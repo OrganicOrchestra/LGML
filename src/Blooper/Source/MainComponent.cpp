@@ -11,6 +11,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+#include "NodeManager.h"
+
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -25,7 +27,7 @@ public:
         setSize (800, 600);
 
         // specify the number of input and output channels that we want to open
-        setAudioChannels (2, 2);
+        //setAudioChannels (2, 2);
     }
 
     ~MainContentComponent()

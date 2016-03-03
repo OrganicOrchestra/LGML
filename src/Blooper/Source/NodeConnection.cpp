@@ -9,3 +9,7 @@
 */
 
 #include "NodeConnection.h"
+
+NodeConnection::NodeConnection()
+  {
+  }

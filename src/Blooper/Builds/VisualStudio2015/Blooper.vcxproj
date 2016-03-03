@@ -128,6 +128,8 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\DataProcessor.cpp"/>
+    <ClCompile Include="..\..\Source\DataProcessorGraph.cpp"/>
     <ClCompile Include="..\..\Source\LookAndFeelOO.cpp"/>
     <ClCompile Include="..\..\Source\SettingsManager.cpp"/>
     <ClCompile Include="..\..\Source\DMXController.cpp"/>
@@ -1323,6 +1325,8 @@
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_opengl\juce_opengl.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\DataProcessor.h"/>
+    <ClInclude Include="..\..\Source\DataProcessorGraph.h"/>
     <ClInclude Include="..\..\Source\LookAndFeelOO.h"/>
     <ClInclude Include="..\..\Source\SettingsManager.h"/>
     <ClInclude Include="..\..\Source\DMXController.h"/>

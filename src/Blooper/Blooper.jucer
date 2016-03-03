@@ -5,6 +5,15 @@
               jucerVersion="4.1.0" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="Blooper">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
+      <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="Data">
+        <FILE id="GVgHpr" name="DataProcessor.cpp" compile="1" resource="0"
+              file="Source/DataProcessor.cpp"/>
+        <FILE id="jPUNwT" name="DataProcessor.h" compile="0" resource="0" file="Source/DataProcessor.h"/>
+        <FILE id="pLs1Ug" name="DataProcessorGraph.cpp" compile="1" resource="0"
+              file="Source/DataProcessorGraph.cpp"/>
+        <FILE id="MxBN89" name="DataProcessorGraph.h" compile="0" resource="0"
+              file="Source/DataProcessorGraph.h"/>
+      </GROUP>
       <GROUP id="{25464EB0-81C5-256B-F983-7775FBA00B84}" name="UI">
         <FILE id="Fa2WJ4" name="LookAndFeelOO.cpp" compile="1" resource="0"
               file="Source/LookAndFeelOO.cpp"/>

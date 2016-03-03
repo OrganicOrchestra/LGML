@@ -11,8 +11,14 @@
 #ifndef NODECONNECTION_H_INCLUDED
 #define NODECONNECTION_H_INCLUDED
 
+#include <JuceHeader.h>
 
-
+class NodeConnection
+{
+public:
+	NodeConnection();
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnection)
+};
 
 
 #endif  // NODECONNECTION_H_INCLUDED

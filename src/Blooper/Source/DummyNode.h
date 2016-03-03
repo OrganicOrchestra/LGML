@@ -21,25 +21,29 @@ public:
 	public:
 		DummyAudioProcessor():NodeBase::NodeAudioProcessor(){}
 
-
 		void processBlock(AudioBuffer<float>& buffer,
 			MidiBuffer& midiMessages) {}
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyAudioProcessor)
 	};
 
 
 	class DummyDataProcessor : public NodeBase::NodeDataProcessor
 	{
+	public:
+		DummyDataProcessor() :NodeBase::NodeDataProcessor() {}
 
-		int getTotalNumInputChannels() { return 0; }
-		int getTotalNumOutputChannels() { return 0; }
+		virtual void processData(Data * incomingData,
+			String targetInputDataName,
+			String targetDataComponentName) {}
 
-
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyDataProcessor)
 	};
 
-	DummyNode() :NodeBase(new DummyAudioProcessor, new DummyDataProcessor) {};
+	DummyNode(uint32 nodeId) :NodeBase(nodeId, new DummyAudioProcessor, new DummyDataProcessor) {};
 
 
-	
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNode)
 };
 
 

@@ -11,14 +11,14 @@
 #include "NodeBase.h"
 
 
-NodeBase::NodeBase(NodeAudioProcessor * _audioProcessor, NodeDataProcessor * _dataProcessor) :
+NodeBase::NodeBase(uint32 _nodeId, NodeAudioProcessor * _audioProcessor, NodeDataProcessor * _dataProcessor) :
+	nodeId(_nodeId),
 	audioProcessor(_audioProcessor),
 	dataProcessor(_dataProcessor)
 {
 	hasAudioInputs = audioProcessor != nullptr?audioProcessor->getTotalNumInputChannels()>0:false;
 	hasAudioOutputs = audioProcessor != nullptr ? audioProcessor->getTotalNumOutputChannels()>0:false;
-	hasDataInputs = dataProcessor != nullptr ? dataProcessor->getTotalNumInputChannels()>0:false;
-	hasDataOutputs = dataProcessor != nullptr ? dataProcessor->getTotalNumInputChannels()>0:false;
-
+	hasDataInputs = dataProcessor != nullptr ? dataProcessor->getTotalNumInputData()>0:false;
+	hasDataOutputs = dataProcessor != nullptr ? dataProcessor->getTotalNumOutputData()>0:false;
 
 }

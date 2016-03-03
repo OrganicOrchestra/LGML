@@ -8,6 +8,9 @@
     <Filter Include="Blooper\Source">
       <UniqueIdentifier>{4C300E5E-6EB3-A6D9-DDD9-8D6ECD00F7A4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Blooper\Source\Data">
+      <UniqueIdentifier>{14CE0A3A-27B9-223F-DD9E-DBFA72A31E22}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Blooper\Source\UI">
       <UniqueIdentifier>{EE6B3EBC-DFCD-8F0E-922E-20FE6A4FF10B}</UniqueIdentifier>
     </Filter>
@@ -346,6 +349,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\DataProcessor.cpp">
+      <Filter>Blooper\Source\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\DataProcessorGraph.cpp">
+      <Filter>Blooper\Source\Data</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\LookAndFeelOO.cpp">
       <Filter>Blooper\Source\UI</Filter>
     </ClCompile>
@@ -1698,6 +1707,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\DataProcessor.h">
+      <Filter>Blooper\Source\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\DataProcessorGraph.h">
+      <Filter>Blooper\Source\Data</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\LookAndFeelOO.h">
       <Filter>Blooper\Source\UI</Filter>
     </ClInclude>
