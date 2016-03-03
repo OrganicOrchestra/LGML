@@ -5,6 +5,11 @@
               jucerVersion="4.1.0" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="Blooper">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
+      <GROUP id="{25464EB0-81C5-256B-F983-7775FBA00B84}" name="UI">
+        <FILE id="Fa2WJ4" name="LookAndFeelOO.cpp" compile="1" resource="0"
+              file="Source/LookAndFeelOO.cpp"/>
+        <FILE id="ToSNQ0" name="LookAndFeelOO.h" compile="0" resource="0" file="Source/LookAndFeelOO.h"/>
+      </GROUP>
       <GROUP id="{61D24830-3FF1-AA71-1066-07487B910808}" name="Settings">
         <FILE id="udYxwE" name="SettingsManager.cpp" compile="1" resource="0"
               file="Source/SettingsManager.cpp"/>
@@ -81,6 +86,10 @@
             <FILE id="jvhq4m" name="AudioNodeConnectionUI.h" compile="0" resource="0"
                   file="Source/AudioNodeConnectionUI.h"/>
           </GROUP>
+          <FILE id="E3PCFl" name="AudioMixerNode.cpp" compile="1" resource="0"
+                file="Source/AudioMixerNode.cpp"/>
+          <FILE id="ePmKKk" name="AudioMixerNode.h" compile="0" resource="0"
+                file="Source/AudioMixerNode.h"/>
           <FILE id="bUpRj4" name="DataLooperNode.cpp" compile="1" resource="0"
                 file="Source/DataLooperNode.cpp"/>
           <FILE id="NbI3z0" name="DataLooperNode.h" compile="0" resource="0"

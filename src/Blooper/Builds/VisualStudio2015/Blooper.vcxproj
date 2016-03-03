@@ -128,6 +128,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\LookAndFeelOO.cpp"/>
     <ClCompile Include="..\..\Source\SettingsManager.cpp"/>
     <ClCompile Include="..\..\Source\DMXController.cpp"/>
     <ClCompile Include="..\..\Source\MIDIController.cpp"/>
@@ -144,6 +145,7 @@
     <ClCompile Include="..\..\Source\AudioLooperEditor.cpp"/>
     <ClCompile Include="..\..\Source\AudioLooperUI.cpp"/>
     <ClCompile Include="..\..\Source\AudioNodeConnectionUI.cpp"/>
+    <ClCompile Include="..\..\Source\AudioMixerNode.cpp"/>
     <ClCompile Include="..\..\Source\DataLooperNode.cpp"/>
     <ClCompile Include="..\..\Source\SpatNode.cpp"/>
     <ClCompile Include="..\..\Source\AudioLooperNode.cpp"/>
@@ -1336,6 +1338,7 @@
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\LookAndFeelOO.h"/>
     <ClInclude Include="..\..\Source\SettingsManager.h"/>
     <ClInclude Include="..\..\Source\DMXController.h"/>
     <ClInclude Include="..\..\Source\MIDIController.h"/>
@@ -1352,6 +1355,7 @@
     <ClInclude Include="..\..\Source\AudioLooperEditor.h"/>
     <ClInclude Include="..\..\Source\AudioLooperUI.h"/>
     <ClInclude Include="..\..\Source\AudioNodeConnectionUI.h"/>
+    <ClInclude Include="..\..\Source\AudioMixerNode.h"/>
     <ClInclude Include="..\..\Source\DataLooperNode.h"/>
     <ClInclude Include="..\..\Source\SpatNode.h"/>
     <ClInclude Include="..\..\Source\AudioLooperNode.h"/>

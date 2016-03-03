@@ -8,6 +8,9 @@
     <Filter Include="Blooper\Source">
       <UniqueIdentifier>{4C300E5E-6EB3-A6D9-DDD9-8D6ECD00F7A4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Blooper\Source\UI">
+      <UniqueIdentifier>{EE6B3EBC-DFCD-8F0E-922E-20FE6A4FF10B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Blooper\Source\Settings">
       <UniqueIdentifier>{F1A4076E-EFF5-6CFB-3760-F16000C553F9}</UniqueIdentifier>
     </Filter>
@@ -355,6 +358,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\LookAndFeelOO.cpp">
+      <Filter>Blooper\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\SettingsManager.cpp">
       <Filter>Blooper\Source\Settings</Filter>
     </ClCompile>
@@ -402,6 +408,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\AudioNodeConnectionUI.cpp">
       <Filter>Blooper\Source\Node\nodes\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\AudioMixerNode.cpp">
+      <Filter>Blooper\Source\Node\nodes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\DataLooperNode.cpp">
       <Filter>Blooper\Source\Node\nodes</Filter>
@@ -1722,6 +1731,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\LookAndFeelOO.h">
+      <Filter>Blooper\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\SettingsManager.h">
       <Filter>Blooper\Source\Settings</Filter>
     </ClInclude>
@@ -1769,6 +1781,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\AudioNodeConnectionUI.h">
       <Filter>Blooper\Source\Node\nodes\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\AudioMixerNode.h">
+      <Filter>Blooper\Source\Node\nodes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\DataLooperNode.h">
       <Filter>Blooper\Source\Node\nodes</Filter>
