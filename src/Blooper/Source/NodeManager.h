@@ -12,7 +12,10 @@
 #define NODEMANAGER_H_INCLUDED
 
 
-
+class NodeManager
+{
+	
+};
 
 
 #endif  // NODEMANAGER_H_INCLUDED

@@ -64,6 +64,8 @@
         <FILE id="uaVLjF" name="TimeManager.h" compile="0" resource="0" file="Source/TimeManager.h"/>
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
+        <FILE id="EJL9RW" name="DummyNode.cpp" compile="1" resource="0" file="Source/DummyNode.cpp"/>
+        <FILE id="YV444r" name="DummyNode.h" compile="0" resource="0" file="Source/DummyNode.h"/>
         <GROUP id="{2CD5DE07-9D46-C579-1A80-852BA2F9EDC6}" name="ui">
           <FILE id="O04rNC" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
           <FILE id="R9VlgY" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>
@@ -133,7 +135,6 @@
         <MODULEPATH id="juce_gui_basics" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
-        <MODULEPATH id="juce_video" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
@@ -157,7 +158,6 @@
         <MODULEPATH id="juce_gui_basics" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
-        <MODULEPATH id="juce_video" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../../../../../../../Softwares/Juce 4.1.0/JUCE/modules"/>
@@ -181,7 +181,6 @@
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS/>
   <LIVE_SETTINGS>

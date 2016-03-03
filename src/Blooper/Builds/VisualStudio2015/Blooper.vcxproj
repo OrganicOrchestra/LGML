@@ -140,6 +140,7 @@
     <ClCompile Include="..\..\Source\ControlManager.cpp"/>
     <ClCompile Include="..\..\Source\ProjectManager.cpp"/>
     <ClCompile Include="..\..\Source\TimeManager.cpp"/>
+    <ClCompile Include="..\..\Source\DummyNode.cpp"/>
     <ClCompile Include="..\..\Source\NodeBaseUI.cpp"/>
     <ClCompile Include="..\..\Source\NodeConnectionUI.cpp"/>
     <ClCompile Include="..\..\Source\AudioLooperEditor.cpp"/>
@@ -1307,21 +1308,6 @@
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_opengl\utils\juce_OpenGLAppComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\capture\juce_CameraDevice.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\native\juce_android_CameraDevice.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\native\juce_win32_CameraDevice.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\native\juce_win32_DirectShowComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\native\juce_win32_QuickTimeMovieComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp"/>
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_audio_devices\juce_audio_devices.cpp"/>
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_audio_formats\juce_audio_formats.cpp"/>
@@ -1335,7 +1321,6 @@
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_gui_basics\juce_gui_basics.cpp"/>
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_gui_extra\juce_gui_extra.cpp"/>
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_opengl\juce_opengl.cpp"/>
-    <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\juce_video.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\LookAndFeelOO.h"/>
@@ -1350,6 +1335,7 @@
     <ClInclude Include="..\..\Source\ControlManager.h"/>
     <ClInclude Include="..\..\Source\ProjectManager.h"/>
     <ClInclude Include="..\..\Source\TimeManager.h"/>
+    <ClInclude Include="..\..\Source\DummyNode.h"/>
     <ClInclude Include="..\..\Source\NodeBaseUI.h"/>
     <ClInclude Include="..\..\Source\NodeConnectionUI.h"/>
     <ClInclude Include="..\..\Source\AudioLooperEditor.h"/>
@@ -1835,10 +1821,6 @@
     <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_opengl\native\juce_OpenGL_win32.h"/>
     <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_opengl\native\juce_OpenGLExtensions.h"/>
     <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_opengl\juce_opengl.h"/>
-    <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\playback\juce_DirectShowComponent.h"/>
-    <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\playback\juce_QuickTimeMovieComponent.h"/>
-    <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\capture\juce_CameraDevice.h"/>
-    <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\juce_video.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
@@ -1856,7 +1838,6 @@
     <None Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_gui_basics\juce_module_info"/>
     <None Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_gui_extra\juce_module_info"/>
     <None Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_opengl\juce_module_info"/>
-    <None Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_video\juce_module_info"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc"/>

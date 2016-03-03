@@ -1,13 +1,12 @@
 /*
   ==============================================================================
 
-    NodeManager.cpp
-    Created: 2 Mar 2016 8:33:39pm
+    DummyNode.cpp
+    Created: 3 Mar 2016 12:31:33pm
     Author:  bkupe
 
   ==============================================================================
 */
 
-#include "NodeManager.h"
-
+#include "DummyNode.h"
 
