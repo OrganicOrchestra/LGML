@@ -21,10 +21,10 @@ DataProcessorGraph::~DataProcessorGraph()
 }
 
 
-DataProcessorGraph::Connection::Connection(const uint32 sourceID, const String sourceDataName, const String sourceComponentName,
-	const uint32 destID, const String destDataName, const String destComponentName) noexcept
-	: sourceNodeId(sourceID), sourceDataName(sourceDataName),sourceComponentName(sourceComponentName),
-	destNodeId(destID), destDataName(destDataName), destComponentName(destComponentName)
+DataProcessorGraph::Connection::Connection(const uint32 sourceID, const String sourceDataName, const String sourceElementName,
+	const uint32 destID, const String destDataName, const String destElementName) noexcept
+	: sourceNodeId(sourceID), sourceDataName(sourceDataName),sourceElementName(sourceElementName),
+	destNodeId(destID), destDataName(destDataName), destElementName(destElementName)
 {
 }
 
@@ -115,10 +115,10 @@ bool DataProcessorGraph::removeNode(uint32 nodeId)
 
 const DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(uint32 sourceNodeId, 
 	String sourceDataName,
-	String sourceComponentName,
+	String sourceElementName,
 	uint32 destNodeId, 
 	String destDataName,
-	String destComponentName
+	String destElementName
 	) const
 {
 	for (int i = connections.size(); --i >= 0;)
@@ -126,10 +126,10 @@ const DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(
 		Connection * c = connections.getUnchecked(i);
 		if (c->sourceNodeId == sourceNodeId
 			&& c->sourceDataName == sourceDataName
-			&& c->sourceComponentName == sourceComponentName
+			&& c->sourceElementName == sourceElementName
 			&& c->destNodeId == destNodeId
 			&& c->destDataName == destDataName
-			&& c->destComponentName == destComponentName)
+			&& c->destElementName == destElementName)
 		{
 			return c;
 		}
@@ -161,10 +161,10 @@ bool DataProcessorGraph::isConnected(uint32 possibleSourceNodeId, uint32 possibl
 
 bool DataProcessorGraph::canConnect(uint32 sourceNodeId,
 	String sourceDataName,
-	String sourceComponentName,
+	String sourceElementName,
 	uint32 destNodeId,
 	String destDataName,
-	String destComponentName) const
+	String destElementName) const
 {
 	if (sourceDataName.isEmpty()
 		|| destDataName.isEmpty()
@@ -175,16 +175,16 @@ bool DataProcessorGraph::canConnect(uint32 sourceNodeId,
 	Node* const source = getNodeForId(sourceNodeId);
 	Node* const dest = getNodeForId(destNodeId);
 
-	if (source->getInputDataType(sourceDataName, sourceComponentName) != dest->getOutputDataType(destDataName, destComponentName)) return false;
+	if (source->getInputDataType(sourceDataName, sourceElementName) != dest->getOutputDataType(destDataName, destElementName)) return false;
 
-	return getConnectionBetween(sourceNodeId, sourceDataName, sourceComponentName,
-		destNodeId, destDataName,destComponentName) == nullptr;
+	return getConnectionBetween(sourceNodeId, sourceDataName, sourceElementName,
+		destNodeId, destDataName,destElementName) == nullptr;
 }
 
 
-bool DataProcessorGraph::addConnection(uint32 sourceNodeId, String sourceDataName, String sourceComponentName, uint32 destNodeId, String destDataName, String destComponentName)
+bool DataProcessorGraph::addConnection(uint32 sourceNodeId, String sourceDataName, String sourceElementName, uint32 destNodeId, String destDataName, String destElementName)
 {
-	if (!canConnect(sourceNodeId, sourceDataName, sourceComponentName, destNodeId,destDataName,destComponentName))
+	if (!canConnect(sourceNodeId, sourceDataName, sourceElementName, destNodeId,destDataName,destElementName))
 		return false;
 
 	/*
@@ -193,7 +193,7 @@ bool DataProcessorGraph::addConnection(uint32 sourceNodeId, String sourceDataNam
 		destNodeId, destChannelIndex));
 		*/
 
-	Connection * c = new Connection(sourceNodeId, sourceDataName, sourceComponentName, destNodeId, destDataName, destComponentName);
+	Connection * c = new Connection(sourceNodeId, sourceDataName, sourceElementName, destNodeId, destDataName, destElementName);
 	connections.add(c);
 
 	//triggerAsyncUpdate();
@@ -206,7 +206,7 @@ void DataProcessorGraph::removeConnection(int index)
 	//triggerAsyncUpdate();
 }
 
-bool DataProcessorGraph::removeConnection(uint32 sourceNodeId, String sourceDataName, String sourceComponentName, uint32 destNodeId, String destDataName, String destComponentName)
+bool DataProcessorGraph::removeConnection(uint32 sourceNodeId, String sourceDataName, String sourceElementName, uint32 destNodeId, String destDataName, String destElementName)
 {
 	bool doneAnything = false;
 
@@ -216,10 +216,10 @@ bool DataProcessorGraph::removeConnection(uint32 sourceNodeId, String sourceData
 
 		if (c->sourceNodeId == sourceNodeId
 			&& c->sourceDataName == sourceDataName
-			&& c->sourceComponentName == sourceComponentName
+			&& c->sourceElementName == sourceElementName
 			&& c->destNodeId == destNodeId
 			&& c->destDataName == destDataName
-			&& c->destComponentName == destComponentName)
+			&& c->destElementName == destElementName)
 		{
             removeConnection (i);
             doneAnything = true;

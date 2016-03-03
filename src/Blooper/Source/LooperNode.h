@@ -1,18 +1,18 @@
 /*
   ==============================================================================
 
-    AudioLooperNode.h
-    Created: 2 Mar 2016 8:37:35pm
+    LooperNode.h
+    Created: 3 Mar 2016 10:32:16pm
     Author:  bkupe
 
   ==============================================================================
 */
 
-#ifndef AUDIOLOOPERNODE_H_INCLUDED
-#define AUDIOLOOPERNODE_H_INCLUDED
+#ifndef LOOPERNODE_H_INCLUDED
+#define LOOPERNODE_H_INCLUDED
 
 
 
 
 
-#endif  // AUDIOLOOPERNODE_H_INCLUDED
+#endif  // LOOPERNODE_H_INCLUDED

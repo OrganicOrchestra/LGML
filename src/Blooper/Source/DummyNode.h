@@ -13,7 +13,7 @@
 
 #include "NodeBase.h"
 
-class DummyNode : NodeBase
+class DummyNode : NodeBase 
 {
 public:
 	class DummyAudioProcessor : public NodeBase::NodeAudioProcessor
@@ -28,7 +28,7 @@ public:
 	};
 
 
-	class DummyDataProcessor : public NodeBase::NodeDataProcessor
+	class DummyDataProcessor : public NodeBase::NodeDataProcessor 
 	{
 	public:
 		DummyDataProcessor() :NodeBase::NodeDataProcessor() {}

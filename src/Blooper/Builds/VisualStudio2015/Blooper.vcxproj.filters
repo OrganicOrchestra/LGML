@@ -400,25 +400,16 @@
     <ClCompile Include="..\..\Source\NodeConnectionUI.cpp">
       <Filter>Blooper\Source\Node\ui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\AudioLooperEditor.cpp">
-      <Filter>Blooper\Source\Node\nodes\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioLooperUI.cpp">
-      <Filter>Blooper\Source\Node\nodes\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioNodeConnectionUI.cpp">
-      <Filter>Blooper\Source\Node\nodes\ui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\AudioMixerNode.cpp">
       <Filter>Blooper\Source\Node\nodes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\DataLooperNode.cpp">
       <Filter>Blooper\Source\Node\nodes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\SpatNode.cpp">
+    <ClCompile Include="..\..\Source\LooperNode.cpp">
       <Filter>Blooper\Source\Node\nodes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\AudioLooperNode.cpp">
+    <ClCompile Include="..\..\Source\SpatNode.cpp">
       <Filter>Blooper\Source\Node\nodes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\VSTNode.cpp">
@@ -1758,25 +1749,16 @@
     <ClInclude Include="..\..\Source\NodeConnectionUI.h">
       <Filter>Blooper\Source\Node\ui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\AudioLooperEditor.h">
-      <Filter>Blooper\Source\Node\nodes\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioLooperUI.h">
-      <Filter>Blooper\Source\Node\nodes\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioNodeConnectionUI.h">
-      <Filter>Blooper\Source\Node\nodes\ui</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\AudioMixerNode.h">
       <Filter>Blooper\Source\Node\nodes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\DataLooperNode.h">
       <Filter>Blooper\Source\Node\nodes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\SpatNode.h">
+    <ClInclude Include="..\..\Source\LooperNode.h">
       <Filter>Blooper\Source\Node\nodes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\AudioLooperNode.h">
+    <ClInclude Include="..\..\Source\SpatNode.h">
       <Filter>Blooper\Source\Node\nodes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\VSTNode.h">

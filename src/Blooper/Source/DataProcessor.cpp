@@ -15,7 +15,7 @@ DataProcessor::DataProcessor()
 
 }
 
-DataProcessor::DataType DataProcessor::getInputDataType(String dataName, String componentName)
+DataProcessor::DataType DataProcessor::getInputDataType(String dataName, String elementName)
 {
 	for (int i = inputDatas.size(); --i >= 0;)
 	{
@@ -23,22 +23,22 @@ DataProcessor::DataType DataProcessor::getInputDataType(String dataName, String 
 
 		if (d->name == dataName)
 		{
-			if (componentName.isEmpty())
+			if (elementName.isEmpty())
 			{
 				return d->type;
 			}
 			else
 			{
-				DataComponent * comp = d->getComponent(componentName);
-				if (comp == nullptr) return DataType::Unknown;
-				return comp->type;
+				DataElement * e = d->getElement(elementName);
+				if (e == nullptr) return DataType::Unknown;
+				return e->type;
 			}
 		}
 	}
 
 }
 
-DataProcessor::DataType DataProcessor::getOutputDataType(String dataName, String componentName)
+DataProcessor::DataType DataProcessor::getOutputDataType(String dataName, String elementName)
 {
 	for (int i = outputDatas.size(); --i >= 0;)
 	{
@@ -46,15 +46,15 @@ DataProcessor::DataType DataProcessor::getOutputDataType(String dataName, String
 
 		if (d->name == dataName)
 		{
-			if (componentName.isEmpty())
+			if (elementName.isEmpty())
 			{
 				return d->type;
 			}
 			else
 			{
-				DataComponent * comp = d->getComponent(componentName);
-				if (comp == nullptr) return DataType::Unknown;
-				return comp->type;
+				DataElement * e = d->getElement(elementName);
+				if (e == nullptr) return DataType::Unknown;
+				return e->type;
 			}
 		}
 	}

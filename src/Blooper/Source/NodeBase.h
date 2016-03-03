@@ -33,8 +33,6 @@ public:
 
 		bool silenceInProducesSilenceOut() const { return false; }
 
-
-
 		virtual AudioProcessorEditor* createEditor() { return nullptr; }
 		virtual bool hasEditor() const { return false; }
 

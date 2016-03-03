@@ -1,11 +1,11 @@
 /*
   ==============================================================================
 
-    AudioLooperNode.cpp
-    Created: 2 Mar 2016 8:37:35pm
+    LooperNode.cpp
+    Created: 3 Mar 2016 10:32:16pm
     Author:  bkupe
 
   ==============================================================================
 */
 
-#include "AudioLooperNode.h"
+#include "LooperNode.h"

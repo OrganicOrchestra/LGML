@@ -84,19 +84,7 @@
                 file="Source/NodeConnectionUI.h"/>
         </GROUP>
         <GROUP id="{90D03868-3FD4-352F-D8F2-C231A68FF418}" name="nodes">
-          <GROUP id="{0D7900E2-1839-0B67-4130-AE6CD622531E}" name="ui">
-            <FILE id="NajBBa" name="AudioLooperEditor.cpp" compile="1" resource="0"
-                  file="Source/AudioLooperEditor.cpp"/>
-            <FILE id="xWGYCb" name="AudioLooperEditor.h" compile="0" resource="0"
-                  file="Source/AudioLooperEditor.h"/>
-            <FILE id="YbpyYP" name="AudioLooperUI.cpp" compile="1" resource="0"
-                  file="Source/AudioLooperUI.cpp"/>
-            <FILE id="bkifRU" name="AudioLooperUI.h" compile="0" resource="0" file="Source/AudioLooperUI.h"/>
-            <FILE id="Mqa4ct" name="AudioNodeConnectionUI.cpp" compile="1" resource="0"
-                  file="Source/AudioNodeConnectionUI.cpp"/>
-            <FILE id="jvhq4m" name="AudioNodeConnectionUI.h" compile="0" resource="0"
-                  file="Source/AudioNodeConnectionUI.h"/>
-          </GROUP>
+          <GROUP id="{0D7900E2-1839-0B67-4130-AE6CD622531E}" name="ui"/>
           <FILE id="E3PCFl" name="AudioMixerNode.cpp" compile="1" resource="0"
                 file="Source/AudioMixerNode.cpp"/>
           <FILE id="ePmKKk" name="AudioMixerNode.h" compile="0" resource="0"
@@ -105,12 +93,10 @@
                 file="Source/DataLooperNode.cpp"/>
           <FILE id="NbI3z0" name="DataLooperNode.h" compile="0" resource="0"
                 file="Source/DataLooperNode.h"/>
+          <FILE id="lWXXbw" name="LooperNode.cpp" compile="1" resource="0" file="Source/LooperNode.cpp"/>
+          <FILE id="p6VNxS" name="LooperNode.h" compile="0" resource="0" file="Source/LooperNode.h"/>
           <FILE id="Yv1aON" name="SpatNode.cpp" compile="1" resource="0" file="Source/SpatNode.cpp"/>
           <FILE id="xdFuwd" name="SpatNode.h" compile="0" resource="0" file="Source/SpatNode.h"/>
-          <FILE id="J2Pr3M" name="AudioLooperNode.cpp" compile="1" resource="0"
-                file="Source/AudioLooperNode.cpp"/>
-          <FILE id="gPtj9D" name="AudioLooperNode.h" compile="0" resource="0"
-                file="Source/AudioLooperNode.h"/>
           <FILE id="eBfKxJ" name="VSTNode.cpp" compile="1" resource="0" file="Source/VSTNode.cpp"/>
           <FILE id="xr7Cfk" name="VSTNode.h" compile="0" resource="0" file="Source/VSTNode.h"/>
         </GROUP>

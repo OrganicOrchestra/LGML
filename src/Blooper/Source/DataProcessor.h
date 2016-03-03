@@ -26,69 +26,75 @@ public :
 		Unknown,Number,Boolean,Position,Orientation,Color
 	};
 
-	class DataComponent
+	class DataElement
 	{
 	public:
-		DataComponent(String _name) : name(_name){}
+		DataElement(String _name) : name(_name),type(Number) {}
 
 		String name;
 		DataType type;
 		float value;
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataElement)
 	};
 
 	class Data
 	{
 	public:
+		String name;
+		DataType type;
+
+		OwnedArray<DataElement> elements;
+
 		Data(String _name, DataType _type) : name(_name), type(_type)
 		{
 			switch (type)
 			{
 			case Number:
 			case Boolean:
-				addComponent("value");
+				addElement("value");
 				break;
 
 			case Position:
-				addComponent("x");
-				addComponent("y");
-				addComponent("z");
+				addElement("x");
+				addElement("y");
+				addElement("z");
 				break;
 
 			case Orientation:
-				addComponent("Yaw");
-				addComponent("Pitch");
-				addComponent("Roll");
+				addElement("Yaw");
+				addElement("Pitch");
+				addElement("Roll");
 				break;
 
 			case Color:
-				addComponent("Red");
-				addComponent("Green");
-				addComponent("Blue");
+				addElement("Red");
+				addElement("Green");
+				addElement("Blue");
 				break;
 			}
 		};
 
-		String name;
-		DataType type;
-
-		void addComponent(String name) {
-			DataComponent *c = new DataComponent(name);
-			components.add(c);
+		void addElement(String name) {
+			DataElement *e = new DataElement(name);
+			elements.add(e);
 		}
 
-		DataComponent * getComponent(String componentName)
+		DataElement * getElement(String elementName)
 		{
-			for (int i = components.size(); --i >= 0;)
+			for (int i = elements.size(); --i >= 0;)
 			{
-				DataComponent * c = components.getUnchecked(i);
-				if (c->name == componentName) return c;
+				DataElement * e = elements.getUnchecked(i);
+				if (e->name == elementName) return e;
 			}
 
 			return nullptr;
 		}
 
-		OwnedArray<DataComponent> components;
-		bool isComplex() { return components.size() > 1; }
+		
+		bool isComplex() { return elements.size() > 1; }
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Data)
 	};
 
 	
@@ -111,14 +117,16 @@ public :
 		return d;
 	}
 
-	virtual void processData(Data * incomingData, String targetInputDataName,String targetDataComponentName) = 0;
+
+	virtual void receiveData(const Data * incomingData, String destDataName, String destElementName = "", String sourceElementName = "") = 0;
+	virtual void sendData(const Data * outgoingData, String sourceElementName = "") = 0;
 
 	int getTotalNumInputData() const { return inputDatas.size(); }
 	int getTotalNumOutputData() const { return outputDatas.size(); }
 
 
-	DataType getInputDataType(String dataName, String componentName);
-	DataType getOutputDataType(String dataName, String componentName);
+	DataType getInputDataType(String dataName, String elementName);
+	DataType getOutputDataType(String dataName, String elementName);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataProcessor)
 };

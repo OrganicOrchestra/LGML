@@ -21,21 +21,21 @@ public:
 	DataProcessorGraph();
 	~DataProcessorGraph();
 
-	class  Node : public ReferenceCountedObject
+	class Node : public ReferenceCountedObject
 	{
 	public:
 		
 		const uint32 nodeId;
 		DataProcessor * getProcessor() const noexcept { return processor; }
 
-		DataProcessor::DataType getInputDataType(String dataName, String componentName)
+		DataProcessor::DataType getInputDataType(String dataName, String ElementName)
 		{
-			return processor->getInputDataType(dataName, componentName);
+			return processor->getInputDataType(dataName, ElementName);
 		}
 
-		DataProcessor::DataType getOutputDataType(String dataName, String componentName)
+		DataProcessor::DataType getOutputDataType(String dataName, String ElementName)
 		{
-			return processor->getOutputDataType(dataName, componentName);
+			return processor->getOutputDataType(dataName, ElementName);
 		}
 		
 		//Used in parent node containing both data and audio node
@@ -63,23 +63,23 @@ public:
 
 	To create a connection, use AudioProcessorGraph::addConnection().
 	*/
-	struct JUCE_API  Connection
+	struct Connection
 	{
 	public:
 		//==============================================================================
-		Connection(uint32 sourceNodeId, String sourceDataName, String sourceComponentName,
-			uint32 destNodeId, String destDataName, String destComponentName) noexcept;
+		Connection(uint32 sourceNodeId, String sourceDataName, String sourceElementName,
+			uint32 destNodeId, String destDataName, String destElementName) noexcept;
 
 		uint32 sourceNodeId;
 
 
 		String sourceDataName;
-		String sourceComponentName;
+		String sourceElementName;
 
 		uint32 destNodeId;
 
 		String destDataName;
-		String destComponentName;
+		String destElementName;
 
 	private:
 		//==============================================================================
@@ -111,10 +111,10 @@ public:
 
 	const Connection* getConnectionBetween(uint32 sourceNodeId,
 		String sourceDataName,
-		String sourceComponentName,
+		String sourceElementName,
 		uint32 destNodeId,
 		String destDataName,
-		String destComponentName) const;
+		String destElementName) const;
 
 
 	bool isConnected(uint32 possibleSourceNodeId,
@@ -122,28 +122,28 @@ public:
 
 	bool canConnect(uint32 sourceNodeId,
 		String sourceDataName,
-		String sourceComponentName,
+		String sourceElementName,
 		uint32 destNodeId,
 		String destDataName,
-		String destComponentName) const;
+		String destElementName) const;
 
 
 	bool addConnection(uint32 sourceNodeId,
 		String sourceDataName,
-		String sourceComponentName,
+		String sourceElementName,
 		uint32 destNodeId,
 		String destDataName,
-		String destComponentName);
+		String destElementName);
 
 	void removeConnection(int index);
 
 
 	bool removeConnection(uint32 sourceNodeId,
 		String sourceDataName,
-		String sourceComponentName,
+		String sourceElementName,
 		uint32 destNodeId,
 		String destDataName,
-		String destComponentName);
+		String destElementName);
 
 
 	bool disconnectNode(uint32 nodeId);
