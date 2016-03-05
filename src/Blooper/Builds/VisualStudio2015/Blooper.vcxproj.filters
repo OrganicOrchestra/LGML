@@ -41,14 +41,29 @@
     <Filter Include="Blooper\Source\Node">
       <UniqueIdentifier>{59F0960B-5DBA-C39F-AED8-6F101E7C0C49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blooper\Source\Node\ui">
-      <UniqueIdentifier>{235F49B3-B364-7179-CFE9-5858E27729CA}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Blooper\Source\Node\nodes">
       <UniqueIdentifier>{FDC9C0BE-3B10-D092-E13F-C66FEFEE841C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Blooper\Source\Node\nodes\ui">
-      <UniqueIdentifier>{00162A12-7C53-E945-D024-B23B698AA323}</UniqueIdentifier>
+    <Filter Include="Blooper\Source\Node\nodes\connection">
+      <UniqueIdentifier>{684027D2-76C1-E6BE-7467-25203BC13BA3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blooper\Source\Node\nodes\Base">
+      <UniqueIdentifier>{29C43C62-777C-55A9-AE96-93F65D4EE006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blooper\Source\Node\nodes\Dummy">
+      <UniqueIdentifier>{A32F02F8-C106-E849-C26F-07464FDF6603}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blooper\Source\Node\nodes\AudioMixer">
+      <UniqueIdentifier>{CBA8C3DC-94F5-CF72-0550-94CBE809E68A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blooper\Source\Node\nodes\Looper">
+      <UniqueIdentifier>{833CBE64-1E6A-FE08-B25D-DAD0F0F13015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blooper\Source\Node\nodes\Spat">
+      <UniqueIdentifier>{2B97AFE0-E2E1-C007-9747-E27003DCEBC1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blooper\Source\Node\nodes\VST">
+      <UniqueIdentifier>{8CC0FE2C-DC5B-3B25-DCA4-522F8F960C43}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules">
       <UniqueIdentifier>{422C46B7-0467-2DB0-BF3C-16DFCAFD69AC}</UniqueIdentifier>
@@ -358,6 +373,9 @@
     <ClCompile Include="..\..\Source\LookAndFeelOO.cpp">
       <Filter>Blooper\Source\UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UIHelpers.cpp">
+      <Filter>Blooper\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\SettingsManager.cpp">
       <Filter>Blooper\Source\Settings</Filter>
     </ClCompile>
@@ -391,37 +409,37 @@
     <ClCompile Include="..\..\Source\TimeManager.cpp">
       <Filter>Blooper\Source\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\DummyNode.cpp">
-      <Filter>Blooper\Source\Node</Filter>
+    <ClCompile Include="..\..\Source\NodeConnectionUI.cpp">
+      <Filter>Blooper\Source\Node\nodes\connection</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\NodeBaseUI.cpp">
-      <Filter>Blooper\Source\Node\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\NodeConnectionUI.cpp">
-      <Filter>Blooper\Source\Node\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioMixerNode.cpp">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\DataLooperNode.cpp">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\LooperNode.cpp">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\SpatNode.cpp">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\VSTNode.cpp">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\NodeManager.cpp">
-      <Filter>Blooper\Source\Node</Filter>
+      <Filter>Blooper\Source\Node\nodes\Base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\NodeBase.cpp">
+      <Filter>Blooper\Source\Node\nodes\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\DummyNode.cpp">
+      <Filter>Blooper\Source\Node\nodes\Dummy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\DummyNodeUI.cpp">
+      <Filter>Blooper\Source\Node\nodes\Dummy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\AudioMixerNode.cpp">
+      <Filter>Blooper\Source\Node\nodes\AudioMixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\LooperNode.cpp">
+      <Filter>Blooper\Source\Node\nodes\Looper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\SpatNode.cpp">
+      <Filter>Blooper\Source\Node\nodes\Spat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\VSTNode.cpp">
+      <Filter>Blooper\Source\Node\nodes\VST</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\NodeManagerUI.cpp">
       <Filter>Blooper\Source\Node</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeConnection.cpp">
+    <ClCompile Include="..\..\Source\NodeManager.cpp">
       <Filter>Blooper\Source\Node</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
@@ -1707,6 +1725,12 @@
     <ClInclude Include="..\..\Source\LookAndFeelOO.h">
       <Filter>Blooper\Source\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Style.h">
+      <Filter>Blooper\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UIHelpers.h">
+      <Filter>Blooper\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\SettingsManager.h">
       <Filter>Blooper\Source\Settings</Filter>
     </ClInclude>
@@ -1740,37 +1764,40 @@
     <ClInclude Include="..\..\Source\TimeManager.h">
       <Filter>Blooper\Source\Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\DummyNode.h">
-      <Filter>Blooper\Source\Node</Filter>
+    <ClInclude Include="..\..\Source\NodeConnectionUI.h">
+      <Filter>Blooper\Source\Node\nodes\connection</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\NodeBaseUI.h">
-      <Filter>Blooper\Source\Node\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeConnectionUI.h">
-      <Filter>Blooper\Source\Node\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioMixerNode.h">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\DataLooperNode.h">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\LooperNode.h">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\SpatNode.h">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\VSTNode.h">
-      <Filter>Blooper\Source\Node\nodes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeManager.h">
-      <Filter>Blooper\Source\Node</Filter>
+      <Filter>Blooper\Source\Node\nodes\Base</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\NodeBase.h">
+      <Filter>Blooper\Source\Node\nodes\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\DummyNode.h">
+      <Filter>Blooper\Source\Node\nodes\Dummy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\DummyNodeUI.h">
+      <Filter>Blooper\Source\Node\nodes\Dummy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\AudioMixerNode.h">
+      <Filter>Blooper\Source\Node\nodes\AudioMixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\LooperNode.h">
+      <Filter>Blooper\Source\Node\nodes\Looper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\SpatNode.h">
+      <Filter>Blooper\Source\Node\nodes\Spat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\VSTNode.h">
+      <Filter>Blooper\Source\Node\nodes\VST</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\NodeFactory.h">
       <Filter>Blooper\Source\Node</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeConnection.h">
+    <ClInclude Include="..\..\Source\NodeManagerUI.h">
+      <Filter>Blooper\Source\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\NodeManager.h">
       <Filter>Blooper\Source\Node</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">

@@ -13,7 +13,8 @@
 
 #include "NodeBase.h"
 
-class DummyNode : NodeBase 
+
+class DummyNode : public NodeBase 
 {
 public:
 	class DummyAudioProcessor : public NodeBase::NodeAudioProcessor
@@ -33,15 +34,18 @@ public:
 	public:
 		DummyDataProcessor() :NodeBase::NodeDataProcessor() {}
 
-		virtual void processData(Data * incomingData,
-			String targetInputDataName,
-			String targetDataComponentName) {}
+		virtual void processData(Data * incomingData, String targetInputDataName, String targetDataComponentName) {}
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyDataProcessor)
 	};
 
-	DummyNode(uint32 nodeId) :NodeBase(nodeId, new DummyAudioProcessor, new DummyDataProcessor) {};
 
+
+	DummyNode(uint32 nodeId);
+	~DummyNode();
+
+	virtual NodeBaseUI * createUI() override;
+	
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNode)
 };

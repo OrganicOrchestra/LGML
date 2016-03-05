@@ -57,7 +57,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Softwares\Juce 4.1.0\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=0.1.0;JUCE_APP_VERSION_HEX=0x100;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -96,7 +96,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;D:\Softwares\Juce 4.1.0\JUCE\modules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=0.1.0;JUCE_APP_VERSION_HEX=0x100;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -131,6 +131,7 @@
     <ClCompile Include="..\..\Source\DataProcessor.cpp"/>
     <ClCompile Include="..\..\Source\DataProcessorGraph.cpp"/>
     <ClCompile Include="..\..\Source\LookAndFeelOO.cpp"/>
+    <ClCompile Include="..\..\Source\UIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\SettingsManager.cpp"/>
     <ClCompile Include="..\..\Source\DMXController.cpp"/>
     <ClCompile Include="..\..\Source\MIDIController.cpp"/>
@@ -142,17 +143,17 @@
     <ClCompile Include="..\..\Source\ControlManager.cpp"/>
     <ClCompile Include="..\..\Source\ProjectManager.cpp"/>
     <ClCompile Include="..\..\Source\TimeManager.cpp"/>
-    <ClCompile Include="..\..\Source\DummyNode.cpp"/>
-    <ClCompile Include="..\..\Source\NodeBaseUI.cpp"/>
     <ClCompile Include="..\..\Source\NodeConnectionUI.cpp"/>
+    <ClCompile Include="..\..\Source\NodeBaseUI.cpp"/>
+    <ClCompile Include="..\..\Source\NodeBase.cpp"/>
+    <ClCompile Include="..\..\Source\DummyNode.cpp"/>
+    <ClCompile Include="..\..\Source\DummyNodeUI.cpp"/>
     <ClCompile Include="..\..\Source\AudioMixerNode.cpp"/>
-    <ClCompile Include="..\..\Source\DataLooperNode.cpp"/>
     <ClCompile Include="..\..\Source\LooperNode.cpp"/>
     <ClCompile Include="..\..\Source\SpatNode.cpp"/>
     <ClCompile Include="..\..\Source\VSTNode.cpp"/>
+    <ClCompile Include="..\..\Source\NodeManagerUI.cpp"/>
     <ClCompile Include="..\..\Source\NodeManager.cpp"/>
-    <ClCompile Include="..\..\Source\NodeBase.cpp"/>
-    <ClCompile Include="..\..\Source\NodeConnection.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
@@ -1325,6 +1326,8 @@
     <ClInclude Include="..\..\Source\DataProcessor.h"/>
     <ClInclude Include="..\..\Source\DataProcessorGraph.h"/>
     <ClInclude Include="..\..\Source\LookAndFeelOO.h"/>
+    <ClInclude Include="..\..\Source\Style.h"/>
+    <ClInclude Include="..\..\Source\UIHelpers.h"/>
     <ClInclude Include="..\..\Source\SettingsManager.h"/>
     <ClInclude Include="..\..\Source\DMXController.h"/>
     <ClInclude Include="..\..\Source\MIDIController.h"/>
@@ -1336,17 +1339,18 @@
     <ClInclude Include="..\..\Source\ControlManager.h"/>
     <ClInclude Include="..\..\Source\ProjectManager.h"/>
     <ClInclude Include="..\..\Source\TimeManager.h"/>
-    <ClInclude Include="..\..\Source\DummyNode.h"/>
-    <ClInclude Include="..\..\Source\NodeBaseUI.h"/>
     <ClInclude Include="..\..\Source\NodeConnectionUI.h"/>
+    <ClInclude Include="..\..\Source\NodeBaseUI.h"/>
+    <ClInclude Include="..\..\Source\NodeBase.h"/>
+    <ClInclude Include="..\..\Source\DummyNode.h"/>
+    <ClInclude Include="..\..\Source\DummyNodeUI.h"/>
     <ClInclude Include="..\..\Source\AudioMixerNode.h"/>
-    <ClInclude Include="..\..\Source\DataLooperNode.h"/>
     <ClInclude Include="..\..\Source\LooperNode.h"/>
     <ClInclude Include="..\..\Source\SpatNode.h"/>
     <ClInclude Include="..\..\Source\VSTNode.h"/>
+    <ClInclude Include="..\..\Source\NodeFactory.h"/>
+    <ClInclude Include="..\..\Source\NodeManagerUI.h"/>
     <ClInclude Include="..\..\Source\NodeManager.h"/>
-    <ClInclude Include="..\..\Source\NodeBase.h"/>
-    <ClInclude Include="..\..\Source\NodeConnection.h"/>
     <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h"/>
     <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h"/>
     <ClInclude Include="..\..\..\..\..\..\..\..\..\..\..\Softwares\Juce 4.1.0\JUCE\modules\juce_audio_basics\buffers\juce_FloatVectorOperations.h"/>

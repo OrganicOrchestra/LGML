@@ -8,14 +8,22 @@
   ==============================================================================
 */
 
+/*
+NodeBase is the base class for all Nodes
+it contains NodeBase::NodeAudioProcessor and/or NodeBase::NodeDataProcessor
+	
 
+*/
 #ifndef NODEBASE_H_INCLUDED
 #define NODEBASE_H_INCLUDED
 
 #include <JuceHeader.h>
 #include "DataProcessor.h"
 
-class NodeBase : public ReferenceCountedObject
+class NodeBaseUI;
+
+
+class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener
 {
 
 public:
@@ -23,41 +31,42 @@ public:
 	{
 	public:
 		NodeAudioProcessor() :AudioProcessor() {};
-
 		
-		virtual const String getName() const { return "NodeBase"; };
-		virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) {jassert(false);};
-		virtual void releaseResources() {jassert(false);};
+		virtual const String getName() const override { return "NodeBaseProcessor"; };
+
+		virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) override {jassert(false);};
+		virtual void releaseResources() override {jassert(false);};
 
 
 
-		bool silenceInProducesSilenceOut() const { return false; }
+		bool silenceInProducesSilenceOut() const override { return false; }
 
-		virtual AudioProcessorEditor* createEditor() { return nullptr; }
-		virtual bool hasEditor() const { return false; }
+		virtual AudioProcessorEditor* createEditor() override { return nullptr; }
+		virtual bool hasEditor() const override { return false; }
 
 
 
 		// dumb overrides from JUCE AudioProcessor :  MIDI
-		int getNumPrograms() { return 0; }
-		int getCurrentProgram() { return 0; }
-		void setCurrentProgram(int index) {}
-		const String getProgramName(int index) { return "NoProgram"; }
-		void changeProgramName(int index, const String& newName) {};
-		double getTailLengthSeconds() const { return 0; }
-		bool acceptsMidi() const { return false; }
-		bool producesMidi() const { return false; }
+		int getNumPrograms() override { return 0; }
+		int getCurrentProgram() override { return 0; }
+		void setCurrentProgram(int index) override {}
+		const String getProgramName(int index) override { return "NoProgram"; }
+		void changeProgramName(int index, const String& newName) override {};
+		double getTailLengthSeconds() const override { return 0; }
+		bool acceptsMidi() const override { return false; }
+		bool producesMidi() const override { return false; }
 
 
 		// save procedures from host
-		virtual void getStateInformation(juce::MemoryBlock& destData) {};
-		virtual void setStateInformation(const void* data, int sizeInBytes){};
+		virtual void getStateInformation(juce::MemoryBlock& destData) override {};
+		virtual void setStateInformation(const void* data, int sizeInBytes) override {};
 
 
 
 		virtual void processBlock(AudioBuffer<float>& buffer,
-			MidiBuffer& midiMessages) = 0;
+			MidiBuffer& midiMessages) override = 0;
 
+		
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeAudioProcessor)
 	};
 
@@ -66,30 +75,68 @@ public:
 	{
 	public:
 		NodeDataProcessor() {};
-
-		virtual void processData(Data * incomingData, String targetInputDataName, String targetDataComponentName) = 0;
+		
+		// Inherited via DataProcessor
+		virtual void receiveData(const Data * incomingData, String destDataName, String destElementName = "", String sourceElementName = "") override;
+		virtual void sendData(const Data * outgoingData, String sourceElementName = "") override;
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeDataProcessor)
+
 	};
 
 
 	
-
-	NodeBase(uint32 nodeId, NodeBase::NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
+public:
+	NodeBase(uint32 nodeId, String name = "[NodeBase]", NodeBase::NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
+	virtual ~NodeBase();
 
 	uint32 nodeId;
+	String name;
+
+	ScopedPointer<NodeAudioProcessor> audioProcessor;
+	ScopedPointer<NodeDataProcessor> dataProcessor;
 
 	bool hasAudioInputs;
 	bool hasAudioOutputs;
 	bool hasDataInputs;
 	bool hasDataOutputs;
-
-	ScopedPointer<NodeAudioProcessor> audioProcessor;
-	ScopedPointer<NodeDataProcessor> dataProcessor;
-
-
 	
+	void checkInputsAndOutputs();
+
+	void remove();
+	
+
+	//ui
+	virtual NodeBaseUI *  createUI() { 
+		DBG("No implementation in child node class !");
+		jassert(false);
+		return nullptr;
+	}
+	
+	// Inherited via DataProcessor::Listener
+	virtual void inputAdded(DataProcessor::Data *) override;
+	virtual void inputRemoved(DataProcessor::Data *) override;
+	virtual void outputAdded(DataProcessor::Data *) override;
+	virtual void ouputRemoved(DataProcessor::Data *) override;
+
+
+
+	//Listener
+	class Listener
+	{
+	public:
+		virtual ~Listener() {}
+		virtual void askForRemoveNode(NodeBase *) = 0;
+
+	};
+
+	ListenerList<Listener> listeners;
+	void addListener(Listener* newListener) { listeners.add(newListener); }
+	void removeListener(Listener* listener) { listeners.remove(listener); }
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
+
+		
 };
 
 #endif  // NODEBASE_H_INCLUDED

@@ -1,67 +1,190 @@
 /*
   ==============================================================================
 
-  This is an automatically generated GUI class created by the Introjucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Introjucer version: 4.1.0
-
-  ------------------------------------------------------------------------------
-
-  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+    NodeBaseUI.h
+    Created: 3 Mar 2016 11:52:50pm
+    Author:  bkupe
 
   ==============================================================================
 */
 
-#ifndef __JUCE_HEADER_12AD6A61C4B0434E__
-#define __JUCE_HEADER_12AD6A61C4B0434E__
+#ifndef NODEBASEUI_H_INCLUDED
+#define NODEBASEUI_H_INCLUDED
 
-//[Headers]     -- You can add your own extra header files here --
-#include "JuceHeader.h"
-//[/Headers]
+#include "Style.h"
+#include "UIHelpers.h"
 
+class NodeBase;
+class NodeManagerUI;
 
 
 //==============================================================================
-/**
-                                                                    //[Comments]
-    An auto-generated component, created by the Introjucer.
+/*
 
-    Describe your class and how it works here!
-                                                                    //[/Comments]
+NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
-class NodeBaseUI  : public Component
+class NodeBaseUI    : public Component
 {
 public:
-    //==============================================================================
-    NodeBaseUI ();
-    ~NodeBaseUI();
+	NodeBaseUI();
 
-    //==============================================================================
-    //[UserMethods]     -- You can add your own custom methods in this section.
-    //[/UserMethods]
-
-    void paint (Graphics& g);
+    virtual ~NodeBaseUI();
+	
+	NodeBase * node;
+	virtual void setNode(NodeBase * node);
+	
+    void paint (Graphics&);
     void resized();
+	
+	//layout
+	int connectorWidth;
+	
+	class MainContainer : public ContourComponent
+	{
+	public:
+		//layout
+		int headerHeight;
+
+		//containers
+		ContourComponent headerContainer;
+		ContourComponent contentContainer;
+
+		//ui components
+		Label titleLabel;
+
+		MainContainer() :ContourComponent(Colours::green) 
+		{
+			headerHeight = 30;
+			
+			addAndMakeVisible(headerContainer);
+			addAndMakeVisible(contentContainer);
+
+			titleLabel.setColour(Label::ColourIds::textColourId,TEXT_COLOR);
+			headerContainer.addAndMakeVisible(titleLabel);
+		}
+
+		void paint(Graphics &g)
+		{
+			g.fillAll(PANEL_COLOR);   // clear the background
+			g.setColour(CONTOUR_COLOR);
+			g.drawRect(getLocalBounds());
+		}
+
+		void resized()
+		{
+			Rectangle<int> r = getLocalBounds();
+			Rectangle<int> headerBounds = r.removeFromTop(headerHeight);
+
+			headerContainer.setBounds(headerBounds);
+			contentContainer.setBounds(r);
+
+			titleLabel.setBounds(headerBounds);
+		}
+	};
 
 
+	class ConnectorContainer : public ContourComponent
+	{
+	public:
+		
+		class ConnectorComponent : public Component
+		{
+		public:
 
+			enum ConnectorIOType
+			{
+				INPUT, OUTPUT
+			};
+
+			enum ConnectorDataType
+			{
+				AUDIO, DATA
+			};
+
+			enum ConnectorDisplayLevel
+			{
+				MINIMAL, CONNECTED, ALL
+			};
+
+
+			ConnectorDataType dataType;
+			ConnectorIOType ioType;
+			NodeBase * node;
+
+			//layout
+
+			//style
+			Colour boxColor;
+
+			ConnectorComponent(ConnectorIOType ioType, ConnectorDataType dataType, NodeBase * node);
+			
+			void paint(Graphics &g)
+			{
+				g.fillAll(boxColor);
+			}
+
+			void mouseDown(const MouseEvent &e) override;
+			void mouseDrag(const MouseEvent &e) override;
+			void mouseUp(const MouseEvent &e) override;
+
+			
+			NodeManagerUI * getNodeManagerUI() const noexcept;
+			NodeBaseUI * getNodeUI() const noexcept;
+
+			JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorComponent)
+		};
+
+	
+		OwnedArray<ConnectorComponent> connectors;
+
+		ConnectorComponent::ConnectorDisplayLevel displayLevel;
+		ConnectorComponent::ConnectorIOType type;
+
+		ConnectorContainer(ConnectorComponent::ConnectorIOType type);
+
+		void setConnectorsFromNode(NodeBase * node);
+		void addConnector(ConnectorComponent::ConnectorIOType ioType, ConnectorComponent::ConnectorDataType dataType, NodeBase * node);
+		void resized();
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorContainer)
+	};
+	
+	MainContainer mainContainer;
+	ConnectorContainer inputContainer;
+	ConnectorContainer outputContainer;
+
+	Component * getContentContainer() { return &mainContainer.contentContainer; }
+	Component * getHeaderContainer() { return &mainContainer.headerContainer; }
+
+	Array<ConnectorContainer::ConnectorComponent *> getComplementaryConnectors(ConnectorContainer::ConnectorComponent * baseConnector)
+	{
+		Array<ConnectorContainer::ConnectorComponent *> result;
+		
+		
+		ConnectorContainer * checkSameCont = baseConnector->ioType == ConnectorContainer::ConnectorComponent::ConnectorIOType::INPUT ? &inputContainer : &outputContainer;
+		if (checkSameCont->getIndexOfChildComponent(baseConnector) != -1) return result;
+
+		ConnectorContainer * complCont = checkSameCont == &inputContainer ? &outputContainer : &inputContainer;
+		for (int i = 0; i < complCont->connectors.size(); i++)
+		{
+			ConnectorContainer::ConnectorComponent *c = (ConnectorContainer::ConnectorComponent *)complCont->getChildComponent(i);
+			if (c->dataType == baseConnector->dataType)
+			{
+				result.add(c);
+			}
+		}
+
+		return result;
+	}
+	NodeManagerUI * getNodeManagerUI() const noexcept;
+
+	Point<int> nodeInitPos;
+	void mouseDown(const MouseEvent &e) override;
+	void mouseDrag(const MouseEvent &e)  override;
+	
 private:
-    //[UserVariables]   -- You can add your own custom variables in this section.
-    //[/UserVariables]
-
-    //==============================================================================
-
-
-    //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeBaseUI)
 };
 
-//[EndFile] You can add extra defines here...
-//[/EndFile]
 
-#endif   // __JUCE_HEADER_12AD6A61C4B0434E__
+#endif  // NODEBASEUI_H_INCLUDED

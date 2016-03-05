@@ -10,15 +10,19 @@
 
 #ifndef DATAPROCESSOR_H_INCLUDED
 #define DATAPROCESSOR_H_INCLUDED
+/*
+
+This class is a base class for all data processors :
+	A data Processor has to override receiveData and sendData
+	Data class is an Array of DataElement(typed data) 
 
 
-#include <JuceHeader.h>
+*/
+
+#include "JuceHeader.h"
 
 class DataProcessor
 {
-
-protected:
-	DataProcessor();
 
 public :
 	enum DataType
@@ -72,6 +76,11 @@ public :
 				addElement("Green");
 				addElement("Blue");
 				break;
+
+			default:
+				DBG("Type not exist");
+				jassert(false);
+				break;
 			}
 		};
 
@@ -97,7 +106,10 @@ public :
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Data)
 	};
 
-	
+public:
+	DataProcessor();
+	virtual ~DataProcessor();
+
 	virtual const String getName() const { return "[Data Processor]"; }
 
 	OwnedArray<Data> inputDatas;
@@ -107,6 +119,9 @@ public :
 	{
 		Data *d = new Data(name,type);
 		inputDatas.add(d);
+
+		listeners.call(&DataProcessor::Listener::inputAdded, d);
+
 		return d;
 	}
 
@@ -114,6 +129,9 @@ public :
 	{
 		Data * d = new Data(name, type);
 		outputDatas.add(d);
+
+		listeners.call(&DataProcessor::Listener::outputAdded, d);
+
 		return d;
 	}
 
@@ -127,6 +145,30 @@ public :
 
 	DataType getInputDataType(String dataName, String elementName);
 	DataType getOutputDataType(String dataName, String elementName);
+
+	//Listener
+	class  Listener
+	{
+	public:
+		/** Destructor. */
+		virtual ~Listener() {}
+
+		virtual void inputAdded(Data *) = 0;
+		virtual void inputRemoved(Data *) = 0;
+
+		virtual void outputAdded(Data *) = 0;
+		virtual void ouputRemoved(Data *) = 0;
+
+	};
+
+	ListenerList<Listener> listeners;
+
+	void addListener(Listener* newListener);
+
+	/** Removes a previously-registered button listener
+	@see addListener
+	*/
+	void removeListener(Listener* listener);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataProcessor)
 };

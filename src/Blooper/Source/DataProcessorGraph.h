@@ -14,6 +14,13 @@
 #include <JuceHeader.h>
 #include "DataProcessor.h"
 
+
+
+/*
+DataProcessoGraph handle a graph of DataProcessorGraph::Node, 
+	each Node refer to a dataProcessor and allow connections between them
+
+*/
 class DataProcessorGraph
 {
 	

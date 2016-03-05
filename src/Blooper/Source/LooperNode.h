@@ -14,5 +14,15 @@
 
 
 
+#include "NodeBase.h"
+
+class LooperNode : public NodeBase
+{
+
+public:
+	LooperNode(uint32 nodeId) :NodeBase(nodeId) {}
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
+};
 
 #endif  // LOOPERNODE_H_INCLUDED

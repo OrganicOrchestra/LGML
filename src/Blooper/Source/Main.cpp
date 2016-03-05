@@ -13,11 +13,11 @@
 Component* createMainContentComponent();
 
 //==============================================================================
-class NewProjectApplication  : public JUCEApplication
+class BlooperApplication  : public JUCEApplication
 {
 public:
     //==============================================================================
-    NewProjectApplication() {}
+    BlooperApplication() {}
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -98,4 +98,4 @@ private:
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (NewProjectApplication)
+START_JUCE_APPLICATION (BlooperApplication)

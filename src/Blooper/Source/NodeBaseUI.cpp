@@ -1,106 +1,171 @@
 /*
   ==============================================================================
 
-  This is an automatically generated GUI class created by the Introjucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Introjucer version: 4.1.0
-
-  ------------------------------------------------------------------------------
-
-  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+    NodeBaseUI.cpp
+    Created: 3 Mar 2016 11:52:50pm
+    Author:  bkupe
 
   ==============================================================================
 */
 
-//[Headers] You can add your own extra header files here...
-//[/Headers]
-
+#include "../JuceLibraryCode/JuceHeader.h"
 #include "NodeBaseUI.h"
+#include "NodeBase.h"
+#include "NodeManagerUI.h"
 
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
-//[/MiscUserDefs]
 
 //==============================================================================
-NodeBaseUI::NodeBaseUI ()
+NodeBaseUI::NodeBaseUI() :
+	inputContainer(ConnectorContainer::ConnectorComponent::ConnectorIOType::INPUT),
+	outputContainer(ConnectorContainer::ConnectorComponent::ConnectorIOType::OUTPUT)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
 
+	DBG("Node Base UI Constructor");
+	
+	connectorWidth = 10;
 
-    //[UserPreSize]
-    //[/UserPreSize]
+	addAndMakeVisible(mainContainer);
+	addAndMakeVisible(inputContainer);
+	addAndMakeVisible(outputContainer);
+	
+	setSize(300,200);
 
-    setSize (600, 400);
-
-
-    //[Constructor] You can add your own custom stuff here..
-    //[/Constructor]
+	
+	getHeaderContainer()->addMouseListener(this,true);// (true, true);
+	
 }
 
 NodeBaseUI::~NodeBaseUI()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
-
-
-
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
+	this->node = nullptr;
 }
 
-//==============================================================================
+
+void NodeBaseUI::setNode(NodeBase * node)
+{
+	this->node = node;
+	mainContainer.titleLabel.setText(node->name,NotificationType::sendNotification);
+	inputContainer.setConnectorsFromNode(node);
+	outputContainer.setConnectorsFromNode(node);
+}
+
+
 void NodeBaseUI::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
 
-    g.fillAll (Colours::white);
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void NodeBaseUI::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+	Rectangle<int> r = getLocalBounds();
+	Rectangle<int> inputBounds = r.removeFromLeft(connectorWidth);
+	Rectangle<int> outputBounds = r.removeFromRight(connectorWidth);
 
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+	mainContainer.setBounds(r);
+	inputContainer.setBounds(inputBounds);
+	outputContainer.setBounds(outputBounds);
+}
+
+NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
+{
+	return findParentComponentOfClass<NodeManagerUI>();
+}
+
+void NodeBaseUI::mouseDown(const MouseEvent & e)
+{
+	if (e.mods.getCurrentModifiers().isCtrlDown())
+	{
+		DBG("Node->remove");
+		node->remove();
+	}
+	else
+	{
+		nodeInitPos = getPosition();
+	}
+	
+}
+
+void NodeBaseUI::mouseDrag(const MouseEvent & e)
+{
+	Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
+	setTopLeftPosition(nodeInitPos + diff);
 }
 
 
 
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-//[/MiscUserCode]
+// ======= CONNECTOR CONTAINER AND CONNECTOR COMPONENT ===================
+
+NodeBaseUI::ConnectorContainer::ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, ConnectorDataType dataType, NodeBase * node) :
+	ioType(ioType), dataType(dataType), node(node)
+{
+	boxColor = dataType == AUDIO ? AUDIO_COLOR : DATA_COLOR;
+	setSize(10,10);
+}
+
+void NodeBaseUI::ConnectorContainer::ConnectorComponent::mouseDown(const MouseEvent & e)
+{
+	NodeManagerUI * nmui = getNodeManagerUI();
+	nmui->createConnectionFromConnector(this);
+}
+
+void NodeBaseUI::ConnectorContainer::ConnectorComponent::mouseDrag(const MouseEvent & e)
+{
+	getNodeManagerUI()->updateEditingConnection();
+}
+
+void NodeBaseUI::ConnectorContainer::ConnectorComponent::mouseUp(const MouseEvent & e)
+{
+	getNodeManagerUI()->finishEditingConnection(this);
+}
+NodeManagerUI * NodeBaseUI::ConnectorContainer::ConnectorComponent::getNodeManagerUI() const noexcept
+{
+	return findParentComponentOfClass<NodeManagerUI>();
+}
+
+NodeBaseUI * NodeBaseUI::ConnectorContainer::ConnectorComponent::getNodeUI() const noexcept
+{
+	return findParentComponentOfClass<NodeBaseUI>();
+}
 
 
-//==============================================================================
-#if 0
-/*  -- Introjucer information section --
+NodeBaseUI::ConnectorContainer::ConnectorContainer(ConnectorComponent::ConnectorIOType type) :ContourComponent(), type(type), displayLevel(ConnectorComponent::MINIMAL)
+{
+}
 
-    This is where the Introjucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
+void NodeBaseUI::ConnectorContainer::setConnectorsFromNode(NodeBase * node)
+{
+	connectors.clear();
+	
+	//for later : this is the creation for minimal display level
+	bool hasAudio = (type == ConnectorComponent::INPUT) ? node->hasAudioInputs : node->hasAudioOutputs;
+	bool hasData = (type == ConnectorComponent::INPUT) ? node->hasDataInputs : node->hasDataOutputs;
 
-BEGIN_JUCER_METADATA
+	if (hasAudio)
+	{
+		addConnector(type, ConnectorComponent::AUDIO, node);
+	}
 
-<JUCER_COMPONENT documentType="Component" className="NodeBaseUI" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="ffffffff"/>
-</JUCER_COMPONENT>
+	if (hasData)
+	{
+		DBG("Set connectors from node, connector is data, num inputs ?" + String(node->dataProcessor->getTotalNumInputData()));
+		addConnector(type, ConnectorComponent::DATA, node);
+	}
+}
 
-END_JUCER_METADATA
-*/
-#endif
+void NodeBaseUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorIOType ioType, ConnectorComponent::ConnectorDataType dataType, NodeBase * node)
+{
+	ConnectorComponent * c = new ConnectorComponent(ioType, dataType, node);
 
+	c->setTopLeftPosition(0, 20 + getNumChildComponents()*(getWidth() + 10));
 
-//[EndFile] You can add extra defines here...
-//[/EndFile]
+	connectors.add(c);
+	addAndMakeVisible(c);
+}
+
+void NodeBaseUI::ConnectorContainer::resized()
+{
+	for (int i = connectors.size() - 1; i >= 0; --i)
+	{
+		getChildComponent(i)->setSize(getWidth(), getWidth());
+	}
+}

@@ -14,5 +14,16 @@
 
 
 
+#include "NodeBase.h"
+
+class SpatNode : public NodeBase
+{
+public:
+	SpatNode(uint32 nodeId) :NodeBase(nodeId) {}
+
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpatNode)
+};
+
 
 #endif  // SPATNODE_H_INCLUDED

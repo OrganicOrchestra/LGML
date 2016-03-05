@@ -15,6 +15,10 @@ DataProcessor::DataProcessor()
 
 }
 
+  DataProcessor::~DataProcessor()
+  {
+  }
+
 DataProcessor::DataType DataProcessor::getInputDataType(String dataName, String elementName)
 {
 	for (int i = inputDatas.size(); --i >= 0;)
@@ -58,4 +62,15 @@ DataProcessor::DataType DataProcessor::getOutputDataType(String dataName, String
 			}
 		}
 	}
+}
+
+
+void DataProcessor::addListener(Listener * const newListener)
+{
+	listeners.add(newListener);
+}
+
+void DataProcessor::removeListener(Listener * const listener)
+{
+	listeners.remove(listener);
 }

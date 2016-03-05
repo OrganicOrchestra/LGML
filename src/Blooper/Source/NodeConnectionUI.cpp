@@ -1,106 +1,138 @@
 /*
   ==============================================================================
 
-  This is an automatically generated GUI class created by the Introjucer!
-
-  Be careful when adding custom code to these files, as only the code within
-  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
-  and re-saved.
-
-  Created with Introjucer version: 4.1.0
-
-  ------------------------------------------------------------------------------
-
-  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
-  Copyright (c) 2015 - ROLI Ltd.
+    NodeConnectionUI.cpp
+    Created: 4 Mar 2016 3:19:24pm
+    Author:  bkupe
 
   ==============================================================================
 */
 
-//[Headers] You can add your own extra header files here...
-//[/Headers]
-
+#include "JuceHeader.h"
 #include "NodeConnectionUI.h"
 
-
-//[MiscUserDefs] You can add your own user definitions and misc code here...
-//[/MiscUserDefs]
-
 //==============================================================================
-NodeConnectionUI::NodeConnectionUI ()
+NodeConnectionUI::NodeConnectionUI() :ContourComponent(Colours::red),sourceConnector(nullptr),destConnector(nullptr), candidateDropConnector(nullptr)
 {
-    //[Constructor_pre] You can add your own custom stuff here..
-    //[/Constructor_pre]
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
-    setSize (600, 400);
-
-
-    //[Constructor] You can add your own custom stuff here..
-    //[/Constructor]
+	setInterceptsMouseClicks(false, false);
 }
 
 NodeConnectionUI::~NodeConnectionUI()
 {
-    //[Destructor_pre]. You can add your own custom destruction code here..
-    //[/Destructor_pre]
+	if (sourceConnector != nullptr)
+	{
+		sourceConnector->getNodeUI()->removeComponentListener(this);
+	}
 
+	sourceConnector = nullptr;
 
+	if (destConnector != nullptr)
+	{
+		destConnector->getNodeUI()->removeComponentListener(this);
+	}
+	destConnector = nullptr;
 
-    //[Destructor]. You can add your own custom destruction code here..
-    //[/Destructor]
+	candidateDropConnector = nullptr;
 }
 
-//==============================================================================
 void NodeConnectionUI::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
+	ContourComponent::paint(g);
 
-    g.fillAll (Colours::white);
+	//DBG("PAINT !!");
+	Point<int> sourcePos;
+	Point<int> endPos;
 
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
+	if (isEditing())
+	{
+		sourcePos = ComponentUtil::getRelativeComponentPositionCenter(getBaseConnector(), this);
+		endPos = (candidateDropConnector != nullptr)?ComponentUtil::getRelativeComponentPositionCenter(candidateDropConnector, this):getMouseXYRelative();
+	}else
+	{
+		sourcePos = ComponentUtil::getRelativeComponentPositionCenter(sourceConnector, this);
+		endPos = ComponentUtil::getRelativeComponentPositionCenter(destConnector, this);
+	}
+	
+	//if (candidateDropConnector != nullptr) DBG("HAS CANDIDATE");
+
+	//DBG("edit connection : " + sourcePos.toString() +"/" + endPos.toString());
+	
+	g.setColour((candidateDropConnector != nullptr) ? Colours::yellow:(getBaseConnector()->dataType == Connector::ConnectorDataType::AUDIO ? AUDIO_COLOR : DATA_COLOR));
+	
+	int midX = (sourcePos.x + endPos.x) / 2;
+	
+	Path p;
+	p.startNewSubPath(sourcePos.x,sourcePos.y);          // move the current position to (10, 10)
+	p.cubicTo(midX,sourcePos.y,midX,endPos.y,endPos.x,endPos.y); // draw a curve that ends at (5, 50)
+	//p.closeSubPath();                          // close the subpath with a line back to (10, 10)
+	
+	
+	g.strokePath(p, PathStrokeType(2.0f));
+	//g.drawLine(sourcePos.x, sourcePos.y, endPos.x, endPos.y, 3);
+
+	//g.drawRect(endPos.x-5, endPos.y-5, 10, 10);
 }
 
 void NodeConnectionUI::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    // This method is where you should set the bounds of any child
+    // components that your component contains..
 
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
 }
 
+void NodeConnectionUI::setSourceConnector(Connector * c)
+{
+	if (sourceConnector != nullptr) c->removeComponentListener(this);
+	sourceConnector = c;
+	repaint();
+}
 
+void NodeConnectionUI::setDestConnector(Connector * c)
+{
+	if (destConnector != nullptr) c->removeComponentListener(this);
+	destConnector = c;
+	repaint();
+}
 
-//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
-//[/MiscUserCode]
+bool NodeConnectionUI::setCandidateDropConnector(Connector * connector)
+{
+	//check if connector can accept data
+	if (getBaseConnector() == connector) return true;
+	if (getBaseConnector()->ioType == connector->ioType) return false;
+	if (getBaseConnector()->dataType != connector->dataType) return false;
 
+	candidateDropConnector = connector;
 
-//==============================================================================
-#if 0
-/*  -- Introjucer information section --
+	return true;
+}
 
-    This is where the Introjucer stores the metadata that describe this GUI layout, so
-    make changes in here at your peril!
+void NodeConnectionUI::cancelCandidateDropConnector()
+{
+	candidateDropConnector = nullptr;
+}
 
-BEGIN_JUCER_METADATA
+bool NodeConnectionUI::finishEditing()
+{
+	bool success = candidateDropConnector != nullptr;
+	if(success)
+	{
+		if (sourceConnector == nullptr) setSourceConnector(candidateDropConnector);
+		else 
+		{
+			setDestConnector(candidateDropConnector);
+			sourceConnector->getNodeUI()->addComponentListener(this);
+			destConnector->getNodeUI()->addComponentListener(this);
+		}
+	}
 
-<JUCER_COMPONENT documentType="Component" className="NodeConnectionUI" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
-  <BACKGROUND backgroundColour="ffffffff"/>
-</JUCER_COMPONENT>
+	candidateDropConnector = nullptr;
+	return success;
+}
 
-END_JUCER_METADATA
+/*
+void NodeConnectionUI::setEditingPos(Point<int> pos)
+{
+	editingPos = pos;
+	repaint();
+}
 */
-#endif
-
-
-//[EndFile] You can add extra defines here...
-//[/EndFile]
