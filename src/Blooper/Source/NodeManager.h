@@ -63,13 +63,9 @@ public:
 	};
 
 	ListenerList<Listener> listeners;
+	void addListener(Listener* newListener) { listeners.add(newListener); }
+	void removeListener(Listener* listener) { listeners.remove(listener); }
 
-	void addListener(Listener* newListener);
-
-	/** Removes a previously-registered button listener
-	@see addListener
-	*/
-	void removeListener(Listener* listener);
 
 private: 
 	ReferenceCountedArray<NodeBase> nodes;

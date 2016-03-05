@@ -82,14 +82,12 @@ void NodeConnectionUI::resized()
 
 void NodeConnectionUI::setSourceConnector(Connector * c)
 {
-	if (sourceConnector != nullptr) c->removeComponentListener(this);
 	sourceConnector = c;
 	repaint();
 }
 
 void NodeConnectionUI::setDestConnector(Connector * c)
 {
-	if (destConnector != nullptr) c->removeComponentListener(this);
 	destConnector = c;
 	repaint();
 }
@@ -116,13 +114,18 @@ bool NodeConnectionUI::finishEditing()
 	bool success = candidateDropConnector != nullptr;
 	if(success)
 	{
-		if (sourceConnector == nullptr) setSourceConnector(candidateDropConnector);
-		else 
+		if (sourceConnector == nullptr)
+		{
+			setSourceConnector(candidateDropConnector);
+		}
+		else
 		{
 			setDestConnector(candidateDropConnector);
-			sourceConnector->getNodeUI()->addComponentListener(this);
-			destConnector->getNodeUI()->addComponentListener(this);
+
 		}
+
+		sourceConnector->getNodeUI()->addComponentListener(this);
+		destConnector->getNodeUI()->addComponentListener(this);
 	}
 
 	candidateDropConnector = nullptr;

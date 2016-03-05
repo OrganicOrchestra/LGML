@@ -47,19 +47,20 @@ public:
 
 	void componentMovedOrResized(Component& component,bool wasMoved,bool wasResize)
 	{
-		//DBG("MOVED detected from NodeConnectionUI");
+		DBG("MOVED detected from NodeConnectionUI");
 		if (!isEditing())
 		{
 			Component * nmui = getNodeManagerUI();
 			Point<int> cPos = ComponentUtil::getRelativeComponentPositionCenter(sourceConnector,nmui);
 			Point<int> mPos = ComponentUtil::getRelativeComponentPositionCenter(destConnector,nmui);
+
 			int minX = jmin<int>(cPos.x, mPos.x);
 			int minY = jmin<int>(cPos.y, mPos.y);
 			int tw = abs(cPos.x - mPos.x);
 			int th = abs(cPos.y - mPos.y);
 			int margin = 50;
 
-			//DBG(cPos.toString() + " // " + mPos.toString());
+			DBG(cPos.toString() + " // " + mPos.toString());
 			setBounds(minX - margin, minY - margin, tw + margin * 2, th + margin * 2);
 		}
 		

@@ -65,6 +65,14 @@ NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
 	return n;
 }
 
+
+//From NodeBase Listener
+void NodeManager::askForRemoveNode(NodeBase * node)
+{
+	removeNode(node->nodeId);
+}
+
+
 bool NodeManager::removeNode(uint32 nodeId)
 {
 	DBG("Remove node from Node Manager, dispatch nodeRemoved to UI");
@@ -79,19 +87,7 @@ bool NodeManager::removeNode(uint32 nodeId)
 
 
 
-void NodeManager::addListener(Listener * const newListener)
-{
-	listeners.add(newListener);
-}
 
-void NodeManager::removeListener(Listener * const listener)
-{
-	listeners.remove(listener);
-}
 
-void NodeManager::askForRemoveNode(NodeBase * node)
-{
-	removeNode(node->nodeId);
-}
 
 
