@@ -27,17 +27,21 @@ class DataProcessor
 public :
 	enum DataType
 	{
-		Unknown,Number,Boolean,Position,Orientation,Color
+		Unknown, Float, Number,Boolean,Position,Orientation,Color
 	};
 
 	class DataElement
 	{
 	public:
-		DataElement(String _name) : name(_name),type(Number) {}
+		DataElement(String _name) : name(_name),type(Float) {}
 
 		String name;
 		DataType type;
 		float value;
+
+		bool isTypeCompatible(const DataType &targetType) {
+			return targetType == Float || targetType == Unknown;
+		}
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataElement)
 	};
@@ -78,7 +82,7 @@ public :
 				break;
 
 			default:
-				DBG("Type not exist");
+				DBG("Type not exist for data");
 				jassert(false);
 				break;
 			}
@@ -102,6 +106,39 @@ public :
 
 		
 		bool isComplex() { return elements.size() > 1; }
+
+		bool isTypeCompatible(const DataType &targetType) {
+
+			return targetType == DataType::Unknown || type == targetType || getNumElementsForType(type) == getNumElementsForType(targetType);
+		};
+
+		int getNumElementsForType(const DataType &type)
+		{
+			switch (type)
+			{
+			case Number:
+			case Boolean:
+				return 1;
+				break;
+
+			case Position:
+			case Orientation:
+			case Color:
+				return 3;
+				break;
+
+			default:
+				DBG("Type not exist for data");
+				return 0;
+				break;
+			}
+		}
+
+		String getTypeString()
+		{
+			Array<String> names = { "Unknown", "Float", "Number", "Boolean", "Position", "Orientation", "Color" };
+			return names[(int)type];
+		}
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Data)
 	};

@@ -26,6 +26,7 @@ void NodeManager::clear()
 {
 	DBG("Clear NodeManager");
 	nodes.clear();
+	connections.clear();
 	audioGraph.clear();
 	dataGraph.clear();
 }
@@ -58,10 +59,6 @@ NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
 	nodes.add(n);
 	n->addListener(this);
 	listeners.call(&NodeManager::Listener::nodeAdded,n);
-    
-
-	//triggerAsyncUpdate();
-	//n->setManager(this);
 
 	return n;
 }

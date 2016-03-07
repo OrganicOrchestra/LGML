@@ -19,10 +19,24 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAu
 	name(name)
 {
 
-	if(dataProcessor != nullptr) dataProcessor->addListener(this);
+	if (dataProcessor != nullptr)
+	{
+		dataProcessor->addListener(this);
+		nodeManager->dataGraph.addNode(dataProcessor);
+	}
+
 	DBG("Node Base check inputs and outputs");
 	checkInputsAndOutputs();
     addToAudioGraphIfNeeded();
+}
+
+
+NodeBase::~NodeBase()
+{
+	DBG("delete NodeBase");
+	nodeManager = nullptr;
+	dataProcessor = nullptr;
+	audioProcessor = nullptr;
 }
 
 void NodeBase::checkInputsAndOutputs()
@@ -61,16 +75,6 @@ void NodeBase::ouputRemoved(DataProcessor::Data *)
 	hasDataOutputs = dataProcessor != nullptr ? dataProcessor->getTotalNumOutputData()>0:false;
 }
 
-NodeBase::~NodeBase()
-{
-	DBG("delete NodeBase");
-	/*
-	if (ui != nullptr)
-	{
-	delete ui;
-	}
-	*/
-}
 
 void NodeBase::addToAudioGraphIfNeeded(){
     if(hasAudioInputs || hasAudioOutputs){

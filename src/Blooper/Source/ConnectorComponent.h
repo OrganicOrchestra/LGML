@@ -55,10 +55,12 @@ public:
 	}
 
 	void mouseDown(const MouseEvent &e) override;
-	void mouseDrag(const MouseEvent &e) override;
-	void mouseUp(const MouseEvent &e) override;
+	//void mouseDrag(const MouseEvent &e) override;
+	//void mouseUp(const MouseEvent &e) override;
 
 
+	void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataProcessor::DataType &selectedDataType, const DataProcessor::DataType &filterType = DataProcessor::DataType::Unknown);
+	
 	NodeManagerUI * getNodeManagerUI() const noexcept;
 	NodeBaseUI * getNodeUI() const noexcept;
 
