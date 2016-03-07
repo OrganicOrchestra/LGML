@@ -19,7 +19,7 @@ class AudioMixerNode : public NodeBase
 {
 
 public:
-	AudioMixerNode(uint32 nodeId) :NodeBase(nodeId) {}
+	AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId) {}
 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerNode)

@@ -17,6 +17,8 @@
 #include "SpatNode.h"
 #include "VSTNode.h"
 
+class NodeManager;
+
 class NodeFactory
 {
 public:
@@ -39,27 +41,27 @@ public:
 
 	}
 
-	NodeBase * createNode(NodeType nodeType, uint32 nodeId = 0)
+	NodeBase * createNode(NodeManager * nodeManager,NodeType nodeType, uint32 nodeId = 0)
 	{
 		NodeBase * n;
 
 		switch (nodeType)
 		{
 		case Dummy:
-			n = new DummyNode(nodeId);
+			n = new DummyNode(nodeManager,nodeId);
 			break;
 
 		case AudioMixer:
-			n = new AudioMixerNode(nodeId);
+			n = new AudioMixerNode(nodeManager,nodeId);
 			break;
 		case Spat:
-			n = new SpatNode(nodeId);
+			n = new SpatNode(nodeManager,nodeId);
 			break;
 		case Looper:
-			n = new LooperNode(nodeId);
+			n = new LooperNode(nodeManager,nodeId);
 			break;
 		case VST:
-			n = new VSTNode(nodeId);
+			n = new VSTNode(nodeManager,nodeId);
 			break;
 		default:
 			jassert(false);

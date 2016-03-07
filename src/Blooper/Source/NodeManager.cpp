@@ -54,10 +54,11 @@ NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
 	}
 
 
-	NodeBase * n = nodeFactory.createNode(nodeType, nodeId);
+	NodeBase * n = nodeFactory.createNode(this,nodeType, nodeId);
 	nodes.add(n);
 	n->addListener(this);
 	listeners.call(&NodeManager::Listener::nodeAdded,n);
+    
 
 	//triggerAsyncUpdate();
 	//n->setManager(this);
@@ -78,9 +79,15 @@ bool NodeManager::removeNode(uint32 nodeId)
 
 	if (n == nullptr) return false;
 	n->removeListener(this);
-	nodes.removeObject(n);
-	listeners.call(&NodeManager::Listener::nodeRemoved, n);
 
+	listeners.call(&NodeManager::Listener::nodeRemoved, n);
+	nodes.removeObject(n);
+    
+    
+    if(n->hasAudioInputs || n->hasAudioOutputs){
+        audioGraph.removeNode(nodeId);
+    }
+    
 	return true;
 }
 
@@ -144,7 +151,7 @@ NodeConnection * NodeManager::addConnection(NodeBase * sourceNode, NodeBase * de
 	}
 
 
-	NodeConnection * c = new NodeConnection(connectionId, sourceNode, destNode, connectionType);
+	NodeConnection * c = new NodeConnection(this,connectionId, sourceNode, destNode, connectionType);
 	connections.add(c);
 	c->addListener(this);
 

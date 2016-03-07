@@ -22,13 +22,23 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
+
+
+ApplicationCommandManager& getCommandManager();
+ApplicationProperties& getAppProperties();
+
+
+
 class MainContentComponent   : public AudioAppComponent
 {
 public:
 		
 	ScopedPointer<NodeManager> nodeManager;
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
-
+    
+    // Audio
+    AudioDeviceManager deviceManager;
+    AudioProcessorPlayer graphPlayer;
     //==============================================================================
     MainContentComponent()
     {
@@ -38,6 +48,15 @@ public:
         //setAudioChannels (2, 2);
 
 		nodeManager = new NodeManager();
+        
+        // init Audio
+        graphPlayer.setProcessor(&nodeManager->audioGraph);
+        ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()
+                                                   ->getXmlValue ("audioDeviceState"));
+        deviceManager.initialise (256, 256, savedAudioState, true);
+        deviceManager.addAudioCallback (&graphPlayer);
+        
+        
 		nodeManagerUI = new NodeManagerUI(nodeManager);
 		addAndMakeVisible(nodeManagerUI);
 		nodeManagerUI->setSize(getWidth(),getHeight());

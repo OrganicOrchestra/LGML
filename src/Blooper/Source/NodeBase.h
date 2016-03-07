@@ -21,6 +21,7 @@ it contains NodeBase::NodeAudioProcessor and/or NodeBase::NodeDataProcessor
 #include "DataProcessor.h"
 
 class NodeBaseUI;
+class NodeManager;
 
 
 class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener
@@ -30,12 +31,14 @@ public:
 	class NodeAudioProcessor : public juce::AudioProcessor
 	{
 	public:
-		NodeAudioProcessor() :AudioProcessor() {};
+		NodeAudioProcessor() :AudioProcessor() {
+        
+        };
 		
 		virtual const String getName() const override { return "NodeBaseProcessor"; };
 
-		virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) override {jassert(false);};
-		virtual void releaseResources() override {jassert(false);};
+		virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) override {};
+		virtual void releaseResources() override {};
 
 
 
@@ -87,13 +90,15 @@ public:
 
 	
 public:
-	NodeBase(uint32 nodeId, String name = "[NodeBase]", NodeBase::NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
+	NodeBase(NodeManager * nodeManager,uint32 nodeId, String name = "[NodeBase]", NodeBase::NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
 	virtual ~NodeBase();
 
 	uint32 nodeId;
 	String name;
-
-	ScopedPointer<NodeAudioProcessor> audioProcessor;
+    NodeManager * nodeManager;
+    
+	// owned by audio Graph in a refference Counted Array
+    NodeAudioProcessor *  audioProcessor;
 	ScopedPointer<NodeDataProcessor> dataProcessor;
 
 	bool hasAudioInputs;
@@ -105,7 +110,11 @@ public:
 
 	void remove();
 	
-
+    //audio
+    
+    
+    void addToAudioGraphIfNeeded();
+    void removeFromAudioGraphIfNeeded();
 	//ui
 	virtual NodeBaseUI *  createUI() { 
 		DBG("No implementation in child node class !");

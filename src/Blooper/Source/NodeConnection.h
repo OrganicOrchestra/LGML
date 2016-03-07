@@ -12,7 +12,7 @@
 #define NODECONNECTION_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "juce_audio_processors\juce_audio_processors.h"
+#include "juce_audio_processors.h"
 #include "DataProcessorGraph.h"
 class NodeManager;
 class NodeBase;
@@ -29,6 +29,7 @@ public:
 
 	ConnectionType connectionType;
 
+    NodeManager * nodeManager;
 	NodeBase * sourceNode;
 	NodeBase * destNode;
 
@@ -36,7 +37,7 @@ public:
 	Array<DataProcessorGraph::Connection *> dataConnections;
 
 
-	NodeConnection(uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
+	NodeConnection(NodeManager* nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
 	virtual ~NodeConnection();
 
 
