@@ -79,7 +79,6 @@ public:
 
 		uint32 sourceNodeId;
 
-
 		String sourceDataName;
 		String sourceElementName;
 

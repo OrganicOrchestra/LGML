@@ -69,11 +69,11 @@ NodeBase::~NodeBase()
 	*/
 }
 
-void NodeBase::NodeDataProcessor::receiveData(const Data * incomingData, String destDataName, String destElementName, String sourceElementName)
+void NodeBase::NodeDataProcessor::receiveData(const Data * incomingData, const String &destDataName, const String &destElementName, const String &sourceElementName)
 {
 }
 
-void NodeBase::NodeDataProcessor::sendData(const Data * outgoingData, String sourceElementName)
+void NodeBase::NodeDataProcessor::sendData(const Data * outgoingData, const String &sourceElementName)
 {
 	
 }

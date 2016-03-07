@@ -12,12 +12,12 @@
 #include "NodeBaseUI.h"
 #include "NodeBase.h"
 #include "NodeManagerUI.h"
-
+#include "ConnectorComponent.h"
 
 //==============================================================================
 NodeBaseUI::NodeBaseUI() :
-	inputContainer(ConnectorContainer::ConnectorComponent::ConnectorIOType::INPUT),
-	outputContainer(ConnectorContainer::ConnectorComponent::ConnectorIOType::OUTPUT)
+	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
+	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT)
 {
 
 	DBG("Node Base UI Constructor");
@@ -94,40 +94,6 @@ void NodeBaseUI::mouseDrag(const MouseEvent & e)
 
 
 // ======= CONNECTOR CONTAINER AND CONNECTOR COMPONENT ===================
-
-NodeBaseUI::ConnectorContainer::ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, ConnectorDataType dataType, NodeBase * node) :
-	ioType(ioType), dataType(dataType), node(node)
-{
-	boxColor = dataType == AUDIO ? AUDIO_COLOR : DATA_COLOR;
-	setSize(10,10);
-}
-
-void NodeBaseUI::ConnectorContainer::ConnectorComponent::mouseDown(const MouseEvent & e)
-{
-	NodeManagerUI * nmui = getNodeManagerUI();
-	nmui->createConnectionFromConnector(this);
-}
-
-void NodeBaseUI::ConnectorContainer::ConnectorComponent::mouseDrag(const MouseEvent & e)
-{
-	getNodeManagerUI()->updateEditingConnection();
-}
-
-void NodeBaseUI::ConnectorContainer::ConnectorComponent::mouseUp(const MouseEvent & e)
-{
-	getNodeManagerUI()->finishEditingConnection(this);
-}
-NodeManagerUI * NodeBaseUI::ConnectorContainer::ConnectorComponent::getNodeManagerUI() const noexcept
-{
-	return findParentComponentOfClass<NodeManagerUI>();
-}
-
-NodeBaseUI * NodeBaseUI::ConnectorContainer::ConnectorComponent::getNodeUI() const noexcept
-{
-	return findParentComponentOfClass<NodeBaseUI>();
-}
-
-
 NodeBaseUI::ConnectorContainer::ConnectorContainer(ConnectorComponent::ConnectorIOType type) :ContourComponent(), type(type), displayLevel(ConnectorComponent::MINIMAL)
 {
 }
@@ -142,17 +108,17 @@ void NodeBaseUI::ConnectorContainer::setConnectorsFromNode(NodeBase * node)
 
 	if (hasAudio)
 	{
-		addConnector(type, ConnectorComponent::AUDIO, node);
+		addConnector(type, NodeConnection::ConnectionType::AUDIO, node);
 	}
 
 	if (hasData)
 	{
 		DBG("Set connectors from node, connector is data, num inputs ?" + String(node->dataProcessor->getTotalNumInputData()));
-		addConnector(type, ConnectorComponent::DATA, node);
+		addConnector(type, NodeConnection::ConnectionType::DATA, node);
 	}
 }
 
-void NodeBaseUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorIOType ioType, ConnectorComponent::ConnectorDataType dataType, NodeBase * node)
+void NodeBaseUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node)
 {
 	ConnectorComponent * c = new ConnectorComponent(ioType, dataType, node);
 

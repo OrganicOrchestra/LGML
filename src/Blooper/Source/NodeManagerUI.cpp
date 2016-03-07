@@ -67,24 +67,19 @@ void NodeManagerUI::nodeRemoved(NodeBase * node)
 }
 
 
-void NodeManagerUI::audioConnectionAdded(AudioProcessorGraph::Connection * connection)
+void NodeManagerUI::connectionAdded(NodeConnection * connection)
 {
-	//addAudioConnectionUI(connection);
+	addConnectionUI(connection);
 }
 
-void NodeManagerUI::audioConnectionRemoved(AudioProcessorGraph::Connection * connection)
+void NodeManagerUI::connectionEdited(NodeConnection * connection)
 {
-	//removeAudioConnectionUI(connection);
+	//do nothing ?
 }
 
-void NodeManagerUI::dataConnectionAdded(DataProcessorGraph::Connection * connection)
+void NodeManagerUI::connectionRemoved(NodeConnection * connection)
 {
-	//addDataConnectionUI(connection);
-}
-
-void NodeManagerUI::dataConnectionRemoved(DataProcessorGraph::Connection * connection)
-{
-	//removeDataConnectionUI(connection);
+	removeConnectionUI(connection);
 }
 
 
@@ -133,14 +128,53 @@ NodeBaseUI * NodeManagerUI::getUIForNode(NodeBase * node)
 	return nullptr;
 }
 
-void NodeManagerUI::mouseDown(const MouseEvent & event)
+void NodeManagerUI::addConnectionUI(NodeConnection * connection)
 {
-	if (event.mods.getCurrentModifiers().isCtrlDown())
+	DBG("NMUI :: addConnectionUI From NodeManagerListener");
+
+	if (getUIForConnection(connection) != nullptr)
 	{
-		nodeManager->addNode(NodeFactory::NodeType::Dummy);
+		DBG("AddConnectionUI :: already exists");
+		return;
 	}
+
+	NodeBaseUI * n1 = getUIForNode(connection->sourceNode);
+	NodeBaseUI * n2 = getUIForNode(connection->destNode);
+
+	ConnectorComponent * c1 = (n1 != nullptr) ? n1->getFirstConnector(connection->connectionType,ConnectorComponent::OUTPUT): nullptr;
+	ConnectorComponent * c2 = (n2 != nullptr) ? n2->getFirstConnector(connection->connectionType,ConnectorComponent::INPUT) : nullptr;
+
+
+	NodeConnectionUI * cui = new NodeConnectionUI(connection, c1,c2);
+	connectionsUI.add(cui);
+	
+	DBG("Add And MakeVisible connection");
+	addAndMakeVisible(cui,0);
 }
 
+void NodeManagerUI::removeConnectionUI(NodeConnection * connection)
+{
+	NodeConnectionUI * nui = getUIForConnection(connection);
+	if (nui == nullptr)
+	{
+		DBG("RemoveConnectionUI :: not exists");
+		return;
+	}
+
+	connectionsUI.removeObject(nui);
+	removeChildComponent(nui);
+}
+
+NodeConnectionUI * NodeManagerUI::getUIForConnection(NodeConnection* connection)
+{
+	for (int i = connectionsUI.size(); --i >= 0;)
+	{
+		NodeConnectionUI * cui = connectionsUI.getUnchecked(i);
+		if (cui->connection == connection) return cui;
+	}
+
+	return nullptr;
+}
 
 
 void NodeManagerUI::createConnectionFromConnector(Connector * baseConnector)
@@ -149,14 +183,14 @@ void NodeManagerUI::createConnectionFromConnector(Connector * baseConnector)
 	Point<int> globalConnectorPos = ComponentUtil::getRelativeComponentPosition(baseConnector, this);
 	
 	bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
-	editingConnection = new NodeConnectionUI();
+	
+
 	if (isOutputConnector)
 	{
-		editingConnection->setSourceConnector(baseConnector);
-	}
-	else
+		editingConnection = new NodeConnectionUI(nullptr, baseConnector, nullptr);
+	}else
 	{
-		editingConnection->setDestConnector(baseConnector);
+		editingConnection = new NodeConnectionUI(nullptr, nullptr, baseConnector);
 	}
 
 	addAndMakeVisible(editingConnection);
@@ -167,8 +201,6 @@ void NodeManagerUI::updateEditingConnection()
 {
 
 	if (editingConnection == nullptr) return;
-
-	DBG("update editing connection");
 
 	Point<int> cPos = ComponentUtil::getRelativeComponentPosition(editingConnection->getBaseConnector(), this);
 	Point<int> mPos = getMouseXYRelative();
@@ -230,42 +262,25 @@ void NodeManagerUI::finishEditingConnection(Connector * c)
 	DBG("Finish editing, sucess ?" + String(success));
 	if (success)
 	{
-		connectionsUI.add(editingConnection);
-	}else
-	{
-		removeChildComponent(editingConnection);
-		delete editingConnection;
-		
+		nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, c->dataType);
 	}
+	else
+	{
 
+
+	}
+	//Delete the editing connection
+	removeChildComponent(editingConnection);
+	delete editingConnection;
 	editingConnection = nullptr;
 	
 }
 
-void NodeManagerUI::addAudioConnectionUI(AudioProcessorGraph::Connection * connection)
+//Interaction Events
+void NodeManagerUI::mouseDown(const MouseEvent & event)
 {
-}
-
-void NodeManagerUI::removeAudioConnectionUI(AudioProcessorGraph::Connection * connection)
-{
-}
-
-
-NodeConnectionUI * NodeManagerUI::getUIForAudioConnection(AudioProcessorGraph::Connection * connection)
-{
-	return nullptr;
-}
-
-void NodeManagerUI::addDataConnectionUI(DataProcessorGraph::Connection * connection)
-{
-}
-
-void NodeManagerUI::removeDataConnectionUI(DataProcessorGraph::Connection * connection)
-{
-}
-
-
-NodeConnectionUI * NodeManagerUI::getUIForDataConnection(DataProcessorGraph::Connection * connection)
-{
-	return nullptr;
+	if (event.mods.getCurrentModifiers().isCtrlDown())
+	{
+		nodeManager->addNode(NodeFactory::NodeType::Dummy);
+	}
 }

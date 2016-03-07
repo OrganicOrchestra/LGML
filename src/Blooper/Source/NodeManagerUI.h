@@ -41,10 +41,9 @@ public:
 	// Inherited via Listener
 	virtual void nodeAdded(NodeBase *) override;
 	virtual void nodeRemoved(NodeBase *) override;
-	virtual void audioConnectionAdded(AudioProcessorGraph::Connection *) override;
-	virtual void audioConnectionRemoved(AudioProcessorGraph::Connection *) override;
-	virtual void dataConnectionAdded(DataProcessorGraph::Connection *) override;
-	virtual void dataConnectionRemoved(DataProcessorGraph::Connection *) override;
+	virtual void connectionAdded(NodeConnection *) override;
+	virtual void connectionEdited(NodeConnection * ) override;
+	virtual void connectionRemoved(NodeConnection *) override;
 
 
 	void addNodeUI(NodeBase * node);
@@ -52,8 +51,13 @@ public:
 	NodeBaseUI * getUIForNode(NodeBase * node);
 
 	
+	void addConnectionUI(NodeConnection * connection);
+	void removeConnectionUI(NodeConnection * connection);
+	NodeConnectionUI *  getUIForConnection(NodeConnection * connection);
+
+
 	//connection creation / editing
-	typedef NodeBaseUI::ConnectorContainer::ConnectorComponent Connector;
+	typedef ConnectorComponent Connector;
 	void createConnectionFromConnector(Connector * baseConnector);
 	void updateEditingConnection();
 	bool isEditingConnection() { return editingConnection != nullptr; }
@@ -62,13 +66,6 @@ public:
 	void cancelCandidateDropConnector();
 	void finishEditingConnection(Connector *c);
 
-	void addAudioConnectionUI(AudioProcessorGraph::Connection * connection);
-	void removeAudioConnectionUI(AudioProcessorGraph::Connection * connection);
-	NodeConnectionUI *  getUIForAudioConnection(AudioProcessorGraph::Connection * connection);
-
-	void addDataConnectionUI(DataProcessorGraph::Connection * connection);
-	void removeDataConnectionUI(DataProcessorGraph::Connection * connection);
-	NodeConnectionUI * getUIForDataConnection(DataProcessorGraph::Connection * connection);
 	
 
 	//Mouse event

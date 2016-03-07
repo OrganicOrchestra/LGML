@@ -76,13 +76,21 @@
         <FILE id="uaVLjF" name="TimeManager.h" compile="0" resource="0" file="Source/TimeManager.h"/>
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
+        <GROUP id="{BA13D1BE-1F46-C45E-3568-F1B617CE7E74}" name="connection">
+          <FILE id="D2Mdhy" name="ConnectorComponent.cpp" compile="1" resource="0"
+                file="Source/ConnectorComponent.cpp"/>
+          <FILE id="iMpAzs" name="ConnectorComponent.h" compile="0" resource="0"
+                file="Source/ConnectorComponent.h"/>
+          <FILE id="HSTERn" name="NodeConnection.cpp" compile="1" resource="0"
+                file="Source/NodeConnection.cpp"/>
+          <FILE id="rqbxg1" name="NodeConnection.h" compile="0" resource="0"
+                file="Source/NodeConnection.h"/>
+          <FILE id="iREnna" name="NodeConnectionUI.cpp" compile="1" resource="0"
+                file="Source/NodeConnectionUI.cpp"/>
+          <FILE id="CijEHt" name="NodeConnectionUI.h" compile="0" resource="0"
+                file="Source/NodeConnectionUI.h"/>
+        </GROUP>
         <GROUP id="{90D03868-3FD4-352F-D8F2-C231A68FF418}" name="nodes">
-          <GROUP id="{BA13D1BE-1F46-C45E-3568-F1B617CE7E74}" name="connection">
-            <FILE id="iREnna" name="NodeConnectionUI.cpp" compile="1" resource="0"
-                  file="Source/NodeConnectionUI.cpp"/>
-            <FILE id="CijEHt" name="NodeConnectionUI.h" compile="0" resource="0"
-                  file="Source/NodeConnectionUI.h"/>
-          </GROUP>
           <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
             <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
             <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>

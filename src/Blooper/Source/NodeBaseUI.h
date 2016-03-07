@@ -13,10 +13,10 @@
 
 #include "Style.h"
 #include "UIHelpers.h"
+#include "ConnectorComponent.h"
 
 class NodeBase;
 class NodeManagerUI;
-
 
 //==============================================================================
 /*
@@ -85,56 +85,7 @@ public:
 
 	class ConnectorContainer : public ContourComponent
 	{
-	public:
-		
-		class ConnectorComponent : public Component
-		{
-		public:
-
-			enum ConnectorIOType
-			{
-				INPUT, OUTPUT
-			};
-
-			enum ConnectorDataType
-			{
-				AUDIO, DATA
-			};
-
-			enum ConnectorDisplayLevel
-			{
-				MINIMAL, CONNECTED, ALL
-			};
-
-
-			ConnectorDataType dataType;
-			ConnectorIOType ioType;
-			NodeBase * node;
-
-			//layout
-
-			//style
-			Colour boxColor;
-
-			ConnectorComponent(ConnectorIOType ioType, ConnectorDataType dataType, NodeBase * node);
-			
-			void paint(Graphics &g)
-			{
-				g.fillAll(boxColor);
-			}
-
-			void mouseDown(const MouseEvent &e) override;
-			void mouseDrag(const MouseEvent &e) override;
-			void mouseUp(const MouseEvent &e) override;
-
-			
-			NodeManagerUI * getNodeManagerUI() const noexcept;
-			NodeBaseUI * getNodeUI() const noexcept;
-
-			JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorComponent)
-		};
-
-	
+	public:	
 		OwnedArray<ConnectorComponent> connectors;
 
 		ConnectorComponent::ConnectorDisplayLevel displayLevel;
@@ -143,8 +94,18 @@ public:
 		ConnectorContainer(ConnectorComponent::ConnectorIOType type);
 
 		void setConnectorsFromNode(NodeBase * node);
-		void addConnector(ConnectorComponent::ConnectorIOType ioType, ConnectorComponent::ConnectorDataType dataType, NodeBase * node);
+		void addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
 		void resized();
+
+		ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType dataType)
+		{
+			for (int i = 0; i < connectors.size(); i++)
+			{
+				if (connectors.getUnchecked(i)->dataType == dataType) return connectors.getUnchecked(i);
+			}
+
+			return nullptr;
+		}
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorContainer)
 	};
@@ -156,18 +117,18 @@ public:
 	Component * getContentContainer() { return &mainContainer.contentContainer; }
 	Component * getHeaderContainer() { return &mainContainer.headerContainer; }
 
-	Array<ConnectorContainer::ConnectorComponent *> getComplementaryConnectors(ConnectorContainer::ConnectorComponent * baseConnector)
+	Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector)
 	{
-		Array<ConnectorContainer::ConnectorComponent *> result;
+		Array<ConnectorComponent *> result;
 		
 		
-		ConnectorContainer * checkSameCont = baseConnector->ioType == ConnectorContainer::ConnectorComponent::ConnectorIOType::INPUT ? &inputContainer : &outputContainer;
+		ConnectorContainer * checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? &inputContainer : &outputContainer;
 		if (checkSameCont->getIndexOfChildComponent(baseConnector) != -1) return result;
 
 		ConnectorContainer * complCont = checkSameCont == &inputContainer ? &outputContainer : &inputContainer;
 		for (int i = 0; i < complCont->connectors.size(); i++)
 		{
-			ConnectorContainer::ConnectorComponent *c = (ConnectorContainer::ConnectorComponent *)complCont->getChildComponent(i);
+			ConnectorComponent *c = (ConnectorComponent *)complCont->getChildComponent(i);
 			if (c->dataType == baseConnector->dataType)
 			{
 				result.add(c);
@@ -177,6 +138,22 @@ public:
 		return result;
 	}
 	NodeManagerUI * getNodeManagerUI() const noexcept;
+
+
+	//Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
+	ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType)
+	{
+		if (ioType == ConnectorComponent::INPUT)
+		{
+			return inputContainer.getFirstConnector(connectionType);
+		}
+		else
+		{
+			return outputContainer.getFirstConnector(connectionType);
+		}
+
+		return nullptr;
+	}
 
 	Point<int> nodeInitPos;
 	void mouseDown(const MouseEvent &e) override;

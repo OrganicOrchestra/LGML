@@ -41,11 +41,11 @@
     <Filter Include="Blooper\Source\Node">
       <UniqueIdentifier>{59F0960B-5DBA-C39F-AED8-6F101E7C0C49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Blooper\Source\Node\connection">
+      <UniqueIdentifier>{74C37334-A9D1-145A-7A67-6ADDAF9A36B5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Blooper\Source\Node\nodes">
       <UniqueIdentifier>{FDC9C0BE-3B10-D092-E13F-C66FEFEE841C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Blooper\Source\Node\nodes\connection">
-      <UniqueIdentifier>{684027D2-76C1-E6BE-7467-25203BC13BA3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blooper\Source\Node\nodes\Base">
       <UniqueIdentifier>{29C43C62-777C-55A9-AE96-93F65D4EE006}</UniqueIdentifier>
@@ -409,8 +409,14 @@
     <ClCompile Include="..\..\Source\TimeManager.cpp">
       <Filter>Blooper\Source\Time</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\ConnectorComponent.cpp">
+      <Filter>Blooper\Source\Node\connection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\NodeConnection.cpp">
+      <Filter>Blooper\Source\Node\connection</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\NodeConnectionUI.cpp">
-      <Filter>Blooper\Source\Node\nodes\connection</Filter>
+      <Filter>Blooper\Source\Node\connection</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\NodeBaseUI.cpp">
       <Filter>Blooper\Source\Node\nodes\Base</Filter>
@@ -1764,8 +1770,14 @@
     <ClInclude Include="..\..\Source\TimeManager.h">
       <Filter>Blooper\Source\Time</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\ConnectorComponent.h">
+      <Filter>Blooper\Source\Node\connection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\NodeConnection.h">
+      <Filter>Blooper\Source\Node\connection</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\NodeConnectionUI.h">
-      <Filter>Blooper\Source\Node\nodes\connection</Filter>
+      <Filter>Blooper\Source\Node\connection</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\NodeBaseUI.h">
       <Filter>Blooper\Source\Node\nodes\Base</Filter>

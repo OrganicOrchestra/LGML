@@ -34,7 +34,7 @@ public:
 	public:
 		DummyDataProcessor() :NodeBase::NodeDataProcessor() {}
 
-		virtual void processData(Data * incomingData, String targetInputDataName, String targetDataComponentName) {}
+		virtual void processData(Data * incomingData, const String &targetInputDataName, const String &targetDataComponentName) {}
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyDataProcessor)
 	};

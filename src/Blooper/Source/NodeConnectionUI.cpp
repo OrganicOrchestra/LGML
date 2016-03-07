@@ -12,9 +12,19 @@
 #include "NodeConnectionUI.h"
 
 //==============================================================================
-NodeConnectionUI::NodeConnectionUI() :ContourComponent(Colours::red),sourceConnector(nullptr),destConnector(nullptr), candidateDropConnector(nullptr)
+NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sourceConnector, Connector * destConnector) :
+	ContourComponent(Colours::red),
+	 candidateDropConnector(nullptr),
+	connection(connection),
+	sourceConnector(nullptr),destConnector(nullptr)
 {
 	setInterceptsMouseClicks(false, false);
+
+	setSourceConnector(sourceConnector);
+	setDestConnector(destConnector);
+
+	addComponentListener(this);
+	
 }
 
 NodeConnectionUI::~NodeConnectionUI()
@@ -57,7 +67,7 @@ void NodeConnectionUI::paint (Graphics& g)
 
 	//DBG("edit connection : " + sourcePos.toString() +"/" + endPos.toString());
 	
-	g.setColour((candidateDropConnector != nullptr) ? Colours::yellow:(getBaseConnector()->dataType == Connector::ConnectorDataType::AUDIO ? AUDIO_COLOR : DATA_COLOR));
+	g.setColour((candidateDropConnector != nullptr) ? Colours::yellow:(getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR));
 	
 	int midX = (sourcePos.x + endPos.x) / 2;
 	
@@ -80,16 +90,68 @@ void NodeConnectionUI::resized()
 
 }
 
+void NodeConnectionUI::updateBoundsFromNodes()
+{
+	DBG("Update bounds from Nodes, is Editing ? " + String(isEditing()));
+	if (!isEditing())
+	{
+		Component * nmui = getNodeManagerUI();
+		Point<int> cPos = ComponentUtil::getRelativeComponentPositionCenter(sourceConnector, nmui);
+		Point<int> mPos = ComponentUtil::getRelativeComponentPositionCenter(destConnector, nmui);
+
+		int minX = jmin<int>(cPos.x, mPos.x);
+		int minY = jmin<int>(cPos.y, mPos.y);
+		int tw = abs(cPos.x - mPos.x);
+		int th = abs(cPos.y - mPos.y);
+		int margin = 50;
+
+		DBG(cPos.toString() + " // " + mPos.toString());
+
+		setBounds(minX - margin, minY - margin, tw + margin * 2, th + margin * 2);
+
+		repaint();
+	}
+
+	
+
+}
+
 void NodeConnectionUI::setSourceConnector(Connector * c)
 {
+	if (sourceConnector != nullptr)
+	{
+		sourceConnector->getNodeUI()->removeComponentListener(this);
+	}
 	sourceConnector = c;
+
+	if (sourceConnector != nullptr)
+	{
+		sourceConnector->getNodeUI()->addComponentListener(this);
+	}
+
 	repaint();
 }
 
 void NodeConnectionUI::setDestConnector(Connector * c)
 {
+	if (destConnector != nullptr)
+	{
+		destConnector->getNodeUI()->removeComponentListener(this);
+	}
+
 	destConnector = c;
+
+	if (destConnector != nullptr)
+	{
+		destConnector->getNodeUI()->addComponentListener(this);
+	}
+
 	repaint();
+}
+
+void NodeConnectionUI::componentMovedOrResized(Component & component, bool wasMoved, bool wasResize)
+{
+	updateBoundsFromNodes();
 }
 
 bool NodeConnectionUI::setCandidateDropConnector(Connector * connector)
@@ -124,8 +186,8 @@ bool NodeConnectionUI::finishEditing()
 
 		}
 
-		sourceConnector->getNodeUI()->addComponentListener(this);
-		destConnector->getNodeUI()->addComponentListener(this);
+		//sourceConnector->getNodeUI()->addComponentListener(this);
+		//destConnector->getNodeUI()->addComponentListener(this);
 	}
 
 	candidateDropConnector = nullptr;

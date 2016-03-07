@@ -143,6 +143,8 @@
     <ClCompile Include="..\..\Source\ControlManager.cpp"/>
     <ClCompile Include="..\..\Source\ProjectManager.cpp"/>
     <ClCompile Include="..\..\Source\TimeManager.cpp"/>
+    <ClCompile Include="..\..\Source\ConnectorComponent.cpp"/>
+    <ClCompile Include="..\..\Source\NodeConnection.cpp"/>
     <ClCompile Include="..\..\Source\NodeConnectionUI.cpp"/>
     <ClCompile Include="..\..\Source\NodeBaseUI.cpp"/>
     <ClCompile Include="..\..\Source\NodeBase.cpp"/>
@@ -1339,6 +1341,8 @@
     <ClInclude Include="..\..\Source\ControlManager.h"/>
     <ClInclude Include="..\..\Source\ProjectManager.h"/>
     <ClInclude Include="..\..\Source\TimeManager.h"/>
+    <ClInclude Include="..\..\Source\ConnectorComponent.h"/>
+    <ClInclude Include="..\..\Source\NodeConnection.h"/>
     <ClInclude Include="..\..\Source\NodeConnectionUI.h"/>
     <ClInclude Include="..\..\Source\NodeBaseUI.h"/>
     <ClInclude Include="..\..\Source\NodeBase.h"/>

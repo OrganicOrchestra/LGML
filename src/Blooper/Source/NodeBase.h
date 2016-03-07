@@ -77,8 +77,8 @@ public:
 		NodeDataProcessor() {};
 		
 		// Inherited via DataProcessor
-		virtual void receiveData(const Data * incomingData, String destDataName, String destElementName = "", String sourceElementName = "") override;
-		virtual void sendData(const Data * outgoingData, String sourceElementName = "") override;
+		virtual void receiveData(const Data * incomingData, const String &destDataName, const String &destElementName = "", const String &sourceElementName = "") override;
+		virtual void sendData(const Data * outgoingData, const String &sourceElementName = "") override;
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeDataProcessor)
 

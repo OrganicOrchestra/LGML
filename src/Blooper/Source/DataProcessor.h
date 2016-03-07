@@ -84,12 +84,12 @@ public :
 			}
 		};
 
-		void addElement(String name) {
+		void addElement(const String &name) {
 			DataElement *e = new DataElement(name);
 			elements.add(e);
 		}
 
-		DataElement * getElement(String elementName)
+		DataElement * getElement(const String &elementName)
 		{
 			for (int i = elements.size(); --i >= 0;)
 			{
@@ -115,7 +115,7 @@ public:
 	OwnedArray<Data> inputDatas;
 	OwnedArray<Data> outputDatas;
 
-	Data * addInputData(String name,DataType type)
+	Data * addInputData(const String &name,DataType type)
 	{
 		Data *d = new Data(name,type);
 		inputDatas.add(d);
@@ -125,7 +125,7 @@ public:
 		return d;
 	}
 
-	Data * addOutputData (String name, DataType type)
+	Data * addOutputData (const String &name, DataType type)
 	{
 		Data * d = new Data(name, type);
 		outputDatas.add(d);
@@ -136,15 +136,15 @@ public:
 	}
 
 
-	virtual void receiveData(const Data * incomingData, String destDataName, String destElementName = "", String sourceElementName = "") = 0;
-	virtual void sendData(const Data * outgoingData, String sourceElementName = "") = 0;
+	virtual void receiveData(const Data * incomingData, const String &destDataName, const String &destElementName = "", const String &sourceElementName = "") = 0;
+	virtual void sendData(const Data * outgoingData, const String &sourceElementName = "") = 0;
 
 	int getTotalNumInputData() const { return inputDatas.size(); }
 	int getTotalNumOutputData() const { return outputDatas.size(); }
 
 
-	DataType getInputDataType(String dataName, String elementName);
-	DataType getOutputDataType(String dataName, String elementName);
+	DataType getInputDataType(const String &dataName, const String &elementName);
+	DataType getOutputDataType(const String &dataName, const String &elementName);
 
 	//Listener
 	class  Listener
@@ -158,17 +158,11 @@ public:
 
 		virtual void outputAdded(Data *) = 0;
 		virtual void ouputRemoved(Data *) = 0;
-
 	};
 
 	ListenerList<Listener> listeners;
-
-	void addListener(Listener* newListener);
-
-	/** Removes a previously-registered button listener
-	@see addListener
-	*/
-	void removeListener(Listener* listener);
+	void addListener(Listener* newListener) { listeners.add(newListener); }
+	void removeListener(Listener* listener) { listeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataProcessor)
 };
