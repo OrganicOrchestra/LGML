@@ -18,7 +18,7 @@ NodeBase::NodeBase(uint32 _nodeId, String name, NodeAudioProcessor * _audioProce
 	name(name)
 {
 
-	dataProcessor->addListener(this);
+	if(dataProcessor != nullptr) dataProcessor->addListener(this);
 	DBG("Node Base check inputs and outputs");
 	checkInputsAndOutputs();
 }

@@ -53,12 +53,12 @@ public:
 	
 	void addConnectionUI(NodeConnection * connection);
 	void removeConnectionUI(NodeConnection * connection);
-	NodeConnectionUI *  getUIForConnection(NodeConnection * connection);
-
+	NodeConnectionUI * getUIForConnection(NodeConnection * connection);
 
 	//connection creation / editing
 	typedef ConnectorComponent Connector;
-	void createConnectionFromConnector(Connector * baseConnector);
+	void createDataConnectionFromConnector(Connector * baseConnector, const String &dataName, const String &elementName);
+
 	void updateEditingConnection();
 	bool isEditingConnection() { return editingConnection != nullptr; }
 	bool checkDropCandidates();

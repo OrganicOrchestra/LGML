@@ -108,6 +108,10 @@
                   file="Source/AudioMixerNode.cpp"/>
             <FILE id="ePmKKk" name="AudioMixerNode.h" compile="0" resource="0"
                   file="Source/AudioMixerNode.h"/>
+            <FILE id="Czh7cG" name="AudioMixerNodeUI.cpp" compile="1" resource="0"
+                  file="Source/AudioMixerNodeUI.cpp"/>
+            <FILE id="AfWPjy" name="AudioMixerNodeUI.h" compile="0" resource="0"
+                  file="Source/AudioMixerNodeUI.h"/>
           </GROUP>
           <GROUP id="{5C55270A-43A6-03C9-B529-1BFE882AB7F6}" name="Looper">
             <FILE id="lWXXbw" name="LooperNode.cpp" compile="1" resource="0" file="Source/LooperNode.cpp"/>

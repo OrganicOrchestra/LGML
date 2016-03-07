@@ -17,17 +17,16 @@ DummyNode::DummyNode(uint32 nodeId) :
 {
 
 	DBG("Dummy node add Data Input");
-	
-	dataProcessor->addInputData("Dummy IN Number", DataProcessor::DataType::Number);
-	dataProcessor->addInputData("Dummy IN Position", DataProcessor::DataType::Position);
+	dataProcessor->addInputData("IN Number", DataProcessor::DataType::Number);
+	dataProcessor->addInputData("IN Position", DataProcessor::DataType::Position);
 
-	dataProcessor->addOutputData("Dummy OUT Number", DataProcessor::DataType::Number);
-	dataProcessor->addOutputData("Dummy OUT Orientatin", DataProcessor::DataType::Orientation);
+	dataProcessor->addOutputData("OUT Number", DataProcessor::DataType::Number);
+	dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
 }
 
  DummyNode::~DummyNode()
 {
-	DBG("delete");
+	DBG("delete dummy node");
 }
 
 NodeBaseUI * DummyNode::createUI()

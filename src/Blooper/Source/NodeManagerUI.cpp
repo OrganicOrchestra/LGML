@@ -20,7 +20,11 @@ NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :nodeManager(nodeManager
 
 NodeManagerUI::~NodeManagerUI()
 {
-
+	if (editingConnection != nullptr)
+	{
+		delete editingConnection;
+		editingConnection = nullptr;
+	}
 }
 
 /*
@@ -177,9 +181,10 @@ NodeConnectionUI * NodeManagerUI::getUIForConnection(NodeConnection* connection)
 }
 
 
-void NodeManagerUI::createConnectionFromConnector(Connector * baseConnector)
+void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector, const String &dataName, const String &elementName)
 {
 	
+	DBG("Create Data connection from connector : " + dataName + ", " + elementName);
 	Point<int> globalConnectorPos = ComponentUtil::getRelativeComponentPosition(baseConnector, this);
 	
 	bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
@@ -194,12 +199,10 @@ void NodeManagerUI::createConnectionFromConnector(Connector * baseConnector)
 	}
 
 	addAndMakeVisible(editingConnection);
-	
 }
 
 void NodeManagerUI::updateEditingConnection()
 {
-
 	if (editingConnection == nullptr) return;
 
 	Point<int> cPos = ComponentUtil::getRelativeComponentPosition(editingConnection->getBaseConnector(), this);
@@ -279,8 +282,17 @@ void NodeManagerUI::finishEditingConnection(Connector * c)
 //Interaction Events
 void NodeManagerUI::mouseDown(const MouseEvent & event)
 {
-	if (event.mods.getCurrentModifiers().isCtrlDown())
+	if (event.mods.isRightButtonDown())
 	{
-		nodeManager->addNode(NodeFactory::NodeType::Dummy);
+		ScopedPointer<PopupMenu> menu = new PopupMenu();
+		ScopedPointer<PopupMenu> addNodeMenu = NodeFactory::getNodeTypesMenu(0);
+		menu->addSubMenu("Add Node", *addNodeMenu);
+
+		int result = menu->show();
+		if (result >= 1 && result <= addNodeMenu->getNumItems())
+		{
+			nodeManager->addNode((NodeFactory::NodeType)(result-1));
+		}
 	}
+	
 }

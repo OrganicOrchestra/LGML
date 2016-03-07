@@ -151,6 +151,7 @@
     <ClCompile Include="..\..\Source\DummyNode.cpp"/>
     <ClCompile Include="..\..\Source\DummyNodeUI.cpp"/>
     <ClCompile Include="..\..\Source\AudioMixerNode.cpp"/>
+    <ClCompile Include="..\..\Source\AudioMixerNodeUI.cpp"/>
     <ClCompile Include="..\..\Source\LooperNode.cpp"/>
     <ClCompile Include="..\..\Source\SpatNode.cpp"/>
     <ClCompile Include="..\..\Source\VSTNode.cpp"/>
@@ -1349,6 +1350,7 @@
     <ClInclude Include="..\..\Source\DummyNode.h"/>
     <ClInclude Include="..\..\Source\DummyNodeUI.h"/>
     <ClInclude Include="..\..\Source\AudioMixerNode.h"/>
+    <ClInclude Include="..\..\Source\AudioMixerNodeUI.h"/>
     <ClInclude Include="..\..\Source\LooperNode.h"/>
     <ClInclude Include="..\..\Source\SpatNode.h"/>
     <ClInclude Include="..\..\Source\VSTNode.h"/>

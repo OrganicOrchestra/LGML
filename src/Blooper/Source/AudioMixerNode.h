@@ -19,8 +19,22 @@ class AudioMixerNode : public NodeBase
 {
 
 public:
-	AudioMixerNode(uint32 nodeId) :NodeBase(nodeId) {}
 
+	class AudioMixerAudioProcessor : public NodeBase::NodeAudioProcessor
+	{
+	public:
+		AudioMixerAudioProcessor() :NodeBase::NodeAudioProcessor() {}
+
+		void processBlock(AudioBuffer<float>& buffer,
+			MidiBuffer& midiMessages) {}
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerAudioProcessor)
+	};
+
+	AudioMixerNode(uint32 nodeId) :NodeBase(nodeId, "AudioMixer", new AudioMixerAudioProcessor, nullptr) {}
+
+
+	virtual NodeBaseUI * createUI() override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerNode)
 };

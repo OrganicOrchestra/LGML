@@ -433,6 +433,9 @@
     <ClCompile Include="..\..\Source\AudioMixerNode.cpp">
       <Filter>Blooper\Source\Node\nodes\AudioMixer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\AudioMixerNodeUI.cpp">
+      <Filter>Blooper\Source\Node\nodes\AudioMixer</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\LooperNode.cpp">
       <Filter>Blooper\Source\Node\nodes\Looper</Filter>
     </ClCompile>
@@ -1792,6 +1795,9 @@
       <Filter>Blooper\Source\Node\nodes\Dummy</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\AudioMixerNode.h">
+      <Filter>Blooper\Source\Node\nodes\AudioMixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\AudioMixerNodeUI.h">
       <Filter>Blooper\Source\Node\nodes\AudioMixer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\LooperNode.h">

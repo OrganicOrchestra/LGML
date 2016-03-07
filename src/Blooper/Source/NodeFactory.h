@@ -70,7 +70,17 @@ public:
 		return n;
 	}
 
-
+	static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0)
+	{
+		PopupMenu * p = new PopupMenu();
+		Array<String> nodeTypeNames = { "Dummy","AudioMixer","Spat","Looper","VST" };
+		for (int i = 0; i < nodeTypeNames.size();i++)
+		{
+			p->addItem(menuIdOffset + i+1, nodeTypeNames[i]);
+		}
+		
+		return p;
+	}
 };
 
 
