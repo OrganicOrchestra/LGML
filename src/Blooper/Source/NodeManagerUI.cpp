@@ -241,6 +241,8 @@ void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector
 		editingConnection = new NodeConnectionUI(nullptr, nullptr, baseConnector);
 	}
 
+	editingChannel = -1; //temp, will be able to select which channel later
+	 
 	baseConnector->addMouseListener(this, false);
 
 	addAndMakeVisible(editingConnection);
@@ -310,34 +312,39 @@ void NodeManagerUI::finishEditingConnection()
 	DBG("Finish Editing connection");
 	if (!isEditingConnection()) return;
 
-	if (editingConnection->getBaseConnector()->dataType == NodeConnection::ConnectionType::DATA) //DATA
+	bool isEditingDataOutput = editingConnection->getBaseConnector()->ioType == Connector::ConnectorIOType::OUTPUT;
+	editingConnection->getBaseConnector()->removeMouseListener(this);
+	if(editingConnection->candidateDropConnector != nullptr) editingConnection->candidateDropConnector->removeMouseListener(this);
+
+	bool isDataConnection = editingConnection->getBaseConnector()->dataType == NodeConnection::ConnectionType::DATA;
+
+	if (isDataConnection) //DATA
 	{
 		//Delete the editing connection
 		String targetDataName = "";
 		String targetElementName = "";
 		DataProcessor::DataType targetDataType;
-
-		editingConnection->getBaseConnector()->removeMouseListener(this);
-		if (editingConnection->candidateDropConnector != nullptr)
+		
+		if (editingDataName != "")
 		{
-			editingConnection->candidateDropConnector->removeMouseListener(this);
-			if (editingDataName != "")
-			{
-				editingConnection->candidateDropConnector->selectDataAndElementPopup(targetDataName, targetElementName, targetDataType, editingDataType);
-			}
+			if(editingConnection->candidateDropConnector != nullptr) editingConnection->candidateDropConnector->selectDataAndElementPopup(targetDataName, targetElementName, targetDataType, editingDataType);
 		}
 
-		DBG("Finish after select, targetDataName " + targetDataName);
 		if (editingDataName == "" || targetDataName != "")
 		{
 			bool success = editingConnection->finishEditing();
 
 			if (success)
 			{
-				nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
-			}
-			else
-			{
+				NodeConnection * nc = nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
+				if (isEditingDataOutput)
+				{
+					nc->addDataGraphConnection(editingDataName, editingElementName, targetDataName, targetElementName);
+				}
+				else
+				{
+					nc->addDataGraphConnection(targetDataName, targetElementName, editingDataName, editingElementName);
+				}
 			}
 		}
 	}
@@ -345,12 +352,12 @@ void NodeManagerUI::finishEditingConnection()
 	{
 		bool success = editingConnection->finishEditing();
 
+		int targetChannel = -1;//temp, will be able to edit channel later
+
 		if (success)
 		{
-			nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
-		}
-		else
-		{
+			NodeConnection * nc = nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
+			nc->addAudioGraphConnection(editingChannel, targetChannel);
 		}
 	}
 
@@ -414,13 +421,8 @@ void NodeManagerUI::mouseDrag(const MouseEvent & event)
 void NodeManagerUI::mouseUp(const MouseEvent & event)
 {
 	DBG("MOUSE UP");
-	if (editingConnection != nullptr)
+	if (isEditingConnection())
 	{
 		finishEditingConnection();
-
-		//if (event.eventComponent == editingConnection->getBaseConnector())
-		//{
-		//	
-		//}
 	}
 }
