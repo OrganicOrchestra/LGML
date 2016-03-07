@@ -18,7 +18,7 @@ class VSTNode : public NodeBase
 {
 
 public:
-	VSTNode(uint32 nodeId) :NodeBase(nodeId) {}
+	VSTNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId) {}
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)
 };

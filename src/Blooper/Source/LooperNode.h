@@ -20,7 +20,7 @@ class LooperNode : public NodeBase
 {
 
 public:
-	LooperNode(uint32 nodeId) :NodeBase(nodeId) {}
+	LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId) {}
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
 };

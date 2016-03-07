@@ -31,7 +31,7 @@ public:
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerAudioProcessor)
 	};
 
-	AudioMixerNode(uint32 nodeId) :NodeBase(nodeId, "AudioMixer", new AudioMixerAudioProcessor, nullptr) {}
+	AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId, "AudioMixer", new AudioMixerAudioProcessor, nullptr) {}
 
 
 	virtual NodeBaseUI * createUI() override;

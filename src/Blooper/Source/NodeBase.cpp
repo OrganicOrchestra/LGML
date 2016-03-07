@@ -9,9 +9,10 @@
 */
 
 #include "NodeBase.h"
+#include "NodeManager.h"
 
-
-NodeBase::NodeBase(uint32 _nodeId, String name, NodeAudioProcessor * _audioProcessor, NodeDataProcessor * _dataProcessor) :
+NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAudioProcessor * _audioProcessor, NodeDataProcessor * _dataProcessor) :
+    nodeManager(nodeManager),
 	nodeId(_nodeId),
 	audioProcessor(_audioProcessor),
 	dataProcessor(_dataProcessor),
@@ -21,6 +22,7 @@ NodeBase::NodeBase(uint32 _nodeId, String name, NodeAudioProcessor * _audioProce
 	if(dataProcessor != nullptr) dataProcessor->addListener(this);
 	DBG("Node Base check inputs and outputs");
 	checkInputsAndOutputs();
+    addToAudioGraphIfNeeded();
 }
 
 void NodeBase::checkInputsAndOutputs()
@@ -34,6 +36,7 @@ void NodeBase::checkInputsAndOutputs()
 
 void NodeBase::remove()
 {
+    removeFromAudioGraphIfNeeded();
 	DBG("NodeBase::remove, disaptch askForRemove");
 	listeners.call(&NodeBase::Listener::askForRemoveNode,this);
 }
@@ -67,6 +70,17 @@ NodeBase::~NodeBase()
 	delete ui;
 	}
 	*/
+}
+
+void NodeBase::addToAudioGraphIfNeeded(){
+    if(hasAudioInputs || hasAudioOutputs){
+        nodeManager->audioGraph.addNode(audioProcessor,nodeId);
+    }
+}
+void NodeBase::removeFromAudioGraphIfNeeded(){
+    if(hasAudioInputs || hasAudioOutputs){
+        nodeManager->audioGraph.removeNode(nodeId);
+    }
 }
 
 void NodeBase::NodeDataProcessor::receiveData(const Data * incomingData, const String &destDataName, const String &destElementName, const String &sourceElementName)

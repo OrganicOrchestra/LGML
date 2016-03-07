@@ -27,7 +27,14 @@ public:
     void initialise (const String& commandLine) override
     {
         // This method is where you should put your application's initialisation code..
-
+        PropertiesFile::Options options;
+        options.applicationName     = "Blooper";
+        options.filenameSuffix      = "settings";
+        options.osxLibrarySubFolder = "Preferences";
+        
+        appProperties = new ApplicationProperties();
+        appProperties->setStorageParameters (options);
+        Process::setPriority (Process::HighPriority);
         mainWindow = new MainWindow (getApplicationName());
     }
 
@@ -91,11 +98,19 @@ public:
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
     };
+    
+    ApplicationCommandManager commandManager;
+    ScopedPointer<ApplicationProperties> appProperties;
 
 private:
     ScopedPointer<MainWindow> mainWindow;
+
 };
 
+
+static BlooperApplication& getApp()                 { return *dynamic_cast<BlooperApplication*>(JUCEApplication::getInstance()); }
+ApplicationCommandManager& getCommandManager()      { return getApp().commandManager; }
+ApplicationProperties& getAppProperties()           { return *getApp().appProperties; }
 //==============================================================================
 // This macro generates the main() routine that launches the app.
 START_JUCE_APPLICATION (BlooperApplication)

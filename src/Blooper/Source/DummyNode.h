@@ -23,7 +23,9 @@ public:
 		DummyAudioProcessor():NodeBase::NodeAudioProcessor(){}
 
 		void processBlock(AudioBuffer<float>& buffer,
-			MidiBuffer& midiMessages) {}
+			MidiBuffer& midiMessages) {
+            int dbg=0;
+        }
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyAudioProcessor)
 	};
@@ -41,7 +43,7 @@ public:
 
 
 
-	DummyNode(uint32 nodeId);
+	DummyNode(NodeManager * nodeManager,uint32 nodeId);
 	~DummyNode();
 
 	virtual NodeBaseUI * createUI() override;

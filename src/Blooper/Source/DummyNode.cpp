@@ -12,8 +12,8 @@
 #include "DummyNodeUI.h"
 
 
-DummyNode::DummyNode(uint32 nodeId) :
-	NodeBase(nodeId, "DummyNode", new DummyAudioProcessor, new DummyDataProcessor)
+DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
+	NodeBase(nodeManager,nodeId, "DummyNode", new DummyAudioProcessor, new DummyDataProcessor)
 {
 
 	DBG("Dummy node add Data Input");
