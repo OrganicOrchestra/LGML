@@ -25,7 +25,7 @@ public:
 	public:
 		AudioMixerAudioProcessor() :NodeBase::NodeAudioProcessor() {}
 
-		void processBlock(AudioBuffer<float>& buffer,
+		void processBlockInternal(AudioBuffer<float>& buffer,
 			MidiBuffer& midiMessages) {}
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerAudioProcessor)

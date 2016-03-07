@@ -21,10 +21,20 @@ public:
 	{
 	public:
 		DummyAudioProcessor():NodeBase::NodeAudioProcessor(){}
-
-		void processBlock(AudioBuffer<float>& buffer,
+        int step = 0;
+        int period = 44100*1.0/440;
+        float amp = 1;
+		void processBlockInternal(AudioBuffer<float>& buffer,
 			MidiBuffer& midiMessages) {
-            int dbg=0;
+            
+            for(int i = 0 ; i < buffer.getNumSamples() ; i++){
+                buffer.addSample(0, i, amp*cos(2.0*double_Pi*step*1.0/period));
+                step++;
+                if(step>period){
+                    step = 0;
+                }
+            }
+
         }
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyAudioProcessor)

@@ -28,24 +28,25 @@ class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener
 {
 
 public:
-	class NodeAudioProcessor : public juce::AudioProcessor
+	class NodeAudioProcessor : public juce::AudioProcessor,public AsyncUpdater
 	{
 	public:
-		NodeAudioProcessor() :AudioProcessor() {
-        
+		NodeAudioProcessor() :AudioProcessor(){
+
         };
 		
 		virtual const String getName() const override { return "NodeBaseProcessor"; };
 
-		virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) override {};
-		virtual void releaseResources() override {};
+        virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) override
+            {};
+        virtual void releaseResources() override {};
 
-
+        
 
 		bool silenceInProducesSilenceOut() const override { return false; }
 
-		virtual AudioProcessorEditor* createEditor() override { return nullptr; }
-		virtual bool hasEditor() const override { return false; }
+        virtual AudioProcessorEditor* createEditor() override {return nullptr ;}
+        virtual bool hasEditor() const override { return false; }
 
 
 
@@ -65,11 +66,49 @@ public:
 		virtual void setStateInformation(const void* data, int sizeInBytes) override {};
 
 
-
+//        AudioProcessor * getAudioProcessor()const {return audioProcessorImpl;};
 		virtual void processBlock(AudioBuffer<float>& buffer,
-			MidiBuffer& midiMessages) override = 0;
+                                  MidiBuffer& midiMessages) override {
+            processBlockInternal(buffer, midiMessages);
+            if(listeners.size()){
+                updateRMS(buffer);
+                triggerAsyncUpdate();
+            }
+            
+            
+        };
+        
+        virtual void processBlockInternal(AudioBuffer<float>& buffer,
+                                          MidiBuffer& midiMessages) = 0;
+        
+        
+        float updateRMS(AudioBuffer<float>& buffer){
+            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1-alphaRMS) * rmsValue;
+        }
+        float alphaRMS = 0.5;
+        float rmsValue = 0;
 
-		
+        
+        //Listener are called from non audio thread
+        void handleAsyncUpdate() override{
+            listeners.call(&Listener::RMSChanged,rmsValue);
+        }
+        
+        class  Listener : public AsyncUpdater
+        {
+        public:
+            /** Destructor. */
+            virtual ~Listener() {}
+            virtual void RMSChanged(float ) = 0;
+           
+        };
+        
+        ListenerList<Listener> listeners;
+        void addListener(Listener* newListener) { listeners.add(newListener); }
+        void removeListener(Listener* listener) { listeners.remove(listener); }
+        
+        ScopedPointer<AudioProcessor> audioProcessorImpl;
+        
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeAudioProcessor)
 	};
 

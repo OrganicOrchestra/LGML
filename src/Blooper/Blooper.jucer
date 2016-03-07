@@ -91,6 +91,22 @@
                 file="Source/NodeConnectionUI.h"/>
         </GROUP>
         <GROUP id="{90D03868-3FD4-352F-D8F2-C231A68FF418}" name="nodes">
+          <GROUP id="{83B99C76-9727-E032-6D0F-014884937604}" name="AudioOut">
+            <FILE id="fQzeSW" name="AudioOutNode.cpp" compile="1" resource="0"
+                  file="Source/AudioOutNode.cpp"/>
+            <FILE id="p7hEKJ" name="AudioOutNode.h" compile="0" resource="0" file="Source/AudioOutNode.h"/>
+            <FILE id="LxtX1l" name="AudioOutNodeUI.cpp" compile="1" resource="0"
+                  file="Source/AudioOutNodeUI.cpp"/>
+            <FILE id="CjJB8d" name="AudioOutNodeUI.h" compile="0" resource="0"
+                  file="Source/AudioOutNodeUI.h"/>
+          </GROUP>
+          <GROUP id="{EF2D37F3-7377-F588-4856-CFF84927A472}" name="AudioIn">
+            <FILE id="zgumfG" name="AudioInNode.cpp" compile="1" resource="0" file="Source/AudioInNode.cpp"/>
+            <FILE id="RPhhcb" name="AudioInNode.h" compile="0" resource="0" file="Source/AudioInNode.h"/>
+            <FILE id="IzXgLn" name="AudioInNodeUI.cpp" compile="1" resource="0"
+                  file="Source/AudioInNodeUI.cpp"/>
+            <FILE id="tAWm8s" name="AudioInNodeUI.h" compile="0" resource="0" file="Source/AudioInNodeUI.h"/>
+          </GROUP>
           <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
             <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
             <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>

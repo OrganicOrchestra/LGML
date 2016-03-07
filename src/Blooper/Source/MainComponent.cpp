@@ -29,7 +29,7 @@ ApplicationProperties& getAppProperties();
 
 
 
-class MainContentComponent   : public AudioAppComponent
+class MainContentComponent   : public Component
 {
 public:
 		
@@ -49,12 +49,8 @@ public:
 
 		nodeManager = new NodeManager();
         
-        // init Audio
-        graphPlayer.setProcessor(&nodeManager->audioGraph);
-        ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()
-                                                   ->getXmlValue ("audioDeviceState"));
-        deviceManager.initialise (256, 256, savedAudioState, true);
-        deviceManager.addAudioCallback (&graphPlayer);
+        initAudio();
+
         
         
 		nodeManagerUI = new NodeManagerUI(nodeManager);
@@ -64,40 +60,20 @@ public:
 
     ~MainContentComponent()
     {
-        shutdownAudio();
-
-
+        stopAudio();
     }
-
-    //=======================================================================
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override
-    {
-        // This function will be called when the audio device is started, or when
-        // its settings (i.e. sample rate, block size, etc) are changed.
-
-        // You can use this function to initialise any resources you might need,
-        // but be careful - it will be called on the audio thread, not the GUI thread.
-
-        // For more details, see the help for AudioProcessor::prepareToPlay()
+    
+    
+    void initAudio(){
+        graphPlayer.setProcessor(&nodeManager->audioGraph);
+        ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()
+                                                   ->getXmlValue ("audioDeviceState"));
+        deviceManager.initialise (256, 256, savedAudioState, true);
+        deviceManager.addAudioCallback (&graphPlayer);
     }
-
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override
-    {
-        // Your audio-processing code goes here!
-
-        // For more details, see the help for AudioProcessor::getNextAudioBlock()
-
-        // Right now we are not producing any data, in which case we need to clear the buffer
-        // (to prevent the output of random noise)
-        bufferToFill.clearActiveBufferRegion();
-    }
-
-    void releaseResources() override
-    {
-        // This will be called when the audio device stops, or when it is being
-        // restarted due to a setting change.
-
-        // For more details, see the help for AudioProcessor::releaseResources()
+    void stopAudio(){
+        deviceManager.removeAudioCallback (&graphPlayer);
+        deviceManager.closeAudioDevice();
     }
 
     //=======================================================================
