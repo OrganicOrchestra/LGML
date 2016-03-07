@@ -58,6 +58,7 @@ public:
 	//connection creation / editing
 	typedef ConnectorComponent Connector;
 	void createDataConnectionFromConnector(Connector * baseConnector, const String &dataName, const String &elementName);
+	void createAudioConnectionFromConnector(Connector * baseConnector, uint32 channel);
 
 	void updateEditingConnection();
 	bool isEditingConnection() { return editingConnection != nullptr; }
@@ -70,6 +71,8 @@ public:
 
 	//Mouse event
 	void mouseDown(const MouseEvent& event) override;
+	void mouseDrag(const MouseEvent& event) override;
+	void mouseUp(const MouseEvent& event) override;
 
 private:
     

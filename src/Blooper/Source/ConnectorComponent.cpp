@@ -15,55 +15,65 @@ void ConnectorComponent::mouseDown(const MouseEvent & e)
 	if (dataType == NodeConnection::ConnectionType::DATA)
 	{
 		
-		int numDatas = 0;
-		OwnedArray<DataProcessor::Data>* datas;
-
-		if (ioType == ConnectorIOType::INPUT)
-		{
-			numDatas = node->dataProcessor->getTotalNumInputData();
-			datas = &node->dataProcessor->inputDatas;
-		}
-		else
-		{
-			numDatas = node->dataProcessor->getTotalNumOutputData();
-			datas = &node->dataProcessor->outputDatas;
-		}
-
+		
 		String dataName = "";
 		String elementName = "";
 
-		ScopedPointer<PopupMenu> menu = new PopupMenu();
-
-		const int maxElementPerData = 10;
-
-		for (int i = 0; i < numDatas; i++)
+		if(e.mods.isRightButtonDown())
 		{
-			ScopedPointer<PopupMenu> dataMenu = new PopupMenu();
-			DataProcessor::Data * d = datas->getUnchecked(i);
-			int itemID = i *  maxElementPerData + 1; //max 10 element per data anyway, 1 to not start from 0
-			
-			
-			for (int j = 0; j < d->elements.size(); j++)
+			int numDatas = 0;
+			OwnedArray<DataProcessor::Data>* datas;
+
+			if (ioType == ConnectorIOType::INPUT)
 			{
-				dataMenu->addItem(itemID + (j + 1), d->elements[j]->name);
+				numDatas = node->dataProcessor->getTotalNumInputData();
+				datas = &node->dataProcessor->inputDatas;
 			}
-			menu->addSubMenu(d->name, *dataMenu, true, nullptr, false, itemID);
+			else
+			{
+				numDatas = node->dataProcessor->getTotalNumOutputData();
+				datas = &node->dataProcessor->outputDatas;
+			}
+
+
+			ScopedPointer<PopupMenu> menu = new PopupMenu();
+
+			const int maxElementPerData = 10;
+
+			for (int i = 0; i < numDatas; i++)
+			{
+				ScopedPointer<PopupMenu> dataMenu = new PopupMenu();
+				DataProcessor::Data * d = datas->getUnchecked(i);
+				int itemID = i *  maxElementPerData + 1; //max 10 element per data anyway, 1 to not start from 0
+			
+			
+				for (int j = 0; j < d->elements.size(); j++)
+				{
+					dataMenu->addItem(itemID + (j + 1), d->elements[j]->name);
+				}
+				menu->addSubMenu(d->name, *dataMenu, true, nullptr, false, itemID);
+			}
+
+
+
+			DBG("here");
+			int resultID = menu->show();
+
+			int offsetID = resultID - 1;
+
+			int dataID = (int)floor(offsetID / 10);
+			int elementID = offsetID % maxElementPerData;
+
+			dataName = datas->getUnchecked(dataID)->name;
+			if (elementID > 0) elementName = datas->getUnchecked(dataID)->elements[elementID-1]->name;
+
 		}
 
-
-
-		DBG("here");
-		int resultID = menu->show();
-
-		int offsetID = resultID - 1;
-
-		int dataID = (int)floor(offsetID / 10);
-		int elementID = offsetID % maxElementPerData;
-
-		dataName = datas->getUnchecked(dataID)->name;
-		if (elementID > 0) elementName = datas->getUnchecked(dataID)->elements[elementID]->name;
-
 		nmui->createDataConnectionFromConnector(this,dataName,elementName);
+	}
+	else
+	{
+		nmui->createAudioConnectionFromConnector(this, 0);
 	}
 }
 
@@ -76,6 +86,8 @@ void ConnectorComponent::mouseUp(const MouseEvent & e)
 {
 	getNodeManagerUI()->finishEditingConnection(this);
 }
+
+
 NodeManagerUI * ConnectorComponent::getNodeManagerUI() const noexcept
 {
 	return findParentComponentOfClass<NodeManagerUI>();

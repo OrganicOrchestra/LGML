@@ -185,8 +185,7 @@ void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector,
 {
 	
 	DBG("Create Data connection from connector : " + dataName + ", " + elementName);
-	Point<int> globalConnectorPos = ComponentUtil::getRelativeComponentPosition(baseConnector, this);
-	
+
 	bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
 	
 
@@ -194,6 +193,29 @@ void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector,
 	{
 		editingConnection = new NodeConnectionUI(nullptr, baseConnector, nullptr);
 	}else
+	{
+		editingConnection = new NodeConnectionUI(nullptr, nullptr, baseConnector);
+	}
+
+	addAndMakeVisible(editingConnection);
+
+	if (dataName == "" && elementName == "")
+	{
+		baseConnector->removeMouseListener(this);
+	}
+}
+
+void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector, uint32 channel)
+{
+	DBG("Create Audio Connection from connector " + String(channel));
+
+	bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
+
+	if (isOutputConnector)
+	{
+		editingConnection = new NodeConnectionUI(nullptr, baseConnector, nullptr);
+	}
+	else
 	{
 		editingConnection = new NodeConnectionUI(nullptr, nullptr, baseConnector);
 	}
@@ -295,4 +317,17 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
 		}
 	}
 	
+}
+
+void NodeManagerUI::mouseDrag(const MouseEvent & event)
+{
+	if (editingConnection != nullptr)
+	{
+		DBG("NMUI drag, target is editingConnection ?"+String(event.eventComponent == editingConnection->getBaseConnector()));
+	}
+}
+
+void NodeManagerUI::mouseUp(const MouseEvent & event)
+{
+
 }
