@@ -115,7 +115,7 @@ public:
 	const Connection* getConnection(int index) const { return connections[index]; }
 
 
-	const Connection* getConnectionBetween(uint32 sourceNodeId,
+	Connection* getConnectionBetween(uint32 sourceNodeId,
 		String sourceDataName,
 		String sourceElementName,
 		uint32 destNodeId,
@@ -134,7 +134,7 @@ public:
 		String destElementName) const;
 
 
-	bool addConnection(uint32 sourceNodeId,
+	Connection * addConnection(uint32 sourceNodeId,
 		String sourceDataName,
 		String sourceElementName,
 		uint32 destNodeId,

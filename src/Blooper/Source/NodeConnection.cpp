@@ -26,6 +26,8 @@ nodeManager(nodeManager), connectionId(connectionId), sourceNode(sourceNode), de
 
 NodeConnection::~NodeConnection()
 {
+	dataConnections.clear();
+	audioConnections.clear();
 	sourceNode = nullptr;
 	destNode = nullptr;
 }
@@ -33,7 +35,6 @@ NodeConnection::~NodeConnection()
 void NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
     nodeManager->audioGraph.addConnection(sourceNode->nodeId, sourceChannel, destNode->nodeId, destChannel);
-
 }
 
 void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
@@ -43,12 +44,17 @@ void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 des
 
 void NodeConnection::addDataGraphConnection(const String &sourceDataName, const String &sourceElementName, const String &destDataName, const String &destElementName)
 {
-
+	DataProcessorGraph::Connection * c = nodeManager->dataGraph.addConnection(sourceNode->nodeId, sourceDataName, sourceElementName, destNode->nodeId, destDataName, destElementName);
+	dataConnections.add(c);
 }
 
 void NodeConnection::removeDataGraphConnection(const String &sourceDataName, const String &sourceElementName, const String &destDataName, const String &destElementName)
 {
+	DataProcessorGraph::Connection * c = nodeManager->dataGraph.getConnectionBetween(sourceNode->nodeId, sourceDataName, sourceElementName, destNode->nodeId, destDataName, destElementName);
+	dataConnections.removeAllInstancesOf(c);
+	nodeManager->dataGraph.removeConnection(sourceNode->nodeId, sourceDataName, sourceElementName, destNode->nodeId, destDataName, destElementName);
 
+	
 }
 
 

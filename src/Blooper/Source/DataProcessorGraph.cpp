@@ -44,7 +44,7 @@ void DataProcessorGraph::Node::setParentGraph(DataProcessorGraph *) const
 void DataProcessorGraph::clear()
 {
 	nodes.clear();
-	connections.clear();
+	//connections.clear();
 	//triggerAsyncUpdate();
 }
 
@@ -113,7 +113,7 @@ bool DataProcessorGraph::removeNode(uint32 nodeId)
 	return false;
 }
 
-const DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(uint32 sourceNodeId, 
+DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(uint32 sourceNodeId, 
 	String sourceDataName,
 	String sourceElementName,
 	uint32 destNodeId, 
@@ -135,7 +135,6 @@ const DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(
 		}
 	}
 
-	jassert(false);
 	return nullptr;
 
 	//const Connection c(sourceNodeId, sourceChannelIndex, destNodeId, destChannelIndex);
@@ -182,10 +181,10 @@ bool DataProcessorGraph::canConnect(uint32 sourceNodeId,
 }
 
 
-bool DataProcessorGraph::addConnection(uint32 sourceNodeId, String sourceDataName, String sourceElementName, uint32 destNodeId, String destDataName, String destElementName)
+DataProcessorGraph::Connection * DataProcessorGraph::addConnection(uint32 sourceNodeId, String sourceDataName, String sourceElementName, uint32 destNodeId, String destDataName, String destElementName)
 {
 	if (!canConnect(sourceNodeId, sourceDataName, sourceElementName, destNodeId,destDataName,destElementName))
-		return false;
+		return nullptr;
 
 	/*
 	GraphRenderingOps::ConnectionSorter sorter;
@@ -197,7 +196,7 @@ bool DataProcessorGraph::addConnection(uint32 sourceNodeId, String sourceDataNam
 	connections.add(c);
 
 	//triggerAsyncUpdate();
-	return true;
+	return c;
 }
 
 void DataProcessorGraph::removeConnection(int index)
