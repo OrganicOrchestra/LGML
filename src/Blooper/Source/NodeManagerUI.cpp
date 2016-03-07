@@ -310,23 +310,38 @@ void NodeManagerUI::finishEditingConnection()
 	DBG("Finish Editing connection");
 	if (!isEditingConnection()) return;
 
-	//Delete the editing connection
-	String targetDataName = "";
-	String targetElementName = "";
-	DataProcessor::DataType targetDataType;
-
-	editingConnection->getBaseConnector()->removeMouseListener(this);
-	if (editingConnection->candidateDropConnector != nullptr)
+	if (editingConnection->getBaseConnector()->dataType == NodeConnection::ConnectionType::DATA) //DATA
 	{
-		editingConnection->candidateDropConnector->removeMouseListener(this);
-		if (editingDataName != "")
+		//Delete the editing connection
+		String targetDataName = "";
+		String targetElementName = "";
+		DataProcessor::DataType targetDataType;
+
+		editingConnection->getBaseConnector()->removeMouseListener(this);
+		if (editingConnection->candidateDropConnector != nullptr)
 		{
-			editingConnection->candidateDropConnector->selectDataAndElementPopup(targetDataName, targetElementName,targetDataType,editingDataType);
+			editingConnection->candidateDropConnector->removeMouseListener(this);
+			if (editingDataName != "")
+			{
+				editingConnection->candidateDropConnector->selectDataAndElementPopup(targetDataName, targetElementName, targetDataType, editingDataType);
+			}
+		}
+
+		DBG("Finish after select, targetDataName " + targetDataName);
+		if (editingDataName == "" || targetDataName != "")
+		{
+			bool success = editingConnection->finishEditing();
+
+			if (success)
+			{
+				nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
+			}
+			else
+			{
+			}
 		}
 	}
-
-	DBG("Finish after select, targetDataName " + targetDataName);
-	if (editingDataName == "" || targetDataName != "")
+	else //AUDIO
 	{
 		bool success = editingConnection->finishEditing();
 
@@ -339,7 +354,6 @@ void NodeManagerUI::finishEditingConnection()
 		}
 	}
 
-	
 	removeChildComponent(editingConnection);
 	delete editingConnection;
 	editingConnection = nullptr;
