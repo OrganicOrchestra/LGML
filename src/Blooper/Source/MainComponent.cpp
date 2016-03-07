@@ -42,7 +42,7 @@ public:
     //==============================================================================
     MainContentComponent()
     {
-        setSize (1280,800);
+        setSize (800,600);
 
         // specify the number of input and output channels that we want to open
         //setAudioChannels (2, 2);
@@ -50,12 +50,13 @@ public:
 		nodeManager = new NodeManager();
         
         // init Audio
-        graphPlayer.setProcessor(&nodeManager->audioGraph);
+        /*graphPlayer.setProcessor(&nodeManager->audioGraph);
         ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()
                                                    ->getXmlValue ("audioDeviceState"));
+
         deviceManager.initialise (256, 256, savedAudioState, true);
         deviceManager.addAudioCallback (&graphPlayer);
-        
+        */
         
 		nodeManagerUI = new NodeManagerUI(nodeManager);
 		addAndMakeVisible(nodeManagerUI);
@@ -64,6 +65,7 @@ public:
 
     ~MainContentComponent()
     {
+		
         shutdownAudio();
 
 

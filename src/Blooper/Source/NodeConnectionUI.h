@@ -42,7 +42,6 @@ public:
 
 	void updateBoundsFromNodes();
 
-
 	Connector* getBaseConnector()
 	{
 		return sourceConnector != nullptr ? sourceConnector : destConnector;

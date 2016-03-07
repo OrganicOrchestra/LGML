@@ -22,6 +22,7 @@ NodeManagerUI::~NodeManagerUI()
 {
 	if (editingConnection != nullptr)
 	{
+		editingConnection->getBaseConnector()->removeMouseListener(this);
 		delete editingConnection;
 		editingConnection = nullptr;
 	}
@@ -181,10 +182,16 @@ NodeConnectionUI * NodeManagerUI::getUIForConnection(NodeConnection* connection)
 }
 
 
-void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector, const String &dataName, const String &elementName)
+void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector, const String &dataName, const String &elementName, DataProcessor::DataType dataType)
 {
 	
 	DBG("Create Data connection from connector : " + dataName + ", " + elementName);
+
+	if (editingConnection != nullptr)
+	{
+		DBG("Already editing a connection !");
+		return;
+	}
 
 	bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
 	
@@ -199,15 +206,29 @@ void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector,
 
 	addAndMakeVisible(editingConnection);
 
+	editingDataName = dataName;
+	editingElementName = elementName;
+	editingDataType = dataType;
+
 	if (dataName == "" && elementName == "")
 	{
-		baseConnector->removeMouseListener(this);
+		baseConnector->addMouseListener(this,false);
+	}
+	else
+	{
+		
 	}
 }
 
 void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector, uint32 channel)
 {
 	DBG("Create Audio Connection from connector " + String(channel));
+
+	if (editingConnection != nullptr)
+	{
+		DBG("Already editing a connection !");
+		return;
+	}
 
 	bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
 
@@ -220,13 +241,15 @@ void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector
 		editingConnection = new NodeConnectionUI(nullptr, nullptr, baseConnector);
 	}
 
+	baseConnector->addMouseListener(this, false);
+
 	addAndMakeVisible(editingConnection);
 }
 
 void NodeManagerUI::updateEditingConnection()
 {
 	if (editingConnection == nullptr) return;
-
+	
 	Point<int> cPos = ComponentUtil::getRelativeComponentPosition(editingConnection->getBaseConnector(), this);
 	Point<int> mPos = getMouseXYRelative();
 	int minX = jmin<int>(cPos.x, mPos.x);
@@ -268,66 +291,122 @@ bool NodeManagerUI::setCandidateDropConnector(Connector * connector)
 {
 	if (!isEditingConnection()) return false;
 	
-	return editingConnection->setCandidateDropConnector(connector);
-	return true;
+	bool result = editingConnection->setCandidateDropConnector(connector);
+	editingConnection->candidateDropConnector->addMouseListener(this,false);
+	return result;
 }
 
 void NodeManagerUI::cancelCandidateDropConnector()
 {
 	if (!isEditingConnection()) return;
+	if(editingConnection->candidateDropConnector != nullptr) editingConnection->candidateDropConnector->removeMouseListener(this);
 	editingConnection->cancelCandidateDropConnector();
+	
+
 }
 
-void NodeManagerUI::finishEditingConnection(Connector * c)
+void NodeManagerUI::finishEditingConnection()
 {
+	DBG("Finish Editing connection");
 	if (!isEditingConnection()) return;
-	bool success = editingConnection->finishEditing();
-	editingConnection->toBack();
 
-	DBG("Finish editing, sucess ?" + String(success));
-	if (success)
-	{
-		nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, c->dataType);
-	}
-	else
-	{
-
-
-	}
 	//Delete the editing connection
+	String targetDataName = "";
+	String targetElementName = "";
+	DataProcessor::DataType targetDataType;
+
+	editingConnection->getBaseConnector()->removeMouseListener(this);
+	if (editingConnection->candidateDropConnector != nullptr)
+	{
+		editingConnection->candidateDropConnector->removeMouseListener(this);
+		if (editingDataName != "")
+		{
+			editingConnection->candidateDropConnector->selectDataAndElementPopup(targetDataName, targetElementName,targetDataType,editingDataType);
+		}
+	}
+
+	DBG("Finish after select, targetDataName " + targetDataName);
+	if (editingDataName == "" || targetDataName != "")
+	{
+		bool success = editingConnection->finishEditing();
+
+		if (success)
+		{
+			nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
+		}
+		else
+		{
+		}
+	}
+
+	
 	removeChildComponent(editingConnection);
 	delete editingConnection;
 	editingConnection = nullptr;
-	
+
 }
 
 //Interaction Events
 void NodeManagerUI::mouseDown(const MouseEvent & event)
 {
-	if (event.mods.isRightButtonDown())
+	DBG("Mouse Button down");
+	if (event.eventComponent == this)
 	{
-		ScopedPointer<PopupMenu> menu = new PopupMenu();
-		ScopedPointer<PopupMenu> addNodeMenu = NodeFactory::getNodeTypesMenu(0);
-		menu->addSubMenu("Add Node", *addNodeMenu);
-
-		int result = menu->show();
-		if (result >= 1 && result <= addNodeMenu->getNumItems())
+		if (event.mods.isRightButtonDown())
 		{
-			nodeManager->addNode((NodeFactory::NodeType)(result-1));
+
+			ScopedPointer<PopupMenu> menu = new PopupMenu();
+			ScopedPointer<PopupMenu> addNodeMenu = NodeFactory::getNodeTypesMenu(0);
+			menu->addSubMenu("Add Node", *addNodeMenu);
+
+			int result = menu->show();
+			if (result >= 1 && result <= addNodeMenu->getNumItems())
+			{
+				nodeManager->addNode((NodeFactory::NodeType)(result - 1));
+			}
+		}
+		else
+		{
+			DBG("> left button down !");
+			if (event.mods.isCtrlDown())
+			{
+				nodeManager->addNode(NodeFactory::NodeType::Dummy);
+			}
 		}
 	}
 	
+}
+
+void NodeManagerUI::mouseMove(const MouseEvent & event)
+{
+	if (editingConnection != nullptr)
+	{
+		//DBG("NMUI mouse mouve while editing connection");
+		updateEditingConnection();
+	}
 }
 
 void NodeManagerUI::mouseDrag(const MouseEvent & event)
 {
 	if (editingConnection != nullptr)
 	{
-		DBG("NMUI drag, target is editingConnection ?"+String(event.eventComponent == editingConnection->getBaseConnector()));
+		if (event.eventComponent == editingConnection->getBaseConnector())
+		{
+			updateEditingConnection();
+		}
 	}
 }
 
 void NodeManagerUI::mouseUp(const MouseEvent & event)
 {
+	DBG("MOUSE UP");
+	if (editingConnection != nullptr)
+	{
+		finishEditingConnection();
 
+		//if (event.eventComponent == editingConnection->getBaseConnector())
+		//{
+		//	
+		//}
+	}
 }

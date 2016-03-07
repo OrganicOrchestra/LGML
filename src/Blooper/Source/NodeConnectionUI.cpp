@@ -157,7 +157,7 @@ void NodeConnectionUI::componentMovedOrResized(Component & component, bool wasMo
 bool NodeConnectionUI::setCandidateDropConnector(Connector * connector)
 {
 	//check if connector can accept data
-	if (getBaseConnector() == connector) return true;
+	if (getBaseConnector() == connector) return false;
 	if (getBaseConnector()->ioType == connector->ioType) return false;
 	if (getBaseConnector()->dataType != connector->dataType) return false;
 
@@ -185,9 +185,6 @@ bool NodeConnectionUI::finishEditing()
 			setDestConnector(candidateDropConnector);
 
 		}
-
-		//sourceConnector->getNodeUI()->addComponentListener(this);
-		//destConnector->getNodeUI()->addComponentListener(this);
 	}
 
 	candidateDropConnector = nullptr;
