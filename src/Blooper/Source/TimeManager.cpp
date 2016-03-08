@@ -9,3 +9,6 @@
 */
 
 #include "TimeManager.h"
+
+
+juce_ImplementSingleton(TimeManager);
