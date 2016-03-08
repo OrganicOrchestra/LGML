@@ -9,7 +9,7 @@
 */
 
 #include "DummyNode.h"
-#include "DummyNodeUI.h"
+#include "NodeBaseUI.h"
 
 
 DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
@@ -32,7 +32,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 NodeBaseUI * DummyNode::createUI()
 {
 
-	DummyNodeUI * ui = new DummyNodeUI(this);
+	NodeBaseUI * ui = new NodeBaseUI(this);
 	return ui;
 	
 }

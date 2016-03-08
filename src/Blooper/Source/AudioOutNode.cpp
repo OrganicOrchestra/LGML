@@ -9,12 +9,10 @@
 */
 
 #include "AudioOutNode.h"
-
-#include "DummyNodeUI.h"
-
+#include "NodeBaseUI.h"
 
 NodeBaseUI * AudioOutNode::createUI() {
-	DummyNodeUI* ui = new DummyNodeUI(this);
+	NodeBaseUI * ui = new NodeBaseUI(this);
     return ui;
     
 }

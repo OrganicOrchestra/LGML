@@ -9,12 +9,12 @@
 */
 
 #include "AudioMixerNode.h"
-#include "AudioMixerNodeUI.h"
+#include "NodeBaseUI.h"
 
 NodeBaseUI * AudioMixerNode::createUI()
 {
 
-	AudioMixerNodeUI * ui = new AudioMixerNodeUI(this);
+	NodeBaseUI * ui = new NodeBaseUI(this);
 	return ui;
 
 }
