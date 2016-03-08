@@ -37,11 +37,10 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     
     
     // RECORDING
-    if (isRecording)
+    if (trackState == RECORDING)
     {
         if(recordNeedle.get() + buffer.getNumSamples()> parentLooper->getSampleRate() * MAX_LOOP_LENGTH_S){
-            shouldRecord = false;
-            isRecording = false;
+            setTrackState(STOPPED);
         };
         monoLoopSample.copyFrom(0, recordNeedle.get(), buffer, 0, 0, buffer.getNumSamples());
         recordNeedle += buffer.getNumSamples();
@@ -58,7 +57,7 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     // allow circular reading , although not sure that overflow need to be handled as its written with same block sizes than read
     // we may need it if we start to use a different clock  than looperState in OOServer that has a granularity of blockSize
     // or if we dynamicly change blockSize
-    if (isPlaying && recordNeedle.get()>0 && monoLoopSample.getNumSamples())
+    if (trackState==PLAYING && recordNeedle.get()>0 && monoLoopSample.getNumSamples())
     {
         if ( (playNeedle + buffer.getNumSamples()) > recordNeedle.get())
         {
@@ -93,7 +92,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(int64 curTime){
     if(quantizedRecordStart>0){
         if(curTime>quantizedRecordStart){
             preDelayMs.setValue( 0);
-            isRecording = true;
+            setTrackState(RECORDING);
             
         }
         
@@ -101,28 +100,28 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(int64 curTime){
     else if( quantizedRecordEnd>0){
         if(curTime>quantizedRecordEnd){
             preDelayMs.setValue(0);
-            isRecording = false;
+            setTrackState(PLAYING);
         }
     }
     
-    else if(isRecording!=shouldRecord){
-        isRecording = (bool)shouldRecord;
-    }
+//    else if(isRecording!=shouldRecord){
+//        isRecording = (bool)shouldRecord;
+//    }
     
     
     if(quantizedPlayStart>0){
         if(curTime>quantizedPlayStart){
-            isPlaying = true;
+            setTrackState(PLAYING);
         }
     }
     else if( quantizedPlayEnd>0){
         if(curTime>quantizedPlayEnd){
-            isPlaying = false;
+            setTrackState(STOPPED);
         }
     }
-    else if(isPlaying!= shouldPlay){
-        isPlaying = (bool)shouldPlay;
-    }
+//    else if(isPlaying!= (track)shouldPlay){
+//        isPlaying = (bool)shouldPlay;
+//    }
     
 }
 
@@ -145,15 +144,20 @@ void LooperNode::Looper::setNumTracks(int numTracks){
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
     if(t == &shouldRecordTrig){
-        shouldRecord = true;
+        setTrackState(SHOULD_RECORD);
     }
-    else if( t == &shouldPlayTrig){
-        shouldPlay = true;
+    else if(t == &shouldPlayTrig){
+        setTrackState(SHOULD_PLAY);
     }
     else if(t== &shouldClearTrig){
-        shouldClear = true;
+        setTrackState(SHOULD_CLEAR);
     }
 }
 
+
+void LooperNode::Looper::Track::setTrackState(TrackState state){
+    trackState = state;
+    listeners.call(&LooperNode::Looper::Track::Listener::trackStateChanged,state);
+};
 
 NodeBaseUI * LooperNode::createUI(){LooperNodeUI * ui = new LooperNodeUI(this);    ui->setNode(this);return ui;}

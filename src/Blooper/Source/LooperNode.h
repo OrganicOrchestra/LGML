@@ -53,25 +53,57 @@ public:
             Track(Looper * looper,int _trackNum):
             parentLooper(looper),
             trackNum("trackNum",_trackNum,0,MAX_NUM_TRACKS),
-            shouldRecordTrig("shouldRecord"),shouldRecord(false),isRecording(false),quantizedRecordStart(0),quantizedRecordEnd(0),
-            shouldPlayTrig("shouldPlay"),shouldPlay(false),isPlaying(false),quantizedPlayStart(0),quantizedPlayEnd(0),
-            shouldClearTrig("shouldClear"),shouldClear(false),
+            shouldRecordTrig("shouldRecord"),quantizedRecordStart(0),quantizedRecordEnd(0),
+            shouldPlayTrig("shouldPlay"),quantizedPlayStart(0),quantizedPlayEnd(0),
+            shouldClearTrig("shouldClear"),
             volume("volume",.85,0,1),
             preDelayMs("preDelayMs",0,0,200),
             streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
-            monoLoopSample(1,44100*MAX_LOOP_LENGTH_S)
+            monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
+            trackState(STOPPED)
             {
-    
+                shouldRecordTrig.addListener(this);
+                shouldPlayTrig.addListener(this);
+                shouldClearTrig.addListener(this);
             }
             
-            
+            ~Track(){
+                
+            }
             
             Trigger  shouldRecordTrig;
-            bool shouldRecord;
             Trigger  shouldPlayTrig;
-            bool shouldPlay;
             Trigger  shouldClearTrig;
-            bool shouldClear;
+
+            
+            
+            
+            enum TrackState{
+                SHOULD_RECORD,
+                RECORDING,
+                SHOULD_PLAY,
+                PLAYING,
+                SHOULD_CLEAR,
+                CLEARED,
+                STOPPED
+            };
+            TrackState trackState;
+            void setTrackState(TrackState state);
+            
+            
+            //Listener
+            class  Listener
+            {
+            public:
+                
+                /** Destructor. */
+                virtual ~Listener() {}
+                virtual void trackStateChanged(TrackState state) = 0;
+                
+            };
+            ListenerList<Listener> listeners;
+            void addListener(Listener* newListener) { listeners.add(newListener); }
+            void removeListener(Listener* listener) { listeners.remove(listener); }
             
             FloatParameter volume;
             float lastVolume;
@@ -86,12 +118,11 @@ public:
             
             
             
-            bool  isRecording;
+
             Atomic<int> recordNeedle;
             int recordingDelay;
             int quantizedRecordEnd,quantizedRecordStart;
             
-            bool isPlaying;
             int playNeedle;
             int quantizedPlayStart,quantizedPlayEnd;
             void updatePendingLooperTrackState(int64 curTime);

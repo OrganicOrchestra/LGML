@@ -13,10 +13,11 @@
 
 #include "NodeBaseUI.h"
 
+#include "TriggerButtonUI.h"
 
 class LooperNodeUI: public NodeBaseUI , public LooperNode::Looper::Listener{
 public:
-    LooperNodeUI(LooperNode * looperNode):looperNode(looperNode){
+    LooperNodeUI(LooperNode * looperNode):NodeBaseUI(looperNode),looperNode(looperNode){
         trackNumChanged(looperNode->looper->tracks.size());
         looperNode->looper->addListener(this);
     }
@@ -27,9 +28,19 @@ public:
     }
     class TrackUI : public Component{
     public:
-        void paint(Graphics & g) override{
-            g.fillAll(Colours::red);
+        
+        TrackUI(LooperNode::Looper::Track * track):recButton(&track->shouldRecordTrig){
+            addAndMakeVisible(recButton);
         }
+        void paint(Graphics & g) override{
+            g.fillAll(Colours::red.withAlpha(0.2f));
+        }
+        void resized()override{
+            Rectangle<int> area = getLocalBounds();
+            recButton.setBounds(area.removeFromTop(area.getHeight()/2));
+        }
+        
+        TriggerButtonUI recButton;
         
     };
     void trackNumChanged(int num) {
@@ -39,7 +50,7 @@ public:
         }
         else{
             for(int i = tracksUI.size() ; i < num ; i++){
-                TrackUI * t = new TrackUI();
+                TrackUI * t = new TrackUI(looperNode->looper->tracks.getUnchecked(i));
                 tracksUI.add(t);
                 getContentContainer()->addAndMakeVisible(t);
             }
