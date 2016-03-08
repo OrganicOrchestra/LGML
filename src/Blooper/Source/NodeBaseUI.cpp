@@ -57,8 +57,7 @@ void NodeBaseUI::setNode(NodeBase * node)
 
     if(node!=nullptr && node->hasAudioOutputs){
         node->audioProcessor->addListener(&vuMeter);
-        mainContainer.addAndMakeVisible(vuMeter);
-        resized();
+        getHeaderContainer()->addAndMakeVisible(vuMeter);
     }
 
 	//parameters
@@ -78,9 +77,11 @@ void NodeBaseUI::resized()
 	Rectangle<int> outputBounds = r.removeFromRight(connectorWidth);
 
 	mainContainer.setBounds(r);
+
     if(node!=nullptr && node->hasAudioOutputs){
-        Rectangle<int> vuMeterRect =r.removeFromRight(vuMeter.getWidth());
-        vuMeter.setBounds(vuMeterRect.reduced(6));
+		
+		Rectangle<int> vuMeterRect = getHeaderContainer()->getLocalBounds().removeFromRight(14).reduced(4);
+		vuMeter.setBounds(vuMeterRect);
     }
 
 	inputContainer.setBounds(inputBounds);
@@ -145,7 +146,7 @@ void NodeBaseUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorI
 {
 	ConnectorComponent * c = new ConnectorComponent(ioType, dataType, node);
 
-	c->setTopLeftPosition(0, 20 + getNumChildComponents()*(getHeight() + 30));
+	c->setTopLeftPosition(0, 10 + getNumChildComponents()*(getHeight() + 30));
 
 	connectors.add(c);
 	addAndMakeVisible(c);

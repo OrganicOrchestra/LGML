@@ -85,6 +85,7 @@ public:
 			g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
 			g.setColour(CONTOUR_COLOR); 
 			g.drawRoundedRectangle(getLocalBounds().toFloat(),4,2);
+
 		}
 
 		void resized()
@@ -136,17 +137,19 @@ public:
         
     public:
         VuMeter(){
-            setSize(30,60);
+            setSize(8,20);
         }
         
         void paint(Graphics &g)override{
+			
 
-            g.setColour(Colours::green);
-            Rectangle<int> area = getLocalBounds();
-            g.fillRect(area);
-            g.setColour(Colours::black);
-            g.fillRect(area.withHeight(area.getHeight()*(1.0-vol)));
-            
+			g.setColour(NORMAL_COLOR);
+			g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
+			if (vol > 0)
+			{
+				g.setGradientFill(ColourGradient(Colours::red, 0, getHeight(), Colours::lightgreen, 0, getLocalBounds().getCentreY(), false));
+				g.fillRoundedRectangle(getLocalBounds().removeFromBottom(getHeight()*(vol)).toFloat(), 2);
+			}
         }
         float vol;
         void RMSChanged(float v) override {
