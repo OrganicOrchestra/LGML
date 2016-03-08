@@ -109,10 +109,35 @@ public:
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorContainer)
 	};
+    
+    class VuMeter : public ContourComponent,public NodeBase::NodeAudioProcessor::Listener{
+        
+    public:
+        VuMeter(){
+            setSize(30,60);
+        }
+        
+        void paint(Graphics &g)override{
+
+            g.setColour(Colours::green);
+            Rectangle<int> area = getLocalBounds();
+            g.fillRect(area);
+            g.setColour(Colours::black);
+            g.fillRect(area.withHeight(area.getHeight()*(1.0-vol)));
+            
+        }
+        float vol;
+        void RMSChanged(float v) override {
+            vol = v;
+            repaint();
+        };
+        
+    };
 	
 	MainContainer mainContainer;
 	ConnectorContainer inputContainer;
 	ConnectorContainer outputContainer;
+    VuMeter vuMeter;
 
 	Component * getContentContainer() { return &mainContainer.contentContainer; }
 	Component * getHeaderContainer() { return &mainContainer.headerContainer; }

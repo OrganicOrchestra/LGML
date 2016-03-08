@@ -17,26 +17,26 @@
 //==============================================================================
 NodeBaseUI::NodeBaseUI() :
 	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
-	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT)
+	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
+    node(nullptr)
 {
 
 	DBG("Node Base UI Constructor");
 	
 	connectorWidth = 10;
-
 	addAndMakeVisible(mainContainer);
 	addAndMakeVisible(inputContainer);
 	addAndMakeVisible(outputContainer);
-	
 	setSize(300,200);
-
-	
 	getHeaderContainer()->addMouseListener(this,true);// (true, true);
 	
 }
 
 NodeBaseUI::~NodeBaseUI()
 {
+    if(node && node->hasAudioOutputs){
+        node->audioProcessor->removeListener(&vuMeter);
+    }
 	this->node = nullptr;
 }
 
@@ -47,6 +47,11 @@ void NodeBaseUI::setNode(NodeBase * node)
 	mainContainer.titleLabel.setText(node->name,NotificationType::sendNotification);
 	inputContainer.setConnectorsFromNode(node);
 	outputContainer.setConnectorsFromNode(node);
+    if(node!=nullptr && node->hasAudioOutputs){
+        node->audioProcessor->addListener(&vuMeter);
+        mainContainer.addAndMakeVisible(vuMeter);
+        resized();
+    }
 }
 
 
@@ -62,6 +67,10 @@ void NodeBaseUI::resized()
 	Rectangle<int> outputBounds = r.removeFromRight(connectorWidth);
 
 	mainContainer.setBounds(r);
+    if(node!=nullptr && node->hasAudioOutputs){
+        Rectangle<int> vuMeterRect =r.removeFromRight(vuMeter.getWidth());
+        vuMeter.setBounds(vuMeterRect.reduced(6));
+    }
 	inputContainer.setBounds(inputBounds);
 	outputContainer.setBounds(outputBounds);
 }

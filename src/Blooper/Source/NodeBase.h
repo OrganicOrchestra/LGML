@@ -82,7 +82,7 @@ public:
                                           MidiBuffer& midiMessages) = 0;
         
         
-        float updateRMS(AudioBuffer<float>& buffer){
+        void updateRMS(AudioBuffer<float>& buffer){
             rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1-alphaRMS) * rmsValue;
         }
         float alphaRMS = 0.5;
@@ -94,7 +94,7 @@ public:
             listeners.call(&Listener::RMSChanged,rmsValue);
         }
         
-        class  Listener : public AsyncUpdater
+        class  Listener 
         {
         public:
             /** Destructor. */
