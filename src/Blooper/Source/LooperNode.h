@@ -23,15 +23,17 @@ class LooperNode : public NodeBase
 {
 
 public:
-	LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"Looper",new Looper) {}
+    LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"Looper",new Looper) {
+        looper = dynamic_cast<Looper*>(audioProcessor);
+    }
     
     
-    
+
     
     class Looper : public NodeAudioProcessor{
     public:
-        Looper():globalSampleTime(0),maxLoopLength(44100*2){
-        
+        Looper(){
+            setNumTracks(8);
         }
         
         
@@ -39,52 +41,61 @@ public:
                                   MidiBuffer& midiMessages)override;
         
         
-        
-        int globalSampleTime;
-        int maxLoopLength;
+
         
         
         void setNumTracks(int numTracks);
         
-        class Track{
+        class Track : Trigger::Listener{
         public:
             
             
-            Track(Looper * looper,int _trackNum):parentLooper(looper),
-            trackNum("trackNum","trackNum",0,MAX_NUM_TRACKS,_trackNum),
-            // 16000 ~ 300ms and 256*64
-            streamBipBuffer(16384)
-            
+            Track(Looper * looper,int _trackNum):
+            parentLooper(looper),
+            trackNum("trackNum",_trackNum,0,MAX_NUM_TRACKS),
+            shouldRecordTrig("shouldRecord"),shouldRecord(false),isRecording(false),quantizedRecordStart(0),quantizedRecordEnd(0),
+            shouldPlayTrig("shouldPlay"),shouldPlay(false),isPlaying(false),quantizedPlayStart(0),quantizedPlayEnd(0),
+            shouldClearTrig("shouldClear"),shouldClear(false),
+            volume("volume",.85,0,1),
+            preDelayMs("preDelayMs",0,0,200),
+            streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
+            monoLoopSample(1,44100*MAX_LOOP_LENGTH_S)
             {
     
             }
             
             
-            AudioParameterBool *  shouldRecord;
-            AudioParameterBool * shouldPlay;
-            AudioParameterBool * shouldClear;
             
+            Trigger  shouldRecordTrig;
+            bool shouldRecord;
+            Trigger  shouldPlayTrig;
+            bool shouldPlay;
+            Trigger  shouldClearTrig;
+            bool shouldClear;
             
-            AudioParameterFloat * volume;
+            FloatParameter volume;
             float lastVolume;
-
+            
+            // RMS Values from all Tracks
+            Array<float> RMS;
         private:
-            AudioParameterInt   trackNum;
+            
+            void triggerTriggered(Trigger * t)override;
+            
+            IntParameter   trackNum;
             
             
             
-            AudioParameterBool *  isRecording;
+            bool  isRecording;
             Atomic<int> recordNeedle;
             int recordingDelay;
             int quantizedRecordEnd,quantizedRecordStart;
             
-            AudioParameterBool * isPlaying;
+            bool isPlaying;
             int playNeedle;
             int quantizedPlayStart,quantizedPlayEnd;
-            void updatePendingLooperState(int64 curTime);
-            
-            
-            
+            void updatePendingLooperTrackState(int64 curTime);
+      
             
             AudioSampleBuffer monoLoopSample;
             
@@ -93,26 +104,46 @@ public:
             
 
             BipBuffer streamBipBuffer;
-            AudioParameterInt * streamBipBufferDelay;
+            IntParameter  preDelayMs;
 
             Looper * parentLooper;
             
             void processBlock(AudioBuffer<float>& buffer, MidiBuffer & midi);
             
+            
             friend class Looper;
         };
         
         
+        //Listener
+        class  Listener
+        {
+        public:
+            
+            /** Destructor. */
+            virtual ~Listener() {}
+         
+            virtual void trackNumChanged(int num) = 0;
+           
+        };
         
+        
+        ListenerList<Listener> listeners;
+        void addListener(Listener* newListener) { listeners.add(newListener); }
+        void removeListener(Listener* listener) { listeners.remove(listener); }
+
         
         OwnedArray<Track> tracks;
-        // RMS Values from all Tracks
-        Array<Array<float> > RMS;
 
+        AudioBuffer<float> bufferIn;
+
+        AudioBuffer<float>bufferOut;
         
     };
     
     
+    Looper * looper;
+    NodeBaseUI * createUI() override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
 };
