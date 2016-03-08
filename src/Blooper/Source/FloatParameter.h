@@ -15,6 +15,8 @@
 
 #include "Parameter.h"
 
+class FloatSliderUI;
+
 class FloatParameter : public Parameter
 {
 public:
@@ -32,11 +34,17 @@ public:
 		if (!silentSet) notifyValueChanged();
 	}
 
+	void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false)
+	{
+		setValue(jmap<float>(normalizedValue, minValue, maxValue), silentSet, force);
+	}
+
 	float getNormalizedValue() override
 	{
 		return jmap<float>(value, minValue, maxValue, 0, 1);
 	}
 
+	FloatSliderUI * createSlider();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatParameter)
 };

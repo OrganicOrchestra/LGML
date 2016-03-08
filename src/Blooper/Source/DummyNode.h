@@ -56,6 +56,8 @@ public:
 	DummyNode(NodeManager * nodeManager,uint32 nodeId);
 	~DummyNode();
 
+	FloatParameter * testFloatParam;
+
 	virtual NodeBaseUI * createUI() override;
 	
 
