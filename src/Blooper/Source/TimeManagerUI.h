@@ -61,10 +61,13 @@ class TimeManagerUI : public Component{
             }
         }
         
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeBar)
         
     };
     
     TimeBar timeBar;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManagerUI)
 };
 
 

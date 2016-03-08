@@ -23,11 +23,12 @@ public:
 	virtual ~ContourComponent() {}
 	Colour c;
 
-	void paint(Graphics &g)
+	virtual void paint(Graphics &g) override
 	{
 #if DRAW_CONTOUR
-		g.fillAll(c.withAlpha(.1f));
-		g.setColour(c.withAlpha(.25f));
+		DBG("Draw contour");
+		g.fillAll(c.withAlpha(.3f));
+		g.setColour(c.withAlpha(.4f));
 		g.drawRect(getLocalBounds());
 #endif
 	}

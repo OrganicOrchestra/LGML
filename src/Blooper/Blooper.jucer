@@ -46,6 +46,10 @@
             <FILE id="IhFgI5" name="IntStepperUI.h" compile="0" resource="0" file="Source/IntStepperUI.h"/>
             <FILE id="NF7928" name="ParameterUI.cpp" compile="1" resource="0" file="Source/ParameterUI.cpp"/>
             <FILE id="qadrpo" name="ParameterUI.h" compile="0" resource="0" file="Source/ParameterUI.h"/>
+            <FILE id="hkkAX2" name="StringParameterUI.cpp" compile="1" resource="0"
+                  file="Source/StringParameterUI.cpp"/>
+            <FILE id="MCT8It" name="StringParameterUI.h" compile="0" resource="0"
+                  file="Source/StringParameterUI.h"/>
           </GROUP>
           <FILE id="mezBUW" name="BoolParameter.cpp" compile="1" resource="0"
                 file="Source/BoolParameter.cpp"/>
@@ -63,6 +67,10 @@
           <FILE id="hxhJJT" name="IntParameter.h" compile="0" resource="0" file="Source/IntParameter.h"/>
           <FILE id="mi3a1Z" name="Parameter.cpp" compile="1" resource="0" file="Source/Parameter.cpp"/>
           <FILE id="CVykgt" name="Parameter.h" compile="0" resource="0" file="Source/Parameter.h"/>
+          <FILE id="wz5PBh" name="StringParameter.cpp" compile="1" resource="0"
+                file="Source/StringParameter.cpp"/>
+          <FILE id="IhX92R" name="StringParameter.h" compile="0" resource="0"
+                file="Source/StringParameter.h"/>
         </GROUP>
       </GROUP>
       <GROUP id="{25464EB0-81C5-256B-F983-7775FBA00B84}" name="UI">
@@ -70,7 +78,6 @@
               file="Source/LookAndFeelOO.cpp"/>
         <FILE id="ToSNQ0" name="LookAndFeelOO.h" compile="0" resource="0" file="Source/LookAndFeelOO.h"/>
         <FILE id="AoaOQ9" name="Style.h" compile="0" resource="0" file="Source/Style.h"/>
-        <FILE id="xcQ9Hz" name="UIHelpers.cpp" compile="1" resource="0" file="Source/UIHelpers.cpp"/>
         <FILE id="iwzvE6" name="UIHelpers.h" compile="0" resource="0" file="Source/UIHelpers.h"/>
       </GROUP>
       <GROUP id="{61D24830-3FF1-AA71-1066-07487B910808}" name="Settings">

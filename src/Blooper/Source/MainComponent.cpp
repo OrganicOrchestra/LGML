@@ -49,50 +49,31 @@ public:
     AudioProcessorPlayer graphPlayer;
     //==============================================================================
     MainContentComponent()
-    {
-<<<<<<< HEAD
-      
-		
-=======
-
-
-        // specify the number of input and output channels that we want to open
-        //setAudioChannels (2, 2);
->>>>>>> 287d44fb80b3b07c52c9ff485d3d2d9721f5db39
-
-		
+    {		
 		nodeManager = new NodeManager();
-<<<<<<< HEAD
 		controllerManager = new ControllerManager();
 
 		initAudio();
-=======
-        initAudio();
->>>>>>> 287d44fb80b3b07c52c9ff485d3d2d9721f5db39
 
+		timeManagerUI = new TimeManagerUI();
 		nodeManagerUI = new NodeManagerUI(nodeManager);
 		controllerManagerUI = new ControllerManagerUI(controllerManager);
-		addAndMakeVisible(controllerManagerUI);
+		
+		
+		addAndMakeVisible(timeManagerUI);
 		addAndMakeVisible(nodeManagerUI);
-<<<<<<< HEAD
-
-		setSize(1200, 600);
-
-=======
+		addAndMakeVisible(controllerManagerUI);
+		
 		nodeManagerUI->setSize(getWidth(),getHeight());
         
-        
-        timeManagerUI = new TimeManagerUI();
-        addAndMakeVisible(timeManagerUI);
-        
         // resize after contentCreated
-                setSize (800,600);
->>>>>>> 287d44fb80b3b07c52c9ff485d3d2d9721f5db39
+         setSize (800,600);
     }
 
     ~MainContentComponent()
     {
         stopAudio();
+		delete TimeManager::getInstance(); //TO PREVENT LEAK OF SINGLETON
     }
     
     
@@ -123,19 +104,10 @@ public:
 
     void resized() override
     {
-<<<<<<< HEAD
 		Rectangle<int> r = getLocalBounds();
+		timeManagerUI->setBounds(r.removeFromTop(50));
 		controllerManagerUI->setBounds(r.removeFromLeft(300));
 		nodeManagerUI->setBounds(r);
-=======
-        // This is called when the MainContentComponent is resized.
-        // If you add any child components, this is where you should
-        // update their positions.
-        
-        Rectangle<int> area = getLocalBounds();
-        timeManagerUI->setBounds(area.removeFromTop(50));
-        nodeManagerUI->setBounds(area);
->>>>>>> 287d44fb80b3b07c52c9ff485d3d2d9721f5db39
     }
 
 private:

@@ -18,9 +18,6 @@ Controller::Controller(const String &name) :
 	enabledParam = addBoolParameter("Enabled", true);
 }
 
-Controller::Controller(const String & name)
-{
-}
 
 Controller::~Controller()
 {

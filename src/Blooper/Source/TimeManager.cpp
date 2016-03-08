@@ -24,7 +24,11 @@ beatPerBar(4),sampleRate(44100),
 timeMasterNode(nullptr),
 beatPerQuantizedTime(8){
     
-};
+}
+TimeManager::~TimeManager()
+{
+}
+;
 
 
 void TimeManager::incrementClock(int time){

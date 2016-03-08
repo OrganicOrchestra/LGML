@@ -18,8 +18,8 @@
  then can dispatch synchronous or asynchronous event via TimeManager::Listener
  */
 
+#include "NodeBase.h"
 
-class NodeBase;
 class TimeManager : public AudioIODeviceCallback{
     
     
@@ -27,6 +27,7 @@ class TimeManager : public AudioIODeviceCallback{
     juce_DeclareSingleton(TimeManager, true);
     
     TimeManager();
+	~TimeManager();
     
     int beatPerQuantizedTime;
     void incrementClock(int time);
@@ -108,7 +109,7 @@ class TimeManager : public AudioIODeviceCallback{
     int beatTimeInSample;
     int sampleRate;
     int beatPerBar;
-    NodeBase * timeMasterNode;
+    ScopedPointer<NodeBase> timeMasterNode;
     bool hasMasterNode(){return timeMasterNode!=nullptr;}
     void removeIfMaster(NodeBase * n){if(n==timeMasterNode)timeMasterNode=nullptr;}
     bool askForBeingMasterNode(NodeBase * n);
@@ -126,7 +127,7 @@ class TimeManager : public AudioIODeviceCallback{
     };
     
 
-    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
 
 };
 

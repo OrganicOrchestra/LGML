@@ -14,8 +14,7 @@
 #include "JuceHeader.h"
 #include "ControllerUI.h"
 #include "UIHelpers.h"
-
-class BoolToggleUI;
+#include "BoolToggleUI.h"
 
 class ControllerHeaderUI : public ContourComponent
 {
@@ -28,6 +27,13 @@ public:
 
 	Label titleLabel;
 	ScopedPointer<BoolToggleUI> enabledUI;
+
+	void paint(Graphics &g) {
+		DBG("paint here !!");
+		ContourComponent::paint(g);
+	}
+
+	void resized();
 
 	void setControllerAndUI(Controller * controller, ControllerUI * cui);
 	virtual void init(); //override for proper init with controller and ui

@@ -12,10 +12,11 @@
 #define CONTROLLERUI_H_INCLUDED
 
 #include "Controller.h"
+#include "UIHelpers.h"
 class ControllerHeaderUI;
 class ControllerContentUI;
 
-class ControllerUI : public Component
+class ControllerUI : public ContourComponent
 {
 public:
 	ControllerUI(Controller * controller, ControllerContentUI * contentUI = nullptr, ControllerHeaderUI * headerUI = nullptr);
@@ -26,7 +27,7 @@ public:
 
 	Controller * controller;
 
-	void paint(Graphics &g);
+	void paint(Graphics &g) override;
 	void resized() override;
 
 	void mouseDown(const MouseEvent &e) override;
