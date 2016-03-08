@@ -10,8 +10,9 @@
 
 #include "Controllable.h"
 
-Controllable::Controllable(const String & shortName, bool enabled) : 
-	shortName(shortName)
+Controllable::Controllable(const String & niceName, bool enabled)
 {
 	setEnabled(enabled);
+	setNiceName(niceName);
+	DBG("Add controllable :" + niceName + " >> " + shortName);
 }

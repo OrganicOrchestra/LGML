@@ -12,14 +12,22 @@
 #define CONTROLLABLE_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "StringUtil.h"
 
 class Controllable
 {
 public:
-	Controllable(const String &shortName, bool enabled = true);
+	Controllable(const String &niceName, bool enabled = true);
+	virtual ~Controllable() {}
 
 	bool enabled;
+	String niceName;
 	String shortName;
+
+	void setNiceName(const String &niceName, bool autoSetShortName = true) {
+		this->niceName = niceName;
+		if (autoSetShortName) shortName = StringUtil::toShortName(niceName);
+	}
 
 	void setEnabled(bool value, bool silentSet = false, bool force = false)
 	{
@@ -30,6 +38,8 @@ public:
 		
 	}
 
+
+public:
 	class  Listener
 	{
 	public:
@@ -41,6 +51,8 @@ public:
 	ListenerList<Listener> listeners;
 	void addListener(Listener* newListener) { listeners.add(newListener); }
 	void removeListener(Listener* listener) { listeners.remove(listener); }
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controllable)
 };
 
 #endif  // CONTROLLABLE_H_INCLUDED

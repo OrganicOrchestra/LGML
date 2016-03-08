@@ -16,7 +16,8 @@
 class IntParameter : public Parameter
 {
 public:
-	IntParameter(const String &shortName, const int &initialValue, const int &minValue = 0, const int &maxValue = 1, bool enabled = true);
+	IntParameter(const String &niceName, const int &initialValue, const int &minValue = 0, const int &maxValue = 1, bool enabled = true);
+	~IntParameter() {}
 
 	int minValue;
 	int maxValue;
@@ -33,6 +34,8 @@ public:
 	{
 		return jmap<float>(value, minValue, maxValue, 0, 1);
 	}
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntParameter)
 };
 
 

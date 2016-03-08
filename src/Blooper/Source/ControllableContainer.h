@@ -20,16 +20,23 @@
 class ControllableContainer
 {
 public:
-	ControllableContainer(const String &shortName);
+	ControllableContainer(const String &niceName);
 	~ControllableContainer();
 
+	String niceName;
 	String shortName;
+
+	void setNiceName(const String &niceName, bool autoSetShortName = true) {
+		this->niceName = niceName;
+		if (autoSetShortName) shortName = StringUtil::toShortName(niceName);
+	}
+
 	OwnedArray<Controllable> controllables;
 
-	FloatParameter * addFloatParameter(const String &shortName, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
-	IntParameter * addIntParameter(const String &shortName, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
-	BoolParameter * addBoolParameter(const String &shortName, const bool &value, const bool &enabled = true);
-	Trigger * addTrigger(const String &shortName, const bool &enabled = true);
+	FloatParameter * addFloatParameter(const String &niceName, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
+	IntParameter * addIntParameter(const String &niceName, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
+	BoolParameter * addBoolParameter(const String &niceName, const bool &value, const bool &enabled = true);
+	Trigger * addTrigger(const String &niceName, const bool &enabled = true);
 
 	void removeControllable(Controllable * c);
 	Controllable * getControllableByName(const String &name);
@@ -49,6 +56,8 @@ public:
 	ListenerList<Listener> listeners;
 	void addListener(Listener* newListener) { listeners.add(newListener); }
 	void removeListener(Listener* listener) { listeners.remove(listener); }
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableContainer)
 };
 
 

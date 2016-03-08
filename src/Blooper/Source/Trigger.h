@@ -16,7 +16,8 @@
 class Trigger : public Controllable
 {
 public:
-	Trigger(const String &shortName, bool enabled = true);
+	Trigger(const String &niceName, bool enabled = true);
+	~Trigger() {}
 
 	void trigger()
 	{
@@ -37,6 +38,8 @@ public:
 	void addListener(Listener* newListener) { listeners.add(newListener); }
 	void removeListener(Listener* listener) { listeners.remove(listener); }
 
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Trigger)
 };
 
 

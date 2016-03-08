@@ -16,7 +16,9 @@
 class Parameter : public Controllable
 {
 public:
-	class Parameter(const String &shortName, bool enabled = true);
+	class Parameter(const String &niceName, bool enabled = true);
+	virtual ~Parameter() {}
+
 	virtual float getNormalizedValue() = 0;
 
 
@@ -38,6 +40,8 @@ public:
 	void addListener(Listener* newListener) { listeners.add(newListener); }
 	void removeListener(Listener* listener) { listeners.remove(listener); }
 
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Parameter)
 	
 };
 

@@ -36,6 +36,8 @@ NodeBase * NodeManager::getNodeForId(const uint32 nodeId) const
 	for (int i = nodes.size(); --i >= 0;)
 		if (nodes.getUnchecked(i)->nodeId == nodeId)
 			return nodes.getUnchecked(i);
+
+	return nullptr;
 }
 
 NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)

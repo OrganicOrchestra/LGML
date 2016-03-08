@@ -88,8 +88,8 @@ public :
 			}
 		};
 
-		void addElement(const String &name) {
-			DataElement *e = new DataElement(name);
+		void addElement(const String &_name) {
+			DataElement *e = new DataElement(_name);
 			elements.add(e);
 		}
 
@@ -112,9 +112,9 @@ public :
 			return targetType == DataType::Unknown || type == targetType || getNumElementsForType(type) == getNumElementsForType(targetType);
 		};
 
-		int getNumElementsForType(const DataType &type)
+		int getNumElementsForType(const DataType &_type)
 		{
-			switch (type)
+			switch (_type)
 			{
 			case Number:
 			case Boolean:
