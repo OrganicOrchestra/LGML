@@ -51,7 +51,6 @@ void NodeBase::checkInputsAndOutputs()
 
 void NodeBase::remove()
 {
-	DBG("NodeBase::remove, disaptch askForRemove");
 	listeners.call(&NodeBase::Listener::askForRemoveNode,this);
 }
 
