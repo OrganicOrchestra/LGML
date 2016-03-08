@@ -51,3 +51,4 @@ profile
 doxygen/doc
 src/Blooper/Builds/VisualStudio2015/Blooper.vcxproj
 src/Blooper/Builds/VisualStudio2015/Blooper.vcxproj.filters
+src/Blooper/Builds/MacOSX/Blooper.xcodeproj/project.pbxproj
