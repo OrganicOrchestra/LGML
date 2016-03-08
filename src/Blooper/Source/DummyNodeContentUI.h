@@ -12,7 +12,7 @@
 #define DUMMYNODECONTENTUI_H_INCLUDED
 
 #include "NodeBaseContentUI.h"
-#include "FloatSliderUI.h"
+#include "IntSliderUI.h"
 
 class DummyNodeContentUI : public NodeBaseContentUI
 {
@@ -25,7 +25,7 @@ public:
 
 	DummyNode * dummyNode;
 
-	ScopedPointer<FloatSliderUI> testSlider;
+	ScopedPointer<IntSliderUI> testSlider;
 
 	void resized() override;
 

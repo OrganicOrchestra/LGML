@@ -14,7 +14,7 @@
 //==============================================================================
 TriggerButtonUI::TriggerButtonUI(Trigger *t):
 trigger(t),
-blinkTime(400),
+blinkTime(200),
 refreshPeriod(10),
 intensity(0)
 

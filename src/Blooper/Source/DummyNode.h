@@ -57,7 +57,7 @@ public:
 	~DummyNode();
 
 	//parameters
-	FloatParameter * testFloatParam;
+	IntParameter * testFloatParam;
 	void parameterValueChanged(Parameter * p) override;
 
 	virtual NodeBaseUI * createUI() override;
