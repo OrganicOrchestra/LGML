@@ -130,8 +130,12 @@
                   file="Source/AudioMixerNodeUI.h"/>
           </GROUP>
           <GROUP id="{5C55270A-43A6-03C9-B529-1BFE882AB7F6}" name="Looper">
+            <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
             <FILE id="lWXXbw" name="LooperNode.cpp" compile="1" resource="0" file="Source/LooperNode.cpp"/>
             <FILE id="p6VNxS" name="LooperNode.h" compile="0" resource="0" file="Source/LooperNode.h"/>
+            <FILE id="C7ZscO" name="LooperNodeUI.cpp" compile="1" resource="0"
+                  file="Source/LooperNodeUI.cpp"/>
+            <FILE id="WjTIhy" name="LooperNodeUI.h" compile="0" resource="0" file="Source/LooperNodeUI.h"/>
           </GROUP>
           <GROUP id="{CB5E1C7D-6C04-4382-6371-7CE987E3A0BF}" name="Spat">
             <FILE id="Yv1aON" name="SpatNode.cpp" compile="1" resource="0" file="Source/SpatNode.cpp"/>
