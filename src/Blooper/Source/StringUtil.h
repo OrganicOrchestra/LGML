@@ -26,7 +26,8 @@ public:
 		{
 			if (s.isEmpty()) continue;
 			String initial = s.substring(0, 1);
-			s.swapWith(s.replaceSection(0, 1, index == 0 ? initial.toLowerCase() : initial.toUpperCase()));
+            String upperCaseWord = s.replaceSection(0, 1, index == 0 ? initial.toLowerCase() : initial.toUpperCase());
+			s.swapWith(upperCaseWord);
 			index++;
 		}
 

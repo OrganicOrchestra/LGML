@@ -51,7 +51,9 @@ public:
             
             
             Track(Looper * looper,int _trackNum):parentLooper(looper),
-            trackNum("trackNum","trackNum",0,MAX_NUM_TRACKS,_trackNum)
+            trackNum("trackNum","trackNum",0,MAX_NUM_TRACKS,_trackNum),
+            // 16000 ~ 300ms and 256*64
+            streamBipBuffer(16384)
             
             {
     
