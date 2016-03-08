@@ -49,10 +49,7 @@ public:
 
 	ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
 
-	void paint(Graphics &g)
-	{
-		g.fillAll(boxColor);
-	}
+	void paint(Graphics &g);
 
 	void mouseDown(const MouseEvent &e) override;
 	//void mouseDrag(const MouseEvent &e) override;

@@ -6,6 +6,14 @@
   <MAINGROUP id="RYpQgZ" name="Blooper">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
+        <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
+          <FILE id="ANg4jk" name="TriggerButtonUI.cpp" compile="1" resource="0"
+                file="Source/TriggerButtonUI.cpp"/>
+          <FILE id="c0uIkt" name="TriggerButtonUI.h" compile="0" resource="0"
+                file="Source/TriggerButtonUI.h"/>
+          <FILE id="OUrAS4" name="TriggerUI.cpp" compile="1" resource="0" file="Source/TriggerUI.cpp"/>
+          <FILE id="E4MhHL" name="TriggerUI.h" compile="0" resource="0" file="Source/TriggerUI.h"/>
+        </GROUP>
         <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
         <FILE id="pm5PA0" name="ControllableContainer.cpp" compile="1" resource="0"
               file="Source/ControllableContainer.cpp"/>
@@ -17,6 +25,21 @@
         <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
         <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
         <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
+          <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
+            <FILE id="Qqzkdl" name="BoolToggleUI.cpp" compile="1" resource="0"
+                  file="Source/BoolToggleUI.cpp"/>
+            <FILE id="PZG6XQ" name="BoolToggleUI.h" compile="0" resource="0" file="Source/BoolToggleUI.h"/>
+            <FILE id="No0Xmd" name="FloatSliderUI.cpp" compile="1" resource="0"
+                  file="Source/FloatSliderUI.cpp"/>
+            <FILE id="Fk8DYI" name="FloatSliderUI.h" compile="0" resource="0" file="Source/FloatSliderUI.h"/>
+            <FILE id="tnoC6e" name="IntSliderUI.cpp" compile="1" resource="0" file="Source/IntSliderUI.cpp"/>
+            <FILE id="nmz0Le" name="IntSliderUI.h" compile="0" resource="0" file="Source/IntSliderUI.h"/>
+            <FILE id="aoAqVv" name="IntStepperUI.cpp" compile="1" resource="0"
+                  file="Source/IntStepperUI.cpp"/>
+            <FILE id="IhFgI5" name="IntStepperUI.h" compile="0" resource="0" file="Source/IntStepperUI.h"/>
+            <FILE id="NF7928" name="ParameterUI.cpp" compile="1" resource="0" file="Source/ParameterUI.cpp"/>
+            <FILE id="qadrpo" name="ParameterUI.h" compile="0" resource="0" file="Source/ParameterUI.h"/>
+          </GROUP>
           <FILE id="mezBUW" name="BoolParameter.cpp" compile="1" resource="0"
                 file="Source/BoolParameter.cpp"/>
           <FILE id="YWoigC" name="BoolParameter.h" compile="0" resource="0" file="Source/BoolParameter.h"/>

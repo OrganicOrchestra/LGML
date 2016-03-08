@@ -32,8 +32,7 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAu
     addToAudioGraphIfNeeded();
 
 	//set Params
-	enabledParam = addBoolParameter("This is Enabled", true);
-	
+	enabledParam = addBoolParameter("Enabled", true);	
 }
 
 

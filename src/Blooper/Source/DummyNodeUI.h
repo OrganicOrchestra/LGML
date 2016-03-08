@@ -20,7 +20,7 @@
 class DummyNodeUI    : public NodeBaseUI
 {
 public:
-    DummyNodeUI();
+    DummyNodeUI(NodeBase * node);
     ~DummyNodeUI();
 
 

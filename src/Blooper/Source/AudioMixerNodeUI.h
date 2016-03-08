@@ -20,7 +20,7 @@
 class AudioMixerNodeUI    : public NodeBaseUI
 {
 public:
-    AudioMixerNodeUI();
+    AudioMixerNodeUI(NodeBase * node);
     ~AudioMixerNodeUI();
 
 private:

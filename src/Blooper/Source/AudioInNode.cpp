@@ -13,8 +13,7 @@
 
 
 NodeBaseUI * AudioInNode::createUI() {
-    DummyNodeUI* ui =  new DummyNodeUI();
-    ui->setNode(this);
+	DummyNodeUI* ui = new DummyNodeUI(this);
     return ui;
     
 }
