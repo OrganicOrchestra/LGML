@@ -10,8 +10,8 @@
 
 #include "BoolParameter.h"
 
-BoolParameter::BoolParameter(const String & shortName, const bool & initialValue, bool enabled) :
-	Parameter(shortName, enabled)
+BoolParameter::BoolParameter(const String & niceName, const bool & initialValue, bool enabled) :
+	Parameter(niceName, enabled)
 {
 	setValue(initialValue);
 }

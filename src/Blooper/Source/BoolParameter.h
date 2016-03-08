@@ -17,7 +17,8 @@
 class BoolParameter : public Parameter
 {
 public:
-	BoolParameter(const String &shortName, const bool &initialValue, bool enabled = true);
+	BoolParameter(const String &niceName, const bool &initialValue, bool enabled = true);
+	~BoolParameter() {}
 
 	bool value;
 
@@ -32,6 +33,8 @@ public:
 	{
 		return value ? 1 : 0;
 	}
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
 };
 
 

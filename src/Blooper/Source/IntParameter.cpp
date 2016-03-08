@@ -10,8 +10,8 @@
 
 #include "IntParameter.h"
 
-IntParameter::IntParameter(const String & shortName, const int & initialValue, const int & minValue, const int & maxValue, bool enabled) :
-	Parameter(shortName,enabled), minValue(minValue), maxValue(maxValue)
+IntParameter::IntParameter(const String & niceName, const int & initialValue, const int & minValue, const int & maxValue, bool enabled) :
+	Parameter(niceName,enabled), minValue(minValue), maxValue(maxValue)
 {
 	setValue(initialValue);
 }

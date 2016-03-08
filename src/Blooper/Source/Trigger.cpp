@@ -10,7 +10,7 @@
 
 #include "Trigger.h"
 
-Trigger::Trigger(const String & shortName, bool enabled) :
-	Controllable(shortName,enabled)
+Trigger::Trigger(const String & niceName, bool enabled) :
+	Controllable(niceName,enabled)
 {
 }

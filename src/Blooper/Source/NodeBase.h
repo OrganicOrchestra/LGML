@@ -19,12 +19,14 @@ it contains NodeBase::NodeAudioProcessor and/or NodeBase::NodeDataProcessor
 
 #include <JuceHeader.h>
 #include "DataProcessor.h"
+#include "ControllableContainer.h"
 
 class NodeBaseUI;
 class NodeManager;
 
 
-class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener
+
+class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener, public ControllableContainer
 {
 
 public:
@@ -150,11 +152,15 @@ public:
 
 	void remove();
 	
+
+	//Controllables (from ControllableContainer)
+	BoolParameter * enabledParam;
+
     //audio
-    
-    
     void addToAudioGraphIfNeeded();
     void removeFromAudioGraphIfNeeded();
+
+
 	//ui
 	virtual NodeBaseUI *  createUI() { 
 		DBG("No implementation in child node class !");
@@ -167,8 +173,6 @@ public:
 	virtual void inputRemoved(DataProcessor::Data *) override;
 	virtual void outputAdded(DataProcessor::Data *) override;
 	virtual void ouputRemoved(DataProcessor::Data *) override;
-
-
 
 	//Listener
 	class Listener

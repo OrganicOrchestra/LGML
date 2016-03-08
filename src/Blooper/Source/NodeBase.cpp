@@ -16,7 +16,9 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAu
 	nodeId(_nodeId),
 	audioProcessor(_audioProcessor),
 	dataProcessor(_dataProcessor),
-	name(name)
+	name(name),
+
+	ControllableContainer(name)
 {
 
 	if (dataProcessor != nullptr)
@@ -28,6 +30,10 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAu
 	DBG("Node Base check inputs and outputs");
 	checkInputsAndOutputs();
     addToAudioGraphIfNeeded();
+
+	//set Params
+	enabledParam = addBoolParameter("This is Enabled", true);
+	
 }
 
 
@@ -35,9 +41,6 @@ NodeBase::~NodeBase()
 {
 	DBG("delete NodeBase");
 	removeFromAudioGraphIfNeeded();
-	nodeManager = nullptr;
-	dataProcessor = nullptr;
-	audioProcessor = nullptr;
 }
 
 void NodeBase::checkInputsAndOutputs()

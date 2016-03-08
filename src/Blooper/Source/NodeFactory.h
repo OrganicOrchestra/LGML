@@ -47,7 +47,7 @@ public:
     
     NodeBase * createNode(NodeManager * nodeManager,NodeType nodeType, uint32 nodeId = 0)
     {
-        NodeBase * n;
+        NodeBase * n = nullptr;
         
         switch (nodeType)
         {

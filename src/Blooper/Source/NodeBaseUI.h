@@ -176,8 +176,6 @@ public:
 		{
 			return outputContainer.getFirstConnector(connectionType);
 		}
-
-		return nullptr;
 	}
 
 	Point<int> nodeInitPos;
