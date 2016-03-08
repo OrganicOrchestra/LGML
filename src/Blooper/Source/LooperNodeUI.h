@@ -15,9 +15,13 @@
 
 #include "TriggerButtonUI.h"
 
-class LooperNodeUI: public NodeBaseUI , public LooperNode::Looper::Listener{
+class LooperNodeUI: public NodeBaseContentUI , public LooperNode::Looper::Listener{
 public:
-    LooperNodeUI(LooperNode * looperNode):NodeBaseUI(looperNode),looperNode(looperNode){
+    LooperNodeUI(){
+    }
+    
+    void setNodeAndNodeUI(NodeBase * node,NodeBaseUI * nodeUI)override{
+        looperNode = dynamic_cast<LooperNode*> (node);
         trackNumChanged(looperNode->looper->tracks.size());
         looperNode->looper->addListener(this);
     }
@@ -95,7 +99,7 @@ public:
             for(int i = tracksUI.size() ; i < num ; i++){
                 TrackUI * t = new TrackUI(looperNode->looper->tracks.getUnchecked(i));
                 tracksUI.add(t);
-                getContentContainer()->addAndMakeVisible(t);
+                addAndMakeVisible(t);
             }
         }
         
@@ -109,8 +113,8 @@ public:
     void reLayoutTracks(){
         int numRow = 2;
         int numCol = tracksUI.size()/numRow ;
-        int width = getContentContainer()->getLocalBounds().getWidth()/numCol;
-        int height = getContentContainer()->getLocalBounds().getHeight()/numRow;
+        int width = getLocalBounds().getWidth()/numCol;
+        int height = getLocalBounds().getHeight()/numRow;
         int pad = 10;
         
         for(int j = 0 ; j < numRow ; j++){

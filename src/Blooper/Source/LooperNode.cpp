@@ -203,4 +203,4 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     listeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };
 
-NodeBaseUI * LooperNode::createUI(){LooperNodeUI * ui = new LooperNodeUI(this);    ui->setNode(this);return ui;}
+NodeBaseUI * LooperNode::createUI(){return new NodeBaseUI(this, new LooperNodeUI);}
