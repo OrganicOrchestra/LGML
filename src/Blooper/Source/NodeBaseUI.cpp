@@ -14,51 +14,47 @@
 #include "NodeManagerUI.h"
 #include "ConnectorComponent.h"
 
-#include "BoolToggleUI.h"
+#include "NodeBaseHeaderUI.h"
+#include "NodeBaseContentUI.h"
 
 //==============================================================================
-NodeBaseUI::NodeBaseUI(NodeBase * node) :
+NodeBaseUI::NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer, NodeBaseHeaderUI * headerContainer) :
 	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
+	mainContainer(contentContainer,headerContainer),
     node(node)
 {
 
 	DBG("Node Base UI Constructor");
 	
+	this->node = node;
+
 	connectorWidth = 10;
+	
+
+	mainContainer.setNodeAndNodeUI(node,this);
+
+	inputContainer.setConnectorsFromNode(node);
+	outputContainer.setConnectorsFromNode(node);
+
+	
+
 	addAndMakeVisible(mainContainer);
 	addAndMakeVisible(inputContainer);
 	addAndMakeVisible(outputContainer);
-	
-	getHeaderContainer()->addMouseListener(this,false);// (true, true);
-	
-	setNode(node);
-
+	getHeaderContainer()->addMouseListener(this, false);// (true, true);
 	setSize(300, 200);
 	
 }
 
 NodeBaseUI::~NodeBaseUI()
 {
-    if(node && node->hasAudioOutputs){
-        node->audioProcessor->removeListener(&vuMeter);
-    }
-	//this->node = nullptr;
 }
 
 
 void NodeBaseUI::setNode(NodeBase * node)
 {
-	this->node = node;
-	mainContainer.setUIFromNode(node);
-
-	inputContainer.setConnectorsFromNode(node);
-	outputContainer.setConnectorsFromNode(node);
-
-    if(node!=nullptr && node->hasAudioOutputs){
-        node->audioProcessor->addListener(&vuMeter);
-        getHeaderContainer()->addAndMakeVisible(vuMeter);
-    }
+	
 
 	//parameters
 
@@ -75,15 +71,7 @@ void NodeBaseUI::resized()
 	Rectangle<int> r = getLocalBounds();
 	Rectangle<int> inputBounds = r.removeFromLeft(connectorWidth);
 	Rectangle<int> outputBounds = r.removeFromRight(connectorWidth);
-
 	mainContainer.setBounds(r);
-
-    if(node!=nullptr && node->hasAudioOutputs){
-		
-		Rectangle<int> vuMeterRect = getHeaderContainer()->getLocalBounds().removeFromRight(14).reduced(4);
-		vuMeter.setBounds(vuMeterRect);
-    }
-
 	inputContainer.setBounds(inputBounds);
 	outputContainer.setBounds(outputBounds);
 
@@ -158,4 +146,40 @@ void NodeBaseUI::ConnectorContainer::resized()
 	{
 		getChildComponent(i)->setSize(getWidth(), getWidth());
 	}
+}
+
+NodeBaseUI::MainContainer::MainContainer(NodeBaseContentUI * content, NodeBaseHeaderUI * header) :
+	ContourComponent(Colours::green),
+	headerContainer(header), contentContainer(content)
+{
+
+	if (headerContainer == nullptr) headerContainer = new NodeBaseHeaderUI();
+	if (contentContainer == nullptr) contentContainer = new NodeBaseContentUI();
+
+
+	addAndMakeVisible(headerContainer);
+	addAndMakeVisible(contentContainer);
+}
+
+void NodeBaseUI::MainContainer::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
+{
+	headerContainer->setNodeAndNodeUI(node, nodeUI);
+	contentContainer->setNodeAndNodeUI(node, nodeUI);
+}
+
+void NodeBaseUI::MainContainer::paint(Graphics & g)
+{
+	g.setColour(PANEL_COLOR);
+	g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
+	g.setColour(CONTOUR_COLOR);
+	g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
+
+}
+
+void NodeBaseUI::MainContainer::resized()
+{
+	Rectangle<int> r = getLocalBounds();
+	Rectangle<int> headerBounds = r.removeFromTop(headerContainer->getHeight());
+	headerContainer->setBounds(headerBounds);
+	contentContainer->setBounds(r);
 }

@@ -9,11 +9,10 @@
 */
 
 #include "AudioInNode.h"
-#include "DummyNodeUI.h"
-
+#include "NodeBaseUI.h"
 
 NodeBaseUI * AudioInNode::createUI() {
-	DummyNodeUI* ui = new DummyNodeUI(this);
+	NodeBaseUI * ui = new NodeBaseUI(this);
     return ui;
     
 }
