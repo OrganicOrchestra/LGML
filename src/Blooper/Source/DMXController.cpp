@@ -9,3 +9,7 @@
 */
 
 #include "DMXController.h"
+
+DMXController::DMXController()
+{
+}

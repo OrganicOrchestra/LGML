@@ -14,6 +14,9 @@
 #include "NodeManager.h"
 #include "NodeManagerUI.h"
 
+#include "ControlManager.h"
+#include "ControllerManagerUI.h"
+
 #include "UIHelpers.h"
 #include "TimeManager.h"
 
@@ -36,26 +39,32 @@ public:
 	ScopedPointer<NodeManager> nodeManager;
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
     
+
+	ScopedPointer<ControllerManager> controllerManager;
+	ScopedPointer<ControllerManagerUI> controllerManagerUI;
+
     // Audio
     AudioDeviceManager deviceManager;
     AudioProcessorPlayer graphPlayer;
     //==============================================================================
     MainContentComponent()
     {
-        setSize (800,600);
+      
+		
 
-        // specify the number of input and output channels that we want to open
-        //setAudioChannels (2, 2);
-
+		
 		nodeManager = new NodeManager();
-        
-        initAudio();
+		controllerManager = new ControllerManager();
 
-        
-        
+		initAudio();
+
 		nodeManagerUI = new NodeManagerUI(nodeManager);
+		controllerManagerUI = new ControllerManagerUI(controllerManager);
+		addAndMakeVisible(controllerManagerUI);
 		addAndMakeVisible(nodeManagerUI);
-		nodeManagerUI->setSize(getWidth(),getHeight());
+
+		setSize(1200, 600);
+
     }
 
     ~MainContentComponent()
@@ -88,11 +97,12 @@ public:
         // You can add your drawing code here!
     }
 
+
     void resized() override
     {
-        // This is called when the MainContentComponent is resized.
-        // If you add any child components, this is where you should
-        // update their positions.
+		Rectangle<int> r = getLocalBounds();
+		controllerManagerUI->setBounds(r.removeFromLeft(300));
+		nodeManagerUI->setBounds(r);
     }
 
 private:
@@ -100,8 +110,7 @@ private:
 
     // Your private member variables go here...
 
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
 };
 
 

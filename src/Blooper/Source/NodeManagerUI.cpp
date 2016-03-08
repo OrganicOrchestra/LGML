@@ -112,7 +112,7 @@ void NodeManagerUI::removeNodeUI(NodeBase * node)
 	NodeBaseUI * nui = getUIForNode(node);
 	if (nui != nullptr)
 	{
-		nodesUI.remove(nodesUI.indexOf(nui));
+		nodesUI.removeObject(nui);
 		removeChildComponent(nui);
 	}
 	else
@@ -370,7 +370,6 @@ void NodeManagerUI::finishEditingConnection()
 //Interaction Events
 void NodeManagerUI::mouseDown(const MouseEvent & event)
 {
-	DBG("Mouse Button down");
 	if (event.eventComponent == this)
 	{
 		if (event.mods.isRightButtonDown())
@@ -388,7 +387,6 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
 		}
 		else
 		{
-			DBG("> left button down !");
 			if (event.mods.isCtrlDown())
 			{
 				nodeManager->addNode(NodeFactory::NodeType::Dummy);
@@ -420,7 +418,6 @@ void NodeManagerUI::mouseDrag(const MouseEvent & event)
 
 void NodeManagerUI::mouseUp(const MouseEvent & event)
 {
-	DBG("MOUSE UP");
 	if (isEditingConnection())
 	{
 		finishEditingConnection();

@@ -9,3 +9,7 @@
 */
 
 #include "MIDIController.h"
+
+MIDIController::MIDIController()
+  {
+  }

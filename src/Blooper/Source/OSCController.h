@@ -11,7 +11,16 @@
 #ifndef OSCCONTROLLER_H_INCLUDED
 #define OSCCONTROLLER_H_INCLUDED
 
+#include "Controller.h"
 
+class OSCController : public Controller
+{
+public:
+	OSCController();
+	virtual ~OSCController();
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCController)
+};
 
 
 

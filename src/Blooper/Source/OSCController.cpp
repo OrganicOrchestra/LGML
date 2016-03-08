@@ -9,3 +9,11 @@
 */
 
 #include "OSCController.h"
+
+OSCController::OSCController()
+  {
+  }
+
+  OSCController::~OSCController()
+  {
+  }

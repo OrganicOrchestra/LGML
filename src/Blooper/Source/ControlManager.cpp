@@ -9,3 +9,33 @@
 */
 
 #include "ControlManager.h"
+
+ControllerManager::ControllerManager()
+{
+}
+
+ControllerManager::~ControllerManager()
+{
+
+}
+
+Controller * ControllerManager::addController(ControllerFactory::ControllerType controllerType)
+{
+	Controller * c = factory.createController(controllerType);
+	controllers.add(c);
+	listeners.call(&Listener::controllerAdded, c);
+	c->addListener(this);
+	return c;
+}
+
+void ControllerManager::removeController(Controller * c)
+{
+	c->removeListener(this);
+	listeners.call(&Listener::controllerRemoved, c);
+	controllers.removeObject(c);
+}
+
+void ControllerManager::askForRemoveController(Controller * c)
+{
+	removeController(c);
+}

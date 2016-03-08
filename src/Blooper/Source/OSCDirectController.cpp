@@ -1,11 +1,15 @@
 /*
   ==============================================================================
 
-    OSCLayoutController.cpp
-    Created: 2 Mar 2016 8:50:32pm
+    OSCDirectController.cpp
+    Created: 8 Mar 2016 10:27:37pm
     Author:  bkupe
 
   ==============================================================================
 */
 
-#include "OSCLayoutController.h"
+#include "OSCDirectController.h"
+
+OSCDirectController::OSCDirectController()
+  {
+  }

@@ -41,6 +41,7 @@ void TriggerButtonUI::setTriggerReference(Trigger * t){
 void TriggerButtonUI::triggerTriggered(Trigger * p){
      startBlink();
 }
+
 void TriggerButtonUI::paint (Graphics& g)
 {
 

@@ -80,37 +80,57 @@
               file="Source/SettingsManager.h"/>
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
-        <GROUP id="{A8B5EC44-5624-781B-D5A3-A45818A2C80E}" name="dmx">
-          <FILE id="y6ewhc" name="DMXController.cpp" compile="1" resource="0"
-                file="Source/DMXController.cpp"/>
-          <FILE id="UfTE5L" name="DMXController.h" compile="0" resource="0" file="Source/DMXController.h"/>
+        <GROUP id="{4428FDD1-4E1A-F199-46F2-F7D32DF545CA}" name="controllers">
+          <GROUP id="{AC428C7B-CE35-EA62-F640-20F5072B53F7}" name="base">
+            <FILE id="I6uMd3" name="Controller.cpp" compile="1" resource="0" file="Source/Controller.cpp"/>
+            <FILE id="IUdrpc" name="Controller.h" compile="0" resource="0" file="Source/Controller.h"/>
+            <FILE id="AC3XZX" name="ControllerContentUI.cpp" compile="1" resource="0"
+                  file="Source/ControllerContentUI.cpp"/>
+            <FILE id="NJmX1Y" name="ControllerContentUI.h" compile="0" resource="0"
+                  file="Source/ControllerContentUI.h"/>
+            <FILE id="se5mC9" name="ControllerHeaderUI.cpp" compile="1" resource="0"
+                  file="Source/ControllerHeaderUI.cpp"/>
+            <FILE id="lrbb4S" name="ControllerHeaderUI.h" compile="0" resource="0"
+                  file="Source/ControllerHeaderUI.h"/>
+            <FILE id="YugMP3" name="ControllerUI.cpp" compile="1" resource="0"
+                  file="Source/ControllerUI.cpp"/>
+            <FILE id="OxWQWW" name="ControllerUI.h" compile="0" resource="0" file="Source/ControllerUI.h"/>
+          </GROUP>
+          <GROUP id="{A8B5EC44-5624-781B-D5A3-A45818A2C80E}" name="dmx">
+            <FILE id="y6ewhc" name="DMXController.cpp" compile="1" resource="0"
+                  file="Source/DMXController.cpp"/>
+            <FILE id="UfTE5L" name="DMXController.h" compile="0" resource="0" file="Source/DMXController.h"/>
+          </GROUP>
+          <GROUP id="{885E027C-072F-A08D-8B28-EA6E37B5F2CF}" name="midi">
+            <FILE id="DqPAvQ" name="MIDIController.cpp" compile="1" resource="0"
+                  file="Source/MIDIController.cpp"/>
+            <FILE id="mqggWF" name="MIDIController.h" compile="0" resource="0"
+                  file="Source/MIDIController.h"/>
+          </GROUP>
+          <GROUP id="{3554E0A1-9ED7-3CD1-782B-5AD2E7D8B75B}" name="osc">
+            <GROUP id="{D82D4191-3638-62ED-6D1B-3F21F55A088A}" name="direct">
+              <FILE id="n6bZSA" name="OSCDirectController.cpp" compile="1" resource="0"
+                    file="Source/OSCDirectController.cpp"/>
+              <FILE id="CFXtw0" name="OSCDirectController.h" compile="0" resource="0"
+                    file="Source/OSCDirectController.h"/>
+              <FILE id="c3uO0S" name="OSCDirectControllerContentUI.cpp" compile="1"
+                    resource="0" file="Source/OSCDirectControllerContentUI.cpp"/>
+              <FILE id="maPiOq" name="OSCDirectControllerContentUI.h" compile="0"
+                    resource="0" file="Source/OSCDirectControllerContentUI.h"/>
+            </GROUP>
+            <FILE id="csknSp" name="OSCController.cpp" compile="1" resource="0"
+                  file="Source/OSCController.cpp"/>
+            <FILE id="eBYQu2" name="OSCController.h" compile="0" resource="0" file="Source/OSCController.h"/>
+          </GROUP>
         </GROUP>
-        <GROUP id="{885E027C-072F-A08D-8B28-EA6E37B5F2CF}" name="midi">
-          <FILE id="DqPAvQ" name="MIDIController.cpp" compile="1" resource="0"
-                file="Source/MIDIController.cpp"/>
-          <FILE id="mqggWF" name="MIDIController.h" compile="0" resource="0"
-                file="Source/MIDIController.h"/>
+        <GROUP id="{7D0856CF-D443-011E-0078-B8B9609F7539}" name="ui">
+          <FILE id="JlRclu" name="ControllerManagerUI.cpp" compile="1" resource="0"
+                file="Source/ControllerManagerUI.cpp"/>
+          <FILE id="X13lyg" name="ControllerManagerUI.h" compile="0" resource="0"
+                file="Source/ControllerManagerUI.h"/>
         </GROUP>
-        <GROUP id="{3554E0A1-9ED7-3CD1-782B-5AD2E7D8B75B}" name="osc">
-          <FILE id="csknSp" name="OSCController.cpp" compile="1" resource="0"
-                file="Source/OSCController.cpp"/>
-          <FILE id="eBYQu2" name="OSCController.h" compile="0" resource="0" file="Source/OSCController.h"/>
-          <FILE id="EbMiSn" name="OSCGloveController.cpp" compile="1" resource="0"
-                file="Source/OSCGloveController.cpp"/>
-          <FILE id="MLP1NP" name="OSCGloveController.h" compile="0" resource="0"
-                file="Source/OSCGloveController.h"/>
-          <FILE id="TkU5Iq" name="OSCLayoutController.cpp" compile="1" resource="0"
-                file="Source/OSCLayoutController.cpp"/>
-          <FILE id="eCXts3" name="OSCLayoutController.h" compile="0" resource="0"
-                file="Source/OSCLayoutController.h"/>
-          <FILE id="WBmhLm" name="OSCOpenController.cpp" compile="1" resource="0"
-                file="Source/OSCOpenController.cpp"/>
-          <FILE id="fjTtwS" name="OSCOpenController.h" compile="0" resource="0"
-                file="Source/OSCOpenController.h"/>
-        </GROUP>
-        <GROUP id="{7D0856CF-D443-011E-0078-B8B9609F7539}" name="ui"/>
-        <FILE id="I6uMd3" name="Controller.cpp" compile="1" resource="0" file="Source/Controller.cpp"/>
-        <FILE id="IUdrpc" name="Controller.h" compile="0" resource="0" file="Source/Controller.h"/>
+        <FILE id="Fldwr5" name="ControllerFactory.h" compile="0" resource="0"
+              file="Source/ControllerFactory.h"/>
         <FILE id="Dx4Kpj" name="ControlManager.cpp" compile="1" resource="0"
               file="Source/ControlManager.cpp"/>
         <FILE id="fcgntQ" name="ControlManager.h" compile="0" resource="0"
