@@ -16,16 +16,28 @@
 //==============================================================================
 /*
 */
-class TriggerButtonUI    : public Component
+
+#include "Trigger.h"
+
+class TriggerButtonUI    : public Component,public Trigger::Listener,Timer
 {
 public:
-    TriggerButtonUI();
+    TriggerButtonUI(Trigger * t);
     ~TriggerButtonUI();
 
     void paint (Graphics&);
     void resized();
-
+    void mouseDown (const MouseEvent& event)override;
+    void triggerTriggered(Trigger * p)override ;
+    void startBlink();
+    void timerCallback();
+    
+    float intensity;
+    Trigger *  trigger;
 private:
+    
+    int blinkTime;
+    int refreshPeriod;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TriggerButtonUI)
 };
 
