@@ -10,6 +10,8 @@
 
 #include "NodeBase.h"
 #include "NodeManager.h"
+#include "TimeManager.h"
+
 
 NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAudioProcessor * _audioProcessor, NodeDataProcessor * _dataProcessor) :
     nodeManager(nodeManager),
@@ -40,6 +42,7 @@ NodeBase::~NodeBase()
 {
 	DBG("delete NodeBase");
 	removeFromAudioGraphIfNeeded();
+    TimeManager::getInstance()->removeIfMaster(this);
 }
 
 void NodeBase::checkInputsAndOutputs()

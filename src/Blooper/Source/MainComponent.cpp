@@ -15,7 +15,7 @@
 #include "NodeManagerUI.h"
 
 #include "UIHelpers.h"
-#include "TimeManager.h"
+#include "TimeManagerUI.h"
 
 //==============================================================================
 /*
@@ -35,6 +35,7 @@ public:
 		
 	ScopedPointer<NodeManager> nodeManager;
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
+    ScopedPointer<TimeManagerUI> timeManagerUI;
     
     // Audio
     AudioDeviceManager deviceManager;
@@ -42,20 +43,24 @@ public:
     //==============================================================================
     MainContentComponent()
     {
-        setSize (800,600);
+
 
         // specify the number of input and output channels that we want to open
         //setAudioChannels (2, 2);
 
 		nodeManager = new NodeManager();
-        
         initAudio();
 
-        
-        
 		nodeManagerUI = new NodeManagerUI(nodeManager);
 		addAndMakeVisible(nodeManagerUI);
 		nodeManagerUI->setSize(getWidth(),getHeight());
+        
+        
+        timeManagerUI = new TimeManagerUI();
+        addAndMakeVisible(timeManagerUI);
+        
+        // resize after contentCreated
+                setSize (800,600);
     }
 
     ~MainContentComponent()
@@ -93,6 +98,10 @@ public:
         // This is called when the MainContentComponent is resized.
         // If you add any child components, this is where you should
         // update their positions.
+        
+        Rectangle<int> area = getLocalBounds();
+        timeManagerUI->setBounds(area.removeFromTop(50));
+        nodeManagerUI->setBounds(area);
     }
 
 private:

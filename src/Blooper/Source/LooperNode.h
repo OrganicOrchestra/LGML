@@ -23,7 +23,7 @@ class LooperNode : public NodeBase
 {
 
 public:
-    LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"Looper",new Looper) {
+    LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"Looper",new Looper(this)) {
         looper = dynamic_cast<Looper*>(audioProcessor);
     }
     
@@ -32,7 +32,7 @@ public:
     
     class Looper : public NodeAudioProcessor{
     public:
-        Looper(){
+        Looper(LooperNode * looperNode):looperNode(looperNode){
             setNumTracks(8);
         }
         
@@ -40,9 +40,9 @@ public:
         void processBlockInternal(AudioBuffer<float>& buffer,
                                   MidiBuffer& midiMessages)override;
         
-        
 
-        
+
+
         
         void setNumTracks(int numTracks);
         
@@ -56,12 +56,13 @@ public:
             shouldRecordTrig("shouldRecord"),quantizedRecordStart(0),quantizedRecordEnd(0),
             shouldPlayTrig("shouldPlay"),quantizedPlayStart(0),quantizedPlayEnd(0),
             shouldClearTrig("shouldClear"),
-            volume("volume",.85,0,1),
+            volume("volume",1,0,1),
             preDelayMs("preDelayMs",0,0,200),
             streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
             monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
-            trackState(STOPPED)
+            trackState(CLEARED)
             {
+
                 shouldRecordTrig.addListener(this);
                 shouldPlayTrig.addListener(this);
                 shouldClearTrig.addListener(this);
@@ -122,6 +123,7 @@ public:
             
             // RMS Values from all Tracks
             Array<float> RMS;
+            bool isMasterTempoTrack();
         private:
             
             void triggerTriggered(Trigger * t)override;
@@ -163,24 +165,34 @@ public:
             
             /** Destructor. */
             virtual ~Listener() {}
-            
             virtual void trackNumChanged(int num) = 0;
-           
-            
-            
         };
         
         
         ListenerList<Listener> listeners;
         void addListener(Listener* newListener) { listeners.add(newListener); }
         void removeListener(Listener* listener) { listeners.remove(listener); }
-
+        
+        bool askForBeingMasterTrack(Track * t){
+            if(areAllTrackClearedButThis(t)){
+                return true;
+            }
+            return false;
+        }
+        bool areAllTrackClearedButThis(Track * _t){
+            bool result = true;
+            for(auto & t:tracks){
+                if(t!=_t)result &= t->trackState == Track::CLEARED;
+            }
+            return result;
+        }
         
         OwnedArray<Track> tracks;
 
         AudioBuffer<float> bufferIn;
-
         AudioBuffer<float>bufferOut;
+        
+        LooperNode * looperNode;
         
     };
     
