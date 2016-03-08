@@ -5,14 +5,30 @@
               jucerVersion="4.1.0" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="Blooper">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
-      <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="Data">
-        <FILE id="GVgHpr" name="DataProcessor.cpp" compile="1" resource="0"
-              file="Source/DataProcessor.cpp"/>
-        <FILE id="jPUNwT" name="DataProcessor.h" compile="0" resource="0" file="Source/DataProcessor.h"/>
-        <FILE id="pLs1Ug" name="DataProcessorGraph.cpp" compile="1" resource="0"
-              file="Source/DataProcessorGraph.cpp"/>
-        <FILE id="MxBN89" name="DataProcessorGraph.h" compile="0" resource="0"
-              file="Source/DataProcessorGraph.h"/>
+      <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
+        <FILE id="pm5PA0" name="ControllableContainer.cpp" compile="1" resource="0"
+              file="Source/ControllableContainer.cpp"/>
+        <FILE id="yWCKk0" name="ControllableContainer.h" compile="0" resource="0"
+              file="Source/ControllableContainer.h"/>
+        <FILE id="K9s4xv" name="Controllable.cpp" compile="1" resource="0"
+              file="Source/Controllable.cpp"/>
+        <FILE id="H2nHBA" name="Controllable.h" compile="0" resource="0" file="Source/Controllable.h"/>
+        <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
+        <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
+        <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
+          <FILE id="mezBUW" name="BoolParameter.cpp" compile="1" resource="0"
+                file="Source/BoolParameter.cpp"/>
+          <FILE id="YWoigC" name="BoolParameter.h" compile="0" resource="0" file="Source/BoolParameter.h"/>
+          <FILE id="UquI0M" name="FloatParameter.cpp" compile="1" resource="0"
+                file="Source/FloatParameter.cpp"/>
+          <FILE id="uaeE3Q" name="FloatParameter.h" compile="0" resource="0"
+                file="Source/FloatParameter.h"/>
+          <FILE id="nFbmUB" name="IntParameter.cpp" compile="1" resource="0"
+                file="Source/IntParameter.cpp"/>
+          <FILE id="hxhJJT" name="IntParameter.h" compile="0" resource="0" file="Source/IntParameter.h"/>
+          <FILE id="mi3a1Z" name="Parameter.cpp" compile="1" resource="0" file="Source/Parameter.cpp"/>
+          <FILE id="CVykgt" name="Parameter.h" compile="0" resource="0" file="Source/Parameter.h"/>
+        </GROUP>
       </GROUP>
       <GROUP id="{25464EB0-81C5-256B-F983-7775FBA00B84}" name="UI">
         <FILE id="Fa2WJ4" name="LookAndFeelOO.cpp" compile="1" resource="0"
@@ -76,6 +92,15 @@
         <FILE id="uaVLjF" name="TimeManager.h" compile="0" resource="0" file="Source/TimeManager.h"/>
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
+        <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">
+          <FILE id="GVgHpr" name="DataProcessor.cpp" compile="1" resource="0"
+                file="Source/DataProcessor.cpp"/>
+          <FILE id="jPUNwT" name="DataProcessor.h" compile="0" resource="0" file="Source/DataProcessor.h"/>
+          <FILE id="pLs1Ug" name="DataProcessorGraph.cpp" compile="1" resource="0"
+                file="Source/DataProcessorGraph.cpp"/>
+          <FILE id="MxBN89" name="DataProcessorGraph.h" compile="0" resource="0"
+                file="Source/DataProcessorGraph.h"/>
+        </GROUP>
         <GROUP id="{BA13D1BE-1F46-C45E-3568-F1B617CE7E74}" name="connection">
           <FILE id="D2Mdhy" name="ConnectorComponent.cpp" compile="1" resource="0"
                 file="Source/ConnectorComponent.cpp"/>
