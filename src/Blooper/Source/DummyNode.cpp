@@ -23,7 +23,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 	dataProcessor->addOutputData("OUT Number", DataProcessor::DataType::Number);
 	dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
 
-	testFloatParam = addFloatParameter("Test Float slider", 2.3f, .1f, 5);
+	testFloatParam = addIntParameter("Test Float slider", 5,3,8);
 	testFloatParam->addListener(this);
 }
 
@@ -34,7 +34,11 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 
  void DummyNode::parameterValueChanged(Parameter * p)
  {
-	 if (p == testFloatParam) ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();
+	 if (p == testFloatParam)
+	 {
+		 DBG(testFloatParam->value);
+		 ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();
+	 }
  }
 
  NodeBaseUI * DummyNode::createUI()

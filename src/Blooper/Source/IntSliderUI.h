@@ -11,14 +11,19 @@
 #ifndef INTSLIDERUI_H_INCLUDED
 #define INTSLIDERUI_H_INCLUDED
 
-#include "ParameterUI.h"
+#include "FloatSliderUI.h"
+#include "IntParameter.h"
 
-class IntSliderUI : public ParameterUI, public Slider
+class IntSliderUI : public FloatSliderUI
 {
 public:
 	IntSliderUI(Parameter * parameter);
 	~IntSliderUI();
 
+	IntParameter * intParam;
+
+	void setParamNormalizedValue(float value) override;
+	float getParamNormalizedValue() override;
 protected:
 	void parameterValueChanged(Parameter *) override { repaint(); };
 

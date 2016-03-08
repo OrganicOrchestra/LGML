@@ -17,7 +17,7 @@
 class FloatSliderUI    : public ParameterUI, public Component
 {
 public:
-    FloatSliderUI(Parameter * parameter);
+    FloatSliderUI(Parameter * parameter = nullptr);
     ~FloatSliderUI();
 
 	enum Direction { HORIZONTAL, VERTICAL };
@@ -39,6 +39,9 @@ public:
 
 	float getValueFromMouse();
 	float getValueFromPosition(const Point<int> &pos);
+
+	virtual void setParamNormalizedValue(float value);
+	virtual float getParamNormalizedValue();
 
 protected:
 	void parameterValueChanged(Parameter *) override { repaint(); };

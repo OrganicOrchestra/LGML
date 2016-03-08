@@ -12,6 +12,7 @@
 #define INTPARAMETER_H_INCLUDED
 
 #include "Parameter.h"
+class IntSliderUI;
 
 class IntParameter : public Parameter
 {
@@ -30,9 +31,9 @@ public:
 		if (!silentSet) notifyValueChanged();
 	}
 
-	void setNormalizedValue(const int &normalizedValue, bool silentSet = false, bool force = false)
+	void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false)
 	{
-		setValue(jmap<int>(normalizedValue, minValue, maxValue), silentSet, force);
+		setValue(jmap<float>(normalizedValue, minValue, maxValue), silentSet, force);
 	}
 
 	float getNormalizedValue() override
@@ -40,6 +41,7 @@ public:
 		return jmap<float>(value, minValue, maxValue, 0, 1);
 	}
 
+	IntSliderUI * createSlider();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntParameter)
 };

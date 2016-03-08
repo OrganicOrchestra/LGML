@@ -15,8 +15,8 @@
 FloatSliderUI::FloatSliderUI(Parameter * parameter) :
 	ParameterUI(parameter), floatParam((FloatParameter *)parameter)
 {
+	assignOnMousePosDirect = true;
 	changeParamOnMouseUpOnly = false;
-	assignOnMousePosDirect = false;
 	orientation = HORIZONTAL;
 }
 
@@ -34,7 +34,7 @@ void FloatSliderUI::paint(Graphics & g)
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 
 	g.setColour(c);
-	float drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : floatParam->getNormalizedValue()*getWidth();
+	float drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : getParamNormalizedValue()*getWidth();
 	g.fillRoundedRectangle(getLocalBounds().removeFromLeft(drawPos).toFloat(), 2);
 }
 
@@ -42,15 +42,15 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 {
 	if (assignOnMousePosDirect)
 	{
-		floatParam->setNormalizedValue(getValueFromMouse());
+		setParamNormalizedValue(getValueFromMouse());
 	}
 	else
 	{
 		repaint();
 	}
 
-	initValue = floatParam->getNormalizedValue();
-	setMouseCursor(MouseCursor::NoCursor);
+	initValue = getParamNormalizedValue();
+	//setMouseCursor(MouseCursor::NoCursor);
 	
 }
 
@@ -59,11 +59,11 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
 	if(changeParamOnMouseUpOnly) repaint();
 	else
 	{
-		if (assignOnMousePosDirect) floatParam->setNormalizedValue(getValueFromMouse());
+		if (assignOnMousePosDirect) setParamNormalizedValue(getValueFromMouse());
 		else
 		{
 			float diffValue = getValueFromPosition(e.getPosition()-e.getMouseDownPosition());
-			floatParam->setNormalizedValue(initValue + diffValue);
+			setParamNormalizedValue(initValue + diffValue);
 		}
 	}
 }
@@ -72,7 +72,7 @@ void FloatSliderUI::mouseUp(const MouseEvent & e)
 {
 	if (changeParamOnMouseUpOnly)
 	{
-		floatParam->setNormalizedValue(getValueFromMouse());
+		setParamNormalizedValue(getValueFromMouse());
 	}
 	else
 	{
@@ -91,6 +91,16 @@ float FloatSliderUI::getValueFromPosition(const Point<int> &pos)
 {
 	if (orientation == HORIZONTAL) return (pos.x*1.0 / getWidth());
 	else return (pos.y*1.0 / getHeight());
+}
+
+void FloatSliderUI::setParamNormalizedValue(float value)
+{
+	floatParam->setNormalizedValue(value);
+}
+
+float FloatSliderUI::getParamNormalizedValue()
+{
+	return floatParam->getNormalizedValue();
 }
 
 
