@@ -46,7 +46,7 @@ public:
 	// Inherited via Listener
 	virtual void parameterValueChanged(Parameter * p) override {};
 
-protected:
+private:
 	void addParameterInternal(Parameter * p);
 
 public:

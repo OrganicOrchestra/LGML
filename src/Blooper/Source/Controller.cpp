@@ -11,20 +11,27 @@
 #include "Controller.h"
 #include "ControllerUI.h";
 
-Controller::Controller()
-  {
-  }
+Controller::Controller(const String &name) :
+	name(name),
+	ControllableContainer(name)
+{
+	enabledParam = addBoolParameter("Enabled", true);
+}
 
-  Controller::~Controller()
-  {
-  }
+Controller::Controller(const String & name)
+{
+}
 
-  ControllerUI * Controller::createUI()
-  {
-	  return new ControllerUI(this);
-  }
+Controller::~Controller()
+{
+}
 
-  void Controller::remove()
-  {
-	  listeners.call(&Listener::askForRemoveController, this);
-  }
+ControllerUI * Controller::createUI()
+{
+	return new ControllerUI(this);
+}
+
+void Controller::remove()
+{
+	listeners.call(&Listener::askForRemoveController, this);
+}

@@ -12,17 +12,21 @@
 #define CONTROLLER_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "ControllableContainer.h"
 class ControllerUI;
 
-class Controller
+class Controller : public ControllableContainer
 {
 public:
-	Controller();
+	Controller(const String &name = "[Controller]");
 	virtual ~Controller();
 
 	ControllerUI * createUI();
 
 	void remove(); //will dispatch askForRemoveController
+
+	String name;
+	BoolParameter * enabledParam;
 
 	class  Listener
 	{

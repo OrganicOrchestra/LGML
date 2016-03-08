@@ -35,7 +35,7 @@ public:
             addAndMakeVisible(recPlayButton);
         }
         void paint(Graphics & g) override{
-            g.fillAll(mainColour.withAlpha(0.2f));
+            g.fillAll(mainColour.withAlpha(0.7f));
         }
         void resized()override{
             Rectangle<int> area = getLocalBounds();
@@ -57,7 +57,7 @@ public:
                     break;
                 
                 case LooperNode::Looper::Track::SHOULD_PLAY:
-                    mainColour = Colours::lightgreen;
+                    mainColour = Colours::yellow;
                     break;
                 
                 case LooperNode::Looper::Track::SHOULD_CLEAR:
@@ -83,6 +83,7 @@ public:
             else{
                 recPlayButton.setTriggerReference(&track->shouldRecordTrig);
             }
+            repaint();
         };
         
         LooperNode::Looper::Track * track;

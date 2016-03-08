@@ -145,6 +145,9 @@
       <GROUP id="{C42B7041-9902-DAD4-34C4-9F8B62125E4B}" name="Time">
         <FILE id="hX6HKd" name="TimeManager.cpp" compile="1" resource="0" file="Source/TimeManager.cpp"/>
         <FILE id="uaVLjF" name="TimeManager.h" compile="0" resource="0" file="Source/TimeManager.h"/>
+        <FILE id="Gv1zB9" name="TimeManagerUI.cpp" compile="1" resource="0"
+              file="Source/TimeManagerUI.cpp"/>
+        <FILE id="a4XrkQ" name="TimeManagerUI.h" compile="0" resource="0" file="Source/TimeManagerUI.h"/>
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
         <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">

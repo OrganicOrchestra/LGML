@@ -18,7 +18,7 @@
 #include "ControllerManagerUI.h"
 
 #include "UIHelpers.h"
-#include "TimeManager.h"
+#include "TimeManagerUI.h"
 
 //==============================================================================
 /*
@@ -38,6 +38,7 @@ public:
 		
 	ScopedPointer<NodeManager> nodeManager;
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
+    ScopedPointer<TimeManagerUI> timeManagerUI;
     
 
 	ScopedPointer<ControllerManager> controllerManager;
@@ -49,22 +50,44 @@ public:
     //==============================================================================
     MainContentComponent()
     {
+<<<<<<< HEAD
       
 		
+=======
+
+
+        // specify the number of input and output channels that we want to open
+        //setAudioChannels (2, 2);
+>>>>>>> 287d44fb80b3b07c52c9ff485d3d2d9721f5db39
 
 		
 		nodeManager = new NodeManager();
+<<<<<<< HEAD
 		controllerManager = new ControllerManager();
 
 		initAudio();
+=======
+        initAudio();
+>>>>>>> 287d44fb80b3b07c52c9ff485d3d2d9721f5db39
 
 		nodeManagerUI = new NodeManagerUI(nodeManager);
 		controllerManagerUI = new ControllerManagerUI(controllerManager);
 		addAndMakeVisible(controllerManagerUI);
 		addAndMakeVisible(nodeManagerUI);
+<<<<<<< HEAD
 
 		setSize(1200, 600);
 
+=======
+		nodeManagerUI->setSize(getWidth(),getHeight());
+        
+        
+        timeManagerUI = new TimeManagerUI();
+        addAndMakeVisible(timeManagerUI);
+        
+        // resize after contentCreated
+                setSize (800,600);
+>>>>>>> 287d44fb80b3b07c52c9ff485d3d2d9721f5db39
     }
 
     ~MainContentComponent()
@@ -100,9 +123,19 @@ public:
 
     void resized() override
     {
+<<<<<<< HEAD
 		Rectangle<int> r = getLocalBounds();
 		controllerManagerUI->setBounds(r.removeFromLeft(300));
 		nodeManagerUI->setBounds(r);
+=======
+        // This is called when the MainContentComponent is resized.
+        // If you add any child components, this is where you should
+        // update their positions.
+        
+        Rectangle<int> area = getLocalBounds();
+        timeManagerUI->setBounds(area.removeFromTop(50));
+        nodeManagerUI->setBounds(area);
+>>>>>>> 287d44fb80b3b07c52c9ff485d3d2d9721f5db39
     }
 
 private:

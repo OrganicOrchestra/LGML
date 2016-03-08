@@ -15,6 +15,8 @@
 #include "ControllerUI.h"
 #include "UIHelpers.h"
 
+class BoolToggleUI;
+
 class ControllerHeaderUI : public ContourComponent
 {
 public:
@@ -23,6 +25,9 @@ public:
 
 	Controller * controller;
 	ControllerUI * cui;
+
+	Label titleLabel;
+	ScopedPointer<BoolToggleUI> enabledUI;
 
 	void setControllerAndUI(Controller * controller, ControllerUI * cui);
 	virtual void init(); //override for proper init with controller and ui

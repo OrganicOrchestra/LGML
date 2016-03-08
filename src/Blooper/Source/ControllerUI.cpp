@@ -50,5 +50,5 @@ void ControllerUI::resized()
 
 void ControllerUI::mouseDown(const MouseEvent & e)
 {
-	controller->remove();
+	if(e.mods.isCtrlDown()) controller->remove();
 }
