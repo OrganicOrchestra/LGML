@@ -20,7 +20,7 @@ class FloatSliderUI;
 class FloatParameter : public Parameter
 {
 public:
-	FloatParameter(const String &niceName, const int &initialValue, const int &minValue = 0, const int &maxValue = 1, bool enabled = true);
+	FloatParameter(const String &niceName, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, bool enabled = true);
 	~FloatParameter() {}
 
 	float minValue;

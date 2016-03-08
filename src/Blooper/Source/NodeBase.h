@@ -156,6 +156,7 @@ public:
 	//Controllables (from ControllableContainer)
 	BoolParameter * enabledParam;
 	
+	
     //audio
     void addToAudioGraphIfNeeded();
     void removeFromAudioGraphIfNeeded();
@@ -190,6 +191,9 @@ public:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 
 		
+
+		
+
 };
 
 #endif  // NODEBASE_H_INCLUDED

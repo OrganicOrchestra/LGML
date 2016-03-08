@@ -17,7 +17,7 @@
 #include "BoolParameter.h"
 #include "Trigger.h"
 
-class ControllableContainer
+class ControllableContainer : public Parameter::Listener
 {
 public:
 	ControllableContainer(const String &niceName);
@@ -33,6 +33,8 @@ public:
 
 	OwnedArray<Controllable> controllables;
 
+	
+
 	FloatParameter * addFloatParameter(const String &niceName, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
 	IntParameter * addIntParameter(const String &niceName, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
 	BoolParameter * addBoolParameter(const String &niceName, const bool &value, const bool &enabled = true);
@@ -41,6 +43,11 @@ public:
 	void removeControllable(Controllable * c);
 	Controllable * getControllableByName(const String &name);
 
+	// Inherited via Listener
+	virtual void parameterValueChanged(Parameter * p) override {};
+
+protected:
+	void addParameterInternal(Parameter * p);
 
 public:
 	//Listener

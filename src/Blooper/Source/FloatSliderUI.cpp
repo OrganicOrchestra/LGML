@@ -16,7 +16,7 @@ FloatSliderUI::FloatSliderUI(Parameter * parameter) :
 	ParameterUI(parameter), floatParam((FloatParameter *)parameter)
 {
 	changeParamOnMouseUpOnly = false;
-	assignOnMousePosDirect = true;
+	assignOnMousePosDirect = false;
 	orientation = HORIZONTAL;
 }
 
@@ -28,20 +28,20 @@ FloatSliderUI::~FloatSliderUI()
 void FloatSliderUI::paint(Graphics & g)
 {
 	
-	Colour c = (isMouseOverOrDragging() ? HIGHLIGHT_COLOR : NORMAL_COLOR).withAlpha(floatParam->enabled ? 1 : .3f);
+	Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly ? HIGHLIGHT_COLOR : PARAMETER_FRONT_COLOR).withAlpha(floatParam->enabled ? 1 : .3f);
 	
-	g.setGradientFill(ColourGradient(NORMAL_COLOR, getLocalBounds().getCentreX(), getLocalBounds().getCentreY(), NORMAL_COLOR.darker(), 2, 2, true));
+	g.setColour(BG_COLOR);
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 
 	g.setColour(c);
-	g.fillRoundedRectangle(getLocalBounds().removeFromLeft(floatParam->value*getWidth()).toFloat(), 2);
+	float drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : floatParam->getNormalizedValue()*getWidth();
+	g.fillRoundedRectangle(getLocalBounds().removeFromLeft(drawPos).toFloat(), 2);
 }
 
 void FloatSliderUI::mouseDown(const MouseEvent & e)
 {
 	if (assignOnMousePosDirect)
 	{
-		DBG(getValueFromMouse());
 		floatParam->setNormalizedValue(getValueFromMouse());
 	}
 	else
@@ -50,7 +50,7 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 	}
 
 	initValue = floatParam->getNormalizedValue();
-	//setMouseCursor(MouseCursor::NoCursor);
+	setMouseCursor(MouseCursor::NoCursor);
 	
 }
 
@@ -79,7 +79,7 @@ void FloatSliderUI::mouseUp(const MouseEvent & e)
 		repaint();
 	}
 
-	//setMouseCursor(MouseCursor::NormalCursor);
+	setMouseCursor(MouseCursor::NormalCursor);
 }
 
 float FloatSliderUI::getValueFromMouse()

@@ -29,8 +29,7 @@ FloatParameter * ControllableContainer::addFloatParameter(const String & niceNam
 	}
 
 	FloatParameter * p = new FloatParameter(niceName, initialValue, minValue, maxValue, enabled);
-	controllables.add(p);
-	listeners.call(&Listener::controllableAdded, p);
+	addParameterInternal(p);
 	return p;
 }
 
@@ -43,8 +42,7 @@ IntParameter * ControllableContainer::addIntParameter(const String & niceName, c
 	}
 
 	IntParameter * p = new IntParameter(niceName, initialValue, minValue, maxValue, enabled);
-	controllables.add(p);
-	listeners.call(&Listener::controllableAdded, p);
+	addParameterInternal(p);
 	return p;
 }
 
@@ -57,8 +55,7 @@ BoolParameter * ControllableContainer::addBoolParameter(const String & niceName,
 	}
 
 	BoolParameter * p = new BoolParameter(niceName, value, enabled);
-	controllables.add(p);
-	listeners.call(&Listener::controllableAdded, p);
+	addParameterInternal(p);
 	return p;
 }
 
@@ -90,4 +87,10 @@ Controllable * ControllableContainer::getControllableByName(const String & niceN
 	}
 
 	return nullptr;
+}
+
+void ControllableContainer::addParameterInternal(Parameter * p)
+{
+	controllables.add(p);
+	listeners.call(&Listener::controllableAdded, p);
 }

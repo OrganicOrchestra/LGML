@@ -24,4 +24,6 @@
 #define AUDIO_COLOR		Colours::cadetblue
 #define DATA_COLOR		Colours::pink
 
+#define PARAMETER_FRONT_COLOR Colour(0x99ff66)
+
 #endif  // STYLE_H_INCLUDED

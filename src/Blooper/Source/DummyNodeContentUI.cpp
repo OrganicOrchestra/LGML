@@ -21,7 +21,7 @@ DummyNodeContentUI::~DummyNodeContentUI()
 void DummyNodeContentUI::resized()
 {
 	if (node == nullptr) return;
-	testSlider->setBounds(getLocalBounds().reduced(50).removeFromTop(50));
+	testSlider->setBounds(getLocalBounds().reduced(50).removeFromTop(20));
 }
 
 void DummyNodeContentUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
