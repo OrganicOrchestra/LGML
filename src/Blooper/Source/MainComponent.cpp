@@ -15,7 +15,7 @@
 #include "NodeManagerUI.h"
 
 #include "UIHelpers.h"
-
+#include "TimeManager.h"
 
 //==============================================================================
 /*
@@ -66,10 +66,12 @@ public:
     
     void initAudio(){
         graphPlayer.setProcessor(&nodeManager->audioGraph);
+        
         ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()
                                                    ->getXmlValue ("audioDeviceState"));
         deviceManager.initialise (256, 256, savedAudioState, true);
         deviceManager.addAudioCallback (&graphPlayer);
+        deviceManager.addAudioCallback(TimeManager::getInstance());
     }
     void stopAudio(){
         deviceManager.removeAudioCallback (&graphPlayer);

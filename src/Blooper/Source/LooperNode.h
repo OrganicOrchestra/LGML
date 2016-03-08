@@ -15,7 +15,7 @@
 #include "NodeBase.h"
 #include "AudioHelpers.h"
 
-#define STREAM_BIPARTITE 0
+
 #define MAX_LOOP_LENGTH_S 30
 #define MAX_NUM_TRACKS 30
 
@@ -30,7 +30,9 @@ public:
     
     class Looper : public NodeAudioProcessor{
     public:
-        Looper():globalSampleTime(0),maxLoopLength(44100*2){}
+        Looper():globalSampleTime(0),maxLoopLength(44100*2){
+        
+        }
         
         
         void processBlockInternal(AudioBuffer<float>& buffer,
@@ -87,10 +89,10 @@ public:
             // keeps track of few bits of audio
             // to readjust the loop when controllers are delayed
             
-#if STREAM_BIPARTITE
+
             BipBuffer streamBipBuffer;
             AudioParameterInt * streamBipBufferDelay;
-#endif
+
             Looper * parentLooper;
             
             void processBlock(AudioBuffer<float>& buffer, MidiBuffer & midi);
@@ -104,6 +106,7 @@ public:
         OwnedArray<Track> tracks;
         // RMS Values from all Tracks
         Array<Array<float> > RMS;
+
         
     };
     

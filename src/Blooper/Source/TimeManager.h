@@ -18,7 +18,7 @@
  then can dispatch synchronous or asynchronous event via TimeManager::Listener
  */
 
-class TimeManager{
+class TimeManager : public AudioIODeviceCallback{
     
     
     public :
@@ -155,6 +155,46 @@ class TimeManager{
     int beatTimeInSample;
     int sampleRate;
     int beatPerBar;
+    
+    
+     void audioDeviceIOCallback (const float** inputChannelData,
+                                        int numInputChannels,
+                                        float** outputChannelData,
+                                        int numOutputChannels,
+                                 int numSamples) {
+    incrementClock(numSamples);
+         
+         for (int i = 0; i < numOutputChannels; ++i)
+             zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
+     }
+    
+    /** Called to indicate that the device is about to start calling back.
+     
+     This will be called just before the audio callbacks begin, either when this
+     callback has just been added to an audio device, or after the device has been
+     restarted because of a sample-rate or block-size change.
+     
+     You can use this opportunity to find out the sample rate and block size
+     that the device is going to use by calling the AudioIODevice::getCurrentSampleRate()
+     and AudioIODevice::getCurrentBufferSizeSamples() on the supplied pointer.
+     
+     @param device       the audio IO device that will be used to drive the callback.
+     Note that if you're going to store this this pointer, it is
+     only valid until the next time that audioDeviceStopped is called.
+     */
+    virtual void audioDeviceAboutToStart (AudioIODevice* device) {
+        setSampleRate(device->getCurrentSampleRate());
+    
+    };
+    
+    /** Called to indicate that the device has stopped. */
+    virtual void audioDeviceStopped() {
+    
+    };
+    
+
+    
+
 };
 
 

@@ -9,7 +9,7 @@
 */
 
 #include "LooperNode.h"
-
+#include "TimeManager.h"
 
 void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages){
 
@@ -34,8 +34,8 @@ void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuffer &midi){
     
     
-    //        updatePendingLooperState(OOServer::getInstance()->looperState.timeInSamples);
-    //        OOServer::getInstance()->updateGlobalTime(this,buffer.getNumSamples());
+    updatePendingLooperState(TimeManager::getInstance()->timeInSample);
+
     
     // RECORDING
     if (*isRecording)
@@ -89,6 +89,44 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     
 
 }
+void LooperNode::Looper::Track::updatePendingLooperState(int64 curTime){
+    
+    if(quantizedRecordStart>0){
+        if(curTime>quantizedRecordStart){
+            *streamBipBufferDelay = 0;
+            *isRecording = true;
+            
+        }
+        
+    }
+    else if( quantizedRecordEnd>0){
+        if(curTime>quantizedRecordEnd){
+            *streamBipBufferDelay = 0;
+            *isRecording = false;
+        }
+    }
+    
+    else if(*isRecording!=*shouldRecord){
+        *isRecording = (bool)*shouldRecord;
+    }
+    
+    
+    if(quantizedPlayStart>0){
+        if(curTime>quantizedPlayStart){
+            *isPlaying = true;
+        }
+    }
+    else if( quantizedPlayEnd>0){
+        if(curTime>quantizedPlayEnd){
+            *isPlaying = false;
+        }
+    }
+    else if(*isPlaying!= *shouldPlay){
+        *isPlaying = (bool)*shouldPlay;
+    }
+    
+}
+
 
 
 void LooperNode::Looper::setNumTracks(int numTracks){
