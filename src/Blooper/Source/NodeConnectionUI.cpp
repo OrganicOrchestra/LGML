@@ -18,10 +18,14 @@ NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sour
 	connection(connection),
 	sourceConnector(nullptr),destConnector(nullptr)
 {
-	setInterceptsMouseClicks(false, false);
-
+	
 	setSourceConnector(sourceConnector);
 	setDestConnector(destConnector);
+
+	if (sourceConnector == nullptr || destConnector == nullptr)
+	{
+		setInterceptsMouseClicks(false, false);
+	}
 
 	addComponentListener(this);
 	
@@ -62,25 +66,39 @@ void NodeConnectionUI::paint (Graphics& g)
 		sourcePos = ComponentUtil::getRelativeComponentPositionCenter(sourceConnector, this);
 		endPos = ComponentUtil::getRelativeComponentPositionCenter(destConnector, this);
 	}
-	
-	//if (candidateDropConnector != nullptr) DBG("HAS CANDIDATE");
 
-	//DBG("edit connection : " + sourcePos.toString() +"/" + endPos.toString());
-	
-	g.setColour((candidateDropConnector != nullptr) ? Colours::yellow:(getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR));
-	
-	int midX = (sourcePos.x + endPos.x) / 2;
-	
+	Point<int> midPoint = (sourcePos + endPos) / 2;
+
+	int minDist = -200;
+	int maxDist = 100;
+	float minOffset = 0;
+	float maxOffset = 150;
+
+	float anchorOffset = jmap<float>(endPos.x-sourcePos.x, maxDist, minDist, minOffset, maxOffset);
+	anchorOffset = jmin<float>(jmax<float>(anchorOffset, minOffset), maxOffset);
+
+	int sourceAnchorX = (sourcePos.x + midPoint.x)/2 + anchorOffset;
+	int endAnchorX = (endPos.x+midPoint.x)/2  - anchorOffset;
+
+	int hitMargin = 30;
+	hitPath.clear();
+	hitPath.startNewSubPath(sourcePos.x, sourcePos.y - hitMargin);
+	hitPath.quadraticTo(sourceAnchorX, sourcePos.y - hitMargin, midPoint.x, midPoint.y - hitMargin);
+	hitPath.quadraticTo(endAnchorX, endPos.y - hitMargin, endPos.x, endPos.y - hitMargin);
+	hitPath.lineTo(endPos.x, endPos.y + hitMargin);
+	hitPath.quadraticTo(endAnchorX, endPos.y + hitMargin, midPoint.x, midPoint.y + hitMargin);
+	hitPath.quadraticTo(sourceAnchorX, sourcePos.y + hitMargin, sourcePos.x, sourcePos.y + hitMargin);
+	hitPath.closeSubPath();
+
 	Path p;
-	p.startNewSubPath(sourcePos.x,sourcePos.y);          // move the current position to (10, 10)
-	p.cubicTo(midX,sourcePos.y,midX,endPos.y,endPos.x,endPos.y); // draw a curve that ends at (5, 50)
-	//p.closeSubPath();                          // close the subpath with a line back to (10, 10)
-	
-	
-	g.strokePath(p, PathStrokeType(2.0f));
-	//g.drawLine(sourcePos.x, sourcePos.y, endPos.x, endPos.y, 3);
+	p.startNewSubPath(sourcePos.x, sourcePos.y);        
+	p.quadraticTo(sourceAnchorX, sourcePos.y, midPoint.x, midPoint.y);
+	p.quadraticTo(endAnchorX, endPos.y, endPos.x, endPos.y);
 
-	//g.drawRect(endPos.x-5, endPos.y-5, 10, 10);
+	Colour baseColor = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
+	g.setColour((candidateDropConnector != nullptr) ? Colours::yellow : isMouseOver()?Colours::orange:baseColor );
+	g.strokePath(p, PathStrokeType(2.0f));
+
 }
 
 void NodeConnectionUI::resized()
@@ -114,6 +132,38 @@ void NodeConnectionUI::updateBoundsFromNodes()
 
 	
 
+}
+
+void NodeConnectionUI::mouseDown(const MouseEvent & e)
+{
+	if (e.mods.isRightButtonDown())
+	{
+		PopupMenu m;
+		m.addItem(1,"Edit connections...");
+		m.addItem(2, "Delete all connections");
+		
+		int result = m.show();
+		switch (result)
+		{
+		case 1:
+			//edit connection
+			break;
+
+		case 2:
+			connection->remove();
+			break;
+		}
+	}
+}
+
+void NodeConnectionUI::mouseEnter(const MouseEvent &)
+{
+	repaint();
+}
+
+void NodeConnectionUI::mouseExit(const MouseEvent &)
+{
+	repaint();
 }
 
 void NodeConnectionUI::setSourceConnector(Connector * c)
@@ -188,6 +238,9 @@ bool NodeConnectionUI::finishEditing()
 	}
 
 	candidateDropConnector = nullptr;
+
+	
+
 	return success;
 }
 

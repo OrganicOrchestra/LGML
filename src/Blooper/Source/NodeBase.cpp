@@ -34,6 +34,7 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAu
 NodeBase::~NodeBase()
 {
 	DBG("delete NodeBase");
+	removeFromAudioGraphIfNeeded();
 	nodeManager = nullptr;
 	dataProcessor = nullptr;
 	audioProcessor = nullptr;
@@ -50,8 +51,6 @@ void NodeBase::checkInputsAndOutputs()
 
 void NodeBase::remove()
 {
-    removeFromAudioGraphIfNeeded();
-	DBG("NodeBase::remove, disaptch askForRemove");
 	listeners.call(&NodeBase::Listener::askForRemoveNode,this);
 }
 

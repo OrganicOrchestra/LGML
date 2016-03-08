@@ -49,3 +49,4 @@ profile
 **/CodeBlocks/*.layout
 **/Builds/AndroidStudio
 doxygen/doc
+src/Blooper/Builds/

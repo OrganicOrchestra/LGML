@@ -36,11 +36,20 @@ public:
 	void setSourceConnector(Connector * c);
 	void setDestConnector(Connector * c);
 
+
+	Path hitPath;
+
 	void paint(Graphics&);
 	void resized();
 	void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
 
 	void updateBoundsFromNodes();
+	virtual bool hitTest(int x, int y) { return hitPath.contains(x, y); }
+
+	//interaction
+	void mouseDown(const MouseEvent &e) override;
+	void mouseEnter(const MouseEvent &e) override;
+	void mouseExit(const MouseEvent &e) override;
 
 	Connector* getBaseConnector()
 	{
