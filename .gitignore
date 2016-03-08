@@ -49,3 +49,5 @@ profile
 **/CodeBlocks/*.layout
 **/Builds/AndroidStudio
 doxygen/doc
+src/Blooper/Builds/VisualStudio2015/Blooper.vcxproj
+src/Blooper/Builds/VisualStudio2015/Blooper.vcxproj.filters
