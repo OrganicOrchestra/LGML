@@ -9,9 +9,15 @@
 */
 
 #include "FloatParameter.h"
+#include "FloatSliderUI.h"
 
 FloatParameter::FloatParameter(const String & niceName, const int & initialValue, const int & minValue, const int & maxValue, bool enabled) :
 	Parameter(niceName,enabled), minValue(minValue),maxValue(maxValue)
 {
 	setValue(initialValue);
 }
+
+  FloatSliderUI * FloatParameter::createSlider()
+  {
+	  return new FloatSliderUI(this);
+  }

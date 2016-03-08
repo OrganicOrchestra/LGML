@@ -10,7 +10,7 @@
 
 #include "DummyNode.h"
 #include "NodeBaseUI.h"
-
+#include "DummyNodeContentUI.h"
 
 DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 	NodeBase(nodeManager,nodeId, "DummyNode", new DummyAudioProcessor, new DummyDataProcessor)
@@ -22,6 +22,8 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 
 	dataProcessor->addOutputData("OUT Number", DataProcessor::DataType::Number);
 	dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
+
+	testFloatParam = addFloatParameter("Test Float slider", 2.3f, .1f, 5);
 }
 
  DummyNode::~DummyNode()
@@ -32,7 +34,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 NodeBaseUI * DummyNode::createUI()
 {
 
-	NodeBaseUI * ui = new NodeBaseUI(this);
+	NodeBaseUI * ui = new NodeBaseUI(this,new DummyNodeContentUI());
 	return ui;
 	
 }

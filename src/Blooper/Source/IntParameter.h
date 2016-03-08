@@ -30,10 +30,16 @@ public:
 		if (!silentSet) notifyValueChanged();
 	}
 
+	void setNormalizedValue(const int &normalizedValue, bool silentSet = false, bool force = false)
+	{
+		setValue(jmap<int>(normalizedValue, minValue, maxValue), silentSet, force);
+	}
+
 	float getNormalizedValue() override
 	{
 		return jmap<float>(value, minValue, maxValue, 0, 1);
 	}
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntParameter)
 };

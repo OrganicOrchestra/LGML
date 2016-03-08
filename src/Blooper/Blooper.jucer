@@ -32,6 +32,10 @@
             <FILE id="Qqzkdl" name="BoolToggleUI.cpp" compile="1" resource="0"
                   file="Source/BoolToggleUI.cpp"/>
             <FILE id="PZG6XQ" name="BoolToggleUI.h" compile="0" resource="0" file="Source/BoolToggleUI.h"/>
+            <FILE id="Eql1CU" name="FloatRangeParameterUI.cpp" compile="1" resource="0"
+                  file="Source/FloatRangeParameterUI.cpp"/>
+            <FILE id="buXRAL" name="FloatRangeParameterUI.h" compile="0" resource="0"
+                  file="Source/FloatRangeParameterUI.h"/>
             <FILE id="No0Xmd" name="FloatSliderUI.cpp" compile="1" resource="0"
                   file="Source/FloatSliderUI.cpp"/>
             <FILE id="Fk8DYI" name="FloatSliderUI.h" compile="0" resource="0" file="Source/FloatSliderUI.h"/>
@@ -50,6 +54,10 @@
                 file="Source/FloatParameter.cpp"/>
           <FILE id="uaeE3Q" name="FloatParameter.h" compile="0" resource="0"
                 file="Source/FloatParameter.h"/>
+          <FILE id="KNLgAl" name="FloatRangeParameter.cpp" compile="1" resource="0"
+                file="Source/FloatRangeParameter.cpp"/>
+          <FILE id="VnQ40x" name="FloatRangeParameter.h" compile="0" resource="0"
+                file="Source/FloatRangeParameter.h"/>
           <FILE id="nFbmUB" name="IntParameter.cpp" compile="1" resource="0"
                 file="Source/IntParameter.cpp"/>
           <FILE id="hxhJJT" name="IntParameter.h" compile="0" resource="0" file="Source/IntParameter.h"/>
@@ -169,6 +177,10 @@
           <GROUP id="{EA2B191A-C936-B14E-A8BC-F8E388834EC9}" name="Dummy">
             <FILE id="EJL9RW" name="DummyNode.cpp" compile="1" resource="0" file="Source/DummyNode.cpp"/>
             <FILE id="YV444r" name="DummyNode.h" compile="0" resource="0" file="Source/DummyNode.h"/>
+            <FILE id="QX4nbb" name="DummyNodeContentUI.cpp" compile="1" resource="0"
+                  file="Source/DummyNodeContentUI.cpp"/>
+            <FILE id="Lc3AQH" name="DummyNodeContentUI.h" compile="0" resource="0"
+                  file="Source/DummyNodeContentUI.h"/>
           </GROUP>
           <GROUP id="{A4E8FCF3-24AB-FBFE-40E7-4694F8E90563}" name="AudioMixer">
             <FILE id="E3PCFl" name="AudioMixerNode.cpp" compile="1" resource="0"

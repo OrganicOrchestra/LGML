@@ -42,7 +42,7 @@ public:
     //==============================================================================
     MainContentComponent()
     {
-        setSize (1280,800);
+        setSize (800,600);
 
         // specify the number of input and output channels that we want to open
         //setAudioChannels (2, 2);

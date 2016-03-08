@@ -32,8 +32,8 @@ public:
 	ScopedPointer<BoolToggleUI> enabledToggle;
 	VuMeter vuMeter;
 
-	void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
-	void resized();
+	virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
+	virtual void resized() override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
 };
