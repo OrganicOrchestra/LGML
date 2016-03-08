@@ -32,8 +32,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 NodeBaseUI * DummyNode::createUI()
 {
 
-	DummyNodeUI * ui = new DummyNodeUI();
-	ui->setNode(this);
+	DummyNodeUI * ui = new DummyNodeUI(this);
 	return ui;
 	
 }

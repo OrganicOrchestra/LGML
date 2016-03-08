@@ -13,6 +13,7 @@
 
 #include "Parameter.h"
 
+class BoolToggleUI;
 
 class BoolParameter : public Parameter
 {
@@ -33,6 +34,10 @@ public:
 	{
 		return value ? 1 : 0;
 	}
+
+
+	//ui creation
+	BoolToggleUI * createToggle(); 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
 };

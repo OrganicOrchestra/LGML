@@ -15,6 +15,8 @@
 #include "UIHelpers.h"
 #include "ConnectorComponent.h"
 
+#include "BoolToggleUI.h"
+
 class NodeBase;
 class NodeManagerUI;
 
@@ -26,7 +28,7 @@ NodeBaseUI provide UI for blocks seen in NodeManagerUI
 class NodeBaseUI    : public Component
 {
 public:
-	NodeBaseUI();
+	NodeBaseUI(NodeBase * node);
 
     virtual ~NodeBaseUI();
 	
@@ -38,7 +40,8 @@ public:
 	
 	//layout
 	int connectorWidth;
-	
+
+	//ui
 	class MainContainer : public ContourComponent
 	{
 	public:
@@ -51,6 +54,7 @@ public:
 
 		//ui components
 		Label titleLabel;
+		ScopedPointer<BoolToggleUI> enabledToggle;
 
 		MainContainer() :ContourComponent(Colours::green) 
 		{
@@ -60,14 +64,27 @@ public:
 			addAndMakeVisible(contentContainer);
 
 			titleLabel.setColour(Label::ColourIds::textColourId,TEXT_COLOR);
+			titleLabel.setJustificationType(Justification::topLeft);
+			titleLabel.setInterceptsMouseClicks(false, false);
 			headerContainer.addAndMakeVisible(titleLabel);
+		}
+
+		void setUIFromNode(NodeBase * node)
+		{
+			titleLabel.setText(node->name, NotificationType::dontSendNotification);
+			enabledToggle = node->enabledParam->createToggle();
+			headerContainer.addAndMakeVisible(enabledToggle);
+
 		}
 
 		void paint(Graphics &g)
 		{
-			g.fillAll(PANEL_COLOR);   // clear the background
-			g.setColour(CONTOUR_COLOR);
-			g.drawRect(getLocalBounds());
+
+			//g.fillAll(PANEL_COLOR);   // clear the background
+			g.setColour(PANEL_COLOR);
+			g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
+			g.setColour(CONTOUR_COLOR); 
+			g.drawRoundedRectangle(getLocalBounds().toFloat(),4,2);
 		}
 
 		void resized()
@@ -78,7 +95,12 @@ public:
 			headerContainer.setBounds(headerBounds);
 			contentContainer.setBounds(r);
 
+			
+			headerBounds.reduce(5, 2);
+			headerBounds.removeFromLeft(enabledToggle->getWidth());
+
 			titleLabel.setBounds(headerBounds);
+			enabledToggle->setTopLeftPosition(5, 5);
 		}
 	};
 

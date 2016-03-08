@@ -14,11 +14,13 @@
 #include "NodeManagerUI.h"
 #include "ConnectorComponent.h"
 
+#include "BoolToggleUI.h"
+
 //==============================================================================
-NodeBaseUI::NodeBaseUI() :
+NodeBaseUI::NodeBaseUI(NodeBase * node) :
 	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
-    node(nullptr)
+    node(node)
 {
 
 	DBG("Node Base UI Constructor");
@@ -27,8 +29,12 @@ NodeBaseUI::NodeBaseUI() :
 	addAndMakeVisible(mainContainer);
 	addAndMakeVisible(inputContainer);
 	addAndMakeVisible(outputContainer);
-	setSize(300,200);
-	getHeaderContainer()->addMouseListener(this,true);// (true, true);
+	
+	getHeaderContainer()->addMouseListener(this,false);// (true, true);
+	
+	setNode(node);
+
+	setSize(300, 200);
 	
 }
 
@@ -37,21 +43,26 @@ NodeBaseUI::~NodeBaseUI()
     if(node && node->hasAudioOutputs){
         node->audioProcessor->removeListener(&vuMeter);
     }
-	this->node = nullptr;
+	//this->node = nullptr;
 }
 
 
 void NodeBaseUI::setNode(NodeBase * node)
 {
 	this->node = node;
-	mainContainer.titleLabel.setText(node->name,NotificationType::sendNotification);
+	mainContainer.setUIFromNode(node);
+
 	inputContainer.setConnectorsFromNode(node);
 	outputContainer.setConnectorsFromNode(node);
+
     if(node!=nullptr && node->hasAudioOutputs){
         node->audioProcessor->addListener(&vuMeter);
         mainContainer.addAndMakeVisible(vuMeter);
         resized();
     }
+
+	//parameters
+
 }
 
 
@@ -71,8 +82,11 @@ void NodeBaseUI::resized()
         Rectangle<int> vuMeterRect =r.removeFromRight(vuMeter.getWidth());
         vuMeter.setBounds(vuMeterRect.reduced(6));
     }
+
 	inputContainer.setBounds(inputBounds);
 	outputContainer.setBounds(outputBounds);
+
+	
 }
 
 NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
@@ -131,7 +145,7 @@ void NodeBaseUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorI
 {
 	ConnectorComponent * c = new ConnectorComponent(ioType, dataType, node);
 
-	c->setTopLeftPosition(0, 20 + getNumChildComponents()*(getWidth() + 10));
+	c->setTopLeftPosition(0, 20 + getNumChildComponents()*(getHeight() + 30));
 
 	connectors.add(c);
 	addAndMakeVisible(c);

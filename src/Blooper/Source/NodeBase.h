@@ -155,7 +155,7 @@ public:
 
 	//Controllables (from ControllableContainer)
 	BoolParameter * enabledParam;
-
+	
     //audio
     void addToAudioGraphIfNeeded();
     void removeFromAudioGraphIfNeeded();

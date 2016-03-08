@@ -14,8 +14,7 @@
 NodeBaseUI * AudioMixerNode::createUI()
 {
 
-	AudioMixerNodeUI * ui = new AudioMixerNodeUI();
-	ui->setNode(this);
+	AudioMixerNodeUI * ui = new AudioMixerNodeUI(this);
 	return ui;
 
 }

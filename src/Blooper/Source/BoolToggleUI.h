@@ -1,0 +1,36 @@
+/*
+  ==============================================================================
+
+    BoolToggleUI.h
+    Created: 8 Mar 2016 3:47:01pm
+    Author:  bkupe
+
+  ==============================================================================
+*/
+
+#ifndef BOOLTOGGLEUI_H_INCLUDED
+#define BOOLTOGGLEUI_H_INCLUDED
+
+#include "ParameterUI.h"
+#include "BoolParameter.h"
+
+
+class BoolToggleUI    : public Component,public ParameterUI
+{
+public:
+    BoolToggleUI(Parameter * parameter);
+    ~BoolToggleUI();
+
+	BoolParameter * boolParam;
+
+	void paint(Graphics &g) override;
+	void mouseDown(const MouseEvent &e) override;
+
+protected:
+	void parameterValueChanged(Parameter *) override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolToggleUI)
+};
+
+
+#endif  // BOOLTOGGLEUI_H_INCLUDED

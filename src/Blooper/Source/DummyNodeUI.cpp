@@ -12,7 +12,7 @@
 #include "DummyNodeUI.h"
 
 //==============================================================================
-DummyNodeUI::DummyNodeUI():NodeBaseUI()
+DummyNodeUI::DummyNodeUI(NodeBase * node):NodeBaseUI(node)
 {
 	setSize(170, 80);
     // In your constructor, you should add any child components, and

@@ -8,6 +8,13 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::C
 	setSize(10,10);
 }
 
+void ConnectorComponent::paint(Graphics & g)
+{
+	g.setGradientFill(ColourGradient(boxColor, getLocalBounds().getCentreY(),getLocalBounds().getCentreY(), boxColor.darker(), 0,0, true));
+	//g.setFillType(FillType::gradient);
+	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
+}
+
 void ConnectorComponent::mouseDown(const MouseEvent & e)
 {
 	NodeManagerUI * nmui = getNodeManagerUI();
