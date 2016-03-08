@@ -22,25 +22,68 @@ public:
         looperNode->looper->addListener(this);
     }
     
-    void paint(Graphics & g) override{
-        g.setColour(Colours::pink);
-        g.fillRect(getContentContainer()->getLocalBounds());
-    }
-    class TrackUI : public Component{
+    class TrackUI : public Component , public LooperNode::Looper::Track::Listener{
     public:
         
-        TrackUI(LooperNode::Looper::Track * track):recButton(&track->shouldRecordTrig){
-            addAndMakeVisible(recButton);
+        TrackUI(LooperNode::Looper::Track * track):track(track),recPlayButton(&track->shouldRecordTrig){
+            track->addListener(this);
+            mainColour = Colours::black;
+            addAndMakeVisible(recPlayButton);
         }
         void paint(Graphics & g) override{
-            g.fillAll(Colours::red.withAlpha(0.2f));
+            g.fillAll(mainColour.withAlpha(0.2f));
         }
         void resized()override{
             Rectangle<int> area = getLocalBounds();
-            recButton.setBounds(area.removeFromTop(area.getHeight()/2));
+            recPlayButton.setBounds(area.removeFromTop(area.getHeight()/2));
         }
         
-        TriggerButtonUI recButton;
+        void trackStateChangedAsync(const LooperNode::Looper::Track::TrackState & state) override{
+            switch(state){
+                case LooperNode::Looper::Track::RECORDING:
+                    mainColour = Colours::red;
+                    break;
+                    
+                case LooperNode::Looper::Track::PLAYING:
+                    mainColour = Colours::green;
+                    break;
+                
+                case LooperNode::Looper::Track::SHOULD_RECORD:
+                    mainColour = Colours::yellow;
+                    break;
+                
+                case LooperNode::Looper::Track::SHOULD_PLAY:
+                    mainColour = Colours::lightgreen;
+                    break;
+                
+                case LooperNode::Looper::Track::SHOULD_CLEAR:
+                case LooperNode::Looper::Track::CLEARED:
+                    mainColour = Colours::black;
+                    break;
+                
+                case LooperNode::Looper::Track::STOPPED:
+                    mainColour = Colours::grey;
+                    break;
+                
+                default:
+                    jassertfalse;
+                    break;
+            }
+            
+            if(state == LooperNode::Looper::Track::RECORDING ||
+               state == LooperNode::Looper::Track::STOPPED
+               )
+            {
+                recPlayButton.setTriggerReference(&track->shouldPlayTrig);
+            }
+            else{
+                recPlayButton.setTriggerReference(&track->shouldRecordTrig);
+            }
+        };
+        
+        LooperNode::Looper::Track * track;
+        Colour mainColour;
+        TriggerButtonUI recPlayButton;
         
     };
     void trackNumChanged(int num) {

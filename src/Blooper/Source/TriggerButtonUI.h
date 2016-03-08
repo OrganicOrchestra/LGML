@@ -31,7 +31,7 @@ public:
     void triggerTriggered(Trigger * p)override ;
     void startBlink();
     void timerCallback();
-    
+    void setTriggerReference(Trigger * t);
     float intensity;
     Trigger *  trigger;
 private:

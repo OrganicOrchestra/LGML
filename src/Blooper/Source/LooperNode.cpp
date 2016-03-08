@@ -15,7 +15,7 @@
 
 void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages){
     
- // TODO check if we can optimize copies
+    // TODO check if we can optimize copies
     // handle multiples channels
     bufferIn.makeCopyOf(buffer);
     bufferOut.setSize(bufferIn.getNumChannels(),bufferIn.getNumSamples());
@@ -26,7 +26,7 @@ void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
         bufferOut.addFrom(0,0,buffer,0,0,buffer.getNumSamples());
         buffer.copyFrom(0,0,bufferIn,0,0,buffer.getNumSamples());
     }
-
+    
     buffer.makeCopyOf( bufferOut);
 }
 
@@ -39,32 +39,30 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     // RECORDING
     if (trackState == RECORDING)
     {
-        if(recordNeedle.get() + buffer.getNumSamples()> parentLooper->getSampleRate() * MAX_LOOP_LENGTH_S){
+        if(recordNeedle + buffer.getNumSamples()> parentLooper->getSampleRate() * MAX_LOOP_LENGTH_S){
             setTrackState(STOPPED);
         };
-        monoLoopSample.copyFrom(0, recordNeedle.get(), buffer, 0, 0, buffer.getNumSamples());
+        monoLoopSample.copyFrom(0, recordNeedle, buffer, 0, 0, buffer.getNumSamples());
         recordNeedle += buffer.getNumSamples();
-        
-        
-        
+
     }
-#if STREAM_BIPARTITE
+    
     else{
         streamBipBuffer.writeBlock(buffer);
     }
-#endif
+    
     // PLAYING
     // allow circular reading , although not sure that overflow need to be handled as its written with same block sizes than read
     // we may need it if we start to use a different clock  than looperState in OOServer that has a granularity of blockSize
     // or if we dynamicly change blockSize
-    if (trackState==PLAYING && recordNeedle.get()>0 && monoLoopSample.getNumSamples())
+    if (trackState==PLAYING && recordNeedle>0 && monoLoopSample.getNumSamples())
     {
-        if ( (playNeedle + buffer.getNumSamples()) > recordNeedle.get())
+        if ( (playNeedle + buffer.getNumSamples()) > recordNeedle)
         {
             
             //assert false for now see above
             //            jassert(false);
-            int firstSegmentLength = recordNeedle.get() - playNeedle;
+            int firstSegmentLength = recordNeedle - playNeedle;
             int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
             buffer.copyFrom(0, 0, monoLoopSample, 0, playNeedle, firstSegmentLength);
             buffer.copyFrom(0, 0, monoLoopSample, 0, 0, secondSegmentLength);
@@ -73,7 +71,7 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
         }else{
             buffer.copyFrom(0, 0, monoLoopSample, 0, playNeedle, buffer.getNumSamples());
             playNeedle += buffer.getNumSamples();
-            playNeedle %= recordNeedle.get();
+            playNeedle %= recordNeedle;
         }
         buffer.applyGainRamp(0, 0, buffer.getNumSamples(), lastVolume,volume.value);
         lastVolume = volume.value;
@@ -103,10 +101,10 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(int64 curTime){
             setTrackState(PLAYING);
         }
     }
-    
-//    else if(isRecording!=shouldRecord){
-//        isRecording = (bool)shouldRecord;
-//    }
+    else if(trackState==SHOULD_RECORD){
+        setTrackState(RECORDING);
+    }
+
     
     
     if(quantizedPlayStart>0){
@@ -119,10 +117,10 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(int64 curTime){
             setTrackState(STOPPED);
         }
     }
-//    else if(isPlaying!= (track)shouldPlay){
-//        isPlaying = (bool)shouldPlay;
-//    }
-    
+    else if(trackState == SHOULD_PLAY){
+        setTrackState(PLAYING);
+    }
+
 }
 
 
@@ -155,9 +153,54 @@ void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
 }
 
 
-void LooperNode::Looper::Track::setTrackState(TrackState state){
-    trackState = state;
-    listeners.call(&LooperNode::Looper::Track::Listener::trackStateChanged,state);
+void LooperNode::Looper::Track::setTrackState(TrackState newState){
+    
+    if(newState == RECORDING){
+        quantizedRecordStart = -1;
+        if(preDelayMs.value>0){
+            monoLoopSample.copyFrom(0,0,streamBipBuffer.getLastBlock(preDelayMs.value),preDelayMs.value);
+            recordNeedle = preDelayMs.value;
+        }
+        else{
+            preDelayMs.setValue( 0);
+            recordNeedle = 0;
+        }
+    }
+    else if(trackState == RECORDING && newState!=trackState){
+        {
+            
+            
+            recordNeedle-=preDelayMs.value;
+            // 22 ms if 44100
+            int fadeNumSaples = 10;
+            if(recordNeedle>2*fadeNumSaples){
+                monoLoopSample.applyGainRamp(0, 0, fadeNumSaples, 0, 1);
+                monoLoopSample.applyGainRamp(0,recordNeedle - fadeNumSaples, fadeNumSaples, 1, 0);
+            }
+            
+            quantizedRecordEnd = -1;
+        }
+    }
+    else if(newState ==PLAYING){
+        quantizedPlayStart = -1;
+        playNeedle = 0;
+    }
+    else if (trackState== PLAYING && newState!=PLAYING){
+        quantizedPlayEnd = -1;
+    }
+    
+    else if(newState == SHOULD_CLEAR){
+        recordNeedle = 0;
+        playNeedle = 0;
+        quantizedPlayEnd = -1;
+        quantizedPlayStart = -1;
+        quantizedRecordEnd = -1;
+        quantizedRecordStart = -1;
+        
+    }
+    
+    trackState = newState;
+    listeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };
 
 NodeBaseUI * LooperNode::createUI(){LooperNodeUI * ui = new LooperNodeUI(this);    ui->setNode(this);return ui;}

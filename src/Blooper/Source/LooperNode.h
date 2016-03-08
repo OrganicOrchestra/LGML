@@ -92,14 +92,26 @@ public:
             
             
             //Listener
-            class  Listener
+            class  Listener : public AsyncUpdater
             {
             public:
                 
                 /** Destructor. */
                 virtual ~Listener() {}
-                virtual void trackStateChanged(TrackState state) = 0;
+//                called from here
+                void internalTrackStateChanged(const TrackState &state){
+                    stateToBeNotified = state;
+                    trackStateChanged(state);
+                    triggerAsyncUpdate();
+                }
+                TrackState stateToBeNotified;
                 
+                // dispatched to listeners
+                virtual void trackStateChanged(const TrackState & state) {};
+                virtual void trackStateChangedAsync(const TrackState & state) = 0;
+                void handleAsyncUpdate() override{
+                    trackStateChangedAsync(stateToBeNotified);
+                }
             };
             ListenerList<Listener> listeners;
             void addListener(Listener* newListener) { listeners.add(newListener); }
@@ -119,7 +131,7 @@ public:
             
             
 
-            Atomic<int> recordNeedle;
+            int recordNeedle;
             int recordingDelay;
             int quantizedRecordEnd,quantizedRecordStart;
             
@@ -132,8 +144,6 @@ public:
             
             // keeps track of few bits of audio
             // to readjust the loop when controllers are delayed
-            
-
             BipBuffer streamBipBuffer;
             IntParameter  preDelayMs;
 
@@ -153,9 +163,11 @@ public:
             
             /** Destructor. */
             virtual ~Listener() {}
-         
+            
             virtual void trackNumChanged(int num) = 0;
            
+            
+            
         };
         
         

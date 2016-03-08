@@ -20,15 +20,26 @@ intensity(0)
 
 {
 
-    t->addListener(this);
+    trigger->addListener(this);
 
 }
 
 TriggerButtonUI::~TriggerButtonUI()
 {
+    trigger->removeListener(this);
 }
-void TriggerButtonUI::triggerTriggered(Trigger * p){
+
+void TriggerButtonUI::setTriggerReference(Trigger * t){
+    if(trigger!=nullptr){
+         trigger->removeListener(this);
+    }
+    trigger = t;
     
+    trigger->addListener(this);
+}
+
+void TriggerButtonUI::triggerTriggered(Trigger * p){
+     startBlink();
 }
 void TriggerButtonUI::paint (Graphics& g)
 {
@@ -62,6 +73,6 @@ void TriggerButtonUI::resized()
 
 void TriggerButtonUI::mouseDown (const MouseEvent& event){
     trigger->trigger();
-    startBlink();
+   
 }
 
