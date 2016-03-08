@@ -30,6 +30,9 @@ NodeConnection::~NodeConnection()
 	audioConnections.clear();
 	sourceNode = nullptr;
 	destNode = nullptr;
+
+
+	//TODO MARTIN : supprimer la connection dans l'audioGraph (si connectionType AUDIO)
 }
 
 void NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
@@ -53,14 +56,10 @@ void NodeConnection::removeDataGraphConnection(const String &sourceDataName, con
 	DataProcessorGraph::Connection * c = nodeManager->dataGraph.getConnectionBetween(sourceNode->nodeId, sourceDataName, sourceElementName, destNode->nodeId, destDataName, destElementName);
 	dataConnections.removeAllInstancesOf(c);
 	nodeManager->dataGraph.removeConnection(sourceNode->nodeId, sourceDataName, sourceElementName, destNode->nodeId, destDataName, destElementName);
-
-	
 }
 
 
 void NodeConnection::remove()
 {
-	//manage clearing all inner audio or data connections/subconnections
-	audioConnections.clear();
-	dataConnections.clear();
+	listeners.call(&NodeConnection::Listener::askForRemoveConnection,this);
 }

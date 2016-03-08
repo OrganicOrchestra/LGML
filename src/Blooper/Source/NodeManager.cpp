@@ -79,12 +79,7 @@ bool NodeManager::removeNode(uint32 nodeId)
 
 	listeners.call(&NodeManager::Listener::nodeRemoved, n);
 	nodes.removeObject(n);
-    
-    
-    if(n->hasAudioInputs || n->hasAudioOutputs){
-        audioGraph.removeNode(nodeId);
-    }
-    
+
 	return true;
 }
 
@@ -169,7 +164,6 @@ bool NodeManager::removeConnection(NodeConnection * c)
 {
 	if (c == nullptr) return false;
 	c->removeListener(this);
-	c->remove();
 
 	connections.removeObject(c);
 
