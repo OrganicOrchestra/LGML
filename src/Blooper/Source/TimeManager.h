@@ -109,7 +109,7 @@ class TimeManager : public AudioIODeviceCallback{
     int beatTimeInSample;
     int sampleRate;
     int beatPerBar;
-    ScopedPointer<NodeBase> timeMasterNode;
+    NodeBase *  timeMasterNode;
     bool hasMasterNode(){return timeMasterNode!=nullptr;}
     void removeIfMaster(NodeBase * n){if(n==timeMasterNode)timeMasterNode=nullptr;}
     bool askForBeingMasterNode(NodeBase * n);
