@@ -34,8 +34,16 @@ void FloatSliderUI::paint(Graphics & g)
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 
 	g.setColour(c);
-	float drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : getParamNormalizedValue()*getWidth();
-	g.fillRoundedRectangle(getLocalBounds().removeFromLeft(drawPos).toFloat(), 2);
+	float drawPos = 0; 
+	if (orientation == HORIZONTAL)
+	{
+		drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : getParamNormalizedValue()*getWidth();
+		g.fillRoundedRectangle(getLocalBounds().removeFromLeft(drawPos).toFloat(), 2);
+	}
+	else {
+		drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : getParamNormalizedValue()*getHeight();
+		g.fillRoundedRectangle(getLocalBounds().removeFromBottom(drawPos).toFloat(), 2);
+	}
 }
 
 void FloatSliderUI::mouseDown(const MouseEvent & e)
@@ -90,7 +98,7 @@ float FloatSliderUI::getValueFromMouse()
 float FloatSliderUI::getValueFromPosition(const Point<int> &pos)
 {
 	if (orientation == HORIZONTAL) return (pos.x*1.0 / getWidth());
-	else return (pos.y*1.0 / getHeight());
+	else return 1-(pos.y*1.0 / getHeight());
 }
 
 void FloatSliderUI::setParamNormalizedValue(float value)
