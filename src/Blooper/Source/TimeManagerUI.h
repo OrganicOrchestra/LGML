@@ -57,7 +57,7 @@ class TimeManagerUI : public Component{
             g.setColour(Colours::grey);
             int beatBarWidth  =4;
             for(int i = 0 ; i < beatPerBar  ; i++){
-                g.fillRect(area.withLeft(i*beatWidth - beatBarWidth).withWidth(beatBarWidth));
+                g.fillRect(area.withLeft(i*beatWidth - beatBarWidth/2).withWidth(beatBarWidth));
             }
         }
         

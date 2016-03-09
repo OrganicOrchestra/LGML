@@ -110,7 +110,6 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(uint64 curTime){
     
     if(quantizedPlayStart>0){
         if(curTime>quantizedPlayStart){
-            DBG( curTime << " , " <<quantizedPlayStart);
             setTrackState(PLAYING);
         }
     }
@@ -124,27 +123,23 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(uint64 curTime){
 }
 
 
+
+void LooperNode::Looper::addTrack(){
+    Track * t = new Track(this, tracks.size());
+    tracks.add(t);
+    addChildControllableContainer(t);
+}
+
+void LooperNode::Looper::removeTrack( int i){
+    removeChildControllableContainer(tracks[i]);
+    tracks.remove(i);
+}
+
+
 void LooperNode::Looper::setNumTracks(int numTracks){
     int oldSize = tracks.size();
-    if(numTracks>oldSize){
-        for(int i = oldSize ; i< numTracks ; i++){
-           
-			//to put in addTrack() ?
-			Track * t = new Track(this, i);
-			tracks.add(t);
-
-			addChildControllableContainer(t);
-        }
-    }
-    else{
-		for (int i = oldSize - 1; i > numTracks; --i)
-		{
-			removeChildControllableContainer(tracks[i]);
-		}
-
-        tracks.removeRange(oldSize,oldSize - numTracks );
-    }
-    
+    if(numTracks>oldSize)   { for(int i = oldSize ; i< numTracks ; i++)     {addTrack();}}
+    else                    {for (int i = oldSize - 1; i > numTracks; --i)  {removeTrack(i);}}
     listeners.call(&Listener::trackNumChanged,numTracks);
 }
 
@@ -158,10 +153,10 @@ void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
           setTrackState(SHOULD_PLAY);
         }
     }
-    else if(t == shouldPlayTrig){
+    else if(t == playTrig){
         setTrackState(SHOULD_PLAY);
     }
-    else if(t== shouldClearTrig){
+    else if(t== clearTrig){
         setTrackState(SHOULD_CLEAR);
     }
 }
@@ -252,7 +247,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         quantizedRecordStart = -1;
         newState = CLEARED;
     }
-        DBG(newState <<","<<trackState );
+    DBG(newState <<","<<trackState );
     trackState = newState;
     listeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };

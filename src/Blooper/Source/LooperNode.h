@@ -44,7 +44,8 @@ public:
                                   MidiBuffer& midiMessages)override;
         
         void setNumTracks(int numTracks);
-        
+        void addTrack();
+        void removeTrack( int i);
         class Track : public ControllableContainer, public Trigger::Listener
 		{
         public:
@@ -63,17 +64,22 @@ public:
 				setCustomShortName("track/" + String(_trackNum));
 
 				trackNum = addIntParameter("Track Number", "Index of the track", _trackNum, 0, MAX_NUM_TRACKS);
-				recPlayTrig = addTrigger("RecPlay", "Tells the track to wait for the next bar and then start record or play");
-				shouldPlayTrig = addTrigger("Should Play", "Tells the track to wait for the next bar and then stop recording and start playing");
-				shouldClearTrig = addTrigger("Should Clear", "Tells the track to clear it's content if got any");
-				volume = addFloatParameter("Volume", "Set the volume of the track", 1, 0, 1);
-				preDelayMs = addIntParameter("Pre Delay MS", "Pre process delay (in milliseconds)", 0, 0, 200);
+				recPlayTrig = addTrigger("Rec Or Play",
+                                         "Tells the track to wait for the next bar and then start record or play");
+				playTrig = addTrigger("Play",
+                                      "Tells the track to wait for the next bar and then stop recording and start playing");
+				clearTrig = addTrigger("Clear",
+                                       "Tells the track to clear it's content if got any");
+				volume = addFloatParameter("Volume",
+                                           "Set the volume of the track", 1, 0, 1);
+				preDelayMs = addIntParameter("Pre Delay MS",
+                                             "Pre process delay (in milliseconds)", 0, 0, 200);
 
 				preDelayMs->isControllableExposed = false;
 
 				recPlayTrig->addListener(this);
-                shouldPlayTrig->addListener(this);
-                shouldClearTrig->addListener(this);
+                playTrig->addListener(this);
+                clearTrig->addListener(this);
             }
             
             ~Track(){
@@ -81,8 +87,8 @@ public:
             }
             
             Trigger * recPlayTrig;
-            Trigger * shouldPlayTrig;
-            Trigger * shouldClearTrig;
+            Trigger * playTrig;
+            Trigger * clearTrig;
 
             
             enum TrackState{

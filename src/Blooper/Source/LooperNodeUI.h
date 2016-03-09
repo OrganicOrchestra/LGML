@@ -14,6 +14,7 @@
 #include "NodeBaseUI.h"
 
 #include "TriggerBlinkUI.h"
+#include "FloatSliderUI.h"
 
 class LooperNodeUI: public NodeBaseContentUI , public LooperNode::Looper::Listener{
 public:
@@ -25,28 +26,40 @@ public:
         looperNode = dynamic_cast<LooperNode*> (node);
         trackNumChanged(looperNode->looper->tracks.size());
         looperNode->looper->addListener(this);
+        setSize(300,300);
     }
     
     class TrackUI : public Component , public LooperNode::Looper::Track::Listener{
     public:
         
-        TrackUI(LooperNode::Looper::Track * track):track(track),recPlayButton(track->recPlayTrig){
+        TrackUI(LooperNode::Looper::Track * track):track(track),
+        recPlayButton(track->recPlayTrig),
+        clearButton(track->clearTrig){
             track->addListener(this);
             mainColour = Colours::black;
             addAndMakeVisible(recPlayButton);
+            addAndMakeVisible(clearButton);
+            volumeSlider = track->volume->createSlider();
+            volumeSlider->orientation = FloatSliderUI::VERTICAL;
+            addAndMakeVisible(volumeSlider);
         }
         void paint(Graphics & g) override{
             g.fillAll(mainColour.withAlpha(0.7f));
         }
         void resized()override{
             Rectangle<int> area = getLocalBounds();
+            volumeSlider->setBounds(area.removeFromRight(30));
             recPlayButton.setBounds(area.removeFromTop(area.getHeight()/2));
+            clearButton.setBounds(area);
+            
         }
         
         void trackStateChangedAsync(const LooperNode::Looper::Track::TrackState & state)override;
         LooperNode::Looper::Track * track;
         Colour mainColour;
         TriggerBlinkUI recPlayButton;
+        TriggerBlinkUI clearButton;
+        ScopedPointer<FloatSliderUI> volumeSlider;
         
     };
     

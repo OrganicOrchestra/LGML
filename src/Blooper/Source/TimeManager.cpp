@@ -88,13 +88,13 @@ int TimeManager::setBPMForLoopLength(int time){
     double time_seconds = time* 1.0/ sampleRate;
     double beatTime = time_seconds* 1.0/beatPerBar;
     int barLength = 1;
+    
     // over 150 bpm
     if(beatTime < .40){beatTime*=2;barLength/=2;}
     // under 60 bpm
     else if(beatTime > 1){beatTime/=2;barLength*=2;}
     
     setBPM( 60.0/beatTime);
-    
     return barLength;
 }
 

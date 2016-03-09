@@ -38,8 +38,9 @@ public:
 	NodeBase * node;
 	virtual void setNode(NodeBase * node);
 	
-    void paint (Graphics&);
-    void resized();
+    void paint (Graphics&)override;
+    void resized()override;
+    void childBoundsChanged (Component*)override;
 	
 	//layout
 	int connectorWidth;
@@ -61,8 +62,9 @@ public:
 		//ui components
 		MainContainer(NodeBaseContentUI * content = nullptr, NodeBaseHeaderUI * header = nullptr);
 		void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
-		void paint(Graphics &g);
-		void resized();
+		void paint(Graphics &g)override;
+		void resized()override;
+        void childBoundsChanged (Component*)override;
 	};
 
 
