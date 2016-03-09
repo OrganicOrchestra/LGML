@@ -23,7 +23,7 @@ TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
 
 TriggerBlinkUI::~TriggerBlinkUI()
 {
-	trigger->removeListener(this);
+	
 }
 
 void TriggerBlinkUI::setTriggerReference(Trigger * t) {
