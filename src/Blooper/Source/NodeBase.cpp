@@ -40,7 +40,10 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, const String &name,
 NodeBase::~NodeBase()
 {
 	removeFromAudioGraphIfNeeded();
-    TimeManager::getInstance()->removeIfMaster(this);
+    // get called after deletion of TimeManager on app exit
+    TimeManager * tm = TimeManager::getInstanceWithoutCreating();
+    if(tm!=nullptr)
+        tm->removeIfMaster(this);
 }
 
 void NodeBase::checkInputsAndOutputs()

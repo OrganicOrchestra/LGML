@@ -53,7 +53,7 @@ public:
     AudioDeviceManager deviceManager;
     AudioProcessorPlayer graphPlayer;
     //==============================================================================
-	MainContentComponent::MainContentComponent()
+    MainContentComponent()
 	{
 		controllerManager = new ControllerManager();
 
@@ -79,8 +79,8 @@ public:
     ~MainContentComponent()
     {
         stopAudio();
-		delete TimeManager::getInstance(); //TO PREVENT LEAK OF SINGLETON
-		delete NodeManager::getInstance();
+		TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
+		NodeManager::deleteInstance();
     }
     
     
@@ -95,6 +95,7 @@ public:
     }
     void stopAudio(){
         deviceManager.removeAudioCallback (&graphPlayer);
+        deviceManager.removeAudioCallback(TimeManager::getInstance());
         deviceManager.closeAudioDevice();
     }
 
