@@ -150,6 +150,42 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 	return result;
 }
 
+Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive)
+{
+
+	bool isTargetControllable = addressSplit.size() == 1;
+	DBG("Get controllable for adress (" + shortName + ") is target a controllable ? " + String(isTargetControllable));
+	if (isTargetControllable)
+	{
+		for (auto &c : controllables)
+		{
+			if (c->shortName == addressSplit[0])
+			{
+				if (c->isControllableExposed) return c;
+				else return nullptr;
+			}
+		}
+	}
+	else
+	{
+		
+		
+		DBG("Check for container with name " + addressSplit[0]);
+		
+		for (auto &cc : controllableContainers)
+		{
+			DBG(" > " + cc->shortName);
+			if (cc->shortName == addressSplit[0])
+			{
+				addressSplit.remove(0);
+				return cc->getControllableForAddress(addressSplit);
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
