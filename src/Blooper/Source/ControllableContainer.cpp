@@ -88,6 +88,7 @@ Trigger * ControllableContainer::addTrigger(const String & niceName, const Strin
 	Trigger * t = new Trigger(niceName, description, enabled);
 	controllables.add(t);
 	t->setParentContainer(this);
+	
 	listeners.call(&Listener::controllableAdded, t);
 	return t;
 }
@@ -140,9 +141,15 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 	return result;
 }
 
+void ControllableContainer::parameterValueChanged(Parameter * p)
+{
+	DBG("ControllableContainer :: parameterValueChanged");
+}
+
 void ControllableContainer::addParameterInternal(Parameter * p)
 {
 	p->setParentContainer(this);
 	controllables.add(p);
+	p->addListener(this);
 	listeners.call(&Listener::controllableAdded, p);
 }

@@ -91,7 +91,6 @@ void NodeManagerUI::connectionRemoved(NodeConnection * connection)
 void NodeManagerUI::addNodeUI(NodeBase * node)
 {
 	
-	DBG("Add Node UI");
 	if (getUIForNode(node) == nullptr)
 	{
 		NodeBaseUI * nui = node->createUI();

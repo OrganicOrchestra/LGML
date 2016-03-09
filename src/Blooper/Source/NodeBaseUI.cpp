@@ -32,18 +32,17 @@ NodeBaseUI::NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer, No
 	connectorWidth = 10;
 	
 
-	mainContainer.setNodeAndNodeUI(node,this);
-
+	
 	inputContainer.setConnectorsFromNode(node);
 	outputContainer.setConnectorsFromNode(node);
-
-	
 
 	addAndMakeVisible(mainContainer);
 	addAndMakeVisible(inputContainer);
 	addAndMakeVisible(outputContainer);
 	getHeaderContainer()->addMouseListener(this, false);// (true, true);
-	setSize(300, 200);
+	
+	mainContainer.setNodeAndNodeUI(node, this);
+	if(getWidth() == 0 || getHeight() == 0) setSize(300, 200);
 	
 }
 
@@ -125,7 +124,6 @@ void NodeBaseUI::ConnectorContainer::setConnectorsFromNode(NodeBase * node)
 
 	if (hasData)
 	{
-		DBG("Set connectors from node, connector is data, num inputs ?" + String(node->dataProcessor->getTotalNumInputData()));
 		addConnector(type, NodeConnection::ConnectionType::DATA, node);
 	}
 }

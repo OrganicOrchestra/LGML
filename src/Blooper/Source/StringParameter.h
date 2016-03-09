@@ -24,7 +24,6 @@ public:
 
 	void setValue(const String &value, bool silentSet = false, bool force = false)
 	{
-		DBG("set value " + value);
 		if (this->value == value && !force) return;
 		this->value = value;
 		if (!silentSet) notifyValueChanged();

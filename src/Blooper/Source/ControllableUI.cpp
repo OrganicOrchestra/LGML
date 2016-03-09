@@ -13,7 +13,6 @@
 ControllableUI::ControllableUI(Controllable * controllable) :  
 	controllable(controllable)
 {
-	DBG("Set tooltip : " + controllable->description);
 	setTooltip(controllable->description);
 }
 

@@ -16,7 +16,6 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 	NodeBase(nodeManager,nodeId, "DummyNode", new DummyAudioProcessor, new DummyDataProcessor)
 {
 
-	DBG("Dummy node add Data Input");
 	dataProcessor->addInputData("IN Number", DataProcessor::DataType::Number);
 	dataProcessor->addInputData("IN Position", DataProcessor::DataType::Position);
 
@@ -29,11 +28,12 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 
  DummyNode::~DummyNode()
 {
-	DBG("delete dummy node");
 }
 
  void DummyNode::parameterValueChanged(Parameter * p)
  {
+	 NodeBase::parameterValueChanged(p);
+
 	 if (p == testFloatParam)
 	 {
 		 DBG(testFloatParam->value);

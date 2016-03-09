@@ -68,7 +68,7 @@ public:
 	Array<Controllable *> getAllControllables(bool recursive = false);
 
 	// Inherited via Listener
-	virtual void parameterValueChanged(Parameter * p) override {};
+	virtual void parameterValueChanged(Parameter * p) override;
 
 private:
 	void addParameterInternal(Parameter * p);

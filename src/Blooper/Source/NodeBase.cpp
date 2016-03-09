@@ -28,21 +28,17 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, const String &name,
 		nodeManager->dataGraph.addNode(dataProcessor);
 	}
 
-	DBG("Node Base check inputs and outputs");
 	checkInputsAndOutputs();
     addToAudioGraphIfNeeded();
 
 	//set Params
 	nameParam = addStringParameter("Name", "Set the name of the node.", name);
-	nameParam->addListener(this);
 	enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
-	enabledParam->addListener(this);
 }
 
 
 NodeBase::~NodeBase()
 {
-	DBG("delete NodeBase");
 	removeFromAudioGraphIfNeeded();
     TimeManager::getInstance()->removeIfMaster(this);
 }
@@ -84,7 +80,8 @@ void NodeBase::ouputRemoved(DataProcessor::Data *)
 
 void NodeBase::parameterValueChanged(Parameter * p)
 {
-	DBG("param value changed in nodeBase :" + p->niceName);
+	ControllableContainer::parameterValueChanged(p);
+
 	if (p == nameParam) setNiceName(nameParam->value);
 	else if (p == enabledParam)
 	{

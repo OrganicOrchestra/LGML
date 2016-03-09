@@ -31,4 +31,6 @@ void DummyNodeContentUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
 
 	testSlider = dummyNode->testFloatParam->createSlider();
 	addAndMakeVisible(testSlider);
+
+	nodeUI->setSize(200, 100);
 }

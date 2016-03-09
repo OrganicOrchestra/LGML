@@ -156,8 +156,8 @@ public:
 	StringParameter * nameParam;
 	BoolParameter * enabledParam;
 	
-	void parameterValueChanged(Parameter * p);
-	
+	virtual void parameterValueChanged(Parameter * p) override;
+
     //audio
     void addToAudioGraphIfNeeded();
     void removeFromAudioGraphIfNeeded();

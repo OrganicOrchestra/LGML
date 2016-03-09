@@ -63,7 +63,6 @@ NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
 	nodes.add(n);
 	n->addListener(this);
 	addChildControllableContainer(n); //ControllableContainer
-	DBG("add child controllable node, parent ? " + String(n->parentContainer == nullptr));
 	listeners.call(&NodeManager::Listener::nodeAdded,n);
 
 	return n;

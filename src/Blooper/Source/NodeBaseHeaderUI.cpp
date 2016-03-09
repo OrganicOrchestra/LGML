@@ -55,7 +55,7 @@ void NodeBaseHeaderUI::resized()
 		Rectangle<int> r = getLocalBounds();
 		r.reduce(5, 2);
 		r.removeFromLeft(enabledUI->getWidth());
-		r.removeFromRight(100);
+		r.removeFromRight(50);
 		titleUI->setBounds(r);
 		enabledUI->setTopLeftPosition(5, 5);
 	}

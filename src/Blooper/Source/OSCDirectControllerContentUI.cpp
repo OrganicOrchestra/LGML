@@ -13,6 +13,7 @@
 
 OSCDirectControllerContentUI::OSCDirectControllerContentUI()
 {
+	DBG("direct controller ui constructor");
 }
 
 void OSCDirectControllerContentUI::init()
