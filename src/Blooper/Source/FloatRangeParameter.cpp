@@ -10,8 +10,8 @@
 
 #include "FloatRangeParameter.h"
 
-FloatRangeParameter::FloatRangeParameter(const String & niceName, const int & initialValueMin, const int &initialValueMax, const int & minValue, const int & maxValue, bool enabled) :
-	Parameter(niceName, enabled), minValue(minValue), maxValue(maxValue)
+FloatRangeParameter::FloatRangeParameter(const String & niceName, const String &description, const int & initialValueMin, const int &initialValueMax, const int & minValue, const int & maxValue, bool enabled) :
+	Parameter(niceName, description, enabled), minValue(minValue), maxValue(maxValue)
 {
 	//base set values to min and max so they don't overlap when setting with setValues
 	valueMin = minValue;

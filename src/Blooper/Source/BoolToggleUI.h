@@ -15,7 +15,7 @@
 #include "BoolParameter.h"
 
 
-class BoolToggleUI    : public Component,public ParameterUI
+class BoolToggleUI : public ParameterUI
 {
 public:
     BoolToggleUI(Parameter * parameter);
@@ -25,6 +25,7 @@ public:
 
 	void paint(Graphics &g) override;
 	void mouseDown(const MouseEvent &e) override;
+	void mouseUp(const MouseEvent &e) override;
 
 protected:
 	void parameterValueChanged(Parameter *) override;

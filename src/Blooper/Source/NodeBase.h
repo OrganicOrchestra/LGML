@@ -131,11 +131,10 @@ public:
 
 	
 public:
-	NodeBase(NodeManager * nodeManager,uint32 nodeId, String name = "[NodeBase]", NodeBase::NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
+	NodeBase(NodeManager * nodeManager,uint32 nodeId, const String &name = "[NodeBase]", NodeBase::NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
 	virtual ~NodeBase();
 
 	uint32 nodeId;
-	String name;
     NodeManager * nodeManager;
     
 	// owned by audio Graph in a refference Counted Array
@@ -154,8 +153,10 @@ public:
 	
 
 	//Controllables (from ControllableContainer)
+	StringParameter * nameParam;
 	BoolParameter * enabledParam;
 	
+	void parameterValueChanged(Parameter * p);
 	
     //audio
     void addToAudioGraphIfNeeded();

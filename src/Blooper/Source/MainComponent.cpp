@@ -36,6 +36,10 @@ class MainContentComponent   : public Component
 {
 public:
 		
+	TooltipWindow tooltipWindow; // to add tooltips to an application, you
+								 // just need to create one of these and leave it
+								 // there to do its work..
+
 	ScopedPointer<NodeManager> nodeManager;
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
     ScopedPointer<TimeManagerUI> timeManagerUI;
@@ -67,7 +71,7 @@ public:
 		nodeManagerUI->setSize(getWidth(),getHeight());
         
         // resize after contentCreated
-         setSize (800,600);
+         setSize (1200,600);
     }
 
     ~MainContentComponent()

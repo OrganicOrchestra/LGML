@@ -17,9 +17,11 @@
 /*
 */
 
-#include "Trigger.h"
 
-class TriggerButtonUI    : public Component,public Trigger::Listener,Timer
+#include "Trigger.h"
+#include "TriggerUI.h"
+
+class TriggerButtonUI    : public TriggerUI , public Timer
 {
 public:
     TriggerButtonUI(Trigger * t);
@@ -28,12 +30,12 @@ public:
     void paint (Graphics&);
     void resized();
     void mouseDown (const MouseEvent& event)override;
-    void triggerTriggered(Trigger * p)override ;
+    void triggerTriggered(Trigger * p) override ;
     void startBlink();
     void timerCallback();
     void setTriggerReference(Trigger * t);
     float intensity;
-    Trigger *  trigger;
+    
 private:
     
     int blinkTime;

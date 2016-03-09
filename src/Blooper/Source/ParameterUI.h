@@ -12,13 +12,13 @@
 #define PARAMETERUI_H_INCLUDED
 
 #include "Parameter.h"
+#include "ControllableUI.h"
 
-
-class ParameterUI : public Parameter::Listener
+class ParameterUI : public Parameter::Listener, public ControllableUI
 {
 public:
     ParameterUI(Parameter * parameter);
-    ~ParameterUI();
+    virtual ~ParameterUI();
 
 	Parameter * parameter;
 

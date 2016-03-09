@@ -23,7 +23,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 	dataProcessor->addOutputData("OUT Number", DataProcessor::DataType::Number);
 	dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
 
-	testFloatParam = addIntParameter("Test Float slider", 5,3,8);
+	testFloatParam = addFloatParameter("Test Int slider", "This is a test int slider",.23f);
 	testFloatParam->addListener(this);
 }
 

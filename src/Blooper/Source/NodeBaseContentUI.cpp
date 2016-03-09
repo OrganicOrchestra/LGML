@@ -27,4 +27,10 @@
   {
 	  this->node = node;
 	  this->nodeUI = nodeUI;
+
+	  init();
+  }
+
+  void NodeBaseContentUI::init()
+  {
   }

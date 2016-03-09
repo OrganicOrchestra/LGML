@@ -40,7 +40,7 @@ void FloatSliderUI::paint(Graphics & g)
 
 void FloatSliderUI::mouseDown(const MouseEvent & e)
 {
-	if (assignOnMousePosDirect)
+	if (assignOnMousePosDirect && !e.mods.isRightButtonDown())
 	{
 		setParamNormalizedValue(getValueFromMouse());
 	}
@@ -50,7 +50,7 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 	}
 
 	initValue = getParamNormalizedValue();
-	//setMouseCursor(MouseCursor::NoCursor);
+	setMouseCursor(MouseCursor::NoCursor);
 	
 }
 
@@ -59,7 +59,7 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
 	if(changeParamOnMouseUpOnly) repaint();
 	else
 	{
-		if (assignOnMousePosDirect) setParamNormalizedValue(getValueFromMouse());
+		if (assignOnMousePosDirect && !e.mods.isRightButtonDown()) setParamNormalizedValue(getValueFromMouse());
 		else
 		{
 			float diffValue = getValueFromPosition(e.getPosition()-e.getMouseDownPosition());

@@ -12,8 +12,8 @@
 #include "StringParameterUI.h"
 
 
-StringParameter::StringParameter(const String & niceName, const String & initialValue, bool enabled) :
-	Parameter(niceName,enabled)
+StringParameter::StringParameter(const String & niceName, const String &description, const String & initialValue, bool enabled) :
+	Parameter(niceName, description, enabled)
 {
 	setValue(initialValue);
 	

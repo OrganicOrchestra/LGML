@@ -17,12 +17,14 @@
 class Controllable
 {
 public:
-	Controllable(const String &niceName, bool enabled = true);
+	Controllable(const String &niceName, const String &description, bool enabled = true);
 	virtual ~Controllable() {}
 
 	bool enabled;
 	String niceName;
 	String shortName;
+
+	String description;
 
 	void setNiceName(const String &niceName, bool autoSetShortName = true) {
 		this->niceName = niceName;

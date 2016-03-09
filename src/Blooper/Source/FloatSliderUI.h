@@ -14,11 +14,11 @@
 #include "ParameterUI.h"
 #include "FloatParameter.h"
 
-class FloatSliderUI    : public ParameterUI, public Component
+class FloatSliderUI    : public ParameterUI
 {
 public:
     FloatSliderUI(Parameter * parameter = nullptr);
-    ~FloatSliderUI();
+    virtual ~FloatSliderUI();
 
 	enum Direction { HORIZONTAL, VERTICAL };
 

@@ -16,7 +16,7 @@
 class Trigger : public Controllable
 {
 public:
-	Trigger(const String &niceName, bool enabled = true);
+	Trigger(const String &niceName, const String &description, bool enabled = true);
 	~Trigger() {}
 
 	void trigger()

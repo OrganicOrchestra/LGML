@@ -14,9 +14,9 @@
 Controller::Controller(const String &name) :
 	ControllableContainer(name)
 {
-	nameParam = addStringParameter("Name", name);
+	nameParam = addStringParameter("Name", "Set the name of the controller.",name);
 	nameParam->addListener(this);
-	enabledParam = addBoolParameter("Enabled",true);
+	enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
 	enabledParam->addListener(this);
 }
 
@@ -40,6 +40,6 @@ void Controller::parameterValueChanged(Parameter * p)
 	if (p == nameParam) setNiceName(nameParam->value);
 	else if (p == enabledParam)
 	{
-		DBG("set Enabled " + String(enabledParam->value));
+		DBG("set Controller Enabled " + String(enabledParam->value));
 	}
 }

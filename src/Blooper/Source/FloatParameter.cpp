@@ -11,8 +11,8 @@
 #include "FloatParameter.h"
 #include "FloatSliderUI.h"
 
-FloatParameter::FloatParameter(const String & niceName, const float & initialValue, const float & minValue, const float & maxValue, bool enabled) :
-	Parameter(niceName,enabled), minValue(minValue),maxValue(maxValue)
+FloatParameter::FloatParameter(const String & niceName, const String &description, const float & initialValue, const float & minValue, const float & maxValue, bool enabled) :
+	Parameter(niceName, description, enabled), minValue(minValue),maxValue(maxValue)
 {
 	setValue(initialValue);
 }

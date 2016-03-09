@@ -9,3 +9,19 @@
 */
 
 #include "TriggerUI.h"
+
+TriggerUI::TriggerUI(Trigger * trigger) :
+	ControllableUI(trigger),
+	trigger(trigger)
+{
+	trigger->addListener(this);
+}
+
+TriggerUI::~TriggerUI()
+{
+	trigger->removeListener(this);
+}
+
+void TriggerUI::triggerTriggered(Trigger * p)
+{
+}

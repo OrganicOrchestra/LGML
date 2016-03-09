@@ -10,8 +10,8 @@
 
 #include "Parameter.h"
 
-Parameter::Parameter(const String &niceName, bool enabled) :
-	Controllable(niceName,enabled)
+Parameter::Parameter(const String &niceName, const String &description, bool enabled) :
+	Controllable(niceName, description, enabled)
 {
 
 }

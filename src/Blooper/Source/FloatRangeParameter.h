@@ -17,7 +17,7 @@
 class FloatRangeParameter : public Parameter
 {
 public:
-	FloatRangeParameter(const String &niceName, const int &initialValueMin, const int &initialValueMax, const int &minValue = 0, const int &maxValue = 1, bool enabled = true);
+	FloatRangeParameter(const String &niceName, const String &description, const int &initialValueMin, const int &initialValueMax, const int &minValue = 0, const int &maxValue = 1, bool enabled = true);
 	~FloatRangeParameter() {}
 
 	float minValue;

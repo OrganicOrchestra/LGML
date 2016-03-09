@@ -6,6 +6,23 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::C
 {
 	boxColor = dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
 	setSize(10,10);
+
+
+	String tooltip;
+	tooltip += dataType == NodeConnection::ConnectionType::AUDIO?"Audio\n":"Data\n";
+	if (dataType == NodeConnection::ConnectionType::AUDIO)
+	{
+		tooltip += ioType == ConnectorIOType::INPUT? node->audioProcessor->getTotalNumInputChannels() : node->audioProcessor->getTotalNumOutputChannels();
+		tooltip += " channels";
+	}
+	else
+	{
+		StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->dataProcessor->getInputDataInfos() : node->dataProcessor->getOutputDataInfos();
+		tooltip += dataInfos.joinIntoString("\n");
+	}
+
+	setTooltip(tooltip);
+
 }
 
 void ConnectorComponent::paint(Graphics & g)

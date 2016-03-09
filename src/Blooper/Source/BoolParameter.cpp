@@ -11,8 +11,8 @@
 #include "BoolParameter.h"
 #include "BoolToggleUI.h"
 
-BoolParameter::BoolParameter(const String & niceName, const bool & initialValue, bool enabled) :
-	Parameter(niceName, enabled)
+BoolParameter::BoolParameter(const String & niceName, const String &description, const bool & initialValue, bool enabled) :
+	Parameter(niceName, description, enabled)
 {
 	setValue(initialValue);
 }

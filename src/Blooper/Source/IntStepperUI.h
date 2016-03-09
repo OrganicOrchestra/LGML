@@ -13,7 +13,7 @@
 
 #include "ParameterUI.h"
 
-class IntStepperUI : public ParameterUI, public Component
+class IntStepperUI : public ParameterUI
 {
 public:
 	IntStepperUI(Parameter * parameter);

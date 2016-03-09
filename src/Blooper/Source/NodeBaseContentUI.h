@@ -25,6 +25,7 @@ public:
 	NodeBase * node;
 
 	virtual void setNodeAndNodeUI(NodeBase * node,NodeBaseUI * nodeUI);
+	virtual void init();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseContentUI)
 };

@@ -17,7 +17,7 @@ class IntSliderUI;
 class IntParameter : public Parameter
 {
 public:
-	IntParameter(const String &niceName, const int &initialValue, const int &minValue = 0, const int &maxValue = 1, bool enabled = true);
+	IntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue = 0, const int &maxValue = 1, bool enabled = true);
 	~IntParameter() {}
 
 	int minValue;

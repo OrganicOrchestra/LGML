@@ -20,7 +20,7 @@ ControllableContainer::~ControllableContainer()
 	controllables.clear();
 }
 
-FloatParameter * ControllableContainer::addFloatParameter(const String & niceName, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
+FloatParameter * ControllableContainer::addFloatParameter(const String & niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
 	if (getControllableByName(niceName) != nullptr)
 	{
@@ -28,12 +28,12 @@ FloatParameter * ControllableContainer::addFloatParameter(const String & niceNam
 		return nullptr;
 	}
 
-	FloatParameter * p = new FloatParameter(niceName, initialValue, minValue, maxValue, enabled);
+	FloatParameter * p = new FloatParameter(niceName, description, initialValue, minValue, maxValue, enabled);
 	addParameterInternal(p);
 	return p;
 }
 
-IntParameter * ControllableContainer::addIntParameter(const String & niceName, const int & initialValue, const int & minValue, const int & maxValue, const bool & enabled)
+IntParameter * ControllableContainer::addIntParameter(const String & niceName, const String & description, const int & initialValue, const int & minValue, const int & maxValue, const bool & enabled)
 {
 	if (getControllableByName(niceName) != nullptr)
 	{
@@ -41,12 +41,12 @@ IntParameter * ControllableContainer::addIntParameter(const String & niceName, c
 		return nullptr;
 	}
 
-	IntParameter * p = new IntParameter(niceName, initialValue, minValue, maxValue, enabled);
+	IntParameter * p = new IntParameter(niceName, description, initialValue, minValue, maxValue, enabled);
 	addParameterInternal(p);
 	return p;
 }
 
-BoolParameter * ControllableContainer::addBoolParameter(const String & niceName, const bool & value, const bool & enabled)
+BoolParameter * ControllableContainer::addBoolParameter(const String & niceName, const String & description, const bool & value, const bool & enabled)
 {
 	if (getControllableByName(niceName) != nullptr)
 	{
@@ -54,12 +54,12 @@ BoolParameter * ControllableContainer::addBoolParameter(const String & niceName,
 		return nullptr;
 	}
 
-	BoolParameter * p = new BoolParameter(niceName, value, enabled);
+	BoolParameter * p = new BoolParameter(niceName, description, value, enabled);
 	addParameterInternal(p);
 	return p;
 }
 
-StringParameter * ControllableContainer::addStringParameter(const String & niceName, const String &value, const bool & enabled)
+StringParameter * ControllableContainer::addStringParameter(const String & niceName, const String & description, const String &value, const bool & enabled)
 {
 	if (getControllableByName(niceName) != nullptr)
 	{
@@ -67,12 +67,12 @@ StringParameter * ControllableContainer::addStringParameter(const String & niceN
 		return nullptr;
 	}
 
-	StringParameter * p = new StringParameter(niceName, value, enabled);
+	StringParameter * p = new StringParameter(niceName, description, value, enabled);
 	addParameterInternal(p);
 	return p;
 }
 
-Trigger * ControllableContainer::addTrigger(const String & niceName, const bool & enabled)
+Trigger * ControllableContainer::addTrigger(const String & niceName, const String & description, const bool & enabled)
 {
 	if (getControllableByName(niceName) != nullptr)
 	{
@@ -80,7 +80,7 @@ Trigger * ControllableContainer::addTrigger(const String & niceName, const bool 
 		return nullptr;
 	}
 
-	Trigger * t = new Trigger(niceName, enabled);
+	Trigger * t = new Trigger(niceName, description, enabled);
 	controllables.add(t);
 	listeners.call(&Listener::controllableAdded, t);
 	return t;

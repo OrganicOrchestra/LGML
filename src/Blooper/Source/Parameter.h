@@ -16,7 +16,7 @@
 class Parameter : public Controllable
 {
 public:
-	Parameter(const String & niceName, bool enabled = true);
+	Parameter(const String & niceName, const String &description, bool enabled = true);
 	virtual ~Parameter() {}
 
 	virtual float getNormalizedValue() {

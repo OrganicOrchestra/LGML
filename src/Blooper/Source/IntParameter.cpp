@@ -11,8 +11,8 @@
 #include "IntParameter.h"
 #include "IntSliderUI.h"
 
-IntParameter::IntParameter(const String & niceName, const int & initialValue, const int & minValue, const int & maxValue, bool enabled) :
-	Parameter(niceName,enabled), minValue(minValue), maxValue(maxValue)
+IntParameter::IntParameter(const String & niceName, const String &description, const int & initialValue, const int & minValue, const int & maxValue, bool enabled) :
+	Parameter(niceName, description, enabled), minValue(minValue), maxValue(maxValue)
 {
 	setValue(initialValue);
 }

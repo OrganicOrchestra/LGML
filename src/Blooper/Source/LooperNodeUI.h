@@ -20,7 +20,8 @@ public:
     LooperNodeUI(){
     }
     
-    void setNodeAndNodeUI(NodeBase * node,NodeBaseUI * nodeUI)override{
+    void init() override{
+		
         looperNode = dynamic_cast<LooperNode*> (node);
         trackNumChanged(looperNode->looper->tracks.size());
         looperNode->looper->addListener(this);
@@ -107,10 +108,10 @@ public:
         resized();
     };
     
-    
     void resized() override{
         reLayoutTracks();
     }
+
     void reLayoutTracks(){
         int numRow = 2;
         int numCol = tracksUI.size()/numRow ;

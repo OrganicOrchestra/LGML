@@ -12,11 +12,6 @@
 
 NodeBaseHeaderUI::NodeBaseHeaderUI()
   {
-	  titleLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
-	  titleLabel.setJustificationType(Justification::topLeft);
-	  titleLabel.setInterceptsMouseClicks(false, false);
-	  addAndMakeVisible(titleLabel);
-
 	  node = nullptr;
 	  nodeUI = nullptr;
 
@@ -35,25 +30,35 @@ NodeBaseHeaderUI::NodeBaseHeaderUI()
 	this->node = node;
 	this->nodeUI = nodeUI;
 
-	titleLabel.setText(node->name, NotificationType::dontSendNotification);
-	enabledToggle = node->enabledParam->createToggle();
-	addAndMakeVisible(enabledToggle);
-
 	if (node != nullptr && node->hasAudioOutputs) {
 		node->audioProcessor->addListener(&vuMeter);
 		addAndMakeVisible(vuMeter);
 	}
+
+	init();
 }
+
+  void NodeBaseHeaderUI::init()
+  {
+	  //to override
+
+	  titleUI = node->nameParam->getUI();
+	  addAndMakeVisible(titleUI);
+
+	  enabledUI = node->enabledParam->createToggle();
+	  addAndMakeVisible(enabledUI);
+  }
 
 void NodeBaseHeaderUI::resized()
 {
-	if (enabledToggle != nullptr)
+	if (enabledUI != nullptr)
 	{
 		Rectangle<int> r = getLocalBounds();
 		r.reduce(5, 2);
-		r.removeFromLeft(enabledToggle->getWidth());
-		titleLabel.setBounds(r);
-		enabledToggle->setTopLeftPosition(5, 5);
+		r.removeFromLeft(enabledUI->getWidth());
+		r.removeFromRight(100);
+		titleUI->setBounds(r);
+		enabledUI->setTopLeftPosition(5, 5);
 	}
 
 	if (node && node->hasAudioOutputs) {

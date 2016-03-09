@@ -10,6 +10,10 @@
           <GROUP id="{DAA3A1A3-F6F4-BC56-0152-800A0DA495A5}" name="viz">
             <FILE id="CyjIBR" name="VuMeter.h" compile="0" resource="0" file="Source/VuMeter.h"/>
           </GROUP>
+          <FILE id="YpRfx9" name="ControllableUI.cpp" compile="1" resource="0"
+                file="Source/ControllableUI.cpp"/>
+          <FILE id="wsPUhO" name="ControllableUI.h" compile="0" resource="0"
+                file="Source/ControllableUI.h"/>
           <FILE id="ANg4jk" name="TriggerButtonUI.cpp" compile="1" resource="0"
                 file="Source/TriggerButtonUI.cpp"/>
           <FILE id="c0uIkt" name="TriggerButtonUI.h" compile="0" resource="0"

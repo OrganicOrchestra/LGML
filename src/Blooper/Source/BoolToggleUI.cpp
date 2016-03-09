@@ -36,6 +36,11 @@ void BoolToggleUI::mouseDown(const MouseEvent & e)
 	boolParam->setValue(!boolParam->value);
 }
 
+void BoolToggleUI::mouseUp(const MouseEvent & e)
+{
+	if (e.mods.isRightButtonDown()) boolParam->setValue(!boolParam->value);
+}
+
 void BoolToggleUI::parameterValueChanged(Parameter *)
 {
 	repaint();

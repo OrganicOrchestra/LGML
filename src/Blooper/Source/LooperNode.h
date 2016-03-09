@@ -48,16 +48,14 @@ public:
         
         class Track : Trigger::Listener{
         public:
-            
-            
             Track(Looper * looper,int _trackNum):
             parentLooper(looper),
-            trackNum("trackNum",_trackNum,0,MAX_NUM_TRACKS),
-            shouldRecordTrig("shouldRecord"),quantizedRecordStart(0),quantizedRecordEnd(0),
-            shouldPlayTrig("shouldPlay"),quantizedPlayStart(0),quantizedPlayEnd(0),
-            shouldClearTrig("shouldClear"),
-            volume("volume",1,0,1),
-            preDelayMs("preDelayMs",0,0,200),
+            trackNum("Track Number","Index of the track",_trackNum,0,MAX_NUM_TRACKS),
+            shouldRecordTrig("Should Record","Tells the track to wait for the next bar and then start recording"),quantizedRecordStart(0),quantizedRecordEnd(0),
+            shouldPlayTrig("Should Play","Tells the track to wait for the next bar and then stop recording and start playing"),quantizedPlayStart(0),quantizedPlayEnd(0),
+            shouldClearTrig("Should Clear","Tells the track to clear it's content if got any"),
+            volume("Volume","Set the volume of the track",1,0,1),
+            preDelayMs("Pre Delay MS","Pre process delay (in milliseconds)",0,0,200),
             streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
             monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
             trackState(CLEARED)

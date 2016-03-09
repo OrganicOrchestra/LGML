@@ -12,9 +12,10 @@
 
 //==============================================================================
 ParameterUI::ParameterUI(Parameter * parameter) :
-	parameter(parameter)
+	parameter(parameter), ControllableUI(parameter)
 {
 	parameter->addListener(this);
+
 }
 
 ParameterUI::~ParameterUI()

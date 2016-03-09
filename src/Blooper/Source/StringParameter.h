@@ -19,7 +19,7 @@ class StringParameterUI;
 class StringParameter : public Parameter
 {
 public:
-	StringParameter(const String &niceName, const String &initialValue, bool enabled);
+	StringParameter(const String &niceName, const String &description, const String &initialValue, bool enabled);
 	String value;
 
 	void setValue(const String &value, bool silentSet = false, bool force = false)

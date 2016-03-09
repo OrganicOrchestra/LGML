@@ -13,12 +13,11 @@
 #include "TimeManager.h"
 
 
-NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAudioProcessor * _audioProcessor, NodeDataProcessor * _dataProcessor) :
+NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, const String &name, NodeAudioProcessor * _audioProcessor, NodeDataProcessor * _dataProcessor) :
     nodeManager(nodeManager),
 	nodeId(_nodeId),
 	audioProcessor(_audioProcessor),
 	dataProcessor(_dataProcessor),
-	name(name),
 
 	ControllableContainer(name)
 {
@@ -34,7 +33,10 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, String name, NodeAu
     addToAudioGraphIfNeeded();
 
 	//set Params
-	enabledParam = addBoolParameter("Enabled", true);	
+	nameParam = addStringParameter("Name", "Set the name of the node.", name);
+	nameParam->addListener(this);
+	enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
+	enabledParam->addListener(this);
 }
 
 
@@ -77,6 +79,16 @@ void NodeBase::outputAdded(DataProcessor::Data *)
 void NodeBase::ouputRemoved(DataProcessor::Data *)
 {
 	hasDataOutputs = dataProcessor != nullptr ? dataProcessor->getTotalNumOutputData()>0:false;
+}
+
+
+void NodeBase::parameterValueChanged(Parameter * p)
+{
+	if (p == nameParam) setNiceName(nameParam->value);
+	else if (p == enabledParam)
+	{
+		DBG("set Node Enabled " + String(enabledParam->value));
+	}
 }
 
 

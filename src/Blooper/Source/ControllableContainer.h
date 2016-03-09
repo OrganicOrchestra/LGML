@@ -36,11 +36,11 @@ public:
 
 	
 
-	FloatParameter * addFloatParameter(const String &niceName, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
-	IntParameter * addIntParameter(const String &niceName, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
-	BoolParameter * addBoolParameter(const String &niceName, const bool &value, const bool &enabled = true);
-	StringParameter * addStringParameter(const String &niceName, const String &value, const bool &enabled = true);
-	Trigger * addTrigger(const String &niceName, const bool &enabled = true);
+	FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
+	IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
+	BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);
+	StringParameter * addStringParameter(const String &niceName, const String &description, const String &value, const bool &enabled = true);
+	Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
 
 	void removeControllable(Controllable * c);
 	Controllable * getControllableByName(const String &name);

@@ -15,7 +15,7 @@
 #include "ParameterUI.h"
 #include "StringParameter.h"
 
-class StringParameterUI : public ParameterUI, public Component, public Label::Listener
+class StringParameterUI : public ParameterUI, public Label::Listener
 {
 public:
 	StringParameterUI(Parameter * p);

@@ -22,7 +22,7 @@ class NodeBase;
 //==============================================================================
 /*
 */
-class ConnectorComponent : public Component
+class ConnectorComponent : public Component, public SettableTooltipClient
 {
 public:
 

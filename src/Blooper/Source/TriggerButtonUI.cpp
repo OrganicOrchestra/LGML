@@ -13,14 +13,11 @@
 
 //==============================================================================
 TriggerButtonUI::TriggerButtonUI(Trigger *t):
-trigger(t),
-blinkTime(200),
-refreshPeriod(10),
-intensity(0)
-
+	TriggerUI(t),
+	blinkTime(200),
+	refreshPeriod(10),
+	intensity(0)
 {
-
-    trigger->addListener(this);
 
 }
 
@@ -33,6 +30,7 @@ void TriggerButtonUI::setTriggerReference(Trigger * t){
     if(trigger!=nullptr){
          trigger->removeListener(this);
     }
+
     trigger = t;
     
     trigger->addListener(this);

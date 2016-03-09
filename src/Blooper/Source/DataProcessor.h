@@ -179,6 +179,19 @@ public:
 	int getTotalNumInputData() const { return inputDatas.size(); }
 	int getTotalNumOutputData() const { return outputDatas.size(); }
 
+	StringArray getInputDataInfos()
+	{
+		StringArray dataInfos;
+		for (auto &d : inputDatas) dataInfos.add(d->name + " ("+d->getTypeString()+")");
+		return dataInfos;
+	}
+
+	StringArray getOutputDataInfos()
+	{
+		StringArray dataInfos;
+		for (auto &d : outputDatas) dataInfos.add(d->name + " (" + d->getTypeString() + ")");
+		return dataInfos;
+	}
 
 	DataType getInputDataType(const String &dataName, const String &elementName);
 	DataType getOutputDataType(const String &dataName, const String &elementName);

@@ -18,7 +18,7 @@ class BoolToggleUI;
 class BoolParameter : public Parameter
 {
 public:
-	BoolParameter(const String &niceName, const bool &initialValue, bool enabled = true);
+	BoolParameter(const String &niceName, const String &description, const bool &initialValue, bool enabled = true);
 	~BoolParameter() {}
 
 	bool value;
