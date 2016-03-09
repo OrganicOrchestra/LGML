@@ -25,7 +25,7 @@ public:
 
 
 protected:
-	void notifyValueChanged() { listeners.call(&Listener::parameterValueChanged, this); }
+	void notifyValueChanged() { DBG("notify value changed"); listeners.call(&Listener::parameterValueChanged, this); }
 
 
 public:

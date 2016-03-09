@@ -38,6 +38,7 @@ public:
 	void setCustomShortName(const String &shortName)
 	{
 		this->shortName = shortName;
+		DBG("Set short name : "+shortName);
 		hasCustomShortName = true;
 	}
 

@@ -117,8 +117,8 @@ void ControllableContainer::addChildControllableContainer(ControllableContainer 
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
-	controllableContainers.remove(&container);
 	container->setParentContainer(nullptr);
+	controllableContainers.removeAllInstancesOf(container);
 }
 
 void ControllableContainer::setParentContainer(ControllableContainer * container)

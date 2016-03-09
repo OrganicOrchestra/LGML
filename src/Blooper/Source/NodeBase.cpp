@@ -84,6 +84,7 @@ void NodeBase::ouputRemoved(DataProcessor::Data *)
 
 void NodeBase::parameterValueChanged(Parameter * p)
 {
+	DBG("param value changed in nodeBase :" + p->niceName);
 	if (p == nameParam) setNiceName(nameParam->value);
 	else if (p == enabledParam)
 	{
