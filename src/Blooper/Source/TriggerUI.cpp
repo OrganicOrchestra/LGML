@@ -19,7 +19,8 @@ TriggerUI::TriggerUI(Trigger * trigger) :
 
 TriggerUI::~TriggerUI()
 {
-	trigger->removeListener(this);
+    // TODO check global comportement for listeners
+	//trigger->removeListener(this);
 }
 
 void TriggerUI::triggerTriggered(Trigger * p)

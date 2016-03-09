@@ -30,7 +30,7 @@ public:
     class TrackUI : public Component , public LooperNode::Looper::Track::Listener{
     public:
         
-        TrackUI(LooperNode::Looper::Track * track):track(track),recPlayButton(track->shouldRecordTrig){
+        TrackUI(LooperNode::Looper::Track * track):track(track),recPlayButton(track->recPlayTrig){
             track->addListener(this);
             mainColour = Colours::black;
             addAndMakeVisible(recPlayButton);
@@ -43,92 +43,21 @@ public:
             recPlayButton.setBounds(area.removeFromTop(area.getHeight()/2));
         }
         
-        void trackStateChangedAsync(const LooperNode::Looper::Track::TrackState & state) override{
-            switch(state){
-                case LooperNode::Looper::Track::RECORDING:
-                    mainColour = Colours::red;
-                    break;
-                    
-                case LooperNode::Looper::Track::PLAYING:
-                    mainColour = Colours::green;
-                    break;
-                
-                case LooperNode::Looper::Track::SHOULD_RECORD:
-                    mainColour = Colours::yellow;
-                    break;
-                
-                case LooperNode::Looper::Track::SHOULD_PLAY:
-                    mainColour = Colours::yellow;
-                    break;
-                
-                case LooperNode::Looper::Track::SHOULD_CLEAR:
-                case LooperNode::Looper::Track::CLEARED:
-                    mainColour = Colours::black;
-                    break;
-                
-                case LooperNode::Looper::Track::STOPPED:
-                    mainColour = Colours::grey;
-                    break;
-                
-                default:
-                    jassertfalse;
-                    break;
-            }
-            
-            if(state == LooperNode::Looper::Track::RECORDING ||
-               state == LooperNode::Looper::Track::STOPPED
-               )
-            {
-                recPlayButton.setTriggerReference(track->shouldPlayTrig);
-            }
-            else{
-                recPlayButton.setTriggerReference(track->shouldRecordTrig);
-            }
-            repaint();
-        };
-        
+        void trackStateChangedAsync(const LooperNode::Looper::Track::TrackState & state)override;
         LooperNode::Looper::Track * track;
         Colour mainColour;
         TriggerBlinkUI recPlayButton;
         
     };
-    void trackNumChanged(int num) {
-        
-        if(num < tracksUI.size()){
-            tracksUI.removeRange(num, tracksUI.size() - num);
-        }
-        else{
-            for(int i = tracksUI.size() ; i < num ; i++){
-                TrackUI * t = new TrackUI(looperNode->looper->tracks.getUnchecked(i));
-                tracksUI.add(t);
-                addAndMakeVisible(t);
-            }
-        }
-        
-        resized();
-    };
+    
+    
+    void trackNumChanged(int num) override;
     
     void resized() override{
         reLayoutTracks();
     }
 
-    void reLayoutTracks(){
-        int numRow = 2;
-        int numCol = tracksUI.size()/numRow ;
-        int width = getLocalBounds().getWidth()/numCol;
-        int height = getLocalBounds().getHeight()/numRow;
-        int pad = 10;
-        
-        for(int j = 0 ; j < numRow ; j++){
-            for(int i = 0 ; i < numCol ;i++){
-                int idx = j*numCol + i;
-                if(idx < tracksUI.size()){
-                    tracksUI.getUnchecked(idx)->setBounds(i*width+pad,j*height+pad,width-2*pad,height-2*pad);
-                }
-            }
-        }
-        
-    }
+    void reLayoutTracks();
     
     OwnedArray<TrackUI> tracksUI;
     

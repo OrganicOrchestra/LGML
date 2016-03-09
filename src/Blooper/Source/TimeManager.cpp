@@ -22,7 +22,7 @@ playState(false),
 beatTimeInSample(44100),
 beatPerBar(4),sampleRate(44100),
 timeMasterNode(nullptr),
-beatPerQuantizedTime(8){
+beatPerQuantizedTime(4){
     
 }
 TimeManager::~TimeManager()
@@ -99,10 +99,10 @@ int TimeManager::setBPMForLoopLength(int time){
 }
 
 void TimeManager::setNumBeatForQuantification(int n){beatPerQuantizedTime = n;}
-int TimeManager::getNextQuantifiedTime(){return ceil(getBeat()*1.0/beatPerQuantizedTime) *beatPerQuantizedTime* beatTimeInSample;}
+int TimeManager::getNextQuantifiedTime(){return ceil((getBeat() + 1)*1.0/beatPerQuantizedTime) *beatPerQuantizedTime* beatTimeInSample;}
 double TimeManager::getBPM(){return sampleRate*60.0/beatTimeInSample;}
 
-int TimeManager::getBeat(){return timeInSample/beatTimeInSample;}
+int TimeManager::getBeat(){return floor(timeInSample*1.0/beatTimeInSample);}
 double TimeManager::getBeatPercent(){return timeInSample*1.0/beatTimeInSample-getBeat();}
 
 int TimeManager::getBar(){return getBeat()/beatPerBar;}

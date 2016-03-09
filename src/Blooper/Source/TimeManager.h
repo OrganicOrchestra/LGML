@@ -105,7 +105,7 @@ class TimeManager : public AudioIODeviceCallback{
     void addListener(Listener* newListener) { listeners.add(newListener); }
     void removeListener(Listener* listener) { listeners.remove(listener); }
 
-    int timeInSample;
+    uint64 timeInSample;
     int beatTimeInSample;
     int sampleRate;
     int beatPerBar;

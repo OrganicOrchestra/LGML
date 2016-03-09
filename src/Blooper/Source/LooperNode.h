@@ -63,7 +63,7 @@ public:
 				setCustomShortName("track/" + String(_trackNum));
 
 				trackNum = addIntParameter("Track Number", "Index of the track", _trackNum, 0, MAX_NUM_TRACKS);
-				shouldRecordTrig = addTrigger("Should Record", "Tells the track to wait for the next bar and then start recording");
+				recPlayTrig = addTrigger("RecPlay", "Tells the track to wait for the next bar and then start record or play");
 				shouldPlayTrig = addTrigger("Should Play", "Tells the track to wait for the next bar and then stop recording and start playing");
 				shouldClearTrig = addTrigger("Should Clear", "Tells the track to clear it's content if got any");
 				volume = addFloatParameter("Volume", "Set the volume of the track", 1, 0, 1);
@@ -71,7 +71,7 @@ public:
 
 				preDelayMs->isControllableExposed = false;
 
-				shouldRecordTrig->addListener(this);
+				recPlayTrig->addListener(this);
                 shouldPlayTrig->addListener(this);
                 shouldClearTrig->addListener(this);
             }
@@ -80,7 +80,7 @@ public:
                 
             }
             
-            Trigger * shouldRecordTrig;
+            Trigger * recPlayTrig;
             Trigger * shouldPlayTrig;
             Trigger * shouldClearTrig;
 
@@ -142,7 +142,7 @@ public:
             
             int playNeedle;
             int quantizedPlayStart,quantizedPlayEnd;
-            void updatePendingLooperTrackState(int64 curTime);
+            void updatePendingLooperTrackState(uint64 curTime);
       
             
             AudioSampleBuffer monoLoopSample;

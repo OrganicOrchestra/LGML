@@ -89,7 +89,7 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     
     
 }
-void LooperNode::Looper::Track::updatePendingLooperTrackState(int64 curTime){
+void LooperNode::Looper::Track::updatePendingLooperTrackState(uint64 curTime){
     
     if(quantizedRecordStart>0){
         if(curTime>quantizedRecordStart){
@@ -110,6 +110,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(int64 curTime){
     
     if(quantizedPlayStart>0){
         if(curTime>quantizedPlayStart){
+            DBG( curTime << " , " <<quantizedPlayStart);
             setTrackState(PLAYING);
         }
     }
@@ -149,9 +150,13 @@ void LooperNode::Looper::setNumTracks(int numTracks){
 
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
-    if(t == shouldRecordTrig){
+    if(t == recPlayTrig){
+        if(trackState == CLEARED){
         setTrackState(SHOULD_RECORD);
-        
+        }
+        else{
+          setTrackState(SHOULD_PLAY);
+        }
     }
     else if(t == shouldPlayTrig){
         setTrackState(SHOULD_PLAY);
@@ -224,8 +229,12 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     }
     
     
-    
-    if(newState ==PLAYING){
+    if(newState ==SHOULD_PLAY){
+        quantizedRecordEnd = -1;
+        quantizedRecordStart = -1;
+        quantizedPlayStart = TimeManager::getInstance()->getNextQuantifiedTime();
+    }
+    else if(newState ==PLAYING){
         quantizedRecordEnd = -1;
         quantizedPlayStart = -1;
         playNeedle = 0;

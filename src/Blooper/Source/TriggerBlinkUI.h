@@ -25,7 +25,7 @@ class TriggerBlinkUI : public TriggerUI, public Timer
 {
 public:
 	TriggerBlinkUI(Trigger * t);
-	~TriggerBlinkUI();
+	virtual ~TriggerBlinkUI();
 
 	void paint(Graphics&);
 	void resized();
