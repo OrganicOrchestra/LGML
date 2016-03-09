@@ -27,10 +27,9 @@ public:
 
 	Controller * controller;
 
-	void paint(Graphics &g) override;
-	void resized() override;
+	virtual void paint(Graphics &g) override;
+	virtual void resized() override;
 
-	void mouseDown(const MouseEvent &e) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerUI)
 };

@@ -29,13 +29,16 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 #include "NodeConnection.h"
 
 
-class NodeManager: public NodeBase::Listener , public NodeConnection::Listener
+class NodeManager: public NodeBase::Listener , public NodeConnection::Listener, public ControllableContainer
 {
-	
+
+
+
 public:
 	NodeManager();
 	~NodeManager();
 
+	juce_DeclareSingleton(NodeManager, true);
 
 	NodeFactory nodeFactory;
 

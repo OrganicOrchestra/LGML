@@ -14,7 +14,7 @@
 #include "JuceHeader.h"
 #include "ControllerFactory.h"
 
-class ControllerManager : public Controller::Listener
+class ControllerManager : public Controller::Listener, public ControllableContainer
 {
 public:
 	ControllerManager();

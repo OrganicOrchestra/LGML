@@ -14,6 +14,8 @@
 #include "JuceHeader.h"
 #include "StringUtil.h"
 
+class ControllableContainer;
+
 class Controllable
 {
 public:
@@ -23,12 +25,28 @@ public:
 	bool enabled;
 	String niceName;
 	String shortName;
+	bool hasCustomShortName;
+	
+	bool isControllableExposed;
 
 	String description;
 
-	void setNiceName(const String &niceName, bool autoSetShortName = true) {
+	ControllableContainer * parentContainer;
+
+	void setNiceName(const String &niceName) {
 		this->niceName = niceName;
-		if (autoSetShortName) shortName = StringUtil::toShortName(niceName);
+		if (!hasCustomShortName) setAutoShortName();
+	}
+
+	void setCustomShortName(const String &shortName)
+	{
+		this->shortName = shortName;
+		hasCustomShortName = true;
+	}
+
+	void setAutoShortName() {
+		hasCustomShortName = false;
+		shortName = StringUtil::toShortName(niceName);
 	}
 
 	void setEnabled(bool value, bool silentSet = false, bool force = false)
@@ -37,9 +55,14 @@ public:
 
 		enabled = value;
 		if(!silentSet) listeners.call(&Listener::controllableStateChanged, this);
-		
 	}
 
+	void setParentContainer(ControllableContainer * container)
+	{
+		this->parentContainer = container;
+	}
+
+	String getControlAddress();
 
 public:
 	class  Listener

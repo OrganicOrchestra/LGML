@@ -20,13 +20,14 @@ ControllerUI::ControllerUI(Controller * controller, ControllerContentUI * conten
 	if(this->headerUI == nullptr) this->headerUI = new ControllerHeaderUI();
 	if (this->contentUI == nullptr) this->contentUI = new ControllerContentUI();
 
+
 	this->headerUI->setControllerAndUI(controller, this);
 	this->contentUI->setControllerAndUI(controller, this);
 
 	addAndMakeVisible(this->headerUI);
 	addAndMakeVisible(this->contentUI);
 
-	setSize(300, 300);
+	if(getHeight() == 0) setSize(100,50);
 }
 
 ControllerUI::~ControllerUI()
@@ -45,13 +46,9 @@ void ControllerUI::paint(Graphics & g)
 
 void ControllerUI::resized()
 {
-	DBG("Resize here " + getLocalBounds().toString());
 	Rectangle<int> r = getLocalBounds();
 	headerUI->setBounds(r.removeFromTop(headerUI->getHeight()));
 	contentUI->setBounds(r);
 }
 
-void ControllerUI::mouseDown(const MouseEvent & e)
-{
-	if(e.mods.isCtrlDown()) controller->remove();
-}
+

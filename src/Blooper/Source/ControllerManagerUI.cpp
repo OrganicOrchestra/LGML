@@ -16,10 +16,12 @@
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(ControllerManager * manager) :
+	ContourComponent(Colours::red),
 	manager(manager)
 {
  
 	manager->addListener(this);
+	
 }
 
 ControllerManagerUI::~ControllerManagerUI()
@@ -51,7 +53,9 @@ ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
 	ControllerUI * cui = controller->createUI();
 	controllersUI.add(cui);
 	addAndMakeVisible(cui);
-	resized(); //proper ?
+	
+	placeElements();
+
 	return cui;
 }
 
@@ -66,6 +70,7 @@ void ControllerManagerUI::removeControllerUI(Controller * controller)
 
 	controllersUI.removeObject(cui);
 	removeChildComponent(getIndexOfChildComponent(cui));
+	placeElements();
 }
 
 ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)
@@ -78,20 +83,28 @@ ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)
 	return nullptr;
 }
 
-void ControllerManagerUI::paint (Graphics& g)
-{
-	g.setColour(BG_COLOR.darker());
-	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
-}
-
-void ControllerManagerUI::resized()
+void ControllerManagerUI::placeElements()
 {
 	Rectangle<int> r = getLocalBounds().reduced(5);
 	for (auto &cui : controllersUI)
 	{
-		cui->setBounds(r.removeFromTop(cui->getHeight()));
-		r.removeFromTop(5);
+		r.setHeight(cui->getHeight());
+		cui->setBounds(r);
+		r.translate(0, cui->getHeight() + 10);
 	}
+
+	int targetHeight = jmax<int>(r.getTopLeft().y, getParentComponent()->getHeight());
+	setSize(getWidth(), targetHeight);
+}
+
+void ControllerManagerUI::paint (Graphics& g)
+{
+	//ContourComponent::paint(g);
+}
+
+void ControllerManagerUI::resized()
+{
+
 }
 
 
@@ -123,3 +136,25 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
 
 }
 
+ControllerManagerViewport::ControllerManagerViewport(ControllerManager * controllerManager)
+{
+	cmui = new ControllerManagerUI(controllerManager);
+	setViewedComponent(cmui);
+	
+}
+
+void ControllerManagerViewport::paint(Graphics & g)
+{
+	g.setColour(BG_COLOR.darker());
+	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
+}
+
+void ControllerManagerViewport::resized()
+{
+	if (cmui->getHeight() < getHeight())
+	{
+		Rectangle<int> r = getLocalBounds();
+		r.removeFromRight(18); //scrollbar
+		cmui->setBounds(r);
+	}
+}

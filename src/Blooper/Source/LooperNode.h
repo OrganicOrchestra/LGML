@@ -25,14 +25,17 @@ class LooperNode : public NodeBase
 public:
     LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"Looper",new Looper(this)) {
         looper = dynamic_cast<Looper*>(audioProcessor);
+		addChildControllableContainer(looper);
     }
     
-    
-
-    
-    class Looper : public NodeAudioProcessor{
+    class Looper : public NodeAudioProcessor, public ControllableContainer
+	{
     public:
-        Looper(LooperNode * looperNode):looperNode(looperNode){
+        Looper(LooperNode * looperNode):
+			looperNode(looperNode),
+			ControllableContainer("Looper")
+		{
+			skipControllableNameInAddress = true;
             setNumTracks(8);
         }
         
@@ -40,42 +43,47 @@ public:
         void processBlockInternal(AudioBuffer<float>& buffer,
                                   MidiBuffer& midiMessages)override;
         
-
-
-
-        
         void setNumTracks(int numTracks);
         
-        class Track : Trigger::Listener{
+        class Track : public ControllableContainer, public Trigger::Listener
+		{
         public:
-            Track(Looper * looper,int _trackNum):
-            parentLooper(looper),
-            trackNum("Track Number","Index of the track",_trackNum,0,MAX_NUM_TRACKS),
-            shouldRecordTrig("Should Record","Tells the track to wait for the next bar and then start recording"),quantizedRecordStart(0),quantizedRecordEnd(0),
-            shouldPlayTrig("Should Play","Tells the track to wait for the next bar and then stop recording and start playing"),quantizedPlayStart(0),quantizedPlayEnd(0),
-            shouldClearTrig("Should Clear","Tells the track to clear it's content if got any"),
-            volume("Volume","Set the volume of the track",1,0,1),
-            preDelayMs("Pre Delay MS","Pre process delay (in milliseconds)",0,0,200),
-            streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
-            monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
-            trackState(CLEARED)
+			Track(Looper * looper, int _trackNum) :
+				ControllableContainer("Track " + String(_trackNum)),
+				parentLooper(looper),
+				quantizedRecordStart(0),
+				quantizedRecordEnd(0),
+				quantizedPlayStart(0),
+				quantizedPlayEnd(0),
+				streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
+				monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
+				trackState(CLEARED)
             {
 
-                shouldRecordTrig.addListener(this);
-                shouldPlayTrig.addListener(this);
-                shouldClearTrig.addListener(this);
+				setCustomShortName("track/" + String(_trackNum));
+
+				trackNum = addIntParameter("Track Number", "Index of the track", _trackNum, 0, MAX_NUM_TRACKS);
+				shouldRecordTrig = addTrigger("Should Record", "Tells the track to wait for the next bar and then start recording");
+				shouldPlayTrig = addTrigger("Should Play", "Tells the track to wait for the next bar and then stop recording and start playing");
+				shouldClearTrig = addTrigger("Should Clear", "Tells the track to clear it's content if got any");
+				volume = addFloatParameter("Volume", "Set the volume of the track", 1, 0, 1);
+				preDelayMs = addIntParameter("Pre Delay MS", "Pre process delay (in milliseconds)", 0, 0, 200);
+
+				preDelayMs->isControllableExposed = false;
+
+				shouldRecordTrig->addListener(this);
+                shouldPlayTrig->addListener(this);
+                shouldClearTrig->addListener(this);
             }
             
             ~Track(){
                 
             }
             
-            Trigger  shouldRecordTrig;
-            Trigger  shouldPlayTrig;
-            Trigger  shouldClearTrig;
+            Trigger * shouldRecordTrig;
+            Trigger * shouldPlayTrig;
+            Trigger * shouldClearTrig;
 
-            
-            
             
             enum TrackState{
                 SHOULD_RECORD,
@@ -116,7 +124,7 @@ public:
             void addListener(Listener* newListener) { listeners.add(newListener); }
             void removeListener(Listener* listener) { listeners.remove(listener); }
             
-            FloatParameter volume;
+            FloatParameter * volume;
             float lastVolume;
             
             // RMS Values from all Tracks
@@ -124,13 +132,10 @@ public:
             bool isMasterTempoTrack();
         private:
             
-            void triggerTriggered(Trigger * t)override;
+            void triggerTriggered(Trigger * t) override;
             
-            IntParameter   trackNum;
+            IntParameter * trackNum;
             
-            
-            
-
             int recordNeedle;
             int recordingDelay;
             int quantizedRecordEnd,quantizedRecordStart;
@@ -145,7 +150,7 @@ public:
             // keeps track of few bits of audio
             // to readjust the loop when controllers are delayed
             BipBuffer streamBipBuffer;
-            IntParameter  preDelayMs;
+            IntParameter * preDelayMs;
 
             Looper * parentLooper;
             

@@ -20,6 +20,7 @@
 #define CONTOUR_COLOR	Colour(0xcc303030)
 
 #define TEXT_COLOR		Colour(0xffCCCCCC)
+#define TEXTNAME_COLOR	Colour(0xff999999)
 
 #define AUDIO_COLOR		Colours::cadetblue
 #define DATA_COLOR		Colours::pink

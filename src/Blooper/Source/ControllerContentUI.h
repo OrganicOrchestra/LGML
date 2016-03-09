@@ -25,6 +25,10 @@ public:
 	void setControllerAndUI(Controller * controller, ControllerUI * cui);
 	virtual void init(); //override this function for proper init with controller and UI
 
+	virtual void mouseDown(const MouseEvent &e) override
+	{
+		if (e.mods.isCtrlDown()) controller->remove();
+	}
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerContentUI)
 };

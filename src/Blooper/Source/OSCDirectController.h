@@ -18,6 +18,7 @@ class OSCDirectController : public OSCController
 public:
 	OSCDirectController();
 
+	ControllerUI * createUI() override;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
 };
 

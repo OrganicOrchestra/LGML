@@ -9,7 +9,7 @@
 #ifndef MAINCOMPONENT_H_INCLUDED
 #define MAINCOMPONENT_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "JuceHeader.h"
 
 #include "NodeManager.h"
 #include "NodeManagerUI.h"
@@ -40,49 +40,52 @@ public:
 								 // just need to create one of these and leave it
 								 // there to do its work..
 
-	ScopedPointer<NodeManager> nodeManager;
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
     ScopedPointer<TimeManagerUI> timeManagerUI;
     
 
 	ScopedPointer<ControllerManager> controllerManager;
-	ScopedPointer<ControllerManagerUI> controllerManagerUI;
+	
+	ScopedPointer<ControllerManagerViewport> controllerManagerViewport;
 
+	
     // Audio
     AudioDeviceManager deviceManager;
     AudioProcessorPlayer graphPlayer;
     //==============================================================================
-    MainContentComponent()
-    {		
-		nodeManager = new NodeManager();
+	MainContentComponent::MainContentComponent()
+	{
 		controllerManager = new ControllerManager();
 
 		initAudio();
 
 		timeManagerUI = new TimeManagerUI();
-		nodeManagerUI = new NodeManagerUI(nodeManager);
-		controllerManagerUI = new ControllerManagerUI(controllerManager);
-		
-		
+		nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
+
+
 		addAndMakeVisible(timeManagerUI);
 		addAndMakeVisible(nodeManagerUI);
-		addAndMakeVisible(controllerManagerUI);
-		
-		nodeManagerUI->setSize(getWidth(),getHeight());
-        
-        // resize after contentCreated
-         setSize (1200,600);
-    }
+
+		controllerManagerViewport = new ControllerManagerViewport(controllerManager);
+		addAndMakeVisible(controllerManagerViewport);
+
+		nodeManagerUI->setSize(getWidth(), getHeight());
+
+		// resize after contentCreated
+		setSize(1200, 600);
+	}
+
 
     ~MainContentComponent()
     {
         stopAudio();
 		delete TimeManager::getInstance(); //TO PREVENT LEAK OF SINGLETON
+		delete NodeManager::getInstance();
     }
     
     
     void initAudio(){
-        graphPlayer.setProcessor(&nodeManager->audioGraph);
+        graphPlayer.setProcessor(&NodeManager::getInstance()->audioGraph);
         
         ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()
                                                    ->getXmlValue ("audioDeviceState"));
@@ -110,7 +113,7 @@ public:
     {
 		Rectangle<int> r = getLocalBounds();
 		timeManagerUI->setBounds(r.removeFromTop(20));
-		controllerManagerUI->setBounds(r.removeFromLeft(300));
+		controllerManagerViewport->setBounds(r.removeFromLeft(300));
 		nodeManagerUI->setBounds(r);
     }
 
@@ -125,7 +128,6 @@ private:
 
 // (This function is called by the app startup code to create our main component)
 Component* createMainContentComponent()     { return new MainContentComponent(); }
-
 
 
 #endif  // MAINCOMPONENT_H_INCLUDED

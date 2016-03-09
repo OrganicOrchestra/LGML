@@ -10,8 +10,10 @@
 
 #include "ControlManager.h"
 
-ControllerManager::ControllerManager()
+ControllerManager::ControllerManager() :
+	ControllableContainer("Controller Manager")
 {
+	setCustomShortName("control");
 }
 
 ControllerManager::~ControllerManager()
@@ -25,6 +27,7 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 	controllers.add(c);
 	listeners.call(&Listener::controllerAdded, c);
 	c->addListener(this);
+	c->setParentContainer(this);
 	return c;
 }
 

@@ -12,12 +12,17 @@
 #define OSCCONTROLLER_H_INCLUDED
 
 #include "Controller.h"
+#include "StringParameter.h"
 
 class OSCController : public Controller
 {
 public:
-	OSCController();
+	OSCController(const String &name);
 	virtual ~OSCController();
+
+
+	StringParameter * localPortParam;
+	StringParameter * remotePortParam;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCController)
 };

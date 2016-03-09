@@ -10,9 +10,14 @@
 
 #include "ControllableContainer.h"
 
-ControllableContainer::ControllableContainer(const String & niceName) : niceName(niceName)
+ControllableContainer::ControllableContainer(const String & niceName) : 
+	niceName(niceName), 
+	parentContainer(nullptr), 
+	hasCustomShortName(false),
+	skipControllableNameInAddress(false)
 {
 	setNiceName(niceName);
+
 }
 
 ControllableContainer::~ControllableContainer()
@@ -82,6 +87,7 @@ Trigger * ControllableContainer::addTrigger(const String & niceName, const Strin
 
 	Trigger * t = new Trigger(niceName, description, enabled);
 	controllables.add(t);
+	t->setParentContainer(this);
 	listeners.call(&Listener::controllableAdded, t);
 	return t;
 }
@@ -102,8 +108,41 @@ Controllable * ControllableContainer::getControllableByName(const String & niceN
 	return nullptr;
 }
 
+void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
+{
+	controllableContainers.add(container);
+
+	container->setParentContainer(this);
+}
+
+void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
+{
+	controllableContainers.remove(&container);
+	container->setParentContainer(nullptr);
+}
+
+void ControllableContainer::setParentContainer(ControllableContainer * container)
+{
+	this->parentContainer = container;
+}
+
+Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
+{
+	DBG("get All controllables");
+	Array<Controllable*> result;
+	for (auto &c : controllables) if(c->isControllableExposed) result.add(c);
+
+	if (recursive)
+	{
+		for (auto &cc : controllableContainers) result.addArray(cc->getAllControllables(true));
+	}
+
+	return result;
+}
+
 void ControllableContainer::addParameterInternal(Parameter * p)
 {
+	p->setParentContainer(this);
 	controllables.add(p);
 	listeners.call(&Listener::controllableAdded, p);
 }

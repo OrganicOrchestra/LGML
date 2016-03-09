@@ -26,15 +26,30 @@ public:
 
 	String niceName;
 	String shortName;
+	bool hasCustomShortName;
 
-	void setNiceName(const String &niceName, bool autoSetShortName = true) {
+	bool skipControllableNameInAddress;
+
+	void setNiceName(const String &niceName) {
 		this->niceName = niceName;
-		if (autoSetShortName) shortName = StringUtil::toShortName(niceName);
+		if (!hasCustomShortName) setAutoShortName();
 	}
 
-	OwnedArray<Controllable> controllables;
+	void setCustomShortName(const String &shortName)
+	{
+		this->shortName = shortName;
+		hasCustomShortName = true;
+	}
 
-	
+	void setAutoShortName() {
+		hasCustomShortName = false;
+		shortName = StringUtil::toShortName(niceName);
+	}
+
+
+	OwnedArray<Controllable> controllables;
+	Array<ControllableContainer * > controllableContainers;
+	ControllableContainer * parentContainer;
 
 	FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
 	IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
@@ -44,6 +59,12 @@ public:
 
 	void removeControllable(Controllable * c);
 	Controllable * getControllableByName(const String &name);
+
+	void addChildControllableContainer(ControllableContainer * container);
+	void removeChildControllableContainer(ControllableContainer *container);
+
+	void setParentContainer(ControllableContainer * container);
+	Array<Controllable *> getAllControllables(bool recursive = false);
 
 	// Inherited via Listener
 	virtual void parameterValueChanged(Parameter * p) override {};

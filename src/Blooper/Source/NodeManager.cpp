@@ -11,10 +11,12 @@
 #include "NodeManager.h"
 #include "DummyNode.h"
 
+juce_ImplementSingleton(NodeManager);
 
-NodeManager::NodeManager()
+NodeManager::NodeManager() :
+	ControllableContainer("Node Manager")
 {
-
+	setCustomShortName("node");
 }
 
 NodeManager::~NodeManager()
@@ -60,6 +62,8 @@ NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
 	NodeBase * n = nodeFactory.createNode(this,nodeType, nodeId);
 	nodes.add(n);
 	n->addListener(this);
+	addChildControllableContainer(n); //ControllableContainer
+	DBG("add child controllable node, parent ? " + String(n->parentContainer == nullptr));
 	listeners.call(&NodeManager::Listener::nodeAdded,n);
 
 	return n;
@@ -78,6 +82,7 @@ bool NodeManager::removeNode(uint32 nodeId)
 
 	if (n == nullptr) return false;
 	n->removeListener(this);
+	removeChildControllableContainer(n);
 
 	listeners.call(&NodeManager::Listener::nodeRemoved, n);
 	nodes.removeObject(n);

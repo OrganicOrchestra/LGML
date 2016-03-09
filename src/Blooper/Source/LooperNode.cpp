@@ -28,6 +28,8 @@ void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
     }
     
     buffer.makeCopyOf( bufferOut);
+
+	
 }
 
 void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuffer &midi){
@@ -75,8 +77,8 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
             playNeedle += buffer.getNumSamples();
             playNeedle %= recordNeedle;
         }
-        buffer.applyGainRamp(0, 0, buffer.getNumSamples(), lastVolume,volume.value);
-        lastVolume = volume.value;
+        buffer.applyGainRamp(0, 0, buffer.getNumSamples(), lastVolume,volume->value);
+        lastVolume = volume->value;
         
         
     }
@@ -91,7 +93,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(int64 curTime){
     
     if(quantizedRecordStart>0){
         if(curTime>quantizedRecordStart){
-            preDelayMs.setValue( 0);
+            preDelayMs->setValue( 0);
             setTrackState(RECORDING);
             
         }
@@ -99,7 +101,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(int64 curTime){
     }
     else if( quantizedRecordEnd>0){
         if(curTime>quantizedRecordEnd){
-            preDelayMs.setValue(0);
+            preDelayMs->setValue(0);
             setTrackState(PLAYING);
         }
     }
@@ -125,10 +127,20 @@ void LooperNode::Looper::setNumTracks(int numTracks){
     int oldSize = tracks.size();
     if(numTracks>oldSize){
         for(int i = oldSize ; i< numTracks ; i++){
-            tracks.add(new Track(this,i));
+           
+			//to put in addTrack() ?
+			Track * t = new Track(this, i);
+			tracks.add(t);
+
+			addChildControllableContainer(t);
         }
     }
     else{
+		for (int i = oldSize - 1; i > numTracks; --i)
+		{
+			removeChildControllableContainer(tracks[i]);
+		}
+
         tracks.removeRange(oldSize,oldSize - numTracks );
     }
     
@@ -137,14 +149,14 @@ void LooperNode::Looper::setNumTracks(int numTracks){
 
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
-    if(t == &shouldRecordTrig){
+    if(t == shouldRecordTrig){
         setTrackState(SHOULD_RECORD);
         
     }
-    else if(t == &shouldPlayTrig){
+    else if(t == shouldPlayTrig){
         setTrackState(SHOULD_PLAY);
     }
-    else if(t== &shouldClearTrig){
+    else if(t== shouldClearTrig){
         setTrackState(SHOULD_CLEAR);
     }
 }
@@ -179,12 +191,12 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     if(newState == RECORDING){
         quantizedRecordStart = -1;
-        if(preDelayMs.value>0){
-            monoLoopSample.copyFrom(0,0,streamBipBuffer.getLastBlock(preDelayMs.value),preDelayMs.value);
-            recordNeedle = preDelayMs.value;
+        if(preDelayMs->value>0){
+            monoLoopSample.copyFrom(0,0,streamBipBuffer.getLastBlock(preDelayMs->value),preDelayMs->value);
+            recordNeedle = preDelayMs->value;
         }
         else{
-            preDelayMs.setValue( 0);
+            preDelayMs->setValue( 0);
             recordNeedle = 0;
         }
     }
@@ -192,7 +204,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         {
             
             if( isMasterTempoTrack()){
-                recordNeedle-=preDelayMs.value;
+                recordNeedle-=preDelayMs->value;
                 // 22 ms if 44100
                 int fadeNumSaples = 10;
                 if(recordNeedle>2*fadeNumSaples){

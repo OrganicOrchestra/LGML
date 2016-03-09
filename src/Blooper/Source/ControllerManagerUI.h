@@ -18,7 +18,10 @@
 //==============================================================================
 /*
 */
-class ControllerManagerUI : public Component, public ControllerManager::Listener
+
+
+
+class ControllerManagerUI : public ContourComponent, public ControllerManager::Listener
 {
 public:
     ControllerManagerUI(ControllerManager * manager);
@@ -33,6 +36,8 @@ public:
 
 	ControllerUI * getUIForController(Controller * controller);
 
+	void placeElements(); //update size when controllerUIs added or removed
+
     void paint (Graphics&);
     void resized();
 
@@ -46,5 +51,18 @@ private:
 	virtual void controllerRemoved(Controller *) override;
 };
 
+
+
+class ControllerManagerViewport : public Viewport
+{
+public:
+	ControllerManagerViewport(ControllerManager * controllerManager);
+
+	ControllerManagerUI * cmui;
+
+	void paint(Graphics &g) override;
+	void resized() override;
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerViewport)
+};
 
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED

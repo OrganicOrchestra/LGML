@@ -21,15 +21,17 @@ public:
 	Controller(const String &name = "[Controller]");
 	virtual ~Controller();
 
-	ControllerUI * createUI();
-
-	void remove(); //will dispatch askForRemoveController
 
 	StringParameter * nameParam;
 	BoolParameter * enabledParam;
 
+
+
+	void remove(); //will dispatch askForRemoveController
 	virtual void parameterValueChanged(Parameter * p) override;
 
+	virtual ControllerUI * createUI();
+	
 	class  Listener
 	{
 	public:

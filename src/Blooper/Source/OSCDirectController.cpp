@@ -9,7 +9,15 @@
 */
 
 #include "OSCDirectController.h"
+#include "OSCDirectControllerContentUI.h"
 
-OSCDirectController::OSCDirectController()
-  {
-  }
+OSCDirectController::OSCDirectController() :
+	OSCController("OSC Direct Controller")
+{
+
+}
+
+ControllerUI * OSCDirectController::createUI()
+{
+	return new ControllerUI(this, new OSCDirectControllerContentUI());
+}

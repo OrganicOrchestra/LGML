@@ -20,9 +20,7 @@ NodeBaseHeaderUI::NodeBaseHeaderUI()
 
   NodeBaseHeaderUI::~NodeBaseHeaderUI()
   {
-	  if (node && node->hasAudioOutputs) {
-		  node->audioProcessor->removeListener(&vuMeter);
-	  }
+
   }
 
   void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
@@ -43,6 +41,7 @@ NodeBaseHeaderUI::NodeBaseHeaderUI()
 	  //to override
 
 	  titleUI = node->nameParam->getUI();
+	  titleUI->setNameLabelVisible(false);
 	  addAndMakeVisible(titleUI);
 
 	  enabledUI = node->enabledParam->createToggle();

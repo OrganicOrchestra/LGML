@@ -21,7 +21,11 @@ public:
 	StringParameterUI(Parameter * p);
 
 	StringParameter * stringParam;
+	Label nameLabel;
 	Label valueLabel;
+
+	bool nameLabelIsVisible;
+	void setNameLabelVisible(bool visible);
 
 	void resized() override;
 

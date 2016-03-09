@@ -9,10 +9,32 @@
 */
 
 #include "Controllable.h"
+#include "ControllableContainer.h"
 
-Controllable::Controllable(const String & niceName, const String &description, bool enabled) : description(description)
+Controllable::Controllable(const String & niceName, const String &description, bool enabled) :
+	description(description),
+	parentContainer(nullptr),
+	hasCustomShortName(false),
+	isControllableExposed(true)
 {
 	setEnabled(enabled);
 	setNiceName(niceName);
 	DBG("Add controllable :" + niceName + " >> " + shortName + " (" + description + ")");
+}
+
+String Controllable::getControlAddress()
+{
+	StringArray addressArray;
+	addressArray.add(shortName);
+
+	ControllableContainer * pc = parentContainer;
+
+	while (pc != nullptr)
+	{
+		if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
+		pc = pc->parentContainer;
+		
+	}
+
+	return "/" + addressArray.joinIntoString("/");
 }

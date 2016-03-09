@@ -30,7 +30,7 @@ public:
     class TrackUI : public Component , public LooperNode::Looper::Track::Listener{
     public:
         
-        TrackUI(LooperNode::Looper::Track * track):track(track),recPlayButton(&track->shouldRecordTrig){
+        TrackUI(LooperNode::Looper::Track * track):track(track),recPlayButton(track->shouldRecordTrig){
             track->addListener(this);
             mainColour = Colours::black;
             addAndMakeVisible(recPlayButton);
@@ -79,10 +79,10 @@ public:
                state == LooperNode::Looper::Track::STOPPED
                )
             {
-                recPlayButton.setTriggerReference(&track->shouldPlayTrig);
+                recPlayButton.setTriggerReference(track->shouldPlayTrig);
             }
             else{
-                recPlayButton.setTriggerReference(&track->shouldRecordTrig);
+                recPlayButton.setTriggerReference(track->shouldRecordTrig);
             }
             repaint();
         };

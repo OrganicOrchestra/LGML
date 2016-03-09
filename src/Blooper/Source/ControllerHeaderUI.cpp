@@ -23,8 +23,6 @@ void ControllerHeaderUI::resized()
 {
 	if (enabledUI == nullptr) return;
 
-	
-	DBG("header resized : "+getLocalBounds().toString());
 	enabledUI->setTopLeftPosition(5, 5);
 	titleUI->setBounds(getLocalBounds().reduced(15,2));
 }
@@ -40,6 +38,7 @@ void ControllerHeaderUI::init()
 {
 	//to override
 	titleUI = controller->nameParam->getUI();
+	titleUI->setNameLabelVisible(false);
 	addAndMakeVisible(titleUI);
 
 	enabledUI = controller->enabledParam->createToggle();
