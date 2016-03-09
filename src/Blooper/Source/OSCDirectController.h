@@ -18,6 +18,8 @@ class OSCDirectController : public OSCController
 public:
 	OSCDirectController();
 
+	void processMessage(const OSCMessage &msg) override;
+
 	ControllerUI * createUI() override;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
 };

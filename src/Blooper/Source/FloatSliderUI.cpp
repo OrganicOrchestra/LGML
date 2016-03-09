@@ -28,7 +28,7 @@ FloatSliderUI::~FloatSliderUI()
 void FloatSliderUI::paint(Graphics & g)
 {
 	
-	Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly ? HIGHLIGHT_COLOR : PARAMETER_FRONT_COLOR).withAlpha(floatParam->enabled ? 1 : .3f);
+	Colour c = isMouseButtonDown() && changeParamOnMouseUpOnly ? HIGHLIGHT_COLOR : PARAMETER_FRONT_COLOR;
 	
 	g.setColour(BG_COLOR);
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);

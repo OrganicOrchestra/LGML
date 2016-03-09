@@ -14,17 +14,36 @@
 #include "Controller.h"
 #include "StringParameter.h"
 
-class OSCController : public Controller
+#include "juce_osc\juce_osc.h"
+
+
+class OSCController : public Controller, public OSCReceiver::Listener<OSCReceiver::MessageLoopCallback>
 {
 public:
 	OSCController(const String &name);
 	virtual ~OSCController();
 
 
+	OSCReceiver receiver;
+	OSCSender sender;
+
 	StringParameter * localPortParam;
+	StringParameter * remoteHostParam;
 	StringParameter * remotePortParam;
 
+	void setupReceiver();
+	void setupSender();
+
+	virtual void processMessage(const OSCMessage & msg);
+
+	virtual void parameterValueChanged(Parameter * p) override;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCController)
+
+	// Inherited via Listener
+private:
+	virtual void oscMessageReceived(const OSCMessage & message) override;
+	virtual void oscBundleReceived(const OSCBundle& /*bundle*/) override { DBG("bundle received"); }
 };
 
 

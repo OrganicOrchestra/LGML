@@ -33,7 +33,7 @@ void OSCDirectControllerContentUI::init()
 	Array<Controllable *> nodeControllables = NodeManager::getInstance()->getAllControllables(true);
 	for (auto &c : nodeControllables)
 	{
-		DBG(c->niceName + " : " + c->getControlAddress());
+		DBG(c->controlAddress+"		"+c->description);
 	}
 }
 

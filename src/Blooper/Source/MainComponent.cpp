@@ -55,6 +55,8 @@ public:
     //==============================================================================
     MainContentComponent()
 	{
+		DBG("Application Start");
+
 		controllerManager = new ControllerManager();
 
 		initAudio();
@@ -83,7 +85,7 @@ public:
 		NodeManager::deleteInstance();
     }
     
-    
+     
     void initAudio(){
         graphPlayer.setProcessor(&NodeManager::getInstance()->audioGraph);
         

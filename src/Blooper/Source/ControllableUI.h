@@ -14,15 +14,24 @@
 #include "JuceHeader.h"
 #include "Controllable.h"
 
-class ControllableUI : public Component, public SettableTooltipClient
+class ControllableUI : public Component, public SettableTooltipClient, public Controllable::Listener
 {
 public:
 	ControllableUI(Controllable * controllable);
 	virtual ~ControllableUI();
 
+	String tooltip;
+
 	Controllable * controllable;
 
+	// Inherited via Listener
+	virtual void controllableStateChanged(Controllable * c) override;
+	virtual void controllableControlAddressChanged(Controllable * c) override;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableUI)
+
+protected :
+	void updateTooltip();
 };
 
 

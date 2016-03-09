@@ -38,7 +38,6 @@ public:
 	void setCustomShortName(const String &shortName)
 	{
 		this->shortName = shortName;
-		DBG("Set short name : "+shortName);
 		hasCustomShortName = true;
 	}
 
@@ -65,8 +64,10 @@ public:
 	void removeChildControllableContainer(ControllableContainer *container);
 
 	void setParentContainer(ControllableContainer * container);
+	void updateChildrenControlAddress();
 	Array<Controllable *> getAllControllables(bool recursive = false);
 
+	
 	// Inherited via Listener
 	virtual void parameterValueChanged(Parameter * p) override;
 

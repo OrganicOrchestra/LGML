@@ -26,7 +26,7 @@ BoolToggleUI::~BoolToggleUI()
 
 void BoolToggleUI::paint(Graphics & g)
 {
-	Colour c = (boolParam->value ? HIGHLIGHT_COLOR : NORMAL_COLOR).withAlpha(boolParam->enabled?1:.3f);
+	Colour c = boolParam->value ? HIGHLIGHT_COLOR : NORMAL_COLOR;
 	g.setGradientFill(ColourGradient(c.brighter(), getLocalBounds().getCentreX(), getLocalBounds().getCentreY(), c.darker(), 2,2,true));
 	g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
 }
