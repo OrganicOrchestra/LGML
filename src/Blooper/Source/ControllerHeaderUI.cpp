@@ -26,7 +26,7 @@ void ControllerHeaderUI::resized()
 	
 	DBG("header resized : "+getLocalBounds().toString());
 	enabledUI->setTopLeftPosition(5, 5);
-	titleLabel.setBounds(getLocalBounds().reduced(15,0));
+	titleUI->setBounds(getLocalBounds().reduced(15,2));
 }
 
 void ControllerHeaderUI::setControllerAndUI(Controller * controller, ControllerUI * cui)
@@ -39,9 +39,8 @@ void ControllerHeaderUI::setControllerAndUI(Controller * controller, ControllerU
 void ControllerHeaderUI::init()
 {
 	//to override
-	titleLabel.setJustificationType(Justification::topLeft);
-	titleLabel.setText(controller->name,NotificationType::dontSendNotification);
-	addAndMakeVisible(titleLabel);
+	titleUI = controller->nameParam->getUI();
+	addAndMakeVisible(titleUI);
 
 	enabledUI = controller->enabledParam->createToggle();
 	addAndMakeVisible(enabledUI);

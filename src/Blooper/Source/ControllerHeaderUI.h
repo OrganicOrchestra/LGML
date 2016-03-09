@@ -14,7 +14,9 @@
 #include "JuceHeader.h"
 #include "ControllerUI.h"
 #include "UIHelpers.h"
+
 #include "BoolToggleUI.h"
+#include "StringParameterUI.h"
 
 class ControllerHeaderUI : public ContourComponent
 {
@@ -25,13 +27,8 @@ public:
 	Controller * controller;
 	ControllerUI * cui;
 
-	Label titleLabel;
+	ScopedPointer<StringParameterUI> titleUI;
 	ScopedPointer<BoolToggleUI> enabledUI;
-
-	void paint(Graphics &g) {
-		DBG("paint here !!");
-		ContourComponent::paint(g);
-	}
 
 	void resized();
 

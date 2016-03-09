@@ -12,10 +12,11 @@
 #include "StringParameterUI.h"
 
 
-StringParameter::StringParameter(const String & niceName, const String & initialValue) :
-	Parameter(niceName)
+StringParameter::StringParameter(const String & niceName, const String & initialValue, bool enabled) :
+	Parameter(niceName,enabled)
 {
 	setValue(initialValue);
+	
 }
 
 StringParameterUI * StringParameter::getUI()

@@ -12,10 +12,12 @@
 #include "ControllerUI.h";
 
 Controller::Controller(const String &name) :
-	name(name),
 	ControllableContainer(name)
 {
-	enabledParam = addBoolParameter("Enabled", true);
+	nameParam = addStringParameter("Name", name);
+	nameParam->addListener(this);
+	enabledParam = addBoolParameter("Enabled",true);
+	enabledParam->addListener(this);
 }
 
 
@@ -31,4 +33,13 @@ ControllerUI * Controller::createUI()
 void Controller::remove()
 {
 	listeners.call(&Listener::askForRemoveController, this);
+}
+
+void Controller::parameterValueChanged(Parameter * p)
+{
+	if (p == nameParam) setNiceName(nameParam->value);
+	else if (p == enabledParam)
+	{
+		DBG("set Enabled " + String(enabledParam->value));
+	}
 }

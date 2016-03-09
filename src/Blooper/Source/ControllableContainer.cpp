@@ -59,6 +59,19 @@ BoolParameter * ControllableContainer::addBoolParameter(const String & niceName,
 	return p;
 }
 
+StringParameter * ControllableContainer::addStringParameter(const String & niceName, const String &value, const bool & enabled)
+{
+	if (getControllableByName(niceName) != nullptr)
+	{
+		DBG("ControllableContainer::add parameter, short Name already exists : " + niceName);
+		return nullptr;
+	}
+
+	StringParameter * p = new StringParameter(niceName, value, enabled);
+	addParameterInternal(p);
+	return p;
+}
+
 Trigger * ControllableContainer::addTrigger(const String & niceName, const bool & enabled)
 {
 	if (getControllableByName(niceName) != nullptr)

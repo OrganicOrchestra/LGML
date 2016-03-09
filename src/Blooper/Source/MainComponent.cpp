@@ -105,7 +105,7 @@ public:
     void resized() override
     {
 		Rectangle<int> r = getLocalBounds();
-		timeManagerUI->setBounds(r.removeFromTop(50));
+		timeManagerUI->setBounds(r.removeFromTop(20));
 		controllerManagerUI->setBounds(r.removeFromLeft(300));
 		nodeManagerUI->setBounds(r);
     }

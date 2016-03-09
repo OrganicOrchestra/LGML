@@ -25,8 +25,10 @@ public:
 
 	void remove(); //will dispatch askForRemoveController
 
-	String name;
+	StringParameter * nameParam;
 	BoolParameter * enabledParam;
+
+	virtual void parameterValueChanged(Parameter * p) override;
 
 	class  Listener
 	{

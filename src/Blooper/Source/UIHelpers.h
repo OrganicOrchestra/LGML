@@ -26,7 +26,6 @@ public:
 	virtual void paint(Graphics &g) override
 	{
 #if DRAW_CONTOUR
-		DBG("Draw contour");
 		g.fillAll(c.withAlpha(.3f));
 		g.setColour(c.withAlpha(.4f));
 		g.drawRect(getLocalBounds());
