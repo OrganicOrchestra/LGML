@@ -14,6 +14,10 @@
                 file="Source/ControllableUI.cpp"/>
           <FILE id="wsPUhO" name="ControllableUI.h" compile="0" resource="0"
                 file="Source/ControllableUI.h"/>
+          <FILE id="F1WYW6" name="TriggerBlinkUI.cpp" compile="1" resource="0"
+                file="Source/TriggerBlinkUI.cpp"/>
+          <FILE id="YU6UcA" name="TriggerBlinkUI.h" compile="0" resource="0"
+                file="Source/TriggerBlinkUI.h"/>
           <FILE id="ANg4jk" name="TriggerButtonUI.cpp" compile="1" resource="0"
                 file="Source/TriggerButtonUI.cpp"/>
           <FILE id="c0uIkt" name="TriggerButtonUI.h" compile="0" resource="0"

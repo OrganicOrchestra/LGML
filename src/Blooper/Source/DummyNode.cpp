@@ -23,7 +23,8 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 	dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
 
 	testFloatParam = addFloatParameter("Test Int slider", "This is a test int slider",.23f);
-	testFloatParam->addListener(this);
+
+	testTrigger = addTrigger("Test Trigger", "Youpi");
 }
 
  DummyNode::~DummyNode()

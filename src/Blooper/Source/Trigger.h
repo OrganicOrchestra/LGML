@@ -13,11 +13,18 @@
 
 #include "Controllable.h"
 
+class TriggerButtonUI;
+class TriggerBlinkUI;
+
 class Trigger : public Controllable
 {
 public:
 	Trigger(const String &niceName, const String &description, bool enabled = true);
 	~Trigger() {}
+
+
+	TriggerButtonUI * createButtonUI();
+	TriggerBlinkUI * createBlinkUI();
 
 	void trigger()
 	{

@@ -13,6 +13,7 @@
 
 #include "NodeBaseContentUI.h"
 #include "FloatSliderUI.h"
+#include "TriggerButtonUI.h"
 
 class DummyNodeContentUI : public NodeBaseContentUI
 {
@@ -20,16 +21,14 @@ public:
 	DummyNodeContentUI();
 	virtual ~DummyNodeContentUI();
 
-	NodeBaseUI * nodeUI;
-	NodeBase * node;
-
 	DummyNode * dummyNode;
 
 	ScopedPointer<FloatSliderUI> testSlider;
+	ScopedPointer<TriggerButtonUI> testTriggerButton;
 
 	void resized() override;
 
-	void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI) override;
+	void init() override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNodeContentUI)
 };

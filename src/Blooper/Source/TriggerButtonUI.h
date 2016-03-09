@@ -21,7 +21,7 @@
 #include "Trigger.h"
 #include "TriggerUI.h"
 
-class TriggerButtonUI    : public TriggerUI , public Timer
+class TriggerButtonUI : public TriggerUI
 {
 public:
     TriggerButtonUI(Trigger * t);
@@ -29,17 +29,13 @@ public:
 
     void paint (Graphics&);
     void resized();
-    void mouseDown (const MouseEvent& event)override;
-    void triggerTriggered(Trigger * p) override ;
-    void startBlink();
-    void timerCallback();
-    void setTriggerReference(Trigger * t);
-    float intensity;
+    void mouseDown (const MouseEvent& event) override;
+	void mouseUp(const MouseEvent& event) override;
+	void mouseEnter(const MouseEvent& event) override;
+	void mouseExit(const MouseEvent& event) override;
+	void triggerTriggered(Trigger * p) override ;
     
 private:
-    
-    int blinkTime;
-    int refreshPeriod;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TriggerButtonUI)
 };
 

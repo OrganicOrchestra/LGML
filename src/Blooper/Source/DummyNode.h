@@ -58,6 +58,8 @@ public:
 
 	//parameters
 	FloatParameter * testFloatParam;
+	Trigger * testTrigger;
+
 	void parameterValueChanged(Parameter * p) override;
 
 	virtual NodeBaseUI * createUI() override;

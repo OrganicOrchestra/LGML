@@ -33,6 +33,13 @@ NodeBaseHeaderUI::NodeBaseHeaderUI()
 		addAndMakeVisible(vuMeter);
 	}
 
+	titleUI = node->nameParam->getUI();
+	titleUI->setNameLabelVisible(false);
+	addAndMakeVisible(titleUI);
+
+	enabledUI = node->enabledParam->createToggle();
+	addAndMakeVisible(enabledUI);
+
 	init();
 }
 
@@ -40,12 +47,6 @@ NodeBaseHeaderUI::NodeBaseHeaderUI()
   {
 	  //to override
 
-	  titleUI = node->nameParam->getUI();
-	  titleUI->setNameLabelVisible(false);
-	  addAndMakeVisible(titleUI);
-
-	  enabledUI = node->enabledParam->createToggle();
-	  addAndMakeVisible(enabledUI);
   }
 
 void NodeBaseHeaderUI::resized()

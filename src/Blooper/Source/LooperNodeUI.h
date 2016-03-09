@@ -13,7 +13,7 @@
 
 #include "NodeBaseUI.h"
 
-#include "TriggerButtonUI.h"
+#include "TriggerBlinkUI.h"
 
 class LooperNodeUI: public NodeBaseContentUI , public LooperNode::Looper::Listener{
 public:
@@ -89,7 +89,7 @@ public:
         
         LooperNode::Looper::Track * track;
         Colour mainColour;
-        TriggerButtonUI recPlayButton;
+        TriggerBlinkUI recPlayButton;
         
     };
     void trackNumChanged(int num) {

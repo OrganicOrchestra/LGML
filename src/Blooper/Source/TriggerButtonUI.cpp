@@ -11,14 +11,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "TriggerButtonUI.h"
 
+#include "Style.h"
+
 //==============================================================================
 TriggerButtonUI::TriggerButtonUI(Trigger *t):
-	TriggerUI(t),
-	blinkTime(200),
-	refreshPeriod(10),
-	intensity(0)
+	TriggerUI(t)
 {
-
+	setSize(20,15);
 }
 
 TriggerButtonUI::~TriggerButtonUI()
@@ -26,43 +25,24 @@ TriggerButtonUI::~TriggerButtonUI()
     trigger->removeListener(this);
 }
 
-void TriggerButtonUI::setTriggerReference(Trigger * t){
-    if(trigger!=nullptr){
-         trigger->removeListener(this);
-    }
-
-    trigger = t;
-    
-    trigger->addListener(this);
-}
-
 void TriggerButtonUI::triggerTriggered(Trigger * p){
-     startBlink();
+	repaint();
 }
 
 void TriggerButtonUI::paint (Graphics& g)
 {
+	setAlpha(trigger->enabled ? 1 : .5);
 
-    g.setColour(Colours::white);
-    g.drawRect(getLocalBounds());
-    
-    g.setColour(Colours::white.withAlpha(intensity));
-    g.fillRect(getLocalBounds());
+	Point<int> center = getBounds().getCentre();
+
+	Colour c = isMouseOverOrDragging() ? (isMouseButtonDown() ? HIGHLIGHT_COLOR : NORMAL_COLOR.brighter()) : NORMAL_COLOR;
+
+	g.setGradientFill(ColourGradient(c,center.x,center.y,c.darker(.2f),2,2,true));
+	g.fillRoundedRectangle(getLocalBounds().toFloat(),4);
+	g.setColour(c.darker());
+	g.drawRoundedRectangle(getLocalBounds().toFloat(), 4,2);
 }
 
-
-void TriggerButtonUI::startBlink(){
-    intensity = 1;
-    startTimer(refreshPeriod);
-}
-void TriggerButtonUI::timerCallback(){
-    intensity-= refreshPeriod*1.0/blinkTime;
-    if(intensity<0){
-        intensity = 0;
-        stopTimer();
-    }
-    repaint();
-}
 void TriggerButtonUI::resized()
 {
     // This method is where you should set the bounds of any child
@@ -73,5 +53,20 @@ void TriggerButtonUI::resized()
 void TriggerButtonUI::mouseDown (const MouseEvent& event){
     trigger->trigger();
    
+}
+
+void TriggerButtonUI::mouseExit(const MouseEvent & event)
+{
+	repaint();
+}
+
+void TriggerButtonUI::mouseUp(const MouseEvent & event)
+{
+	repaint();
+}
+
+void TriggerButtonUI::mouseEnter(const MouseEvent & event)
+{
+	repaint();
 }
 
