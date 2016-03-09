@@ -125,6 +125,15 @@ void ControllableContainer::removeChildControllableContainer(ControllableContain
 void ControllableContainer::setParentContainer(ControllableContainer * container)
 {
 	this->parentContainer = container;
+	for (auto &c : controllables) c->updateControlAddress();
+	for (auto &cc : controllableContainers)cc->updateChildrenControlAddress();
+
+}
+
+void ControllableContainer::updateChildrenControlAddress()
+{
+	for (auto &c : controllables) c->updateControlAddress();
+
 }
 
 Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
@@ -140,6 +149,8 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 
 	return result;
 }
+
+
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {

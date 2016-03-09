@@ -25,11 +25,12 @@ public:
 	bool enabled;
 	String niceName;
 	String shortName;
+	String description;
+
 	bool hasCustomShortName;
-	
 	bool isControllableExposed;
 
-	String description;
+	String controlAddress;
 
 	ControllableContainer * parentContainer;
 
@@ -60,6 +61,13 @@ public:
 	void setParentContainer(ControllableContainer * container)
 	{
 		this->parentContainer = container;
+		updateControlAddress();
+	}
+
+	void updateControlAddress()
+	{
+		this->controlAddress = getControlAddress();
+		listeners.call(&Listener::controllableControlAddressChanged, this);
 	}
 
 	String getControlAddress();
@@ -71,6 +79,7 @@ public:
 		/** Destructor. */
 		virtual ~Listener() {}
 		virtual void controllableStateChanged(Controllable * c) = 0;
+		virtual void controllableControlAddressChanged(Controllable * c) = 0;
 	};
 
 	ListenerList<Listener> listeners;
