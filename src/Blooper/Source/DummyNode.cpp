@@ -22,7 +22,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 	dataProcessor->addOutputData("OUT Number", DataProcessor::DataType::Number);
 	dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
 
-	testFloatParam = addFloatParameter("Test Int slider", "This is a test int slider",.23f);
+	testFloatParam = addFloatParameter("Volume", "This is a test int slider",.23f);
 
 	testTrigger = addTrigger("Test Trigger", "Youpi");
 }
@@ -37,7 +37,6 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 
 	 if (p == testFloatParam)
 	 {
-		 DBG(testFloatParam->value);
 		 ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();
 	 }
  }

@@ -72,6 +72,10 @@ public:
 
 	String getControlAddress();
 
+
+	//TEMP
+	virtual void parseValueFromController(float value) { DBG("Not implemented."); }
+
 public:
 	class  Listener
 	{

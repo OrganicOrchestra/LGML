@@ -21,8 +21,8 @@ DummyNodeContentUI::~DummyNodeContentUI()
 void DummyNodeContentUI::resized()
 {
 	if (node == nullptr) return;
-	Rectangle<int> r = getLocalBounds().reduced(50);
-	testSlider->setBounds(r.removeFromTop(20));
+	Rectangle<int> r = getLocalBounds().reduced(10);
+	testSlider->setBounds(r.removeFromTop(25));
 
 	testTriggerButton->setTopRightPosition(getWidth()-10, getHeight() - testTriggerButton->getHeight() - 10);
 }

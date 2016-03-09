@@ -67,6 +67,7 @@ public:
 	void updateChildrenControlAddress();
 	Array<Controllable *> getAllControllables(bool recursive = false);
 
+	Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true);
 	
 	// Inherited via Listener
 	virtual void parameterValueChanged(Parameter * p) override;

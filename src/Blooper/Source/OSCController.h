@@ -14,8 +14,6 @@
 #include "Controller.h"
 #include "StringParameter.h"
 
-#include "juce_osc\juce_osc.h"
-
 
 class OSCController : public Controller, public OSCReceiver::Listener<OSCReceiver::MessageLoopCallback>
 {
