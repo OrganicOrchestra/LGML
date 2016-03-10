@@ -22,16 +22,13 @@ OSCDirectController::OSCDirectController() :
 
 void OSCDirectController::processMessage(const OSCMessage & msg)
 {
-	DBG("Process message in direct controller");
 	String addr = msg.getAddressPattern().toString();
 	StringArray addrArray;
 	addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
 	juce::Array<String> addSplit = addrArray.strings;
-	DBG(addrArray.strings.size());
 
 	addSplit.remove(0);
 	String controller = addSplit[0];
-	DBG("Target Controller :" + controller);
 
 	if (controller == "node")
 	{
@@ -113,6 +110,7 @@ void OSCDirectController::controllableRemoved(Controllable * c)
 
 void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
 {
+	DBG("Send OSC with address : " + c->controlAddress + " to " + remoteHostParam->value + ":" + remotePortParam->value);
 	switch (c->type)
 	{
 		case Controllable::Type::TRIGGER:
