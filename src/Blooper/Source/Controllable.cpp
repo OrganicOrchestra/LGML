@@ -11,7 +11,8 @@
 #include "Controllable.h"
 #include "ControllableContainer.h"
 
-Controllable::Controllable(const String & niceName, const String &description, bool enabled) :
+Controllable::Controllable(const Type &type, const String & niceName, const String &description, bool enabled) :
+	type(type),
 	description(description),
 	parentContainer(nullptr),
 	hasCustomShortName(false),

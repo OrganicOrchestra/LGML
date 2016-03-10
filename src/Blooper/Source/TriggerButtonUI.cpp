@@ -35,6 +35,7 @@ void TriggerButtonUI::paint (Graphics& g)
 
 	Point<int> center = getBounds().getCentre();
 
+
 	Colour c = isMouseOverOrDragging() ? (isMouseButtonDown() ? HIGHLIGHT_COLOR : NORMAL_COLOR.brighter()) : NORMAL_COLOR;
 
 	g.setGradientFill(ColourGradient(c,center.x,center.y,c.darker(.2f),2,2,true));

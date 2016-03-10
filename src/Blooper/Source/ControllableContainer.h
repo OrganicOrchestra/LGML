@@ -14,11 +14,12 @@
 #include "Controllable.h"
 #include "FloatParameter.h"
 #include "IntParameter.h"
+#include "FloatRangeParameter.h"
 #include "BoolParameter.h"
 #include "StringParameter.h"
 #include "Trigger.h"
 
-class ControllableContainer : public Parameter::Listener
+class ControllableContainer : public Parameter::Listener, public Trigger::Listener
 {
 public:
 	ControllableContainer(const String &niceName);
@@ -44,6 +45,7 @@ public:
 	void setAutoShortName() {
 		hasCustomShortName = false;
 		shortName = StringUtil::toShortName(niceName);
+		updateChildrenControlAddress();
 	}
 
 
@@ -67,10 +69,15 @@ public:
 	void updateChildrenControlAddress();
 	Array<Controllable *> getAllControllables(bool recursive = false);
 
-	Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true);
+	Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
 	
-	// Inherited via Listener
+
+	void dispatchFeedback(Controllable * c);
+
+	// Inherited via Parameter::Listener
 	virtual void parameterValueChanged(Parameter * p) override;
+	// Inherited via Trigger::Listener
+	virtual void triggerTriggered(Trigger * p) override;
 
 private:
 	void addParameterInternal(Parameter * p);
@@ -84,13 +91,16 @@ public:
 		virtual ~Listener() {}
 		virtual void controllableAdded(Controllable * c) = 0;
 		virtual void controllableRemoved(Controllable * c) = 0;
+		virtual void controllableFeedbackUpdate(Controllable *c) = 0;
 	};
 
 	ListenerList<Listener> listeners;
-	void addListener(Listener* newListener) { listeners.add(newListener); }
-	void removeListener(Listener* listener) { listeners.remove(listener); }
+	void addControllableContainerListener(Listener* newListener) { listeners.add(newListener); }
+	void removeControllableContainerListener(Listener* listener) { listeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableContainer)
+
+		
 };
 
 

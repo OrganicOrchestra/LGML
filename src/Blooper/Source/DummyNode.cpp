@@ -25,6 +25,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 	testFloatParam = addFloatParameter("Volume", "This is a test int slider",.23f);
 
 	testTrigger = addTrigger("Test Trigger", "Youpi");
+
 }
 
  DummyNode::~DummyNode()

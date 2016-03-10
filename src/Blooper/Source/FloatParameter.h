@@ -46,8 +46,6 @@ public:
 
 	FloatSliderUI * createSlider();
 
-	virtual void parseValueFromController(float value) override { DBG("Float set value from controller"); setNormalizedValue(value); }
-
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatParameter)
 };
 

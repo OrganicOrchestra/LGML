@@ -13,7 +13,7 @@
 
 #include "OSCController.h"
 
-class OSCDirectController : public OSCController
+class OSCDirectController : public OSCController, public ControllableContainer::Listener
 {
 public:
 	OSCDirectController();
@@ -21,7 +21,14 @@ public:
 	void processMessage(const OSCMessage &msg) override;
 
 	ControllerUI * createUI() override;
+
+	// Inherited via Listener
+	virtual void controllableAdded(Controllable * c) override;
+	virtual void controllableRemoved(Controllable * c) override;
+	virtual void controllableFeedbackUpdate(Controllable * c) override;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
+
 };
 
 

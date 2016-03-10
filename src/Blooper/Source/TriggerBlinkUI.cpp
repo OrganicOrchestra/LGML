@@ -10,7 +10,7 @@ Author:  bkupe
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "TriggerBlinkUI.h"
-
+#include "Style.h"
 //==============================================================================
 TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
 	TriggerUI(t),
@@ -42,11 +42,8 @@ void TriggerBlinkUI::triggerTriggered(Trigger * p) {
 
 void TriggerBlinkUI::paint(Graphics& g)
 {
-	g.setColour(Colours::white.withAlpha(intensity));
-	g.fillRect(getLocalBounds());
-
-	g.setColour(Colours::white);
-	g.drawRect(getLocalBounds());
+	g.setColour(NORMAL_COLOR.brighter(intensity));
+	g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
 
 }
 

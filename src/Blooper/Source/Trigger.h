@@ -23,6 +23,7 @@ public:
 	~Trigger() {}
 
 
+	
 	TriggerButtonUI * createButtonUI();
 	TriggerBlinkUI * createBlinkUI();
 

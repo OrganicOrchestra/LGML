@@ -88,14 +88,15 @@ Trigger * ControllableContainer::addTrigger(const String & niceName, const Strin
 	Trigger * t = new Trigger(niceName, description, enabled);
 	controllables.add(t);
 	t->setParentContainer(this);
-	
-	listeners.call(&Listener::controllableAdded, t);
+	t->addListener(this);
+
+	listeners.call(&ControllableContainer::Listener::controllableAdded, t);
 	return t;
 }
 
 void ControllableContainer::removeControllable(Controllable * c)
 {
-	listeners.call(&Listener::controllableRemoved, c);
+	listeners.call(&ControllableContainer::Listener::controllableRemoved, c);
 	controllables.removeObject(c);
 }
 
@@ -150,18 +151,17 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 	return result;
 }
 
-Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive)
+Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
 {
 
 	bool isTargetControllable = addressSplit.size() == 1;
-	DBG("Get controllable for adress (" + shortName + ") is target a controllable ? " + String(isTargetControllable));
 	if (isTargetControllable)
 	{
 		for (auto &c : controllables)
 		{
 			if (c->shortName == addressSplit[0])
 			{
-				if (c->isControllableExposed) return c;
+				if (c->isControllableExposed || getNotExposed) return c;
 				else return nullptr;
 			}
 		}
@@ -169,12 +169,8 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 	else
 	{
 		
-		
-		DBG("Check for container with name " + addressSplit[0]);
-		
 		for (auto &cc : controllableContainers)
 		{
-			DBG(" > " + cc->shortName);
 			if (cc->shortName == addressSplit[0])
 			{
 				addressSplit.remove(0);
@@ -186,17 +182,33 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 	return nullptr;
 }
 
+void ControllableContainer::dispatchFeedback(Controllable * c)
+{
+	if (parentContainer != nullptr) parentContainer->dispatchFeedback(c);
+	else listeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
+}
+
 
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
-	DBG("ControllableContainer :: parameterValueChanged");
+	if (p->isControllableExposed) dispatchFeedback(p);
 }
+
+void ControllableContainer::triggerTriggered(Trigger * t)
+{
+	if (t->isControllableExposed) dispatchFeedback(t);
+}
+
+
+
 
 void ControllableContainer::addParameterInternal(Parameter * p)
 {
 	p->setParentContainer(this);
 	controllables.add(p);
 	p->addListener(this);
-	listeners.call(&Listener::controllableAdded, p);
+	listeners.call(&ControllableContainer::Listener::controllableAdded, p);
 }
+
+

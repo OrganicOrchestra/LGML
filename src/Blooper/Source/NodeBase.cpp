@@ -33,6 +33,7 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, const String &name,
 
 	//set Params
 	nameParam = addStringParameter("Name", "Set the name of the node.", name);
+	DBG("name PAram has custom short name ?"+String(nameParam->hasCustomShortName));
 	enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
 }
 
@@ -85,8 +86,10 @@ void NodeBase::parameterValueChanged(Parameter * p)
 {
 	ControllableContainer::parameterValueChanged(p);
 
-	if (p == nameParam) setNiceName(nameParam->value);
-	else if (p == enabledParam)
+	if (p == nameParam)
+	{
+		setNiceName(nameParam->value);
+	}else if (p == enabledParam)
 	{
 		DBG("set Node Enabled " + String(enabledParam->value));
 	}

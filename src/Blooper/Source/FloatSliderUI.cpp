@@ -71,6 +71,8 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
 		else
 		{
 			float diffValue = getValueFromPosition(e.getPosition()-e.getMouseDownPosition());
+			if (orientation == VERTICAL) diffValue -= 1;
+
 			setParamNormalizedValue(initValue + diffValue);
 		}
 	}
