@@ -48,7 +48,7 @@ public:
         isSelected(false)
         {
             track->addTrackListener(this);
-            mainColour = Colours::black;
+            trackStateChangedAsync(track->trackState);
             addAndMakeVisible(recPlayButton);
             addAndMakeVisible(clearButton);
             volumeSlider = track->volume->createSlider();

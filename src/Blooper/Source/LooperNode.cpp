@@ -20,7 +20,9 @@ LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeMa
 
 
 LooperNode::Looper::Looper(LooperNode * looperNode):
-ControllableContainer("Looper"),selectedTrack(nullptr),looperNode(looperNode)
+ControllableContainer("Looper"),
+selectedTrack(nullptr),
+looperNode(looperNode)
 {
     
     recPlaySelectedTrig =   addTrigger("Rec Or Play",
@@ -31,7 +33,7 @@ ControllableContainer("Looper"),selectedTrack(nullptr),looperNode(looperNode)
                                        "Tells the selected track to wait for the next bar and \
                                        then stop recording and start playing");
     stopSelectedTrig =      addTrigger("Stop",
-                                      "Tells the selected track to stop ");
+                                       "Tells the selected track to stop ");
     
     clearSelectedTrig =     addTrigger("Clear",
                                        "Tells the selected track to clear it's content if got any");
@@ -45,7 +47,7 @@ ControllableContainer("Looper"),selectedTrack(nullptr),looperNode(looperNode)
                               "Tells all tracks to clear it's content if got any");
     
     stopAllTrig = addTrigger("StopAll",
-                              "Tells all tracks to stop it's content if got any");
+                             "Tells all tracks to stop it's content if got any");
     
     skipControllableNameInAddress = true;
     setNumTracks(8);
@@ -127,12 +129,12 @@ void LooperNode::Looper::triggerTriggered(Trigger * t){
             selectedTrack->stopTrig->trigger();
         }
     }
-    else if(t == clearAllTrig){
+    if(t == clearAllTrig){
         for(auto & t:tracks){
             t->clearTrig->trigger();
         }
     }
-    else if(t == stopAllTrig){
+    if(t == stopAllTrig){
         for(auto & t:tracks){
             t->stopTrig->trigger();
         }
@@ -168,42 +170,47 @@ quantizedPlayStart(0),
 quantizedPlayEnd(0),
 streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
 monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
-trackState(CLEARED)
+trackState(CLEARED),
+internalTrackState(BUFFER_STOPPED)
 {
     
-				setCustomShortName("track/" + String(_trackNum));
+    setCustomShortName("track/" + String(_trackNum));
     
-				trackNum =      addIntParameter("Track Number",
-                                                "Number of tracks",
-                                                _trackNum, 0, MAX_NUM_TRACKS);
+    trackNum =      addIntParameter("Track Number",
+                                    "Number of tracks",
+                                    _trackNum, 0, MAX_NUM_TRACKS);
     
-				recPlayTrig =   addTrigger("Rec Or Play",
-                                           "Tells the track to wait for the next bar \
-                                           and then start record or play");
+    recPlayTrig =   addTrigger("Rec Or Play",
+                               "Tells the track to wait for the next bar \
+                               and then start record or play");
     
-				playTrig =      addTrigger("Play",
-                                           "Tells the track to wait for the next bar and \
-                                           then stop recording and start playing");
-                stopTrig =     addTrigger("Stop",
+    playTrig =      addTrigger("Play",
+                               "Tells the track to wait for the next bar and \
+                               then stop recording and start playing");
+    stopTrig =     addTrigger("Stop",
                               "Tells the track to stop ");
     
-				clearTrig =     addTrigger("Clear",
-                                           "Tells the track to clear it's content if got any");
+    clearTrig =     addTrigger("Clear",
+                               "Tells the track to clear it's content if got any");
     
-				volume =        addFloatParameter("Volume",
-                                                  "Set the volume of the track",
-                                                  1, 0, 1);
+    volume =        addFloatParameter("Volume",
+                                      "Set the volume of the track",
+                                      1, 0, 1);
     
-				preDelayMs =    addIntParameter("Pre Delay MS",
-                                                "Pre process delay (in milliseconds)",
-                                                0, 0, 200);
+    preDelayMs =    addIntParameter("Pre Delay MS",
+                                    "Pre process delay (in milliseconds)",
+                                    0, 0, 200);
     
-				preDelayMs->isControllableExposed = false;
+    preDelayMs->isControllableExposed = false;
     
-				recPlayTrig->addTriggerListener(this);
+    recPlayTrig->addTriggerListener(this);
     playTrig->addTriggerListener(this);
     clearTrig->addTriggerListener(this);
     stopTrig->addTriggerListener(this);
+    
+    
+    // post init
+    volume->setValue(defaultVolumeValue);
 }
 
 void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuffer &midi){
@@ -213,7 +220,7 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     
     
     // RECORDING
-    if (trackState == RECORDING)
+    if (internalTrackState == BUFFER_RECORDING )
     {
         if(recordNeedle + buffer.getNumSamples()> parentLooper->getSampleRate() * MAX_LOOP_LENGTH_S){
             setTrackState(STOPPED);
@@ -233,7 +240,7 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     // allow circular reading , although not sure that overflow need to be handled as its written with same block sizes than read
     // we may need it if we start to use a different clock  than looperState in OOServer that has a granularity of blockSize
     // or if we dynamicly change blockSize
-    if (trackState==PLAYING && recordNeedle>0 && monoLoopSample.getNumSamples())
+    if (internalTrackState==BUFFER_PLAYING && recordNeedle>0 && monoLoopSample.getNumSamples())
     {
         if ( (playNeedle + buffer.getNumSamples()) > recordNeedle)
         {
@@ -269,7 +276,6 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(uint64 curTime){
         if(curTime>quantizedRecordStart){
             preDelayMs->setValue( 0);
             setTrackState(RECORDING);
-            
         }
         
     }
@@ -277,6 +283,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(uint64 curTime){
         if(curTime>quantizedRecordEnd){
             preDelayMs->setValue(0);
             setTrackState(PLAYING);
+            
         }
     }
     
@@ -334,9 +341,10 @@ void LooperNode::Looper::Track::askForSelection(bool isSelected){
 void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     
+    
+    
+    
     // quantify
-    
-    
     if(newState == SHOULD_RECORD){
         // are we able to set the tempo
         if( isMasterTempoTrack()){
@@ -355,6 +363,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     // on true start recording
     if(newState == RECORDING){
+        internalTrackState = BUFFER_RECORDING;
         quantizedRecordStart = -1;
         if(preDelayMs->value>0){
             monoLoopSample.copyFrom(0,0,streamBipBuffer.getLastBlock(preDelayMs->value),preDelayMs->value);
@@ -397,9 +406,11 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     }
     // on true start of play
     else if(newState ==PLAYING){
+        internalTrackState = BUFFER_PLAYING;
         quantizedRecordEnd = -1;
         quantizedPlayStart = -1;
         playNeedle = 0;
+        
     }
     // on true end of play
     else if (trackState== PLAYING && newState!=PLAYING){
@@ -413,12 +424,20 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         quantizedPlayStart = -1;
         quantizedRecordEnd = -1;
         quantizedRecordStart = -1;
+        volume->setValue(defaultVolumeValue);
         newState = CLEARED;
+        internalTrackState = BUFFER_STOPPED;
+        
+        
     }
     
-    // force a track to stay in cleared state if stop triggered
-    if(newState == STOPPED && trackState == CLEARED){
-        newState = CLEARED;
+    
+    if(newState == STOPPED){
+        internalTrackState = BUFFER_STOPPED;
+        // force a track to stay in cleared state if stop triggered
+        if(trackState == CLEARED){
+            newState = CLEARED;
+        }
     }
     DBG(newState <<","<<trackState );
     

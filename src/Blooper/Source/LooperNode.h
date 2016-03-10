@@ -80,6 +80,16 @@ public:
                 STOPPED
             };
             TrackState trackState;
+            
+            
+            // represent audioProcessor behaviour
+            enum InternalTrackState{
+                BUFFER_STOPPED = 0,
+                BUFFER_PLAYING,
+                BUFFER_RECORDING
+                
+            };
+            InternalTrackState internalTrackState;
             void setTrackState(TrackState state);
             // from events like UI
             void askForSelection(bool isSelected);
@@ -143,7 +153,7 @@ public:
             Looper * parentLooper;
             
             void processBlock(AudioBuffer<float>& buffer, MidiBuffer & midi);
-            
+            const float defaultVolumeValue = 0.8;
             
             friend class Looper;
         };
