@@ -23,6 +23,8 @@ OSCDirectController::OSCDirectController() :
 void OSCDirectController::processMessage(const OSCMessage & msg)
 {
 	String addr = msg.getAddressPattern().toString();
+	DBG("Process : " + addr);
+	
 	StringArray addrArray;
 	addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
 	juce::Array<String> addSplit = addrArray.strings;
@@ -137,4 +139,12 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
 			sender.send(c->controlAddress, ((StringParameter *)c)->value);
 			break;
 	}
+}
+
+void OSCDirectController::controllableContainerAdded(ControllableContainer * cc)
+{
+}
+
+void OSCDirectController::controllableContainerRemoved(ControllableContainer * cc)
+{
 }

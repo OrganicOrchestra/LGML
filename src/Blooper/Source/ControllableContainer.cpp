@@ -100,11 +100,11 @@ void ControllableContainer::removeControllable(Controllable * c)
 	controllables.removeObject(c);
 }
 
-Controllable * ControllableContainer::getControllableByName(const String & niceName)
+Controllable * ControllableContainer::getControllableByName(const String & name)
 {
 	for (auto &c : controllables)
 	{
-		if (c->niceName == niceName) return c;
+		if (c->shortName == name) return c;
 	}
 
 	return nullptr;
@@ -113,33 +113,45 @@ Controllable * ControllableContainer::getControllableByName(const String & niceN
 void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
 {
 	controllableContainers.add(container);
-
+	listeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
 	container->setParentContainer(this);
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
 	container->setParentContainer(nullptr);
+	listeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
 	controllableContainers.removeAllInstancesOf(container);
+}
+
+ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name)
+{
+	for (auto &cc : controllableContainers)
+	{
+		if (cc->shortName == name) return cc;
+	}
+
+	return nullptr;
+
 }
 
 void ControllableContainer::setParentContainer(ControllableContainer * container)
 {
 	this->parentContainer = container;
 	for (auto &c : controllables) c->updateControlAddress();
-	for (auto &cc : controllableContainers)cc->updateChildrenControlAddress();
+	for (auto &cc : controllableContainers) cc->updateChildrenControlAddress();
 
 }
 
 void ControllableContainer::updateChildrenControlAddress()
 {
 	for (auto &c : controllables) c->updateControlAddress();
+	for (auto &cc : controllableContainers) cc->updateChildrenControlAddress();
 
 }
 
 Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 {
-	DBG("get All controllables");
 	Array<Controllable*> result;
 	for (auto &c : controllables) if(c->isControllableExposed) result.add(c);
 
@@ -154,28 +166,56 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 
 Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
 {
+	if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
 
 	bool isTargetAControllable = addressSplit.size() == 1;
+
 	if (isTargetAControllable)
 	{
+		DBG("Check controllable Address : " + shortName);
 		for (auto &c : controllables)
 		{
 			if (c->shortName == addressSplit[0])
 			{
+				DBG(c->shortName);
 				if (c->isControllableExposed || getNotExposed) return c;
 				else return nullptr;
+			}
+		}
+		
+		//no found in direct children controllables, maybe in a skip container ?
+		for (auto &cc : controllableContainers)
+		{
+			if (cc->skipControllableNameInAddress)
+			{
+				Controllable * tc = cc->getControllableByName(addressSplit[0]);
+
+				if (tc != nullptr) return tc;
 			}
 		}
 	}
 	else
 	{
-		
 		for (auto &cc : controllableContainers)
 		{
-			if (cc->shortName == addressSplit[0])
+			
+			if (!cc->skipControllableNameInAddress)
 			{
-				addressSplit.remove(0);
-				return cc->getControllableForAddress(addressSplit);
+				if (cc->shortName == addressSplit[0])
+				{
+					addressSplit.remove(0);
+					return cc->getControllableForAddress(addressSplit);
+				}
+			}
+			else
+			{
+				ControllableContainer * tc = cc->getControllableContainerByName(addressSplit[0]);
+				if (tc != nullptr)
+				{
+					addressSplit.remove(0);
+					return tc->getControllableForAddress(addressSplit);
+				}
+
 			}
 		}
 	}

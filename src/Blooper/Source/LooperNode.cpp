@@ -20,7 +20,7 @@ LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeMa
 
 
 LooperNode::Looper::Looper(LooperNode * looperNode):
-ControllableContainer("Looper"),
+ControllableContainer("InnerLooper"),
 selectedTrack(nullptr),
 looperNode(looperNode)
 {
@@ -50,6 +50,7 @@ looperNode(looperNode)
                              "Tells all tracks to stop it's content if got any");
     
     skipControllableNameInAddress = true;
+
     setNumTracks(8);
     recPlaySelectedTrig->addTriggerListener(this);
     playSelectedTrig->addTriggerListener(this);
@@ -174,7 +175,7 @@ trackState(CLEARED),
 internalTrackState(BUFFER_STOPPED)
 {
     
-    setCustomShortName("track/" + String(_trackNum));
+    //setCustomShortName("track/" + String(_trackNum)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
     
     trackNum =      addIntParameter("Track Number",
                                     "Number of tracks",
@@ -201,6 +202,9 @@ internalTrackState(BUFFER_STOPPED)
                                     "Pre process delay (in milliseconds)",
                                     0, 0, 200);
     
+    
+    stateParameterString = addStringParameter("state", "track state", "");
+    stateParameterString->isControllableFeedbackOnly = true;
     preDelayMs->isControllableExposed = false;
     
     recPlayTrig->addTriggerListener(this);
@@ -304,7 +308,28 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(uint64 curTime){
 }
 
 
-
+String LooperNode::Looper::Track::trackStateToString(const TrackState & ts){
+    
+    switch (ts) {
+        case SHOULD_CLEAR:
+        case CLEARED:
+            return "empty";
+        case PLAYING:
+            return "playing";
+        case RECORDING:
+            return "recording";
+        case SHOULD_PLAY:
+            return "willPlay";
+        case SHOULD_RECORD:
+            return "willRecord";
+        case STOPPED:
+            return "stopped";
+            
+        default:
+            jassertfalse;
+            break;
+    }
+}
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
     if(t == recPlayTrig){
@@ -439,9 +464,11 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
             newState = CLEARED;
         }
     }
-    DBG(newState <<","<<trackState );
+    //DBG(newState <<","<<trackState );
     
     trackState = newState;
+    
+    stateParameterString->setValue(trackStateToString(trackState));
     parentLooper->checkIfNeedGlobalLooperStateUpdate();
     trackStateListeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };

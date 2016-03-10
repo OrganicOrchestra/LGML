@@ -69,6 +69,7 @@ public:
             Trigger * playTrig;
             Trigger * clearTrig;
             Trigger * stopTrig;
+            StringParameter  * stateParameterString;
             
             enum TrackState{
                 SHOULD_RECORD = 0,
@@ -80,7 +81,7 @@ public:
                 STOPPED
             };
             TrackState trackState;
-            
+            String trackStateToString(const TrackState & ts);
             
             // represent audioProcessor behaviour
             enum InternalTrackState{

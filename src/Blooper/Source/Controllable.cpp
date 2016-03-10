@@ -21,7 +21,6 @@ Controllable::Controllable(const Type &type, const String & niceName, const Stri
 {
 	setEnabled(enabled);
 	setNiceName(niceName);
-	DBG("Add controllable :" + niceName + " >> " + shortName + " (" + description + ")");
 }
 
 String Controllable::getControlAddress()
