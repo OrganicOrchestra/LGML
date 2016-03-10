@@ -131,6 +131,8 @@ ControllableContainer * ControllableContainer::getControllableContainerByName(co
 		if (cc->shortName == name) return cc;
 	}
 
+	return nullptr;
+
 }
 
 void ControllableContainer::setParentContainer(ControllableContainer * container)
@@ -164,23 +166,36 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 
 Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
 {
+	if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
 
 	bool isTargetAControllable = addressSplit.size() == 1;
 
 	if (isTargetAControllable)
 	{
+		DBG("Check controllable Address : " + shortName);
 		for (auto &c : controllables)
 		{
 			if (c->shortName == addressSplit[0])
 			{
+				DBG(c->shortName);
 				if (c->isControllableExposed || getNotExposed) return c;
 				else return nullptr;
+			}
+		}
+		
+		//no found in direct children controllables, maybe in a skip container ?
+		for (auto &cc : controllableContainers)
+		{
+			if (cc->skipControllableNameInAddress)
+			{
+				Controllable * tc = cc->getControllableByName(addressSplit[0]);
+
+				if (tc != nullptr) return tc;
 			}
 		}
 	}
 	else
 	{
-		
 		for (auto &cc : controllableContainers)
 		{
 			
@@ -202,10 +217,6 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 				}
 
 			}
-
-			
-
-			
 		}
 	}
 
