@@ -41,7 +41,12 @@ public:
 	// Inherited via Listener
 private:
 	virtual void oscMessageReceived(const OSCMessage & message) override;
-	virtual void oscBundleReceived(const OSCBundle& /*bundle*/) override { DBG("bundle received"); }
+	virtual void oscBundleReceived(const OSCBundle& bundle) override { 
+		for (auto &m : bundle)
+		{
+			processMessage(m.getMessage());
+		}
+	}
 };
 
 

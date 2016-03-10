@@ -16,7 +16,8 @@ Controllable::Controllable(const Type &type, const String & niceName, const Stri
 	description(description),
 	parentContainer(nullptr),
 	hasCustomShortName(false),
-	isControllableExposed(true)
+	isControllableExposed(true),
+	isControllableFeedbackOnly(false)
 {
 	setEnabled(enabled);
 	setNiceName(niceName);
@@ -34,7 +35,6 @@ String Controllable::getControlAddress()
 	{
 		if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
 		pc = pc->parentContainer;
-		
 	}
 
 	return "/" + addressArray.joinIntoString("/");

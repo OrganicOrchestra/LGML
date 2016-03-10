@@ -23,7 +23,9 @@ public:
 	OSCDirectController * oscd;
 
 	ScopedPointer<StringParameterUI> localPortUI;
+	ScopedPointer<StringParameterUI> remoteHostUI;
 	ScopedPointer<StringParameterUI> remotePortUI;
+
 	void init() override;
 
 	void resized() override;
