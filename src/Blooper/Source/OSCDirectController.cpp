@@ -16,6 +16,8 @@ OSCDirectController::OSCDirectController() :
 	OSCController("OSC Direct Controller")
 {
 	DBG("direct controller constructor");
+
+	NodeManager::getInstance()->addControllableContainerListener(this);
 }
 
 void OSCDirectController::processMessage(const OSCMessage & msg)
@@ -36,7 +38,7 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
 		addSplit.remove(0);
 		Controllable * c = NodeManager::getInstance()->getControllableForAddress(addSplit);
 
-		if (c != nullptr)
+		if (c != nullptr && !c->isControllableFeedbackOnly)
 		{
 
 
@@ -80,7 +82,7 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
 				{
 					float value1 = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
 					float value2 = msg[1].isInt32() ? msg[1].getInt32() : msg[1].getFloat32();
-					((FloatRangeParameter *)c)->setValuesMinMax(value1, value2);
+					((FloatRangeParameter *)c)->setValuesMinMax(value1, value2); 
 				}
 				break;
 
@@ -98,4 +100,43 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
 ControllerUI * OSCDirectController::createUI()
 {
 	return new ControllerUI(this, new OSCDirectControllerContentUI());
+}
+
+void OSCDirectController::controllableAdded(Controllable * c)
+{
+}
+
+void OSCDirectController::controllableRemoved(Controllable * c)
+{
+
+}
+
+void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
+{
+	switch (c->type)
+	{
+		case Controllable::Type::TRIGGER:
+			sender.send(c->controlAddress,1);
+			break;
+
+		case Controllable::Type::BOOL:
+			sender.send(c->controlAddress,((BoolParameter *)c)->value?1:0);
+			break;
+
+		case Controllable::Type::FLOAT:
+			sender.send(c->controlAddress, ((FloatParameter *)c)->value);
+			break;
+
+		case Controllable::Type::INT:
+			sender.send(c->controlAddress, ((IntParameter *)c)->value);
+			break;
+
+		case Controllable::Type::RANGE:
+			sender.send(c->controlAddress, ((FloatParameter *)c)->value, ((FloatParameter *)c)->value);
+			break;
+
+		case Controllable::Type::STRING:
+			sender.send(c->controlAddress, ((StringParameter *)c)->value);
+			break;
+	}
 }

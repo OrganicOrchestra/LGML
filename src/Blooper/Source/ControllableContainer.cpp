@@ -151,29 +151,26 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 	return result;
 }
 
-Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive)
+Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
 {
 
 	bool isTargetControllable = addressSplit.size() == 1;
-	DBG("Get controllable for adress (" + shortName + ") is target a controllable ? " + String(isTargetControllable));
 	if (isTargetControllable)
 	{
 		for (auto &c : controllables)
 		{
 			if (c->shortName == addressSplit[0])
 			{
-				if (c->isControllableExposed) return c;
+				if (c->isControllableExposed || getNotExposed) return c;
 				else return nullptr;
 			}
 		}
 	}
 	else
 	{
-		DBG("Check for container with name " + addressSplit[0]);
 		
 		for (auto &cc : controllableContainers)
 		{
-			DBG(" > " + cc->shortName);
 			if (cc->shortName == addressSplit[0])
 			{
 				addressSplit.remove(0);
@@ -185,16 +182,22 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 	return nullptr;
 }
 
+void ControllableContainer::dispatchFeedback(Controllable * c)
+{
+	if (parentContainer != nullptr) parentContainer->dispatchFeedback(c);
+	else listeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
+}
+
 
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
-	DBG("ControllableContainer :: parameterValueChanged");
+	if (p->isControllableExposed) dispatchFeedback(p);
 }
 
-void ControllableContainer::triggerTriggered(Trigger * p)
+void ControllableContainer::triggerTriggered(Trigger * t)
 {
-	DBG("ControllableContainer :: triggerTriggered");
+	if (t->isControllableExposed) dispatchFeedback(t);
 }
 
 

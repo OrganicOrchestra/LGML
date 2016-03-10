@@ -42,6 +42,7 @@ public:
 	bool enabled;
 	bool hasCustomShortName;
 	bool isControllableExposed;
+	bool isControllableFeedbackOnly;
 
 	String controlAddress;
 
@@ -61,6 +62,7 @@ public:
 	void setAutoShortName() {
 		hasCustomShortName = false;
 		shortName = StringUtil::toShortName(niceName);
+		updateControlAddress();
 	}
 
 	void setEnabled(bool value, bool silentSet = false, bool force = false)

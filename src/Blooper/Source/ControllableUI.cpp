@@ -28,7 +28,6 @@ void ControllableUI::controllableStateChanged(Controllable * c)
 
 void ControllableUI::controllableControlAddressChanged(Controllable * c)
 {
-	DBG("Controllable control adress changed");
 	updateTooltip();
 }
 
