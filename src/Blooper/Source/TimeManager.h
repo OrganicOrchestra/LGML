@@ -24,6 +24,8 @@ class TimeManager : public AudioIODeviceCallback{
     
     
     public :
+    
+    // TODO check if we can use SingleThread Singleton for fast access in processAdio
     juce_DeclareSingleton(TimeManager, true);
     
     TimeManager();

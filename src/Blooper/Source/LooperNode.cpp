@@ -144,6 +144,22 @@ void LooperNode::Looper::setNumTracks(int numTracks){
 }
 
 
+void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
+    bool needToStop = true;
+    bool needToReleaseMasterTempo = true;
+    for(auto & t : tracks){
+        needToStop &= (t->trackState == Track::STOPPED  ||t->trackState == Track::CLEARED  ) ;
+        needToReleaseMasterTempo &= (t->trackState == Track::CLEARED );
+    }
+    
+    if (needToReleaseMasterTempo) {
+        TimeManager::getInstance()->removeIfMaster(looperNode);
+    }
+    if (needToStop) {
+        TimeManager::getInstance()->stop();
+    }
+}
+
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
     if(t == recPlayTrig){
         if(trackState == CLEARED){
@@ -159,11 +175,14 @@ void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
     else if(t== clearTrig){
         setTrackState(SHOULD_CLEAR);
     }
+    else if (t == stopTrig){
+        setTrackState(STOPPED);
+    }
 }
 
 bool LooperNode::Looper::Track::isMasterTempoTrack(){
     return TimeManager::getInstance()->askForBeingMasterNode(parentLooper->looperNode)
-    && parentLooper->askForBeingMasterTrack(this);
+            && parentLooper->askForBeingMasterTrack(this);
 }
 
 void LooperNode::Looper::Track::setTrackState(TrackState newState){
@@ -238,7 +257,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         quantizedPlayEnd = -1;
     }
     
-    else if(newState == SHOULD_CLEAR){
+    if(newState == SHOULD_CLEAR){
         recordNeedle = 0;
         playNeedle = 0;
         quantizedPlayEnd = -1;
@@ -248,7 +267,9 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         newState = CLEARED;
     }
     DBG(newState <<","<<trackState );
+
     trackState = newState;
+    parentLooper->checkIfNeedGlobalLooperStateUpdate();
     listeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };
 

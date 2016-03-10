@@ -39,6 +39,7 @@ class TimeManagerUI : public Component{
             startTimerHz(30);
         }
         void async_stop()override{
+            repaint();
             stopTimer();
         }
         void timerCallback()override{

@@ -356,7 +356,8 @@ void NodeManagerUI::finishEditingConnection()
 		if (success)
 		{
 			NodeConnection * nc = nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
-			nc->addAudioGraphConnection(editingChannel, targetChannel);
+            if(nc!=nullptr)
+                nc->addAudioGraphConnection(editingChannel, targetChannel);
 		}
 	}
 

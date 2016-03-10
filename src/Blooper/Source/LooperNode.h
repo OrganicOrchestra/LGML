@@ -19,6 +19,8 @@
 #define MAX_LOOP_LENGTH_S 30
 #define MAX_NUM_TRACKS 30
 
+
+
 class LooperNode : public NodeBase
 {
 
@@ -28,6 +30,8 @@ public:
 		addChildControllableContainer(looper);
     }
     
+    
+
     class Looper : public NodeAudioProcessor, public ControllableContainer
 	{
     public:
@@ -63,23 +67,37 @@ public:
 
 				setCustomShortName("track/" + String(_trackNum));
 
-				trackNum = addIntParameter("Track Number", "Index of the track", _trackNum, 0, MAX_NUM_TRACKS);
-				recPlayTrig = addTrigger("Rec Or Play",
-                                         "Tells the track to wait for the next bar and then start record or play");
-				playTrig = addTrigger("Play",
-                                      "Tells the track to wait for the next bar and then stop recording and start playing");
-				clearTrig = addTrigger("Clear",
+				trackNum =      addIntParameter("Track Number",
+                                                "Index of the track",
+                                                _trackNum, 0, MAX_NUM_TRACKS);
+                
+				recPlayTrig =   addTrigger("Rec Or Play",
+                                         "Tells the track to wait for the next bar \
+                                         and then start record or play");
+                
+				playTrig =      addTrigger("Play",
+                                      "Tells the track to wait for the next bar and \
+                                      then stop recording and start playing");
+                stopTrig =     addTrigger("Stop",
+                                          "Tells the track to stop ");
+                
+				clearTrig =     addTrigger("Clear",
                                        "Tells the track to clear it's content if got any");
-				volume = addFloatParameter("Volume",
-                                           "Set the volume of the track", 1, 0, 1);
-				preDelayMs = addIntParameter("Pre Delay MS",
-                                             "Pre process delay (in milliseconds)", 0, 0, 200);
+                
+				volume =        addFloatParameter("Volume",
+                                           "Set the volume of the track",
+                                           1, 0, 1);
+                
+				preDelayMs =    addIntParameter("Pre Delay MS",
+                                             "Pre process delay (in milliseconds)",
+                                             0, 0, 200);
 
 				preDelayMs->isControllableExposed = false;
 
 				recPlayTrig->addListener(this);
                 playTrig->addListener(this);
                 clearTrig->addListener(this);
+                stopTrig->addListener(this);
             }
             
             ~Track(){
@@ -89,10 +107,11 @@ public:
             Trigger * recPlayTrig;
             Trigger * playTrig;
             Trigger * clearTrig;
-
+            
+            Trigger * stopTrig;
             
             enum TrackState{
-                SHOULD_RECORD,
+                SHOULD_RECORD = 0,
                 RECORDING,
                 SHOULD_PLAY,
                 PLAYING,
@@ -112,7 +131,7 @@ public:
                 /** Destructor. */
                 virtual ~Listener() {}
 //                called from here
-                void internalTrackStateChanged(const TrackState &state){
+                void internalTrackStateChanged( const TrackState &state){
                     stateToBeNotified = state;
                     trackStateChanged(state);
                     triggerAsyncUpdate();
@@ -196,6 +215,8 @@ public:
             return result;
         }
         
+        
+        void checkIfNeedGlobalLooperStateUpdate();
         OwnedArray<Track> tracks;
 
         AudioBuffer<float> bufferIn;
