@@ -19,15 +19,20 @@
 class LooperNodeUI: public NodeBaseContentUI , public LooperNode::Looper::Listener
 {
 public:
-    LooperNodeUI(){};
     
-    void init() override{
-        looperNode = dynamic_cast<LooperNode*> (node);
-        looperNode->looper->addListener(this);
-        setSize(300,300);
-        trackNumChanged(looperNode->looper->tracks.size());
-
-    }
+    ScopedPointer<TriggerBlinkUI>   recPlaySelectedButton;
+    ScopedPointer<TriggerBlinkUI>   clearSelectedButton;
+    ScopedPointer<TriggerBlinkUI>   stopSelectedButton;
+    ScopedPointer<FloatSliderUI>    volumeSelectedSlider;
+    ScopedPointer<TriggerBlinkUI>   clearAllButton;
+    ScopedPointer<TriggerBlinkUI>   stopAllButton;
+    
+    LooperNodeUI();
+    
+    
+    Component trackContainer;
+    Component headerContainer;
+    void init() override;
     
     class TrackUI :
     public Component ,
@@ -55,6 +60,10 @@ public:
             track->recPlayTrig->addListener(this);
             track->clearTrig->addListener(this);
             track->stopTrig->addListener(this);
+            
+            
+            
+            
         }
         void paint(Graphics & g) override{
             if(isSelected){
@@ -67,13 +76,20 @@ public:
         
         void triggerTriggered(Trigger * t)override{track->askForSelection(true);}
         void resized()override{
-            Rectangle<int> area = getLocalBounds();
-            area.reduce(5,5);
-            volumeSlider->setBounds(area.removeFromRight(10));
-            recPlayButton.setBounds(area.removeFromTop(area.getHeight()/2));
-            stopButton.setBounds(area.removeFromLeft(area.getWidth()/2));
-            clearButton.setBounds(area);
+            // RelativeLayout
+            float pad = 0.01;
+            volumeSlider->setBoundsRelative(    .8+pad,     0+pad,  .2 - 2*pad,     1-2*pad);
             
+            recPlayButton.setBoundsRelative(    0+pad,      0+pad,  .8-2*pad,       .8-2*pad);
+            stopButton.setBoundsRelative(       0+pad,      .8+pad, .4-2*pad,       .2-2*pad);
+            clearButton.setBoundsRelative(      .4+pad,     .8+pad, .4-2*pad,       .2-2*pad);
+            //            Rectangle<int> area = getLocalBounds();
+            //            area.reduce(5,5);
+            //            volumeSlider->setBounds(area.removeFromRight(10));
+            //            recPlayButton.setBounds(area.removeFromTop(area.getHeight()/2));
+            //            stopButton.setBounds(area.removeFromLeft(area.getWidth()/2));
+            //            clearButton.setBounds(area);
+            //
         }
         void trackSelected(bool _isSelected)override{ isSelected = _isSelected;repaint();}
         void trackStateChangedAsync(const LooperNode::Looper::Track::TrackState & state)override;
@@ -82,13 +98,14 @@ public:
         TriggerBlinkUI recPlayButton;
         TriggerBlinkUI clearButton;
         TriggerBlinkUI stopButton;
+
         ScopedPointer<FloatSliderUI> volumeSlider;
         bool isSelected;
     };
     
     
     void trackNumChanged(int num) override;
-    void resized() override{reLayoutTracks();}
+    void resized() override;
     void reLayoutTracks();
     
     OwnedArray<TrackUI> tracksUI;

@@ -23,21 +23,29 @@ LooperNode::Looper::Looper(LooperNode * looperNode):ControllableContainer("Loope
 {
     
     recPlaySelectedTrig =   addTrigger("Rec Or Play",
-                                       "Tells the track to wait for the next bar \
+                                       "Tells the selected track to wait for the next bar \
                                        and then start record or play");
     
     playSelectedTrig =      addTrigger("Play",
-                                       "Tells the track to wait for the next bar and \
+                                       "Tells the selected track to wait for the next bar and \
                                        then stop recording and start playing");
     stopSelectedTrig =     addTrigger("Stop",
-                                      "Tells the track to stop ");
+                                      "Tells the selected track to stop ");
     
     clearSelectedTrig =     addTrigger("Clear",
-                                       "Tells the track to clear it's content if got any");
+                                       "Tells the selected track to clear it's content if got any");
     
     volumeSelected =        addFloatParameter("Volume",
-                                              "Set the volume of the track",
+                                              "Set the volume of the selected track",
                                               1, 0, 1);
+    
+    
+    clearAllTrig = addTrigger("ClearAll",
+                              "Tells all tracks to clear it's content if got any");
+    
+    stopAllTrig = addTrigger("StopAll",
+                              "Tells all tracks to stop it's content if got any");
+    
     skipControllableNameInAddress = true;
     setNumTracks(8);
     recPlaySelectedTrig->addListener(this);
@@ -106,15 +114,25 @@ void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
 
 void LooperNode::Looper::triggerTriggered(Trigger * t){
     if(selectedTrack!=nullptr){
-    if(t == recPlaySelectedTrig){
-    
-    }else if(t == playSelectedTrig){
-        
-    }else if(t == clearSelectedTrig){
-        
-    }else if(t == stopSelectedTrig){
-        
+        if(t == recPlaySelectedTrig){
+            selectedTrack->recPlayTrig->trigger();
+        }else if(t == playSelectedTrig){
+            selectedTrack->playTrig->trigger();
+        }else if(t == clearSelectedTrig){
+            selectedTrack->clearTrig->trigger();
+        }else if(t == stopSelectedTrig){
+            selectedTrack->stopTrig->trigger();
+        }
     }
+    else if(t == clearAllTrig){
+        for(auto & t:tracks){
+            t->clearTrig->trigger();
+        }
+    }
+    else if(t == stopAllTrig){
+        for(auto & t:tracks){
+            t->stopTrig->trigger();
+        }
     }
 }
 void LooperNode::Looper::selectMe(Track * t){
@@ -280,7 +298,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(uint64 curTime){
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
     if(t == recPlayTrig){
-        if(trackState == CLEARED){
+        if(trackState == CLEARED || trackState == STOPPED){
             setTrackState(SHOULD_RECORD);
         }
         else{
@@ -332,7 +350,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     
     
-    
+    // on true start recording
     if(newState == RECORDING){
         quantizedRecordStart = -1;
         if(preDelayMs->value>0){
@@ -344,6 +362,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
             recordNeedle = 0;
         }
     }
+    // on true end recording
     else if(trackState == RECORDING && newState==SHOULD_PLAY){
         {
             
@@ -367,21 +386,23 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         }
     }
     
-    
+    // on ask for play
     if(newState ==SHOULD_PLAY){
         quantizedRecordEnd = -1;
         quantizedRecordStart = -1;
         quantizedPlayStart = TimeManager::getInstance()->getNextQuantifiedTime();
     }
+    // on true start of play
     else if(newState ==PLAYING){
         quantizedRecordEnd = -1;
         quantizedPlayStart = -1;
         playNeedle = 0;
     }
+    // on true end of play
     else if (trackState== PLAYING && newState!=PLAYING){
         quantizedPlayEnd = -1;
     }
-    
+    // on should clear
     if(newState == SHOULD_CLEAR){
         recordNeedle = 0;
         playNeedle = 0;
@@ -389,6 +410,11 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         quantizedPlayStart = -1;
         quantizedRecordEnd = -1;
         quantizedRecordStart = -1;
+        newState = CLEARED;
+    }
+    
+    // force a track to stay in cleared state if stop triggered
+    if(newState == STOPPED && trackState == CLEARED){
         newState = CLEARED;
     }
     DBG(newState <<","<<trackState );

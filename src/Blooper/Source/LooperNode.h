@@ -37,6 +37,11 @@ public:
         Trigger * playSelectedTrig;
         Trigger * clearSelectedTrig;
         Trigger * stopSelectedTrig;
+        
+        Trigger * clearAllTrig;
+        Trigger * stopAllTrig;
+        
+        
         FloatParameter * volumeSelected;
         
         
