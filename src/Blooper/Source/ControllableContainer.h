@@ -62,14 +62,14 @@ public:
 	void removeControllable(Controllable * c);
 	Controllable * getControllableByName(const String &name);
 
-	void addChildControllableContainer(ControllableContainer * container);
-	void removeChildControllableContainer(ControllableContainer *container);
+	virtual void addChildControllableContainer(ControllableContainer * container);
+	virtual void removeChildControllableContainer(ControllableContainer *container);
 
 	void setParentContainer(ControllableContainer * container);
 	void updateChildrenControlAddress();
-	Array<Controllable *> getAllControllables(bool recursive = false);
+	virtual Array<Controllable *> getAllControllables(bool recursive = false);
 
-	Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
+	virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
 	
 
 	void dispatchFeedback(Controllable * c);
