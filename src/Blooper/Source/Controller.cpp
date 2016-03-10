@@ -32,7 +32,7 @@ ControllerUI * Controller::createUI()
 
 void Controller::remove()
 {
-	listeners.call(&Listener::askForRemoveController, this);
+	listeners.call(&Controller::Listener::askForRemoveController, this);
 }
 
 void Controller::parameterValueChanged(Parameter * p)

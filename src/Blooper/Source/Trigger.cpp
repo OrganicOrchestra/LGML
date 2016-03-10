@@ -14,7 +14,7 @@
 #include "TriggerBlinkUI.h"
 
 Trigger::Trigger(const String & niceName, const String &description, bool enabled) :
-	Controllable(niceName, description, enabled)
+	Controllable(Type::TRIGGER, niceName, description, enabled)
 {
 }
 

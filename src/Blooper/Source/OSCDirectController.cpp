@@ -35,17 +35,62 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
 	{
 		addSplit.remove(0);
 		Controllable * c = NodeManager::getInstance()->getControllableForAddress(addSplit);
-		if (c == nullptr)
+
+		if (c != nullptr)
 		{
-			DBG("No Controllable for address : " + addr);
+
+
+			switch (c->type)
+			{
+			case Controllable::Type::TRIGGER:
+				if(msg.size() == 0)	((Trigger *)c)->trigger();
+				else if (msg[0].isInt32() || msg[0].isFloat32())
+				{
+					float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+					if (val > 0) ((Trigger *)c)->trigger();
+				}
+				break;
+
+			case Controllable::Type::BOOL:
+				if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+				{
+					float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+					((BoolParameter *)c)->setValue(val > 0);
+				}
+				break;
+
+			case Controllable::Type::FLOAT:
+				if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+				{
+					float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+					((FloatParameter *)c)->setNormalizedValue(value); //normalized or not ? can user decide ?
+				}
+				break;
+
+			case Controllable::Type::INT:
+				if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+				{
+					float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+					((IntParameter *)c)->setValue(value); //normalized or not ? can user decide ?
+				}
+				break;
+
+			case Controllable::Type::RANGE:
+				if (msg.size() > 1 && (msg[0].isInt32() || msg[0].isFloat32()) && (msg[1].isInt32() || msg[1].isFloat32()))
+				{
+					float value1 = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+					float value2 = msg[1].isInt32() ? msg[1].getInt32() : msg[1].getFloat32();
+					((FloatRangeParameter *)c)->setValuesMinMax(value1, value2);
+				}
+				break;
+
+			case Controllable::Type::STRING:
+				break;
+			}
 		}
 		else
 		{
-			DBG("Found controller !");
-			if (msg.size() == 1)
-			{
-				c->parseValueFromController(msg[0].isInt32()?msg[0].getInt32():msg[0].getFloat32());
-			}
+			DBG("No Controllable for address : " + addr);
 		}
 	}
 }

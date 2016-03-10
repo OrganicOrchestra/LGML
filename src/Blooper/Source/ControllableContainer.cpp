@@ -88,14 +88,15 @@ Trigger * ControllableContainer::addTrigger(const String & niceName, const Strin
 	Trigger * t = new Trigger(niceName, description, enabled);
 	controllables.add(t);
 	t->setParentContainer(this);
-	
-	listeners.call(&Listener::controllableAdded, t);
+	t->addListener(this);
+
+	listeners.call(&ControllableContainer::Listener::controllableAdded, t);
 	return t;
 }
 
 void ControllableContainer::removeControllable(Controllable * c)
 {
-	listeners.call(&Listener::controllableRemoved, c);
+	listeners.call(&ControllableContainer::Listener::controllableRemoved, c);
 	controllables.removeObject(c);
 }
 
@@ -168,8 +169,6 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 	}
 	else
 	{
-		
-		
 		DBG("Check for container with name " + addressSplit[0]);
 		
 		for (auto &cc : controllableContainers)
@@ -193,10 +192,20 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 	DBG("ControllableContainer :: parameterValueChanged");
 }
 
+void ControllableContainer::triggerTriggered(Trigger * p)
+{
+	DBG("ControllableContainer :: triggerTriggered");
+}
+
+
+
+
 void ControllableContainer::addParameterInternal(Parameter * p)
 {
 	p->setParentContainer(this);
 	controllables.add(p);
 	p->addListener(this);
-	listeners.call(&Listener::controllableAdded, p);
+	listeners.call(&ControllableContainer::Listener::controllableAdded, p);
 }
+
+

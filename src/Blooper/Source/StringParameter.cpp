@@ -13,7 +13,7 @@
 
 
 StringParameter::StringParameter(const String & niceName, const String &description, const String & initialValue, bool enabled) :
-	Parameter(niceName, description, enabled)
+	Parameter(Type::STRING, niceName, description, enabled)
 {
 	setValue(initialValue);
 	

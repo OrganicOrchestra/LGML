@@ -35,8 +35,6 @@ public:
 		return value ? 1 : 0;
 	}
 
-	virtual void parseValueFromController(float value) override { DBG("Bool set value from controller"); setValue(value > .5f); }
-
 	//ui creation
 	BoolToggleUI * createToggle(); 
 

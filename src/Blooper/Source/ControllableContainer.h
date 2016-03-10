@@ -14,11 +14,12 @@
 #include "Controllable.h"
 #include "FloatParameter.h"
 #include "IntParameter.h"
+#include "FloatRangeParameter.h"
 #include "BoolParameter.h"
 #include "StringParameter.h"
 #include "Trigger.h"
 
-class ControllableContainer : public Parameter::Listener
+class ControllableContainer : public Parameter::Listener, public Trigger::Listener
 {
 public:
 	ControllableContainer(const String &niceName);
@@ -69,8 +70,10 @@ public:
 
 	Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true);
 	
-	// Inherited via Listener
+	// Inherited via Parameter::Listener
 	virtual void parameterValueChanged(Parameter * p) override;
+	// Inherited via Trigger::Listener
+	virtual void triggerTriggered(Trigger * p) override;
 
 private:
 	void addParameterInternal(Parameter * p);
@@ -91,6 +94,8 @@ public:
 	void removeListener(Listener* listener) { listeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableContainer)
+
+		
 };
 
 

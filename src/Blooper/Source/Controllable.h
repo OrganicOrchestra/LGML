@@ -19,14 +19,27 @@ class ControllableContainer;
 class Controllable
 {
 public:
-	Controllable(const String &niceName, const String &description, bool enabled = true);
-	virtual ~Controllable() {}
+	enum Type { //Add type here if creating new type of Controllable
+		TRIGGER,
+		FLOAT,
+		INT,
+		BOOL,
+		STRING,
+		RANGE
 
-	bool enabled;
+	};
+
+
+	Controllable(const Type &type, const String &niceName, const String &description, bool enabled = true);
+	virtual ~Controllable() {}
+	
+
+	Type type;
 	String niceName;
 	String shortName;
 	String description;
 
+	bool enabled;
 	bool hasCustomShortName;
 	bool isControllableExposed;
 
@@ -71,10 +84,6 @@ public:
 	}
 
 	String getControlAddress();
-
-
-	//TEMP
-	virtual void parseValueFromController(float value) { DBG("Not implemented."); }
 
 public:
 	class  Listener
