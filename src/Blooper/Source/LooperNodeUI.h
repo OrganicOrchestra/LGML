@@ -34,7 +34,9 @@ public:
         
         TrackUI(LooperNode::Looper::Track * track):track(track),
         recPlayButton(track->recPlayTrig),
-        clearButton(track->clearTrig){
+        clearButton(track->clearTrig),
+        stopButton(track->stopTrig)
+        {
             track->addListener(this);
             mainColour = Colours::black;
             addAndMakeVisible(recPlayButton);
@@ -42,14 +44,17 @@ public:
             volumeSlider = track->volume->createSlider();
             volumeSlider->orientation = FloatSliderUI::VERTICAL;
             addAndMakeVisible(volumeSlider);
+            
+            addAndMakeVisible(stopButton);
         }
         void paint(Graphics & g) override{
             g.fillAll(mainColour.withAlpha(0.7f));
         }
         void resized()override{
             Rectangle<int> area = getLocalBounds();
-            volumeSlider->setBounds(area.removeFromRight(30));
+            volumeSlider->setBounds(area.removeFromRight(10));
             recPlayButton.setBounds(area.removeFromTop(area.getHeight()/2));
+            stopButton.setBounds(area.removeFromLeft(area.getWidth()/2));
             clearButton.setBounds(area);
             
         }
@@ -59,6 +64,7 @@ public:
         Colour mainColour;
         TriggerBlinkUI recPlayButton;
         TriggerBlinkUI clearButton;
+        TriggerBlinkUI stopButton;
         ScopedPointer<FloatSliderUI> volumeSlider;
         
     };
