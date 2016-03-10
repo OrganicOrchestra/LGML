@@ -20,7 +20,7 @@ LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeMa
 
 
 LooperNode::Looper::Looper(LooperNode * looperNode):
-ControllableContainer("Looper"),
+ControllableContainer("InnerLooper"),
 selectedTrack(nullptr),
 looperNode(looperNode)
 {
@@ -50,6 +50,7 @@ looperNode(looperNode)
                              "Tells all tracks to stop it's content if got any");
     
     skipControllableNameInAddress = true;
+
     setNumTracks(8);
     recPlaySelectedTrig->addTriggerListener(this);
     playSelectedTrig->addTriggerListener(this);
@@ -174,7 +175,7 @@ trackState(CLEARED),
 internalTrackState(BUFFER_STOPPED)
 {
     
-    setCustomShortName("track/" + String(_trackNum));
+    //setCustomShortName("track/" + String(_trackNum)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
     
     trackNum =      addIntParameter("Track Number",
                                     "Number of tracks",
@@ -439,7 +440,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
             newState = CLEARED;
         }
     }
-    DBG(newState <<","<<trackState );
+    //DBG(newState <<","<<trackState );
     
     trackState = newState;
     parentLooper->checkIfNeedGlobalLooperStateUpdate();

@@ -61,9 +61,11 @@ public:
 
 	void removeControllable(Controllable * c);
 	Controllable * getControllableByName(const String &name);
-
+	
 	virtual void addChildControllableContainer(ControllableContainer * container);
 	virtual void removeChildControllableContainer(ControllableContainer *container);
+	ControllableContainer * getControllableContainerByName(const String &name);
+
 
 	void setParentContainer(ControllableContainer * container);
 	void updateChildrenControlAddress();
@@ -91,6 +93,8 @@ public:
 		virtual ~Listener() {}
 		virtual void controllableAdded(Controllable * c) = 0;
 		virtual void controllableRemoved(Controllable * c) = 0;
+		virtual void controllableContainerAdded(ControllableContainer * cc) = 0;
+		virtual void controllableContainerRemoved(ControllableContainer * cc) = 0;
 		virtual void controllableFeedbackUpdate(Controllable *c) = 0;
 	};
 

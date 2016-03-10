@@ -25,9 +25,16 @@ public:
 	// Inherited via Listener
 	virtual void controllableAdded(Controllable * c) override;
 	virtual void controllableRemoved(Controllable * c) override;
+	virtual void controllableContainerAdded(ControllableContainer * cc) override;
+	virtual void controllableContainerRemoved(ControllableContainer * cc) override;
+
 	virtual void controllableFeedbackUpdate(Controllable * c) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
+
+
+		// Inherited via Listener
+		
 
 };
 
