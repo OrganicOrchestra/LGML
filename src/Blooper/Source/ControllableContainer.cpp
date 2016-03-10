@@ -151,11 +151,12 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 	return result;
 }
 
+
 Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
 {
 
-	bool isTargetControllable = addressSplit.size() == 1;
-	if (isTargetControllable)
+	bool isTargetAControllable = addressSplit.size() == 1;
+	if (isTargetAControllable)
 	{
 		for (auto &c : controllables)
 		{

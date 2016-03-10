@@ -94,7 +94,7 @@ void LooperNode::Looper::setNumTracks(int numTracks){
     int oldSize = tracks.size();
     if(numTracks>oldSize)   { for(int i = oldSize ; i< numTracks ; i++)     {addTrack();}}
     else                    {for (int i = oldSize - 1; i > numTracks; --i)  {removeTrack(i);}}
-    looperListeners.call(&Listener::trackNumChanged,numTracks);
+    looperListeners.call(&Looper::Listener::trackNumChanged,numTracks);
 }
 
 

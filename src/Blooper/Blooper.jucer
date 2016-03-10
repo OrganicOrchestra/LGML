@@ -25,14 +25,18 @@
           <FILE id="OUrAS4" name="TriggerUI.cpp" compile="1" resource="0" file="Source/TriggerUI.cpp"/>
           <FILE id="E4MhHL" name="TriggerUI.h" compile="0" resource="0" file="Source/TriggerUI.h"/>
         </GROUP>
-        <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
+        <FILE id="K9s4xv" name="Controllable.cpp" compile="1" resource="0"
+              file="Source/Controllable.cpp"/>
+        <FILE id="H2nHBA" name="Controllable.h" compile="0" resource="0" file="Source/Controllable.h"/>
         <FILE id="pm5PA0" name="ControllableContainer.cpp" compile="1" resource="0"
               file="Source/ControllableContainer.cpp"/>
         <FILE id="yWCKk0" name="ControllableContainer.h" compile="0" resource="0"
               file="Source/ControllableContainer.h"/>
-        <FILE id="K9s4xv" name="Controllable.cpp" compile="1" resource="0"
-              file="Source/Controllable.cpp"/>
-        <FILE id="H2nHBA" name="Controllable.h" compile="0" resource="0" file="Source/Controllable.h"/>
+        <FILE id="c9WgX8" name="ControllableIndexedContainer.cpp" compile="1"
+              resource="0" file="Source/ControllableIndexedContainer.cpp"/>
+        <FILE id="Y9EZlj" name="ControllableIndexedContainer.h" compile="0"
+              resource="0" file="Source/ControllableIndexedContainer.h"/>
+        <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
         <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
         <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
         <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
