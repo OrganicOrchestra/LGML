@@ -14,10 +14,10 @@
 #include "Style.h"
 
 //==============================================================================
-TriggerButtonUI::TriggerButtonUI(Trigger *t):
+TriggerButtonUI::TriggerButtonUI(Trigger *t) :
 	TriggerUI(t)
 {
-	setSize(20,15);
+	setSize(20, 15);
 }
 
 TriggerButtonUI::~TriggerButtonUI()
@@ -31,8 +31,6 @@ void TriggerButtonUI::triggerTriggered(Trigger * p){
 
 void TriggerButtonUI::paint (Graphics& g)
 {
-	setAlpha(trigger->enabled ? 1 : .5);
-
 	Point<int> center = getBounds().getCentre();
 
 

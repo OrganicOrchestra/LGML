@@ -36,6 +36,8 @@ public:
 	void setTriggerReference(Trigger * t);
 	float intensity;
 
+	Label nameLabel;
+
 private:
 
 	int blinkTime;

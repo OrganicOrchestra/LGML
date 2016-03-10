@@ -19,6 +19,16 @@ TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
 	intensity(0)
 {
 	setSize(30, 20);
+	
+
+	nameLabel.setJustificationType(Justification::centred);
+	nameLabel.setText(t->niceName, NotificationType::dontSendNotification);
+	addAndMakeVisible(nameLabel);
+	nameLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
+	Font f = nameLabel.getFont();
+	f.setHeight(10);
+	nameLabel.setFont(f);
+	nameLabel.setInterceptsMouseClicks(false, false);
 }
 
 TriggerBlinkUI::~TriggerBlinkUI()
@@ -44,7 +54,7 @@ void TriggerBlinkUI::paint(Graphics& g)
 {
 	g.setColour(NORMAL_COLOR.brighter(intensity));
 	g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
-
+	
 }
 
 
@@ -67,6 +77,7 @@ void TriggerBlinkUI::resized()
 {
 	// This method is where you should set the bounds of any child
 	// components that your component contains..
+	nameLabel.setBounds(getLocalBounds());
 
 }
 
