@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
-
-    LooperNode.h
-    Created: 3 Mar 2016 10:32:16pm
-    Author:  bkupe
-
-  ==============================================================================
-*/
+ ==============================================================================
+ 
+ LooperNode.h
+ Created: 3 Mar 2016 10:32:16pm
+ Author:  bkupe
+ 
+ ==============================================================================
+ */
 
 #ifndef LOOPERNODE_H_INCLUDED
 #define LOOPERNODE_H_INCLUDED
@@ -23,91 +23,46 @@
 
 class LooperNode : public NodeBase
 {
-
+    
 public:
-    LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"Looper",new Looper(this)) {
-        looper = dynamic_cast<Looper*>(audioProcessor);
-		addChildControllableContainer(looper);
-    }
+    LooperNode(NodeManager * nodeManager,uint32 nodeId);
     
     
-
-    class Looper : public NodeAudioProcessor, public ControllableContainer
-	{
+    
+    class Looper : public NodeAudioProcessor, public ControllableContainer, public Trigger::Listener
+    {
+        
     public:
-        Looper(LooperNode * looperNode):
-			looperNode(looperNode),
-			ControllableContainer("Looper")
-		{
-			skipControllableNameInAddress = true;
-            setNumTracks(8);
-        }
+        Trigger * recPlaySelectedTrig;
+        Trigger * playSelectedTrig;
+        Trigger * clearSelectedTrig;
+        Trigger * stopSelectedTrig;
+        FloatParameter * volumeSelected;
         
         
-        void processBlockInternal(AudioBuffer<float>& buffer,
-                                  MidiBuffer& midiMessages)override;
+        
+        Looper(LooperNode * looperNode);
+
+        
+        
+        void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override;
         
         void setNumTracks(int numTracks);
         void addTrack();
         void removeTrack( int i);
+        void triggerTriggered(Trigger * t) override;
+        
+        
         class Track : public ControllableContainer, public Trigger::Listener
-		{
+        {
         public:
-			Track(Looper * looper, int _trackNum) :
-				ControllableContainer("Track " + String(_trackNum)),
-				parentLooper(looper),
-				quantizedRecordStart(0),
-				quantizedRecordEnd(0),
-				quantizedPlayStart(0),
-				quantizedPlayEnd(0),
-				streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
-				monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
-				trackState(CLEARED)
-            {
-
-				setCustomShortName("track/" + String(_trackNum));
-
-				trackNum =      addIntParameter("Track Number",
-                                                "Index of the track",
-                                                _trackNum, 0, MAX_NUM_TRACKS);
-                
-				recPlayTrig =   addTrigger("Rec Or Play",
-                                         "Tells the track to wait for the next bar \
-                                         and then start record or play");
-                
-				playTrig =      addTrigger("Play",
-                                      "Tells the track to wait for the next bar and \
-                                      then stop recording and start playing");
-                stopTrig =     addTrigger("Stop",
-                                          "Tells the track to stop ");
-                
-				clearTrig =     addTrigger("Clear",
-                                       "Tells the track to clear it's content if got any");
-                
-				volume =        addFloatParameter("Volume",
-                                           "Set the volume of the track",
-                                           1, 0, 1);
-                
-				preDelayMs =    addIntParameter("Pre Delay MS",
-                                             "Pre process delay (in milliseconds)",
-                                             0, 0, 200);
-
-				preDelayMs->isControllableExposed = false;
-
-				recPlayTrig->addListener(this);
-                playTrig->addListener(this);
-                clearTrig->addListener(this);
-                stopTrig->addListener(this);
-            }
+            Track(Looper * looper, int _trackNum);
             
-            ~Track(){
-                
-            }
+            ~Track(){}
             
             Trigger * recPlayTrig;
             Trigger * playTrig;
             Trigger * clearTrig;
-            
             Trigger * stopTrig;
             
             enum TrackState{
@@ -121,6 +76,10 @@ public:
             };
             TrackState trackState;
             void setTrackState(TrackState state);
+            // from events like UI
+            void askForSelection(bool isSelected);
+            
+            
             
             
             //Listener
@@ -130,7 +89,7 @@ public:
                 
                 /** Destructor. */
                 virtual ~Listener() {}
-//                called from here
+                //                called from here
                 void internalTrackStateChanged( const TrackState &state){
                     stateToBeNotified = state;
                     trackStateChanged(state);
@@ -141,13 +100,12 @@ public:
                 // dispatched to listeners
                 virtual void trackStateChanged(const TrackState & state) {};
                 virtual void trackStateChangedAsync(const TrackState & state) = 0;
-                void handleAsyncUpdate() override{
-                    trackStateChangedAsync(stateToBeNotified);
-                }
+                void handleAsyncUpdate() override{trackStateChangedAsync(stateToBeNotified);}
+                virtual void trackSelected(bool isSelected){};
             };
-            ListenerList<Listener> listeners;
-            void addListener(Listener* newListener) { listeners.add(newListener); }
-            void removeListener(Listener* listener) { listeners.remove(listener); }
+            ListenerList<Listener> trackStateListeners;
+            void addListener(Listener* newListener) { trackStateListeners.add(newListener); }
+            void removeListener(Listener* listener) { trackStateListeners.remove(listener); }
             
             FloatParameter * volume;
             float lastVolume;
@@ -158,7 +116,7 @@ public:
         private:
             
             void triggerTriggered(Trigger * t) override;
-            
+            void setSelected(bool isSelected);
             IntParameter * trackNum;
             
             int recordNeedle;
@@ -168,7 +126,7 @@ public:
             int playNeedle;
             int quantizedPlayStart,quantizedPlayEnd;
             void updatePendingLooperTrackState(uint64 curTime);
-      
+            
             
             AudioSampleBuffer monoLoopSample;
             
@@ -176,7 +134,7 @@ public:
             // to readjust the loop when controllers are delayed
             BipBuffer streamBipBuffer;
             IntParameter * preDelayMs;
-
+            
             Looper * parentLooper;
             
             void processBlock(AudioBuffer<float>& buffer, MidiBuffer & midi);
@@ -197,16 +155,11 @@ public:
         };
         
         
-        ListenerList<Listener> listeners;
-        void addListener(Listener* newListener) { listeners.add(newListener); }
-        void removeListener(Listener* listener) { listeners.remove(listener); }
+        ListenerList<Listener> looperListeners;
+        void addListener(Listener* newListener) { looperListeners.add(newListener); }
+        void removeListener(Listener* listener) { looperListeners.remove(listener); }
         
-        bool askForBeingMasterTrack(Track * t){
-            if(areAllTrackClearedButThis(t)){
-                return true;
-            }
-            return false;
-        }
+        bool askForBeingMasterTrack(Track * t){return areAllTrackClearedButThis(t);}
         bool areAllTrackClearedButThis(Track * _t){
             bool result = true;
             for(auto & t:tracks){
@@ -215,10 +168,11 @@ public:
             return result;
         }
         
-        
+        // internal
         void checkIfNeedGlobalLooperStateUpdate();
+        void selectMe(Track * t);
         OwnedArray<Track> tracks;
-
+        Track * selectedTrack;
         AudioBuffer<float> bufferIn;
         AudioBuffer<float>bufferOut;
         
@@ -229,8 +183,8 @@ public:
     
     Looper * looper;
     NodeBaseUI * createUI() override;
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
 };
 
 #endif  // LOOPERNODE_H_INCLUDED

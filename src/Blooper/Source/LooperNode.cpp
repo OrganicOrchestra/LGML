@@ -13,6 +13,39 @@
 
 #include "LooperNodeUI.h"
 
+LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"Looper",new Looper(this)) {
+    looper = dynamic_cast<Looper*>(audioProcessor);
+    addChildControllableContainer(looper);
+}
+
+
+LooperNode::Looper::Looper(LooperNode * looperNode):ControllableContainer("Looper"),looperNode(looperNode),selectedTrack(nullptr)
+{
+    
+    recPlaySelectedTrig =   addTrigger("Rec Or Play",
+                                       "Tells the track to wait for the next bar \
+                                       and then start record or play");
+    
+    playSelectedTrig =      addTrigger("Play",
+                                       "Tells the track to wait for the next bar and \
+                                       then stop recording and start playing");
+    stopSelectedTrig =     addTrigger("Stop",
+                                      "Tells the track to stop ");
+    
+    clearSelectedTrig =     addTrigger("Clear",
+                                       "Tells the track to clear it's content if got any");
+    
+    volumeSelected =        addFloatParameter("Volume",
+                                              "Set the volume of the track",
+                                              1, 0, 1);
+    skipControllableNameInAddress = true;
+    setNumTracks(8);
+    recPlaySelectedTrig->addListener(this);
+    playSelectedTrig->addListener(this);
+    clearSelectedTrig->addListener(this);
+    stopSelectedTrig->addListener(this);
+}
+
 void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages){
     
     // TODO check if we can optimize copies
@@ -28,8 +61,128 @@ void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
     }
     
     buffer.makeCopyOf( bufferOut);
+    
+    
+}
 
-	
+
+
+void LooperNode::Looper::addTrack(){
+    Track * t = new Track(this, tracks.size());
+    tracks.add(t);
+    addChildControllableContainer(t);
+}
+
+void LooperNode::Looper::removeTrack( int i){
+    removeChildControllableContainer(tracks[i]);
+    tracks.remove(i);
+}
+
+
+void LooperNode::Looper::setNumTracks(int numTracks){
+    int oldSize = tracks.size();
+    if(numTracks>oldSize)   { for(int i = oldSize ; i< numTracks ; i++)     {addTrack();}}
+    else                    {for (int i = oldSize - 1; i > numTracks; --i)  {removeTrack(i);}}
+    looperListeners.call(&Listener::trackNumChanged,numTracks);
+}
+
+
+void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
+    bool needToStop = true;
+    bool needToReleaseMasterTempo = true;
+    for(auto & t : tracks){
+        needToStop &= (t->trackState == Track::STOPPED  ||t->trackState == Track::CLEARED  ) ;
+        needToReleaseMasterTempo &= (t->trackState == Track::CLEARED );
+    }
+    
+    if (needToReleaseMasterTempo) {
+        TimeManager::getInstance()->removeIfMaster(looperNode);
+    }
+    if (needToStop) {
+        TimeManager::getInstance()->stop();
+    }
+}
+
+
+void LooperNode::Looper::triggerTriggered(Trigger * t){
+    if(selectedTrack!=nullptr){
+    if(t == recPlaySelectedTrig){
+    
+    }else if(t == playSelectedTrig){
+        
+    }else if(t == clearSelectedTrig){
+        
+    }else if(t == stopSelectedTrig){
+        
+    }
+    }
+}
+void LooperNode::Looper::selectMe(Track * t){
+    if(selectedTrack!=nullptr ){
+        selectedTrack->setSelected(false);
+    }
+    selectedTrack = t;
+    if(selectedTrack!=nullptr ){
+        selectedTrack->setSelected(true);
+    }
+    
+    
+}
+
+
+
+/////////
+// TRACK
+////////
+
+
+
+
+LooperNode::Looper::Track::Track(Looper * looper, int _trackNum) :
+ControllableContainer("Track " + String(_trackNum)),
+parentLooper(looper),
+quantizedRecordStart(0),
+quantizedRecordEnd(0),
+quantizedPlayStart(0),
+quantizedPlayEnd(0),
+streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
+monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
+trackState(CLEARED)
+{
+    
+				setCustomShortName("track/" + String(_trackNum));
+    
+				trackNum =      addIntParameter("Track Number",
+                                                "Number of tracks",
+                                                _trackNum, 0, MAX_NUM_TRACKS);
+    
+				recPlayTrig =   addTrigger("Rec Or Play",
+                                           "Tells the track to wait for the next bar \
+                                           and then start record or play");
+    
+				playTrig =      addTrigger("Play",
+                                           "Tells the track to wait for the next bar and \
+                                           then stop recording and start playing");
+    stopTrig =     addTrigger("Stop",
+                              "Tells the track to stop ");
+    
+				clearTrig =     addTrigger("Clear",
+                                           "Tells the track to clear it's content if got any");
+    
+				volume =        addFloatParameter("Volume",
+                                                  "Set the volume of the track",
+                                                  1, 0, 1);
+    
+				preDelayMs =    addIntParameter("Pre Delay MS",
+                                                "Pre process delay (in milliseconds)",
+                                                0, 0, 200);
+    
+				preDelayMs->isControllableExposed = false;
+    
+				recPlayTrig->addListener(this);
+    playTrig->addListener(this);
+    clearTrig->addListener(this);
+    stopTrig->addListener(this);
 }
 
 void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuffer &midi){
@@ -118,55 +271,20 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(uint64 curTime){
             setTrackState(STOPPED);
         }
     }
-
+    
     
 }
 
 
 
-void LooperNode::Looper::addTrack(){
-    Track * t = new Track(this, tracks.size());
-    tracks.add(t);
-    addChildControllableContainer(t);
-}
-
-void LooperNode::Looper::removeTrack( int i){
-    removeChildControllableContainer(tracks[i]);
-    tracks.remove(i);
-}
-
-
-void LooperNode::Looper::setNumTracks(int numTracks){
-    int oldSize = tracks.size();
-    if(numTracks>oldSize)   { for(int i = oldSize ; i< numTracks ; i++)     {addTrack();}}
-    else                    {for (int i = oldSize - 1; i > numTracks; --i)  {removeTrack(i);}}
-    listeners.call(&Listener::trackNumChanged,numTracks);
-}
-
-
-void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
-    bool needToStop = true;
-    bool needToReleaseMasterTempo = true;
-    for(auto & t : tracks){
-        needToStop &= (t->trackState == Track::STOPPED  ||t->trackState == Track::CLEARED  ) ;
-        needToReleaseMasterTempo &= (t->trackState == Track::CLEARED );
-    }
-    
-    if (needToReleaseMasterTempo) {
-        TimeManager::getInstance()->removeIfMaster(looperNode);
-    }
-    if (needToStop) {
-        TimeManager::getInstance()->stop();
-    }
-}
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
     if(t == recPlayTrig){
         if(trackState == CLEARED){
-        setTrackState(SHOULD_RECORD);
+            setTrackState(SHOULD_RECORD);
         }
         else{
-          setTrackState(SHOULD_PLAY);
+            setTrackState(SHOULD_PLAY);
         }
     }
     else if(t == playTrig){
@@ -182,14 +300,21 @@ void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
 
 bool LooperNode::Looper::Track::isMasterTempoTrack(){
     return TimeManager::getInstance()->askForBeingMasterNode(parentLooper->looperNode)
-            && parentLooper->askForBeingMasterTrack(this);
+    && parentLooper->askForBeingMasterTrack(this);
 }
+void LooperNode::Looper::Track::setSelected(bool isSelected){
+    trackStateListeners.call(&LooperNode::Looper::Track::Listener::trackSelected,isSelected);
+}
+void LooperNode::Looper::Track::askForSelection(bool isSelected){
+    parentLooper->selectMe(isSelected?this:nullptr);
+}
+
 
 void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     
     // quantify
-
+    
     
     if(newState == SHOULD_RECORD){
         // are we able to set the tempo
@@ -204,7 +329,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         }
     }
     
-
+    
     
     
     
@@ -267,10 +392,13 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         newState = CLEARED;
     }
     DBG(newState <<","<<trackState );
-
+    
     trackState = newState;
     parentLooper->checkIfNeedGlobalLooperStateUpdate();
-    listeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
+    trackStateListeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };
+
+
+
 
 NodeBaseUI * LooperNode::createUI(){return new NodeBaseUI(this, new LooperNodeUI);}
