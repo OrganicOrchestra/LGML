@@ -9,15 +9,15 @@
 */
 
 #include "Controller.h"
-#include "ControllerUI.h";
+#include "ControllerUI.h"
 
 Controller::Controller(const String &name) :
 	ControllableContainer(name)
 {
 	nameParam = addStringParameter("Name", "Set the name of the controller.",name);
-	nameParam->addListener(this);
+	nameParam->addParameterListener(this);
 	enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
-	enabledParam->addListener(this);
+	enabledParam->addParameterListener(this);
 }
 
 

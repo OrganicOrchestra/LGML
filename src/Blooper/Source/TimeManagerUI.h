@@ -32,7 +32,7 @@ class TimeManagerUI : public Component{
     class TimeBar : public Component,public TimeManager::Listener,public Timer{
         public :
         TimeBar(){
-             TimeManager::getInstance()->addListener(this);
+             TimeManager::getInstance()->addTimeManagerListener(this);
         }
         
         void  async_play()override{

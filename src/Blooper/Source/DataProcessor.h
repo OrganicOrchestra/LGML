@@ -211,8 +211,8 @@ public:
 	};
 
 	ListenerList<Listener> listeners;
-	void addListener(Listener* newListener) { listeners.add(newListener); }
-	void removeListener(Listener* listener) { listeners.remove(listener); }
+	void addDataProcessorListener(Listener* newListener) { listeners.add(newListener); }
+	void removeDataProcessorListener(Listener* listener) { listeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataProcessor)
 };

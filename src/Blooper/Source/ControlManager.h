@@ -42,8 +42,8 @@ public:
 	};
 
 	ListenerList<Listener> listeners;
-	void addListener(Listener* newListener) { listeners.add(newListener); }
-	void removeListener(Listener* listener) { listeners.remove(listener); }
+	void addControllerListener(Listener* newListener) { listeners.add(newListener); }
+	void removeControllerListener(Listener* listener) { listeners.remove(listener); }
 
 	// Inherited via Listener
 	virtual void askForRemoveController(Controller *) override;

@@ -28,12 +28,12 @@ TriggerBlinkUI::~TriggerBlinkUI()
 
 void TriggerBlinkUI::setTriggerReference(Trigger * t) {
 	if (trigger != nullptr) {
-		trigger->removeListener(this);
+		trigger->removeTriggerListener(this);
 	}
 
 	trigger = t;
 
-	trigger->addListener(this);
+	trigger->addTriggerListener(this);
 }
 
 void TriggerBlinkUI::triggerTriggered(Trigger * p) {

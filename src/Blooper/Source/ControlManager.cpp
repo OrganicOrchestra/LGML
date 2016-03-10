@@ -26,7 +26,7 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 	Controller * c = factory.createController(controllerType);
 	controllers.add(c);
 	listeners.call(&Listener::controllerAdded, c);
-	c->addListener(this);
+	c->addControllableListener(this);
 	c->setParentContainer(this);
 	return c;
 }

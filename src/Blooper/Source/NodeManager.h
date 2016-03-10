@@ -16,18 +16,13 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 */
 #include "JuceHeader.h"
 
-#ifdef JUCE_WINDOWS
-#include "juce_audio_processors\juce_audio_processors.h"
-#else
-#include "juce_audio_processors.h"
-#endif
 
 #include "DataProcessorGraph.h"
 
-
-#include "NodeFactory.h"
 #include "NodeConnection.h"
 
+
+#include "NodeFactory.h"
 
 class NodeManager: public NodeBase::Listener , public NodeConnection::Listener, public ControllableContainer
 {
@@ -40,7 +35,7 @@ public:
 
 	juce_DeclareSingleton(NodeManager, true);
 
-	NodeFactory nodeFactory;
+    NodeFactory nodeFactory;
 
 
 	AudioProcessorGraph audioGraph;
@@ -80,8 +75,8 @@ public:
 	};
 
 	ListenerList<Listener> listeners;
-	void addListener(Listener* newListener) { listeners.add(newListener); }
-	void removeListener(Listener* listener) { listeners.remove(listener); }
+	void addNodeManagerListener(Listener* newListener) { listeners.add(newListener); }
+	void removeNodeManagerListener(Listener* listener) { listeners.remove(listener); }
 
 
 private: 

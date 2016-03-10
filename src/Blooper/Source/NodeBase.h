@@ -106,8 +106,8 @@ public:
         };
         
         ListenerList<Listener> listeners;
-        void addListener(Listener* newListener) { listeners.add(newListener); }
-        void removeListener(Listener* listener) { listeners.remove(listener); }
+        void addRMSListener(Listener* newListener) { listeners.add(newListener); }
+        void removeRMSListener(Listener* listener) { listeners.remove(listener); }
         
         ScopedPointer<AudioProcessor> audioProcessorImpl;
         
@@ -186,8 +186,8 @@ public:
 	};
 
 	ListenerList<Listener> listeners;
-	void addListener(Listener* newListener) { listeners.add(newListener); }
-	void removeListener(Listener* listener) { listeners.remove(listener); }
+	void addRemoveNodeListener(Listener* newListener) { listeners.add(newListener); }
+	void removeRemoveNodeListener(Listener* listener) { listeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 

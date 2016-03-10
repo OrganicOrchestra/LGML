@@ -14,7 +14,7 @@
 //==============================================================================
 NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :nodeManager(nodeManager),editingConnection(nullptr)
 {
-	nodeManager->addListener(this);
+	nodeManager->addNodeManagerListener(this);
 	setInterceptsMouseClicks(true, true);
 }
 

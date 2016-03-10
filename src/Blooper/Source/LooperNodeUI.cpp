@@ -20,7 +20,7 @@ void LooperNodeUI::init(){
     
     
     looperNode = dynamic_cast<LooperNode*> (node);
-    looperNode->looper->addListener(this);
+    looperNode->looper->addLooperListener(this);
     trackNumChanged(looperNode->looper->tracks.size());
     
     recPlaySelectedButton = new TriggerBlinkUI(looperNode->looper->recPlaySelectedTrig);
@@ -127,11 +127,11 @@ void LooperNodeUI::TrackUI::trackStateChangedAsync(const LooperNode::Looper::Tra
             
         case LooperNode::Looper::Track::SHOULD_CLEAR:
         case LooperNode::Looper::Track::CLEARED:
-            mainColour = Colours::black;
+            mainColour = Colours::grey;
             break;
             
         case LooperNode::Looper::Track::STOPPED:
-            mainColour = Colours::grey;
+            mainColour = Colours::black;
             break;
             
         default:

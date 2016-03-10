@@ -14,7 +14,7 @@ TriggerUI::TriggerUI(Trigger * trigger) :
 	ControllableUI(trigger),
 	trigger(trigger)
 {
-	trigger->addListener(this);
+	trigger->addTriggerListener(this);
 }
 
 TriggerUI::~TriggerUI()

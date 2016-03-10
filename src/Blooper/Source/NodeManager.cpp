@@ -11,6 +11,7 @@
 #include "NodeManager.h"
 #include "DummyNode.h"
 
+
 juce_ImplementSingleton(NodeManager);
 
 NodeManager::NodeManager() :
@@ -61,7 +62,7 @@ NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
 
 	NodeBase * n = nodeFactory.createNode(this,nodeType, nodeId);
 	nodes.add(n);
-	n->addListener(this);
+	n->addRemoveNodeListener(this);
 	addChildControllableContainer(n); //ControllableContainer
 	listeners.call(&NodeManager::Listener::nodeAdded,n);
 
@@ -80,7 +81,7 @@ bool NodeManager::removeNode(uint32 nodeId)
 	for (auto &connection : relatedConnections) removeConnection(connection);
 
 	if (n == nullptr) return false;
-	n->removeListener(this);
+	n->removeRemoveNodeListener(this);
 	removeChildControllableContainer(n);
 
 	listeners.call(&NodeManager::Listener::nodeRemoved, n);
@@ -151,7 +152,7 @@ NodeConnection * NodeManager::addConnection(NodeBase * sourceNode, NodeBase * de
 
 	NodeConnection * c = new NodeConnection(this,connectionId, sourceNode, destNode, connectionType);
 	connections.add(c);
-	c->addListener(this);
+	c->addConnectionListener(this);
 
 	DBG("Dispatch connection Added from NodeManager");
 	listeners.call(&NodeManager::Listener::connectionAdded, c);
@@ -169,7 +170,7 @@ bool NodeManager::removeConnection(uint32 connectionId)
 bool NodeManager::removeConnection(NodeConnection * c)
 {
 	if (c == nullptr) return false;
-	c->removeListener(this);
+	c->removeConnectionListener(this);
 
 	connections.removeObject(c);
 

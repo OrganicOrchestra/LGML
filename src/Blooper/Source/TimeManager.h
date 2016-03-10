@@ -104,8 +104,8 @@ class TimeManager : public AudioIODeviceCallback{
     
     bool playState;
     ListenerList<Listener> listeners;
-    void addListener(Listener* newListener) { listeners.add(newListener); }
-    void removeListener(Listener* listener) { listeners.remove(listener); }
+    void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
+    void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
 
     uint64 timeInSample;
     int beatTimeInSample;

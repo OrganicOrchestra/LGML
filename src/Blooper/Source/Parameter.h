@@ -39,8 +39,8 @@ public:
 	};
 
 	ListenerList<Listener> listeners;
-	void addListener(Listener* newListener) { listeners.add(newListener); }
-	void removeListener(Listener* listener) { listeners.remove(listener); }
+	void addParameterListener(Listener* newListener) { listeners.add(newListener); }
+	void removeParameterListener(Listener* listener) { listeners.remove(listener); }
 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Parameter)

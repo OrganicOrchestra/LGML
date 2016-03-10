@@ -14,7 +14,7 @@
 ParameterUI::ParameterUI(Parameter * parameter) :
 	parameter(parameter), ControllableUI(parameter)
 {
-	parameter->addListener(this);
+	parameter->addParameterListener(this);
 
 }
 

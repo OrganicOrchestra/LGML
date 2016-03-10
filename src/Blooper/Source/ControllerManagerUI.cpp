@@ -20,13 +20,13 @@ ControllerManagerUI::ControllerManagerUI(ControllerManager * manager) :
 	manager(manager)
 {
  
-	manager->addListener(this);
+	manager->addControllerListener(this);
 	
 }
 
 ControllerManagerUI::~ControllerManagerUI()
 {
-	manager->removeListener(this);
+	manager->removeControllerListener(this);
 }
 
 

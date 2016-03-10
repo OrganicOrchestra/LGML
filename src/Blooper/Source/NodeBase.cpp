@@ -24,7 +24,7 @@ NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, const String &name,
 
 	if (dataProcessor != nullptr)
 	{
-		dataProcessor->addListener(this);
+		dataProcessor->addDataProcessorListener(this);
 		nodeManager->dataGraph.addNode(dataProcessor);
 	}
 

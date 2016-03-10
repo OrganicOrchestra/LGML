@@ -19,7 +19,8 @@ LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeMa
 }
 
 
-LooperNode::Looper::Looper(LooperNode * looperNode):ControllableContainer("Looper"),looperNode(looperNode),selectedTrack(nullptr)
+LooperNode::Looper::Looper(LooperNode * looperNode):
+ControllableContainer("Looper"),selectedTrack(nullptr),looperNode(looperNode)
 {
     
     recPlaySelectedTrig =   addTrigger("Rec Or Play",
@@ -29,7 +30,7 @@ LooperNode::Looper::Looper(LooperNode * looperNode):ControllableContainer("Loope
     playSelectedTrig =      addTrigger("Play",
                                        "Tells the selected track to wait for the next bar and \
                                        then stop recording and start playing");
-    stopSelectedTrig =     addTrigger("Stop",
+    stopSelectedTrig =      addTrigger("Stop",
                                       "Tells the selected track to stop ");
     
     clearSelectedTrig =     addTrigger("Clear",
@@ -48,10 +49,12 @@ LooperNode::Looper::Looper(LooperNode * looperNode):ControllableContainer("Loope
     
     skipControllableNameInAddress = true;
     setNumTracks(8);
-    recPlaySelectedTrig->addListener(this);
-    playSelectedTrig->addListener(this);
-    clearSelectedTrig->addListener(this);
-    stopSelectedTrig->addListener(this);
+    recPlaySelectedTrig->addTriggerListener(this);
+    playSelectedTrig->addTriggerListener(this);
+    clearSelectedTrig->addTriggerListener(this);
+    stopSelectedTrig->addTriggerListener(this);
+    clearAllTrig->addTriggerListener(this);
+    stopAllTrig->addTriggerListener(this);
 }
 
 void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages){
@@ -181,7 +184,7 @@ trackState(CLEARED)
 				playTrig =      addTrigger("Play",
                                            "Tells the track to wait for the next bar and \
                                            then stop recording and start playing");
-    stopTrig =     addTrigger("Stop",
+                stopTrig =     addTrigger("Stop",
                               "Tells the track to stop ");
     
 				clearTrig =     addTrigger("Clear",
@@ -197,10 +200,10 @@ trackState(CLEARED)
     
 				preDelayMs->isControllableExposed = false;
     
-				recPlayTrig->addListener(this);
-    playTrig->addListener(this);
-    clearTrig->addListener(this);
-    stopTrig->addListener(this);
+				recPlayTrig->addTriggerListener(this);
+    playTrig->addTriggerListener(this);
+    clearTrig->addTriggerListener(this);
+    stopTrig->addTriggerListener(this);
 }
 
 void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuffer &midi){

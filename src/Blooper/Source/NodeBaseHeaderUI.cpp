@@ -29,7 +29,7 @@ NodeBaseHeaderUI::NodeBaseHeaderUI()
 	this->nodeUI = nodeUI;
 
 	if (node != nullptr && node->hasAudioOutputs) {
-		node->audioProcessor->addListener(&vuMeter);
+		node->audioProcessor->addRMSListener(&vuMeter);
 		addAndMakeVisible(vuMeter);
 	}
 

@@ -14,7 +14,7 @@ ControllableUI::ControllableUI(Controllable * controllable) :
 	controllable(controllable)
 {
 	updateTooltip();
-	controllable->addListener(this);
+	controllable->addControllableListener(this);
 }
 
 ControllableUI::~ControllableUI()

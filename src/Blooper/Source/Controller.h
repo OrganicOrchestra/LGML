@@ -42,7 +42,7 @@ public:
 	};
 
 	ListenerList<Listener> listeners;
-	void addListener(Listener* newListener) { listeners.add(newListener); }
+	void addControllableListener(Listener* newListener) { listeners.add(newListener); }
 	void removeListener(Listener* listener) { listeners.remove(listener); }
 
 

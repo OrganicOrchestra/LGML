@@ -88,7 +88,7 @@ Trigger * ControllableContainer::addTrigger(const String & niceName, const Strin
 	Trigger * t = new Trigger(niceName, description, enabled);
 	controllables.add(t);
 	t->setParentContainer(this);
-	t->addListener(this);
+	t->addTriggerListener(this);
 
 	listeners.call(&ControllableContainer::Listener::controllableAdded, t);
 	return t;
@@ -207,7 +207,7 @@ void ControllableContainer::addParameterInternal(Parameter * p)
 {
 	p->setParentContainer(this);
 	controllables.add(p);
-	p->addListener(this);
+	p->addParameterListener(this);
 	listeners.call(&ControllableContainer::Listener::controllableAdded, p);
 }
 

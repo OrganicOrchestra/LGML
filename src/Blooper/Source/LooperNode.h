@@ -29,7 +29,7 @@ public:
     
     
     
-    class Looper : public NodeAudioProcessor, public ControllableContainer, public Trigger::Listener
+    class Looper : public NodeAudioProcessor, public ControllableContainer
     {
         
     public:
@@ -58,7 +58,7 @@ public:
         void triggerTriggered(Trigger * t) override;
         
         
-        class Track : public ControllableContainer, public Trigger::Listener
+        class Track : public ControllableContainer
         {
         public:
             Track(Looper * looper, int _trackNum);
@@ -109,8 +109,8 @@ public:
                 virtual void trackSelected(bool isSelected){};
             };
             ListenerList<Listener> trackStateListeners;
-            void addListener(Listener* newListener) { trackStateListeners.add(newListener); }
-            void removeListener(Listener* listener) { trackStateListeners.remove(listener); }
+            void addTrackListener(Listener* newListener) { trackStateListeners.add(newListener); }
+            void removeTrackListener(Listener* listener) { trackStateListeners.remove(listener); }
             
             FloatParameter * volume;
             float lastVolume;
@@ -161,8 +161,8 @@ public:
         
         
         ListenerList<Listener> looperListeners;
-        void addListener(Listener* newListener) { looperListeners.add(newListener); }
-        void removeListener(Listener* listener) { looperListeners.remove(listener); }
+        void addLooperListener(Listener* newListener) { looperListeners.add(newListener); }
+        void removeLooperListener(Listener* listener) { looperListeners.remove(listener); }
         
         bool askForBeingMasterTrack(Track * t){return areAllTrackClearedButThis(t);}
         bool areAllTrackClearedButThis(Track * _t){
