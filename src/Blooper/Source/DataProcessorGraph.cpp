@@ -53,6 +53,11 @@ DataProcessorGraph::Node * DataProcessorGraph::getNodeForId(const uint32 nodeId)
 	for (int i = nodes.size(); --i >= 0;)
 		if (nodes.getUnchecked(i)->nodeId == nodeId)
 			return nodes.getUnchecked(i);
+    
+    
+    // TODO @ben do we handle wrong ids?
+    jassertfalse;
+    return nullptr;
 }
 
 DataProcessorGraph::Node * DataProcessorGraph::addNode(DataProcessor * newProcessor, uint32 nodeId)
