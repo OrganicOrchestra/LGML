@@ -38,8 +38,8 @@ public:
 
 	void placeElements(); //update size when controllerUIs added or removed
 
-    void paint (Graphics&);
-    void resized();
+    void paint (Graphics&)override;
+    void resized()override;
 
 	void mouseDown(const MouseEvent &e) override;
 

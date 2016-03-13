@@ -113,6 +113,8 @@ void OSCDirectController::controllableRemoved(Controllable * c)
 void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
 {
 	DBG("Send OSC with address : " + c->controlAddress + " to " + remoteHostParam->value + ":" + remotePortParam->value);
+    
+#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 	switch (c->type)
 	{
 		case Controllable::Type::TRIGGER:
@@ -139,6 +141,48 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
 			sender.send(c->controlAddress, ((StringParameter *)c)->value);
 			break;
 	}
+    
+#else
+    OSCMessage msg(c->controlAddress);
+    switch (c->type)
+    {
+        case Controllable::Type::TRIGGER:
+            msg.addInt32(1);
+            break;
+            
+        case Controllable::Type::BOOL:
+            msg.addInt32(((BoolParameter *)c)->value?1:0);
+            break;
+            
+        case Controllable::Type::FLOAT:
+            msg.addFloat32(((FloatParameter *)c)->value);
+            break;
+            
+        case Controllable::Type::INT:
+            msg.addInt32(((IntParameter *)c)->value);
+            break;
+            
+        case Controllable::Type::RANGE:
+            DBG(" Martin @Ben : sending twice same value ??");
+            jassertfalse;
+            msg.addFloat32(((FloatParameter *)c)->value);
+            msg.addFloat32(((FloatParameter *)c)->value);
+            break;
+            
+        case Controllable::Type::STRING:
+            msg.addString(((StringParameter *)c)->value);
+            break;
+        
+        default:
+            DBG("OSC : unknown Controllable");
+            jassertfalse;
+            break;
+    }
+    
+    sender.send(msg);
+#endif
+    
+    
 }
 
 void OSCDirectController::controllableContainerAdded(ControllableContainer * cc)

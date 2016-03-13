@@ -115,8 +115,8 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
 		if (event.mods.isRightButtonDown())
 		{
 
-			ScopedPointer<PopupMenu> menu = new PopupMenu();
-			ScopedPointer<PopupMenu> addNodeMenu = ControllerFactory::getControllerTypesMenu(0);
+			ScopedPointer<PopupMenu> menu( new PopupMenu());
+			ScopedPointer<PopupMenu> addNodeMenu( ControllerFactory::getControllerTypesMenu(0));
 			menu->addSubMenu("Add Controller", *addNodeMenu);
 
 			int result = menu->show();

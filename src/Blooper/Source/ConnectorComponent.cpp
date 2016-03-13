@@ -90,13 +90,13 @@ void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, St
 	}
 
 
-	ScopedPointer<PopupMenu> menu = new PopupMenu();
+	ScopedPointer<PopupMenu> menu (new PopupMenu());
 
 	const int maxElementPerData = 10;
 
 	for (int i = 0; i < numDatas; i++)
 	{
-		ScopedPointer<PopupMenu> dataMenu = new PopupMenu();
+		ScopedPointer<PopupMenu> dataMenu( new PopupMenu());
 		DataProcessor::Data * d = datas->getUnchecked(i);
 		int itemID = i *  maxElementPerData + 1; //max 10 element per data anyway, 1 to not start from 0
 

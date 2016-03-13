@@ -37,6 +37,8 @@ class ComponentUtil
 {
 public:
 
+    
+    // TODO use of juce's getlocalpoint
 	static Point<int> getRelativeComponentPosition(Component * target, Component * source)
 	{
 		return source->globalPositionToRelative(target->localPointToGlobal(target->getLocalBounds().getTopLeft()));

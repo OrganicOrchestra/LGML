@@ -39,12 +39,12 @@ public:
 
 	Path hitPath;
 
-	void paint(Graphics&);
-	void resized();
+	void paint(Graphics&)override;
+	void resized()override;
 	void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
 
 	void updateBoundsFromNodes();
-	virtual bool hitTest(int x, int y) { return hitPath.contains(x, y); }
+	virtual bool hitTest(int x, int y) override{ return hitPath.contains(x, y); }
 
 	//interaction
 	void mouseDown(const MouseEvent &e) override;
@@ -57,7 +57,7 @@ public:
 	}
 
 	//From Component Listener
-	void componentMovedOrResized(Component& component, bool wasMoved, bool wasResize);
+	void componentMovedOrResized(Component& component, bool wasMoved, bool wasResize)override;
 	
 
 	bool isEditing()

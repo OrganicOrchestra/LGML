@@ -27,12 +27,12 @@ public:
 	TriggerBlinkUI(Trigger * t);
 	virtual ~TriggerBlinkUI();
 
-	void paint(Graphics&);
-	void resized();
+	void paint(Graphics&)override;
+	void resized()override;
 	void mouseDown(const MouseEvent& event)override;
 	void triggerTriggered(Trigger * p) override;
 	void startBlink();
-	void timerCallback();
+	void timerCallback()override;
 	void setTriggerReference(Trigger * t);
 	float intensity;
 

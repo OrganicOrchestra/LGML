@@ -375,8 +375,8 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
 		if (event.mods.isRightButtonDown())
 		{
 
-			ScopedPointer<PopupMenu> menu = new PopupMenu();
-			ScopedPointer<PopupMenu> addNodeMenu = NodeFactory::getNodeTypesMenu(0);
+			ScopedPointer<PopupMenu> menu(new PopupMenu());
+			ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(0));
 			menu->addSubMenu("Add Node", *addNodeMenu);
 
 			int result = menu->show();

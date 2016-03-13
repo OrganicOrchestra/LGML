@@ -29,8 +29,8 @@ public:
 
 	ComponentAnimator animator;
 
-    void paint (Graphics&);
-    void resized();
+    void paint (Graphics&) override;
+    void resized() override;
     void mouseDown (const MouseEvent& event) override;
 	void mouseUp(const MouseEvent& event) override;
 	void mouseEnter(const MouseEvent& event) override;

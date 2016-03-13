@@ -39,7 +39,8 @@ DataProcessor::DataType DataProcessor::getInputDataType(const String &dataName, 
 			}
 		}
 	}
-
+    
+    return DataType::Unknown;
 }
 
 DataProcessor::DataType DataProcessor::getOutputDataType(const String &dataName, const String &elementName)

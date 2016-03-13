@@ -88,8 +88,8 @@ public:
     static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0)
     {
         PopupMenu * p = new PopupMenu();
-        Array<String> nodeTypeNames = { "Dummy","AudioMixer","Spat","Looper","VST","AudioIn","AudioOut" };
-        for (int i = 0; i < nodeTypeNames.size();i++)
+        const static String nodeTypeNames[] = { "Dummy","AudioMixer","Spat","Looper","VST","AudioIn","AudioOut" };
+        for (int i = 0; i < numElementsInArray(nodeTypeNames);i++)
         {
             p->addItem(menuIdOffset + i+1, nodeTypeNames[i]);
         }

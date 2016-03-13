@@ -136,7 +136,7 @@ public :
 
 		String getTypeString()
 		{
-			Array<String> names = { "Unknown", "Float", "Number", "Boolean", "Position", "Orientation", "Color" };
+			const static String names[] = { "Unknown", "Float", "Number", "Boolean", "Position", "Orientation", "Color" };
 			return names[(int)type];
 		}
 

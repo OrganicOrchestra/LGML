@@ -68,8 +68,8 @@ public:
 	static PopupMenu * getControllerTypesMenu(int menuIdOffset = 0)
 	{
 		PopupMenu * p = new PopupMenu();
-		Array<String> controllerTypeNames = { "OSC Direct","DMX","MIDI" };
-		for (int i = 0; i < controllerTypeNames.size(); i++)
+		static const String controllerTypeNames [] = { "OSC Direct","DMX","MIDI" };
+		for (int i = 0; i < numElementsInArray(controllerTypeNames); i++)
 		{
 			p->addItem(menuIdOffset + i + 1, controllerTypeNames[i]);
 		}

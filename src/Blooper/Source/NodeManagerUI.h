@@ -40,8 +40,8 @@ public:
 
 	void clear();
 
-    void paint (Graphics&);
-    void resized();
+    void paint (Graphics&) override;
+    void resized() override;
 
 	// Inherited via Listener
 	virtual void nodeAdded(NodeBase *) override;
