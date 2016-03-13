@@ -200,7 +200,7 @@ internalTrackState(BUFFER_STOPPED)
     
     preDelayMs =    addIntParameter("Pre Delay MS",
                                     "Pre process delay (in milliseconds)",
-                                    0, 0, 200);
+                                    80, 0, 200);
     
     
     stateParameterString = addStringParameter("state", "track state", "");
