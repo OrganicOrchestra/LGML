@@ -39,7 +39,8 @@ public:
 	NodeBase * sourceNode;
 	NodeBase * destNode;
 
-	Array<AudioProcessorGraph::Connection *> audioConnections;
+    typedef std::pair<int,int> AudioConnection;
+    Array<AudioConnection > audioConnections;
 	Array<DataProcessorGraph::Connection *> dataConnections;
 
 
@@ -49,6 +50,8 @@ public:
 
 	void addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
 	void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
+    void removeAllAudioGraphConnections();
+    
 	void addDataGraphConnection(const String &sourceDataName, const String &sourceElementName,const String &destDataName, const String &destElementName);
 	void removeDataGraphConnection(const String &sourceDataName, const String &sourceElementName,const String &destDataName, const String &destElementName);
 

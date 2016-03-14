@@ -26,6 +26,7 @@ public:
     ScopedPointer<FloatSliderUI>    volumeSelectedSlider;
     ScopedPointer<TriggerBlinkUI>   clearAllButton;
     ScopedPointer<TriggerBlinkUI>   stopAllButton;
+    ScopedPointer<BoolToggleUI> monitoringButton;
     
     LooperNodeUI();
     
@@ -76,6 +77,7 @@ public:
                                      withWidth((1-volumeWidth)*getLocalBounds().getHeight()));
                        
         }
+        void mouseUp(const MouseEvent & me) override{track->askForSelection(true);}
         
         void triggerTriggered(Trigger * t)override{track->askForSelection(true);}
         void resized()override{
@@ -115,6 +117,7 @@ public:
     void trackNumChanged(int num) override;
     void resized() override;
     void reLayoutTracks();
+    void reLayoutHeader();
     
     OwnedArray<TrackUI> tracksUI;
     LooperNode * looperNode;

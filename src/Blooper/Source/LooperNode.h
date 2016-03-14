@@ -43,7 +43,7 @@ public:
         
         
         FloatParameter * volumeSelected;
-        
+        BoolParameter * isMonitoring;
         
         
         Looper(LooperNode * looperNode);
@@ -136,12 +136,12 @@ public:
             IntParameter * trackNum;
             
             int recordNeedle;
-            int recordingDelay;
             int quantizedRecordEnd,quantizedRecordStart;
             
             int playNeedle;
             int quantizedPlayStart,quantizedPlayEnd;
-            void updatePendingLooperTrackState(uint64 curTime);
+            
+            void updatePendingLooperTrackState(const uint64 curTime,int blockSize);
             
             
             AudioSampleBuffer monoLoopSample;

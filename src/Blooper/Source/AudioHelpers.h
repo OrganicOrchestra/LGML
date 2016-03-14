@@ -30,15 +30,24 @@ public:
     
     void writeBlock(AudioSampleBuffer & newBuf){
         
+        buf.setSize(newBuf.getNumChannels(),buf.getNumSamples());
+        
+        
         int toCopy = newBuf.getNumSamples();
         
         if( phantomSize+writeNeedle + toCopy > 3*phantomSize){
             int firstSeg = 3*phantomSize-(phantomSize+writeNeedle) ;
-            safeCopy(newBuf.getReadPointer(0,0),firstSeg);
-            safeCopy(newBuf.getReadPointer(0,firstSeg),toCopy-firstSeg);
+            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
+            safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
+            }
+            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
+                safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
+            }
         }
         else{
-            safeCopy(newBuf.getReadPointer(0),toCopy);
+            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
+            safeCopy(newBuf.getReadPointer(i),toCopy,i);
+            }
         }
     }
     
@@ -50,11 +59,11 @@ public:
     
     AudioSampleBuffer buf;
 private:
-    void safeCopy(const float * b,int s){
-        buf.copyFrom(0, phantomSize+writeNeedle, b, s);
+    void safeCopy(const float * b,int s,int channel){
+        buf.copyFrom(channel, phantomSize+writeNeedle, b, s);
         
         if(writeNeedle>2*phantomSize){
-            buf.copyFrom(0, writeNeedle-2*phantomSize,b,s);
+            buf.copyFrom(channel, writeNeedle-2*phantomSize,b,s);
         }
         writeNeedle+=s;
         writeNeedle%=2*phantomSize;

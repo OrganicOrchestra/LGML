@@ -22,7 +22,7 @@ public:
 	public:
 		DummyAudioProcessor():NodeBase::NodeAudioProcessor(){}
         int step = 0;
-        int period = 44100*1.0/440;
+        int period = 44100*1.0/300;
         float amp = 1;
 		void processBlockInternal(AudioBuffer<float>& buffer,
 			MidiBuffer& midiMessages) {
@@ -30,9 +30,8 @@ public:
             for(int i = 0 ; i < buffer.getNumSamples() ; i++){
                 buffer.addSample(0, i, amp*cos(2.0*double_Pi*step*1.0/period));
                 step++;
-                if(step>period){
-                    step = 0;
-                }
+                if(step>period){step = 0;}
+                
             }
 
         }
