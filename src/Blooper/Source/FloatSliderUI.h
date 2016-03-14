@@ -26,6 +26,7 @@ public:
 
 	//settings
 	Direction orientation;
+    bool displayText;
 	bool changeParamOnMouseUpOnly;
 	bool assignOnMousePosDirect;
 

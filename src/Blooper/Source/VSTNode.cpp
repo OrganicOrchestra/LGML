@@ -9,3 +9,11 @@
 */
 
 #include "VSTNode.h"
+
+
+
+
+
+
+#include "NodeBaseUI.h"
+NodeBaseUI * VSTNode::createUI(){return new NodeBaseUI(this);}

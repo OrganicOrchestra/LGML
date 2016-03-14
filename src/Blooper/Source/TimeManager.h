@@ -20,7 +20,7 @@
 
 #include "NodeBase.h"
 
-class TimeManager : public AudioIODeviceCallback{
+class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     
     
     public :
@@ -36,18 +36,20 @@ class TimeManager : public AudioIODeviceCallback{
     
     
     void stop();
-    void setPlayState(bool s);
+    void setPlayState(bool s,bool isSettingTempo = false);
     void setSampleRate(int sr);
     void setBPM(double BPM);
     int setBPMForLoopLength(int time);
     double getBPM();
-    
+    FloatParameter *  BPM;
     int getBeat();
     int getNextQuantifiedTime();
     void setNumBeatForQuantification(int n);
     //return percent in beat
     double getBeatPercent();
     int getBar();
+    bool isSettingTempo;
+    bool getIsSettingTempo(){return isSettingTempo;};
 // these Macros helps to declare synchronous and asynchronous Methods for listeners
     //declares internal function as internal_"name" then dispatch sync and async messages
 #define METHOD_SYNC_ASYNC(x)                \
@@ -87,6 +89,7 @@ class TimeManager : public AudioIODeviceCallback{
         
         METHOD_SYNC_ASYNC(stop)
         METHOD_SYNC_ASYNC(play)
+        METHOD_SYNC_ASYNC1(isSettingTempo,bool)
         METHOD_SYNC_ASYNC1(newBar,int)
         METHOD_SYNC_ASYNC1(newBeat,int)
         METHOD_SYNC_ASYNC1(newBPM,double)
@@ -98,9 +101,9 @@ class TimeManager : public AudioIODeviceCallback{
             CHECK_ASYNC1(newBar,int);
             CHECK_ASYNC1(newBeat,int);
             CHECK_ASYNC1(newBPM,double);
+            CHECK_ASYNC1(isSettingTempo,bool);
         }
     };
-    
     
     bool playState;
     ListenerList<Listener> listeners;

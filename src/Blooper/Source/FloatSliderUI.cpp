@@ -17,6 +17,7 @@ FloatSliderUI::FloatSliderUI(Parameter * parameter) :
 {
 	assignOnMousePosDirect = true;
 	changeParamOnMouseUpOnly = false;
+    displayText = false;
 	orientation = HORIZONTAL;
 }
 
@@ -34,6 +35,10 @@ void FloatSliderUI::paint(Graphics & g)
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 
 	g.setColour(c);
+    if(displayText){
+        g.drawText(String::formatted("%.2f",floatParam->value), getLocalBounds(), Justification::centred);
+    }
+    else{
 	float drawPos = 0; 
 	if (orientation == HORIZONTAL)
 	{
@@ -44,6 +49,7 @@ void FloatSliderUI::paint(Graphics & g)
 		drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : getParamNormalizedValue()*getHeight();
 		g.fillRoundedRectangle(getLocalBounds().removeFromBottom(drawPos).toFloat(), 2);
 	}
+    }
 }
 
 void FloatSliderUI::mouseDown(const MouseEvent & e)

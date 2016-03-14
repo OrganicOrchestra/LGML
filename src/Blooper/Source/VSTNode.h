@@ -18,8 +18,24 @@ class VSTNode : public NodeBase
 {
 
 public:
-	VSTNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId) {}
+	VSTNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId) {
+        formatManager.addDefaultFormats();
+    
+    }
 
+    
+    
+    NodeBaseUI * createUI()override;
+
+    
+    
+    AudioPluginFormatManager formatManager;
+
+    KnownPluginList knownPluginList;
+    KnownPluginList::SortMethod pluginSortMethod;
+    
+    
+    
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)
 };
 

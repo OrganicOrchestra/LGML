@@ -19,10 +19,14 @@ juce_ImplementSingleton(TimeManager);
 TimeManager::TimeManager():
 timeInSample(0),
 playState(false),
-beatTimeInSample(44100),
+beatTimeInSample(22050),
 beatPerBar(4),sampleRate(44100),
 timeMasterNode(nullptr),
-beatPerQuantizedTime(4){
+beatPerQuantizedTime(4),
+isSettingTempo(false),
+ControllableContainer("time"){
+    
+    BPM = addFloatParameter("bpm","current BPM",120,10,600);
     
 }
 TimeManager::~TimeManager()
@@ -67,7 +71,9 @@ bool TimeManager::askForBeingMasterNode(NodeBase * n){
         }
 }
 
-void TimeManager::setPlayState(bool s){
+void TimeManager::setPlayState(bool s,bool _isSettingTempo){
+    listeners.call(&Listener::internal_isSettingTempo,_isSettingTempo);
+    isSettingTempo = _isSettingTempo;
     playState = s;
     if(!s){ listeners.call(&Listener::internal_stop);DBG("stop");}
     else{ listeners.call(&Listener::internal_play);DBG("play");}
@@ -76,11 +82,15 @@ void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
     // actualize beatTime in sample
     setBPM(getBPM());
-    // shouldWe notify something here?
+
 }
-void TimeManager::setBPM(double BPM){
-    beatTimeInSample = sampleRate*60.0/BPM;
-    listeners.call(&Listener::newBPM,BPM);
+void TimeManager::setBPM(double _BPM){
+    isSettingTempo = false;
+    listeners.call(&Listener::internal_isSettingTempo,isSettingTempo);
+    beatTimeInSample = sampleRate*60.0/_BPM;
+    timeInSample = 0;
+    BPM->setValue(_BPM);
+    listeners.call(&Listener::internal_newBPM,_BPM);
 }
 
 
