@@ -27,15 +27,15 @@ public:
 
 		g.setColour(NORMAL_COLOR);
 		g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
-		if (vol > 0)
+		if (voldB > 0)
 		{
-			g.setGradientFill(ColourGradient(Colours::red, 0, getHeight(), Colours::lightgreen, 0, getLocalBounds().getCentreY(), false));
-			g.fillRoundedRectangle(getLocalBounds().removeFromBottom(getHeight()*(vol)).toFloat(), 2);
+			g.setGradientFill(ColourGradient(Colours::lightgreen, 0, getHeight()*.5, Colours::red, 0, getHeight()*0.1, false));
+			g.fillRoundedRectangle(getLocalBounds().removeFromBottom(getHeight()*(voldB)).toFloat(), 2);
 		}
 	}
-	float vol;
-	void RMSChanged(float v) override {
-		vol = v;
+	float voldB;
+	void RMSChanged(float rms) override {
+		voldB = jmap(20.0*log10(rms/0.74),0.0,6.0,0.85,1.0);
 		repaint();
 	};
 

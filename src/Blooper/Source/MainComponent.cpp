@@ -20,6 +20,8 @@
 #include "UIHelpers.h"
 #include "TimeManagerUI.h"
 
+
+// called hack because we need to fine a better place for the code in this define
 #define HACK_DEVICEINPUTCHOOSE 1
 
 //==============================================================================
@@ -29,7 +31,7 @@
 */
 
 #if HACK_DEVICEINPUTCHOOSE
-//==TODO put in Header ============================================================================
+//==TODO implement IDs ============================================================================
 namespace CommandIDs
 {
     static const int open                   = 0x30000;
@@ -152,6 +154,11 @@ public:
 
         // You can add your drawing code here!
     }
+    
+    
+    // from here are the method for native bar display and dispatch
+    // TODO figure out where to put it so that it has easy access to all functions and don't fuck up this file readability
+    // PS See Juce audio host demo for inspiration of these next lines
 #if HACK_DEVICEINPUTCHOOSE
     void showAudioSettings()
     {
@@ -185,11 +192,9 @@ public:
     }
 
 
-     ApplicationCommandTarget* getNextCommandTarget() {
-            return findFirstTargetParentComponent();
-    }
+     ApplicationCommandTarget* getNextCommandTarget() override {return findFirstTargetParentComponent();}
     
-    void getAllCommands (Array<CommandID>& commands) {
+    void getAllCommands (Array<CommandID>& commands) override{
         // this returns the set of all commands that this target can perform..
         const CommandID ids[] = {
             CommandIDs::newFile,
@@ -265,11 +270,13 @@ public:
     }
 
     
-    virtual bool perform (const InvocationInfo& info) {
+    virtual bool perform (const InvocationInfo& info) override {
 //        GraphDocumentComponent* const graphEditor = getGraphEditor();
         
         switch (info.commandID)
         {
+                
+                // TODOs
 //            case CommandIDs::newFile:
 //                if (graphEditor != nullptr && graphEditor->graph.saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
 //                    graphEditor->graph.newDocument();
@@ -300,37 +307,17 @@ public:
             case CommandIDs::showAudioSettings:
                 showAudioSettings();
                 break;
-//                
-//            case CommandIDs::toggleDoublePrecision:
-//                if (PropertiesFile* props = getAppProperties().getUserSettings())
-//                {
-//                    bool newIsDoublePrecision = ! isDoublePrecisionProcessing();
-//                    props->setValue ("doublePrecisionProcessing", var (newIsDoublePrecision));
-//                    
-//                    {
-//                        ApplicationCommandInfo cmdInfo (info.commandID);
-//                        updatePrecisionMenuItem (cmdInfo);
-//                        menuItemsChanged();
-//                    }
-//                    
-//                    if (graphEditor != nullptr)
-//                        graphEditor->setDoublePrecision (newIsDoublePrecision);
-//                }
-//                break;
+
                 
-//            case CommandIDs::aboutBox:
-//                // TODO
-//                break;
-//                
-//            case CommandIDs::allWindowsForward:
-//            {
-//                Desktop& desktop = Desktop::getInstance();
-//                
-//                for (int i = 0; i < desktop.getNumComponents(); ++i)
-//                    desktop.getComponent (i)->toBehind (this);
-//                
-//                break;
-//            }
+            case CommandIDs::allWindowsForward:
+            {
+                Desktop& desktop = Desktop::getInstance();
+                
+                for (int i = 0; i < desktop.getNumComponents(); ++i)
+                    desktop.getComponent (i)->toBehind (this);
+                
+                break;
+            }
                 
             default:
                 return false;
@@ -341,19 +328,14 @@ public:
     
     //==============================================================================
     /** This method must return a list of the names of the menus. */
-    StringArray getMenuBarNames() {
+    StringArray getMenuBarNames() override {
         const char* const names[] = { "File", "Plugins", "Options", "Windows", nullptr };
         
         return StringArray (names);
     }
     
-    /** This should return the popup menu to display for a given top-level menu.
-     
-     @param topLevelMenuIndex    the index of the top-level menu to show
-     @param menuName             the name of the top-level menu item to show
-     */
     virtual PopupMenu getMenuForIndex (int topLevelMenuIndex,
-                                       const String& menuName) {
+                                       const String& menuName) override{
         PopupMenu menu;
         
         if (topLevelMenuIndex == 0)
@@ -388,17 +370,7 @@ public:
         {
             // "Options" menu
             
-            menu.addCommandItem (&getCommandManager(), CommandIDs::showPluginListEditor);
-            
-//            PopupMenu sortTypeMenu;
-//            sortTypeMenu.addItem (200, "List plugins in default order",      true, pluginSortMethod == KnownPluginList::defaultOrder);
-//            sortTypeMenu.addItem (201, "List plugins in alphabetical order", true, pluginSortMethod == KnownPluginList::sortAlphabetically);
-//            sortTypeMenu.addItem (202, "List plugins by category",           true, pluginSortMethod == KnownPluginList::sortByCategory);
-//            sortTypeMenu.addItem (203, "List plugins by manufacturer",       true, pluginSortMethod == KnownPluginList::sortByManufacturer);
-//            sortTypeMenu.addItem (204, "List plugins based on the directory structure", true, pluginSortMethod == KnownPluginList::sortByFileSystemLocation);
-//            menu.addSubMenu ("Plugin menu type", sortTypeMenu);
-            
-//            menu.addSeparator();
+
             menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
             menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
             
@@ -420,46 +392,12 @@ public:
      chosen (just in case you've used duplicate ID numbers
      on more than one of the popup menus)
      */
-    void menuItemSelected (int menuItemID,
-                                   int topLevelMenuIndex) {
-//        GraphDocumentComponent* const graphEditor = getGraphEditor();
-        
-//        if (menuItemID == 250)
-//        {
-//            if (graphEditor != nullptr)
-//                graphEditor->graph.clear();
-//        }
-//        else
-//            if (menuItemID >= 100 && menuItemID < 200)
-//        {
-//            RecentlyOpenedFilesList recentFiles;
-//            recentFiles.restoreFromString (getAppProperties().getUserSettings()
-//                                           ->getValue ("recentFilterGraphFiles"));
-//            
-//            if (graphEditor != nullptr && graphEditor->graph.saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-//                graphEditor->graph.loadFrom (recentFiles.getFile (menuItemID - 100), true);
-//        }
-//        else if (menuItemID >= 200 && menuItemID < 210)
-//        {
-//            if (menuItemID == 200)     pluginSortMethod = KnownPluginList::defaultOrder;
-//            else if (menuItemID == 201)     pluginSortMethod = KnownPluginList::sortAlphabetically;
-//            else if (menuItemID == 202)     pluginSortMethod = KnownPluginList::sortByCategory;
-//            else if (menuItemID == 203)     pluginSortMethod = KnownPluginList::sortByManufacturer;
-//            else if (menuItemID == 204)     pluginSortMethod = KnownPluginList::sortByFileSystemLocation;
-//            
-//            getAppProperties().getUserSettings()->setValue ("pluginSortMethod", (int) pluginSortMethod);
-//            
-//            menuItemsChanged();
-//        }
-//        else
-//        {
-//            createPlugin (getChosenType (menuItemID),
-//                          proportionOfWidth  (0.3f + Random::getSystemRandom().nextFloat() * 0.6f),
-//                          proportionOfHeight (0.3f + Random::getSystemRandom().nextFloat() * 0.6f));
-//        }
-    }
+    void menuItemSelected (int menuItemID,int topLevelMenuIndex) override{}
     
 #endif
+    
+    
+    
     void resized() override
     {
 		Rectangle<int> r = getLocalBounds();

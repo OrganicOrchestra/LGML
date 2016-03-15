@@ -351,11 +351,12 @@ void NodeManagerUI::finishEditingConnection()
 	{
 		bool success = editingConnection->finishEditing();
 
-		int targetChannel = -1;//temp, will be able to edit channel later
+//		int targetChannel = -1;//temp, will be able to edit channel later
 
 		if (success)
 		{
-			NodeConnection * nc = nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
+//			NodeConnection * nc =
+            nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
             
             //handled in Node Connection Constructor ? 
 //            if(nc!=nullptr)

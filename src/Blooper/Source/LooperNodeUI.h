@@ -72,9 +72,10 @@ public:
                 g.drawRect(getLocalBounds());
             }
             g.setColour(mainColour.withAlpha(0.7f));
-            g.fillRect(getLocalBounds().
-                       removeFromTop(headerHackHeight*getLocalBounds().getHeight()).
-                                     withWidth((1-volumeWidth)*getLocalBounds().getHeight()));
+            g.fillRoundedRectangle(getLocalBounds().
+                       removeFromTop(headerHackHeight*getLocalBounds().getHeight())
+                                   .withWidth((1-volumeWidth)*getLocalBounds().getWidth())
+                                   .reduced(1).toFloat(),2);
                        
         }
         void mouseUp(const MouseEvent & me) override{track->askForSelection(true);}
