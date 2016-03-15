@@ -13,11 +13,6 @@
 
 #include "JuceHeader.h"
 
-#ifdef JUCE_WINDOWS
-#include "juce_audio_processors\juce_audio_processors.h"
-#else
-#include "juce_audio_processors.h"
-#endif
 
 #include "DataProcessorGraph.h"
 class NodeManager;
