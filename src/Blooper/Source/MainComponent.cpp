@@ -303,7 +303,7 @@ public:
                 
                 
             case CommandIDs::showPluginListEditor:
-                VSTManager::getInstance()->createSettingsWindowIfNeeded();
+                VSTManager::getInstance()->createPluginListWindowIfNeeded();
                 break;
 
             case CommandIDs::showAudioSettings:

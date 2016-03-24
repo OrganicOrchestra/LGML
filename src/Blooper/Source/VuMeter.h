@@ -20,6 +20,7 @@ class VuMeter : public ContourComponent, public NodeBase::NodeAudioProcessor::Li
 public:
 	VuMeter() {
 		setSize(8, 20);
+        voldB = 0;
 	}
 
 	void paint(Graphics &g)override {
@@ -35,8 +36,11 @@ public:
 	}
 	float voldB;
 	void RMSChanged(float rms) override {
-		voldB = jmap(20.0*log10(rms/0.74),0.0,6.0,0.85,1.0);
-		repaint();
+        float newVoldB = jmap(20.0*log10(rms/0.74),0.0,6.0,0.85,1.0);
+        if(newVoldB>=0 && newVoldB!=voldB){
+            voldB = newVoldB;
+            repaint();
+        }
 	};
 
 };

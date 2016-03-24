@@ -28,7 +28,7 @@ public:
     
     
     void changeListenerCallback (ChangeBroadcaster* changed)override;
-    void createSettingsWindowIfNeeded();
+    void createPluginListWindowIfNeeded();
     
     
     class PluginListWindow  : public DocumentWindow

@@ -50,7 +50,7 @@ void VSTManager::changeListenerCallback (ChangeBroadcaster* changed)
         }
     }
 }
-void VSTManager::createSettingsWindowIfNeeded(){
+void VSTManager::createPluginListWindowIfNeeded(){
     if (pluginListWindow == nullptr)
         pluginListWindow = new PluginListWindow (*this, formatManager);
     pluginListWindow->toFront (true);
