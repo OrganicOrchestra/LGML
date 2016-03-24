@@ -53,7 +53,7 @@ public:
     NamedValueSet properties;
     
     Array<FloatParameter *> VSTParameters;
-    void setParameterFromProcessor(AudioProcessor * p);
+    void initParameterFromProcessor(AudioProcessor * p);
 
     
     
@@ -74,26 +74,38 @@ public:
             delete innerPlugin.release();
             String errorMessage;
             AudioDeviceManager::AudioDeviceSetup result;
+            
+            // set max channels to this
+            // TODO check that it actually works
+            desc->numInputChannels=jmin(desc->numInputChannels,getMainBusNumInputChannels());
+            desc->numOutputChannels=jmin(desc->numOutputChannels,getMainBusNumOutputChannels());
+
+            
             getAudioDeviceManager().getAudioDeviceSetup (result);
             if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
                 (*desc, result.sampleRate, result.bufferSize, errorMessage)){
                 
                 // try to align the precision of the processor and the graph
-                instance->setProcessingPrecision (
-                                                  //                                                  instance->supportsDoublePrecisionProcessing() ? precision:
-                                                  singlePrecision);
-                owner->setParameterFromProcessor(instance);
+                instance->setProcessingPrecision (singlePrecision);
+                
+                
+                instance->setPreferredBusArrangement (true,  0, AudioChannelSet::canonicalChannelSet (getMainBusNumInputChannels()));
+                instance->setPreferredBusArrangement (false,  0, AudioChannelSet::canonicalChannelSet (getMainBusNumOutputChannels()));
+                
                 
                 int numIn=instance->getMainBusNumInputChannels();
                 int numOut = instance->getMainBusNumOutputChannels();
                 
                 setPlayConfigDetails(numIn,numOut,result.sampleRate, result.bufferSize);
-                //                instance->setPlayConfigDetails (numIn,numOut,result.sampleRate, result.bufferSize);
+
                 instance->prepareToPlay (result.sampleRate, result.bufferSize);
                 
                 
                 // TODO check if scoped pointer deletes old innerPlugin
                 innerPlugin=instance;
+                                            
+                                            
+                owner->initParameterFromProcessor(instance);
             }
             
             else{

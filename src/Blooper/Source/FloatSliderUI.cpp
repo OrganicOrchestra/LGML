@@ -17,7 +17,8 @@ FloatSliderUI::FloatSliderUI(Parameter * parameter) :
 {
 	assignOnMousePosDirect = true;
 	changeParamOnMouseUpOnly = false;
-    displayText = false;
+    displayText = true;
+    displayBar = true;
 	orientation = HORIZONTAL;
 }
 
@@ -34,11 +35,11 @@ void FloatSliderUI::paint(Graphics & g)
 	g.setColour(BG_COLOR);
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 
-	g.setColour(c);
-    if(displayText){
-        g.drawText(String::formatted("%.2f",floatParam->value), getLocalBounds(), Justification::centred);
-    }
-    else{
+
+
+    
+    g.setColour(c);
+    if(displayBar){
 	float drawPos = 0; 
 	if (orientation == HORIZONTAL)
 	{
@@ -49,6 +50,11 @@ void FloatSliderUI::paint(Graphics & g)
 		drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : getParamNormalizedValue()*getHeight();
 		g.fillRoundedRectangle(getLocalBounds().removeFromBottom(drawPos).toFloat(), 2);
 	}
+    }
+    
+    if(displayText){
+        g.setColour(displayBar?Colours::darkgrey:c);
+        g.drawText(String::formatted("%.2f",floatParam->value), getLocalBounds(), Justification::centred);
     }
 }
 

@@ -21,7 +21,9 @@ class TimeManagerUI : public Component, public TimeManager::Listener{
         TimeManager::getInstance()->addTimeManagerListener(this);
         addAndMakeVisible(timeBar);
         bpmSlider = TimeManager::getInstance()->BPM->createSlider();
+
         bpmSlider->displayText = true;
+        bpmSlider->displayBar = false;
         addAndMakeVisible(bpmSlider);
         
     }

@@ -40,7 +40,7 @@ void VSTNode::parameterValueChanged(Parameter * p) {
         
     }
 };
-void VSTNode::setParameterFromProcessor(AudioProcessor * p){
+void VSTNode::initParameterFromProcessor(AudioProcessor * p){
     p->addListener(this);
     if(!VSTParameters.empty()){
         for(auto &c:VSTParameters){
