@@ -80,6 +80,9 @@ public:
 	void mouseDrag(const MouseEvent& event) override;
 	void mouseUp(const MouseEvent& event) override;
 
+    
+    
+    static void createNodeFromIndex(int modalResult,int  maxResult);
 private:
     
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)

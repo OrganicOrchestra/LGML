@@ -243,6 +243,11 @@
             <FILE id="xdFuwd" name="SpatNode.h" compile="0" resource="0" file="Source/SpatNode.h"/>
           </GROUP>
           <GROUP id="{43D6AD7F-A710-EDE9-A28C-2FFC47798A32}" name="VST">
+            <FILE id="YnJwtS" name="PluginWindow.cpp" compile="1" resource="0"
+                  file="Source/PluginWindow.cpp"/>
+            <FILE id="kS8MT9" name="PluginWindow.h" compile="0" resource="0" file="Source/PluginWindow.h"/>
+            <FILE id="YVoVmw" name="VSTManager.cpp" compile="1" resource="0" file="Source/VSTManager.cpp"/>
+            <FILE id="WbfJ1L" name="VSTManager.h" compile="0" resource="0" file="Source/VSTManager.h"/>
             <FILE id="eBfKxJ" name="VSTNode.cpp" compile="1" resource="0" file="Source/VSTNode.cpp"/>
             <FILE id="xr7Cfk" name="VSTNode.h" compile="0" resource="0" file="Source/VSTNode.h"/>
           </GROUP>
@@ -260,7 +265,8 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder">
+    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder"
+               vstFolder="" vst3Folder="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
                        isDebug="1" optimisation="1" targetName="Blooper" cppLanguageStandard=""
@@ -326,7 +332,8 @@
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS/>
+  <JUCEOPTIONS JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
+               JUCE_PLUGINHOST_AU="enabled" JUCE_WEB_BROWSER="disabled"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>

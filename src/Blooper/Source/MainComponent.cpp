@@ -50,7 +50,7 @@ namespace CommandIDs
 
 ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
-
+AudioDeviceManager& getAudioDeviceManager();
 
 
 class MainContentComponent   : public Component
@@ -74,7 +74,7 @@ public:
 
 
     // Audio
-    AudioDeviceManager deviceManager;
+
     AudioProcessorPlayer graphPlayer;
     //==============================================================================
     MainContentComponent()
@@ -118,6 +118,7 @@ public:
         stopAudio();
 		TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
 		NodeManager::deleteInstance();
+        VSTManager::deleteInstance();
         
 #if HACK_DEVICEINPUTCHOOSE
 #if JUCE_MAC
@@ -135,14 +136,14 @@ public:
         
         ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()
                                                    ->getXmlValue ("audioDeviceState"));
-        deviceManager.initialise (256, 256, savedAudioState, true);
-        deviceManager.addAudioCallback (&graphPlayer);
-        deviceManager.addAudioCallback(TimeManager::getInstance());
+        getAudioDeviceManager().initialise (256, 256, savedAudioState, true);
+        getAudioDeviceManager().addAudioCallback (&graphPlayer);
+        getAudioDeviceManager().addAudioCallback(TimeManager::getInstance());
     }
     void stopAudio(){
-        deviceManager.removeAudioCallback (&graphPlayer);
-        deviceManager.removeAudioCallback(TimeManager::getInstance());
-        deviceManager.closeAudioDevice();
+        getAudioDeviceManager().removeAudioCallback (&graphPlayer);
+        getAudioDeviceManager().removeAudioCallback(TimeManager::getInstance());
+        getAudioDeviceManager().closeAudioDevice();
     }
 
     //=======================================================================
@@ -162,7 +163,7 @@ public:
 #if HACK_DEVICEINPUTCHOOSE
     void showAudioSettings()
     {
-        AudioDeviceSelectorComponent audioSettingsComp (deviceManager,
+        AudioDeviceSelectorComponent audioSettingsComp (getAudioDeviceManager(),
                                                         0, 256,
                                                         0, 256,
                                                         true, true, true, false);
@@ -180,7 +181,7 @@ public:
         
         o.runModal();
         
-        ScopedPointer<XmlElement> audioState (deviceManager.createStateXml());
+        ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
         
         getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
         getAppProperties().getUserSettings()->saveIfNeeded();
@@ -277,33 +278,34 @@ public:
         {
                 
                 // TODOs
-//            case CommandIDs::newFile:
+            case CommandIDs::newFile:
 //                if (graphEditor != nullptr && graphEditor->graph.saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
 //                    graphEditor->graph.newDocument();
-//                break;
-//                
-//            case CommandIDs::open:
+                break;
+                
+            case CommandIDs::open:
 //                if (graphEditor != nullptr && graphEditor->graph.saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
 //                    graphEditor->graph.loadFromUserSpecifiedFile (true);
-//                break;
-//                
-//            case CommandIDs::save:
+                break;
+                
+            case CommandIDs::save:
 //                if (graphEditor != nullptr)
 //                    graphEditor->graph.save (true, true);
-//                break;
-//                
-//            case CommandIDs::saveAs:
+                break;
+                
+            case CommandIDs::saveAs:
 //                if (graphEditor != nullptr)
 //                    graphEditor->graph.saveAs (File::nonexistent, true, true, true);
-//                break;
-//                
-//            case CommandIDs::showPluginListEditor:
-//                if (pluginListWindow == nullptr)
-//                    pluginListWindow = new PluginListWindow (*this, formatManager);
-//                
-//                pluginListWindow->toFront (true);
-//                break;
-//                
+                break;
+                
+            case CommandIDs::toggleDoublePrecision:
+                break;
+                
+                
+            case CommandIDs::showPluginListEditor:
+                VSTManager::getInstance()->createSettingsWindowIfNeeded();
+                break;
+
             case CommandIDs::showAudioSettings:
                 showAudioSettings();
                 break;
@@ -370,7 +372,7 @@ public:
         {
             // "Options" menu
             
-
+            menu.addCommandItem (&getCommandManager(), CommandIDs::showPluginListEditor);
             menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
             menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
             

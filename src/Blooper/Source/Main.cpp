@@ -101,6 +101,7 @@ public:
     
     ApplicationCommandManager commandManager;
     ScopedPointer<ApplicationProperties> appProperties;
+    AudioDeviceManager deviceManager;
 
 private:
     ScopedPointer<MainWindow> mainWindow;
@@ -111,6 +112,7 @@ private:
 static BlooperApplication& getApp()                 { return *dynamic_cast<BlooperApplication*>(JUCEApplication::getInstance()); }
 ApplicationCommandManager& getCommandManager()      { return getApp().commandManager; }
 ApplicationProperties& getAppProperties()           { return *getApp().appProperties; }
+AudioDeviceManager & getAudioDeviceManager()        {return getApp().deviceManager;}
 //==============================================================================
 // This macro generates the main() routine that launches the app.
 START_JUCE_APPLICATION (BlooperApplication)

@@ -370,6 +370,16 @@ void NodeManagerUI::finishEditingConnection()
 
 }
 
+void NodeManagerUI::createNodeFromIndex(int modalResult, int maxRes)
+{
+    if (modalResult >= 1 && modalResult <= maxRes)
+    {
+        NodeManager::getInstance()->addNode((NodeFactory::NodeType)(modalResult - 1));
+    }
+}
+
+
+
 //Interaction Events
 void NodeManagerUI::mouseDown(const MouseEvent & event)
 {
@@ -378,15 +388,10 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
 		if (event.mods.isRightButtonDown())
 		{
 
-			ScopedPointer<PopupMenu> menu(new PopupMenu());
-			ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(0));
-			menu->addSubMenu("Add Node", *addNodeMenu);
-
-			int result = menu->show();
-			if (result >= 1 && result <= addNodeMenu->getNumItems())
-			{
-				nodeManager->addNode((NodeFactory::NodeType)(result - 1));
-			}
+            PopupMenu   menu;//(new PopupMenu());
+            ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(0));
+			menu.addSubMenu("Add Node", *addNodeMenu);
+            menu.show(0,0,0,0,ModalCallbackFunction::create(&NodeManagerUI::createNodeFromIndex,addNodeMenu->getNumItems()));
 		}
 		else
 		{
