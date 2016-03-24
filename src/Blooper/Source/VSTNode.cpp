@@ -11,20 +11,48 @@
 #include "VSTNode.h"
 
 #include "NodeManager.h"
+
+#include "VSTNodeUI.h"
+
+
+NodeBaseUI * VSTNode::createUI(){return new NodeBaseUI(this,new VSTNodeUI(this));}
+
+
 void  VSTNode::createPluginWindow(){
-
-    
-
     if (PluginWindow* const w = PluginWindow::getWindowFor (this))
         w->toFront (true);
-
+    
 }
 
 void VSTNode::closePluginWindow(){
     PluginWindow::closeCurrentlyOpenWindowsFor (this);
 }
 
-
+void VSTNode::parameterValueChanged(Parameter * p) {
+    if(blockFeedback)return;
+    for(int i = VSTParameters.size() -1; i>=0;--i){
+        if(VSTParameters.getUnchecked(i) == p){
+            VSTProcessor * vstProcessor = dynamic_cast<VSTProcessor*>(audioProcessor);
+            vstProcessor->innerPlugin->setParameter(i, VSTParameters.getUnchecked(i)->value);
+            
+            break;
+        }
+        
+    }
+};
+void VSTNode::setParameterFromProcessor(AudioProcessor * p){
+    p->addListener(this);
+    if(!VSTParameters.empty()){
+        for(auto &c:VSTParameters){
+            removeControllable(c);
+        }
+    }
+    
+    for(int i = 0 ; i < p->getNumParameters() ; i++){
+        VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
+    }
+    sendChangeMessage();
+}
 
 
 void VSTNode::VSTProcessor::numChannelsChanged(){
@@ -34,62 +62,17 @@ void VSTNode::VSTProcessor::numChannelsChanged(){
 }
 
 
-
-
-
-
-
-
-
-
-#include "NodeBaseUI.h"
-class VSTUI:public NodeBaseContentUI,public Button::Listener{
-public:
-    VSTUI(VSTNode * _owner):VSTListShowButton("VSTs"),showPluginWindowButton("showWindow"),owner(_owner){}
-    void init() override{
-        VSTListShowButton.addListener(this);
-        showPluginWindowButton.addListener(this);
-        addAndMakeVisible(showPluginWindowButton);
-        addAndMakeVisible(VSTListShowButton);
-        setSize(200, 100);
-    }
+void VSTNode::audioProcessorParameterChanged (AudioProcessor* processor,
+                                              int parameterIndex,
+                                              float newValue) {
     
+    jassert(parameterIndex<VSTParameters.size());
+    blockFeedback = true;
+    
+    VSTParameters.getUnchecked(parameterIndex)->setValue(newValue);
+    
+    blockFeedback = false;
+}
 
-    void resized()override{
-        Rectangle<int> headerArea = getLocalBounds().removeFromTop(40);
-        VSTListShowButton.setBounds(headerArea.removeFromLeft(headerArea.getWidth()/2));
-        showPluginWindowButton.setBounds(headerArea);
-    }
-    
-    TextButton VSTListShowButton;
-    TextButton showPluginWindowButton;
-    VSTNode * owner;
-    
-    
-    static void vstSelected (int modalResult, Component *  originComp)
-    {
-        int index = VSTManager::getInstance()->knownPluginList.getIndexChosenByMenu(modalResult);
-        if(index>=0 ){
-           VSTUI * originVSTUI =  dynamic_cast<VSTUI*>(originComp);
-            if(originVSTUI){
-                originVSTUI->owner->generatePluginFromDescription(VSTManager::getInstance()->knownPluginList.getType (index));
-            }
-        }
-    }
-    
-    void buttonClicked (Button* button) override
-    {
-        if (button == &VSTListShowButton){
-            PopupMenu  VSTList;
-            VSTManager::getInstance()->knownPluginList.addToMenu(VSTList, KnownPluginList::SortMethod::sortByCategory);
-            owner->closePluginWindow();
-            VSTList.showAt (&VSTListShowButton,0,0,0,0, ModalCallbackFunction::forComponent(&VSTUI::vstSelected, (Component*)this));
-            
-        }
-        if(button == &showPluginWindowButton){
-            owner->createPluginWindow();
-        }
-    }
-    
-};
-NodeBaseUI * VSTNode::createUI(){return new NodeBaseUI(this,new VSTUI(this));}
+
+

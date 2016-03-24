@@ -250,6 +250,8 @@
             <FILE id="WbfJ1L" name="VSTManager.h" compile="0" resource="0" file="Source/VSTManager.h"/>
             <FILE id="eBfKxJ" name="VSTNode.cpp" compile="1" resource="0" file="Source/VSTNode.cpp"/>
             <FILE id="xr7Cfk" name="VSTNode.h" compile="0" resource="0" file="Source/VSTNode.h"/>
+            <FILE id="wzUX89" name="VSTNodeUI.cpp" compile="1" resource="0" file="Source/VSTNodeUI.cpp"/>
+            <FILE id="mz72JY" name="VSTNodeUI.h" compile="0" resource="0" file="Source/VSTNodeUI.h"/>
           </GROUP>
         </GROUP>
         <FILE id="A6v89K" name="NodeFactory.h" compile="0" resource="0" file="Source/NodeFactory.h"/>

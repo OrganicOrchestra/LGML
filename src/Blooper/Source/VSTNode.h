@@ -20,17 +20,15 @@
 AudioDeviceManager& getAudioDeviceManager();
 
 
-class VSTNode : public NodeBase
+class VSTNode : public NodeBase,public ChangeBroadcaster,public AudioProcessorListener
 {
     
 public:
-    VSTNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"VST",new VSTProcessor(this)) {
-        
-        
+    VSTNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"VST",new VSTProcessor(this)),blockFeedback(false) {
+
     }
     ~VSTNode(){
         PluginWindow::closeCurrentlyOpenWindowsFor (this);
-        
     }
     
     void generatePluginFromDescription(PluginDescription * desc){
@@ -42,14 +40,27 @@ public:
     void createPluginWindow();
     void closePluginWindow();
     
-    
+    void parameterValueChanged(Parameter * p) override;
+
+    void audioProcessorParameterChanged (AudioProcessor* processor,
+                                                 int parameterIndex,
+                                                 float newValue) override;
+
+    void audioProcessorChanged (AudioProcessor* processor)override{};
+    //kept to keep cross compatibility with pluginWindow
+    // but we should implement our mechanism to save VST WindowsPosition and displayed state
+    // do we really need it?
     NamedValueSet properties;
     
+    Array<FloatParameter *> VSTParameters;
+    void setParameterFromProcessor(AudioProcessor * p);
+
     
-    class VSTProcessor : public NodeAudioProcessor, public ControllableContainer{
+    
+    class VSTProcessor : public NodeAudioProcessor{
         
     public:
-        VSTProcessor(VSTNode * owner):ControllableContainer("VST"){
+        VSTProcessor(VSTNode * _owner):owner(_owner){
             
         }
         ~VSTProcessor(){}
@@ -71,6 +82,8 @@ public:
                 instance->setProcessingPrecision (
                                                   //                                                  instance->supportsDoublePrecisionProcessing() ? precision:
                                                   singlePrecision);
+                owner->setParameterFromProcessor(instance);
+                
                 int numIn=instance->getMainBusNumInputChannels();
                 int numOut = instance->getMainBusNumOutputChannels();
                 
@@ -78,6 +91,8 @@ public:
                 //                instance->setPlayConfigDetails (numIn,numOut,result.sampleRate, result.bufferSize);
                 instance->prepareToPlay (result.sampleRate, result.bufferSize);
                 
+                
+                // TODO check if scoped pointer deletes old innerPlugin
                 innerPlugin=instance;
             }
             
@@ -104,11 +119,13 @@ public:
                 }
             }
         };
+        
+        VSTNode * owner;
         ScopedPointer<AudioPluginInstance> innerPlugin;
     };
     NodeBaseUI * createUI()override;
     
-    
+    bool blockFeedback;    
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)
 };
