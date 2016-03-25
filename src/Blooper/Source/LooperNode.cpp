@@ -90,7 +90,7 @@ void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
     }
     for(int i = buffer.getNumChannels()-1;i>=0 ;--i){
         buffer.copyFrom(i,0, bufferOut,i,0,buffer.getNumSamples());
-
+        
     }
     
     
@@ -132,7 +132,7 @@ void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
     if (TimeManager::getInstance()->isMasterNode(looperNode) && needToStop) {
         TimeManager::getInstance()->stop();
     }
-
+    
     if (needToReleaseMasterTempo) {
         TimeManager::getInstance()->removeIfMaster(looperNode);
     }
@@ -180,10 +180,11 @@ quantizedRecordStart(0),
 quantizedRecordEnd(0),
 quantizedPlayStart(0),
 quantizedPlayEnd(0),
-streamBipBuffer(16384),// 16000 ~ 300ms and 256*64
+streamAudioBuffer(16384),// 16000 ~ 300ms and 256*64
 monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
 trackState(CLEARED),
-internalTrackState(BUFFER_STOPPED)
+internalTrackState(BUFFER_STOPPED),
+lastInternalTrackState(internalTrackState)
 {
     
     //setCustomShortName("track/" + String(_trackNum)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
@@ -211,7 +212,7 @@ internalTrackState(BUFFER_STOPPED)
     
     preDelayMs =    addIntParameter("Pre Delay MS",
                                     "Pre process delay (in milliseconds)",
-                                    80, 0, 200);
+                                    40, 0, 200);
     
     
     stateParameterString = addStringParameter("state", "track state", "");
@@ -250,7 +251,7 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     }
     
     else{
-        streamBipBuffer.writeBlock(buffer);
+        streamAudioBuffer.writeBlock(buffer);
     }
     
     // PLAYING
@@ -289,13 +290,48 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
     else{
         // silence output buffer
         for(int i = buffer.getNumChannels()-1;i>=0 ;--i){
-        buffer.applyGain(i, 0, buffer.getNumSamples(), 0);
+            buffer.applyGain(i, 0, buffer.getNumSamples(), 0);
         }
     }
     
     
 }
 void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTime, int blockSize){
+    
+
+    //    process changed internalState
+    if(internalTrackState!=lastInternalTrackState){
+        
+        if(internalTrackState == BUFFER_RECORDING){
+            if(isMasterTempoTrack() ){
+                int samplesToGet = preDelayMs->value*0.001*parentLooper->getSampleRate();
+                for(int i = monoLoopSample.getNumChannels()-1;i>=0 ;--i){
+                    monoLoopSample.copyFrom(i,0,streamAudioBuffer.getLastBlock(samplesToGet,i),samplesToGet);
+                }
+                recordNeedle = samplesToGet;
+            }
+            else{
+                preDelayMs->setValue( 0);
+                recordNeedle = 0;
+            }
+        }
+        
+        if(lastInternalTrackState ==BUFFER_RECORDING){
+            if( isMasterTempoTrack()){
+                recordNeedle-=preDelayMs->value*0.001*parentLooper->getSampleRate();
+
+                const int fadeNumSamples = parentLooper->getSampleRate()*0.022;
+                if(fadeNumSamples>0 && recordNeedle>2*fadeNumSamples){
+                    monoLoopSample.applyGainRamp(0, 0, fadeNumSamples, 0, 1);
+                    monoLoopSample.applyGainRamp(0,recordNeedle - fadeNumSamples, fadeNumSamples, 1, 0);
+                }
+                TimeManager::getInstance()->setBPMForLoopLength(recordNeedle);
+                
+                
+            }
+            playNeedle=0;
+        }
+    }
     
     // TODO subBlock precision ?
     // not sure -> triggers are updated at block size granularity
@@ -304,14 +340,12 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
     const uint64 triggeringTime = curTime  + blockSize/2;
     if(quantizedRecordStart>0){
         if(triggeringTime>=quantizedRecordStart){
-            preDelayMs->setValue( 0);
             setTrackState(RECORDING);
         }
         
     }
     else if( quantizedRecordEnd>0){
         if(triggeringTime>=quantizedRecordEnd){
-            preDelayMs->setValue(0);
             setTrackState(PLAYING);
             
         }
@@ -330,7 +364,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
         }
     }
     
-    
+    lastInternalTrackState = internalTrackState;
 }
 
 
@@ -393,54 +427,33 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     
     
-    
-    
     // quantify
     if(newState == SHOULD_RECORD){
         // are we able to set the tempo
         if( isMasterTempoTrack()){
             TimeManager::getInstance()->stop();
             TimeManager::getInstance()->setPlayState(true,true);
-            newState = RECORDING;
             quantizedRecordStart = -1;
+            setTrackState(RECORDING);
+            return;
         }
         else{
             quantizedRecordStart =TimeManager::getInstance()->getNextQuantifiedTime();
         }
     }
     
-    
-    
-    
     // on true start recording
     if(newState == RECORDING){
         internalTrackState = BUFFER_RECORDING;
         quantizedRecordStart = -1;
-        if(preDelayMs->value>0){
-            monoLoopSample.copyFrom(0,0,streamBipBuffer.getLastBlock(preDelayMs->value),preDelayMs->value);
-            recordNeedle = preDelayMs->value;
-        }
-        else{
-            preDelayMs->setValue( 0);
-            recordNeedle = 0;
-        }
+        
     }
     // on true end recording
     else if(trackState == RECORDING && newState==SHOULD_PLAY){
         {
             
-            if( isMasterTempoTrack()){
-                recordNeedle-=preDelayMs->value;
-                // 22 ms if 44100
-                const int fadeNumSaples = 200;
-                if(recordNeedle>2*fadeNumSaples){
-                    monoLoopSample.applyGainRamp(0, 0, fadeNumSaples, 0, 1);
-                    monoLoopSample.applyGainRamp(0,recordNeedle - fadeNumSaples, fadeNumSaples, 1, 0);
-                }
-                
+            if(isMasterTempoTrack()){
                 quantizedRecordEnd = -1;
-                
-                TimeManager::getInstance()->setBPMForLoopLength(recordNeedle);
                 newState = PLAYING;
             }
             else{
@@ -451,15 +464,13 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     // on ask for play
     if(newState ==SHOULD_PLAY){
-        quantizedRecordEnd = -1;
-        quantizedRecordStart = -1;
+        cleanAllQuantizeNeedles();
         quantizedPlayStart = TimeManager::getInstance()->getNextQuantifiedTime();
     }
     // on true start of play
     else if(newState ==PLAYING){
         internalTrackState = BUFFER_PLAYING;
-        quantizedRecordEnd = -1;
-        quantizedPlayStart = -1;
+        cleanAllQuantizeNeedles();
         playNeedle = 0;
         
     }
@@ -471,10 +482,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     if(newState == SHOULD_CLEAR){
         recordNeedle = 0;
         playNeedle = 0;
-        quantizedPlayEnd = -1;
-        quantizedPlayStart = -1;
-        quantizedRecordEnd = -1;
-        quantizedRecordStart = -1;
+        cleanAllQuantizeNeedles();
         volume->setValue(defaultVolumeValue);
         newState = CLEARED;
         internalTrackState = BUFFER_STOPPED;
@@ -485,10 +493,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     if(newState == STOPPED){
         internalTrackState = BUFFER_STOPPED;
-        quantizedPlayEnd = -1;
-        quantizedPlayStart = -1;
-        quantizedRecordEnd = -1;
-        quantizedRecordStart = -1;
+        cleanAllQuantizeNeedles();
         // force a track to stay in cleared state if stop triggered
         if(trackState == CLEARED){newState = CLEARED;}
     }
@@ -500,6 +505,13 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     parentLooper->checkIfNeedGlobalLooperStateUpdate();
     trackStateListeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };
+
+void LooperNode::Looper::Track::cleanAllQuantizeNeedles(){
+    quantizedPlayEnd = -1;
+    quantizedPlayStart = -1;
+    quantizedRecordEnd = -1;
+    quantizedRecordStart = -1;
+}
 
 
 

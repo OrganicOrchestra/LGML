@@ -43,6 +43,7 @@
               resource="0" file="Source/ControllableIndexedContainer.cpp"/>
         <FILE id="Y9EZlj" name="ControllableIndexedContainer.h" compile="0"
               resource="0" file="Source/ControllableIndexedContainer.h"/>
+        <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
         <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
         <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
         <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
@@ -231,7 +232,6 @@
                   file="Source/AudioMixerNode.h"/>
           </GROUP>
           <GROUP id="{5C55270A-43A6-03C9-B529-1BFE882AB7F6}" name="Looper">
-            <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
             <FILE id="lWXXbw" name="LooperNode.cpp" compile="1" resource="0" file="Source/LooperNode.cpp"/>
             <FILE id="p6VNxS" name="LooperNode.h" compile="0" resource="0" file="Source/LooperNode.h"/>
             <FILE id="C7ZscO" name="LooperNodeUI.cpp" compile="1" resource="0"

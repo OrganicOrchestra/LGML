@@ -46,16 +46,18 @@ public:
         BoolParameter * isMonitoring;
         
         
-        Looper(LooperNode * looperNode);
 
+        class Track;
+        OwnedArray<Track> tracks;
+        
+        Looper(LooperNode * looperNode);
         
         
-        void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override;
         
         void setNumTracks(int numTracks);
         void addTrack();
         void removeTrack( int i);
-        void triggerTriggered(Trigger * t) override;
+
         
         
         class Track : public ControllableContainer
@@ -83,18 +85,11 @@ public:
             TrackState trackState;
             String trackStateToString(const TrackState & ts);
             
-            // represent audioProcessor behaviour
-            enum InternalTrackState{
-                BUFFER_STOPPED = 0,
-                BUFFER_PLAYING,
-                BUFFER_RECORDING
-                
-            };
-            InternalTrackState internalTrackState;
+
             void setTrackState(TrackState state);
             // from events like UI
             void askForSelection(bool isSelected);
-            
+            bool isMasterTempoTrack();
             
             
             
@@ -124,11 +119,8 @@ public:
             void removeTrackListener(Listener* listener) { trackStateListeners.remove(listener); }
             
             FloatParameter * volume;
-            float lastVolume;
-            
-            // RMS Values from all Tracks
-            Array<float> RMS;
-            bool isMasterTempoTrack();
+
+
         private:
             
             void triggerTriggered(Trigger * t) override;
@@ -145,10 +137,20 @@ public:
             
             
             AudioSampleBuffer monoLoopSample;
+            float lastVolume;
+            // represent audioProcessor behaviour
+            enum InternalTrackState{
+                BUFFER_STOPPED = 0,
+                BUFFER_PLAYING,
+                BUFFER_RECORDING
+                
+            };
+            InternalTrackState internalTrackState;
+            InternalTrackState lastInternalTrackState;
             
             // keeps track of few bits of audio
             // to readjust the loop when controllers are delayed
-            BipBuffer streamBipBuffer;
+            RingBuffer streamAudioBuffer;
             IntParameter * preDelayMs;
             
             Looper * parentLooper;
@@ -156,6 +158,8 @@ public:
             void processBlock(AudioBuffer<float>& buffer, MidiBuffer & midi);
             const float defaultVolumeValue = 0.8;
             
+            
+            void cleanAllQuantizeNeedles();
             friend class Looper;
         };
         
@@ -184,10 +188,16 @@ public:
             return result;
         }
         
+        
+        
+    private:
+        
+        void triggerTriggered(Trigger * t) override;
         // internal
+        void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override;
         void checkIfNeedGlobalLooperStateUpdate();
         void selectMe(Track * t);
-        OwnedArray<Track> tracks;
+
         Track * selectedTrack;
         AudioBuffer<float> bufferIn;
         AudioBuffer<float>bufferOut;

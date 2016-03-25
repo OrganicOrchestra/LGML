@@ -91,9 +91,30 @@ public:
         
         
         void updateRMS(AudioBuffer<float>& buffer){
-            for(int i = buffer.getNumSamples()-64; i>=0 ; i-=64){
-                rmsValue = alphaRMS * buffer.getRMSLevel(0, i, 64) + (1.0-alphaRMS) * rmsValue;
+            int numSamples = buffer.getNumSamples();
+            int numChannels = buffer.getNumChannels();
+#ifdef HIGH_ACCURACY_RMS
+            for(int i = numSamples-64; i>=0 ; i-=64){
+                rmsValue += alphaRMS * (buffer.getRMSLevel(0, i, 64) - rmsValue);
             }
+#else
+            // faster implementation taken from juce Device Settings input meter
+            for (int j = 0; j <numSamples; ++j)
+            {
+                float s = 0;
+                for (int i = numChannels-1; i >0; --i)
+                    s += std::abs (buffer.getSample(i, j));
+                
+                s /= numChannels;
+                const double decayFactor = 0.99992;
+                if (s > rmsValue)
+                    rmsValue = s;
+                else if (rmsValue > 0.001f)
+                    rmsValue *= decayFactor;
+                else
+                    rmsValue = 0;
+            }
+#endif
 //            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;
 
         }
