@@ -251,7 +251,7 @@ void NodeManagerUI::updateEditingConnection()
 {
 	if (editingConnection == nullptr) return;
 	
-	Point<int> cPos = ComponentUtil::getRelativeComponentPosition(editingConnection->getBaseConnector(), this);
+	Point<int> cPos = getLocalPoint(editingConnection->getBaseConnector(), editingConnection->getBaseConnector()->getLocalBounds().getCentre());
 	Point<int> mPos = getMouseXYRelative();
 	int minX = jmin<int>(cPos.x, mPos.x);
 	int minY = jmin<int>(cPos.y, mPos.y);

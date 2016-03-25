@@ -59,12 +59,14 @@ void NodeConnectionUI::paint (Graphics& g)
 
 	if (isEditing())
 	{
-		sourcePos = ComponentUtil::getRelativeComponentPositionCenter(getBaseConnector(), this);
-		endPos = (candidateDropConnector != nullptr)?ComponentUtil::getRelativeComponentPositionCenter(candidateDropConnector, this):getMouseXYRelative();
+        sourcePos = getLocalPoint(getBaseConnector(),getBaseConnector()->getLocalBounds().getCentre());
+        endPos = (candidateDropConnector != nullptr)?
+        getLocalPoint(candidateDropConnector, candidateDropConnector->getLocalBounds().getCentre()):
+        getMouseXYRelative();
 	}else
 	{
-		sourcePos = ComponentUtil::getRelativeComponentPositionCenter(sourceConnector, this);
-		endPos = ComponentUtil::getRelativeComponentPositionCenter(destConnector, this);
+		sourcePos = getLocalPoint(sourceConnector, sourceConnector->getLocalBounds().getCentre());
+		endPos = getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre());
 	}
 
 	Point<int> midPoint = (sourcePos + endPos) / 2;
@@ -114,8 +116,8 @@ void NodeConnectionUI::updateBoundsFromNodes()
 	if (!isEditing())
 	{
 		Component * nmui = getNodeManagerUI();
-		Point<int> cPos = ComponentUtil::getRelativeComponentPositionCenter(sourceConnector, nmui);
-		Point<int> mPos = ComponentUtil::getRelativeComponentPositionCenter(destConnector, nmui);
+		Point<int> cPos = nmui->getLocalPoint(sourceConnector, sourceConnector->getLocalBounds().getCentre());
+		Point<int> mPos = nmui->getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre());
 
 		int minX = jmin<int>(cPos.x, mPos.x);
 		int minY = jmin<int>(cPos.y, mPos.y);

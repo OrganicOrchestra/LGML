@@ -33,22 +33,4 @@ public:
 	}
 };
 
-class ComponentUtil
-{
-public:
-
-    
-    // TODO use of juce's getlocalpoint
-	static Point<int> getRelativeComponentPosition(Component * target, Component * source)
-	{
-		return source->globalPositionToRelative(target->localPointToGlobal(target->getLocalBounds().getTopLeft()));
-	}
-
-	static Point<int> getRelativeComponentPositionCenter(Component * target, Component * source)
-	{
-		return source->globalPositionToRelative(target->localPointToGlobal(target->getLocalBounds().getCentre()));
-	}
-};
-
-
 #endif  // UIHELPERS_H_INCLUDED
