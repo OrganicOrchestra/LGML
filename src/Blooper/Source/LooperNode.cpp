@@ -131,7 +131,7 @@ void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
     if (needToReleaseMasterTempo) {
         TimeManager::getInstance()->removeIfMaster(looperNode);
     }
-    if (needToStop) {
+    if (TimeManager::getInstance()->isMasterNode(looperNode) && needToStop) {
         TimeManager::getInstance()->stop();
     }
 }
@@ -483,6 +483,10 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     
     if(newState == STOPPED){
         internalTrackState = BUFFER_STOPPED;
+        quantizedPlayEnd = -1;
+        quantizedPlayStart = -1;
+        quantizedRecordEnd = -1;
+        quantizedRecordStart = -1;
         // force a track to stay in cleared state if stop triggered
         if(trackState == CLEARED){
             newState = CLEARED;
