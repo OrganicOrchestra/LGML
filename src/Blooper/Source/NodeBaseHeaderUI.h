@@ -32,6 +32,10 @@ public:
 	ScopedPointer<BoolToggleUI> enabledUI;
 	VuMeter vuMeter;
 
+    
+    void mouseDoubleClick(const MouseEvent & e)override;
+
+    
 	virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
 	virtual void init();
 

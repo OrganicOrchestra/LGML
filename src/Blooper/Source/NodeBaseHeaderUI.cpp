@@ -35,12 +35,17 @@ NodeBaseHeaderUI::NodeBaseHeaderUI()
 
 	titleUI = node->nameParam->getUI();
 	titleUI->setNameLabelVisible(false);
+    titleUI->setInterceptsMouseClicks(false, false);
 	addAndMakeVisible(titleUI);
 
 	enabledUI = node->enabledParam->createToggle();
 	addAndMakeVisible(enabledUI);
 
 	init();
+
+}
+void NodeBaseHeaderUI::mouseDoubleClick(const MouseEvent & e){
+    if(titleUI){titleUI->valueLabel.showEditor();}
 }
 
   void NodeBaseHeaderUI::init()
