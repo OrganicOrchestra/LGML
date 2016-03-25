@@ -128,11 +128,13 @@ void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
         needToReleaseMasterTempo &= (t->trackState == Track::CLEARED );
     }
     
-    if (needToReleaseMasterTempo) {
-        TimeManager::getInstance()->removeIfMaster(looperNode);
-    }
+    
     if (TimeManager::getInstance()->isMasterNode(looperNode) && needToStop) {
         TimeManager::getInstance()->stop();
+    }
+
+    if (needToReleaseMasterTempo) {
+        TimeManager::getInstance()->removeIfMaster(looperNode);
     }
 }
 
