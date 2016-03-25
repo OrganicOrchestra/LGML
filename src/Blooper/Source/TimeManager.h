@@ -42,7 +42,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     int setBPMForLoopLength(int time);
     double getBPM();
     FloatParameter *  BPM;
-    
+
     void setBeatPerBar(int bpb);
     int getBeat();
     int getNextQuantifiedTime();
@@ -114,6 +114,15 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
     void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
 
+    class  AsyncNotifier : public TimeManager::Listener{
+    public:
+        AsyncNotifier(TimeManager* _owner):owner(_owner){};
+        void async_newBPM(double bpm) override{
+            owner->BPM->setValue(bpm);
+        }
+        TimeManager* owner;
+    };
+    AsyncNotifier asyncNotifier;
     uint64 timeInSample;
     int beatTimeInSample;
     int sampleRate;

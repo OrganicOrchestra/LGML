@@ -24,10 +24,11 @@ beatPerBar(4),sampleRate(44100),
 timeMasterNode(nullptr),
 beatPerQuantizedTime(4),
 isSettingTempo(false),
-ControllableContainer("time"){
+ControllableContainer("time"),
+asyncNotifier(this){
     
     BPM = addFloatParameter("bpm","current BPM",120,10,600);
-    
+    addTimeManagerListener(&asyncNotifier);
 }
 TimeManager::~TimeManager()
 {
@@ -89,7 +90,6 @@ void TimeManager::setBPM(double _BPM){
     listeners.call(&Listener::internal_isSettingTempo,isSettingTempo);
     beatTimeInSample = sampleRate*60.0/_BPM;
     timeInSample = 0;
-    BPM->setValue(_BPM);
     listeners.call(&Listener::internal_newBPM,_BPM);
 }
 
