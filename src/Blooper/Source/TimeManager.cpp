@@ -93,7 +93,10 @@ void TimeManager::setBPM(double _BPM){
     listeners.call(&Listener::internal_newBPM,_BPM);
 }
 
-
+void TimeManager::setBeatPerBar(int bpb){
+    beatPerBar = bpb;
+    listeners.call(&Listener::internal_beatPerBarChanged,beatPerBar);
+}
 int TimeManager::setBPMForLoopLength(int time){
     double time_seconds = time* 1.0/ sampleRate;
     double beatTime = time_seconds* 1.0/beatPerBar;

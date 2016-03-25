@@ -42,6 +42,8 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     int setBPMForLoopLength(int time);
     double getBPM();
     FloatParameter *  BPM;
+    
+    void setBeatPerBar(int bpb);
     int getBeat();
     int getNextQuantifiedTime();
     void setNumBeatForQuantification(int n);
@@ -93,6 +95,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
         METHOD_SYNC_ASYNC1(newBar,int)
         METHOD_SYNC_ASYNC1(newBeat,int)
         METHOD_SYNC_ASYNC1(newBPM,double)
+        METHOD_SYNC_ASYNC1(beatPerBarChanged,int)
         
         
         void handleAsyncUpdate()override {
@@ -102,6 +105,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
             CHECK_ASYNC1(newBeat,int);
             CHECK_ASYNC1(newBPM,double);
             CHECK_ASYNC1(isSettingTempo,bool);
+            CHECK_ASYNC1(beatPerBarChanged,int)
         }
     };
     
