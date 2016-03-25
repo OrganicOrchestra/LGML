@@ -37,7 +37,7 @@ public:
 	float voldB;
 	void RMSChanged(float rms) override {
         float newVoldB = jmap(20.0*log10(rms/0.74),0.0,6.0,0.85,1.0);
-        if(newVoldB>=0 && newVoldB!=voldB){
+        if(newVoldB>=0 && std::abs(newVoldB-voldB)>0.02f){
             voldB = newVoldB;
             repaint();
         }

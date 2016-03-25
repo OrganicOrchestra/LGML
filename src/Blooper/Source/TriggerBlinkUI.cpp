@@ -15,7 +15,7 @@ Author:  bkupe
 TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
 	TriggerUI(t),
 	blinkTime(200),
-	refreshPeriod(10),
+	refreshPeriod(50),
 	intensity(0)
 {
 	setSize(30, 20);

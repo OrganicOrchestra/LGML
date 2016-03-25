@@ -15,7 +15,7 @@
 TimeManagerUI::TimeManagerUI(){
 
     addAndMakeVisible(timeBar);
-    bpmSlider = TimeManager::getInstance()->BPM->createSlider();    
+    bpmSlider = TimeManager::getInstance()->BPM->createSlider();
     bpmSlider->displayText = true;
     bpmSlider->displayBar = false;
     addAndMakeVisible(bpmSlider);

@@ -110,6 +110,8 @@ public:
         setMenuBar (this);
 #endif
 #endif
+        
+        populateDefaultNodes();
 	}
 
 
@@ -146,6 +148,12 @@ public:
         getAudioDeviceManager().closeAudioDevice();
     }
 
+    void populateDefaultNodes(){
+        NodeBase * node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioIn);
+        nodeManagerUI->getUIForNode(node)->setTopLeftPosition(0, 0);
+        node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioOut);
+        nodeManagerUI->getUIForNode(node)->setTopRightPosition(nodeManagerUI->getWidth(), nodeManagerUI->getHeight() - 100);
+    }
     //=======================================================================
     void paint (Graphics& g) override
     {
@@ -185,11 +193,7 @@ public:
         
         getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
         getAppProperties().getUserSettings()->saveIfNeeded();
-        
-        //            GraphDocumentComponent* const graphEditor = getGraphEditor();
-        //
-        //            if (graphEditor != nullptr)
-        //                graphEditor->graph.removeIllegalConnections();
+
     }
 
 
