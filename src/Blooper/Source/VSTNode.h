@@ -127,7 +127,8 @@ public:
                 if( buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(),innerPlugin->getTotalNumOutputChannels()))
                 {innerPlugin->processBlock(buffer, midiMessages);}
                 else{
-                    DBG("dropAudio");
+                    static int numFrameDropped = 0;
+                    DBG("dropAudio " + String(numFrameDropped++));
                 }
             }
         };
