@@ -13,6 +13,7 @@
 ControllableUI::ControllableUI(Controllable * controllable) :  
 	controllable(controllable)
 {
+    jassert(controllable!=nullptr);
 	updateTooltip();
 	controllable->addControllableListener(this);
 }

@@ -42,11 +42,12 @@ void VSTNode::parameterValueChanged(Parameter * p) {
 };
 void VSTNode::initParameterFromProcessor(AudioProcessor * p){
     p->addListener(this);
-    if(!VSTParameters.empty()){
-        for(auto &c:VSTParameters){
-            removeControllable(c);
-        }
+    
+    for(auto &c:VSTParameters){
+        removeControllable(c);
     }
+    
+    VSTParameters.clear();
     
     for(int i = 0 ; i < p->getNumParameters() ; i++){
         VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));

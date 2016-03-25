@@ -488,9 +488,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
         quantizedRecordEnd = -1;
         quantizedRecordStart = -1;
         // force a track to stay in cleared state if stop triggered
-        if(trackState == CLEARED){
-            newState = CLEARED;
-        }
+        if(trackState == CLEARED){newState = CLEARED;}
     }
     //DBG(newState <<","<<trackState );
     

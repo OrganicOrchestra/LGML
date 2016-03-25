@@ -16,13 +16,19 @@
 #include "NodeBaseUI.h"
 
 #include "FloatSliderUI.h"
-class VSTNodeUI:public NodeBaseContentUI,public Button::Listener,public ChangeListener{
+class VSTNodeUI:public NodeBaseContentUI,public Button::Listener,public ChangeListener,public ControllableContainer::Listener{
 public:
     VSTNodeUI(VSTNode * _owner):
     VSTListShowButton("VSTs"),
     showPluginWindowButton("showWindow"),
     owner(_owner){
         owner->addChangeListener(this);
+        owner->addControllableContainerListener(this);
+    }
+    ~VSTNodeUI(){
+        owner->removeChangeListener(this);
+        owner->removeControllableContainerListener(this);
+
     }
     
     void init() override{
@@ -54,6 +60,22 @@ public:
         resized();
     }
 
+    void controllableAdded(Controllable * c)override {};
+    void controllableRemoved(Controllable * c)override{
+        for(auto &p:paramSliders){
+        if(p->floatParam == c){
+            removeChildComponent (p);
+            paramSliders.removeObject(p);
+            break;
+        }
+        };
+    }
+    void controllableContainerAdded(ControllableContainer * cc)override{};
+    void controllableContainerRemoved(ControllableContainer * cc) override{};
+    void controllableFeedbackUpdate(Controllable *c) override{};
+    
+    
+    
     void changeListenerCallback(ChangeBroadcaster * c) override{
         if(c == owner){
             updateVSTParameters();
@@ -71,7 +93,7 @@ public:
     }
     
     void layoutSliderParameters(Rectangle<int> pArea){
-        if(paramSliders.size()==0)return;
+        if(paramSliders.isEmpty())return;
         int maxLines = 4;
         
         int numLines = jmin(maxLines,paramSliders.size());
