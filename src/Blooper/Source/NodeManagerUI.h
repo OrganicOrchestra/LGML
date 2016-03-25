@@ -80,6 +80,7 @@ public:
 	void mouseDrag(const MouseEvent& event) override;
 	void mouseUp(const MouseEvent& event) override;
 
+    void childBoundsChanged(Component * )override;
     
     
     static void createNodeFromIndex(int modalResult,int  maxResult);

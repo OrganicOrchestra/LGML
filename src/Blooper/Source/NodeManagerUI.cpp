@@ -105,6 +105,17 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
 	}
 }
 
+void NodeManagerUI::childBoundsChanged(Component * c){
+    Rectangle<int> newRect = c->getBounds();
+    
+    Rectangle<int> bounds = getParentComponent()->getLocalBounds();
+    for(auto & n : nodesUI){
+        bounds = bounds.getUnion(n->getBounds());
+    }
+    setBounds(bounds);
+   
+}
+
 void NodeManagerUI::removeNodeUI(NodeBase * node)
 {
 	DBG("Remove NodeUI");

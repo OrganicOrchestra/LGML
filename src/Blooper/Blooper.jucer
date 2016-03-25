@@ -261,7 +261,10 @@
         <FILE id="bjuLcd" name="NodeManager.cpp" compile="1" resource="0" file="Source/NodeManager.cpp"/>
         <FILE id="iTucpu" name="NodeManager.h" compile="0" resource="0" file="Source/NodeManager.h"/>
       </GROUP>
-      <FILE id="ddEu7L" name="MainComponent.cpp" compile="1" resource="0"
+      <FILE id="U1Atk6" name="MainComponentCommands.cpp" compile="1" resource="0"
+            file="Source/MainComponentCommands.cpp"/>
+      <FILE id="ddEu7L" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="OvsUVU" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="gEsmKk" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
