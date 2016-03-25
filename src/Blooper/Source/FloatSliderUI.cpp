@@ -54,7 +54,14 @@ void FloatSliderUI::paint(Graphics & g)
     
     if(displayText){
         g.setColour(displayBar?Colours::darkgrey:c);
-        g.drawText(String::formatted("%.2f",floatParam->value), getLocalBounds(), Justification::centred);
+        Rectangle<int> destRect = getLocalBounds();
+        if(orientation == VERTICAL){
+            AffineTransform at;
+            at = at.rotated(-double_Pi/2.0, getLocalBounds().getWidth()/2.0, getLocalBounds().getHeight()/2.0);
+            g.addTransform(at);
+            destRect.setBounds(0,0,getLocalBounds().getHeight(),getLocalBounds().getHeight());
+        }
+        g.drawText(String::formatted("%.2f",floatParam->value), destRect, Justification::centred);
     }
 }
 
