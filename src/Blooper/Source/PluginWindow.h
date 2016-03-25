@@ -61,9 +61,6 @@ inline String toString (PluginWindow::WindowFormatType type)
         default:                       return String();
     }
 }
-inline String getLastXProp (PluginWindow::WindowFormatType type)    { return "uiLastX_" + toString (type); }
-inline String getLastYProp (PluginWindow::WindowFormatType type)    { return "uiLastY_" + toString (type); }
-inline String getOpenProp  (PluginWindow::WindowFormatType type)    { return "uiopen_"  + toString (type); }
 
 
 #endif  // PluginWindow_H_INCLUDED

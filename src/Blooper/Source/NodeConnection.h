@@ -23,7 +23,7 @@ class NodeConnection : public ReferenceCountedObject
 public:
 	enum ConnectionType
 	{
-		AUDIO, DATA
+		AUDIO, DATA, UNDEFINED
 	};
 
 	uint32 connectionId;

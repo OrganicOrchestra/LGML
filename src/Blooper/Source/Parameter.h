@@ -23,7 +23,8 @@ public:
 		return 0;
 	}
 
-
+    virtual String toString() = 0;
+    virtual void fromString(const String & s,bool silentSet = false, bool force = false) = 0;
 protected:
 	void notifyValueChanged() {listeners.call(&Listener::parameterValueChanged, this); }
 

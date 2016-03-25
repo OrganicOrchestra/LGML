@@ -96,8 +96,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
 		NodeBaseUI * nui = node->createUI();
 		nodesUI.add(nui);
 		addAndMakeVisible(nui);
-		Point<int> mousePos = getMouseXYRelative();
-		nui->setCentrePosition(mousePos.x, mousePos.y);
+
 	}
 	else
 	{
@@ -381,11 +380,15 @@ void NodeManagerUI::finishEditingConnection()
 
 }
 
-void NodeManagerUI::createNodeFromIndex(int modalResult, int maxRes)
+void NodeManagerUI::createNodeFromIndexAtPos(int modalResult, Component * c,int maxRes)
 {
     if (modalResult >= 1 && modalResult <= maxRes)
     {
-        NodeManager::getInstance()->addNode((NodeFactory::NodeType)(modalResult - 1));
+        NodeBase * n = NodeManager::getInstance()->addNode((NodeFactory::NodeType)(modalResult - 1));
+        
+        Point<int> mousePos = c->getMouseXYRelative();
+        n->xPosition->setValue( mousePos.x);
+        n->yPosition->setValue( mousePos.y);
     }
 }
 
@@ -402,7 +405,8 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
             PopupMenu   menu;//(new PopupMenu());
             ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(0));
 			menu.addSubMenu("Add Node", *addNodeMenu);
-            menu.show(0,0,0,0,ModalCallbackFunction::create(&NodeManagerUI::createNodeFromIndex,addNodeMenu->getNumItems()));
+            
+            menu.show(0,0,0,0,ModalCallbackFunction::forComponent(&NodeManagerUI::createNodeFromIndexAtPos,(Component*)this,addNodeMenu->getNumItems()));
 		}
 		else
 		{

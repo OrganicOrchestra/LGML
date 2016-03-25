@@ -30,10 +30,10 @@ type (t)
     setContentOwned (pluginEditor, true);
 
     
-    setTopLeftPosition (owner->properties.getWithDefault (getLastXProp (type), Random::getSystemRandom().nextInt (500)),
-                        owner->properties.getWithDefault (getLastYProp (type), Random::getSystemRandom().nextInt (500)));
+    setTopLeftPosition (owner->pluginWindowParameter.x->value,
+                        owner->pluginWindowParameter.y->value);
     
-    owner->properties.set (getOpenProp (type), true);
+     owner->pluginWindowParameter.isDisplayed->setValue(true);
     
     setVisible (true);
     
@@ -114,12 +114,12 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
 
 void PluginWindow::moved()
 {
-    owner->properties.set (getLastXProp (type), getX());
-    owner->properties.set (getLastYProp (type), getY());
+    owner->pluginWindowParameter.x->setValue(getX());
+    owner->pluginWindowParameter.y->setValue(getY());
 }
 
 void PluginWindow::closeButtonPressed()
 {
-    owner->properties.set (getOpenProp (type), false);
+    owner->pluginWindowParameter.isDisplayed->setValue(false);
     delete this;
 }

@@ -17,7 +17,7 @@
 class FloatRangeParameter : public Parameter
 {
 public:
-	FloatRangeParameter(const String &niceName, const String &description, const int &initialValueMin, const int &initialValueMax, const int &minValue = 0, const int &maxValue = 1, bool enabled = true);
+	FloatRangeParameter(const String &niceName, const String &description, const float &initialValueMin, const float &initialValueMax, const float &minValue = 0, const float &maxValue = 1, bool enabled = true);
 	~FloatRangeParameter() {}
 
 	float minValue;
@@ -51,8 +51,13 @@ public:
 	{
 		return jmap<float>(valueMax, minValue, maxValue, 0, 1);
 	}
-
-
+    String toString()override { return String::formatted("%f,%f,%f,%f",valueMin,valueMax,minValue,maxValue);}
+    void fromString(const String & s,bool silentSet = false, bool force = false) override{
+        StringArray sa;
+        sa.addTokens(s,",");
+        DBG("to implement");
+        jassertfalse;}
+    
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatRangeParameter)
 };
 

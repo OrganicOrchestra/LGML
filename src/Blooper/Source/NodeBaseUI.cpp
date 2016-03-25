@@ -44,6 +44,8 @@ node(node)
     mainContainer.setNodeAndNodeUI(node, this);
     if(getWidth() == 0 || getHeight() == 0) setSize(150, 50);
     
+    node->xPosition->addParameterListener(this);
+    node->yPosition->addParameterListener(this);
 }
 
 NodeBaseUI::~NodeBaseUI()
@@ -89,6 +91,11 @@ void NodeBaseUI::childBoundsChanged (Component* c){
         }
     }
 }
+void NodeBaseUI::parameterValueChanged(Parameter * p) {
+    if(p== node->xPosition||p==node->yPosition){
+        setCentrePosition(node->xPosition->value, node->yPosition->value);
+    }
+}
 
 NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
 {
@@ -104,7 +111,7 @@ void NodeBaseUI::mouseDown(const MouseEvent & e)
     }
     else
     {
-        nodeInitPos = getPosition();
+        nodeInitPos = getBounds().getCentre();
     }
     
 }
@@ -112,7 +119,10 @@ void NodeBaseUI::mouseDown(const MouseEvent & e)
 void NodeBaseUI::mouseDrag(const MouseEvent & e)
 {
     Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
-    setTopLeftPosition(nodeInitPos + diff);
+    Point <int> newPos = nodeInitPos + diff;
+//    setTopLeftPosition(newPos);
+    node->xPosition->setValue(newPos.x);
+    node->yPosition->setValue(newPos.y);
 }
 
 

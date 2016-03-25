@@ -29,7 +29,7 @@ class NodeBaseContentUI;
 
 NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
-class NodeBaseUI    : public Component
+class NodeBaseUI    : public Component,public Parameter::Listener
 {
 public:
 	NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer = nullptr, NodeBaseHeaderUI * headerContainer = nullptr);
@@ -37,7 +37,8 @@ public:
 	
 	NodeBase * node;
 	virtual void setNode(NodeBase * node);
-	
+    // receives x y position from node parameters
+    void parameterValueChanged(Parameter * p) override;
     void paint (Graphics&)override;
     void resized()override;
     void childBoundsChanged (Component*)override;

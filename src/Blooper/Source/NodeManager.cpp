@@ -29,10 +29,13 @@ NodeManager::~NodeManager()
 void NodeManager::clear()
 {
 	DBG("Clear NodeManager");
-	nodes.clear();
+   while(nodes.size())
+        nodes[0]->remove();
+    
 	connections.clear();
 	audioGraph.clear();
 	dataGraph.clear();
+    lastNodeId=0;
 }
 
 NodeBase * NodeManager::getNodeForId(const uint32 nodeId) const
@@ -76,7 +79,6 @@ bool NodeManager::removeNode(uint32 nodeId)
 {
 	DBG("Remove node from Node Manager, dispatch nodeRemoved to UI");
 	NodeBase * n = getNodeForId(nodeId);
-	
 	Array<NodeConnection *> relatedConnections = getAllConnectionsForNode(n);
 
 	for (auto &connection : relatedConnections) removeConnection(connection);
@@ -102,6 +104,9 @@ NodeConnection * NodeManager::getConnectionForId(const uint32 connectionId) cons
 	}
 
 	return nullptr;
+}
+int NodeManager::getNumConnections(){
+    return connections.size();
 }
 
 NodeConnection * NodeManager::getConnectionBetweenNodes(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType)
@@ -198,6 +203,13 @@ void NodeManager::askForRemoveConnection(NodeConnection *connection)
 	removeConnection(connection->connectionId);
 }
 
+
+
+void NodeManager::removeIllegalConnections(){
+    //TODO synchronize this and implement it for data
+    // it's not indispensable
+    jassert(!audioGraph.removeIllegalConnections());
+}
 
 
 

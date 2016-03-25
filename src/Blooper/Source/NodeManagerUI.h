@@ -83,7 +83,7 @@ public:
     void childBoundsChanged(Component * )override;
     
     
-    static void createNodeFromIndex(int modalResult,int  maxResult);
+    static void createNodeFromIndexAtPos(int modalResult,Component * c,int  maxResult);
 private:
     
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)

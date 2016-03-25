@@ -58,6 +58,8 @@ public:
 	NodeConnection * addConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType, uint32 connectionId = 0);
 	bool removeConnection(uint32 connectionId);
 	bool removeConnection(NodeConnection * c);
+    void removeIllegalConnections();
+    int getNumConnections();
 
 	//Listener
 	class  Listener
@@ -80,7 +82,7 @@ public:
 
 
 private: 
-	ReferenceCountedArray<NodeBase> nodes;
+	OwnedArray<NodeBase> nodes;
 	uint32 lastNodeId;
 	
 	ReferenceCountedArray<NodeConnection> connections;

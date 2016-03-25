@@ -41,6 +41,8 @@ public:
 		return jmap<float>(value, minValue, maxValue, 0, 1);
 	}
 
+    String toString() override{return String(value);}
+    void fromString(const String & s,bool silentSet = false, bool force = false) override{setValue(s.getIntValue(),silentSet,force);};
 	IntSliderUI * createSlider();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntParameter)

@@ -22,6 +22,9 @@ public:
 		setSize(8, 20);
         voldB = 0;
 	}
+    ~VuMeter(){
+        
+    }
 
 	void paint(Graphics &g)override {
 

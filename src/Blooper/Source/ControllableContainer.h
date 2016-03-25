@@ -81,6 +81,8 @@ public:
 	// Inherited via Trigger::Listener
 	virtual void triggerTriggered(Trigger * p) override;
 
+    
+
 private:
 	void addParameterInternal(Parameter * p);
 

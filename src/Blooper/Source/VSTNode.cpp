@@ -43,9 +43,7 @@ void VSTNode::parameterValueChanged(Parameter * p) {
 void VSTNode::initParameterFromProcessor(AudioProcessor * p){
     p->addListener(this);
     
-    for(auto &c:VSTParameters){
-        removeControllable(c);
-    }
+    for(auto &c:VSTParameters){removeControllable(c);}
     
     VSTParameters.clear();
     

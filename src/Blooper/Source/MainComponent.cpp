@@ -14,7 +14,10 @@
 Component* createMainContentComponent()     { return new MainContentComponent(); }
 
 
-MainContentComponent::MainContentComponent()
+MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
+                                                                filenameWildcard,
+                                                                "Load a filter graph",
+                                                                "Save a filter graph")
 {
     DBG("Application Start");
     
@@ -49,7 +52,7 @@ MainContentComponent::MainContentComponent()
     setMenuBar (this);
 #endif
     
-    populateDefaultNodes();
+    createNewGraph();
 }
 
 
@@ -79,7 +82,8 @@ void MainContentComponent::resized()
 
 
 
-void MainContentComponent::populateDefaultNodes(){
+void MainContentComponent::createNewGraph(){
+    clear();
     NodeBase * node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioIn);
     nodeManagerUI->getUIForNode(node)->setTopLeftPosition(0, 0);
     node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioOut);
@@ -104,7 +108,15 @@ void MainContentComponent::stopAudio(){
     getAudioDeviceManager().closeAudioDevice();
 }
 
+void MainContentComponent::clear(){
+//    do we need to stop audio?
+//    stopAudio();
+    TimeManager::getInstance()->stop();
+    NodeManager::getInstance()->clear();
+    
 
+    changed();    //fileDocument
+}
 
 void MainContentComponent::showAudioSettings()
 {

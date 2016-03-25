@@ -33,18 +33,13 @@ public:
     class NodeAudioProcessor : public juce::AudioProcessor,public AsyncUpdater
     {
     public:
-        NodeAudioProcessor() :AudioProcessor(){
-            
-        };
+        NodeAudioProcessor() :AudioProcessor(){};
         
         virtual const String getName() const override { return "NodeBaseProcessor"; };
         
-        virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) override
-        {};
+        virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) override{};
         virtual void releaseResources() override {};
-        
-        
-        
+
         bool silenceInProducesSilenceOut() const override { return false; }
         
         virtual AudioProcessorEditor* createEditor() override {return nullptr ;}
@@ -67,66 +62,19 @@ public:
         virtual void getStateInformation(juce::MemoryBlock& destData) override {};
         virtual void setStateInformation(const void* data, int sizeInBytes) override {};
         
-        
-        //        AudioProcessor * getAudioProcessor()const {return audioProcessorImpl;};
-        virtual void processBlock(AudioBuffer<float>& buffer,
-                                  MidiBuffer& midiMessages) override {
-            processBlockInternal(buffer, midiMessages);
-            
-            if(listeners.size() ){
-                updateRMS(buffer);
-                curSamplesForRMSUpdate+= buffer.getNumSamples();
-                
-                if(curSamplesForRMSUpdate>=samplesBeforeRMSUpdate){
-                    triggerAsyncUpdate();
-                    curSamplesForRMSUpdate = 0;
-                }
-            }
-            
-            
-        };
-        
-        virtual void processBlockInternal(AudioBuffer<float>& buffer,
-                                          MidiBuffer& midiMessages) = 0;
-        
-        
-        void updateRMS(AudioBuffer<float>& buffer){
-            int numSamples = buffer.getNumSamples();
-            int numChannels = buffer.getNumChannels();
-#ifdef HIGH_ACCURACY_RMS
-            for(int i = numSamples-64; i>=0 ; i-=64){
-                rmsValue += alphaRMS * (buffer.getRMSLevel(0, i, 64) - rmsValue);
-            }
-#else
-            // faster implementation taken from juce Device Settings input meter
-            for (int j = 0; j <numSamples; ++j)
-            {
-                float s = 0;
-                for (int i = numChannels-1; i >0; --i)
-                    s += std::abs (buffer.getSample(i, j));
-                
-                s /= numChannels;
-                const double decayFactor = 0.99992;
-                if (s > rmsValue)
-                    rmsValue = s;
-                else if (rmsValue > 0.001f)
-                    rmsValue *= decayFactor;
-                else
-                    rmsValue = 0;
-            }
-#endif
-//            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;
 
-        }
+        virtual void processBlock(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) override ;
+        virtual void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) = 0;
+        
+        
+        void updateRMS(AudioBuffer<float>& buffer);
         float alphaRMS = 0.05;
         float rmsValue = 0;
         const int samplesBeforeRMSUpdate = 512;
         int curSamplesForRMSUpdate = 0;
         
         //Listener are called from non audio thread
-        void handleAsyncUpdate() override{
-            listeners.call(&Listener::RMSChanged,rmsValue);
-        }
+        void handleAsyncUpdate() override{listeners.call(&Listener::RMSChanged,rmsValue);}
         
         class  Listener
         {
@@ -187,6 +135,8 @@ public:
     //Controllables (from ControllableContainer)
     StringParameter * nameParam;
     BoolParameter * enabledParam;
+    FloatParameter * xPosition;
+    FloatParameter * yPosition;
     
     virtual void parameterValueChanged(Parameter * p) override;
     
@@ -196,11 +146,7 @@ public:
     
     
     //ui
-    virtual NodeBaseUI *  createUI() {
-        DBG("No implementation in child node class !");
-        jassert(false);
-        return nullptr;
-    }
+    virtual NodeBaseUI *  createUI() {DBG("No implementation in child node class !");jassert(false);return nullptr;}
     
     // Inherited via DataProcessor::Listener
     virtual void inputAdded(DataProcessor::Data *) override;
@@ -220,6 +166,9 @@ public:
     ListenerList<Listener> listeners;
     void addRemoveNodeListener(Listener* newListener) { listeners.add(newListener); }
     void removeRemoveNodeListener(Listener* listener) { listeners.remove(listener); }
+    
+// keeps type info from NodeFactory
+    int nodeTypeEnum;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
     

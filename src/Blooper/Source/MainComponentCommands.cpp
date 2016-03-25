@@ -164,26 +164,26 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
             
             // TODOs
         case CommandIDs::newFile:
-            //                if (graphEditor != nullptr && graphEditor->graph.saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-            //                    graphEditor->graph.newDocument();
+            createNewGraph();
             break;
             
         case CommandIDs::open:
-            //                if (graphEditor != nullptr && graphEditor->graph.saveIfNeededAndUserAgrees() == FileBasedDocument::savedOk)
-            //                    graphEditor->graph.loadFromUserSpecifiedFile (true);
+            loadFromUserSpecifiedFile (true);
             break;
             
         case CommandIDs::save:
-            //                if (graphEditor != nullptr)
-            //                    graphEditor->graph.save (true, true);
+            // hack to force saving not allowed if nothing has changed
+            // TODO implement change on every action .. !! 
+            changed();
+            save (true, true);
             break;
             
         case CommandIDs::saveAs:
-            //                if (graphEditor != nullptr)
-            //                    graphEditor->graph.saveAs (File::nonexistent, true, true, true);
+            saveAs (File::nonexistent, true, true, true);
             break;
             
         case CommandIDs::toggleDoublePrecision:
+            DBG("double precision not supported yet...");
             break;
             
             

@@ -24,19 +24,42 @@ class VSTNode : public NodeBase,public ChangeBroadcaster,public AudioProcessorLi
 {
     
 public:
-    VSTNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"VST",new VSTProcessor(this)),blockFeedback(false) {
-
+    StringParameter *  identifierString;
+    Array<FloatParameter *> VSTParameters;
+    
+    
+    VSTNode(NodeManager * nodeManager,uint32 nodeId) :
+    NodeBase(nodeManager,nodeId,"VST",new VSTProcessor(this)),blockFeedback(false)
+    
+    {
+        identifierString = addStringParameter("VST Identifier","string that identify a VST","");
+        addChildControllableContainer(&pluginWindowParameter);
     }
+    
     ~VSTNode(){
         PluginWindow::closeCurrentlyOpenWindowsFor (this);
     }
+    
+    
     
     void generatePluginFromDescription(PluginDescription * desc){
         VSTProcessor * vstProcessor = dynamic_cast<VSTProcessor*>(audioProcessor);
         vstProcessor->generatePluginFromDescription(desc);
     }
-    
-    
+    class PluginWindowParameters : public ControllableContainer{
+    public:
+        PluginWindowParameters():ControllableContainer("PluginWindow Parameters")
+        {
+            x = addFloatParameter("x","x position of plugin window", Random::getSystemRandom().nextInt (500),0,1000);
+            y = addFloatParameter("y","y position of plugin window", Random::getSystemRandom().nextInt (500),0,1000);
+            isDisplayed = addBoolParameter("isDisplayed","is the plugin window displayed",false);
+        }
+        
+        FloatParameter * x;
+        FloatParameter * y;
+        BoolParameter * isDisplayed;
+    };
+    PluginWindowParameters pluginWindowParameter;
     void createPluginWindow();
     void closePluginWindow();
     
@@ -47,12 +70,9 @@ public:
                                                  float newValue) override;
 
     void audioProcessorChanged (AudioProcessor* processor)override{};
-    //kept to keep cross compatibility with pluginWindow
-    // but we should implement our mechanism to save VST WindowsPosition and displayed state
-    // do we really need it?
-    NamedValueSet properties;
+
     
-    Array<FloatParameter *> VSTParameters;
+
     void initParameterFromProcessor(AudioProcessor * p);
 
     

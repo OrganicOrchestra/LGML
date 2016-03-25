@@ -31,8 +31,10 @@ ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
+const char* const filenameSuffix = ".lgml";
+const char* const filenameWildcard = "*.lgml";
 
-class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel
+class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public FileBasedDocument
 
 {
 public:
@@ -59,18 +61,20 @@ public:
     void initAudio();
     void stopAudio();
     
-    void populateDefaultNodes();
+    void createNewGraph();
     //=======================================================================
     void paint (Graphics& g) override{g.fillAll (Colours::black);}
+    void resized() override;
     
-    
-    
+    void clear();
     
     void showAudioSettings();
     
     
     //======================
     // see MainComponentCommands.cpp
+    
+    // inherited from MenuBarModel , ApplicationCommandTarget
     ApplicationCommandTarget* getNextCommandTarget() override {return findFirstTargetParentComponent();}
     void getAllCommands (Array<CommandID>& commands) override;
     virtual void getCommandInfo (CommandID commandID, ApplicationCommandInfo& result) override ;
@@ -79,10 +83,28 @@ public:
     virtual PopupMenu getMenuForIndex (int topLevelMenuIndex,const String& menuName) override;
     void menuItemSelected (int menuItemID,int topLevelMenuIndex) override{}
     
+    //==========================
+    // see MainContentFileDocument.cpp
     
+    //  inherited from FileBasedDocument
+     String getDocumentTitle()override ;
+     Result loadDocument (const File& file)override;
+     Result saveDocument (const File& file)override;
+     File getLastDocumentOpened() override;
+     void setLastDocumentOpened (const File& file) override;
+//    #if JUCE_MODAL_LOOPS_PERMITTED
+//     File getSuggestedSaveAsFile (const File& defaultFile)override;
+//    #endif
     
+    // our Saving methods
+    XmlElement* createXml()const;
+
+
+    void restoreFromXml(const XmlElement &);
+    void createNodeFromXml (const XmlElement& xml);
+
     
-    void resized() override;
+
     
 private:
     //==============================================================================
