@@ -111,7 +111,7 @@ void NodeManagerUI::childBoundsChanged(Component * c){
     for(auto & n : nodesUI){
         bounds = bounds.getUnion(n->getBoundsInParent());
     }
-    DBG(bounds.toString());
+
     setBounds(bounds);//.withPosition(0, 0));
 
     // basic clipping before finding better handling in viewPort

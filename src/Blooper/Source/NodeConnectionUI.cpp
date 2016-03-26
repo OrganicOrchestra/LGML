@@ -71,17 +71,26 @@ void NodeConnectionUI::paint (Graphics& g)
 
 	Point<int> midPoint = (sourcePos + endPos) / 2;
 
-	int minDist = -200;
-	int maxDist = 100;
-	float minOffset = 0;
-	float maxOffset = 150;
+//	int minDist = -200;
+//	int maxDist = 100;
+//	float minOffset = 0;
+//	float maxOffset = 150;
+//
+//	float anchorOffset = jmap<float>(endPos.x-sourcePos.x, maxDist, minDist, minOffset, maxOffset);
+//	anchorOffset = jmin<float>(jmax<float>(anchorOffset, minOffset), maxOffset);
+//
+//	int sourceAnchorX = (sourcePos.x + midPoint.x)/2 + anchorOffset;
+//	int endAnchorX = (endPos.x+midPoint.x)/2  - anchorOffset;
 
-	float anchorOffset = jmap<float>(endPos.x-sourcePos.x, maxDist, minDist, minOffset, maxOffset);
-	anchorOffset = jmin<float>(jmax<float>(anchorOffset, minOffset), maxOffset);
+    //@ben I prefer that atm (at least it doesnt start with weird anchors)
+    //but I'm up for any other fancy complexoid cuved Path algos that never touch a node
 
-	int sourceAnchorX = (sourcePos.x + midPoint.x)/2 + anchorOffset;
-	int endAnchorX = (endPos.x+midPoint.x)/2  - anchorOffset;
-
+    float smoothBigConnector = 1+ .01*(jmax<float>(10,std::abs(endPos.x - sourcePos.x))-10);
+    float anchorOffset = (endPos.x - sourcePos.x)/(2*smoothBigConnector);
+    int sourceAnchorX = sourcePos.x + anchorOffset;
+    int endAnchorX = endPos.x - anchorOffset;
+    
+    
 	int hitMargin = 30;
 	hitPath.clear();
 	hitPath.startNewSubPath(sourcePos.x, sourcePos.y - hitMargin);
