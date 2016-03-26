@@ -13,16 +13,12 @@
 
 //==============================================================================
 NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
-Viewport("NodeManagerViewPort"),
 nodeManager(nodeManager),
 editingConnection(nullptr)
 {
     nodeManager->addNodeManagerListener(this);
     setInterceptsMouseClicks(true, true);
-    setScrollBarsShown(true,true);
-    //    setSize(500,500);
 
-    setViewedComponent(&canvas,false);
 }
 
 NodeManagerUI::~NodeManagerUI()
@@ -65,8 +61,7 @@ void NodeManagerUI::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
-    canvas.minBounds = getLocalBounds();
-    canvas.resizeCanvasToFitNodes();
+
 
 }
 
@@ -104,8 +99,8 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
     {
         NodeBaseUI * nui = node->createUI();
         nodesUI.add(nui);
-        canvas.addAndMakeVisible(nui);
-
+        addAndMakeVisible(nui);
+        
     }
     else
     {
@@ -122,7 +117,7 @@ void NodeManagerUI::removeNodeUI(NodeBase * node)
     if (nui != nullptr)
     {
         nodesUI.removeObject(nui);
-        canvas.removeChildComponent(nui);
+        removeChildComponent(nui);
     }
     else
     {
@@ -163,7 +158,7 @@ void NodeManagerUI::addConnectionUI(NodeConnection * connection)
     connectionsUI.add(cui);
 
     DBG("Add And MakeVisible connection");
-    canvas.addAndMakeVisible(cui,0);
+    addAndMakeVisible(cui,0);
 }
 
 void NodeManagerUI::removeConnectionUI(NodeConnection * connection)
@@ -213,7 +208,7 @@ void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector,
         editingConnection = new NodeConnectionUI(nullptr, nullptr, baseConnector);
     }
 
-    canvas.addAndMakeVisible(editingConnection);
+    addAndMakeVisible(editingConnection);
 
     editingDataName = dataName;
     editingElementName = elementName;
@@ -254,7 +249,7 @@ void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector
 
     baseConnector->addMouseListener(this, false);
 
-    canvas.addAndMakeVisible(editingConnection);
+    addAndMakeVisible(editingConnection);
 }
 
 void NodeManagerUI::updateEditingConnection()
@@ -397,7 +392,7 @@ void NodeManagerUI::createNodeFromIndexAtPos(int modalResult, Viewport * c,int m
 //Interaction Events
 void NodeManagerUI::mouseDown(const MouseEvent & event)
 {
-    if (event.eventComponent == this)
+    if (event.eventComponent == this )
     {
         if (event.mods.isRightButtonDown())
         {
@@ -464,24 +459,27 @@ void NodeManagerUI::setAllNodesToStartAtZero(){
     }
 
 }
+void NodeManagerUI::childBoundsChanged(Component * ){
+    resizeToFitNodes();
+}
 
 
-void NodeManagerUI::visibleAreaChanged(const Rectangle<int>& newVisibleArea){
+void NodeManagerUIViewport::visibleAreaChanged(const Rectangle<int>& newVisibleArea){
     Point <int> mouse = getMouseXYRelative();
     autoScroll(mouse.x, mouse.y, 100, 10);
-//    static int count = 0;
-//    count++;
-//    DBG(String(count) + "visible "+newVisibleArea.toString());
-//    DBG(String(count) + "canvas "+canvas.getBounds().toString());
+
 }
-void NodeManagerUI::Canvas::resizeCanvasToFitNodes(){
+void NodeManagerUIViewport::resized(){
+    if(getLocalBounds().contains(nmui->getLocalBounds())){
+        nmui->minBounds = getLocalBounds();
+    }
+}
+void NodeManagerUI::resizeToFitNodes(){
     Rectangle<int> bounds = minBounds;
-    for(int i = getNumChildComponents()-1 ; i>=0 ; --i){
-        Rectangle<int> r = getChildComponent(i)->getBoundsInParent();
+    for(auto &n:nodesUI){
+        Rectangle<int> r = n->getBoundsInParent();
         bounds = bounds.getUnion(r);
     }
     setBounds(bounds);
 
 }
-
-

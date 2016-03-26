@@ -42,6 +42,7 @@ public:
     TooltipWindow tooltipWindow; // to add tooltips to an application, you
     // just need to create one of these and leave it
     // there to do its work..
+    ScopedPointer<NodeManagerUIViewport> nodeManagerUIViewport;
     ScopedPointer<NodeManagerUI> nodeManagerUI;
     ScopedPointer<TimeManagerUI> timeManagerUI;
     ScopedPointer<ControllerManager> controllerManager;

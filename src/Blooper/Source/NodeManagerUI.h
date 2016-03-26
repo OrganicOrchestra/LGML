@@ -21,7 +21,7 @@ class NodeConnectionUI;
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public Viewport, public NodeManager::Listener
+class NodeManagerUI : public Component, public NodeManager::Listener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
@@ -29,20 +29,7 @@ public:
 
     NodeManager * nodeManager;
 
-    class Canvas : public Component{
-    public:
-        Canvas(){};
 
-        Rectangle<int> minBounds;
-
-        void childBoundsChanged(Component * c)override{resizeCanvasToFitNodes();}
-
-        void resizeCanvasToFitNodes();
-
-
-    };
-
-    Canvas canvas;
 
     OwnedArray<NodeBaseUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
@@ -96,15 +83,28 @@ public:
     void mouseDrag(const MouseEvent& event) override;
     void mouseUp(const MouseEvent& event) override;
 
-    //    void childBoundsChanged(Component * )override;
+    void childBoundsChanged(Component * )override;
 
-    void visibleAreaChanged (const Rectangle<int>& newVisibleArea)override;
     void setAllNodesToStartAtZero();
+    void resizeToFitNodes();
     static void createNodeFromIndexAtPos(int modalResult,Viewport * c,int  maxResult);
+    Rectangle<int> minBounds;
 private:
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
-    
+
+};
+
+class NodeManagerUIViewport : public Viewport{
+public:
+    NodeManagerUIViewport(NodeManagerUI * _nmui):Viewport("NodeManagerViewPort"),nmui(_nmui){
+        setScrollBarsShown(true,true);
+        //    setSize(500,500);
+        setViewedComponent(nmui,false);
+    }
+    void visibleAreaChanged (const Rectangle<int>& newVisibleArea)override;
+    void resized() override;
+    NodeManagerUI * nmui;
 };
 
 

@@ -27,11 +27,12 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
 
     timeManagerUI = new TimeManagerUI();
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
-    nodeManagerUI->setSize(500,500);
+    nodeManagerUIViewport=new NodeManagerUIViewport(nodeManagerUI);
+
 
     addAndMakeVisible(timeManagerUI);
 
-    addAndMakeVisible(nodeManagerUI);
+    addAndMakeVisible(nodeManagerUIViewport);
 
 
 
@@ -82,7 +83,7 @@ void MainContentComponent::resized()
     Rectangle<int> r = getLocalBounds();
     timeManagerUI->setBounds(r.removeFromTop(20));
     controllerManagerViewport->setBounds(r.removeFromLeft(300));
-    nodeManagerUI->setBounds(r);
+    nodeManagerUIViewport->setBounds(r);
 }
 
 
