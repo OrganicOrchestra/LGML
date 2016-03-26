@@ -12,10 +12,17 @@
 #include "NodeConnectionUI.h"
 
 //==============================================================================
-NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :nodeManager(nodeManager),editingConnection(nullptr)
+NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
+Viewport("NodeManagerViewPort"),
+nodeManager(nodeManager),
+editingConnection(nullptr)
 {
     nodeManager->addNodeManagerListener(this);
     setInterceptsMouseClicks(true, true);
+    setScrollBarsShown(true,true);
+    //    setSize(500,500);
+
+    setViewedComponent(&canvas,false);
 }
 
 NodeManagerUI::~NodeManagerUI()
@@ -31,8 +38,8 @@ NodeManagerUI::~NodeManagerUI()
 /*
  void NodeManagerUI::setNodeManager(NodeManager * nodeManager)
  {
-    this->nodeManager = nodeManager;
-    nodeManager->addListener(this);
+ this->nodeManager = nodeManager;
+ nodeManager->addListener(this);
  }
  */
 
@@ -58,6 +65,8 @@ void NodeManagerUI::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
+    canvas.minBounds = getLocalBounds();
+    canvas.resizeCanvasToFitNodes();
 
 }
 
@@ -95,7 +104,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
     {
         NodeBaseUI * nui = node->createUI();
         nodesUI.add(nui);
-        addAndMakeVisible(nui);
+        canvas.addAndMakeVisible(nui);
 
     }
     else
@@ -104,31 +113,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
     }
 }
 
-void NodeManagerUI::childBoundsChanged(Component * c){
-    Rectangle<int> newRect = c->getBounds();
 
-    Rectangle<int> bounds = getParentComponent()->getLocalBounds();
-    for(auto & n : nodesUI){
-        bounds = bounds.getUnion(n->getBoundsInParent());
-    }
-
-    setBounds(bounds);//.withPosition(0, 0));
-
-    // basic clipping before finding better handling in viewPort
-    // if not applied some case leads to loosing nodes (x<0 || y<0)
-    for(auto & n : nodesUI){
-        if(n->getX()<0 ){
-            n->setTopLeftPosition(0, n->getY());
-        }
-    }
-
-        for(auto & n : nodesUI){
-        if( n->getY()<0){
-            n->setTopLeftPosition(n->getX(), 0);
-        }
-    }
-
-}
 
 void NodeManagerUI::removeNodeUI(NodeBase * node)
 {
@@ -137,7 +122,7 @@ void NodeManagerUI::removeNodeUI(NodeBase * node)
     if (nui != nullptr)
     {
         nodesUI.removeObject(nui);
-        removeChildComponent(nui);
+        canvas.removeChildComponent(nui);
     }
     else
     {
@@ -178,7 +163,7 @@ void NodeManagerUI::addConnectionUI(NodeConnection * connection)
     connectionsUI.add(cui);
 
     DBG("Add And MakeVisible connection");
-    addAndMakeVisible(cui,0);
+    canvas.addAndMakeVisible(cui,0);
 }
 
 void NodeManagerUI::removeConnectionUI(NodeConnection * connection)
@@ -228,7 +213,7 @@ void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector,
         editingConnection = new NodeConnectionUI(nullptr, nullptr, baseConnector);
     }
 
-    addAndMakeVisible(editingConnection);
+    canvas.addAndMakeVisible(editingConnection);
 
     editingDataName = dataName;
     editingElementName = elementName;
@@ -269,7 +254,7 @@ void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector
 
     baseConnector->addMouseListener(this, false);
 
-    addAndMakeVisible(editingConnection);
+    canvas.addAndMakeVisible(editingConnection);
 }
 
 void NodeManagerUI::updateEditingConnection()
@@ -395,7 +380,7 @@ void NodeManagerUI::finishEditingConnection()
 
 }
 
-void NodeManagerUI::createNodeFromIndexAtPos(int modalResult, Component * c,int maxRes)
+void NodeManagerUI::createNodeFromIndexAtPos(int modalResult, Viewport * c,int maxRes)
 {
     if (modalResult >= 1 && modalResult <= maxRes)
     {
@@ -421,7 +406,7 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
             ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(0));
             menu.addSubMenu("Add Node", *addNodeMenu);
 
-            menu.show(0,0,0,0,ModalCallbackFunction::forComponent(&NodeManagerUI::createNodeFromIndexAtPos,(Component*)this,addNodeMenu->getNumItems()));
+            menu.show(0,0,0,0,ModalCallbackFunction::forComponent(&NodeManagerUI::createNodeFromIndexAtPos,(Viewport*)this,addNodeMenu->getNumItems()));
         }
         else
         {
@@ -460,4 +445,43 @@ void NodeManagerUI::mouseUp(const MouseEvent & event)
     {
         finishEditingConnection();
     }
+
 }
+
+
+void NodeManagerUI::setAllNodesToStartAtZero(){
+    if(nodesUI.size()==0)return;
+
+    Point<int> minPoint = nodesUI.getUnchecked(0)->getBounds().getTopLeft();
+    for(auto &n:nodesUI){
+        minPoint.x = jmin(n->getX(),minPoint.x);
+        minPoint.y = jmin(n->getY(),minPoint.y);
+    }
+
+    for(auto &n:nodesUI){
+        n->setTopLeftPosition(n->getX()-(minPoint.x<0?minPoint.x:0),
+                              n->getY()-(minPoint.y<0?minPoint.y:0));
+    }
+
+}
+
+
+void NodeManagerUI::visibleAreaChanged(const Rectangle<int>& newVisibleArea){
+    Point <int> mouse = getMouseXYRelative();
+    autoScroll(mouse.x, mouse.y, 100, 10);
+//    static int count = 0;
+//    count++;
+//    DBG(String(count) + "visible "+newVisibleArea.toString());
+//    DBG(String(count) + "canvas "+canvas.getBounds().toString());
+}
+void NodeManagerUI::Canvas::resizeCanvasToFitNodes(){
+    Rectangle<int> bounds = minBounds;
+    for(int i = getNumChildComponents()-1 ; i>=0 ; --i){
+        Rectangle<int> r = getChildComponent(i)->getBoundsInParent();
+        bounds = bounds.getUnion(r);
+    }
+    setBounds(bounds);
+
+}
+
+

@@ -55,6 +55,12 @@ NodeBaseUI::~NodeBaseUI()
 {
 }
 
+void NodeBaseUI::moved(){
+    if(node->xPosition->value != getBounds().getCentreX() ||node->yPosition->value != getBounds().getCentreY() ){
+        node->xPosition->value = getBounds().getCentreX();
+        node->yPosition->value = getBounds().getCentreY();
+    }
+}
 
 void NodeBaseUI::setNode(NodeBase * node)
 {
@@ -117,6 +123,13 @@ void NodeBaseUI::mouseDown(const MouseEvent & e)
         nodeInitPos = getBounds().getCentre();
     }
 
+}
+
+void NodeBaseUI::mouseUp(const juce::MouseEvent &event){
+    NodeManagerUI * nmui = getNodeManagerUI();
+    if(nmui){
+        nmui->setAllNodesToStartAtZero();
+    }
 }
 
 void NodeBaseUI::mouseDrag(const MouseEvent & e)

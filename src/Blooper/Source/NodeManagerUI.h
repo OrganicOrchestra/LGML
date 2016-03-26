@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    NodeManagerUI.h
-    Created: 3 Mar 2016 10:38:22pm
-    Author:  bkupe
+ NodeManagerUI.h
+ Created: 3 Mar 2016 10:38:22pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef NODEMANAGERUI_H_INCLUDED
 #define NODEMANAGERUI_H_INCLUDED
@@ -19,15 +19,30 @@ class NodeConnectionUI;
 
 //==============================================================================
 /*
-    Draw all connected Nodes and Connections
-*/
-class NodeManagerUI : public Component, public NodeManager::Listener
+ Draw all connected Nodes and Connections
+ */
+class NodeManagerUI : public Viewport, public NodeManager::Listener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
     ~NodeManagerUI();
 
     NodeManager * nodeManager;
+
+    class Canvas : public Component{
+    public:
+        Canvas(){};
+
+        Rectangle<int> minBounds;
+
+        void childBoundsChanged(Component * c)override{resizeCanvasToFitNodes();}
+
+        void resizeCanvasToFitNodes();
+
+
+    };
+
+    Canvas canvas;
 
     OwnedArray<NodeBaseUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
@@ -37,6 +52,7 @@ public:
     DataProcessor::DataType editingDataType;
 
     uint32 editingChannel;
+
 
     void clear();
 
@@ -80,14 +96,15 @@ public:
     void mouseDrag(const MouseEvent& event) override;
     void mouseUp(const MouseEvent& event) override;
 
-    void childBoundsChanged(Component * )override;
+    //    void childBoundsChanged(Component * )override;
 
-
-    static void createNodeFromIndexAtPos(int modalResult,Component * c,int  maxResult);
+    void visibleAreaChanged (const Rectangle<int>& newVisibleArea)override;
+    void setAllNodesToStartAtZero();
+    static void createNodeFromIndexAtPos(int modalResult,Viewport * c,int  maxResult);
 private:
-
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
-
+    
 };
 
 

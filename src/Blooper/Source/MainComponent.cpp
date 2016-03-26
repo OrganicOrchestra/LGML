@@ -30,10 +30,9 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
     nodeManagerUI->setSize(500,500);
 
     addAndMakeVisible(timeManagerUI);
-    nodeManagerUIViewport = new Viewport("nodeManagerUI");
-    nodeManagerUIViewport->setScrollBarsShown(true,true);
-    addAndMakeVisible(nodeManagerUIViewport);
-    nodeManagerUIViewport->setViewedComponent(nodeManagerUI,false);
+
+    addAndMakeVisible(nodeManagerUI);
+
 
 
     controllerManagerViewport = new ControllerManagerViewport(controllerManager);
@@ -83,7 +82,7 @@ void MainContentComponent::resized()
     Rectangle<int> r = getLocalBounds();
     timeManagerUI->setBounds(r.removeFromTop(20));
     controllerManagerViewport->setBounds(r.removeFromLeft(300));
-    nodeManagerUIViewport->setBounds(r);
+    nodeManagerUI->setBounds(r);
 }
 
 

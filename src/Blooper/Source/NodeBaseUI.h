@@ -49,8 +49,9 @@ public:
     //interaction
     Point<int> nodeInitPos;
     void mouseDown(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e)  override;
-
+    void moved()override;
     //ui
     class MainContainer : public ContourComponent
     {
