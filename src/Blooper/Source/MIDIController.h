@@ -16,8 +16,8 @@
 class MIDIController : public Controller
 {
 public :
-	MIDIController();
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
+    MIDIController();
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
 };
 
 

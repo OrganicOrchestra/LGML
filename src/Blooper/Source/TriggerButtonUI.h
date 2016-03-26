@@ -27,16 +27,16 @@ public:
     TriggerButtonUI(Trigger * t);
     ~TriggerButtonUI();
 
-	ComponentAnimator animator;
+    ComponentAnimator animator;
 
     void paint (Graphics&) override;
     void resized() override;
     void mouseDown (const MouseEvent& event) override;
-	void mouseUp(const MouseEvent& event) override;
-	void mouseEnter(const MouseEvent& event) override;
-	void mouseExit(const MouseEvent& event) override;
-	void triggerTriggered(Trigger * p) override ;
-    
+    void mouseUp(const MouseEvent& event) override;
+    void mouseEnter(const MouseEvent& event) override;
+    void mouseExit(const MouseEvent& event) override;
+    void triggerTriggered(Trigger * p) override ;
+
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TriggerButtonUI)
 };

@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  AudioHelpers.h
  Created: 8 Mar 2016 12:33:13pm
  Author:  Martin Hermant
- 
+
  ==============================================================================
  */
 
@@ -20,21 +20,21 @@
  allowing having constant access to contiguous memory in a circular buffer
  */
 class BipBuffer{
-    
+
 public:
     BipBuffer(int size){
         phantomSize = size;
         buf.setSize(1,3*size);
         writeNeedle = 0;
     }
-    
+
     void writeBlock(AudioSampleBuffer & newBuf){
-        
+
         buf.setSize(newBuf.getNumChannels(),buf.getNumSamples());
-        
-        
+
+
         int toCopy = newBuf.getNumSamples();
-        
+
         if( phantomSize+writeNeedle + toCopy > 3*phantomSize){
             int firstSeg = 3*phantomSize-(phantomSize+writeNeedle) ;
             for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
@@ -50,51 +50,51 @@ public:
             }
         }
     }
-    
-    
+
+
     const float* getLastBlock(int num,int channel=0){
         jassert(num<phantomSize);
         return buf.getReadPointer(channel, phantomSize + writeNeedle - num);
     }
-    
+
     AudioSampleBuffer buf;
 private:
     void safeCopy(const float * b,int s,int channel){
         buf.copyFrom(channel, phantomSize+writeNeedle, b, s);
-        
+
         if(writeNeedle>2*phantomSize){
             buf.copyFrom(channel, writeNeedle-2*phantomSize,b,s);
         }
         writeNeedle+=s;
         writeNeedle%=2*phantomSize;
-        
+
     }
     int writeNeedle;
     int phantomSize;
-    
-    
-    
-    
+
+
+
+
 };
 
 
 class RingBuffer{
 public:
-    
+
     RingBuffer(int size):ringSize(size),writeNeedle(0),contiguousWriteNeedle(0){
         buf.setSize(1, size);
-        
+
     }
     AudioSampleBuffer buf;
-    
+
     uint ringSize;
     uint writeNeedle;
-    
+
     void writeBlock(AudioSampleBuffer & newBuf){
         int numChans =newBuf.getNumChannels();
         buf.setSize(numChans,buf.getNumSamples());
         int toCopy = newBuf.getNumSamples();
-        
+
         if( writeNeedle + toCopy > ringSize){
             int firstSeg = ringSize-writeNeedle ;
             for(int i = numChans-1;i>=0 ;--i){
@@ -110,11 +110,11 @@ public:
         }
         writeNeedle+=toCopy;
         writeNeedle%=ringSize;
-        
+
         // avoid wrapping errors when checking if contiguous need update
         contiguousWriteNeedle+=1;
     }
-    
+
 
     const float* getLastBlock(int num,int channel = 0){
 
@@ -126,12 +126,12 @@ public:
         }
         return contiguousBuffer.getReadPointer(channel);
     }
-    
-    
+
+
 private:
-    
+
     void updateContiguousBuffer(int num){
-        
+
         jassert(num<ringSize);
         contiguousBuffer.setSize(buf.getNumChannels(),num);
         int startIdx = writeNeedle-num;
@@ -154,7 +154,7 @@ private:
     AudioSampleBuffer contiguousBuffer;
     uint contiguousWriteNeedle = 0 ;
 
-    
+
 };
 
 

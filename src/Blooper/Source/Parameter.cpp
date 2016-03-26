@@ -11,7 +11,7 @@
 #include "Parameter.h"
 
 Parameter::Parameter(const Type &type, const String &niceName, const String &description, bool enabled) :
-	Controllable(type, niceName, description, enabled)
+    Controllable(type, niceName, description, enabled)
 {
 
 }

@@ -17,48 +17,48 @@
 class FloatRangeParameter : public Parameter
 {
 public:
-	FloatRangeParameter(const String &niceName, const String &description, const float &initialValueMin, const float &initialValueMax, const float &minValue = 0, const float &maxValue = 1, bool enabled = true);
-	~FloatRangeParameter() {}
+    FloatRangeParameter(const String &niceName, const String &description, const float &initialValueMin, const float &initialValueMax, const float &minValue = 0, const float &maxValue = 1, bool enabled = true);
+    ~FloatRangeParameter() {}
 
-	float minValue;
-	float maxValue;
+    float minValue;
+    float maxValue;
 
-	float valueMin;
-	float valueMax;
+    float valueMin;
+    float valueMax;
 
-	void setValuesMinMax(const float &valueMin, const float &valueMax, bool silentSet = false, bool force = false)
-	{
-		if (!force && this->valueMin == valueMin && this->valueMax == valueMax) return;
-		this->valueMin = jlimit<float>(minValue, maxValue, valueMin);
-		this->valueMax = jlimit<float>(valueMin, maxValue, valueMax);
-		if (!silentSet) notifyValueChanged();
-	}
+    void setValuesMinMax(const float &valueMin, const float &valueMax, bool silentSet = false, bool force = false)
+    {
+        if (!force && this->valueMin == valueMin && this->valueMax == valueMax) return;
+        this->valueMin = jlimit<float>(minValue, maxValue, valueMin);
+        this->valueMax = jlimit<float>(valueMin, maxValue, valueMax);
+        if (!silentSet) notifyValueChanged();
+    }
 
-	void setValuesMaxMin(const float &valueMin, const float &valueMax, bool silentSet = false, bool force = false)
-	{
-		if (!force && this->valueMin == valueMin && this->valueMax == valueMax) return;
-		this->valueMax = jlimit<float>(minValue, maxValue, valueMax);
-		this->valueMin = jlimit<float>(minValue, valueMax, valueMin);
-		if (!silentSet) notifyValueChanged();
-	}
+    void setValuesMaxMin(const float &valueMin, const float &valueMax, bool silentSet = false, bool force = false)
+    {
+        if (!force && this->valueMin == valueMin && this->valueMax == valueMax) return;
+        this->valueMax = jlimit<float>(minValue, maxValue, valueMax);
+        this->valueMin = jlimit<float>(minValue, valueMax, valueMin);
+        if (!silentSet) notifyValueChanged();
+    }
 
-	float getNormalizedValueMin()
-	{
-		return jmap<float>(valueMin, minValue, maxValue, 0, 1);
-	}
+    float getNormalizedValueMin()
+    {
+        return jmap<float>(valueMin, minValue, maxValue, 0, 1);
+    }
 
-	float getNormalizedValueMax()
-	{
-		return jmap<float>(valueMax, minValue, maxValue, 0, 1);
-	}
+    float getNormalizedValueMax()
+    {
+        return jmap<float>(valueMax, minValue, maxValue, 0, 1);
+    }
     String toString()override { return String::formatted("%f,%f,%f,%f",valueMin,valueMax,minValue,maxValue);}
     void fromString(const String & s,bool silentSet = false, bool force = false) override{
         StringArray sa;
         sa.addTokens(s,",");
         DBG("to implement");
         jassertfalse;}
-    
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatRangeParameter)
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatRangeParameter)
 };
 
 

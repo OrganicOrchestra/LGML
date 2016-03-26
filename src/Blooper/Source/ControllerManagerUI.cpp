@@ -16,90 +16,90 @@
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(ControllerManager * manager) :
-	ContourComponent(Colours::red),
-	manager(manager)
+    ContourComponent(Colours::red),
+    manager(manager)
 {
- 
-	manager->addControllerListener(this);
-	
+
+    manager->addControllerListener(this);
+
 }
 
 ControllerManagerUI::~ControllerManagerUI()
 {
-	manager->removeControllerListener(this);
+    manager->removeControllerListener(this);
 }
 
 
 
 void ControllerManagerUI::controllerAdded(Controller * c)
 {
-	DBG("Controller added, addUI");
-	addControllerUI(c);
+    DBG("Controller added, addUI");
+    addControllerUI(c);
 }
 
 void ControllerManagerUI::controllerRemoved(Controller * c)
 {
-	removeControllerUI(c);
+    removeControllerUI(c);
 }
 
 ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
 {
-	if (getUIForController(controller) != nullptr)
-	{
-		DBG("Controller already exists");
-		return nullptr;
-	}
+    if (getUIForController(controller) != nullptr)
+    {
+        DBG("Controller already exists");
+        return nullptr;
+    }
 
-	ControllerUI * cui = controller->createUI();
-	controllersUI.add(cui);
-	addAndMakeVisible(cui);
-	
-	placeElements();
+    ControllerUI * cui = controller->createUI();
+    controllersUI.add(cui);
+    addAndMakeVisible(cui);
 
-	return cui;
+    placeElements();
+
+    return cui;
 }
 
 void ControllerManagerUI::removeControllerUI(Controller * controller)
 {
-	ControllerUI * cui = getUIForController(controller);
-	if (cui == nullptr)
-	{
-		DBG("Controller not exist");
-		return;
-	}
+    ControllerUI * cui = getUIForController(controller);
+    if (cui == nullptr)
+    {
+        DBG("Controller not exist");
+        return;
+    }
 
-	controllersUI.removeObject(cui);
-	removeChildComponent(getIndexOfChildComponent(cui));
-	placeElements();
+    controllersUI.removeObject(cui);
+    removeChildComponent(getIndexOfChildComponent(cui));
+    placeElements();
 }
 
 ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)
 {
-	for (auto &cui : controllersUI)
-	{
-		if (cui->controller == controller) return cui;
-	}
+    for (auto &cui : controllersUI)
+    {
+        if (cui->controller == controller) return cui;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 void ControllerManagerUI::placeElements()
 {
-	Rectangle<int> r = getLocalBounds().reduced(5);
-	for (auto &cui : controllersUI)
-	{
-		r.setHeight(cui->getHeight());
-		cui->setBounds(r);
-		r.translate(0, cui->getHeight() + 10);
-	}
+    Rectangle<int> r = getLocalBounds().reduced(5);
+    for (auto &cui : controllersUI)
+    {
+        r.setHeight(cui->getHeight());
+        cui->setBounds(r);
+        r.translate(0, cui->getHeight() + 10);
+    }
 
-	int targetHeight = jmax<int>(r.getTopLeft().y, getParentComponent()->getHeight());
-	setSize(getWidth(), targetHeight);
+    int targetHeight = jmax<int>(r.getTopLeft().y, getParentComponent()->getHeight());
+    setSize(getWidth(), targetHeight);
 }
 
 void ControllerManagerUI::paint (Graphics& g)
 {
-	//ContourComponent::paint(g);
+    //ContourComponent::paint(g);
 }
 
 void ControllerManagerUI::resized()
@@ -110,51 +110,51 @@ void ControllerManagerUI::resized()
 
 void ControllerManagerUI::mouseDown(const MouseEvent & event)
 {
-	if (event.eventComponent == this)
-	{
-		if (event.mods.isRightButtonDown())
-		{
+    if (event.eventComponent == this)
+    {
+        if (event.mods.isRightButtonDown())
+        {
 
-			ScopedPointer<PopupMenu> menu( new PopupMenu());
-			ScopedPointer<PopupMenu> addNodeMenu( ControllerFactory::getControllerTypesMenu(0));
-			menu->addSubMenu("Add Controller", *addNodeMenu);
+            ScopedPointer<PopupMenu> menu( new PopupMenu());
+            ScopedPointer<PopupMenu> addNodeMenu( ControllerFactory::getControllerTypesMenu(0));
+            menu->addSubMenu("Add Controller", *addNodeMenu);
 
-			int result = menu->show();
-			if (result >= 1 && result <= addNodeMenu->getNumItems())
-			{
-				manager->addController((ControllerFactory::ControllerType)(result - 1));
-			}
-		}
-		else
-		{
-			if (event.mods.isCtrlDown())
-			{
-				manager->addController(ControllerFactory::ControllerType::OSCDirect);
-			}
-		}
-	}
+            int result = menu->show();
+            if (result >= 1 && result <= addNodeMenu->getNumItems())
+            {
+                manager->addController((ControllerFactory::ControllerType)(result - 1));
+            }
+        }
+        else
+        {
+            if (event.mods.isCtrlDown())
+            {
+                manager->addController(ControllerFactory::ControllerType::OSCDirect);
+            }
+        }
+    }
 
 }
 
 ControllerManagerViewport::ControllerManagerViewport(ControllerManager * controllerManager)
 {
-	cmui = new ControllerManagerUI(controllerManager);
-	setViewedComponent(cmui);
-	
+    cmui = new ControllerManagerUI(controllerManager);
+    setViewedComponent(cmui);
+
 }
 
 void ControllerManagerViewport::paint(Graphics & g)
 {
-	g.setColour(BG_COLOR.darker());
-	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
+    g.setColour(BG_COLOR.darker());
+    g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 }
 
 void ControllerManagerViewport::resized()
 {
-	if (cmui->getHeight() < getHeight())
-	{
-		Rectangle<int> r = getLocalBounds();
-		r.removeFromRight(18); //scrollbar
-		cmui->setBounds(r);
-	}
+    if (cmui->getHeight() < getHeight())
+    {
+        Rectangle<int> r = getLocalBounds();
+        r.removeFromRight(18); //scrollbar
+        cmui->setBounds(r);
+    }
 }

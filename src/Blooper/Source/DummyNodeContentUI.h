@@ -18,19 +18,19 @@
 class DummyNodeContentUI : public NodeBaseContentUI
 {
 public:
-	DummyNodeContentUI();
-	virtual ~DummyNodeContentUI();
+    DummyNodeContentUI();
+    virtual ~DummyNodeContentUI();
 
-	DummyNode * dummyNode;
+    DummyNode * dummyNode;
 
-	ScopedPointer<FloatSliderUI> testSlider;
-	ScopedPointer<TriggerButtonUI> testTriggerButton;
+    ScopedPointer<FloatSliderUI> testSlider;
+    ScopedPointer<TriggerButtonUI> testTriggerButton;
 
-	void resized() override;
+    void resized() override;
 
-	void init() override;
+    void init() override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNodeContentUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNodeContentUI)
 };
 
 

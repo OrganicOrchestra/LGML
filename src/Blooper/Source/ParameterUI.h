@@ -20,14 +20,14 @@ public:
     ParameterUI(Parameter * parameter);
     virtual ~ParameterUI();
 
-	Parameter * parameter;
+    Parameter * parameter;
 
 protected:
-	// Inherited via Listener
-	virtual void parameterValueChanged(Parameter * p) override;
+    // Inherited via Listener
+    virtual void parameterValueChanged(Parameter * p) override;
 
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
 };
 
 

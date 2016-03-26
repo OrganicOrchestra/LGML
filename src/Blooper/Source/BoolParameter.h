@@ -18,30 +18,30 @@ class BoolToggleUI;
 class BoolParameter : public Parameter
 {
 public:
-	BoolParameter(const String &niceName, const String &description, const bool &initialValue, bool enabled = true);
-	~BoolParameter() {}
+    BoolParameter(const String &niceName, const String &description, const bool &initialValue, bool enabled = true);
+    ~BoolParameter() {}
 
-	bool value;
+    bool value;
 
-	void setValue(const bool &value, bool silentSet = false, bool force = false)
-	{
-		if (!force && this->value == value) return;
-		this->value = value;
-		if (!silentSet) notifyValueChanged();
-	}
+    void setValue(const bool &value, bool silentSet = false, bool force = false)
+    {
+        if (!force && this->value == value) return;
+        this->value = value;
+        if (!silentSet) notifyValueChanged();
+    }
 
-	float getNormalizedValue() override
-	{
-		return value ? 1 : 0;
-	}
+    float getNormalizedValue() override
+    {
+        return value ? 1 : 0;
+    }
 
-	//ui creation
-	BoolToggleUI * createToggle();
+    //ui creation
+    BoolToggleUI * createToggle();
 
-    
+
     String toString() override{return String(value);}
     void fromString(const String & s,bool silentSet = false, bool force = false) override{setValue(s.getIntValue()!=0,silentSet,force);};
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
 };
 
 

@@ -22,7 +22,10 @@ def sh(cmd):
 	print os.popen(cmd).read()
 
 def cleanCode(sourceFolder):
-	sh(proJucerPath+ " --remove-tabs --tidy-divider-comments --trim-whitespace "+sourceFolder)
+	# sourceFolder = os.path.abspath(sourceFolder)
+	sh(proJucerPath+ " --remove-tabs "+sourceFolder);
+	sh(proJucerPath+ " --tidy-divider-comments "+sourceFolder);
+	sh(proJucerPath+ " --trim-whitespace "+sourceFolder);
 
 def buildJUCE(JuceProjectPath):
 	sh(proJucerPath+" -h")
@@ -66,8 +69,8 @@ def copyDmg(exportFileBaseName,appPath):
 
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
-cleanCode("../Sources");
-buildJUCE(JuceProjectPath);
+cleanCode("../Source");
+# buildJUCE(JuceProjectPath);
 # buildApp(xcodeProjPath,configuration);
 # copyDmg(exportPath+configuration+"/"+executable_name,appPath);
 

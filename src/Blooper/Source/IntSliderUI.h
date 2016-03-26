@@ -17,17 +17,17 @@
 class IntSliderUI : public FloatSliderUI
 {
 public:
-	IntSliderUI(Parameter * parameter);
-	~IntSliderUI();
+    IntSliderUI(Parameter * parameter);
+    ~IntSliderUI();
 
-	IntParameter * intParam;
+    IntParameter * intParam;
 
-	void setParamNormalizedValue(float value) override;
-	float getParamNormalizedValue() override;
+    void setParamNormalizedValue(float value) override;
+    float getParamNormalizedValue() override;
 protected:
-	void parameterValueChanged(Parameter *) override { repaint(); };
+    void parameterValueChanged(Parameter *) override { repaint(); };
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntSliderUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntSliderUI)
 };
 
 

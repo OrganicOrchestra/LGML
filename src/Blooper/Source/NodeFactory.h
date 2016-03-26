@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  NodeFactory.h
  Created: 4 Mar 2016 10:56:58am
  Author:  bkupe
- 
+
  ==============================================================================
  */
 
@@ -37,27 +37,27 @@ public:
         AudioOut,
         UNKNOWN // has to be last
     };
-    
+
     NodeFactory()
     {
-        
+
     }
-    
+
     ~NodeFactory()
     {
-        
+
     }
-    
+
     NodeBase * createNode(NodeManager * nodeManager,NodeType nodeType, uint32 nodeId = 0)
     {
         NodeBase * n = nullptr;
-        
+
         switch (nodeType)
         {
             case Dummy:
                 n = new DummyNode(nodeManager,nodeId);
                 break;
-                
+
             case AudioMixer:
                 n = new AudioMixerNode(nodeManager,nodeId);
                 break;
@@ -70,11 +70,11 @@ public:
             case VST:
                 n = new VSTNode(nodeManager,nodeId);
                 break;
-                
+
             case AudioIn:
                 n = new AudioInNode(nodeManager,nodeId);
                 break;
-                
+
             case AudioOut:
                 n = new AudioOutNode(nodeManager,nodeId);
                 break;
@@ -86,7 +86,7 @@ public:
                 break;
         }
         n->nodeTypeEnum = (int)nodeType;
-        
+
         return n;
     }
 
@@ -97,10 +97,10 @@ public:
         {
             p->addItem(menuIdOffset + i+1, nodeTypeNames[i]);
         }
-        
+
         return p;
     }
-    
+
     static NodeType getTypeFromString(const String & s){
         for (int i = 0; i < numElementsInArray(nodeTypeNames);i++)
         {
@@ -108,7 +108,7 @@ public:
         }
         return UNKNOWN;
     }
-    
+
     static String nodeTypeToString(NodeType t){
         if(t<0 || t > UNKNOWN)return String::empty;
         return nodeTypeNames[(int)t];

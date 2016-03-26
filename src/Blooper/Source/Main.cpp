@@ -31,7 +31,7 @@ public:
         options.applicationName     = "Blooper";
         options.filenameSuffix      = "settings";
         options.osxLibrarySubFolder = "Preferences";
-        
+
         appProperties = new ApplicationProperties();
         appProperties->setStorageParameters (options);
         Process::setPriority (Process::HighPriority);
@@ -98,7 +98,7 @@ public:
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
     };
-    
+
     ApplicationCommandManager commandManager;
     ScopedPointer<ApplicationProperties> appProperties;
     AudioDeviceManager deviceManager;

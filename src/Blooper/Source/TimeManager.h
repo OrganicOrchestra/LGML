@@ -21,20 +21,20 @@
 #include "NodeBase.h"
 
 class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
-    
-    
+
+
     public :
-    
+
     // TODO check if we can use SingleThread Singleton for fast access in processAdio
     juce_DeclareSingleton(TimeManager, true);
-    
+
     TimeManager();
-	~TimeManager();
-    
+    ~TimeManager();
+
     int beatPerQuantizedTime;
     void incrementClock(int time);
-    
-    
+
+
     void stop();
     void setPlayState(bool s,bool isSettingTempo = false);
     void setSampleRate(int sr);
@@ -79,16 +79,16 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
         needToCallAsync_##x = false;}   \
 
     //Listener
-    
+
     // they should override "name" and async_"name"
     class  Listener : public AsyncUpdater
     {
     public:
-        
+
         /** Destructor. */
         virtual ~Listener() {}
-        
-        
+
+
         METHOD_SYNC_ASYNC(stop)
         METHOD_SYNC_ASYNC(play)
         METHOD_SYNC_ASYNC1(isSettingTempo,bool)
@@ -96,8 +96,8 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
         METHOD_SYNC_ASYNC1(newBeat,int)
         METHOD_SYNC_ASYNC1(newBPM,double)
         METHOD_SYNC_ASYNC1(beatPerBarChanged,int)
-        
-        
+
+
         void handleAsyncUpdate()override {
             CHECK_ASYNC(stop);
             CHECK_ASYNC(play);
@@ -108,7 +108,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
             CHECK_ASYNC1(beatPerBarChanged,int)
         }
     };
-    
+
     bool playState;
     ListenerList<Listener> listeners;
     void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
@@ -133,18 +133,18 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     void removeIfMaster(NodeBase * n){if(n==timeMasterNode)timeMasterNode=nullptr;}
     bool askForBeingMasterNode(NodeBase * n);
      void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) ;
-    
+
 
     virtual void audioDeviceAboutToStart (AudioIODevice* device) {
         setSampleRate(device->getCurrentSampleRate());
      // should we notify blockSize?
     };
-    
+
     /** Called to indicate that the device has stopped. */
     virtual void audioDeviceStopped() {
-    
+
     };
-    
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
 

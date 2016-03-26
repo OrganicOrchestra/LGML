@@ -20,35 +20,35 @@ class FloatSliderUI;
 class FloatParameter : public Parameter
 {
 public:
-	FloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, bool enabled = true);
-	~FloatParameter() {}
+    FloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, bool enabled = true);
+    ~FloatParameter() {}
 
-	float minValue;
-	float maxValue;
-	float value;
+    float minValue;
+    float maxValue;
+    float value;
 
-	void setValue(const float &value, bool silentSet = false, bool force = false)
-	{
-		if (!force && this->value == value) return;
-		this->value = jlimit<float>(minValue, maxValue, value);
-		if (!silentSet) notifyValueChanged();
-	}
+    void setValue(const float &value, bool silentSet = false, bool force = false)
+    {
+        if (!force && this->value == value) return;
+        this->value = jlimit<float>(minValue, maxValue, value);
+        if (!silentSet) notifyValueChanged();
+    }
 
-	void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false)
-	{
-		setValue(jmap<float>(normalizedValue, minValue, maxValue), silentSet, force);
-	}
+    void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false)
+    {
+        setValue(jmap<float>(normalizedValue, minValue, maxValue), silentSet, force);
+    }
 
-	float getNormalizedValue() override
-	{
-		return jmap<float>(value, minValue, maxValue, 0, 1);
-	}
+    float getNormalizedValue() override
+    {
+        return jmap<float>(value, minValue, maxValue, 0, 1);
+    }
 
-	FloatSliderUI * createSlider();
-    
+    FloatSliderUI * createSlider();
+
     String toString() override{return String(value);}
     void fromString(const String & s,bool silentSet = false, bool force = false) override{setValue(s.getFloatValue(),silentSet,force);};
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatParameter)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatParameter)
 };
 
 

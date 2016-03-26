@@ -19,89 +19,89 @@ class ControllableContainer;
 class Controllable
 {
 public:
-	enum Type { //Add type here if creating new type of Controllable
-		TRIGGER,
-		FLOAT,
-		INT,
-		BOOL,
-		STRING,
-		RANGE
+    enum Type { //Add type here if creating new type of Controllable
+        TRIGGER,
+        FLOAT,
+        INT,
+        BOOL,
+        STRING,
+        RANGE
 
-	};
+    };
 
 
-	Controllable(const Type &type, const String &niceName, const String &description, bool enabled = true);
-	virtual ~Controllable() {}
-	
+    Controllable(const Type &type, const String &niceName, const String &description, bool enabled = true);
+    virtual ~Controllable() {}
 
-	Type type;
-	String niceName;
-	String shortName;
-	String description;
 
-	bool enabled;
-	bool hasCustomShortName;
-	bool isControllableExposed;
-	bool isControllableFeedbackOnly;
+    Type type;
+    String niceName;
+    String shortName;
+    String description;
 
-	String controlAddress;
+    bool enabled;
+    bool hasCustomShortName;
+    bool isControllableExposed;
+    bool isControllableFeedbackOnly;
 
-	ControllableContainer * parentContainer;
+    String controlAddress;
 
-	void setNiceName(const String &niceName) {
-		this->niceName = niceName;
-		if (!hasCustomShortName) setAutoShortName();
-	}
+    ControllableContainer * parentContainer;
 
-	void setCustomShortName(const String &shortName)
-	{
-		this->shortName = shortName;
-		hasCustomShortName = true;
-	}
+    void setNiceName(const String &niceName) {
+        this->niceName = niceName;
+        if (!hasCustomShortName) setAutoShortName();
+    }
 
-	void setAutoShortName() {
-		hasCustomShortName = false;
-		shortName = StringUtil::toShortName(niceName);
-		updateControlAddress();
-	}
+    void setCustomShortName(const String &shortName)
+    {
+        this->shortName = shortName;
+        hasCustomShortName = true;
+    }
 
-	void setEnabled(bool value, bool silentSet = false, bool force = false)
-	{
-		if (!force && value == enabled) return;
+    void setAutoShortName() {
+        hasCustomShortName = false;
+        shortName = StringUtil::toShortName(niceName);
+        updateControlAddress();
+    }
 
-		enabled = value;
-		if(!silentSet) listeners.call(&Listener::controllableStateChanged, this);
-	}
+    void setEnabled(bool value, bool silentSet = false, bool force = false)
+    {
+        if (!force && value == enabled) return;
 
-	void setParentContainer(ControllableContainer * container)
-	{
-		this->parentContainer = container;
-		updateControlAddress();
-	}
+        enabled = value;
+        if(!silentSet) listeners.call(&Listener::controllableStateChanged, this);
+    }
 
-	void updateControlAddress()
-	{
-		this->controlAddress = getControlAddress();
-		listeners.call(&Listener::controllableControlAddressChanged, this);
-	}
+    void setParentContainer(ControllableContainer * container)
+    {
+        this->parentContainer = container;
+        updateControlAddress();
+    }
 
-	String getControlAddress();
+    void updateControlAddress()
+    {
+        this->controlAddress = getControlAddress();
+        listeners.call(&Listener::controllableControlAddressChanged, this);
+    }
+
+    String getControlAddress();
 
 public:
-	class  Listener
-	{
-	public:
-		/** Destructor. */
-		virtual ~Listener() {}
-		virtual void controllableStateChanged(Controllable * c) = 0;
-		virtual void controllableControlAddressChanged(Controllable * c) = 0;
-	};
+    class  Listener
+    {
+    public:
+        /** Destructor. */
+        virtual ~Listener() {}
+        virtual void controllableStateChanged(Controllable * c) = 0;
+        virtual void controllableControlAddressChanged(Controllable * c) = 0;
+    };
 
-	ListenerList<Listener> listeners;
-	void addControllableListener(Listener* newListener) { listeners.add(newListener); }
-	void removeControllableListener(Listener* listener) { listeners.remove(listener); }
+    ListenerList<Listener> listeners;
+    void addControllableListener(Listener* newListener) { listeners.add(newListener); }
+    void removeControllableListener(Listener* listener) { listeners.remove(listener); }
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controllable)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controllable)
 };
 
 #endif  // CONTROLLABLE_H_INCLUDED

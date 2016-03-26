@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  NodeConnection.cpp
  Created: 7 Mar 2016 12:39:02pm
  Author:  bkupe
- 
+
  ==============================================================================
  */
 
@@ -14,7 +14,7 @@
 NodeConnection::NodeConnection(NodeManager * nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType) :
 nodeManager(nodeManager), connectionId(connectionId), sourceNode(sourceNode), destNode(destNode), connectionType(connectionType)
 {
-    
+
     // init with all possible Audio connections
     if(connectionType==AUDIO){
         int maxCommonAudiConnections = jmin(sourceNode->audioProcessor->getTotalNumOutputChannels() , destNode->audioProcessor->getTotalNumInputChannels());
@@ -30,10 +30,10 @@ NodeConnection::~NodeConnection()
     dataConnections.clear();
     sourceNode = nullptr;
     destNode = nullptr;
-    
-    
-    
-    
+
+
+
+
 }
 
 void NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
@@ -53,7 +53,7 @@ void NodeConnection::removeAllAudioGraphConnections()
         nodeManager->audioGraph.removeConnection(sourceNode->nodeId, c.first, destNode->nodeId, c.second);
     }
     audioConnections.clear();
-    
+
 }
 void NodeConnection::addDataGraphConnection(const String &sourceDataName, const String &sourceElementName, const String &destDataName, const String &destElementName)
 {

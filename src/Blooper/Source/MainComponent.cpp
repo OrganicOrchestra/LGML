@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  MainComponent.cpp
  Created: 25 Mar 2016 6:11:02pm
  Author:  Martin Hermant
- 
+
  ==============================================================================
  */
 
@@ -20,26 +20,26 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
                                                                 "Save a filter graph")
 {
     DBG("Application Start");
-    
+
     controllerManager = new ControllerManager();
-    
+
     initAudio();
-    
+
     timeManagerUI = new TimeManagerUI();
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
     nodeManagerUI->setSize(500,500);
-    
+
     addAndMakeVisible(timeManagerUI);
     nodeManagerUIViewport = new Viewport("nodeManagerUI");
     nodeManagerUIViewport->setScrollBarsShown(true,true);
     addAndMakeVisible(nodeManagerUIViewport);
     nodeManagerUIViewport->setViewedComponent(nodeManagerUI,false);
-    
-    
+
+
     controllerManagerViewport = new ControllerManagerViewport(controllerManager);
     addAndMakeVisible(controllerManagerViewport);
-    
-    
+
+
     // resize after contentCreated
 
     setSize(1200, 600);
@@ -47,7 +47,7 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
     (&getCommandManager())->registerAllCommandsForTarget (this);
     (&getCommandManager())-> setFirstCommandTarget(this);
 
-    (&getCommandManager())->getKeyMappings()->resetToDefaultMappings();    
+    (&getCommandManager())->getKeyMappings()->resetToDefaultMappings();
 //    (&getCommandManager())->getKeyMappings()->restoreFromXml (lastSavedKeyMappingsXML);
     addKeyListener ((&getCommandManager())->getKeyMappings());
 #if JUCE_MAC
@@ -55,9 +55,9 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
 #else
     setMenuBar (this);
 #endif
-    
+
     createNewGraph();
-    
+
 
 }
 
@@ -72,13 +72,13 @@ MainContentComponent::~MainContentComponent(){
     setMacMainMenu (nullptr);
 #else
     setMenuBar (nullptr);
-    
+
 #endif
 }
 
 
 
-void MainContentComponent::resized() 
+void MainContentComponent::resized()
 {
     Rectangle<int> r = getLocalBounds();
     timeManagerUI->setBounds(r.removeFromTop(20));
@@ -121,7 +121,7 @@ void MainContentComponent::clear(){
 //    stopAudio();
     TimeManager::getInstance()->stop();
     NodeManager::getInstance()->clear();
-    
+
 
     changed();    //fileDocument
 }
@@ -132,9 +132,9 @@ void MainContentComponent::showAudioSettings()
                                                     0, 256,
                                                     0, 256,
                                                     true, true, true, false);
-    
+
     audioSettingsComp.setSize (500, 450);
-    
+
     DialogWindow::LaunchOptions o;
     o.content.setNonOwned (&audioSettingsComp);
     o.dialogTitle                   = "Audio Settings";
@@ -143,12 +143,12 @@ void MainContentComponent::showAudioSettings()
     o.escapeKeyTriggersCloseButton  = true;
     o.useNativeTitleBar             = false;
     o.resizable                     = false;
-    
+
     o.runModal();
-    
+
     ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
-    
+
     getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
     getAppProperties().getUserSettings()->saveIfNeeded();
-    
+
 }

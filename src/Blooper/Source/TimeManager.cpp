@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  TimeManager.cpp
  Created: 2 Mar 2016 8:33:44pm
  Author:  bkupe
- 
+
  ==============================================================================
  */
 
@@ -26,7 +26,7 @@ beatPerQuantizedTime(4),
 isSettingTempo(false),
 ControllableContainer("time"),
 asyncNotifier(this){
-    
+
     BPM = addFloatParameter("bpm","current BPM",120,10,600);
     addTimeManagerListener(&asyncNotifier);
 }
@@ -38,7 +38,7 @@ TimeManager::~TimeManager()
 
 void TimeManager::incrementClock(int time){
     int lastBeat = getBeat();
-    
+
     if(playState){
         timeInSample+=time;
     }
@@ -47,7 +47,7 @@ void TimeManager::incrementClock(int time){
         listeners.call(&Listener::internal_newBeat,newBeat);
         if(newBeat%beatPerBar == 0){
             listeners.call(&Listener::internal_newBar,getBar());
-            
+
         }
     }
 }
@@ -59,7 +59,7 @@ void TimeManager::audioDeviceIOCallback (const float** inputChannelData,
                                          int numOutputChannels,
                                          int numSamples) {
     incrementClock(numSamples);
-    
+
     for (int i = 0; i < numOutputChannels; ++i)
         zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
 }
@@ -101,12 +101,12 @@ int TimeManager::setBPMForLoopLength(int time){
     double time_seconds = time* 1.0/ sampleRate;
     double beatTime = time_seconds* 1.0/beatPerBar;
     int barLength = 1;
-    
+
     // over 150 bpm
     if(beatTime < .40){beatTime*=2;barLength/=2;}
     // under 60 bpm
     else if(beatTime > 1){beatTime/=2;barLength*=2;}
-    
+
     setBPM( 60.0/beatTime);
     return barLength;
 }

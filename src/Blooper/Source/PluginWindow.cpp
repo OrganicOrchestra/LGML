@@ -26,17 +26,17 @@ owner (o),
 type (t)
 {
     setSize (400, 300);
-    
+
     setContentOwned (pluginEditor, true);
 
-    
+
     setTopLeftPosition (owner->pluginWindowParameter.x->value,
                         owner->pluginWindowParameter.y->value);
-    
+
      owner->pluginWindowParameter.isDisplayed->setValue(true);
-    
+
     setVisible (true);
-    
+
     activePluginWindows.add (this);
 }
 
@@ -60,7 +60,7 @@ void PluginWindow::closeAllCurrentlyOpenWindows()
     {
         for (int i = activePluginWindows.size(); --i >= 0;)
             delete activePluginWindows.getUnchecked (i);
-        
+
         Component dummyModalComp;
         dummyModalComp.enterModalState();
         MessageManager::getInstance()->runDispatchLoopUntil (50);
@@ -71,26 +71,26 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
                                           WindowFormatType type)
 {
     jassert (node != nullptr);
-    
+
     for (int i = activePluginWindows.size(); --i >= 0;)
         if (activePluginWindows.getUnchecked(i)->owner == node
             && activePluginWindows.getUnchecked(i)->type == type)
             return activePluginWindows.getUnchecked(i);
-    
+
     AudioProcessor* processor = dynamic_cast<VSTNode::VSTProcessor*>(node->audioProcessor)->innerPlugin;
     if(!processor)return nullptr;
-    
-    
+
+
     AudioProcessorEditor* ui = nullptr;
-    
+
     if (type == Normal)
     {
         ui = processor->createEditorIfNeeded();
-        
+
         if (ui == nullptr)
             type = Generic;
     }
-    
+
     if (ui == nullptr)
     {
         if (type == Generic || type == Parameters)
@@ -98,15 +98,15 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
 //        else if (type == Programs)
 //            ui = new ProgramAudioProcessorEditor (processor);
     }
-    
+
     if (ui != nullptr)
     {
         if (AudioPluginInstance* const plugin = dynamic_cast<AudioPluginInstance*> (processor))
             ui->setName (plugin->getName());
-        
+
         return new PluginWindow (ui, node, type);
     }
-    
+
     return nullptr;
 }
 

@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  TimeManagerUI.cpp
  Created: 8 Mar 2016 11:06:41pm
  Author:  Martin Hermant
- 
+
  ==============================================================================
  */
 
@@ -19,7 +19,7 @@ TimeManagerUI::TimeManagerUI(){
     bpmSlider->displayText = true;
     bpmSlider->displayBar = false;
     addAndMakeVisible(bpmSlider);
-    
+
 }
 
 
@@ -44,7 +44,7 @@ void TimeManagerUI::TimeBar::initComponentsForNumBeats(int nb){
         beatComponents.add(bc);
     }
     resized();
-    
+
 }
 
 void TimeManagerUI::TimeBar::resized() {
@@ -80,9 +80,9 @@ void TimeManagerUI::TimeBar::zeroOutBeatComponents(){
         BeatComponent * bc = beatComponents.getUnchecked(i);
         bc->percentDone = 0;
         bc->repaint();
-        
+
     }
-    
+
 }
 
 void TimeManagerUI::TimeBar::showBeatComponents(bool show){
@@ -111,7 +111,7 @@ void TimeManagerUI::TimeBar::timerCallback(){
 
 
 void TimeManagerUI::TimeBar::paint(Graphics & g) {
-    
+
     if(isSettingTempo){
         // called only if setting tempo
         Rectangle<int> area = getLocalBounds();
@@ -119,7 +119,7 @@ void TimeManagerUI::TimeBar::paint(Graphics & g) {
         if(blinkCount>1){
             blinkCount-=1;
         }
-        
+
         g.setColour(Colours::red.brighter(1-sin(2.0*double_Pi*blinkCount)));
         g.fillRect(area);
     }
@@ -132,8 +132,8 @@ void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g){
     g.setColour(Colours::grey);
     g.fillRect(area.removeFromLeft(beatBarWidth));
 //    g.fillRect(area.removeFromRight(beatBarWidth));
-    
-    
+
+
     if(percentDone >= 1){
         g.setColour(Colours::green);
         g.fillRect(area);
@@ -143,10 +143,7 @@ void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g){
         g.fillRect(area.removeFromLeft(percentDone*area.getWidth()));
         g.setColour(Colours::black);
         g.fillRect(area);
-        
+
     }
-    
+
 }
-
-
-

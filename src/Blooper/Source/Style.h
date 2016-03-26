@@ -12,18 +12,18 @@
 #define STYLE_H_INCLUDED
 
 
-#define NORMAL_COLOR	Colour(0xff666666)
-#define BG_COLOR		Colour(0xff222222)
-#define PANEL_COLOR		Colour(0xff444444)
-#define FRONT_COLOR		Colour(0xffCCCCCC)
+#define NORMAL_COLOR    Colour(0xff666666)
+#define BG_COLOR        Colour(0xff222222)
+#define PANEL_COLOR     Colour(0xff444444)
+#define FRONT_COLOR     Colour(0xffCCCCCC)
 #define HIGHLIGHT_COLOR Colour(0xffFF922F)
-#define CONTOUR_COLOR	Colour(0xcc303030)
+#define CONTOUR_COLOR   Colour(0xcc303030)
 
-#define TEXT_COLOR		Colour(0xffCCCCCC)
-#define TEXTNAME_COLOR	Colour(0xff999999)
+#define TEXT_COLOR      Colour(0xffCCCCCC)
+#define TEXTNAME_COLOR  Colour(0xff999999)
 
-#define AUDIO_COLOR		Colours::cadetblue
-#define DATA_COLOR		Colours::pink
+#define AUDIO_COLOR     Colours::cadetblue
+#define DATA_COLOR      Colours::pink
 
 #define PARAMETER_FRONT_COLOR Colour(0xff99ff66)
 

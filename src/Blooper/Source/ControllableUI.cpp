@@ -10,12 +10,12 @@
 
 #include "ControllableUI.h"
 
-ControllableUI::ControllableUI(Controllable * controllable) :  
-	controllable(controllable)
+ControllableUI::ControllableUI(Controllable * controllable) :
+    controllable(controllable)
 {
     jassert(controllable!=nullptr);
-	updateTooltip();
-	controllable->addControllableListener(this);
+    updateTooltip();
+    controllable->addControllableListener(this);
 }
 
 ControllableUI::~ControllableUI()
@@ -24,16 +24,16 @@ ControllableUI::~ControllableUI()
 
 void ControllableUI::controllableStateChanged(Controllable * c)
 {
-	setAlpha(c->enabled ? 1 : .5f);
+    setAlpha(c->enabled ? 1 : .5f);
 }
 
 void ControllableUI::controllableControlAddressChanged(Controllable * c)
 {
-	updateTooltip();
+    updateTooltip();
 }
 
 void ControllableUI::updateTooltip()
 {
-	tooltip = controllable->description + "\nControl Address : " + controllable->controlAddress;
-	setTooltip(tooltip);
+    tooltip = controllable->description + "\nControl Address : " + controllable->controlAddress;
+    setTooltip(tooltip);
 }

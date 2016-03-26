@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  VSTNodeUI.cpp
  Created: 24 Mar 2016 9:44:38pm
  Author:  Martin Hermant
- 
+
  ==============================================================================
  */
 
@@ -21,7 +21,7 @@ owner(_owner){
 VSTNodeUI::~VSTNodeUI(){
     owner->removeChangeListener(this);
     owner->removeControllableContainerListener(this);
-    
+
 }
 
 void VSTNodeUI::init() {
@@ -31,15 +31,15 @@ void VSTNodeUI::init() {
     addAndMakeVisible(VSTListShowButton);
     setSize(200, 100);
     updateVSTParameters();
-    
+
 }
 
 void VSTNodeUI::updateVSTParameters(){
     paramSliders.clear();
-    
+
     int maxParameter = 20;
     int pCount = 0;
-    
+
     for(auto &p:owner->VSTParameters){
         FloatSliderUI * slider = p->createSlider();
         paramSliders.add(slider);
@@ -49,7 +49,7 @@ void VSTNodeUI::updateVSTParameters(){
             break;
         }
     }
-    
+
     resized();
 }
 
@@ -81,16 +81,16 @@ void VSTNodeUI::resized(){
     VSTListShowButton.setBounds(headerArea.removeFromLeft(headerArea.getWidth()/2));
     showPluginWindowButton.setBounds(headerArea);
     layoutSliderParameters(area.reduced(2));
-    
+
 }
 
 void VSTNodeUI::layoutSliderParameters(Rectangle<int> pArea){
     if(paramSliders.isEmpty())return;
     int maxLines = 4;
-    
+
     int numLines = jmin(maxLines,paramSliders.size());
     int numCols = (paramSliders.size()-1)/maxLines + 1;
-    
+
     int w = pArea.getWidth()/numCols;
     int h =pArea.getHeight()/numLines;
     int idx = 0;
@@ -122,20 +122,16 @@ void VSTNodeUI::vstSelected (int modalResult, Component *  originComp)
     }
 }
 
-void VSTNodeUI::buttonClicked (Button* button) 
+void VSTNodeUI::buttonClicked (Button* button)
 {
     if (button == &VSTListShowButton){
         PopupMenu  VSTList;
         VSTManager::getInstance()->knownPluginList.addToMenu(VSTList, KnownPluginList::SortMethod::sortByCategory);
         owner->closePluginWindow();
         VSTList.showAt (&VSTListShowButton,0,0,0,0, ModalCallbackFunction::forComponent(&VSTNodeUI::vstSelected, (Component*)this));
-        
+
     }
     if(button == &showPluginWindowButton){
         owner->createPluginWindow();
     }
 }
-
-
-
-

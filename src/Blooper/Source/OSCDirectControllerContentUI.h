@@ -18,20 +18,20 @@
 class OSCDirectControllerContentUI : public ControllerContentUI
 {
 public:
-	OSCDirectControllerContentUI();
+    OSCDirectControllerContentUI();
 
-	OSCDirectController * oscd;
+    OSCDirectController * oscd;
 
-	ScopedPointer<StringParameterUI> localPortUI;
-	ScopedPointer<StringParameterUI> remoteHostUI;
-	ScopedPointer<StringParameterUI> remotePortUI;
+    ScopedPointer<StringParameterUI> localPortUI;
+    ScopedPointer<StringParameterUI> remoteHostUI;
+    ScopedPointer<StringParameterUI> remotePortUI;
 
-	void init() override;
+    void init() override;
 
-	void resized() override;
-	void mouseDown(const MouseEvent &e) override;
+    void resized() override;
+    void mouseDown(const MouseEvent &e) override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectControllerContentUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectControllerContentUI)
 };
 
 

@@ -21,54 +21,54 @@ class NodeBase;
 class NodeConnection : public ReferenceCountedObject
 {
 public:
-	enum ConnectionType
-	{
-		AUDIO, DATA, UNDEFINED
-	};
+    enum ConnectionType
+    {
+        AUDIO, DATA, UNDEFINED
+    };
 
-	uint32 connectionId;
+    uint32 connectionId;
 
-	ConnectionType connectionType;
+    ConnectionType connectionType;
 
     NodeManager * nodeManager;
-	NodeBase * sourceNode;
-	NodeBase * destNode;
+    NodeBase * sourceNode;
+    NodeBase * destNode;
 
     typedef std::pair<int,int> AudioConnection;
     Array<AudioConnection > audioConnections;
-	Array<DataProcessorGraph::Connection *> dataConnections;
+    Array<DataProcessorGraph::Connection *> dataConnections;
 
 
-	NodeConnection(NodeManager* nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
-	virtual ~NodeConnection();
+    NodeConnection(NodeManager* nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
+    virtual ~NodeConnection();
 
 
-	void addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
-	void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
+    void addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
+    void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
     void removeAllAudioGraphConnections();
-    
-	void addDataGraphConnection(const String &sourceDataName, const String &sourceElementName,const String &destDataName, const String &destElementName);
-	void removeDataGraphConnection(const String &sourceDataName, const String &sourceElementName,const String &destDataName, const String &destElementName);
 
-	void remove();
+    void addDataGraphConnection(const String &sourceDataName, const String &sourceElementName,const String &destDataName, const String &destElementName);
+    void removeDataGraphConnection(const String &sourceDataName, const String &sourceElementName,const String &destDataName, const String &destElementName);
 
-	//Listener
-	class  Listener
-	{
-	public:
-		/** Destructor. */
-		virtual ~Listener() {}
+    void remove();
 
-		virtual void connectionEdited(NodeConnection *) = 0;
-		virtual void askForRemoveConnection(NodeConnection *) = 0;
-	};
+    //Listener
+    class  Listener
+    {
+    public:
+        /** Destructor. */
+        virtual ~Listener() {}
 
-	ListenerList<Listener> listeners;
-	void addConnectionListener(Listener* newListener) { listeners.add(newListener); }
-	void removeConnectionListener(Listener* listener) { listeners.remove(listener); }
+        virtual void connectionEdited(NodeConnection *) = 0;
+        virtual void askForRemoveConnection(NodeConnection *) = 0;
+    };
+
+    ListenerList<Listener> listeners;
+    void addConnectionListener(Listener* newListener) { listeners.add(newListener); }
+    void removeConnectionListener(Listener* listener) { listeners.remove(listener); }
 
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnection)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnection)
 
 };
 

@@ -28,25 +28,25 @@ public:
         {
         NodeBase::NodeAudioProcessor::busArrangement.inputBuses.clear();
         }
-        
+
         void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) {
             AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
         }
 
-        
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioInProcessor)
     };
-    
 
-    
-    
-    
+
+
+
+
     AudioInNode(NodeManager * nodeManager,uint32 nodeId)  : NodeBase(nodeManager,nodeId,"AudioInNode",new AudioInProcessor){};
     ~AudioInNode(){};
-    
+
     virtual NodeBaseUI * createUI() override;
-    
-    
+
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioInNode)
 };
 

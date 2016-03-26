@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  DataProcessor.cpp
  Created: 3 Mar 2016 1:53:08pm
  Author:  bkupe
- 
+
  ==============================================================================
  */
 
@@ -12,7 +12,7 @@
 
 DataProcessor::DataProcessor()
 {
-    
+
 }
 
 DataProcessor::~DataProcessor()
@@ -24,7 +24,7 @@ DataProcessor::DataType DataProcessor::getInputDataType(const String &dataName, 
     for (int i = inputDatas.size(); --i >= 0;)
     {
         Data* d = inputDatas.getUnchecked(i);
-        
+
         if (d->name == dataName)
         {
             if (elementName.isEmpty())
@@ -39,7 +39,7 @@ DataProcessor::DataType DataProcessor::getInputDataType(const String &dataName, 
             }
         }
     }
-    
+
     return DataType::Unknown;
 }
 
@@ -48,7 +48,7 @@ DataProcessor::DataType DataProcessor::getOutputDataType(const String &dataName,
     for (int i = outputDatas.size(); --i >= 0;)
     {
         Data* d = outputDatas.getUnchecked(i);
-        
+
         if (d->name == dataName)
         {
             if (elementName.isEmpty())
@@ -63,7 +63,7 @@ DataProcessor::DataType DataProcessor::getOutputDataType(const String &dataName,
             }
         }
     }
-    
+
     return DataType::Unknown;
-    
+
 }

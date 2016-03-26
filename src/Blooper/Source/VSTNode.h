@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  VSTNode.h
  Created: 2 Mar 2016 8:37:24pm
  Author:  bkupe
- 
+
  ==============================================================================
  */
 
@@ -22,18 +22,18 @@ AudioDeviceManager& getAudioDeviceManager();
 
 class VSTNode : public NodeBase,public ChangeBroadcaster,public AudioProcessorListener
 {
-    
+
 public:
     StringParameter *  identifierString;
     Array<FloatParameter *> VSTParameters;
-    
-    
+
+
     VSTNode(NodeManager * nodeManager,uint32 nodeId);
     ~VSTNode();
-    
+
     void generatePluginFromDescription(PluginDescription * desc);
-    
-    
+
+
     class PluginWindowParameters : public ControllableContainer{
     public:
         PluginWindowParameters():ControllableContainer("PluginWindow Parameters")
@@ -42,7 +42,7 @@ public:
             y = addFloatParameter("y","y position of plugin window", Random::getSystemRandom().nextInt (500),0,1000);
             isDisplayed = addBoolParameter("isDisplayed","is the plugin window displayed",false);
         }
-        
+
         FloatParameter * x;
         FloatParameter * y;
         BoolParameter * isDisplayed;
@@ -50,45 +50,45 @@ public:
     PluginWindowParameters pluginWindowParameter;
     void createPluginWindow();
     void closePluginWindow();
-    
+
     void parameterValueChanged(Parameter * p) override;
-    
+
     void audioProcessorParameterChanged (AudioProcessor* processor,
                                          int parameterIndex,
                                          float newValue) override;
-    
+
     void audioProcessorChanged (AudioProcessor* processor)override{};
-    
-    
-    
+
+
+
     void initParameterFromProcessor(AudioProcessor * p);
-    
-    
-    
+
+
+
     class VSTProcessor : public NodeAudioProcessor{
-        
+
     public:
         VSTProcessor(VSTNode * _owner):owner(_owner){
-            
+
         }
         ~VSTProcessor(){}
-        
+
         AudioProcessorEditor * createEditor()override{
             if(innerPlugin)return innerPlugin->createEditor();
                 else return nullptr;
         }
-        
+
         void generatePluginFromDescription(PluginDescription * desc){
             delete innerPlugin.release();
             String errorMessage;
             AudioDeviceManager::AudioDeviceSetup result;
-            
+
             // set max channels to this
             // TODO check that it actually works
             desc->numInputChannels=jmin(desc->numInputChannels,getMainBusNumInputChannels());
             desc->numOutputChannels=jmin(desc->numOutputChannels,getMainBusNumOutputChannels());
-            
-            
+
+
             getAudioDeviceManager().getAudioDeviceSetup (result);
             if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
                 (*desc, result.sampleRate, result.bufferSize, errorMessage)){
@@ -104,15 +104,15 @@ public:
                 innerPlugin=instance;
                 owner->initParameterFromProcessor(instance);
             }
-            
+
             else{
-                
+
                 DBG(errorMessage);
                 jassertfalse;
             }
         }
-        
-        
+
+
         void numChannelsChanged()override;
         void prepareToPlay(double sampleRate,int blockSize)override  {if(innerPlugin){innerPlugin->prepareToPlay(sampleRate,blockSize);}}
         void releaseResources() override    {if(innerPlugin){innerPlugin->releaseResources();}};
@@ -129,14 +129,14 @@ public:
                 }
             }
         };
-        
+
         VSTNode * owner;
         ScopedPointer<AudioPluginInstance> innerPlugin;
     };
     NodeBaseUI * createUI()override;
-    
+
     bool blockFeedback;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)
 };
 

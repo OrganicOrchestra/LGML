@@ -1,8 +1,8 @@
 /*
  ==============================================================================
- 
+
  This file was auto-generated!
- 
+
  ==============================================================================
  */
 
@@ -38,7 +38,7 @@ class MainContentComponent   : public Component,public ApplicationCommandTarget,
 
 {
 public:
-    
+
     TooltipWindow tooltipWindow; // to add tooltips to an application, you
     // just need to create one of these and leave it
     // there to do its work..
@@ -47,33 +47,33 @@ public:
     ScopedPointer<TimeManagerUI> timeManagerUI;
     ScopedPointer<ControllerManager> controllerManager;
     ScopedPointer<ControllerManagerViewport> controllerManagerViewport;
-    
-    
+
+
     // Audio
-    
+
     AudioProcessorPlayer graphPlayer;
     //==============================================================================
     MainContentComponent();
     ~MainContentComponent();
-    
-    //======================
+
+    //==============================================================================
     // see MainComponent.cpp
     void initAudio();
     void stopAudio();
-    
+
     void createNewGraph();
-    //=======================================================================
+    //==============================================================================
     void paint (Graphics& g) override{g.fillAll (Colours::black);}
     void resized() override;
-    
+
     void clear();
-    
+
     void showAudioSettings();
-    
-    
-    //======================
+
+
+    //==============================================================================
     // see MainComponentCommands.cpp
-    
+
     // inherited from MenuBarModel , ApplicationCommandTarget
     ApplicationCommandTarget* getNextCommandTarget() override {return findFirstTargetParentComponent();}
     void getAllCommands (Array<CommandID>& commands) override;
@@ -82,20 +82,20 @@ public:
     StringArray getMenuBarNames() override ;
     virtual PopupMenu getMenuForIndex (int topLevelMenuIndex,const String& menuName) override;
     void menuItemSelected (int menuItemID,int topLevelMenuIndex) override{}
-    
-    //==========================
+
+    //==============================================================================
     // see MainContentFileDocument.cpp
-    
+
     //  inherited from FileBasedDocument
-     String getDocumentTitle()override ;
-     Result loadDocument (const File& file)override;
-     Result saveDocument (const File& file)override;
-     File getLastDocumentOpened() override;
-     void setLastDocumentOpened (const File& file) override;
-//    #if JUCE_MODAL_LOOPS_PERMITTED
-//     File getSuggestedSaveAsFile (const File& defaultFile)override;
-//    #endif
-    
+    String getDocumentTitle()override ;
+    Result loadDocument (const File& file)override;
+    Result saveDocument (const File& file)override;
+    File getLastDocumentOpened() override;
+    void setLastDocumentOpened (const File& file) override;
+    //    #if JUCE_MODAL_LOOPS_PERMITTED
+    //     File getSuggestedSaveAsFile (const File& defaultFile)override;
+    //    #endif
+
     // our Saving methods
     XmlElement* createXml()const;
 
@@ -103,14 +103,14 @@ public:
     void restoreFromXml(const XmlElement &);
     void createNodeFromXml (const XmlElement& xml);
 
-    
 
-    
+
+
 private:
     //==============================================================================
-    
+
     // Your private member variables go here...
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
 };
 

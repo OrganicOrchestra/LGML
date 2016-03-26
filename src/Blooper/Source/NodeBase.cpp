@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  NodeBase.cpp
  Created: 2 Mar 2016 8:36:17pm
  Author:  bkupe
- 
+
  ==============================================================================
  */
 
@@ -21,16 +21,16 @@ dataProcessor(_dataProcessor),
 ControllableContainer(name),
 nodeTypeEnum(-1)
 {
-    
+
     if (dataProcessor != nullptr)
     {
         dataProcessor->addDataProcessorListener(this);
         nodeManager->dataGraph.addNode(dataProcessor);
     }
-    
+
     checkInputsAndOutputs();
     addToAudioGraphIfNeeded();
-    
+
     //set Params
     nameParam = addStringParameter("Name", "Set the name of the node.", name);
     enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
@@ -53,7 +53,7 @@ void NodeBase::checkInputsAndOutputs()
 {
     hasDataInputs = dataProcessor != nullptr ? dataProcessor->getTotalNumInputData()>0:false;
     hasDataOutputs = dataProcessor != nullptr ? dataProcessor->getTotalNumOutputData()>0:false;
-    
+
     hasAudioInputs = audioProcessor != nullptr ? audioProcessor->getTotalNumInputChannels() > 0:false;
     hasAudioOutputs = audioProcessor != nullptr ? audioProcessor->getTotalNumOutputChannels() > 0:false;
 }
@@ -87,7 +87,7 @@ void NodeBase::ouputRemoved(DataProcessor::Data *)
 void NodeBase::parameterValueChanged(Parameter * p)
 {
     ControllableContainer::parameterValueChanged(p);
-    
+
     if (p == nameParam)
     {
         setNiceName(nameParam->value);
@@ -115,7 +115,7 @@ void NodeBase::NodeDataProcessor::receiveData(const Data * incomingData, const S
 
 void NodeBase::NodeDataProcessor::sendData(const Data * outgoingData, const String &sourceElementName)
 {
-    
+
 }
 
 
@@ -127,18 +127,18 @@ void NodeBase::NodeDataProcessor::sendData(const Data * outgoingData, const Stri
 void NodeBase::NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
                                                 MidiBuffer& midiMessages) {
     processBlockInternal(buffer, midiMessages);
-    
+
     if(listeners.size() ){
         updateRMS(buffer);
         curSamplesForRMSUpdate+= buffer.getNumSamples();
-        
+
         if(curSamplesForRMSUpdate>=samplesBeforeRMSUpdate){
             triggerAsyncUpdate();
             curSamplesForRMSUpdate = 0;
         }
     }
-    
-    
+
+
 };
 
 void NodeBase::NodeAudioProcessor::updateRMS(AudioBuffer<float>& buffer){
@@ -155,7 +155,7 @@ void NodeBase::NodeAudioProcessor::updateRMS(AudioBuffer<float>& buffer){
         float s = 0;
         for (int i = numChannels-1; i >0; --i)
             s += std::abs (buffer.getSample(i, j));
-        
+
         s /= numChannels;
         const double decayFactor = 0.99992;
         if (s > rmsValue)
@@ -167,5 +167,5 @@ void NodeBase::NodeAudioProcessor::updateRMS(AudioBuffer<float>& buffer){
     }
 #endif
     //            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;
-    
+
 }

@@ -21,9 +21,9 @@ public:
     VSTNodeUI(VSTNode * _owner);
     ~VSTNodeUI();
     OwnedArray<FloatSliderUI> paramSliders;
-    
+
     void init() override;
-    
+
     void updateVSTParameters();
 
     void controllableAdded(Controllable * c)override ;
@@ -31,25 +31,25 @@ public:
     void controllableContainerAdded(ControllableContainer * cc)override;
     void controllableContainerRemoved(ControllableContainer * cc) override;
     void controllableFeedbackUpdate(Controllable *c) override;
-    
-    
-    
+
+
+
     void changeListenerCallback(ChangeBroadcaster * c) override;
 
-    
+
     void resized()override;
-    
+
     void layoutSliderParameters(Rectangle<int> pArea);
-    
+
     TextButton VSTListShowButton;
     TextButton showPluginWindowButton;
     VSTNode * owner;
-    
-    
+
+
     static void vstSelected (int modalResult, Component *  originComp);
-    
+
     void buttonClicked (Button* button) override;
-    
+
 };
 
 

@@ -18,24 +18,24 @@
 class StringParameterUI : public ParameterUI, public Label::Listener
 {
 public:
-	StringParameterUI(Parameter * p);
+    StringParameterUI(Parameter * p);
 
-	StringParameter * stringParam;
-	Label nameLabel;
-	Label valueLabel;
+    StringParameter * stringParam;
+    Label nameLabel;
+    Label valueLabel;
 
-	bool nameLabelIsVisible;
-	void setNameLabelVisible(bool visible);
+    bool nameLabelIsVisible;
+    void setNameLabelVisible(bool visible);
 
-	void resized() override;
+    void resized() override;
 
 protected:
-	void parameterValueChanged(Parameter * p) override;
+    void parameterValueChanged(Parameter * p) override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameterUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameterUI)
 
-		// Inherited via Listener
-	virtual void labelTextChanged(Label * labelThatHasChanged) override;
+        // Inherited via Listener
+    virtual void labelTextChanged(Label * labelThatHasChanged) override;
 };
 
 

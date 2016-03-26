@@ -12,9 +12,9 @@
 
 //==============================================================================
 ParameterUI::ParameterUI(Parameter * parameter) :
-	parameter(parameter), ControllableUI(parameter)
+    parameter(parameter), ControllableUI(parameter)
 {
-	parameter->addParameterListener(this);
+    parameter->addParameterListener(this);
 
 }
 
@@ -24,5 +24,5 @@ ParameterUI::~ParameterUI()
 
 void ParameterUI::parameterValueChanged(Parameter * p)
 {
-	//to be overriden
+    //to be overriden
 }

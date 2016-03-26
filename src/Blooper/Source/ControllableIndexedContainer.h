@@ -20,14 +20,14 @@
 class ControllableIndexedContainer : public ControllableContainer
 {
 public :
-	ControllableIndexedContainer(const String &niceName) :
-		ControllableContainer(niceName)
-	{
-		
-	}
+    ControllableIndexedContainer(const String &niceName) :
+        ControllableContainer(niceName)
+    {
 
-	virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false) override;
-	//virtual Array<Controllable *> getAllControllables(bool recursive = false) override;
+    }
+
+    virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false) override;
+    //virtual Array<Controllable *> getAllControllables(bool recursive = false) override;
 
 };
 

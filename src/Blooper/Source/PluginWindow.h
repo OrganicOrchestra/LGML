@@ -29,24 +29,24 @@ public:
         Parameters,
         NumTypes
     };
-    
+
     PluginWindow (Component* pluginEditor, VSTNode*, WindowFormatType);
     ~PluginWindow();
-    
+
     static PluginWindow* getWindowFor (VSTNode*, WindowFormatType w=WindowFormatType::Normal );
-    
+
     static void closeCurrentlyOpenWindowsFor (VSTNode*);
     static void closeAllCurrentlyOpenWindows();
-    
+
     void moved() override;
     void closeButtonPressed() override;
-    
+
 private:
     VSTNode* owner;
     WindowFormatType type;
-    
+
     float getDesktopScaleFactor() const override     { return 1.0f; }
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginWindow)
 };
 

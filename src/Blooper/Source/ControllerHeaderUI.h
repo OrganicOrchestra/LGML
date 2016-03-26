@@ -21,21 +21,21 @@
 class ControllerHeaderUI : public ContourComponent
 {
 public:
-	ControllerHeaderUI();
-	virtual ~ControllerHeaderUI();
+    ControllerHeaderUI();
+    virtual ~ControllerHeaderUI();
 
-	Controller * controller;
-	ControllerUI * cui;
+    Controller * controller;
+    ControllerUI * cui;
 
-	ScopedPointer<StringParameterUI> titleUI;
-	ScopedPointer<BoolToggleUI> enabledUI;
+    ScopedPointer<StringParameterUI> titleUI;
+    ScopedPointer<BoolToggleUI> enabledUI;
 
-	void resized();
+    void resized();
 
-	void setControllerAndUI(Controller * controller, ControllerUI * cui);
-	virtual void init(); //override for proper init with controller and ui
+    void setControllerAndUI(Controller * controller, ControllerUI * cui);
+    virtual void init(); //override for proper init with controller and ui
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerHeaderUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerHeaderUI)
 };
 
 

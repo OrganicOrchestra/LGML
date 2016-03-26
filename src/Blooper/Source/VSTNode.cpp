@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  VSTNode.cpp
  Created: 2 Mar 2016 8:37:24pm
  Author:  bkupe
- 
+
  ==============================================================================
  */
 
@@ -37,7 +37,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc){
 void  VSTNode::createPluginWindow(){
     if (PluginWindow* const w = PluginWindow::getWindowFor (this))
         w->toFront (true);
-    
+
 }
 
 void VSTNode::closePluginWindow(){
@@ -53,7 +53,7 @@ void VSTNode::parameterValueChanged(Parameter * p) {
         }
         else{DBG("VST : no identifierStrind provided");}
     }
-    
+
     // a VSTParameter is changed
     else{
         if(blockFeedback)return;
@@ -61,20 +61,20 @@ void VSTNode::parameterValueChanged(Parameter * p) {
             if(VSTParameters.getUnchecked(i) == p){
                 VSTProcessor * vstProcessor = dynamic_cast<VSTProcessor*>(audioProcessor);
                 vstProcessor->innerPlugin->setParameter(i, VSTParameters.getUnchecked(i)->value);
-                
+
                 break;
             }
-            
+
         }
     }
 };
 void VSTNode::initParameterFromProcessor(AudioProcessor * p){
     p->addListener(this);
-    
+
     for(auto &c:VSTParameters){removeControllable(c);}
-    
+
     VSTParameters.clear();
-    
+
     for(int i = 0 ; i < p->getNumParameters() ; i++){
         VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
     }
@@ -92,14 +92,11 @@ void VSTNode::VSTProcessor::numChannelsChanged(){
 void VSTNode::audioProcessorParameterChanged (AudioProcessor* processor,
                                               int parameterIndex,
                                               float newValue) {
-    
+
     jassert(parameterIndex<VSTParameters.size());
     blockFeedback = true;
-    
+
     VSTParameters.getUnchecked(parameterIndex)->setValue(newValue);
-    
+
     blockFeedback = false;
 }
-
-
-

@@ -12,7 +12,7 @@
 #include "NodeBaseUI.h"
 
 NodeBaseUI * AudioOutNode::createUI() {
-	NodeBaseUI * ui = new NodeBaseUI(this);
+    NodeBaseUI * ui = new NodeBaseUI(this);
     return ui;
-    
+
 }

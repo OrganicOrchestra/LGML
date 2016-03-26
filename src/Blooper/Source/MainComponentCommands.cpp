@@ -31,56 +31,56 @@ namespace CommandIDs
 
 void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationCommandInfo& result)  {
     const String category ("General");
-    
+
     switch (commandID)
     {
         case CommandIDs::newFile:
             result.setInfo ("New", "Creates a new filter graph file", category, 0);
             result.defaultKeypresses.add(KeyPress('n', ModifierKeys::commandModifier, 0));
             break;
-            
+
         case CommandIDs::open:
             result.setInfo ("Open...", "Opens a filter graph file", category, 0);
             result.defaultKeypresses.add (KeyPress ('o', ModifierKeys::commandModifier, 0));
             break;
-            
+
         case CommandIDs::save:
             result.setInfo ("Save", "Saves the current graph to a file", category, 0);
             result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::commandModifier, 0));
             break;
-            
+
         case CommandIDs::saveAs:
             result.setInfo ("Save As...",
                             "Saves a copy of the current graph to a file",
                             category, 0);
             result.defaultKeypresses.add (KeyPress ('s', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
             break;
-            
+
         case CommandIDs::showPluginListEditor:
             result.setInfo ("Edit the list of available plug-Ins...", String::empty, category, 0);
             result.addDefaultKeypress ('p', ModifierKeys::commandModifier);
             break;
-            
+
         case CommandIDs::showAudioSettings:
             result.setInfo ("Change the audio device settings", String::empty, category, 0);
             result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
             break;
-            
+
         case CommandIDs::toggleDoublePrecision:
             result.setInfo ("toggles doublePrecision", String::empty, category, 0);
-            
+
             //                updatePrecisionMenuItem (result);
             break;
-            
+
         case CommandIDs::aboutBox:
             result.setInfo ("About...", String::empty, category, 0);
             break;
-            
+
         case CommandIDs::allWindowsForward:
             result.setInfo ("All Windows Forward", "Bring all plug-in windows forward", category, 0);
             result.addDefaultKeypress ('w', ModifierKeys::commandModifier);
             break;
-            
+
         default:
             break;
     }
@@ -100,7 +100,7 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
         CommandIDs::aboutBox,
         CommandIDs::allWindowsForward
     };
-    
+
     commands.addArray (ids, numElementsInArray (ids));
 }
 
@@ -108,21 +108,21 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
 PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
                                    const String& menuName) {
     PopupMenu menu;
-    
+
     if (topLevelMenuIndex == 0)
     {
         // "File" menu
         menu.addCommandItem (&getCommandManager(), CommandIDs::newFile);
         menu.addCommandItem (&getCommandManager(), CommandIDs::open);
-        
+
         RecentlyOpenedFilesList recentFiles;
         recentFiles.restoreFromString (getAppProperties().getUserSettings()
                                        ->getValue ("recentFilterGraphFiles"));
-        
+
         PopupMenu recentFilesMenu;
         recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
         menu.addSubMenu ("Open recent file", recentFilesMenu);
-        
+
         menu.addCommandItem (&getCommandManager(), CommandIDs::save);
         menu.addCommandItem (&getCommandManager(), CommandIDs::saveAs);
         menu.addSeparator();
@@ -140,11 +140,11 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
     else if (topLevelMenuIndex == 2)
     {
         // "Options" menu
-        
+
         menu.addCommandItem (&getCommandManager(), CommandIDs::showPluginListEditor);
         menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
         menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
-        
+
         menu.addSeparator();
         menu.addCommandItem (&getCommandManager(), CommandIDs::aboutBox);
     }
@@ -152,60 +152,60 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
     {
         menu.addCommandItem (&getCommandManager(), CommandIDs::allWindowsForward);
     }
-    
+
     return menu;
 }
 
 bool MainContentComponent::perform(const InvocationInfo& info) {
-    
+
     switch (info.commandID)
     {
-            
+
             // TODOs
         case CommandIDs::newFile:
             createNewGraph();
             break;
-            
+
         case CommandIDs::open:
             loadFromUserSpecifiedFile (true);
             break;
-            
+
         case CommandIDs::save:
             save (true, true);
             break;
-            
+
         case CommandIDs::saveAs:
             saveAs (File::nonexistent, true, true, true);
             break;
-            
+
         case CommandIDs::toggleDoublePrecision:
             DBG("double precision not supported yet...");
             break;
-            
-            
+
+
         case CommandIDs::showPluginListEditor:
             VSTManager::getInstance()->createPluginListWindowIfNeeded();
             break;
-            
+
         case CommandIDs::showAudioSettings:
             showAudioSettings();
             break;
-            
-            
+
+
         case CommandIDs::allWindowsForward:
         {
             Desktop& desktop = Desktop::getInstance();
-            
+
             for (int i = 0; i < desktop.getNumComponents(); ++i)
                 desktop.getComponent (i)->toBehind (this);
-                
+
                 break;
         }
-            
+
         default:
             return false;
     }
-    
+
     return true;
 }
 
