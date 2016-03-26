@@ -20,6 +20,9 @@ NodeBaseHeaderUI::NodeBaseHeaderUI()
 
 NodeBaseHeaderUI::~NodeBaseHeaderUI()
 {
+    if (node != nullptr && node->hasAudioOutputs) {
+        node->audioProcessor->removeRMSListener(&vuMeter);
+    }
     
 }
 

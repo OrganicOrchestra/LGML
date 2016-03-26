@@ -112,7 +112,7 @@ void NodeConnectionUI::resized()
 
 void NodeConnectionUI::updateBoundsFromNodes()
 {
-	DBG("Update bounds from Nodes, is Editing ? " + String(isEditing()));
+//	DBG("Update bounds from Nodes, is Editing ? " + String(isEditing()));
 	if (!isEditing())
 	{
 		Component * nmui = getNodeManagerUI();
@@ -125,7 +125,7 @@ void NodeConnectionUI::updateBoundsFromNodes()
 		int th = abs(cPos.y - mPos.y);
 		int margin = 50;
 
-		DBG(cPos.toString() + " // " + mPos.toString());
+//		DBG(cPos.toString() + " // " + mPos.toString());
 
 		setBounds(minX - margin, minY - margin, tw + margin * 2, th + margin * 2);
 

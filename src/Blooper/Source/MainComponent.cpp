@@ -43,9 +43,13 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
     // resize after contentCreated
 
     setSize(1200, 600);
-    
+
     (&getCommandManager())->registerAllCommandsForTarget (this);
-    
+    (&getCommandManager())-> setFirstCommandTarget(this);
+
+    (&getCommandManager())->getKeyMappings()->resetToDefaultMappings();    
+//    (&getCommandManager())->getKeyMappings()->restoreFromXml (lastSavedKeyMappingsXML);
+    addKeyListener ((&getCommandManager())->getKeyMappings());
 #if JUCE_MAC
     setMacMainMenu (this);
 #else
@@ -53,6 +57,8 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
 #endif
     
     createNewGraph();
+    
+
 }
 
 
@@ -85,9 +91,11 @@ void MainContentComponent::resized()
 void MainContentComponent::createNewGraph(){
     clear();
     NodeBase * node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioIn);
-    nodeManagerUI->getUIForNode(node)->setTopLeftPosition(0, 0);
+    node->xPosition->setValue(80);
+    node->yPosition->setValue(50);
     node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioOut);
-    nodeManagerUI->getUIForNode(node)->setTopRightPosition(600, 600);
+    node->xPosition->setValue(450);
+    node->yPosition->setValue(50);
 }
 
 

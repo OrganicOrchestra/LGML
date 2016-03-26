@@ -12,6 +12,10 @@
 
 #include "NodeFactory.h"
 
+
+
+// TODO Fuck XML Lets JSON that !!
+
 String MainContentComponent::getDocumentTitle() {
     if (! getFile().exists())
         return "Unnamed";
@@ -24,7 +28,7 @@ Result MainContentComponent::loadDocument (const File& file){
     XmlDocument doc (file);
     ScopedPointer<XmlElement> xml (doc.getDocumentElement());
     
-    if (xml == nullptr || ! xml->hasTagName ("NODEGRAPH"))
+    if (xml == nullptr || ! xml->hasTagName ("LGMLPROJECT"))
         return Result::fail ("Not a valid filter graph file");
     
     restoreFromXml (*xml);
@@ -71,15 +75,13 @@ void MainContentComponent::setLastDocumentOpened (const File& file) {
 // saving
 
 
-
-
-
 //==============================================================================
 static XmlElement* createNodeXml (NodeBase* const node) noexcept
 {
     
     XmlElement* e = new XmlElement ("NODE");
     e->setAttribute("NodeType", NodeFactory::nodeToString(node));
+    e->setAttribute("NodeId", String(node->nodeId));
     
     XmlElement* p = new XmlElement("PARAMETERS");
     Array<Controllable*> cont =node->ControllableContainer::getAllControllables();
@@ -117,6 +119,13 @@ static XmlElement* createNodeXml (NodeBase* const node) noexcept
 
 XmlElement* MainContentComponent::createXml() const
 {
+    XmlElement* projXml = new XmlElement("LGMLPROJECT");
+    XmlElement* meta = new XmlElement("META");
+    meta->setAttribute("LGMLVersion",ProjectInfo::versionString);
+    
+    projXml->addChildElement(meta);
+    
+    
     XmlElement* xml = new XmlElement ("NODEGRAPH");
     
     for (int i = 0; i < NodeManager::getInstance()->getNumNodes(); ++i){
@@ -138,23 +147,28 @@ XmlElement* MainContentComponent::createXml() const
         xml->addChildElement (e);
     }
     
-    return xml;
+    projXml->addChildElement(xml);
+    return projXml;
 }
 
 /// ===================
 // loading
 
-void MainContentComponent::restoreFromXml (const XmlElement& xml)
+void MainContentComponent::restoreFromXml (const XmlElement& proj)
 {
     clear();
+//    TODO check version Compat
+//    XmlElement *meta = proj.getChildByName("META");
     
-    forEachXmlChildElementWithTagName (xml, e, "NODE")
+    XmlElement * xml = proj.getChildByName("NODEGRAPH");
+    
+    forEachXmlChildElementWithTagName (*xml, e, "NODE")
     {
         createNodeFromXml (*e);
         changed();
     }
     
-    forEachXmlChildElementWithTagName (xml, e, "CONNECTION")
+    forEachXmlChildElementWithTagName (*xml, e, "CONNECTION")
     {
         NodeManager * nm = NodeManager::getInstance();
         NodeBase * srcNode = nm->getNodeForId(e->getIntAttribute ("srcNodeId"));
@@ -179,8 +193,9 @@ void MainContentComponent::restoreFromXml (const XmlElement& xml)
 
 void MainContentComponent::createNodeFromXml (const XmlElement& xml)
 {
-    
-    NodeBase* node =  NodeManager::getInstance()->addNode(NodeFactory::getTypeFromString(xml.getStringAttribute("NodeType")));
+    NodeFactory::NodeType nodeType = NodeFactory::getTypeFromString(xml.getStringAttribute("NodeType"));
+    int nodeId = xml.getIntAttribute("nodeId");
+    NodeBase* node =  NodeManager::getInstance()->addNode(nodeType,nodeId);
     
     XmlElement * paramXml= xml.getChildByName("PARAMETERS");
     

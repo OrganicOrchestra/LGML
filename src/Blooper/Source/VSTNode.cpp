@@ -29,15 +29,27 @@ void VSTNode::closePluginWindow(){
 }
 
 void VSTNode::parameterValueChanged(Parameter * p) {
-    if(blockFeedback)return;
-    for(int i = VSTParameters.size() -1; i>=0;--i){
-        if(VSTParameters.getUnchecked(i) == p){
-            VSTProcessor * vstProcessor = dynamic_cast<VSTProcessor*>(audioProcessor);
-            vstProcessor->innerPlugin->setParameter(i, VSTParameters.getUnchecked(i)->value);
-            
-            break;
+    if(p==identifierString){
+        if(identifierString->value!=""){
+            PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
+            if(pd){generatePluginFromDescription(pd);}
+            else{DBG("VST : cant find plugin for identifier : "+identifierString->value);}
         }
-        
+        else{DBG("VST : no identifierStrind provided");}
+    }
+    
+    // a VSTParameter is changed
+    else{
+        if(blockFeedback)return;
+        for(int i = VSTParameters.size() -1; i>=0;--i){
+            if(VSTParameters.getUnchecked(i) == p){
+                VSTProcessor * vstProcessor = dynamic_cast<VSTProcessor*>(audioProcessor);
+                vstProcessor->innerPlugin->setParameter(i, VSTParameters.getUnchecked(i)->value);
+                
+                break;
+            }
+            
+        }
     }
 };
 void VSTNode::initParameterFromProcessor(AudioProcessor * p){

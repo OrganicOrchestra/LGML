@@ -157,7 +157,6 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
 }
 
 bool MainContentComponent::perform(const InvocationInfo& info) {
-    //        GraphDocumentComponent* const graphEditor = getGraphEditor();
     
     switch (info.commandID)
     {
@@ -172,9 +171,6 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
             break;
             
         case CommandIDs::save:
-            // hack to force saving not allowed if nothing has changed
-            // TODO implement change on every action .. !! 
-            changed();
             save (true, true);
             break;
             
@@ -216,6 +212,5 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
 StringArray MainContentComponent::getMenuBarNames() {
     const char* const names[] = { "File", "Plugins", "Options", "Windows", nullptr };
-    
     return StringArray (names);
 }

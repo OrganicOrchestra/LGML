@@ -39,13 +39,16 @@ node(node)
     addAndMakeVisible(mainContainer);
     addAndMakeVisible(inputContainer);
     addAndMakeVisible(outputContainer);
-    getHeaderContainer()->addMouseListener(this, false);// (true, true);
+    getHeaderContainer()->addMouseListener(this, true);// (true, true);
     
     mainContainer.setNodeAndNodeUI(node, this);
     if(getWidth() == 0 || getHeight() == 0) setSize(150, 50);
     
     node->xPosition->addParameterListener(this);
     node->yPosition->addParameterListener(this);
+    
+    
+    
 }
 
 NodeBaseUI::~NodeBaseUI()
@@ -120,7 +123,6 @@ void NodeBaseUI::mouseDrag(const MouseEvent & e)
 {
     Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
     Point <int> newPos = nodeInitPos + diff;
-//    setTopLeftPosition(newPos);
     node->xPosition->setValue(newPos.x);
     node->yPosition->setValue(newPos.y);
 }
@@ -130,6 +132,7 @@ void NodeBaseUI::mouseDrag(const MouseEvent & e)
 // ======= CONNECTOR CONTAINER AND CONNECTOR COMPONENT ===================
 NodeBaseUI::ConnectorContainer::ConnectorContainer(ConnectorComponent::ConnectorIOType type) :ContourComponent(), type(type), displayLevel(ConnectorComponent::MINIMAL)
 {
+    setInterceptsMouseClicks(false, true);
 }
 
 void NodeBaseUI::ConnectorContainer::setConnectorsFromNode(NodeBase * node)
