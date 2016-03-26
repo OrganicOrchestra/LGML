@@ -18,6 +18,22 @@
 NodeBaseUI * VSTNode::createUI(){return new NodeBaseUI(this,new VSTNodeUI(this));}
 
 
+VSTNode::VSTNode(NodeManager * nodeManager,uint32 nodeId) :
+NodeBase(nodeManager,nodeId,"VST",new VSTProcessor(this)),blockFeedback(false){
+    identifierString = addStringParameter("VST Identifier","string that identify a VST","");
+    addChildControllableContainer(&pluginWindowParameter);
+}
+
+
+VSTNode::~VSTNode(){
+    PluginWindow::closeCurrentlyOpenWindowsFor (this);
+}
+
+
+void VSTNode::generatePluginFromDescription(PluginDescription * desc){
+    VSTProcessor * vstProcessor = dynamic_cast<VSTProcessor*>(audioProcessor);
+    vstProcessor->generatePluginFromDescription(desc);
+}
 void  VSTNode::createPluginWindow(){
     if (PluginWindow* const w = PluginWindow::getWindowFor (this))
         w->toFront (true);

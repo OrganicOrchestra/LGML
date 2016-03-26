@@ -31,14 +31,6 @@ void TimeManagerUI::resized(){
 
 
 
-
-
-
-
-
-
-
-
 TimeManagerUI::TimeBar::TimeBar(){
     TimeManager::getInstance()->addTimeManagerListener(this);
     initComponentsForNumBeats(TimeManager::getInstance()->beatPerBar);
@@ -139,7 +131,7 @@ void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g){
     static int beatBarWidth  =2;
     g.setColour(Colours::grey);
     g.fillRect(area.removeFromLeft(beatBarWidth));
-    g.fillRect(area.removeFromRight(beatBarWidth));
+//    g.fillRect(area.removeFromRight(beatBarWidth));
     
     
     if(percentDone >= 1){

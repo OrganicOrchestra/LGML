@@ -12,6 +12,10 @@
 
 #include "NodeFactory.h"
 
+/*================================
+ this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
+ */
+
 
 
 // TODO Fuck XML Lets JSON that !!
@@ -111,8 +115,10 @@ static XmlElement* createNodeXml (NodeBase* const node) noexcept
         
         // TODO we could implement that for all node objects to be able to save any kind of custom data
         node->audioProcessor->getStateInformation (m);
-        state->addTextElement (m.toBase64Encoding());
-        e->addChildElement (state);
+        if(m.getSize()){
+            state->addTextElement (m.toBase64Encoding());
+            e->addChildElement (state);
+        }
     }
     return e;
 }
@@ -157,8 +163,8 @@ XmlElement* MainContentComponent::createXml() const
 void MainContentComponent::restoreFromXml (const XmlElement& proj)
 {
     clear();
-//    TODO check version Compat
-//    XmlElement *meta = proj.getChildByName("META");
+    //    TODO check version Compat
+    //    XmlElement *meta = proj.getChildByName("META");
     
     XmlElement * xml = proj.getChildByName("NODEGRAPH");
     
@@ -203,7 +209,7 @@ void MainContentComponent::createNodeFromXml (const XmlElement& xml)
         
         String curParamName = paramXml->getAttributeName(i);
         
-        if(Controllable * c = node->getControllableByName(curParamName)){    
+        if(Controllable * c = node->getControllableByName(curParamName)){
             if(Parameter * p = dynamic_cast<Parameter*>(c)){
                 p->fromString(paramXml->getAttributeValue(i));
             }
