@@ -2,15 +2,14 @@
 import os;
 import json;
 
-proJucerPath = "~/Dev/JUCE/ProJucer.app/Contents/MacOS/ProJucer"
-JuceProjectPath = "../Blooper.jucer"
-
-
-xcodeProjPath = "../Builds/MacOSX/" 
-configuration  = "Debug"
-
+configuration  = "Release"
 exportPath = "/Users/Tintamar/Google_Drive/LGML/Builds/OSX/"
 
+
+
+proJucerPath = "~/Dev/JUCE/ProJucer.app/Contents/MacOS/ProJucer"
+JuceProjectPath = "../Blooper.jucer"
+xcodeProjPath = "../Builds/MacOSX/" 
 executable_name = "Blooper"
 appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
@@ -70,9 +69,9 @@ def copyDmg(exportFileBaseName,appPath):
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
 cleanCode("../Source");
-# buildJUCE(JuceProjectPath);
-# buildApp(xcodeProjPath,configuration);
-# copyDmg(exportPath+configuration+"/"+executable_name,appPath);
+buildJUCE(JuceProjectPath);
+buildApp(xcodeProjPath,configuration);
+copyDmg(exportPath+configuration+"/"+executable_name,appPath);
 
 
 
