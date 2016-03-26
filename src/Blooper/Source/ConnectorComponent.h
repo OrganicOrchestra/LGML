@@ -46,12 +46,15 @@ public:
 
 	//style
 	Colour boxColor;
+    bool isHovered;
 
 	ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
 
 	void paint(Graphics &g)override;
 
 	void mouseDown(const MouseEvent &e) override;
+    void mouseEnter (const MouseEvent&)override;
+    void mouseExit  (const MouseEvent&)override;
 	//void mouseDrag(const MouseEvent &e) override;
 	//void mouseUp(const MouseEvent &e) override;
 

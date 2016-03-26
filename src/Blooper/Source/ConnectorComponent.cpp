@@ -2,7 +2,7 @@
 #include "ConnectorComponent.h"
 
 ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node) :
-	ioType(ioType), dataType(dataType), node(node)
+	ioType(ioType), dataType(dataType), node(node),isHovered(false)
 {
 	boxColor = dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
 	setSize(10,10);
@@ -27,7 +27,7 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::C
 
 void ConnectorComponent::paint(Graphics & g)
 {
-	g.setGradientFill(ColourGradient(boxColor, getLocalBounds().getCentreY(),getLocalBounds().getCentreY(), boxColor.darker(), 0,0, true));
+    g.setGradientFill(ColourGradient(isHovered?boxColor.brighter(5.f):boxColor, getLocalBounds().getCentreY(),getLocalBounds().getCentreY(), boxColor.darker(), 0,0, true));
 	//g.setFillType(FillType::gradient);
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 }
@@ -58,7 +58,14 @@ void ConnectorComponent::mouseDown(const MouseEvent & e)
 	}
 }
 
-
+void ConnectorComponent::mouseEnter (const MouseEvent&){
+    isHovered = true;
+    repaint();
+}
+void ConnectorComponent::mouseExit  (const MouseEvent&){
+    isHovered = false;
+    repaint();
+}
 //void ConnectorComponent::mouseDrag(const MouseEvent & e)
 //{
 //	getNodeManagerUI()->updateEditingConnection();
