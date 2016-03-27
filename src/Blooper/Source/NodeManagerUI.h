@@ -21,7 +21,7 @@ class NodeConnectionUI;
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public Component, public NodeManager::Listener
+class NodeManagerUI : public Component, public NodeManager::Listener,public SelectableComponent::Listener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
@@ -89,7 +89,50 @@ public:
     void resizeToFitNodes();
     static void createNodeFromIndexAtPos(int modalResult,Viewport * c,int  maxResult);
     Rectangle<int> minBounds;
+
+
+    //
+    class  SelectedNodesListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~SelectedNodesListener() {}
+        virtual void selectedNodeEvent(NodeBaseUI*  selectedNodes,bool isSelected) = 0;
+    };
+
+    void addSelectedNodesListener(SelectedNodesListener* newListener) { selectedNodeListeners.add(newListener); }
+    void removeSelectedNodesListener(SelectedNodesListener* listener) { selectedNodeListeners.remove(listener); }
+    ListenerList<SelectedNodesListener> selectedNodeListeners;
+
+
+
 private:
+    bool isSelectingNodes;
+    class SelectingRect :public Component{
+    public:
+        void paint(Graphics & g) override{
+            g.setColour(Colours::whitesmoke.withAlpha(.1f));
+            g.fillRect(getLocalBounds());
+        }
+    };
+    SelectingRect selectingBounds;
+    void checkSelected();
+    Array<NodeBaseUI*> selectedNodes;
+
+    //recieve info if node ask for selection or if its triggered by multiselection
+    void selectableSelected(SelectableComponent * c,bool state)override {
+        NodeBaseUI* n = dynamic_cast<NodeBaseUI*>(c);
+        if(n){
+            selectedNodeListeners.call(&SelectedNodesListener::selectedNodeEvent,n, state);
+        }
+        else{
+            jassertfalse;
+        }
+
+    }
+
+
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 
@@ -102,8 +145,17 @@ public:
         //    setSize(500,500);
         setViewedComponent(nmui,false);
     }
-    void visibleAreaChanged (const Rectangle<int>& newVisibleArea)override;
-    void resized() override;
+    void visibleAreaChanged (const Rectangle<int>& newVisibleArea)override{
+        Point <int> mouse = getMouseXYRelative();
+        autoScroll(mouse.x, mouse.y, 100, 10);
+
+    }
+    void resized() override{
+        if(getLocalBounds().contains(nmui->getLocalBounds())){
+            nmui->minBounds = getLocalBounds();
+        }
+    }
+
     NodeManagerUI * nmui;
 };
 

@@ -15,6 +15,7 @@
 #include "StringUtil.h"
 
 class ControllableContainer;
+class ControllableUI;
 
 class Controllable
 {
@@ -86,6 +87,9 @@ public:
     }
 
     String getControlAddress();
+
+    // used for generating editor
+    virtual ControllableUI * createDefaultControllableEditor() = 0;
 
 public:
     class  Listener

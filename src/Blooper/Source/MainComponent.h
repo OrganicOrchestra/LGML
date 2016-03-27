@@ -20,6 +20,8 @@
 #include "UIHelpers.h"
 #include "TimeManagerUI.h"
 
+#include "ControllableInspector.h"
+
 
 //==============================================================================
 /*
@@ -47,7 +49,7 @@ public:
     ScopedPointer<TimeManagerUI> timeManagerUI;
     ScopedPointer<ControllerManager> controllerManager;
     ScopedPointer<ControllerManagerViewport> controllerManagerViewport;
-
+    ScopedPointer<ControllableInspector> controllableInspector;
 
     // Audio
 

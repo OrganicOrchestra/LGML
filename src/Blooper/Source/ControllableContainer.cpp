@@ -10,6 +10,8 @@
 
 #include "ControllableContainer.h"
 
+#include "ControllableContainerEditor.h"
+
 ControllableContainer::ControllableContainer(const String & niceName) :
     niceName(niceName),
     parentContainer(nullptr),
@@ -90,13 +92,13 @@ Trigger * ControllableContainer::addTrigger(const String & niceName, const Strin
     t->setParentContainer(this);
     t->addTriggerListener(this);
 
-    listeners.call(&ControllableContainer::Listener::controllableAdded, t);
+    controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, t);
     return t;
 }
 
 void ControllableContainer::removeControllable(Controllable * c)
 {
-    listeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+    controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
     controllables.removeObject(c);
 }
 
@@ -113,14 +115,14 @@ Controllable * ControllableContainer::getControllableByName(const String & name)
 void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
 {
     controllableContainers.add(container);
-    listeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
+    controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
     container->setParentContainer(this);
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
     container->setParentContainer(nullptr);
-    listeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
+    controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
     controllableContainers.removeAllInstancesOf(container);
 }
 
@@ -225,8 +227,10 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 
 void ControllableContainer::dispatchFeedback(Controllable * c)
 {
+//    @ben removed else here to enable containerlistener call back of non root (proxies)
     if (parentContainer != nullptr) parentContainer->dispatchFeedback(c);
-    else listeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
+    controllableContainerListeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
+
 }
 
 
@@ -249,5 +253,32 @@ void ControllableContainer::addParameterInternal(Parameter * p)
     p->setParentContainer(this);
     controllables.add(p);
     p->addParameterListener(this);
-    listeners.call(&ControllableContainer::Listener::controllableAdded, p);
+    controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
+}
+
+
+ControllableContainerEditor * ControllableContainer::createControllableContainerEditor(){
+    ControllableContainerEditor * editor = new ControllableContainerEditor(this);
+    Rectangle<int> bounds;
+    int curY = 0;
+    for(auto & c:controllables){
+        ControllableUI * cUI = c->createDefaultControllableEditor();
+        cUI->setTopLeftPosition(0, curY);
+        curY+=cUI->getHeight();
+        editor->addControlUI(cUI);
+        bounds = bounds.getUnion(cUI->getBounds());
+    }
+
+
+    for(auto &c:controllableContainers){
+        ControllableContainerEditor * cE=c->createControllableContainerEditor();
+        cE->setTopLeftPosition(0, curY);
+        curY+=cE->getHeight();
+        editor->addAndMakeVisible(cE);
+        bounds = bounds.getUnion(cE->getBounds());
+    }
+
+    editor->setBounds(bounds);
+    return editor;
+
 }

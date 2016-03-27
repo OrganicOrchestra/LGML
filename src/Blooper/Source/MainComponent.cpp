@@ -40,6 +40,9 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
     addAndMakeVisible(controllerManagerViewport);
 
 
+    controllableInspector = new ControllableInspector(nodeManagerUI);
+    addAndMakeVisible(controllableInspector);
+
     // resize after contentCreated
 
     setSize(1200, 600);
@@ -83,6 +86,7 @@ void MainContentComponent::resized()
     Rectangle<int> r = getLocalBounds();
     timeManagerUI->setBounds(r.removeFromTop(20));
     controllerManagerViewport->setBounds(r.removeFromLeft(300));
+    controllableInspector->setBounds(r.removeFromRight(300));
     nodeManagerUIViewport->setBounds(r);
 }
 

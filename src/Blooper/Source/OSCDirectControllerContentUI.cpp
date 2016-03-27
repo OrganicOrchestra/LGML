@@ -21,9 +21,9 @@ void OSCDirectControllerContentUI::init()
     DBG("init direct controller");
     oscd = (OSCDirectController *)controller;
 
-    localPortUI = oscd->localPortParam->getUI();
-    remoteHostUI = oscd->remoteHostParam->getUI();
-    remotePortUI = oscd->remotePortParam->getUI();
+    localPortUI = oscd->localPortParam->createStringParameterUI();
+    remoteHostUI = oscd->remoteHostParam->createStringParameterUI();
+    remotePortUI = oscd->remotePortParam->createStringParameterUI();
 
     addAndMakeVisible(localPortUI);
     addAndMakeVisible(remoteHostUI);

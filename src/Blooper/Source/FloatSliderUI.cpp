@@ -20,6 +20,7 @@ FloatSliderUI::FloatSliderUI(Parameter * parameter) :
     displayText = true;
     displayBar = true;
     orientation = HORIZONTAL;
+    setSize(100,10);
 }
 
 FloatSliderUI::~FloatSliderUI()

@@ -17,7 +17,7 @@ class IntStepperUI : public ParameterUI
 {
 public:
     IntStepperUI(Parameter * parameter);
-    ~IntStepperUI();
+    virtual ~IntStepperUI();
 
 protected:
     void parameterValueChanged(Parameter *) override  { repaint(); } ;

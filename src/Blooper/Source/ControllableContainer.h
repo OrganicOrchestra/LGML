@@ -19,6 +19,9 @@
 #include "StringParameter.h"
 #include "Trigger.h"
 
+
+class ControllableContainerEditor;
+
 class ControllableContainer : public Parameter::Listener, public Trigger::Listener
 {
 public:
@@ -81,6 +84,9 @@ public:
     // Inherited via Trigger::Listener
     virtual void triggerTriggered(Trigger * p) override;
 
+    // can be overriden if custom editor wanted
+    virtual ControllableContainerEditor * createControllableContainerEditor();
+
 
 
 private:
@@ -100,9 +106,9 @@ public:
         virtual void controllableFeedbackUpdate(Controllable *c) = 0;
     };
 
-    ListenerList<Listener> listeners;
-    void addControllableContainerListener(Listener* newListener) { listeners.add(newListener); }
-    void removeControllableContainerListener(Listener* listener) { listeners.remove(listener); }
+    ListenerList<Listener> controllableContainerListeners;
+    void addControllableContainerListener(Listener* newListener) { controllableContainerListeners.add(newListener);}
+    void removeControllableContainerListener(Listener* listener) { controllableContainerListeners.remove(listener);}
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableContainer)
 

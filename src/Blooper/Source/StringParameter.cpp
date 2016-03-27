@@ -19,7 +19,12 @@ StringParameter::StringParameter(const String & niceName, const String &descript
 
 }
 
-StringParameterUI * StringParameter::getUI()
+StringParameterUI * StringParameter::createStringParameterUI()
 {
     return new StringParameterUI(this);
 }
+
+
+ControllableUI* StringParameter::createDefaultControllableEditor(){
+    return createStringParameterUI();
+};

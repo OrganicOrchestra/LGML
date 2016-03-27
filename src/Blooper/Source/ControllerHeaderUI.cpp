@@ -37,7 +37,7 @@ void ControllerHeaderUI::setControllerAndUI(Controller * controller, ControllerU
 void ControllerHeaderUI::init()
 {
     //to override
-    titleUI = controller->nameParam->getUI();
+    titleUI = controller->nameParam->createStringParameterUI();
     titleUI->setNameLabelVisible(false);
     addAndMakeVisible(titleUI);
 

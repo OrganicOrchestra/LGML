@@ -20,6 +20,7 @@ ControllableUI::ControllableUI(Controllable * controllable) :
 
 ControllableUI::~ControllableUI()
 {
+    controllable->removeControllableListener(this);
 }
 
 void ControllableUI::controllableStateChanged(Controllable * c)

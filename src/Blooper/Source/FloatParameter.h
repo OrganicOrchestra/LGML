@@ -45,6 +45,7 @@ public:
     }
 
     FloatSliderUI * createSlider();
+    ControllableUI * createDefaultControllableEditor() override;
 
     String toString() override{return String(value);}
     void fromString(const String & s,bool silentSet = false, bool force = false) override{setValue(s.getFloatValue(),silentSet,force);};

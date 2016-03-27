@@ -18,7 +18,7 @@ class IntSliderUI : public FloatSliderUI
 {
 public:
     IntSliderUI(Parameter * parameter);
-    ~IntSliderUI();
+    virtual ~IntSliderUI();
 
     IntParameter * intParam;
 

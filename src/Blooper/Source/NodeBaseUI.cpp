@@ -75,6 +75,12 @@ void NodeBaseUI::paint (Graphics& g)
 {
 
 }
+void NodeBaseUI::paintOverChildren(Graphics& g){
+    if(isSelected){
+        g.setColour(Colours::yellow);
+        g.drawRect(getLocalBounds());
+    }
+}
 
 void NodeBaseUI::resized()
 {
@@ -212,6 +218,7 @@ void NodeBaseUI::MainContainer::paint(Graphics & g)
     g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
 
 }
+
 
 void NodeBaseUI::MainContainer::resized()
 {

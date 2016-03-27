@@ -21,3 +21,6 @@ IntSliderUI * IntParameter::createSlider()
 {
     return new IntSliderUI(this);
 }
+
+
+ControllableUI * IntParameter::createDefaultControllableEditor(){return createSlider();};

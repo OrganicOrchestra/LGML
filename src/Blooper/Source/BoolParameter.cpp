@@ -21,3 +21,6 @@ BoolToggleUI * BoolParameter::createToggle()
 {
     return new BoolToggleUI(this);
 }
+
+
+ControllableUI * BoolParameter::createDefaultControllableEditor() {return createToggle();}

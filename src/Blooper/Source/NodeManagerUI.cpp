@@ -14,10 +14,12 @@
 //==============================================================================
 NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
 nodeManager(nodeManager),
-editingConnection(nullptr)
+editingConnection(nullptr),
+isSelectingNodes(false)
 {
     nodeManager->addNodeManagerListener(this);
     setInterceptsMouseClicks(true, true);
+    addAndMakeVisible(selectingBounds);
 
 }
 
@@ -55,6 +57,7 @@ void NodeManagerUI::paint (Graphics& g)
 
     g.fillAll (BG_COLOR);   // clear the background
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
+
 }
 
 void NodeManagerUI::resized()
@@ -100,7 +103,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
         NodeBaseUI * nui = node->createUI();
         nodesUI.add(nui);
         addAndMakeVisible(nui);
-        
+        nui->addSelectableListener(this);
     }
     else
     {
@@ -407,7 +410,14 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
         {
             if (event.mods.isCtrlDown())
             {
-                nodeManager->addNode(NodeFactory::NodeType::Dummy);
+                NodeBase * n = nodeManager->addNode(NodeFactory::NodeType::Dummy);
+                n->xPosition->setValue( getMouseXYRelative().x);
+                n->yPosition->setValue( getMouseXYRelative().y);
+            }
+            else{
+                Point<int> mouse = getMouseXYRelative();
+                selectingBounds.setTopLeftPosition(mouse.x,mouse.y);
+
             }
         }
     }
@@ -432,6 +442,22 @@ void NodeManagerUI::mouseDrag(const MouseEvent & event)
             updateEditingConnection();
         }
     }
+    else{
+
+        if(isSelectingNodes){
+            selectingBounds.setSize(std::abs(event.getDistanceFromDragStartX()),std::abs(event.getDistanceFromDragStartY()));
+            selectingBounds.setTopLeftPosition(jmin(event.getMouseDownX(),getMouseXYRelative().x),
+                                               jmin(event.getMouseDownY(),getMouseXYRelative().y));
+            selectingBounds.toFront(false);
+            checkSelected();
+            repaint();
+        }
+        else{
+
+            isSelectingNodes = true;
+            selectingBounds.setVisible(true);
+        }
+    }
 }
 
 void NodeManagerUI::mouseUp(const MouseEvent & event)
@@ -441,8 +467,45 @@ void NodeManagerUI::mouseUp(const MouseEvent & event)
         finishEditingConnection();
     }
 
+    isSelectingNodes = false;
+    selectingBounds.setVisible(false);
+    selectingBounds.setSize(0, 0);
 }
 
+
+void NodeManagerUI::checkSelected(){
+    // multiple ones
+    if(isSelectingNodes){
+        Array<NodeBaseUI*> currentOnes;
+        for(auto &n:nodesUI){
+            if(selectingBounds.getBounds().intersects(n->getBounds())){
+                currentOnes.add(n);
+            }
+        }
+        for(auto &n:currentOnes){
+            if(!selectedNodes.contains(n)){
+                n->internalSetSelected(true);
+            }
+        }
+        for(auto &n:selectedNodes){
+            if(!currentOnes.contains(n)){
+                n->internalSetSelected(false);
+            }
+        }
+
+        selectedNodes.swapWith(currentOnes);
+
+    }
+    // only one
+    else{
+        jassert(selectedNodes.size()==0);
+        Point<int> mouse = getMouseXYRelative();
+        NodeBaseUI * n = dynamic_cast<NodeBaseUI*>(getComponentAt(mouse.x, mouse.y));
+        if(n){
+            selectedNodes.add(n);
+        }
+    }
+}
 
 void NodeManagerUI::setAllNodesToStartAtZero(){
     if(nodesUI.size()==0)return;
@@ -464,16 +527,6 @@ void NodeManagerUI::childBoundsChanged(Component * ){
 }
 
 
-void NodeManagerUIViewport::visibleAreaChanged(const Rectangle<int>& newVisibleArea){
-    Point <int> mouse = getMouseXYRelative();
-    autoScroll(mouse.x, mouse.y, 100, 10);
-
-}
-void NodeManagerUIViewport::resized(){
-    if(getLocalBounds().contains(nmui->getLocalBounds())){
-        nmui->minBounds = getLocalBounds();
-    }
-}
 void NodeManagerUI::resizeToFitNodes(){
     Rectangle<int> bounds = minBounds;
     for(auto &n:nodesUI){

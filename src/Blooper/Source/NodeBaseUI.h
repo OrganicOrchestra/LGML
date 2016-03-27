@@ -17,7 +17,7 @@
 
 #include "NodeBaseHeaderUI.h"
 #include "NodeBaseContentUI.h"
-
+#include "SelectableComponent.h"
 
 class NodeBase;
 class NodeManagerUI;
@@ -29,7 +29,7 @@ class NodeBaseContentUI;
 
 NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
-class NodeBaseUI    : public Component,public Parameter::Listener
+class NodeBaseUI    : public SelectableComponent,public Parameter::Listener
 {
 public:
     NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer = nullptr, NodeBaseHeaderUI * headerContainer = nullptr);
@@ -144,6 +144,8 @@ public:
 
 
 private:
+
+    void paintOverChildren(Graphics& g)override ;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeBaseUI)
 };
 

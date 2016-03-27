@@ -36,7 +36,7 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
         addAndMakeVisible(vuMeter);
     }
 
-    titleUI = node->nameParam->getUI();
+    titleUI = node->nameParam->createStringParameterUI();
     titleUI->setNameLabelVisible(false);
     titleUI->setInterceptsMouseClicks(false, false);
     addAndMakeVisible(titleUI);
