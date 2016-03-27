@@ -1,8 +1,13 @@
 
 import os;
 import json;
+import urllib;
+
 
 configuration  = "Release"
+# configuration  = "Debug"
+
+
 exportPath = "/Users/Tintamar/Google_Drive/LGML/Builds/OSX/"
 
 
@@ -13,12 +18,24 @@ xcodeProjPath = "../Builds/MacOSX/"
 executable_name = "Blooper"
 appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
-
+import xml.etree.ElementTree as ET
+tree = ET.parse(JuceProjectPath)
+root = tree.getroot()
+projectVersion =root.attrib["version"]
 
 
 def sh(cmd):
 	print ("exec : "+cmd);
 	print os.popen(cmd).read()
+
+def generateProductBaseName():
+	return executable_name+"v"+projectVersion+"_"+configuration
+	
+	
+	
+
+
+
 
 def cleanCode(sourceFolder):
 	# sourceFolder = os.path.abspath(sourceFolder)
@@ -33,7 +50,7 @@ def buildJUCE(JuceProjectPath):
 
 def buildApp(xcodeProjPath,configuration):
 	sh("cd "+xcodeProjPath+ " && "\
-		+" pwd &&" \
+		
 		+" xcodebuild -project Blooper.xcodeproj" \
 		+" -configuration "+configuration
 		+" -jobs 4 ")
@@ -53,7 +70,7 @@ def createAppdmgJSON(appPath ,destPath):
 	with open(destPath,'w') as f:
 		json.dump(jdata,f)
 
-def copyDmg(exportFileBaseName,appPath):
+def createDmg(exportFileBaseName,appPath):
 	if sh("which appdmg")!="":
 		jsonPath = "dmgExport.json"
 		createAppdmgJSON(appPath,jsonPath)
@@ -66,12 +83,25 @@ def copyDmg(exportFileBaseName,appPath):
 		print "no appdmg exporter using zip"
 		sh("zip -rv9 \""+exportFileBaseName+".zip\" \""+appPath+"\"")
 
+
+def sendToOwnCloud(originPath,destPath):
+	credPath = os.path.dirname(os.path.abspath(__file__));
+	# credPath = os.path.abspath(os.path.join(credPath, os.pardir))
+	credPath = os.path.join(credPath,"owncloud.password")
+	
+	with open(credPath) as json_data:
+		credentials = json.loads(json_data.read())
+
+	sh("curl -X PUT \"http://195.154.11.18/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"])
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
 cleanCode("../Source");
 buildJUCE(JuceProjectPath);
 buildApp(xcodeProjPath,configuration);
-copyDmg(exportPath+configuration+"/"+executable_name,appPath);
+localPath = exportPath+generateProductBaseName();
+createDmg(localPath,appPath);
 
+ownCloudPath = "Projets Releases/LGML/App/OSX/"+generateProductBaseName()+".dmg"
+sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
 
 
