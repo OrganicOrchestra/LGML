@@ -27,11 +27,11 @@ void ControllableInspector::selectableChanged(SelectableComponent * _node,bool s
 
 }
 void ControllableInspector::addOrMergeControllableContainerEditor(ControllableContainer * c){
-    candidateContainers.add(c);
+    candidateContainers.addIfNotAlreadyThere(c);
     if(candidateContainers.size()==1){
-           if(proxyContainer==nullptr)
-               proxyContainer = new ControllableContainerProxy(c);
-           else jassertfalse;
+        if(proxyContainer==nullptr)
+            proxyContainer = new ControllableContainerProxy(c);
+        else jassertfalse;
     }
     generateFromCandidates();
 }
@@ -42,52 +42,30 @@ void ControllableInspector::generateFromCandidates(){
 
 
     if(candidateContainers.size()==0){return;}
-    else if(candidateContainers.size()==1){
-        displayedEditor = proxyContainer->sourceContainer->createControllableContainerEditor();
-    }
+
+    if(displayedEditor==nullptr )displayedEditor = proxyContainer->sourceContainer->createControllableContainerEditor();
+    else if(displayedEditor->owner==proxyContainer->sourceContainer){
+        delete displayedEditor.release();
+        displayedEditor = proxyContainer->sourceContainer->createControllableContainerEditor();}
+
 
     // try to merge common properties based on first
-    else {
-        if(displayedEditor==nullptr){
-            // imossible that two candidate are added in one call
-            jassertfalse;
-            displayedEditor = proxyContainer->sourceContainer->createControllableContainerEditor();
-        }
-        for(auto &candidate:candidateContainers){
-            proxyContainer->addProxyListener(candidate);
 
-
-        }
-
+    for(auto &candidate:candidateContainers){
+        proxyContainer->addProxyListener(candidate);
     }
 
-    jassert(displayedEditor!=nullptr);
     addAndMakeVisible(displayedEditor);
     // TODO default component are not resized...
     displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
 }
 
-bool ControllableInspector::hasSameControllableType(ControllableContainer * source,ControllableContainer * target){
-    return source == target;
-}
 
 
 
 
-void ControllableInspector::addControllableListenerToEditor(ControllableContainerEditor * source,ControllableContainer * listener){
-    for(auto &c:source->controllableUIs){
-        Controllable * cListener  =listener->getControllableByName(c->controllable->niceName);
-        if(cListener){
-//            c->addL
-        }
-        else{
-            // should always find
-            jassertfalse;
-        }
-    }
 
 
-}
 void ControllableInspector::removeControllableContainerEditor(ControllableContainer * c){
     candidateContainers.removeFirstMatchingValue(c);
 
@@ -95,7 +73,9 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
     if(candidateContainers.size()==0){
         delete proxyContainer.release();
         proxyContainer=nullptr;
+        delete displayedEditor.release();
+        displayedEditor = nullptr;
     }
     generateFromCandidates();
-
+    
 }

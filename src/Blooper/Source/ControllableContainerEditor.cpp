@@ -25,3 +25,9 @@ void ControllableContainerEditor::removeControlUI(ControllableUI * c){
     controllableUIs.removeFirstMatchingValue(c);
     removeChildComponent(c);
 }
+
+void ControllableContainerEditor::resized(){
+    for(auto &c:controllableUIs){
+        c->setSize(getWidth(), c->getHeight());
+    }
+}

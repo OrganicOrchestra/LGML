@@ -22,7 +22,7 @@ TriggerButtonUI::TriggerButtonUI(Trigger *t) :
 
 TriggerButtonUI::~TriggerButtonUI()
 {
-    trigger->removeTriggerListener(this);
+
 }
 
 void TriggerButtonUI::triggerTriggered(Trigger * p){

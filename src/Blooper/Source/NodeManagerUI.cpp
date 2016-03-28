@@ -459,7 +459,7 @@ void NodeManagerUI::mouseDrag(const MouseEvent & event)
             checkSelected();
             repaint();
         }
-        else{
+        else if(event.getDistanceFromDragStart()>4){
 
             isSelectingNodes = true;
             selectingBounds.setVisible(true);
@@ -473,10 +473,11 @@ void NodeManagerUI::mouseUp(const MouseEvent & event)
     {
         finishEditingConnection();
     }
-
+    if(!isSelectingNodes){selectableHandler.removeAllSelected();}
     isSelectingNodes = false;
     selectingBounds.setVisible(false);
     selectingBounds.setSize(0, 0);
+
 }
 
 
@@ -489,16 +490,19 @@ void NodeManagerUI::checkSelected(){
                 currentOnes.add(n);
             }
         }
-        for(auto &n:currentOnes){
-            if(!selectableHandler.selected.contains(n)){
-                n->askForSelection(true,false);
-            }
-        }
+
         for(auto &n:selectableHandler.selected){
             if(!currentOnes.contains(n)){
                 n->askForSelection(false,false);
             }
         }
+        
+        for(auto &n:currentOnes){
+            if(!selectableHandler.selected.contains(n)){
+                n->askForSelection(true,false);
+            }
+        }
+
 
     }
     // only one

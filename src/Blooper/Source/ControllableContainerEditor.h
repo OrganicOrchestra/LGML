@@ -28,6 +28,7 @@ public:
 
     void addControlUI(ControllableUI * c);
     void removeControlUI(ControllableUI * c);
+    void resized()override;
     ControllableContainer * owner;
     Array<ControllableUI*> controllableUIs;
 protected:

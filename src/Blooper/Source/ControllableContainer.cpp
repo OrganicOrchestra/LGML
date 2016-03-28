@@ -260,22 +260,24 @@ void ControllableContainer::addParameterInternal(Parameter * p)
 ControllableContainerEditor * ControllableContainer::createControllableContainerEditor(){
     ControllableContainerEditor * editor = new ControllableContainerEditor(this);
     Rectangle<int> bounds;
-    int curY = 0;
+
+    int pad=3;
+    int curY = pad;
     for(auto & c:controllables){
         ControllableUI * cUI = c->createDefaultControllableEditor();
         cUI->setTopLeftPosition(0, curY);
-        curY+=cUI->getHeight();
+        curY+=cUI->getHeight() + pad;
         editor->addControlUI(cUI);
-        bounds = bounds.getUnion(cUI->getBounds());
+        bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
     }
 
 
     for(auto &c:controllableContainers){
         ControllableContainerEditor * cE=c->createControllableContainerEditor();
         cE->setTopLeftPosition(0, curY);
-        curY+=cE->getHeight();
+        curY+=cE->getHeight()+pad;
         editor->addAndMakeVisible(cE);
-        bounds = bounds.getUnion(cE->getBounds());
+        bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
     }
 
     editor->setBounds(bounds);

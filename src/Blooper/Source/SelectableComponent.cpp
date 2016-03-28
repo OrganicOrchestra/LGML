@@ -16,15 +16,20 @@
 SelectableComponent::SelectableComponent(SelectableComponentHandler * _handler):isSelected (false),repaintOnSelection(true),handler(_handler){
 
 }
+
+SelectableComponent::~SelectableComponent(){
+    handler->internalSelected(this,false,false);
+}
 void SelectableComponent::setHandler(SelectableComponentHandler * h){
     handler = h;
 }
 
 void SelectableComponent::askForSelection(bool _isSelected,bool unique ) {
+    bool changed = (_isSelected!=isSelected);
     isSelected = _isSelected;
     internalSetSelected(isSelected);
-    if(handler!=nullptr)handler->internalSelected(this,isSelected,unique);
-    if(repaintOnSelection)repaint();
+    if(handler!=nullptr && changed)handler->internalSelected(this,isSelected,unique);
+    if(repaintOnSelection && changed)repaint();
 };
 void SelectableComponent::paintOverChildren(juce::Graphics &g){
 if(isSelected){

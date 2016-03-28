@@ -47,7 +47,8 @@ node(node)
 
     node->xPosition->addParameterListener(this);
     node->yPosition->addParameterListener(this);
-
+    node->xPosition->isControllableExposed = false;
+    node->yPosition->isControllableExposed = false;
 
 
 }
@@ -122,6 +123,7 @@ void NodeBaseUI::mouseDown(const MouseEvent & e)
     else
     {
         nodeInitPos = getBounds().getCentre();
+
     }
 
 
@@ -130,8 +132,8 @@ void NodeBaseUI::mouseDown(const MouseEvent & e)
 void NodeBaseUI::mouseUp(const juce::MouseEvent &event){
     NodeManagerUI * nmui = getNodeManagerUI();
     if(nmui){nmui->setAllNodesToStartAtZero();}
-
     askForSelection(true,true);
+
 
 }
 

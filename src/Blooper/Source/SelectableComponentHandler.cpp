@@ -16,19 +16,24 @@
 void SelectableComponentHandler::internalSelected(SelectableComponent * c,bool state,bool unique){
 
     if(unique || c==nullptr){
-        for(auto & cc:selected){
-            cc->askForSelection(false,false);
-            selectableHandlerListeners.call(&SelectableHandlerListener::selectableChanged,cc, false);
-
-        }
-        selected.clear();
+        removeAllSelected();
     }
     if(c){
         c->internalSetSelected(state);
-        if(state)selected.add(c);
+
+        if(state)selected.addIfNotAlreadyThere(c);
         else selected.removeFirstMatchingValue(c);
         selectableHandlerListeners.call(&SelectableHandlerListener::selectableChanged,c, state);
     }
 
 
+}
+
+void SelectableComponentHandler::removeAllSelected(){
+    for(auto & cc:selected){
+        cc->askForSelection(false,false);
+        selectableHandlerListeners.call(&SelectableHandlerListener::selectableChanged,cc, false);
+
+    }
+    selected.clear();
 }

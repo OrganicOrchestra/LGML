@@ -23,7 +23,7 @@ class SelectableComponent : public Component{
 
 public:
     SelectableComponent(SelectableComponentHandler * handler);
-    virtual ~SelectableComponent(){}
+    virtual ~SelectableComponent();
 
 
     // called to change state manually

@@ -13,8 +13,10 @@
 
 
 
-// a proxyContainer can dispatch event from a source container to a list of container
+// a proxyContainer can fully syncronyze Controllables from a source container to a list of container
 // other containers have to be of the same kind
+// correspondences of Controllables is based on ControlAddress relative to ControllableContainers depth (i.e starting from the name of it
+// TODO handle controllableContainerAdded / Removed sync
 
 #include "ControllableContainer.h"
 class ControllableContainerProxy : public ControllableContainer, ControllableContainer::Listener{
@@ -22,26 +24,19 @@ class ControllableContainerProxy : public ControllableContainer, ControllableCon
 public:
     ControllableContainerProxy(ControllableContainer * source):
     ControllableContainer("proxy_"+source->niceName),
-    sourceContainer(source),depthInOriginContainer(-1){
+    sourceContainer(source),depthInOriginContainer(-1),
+    isNotifying(false){
         buildFromContainer(source);
     }
     virtual ~ControllableContainerProxy(){
-
+        for(auto &c:proxyControllableListeners){
+            c->removeControllableContainerListener(this);
+        }
+        if(sourceContainer)
+            sourceContainer->removeControllableContainerListener(this);
     }
 
-    void buildFromContainer(ControllableContainer * source){
-        if(sourceContainer){
-            sourceContainer->removeControllableContainerListener(this);
-        }
-        source->addControllableContainerListener(this);
-        depthInOriginContainer = 0;
-        ControllableContainer * t = source;
-        while(t!=nullptr){
-            t = t->parentContainer;
-            depthInOriginContainer++;
-        }
-        sourceContainer = source;
-    };
+    void buildFromContainer(ControllableContainer * source);
 
 
     void addProxyListener(ControllableContainer * );
@@ -57,6 +52,11 @@ public:
     void controllableContainerRemoved(ControllableContainer * cc)override{};
     void controllableFeedbackUpdate(Controllable *c)override;
     int depthInOriginContainer;
+
+private:
+    bool isNotifying;
+
+    bool setControllableValue(Controllable * cOrigin,Controllable * c);
 };
 
 

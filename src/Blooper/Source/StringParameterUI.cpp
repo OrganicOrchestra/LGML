@@ -17,6 +17,7 @@ StringParameterUI::StringParameterUI(Parameter * p) :
     stringParam((StringParameter *)p)
 {
 
+    addChildComponent(nameLabel);
     setNameLabelVisible(true);
     addAndMakeVisible(valueLabel);
 
@@ -37,10 +38,9 @@ StringParameterUI::StringParameterUI(Parameter * p) :
 
 void StringParameterUI::setNameLabelVisible(bool visible)
 {
-    if (nameLabelIsVisible == visible) return;
+//    if (nameLabelIsVisible == visible) return;
     nameLabelIsVisible = visible;
-    if (visible) addAndMakeVisible(nameLabel);
-    else removeChildComponent(&nameLabel);
+    nameLabel.setVisible(visible);
 }
 
 void StringParameterUI::resized()

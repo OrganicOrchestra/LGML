@@ -20,6 +20,8 @@ public:
 
     void internalSelected(SelectableComponent * ,bool state,bool unique);
 
+    void removeAllSelected();
+
     //
     class  SelectableHandlerListener
     {
