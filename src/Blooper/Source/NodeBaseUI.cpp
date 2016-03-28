@@ -19,6 +19,7 @@
 
 //==============================================================================
 NodeBaseUI::NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer, NodeBaseHeaderUI * headerContainer) :
+SelectableComponent(&NodeManagerUI::selectableHandler),
 inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
 mainContainer(contentContainer,headerContainer),
@@ -75,12 +76,6 @@ void NodeBaseUI::paint (Graphics& g)
 {
 
 }
-void NodeBaseUI::paintOverChildren(Graphics& g){
-    if(isSelected){
-        g.setColour(Colours::yellow);
-        g.drawRect(getLocalBounds());
-    }
-}
 
 void NodeBaseUI::resized()
 {
@@ -129,13 +124,15 @@ void NodeBaseUI::mouseDown(const MouseEvent & e)
         nodeInitPos = getBounds().getCentre();
     }
 
+
 }
 
 void NodeBaseUI::mouseUp(const juce::MouseEvent &event){
     NodeManagerUI * nmui = getNodeManagerUI();
-    if(nmui){
-        nmui->setAllNodesToStartAtZero();
-    }
+    if(nmui){nmui->setAllNodesToStartAtZero();}
+
+    askForSelection(true,true);
+
 }
 
 void NodeBaseUI::mouseDrag(const MouseEvent & e)

@@ -14,8 +14,14 @@
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
+          <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="1"
+                resource="0" file="Source/SelectableComponentHandler.cpp"/>
+          <FILE id="cO1ryN" name="SelectableComponentHandler.h" compile="0" resource="0"
+                file="Source/SelectableComponentHandler.h"/>
           <FILE id="WugEBC" name="SelectableComponent.h" compile="0" resource="0"
                 file="Source/SelectableComponent.h"/>
+          <FILE id="z9jnyI" name="SelectableComponent.cpp" compile="1" resource="0"
+                file="Source/SelectableComponent.cpp"/>
           <GROUP id="{DAA3A1A3-F6F4-BC56-0152-800A0DA495A5}" name="viz">
             <FILE id="CyjIBR" name="VuMeter.h" compile="0" resource="0" file="Source/VuMeter.h"/>
           </GROUP>

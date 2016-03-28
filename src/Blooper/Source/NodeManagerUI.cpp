@@ -11,6 +11,13 @@
 #include "NodeManagerUI.h"
 #include "NodeConnectionUI.h"
 
+
+
+SelectableComponentHandler NodeManagerUI::selectableHandler;
+
+
+
+
 //==============================================================================
 NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
 nodeManager(nodeManager),
@@ -103,7 +110,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
         NodeBaseUI * nui = node->createUI();
         nodesUI.add(nui);
         addAndMakeVisible(nui);
-        nui->addSelectableListener(this);
+
     }
     else
     {
@@ -476,35 +483,26 @@ void NodeManagerUI::mouseUp(const MouseEvent & event)
 void NodeManagerUI::checkSelected(){
     // multiple ones
     if(isSelectingNodes){
-        Array<NodeBaseUI*> currentOnes;
+        Array<SelectableComponent*> currentOnes;
         for(auto &n:nodesUI){
             if(selectingBounds.getBounds().intersects(n->getBounds())){
                 currentOnes.add(n);
             }
         }
         for(auto &n:currentOnes){
-            if(!selectedNodes.contains(n)){
-                n->internalSetSelected(true);
+            if(!selectableHandler.selected.contains(n)){
+                n->askForSelection(true,false);
             }
         }
-        for(auto &n:selectedNodes){
+        for(auto &n:selectableHandler.selected){
             if(!currentOnes.contains(n)){
-                n->internalSetSelected(false);
+                n->askForSelection(false,false);
             }
         }
-
-        selectedNodes.swapWith(currentOnes);
 
     }
     // only one
-    else{
-        jassert(selectedNodes.size()==0);
-        Point<int> mouse = getMouseXYRelative();
-        NodeBaseUI * n = dynamic_cast<NodeBaseUI*>(getComponentAt(mouse.x, mouse.y));
-        if(n){
-            selectedNodes.add(n);
-        }
-    }
+
 }
 
 void NodeManagerUI::setAllNodesToStartAtZero(){

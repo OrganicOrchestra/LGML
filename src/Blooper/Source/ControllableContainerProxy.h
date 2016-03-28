@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ControllableContainerProxy.h
-    Created: 27 Mar 2016 3:25:47pm
-    Author:  Martin Hermant
+ ControllableContainerProxy.h
+ Created: 27 Mar 2016 3:25:47pm
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef CONTROLLABLECONTAINERPROXY_H_INCLUDED
 #define CONTROLLABLECONTAINERPROXY_H_INCLUDED
@@ -25,8 +25,14 @@ public:
     sourceContainer(source),depthInOriginContainer(-1){
         buildFromContainer(source);
     }
+    virtual ~ControllableContainerProxy(){
+
+    }
 
     void buildFromContainer(ControllableContainer * source){
+        if(sourceContainer){
+            sourceContainer->removeControllableContainerListener(this);
+        }
         source->addControllableContainerListener(this);
         depthInOriginContainer = 0;
         ControllableContainer * t = source;
@@ -34,6 +40,7 @@ public:
             t = t->parentContainer;
             depthInOriginContainer++;
         }
+        sourceContainer = source;
     };
 
 
@@ -41,7 +48,7 @@ public:
     void removeProxyListener(ControllableContainer * );
     ControllableContainer * sourceContainer;
 
-    Array<ControllableContainer*> controllableListeners;
+    Array<ControllableContainer*> proxyControllableListeners;
 
 
     void controllableAdded(Controllable * c) override{};

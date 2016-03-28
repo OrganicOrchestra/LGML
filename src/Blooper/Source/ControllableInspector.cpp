@@ -11,13 +11,13 @@
 #include "ControllableInspector.h"
 
 
-ControllableInspector::ControllableInspector(NodeManagerUI * nmui){
-    nmui->addSelectedNodesListener(this);
+ControllableInspector::ControllableInspector(NodeManagerUI * nmui):proxyContainer(nullptr){
+    nmui->selectableHandler.addSelectableHandlerListener(this);
 
 }
 
-void ControllableInspector::selectedNodeEvent(NodeBaseUI * node,bool state){
-
+void ControllableInspector::selectableChanged(SelectableComponent * _node,bool state){
+    NodeBaseUI * node = (NodeBaseUI*)_node;
     if(node){
         if(state)
             addOrMergeControllableContainerEditor(node->node);
@@ -29,7 +29,9 @@ void ControllableInspector::selectedNodeEvent(NodeBaseUI * node,bool state){
 void ControllableInspector::addOrMergeControllableContainerEditor(ControllableContainer * c){
     candidateContainers.add(c);
     if(candidateContainers.size()==1){
-        proxyContainer = new ControllableContainerProxy(c);
+           if(proxyContainer==nullptr)
+               proxyContainer = new ControllableContainerProxy(c);
+           else jassertfalse;
     }
     generateFromCandidates();
 }
@@ -88,9 +90,11 @@ void ControllableInspector::addControllableListenerToEditor(ControllableContaine
 }
 void ControllableInspector::removeControllableContainerEditor(ControllableContainer * c){
     candidateContainers.removeFirstMatchingValue(c);
-    proxyContainer->removeProxyListener(c);
+
+    if(proxyContainer!=nullptr)proxyContainer->removeProxyListener(c);
     if(candidateContainers.size()==0){
         delete proxyContainer.release();
+        proxyContainer=nullptr;
     }
     generateFromCandidates();
 

@@ -227,8 +227,8 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 
 void ControllableContainer::dispatchFeedback(Controllable * c)
 {
-//    @ben removed else here to enable containerlistener call back of non root (proxies)
-    if (parentContainer != nullptr) parentContainer->dispatchFeedback(c);
+//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+    if (parentContainer != nullptr){ parentContainer->dispatchFeedback(c);}
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
 
 }

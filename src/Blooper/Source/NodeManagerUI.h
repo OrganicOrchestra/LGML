@@ -14,6 +14,7 @@
 
 #include "NodeManager.h"
 #include "NodeBaseUI.h"
+#include "SelectableComponentHandler.h"
 
 class NodeConnectionUI;
 
@@ -21,14 +22,14 @@ class NodeConnectionUI;
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public Component, public NodeManager::Listener,public SelectableComponent::Listener
+class NodeManagerUI : public Component, public NodeManager::Listener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
     ~NodeManagerUI();
 
     NodeManager * nodeManager;
-
+    static SelectableComponentHandler selectableHandler;
 
 
     OwnedArray<NodeBaseUI> nodesUI;
@@ -91,19 +92,6 @@ public:
     Rectangle<int> minBounds;
 
 
-    //
-    class  SelectedNodesListener
-    {
-    public:
-        /** Destructor. */
-        virtual ~SelectedNodesListener() {}
-        virtual void selectedNodeEvent(NodeBaseUI*  selectedNodes,bool isSelected) = 0;
-    };
-
-    void addSelectedNodesListener(SelectedNodesListener* newListener) { selectedNodeListeners.add(newListener); }
-    void removeSelectedNodesListener(SelectedNodesListener* listener) { selectedNodeListeners.remove(listener); }
-    ListenerList<SelectedNodesListener> selectedNodeListeners;
-
 
 
 private:
@@ -117,19 +105,9 @@ private:
     };
     SelectingRect selectingBounds;
     void checkSelected();
-    Array<NodeBaseUI*> selectedNodes;
 
-    //recieve info if node ask for selection or if its triggered by multiselection
-    void selectableSelected(SelectableComponent * c,bool state)override {
-        NodeBaseUI* n = dynamic_cast<NodeBaseUI*>(c);
-        if(n){
-            selectedNodeListeners.call(&SelectedNodesListener::selectedNodeEvent,n, state);
-        }
-        else{
-            jassertfalse;
-        }
 
-    }
+
 
 
 

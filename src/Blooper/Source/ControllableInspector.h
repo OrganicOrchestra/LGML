@@ -20,12 +20,12 @@
 // side bar component displaying editor of currently selected nodes
 // TODO handle merging of multiple component of sameClass
 
-class ControllableInspector:public NodeManagerUI::SelectedNodesListener,public Component{
+class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,public Component{
 public:
     ControllableInspector(NodeManagerUI * );
     virtual ~ControllableInspector(){}
 
-    void selectedNodeEvent(NodeBaseUI * n,bool state)override;
+void selectableChanged(SelectableComponent*  c,bool isSelected) override;
 private:
 
     void addOrMergeControllableContainerEditor(ControllableContainer * c);
@@ -37,7 +37,7 @@ private:
     // each inspector UI element is binded to one Controllable in proxy,
     // if changed , it notifies All corresponding candidateControllable
     ScopedPointer<ControllableContainerProxy> proxyContainer;
-    
+
     void generateProxyFromContainer(ControllableContainer * source);
     ScopedPointer<ControllableContainerEditor> displayedEditor;
     Array<ControllableContainer *> candidateContainers;

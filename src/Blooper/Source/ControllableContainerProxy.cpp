@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ControllableContainerProxy.cpp
-    Created: 27 Mar 2016 3:25:47pm
-    Author:  Martin Hermant
+ ControllableContainerProxy.cpp
+ Created: 27 Mar 2016 3:25:47pm
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "ControllableContainerProxy.h"
 
@@ -14,11 +14,26 @@
 void ControllableContainerProxy::addProxyListener(ControllableContainer * c){
     // check that we have same class
     jassert(typeid(c)==typeid(sourceContainer));
-
-    controllableListeners.add(c);
+    c->addControllableContainerListener(this);
+    proxyControllableListeners.add(c);
 }
 void ControllableContainerProxy::removeProxyListener(ControllableContainer * c){
-    controllableListeners.removeFirstMatchingValue(c);
+    // if source is deleted use another listener as source
+    c->removeControllableContainerListener(this);
+
+    if(c==sourceContainer){
+
+        if(proxyControllableListeners.size()>0){
+            buildFromContainer(proxyControllableListeners.getUnchecked(0));
+        }
+        else{
+            sourceContainer = nullptr;
+        }
+    }
+    else{
+        proxyControllableListeners.removeFirstMatchingValue(c);
+
+    }
 }
 
 
@@ -30,15 +45,15 @@ void ControllableContainerProxy::controllableFeedbackUpdate(Controllable *cOrigi
     juce::Array<String> addSplit = addrArray.strings;
 
     for(int i = 0 ; i < depthInOriginContainer ; i ++){
-    addSplit.remove(0);
+        addSplit.remove(0);
     }
 
     String controller = addSplit[0];
     addSplit.remove(0);
-    for(auto & listener:controllableListeners){
+    for(auto & listener:proxyControllableListeners){
         Controllable * c = listener->getControllableForAddress(addSplit,true,true);
         //block feedback loop ?
-//        if(c==cOrigin)return;
+        //        if(c==cOrigin)return;
 
         jassert(cOrigin->type == c->type);
 
@@ -67,9 +82,9 @@ void ControllableContainerProxy::controllableFeedbackUpdate(Controllable *cOrigi
                 case Controllable::Type::RANGE:
                     DBG("float range not supported");
                     jassert(false);
-//                    ((FloatRangeParameter *)c)->setValue(((FloatRangeParameter*)cOrigin)->value);
+                    //                    ((FloatRangeParameter *)c)->setValue(((FloatRangeParameter*)cOrigin)->value);
                     break;
-                    
+
                 case Controllable::Type::STRING:
                     ((StringParameter *)c)->setValue(((StringParameter*)cOrigin)->value);
                     break;
