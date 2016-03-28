@@ -12,7 +12,7 @@
 
 ControllerHeaderUI::ControllerHeaderUI() :ContourComponent(Colours::green)
   {
-	  setSize(40, 30);
+      setSize(40, 30);
   }
 
 ControllerHeaderUI::~ControllerHeaderUI()
@@ -21,27 +21,27 @@ ControllerHeaderUI::~ControllerHeaderUI()
 
 void ControllerHeaderUI::resized()
 {
-	if (enabledUI == nullptr) return;
+    if (enabledUI == nullptr) return;
 
-	enabledUI->setTopLeftPosition(5, 5);
-	titleUI->setBounds(getLocalBounds().reduced(15,2));
+    enabledUI->setTopLeftPosition(5, 5);
+    titleUI->setBounds(getLocalBounds().reduced(15,2));
 }
 
 void ControllerHeaderUI::setControllerAndUI(Controller * controller, ControllerUI * cui)
 {
-	this->controller = controller;
-	this->cui = cui;
-	init();
+    this->controller = controller;
+    this->cui = cui;
+    init();
 }
 
 void ControllerHeaderUI::init()
 {
-	//to override
-	titleUI = controller->nameParam->getUI();
-	titleUI->setNameLabelVisible(false);
-	addAndMakeVisible(titleUI);
+    //to override
+    titleUI = controller->nameParam->createStringParameterUI();
+    titleUI->setNameLabelVisible(false);
+    addAndMakeVisible(titleUI);
 
-	enabledUI = controller->enabledParam->createToggle();
-	addAndMakeVisible(enabledUI);
+    enabledUI = controller->enabledParam->createToggle();
+    addAndMakeVisible(enabledUI);
 
 }

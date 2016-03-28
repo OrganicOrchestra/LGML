@@ -27,28 +27,28 @@ public:
     ControllerManagerUI(ControllerManager * manager);
     ~ControllerManagerUI();
 
-	ControllerManager * manager;
+    ControllerManager * manager;
 
-	OwnedArray<ControllerUI> controllersUI;
+    OwnedArray<ControllerUI> controllersUI;
 
-	ControllerUI * addControllerUI(Controller * controller);
-	void removeControllerUI(Controller * controller);
+    ControllerUI * addControllerUI(Controller * controller);
+    void removeControllerUI(Controller * controller);
 
-	ControllerUI * getUIForController(Controller * controller);
+    ControllerUI * getUIForController(Controller * controller);
 
-	void placeElements(); //update size when controllerUIs added or removed
+    void placeElements(); //update size when controllerUIs added or removed
 
-    void paint (Graphics&);
-    void resized();
+    void paint (Graphics&)override;
+    void resized()override;
 
-	void mouseDown(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUI)
 
-	// Inherited via Listener
-	virtual void controllerAdded(Controller *) override;
-	virtual void controllerRemoved(Controller *) override;
+    // Inherited via Listener
+    virtual void controllerAdded(Controller *) override;
+    virtual void controllerRemoved(Controller *) override;
 };
 
 
@@ -56,13 +56,13 @@ private:
 class ControllerManagerViewport : public Viewport
 {
 public:
-	ControllerManagerViewport(ControllerManager * controllerManager);
+    ControllerManagerViewport(ControllerManager * controllerManager);
 
-	ControllerManagerUI * cmui;
+    ControllerManagerUI * cmui;
 
-	void paint(Graphics &g) override;
-	void resized() override;
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerViewport)
+    void paint(Graphics &g) override;
+    void resized() override;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerViewport)
 };
 
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED

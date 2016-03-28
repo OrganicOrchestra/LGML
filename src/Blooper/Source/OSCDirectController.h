@@ -16,25 +16,25 @@
 class OSCDirectController : public OSCController, public ControllableContainer::Listener
 {
 public:
-	OSCDirectController();
+    OSCDirectController();
 
-	void processMessage(const OSCMessage &msg) override;
+    void processMessage(const OSCMessage &msg) override;
 
-	ControllerUI * createUI() override;
+    ControllerUI * createUI() override;
 
-	// Inherited via Listener
-	virtual void controllableAdded(Controllable * c) override;
-	virtual void controllableRemoved(Controllable * c) override;
-	virtual void controllableContainerAdded(ControllableContainer * cc) override;
-	virtual void controllableContainerRemoved(ControllableContainer * cc) override;
+    // Inherited via Listener
+    virtual void controllableAdded(Controllable * c) override;
+    virtual void controllableRemoved(Controllable * c) override;
+    virtual void controllableContainerAdded(ControllableContainer * cc) override;
+    virtual void controllableContainerRemoved(ControllableContainer * cc) override;
 
-	virtual void controllableFeedbackUpdate(Controllable * c) override;
+    virtual void controllableFeedbackUpdate(Controllable * c) override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
 
 
-		// Inherited via Listener
-		
+        // Inherited via Listener
+
 
 };
 

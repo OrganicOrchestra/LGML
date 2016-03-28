@@ -1,68 +1,78 @@
 /*
  ==============================================================================
- 
+
  LooperNodeUI.cpp
  Created: 8 Mar 2016 12:01:53pm
  Author:  Martin Hermant
- 
+
  ==============================================================================
  */
 
 #include "LooperNodeUI.h"
 
 LooperNodeUI::LooperNodeUI(){
-    
+
 }
 
 
 void LooperNodeUI::init(){
-    setSize(300,200);
-    
-    
+
     looperNode = dynamic_cast<LooperNode*> (node);
     looperNode->looper->addLooperListener(this);
-    trackNumChanged(looperNode->looper->tracks.size());
-    
+
     recPlaySelectedButton = new TriggerBlinkUI(looperNode->looper->recPlaySelectedTrig);
     clearSelectedButton = new TriggerBlinkUI(looperNode->looper->clearSelectedTrig);
     stopSelectedButton = new TriggerBlinkUI(looperNode->looper->stopSelectedTrig);
-    
+
     clearAllButton = new TriggerBlinkUI(looperNode->looper->clearAllTrig);
     stopAllButton = new TriggerBlinkUI(looperNode->looper->stopAllTrig);
-    
+
     volumeSelectedSlider = new FloatSliderUI(looperNode->looper->volumeSelected);
 
-    
-    
+    monitoringButton = new BoolToggleUI(looperNode->looper->isMonitoring);
+
     headerContainer.addAndMakeVisible(recPlaySelectedButton);
     headerContainer.addAndMakeVisible(clearSelectedButton);
     headerContainer.addAndMakeVisible(stopSelectedButton);
     headerContainer.addAndMakeVisible(clearAllButton);
     headerContainer.addAndMakeVisible(stopAllButton);
-    
-    float pad = 0.01;
-    float selectedW = .4;
-    recPlaySelectedButton->setBoundsRelative(pad, pad, selectedW-2*pad,  .6- 2*pad);
-    stopSelectedButton->setBoundsRelative(pad, .6+pad, selectedW/2-2*pad,.4 - 2*pad);
-    clearSelectedButton->setBoundsRelative(selectedW/2+pad, .6+pad, selectedW/2-2*pad, .4 - 2*pad);
-    
-    stopAllButton->setBoundsRelative(selectedW+pad,  pad, (1-selectedW)/2 - 2*pad, 1-2*pad);
-    clearAllButton->setBoundsRelative(selectedW+(1-selectedW)/2+pad,  pad, (1-selectedW)/2 - 2*pad, 1-2*pad);
-    
-    
-    
+    headerContainer.addAndMakeVisible(monitoringButton);
+
+
     addAndMakeVisible(headerContainer);
     addAndMakeVisible(trackContainer);
+
+    setSize(300,200);
+
+
+    trackNumChanged(looperNode->looper->tracks.size());
 }
 
 void LooperNodeUI::resized(){
     Rectangle<int> area = getLocalBounds();
     headerContainer.setBounds(area.removeFromTop(50));
     trackContainer.setBounds(area);
+    reLayoutHeader();
     reLayoutTracks();
 
 }
 
+
+void LooperNodeUI::reLayoutHeader(){
+
+    float selectedW = .4;
+    Rectangle<int> area = headerContainer.getBounds();
+    int pad = 3;
+    Rectangle<int> selTrackArea = area.removeFromLeft(selectedW*area.getWidth());
+    recPlaySelectedButton->setBounds(selTrackArea.removeFromTop(.6*selTrackArea.getHeight()).reduced(pad));
+    stopSelectedButton->setBounds(selTrackArea.removeFromLeft(.5*selTrackArea.getWidth()).reduced(pad));
+    clearSelectedButton->setBounds(selTrackArea.reduced(pad));
+
+    stopAllButton->setBounds(area.removeFromLeft(area.getWidth()/3).reduced(pad));
+    clearAllButton->setBounds(area.removeFromLeft(area.getWidth()/2).reduced(pad));
+    monitoringButton->setBounds(area.removeFromTop(area.getHeight()/3).reduced(pad));
+
+}
 void LooperNodeUI::reLayoutTracks(){
     if(tracksUI.size()){
 
@@ -71,7 +81,7 @@ void LooperNodeUI::reLayoutTracks(){
         float width = 1.0/numCol;
         float height =1.0/numRow;
         float pad = 0.02;
-        
+
         for(int j = 0 ; j < numRow ; j++){
             for(int i = 0 ; i < numCol ;i++){
                 int idx = j*numCol + i;
@@ -82,11 +92,11 @@ void LooperNodeUI::reLayoutTracks(){
             }
         }
     }
-    
+
 }
 
 void LooperNodeUI::trackNumChanged(int num) {
-    
+
     if(num < tracksUI.size()){
         tracksUI.removeRange(num, tracksUI.size() - num);
     }
@@ -112,32 +122,32 @@ void LooperNodeUI::TrackUI::trackStateChangedAsync(const LooperNode::Looper::Tra
         case LooperNode::Looper::Track::RECORDING:
             mainColour = Colours::red;
             break;
-            
+
         case LooperNode::Looper::Track::PLAYING:
             mainColour = Colours::green;
             break;
-            
+
         case LooperNode::Looper::Track::SHOULD_RECORD:
             mainColour = Colours::yellow;
             break;
-            
+
         case LooperNode::Looper::Track::SHOULD_PLAY:
             mainColour = Colours::yellow;
             break;
-            
+
         case LooperNode::Looper::Track::SHOULD_CLEAR:
         case LooperNode::Looper::Track::CLEARED:
             mainColour = Colours::grey;
             break;
-            
+
         case LooperNode::Looper::Track::STOPPED:
             mainColour = Colours::black;
             break;
-            
+
         default:
             jassertfalse;
             break;
     }
-    
+
     repaint();
 }

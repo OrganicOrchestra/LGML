@@ -13,14 +13,18 @@
 
 
 StringParameter::StringParameter(const String & niceName, const String &description, const String & initialValue, bool enabled) :
-	Parameter(Type::STRING, niceName, description, enabled)
+    Parameter(Type::STRING, niceName, description, enabled)
 {
-	setValue(initialValue);
-	
+    setValue(initialValue);
+
 }
 
-StringParameterUI * StringParameter::getUI()
+StringParameterUI * StringParameter::createStringParameterUI()
 {
-	return new StringParameterUI(this);
+    return new StringParameterUI(this);
 }
 
+
+ControllableUI* StringParameter::createDefaultControllableEditor(){
+    return createStringParameterUI();
+};

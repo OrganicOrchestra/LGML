@@ -33,20 +33,20 @@ public:
                           MidiBuffer& midiMessages) {
             AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
         }
-        
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioOutProcessor)
     };
-    
-    
-    
-    
-    
+
+
+
+
+
     AudioOutNode(NodeManager * nodeManager,uint32 nodeId)  : NodeBase(nodeManager,nodeId,"AudioOutNode",new AudioOutProcessor){};
     ~AudioOutNode(){};
-    
+
     virtual NodeBaseUI * createUI() override;
-    
-    
+
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioOutNode)
 };
 

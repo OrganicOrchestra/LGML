@@ -20,31 +20,35 @@ public:
     FloatSliderUI(Parameter * parameter = nullptr);
     virtual ~FloatSliderUI();
 
-	enum Direction { HORIZONTAL, VERTICAL };
+    enum Direction { HORIZONTAL, VERTICAL };
 
-	FloatParameter * floatParam;
+    FloatParameter * floatParam;
 
-	//settings
-	Direction orientation;
-	bool changeParamOnMouseUpOnly;
-	bool assignOnMousePosDirect;
+    //settings
+    Direction orientation;
 
-	//interaction
-	float initValue; 
+    // TODO implement a numboxUI
+    bool displayText;
+    bool displayBar;
+    bool changeParamOnMouseUpOnly;
+    bool assignOnMousePosDirect;
 
-	void paint(Graphics &g) override;
-	void mouseDown(const MouseEvent &e) override;
-	void mouseDrag(const MouseEvent &e) override;
-	void mouseUp(const MouseEvent &e) override;
+    //interaction
+    float initValue;
 
-	float getValueFromMouse();
-	float getValueFromPosition(const Point<int> &pos);
+    void paint(Graphics &g) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
-	virtual void setParamNormalizedValue(float value);
-	virtual float getParamNormalizedValue();
+    float getValueFromMouse();
+    float getValueFromPosition(const Point<int> &pos);
+
+    virtual void setParamNormalizedValue(float value);
+    virtual float getParamNormalizedValue();
 
 protected:
-	void parameterValueChanged(Parameter *) override { repaint(); };
+    void parameterValueChanged(Parameter *) override { repaint(); };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FloatSliderUI)
 };

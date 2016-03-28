@@ -17,17 +17,17 @@
 class TriggerUI : public ControllableUI, public Trigger::Listener
 {
 public :
-	TriggerUI(Trigger * trigger);
-	virtual ~TriggerUI();
+    TriggerUI(Trigger * trigger);
+    virtual ~TriggerUI();
 
-	Trigger *  trigger;
+    Trigger *  trigger;
 
-	// Inherited via Listener
-	virtual void triggerTriggered(Trigger * p) override;
+    // Inherited via Listener
+    virtual void triggerTriggered(Trigger * p) override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriggerUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriggerUI)
 
-		
+
 };
 
 

@@ -22,23 +22,27 @@
 class NodeBaseHeaderUI : public ContourComponent
 {
 public:
-	NodeBaseHeaderUI();
-	virtual ~NodeBaseHeaderUI();
+    NodeBaseHeaderUI();
+    virtual ~NodeBaseHeaderUI();
 
-	NodeBase * node;
-	NodeBaseUI * nodeUI;
+    NodeBase * node;
+    NodeBaseUI * nodeUI;
 
-	ScopedPointer<StringParameterUI> titleUI;
-	ScopedPointer<BoolToggleUI> enabledUI;
-	VuMeter vuMeter;
-
-	virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
-	virtual void init();
+    ScopedPointer<StringParameterUI> titleUI;
+    ScopedPointer<BoolToggleUI> enabledUI;
+    VuMeter vuMeter;
 
 
-	virtual void resized() override;
+    void mouseDoubleClick(const MouseEvent & e)override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
+
+    virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
+    virtual void init();
+
+
+    virtual void resized() override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
 };
 
 

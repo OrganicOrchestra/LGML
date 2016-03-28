@@ -14,8 +14,8 @@
 
   NodeBaseContentUI::NodeBaseContentUI()
   {
-	  node = nullptr;
-	  nodeUI = nullptr;
+      node = nullptr;
+      nodeUI = nullptr;
   }
 
   NodeBaseContentUI::~NodeBaseContentUI()
@@ -25,10 +25,10 @@
 
   void NodeBaseContentUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
   {
-	  this->node = node;
-	  this->nodeUI = nodeUI;
+      this->node = node;
+      this->nodeUI = nodeUI;
 
-	  init();
+      init();
   }
 
   void NodeBaseContentUI::init()

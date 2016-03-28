@@ -5,8 +5,23 @@
               jucerVersion="4.1.0" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="Blooper">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
+      <GROUP id="{C42B7041-9902-DAD4-34C4-9F8B62125E4B}" name="Time">
+        <FILE id="hX6HKd" name="TimeManager.cpp" compile="1" resource="0" file="Source/TimeManager.cpp"/>
+        <FILE id="uaVLjF" name="TimeManager.h" compile="0" resource="0" file="Source/TimeManager.h"/>
+        <FILE id="Gv1zB9" name="TimeManagerUI.cpp" compile="1" resource="0"
+              file="Source/TimeManagerUI.cpp"/>
+        <FILE id="a4XrkQ" name="TimeManagerUI.h" compile="0" resource="0" file="Source/TimeManagerUI.h"/>
+      </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
+          <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="1"
+                resource="0" file="Source/SelectableComponentHandler.cpp"/>
+          <FILE id="cO1ryN" name="SelectableComponentHandler.h" compile="0" resource="0"
+                file="Source/SelectableComponentHandler.h"/>
+          <FILE id="WugEBC" name="SelectableComponent.h" compile="0" resource="0"
+                file="Source/SelectableComponent.h"/>
+          <FILE id="z9jnyI" name="SelectableComponent.cpp" compile="1" resource="0"
+                file="Source/SelectableComponent.cpp"/>
           <GROUP id="{DAA3A1A3-F6F4-BC56-0152-800A0DA495A5}" name="viz">
             <FILE id="CyjIBR" name="VuMeter.h" compile="0" resource="0" file="Source/VuMeter.h"/>
           </GROUP>
@@ -28,6 +43,14 @@
         <FILE id="K9s4xv" name="Controllable.cpp" compile="1" resource="0"
               file="Source/Controllable.cpp"/>
         <FILE id="H2nHBA" name="Controllable.h" compile="0" resource="0" file="Source/Controllable.h"/>
+        <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="1"
+              resource="0" file="Source/ControllableContainerEditor.cpp"/>
+        <FILE id="QNpqO3" name="ControllableContainerEditor.h" compile="0"
+              resource="0" file="Source/ControllableContainerEditor.h"/>
+        <FILE id="FIR3Kt" name="ControllableContainerProxy.cpp" compile="1"
+              resource="0" file="Source/ControllableContainerProxy.cpp"/>
+        <FILE id="ptJrDO" name="ControllableContainerProxy.h" compile="0" resource="0"
+              file="Source/ControllableContainerProxy.h"/>
         <FILE id="pm5PA0" name="ControllableContainer.cpp" compile="1" resource="0"
               file="Source/ControllableContainer.cpp"/>
         <FILE id="yWCKk0" name="ControllableContainer.h" compile="0" resource="0"
@@ -36,6 +59,7 @@
               resource="0" file="Source/ControllableIndexedContainer.cpp"/>
         <FILE id="Y9EZlj" name="ControllableIndexedContainer.h" compile="0"
               resource="0" file="Source/ControllableIndexedContainer.h"/>
+        <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
         <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
         <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
         <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
@@ -97,6 +121,12 @@
               file="Source/SettingsManager.cpp"/>
         <FILE id="DlfGm8" name="SettingsManager.h" compile="0" resource="0"
               file="Source/SettingsManager.h"/>
+      </GROUP>
+      <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
+        <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
+              file="Source/ControllableInspector.cpp"/>
+        <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
+              file="Source/ControllableInspector.h"/>
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
         <GROUP id="{4428FDD1-4E1A-F199-46F2-F7D32DF545CA}" name="controllers">
@@ -161,13 +191,6 @@
         <FILE id="hfPSy3" name="ProjectManager.h" compile="0" resource="0"
               file="Source/ProjectManager.h"/>
       </GROUP>
-      <GROUP id="{C42B7041-9902-DAD4-34C4-9F8B62125E4B}" name="Time">
-        <FILE id="hX6HKd" name="TimeManager.cpp" compile="1" resource="0" file="Source/TimeManager.cpp"/>
-        <FILE id="uaVLjF" name="TimeManager.h" compile="0" resource="0" file="Source/TimeManager.h"/>
-        <FILE id="Gv1zB9" name="TimeManagerUI.cpp" compile="1" resource="0"
-              file="Source/TimeManagerUI.cpp"/>
-        <FILE id="a4XrkQ" name="TimeManagerUI.h" compile="0" resource="0" file="Source/TimeManagerUI.h"/>
-      </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
         <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">
           <FILE id="GVgHpr" name="DataProcessor.cpp" compile="1" resource="0"
@@ -231,7 +254,6 @@
                   file="Source/AudioMixerNode.h"/>
           </GROUP>
           <GROUP id="{5C55270A-43A6-03C9-B529-1BFE882AB7F6}" name="Looper">
-            <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
             <FILE id="lWXXbw" name="LooperNode.cpp" compile="1" resource="0" file="Source/LooperNode.cpp"/>
             <FILE id="p6VNxS" name="LooperNode.h" compile="0" resource="0" file="Source/LooperNode.h"/>
             <FILE id="C7ZscO" name="LooperNodeUI.cpp" compile="1" resource="0"
@@ -243,8 +265,15 @@
             <FILE id="xdFuwd" name="SpatNode.h" compile="0" resource="0" file="Source/SpatNode.h"/>
           </GROUP>
           <GROUP id="{43D6AD7F-A710-EDE9-A28C-2FFC47798A32}" name="VST">
+            <FILE id="YnJwtS" name="PluginWindow.cpp" compile="1" resource="0"
+                  file="Source/PluginWindow.cpp"/>
+            <FILE id="kS8MT9" name="PluginWindow.h" compile="0" resource="0" file="Source/PluginWindow.h"/>
+            <FILE id="YVoVmw" name="VSTManager.cpp" compile="1" resource="0" file="Source/VSTManager.cpp"/>
+            <FILE id="WbfJ1L" name="VSTManager.h" compile="0" resource="0" file="Source/VSTManager.h"/>
             <FILE id="eBfKxJ" name="VSTNode.cpp" compile="1" resource="0" file="Source/VSTNode.cpp"/>
             <FILE id="xr7Cfk" name="VSTNode.h" compile="0" resource="0" file="Source/VSTNode.h"/>
+            <FILE id="wzUX89" name="VSTNodeUI.cpp" compile="1" resource="0" file="Source/VSTNodeUI.cpp"/>
+            <FILE id="mz72JY" name="VSTNodeUI.h" compile="0" resource="0" file="Source/VSTNodeUI.h"/>
           </GROUP>
         </GROUP>
         <FILE id="A6v89K" name="NodeFactory.h" compile="0" resource="0" file="Source/NodeFactory.h"/>
@@ -254,18 +283,26 @@
         <FILE id="bjuLcd" name="NodeManager.cpp" compile="1" resource="0" file="Source/NodeManager.cpp"/>
         <FILE id="iTucpu" name="NodeManager.h" compile="0" resource="0" file="Source/NodeManager.h"/>
       </GROUP>
-      <FILE id="ddEu7L" name="MainComponent.cpp" compile="1" resource="0"
+      <FILE id="U1Atk6" name="MainComponentCommands.cpp" compile="1" resource="0"
+            file="Source/MainComponentCommands.cpp"/>
+      <FILE id="rpB1Vz" name="MainComponentFileDocument.cpp" compile="1"
+            resource="0" file="Source/MainComponentFileDocument.cpp"/>
+      <FILE id="ddEu7L" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="OvsUVU" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="gEsmKk" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder"
+               vstFolder="" vst3Folder="" postbuildCommand="">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       isDebug="1" optimisation="1" targetName="NewProject"/>
-        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       isDebug="0" optimisation="3" targetName="NewProject"/>
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
+                       isDebug="1" optimisation="1" targetName="Blooper" cppLanguageStandard="c++98"
+                       cppLibType="libstdc++" binaryPath=""/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
+                       isDebug="0" optimisation="3" targetName="Blooper" binaryPath=""
+                       cppLanguageStandard="c++98" cppLibType="libstdc++"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../../../Dev/JUCE/modules"/>
@@ -325,8 +362,10 @@
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS/>
+  <JUCEOPTIONS JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
+               JUCE_PLUGINHOST_AU="enabled" JUCE_WEB_BROWSER="disabled"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
+    <OSX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>

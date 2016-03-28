@@ -24,25 +24,25 @@ Author:  bkupe
 class TriggerBlinkUI : public TriggerUI, public Timer
 {
 public:
-	TriggerBlinkUI(Trigger * t);
-	virtual ~TriggerBlinkUI();
+    TriggerBlinkUI(Trigger * t);
+    virtual ~TriggerBlinkUI();
 
-	void paint(Graphics&);
-	void resized();
-	void mouseDown(const MouseEvent& event)override;
-	void triggerTriggered(Trigger * p) override;
-	void startBlink();
-	void timerCallback();
-	void setTriggerReference(Trigger * t);
-	float intensity;
+    void paint(Graphics&)override;
+    void resized()override;
+    void mouseDown(const MouseEvent& event)override;
+    void triggerTriggered(Trigger * p) override;
+    void startBlink();
+    void timerCallback()override;
+    void setTriggerReference(Trigger * t);
+    float intensity;
 
-	Label nameLabel;
+    Label nameLabel;
 
 private:
 
-	int blinkTime;
-	int refreshPeriod;
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriggerBlinkUI)
+    int blinkTime;
+    int refreshPeriod;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriggerBlinkUI)
 };
 
 

@@ -19,19 +19,19 @@ class ControllerContentUI;
 class ControllerUI : public ContourComponent
 {
 public:
-	ControllerUI(Controller * controller, ControllerContentUI * contentUI = nullptr, ControllerHeaderUI * headerUI = nullptr);
-	virtual ~ControllerUI();
+    ControllerUI(Controller * controller, ControllerContentUI * contentUI = nullptr, ControllerHeaderUI * headerUI = nullptr);
+    virtual ~ControllerUI();
 
-	ScopedPointer<ControllerHeaderUI> headerUI;
-	ScopedPointer<ControllerContentUI> contentUI;
+    ScopedPointer<ControllerHeaderUI> headerUI;
+    ScopedPointer<ControllerContentUI> contentUI;
 
-	Controller * controller;
+    Controller * controller;
 
-	virtual void paint(Graphics &g) override;
-	virtual void resized() override;
+    virtual void paint(Graphics &g) override;
+    virtual void resized() override;
 
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerUI)
 };
 
 

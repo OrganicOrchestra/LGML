@@ -12,29 +12,29 @@
 #include "ControllableContainer.h"
 
 Controllable::Controllable(const Type &type, const String & niceName, const String &description, bool enabled) :
-	type(type),
-	description(description),
-	parentContainer(nullptr),
-	hasCustomShortName(false),
-	isControllableExposed(true),
-	isControllableFeedbackOnly(false)
+    type(type),
+    description(description),
+    parentContainer(nullptr),
+    hasCustomShortName(false),
+    isControllableExposed(true),
+    isControllableFeedbackOnly(false)
 {
-	setEnabled(enabled);
-	setNiceName(niceName);
+    setEnabled(enabled);
+    setNiceName(niceName);
 }
 
 String Controllable::getControlAddress()
 {
-	StringArray addressArray;
-	addressArray.add(shortName);
+    StringArray addressArray;
+    addressArray.add(shortName);
 
-	ControllableContainer * pc = parentContainer;
+    ControllableContainer * pc = parentContainer;
 
-	while (pc != nullptr)
-	{
-		if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
-		pc = pc->parentContainer;
-	}
+    while (pc != nullptr)
+    {
+        if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
+        pc = pc->parentContainer;
+    }
 
-	return "/" + addressArray.joinIntoString("/");
+    return "/" + addressArray.joinIntoString("/");
 }

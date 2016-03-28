@@ -18,16 +18,16 @@
 class NodeBaseContentUI : public ContourComponent
 {
 public:
-	NodeBaseContentUI();
-	virtual ~NodeBaseContentUI();
+    NodeBaseContentUI();
+    virtual ~NodeBaseContentUI();
 
-	NodeBaseUI * nodeUI;
-	NodeBase * node;
+    NodeBaseUI * nodeUI;
+    NodeBase * node;
 
-	virtual void setNodeAndNodeUI(NodeBase * node,NodeBaseUI * nodeUI);
-	virtual void init();
+    virtual void setNodeAndNodeUI(NodeBase * node,NodeBaseUI * nodeUI);
+    virtual void init();
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseContentUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseContentUI)
 };
 
 #endif  // NODEBASECONTENTUI_H_INCLUDED

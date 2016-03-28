@@ -11,16 +11,16 @@
 #include "TriggerUI.h"
 
 TriggerUI::TriggerUI(Trigger * trigger) :
-	ControllableUI(trigger),
-	trigger(trigger)
+    ControllableUI(trigger),
+    trigger(trigger)
 {
-	trigger->addTriggerListener(this);
+    trigger->addTriggerListener(this);
 }
 
 TriggerUI::~TriggerUI()
 {
-    // TODO check global comportement for listeners
-	//trigger->removeListener(this);
+
+    trigger->removeTriggerListener(this);
 }
 
 void TriggerUI::triggerTriggered(Trigger * p)

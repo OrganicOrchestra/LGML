@@ -16,23 +16,24 @@
 class StringUtil
 {
 public:
-	static String toShortName(const String &niceName) {
-		if (niceName.isEmpty()) return "";
+    static String toShortName(const String &niceName) {
+        if (niceName.isEmpty()) return "";
 
-		StringArray sa;
-		sa.addTokens(niceName, false);
-		int index = 0;
-		for (auto &s : sa.strings)
-		{
-			if (s.isEmpty()) continue;
-			String initial = s.substring(0, 1);
+        StringArray sa;
+        sa.addTokens(niceName, false);
+        int index = 0;
+        for (auto &s : sa.strings)
+        {
+            if (s.isEmpty()) continue;
+            String initial = s.substring(0, 1);
             String upperCaseWord = s.replaceSection(0, 1, index == 0 ? initial.toLowerCase() : initial.toUpperCase());
-			s.swapWith(upperCaseWord);
-			index++;
-		}
+            s.swapWith(upperCaseWord);
+            s = s.replace("/","_");
+            index++;
+        }
 
-		return sa.joinIntoString("");
-	}
+        return sa.joinIntoString("");
+    }
 };
 
 

@@ -19,19 +19,22 @@ class StringParameterUI;
 class StringParameter : public Parameter
 {
 public:
-	StringParameter(const String &niceName, const String &description, const String &initialValue, bool enabled);
-	String value;
+    StringParameter(const String &niceName, const String &description, const String &initialValue, bool enabled=true);
+    String value;
 
-	void setValue(const String &value, bool silentSet = false, bool force = false)
-	{
-		if (this->value == value && !force) return;
-		this->value = value;
-		if (!silentSet) notifyValueChanged();
-	}
+    void setValue(const String &value, bool silentSet = false, bool force = false)
+    {
+        if (this->value == value && !force) return;
+        this->value = value;
+        if (!silentSet) notifyValueChanged();
+    }
 
-	StringParameterUI * getUI();
+    StringParameterUI * createStringParameterUI();
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameter)
+    ControllableUI* createDefaultControllableEditor()override;
+    String toString()override {return value;}
+    void fromString(const String & s,bool silentSet = false, bool force = false) override{setValue(s,silentSet,force);};
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameter)
 };
 
 

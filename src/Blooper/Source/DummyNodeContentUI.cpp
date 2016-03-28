@@ -20,24 +20,24 @@ DummyNodeContentUI::~DummyNodeContentUI()
 
 void DummyNodeContentUI::resized()
 {
-	if (node == nullptr) return;
-	Rectangle<int> r = getLocalBounds().reduced(10);
-	testSlider->setBounds(r.removeFromTop(25));
+    if (node == nullptr) return;
+    Rectangle<int> r = getLocalBounds().reduced(10);
+    testSlider->setBounds(r.removeFromTop(25));
 
-	testTriggerButton->setTopRightPosition(getWidth()-10, getHeight() - testTriggerButton->getHeight() - 10);
+    testTriggerButton->setTopRightPosition(getWidth()-10, getHeight() - testTriggerButton->getHeight() - 10);
 }
 
 void DummyNodeContentUI::init()
 {
-	//no need to call NodeBase init because there is nothing inside and there should not be anything !
+    //no need to call NodeBase init because there is nothing inside and there should not be anything !
 
-	dummyNode = (DummyNode *)node;
+    dummyNode = (DummyNode *)node;
 
-	testSlider = dummyNode->testFloatParam->createSlider();
-	addAndMakeVisible(testSlider);
+    testSlider = dummyNode->testFloatParam->createSlider();
+    addAndMakeVisible(testSlider);
 
-	testTriggerButton = dummyNode->testTrigger->createButtonUI();
-	addAndMakeVisible(testTriggerButton);
+    testTriggerButton = dummyNode->testTrigger->createButtonUI();
+    addAndMakeVisible(testTriggerButton);
 
-	nodeUI->setSize(200, 100);
+    nodeUI->setSize(200, 100);
 }

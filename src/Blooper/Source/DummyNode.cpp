@@ -13,18 +13,17 @@
 #include "DummyNodeContentUI.h"
 
 DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
-	NodeBase(nodeManager,nodeId, "DummyNode", new DummyAudioProcessor, new DummyDataProcessor)
+    NodeBase(nodeManager,nodeId, "DummyNode", new DummyAudioProcessor, new DummyDataProcessor)
 {
 
-	dataProcessor->addInputData("IN Number", DataProcessor::DataType::Number);
-	dataProcessor->addInputData("IN Position", DataProcessor::DataType::Position);
+    dataProcessor->addInputData("IN Number", DataProcessor::DataType::Number);
+    dataProcessor->addInputData("IN Position", DataProcessor::DataType::Position);
 
-	dataProcessor->addOutputData("OUT Number", DataProcessor::DataType::Number);
-	dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
+    dataProcessor->addOutputData("OUT Number", DataProcessor::DataType::Number);
+    dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
 
-	testFloatParam = addFloatParameter("Volume", "This is a test int slider",.23f);
-
-	testTrigger = addTrigger("Test Trigger", "Youpi");
+    testFloatParam = addFloatParameter("Volume", "This is a test int slider",.23f);
+    testTrigger = addTrigger("Test Trigger", "Youpi");
 
 }
 
@@ -34,18 +33,18 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 
  void DummyNode::parameterValueChanged(Parameter * p)
  {
-	 NodeBase::parameterValueChanged(p);
-
-	 if (p == testFloatParam)
-	 {
-		 ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();
-	 }
+     NodeBase::parameterValueChanged(p);
+     if (p == testFloatParam)
+     {
+//       ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();
+         ((DummyAudioProcessor*)audioProcessor)->period = 44100.0/(1.0+440.0*p->getNormalizedValue());
+     }
  }
 
  NodeBaseUI * DummyNode::createUI()
 {
 
-	NodeBaseUI * ui = new NodeBaseUI(this,new DummyNodeContentUI());
-	return ui;
-	
+    NodeBaseUI * ui = new NodeBaseUI(this,new DummyNodeContentUI());
+    return ui;
+
 }

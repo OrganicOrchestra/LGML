@@ -16,12 +16,12 @@ ControllerContentUI::ControllerContentUI()
 
   void ControllerContentUI::setControllerAndUI(Controller * controller, ControllerUI * cui)
   {
-	  this->controller = controller;
-	  this->cui = cui;
-	  init();
+      this->controller = controller;
+      this->cui = cui;
+      init();
   }
 
   void ControllerContentUI::init()
   {
-	  //to override
+      //to override
   }

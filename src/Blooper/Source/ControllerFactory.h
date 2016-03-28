@@ -21,63 +21,63 @@ class ControllerManager;
 class ControllerFactory
 {
 public:
-	enum ControllerType
-	{
-		OSCDirect,
-		DMX,
-		MIDI
-	};
+    enum ControllerType
+    {
+        OSCDirect,
+        DMX,
+        MIDI
+    };
 
-	ControllerFactory()
-	{
+    ControllerFactory()
+    {
 
-	}
+    }
 
-	~ControllerFactory()
-	{
+    ~ControllerFactory()
+    {
 
-	}
+    }
 
-	Controller * createController(ControllerType nodeType)
-	{
-		Controller * c = nullptr;
+    Controller * createController(ControllerType nodeType)
+    {
+        Controller * c = nullptr;
 
-		switch (nodeType)
-		{
-		case OSCDirect:
-			c = new OSCDirectController();
-			break;
+        switch (nodeType)
+        {
+        case OSCDirect:
+            c = new OSCDirectController();
+            break;
 
-		case DMX:
-			c = new DMXController();
-			break;
+        case DMX:
+            c = new DMXController();
+            break;
 
-		case MIDI:
-			c = new MIDIController();
-			break;
+        case MIDI:
+            c = new MIDIController();
+            break;
 
-		default:
-			jassert(false);
-			break;
-		}
+        default:
+            jassert(false);
+            break;
+        }
 
 
-		return c;
-	}
+        return c;
+    }
 
-	static PopupMenu * getControllerTypesMenu(int menuIdOffset = 0)
-	{
-		PopupMenu * p = new PopupMenu();
-		Array<String> controllerTypeNames = { "OSC Direct","DMX","MIDI" };
-		for (int i = 0; i < controllerTypeNames.size(); i++)
-		{
-			p->addItem(menuIdOffset + i + 1, controllerTypeNames[i]);
-		}
+    static PopupMenu * getControllerTypesMenu(int menuIdOffset = 0)
+    {
+        PopupMenu * p = new PopupMenu();
+        static const String controllerTypeNames [] = { "OSC Direct","DMX","MIDI" };
+        for (int i = 0; i < numElementsInArray(controllerTypeNames); i++)
+        {
+            p->addItem(menuIdOffset + i + 1, controllerTypeNames[i]);
+        }
 
-		return p;
-	}
+        return p;
+    }
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerFactory)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerFactory)
 };
 
 

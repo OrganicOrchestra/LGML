@@ -16,14 +16,14 @@
 class IntStepperUI : public ParameterUI
 {
 public:
-	IntStepperUI(Parameter * parameter);
-	~IntStepperUI();
+    IntStepperUI(Parameter * parameter);
+    virtual ~IntStepperUI();
 
 protected:
-	void parameterValueChanged(Parameter *) override  { repaint(); } ;
+    void parameterValueChanged(Parameter *) override  { repaint(); } ;
 
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntStepperUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntStepperUI)
 };
 
 

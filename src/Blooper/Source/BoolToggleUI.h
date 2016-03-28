@@ -19,16 +19,16 @@ class BoolToggleUI : public ParameterUI
 {
 public:
     BoolToggleUI(Parameter * parameter);
-    ~BoolToggleUI();
+    virtual ~BoolToggleUI();
 
-	BoolParameter * boolParam;
+    BoolParameter * boolParam;
 
-	void paint(Graphics &g) override;
-	void mouseDown(const MouseEvent &e) override;
-	void mouseUp(const MouseEvent &e) override;
+    void paint(Graphics &g) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 protected:
-	void parameterValueChanged(Parameter *) override;
+    void parameterValueChanged(Parameter *) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolToggleUI)
 };

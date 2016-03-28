@@ -21,7 +21,7 @@ public:
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
-    bool moreThanOneInstanceAllowed() override       { return true; }
+    bool moreThanOneInstanceAllowed() override       { return false; }
 
     //==============================================================================
     void initialise (const String& commandLine) override
@@ -31,7 +31,7 @@ public:
         options.applicationName     = "Blooper";
         options.filenameSuffix      = "settings";
         options.osxLibrarySubFolder = "Preferences";
-        
+
         appProperties = new ApplicationProperties();
         appProperties->setStorageParameters (options);
         Process::setPriority (Process::HighPriority);
@@ -98,9 +98,10 @@ public:
     private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
     };
-    
+
     ApplicationCommandManager commandManager;
     ScopedPointer<ApplicationProperties> appProperties;
+    AudioDeviceManager deviceManager;
 
 private:
     ScopedPointer<MainWindow> mainWindow;
@@ -111,6 +112,7 @@ private:
 static BlooperApplication& getApp()                 { return *dynamic_cast<BlooperApplication*>(JUCEApplication::getInstance()); }
 ApplicationCommandManager& getCommandManager()      { return getApp().commandManager; }
 ApplicationProperties& getAppProperties()           { return *getApp().appProperties; }
+AudioDeviceManager & getAudioDeviceManager()        {return getApp().deviceManager;}
 //==============================================================================
 // This macro generates the main() routine that launches the app.
 START_JUCE_APPLICATION (BlooperApplication)

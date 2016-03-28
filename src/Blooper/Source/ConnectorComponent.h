@@ -26,42 +26,45 @@ class ConnectorComponent : public Component, public SettableTooltipClient
 {
 public:
 
-	enum ConnectorIOType
-	{
-		INPUT, OUTPUT
-	};
+    enum ConnectorIOType
+    {
+        INPUT, OUTPUT
+    };
 
 
-	enum ConnectorDisplayLevel
-	{
-		MINIMAL, CONNECTED, ALL
-	};
+    enum ConnectorDisplayLevel
+    {
+        MINIMAL, CONNECTED, ALL
+    };
 
 
-	NodeConnection::ConnectionType dataType;
-	ConnectorIOType ioType;
-	NodeBase * node;
+    NodeConnection::ConnectionType dataType;
+    ConnectorIOType ioType;
+    NodeBase * node;
 
-	//layout
+    //layout
 
-	//style
-	Colour boxColor;
+    //style
+    Colour boxColor;
+    bool isHovered;
 
-	ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
+    ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
 
-	void paint(Graphics &g);
+    void paint(Graphics &g)override;
 
-	void mouseDown(const MouseEvent &e) override;
-	//void mouseDrag(const MouseEvent &e) override;
-	//void mouseUp(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseEnter (const MouseEvent&)override;
+    void mouseExit  (const MouseEvent&)override;
+    //void mouseDrag(const MouseEvent &e) override;
+    //void mouseUp(const MouseEvent &e) override;
 
 
-	void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataProcessor::DataType &selectedDataType, const DataProcessor::DataType &filterType = DataProcessor::DataType::Unknown);
-	
-	NodeManagerUI * getNodeManagerUI() const noexcept;
-	NodeBaseUI * getNodeUI() const noexcept;
+    void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataProcessor::DataType &selectedDataType, const DataProcessor::DataType &filterType = DataProcessor::DataType::Unknown);
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorComponent)
+    NodeManagerUI * getNodeManagerUI() const noexcept;
+    NodeBaseUI * getNodeUI() const noexcept;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorComponent)
 };
 
 

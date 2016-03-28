@@ -13,6 +13,4 @@
 
 
 
-
-
 #endif  // SETTINGSMANAGER_H_INCLUDED
