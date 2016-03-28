@@ -291,11 +291,12 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder"
                vstFolder="" vst3Folder="" postbuildCommand="">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
                        isDebug="1" optimisation="1" targetName="Blooper" cppLanguageStandard="c++98"
                        cppLibType="libstdc++" binaryPath=""/>
-        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
-                       isDebug="0" optimisation="3" targetName="Blooper" binaryPath=""/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
+                       isDebug="0" optimisation="3" targetName="Blooper" binaryPath=""
+                       cppLanguageStandard="c++98" cppLibType="libstdc++"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../../../Dev/JUCE/modules"/>
