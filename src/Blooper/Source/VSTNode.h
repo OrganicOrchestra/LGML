@@ -38,8 +38,8 @@ public:
     public:
         PluginWindowParameters():ControllableContainer("PluginWindow Parameters")
         {
-            x = addFloatParameter("x","x position of plugin window", Random::getSystemRandom().nextInt (500),0,1000);
-            y = addFloatParameter("y","y position of plugin window", Random::getSystemRandom().nextInt (500),0,1000);
+            x = addFloatParameter("x","x position of plugin window", (float)Random::getSystemRandom().nextInt(500),0.f,1000.f);
+            y = addFloatParameter("y","y position of plugin window", (float)Random::getSystemRandom().nextInt (500),0.f,1000.f);
             isDisplayed = addBoolParameter("isDisplayed","is the plugin window displayed",false);
         }
 
@@ -57,7 +57,7 @@ public:
                                          int parameterIndex,
                                          float newValue) override;
 
-    void audioProcessorChanged (AudioProcessor* processor)override{};
+    void audioProcessorChanged (AudioProcessor*) override{};
 
 
 
@@ -114,7 +114,7 @@ public:
 
 
         void numChannelsChanged()override;
-        void prepareToPlay(double sampleRate,int blockSize)override  {if(innerPlugin){innerPlugin->prepareToPlay(sampleRate,blockSize);}}
+        void prepareToPlay(double _sampleRate,int _blockSize)override  {if(innerPlugin){innerPlugin->prepareToPlay(_sampleRate,_blockSize);}}
         void releaseResources() override    {if(innerPlugin){innerPlugin->releaseResources();}};
         bool hasEditor() const override     {if(innerPlugin){return innerPlugin->hasEditor();}return false;};
         void getStateInformation(MemoryBlock & destData)override    {if(innerPlugin){innerPlugin->getStateInformation(destData);};}

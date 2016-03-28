@@ -34,14 +34,14 @@ public:
 
     bool skipControllableNameInAddress;
 
-    void setNiceName(const String &niceName) {
-        this->niceName = niceName;
+    void setNiceName(const String &_niceName) {
+        this->niceName = _niceName;
         if (!hasCustomShortName) setAutoShortName();
     }
 
-    void setCustomShortName(const String &shortName)
+    void setCustomShortName(const String &_shortName)
     {
-        this->shortName = shortName;
+        this->shortName = _shortName;
         hasCustomShortName = true;
     }
 

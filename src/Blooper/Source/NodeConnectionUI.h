@@ -47,7 +47,7 @@ public:
     void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
 
     void updateBoundsFromNodes();
-    virtual bool hitTest(int x, int y) override{ return hitPath.contains(x, y); }
+    virtual bool hitTest(int x, int y) override{ return hitPath.contains((float)x, (float)y); }
 
     //interaction
     void mouseDown(const MouseEvent &e) override;

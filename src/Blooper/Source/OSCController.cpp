@@ -45,7 +45,7 @@ void OSCController::setupSender()
     sender.connect(remoteHostParam->value, remotePortParam->value.getIntValue());
 }
 
-void OSCController::processMessage(const OSCMessage & msg)
+void OSCController::processMessage(const OSCMessage &)
 {
     //to override
 }

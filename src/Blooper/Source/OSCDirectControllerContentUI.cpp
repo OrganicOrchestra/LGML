@@ -33,9 +33,9 @@ void OSCDirectControllerContentUI::init()
     cui->setSize(300, 150);
 
     Array<Controllable *> nodeControllables = NodeManager::getInstance()->getAllControllables(true);
-    for (auto &c : nodeControllables)
+    for (auto &_c : nodeControllables)
     {
-        DBG(c->controlAddress+"     "+c->description);
+        DBG(_c->controlAddress+"     "+_c->description);
     }
 }
 
@@ -50,7 +50,7 @@ void OSCDirectControllerContentUI::resized()
 
 }
 
-void OSCDirectControllerContentUI::mouseDown(const MouseEvent & e)
+void OSCDirectControllerContentUI::mouseDown(const MouseEvent &)
 {
 
     DBG("mouse down");

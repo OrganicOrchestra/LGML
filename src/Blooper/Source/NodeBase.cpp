@@ -109,11 +109,11 @@ void NodeBase::removeFromAudioGraphIfNeeded(){
     }
 }
 
-void NodeBase::NodeDataProcessor::receiveData(const Data * incomingData, const String &destDataName, const String &destElementName, const String &sourceElementName)
+void NodeBase::NodeDataProcessor::receiveData(const Data * /*incomingData*/, const String &/*destDataName*/, const String &/*destElementName*/, const String &/*sourceElementName*/)
 {
 }
 
-void NodeBase::NodeDataProcessor::sendData(const Data * outgoingData, const String &sourceElementName)
+void NodeBase::NodeDataProcessor::sendData(const Data * /*outgoingData*/, const String &/*sourceElementName*/)
 {
 
 }
@@ -161,7 +161,7 @@ void NodeBase::NodeAudioProcessor::updateRMS(AudioBuffer<float>& buffer){
         if (s > rmsValue)
             rmsValue = s;
         else if (rmsValue > 0.001f)
-            rmsValue *= decayFactor;
+            rmsValue *= (float)decayFactor;
         else
             rmsValue = 0;
     }

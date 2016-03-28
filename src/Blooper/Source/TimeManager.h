@@ -88,6 +88,8 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
         /** Destructor. */
         virtual ~Listener() {}
 
+#pragma warning(push)
+#pragma warning(disable: 4100) // Windows :: disables unreferenced formal parameter warning
 
         METHOD_SYNC_ASYNC(stop)
         METHOD_SYNC_ASYNC(play)
@@ -96,6 +98,8 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
         METHOD_SYNC_ASYNC1(newBeat,int)
         METHOD_SYNC_ASYNC1(newBPM,double)
         METHOD_SYNC_ASYNC1(beatPerBarChanged,int)
+
+#pragma warning(pop)
 
 
         void handleAsyncUpdate()override {
@@ -118,7 +122,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     public:
         AsyncNotifier(TimeManager* _owner):owner(_owner){};
         void async_newBPM(double bpm) override{
-            owner->BPM->setValue(bpm);
+            owner->BPM->setValue((float)bpm);
         }
         TimeManager* owner;
     };
@@ -136,7 +140,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
 
 
     virtual void audioDeviceAboutToStart (AudioIODevice* device) {
-        setSampleRate(device->getCurrentSampleRate());
+        setSampleRate((int)device->getCurrentSampleRate());
      // should we notify blockSize?
     };
 

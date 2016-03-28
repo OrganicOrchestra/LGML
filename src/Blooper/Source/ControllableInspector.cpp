@@ -11,9 +11,12 @@
 #include "ControllableInspector.h"
 
 
-ControllableInspector::ControllableInspector(NodeManagerUI * nmui):proxyContainer(nullptr){
-    nmui->selectableHandler.addSelectableHandlerListener(this);
+ControllableInspector::ControllableInspector(NodeManagerUI * _nmui):
+	proxyContainer(nullptr)
+{
+	_nmui;//
 
+    _nmui->selectableHandler.addSelectableHandlerListener(this);
 }
 
 void ControllableInspector::selectableChanged(SelectableComponent * _node,bool state){

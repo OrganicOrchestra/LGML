@@ -60,12 +60,12 @@ void LooperNodeUI::resized(){
 
 void LooperNodeUI::reLayoutHeader(){
 
-    float selectedW = .4;
+    float selectedW = .4f;
     Rectangle<int> area = headerContainer.getBounds();
     int pad = 3;
-    Rectangle<int> selTrackArea = area.removeFromLeft(selectedW*area.getWidth());
-    recPlaySelectedButton->setBounds(selTrackArea.removeFromTop(.6*selTrackArea.getHeight()).reduced(pad));
-    stopSelectedButton->setBounds(selTrackArea.removeFromLeft(.5*selTrackArea.getWidth()).reduced(pad));
+    Rectangle<int> selTrackArea = area.removeFromLeft((int)(selectedW*area.getWidth()));
+    recPlaySelectedButton->setBounds(selTrackArea.removeFromTop((int)(.6f*selTrackArea.getHeight())).reduced(pad));
+    stopSelectedButton->setBounds(selTrackArea.removeFromLeft((int)(.5f*selTrackArea.getWidth())).reduced(pad));
     clearSelectedButton->setBounds(selTrackArea.reduced(pad));
 
     stopAllButton->setBounds(area.removeFromLeft(area.getWidth()/3).reduced(pad));
@@ -78,16 +78,16 @@ void LooperNodeUI::reLayoutTracks(){
 
         int numRow = 2;
         int numCol = tracksUI.size()/numRow ;
-        float width = 1.0/numCol;
-        float height =1.0/numRow;
-        float pad = 0.02;
+        float width = 1.0f/numCol;
+        float height =1.0f/numRow;
+        float pad = 0.02f;
 
         for(int j = 0 ; j < numRow ; j++){
             for(int i = 0 ; i < numCol ;i++){
                 int idx = j*numCol + i;
                 if(idx < tracksUI.size()){
-                    tracksUI.getUnchecked(idx)->setBoundsRelative(i*1.0/numCol + pad, j*1.0/numRow + pad,
-                                                                  width - 2.0*pad, height - 2.0*pad);
+                    tracksUI.getUnchecked(idx)->setBoundsRelative(i*1.0f/numCol + pad, j*1.0f/numRow + pad,
+                                                                  width - 2.0f*pad, height - 2.0f*pad);
                 }
             }
         }

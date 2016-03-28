@@ -26,19 +26,19 @@ public:
     float valueMin;
     float valueMax;
 
-    void setValuesMinMax(const float &valueMin, const float &valueMax, bool silentSet = false, bool force = false)
+    void setValuesMinMax(const float &_valueMin, const float &_valueMax, bool silentSet = false, bool force = false)
     {
-        if (!force && this->valueMin == valueMin && this->valueMax == valueMax) return;
-        this->valueMin = jlimit<float>(minValue, maxValue, valueMin);
-        this->valueMax = jlimit<float>(valueMin, maxValue, valueMax);
+        if (!force && this->valueMin == _valueMin && this->valueMax == _valueMax) return;
+        this->valueMin = jlimit<float>(minValue, maxValue, _valueMin);
+        this->valueMax = jlimit<float>(_valueMin, maxValue, _valueMax);
         if (!silentSet) notifyValueChanged();
     }
 
-    void setValuesMaxMin(const float &valueMin, const float &valueMax, bool silentSet = false, bool force = false)
+    void setValuesMaxMin(const float &_valueMin, const float &_valueMax, bool silentSet = false, bool force = false)
     {
-        if (!force && this->valueMin == valueMin && this->valueMax == valueMax) return;
-        this->valueMax = jlimit<float>(minValue, maxValue, valueMax);
-        this->valueMin = jlimit<float>(minValue, valueMax, valueMin);
+        if (!force && this->valueMin == _valueMin && this->valueMax == _valueMax) return;
+        this->valueMax = jlimit<float>(minValue, maxValue, _valueMax);
+        this->valueMin = jlimit<float>(minValue, _valueMax, _valueMin);
         if (!silentSet) notifyValueChanged();
     }
 
@@ -52,7 +52,8 @@ public:
         return jmap<float>(valueMax, minValue, maxValue, 0, 1);
     }
     String toString()override { return String::formatted("%f,%f,%f,%f",valueMin,valueMax,minValue,maxValue);}
-    void fromString(const String & s,bool silentSet = false, bool force = false) override{
+
+    void fromString(const String & s,bool = false, bool = false) override{
         StringArray sa;
         sa.addTokens(s,",");
         DBG("to implement");

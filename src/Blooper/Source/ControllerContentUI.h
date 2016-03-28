@@ -22,7 +22,7 @@ public:
     Controller * controller;
     ControllerUI * cui;
 
-    void setControllerAndUI(Controller * controller, ControllerUI * cui);
+    void setControllerAndUI(Controller * _controller, ControllerUI * _cui);
     virtual void init(); //override this function for proper init with controller and UI
 
     virtual void mouseDown(const MouseEvent &e) override

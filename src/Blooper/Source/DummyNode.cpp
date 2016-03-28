@@ -37,7 +37,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
      if (p == testFloatParam)
      {
 //       ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();
-         ((DummyAudioProcessor*)audioProcessor)->period = 44100.0/(1.0+440.0*p->getNormalizedValue());
+         ((DummyAudioProcessor*)audioProcessor)->period = (int)(44100.0f/(1.0f+440.0f*p->getNormalizedValue()));
      }
  }
 

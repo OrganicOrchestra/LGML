@@ -83,7 +83,7 @@ public:
     virtual bool perform (const InvocationInfo& info) override ;
     StringArray getMenuBarNames() override ;
     virtual PopupMenu getMenuForIndex (int topLevelMenuIndex,const String& menuName) override;
-    void menuItemSelected (int menuItemID,int topLevelMenuIndex) override{}
+    void menuItemSelected (int /*menuItemID*/,int /*topLevelMenuIndex*/) override{}
 
     //==============================================================================
     // see MainContentFileDocument.cpp

@@ -54,22 +54,22 @@ void NodeConnectionUI::paint (Graphics& g)
     ContourComponent::paint(g);
 
     //DBG("PAINT !!");
-    Point<int> sourcePos;
-    Point<int> endPos;
+    Point<float> sourcePos;
+    Point<float> endPos;
 
     if (isEditing())
     {
-        sourcePos = getLocalPoint(getBaseConnector(),getBaseConnector()->getLocalBounds().getCentre());
+        sourcePos = getLocalPoint(getBaseConnector(),getBaseConnector()->getLocalBounds().getCentre()).toFloat();
         endPos = (candidateDropConnector != nullptr)?
-        getLocalPoint(candidateDropConnector, candidateDropConnector->getLocalBounds().getCentre()):
-        getMouseXYRelative();
+        getLocalPoint(candidateDropConnector, candidateDropConnector->getLocalBounds().getCentre()).toFloat():
+        getMouseXYRelative().toFloat();
     }else
     {
-        sourcePos = getLocalPoint(sourceConnector, sourceConnector->getLocalBounds().getCentre());
-        endPos = getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre());
+        sourcePos = getLocalPoint(sourceConnector, sourceConnector->getLocalBounds().getCentre()).toFloat();
+        endPos = getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre()).toFloat();
     }
 
-    Point<int> midPoint = (sourcePos + endPos) / 2;
+    Point<float> midPoint = (sourcePos + endPos) / 2;
 
 //  int minDist = -200;
 //  int maxDist = 100;
@@ -85,10 +85,10 @@ void NodeConnectionUI::paint (Graphics& g)
     //@ben I prefer that atm (at least it doesnt start with weird anchors)
     //but I'm up for any other fancy complexoid cuved Path algos that never touch a node
 
-    float smoothBigConnector = 1+ .01*(jmax<float>(10,std::abs(endPos.x - sourcePos.x))-10);
+    float smoothBigConnector = 1+ .01f*(jmax<float>(10,std::abs(endPos.x - sourcePos.x))-10);
     float anchorOffset = (endPos.x - sourcePos.x)/(2*smoothBigConnector);
-    int sourceAnchorX = sourcePos.x + anchorOffset;
-    int endAnchorX = endPos.x - anchorOffset;
+	float sourceAnchorX = sourcePos.x + anchorOffset;
+	float endAnchorX = endPos.x - anchorOffset;
 
 
     int hitMargin = 30;
@@ -210,7 +210,7 @@ void NodeConnectionUI::setDestConnector(Connector * c)
     repaint();
 }
 
-void NodeConnectionUI::componentMovedOrResized(Component & component, bool wasMoved, bool wasResize)
+void NodeConnectionUI::componentMovedOrResized(Component &, bool, bool)
 {
     updateBoundsFromNodes();
 }

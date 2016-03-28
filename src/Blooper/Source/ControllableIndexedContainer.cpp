@@ -10,7 +10,7 @@
 
 #include "ControllableIndexedContainer.h"
 
-Controllable * ControllableIndexedContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
+Controllable * ControllableIndexedContainer::getControllableForAddress(Array<String> addressSplit, bool /*recursive*/, bool /*getNotExposed*/)
 {
 
     //Indexed container is not made to directly contain contrallable, but only multiple containers of the same type

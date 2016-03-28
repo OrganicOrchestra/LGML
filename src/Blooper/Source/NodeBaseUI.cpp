@@ -59,12 +59,12 @@ NodeBaseUI::~NodeBaseUI()
 
 void NodeBaseUI::moved(){
     if(node->xPosition->value != getBounds().getCentreX() ||node->yPosition->value != getBounds().getCentreY() ){
-        node->xPosition->value = getBounds().getCentreX();
-        node->yPosition->value = getBounds().getCentreY();
+        node->xPosition->value = (float)getBounds().getCentreX();
+        node->yPosition->value = (float)getBounds().getCentreY();
     }
 }
 
-void NodeBaseUI::setNode(NodeBase * node)
+void NodeBaseUI::setNode(NodeBase *)
 {
 
 
@@ -73,7 +73,7 @@ void NodeBaseUI::setNode(NodeBase * node)
 }
 
 
-void NodeBaseUI::paint (Graphics& g)
+void NodeBaseUI::paint (Graphics&)
 {
 
 }
@@ -104,7 +104,7 @@ void NodeBaseUI::childBoundsChanged (Component* c){
 }
 void NodeBaseUI::parameterValueChanged(Parameter * p) {
     if(p== node->xPosition||p==node->yPosition){
-        setCentrePosition(node->xPosition->value, node->yPosition->value);
+        setCentrePosition((int)node->xPosition->value, (int)node->yPosition->value);
     }
 }
 
@@ -113,9 +113,11 @@ NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
     return findParentComponentOfClass<NodeManagerUI>();
 }
 
-void NodeBaseUI::mouseDown(const MouseEvent & e)
+void NodeBaseUI::mouseDown(const MouseEvent &event)
 {
-    if (e.mods.getCurrentModifiers().isCtrlDown())
+	event;// avoir unreferenced formal parameter warning
+
+    if (event.mods.getCurrentModifiers().isCtrlDown())
     {
         DBG("Node->remove");
         node->remove();
@@ -125,11 +127,9 @@ void NodeBaseUI::mouseDown(const MouseEvent & e)
         nodeInitPos = getBounds().getCentre();
 
     }
-
-
 }
 
-void NodeBaseUI::mouseUp(const juce::MouseEvent &event){
+void NodeBaseUI::mouseUp(const juce::MouseEvent &){
     NodeManagerUI * nmui = getNodeManagerUI();
     if(nmui){nmui->setAllNodesToStartAtZero();}
     askForSelection(true,true);
@@ -141,8 +141,8 @@ void NodeBaseUI::mouseDrag(const MouseEvent & e)
 {
     Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
     Point <int> newPos = nodeInitPos + diff;
-    node->xPosition->setValue(newPos.x);
-    node->yPosition->setValue(newPos.y);
+    node->xPosition->setValue((float)newPos.x);
+    node->yPosition->setValue((float)newPos.y);
 }
 
 
@@ -153,28 +153,28 @@ NodeBaseUI::ConnectorContainer::ConnectorContainer(ConnectorComponent::Connector
     setInterceptsMouseClicks(false, true);
 }
 
-void NodeBaseUI::ConnectorContainer::setConnectorsFromNode(NodeBase * node)
+void NodeBaseUI::ConnectorContainer::setConnectorsFromNode(NodeBase * _node)
 {
     connectors.clear();
 
     //for later : this is the creation for minimal display level
-    bool hasAudio = (type == ConnectorComponent::INPUT) ? node->hasAudioInputs : node->hasAudioOutputs;
-    bool hasData = (type == ConnectorComponent::INPUT) ? node->hasDataInputs : node->hasDataOutputs;
+    bool hasAudio = (type == ConnectorComponent::INPUT) ? _node->hasAudioInputs : _node->hasAudioOutputs;
+    bool hasData = (type == ConnectorComponent::INPUT) ? _node->hasDataInputs : _node->hasDataOutputs;
 
     if (hasAudio)
     {
-        addConnector(type, NodeConnection::ConnectionType::AUDIO, node);
+        addConnector(type, NodeConnection::ConnectionType::AUDIO, _node);
     }
 
     if (hasData)
     {
-        addConnector(type, NodeConnection::ConnectionType::DATA, node);
+        addConnector(type, NodeConnection::ConnectionType::DATA, _node);
     }
 }
 
-void NodeBaseUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node)
+void NodeBaseUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * _node)
 {
-    ConnectorComponent * c = new ConnectorComponent(ioType, dataType, node);
+    ConnectorComponent * c = new ConnectorComponent(ioType, dataType, _node);
 
     c->setTopLeftPosition(0, 10 + getNumChildComponents()*(getHeight() + 30));
 
@@ -203,10 +203,10 @@ headerContainer(header), contentContainer(content)
     addAndMakeVisible(contentContainer);
 }
 
-void NodeBaseUI::MainContainer::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
+void NodeBaseUI::MainContainer::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 {
-    headerContainer->setNodeAndNodeUI(node, nodeUI);
-    contentContainer->setNodeAndNodeUI(node, nodeUI);
+    headerContainer->setNodeAndNodeUI(_node, _nodeUI);
+    contentContainer->setNodeAndNodeUI(_node, _nodeUI);
 }
 
 void NodeBaseUI::MainContainer::paint(Graphics & g)

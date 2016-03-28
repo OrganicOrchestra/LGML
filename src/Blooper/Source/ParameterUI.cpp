@@ -23,7 +23,7 @@ ParameterUI::~ParameterUI()
     parameter->removeParameterListener(this);
 }
 
-void ParameterUI::parameterValueChanged(Parameter * p)
+void ParameterUI::parameterValueChanged(Parameter *)
 {
     //to be overriden
 }

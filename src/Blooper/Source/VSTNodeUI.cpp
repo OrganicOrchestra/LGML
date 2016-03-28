@@ -53,7 +53,7 @@ void VSTNodeUI::updateVSTParameters(){
     resized();
 }
 
-void VSTNodeUI::controllableAdded(Controllable * c) {};
+void VSTNodeUI::controllableAdded(Controllable *) {};
 void VSTNodeUI::controllableRemoved(Controllable * c){
     for(auto &p:paramSliders){
         if(p->floatParam == c){
@@ -63,9 +63,9 @@ void VSTNodeUI::controllableRemoved(Controllable * c){
         }
     };
 }
-void VSTNodeUI::controllableContainerAdded(ControllableContainer * cc){};
-void VSTNodeUI::controllableContainerRemoved(ControllableContainer * cc) {};
-void VSTNodeUI::controllableFeedbackUpdate(Controllable *c) {};
+void VSTNodeUI::controllableContainerAdded(ControllableContainer *){};
+void VSTNodeUI::controllableContainerRemoved(ControllableContainer *) {};
+void VSTNodeUI::controllableFeedbackUpdate(Controllable *) {};
 
 
 
@@ -85,7 +85,7 @@ void VSTNodeUI::resized(){
 }
 
 void VSTNodeUI::layoutSliderParameters(Rectangle<int> pArea){
-    if(paramSliders.isEmpty())return;
+    if(paramSliders.size() == 0) return;
     int maxLines = 4;
 
     int numLines = jmin(maxLines,paramSliders.size());

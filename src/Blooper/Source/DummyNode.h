@@ -22,13 +22,12 @@ public:
     public:
         DummyAudioProcessor():NodeBase::NodeAudioProcessor(){}
         int step = 0;
-        int period = 44100*1.0/300;
-        float amp = 1;
-        void processBlockInternal(AudioBuffer<float>& buffer,
-            MidiBuffer& midiMessages) {
+        int period = (int)(44100 *1.0f/300);
+        float amp = 1.f;
+        void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
             for(int i = 0 ; i < buffer.getNumSamples() ; i++){
-                buffer.addSample(0, i, amp*cos(2.0*double_Pi*step*1.0/period));
+                buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step*1.0/period)));
                 step++;
                 if(step>period){step = 0;}
 
@@ -45,7 +44,7 @@ public:
     public:
         DummyDataProcessor() :NodeBase::NodeDataProcessor() {}
 
-        virtual void processData(Data * incomingData, const String &targetInputDataName, const String &targetDataComponentName) {}
+        virtual void processData(Data *, const String &, const String &) {}
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyDataProcessor)
     };

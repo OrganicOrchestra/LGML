@@ -44,17 +44,17 @@ void TimeManager::incrementClock(int time){
     }
     int newBeat = getBeat();
     if(lastBeat!=newBeat){
-        listeners.call(&Listener::internal_newBeat,newBeat);
+        listeners.call(&TimeManager::Listener::internal_newBeat,newBeat);
         if(newBeat%beatPerBar == 0){
-            listeners.call(&Listener::internal_newBar,getBar());
+            listeners.call(&TimeManager::Listener::internal_newBar,getBar());
 
         }
     }
 }
 
 
-void TimeManager::audioDeviceIOCallback (const float** inputChannelData,
-                                         int numInputChannels,
+void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
+                                         int /*numInputChannels*/,
                                          float** outputChannelData,
                                          int numOutputChannels,
                                          int numSamples) {
@@ -73,11 +73,11 @@ bool TimeManager::askForBeingMasterNode(NodeBase * n){
 }
 
 void TimeManager::setPlayState(bool s,bool _isSettingTempo){
-    listeners.call(&Listener::internal_isSettingTempo,_isSettingTempo);
+    listeners.call(&TimeManager::Listener::internal_isSettingTempo,_isSettingTempo);
     isSettingTempo = _isSettingTempo;
     playState = s;
-    if(!s){ listeners.call(&Listener::internal_stop);DBG("stop");}
-    else{ listeners.call(&Listener::internal_play);DBG("play");}
+    if(!s){ listeners.call(&TimeManager::Listener::internal_stop);DBG("stop");}
+    else{ listeners.call(&TimeManager::Listener::internal_play);DBG("play");}
 }
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
@@ -87,15 +87,15 @@ void TimeManager::setSampleRate(int sr){
 }
 void TimeManager::setBPM(double _BPM){
     isSettingTempo = false;
-    listeners.call(&Listener::internal_isSettingTempo,isSettingTempo);
-    beatTimeInSample = sampleRate*60.0/_BPM;
+	listeners.call(&TimeManager::Listener::internal_isSettingTempo, isSettingTempo);
+	beatTimeInSample = (int)(sampleRate*60.0f / _BPM);
     timeInSample = 0;
-    listeners.call(&Listener::internal_newBPM,_BPM);
+    listeners.call(&TimeManager::Listener::internal_newBPM,_BPM);
 }
 
 void TimeManager::setBeatPerBar(int bpb){
     beatPerBar = bpb;
-    listeners.call(&Listener::internal_beatPerBarChanged,beatPerBar);
+    listeners.call(&TimeManager::Listener::internal_beatPerBarChanged,beatPerBar);
 }
 int TimeManager::setBPMForLoopLength(int time){
     double time_seconds = time* 1.0/ sampleRate;
@@ -112,10 +112,10 @@ int TimeManager::setBPMForLoopLength(int time){
 }
 
 void TimeManager::setNumBeatForQuantification(int n){beatPerQuantizedTime = n;}
-int TimeManager::getNextQuantifiedTime(){return ceil((getBeat() + 1)*1.0/beatPerQuantizedTime) *beatPerQuantizedTime* beatTimeInSample;}
+int TimeManager::getNextQuantifiedTime(){return (int)(ceil((getBeat() + 1)*1.0/beatPerQuantizedTime) *beatPerQuantizedTime* beatTimeInSample);}
 double TimeManager::getBPM(){return sampleRate*60.0/beatTimeInSample;}
 
-int TimeManager::getBeat(){return floor(timeInSample*1.0/beatTimeInSample);}
+int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample));}
 double TimeManager::getBeatPercent(){return timeInSample*1.0/beatTimeInSample-getBeat();}
 
 int TimeManager::getBar(){return getBeat()/beatPerBar;}

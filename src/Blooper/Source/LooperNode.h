@@ -109,10 +109,10 @@ public:
                 TrackState stateToBeNotified;
 
                 // dispatched to listeners
-                virtual void trackStateChanged(const TrackState & state) {};
+                virtual void trackStateChanged(const TrackState &) {};
                 virtual void trackStateChangedAsync(const TrackState & state) = 0;
                 void handleAsyncUpdate() override{trackStateChangedAsync(stateToBeNotified);}
-                virtual void trackSelected(bool isSelected){};
+                virtual void trackSelected(bool){};
             };
             ListenerList<Listener> trackStateListeners;
             void addTrackListener(Listener* newListener) { trackStateListeners.add(newListener); }
@@ -156,7 +156,7 @@ public:
             Looper * parentLooper;
 
             void processBlock(AudioBuffer<float>& buffer, MidiBuffer & midi);
-            const float defaultVolumeValue = 0.8;
+            const float defaultVolumeValue = 0.8f;
 
 
             void cleanAllQuantizeNeedles();

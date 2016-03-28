@@ -57,7 +57,7 @@ void StringParameterUI::parameterValueChanged(Parameter * p)
     valueLabel.setText(stringParam->value,NotificationType::dontSendNotification);
 }
 
-void StringParameterUI::labelTextChanged(Label * labelThatHasChanged)
+void StringParameterUI::labelTextChanged(Label *)
 {
     stringParam->setValue(valueLabel.getText());
 }

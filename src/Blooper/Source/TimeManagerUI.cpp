@@ -35,7 +35,7 @@ TimeManagerUI::TimeBar::TimeBar(){
     TimeManager::getInstance()->addTimeManagerListener(this);
     initComponentsForNumBeats(TimeManager::getInstance()->beatPerBar);
 }
-void TimeManagerUI::TimeBar::initComponentsForNumBeats(int nb){
+void TimeManagerUI::TimeBar::initComponentsForNumBeats(int /*nb*/){
     beatComponents.clear();
     int beatPerBar =TimeManager::getInstance()->beatPerBar;
     for(int i = 0 ;i <beatPerBar ; i++){
@@ -95,7 +95,7 @@ void TimeManagerUI::TimeBar::timerCallback(){
         for(int i = 0 ; i< beatComponents.size() ; i++){
             BeatComponent * bc = beatComponents.getUnchecked(i);
             if(i==lastBeat){
-                bc->percentDone = TimeManager::getInstance()->getBeatPercent();
+                bc->percentDone = (float)TimeManager::getInstance()->getBeatPercent();
                 bc->repaint();
             }
             // ensure old beats are filled
@@ -120,7 +120,7 @@ void TimeManagerUI::TimeBar::paint(Graphics & g) {
             blinkCount-=1;
         }
 
-        g.setColour(Colours::red.brighter(1-sin(2.0*double_Pi*blinkCount)));
+        g.setColour(Colours::red.brighter(1-sin((float)(2.0f*double_Pi*blinkCount))));
         g.fillRect(area);
     }
 }
@@ -140,7 +140,7 @@ void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g){
     }
     else{
         g.setColour(Colours::orange);
-        g.fillRect(area.removeFromLeft(percentDone*area.getWidth()));
+        g.fillRect(area.removeFromLeft((int)(percentDone*area.getWidth())));
         g.setColour(Colours::black);
         g.fillRect(area);
 

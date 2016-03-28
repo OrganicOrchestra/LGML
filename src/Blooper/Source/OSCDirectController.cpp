@@ -72,7 +72,7 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
                 if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
                 {
                     float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                    ((IntParameter *)c)->setValue(value); //normalized or not ? can user decide ?
+                    ((IntParameter *)c)->setValue((int)value); //normalized or not ? can user decide ?
                 }
                 break;
 
@@ -101,11 +101,11 @@ ControllerUI * OSCDirectController::createUI()
     return new ControllerUI(this, new OSCDirectControllerContentUI());
 }
 
-void OSCDirectController::controllableAdded(Controllable * c)
+void OSCDirectController::controllableAdded(Controllable *)
 {
 }
 
-void OSCDirectController::controllableRemoved(Controllable * c)
+void OSCDirectController::controllableRemoved(Controllable *)
 {
 
 }
@@ -185,10 +185,10 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
 
 }
 
-void OSCDirectController::controllableContainerAdded(ControllableContainer * cc)
+void OSCDirectController::controllableContainerAdded(ControllableContainer *)
 {
 }
 
-void OSCDirectController::controllableContainerRemoved(ControllableContainer * cc)
+void OSCDirectController::controllableContainerRemoved(ControllableContainer *)
 {
 }

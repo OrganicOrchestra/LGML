@@ -23,6 +23,6 @@ TriggerUI::~TriggerUI()
     trigger->removeTriggerListener(this);
 }
 
-void TriggerUI::triggerTriggered(Trigger * p)
+void TriggerUI::triggerTriggered(Trigger *)
 {
 }

@@ -229,7 +229,7 @@ lastInternalTrackState(internalTrackState)
     volume->setValue(defaultVolumeValue);
 }
 
-void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuffer &midi){
+void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuffer &){
 
 
     updatePendingLooperTrackState(TimeManager::getInstance()->timeInSample,buffer.getNumSamples());
@@ -296,7 +296,7 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
 
 
 }
-void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTime, int blockSize){
+void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTime, int _blockSize){
 
 
     //    process changed internalState
@@ -304,7 +304,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
 
         if(internalTrackState == BUFFER_RECORDING){
             if(isMasterTempoTrack() ){
-                int samplesToGet = preDelayMs->value*0.001*parentLooper->getSampleRate();
+                int samplesToGet = (int)(preDelayMs->value*0.001f*parentLooper->getSampleRate());
                 for(int i = monoLoopSample.getNumChannels()-1;i>=0 ;--i){
                     monoLoopSample.copyFrom(i,0,streamAudioBuffer.getLastBlock(samplesToGet,i),samplesToGet);
                 }
@@ -318,9 +318,9 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
 
         if(lastInternalTrackState ==BUFFER_RECORDING){
             if( isMasterTempoTrack()){
-                recordNeedle-=preDelayMs->value*0.001*parentLooper->getSampleRate();
+                recordNeedle-= (int)(preDelayMs->value*0.001f*parentLooper->getSampleRate());
 
-                const int fadeNumSamples = parentLooper->getSampleRate()*0.022;
+                const int fadeNumSamples = (int)(parentLooper->getSampleRate()*0.022f);
                 if(fadeNumSamples>0 && recordNeedle>2*fadeNumSamples){
                     monoLoopSample.applyGainRamp(0, 0, fadeNumSamples, 0, 1);
                     monoLoopSample.applyGainRamp(0,recordNeedle - fadeNumSamples, fadeNumSamples, 1, 0);
@@ -337,7 +337,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
     // not sure -> triggers are updated at block size granularity
 
     // for now reduce block approximation noise when quantized
-    const uint64 triggeringTime = curTime  + blockSize/2;
+    const uint64 triggeringTime = curTime  + _blockSize/2;
     if(quantizedRecordStart>0){
         if(triggeringTime>=quantizedRecordStart){
             setTrackState(RECORDING);
@@ -389,6 +389,8 @@ String LooperNode::Looper::Track::trackStateToString(const TrackState & ts){
             jassertfalse;
             break;
     }
+
+	return "[noState]";
 }
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){

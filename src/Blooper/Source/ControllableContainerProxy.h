@@ -46,11 +46,11 @@ public:
     Array<ControllableContainer*> proxyControllableListeners;
 
 
-    void controllableAdded(Controllable * c) override{};
-    void controllableRemoved(Controllable * c)override{};
-    void controllableContainerAdded(ControllableContainer * cc) override{};
-    void controllableContainerRemoved(ControllableContainer * cc)override{};
-    void controllableFeedbackUpdate(Controllable *c)override;
+    void controllableAdded(Controllable *) override{};
+    void controllableRemoved(Controllable *)override{};
+    void controllableContainerAdded(ControllableContainer *) override{};
+    void controllableContainerRemoved(ControllableContainer *)override{};
+    void controllableFeedbackUpdate(Controllable *c) override;
     int depthInOriginContainer;
 
 private:

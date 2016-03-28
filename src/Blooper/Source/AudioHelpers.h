@@ -87,8 +87,8 @@ public:
     }
     AudioSampleBuffer buf;
 
-    uint ringSize;
-    uint writeNeedle;
+    uint32 ringSize;
+    uint32 writeNeedle;
 
     void writeBlock(AudioSampleBuffer & newBuf){
         int numChans =newBuf.getNumChannels();
@@ -132,7 +132,7 @@ private:
 
     void updateContiguousBuffer(int num){
 
-        jassert(num<ringSize);
+        jassert(num < (int)ringSize);
         contiguousBuffer.setSize(buf.getNumChannels(),num);
         int startIdx = writeNeedle-num;
         if(startIdx>=0){
@@ -152,9 +152,7 @@ private:
         contiguousWriteNeedle = writeNeedle;
     }
     AudioSampleBuffer contiguousBuffer;
-    uint contiguousWriteNeedle = 0 ;
-
-
+    uint32 contiguousWriteNeedle = 0 ;
 };
 
 

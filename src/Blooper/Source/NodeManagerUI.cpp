@@ -91,7 +91,7 @@ void NodeManagerUI::connectionAdded(NodeConnection * connection)
     addConnectionUI(connection);
 }
 
-void NodeManagerUI::connectionEdited(NodeConnection * connection)
+void NodeManagerUI::connectionEdited(NodeConnection *)
 {
     //do nothing ?
 }
@@ -255,7 +255,7 @@ void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector
         editingConnection = new NodeConnectionUI(nullptr, nullptr, baseConnector);
     }
 
-    editingChannel = -1; //temp, will be able to select which channel later
+    editingChannel = (uint32)-1; //temp, will be able to select which channel later
 
     baseConnector->addMouseListener(this, false);
 
@@ -289,7 +289,7 @@ bool NodeManagerUI::checkDropCandidates()
         for (int j = 0; j < compConnectors.size(); j++)
         {
             Connector * c = compConnectors.getUnchecked(j);
-            float dist = c->getMouseXYRelative().getDistanceFromOrigin();
+            float dist = (float)(c->getMouseXYRelative().getDistanceFromOrigin());
             if (dist < 20)
             {
                 candidate = c;
@@ -392,8 +392,8 @@ void NodeManagerUI::createNodeFromIndexAtPos(int modalResult, Viewport * c,int m
         NodeBase * n = NodeManager::getInstance()->addNode((NodeFactory::NodeType)(modalResult - 1));
 
         Point<int> mousePos = c->getMouseXYRelative();
-        n->xPosition->setValue( mousePos.x);
-        n->yPosition->setValue( mousePos.y);
+        n->xPosition->setValue((float)mousePos.x);
+        n->yPosition->setValue((float)mousePos.y);
     }
 }
 
@@ -418,8 +418,8 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
             if (event.mods.isCtrlDown())
             {
                 NodeBase * n = nodeManager->addNode(NodeFactory::NodeType::Dummy);
-                n->xPosition->setValue( getMouseXYRelative().x);
-                n->yPosition->setValue( getMouseXYRelative().y);
+                n->xPosition->setValue((float)getMouseXYRelative().x);
+                n->yPosition->setValue((float)getMouseXYRelative().y);
             }
             else{
                 Point<int> mouse = getMouseXYRelative();
@@ -431,7 +431,7 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
 
 }
 
-void NodeManagerUI::mouseMove(const MouseEvent & event)
+void NodeManagerUI::mouseMove(const MouseEvent &)
 {
     if (editingConnection != nullptr)
     {
@@ -467,7 +467,7 @@ void NodeManagerUI::mouseDrag(const MouseEvent & event)
     }
 }
 
-void NodeManagerUI::mouseUp(const MouseEvent & event)
+void NodeManagerUI::mouseUp(const MouseEvent &)
 {
     if (isEditingConnection())
     {
@@ -530,11 +530,11 @@ void NodeManagerUI::childBoundsChanged(Component * ){
 
 
 void NodeManagerUI::resizeToFitNodes(){
-    Rectangle<int> bounds = minBounds;
+    Rectangle<int> _bounds = minBounds;
     for(auto &n:nodesUI){
         Rectangle<int> r = n->getBoundsInParent();
-        bounds = bounds.getUnion(r);
+        _bounds = _bounds.getUnion(r);
     }
-    setBounds(bounds);
+    setBounds(_bounds);
 
 }

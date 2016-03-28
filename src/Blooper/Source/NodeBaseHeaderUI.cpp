@@ -26,10 +26,10 @@ NodeBaseHeaderUI::~NodeBaseHeaderUI()
 
 }
 
-void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
+void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 {
-    this->node = node;
-    this->nodeUI = nodeUI;
+    this->node = _node;
+    this->nodeUI = _nodeUI;
 
     if (node != nullptr && node->hasAudioOutputs) {
         node->audioProcessor->addRMSListener(&vuMeter);
@@ -47,7 +47,7 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
     init();
 
 }
-void NodeBaseHeaderUI::mouseDoubleClick(const MouseEvent & e){
+void NodeBaseHeaderUI::mouseDoubleClick(const MouseEvent &){
     if(titleUI){titleUI->valueLabel.showEditor();}
 }
 

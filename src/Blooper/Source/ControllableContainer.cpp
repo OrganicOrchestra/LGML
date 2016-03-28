@@ -27,7 +27,7 @@ ControllableContainer::~ControllableContainer()
     controllables.clear();
 }
 
-FloatParameter * ControllableContainer::addFloatParameter(const String & niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
+FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
     if (getControllableByName(niceName) != nullptr)
     {
@@ -35,59 +35,59 @@ FloatParameter * ControllableContainer::addFloatParameter(const String & niceNam
         return nullptr;
     }
 
-    FloatParameter * p = new FloatParameter(niceName, description, initialValue, minValue, maxValue, enabled);
+    FloatParameter * p = new FloatParameter(_niceName, description, initialValue, minValue, maxValue, enabled);
     addParameterInternal(p);
     return p;
 }
 
-IntParameter * ControllableContainer::addIntParameter(const String & niceName, const String & description, const int & initialValue, const int & minValue, const int & maxValue, const bool & enabled)
+IntParameter * ControllableContainer::addIntParameter(const String & _niceName, const String & _description, const int & initialValue, const int & minValue, const int & maxValue, const bool & enabled)
 {
-    if (getControllableByName(niceName) != nullptr)
+    if (getControllableByName(_niceName) != nullptr)
     {
-        DBG("ControllableContainer::add parameter, short Name already exists : " + niceName);
+        DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
         return nullptr;
     }
 
-    IntParameter * p = new IntParameter(niceName, description, initialValue, minValue, maxValue, enabled);
+    IntParameter * p = new IntParameter(_niceName, _description, initialValue, minValue, maxValue, enabled);
     addParameterInternal(p);
     return p;
 }
 
-BoolParameter * ControllableContainer::addBoolParameter(const String & niceName, const String & description, const bool & value, const bool & enabled)
+BoolParameter * ControllableContainer::addBoolParameter(const String & _niceName, const String & _description, const bool & value, const bool & enabled)
 {
-    if (getControllableByName(niceName) != nullptr)
+    if (getControllableByName(_niceName) != nullptr)
     {
-        DBG("ControllableContainer::add parameter, short Name already exists : " + niceName);
+        DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
         return nullptr;
     }
 
-    BoolParameter * p = new BoolParameter(niceName, description, value, enabled);
+    BoolParameter * p = new BoolParameter(_niceName, _description, value, enabled);
     addParameterInternal(p);
     return p;
 }
 
-StringParameter * ControllableContainer::addStringParameter(const String & niceName, const String & description, const String &value, const bool & enabled)
+StringParameter * ControllableContainer::addStringParameter(const String & _niceName, const String & _description, const String &value, const bool & enabled)
 {
-    if (getControllableByName(niceName) != nullptr)
+    if (getControllableByName(_niceName) != nullptr)
     {
-        DBG("ControllableContainer::add parameter, short Name already exists : " + niceName);
+        DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
         return nullptr;
     }
 
-    StringParameter * p = new StringParameter(niceName, description, value, enabled);
+    StringParameter * p = new StringParameter(_niceName, _description, value, enabled);
     addParameterInternal(p);
     return p;
 }
 
-Trigger * ControllableContainer::addTrigger(const String & niceName, const String & description, const bool & enabled)
+Trigger * ControllableContainer::addTrigger(const String & _niceName, const String & _description, const bool & enabled)
 {
-    if (getControllableByName(niceName) != nullptr)
+    if (getControllableByName(_niceName) != nullptr)
     {
-        DBG("ControllableContainer::add trigger, short Name already exists : " + niceName);
+        DBG("ControllableContainer::add trigger, short Name already exists : " + _niceName);
         return nullptr;
     }
 
-    Trigger * t = new Trigger(niceName, description, enabled);
+    Trigger * t = new Trigger(_niceName, _description, enabled);
     controllables.add(t);
     t->setParentContainer(this);
     t->addTriggerListener(this);
@@ -166,7 +166,7 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 }
 
 
-Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
+Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool , bool getNotExposed)
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
 

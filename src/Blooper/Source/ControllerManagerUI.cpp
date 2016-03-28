@@ -97,7 +97,7 @@ void ControllerManagerUI::placeElements()
     setSize(getWidth(), targetHeight);
 }
 
-void ControllerManagerUI::paint (Graphics& g)
+void ControllerManagerUI::paint (Graphics&)
 {
     //ContourComponent::paint(g);
 }

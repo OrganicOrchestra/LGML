@@ -25,7 +25,7 @@ TriggerButtonUI::~TriggerButtonUI()
 
 }
 
-void TriggerButtonUI::triggerTriggered(Trigger * p){
+void TriggerButtonUI::triggerTriggered(Trigger *){
     repaint();
 }
 
@@ -36,10 +36,10 @@ void TriggerButtonUI::paint (Graphics& g)
 
     Colour c = isMouseOverOrDragging() ? (isMouseButtonDown() ? HIGHLIGHT_COLOR : NORMAL_COLOR.brighter()) : NORMAL_COLOR;
 
-    g.setGradientFill(ColourGradient(c,center.x,center.y,c.darker(.2f),2,2,true));
-    g.fillRoundedRectangle(getLocalBounds().toFloat(),4);
+    g.setGradientFill(ColourGradient(c,(float)center.x,(float)center.y,c.darker(.2f),2.f,2.f,true));
+	g.fillRoundedRectangle(getLocalBounds().toFloat(), 4.f);
     g.setColour(c.darker());
-    g.drawRoundedRectangle(getLocalBounds().toFloat(), 4,2);
+	g.drawRoundedRectangle(getLocalBounds().toFloat(), 4.f, 2.f);
 }
 
 void TriggerButtonUI::resized()
@@ -49,22 +49,22 @@ void TriggerButtonUI::resized()
 
 }
 
-void TriggerButtonUI::mouseDown (const MouseEvent& event){
+void TriggerButtonUI::mouseDown (const MouseEvent&){
     trigger->trigger();
 
 }
 
-void TriggerButtonUI::mouseExit(const MouseEvent & event)
+void TriggerButtonUI::mouseExit(const MouseEvent &)
 {
     repaint();
 }
 
-void TriggerButtonUI::mouseUp(const MouseEvent & event)
+void TriggerButtonUI::mouseUp(const MouseEvent &)
 {
     repaint();
 }
 
-void TriggerButtonUI::mouseEnter(const MouseEvent & event)
+void TriggerButtonUI::mouseEnter(const MouseEvent &)
 {
     repaint();
 }

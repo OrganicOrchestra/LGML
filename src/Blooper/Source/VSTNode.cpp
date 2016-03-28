@@ -89,7 +89,7 @@ void VSTNode::VSTProcessor::numChannelsChanged(){
 }
 
 
-void VSTNode::audioProcessorParameterChanged (AudioProcessor* processor,
+void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
                                               int parameterIndex,
                                               float newValue) {
 

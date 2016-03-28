@@ -19,18 +19,20 @@
 class ContourComponent : public Component
 {
 public:
-    ContourComponent(Colour c = CONTOUR_COLOR) :c(c) {}
+    ContourComponent(Colour c = CONTOUR_COLOR) :contourColor(c) {}
     virtual ~ContourComponent() {}
-    Colour c;
+    Colour contourColor;
 
+	#if DRAW_CONTOUR
     virtual void paint(Graphics &g) override
     {
-#if DRAW_CONTOUR
-        g.fillAll(c.withAlpha(.3f));
-        g.setColour(c.withAlpha(.4f));
+
+        g.fillAll(contourColor.withAlpha(.3f));
+        g.setColour(contourColor.withAlpha(.4f));
         g.drawRect(getLocalBounds());
-#endif
+
     }
+	#endif
 };
 
 #endif  // UIHELPERS_H_INCLUDED

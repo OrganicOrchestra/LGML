@@ -11,7 +11,7 @@
 #include "MainComponent.h"
 
 // (This function is called by the app startup code to create our main component)
-Component* createMainContentComponent()     { return new MainContentComponent(); }
+MainContentComponent* createMainContentComponent()     { return new MainContentComponent(); }
 
 
 MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
@@ -56,7 +56,7 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
 #if JUCE_MAC
     setMacMainMenu (this);
 #else
-    setMenuBar (this);
+    //setMenu (this); //done in Main.cpp as it's a method of DocumentWindow
 #endif
 
     createNewGraph();
@@ -74,7 +74,7 @@ MainContentComponent::~MainContentComponent(){
 #if JUCE_MAC
     setMacMainMenu (nullptr);
 #else
-    setMenuBar (nullptr);
+    //setMenuBar (nullptr);
 
 #endif
 }

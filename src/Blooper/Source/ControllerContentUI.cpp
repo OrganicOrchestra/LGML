@@ -14,10 +14,10 @@ ControllerContentUI::ControllerContentUI()
 {
 }
 
-  void ControllerContentUI::setControllerAndUI(Controller * controller, ControllerUI * cui)
+  void ControllerContentUI::setControllerAndUI(Controller * _controller, ControllerUI * _cui)
   {
-      this->controller = controller;
-      this->cui = cui;
+      this->controller = _controller;
+      this->cui = _cui;
       init();
   }
 

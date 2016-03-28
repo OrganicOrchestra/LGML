@@ -30,8 +30,8 @@ type (t)
     setContentOwned (pluginEditor, true);
 
 
-    setTopLeftPosition (owner->pluginWindowParameter.x->value,
-                        owner->pluginWindowParameter.y->value);
+    setTopLeftPosition ((int)owner->pluginWindowParameter.x->value,
+                        (int)owner->pluginWindowParameter.y->value);
 
      owner->pluginWindowParameter.isDisplayed->setValue(true);
 
@@ -114,8 +114,8 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
 
 void PluginWindow::moved()
 {
-    owner->pluginWindowParameter.x->setValue(getX());
-    owner->pluginWindowParameter.y->setValue(getY());
+    owner->pluginWindowParameter.x->setValue((float)getX());
+    owner->pluginWindowParameter.y->setValue((float)getY());
 }
 
 void PluginWindow::closeButtonPressed()

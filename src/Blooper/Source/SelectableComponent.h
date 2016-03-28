@@ -18,21 +18,21 @@
 #include "JuceHeader.h"
 class SelectableComponentHandler;
 
-class SelectableComponent : public Component{
+class SelectableComponent : public Component {
 
 
 public:
-    SelectableComponent(SelectableComponentHandler * handler);
-    virtual ~SelectableComponent();
+	SelectableComponent(SelectableComponentHandler * handler);
+	virtual ~SelectableComponent();
 
 
-    // called to change state manually
-    void askForSelection(bool _isSelected,bool unique = false) ;
+	// called to change state manually
+	void askForSelection(bool _isSelected, bool unique = false);
 
-    bool isSelected;
+	bool isSelected;
 
-    // can be overriden for self update
-    virtual void internalSetSelected(bool isSelected){}
+	// can be overriden for self update
+	virtual void internalSetSelected(bool) {}
 
     void setHandler(SelectableComponentHandler * h);
     virtual void paintOverChildren(Graphics & g)override;

@@ -74,26 +74,26 @@ public:
             }
             g.setColour(mainColour.withAlpha(0.7f));
             g.fillRoundedRectangle(getLocalBounds().
-                       removeFromTop(headerHackHeight*getLocalBounds().getHeight())
-                                   .withWidth((1-volumeWidth)*getLocalBounds().getWidth())
+                       removeFromTop((int)(headerHackHeight*getLocalBounds().getHeight()))
+                                   .withWidth((int)((1-volumeWidth)*getLocalBounds().getWidth()))
                                    .reduced(1).toFloat(),2);
 
         }
-        void mouseUp(const MouseEvent & me) override{track->askForSelection(true);}
+        void mouseUp(const MouseEvent &) override{track->askForSelection(true);}
 
-        void triggerTriggered(Trigger * t)override{track->askForSelection(true);}
+        void triggerTriggered(Trigger *)override{track->askForSelection(true);}
         void resized()override{
             // RelativeLayout
-            float pad = 0.01;
+            float pad = 0.01f;
             volumeSlider->setBoundsRelative(    1-volumeWidth+pad,             0+pad,
                                             volumeWidth - 2*pad,    1-2*pad);
 
-            recPlayButton.setBoundsRelative(pad,                 headerHackHeight+pad,
-                                            1-volumeWidth-2*pad, .8-headerHackHeight-2*pad);
-            stopButton.setBoundsRelative( 0+pad,      .8+pad,
-                                         .4-2*pad,    .2-2*pad);
-            clearButton.setBoundsRelative(.4+pad,     .8+pad,
-                                          .4-2*pad,   .2-2*pad);
+            recPlayButton.setBoundsRelative(pad,headerHackHeight+pad,
+                                           1.f-volumeWidth-2.f*pad, .8f-headerHackHeight-2.f*pad);
+            stopButton.setBoundsRelative(0+pad,      .8f+pad,
+                                         .4f-2*pad,    .2f-2*pad);
+            clearButton.setBoundsRelative(.4f+pad,     .8f+pad,
+                                          .4f-2*pad,   .2f-2*pad);
             //            Rectangle<int> area = getLocalBounds();
             //            area.reduce(5,5);
             //            volumeSlider->setBounds(area.removeFromRight(10));
@@ -109,8 +109,8 @@ public:
         TriggerBlinkUI recPlayButton;
         TriggerBlinkUI clearButton;
         TriggerBlinkUI stopButton;
-        float headerHackHeight = .2;
-        float volumeWidth = .2;
+        float headerHackHeight = .2f;
+        float volumeWidth = .2f;
         ScopedPointer<FloatSliderUI> volumeSlider;
         bool isSelected;
     };

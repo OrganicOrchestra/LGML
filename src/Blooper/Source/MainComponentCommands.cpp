@@ -106,7 +106,7 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
 
 
 PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
-                                   const String& menuName) {
+                                   const String& /*menuName*/) {
     PopupMenu menu;
 
     if (topLevelMenuIndex == 0)
@@ -197,8 +197,11 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
             Desktop& desktop = Desktop::getInstance();
 
             for (int i = 0; i < desktop.getNumComponents(); ++i)
-                desktop.getComponent (i)->toBehind (this);
-
+                // doesn't work on windows
+				if (desktop.getComponent(i)->getParentComponent() != nullptr)
+				{
+					desktop.getComponent(i)->toBehind(this);
+				}
                 break;
         }
 

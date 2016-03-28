@@ -46,7 +46,7 @@ void TriggerBlinkUI::setTriggerReference(Trigger * t) {
     trigger->addTriggerListener(this);
 }
 
-void TriggerBlinkUI::triggerTriggered(Trigger * p) {
+void TriggerBlinkUI::triggerTriggered(Trigger *) {
     startBlink();
 }
 
@@ -64,7 +64,7 @@ void TriggerBlinkUI::startBlink(){
 }
 
 void TriggerBlinkUI::timerCallback(){
-    intensity-= refreshPeriod*1.0/blinkTime;
+    intensity-= refreshPeriod*1.0f/blinkTime;
     if(intensity<0){
     intensity = 0;
     stopTimer();
@@ -81,7 +81,7 @@ void TriggerBlinkUI::resized()
 
 }
 
-void TriggerBlinkUI::mouseDown(const MouseEvent& event) {
+void TriggerBlinkUI::mouseDown(const MouseEvent&) {
     trigger->trigger();
 
 }

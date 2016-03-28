@@ -18,9 +18,12 @@
 class VuMeter : public ContourComponent, public NodeBase::NodeAudioProcessor::Listener {
 
 public:
-    VuMeter() {
+	float voldB;
+	
+	
+	VuMeter() {
         setSize(8, 20);
-        voldB = 0;
+        voldB = 0.f;
     }
     ~VuMeter(){
 
@@ -33,13 +36,16 @@ public:
         g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
         if (voldB > 0)
         {
-            g.setGradientFill(ColourGradient(Colours::lightgreen, 0, getHeight()*.5, Colours::red, 0, getHeight()*0.1, false));
-            g.fillRoundedRectangle(getLocalBounds().removeFromBottom(getHeight()*(voldB)).toFloat(), 2);
+            g.setGradientFill(ColourGradient(Colours::lightgreen, 0.f, getHeight()*.5f, Colours::red, 0.f, getHeight()*0.1f, false));
+            g.fillRoundedRectangle(getLocalBounds().removeFromBottom((int)(getHeight()*(voldB))).toFloat(), 2.f);
         }
     }
-    float voldB;
+    
+	
     void RMSChanged(float rms) override {
-        float newVoldB = jmap(20.0*log10(rms/0.74),0.0,6.0,0.85,1.0);
+        
+		float newVoldB = jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,0.85f,1.0f);
+
         if(newVoldB>=0 && std::abs(newVoldB-voldB)>0.02f){
             voldB = newVoldB;
             repaint();

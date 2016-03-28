@@ -22,10 +22,10 @@ public:
     StringParameter(const String &niceName, const String &description, const String &initialValue, bool enabled=true);
     String value;
 
-    void setValue(const String &value, bool silentSet = false, bool force = false)
+    void setValue(const String &_value, bool silentSet = false, bool force = false)
     {
-        if (this->value == value && !force) return;
-        this->value = value;
+        if (this->value == _value && !force) return;
+        this->value = _value;
         if (!silentSet) notifyValueChanged();
     }
 

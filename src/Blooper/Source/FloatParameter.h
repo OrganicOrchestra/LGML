@@ -27,10 +27,10 @@ public:
     float maxValue;
     float value;
 
-    void setValue(const float &value, bool silentSet = false, bool force = false)
+    void setValue(const float &_value, bool silentSet = false, bool force = false)
     {
-        if (!force && this->value == value) return;
-        this->value = jlimit<float>(minValue, maxValue, value);
+        if (!force && this->value == _value) return;
+        this->value = jlimit<float>(minValue, maxValue, _value);
         if (!silentSet) notifyValueChanged();
     }
 

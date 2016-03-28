@@ -23,10 +23,10 @@
   }
 
 
-  void NodeBaseContentUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI)
+  void NodeBaseContentUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
   {
-      this->node = node;
-      this->nodeUI = nodeUI;
+      this->node = _node;
+      this->nodeUI = _nodeUI;
 
       init();
   }

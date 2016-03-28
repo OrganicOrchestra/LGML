@@ -23,16 +23,16 @@ public:
 
     bool value;
 
-    void setValue(const bool &value, bool silentSet = false, bool force = false)
+    void setValue(const bool &_value, bool silentSet = false, bool force = false)
     {
-        if (!force && this->value == value) return;
-        this->value = value;
+        if (!force && this->value == _value) return;
+        this->value = _value;
         if (!silentSet) notifyValueChanged();
     }
 
     float getNormalizedValue() override
     {
-        return value ? 1 : 0;
+        return value ? 1.f : 0.f;
     }
 
     //ui creation

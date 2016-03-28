@@ -27,7 +27,7 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::C
 
 void ConnectorComponent::paint(Graphics & g)
 {
-    g.setGradientFill(ColourGradient(isHovered?boxColor.brighter(5.f):boxColor, getLocalBounds().getCentreY(),getLocalBounds().getCentreY(), boxColor.darker(), 0,0, true));
+    g.setGradientFill(ColourGradient(isHovered?boxColor.brighter(5.f):boxColor, (float)(getLocalBounds().getCentreY()),(float)(getLocalBounds().getCentreY()), boxColor.darker(), 0.f,0.f, true));
     //g.setFillType(FillType::gradient);
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 }

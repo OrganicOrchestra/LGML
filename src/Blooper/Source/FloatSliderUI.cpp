@@ -45,11 +45,11 @@ void FloatSliderUI::paint(Graphics & g)
     if (orientation == HORIZONTAL)
     {
         drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : getParamNormalizedValue()*getWidth();
-        g.fillRoundedRectangle(getLocalBounds().removeFromLeft(drawPos).toFloat(), 2);
+		g.fillRoundedRectangle(getLocalBounds().removeFromLeft((int)drawPos).toFloat(), 2.f);
     }
     else {
         drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : getParamNormalizedValue()*getHeight();
-        g.fillRoundedRectangle(getLocalBounds().removeFromBottom(drawPos).toFloat(), 2);
+        g.fillRoundedRectangle(getLocalBounds().removeFromBottom((int)drawPos).toFloat(), 2.f);
     }
     }
 
@@ -58,7 +58,7 @@ void FloatSliderUI::paint(Graphics & g)
         Rectangle<int> destRect = getLocalBounds();
         if(orientation == VERTICAL){
             AffineTransform at;
-            at = at.rotated(-double_Pi/2.0, getLocalBounds().getWidth()/2.0, getLocalBounds().getHeight()/2.0);
+            at = at.rotated((float)(-double_Pi/2.0f), getLocalBounds().getWidth()/2.0f, getLocalBounds().getHeight()/2.0f);
             g.addTransform(at);
             destRect.setBounds(0,0,getLocalBounds().getHeight(),getLocalBounds().getHeight());
         }
@@ -98,7 +98,7 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
     }
 }
 
-void FloatSliderUI::mouseUp(const MouseEvent & e)
+void FloatSliderUI::mouseUp(const MouseEvent &)
 {
     if (changeParamOnMouseUpOnly)
     {
@@ -119,8 +119,8 @@ float FloatSliderUI::getValueFromMouse()
 
 float FloatSliderUI::getValueFromPosition(const Point<int> &pos)
 {
-    if (orientation == HORIZONTAL) return (pos.x*1.0 / getWidth());
-    else return 1-(pos.y*1.0 / getHeight());
+    if (orientation == HORIZONTAL) return (pos.x*1.0f / getWidth());
+    else return 1-(pos.y*1.0f/ getHeight());
 }
 
 void FloatSliderUI::setParamNormalizedValue(float value)

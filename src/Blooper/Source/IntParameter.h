@@ -24,21 +24,21 @@ public:
     int maxValue;
     int value;
 
-    void setValue(const int &value, bool silentSet = false, bool force = false)
+    void setValue(const int &_value, bool silentSet = false, bool force = false)
     {
-        if (!force && this->value == value) return;
-        this->value = jlimit<int>(minValue, maxValue, value);
+        if (!force && this->value == _value) return;
+        this->value = jlimit<int>(minValue, maxValue, _value);
         if (!silentSet) notifyValueChanged();
     }
 
     void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false)
     {
-        setValue(jmap<float>(normalizedValue, minValue, maxValue), silentSet, force);
+        setValue((const int)jmap<float>(normalizedValue, (float)minValue, (float)maxValue), silentSet, force);
     }
 
     float getNormalizedValue() override
     {
-        return jmap<float>(value, minValue, maxValue, 0, 1);
+        return jmap<float>((float)value, (float)minValue, (float)maxValue, 0.f, 1.f);
     }
 
     String toString() override{return String(value);}

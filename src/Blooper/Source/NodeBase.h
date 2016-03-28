@@ -37,7 +37,7 @@ public:
 
         virtual const String getName() const override { return "NodeBaseProcessor"; };
 
-        virtual void prepareToPlay(double sampleRate,int estimatedSamplesPerBlock) override{};
+        virtual void prepareToPlay(double ,int) override{};
         virtual void releaseResources() override {};
 
         bool silenceInProducesSilenceOut() const override { return false; }
@@ -50,17 +50,17 @@ public:
         // dumb overrides from JUCE AudioProcessor :  MIDI
         int getNumPrograms() override { return 0; }
         int getCurrentProgram() override { return 0; }
-        void setCurrentProgram(int index) override {}
-        const String getProgramName(int index) override { return "NoProgram"; }
-        void changeProgramName(int index, const String& newName) override {};
+        void setCurrentProgram(int) override {}
+        const String getProgramName(int) override { return "NoProgram"; }
+        void changeProgramName(int, const String&) override {};
         double getTailLengthSeconds() const override { return 0; }
         bool acceptsMidi() const override { return false; }
         bool producesMidi() const override { return false; }
 
 
         // save procedures from host
-        virtual void getStateInformation(juce::MemoryBlock& destData) override {};
-        virtual void setStateInformation(const void* data, int sizeInBytes) override {};
+        virtual void getStateInformation(juce::MemoryBlock&) override {};
+        virtual void setStateInformation(const void*, int) override {};
 
 
         virtual void processBlock(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) override ;
@@ -68,8 +68,8 @@ public:
 
 
         void updateRMS(AudioBuffer<float>& buffer);
-        float alphaRMS = 0.05;
-        float rmsValue = 0;
+        float alphaRMS = 0.05f;
+        float rmsValue = 0.f;
         const int samplesBeforeRMSUpdate = 512;
         int curSamplesForRMSUpdate = 0;
 

@@ -9,8 +9,9 @@
 */
 
 #include "JuceHeader.h"
+#include "MainComponent.h"
 
-Component* createMainContentComponent();
+MainContentComponent* createMainContentComponent();
 
 //==============================================================================
 class BlooperApplication  : public JUCEApplication
@@ -24,7 +25,7 @@ public:
     bool moreThanOneInstanceAllowed() override       { return false; }
 
     //==============================================================================
-    void initialise (const String& commandLine) override
+    void initialise (const String& /*commandLine*/) override
     {
         // This method is where you should put your application's initialisation code..
         PropertiesFile::Options options;
@@ -53,7 +54,7 @@ public:
         quit();
     }
 
-    void anotherInstanceStarted (const String& commandLine) override
+    void anotherInstanceStarted (const String& /*commandLine*/) override
     {
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
@@ -73,11 +74,16 @@ public:
                                                     DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            setContentOwned (createMainContentComponent(), true);
+			MainContentComponent * mainComponent = createMainContentComponent();
+            setContentOwned (mainComponent, true);
             setResizable (true, true);
 
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
+
+			#if JUCE_WINDOWS
+				setMenuBar(mainComponent);
+			#endif
         }
 
         void closeButtonPressed() override

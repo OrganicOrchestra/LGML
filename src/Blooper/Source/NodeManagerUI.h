@@ -123,7 +123,7 @@ public:
         //    setSize(500,500);
         setViewedComponent(nmui,false);
     }
-    void visibleAreaChanged (const Rectangle<int>& newVisibleArea)override{
+    void visibleAreaChanged (const Rectangle<int>&)override{
         Point <int> mouse = getMouseXYRelative();
         autoScroll(mouse.x, mouse.y, 100, 10);
 

@@ -28,7 +28,7 @@ void ControllableUI::controllableStateChanged(Controllable * c)
     setAlpha(c->enabled ? 1 : .5f);
 }
 
-void ControllableUI::controllableControlAddressChanged(Controllable * c)
+void ControllableUI::controllableControlAddressChanged(Controllable *)
 {
     updateTooltip();
 }
