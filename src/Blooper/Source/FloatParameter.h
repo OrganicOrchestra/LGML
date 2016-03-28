@@ -27,12 +27,11 @@ public:
     float maxValue;
     float value;
 
-
     void setValue(const float &value, bool silentSet = false, bool force = false)
     {
         if (!force && this->value == value) return;
         this->value = jlimit<float>(minValue, maxValue, value);
-        notifyValueChanged();
+        if (!silentSet) notifyValueChanged();
     }
 
     void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false)
