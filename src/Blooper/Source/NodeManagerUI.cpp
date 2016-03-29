@@ -234,7 +234,7 @@ void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector,
     }
 }
 
-void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector, uint32 channel)
+void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector, uint32 /*channel*/)
 {
     DBG("Create Audio Connection from connector " + String(channel));
 

@@ -35,8 +35,8 @@ void OSCController::setupReceiver()
 {
     DBG("setupReceiver");
     receiver.disconnect();
-    bool result = receiver.connect(localPortParam->value.getIntValue());
-    DBG("Receiver connected" + String(result));
+    receiver.connect(localPortParam->value.getIntValue());
+	//DBG("Receiver connected" + String(result));
 }
 void OSCController::setupSender()
 {

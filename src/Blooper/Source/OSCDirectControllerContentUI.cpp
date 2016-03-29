@@ -33,10 +33,14 @@ void OSCDirectControllerContentUI::init()
     cui->setSize(300, 150);
 
     Array<Controllable *> nodeControllables = NodeManager::getInstance()->getAllControllables(true);
-    for (auto &_c : nodeControllables)
+    
+	/*
+	for (auto &_c : nodeControllables)
     {
+		_c;
         DBG(_c->controlAddress+"     "+_c->description);
     }
+	*/
 }
 
 void OSCDirectControllerContentUI::resized()

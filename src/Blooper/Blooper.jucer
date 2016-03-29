@@ -325,9 +325,9 @@
             vst3Folder="D:\Documents\Ressources\SDKs\VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="Blooper"/>
+                       isDebug="1" optimisation="1" targetName="Blooper" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="Blooper"/>
+                       isDebug="0" optimisation="3" targetName="Blooper" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="D:\Softwares\Juce 4.1.0\JUCE\modules"/>
@@ -364,7 +364,8 @@
     <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
-               JUCE_PLUGINHOST_AU="enabled" JUCE_WEB_BROWSER="disabled"/>
+               JUCE_PLUGINHOST_AU="enabled" JUCE_WEB_BROWSER="disabled" JUCE_ASIO="enabled"
+               JUCE_WASAPI="enabled" JUCE_DIRECTSOUND="enabled"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
     <OSX/>
