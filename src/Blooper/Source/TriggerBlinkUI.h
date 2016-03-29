@@ -11,14 +11,13 @@ Author:  bkupe
 #ifndef TRIGGERBLINKUI_H_INCLUDED
 #define TRIGGERBLINKUI_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
+
 
 //==============================================================================
 /*
 */
 
 
-#include "Trigger.h"
 #include "TriggerUI.h"
 
 class TriggerBlinkUI : public TriggerUI, public Timer

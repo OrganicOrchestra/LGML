@@ -59,6 +59,7 @@ void ControllableInspector::generateFromCandidates(){
     addAndMakeVisible(displayedEditor);
     // TODO default component are not resized...
     displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
+    setBounds(displayedEditor->getBounds().withPosition(0,0));
 }
 
 
@@ -79,4 +80,8 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
     }
     generateFromCandidates();
     
+}
+
+void ControllableInspector::resized(){
+if(displayedEditor)displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
 }

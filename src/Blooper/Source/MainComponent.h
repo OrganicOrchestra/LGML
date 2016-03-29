@@ -50,6 +50,7 @@ public:
     ScopedPointer<ControllerManager> controllerManager;
     ScopedPointer<ControllerManagerViewport> controllerManagerViewport;
     ScopedPointer<ControllableInspector> controllableInspector;
+    ScopedPointer<ControllableInspectorViewPort> controllableInspectorViewPort;
 
     // Audio
 

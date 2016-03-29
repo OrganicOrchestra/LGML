@@ -9,6 +9,7 @@
  */
 
 #include "MainComponent.h"
+#include "LookAndFeelOO.h"
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent()     { return new MainContentComponent(); }
@@ -19,9 +20,13 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
                                                                 "Load a filter graph",
                                                                 "Save a filter graph")
 {
+    
+    setLookAndFeel(LookAndFeelOO::getInstance());
+
     DBG("Application Start");
 
     controllerManager = new ControllerManager();
+    
 
     initAudio();
 
@@ -31,7 +36,6 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
 
 
     addAndMakeVisible(timeManagerUI);
-
     addAndMakeVisible(nodeManagerUIViewport);
 
 
@@ -41,7 +45,8 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
 
 
     controllableInspector = new ControllableInspector(nodeManagerUI);
-    addAndMakeVisible(controllableInspector);
+    controllableInspectorViewPort = new ControllableInspectorViewPort(controllableInspector);
+    addAndMakeVisible(controllableInspectorViewPort);
 
     // resize after contentCreated
 
@@ -71,6 +76,7 @@ MainContentComponent::~MainContentComponent(){
     TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
     NodeManager::deleteInstance();
     VSTManager::deleteInstance();
+	LookAndFeelOO::deleteInstance();
 #if JUCE_MAC
     setMacMainMenu (nullptr);
 #else
@@ -86,7 +92,10 @@ void MainContentComponent::resized()
     Rectangle<int> r = getLocalBounds();
     timeManagerUI->setBounds(r.removeFromTop(20));
     controllerManagerViewport->setBounds(r.removeFromLeft(300));
-    controllableInspector->setBounds(r.removeFromRight(300));
+    
+    
+    controllableInspector->setSize(300,controllableInspector->getHeight());
+    controllableInspectorViewPort->setBounds(r.removeFromRight(300));
     nodeManagerUIViewport->setBounds(r);
 }
 

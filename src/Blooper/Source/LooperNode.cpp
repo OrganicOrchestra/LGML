@@ -32,6 +32,7 @@ looperNode(looperNode)
     playSelectedTrig =      addTrigger("Play",
                                        "Tells the selected track to wait for the next bar and \
                                        then stop recording and start playing");
+									   
     stopSelectedTrig =      addTrigger("Stop",
                                        "Tells the selected track to stop ");
 
@@ -51,15 +52,22 @@ looperNode(looperNode)
 
     isMonitoring = addBoolParameter("monitor", "do we monitor audio input ? ", true);
 
+    numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 0, 0, MAX_NUM_TRACKS);
+                                       
+                                       
     skipControllableNameInAddress = true;
 
-    setNumTracks(8);
+    
     recPlaySelectedTrig->addTriggerListener(this);
     playSelectedTrig->addTriggerListener(this);
     clearSelectedTrig->addTriggerListener(this);
     stopSelectedTrig->addTriggerListener(this);
     clearAllTrig->addTriggerListener(this);
     stopAllTrig->addTriggerListener(this);
+									   
+	numberOfTracks->setValue(8);
+									   
+									   
 }
 
 void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages){
@@ -164,7 +172,11 @@ void LooperNode::Looper::selectMe(Track * t){
     }
 }
 
-
+void LooperNode::Looper::parameterValueChanged(Parameter * p) {
+	if(p==numberOfTracks){
+		setNumTracks(numberOfTracks->value);
+	}
+}
 
 /////////
 // TRACK
@@ -173,25 +185,24 @@ void LooperNode::Looper::selectMe(Track * t){
 
 
 
-LooperNode::Looper::Track::Track(Looper * looper, int _trackNum) :
-ControllableContainer("Track " + String(_trackNum)),
+LooperNode::Looper::Track::Track(Looper * looper, int _trackIdx) :
+ControllableContainer("Track " + String(_trackIdx)),
 parentLooper(looper),
 quantizedRecordStart(0),
 quantizedRecordEnd(0),
 quantizedPlayStart(0),
 quantizedPlayEnd(0),
+recordNeedle(0),
+playNeedle(0),
 streamAudioBuffer(16384),// 16000 ~ 300ms and 256*64
 monoLoopSample(1,44100*MAX_LOOP_LENGTH_S),
 trackState(CLEARED),
 internalTrackState(BUFFER_STOPPED),
-lastInternalTrackState(internalTrackState)
+lastInternalTrackState(internalTrackState),
+trackIdx(_trackIdx)
 {
 
-    //setCustomShortName("track/" + String(_trackNum)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
-
-    trackNum =      addIntParameter("Track Number",
-                                    "Number of tracks",
-                                    _trackNum, 0, MAX_NUM_TRACKS);
+    //setCustomShortName("track/" + String(_trackIdx)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
 
     recPlayTrig =   addTrigger("Rec Or Play",
                                "Tells the track to wait for the next bar \
@@ -217,7 +228,7 @@ lastInternalTrackState(internalTrackState)
 
     stateParameterString = addStringParameter("state", "track state", "");
     stateParameterStringSynchronizer = new AsyncTrackStateStringSynchroizer(stateParameterString);
-                               
+    addTrackListener(stateParameterStringSynchronizer);
     stateParameterString->isControllableFeedbackOnly = true;
     preDelayMs->isControllableExposed = false;
 
@@ -314,10 +325,6 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
             }
 
             else{
-
-
-
-                preDelayMs->setValue( 0);
                 recordNeedle = 0;
             }
         }

@@ -11,7 +11,7 @@
 #ifndef CONTROLLABLEUI_H_INCLUDED
 #define CONTROLLABLEUI_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "Controllable.h"
 
 class ControllableUI : public Component, public SettableTooltipClient, public Controllable::Listener

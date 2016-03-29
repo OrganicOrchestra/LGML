@@ -67,6 +67,11 @@ public:
 
 
         }
+		~TrackUI(){
+			track->removeTrackListener(this);
+		}
+		
+		
         void paint(Graphics & g) override{
             if(isSelected){
                 g.setColour(Colours::white);

@@ -11,7 +11,7 @@
 #ifndef CONTROLLABLE_H_INCLUDED
 #define CONTROLLABLE_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "StringUtil.h"
 
 class ControllableContainer;
