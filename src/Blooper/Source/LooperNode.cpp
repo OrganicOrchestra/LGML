@@ -216,6 +216,8 @@ lastInternalTrackState(internalTrackState)
 
 
     stateParameterString = addStringParameter("state", "track state", "");
+    stateParameterStringSynchronizer = new AsyncTrackStateStringSynchroizer(stateParameterString);
+                               
     stateParameterString->isControllableFeedbackOnly = true;
     preDelayMs->isControllableExposed = false;
 
@@ -303,21 +305,25 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
     if(internalTrackState!=lastInternalTrackState){
 
         if(internalTrackState == BUFFER_RECORDING){
-            if(isMasterTempoTrack() ){
+            if(askForBeingMasterTempoTrack() ){
                 int samplesToGet = (int)(preDelayMs->value*0.001f*parentLooper->getSampleRate());
                 for(int i = monoLoopSample.getNumChannels()-1;i>=0 ;--i){
                     monoLoopSample.copyFrom(i,0,streamAudioBuffer.getLastBlock(samplesToGet,i),samplesToGet);
                 }
                 recordNeedle = samplesToGet;
             }
+
             else{
+
+
+
                 preDelayMs->setValue( 0);
                 recordNeedle = 0;
             }
         }
 
         if(lastInternalTrackState ==BUFFER_RECORDING){
-            if( isMasterTempoTrack()){
+            if( askForBeingMasterTempoTrack()){
                 recordNeedle-= (int)(preDelayMs->value*0.001f*parentLooper->getSampleRate());
 
                 const int fadeNumSamples = (int)(parentLooper->getSampleRate()*0.022f);
@@ -413,10 +419,12 @@ void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
     }
 }
 
-bool LooperNode::Looper::Track::isMasterTempoTrack(){
+bool LooperNode::Looper::Track::askForBeingMasterTempoTrack(){
     return TimeManager::getInstance()->askForBeingMasterNode(parentLooper->looperNode)
     && parentLooper->askForBeingMasterTrack(this);
 }
+
+
 void LooperNode::Looper::Track::setSelected(bool isSelected){
     trackStateListeners.call(&LooperNode::Looper::Track::Listener::trackSelected,isSelected);
 }
@@ -432,15 +440,24 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     // quantify
     if(newState == SHOULD_RECORD){
         // are we able to set the tempo
-        if( isMasterTempoTrack()){
+        if( askForBeingMasterTempoTrack()){
             TimeManager::getInstance()->stop();
             TimeManager::getInstance()->setPlayState(true,true);
             quantizedRecordStart = -1;
             setTrackState(RECORDING);
             return;
         }
-        else{
+        else if(!TimeManager::getInstance()->getIsSettingTempo()){
             quantizedRecordStart =TimeManager::getInstance()->getNextQuantifiedTime();
+        }
+        else {
+//            RecordPer default if triggering other rec whil master is recording
+            newState = RECORDING;
+            TimeManager::getInstance()->setPlayState(true,false);
+            //        another master track  is recording
+//            if(parentLooper->lastMasterTempoTrack->trackState==LooperNode::Looper::Track::TrackState::RECORDING){
+                parentLooper->lastMasterTempoTrack->setTrackState(LooperNode::Looper::Track::TrackState::PLAYING);
+//            }
         }
     }
 
@@ -454,7 +471,7 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     else if(trackState == RECORDING && newState==SHOULD_PLAY){
         {
 
-            if(isMasterTempoTrack()){
+            if(askForBeingMasterTempoTrack()){
                 quantizedRecordEnd = -1;
                 newState = PLAYING;
             }
@@ -503,7 +520,8 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
 
     trackState = newState;
 
-    stateParameterString->setValue(trackStateToString(trackState));
+
+
     parentLooper->checkIfNeedGlobalLooperStateUpdate();
     trackStateListeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };
