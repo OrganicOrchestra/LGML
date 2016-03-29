@@ -14,8 +14,6 @@
 ControllableInspector::ControllableInspector(NodeManagerUI * _nmui):
 	proxyContainer(nullptr)
 {
-	_nmui;//
-
     _nmui->selectableHandler.addSelectableHandlerListener(this);
 }
 

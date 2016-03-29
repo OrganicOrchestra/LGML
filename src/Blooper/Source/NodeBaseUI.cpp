@@ -115,7 +115,10 @@ NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
 
 void NodeBaseUI::mouseDown(const MouseEvent &event)
 {
-	event;// avoir unreferenced formal parameter warning
+//    @ben i get parameter unused warning
+//    i think it's better to never "write" a variable without any other meaning than supress a warning
+//    it add meaningless lines for nothing but get rid of useless warning
+//	event;// avoir unreferenced formal parameter warning
 
     if (event.mods.getCurrentModifiers().isCtrlDown())
     {

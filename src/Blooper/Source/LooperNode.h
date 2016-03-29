@@ -83,13 +83,14 @@ public:
                 STOPPED
             };
             TrackState trackState;
-            String trackStateToString(const TrackState & ts);
+            static String trackStateToString(const TrackState & ts);
 
 
             void setTrackState(TrackState state);
             // from events like UI
             void askForSelection(bool isSelected);
-            bool isMasterTempoTrack();
+            bool askForBeingMasterTempoTrack();
+            Track * getMasterTempoTrack();
 
 
 
@@ -114,6 +115,16 @@ public:
                 void handleAsyncUpdate() override{trackStateChangedAsync(stateToBeNotified);}
                 virtual void trackSelected(bool){};
             };
+
+            class AsyncTrackStateStringSynchroizer : public Track::Listener{
+            public:
+                StringParameter * stringParameter;
+                AsyncTrackStateStringSynchroizer(StringParameter  *origin):stringParameter(origin){}
+                void trackStateChangedAsync(const TrackState &trackState)override{
+                    stringParameter->setValue(trackStateToString(trackState));
+                }
+            };
+           ScopedPointer<AsyncTrackStateStringSynchroizer> stateParameterStringSynchronizer;
             ListenerList<Listener> trackStateListeners;
             void addTrackListener(Listener* newListener) { trackStateListeners.add(newListener); }
             void removeTrackListener(Listener* listener) { trackStateListeners.remove(listener); }
@@ -179,7 +190,11 @@ public:
         void addLooperListener(Listener* newListener) { looperListeners.add(newListener); }
         void removeLooperListener(Listener* listener) { looperListeners.remove(listener); }
 
-        bool askForBeingMasterTrack(Track * t){return areAllTrackClearedButThis(t);}
+        bool askForBeingMasterTrack(Track * t){bool res =  areAllTrackClearedButThis(t);
+            if(res)lastMasterTempoTrack = t;
+            return res;
+        }
+        
         bool areAllTrackClearedButThis(Track * _t){
             bool result = true;
             for(auto & t:tracks){
@@ -197,7 +212,7 @@ public:
         void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override;
         void checkIfNeedGlobalLooperStateUpdate();
         void selectMe(Track * t);
-
+        Track * lastMasterTempoTrack;
         Track * selectedTrack;
         AudioBuffer<float> bufferIn;
         AudioBuffer<float>bufferOut;
