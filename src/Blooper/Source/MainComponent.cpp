@@ -30,7 +30,7 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
 
     initAudio();
 
-    timeManagerUI = new TimeManagerUI();
+    timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
     nodeManagerUIViewport=new NodeManagerUIViewport(nodeManagerUI);
 

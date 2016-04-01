@@ -12,10 +12,12 @@
 
 
 
-TimeManagerUI::TimeManagerUI(){
+TimeManagerUI::TimeManagerUI(TimeManager * _timeManager):
+timeManager(_timeManager),
+timeBar(_timeManager){
 
     addAndMakeVisible(timeBar);
-    bpmSlider = TimeManager::getInstance()->BPM->createSlider();
+    bpmSlider = timeManager->BPM->createSlider();
     bpmSlider->displayText = true;
     bpmSlider->displayBar = false;
     addAndMakeVisible(bpmSlider);
@@ -31,13 +33,13 @@ void TimeManagerUI::resized(){
 
 
 
-TimeManagerUI::TimeBar::TimeBar(){
-    TimeManager::getInstance()->addTimeManagerListener(this);
-    initComponentsForNumBeats(TimeManager::getInstance()->beatPerBar);
+TimeManagerUI::TimeBar::TimeBar(TimeManager * t):timeManager(t){
+    timeManager->addTimeManagerListener(this);
+    initComponentsForNumBeats(timeManager->beatPerBar);
 }
 void TimeManagerUI::TimeBar::initComponentsForNumBeats(int /*nb*/){
     beatComponents.clear();
-    int beatPerBar =TimeManager::getInstance()->beatPerBar;
+    int beatPerBar =timeManager->beatPerBar;
     for(int i = 0 ;i <beatPerBar ; i++){
         BeatComponent * bc=new BeatComponent();
         addAndMakeVisible(bc);
@@ -91,11 +93,11 @@ void TimeManagerUI::TimeBar::showBeatComponents(bool show){
 void TimeManagerUI::TimeBar::timerCallback(){
     if(isSettingTempo){repaint();}
     else{
-        int lastBeat =TimeManager::getInstance()->getBeat()%beatComponents.size();
+        int lastBeat =timeManager->getBeat()%beatComponents.size();
         for(int i = 0 ; i< beatComponents.size() ; i++){
             BeatComponent * bc = beatComponents.getUnchecked(i);
             if(i==lastBeat){
-                bc->percentDone = (float)TimeManager::getInstance()->getBeatPercent();
+                bc->percentDone = (float)timeManager->getBeatPercent();
                 bc->repaint();
             }
             // ensure old beats are filled

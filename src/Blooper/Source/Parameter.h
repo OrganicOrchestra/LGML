@@ -17,7 +17,7 @@ class Parameter : public Controllable
 {
 public:
     Parameter(const Type &type, const String & niceName, const String &description, bool enabled = true);
-    virtual ~Parameter() {}
+    virtual ~Parameter() {Parameter::masterReference.clear();}
 
     virtual float getNormalizedValue() {
         return 0;
@@ -42,6 +42,13 @@ public:
     ListenerList<Listener> listeners;
     void addParameterListener(Listener* newListener) { listeners.add(newListener); }
     void removeParameterListener(Listener* listener) { listeners.remove(listener); }
+
+
+
+private:
+
+    WeakReference<Parameter>::Master masterReference;
+    friend class WeakReference<Parameter>;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Parameter)

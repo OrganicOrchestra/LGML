@@ -22,7 +22,7 @@ void ControllableContainerEditor::addControlUI(ControllableUI * c){
     addAndMakeVisible(c);
 }
 void ControllableContainerEditor::removeControlUI(ControllableUI * c){
-    controllableUIs.removeFirstMatchingValue(c);
+    controllableUIs.removeObject(c);
     removeChildComponent(c);
 }
 

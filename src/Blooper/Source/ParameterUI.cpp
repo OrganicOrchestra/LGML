@@ -20,7 +20,7 @@ ParameterUI::ParameterUI(Parameter * parameter) :
 
 ParameterUI::~ParameterUI()
 {
-    parameter->removeParameterListener(this);
+    if(parameter)parameter->removeParameterListener(this);
 }
 
 void ParameterUI::parameterValueChanged(Parameter *)

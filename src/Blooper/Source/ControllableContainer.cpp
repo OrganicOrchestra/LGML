@@ -265,7 +265,7 @@ ControllableContainerEditor * ControllableContainer::createControllableContainer
     int curY = pad;
     for(auto & c:controllables){
 		if(c->isControllableExposed){
-			ControllableUI * cUI = c->createDefaultControllableEditor();
+			ControllableUI * cUI = new NamedControllableUI(c->createDefaultControllableEditor(),100);
 			cUI->setTopLeftPosition(0, curY);
 			curY+=cUI->getHeight() + pad;
 			editor->addControlUI(cUI);
