@@ -15,6 +15,7 @@
 #include "NodeManager.h"
 #include "NodeBaseUI.h"
 #include "SelectableComponentHandler.h"
+#include "NodeConnectionEditor.h"
 
 class NodeConnectionUI;
 
@@ -31,13 +32,14 @@ public:
     NodeManager * nodeManager;
     static SelectableComponentHandler selectableHandler;
 
-
+	
     OwnedArray<NodeBaseUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI * editingConnection;
     String editingDataName;
     String editingElementName;
     DataProcessor::DataType editingDataType;
+	ScopedPointer<NodeConnectionEditor> connectionEditor;
 
     uint32 editingChannel;
 

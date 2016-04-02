@@ -202,6 +202,20 @@
                 file="Source/DataProcessorGraph.h"/>
         </GROUP>
         <GROUP id="{BA13D1BE-1F46-C45E-3568-F1B617CE7E74}" name="connection">
+          <GROUP id="{B772DAA0-0E0E-F395-1945-F81FB7693F1D}" name="editor">
+            <FILE id="mgz2Ld" name="NodeConnectionEditor.cpp" compile="1" resource="0"
+                  file="Source/NodeConnectionEditor.cpp"/>
+            <FILE id="rUoM6K" name="NodeConnectionEditor.h" compile="0" resource="0"
+                  file="Source/NodeConnectionEditor.h"/>
+            <FILE id="ZzxbPp" name="NodeConnectionEditorDataSlot.cpp" compile="1"
+                  resource="0" file="Source/NodeConnectionEditorDataSlot.cpp"/>
+            <FILE id="VRjVrE" name="NodeConnectionEditorDataSlot.h" compile="0"
+                  resource="0" file="Source/NodeConnectionEditorDataSlot.h"/>
+            <FILE id="RsIa8q" name="NodeConnectionEditorLink.cpp" compile="1" resource="0"
+                  file="Source/NodeConnectionEditorLink.cpp"/>
+            <FILE id="XSlsYj" name="NodeConnectionEditorLink.h" compile="0" resource="0"
+                  file="Source/NodeConnectionEditorLink.h"/>
+          </GROUP>
           <FILE id="D2Mdhy" name="ConnectorComponent.cpp" compile="1" resource="0"
                 file="Source/ConnectorComponent.cpp"/>
           <FILE id="iMpAzs" name="ConnectorComponent.h" compile="0" resource="0"

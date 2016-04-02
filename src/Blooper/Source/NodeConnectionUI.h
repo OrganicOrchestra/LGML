@@ -54,6 +54,8 @@ public:
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
 
+	void showEditor();
+
     Connector* getBaseConnector()
     {
         return sourceConnector != nullptr ? sourceConnector : destConnector;

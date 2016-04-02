@@ -28,6 +28,8 @@ isSelectingNodes(false)
     setInterceptsMouseClicks(true, true);
     addAndMakeVisible(selectingBounds);
 
+	connectionEditor = new NodeConnectionEditor();
+
 }
 
 NodeManagerUI::~NodeManagerUI()
@@ -110,7 +112,6 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
         NodeBaseUI * nui = node->createUI();
         nodesUI.add(nui);
         addAndMakeVisible(nui);
-
     }
     else
     {
