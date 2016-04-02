@@ -214,6 +214,18 @@
                 file="Source/NodeConnection.cpp"/>
           <FILE id="rqbxg1" name="NodeConnection.h" compile="0" resource="0"
                 file="Source/NodeConnection.h"/>
+          <FILE id="uWMNrb" name="NodeConnectionEditor.cpp" compile="1" resource="0"
+                file="Source/NodeConnectionEditor.cpp"/>
+          <FILE id="rPgdLY" name="NodeConnectionEditor.h" compile="0" resource="0"
+                file="Source/NodeConnectionEditor.h"/>
+          <FILE id="fz0Ecl" name="NodeConnectionEditorDataSlot.cpp" compile="1"
+                resource="0" file="Source/NodeConnectionEditorDataSlot.cpp"/>
+          <FILE id="vvbINs" name="NodeConnectionEditorDataSlot.h" compile="0"
+                resource="0" file="Source/NodeConnectionEditorDataSlot.h"/>
+          <FILE id="kMIyDl" name="NodeConnectionEditorLink.cpp" compile="1" resource="0"
+                file="Source/NodeConnectionEditorLink.cpp"/>
+          <FILE id="QPyVQj" name="NodeConnectionEditorLink.h" compile="0" resource="0"
+                file="Source/NodeConnectionEditorLink.h"/>
           <FILE id="iREnna" name="NodeConnectionUI.cpp" compile="1" resource="0"
                 file="Source/NodeConnectionUI.cpp"/>
           <FILE id="CijEHt" name="NodeConnectionUI.h" compile="0" resource="0"
