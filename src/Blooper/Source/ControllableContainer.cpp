@@ -1,10 +1,10 @@
 /*
  ==============================================================================
- 
+
  ControllableContainer.cpp
  Created: 8 Mar 2016 1:15:36pm
  Author:  bkupe
- 
+
  ==============================================================================
  */
 
@@ -19,7 +19,7 @@ hasCustomShortName(false),
 skipControllableNameInAddress(false)
 {
     setNiceName(niceName);
-	
+
 }
 
 ControllableContainer::~ControllableContainer()
@@ -34,7 +34,7 @@ FloatParameter * ControllableContainer::addFloatParameter(const String & _niceNa
         DBG("ControllableContainer::add parameter, short Name already exists : " + niceName);
         return nullptr;
     }
-	
+
     FloatParameter * p = new FloatParameter(_niceName, description, initialValue, minValue, maxValue, enabled);
     addParameterInternal(p);
     return p;
@@ -47,7 +47,7 @@ IntParameter * ControllableContainer::addIntParameter(const String & _niceName, 
         DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
         return nullptr;
     }
-	
+
     IntParameter * p = new IntParameter(_niceName, _description, initialValue, minValue, maxValue, enabled);
     addParameterInternal(p);
     return p;
@@ -60,7 +60,7 @@ BoolParameter * ControllableContainer::addBoolParameter(const String & _niceName
         DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
         return nullptr;
     }
-	
+
     BoolParameter * p = new BoolParameter(_niceName, _description, value, enabled);
     addParameterInternal(p);
     return p;
@@ -73,7 +73,7 @@ StringParameter * ControllableContainer::addStringParameter(const String & _nice
         DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
         return nullptr;
     }
-	
+
     StringParameter * p = new StringParameter(_niceName, _description, value, enabled);
     addParameterInternal(p);
     return p;
@@ -86,12 +86,12 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
         DBG("ControllableContainer::add trigger, short Name already exists : " + _niceName);
         return nullptr;
     }
-	
+
     Trigger * t = new Trigger(_niceName, _description, enabled);
     controllables.add(t);
     t->setParentContainer(this);
     t->addTriggerListener(this);
-	
+
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, t);
     return t;
 }
@@ -108,7 +108,7 @@ Controllable * ControllableContainer::getControllableByName(const String & name)
     {
         if (c->shortName == name) return c;
     }
-	
+
     return nullptr;
 }
 
@@ -132,9 +132,9 @@ ControllableContainer * ControllableContainer::getControllableContainerByName(co
     {
         if (cc->shortName == name) return cc;
     }
-	
+
     return nullptr;
-	
+
 }
 
 void ControllableContainer::setParentContainer(ControllableContainer * container)
@@ -142,26 +142,26 @@ void ControllableContainer::setParentContainer(ControllableContainer * container
     this->parentContainer = container;
     for (auto &c : controllables) c->updateControlAddress();
     for (auto &cc : controllableContainers) cc->updateChildrenControlAddress();
-	
+
 }
 
 void ControllableContainer::updateChildrenControlAddress()
 {
     for (auto &c : controllables) c->updateControlAddress();
     for (auto &cc : controllableContainers) cc->updateChildrenControlAddress();
-	
+
 }
 
 Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 {
     Array<Controllable*> result;
     for (auto &c : controllables) if(c->isControllableExposed) result.add(c);
-	
+
     if (recursive)
     {
         for (auto &cc : controllableContainers) result.addArray(cc->getAllControllables(true));
     }
-	
+
     return result;
 }
 
@@ -169,9 +169,9 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
 Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool , bool getNotExposed)
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
-	
+
     bool isTargetAControllable = addressSplit.size() == 1;
-	
+
     if (isTargetAControllable)
     {
         DBG("Check controllable Address : " + shortName);
@@ -184,14 +184,14 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
                 else return nullptr;
             }
         }
-		
+
         //no found in direct children controllables, maybe in a skip container ?
         for (auto &cc : controllableContainers)
         {
             if (cc->skipControllableNameInAddress)
             {
                 Controllable * tc = cc->getControllableByName(addressSplit[0]);
-				
+
                 if (tc != nullptr) return tc;
             }
         }
@@ -200,7 +200,7 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
     {
         for (auto &cc : controllableContainers)
         {
-			
+
             if (!cc->skipControllableNameInAddress)
             {
                 if (cc->shortName == addressSplit[0])
@@ -217,20 +217,20 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
                     addressSplit.remove(0);
                     return tc->getControllableForAddress(addressSplit);
                 }
-				
+
             }
         }
     }
-	
+
     return nullptr;
 }
 
 void ControllableContainer::dispatchFeedback(Controllable * c)
 {
-	//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+    //    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
     if (parentContainer != nullptr){ parentContainer->dispatchFeedback(c);}
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
-	
+
 }
 
 
@@ -257,32 +257,34 @@ void ControllableContainer::addParameterInternal(Parameter * p)
 }
 
 
-ControllableContainerEditor * ControllableContainer::createControllableContainerEditor(){
-    ControllableContainerEditor * editor = new ControllableContainerEditor(this);
+Component * ControllableContainer::createControllableContainerEditor(){
+    ControllableContainerEditor * editor = new ControllableContainerEditor(this,nullptr);
     Rectangle<int> bounds;
-	
+
     int pad=3;
     int curY = pad;
     for(auto & c:controllables){
-		if(c->isControllableExposed){
-			ControllableUI * cUI = new NamedControllableUI(c->createDefaultControllableEditor(),100);
-			cUI->setTopLeftPosition(0, curY);
-			curY+=cUI->getHeight() + pad;
-			editor->addControlUI(cUI);
-			bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
-		}
+        if(!c->hideInEditor){
+            ControllableUI * cUI = new NamedControllableUI(c->createDefaultControllableEditor(),100);
+            cUI->setTopLeftPosition(0, curY);
+            curY+=cUI->getHeight() + pad;
+            editor->addControlUI(cUI);
+            bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
+        }
     }
-	
-	
+
+
     for(auto &c:controllableContainers){
-        ControllableContainerEditor * cE=c->createControllableContainerEditor();
-        cE->setTopLeftPosition(0, curY);
-        curY+=cE->getHeight()+pad;
-        editor->addAndMakeVisible(cE);
-        bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
+        Component * cE=c->createControllableContainerEditor();
+        if(cE){
+            cE->setTopLeftPosition(0, curY);
+            curY+=cE->getHeight()+pad;
+            editor->addAndMakeVisible(cE);
+            bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
+        }
     }
-	
+    
     editor->setBounds(bounds);
     return editor;
-	
+    
 }

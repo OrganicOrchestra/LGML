@@ -47,8 +47,8 @@ node(node)
 
     node->xPosition->addParameterListener(this);
     node->yPosition->addParameterListener(this);
-    node->xPosition->isControllableExposed = false;
-    node->yPosition->isControllableExposed = false;
+    node->xPosition->hideInEditor = true;
+    node->yPosition->hideInEditor = true;
 
 
 }

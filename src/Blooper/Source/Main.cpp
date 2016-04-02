@@ -11,7 +11,7 @@
 #include "JuceHeader.h"
 #include "MainComponent.h"
 
-MainContentComponent* createMainContentComponent();
+MainContentComponent* createMainContentComponent(Engine* e);
 
 //==============================================================================
 class BlooperApplication  : public JUCEApplication
@@ -25,7 +25,7 @@ public:
     bool moreThanOneInstanceAllowed() override       { return false; }
 
     //==============================================================================
-    void initialise (const String& /*commandLine*/) override
+    void initialise (const String& commandLine) override
     {
         // This method is where you should put your application's initialisation code..
         PropertiesFile::Options options;
@@ -36,13 +36,18 @@ public:
         appProperties = new ApplicationProperties();
         appProperties->setStorageParameters (options);
         Process::setPriority (Process::HighPriority);
-        mainWindow = new MainWindow (getApplicationName());
+
+        DBG(commandLine);
+        
+        engine = new Engine();
+
+        mainWindow = new MainWindow (getApplicationName(),engine);
     }
 
     void shutdown() override
     {
         // Add your application's shutdown code here..
-
+        engine = nullptr;
         mainWindow = nullptr; // (deletes our window)
     }
 
@@ -69,12 +74,12 @@ public:
     class MainWindow    : public DocumentWindow
     {
     public:
-        MainWindow (String name)  : DocumentWindow (name,
+        MainWindow (String name,Engine * e)  : DocumentWindow (name,
                                                     Colours::lightgrey,
                                                     DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-			MainContentComponent * mainComponent = createMainContentComponent();
+			MainContentComponent * mainComponent = createMainContentComponent(e);
             setContentOwned (mainComponent, true);
             setResizable (true, true);
 
@@ -109,6 +114,8 @@ public:
     ScopedPointer<ApplicationProperties> appProperties;
     AudioDeviceManager deviceManager;
     UndoManager undoManager;
+
+    ScopedPointer<Engine> engine;
 private:
     ScopedPointer<MainWindow> mainWindow;
 
@@ -119,7 +126,7 @@ static BlooperApplication& getApp()                 { return *dynamic_cast<Bloop
 ApplicationCommandManager& getCommandManager()      { return getApp().commandManager; }
 ApplicationProperties& getAppProperties()           { return *getApp().appProperties; }
 AudioDeviceManager & getAudioDeviceManager()        { return getApp().deviceManager;}
-UndoManager & getUndoManager()                      { return getApp().undoManager;}
+UndoManager & getAppUndoManager()                      { return getApp().undoManager;}
 //==============================================================================
 // This macro generates the main() routine that launches the app.
 START_JUCE_APPLICATION (BlooperApplication)

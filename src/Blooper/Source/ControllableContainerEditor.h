@@ -23,15 +23,16 @@
 
 class ControllableContainerEditor:public Component{
 public:
-    ControllableContainerEditor(ControllableContainer * );
-    virtual ~ControllableContainerEditor(){}
+    ControllableContainerEditor(ControllableContainer * ,Component*);
+    virtual ~ControllableContainerEditor(){deleteAllChildren();}
 
     void addControlUI(ControllableUI * c);
     void removeControlUI(ControllableUI * c);
     void resized()override;
     ControllableContainer * owner;
-    OwnedArray<ControllableUI> controllableUIs;
+    Array<ControllableUI*> controllableUIs;
 protected:
+    Component* embeddedComp;
 
 
 };

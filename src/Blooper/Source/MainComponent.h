@@ -22,7 +22,10 @@
 
 #include "ControllableInspector.h"
 
+#include "Engine.h"
 
+
+#include "LookAndFeelOO.h"
 //==============================================================================
 /*
  This component lives inside our window, and this is where you should put all
@@ -33,10 +36,8 @@ ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
-const char* const filenameSuffix = ".lgml";
-const char* const filenameWildcard = "*.lgml";
 
-class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public FileBasedDocument
+class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel
 
 {
 public:
@@ -47,24 +48,24 @@ public:
     ScopedPointer<NodeManagerUIViewport> nodeManagerUIViewport;
     ScopedPointer<NodeManagerUI> nodeManagerUI;
     ScopedPointer<TimeManagerUI> timeManagerUI;
-    ScopedPointer<ControllerManager> controllerManager;
+
     ScopedPointer<ControllerManagerViewport> controllerManagerViewport;
     ScopedPointer<ControllableInspector> controllableInspector;
     ScopedPointer<ControllableInspectorViewPort> controllableInspectorViewPort;
 
-    // Audio
 
-    AudioProcessorPlayer graphPlayer;
+    Engine * engine;
+
+
+    ScopedPointer<LookAndFeelOO> lookAndFeelOO;
+
     //==============================================================================
-    MainContentComponent();
+    MainContentComponent(Engine * e);
     ~MainContentComponent();
 
     //==============================================================================
     // see MainComponent.cpp
-    void initAudio();
-    void stopAudio();
 
-    void createNewGraph();
     //==============================================================================
     void paint (Graphics& g) override{g.fillAll (Colours::black);}
     void resized() override;
@@ -85,27 +86,6 @@ public:
     StringArray getMenuBarNames() override ;
     virtual PopupMenu getMenuForIndex (int topLevelMenuIndex,const String& menuName) override;
     void menuItemSelected (int /*menuItemID*/,int /*topLevelMenuIndex*/) override{}
-
-    //==============================================================================
-    // see MainContentFileDocument.cpp
-
-    //  inherited from FileBasedDocument
-    String getDocumentTitle()override ;
-    Result loadDocument (const File& file)override;
-    Result saveDocument (const File& file)override;
-    File getLastDocumentOpened() override;
-    void setLastDocumentOpened (const File& file) override;
-    //    #if JUCE_MODAL_LOOPS_PERMITTED
-    //     File getSuggestedSaveAsFile (const File& defaultFile)override;
-    //    #endif
-
-    // our Saving methods
-    XmlElement* createXml()const;
-
-
-    void restoreFromXml(const XmlElement &);
-    void createNodeFromXml (const XmlElement& xml);
-
 
 
 

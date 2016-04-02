@@ -12,9 +12,14 @@
 
 
 ControllableInspector::ControllableInspector(NodeManagerUI * _nmui):
-	proxyContainer(nullptr)
+	proxyContainer(nullptr),
+    nmui(_nmui)
 {
-    _nmui->selectableHandler.addSelectableHandlerListener(this);
+    nmui->selectableHandler.addSelectableHandlerListener(this);
+}
+
+ControllableInspector::~ControllableInspector(){
+    nmui->selectableHandler.removeSelectableHandlerListener(this);
 }
 
 void ControllableInspector::selectableChanged(SelectableComponent * _node,bool state){
@@ -44,10 +49,11 @@ void ControllableInspector::generateFromCandidates(){
 
     if(candidateContainers.size()==0){return;}
 
-    if(displayedEditor==nullptr )displayedEditor = proxyContainer->sourceContainer->createControllableContainerEditor();
-    else if(displayedEditor->owner==proxyContainer->sourceContainer){
+    if(displayedEditor==nullptr )displayedEditor = new ControllableContainerEditor(
+                                                                                   proxyContainer->sourceContainer,proxyContainer->sourceContainer->createControllableContainerEditor());
+    else if(displayedEditor->owner!=nullptr && displayedEditor->owner==proxyContainer->sourceContainer){
         delete displayedEditor.release();
-        displayedEditor = proxyContainer->sourceContainer->createControllableContainerEditor();}
+        displayedEditor = new ControllableContainerEditor(proxyContainer->sourceContainer,proxyContainer->sourceContainer->createControllableContainerEditor());}
 
 
     // try to merge common properties based on first
@@ -57,7 +63,7 @@ void ControllableInspector::generateFromCandidates(){
     }
 
     addAndMakeVisible(displayedEditor);
-    // TODO default component are not resized...
+
     displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
     setBounds(displayedEditor->getBounds().withPosition(0,0));
 }

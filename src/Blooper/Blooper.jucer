@@ -202,6 +202,10 @@
                 file="Source/DataProcessorGraph.h"/>
         </GROUP>
         <GROUP id="{BA13D1BE-1F46-C45E-3568-F1B617CE7E74}" name="connection">
+          <FILE id="cfDB2T" name="ConnectionEditor.cpp" compile="1" resource="0"
+                file="Source/ConnectionEditor.cpp"/>
+          <FILE id="zpq1wn" name="ConnectionEditor.h" compile="0" resource="0"
+                file="Source/ConnectionEditor.h"/>
           <FILE id="D2Mdhy" name="ConnectorComponent.cpp" compile="1" resource="0"
                 file="Source/ConnectorComponent.cpp"/>
           <FILE id="iMpAzs" name="ConnectorComponent.h" compile="0" resource="0"
@@ -283,13 +287,15 @@
         <FILE id="bjuLcd" name="NodeManager.cpp" compile="1" resource="0" file="Source/NodeManager.cpp"/>
         <FILE id="iTucpu" name="NodeManager.h" compile="0" resource="0" file="Source/NodeManager.h"/>
       </GROUP>
-      <FILE id="U1Atk6" name="MainComponentCommands.cpp" compile="1" resource="0"
-            file="Source/MainComponentCommands.cpp"/>
-      <FILE id="rpB1Vz" name="MainComponentFileDocument.cpp" compile="1"
-            resource="0" file="Source/MainComponentFileDocument.cpp"/>
+      <FILE id="Z0ukeN" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
+      <FILE id="Mmqzc5" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
+      <FILE id="rpB1Vz" name="EngineFileDocument.cpp" compile="1" resource="0"
+            file="Source/EngineFileDocument.cpp"/>
       <FILE id="ddEu7L" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="OvsUVU" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
+      <FILE id="U1Atk6" name="MainComponentCommands.cpp" compile="1" resource="0"
+            file="Source/MainComponentCommands.cpp"/>
       <FILE id="gEsmKk" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
   </MAINGROUP>

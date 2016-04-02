@@ -227,6 +227,11 @@ trackIdx(_trackIdx)
                                     "Pre process delay (in milliseconds)",
                                     40, 0, 200);
 
+    recPlayTrig->hideInEditor = true;
+    playTrig->hideInEditor = true;
+    stopTrig->hideInEditor = true;
+    clearTrig->hideInEditor = true;
+    volume->hideInEditor = true;
 
     stateParameterString = addStringParameter("state", "track state", "");
     stateParameterStringSynchronizer = new AsyncTrackStateStringSynchroizer(stateParameterString);
@@ -542,6 +547,8 @@ void LooperNode::Looper::Track::cleanAllQuantizeNeedles(){
 }
 
 
-
+Component * LooperNode::Looper::Track::createControllableContainerEditor(){
+    return nullptr;
+}
 
 NodeBaseUI * LooperNode::createUI(){return new NodeBaseUI(this, new LooperNodeUI);}

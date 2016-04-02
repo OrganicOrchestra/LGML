@@ -44,7 +44,7 @@ public:
     bool hasCustomShortName;
     bool isControllableExposed;
     bool isControllableFeedbackOnly;
-
+    bool hideInEditor;
     String controlAddress;
 
     ControllableContainer * parentContainer;

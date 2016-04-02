@@ -17,7 +17,8 @@ Controllable::Controllable(const Type &type, const String & niceName, const Stri
     parentContainer(nullptr),
     hasCustomShortName(false),
     isControllableExposed(true),
-    isControllableFeedbackOnly(false)
+    isControllableFeedbackOnly(false),
+    hideInEditor(false)
 {
     setEnabled(enabled);
     setNiceName(niceName);

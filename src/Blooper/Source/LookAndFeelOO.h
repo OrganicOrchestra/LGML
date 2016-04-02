@@ -18,7 +18,7 @@
 
 class LookAndFeelOO:public LookAndFeel{
 public:
-	juce_DeclareSingleton(LookAndFeelOO, true);
+//	juce_DeclareSingleton(LookAndFeelOO, true);
     LookAndFeelOO();
     ~LookAndFeelOO();
     //==============================================================================

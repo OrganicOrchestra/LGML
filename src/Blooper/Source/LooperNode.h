@@ -87,15 +87,13 @@ public:
             };
             TrackState trackState;
             static String trackStateToString(const TrackState & ts);
-
+            Component * createControllableContainerEditor()override;
 
             void setTrackState(TrackState state);
             // from events like UI
             void askForSelection(bool isSelected);
             bool askForBeingMasterTempoTrack();
             Track * getMasterTempoTrack();
-
-
 
             //Listener
             class  Listener : public AsyncUpdater

@@ -23,7 +23,7 @@
 class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,public Component{
 public:
     ControllableInspector(NodeManagerUI * _nmui);
-    virtual ~ControllableInspector(){}
+    virtual ~ControllableInspector();
 
 void selectableChanged(SelectableComponent*  c,bool isSelected) override;
 private:
@@ -46,7 +46,7 @@ private:
     void resized()override;
 
 
-
+    NodeManagerUI * nmui;
 
 
 

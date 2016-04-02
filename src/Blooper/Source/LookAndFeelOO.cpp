@@ -12,7 +12,7 @@
 
 #include "Style.h"
 
-juce_ImplementSingleton(LookAndFeelOO);
+//juce_ImplementSingleton(LookAndFeelOO);
 
 LookAndFeelOO::LookAndFeelOO(){
 

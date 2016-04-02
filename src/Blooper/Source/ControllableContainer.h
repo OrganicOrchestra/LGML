@@ -85,7 +85,7 @@ public:
     virtual void triggerTriggered(Trigger * p) override;
 
     // can be overriden if custom editor wanted
-    virtual ControllableContainerEditor * createControllableContainerEditor();
+    virtual Component * createControllableContainerEditor();
 
 
 

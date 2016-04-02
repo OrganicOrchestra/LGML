@@ -11,10 +11,13 @@
 #include "ControllableContainerEditor.h"
 
 
-ControllableContainerEditor::ControllableContainerEditor(ControllableContainer * cc):owner(cc){
+ControllableContainerEditor::ControllableContainerEditor(ControllableContainer * cc,Component* _embeddedComp):owner(cc),embeddedComp(_embeddedComp){
 
-
-};
+    if(embeddedComp){
+        addAndMakeVisible(embeddedComp);
+        setBounds(embeddedComp->getBounds());
+    }
+}
 
 
 void ControllableContainerEditor::addControlUI(ControllableUI * c){
@@ -22,11 +25,15 @@ void ControllableContainerEditor::addControlUI(ControllableUI * c){
     addAndMakeVisible(c);
 }
 void ControllableContainerEditor::removeControlUI(ControllableUI * c){
-    controllableUIs.removeObject(c);
     removeChildComponent(c);
+    controllableUIs.removeFirstMatchingValue(c);
+
 }
 
 void ControllableContainerEditor::resized(){
+    if(embeddedComp){
+        embeddedComp->setBounds(getBounds());
+    }
     for(auto &c:controllableUIs){
         c->setSize(getWidth(), c->getHeight());
     }
