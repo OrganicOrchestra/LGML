@@ -11,14 +11,13 @@
 #ifndef TRIGGERBUTTONUI_H_INCLUDED
 #define TRIGGERBUTTONUI_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
+
 
 //==============================================================================
 /*
 */
 
 
-#include "Trigger.h"
 #include "TriggerUI.h"
 
 class TriggerButtonUI : public TriggerUI

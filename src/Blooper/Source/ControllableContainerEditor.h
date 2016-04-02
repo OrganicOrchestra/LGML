@@ -23,7 +23,7 @@
 
 class ControllableContainerEditor:public Component{
 public:
-    ControllableContainerEditor(ControllableContainer * );
+    ControllableContainerEditor(ControllableContainer * ,Component*);
     virtual ~ControllableContainerEditor(){deleteAllChildren();}
 
     void addControlUI(ControllableUI * c);
@@ -32,6 +32,7 @@ public:
     ControllableContainer * owner;
     Array<ControllableUI*> controllableUIs;
 protected:
+    Component* embeddedComp;
 
 
 };

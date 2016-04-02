@@ -17,7 +17,7 @@
 
 
 #define MAX_LOOP_LENGTH_S 30
-#define MAX_NUM_TRACKS 30
+#define MAX_NUM_TRACKS 32
 
 
 
@@ -44,6 +44,7 @@ public:
 
         FloatParameter * volumeSelected;
         BoolParameter * isMonitoring;
+        IntParameter * numberOfTracks;
 
 
 
@@ -63,7 +64,7 @@ public:
         class Track : public ControllableContainer
         {
         public:
-            Track(Looper * looper, int _trackNum);
+            Track(Looper * looper, int _trackIdx);
 
             ~Track(){}
 
@@ -72,7 +73,9 @@ public:
             Trigger * clearTrig;
             Trigger * stopTrig;
             StringParameter  * stateParameterString;
-
+            FloatParameter * volume;
+			
+			
             enum TrackState{
                 SHOULD_RECORD = 0,
                 RECORDING,
@@ -84,15 +87,13 @@ public:
             };
             TrackState trackState;
             static String trackStateToString(const TrackState & ts);
-
+            Component * createControllableContainerEditor()override;
 
             void setTrackState(TrackState state);
             // from events like UI
             void askForSelection(bool isSelected);
             bool askForBeingMasterTempoTrack();
             Track * getMasterTempoTrack();
-
-
 
             //Listener
             class  Listener : public AsyncUpdater
@@ -115,6 +116,12 @@ public:
                 void handleAsyncUpdate() override{trackStateChangedAsync(stateToBeNotified);}
                 virtual void trackSelected(bool){};
             };
+			ListenerList<Listener> trackStateListeners;
+            void addTrackListener(Listener* newListener) { trackStateListeners.add(newListener); }
+            void removeTrackListener(Listener* listener) { trackStateListeners.remove(listener); }
+			
+			
+			
 
             class AsyncTrackStateStringSynchroizer : public Track::Listener{
             public:
@@ -125,18 +132,15 @@ public:
                 }
             };
            ScopedPointer<AsyncTrackStateStringSynchroizer> stateParameterStringSynchronizer;
-            ListenerList<Listener> trackStateListeners;
-            void addTrackListener(Listener* newListener) { trackStateListeners.add(newListener); }
-            void removeTrackListener(Listener* listener) { trackStateListeners.remove(listener); }
 
-            FloatParameter * volume;
+
 
 
         private:
 
             void triggerTriggered(Trigger * t) override;
             void setSelected(bool isSelected);
-            IntParameter * trackNum;
+            int trackIdx;
 
             int recordNeedle;
             int quantizedRecordEnd,quantizedRecordStart;
@@ -208,6 +212,7 @@ public:
     private:
 
         void triggerTriggered(Trigger * t) override;
+        void parameterValueChanged(Parameter * p) override;
         // internal
         void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override;
         void checkIfNeedGlobalLooperStateUpdate();

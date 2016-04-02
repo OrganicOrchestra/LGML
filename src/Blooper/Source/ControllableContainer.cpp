@@ -1,22 +1,22 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ControllableContainer.cpp
-    Created: 8 Mar 2016 1:15:36pm
-    Author:  bkupe
+ ControllableContainer.cpp
+ Created: 8 Mar 2016 1:15:36pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "ControllableContainer.h"
 
 #include "ControllableContainerEditor.h"
 
 ControllableContainer::ControllableContainer(const String & niceName) :
-    niceName(niceName),
-    parentContainer(nullptr),
-    hasCustomShortName(false),
-    skipControllableNameInAddress(false)
+niceName(niceName),
+parentContainer(nullptr),
+hasCustomShortName(false),
+skipControllableNameInAddress(false)
 {
     setNiceName(niceName);
 
@@ -227,7 +227,7 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 
 void ControllableContainer::dispatchFeedback(Controllable * c)
 {
-//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+    //    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
     if (parentContainer != nullptr){ parentContainer->dispatchFeedback(c);}
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
 
@@ -257,30 +257,34 @@ void ControllableContainer::addParameterInternal(Parameter * p)
 }
 
 
-ControllableContainerEditor * ControllableContainer::createControllableContainerEditor(){
-    ControllableContainerEditor * editor = new ControllableContainerEditor(this);
+Component * ControllableContainer::createControllableContainerEditor(){
+    ControllableContainerEditor * editor = new ControllableContainerEditor(this,nullptr);
     Rectangle<int> bounds;
 
     int pad=3;
     int curY = pad;
     for(auto & c:controllables){
-        ControllableUI * cUI = c->createDefaultControllableEditor();
-        cUI->setTopLeftPosition(0, curY);
-        curY+=cUI->getHeight() + pad;
-        editor->addControlUI(cUI);
-        bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
+        if(!c->hideInEditor){
+            ControllableUI * cUI = new NamedControllableUI(c->createDefaultControllableEditor(),100);
+            cUI->setTopLeftPosition(0, curY);
+            curY+=cUI->getHeight() + pad;
+            editor->addControlUI(cUI);
+            bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
+        }
     }
 
 
     for(auto &c:controllableContainers){
-        ControllableContainerEditor * cE=c->createControllableContainerEditor();
-        cE->setTopLeftPosition(0, curY);
-        curY+=cE->getHeight()+pad;
-        editor->addAndMakeVisible(cE);
-        bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
+        Component * cE=c->createControllableContainerEditor();
+        if(cE){
+            cE->setTopLeftPosition(0, curY);
+            curY+=cE->getHeight()+pad;
+            editor->addAndMakeVisible(cE);
+            bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
+        }
     }
-
+    
     editor->setBounds(bounds);
     return editor;
-
+    
 }

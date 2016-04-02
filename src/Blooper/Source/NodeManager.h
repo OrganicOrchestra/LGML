@@ -85,7 +85,7 @@ private:
     OwnedArray<NodeBase> nodes;
     uint32 lastNodeId;
 
-    ReferenceCountedArray<NodeConnection> connections;
+    OwnedArray<NodeConnection> connections;
     uint32 lastConnectionId;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeManager)

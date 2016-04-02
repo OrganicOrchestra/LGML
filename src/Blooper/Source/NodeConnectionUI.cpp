@@ -91,7 +91,7 @@ void NodeConnectionUI::paint (Graphics& g)
 	float endAnchorX = endPos.x - anchorOffset;
 
 
-    int hitMargin = 30;
+    int hitMargin = 10;
     hitPath.clear();
     hitPath.startNewSubPath(sourcePos.x, sourcePos.y - hitMargin);
     hitPath.quadraticTo(sourceAnchorX, sourcePos.y - hitMargin, midPoint.x, midPoint.y - hitMargin);
@@ -165,6 +165,11 @@ void NodeConnectionUI::mouseDown(const MouseEvent & e)
             connection->remove();
             break;
         }
+    }
+    else  if (e.mods.isCtrlDown())
+    {
+        connection->remove();
+
     }
 }
 

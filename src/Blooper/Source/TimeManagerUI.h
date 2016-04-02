@@ -17,7 +17,7 @@
 class TimeManagerUI : public Component{
 
     public :
-    TimeManagerUI();
+    TimeManagerUI(TimeManager * _timeManager);
 
 
     void resized()override;
@@ -26,7 +26,7 @@ class TimeManagerUI : public Component{
 
     class TimeBar : public Component,public TimeManager::Listener,public Timer{
         public :
-        TimeBar();
+        TimeBar(TimeManager *);
 
         bool isSettingTempo = false;
         int refreshHz = 30;
@@ -62,7 +62,7 @@ class TimeManagerUI : public Component{
 
         void paint(Graphics & g) override;
 
-
+        TimeManager * timeManager;
 
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeBar);
@@ -72,6 +72,7 @@ class TimeManagerUI : public Component{
     ScopedPointer<FloatSliderUI>  bpmSlider;
 
     TimeBar timeBar;
+    TimeManager * timeManager;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManagerUI);
 };

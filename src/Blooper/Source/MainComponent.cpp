@@ -10,38 +10,40 @@
 
 #include "MainComponent.h"
 
+
 // (This function is called by the app startup code to create our main component)
-MainContentComponent* createMainContentComponent()     { return new MainContentComponent(); }
+MainContentComponent* createMainContentComponent(Engine * e)     { return new MainContentComponent(e); }
 
 
-MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
-                                                                filenameWildcard,
-                                                                "Load a filter graph",
-                                                                "Save a filter graph")
+MainContentComponent::MainContentComponent(Engine * e):engine(e)
 {
+    
+    setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
+
     DBG("Application Start");
 
-    controllerManager = new ControllerManager();
 
-    initAudio();
+    
 
-    timeManagerUI = new TimeManagerUI();
+
+
+    timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
     nodeManagerUIViewport=new NodeManagerUIViewport(nodeManagerUI);
 
 
     addAndMakeVisible(timeManagerUI);
-
     addAndMakeVisible(nodeManagerUIViewport);
 
 
 
-    controllerManagerViewport = new ControllerManagerViewport(controllerManager);
+    controllerManagerViewport = new ControllerManagerViewport(engine->controllerManager);
     addAndMakeVisible(controllerManagerViewport);
 
 
     controllableInspector = new ControllableInspector(nodeManagerUI);
-    addAndMakeVisible(controllableInspector);
+    controllableInspectorViewPort = new ControllableInspectorViewPort(controllableInspector);
+    addAndMakeVisible(controllableInspectorViewPort);
 
     // resize after contentCreated
 
@@ -59,7 +61,7 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
     //setMenu (this); //done in Main.cpp as it's a method of DocumentWindow
 #endif
 
-    createNewGraph();
+    e->createNewGraph();
 
 
 }
@@ -67,16 +69,14 @@ MainContentComponent::MainContentComponent():FileBasedDocument (filenameSuffix,
 
 
 MainContentComponent::~MainContentComponent(){
-    stopAudio();
-    TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
-    NodeManager::deleteInstance();
-    VSTManager::deleteInstance();
+
 #if JUCE_MAC
     setMacMainMenu (nullptr);
 #else
     //setMenuBar (nullptr);
 
 #endif
+//    LookAndFeelOO::deleteInstance();
 }
 
 
@@ -86,49 +86,14 @@ void MainContentComponent::resized()
     Rectangle<int> r = getLocalBounds();
     timeManagerUI->setBounds(r.removeFromTop(20));
     controllerManagerViewport->setBounds(r.removeFromLeft(300));
-    controllableInspector->setBounds(r.removeFromRight(300));
+    
+    
+    controllableInspector->setSize(300,controllableInspector->getHeight());
+    controllableInspectorViewPort->setBounds(r.removeFromRight(300));
     nodeManagerUIViewport->setBounds(r);
 }
 
 
-
-void MainContentComponent::createNewGraph(){
-    clear();
-    NodeBase * node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioIn);
-    node->xPosition->setValue(80);
-    node->yPosition->setValue(50);
-    node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioOut);
-    node->xPosition->setValue(450);
-    node->yPosition->setValue(50);
-}
-
-
-
-
-void MainContentComponent::initAudio(){
-    graphPlayer.setProcessor(&NodeManager::getInstance()->audioGraph);
-    ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
-    getAudioDeviceManager().initialise (256, 256, savedAudioState, true);
-    getAudioDeviceManager().addAudioCallback (&graphPlayer);
-    getAudioDeviceManager().addAudioCallback(TimeManager::getInstance());
-}
-
-
-void MainContentComponent::stopAudio(){
-    getAudioDeviceManager().removeAudioCallback (&graphPlayer);
-    getAudioDeviceManager().removeAudioCallback(TimeManager::getInstance());
-    getAudioDeviceManager().closeAudioDevice();
-}
-
-void MainContentComponent::clear(){
-//    do we need to stop audio?
-//    stopAudio();
-    TimeManager::getInstance()->stop();
-    NodeManager::getInstance()->clear();
-
-
-    changed();    //fileDocument
-}
 
 void MainContentComponent::showAudioSettings()
 {

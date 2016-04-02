@@ -163,19 +163,19 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
             // TODOs
         case CommandIDs::newFile:
-            createNewGraph();
+            engine->createNewGraph();
             break;
 
         case CommandIDs::open:
-            loadFromUserSpecifiedFile (true);
+            engine->loadFromUserSpecifiedFile (true);
             break;
 
         case CommandIDs::save:
-            save (true, true);
+            engine->save (true, true);
             break;
 
         case CommandIDs::saveAs:
-            saveAs (File::nonexistent, true, true, true);
+            engine->saveAs (File::nonexistent, true, true, true);
             break;
 
         case CommandIDs::toggleDoublePrecision:

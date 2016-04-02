@@ -20,7 +20,7 @@ public:
     ParameterUI(Parameter * parameter);
     virtual ~ParameterUI();
 
-    Parameter * parameter;
+    WeakReference<Parameter> parameter;
 
 protected:
     // Inherited via Listener

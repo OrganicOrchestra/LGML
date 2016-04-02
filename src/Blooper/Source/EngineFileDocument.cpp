@@ -8,7 +8,7 @@
  ==============================================================================
  */
 
-#include "MainComponent.h"
+#include "Engine.h"
 
 #include "NodeFactory.h"
 
@@ -20,7 +20,7 @@
 
 // TODO Fuck XML Lets JSON that !!
 
-String MainContentComponent::getDocumentTitle() {
+String Engine::getDocumentTitle() {
     if (! getFile().exists())
         return "Unnamed";
 
@@ -28,7 +28,7 @@ String MainContentComponent::getDocumentTitle() {
 }
 
 
-Result MainContentComponent::loadDocument (const File& file){
+Result Engine::loadDocument (const File& file){
     XmlDocument doc (file);
     ScopedPointer<XmlElement> xml (doc.getDocumentElement());
 
@@ -40,7 +40,7 @@ Result MainContentComponent::loadDocument (const File& file){
 }
 
 
-Result MainContentComponent::saveDocument (const File& file){
+Result Engine::saveDocument (const File& file){
     ScopedPointer<XmlElement> xml (createXml());
 
     if (! xml->writeToFile (file, String::empty))
@@ -51,7 +51,7 @@ Result MainContentComponent::saveDocument (const File& file){
 
 
 
-File MainContentComponent::getLastDocumentOpened() {
+File Engine::getLastDocumentOpened() {
     RecentlyOpenedFilesList recentFiles;
     recentFiles.restoreFromString (getAppProperties().getUserSettings()
                                    ->getValue ("recentNodeGraphFiles"));
@@ -62,7 +62,7 @@ File MainContentComponent::getLastDocumentOpened() {
 
 
 
-void MainContentComponent::setLastDocumentOpened (const File& file) {
+void Engine::setLastDocumentOpened (const File& file) {
 
     RecentlyOpenedFilesList recentFiles;
     recentFiles.restoreFromString (getAppProperties().getUserSettings()
@@ -123,7 +123,7 @@ static XmlElement* createNodeXml (NodeBase* const node) noexcept
     return e;
 }
 
-XmlElement* MainContentComponent::createXml() const
+XmlElement* Engine::createXml() const
 {
     XmlElement* projXml = new XmlElement("LGMLPROJECT");
     XmlElement* meta = new XmlElement("META");
@@ -160,7 +160,7 @@ XmlElement* MainContentComponent::createXml() const
 /// ===================
 // loading
 
-void MainContentComponent::restoreFromXml (const XmlElement& proj)
+void Engine::restoreFromXml (const XmlElement& proj)
 {
     clear();
     //    TODO check version Compat
@@ -197,7 +197,7 @@ void MainContentComponent::restoreFromXml (const XmlElement& proj)
 
 
 
-void MainContentComponent::createNodeFromXml (const XmlElement& xml)
+void Engine::createNodeFromXml (const XmlElement& xml)
 {
     NodeFactory::NodeType nodeType = NodeFactory::getTypeFromString(xml.getStringAttribute("NodeType"));
     int nodeId = xml.getIntAttribute("nodeId");
@@ -238,7 +238,7 @@ void MainContentComponent::createNodeFromXml (const XmlElement& xml)
 
 
 //#if JUCE_MODAL_LOOPS_PERMITTED
-//File MainContentComponent::getSuggestedSaveAsFile (const File& defaultFile){
+//File Engine::getSuggestedSaveAsFile (const File& defaultFile){
 //
 //}
 //#endif

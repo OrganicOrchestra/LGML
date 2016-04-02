@@ -77,7 +77,7 @@ void LooperNodeUI::reLayoutTracks(){
     if(tracksUI.size()){
 
         int numRow = 2;
-        int numCol = tracksUI.size()/numRow ;
+        int numCol = (tracksUI.size()+1)/numRow ;
         float width = 1.0f/numCol;
         float height =1.0f/numRow;
         float pad = 0.02f;

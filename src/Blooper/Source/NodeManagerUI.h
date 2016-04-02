@@ -122,7 +122,6 @@ class NodeManagerUIViewport : public Viewport{
 public:
     NodeManagerUIViewport(NodeManagerUI * _nmui):Viewport("NodeManagerViewPort"),nmui(_nmui){
         setScrollBarsShown(true,true);
-        //    setSize(500,500);
         setViewedComponent(nmui,false);
     }
     void visibleAreaChanged (const Rectangle<int>&)override{
@@ -131,9 +130,8 @@ public:
 
     }
     void resized() override{
-        if(getLocalBounds().contains(nmui->getLocalBounds())){
             nmui->minBounds = getLocalBounds();
-        }
+            nmui->resizeToFitNodes();
     }
 
     NodeManagerUI * nmui;

@@ -11,7 +11,7 @@
 #ifndef CONTROLLABLE_H_INCLUDED
 #define CONTROLLABLE_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "StringUtil.h"
 
 class ControllableContainer;
@@ -32,7 +32,7 @@ public:
 
 
     Controllable(const Type &type, const String &niceName, const String &description, bool enabled = true);
-    virtual ~Controllable() {}
+    virtual ~Controllable() {    Controllable::masterReference.clear();}
 
 
     Type type;
@@ -44,7 +44,7 @@ public:
     bool hasCustomShortName;
     bool isControllableExposed;
     bool isControllableFeedbackOnly;
-
+    bool hideInEditor;
     String controlAddress;
 
     ControllableContainer * parentContainer;
@@ -91,6 +91,7 @@ public:
     // used for generating editor
     virtual ControllableUI * createDefaultControllableEditor() = 0;
 
+
 public:
     class  Listener
     {
@@ -104,6 +105,15 @@ public:
     ListenerList<Listener> listeners;
     void addControllableListener(Listener* newListener) { listeners.add(newListener); }
     void removeControllableListener(Listener* listener) { listeners.remove(listener); }
+
+
+
+
+private:
+
+    WeakReference<Controllable>::Master masterReference;
+    friend class WeakReference<Controllable>;
+    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controllable)
 };
