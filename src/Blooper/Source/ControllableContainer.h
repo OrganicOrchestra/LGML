@@ -72,7 +72,7 @@ public:
 
     void setParentContainer(ControllableContainer * container);
     void updateChildrenControlAddress();
-    virtual Array<Controllable *> getAllControllables(bool recursive = false);
+    virtual Array<Controllable *> getAllControllables(bool recursive = false,bool getNotExposed = false);
 
     virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
 

@@ -22,11 +22,6 @@ MainContentComponent::MainContentComponent(Engine * e):engine(e)
 
     DBG("Application Start");
 
-
-    
-
-
-
     timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
     nodeManagerUIViewport=new NodeManagerUIViewport(nodeManagerUI);
@@ -34,8 +29,6 @@ MainContentComponent::MainContentComponent(Engine * e):engine(e)
 
     addAndMakeVisible(timeManagerUI);
     addAndMakeVisible(nodeManagerUIViewport);
-
-
 
     controllerManagerViewport = new ControllerManagerViewport(engine->controllerManager);
     addAndMakeVisible(controllerManagerViewport);
@@ -56,7 +49,7 @@ MainContentComponent::MainContentComponent(Engine * e):engine(e)
 //    (&getCommandManager())->getKeyMappings()->restoreFromXml (lastSavedKeyMappingsXML);
     addKeyListener ((&getCommandManager())->getKeyMappings());
 #if JUCE_MAC
-    setMacMainMenu (this);
+    setMacMainMenu (this,nullptr,"Open recent file");
 #else
     //setMenu (this); //done in Main.cpp as it's a method of DocumentWindow
 #endif

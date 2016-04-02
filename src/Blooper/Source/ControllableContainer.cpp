@@ -152,21 +152,21 @@ void ControllableContainer::updateChildrenControlAddress()
 
 }
 
-Array<Controllable*> ControllableContainer::getAllControllables(bool recursive)
+Array<Controllable*> ControllableContainer::getAllControllables(bool recursive,bool getExposed)
 {
     Array<Controllable*> result;
-    for (auto &c : controllables) if(c->isControllableExposed) result.add(c);
+    for (auto &c : controllables) if(getExposed || c->isControllableExposed) result.add(c);
 
     if (recursive)
     {
-        for (auto &cc : controllableContainers) result.addArray(cc->getAllControllables(true));
+        for (auto &cc : controllableContainers) result.addArray(cc->getAllControllables(true,getExposed));
     }
 
     return result;
 }
 
 
-Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool , bool getNotExposed)
+Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recu, bool getNotExposed)
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
 
@@ -206,7 +206,7 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
                 if (cc->shortName == addressSplit[0])
                 {
                     addressSplit.remove(0);
-                    return cc->getControllableForAddress(addressSplit);
+                    return cc->getControllableForAddress(addressSplit,recu,getNotExposed);
                 }
             }
             else
@@ -215,7 +215,7 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
                 if (tc != nullptr)
                 {
                     addressSplit.remove(0);
-                    return tc->getControllableForAddress(addressSplit);
+                    return tc->getControllableForAddress(addressSplit,recu,getNotExposed);
                 }
 
             }

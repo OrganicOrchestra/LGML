@@ -24,14 +24,14 @@ Controllable::Controllable(const Type &type, const String & niceName, const Stri
     setNiceName(niceName);
 }
 
-String Controllable::getControlAddress()
+String Controllable::getControlAddress(ControllableContainer * relativeTo)
 {
     StringArray addressArray;
     addressArray.add(shortName);
 
     ControllableContainer * pc = parentContainer;
 
-    while (pc != nullptr)
+    while (pc != relativeTo)
     {
         if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
         pc = pc->parentContainer;

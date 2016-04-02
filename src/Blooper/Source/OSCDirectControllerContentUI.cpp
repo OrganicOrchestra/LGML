@@ -32,7 +32,7 @@ void OSCDirectControllerContentUI::init()
 
     cui->setSize(300, 150);
 
-    Array<Controllable *> nodeControllables = NodeManager::getInstance()->getAllControllables(true);
+    Array<Controllable *> nodeControllables = NodeManager::getInstance()->getAllControllables(true,false);
     
 	/*
 	for (auto &_c : nodeControllables)

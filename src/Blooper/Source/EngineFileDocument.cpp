@@ -77,6 +77,19 @@ void Engine::setLastDocumentOpened (const File& file) {
 
 //==============================================================================
 // saving
+static String  makeXMLAttributefromAddress(const String & address){
+    StringArray ad;
+    ad.addTokens(address, "/","");
+    ad.remove(0);
+    return ad.joinIntoString(".");
+
+}
+static StringArray  makeAddressFromXMLAttribute(const String & attr){
+    StringArray ad;
+    ad.addTokens(attr, ".","");
+    return ad;
+
+}
 
 
 //==============================================================================
@@ -88,11 +101,15 @@ static XmlElement* createNodeXml (NodeBase* const node) noexcept
     e->setAttribute("NodeId", String(node->nodeId));
 
     XmlElement* p = new XmlElement("PARAMETERS");
-    Array<Controllable*> cont =node->ControllableContainer::getAllControllables();
+    Array<Controllable*> cont =node->ControllableContainer::getAllControllables(true,true);
     for(auto &c:cont){
         Parameter * base = dynamic_cast<Parameter*>(c);
         if(base){
-            p->setAttribute(base->shortName, base->toString());
+
+            p->setAttribute(makeXMLAttributefromAddress(base->getControlAddress(node)), base->toString());
+        }
+        else if(dynamic_cast<Trigger*>(c) !=nullptr){
+
         }
         else{
             // should never happen un less another Controllable type than parameter has been introduced
@@ -110,12 +127,13 @@ static XmlElement* createNodeXml (NodeBase* const node) noexcept
     if(node->audioProcessor){
 
 
-        XmlElement* state = new XmlElement ("STATE");
+
         MemoryBlock m;
 
         // TODO we could implement that for all node objects to be able to save any kind of custom data
         node->audioProcessor->getStateInformation (m);
         if(m.getSize()){
+            XmlElement* state = new XmlElement ("STATE");
             state->addTextElement (m.toBase64Encoding());
             e->addChildElement (state);
         }
@@ -207,9 +225,10 @@ void Engine::createNodeFromXml (const XmlElement& xml)
 
     for(int i = 0;i < paramXml->getNumAttributes() ; i++){
 
-        String curParamName = paramXml->getAttributeName(i);
+        StringArray curParamName = makeAddressFromXMLAttribute(paramXml->getAttributeName(i));
 
-        if(Controllable * c = node->getControllableByName(curParamName)){
+
+        if(Controllable * c = node->getControllableForAddress(curParamName.strings,true,true)){
             if(Parameter * p = dynamic_cast<Parameter*>(c)){
                 p->fromString(paramXml->getAttributeValue(i));
             }
@@ -219,7 +238,7 @@ void Engine::createNodeFromXml (const XmlElement& xml)
             }
         }
         else{
-            DBG("attribute not found");
+            DBG("attribute not found : "+curParamName.joinIntoString("/"));
             jassertfalse;
         }
     }
