@@ -110,11 +110,11 @@
 //        p.startNewSubPath(sourcePos.x, sourcePos.y);
 //        p.quadraticTo(sourceAnchorX, sourcePos.y, midPoint.x, midPoint.y);
 //        p.quadraticTo(endAnchorX, endPos.y, endPos.x, endPos.y);
-//        
+//
 //        Colour baseColor = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
 //        g.setColour((candidateDropConnector != nullptr) ? Colours::yellow : isMouseOver()?Colours::orange:baseColor );
 //        g.strokePath(p, PathStrokeType(2.0f));
-//        
+//
 //    }
 //
 //

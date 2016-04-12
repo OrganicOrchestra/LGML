@@ -19,66 +19,66 @@ juce_ImplementSingleton(NodeConnectionEditor);
 //==============================================================================
 NodeConnectionEditor::NodeConnectionEditor() : DocumentWindow("Connection Editor",BG_COLOR,DocumentWindow::closeButton,false)
 {
-	currentConnection = nullptr;
-	setSize(300,500);
-	setResizable(true, false);
-	setUsingNativeTitleBar(true);
-	mainContainer.setBounds(0, 0, 300, 500);
-	setContentOwned(&mainContainer,true);
+    currentConnection = nullptr;
+    setSize(300,500);
+    setResizable(true, false);
+    setUsingNativeTitleBar(true);
+    mainContainer.setBounds(0, 0, 300, 500);
+    setContentOwned(&mainContainer,true);
 
 }
 
 NodeConnectionEditor::~NodeConnectionEditor()
 {
-	setCurrentConnection(nullptr);
-	setVisible(false);
-	removeFromDesktop();
+    setCurrentConnection(nullptr);
+    setVisible(false);
+    removeFromDesktop();
 }
 
 void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
 {
-	if (currentConnection == currentConnection) return;
+    if (currentConnection == currentConnection) return;
 
-	if (_connection != nullptr)
-	{
-		clearContent();
-	}
+    if (_connection != nullptr)
+    {
+        clearContent();
+    }
 
-	currentConnection = _connection;
+    currentConnection = _connection;
 
-	if (currentConnection != nullptr)
-	{
-		generateContent();
-	}
+    if (currentConnection != nullptr)
+    {
+        generateContent();
+    }
 }
 
 void NodeConnectionEditor::editConnection(NodeConnection * _connection)
 {
-	addToDesktop();
-	setTopLeftPosition(200, 200);
-	setVisible(true);
-	setCurrentConnection(_connection);
+    addToDesktop();
+    setTopLeftPosition(200, 200);
+    setVisible(true);
+    setCurrentConnection(_connection);
 }
 
 void NodeConnectionEditor::resized()
 {
-	DBG("editor resized");
+    DBG("editor resized");
 }
 
 void NodeConnectionEditor::closeButtonPressed()
 {
-	setCurrentConnection(nullptr);
+    setCurrentConnection(nullptr);
 }
 
 void NodeConnectionEditor::clearContent()
 {
-	inputsContainer.removeAllChildren();
-	outputsContainer.removeAllChildren();
-	linksContainer.removeAllChildren();
+    inputsContainer.removeAllChildren();
+    outputsContainer.removeAllChildren();
+    linksContainer.removeAllChildren();
 }
 
 void NodeConnectionEditor::generateContent()
 {
 
-	resized();
+    resized();
 }

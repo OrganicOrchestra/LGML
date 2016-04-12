@@ -496,7 +496,7 @@ void NodeManagerUI::checkSelected(){
                 n->askForSelection(false,false);
             }
         }
-        
+
         for(auto &n:currentOnes){
             if(!selectableHandler.selected.contains(n)){
                 n->askForSelection(true,false);

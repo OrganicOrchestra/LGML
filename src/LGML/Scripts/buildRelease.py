@@ -4,8 +4,8 @@ import json;
 import urllib;
 
 
-configuration  = "Release"
-# configuration  = "Debug"
+# configuration  = "Release"
+configuration  = "Debug"
 
 
 exportPath = "/Users/Tintamar/Google_Drive/LGML/Builds/OSX/"
@@ -13,9 +13,9 @@ exportPath = "/Users/Tintamar/Google_Drive/LGML/Builds/OSX/"
 
 
 proJucerPath = "~/Dev/JUCE/ProJucer.app/Contents/MacOS/ProJucer"
-JuceProjectPath = "../Blooper.jucer"
+JuceProjectPath = "../LGML.jucer"
 xcodeProjPath = "../Builds/MacOSX/" 
-executable_name = "Blooper"
+executable_name = "LGML"
 appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
 import xml.etree.ElementTree as ET
@@ -29,7 +29,7 @@ def sh(cmd):
 	print os.popen(cmd).read()
 
 def generateProductBaseName():
-	return executable_name+"v"+projectVersion+"_"+configuration
+	return executable_name+"_v"+projectVersion+"_"+configuration
 	
 	
 	
@@ -51,7 +51,7 @@ def buildJUCE(JuceProjectPath):
 def buildApp(xcodeProjPath,configuration):
 	sh("cd "+xcodeProjPath+ " && "\
 		
-		+" xcodebuild -project Blooper.xcodeproj" \
+		+" xcodebuild -project LGML.xcodeproj" \
 		+" -configuration "+configuration
 		+" -jobs 4 ")
 
@@ -59,7 +59,7 @@ def createAppdmgJSON(appPath ,destPath):
 	jdata =  {
   	"title": "Le Grand Mechant Loop",
   	"icon": "",
-  	"background": "dmgBack.png",
+  	"background": "../Resources/grandlouloup.png",
   	"icon-size": 80,
 	"contents": [
 	{ "x": 448, "y": 304, "type": "link", "path": "/Applications" },
@@ -86,7 +86,6 @@ def createDmg(exportFileBaseName,appPath):
 
 def sendToOwnCloud(originPath,destPath):
 	credPath = os.path.dirname(os.path.abspath(__file__));
-	# credPath = os.path.abspath(os.path.join(credPath, os.pardir))
 	credPath = os.path.join(credPath,"owncloud.password")
 	
 	with open(credPath) as json_data:
@@ -101,7 +100,7 @@ buildApp(xcodeProjPath,configuration);
 localPath = exportPath+generateProductBaseName();
 createDmg(localPath,appPath);
 
-ownCloudPath = "Projets Releases/LGML/App/OSX/"+generateProductBaseName()+".dmg"
-sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
+ownCloudPath = "Projets/LGML/App/OSX/"+generateProductBaseName()+".dmg"
+# sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
 
 

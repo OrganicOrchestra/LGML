@@ -87,8 +87,8 @@ void TimeManager::setSampleRate(int sr){
 }
 void TimeManager::setBPM(double _BPM){
     isSettingTempo = false;
-	listeners.call(&TimeManager::Listener::internal_isSettingTempo, isSettingTempo);
-	beatTimeInSample = (int)(sampleRate*60.0f / _BPM);
+    listeners.call(&TimeManager::Listener::internal_isSettingTempo, isSettingTempo);
+    beatTimeInSample = (int)(sampleRate*60.0f / _BPM);
     timeInSample = 0;
     listeners.call(&TimeManager::Listener::internal_newBPM,_BPM);
 }

@@ -45,7 +45,7 @@ void FloatSliderUI::paint(Graphics & g)
     if (orientation == HORIZONTAL)
     {
         drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : getParamNormalizedValue()*getWidth();
-		g.fillRoundedRectangle(getLocalBounds().removeFromLeft((int)drawPos).toFloat(), 2.f);
+        g.fillRoundedRectangle(getLocalBounds().removeFromLeft((int)drawPos).toFloat(), 2.f);
     }
     else {
         drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : getParamNormalizedValue()*getHeight();

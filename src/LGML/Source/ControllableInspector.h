@@ -42,7 +42,7 @@ private:
     ScopedPointer<ControllableContainerEditor> displayedEditor;
     Array<ControllableContainer *> candidateContainers;
 
-    
+
     void resized()override;
 
 
@@ -58,12 +58,12 @@ public:
         setScrollBarsShown(true,true);
         setViewedComponent(cI,false);
     }
-    
+
 
         void visibleAreaChanged (const Rectangle<int>&)override{
 //            Point <int> mouse = getMouseXYRelative();
 //            autoScroll(mouse.x, mouse.y, 100, 10);
-            
+
         }
         void resized() override{
 //            inspector->setSize(getWidth(),jmax(inspector->getHeight(),getHeight()));
@@ -71,14 +71,14 @@ public:
 //                inspector->minBounds = getLocalBounds();
 //            }
         }
-    
-    
+
+
     void viewedComponentChanged(Component * )override{
-        
+
     }
         ControllableInspector * inspector;
 
-    
+
 };
 
 

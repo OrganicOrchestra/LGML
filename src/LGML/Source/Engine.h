@@ -30,7 +30,7 @@ public:
     AudioProcessorPlayer graphPlayer;
 
 
-    
+
     ScopedPointer<ControllerManager> controllerManager;
 
     void createNewGraph();
@@ -59,8 +59,8 @@ public:
 
     void restoreFromXml(const XmlElement &);
     void createNodeFromXml (const XmlElement& xml);
-    
-    
+
+
 
 };
 

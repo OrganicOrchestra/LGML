@@ -38,7 +38,7 @@ public:
         Process::setPriority (Process::HighPriority);
 
         DBG(commandLine);
-        
+
         engine = new Engine();
 
         mainWindow = new MainWindow (getApplicationName(),engine);
@@ -79,16 +79,16 @@ public:
                                                     DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-			MainContentComponent * mainComponent = createMainContentComponent(e);
+            MainContentComponent * mainComponent = createMainContentComponent(e);
             setContentOwned (mainComponent, true);
             setResizable (true, true);
 
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
 
-			#if JUCE_WINDOWS
-				setMenuBar(mainComponent);
-			#endif
+            #if JUCE_WINDOWS
+                setMenuBar(mainComponent);
+            #endif
         }
 
         void closeButtonPressed() override

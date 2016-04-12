@@ -74,8 +74,8 @@ public:
             Trigger * stopTrig;
             StringParameter  * stateParameterString;
             FloatParameter * volume;
-			
-			
+
+
             enum TrackState{
                 SHOULD_RECORD = 0,
                 RECORDING,
@@ -116,12 +116,12 @@ public:
                 void handleAsyncUpdate() override{trackStateChangedAsync(stateToBeNotified);}
                 virtual void trackSelected(bool){};
             };
-			ListenerList<Listener> trackStateListeners;
+            ListenerList<Listener> trackStateListeners;
             void addTrackListener(Listener* newListener) { trackStateListeners.add(newListener); }
             void removeTrackListener(Listener* listener) { trackStateListeners.remove(listener); }
-			
-			
-			
+
+
+
 
             class AsyncTrackStateStringSynchroizer : public Track::Listener{
             public:
@@ -198,7 +198,7 @@ public:
             if(res)lastMasterTempoTrack = t;
             return res;
         }
-        
+
         bool areAllTrackClearedButThis(Track * _t){
             bool result = true;
             for(auto & t:tracks){

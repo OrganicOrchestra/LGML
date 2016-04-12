@@ -283,8 +283,8 @@ Component * ControllableContainer::createControllableContainerEditor(){
             bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
         }
     }
-    
+
     editor->setBounds(bounds);
     return editor;
-    
+
 }
