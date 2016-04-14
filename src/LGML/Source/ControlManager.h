@@ -25,7 +25,10 @@ public:
 
     Controller * addController(ControllerFactory::ControllerType controllerType);
     void removeController(Controller * c);
-	void clear();
+
+
+
+
 
 
     class  Listener

@@ -532,9 +532,9 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     //DBG(newState <<","<<trackState );
 
     trackState = newState;
-    
-    
-    
+
+
+
     parentLooper->checkIfNeedGlobalLooperStateUpdate();
     trackStateListeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);
 };

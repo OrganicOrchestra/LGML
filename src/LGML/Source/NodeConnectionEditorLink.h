@@ -23,9 +23,9 @@ public:
     NodeConnectionEditorLink();
     ~NodeConnectionEditorLink();
 
-	NodeConnectionEditorDataSlot * outSlot;
-	NodeConnectionEditorDataSlot * inSlot;
-	
+    NodeConnectionEditorDataSlot * outSlot;
+    NodeConnectionEditorDataSlot * inSlot;
+
     void paint (Graphics&);
     void resized();
 

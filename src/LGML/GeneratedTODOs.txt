@@ -1,0 +1,88 @@
+//////////////////////////////////////
+ Auto - Generated TODO list from source code with Scripts/generateTODOList.py
+ useless to overwrite !! but useful for rainy sunday code cleaning and improving
+ TODOs in source code are not meant to be features but improvement and cleaning of CODE
+ a discussion can be added after TODO comment line in source code (but not meant to be long) 
+ Of course this list can also be used to remove unnecessary TODOs...
+ ///////////////////////////////////////
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/ControllableInspector.h
+line : 20
+	// TODO handle merging of multiple component of sameClass : almost there ....
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/FloatSliderUI.h
+line : 29
+	    // TODO implement a numboxUI
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/TimeManager.h
+line : 27
+	    // TODO check if we can use SingleThread Singleton for fast access in processAdio
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/LooperNode.cpp
+line : 72
+	    // TODO check if we can optimize copies
+
+
+line : 355
+	    // TODO subBlock precision ?
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/NodeManager.cpp
+line : 208
+	    //TODO synchronize this and implement it for data
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/VuMeter.h
+line : 16
+	//TODO, move to more common place for use in other components
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/VSTNode.h
+line : 102
+	                // TODO check if scoped pointer deletes old innerPlugin
+
+
+line : 86
+	            // TODO check that it actually works
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/ControllableContainerProxy.h
+line : 18
+	// TODO handle controllableContainerAdded / Removed sync
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/MainComponentCommands.cpp
+line : 163
+	            // TODOs
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/EngineFileDocument.cpp
+line : 168
+	        // TODO embed routing info
+
+
+line : 132
+	        // TODO we could implement that for all node objects to be able to save any kind of custom data
+
+
+line : 20
+	// TODO Fuck XML Lets JSON that !!
+
+
+line : 205
+	            // TODO nicely handle file format errors?
+
+
+line : 183
+	    //    TODO check version Compat
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/DataProcessorGraph.cpp
+line : 57
+	    // TODO @ben do we handle wrong ids?
+
+

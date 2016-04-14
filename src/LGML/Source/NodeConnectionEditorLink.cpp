@@ -19,8 +19,8 @@ NodeConnectionEditorLink::NodeConnectionEditorLink()
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-	inSlot = nullptr;
-	outSlot = nullptr;
+    inSlot = nullptr;
+    outSlot = nullptr;
 }
 
 NodeConnectionEditorLink::~NodeConnectionEditorLink()
@@ -30,9 +30,9 @@ NodeConnectionEditorLink::~NodeConnectionEditorLink()
 
 void NodeConnectionEditorLink::paint (Graphics& g)
 {
-	g.setColour(NORMAL_COLOR);
-	
-	//Point<int> = getLocal
+    g.setColour(NORMAL_COLOR);
+
+    //Point<int> = getLocal
 }
 
 void NodeConnectionEditorLink::resized()

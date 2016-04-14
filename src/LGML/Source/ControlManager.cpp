@@ -21,7 +21,6 @@ ControllerManager::~ControllerManager()
 
 }
 
-
 Controller * ControllerManager::addController(ControllerFactory::ControllerType controllerType)
 {
     Controller * c = factory.createController(controllerType);
@@ -37,12 +36,6 @@ void ControllerManager::removeController(Controller * c)
     c->removeListener(this);
     listeners.call(&Listener::controllerRemoved, c);
     controllers.removeObject(c);
-}
-
-void ControllerManager::clear()
-{
-	while (controllers.size())
-		controllers[0]->remove();
 }
 
 void ControllerManager::askForRemoveController(Controller * c)

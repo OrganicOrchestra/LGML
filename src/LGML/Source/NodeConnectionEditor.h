@@ -26,30 +26,30 @@ class NodeConnectionEditor    : public DocumentWindow
 public:
     NodeConnectionEditor();
     ~NodeConnectionEditor();
-	
-	juce_DeclareSingleton(NodeConnectionEditor, true);
 
-	OwnedArray<NodeConnectionEditorDataSlot> outputSlots;
-	OwnedArray<NodeConnectionEditorDataSlot> inputSlots;
-	OwnedArray<NodeConnectionEditorLink> links;
+    juce_DeclareSingleton(NodeConnectionEditor, true);
 
-	Component mainContainer;
+    OwnedArray<NodeConnectionEditorDataSlot> outputSlots;
+    OwnedArray<NodeConnectionEditorDataSlot> inputSlots;
+    OwnedArray<NodeConnectionEditorLink> links;
 
-	Component inputsContainer;
-	Component outputsContainer;
-	Component linksContainer;
+    Component mainContainer;
 
-	NodeConnection * currentConnection;
-	void setCurrentConnection(NodeConnection * _connection);
-	void editConnection(NodeConnection * _connection);
-	
+    Component inputsContainer;
+    Component outputsContainer;
+    Component linksContainer;
 
-    
+    NodeConnection * currentConnection;
+    void setCurrentConnection(NodeConnection * _connection);
+    void editConnection(NodeConnection * _connection);
+
+
+
     void resized();
-	void closeButtonPressed() override;
+    void closeButtonPressed() override;
 
-	void clearContent();
-	void generateContent();
+    void clearContent();
+    void generateContent();
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionEditor)

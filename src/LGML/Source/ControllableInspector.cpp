@@ -12,7 +12,7 @@
 
 
 ControllableInspector::ControllableInspector(NodeManagerUI * _nmui):
-	proxyContainer(nullptr),
+    proxyContainer(nullptr),
     nmui(_nmui)
 {
     nmui->selectableHandler.addSelectableHandlerListener(this);
@@ -85,7 +85,7 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
         displayedEditor = nullptr;
     }
     generateFromCandidates();
-    
+
 }
 
 void ControllableInspector::resized(){

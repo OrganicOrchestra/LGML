@@ -23,7 +23,7 @@ public:
     virtual ~ContourComponent() {}
     Colour contourColor;
 
-	#if DRAW_CONTOUR
+    #if DRAW_CONTOUR
     virtual void paint(Graphics &g) override
     {
 
@@ -32,7 +32,7 @@ public:
         g.drawRect(getLocalBounds());
 
     }
-	#endif
+    #endif
 };
 
 #endif  // UIHELPERS_H_INCLUDED

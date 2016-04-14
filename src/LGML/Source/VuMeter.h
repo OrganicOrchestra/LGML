@@ -18,10 +18,10 @@
 class VuMeter : public ContourComponent, public NodeBase::NodeAudioProcessor::Listener {
 
 public:
-	float voldB;
-	
-	
-	VuMeter() {
+    float voldB;
+
+
+    VuMeter() {
         setSize(8, 20);
         voldB = 0.f;
     }
@@ -40,11 +40,11 @@ public:
             g.fillRoundedRectangle(getLocalBounds().removeFromBottom((int)(getHeight()*(voldB))).toFloat(), 2.f);
         }
     }
-    
-	
+
+
     void RMSChanged(float rms) override {
-        
-		float newVoldB = jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,0.85f,1.0f);
+
+        float newVoldB = jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,0.85f,1.0f);
 
         if(newVoldB>=0 && std::abs(newVoldB-voldB)>0.02f){
             voldB = newVoldB;

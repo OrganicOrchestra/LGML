@@ -198,10 +198,10 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
             for (int i = 0; i < desktop.getNumComponents(); ++i)
                 // doesn't work on windows
-				if (desktop.getComponent(i)->getParentComponent() != nullptr)
-				{
-					desktop.getComponent(i)->toBehind(this);
-				}
+                if (desktop.getComponent(i)->getParentComponent() != nullptr)
+                {
+                    desktop.getComponent(i)->toBehind(this);
+                }
                 break;
         }
 
