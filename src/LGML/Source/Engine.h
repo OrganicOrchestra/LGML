@@ -59,9 +59,6 @@ public:
 
     void restoreFromXml(const XmlElement &);
     void createNodeFromXml (const XmlElement& xml);
-    
-    
-
 };
 
 

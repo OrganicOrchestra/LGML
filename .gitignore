@@ -51,3 +51,4 @@ profile
 doxygen/doc
 src/Blooper/Builds/
 *.password
+src/LGML/Builds/VisualStudio2015/Debug 32bit/
