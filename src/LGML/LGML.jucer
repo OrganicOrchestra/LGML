@@ -310,15 +310,10 @@
             file="Source/MainComponentCommands.cpp"/>
       <FILE id="gEsmKk" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
-    <GROUP id="{E505E8BF-4B41-CDCF-35D2-EB6EEDDA0F4A}" name="Resources">
-      <FILE id="YQ2lNo" name="grandlouloup.png" compile="0" resource="0"
-            file="Resources/grandlouloup.png"/>
-    </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder"
-               vstFolder="" vst3Folder="" postbuildCommand="" smallIcon="YQ2lNo"
-               bigIcon="YQ2lNo">
+               vstFolder="" vst3Folder="" postbuildCommand="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
                        isDebug="1" optimisation="1" targetName="LGML" cppLanguageStandard="c++98"

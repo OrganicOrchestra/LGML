@@ -121,6 +121,90 @@ void NodeBase::NodeDataProcessor::sendData(const Data * /*outgoingData*/, const 
 }
 
 
+//Save / Load
+
+var NodeBase::getJSONData()
+{
+	var data(new DynamicObject());
+	data.getDynamicObject()->setProperty("nodeType", NodeFactory::nodeToString(this));
+	data.getDynamicObject()->setProperty("nodeId", String(nodeId));
+	
+	var paramsData;
+
+	Array<Controllable *> cont = ControllableContainer::getAllControllables(true, true);
+
+	for (auto &c : cont) {
+		Parameter * base = dynamic_cast<Parameter*>(c);
+		if (base) 
+		{
+			var pData(new DynamicObject());
+			pData.getDynamicObject()->setProperty("controlAddress", base->getControlAddress(this));
+			pData.getDynamicObject()->setProperty("value", base->toString());
+			paramsData.append(pData);
+		}
+		else if (dynamic_cast<Trigger*>(c) != nullptr) {
+
+		}
+		else {
+			// should never happen un less another Controllable type than parameter or trigger has been introduced
+			jassertfalse;
+		}
+	}
+
+	data.getDynamicObject()->setProperty("parameters", paramsData);
+
+	//    for (int i = 0; i < PluginWindow::NumTypes; ++i)
+	//    {
+	//          .... do we need support of other windows than main PluginWindow?
+	//    }
+
+	if (audioProcessor) {
+		MemoryBlock m;
+
+		// TODO we could implement that for all node objects to be able to save any kind of custom data
+		audioProcessor->getStateInformation(m);
+
+		if (m.getSize()) {
+			var audioProcessorData(new DynamicObject());
+			audioProcessorData.getDynamicObject()->setProperty("state", m.toBase64Encoding());
+			data.getDynamicObject()->setProperty("audioProcessor", &audioProcessorData);
+		}
+	}
+
+	return data;
+}
+
+void NodeBase::loadJSONData(var data)
+{
+
+	//TODO : Move parameters save/load in ControllableContainer, so we only need to call ControllableContainer::loadJSONData() to handle parameters of a class inheriting CContainer;
+	Array<var> * paramsData = data.getProperty("parameters",var()).getArray();
+
+	for (var &pData : *paramsData)
+	{
+		String pControlAddress = pData.getProperty("controlAddress",var());// getProperymakeAddressFromXMLAttribute(paramXml->getAttributeName(i));
+
+		Controllable * c = getControllableForAddress(pControlAddress, true, true);
+		if (Parameter * p = dynamic_cast<Parameter*>(c)) {
+			p->fromString(pData.getProperty("value",var())); //need to have a var-typed variable in parameter, so we can take advantage of autotyping
+		}
+		else {
+			DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");
+			jassertfalse;
+		}
+	}
+
+	if (audioProcessor) {
+		var audioProcessorData = data.getProperty("audioProcessor", var());
+		String audioProcessorStateData = audioProcessorData.getProperty("state",var());
+		
+		MemoryBlock m;
+		m.fromBase64Encoding(audioProcessorStateData);
+		audioProcessor->setStateInformation(m.getData(), (int)m.getSize());
+	}
+}
+
+
 
 // =====================
 
@@ -171,3 +255,4 @@ void NodeBase::NodeAudioProcessor::updateRMS(AudioBuffer<float>& buffer){
     //            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;
 
 }
+

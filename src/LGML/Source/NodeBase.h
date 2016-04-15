@@ -76,6 +76,8 @@ public:
         //Listener are called from non audio thread
         void handleAsyncUpdate() override{listeners.call(&Listener::RMSChanged,rmsValue);}
 
+
+		
         class  Listener
         {
         public:
@@ -153,6 +155,11 @@ public:
     virtual void inputRemoved(DataProcessor::Data *) override;
     virtual void outputAdded(DataProcessor::Data *) override;
     virtual void ouputRemoved(DataProcessor::Data *) override;
+
+
+	var getJSONData();
+	void loadJSONData(var data);
+
 
     //Listener
     class Listener

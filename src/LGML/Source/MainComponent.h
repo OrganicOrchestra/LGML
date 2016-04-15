@@ -70,7 +70,6 @@ public:
     void paint (Graphics& g) override{g.fillAll (Colours::black);}
     void resized() override;
 
-    void clear();
 
     void showAudioSettings();
 

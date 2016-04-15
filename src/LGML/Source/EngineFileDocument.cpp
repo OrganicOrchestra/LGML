@@ -17,9 +17,6 @@
  */
 
 
-
-// TODO Fuck XML Lets JSON that !!
-
 String Engine::getDocumentTitle() {
     if (! getFile().exists())
         return "Unnamed";
@@ -29,22 +26,24 @@ String Engine::getDocumentTitle() {
 
 
 Result Engine::loadDocument (const File& file){
-    XmlDocument doc (file);
-    ScopedPointer<XmlElement> xml (doc.getDocumentElement());
 
-    if (xml == nullptr || ! xml->hasTagName ("LGMLPROJECT"))
-        return Result::fail ("Not a valid filter graph file");
+	ScopedPointer<InputStream> is = file.createInputStream();
+	var data = JSON::parse(*is);
 
-    restoreFromXml (*xml);
+	loadJSONData(data);
     return Result::ok();
 }
 
 
 Result Engine::saveDocument (const File& file){
-    ScopedPointer<XmlElement> xml (createXml());
+    
+	var data = getJSONData();
 
-    if (! xml->writeToFile (file, String::empty))
-        return Result::fail ("Couldn't write to the file");
+	if (file.exists()) file.deleteFile();
+	ScopedPointer<OutputStream> os = file.createOutputStream();
+	JSON::writeToStream(*os, data);
+	os->flush();
+	
 
     return Result::ok();
 }
@@ -73,187 +72,36 @@ void Engine::setLastDocumentOpened (const File& file) {
     getAppProperties().getUserSettings()->setValue ("recentNodeGraphFiles", recentFiles.toString());
 }
 
-
-
-//==============================================================================
-// saving
-static String  makeXMLAttributefromAddress(const String & address){
-    StringArray ad;
-    ad.addTokens(address, "/","");
-    ad.remove(0);
-    return ad.joinIntoString(".");
-
-}
-static StringArray  makeAddressFromXMLAttribute(const String & attr){
-    StringArray ad;
-    ad.addTokens(attr, ".","");
-    return ad;
-
-}
-
-
-//==============================================================================
-static XmlElement* createNodeXml (NodeBase* const node) noexcept
+var Engine::getJSONData()
 {
 
-    XmlElement* e = new XmlElement ("NODE");
-    e->setAttribute("NodeType", NodeFactory::nodeToString(node));
-    e->setAttribute("NodeId", String(node->nodeId));
+	var data(new DynamicObject());
+	var metaData(new DynamicObject());
+	
+	var nodeManagerData(new DynamicObject());
+	var controllerManagerData(new DynamicObject());
 
-    XmlElement* p = new XmlElement("PARAMETERS");
-    Array<Controllable*> cont =node->ControllableContainer::getAllControllables(true,true);
-    for(auto &c:cont){
-        Parameter * base = dynamic_cast<Parameter*>(c);
-        if(base){
+    metaData.getDynamicObject()->setProperty("LGMLVersion",ProjectInfo::versionString);
 
-            p->setAttribute(makeXMLAttributefromAddress(base->getControlAddress(node)), base->toString());
-        }
-        else if(dynamic_cast<Trigger*>(c) !=nullptr){
+	data.getDynamicObject()->setProperty("meta", metaData);
+	data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
+	data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
 
-        }
-        else{
-            // should never happen un less another Controllable type than parameter has been introduced
-            jassertfalse;
-        }
-    }
-    e->addChildElement(p);
-
-
-    //    for (int i = 0; i < PluginWindow::NumTypes; ++i)
-    //    {
-    //          .... do we need support of other windows than main PluginWindow?
-    //    }
-
-    if(node->audioProcessor){
-
-
-
-        MemoryBlock m;
-
-        // TODO we could implement that for all node objects to be able to save any kind of custom data
-        node->audioProcessor->getStateInformation (m);
-        if(m.getSize()){
-            XmlElement* state = new XmlElement ("STATE");
-            state->addTextElement (m.toBase64Encoding());
-            e->addChildElement (state);
-        }
-    }
-    return e;
-}
-
-XmlElement* Engine::createXml() const
-{
-    XmlElement* projXml = new XmlElement("LGMLPROJECT");
-    XmlElement* meta = new XmlElement("META");
-    meta->setAttribute("LGMLVersion",ProjectInfo::versionString);
-
-    projXml->addChildElement(meta);
-
-
-    XmlElement* xml = new XmlElement ("NODEGRAPH");
-
-    for (int i = 0; i < NodeManager::getInstance()->getNumNodes(); ++i){
-
-        xml->addChildElement (createNodeXml (NodeManager::getInstance()->getNode (i)));
-    }
-
-    for (int i = 0; i < NodeManager::getInstance()->getNumConnections(); ++i)
-    {
-        const NodeConnection* const fc = NodeManager::getInstance()->getConnection(i);
-
-        XmlElement* e = new XmlElement ("CONNECTION");
-
-        e->setAttribute ("srcNodeId", (int) fc->sourceNode->nodeId);
-        e->setAttribute ("dstNodeId", (int) fc->destNode->nodeId);
-        e->setAttribute("connectionType",(int) fc->connectionType);
-        // TODO embed routing info
-
-        xml->addChildElement (e);
-    }
-
-    projXml->addChildElement(xml);
-    return projXml;
+    return data;
 }
 
 /// ===================
 // loading
 
-void Engine::restoreFromXml (const XmlElement& proj)
+void Engine::loadJSONData (var data, bool clearManagers)
 {
     clear();
     //    TODO check version Compat
-    //    XmlElement *meta = proj.getChildByName("META");
 
-    XmlElement * xml = proj.getChildByName("NODEGRAPH");
-
-    forEachXmlChildElementWithTagName (*xml, e, "NODE")
-    {
-        createNodeFromXml (*e);
-        changed();
-    }
-
-    forEachXmlChildElementWithTagName (*xml, e, "CONNECTION")
-    {
-        NodeManager * nm = NodeManager::getInstance();
-        NodeBase * srcNode = nm->getNodeForId(e->getIntAttribute ("srcNodeId"));
-        NodeBase * dstNode = nm->getNodeForId(e->getIntAttribute ("dstNodeId"));
-        int cType = e->getIntAttribute ("connectionType");
-        if(srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)){
-            nm->addConnection (srcNode,dstNode,NodeConnection::ConnectionType(cType));
-        }
-        else{
-
-            // TODO nicely handle file format errors?
-            jassertfalse;
-        }
-    }
-
-    NodeManager::getInstance()->removeIllegalConnections();
+	DBG(JSON::toString(data));
+	NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()), clearManagers);
+	ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()), clearManagers);
 }
-
-
-
-
-
-void Engine::createNodeFromXml (const XmlElement& xml)
-{
-    NodeFactory::NodeType nodeType = NodeFactory::getTypeFromString(xml.getStringAttribute("NodeType"));
-    int nodeId = xml.getIntAttribute("nodeId");
-    NodeBase* node =  NodeManager::getInstance()->addNode(nodeType,nodeId);
-
-    XmlElement * paramXml= xml.getChildByName("PARAMETERS");
-
-    for(int i = 0;i < paramXml->getNumAttributes() ; i++){
-
-        StringArray curParamName = makeAddressFromXMLAttribute(paramXml->getAttributeName(i));
-
-
-        if(Controllable * c = node->getControllableForAddress(curParamName.strings,true,true)){
-            if(Parameter * p = dynamic_cast<Parameter*>(c)){
-                p->fromString(paramXml->getAttributeValue(i));
-            }
-            else{
-                DBG("other Controllable than Parameters?");
-                jassertfalse;
-            }
-        }
-        else{
-            DBG("attribute not found : "+curParamName.joinIntoString("/"));
-            jassertfalse;
-        }
-    }
-
-    if(node->audioProcessor){
-        if (const XmlElement* const state = xml.getChildByName ("STATE"))
-        {
-            MemoryBlock m;
-            m.fromBase64Encoding (state->getAllSubText());
-            node->audioProcessor->setStateInformation (m.getData(), (int) m.getSize());
-        }
-    }
-
-}
-
 
 
 //#if JUCE_MODAL_LOOPS_PERMITTED

@@ -30,7 +30,7 @@ MainContentComponent::MainContentComponent(Engine * e):engine(e)
     addAndMakeVisible(timeManagerUI);
     addAndMakeVisible(nodeManagerUIViewport);
 
-    controllerManagerViewport = new ControllerManagerViewport(engine->controllerManager);
+    controllerManagerViewport = new ControllerManagerViewport(ControllerManager::getInstance());
     addAndMakeVisible(controllerManagerViewport);
 
 
@@ -85,7 +85,6 @@ void MainContentComponent::resized()
     controllableInspectorViewPort->setBounds(r.removeFromRight(300));
     nodeManagerUIViewport->setBounds(r);
 }
-
 
 
 void MainContentComponent::showAudioSettings()

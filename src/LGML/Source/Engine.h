@@ -29,10 +29,6 @@ public:
 
     AudioProcessorPlayer graphPlayer;
 
-
-
-    ScopedPointer<ControllerManager> controllerManager;
-
     void createNewGraph();
     void clear();
     void initAudio();
@@ -54,13 +50,8 @@ public:
     //    #endif
 
     // our Saving methods
-    XmlElement* createXml()const;
-
-
-    void restoreFromXml(const XmlElement &);
-    void createNodeFromXml (const XmlElement& xml);
-
-
+    var getJSONData();
+	void loadJSONData(var data, bool clearManagers = true);
 
 };
 

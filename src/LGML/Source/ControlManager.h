@@ -17,8 +17,13 @@
 class ControllerManager : public Controller::Listener, public ControllableContainer
 {
 public:
+
+	
+
     ControllerManager();
     ~ControllerManager();
+
+	juce_DeclareSingleton(ControllerManager, true);
 
     ControllerFactory factory;
     OwnedArray<Controller> controllers;
@@ -27,6 +32,8 @@ public:
     void removeController(Controller * c);
 	void clear();
 
+	var getJSONData();
+	void loadJSONData(var data, bool clearBeforeLoad = true);
 
     class  Listener
     {

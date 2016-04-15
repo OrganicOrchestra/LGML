@@ -19,6 +19,9 @@ public:
     Parameter(const Type &type, const String & niceName, const String &description, bool enabled = true);
     virtual ~Parameter() {Parameter::masterReference.clear();}
 
+
+	//TODO use a "var" type to have more consistency and method heritage (pull up the value member in this parent class, not in every child class)
+
     virtual float getNormalizedValue() {
         return 0;
     }

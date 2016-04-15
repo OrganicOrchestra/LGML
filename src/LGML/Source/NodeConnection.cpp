@@ -73,3 +73,19 @@ void NodeConnection::remove()
 {
     listeners.call(&NodeConnection::Listener::askForRemoveConnection,this);
 }
+
+var NodeConnection::getJSONData()
+{
+	var data(new DynamicObject());
+	data.getDynamicObject()->setProperty("srcNodeId", (int)sourceNode->nodeId);
+	data.getDynamicObject()->setProperty("dstNodeId", (int)destNode->nodeId);
+	data.getDynamicObject()->setProperty("connectionType", (int)connectionType);
+
+	// TODO embed routing info
+
+	return data;
+}
+
+void NodeConnection::loadJSONData(var data)
+{
+}

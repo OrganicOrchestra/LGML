@@ -18,6 +18,8 @@
 
 class ControllerManager;
 
+static const String controllerTypeNames[] = { "OSC Direct","DMX","MIDI" };
+
 class ControllerFactory
 {
 public:
@@ -25,7 +27,8 @@ public:
     {
         OSCDirect,
         DMX,
-        MIDI
+        MIDI,
+		UNKNOWN //has to be last
     };
 
     ControllerFactory()
@@ -38,11 +41,11 @@ public:
 
     }
 
-    Controller * createController(ControllerType nodeType)
+    Controller * createController(ControllerType controllerType)
     {
         Controller * c = nullptr;
 
-        switch (nodeType)
+        switch (controllerType)
         {
         case OSCDirect:
             c = new OSCDirectController();
@@ -62,13 +65,13 @@ public:
         }
 
 
+		c->controllerTypeEnum = (int)controllerType;
         return c;
     }
 
     static PopupMenu * getControllerTypesMenu(int menuIdOffset = 0)
     {
         PopupMenu * p = new PopupMenu();
-        static const String controllerTypeNames [] = { "OSC Direct","DMX","MIDI" };
         for (int i = 0; i < numElementsInArray(controllerTypeNames); i++)
         {
             p->addItem(menuIdOffset + i + 1, controllerTypeNames[i]);
@@ -76,6 +79,25 @@ public:
 
         return p;
     }
+
+	static ControllerType getTypeFromString(const String & s) {
+		for (int i = 0; i < numElementsInArray(controllerTypeNames); i++)
+		{
+			if (s == controllerTypeNames[i]) { return ControllerType(i); }
+		}
+		return UNKNOWN;
+	}
+
+	static String controllerTypeToString(ControllerType t) {
+		if (t<0 || t > UNKNOWN)return String::empty;
+		return controllerTypeNames[(int)t];
+	}
+
+	static String controllerToString(Controller *  c) {
+		int t = c->controllerTypeEnum;
+		if (t<0 || t > UNKNOWN)return String::empty;
+		return controllerTypeNames[(int)t];
+	}
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerFactory)
 };

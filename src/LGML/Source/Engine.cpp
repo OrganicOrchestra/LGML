@@ -21,7 +21,6 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 
 
 
-        controllerManager = new ControllerManager();
         initAudio();
 }
 
@@ -29,9 +28,10 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 Engine::~Engine(){
     stopAudio();
     TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
-    NodeManager::deleteInstance();
+	ControllerManager::deleteInstance(); 
+	NodeManager::deleteInstance();
     VSTManager::deleteInstance();
-
+	
 }
 
 
@@ -55,16 +55,17 @@ void Engine::stopAudio(){
 
 void Engine::clear(){
     //    do we need to stop audio?
-    //    stopAudio();
+     stopAudio();
     TimeManager::getInstance()->stop();
-    NodeManager::getInstance()->clear();
-
-
+	ControllerManager::getInstance()->clear();
+	NodeManager::getInstance()->clear();
+	
     changed();    //fileDocument
 }
 
 void Engine::createNewGraph(){
     clear();
+
     NodeBase * node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioIn);
     node->xPosition->setValue(80);
     node->yPosition->setValue(50);

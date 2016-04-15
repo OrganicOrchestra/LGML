@@ -21,16 +21,19 @@ public:
     Controller(const String &name = "[Controller]");
     virtual ~Controller();
 
+	int controllerTypeEnum;
 
     StringParameter * nameParam;
     BoolParameter * enabledParam;
-
-
 
     void remove(); //will dispatch askForRemoveController
     virtual void parameterValueChanged(Parameter * p) override;
 
     virtual ControllerUI * createUI();
+
+	var getJSONData();
+	void loadJSONData(var data);
+
 
     class  Listener
     {

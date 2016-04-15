@@ -127,8 +127,8 @@ public:
             public:
                 StringParameter * stringParameter;
                 AsyncTrackStateStringSynchroizer(StringParameter  *origin):stringParameter(origin){}
-                void trackStateChangedAsync(const TrackState &trackState)override{
-                    stringParameter->setValue(trackStateToString(trackState));
+                void trackStateChangedAsync(const TrackState &_trackState)override{
+                    stringParameter->setValue(trackStateToString(_trackState));
                 }
             };
            ScopedPointer<AsyncTrackStateStringSynchroizer> stateParameterStringSynchronizer;

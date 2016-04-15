@@ -61,6 +61,10 @@ public:
     void removeIllegalConnections();
     int getNumConnections();
 
+	//save / load
+	var getJSONData() const;
+	void loadJSONData(var data, bool clearBeforeLoad = true);
+
     //Listener
     class  Listener
     {

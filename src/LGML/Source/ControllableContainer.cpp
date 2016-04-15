@@ -24,7 +24,8 @@ skipControllableNameInAddress(false)
 
 ControllableContainer::~ControllableContainer()
 {
-    controllables.clear();
+    //controllables.clear();
+	DBG("CLEAR CONTROLLABLE CONTAINER");
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
@@ -166,7 +167,18 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive,b
 }
 
 
-Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recu, bool getNotExposed)
+
+Controllable * ControllableContainer::getControllableForAddress(String address, bool recursive, bool getNotExposed)
+{
+	StringArray addrArray;
+	addrArray.addTokens(address, juce::StringRef("/"), juce::StringRef("\""));
+	juce::Array<String> addSplit = addrArray.strings;
+	addSplit.remove(0);
+
+	return getControllableForAddress(addSplit, recursive, getNotExposed);
+}
+
+Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
 
@@ -206,7 +218,7 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
                 if (cc->shortName == addressSplit[0])
                 {
                     addressSplit.remove(0);
-                    return cc->getControllableForAddress(addressSplit,recu,getNotExposed);
+                    return cc->getControllableForAddress(addressSplit,recursive,getNotExposed);
                 }
             }
             else
@@ -215,7 +227,7 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
                 if (tc != nullptr)
                 {
                     addressSplit.remove(0);
-                    return tc->getControllableForAddress(addressSplit,recu,getNotExposed);
+                    return tc->getControllableForAddress(addressSplit,recursive,getNotExposed);
                 }
 
             }

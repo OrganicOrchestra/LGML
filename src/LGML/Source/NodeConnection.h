@@ -52,6 +52,12 @@ public:
 
     void remove();
 
+
+	// save / load
+
+	var getJSONData();
+	void loadJSONData(var data);
+
     //Listener
     class  Listener
     {
