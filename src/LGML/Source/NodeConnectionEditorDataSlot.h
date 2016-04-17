@@ -13,17 +13,73 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+//#include "NodeBase.h"
+#include "NodeBaseUI.h"
+
 //==============================================================================
 /*
 */
 class NodeConnectionEditorDataSlot    : public Component
 {
 public:
-    NodeConnectionEditorDataSlot();
-    ~NodeConnectionEditorDataSlot();
 
-    void paint (Graphics&);
+	enum IOType { INPUT, OUTPUT };
+
+
+    NodeConnectionEditorDataSlot(String label,	DataProcessor::Data * data, NodeConnection::ConnectionType connectionType, IOType ioType); //for data
+	NodeConnectionEditorDataSlot(String label, int channel, NodeConnection::ConnectionType connectionType, IOType ioType); //for audio
+	~NodeConnectionEditorDataSlot();
+
+	String label;
+	DataProcessor::Data * data;
+	int channel;
+
+	bool isConnected;
+	void setConnected(bool value)
+	{
+		isConnected = value;
+		repaint();
+	}
+
+	NodeConnection::ConnectionType connectionType;
+	IOType ioType;
+
+	DataProcessor::Data * currentEditingData;
+	void setCurrentEditingData(DataProcessor::Data * editingData)
+	{
+		currentEditingData = editingData;
+		repaint();
+	}
+    
+	void paint (Graphics&);
     void resized();
+
+
+	void mouseDown(const MouseEvent &e) override;
+	void mouseEnter(const MouseEvent &e) override;
+	void mouseExit(const MouseEvent &e) override;
+	void mouseMove(const MouseEvent &e) override;
+	void mouseUp(const MouseEvent &e) override;
+	void mouseDrag(const MouseEvent &e) override;
+
+	//Listener
+	class  SlotListener
+	{
+	public:
+		/** Destructor. */
+		virtual ~SlotListener() {}
+
+		virtual void slotMouseEnter(NodeConnectionEditorDataSlot * target) = 0;
+		virtual void slotMouseExit(NodeConnectionEditorDataSlot * target) = 0;
+		virtual void slotMouseDown(NodeConnectionEditorDataSlot * target) = 0;
+		virtual void slotMouseMove(NodeConnectionEditorDataSlot * target) = 0;
+		virtual void slotMouseUp(NodeConnectionEditorDataSlot * target) = 0;
+		virtual void slotMouseDrag(NodeConnectionEditorDataSlot * target) = 0;
+	};
+
+	ListenerList<SlotListener> listeners;
+	void addSlotListener(SlotListener* newListener) { listeners.add(newListener); }
+	void removeSlotListener(SlotListener* listener) { listeners.remove(listener); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionEditorDataSlot)

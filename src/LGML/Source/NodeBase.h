@@ -122,7 +122,7 @@ public:
     // owned by audio Graph in a refference Counted Array
     NodeAudioProcessor *  audioProcessor;
     //owned by data Graph in a reference counted array
-    NodeDataProcessor * dataProcessor;
+    ScopedPointer<NodeDataProcessor> dataProcessor;
 
     bool hasAudioInputs;
     bool hasAudioOutputs;

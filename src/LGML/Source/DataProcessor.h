@@ -43,6 +43,7 @@ public :
             return targetType == Float || targetType == Unknown;
         }
 
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataElement)
     };
 
@@ -52,9 +53,13 @@ public :
         String name;
         DataType type;
 
+		DataProcessor * processor;
+
+		int numConnections;
+
         OwnedArray<DataElement> elements;
 
-        Data(String _name, DataType _type) : name(_name), type(_type)
+        Data(DataProcessor * processor,String _name, DataType _type) : processor(processor), name(_name), type(_type), numConnections(0)
         {
             switch (type)
             {
@@ -87,6 +92,10 @@ public :
                 break;
             }
         };
+
+		~Data() {
+			elements.clear();
+		}
 
         void addElement(const String &_name) {
             DataElement *e = new DataElement(_name);
@@ -154,7 +163,7 @@ public:
 
     Data * addInputData(const String &name,DataType type)
     {
-        Data *d = new Data(name,type);
+        Data *d = new Data(this,name,type);
         inputDatas.add(d);
 
         listeners.call(&DataProcessor::Listener::inputAdded, d);
@@ -164,7 +173,7 @@ public:
 
     Data * addOutputData (const String &name, DataType type)
     {
-        Data * d = new Data(name, type);
+        Data * d = new Data(this,name, type);
         outputDatas.add(d);
 
         listeners.call(&DataProcessor::Listener::outputAdded, d);

@@ -22,6 +22,9 @@ public:
 
     WeakReference<Parameter> parameter;
 
+	//Label label;
+	bool showLabel;
+
 protected:
     // Inherited via Listener
     virtual void parameterValueChanged(Parameter * p) override;

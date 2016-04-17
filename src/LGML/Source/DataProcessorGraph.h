@@ -28,134 +28,43 @@ public:
     DataProcessorGraph();
     ~DataProcessorGraph();
 
-    class Node : public ReferenceCountedObject
-    {
-    public:
-
-        const uint32 nodeId;
-        DataProcessor * getProcessor() const noexcept { return processor; }
-
-        DataProcessor::DataType getInputDataType(String dataName, String ElementName)
-        {
-            return processor->getInputDataType(dataName, ElementName);
-        }
-
-        DataProcessor::DataType getOutputDataType(String dataName, String ElementName)
-        {
-            return processor->getOutputDataType(dataName, ElementName);
-        }
-
-        //Used in parent node containing both data and audio node
-        //NamedValueSet properties;
-
-        //==============================================================================
-        /** A convenient typedef for referring to a pointer to a node object. */
-        typedef ReferenceCountedObjectPtr<Node> Ptr;
-
-    private:
-        //==============================================================================
-        friend class DataProcessorGraph;
-
-        const ScopedPointer<DataProcessor> processor;
-
-        Node(uint32 nodeId, DataProcessor*) noexcept;
-
-        void setParentGraph(DataProcessorGraph*) const;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Node)
-    };
 
     //==============================================================================
     /** Represents a connection between two channels of two nodes in an AudioProcessorGraph.
 
-    To create a connection, use AudioProcessorGraph::addConnection().
+    To create a connection, use DataProcessorGraph::addConnection().
     */
     struct Connection
     {
     public:
         //==============================================================================
-        Connection(uint32 sourceNodeId, String sourceDataName, String sourceElementName,
-            uint32 destNodeId, String destDataName, String destElementName) noexcept;
+        Connection(DataProcessor::Data * sourceData, DataProcessor::Data * destData) noexcept;
 
-        uint32 sourceNodeId;
-
-        String sourceDataName;
-        String sourceElementName;
-
-        uint32 destNodeId;
-
-        String destDataName;
-        String destElementName;
-
+		DataProcessor::Data * sourceData;
+		DataProcessor::Data * destData;
+        
     private:
         //==============================================================================
         JUCE_LEAK_DETECTOR(Connection)
     };
 
 
+	
+
     void clear();
+	int getNumConnections() const { return connections.size(); }
+	const Connection* getConnection(int index) const { return connections[index]; }
+	Connection* getConnectionBetween(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const;
 
-    int getNumNodes() const noexcept { return nodes.size(); }
+	bool canConnect(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const;
 
-
-    Node* getNode(const int index) const noexcept { return nodes[index]; }
-
-    Node* getNodeForId(const uint32 nodeId) const;
-
-
-    Node* addNode(DataProcessor* newProcessor, uint32 nodeId = 0);
-
-
-    bool removeNode(uint32 nodeId);
-
-
-    int getNumConnections() const { return connections.size(); }
-
-
-    const Connection* getConnection(int index) const { return connections[index]; }
-
-
-    Connection* getConnectionBetween(uint32 sourceNodeId,
-        String sourceDataName,
-        String sourceElementName,
-        uint32 destNodeId,
-        String destDataName,
-        String destElementName) const;
-
-
-    bool isConnected(uint32 possibleSourceNodeId,
-        uint32 possibleDestNodeId) const;
-
-    bool canConnect(uint32 sourceNodeId,
-        String sourceDataName,
-        String sourceElementName,
-        uint32 destNodeId,
-        String destDataName,
-        String destElementName) const;
-
-
-    Connection * addConnection(uint32 sourceNodeId,
-        String sourceDataName,
-        String sourceElementName,
-        uint32 destNodeId,
-        String destDataName,
-        String destElementName);
+    Connection * addConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
 
     void removeConnection(int index);
-
-
-    bool removeConnection(uint32 sourceNodeId,
-        String sourceDataName,
-        String sourceElementName,
-        uint32 destNodeId,
-        String destDataName,
-        String destElementName);
-
-
-    bool disconnectNode(uint32 nodeId);
+    void removeConnection(Connection * connection);
 
     private:
-        ReferenceCountedArray<Node> nodes;
+        Array<DataProcessor *> processors;
         OwnedArray<Connection> connections;
         uint32 lastNodeId;
 

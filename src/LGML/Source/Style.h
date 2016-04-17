@@ -176,6 +176,7 @@ namespace LookAndFeelHelpers {
         FileChooserDialogBox::titleTextColourId,                0xff000000,
     };
 
+	
     static Colour createBaseColour (Colour buttonColour,
                                     bool hasKeyboardFocus,
                                     bool isMouseOverButton,
@@ -203,7 +204,7 @@ namespace LookAndFeelHelpers {
         tl.createLayoutWithBalancedLineLengths (s, (float) maxToolTipWidth);
         return tl;
     }
-
+	
 
 }
 #endif  // STYLE_H_INCLUDED

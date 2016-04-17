@@ -9,7 +9,7 @@
  */
 
 #include "MainComponent.h"
-
+#include "NodeConnectionEditor.h"
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)     { return new MainContentComponent(e); }
@@ -70,6 +70,8 @@ MainContentComponent::~MainContentComponent(){
 
 #endif
 //    LookAndFeelOO::deleteInstance();
+
+	NodeConnectionEditor::deleteInstance();
 }
 
 
@@ -90,8 +92,8 @@ void MainContentComponent::resized()
 void MainContentComponent::showAudioSettings()
 {
     AudioDeviceSelectorComponent audioSettingsComp (getAudioDeviceManager(),
-                                                    0, 256,
-                                                    0, 256,
+                                                    2, 256,
+                                                    2, 256,
                                                     true, true, true, false);
 
     audioSettingsComp.setSize (500, 450);

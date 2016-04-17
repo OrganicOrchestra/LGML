@@ -39,22 +39,24 @@ void ConnectorComponent::mouseDown(const MouseEvent & e)
     if (dataType == NodeConnection::ConnectionType::DATA)
     {
 
-
+		/*
         String dataName = "";
         String elementName = "";
         DataProcessor::DataType dType = DataProcessor::DataType::Unknown;
 
+		
         if (e.mods.isRightButtonDown())
         {
             selectDataAndElementPopup(dataName, elementName, dType);
             DBG("Select data and element popup : " + dataName + ", " + elementName+", "+String(dType));
         }
+		*/
 
-        nmui->createDataConnectionFromConnector(this,dataName,elementName, dType);
+        nmui->createDataConnectionFromConnector(this);
     }
     else
     {
-        nmui->createAudioConnectionFromConnector(this, 0);
+        nmui->createAudioConnectionFromConnector(this);
     }
 }
 

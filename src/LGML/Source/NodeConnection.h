@@ -35,20 +35,22 @@ public:
     NodeBase * destNode;
 
     typedef std::pair<int,int> AudioConnection;
-    Array<AudioConnection > audioConnections;
+    Array<AudioConnection> audioConnections;
     Array<DataProcessorGraph::Connection *> dataConnections;
 
 
     NodeConnection(NodeManager* nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
     virtual ~NodeConnection();
 
-
+	//Audio
     void addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
     void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
     void removeAllAudioGraphConnections();
 
-    void addDataGraphConnection(const String &sourceDataName, const String &sourceElementName,const String &destDataName, const String &destElementName);
-    void removeDataGraphConnection(const String &sourceDataName, const String &sourceElementName,const String &destDataName, const String &destElementName);
+	//Data
+    void addDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+    void removeDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+	void removeAllDataGraphConnections();
 
     void remove();
 

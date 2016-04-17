@@ -20,7 +20,7 @@
 //==============================================================================
 /*
 */
-class NodeConnectionEditor    : public DocumentWindow
+class NodeConnectionEditor    : public DocumentWindow, NodeConnectionEditorDataSlot::SlotListener
 {
 
 public:
@@ -40,19 +40,52 @@ public:
     Component linksContainer;
 
     NodeConnection * currentConnection;
-    void setCurrentConnection(NodeConnection * _connection);
+	NodeConnection::ConnectionType editingType;
+
+	void setCurrentConnection(NodeConnection * _connection);
     void editConnection(NodeConnection * _connection);
 
-
+	
 
     void resized();
     void closeButtonPressed() override;
 
+	NodeConnectionEditorLink * editingLink;
+	
+
+	void mouseEnter(const MouseEvent &) override;
+	void mouseExit(const MouseEvent &) override;
+	void mouseMove(const MouseEvent &) override
+	{
+		DBG("Editor mouseMove");
+	}
+
+	void createEditingLink(NodeConnectionEditorDataSlot * baseSlot);
+
+	void updateEditingLink();
+	bool checkDropCandidates();
+	void finishEditingLink();
+	
+	bool setCandidateDropSlot(NodeConnectionEditorDataSlot * slot);
+	void cancelCandidateDropSlot();
+
     void clearContent();
-    void generateContent();
+    void generateContentForAudio();
+	void generateContentForData();
+
+	NodeConnectionEditorDataSlot * getOutputSlotForData(DataProcessor::Data * data);
+	NodeConnectionEditorDataSlot * getInputSlotForData(DataProcessor::Data * data);
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionEditor)
+
+	// Inherited via SlotListener
+	virtual void slotMouseEnter(NodeConnectionEditorDataSlot * target) override;
+	virtual void slotMouseExit(NodeConnectionEditorDataSlot * target) override;
+	virtual void slotMouseDown(NodeConnectionEditorDataSlot * target) override;
+	virtual void slotMouseMove(NodeConnectionEditorDataSlot * target) override;
+	virtual void slotMouseDrag(NodeConnectionEditorDataSlot * target) override;
+	virtual void slotMouseUp(NodeConnectionEditorDataSlot * target) override;
 };
 
 
