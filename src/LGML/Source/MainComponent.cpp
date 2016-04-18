@@ -64,7 +64,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 	
     e->createNewGraph();
-	e->initAudio();
+	//e->initAudio();
 	
 }
 

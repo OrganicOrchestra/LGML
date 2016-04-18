@@ -22,7 +22,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 
 
 
-        //initAudio();
+        initAudio();
 }
 
 
@@ -46,7 +46,6 @@ void Engine::initAudio(){
     
 	getAudioDeviceManager().addAudioCallback (&graphPlayer);
     getAudioDeviceManager().addAudioCallback(TimeManager::getInstance());
-	//getAudioDeviceManager().initialiseWithDefaultDevices(2, 2);
 	DBG("init audio");
 
 }
@@ -61,7 +60,7 @@ void Engine::stopAudio(){
 
 void Engine::clear(){
     //    do we need to stop audio?
-     stopAudio();
+     //stopAudio();
 	
 	 
 	TimeManager::getInstance()->stop();
