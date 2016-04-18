@@ -184,7 +184,7 @@ void NodeConnectionUI::mouseExit(const MouseEvent &)
     repaint();
 }
 
-void NodeConnectionUI::mouseDoubleClick(const MouseEvent & e)
+void NodeConnectionUI::mouseDoubleClick(const MouseEvent &)
 {
 	NodeConnectionEditor::getInstance()->editConnection(connection);
 }

@@ -28,29 +28,15 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::C
 void ConnectorComponent::paint(Graphics & g)
 {
     g.setGradientFill(ColourGradient(isHovered?boxColor.brighter(5.f):boxColor, (float)(getLocalBounds().getCentreY()),(float)(getLocalBounds().getCentreY()), boxColor.darker(), 0.f,0.f, true));
-    //g.setFillType(FillType::gradient);
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 }
 
-void ConnectorComponent::mouseDown(const MouseEvent & e)
+void ConnectorComponent::mouseDown(const MouseEvent &)
 {
     NodeManagerUI * nmui = getNodeManagerUI();
 
     if (dataType == NodeConnection::ConnectionType::DATA)
     {
-
-		/*
-        String dataName = "";
-        String elementName = "";
-        DataProcessor::DataType dType = DataProcessor::DataType::Unknown;
-
-		
-        if (e.mods.isRightButtonDown())
-        {
-            selectDataAndElementPopup(dataName, elementName, dType);
-            DBG("Select data and element popup : " + dataName + ", " + elementName+", "+String(dType));
-        }
-		*/
 
         nmui->createDataConnectionFromConnector(this);
     }
@@ -68,17 +54,8 @@ void ConnectorComponent::mouseExit  (const MouseEvent&){
     isHovered = false;
     repaint();
 }
-//void ConnectorComponent::mouseDrag(const MouseEvent & e)
-//{
-//  getNodeManagerUI()->updateEditingConnection();
-//}
-//
-//void ConnectorComponent::mouseUp(const MouseEvent & e)
-//{
-//  getNodeManagerUI()->finishEditingConnection(this);
-//}
 
-
+/*
 void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, String & selectedElementName,
     DataProcessor::DataType &selectedDataType, const DataProcessor::DataType &filterType)
 {
@@ -117,8 +94,7 @@ void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, St
         {
             menu->addItem(itemID + (j + 1), ".    | "+d->elements[j]->name, d->elements[j]->isTypeCompatible(filterType));
             //dataMenu->addItem(itemID + (j + 1), d->elements[j]->name,d->elements[j]->isTypeCompatible(filterType));
-            //DBG(" > Is element compatible ? " + String(d->elements[j]->isTypeCompatible(filterType)));
-
+            //DBG(" > Is element compatible ? " + String(d->elements[j]->isTypeCompatible(filterType)))
         }
 
         //menu->addSubMenu(d->name, *dataMenu, true, nullptr, false, d->isTypeCompatible(filterType)?itemID:0);
@@ -144,8 +120,8 @@ void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, St
             selectedDataType = datas->getUnchecked(dataID)->type;
         }
     }
-
 }
+*/
 
 NodeManagerUI * ConnectorComponent::getNodeManagerUI() const noexcept
 {

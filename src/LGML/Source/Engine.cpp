@@ -58,9 +58,8 @@ void Engine::clear(){
     //    do we need to stop audio?
      stopAudio();
 	
-	 NodeConnectionEditor::getInstance()->closeWindow();
-    
-	 TimeManager::getInstance()->stop();
+	 
+	TimeManager::getInstance()->stop();
 	ControllerManager::getInstance()->clear();
 	NodeManager::getInstance()->clear();
 	

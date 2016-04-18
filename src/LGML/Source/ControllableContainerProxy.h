@@ -11,8 +11,6 @@
 #ifndef CONTROLLABLECONTAINERPROXY_H_INCLUDED
 #define CONTROLLABLECONTAINERPROXY_H_INCLUDED
 
-
-
 // a proxyContainer can fully syncronyze Controllables from a source container to a list of container
 // other containers have to be of the same kind
 // correspondences of Controllables is based on ControlAddress relative to ControllableContainers depth (i.e starting from the name of it
@@ -28,6 +26,7 @@ public:
     isNotifying(false){
         buildFromContainer(source);
     }
+
     virtual ~ControllableContainerProxy(){
         for(auto &c:proxyControllableListeners){
             c->removeControllableContainerListener(this);
@@ -37,7 +36,6 @@ public:
     }
 
     void buildFromContainer(ControllableContainer * source);
-
 
     void addProxyListener(ControllableContainer * );
     void removeProxyListener(ControllableContainer * );

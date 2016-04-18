@@ -22,7 +22,9 @@ void DummyNodeContentUI::resized()
 {
     if (node == nullptr) return;
     Rectangle<int> r = getLocalBounds().reduced(10);
-    testSlider->setBounds(r.removeFromTop(25));
+	freq1Slider->setBounds(r.removeFromTop(25));
+	r.removeFromTop(10);
+	freq2Slider->setBounds(r.removeFromTop(25));
 
     testTriggerButton->setTopRightPosition(getWidth()-10, getHeight() - testTriggerButton->getHeight() - 10);
 }
@@ -33,11 +35,14 @@ void DummyNodeContentUI::init()
 
     dummyNode = (DummyNode *)node;
 
-    testSlider = dummyNode->testFloatParam->createSlider();
-    addAndMakeVisible(testSlider);
+    freq1Slider = dummyNode->freq1Param->createSlider();
+    addAndMakeVisible(freq1Slider);
+
+	freq2Slider = dummyNode->freq2Param->createSlider();
+	addAndMakeVisible(freq2Slider);
 
     testTriggerButton = dummyNode->testTrigger->createButtonUI();
     addAndMakeVisible(testTriggerButton);
 
-    nodeUI->setSize(200, 100);
+    nodeUI->setSize(200, 150);
 }

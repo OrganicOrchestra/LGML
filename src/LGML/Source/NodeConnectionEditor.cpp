@@ -164,9 +164,10 @@ void NodeConnectionEditor::generateContentForAudio()
 	clearContent();
 	
 	int numOutputChannels = currentConnection->sourceNode->audioProcessor->getTotalNumOutputChannels();
+
 	int numInputChannels = currentConnection->destNode->audioProcessor->getTotalNumInputChannels();
 
-	//DBG("generate content for audio " << numOutputChannels << " / " << numInputChannels);
+	DBG("generate content for audio : " << currentConnection->sourceNode->niceName << " : " << numOutputChannels << " / " << currentConnection->destNode->niceName << " : " << numInputChannels);
 	for (int i = 0; i < numOutputChannels; i++)
 	{
 		NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot("Output "+String(i+1),i,currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
@@ -250,8 +251,11 @@ void NodeConnectionEditor::addAudioLink(int sourceChannel, int destChannel)
 
 void NodeConnectionEditor::removeAudioLinkForChannels(int sourceChannel, int destChannel)
 {
-	DBG("Remove audio Link for channels");
+	//DBG("Remove audio Link for channels");
 	NodeConnectionEditorLink * l = getLinkForChannels(sourceChannel, destChannel);
+	l->outSlot->removeConnectedSlot(l->inSlot);
+	l->inSlot->removeConnectedSlot(l->outSlot);
+
 	linksContainer.removeChildComponent(l);
 	l->removeLinkListener(this);
 	links.removeObject(l);
@@ -331,11 +335,11 @@ NodeConnectionEditorDataSlot * NodeConnectionEditor::getInputSlotForData(DataPro
 
 void NodeConnectionEditor::createEditingLink(NodeConnectionEditorDataSlot * baseSlot)
 {
-	DBG("Create Link from connector");
+	//DBG("Create Link from connector");
 
 	if (editingLink != nullptr)
 	{
-		DBG("Already editing a connection !");
+		//DBG("Already editing a connection !");
 		return;
 	}
 
@@ -404,7 +408,7 @@ void NodeConnectionEditor::finishEditingLink()
 {
 	bool success = editingLink->finishEditing();
 
-	DBG("Finish Editing, sucess ? " + String(success));
+	//DBG("Finish Editing, sucess ? " + String(success));
 
 	
 
@@ -417,7 +421,7 @@ void NodeConnectionEditor::finishEditingLink()
 		if(inputAlreadyConnected)
 		{
 			int alertResult = AlertWindow::showNativeDialogBox("Already connected", "This slot is already connected, choose Yes to replace the existing connection with this one",true);
-			DBG("Alert result " + String(alertResult));
+			//DBG("Alert result " + String(alertResult));
 
 			if (alertResult == 1)
 			{
@@ -489,7 +493,7 @@ void NodeConnectionEditor::slotMouseUp(NodeConnectionEditorDataSlot * target)
 
 void NodeConnectionEditor::askForRemoveLink(NodeConnectionEditorLink * target)
 {
-	DBG("Ask for remove link");
+	//DBG("Ask for remove link");
 	if (currentConnection->isAudio())
 	{
 		currentConnection->removeAudioGraphConnection(target->outSlot->channel, target->inSlot->channel);
@@ -514,14 +518,14 @@ void NodeConnectionEditor::connectionDataLinkRemoved(DataProcessorGraph::Connect
 
 void NodeConnectionEditor::connectionAudioLinkAdded(const NodeConnection::AudioConnection & audioConnection)
 {
-	DBG("Audio link added " << audioConnection.first << " > " << audioConnection.second);
+	//DBG("Audio link added " << audioConnection.first << " > " << audioConnection.second);
 	addAudioLink(audioConnection.first, audioConnection.second);
 	resized();
 }
 
 void NodeConnectionEditor::connectionAudioLinkRemoved(const NodeConnection::AudioConnection & audioConnection)
 {
-	DBG("Audio link removed");
+	//DBG("Audio link removed");
 	removeAudioLinkForChannels(audioConnection.first, audioConnection.second);
 }
 

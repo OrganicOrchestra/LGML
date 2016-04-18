@@ -18,7 +18,7 @@ nodeManager(nodeManager), connectionId(connectionId), sourceNode(sourceNode), de
     // init with all possible Audio connections
     if(connectionType==AUDIO){
         int maxCommonAudiConnections = jmin(sourceNode->audioProcessor->getTotalNumOutputChannels() , destNode->audioProcessor->getTotalNumInputChannels());
-        for( int i = 0 ; i <maxCommonAudiConnections ; i ++){
+        for( int i = 0 ; i < maxCommonAudiConnections ; i ++){
             addAudioGraphConnection(i, i);
         }
     }

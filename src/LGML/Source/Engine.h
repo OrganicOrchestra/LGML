@@ -45,6 +45,7 @@ public:
     Result saveDocument (const File& file)override;
     File getLastDocumentOpened() override;
     void setLastDocumentOpened (const File& file) override;
+
     //    #if JUCE_MODAL_LOOPS_PERMITTED
     //     File getSuggestedSaveAsFile (const File& defaultFile)override;
     //    #endif

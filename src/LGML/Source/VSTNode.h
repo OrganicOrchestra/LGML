@@ -100,8 +100,12 @@ public:
                 int numIn=instance->getMainBusNumInputChannels();
                 int numOut = instance->getMainBusNumOutputChannels();
                 setPlayConfigDetails(numIn,numOut,result.sampleRate, result.bufferSize);
+
+				//@Martin i addedd this because when not playing, it crashed
                 if(TimeManager::getInstance()->playState) instance->prepareToPlay (result.sampleRate, result.bufferSize);
-                // TODO check if scoped pointer deletes old innerPlugin
+                
+				
+				// TODO check if scoped pointer deletes old innerPlugin
                 innerPlugin=instance;
                 owner->initParameterFromProcessor(instance);
             }

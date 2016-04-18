@@ -100,10 +100,10 @@ private:
     virtual void askForRemoveConnection(NodeConnection *) override;
 
 	// Inherited via Listener
-	virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) override {}
-	virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) override {}
-	virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & audioConnection) override {}
-	virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection & audioConnection) override {}
+	virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * ) override {}
+	virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * ) override {}
+	virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & ) override {}
+	virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection & ) override {}
 };
 
 

@@ -20,47 +20,41 @@
 //==============================================================================
 /*
 */
-class NodeConnectionEditor    : public DocumentWindow, 
-	NodeConnectionEditorDataSlot::SlotListener, NodeConnectionEditorLink::LinkListener,NodeConnection::Listener
+class NodeConnectionEditor : public DocumentWindow,
+	NodeConnectionEditorDataSlot::SlotListener, NodeConnectionEditorLink::LinkListener, NodeConnection::Listener
 {
 
 public:
-    NodeConnectionEditor();
-    ~NodeConnectionEditor();
+	NodeConnectionEditor();
+	~NodeConnectionEditor();
 
-    juce_DeclareSingleton(NodeConnectionEditor, true);
+	juce_DeclareSingleton(NodeConnectionEditor, true);
 
-    OwnedArray<NodeConnectionEditorDataSlot> outputSlots;
-    OwnedArray<NodeConnectionEditorDataSlot> inputSlots;
-    OwnedArray<NodeConnectionEditorLink> links;
+	OwnedArray<NodeConnectionEditorDataSlot> outputSlots;
+	OwnedArray<NodeConnectionEditorDataSlot> inputSlots;
+	OwnedArray<NodeConnectionEditorLink> links;
 
-    Component mainContainer;
+	Component mainContainer;
 
-    Component inputsContainer;
-    Component outputsContainer;
-    Component linksContainer;
+	Component inputsContainer;
+	Component outputsContainer;
+	Component linksContainer;
 
-    NodeConnection * currentConnection;
+	NodeConnection * currentConnection;
 	NodeConnection::ConnectionType editingType;
 
 	void setCurrentConnection(NodeConnection * _connection);
-    void editConnection(NodeConnection * _connection);
+	void editConnection(NodeConnection * _connection);
 
-	
-
-    void resized();
-    void closeButtonPressed() override;
+	void resized();
+	void closeButtonPressed() override;
 	void closeWindow();
 
 	NodeConnectionEditorLink * editingLink;
-	
+
 
 	void mouseEnter(const MouseEvent &) override;
 	void mouseExit(const MouseEvent &) override;
-	void mouseMove(const MouseEvent &) override
-	{
-		DBG("Editor mouseMove");
-	}
 
 	void createEditingLink(NodeConnectionEditorDataSlot * baseSlot);
 

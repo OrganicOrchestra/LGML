@@ -22,18 +22,23 @@ public:
     public:
         DummyAudioProcessor():NodeBase::NodeAudioProcessor()
 		{
+			setPlayConfigDetails(2, 3, getSampleRate(), getBlockSize());
+
 		}
         
 		int step = 0;
-        int period = (int)(44100 *1.0f/300);
-        float amp = 1.f;
+        int period1 = (int)(44100 *1.0f/300);
+		int period2 = (int)(44100 * 1.0f / 300);
+		float amp = 1.f;
 
         void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
+			DBG("process block internal dummy");
+
             for(int i = 0 ; i < buffer.getNumSamples() ; i++){
-                buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step*1.0/period)));
+                buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step*1.0/period1)));
                 step++;
-                if(step>period){step = 0;}
+                if(step>period1){step = 0;}
 
             }
 
@@ -59,7 +64,9 @@ public:
     ~DummyNode();
 
     //parameters
-    FloatParameter * testFloatParam;
+    FloatParameter * freq1Param;
+	FloatParameter * freq2Param;
+
     Trigger * testTrigger;
 
     void parameterValueChanged(Parameter * p) override;

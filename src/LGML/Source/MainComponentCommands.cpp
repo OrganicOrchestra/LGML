@@ -11,6 +11,7 @@
 
 #include "MainComponent.h"
 
+#include "NodeConnectionEditor.h"
 
 //==TODO implement IDs ============================================================================
 namespace CommandIDs
@@ -68,8 +69,7 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
 
         case CommandIDs::toggleDoublePrecision:
             result.setInfo ("toggles doublePrecision", String::empty, category, 0);
-
-            //                updatePrecisionMenuItem (result);
+		    //updatePrecisionMenuItem (result);
             break;
 
         case CommandIDs::aboutBox:
@@ -164,10 +164,14 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
             // TODOs
         case CommandIDs::newFile:
             engine->createNewGraph();
+			NodeConnectionEditor::getInstance()->closeWindow();
+
             break;
 
         case CommandIDs::open:
             engine->loadFromUserSpecifiedFile (true);
+			NodeConnectionEditor::getInstance()->closeWindow();
+
             break;
 
         case CommandIDs::save:

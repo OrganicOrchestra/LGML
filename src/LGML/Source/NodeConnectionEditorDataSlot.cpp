@@ -87,12 +87,12 @@ void NodeConnectionEditorDataSlot::mouseMove(const MouseEvent &)
 	listeners.call(&SlotListener::slotMouseMove, this);
 }
 
-void NodeConnectionEditorDataSlot::mouseUp(const MouseEvent & e)
+void NodeConnectionEditorDataSlot::mouseUp(const MouseEvent &)
 {
 	listeners.call(&SlotListener::slotMouseUp, this);
 }
 
-void NodeConnectionEditorDataSlot::mouseDrag(const MouseEvent & e)
+void NodeConnectionEditorDataSlot::mouseDrag(const MouseEvent &)
 {
 	listeners.call(&SlotListener::slotMouseDrag, this);
 }

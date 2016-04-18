@@ -45,6 +45,16 @@ public:
 		return true;
 	}
 
+	bool removeConnectedSlot(NodeConnectionEditorDataSlot * s)
+	{
+		if (!isConnectedTo(s)) return false;
+
+		connectedSlots.removeAllInstancesOf(s);
+		repaint();
+
+		return true;
+	}
+
 	bool isConnected() { return connectedSlots.size() > 0; }
 	bool isConnectedTo(NodeConnectionEditorDataSlot * s) { return (connectedSlots.contains(s)); }
 	NodeConnectionEditorDataSlot * getFirstConnectedSlot() {

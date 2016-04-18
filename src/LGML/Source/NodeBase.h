@@ -33,7 +33,10 @@ public:
     class NodeAudioProcessor : public juce::AudioProcessor,public AsyncUpdater
     {
     public:
-        NodeAudioProcessor() :AudioProcessor(){};
+        NodeAudioProcessor() :AudioProcessor(){
+		};
+
+
 
         virtual const String getName() const override { return "NodeBaseProcessor"; };
 
@@ -76,8 +79,6 @@ public:
         //Listener are called from non audio thread
         void handleAsyncUpdate() override{listeners.call(&Listener::RMSChanged,rmsValue);}
 
-
-		
         class  Listener
         {
         public:
@@ -121,7 +122,8 @@ public:
 
     // owned by audio Graph in a refference Counted Array
     NodeAudioProcessor *  audioProcessor;
-    //owned by data Graph in a reference counted array
+   
+	//owned here, dataGraph only holds connections
     ScopedPointer<NodeDataProcessor> dataProcessor;
 
     bool hasAudioInputs;

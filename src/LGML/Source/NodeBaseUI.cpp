@@ -113,14 +113,14 @@ NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
     return findParentComponentOfClass<NodeManagerUI>();
 }
 
-void NodeBaseUI::mouseDown(const MouseEvent &event)
+void NodeBaseUI::mouseDown(const MouseEvent &e)
 {
 //    @ben i get parameter unused warning
 //    i think it's better to never "write" a variable without any other meaning than supress a warning
 //    it add meaningless lines for nothing but get rid of useless warning
 //  event;// avoir unreferenced formal parameter warning
 
-    if (event.mods.getCurrentModifiers().isCtrlDown())
+    if (e.mods.getCurrentModifiers().isCtrlDown())
     {
         DBG("Node->remove");
         node->remove();
