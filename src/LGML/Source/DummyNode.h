@@ -26,8 +26,9 @@ public:
 
 		}
         
-		int step = 0;
-        int period1 = (int)(44100 *1.0f/300);
+		int step1 = 0;
+		int step2 = 0;
+		int period1 = (int)(44100 *1.0f/300);
 		int period2 = (int)(44100 * 1.0f / 300);
 		float amp = 1.f;
 
@@ -35,12 +36,16 @@ public:
 
 			DBG("process block internal dummy");
 
+			
             for(int i = 0 ; i < buffer.getNumSamples() ; i++){
-                buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step*1.0/period1)));
-                step++;
-                if(step>period1){step = 0;}
-
+                buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step1*1.0/period1)));
+				buffer.addSample(1, i, (float)(amp*cos(2.0*double_Pi*step2*1.0 / period2)));
+				step1++;
+				step2++;
+                if(step1>period1){step1 = 0;}
+				if (step2>period2) { step2 = 0; }
             }
+
 
         }
 

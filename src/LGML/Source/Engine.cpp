@@ -22,7 +22,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 
 
 
-        initAudio();
+        //initAudio();
 }
 
 
@@ -39,11 +39,16 @@ Engine::~Engine(){
 
 
 void Engine::initAudio(){
+	
     graphPlayer.setProcessor(&NodeManager::getInstance()->audioGraph);
     ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
     getAudioDeviceManager().initialise (256, 256, savedAudioState, true);
-    getAudioDeviceManager().addAudioCallback (&graphPlayer);
+    
+	getAudioDeviceManager().addAudioCallback (&graphPlayer);
     getAudioDeviceManager().addAudioCallback(TimeManager::getInstance());
+	//getAudioDeviceManager().initialiseWithDefaultDevices(2, 2);
+	DBG("init audio");
+
 }
 
 

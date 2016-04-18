@@ -12,10 +12,18 @@
 #include "NodeConnectionEditor.h"
 
 // (This function is called by the app startup code to create our main component)
-MainContentComponent* createMainContentComponent(Engine * e)     { return new MainContentComponent(e); }
+MainContentComponent* createMainContentComponent(Engine * e)     
+{ 
+	return new MainContentComponent(e); 
+}
 
 
-MainContentComponent::MainContentComponent(Engine * e):engine(e)
+MainContentComponent::MainContentComponent(Engine * e): 
+	engine(e),
+	audioSettingsComp(getAudioDeviceManager(),
+		0, 256,
+		0, 256,
+		false,false, false,false)
 {
 
     setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
@@ -54,9 +62,10 @@ MainContentComponent::MainContentComponent(Engine * e):engine(e)
     //setMenu (this); //done in Main.cpp as it's a method of DocumentWindow
 #endif
 
+	
     e->createNewGraph();
-
-
+	e->initAudio();
+	
 }
 
 
@@ -91,11 +100,6 @@ void MainContentComponent::resized()
 
 void MainContentComponent::showAudioSettings()
 {
-    AudioDeviceSelectorComponent audioSettingsComp (getAudioDeviceManager(),
-                                                    2, 256,
-                                                    2, 256,
-                                                    true, true, true, false);
-
     audioSettingsComp.setSize (500, 450);
 
     DialogWindow::LaunchOptions o;
