@@ -91,11 +91,6 @@ void NodeManagerUI::connectionAdded(NodeConnection * connection)
     addConnectionUI(connection);
 }
 
-void NodeManagerUI::connectionEdited(NodeConnection *)
-{
-    //do nothing ?
-}
-
 void NodeManagerUI::connectionRemoved(NodeConnection * connection)
 {
     removeConnectionUI(connection);
@@ -122,7 +117,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
 
 void NodeManagerUI::removeNodeUI(NodeBase * node)
 {
-    DBG("Remove NodeUI");
+    //DBG("Remove NodeUI");
     NodeBaseUI * nui = getUIForNode(node);
     if (nui != nullptr)
     {
@@ -199,7 +194,7 @@ NodeConnectionUI * NodeManagerUI::getUIForConnection(NodeConnection* connection)
 void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector)
 {
 
-    DBG("Create Data connection from connector");
+    //DBG("Create Data connection from connector");
 
     if (editingConnection != nullptr)
     {
@@ -323,7 +318,7 @@ void NodeManagerUI::cancelCandidateDropConnector()
 
 void NodeManagerUI::finishEditingConnection()
 {
-    DBG("Finish Editing connection");
+    //DBG("Finish Editing connection");
     if (!isEditingConnection()) return;
 
     //bool isEditingDataOutput = editingConnection->getBaseConnector()->ioType == Connector::ConnectorIOType::OUTPUT;

@@ -58,7 +58,6 @@ public:
     virtual void nodeAdded(NodeBase *) override;
     virtual void nodeRemoved(NodeBase *) override;
     virtual void connectionAdded(NodeConnection *) override;
-    virtual void connectionEdited(NodeConnection * ) override;
     virtual void connectionRemoved(NodeConnection *) override;
 
 

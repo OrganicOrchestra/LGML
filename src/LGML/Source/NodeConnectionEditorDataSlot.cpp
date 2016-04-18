@@ -12,9 +12,9 @@
 #include "NodeConnectionEditorDataSlot.h"
 #include "Style.h"
 //==============================================================================
-NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot(String label, DataProcessor::Data* data, 
-		NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(data), channel(-1),
-connectionType(connectionType),ioType(ioType), isConnected(false), currentEditingData(nullptr)
+NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot(String label, DataProcessor::Data* data,
+	NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(data), channel(-1),
+	connectionType(connectionType), ioType(ioType), currentEditingData(nullptr)
 {
 
 	
@@ -22,7 +22,7 @@ connectionType(connectionType),ioType(ioType), isConnected(false), currentEditin
 
 NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot(String label, int channel,
 	NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(nullptr), channel(channel),
-connectionType(connectionType), ioType(ioType), isConnected(false), currentEditingData(nullptr)
+connectionType(connectionType), ioType(ioType), currentEditingData(nullptr)
 {
 }
 
@@ -39,7 +39,7 @@ void NodeConnectionEditorDataSlot::paint (Graphics& g)
 	
     g.drawText (label, getLocalBounds(),Justification::centred, true);   // draw some placeholder text
 
-	Colour c = isMouseOver() ? HIGHLIGHT_COLOR : (isConnected ? Colours::lightblue : NORMAL_COLOR);
+	Colour c = isMouseOver() ? HIGHLIGHT_COLOR : (isConnected() ? Colours::lightblue : NORMAL_COLOR);
 
 	if (currentEditingData != nullptr)
 	{

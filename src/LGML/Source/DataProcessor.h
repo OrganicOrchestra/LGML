@@ -205,6 +205,27 @@ public:
     DataType getInputDataType(const String &dataName, const String &elementName);
     DataType getOutputDataType(const String &dataName, const String &elementName);
 
+
+	Data * getOutputDataByName(const String &dataName)
+	{
+		for (auto &d : outputDatas)
+		{
+			if (d->name == dataName) return d;
+		}
+
+		return nullptr;
+	}
+
+	Data * getInputDataByName(const String &dataName)
+	{
+		for (auto &d : inputDatas)
+		{
+			if (d->name == dataName) return d;
+		}
+
+		return nullptr;
+	}
+
     //Listener
     class  Listener
     {

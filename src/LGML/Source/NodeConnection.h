@@ -30,6 +30,9 @@ public:
 
     ConnectionType connectionType;
 
+	bool isAudio() { return connectionType == ConnectionType::AUDIO; }
+	bool isData() { return connectionType == ConnectionType::DATA; }
+
     NodeManager * nodeManager;
     NodeBase * sourceNode;
     NodeBase * destNode;
@@ -67,8 +70,13 @@ public:
         /** Destructor. */
         virtual ~Listener() {}
 
-        virtual void connectionEdited(NodeConnection *) = 0;
         virtual void askForRemoveConnection(NodeConnection *) = 0;
+
+		virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) = 0;
+		virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) = 0;
+
+		virtual void connectionAudioLinkAdded(const AudioConnection &audioConnection) = 0;
+		virtual void connectionAudioLinkRemoved(const AudioConnection &audioConnection) = 0;
     };
 
     ListenerList<Listener> listeners;

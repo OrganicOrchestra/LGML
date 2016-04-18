@@ -34,15 +34,29 @@ public:
 	DataProcessor::Data * data;
 	int channel;
 
-	bool isConnected;
-	void setConnected(bool value)
+	Array<NodeConnectionEditorDataSlot *> connectedSlots;
+	bool addConnectedSlot(NodeConnectionEditorDataSlot * s)
 	{
-		isConnected = value;
+		if (isConnectedTo(s)) return false;
+
+		connectedSlots.add(s);
 		repaint();
+
+		return true;
+	}
+
+	bool isConnected() { return connectedSlots.size() > 0; }
+	bool isConnectedTo(NodeConnectionEditorDataSlot * s) { return (connectedSlots.contains(s)); }
+	NodeConnectionEditorDataSlot * getFirstConnectedSlot() {
+		if (!isConnected()) return nullptr;
+		return connectedSlots[0];
 	}
 
 	NodeConnection::ConnectionType connectionType;
 	IOType ioType;
+
+	bool isAudio() { return connectionType == NodeConnection::ConnectionType::AUDIO; }
+	bool isData() { return connectionType == NodeConnection::ConnectionType::DATA; }
 
 	DataProcessor::Data * currentEditingData;
 	void setCurrentEditingData(DataProcessor::Data * editingData)

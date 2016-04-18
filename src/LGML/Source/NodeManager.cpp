@@ -57,7 +57,7 @@ NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
     {
         // you can't add a node with an id that already exists in the graph..
         jassert(getNodeForId(nodeId) == nullptr);
-		DBG("Remove node because id already exists and pointer is null");
+		//DBG("Remove node because id already exists and pointer is null");
 		removeNode(nodeId);
 
         if (nodeId > lastNodeId)
@@ -155,7 +155,8 @@ void NodeManager::loadJSONData(var data, bool clearBeforeLoad)
 			int cType = cData.getProperty("connectionType", var());
 
 			if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
-				addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
+				NodeConnection * c = addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
+				c->loadJSONData(cData);
 			}
 			else {
 				// TODO nicely handle file format errors?
@@ -193,7 +194,6 @@ Array<NodeConnection*> NodeManager::getAllConnectionsForNode(NodeBase * node)
 
 NodeConnection * NodeManager::addConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType, uint32 connectionId)
 {
-    DBG("Add Connection");
     if (getConnectionBetweenNodes(sourceNode, destNode, connectionType) != nullptr)
     {
         //connection already exists
@@ -220,7 +220,7 @@ NodeConnection * NodeManager::addConnection(NodeBase * sourceNode, NodeBase * de
     connections.add(c);
     c->addConnectionListener(this);
 
-    DBG("Dispatch connection Added from NodeManager");
+   // DBG("Dispatch connection Added from NodeManager");
     listeners.call(&NodeManager::Listener::connectionAdded, c);
 
     return c;
@@ -228,7 +228,7 @@ NodeConnection * NodeManager::addConnection(NodeBase * sourceNode, NodeBase * de
 
 bool NodeManager::removeConnection(uint32 connectionId)
 {
-    DBG("Remove connection from Node Manager, dispatch connectionRemoved to UI");
+    //DBG("Remove connection from Node Manager, dispatch connectionRemoved to UI");
     NodeConnection * c = getConnectionForId(connectionId);
     return removeConnection(c);
 }
@@ -253,10 +253,6 @@ void NodeManager::askForRemoveNode(NodeBase * node)
     removeNode(node->nodeId);
 }
 
-void NodeManager::connectionEdited(NodeConnection * connection)
-{
-    listeners.call(&NodeManager::Listener::connectionEdited, connection);
-}
 
 void NodeManager::askForRemoveConnection(NodeConnection *connection)
 {

@@ -25,7 +25,7 @@ skipControllableNameInAddress(false)
 ControllableContainer::~ControllableContainer()
 {
     //controllables.clear();
-	DBG("CLEAR CONTROLLABLE CONTAINER");
+	//DBG("CLEAR CONTROLLABLE CONTAINER");
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
@@ -186,12 +186,12 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
 
     if (isTargetAControllable)
     {
-        DBG("Check controllable Address : " + shortName);
+        //DBG("Check controllable Address : " + shortName);
         for (auto &c : controllables)
         {
             if (c->shortName == addressSplit[0])
             {
-                DBG(c->shortName);
+                //DBG(c->shortName);
                 if (c->isControllableExposed || getNotExposed) return c;
                 else return nullptr;
             }

@@ -20,7 +20,8 @@
 //==============================================================================
 /*
 */
-class NodeConnectionEditor    : public DocumentWindow, NodeConnectionEditorDataSlot::SlotListener
+class NodeConnectionEditor    : public DocumentWindow, 
+	NodeConnectionEditorDataSlot::SlotListener, NodeConnectionEditorLink::LinkListener,NodeConnection::Listener
 {
 
 public:
@@ -49,6 +50,7 @@ public:
 
     void resized();
     void closeButtonPressed() override;
+	void closeWindow();
 
 	NodeConnectionEditorLink * editingLink;
 	
@@ -73,6 +75,16 @@ public:
     void generateContentForAudio();
 	void generateContentForData();
 
+	void addAudioLink(int sourceChannel, int destChannel);
+	void removeAudioLinkForChannels(int sourceChannel, int destChannel);
+	void addDataLink(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+	void removeDataLinkForDatas(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+
+
+	NodeConnectionEditorLink * getLinkForSlots(NodeConnectionEditorDataSlot * outSlot, NodeConnectionEditorDataSlot * inSlot);
+	NodeConnectionEditorLink * getLinkForChannels(int sourceChannel, int destChannel);
+	NodeConnectionEditorLink * getLinkForDatas(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+
 	NodeConnectionEditorDataSlot * getOutputSlotForData(DataProcessor::Data * data);
 	NodeConnectionEditorDataSlot * getInputSlotForData(DataProcessor::Data * data);
 
@@ -86,6 +98,16 @@ private:
 	virtual void slotMouseMove(NodeConnectionEditorDataSlot * target) override;
 	virtual void slotMouseDrag(NodeConnectionEditorDataSlot * target) override;
 	virtual void slotMouseUp(NodeConnectionEditorDataSlot * target) override;
+
+	// Inherited via LinkListener
+	virtual void askForRemoveLink(NodeConnectionEditorLink * target) override;
+
+	// Inherited via Listener
+	virtual void askForRemoveConnection(NodeConnection *) override {};
+	virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) override;
+	virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) override;
+	virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & audioConnection) override;
+	virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection & audioConnection) override;
 };
 
 
