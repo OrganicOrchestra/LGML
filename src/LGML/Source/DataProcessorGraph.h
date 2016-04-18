@@ -40,23 +40,23 @@ public:
         //==============================================================================
         Connection(DataProcessor::Data * sourceData, DataProcessor::Data * destData) noexcept;
 
-		DataProcessor::Data * sourceData;
-		DataProcessor::Data * destData;
-        
+        DataProcessor::Data * sourceData;
+        DataProcessor::Data * destData;
+
     private:
         //==============================================================================
         JUCE_LEAK_DETECTOR(Connection)
     };
 
 
-	
+
 
     void clear();
-	int getNumConnections() const { return connections.size(); }
-	const Connection* getConnection(int index) const { return connections[index]; }
-	Connection* getConnectionBetween(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const;
+    int getNumConnections() const { return connections.size(); }
+    const Connection* getConnection(int index) const { return connections[index]; }
+    Connection* getConnectionBetween(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const;
 
-	bool canConnect(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const;
+    bool canConnect(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const;
 
     Connection * addConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
 

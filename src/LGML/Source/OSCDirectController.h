@@ -17,7 +17,7 @@ class OSCDirectController : public OSCController, public ControllableContainer::
 {
 public:
     OSCDirectController();
-	virtual ~OSCDirectController();
+    virtual ~OSCDirectController();
 
     void processMessage(const OSCMessage &msg) override;
 

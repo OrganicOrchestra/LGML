@@ -26,47 +26,47 @@ public:
     NodeConnectionEditorDataSlot * outSlot;
     NodeConnectionEditorDataSlot * inSlot;
 
-	bool isEditing;
-	void setEditing(bool value)
-	{
-		isEditing = value;
-		repaint();
-	}
+    bool isEditing;
+    void setEditing(bool value)
+    {
+        isEditing = value;
+        repaint();
+    }
 
-	NodeConnectionEditorDataSlot * getBaseSlot()
-	{
-		return outSlot == nullptr ? inSlot : outSlot;
-	}
+    NodeConnectionEditorDataSlot * getBaseSlot()
+    {
+        return outSlot == nullptr ? inSlot : outSlot;
+    }
 
-	NodeConnectionEditorDataSlot * candidateDropSlot;
+    NodeConnectionEditorDataSlot * candidateDropSlot;
 
-	bool finishEditing();
-	bool setCandidateDropSlot(NodeConnectionEditorDataSlot * connector);
-	void cancelCandidateDropSlot();
+    bool finishEditing();
+    bool setCandidateDropSlot(NodeConnectionEditorDataSlot * connector);
+    void cancelCandidateDropSlot();
 
-	virtual bool hitTest(int x, int y) override { return hitPath.contains((float)x, (float)y); }
+    virtual bool hitTest(int x, int y) override { return hitPath.contains((float)x, (float)y); }
 
-	Path hitPath;
+    Path hitPath;
     void paint (Graphics&);
     void resized();
 
-	void mouseEnter(const MouseEvent &) override { repaint(); };
-	void mouseExit(const MouseEvent &) override { repaint(); };
+    void mouseEnter(const MouseEvent &) override { repaint(); };
+    void mouseExit(const MouseEvent &) override { repaint(); };
 
-	void remove() { listeners.call(&LinkListener::askForRemoveLink, this); }
+    void remove() { listeners.call(&LinkListener::askForRemoveLink, this); }
 
-	//Listener
-	class LinkListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~LinkListener() {}
-		virtual void askForRemoveLink(NodeConnectionEditorLink * target) = 0;
-	};
+    //Listener
+    class LinkListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~LinkListener() {}
+        virtual void askForRemoveLink(NodeConnectionEditorLink * target) = 0;
+    };
 
-	ListenerList<LinkListener> listeners;
-	void addLinkListener(LinkListener* newListener) { listeners.add(newListener); }
-	void removeLinkListener(LinkListener* listener) { listeners.remove(listener); }
+    ListenerList<LinkListener> listeners;
+    void addLinkListener(LinkListener* newListener) { listeners.add(newListener); }
+    void removeLinkListener(LinkListener* listener) { listeners.remove(listener); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionEditorLink)

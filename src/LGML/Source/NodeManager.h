@@ -61,9 +61,9 @@ public:
     void removeIllegalConnections();
     int getNumConnections();
 
-	//save / load
-	var getJSONData() const;
-	void loadJSONData(var data, bool clearBeforeLoad = true);
+    //save / load
+    var getJSONData() const;
+    void loadJSONData(var data, bool clearBeforeLoad = true);
 
     //Listener
     class  Listener
@@ -99,11 +99,11 @@ private:
     // Inherited via NodeConnection::Listener
     virtual void askForRemoveConnection(NodeConnection *) override;
 
-	// Inherited via Listener
-	virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * ) override {}
-	virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * ) override {}
-	virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & ) override {}
-	virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection & ) override {}
+    // Inherited via Listener
+    virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * ) override {}
+    virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * ) override {}
+    virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & ) override {}
+    virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection & ) override {}
 };
 
 

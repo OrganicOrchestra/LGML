@@ -159,7 +159,7 @@ void NodeConnectionUI::mouseDown(const MouseEvent & e)
         {
         case 1:
             //edit connection
-			NodeConnectionEditor::getInstance()->editConnection(connection);
+            NodeConnectionEditor::getInstance()->editConnection(connection);
             break;
 
         case 2:
@@ -186,7 +186,7 @@ void NodeConnectionUI::mouseExit(const MouseEvent &)
 
 void NodeConnectionUI::mouseDoubleClick(const MouseEvent &)
 {
-	NodeConnectionEditor::getInstance()->editConnection(connection);
+    NodeConnectionEditor::getInstance()->editConnection(connection);
 }
 
 void NodeConnectionUI::setSourceConnector(Connector * c)

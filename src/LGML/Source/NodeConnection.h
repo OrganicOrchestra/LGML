@@ -30,8 +30,8 @@ public:
 
     ConnectionType connectionType;
 
-	bool isAudio() { return connectionType == ConnectionType::AUDIO; }
-	bool isData() { return connectionType == ConnectionType::DATA; }
+    bool isAudio() { return connectionType == ConnectionType::AUDIO; }
+    bool isData() { return connectionType == ConnectionType::DATA; }
 
     NodeManager * nodeManager;
     NodeBase * sourceNode;
@@ -45,23 +45,23 @@ public:
     NodeConnection(NodeManager* nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
     virtual ~NodeConnection();
 
-	//Audio
+    //Audio
     void addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
     void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
     void removeAllAudioGraphConnections();
 
-	//Data
+    //Data
     void addDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
     void removeDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
-	void removeAllDataGraphConnections();
+    void removeAllDataGraphConnections();
 
     void remove();
 
 
-	// save / load
+    // save / load
 
-	var getJSONData();
-	void loadJSONData(var data);
+    var getJSONData();
+    void loadJSONData(var data);
 
     //Listener
     class  Listener
@@ -72,11 +72,11 @@ public:
 
         virtual void askForRemoveConnection(NodeConnection *) = 0;
 
-		virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) = 0;
-		virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) = 0;
+        virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) = 0;
+        virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) = 0;
 
-		virtual void connectionAudioLinkAdded(const AudioConnection &audioConnection) = 0;
-		virtual void connectionAudioLinkRemoved(const AudioConnection &audioConnection) = 0;
+        virtual void connectionAudioLinkAdded(const AudioConnection &audioConnection) = 0;
+        virtual void connectionAudioLinkRemoved(const AudioConnection &audioConnection) = 0;
     };
 
     ListenerList<Listener> listeners;

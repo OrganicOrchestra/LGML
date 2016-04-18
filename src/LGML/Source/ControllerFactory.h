@@ -28,7 +28,7 @@ public:
         OSCDirect,
         DMX,
         MIDI,
-		UNKNOWN //has to be last
+        UNKNOWN //has to be last
     };
 
     ControllerFactory()
@@ -65,7 +65,7 @@ public:
         }
 
 
-		c->controllerTypeEnum = (int)controllerType;
+        c->controllerTypeEnum = (int)controllerType;
         return c;
     }
 
@@ -80,24 +80,24 @@ public:
         return p;
     }
 
-	static ControllerType getTypeFromString(const String & s) {
-		for (int i = 0; i < numElementsInArray(controllerTypeNames); i++)
-		{
-			if (s == controllerTypeNames[i]) { return ControllerType(i); }
-		}
-		return UNKNOWN;
-	}
+    static ControllerType getTypeFromString(const String & s) {
+        for (int i = 0; i < numElementsInArray(controllerTypeNames); i++)
+        {
+            if (s == controllerTypeNames[i]) { return ControllerType(i); }
+        }
+        return UNKNOWN;
+    }
 
-	static String controllerTypeToString(ControllerType t) {
-		if (t<0 || t > UNKNOWN)return String::empty;
-		return controllerTypeNames[(int)t];
-	}
+    static String controllerTypeToString(ControllerType t) {
+        if (t<0 || t > UNKNOWN)return String::empty;
+        return controllerTypeNames[(int)t];
+    }
 
-	static String controllerToString(Controller *  c) {
-		int t = c->controllerTypeEnum;
-		if (t<0 || t > UNKNOWN)return String::empty;
-		return controllerTypeNames[(int)t];
-	}
+    static String controllerToString(Controller *  c) {
+        int t = c->controllerTypeEnum;
+        if (t<0 || t > UNKNOWN)return String::empty;
+        return controllerTypeNames[(int)t];
+    }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerFactory)
 };

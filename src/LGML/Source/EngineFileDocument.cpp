@@ -27,23 +27,23 @@ String Engine::getDocumentTitle() {
 
 Result Engine::loadDocument (const File& file){
 
-	ScopedPointer<InputStream> is = file.createInputStream();
-	var data = JSON::parse(*is);
+    ScopedPointer<InputStream> is( file.createInputStream());
+    var data = JSON::parse(*is);
 
-	loadJSONData(data);
+    loadJSONData(data);
     return Result::ok();
 }
 
 
 Result Engine::saveDocument (const File& file){
-    
-	var data = getJSONData();
 
-	if (file.exists()) file.deleteFile();
-	ScopedPointer<OutputStream> os = file.createOutputStream();
-	JSON::writeToStream(*os, data);
-	os->flush();
-	
+    var data = getJSONData();
+
+    if (file.exists()) file.deleteFile();
+    ScopedPointer<OutputStream> os( file.createOutputStream());
+    JSON::writeToStream(*os, data);
+    os->flush();
+
 
     return Result::ok();
 }
@@ -75,17 +75,17 @@ void Engine::setLastDocumentOpened (const File& file) {
 var Engine::getJSONData()
 {
 
-	var data(new DynamicObject());
-	var metaData(new DynamicObject());
-	
-	var nodeManagerData(new DynamicObject());
-	var controllerManagerData(new DynamicObject());
+    var data(new DynamicObject());
+    var metaData(new DynamicObject());
+
+    var nodeManagerData(new DynamicObject());
+    var controllerManagerData(new DynamicObject());
 
     metaData.getDynamicObject()->setProperty("LGMLVersion",ProjectInfo::versionString);
 
-	data.getDynamicObject()->setProperty("meta", metaData);
-	data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
-	data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
+    data.getDynamicObject()->setProperty("meta", metaData);
+    data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
+    data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
 
     return data;
 }
@@ -98,8 +98,8 @@ void Engine::loadJSONData (var data, bool clearManagers)
     clear();
     //    TODO check version Compat
 
-	NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()), clearManagers);
-	ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()), clearManagers);
+    NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()), clearManagers);
+    ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()), clearManagers);
 }
 
 

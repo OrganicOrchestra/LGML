@@ -29,24 +29,24 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 Engine::~Engine(){
     stopAudio();
     TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
-	ControllerManager::deleteInstance(); 
-	NodeManager::deleteInstance();
+    ControllerManager::deleteInstance();
+    NodeManager::deleteInstance();
     VSTManager::deleteInstance();
-	
+
 }
 
 
 
 
 void Engine::initAudio(){
-	
+
     graphPlayer.setProcessor(&NodeManager::getInstance()->audioGraph);
     ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
     getAudioDeviceManager().initialise (256, 256, savedAudioState, true);
-    
-	getAudioDeviceManager().addAudioCallback (&graphPlayer);
+
+    getAudioDeviceManager().addAudioCallback (&graphPlayer);
     getAudioDeviceManager().addAudioCallback(TimeManager::getInstance());
-	DBG("init audio");
+    DBG("init audio");
 
 }
 
@@ -61,12 +61,12 @@ void Engine::stopAudio(){
 void Engine::clear(){
     //    do we need to stop audio?
      //stopAudio();
-	
-	 
-	TimeManager::getInstance()->stop();
-	ControllerManager::getInstance()->clear();
-	NodeManager::getInstance()->clear();
-	
+
+
+    TimeManager::getInstance()->stop();
+    ControllerManager::getInstance()->clear();
+    NodeManager::getInstance()->clear();
+
     changed();    //fileDocument
 }
 

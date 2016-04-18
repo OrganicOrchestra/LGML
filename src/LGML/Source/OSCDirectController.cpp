@@ -22,7 +22,7 @@ OSCDirectController::OSCDirectController() :
 
 OSCDirectController::~OSCDirectController()
 {
-	NodeManager::getInstance()->removeControllableContainerListener(this);
+    NodeManager::getInstance()->removeControllableContainerListener(this);
 }
 
 void OSCDirectController::processMessage(const OSCMessage & msg)

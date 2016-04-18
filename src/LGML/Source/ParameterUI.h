@@ -22,8 +22,8 @@ public:
 
     WeakReference<Parameter> parameter;
 
-	//Label label;
-	bool showLabel;
+    //Label label;
+    bool showLabel;
 
 protected:
     // Inherited via Listener

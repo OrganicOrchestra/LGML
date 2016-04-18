@@ -2,3 +2,9 @@ Pourquoi refactor du design des connections ? Le but n'est pas que ca ne touche 
 
 controllable proxies : a quoi ca sert ? 
 > feedback philosophy : en forward ou event-driven mais on doit choisir (event parait plus consistent peut-etre ?)
+
+
+Bug Looper
+
+rec or play after stop not working
+track volumes??

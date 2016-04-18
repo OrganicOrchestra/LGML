@@ -40,15 +40,15 @@ public:
         engine = new Engine();
 
         mainWindow = new MainWindow (getApplicationName(),engine);
-		
-		String commandLineEscaped = commandLine.removeCharacters("\"");
-		File f(commandLineEscaped);
-		
-		if (f.existsAsFile())
-		{
-			engine->loadDocument(f);
-		}
-		
+
+        String commandLineEscaped = commandLine.removeCharacters("\"");
+        File f(commandLineEscaped);
+
+        if (f.existsAsFile())
+        {
+            engine->loadDocument(f);
+        }
+
     }
 
     void shutdown() override
@@ -71,8 +71,8 @@ public:
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
-		
-		
+
+
     }
 
     //==============================================================================
@@ -121,7 +121,7 @@ public:
 
     ApplicationCommandManager commandManager;
     ScopedPointer<ApplicationProperties> appProperties;
-    AudioDeviceManager deviceManager; 
+    AudioDeviceManager deviceManager;
     UndoManager undoManager;
 
     ScopedPointer<Engine> engine;

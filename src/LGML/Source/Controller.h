@@ -21,7 +21,7 @@ public:
     Controller(const String &name = "[Controller]");
     virtual ~Controller();
 
-	int controllerTypeEnum;
+    int controllerTypeEnum;
 
     StringParameter * nameParam;
     BoolParameter * enabledParam;
@@ -31,8 +31,8 @@ public:
 
     virtual ControllerUI * createUI();
 
-	var getJSONData();
-	void loadJSONData(var data);
+    var getJSONData();
+    void loadJSONData(var data);
 
 
     class  Listener

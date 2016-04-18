@@ -25,7 +25,7 @@ skipControllableNameInAddress(false)
 ControllableContainer::~ControllableContainer()
 {
     //controllables.clear();
-	//DBG("CLEAR CONTROLLABLE CONTAINER");
+    //DBG("CLEAR CONTROLLABLE CONTAINER");
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
@@ -170,12 +170,12 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive,b
 
 Controllable * ControllableContainer::getControllableForAddress(String address, bool recursive, bool getNotExposed)
 {
-	StringArray addrArray;
-	addrArray.addTokens(address, juce::StringRef("/"), juce::StringRef("\""));
-	juce::Array<String> addSplit = addrArray.strings;
-	addSplit.remove(0);
+    StringArray addrArray;
+    addrArray.addTokens(address, juce::StringRef("/"), juce::StringRef("\""));
+    juce::Array<String> addSplit = addrArray.strings;
+    addSplit.remove(0);
 
-	return getControllableForAddress(addSplit, recursive, getNotExposed);
+    return getControllableForAddress(addSplit, recursive, getNotExposed);
 }
 
 Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)

@@ -24,9 +24,9 @@ public:
     DummyNode * dummyNode;
 
     ScopedPointer<FloatSliderUI> freq1Slider;
-	ScopedPointer<FloatSliderUI> freq2Slider;
+    ScopedPointer<FloatSliderUI> freq2Slider;
 
-	ScopedPointer<TriggerButtonUI> testTriggerButton;
+    ScopedPointer<TriggerButtonUI> testTriggerButton;
 
     void resized() override;
 

@@ -67,7 +67,7 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
 
         case CommandIDs::toggleDoublePrecision:
             result.setInfo ("toggles doublePrecision", String::empty, category, 0);
-		    //updatePrecisionMenuItem (result);
+            //updatePrecisionMenuItem (result);
             break;
 
         case CommandIDs::aboutBox:

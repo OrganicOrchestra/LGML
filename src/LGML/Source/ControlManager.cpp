@@ -21,7 +21,7 @@ ControllerManager::ControllerManager() :
 
 ControllerManager::~ControllerManager()
 {
-	clear();
+    clear();
 }
 
 
@@ -44,45 +44,45 @@ void ControllerManager::removeController(Controller * c)
 
 void ControllerManager::clear()
 {
-	while (controllers.size())
-		controllers[0]->remove();
+    while (controllers.size())
+        controllers[0]->remove();
 }
 
 var ControllerManager::getJSONData()
 {
-	var data(new DynamicObject());
-	var controllersData;
+    var data(new DynamicObject());
+    var controllersData;
 
-	for (auto &c: controllers)
-	{
-		controllersData.append(c->getJSONData());
-	}
+    for (auto &c: controllers)
+    {
+        controllersData.append(c->getJSONData());
+    }
 
-	data.getDynamicObject()->setProperty("controllers", controllersData);
-	return data;
+    data.getDynamicObject()->setProperty("controllers", controllersData);
+    return data;
 }
 
 void ControllerManager::loadJSONData(var data, bool clearBeforeLoad)
 {
-	if (clearBeforeLoad) clear();
+    if (clearBeforeLoad) clear();
 
-	Array<var> * controllersData = data.getProperty("controllers", var()).getArray();
-	if (controllersData)
-	{
-		for (var &cData : *controllersData)
-		{
-			ControllerFactory::ControllerType controllerType = ControllerFactory::getTypeFromString(cData.getProperty("controllerType", var()));
-			//int controllerId = cData.getProperty("controllerId", var());
-			Controller* controller = addController(controllerType);
-			controller->loadJSONData(cData);
-		}
-	}
-	else
-	{
-		//DBG("No Controller to load");
-	}
-	
-	
+    Array<var> * controllersData = data.getProperty("controllers", var()).getArray();
+    if (controllersData)
+    {
+        for (var &cData : *controllersData)
+        {
+            ControllerFactory::ControllerType controllerType = ControllerFactory::getTypeFromString(cData.getProperty("controllerType", var()));
+            //int controllerId = cData.getProperty("controllerId", var());
+            Controller* controller = addController(controllerType);
+            controller->loadJSONData(cData);
+        }
+    }
+    else
+    {
+        //DBG("No Controller to load");
+    }
+
+
 }
 
 void ControllerManager::askForRemoveController(Controller * c)

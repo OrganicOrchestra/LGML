@@ -53,9 +53,9 @@ public :
         String name;
         DataType type;
 
-		DataProcessor * processor;
+        DataProcessor * processor;
 
-		int numConnections;
+        int numConnections;
 
         OwnedArray<DataElement> elements;
 
@@ -93,9 +93,9 @@ public :
             }
         };
 
-		~Data() {
-			elements.clear();
-		}
+        ~Data() {
+            elements.clear();
+        }
 
         void addElement(const String &_name) {
             DataElement *e = new DataElement(_name);
@@ -206,25 +206,25 @@ public:
     DataType getOutputDataType(const String &dataName, const String &elementName);
 
 
-	Data * getOutputDataByName(const String &dataName)
-	{
-		for (auto &d : outputDatas)
-		{
-			if (d->name == dataName) return d;
-		}
+    Data * getOutputDataByName(const String &dataName)
+    {
+        for (auto &d : outputDatas)
+        {
+            if (d->name == dataName) return d;
+        }
 
-		return nullptr;
-	}
+        return nullptr;
+    }
 
-	Data * getInputDataByName(const String &dataName)
-	{
-		for (auto &d : inputDatas)
-		{
-			if (d->name == dataName) return d;
-		}
+    Data * getInputDataByName(const String &dataName)
+    {
+        for (auto &d : inputDatas)
+        {
+            if (d->name == dataName) return d;
+        }
 
-		return nullptr;
-	}
+        return nullptr;
+    }
 
     //Listener
     class  Listener

@@ -13,22 +13,22 @@
 #include "Style.h"
 //==============================================================================
 NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot(String label, DataProcessor::Data* data,
-	NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(data), channel(-1),
-	connectionType(connectionType), ioType(ioType), currentEditingData(nullptr)
+    NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(data), channel(-1),
+    connectionType(connectionType), ioType(ioType), currentEditingData(nullptr)
 {
 
-	
+
 }
 
 NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot(String label, int channel,
-	NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(nullptr), channel(channel),
+    NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(nullptr), channel(channel),
 connectionType(connectionType), ioType(ioType), currentEditingData(nullptr)
 {
 }
 
 NodeConnectionEditorDataSlot::~NodeConnectionEditorDataSlot()
 {
-	data = nullptr;
+    data = nullptr;
 }
 
 void NodeConnectionEditorDataSlot::paint (Graphics& g)
@@ -36,25 +36,25 @@ void NodeConnectionEditorDataSlot::paint (Graphics& g)
 
     g.setColour (isMouseOver() ? HIGHLIGHT_COLOR:TEXTNAME_COLOR);
     g.setFont (14.0f);
-	
+
     g.drawText (label, getLocalBounds(),Justification::centred, true);   // draw some placeholder text
 
-	Colour c = isMouseOver() ? HIGHLIGHT_COLOR : (isConnected() ? Colours::lightblue : NORMAL_COLOR);
+    Colour c = isMouseOver() ? HIGHLIGHT_COLOR : (isConnected() ? Colours::lightblue : NORMAL_COLOR);
 
-	if (currentEditingData != nullptr)
-	{
-		if (currentEditingData->type == data->type) c = Colours::lightgreen;
-		else if (currentEditingData->isTypeCompatible(data->type)) c = Colours::yellow;
-		else c = NORMAL_COLOR;
-	}
-	g.setColour(c);
+    if (currentEditingData != nullptr)
+    {
+        if (currentEditingData->type == data->type) c = Colours::lightgreen;
+        else if (currentEditingData->isTypeCompatible(data->type)) c = Colours::yellow;
+        else c = NORMAL_COLOR;
+    }
+    g.setColour(c);
 
-	Rectangle<int> connectorBounds = getLocalBounds();
-	int connectorSize = 10;
-	connectorBounds.setSize(connectorSize, connectorSize);
-	int targetX = ioType == OUTPUT ? getLocalBounds().getRight() - connectorSize / 2 : connectorSize / 2;
-	connectorBounds.setCentre(targetX, getLocalBounds().getCentreY());
-	g.fillRoundedRectangle(connectorBounds.toFloat(),4);   // draw an outline around the component
+    Rectangle<int> connectorBounds = getLocalBounds();
+    int connectorSize = 10;
+    connectorBounds.setSize(connectorSize, connectorSize);
+    int targetX = ioType == OUTPUT ? getLocalBounds().getRight() - connectorSize / 2 : connectorSize / 2;
+    connectorBounds.setCentre(targetX, getLocalBounds().getCentreY());
+    g.fillRoundedRectangle(connectorBounds.toFloat(),4);   // draw an outline around the component
 
 }
 
@@ -67,32 +67,32 @@ void NodeConnectionEditorDataSlot::resized()
 
 void NodeConnectionEditorDataSlot::mouseDown(const MouseEvent &)
 {
-	listeners.call(&SlotListener::slotMouseDown,this);
+    listeners.call(&SlotListener::slotMouseDown,this);
 }
 
 void NodeConnectionEditorDataSlot::mouseEnter(const MouseEvent &)
 {
-	listeners.call(&SlotListener::slotMouseEnter, this);
-	repaint();
+    listeners.call(&SlotListener::slotMouseEnter, this);
+    repaint();
 }
 
 void NodeConnectionEditorDataSlot::mouseExit(const MouseEvent &)
 {
-	listeners.call(&SlotListener::slotMouseExit, this);
-	repaint();
+    listeners.call(&SlotListener::slotMouseExit, this);
+    repaint();
 }
 
 void NodeConnectionEditorDataSlot::mouseMove(const MouseEvent &)
 {
-	listeners.call(&SlotListener::slotMouseMove, this);
+    listeners.call(&SlotListener::slotMouseMove, this);
 }
 
 void NodeConnectionEditorDataSlot::mouseUp(const MouseEvent &)
 {
-	listeners.call(&SlotListener::slotMouseUp, this);
+    listeners.call(&SlotListener::slotMouseUp, this);
 }
 
 void NodeConnectionEditorDataSlot::mouseDrag(const MouseEvent &)
 {
-	listeners.call(&SlotListener::slotMouseDrag, this);
+    listeners.call(&SlotListener::slotMouseDrag, this);
 }

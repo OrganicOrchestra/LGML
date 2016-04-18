@@ -34,7 +34,7 @@ public:
     {
     public:
         NodeAudioProcessor() :AudioProcessor(){
-		};
+        };
 
 
 
@@ -122,8 +122,8 @@ public:
 
     // owned by audio Graph in a refference Counted Array
     NodeAudioProcessor *  audioProcessor;
-   
-	//owned here, dataGraph only holds connections
+
+    //owned here, dataGraph only holds connections
     ScopedPointer<NodeDataProcessor> dataProcessor;
 
     bool hasAudioInputs;
@@ -159,8 +159,8 @@ public:
     virtual void ouputRemoved(DataProcessor::Data *) override;
 
 
-	var getJSONData();
-	void loadJSONData(var data);
+    var getJSONData();
+    void loadJSONData(var data);
 
 
     //Listener
