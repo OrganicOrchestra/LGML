@@ -9,6 +9,8 @@
             file="Resources/grandlouloup.png"/>
       <FILE id="rXKQj6" name="wolf_footprint.png" compile="0" resource="1"
             file="Resources/wolf_footprint.png"/>
+      <FILE id="cPPKNn" name="wolf_footprint_debug.png" compile="0" resource="1"
+            file="Resources/wolf_footprint_debug.png"/>
     </GROUP>
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
       <GROUP id="{C42B7041-9902-DAD4-34C4-9F8B62125E4B}" name="Time">
@@ -345,8 +347,8 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2015 targetFolder="Builds/VisualStudio2015" vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK"
-            vst3Folder="D:\Documents\Ressources\SDKs\VST3 SDK" smallIcon="rXKQj6"
-            bigIcon="rXKQj6">
+            vst3Folder="D:\Documents\Ressources\SDKs\VST3 SDK" smallIcon="cPPKNn"
+            bigIcon="cPPKNn">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="LGML" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common"/>

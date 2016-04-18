@@ -14,11 +14,11 @@
 MainContentComponent* createMainContentComponent(Engine* e);
 
 //==============================================================================
-class BlooperApplication  : public JUCEApplication
+class LGMLApplication : public JUCEApplication
 {
 public:
     //==============================================================================
-    BlooperApplication() {}
+    LGMLApplication() {}
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -29,7 +29,7 @@ public:
     {
         // This method is where you should put your application's initialisation code..
         PropertiesFile::Options options;
-        options.applicationName     = "Blooper";
+        options.applicationName     = "LGML";
         options.filenameSuffix      = "settings";
         options.osxLibrarySubFolder = "Preferences";
 
@@ -37,11 +37,18 @@ public:
         appProperties->setStorageParameters (options);
         Process::setPriority (Process::HighPriority);
 
-        DBG(commandLine);
-
         engine = new Engine();
 
         mainWindow = new MainWindow (getApplicationName(),engine);
+		
+		String commandLineEscaped = commandLine.removeCharacters("\"");
+		File f(commandLineEscaped);
+		
+		if (f.existsAsFile())
+		{
+			engine->loadDocument(f);
+		}
+		
     }
 
     void shutdown() override
@@ -64,6 +71,8 @@ public:
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
+		
+		
     }
 
     //==============================================================================
@@ -112,7 +121,7 @@ public:
 
     ApplicationCommandManager commandManager;
     ScopedPointer<ApplicationProperties> appProperties;
-    AudioDeviceManager deviceManager;
+    AudioDeviceManager deviceManager; 
     UndoManager undoManager;
 
     ScopedPointer<Engine> engine;
@@ -122,11 +131,11 @@ private:
 };
 
 
-static BlooperApplication& getApp()                 { return *dynamic_cast<BlooperApplication*>(JUCEApplication::getInstance()); }
+static LGMLApplication& getApp()                 { return *dynamic_cast<LGMLApplication*>(JUCEApplication::getInstance()); }
 ApplicationCommandManager& getCommandManager()      { return getApp().commandManager; }
 ApplicationProperties& getAppProperties()           { return *getApp().appProperties; }
 AudioDeviceManager & getAudioDeviceManager()        { return getApp().deviceManager;}
 UndoManager & getAppUndoManager()                      { return getApp().undoManager;}
 //==============================================================================
 // This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (BlooperApplication)
+START_JUCE_APPLICATION (LGMLApplication)
