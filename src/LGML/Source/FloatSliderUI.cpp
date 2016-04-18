@@ -33,36 +33,41 @@ void FloatSliderUI::paint(Graphics & g)
 
     Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : PARAMETER_FRONT_COLOR;
 
+	Rectangle<int> sliderBounds = getLocalBounds();
+
+
+	float normalizedValue = getParamNormalizedValue();
     g.setColour(BG_COLOR);
-    g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
-
-
-
+    g.fillRoundedRectangle(sliderBounds.toFloat(), 2);
 
     g.setColour(c);
     if(displayBar){
     float drawPos = 0;
     if (orientation == HORIZONTAL)
     {
-        drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : getParamNormalizedValue()*getWidth();
-        g.fillRoundedRectangle(getLocalBounds().removeFromLeft((int)drawPos).toFloat(), 2.f);
+        drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : normalizedValue*getWidth();
+        g.fillRoundedRectangle(sliderBounds.removeFromLeft((int)drawPos).toFloat(), 2.f);
     }
     else {
-        drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : getParamNormalizedValue()*getHeight();
-        g.fillRoundedRectangle(getLocalBounds().removeFromBottom((int)drawPos).toFloat(), 2.f);
+        drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : normalizedValue*getHeight();
+        g.fillRoundedRectangle(sliderBounds.removeFromBottom((int)drawPos).toFloat(), 2.f);
     }
     }
 
+	sliderBounds = getLocalBounds();
+
     if(displayText){
-        g.setColour(displayBar?Colours::darkgrey:c);
-        Rectangle<int> destRect = getLocalBounds();
+		Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::lightgrey;
+        g.setColour(displayBar?textColor:c);
+        Rectangle<int> destRect = sliderBounds;
         if(orientation == VERTICAL){
             AffineTransform at;
-            at = at.rotated((float)(-double_Pi/2.0f), getLocalBounds().getWidth()/2.0f, getLocalBounds().getHeight()/2.0f);
+            at = at.rotated((float)(-double_Pi/2.0f), sliderBounds.getWidth()/2.0f, sliderBounds.getHeight()/2.0f);
             g.addTransform(at);
-            destRect.setBounds(0,0,getLocalBounds().getHeight(),getLocalBounds().getHeight());
+            destRect.setBounds(0,0, sliderBounds.getHeight(), sliderBounds.getHeight());
         }
-        g.drawText(String::formatted("%.2f",floatParam->value), destRect, Justification::centred);
+
+        g.drawText(floatParam->niceName+" : "+String::formatted("%.2f",floatParam->value), destRect, Justification::centred);
     }
 }
 

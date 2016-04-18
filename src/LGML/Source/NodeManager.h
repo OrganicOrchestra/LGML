@@ -76,7 +76,6 @@ public:
         virtual void nodeRemoved(NodeBase *) = 0;
 
         virtual void connectionAdded(NodeConnection *) = 0;
-        virtual void connectionEdited(NodeConnection *) = 0;
         virtual void connectionRemoved(NodeConnection *) = 0;
     };
 
@@ -98,8 +97,13 @@ private:
     virtual void askForRemoveNode(NodeBase *) override;
 
     // Inherited via NodeConnection::Listener
-    virtual void connectionEdited(NodeConnection *) override;
     virtual void askForRemoveConnection(NodeConnection *) override;
+
+	// Inherited via Listener
+	virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) override {}
+	virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) override {}
+	virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & audioConnection) override {}
+	virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection & audioConnection) override {}
 };
 
 

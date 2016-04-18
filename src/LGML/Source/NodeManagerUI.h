@@ -35,11 +35,18 @@ public:
     OwnedArray<NodeBaseUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI * editingConnection;
-    String editingDataName;
+
+	//DataProcessor::Data * editingData;
+    
+	//Data
+	/*
+	String editingDataName;
     String editingElementName;
     DataProcessor::DataType editingDataType;
+	*/
 
-    uint32 editingChannel;
+	//Audio
+    //uint32 editingChannel;
 
 
     void clear();
@@ -51,7 +58,6 @@ public:
     virtual void nodeAdded(NodeBase *) override;
     virtual void nodeRemoved(NodeBase *) override;
     virtual void connectionAdded(NodeConnection *) override;
-    virtual void connectionEdited(NodeConnection * ) override;
     virtual void connectionRemoved(NodeConnection *) override;
 
 
@@ -66,8 +72,8 @@ public:
 
     //connection creation / editing
     typedef ConnectorComponent Connector;
-    void createDataConnectionFromConnector(Connector * baseConnector, const String &dataName, const String &elementName, DataProcessor::DataType editingDataType = DataProcessor::DataType::Unknown);
-    void createAudioConnectionFromConnector(Connector * baseConnector, uint32 channel);
+	void createDataConnectionFromConnector(Connector * baseConnector);
+    void createAudioConnectionFromConnector(Connector * baseConnector);
 
     void updateEditingConnection();
     bool isEditingConnection() { return editingConnection != nullptr; }

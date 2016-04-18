@@ -20,10 +20,14 @@ public:
     class DummyAudioProcessor : public NodeBase::NodeAudioProcessor
     {
     public:
-        DummyAudioProcessor():NodeBase::NodeAudioProcessor(){}
-        int step = 0;
+        DummyAudioProcessor():NodeBase::NodeAudioProcessor()
+		{
+		}
+        
+		int step = 0;
         int period = (int)(44100 *1.0f/300);
         float amp = 1.f;
+
         void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
             for(int i = 0 ; i < buffer.getNumSamples() ; i++){

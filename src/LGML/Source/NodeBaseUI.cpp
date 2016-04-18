@@ -26,7 +26,7 @@ mainContainer(contentContainer,headerContainer),
 node(node)
 {
 
-    DBG("Node Base UI Constructor");
+    //DBG("Node Base UI Constructor");
 
     this->node = node;
 

@@ -10,6 +10,7 @@
 
 #include "Engine.h"
 
+#include "NodeConnectionEditor.h"
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
@@ -56,7 +57,10 @@ void Engine::stopAudio(){
 void Engine::clear(){
     //    do we need to stop audio?
      stopAudio();
-    TimeManager::getInstance()->stop();
+	
+	 NodeConnectionEditor::getInstance()->closeWindow();
+    
+	 TimeManager::getInstance()->stop();
 	ControllerManager::getInstance()->clear();
 	NodeManager::getInstance()->clear();
 	

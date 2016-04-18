@@ -16,6 +16,7 @@
 #include "NodeBase.h"
 
 #include "PluginWindow.h"
+#include "TimeManager.h"
 
 AudioDeviceManager& getAudioDeviceManager();
 
@@ -99,7 +100,7 @@ public:
                 int numIn=instance->getMainBusNumInputChannels();
                 int numOut = instance->getMainBusNumOutputChannels();
                 setPlayConfigDetails(numIn,numOut,result.sampleRate, result.bufferSize);
-                instance->prepareToPlay (result.sampleRate, result.bufferSize);
+                if(TimeManager::getInstance()->playState) instance->prepareToPlay (result.sampleRate, result.bufferSize);
                 // TODO check if scoped pointer deletes old innerPlugin
                 innerPlugin=instance;
                 owner->initParameterFromProcessor(instance);

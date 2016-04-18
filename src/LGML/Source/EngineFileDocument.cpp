@@ -98,7 +98,6 @@ void Engine::loadJSONData (var data, bool clearManagers)
     clear();
     //    TODO check version Compat
 
-	DBG(JSON::toString(data));
 	NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()), clearManagers);
 	ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()), clearManagers);
 }

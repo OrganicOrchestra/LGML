@@ -10,6 +10,7 @@
 
 #include "JuceHeader.h"
 #include "NodeConnectionUI.h"
+#include "NodeConnectionEditor.h"
 
 //==============================================================================
 NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sourceConnector, Connector * destConnector) :
@@ -158,6 +159,7 @@ void NodeConnectionUI::mouseDown(const MouseEvent & e)
         {
         case 1:
             //edit connection
+			NodeConnectionEditor::getInstance()->editConnection(connection);
             break;
 
         case 2:
@@ -180,6 +182,11 @@ void NodeConnectionUI::mouseEnter(const MouseEvent &)
 void NodeConnectionUI::mouseExit(const MouseEvent &)
 {
     repaint();
+}
+
+void NodeConnectionUI::mouseDoubleClick(const MouseEvent & e)
+{
+	NodeConnectionEditor::getInstance()->editConnection(connection);
 }
 
 void NodeConnectionUI::setSourceConnector(Connector * c)

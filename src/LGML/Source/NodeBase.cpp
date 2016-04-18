@@ -25,7 +25,6 @@ nodeTypeEnum(-1)
     if (dataProcessor != nullptr)
     {
         dataProcessor->addDataProcessorListener(this);
-        nodeManager->dataGraph.addNode(dataProcessor);
     }
 
     checkInputsAndOutputs();
@@ -45,10 +44,12 @@ NodeBase::~NodeBase()
 {
 
     removeFromAudioGraphIfNeeded();
+
     // get called after deletion of TimeManager on app exit
     TimeManager * tm = TimeManager::getInstanceWithoutCreating();
     if(tm!=nullptr)
         tm->removeIfMaster(this);
+
 }
 
 void NodeBase::checkInputsAndOutputs()
@@ -167,7 +168,7 @@ var NodeBase::getJSONData()
 		if (m.getSize()) {
 			var audioProcessorData(new DynamicObject());
 			audioProcessorData.getDynamicObject()->setProperty("state", m.toBase64Encoding());
-			data.getDynamicObject()->setProperty("audioProcessor", &audioProcessorData);
+			data.getDynamicObject()->setProperty("audioProcessor", audioProcessorData);
 		}
 	}
 
