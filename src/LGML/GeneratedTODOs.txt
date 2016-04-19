@@ -27,7 +27,7 @@ line : 72
 	    // TODO check if we can optimize copies
 
 
-line : 355
+line : 357
 	    // TODO subBlock precision ?
 
 
@@ -75,7 +75,7 @@ line : 161
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/EngineFileDocument.cpp
-line : 98
+line : 99
 	    //    TODO check version Compat
 
 

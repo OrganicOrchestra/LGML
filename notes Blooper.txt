@@ -1,10 +1,11 @@
 Pourquoi refactor du design des connections ? Le but n'est pas que ca ne touche pas les noeuds, mais qu'on voie la connection partir meme si la destination est derriere le noeud.
 
+quand on tire un cable au debut ca fait un vieu zigouigoui ( en vrai c'est pas tres important, tu peux le remetre si tu veux..)
+
+
+
 controllable proxies : a quoi ca sert ? 
+ - meta controllable permettant de syncroniser plusieurs controllables entre eux
+
 > feedback philosophy : en forward ou event-driven mais on doit choisir (event parait plus consistent peut-etre ?)
-
-
-Bug Looper
-
-rec or play after stop not working
-track volumes??
+j'ai peut etre laissé du forward quand je vais vite dit moi donc ou .
