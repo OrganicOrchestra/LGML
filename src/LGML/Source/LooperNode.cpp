@@ -302,7 +302,9 @@ void LooperNode::Looper::Track::processBlock(AudioBuffer<float>& buffer, MidiBuf
             playNeedle += buffer.getNumSamples();
             playNeedle %= recordNeedle;
         }
-        buffer.applyGainRamp(0, 0, buffer.getNumSamples(), lastVolume,volume->value);
+        for(int i = buffer.getNumChannels()-1 ; i>=0 ; --i){
+        buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume,volume->value);
+        }
         lastVolume = volume->value;
 
 
@@ -415,7 +417,7 @@ String LooperNode::Looper::Track::trackStateToString(const TrackState & ts){
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
     if(t == recPlayTrig){
-        if(trackState == CLEARED || trackState == STOPPED){
+        if(trackState == CLEARED ){
             setTrackState(SHOULD_RECORD);
         }
         else{
@@ -481,12 +483,14 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
 
     }
     // on true end recording
-    else if(trackState == RECORDING && newState==SHOULD_PLAY){
+    else if((trackState == RECORDING || trackState==STOPPED) && newState==SHOULD_PLAY){
         {
 
             if(askForBeingMasterTempoTrack()){
                 quantizedRecordEnd = -1;
                 newState = PLAYING;
+                TimeManager::getInstance()->stop();
+                TimeManager::getInstance()->setPlayState(true,false);
             }
             else{
                 quantizedRecordEnd = TimeManager::getInstance()->getNextQuantifiedTime();
