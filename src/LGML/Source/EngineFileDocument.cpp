@@ -29,8 +29,8 @@ Result Engine::loadDocument (const File& file){
 
     ScopedPointer<InputStream> is( file.createInputStream());
     var data = JSON::parse(*is);
-
     loadJSONData(data);
+    setLastDocumentOpened(file);
     return Result::ok();
 }
 
@@ -44,7 +44,7 @@ Result Engine::saveDocument (const File& file){
     JSON::writeToStream(*os, data);
     os->flush();
 
-
+    setLastDocumentOpened(file);
     return Result::ok();
 }
 
@@ -70,6 +70,7 @@ void Engine::setLastDocumentOpened (const File& file) {
     recentFiles.addFile (file);
 
     getAppProperties().getUserSettings()->setValue ("recentNodeGraphFiles", recentFiles.toString());
+
 }
 
 var Engine::getJSONData()
