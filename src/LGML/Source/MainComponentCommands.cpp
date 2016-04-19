@@ -115,7 +115,7 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
 
         RecentlyOpenedFilesList recentFiles;
         recentFiles.restoreFromString (getAppProperties().getUserSettings()
-                                       ->getValue ("recentFilterGraphFiles"));
+                                       ->getValue ("recentNodeGraphFiles"));
 
         PopupMenu recentFilesMenu;
         recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);

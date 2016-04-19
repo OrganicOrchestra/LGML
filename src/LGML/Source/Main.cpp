@@ -41,8 +41,8 @@ public:
 
         mainWindow = new MainWindow (getApplicationName(),engine);
 
-        String commandLineEscaped = commandLine.removeCharacters("\"");
-        File f(commandLineEscaped);
+
+        File f(engine->getLastDocumentOpened() );
 
         if (f.existsAsFile())
         {
