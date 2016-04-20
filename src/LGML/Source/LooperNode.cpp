@@ -486,7 +486,8 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     else if((trackState == RECORDING || trackState==STOPPED) && newState==SHOULD_PLAY){
         {
 
-            if(askForBeingMasterTempoTrack()){
+            if((askForBeingMasterTempoTrack() && trackState==RECORDING) ||
+               (parentLooper->askForBeingAbleToPlayNow(this) && trackState==STOPPED) ){
                 quantizedRecordEnd = -1;
                 newState = PLAYING;
                 TimeManager::getInstance()->stop();
