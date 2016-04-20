@@ -313,10 +313,10 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder"
                vstFolder="" vst3Folder="" postbuildCommand="">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
                        isDebug="1" optimisation="1" targetName="LGML" cppLanguageStandard="c++98"
                        cppLibType="libstdc++" binaryPath=""/>
-        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
                        cppLanguageStandard="c++98" cppLibType="libstdc++"/>
       </CONFIGURATIONS>
