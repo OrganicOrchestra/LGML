@@ -48,7 +48,7 @@ looperNode(looperNode)
     stopAllTrig = addTrigger("StopAll",
                              "Tells all tracks to stop it's content if got any");
 
-    isMonitoring = addBoolParameter("monitor", "do we monitor audio input ? ", true);
+    isMonitoring = addBoolParameter("monitor", "do we monitor audio input ? ", false);
 
     numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 0, 0, MAX_NUM_TRACKS);
 
