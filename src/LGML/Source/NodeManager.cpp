@@ -266,3 +266,9 @@ void NodeManager::removeIllegalConnections(){
     // it's not indispensable
     jassert(!audioGraph.removeIllegalConnections());
 }
+
+void NodeManager::updateAudioGraph(){
+    AudioIODevice * ad  =getAudioDeviceManager().getCurrentAudioDevice();
+    audioGraph.prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());
+}
+

@@ -83,6 +83,7 @@ public:
     void addNodeManagerListener(Listener* newListener) { listeners.add(newListener); }
     void removeNodeManagerListener(Listener* listener) { listeners.remove(listener); }
 
+    void updateAudioGraph();
 
 private:
     OwnedArray<NodeBase> nodes;
@@ -104,6 +105,8 @@ private:
     virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * ) override {}
     virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & ) override {}
     virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection & ) override {}
+
+
 };
 
 

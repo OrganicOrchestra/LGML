@@ -16,3 +16,17 @@ NodeBaseUI * AudioInNode::createUI() {
     return ui;
 
 }
+
+
+void AudioInNode::changeListenerCallback (ChangeBroadcaster* source) {
+    setIOFromAudioDevice();
+    nodeManager->updateAudioGraph();
+}
+void AudioInNode::setIOFromAudioDevice(){
+    AudioIODevice * ad  =getAudioDeviceManager().getCurrentAudioDevice();
+    audioProcessor->setPlayConfigDetails(0,
+                                         ad->getActiveInputChannels().countNumberOfSetBits(),
+                                         ad->getCurrentSampleRate(),
+                                         ad->getDefaultBufferSize());
+
+};

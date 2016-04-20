@@ -229,7 +229,7 @@ void NodeBase::NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
 
 };
 
-void NodeBase::NodeAudioProcessor::updateRMS(AudioBuffer<float>& buffer){
+void NodeBase::NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer){
     int numSamples = buffer.getNumSamples();
     int numChannels = buffer.getNumChannels();
 #ifdef HIGH_ACCURACY_RMS
@@ -242,9 +242,9 @@ void NodeBase::NodeAudioProcessor::updateRMS(AudioBuffer<float>& buffer){
     {
         float s = 0;
         for (int i = numChannels-1; i >0; --i)
-            s += std::abs (buffer.getSample(i, j));
+            s = jmax(s, std::abs (buffer.getSample(i, j)));
 
-        s /= numChannels;
+
         const double decayFactor = 0.99992;
         if (s > rmsValue)
             rmsValue = s;
