@@ -9,7 +9,7 @@
  */
 
 #include "ControllableInspector.h"
-
+#include "Style.h"
 
 ControllableInspector::ControllableInspector(NodeManagerUI * _nmui):
     proxyContainer(nullptr),
@@ -66,6 +66,8 @@ void ControllableInspector::generateFromCandidates(){
 
     displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
     setBounds(displayedEditor->getBounds().withPosition(0,0));
+
+
 }
 
 
@@ -88,6 +90,12 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
 
 }
 
+void ControllableInspector::paint(Graphics & g)
+{
+	g.fillAll(BG_COLOR);
+}
+
 void ControllableInspector::resized(){
 if(displayedEditor)displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
+repaint();
 }

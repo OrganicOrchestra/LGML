@@ -81,7 +81,7 @@ void NodeConnectionEditor::resized()
     DBG("editor resized " << mainContainer.getBounds().toString());
 	mainContainer.setBounds(0,0,getWidth(),getHeight());
 
-	float panelWidth = jlimit<float>(150, 400, getWidth() / 3.f);
+	int panelWidth = jlimit<int>(150, 400, (int)(getWidth() / 3.f));
 
 	Rectangle<int> r = mainContainer.getLocalBounds();
 	outputsContainer.setBounds(r.removeFromLeft(panelWidth));
@@ -126,14 +126,14 @@ void NodeConnectionEditor::closeWindow()
 	removeFromDesktop();
 }
 
-void NodeConnectionEditor::mouseEnter(const MouseEvent &e)
+void NodeConnectionEditor::mouseEnter(const MouseEvent &)
 {
 	//DBG("Editor mouse enter " << e.eventComponent->getName());
 
 	
 }
 
-void NodeConnectionEditor::mouseExit(const MouseEvent &e)
+void NodeConnectionEditor::mouseExit(const MouseEvent &)
 {
 	
 }
@@ -486,7 +486,7 @@ void NodeConnectionEditor::slotMouseEnter(NodeConnectionEditorDataSlot * target)
 }
 
 
-void NodeConnectionEditor::slotMouseUp(NodeConnectionEditorDataSlot * target)
+void NodeConnectionEditor::slotMouseUp(NodeConnectionEditorDataSlot *)
 {
 	finishEditingLink();
 }
@@ -529,7 +529,7 @@ void NodeConnectionEditor::connectionAudioLinkRemoved(const NodeConnection::Audi
 	removeAudioLinkForChannels(audioConnection.first, audioConnection.second);
 }
 
-void NodeConnectionEditor::slotMouseExit(NodeConnectionEditorDataSlot * target)
+void NodeConnectionEditor::slotMouseExit(NodeConnectionEditorDataSlot *)
 {
 	for (auto &s : outputSlots) s->setCurrentEditingData(nullptr);
 	for (auto &s : inputSlots) s->setCurrentEditingData(nullptr);
@@ -541,12 +541,12 @@ void NodeConnectionEditor::slotMouseDown(NodeConnectionEditorDataSlot * target)
 	createEditingLink(target);
 }
 
-void NodeConnectionEditor::slotMouseMove(NodeConnectionEditorDataSlot * target)
+void NodeConnectionEditor::slotMouseMove(NodeConnectionEditorDataSlot *)
 {
 	//updateEditingLink();
 }
 
-void NodeConnectionEditor::slotMouseDrag(NodeConnectionEditorDataSlot * target)
+void NodeConnectionEditor::slotMouseDrag(NodeConnectionEditorDataSlot *)
 {
 	updateEditingLink();
 }

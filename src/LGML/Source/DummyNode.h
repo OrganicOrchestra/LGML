@@ -34,7 +34,7 @@ public:
 
         void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
-			DBG("process block internal dummy");
+			//DBG("process block internal dummy");
 
 			
             for(int i = 0 ; i < buffer.getNumSamples() ; i++){
@@ -56,10 +56,15 @@ public:
     class DummyDataProcessor : public NodeBase::NodeDataProcessor
     {
     public:
-        DummyDataProcessor() :NodeBase::NodeDataProcessor() {}
+        DummyDataProcessor() :NodeBase::NodeDataProcessor() {
+		addInputData("IN Number", DataProcessor::DataType::Number);
+		addInputData("IN Position", DataProcessor::DataType::Position);
 
-        virtual void processData(Data *, const String &, const String &) {}
+		addOutputData("OUT Number", DataProcessor::DataType::Number);
+		addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
+		}
 
+		
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyDataProcessor)
     };
 
@@ -75,6 +80,16 @@ public:
     Trigger * testTrigger;
 
     void parameterValueChanged(Parameter * p) override;
+
+	void inputDataChanged(DataProcessor::Data *d) override
+	{
+		DBG("DummyNode :: Input data changed " << d->name);
+
+		if (d->name == "IN Number")
+		{
+			((DummyAudioProcessor *)audioProcessor)->amp = d->getElement("value")->value;
+		}
+	}
 
     virtual NodeBaseUI * createUI() override;
 

@@ -16,13 +16,6 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
     NodeBase(nodeManager,nodeId, "DummyNode", new DummyAudioProcessor, new DummyDataProcessor)
 {
 
-
-    dataProcessor->addInputData("IN Number", DataProcessor::DataType::Number);
-    dataProcessor->addInputData("IN Position", DataProcessor::DataType::Position);
-
-    dataProcessor->addOutputData("OUT Number", DataProcessor::DataType::Number);
-    dataProcessor->addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
-
     freq1Param = addFloatParameter("Freq 1", "This is a test int slider",.23f);
 	freq2Param = addFloatParameter("Freq 2", "This is a test int slider", .55f);
 
@@ -35,8 +28,6 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 
  void DummyNode::parameterValueChanged(Parameter * p)
  {
-
-
 	 NodeBase::parameterValueChanged(p);
 	 if (p == freq1Param)
 	 {

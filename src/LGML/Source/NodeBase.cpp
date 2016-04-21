@@ -112,16 +112,6 @@ void NodeBase::removeFromAudioGraphIfNeeded(){
     }
 }
 
-void NodeBase::NodeDataProcessor::receiveData(const Data * /*incomingData*/, const String &/*destDataName*/, const String &/*destElementName*/, const String &/*sourceElementName*/)
-{
-
-}
-
-void NodeBase::NodeDataProcessor::sendData(const Data * /*outgoingData*/, const String &/*sourceElementName*/)
-{
-
-}
-
 
 //Save / Load
 

@@ -101,12 +101,7 @@ public:
     class NodeDataProcessor : public DataProcessor
     {
     public:
-        NodeDataProcessor() {};
-
-        // Inherited via DataProcessor
-        virtual void receiveData(const Data * incomingData, const String &destDataName, const String &destElementName = "", const String &sourceElementName = "") override;
-        virtual void sendData(const Data * outgoingData, const String &sourceElementName = "") override;
-
+		NodeDataProcessor() {};
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeDataProcessor)
 
     };
@@ -157,7 +152,6 @@ public:
     virtual void inputRemoved(DataProcessor::Data *) override;
     virtual void outputAdded(DataProcessor::Data *) override;
     virtual void ouputRemoved(DataProcessor::Data *) override;
-
 
 	var getJSONData();
 	void loadJSONData(var data);

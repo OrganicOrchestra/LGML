@@ -30,6 +30,11 @@ void ControllableContainerEditor::removeControlUI(ControllableUI * c){
 
 }
 
+void ControllableContainerEditor::paint(Graphics & g)
+{
+	g.fillAll(BG_COLOR);
+}
+
 void ControllableContainerEditor::resized(){
     if(embeddedComp){
         embeddedComp->setBounds(getBounds());

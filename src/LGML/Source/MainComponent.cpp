@@ -48,7 +48,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
     // resize after contentCreated
 
-    setSize(1200, 600);
+    setSize(1500, 750);
 
     (&getCommandManager())->registerAllCommandsForTarget (this);
     (&getCommandManager())-> setFirstCommandTarget(this);
@@ -91,10 +91,10 @@ void MainContentComponent::resized()
     timeManagerUI->setBounds(r.removeFromTop(20));
     controllerManagerViewport->setBounds(r.removeFromLeft(300));
 
-
+	nodeManagerUIViewport->setBounds(r);
+	
     controllableInspector->setSize(300,controllableInspector->getHeight());
-    controllableInspectorViewPort->setBounds(r.removeFromRight(300));
-    nodeManagerUIViewport->setBounds(r);
+    controllableInspectorViewPort->setBounds(r.removeFromRight(300));    
 }
 
 

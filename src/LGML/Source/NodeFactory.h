@@ -13,6 +13,7 @@
 
 #include "DummyNode.h"
 #include "AudioMixerNode.h"
+#include "OSC2DataNode.h"
 #include "LooperNode.h"
 #include "SpatNode.h"
 #include "VSTNode.h"
@@ -21,7 +22,7 @@
 
 class NodeManager;
 
-const static String nodeTypeNames[] = { "Dummy","AudioMixer","Spat","Looper","VST","AudioIn","AudioOut" };
+const static String nodeTypeNames[] = { "Dummy","AudioMixer","OSC2Data","Spat","Looper","VST","AudioIn","AudioOut" };
 
 class NodeFactory
 {
@@ -30,6 +31,7 @@ public:
     {
         Dummy,
         AudioMixer,
+		OSC2Data,
         Spat,
         Looper,
         VST,
@@ -61,6 +63,11 @@ public:
             case AudioMixer:
                 n = new AudioMixerNode(nodeManager,nodeId);
                 break;
+
+			case OSC2Data:
+				n = new OSC2DataNode(nodeManager, nodeId);
+				break;
+
             case Spat:
                 n = new SpatNode(nodeManager,nodeId);
                 break;

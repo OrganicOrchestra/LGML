@@ -15,7 +15,7 @@
 #include "DataProcessor.h"
 
 
-
+#include "DataProcessor.h"
 /*
 DataProcessoGraph handle a graph of DataProcessorGraph::Node,
     each Node refer to a dataProcessor and allow connections between them
@@ -34,11 +34,17 @@ public:
 
     To create a connection, use DataProcessorGraph::addConnection().
     */
-    struct Connection
+
+
+    class Connection : public DataProcessor::Data::DataListener
     {
     public:
         //==============================================================================
         Connection(DataProcessor::Data * sourceData, DataProcessor::Data * destData) noexcept;
+		virtual ~Connection()
+		{
+			if (sourceData != nullptr) sourceData->removeDataListener(this);
+		}
 
 		DataProcessor::Data * sourceData;
 		DataProcessor::Data * destData;
@@ -46,7 +52,10 @@ public:
     private:
         //==============================================================================
         JUCE_LEAK_DETECTOR(Connection)
-    };
+
+			// Inherited via DataListener
+			virtual void dataChanged(DataProcessor::Data *) override;
+	};
 
 
 	

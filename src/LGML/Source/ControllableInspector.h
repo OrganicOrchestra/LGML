@@ -20,7 +20,8 @@
 // side bar component displaying editor of currently selected nodes
 // TODO handle merging of multiple component of sameClass : almost there ....
 
-class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,public Component{
+class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,public Component
+{
 public:
     ControllableInspector(NodeManagerUI * _nmui);
     virtual ~ControllableInspector();
@@ -43,6 +44,7 @@ private:
     Array<ControllableContainer *> candidateContainers;
 
 
+	void paint(Graphics &g) override;
     void resized()override;
 
 
