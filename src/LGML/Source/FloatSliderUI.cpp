@@ -33,10 +33,10 @@ void FloatSliderUI::paint(Graphics & g)
 
     Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : PARAMETER_FRONT_COLOR;
 
-	Rectangle<int> sliderBounds = getLocalBounds();
+    Rectangle<int> sliderBounds = getLocalBounds();
 
 
-	float normalizedValue = getParamNormalizedValue();
+    float normalizedValue = getParamNormalizedValue();
     g.setColour(BG_COLOR);
     g.fillRoundedRectangle(sliderBounds.toFloat(), 2);
 
@@ -54,10 +54,10 @@ void FloatSliderUI::paint(Graphics & g)
     }
     }
 
-	sliderBounds = getLocalBounds();
+    sliderBounds = getLocalBounds();
 
     if(displayText){
-		Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::lightgrey;
+        Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::lightgrey;
         g.setColour(displayBar?textColor:c);
         Rectangle<int> destRect = sliderBounds;
         if(orientation == VERTICAL){

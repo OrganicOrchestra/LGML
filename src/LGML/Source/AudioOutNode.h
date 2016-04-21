@@ -16,9 +16,10 @@
 #include "NodeBase.h"
 
 
+AudioDeviceManager & getAudioDeviceManager() ;
 
 
-class AudioOutNode : public NodeBase
+class AudioOutNode : public NodeBase,public ChangeListener
 {
 public:
     class AudioOutProcessor : public juce::AudioProcessorGraph::AudioGraphIOProcessor, public NodeBase::NodeAudioProcessor
@@ -39,10 +40,13 @@ public:
 
 
 
-
-
-    AudioOutNode(NodeManager * nodeManager,uint32 nodeId)  : NodeBase(nodeManager,nodeId,"AudioOutNode",new AudioOutProcessor){};
-    ~AudioOutNode(){};
+    void changeListenerCallback (ChangeBroadcaster* source)override;
+    void setIOFromAudioDevice();
+    AudioOutNode(NodeManager * nodeManager,uint32 nodeId)  : NodeBase(nodeManager,nodeId,"AudioOutNode",new AudioOutProcessor){
+        getAudioDeviceManager().addChangeListener(this);
+        setIOFromAudioDevice();
+    };
+    ~AudioOutNode(){getAudioDeviceManager().removeChangeListener(this);};
 
     virtual NodeBaseUI * createUI() override;
 

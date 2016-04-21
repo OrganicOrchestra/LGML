@@ -12,18 +12,18 @@
 #include "NodeConnectionEditor.h"
 
 // (This function is called by the app startup code to create our main component)
-MainContentComponent* createMainContentComponent(Engine * e)     
-{ 
-	return new MainContentComponent(e); 
+MainContentComponent* createMainContentComponent(Engine * e)
+{
+    return new MainContentComponent(e);
 }
 
 
-MainContentComponent::MainContentComponent(Engine * e): 
-	engine(e),
-	audioSettingsComp(getAudioDeviceManager(),
-		0, 256,
-		0, 256,
-		false,false, false,false)
+MainContentComponent::MainContentComponent(Engine * e):
+    engine(e),
+    audioSettingsComp(getAudioDeviceManager(),
+        0, 256,
+        0, 256,
+        false,false, false,false)
 {
 
     setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
@@ -57,15 +57,15 @@ MainContentComponent::MainContentComponent(Engine * e):
 //    (&getCommandManager())->getKeyMappings()->restoreFromXml (lastSavedKeyMappingsXML);
     addKeyListener ((&getCommandManager())->getKeyMappings());
 #if JUCE_MAC
-    setMacMainMenu (this,nullptr,"Open recent file");
+    setMacMainMenu (this,nullptr,"");
 #else
     //setMenu (this); //done in Main.cpp as it's a method of DocumentWindow
 #endif
 
-	
+
     e->createNewGraph();
-	//e->initAudio();
-	
+    //e->initAudio();
+
 }
 
 
@@ -80,7 +80,7 @@ MainContentComponent::~MainContentComponent(){
 #endif
 //    LookAndFeelOO::deleteInstance();
 
-	NodeConnectionEditor::deleteInstance();
+    NodeConnectionEditor::deleteInstance();
 }
 
 

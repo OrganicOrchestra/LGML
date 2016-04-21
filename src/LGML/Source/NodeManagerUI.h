@@ -36,16 +36,16 @@ public:
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI * editingConnection;
 
-	//DataProcessor::Data * editingData;
-    
-	//Data
-	/*
-	String editingDataName;
+    //DataProcessor::Data * editingData;
+
+    //Data
+    /*
+    String editingDataName;
     String editingElementName;
     DataProcessor::DataType editingDataType;
-	*/
+    */
 
-	//Audio
+    //Audio
     //uint32 editingChannel;
 
 
@@ -72,7 +72,7 @@ public:
 
     //connection creation / editing
     typedef ConnectorComponent Connector;
-	void createDataConnectionFromConnector(Connector * baseConnector);
+    void createDataConnectionFromConnector(Connector * baseConnector);
     void createAudioConnectionFromConnector(Connector * baseConnector);
 
     void updateEditingConnection();

@@ -27,13 +27,22 @@ line : 72
 	    // TODO check if we can optimize copies
 
 
-line : 355
+line : 357
 	    // TODO subBlock precision ?
 
 
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/NodeConnectionEditor.cpp
+line : 389
+	                //TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/NodeManager.cpp
-line : 208
+line : 264
 	    //TODO synchronize this and implement it for data
+
+
+line : 161
+	                // TODO nicely handle file format errors?
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/VuMeter.h
@@ -41,48 +50,50 @@ line : 16
 	//TODO, move to more common place for use in other components
 
 
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/Parameter.h
+line : 22
+	    //TODO use a "var" type to have more consistency and method heritage (pull up the value member in this parent class, not in every child class)
+
+
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/VSTNode.h
-line : 102
+line : 107
 	                // TODO check if scoped pointer deletes old innerPlugin
 
 
-line : 86
+line : 87
 	            // TODO check that it actually works
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/ControllableContainerProxy.h
-line : 18
+line : 16
 	// TODO handle controllableContainerAdded / Removed sync
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/MainComponentCommands.cpp
-line : 163
+line : 161
 	            // TODOs
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/EngineFileDocument.cpp
-line : 168
-	        // TODO embed routing info
-
-
-line : 132
-	        // TODO we could implement that for all node objects to be able to save any kind of custom data
-
-
-line : 20
-	// TODO Fuck XML Lets JSON that !!
-
-
-line : 205
-	            // TODO nicely handle file format errors?
-
-
-line : 183
+line : 99
 	    //    TODO check version Compat
 
 
-/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/DataProcessorGraph.cpp
-line : 57
-	    // TODO @ben do we handle wrong ids?
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/NodeBase.cpp
+line : 165
+	        // TODO we could implement that for all node objects to be able to save any kind of custom data
+
+
+line : 181
+	    //TODO : Move parameters save/load in ControllableContainer, so we only need to call ControllableContainer::loadJSONData() to handle parameters of a class inheriting CContainer;
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/Controller.cpp
+line : 74
+	    //TODO : Move parameters save/load in ControllableContainer, so we only need to call ControllableContainer::loadJSONData() to handle parameters of a class inheriting CContainer;
+
+
+line : 43
+	    //TODO should be moved in ControllableContainer getJSON generic method, so every controllableContainer will have already save/load functions.
 
 

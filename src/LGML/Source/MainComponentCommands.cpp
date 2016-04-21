@@ -67,7 +67,7 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
 
         case CommandIDs::toggleDoublePrecision:
             result.setInfo ("toggles doublePrecision", String::empty, category, 0);
-		    //updatePrecisionMenuItem (result);
+            //updatePrecisionMenuItem (result);
             break;
 
         case CommandIDs::aboutBox:
@@ -115,7 +115,7 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
 
         RecentlyOpenedFilesList recentFiles;
         recentFiles.restoreFromString (getAppProperties().getUserSettings()
-                                       ->getValue ("recentFilterGraphFiles"));
+                                       ->getValue ("recentNodeGraphFiles"));
 
         PopupMenu recentFilesMenu;
         recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);

@@ -80,7 +80,7 @@ def createDmg(exportFileBaseName,appPath):
 		sh("rm "+jsonPath)
 
 	else:
-		print "no appdmg exporter using zip"
+		print "no appdmg exporter : using zip"
 		sh("zip -rv9 \""+exportFileBaseName+".zip\" \""+appPath+"\"")
 
 
@@ -100,7 +100,7 @@ buildApp(xcodeProjPath,configuration);
 localPath = exportPath+generateProductBaseName();
 createDmg(localPath,appPath);
 
-ownCloudPath = "Projets/LGML/App/OSX/"+generateProductBaseName()+".dmg"
-# sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
+ownCloudPath = "Projets/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
+sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
 
 

@@ -18,22 +18,22 @@ class ControllerManager : public Controller::Listener, public ControllableContai
 {
 public:
 
-	
+
 
     ControllerManager();
     ~ControllerManager();
 
-	juce_DeclareSingleton(ControllerManager, true);
+    juce_DeclareSingleton(ControllerManager, true);
 
     ControllerFactory factory;
     OwnedArray<Controller> controllers;
 
     Controller * addController(ControllerFactory::ControllerType controllerType);
     void removeController(Controller * c);
-	void clear();
+    void clear();
 
-	var getJSONData();
-	void loadJSONData(var data, bool clearBeforeLoad = true);
+    var getJSONData();
+    void loadJSONData(var data, bool clearBeforeLoad = true);
 
     class  Listener
     {

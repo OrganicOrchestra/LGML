@@ -57,8 +57,8 @@ NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
     {
         // you can't add a node with an id that already exists in the graph..
         jassert(getNodeForId(nodeId) == nullptr);
-		//DBG("Remove node because id already exists and pointer is null");
-		removeNode(nodeId);
+        //DBG("Remove node because id already exists and pointer is null");
+        removeNode(nodeId);
 
         if (nodeId > lastNodeId)
             lastNodeId = nodeId;
@@ -112,60 +112,60 @@ int NodeManager::getNumConnections(){
 
 var NodeManager::getJSONData() const
 {
-	var data(new DynamicObject());
-	var nodesData;
-	
-	for (auto &n : nodes)
-	{
-		nodesData.append(n->getJSONData());
-	}
+    var data(new DynamicObject());
+    var nodesData;
 
-	var connectionsData;
+    for (auto &n : nodes)
+    {
+        nodesData.append(n->getJSONData());
+    }
 
-	for (auto &c : connections)
-	{
-		connectionsData.append (c->getJSONData());
-	}
+    var connectionsData;
 
-	data.getDynamicObject()->setProperty("nodes", nodesData);
-	data.getDynamicObject()->setProperty("connections",connectionsData);
-	return data;
+    for (auto &c : connections)
+    {
+        connectionsData.append (c->getJSONData());
+    }
+
+    data.getDynamicObject()->setProperty("nodes", nodesData);
+    data.getDynamicObject()->setProperty("connections",connectionsData);
+    return data;
 }
 
 void NodeManager::loadJSONData(var data, bool clearBeforeLoad)
 {
-	if (clearBeforeLoad) clear();
+    if (clearBeforeLoad) clear();
 
-	Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
-	for (var &nData : *nodesData)
-	{
-		NodeFactory::NodeType nodeType = NodeFactory::getTypeFromString(nData.getProperty("nodeType",var()));
-		int nodeId = nData.getProperty("nodeId", var());
-		NodeBase* node = addNode(nodeType, nodeId);
-		node->loadJSONData(nData);
-	}
-	
-	Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
-	if (connectionsData)
-	{
-		for (var &cData : *connectionsData)
-		{
-			NodeBase * srcNode = getNodeForId((int)(cData.getProperty("srcNodeId", var())));
-			NodeBase * dstNode = getNodeForId((int)(cData.getProperty("dstNodeId", var())));
-			int cType = cData.getProperty("connectionType", var());
+    Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
+    for (var &nData : *nodesData)
+    {
+        NodeFactory::NodeType nodeType = NodeFactory::getTypeFromString(nData.getProperty("nodeType",var()));
+        int nodeId = nData.getProperty("nodeId", var());
+        NodeBase* node = addNode(nodeType, nodeId);
+        node->loadJSONData(nData);
+    }
 
-			if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
-				NodeConnection * c = addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
-				c->loadJSONData(cData);
-			}
-			else {
-				// TODO nicely handle file format errors?
-				jassertfalse;
-			}
-		}
-	}
+    Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
+    if (connectionsData)
+    {
+        for (var &cData : *connectionsData)
+        {
+            NodeBase * srcNode = getNodeForId((int)(cData.getProperty("srcNodeId", var())));
+            NodeBase * dstNode = getNodeForId((int)(cData.getProperty("dstNodeId", var())));
+            int cType = cData.getProperty("connectionType", var());
 
-	removeIllegalConnections();
+            if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
+                NodeConnection * c = addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
+                c->loadJSONData(cData);
+            }
+            else {
+                // TODO nicely handle file format errors?
+                jassertfalse;
+            }
+        }
+    }
+
+    removeIllegalConnections();
 
 }
 
@@ -266,3 +266,9 @@ void NodeManager::removeIllegalConnections(){
     // it's not indispensable
     jassert(!audioGraph.removeIllegalConnections());
 }
+
+void NodeManager::updateAudioGraph(){
+    AudioIODevice * ad  =getAudioDeviceManager().getCurrentAudioDevice();
+    audioGraph.prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());
+}
+

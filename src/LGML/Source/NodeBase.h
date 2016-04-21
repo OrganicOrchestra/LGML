@@ -33,8 +33,10 @@ public:
     class NodeAudioProcessor : public juce::AudioProcessor,public AsyncUpdater
     {
     public:
+
+
         NodeAudioProcessor() :AudioProcessor(){
-		};
+        };
 
 
 
@@ -59,6 +61,9 @@ public:
         double getTailLengthSeconds() const override { return 0; }
         bool acceptsMidi() const override { return false; }
         bool producesMidi() const override { return false; }
+        void numChannelsChanged()override{
+            int a = 0;
+        };
 
 
         // save procedures from host
@@ -70,7 +75,7 @@ public:
         virtual void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) = 0;
 
 
-        void updateRMS(AudioBuffer<float>& buffer);
+        void updateRMS(const AudioBuffer<float>& buffer);
         float alphaRMS = 0.05f;
         float rmsValue = 0.f;
         const int samplesBeforeRMSUpdate = 512;
@@ -92,7 +97,7 @@ public:
         void addRMSListener(Listener* newListener) { listeners.add(newListener); }
         void removeRMSListener(Listener* listener) { listeners.remove(listener); }
 
-        ScopedPointer<AudioProcessor> audioProcessorImpl;
+
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeAudioProcessor)
     };
@@ -101,7 +106,12 @@ public:
     class NodeDataProcessor : public DataProcessor
     {
     public:
-		NodeDataProcessor() {};
+        NodeDataProcessor() {};
+
+        // Inherited via DataProcessor
+        virtual void receiveData(const Data * incomingData, const String &destDataName, const String &destElementName = "", const String &sourceElementName = "") override;
+        virtual void sendData(const Data * outgoingData, const String &sourceElementName = "") override;
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeDataProcessor)
 
     };
@@ -117,8 +127,8 @@ public:
 
     // owned by audio Graph in a refference Counted Array
     NodeAudioProcessor *  audioProcessor;
-   
-	//owned here, dataGraph only holds connections
+
+    //owned here, dataGraph only holds connections
     ScopedPointer<NodeDataProcessor> dataProcessor;
 
     bool hasAudioInputs;
@@ -153,8 +163,12 @@ public:
     virtual void outputAdded(DataProcessor::Data *) override;
     virtual void ouputRemoved(DataProcessor::Data *) override;
 
-	var getJSONData();
-	void loadJSONData(var data);
+
+    //
+
+
+    var getJSONData();
+    void loadJSONData(var data);
 
 
     //Listener

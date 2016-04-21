@@ -56,7 +56,7 @@ public:
 
     Engine * engine;
 
-	AudioDeviceSelectorComponent audioSettingsComp;
+    AudioDeviceSelectorComponent audioSettingsComp;
 
 
 

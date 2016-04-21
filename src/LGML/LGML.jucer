@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.0"
-              bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.1.1"
+              bundleIdentifier="org.anic.orchestra.Blooper" includeBinaryInAppConfig="1"
               jucerVersion="4.1.0" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
-    <GROUP id="{B424902D-788F-FD39-DC9D-89B8A6050F98}" name="Resources">
-      <FILE id="NgIJL8" name="grandlouloup.png" compile="0" resource="1"
-            file="Resources/grandlouloup.png"/>
-      <FILE id="rXKQj6" name="wolf_footprint.png" compile="0" resource="1"
-            file="Resources/wolf_footprint.png"/>
-      <FILE id="cPPKNn" name="wolf_footprint_debug.png" compile="0" resource="1"
-            file="Resources/wolf_footprint_debug.png"/>
-    </GROUP>
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
       <GROUP id="{C42B7041-9902-DAD4-34C4-9F8B62125E4B}" name="Time">
         <FILE id="hX6HKd" name="TimeManager.cpp" compile="1" resource="0" file="Source/TimeManager.cpp"/>
@@ -329,13 +321,12 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder"
-               vstFolder="" vst3Folder="" postbuildCommand="" smallIcon="NgIJL8"
-               bigIcon="NgIJL8">
+               vstFolder="" vst3Folder="" postbuildCommand="">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
                        isDebug="1" optimisation="1" targetName="LGML" cppLanguageStandard="c++98"
                        cppLibType="libstdc++" binaryPath=""/>
-        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="default"
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
                        cppLanguageStandard="c++98" cppLibType="libstdc++"/>
       </CONFIGURATIONS>
@@ -357,8 +348,7 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2015 targetFolder="Builds/VisualStudio2015" vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK"
-            vst3Folder="D:\Documents\Ressources\SDKs\VST3 SDK" smallIcon="cPPKNn"
-            bigIcon="cPPKNn">
+            vst3Folder="D:\Documents\Ressources\SDKs\VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="LGML" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common"/>

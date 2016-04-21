@@ -17,8 +17,8 @@ DataProcessor::DataProcessor() : proxyListener(this)
 
 DataProcessor::~DataProcessor()
 {
-	inputDatas.clear();
-	outputDatas.clear();
+    inputDatas.clear();
+    outputDatas.clear();
 }
 
 DataProcessor::DataType DataProcessor::getInputDataType(const String &dataName, const String &elementName)

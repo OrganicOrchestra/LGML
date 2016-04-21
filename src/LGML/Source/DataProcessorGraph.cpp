@@ -59,13 +59,13 @@ bool DataProcessorGraph::canConnect(DataProcessor::Data * sourceData, DataProces
     if (sourceData == nullptr || destData == nullptr)
         return false;
 
-	/*
+    /*
     if (source->getInputDataType(sourceDataName, sourceElementName) != dest->getOutputDataType(destDataName, destElementName)) return false;
 
     return getConnectionBetween(sourceNodeId, sourceDataName, sourceElementName,
         destNodeId, destDataName,destElementName) == nullptr;
-		*/
-	return true;
+        */
+    return true;
 }
 
 
@@ -80,7 +80,7 @@ DataProcessorGraph::Connection * DataProcessorGraph::addConnection(DataProcessor
         destNodeId, destChannelIndex));
         */
 
-	Connection * c = new Connection(sourceData, destData);
+    Connection * c = new Connection(sourceData, destData);
     connections.add(c);
 
     //triggerAsyncUpdate();
@@ -95,5 +95,5 @@ void DataProcessorGraph::removeConnection(int index)
 
 void DataProcessorGraph::removeConnection(Connection * c)
 {
-	connections.removeObject(c, true);
+    connections.removeObject(c, true);
 }

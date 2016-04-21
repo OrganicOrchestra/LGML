@@ -198,6 +198,13 @@ public:
             if(res)lastMasterTempoTrack = t;
             return res;
         }
+        bool askForBeingAbleToPlayNow(Track *_t){
+            bool result = true;
+            for(auto & t:tracks){
+                if(t!=_t)result &= (t->trackState == Track::STOPPED)||(t->trackState == Track::CLEARED);
+            }
+            return result;
+        }
 
         bool areAllTrackClearedButThis(Track * _t){
             bool result = true;

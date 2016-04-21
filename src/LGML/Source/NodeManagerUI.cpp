@@ -177,10 +177,10 @@ void NodeManagerUI::removeConnectionUI(NodeConnection * connection)
     connectionsUI.removeObject(nui);
     removeChildComponent(nui);
 
-	if (NodeConnectionEditor::getInstance()->currentConnection == connection)
-	{
-		NodeConnectionEditor::getInstance()->closeWindow();
-	}
+    if (NodeConnectionEditor::getInstance()->currentConnection == connection)
+    {
+        NodeConnectionEditor::getInstance()->closeWindow();
+    }
 }
 
 NodeConnectionUI * NodeManagerUI::getUIForConnection(NodeConnection* connection)
@@ -220,17 +220,17 @@ void NodeManagerUI::createDataConnectionFromConnector(Connector * baseConnector)
     addAndMakeVisible(editingConnection);
 
     //editingData = data;
-	baseConnector->addMouseListener(this, false);
-	/*
+    baseConnector->addMouseListener(this, false);
+    /*
     if (data == nullptr)
     {
-        
+
     }
     else
     {
 
     }
-	*/
+    */
 }
 
 void NodeManagerUI::createAudioConnectionFromConnector(Connector * baseConnector)
@@ -338,13 +338,13 @@ void NodeManagerUI::finishEditingConnection()
         //String targetElementName = "";
         //DataProcessor::DataType targetDataType;
 
-		bool success = editingConnection->finishEditing();
-		if (success)
-		{
-			nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
-		}
+        bool success = editingConnection->finishEditing();
+        if (success)
+        {
+            nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
+        }
 
-		/*
+        /*
         if (editingData)
         {
             if(editingConnection->candidateDropConnector != nullptr) editingConnection->candidateDropConnector->selectDataAndElementPopup(targetDataName, targetElementName, targetDataType, editingDataType);
@@ -352,7 +352,7 @@ void NodeManagerUI::finishEditingConnection()
 
         if (editingData != nullptr)
         {
-           
+
             if (success)
             {
                 NodeConnection * nc = nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
@@ -366,7 +366,7 @@ void NodeManagerUI::finishEditingConnection()
                 }
             }
         }
-		*/
+        */
     }
     else //AUDIO
     {

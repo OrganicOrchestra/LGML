@@ -22,7 +22,7 @@ OSCDirectController::OSCDirectController() :
 
 OSCDirectController::~OSCDirectController()
 {
-	NodeManager::getInstance()->removeControllableContainerListener(this);
+    NodeManager::getInstance()->removeControllableContainerListener(this);
 }
 
 void OSCDirectController::processMessage(const OSCMessage & msg)
@@ -40,7 +40,7 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
     if (controller == "node")
     {
         addSplit.remove(0);
-        Controllable * c = NodeManager::getInstance()->getControllableForAddress(addr);
+        Controllable * c = NodeManager::getInstance()->getControllableForAddress(addSplit);
 
         if (c != nullptr && !c->isControllableFeedbackOnly)
         {
