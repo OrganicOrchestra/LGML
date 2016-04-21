@@ -13,6 +13,12 @@
         <FILE id="a4XrkQ" name="TimeManagerUI.h" compile="0" resource="0" file="Source/TimeManagerUI.h"/>
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
+        <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
+          <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
+                file="Source/ControllableInspector.cpp"/>
+          <FILE id="oRwwuf" name="ControllableInspector.h" compile="1" resource="0"
+                file="Source/ControllableInspector.h"/>
+        </GROUP>
         <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
           <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="1"
                 resource="0" file="Source/SelectableComponentHandler.cpp"/>
@@ -121,12 +127,6 @@
               file="Source/SettingsManager.cpp"/>
         <FILE id="DlfGm8" name="SettingsManager.h" compile="0" resource="0"
               file="Source/SettingsManager.h"/>
-      </GROUP>
-      <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
-        <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
-              file="Source/ControllableInspector.cpp"/>
-        <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
-              file="Source/ControllableInspector.h"/>
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
         <GROUP id="{4428FDD1-4E1A-F199-46F2-F7D32DF545CA}" name="controllers">
