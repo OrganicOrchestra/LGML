@@ -5,6 +5,9 @@
               jucerVersion="4.1.0" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
+      <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
+        <FILE id="VmT8id" name="removeBT.png" compile="0" resource="1" file="C:/Users/bkupe/Desktop/removeBT.png"/>
+      </GROUP>
       <GROUP id="{C42B7041-9902-DAD4-34C4-9F8B62125E4B}" name="Time">
         <FILE id="hX6HKd" name="TimeManager.cpp" compile="1" resource="0" file="Source/TimeManager.cpp"/>
         <FILE id="uaVLjF" name="TimeManager.h" compile="0" resource="0" file="Source/TimeManager.h"/>
