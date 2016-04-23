@@ -27,6 +27,8 @@ String Engine::getDocumentTitle() {
 
 Result Engine::loadDocument (const File& file){
 
+	if (!file.exists()) return Result::fail("File does not exist");
+
     ScopedPointer<InputStream> is( file.createInputStream());
     var data = JSON::parse(*is);
     loadJSONData(data);

@@ -23,6 +23,10 @@
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
+          <FILE id="FIR3Kt" name="ControllableContainerProxy.cpp" compile="1"
+                resource="0" file="Source/ControllableContainerProxy.cpp"/>
+          <FILE id="ptJrDO" name="ControllableContainerProxy.h" compile="0" resource="0"
+                file="Source/ControllableContainerProxy.h"/>
           <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
                 file="Source/ControllableInspector.cpp"/>
           <FILE id="oRwwuf" name="ControllableInspector.h" compile="1" resource="0"
@@ -62,10 +66,6 @@
               resource="0" file="Source/ControllableContainerEditor.cpp"/>
         <FILE id="QNpqO3" name="ControllableContainerEditor.h" compile="0"
               resource="0" file="Source/ControllableContainerEditor.h"/>
-        <FILE id="FIR3Kt" name="ControllableContainerProxy.cpp" compile="1"
-              resource="0" file="Source/ControllableContainerProxy.cpp"/>
-        <FILE id="ptJrDO" name="ControllableContainerProxy.h" compile="0" resource="0"
-              file="Source/ControllableContainerProxy.h"/>
         <FILE id="pm5PA0" name="ControllableContainer.cpp" compile="1" resource="0"
               file="Source/ControllableContainer.cpp"/>
         <FILE id="yWCKk0" name="ControllableContainer.h" compile="0" resource="0"

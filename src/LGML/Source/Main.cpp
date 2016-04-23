@@ -41,14 +41,6 @@ public:
 
         mainWindow = new MainWindow (getApplicationName(),engine);
 
-
-        File f(engine->getLastDocumentOpened() );
-
-        if (f.existsAsFile())
-        {
-            engine->loadDocument(f);
-        }
-
     }
 
     void shutdown() override
