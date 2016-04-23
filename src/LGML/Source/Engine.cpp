@@ -74,7 +74,7 @@ void Engine::createNewGraph(){
     clear();
 
     NodeBase * node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioIn);
-    node->xPosition->setValue(80);
+    node->xPosition->setValue(150);
     node->yPosition->setValue(50);
     node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioOut);
     node->xPosition->setValue(450);

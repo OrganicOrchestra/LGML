@@ -6,9 +6,9 @@
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
       <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
-        <FILE id="jsU7Hw" name="grandlouloup.png" compile="0" resource="1"
-              file="Resources/grandlouloup.png"/>
         <FILE id="tBFuYU" name="removeBT.png" compile="0" resource="1" file="Resources/removeBT.png"/>
+        <FILE id="jsU7Hw" name="grandlouloup.png" compile="0" resource="1"
+              file="Resources/grandlouloup.png" xcodeResource="0"/>
         <FILE id="jLWFzR" name="wolf_footprint.png" compile="0" resource="1"
               file="Resources/wolf_footprint.png"/>
         <FILE id="PfjWQr" name="wolf_footprint_debug.png" compile="0" resource="1"
@@ -390,7 +390,7 @@
     </VS2015>
   </EXPORTFORMATS>
   <MODULES>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>

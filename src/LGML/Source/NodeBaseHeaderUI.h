@@ -31,10 +31,10 @@ public:
 		void paint(Graphics &g) override
 		{
 			g.setColour(FRONT_COLOR);
-			Rectangle<int> r = getLocalBounds().reduced(5);
-			g.drawLine(r.getTopLeft().x, r.getRelativePoint(0, .2f).y, r.getTopRight().x, r.getRelativePoint(0, .2f).y, .4f);
-			g.drawLine(r.getTopLeft().x, r.getCentreY() - .5f, r.getBottomRight().x, r.getCentreY() - .5f, .4f);
-			g.drawLine(r.getBottomLeft().x, r.getRelativePoint(0, .8f).y, r.getBottomRight().x, r.getRelativePoint(0, .8f).y, .4f);
+			Rectangle<float> r = getLocalBounds().reduced(5).toFloat();
+			g.drawLine(r.getTopLeft().x, r.getRelativePoint(0.f, .2f).y, r.getTopRight().x, r.getRelativePoint(0.f, .2f).y, .4f);
+			g.drawLine(r.getTopLeft().x, r.getCentreY(), r.getBottomRight().x, r.getCentreY(), .4f);
+			g.drawLine(r.getBottomLeft().x, r.getRelativePoint(0.f, .8f).y, r.getBottomRight().x, r.getRelativePoint(0.f, .8f).y, .4f);
 
 		}
 	};

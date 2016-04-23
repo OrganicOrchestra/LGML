@@ -9,11 +9,11 @@
 
 namespace BinaryData
 {
-    extern const char*   grandlouloup_png;
-    const int            grandlouloup_pngSize = 71763;
-
     extern const char*   removeBT_png;
     const int            removeBT_pngSize = 58335;
+
+    extern const char*   grandlouloup_png;
+    const int            grandlouloup_pngSize = 71763;
 
     extern const char*   wolf_footprint_png;
     const int            wolf_footprint_pngSize = 45430;

@@ -45,7 +45,7 @@ public:
         virtual void prepareToPlay(double ,int) override{};
         virtual void releaseResources() override {};
 
-        bool silenceInProducesSilenceOut() const override { return false; }
+        //bool silenceInProducesSilenceOut() const override { return false; }
 
         virtual AudioProcessorEditor* createEditor() override {return nullptr ;}
         virtual bool hasEditor() const override { return false; }
@@ -62,8 +62,8 @@ public:
         bool acceptsMidi() const override { return false; }
         bool producesMidi() const override { return false; }
         void numChannelsChanged()override{
-            int a = 0;
-        };
+           // int a = 0;
+        }; 
 
 
         // save procedures from host

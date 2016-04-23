@@ -18,7 +18,7 @@ NodeBaseUI * AudioOutNode::createUI() {
 }
 
 
-void AudioOutNode::changeListenerCallback (ChangeBroadcaster* source) {
+void AudioOutNode::changeListenerCallback (ChangeBroadcaster*) {
     setIOFromAudioDevice();
     nodeManager->updateAudioGraph();
 };
