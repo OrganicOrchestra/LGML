@@ -19,9 +19,6 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
                                     filenameWildcard,
                                     "Load a filter graph",
                                     "Save a filter graph"){
-
-
-
         initAudio();
 }
 
@@ -32,7 +29,6 @@ Engine::~Engine(){
     ControllerManager::deleteInstance();
     NodeManager::deleteInstance();
     VSTManager::deleteInstance();
-
 }
 
 
