@@ -68,8 +68,7 @@ public:
 
 
 
-    // internal callback that a controllableContainer can override to react to any of it's parameter change
-    virtual void onAnyParameterChanged(Parameter * p){};
+
     void dispatchFeedback(Controllable * c);
 
     // Inherited via Parameter::Listener
@@ -83,6 +82,14 @@ public:
 
 
 private:
+    // internal callback that a controllableContainer can override to react to any of it's parameter change
+    //@ ben this is to avoid either:
+    //      adding controllableContainerListener for each implementation
+    //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
+    //      or using dispatch feedback that triggers only exposedParams
+
+    virtual void onAnyParameterChanged(Parameter * p){};
+    
     void addParameterInternal(Parameter * p);
 
 public:

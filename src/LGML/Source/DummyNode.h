@@ -79,7 +79,7 @@ public:
 
     Trigger * testTrigger;
 
-    void parameterValueChanged(Parameter * p) override;
+    void onAnyParameterChanged(Parameter * p) override;
 
 	void inputDataChanged(DataProcessor::Data *d) override
 	{
