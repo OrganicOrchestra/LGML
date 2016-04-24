@@ -14,19 +14,19 @@
 
 #include "JuceHeader.h"
 #include "ControllableContainerEditor.h"
-#include "ControllableContainerProxy.h"
+#include "ControllableContainerSync.h"
 
 
 // side bar component displaying editor of currently selected nodes
 // TODO handle merging of multiple component of sameClass : almost there ....
 
-class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,public Component
+class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,public Component,public ControllableContainer::Listener
 {
 public:
     ControllableInspector(NodeManagerUI * _nmui);
     virtual ~ControllableInspector();
 
-void selectableChanged(SelectableComponent*  c,bool isSelected) override;
+    void selectableChanged(SelectableComponent*  c,bool isSelected) override;
 private:
 
     void addOrMergeControllableContainerEditor(ControllableContainer * c);
@@ -37,15 +37,24 @@ private:
     // create Controllables binded to UI that dispatch to multiple Controllables
     // each inspector UI element is binded to one Controllable in proxy,
     // if changed , it notifies All corresponding candidateControllable
-    ScopedPointer<ControllableContainerProxy> proxyContainer;
+    ScopedPointer<ControllableContainerSync> controllableContainerSync;
 
-    void generateProxyFromContainer(ControllableContainer * source);
+
     ScopedPointer<ControllableContainerEditor> displayedEditor;
     Array<ControllableContainer *> candidateContainers;
+
+    Array<Controllable*> removedControllables;
+    Array<ControllableContainer*> removedContainers;
 
 
 	void paint(Graphics &g) override;
     void resized()override;
+
+    void controllableAdded(Controllable * c) override{  removedControllables.removeAllInstancesOf(c);  generateFromCandidates();};
+    void controllableRemoved(Controllable * c)override{ removedControllables.add(c);  generateFromCandidates();};
+    void controllableContainerAdded(ControllableContainer * c)override { removedContainers.removeAllInstancesOf(c);   generateFromCandidates();};
+    void controllableContainerRemoved(ControllableContainer * c)override { removedContainers.add(c);   generateFromCandidates();};
+    void controllableFeedbackUpdate(Controllable *c) override{};
 
 
     NodeManagerUI * nmui;

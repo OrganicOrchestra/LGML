@@ -30,6 +30,40 @@ void ControllableContainerEditor::removeControlUI(ControllableUI * c){
 
 }
 
+void ControllableContainerEditor::removeControllableFromEditor(Controllable * toRemove){
+    Array<ControllableUI *> arrayToRemove;
+    for(auto & c:controllableUIs){
+        if(c->controllable==toRemove){
+            arrayToRemove.add(c);
+        }
+    }
+    for(auto &r:arrayToRemove){
+        controllableUIs.removeAllInstancesOf(r);
+        delete r;
+    }
+
+
+    for(int i = 0 ; i < getNumChildComponents() ; i++){
+        if(ControllableContainerEditor* c = dynamic_cast<ControllableContainerEditor*>(getChildComponent(i))){
+            c->removeControllableFromEditor(toRemove);
+        }
+    }
+}
+
+void ControllableContainerEditor::removeContainerFromEditor(ControllableContainer * toRemove){
+    Array<Component *> arrayToRemove;
+    for(int i = 0 ; i < getNumChildComponents() ; i++){
+        if(ControllableContainerEditor* c = dynamic_cast<ControllableContainerEditor*>(getChildComponent(i))){
+            if(c->owner==toRemove){arrayToRemove.add(c);}
+            else{c->removeContainerFromEditor(toRemove);} 
+        }
+    }
+    for(auto &r:arrayToRemove){
+        removeChildComponent(r);
+        delete r;
+    }
+}
+
 void ControllableContainerEditor::paint(Graphics & g)
 {
 	g.fillAll(BG_COLOR);

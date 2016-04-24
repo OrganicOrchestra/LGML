@@ -143,7 +143,12 @@ public :
 			
 			bool hasChanged = false;
 			int numElements = elements.size();
-			const Array<float> values = { value1, value2, value3 };
+
+
+            // const Array<float> values = { value1, value2, value3 };
+            // above not compiling with c++ 98 / libstdc / Xcode
+            Array<float> values;
+            values.resize(3);values.set(0,value1);values.set(2,value2);values.set(3,value3);
 			
 			for (int i = 0; i < numElements; i++)
 			{
@@ -154,7 +159,6 @@ public :
 					hasChanged = true;
 				}
 			}
-
 			if (hasChanged)
 			{
 				listeners.call(&DataListener::dataChanged, this);
@@ -264,11 +268,11 @@ public:
 		//to be overriden by child classes
 	}
 	
-	virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0)
-	{
-		Data * d = getOutputDataByName(dataName);
-		if (d != nullptr) d->update(value1, value2, value3);
-	}
+//	virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0)
+//	{
+//		Data * d = getOutputDataByName(dataName);
+//		if (d != nullptr) d->update(value1, value2, value3);
+//	}
 
 
     int getTotalNumInputData() const { return inputDatas.size(); }

@@ -26,7 +26,7 @@ class ControllableContainer : public Parameter::Listener, public Trigger::Listen
 {
 public:
     ControllableContainer(const String &niceName);
-    ~ControllableContainer();
+    virtual ~ControllableContainer();
 
     String niceName;
     String shortName;
@@ -54,8 +54,8 @@ public:
     void removeControllable(Controllable * c);
     Controllable * getControllableByName(const String &name);
 
-    virtual void addChildControllableContainer(ControllableContainer * container);
-    virtual void removeChildControllableContainer(ControllableContainer *container);
+    void addChildControllableContainer(ControllableContainer * container);
+    void removeChildControllableContainer(ControllableContainer *container);
     ControllableContainer * getControllableContainerByName(const String &name);
 
 

@@ -15,7 +15,7 @@
 #include "NodeBase.h"
 
 //TODO, move to more common place for use in other components
-class VuMeter : public ContourComponent, public NodeBase::NodeAudioProcessor::Listener {
+class VuMeter : public ContourComponent, public NodeAudioProcessor::RMSListener {
 
 public:
     float voldB;

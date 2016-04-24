@@ -138,10 +138,21 @@ void ControllableContainer::addChildControllableContainer(ControllableContainer 
     controllableContainers.add(container);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
     container->setParentContainer(this);
+    ControllableContainer * notified = parentContainer;
+    while(notified!=nullptr){
+        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
+        notified = notified->parentContainer;
+    }
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
+    ControllableContainer * notified = parentContainer;
+    while(notified!=nullptr){
+        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
+        notified = notified->parentContainer;
+    }
+
     container->setParentContainer(nullptr);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
     controllableContainers.removeAllInstancesOf(container);

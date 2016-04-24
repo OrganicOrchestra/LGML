@@ -10,7 +10,7 @@
 
 /*
  NodeBase is the base class for all Nodes
- it contains NodeBase::NodeAudioProcessor and/or NodeBase::NodeDataProcessor
+ it contains NodeAudioProcessor and/or NodeBase::NodeDataProcessor
 
 
  */
@@ -19,6 +19,7 @@
 
 #include "JuceHeader.h"
 #include "DataProcessor.h"
+#include "NodeAudioProcessor.h"
 #include "ControllableContainer.h"
 
 class NodeBaseUI;
@@ -26,81 +27,11 @@ class NodeManager;
 
 
 
-class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener, public ControllableContainer
+class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener,public NodeAudioProcessor::NodeAudioProcessorListener, public ControllableContainer
 {
 
 public:
-    class NodeAudioProcessor : public juce::AudioProcessor,public AsyncUpdater
-    {
-    public:
-
-
-        NodeAudioProcessor() :AudioProcessor(){
-        };
-
-
-
-        virtual const String getName() const override { return "NodeBaseProcessor"; };
-
-        virtual void prepareToPlay(double ,int) override{};
-        virtual void releaseResources() override {};
-
-        //bool silenceInProducesSilenceOut() const override { return false; }
-
-        virtual AudioProcessorEditor* createEditor() override {return nullptr ;}
-        virtual bool hasEditor() const override { return false; }
-
-
-
-        // dumb overrides from JUCE AudioProcessor :  MIDI
-        int getNumPrograms() override { return 0; }
-        int getCurrentProgram() override { return 0; }
-        void setCurrentProgram(int) override {}
-        const String getProgramName(int) override { return "NoProgram"; }
-        void changeProgramName(int, const String&) override {};
-        double getTailLengthSeconds() const override { return 0; }
-        bool acceptsMidi() const override { return false; }
-        bool producesMidi() const override { return false; }
-        void numChannelsChanged()override{
-           // int a = 0;
-        }; 
-
-
-        // save procedures from host
-        virtual void getStateInformation(juce::MemoryBlock&) override {};
-        virtual void setStateInformation(const void*, int) override {};
-
-
-        virtual void processBlock(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) override ;
-        virtual void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) = 0;
-
-
-        void updateRMS(const AudioBuffer<float>& buffer);
-        float alphaRMS = 0.05f;
-        float rmsValue = 0.f;
-        const int samplesBeforeRMSUpdate = 512;
-        int curSamplesForRMSUpdate = 0;
-
-        //Listener are called from non audio thread
-        void handleAsyncUpdate() override{listeners.call(&Listener::RMSChanged,rmsValue);}
-
-        class  Listener
-        {
-        public:
-            /** Destructor. */
-            virtual ~Listener() {}
-            virtual void RMSChanged(float ) = 0;
-
-        };
-
-        ListenerList<Listener> listeners;
-        void addRMSListener(Listener* newListener) { listeners.add(newListener); }
-        void removeRMSListener(Listener* listener) { listeners.remove(listener); }
-
-
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeAudioProcessor)
-    };
+    
 
 
     class NodeDataProcessor : public DataProcessor
@@ -114,7 +45,7 @@ public:
 
 
 public:
-    NodeBase(NodeManager * nodeManager,uint32 nodeId, const String &name = "[NodeBase]", NodeBase::NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
+    NodeBase(NodeManager * nodeManager,uint32 nodeId, const String &name = "[NodeBase]", NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
     virtual ~NodeBase();
 
     uint32 nodeId;
@@ -158,6 +89,9 @@ public:
     virtual void outputAdded(DataProcessor::Data *) override;
     virtual void ouputRemoved(DataProcessor::Data *) override;
 
+
+    void numAudioInputChanged(int newNum);
+    void numAudioOutputChanged(int newNum);
 
     //
 

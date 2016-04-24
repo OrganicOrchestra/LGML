@@ -1,19 +1,19 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    FloatSliderUI.cpp
-    Created: 8 Mar 2016 3:46:27pm
-    Author:  bkupe
+ FloatSliderUI.cpp
+ Created: 8 Mar 2016 3:46:27pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "FloatSliderUI.h"
 #include "Style.h"
 
 //==============================================================================
 FloatSliderUI::FloatSliderUI(Parameter * parameter) :
-    ParameterUI(parameter), floatParam((FloatParameter *)parameter)
+ParameterUI(parameter), floatParam((FloatParameter *)parameter)
 {
     assignOnMousePosDirect = true;
     changeParamOnMouseUpOnly = false;
@@ -42,16 +42,16 @@ void FloatSliderUI::paint(Graphics & g)
 
     g.setColour(c);
     if(displayBar){
-    float drawPos = 0;
-    if (orientation == HORIZONTAL)
-    {
-        drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : normalizedValue*getWidth();
-        g.fillRoundedRectangle(sliderBounds.removeFromLeft((int)drawPos).toFloat(), 2.f);
-    }
-    else {
-        drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : normalizedValue*getHeight();
-        g.fillRoundedRectangle(sliderBounds.removeFromBottom((int)drawPos).toFloat(), 2.f);
-    }
+        float drawPos = 0;
+        if (orientation == HORIZONTAL)
+        {
+            drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : normalizedValue*getWidth();
+            g.fillRoundedRectangle(sliderBounds.removeFromLeft((int)drawPos).toFloat(), 2.f);
+        }
+        else {
+            drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : normalizedValue*getHeight();
+            g.fillRoundedRectangle(sliderBounds.removeFromBottom((int)drawPos).toFloat(), 2.f);
+        }
     }
 
     sliderBounds = getLocalBounds();
@@ -73,6 +73,7 @@ void FloatSliderUI::paint(Graphics & g)
 
 void FloatSliderUI::mouseDown(const MouseEvent & e)
 {
+    BailOutChecker checker (this);
     if (assignOnMousePosDirect && !e.mods.isRightButtonDown())
     {
         setParamNormalizedValue(getValueFromMouse());
@@ -82,8 +83,12 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
         repaint();
     }
 
-    initValue = getParamNormalizedValue();
-    setMouseCursor(MouseCursor::NoCursor);
+    // a component can delete itself ( by trigger the whole rebuilding of Inspector for example)
+    // thank JUCE for having the perfect class for it
+    if(!checker.shouldBailOut()){
+        initValue = getParamNormalizedValue();
+        setMouseCursor(MouseCursor::NoCursor);
+    }
 
 }
 
@@ -105,6 +110,7 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
 
 void FloatSliderUI::mouseUp(const MouseEvent &)
 {
+    BailOutChecker checker (this);
     if (changeParamOnMouseUpOnly)
     {
         setParamNormalizedValue(getValueFromMouse());
@@ -114,7 +120,9 @@ void FloatSliderUI::mouseUp(const MouseEvent &)
         repaint();
     }
 
-    setMouseCursor(MouseCursor::NormalCursor);
+    if(!checker.shouldBailOut()){
+        setMouseCursor(MouseCursor::NormalCursor);
+    }
 }
 
 float FloatSliderUI::getValueFromMouse()

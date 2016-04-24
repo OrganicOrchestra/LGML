@@ -6,8 +6,17 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::C
 {
     boxColor = dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
     setSize(10,10);
+    if(node->audioProcessor){node->audioProcessor->addNodeAudioProcessorListener(this);}
+    generateToolTip();
 
 
+}
+
+ConnectorComponent::~ConnectorComponent(){
+    if(node->audioProcessor){node->audioProcessor->removeNodeAudioProcessorListener(this);}
+}
+
+void ConnectorComponent::generateToolTip(){
     String tooltip;
     tooltip += dataType == NodeConnection::ConnectionType::AUDIO?"Audio\n":"Data\n";
     if (dataType == NodeConnection::ConnectionType::AUDIO)
@@ -20,11 +29,8 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::C
         StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->dataProcessor->getInputDataInfos() : node->dataProcessor->getOutputDataInfos();
         tooltip += dataInfos.joinIntoString("\n");
     }
-
-    setTooltip(tooltip);
-
+      setTooltip(tooltip);
 }
-
 void ConnectorComponent::paint(Graphics & g)
 {
     g.setGradientFill(ColourGradient(isHovered?boxColor.brighter(5.f):boxColor, (float)(getLocalBounds().getCentreY()),(float)(getLocalBounds().getCentreY()), boxColor.darker(), 0.f,0.f, true));
@@ -122,6 +128,10 @@ void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, St
     }
 }
 */
+
+
+void ConnectorComponent::numAudioInputChanged(int newNum){generateToolTip();}
+void ConnectorComponent::numAudioOutputChanged(int newNum){generateToolTip();}
 
 NodeManagerUI * ConnectorComponent::getNodeManagerUI() const noexcept
 {

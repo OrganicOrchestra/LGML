@@ -17,10 +17,10 @@
 class DummyNode : public NodeBase
 {
 public:
-    class DummyAudioProcessor : public NodeBase::NodeAudioProcessor
+    class DummyAudioProcessor : public NodeAudioProcessor
     {
     public:
-        DummyAudioProcessor():NodeBase::NodeAudioProcessor()
+        DummyAudioProcessor():NodeAudioProcessor()
 		{
 			setPlayConfigDetails(2, 3, getSampleRate(), getBlockSize());
 

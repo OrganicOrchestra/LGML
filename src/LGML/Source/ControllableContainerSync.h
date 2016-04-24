@@ -1,34 +1,33 @@
 /*
  ==============================================================================
 
- ControllableContainerProxy.h
+ ControllableContainerSync.h
  Created: 27 Mar 2016 3:25:47pm
  Author:  Martin Hermant
 
  ==============================================================================
  */
 
-#ifndef CONTROLLABLECONTAINERPROXY_H_INCLUDED
-#define CONTROLLABLECONTAINERPROXY_H_INCLUDED
+#ifndef ControllableContainerSync_H_INCLUDED
+#define ControllableContainerSync_H_INCLUDED
 
-// a proxyContainer can fully syncronyze Controllables from a source container to a list of container
+// a ControllableContainerSync can fully syncronyze Controllables from a source container to a list of container
 // other containers have to be of the same kind
 // correspondences of Controllables is based on ControlAddress relative to ControllableContainers depth (i.e starting from the name of it
 // TODO handle controllableContainerAdded / Removed sync
 
 #include "ControllableContainer.h"
-class ControllableContainerProxy : public ControllableContainer, ControllableContainer::Listener{
+class ControllableContainerSync : public ControllableContainer::Listener{
 
 public:
-    ControllableContainerProxy(ControllableContainer * source):
-    ControllableContainer("proxy_"+source->niceName),
+    ControllableContainerSync(ControllableContainer * source):
     sourceContainer(source),depthInOriginContainer(-1),
     isNotifying(false){
         buildFromContainer(source);
     }
 
-    virtual ~ControllableContainerProxy(){
-        for(auto &c:proxyControllableListeners){
+    virtual ~ControllableContainerSync(){
+        for(auto &c:targetSyncedContainers){
             c->removeControllableContainerListener(this);
         }
         if(sourceContainer)
@@ -37,11 +36,11 @@ public:
 
     void buildFromContainer(ControllableContainer * source);
 
-    void addProxyListener(ControllableContainer * );
-    void removeProxyListener(ControllableContainer * );
+    void addSyncedControllableIfNotAlreadyThere(ControllableContainer * );
+    void removeSyncedControllable(ControllableContainer * );
     ControllableContainer * sourceContainer;
 
-    Array<ControllableContainer*> proxyControllableListeners;
+    Array<ControllableContainer*> targetSyncedContainers;
 
 
     void controllableAdded(Controllable *) override{};
@@ -51,6 +50,9 @@ public:
     void controllableFeedbackUpdate(Controllable *c) override;
     int depthInOriginContainer;
 
+
+
+
 private:
     bool isNotifying;
 
@@ -59,4 +61,4 @@ private:
 
 
 
-#endif  // CONTROLLABLECONTAINERPROXY_H_INCLUDED
+#endif  // ControllableContainerSync_H_INCLUDED

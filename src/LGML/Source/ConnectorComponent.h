@@ -22,7 +22,7 @@ class NodeBase;
 //==============================================================================
 /*
 */
-class ConnectorComponent : public Component, public SettableTooltipClient
+class ConnectorComponent : public Component, public SettableTooltipClient,public NodeAudioProcessor::NodeAudioProcessorListener
 {
 public:
 
@@ -49,7 +49,7 @@ public:
     bool isHovered;
 
     ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
-
+    ~ConnectorComponent();
     void paint(Graphics &g)override;
 
     void mouseDown(const MouseEvent &e) override;
@@ -61,6 +61,16 @@ public:
 
     NodeManagerUI * getNodeManagerUI() const noexcept;
     NodeBaseUI * getNodeUI() const noexcept;
+
+
+
+     void numAudioInputChanged(int newNum)override;
+    void numAudioOutputChanged(int newNum)override;
+
+
+
+private:
+    void generateToolTip();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorComponent)
 };

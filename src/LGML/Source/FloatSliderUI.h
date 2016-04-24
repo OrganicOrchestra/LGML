@@ -22,7 +22,7 @@ public:
 
     enum Direction { HORIZONTAL, VERTICAL };
 
-    FloatParameter * floatParam;
+    FloatParameter*  floatParam;
 
     //settings
     Direction orientation;

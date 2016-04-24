@@ -1,45 +1,46 @@
 /*
  ==============================================================================
 
- ControllableContainerProxy.cpp
+ ControllableContainerSync.cpp
  Created: 27 Mar 2016 3:25:47pm
  Author:  Martin Hermant
 
  ==============================================================================
  */
 
-#include "ControllableContainerProxy.h"
+#include "ControllableContainerSync.h"
 
 
-void ControllableContainerProxy::addProxyListener(ControllableContainer * c){
+void ControllableContainerSync::addSyncedControllableIfNotAlreadyThere(ControllableContainer * c){
     // check that we have same class
     jassert(typeid(c)==typeid(sourceContainer));
-    if(c!=sourceContainer && !proxyControllableListeners.contains(c)){
+    if(c!=sourceContainer && !targetSyncedContainers.contains(c)){
         c->addControllableContainerListener(this);
-        proxyControllableListeners.add(c);
+        targetSyncedContainers.add(c);
     }
 }
-void ControllableContainerProxy::removeProxyListener(ControllableContainer * c){
+void ControllableContainerSync::removeSyncedControllable(ControllableContainer * c){
     // if source is deleted use another listener as source
     c->removeControllableContainerListener(this);
 
+    // if removing source try to build from first available
     if(c==sourceContainer){
 
-        if(proxyControllableListeners.size()>0){
-            buildFromContainer(proxyControllableListeners.getUnchecked(0));
+        if(targetSyncedContainers.size()>0){
+            buildFromContainer(targetSyncedContainers.getUnchecked(0));
         }
         else{
             sourceContainer = nullptr;
         }
     }
     else{
-        proxyControllableListeners.removeFirstMatchingValue(c);
+        targetSyncedContainers.removeFirstMatchingValue(c);
 
     }
 }
 
 
-void ControllableContainerProxy::buildFromContainer(ControllableContainer * source){
+void ControllableContainerSync::buildFromContainer(ControllableContainer * source){
     if(sourceContainer){
         sourceContainer->removeControllableContainerListener(this);
     }
@@ -54,7 +55,7 @@ void ControllableContainerProxy::buildFromContainer(ControllableContainer * sour
 
 };
 
-void ControllableContainerProxy::controllableFeedbackUpdate(Controllable *cOrigin){
+void ControllableContainerSync::controllableFeedbackUpdate(Controllable *cOrigin){
     if(isNotifying)return;
     isNotifying = true;
     String addr =  cOrigin->getControlAddress();
@@ -69,7 +70,7 @@ void ControllableContainerProxy::controllableFeedbackUpdate(Controllable *cOrigi
 
     String controller = addSplit[0];
     addSplit.remove(0);
-    for(auto & listener:proxyControllableListeners){
+    for(auto & listener:targetSyncedContainers){
         Controllable * c = listener->getControllableForAddress(addSplit,true,true);
         setControllableValue(cOrigin, c);
     }
@@ -82,7 +83,7 @@ void ControllableContainerProxy::controllableFeedbackUpdate(Controllable *cOrigi
 }
 
 
-bool ControllableContainerProxy::setControllableValue(Controllable * cOrigin,Controllable * c){
+bool ControllableContainerSync::setControllableValue(Controllable * cOrigin,Controllable * c){
     jassert(cOrigin->type == c->type);
 
     if (c != nullptr && !c->isControllableFeedbackOnly)

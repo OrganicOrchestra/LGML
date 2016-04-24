@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    AudioMixerNode.h
-    Created: 3 Mar 2016 10:14:46am
-    Author:  bkupe
+ AudioMixerNode.h
+ Created: 3 Mar 2016 10:14:46am
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef AUDIOMIXERNODE_H_INCLUDED
 #define AUDIOMIXERNODE_H_INCLUDED
@@ -20,21 +20,53 @@ class AudioMixerNode : public NodeBase
 
 public:
 
-    class AudioMixerAudioProcessor : public NodeBase::NodeAudioProcessor
+
+
+
+    class AudioMixerAudioProcessor : public NodeAudioProcessor,public ControllableContainer
     {
     public:
-        AudioMixerAudioProcessor() :NodeBase::NodeAudioProcessor() {}
 
-        void processBlockInternal(AudioBuffer<float>&, MidiBuffer&) {}
 
+        class OutputBus : public ControllableContainer{
+        public:
+            OutputBus(int _outputIndex,int numInput);
+            void setNumInput(int numInput);
+
+            Array<FloatParameter*> volumes;
+            Array<float> lastVolumes;
+            int outputIndex;
+        };
+
+        
+        OwnedArray<OutputBus> outBuses;
+        AudioBuffer<float> cachedBuffer;
+
+
+        IntParameter * numberOfInput;
+        IntParameter * numberOfOutput;
+
+        void updateInput();
+        void updateOutput();
+
+
+        void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override ;
+        void onAnyParameterChanged(Parameter * p) override;
+
+        AudioMixerAudioProcessor();
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerAudioProcessor)
     };
 
-    AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId, "AudioMixer", new AudioMixerAudioProcessor, nullptr) {}
+    AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) ;
 
 
-    virtual NodeBaseUI * createUI() override;
 
+    NodeBaseUI * createUI() override;
+    
+    
+private:
+
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerNode)
 };
 

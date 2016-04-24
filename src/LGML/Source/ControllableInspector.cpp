@@ -12,8 +12,8 @@
 #include "Style.h"
 
 ControllableInspector::ControllableInspector(NodeManagerUI * _nmui):
-    proxyContainer(nullptr),
-    nmui(_nmui)
+controllableContainerSync(nullptr),
+nmui(_nmui)
 {
     nmui->selectableHandler.addSelectableHandlerListener(this);
 }
@@ -33,10 +33,14 @@ void ControllableInspector::selectableChanged(SelectableComponent * _node,bool s
 
 }
 void ControllableInspector::addOrMergeControllableContainerEditor(ControllableContainer * c){
-    candidateContainers.addIfNotAlreadyThere(c);
+    if(!candidateContainers.contains (c)){
+        candidateContainers.add(c);
+        c->addControllableContainerListener(this);
+    }
     if(candidateContainers.size()==1){
-        if(proxyContainer==nullptr)
-            proxyContainer = new ControllableContainerProxy(c);
+        if(controllableContainerSync==nullptr){
+            controllableContainerSync = new ControllableContainerSync(c);
+        }
         else jassertfalse;
     }
     generateFromCandidates();
@@ -49,21 +53,32 @@ void ControllableInspector::generateFromCandidates(){
 
     if(candidateContainers.size()==0){return;}
 
-    if(displayedEditor==nullptr )displayedEditor = new ControllableContainerEditor(
-                                                                                   proxyContainer->sourceContainer,proxyContainer->sourceContainer->createControllableContainerEditor());
-    else if(displayedEditor->owner!=nullptr && displayedEditor->owner==proxyContainer->sourceContainer){
-        delete displayedEditor.release();
-        displayedEditor = new ControllableContainerEditor(proxyContainer->sourceContainer,proxyContainer->sourceContainer->createControllableContainerEditor());}
-
-
-    // try to merge common properties based on first
-
-    for(auto &candidate:candidateContainers){
-        proxyContainer->addProxyListener(candidate);
+    if(displayedEditor==nullptr ){
+        displayedEditor =
+        new ControllableContainerEditor(controllableContainerSync->sourceContainer,controllableContainerSync->sourceContainer->createControllableContainerEditor());
     }
 
-    addAndMakeVisible(displayedEditor);
+    // regenerate a new one
+    else if(displayedEditor->owner!=nullptr && displayedEditor->owner==controllableContainerSync->sourceContainer){
+        delete displayedEditor.release();
+        displayedEditor = new ControllableContainerEditor(controllableContainerSync->sourceContainer,controllableContainerSync->sourceContainer->createControllableContainerEditor());
+    }
 
+
+
+    // TODO :   -avoid recreating everything
+    //          -try to merge common properties based on first by deleting non common params within candidateContainers
+    for(auto &c:removedContainers){
+        displayedEditor->removeContainerFromEditor(c);
+    }
+
+    for( auto &c:removedControllables){
+        displayedEditor->removeControllableFromEditor(c);
+    }
+
+    for(auto &candidate:candidateContainers){controllableContainerSync->addSyncedControllableIfNotAlreadyThere(candidate);}
+
+    addAndMakeVisible(displayedEditor);
     displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
     setBounds(displayedEditor->getBounds().withPosition(0,0));
 
@@ -77,12 +92,14 @@ void ControllableInspector::generateFromCandidates(){
 
 
 void ControllableInspector::removeControllableContainerEditor(ControllableContainer * c){
-    candidateContainers.removeFirstMatchingValue(c);
 
-    if(proxyContainer!=nullptr)proxyContainer->removeProxyListener(c);
+    candidateContainers.removeFirstMatchingValue(c);
+    c->removeControllableContainerListener(this);
+    removedControllables.clear();
+    if(controllableContainerSync!=nullptr)controllableContainerSync->removeSyncedControllable(c);
     if(candidateContainers.size()==0){
-        delete proxyContainer.release();
-        proxyContainer=nullptr;
+        delete controllableContainerSync.release();
+        controllableContainerSync=nullptr;
         delete displayedEditor.release();
         displayedEditor = nullptr;
     }
@@ -92,10 +109,10 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
 
 void ControllableInspector::paint(Graphics & g)
 {
-	g.fillAll(BG_COLOR);
+    g.fillAll(BG_COLOR);
 }
 
 void ControllableInspector::resized(){
-if(displayedEditor)displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
-repaint();
+    if(displayedEditor)displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
+    repaint();
 }

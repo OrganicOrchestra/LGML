@@ -104,11 +104,13 @@ void NodeBase::parameterValueChanged(Parameter * p)
 void NodeBase::addToAudioGraphIfNeeded(){
     if(hasAudioInputs || hasAudioOutputs){
         nodeManager->audioGraph.addNode(audioProcessor,nodeId);
+        audioProcessor->addNodeAudioProcessorListener(this);
     }
 }
 void NodeBase::removeFromAudioGraphIfNeeded(){
     if(hasAudioInputs || hasAudioOutputs){
         nodeManager->audioGraph.removeNode(nodeId);
+        audioProcessor->removeNodeAudioProcessorListener(this);
     }
 }
 
@@ -197,53 +199,11 @@ void NodeBase::loadJSONData(var data)
 }
 
 
+void NodeBase::numAudioInputChanged(int newNum){
 
-// =====================
-
-// NodeAudioProcessor
-
-void NodeBase::NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
-                                                MidiBuffer& midiMessages) {
-    processBlockInternal(buffer, midiMessages);
-
-    if(listeners.size() ){
-        updateRMS(buffer);
-        curSamplesForRMSUpdate+= buffer.getNumSamples();
-
-        if(curSamplesForRMSUpdate>=samplesBeforeRMSUpdate){
-            triggerAsyncUpdate();
-            curSamplesForRMSUpdate = 0;
-        }
-    }
-
-
-};
-
-void NodeBase::NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer){
-    int numSamples = buffer.getNumSamples();
-    int numChannels = buffer.getNumChannels();
-#ifdef HIGH_ACCURACY_RMS
-    for(int i = numSamples-64; i>=0 ; i-=64){
-        rmsValue += alphaRMS * (buffer.getRMSLevel(0, i, 64) - rmsValue);
-    }
-#else
-    // faster implementation taken from juce Device Settings input meter
-    for (int j = 0; j <numSamples; ++j)
-    {
-        float s = 0;
-        for (int i = numChannels-1; i >0; --i)
-            s = jmax(s, std::abs (buffer.getSample(i, j)));
-
-
-        const double decayFactor = 0.99992;
-        if (s > rmsValue)
-            rmsValue = s;
-        else if (rmsValue > 0.001f)
-            rmsValue *= (float)decayFactor;
-        else
-            rmsValue = 0;
-    }
-#endif
-    //            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;
-
+    nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(),nodeManager->audioGraph.getSampleRate());
 }
+void NodeBase::numAudioOutputChanged(int newNum){
+    nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(),nodeManager->audioGraph.getSampleRate());
+}
+

@@ -19,19 +19,22 @@
 AudioDeviceManager & getAudioDeviceManager() ;
 
 
-class AudioOutNode : public NodeBase,public ChangeListener
+class AudioOutNode : public NodeBase
 {
 public:
-    class AudioOutProcessor : public juce::AudioProcessorGraph::AudioGraphIOProcessor, public NodeBase::NodeAudioProcessor
+    class AudioOutProcessor : public juce::AudioProcessorGraph::AudioGraphIOProcessor, public NodeAudioProcessor,public ChangeListener
     {
     public:
         AudioOutProcessor():
-        NodeBase::NodeAudioProcessor(),
+        NodeAudioProcessor(),
         AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode){
-            NodeBase::NodeAudioProcessor::busArrangement.outputBuses.clear();
+            NodeAudioProcessor::busArrangement.outputBuses.clear();
         }
+
+        void changeListenerCallback (ChangeBroadcaster* source)override;
+        void updateIO();
         void processBlockInternal(AudioBuffer<float>& buffer,
-                          MidiBuffer& midiMessages) {
+                          MidiBuffer& midiMessages) override{
             AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
         }
 
@@ -40,13 +43,13 @@ public:
 
 
 
-    void changeListenerCallback (ChangeBroadcaster* source)override;
-    void setIOFromAudioDevice();
+
     AudioOutNode(NodeManager * nodeManager,uint32 nodeId)  : NodeBase(nodeManager,nodeId,"AudioOutNode",new AudioOutProcessor){
-        getAudioDeviceManager().addChangeListener(this);
-        setIOFromAudioDevice();
+        AudioOutProcessor* ap=(AudioOutProcessor*)audioProcessor;
+        getAudioDeviceManager().addChangeListener(ap);
+        ap->updateIO();
     };
-    ~AudioOutNode(){getAudioDeviceManager().removeChangeListener(this);};
+    ~AudioOutNode(){getAudioDeviceManager().removeChangeListener((AudioOutProcessor*)audioProcessor);};
 
     virtual NodeBaseUI * createUI() override;
 

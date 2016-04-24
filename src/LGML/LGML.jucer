@@ -23,10 +23,10 @@
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
-          <FILE id="FIR3Kt" name="ControllableContainerProxy.cpp" compile="1"
-                resource="0" file="Source/ControllableContainerProxy.cpp"/>
-          <FILE id="ptJrDO" name="ControllableContainerProxy.h" compile="0" resource="0"
-                file="Source/ControllableContainerProxy.h"/>
+          <FILE id="FIR3Kt" name="ControllableContainerSync.cpp" compile="1"
+                resource="0" file="Source/ControllableContainerSync.cpp"/>
+          <FILE id="ptJrDO" name="ControllableContainerSync.h" compile="0" resource="0"
+                file="Source/ControllableContainerSync.h"/>
           <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
                 file="Source/ControllableInspector.cpp"/>
           <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
@@ -201,14 +201,36 @@
               file="Source/ProjectManager.h"/>
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
-        <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">
-          <FILE id="GVgHpr" name="DataProcessor.cpp" compile="1" resource="0"
-                file="Source/DataProcessor.cpp"/>
-          <FILE id="jPUNwT" name="DataProcessor.h" compile="0" resource="0" file="Source/DataProcessor.h"/>
-          <FILE id="pLs1Ug" name="DataProcessorGraph.cpp" compile="1" resource="0"
-                file="Source/DataProcessorGraph.cpp"/>
-          <FILE id="MxBN89" name="DataProcessorGraph.h" compile="0" resource="0"
-                file="Source/DataProcessorGraph.h"/>
+        <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
+          <GROUP id="{A2D3A061-C57A-C7C0-F696-113F915DCD55}" name="UI">
+            <FILE id="NDsjg3" name="NodeBaseHeaderUI.cpp" compile="1" resource="0"
+                  file="Source/NodeBaseHeaderUI.cpp"/>
+            <FILE id="iIJRHp" name="NodeBaseHeaderUI.h" compile="0" resource="0"
+                  file="Source/NodeBaseHeaderUI.h"/>
+            <FILE id="FzpBRR" name="NodeBaseContentUI.cpp" compile="1" resource="0"
+                  file="Source/NodeBaseContentUI.cpp"/>
+            <FILE id="PCMBA4" name="NodeBaseContentUI.h" compile="0" resource="0"
+                  file="Source/NodeBaseContentUI.h"/>
+            <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
+            <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>
+          </GROUP>
+          <GROUP id="{AF0BF0A3-60FB-031F-524D-3BF9CD91D07F}" name="audio">
+            <FILE id="Ghizny" name="NodeAudioProcessor.cpp" compile="1" resource="0"
+                  file="Source/NodeAudioProcessor.cpp"/>
+            <FILE id="TpAMPu" name="NodeAudioProcessor.h" compile="0" resource="0"
+                  file="Source/NodeAudioProcessor.h"/>
+          </GROUP>
+          <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">
+            <FILE id="GVgHpr" name="DataProcessor.cpp" compile="1" resource="0"
+                  file="Source/DataProcessor.cpp"/>
+            <FILE id="jPUNwT" name="DataProcessor.h" compile="0" resource="0" file="Source/DataProcessor.h"/>
+            <FILE id="pLs1Ug" name="DataProcessorGraph.cpp" compile="1" resource="0"
+                  file="Source/DataProcessorGraph.cpp"/>
+            <FILE id="MxBN89" name="DataProcessorGraph.h" compile="0" resource="0"
+                  file="Source/DataProcessorGraph.h"/>
+          </GROUP>
+          <FILE id="sCyEGf" name="NodeBase.h" compile="0" resource="0" file="Source/NodeBase.h"/>
+          <FILE id="pLpoL1" name="NodeBase.cpp" compile="1" resource="0" file="Source/NodeBase.cpp"/>
         </GROUP>
         <GROUP id="{BA13D1BE-1F46-C45E-3568-F1B617CE7E74}" name="connection">
           <GROUP id="{2E0F7B5F-7DD6-5314-CC6E-B8D149005290}" name="connectionEditor">
@@ -258,20 +280,6 @@
             <FILE id="zgumfG" name="AudioInNode.cpp" compile="1" resource="0" file="Source/AudioInNode.cpp"/>
             <FILE id="RPhhcb" name="AudioInNode.h" compile="0" resource="0" file="Source/AudioInNode.h"/>
           </GROUP>
-          <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
-            <FILE id="NDsjg3" name="NodeBaseHeaderUI.cpp" compile="1" resource="0"
-                  file="Source/NodeBaseHeaderUI.cpp"/>
-            <FILE id="iIJRHp" name="NodeBaseHeaderUI.h" compile="0" resource="0"
-                  file="Source/NodeBaseHeaderUI.h"/>
-            <FILE id="FzpBRR" name="NodeBaseContentUI.cpp" compile="1" resource="0"
-                  file="Source/NodeBaseContentUI.cpp"/>
-            <FILE id="PCMBA4" name="NodeBaseContentUI.h" compile="0" resource="0"
-                  file="Source/NodeBaseContentUI.h"/>
-            <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
-            <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>
-            <FILE id="sCyEGf" name="NodeBase.h" compile="0" resource="0" file="Source/NodeBase.h"/>
-            <FILE id="pLpoL1" name="NodeBase.cpp" compile="1" resource="0" file="Source/NodeBase.cpp"/>
-          </GROUP>
           <GROUP id="{EA2B191A-C936-B14E-A8BC-F8E388834EC9}" name="Dummy">
             <FILE id="EJL9RW" name="DummyNode.cpp" compile="1" resource="0" file="Source/DummyNode.cpp"/>
             <FILE id="YV444r" name="DummyNode.h" compile="0" resource="0" file="Source/DummyNode.h"/>
@@ -285,6 +293,10 @@
                   file="Source/AudioMixerNode.cpp"/>
             <FILE id="ePmKKk" name="AudioMixerNode.h" compile="0" resource="0"
                   file="Source/AudioMixerNode.h"/>
+            <FILE id="IXdDdD" name="AudioMixerNodeUI.cpp" compile="1" resource="0"
+                  file="Source/AudioMixerNodeUI.cpp"/>
+            <FILE id="BP82hM" name="AudioMixerNodeUI.h" compile="0" resource="0"
+                  file="Source/AudioMixerNodeUI.h"/>
           </GROUP>
           <GROUP id="{5C55270A-43A6-03C9-B529-1BFE882AB7F6}" name="Looper">
             <FILE id="lWXXbw" name="LooperNode.cpp" compile="1" resource="0" file="Source/LooperNode.cpp"/>
