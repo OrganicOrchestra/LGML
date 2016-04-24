@@ -29,8 +29,8 @@ public:
 
 	OwnedArray<ParameterUI> parameterUIs;
 
-    void paint (Graphics&);
-    void resized();
+    void paint (Graphics&)override;
+    void resized()override;
 
 	void init() override;
 

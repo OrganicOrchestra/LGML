@@ -47,8 +47,8 @@ public:
     virtual bool hitTest(int x, int y) override { return hitPath.contains((float)x, (float)y); }
 
     Path hitPath;
-    void paint (Graphics&);
-    void resized();
+    void paint (Graphics&)override;
+    void resized()override;
 
     void mouseEnter(const MouseEvent &) override { repaint(); };
     void mouseExit(const MouseEvent &) override { repaint(); };

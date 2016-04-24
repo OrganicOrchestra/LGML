@@ -29,7 +29,7 @@
                 file="Source/ControllableContainerProxy.h"/>
           <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
                 file="Source/ControllableInspector.cpp"/>
-          <FILE id="oRwwuf" name="ControllableInspector.h" compile="1" resource="0"
+          <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
                 file="Source/ControllableInspector.h"/>
         </GROUP>
         <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">

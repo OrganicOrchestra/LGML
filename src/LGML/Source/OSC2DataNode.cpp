@@ -26,7 +26,7 @@ OSC2DataNode::~OSC2DataNode()
 
 void OSC2DataNode::parameterValueChanged(Parameter * p)
 {
-	dataProcessor->updateOutputData(p->niceName, p->getNormalizedValue());
+//	dataProcessor->updateOutputData(p->niceName, p->getNormalizedValue());
 }
 
 NodeBaseUI * OSC2DataNode::createUI()

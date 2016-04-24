@@ -46,7 +46,7 @@ public:
     void setCurrentConnection(NodeConnection * _connection);
     void editConnection(NodeConnection * _connection);
 
-    void resized();
+    void resized()override;
     void closeButtonPressed() override;
     void closeWindow();
 

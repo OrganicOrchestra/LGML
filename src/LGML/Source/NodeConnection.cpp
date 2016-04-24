@@ -138,7 +138,7 @@ void NodeConnection::loadJSONData(var data)
 			{
 				int sourceChannel = linkVar.getProperty("sourceChannel", var());
 				int destChannel = linkVar.getProperty("destChannel", var());
-				DBG("Add from JSON, " << sourceChannel + " > " + destChannel);
+				DBG("Add from JSON, " << sourceChannel << " > " <<destChannel);
 
 				addAudioGraphConnection(sourceChannel, destChannel);
 			}
