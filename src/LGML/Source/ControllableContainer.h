@@ -34,22 +34,11 @@ public:
 
     bool skipControllableNameInAddress;
 
-    void setNiceName(const String &_niceName) {
-        this->niceName = _niceName;
-        if (!hasCustomShortName) setAutoShortName();
-    }
+    void setNiceName(const String &_niceName) ;
 
-    void setCustomShortName(const String &_shortName)
-    {
-        this->shortName = _shortName;
-        hasCustomShortName = true;
-    }
+    void setCustomShortName(const String &_shortName);
 
-    void setAutoShortName() {
-        hasCustomShortName = false;
-        shortName = StringUtil::toShortName(niceName);
-        updateChildrenControlAddress();
-    }
+    void setAutoShortName();
 
 
     OwnedArray<Controllable> controllables;
@@ -78,6 +67,9 @@ public:
     virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
 
 
+
+    // internal callback that a controllableContainer can override to react to any of it's parameter change
+    virtual void onAnyParameterChanged(Parameter * p){};
     void dispatchFeedback(Controllable * c);
 
     // Inherited via Parameter::Listener

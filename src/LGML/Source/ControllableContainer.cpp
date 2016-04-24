@@ -103,6 +103,26 @@ void ControllableContainer::removeControllable(Controllable * c)
     controllables.removeObject(c);
 }
 
+
+
+void ControllableContainer::setNiceName(const String &_niceName) {
+    niceName = _niceName;
+    if (!hasCustomShortName) setAutoShortName();
+}
+
+void ControllableContainer::setCustomShortName(const String &_shortName){
+    shortName = _shortName;
+    hasCustomShortName = true;
+}
+
+void ControllableContainer::setAutoShortName() {
+    hasCustomShortName = false;
+    shortName = StringUtil::toShortName(niceName);
+    updateChildrenControlAddress();
+}
+
+
+
 Controllable * ControllableContainer::getControllableByName(const String & name)
 {
     for (auto &c : controllables)
@@ -249,6 +269,7 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
+    onAnyParameterChanged(p);
     if (p->isControllableExposed) dispatchFeedback(p);
 }
 
