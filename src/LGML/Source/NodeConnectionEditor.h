@@ -71,16 +71,16 @@ public:
 
     void addAudioLink(int sourceChannel, int destChannel);
     void removeAudioLinkForChannels(int sourceChannel, int destChannel);
-    void addDataLink(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
-    void removeDataLinkForDatas(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+    void addDataLink(Data * sourceData, Data * destData);
+    void removeDataLinkForDatas(Data * sourceData, Data * destData);
 
 
     NodeConnectionEditorLink * getLinkForSlots(NodeConnectionEditorDataSlot * outSlot, NodeConnectionEditorDataSlot * inSlot);
     NodeConnectionEditorLink * getLinkForChannels(int sourceChannel, int destChannel);
-    NodeConnectionEditorLink * getLinkForDatas(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+    NodeConnectionEditorLink * getLinkForDatas(Data * sourceData, Data * destData);
 
-    NodeConnectionEditorDataSlot * getOutputSlotForData(DataProcessor::Data * data);
-    NodeConnectionEditorDataSlot * getInputSlotForData(DataProcessor::Data * data);
+    NodeConnectionEditorDataSlot * getOutputSlotForData(Data * data);
+    NodeConnectionEditorDataSlot * getInputSlotForData(Data * data);
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionEditor)

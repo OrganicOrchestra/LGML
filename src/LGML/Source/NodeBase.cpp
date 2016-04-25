@@ -66,22 +66,22 @@ void NodeBase::remove()
     listeners.call(&NodeBase::Listener::askForRemoveNode,this);
 }
 
-void NodeBase::inputAdded(DataProcessor::Data *)
+void NodeBase::inputAdded(Data *)
 {
     hasDataInputs = dataProcessor != nullptr ? dataProcessor->getTotalNumInputData()>0:false;
 }
 
-void NodeBase::inputRemoved(DataProcessor::Data *)
+void NodeBase::inputRemoved(Data *)
 {
     hasDataInputs = dataProcessor != nullptr ? dataProcessor->getTotalNumInputData()>0:false;
 }
 
-void NodeBase::outputAdded(DataProcessor::Data *)
+void NodeBase::outputAdded(Data *)
 {
     hasDataOutputs = dataProcessor != nullptr ? dataProcessor->getTotalNumOutputData()>0:false;
 }
 
-void NodeBase::ouputRemoved(DataProcessor::Data *)
+void NodeBase::ouputRemoved(Data *)
 {
     hasDataOutputs = dataProcessor != nullptr ? dataProcessor->getTotalNumOutputData()>0:false;
 }
@@ -199,10 +199,10 @@ void NodeBase::loadJSONData(var data)
 }
 
 
-void NodeBase::numAudioInputChanged(int newNum){
+void NodeBase::numAudioInputChanged(int ){
 
-    nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(),nodeManager->audioGraph.getSampleRate());
+    nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(),(int)nodeManager->audioGraph.getSampleRate());
 }
-void NodeBase::numAudioOutputChanged(int newNum){
-    nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(),nodeManager->audioGraph.getSampleRate());
+void NodeBase::numAudioOutputChanged(int ){
+    nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(),(int)nodeManager->audioGraph.getSampleRate());
 }

@@ -88,7 +88,7 @@ private:
     //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
     //      or using dispatch feedback that triggers only exposedParams
 
-    virtual void onAnyParameterChanged(Parameter * p){};
+    virtual void onAnyParameterChanged(Parameter *){};
 
     void addParameterInternal(Parameter * p);
 

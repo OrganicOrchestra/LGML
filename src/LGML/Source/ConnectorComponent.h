@@ -57,7 +57,7 @@ public:
     void mouseExit  (const MouseEvent&)override;
 
 
-    //void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataProcessor::DataType &selectedDataType, const DataProcessor::DataType &filterType = DataProcessor::DataType::Unknown);
+    //void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataType &selectedDataType, const DataType &filterType = DataType::Unknown);
 
     NodeManagerUI * getNodeManagerUI() const noexcept;
     NodeBaseUI * getNodeUI() const noexcept;

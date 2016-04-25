@@ -59,14 +59,14 @@ void NodeConnection::removeAllAudioGraphConnections()
     audioConnections.clear();
 
 }
-void NodeConnection::addDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData)
+void NodeConnection::addDataGraphConnection(Data * sourceData, Data * destData)
 {
     DataProcessorGraph::Connection * c = nodeManager->dataGraph.addConnection(sourceData, destData);
     dataConnections.add(c);
     listeners.call(&Listener::connectionDataLinkAdded, c);
 }
 
-void NodeConnection::removeDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData)
+void NodeConnection::removeDataGraphConnection(Data * sourceData, Data * destData)
 {
     DataProcessorGraph::Connection * c = nodeManager->dataGraph.getConnectionBetween(sourceData, destData);
     dataConnections.removeAllInstancesOf(c);

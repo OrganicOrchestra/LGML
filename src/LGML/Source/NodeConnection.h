@@ -51,8 +51,8 @@ public:
     void removeAllAudioGraphConnections();
 
     //Data
-    void addDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
-    void removeDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+    void addDataGraphConnection(Data * sourceData, Data * destData);
+    void removeDataGraphConnection(Data * sourceData, Data * destData);
     void removeAllDataGraphConnections();
 
     void remove();

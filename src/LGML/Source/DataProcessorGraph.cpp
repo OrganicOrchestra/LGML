@@ -20,13 +20,13 @@ DataProcessorGraph::~DataProcessorGraph()
 }
 
 
-DataProcessorGraph::Connection::Connection(DataProcessor::Data * sourceData, DataProcessor::Data * destData) noexcept
+DataProcessorGraph::Connection::Connection(Data * sourceData, Data * destData) noexcept
     : sourceData(sourceData), destData(destData)
 {
     if(sourceData != nullptr) sourceData->addDataListener(this);
 }
 
-void DataProcessorGraph::Connection::dataChanged(DataProcessor::Data * d)
+void DataProcessorGraph::Connection::dataChanged(Data * d)
 {
     if (destData != nullptr) destData->updateFromSourceData(d);
 }
@@ -39,7 +39,7 @@ void DataProcessorGraph::clear()
 
 }
 
-DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const
+DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(Data * sourceData, Data * destData) const
 {
     for (int i = connections.size(); --i >= 0;)
     {
@@ -54,7 +54,7 @@ DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(DataPr
 }
 
 
-bool DataProcessorGraph::canConnect(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const
+bool DataProcessorGraph::canConnect(Data * sourceData, Data * destData) const
 {
     if (sourceData == nullptr || destData == nullptr)
         return false;
@@ -69,7 +69,7 @@ bool DataProcessorGraph::canConnect(DataProcessor::Data * sourceData, DataProces
 }
 
 
-DataProcessorGraph::Connection * DataProcessorGraph::addConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData)
+DataProcessorGraph::Connection * DataProcessorGraph::addConnection(Data * sourceData, Data * destData)
 {
     if (!canConnect(sourceData,destData))
         return nullptr;

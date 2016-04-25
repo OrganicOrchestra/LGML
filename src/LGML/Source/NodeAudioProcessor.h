@@ -86,8 +86,8 @@ public:
     class NodeAudioProcessorListener{
     public:
         virtual ~NodeAudioProcessorListener(){};
-        virtual void numAudioInputChanged(int newNum){};
-        virtual void numAudioOutputChanged(int newNum){};
+        virtual void numAudioInputChanged(int ){};
+        virtual void numAudioOutputChanged(int ){};
     };
     ListenerList<NodeAudioProcessorListener> nodeAudioProcessorListeners;
     void addNodeAudioProcessorListener(NodeAudioProcessorListener* newListener) { nodeAudioProcessorListeners.add(newListener); }

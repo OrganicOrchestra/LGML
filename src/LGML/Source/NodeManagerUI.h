@@ -36,13 +36,13 @@ public:
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI * editingConnection;
 
-    //DataProcessor::Data * editingData;
+    //Data * editingData;
 
     //Data
     /*
     String editingDataName;
     String editingElementName;
-    DataProcessor::DataType editingDataType;
+    DataType editingDataType;
     */
 
     //Audio

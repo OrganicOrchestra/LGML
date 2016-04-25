@@ -210,7 +210,7 @@ void NodeConnectionEditor::generateContentForData()
 
     for (int i = 0; i < numOutputData; i++)
     {
-        DataProcessor::Data * data = currentConnection->sourceNode->dataProcessor->outputDatas[i];
+        Data * data = currentConnection->sourceNode->dataProcessor->outputDatas[i];
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(data->name + " (" + data->getTypeString() + ")",data, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
         s->setName("output"+data->name);
         s->addSlotListener(this);
@@ -221,7 +221,7 @@ void NodeConnectionEditor::generateContentForData()
 
     for (int i = 0; i < numInputData; i++)
     {
-        DataProcessor::Data * data = currentConnection->destNode->dataProcessor->inputDatas[i];
+        Data * data = currentConnection->destNode->dataProcessor->inputDatas[i];
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(data->name + " (" + data->getTypeString() + ")",data, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::INPUT);
         s->setName("input" + data->name);
         s->addSlotListener(this);
@@ -261,7 +261,7 @@ void NodeConnectionEditor::removeAudioLinkForChannels(int sourceChannel, int des
     links.removeObject(l);
 }
 
-void NodeConnectionEditor::addDataLink(DataProcessor::Data * sourceData, DataProcessor::Data * destData)
+void NodeConnectionEditor::addDataLink(Data * sourceData, Data * destData)
 {
     NodeConnectionEditorDataSlot * os = getOutputSlotForData(sourceData);
     NodeConnectionEditorDataSlot * is = getInputSlotForData(destData);
@@ -273,7 +273,7 @@ void NodeConnectionEditor::addDataLink(DataProcessor::Data * sourceData, DataPro
     linksContainer.addAndMakeVisible(l);
 }
 
-void NodeConnectionEditor::removeDataLinkForDatas(DataProcessor::Data * sourceData, DataProcessor::Data * destData)
+void NodeConnectionEditor::removeDataLinkForDatas(Data * sourceData, Data * destData)
 {
     NodeConnectionEditorLink * l = getLinkForDatas(sourceData, destData);
     linksContainer.removeChildComponent(l);
@@ -301,7 +301,7 @@ NodeConnectionEditorLink * NodeConnectionEditor::getLinkForChannels(int sourceCh
     return nullptr;
 }
 
-NodeConnectionEditorLink * NodeConnectionEditor::getLinkForDatas(DataProcessor::Data * sourceData, DataProcessor::Data * destData)
+NodeConnectionEditorLink * NodeConnectionEditor::getLinkForDatas(Data * sourceData, Data * destData)
 {
     for (auto &l : links)
     {
@@ -311,7 +311,7 @@ NodeConnectionEditorLink * NodeConnectionEditor::getLinkForDatas(DataProcessor::
     return nullptr;
 }
 
-NodeConnectionEditorDataSlot * NodeConnectionEditor::getOutputSlotForData( DataProcessor::Data * data)
+NodeConnectionEditorDataSlot * NodeConnectionEditor::getOutputSlotForData( Data * data)
 {
     for (auto &slot : outputSlots)
     {
@@ -321,7 +321,7 @@ NodeConnectionEditorDataSlot * NodeConnectionEditor::getOutputSlotForData( DataP
     return nullptr;
 }
 
-NodeConnectionEditorDataSlot * NodeConnectionEditor::getInputSlotForData(DataProcessor::Data * data)
+NodeConnectionEditorDataSlot * NodeConnectionEditor::getInputSlotForData(Data * data)
 {
     for (auto &slot : inputSlots)
     {

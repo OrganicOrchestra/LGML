@@ -12,7 +12,7 @@
 #include "NodeConnectionEditorDataSlot.h"
 #include "Style.h"
 //==============================================================================
-NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot(String label, DataProcessor::Data* data,
+NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot(String label, Data* data,
     NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(data), channel(-1),
     connectionType(connectionType), ioType(ioType), currentEditingData(nullptr)
 {

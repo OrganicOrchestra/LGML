@@ -36,25 +36,25 @@ public:
     */
 
 
-    class Connection : public DataProcessor::Data::DataListener
+    class Connection : public Data::DataListener
     {
     public:
         //==============================================================================
-        Connection(DataProcessor::Data * sourceData, DataProcessor::Data * destData) noexcept;
+        Connection(Data * sourceData, Data * destData) noexcept;
         virtual ~Connection()
         {
             if (sourceData != nullptr) sourceData->removeDataListener(this);
         }
 
-        DataProcessor::Data * sourceData;
-        DataProcessor::Data * destData;
+        Data * sourceData;
+        Data * destData;
 
     private:
         //==============================================================================
         JUCE_LEAK_DETECTOR(Connection)
 
             // Inherited via DataListener
-            virtual void dataChanged(DataProcessor::Data *) override;
+            virtual void dataChanged(Data *) override;
     };
 
 
@@ -63,11 +63,11 @@ public:
     void clear();
     int getNumConnections() const { return connections.size(); }
     const Connection* getConnection(int index) const { return connections[index]; }
-    Connection* getConnectionBetween(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const;
+    Connection* getConnectionBetween(Data * sourceData, Data * destData) const;
 
-    bool canConnect(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const;
+    bool canConnect(Data * sourceData, Data * destData) const;
 
-    Connection * addConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData);
+    Connection * addConnection(Data * sourceData, Data * destData);
 
     void removeConnection(int index);
     void removeConnection(Connection * connection);

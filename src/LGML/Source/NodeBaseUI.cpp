@@ -8,6 +8,7 @@
  ==============================================================================
  */
 
+
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "NodeBaseUI.h"
 #include "NodeBase.h"
@@ -113,16 +114,11 @@ NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
     return findParentComponentOfClass<NodeManagerUI>();
 }
 
-void NodeBaseUI::mouseDown(const MouseEvent &e)
+#pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
+void NodeBaseUI::mouseDown(const juce::MouseEvent &e)
 {
-//    @ben i get parameter unused warning
-//    i think it's better to never "write" a variable without any other meaning than supress a warning
-//    it add meaningless lines for nothing but get rid of useless warning
-//  event;// avoir unreferenced formal parameter warning
-
-    if (e.mods.getCurrentModifiers().isCtrlDown())
+	if (e.mods.getCurrentModifiers().isCtrlDown())
     {
-        DBG("Node->remove");
         node->remove();
     }
     else
@@ -131,6 +127,8 @@ void NodeBaseUI::mouseDown(const MouseEvent &e)
 
     }
 }
+#pragma warning( default : 4100 )
+
 
 void NodeBaseUI::mouseUp(const juce::MouseEvent &){
     NodeManagerUI * nmui = getNodeManagerUI();

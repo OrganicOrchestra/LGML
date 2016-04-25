@@ -54,7 +54,7 @@ private:
     void controllableRemoved(Controllable * c)override{ removedControllables.add(c);  generateFromCandidates();};
     void controllableContainerAdded(ControllableContainer * c)override { removedContainers.removeAllInstancesOf(c);   generateFromCandidates();};
     void controllableContainerRemoved(ControllableContainer * c)override { removedContainers.add(c);   generateFromCandidates();};
-    void controllableFeedbackUpdate(Controllable *c) override{};
+    void controllableFeedbackUpdate(Controllable *) override{};
 
 
     NodeManagerUI * nmui;

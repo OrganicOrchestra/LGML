@@ -221,6 +221,8 @@
                   file="Source/NodeAudioProcessor.h"/>
           </GROUP>
           <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">
+            <FILE id="LufRbo" name="Data.cpp" compile="1" resource="0" file="Source/Data.cpp"/>
+            <FILE id="PrlybT" name="Data.h" compile="0" resource="0" file="Source/Data.h"/>
             <FILE id="GVgHpr" name="DataProcessor.cpp" compile="1" resource="0"
                   file="Source/DataProcessor.cpp"/>
             <FILE id="jPUNwT" name="DataProcessor.h" compile="0" resource="0" file="Source/DataProcessor.h"/>
@@ -261,15 +263,12 @@
                 file="Source/NodeConnectionUI.h"/>
         </GROUP>
         <GROUP id="{90D03868-3FD4-352F-D8F2-C231A68FF418}" name="nodes">
-          <GROUP id="{5417A4A0-D810-BE2F-ADD2-883B526A6B39}" name="Data2OSC"/>
-          <GROUP id="{188EEA22-1910-946C-A8A8-4B25F7BDDA65}" name="OSC2Data">
-            <FILE id="q7jbL6" name="OSC2DataNode.cpp" compile="1" resource="0"
-                  file="Source/OSC2DataNode.cpp"/>
-            <FILE id="gse7SE" name="OSC2DataNode.h" compile="0" resource="0" file="Source/OSC2DataNode.h"/>
-            <FILE id="lhhusd" name="OSC2DataNodeUI.cpp" compile="1" resource="0"
-                  file="Source/OSC2DataNodeUI.cpp"/>
-            <FILE id="aQrTAH" name="OSC2DataNodeUI.h" compile="0" resource="0"
-                  file="Source/OSC2DataNodeUI.h"/>
+          <GROUP id="{188EEA22-1910-946C-A8A8-4B25F7BDDA65}" name="DataIn">
+            <FILE id="q7jbL6" name="DataInNode.cpp" compile="1" resource="0" file="Source/DataInNode.cpp"/>
+            <FILE id="gse7SE" name="DataInNode.h" compile="0" resource="0" file="Source/DataInNode.h"/>
+            <FILE id="lhhusd" name="DataInNodeUI.cpp" compile="1" resource="0"
+                  file="Source/DataInNodeUI.cpp"/>
+            <FILE id="aQrTAH" name="DataInNodeUI.h" compile="0" resource="0" file="Source/DataInNodeUI.h"/>
           </GROUP>
           <GROUP id="{83B99C76-9727-E032-6D0F-014884937604}" name="AudioOut">
             <FILE id="fQzeSW" name="AudioOutNode.cpp" compile="1" resource="0"

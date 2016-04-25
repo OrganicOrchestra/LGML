@@ -18,7 +18,7 @@ NodeBaseUI * AudioInNode::createUI() {
 }
 
 
-void AudioInNode::AudioInProcessor::changeListenerCallback (ChangeBroadcaster* source) {
+void AudioInNode::AudioInProcessor::changeListenerCallback (ChangeBroadcaster*) {
     updateIO();
 }
 

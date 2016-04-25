@@ -41,6 +41,10 @@ public:
 
         mainWindow = new MainWindow (getApplicationName(),engine);
 
+		File f(commandLine.removeCharacters("\""));
+		if (f.existsAsFile()) engine->loadDocument(f);
+
+
     }
 
     void shutdown() override

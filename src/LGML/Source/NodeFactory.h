@@ -13,7 +13,7 @@
 
 #include "DummyNode.h"
 #include "AudioMixerNode.h"
-#include "OSC2DataNode.h"
+#include "DataInNode.h"
 #include "LooperNode.h"
 #include "SpatNode.h"
 #include "VSTNode.h"
@@ -65,7 +65,7 @@ public:
                 break;
 
             case OSC2Data:
-                n = new OSC2DataNode(nodeManager, nodeId);
+                n = new DataInNode(nodeManager, nodeId);
                 break;
 
             case Spat:

@@ -57,11 +57,11 @@ public:
     {
     public:
         DummyDataProcessor() :NodeBase::NodeDataProcessor() {
-        addInputData("IN Number", DataProcessor::DataType::Number);
-        addInputData("IN Position", DataProcessor::DataType::Position);
+        addInputData("IN Number", DataType::Number);
+        addInputData("IN Position", DataType::Position);
 
-        addOutputData("OUT Number", DataProcessor::DataType::Number);
-        addOutputData("OUT Orientation", DataProcessor::DataType::Orientation);
+        addOutputData("OUT Number", DataType::Number);
+        addOutputData("OUT Orientation", DataType::Orientation);
         }
 
 
@@ -81,7 +81,7 @@ public:
 
     void onAnyParameterChanged(Parameter * p) override;
 
-    void inputDataChanged(DataProcessor::Data *d) override
+    void inputDataChanged(Data *d) override
     {
         DBG("DummyNode :: Input data changed " << d->name);
 

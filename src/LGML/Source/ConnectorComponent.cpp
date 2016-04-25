@@ -63,12 +63,12 @@ void ConnectorComponent::mouseExit  (const MouseEvent&){
 
 /*
 void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, String & selectedElementName,
-    DataProcessor::DataType &selectedDataType, const DataProcessor::DataType &filterType)
+    DataType &selectedDataType, const DataType &filterType)
 {
 
     DBG("Select :: filter Type = " + String(filterType));
     int numDatas = 0;
-    OwnedArray<DataProcessor::Data>* datas;
+    OwnedArray<Data>* datas;
 
     if (ioType == ConnectorIOType::INPUT)
     {
@@ -89,7 +89,7 @@ void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, St
     for (int i = 0; i < numDatas; i++)
     {
         ScopedPointer<PopupMenu> dataMenu( new PopupMenu());
-        DataProcessor::Data * d = datas->getUnchecked(i);
+        Data * d = datas->getUnchecked(i);
         int itemID = i *  maxElementPerData + 1; //max 10 element per data anyway, 1 to not start from 0
 
         DBG("Is data compatible ? "+ String(d->isTypeCompatible(filterType)));
@@ -130,8 +130,8 @@ void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, St
 */
 
 
-void ConnectorComponent::numAudioInputChanged(int newNum){generateToolTip();}
-void ConnectorComponent::numAudioOutputChanged(int newNum){generateToolTip();}
+void ConnectorComponent::numAudioInputChanged(int){generateToolTip();}
+void ConnectorComponent::numAudioOutputChanged(int){generateToolTip();}
 
 NodeManagerUI * ConnectorComponent::getNodeManagerUI() const noexcept
 {

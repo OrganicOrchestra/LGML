@@ -84,10 +84,10 @@ public:
     virtual NodeBaseUI *  createUI() {DBG("No implementation in child node class !");jassert(false);return nullptr;}
 
     // Inherited via DataProcessor::Listener
-    virtual void inputAdded(DataProcessor::Data *) override;
-    virtual void inputRemoved(DataProcessor::Data *) override;
-    virtual void outputAdded(DataProcessor::Data *) override;
-    virtual void ouputRemoved(DataProcessor::Data *) override;
+    virtual void inputAdded(Data *) override;
+    virtual void inputRemoved(Data *) override;
+    virtual void outputAdded(Data *) override;
+    virtual void ouputRemoved(Data *) override;
 
 
     void numAudioInputChanged(int newNum)override;

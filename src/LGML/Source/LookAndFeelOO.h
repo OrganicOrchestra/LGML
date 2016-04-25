@@ -11,11 +11,9 @@
 #ifndef LOOKANDFEELOO_H_INCLUDED
 #define LOOKANDFEELOO_H_INCLUDED
 
+#pragma warning( disable : 4505 )
 
 #include "JuceHeader.h"
-
-
-
 
 namespace LookAndFeelHelpers {
 
@@ -165,6 +163,7 @@ namespace LookAndFeelHelpers {
     };
 
 
+	
 
     static Colour createBaseColour(Colour buttonColour,
         bool hasKeyboardFocus,
@@ -193,6 +192,8 @@ namespace LookAndFeelHelpers {
         tl.createLayoutWithBalancedLineLengths(s, (float)maxToolTipWidth);
         return tl;
     }
+
+
 };
 
 

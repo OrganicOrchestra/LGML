@@ -336,7 +336,7 @@ void NodeManagerUI::finishEditingConnection()
         //Delete the editing connection
         //String targetDataName = "";
         //String targetElementName = "";
-        //DataProcessor::DataType targetDataType;
+        //DataType targetDataType;
 
         bool success = editingConnection->finishEditing();
         if (success)
