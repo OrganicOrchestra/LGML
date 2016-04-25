@@ -6,7 +6,7 @@ import urllib;
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = True
+bumpVersion = False
 specificVersion = ""#0.1.1"
 
 
@@ -41,6 +41,7 @@ def generateProductBaseName():
 	
 getVersion()
 
+
 def formatCode(sourceFolder):
 	# sourceFolder = os.path.abspath(sourceFolder)
 	sh(proJucerPath+ " --remove-tabs "+sourceFolder);
@@ -54,8 +55,8 @@ def formatCode(sourceFolder):
 
 def gitCommit():
 		if(bumpVersion or specificVersion!=""):
-			sh("cd "+gitPath+"&& git add -A && git commit -m"+getVersion())
-			sh(proJucerPath+" --git-tag-version "+JuceProjectPath)
+			sh("cd "+gitPath+"&& git checkout master && git merge develop ")#&& git commit -m"+getVersion())
+			# sh(proJucerPath+" --git-tag-version "+JuceProjectPath)
 
 
 def buildJUCE(JuceProjectPath):

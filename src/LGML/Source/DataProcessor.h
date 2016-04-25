@@ -22,7 +22,11 @@ This class is a base class for all data processors :
 #include "JuceHeader.h"
 
 //predeclaration
+//@ben is it still useful ?
+// this only allow incomplete type resolving (i.e pointers) not sure that's what we want here
+// see comment on class ProcessorDataListener
 class DataProcessorDataListener;
+
 
 class DataProcessor
 {
@@ -268,11 +272,11 @@ public:
         //to be overriden by child classes
     }
 
-//  virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0)
-//  {
-//      Data * d = getOutputDataByName(dataName);
-//      if (d != nullptr) d->update(value1, value2, value3);
-//  }
+  virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0)
+  {
+      Data * d = getOutputDataByName(dataName);
+      if (d != nullptr) d->update(value1, value2, value3);
+  }
 
 
     int getTotalNumInputData() const { return inputDatas.size(); }
@@ -347,6 +351,10 @@ private:
 public :
     //@Martin is this fucked up ?
     //i can't make DataProcessor inherit from Data::DataListener since the Data class is defined inside the DataProcessor class.
+
+    // yes (nesting classes...) but here I think that Data class can be externalized (put in a separate file or at least removed from DataProcessor:: ) as we will surely access it from things that dont need to now about DataProcessors, but Data "format" only (parameters, In and Out interfaces in general)
+//     for now you dont even have circular dependencies if you declare class DataProcessor in some Data.h
+
 
     class ProcessorDataListener : public Data::DataListener, DataProcessor::Listener
     {
