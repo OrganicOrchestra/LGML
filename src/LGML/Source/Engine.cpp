@@ -34,21 +34,36 @@ Engine::~Engine(){
 void Engine::parseCommandline(const String & commandLine){
 	
 	StringArray args;
-	args.addTokens (commandLine, true);
-	args.trim();
 
-		int parsingIdx=0;
-		while(parsingIdx<args.size()){
-			if(args[parsingIdx]== "-f" || parsingIdx==0){
-				File f = File::createFileWithoutCheckingPath(args[1]);
-				if (f.existsAsFile()) loadDocument(f);
-				else {DBG("not found file : " << args[1]);}
-				parsingIdx++;
-			}
-			
-			
+	args.addTokens (commandLine, false);
+	args.trim();
+	
+	
+	int parsingIdx=0;
+	while(parsingIdx<args.size()){
+		String command = "";
+		bool isParameter = args[parsingIdx].startsWith("-");
+		if(isParameter){
+			command = args[parsingIdx].substring(1, args[parsingIdx].length());
 			parsingIdx++;
+			if(parsingIdx>=args.size()){break;}
 		}
+		String argument = File::createLegalPathName(args[parsingIdx]);
+		
+		DBG("parsing commandline :" << command << " " << argument);
+		
+		
+		if(command== "f"|| parsingIdx==0){
+			if (File::isAbsolutePath(argument)) {
+				File f(argument);
+				if (f.existsAsFile()) loadDocument(f);
+			}
+			else{DBG("not found file : " << argument << " please provide a valid absolute path");}
+		}
+		
+		
+		parsingIdx++;
+	}
 	
 }
 
