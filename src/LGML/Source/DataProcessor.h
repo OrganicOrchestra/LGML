@@ -26,10 +26,13 @@ This class is a base class for all data processors :
 
 class DataProcessor : public Data::DataListener
 {
-	typedef Data::DataType DataType;
-	typedef Data::DataElement DataElement;
+
 
 public:
+	typedef Data::DataType DataType;
+	typedef Data::DataElement DataElement;
+	
+	
     DataProcessor();
     virtual ~DataProcessor();
 
