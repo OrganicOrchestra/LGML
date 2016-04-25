@@ -100,6 +100,11 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
 void ControllableContainer::removeControllable(Controllable * c)
 {
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+    ControllableContainer * notified = parentContainer;
+    while(notified!=nullptr){
+        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+        notified = notified->parentContainer;
+    }
     controllables.removeObject(c);
 }
 
@@ -298,6 +303,11 @@ void ControllableContainer::addParameterInternal(Parameter * p)
     controllables.add(p);
     p->addParameterListener(this);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
+    ControllableContainer * notified = parentContainer;
+    while(notified!=nullptr){
+        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
+        notified = notified->parentContainer;
+    }
 }
 
 

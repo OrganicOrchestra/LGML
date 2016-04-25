@@ -54,13 +54,16 @@ void AudioMixerNode::AudioMixerAudioProcessor::onAnyParameterChanged(Parameter *
 }
 
 void AudioMixerNode::AudioMixerAudioProcessor::updateInput(){
-    {
+    
         const ScopedLock sl (getCallbackLock());
+        suspendProcessing(true);
         for(auto & bus:outBuses){
             bus->setNumInput(numberOfInput->value);
         }
-    }
+
+
     setPreferedNumAudioInput(numberOfInput->value);
+    suspendProcessing(false);
 
 }
 
@@ -90,7 +93,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateOutput(){
 
 void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
-    int numInput = numberOfInput->value;
+    int numInput = getTotalNumInputChannels();
 
     if(!(outBuses.size()<=buffer.getNumChannels())){DBG("mixer : dropping frame");return;}
     int numSamples =  buffer.getNumSamples();

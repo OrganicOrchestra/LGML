@@ -10,6 +10,20 @@
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/ControllableInspector.cpp
 line : 68
 	    // TODO :   -avoid recreating everything
+    //          -try to merge common properties based on first by deleting non common params within candidateContainers
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/Parameter.h
+line : 22
+	    //TODO use a "var" type to have more consistency and method heritage (pull up the value member in this parent class, not in every child class)
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/ControllableContainer.h
+line : 85
+	    //@ ben this is to avoid either:
+    //      adding controllableContainerListener for each implementation
+    //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
+    //      or using dispatch feedback that triggers only exposedParams
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/ControllableInspector.h
@@ -22,32 +36,48 @@ line : 29
 	    // TODO implement a numboxUI
 
 
-/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/TimeManager.h
-line : 27
-	    // TODO check if we can use SingleThread Singleton for fast access in processAdio
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/NodeConnectionUI.cpp
+line : 85
+	    //@ben I prefer that atm (at least it doesnt start with weird anchors)
+    //but I'm up for any other fancy complexoid cuved Path algos that never touch a node
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/LooperNode.cpp
 line : 72
 	    // TODO check if we can optimize copies
+    // handle multiples channels outs
 
 
 line : 357
 	    // TODO subBlock precision ?
+    // not sure -> triggers are updated at block size granularity
+    // for now reduce block approximation noise when quantized
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/NodeConnectionEditor.cpp
 line : 389
-					//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+	                //TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+
+line : 190
+	    //@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
+    //but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
+    // should be fixed !!
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/NodeManager.cpp
 line : 264
 	    //TODO synchronize this and implement it for data
+    // it's not indispensable
 
 
 line : 161
 	                // TODO nicely handle file format errors?
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/TimeManager.h
+line : 27
+	    // TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/VuMeter.h
@@ -60,18 +90,36 @@ line : 16
 	// TODO handle controllableContainerAdded / Removed sync
 
 
-/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/Parameter.h
-line : 22
-	    //TODO use a "var" type to have more consistency and method heritage (pull up the value member in this parent class, not in every child class)
-
-
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/VSTNode.h
 line : 107
 	                // TODO check if scoped pointer deletes old innerPlugin
 
 
+line : 103
+	                //@Martin i addedd this because when not playing, it crashed
+
+
 line : 87
 	            // TODO check that it actually works
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/NodeBaseUI.cpp
+line : 117
+	//    @ben i get parameter unused warning
+//    i think it's better to never "write" a variable without any other meaning than supress a warning
+//    it add meaningless lines for nothing but get rid of useless warning
+//  event;// avoir unreferenced formal parameter warning
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/DataProcessor.h
+line : 347
+	    //@Martin is this fucked up ?
+    //i can't make DataProcessor inherit from Data::DataListener since the Data class is defined inside the DataProcessor class.
+
+
+/Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/ControllableContainer.cpp
+line : 277
+	    //    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
 /Users/Tintamar/Work/BO/Git/blooper/src/LGML/Source/MainComponentCommands.cpp

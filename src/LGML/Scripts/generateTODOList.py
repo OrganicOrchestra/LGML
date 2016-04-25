@@ -21,7 +21,8 @@ for root, dirnames, filenames in os.walk(sourcePath):
 
 
 todoRe = re.compile("\s*//\s*TODO");
-commentRe = re.compile("//.*");
+atRe = re.compile("\s*//\s*@");
+commentRe = re.compile("\s*//.*");
 blankRe = re.compile("^\s*$");
 
 # create TODO list
@@ -33,7 +34,7 @@ for file in matches:
 		curTODO = "";
 		idx = 0;
 		for l in f.readlines():
-			if TODOCommentLine ==-1 and todoRe.match(l):
+			if TODOCommentLine ==-1 and (todoRe.match(l) or atRe.match(l)):
 				TODOCommentLine = idx;
 				curTODO+=l
 			elif TODOCommentLine>=0 and commentRe.match(l):
