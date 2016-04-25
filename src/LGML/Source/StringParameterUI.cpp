@@ -13,8 +13,7 @@
 #include "Style.h"
 
 StringParameterUI::StringParameterUI(Parameter * p) :
-    ParameterUI(p),
-    stringParam((StringParameter *)p)
+    ParameterUI(p)
 {
 
     addChildComponent(nameLabel);
@@ -22,11 +21,11 @@ StringParameterUI::StringParameterUI(Parameter * p) :
     addAndMakeVisible(valueLabel);
 
     nameLabel.setJustificationType(Justification::topLeft);
-    nameLabel.setText(stringParam->niceName, NotificationType::dontSendNotification);
+    nameLabel.setText(parameter->niceName, NotificationType::dontSendNotification);
     nameLabel.setColour(Label::ColourIds::textColourId, TEXTNAME_COLOR);
 
     valueLabel.setJustificationType(Justification::topLeft);
-    valueLabel.setText(stringParam->value,NotificationType::dontSendNotification);
+    valueLabel.setText(parameter->value,NotificationType::dontSendNotification);
     valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
     valueLabel.setEditable(true);
     valueLabel.addListener(this);
@@ -54,10 +53,10 @@ void StringParameterUI::resized()
 void StringParameterUI::parameterValueChanged(Parameter * p)
 {
     ParameterUI::parameterValueChanged(p);
-    valueLabel.setText(stringParam->value,NotificationType::dontSendNotification);
+    valueLabel.setText(p->stringValue(),NotificationType::dontSendNotification);
 }
 
 void StringParameterUI::labelTextChanged(Label *)
 {
-    stringParam->setValue(valueLabel.getText());
+    parameter->setValue(valueLabel.getText());
 }

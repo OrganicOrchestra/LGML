@@ -81,15 +81,6 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
                 }
                 break;
 
-            case Controllable::Type::RANGE:
-                if (msg.size() > 1 && (msg[0].isInt32() || msg[0].isFloat32()) && (msg[1].isInt32() || msg[1].isFloat32()))
-                {
-                    float value1 = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                    float value2 = msg[1].isInt32() ? msg[1].getInt32() : msg[1].getFloat32();
-                    ((FloatRangeParameter *)c)->setValuesMinMax(value1, value2);
-                }
-                break;
-
             case Controllable::Type::STRING:
                 break;
             }
@@ -127,23 +118,19 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
             break;
 
         case Controllable::Type::BOOL:
-            sender.send(c->controlAddress,((BoolParameter *)c)->value?1:0);
+            sender.send(c->controlAddress,((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::FLOAT:
-            sender.send(c->controlAddress, ((FloatParameter *)c)->value);
+            sender.send(c->controlAddress, ((Parameter *)c)->floatValue());
             break;
 
         case Controllable::Type::INT:
-            sender.send(c->controlAddress, ((IntParameter *)c)->value);
-            break;
-
-        case Controllable::Type::RANGE:
-            sender.send(c->controlAddress, ((FloatParameter *)c)->value, ((FloatParameter *)c)->value);
+            sender.send(c->controlAddress, ((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::STRING:
-            sender.send(c->controlAddress, ((StringParameter *)c)->value);
+            sender.send(c->controlAddress, ((Parameter *)c)->stringValue());
             break;
     }
 

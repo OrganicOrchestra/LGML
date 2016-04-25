@@ -81,7 +81,11 @@ public:
 
 
     //ui
-    virtual NodeBaseUI *  createUI() {DBG("No implementation in child node class !");jassert(false);return nullptr;}
+    virtual NodeBaseUI *  createUI() { 
+		DBG("No implementation in child node class !"); 
+		jassert(false); 
+		return nullptr;
+	}
 
     // Inherited via DataProcessor::Listener
     virtual void inputAdded(Data *) override;
@@ -117,10 +121,6 @@ public:
     int nodeTypeEnum;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
-
-
-
-
 
 };
 

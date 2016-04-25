@@ -59,9 +59,10 @@ NodeBaseUI::~NodeBaseUI()
 }
 
 void NodeBaseUI::moved(){
-    if(node->xPosition->value != getBounds().getCentreX() ||node->yPosition->value != getBounds().getCentreY() ){
-        node->xPosition->value = (float)getBounds().getCentreX();
-        node->yPosition->value = (float)getBounds().getCentreY();
+
+    if(node->xPosition->intValue() != getBounds().getCentreX() || node->yPosition->intValue() != getBounds().getCentreY() ){
+        node->xPosition->setValue((float)getBounds().getCentreX());
+        node->yPosition->setValue((float)getBounds().getCentreY());
     }
 }
 
@@ -104,14 +105,50 @@ void NodeBaseUI::childBoundsChanged (Component* c){
     }
 }
 void NodeBaseUI::parameterValueChanged(Parameter * p) {
+
     if(p== node->xPosition||p==node->yPosition){
         setCentrePosition((int)node->xPosition->value, (int)node->yPosition->value);
     }
 }
 
+Array<ConnectorComponent*> NodeBaseUI::getComplementaryConnectors(ConnectorComponent * baseConnector)
+{
+	Array<ConnectorComponent *> result;
+
+
+	ConnectorContainer * checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? &inputContainer : &outputContainer;
+	if (checkSameCont->getIndexOfChildComponent(baseConnector) != -1) return result;
+
+	ConnectorContainer * complCont = checkSameCont == &inputContainer ? &outputContainer : &inputContainer;
+	for (int i = 0; i < complCont->connectors.size(); i++)
+	{
+		ConnectorComponent *c = (ConnectorComponent *)complCont->getChildComponent(i);
+		if (c->dataType == baseConnector->dataType)
+		{
+			result.add(c);
+		}
+	}
+
+	return result;
+}
+
 NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
 {
     return findParentComponentOfClass<NodeManagerUI>();
+}
+
+//Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
+
+ConnectorComponent * NodeBaseUI::getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType)
+{
+	if (ioType == ConnectorComponent::INPUT)
+	{
+		return inputContainer.getFirstConnector(connectionType);
+	}
+	else
+	{
+		return outputContainer.getFirstConnector(connectionType);
+	}
 }
 
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
@@ -189,6 +226,16 @@ void NodeBaseUI::ConnectorContainer::resized()
     {
         getChildComponent(i)->setSize(getWidth(), getWidth());
     }
+}
+
+ConnectorComponent * NodeBaseUI::ConnectorContainer::getFirstConnector(NodeConnection::ConnectionType dataType)
+{
+	for (int i = 0; i < connectors.size(); i++)
+	{
+		if (connectors.getUnchecked(i)->dataType == dataType) return connectors.getUnchecked(i);
+	}
+
+	return nullptr;
 }
 
 NodeBaseUI::MainContainer::MainContainer(NodeBaseContentUI * content, NodeBaseHeaderUI * header) :

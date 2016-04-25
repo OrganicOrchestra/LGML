@@ -28,13 +28,14 @@ public:
     DataProcessorGraph();
     ~DataProcessorGraph();
 
+	class DataThread : public Thread
+	{
+	public:
+		DataThread() : Thread("dataThread") {}
+		virtual void run() override { };
+	};
 
-    //==============================================================================
-    /** Represents a connection between two channels of two nodes in an AudioProcessorGraph.
-
-    To create a connection, use DataProcessorGraph::addConnection().
-    */
-
+	DataThread thread;
 
     class Connection : public Data::DataListener
     {

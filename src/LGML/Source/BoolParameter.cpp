@@ -12,7 +12,7 @@
 #include "BoolToggleUI.h"
 
 BoolParameter::BoolParameter(const String & niceName, const String &description, const bool & initialValue, bool enabled) :
-    Parameter(Type::BOOL, niceName, description, enabled)
+    Parameter(Type::BOOL, niceName, description, initialValue, false, true, enabled)
 {
     setValue(initialValue);
 }

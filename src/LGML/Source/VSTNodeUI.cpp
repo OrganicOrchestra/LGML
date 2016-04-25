@@ -55,13 +55,15 @@ void VSTNodeUI::updateVSTParameters(){
 
 void VSTNodeUI::controllableAdded(Controllable *) {};
 void VSTNodeUI::controllableRemoved(Controllable * c){
-    for(auto &p:paramSliders){
-        if(p->floatParam == c){
-            removeChildComponent (p);
-            paramSliders.removeObject(p);
+
+    for(auto &slider:paramSliders){
+        if(slider->parameter == c){
+            removeChildComponent (slider);
+            paramSliders.removeObject(slider);
             break;
         }
     };
+
 }
 void VSTNodeUI::controllableContainerAdded(ControllableContainer *){};
 void VSTNodeUI::controllableContainerRemoved(ControllableContainer *) {};

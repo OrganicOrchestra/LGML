@@ -20,8 +20,6 @@ public:
     IntSliderUI(Parameter * parameter);
     virtual ~IntSliderUI();
 
-    IntParameter * intParam;
-
     void setParamNormalizedValue(float value) override;
     float getParamNormalizedValue() override;
 protected:

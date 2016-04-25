@@ -93,10 +93,10 @@ void NodeBase::parameterValueChanged(Parameter * p)
 
     if (p == nameParam)
     {
-        setNiceName(nameParam->value);
+        setNiceName(nameParam->stringValue());
     }else if (p == enabledParam)
     {
-        DBG("set Node Enabled " + String(enabledParam->value));
+       // DBG("set Node Enabled " + String(enabledParam->boolValue()));
     }
 }
 
@@ -133,7 +133,7 @@ var NodeBase::getJSONData()
         {
             var pData(new DynamicObject());
             pData.getDynamicObject()->setProperty("controlAddress", base->getControlAddress(this));
-            pData.getDynamicObject()->setProperty("value", base->toString());
+            pData.getDynamicObject()->setProperty("value", base->value);
             paramsData.append(pData);
         }
         else if (dynamic_cast<Trigger*>(c) != nullptr) {
@@ -180,7 +180,7 @@ void NodeBase::loadJSONData(var data)
 
         Controllable * c = getControllableForAddress(pControlAddress, true, true);
         if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-            p->fromString(pData.getProperty("value",var())); //need to have a var-typed variable in parameter, so we can take advantage of autotyping
+            p->setValue(pData.getProperty("value",var())); //need to have a var-typed variable in parameter, so we can take advantage of autotyping
         }
         else {
             DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");

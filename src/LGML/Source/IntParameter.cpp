@@ -12,15 +12,22 @@
 #include "IntSliderUI.h"
 
 IntParameter::IntParameter(const String & niceName, const String &description, const int & initialValue, const int & minValue, const int & maxValue, bool enabled) :
-    Parameter(Type::INT, niceName, description, enabled), minValue(minValue), maxValue(maxValue)
+    Parameter(Type::INT, niceName, description, initialValue, minValue, maxValue, enabled)
 {
-    setValue(initialValue);
+
+}
+
+void IntParameter::setValueInternal(var _value)
+{
+	this->value = jlimit<int>(minimumValue, maximumValue, _value);
 }
 
 IntSliderUI * IntParameter::createSlider()
 {
-    return new IntSliderUI(this);
+	return new IntSliderUI(this);
 }
 
 
-ControllableUI * IntParameter::createDefaultControllableEditor(){return createSlider();};
+ControllableUI * IntParameter::createDefaultControllableEditor(){
+	return createSlider();
+};

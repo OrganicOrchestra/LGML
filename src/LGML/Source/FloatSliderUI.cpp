@@ -13,7 +13,7 @@
 
 //==============================================================================
 FloatSliderUI::FloatSliderUI(Parameter * parameter) :
-ParameterUI(parameter), floatParam((FloatParameter *)parameter)
+ParameterUI(parameter)
 {
     assignOnMousePosDirect = true;
     changeParamOnMouseUpOnly = false;
@@ -67,7 +67,7 @@ void FloatSliderUI::paint(Graphics & g)
             destRect.setBounds(0,0, sliderBounds.getHeight(), sliderBounds.getHeight());
         }
 
-        g.drawText(floatParam->niceName+" : "+String::formatted("%.2f",floatParam->value), destRect, Justification::centred);
+        g.drawText(parameter->niceName+" : "+String::formatted("%.2f", parameter->floatValue()), destRect, Justification::centred);
     }
 }
 
@@ -138,10 +138,10 @@ float FloatSliderUI::getValueFromPosition(const Point<int> &pos)
 
 void FloatSliderUI::setParamNormalizedValue(float value)
 {
-    floatParam->setNormalizedValue(value);
+	parameter->setNormalizedValue(value);
 }
 
 float FloatSliderUI::getParamNormalizedValue()
 {
-    return floatParam->getNormalizedValue();
+    return parameter->getNormalizedValue();
 }

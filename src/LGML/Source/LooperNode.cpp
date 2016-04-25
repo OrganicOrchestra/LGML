@@ -326,7 +326,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
 
         if(internalTrackState == BUFFER_RECORDING){
             if(askForBeingMasterTempoTrack() ){
-                int samplesToGet = (int)(preDelayMs->value*0.001f*parentLooper->getSampleRate());
+                int samplesToGet = (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
                 for(int i = monoLoopSample.getNumChannels()-1;i>=0 ;--i){
                     monoLoopSample.copyFrom(i,0,streamAudioBuffer.getLastBlock(samplesToGet,i),samplesToGet);
                 }
@@ -340,7 +340,7 @@ void LooperNode::Looper::Track::updatePendingLooperTrackState(const uint64 curTi
 
         if(lastInternalTrackState ==BUFFER_RECORDING){
             if( askForBeingMasterTempoTrack()){
-                recordNeedle-= (int)(preDelayMs->value*0.001f*parentLooper->getSampleRate());
+                recordNeedle-= (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
 
                 const int fadeNumSamples = (int)(parentLooper->getSampleRate()*0.022f);
                 if(fadeNumSamples>0 && recordNeedle>2*fadeNumSamples){

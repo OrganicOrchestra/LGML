@@ -12,10 +12,12 @@
 
 DataProcessorGraph::DataProcessorGraph()
 {
+	thread.startThread();
 }
 
 DataProcessorGraph::~DataProcessorGraph()
 {
+	thread.stopThread(0);
     clear();
 }
 
@@ -97,3 +99,4 @@ void DataProcessorGraph::removeConnection(Connection * c)
 {
     connections.removeObject(c, true);
 }
+

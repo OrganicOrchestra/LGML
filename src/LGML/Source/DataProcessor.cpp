@@ -14,7 +14,7 @@ typedef Data::DataType DataType;
 
 DataProcessor::DataProcessor()
 {
-
+	
 }
 
 DataProcessor::~DataProcessor()

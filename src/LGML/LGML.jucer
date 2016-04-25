@@ -83,10 +83,6 @@
             <FILE id="Qqzkdl" name="BoolToggleUI.cpp" compile="1" resource="0"
                   file="Source/BoolToggleUI.cpp"/>
             <FILE id="PZG6XQ" name="BoolToggleUI.h" compile="0" resource="0" file="Source/BoolToggleUI.h"/>
-            <FILE id="Eql1CU" name="FloatRangeParameterUI.cpp" compile="1" resource="0"
-                  file="Source/FloatRangeParameterUI.cpp"/>
-            <FILE id="buXRAL" name="FloatRangeParameterUI.h" compile="0" resource="0"
-                  file="Source/FloatRangeParameterUI.h"/>
             <FILE id="No0Xmd" name="FloatSliderUI.cpp" compile="1" resource="0"
                   file="Source/FloatSliderUI.cpp"/>
             <FILE id="Fk8DYI" name="FloatSliderUI.h" compile="0" resource="0" file="Source/FloatSliderUI.h"/>
@@ -109,15 +105,14 @@
                 file="Source/FloatParameter.cpp"/>
           <FILE id="uaeE3Q" name="FloatParameter.h" compile="0" resource="0"
                 file="Source/FloatParameter.h"/>
-          <FILE id="KNLgAl" name="FloatRangeParameter.cpp" compile="1" resource="0"
-                file="Source/FloatRangeParameter.cpp"/>
-          <FILE id="VnQ40x" name="FloatRangeParameter.h" compile="0" resource="0"
-                file="Source/FloatRangeParameter.h"/>
           <FILE id="nFbmUB" name="IntParameter.cpp" compile="1" resource="0"
                 file="Source/IntParameter.cpp"/>
           <FILE id="hxhJJT" name="IntParameter.h" compile="0" resource="0" file="Source/IntParameter.h"/>
           <FILE id="mi3a1Z" name="Parameter.cpp" compile="1" resource="0" file="Source/Parameter.cpp"/>
           <FILE id="CVykgt" name="Parameter.h" compile="0" resource="0" file="Source/Parameter.h"/>
+          <FILE id="ChdLZ1" name="PresetManager.cpp" compile="1" resource="0"
+                file="Source/PresetManager.cpp"/>
+          <FILE id="Crvsjm" name="PresetManager.h" compile="0" resource="0" file="Source/PresetManager.h"/>
           <FILE id="wz5PBh" name="StringParameter.cpp" compile="1" resource="0"
                 file="Source/StringParameter.cpp"/>
           <FILE id="IhX92R" name="StringParameter.h" compile="0" resource="0"

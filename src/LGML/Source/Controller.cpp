@@ -52,7 +52,7 @@ var Controller::getJSONData()
         {
             var pData(new DynamicObject());
             pData.getDynamicObject()->setProperty("controlAddress", base->getControlAddress(this));
-            pData.getDynamicObject()->setProperty("value", base->toString());
+            pData.getDynamicObject()->setProperty("value", base->value);
             paramsData.append(pData);
         }
         else if (dynamic_cast<Trigger*>(c) != nullptr) {
@@ -81,7 +81,7 @@ void Controller::loadJSONData(var data)
 
         Controllable * c = getControllableForAddress(pControlAddress, true, true);
         if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-            p->fromString(pData.getProperty("value", var())); //need to have a var-typed variable in parameter, so we can take advantage of autotyping
+            p->setValue(pData.getProperty("value", var())); //need to have a var-typed variable in parameter, so we can take advantage of autotyping
         }
         else {
             DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");

@@ -12,16 +12,23 @@
 #include "FloatSliderUI.h"
 
 
-ControllableUI * FloatParameter::createDefaultControllableEditor() {return createSlider();}
 
 FloatParameter::FloatParameter(const String & niceName, const String &description, const float & initialValue, const float & minValue, const float & maxValue, bool enabled) :
-    Parameter(Type::FLOAT, niceName, description, enabled), minValue(minValue),maxValue(maxValue)
+    Parameter(Type::FLOAT, niceName, description, (float)initialValue, (float)minValue, (float)maxValue, enabled)
 {
-    setValue(initialValue);
 
 }
 
-  FloatSliderUI * FloatParameter::createSlider()
-  {
-      return new FloatSliderUI(this);
-  }
+void FloatParameter::setValueInternal(var _value)
+{
+	value = jlimit<float>(minimumValue, maximumValue, _value);
+}
+
+FloatSliderUI * FloatParameter::createSlider()
+{
+    return new FloatSliderUI(this);
+}
+
+ControllableUI * FloatParameter::createDefaultControllableEditor() { 
+	return createSlider(); 
+}

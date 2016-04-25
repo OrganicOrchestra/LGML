@@ -14,7 +14,6 @@
 #include "Controllable.h"
 #include "FloatParameter.h"
 #include "IntParameter.h"
-#include "FloatRangeParameter.h"
 #include "BoolParameter.h"
 #include "StringParameter.h"
 #include "Trigger.h"
@@ -34,7 +33,7 @@ public:
 
     bool skipControllableNameInAddress;
 
-    void setNiceName(const String &_niceName) ;
+    void setNiceName(const String &_niceName);
 
     void setCustomShortName(const String &_shortName);
 

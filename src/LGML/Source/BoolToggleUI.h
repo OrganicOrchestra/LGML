@@ -21,8 +21,6 @@ public:
     BoolToggleUI(Parameter * parameter);
     virtual ~BoolToggleUI();
 
-    BoolParameter * boolParam;
-
     void paint(Graphics &g) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;

@@ -44,6 +44,9 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     }
 
     titleUI = node->nameParam->createStringParameterUI();
+
+	DBG("Node Header UI, name Param : " << node->nameParam->stringValue());
+
     titleUI->setNameLabelVisible(false);
     titleUI->setInterceptsMouseClicks(false, false);
     addAndMakeVisible(titleUI);
@@ -90,5 +93,15 @@ void NodeBaseHeaderUI::resized()
     titleUI->setBounds(r);
 
     enabledUI->setTopLeftPosition(5, 5);
+
+}
+
+void NodeBaseHeaderUI::Grabber::paint(Graphics & g)
+{
+	g.setColour(FRONT_COLOR);
+	Rectangle<float> r = getLocalBounds().reduced(5).toFloat();
+	g.drawLine(r.getTopLeft().x, r.getRelativePoint(0.f, .2f).y, r.getTopRight().x, r.getRelativePoint(0.f, .2f).y, .4f);
+	g.drawLine(r.getTopLeft().x, r.getCentreY(), r.getBottomRight().x, r.getCentreY(), .4f);
+	g.drawLine(r.getBottomLeft().x, r.getRelativePoint(0.f, .8f).y, r.getBottomRight().x, r.getRelativePoint(0.f, .8f).y, .4f);
 
 }

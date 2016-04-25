@@ -16,20 +16,30 @@
 class Parameter : public Controllable
 {
 public:
-    Parameter(const Type &type, const String & niceName, const String &description, bool enabled = true);
+    Parameter(const Type &type, const String & niceName, const String &description, var initialValue, var minValue, var maxValue, bool enabled = true);
     virtual ~Parameter() {Parameter::masterReference.clear();}
 
 
-    //TODO use a "var" type to have more consistency and method heritage (pull up the value member in this parent class, not in every child class)
+	var defaultValue;
+	var minimumValue;
+	var maximumValue;
+	var value;
 
-    virtual float getNormalizedValue() {
-        return 0;
-    }
+	void setValue(var _value, bool silentSet = false, bool force = false);	
+	virtual void setValueInternal(var _value);;
 
-    virtual String toString() = 0;
-    virtual void fromString(const String & s,bool silentSet = false, bool force = false) = 0;
+	//For Number type parameters
+	void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false);
+	float getNormalizedValue();
+
+	//helpers for fast typing
+	float floatValue() { return (float)value; }
+	int intValue() { return (int)value; }
+	bool boolValue() { return (bool)value; }
+	String stringValue() { return value.toString(); }
+
 protected:
-    void notifyValueChanged() {listeners.call(&Listener::parameterValueChanged, this); }
+	void notifyValueChanged();
 
 
 public:
@@ -45,8 +55,6 @@ public:
     ListenerList<Listener> listeners;
     void addParameterListener(Listener* newListener) { listeners.add(newListener); }
     void removeParameterListener(Listener* listener) { listeners.remove(listener); }
-
-
 
 private:
 

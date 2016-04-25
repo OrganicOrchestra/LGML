@@ -23,23 +23,10 @@ public:
 
     bool value;
 
-    void setValue(const bool &_value, bool silentSet = false, bool force = false)
-    {
-        if (!force && this->value == _value) return;
-        this->value = _value;
-        if (!silentSet) notifyValueChanged();
-    }
-
-    float getNormalizedValue() override
-    {
-        return value ? 1.f : 0.f;
-    }
-
     //ui creation
     BoolToggleUI * createToggle();
     ControllableUI * createDefaultControllableEditor()override ;
-    String toString() override{return String(value);}
-    void fromString(const String & s,bool silentSet = false, bool force = false) override{setValue(s.getIntValue()!=0,silentSet,force);};
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
 };
 

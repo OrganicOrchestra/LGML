@@ -84,15 +84,7 @@ public:
         void addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
         void resized();
 
-        ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType dataType)
-        {
-            for (int i = 0; i < connectors.size(); i++)
-            {
-                if (connectors.getUnchecked(i)->dataType == dataType) return connectors.getUnchecked(i);
-            }
-
-            return nullptr;
-        }
+		ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType dataType);
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorContainer)
     };
@@ -105,41 +97,12 @@ public:
     NodeBaseContentUI * getContentContainer() { return mainContainer.contentContainer; }
     NodeBaseHeaderUI * getHeaderContainer() { return mainContainer.headerContainer; }
 
-    Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector)
-    {
-        Array<ConnectorComponent *> result;
-
-
-        ConnectorContainer * checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? &inputContainer : &outputContainer;
-        if (checkSameCont->getIndexOfChildComponent(baseConnector) != -1) return result;
-
-        ConnectorContainer * complCont = checkSameCont == &inputContainer ? &outputContainer : &inputContainer;
-        for (int i = 0; i < complCont->connectors.size(); i++)
-        {
-            ConnectorComponent *c = (ConnectorComponent *)complCont->getChildComponent(i);
-            if (c->dataType == baseConnector->dataType)
-            {
-                result.add(c);
-            }
-        }
-
-        return result;
-    }
+	Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector);
     NodeManagerUI * getNodeManagerUI() const noexcept;
 
 
     //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
-    ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType)
-    {
-        if (ioType == ConnectorComponent::INPUT)
-        {
-            return inputContainer.getFirstConnector(connectionType);
-        }
-        else
-        {
-            return outputContainer.getFirstConnector(connectionType);
-        }
-    }
+	ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
 
 
 
