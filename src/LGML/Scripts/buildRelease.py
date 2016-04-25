@@ -24,10 +24,7 @@ executable_name = "LGML"
 gitPath = "../../../"
 appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
-import xml.etree.ElementTree as ET
-tree = ET.parse(JuceProjectPath)
-root = tree.getroot()
-projectVersion =root.attrib["version"]
+
 
 
 def sh(cmd):
@@ -35,18 +32,16 @@ def sh(cmd):
 	res =  os.popen(cmd).read()
 	print res
 	return res
-
-def generateProductBaseName():
-	return executable_name+"_v"+projectVersion+"_"+configuration
-	
-	
 	
 def getVersion():
-	return sh(proJucerPath+ " --get-version " + JuceProjectPath)
-
+	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
+	
+def generateProductBaseName():
+	return executable_name+"_v"+str(getVersion())+"_"+configuration
+	
 getVersion()
 
-def cleanCode(sourceFolder):
+def formatCode(sourceFolder):
 	# sourceFolder = os.path.abspath(sourceFolder)
 	sh(proJucerPath+ " --remove-tabs "+sourceFolder);
 	sh(proJucerPath+ " --tidy-divider-comments "+sourceFolder);
@@ -115,7 +110,7 @@ def sendToOwnCloud(originPath,destPath):
 
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
-cleanCode("../Source");
+formatCode("../Source");
 buildJUCE(JuceProjectPath);
 buildApp(xcodeProjPath,configuration);
 localPath = localExportPath+generateProductBaseName();
