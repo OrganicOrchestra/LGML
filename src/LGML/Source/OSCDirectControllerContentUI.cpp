@@ -18,8 +18,9 @@ OSCDirectControllerContentUI::OSCDirectControllerContentUI() :activityTrigger("O
 	addAndMakeVisible(activityTriggerUI);
 	addAndMakeVisible(&activityLog);
 	activityLog.setColour(activityLog.backgroundColourId,Colours::white);
-	activityLog.setEditable(true);
+	//activityLog.setEditable(true);
 	activityLog.setJustificationType(Justification::bottomLeft);
+	activityLog.setFont(activityLog.getFont().withHeight(12));
 }
 
 OSCDirectControllerContentUI::~OSCDirectControllerContentUI()
@@ -42,17 +43,9 @@ void OSCDirectControllerContentUI::init()
     addAndMakeVisible(remotePortUI);
 
 
-    cui->setSize(300, 300);
+    cui->setSize(getWidth(), 300);
 
     Array<Controllable *> nodeControllables = NodeManager::getInstance()->getAllControllables(true,false);
-
-    /*
-    for (auto &_c : nodeControllables)
-    {
-        _c;
-        DBG(_c->controlAddress+"     "+_c->description);
-    }
-    */
 }
 
 void OSCDirectControllerContentUI::resized()
@@ -77,6 +70,6 @@ void OSCDirectControllerContentUI::mouseDown(const MouseEvent &)
 
 void OSCDirectControllerContentUI::messageProcessed(const OSCMessage & msg, bool success)
 {
-	activityLog.setText(activityLog.getText() + String("\n") + msg.getAddressPattern().toString(),NotificationType::dontSendNotification);
+	activityLog.setText(activityLog.getText() + String("\n") + msg.getAddressPattern().toString()+ " ("+(success?"Success":"Failed")+")",NotificationType::dontSendNotification);
 	activityTrigger.trigger();
 }
