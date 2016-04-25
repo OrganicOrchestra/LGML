@@ -16,6 +16,7 @@
 #define BG_COLOR        Colour(0xff222222)
 #define PANEL_COLOR     Colour(0xff444444)
 #define FRONT_COLOR     Colour(0xffCCCCCC)
+#define LIGHTCONTOUR_COLOR Colour(0xffAAAAAA)
 #define HIGHLIGHT_COLOR Colour(0xffFF922F)
 #define CONTOUR_COLOR   Colour(0xcc303030)
 

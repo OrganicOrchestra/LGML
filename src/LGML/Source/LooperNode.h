@@ -68,7 +68,8 @@ public:
 
             ~Track(){}
 
-            Trigger * recPlayTrig;
+			Trigger * selectTrig;
+			Trigger * recPlayTrig;
             Trigger * playTrig;
             Trigger * clearTrig;
             Trigger * stopTrig;

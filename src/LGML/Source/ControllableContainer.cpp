@@ -189,17 +189,39 @@ void ControllableContainer::updateChildrenControlAddress()
 
 }
 
-Array<Controllable*> ControllableContainer::getAllControllables(bool recursive,bool getExposed)
+Array<Controllable*> ControllableContainer::getAllControllables(bool recursive,bool getNotExposed)
 {
     Array<Controllable*> result;
-    for (auto &c : controllables) if(getExposed || c->isControllableExposed) result.add(c);
+	for (auto &c : controllables)
+	{
+		if (getNotExposed || c->isControllableExposed) result.add(c);
+	}
 
     if (recursive)
     {
-        for (auto &cc : controllableContainers) result.addArray(cc->getAllControllables(true,getExposed));
+        for (auto &cc : controllableContainers) result.addArray(cc->getAllControllables(true,getNotExposed));
     }
 
     return result;
+}
+
+Array<Parameter*> ControllableContainer::getAllParameters(bool recursive, bool getNotExposed)
+{
+	Array<Parameter*> result;
+	for (auto &c : controllables)
+	{
+		Parameter * p = (Parameter *)c;
+		if (p == nullptr) continue;
+
+		if (getNotExposed || c->isControllableExposed) result.add(p);
+	}
+
+	if (recursive)
+	{
+		for (auto &cc : controllableContainers) result.addArray(cc->getAllParameters(true, getNotExposed));
+	}
+
+	return result;
 }
 
 
@@ -271,6 +293,15 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
     }
 
     return nullptr;
+}
+
+void ControllableContainer::applyPreset(PresetManager::Preset * preset)
+{
+	for (auto &pv : preset->presetValues)
+	{
+		Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
+		if (p != nullptr) p->setValue(pv->presetValue);
+	}
 }
 
 void ControllableContainer::dispatchFeedback(Controllable * c)

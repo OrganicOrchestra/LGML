@@ -23,6 +23,7 @@ NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X")
                         removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
                         0.5f);
     setSize(20, 30);
+
 }
 
 NodeBaseHeaderUI::~NodeBaseHeaderUI()
@@ -56,6 +57,8 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 
     addAndMakeVisible(grabber);
     addAndMakeVisible(removeBT);
+
+	presetCB = PresetManager::getInstance()->getPresetSelector(PresetManager::Preset::Type::Node);
 
     init();
 

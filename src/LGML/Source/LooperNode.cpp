@@ -208,6 +208,9 @@ trackIdx(_trackIdx)
 
     //setCustomShortName("track/" + String(_trackIdx)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
 
+	selectTrig = addTrigger("Select",
+		"Select this track");
+
     recPlayTrig =   addTrigger("Rec Or Play",
                                "Tells the track to wait for the next bar and then start record or play");
 
@@ -227,7 +230,8 @@ trackIdx(_trackIdx)
                                     "Pre process delay (in milliseconds)",
                                     40, 0, 200);
 
-    recPlayTrig->hideInEditor = true;
+	selectTrig->hideInEditor = true;
+	recPlayTrig->hideInEditor = true;
     playTrig->hideInEditor = true;
     stopTrig->hideInEditor = true;
     clearTrig->hideInEditor = true;
@@ -239,7 +243,8 @@ trackIdx(_trackIdx)
     stateParameterString->isControllableFeedbackOnly = true;
     preDelayMs->isControllableExposed = false;
 
-    recPlayTrig->addTriggerListener(this);
+	selectTrig->addTriggerListener(this);
+	recPlayTrig->addTriggerListener(this);
     playTrig->addTriggerListener(this);
     clearTrig->addTriggerListener(this);
     stopTrig->addTriggerListener(this);
@@ -416,7 +421,10 @@ String LooperNode::Looper::Track::trackStateToString(const TrackState & ts){
 }
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
-    if(t == recPlayTrig){
+	if (t == selectTrig)
+	{
+		parentLooper->selectMe(this);
+	}else if (t == recPlayTrig) {
         if(trackState == CLEARED ){
             setTrackState(SHOULD_RECORD);
         }
@@ -444,8 +452,8 @@ bool LooperNode::Looper::Track::askForBeingMasterTempoTrack(){
 void LooperNode::Looper::Track::setSelected(bool isSelected){
     trackStateListeners.call(&LooperNode::Looper::Track::Listener::trackSelected,isSelected);
 }
-void LooperNode::Looper::Track::askForSelection(bool isSelected){
-    parentLooper->selectMe(isSelected?this:nullptr);
+void LooperNode::Looper::Track::askForSelection(bool /*isSelected*/){
+   selectTrig->trigger(); //(isSelected ? this : nullptr);)
 }
 
 

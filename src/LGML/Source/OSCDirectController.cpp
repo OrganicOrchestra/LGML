@@ -28,7 +28,7 @@ OSCDirectController::~OSCDirectController()
 void OSCDirectController::processMessage(const OSCMessage & msg)
 {
     String addr = msg.getAddressPattern().toString();
-    DBG("Process : " + addr);
+    DBG("OSCDirectController::Process : " + addr);
 
     StringArray addrArray;
     addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));

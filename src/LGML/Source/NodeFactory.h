@@ -22,7 +22,7 @@
 
 class NodeManager;
 
-const static String nodeTypeNames[] = { "Dummy","AudioMixer","OSC2Data","Spat","Looper","VST","AudioIn","AudioOut" };
+const static String nodeTypeNames[] = { "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioIn","AudioOut" };
 
 class NodeFactory
 {
@@ -31,7 +31,7 @@ public:
     {
         Dummy,
         AudioMixer,
-        OSC2Data,
+        DataIn,
         Spat,
         Looper,
         VST,
@@ -50,81 +50,14 @@ public:
 
     }
 
-    NodeBase * createNode(NodeManager * nodeManager,NodeType nodeType, uint32 nodeId = 0)
-    {
-        NodeBase * n = nullptr;
+	NodeBase * createNode(NodeManager * nodeManager, NodeType nodeType, uint32 nodeId = 0);
 
-        switch (nodeType)
-        {
-            case Dummy:
-                n = new DummyNode(nodeManager,nodeId);
-                break;
+	static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0);
 
-            case AudioMixer:
-                n = new AudioMixerNode(nodeManager,nodeId);
-                break;
+	static NodeType getTypeFromString(const String & s);
 
-            case OSC2Data:
-                n = new DataInNode(nodeManager, nodeId);
-                break;
-
-            case Spat:
-                n = new SpatNode(nodeManager,nodeId);
-                break;
-            case Looper:
-                n = new LooperNode(nodeManager,nodeId);
-                break;
-            case VST:
-                n = new VSTNode(nodeManager,nodeId);
-                break;
-
-            case AudioIn:
-                n = new AudioInNode(nodeManager,nodeId);
-                break;
-
-            case AudioOut:
-                n = new AudioOutNode(nodeManager,nodeId);
-                break;
-            case UNKNOWN:
-                DBG("NodeFactory : not found type for node");
-                return nullptr;
-            default:
-                jassert(false);
-                break;
-        }
-        n->nodeTypeEnum = (int)nodeType;
-
-        return n;
-    }
-
-    static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0)
-    {
-        PopupMenu * p = new PopupMenu();
-        for (int i = 0; i < numElementsInArray(nodeTypeNames);i++)
-        {
-            p->addItem(menuIdOffset + i+1, nodeTypeNames[i]);
-        }
-
-        return p;
-    }
-
-    static NodeType getTypeFromString(const String & s){
-        for (int i = 0; i < numElementsInArray(nodeTypeNames);i++)
-        {
-            if(s==nodeTypeNames[i]){return NodeType(i);}
-        }
-        return UNKNOWN;
-    }
-
-    static String nodeTypeToString(NodeType t){
-        if(t<0 || t > UNKNOWN)return String::empty;
-        return nodeTypeNames[(int)t];
-    }
-    static String nodeToString(NodeBase *  n){
-        int t = n->nodeTypeEnum;
-        if(t<0 || t > UNKNOWN)return String::empty;
-        return nodeTypeNames[(int)t];
-    }
+	static String nodeTypeToString(NodeType t);
+	static String nodeToString(NodeBase *  n);
 
 };
 

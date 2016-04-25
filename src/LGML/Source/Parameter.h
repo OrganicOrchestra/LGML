@@ -25,6 +25,10 @@ public:
 	var maximumValue;
 	var value;
 
+	bool isPresettable;
+	bool isOverriden;
+
+	void resetValue();
 	void setValue(var _value, bool silentSet = false, bool force = false);	
 	virtual void setValueInternal(var _value);;
 

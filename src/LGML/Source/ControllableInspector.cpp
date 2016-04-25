@@ -107,9 +107,10 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
 
 }
 
-void ControllableInspector::paint(Graphics & g)
+void ControllableInspector::paint(Graphics &)
 {
-    g.fillAll(BG_COLOR);
+    //g.fillAll(PANEL_COLOR);
+	
 }
 
 void ControllableInspector::resized(){

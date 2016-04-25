@@ -1,0 +1,66 @@
+<JZML>
+<PROJECT version="5320" width="1024" height="724" osc_target="-1" midi_target="-1" kbmouse_target="-1" skin="Pixel"/>
+<WINDOW class="JAZZINTERFACE" text="LGMLTest" x="0" y="0" width="1024" height="724" state="1" group="0" font="tahoma,11,0" >
+<WINDOW class="Container" text="looper1" x="13" y="63" width="611" height="460" state="1" group="0" font="tahoma,10,0" send="1" osc_target="0" midi_target="-2" kbmouse_target="-2" color="1596013" label="1" tabbar="1" meta="0">
+<WINDOW class="Switches" text="tracks" x="0" y="41" width="595" height="71" state="1" group="0" font="tahoma,10,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" capture="1" color="865343,1596013" column="8" label="0" multicolor="0" multilabel="0" paint="0" radio="1" row="1">
+<PARAM name="x=" value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000" send="16" osc_target="-2" osc_trigger="1" osc_message="/looper1/tracks/x" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" osc_scale="0.000000,1.000000" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/tracks/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+</WINDOW>
+<WINDOW class="Pads" text="recBT" x="56" y="279" width="169" height="151" id="1" state="1" group="0" font="tahoma,10,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" capture="1" color="8336424,1596013" column="1" label="0" multicolor="0" multilabel="0" row="1">
+<PARAM name="x=" value="0.000000" send="16" osc_target="-2" osc_trigger="1" osc_message="/looper1/recBT/x" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" osc_scale="0.000000,1.000000" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="attack=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/recBT/attack" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="decay=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/recBT/decay" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="sustain=1" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/recBT/sustain" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="release=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/recBT/release" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="hold=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/recBT/hold" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/recBT/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<SCRIPT name="recCurrent(indices)" script="decl t = 0;
+decl i;
+for(i=0;i<8;i++)
+{
+	if(tracks.x[i] == 1) t = i;	
+}
+decl pName = getattribute(getparent(getobject()),'name');
+
+oscout(0, '/node/'+pName+'/track'+t+'/recOrPlay',{1});" trigger_script="" trigger_type="255" trigger_name="onPressed" trigger="1" clock="0" clock_div="4" osc_message="/looper1/recBT/recCurrent" midi_message="0x90,0x90,0,0" midi_target="-1" flag="1"/>
+</WINDOW>
+<WINDOW class="Pads" text="clearBT" x="303" y="279" width="169" height="151" id="2" state="1" group="0" font="tahoma,10,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" capture="1" color="6357074,1596013" column="1" label="0" multicolor="0" multilabel="0" row="1">
+<PARAM name="x=" value="0.000000" send="16" osc_target="-2" osc_trigger="1" osc_message="/looper1/clearBT/x" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" osc_scale="0.000000,1.000000" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="attack=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/clearBT/attack" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="decay=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/clearBT/decay" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="sustain=1" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/clearBT/sustain" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="release=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/clearBT/release" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="hold=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/clearBT/hold" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/clearBT/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<SCRIPT name="clearCurrent()" script="" trigger_script="" trigger_type="4" trigger="1" clock="0" clock_div="4" osc_message="/looper1/clearBT/clearCurrent" midi_message="0x90,0x90,0,0" midi_target="-1" flag="1"/>
+</WINDOW>
+<WINDOW class="Text" text="Text" x="168" y="390" width="50" height="31" id="3" state="245" group="0" font="tahoma,14,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" color="8355711" content="REC">
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/Text/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+</WINDOW>
+<WINDOW class="Text" text="Text2" x="415" y="390" width="50" height="31" id="4" state="245" group="0" font="tahoma,14,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" color="8355711" content="CLEAR">
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/Text2/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+</WINDOW>
+<WINDOW class="Text" text="Text3" x="10" y="21" width="65" height="20" id="5" state="245" group="0" font="tahoma,14,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" color="8355711" content="TRACKS">
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/Text3/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+</WINDOW>
+<WINDOW class="Switches" text="tracks2" x="0" y="120" width="595" height="71" id="6" state="1" group="0" font="tahoma,10,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" capture="1" color="15126,2850573" column="8" label="0" multicolor="0" multilabel="0" paint="0" radio="1" row="1">
+<PARAM name="x=" value="0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000,0.000000" send="16" osc_target="-2" osc_trigger="1" osc_message="/looper1/tracks2/x" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" osc_scale="0.000000,1.000000" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/tracks2/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+<SCRIPT name="select()" script="decl t1 = findobject('tracks1');
+decl i;
+for(i=0; i < 8; i++)
+{
+ setattribute(t1.x,
+}
+
+" trigger_script="tracks2.x" trigger_type="0" trigger="1" clock="0" clock_div="4" osc_message="/looper1/tracks2/select" midi_message="0x90,0x90,0,0" midi_target="-1" flag="1"/>
+</WINDOW>
+<WINDOW class="Text" text="LastLooperLabel" x="415" y="203" width="81" height="48" id="7" state="245" group="0" font="tahoma,14,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" color="1596013" content="Last Looper">
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/LastLooperLabel/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+</WINDOW>
+<WINDOW class="Text" text="lastLooper" x="512" y="203" width="57" height="48" id="8" state="241" group="0" font="tahoma,14,0" send="1" osc_target="-2" midi_target="-2" kbmouse_target="-2" color="1596013" content="1">
+<VARIABLE name="light=0" send="0" osc_target="0" osc_trigger="1" osc_message="/looper1/lastLooper/light" midi_target="-1" midi_trigger="1" midi_message="0x90,0x90,0,0" midi_scale="0,16383" kbmouse_target="-1" kbmouse_trigger="1" kbmouse_message="0,0,0" kbmouse_scale="0,1,0,1"/>
+</WINDOW>
+</WINDOW>
+</WINDOW>
+</JZML>

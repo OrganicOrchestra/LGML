@@ -20,8 +20,6 @@
 #include "VuMeter.h"
 #include "Style.h"
 
-
-
 class NodeBaseHeaderUI : public ContourComponent
 {
 public:
@@ -43,6 +41,7 @@ public:
 
     Grabber grabber;
     ImageButton removeBT;
+	ScopedPointer<ComboBox> presetCB;
 
     void mouseDoubleClick(const MouseEvent & e)override;
 

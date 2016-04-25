@@ -35,15 +35,14 @@ public:
     virtual void internalSetSelected(bool) {}
 
     void setHandler(SelectableComponentHandler * h);
-    virtual void paintOverChildren(Graphics & g)override;
+    virtual void paintOverChildren(Graphics & g) override;
 
 protected:
 //    can change this if repaint is handled in setSelected
     bool repaintOnSelection;
+	
 
 private:
-
-
     SelectableComponentHandler * handler;
 };
 

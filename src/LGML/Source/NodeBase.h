@@ -25,15 +25,10 @@
 class NodeBaseUI;
 class NodeManager;
 
-
-
 class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener,public NodeAudioProcessor::NodeAudioProcessorListener, public ControllableContainer
 {
 
 public:
-
-
-
     class NodeDataProcessor : public DataProcessor
     {
     public:
@@ -41,8 +36,6 @@ public:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeDataProcessor)
 
     };
-
-
 
 public:
     NodeBase(NodeManager * nodeManager,uint32 nodeId, const String &name = "[NodeBase]", NodeAudioProcessor * audioProcessor = nullptr, NodeBase::NodeDataProcessor * dataProcessor = nullptr);
@@ -117,8 +110,8 @@ public:
     void addRemoveNodeListener(Listener* newListener) { listeners.add(newListener); }
     void removeRemoveNodeListener(Listener* listener) { listeners.remove(listener); }
 
-// keeps type info from NodeFactory
-    int nodeTypeEnum;
+	// keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeFactory::NodeType, but circular dependency BULLSHIIIIIT)
+	int nodeType;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 

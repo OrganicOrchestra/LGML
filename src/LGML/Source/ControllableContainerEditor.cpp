@@ -66,7 +66,9 @@ void ControllableContainerEditor::removeContainerFromEditor(ControllableContaine
 
 void ControllableContainerEditor::paint(Graphics & g)
 {
-    g.fillAll(BG_COLOR);
+    g.fillAll(PANEL_COLOR);
+	g.setColour(CONTOUR_COLOR);
+	g.drawRect(getLocalBounds());
 }
 
 void ControllableContainerEditor::resized(){

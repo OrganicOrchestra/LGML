@@ -29,11 +29,13 @@ void SelectableComponent::askForSelection(bool _isSelected,bool unique ) {
     isSelected = _isSelected;
     internalSetSelected(isSelected);
     if(handler!=nullptr && changed)handler->internalSelected(this,isSelected,unique);
-    if(repaintOnSelection && changed)repaint();
+    if(repaintOnSelection && changed) repaint();
 };
+
 void SelectableComponent::paintOverChildren(juce::Graphics &g){
-if(isSelected){
-    g.setColour(Colours::yellow);
-    g.drawRect(getLocalBounds());
-}
+
+	if(isSelected){
+		g.setColour(Colours::yellow);
+		g.drawRect(getLocalBounds());
+	}
 }

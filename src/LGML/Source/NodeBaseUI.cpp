@@ -23,7 +23,7 @@ NodeBaseUI::NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer, No
 SelectableComponent(&NodeManagerUI::selectableHandler),
 inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
-mainContainer(contentContainer,headerContainer),
+mainContainer(this,contentContainer,headerContainer),
 node(node)
 {
 
@@ -32,8 +32,6 @@ node(node)
     this->node = node;
 
     connectorWidth = 10;
-
-
 
     inputContainer.setConnectorsFromNode(node);
     outputContainer.setConnectorsFromNode(node);
@@ -44,13 +42,14 @@ node(node)
     getHeaderContainer()->addMouseListener(this, true);// (true, true);
 
     mainContainer.setNodeAndNodeUI(node, this);
-    if(getWidth() == 0 || getHeight() == 0) setSize(200, 60);
+    if(getWidth() == 0 || getHeight() == 0) setSize(250,100);
 
     node->xPosition->addParameterListener(this);
     node->yPosition->addParameterListener(this);
     node->xPosition->hideInEditor = true;
     node->yPosition->hideInEditor = true;
 
+	//repaintOnSelection = false;
 
 }
 
@@ -66,12 +65,15 @@ void NodeBaseUI::moved(){
     }
 }
 
+void NodeBaseUI::internalSetSelected(bool)
+{
+	mainContainer.repaint();
+}
+
+
 void NodeBaseUI::setNode(NodeBase *)
 {
-
-
     //parameters
-
 }
 
 
@@ -238,7 +240,8 @@ ConnectorComponent * NodeBaseUI::ConnectorContainer::getFirstConnector(NodeConne
 	return nullptr;
 }
 
-NodeBaseUI::MainContainer::MainContainer(NodeBaseContentUI * content, NodeBaseHeaderUI * header) :
+NodeBaseUI::MainContainer::MainContainer(NodeBaseUI * _nodeUI, NodeBaseContentUI * content, NodeBaseHeaderUI * header) :
+nodeUI(_nodeUI),
 ContourComponent(Colours::green),
 headerContainer(header), contentContainer(content)
 {
@@ -261,9 +264,10 @@ void NodeBaseUI::MainContainer::paint(Graphics & g)
 {
     g.setColour(PANEL_COLOR);
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
-    g.setColour(CONTOUR_COLOR);
-    g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
 
+    g.setColour(nodeUI->isSelected ?HIGHLIGHT_COLOR:LIGHTCONTOUR_COLOR);
+    g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1),4.f, nodeUI->isSelected?2.f:1.f);
+	
 }
 
 

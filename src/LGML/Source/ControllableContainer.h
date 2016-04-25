@@ -17,7 +17,7 @@
 #include "BoolParameter.h"
 #include "StringParameter.h"
 #include "Trigger.h"
-
+#include "PresetManager.h"
 
 class ControllableContainerEditor;
 
@@ -61,12 +61,13 @@ public:
     void setParentContainer(ControllableContainer * container);
     void updateChildrenControlAddress();
     virtual Array<Controllable *> getAllControllables(bool recursive = false,bool getNotExposed = false);
+	virtual Array<Parameter *> getAllParameters(bool recursive = false, bool getNotExposed = false);
 
     virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
     virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
 
 
-
+	virtual void applyPreset(PresetManager::Preset * preset);
 
     void dispatchFeedback(Controllable * c);
 

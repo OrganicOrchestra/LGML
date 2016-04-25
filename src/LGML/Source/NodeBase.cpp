@@ -19,7 +19,7 @@ nodeId(_nodeId),
 audioProcessor(_audioProcessor),
 dataProcessor(_dataProcessor),
 ControllableContainer(name),
-nodeTypeEnum(-1)
+nodeType(-1)
 {
 
     if (dataProcessor != nullptr)
@@ -35,8 +35,13 @@ nodeTypeEnum(-1)
     enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
     xPosition = addFloatParameter("xPosition","x position on canvas",0,0,99999);
     yPosition= addFloatParameter("yPosition","y position on canvas",0,0,99999);
+
     xPosition->isControllableExposed = false;
     yPosition->isControllableExposed = false;
+	xPosition->isPresettable = false;
+	yPosition->isPresettable = false;
+	nameParam->isPresettable = false;
+	enabledParam->isPresettable = false;
 }
 
 

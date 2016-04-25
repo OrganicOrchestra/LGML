@@ -16,13 +16,26 @@ Parameter::Parameter(const Type &type, const String &niceName, const String &des
 	minimumValue = minValue;
 	maximumValue = maxValue;
 	defaultValue = initialValue;
-	setValue(initialValue);
+	
+	isOverriden = false;
+	isPresettable = true;
+	
+	resetValue();
+}
+
+void Parameter::resetValue()
+{
+	isOverriden = false;
+	setValue(defaultValue);
 }
 
 void Parameter::setValue(var _value, bool silentSet, bool force)
 {
 	if (!force && this->value == _value) return;
 	setValueInternal(_value);
+
+	if(_value != defaultValue) isOverriden = true;
+
 	if (!silentSet) notifyValueChanged();
 }
 

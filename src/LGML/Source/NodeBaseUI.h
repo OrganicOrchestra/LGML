@@ -52,17 +52,26 @@ public:
     void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e)  override;
     void moved()override;
+
+
+	//SelectableComponent
+	void internalSetSelected(bool _selected);
+	void paintOverChildren(Graphics &) {} //cancel default yellow border behavior
+
     //ui
     class MainContainer : public ContourComponent
     {
     public:
+
+		//reference
+		NodeBaseUI * nodeUI;
 
         //containers
         ScopedPointer<NodeBaseHeaderUI> headerContainer;
         ScopedPointer<NodeBaseContentUI> contentContainer;
 
         //ui components
-        MainContainer(NodeBaseContentUI * content = nullptr, NodeBaseHeaderUI * header = nullptr);
+        MainContainer(NodeBaseUI * nodeUI, NodeBaseContentUI * content = nullptr, NodeBaseHeaderUI * header = nullptr);
         void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
         void paint(Graphics &g)override;
         void resized()override;
@@ -104,7 +113,7 @@ public:
     //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
 	ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
 
-
+	
 
 private:
 

@@ -13,7 +13,7 @@
 
 
 DataInNode::DataInNode(NodeManager * nodeManager, uint32 nodeId) :
-    NodeBase(nodeManager, nodeId, "OSC2Data", nullptr, new DataInNodeDataProcessor)
+    NodeBase(nodeManager, nodeId, "DataIn", nullptr, new DataInNodeDataProcessor)
 {
     addFloatParamAndData("Test Param", 0, 0, 1);
 }

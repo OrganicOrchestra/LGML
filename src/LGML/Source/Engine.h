@@ -18,6 +18,7 @@
 #include "TimeManager.h"
 #include "NodeManager.h"
 #include "VSTManager.h"
+#include "PresetManager.h"
 
 class Engine:public FileBasedDocument{
 public:
