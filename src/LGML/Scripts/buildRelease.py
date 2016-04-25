@@ -6,9 +6,14 @@ import urllib;
 
 # configuration  = "Release"
 configuration  = "Debug"
+bumpVersion = True
+specificVersion = ""#0.1.1"
 
 
-exportPath = "/Users/Tintamar/Google_Drive/LGML/Builds/OSX/"
+
+
+
+localExportPath = "/Users/Tintamar/Google_Drive/LGML/Builds/OSX/"
 
 
 
@@ -16,6 +21,7 @@ proJucerPath = "~/Dev/JUCE/ProJucer.app/Contents/MacOS/ProJucer"
 JuceProjectPath = "../LGML.jucer"
 xcodeProjPath = "../Builds/MacOSX/" 
 executable_name = "LGML"
+gitPath = "../../../"
 appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
 import xml.etree.ElementTree as ET
@@ -26,22 +32,36 @@ projectVersion =root.attrib["version"]
 
 def sh(cmd):
 	print ("exec : "+cmd);
-	print os.popen(cmd).read()
+	res =  os.popen(cmd).read()
+	print res
+	return res
 
 def generateProductBaseName():
 	return executable_name+"_v"+projectVersion+"_"+configuration
 	
 	
 	
+def getVersion():
+	return sh(proJucerPath+ " --get-version " + JuceProjectPath)
 
-
-
+getVersion()
 
 def cleanCode(sourceFolder):
 	# sourceFolder = os.path.abspath(sourceFolder)
 	sh(proJucerPath+ " --remove-tabs "+sourceFolder);
 	sh(proJucerPath+ " --tidy-divider-comments "+sourceFolder);
 	sh(proJucerPath+ " --trim-whitespace "+sourceFolder);
+	
+	if(bumpVersion):
+		sh(proJucerPath+ " --bump-version " + JuceProjectPath)
+	elif specificVersion:
+		sh(proJucerPath+ " --set-version " +specificVersion+" "+ JuceProjectPath)
+
+def gitCommit():
+		if(bumpVersion or specificVersion!=""):
+			sh("cd "+gitPath+"&& git add -A && git commit -m"+getVersion())
+			sh(proJucerPath+" --git-tag-version "+JuceProjectPath)
+
 
 def buildJUCE(JuceProjectPath):
 	sh(proJucerPath+" -h")
@@ -92,15 +112,15 @@ def sendToOwnCloud(originPath,destPath):
 		credentials = json.loads(json_data.read())
 
 	sh("curl -X PUT \"http://195.154.11.18/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"])
+
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
 cleanCode("../Source");
 buildJUCE(JuceProjectPath);
 buildApp(xcodeProjPath,configuration);
-localPath = exportPath+generateProductBaseName();
+localPath = localExportPath+generateProductBaseName();
 createDmg(localPath,appPath);
-
 ownCloudPath = "Projets/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
 sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
-
+gitCommit()
 

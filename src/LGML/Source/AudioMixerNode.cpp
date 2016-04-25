@@ -54,7 +54,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::onAnyParameterChanged(Parameter *
 }
 
 void AudioMixerNode::AudioMixerAudioProcessor::updateInput(){
-    
+
         const ScopedLock sl (getCallbackLock());
         suspendProcessing(true);
         for(auto & bus:outBuses){
