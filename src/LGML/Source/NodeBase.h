@@ -90,8 +90,8 @@ public:
     virtual void ouputRemoved(DataProcessor::Data *) override;
 
 
-    void numAudioInputChanged(int newNum);
-    void numAudioOutputChanged(int newNum);
+    void numAudioInputChanged(int newNum)override;
+    void numAudioOutputChanged(int newNum)override;
 
     //
 
