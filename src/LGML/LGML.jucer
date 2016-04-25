@@ -345,6 +345,8 @@
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
                        cppLanguageStandard="c++98" cppLibType="libstdc++"/>
+        <CONFIGURATION name="DebugC++11" isDebug="1" osxSDK="default" osxCompatibility="default"
+                       osxArchitecture="64BitIntel" targetName="LGMLCPP11" defines="JUCE_SUPPORTS_AUv3=0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../../../Dev/JUCE/modules"/>
