@@ -47,7 +47,7 @@ private:
     Array<ControllableContainer*> removedContainers;
 
 
-	void paint(Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized()override;
 
     void controllableAdded(Controllable * c) override{  removedControllables.removeAllInstancesOf(c);  generateFromCandidates();};

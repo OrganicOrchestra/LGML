@@ -77,5 +77,5 @@ void NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer){
     }
 #endif
     //            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;
-    
+
 }

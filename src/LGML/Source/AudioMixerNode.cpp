@@ -30,7 +30,7 @@ AudioMixerNode::AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBas
 
 
 
-//================================
+//==============================================================================
 //    AudioMixerAudioProcessor
 
 
@@ -126,7 +126,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<
 }
 
 
-//===================
+//==============================================================================
 // output bus
 
 AudioMixerNode::AudioMixerAudioProcessor::OutputBus::OutputBus(int _outputIndex,int numInput):
@@ -152,9 +152,8 @@ void AudioMixerNode::AudioMixerAudioProcessor::OutputBus::setNumInput(int numInp
             volumes.removeLast();
         }
     }
-    
-    
+
+
     lastVolumes.resize(numInput);
     for(auto &v:volumes){v->setValue( 1.0f);}
 }
-

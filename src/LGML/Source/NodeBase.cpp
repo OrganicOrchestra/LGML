@@ -206,4 +206,3 @@ void NodeBase::numAudioInputChanged(int newNum){
 void NodeBase::numAudioOutputChanged(int newNum){
     nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(),nodeManager->audioGraph.getSampleRate());
 }
-

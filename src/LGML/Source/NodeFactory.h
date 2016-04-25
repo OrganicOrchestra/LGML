@@ -31,7 +31,7 @@ public:
     {
         Dummy,
         AudioMixer,
-		OSC2Data,
+        OSC2Data,
         Spat,
         Looper,
         VST,
@@ -64,9 +64,9 @@ public:
                 n = new AudioMixerNode(nodeManager,nodeId);
                 break;
 
-			case OSC2Data:
-				n = new OSC2DataNode(nodeManager, nodeId);
-				break;
+            case OSC2Data:
+                n = new OSC2DataNode(nodeManager, nodeId);
+                break;
 
             case Spat:
                 n = new SpatNode(nodeManager,nodeId);

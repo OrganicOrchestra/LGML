@@ -421,19 +421,19 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
         }
         else
         {
-			/*
+            /*
             if (event.mods.isCtrlDown())
             {
                 NodeBase * n = nodeManager->addNode(NodeFactory::NodeType::Dummy);
                 n->xPosition->setValue((float)getMouseXYRelative().x);
                 n->yPosition->setValue((float)getMouseXYRelative().y);
             }
-			*/
-           
+            */
+
             Point<int> mouse = getMouseXYRelative();
             selectingBounds.setTopLeftPosition(mouse.x,mouse.y);
 
-           
+
         }
     }
 

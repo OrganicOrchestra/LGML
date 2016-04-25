@@ -14,9 +14,9 @@
 
 
 OSC2DataNode::OSC2DataNode(NodeManager * nodeManager, uint32 nodeId) :
-	NodeBase(nodeManager, nodeId, "OSC2Data", nullptr, new OSC2DataNodeDataProcessor)
+    NodeBase(nodeManager, nodeId, "OSC2Data", nullptr, new OSC2DataNodeDataProcessor)
 {
-	addFloatParamAndData("Test Param", 0, 0, 1);
+    addFloatParamAndData("Test Param", 0, 0, 1);
 }
 
 OSC2DataNode::~OSC2DataNode()
@@ -26,11 +26,10 @@ OSC2DataNode::~OSC2DataNode()
 
 void OSC2DataNode::parameterValueChanged(Parameter * p)
 {
-//	dataProcessor->updateOutputData(p->niceName, p->getNormalizedValue());
+//  dataProcessor->updateOutputData(p->niceName, p->getNormalizedValue());
 }
 
 NodeBaseUI * OSC2DataNode::createUI()
 {
-	return new NodeBaseUI(this,new OSC2DataNodeContentUI);
+    return new NodeBaseUI(this,new OSC2DataNodeContentUI);
 }
-

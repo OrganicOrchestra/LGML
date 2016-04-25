@@ -16,7 +16,7 @@
   {
       node = nullptr;
       nodeUI = nullptr;
-	  
+
   }
 
   NodeBaseContentUI::~NodeBaseContentUI()

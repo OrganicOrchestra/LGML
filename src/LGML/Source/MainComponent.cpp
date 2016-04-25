@@ -91,10 +91,10 @@ void MainContentComponent::resized()
     timeManagerUI->setBounds(r.removeFromTop(20));
     controllerManagerViewport->setBounds(r.removeFromLeft(300));
 
-	nodeManagerUIViewport->setBounds(r);
-	
+    nodeManagerUIViewport->setBounds(r);
+
     controllableInspector->setSize(300,controllableInspector->getHeight());
-    controllableInspectorViewPort->setBounds(r.removeFromRight(300));    
+    controllableInspectorViewPort->setBounds(r.removeFromRight(300));
 }
 
 

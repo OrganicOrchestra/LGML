@@ -15,13 +15,13 @@ NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X")
     node = nullptr;
     nodeUI = nullptr;
 
-	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
+    Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
-	removeBT.setImages(false, true, true, removeImage,
-						0.7f, Colours::transparentBlack,
-						removeImage, 1.0f, Colours::transparentBlack,
-						removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
-						0.5f);
+    removeBT.setImages(false, true, true, removeImage,
+                        0.7f, Colours::transparentBlack,
+                        removeImage, 1.0f, Colours::transparentBlack,
+                        removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
+                        0.5f);
     setSize(20, 30);
 }
 
@@ -51,8 +51,8 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     enabledUI = node->enabledParam->createToggle();
     addAndMakeVisible(enabledUI);
 
-	addAndMakeVisible(grabber);
-	addAndMakeVisible(removeBT);
+    addAndMakeVisible(grabber);
+    addAndMakeVisible(removeBT);
 
     init();
 
@@ -69,26 +69,26 @@ void NodeBaseHeaderUI::init()
 
 void NodeBaseHeaderUI::resized()
 {
-	if (!node) return;
+    if (!node) return;
 
-	int vuMeterWidth = 14;
-	int removeBTWidth = 15;
-	int grabberWidth = 40;
+    int vuMeterWidth = 14;
+    int removeBTWidth = 15;
+    int grabberWidth = 40;
 
-	Rectangle<int> r = getLocalBounds();
+    Rectangle<int> r = getLocalBounds();
 
-	if (node->hasAudioOutputs) {
-		Rectangle<int> vuMeterRect = r.removeFromRight(vuMeterWidth).reduced(4);
-		vuMeter.setBounds(vuMeterRect);
-	}
+    if (node->hasAudioOutputs) {
+        Rectangle<int> vuMeterRect = r.removeFromRight(vuMeterWidth).reduced(4);
+        vuMeter.setBounds(vuMeterRect);
+    }
 
-	r.reduce(5, 2);
+    r.reduce(5, 2);
     r.removeFromLeft(enabledUI->getWidth());
-        
-	removeBT.setBounds(r.removeFromRight(removeBTWidth));
-	grabber.setBounds(r.removeFromRight(grabberWidth));
+
+    removeBT.setBounds(r.removeFromRight(removeBTWidth));
+    grabber.setBounds(r.removeFromRight(grabberWidth));
     titleUI->setBounds(r);
 
-	enabledUI->setTopLeftPosition(5, 5);
+    enabledUI->setTopLeftPosition(5, 5);
 
 }

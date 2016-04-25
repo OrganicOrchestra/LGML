@@ -16,58 +16,58 @@
 class OSC2DataNode : public NodeBase
 {
 public:
-	class OSC2DataNodeDataProcessor : public NodeBase::NodeDataProcessor
-	{
-	public:
-		OSC2DataNodeDataProcessor() :NodeBase::NodeDataProcessor() {
-			
-		}
+    class OSC2DataNodeDataProcessor : public NodeBase::NodeDataProcessor
+    {
+    public:
+        OSC2DataNodeDataProcessor() :NodeBase::NodeDataProcessor() {
 
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSC2DataNodeDataProcessor)
-	};
+        }
 
-
-	OSC2DataNode(NodeManager * nodeManager, uint32 nodeId);
-	~OSC2DataNode();
-
-	Array<Parameter *> dynamicParameters;
-
-	FloatParameter * addFloatParamAndData(const String &name, float initialValue, float minVal, float maxVal)
-	{
-		FloatParameter * p = addFloatParameter(name, "OSC Control for " + name, initialValue, minVal, maxVal);
-		dataProcessor->addOutputData(name, DataProcessor::DataType::Number);
-		dynamicParameters.add(p);
-		osc2DataListeners.call(&OSC2DataNode::Listener::parameterAdded, p);
-		return p;
-	}
-
-	void removeFloatParamAndData(FloatParameter * p)
-	{
-		removeControllable(p);
-		dataProcessor->removeOutputData(p->niceName);
-		osc2DataListeners.call(&OSC2DataNode::Listener::parameterRemoved, p);
-	}
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSC2DataNodeDataProcessor)
+    };
 
 
-	void parameterValueChanged(Parameter * p) override;
+    OSC2DataNode(NodeManager * nodeManager, uint32 nodeId);
+    ~OSC2DataNode();
 
-	virtual NodeBaseUI * createUI() override;
+    Array<Parameter *> dynamicParameters;
 
-	//Listener
-	class Listener
-	{
-	public:
-		virtual ~Listener() {}
-		virtual void parameterAdded(Parameter *) = 0;
-		virtual void parameterRemoved(Parameter *) = 0;
+    FloatParameter * addFloatParamAndData(const String &name, float initialValue, float minVal, float maxVal)
+    {
+        FloatParameter * p = addFloatParameter(name, "OSC Control for " + name, initialValue, minVal, maxVal);
+        dataProcessor->addOutputData(name, DataProcessor::DataType::Number);
+        dynamicParameters.add(p);
+        osc2DataListeners.call(&OSC2DataNode::Listener::parameterAdded, p);
+        return p;
+    }
 
-	};
+    void removeFloatParamAndData(FloatParameter * p)
+    {
+        removeControllable(p);
+        dataProcessor->removeOutputData(p->niceName);
+        osc2DataListeners.call(&OSC2DataNode::Listener::parameterRemoved, p);
+    }
 
-	ListenerList<Listener> osc2DataListeners;
-	void addO2DListener(Listener* newListener) { osc2DataListeners.add(newListener); }
-	void removeO2DListener(Listener* listener) { osc2DataListeners.remove(listener); }
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSC2DataNode)
+    void parameterValueChanged(Parameter * p) override;
+
+    virtual NodeBaseUI * createUI() override;
+
+    //Listener
+    class Listener
+    {
+    public:
+        virtual ~Listener() {}
+        virtual void parameterAdded(Parameter *) = 0;
+        virtual void parameterRemoved(Parameter *) = 0;
+
+    };
+
+    ListenerList<Listener> osc2DataListeners;
+    void addO2DListener(Listener* newListener) { osc2DataListeners.add(newListener); }
+    void removeO2DListener(Listener* listener) { osc2DataListeners.remove(listener); }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSC2DataNode)
 };
 
 

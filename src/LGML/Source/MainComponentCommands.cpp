@@ -18,7 +18,7 @@ namespace CommandIDs
     static const int save                   = 0x30001;
     static const int saveAs                 = 0x30002;
     static const int newFile                = 0x30003;
-	static const int openLastDocument		= 0x30004;
+    static const int openLastDocument       = 0x30004;
     static const int showPluginListEditor   = 0x30100;
     static const int showAudioSettings      = 0x30200;
     static const int aboutBox               = 0x30300;
@@ -44,10 +44,10 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             result.defaultKeypresses.add (KeyPress ('o', ModifierKeys::commandModifier, 0));
             break;
 
-		case CommandIDs::openLastDocument:
-			result.setInfo("Open Last Document", "Opens a filter graph file", category, 0);
-			result.defaultKeypresses.add(KeyPress('o', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
-			break;
+        case CommandIDs::openLastDocument:
+            result.setInfo("Open Last Document", "Opens a filter graph file", category, 0);
+            result.defaultKeypresses.add(KeyPress('o', ModifierKeys::shiftModifier | ModifierKeys::commandModifier, 0));
+            break;
 
         case CommandIDs::save:
             result.setInfo ("Save", "Saves the current graph to a file", category, 0);
@@ -96,7 +96,7 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
     const CommandID ids[] = {
         CommandIDs::newFile,
         CommandIDs::open,
-		CommandIDs::openLastDocument,
+        CommandIDs::openLastDocument,
         CommandIDs::save,
         CommandIDs::saveAs,
         CommandIDs::showPluginListEditor,
@@ -119,9 +119,9 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
         // "File" menu
         menu.addCommandItem (&getCommandManager(), CommandIDs::newFile);
         menu.addCommandItem (&getCommandManager(), CommandIDs::open);
-		menu.addCommandItem(&getCommandManager(), CommandIDs::openLastDocument);
+        menu.addCommandItem(&getCommandManager(), CommandIDs::openLastDocument);
 
-		RecentlyOpenedFilesList recentFiles;
+        RecentlyOpenedFilesList recentFiles;
         recentFiles.restoreFromString (getAppProperties().getUserSettings()
                                        ->getValue ("recentNodeGraphFiles"));
 
@@ -178,9 +178,9 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
             break;
 
-		case CommandIDs::openLastDocument:
-			engine->loadDocument(engine->getLastDocumentOpened());
-			break;
+        case CommandIDs::openLastDocument:
+            engine->loadDocument(engine->getLastDocumentOpened());
+            break;
 
         case CommandIDs::save:
             engine->save (true, true);

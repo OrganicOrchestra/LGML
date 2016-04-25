@@ -26,4 +26,3 @@ void AudioOutNode::AudioOutProcessor::updateIO(){
     AudioIODevice * ad  =getAudioDeviceManager().getCurrentAudioDevice();
     setPreferedNumAudioInput(ad->getActiveOutputChannels().countNumberOfSetBits());
 }
-

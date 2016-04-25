@@ -30,7 +30,7 @@ public:
     void removeControlUI(ControllableUI * c);
     void removeControllableFromEditor(Controllable * c);
     void removeContainerFromEditor(ControllableContainer * toRemove);
-	void paint(Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized()override;
     ControllableContainer * owner;
     Array<ControllableUI*> controllableUIs;

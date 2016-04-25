@@ -34,26 +34,26 @@ NodeConnection::~NodeConnection()
 
 void NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
-	AudioConnection ac = AudioConnection(sourceChannel, destChannel);
+    AudioConnection ac = AudioConnection(sourceChannel, destChannel);
     audioConnections.add(ac);
     nodeManager->audioGraph.addConnection(sourceNode->nodeId, sourceChannel, destNode->nodeId, destChannel);
-	listeners.call(&Listener::connectionAudioLinkAdded, ac);
+    listeners.call(&Listener::connectionAudioLinkAdded, ac);
 }
 
 void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
-	AudioConnection ac = AudioConnection(sourceChannel, destChannel);
-	nodeManager->audioGraph.removeConnection(sourceNode->nodeId, sourceChannel, destNode->nodeId, destChannel);
-	audioConnections.removeAllInstancesOf(ac);
-	DBG("Remove audio graph connection and dispatch linkRemoved");
-	listeners.call(&Listener::connectionAudioLinkRemoved, ac);
+    AudioConnection ac = AudioConnection(sourceChannel, destChannel);
+    nodeManager->audioGraph.removeConnection(sourceNode->nodeId, sourceChannel, destNode->nodeId, destChannel);
+    audioConnections.removeAllInstancesOf(ac);
+    DBG("Remove audio graph connection and dispatch linkRemoved");
+    listeners.call(&Listener::connectionAudioLinkRemoved, ac);
 
 
 }
 void NodeConnection::removeAllAudioGraphConnections()
 {
     for(auto c:audioConnections){
-		removeAudioGraphConnection(c.first,c.second);
+        removeAudioGraphConnection(c.first,c.second);
     }
 
     audioConnections.clear();
@@ -61,25 +61,25 @@ void NodeConnection::removeAllAudioGraphConnections()
 }
 void NodeConnection::addDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData)
 {
-	DataProcessorGraph::Connection * c = nodeManager->dataGraph.addConnection(sourceData, destData);
+    DataProcessorGraph::Connection * c = nodeManager->dataGraph.addConnection(sourceData, destData);
     dataConnections.add(c);
-	listeners.call(&Listener::connectionDataLinkAdded, c);
+    listeners.call(&Listener::connectionDataLinkAdded, c);
 }
 
 void NodeConnection::removeDataGraphConnection(DataProcessor::Data * sourceData, DataProcessor::Data * destData)
 {
-	DataProcessorGraph::Connection * c = nodeManager->dataGraph.getConnectionBetween(sourceData, destData);
+    DataProcessorGraph::Connection * c = nodeManager->dataGraph.getConnectionBetween(sourceData, destData);
     dataConnections.removeAllInstancesOf(c);
-	nodeManager->dataGraph.removeConnection(c);
-	listeners.call(&Listener::connectionDataLinkRemoved, c);
+    nodeManager->dataGraph.removeConnection(c);
+    listeners.call(&Listener::connectionDataLinkRemoved, c);
 }
 
 void NodeConnection::removeAllDataGraphConnections()
 {
-	for (auto &c : dataConnections) {
-		removeDataGraphConnection(c->sourceData,c->destData);
-	}
-	dataConnections.clear();
+    for (auto &c : dataConnections) {
+        removeDataGraphConnection(c->sourceData,c->destData);
+    }
+    dataConnections.clear();
 }
 
 
@@ -90,68 +90,68 @@ void NodeConnection::remove()
 
 var NodeConnection::getJSONData()
 {
-	var data(new DynamicObject());
-	data.getDynamicObject()->setProperty("srcNodeId", (int)sourceNode->nodeId);
-	data.getDynamicObject()->setProperty("dstNodeId", (int)destNode->nodeId);
-	data.getDynamicObject()->setProperty("connectionType", (int)connectionType);
+    var data(new DynamicObject());
+    data.getDynamicObject()->setProperty("srcNodeId", (int)sourceNode->nodeId);
+    data.getDynamicObject()->setProperty("dstNodeId", (int)destNode->nodeId);
+    data.getDynamicObject()->setProperty("connectionType", (int)connectionType);
 
-	var links;
-	if (isAudio())
-	{
-		for (auto &c : audioConnections)
-		{
-			var cObject(new DynamicObject());
-			cObject.getDynamicObject()->setProperty("sourceChannel", c.first);
-			cObject.getDynamicObject()->setProperty("destChannel", c.second);
-			links.append(cObject);
-		}
-	}
-	else
-	{
-		for (auto &c : dataConnections)
-		{
-			var cObject(new DynamicObject());
-			cObject.getDynamicObject()->setProperty("sourceData", c->sourceData->name);
-			cObject.getDynamicObject()->setProperty("destData", c->destData->name);
-			links.append(cObject);
-		}
-	}
+    var links;
+    if (isAudio())
+    {
+        for (auto &c : audioConnections)
+        {
+            var cObject(new DynamicObject());
+            cObject.getDynamicObject()->setProperty("sourceChannel", c.first);
+            cObject.getDynamicObject()->setProperty("destChannel", c.second);
+            links.append(cObject);
+        }
+    }
+    else
+    {
+        for (auto &c : dataConnections)
+        {
+            var cObject(new DynamicObject());
+            cObject.getDynamicObject()->setProperty("sourceData", c->sourceData->name);
+            cObject.getDynamicObject()->setProperty("destData", c->destData->name);
+            links.append(cObject);
+        }
+    }
 
-	data.getDynamicObject()->setProperty("links", links);
+    data.getDynamicObject()->setProperty("links", links);
 
-	return data;
+    return data;
 }
 
 void NodeConnection::loadJSONData(var data)
 {
-	//srcNodeId, destNodeId & connectionType set at creation, not in this load
+    //srcNodeId, destNodeId & connectionType set at creation, not in this load
 
-	DBG("Load JSON Data Node COnnection !");
-	const Array<var> * links = data.getProperty("links",var()).getArray();
+    DBG("Load JSON Data Node COnnection !");
+    const Array<var> * links = data.getProperty("links",var()).getArray();
 
-	if (links != nullptr)
-	{
-		if (isAudio())
-		{
-			removeAllAudioGraphConnections();
-			for (var &linkVar : *links)
-			{
-				int sourceChannel = linkVar.getProperty("sourceChannel", var());
-				int destChannel = linkVar.getProperty("destChannel", var());
-				DBG("Add from JSON, " << sourceChannel << " > " <<destChannel);
+    if (links != nullptr)
+    {
+        if (isAudio())
+        {
+            removeAllAudioGraphConnections();
+            for (var &linkVar : *links)
+            {
+                int sourceChannel = linkVar.getProperty("sourceChannel", var());
+                int destChannel = linkVar.getProperty("destChannel", var());
+                DBG("Add from JSON, " << sourceChannel << " > " <<destChannel);
 
-				addAudioGraphConnection(sourceChannel, destChannel);
-			}
-		}
-		else
-		{
-			removeAllDataGraphConnections();
-			for (auto &linkVar : *links)
-			{
-				String sourceName = linkVar.getProperty("sourceData", var());
-				String destName = linkVar.getProperty("destData", var());
-				addDataGraphConnection(sourceNode->dataProcessor->getOutputDataByName(sourceName), destNode->dataProcessor->getInputDataByName(destName));
-			}
-		}
-	}
+                addAudioGraphConnection(sourceChannel, destChannel);
+            }
+        }
+        else
+        {
+            removeAllDataGraphConnections();
+            for (auto &linkVar : *links)
+            {
+                String sourceName = linkVar.getProperty("sourceData", var());
+                String destName = linkVar.getProperty("destData", var());
+                addDataGraphConnection(sourceNode->dataProcessor->getOutputDataByName(sourceName), destNode->dataProcessor->getInputDataByName(destName));
+            }
+        }
+    }
 }

@@ -38,7 +38,7 @@ public:
             int outputIndex;
         };
 
-        
+
         OwnedArray<OutputBus> outBuses;
         AudioBuffer<float> cachedBuffer;
 
@@ -62,11 +62,11 @@ public:
 
 
     NodeBaseUI * createUI() override;
-    
-    
+
+
 private:
 
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerNode)
 };
 

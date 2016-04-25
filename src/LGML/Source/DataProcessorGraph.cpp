@@ -23,12 +23,12 @@ DataProcessorGraph::~DataProcessorGraph()
 DataProcessorGraph::Connection::Connection(DataProcessor::Data * sourceData, DataProcessor::Data * destData) noexcept
     : sourceData(sourceData), destData(destData)
 {
-	if(sourceData != nullptr) sourceData->addDataListener(this);
+    if(sourceData != nullptr) sourceData->addDataListener(this);
 }
 
 void DataProcessorGraph::Connection::dataChanged(DataProcessor::Data * d)
 {
-	if (destData != nullptr) destData->updateFromSourceData(d);
+    if (destData != nullptr) destData->updateFromSourceData(d);
 }
 
 
@@ -36,7 +36,7 @@ void DataProcessorGraph::clear()
 {
     processors.clear();
     connections.clear();
-	
+
 }
 
 DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(DataProcessor::Data * sourceData, DataProcessor::Data * destData) const

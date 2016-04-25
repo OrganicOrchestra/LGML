@@ -55,7 +55,7 @@ void ControllableContainerEditor::removeContainerFromEditor(ControllableContaine
     for(int i = 0 ; i < getNumChildComponents() ; i++){
         if(ControllableContainerEditor* c = dynamic_cast<ControllableContainerEditor*>(getChildComponent(i))){
             if(c->owner==toRemove){arrayToRemove.add(c);}
-            else{c->removeContainerFromEditor(toRemove);} 
+            else{c->removeContainerFromEditor(toRemove);}
         }
     }
     for(auto &r:arrayToRemove){
@@ -66,7 +66,7 @@ void ControllableContainerEditor::removeContainerFromEditor(ControllableContaine
 
 void ControllableContainerEditor::paint(Graphics & g)
 {
-	g.fillAll(BG_COLOR);
+    g.fillAll(BG_COLOR);
 }
 
 void ControllableContainerEditor::resized(){

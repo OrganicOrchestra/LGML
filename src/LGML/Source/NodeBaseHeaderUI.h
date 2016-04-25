@@ -26,20 +26,20 @@ class NodeBaseHeaderUI : public ContourComponent
 {
 public:
 
-	class Grabber : public Component
-	{
-		void paint(Graphics &g) override
-		{
-			g.setColour(FRONT_COLOR);
-			Rectangle<float> r = getLocalBounds().reduced(5).toFloat();
-			g.drawLine(r.getTopLeft().x, r.getRelativePoint(0.f, .2f).y, r.getTopRight().x, r.getRelativePoint(0.f, .2f).y, .4f);
-			g.drawLine(r.getTopLeft().x, r.getCentreY(), r.getBottomRight().x, r.getCentreY(), .4f);
-			g.drawLine(r.getBottomLeft().x, r.getRelativePoint(0.f, .8f).y, r.getBottomRight().x, r.getRelativePoint(0.f, .8f).y, .4f);
+    class Grabber : public Component
+    {
+        void paint(Graphics &g) override
+        {
+            g.setColour(FRONT_COLOR);
+            Rectangle<float> r = getLocalBounds().reduced(5).toFloat();
+            g.drawLine(r.getTopLeft().x, r.getRelativePoint(0.f, .2f).y, r.getTopRight().x, r.getRelativePoint(0.f, .2f).y, .4f);
+            g.drawLine(r.getTopLeft().x, r.getCentreY(), r.getBottomRight().x, r.getCentreY(), .4f);
+            g.drawLine(r.getBottomLeft().x, r.getRelativePoint(0.f, .8f).y, r.getBottomRight().x, r.getRelativePoint(0.f, .8f).y, .4f);
 
-		}
-	};
+        }
+    };
 
-	NodeBaseHeaderUI();
+    NodeBaseHeaderUI();
     virtual ~NodeBaseHeaderUI();
 
     NodeBase * node;
@@ -49,8 +49,8 @@ public:
     ScopedPointer<BoolToggleUI> enabledUI;
     VuMeter vuMeter;
 
-	Grabber grabber;
-	ImageButton removeBT;
+    Grabber grabber;
+    ImageButton removeBT;
 
     void mouseDoubleClick(const MouseEvent & e)override;
 

@@ -86,4 +86,3 @@ void OSC2DataNodeContentUI::parameterRemoved(Parameter * p)
     parameterUIs.removeObject(pui);
     resized();
 }
-

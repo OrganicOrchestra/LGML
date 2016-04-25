@@ -41,10 +41,10 @@ public:
     public:
         //==============================================================================
         Connection(DataProcessor::Data * sourceData, DataProcessor::Data * destData) noexcept;
-		virtual ~Connection()
-		{
-			if (sourceData != nullptr) sourceData->removeDataListener(this);
-		}
+        virtual ~Connection()
+        {
+            if (sourceData != nullptr) sourceData->removeDataListener(this);
+        }
 
         DataProcessor::Data * sourceData;
         DataProcessor::Data * destData;
@@ -53,9 +53,9 @@ public:
         //==============================================================================
         JUCE_LEAK_DETECTOR(Connection)
 
-			// Inherited via DataListener
-			virtual void dataChanged(DataProcessor::Data *) override;
-	};
+            // Inherited via DataListener
+            virtual void dataChanged(DataProcessor::Data *) override;
+    };
 
 
 

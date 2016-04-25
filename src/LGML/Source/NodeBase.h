@@ -31,7 +31,7 @@ class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener,p
 {
 
 public:
-    
+
 
 
     class NodeDataProcessor : public DataProcessor

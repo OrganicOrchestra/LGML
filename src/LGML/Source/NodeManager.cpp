@@ -271,4 +271,3 @@ void NodeManager::updateAudioGraph(){
     AudioIODevice * ad  =getAudioDeviceManager().getCurrentAudioDevice();
     audioGraph.prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());
 }
-

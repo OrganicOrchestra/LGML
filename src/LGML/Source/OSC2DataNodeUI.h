@@ -22,38 +22,38 @@
 class OSC2DataNodeContentUI    : public NodeBaseContentUI, OSC2DataNode::Listener
 {
 public:
-	OSC2DataNodeContentUI();
+    OSC2DataNodeContentUI();
     ~OSC2DataNodeContentUI();
 
-	OSC2DataNode * o2dNode;
+    OSC2DataNode * o2dNode;
 
-	OwnedArray<ParameterUI> parameterUIs;
+    OwnedArray<ParameterUI> parameterUIs;
 
     void paint (Graphics&)override;
     void resized()override;
 
-	void init() override;
+    void init() override;
 
-	//helpers
-	void addUIForParameter(Parameter * p);
-	void addParameterUI(ParameterUI *pui);
+    //helpers
+    void addUIForParameter(Parameter * p);
+    void addParameterUI(ParameterUI *pui);
 
 private:
-   
-	// Inherited via Listener
-	virtual void parameterAdded(Parameter *) override;
-	virtual void parameterRemoved(Parameter *) override;
 
-	ParameterUI * getUIForParameter(Parameter * p)
-	{
-		for (auto &pui : parameterUIs)
-		{
-			if (pui->parameter == p) return pui;
-		}
+    // Inherited via Listener
+    virtual void parameterAdded(Parameter *) override;
+    virtual void parameterRemoved(Parameter *) override;
 
-		return nullptr;
-	}
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSC2DataNodeContentUI)
+    ParameterUI * getUIForParameter(Parameter * p)
+    {
+        for (auto &pui : parameterUIs)
+        {
+            if (pui->parameter == p) return pui;
+        }
+
+        return nullptr;
+    }
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSC2DataNodeContentUI)
 };
 
 

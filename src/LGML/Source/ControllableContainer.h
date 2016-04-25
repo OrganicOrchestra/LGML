@@ -89,7 +89,7 @@ private:
     //      or using dispatch feedback that triggers only exposedParams
 
     virtual void onAnyParameterChanged(Parameter * p){};
-    
+
     void addParameterInternal(Parameter * p);
 
 public:
