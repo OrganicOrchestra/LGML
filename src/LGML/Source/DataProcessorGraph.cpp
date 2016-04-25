@@ -17,7 +17,7 @@ DataProcessorGraph::DataProcessorGraph()
 
 DataProcessorGraph::~DataProcessorGraph()
 {
-	thread.stopThread(0);
+	thread.signalThreadShouldExit();
     clear();
 }
 
@@ -100,3 +100,15 @@ void DataProcessorGraph::removeConnection(Connection * c)
     connections.removeObject(c, true);
 }
 
+
+
+DataProcessorGraph::DataThread::~DataThread()
+{
+	stopThread(100);
+}
+
+void DataProcessorGraph::DataThread::run() {
+	while (!threadShouldExit()) {
+	} 
+	DBG("finish data thread");
+}

@@ -96,7 +96,7 @@ void NodeBase::parameterValueChanged(Parameter * p)
         setNiceName(nameParam->stringValue());
     }else if (p == enabledParam)
     {
-       // DBG("set Node Enabled " + String(enabledParam->boolValue()));
+
     }
 }
 

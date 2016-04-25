@@ -31,8 +31,10 @@ public:
 	class DataThread : public Thread
 	{
 	public:
+
 		DataThread() : Thread("dataThread") {}
-		virtual void run() override { };
+		virtual ~DataThread();
+		virtual void run() override;
 	};
 
 	DataThread thread;
