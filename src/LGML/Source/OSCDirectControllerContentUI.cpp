@@ -11,15 +11,27 @@
 #include "OSCDirectControllerContentUI.h"
 #include "NodeManager.h"
 
-OSCDirectControllerContentUI::OSCDirectControllerContentUI()
+OSCDirectControllerContentUI::OSCDirectControllerContentUI() :activityTrigger("O","Activity")
 {
-    DBG("direct controller ui constructor");
+	activityTriggerUI = activityTrigger.createBlinkUI();
+	
+	addAndMakeVisible(activityTriggerUI);
+	addAndMakeVisible(&activityLog);
+	activityLog.setColour(activityLog.backgroundColourId,Colours::white);
+	activityLog.setEditable(true);
+	activityLog.setJustificationType(Justification::bottomLeft);
+}
+
+OSCDirectControllerContentUI::~OSCDirectControllerContentUI()
+{
+	oscd->removeOSCDirectParameterListener(this);
 }
 
 void OSCDirectControllerContentUI::init()
 {
-    DBG("init direct controller");
     oscd = (OSCDirectController *)controller;
+
+	oscd->addOSCDirectParameterListener(this);
 
     localPortUI = oscd->localPortParam->createStringParameterUI();
     remoteHostUI = oscd->remoteHostParam->createStringParameterUI();
@@ -30,7 +42,7 @@ void OSCDirectControllerContentUI::init()
     addAndMakeVisible(remotePortUI);
 
 
-    cui->setSize(300, 150);
+    cui->setSize(300, 300);
 
     Array<Controllable *> nodeControllables = NodeManager::getInstance()->getAllControllables(true,false);
 
@@ -45,18 +57,26 @@ void OSCDirectControllerContentUI::init()
 
 void OSCDirectControllerContentUI::resized()
 {
-    Rectangle<int> r = getLocalBounds().reduced(10);
+
+    Rectangle<int> r = getLocalBounds().reduced(5);
+	activityTriggerUI->setBounds(r.getRight() - 20, 0, 20, 20);
+
     localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));
-    r.removeFromTop(20);
+    r.removeFromTop(10);
     remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));
-    r.removeFromTop(5);
+    r.removeFromTop(2);
     remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()));
+	r.removeFromTop(10);
+	activityLog.setBounds(r);
 
 }
 
 void OSCDirectControllerContentUI::mouseDown(const MouseEvent &)
 {
+}
 
-    DBG("mouse down");
-
+void OSCDirectControllerContentUI::messageProcessed(const OSCMessage & msg, bool success)
+{
+	activityLog.setText(activityLog.getText() + String("\n") + msg.getAddressPattern().toString(),NotificationType::dontSendNotification);
+	activityTrigger.trigger();
 }

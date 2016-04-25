@@ -27,8 +27,8 @@ OSCDirectController::~OSCDirectController()
 
 void OSCDirectController::processMessage(const OSCMessage & msg)
 {
-    String addr = msg.getAddressPattern().toString();
-    DBG("OSCDirectController::Process : " + addr);
+	 String addr = msg.getAddressPattern().toString();
+	 DBG("Process message");
 
     StringArray addrArray;
     addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
@@ -37,59 +37,74 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
     addSplit.remove(0);
     String controller = addSplit[0];
 
-    if (controller == "node")
+	bool success = false;
+	
+	if (controller == "node")
     {
         addSplit.remove(0);
         Controllable * c = NodeManager::getInstance()->getControllableForAddress(addSplit);
 
-        if (c != nullptr && !c->isControllableFeedbackOnly)
+		
+        if (c != nullptr)
         {
+			if (!c->isControllableFeedbackOnly)
+			{
+				success = true;
 
+				switch (c->type)
+				{
+				case Controllable::Type::TRIGGER:
+					if (msg.size() == 0) ((Trigger *)c)->trigger();
+					else if (msg[0].isInt32() || msg[0].isFloat32())
+					{
+						float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+						if (val > 0) ((Trigger *)c)->trigger();
+					}
+					break;
 
-            switch (c->type)
-            {
-            case Controllable::Type::TRIGGER:
-                if(msg.size() == 0) ((Trigger *)c)->trigger();
-                else if (msg[0].isInt32() || msg[0].isFloat32())
-                {
-                    float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                    if (val > 0) ((Trigger *)c)->trigger();
-                }
-                break;
+				case Controllable::Type::BOOL:
+					if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+					{
+						float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+						((BoolParameter *)c)->setValue(val > 0);
+					}
+					break;
 
-            case Controllable::Type::BOOL:
-                if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
-                {
-                    float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                    ((BoolParameter *)c)->setValue(val > 0);
-                }
-                break;
+				case Controllable::Type::FLOAT:
+					if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+					{
+						float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+						((FloatParameter *)c)->setNormalizedValue(value); //normalized or not ? can user decide ?
+					}
+					break;
 
-            case Controllable::Type::FLOAT:
-                if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
-                {
-                    float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                    ((FloatParameter *)c)->setNormalizedValue(value); //normalized or not ? can user decide ?
-                }
-                break;
+				case Controllable::Type::INT:
+					if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+					{
+						float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+						((IntParameter *)c)->setValue((int)value); //normalized or not ? can user decide ?
+					}
+					break;
 
-            case Controllable::Type::INT:
-                if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
-                {
-                    float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                    ((IntParameter *)c)->setValue((int)value); //normalized or not ? can user decide ?
-                }
-                break;
+				case Controllable::Type::STRING:
+					((Parameter *)c)->setValue(msg[0].getString());
+					break;
 
-            case Controllable::Type::STRING:
-                break;
-            }
+				default: 
+					success = false;
+					break;
+
+				}
+			}
         }
         else
         {
             DBG("No Controllable for address : " + addr);
         }
+
     }
+
+	oscDirectlisteners.call(&OSCDirectListener::messageProcessed, msg, success);
 }
 
 ControllerUI * OSCDirectController::createUI()

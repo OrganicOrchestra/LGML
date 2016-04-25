@@ -14,17 +14,24 @@
 #include "ControllerContentUI.h"
 #include "OSCDirectController.h"
 #include "StringParameterUI.h"
+#include "TriggerBlinkUI.h"
 
-class OSCDirectControllerContentUI : public ControllerContentUI
+class OSCDirectControllerContentUI : public ControllerContentUI, OSCDirectController::OSCDirectListener
 {
 public:
     OSCDirectControllerContentUI();
-
+	virtual ~OSCDirectControllerContentUI();
     OSCDirectController * oscd;
 
     ScopedPointer<StringParameterUI> localPortUI;
     ScopedPointer<StringParameterUI> remoteHostUI;
     ScopedPointer<StringParameterUI> remotePortUI;
+
+
+	Trigger activityTrigger;
+	ScopedPointer<TriggerBlinkUI> activityTriggerUI;
+
+	Label activityLog;
 
     void init() override;
 
@@ -32,6 +39,9 @@ public:
     void mouseDown(const MouseEvent &e) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectControllerContentUI)
+
+	// Inherited via OSCDirectListener
+	virtual void messageProcessed(const OSCMessage & msg, bool success) override;
 };
 
 

@@ -30,6 +30,20 @@ public:
     virtual void controllableContainerRemoved(ControllableContainer * cc) override;
 
     virtual void controllableFeedbackUpdate(Controllable * c) override;
+	
+	public:
+		//Listener
+		class  OSCDirectListener
+		{
+		public:
+			/** Destructor. */
+			virtual ~OSCDirectListener() {}
+			virtual void messageProcessed(const OSCMessage & msg, bool success) = 0;
+		};
+
+		ListenerList<OSCDirectListener> oscDirectlisteners;
+		void addOSCDirectParameterListener(OSCDirectListener* newListener) { oscDirectlisteners.add(newListener); }
+		void removeOSCDirectParameterListener(OSCDirectListener* listener) { oscDirectlisteners.remove(listener); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
 
