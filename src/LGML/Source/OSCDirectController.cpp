@@ -150,6 +150,7 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
     }
 
 #else
+
     OSCMessage msg(c->controlAddress);
     switch (c->type)
     {
@@ -158,26 +159,19 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
             break;
 
         case Controllable::Type::BOOL:
-            msg.addInt32(((BoolParameter *)c)->value?1:0);
+            msg.addInt32(((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::FLOAT:
-            msg.addFloat32(((FloatParameter *)c)->value);
+            msg.addFloat32(((Parameter *)c)->floatValue());
             break;
 
         case Controllable::Type::INT:
-            msg.addInt32(((IntParameter *)c)->value);
-            break;
-
-        case Controllable::Type::RANGE:
-            DBG(" Martin @Ben : sending twice same value ??");
-            jassertfalse;
-            msg.addFloat32(((FloatParameter *)c)->value);
-            msg.addFloat32(((FloatParameter *)c)->value);
+            msg.addInt32(((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::STRING:
-            msg.addString(((StringParameter *)c)->value);
+            msg.addString(((Parameter *)c)->stringValue());
             break;
 
         default:
@@ -187,6 +181,7 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
     }
 
     sender.send(msg);
+
 #endif
 
 
