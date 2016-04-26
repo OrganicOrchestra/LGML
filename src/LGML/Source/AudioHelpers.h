@@ -14,7 +14,6 @@
 
 #include "JuceHeader.h"
 
-
 /*
  helper class for bipartite buffer
  allowing having constant access to contiguous memory in a circular buffer

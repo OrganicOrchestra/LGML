@@ -12,11 +12,12 @@
 #define LOOPERNODEUI_H_INCLUDED
 
 #include "NodeBaseUI.h"
-
 #include "TriggerBlinkUI.h"
 #include "FloatSliderUI.h"
+#include "Looper.h"
+#include "LooperTrack.h"
 
-class LooperNodeUI: public NodeBaseContentUI , public LooperNode::Looper::Listener
+class LooperNodeUI: public NodeBaseContentUI , public Looper::Listener
 {
 public:
 
@@ -37,77 +38,21 @@ public:
 
     class TrackUI :
     public Component ,
-    public LooperNode::Looper::Track::Listener
+    public LooperTrack::Listener
     {
     public:
 
-        TrackUI(LooperNode::Looper::Track * track):track(track),
-        recPlayButton(track->recPlayTrig),
-        clearButton(track->clearTrig),
-        stopButton(track->stopTrig),
-        isSelected(false)
-        {
-            track->addTrackListener(this);
-            trackStateChangedAsync(track->trackState);
-            addAndMakeVisible(recPlayButton);
-            addAndMakeVisible(clearButton);
-            volumeSlider = track->volume->createSlider();
-            volumeSlider->orientation = FloatSliderUI::VERTICAL;
-//            volumeSlider->displayText=false;
-            addAndMakeVisible(volumeSlider);
-            addAndMakeVisible(stopButton);
+		TrackUI(LooperTrack * track);
 
-            //select on trigger activations
-           // track->recPlayTrig->addTriggerListener(this);
-           // track->clearTrig->addTriggerListener(this);
-           // track->stopTrig->addTriggerListener(this);
-        }
+		~TrackUI();
 
-        ~TrackUI(){
-            track->removeTrackListener(this);
-           // track->recPlayTrig->removeTriggerListener(this);
-           // track->clearTrig->removeTriggerListener(this);
-            //track->stopTrig->removeTriggerListener(this);
-        }
-
-
-        void paint(Graphics & g) override{
-            if(isSelected){
-                g.setColour(Colours::white);
-                g.drawRect(getLocalBounds());
-            }
-            g.setColour(mainColour.withAlpha(0.7f));
-            g.fillRoundedRectangle(getLocalBounds().
-                       removeFromTop((int)(headerHackHeight*getLocalBounds().getHeight()))
-                                   .withWidth((int)((1-volumeWidth)*getLocalBounds().getWidth()))
-                                   .reduced(1).toFloat(),2);
-
-        }
+		void paint(Graphics & g) override;
         void mouseUp(const MouseEvent &) override{track->askForSelection(true);}
 
-        void resized()override{
-            // RelativeLayout
-            float pad = 0.01f;
-            volumeSlider->setBoundsRelative(    1-volumeWidth+pad,             0+pad,
-                                            volumeWidth - 2*pad,    1-2*pad);
-
-            recPlayButton.setBoundsRelative(pad,headerHackHeight+pad,
-                                           1.f-volumeWidth-2.f*pad, .8f-headerHackHeight-2.f*pad);
-            stopButton.setBoundsRelative(0+pad,      .8f+pad,
-                                         .4f-2*pad,    .2f-2*pad);
-            clearButton.setBoundsRelative(.4f+pad,     .8f+pad,
-                                          .4f-2*pad,   .2f-2*pad);
-            //            Rectangle<int> area = getLocalBounds();
-            //            area.reduce(5,5);
-            //            volumeSlider->setBounds(area.removeFromRight(10));
-            //            recPlayButton.setBounds(area.removeFromTop(area.getHeight()/2));
-            //            stopButton.setBounds(area.removeFromLeft(area.getWidth()/2));
-            //            clearButton.setBounds(area);
-            //
-        }
+		void resized()override;
         void trackSelected(bool _isSelected)override{ isSelected = _isSelected;repaint();}
-        void trackStateChangedAsync(const LooperNode::Looper::Track::TrackState & state)override;
-        LooperNode::Looper::Track * track;
+        void trackStateChangedAsync(const LooperTrack::TrackState & state)override;
+		LooperTrack * track;
         Colour mainColour;
         TriggerBlinkUI recPlayButton;
         TriggerBlinkUI clearButton;
