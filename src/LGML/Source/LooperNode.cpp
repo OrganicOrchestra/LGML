@@ -18,4 +18,4 @@ LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeMa
     addChildControllableContainer(looper);
 }
 
-NodeBaseUI * LooperNode::createUI(){return new NodeBaseUI(this, new LooperNodeUI);}
+NodeBaseUI * LooperNode::createUI(){return new NodeBaseUI(this, new LooperNodeContentUI);}

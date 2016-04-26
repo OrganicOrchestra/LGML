@@ -35,7 +35,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     void incrementClock(int time);
 
 
-    void stop();
+    void stop(); 
     void setPlayState(bool s,bool isSettingTempo = false);
     void setSampleRate(int sr);
     void setBPM(double BPM);

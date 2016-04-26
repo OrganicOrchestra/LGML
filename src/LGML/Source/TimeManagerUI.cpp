@@ -66,7 +66,9 @@ void TimeManagerUI::TimeBar::async_stop(){
     stopTimer();
 }
 void TimeManagerUI::TimeBar::async_newBeat( int b){
-    if(b%beatComponents.size()==0){zeroOutBeatComponents();}
+    if(b%beatComponents.size()==0){
+		zeroOutBeatComponents();
+	}
 }
 void TimeManagerUI::TimeBar::async_beatPerBarChanged(int bpb){
     initComponentsForNumBeats(bpb);

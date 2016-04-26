@@ -17,7 +17,7 @@
 #include "Looper.h"
 #include "LooperTrack.h"
 
-class LooperNodeUI: public NodeBaseContentUI , public Looper::Listener
+class LooperNodeContentUI: public NodeBaseContentUI , public Looper::Listener
 {
 public:
 
@@ -27,9 +27,9 @@ public:
     ScopedPointer<FloatSliderUI>    volumeSelectedSlider;
     ScopedPointer<TriggerBlinkUI>   clearAllButton;
     ScopedPointer<TriggerBlinkUI>   stopAllButton;
-    ScopedPointer<BoolToggleUI> monitoringButton;
+    ScopedPointer<BoolToggleUI>		monitoringButton;
 
-    LooperNodeUI();
+    LooperNodeContentUI();
 
 
     Component trackContainer;
@@ -54,9 +54,13 @@ public:
         void trackStateChangedAsync(const LooperTrack::TrackState & state)override;
 		LooperTrack * track;
         Colour mainColour;
-        TriggerBlinkUI recPlayButton;
-        TriggerBlinkUI clearButton;
-        TriggerBlinkUI stopButton;
+        ScopedPointer<TriggerBlinkUI> recPlayButton;
+		ScopedPointer<TriggerBlinkUI> clearButton;
+		ScopedPointer<TriggerBlinkUI> stopButton;
+
+		ScopedPointer<BoolToggleUI>	muteButton;
+		ScopedPointer<BoolToggleUI>	soloButton;
+
         float headerHackHeight = .2f;
         float volumeWidth = .2f;
         ScopedPointer<FloatSliderUI> volumeSlider;

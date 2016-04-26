@@ -13,7 +13,7 @@
 
 //==============================================================================
 BoolToggleUI::BoolToggleUI(Parameter * parameter) :
-    ParameterUI(parameter)
+    ParameterUI(parameter), invertVisuals(false)
 {
     setSize(10,10);
 }
@@ -25,9 +25,15 @@ BoolToggleUI::~BoolToggleUI()
 
 void BoolToggleUI::paint(Graphics & g)
 {
-    Colour c = parameter->boolValue() ? HIGHLIGHT_COLOR : NORMAL_COLOR;
+	bool valCheck = invertVisuals ? !parameter->boolValue():parameter->boolValue();
+    Colour c =  valCheck? HIGHLIGHT_COLOR : NORMAL_COLOR;
+	
     g.setGradientFill(ColourGradient(c.brighter(),(float)getLocalBounds().getCentreX(),(float)getLocalBounds().getCentreY(), c.darker(), 2.f,2.f,true));
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
+
+	g.setFont(10);
+	g.setColour(Colours::white.darker(.1f));
+	g.drawText(parameter->niceName, getLocalBounds().reduced(2).toFloat(), Justification::centred);
 }
 
 void BoolToggleUI::mouseDown(const MouseEvent &)

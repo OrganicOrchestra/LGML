@@ -53,7 +53,7 @@ void Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMe
 	bufferIn.setSize(buffer.getNumChannels(), buffer.getNumSamples());
 	bufferOut.setSize(buffer.getNumChannels(), buffer.getNumSamples());
 
-	if (isMonitoring->value) {
+	if (isMonitoring->boolValue()) {
 		for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
 			bufferOut.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
 		}

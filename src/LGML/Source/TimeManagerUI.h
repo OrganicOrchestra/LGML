@@ -29,7 +29,7 @@ class TimeManagerUI : public Component{
         TimeBar(TimeManager *);
 
         bool isSettingTempo = false;
-        int refreshHz = 30;
+        int refreshHz = 60;
         float blinkHz = 1;
         double blinkCount = 0;
 

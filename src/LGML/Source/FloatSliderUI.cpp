@@ -60,14 +60,15 @@ void FloatSliderUI::paint(Graphics & g)
         Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::lightgrey;
         g.setColour(displayBar?textColor:c);
         Rectangle<int> destRect = sliderBounds;
+
         if(orientation == VERTICAL){
             AffineTransform at;
             at = at.rotated((float)(-double_Pi/2.0f), sliderBounds.getWidth()/2.0f, sliderBounds.getHeight()/2.0f);
             g.addTransform(at);
-            destRect.setBounds(0,0, sliderBounds.getHeight(), sliderBounds.getHeight());
+            destRect.setBounds(-sliderBounds.getCentreY(),0, sliderBounds.getHeight(), sliderBounds.getHeight());
         }
 
-        g.drawText(parameter->niceName+" : "+String::formatted("%.2f", parameter->floatValue()), destRect, Justification::centred);
+        g.drawText(parameter->niceName+" : "+String::formatted("%.2f", parameter->floatValue()), destRect.reduced(2,0), Justification::left);
     }
 }
 

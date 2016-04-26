@@ -44,15 +44,6 @@ LooperTrack::LooperTrack(Looper * looper, int _trackIdx) :
 	
 	preDelayMs = addIntParameter("Pre Delay MS", "Pre process delay (in milliseconds)", 40, 0, 200);
 
-	//selectTrig->isControllableFeedbackOnly = true;
-
-	selectTrig->hideInEditor = true;
-	recPlayTrig->hideInEditor = true;
-	playTrig->hideInEditor = true;
-	stopTrig->hideInEditor = true;
-	clearTrig->hideInEditor = true;
-	volume->hideInEditor = true;
-
 	stateParameterString = addStringParameter("state", "track state", "");
 	stateParameterStringSynchronizer = new AsyncTrackStateStringSynchroizer(stateParameterString);
 	addTrackListener(stateParameterStringSynchronizer);
@@ -118,10 +109,13 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 			playNeedle += buffer.getNumSamples();
 			playNeedle %= recordNeedle;
 		}
+
+		float newVolume = mute->boolValue() ? 0 : volume->floatValue();
 		for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-			buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume, volume->value);
+			buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume, newVolume);
 		}
-		lastVolume = volume->value;
+
+		lastVolume = newVolume;
 
 
 	}
