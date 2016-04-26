@@ -16,9 +16,7 @@ Controller::Controller(const String &name) :
     ControllableContainer(name)
 {
     nameParam = addStringParameter("Name", "Set the name of the controller.",name);
-    nameParam->addParameterListener(this);
     enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
-    enabledParam->addParameterListener(this);
 
     controllerTypeEnum = 0;//init
 }
@@ -97,6 +95,9 @@ void Controller::remove()
 
 void Controller::parameterValueChanged(Parameter * p)
 {
+    // @ ben I think we need that but may be it was not called for a reason
+    ControllableContainer::parameterValueChanged(p);
+
     if (p == nameParam) setNiceName(nameParam->value);
     else if (p == enabledParam)
     {

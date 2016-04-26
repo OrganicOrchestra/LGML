@@ -23,9 +23,8 @@ DataInNode::~DataInNode()
 
 }
 
-void DataInNode::parameterValueChanged(Parameter * p)
+void DataInNode::onContainerParameterChanged(Parameter * p)
 {
-
   dataProcessor->updateOutputData(p->niceName, p->getNormalizedValue());
 }
 

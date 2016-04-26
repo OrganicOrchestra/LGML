@@ -12,7 +12,8 @@
 
 DataProcessorGraph::DataProcessorGraph()
 {
-	thread.startThread();
+//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
+//	thread.startThread();
 }
 
 DataProcessorGraph::~DataProcessorGraph()
@@ -108,7 +109,9 @@ DataProcessorGraph::DataThread::~DataThread()
 }
 
 void DataProcessorGraph::DataThread::run() {
-	while (!threadShouldExit()) {
-	} 
+
+//	while (!threadShouldExit()) {
+//
+//	} 
 	DBG("finish data thread");
 }

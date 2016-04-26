@@ -27,7 +27,7 @@ public:
     BoolParameter * enabledParam;
 
     void remove(); //will dispatch askForRemoveController
-    virtual void parameterValueChanged(Parameter * p) override;
+    void parameterValueChanged(Parameter * p) override;
 
     virtual ControllerUI * createUI();
 

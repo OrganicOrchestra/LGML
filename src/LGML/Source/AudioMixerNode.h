@@ -51,7 +51,7 @@ public:
 
 
         void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override ;
-        void onAnyParameterChanged(Parameter * p) override;
+        void onContainerParameterChanged(Parameter * p) override;
 
         AudioMixerAudioProcessor();
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerAudioProcessor)

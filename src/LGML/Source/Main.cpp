@@ -50,8 +50,9 @@ public:
     void shutdown() override
     {
         // Add your application's shutdown code here..
-        engine = nullptr;
         mainWindow = nullptr; // (deletes our window)
+        engine = nullptr;
+
     }
 	
     //==============================================================================

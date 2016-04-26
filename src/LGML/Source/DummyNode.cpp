@@ -26,7 +26,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
 {
 }
 
- void DummyNode::onAnyParameterChanged(Parameter * p)
+ void DummyNode::onContainerParameterChanged(Parameter * p)
  {
      if (p == freq1Param)
      {

@@ -49,7 +49,7 @@ public:
     }
 
 
-    void parameterValueChanged(Parameter * p) override;
+    void onContainerParameterChanged(Parameter * p) override;
 
     virtual NodeBaseUI * createUI() override;
 

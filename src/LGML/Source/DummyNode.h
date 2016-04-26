@@ -79,7 +79,7 @@ public:
 
     Trigger * testTrigger;
 
-    void onAnyParameterChanged(Parameter * p) override;
+    void onContainerParameterChanged(Parameter * p) override;
 
     void inputDataChanged(Data *d) override
     {
