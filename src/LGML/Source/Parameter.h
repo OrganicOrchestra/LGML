@@ -20,29 +20,29 @@ public:
     virtual ~Parameter() {Parameter::masterReference.clear();}
 
 
-	var defaultValue;
-	var minimumValue;
-	var maximumValue;
-	var value;
+    var defaultValue;
+    var minimumValue;
+    var maximumValue;
+    var value;
 
-	bool isPresettable;
-	bool isOverriden;
+    bool isPresettable;
+    bool isOverriden;
 
-	void resetValue();
-	void setValue(var _value, bool silentSet = false, bool force = false);	
-	virtual void setValueInternal(var _value);;
+    void resetValue();
+    void setValue(var _value, bool silentSet = false, bool force = false);
+    virtual void setValueInternal(var _value);
 
-	//For Number type parameters
-	void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false);
-	float getNormalizedValue();
+    //For Number type parameters
+    void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false);
+    float getNormalizedValue();
 
-	//helpers for fast typing
-	float floatValue() { return (float)value; }
-	int intValue() { return (int)value; }
-	bool boolValue() { return (bool)value; }
-	String stringValue() { return value.toString(); }
+    //helpers for fast typing
+    float floatValue() { return (float)value; }
+    int intValue() { return (int)value; }
+    bool boolValue() { return (bool)value; }
+    String stringValue() { return value.toString(); }
 
-	void notifyValueChanged();
+    void notifyValueChanged();
 
     //Listener
     class  Listener

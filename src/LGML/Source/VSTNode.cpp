@@ -49,7 +49,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
         if(identifierString->value!=""){
             PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
             if(pd){generatePluginFromDescription(pd);}
-            else{DBG("VST : cant find plugin for identifier : "+identifierString->value);}
+            else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
         }
         else{DBG("VST : no identifierStrind provided");}
     }
