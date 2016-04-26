@@ -86,6 +86,7 @@ public:
         listeners.call(&Listener::controllableControlAddressChanged, this);
     }
 
+
     String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
     // used for generating editor

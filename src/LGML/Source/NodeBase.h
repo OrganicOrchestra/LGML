@@ -21,6 +21,7 @@
 #include "DataProcessor.h"
 #include "NodeAudioProcessor.h"
 #include "ControllableContainer.h"
+#include "PresetManager.h"
 
 class NodeBaseUI;
 class NodeManager;
@@ -72,6 +73,10 @@ public:
     void removeFromAudioGraphIfNeeded();
 
 
+	virtual void saveNewPreset(const String &_name);
+	virtual bool loadPreset(PresetManager::Preset * pre) override;
+	virtual bool resetFromPreset() override;
+
     //ui
     virtual NodeBaseUI *  createUI() { 
 		DBG("No implementation in child node class !"); 
@@ -88,8 +93,6 @@ public:
 
     void numAudioInputChanged(int newNum)override;
     void numAudioOutputChanged(int newNum)override;
-
-    //
 
 
     var getJSONData();
@@ -109,8 +112,8 @@ public:
     void addRemoveNodeListener(Listener* newListener) { listeners.add(newListener); }
     void removeRemoveNodeListener(Listener* listener) { listeners.remove(listener); }
 
-	// keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeFactory::NodeType, but circular dependency BULLSHIIIIIT)
-	int nodeType;
+	// keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeType, but circular dependency BULLSHIIIIIT)
+	NodeType nodeType;
 
     virtual void onContainerParameterChanged(Parameter * p) override;
 

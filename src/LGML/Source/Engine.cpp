@@ -97,17 +97,18 @@ void Engine::clear(){
     TimeManager::getInstance()->stop();
     ControllerManager::getInstance()->clear();
     NodeManager::getInstance()->clear();
-	
+	PresetManager::getInstance()->clear();
+
     changed();    //fileDocument
 }
 
 void Engine::createNewGraph(){
     clear();
 	
-    NodeBase * node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioIn);
+    NodeBase * node = NodeManager::getInstance()->addNode(NodeType::AudioInType);
     node->xPosition->setValue(150);
     node->yPosition->setValue(50);
-    node = NodeManager::getInstance()->addNode(NodeFactory::NodeType::AudioOut);
+    node = NodeManager::getInstance()->addNode(NodeType::AudioOutType);
     node->xPosition->setValue(450);
     node->yPosition->setValue(50);
     changed();

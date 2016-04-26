@@ -17,36 +17,36 @@ NodeBase * NodeFactory::createNode(NodeManager * nodeManager, NodeType nodeType,
 
 	switch (nodeType)
 	{
-	case NodeType::Dummy:
+	case NodeType::DummyType:
 		n = new DummyNode(nodeManager, nodeId);
 		break;
 
-	case NodeType::AudioMixer:
+	case NodeType::AudioMixerType:
 		n = new AudioMixerNode(nodeManager, nodeId);
 		break;
 
-	case NodeType::DataIn:
+	case NodeType::DataInType:
 		n = new DataInNode(nodeManager, nodeId);
 		break;
 
-	case NodeType::Spat:
+	case NodeType::SpatType:
 		n = new SpatNode(nodeManager, nodeId);
 		break;
-	case NodeType::Looper:
+	case NodeType::LooperType:
 		n = new LooperNode(nodeManager, nodeId);
 		break;
-	case NodeType::VST:
+	case NodeType::VSTType:
 		n = new VSTNode(nodeManager, nodeId);
 		break;
 
-	case NodeType::AudioIn:
+	case NodeType::AudioInType:
 		n = new AudioInNode(nodeManager, nodeId);
 		break;
 
-	case NodeType::AudioOut:
+	case NodeType::AudioOutType:
 		n = new AudioOutNode(nodeManager, nodeId);
 		break;
-	case NodeType::UNKNOWN:
+	case NodeType::UNKNOWN_TYPE:
 		DBG("NodeFactory : not found type for node");
 		return nullptr;
 	default:
@@ -69,21 +69,21 @@ PopupMenu * NodeFactory::getNodeTypesMenu(int menuIdOffset)
 	return p;
 }
 
-NodeFactory::NodeType NodeFactory::getTypeFromString(const String & s) {
+NodeType NodeFactory::getTypeFromString(const String & s) {
 	for (int i = 0; i < numElementsInArray(nodeTypeNames); i++)
 	{
 		if (s == nodeTypeNames[i]) { return NodeType(i); }
 	}
-	return UNKNOWN;
+	return UNKNOWN_TYPE;
 }
 
 String NodeFactory::nodeTypeToString(NodeType t) {
-	if (t<0 || t > UNKNOWN)return String::empty;
+	if (t<0 || t > UNKNOWN_TYPE)return String::empty;
 	return nodeTypeNames[(int)t];
 }
 
 String NodeFactory::nodeToString(NodeBase * n) {
 	NodeType t = (NodeType)n->nodeType;
-	if (t<0 || t > UNKNOWN)return String::empty;
+	if (t<0 || t > UNKNOWN_TYPE)return String::empty;
 	return nodeTypeNames[(int)t];
 }

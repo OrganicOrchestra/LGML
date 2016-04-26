@@ -42,7 +42,7 @@ node(node)
     getHeaderContainer()->addMouseListener(this, true);// (true, true);
 
     mainContainer.setNodeAndNodeUI(node, this);
-    if(getWidth() == 0 || getHeight() == 0) setSize(250,100);
+    if(getWidth() == 0 || getHeight() == 0) setSize(280,100);
 
     node->xPosition->addParameterListener(this);
     node->yPosition->addParameterListener(this);

@@ -9,6 +9,8 @@
  */
 
 #include "NodeBaseHeaderUI.h"
+#include "PresetManager.h"
+
 
 NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X")
 {
@@ -58,8 +60,10 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     addAndMakeVisible(grabber);
     addAndMakeVisible(removeBT);
 
-	presetCB = PresetManager::getInstance()->getPresetSelector(PresetManager::Preset::Type::Node);
-
+	presetCB = PresetManager::getInstance()->getNodePresetSelector(node->nodeType);
+	addAndMakeVisible(presetCB);
+	presetCB->addListener(this);
+	presetCB->setTextWhenNothingSelected("Preset");
     init();
 
 }
@@ -80,6 +84,7 @@ void NodeBaseHeaderUI::resized()
     int vuMeterWidth = 14;
     int removeBTWidth = 15;
     int grabberWidth = 40;
+	int presetCBWidth = 70;
 
     Rectangle<int> r = getLocalBounds();
 
@@ -92,11 +97,59 @@ void NodeBaseHeaderUI::resized()
     r.removeFromLeft(enabledUI->getWidth());
 
     removeBT.setBounds(r.removeFromRight(removeBTWidth));
-    grabber.setBounds(r.removeFromRight(grabberWidth));
-    titleUI->setBounds(r);
+	presetCB->setBounds(r.removeFromRight(presetCBWidth).reduced(0, 4));
+	grabber.setBounds(r.removeFromRight(grabberWidth));
+	titleUI->setBounds(r);
 
     enabledUI->setTopLeftPosition(5, 5);
 
+}
+
+void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
+{
+	DBG("Combobox ! " << cb->getSelectedId());
+	int presetID = cb->getSelectedId();
+
+	if (presetID == PresetChoice::SaveCurrent)
+	{
+		bool result = node->saveCurrentPreset();
+		if(result) cb->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
+		else cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
+
+	}if (presetID == PresetChoice::SaveToNew) //save to new
+	{
+		AlertWindow nameWindow("Save a new Preset","Choose a name for the new preset",AlertWindow::AlertIconType::QuestionIcon,this);
+		nameWindow.addTextEditor("newPresetName", "New Preset");
+		nameWindow.addButton("OK", 1, KeyPress(KeyPress::returnKey));
+		nameWindow.addButton("Cancel", 0, KeyPress(KeyPress::escapeKey));
+
+		int nameResult = nameWindow.runModalLoop();
+		
+		if (nameResult)
+		{
+			String presetName = nameWindow.getTextEditorContents("newPresetName");
+			node->saveNewPreset(presetName);
+			cb->clear(NotificationType::dontSendNotification);
+			PresetManager::getInstance()->fillWithNodePresets(cb, node->nodeType);
+			cb->setSelectedItemIndex(cb->getNumItems() - 1, NotificationType::dontSendNotification);
+		}
+		else
+		{
+			cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
+		}
+
+
+	}else if (presetID == PresetChoice::ResetToDefault) //Reset to default
+	{
+		node->resetFromPreset();
+		cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
+	}
+	else
+	{
+		PresetManager::NodePreset * np = PresetManager::getInstance()->getNodePreset(node->nodeType, cb->getItemText(cb->getSelectedItemIndex()));
+		node->loadPreset(np);
+	}
+	
 }
 
 void NodeBaseHeaderUI::Grabber::paint(Graphics & g)

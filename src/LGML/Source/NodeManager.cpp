@@ -47,7 +47,7 @@ NodeBase * NodeManager::getNodeForId(const uint32 nodeId) const
     return nullptr;
 }
 
-NodeBase * NodeManager::addNode(NodeFactory::NodeType nodeType, uint32 nodeId)
+NodeBase * NodeManager::addNode(NodeType nodeType, uint32 nodeId)
 {
     if (nodeId == 0)
     {
@@ -139,7 +139,7 @@ void NodeManager::loadJSONData(var data, bool clearBeforeLoad)
     Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
     for (var &nData : *nodesData)
     {
-        NodeFactory::NodeType nodeType = NodeFactory::getTypeFromString(nData.getProperty("nodeType",var()));
+        NodeType nodeType = NodeFactory::getTypeFromString(nData.getProperty("nodeType",var()));
         int nodeId = nData.getProperty("nodeId", var());
         NodeBase* node = addNode(nodeType, nodeId);
         node->loadJSONData(nData);

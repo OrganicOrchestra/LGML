@@ -44,5 +44,5 @@ void DummyNodeContentUI::init()
     testTriggerButton = dummyNode->testTrigger->createButtonUI();
     addAndMakeVisible(testTriggerButton);
 
-    nodeUI->setSize(200, 150);
+    nodeUI->setSize(250, 150);
 }

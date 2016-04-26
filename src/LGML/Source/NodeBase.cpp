@@ -19,7 +19,7 @@ nodeId(_nodeId),
 audioProcessor(_audioProcessor),
 dataProcessor(_dataProcessor),
 ControllableContainer(name),
-nodeType(-1)
+nodeType(NodeType::UNKNOWN_TYPE)
 {
 
     if (dataProcessor != nullptr)
@@ -104,7 +104,6 @@ void NodeBase::onContainerParameterChanged(Parameter * p)
     }
 }
 
-
 void NodeBase::addToAudioGraphIfNeeded(){
     if(hasAudioInputs || hasAudioOutputs){
         nodeManager->audioGraph.addNode(audioProcessor,nodeId);
@@ -116,6 +115,22 @@ void NodeBase::removeFromAudioGraphIfNeeded(){
         nodeManager->audioGraph.removeNode(nodeId);
         audioProcessor->removeNodeAudioProcessorListener(this);
     }
+}
+
+void NodeBase::saveNewPreset(const String & _name)
+{
+	PresetManager::NodePreset * pre = PresetManager::getInstance()->addNodePreset(_name, nodeType, this, true);
+	loadPreset(pre);
+}
+
+bool NodeBase::loadPreset(PresetManager::Preset * pre)
+{
+	return ControllableContainer::loadPreset(pre); //just to show that child class nodes can override this if special behavior is to be made
+}
+
+bool NodeBase::resetFromPreset()
+{
+	return ControllableContainer::resetFromPreset(); //just to show that child class nodes can override this if special behavior is to be made
 }
 
 

@@ -67,7 +67,10 @@ public:
 	virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
 
 
-	virtual void applyPreset(PresetManager::Preset * preset);
+	PresetManager::Preset * currentPreset;
+	virtual bool loadPreset(PresetManager::Preset * preset);
+	virtual bool saveCurrentPreset();
+	virtual bool resetFromPreset();
 
 	void dispatchFeedback(Controllable * c);
 

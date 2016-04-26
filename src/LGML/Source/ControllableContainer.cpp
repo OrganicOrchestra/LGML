@@ -16,7 +16,8 @@ ControllableContainer::ControllableContainer(const String & niceName) :
 niceName(niceName),
 parentContainer(nullptr),
 hasCustomShortName(false),
-skipControllableNameInAddress(false)
+skipControllableNameInAddress(false),
+currentPreset(nullptr)
 {
     setNiceName(niceName);
 
@@ -211,10 +212,8 @@ Array<Parameter*> ControllableContainer::getAllParameters(bool recursive, bool g
 	Array<Parameter*> result;
 	for (auto &c : controllables)
 	{
-		Parameter * p = (Parameter *)c;
-		if (p == nullptr) continue;
-
-		if (getNotExposed || c->isControllableExposed) result.add(p);
+		if (c->type == Controllable::Type::TRIGGER) continue;
+		if (getNotExposed || c->isControllableExposed) result.add((Parameter *)c);
 	}
 
 	if (recursive)
@@ -296,13 +295,55 @@ Controllable * ControllableContainer::getControllableForAddress(Array<String> ad
     return nullptr;
 }
 
-void ControllableContainer::applyPreset(PresetManager::Preset * preset)
+
+bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 {
+	DBG("load preset, " << String(currentPreset != nullptr));
+	if (preset == nullptr) return false;
+
 	for (auto &pv : preset->presetValues)
 	{
 		Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
 		if (p != nullptr) p->setValue(pv->presetValue);
 	}
+
+	currentPreset = preset;
+
+	return true;
+}
+
+bool ControllableContainer::saveCurrentPreset()
+{
+	DBG("save current preset, " << String(currentPreset != nullptr));
+	if (currentPreset == nullptr) return false;
+
+	for (auto &pv : currentPreset->presetValues)
+	{
+		Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
+		if (p != nullptr)
+		{
+			DBG("set preset value : " << p->niceName << " > " << p->stringValue());
+			pv->presetValue = p->value;
+		}
+	}
+
+	return true;
+}
+
+bool ControllableContainer::resetFromPreset()
+{
+	DBG("Reset from preset, " << String(currentPreset != nullptr));
+	if (currentPreset == nullptr) return false;
+
+	for (auto &pv : currentPreset->presetValues)
+	{
+		DBG("Reset, check presetValue " << pv->paramControlAddress << " > " << pv->presetValue.toString());
+		Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
+		if (p != nullptr) p->resetValue();
+	}
+
+	currentPreset = nullptr;
+	return true;
 }
 
 void ControllableContainer::dispatchFeedback(Controllable * c)

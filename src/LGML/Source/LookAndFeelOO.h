@@ -60,10 +60,10 @@ namespace LookAndFeelHelpers {
         PopupMenu::highlightedTextColourId,         0xffffffff,
         PopupMenu::highlightedBackgroundColourId,   0x991111aa,
 
-        ComboBox::buttonColourId,                   0xffbbbbff,
+        ComboBox::buttonColourId,                   0xffCCCCCC,
         ComboBox::outlineColourId,                  standardOutlineColour,
         ComboBox::textColourId,                     0xff000000,
-        ComboBox::backgroundColourId,               0xffffffff,
+        ComboBox::backgroundColourId,               0xffCCCCCC,
         ComboBox::arrowColourId,                    0x99000000,
 
         PropertyComponent::backgroundColourId,      0x66ffffff,

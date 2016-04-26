@@ -25,12 +25,14 @@ Parameter::Parameter(const Type &type, const String &niceName, const String &des
 
 void Parameter::resetValue()
 {
+	DBG("RESET VALUE : " << niceName << " > " << stringValue());
 	isOverriden = false;
 	setValue(defaultValue);
 }
 
 void Parameter::setValue(var _value, bool silentSet, bool force)
 {
+	
 	if (!force && this->value == _value) return;
 	setValueInternal(_value);
 

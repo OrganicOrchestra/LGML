@@ -14,32 +14,33 @@
 #include "DummyNode.h"
 #include "AudioMixerNode.h"
 #include "DataInNode.h"
-#include "LooperNode.h"
 #include "SpatNode.h"
 #include "VSTNode.h"
 #include "AudioInNode.h"
 #include "AudioOutNode.h"
+#include "LooperNode.h"
 
 class NodeManager;
 
 const static String nodeTypeNames[] = { "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioIn","AudioOut" };
 
+//Added type to not mess with class names
+enum NodeType
+{
+	DummyType,
+	AudioMixerType,
+	DataInType,
+	SpatType,
+	LooperType,
+	VSTType,
+	AudioInType,
+	AudioOutType,
+	UNKNOWN_TYPE // has to be last
+};
+
 class NodeFactory
 {
 public:
-    enum NodeType
-    {
-        Dummy,
-        AudioMixer,
-        DataIn,
-        Spat,
-        Looper,
-        VST,
-        AudioIn,
-        AudioOut,
-        UNKNOWN // has to be last
-    };
-
     NodeFactory()
     {
 

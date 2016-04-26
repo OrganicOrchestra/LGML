@@ -396,7 +396,7 @@ void NodeManagerUI::createNodeFromIndexAtPos(int modalResult, Viewport * c,int m
 {
     if (modalResult >= 1 && modalResult <= maxRes)
     {
-        NodeBase * n = NodeManager::getInstance()->addNode((NodeFactory::NodeType)(modalResult - 1));
+        NodeBase * n = NodeManager::getInstance()->addNode((NodeType)(modalResult - 1));
 
         Point<int> mousePos = c->getMouseXYRelative();
         n->xPosition->setValue((float)mousePos.x);
@@ -425,7 +425,7 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
             /*
             if (event.mods.isCtrlDown())
             {
-                NodeBase * n = nodeManager->addNode(NodeFactory::NodeType::Dummy);
+                NodeBase * n = nodeManager->addNode(NodeType::Dummy);
                 n->xPosition->setValue((float)getMouseXYRelative().x);
                 n->yPosition->setValue((float)getMouseXYRelative().y);
             }

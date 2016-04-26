@@ -20,6 +20,8 @@ Looper::Looper(LooperNode * looperNode) :
 	looperNode(looperNode)
 {
 
+	numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 0, MAX_NUM_TRACKS);
+	
 	selectAllTrig = addTrigger("Select All", "Select All tracks, for all clear or main volume for instance");
 	recPlaySelectedTrig = addTrigger("Rec Or Play",
 		"Tells the selected track to wait for the next bar and then start record or play");
@@ -37,11 +39,10 @@ Looper::Looper(LooperNode * looperNode) :
 	stopAllTrig = addTrigger("StopAll",
 		"Tells all tracks to stop it's content if got any");
 	isMonitoring = addBoolParameter("monitor", "do we monitor audio input ? ", false);
-	numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 0, 0, MAX_NUM_TRACKS);
-
+	
 	skipControllableNameInAddress = true;
 
-	numberOfTracks->setValue(8);
+	setNumTracks(numberOfTracks->intValue());
 
 }
 

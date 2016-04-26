@@ -20,7 +20,7 @@
 #include "VuMeter.h"
 #include "Style.h"
 
-class NodeBaseHeaderUI : public ContourComponent
+class NodeBaseHeaderUI : public ContourComponent, public ComboBox::Listener
 {
 public:
 
@@ -34,7 +34,7 @@ public:
 
     NodeBase * node;
     NodeBaseUI * nodeUI;
-
+	 
     ScopedPointer<StringParameterUI> titleUI;
     ScopedPointer<BoolToggleUI> enabledUI;
     VuMeter vuMeter;
@@ -52,7 +52,12 @@ public:
 
     virtual void resized() override;
 
+	// Inherited via Listener
+	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
+
+		
 };
 
 

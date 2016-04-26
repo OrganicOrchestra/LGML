@@ -42,7 +42,7 @@ public:
 
     NodeBase* getNode(const int index) const noexcept { return nodes[index]; }
     NodeBase* getNodeForId(const uint32 nodeId) const;
-    NodeBase* addNode(NodeFactory::NodeType nodeType, uint32 nodeId = 0);
+    NodeBase* addNode(NodeType nodeType, uint32 nodeId = 0);
     bool removeNode(uint32 nodeId);
 
     NodeConnection * getConnection(const int index) const noexcept { return connections[index]; }

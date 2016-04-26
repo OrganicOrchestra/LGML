@@ -38,7 +38,7 @@ LooperTrack::LooperTrack(Looper * looper, int _trackIdx) :
 	playTrig = addTrigger("Play", "Tells the track to wait for the next bar and then stop recording and start playing");
 	stopTrig = addTrigger("Stop", "Tells the track to stop ");
 	clearTrig = addTrigger("Clear", "Tells the track to clear it's content if got any");
-	volume = addFloatParameter("Volume", "Set the volume of the track", 1, 0, 1);
+	volume = addFloatParameter("Volume", "Set the volume of the track", defaultVolumeValue, 0, 1);
 	mute = addBoolParameter("Mute", "Sets the track muted (or not.)", false);
 	solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
 	

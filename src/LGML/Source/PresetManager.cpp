@@ -10,53 +10,80 @@
 
 #include "PresetManager.h"
 #include "ControllableContainer.h"
+#include "NodeFactory.h"
 
 juce_ImplementSingleton(PresetManager)
 
-void PresetManager::addPreset(const String &name, Preset::Type presetType, ControllableContainer * container, bool recursive, bool includeNotExposed)
+
+PresetManager::PresetManager()
 {
-	
-	Array<PresetValue *> nPresets;
-	for (auto &p : container->getAllParameters())
+}
+
+PresetManager::~PresetManager()
+{
+	nodePresets.clear();
+}
+
+PresetManager::NodePreset * PresetManager::addNodePreset(const String &name, NodeType nodeType, ControllableContainer * container, bool recursive, bool includeNotExposed)
+{
+	//Array<PresetValue *> vPresets;
+	NodePreset * pre = new NodePreset(nodeType, name);
+	for (auto &p : container->getAllParameters(recursive,includeNotExposed))
 	{
 		if (!p->isPresettable) continue;
 		if (!p->isControllableExposed && !includeNotExposed) continue;
 
-		PresetValue * pre = new PresetValue(p->controlAddress,p->value.clone());
-		nPresets.add(pre);
+		DBG("Add preset value " << p->niceName << " > " <<  p->stringValue());
+
+		//PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
+		//vPresets.add(preVal);
+		pre->addPresetValue(p->getControlAddress(container), p->value.clone());
+
 	}
 
-	if (recursive)
-	{
-		//recursive not functional for now
-	}
+	
+	nodePresets.add(pre);
 
-	Preset * pre = new Preset(presetType, name);
-	pre->addPresetValues(nPresets);
+	return pre;
 }
 
-ComboBox * PresetManager::getPresetSelector(Preset::Type type)
+ComboBox * PresetManager::getNodePresetSelector(NodeType nodeType)
 {
 	ComboBox * cb = new ComboBox("Presets");
-	int pIndex = 0;
-	for (auto &pre : presets)
-	{
-		if (pre->type == type)
-		{
-			cb->addItem(pre->name, pIndex);
-			pIndex++;
-		}
-	}
+	fillWithNodePresets(cb, nodeType);
 	
 	return cb;
 }
 
-PresetManager::Preset * PresetManager::getPreset(Preset::Type presetType, const String & name)
+PresetManager::NodePreset * PresetManager::getNodePreset(NodeType nodeType, const String & name)
 {
-	for (auto &pre : presets)
+	for (auto &pre : nodePresets)
 	{
-		if (pre->type == presetType && pre->name == name) return pre;
+		if (pre->nodeType == nodeType && pre->name == name) return pre;
 	}
 
 	return nullptr;
+}
+
+void PresetManager::fillWithNodePresets(ComboBox * cb, NodeType nodeType)
+{
+	cb->addItem("Save current preset", SaveCurrent);
+	cb->addItem("Save to new preset", SaveToNew);
+	cb->addItem("Reset to default", ResetToDefault);
+
+	int pIndex = 1;
+	for (auto &pre : nodePresets)
+	{
+		if (pre->nodeType == nodeType)
+		{
+			pre->presetId = pIndex;
+			cb->addItem(pre->name, pre->presetId);
+			pIndex++;
+		}
+	}
+}
+
+void PresetManager::clear()
+{
+	nodePresets.clear();
 }

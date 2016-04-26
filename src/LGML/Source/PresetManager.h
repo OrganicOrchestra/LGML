@@ -15,6 +15,15 @@
 
 class ControllableContainer;
 
+enum NodeType;
+
+enum PresetChoice
+{
+	SaveCurrent = -3,
+	SaveToNew = -2,
+	ResetToDefault = -1
+};
+
 class PresetManager
 {
 public:
@@ -24,6 +33,7 @@ public:
 		PresetValue(const String &_controlAddress, var _value) : paramControlAddress(_controlAddress), presetValue(_value) {}
 		String paramControlAddress;
 		var presetValue;
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetValue)
 	};
 
 	class Preset
@@ -41,6 +51,7 @@ public:
 		Preset::Type type;
 		String name;
 		OwnedArray<PresetValue> presetValues;
+		int presetId; //change each time the a preset list is created, but we don't care because ControllableContainer keeps the pointer to the Preset
 
 		void addPresetValue(const String &controlAddress, var value)
 		{
@@ -51,16 +62,33 @@ public:
 		{
 			presetValues.addArray(_presetValues);
 		}
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Preset)
+	};
+
+	class NodePreset : public Preset
+	{ 
+	public:
+		NodePreset(NodeType nodeType, const String &_name) : Preset(Type::Node, _name), nodeType(nodeType) {}
+		NodeType nodeType;
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodePreset)
 	};
 
 	juce_DeclareSingleton(PresetManager,true)
 
-	OwnedArray<Preset> presets;
+	OwnedArray<NodePreset> nodePresets;
 
-	void addPreset(const String &name, Preset::Type presetType, ControllableContainer * container, bool recursive = false, bool includeNotExposed = false);
-	ComboBox * getPresetSelector(Preset::Type presetType);
+	PresetManager();
+	virtual ~PresetManager();
+	
+	NodePreset * addNodePreset(const String &name, NodeType nodeType, ControllableContainer * container, bool recursive = false, bool includeNotExposed = false);
+	ComboBox * getNodePresetSelector(NodeType nodeType);
+	NodePreset * getNodePreset(NodeType nodeType, const String &name);
+	void fillWithNodePresets(ComboBox * cb, NodeType nodeType);
 
-	Preset * getPreset(Preset::Type presetType, const String &name);
+	void clear();
+	//JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetManager)
 };
 
 
