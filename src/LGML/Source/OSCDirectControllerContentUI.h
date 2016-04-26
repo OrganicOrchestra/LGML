@@ -31,6 +31,7 @@ public:
 	Trigger activityTrigger;
 	ScopedPointer<TriggerBlinkUI> activityTriggerUI;
 
+	StringArray activityLines;
 	Label activityLog;
 
     void init() override;

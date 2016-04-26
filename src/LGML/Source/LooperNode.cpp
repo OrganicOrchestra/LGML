@@ -25,6 +25,8 @@ selectedTrack(nullptr),
 looperNode(looperNode)
 {
 
+	selectAllTrig = addTrigger("Select All", "Select All tracks, for all clear or main volume for instance");
+
     recPlaySelectedTrig =   addTrigger("Rec Or Play",
                                        "Tells the selected track to wait for the next bar and then start record or play");
 
@@ -55,7 +57,7 @@ looperNode(looperNode)
 
     skipControllableNameInAddress = true;
 
-
+	selectAllTrig->addTriggerListener(this);
     recPlaySelectedTrig->addTriggerListener(this);
     playSelectedTrig->addTriggerListener(this);
     clearSelectedTrig->addTriggerListener(this);
@@ -68,42 +70,37 @@ looperNode(looperNode)
 
 }
 
-void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages){
+void LooperNode::Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages) {
 
-    // TODO check if we can optimize copies
-    // handle multiples channels outs
+	// TODO check if we can optimize copies
+	// handle multiples channels outs
 
-    bufferIn.setSize(buffer.getNumChannels(),buffer.getNumSamples());
-    bufferOut.setSize(buffer.getNumChannels(),buffer.getNumSamples());
+	bufferIn.setSize(buffer.getNumChannels(), buffer.getNumSamples());
+	bufferOut.setSize(buffer.getNumChannels(), buffer.getNumSamples());
 
-    if(isMonitoring->value){
-        for(int i = buffer.getNumChannels()-1;i>=0 ;--i){
-            bufferOut.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
-        }
-    }
-    else{
-        bufferOut.clear();
-    }
-    for(int i = buffer.getNumChannels()-1;i>=0 ;--i){
-        bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
-    }
-    for( auto & t:tracks){
-        t->processBlock(buffer,midiMessages);
-        for(int i = buffer.getNumChannels()-1;i>=0 ;--i){
-            bufferOut.addFrom(i,0,buffer,i,0,buffer.getNumSamples());
-            buffer.copyFrom(i,0,bufferIn,i,0,buffer.getNumSamples());
-        }
-    }
-    for(int i = buffer.getNumChannels()-1;i>=0 ;--i){
-        buffer.copyFrom(i,0, bufferOut,i,0,buffer.getNumSamples());
+	if (isMonitoring->value) {
+		for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+			bufferOut.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+		}
+	}
+	else {
+		bufferOut.clear();
+	}
+	for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+		bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+	}
+	for (auto & t : tracks) {
+		t->processBlock(buffer, midiMessages);
+		for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+			bufferOut.addFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+			buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
+		}
+	}
+	for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+		buffer.copyFrom(i, 0, bufferOut, i, 0, buffer.getNumSamples());
 
-    }
-
-
-
-
+	}
 }
-
 
 
 void LooperNode::Looper::addTrack(){
@@ -151,35 +148,70 @@ void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
 }
 
 
-void LooperNode::Looper::triggerTriggered(Trigger * t){
-    if(selectedTrack!=nullptr){
-        if(t == recPlaySelectedTrig){selectedTrack->recPlayTrig->trigger();
-        }else if(t == playSelectedTrig){selectedTrack->playTrig->trigger();
-        }else if(t == clearSelectedTrig){selectedTrack->clearTrig->trigger();
-        }else if(t == stopSelectedTrig){selectedTrack->stopTrig->trigger();}
+void LooperNode::Looper::onAnyTriggerTriggered(Trigger * t){
+    if(t == recPlaySelectedTrig){
+
+		if (selectedTrack != nullptr) selectedTrack->recPlayTrig->trigger();
+
+    }else if(t == playSelectedTrig){
+
+		if (selectedTrack != nullptr) selectedTrack->playTrig->trigger();
+
+    }else if(t == clearSelectedTrig){
+		
+		if(selectedTrack != nullptr) selectedTrack->clearTrig->trigger();
+		else clearAllTrig->trigger();
+
+    }else if(t == stopSelectedTrig){
+		
+		if (selectedTrack != nullptr) selectedTrack->stopTrig->trigger();
+		else stopAllTrig->trigger();
     }
+
     if(t == clearAllTrig){
-        for(int i = tracks.size()-1 ; i>=0 ; --i){tracks[i]->clearTrig->trigger();}
+        for(int i = tracks.size()-1 ; i>=0 ; --i){
+			tracks[i]->clearTrig->trigger();
+		}
+		tracks[0]->askForSelection(true);
     }
     if(t == stopAllTrig){
-        for(int i = tracks.size()-1 ; i>=0 ; --i){tracks[i]->stopTrig->trigger();}
+        for(int i = tracks.size()-1 ; i>=0 ; --i){
+			tracks[i]->stopTrig->trigger();
+		}
     }
+	if (t == selectAllTrig)
+	{
+		selectMe(nullptr);
+	}
 }
 
 void LooperNode::Looper::selectMe(Track * t){
     if(selectedTrack!=nullptr ){
         selectedTrack->setSelected(false);
     }
-    selectedTrack = t;
-    if(selectedTrack!=nullptr ){
+    
+	selectedTrack = t;
+    
+	if(selectedTrack!=nullptr ){
         selectedTrack->setSelected(true);
+		volumeSelected->setValue(selectedTrack->volume->floatValue());
     }
 }
 
-void LooperNode::Looper::parameterValueChanged(Parameter * p) {
-    if(p==numberOfTracks){
+void LooperNode::Looper::onAnyParameterChanged(Parameter * p) {
+    if(p == numberOfTracks){
         setNumTracks(numberOfTracks->value);
-    }
+	}
+	else if (p == volumeSelected)
+	{
+		if (selectedTrack != nullptr)
+		{
+			selectedTrack->volume->setValue(volumeSelected->floatValue());
+		}else
+		{
+			//define master volume, or all volume ?
+		}
+	}
 }
 
 /////////
@@ -229,6 +261,8 @@ trackIdx(_trackIdx)
     preDelayMs =    addIntParameter("Pre Delay MS",
                                     "Pre process delay (in milliseconds)",
                                     40, 0, 200);
+
+	//selectTrig->isControllableFeedbackOnly = true;
 
 	selectTrig->hideInEditor = true;
 	recPlayTrig->hideInEditor = true;
@@ -420,17 +454,28 @@ String LooperNode::Looper::Track::trackStateToString(const TrackState & ts){
     return "[noState]";
 }
 
-void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
+void LooperNode::Looper::Track::onAnyParameterChanged(Parameter * p)
+{
+	if (p == volume)
+	{
+		if (parentLooper->selectedTrack == this) parentLooper->volumeSelected->setValue(volume->floatValue());
+	}
+}
+
+void LooperNode::Looper::Track::onAnyTriggerTriggered(Trigger * t){
 	if (t == selectTrig)
 	{
 		parentLooper->selectMe(this);
+
 	}else if (t == recPlayTrig) {
+
         if(trackState == CLEARED ){
             setTrackState(SHOULD_RECORD);
         }
         else{
             setTrackState(SHOULD_PLAY);
         }
+
     }
     else if(t == playTrig){
         setTrackState(SHOULD_PLAY);
@@ -449,11 +494,15 @@ bool LooperNode::Looper::Track::askForBeingMasterTempoTrack(){
 }
 
 
+
+
 void LooperNode::Looper::Track::setSelected(bool isSelected){
     trackStateListeners.call(&LooperNode::Looper::Track::Listener::trackSelected,isSelected);
 }
-void LooperNode::Looper::Track::askForSelection(bool /*isSelected*/){
-   selectTrig->trigger(); //(isSelected ? this : nullptr);)
+
+
+void LooperNode::Looper::Track::askForSelection(bool){
+	selectTrig->trigger();
 }
 
 
@@ -545,8 +594,6 @@ void LooperNode::Looper::Track::setTrackState(TrackState newState){
     //DBG(newState <<","<<trackState );
 
     trackState = newState;
-
-
 
     parentLooper->checkIfNeedGlobalLooperStateUpdate();
     trackStateListeners.call(&LooperNode::Looper::Track::Listener::internalTrackStateChanged,trackState);

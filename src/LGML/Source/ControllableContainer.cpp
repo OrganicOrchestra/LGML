@@ -307,7 +307,7 @@ void ControllableContainer::applyPreset(PresetManager::Preset * preset)
 void ControllableContainer::dispatchFeedback(Controllable * c)
 {
     //    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-    if (parentContainer != nullptr){ parentContainer->dispatchFeedback(c);}
+    if (parentContainer != nullptr){ parentContainer->dispatchFeedback(c); }
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
 
 }
@@ -322,7 +322,8 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 
 void ControllableContainer::triggerTriggered(Trigger * t)
 {
-    if (t->isControllableExposed) dispatchFeedback(t);
+	onAnyTriggerTriggered(t);
+	if (t->isControllableExposed) dispatchFeedback(t);
 }
 
 

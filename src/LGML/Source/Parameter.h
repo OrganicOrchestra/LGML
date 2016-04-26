@@ -42,11 +42,8 @@ public:
 	bool boolValue() { return (bool)value; }
 	String stringValue() { return value.toString(); }
 
-protected:
 	void notifyValueChanged();
 
-
-public:
     //Listener
     class  Listener
     {

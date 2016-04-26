@@ -37,8 +37,7 @@ public:
 
     class TrackUI :
     public Component ,
-    public LooperNode::Looper::Track::Listener,
-    public Trigger::Listener
+    public LooperNode::Looper::Track::Listener
     {
     public:
 
@@ -59,19 +58,16 @@ public:
             addAndMakeVisible(stopButton);
 
             //select on trigger activations
-            track->recPlayTrig->addTriggerListener(this);
-            track->clearTrig->addTriggerListener(this);
-            track->stopTrig->addTriggerListener(this);
-
-
-
-
+           // track->recPlayTrig->addTriggerListener(this);
+           // track->clearTrig->addTriggerListener(this);
+           // track->stopTrig->addTriggerListener(this);
         }
+
         ~TrackUI(){
             track->removeTrackListener(this);
-            track->recPlayTrig->removeTriggerListener(this);
-            track->clearTrig->removeTriggerListener(this);
-            track->stopTrig->removeTriggerListener(this);
+           // track->recPlayTrig->removeTriggerListener(this);
+           // track->clearTrig->removeTriggerListener(this);
+            //track->stopTrig->removeTriggerListener(this);
         }
 
 
@@ -89,7 +85,6 @@ public:
         }
         void mouseUp(const MouseEvent &) override{track->askForSelection(true);}
 
-        void triggerTriggered(Trigger *)override{track->askForSelection(true);}
         void resized()override{
             // RelativeLayout
             float pad = 0.01f;

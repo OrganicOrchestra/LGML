@@ -123,7 +123,7 @@ void OSCDirectController::controllableRemoved(Controllable *)
 
 void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
 {
-    DBG("Send OSC with address : " + c->controlAddress + " to " + remoteHostParam->value + ":" + remotePortParam->value);
+    DBG("Send OSC with address : " + c->controlAddress + " to " + remoteHostParam->stringValue() + ":" + String(remotePortParam->stringValue().getIntValue()));
 
 #if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
     switch (c->type)

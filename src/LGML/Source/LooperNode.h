@@ -38,15 +38,13 @@ public:
         Trigger * clearSelectedTrig;
         Trigger * stopSelectedTrig;
 
-        Trigger * clearAllTrig;
+		Trigger * selectAllTrig;
+		Trigger * clearAllTrig;
         Trigger * stopAllTrig;
-
 
         FloatParameter * volumeSelected;
         BoolParameter * isMonitoring;
         IntParameter * numberOfTracks;
-
-
 
         class Track;
         OwnedArray<Track> tracks;
@@ -88,7 +86,10 @@ public:
             };
             TrackState trackState;
             static String trackStateToString(const TrackState & ts);
-            Component * createControllableContainerEditor()override;
+			void onAnyParameterChanged(Parameter * p) override;
+			void onAnyTriggerTriggered(Trigger * t) override;
+
+			Component * createControllableContainerEditor()override;
 
             void setTrackState(TrackState state);
             // from events like UI
@@ -129,17 +130,16 @@ public:
                 StringParameter * stringParameter;
                 AsyncTrackStateStringSynchroizer(StringParameter  *origin):stringParameter(origin){}
                 void trackStateChangedAsync(const TrackState &_trackState)override{
-                    stringParameter->setValue(trackStateToString(_trackState));
+                    stringParameter->setValue(trackStateToString(_trackState),false,true);
                 }
             };
            ScopedPointer<AsyncTrackStateStringSynchroizer> stateParameterStringSynchronizer;
 
 
 
-
+		  
         private:
 
-            void triggerTriggered(Trigger * t) override;
             void setSelected(bool isSelected);
             int trackIdx;
 
@@ -219,8 +219,8 @@ public:
 
     private:
 
-        void triggerTriggered(Trigger * t) override;
-        void parameterValueChanged(Parameter * p) override;
+        void onAnyTriggerTriggered(Trigger * t) override;
+        void onAnyParameterChanged(Parameter * p) override;
         // internal
         void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override;
         void checkIfNeedGlobalLooperStateUpdate();
