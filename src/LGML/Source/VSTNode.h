@@ -52,7 +52,7 @@ public:
     void createPluginWindow();
     void closePluginWindow();
 
-    void parameterValueChanged(Parameter * p) override;
+    void onContainerParameterChanged(Parameter * p) override;
 
     void audioProcessorParameterChanged (AudioProcessor* processor,
                                          int parameterIndex,

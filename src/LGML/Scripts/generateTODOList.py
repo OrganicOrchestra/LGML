@@ -31,19 +31,20 @@ TODOs = {}
 for file in matches:
 	with open(file,'r') as f:
 		TODOCommentLine = -1;
-		curTODO = "";
+		curTODO = [];
+		fileName = os.path.basename(file)
 		idx = 0;
 		for l in f.readlines():
 			if TODOCommentLine ==-1 and (todoRe.match(l) or atRe.match(l)):
 				TODOCommentLine = idx;
-				curTODO+=l
+				curTODO+=[l.lstrip()]
 			elif TODOCommentLine>=0 and commentRe.match(l):
-				curTODO+=l
+				curTODO+=[l.lstrip()]
 			elif TODOCommentLine>=0 and not blankRe.match(l):
-				if not file in TODOs:
-					TODOs[file] = {}	
-				TODOs[file][TODOCommentLine] = curTODO
-				curTODO=""
+				if not fileName in TODOs:
+					TODOs[fileName] = {}	
+				TODOs[fileName][TODOCommentLine] = curTODO
+				curTODO =[]
 				TODOCommentLine=-1
 			idx+=1
 
@@ -65,8 +66,11 @@ Of course this list can also be used to remove unnecessary TODOs...\n \
 	for t in TODOs:
 		f.write(t+"\n")
 		for l in TODOs[t]:
-			f.write("line : "+str(l)+"\n")
-			f.write("\t"+TODOs[t][l]+"\n\n")
+			f.write("\tline : "+str(l)+"\n")
+			for tl in TODOs[t][l]:
+				f.write("\t\t"+tl)
+			f.write("\n")
+		f.write("\n")
 
 
 exit(1)

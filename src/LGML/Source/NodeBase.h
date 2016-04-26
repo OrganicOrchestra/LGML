@@ -66,7 +66,6 @@ public:
     FloatParameter * xPosition;
     FloatParameter * yPosition;
 
-    virtual void parameterValueChanged(Parameter * p) override;
 
     //audio
     void addToAudioGraphIfNeeded();
@@ -112,6 +111,11 @@ public:
 
 	// keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeFactory::NodeType, but circular dependency BULLSHIIIIIT)
 	int nodeType;
+
+
+private:
+    void parameterValueChanged(Parameter * p) override;
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 

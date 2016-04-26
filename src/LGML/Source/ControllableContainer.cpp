@@ -316,12 +316,13 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
-    onAnyParameterChanged(p);
+    onContainerParameterChanged(p);
     if (p->isControllableExposed) dispatchFeedback(p);
 }
 
 void ControllableContainer::triggerTriggered(Trigger * t)
 {
+    onContainerTriggerTriggered(t);
     if (t->isControllableExposed) dispatchFeedback(t);
 }
 

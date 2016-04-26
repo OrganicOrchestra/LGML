@@ -21,7 +21,7 @@
 
 class ControllableContainerEditor;
 
-class ControllableContainer : public Parameter::Listener, public Trigger::Listener
+class ControllableContainer : private Parameter::Listener, private Trigger::Listener
 {
 public:
     ControllableContainer(const String &niceName);
@@ -82,14 +82,10 @@ public:
 
 
 private:
-    // internal callback that a controllableContainer can override to react to any of it's parameter change
-    //@ ben this is to avoid either:
-    //      adding controllableContainerListener for each implementation
-    //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
-    //      or using dispatch feedback that triggers only exposedParams
-
-    virtual void onAnyParameterChanged(Parameter *){};
-
+    // Helper function  called from parameterValueChanged to avoid having to call ControllableContainer::parameterValueChangedin derived classes
+    // its a good practice to use this one instead of parameterValuechanged to avoid confusions with simpleListeners
+    virtual void onContainerParameterChanged(Parameter *){};
+    virtual void onContainerTriggerTriggered(Trigger *){};
     void addParameterInternal(Parameter * p);
 
 public:

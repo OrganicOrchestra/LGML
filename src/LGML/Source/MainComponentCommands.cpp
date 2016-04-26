@@ -11,7 +11,7 @@
 
 #include "MainComponent.h"
 
-//==TODO implement IDs ============================================================================
+
 namespace CommandIDs
 {
     static const int open                   = 0x30000;
@@ -167,7 +167,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
     switch (info.commandID)
     {
 
-            // TODOs
+
         case CommandIDs::newFile:
             engine->createNewGraph();
 

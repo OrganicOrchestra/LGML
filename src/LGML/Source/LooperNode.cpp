@@ -55,14 +55,6 @@ looperNode(looperNode)
 
     skipControllableNameInAddress = true;
 
-
-    recPlaySelectedTrig->addTriggerListener(this);
-    playSelectedTrig->addTriggerListener(this);
-    clearSelectedTrig->addTriggerListener(this);
-    stopSelectedTrig->addTriggerListener(this);
-    clearAllTrig->addTriggerListener(this);
-    stopAllTrig->addTriggerListener(this);
-
     numberOfTracks->setValue(8);
 
 
@@ -151,7 +143,7 @@ void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
 }
 
 
-void LooperNode::Looper::triggerTriggered(Trigger * t){
+void LooperNode::Looper::onContainerTriggerTriggered(Trigger * t){
     if(selectedTrack!=nullptr){
         if(t == recPlaySelectedTrig){selectedTrack->recPlayTrig->trigger();
         }else if(t == playSelectedTrig){selectedTrack->playTrig->trigger();
@@ -176,8 +168,8 @@ void LooperNode::Looper::selectMe(Track * t){
     }
 }
 
-void LooperNode::Looper::parameterValueChanged(Parameter * p) {
-    if(p==numberOfTracks){
+void LooperNode::Looper::onContainerParameterChanged(Parameter * p) {
+      if(p==numberOfTracks){
         setNumTracks(numberOfTracks->value);
     }
 }
@@ -242,12 +234,6 @@ trackIdx(_trackIdx)
     addTrackListener(stateParameterStringSynchronizer);
     stateParameterString->isControllableFeedbackOnly = true;
     preDelayMs->isControllableExposed = false;
-
-	selectTrig->addTriggerListener(this);
-	recPlayTrig->addTriggerListener(this);
-    playTrig->addTriggerListener(this);
-    clearTrig->addTriggerListener(this);
-    stopTrig->addTriggerListener(this);
 
 
     // post init
@@ -421,6 +407,7 @@ String LooperNode::Looper::Track::trackStateToString(const TrackState & ts){
 }
 
 void LooperNode::Looper::Track::triggerTriggered(Trigger * t){
+    ControllableContainer::triggerTriggered(t);
 	if (t == selectTrig)
 	{
 		parentLooper->selectMe(this);

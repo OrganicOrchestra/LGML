@@ -219,8 +219,8 @@ public:
 
     private:
 
-        void triggerTriggered(Trigger * t) override;
-        void parameterValueChanged(Parameter * p) override;
+        void onContainerTriggerTriggered(Trigger * t) override;
+        void onContainerParameterChanged(Parameter * p) override;
         // internal
         void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override;
         void checkIfNeedGlobalLooperStateUpdate();

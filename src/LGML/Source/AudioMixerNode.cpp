@@ -43,7 +43,7 @@ AudioMixerNode::AudioMixerAudioProcessor::AudioMixerAudioProcessor():NodeAudioPr
     skipControllableNameInAddress = true;
 };
 
-void AudioMixerNode::AudioMixerAudioProcessor::onAnyParameterChanged(Parameter *p){
+void AudioMixerNode::AudioMixerAudioProcessor::onContainerParameterChanged(Parameter *p){
     if(p == numberOfInput){
         updateInput();
     }

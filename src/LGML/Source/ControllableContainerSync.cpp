@@ -72,11 +72,11 @@ void ControllableContainerSync::controllableFeedbackUpdate(Controllable *cOrigin
     addSplit.remove(0);
     for(auto & listener:targetSyncedContainers){
         Controllable * c = listener->getControllableForAddress(addSplit,true,true);
-        setControllableValue(cOrigin, c);
+        if(c!=nullptr)setControllableValue(cOrigin, c);
     }
 
     Controllable * c = sourceContainer->getControllableForAddress(addSplit,true,true);
-    if(c!=cOrigin){
+    if(c!=cOrigin && c!=nullptr){
         setControllableValue(cOrigin, c);
     }
     isNotifying = false;

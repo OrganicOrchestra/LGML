@@ -107,7 +107,6 @@ void NodeBaseUI::childBoundsChanged (Component* c){
     }
 }
 void NodeBaseUI::parameterValueChanged(Parameter * p) {
-
     if(p== node->xPosition||p==node->yPosition){
         setCentrePosition((int)node->xPosition->value, (int)node->yPosition->value);
     }
