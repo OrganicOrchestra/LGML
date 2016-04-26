@@ -11,7 +11,7 @@
 #ifndef NODECONNECTIONEDITORDATASLOT_H_INCLUDED
 #define NODECONNECTIONEDITORDATASLOT_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
+
 
 //#include "NodeBase.h"
 #include "NodeBaseUI.h"

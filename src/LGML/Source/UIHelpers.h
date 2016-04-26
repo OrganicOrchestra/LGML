@@ -11,8 +11,9 @@
 #ifndef UIHELPERS_H_INCLUDED
 #define UIHELPERS_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "Style.h"
+#include "JuceHeader.h"
 
 #define DRAW_CONTOUR 0
 

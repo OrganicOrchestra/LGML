@@ -13,7 +13,7 @@
 
 
 
-#include "JuceHeader.h"
+
 #include "NodeManagerUI.h"
 #include "NodeManager.h"
 

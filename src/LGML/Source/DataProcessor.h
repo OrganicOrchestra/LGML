@@ -19,7 +19,7 @@ This class is a base class for all data processors :
 
 */
 
-#include "JuceHeader.h"
+
 #include "Data.h"
 
 

@@ -11,7 +11,6 @@ Author:  bkupe
 #ifndef CONNECTORCOMPONENT_H_INCLUDED
 #define CONNECTORCOMPONENT_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "NodeBaseUI.h"
 #include "NodeManager.h"
 

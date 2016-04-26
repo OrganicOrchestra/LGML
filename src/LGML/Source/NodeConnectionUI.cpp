@@ -8,7 +8,7 @@
   ==============================================================================
 */
 
-#include "JuceHeader.h"
+
 #include "NodeConnectionUI.h"
 #include "NodeConnectionEditor.h"
 

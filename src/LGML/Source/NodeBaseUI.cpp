@@ -9,7 +9,7 @@
  */
 
 
-#include "../JuceLibraryCode/JuceHeader.h"
+
 #include "NodeBaseUI.h"
 #include "NodeBase.h"
 #include "NodeManagerUI.h"

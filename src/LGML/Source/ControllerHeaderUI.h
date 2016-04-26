@@ -11,7 +11,7 @@
 #ifndef CONTROLLERHEADERUI_H_INCLUDED
 #define CONTROLLERHEADERUI_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "ControllerUI.h"
 #include "UIHelpers.h"
 

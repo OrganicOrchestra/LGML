@@ -12,7 +12,7 @@
 #define TIMEMANAGER_H_INCLUDED
 
 
-#include "JuceHeader.h"
+
 /*
  This singleton handle time at sample Level
  then can dispatch synchronous or asynchronous event via TimeManager::Listener

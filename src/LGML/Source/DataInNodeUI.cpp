@@ -8,7 +8,7 @@
  ==============================================================================
  */
 
-#include "../JuceLibraryCode/JuceHeader.h"
+
 #include "DataInNodeUI.h"
 #include "FloatSliderUI.h"
 

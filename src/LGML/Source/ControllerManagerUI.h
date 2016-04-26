@@ -11,7 +11,7 @@
 #ifndef CONTROLLERMANAGERUI_H_INCLUDED
 #define CONTROLLERMANAGERUI_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "ControlManager.h"
 #include "ControllerUI.h"
 

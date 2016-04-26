@@ -12,7 +12,7 @@
 #define CONTROLLABLEINSPECTOR_H_INCLUDED
 
 
-#include "JuceHeader.h"
+
 #include "ControllableContainerEditor.h"
 #include "ControllableContainerSync.h"
 

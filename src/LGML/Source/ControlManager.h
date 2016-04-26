@@ -11,7 +11,7 @@
 #ifndef CONTROLMANAGER_H_INCLUDED
 #define CONTROLMANAGER_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "ControllerFactory.h"
 
 class ControllerManager : public Controller::Listener, public ControllableContainer

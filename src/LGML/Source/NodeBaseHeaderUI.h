@@ -11,7 +11,7 @@
 #ifndef NODEBASEHEADERUI_H_INCLUDED
 #define NODEBASEHEADERUI_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "UIHelpers.h"
 #include "NodeBaseUI.h"
 

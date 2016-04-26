@@ -11,7 +11,7 @@
 #ifndef NODECONNECTIONUI_H_INCLUDED
 #define NODECONNECTIONUI_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "NodeBaseUI.h"
 #include "NodeManagerUI.h"
 

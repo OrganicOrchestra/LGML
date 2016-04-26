@@ -55,8 +55,8 @@ public:
 
 
 	//SelectableComponent
-	void internalSetSelected(bool _selected);
-	void paintOverChildren(Graphics &) {} //cancel default yellow border behavior
+	void internalSetSelected(bool _selected)override;
+	void paintOverChildren(Graphics &) override{} //cancel default yellow border behavior
 
     //ui
     class MainContainer : public ContourComponent
@@ -82,6 +82,7 @@ public:
     class ConnectorContainer : public ContourComponent
     {
     public:
+
         OwnedArray<ConnectorComponent> connectors;
 
         ConnectorComponent::ConnectorDisplayLevel displayLevel;

@@ -14,7 +14,7 @@
 Node Manager Contain all Node and synchronize building of audioGraph (AudioProcessorGraph) and DataGraph (DataProcessorGraph)
 
 */
-#include "JuceHeader.h"
+
 #include "DataProcessorGraph.h"
 #include "NodeConnection.h"
 #include "NodeFactory.h"

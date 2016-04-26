@@ -11,7 +11,7 @@
 #ifndef NODECONNECTION_H_INCLUDED
 #define NODECONNECTION_H_INCLUDED
 
-#include "JuceHeader.h"
+
 
 
 #include "DataProcessorGraph.h"

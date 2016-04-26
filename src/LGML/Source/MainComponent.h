@@ -9,7 +9,7 @@
 #ifndef MAINCOMPONENT_H_INCLUDED
 #define MAINCOMPONENT_H_INCLUDED
 
-#include "JuceHeader.h"
+
 
 #include "NodeManager.h"
 #include "NodeManagerUI.h"

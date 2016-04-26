@@ -8,7 +8,7 @@
  ==============================================================================
  */
 
-#include "JuceHeader.h"
+
 #include "MainComponent.h"
 
 MainContentComponent* createMainContentComponent(Engine* e);

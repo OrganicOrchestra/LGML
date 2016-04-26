@@ -17,7 +17,7 @@
 #ifndef NODEBASE_H_INCLUDED
 #define NODEBASE_H_INCLUDED
 
-#include "JuceHeader.h"
+
 #include "DataProcessor.h"
 #include "NodeAudioProcessor.h"
 #include "ControllableContainer.h"
