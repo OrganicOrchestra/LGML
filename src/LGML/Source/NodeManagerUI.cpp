@@ -31,6 +31,7 @@ isSelectingNodes(false)
 
 NodeManagerUI::~NodeManagerUI()
 {
+	nodeManager->removeNodeManagerListener(this);
     if (editingConnection != nullptr)
     {
         editingConnection->getBaseConnector()->removeMouseListener(this);

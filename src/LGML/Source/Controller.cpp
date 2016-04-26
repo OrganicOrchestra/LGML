@@ -93,10 +93,8 @@ void Controller::remove()
     listeners.call(&Controller::Listener::askForRemoveController, this);
 }
 
-void Controller::parameterValueChanged(Parameter * p)
+void Controller::onContainerParameterChanged(Parameter * p)
 {
-    // @ ben I think we need that but may be it was not called for a reason
-    ControllableContainer::parameterValueChanged(p);
 
     if (p == nameParam) setNiceName(nameParam->value);
     else if (p == enabledParam)

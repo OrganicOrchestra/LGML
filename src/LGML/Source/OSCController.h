@@ -34,7 +34,7 @@ public:
 
     virtual void processMessage(const OSCMessage & msg);
 
-    virtual void parameterValueChanged(Parameter * p) override;
+    virtual void onContainerParameterChanged(Parameter * p) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCController)
 

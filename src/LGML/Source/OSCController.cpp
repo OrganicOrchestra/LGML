@@ -50,9 +50,8 @@ void OSCController::processMessage(const OSCMessage &)
     //to override
 }
 
-void OSCController::parameterValueChanged(Parameter * p)
+void OSCController::onContainerParameterChanged(Parameter * p)
 {
-    Controller::parameterValueChanged(p);
     if (p == localPortParam) setupReceiver();
     else if (p == remotePortParam || p == remoteHostParam) setupSender();
 }
