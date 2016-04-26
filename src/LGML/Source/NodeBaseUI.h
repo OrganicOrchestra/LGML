@@ -56,7 +56,7 @@ public:
 
 	//SelectableComponent
 	void internalSetSelected(bool _selected)override;
-	void paintOverChildren(Graphics &) override{} //cancel default yellow border behavior
+	void paintOverChildren(Graphics &) override {} //cancel default yellow border behavior
 
     //ui
     class MainContainer : public ContourComponent
