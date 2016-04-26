@@ -21,6 +21,8 @@ class StringParameter : public Parameter
 public:
     StringParameter(const String &niceName, const String &description, const String &initialValue, bool enabled=true);
     String value;
+	
+	void setValueInternal(var _value)override;
 
     StringParameterUI * createStringParameterUI();
     ControllableUI* createDefaultControllableEditor() override;

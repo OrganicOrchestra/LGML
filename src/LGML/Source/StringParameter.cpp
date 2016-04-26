@@ -18,6 +18,12 @@ StringParameter::StringParameter(const String & niceName, const String &descript
 
 }
 
+
+void StringParameter::setValueInternal(var _value)
+{
+	value = _value;
+}
+
 StringParameterUI * StringParameter::createStringParameterUI()
 {
     return new StringParameterUI(this);
