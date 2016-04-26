@@ -345,13 +345,14 @@
                bigIcon="jsU7Hw">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
-                       isDebug="1" optimisation="1" targetName="LGML" cppLanguageStandard="c++98"
+                       isDebug="1" optimisation="1" targetName="LGML_Debug" cppLanguageStandard="c++98"
                        cppLibType="libstdc++" binaryPath=""/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
-                       cppLanguageStandard="c++98" cppLibType="libstdc++"/>
-        <CONFIGURATION name="DebugC++11" isDebug="1" osxSDK="default" osxCompatibility="default"
-                       osxArchitecture="64BitIntel" targetName="LGMLCPP11" defines="JUCE_SUPPORTS_AUv3=0"/>
+                       cppLanguageStandard="c++98" cppLibType="libstdc++" linkTimeOptimisation="1"/>
+        <CONFIGURATION name="DebugC++11" isDebug="1" osxSDK="10.9 SDK" osxCompatibility="10.8 SDK"
+                       osxArchitecture="32BitUniversal" targetName="LGML_DebugC++11"
+                       defines="JUCE_SUPPORTS_AUv3=0" cppLanguageStandard="c++11" cppLibType="libc++"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../../../Dev/JUCE/modules"/>
