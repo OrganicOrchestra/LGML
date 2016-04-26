@@ -13,14 +13,13 @@ specificVersion = ""#0.1.1"
 
 
 
-localExportPath = "/Users/Tintamar/Google_Drive/LGML/Builds/OSX/"
-
-
+localExportPath = "../Builds/MacOSX/builds/"
+localExportPath = os.path.abspath(localExportPath)
 
 proJucerPath = "~/Dev/JUCE/ProJucer.app/Contents/MacOS/ProJucer"
 JuceProjectPath = "../LGML.jucer"
 xcodeProjPath = "../Builds/MacOSX/" 
-executable_name = "LGML"
+executable_name = "LGML_"+("" if configuration=="Release" else configuration)
 gitPath = "../../../"
 appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
@@ -37,8 +36,9 @@ def getVersion():
 	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
 	
 def generateProductBaseName():
-	return executable_name+"_v"+str(getVersion())+"_"+configuration
-	
+	return executable_name+("" if configuration=="Release" else "_v"+str(getVersion()))
+
+
 getVersion()
 
 
@@ -64,7 +64,10 @@ def buildJUCE(JuceProjectPath):
 	sh(proJucerPath+ " --resave "+JuceProjectPath)
 
 
-def buildApp(xcodeProjPath,configuration):
+def buildApp(xcodeProjPath,configuration,appPath):
+	if len(appPath)>10:
+		sh("rm -rf "+appPath)
+
 	sh("cd "+xcodeProjPath+ " && "\
 		
 		+" xcodebuild -project LGML.xcodeproj" \
@@ -113,10 +116,10 @@ def sendToOwnCloud(originPath,destPath):
 
 formatCode("../Source");
 buildJUCE(JuceProjectPath);
-buildApp(xcodeProjPath,configuration);
+buildApp(xcodeProjPath,configuration,appPath);
 localPath = localExportPath+generateProductBaseName();
 createDmg(localPath,appPath);
-ownCloudPath = "Projets/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
+ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
 sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
-gitCommit()
+# gitCommit()
 
