@@ -57,6 +57,7 @@ looperNode(looperNode)
 
     skipControllableNameInAddress = true;
 
+	/*
 	selectAllTrig->addTriggerListener(this);
     recPlaySelectedTrig->addTriggerListener(this);
     playSelectedTrig->addTriggerListener(this);
@@ -64,6 +65,7 @@ looperNode(looperNode)
     stopSelectedTrig->addTriggerListener(this);
     clearAllTrig->addTriggerListener(this);
     stopAllTrig->addTriggerListener(this);
+	*/
 
     numberOfTracks->setValue(8);
 
@@ -148,7 +150,7 @@ void LooperNode::Looper::checkIfNeedGlobalLooperStateUpdate(){
 }
 
 
-void LooperNode::Looper::onAnyTriggerTriggered(Trigger * t){
+void LooperNode::Looper::onContainerTriggerTriggered(Trigger * t){
     if(t == recPlaySelectedTrig){
 
 		if (selectedTrack != nullptr) selectedTrack->recPlayTrig->trigger();
@@ -198,7 +200,7 @@ void LooperNode::Looper::selectMe(Track * t){
     }
 }
 
-void LooperNode::Looper::onAnyParameterChanged(Parameter * p) {
+void LooperNode::Looper::onContainerParameterChanged(Parameter * p) {
     if(p == numberOfTracks){
         setNumTracks(numberOfTracks->value);
 	}
@@ -277,11 +279,13 @@ trackIdx(_trackIdx)
     stateParameterString->isControllableFeedbackOnly = true;
     preDelayMs->isControllableExposed = false;
 
+	/*
 	selectTrig->addTriggerListener(this);
 	recPlayTrig->addTriggerListener(this);
     playTrig->addTriggerListener(this);
     clearTrig->addTriggerListener(this);
     stopTrig->addTriggerListener(this);
+	*/
 
 
     // post init
@@ -454,7 +458,7 @@ String LooperNode::Looper::Track::trackStateToString(const TrackState & ts){
     return "[noState]";
 }
 
-void LooperNode::Looper::Track::onAnyParameterChanged(Parameter * p)
+void LooperNode::Looper::Track::onContainerParameterChanged(Parameter * p)
 {
 	if (p == volume)
 	{
@@ -462,7 +466,7 @@ void LooperNode::Looper::Track::onAnyParameterChanged(Parameter * p)
 	}
 }
 
-void LooperNode::Looper::Track::onAnyTriggerTriggered(Trigger * t){
+void LooperNode::Looper::Track::onContainerTriggerTriggered(Trigger * t){
 	if (t == selectTrig)
 	{
 		parentLooper->selectMe(this);

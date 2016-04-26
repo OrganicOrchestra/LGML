@@ -86,8 +86,8 @@ public:
             };
             TrackState trackState;
             static String trackStateToString(const TrackState & ts);
-			void onAnyParameterChanged(Parameter * p) override;
-			void onAnyTriggerTriggered(Trigger * t) override;
+			void onContainerParameterChanged(Parameter * p) override;
+			void onContainerTriggerTriggered(Trigger * t) override;
 
 			Component * createControllableContainerEditor()override;
 
@@ -219,8 +219,8 @@ public:
 
     private:
 
-        void onAnyTriggerTriggered(Trigger * t) override;
-        void onAnyParameterChanged(Parameter * p) override;
+        void onContainerTriggerTriggered(Trigger * t) override;
+        void onContainerParameterChanged(Parameter * p) override;
         // internal
         void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override;
         void checkIfNeedGlobalLooperStateUpdate();

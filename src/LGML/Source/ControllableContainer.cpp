@@ -26,6 +26,7 @@ ControllableContainer::~ControllableContainer()
 {
     //controllables.clear();
     //DBG("CLEAR CONTROLLABLE CONTAINER");
+	controllables.clear();
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
@@ -316,13 +317,13 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
-    onAnyParameterChanged(p);
+    onContainerParameterChanged(p);
     if (p->isControllableExposed) dispatchFeedback(p);
 }
 
 void ControllableContainer::triggerTriggered(Trigger * t)
 {
-	onAnyTriggerTriggered(t);
+	onContainerTriggerTriggered(t);
 	if (t->isControllableExposed) dispatchFeedback(t);
 }
 
