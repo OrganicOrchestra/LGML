@@ -60,13 +60,19 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     addAndMakeVisible(grabber);
     addAndMakeVisible(removeBT);
 
-	presetCB = PresetManager::getInstance()->getNodePresetSelector(node->nodeType);
-	addAndMakeVisible(presetCB);
-	presetCB->addListener(this);
-	presetCB->setTextWhenNothingSelected("Preset");
+	setPresetComboBox();
+
     init();
 
 }
+void NodeBaseHeaderUI::setPresetComboBox()
+{
+	presetCB = PresetManager::getInstance()->getPresetSelector(NodeFactory::nodeToString(node));
+	addAndMakeVisible(presetCB);
+	presetCB->addListener(this);
+	presetCB->setTextWhenNothingSelected("Preset");
+}
+
 void NodeBaseHeaderUI::mouseDoubleClick(const MouseEvent &){
     if(titleUI){titleUI->valueLabel.showEditor();}
 }
@@ -130,7 +136,7 @@ void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
 			String presetName = nameWindow.getTextEditorContents("newPresetName");
 			node->saveNewPreset(presetName);
 			cb->clear(NotificationType::dontSendNotification);
-			PresetManager::getInstance()->fillWithNodePresets(cb, node->nodeType);
+			PresetManager::getInstance()->fillWithPresets(cb, NodeFactory::nodeToString(node));
 			cb->setSelectedItemIndex(cb->getNumItems() - 1, NotificationType::dontSendNotification);
 		}
 		else
@@ -146,8 +152,8 @@ void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
 	}
 	else
 	{
-		PresetManager::NodePreset * np = PresetManager::getInstance()->getNodePreset(node->nodeType, cb->getItemText(cb->getSelectedItemIndex()));
-		node->loadPreset(np);
+		PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(NodeFactory::nodeToString(node), cb->getItemText(cb->getSelectedItemIndex()));
+		node->loadPreset(pre);
 	}
 	
 }

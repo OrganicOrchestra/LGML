@@ -119,7 +119,7 @@ void NodeBase::removeFromAudioGraphIfNeeded(){
 
 void NodeBase::saveNewPreset(const String & _name)
 {
-	PresetManager::NodePreset * pre = PresetManager::getInstance()->addNodePreset(_name, nodeType, this, true);
+	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, NodeFactory::nodeToString(this) , this, true);
 	loadPreset(pre);
 }
 

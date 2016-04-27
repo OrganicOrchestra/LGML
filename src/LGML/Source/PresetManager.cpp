@@ -10,7 +10,6 @@
 
 #include "PresetManager.h"
 #include "ControllableContainer.h"
-#include "NodeFactory.h"
 
 juce_ImplementSingleton(PresetManager)
 
@@ -21,13 +20,13 @@ PresetManager::PresetManager()
 
 PresetManager::~PresetManager()
 {
-	nodePresets.clear();
+	presets.clear();
 }
 
-PresetManager::NodePreset * PresetManager::addNodePreset(const String &name, NodeType nodeType, ControllableContainer * container, bool recursive, bool includeNotExposed)
+PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const String &name, String filter, ControllableContainer * container, bool recursive, bool includeNotExposed)
 {
 	//Array<PresetValue *> vPresets;
-	NodePreset * pre = new NodePreset(nodeType, name);
+	Preset * pre = new Preset(name,filter);
 	for (auto &p : container->getAllParameters(recursive,includeNotExposed))
 	{
 		if (!p->isPresettable) continue;
@@ -42,39 +41,39 @@ PresetManager::NodePreset * PresetManager::addNodePreset(const String &name, Nod
 	}
 
 	
-	nodePresets.add(pre);
+	presets.add(pre);
 
 	return pre;
 }
 
-ComboBox * PresetManager::getNodePresetSelector(NodeType nodeType)
+ComboBox * PresetManager::getPresetSelector(String filter)
 {
 	ComboBox * cb = new ComboBox("Presets");
-	fillWithNodePresets(cb, nodeType);
+	fillWithPresets(cb, filter );
 	
 	return cb;
 }
 
-PresetManager::NodePreset * PresetManager::getNodePreset(NodeType nodeType, const String & name)
+PresetManager::Preset * PresetManager::getPreset(String filter, const String & name)
 {
-	for (auto &pre : nodePresets)
+	for (auto &pre : presets)
 	{
-		if (pre->nodeType == nodeType && pre->name == name) return pre;
+		if (pre->filter == filter && pre->name == name) return pre;
 	}
 
 	return nullptr;
 }
 
-void PresetManager::fillWithNodePresets(ComboBox * cb, NodeType nodeType)
+void PresetManager::fillWithPresets(ComboBox * cb, String filter)
 {
 	cb->addItem("Save current preset", SaveCurrent);
 	cb->addItem("Save to new preset", SaveToNew);
 	cb->addItem("Reset to default", ResetToDefault);
 
 	int pIndex = 1;
-	for (auto &pre : nodePresets)
+	for (auto &pre : presets)
 	{
-		if (pre->nodeType == nodeType)
+		if (pre->filter == filter)
 		{
 			pre->presetId = pIndex;
 			cb->addItem(pre->name, pre->presetId);
@@ -85,5 +84,5 @@ void PresetManager::fillWithNodePresets(ComboBox * cb, NodeType nodeType)
 
 void PresetManager::clear()
 {
-	nodePresets.clear();
+	presets.clear();
 }

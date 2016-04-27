@@ -23,8 +23,10 @@
 #include "ControllableContainer.h"
 #include "PresetManager.h"
 
+
 class NodeBaseUI;
 class NodeManager;
+enum NodeType;
 
 class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener,public NodeAudioProcessor::NodeAudioProcessorListener, public ControllableContainer
 {

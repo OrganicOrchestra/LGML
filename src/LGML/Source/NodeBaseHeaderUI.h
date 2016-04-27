@@ -47,6 +47,7 @@ public:
 
 
     virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
+	virtual void setPresetComboBox(); //can be overriden if don't want auto preset there
     virtual void init();
 
 

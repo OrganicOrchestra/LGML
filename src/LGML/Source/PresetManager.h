@@ -15,8 +15,6 @@
 
 class ControllableContainer;
 
-enum NodeType;
-
 enum PresetChoice
 {
 	SaveCurrent = -3,
@@ -39,16 +37,9 @@ public:
 	class Preset
 	{
 	public:
-		enum Type
-		{
-			Node,
-			Controller,
-			VST
-		};
+		Preset(const String & _name, String _filter) : filter(_filter), name(_name) {}
 
-		Preset(Preset::Type _type, const String & _name) : type(_type), name(_name) {}
-
-		Preset::Type type;
+		String filter; //Used to filter which preset to propose depending on the object (specific nodes, vst, controller, etc.)
 		String name;
 		OwnedArray<PresetValue> presetValues;
 		int presetId; //change each time the a preset list is created, but we don't care because ControllableContainer keeps the pointer to the Preset
@@ -66,26 +57,17 @@ public:
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Preset)
 	};
 
-	class NodePreset : public Preset
-	{ 
-	public:
-		NodePreset(NodeType nodeType, const String &_name) : Preset(Type::Node, _name), nodeType(nodeType) {}
-		NodeType nodeType;
-
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodePreset)
-	};
-
 	juce_DeclareSingleton(PresetManager,true)
 
-	OwnedArray<NodePreset> nodePresets;
+	OwnedArray<Preset> presets;
 
 	PresetManager();
 	virtual ~PresetManager();
 	
-	NodePreset * addNodePreset(const String &name, NodeType nodeType, ControllableContainer * container, bool recursive = false, bool includeNotExposed = false);
-	ComboBox * getNodePresetSelector(NodeType nodeType);
-	NodePreset * getNodePreset(NodeType nodeType, const String &name);
-	void fillWithNodePresets(ComboBox * cb, NodeType nodeType);
+	Preset * addPresetFromControllableContainer(const String &name, String filter, ControllableContainer * container, bool recursive = false, bool includeNotExposed = false);
+	ComboBox * getPresetSelector(String filter);
+	Preset * getPreset(String filter, const String &name);
+	void fillWithPresets(ComboBox * cb, String filter);
 
 	void clear();
 	//JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetManager)

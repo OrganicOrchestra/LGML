@@ -83,7 +83,5 @@ String NodeFactory::nodeTypeToString(NodeType t) {
 }
 
 String NodeFactory::nodeToString(NodeBase * n) {
-	NodeType t = (NodeType)n->nodeType;
-	if (t<0 || t > UNKNOWN_TYPE)return String::empty;
-	return nodeTypeNames[(int)t];
+	return nodeTypeToString(n->nodeType);
 }
