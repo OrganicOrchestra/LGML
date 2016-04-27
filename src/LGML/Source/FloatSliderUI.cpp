@@ -31,6 +31,8 @@ FloatSliderUI::~FloatSliderUI()
 void FloatSliderUI::paint(Graphics & g)
 {
 
+    
+
     Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : PARAMETER_FRONT_COLOR;
 
     Rectangle<int> sliderBounds = getLocalBounds();

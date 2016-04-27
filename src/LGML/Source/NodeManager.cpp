@@ -86,9 +86,11 @@ bool NodeManager::removeNode(uint32 nodeId)
 
     if (n == nullptr) return false;
     n->removeRemoveNodeListener(this);
-    removeChildControllableContainer(n);
+
 
     listeners.call(&NodeManager::Listener::nodeRemoved, n);
+    removeChildControllableContainer(n);
+    
     nodes.removeObject(n);
 
     return true;

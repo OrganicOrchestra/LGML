@@ -16,7 +16,7 @@
 NodeBaseUI * AudioMixerNode::createUI()
 {
 
-    NodeBaseUI * ui = new NodeBaseUI(this);
+    NodeBaseUI * ui = new NodeBaseUI(this,new AudioMixerNodeUI);
     return ui;
 
 }
@@ -38,7 +38,7 @@ AudioMixerNode::AudioMixerAudioProcessor::AudioMixerAudioProcessor():NodeAudioPr
 
     numberOfInput = addIntParameter("numInput", "number of input", 0, 0, 32);
     numberOfOutput = addIntParameter("numOutput", "number of output", 0, 0, 32);
-    numberOfInput->setValue(2);
+    numberOfOutput->setValue(2);
     numberOfInput->setValue(8);
     skipControllableNameInAddress = true;
 };
@@ -136,7 +136,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<
 
 AudioMixerNode::AudioMixerAudioProcessor::OutputBus::OutputBus(int _outputIndex,int numInput):
 outputIndex(_outputIndex),
-ControllableContainer("outputBus : "+String(outputIndex)){
+ControllableContainer("outputBus : "+String(_outputIndex)){
     setNumInput(numInput);
 
 }
