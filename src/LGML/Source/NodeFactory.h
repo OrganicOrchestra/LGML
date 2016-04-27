@@ -27,15 +27,16 @@ const static String nodeTypeNames[] = { "Dummy","AudioMixer","DataIn","Spat","Lo
 //Added type to not mess with class names
 enum NodeType
 {
-	DummyType,
+	UNKNOWN_TYPE =0,
+    DummyType ,
 	AudioMixerType,
 	DataInType,
 	SpatType,
 	LooperType,
 	VSTType,
 	AudioInType,
-	AudioOutType,
-	UNKNOWN_TYPE // has to be last
+	AudioOutType
+
 };
 
 class NodeFactory

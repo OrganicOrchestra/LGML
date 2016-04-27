@@ -19,7 +19,7 @@ nodeId(_nodeId),
 audioProcessor(_audioProcessor),
 dataProcessor(_dataProcessor),
 ControllableContainer(name),
-nodeType(NodeType::UNKNOWN_TYPE)
+nodeTypeUID(0) // UNKNOWNTYPE
 {
 
     if (dataProcessor != nullptr)

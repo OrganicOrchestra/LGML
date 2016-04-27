@@ -26,7 +26,7 @@
 
 class NodeBaseUI;
 class NodeManager;
-enum NodeType;
+
 
 class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener,public NodeAudioProcessor::NodeAudioProcessorListener, public ControllableContainer
 {
@@ -114,10 +114,17 @@ public:
     void addRemoveNodeListener(Listener* newListener) { listeners.add(newListener); }
     void removeRemoveNodeListener(Listener* listener) { listeners.remove(listener); }
 
-	// keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeType, but circular dependency BULLSHIIIIIT)
-	NodeType nodeType;
-
     virtual void onContainerParameterChanged(Parameter * p) override;
+
+
+private:
+    // @ben en fait la forward declaration d'un enum n'est pas ISOC++ (VS l'autorise mais c'est pas un standard donc LLVM non...)
+    // ca reste propre si c'est un int privé que seul NodeFactory peu changer 
+
+    // keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeType, but circular dependency BULLSHIIIIIT)
+	uint nodeTypeUID;
+    friend class NodeFactory;
+
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)

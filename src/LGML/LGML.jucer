@@ -196,7 +196,6 @@
               file="Source/ProjectManager.h"/>
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
-        <FILE id="PPgLRn" name="NodeFactory.cpp" compile="1" resource="0" file="Source/NodeFactory.cpp"/>
         <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
           <GROUP id="{A2D3A061-C57A-C7C0-F696-113F915DCD55}" name="UI">
             <FILE id="NDsjg3" name="NodeBaseHeaderUI.cpp" compile="1" resource="0"
@@ -320,6 +319,7 @@
             <FILE id="mz72JY" name="VSTNodeUI.h" compile="0" resource="0" file="Source/VSTNodeUI.h"/>
           </GROUP>
         </GROUP>
+        <FILE id="PPgLRn" name="NodeFactory.cpp" compile="1" resource="0" file="Source/NodeFactory.cpp"/>
         <FILE id="A6v89K" name="NodeFactory.h" compile="0" resource="0" file="Source/NodeFactory.h"/>
         <FILE id="g6COY8" name="NodeManagerUI.cpp" compile="1" resource="0"
               file="Source/NodeManagerUI.cpp"/>
