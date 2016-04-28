@@ -14,10 +14,10 @@
 void AudioMixerNodeUI::resized() {
     if(outputBusUIs.size()==0)return;
     Rectangle<int> area = getLocalBounds();
-    float step = area.getHeight()/outputBusUIs.size();
+    float step = area.getHeight()/ (float)outputBusUIs.size();
         const int pad = 3;
     for(auto & o:outputBusUIs){
-        o->setBounds(area.removeFromTop(step).reduced(pad));
+        o->setBounds(area.removeFromTop((int)step).reduced(pad));
     }
 }
 
@@ -74,9 +74,9 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
 void AudioMixerNodeUI::OutputBusUI::resized() {
     if(inputVolumes.size()==0)return;
     Rectangle<int> area = getLocalBounds();
-    float step = area.getWidth()/inputVolumes.size();
+    float step = area.getWidth()/(float)inputVolumes.size();
     const int pad = 2;
     for(auto & o:inputVolumes){
-        o->setBounds(area.removeFromLeft(step).reduced(pad));
+        o->setBounds(area.removeFromLeft((int)step).reduced(pad));
     }
 }

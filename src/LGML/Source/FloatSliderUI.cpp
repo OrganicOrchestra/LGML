@@ -70,7 +70,7 @@ void FloatSliderUI::paint(Graphics & g)
 			//destRect = Rectangle<int>(0, 0, 100, 100);
 			juce::AffineTransform at; 
 			at = at.rotated((float)(-double_Pi / 2.0f));// , sliderBounds.getCentreX(), sliderBounds.getCentreY());
-			at = at.translated(0.f,sliderBounds.getHeight());
+			at = at.translated(0.f,(float)sliderBounds.getHeight());
 			g.addTransform(at);
 			destRect = Rectangle<int>(0, 0, sliderBounds.getHeight(), sliderBounds.getWidth()).withSizeKeepingCentre(sliderBounds.getHeight(), 12);
 		}else
