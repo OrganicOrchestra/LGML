@@ -58,27 +58,27 @@ void FloatSliderUI::paint(Graphics & g)
         }
     }
 
-   
+
     if(displayText){
         Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::lightgrey;
         g.setColour(displayBar?textColor:c);
-		
-		sliderBounds = getLocalBounds();
-		Rectangle<int> destRect;
-		
-		if(orientation == VERTICAL){
-			//destRect = Rectangle<int>(0, 0, 100, 100);
-			juce::AffineTransform at; 
-			at = at.rotated((float)(-double_Pi / 2.0f));// , sliderBounds.getCentreX(), sliderBounds.getCentreY());
-			at = at.translated(0.f,(float)sliderBounds.getHeight());
-			g.addTransform(at);
-			destRect = Rectangle<int>(0, 0, sliderBounds.getHeight(), sliderBounds.getWidth()).withSizeKeepingCentre(sliderBounds.getHeight(), 12);
-		}else
-		{
-			destRect = sliderBounds.withSizeKeepingCentre(sliderBounds.getWidth(), 12);
-		}
 
-		String text = parameter->niceName + " : " + String::formatted("%." + String(fixedDecimals) + "f", parameter->floatValue());
+        sliderBounds = getLocalBounds();
+        Rectangle<int> destRect;
+
+        if(orientation == VERTICAL){
+            //destRect = Rectangle<int>(0, 0, 100, 100);
+            juce::AffineTransform at;
+            at = at.rotated((float)(-double_Pi / 2.0f));// , sliderBounds.getCentreX(), sliderBounds.getCentreY());
+            at = at.translated(0.f,(float)sliderBounds.getHeight());
+            g.addTransform(at);
+            destRect = Rectangle<int>(0, 0, sliderBounds.getHeight(), sliderBounds.getWidth()).withSizeKeepingCentre(sliderBounds.getHeight(), 12);
+        }else
+        {
+            destRect = sliderBounds.withSizeKeepingCentre(sliderBounds.getWidth(), 12);
+        }
+
+        String text = parameter->niceName + " : " + String::formatted("%." + String(fixedDecimals) + "f", parameter->floatValue());
         g.drawFittedText(text, destRect, Justification::centred,1);
     }
 }

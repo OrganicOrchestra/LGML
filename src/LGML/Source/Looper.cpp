@@ -232,7 +232,7 @@ void Looper::onContainerParameterChanged(Parameter * p) {
             //define master volume, or all volume ?
         }
     }
-    
+
     else if(p == TimeManager::getInstance()->playState){
         if(!p->value){
             for(auto &t:tracks){

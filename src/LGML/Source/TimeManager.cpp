@@ -23,7 +23,6 @@ beatTimeInSample(22050),
 sampleRate(44100),
 isSettingTempo(false),
 ControllableContainer("time")
-//asyncNotifier(this)
 {
 
     BPM = addFloatParameter("bpm","current BPM",120,10,600);
@@ -35,12 +34,11 @@ ControllableContainer("time")
     playTrigger = addTrigger("play", "trigger play");
     stopTrigger = addTrigger("stop", "trigger stop");
     quantizedBarFraction = addIntParameter("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
-    //    addTimeManagerListener(&asyncNotifier);
 }
 TimeManager::~TimeManager()
 {
 }
-;
+
 
 
 void TimeManager::incrementClock(int time){
@@ -91,10 +89,8 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
     if(p==playState){
         if(!playState->boolValue()){
             timeInSample = 0;
-
         }
-        else{
-        }
+        else{}
     }
     else if(p==BPM){
         setBPMInternal(BPM->floatValue());
@@ -145,15 +141,13 @@ int TimeManager::setBPMForLoopLength(int time){
     return barLength;
 }
 
-
-int TimeManager::getNextQuantifiedTime(){
-    if(quantizedBarFraction->intValue()==0){
-        return timeInSample;
-    }
-    const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/quantizedBarFraction->intValue());
-    float  nextTime =floor(timeInSample/samplesPerUnit) + 1;
-    nextTime*=samplesPerUnit;
-    return (int)nextTime;
+int TimeManager::getGlobalNextQuantifiedTime(){
+    return getNextQuantifiedTime(quantizedBarFraction->intValue());
+}
+int TimeManager::getNextQuantifiedTime(int barFraction){
+    if(barFraction==0){return timeInSample;}
+    const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
+    return (floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit;
 }
 
 

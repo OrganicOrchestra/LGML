@@ -58,7 +58,7 @@ public:
 
 
 
-	// ASYNC 
+    // ASYNC
 
     class AsyncListener : public AsyncUpdater,public Parameter::Listener{
     public:
@@ -80,8 +80,8 @@ public:
         }
     private:
         void parameterValueChanged(Parameter * p) override{
-            
-			{
+
+            {
                 const ScopedLock lk(mu);
                 if(getOnlyLastValue){
                     bool found = false;

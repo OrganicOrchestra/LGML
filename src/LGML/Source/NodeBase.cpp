@@ -68,11 +68,11 @@ void NodeBase::checkInputsAndOutputs()
 
 void NodeBase::remove(bool askBeforeRemove)
 {
-	if (askBeforeRemove)
-	{
-		int result = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Remove node", "Do you want to remove the node ?");
-		if (result == 0) return;
-	}
+    if (askBeforeRemove)
+    {
+        int result = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Remove node", "Do you want to remove the node ?");
+        if (result == 0) return;
+    }
 
     nodeListeners.call(&NodeBase::NodeListener::askForRemoveNode,this);
 }

@@ -38,9 +38,9 @@ AudioMixerNode::AudioMixerAudioProcessor::AudioMixerAudioProcessor():NodeAudioPr
 
     numberOfInput = addIntParameter("numInput", "number of input", 8,1, 32);
     numberOfOutput = addIntParameter("numOutput", "number of output", 2,1, 32);
-		
-	updateInput();
-	updateOutput();
+
+    updateInput();
+    updateOutput();
 
     skipControllableNameInAddress = true;
 };
@@ -98,12 +98,12 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateOutput(){
 void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
     int numInput = getTotalNumInputChannels();
-	int numOutput = getTotalNumOutputChannels();
+    int numOutput = getTotalNumOutputChannels();
 
     if(!(outBuses.size()<=buffer.getNumChannels()))
-	{
-		DBG("mixer : dropping frame");return;
-	}
+    {
+        DBG("mixer : dropping frame");return;
+    }
 
     int numSamples =  buffer.getNumSamples();
 

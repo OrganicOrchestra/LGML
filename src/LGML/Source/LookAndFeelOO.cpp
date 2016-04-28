@@ -188,10 +188,10 @@ void LookAndFeelOO::drawDrawableButton (Graphics& g, DrawableButton& button,
                                          bool /*isMouseOverButton*/, bool /*isButtonDown*/)
 {
     bool toggleState = button.getToggleState();
-	/*
+    /*
     g.fillAll (button.findColour (toggleState ? DrawableButton::backgroundOnColourId
                                   : DrawableButton::backgroundColourId));
-								  */
+                                  */
     const int textH = (button.getStyle() == DrawableButton::ImageAboveTextLabel)
     ? jmin (16, button.proportionOfHeight (0.25f))
     : 0;

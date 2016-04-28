@@ -60,8 +60,8 @@ public:
 
 
 
-		// Inherited via Listener
-		virtual void buttonClicked(Button *) override;
+        // Inherited via Listener
+        virtual void buttonClicked(Button *) override;
 
 };
 

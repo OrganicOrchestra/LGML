@@ -11,14 +11,14 @@
 #include "FloatStepperUI.h"
 
 FloatStepperUI::FloatStepperUI(Parameter * _parameter) :
-	ParameterUI(_parameter)
-	
+    ParameterUI(_parameter)
+
 {
-	slider = new Slider(Slider::SliderStyle::IncDecButtons, Slider::TextEntryBoxPosition::TextBoxLeft);
-	addAndMakeVisible(slider);
-	slider->setRange(parameter->minimumValue, parameter->maximumValue,1);
-	slider->setValue(parameter->value);
-	slider->addListener(this);
+    slider = new Slider(Slider::SliderStyle::IncDecButtons, Slider::TextEntryBoxPosition::TextBoxLeft);
+    addAndMakeVisible(slider);
+    slider->setRange(parameter->minimumValue, parameter->maximumValue,1);
+    slider->setValue(parameter->value);
+    slider->addListener(this);
 }
 
 FloatStepperUI::~FloatStepperUI()
@@ -27,17 +27,17 @@ FloatStepperUI::~FloatStepperUI()
 
 void FloatStepperUI::resized()
 {
-	slider->setBounds(getLocalBounds());
+    slider->setBounds(getLocalBounds());
 }
 
 void FloatStepperUI::valueChanged(const var & value)
 {
-	if ((float)value == slider->getValue()) return;
+    if ((float)value == slider->getValue()) return;
 
-	slider->setValue(value,NotificationType::dontSendNotification);
+    slider->setValue(value,NotificationType::dontSendNotification);
 }
 
 void FloatStepperUI::sliderValueChanged(Slider * slider)
 {
-	parameter->setValue(slider->getValue());
+    parameter->setValue(slider->getValue());
 }

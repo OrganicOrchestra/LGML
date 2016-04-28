@@ -22,7 +22,7 @@ class TimeManagerUI : public Component,public Parameter::AsyncListener{
     TimeManagerUI(TimeManager * _timeManager);
     ~TimeManagerUI();
 
-	void paint(Graphics &g) override;
+    void paint(Graphics &g) override;
     void resized()override;
 
     void asyncParameterValueChanged(Parameter* p ,var & v) override;
@@ -72,7 +72,7 @@ class TimeManagerUI : public Component,public Parameter::AsyncListener{
 
     };
 
-	ScopedPointer<FloatStepperUI>  bpmStepper;
+    ScopedPointer<FloatStepperUI>  bpmStepper;
     ScopedPointer<IntStepperUI> quantizStepper;
     ScopedPointer<TriggerBlinkUI> playTrig,stopTrig;
 

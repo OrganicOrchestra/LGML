@@ -23,13 +23,13 @@ timeBar(_timeManager){
     timeManager->currentBar->addParameterListener(this);
 
     addAndMakeVisible(timeBar);
-	bpmStepper = timeManager->BPM->createStepper();
-	
-	//bpmStepper->assignOnMousePosDirect = false;
+    bpmStepper = timeManager->BPM->createStepper();
+
+    //bpmStepper->assignOnMousePosDirect = false;
     //bpmSlider->orientation = FloatSliderUI::VERTICAL;
-	//bpmStepper->displayText = true;
-	//bpmStepper->displayBar = false;
-	//bpmStepper->scaleFactor = 0.01;
+    //bpmStepper->displayText = true;
+    //bpmStepper->displayBar = false;
+    //bpmStepper->scaleFactor = 0.01;
     addAndMakeVisible(bpmStepper);
 
 
@@ -75,17 +75,17 @@ void TimeManagerUI::asyncParameterValueChanged(Parameter* p ,var & v) {
 
 void TimeManagerUI::paint(Graphics & g)
 {
-	g.fillAll(BG_COLOR);
+    g.fillAll(BG_COLOR);
 }
 
 void TimeManagerUI::resized(){
     Rectangle<int> r = getLocalBounds().withWidth(500).withCentre(getLocalBounds().getCentre()).reduced(4);
     timeBar.setBounds(r.removeFromRight(200).reduced(0, 2));
-	r.removeFromRight(5);
+    r.removeFromRight(5);
     playTrig->setBounds(r.removeFromRight(50));
-	r.removeFromRight(2);
+    r.removeFromRight(2);
     stopTrig->setBounds(r.removeFromRight(50));
-	r.removeFromRight(10);
+    r.removeFromRight(10);
     bpmStepper->setBounds(r.removeFromRight(80));
     r.removeFromRight(10);
     quantizStepper->setBounds(r.removeFromRight(80));
@@ -176,8 +176,8 @@ void TimeManagerUI::TimeBar::paint(Graphics & g) {
         // called only if setting tempo
         Rectangle<int> r = getLocalBounds();
 
-		//g.setColour(PANEL_COLOR.darker());
-		//g.fillRect(r);
+        //g.setColour(PANEL_COLOR.darker());
+        //g.fillRect(r);
 
         blinkCount+=blinkHz*1.0/refreshHz;
 
@@ -192,27 +192,27 @@ void TimeManagerUI::TimeBar::paint(Graphics & g) {
 
 
 void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g){
-	int beatBarWidth = 1; 
-	
-	Rectangle<int> r = getLocalBounds();
-	Rectangle<int> lineR = r.removeFromTop(1);
-	lineR.removeFromLeft(beatBarWidth);
-	lineR.removeFromRight(beatBarWidth);
+    int beatBarWidth = 1;
 
-	r.removeFromTop(1);
+    Rectangle<int> r = getLocalBounds();
+    Rectangle<int> lineR = r.removeFromTop(1);
+    lineR.removeFromLeft(beatBarWidth);
+    lineR.removeFromRight(beatBarWidth);
+
+    r.removeFromTop(1);
 
     g.setColour(PANEL_COLOR);
     g.fillRect(r.removeFromLeft(beatBarWidth));
-	g.setColour(PANEL_COLOR);
-	g.fillRect(r.removeFromRight(beatBarWidth));
+    g.setColour(PANEL_COLOR);
+    g.fillRect(r.removeFromRight(beatBarWidth));
 //    g.fillRect(area.removeFromRight(beatBarWidth));
 
 
     if(percentDone == 0) g.setColour(PANEL_COLOR.brighter());
-	else g.setColour(Colours::orange);
-    
-	g.fillRect(r);
-	
-	g.setColour(HIGHLIGHT_COLOR);
-	g.fillRect(lineR.removeFromLeft((int)(percentDone*lineR.getWidth())));
+    else g.setColour(Colours::orange);
+
+    g.fillRect(r);
+
+    g.setColour(HIGHLIGHT_COLOR);
+    g.fillRect(lineR.removeFromLeft((int)(percentDone*lineR.getWidth())));
 }

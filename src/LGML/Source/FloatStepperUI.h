@@ -18,18 +18,18 @@ class FloatStepperUI : public ParameterUI, public Slider::Listener
 {
 
 public:
-	FloatStepperUI(Parameter * _parameter);
-	virtual ~FloatStepperUI();
+    FloatStepperUI(Parameter * _parameter);
+    virtual ~FloatStepperUI();
 
-	ScopedPointer<Slider> slider;
+    ScopedPointer<Slider> slider;
 
-	void resized() override;
+    void resized() override;
 protected:
-	void valueChanged(const var &) override;
+    void valueChanged(const var &) override;
 
 
-	// Inherited via Listener
-	virtual void sliderValueChanged(Slider * slider) override;
+    // Inherited via Listener
+    virtual void sliderValueChanged(Slider * slider) override;
 
 };
 

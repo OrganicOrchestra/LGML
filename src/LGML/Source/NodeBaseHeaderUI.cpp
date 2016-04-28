@@ -24,7 +24,7 @@ NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X")
                         removeImage, 1.0f, Colours::transparentBlack,
                         removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
                         0.5f);
-	removeBT.addListener(this);
+    removeBT.addListener(this);
     setSize(20, 30);
 
 }
@@ -94,7 +94,7 @@ void NodeBaseHeaderUI::init()
 
 void NodeBaseHeaderUI::resized()
 {
-	DBG("Header Resized !!");
+    DBG("Header Resized !!");
     if (!node) return;
 
     int vuMeterWidth = 14;
@@ -170,7 +170,7 @@ void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
 
 void NodeBaseHeaderUI::buttonClicked(Button *)
 {
-	node->remove(true);
+    node->remove(true);
 }
 
 void NodeBaseHeaderUI::Grabber::paint(Graphics & g)

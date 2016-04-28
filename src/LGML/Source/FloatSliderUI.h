@@ -33,9 +33,9 @@ public:
     bool assignOnMousePosDirect;
     float scaleFactor;
 
-	int fixedDecimals;
+    int fixedDecimals;
 
-	//interaction
+    //interaction
     float initValue;
 
     void paint(Graphics &g) override;
