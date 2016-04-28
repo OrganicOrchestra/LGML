@@ -15,7 +15,9 @@
 #include "FloatParameter.h"
 
 class FloatSliderUI    : public ParameterUI
-{
+{protected:
+    void parameterValueChanged(Parameter *) override  { repaint(); } ;
+
 public:
     FloatSliderUI(Parameter * parameter = nullptr);
     virtual ~FloatSliderUI();
@@ -32,7 +34,9 @@ public:
     bool assignOnMousePosDirect;
     float scaleFactor;
 
-    //interaction
+	int fixedDecimals;
+
+	//interaction
     float initValue;
 
     void paint(Graphics &g) override;

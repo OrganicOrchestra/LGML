@@ -13,7 +13,7 @@
 
 //==============================================================================
 FloatSliderUI::FloatSliderUI(Parameter * parameter) :
-ParameterUI(parameter)
+ParameterUI(parameter), fixedDecimals(3)
 {
     assignOnMousePosDirect = true;
     changeParamOnMouseUpOnly = false;
@@ -79,7 +79,7 @@ void FloatSliderUI::paint(Graphics & g)
 		}
 
 
-        g.drawText(parameter->niceName+" : "+String::formatted("%.2f", parameter->floatValue()), destRect, Justification::centred);
+        g.drawText(parameter->niceName+" : "+String::formatted("%."+String(fixedDecimals)+"f", parameter->floatValue()), destRect, Justification::centred);
     }
 }
 
@@ -96,10 +96,6 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
     {
         repaint();
     }
-
-
-
-
 }
 
 

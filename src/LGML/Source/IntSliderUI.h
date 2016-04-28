@@ -22,6 +22,7 @@ public:
 
     void setParamNormalizedValue(float value) override;
     float getParamNormalizedValue() override;
+
 protected:
     void valueChanged(const var&) override { repaint(); };
 
