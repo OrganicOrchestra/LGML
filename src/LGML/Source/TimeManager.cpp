@@ -141,7 +141,7 @@ int TimeManager::setBPMForLoopLength(int time){
     return barLength;
 }
 
-int TimeManager::getGlobalNextQuantifiedTime(){
+int TimeManager::getNextGlobalQuantifiedTime(){
     return getNextQuantifiedTime(quantizedBarFraction->intValue());
 }
 int TimeManager::getNextQuantifiedTime(int barFraction){
