@@ -11,16 +11,14 @@
 #ifndef INTSTEPPERUI_H_INCLUDED
 #define INTSTEPPERUI_H_INCLUDED
 
-#include "ParameterUI.h"
+#include "FloatStepperUI.h"
 
-class IntStepperUI : public ParameterUI
+class IntStepperUI : public FloatStepperUI
 {
 public:
     IntStepperUI(Parameter * parameter);
     virtual ~IntStepperUI();
 
-protected:
-    void parameterValueChanged(Parameter *) override  { repaint(); } ;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntStepperUI)

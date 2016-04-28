@@ -11,7 +11,7 @@
 #include "IntStepperUI.h"
 
 IntStepperUI::IntStepperUI(Parameter * parameter) :
-    ParameterUI(parameter)
+    FloatStepperUI(parameter)
 {
 }
 

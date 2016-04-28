@@ -30,6 +30,7 @@ protected:
 
     // helper to spot wrong deletion order
     bool shouldBailOut();
+
     // here we are bound to only one parameter so no need to pass parameter*
     // for general behaviour see AsyncListener
     virtual void valueChanged(const var & ){};

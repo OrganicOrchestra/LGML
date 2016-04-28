@@ -23,28 +23,20 @@ timeBar(_timeManager){
     timeManager->currentBar->addParameterListener(this);
 
     addAndMakeVisible(timeBar);
-    bpmSlider = timeManager->BPM->createSlider();
-    bpmSlider->assignOnMousePosDirect = false;
+	bpmStepper = timeManager->BPM->createStepper();
+	
+	//bpmStepper->assignOnMousePosDirect = false;
     //bpmSlider->orientation = FloatSliderUI::VERTICAL;
-    bpmSlider->displayText = true;
-    bpmSlider->displayBar = false;
-    bpmSlider->scaleFactor = 0.01;
-    addAndMakeVisible(bpmSlider);
+	//bpmStepper->displayText = true;
+	//bpmStepper->displayBar = false;
+	//bpmStepper->scaleFactor = 0.01;
+    addAndMakeVisible(bpmStepper);
 
 
     playTrig = timeManager->playTrigger->createBlinkUI();
     addAndMakeVisible(playTrig);
     stopTrig = timeManager->stopTrigger->createBlinkUI();
     addAndMakeVisible(stopTrig);
-
-    globalQuantization = timeManager->quantizedBarFraction->createSlider();
-    globalQuantization->displayText = true;
-    globalQuantization->displayBar = false;
-
-    addAndMakeVisible(globalQuantization);
-    
-
-
 
 }
 
@@ -77,16 +69,22 @@ void TimeManagerUI::asyncParameterValueChanged(Parameter* p ,var & v) {
 }
 
 
-void TimeManagerUI::resized(){
-    Rectangle<int> area = getLocalBounds();
-    timeBar.setBounds(area.removeFromRight(area.getWidth()/2));
-    playTrig->setBounds(area.removeFromRight(70).reduced(2));
-    stopTrig->setBounds(area.removeFromRight(70).reduced(2));
-    globalQuantization->setBounds(area.removeFromRight(70).reduced(2));
-    bpmSlider->setBounds(area.removeFromRight(area.getWidth()/2));
-
+void TimeManagerUI::paint(Graphics & g)
+{
+	g.fillAll(BG_COLOR);
 }
 
+void TimeManagerUI::resized(){
+    Rectangle<int> r = getLocalBounds().withWidth(500).withCentre(getLocalBounds().getCentre()).reduced(4);
+    timeBar.setBounds(r.removeFromRight(200).reduced(0, 2));
+	r.removeFromRight(5);
+    playTrig->setBounds(r.removeFromRight(50));
+	r.removeFromRight(2);
+    stopTrig->setBounds(r.removeFromRight(50));
+	r.removeFromRight(10);
+    bpmStepper->setBounds(r.removeFromRight(80));
+}
+ 
 
 
 TimeManagerUI::TimeBar::TimeBar(TimeManager * t):timeManager(t){
@@ -172,36 +170,45 @@ void TimeManagerUI::TimeBar::paint(Graphics & g) {
 
     if(isSettingTempo){
         // called only if setting tempo
-        Rectangle<int> area = getLocalBounds();
+        Rectangle<int> r = getLocalBounds();
+
+		//g.setColour(PANEL_COLOR.darker());
+		//g.fillRect(r);
+
         blinkCount+=blinkHz*1.0/refreshHz;
+
         if(blinkCount>1){
             blinkCount-=1;
         }
 
         g.setColour(Colours::red.brighter(1-sin((float)(2.0f*double_Pi*blinkCount))));
-        g.fillRect(area);
+        g.fillRect(r);
     }
 }
 
 
 void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g){
-    Rectangle<int> area = getLocalBounds();
-    static int beatBarWidth  =2;
-    g.setColour(Colours::grey);
-    g.fillRect(area.removeFromLeft(beatBarWidth));
+	int beatBarWidth = 1; 
+	
+	Rectangle<int> r = getLocalBounds();
+	Rectangle<int> lineR = r.removeFromTop(1);
+	lineR.removeFromLeft(beatBarWidth);
+	lineR.removeFromRight(beatBarWidth);
+
+	r.removeFromTop(1);
+
+    g.setColour(PANEL_COLOR);
+    g.fillRect(r.removeFromLeft(beatBarWidth));
+	g.setColour(PANEL_COLOR);
+	g.fillRect(r.removeFromRight(beatBarWidth));
 //    g.fillRect(area.removeFromRight(beatBarWidth));
 
 
-    if(percentDone >= 1){
-        g.setColour(Colours::green);
-        g.fillRect(area);
-    }
-    else{
-        g.setColour(Colours::orange);
-        g.fillRect(area.removeFromLeft((int)(percentDone*area.getWidth())));
-        g.setColour(Colours::black);
-        g.fillRect(area);
-
-    }
-
+    if(percentDone == 0) g.setColour(PANEL_COLOR.brighter());
+	else g.setColour(Colours::orange);
+    
+	g.fillRect(r);
+	
+	g.setColour(HIGHLIGHT_COLOR);
+	g.fillRect(lineR.removeFromLeft((int)(percentDone*lineR.getWidth())));
 }

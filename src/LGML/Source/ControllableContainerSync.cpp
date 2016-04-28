@@ -26,9 +26,9 @@ void ControllableContainerSync::removeSyncedControllable(ControllableContainer *
     if(c==sourceContainer){
 
         if(targetSyncedContainers.size()>0){
-            ControllableContainer * c = targetSyncedContainers.getUnchecked(0);
-            buildFromContainer(c);
-            containerSyncListeners.call(&ControllableContainerSync::ContainerSyncListener::sourceUpdated,c);
+            ControllableContainer * _c = targetSyncedContainers.getUnchecked(0);
+            buildFromContainer(_c);
+            containerSyncListeners.call(&ControllableContainerSync::ContainerSyncListener::sourceUpdated,_c);
         }
         else{
             sourceContainer = nullptr;

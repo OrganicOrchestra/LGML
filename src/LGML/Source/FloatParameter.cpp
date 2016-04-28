@@ -10,7 +10,7 @@
 
 #include "FloatParameter.h"
 #include "FloatSliderUI.h"
-
+#include "FloatStepperUI.h"
 
 
 FloatParameter::FloatParameter(const String & niceName, const String &description, const float & initialValue, const float & minValue, const float & maxValue, bool enabled) :
@@ -27,6 +27,11 @@ void FloatParameter::setValueInternal(var _value)
 FloatSliderUI * FloatParameter::createSlider()
 {
     return new FloatSliderUI(this);
+}
+
+FloatStepperUI * FloatParameter::createStepper()
+{
+	return new FloatStepperUI(this);
 }
 
 ControllableUI * FloatParameter::createDefaultControllableEditor() {

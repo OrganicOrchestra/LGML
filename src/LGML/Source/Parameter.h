@@ -56,6 +56,10 @@ public:
     void addParameterListener(Listener* newListener) { listeners.add(newListener); }
     void removeParameterListener(Listener* listener) { listeners.remove(listener); }
 
+
+
+	// ASYNC 
+
     class AsyncListener : public AsyncUpdater,public Parameter::Listener{
     public:
         AsyncListener(bool onlyLast = true):getOnlyLastValue(onlyLast){}
@@ -76,7 +80,8 @@ public:
         }
     private:
         void parameterValueChanged(Parameter * p) override{
-            {
+            
+			{
                 const ScopedLock lk(mu);
                 if(getOnlyLastValue){
                     bool found = false;
@@ -91,6 +96,7 @@ public:
                 }
                 else{asyncVars.add(ParameterWithValue(p,p->value));}
             }
+
             triggerAsyncUpdate();
         };
 
@@ -112,7 +118,6 @@ public:
     void removeParameterListener(AsyncListener* listener) { asyncListeners.remove(listener); }
 
 private:
-
     WeakReference<Parameter>::Master masterReference;
     friend class WeakReference<Parameter>;
 

@@ -188,10 +188,10 @@ void LookAndFeelOO::drawDrawableButton (Graphics& g, DrawableButton& button,
                                          bool /*isMouseOverButton*/, bool /*isButtonDown*/)
 {
     bool toggleState = button.getToggleState();
-
+	/*
     g.fillAll (button.findColour (toggleState ? DrawableButton::backgroundOnColourId
                                   : DrawableButton::backgroundColourId));
-
+								  */
     const int textH = (button.getStyle() == DrawableButton::ImageAboveTextLabel)
     ? jmin (16, button.proportionOfHeight (0.25f))
     : 0;
@@ -956,12 +956,12 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
     if (box.isEnabled() && box.hasKeyboardFocus (false))
     {
         g.setColour (box.findColour (ComboBox::buttonColourId));
-        g.drawRoundedRectangle(0, 0, width, height, 2,2);
+        g.drawRoundedRectangle(0, 0, (float)width, (float)height, 2,2);
     }
     else
     {
         g.setColour (box.findColour (ComboBox::outlineColourId));
-        g.drawRoundedRectangle(0, 0, width, height,2,2);
+        g.drawRoundedRectangle(0, 0, (float)width, (float)height,2,2);
     }
 
     const float outlineThickness = box.isEnabled() ? (isButtonDown ? 1.2f : 0.5f) : 0.3f;

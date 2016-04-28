@@ -16,6 +16,7 @@
 
 class FloatSliderUI    : public ParameterUI
 {
+
 public:
     FloatSliderUI(Parameter * parameter = nullptr);
     virtual ~FloatSliderUI();
@@ -32,7 +33,9 @@ public:
     bool assignOnMousePosDirect;
     float scaleFactor;
 
-    //interaction
+	int fixedDecimals;
+
+	//interaction
     float initValue;
 
     void paint(Graphics &g) override;
