@@ -67,7 +67,6 @@ public:
     void askForSelection(bool isSelected);
     bool askForBeingMasterTempoTrack();
 
-    LooperTrack * getMasterTempoTrack() {}
 
     //Listener
     class  Listener : public AsyncUpdater
@@ -114,6 +113,7 @@ public:
 
     };
 
+
     InternalTrackState internalTrackState;
     InternalTrackState lastInternalTrackState;
 
@@ -126,7 +126,7 @@ public:
     void updatePendingLooperTrackState(const uint64 curTime, int blockSize);
 
 
-    AudioSampleBuffer monoLoopSample;
+    AudioSampleBuffer loopSample;
     float lastVolume;
     // represent audioProcessor behaviour
 

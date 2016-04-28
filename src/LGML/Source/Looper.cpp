@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    Looper.cpp
-    Created: 26 Apr 2016 4:46:37pm
-    Author:  bkupe
+ Looper.cpp
+ Created: 26 Apr 2016 4:46:37pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "Looper.h"
 
@@ -15,9 +15,9 @@
 #include "LooperNode.h"
 
 Looper::Looper(LooperNode * looperNode) :
-    ControllableContainer("InnerLooper"),
-    selectedTrack(nullptr),
-    looperNode(looperNode),
+ControllableContainer("InnerLooper"),
+selectedTrack(nullptr),
+looperNode(looperNode),
 wasMonitoring(false)
 {
 
@@ -25,20 +25,20 @@ wasMonitoring(false)
 
     selectAllTrig = addTrigger("Select All", "Select All tracks, for all clear or main volume for instance");
     recPlaySelectedTrig = addTrigger("Rec Or Play",
-        "Tells the selected track to wait for the next bar and then start record or play");
+                                     "Tells the selected track to wait for the next bar and then start record or play");
     playSelectedTrig = addTrigger("Play",
-        "Tells the selected track to wait for the next bar and then stop recording and start playing");
+                                  "Tells the selected track to wait for the next bar and then stop recording and start playing");
     stopSelectedTrig = addTrigger("Stop",
-        "Tells the selected track to stop ");
+                                  "Tells the selected track to stop ");
     clearSelectedTrig = addTrigger("Clear",
-        "Tells the selected track to clear it's content if got any");
+                                   "Tells the selected track to clear it's content if got any");
     volumeSelected = addFloatParameter("Volume",
-        "Set the volume of the selected track",
-        1, 0, 1);
+                                       "Set the volume of the selected track",
+                                       1, 0, 1);
     clearAllTrig = addTrigger("ClearAll",
-        "Tells all tracks to clear it's content if got any");
+                              "Tells all tracks to clear it's content if got any");
     stopAllTrig = addTrigger("StopAll",
-        "Tells all tracks to stop it's content if got any");
+                             "Tells all tracks to stop it's content if got any");
     isMonitoring = addBoolParameter("monitor", "do we monitor audio input ? ", false);
 
     skipControllableNameInAddress = true;
@@ -49,7 +49,9 @@ wasMonitoring(false)
 
 }
 Looper::~Looper(){
-    TimeManager::getInstance()->playState->removeParameterListener(this);
+    if(TimeManager::getInstanceWithoutCreating()){
+        TimeManager::getInstance()->playState->removeParameterListener(this);
+    }
 
 }
 
@@ -62,12 +64,28 @@ void Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMe
     bufferOut.setSize(buffer.getNumChannels(), buffer.getNumSamples());
 
     if (isMonitoring->boolValue()) {
-        for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-            bufferOut.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+        if(!wasMonitoring){
+            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+                bufferOut.copyFromWithRamp(i, 0, buffer.getReadPointer(i), buffer.getNumSamples(),0.0f,1.0f);
+            }
+            wasMonitoring = true;
+        }
+        else{
+            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+                bufferOut.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+            }
         }
     }
     else {
-        bufferOut.clear();
+        if(wasMonitoring){
+            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+                bufferOut.copyFromWithRamp(i, 0, buffer.getReadPointer(i), buffer.getNumSamples(),1.0f,0.0f);
+            }
+            wasMonitoring = false;
+        }
+        else{
+            bufferOut.clear();
+        }
     }
     for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
         bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
@@ -214,7 +232,7 @@ void Looper::onContainerParameterChanged(Parameter * p) {
             //define master volume, or all volume ?
         }
     }
-
+    
     else if(p == TimeManager::getInstance()->playState){
         if(!p->value){
             for(auto &t:tracks){

@@ -70,7 +70,7 @@ ControllableInspector.cpp
 
 
 LooperTrack.cpp
-	line : 168
+	line : 174
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized
@@ -117,7 +117,7 @@ ControllableContainer.h
 
 
 Looper.cpp
-	line : 57
+	line : 59
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
