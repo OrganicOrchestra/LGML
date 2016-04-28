@@ -17,7 +17,8 @@
 Looper::Looper(LooperNode * looperNode) :
     ControllableContainer("InnerLooper"),
     selectedTrack(nullptr),
-    looperNode(looperNode)
+    looperNode(looperNode),
+wasMonitoring(false)
 {
 
     numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 0, MAX_NUM_TRACKS);
@@ -45,6 +46,10 @@ Looper::Looper(LooperNode * looperNode) :
     setNumTracks(numberOfTracks->intValue());
 
     TimeManager::getInstance()->playState->addParameterListener(this);
+
+}
+Looper::~Looper(){
+    TimeManager::getInstance()->playState->removeParameterListener(this);
 
 }
 

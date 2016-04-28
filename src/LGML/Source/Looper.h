@@ -41,6 +41,7 @@ public:
 
 
     Looper(LooperNode * looperNode);
+    ~Looper();
 
 
     void setNumTracks(int numTracks);
@@ -61,7 +62,7 @@ public:
     void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
     void checkIfNeedGlobalLooperStateUpdate();
 
-
+    bool wasMonitoring;
 
 
     LooperTrack * lastMasterTempoTrack;
