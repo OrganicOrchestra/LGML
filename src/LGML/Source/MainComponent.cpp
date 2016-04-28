@@ -88,7 +88,7 @@ MainContentComponent::~MainContentComponent(){
 void MainContentComponent::resized()
 {
     Rectangle<int> r = getLocalBounds();
-    timeManagerUI->setBounds(r.removeFromTop(20));
+    timeManagerUI->setBounds(r.removeFromTop(25));
     controllerManagerViewport->setBounds(r.removeFromLeft(300));
 
     nodeManagerUIViewport->setBounds(r);

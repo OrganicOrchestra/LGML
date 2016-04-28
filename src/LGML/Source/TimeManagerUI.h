@@ -12,7 +12,7 @@
 #define TIMEMANAGERUI_H_INCLUDED
 
 #include "TimeManager.h"
-#include "FloatSliderUI.h"
+#include "FloatStepperUI.h"
 #include "TriggerBlinkUI.h"
 
 class TimeManagerUI : public Component,public Parameter::AsyncListener{
@@ -21,7 +21,7 @@ class TimeManagerUI : public Component,public Parameter::AsyncListener{
     TimeManagerUI(TimeManager * _timeManager);
     ~TimeManagerUI();
 
-
+	void paint(Graphics &g) override;
     void resized()override;
 
     void asyncParameterValueChanged(Parameter* p ,var & v) override;
@@ -71,7 +71,7 @@ class TimeManagerUI : public Component,public Parameter::AsyncListener{
 
     };
 
-    ScopedPointer<FloatSliderUI>  bpmSlider;
+	ScopedPointer<FloatStepperUI>  bpmStepper;
     ScopedPointer<TriggerBlinkUI> playTrig,stopTrig;
 
 

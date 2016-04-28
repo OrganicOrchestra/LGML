@@ -13,7 +13,7 @@
 
 //==============================================================================
 FloatSliderUI::FloatSliderUI(Parameter * parameter) :
-ParameterUI(parameter), fixedDecimals(3)
+ParameterUI(parameter), fixedDecimals(2)
 {
     assignOnMousePosDirect = true;
     changeParamOnMouseUpOnly = false;
@@ -78,8 +78,8 @@ void FloatSliderUI::paint(Graphics & g)
 			destRect = sliderBounds.withSizeKeepingCentre(sliderBounds.getWidth(), 12);
 		}
 
-
-        g.drawText(parameter->niceName+" : "+String::formatted("%."+String(fixedDecimals)+"f", parameter->floatValue()), destRect, Justification::centred);
+		String text = parameter->niceName + " : " + String::formatted("%." + String(fixedDecimals) + "f", parameter->floatValue());
+        g.drawFittedText(text, destRect, Justification::centred,1);
     }
 }
 

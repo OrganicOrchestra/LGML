@@ -15,8 +15,7 @@
 #include "FloatParameter.h"
 
 class FloatSliderUI    : public ParameterUI
-{protected:
-    void parameterValueChanged(Parameter *) override  { repaint(); } ;
+{
 
 public:
     FloatSliderUI(Parameter * parameter = nullptr);

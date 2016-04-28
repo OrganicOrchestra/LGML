@@ -12,24 +12,24 @@
 #define FLOATSTEPPERUI_H_INCLUDED
 
 #include "ParameterUI.h"
+#include "JuceHeader.h"
 
-class FloatStepperUI : public ParameterUI
+class FloatStepperUI : public ParameterUI, public Slider::Listener
 {
 
 public:
 	FloatStepperUI(Parameter * _parameter);
 	virtual ~FloatStepperUI();
 
-	TextButton plusBT;
-	TextButton minusBT;
-	Label valueLabel;
-
-	int fixedDecimals;
+	ScopedPointer<Slider> slider;
 
 	void resized() override;
-
 protected:
 	void valueChanged(const var &) override;
+
+
+	// Inherited via Listener
+	virtual void sliderValueChanged(Slider * slider) override;
 
 };
 
