@@ -303,7 +303,6 @@ void LooperTrack::setTrackState(TrackState newState) {
     if (newState == SHOULD_RECORD) {
         // are we able to set the tempo
         if (askForBeingMasterTempoTrack()) {
-
             TimeManager::getInstance()->isSettingTempo->setValue(true);
             TimeManager::getInstance()->playTrigger->trigger();
 
@@ -311,10 +310,10 @@ void LooperTrack::setTrackState(TrackState newState) {
             setTrackState(RECORDING);
             return;
         }
-        else if (!TimeManager::getInstance()->isSettingTempo->value) {
+        else if (!TimeManager::getInstance()->isSettingTempo->boolValue()) {
             quantizedRecordStart = TimeManager::getInstance()->getNextQuantifiedTime();
         }
-        //            RecordPer default if triggering other rec while we are current master and we record recording
+        //            Record per default if triggering other rec while we are current master and we record recording
 
         else if (TimeManager::getInstance()->isMasterNode(parentLooper->looperNode)) {
                 newState = RECORDING;
