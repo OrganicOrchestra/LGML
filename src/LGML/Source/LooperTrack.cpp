@@ -24,7 +24,7 @@ LooperTrack::LooperTrack(Looper * looper, int _trackIdx) :
     recordNeedle(0),
     playNeedle(0),
     streamAudioBuffer(16384),// 16000 ~ 300ms and 256*64
-    monoLoopSample(1, 44100 * MAX_LOOP_LENGTH_S),
+    loopSample(1, 44100 * MAX_LOOP_LENGTH_S),
     trackState(CLEARED),
     internalTrackState(BUFFER_STOPPED),
     lastInternalTrackState(BUFFER_STOPPED),
@@ -69,8 +69,8 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             setTrackState(STOPPED);
         }
         else {
-            for (int i = monoLoopSample.getNumChannels() - 1; i >= 0; --i) {
-                monoLoopSample.copyFrom(i, recordNeedle, buffer, i, 0, buffer.getNumSamples());
+            for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
+                loopSample.copyFrom(i, recordNeedle, buffer, i, 0, buffer.getNumSamples());
             }
             recordNeedle += buffer.getNumSamples();
         }
@@ -85,7 +85,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     // allow circular reading , although not sure that overflow need to be handled as its written with same block sizes than read
     // we may need it if we start to use a different clock  than looperState in OOServer that has a granularity of blockSize
     // or if we dynamicly change blockSize
-    if (internalTrackState == BUFFER_PLAYING && recordNeedle>0 && monoLoopSample.getNumSamples())
+    if ((internalTrackState == BUFFER_PLAYING || lastInternalTrackState == BUFFER_PLAYING) && recordNeedle>0 && loopSample.getNumSamples())
     {
         if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
         {
@@ -95,23 +95,27 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             int firstSegmentLength = recordNeedle - playNeedle;
             int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-                int maxChannelFromRecorded = jmin(monoLoopSample.getNumChannels() - 1, i);
-                buffer.copyFrom(i, 0, monoLoopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
-                buffer.copyFrom(i, 0, monoLoopSample, maxChannelFromRecorded, 0, secondSegmentLength);
+                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
+                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
             }
             playNeedle = secondSegmentLength;
 
         }
         else {
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-                int maxChannelFromRecorded = jmin(monoLoopSample.getNumChannels() - 1, i);
-                buffer.copyFrom(i, 0, monoLoopSample, maxChannelFromRecorded, playNeedle, buffer.getNumSamples());
+                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, buffer.getNumSamples());
             }
             playNeedle += buffer.getNumSamples();
             playNeedle %= recordNeedle;
         }
 
         float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : volume->floatValue();
+        // fade out on buffer_stop (clear or stop)
+        if((lastInternalTrackState == BUFFER_PLAYING ) && (internalTrackState==BUFFER_STOPPED) ){
+            newVolume = 0;
+        }
         for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
             buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume, newVolume);
         }
@@ -127,19 +131,21 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
         }
     }
 
+    lastInternalTrackState = internalTrackState;
+
 
 }
 void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _blockSize) {
 
-
+    bool stateChanged = false;
     //    process changed internalState
     if (internalTrackState != lastInternalTrackState) {
-
+        stateChanged=true;
         if (internalTrackState == BUFFER_RECORDING) {
             if (askForBeingMasterTempoTrack()) {
                 int samplesToGet = (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
-                for (int i = monoLoopSample.getNumChannels() - 1; i >= 0; --i) {
-                    monoLoopSample.copyFrom(i, 0, streamAudioBuffer.getLastBlock(samplesToGet, i), samplesToGet);
+                for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
+                    loopSample.copyFrom(i, 0, streamAudioBuffer.getLastBlock(samplesToGet, i), samplesToGet);
                 }
                 recordNeedle = samplesToGet;
             }
@@ -155,8 +161,8 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
                 const int fadeNumSamples = (int)(parentLooper->getSampleRate()*0.022f);
                 if (fadeNumSamples>0 && recordNeedle>2 * fadeNumSamples) {
-                    monoLoopSample.applyGainRamp(0, 0, fadeNumSamples, 0, 1);
-                    monoLoopSample.applyGainRamp(0, recordNeedle - fadeNumSamples, fadeNumSamples, 1, 0);
+                    loopSample.applyGainRamp(0, 0, fadeNumSamples, 0, 1);
+                    loopSample.applyGainRamp(0, recordNeedle - fadeNumSamples, fadeNumSamples, 1, 0);
                 }
                 TimeManager::getInstance()->setBPMForLoopLength(recordNeedle);
 
@@ -197,7 +203,8 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
         }
     }
 
-    lastInternalTrackState = internalTrackState;
+
+
 }
 
 
