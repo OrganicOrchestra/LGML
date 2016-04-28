@@ -21,6 +21,7 @@ void NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
 
     if(isSuspended()){
         if(!wasSuspended){buffer.applyGainRamp(0, buffer.getNumSamples(), 1, 0);wasSuspended = true;}
+        else{buffer.clear();}
         return;
     }
     else if(wasSuspended){buffer.applyGainRamp(0, buffer.getNumSamples(), 0, 1);wasSuspended=false;}

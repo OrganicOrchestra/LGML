@@ -54,7 +54,7 @@ NodeBase * NodeFactory::createNode(NodeManager * nodeManager, NodeType nodeType,
             jassert(false);
             break;
     }
-    n->nodeTypeUID = nodeType;
+    n->nodeTypeUID = (int)nodeType;
 
     return n;
 }
@@ -79,8 +79,8 @@ NodeType NodeFactory::getTypeFromString(const String & s) {
 }
 
 String NodeFactory::nodeTypeToString(NodeType t) {
-    if (t<=UNKNOWN_TYPE || t >=  numElementsInArray(nodeTypeNames))return String::empty;
-    return nodeTypeNames[(int)t];
+    if (t<=UNKNOWN_TYPE || t-1 >  numElementsInArray(nodeTypeNames))return String::empty;
+    return nodeTypeNames[(int)t-1];
 }
 
 String NodeFactory::nodeToString(NodeBase * n) {

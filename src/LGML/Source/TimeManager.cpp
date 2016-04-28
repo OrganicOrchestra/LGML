@@ -21,7 +21,6 @@ timeInSample(0),
 playState(false),
 beatTimeInSample(22050),
 sampleRate(44100),
-timeMasterNode(nullptr),
 beatPerQuantizedTime(4),
 isSettingTempo(false),
 ControllableContainer("time")
@@ -73,13 +72,20 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 }
 
 bool TimeManager::askForBeingMasterNode(NodeBase * n){
-    if(hasMasterNode() && timeMasterNode!=n)return false;
-    else{
-        timeMasterNode = n;
-        return true;
-    }
+    potentialTimeMasterNode.addIfNotAlreadyThere(n);
+    return potentialTimeMasterNode.size()==1;
 }
 
+bool TimeManager::isMasterNode(NodeBase * n){
+    return potentialTimeMasterNode.size()>0 && n==potentialTimeMasterNode[0];
+}
+bool TimeManager::hasMasterNode(){
+    return potentialTimeMasterNode.size()>0;
+}
+void TimeManager::releaseMasterNode(NodeBase * n){
+    potentialTimeMasterNode.removeFirstMatchingValue(n);
+    if(potentialTimeMasterNode.size()==0){stopTrigger->trigger();}
+}
 
 void TimeManager::onContainerParameterChanged(Parameter * p){
     if(p==playState){

@@ -22,7 +22,7 @@ ParameterUI(parameter)
     orientation = HORIZONTAL;
     setSize(100,10);
     scaleFactor = 1;
-    
+
 }
 
 FloatSliderUI::~FloatSliderUI()
