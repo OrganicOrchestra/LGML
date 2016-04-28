@@ -21,7 +21,7 @@ looperNode(looperNode),
 wasMonitoring(false)
 {
 
-    numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 0, MAX_NUM_TRACKS);
+    numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
 
     selectAllTrig = addTrigger("Select All", "Select All tracks, for all clear or main volume for instance");
     recPlaySelectedTrig = addTrigger("Rec Or Play",

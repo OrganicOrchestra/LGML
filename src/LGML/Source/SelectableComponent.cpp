@@ -25,7 +25,7 @@ void SelectableComponent::setHandler(SelectableComponentHandler * h){
 }
 
 void SelectableComponent::askForSelection(bool _isSelected,bool unique ) {
-    bool changed = (_isSelected!=isSelected);
+    bool changed = true;//(_isSelected!=isSelected);
     isSelected = _isSelected;
     internalSetSelected(isSelected);
     if(handler!=nullptr && changed)handler->internalSelected(this,isSelected,unique);

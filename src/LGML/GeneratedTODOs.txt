@@ -64,9 +64,16 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.cpp
-	line : 88
-		// TODO :   -avoid recreating everything
+	line : 96
+		// TODO :   -avoid recreating everything or this cheap refreshing
 		//          -try to merge common properties based on first by deleting non common params within candidateContainers
+		//    for(auto &c:removedContainers){
+		//        displayedEditor->removeContainerFromEditor(c);
+		//    }
+		//
+		//    for( auto &c:removedControllables){
+		//        displayedEditor->removeControllableFromEditor(c);
+		//    }
 
 
 LooperTrack.cpp

@@ -37,7 +37,7 @@ AudioMixerNode::AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBas
 AudioMixerNode::AudioMixerAudioProcessor::AudioMixerAudioProcessor():NodeAudioProcessor(),ControllableContainer("AudioMixer"){
 
     numberOfInput = addIntParameter("numInput", "number of input", 8,1, 32);
-    numberOfOutput = addIntParameter("numOutput", "number of output", 2,1, 32);
+    numberOfOutput = addIntParameter("numOutput", "number of output", 2,1, 16);
 
     updateInput();
     updateOutput();
@@ -56,14 +56,14 @@ void AudioMixerNode::AudioMixerAudioProcessor::onContainerParameterChanged(Param
 }
 
 void AudioMixerNode::AudioMixerAudioProcessor::updateInput(){
-
+    {
         const ScopedLock sl (getCallbackLock());
         suspendProcessing(true);
         for(auto & bus:outBuses){
             bus->setNumInput(numberOfInput->intValue());
         }
 
-
+    }
     setPreferedNumAudioInput(numberOfInput->value);
     suspendProcessing(false);
 
@@ -72,7 +72,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateInput(){
 void AudioMixerNode::AudioMixerAudioProcessor::updateOutput(){
     {
         const ScopedLock sl (getCallbackLock());
-
+        suspendProcessing(true);
         if(numberOfOutput->intValue() > outBuses.size())
         {
             for(int i = outBuses.size() ; i < numberOfOutput->intValue() ; i++){
@@ -91,7 +91,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateOutput(){
     }
 
     setPreferedNumAudioOutput(numberOfOutput->value);
-
+    suspendProcessing(false);
 
 }
 
