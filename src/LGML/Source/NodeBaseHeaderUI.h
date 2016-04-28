@@ -20,7 +20,7 @@
 #include "VuMeter.h"
 #include "Style.h"
 
-class NodeBaseHeaderUI : public ContourComponent, public ComboBox::Listener
+class NodeBaseHeaderUI : public ContourComponent, public ComboBox::Listener, public Button::Listener
 {
 public:
 
@@ -58,6 +58,10 @@ public:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
 
+
+
+		// Inherited via Listener
+		virtual void buttonClicked(Button *) override;
 
 };
 

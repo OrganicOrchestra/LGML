@@ -24,6 +24,7 @@ NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X")
                         removeImage, 1.0f, Colours::transparentBlack,
                         removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
                         0.5f);
+	removeBT.addListener(this);
     setSize(20, 30);
 
 }
@@ -47,6 +48,7 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     }
 
     titleUI = node->nameParam->createStringParameterUI();
+
 
     DBG("Node Header UI, name Param : " << node->nameParam->stringValue());
 
@@ -92,6 +94,7 @@ void NodeBaseHeaderUI::init()
 
 void NodeBaseHeaderUI::resized()
 {
+	DBG("Header Resized !!");
     if (!node) return;
 
     int vuMeterWidth = 14;
@@ -163,6 +166,11 @@ void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
         node->loadPreset(pre);
     }
 
+}
+
+void NodeBaseHeaderUI::buttonClicked(Button *)
+{
+	node->remove(true);
 }
 
 void NodeBaseHeaderUI::Grabber::paint(Graphics & g)

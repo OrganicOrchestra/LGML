@@ -153,7 +153,7 @@ int TimeManager::getNextQuantifiedTime(){
     const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/quantizedBarFraction->intValue());
     float  nextTime =floor(timeInSample/samplesPerUnit) + 1;
     nextTime*=samplesPerUnit;
-    return nextTime;
+    return (int)nextTime;
 }
 
 
