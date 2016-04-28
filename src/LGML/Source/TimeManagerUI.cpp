@@ -37,6 +37,15 @@ timeBar(_timeManager){
     stopTrig = timeManager->stopTrigger->createBlinkUI();
     addAndMakeVisible(stopTrig);
 
+    globalQuantization = timeManager->quantizedBarFraction->createSlider();
+    globalQuantization->displayText = true;
+    globalQuantization->displayBar = false;
+
+    addAndMakeVisible(globalQuantization);
+    
+
+
+
 }
 
 
@@ -73,7 +82,9 @@ void TimeManagerUI::resized(){
     timeBar.setBounds(area.removeFromRight(area.getWidth()/2));
     playTrig->setBounds(area.removeFromRight(70).reduced(2));
     stopTrig->setBounds(area.removeFromRight(70).reduced(2));
+    globalQuantization->setBounds(area.removeFromRight(70).reduced(2));
     bpmSlider->setBounds(area.removeFromRight(area.getWidth()/2));
+
 }
 
 
