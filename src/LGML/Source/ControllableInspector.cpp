@@ -23,7 +23,8 @@ ControllableInspector::~ControllableInspector(){
     if(controllableContainerSync)controllableContainerSync->removeContainerSyncListener(this);
 }
 
-void ControllableInspector::selectableChanged(SelectableComponent * _node,bool state){
+void ControllableInspector::selectableChanged(SelectableComponent * _node,bool state)
+{
     NodeBaseUI * node = (NodeBaseUI*)_node;
     if(node){
         if(state)
@@ -33,7 +34,8 @@ void ControllableInspector::selectableChanged(SelectableComponent * _node,bool s
     }
 
 }
-void ControllableInspector::addOrMergeControllableContainerEditor(ControllableContainer * c){
+void ControllableInspector::addOrMergeControllableContainerEditor(ControllableContainer * c)
+{
     if(!candidateContainers.contains (c)){
         candidateContainers.add(c);
         c->addControllableContainerListener(this);
@@ -51,7 +53,8 @@ void ControllableInspector::addOrMergeControllableContainerEditor(ControllableCo
 }
 
 
-void ControllableInspector::removeControllableContainerEditor(ControllableContainer * c){
+void ControllableInspector::removeControllableContainerEditor(ControllableContainer * c)
+{
 
     candidateContainers.removeFirstMatchingValue(c);
     c->removeControllableContainerListener(this);
@@ -69,34 +72,41 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
 
 
 
-void ControllableInspector::generateFromCandidates(){
+void ControllableInspector::generateFromCandidates()
+{
     removeAllChildren();
     if(candidateContainers.size()==0){return;}
 
-    if(displayedEditor==nullptr ){
+    if(displayedEditor==nullptr )
+	{
         displayedEditor =
         new ControllableContainerEditor(controllableContainerSync->sourceContainer,controllableContainerSync->sourceContainer->createControllableContainerEditor());
     }
 
     // regenerate a new one
-    else if(displayedEditor->owner!=nullptr && displayedEditor->owner==controllableContainerSync->sourceContainer){
+    else if(displayedEditor->owner!=nullptr && displayedEditor->owner==controllableContainerSync->sourceContainer)
+	{
         delete displayedEditor.release();
         displayedEditor = new ControllableContainerEditor(controllableContainerSync->sourceContainer,controllableContainerSync->sourceContainer->createControllableContainerEditor());
     }
 
 
-
     // TODO :   -avoid recreating everything
     //          -try to merge common properties based on first by deleting non common params within candidateContainers
-    for(auto &c:removedContainers){
+    for(auto &c:removedContainers)
+	{
         displayedEditor->removeContainerFromEditor(c);
     }
 
-    for( auto &c:removedControllables){
+    for( auto &c:removedControllables)
+	{
         displayedEditor->removeControllableFromEditor(c);
     }
 
-    for(auto &candidate:candidateContainers){controllableContainerSync->addSyncedControllableIfNotAlreadyThere(candidate);}
+    for(auto &candidate:candidateContainers)
+	{
+		controllableContainerSync->addSyncedControllableIfNotAlreadyThere(candidate);
+	}
 
     addAndMakeVisible(displayedEditor);
     displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
@@ -105,38 +115,37 @@ void ControllableInspector::generateFromCandidates(){
 
 }
 
-
-
-
-
-
-
-
-
 void ControllableInspector::paint(Graphics &)
 {
     //g.fillAll(PANEL_COLOR);
 
 }
 
-void ControllableInspector::resized(){
+void ControllableInspector::resized()
+{
     if(displayedEditor)displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
     repaint();
 }
 
 
-void ControllableInspector::controllableAdded(Controllable * c) {
+void ControllableInspector::controllableAdded(Controllable * c)
+{
     removedControllables.removeAllInstancesOf(c);
     generateFromCandidates();
 };
-void ControllableInspector::controllableRemoved(Controllable * c){
+void ControllableInspector::controllableRemoved(Controllable * c)
+{
     removedControllables.add(c);
     generateFromCandidates();
 };
-void ControllableInspector::controllableContainerAdded(ControllableContainer * c) { removedContainers.removeAllInstancesOf(c);
-    generateFromCandidates();};
+void ControllableInspector::controllableContainerAdded(ControllableContainer * c)
+{
+	removedContainers.removeAllInstancesOf(c);
+    generateFromCandidates();
+};
 
-void ControllableInspector::controllableContainerRemoved(ControllableContainer * c) {
+void ControllableInspector::controllableContainerRemoved(ControllableContainer * c) 
+{
     if(c==displayedEditor->owner){
         delete displayedEditor.release();
     }
@@ -146,10 +155,13 @@ void ControllableInspector::controllableContainerRemoved(ControllableContainer *
     generateFromCandidates();
 }
 
-void ControllableInspector::controllableFeedbackUpdate(Controllable *) {};
+void ControllableInspector::controllableFeedbackUpdate(Controllable *) 
+{
+};
 
 
-void ControllableInspector::sourceUpdated(ControllableContainer * c) {
+void ControllableInspector::sourceUpdated(ControllableContainer * c) 
+{
 
     delete displayedEditor.release();
     addOrMergeControllableContainerEditor(c);

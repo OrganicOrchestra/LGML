@@ -33,5 +33,5 @@ IntStepperUI * IntParameter::createStepper(){
 }
 
 ControllableUI * IntParameter::createDefaultControllableEditor(){
-    return createSlider();
+    return createStepper();
 };

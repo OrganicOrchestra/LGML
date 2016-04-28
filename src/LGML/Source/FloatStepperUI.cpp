@@ -37,7 +37,7 @@ void FloatStepperUI::valueChanged(const var & value)
     slider->setValue(value,NotificationType::dontSendNotification);
 }
 
-void FloatStepperUI::sliderValueChanged(Slider * slider)
+void FloatStepperUI::sliderValueChanged(Slider * _slider)
 {
-    parameter->setValue(slider->getValue());
+    parameter->setValue(_slider->getValue());
 }
