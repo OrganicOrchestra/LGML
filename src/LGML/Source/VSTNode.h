@@ -21,7 +21,7 @@
 AudioDeviceManager& getAudioDeviceManager();
 
 
-class VSTNode : public NodeBase,public ChangeBroadcaster,public AudioProcessorListener
+class VSTNode : public NodeBase, public AudioProcessorListener
 {
 
 public:
@@ -62,9 +62,10 @@ public:
 
 
 
-    void initParameterFromProcessor(AudioProcessor * p);
+    void initParametersFromProcessor(AudioProcessor * p);
 
 
+	String getPresetFilter() override;
 
     class VSTProcessor : public NodeAudioProcessor{
 
@@ -91,6 +92,7 @@ public:
 
 
             getAudioDeviceManager().getAudioDeviceSetup (result);
+
             if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
                 (*desc, result.sampleRate, result.bufferSize, errorMessage)){
                 // try to align the precision of the processor and the graph
@@ -107,7 +109,7 @@ public:
 
                 // TODO check if scoped pointer deletes old innerPlugin
                 innerPlugin=instance;
-                owner->initParameterFromProcessor(instance);
+                owner->initParametersFromProcessor(instance);
             }
 
             else{
@@ -141,6 +143,20 @@ public:
     NodeBaseUI * createUI()override;
 
     bool blockFeedback;
+
+	//Listener
+	class VSTNodeListener
+	{
+	public:
+		virtual ~VSTNodeListener() {}
+		virtual void newVSTSelected() = 0;
+
+	};
+
+	ListenerList<VSTNodeListener> vstNodeListeners;
+	void addVSTNodeListener(VSTNodeListener* newListener) { vstNodeListeners.add(newListener); }
+	void removeVSTNodeListener(VSTNodeListener* listener) { vstNodeListeners.remove(listener); }
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)
 };

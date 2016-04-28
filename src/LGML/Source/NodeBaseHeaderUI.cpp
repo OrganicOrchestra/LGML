@@ -60,18 +60,25 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     addAndMakeVisible(grabber);
     addAndMakeVisible(removeBT);
 
-	setPresetComboBox();
-
-    init();
-
-}
-void NodeBaseHeaderUI::setPresetComboBox()
-{
-	presetCB = PresetManager::getInstance()->getPresetSelector(NodeFactory::nodeToString(node));
+	presetCB = new ComboBox("preset");
+	updatePresetComboBox();
 	addAndMakeVisible(presetCB);
 	presetCB->addListener(this);
 	presetCB->setTextWhenNothingSelected("Preset");
+    init();
+
 }
+
+void NodeBaseHeaderUI::updatePresetComboBox()
+{
+	DBG("Update Preset Combobox : " << node->getPresetFilter());
+
+	bool emptyFilter = node->getPresetFilter().isEmpty();
+	presetCB->setEnabled(!emptyFilter);
+	
+	if (!emptyFilter) PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
+}
+
 
 void NodeBaseHeaderUI::mouseDoubleClick(const MouseEvent &){
     if(titleUI){titleUI->valueLabel.showEditor();}
@@ -122,7 +129,7 @@ void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
 		if(result) cb->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
 		else cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
 
-	}if (presetID == PresetChoice::SaveToNew) //save to new
+	}if (presetID == PresetChoice::SaveToNew) 
 	{
 		AlertWindow nameWindow("Save a new Preset","Choose a name for the new preset",AlertWindow::AlertIconType::QuestionIcon,this);
 		nameWindow.addTextEditor("newPresetName", "New Preset");
@@ -136,7 +143,7 @@ void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
 			String presetName = nameWindow.getTextEditorContents("newPresetName");
 			node->saveNewPreset(presetName);
 			cb->clear(NotificationType::dontSendNotification);
-			PresetManager::getInstance()->fillWithPresets(cb, NodeFactory::nodeToString(node));
+			updatePresetComboBox();
 			cb->setSelectedItemIndex(cb->getNumItems() - 1, NotificationType::dontSendNotification);
 		}
 		else
@@ -152,7 +159,7 @@ void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
 	}
 	else
 	{
-		PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(NodeFactory::nodeToString(node), cb->getItemText(cb->getSelectedItemIndex()));
+		PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(node->getPresetFilter(), cb->getItemText(cb->getSelectedItemIndex()));
 		node->loadPreset(pre);
 	}
 	

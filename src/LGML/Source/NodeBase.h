@@ -79,6 +79,8 @@ public:
 	virtual bool loadPreset(PresetManager::Preset * pre) override;
 	virtual bool resetFromPreset() override;
 
+	virtual String getPresetFilter();
+
     //ui
     virtual NodeBaseUI *  createUI() { 
 		DBG("No implementation in child node class !"); 
@@ -100,29 +102,31 @@ public:
     var getJSONData();
     void loadJSONData(var data);
 
+	virtual void onContainerParameterChanged(Parameter * p) override;
+
 
     //Listener
-    class Listener
+    class NodeListener
     {
     public:
-        virtual ~Listener() {}
+        virtual ~NodeListener() {}
         virtual void askForRemoveNode(NodeBase *) = 0;
 
     };
 
-    ListenerList<Listener> listeners;
-    void addRemoveNodeListener(Listener* newListener) { listeners.add(newListener); }
-    void removeRemoveNodeListener(Listener* listener) { listeners.remove(listener); }
+    ListenerList<NodeListener> nodeListeners;
+    void addNodeListener(NodeListener* newListener) { nodeListeners.add(newListener); }
+    void removeNodeListener(NodeListener* listener) { nodeListeners.remove(listener); }
 
-    virtual void onContainerParameterChanged(Parameter * p) override;
-
+    
 
 private:
     // @ben en fait la forward declaration d'un enum n'est pas ISOC++ (VS l'autorise mais c'est pas un standard donc LLVM non...)
     // ca reste propre si c'est un int privé que seul NodeFactory peu changer 
+	//@martin remis en int car uint pas supporté de base sur VS (ca change pas grand chose, si ?)
 
     // keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeType, but circular dependency BULLSHIIIIIT)
-	uint nodeTypeUID;
+	int nodeTypeUID;
     friend class NodeFactory;
 
 
