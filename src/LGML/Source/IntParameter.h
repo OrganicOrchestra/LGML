@@ -13,6 +13,8 @@
 
 #include "Parameter.h"
 class IntSliderUI;
+class IntStepperUI;
+
 
 class IntParameter : public Parameter
 {
@@ -23,6 +25,7 @@ public:
     void setValueInternal(var _value) override;
 
     IntSliderUI * createSlider();
+    IntStepperUI * createStepper();
     ControllableUI * createDefaultControllableEditor()override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntParameter)
 };

@@ -181,6 +181,9 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
         if (triggeringTime >= quantizedRecordStart) {
             setTrackState(RECORDING);
         }
+        else{
+            int waiting = 0;
+        }
 
     }
     else if (quantizedRecordEnd>0) {

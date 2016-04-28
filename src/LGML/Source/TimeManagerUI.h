@@ -14,6 +14,7 @@
 #include "TimeManager.h"
 #include "FloatStepperUI.h"
 #include "TriggerBlinkUI.h"
+#include "IntStepperUI.h"
 
 class TimeManagerUI : public Component,public Parameter::AsyncListener{
 
@@ -72,6 +73,7 @@ class TimeManagerUI : public Component,public Parameter::AsyncListener{
     };
 
 	ScopedPointer<FloatStepperUI>  bpmStepper;
+    ScopedPointer<IntStepperUI> quantizStepper;
     ScopedPointer<TriggerBlinkUI> playTrig,stopTrig;
 
 

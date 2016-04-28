@@ -10,6 +10,7 @@
 
 #include "IntParameter.h"
 #include "IntSliderUI.h"
+#include "IntStepperUI.h"
 
 IntParameter::IntParameter(const String & niceName, const String &description, const int & initialValue, const int & minValue, const int & maxValue, bool enabled) :
     Parameter(Type::INT, niceName, description, initialValue, minValue, maxValue, enabled)
@@ -27,6 +28,9 @@ IntSliderUI * IntParameter::createSlider()
     return new IntSliderUI(this);
 }
 
+IntStepperUI * IntParameter::createStepper(){
+    return new IntStepperUI(this);
+}
 
 ControllableUI * IntParameter::createDefaultControllableEditor(){
     return createSlider();

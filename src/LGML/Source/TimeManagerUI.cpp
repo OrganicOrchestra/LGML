@@ -33,6 +33,10 @@ timeBar(_timeManager){
     addAndMakeVisible(bpmStepper);
 
 
+    quantizStepper = timeManager->quantizedBarFraction->createStepper();
+
+    addAndMakeVisible(quantizStepper);
+
     playTrig = timeManager->playTrigger->createBlinkUI();
     addAndMakeVisible(playTrig);
     stopTrig = timeManager->stopTrigger->createBlinkUI();
@@ -83,9 +87,9 @@ void TimeManagerUI::resized(){
     stopTrig->setBounds(r.removeFromRight(50));
 	r.removeFromRight(10);
     bpmStepper->setBounds(r.removeFromRight(80));
+    r.removeFromRight(10);
+    quantizStepper->setBounds(r.removeFromRight(80));
 }
- 
-
 
 TimeManagerUI::TimeBar::TimeBar(TimeManager * t):timeManager(t){
     initComponentsForNumBeats(timeManager->beatPerBar->intValue());

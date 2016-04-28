@@ -150,12 +150,14 @@ int TimeManager::getNextQuantifiedTime(){
     if(quantizedBarFraction->intValue()==0){
         return timeInSample;
     }
-
-    return (getBar() + 1.0/quantizedBarFraction->intValue()) *(beatPerBar->intValue()* beatTimeInSample);
+    const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/quantizedBarFraction->intValue());
+    float  nextTime =floor(timeInSample/samplesPerUnit) + 1;
+    nextTime*=samplesPerUnit;
+    return nextTime;
 }
 
 
 int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample));}
 double TimeManager::getBeatPercent(){return timeInSample*1.0/beatTimeInSample-getBeat();}
 
-int TimeManager::getBar(){return (int)(floor(getBeat()/beatPerBar->intValue()));}
+int TimeManager::getBar(){return (int)(floor(getBeat()*1.0/beatPerBar->intValue() ));}
