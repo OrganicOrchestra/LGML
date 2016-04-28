@@ -21,7 +21,6 @@ timeInSample(0),
 playState(false),
 beatTimeInSample(22050),
 sampleRate(44100),
-beatPerQuantizedTime(4),
 isSettingTempo(false),
 ControllableContainer("time")
 //asyncNotifier(this)
@@ -35,6 +34,7 @@ ControllableContainer("time")
     beatPerBar = addIntParameter("beatPerBar", "beat Per Bar", 4, 1, 8);
     playTrigger = addTrigger("play", "trigger play");
     stopTrigger = addTrigger("stop", "trigger stop");
+    quantizedBarFraction = addIntParameter("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
     //    addTimeManagerListener(&asyncNotifier);
 }
 TimeManager::~TimeManager()
@@ -145,11 +145,17 @@ int TimeManager::setBPMForLoopLength(int time){
     return barLength;
 }
 
-void TimeManager::setNumBeatForQuantification(int n){beatPerQuantizedTime = n;}
-int TimeManager::getNextQuantifiedTime(){return (int)(ceil((getBeat() + 1)*1.0/beatPerQuantizedTime) *beatPerQuantizedTime* beatTimeInSample);}
+
+int TimeManager::getNextQuantifiedTime(){
+    if(quantizedBarFraction->intValue()==0){
+        return timeInSample;
+    }
+
+    return (getBar() + 1.0/quantizedBarFraction->intValue()) *(beatPerBar->intValue()* beatTimeInSample);
+}
 
 
 int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample));}
 double TimeManager::getBeatPercent(){return timeInSample*1.0/beatTimeInSample-getBeat();}
 
-int TimeManager::getBar(){return getBeat()/beatPerBar->intValue();}
+int TimeManager::getBar(){return (int)(floor(getBeat()/beatPerBar->intValue()));}

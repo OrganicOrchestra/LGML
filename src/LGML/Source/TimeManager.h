@@ -42,7 +42,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     IntParameter * beatPerBar;
 
 
-    int beatPerQuantizedTime;
+    IntParameter * quantizedBarFraction;
     void incrementClock(int time);
 
     void onContainerParameterChanged(Parameter * )override;
@@ -56,7 +56,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     void setBeatPerBar(int bpb);
     int getBeat();
     int getNextQuantifiedTime();
-    void setNumBeatForQuantification(int n);
+
     //return percent in beat
     double getBeatPercent();
     int getBar();
