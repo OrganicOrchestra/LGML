@@ -51,9 +51,20 @@ private:
     void resized()override;
 
     void controllableAdded(Controllable * c) override{  removedControllables.removeAllInstancesOf(c);  generateFromCandidates();};
-    void controllableRemoved(Controllable * c)override{ removedControllables.add(c);  generateFromCandidates();};
+    void controllableRemoved(Controllable * c)override{
+        removedControllables.add(c);
+        generateFromCandidates();
+    };
     void controllableContainerAdded(ControllableContainer * c)override { removedContainers.removeAllInstancesOf(c);   generateFromCandidates();};
-    void controllableContainerRemoved(ControllableContainer * c)override { removedContainers.add(c);   generateFromCandidates();};
+    void controllableContainerRemoved(ControllableContainer * c)override {
+        if(c==displayedEditor->owner){
+            delete displayedEditor.release();
+        }
+        else{
+            removedContainers.add(c);
+        }
+        generateFromCandidates();
+    };
     void controllableFeedbackUpdate(Controllable *) override{};
 
 

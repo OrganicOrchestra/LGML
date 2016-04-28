@@ -50,10 +50,9 @@ void StringParameterUI::resized()
 }
 
 
-void StringParameterUI::parameterValueChanged(Parameter * p)
+void StringParameterUI::valueChanged(const var & v)
 {
-    ParameterUI::parameterValueChanged(p);
-    valueLabel.setText(p->stringValue(),NotificationType::dontSendNotification);
+    valueLabel.setText(v,NotificationType::dontSendNotification);
 }
 
 void StringParameterUI::labelTextChanged(Label *)

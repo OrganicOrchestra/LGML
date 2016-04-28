@@ -115,7 +115,7 @@ void Looper::checkIfNeedGlobalLooperStateUpdate() {
 
 
 	if (TimeManager::getInstance()->isMasterNode(looperNode) && needToStop) {
-		TimeManager::getInstance()->stop();
+		TimeManager::getInstance()->playState->setValue(false);
 	}
 
 	if (needToReleaseMasterTempo) {

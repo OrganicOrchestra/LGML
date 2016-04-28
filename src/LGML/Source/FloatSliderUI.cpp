@@ -31,7 +31,7 @@ FloatSliderUI::~FloatSliderUI()
 void FloatSliderUI::paint(Graphics & g)
 {
 
-    
+    if(shouldBailOut())return;
 
     Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : PARAMETER_FRONT_COLOR;
 
@@ -95,6 +95,8 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 
 }
 
+
+
 void FloatSliderUI::mouseDrag(const MouseEvent & e)
 {
     if(changeParamOnMouseUpOnly) repaint();
@@ -148,3 +150,7 @@ float FloatSliderUI::getParamNormalizedValue()
 {
     return parameter->getNormalizedValue();
 }
+
+void FloatSliderUI::valueChanged(const var &) {
+    repaint();
+};

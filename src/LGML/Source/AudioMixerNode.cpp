@@ -58,7 +58,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateInput(){
         const ScopedLock sl (getCallbackLock());
         suspendProcessing(true);
         for(auto & bus:outBuses){
-            bus->setNumInput(numberOfInput->value);
+            bus->setNumInput(numberOfInput->intValue());
         }
 
 

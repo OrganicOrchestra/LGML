@@ -14,7 +14,7 @@
 #include "Parameter.h"
 #include "ControllableUI.h"
 
-class ParameterUI : public Parameter::Listener, public ControllableUI
+class ParameterUI : public Parameter::AsyncListener, public ControllableUI
 {
 public:
     ParameterUI(Parameter * parameter);
@@ -26,10 +26,18 @@ public:
     bool showLabel;
 
 protected:
-    // Inherited via Listener
-    virtual void parameterValueChanged(Parameter * p) override;
 
 
+    // helper to spot wrong deletion order
+    bool shouldBailOut();
+    // here we are bound to only one parameter so no need to pass parameter*
+    // for general behaviour see AsyncListener
+    virtual void valueChanged(const var & ){};
+private:
+    // see Parameter::AsyncListener
+    virtual void asyncParameterValueChanged(Parameter * ,var & v) override{
+        valueChanged(v);
+    };
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
 };
 

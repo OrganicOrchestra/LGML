@@ -57,5 +57,6 @@ float Parameter::getNormalizedValue() {
 }
 
 void Parameter::notifyValueChanged() { 
-	listeners.call(&Listener::parameterValueChanged, this); 
+	listeners.call(&Listener::parameterValueChanged, this);
+    asyncListeners.call(&AsyncListener::parameterValueChanged,this);
 }

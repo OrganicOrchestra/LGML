@@ -23,7 +23,7 @@ public:
     void setParamNormalizedValue(float value) override;
     float getParamNormalizedValue() override;
 protected:
-    void parameterValueChanged(Parameter *) override { repaint(); };
+    void valueChanged(const var&) override { repaint(); };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntSliderUI)
 };

@@ -28,7 +28,7 @@ public:
     void mouseUp(const MouseEvent &e) override;
 
 protected:
-    void parameterValueChanged(Parameter *) override;
+    void valueChanged(const var & ) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolToggleUI)
 };

@@ -16,12 +16,46 @@ TimeManagerUI::TimeManagerUI(TimeManager * _timeManager):
 timeManager(_timeManager),
 timeBar(_timeManager){
 
+    timeManager->isSettingTempo->addParameterListener(this);
+    timeManager->playState->addParameterListener(this);
+    timeManager->beatPerBar->addParameterListener(this);
+    timeManager->currentBeat->addParameterListener(this);
+    timeManager->currentBar->addParameterListener(this);
+
     addAndMakeVisible(timeBar);
     bpmSlider = timeManager->BPM->createSlider();
     bpmSlider->displayText = true;
     bpmSlider->displayBar = false;
     addAndMakeVisible(bpmSlider);
 
+}
+
+
+TimeManagerUI::~TimeManagerUI(){
+    timeManager->isSettingTempo->removeParameterListener(this);
+    timeManager->playState->removeParameterListener(this);
+    timeManager->beatPerBar->removeParameterListener(this);
+    timeManager->currentBeat->removeParameterListener(this);
+    timeManager->currentBar->removeParameterListener(this);
+}
+
+
+void TimeManagerUI::asyncParameterValueChanged(Parameter* p ,var & v) {
+    if(p == timeManager->playState){
+        if((bool)v){timeBar.async_play();}
+        else{ timeBar.async_stop();}
+    }
+    else if(p==timeManager->isSettingTempo){
+        timeBar.isSettingTempo = v;
+        timeBar.showBeatComponents(!(bool)v);
+        timeBar.repaint();
+    }
+    else if(p==timeManager->beatPerBar){
+        timeBar.initComponentsForNumBeats(v);
+    }
+    else if(p==timeManager->currentBeat){
+        timeBar.async_newBeat(v);
+    }
 }
 
 
@@ -34,12 +68,12 @@ void TimeManagerUI::resized(){
 
 
 TimeManagerUI::TimeBar::TimeBar(TimeManager * t):timeManager(t){
-    timeManager->addTimeManagerListener(this);
-    initComponentsForNumBeats(timeManager->beatPerBar);
+    initComponentsForNumBeats(timeManager->beatPerBar->intValue());
 }
-void TimeManagerUI::TimeBar::initComponentsForNumBeats(int /*nb*/){
+
+
+void TimeManagerUI::TimeBar::initComponentsForNumBeats(int beatPerBar){
     beatComponents.clear();
-    int beatPerBar =timeManager->beatPerBar;
     for(int i = 0 ;i <beatPerBar ; i++){
         BeatComponent * bc=new BeatComponent();
         addAndMakeVisible(bc);
@@ -50,8 +84,10 @@ void TimeManagerUI::TimeBar::initComponentsForNumBeats(int /*nb*/){
 }
 
 void TimeManagerUI::TimeBar::resized() {
-    Rectangle<int> area = getLocalBounds();
     int beatPerBar =beatComponents.size();
+    if(beatPerBar==0)return;
+
+    Rectangle<int> area = getLocalBounds();
     int beatWidth = area.getWidth()/beatPerBar;
     for(int i = 0 ; i < beatPerBar ; i++){beatComponents.getUnchecked(i)->setBounds(area.removeFromLeft(beatWidth));}
 }
@@ -73,11 +109,7 @@ void TimeManagerUI::TimeBar::async_newBeat( int b){
 void TimeManagerUI::TimeBar::async_beatPerBarChanged(int bpb){
     initComponentsForNumBeats(bpb);
 }
-void TimeManagerUI::TimeBar::async_isSettingTempo( bool b) {
-    isSettingTempo = b;
-    showBeatComponents(!b);
-    repaint();
-}
+
 
 void TimeManagerUI::TimeBar::zeroOutBeatComponents(){
     for(int i = 0 ; i< beatComponents.size() ; i++){

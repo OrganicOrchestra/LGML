@@ -25,7 +25,12 @@ ParameterUI::~ParameterUI()
     if(parameter)parameter->removeParameterListener(this);
 }
 
-void ParameterUI::parameterValueChanged(Parameter *)
-{
-    //to be overriden
+
+bool ParameterUI::shouldBailOut(){
+    bool bailOut= parameter.get()==nullptr;
+    // we want a clean deletion no?
+    // comment this to continue safely to see what happen next    
+    jassert(!bailOut);
+    return bailOut;
+
 }

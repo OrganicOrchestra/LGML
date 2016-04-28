@@ -30,7 +30,7 @@ public:
     void resized() override;
 
 protected:
-    void parameterValueChanged(Parameter * p) override;
+    void valueChanged(const var & v) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameterUI)
 

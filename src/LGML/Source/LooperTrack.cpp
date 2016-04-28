@@ -286,20 +286,23 @@ void LooperTrack::setTrackState(TrackState newState) {
 	if (newState == SHOULD_RECORD) {
 		// are we able to set the tempo
 		if (askForBeingMasterTempoTrack()) {
-			TimeManager::getInstance()->stop();
-			TimeManager::getInstance()->setPlayState(true, true);
+            TimeManager::getInstance()->playState->setValue(false);
+            TimeManager::getInstance()->isSettingTempo->setValue(true);
+            TimeManager::getInstance()->playState->setValue(true);
+
 			quantizedRecordStart = -1;
 			setTrackState(RECORDING);
 			return;
 		}
-		else if (!TimeManager::getInstance()->getIsSettingTempo()) {
+		else if (!TimeManager::getInstance()->isSettingTempo->value) {
 			quantizedRecordStart = TimeManager::getInstance()->getNextQuantifiedTime();
 		}
 		//            RecordPer default if triggering other rec while we are current master and we record recording
 		else if (NodeBase * originMasterNode = TimeManager::getInstance()->timeMasterNode) {
 			if ((LooperNode*)originMasterNode == parentLooper->looperNode) {
 				newState = RECORDING;
-				TimeManager::getInstance()->setPlayState(true, false);
+                TimeManager::getInstance()->isSettingTempo->setValue(false);
+                TimeManager::getInstance()->playState->setValue(true);
 				parentLooper->lastMasterTempoTrack->setTrackState(LooperTrack::TrackState::PLAYING);
 			}
 		}
@@ -319,8 +322,9 @@ void LooperTrack::setTrackState(TrackState newState) {
 				(parentLooper->askForBeingAbleToPlayNow(this) && trackState == STOPPED)) {
 				quantizedRecordEnd = -1;
 				newState = PLAYING;
-				TimeManager::getInstance()->stop();
-				TimeManager::getInstance()->setPlayState(true, false);
+                TimeManager::getInstance()->playState->setValue(false);
+                TimeManager::getInstance()->isSettingTempo->setValue(false);
+                TimeManager::getInstance()->playState->setValue(true);
 			}
 			else {
 				quantizedRecordEnd = TimeManager::getInstance()->getNextQuantifiedTime();

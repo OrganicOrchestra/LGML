@@ -94,7 +94,7 @@ void Engine::clear(){
 	//stopAudio();
 	
 	
-    TimeManager::getInstance()->stop();
+    TimeManager::getInstance()->playState->setValue(false);
     ControllerManager::getInstance()->clear();
     NodeManager::getInstance()->clear();
 	PresetManager::getInstance()->clear();

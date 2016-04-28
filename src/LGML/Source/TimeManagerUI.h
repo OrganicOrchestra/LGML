@@ -14,17 +14,19 @@
 #include "TimeManager.h"
 #include "FloatSliderUI.h"
 
-class TimeManagerUI : public Component{
+class TimeManagerUI : public Component,public Parameter::AsyncListener{
 
     public :
     TimeManagerUI(TimeManager * _timeManager);
+    ~TimeManagerUI();
 
 
     void resized()override;
 
+    void asyncParameterValueChanged(Parameter* p ,var & v) override;
 
 
-    class TimeBar : public Component,public TimeManager::Listener,public Timer{
+    class TimeBar : public Component,public Timer{
         public :
         TimeBar(TimeManager *);
 
@@ -46,13 +48,12 @@ class TimeManagerUI : public Component{
         OwnedArray<BeatComponent> beatComponents;
 
         void initComponentsForNumBeats(int nb);
-
         void resized() override;
-        void  async_play()override;
-        void async_stop()override;
-        void async_newBeat( int b)override;
-        void async_beatPerBarChanged(int bpb)override;
-        void async_isSettingTempo( bool b) override;
+        void async_play();
+        void async_stop();
+        void async_newBeat( int b);
+        void async_beatPerBarChanged(int bpb);
+        void async_isSettingTempo( bool b) ;
 
 
         void zeroOutBeatComponents();

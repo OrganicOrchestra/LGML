@@ -25,7 +25,11 @@ BoolToggleUI::~BoolToggleUI()
 
 void BoolToggleUI::paint(Graphics & g)
 {
-	bool valCheck = invertVisuals ? !parameter->boolValue():parameter->boolValue();
+
+    // we are on component deletion
+    if(shouldBailOut())return;
+
+    bool valCheck = invertVisuals ? !parameter->boolValue():parameter->boolValue();
     Colour c =  valCheck? HIGHLIGHT_COLOR : NORMAL_COLOR;
 	
     g.setGradientFill(ColourGradient(c.brighter(),(float)getLocalBounds().getCentreX(),(float)getLocalBounds().getCentreY(), c.darker(), 2.f,2.f,true));
@@ -46,7 +50,7 @@ void BoolToggleUI::mouseUp(const MouseEvent & e)
     if (e.mods.isRightButtonDown()) parameter->setValue(!parameter->boolValue());
 }
 
-void BoolToggleUI::parameterValueChanged(Parameter *)
+void BoolToggleUI::valueChanged(const var & )
 {
     repaint();
 }
