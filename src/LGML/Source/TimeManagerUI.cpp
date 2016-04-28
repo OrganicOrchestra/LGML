@@ -25,7 +25,7 @@ timeBar(_timeManager){
     addAndMakeVisible(timeBar);
     bpmSlider = timeManager->BPM->createSlider();
     bpmSlider->assignOnMousePosDirect = false;
-    bpmSlider->orientation = FloatSliderUI::VERTICAL;
+    //bpmSlider->orientation = FloatSliderUI::VERTICAL;
     bpmSlider->displayText = true;
     bpmSlider->displayBar = false;
     bpmSlider->scaleFactor = 0.01;
