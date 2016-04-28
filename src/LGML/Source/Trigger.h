@@ -30,9 +30,15 @@ public:
 
     void trigger()
     {
-        if (enabled) listeners.call(&Listener::triggerTriggered, this);
+        if (enabled && !isTriggering){
+            isTriggering = true;
+            listeners.call(&Listener::triggerTriggered, this);
+            isTriggering = false;
+        }
     }
 
+    // avoid feedback loop in listeners
+    bool isTriggering;
 public:
     //Listener
     class  Listener

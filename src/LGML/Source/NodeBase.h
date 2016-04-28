@@ -102,8 +102,8 @@ public:
     var getJSONData();
     void loadJSONData(var data);
 
-    virtual void onContainerParameterChanged(Parameter * p) override;
 
+public:
 
     //Listener
     class NodeListener
@@ -121,14 +121,14 @@ public:
 
 
 private:
-    // @ben en fait la forward declaration d'un enum n'est pas ISOC++ (VS l'autorise mais c'est pas un standard donc LLVM non...)
-    // ca reste propre si c'est un int privé que seul NodeFactory peu changer
-    //@martin remis en int car uint pas supporté de base sur VS (ca change pas grand chose, si ?)
 
-    // keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeType, but circular dependency BULLSHIIIIIT)
     int nodeTypeUID;
     friend class NodeFactory;
 
+    // we use parameterValue changed her to allow Derived Node to implement onContainerParameterChanged without having to call NodeBase::onContainerParameterChanged, less error prone
+    // @ben is it triggering error on your side?
+
+    void parameterValueChanged(Parameter * p) override;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)

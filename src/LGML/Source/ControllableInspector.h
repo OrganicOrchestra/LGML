@@ -20,7 +20,11 @@
 // side bar component displaying editor of currently selected nodes
 // TODO handle merging of multiple component of sameClass : almost there ....
 
-class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,public Component,public ControllableContainer::Listener
+class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,
+public Component,
+public ControllableContainer::Listener,
+public ControllableContainerSync::ContainerSyncListener
+
 {
 public:
     ControllableInspector(NodeManagerUI * _nmui);
@@ -50,23 +54,14 @@ private:
     void paint(Graphics &g) override;
     void resized()override;
 
-    void controllableAdded(Controllable * c) override{  removedControllables.removeAllInstancesOf(c);  generateFromCandidates();};
-    void controllableRemoved(Controllable * c)override{
-        removedControllables.add(c);
-        generateFromCandidates();
-    };
-    void controllableContainerAdded(ControllableContainer * c)override { removedContainers.removeAllInstancesOf(c);   generateFromCandidates();};
-    void controllableContainerRemoved(ControllableContainer * c)override {
-        if(c==displayedEditor->owner){
-            delete displayedEditor.release();
-        }
-        else{
-            removedContainers.add(c);
-        }
-        generateFromCandidates();
-    };
-    void controllableFeedbackUpdate(Controllable *) override{};
+    void controllableAdded(Controllable * c) override;
+    void controllableRemoved(Controllable * c)override;
+    void controllableContainerAdded(ControllableContainer * c)override ;
+    void controllableContainerRemoved(ControllableContainer * c)override ;
+    void controllableFeedbackUpdate(Controllable *) override;
 
+
+    void sourceUpdated(ControllableContainer*) override;
 
     NodeManagerUI * nmui;
 

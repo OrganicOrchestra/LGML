@@ -13,6 +13,7 @@
 
 #include "TimeManager.h"
 #include "FloatSliderUI.h"
+#include "TriggerBlinkUI.h"
 
 class TimeManagerUI : public Component,public Parameter::AsyncListener{
 
@@ -71,6 +72,8 @@ class TimeManagerUI : public Component,public Parameter::AsyncListener{
     };
 
     ScopedPointer<FloatSliderUI>  bpmSlider;
+    ScopedPointer<TriggerBlinkUI> playTrig,stopTrig;
+
 
     TimeBar timeBar;
     TimeManager * timeManager;

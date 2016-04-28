@@ -27,6 +27,7 @@ ControllableContainer::~ControllableContainer()
 {
     //controllables.clear();
     //DBG("CLEAR CONTROLLABLE CONTAINER");
+
     controllables.clear();
 }
 

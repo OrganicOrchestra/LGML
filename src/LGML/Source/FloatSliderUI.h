@@ -30,6 +30,7 @@ public:
     bool displayBar;
     bool changeParamOnMouseUpOnly;
     bool assignOnMousePosDirect;
+    float scaleFactor;
 
     //interaction
     float initValue;

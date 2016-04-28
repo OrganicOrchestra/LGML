@@ -322,9 +322,9 @@ void LooperTrack::setTrackState(TrackState newState) {
                 (parentLooper->askForBeingAbleToPlayNow(this) && trackState == STOPPED)) {
                 quantizedRecordEnd = -1;
                 newState = PLAYING;
-                TimeManager::getInstance()->playState->setValue(false);
+                trackState = newState;
                 TimeManager::getInstance()->isSettingTempo->setValue(false);
-                TimeManager::getInstance()->playState->setValue(true);
+                TimeManager::getInstance()->playTrigger->trigger();
             }
             else {
                 quantizedRecordEnd = TimeManager::getInstance()->getNextQuantifiedTime();
@@ -334,8 +334,14 @@ void LooperTrack::setTrackState(TrackState newState) {
 
     // on ask for play
     if (newState == SHOULD_PLAY) {
+        // a cleared track can't be played
+        if(trackState==CLEARED){
+            newState=CLEARED;
+        }
+        else{
         cleanAllQuantizeNeedles();
         quantizedPlayStart = TimeManager::getInstance()->getNextQuantifiedTime();
+        }
     }
     // on true start of play
     else if (newState == PLAYING) {

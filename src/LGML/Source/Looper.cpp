@@ -44,6 +44,8 @@ Looper::Looper(LooperNode * looperNode) :
 
     setNumTracks(numberOfTracks->intValue());
 
+    TimeManager::getInstance()->playState->addParameterListener(this);
+
 }
 
 void Looper::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages) {
@@ -214,4 +216,19 @@ void Looper::onContainerParameterChanged(Parameter * p) {
             //define master volume, or all volume ?
         }
     }
+
+    else if(p == TimeManager::getInstance()->playState){
+        if(!p->value){
+            for(auto &t:tracks){
+                t->stopTrig->trigger();
+            }
+        }
+        else{
+            for(auto &t:tracks){
+                t->playTrig->trigger();
+            }
+        }
+    }
 }
+
+

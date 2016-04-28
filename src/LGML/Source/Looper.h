@@ -62,6 +62,8 @@ public:
     void checkIfNeedGlobalLooperStateUpdate();
 
 
+
+
     LooperTrack * lastMasterTempoTrack;
     AudioBuffer<float> bufferIn;
     AudioBuffer<float>bufferOut;

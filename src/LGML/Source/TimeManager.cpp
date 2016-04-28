@@ -34,6 +34,8 @@ ControllableContainer("time")
     currentBar  = addIntParameter("currentBar", "currentBar in transport", 0, 0, 4);
     currentBeat  = addIntParameter("currentBeat", "currentBeat in transport", 0, 0, 4);
     beatPerBar = addIntParameter("beatPerBar", "beat Per Bar", 4, 1, 8);
+    playTrigger = addTrigger("play", "trigger play");
+    stopTrigger = addTrigger("stop", "trigger stop");
     //    addTimeManagerListener(&asyncNotifier);
 }
 TimeManager::~TimeManager()
@@ -96,6 +98,18 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
     }
 
 };
+
+void TimeManager::onContainerTriggerTriggered(Trigger * t) {
+    if(t == playTrigger){
+        playState->setValue(false);
+        playState->setValue(true);
+    }
+
+    if(t==stopTrigger){
+        playState->setValue(false);
+    }
+}
+
 
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;

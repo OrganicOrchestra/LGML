@@ -20,17 +20,20 @@ void ControllableContainerSync::addSyncedControllableIfNotAlreadyThere(Controlla
     }
 }
 void ControllableContainerSync::removeSyncedControllable(ControllableContainer * c){
-    // if source is deleted use another listener as source
     c->removeControllableContainerListener(this);
 
     // if removing source try to build from first available
     if(c==sourceContainer){
 
         if(targetSyncedContainers.size()>0){
-            buildFromContainer(targetSyncedContainers.getUnchecked(0));
+            ControllableContainer * c = targetSyncedContainers.getUnchecked(0);
+            buildFromContainer(c);
+            containerSyncListeners.call(&ControllableContainerSync::ContainerSyncListener::sourceUpdated,c);
         }
         else{
             sourceContainer = nullptr;
+            containerSyncListeners.call(&ControllableContainerSync::ContainerSyncListener::sourceDeleted);
+
         }
     }
     else{
@@ -55,6 +58,10 @@ void ControllableContainerSync::buildFromContainer(ControllableContainer * sourc
 
 };
 
+
+// ===============================
+// sync controllables
+
 void ControllableContainerSync::controllableFeedbackUpdate(Controllable *cOrigin){
     if(isNotifying)return;
     isNotifying = true;
@@ -62,14 +69,16 @@ void ControllableContainerSync::controllableFeedbackUpdate(Controllable *cOrigin
 
     StringArray addrArray;
     addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
+    addrArray.remove(0);
     juce::Array<String> addSplit = addrArray.strings;
-
+    if(depthInOriginContainer+1> addSplit.size()){
+        // coming from another controllableContainer with a shorter address
+        return;
+    }
     for(int i = 0 ; i < depthInOriginContainer ; i ++){
         addSplit.remove(0);
     }
 
-    String controller = addSplit[0];
-    addSplit.remove(0);
     for(auto & listener:targetSyncedContainers){
         Controllable * c = listener->getControllableForAddress(addSplit,true,true);
         if(c!=nullptr)setControllableValue(cOrigin, c);

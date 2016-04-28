@@ -92,7 +92,7 @@ void NodeBase::ouputRemoved(Data *)
 }
 
 
-void NodeBase::onContainerParameterChanged(Parameter * p)
+void NodeBase::parameterValueChanged(Parameter * p)
 {
 
     if (p == nameParam)
@@ -101,6 +101,9 @@ void NodeBase::onContainerParameterChanged(Parameter * p)
     }else if (p == enabledParam)
     {
 
+    }
+    else{
+            ControllableContainer::parameterValueChanged(p);
     }
 }
 

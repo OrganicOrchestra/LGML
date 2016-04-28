@@ -51,6 +51,18 @@ public:
     int depthInOriginContainer;
 
 
+    class ContainerSyncListener{
+    public:
+        virtual ~ContainerSyncListener(){}
+
+        virtual void sourceUpdated(ControllableContainer * )=0;
+        virtual void sourceDeleted(){};
+    };
+
+    ListenerList<ContainerSyncListener> containerSyncListeners;
+    void addContainerSyncListener(ContainerSyncListener * l){containerSyncListeners.add(l);}
+    void removeContainerSyncListener(ContainerSyncListener * l){containerSyncListeners.remove(l);}
+
 
 
 private:

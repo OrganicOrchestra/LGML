@@ -21,6 +21,8 @@ ParameterUI(parameter)
     displayBar = true;
     orientation = HORIZONTAL;
     setSize(100,10);
+    scaleFactor = 1;
+    
 }
 
 FloatSliderUI::~FloatSliderUI()
@@ -63,7 +65,7 @@ void FloatSliderUI::paint(Graphics & g)
         g.setColour(displayBar?textColor:c);
         Rectangle<int> destRect = sliderBounds;
 
-        if(orientation == VERTICAL){
+        if(getLocalBounds().getHeight()>getLocalBounds().getWidth()){
             AffineTransform at;
             at = at.rotated((float)(-double_Pi/2.0f), sliderBounds.getWidth()/2.0f, sliderBounds.getHeight()/2.0f);
             g.addTransform(at);
@@ -76,7 +78,9 @@ void FloatSliderUI::paint(Graphics & g)
 
 void FloatSliderUI::mouseDown(const MouseEvent & e)
 {
-    BailOutChecker checker (this);
+    initValue = getParamNormalizedValue();
+    setMouseCursor(MouseCursor::NoCursor);
+
     if (assignOnMousePosDirect && !e.mods.isRightButtonDown())
     {
         setParamNormalizedValue(getValueFromMouse());
@@ -86,12 +90,8 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
         repaint();
     }
 
-    // a component can delete itself ( by trigger the whole rebuilding of Inspector for example)
-    // thank JUCE for having the perfect class for it
-    if(!checker.shouldBailOut()){
-        initValue = getParamNormalizedValue();
-        setMouseCursor(MouseCursor::NoCursor);
-    }
+
+
 
 }
 
@@ -105,10 +105,10 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
         if (assignOnMousePosDirect && !e.mods.isRightButtonDown()) setParamNormalizedValue(getValueFromMouse());
         else
         {
-            float diffValue = getValueFromPosition(e.getPosition()-e.getMouseDownPosition());
+            float diffValue = getValueFromPosition((e.getPosition()-e.getMouseDownPosition()));
             if (orientation == VERTICAL) diffValue -= 1;
 
-            setParamNormalizedValue(initValue + diffValue);
+            setParamNormalizedValue(initValue + diffValue*scaleFactor);
         }
     }
 }

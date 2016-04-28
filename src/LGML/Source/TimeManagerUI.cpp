@@ -24,9 +24,18 @@ timeBar(_timeManager){
 
     addAndMakeVisible(timeBar);
     bpmSlider = timeManager->BPM->createSlider();
+    bpmSlider->assignOnMousePosDirect = false;
+    bpmSlider->orientation = FloatSliderUI::VERTICAL;
     bpmSlider->displayText = true;
     bpmSlider->displayBar = false;
+    bpmSlider->scaleFactor = 0.01;
     addAndMakeVisible(bpmSlider);
+
+
+    playTrig = timeManager->playTrigger->createBlinkUI();
+    addAndMakeVisible(playTrig);
+    stopTrig = timeManager->stopTrigger->createBlinkUI();
+    addAndMakeVisible(stopTrig);
 
 }
 
@@ -62,6 +71,8 @@ void TimeManagerUI::asyncParameterValueChanged(Parameter* p ,var & v) {
 void TimeManagerUI::resized(){
     Rectangle<int> area = getLocalBounds();
     timeBar.setBounds(area.removeFromRight(area.getWidth()/2));
+    playTrig->setBounds(area.removeFromRight(70).reduced(2));
+    stopTrig->setBounds(area.removeFromRight(70).reduced(2));
     bpmSlider->setBounds(area.removeFromRight(area.getWidth()/2));
 }
 

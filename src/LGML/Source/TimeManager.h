@@ -33,6 +33,8 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
 
 
     BoolParameter * playState;
+    Trigger * playTrigger;
+    Trigger * stopTrigger;
     BoolParameter * isSettingTempo;
     FloatParameter *  BPM;
     IntParameter * currentBeat;
@@ -44,6 +46,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     void incrementClock(int time);
 
     void onContainerParameterChanged(Parameter * )override;
+    void onContainerTriggerTriggered(Trigger * ) override;
     void setSampleRate(int sr);
 
     int setBPMForLoopLength(int time);
