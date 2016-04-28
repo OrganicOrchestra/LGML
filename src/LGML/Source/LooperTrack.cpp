@@ -298,13 +298,13 @@ void LooperTrack::setTrackState(TrackState newState) {
             quantizedRecordStart = TimeManager::getInstance()->getNextQuantifiedTime();
         }
         //            RecordPer default if triggering other rec while we are current master and we record recording
-        else if (NodeBase * originMasterNode = TimeManager::getInstance()->timeMasterNode) {
-            if ((LooperNode*)originMasterNode == parentLooper->looperNode) {
+
+        else if (TimeManager::getInstance()->isMasterNode(parentLooper->looperNode)) {
                 newState = RECORDING;
                 TimeManager::getInstance()->isSettingTempo->setValue(false);
                 TimeManager::getInstance()->playState->setValue(true);
                 parentLooper->lastMasterTempoTrack->setTrackState(LooperTrack::TrackState::PLAYING);
-            }
+            
         }
     }
 

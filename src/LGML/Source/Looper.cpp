@@ -108,20 +108,13 @@ void Looper::setNumTracks(int numTracks) {
 
 
 void Looper::checkIfNeedGlobalLooperStateUpdate() {
-    bool needToStop = true;
     bool needToReleaseMasterTempo = true;
     for (auto & t : tracks) {
-        needToStop &= (t->trackState == LooperTrack::TrackState::STOPPED || t->trackState == LooperTrack::TrackState::CLEARED);
         needToReleaseMasterTempo &= (t->trackState == LooperTrack::TrackState::CLEARED);
     }
 
-
-    if (TimeManager::getInstance()->isMasterNode(looperNode) && needToStop) {
-        TimeManager::getInstance()->playState->setValue(false);
-    }
-
     if (needToReleaseMasterTempo) {
-        TimeManager::getInstance()->removeIfMaster(looperNode);
+        TimeManager::getInstance()->releaseMasterNode(looperNode);
     }
 }
 
@@ -230,5 +223,3 @@ void Looper::onContainerParameterChanged(Parameter * p) {
         }
     }
 }
-
-

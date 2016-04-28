@@ -53,7 +53,7 @@ NodeBase::~NodeBase()
     // get called after deletion of TimeManager on app exit
     TimeManager * tm = TimeManager::getInstanceWithoutCreating();
     if(tm!=nullptr)
-        tm->removeIfMaster(this);
+        tm->releaseMasterNode(this);
 
 }
 

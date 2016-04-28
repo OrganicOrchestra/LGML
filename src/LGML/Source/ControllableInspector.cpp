@@ -64,7 +64,7 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
         displayedEditor = nullptr;
     }
     generateFromCandidates();
-    
+
 }
 
 

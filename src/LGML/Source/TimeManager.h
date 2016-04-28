@@ -69,10 +69,10 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     uint64 timeInSample;
     int beatTimeInSample;
     int sampleRate;
-    NodeBase *  timeMasterNode;
-    bool isMasterNode(NodeBase * n){return n==timeMasterNode;}
-    bool hasMasterNode(){return timeMasterNode!=nullptr;}
-    void removeIfMaster(NodeBase * n){if(n==timeMasterNode)timeMasterNode=nullptr;}
+    Array<NodeBase *>  potentialTimeMasterNode;
+    bool isMasterNode(NodeBase * n);
+    bool hasMasterNode();
+    void releaseMasterNode(NodeBase * n);
     bool askForBeingMasterNode(NodeBase * n);
     void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) override;
 
