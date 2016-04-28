@@ -148,10 +148,10 @@ int TimeManager::setBPMForLoopLength(int time){
 
 int TimeManager::getNextQuantifiedTime(){
     if(quantizedBarFraction->intValue()==0){
-        return timeInSample;
+        return (int)timeInSample;
     }
 
-    return (getBar() + 1.0/quantizedBarFraction->intValue()) *(beatPerBar->intValue()* beatTimeInSample);
+    return (int)(getBar() + 1.0/quantizedBarFraction->intValue()) *(beatPerBar->intValue()* beatTimeInSample);
 }
 
 
