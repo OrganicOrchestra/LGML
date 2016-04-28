@@ -143,7 +143,7 @@ float FloatSliderUI::getValueFromPosition(const Point<int> &pos)
 
 void FloatSliderUI::setParamNormalizedValue(float value)
 {
-	parameter->setNormalizedValue(value);
+    parameter->setNormalizedValue(value);
 }
 
 float FloatSliderUI::getParamNormalizedValue()

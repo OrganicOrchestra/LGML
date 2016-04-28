@@ -22,8 +22,8 @@ class FloatParameter : public Parameter
 public:
     FloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0.f, const float &maxValue = 1.f, bool enabled = true);
     ~FloatParameter() {}
-	
-	void setValueInternal(var _value) override;
+
+    void setValueInternal(var _value) override;
 
     FloatSliderUI * createSlider();
     ControllableUI * createDefaultControllableEditor() override;

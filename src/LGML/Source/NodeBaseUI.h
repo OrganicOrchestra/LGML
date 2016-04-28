@@ -54,17 +54,17 @@ public:
     void moved()override;
 
 
-	//SelectableComponent
-	void internalSetSelected(bool _selected)override;
-	void paintOverChildren(Graphics &) override {} //cancel default yellow border behavior
+    //SelectableComponent
+    void internalSetSelected(bool _selected)override;
+    void paintOverChildren(Graphics &) override {} //cancel default yellow border behavior
 
     //ui
     class MainContainer : public ContourComponent
     {
     public:
 
-		//reference
-		NodeBaseUI * nodeUI;
+        //reference
+        NodeBaseUI * nodeUI;
 
         //containers
         ScopedPointer<NodeBaseHeaderUI> headerContainer;
@@ -94,7 +94,7 @@ public:
         void addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
         void resized();
 
-		ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType dataType);
+        ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType dataType);
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorContainer)
     };
@@ -107,14 +107,14 @@ public:
     NodeBaseContentUI * getContentContainer() { return mainContainer.contentContainer; }
     NodeBaseHeaderUI * getHeaderContainer() { return mainContainer.headerContainer; }
 
-	Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector);
+    Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector);
     NodeManagerUI * getNodeManagerUI() const noexcept;
 
 
     //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
-	ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
+    ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
 
-	
+
 
 private:
 

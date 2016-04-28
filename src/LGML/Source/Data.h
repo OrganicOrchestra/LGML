@@ -18,69 +18,69 @@ class DataProcessor;
 class Data
 {
 public:
-	enum DataType
-	{
-		Unknown, Float, Number, Boolean, Position, Orientation, Color
-	};
+    enum DataType
+    {
+        Unknown, Float, Number, Boolean, Position, Orientation, Color
+    };
 
-	class DataElement
-	{
-	public:
-		DataElement(String _name);
+    class DataElement
+    {
+    public:
+        DataElement(String _name);
 
-		String name;
-		DataType type;
-		float value;
+        String name;
+        DataType type;
+        float value;
 
-		bool isTypeCompatible(const DataType &targetType);
+        bool isTypeCompatible(const DataType &targetType);
 
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataElement)
-	};
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataElement)
+    };
 
-	
 
-	String name;
-	DataType type;
 
-	DataProcessor * processor;
+    String name;
+    DataType type;
 
-	int numConnections;
+    DataProcessor * processor;
 
-	OwnedArray<DataElement> elements;
+    int numConnections;
 
-	Data(DataProcessor * processor, String _name, DataType _type);
-	~Data();
+    OwnedArray<DataElement> elements;
 
-	void addElement(const String &_name);
+    Data(DataProcessor * processor, String _name, DataType _type);
+    ~Data();
 
-	DataElement * getElement(const String &elementName);
+    void addElement(const String &_name);
 
-	void updateFromSourceData(Data * sourceData);
+    DataElement * getElement(const String &elementName);
 
-	void update(const float &value1, const float &value2 = 0, const float &value3 = 0);
+    void updateFromSourceData(Data * sourceData);
 
-	bool isComplex() { return elements.size() > 1; }
+    void update(const float &value1, const float &value2 = 0, const float &value3 = 0);
 
-	bool isTypeCompatible(const DataType &targetType);;
+    bool isComplex() { return elements.size() > 1; }
 
-	int getNumElementsForType(const DataType &_type);
+    bool isTypeCompatible(const DataType &targetType);;
 
-	String getTypeString();
+    int getNumElementsForType(const DataType &_type);
 
-	class  DataListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~DataListener() {}
+    String getTypeString();
 
-		virtual void dataChanged(Data *) = 0;
-	};
+    class  DataListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~DataListener() {}
 
-	ListenerList<DataListener> listeners;
-	void addDataListener(DataListener* newListener) { listeners.add(newListener); }
-	void removeDataListener(DataListener* listener) { listeners.remove(listener); }
+        virtual void dataChanged(Data *) = 0;
+    };
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Data)
+    ListenerList<DataListener> listeners;
+    void addDataListener(DataListener* newListener) { listeners.add(newListener); }
+    void removeDataListener(DataListener* listener) { listeners.remove(listener); }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Data)
 };
 
 

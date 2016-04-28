@@ -72,14 +72,14 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateOutput(){
         const ScopedLock sl (getCallbackLock());
 
         if(numberOfOutput->intValue() > outBuses.size())
-		{
+        {
             for(int i = outBuses.size() ; i < numberOfOutput->intValue() ; i++){
                 OutputBus * outB = new OutputBus(i,numberOfInput->value);
                 outBuses.add(outB);
                 addChildControllableContainer(outB);
             }
         }else if(numberOfOutput->intValue() < outBuses.size())
-		{
+        {
             for(int i = numberOfOutput->value;i<outBuses.size() ; i++){
                 OutputBus * outB = outBuses.getUnchecked(i);
                 removeChildControllableContainer(outB);

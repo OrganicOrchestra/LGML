@@ -28,16 +28,16 @@ public:
     DataProcessorGraph();
     ~DataProcessorGraph();
 
-	class DataThread : public Thread
-	{
-	public:
+    class DataThread : public Thread
+    {
+    public:
 
-		DataThread() : Thread("dataThread") {}
-		virtual ~DataThread();
-		virtual void run() override;
-	};
+        DataThread() : Thread("dataThread") {}
+        virtual ~DataThread();
+        virtual void run() override;
+    };
 
-	DataThread thread;
+    DataThread thread;
 
     class Connection : public Data::DataListener
     {

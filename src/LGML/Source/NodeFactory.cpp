@@ -46,7 +46,7 @@ NodeBase * NodeFactory::createNode(NodeManager * nodeManager, NodeType nodeType,
         case NodeType::AudioOutType:
             n = new AudioOutNode(nodeManager, nodeId);
             break;
-            
+
         case NodeType::UNKNOWN_TYPE:
             DBG("NodeFactory : not found type for node");
             return nullptr;

@@ -40,7 +40,7 @@ public:
 protected:
 //    can change this if repaint is handled in setSelected
     bool repaintOnSelection;
-	
+
 
 private:
     SelectableComponentHandler * handler;

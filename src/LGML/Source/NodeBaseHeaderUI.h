@@ -26,7 +26,7 @@ public:
 
     class Grabber : public Component
     {
-		void paint(Graphics &g) override;
+        void paint(Graphics &g) override;
     };
 
     NodeBaseHeaderUI();
@@ -34,31 +34,31 @@ public:
 
     NodeBase * node;
     NodeBaseUI * nodeUI;
-	 
+
     ScopedPointer<StringParameterUI> titleUI;
     ScopedPointer<BoolToggleUI> enabledUI;
     VuMeter vuMeter;
 
     Grabber grabber;
     ImageButton removeBT;
-	ScopedPointer<ComboBox> presetCB;
+    ScopedPointer<ComboBox> presetCB;
 
     void mouseDoubleClick(const MouseEvent & e)override;
 
 
     virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
-	virtual void updatePresetComboBox();
+    virtual void updatePresetComboBox();
     virtual void init();
 
 
     virtual void resized() override;
 
-	// Inherited via Listener
-	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
+    // Inherited via Listener
+    virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
 
-		
+
 };
 
 

@@ -63,7 +63,7 @@ public:
     void resized() override;
     OwnedArray<OutputBusUI> outputBusUIs;
     AudioMixerNode::AudioMixerAudioProcessor * nodeMixer;
-    
+
 };
 
 

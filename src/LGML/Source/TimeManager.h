@@ -84,12 +84,12 @@ private:
 
     /** Called to indicate that the device has stopped. */
     virtual void audioDeviceStopped() override{
-        
+
     };
-    
-    
+
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
-    
+
 };
 
 

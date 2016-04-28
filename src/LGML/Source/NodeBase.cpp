@@ -38,10 +38,10 @@ nodeTypeUID(0) // UNKNOWNTYPE
 
     xPosition->isControllableExposed = false;
     yPosition->isControllableExposed = false;
-	xPosition->isPresettable = false;
-	yPosition->isPresettable = false;
-	nameParam->isPresettable = false;
-	enabledParam->isPresettable = false;
+    xPosition->isPresettable = false;
+    yPosition->isPresettable = false;
+    nameParam->isPresettable = false;
+    enabledParam->isPresettable = false;
 }
 
 
@@ -119,23 +119,23 @@ void NodeBase::removeFromAudioGraphIfNeeded(){
 
 void NodeBase::saveNewPreset(const String & _name)
 {
-	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter() , this, true);
-	loadPreset(pre);
+    PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter() , this, true);
+    loadPreset(pre);
 }
 
 bool NodeBase::loadPreset(PresetManager::Preset * pre)
 {
-	return ControllableContainer::loadPreset(pre); //just to show that child class nodes can override this if special behavior is to be made
+    return ControllableContainer::loadPreset(pre); //just to show that child class nodes can override this if special behavior is to be made
 }
 
 bool NodeBase::resetFromPreset()
 {
-	return ControllableContainer::resetFromPreset(); //just to show that child class nodes can override this if special behavior is to be made
+    return ControllableContainer::resetFromPreset(); //just to show that child class nodes can override this if special behavior is to be made
 }
 
 String NodeBase::getPresetFilter()
 {
-	return NodeFactory::nodeToString(this);
+    return NodeFactory::nodeToString(this);
 }
 
 

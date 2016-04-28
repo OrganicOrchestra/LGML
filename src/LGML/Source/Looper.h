@@ -22,66 +22,66 @@ class Looper : public NodeAudioProcessor, public ControllableContainer
 {
 
 public:
-	Trigger * recPlaySelectedTrig;
-	Trigger * playSelectedTrig;
-	Trigger * clearSelectedTrig;
-	Trigger * stopSelectedTrig;
+    Trigger * recPlaySelectedTrig;
+    Trigger * playSelectedTrig;
+    Trigger * clearSelectedTrig;
+    Trigger * stopSelectedTrig;
 
-	Trigger * selectAllTrig;
-	Trigger * clearAllTrig;
-	Trigger * stopAllTrig;
+    Trigger * selectAllTrig;
+    Trigger * clearAllTrig;
+    Trigger * stopAllTrig;
 
-	FloatParameter * volumeSelected;
-	BoolParameter * isMonitoring;
-	IntParameter * numberOfTracks;
+    FloatParameter * volumeSelected;
+    BoolParameter * isMonitoring;
+    IntParameter * numberOfTracks;
 
-	OwnedArray<LooperTrack> tracks;
+    OwnedArray<LooperTrack> tracks;
 
-	LooperTrack * selectedTrack;
-
-
-	Looper(LooperNode * looperNode);
+    LooperTrack * selectedTrack;
 
 
-	void setNumTracks(int numTracks);
-	void addTrack();
-	void removeTrack(int i);
-
-	void selectMe(LooperTrack * t);
+    Looper(LooperNode * looperNode);
 
 
-	bool askForBeingMasterTrack(LooperTrack * t);
-	bool askForBeingAbleToPlayNow(LooperTrack *_t);
-	bool areAllTrackClearedButThis(LooperTrack * _t);
+    void setNumTracks(int numTracks);
+    void addTrack();
+    void removeTrack(int i);
+
+    void selectMe(LooperTrack * t);
 
 
-	void onContainerTriggerTriggered(Trigger * t) override;
-	void onContainerParameterChanged(Parameter * p) override;
-	// internal
-	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
-	void checkIfNeedGlobalLooperStateUpdate();
+    bool askForBeingMasterTrack(LooperTrack * t);
+    bool askForBeingAbleToPlayNow(LooperTrack *_t);
+    bool areAllTrackClearedButThis(LooperTrack * _t);
 
 
-	LooperTrack * lastMasterTempoTrack;
-	AudioBuffer<float> bufferIn;
-	AudioBuffer<float>bufferOut;
+    void onContainerTriggerTriggered(Trigger * t) override;
+    void onContainerParameterChanged(Parameter * p) override;
+    // internal
+    void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
+    void checkIfNeedGlobalLooperStateUpdate();
 
-	LooperNode * looperNode;
+
+    LooperTrack * lastMasterTempoTrack;
+    AudioBuffer<float> bufferIn;
+    AudioBuffer<float>bufferOut;
+
+    LooperNode * looperNode;
 
 
-	//Listener
-	class  Listener
-	{
-	public:
+    //Listener
+    class  Listener
+    {
+    public:
 
-		/** Destructor. */
-		virtual ~Listener() {}
-		virtual void trackNumChanged(int num) = 0;
-	};
+        /** Destructor. */
+        virtual ~Listener() {}
+        virtual void trackNumChanged(int num) = 0;
+    };
 
-	ListenerList<Listener> looperListeners;
-	void addLooperListener(Listener* newListener) { looperListeners.add(newListener); }
-	void removeLooperListener(Listener* listener) { looperListeners.remove(listener); }
+    ListenerList<Listener> looperListeners;
+    void addLooperListener(Listener* newListener) { looperListeners.add(newListener); }
+    void removeLooperListener(Listener* listener) { looperListeners.remove(listener); }
 
 };
 

@@ -21,10 +21,10 @@ class LooperNode : public NodeBase
 {
 
 public:
-	LooperNode(NodeManager * nodeManager, uint32 nodeId);
+    LooperNode(NodeManager * nodeManager, uint32 nodeId);
 
-	Looper * looper;
-	NodeBaseUI * createUI() override;
+    Looper * looper;
+    NodeBaseUI * createUI() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
 };

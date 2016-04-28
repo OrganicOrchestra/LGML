@@ -19,5 +19,5 @@ LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeMa
 }
 
 NodeBaseUI * LooperNode::createUI(){
-	return new NodeBaseUI(this, new LooperNodeContentUI);
+    return new NodeBaseUI(this, new LooperNodeContentUI);
 }

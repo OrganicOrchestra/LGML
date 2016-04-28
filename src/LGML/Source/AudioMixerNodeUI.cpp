@@ -46,7 +46,7 @@ void AudioMixerNodeUI::numAudioOutputChanged(int newNum){
 
 
 
-//=============================
+//==============================================================================
 // OutputBusUI
 
 
@@ -80,4 +80,3 @@ void AudioMixerNodeUI::OutputBusUI::resized() {
         o->setBounds(area.removeFromLeft(step).reduced(pad));
     }
 }
-

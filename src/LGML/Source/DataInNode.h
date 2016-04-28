@@ -28,7 +28,7 @@ public:
 
 
     DataInNode(NodeManager * nodeManager, uint32 nodeId);
-	~DataInNode();
+    ~DataInNode();
 
     Array<Parameter *> dynamicParameters;
 

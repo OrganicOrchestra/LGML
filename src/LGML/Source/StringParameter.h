@@ -20,7 +20,7 @@ class StringParameter : public Parameter
 {
 public:
     StringParameter(const String &niceName, const String &description, const String &initialValue, bool enabled=true);
-    
+
 
 
     StringParameterUI * createStringParameterUI();

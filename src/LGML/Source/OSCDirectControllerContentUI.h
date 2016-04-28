@@ -20,7 +20,7 @@ class OSCDirectControllerContentUI : public ControllerContentUI, OSCDirectContro
 {
 public:
     OSCDirectControllerContentUI();
-	virtual ~OSCDirectControllerContentUI();
+    virtual ~OSCDirectControllerContentUI();
     OSCDirectController * oscd;
 
     ScopedPointer<StringParameterUI> localPortUI;
@@ -28,11 +28,11 @@ public:
     ScopedPointer<StringParameterUI> remotePortUI;
 
 
-	Trigger activityTrigger;
-	ScopedPointer<TriggerBlinkUI> activityTriggerUI;
+    Trigger activityTrigger;
+    ScopedPointer<TriggerBlinkUI> activityTriggerUI;
 
-	StringArray activityLines;
-	Label activityLog;
+    StringArray activityLines;
+    Label activityLog;
 
     void init() override;
 
@@ -41,8 +41,8 @@ public:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectControllerContentUI)
 
-	// Inherited via OSCDirectListener
-	virtual void messageProcessed(const OSCMessage & msg, bool success) override;
+    // Inherited via OSCDirectListener
+    virtual void messageProcessed(const OSCMessage & msg, bool success) override;
 };
 
 

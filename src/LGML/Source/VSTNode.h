@@ -65,7 +65,7 @@ public:
     void initParametersFromProcessor(AudioProcessor * p);
 
 
-	String getPresetFilter() override;
+    String getPresetFilter() override;
 
     class VSTProcessor : public NodeAudioProcessor{
 
@@ -144,18 +144,18 @@ public:
 
     bool blockFeedback;
 
-	//Listener
-	class VSTNodeListener
-	{
-	public:
-		virtual ~VSTNodeListener() {}
-		virtual void newVSTSelected() = 0;
+    //Listener
+    class VSTNodeListener
+    {
+    public:
+        virtual ~VSTNodeListener() {}
+        virtual void newVSTSelected() = 0;
 
-	};
+    };
 
-	ListenerList<VSTNodeListener> vstNodeListeners;
-	void addVSTNodeListener(VSTNodeListener* newListener) { vstNodeListeners.add(newListener); }
-	void removeVSTNodeListener(VSTNodeListener* listener) { vstNodeListeners.remove(listener); }
+    ListenerList<VSTNodeListener> vstNodeListeners;
+    void addVSTNodeListener(VSTNodeListener* newListener) { vstNodeListeners.add(newListener); }
+    void removeVSTNodeListener(VSTNodeListener* listener) { vstNodeListeners.remove(listener); }
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)

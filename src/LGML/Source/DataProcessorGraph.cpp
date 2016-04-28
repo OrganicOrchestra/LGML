@@ -13,12 +13,12 @@
 DataProcessorGraph::DataProcessorGraph()
 {
 //    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
-//	thread.startThread();
+//  thread.startThread();
 }
 
 DataProcessorGraph::~DataProcessorGraph()
 {
-	thread.signalThreadShouldExit();
+    thread.signalThreadShouldExit();
     clear();
 }
 
@@ -105,13 +105,13 @@ void DataProcessorGraph::removeConnection(Connection * c)
 
 DataProcessorGraph::DataThread::~DataThread()
 {
-	stopThread(100);
+    stopThread(100);
 }
 
 void DataProcessorGraph::DataThread::run() {
 
-//	while (!threadShouldExit()) {
+//  while (!threadShouldExit()) {
 //
-//	} 
-	DBG("finish data thread");
+//  }
+    DBG("finish data thread");
 }

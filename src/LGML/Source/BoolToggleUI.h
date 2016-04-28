@@ -21,7 +21,7 @@ public:
     BoolToggleUI(Parameter * parameter);
     virtual ~BoolToggleUI();
 
-	bool invertVisuals;
+    bool invertVisuals;
 
     void paint(Graphics &g) override;
     void mouseDown(const MouseEvent &e) override;

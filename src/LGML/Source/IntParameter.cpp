@@ -19,15 +19,15 @@ IntParameter::IntParameter(const String & niceName, const String &description, c
 
 void IntParameter::setValueInternal(var _value)
 {
-	this->value = jlimit<int>(minimumValue, maximumValue, _value);
+    this->value = jlimit<int>(minimumValue, maximumValue, _value);
 }
 
 IntSliderUI * IntParameter::createSlider()
 {
-	return new IntSliderUI(this);
+    return new IntSliderUI(this);
 }
 
 
 ControllableUI * IntParameter::createDefaultControllableEditor(){
-	return createSlider();
+    return createSlider();
 };

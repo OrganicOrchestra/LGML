@@ -15,15 +15,15 @@ VSTNodeContentUI::VSTNodeContentUI():
 VSTListShowButton("VSTs"),
 showPluginWindowButton("showWindow")
 {
-    
+
 }
 VSTNodeContentUI::~VSTNodeContentUI(){
-	vstNode->removeVSTNodeListener(this);
-	vstNode->removeControllableContainerListener(this);
+    vstNode->removeVSTNodeListener(this);
+    vstNode->removeControllableContainerListener(this);
 }
 
 void VSTNodeContentUI::init() {
-	vstNode = (VSTNode *)node;
+    vstNode = (VSTNode *)node;
     VSTListShowButton.addListener(this);
     showPluginWindowButton.addListener(this);
     addAndMakeVisible(showPluginWindowButton);
@@ -31,8 +31,8 @@ void VSTNodeContentUI::init() {
     setSize(200, 100);
     updateVSTParameters();
 
-	vstNode->addVSTNodeListener(this);
-	vstNode->addControllableContainerListener(this);
+    vstNode->addVSTNodeListener(this);
+    vstNode->addControllableContainerListener(this);
 
 }
 
@@ -130,12 +130,12 @@ void VSTNodeContentUI::buttonClicked (Button* button)
     if (button == &VSTListShowButton){
         PopupMenu  VSTList;
         VSTManager::getInstance()->knownPluginList.addToMenu(VSTList, KnownPluginList::SortMethod::sortByCategory);
-		vstNode->closePluginWindow();
+        vstNode->closePluginWindow();
         VSTList.showAt (&VSTListShowButton,0,0,0,0, ModalCallbackFunction::forComponent(&VSTNodeContentUI::vstSelected, (Component*)this));
 
     }
     if(button == &showPluginWindowButton){
-		vstNode->createPluginWindow();
+        vstNode->createPluginWindow();
     }
 }
 
@@ -146,22 +146,22 @@ void VSTNodeContentUI::buttonClicked (Button* button)
 
 VSTNodeHeaderUI::VSTNodeHeaderUI()
 {
-	//setSize(getWidth(), 80);
+    //setSize(getWidth(), 80);
 }
 
 VSTNodeHeaderUI::~VSTNodeHeaderUI()
 {
-	vstNode->removeVSTNodeListener(this);
+    vstNode->removeVSTNodeListener(this);
 }
 
 void VSTNodeHeaderUI::init()
 {
-	vstNode = (VSTNode *)node;
-	vstNode->addVSTNodeListener(this);
+    vstNode = (VSTNode *)node;
+    vstNode->addVSTNodeListener(this);
 }
 
 
 void VSTNodeHeaderUI::newVSTSelected()
 {
-	updatePresetComboBox();
+    updatePresetComboBox();
 }

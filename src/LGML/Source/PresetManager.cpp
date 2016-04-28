@@ -20,70 +20,70 @@ PresetManager::PresetManager()
 
 PresetManager::~PresetManager()
 {
-	presets.clear();
+    presets.clear();
 }
 
 PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const String &name, String filter, ControllableContainer * container, bool recursive, bool includeNotExposed)
 {
-	//Array<PresetValue *> vPresets;
-	Preset * pre = new Preset(name,filter);
-	for (auto &p : container->getAllParameters(recursive,includeNotExposed))
-	{
-		if (!p->isPresettable) continue;
-		if (!p->isControllableExposed && !includeNotExposed) continue;
+    //Array<PresetValue *> vPresets;
+    Preset * pre = new Preset(name,filter);
+    for (auto &p : container->getAllParameters(recursive,includeNotExposed))
+    {
+        if (!p->isPresettable) continue;
+        if (!p->isControllableExposed && !includeNotExposed) continue;
 
-		DBG("Add preset value " << p->niceName << " > " <<  p->stringValue());
+        DBG("Add preset value " << p->niceName << " > " <<  p->stringValue());
 
-		//PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
-		//vPresets.add(preVal);
-		pre->addPresetValue(p->getControlAddress(container), p->value.clone());
+        //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
+        //vPresets.add(preVal);
+        pre->addPresetValue(p->getControlAddress(container), p->value.clone());
 
-	}
+    }
 
-	
-	presets.add(pre);
 
-	return pre;
+    presets.add(pre);
+
+    return pre;
 }
 
 ComboBox * PresetManager::getPresetSelector(String filter)
 {
-	ComboBox * cb = new ComboBox("Presets");
-	fillWithPresets(cb, filter );
-	
-	return cb;
+    ComboBox * cb = new ComboBox("Presets");
+    fillWithPresets(cb, filter );
+
+    return cb;
 }
 
 PresetManager::Preset * PresetManager::getPreset(String filter, const String & name)
 {
-	for (auto &pre : presets)
-	{
-		if (pre->filter == filter && pre->name == name) return pre;
-	}
+    for (auto &pre : presets)
+    {
+        if (pre->filter == filter && pre->name == name) return pre;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 void PresetManager::fillWithPresets(ComboBox * cb, String filter)
 {
-	cb->clear();
-	cb->addItem("Save current preset", SaveCurrent);
-	cb->addItem("Save to new preset", SaveToNew);
-	cb->addItem("Reset to default", ResetToDefault);
+    cb->clear();
+    cb->addItem("Save current preset", SaveCurrent);
+    cb->addItem("Save to new preset", SaveToNew);
+    cb->addItem("Reset to default", ResetToDefault);
 
-	int pIndex = 1;
-	for (auto &pre : presets)
-	{
-		if (pre->filter == filter)
-		{
-			pre->presetId = pIndex;
-			cb->addItem(pre->name, pre->presetId);
-			pIndex++;
-		}
-	}
+    int pIndex = 1;
+    for (auto &pre : presets)
+    {
+        if (pre->filter == filter)
+        {
+            pre->presetId = pIndex;
+            cb->addItem(pre->name, pre->presetId);
+            pIndex++;
+        }
+    }
 }
 
 void PresetManager::clear()
 {
-	presets.clear();
+    presets.clear();
 }

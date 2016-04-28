@@ -13,11 +13,11 @@ TimeManager.h
 
 
 NodeManager.cpp
-	line : 266
+	line : 264
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
-	line : 163
+	line : 161
 		// TODO nicely handle file format errors?
 
 
@@ -37,9 +37,10 @@ ControllableContainer.cpp
 
 
 NodeBase.h
-	line : 120
+	line : 123
 		// @ben en fait la forward declaration d'un enum n'est pas ISOC++ (VS l'autorise mais c'est pas un standard donc LLVM non...)
-		// ca reste propre si c'est un int privé que seul NodeFactory peu changer 
+		// ca reste propre si c'est un int privé que seul NodeFactory peu changer
+		//@martin remis en int car uint pas supporté de base sur VS (ca change pas grand chose, si ?)
 		// keeps type info from NodeFactory (SHOULD BE ABLE TO LINK TO NodeType, but circular dependency BULLSHIIIIIT)
 
 
@@ -62,7 +63,7 @@ NodeConnectionUI.cpp
 DataProcessorGraph.cpp
 	line : 14
 		//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
-		//	thread.startThread();
+		//  thread.startThread();
 
 
 ControllableInspector.cpp
@@ -92,21 +93,21 @@ Controller.cpp
 
 
 VSTNode.h
-	line : 107
-		// TODO check if scoped pointer deletes old innerPlugin
+	line : 88
+		// TODO check that it actually works
 
-	line : 103
+	line : 105
 		//@Martin i addedd this because when not playing, it crashed
 
-	line : 87
-		// TODO check that it actually works
+	line : 109
+		// TODO check if scoped pointer deletes old innerPlugin
 
 
 NodeBase.cpp
-	line : 176
+	line : 181
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
-	line : 192
+	line : 197
 		//TODO : Move parameters save/load in ControllableContainer, so we only need to call ControllableContainer::loadJSONData() to handle parameters of a class inheriting CContainer;
 
 

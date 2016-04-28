@@ -27,15 +27,15 @@ const static String nodeTypeNames[] = { "Dummy","AudioMixer","DataIn","Spat","Lo
 //Added type to not mess with class names
 enum NodeType
 {
-	UNKNOWN_TYPE =0,
+    UNKNOWN_TYPE =0,
     DummyType ,
-	AudioMixerType,
-	DataInType,
-	SpatType,
-	LooperType,
-	VSTType,
-	AudioInType,
-	AudioOutType
+    AudioMixerType,
+    DataInType,
+    SpatType,
+    LooperType,
+    VSTType,
+    AudioInType,
+    AudioOutType
 
 };
 
@@ -52,14 +52,14 @@ public:
 
     }
 
-	NodeBase * createNode(NodeManager * nodeManager, NodeType nodeType, uint32 nodeId = 0);
+    NodeBase * createNode(NodeManager * nodeManager, NodeType nodeType, uint32 nodeId = 0);
 
-	static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0);
+    static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0);
 
-	static NodeType getTypeFromString(const String & s);
+    static NodeType getTypeFromString(const String & s);
 
-	static String nodeTypeToString(NodeType t);
-	static String nodeToString(NodeBase *  n);
+    static String nodeTypeToString(NodeType t);
+    static String nodeToString(NodeBase *  n);
 
 };
 

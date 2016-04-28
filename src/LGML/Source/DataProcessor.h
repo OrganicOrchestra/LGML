@@ -29,10 +29,10 @@ class DataProcessor : public Data::DataListener
 
 
 public:
-	typedef Data::DataType DataType;
-	typedef Data::DataElement DataElement;
-	
-	
+    typedef Data::DataType DataType;
+    typedef Data::DataElement DataElement;
+
+
     DataProcessor();
     virtual ~DataProcessor();
 
@@ -41,33 +41,33 @@ public:
     OwnedArray<Data> inputDatas;
     OwnedArray<Data> outputDatas;
 
-	Data * addInputData(const String &name, DataType type);
-	Data * addOutputData(const String &name, DataType type);
+    Data * addInputData(const String &name, DataType type);
+    Data * addOutputData(const String &name, DataType type);
 
-	void removeInputData(const String &name);
-	void removeOutputData(const String &name);
+    void removeInputData(const String &name);
+    void removeOutputData(const String &name);
 
     void inputDataChanged(Data *)
     {
         //to be overriden by child classes
     }
 
-	virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0);
+    virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0);
 
 
     int getTotalNumInputData() const { return inputDatas.size(); }
     int getTotalNumOutputData() const { return outputDatas.size(); }
 
-	StringArray getInputDataInfos();
+    StringArray getInputDataInfos();
 
-	StringArray getOutputDataInfos();
+    StringArray getOutputDataInfos();
 
     Data::DataType getInputDataType(const String &dataName, const String &elementName);
     Data::DataType getOutputDataType(const String &dataName, const String &elementName);
 
 
-	Data * getOutputDataByName(const String &dataName);
-	Data * getInputDataByName(const String &dataName);
+    Data * getOutputDataByName(const String &dataName);
+    Data * getInputDataByName(const String &dataName);
 
     //Listener
     class  Listener
@@ -91,11 +91,11 @@ public:
 
 
 private:
-	virtual void dataChanged(Data *) override;
+    virtual void dataChanged(Data *) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataProcessor)
 
-		
+
 };
 
 

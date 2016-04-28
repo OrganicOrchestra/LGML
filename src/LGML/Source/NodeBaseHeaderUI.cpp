@@ -48,7 +48,7 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 
     titleUI = node->nameParam->createStringParameterUI();
 
-	DBG("Node Header UI, name Param : " << node->nameParam->stringValue());
+    DBG("Node Header UI, name Param : " << node->nameParam->stringValue());
 
     titleUI->setNameLabelVisible(false);
     titleUI->setInterceptsMouseClicks(false, false);
@@ -60,23 +60,23 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     addAndMakeVisible(grabber);
     addAndMakeVisible(removeBT);
 
-	presetCB = new ComboBox("preset");
-	updatePresetComboBox();
-	addAndMakeVisible(presetCB);
-	presetCB->addListener(this);
-	presetCB->setTextWhenNothingSelected("Preset");
+    presetCB = new ComboBox("preset");
+    updatePresetComboBox();
+    addAndMakeVisible(presetCB);
+    presetCB->addListener(this);
+    presetCB->setTextWhenNothingSelected("Preset");
     init();
 
 }
 
 void NodeBaseHeaderUI::updatePresetComboBox()
 {
-	DBG("Update Preset Combobox : " << node->getPresetFilter());
+    DBG("Update Preset Combobox : " << node->getPresetFilter());
 
-	bool emptyFilter = node->getPresetFilter().isEmpty();
-	presetCB->setEnabled(!emptyFilter);
-	
-	if (!emptyFilter) PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
+    bool emptyFilter = node->getPresetFilter().isEmpty();
+    presetCB->setEnabled(!emptyFilter);
+
+    if (!emptyFilter) PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
 }
 
 
@@ -97,7 +97,7 @@ void NodeBaseHeaderUI::resized()
     int vuMeterWidth = 14;
     int removeBTWidth = 15;
     int grabberWidth = 40;
-	int presetCBWidth = 70;
+    int presetCBWidth = 70;
 
     Rectangle<int> r = getLocalBounds();
 
@@ -110,9 +110,9 @@ void NodeBaseHeaderUI::resized()
     r.removeFromLeft(enabledUI->getWidth());
 
     removeBT.setBounds(r.removeFromRight(removeBTWidth));
-	presetCB->setBounds(r.removeFromRight(presetCBWidth).reduced(0, 4));
-	grabber.setBounds(r.removeFromRight(grabberWidth));
-	titleUI->setBounds(r);
+    presetCB->setBounds(r.removeFromRight(presetCBWidth).reduced(0, 4));
+    grabber.setBounds(r.removeFromRight(grabberWidth));
+    titleUI->setBounds(r);
 
     enabledUI->setTopLeftPosition(5, 5);
 
@@ -120,57 +120,57 @@ void NodeBaseHeaderUI::resized()
 
 void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)
 {
-	DBG("Combobox ! " << cb->getSelectedId());
-	int presetID = cb->getSelectedId();
+    DBG("Combobox ! " << cb->getSelectedId());
+    int presetID = cb->getSelectedId();
 
-	if (presetID == PresetChoice::SaveCurrent)
-	{
-		bool result = node->saveCurrentPreset();
-		if(result) cb->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
-		else cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
+    if (presetID == PresetChoice::SaveCurrent)
+    {
+        bool result = node->saveCurrentPreset();
+        if(result) cb->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
+        else cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
 
-	}if (presetID == PresetChoice::SaveToNew) 
-	{
-		AlertWindow nameWindow("Save a new Preset","Choose a name for the new preset",AlertWindow::AlertIconType::QuestionIcon,this);
-		nameWindow.addTextEditor("newPresetName", "New Preset");
-		nameWindow.addButton("OK", 1, KeyPress(KeyPress::returnKey));
-		nameWindow.addButton("Cancel", 0, KeyPress(KeyPress::escapeKey));
+    }if (presetID == PresetChoice::SaveToNew)
+    {
+        AlertWindow nameWindow("Save a new Preset","Choose a name for the new preset",AlertWindow::AlertIconType::QuestionIcon,this);
+        nameWindow.addTextEditor("newPresetName", "New Preset");
+        nameWindow.addButton("OK", 1, KeyPress(KeyPress::returnKey));
+        nameWindow.addButton("Cancel", 0, KeyPress(KeyPress::escapeKey));
 
-		int nameResult = nameWindow.runModalLoop();
-		
-		if (nameResult)
-		{
-			String presetName = nameWindow.getTextEditorContents("newPresetName");
-			node->saveNewPreset(presetName);
-			cb->clear(NotificationType::dontSendNotification);
-			updatePresetComboBox();
-			cb->setSelectedItemIndex(cb->getNumItems() - 1, NotificationType::dontSendNotification);
-		}
-		else
-		{
-			cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
-		}
+        int nameResult = nameWindow.runModalLoop();
+
+        if (nameResult)
+        {
+            String presetName = nameWindow.getTextEditorContents("newPresetName");
+            node->saveNewPreset(presetName);
+            cb->clear(NotificationType::dontSendNotification);
+            updatePresetComboBox();
+            cb->setSelectedItemIndex(cb->getNumItems() - 1, NotificationType::dontSendNotification);
+        }
+        else
+        {
+            cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
+        }
 
 
-	}else if (presetID == PresetChoice::ResetToDefault) //Reset to default
-	{
-		node->resetFromPreset();
-		cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
-	}
-	else
-	{
-		PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(node->getPresetFilter(), cb->getItemText(cb->getSelectedItemIndex()));
-		node->loadPreset(pre);
-	}
-	
+    }else if (presetID == PresetChoice::ResetToDefault) //Reset to default
+    {
+        node->resetFromPreset();
+        cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
+    }
+    else
+    {
+        PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(node->getPresetFilter(), cb->getItemText(cb->getSelectedItemIndex()));
+        node->loadPreset(pre);
+    }
+
 }
 
 void NodeBaseHeaderUI::Grabber::paint(Graphics & g)
 {
-	g.setColour(FRONT_COLOR);
-	Rectangle<float> r = getLocalBounds().reduced(5).toFloat();
-	g.drawLine(r.getTopLeft().x, r.getRelativePoint(0.f, .2f).y, r.getTopRight().x, r.getRelativePoint(0.f, .2f).y, .4f);
-	g.drawLine(r.getTopLeft().x, r.getCentreY(), r.getBottomRight().x, r.getCentreY(), .4f);
-	g.drawLine(r.getBottomLeft().x, r.getRelativePoint(0.f, .8f).y, r.getBottomRight().x, r.getRelativePoint(0.f, .8f).y, .4f);
+    g.setColour(FRONT_COLOR);
+    Rectangle<float> r = getLocalBounds().reduced(5).toFloat();
+    g.drawLine(r.getTopLeft().x, r.getRelativePoint(0.f, .2f).y, r.getTopRight().x, r.getRelativePoint(0.f, .2f).y, .4f);
+    g.drawLine(r.getTopLeft().x, r.getCentreY(), r.getBottomRight().x, r.getCentreY(), .4f);
+    g.drawLine(r.getBottomLeft().x, r.getRelativePoint(0.f, .8f).y, r.getBottomRight().x, r.getRelativePoint(0.f, .8f).y, .4f);
 
 }

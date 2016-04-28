@@ -16,7 +16,7 @@
 
 
 NodeBaseUI * VSTNode::createUI(){
-	return new NodeBaseUI(this,new VSTNodeContentUI,new VSTNodeHeaderUI);
+    return new NodeBaseUI(this,new VSTNodeContentUI,new VSTNodeHeaderUI);
 }
 
 
@@ -51,8 +51,8 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
         if(identifierString->value!=""){
             PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
             if(pd){
-				generatePluginFromDescription(pd);
-			}
+                generatePluginFromDescription(pd);
+            }
             else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
         }
         else{DBG("VST : no identifierStrind provided");}
@@ -76,21 +76,21 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
     p->addListener(this);
 
     for(auto &c:VSTParameters){
-		removeControllable(c);
-	}
+        removeControllable(c);
+    }
 
     VSTParameters.clear();
 
     for(int i = 0 ; i < p->getNumParameters() ; i++){
         VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
     }
-    
-	vstNodeListeners.call(&VSTNodeListener::newVSTSelected);
+
+    vstNodeListeners.call(&VSTNodeListener::newVSTSelected);
 }
 
 String VSTNode::getPresetFilter()
 {
-	return identifierString->stringValue();
+    return identifierString->stringValue();
 }
 
 

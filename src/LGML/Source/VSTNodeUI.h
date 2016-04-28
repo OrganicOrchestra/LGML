@@ -20,14 +20,14 @@
 class VSTNodeHeaderUI : public NodeBaseHeaderUI, public VSTNode::VSTNodeListener
 {
 public:
-	VSTNodeHeaderUI();
-	~VSTNodeHeaderUI();
-	VSTNode * vstNode;
+    VSTNodeHeaderUI();
+    ~VSTNodeHeaderUI();
+    VSTNode * vstNode;
 
-	void init() override;
+    void init() override;
 
-	// Inherited via ChangeListener
-	void newVSTSelected() override;
+    // Inherited via ChangeListener
+    void newVSTSelected() override;
 };
 
 class VSTNodeContentUI:public NodeBaseContentUI,public Button::Listener, public VSTNode::VSTNodeListener,public ControllableContainer::Listener{

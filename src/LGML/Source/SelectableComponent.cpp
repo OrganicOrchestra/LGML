@@ -34,8 +34,8 @@ void SelectableComponent::askForSelection(bool _isSelected,bool unique ) {
 
 void SelectableComponent::paintOverChildren(juce::Graphics &g){
 
-	if(isSelected){
-		g.setColour(Colours::yellow);
-		g.drawRect(getLocalBounds());
-	}
+    if(isSelected){
+        g.setColour(Colours::yellow);
+        g.drawRect(getLocalBounds());
+    }
 }

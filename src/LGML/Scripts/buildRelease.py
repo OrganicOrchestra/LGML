@@ -7,6 +7,7 @@ import urllib;
 # configuration  = "Release"
 configuration  = "Debug"
 bumpVersion = False
+sendToOwncloud = True
 specificVersion = ""#0.1.1"
 
 
@@ -117,9 +118,10 @@ def sendToOwnCloud(originPath,destPath):
 formatCode("../Source");
 buildJUCE(JuceProjectPath);
 buildApp(xcodeProjPath,configuration,appPath);
-localPath = localExportPath+generateProductBaseName();
-createDmg(localPath,appPath);
-ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
-sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
+if sendToOwncloud:
+	localPath = localExportPath+generateProductBaseName();
+	createDmg(localPath,appPath);
+	ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
+	sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
 # gitCommit()
 

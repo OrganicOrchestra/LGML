@@ -24,75 +24,75 @@ class ControllableContainerEditor;
 class ControllableContainer : public Parameter::Listener, public Trigger::Listener
 {
 public:
-	ControllableContainer(const String &niceName);
-	virtual ~ControllableContainer();
+    ControllableContainer(const String &niceName);
+    virtual ~ControllableContainer();
 
-	String niceName;
-	String shortName;
-	bool hasCustomShortName;
+    String niceName;
+    String shortName;
+    bool hasCustomShortName;
 
-	bool skipControllableNameInAddress;
+    bool skipControllableNameInAddress;
 
-	void setNiceName(const String &_niceName);
+    void setNiceName(const String &_niceName);
 
-	void setCustomShortName(const String &_shortName);
+    void setCustomShortName(const String &_shortName);
 
-	void setAutoShortName();
-
-
-	OwnedArray<Controllable> controllables;
-	Array<ControllableContainer * > controllableContainers;
-	ControllableContainer * parentContainer;
-
-	FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
-	IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
-	BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);
-	StringParameter * addStringParameter(const String &niceName, const String &description, const String &value, const bool &enabled = true);
-	Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
-
-	void removeControllable(Controllable * c);
-	Controllable * getControllableByName(const String &name);
-
-	void addChildControllableContainer(ControllableContainer * container);
-	void removeChildControllableContainer(ControllableContainer *container);
-	ControllableContainer * getControllableContainerByName(const String &name);
+    void setAutoShortName();
 
 
-	void setParentContainer(ControllableContainer * container);
-	void updateChildrenControlAddress();
-	virtual Array<Controllable *> getAllControllables(bool recursive = false, bool getNotExposed = false);
-	virtual Array<Parameter *> getAllParameters(bool recursive = false, bool getNotExposed = false);
+    OwnedArray<Controllable> controllables;
+    Array<ControllableContainer * > controllableContainers;
+    ControllableContainer * parentContainer;
 
-	virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
-	virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
+    FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
+    IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
+    BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);
+    StringParameter * addStringParameter(const String &niceName, const String &description, const String &value, const bool &enabled = true);
+    Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
+
+    void removeControllable(Controllable * c);
+    Controllable * getControllableByName(const String &name);
+
+    void addChildControllableContainer(ControllableContainer * container);
+    void removeChildControllableContainer(ControllableContainer *container);
+    ControllableContainer * getControllableContainerByName(const String &name);
 
 
-	PresetManager::Preset * currentPreset;
-	virtual bool loadPreset(PresetManager::Preset * preset);
-	virtual bool saveCurrentPreset();
-	virtual bool resetFromPreset();
+    void setParentContainer(ControllableContainer * container);
+    void updateChildrenControlAddress();
+    virtual Array<Controllable *> getAllControllables(bool recursive = false, bool getNotExposed = false);
+    virtual Array<Parameter *> getAllParameters(bool recursive = false, bool getNotExposed = false);
 
-	void dispatchFeedback(Controllable * c);
+    virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
+    virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
 
-	// Inherited via Parameter::Listener
-	virtual void parameterValueChanged(Parameter * p) override;
-	// Inherited via Trigger::Listener
-	virtual void triggerTriggered(Trigger * p) override;
 
-	// can be overriden if custom editor wanted
-	virtual Component * createControllableContainerEditor();
+    PresetManager::Preset * currentPreset;
+    virtual bool loadPreset(PresetManager::Preset * preset);
+    virtual bool saveCurrentPreset();
+    virtual bool resetFromPreset();
+
+    void dispatchFeedback(Controllable * c);
+
+    // Inherited via Parameter::Listener
+    virtual void parameterValueChanged(Parameter * p) override;
+    // Inherited via Trigger::Listener
+    virtual void triggerTriggered(Trigger * p) override;
+
+    // can be overriden if custom editor wanted
+    virtual Component * createControllableContainerEditor();
 
 
 
 private:
-	// internal callback that a controllableContainer can override to react to any of it's parameter change
-	//@ ben this is to avoid either:
-	//      adding controllableContainerListener for each implementation
-	//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
-	//      or using dispatch feedback that triggers only exposedParams
+    // internal callback that a controllableContainer can override to react to any of it's parameter change
+    //@ ben this is to avoid either:
+    //      adding controllableContainerListener for each implementation
+    //      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
+    //      or using dispatch feedback that triggers only exposedParams
 
-	virtual void onContainerParameterChanged(Parameter *) {};
-	virtual void onContainerTriggerTriggered(Trigger *) {};
+    virtual void onContainerParameterChanged(Parameter *) {};
+    virtual void onContainerTriggerTriggered(Trigger *) {};
     void addParameterInternal(Parameter * p);
 
 public:

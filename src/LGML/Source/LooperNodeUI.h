@@ -27,7 +27,7 @@ public:
     ScopedPointer<FloatSliderUI>    volumeSelectedSlider;
     ScopedPointer<TriggerBlinkUI>   clearAllButton;
     ScopedPointer<TriggerBlinkUI>   stopAllButton;
-    ScopedPointer<BoolToggleUI>		monitoringButton;
+    ScopedPointer<BoolToggleUI>     monitoringButton;
 
     LooperNodeContentUI();
 
@@ -42,24 +42,24 @@ public:
     {
     public:
 
-		TrackUI(LooperTrack * track);
+        TrackUI(LooperTrack * track);
 
-		~TrackUI();
+        ~TrackUI();
 
-		void paint(Graphics & g) override;
+        void paint(Graphics & g) override;
         void mouseUp(const MouseEvent &) override{track->askForSelection(true);}
 
-		void resized()override;
+        void resized()override;
         void trackSelected(bool _isSelected)override{ isSelected = _isSelected;repaint();}
         void trackStateChangedAsync(const LooperTrack::TrackState & state)override;
-		LooperTrack * track;
+        LooperTrack * track;
         Colour mainColour;
         ScopedPointer<TriggerBlinkUI> recPlayButton;
-		ScopedPointer<TriggerBlinkUI> clearButton;
-		ScopedPointer<TriggerBlinkUI> stopButton;
+        ScopedPointer<TriggerBlinkUI> clearButton;
+        ScopedPointer<TriggerBlinkUI> stopButton;
 
-		ScopedPointer<BoolToggleUI>	muteButton;
-		ScopedPointer<BoolToggleUI>	soloButton;
+        ScopedPointer<BoolToggleUI> muteButton;
+        ScopedPointer<BoolToggleUI> soloButton;
 
         float headerHackHeight = .2f;
         float volumeWidth = .2f;

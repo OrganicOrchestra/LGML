@@ -132,4 +132,3 @@ int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample)
 double TimeManager::getBeatPercent(){return timeInSample*1.0/beatTimeInSample-getBeat();}
 
 int TimeManager::getBar(){return getBeat()/beatPerBar->intValue();}
-
