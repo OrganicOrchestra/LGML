@@ -155,15 +155,7 @@ ConnectorComponent * NodeBaseUI::getFirstConnector(NodeConnection::ConnectionTyp
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
 void NodeBaseUI::mouseDown(const juce::MouseEvent &e)
 {
-    if (e.mods.getCurrentModifiers().isCtrlDown())
-    {
-        node->remove();
-    }
-    else
-    {
-        nodeInitPos = getBounds().getCentre();
-
-    }
+    nodeInitPos = getBounds().getCentre();
 }
 #pragma warning( default : 4100 )
 

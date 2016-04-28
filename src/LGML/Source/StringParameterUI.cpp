@@ -29,7 +29,9 @@ StringParameterUI::StringParameterUI(Parameter * p) :
     valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
     valueLabel.setEditable(true);
     valueLabel.addListener(this);
-
+	
+	//valueLabel.setColour(valueLabel.textWhenEditingColourId, TEXTNAME_COLOR);
+	valueLabel.setColour(valueLabel.backgroundWhenEditingColourId, Colours::white);
     nameLabel.setTooltip(p->description);
 
     setSize(200, 20);//default size

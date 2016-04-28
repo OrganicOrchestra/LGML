@@ -60,7 +60,7 @@ public:
 
     void checkInputsAndOutputs();
 
-    void remove();
+    void remove(bool askBeforeRemove = false);
 
 
     //Controllables (from ControllableContainer)
