@@ -18,55 +18,44 @@
 
 #include "FloatSliderUI.h"
 
-class AudioMixerNodeUI : public NodeBaseContentUI,public ControllableContainer::Listener{
+class AudioMixerNodeUI : public NodeBaseContentUI,public NodeAudioProcessor::NodeAudioProcessorListener{
 public:
     AudioMixerNodeUI(){
 
     }
 
     ~AudioMixerNodeUI(){
-        nodeMixer->removeControllableContainerListener(this);
+        nodeMixer->removeNodeAudioProcessorListener(this);
     }
     void init() override{
         nodeMixer = dynamic_cast<AudioMixerNode::AudioMixerAudioProcessor*>(node->audioProcessor);
-        for(auto & c:nodeMixer->outBuses){
-            controllableContainerAdded(c);
-        }
+        numAudioOutputChanged(nodeMixer->numberOfOutput->value);
+        numAudioInputChanged(nodeMixer->numberOfInput->value);
 
-        nodeMixer->addControllableContainerListener(this);
+        nodeMixer->addNodeAudioProcessorListener(this);
 
         nodeUI->setSize(250, 150);
     }
 
-    void controllableAdded(Controllable * c) override{};
-    void controllableRemoved(Controllable * c) override{};
-    void controllableContainerAdded(ControllableContainer * cc)override ;
-    void controllableContainerRemoved(ControllableContainer * cc) override;
-    void controllableFeedbackUpdate(Controllable *c) override{};
+    void numAudioInputChanged(int )override;
+    void numAudioOutputChanged(int )override;
 
-    class OutputBusUI : public Component ,ControllableContainer::Listener{
+    class OutputBusUI : public Component {
     public:
 
         OwnedArray<FloatSliderUI> inputVolumes;
 
 
         OutputBusUI(AudioMixerNode::AudioMixerAudioProcessor::OutputBus * o):owner(o){
-            owner->addControllableContainerListener(this);
             setNumInput(o->volumes.size());
         };
         ~OutputBusUI(){
-            owner->removeControllableContainerListener(this);
         }
         void setNumInput(int numInput);
         void resized() override;
         int outputIdx;
         AudioMixerNode::AudioMixerAudioProcessor::OutputBus* owner;
 
-        void controllableAdded(Controllable * c) override;
-        void controllableRemoved(Controllable * c) override;
-        void controllableContainerAdded(ControllableContainer * cc)override {};
-        void controllableContainerRemoved(ControllableContainer * cc) override{};
-        void controllableFeedbackUpdate(Controllable *c) override{};
 
     };
 

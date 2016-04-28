@@ -21,29 +21,29 @@ void AudioMixerNodeUI::resized() {
     }
 }
 
-
-void AudioMixerNodeUI::controllableContainerAdded(ControllableContainer * c) {
-    if(AudioMixerNode::AudioMixerAudioProcessor::OutputBus * o = dynamic_cast<AudioMixerNode::AudioMixerAudioProcessor::OutputBus*>(c)){
-        OutputBusUI * oo =new OutputBusUI(o);
+void AudioMixerNodeUI::numAudioInputChanged(int numInput){
+    for(auto & b:outputBusUIs){
+        b->setNumInput(numInput);
+    }
+    resized();
+};
+void AudioMixerNodeUI::numAudioOutputChanged(int newNum){
+    int lastNum = outputBusUIs.size();
+    if(newNum>lastNum){
+        for(int i = lastNum ; i < newNum ; i++){
+        OutputBusUI * oo =new OutputBusUI(nodeMixer->outBuses[i]);
         outputBusUIs.add(oo);
         addAndMakeVisible(oo);
-        resized();
-    }
-
-}
-void AudioMixerNodeUI::controllableContainerRemoved(ControllableContainer *cc){
-    if(AudioMixerNode::AudioMixerAudioProcessor::OutputBus * o = dynamic_cast<AudioMixerNode::AudioMixerAudioProcessor::OutputBus*>(cc)){
-        int idx = 0 ;
-        for(auto & oo:outputBusUIs){
-            if(oo->outputIdx==o->outputIndex){
-                outputBusUIs.remove(idx);
-                // outputIdx should be a UID so safely return here
-                return;
-            }
-            idx++;
         }
     }
-}
+    else if(newNum<lastNum){
+        outputBusUIs.removeRange(newNum, lastNum-newNum);
+    }
+    resized();
+
+};
+
+
 
 
 //=============================
@@ -55,11 +55,16 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
     int lastSize = inputVolumes.size();
     if(numInput>lastSize){
         for(int  i = lastSize ; i < numInput;i++ ){
-            controllableAdded(owner->volumes[i]);
+            FloatSliderUI *v = new FloatSliderUI(owner->volumes[i]);
+            v->orientation = FloatSliderUI::Direction::VERTICAL;
+            inputVolumes.add(v);
+            addAndMakeVisible(v);
+            resized();
+
         }
     }
     else if(numInput<lastSize){
-        inputVolumes.removeRange(numInput-1, lastSize-numInput);
+        inputVolumes.removeRange(numInput, lastSize-numInput);
     }
     resized();
 }
@@ -76,18 +81,3 @@ void AudioMixerNodeUI::OutputBusUI::resized() {
     }
 }
 
-void AudioMixerNodeUI::OutputBusUI::controllableAdded(Controllable * c) {
-    if(FloatParameter * f = dynamic_cast<FloatParameter*>(c)){
-        FloatSliderUI *v = new FloatSliderUI(f);
-        v->orientation = FloatSliderUI::Direction::VERTICAL;
-        inputVolumes.add(v);
-        addAndMakeVisible(v);
-                resized();
-    }
-};
-void AudioMixerNodeUI::OutputBusUI::controllableRemoved(Controllable * c) {
-    if(FloatParameter * f = dynamic_cast<FloatParameter*>(c)){
-        inputVolumes.removeLast();
-        resized();
-    }
-};
