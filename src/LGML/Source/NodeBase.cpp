@@ -68,7 +68,7 @@ void NodeBase::checkInputsAndOutputs()
 
 void NodeBase::remove()
 {
-    listeners.call(&NodeBase::Listener::askForRemoveNode,this);
+    nodeListeners.call(&NodeBase::NodeListener::askForRemoveNode,this);
 }
 
 void NodeBase::inputAdded(Data *)
@@ -119,7 +119,7 @@ void NodeBase::removeFromAudioGraphIfNeeded(){
 
 void NodeBase::saveNewPreset(const String & _name)
 {
-	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, NodeFactory::nodeToString(this) , this, true);
+	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter() , this, true);
 	loadPreset(pre);
 }
 
@@ -131,6 +131,11 @@ bool NodeBase::loadPreset(PresetManager::Preset * pre)
 bool NodeBase::resetFromPreset()
 {
 	return ControllableContainer::resetFromPreset(); //just to show that child class nodes can override this if special behavior is to be made
+}
+
+String NodeBase::getPresetFilter()
+{
+	return NodeFactory::nodeToString(this);
 }
 
 

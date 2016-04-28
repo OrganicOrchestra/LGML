@@ -67,7 +67,7 @@ NodeBase * NodeManager::addNode(NodeType nodeType, uint32 nodeId)
 
     NodeBase * n = nodeFactory.createNode(this,nodeType, nodeId);
     nodes.add(n);
-    n->addRemoveNodeListener(this);
+    n->addNodeListener(this);
     addChildControllableContainer(n); //ControllableContainer
     listeners.call(&NodeManager::Listener::nodeAdded,n);
 
@@ -85,12 +85,10 @@ bool NodeManager::removeNode(uint32 nodeId)
     for (auto &connection : relatedConnections) removeConnection(connection);
 
     if (n == nullptr) return false;
-    n->removeRemoveNodeListener(this);
-
+    n->removeNodeListener(this);
+    removeChildControllableContainer(n);
 
     listeners.call(&NodeManager::Listener::nodeRemoved, n);
-    removeChildControllableContainer(n);
-    
     nodes.removeObject(n);
 
     return true;

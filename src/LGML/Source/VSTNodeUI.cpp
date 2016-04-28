@@ -11,20 +11,19 @@
 #include "VSTNodeUI.h"
 
 
-VSTNodeUI::VSTNodeUI(VSTNode * _owner):
+VSTNodeContentUI::VSTNodeContentUI():
 VSTListShowButton("VSTs"),
-showPluginWindowButton("showWindow"),
-owner(_owner){
-    owner->addChangeListener(this);
-    owner->addControllableContainerListener(this);
+showPluginWindowButton("showWindow")
+{
+    
 }
-VSTNodeUI::~VSTNodeUI(){
-    owner->removeChangeListener(this);
-    owner->removeControllableContainerListener(this);
-
+VSTNodeContentUI::~VSTNodeContentUI(){
+	vstNode->removeVSTNodeListener(this);
+	vstNode->removeControllableContainerListener(this);
 }
 
-void VSTNodeUI::init() {
+void VSTNodeContentUI::init() {
+	vstNode = (VSTNode *)node;
     VSTListShowButton.addListener(this);
     showPluginWindowButton.addListener(this);
     addAndMakeVisible(showPluginWindowButton);
@@ -32,15 +31,18 @@ void VSTNodeUI::init() {
     setSize(200, 100);
     updateVSTParameters();
 
+	vstNode->addVSTNodeListener(this);
+	vstNode->addControllableContainerListener(this);
+
 }
 
-void VSTNodeUI::updateVSTParameters(){
+void VSTNodeContentUI::updateVSTParameters(){
     paramSliders.clear();
 
     int maxParameter = 20;
     int pCount = 0;
 
-    for(auto &p:owner->VSTParameters){
+    for(auto &p: vstNode->VSTParameters){
         FloatSliderUI * slider = p->createSlider();
         paramSliders.add(slider);
         addAndMakeVisible(slider);
@@ -53,8 +55,8 @@ void VSTNodeUI::updateVSTParameters(){
     resized();
 }
 
-void VSTNodeUI::controllableAdded(Controllable *) {};
-void VSTNodeUI::controllableRemoved(Controllable * c){
+void VSTNodeContentUI::controllableAdded(Controllable *) {};
+void VSTNodeContentUI::controllableRemoved(Controllable * c){
 
     for(auto &slider:paramSliders){
         if(slider->parameter == c){
@@ -65,19 +67,18 @@ void VSTNodeUI::controllableRemoved(Controllable * c){
     };
 
 }
-void VSTNodeUI::controllableContainerAdded(ControllableContainer *){};
-void VSTNodeUI::controllableContainerRemoved(ControllableContainer *) {};
-void VSTNodeUI::controllableFeedbackUpdate(Controllable *) {};
+void VSTNodeContentUI::controllableContainerAdded(ControllableContainer *){};
+void VSTNodeContentUI::controllableContainerRemoved(ControllableContainer *) {};
+void VSTNodeContentUI::controllableFeedbackUpdate(Controllable *) {};
 
 
 
-void VSTNodeUI::changeListenerCallback(ChangeBroadcaster * c) {
-    if(c == owner){
-        updateVSTParameters();
-    }
+//Listener From VSTNode
+void VSTNodeContentUI::newVSTSelected() {
+    updateVSTParameters();
 }
 
-void VSTNodeUI::resized(){
+void VSTNodeContentUI::resized(){
     Rectangle<int> area = getLocalBounds();
     Rectangle<int> headerArea = area.removeFromTop(40);
     VSTListShowButton.setBounds(headerArea.removeFromLeft(headerArea.getWidth()/2));
@@ -86,7 +87,7 @@ void VSTNodeUI::resized(){
 
 }
 
-void VSTNodeUI::layoutSliderParameters(Rectangle<int> pArea){
+void VSTNodeContentUI::layoutSliderParameters(Rectangle<int> pArea){
     if(paramSliders.size() == 0) return;
     int maxLines = 4;
 
@@ -112,28 +113,55 @@ void VSTNodeUI::layoutSliderParameters(Rectangle<int> pArea){
 }
 
 
-void VSTNodeUI::vstSelected (int modalResult, Component *  originComp)
+void VSTNodeContentUI::vstSelected (int modalResult, Component *  originComp)
 {
     int index = VSTManager::getInstance()->knownPluginList.getIndexChosenByMenu(modalResult);
     if(index>=0 ){
-        VSTNodeUI * originVSTNodeUI =  dynamic_cast<VSTNodeUI*>(originComp);
+        VSTNodeContentUI * originVSTNodeUI =  dynamic_cast<VSTNodeContentUI*>(originComp);
         if(originVSTNodeUI){
-            originVSTNodeUI->owner->identifierString->setValue(VSTManager::getInstance()->knownPluginList.getType (index)->createIdentifierString());
+            originVSTNodeUI->vstNode->identifierString->setValue(VSTManager::getInstance()->knownPluginList.getType (index)->createIdentifierString());
 //            originVSTNodeUI->owner->generatePluginFromDescription(VSTManager::getInstance()->knownPluginList.getType (index));
         }
     }
 }
 
-void VSTNodeUI::buttonClicked (Button* button)
+void VSTNodeContentUI::buttonClicked (Button* button)
 {
     if (button == &VSTListShowButton){
         PopupMenu  VSTList;
         VSTManager::getInstance()->knownPluginList.addToMenu(VSTList, KnownPluginList::SortMethod::sortByCategory);
-        owner->closePluginWindow();
-        VSTList.showAt (&VSTListShowButton,0,0,0,0, ModalCallbackFunction::forComponent(&VSTNodeUI::vstSelected, (Component*)this));
+		vstNode->closePluginWindow();
+        VSTList.showAt (&VSTListShowButton,0,0,0,0, ModalCallbackFunction::forComponent(&VSTNodeContentUI::vstSelected, (Component*)this));
 
     }
     if(button == &showPluginWindowButton){
-        owner->createPluginWindow();
+		vstNode->createPluginWindow();
     }
+}
+
+
+////
+// HEADER UI
+//
+
+VSTNodeHeaderUI::VSTNodeHeaderUI()
+{
+	//setSize(getWidth(), 80);
+}
+
+VSTNodeHeaderUI::~VSTNodeHeaderUI()
+{
+	vstNode->removeVSTNodeListener(this);
+}
+
+void VSTNodeHeaderUI::init()
+{
+	vstNode = (VSTNode *)node;
+	vstNode->addVSTNodeListener(this);
+}
+
+
+void VSTNodeHeaderUI::newVSTSelected()
+{
+	updatePresetComboBox();
 }

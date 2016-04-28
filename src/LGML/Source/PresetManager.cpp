@@ -66,6 +66,7 @@ PresetManager::Preset * PresetManager::getPreset(String filter, const String & n
 
 void PresetManager::fillWithPresets(ComboBox * cb, String filter)
 {
+	cb->clear();
 	cb->addItem("Save current preset", SaveCurrent);
 	cb->addItem("Save to new preset", SaveToNew);
 	cb->addItem("Reset to default", ResetToDefault);

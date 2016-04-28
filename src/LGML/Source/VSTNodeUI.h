@@ -16,10 +16,24 @@
 #include "NodeBaseUI.h"
 
 #include "FloatSliderUI.h"
-class VSTNodeUI:public NodeBaseContentUI,public Button::Listener,public ChangeListener,public ControllableContainer::Listener{
+
+class VSTNodeHeaderUI : public NodeBaseHeaderUI, public VSTNode::VSTNodeListener
+{
 public:
-    VSTNodeUI(VSTNode * _owner);
-    ~VSTNodeUI();
+	VSTNodeHeaderUI();
+	~VSTNodeHeaderUI();
+	VSTNode * vstNode;
+
+	void init() override;
+
+	// Inherited via ChangeListener
+	void newVSTSelected() override;
+};
+
+class VSTNodeContentUI:public NodeBaseContentUI,public Button::Listener, public VSTNode::VSTNodeListener,public ControllableContainer::Listener{
+public:
+    VSTNodeContentUI();
+    ~VSTNodeContentUI();
     OwnedArray<FloatSliderUI> paramSliders;
 
     void init() override;
@@ -32,9 +46,7 @@ public:
     void controllableContainerRemoved(ControllableContainer * cc) override;
     void controllableFeedbackUpdate(Controllable *c) override;
 
-
-
-    void changeListenerCallback(ChangeBroadcaster * c) override;
+    void newVSTSelected() override;
 
 
     void resized()override;
@@ -43,7 +55,7 @@ public:
 
     TextButton VSTListShowButton;
     TextButton showPluginWindowButton;
-    VSTNode * owner;
+    VSTNode * vstNode;
 
 
     static void vstSelected (int modalResult, Component *  originComp);
