@@ -36,10 +36,12 @@ AudioMixerNode::AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBas
 
 AudioMixerNode::AudioMixerAudioProcessor::AudioMixerAudioProcessor():NodeAudioProcessor(),ControllableContainer("AudioMixer"){
 
-    numberOfInput = addIntParameter("numInput", "number of input", 0, 0, 32);
-    numberOfOutput = addIntParameter("numOutput", "number of output", 0, 0, 32);
-    numberOfOutput->setValue(2);
-    numberOfInput->setValue(8);
+    numberOfInput = addIntParameter("numInput", "number of input", 8,1, 32);
+    numberOfOutput = addIntParameter("numOutput", "number of output", 2,1, 32);
+		
+	updateInput();
+	updateOutput();
+
     skipControllableNameInAddress = true;
 };
 
@@ -96,15 +98,21 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateOutput(){
 void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
     int numInput = getTotalNumInputChannels();
+	int numOutput = getTotalNumOutputChannels();
 
-    if(!(outBuses.size()<=buffer.getNumChannels())){DBG("mixer : dropping frame");return;}
+    if(!(outBuses.size()<=buffer.getNumChannels()))
+	{
+		DBG("mixer : dropping frame");return;
+	}
+
     int numSamples =  buffer.getNumSamples();
 
     // doesnt do anything if it's already the right size
     cachedBuffer.setSize(outBuses.size(), numSamples);
 
 
-    if(numInput>0){
+    if(numInput>0 && numOutput > 0){
+
         for(int i = outBuses.size() -1 ; i >=0 ; --i){
             cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,outBuses[i]->lastVolumes[0],outBuses[i]->volumes[0]->value);
 
@@ -125,9 +133,6 @@ void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<
 
     // if buffer is bigger than cached (input>output) excedent it should never be used after this call so reference it
     //    buffer.setDataToReferTo(cachedBuffer.getArrayOfWritePointers(), cachedBuffer.getNumChannels(), cachedBuffer.getNumSamples());
-
-
-
 }
 
 
@@ -146,7 +151,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::OutputBus::setNumInput(int numInp
 
     if(numInput>volumes.size()){
         for(int i = volumes.size();i<numInput ; i++){
-            volumes.add(addFloatParameter("volume "+String(i), "mixer volume from input"+String(i), 1.0f));
+            volumes.add(addFloatParameter("In "+String(i)+ " > Out "+String(outputIndex), "mixer volume from input"+String(i), 1.0f));
         }
     }
     else if(numInput<volumes.size()){
