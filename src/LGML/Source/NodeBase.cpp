@@ -100,7 +100,12 @@ void NodeBase::parameterValueChanged(Parameter * p)
         setNiceName(nameParam->stringValue());
     }else if (p == enabledParam)
     {
-
+        if(audioProcessor){
+            audioProcessor->suspendProcessing(!enabledParam->boolValue());
+        }
+        if(dataProcessor){
+            dataProcessor->enabled = enabledParam->boolValue();
+        }
     }
     else{
             ControllableContainer::parameterValueChanged(p);

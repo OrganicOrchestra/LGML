@@ -13,7 +13,7 @@
 typedef Data::DataType DataType;
 
 DataProcessor::DataProcessor()
-{
+:enabled(true){
 
 }
 
@@ -153,5 +153,7 @@ Data * DataProcessor::getInputDataByName(const String & dataName)
 
 void DataProcessor::dataChanged(Data * d)
 {
+    if(enabled){
     listeners.call(&DataProcessor::Listener::inputDataChanged, d);
+    }
 }

@@ -304,7 +304,7 @@ void LooperTrack::setTrackState(TrackState newState) {
                 TimeManager::getInstance()->isSettingTempo->setValue(false);
                 TimeManager::getInstance()->playState->setValue(true);
                 parentLooper->lastMasterTempoTrack->setTrackState(LooperTrack::TrackState::PLAYING);
-            
+
         }
     }
 
