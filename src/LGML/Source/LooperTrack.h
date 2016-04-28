@@ -46,6 +46,8 @@ public:
 
     TrackState trackState;
 
+    bool someOneIsSolo;
+
     const float defaultVolumeValue = 0.8f;
     int trackIdx;
 

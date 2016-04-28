@@ -28,7 +28,8 @@ LooperTrack::LooperTrack(Looper * looper, int _trackIdx) :
     trackState(CLEARED),
     internalTrackState(BUFFER_STOPPED),
     lastInternalTrackState(BUFFER_STOPPED),
-    trackIdx(_trackIdx)
+    trackIdx(_trackIdx),
+    someOneIsSolo(false)
 {
 
     //setCustomShortName("track/" + String(_trackIdx)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
@@ -110,7 +111,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             playNeedle %= recordNeedle;
         }
 
-        float newVolume = mute->boolValue() ? 0 : volume->floatValue();
+        float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : volume->floatValue();
         for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
             buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume, newVolume);
         }
@@ -230,6 +231,15 @@ void LooperTrack::onContainerParameterChanged(Parameter * p)
     if (p == volume)
     {
         if (parentLooper->selectedTrack == this) parentLooper->volumeSelected->setValue(volume->floatValue());
+    }
+    if(p==solo){
+        someOneIsSolo = false;
+        for(auto &t:parentLooper->tracks){
+                someOneIsSolo |= t->solo->boolValue();
+        }
+        for(auto &t:parentLooper->tracks){
+            t->someOneIsSolo = someOneIsSolo;
+        }
     }
 }
 
