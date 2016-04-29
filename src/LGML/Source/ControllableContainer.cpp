@@ -11,6 +11,7 @@
 #include "ControllableContainer.h"
 
 #include "ControllableContainerEditor.h"
+#include "ControllableUI.h"
 
 ControllableContainer::ControllableContainer(const String & niceName) :
 niceName(niceName),
@@ -36,6 +37,7 @@ FloatParameter * ControllableContainer::addFloatParameter(const String & _niceNa
     if (getControllableByName(niceName) != nullptr)
     {
         DBG("ControllableContainer::add parameter, short Name already exists : " + niceName);
+        jassertfalse;
         return nullptr;
     }
 
@@ -401,7 +403,6 @@ Component * ControllableContainer::createControllableContainerEditor(){
             bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
         }
     }
-
 
     for(auto &c:controllableContainers){
         Component * cE=c->createControllableContainerEditor();

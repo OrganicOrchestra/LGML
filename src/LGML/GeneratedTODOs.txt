@@ -32,7 +32,7 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 351
+	line : 353
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
@@ -64,16 +64,9 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.cpp
-	line : 96
-		// TODO :   -avoid recreating everything or this cheap refreshing
+	line : 86
+		// TODO :   -avoid recreating everything
 		//          -try to merge common properties based on first by deleting non common params within candidateContainers
-		//    for(auto &c:removedContainers){
-		//        displayedEditor->removeContainerFromEditor(c);
-		//    }
-		//
-		//    for( auto &c:removedControllables){
-		//        displayedEditor->removeControllableFromEditor(c);
-		//    }
 
 
 LooperTrack.cpp
@@ -130,7 +123,7 @@ Looper.cpp
 
 
 ControllableInspector.h
-	line : 20
+	line : 22
 		// TODO handle merging of multiple component of sameClass : almost there ....
 
 

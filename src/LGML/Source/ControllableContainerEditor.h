@@ -12,12 +12,11 @@
 #define CONTROLLABLEEDITOR_H_INCLUDED
 
 
+#include "JuceHeader.h"
 
-
-#include "NodeManagerUI.h"
-#include "NodeManager.h"
-
-
+class ControllableUI;
+class Controllable;
+class ControllableContainer;
 
 //  base class for displaying an UI presenting all control available in ControllableContainer
 
@@ -31,9 +30,12 @@ public:
     void removeControllableFromEditor(Controllable * c);
     void removeContainerFromEditor(ControllableContainer * toRemove);
     void paint(Graphics &g) override;
+    void childBoundsChanged(Component *)override;
     void resized()override;
+    void syncUIElements();
     ControllableContainer * owner;
     Array<ControllableUI*> controllableUIs;
+    Array<ControllableContainerEditor*> editors;
 protected:
     Component* embeddedComp;
 

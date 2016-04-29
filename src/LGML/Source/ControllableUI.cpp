@@ -38,3 +38,11 @@ void ControllableUI::updateTooltip()
     tooltip = controllable->description + "\nControl Address : " + controllable->controlAddress;
     setTooltip(tooltip);
 }
+
+
+void ControllableUI::controllableBeingDeleted(Controllable * c) {
+    if(c==controllable){
+    getParentComponent()->removeChildComponent(this);
+        delete this;
+    }
+};

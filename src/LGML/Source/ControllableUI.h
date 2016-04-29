@@ -28,6 +28,7 @@ public:
     // Inherited via Listener
     virtual void controllableStateChanged(Controllable * c) override;
     virtual void controllableControlAddressChanged(Controllable * c) override;
+    void controllableBeingDeleted(Controllable *) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableUI)
 

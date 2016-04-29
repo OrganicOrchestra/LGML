@@ -32,7 +32,7 @@ public:
 
 
     Controllable(const Type &type, const String &niceName, const String &description, bool enabled = true);
-    virtual ~Controllable() {    Controllable::masterReference.clear();}
+    virtual ~Controllable() {  listeners.call(&Controllable::Listener::controllableBeingDeleted,this);  Controllable::masterReference.clear();}
 
 
     Type type;
@@ -101,6 +101,7 @@ public:
         virtual ~Listener() {}
         virtual void controllableStateChanged(Controllable * c) = 0;
         virtual void controllableControlAddressChanged(Controllable * c) = 0;
+        virtual void controllableBeingDeleted(Controllable *){}
     };
 
     ListenerList<Listener> listeners;

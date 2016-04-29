@@ -14,91 +14,152 @@
 void ControllableContainerSync::addSyncedControllableIfNotAlreadyThere(ControllableContainer * c){
     // check that we have same class
     jassert(typeid(c)==typeid(sourceContainer));
-    if(c!=sourceContainer && !targetSyncedContainers.contains(c)){
+    if(!targetSyncedContainers.contains(c)){
         c->addControllableContainerListener(this);
         targetSyncedContainers.add(c);
+
+        for(auto & cc:controllableContainers){
+            for(auto & ccc:c->controllableContainers){
+                if(areCompatible(ccc,cc)){
+                    ((ControllableContainerSync*)cc)->addSyncedControllableIfNotAlreadyThere(ccc);
+                    break;
+                }
+            }
+        }
     }
 }
 void ControllableContainerSync::removeSyncedControllable(ControllableContainer * c){
-    c->removeControllableContainerListener(this);
+    if(c!=sourceContainer && !targetSyncedContainers.contains(c)){
+        c->removeControllableContainerListener(this);
+        targetSyncedContainers.removeAllInstancesOf(c);
 
-    // if removing source try to build from first available
-    if(c==sourceContainer){
-
-        if(targetSyncedContainers.size()>0){
-            ControllableContainer * _c = targetSyncedContainers.getUnchecked(0);
-            buildFromContainer(_c);
-            containerSyncListeners.call(&ControllableContainerSync::ContainerSyncListener::sourceUpdated,_c);
+        for(auto & cc:controllableContainers){
+            for(auto & ccc:c->controllableContainers){
+                if(areCompatible(ccc,cc)){
+                    ((ControllableContainerSync*)cc)->removeSyncedControllable(ccc);
+                    break;
+                }
+            }
         }
-        else{
-            sourceContainer = nullptr;
-            containerSyncListeners.call(&ControllableContainerSync::ContainerSyncListener::sourceDeleted);
-
-        }
-    }
-    else{
-        targetSyncedContainers.removeFirstMatchingValue(c);
-
     }
 }
 
 
-void ControllableContainerSync::buildFromContainer(ControllableContainer * source){
-    if(sourceContainer){
-        sourceContainer->removeControllableContainerListener(this);
-    }
-    sourceContainer = source;
-    sourceContainer->addControllableContainerListener(this);
-    depthInOriginContainer = 0;
-    ControllableContainer * t = sourceContainer;
-    while(t!=nullptr){
-        t = t->parentContainer;
-        depthInOriginContainer++;
-    }
 
-};
+void ControllableContainerSync::deepCopyForContainer(ControllableContainer * container){
+
+    for(auto & c:container->controllables){
+        doAddControllable(c);
+    }
+    for(auto & c:container->controllableContainers){
+        ControllableContainerSync * cc = new ControllableContainerSync(c,groupName);
+        addChildControllableContainer(cc);
+    }
+    addSyncedControllableIfNotAlreadyThere(container);
+
+
+}
+
+void ControllableContainerSync::doAddControllable(Controllable *c){
+    if(c->hideInEditor)return;
+    if(Trigger * t = dynamic_cast<Trigger*>(c)){
+        addTrigger(produceGroupName(t->niceName), t->description);
+    }
+    else if(FloatParameter * f = dynamic_cast<FloatParameter *>(c)){
+        FloatParameter * ef = addFloatParameter(produceGroupName(f->niceName),f->description,f->defaultValue,f->minimumValue,f->maximumValue);
+        ef->setValue(f->floatValue());
+    }
+    else if(IntParameter * f = dynamic_cast<IntParameter *>(c)){
+        IntParameter * ef = addIntParameter(produceGroupName(f->niceName),f->description,f->defaultValue,f->minimumValue,f->maximumValue);
+        ef->setValue(f->intValue());
+    }
+    else if(StringParameter * f = dynamic_cast<StringParameter *>(c)){
+        StringParameter * ef = addStringParameter(produceGroupName(f->niceName),f->description,f->defaultValue);
+        ef->setValue(f->stringValue());
+    }
+    else if(BoolParameter * f = dynamic_cast<BoolParameter *>(c)){
+        BoolParameter * ef = addBoolParameter(produceGroupName(f->niceName),f->description,f->defaultValue);
+        ef->setValue(f->boolValue());
+    }
+}
+
+void ControllableContainerSync::doRemoveControllable(Controllable * c){
+
+    for(auto & cc:controllables){
+        if(areCompatible(c,cc)){
+            removeControllable(cc);
+            break;
+        }
+    }
+}
+
+void ControllableContainerSync::clear(){
+    while(controllables.size()>0){
+            removeControllable(controllables.getLast());
+    }
+    for(auto & c:controllableContainers){
+        ((ControllableContainerSync*)c)->clear();
+    }
+    controllableContainers.clear();
+}
+
 
 
 // ===============================
 // sync controllables
 
-void ControllableContainerSync::controllableFeedbackUpdate(Controllable *cOrigin){
-    if(isNotifying)return;
-    isNotifying = true;
-    String addr =  cOrigin->getControlAddress();
 
-    StringArray addrArray;
-    addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
-    addrArray.remove(0);
-    juce::Array<String> addSplit = addrArray.strings;
-    if(depthInOriginContainer+1> addSplit.size()){
-        // coming from another controllableContainer with a shorter address
-        return;
-    }
-    for(int i = 0 ; i < depthInOriginContainer ; i ++){
-        addSplit.remove(0);
-    }
 
+// from main
+void ControllableContainerSync::onContainerParameterChanged(Parameter * c){
     for(auto & listener:targetSyncedContainers){
-        Controllable * c = listener->getControllableForAddress(addSplit,true,true);
-        if(c!=nullptr)setControllableValue(cOrigin, c);
+        for(auto t:listener->controllables){
+            if(areCompatible(t ,c)){
+                setControllableValue(c, t);
+            }
+        }
     }
-
-    Controllable * c = sourceContainer->getControllableForAddress(addSplit,true,true);
-    if(c!=cOrigin && c!=nullptr){
-        setControllableValue(cOrigin, c);
+}
+void ControllableContainerSync::onContainerTriggerTriggered(Trigger * c){
+    for(auto & listener:targetSyncedContainers){
+        for(auto t:listener->controllables){
+            if(areCompatible(t ,c)){
+                setControllableValue(c, t);
+            }
+        }
     }
-    isNotifying = false;
 }
 
 
+// from list
+void ControllableContainerSync::controllableFeedbackUpdate(Controllable *c) {
+    if(c->parentContainer ){
+    if(areCompatible(c->parentContainer,this)){
+        for(auto & cc:controllables){
+            if(areCompatible(c, cc)){
+                setControllableValue(c, cc);
+
+            }
+        }
+    }
+    }
+    else{
+        jassertfalse;
+
+    }
+};
+
+
+
 bool ControllableContainerSync::setControllableValue(Controllable * cOrigin,Controllable * c){
+    if(cOrigin==notifyingControllable)return false;
     jassert(cOrigin->type == c->type);
 
-    if (c != nullptr && !c->isControllableFeedbackOnly)
+
+    if (c != nullptr )
     {
 
-
+        notifyingControllable = cOrigin;
         switch (c->type)
         {
             case Controllable::Type::TRIGGER:
@@ -129,10 +190,12 @@ bool ControllableContainerSync::setControllableValue(Controllable * cOrigin,Cont
             default:
                 jassertfalse;
         }
+            notifyingControllable = nullptr;
     }
     else{
         return false;
     }
     return true;
+
 
 }

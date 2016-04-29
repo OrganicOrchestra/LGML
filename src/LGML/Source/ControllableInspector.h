@@ -15,6 +15,8 @@
 
 #include "ControllableContainerEditor.h"
 #include "ControllableContainerSync.h"
+#include "SelectableComponent.h"
+#include "NodeManagerUI.h"
 
 
 // side bar component displaying editor of currently selected nodes
@@ -42,13 +44,7 @@ private:
     // each inspector UI element is binded to one Controllable in proxy,
     // if changed , it notifies All corresponding candidateControllable
     ScopedPointer<ControllableContainerSync> controllableContainerSync;
-
-
     ScopedPointer<ControllableContainerEditor> displayedEditor;
-    Array<ControllableContainer *> candidateContainers;
-
-    Array<Controllable*> removedControllables;
-    Array<ControllableContainer*> removedContainers;
 
 
     void paint(Graphics &g) override;

@@ -17,13 +17,20 @@
 // TODO handle controllableContainerAdded / Removed sync
 
 #include "ControllableContainer.h"
-class ControllableContainerSync : public ControllableContainer::Listener{
+
+
+class ControllableContainerSync :public ControllableContainer, public ControllableContainer::Listener{
 
 public:
-    ControllableContainerSync(ControllableContainer * source):
-    sourceContainer(source),depthInOriginContainer(-1),
-    isNotifying(false){
-        buildFromContainer(source);
+    ControllableContainerSync(ControllableContainer * source,String _groupName):
+    groupName(_groupName),
+    ControllableContainer(source->niceName),
+    sourceContainer(source),
+    notifyingControllable(nullptr)
+    {
+        setNiceName(produceGroupName(source->niceName));
+        deepCopyForContainer(source);
+        
     }
 
     virtual ~ControllableContainerSync(){
@@ -32,9 +39,19 @@ public:
         }
         if(sourceContainer)
             sourceContainer->removeControllableContainerListener(this);
+
+        clear();
     }
 
-    void buildFromContainer(ControllableContainer * source);
+    String groupName;
+
+    bool areCompatible(Controllable * target,Controllable * local){return produceGroupName(target->niceName) == local->niceName;}
+    bool areCompatible(ControllableContainer * target,ControllableContainer * local){return produceGroupName(target->niceName) == local->niceName;}
+    String produceGroupName(const String & n){return groupName+"_"+n;}
+    void deepCopyForContainer(ControllableContainer * container);
+    void doAddControllable(Controllable *c);
+    void doRemoveControllable(Controllable * c);
+    void clear();
 
     void addSyncedControllableIfNotAlreadyThere(ControllableContainer * );
     void removeSyncedControllable(ControllableContainer * );
@@ -43,12 +60,15 @@ public:
     Array<ControllableContainer*> targetSyncedContainers;
 
 
-    void controllableAdded(Controllable *) override{};
-    void controllableRemoved(Controllable *)override{};
+    void controllableAdded(Controllable *c) override{doAddControllable(c);};
+    void controllableRemoved(Controllable *c)override{doRemoveControllable(c);};
     void controllableContainerAdded(ControllableContainer *) override{};
     void controllableContainerRemoved(ControllableContainer *)override{};
     void controllableFeedbackUpdate(Controllable *c) override;
-    int depthInOriginContainer;
+
+    
+    void onContainerParameterChanged(Parameter*)override;
+    void onContainerTriggerTriggered(Parameter*)override;
 
 
     class ContainerSyncListener{
@@ -57,6 +77,7 @@ public:
 
         virtual void sourceUpdated(ControllableContainer * )=0;
         virtual void sourceDeleted(){};
+
     };
 
     ListenerList<ContainerSyncListener> containerSyncListeners;
@@ -66,7 +87,7 @@ public:
 
 
 private:
-    bool isNotifying;
+    Controllable * notifyingControllable;
 
     bool setControllableValue(Controllable * cOrigin,Controllable * c);
 };
