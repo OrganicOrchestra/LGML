@@ -99,6 +99,7 @@ void ControllableContainerSync::clear(){
     }
     for(auto & c:controllableContainers){
         ((ControllableContainerSync*)c)->clear();
+        delete c;
     }
     controllableContainers.clear();
 }
@@ -152,7 +153,7 @@ void ControllableContainerSync::controllableFeedbackUpdate(Controllable *c) {
 
 
 bool ControllableContainerSync::setControllableValue(Controllable * cOrigin,Controllable * c){
-    if(cOrigin==notifyingControllable)return false;
+//    if(cOrigin==notifyingControllable)return false;
     jassert(cOrigin->type == c->type);
 
 

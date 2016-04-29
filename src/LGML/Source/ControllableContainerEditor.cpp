@@ -52,25 +52,40 @@ void ControllableContainerEditor::childBoundsChanged(Component * c){
 
 
 void ControllableContainerEditor::syncUIElements(){
-//    if(owner==nullptr)return;
-//
-//    for(auto & c:owner->controllables){
-//        bool found = false;
-//        for(auto & cc:controllableUIs){
-//            if( cc->controllable == c){
-//                found = true;
-//                break;
-//            }
-//        }
-//        if(!found){
-//            addControlUI(c->createDefaultControllableEditor());
-//        }
-//
-//    }
-//
-//    for(auto & c:)
+    if(owner==nullptr)return;
+
+    for(auto & c:owner->controllables){
+        bool found = false;
+        for(auto & cc:controllableUIs){
+            if( cc->controllable == c){
+                found = true;
+                break;
+            }
+        }
+        if(!found){
+            addControlUI(new NamedControllableUI(c->createDefaultControllableEditor(),100));
+        }
+
+    }
+
+
 }
 
+
+void ControllableContainerEditor::childrenChanged(){
+
+    int y = 0;
+    int pad = 3;
+    int maxW = 0;
+    for(int i = 0 ; i < getNumChildComponents() ; i ++){
+        Component * ch= getChildComponent(i);
+        ch->setTopLeftPosition(0, y);
+        y+=ch->getHeight()+pad;
+        maxW = jmax(ch->getWidth(),maxW);
+
+    }
+    setSize(maxW,y);
+};
 void ControllableContainerEditor::removeContainerFromEditor(ControllableContainer * toRemove){
     Array<Component *> arrayToRemove;
     for(int i = 0 ; i < getNumChildComponents() ; i++){
@@ -96,7 +111,7 @@ void ControllableContainerEditor::resized(){
     if(embeddedComp){
         embeddedComp->setBounds(getBounds());
     }
-    for(auto &c:controllableUIs){
-        c->setSize(getWidth(), c->getHeight());
+    for(int i = 0 ;i < getNumChildComponents() ; i++){
+        getChildComponent(i)->setSize(getWidth(), getChildComponent(i)->getHeight());
     }
 }

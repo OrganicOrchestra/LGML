@@ -29,6 +29,7 @@ public:
     void removeControlUI(ControllableUI * c);
     void removeControllableFromEditor(Controllable * c);
     void removeContainerFromEditor(ControllableContainer * toRemove);
+    void childrenChanged()override;
     void paint(Graphics &g) override;
     void childBoundsChanged(Component *)override;
     void resized()override;

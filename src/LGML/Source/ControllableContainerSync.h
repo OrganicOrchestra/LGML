@@ -68,7 +68,7 @@ public:
 
     
     void onContainerParameterChanged(Parameter*)override;
-    void onContainerTriggerTriggered(Parameter*)override;
+    void onContainerTriggerTriggered(Trigger*)override;
 
 
     class ContainerSyncListener{
