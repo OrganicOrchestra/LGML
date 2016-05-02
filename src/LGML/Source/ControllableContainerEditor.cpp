@@ -73,7 +73,7 @@ void ControllableContainerEditor::paint(Graphics & g)
 
 void ControllableContainerEditor::resized(){
     if(embeddedComp){
-        embeddedComp->setBounds(getBounds());
+        embeddedComp->setBounds(getLocalBounds());
     }
     for(auto &c:controllableUIs){
         c->setSize(getWidth(), c->getHeight());

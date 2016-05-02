@@ -16,13 +16,12 @@
 
 #include "ControlManager.h"
 #include "ControllerManagerUI.h"
-
 #include "TimeManagerUI.h"
 
+#include "ShapeShifterManager.h"
+
 #include "ControllableInspector.h"
-
 #include "Engine.h"
-
 
 #include "LookAndFeelOO.h"
 //==============================================================================
@@ -44,17 +43,22 @@ public:
     TooltipWindow tooltipWindow; // to add tooltips to an application, you
     // just need to create one of these and leave it
     // there to do its work..
-    ScopedPointer<NodeManagerUIViewport> nodeManagerUIViewport;
-    ScopedPointer<NodeManagerUI> nodeManagerUI;
-    ScopedPointer<TimeManagerUI> timeManagerUI;
 
-    ScopedPointer<ControllerManagerViewport> controllerManagerViewport;
-    ScopedPointer<ControllableInspector> controllableInspector;
-    ScopedPointer<ControllableInspectorViewPort> controllableInspectorViewPort;
+	ShapeShifterManager shapeShifterManager;
 
+	TimeManagerUI * timeManagerUI;
+	ScopedPointer<NodeManagerUI> nodeManagerUI;
+	ScopedPointer<ControllableInspector> controllableInspector;
+
+	ScopedPointer<ShapeShifterPanel> nodeManagerPanel;
+	ScopedPointer<ShapeShifterPanel> controllerManagerPanel;
+	ScopedPointer<ShapeShifterPanel> controllableInspectorPanel;
+	ScopedPointer<ShapeShifterPanel> timeManagerPanel;
+
+    
+	
 
     Engine * engine;
-
     AudioDeviceSelectorComponent audioSettingsComp;
 
 
@@ -69,7 +73,9 @@ public:
     // see MainComponent.cpp
 
     //==============================================================================
-    void paint (Graphics& g) override{g.fillAll (Colours::black);}
+    void paint (Graphics& g) override{
+		g.fillAll (BG_COLOR.darker());
+	}
     void resized() override;
 
 

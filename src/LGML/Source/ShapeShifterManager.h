@@ -13,7 +13,7 @@
 
 #include "ShapeShifterContainer.h"
 
-class ShapeShifterManager : public Component
+class ShapeShifterManager
 {
 public:
 	juce_DeclareSingleton(ShapeShifterManager,true);

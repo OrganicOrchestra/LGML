@@ -87,6 +87,7 @@ public:
 //            if(getLocalBounds().contains(nmui->getLocalBounds())){
 //                inspector->minBounds = getLocalBounds();
 //            }
+			inspector->setBounds(getLocalBounds());
         }
 
 

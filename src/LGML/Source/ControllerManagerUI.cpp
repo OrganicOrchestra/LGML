@@ -102,7 +102,10 @@ void ControllerManagerUI::paint (Graphics&)
 
 void ControllerManagerUI::resized()
 {
-
+	for (auto &c : controllersUI)
+	{
+		c->setSize(getWidth(), c->getHeight());
+	}
 }
 
 
@@ -138,13 +141,6 @@ ControllerManagerViewport::ControllerManagerViewport(ControllerManager * control
 {
     cmui = new ControllerManagerUI(controllerManager);
     setViewedComponent(cmui);
-
-}
-
-void ControllerManagerViewport::paint(Graphics & g)
-{
-    g.setColour(BG_COLOR.darker());
-    g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 }
 
 void ControllerManagerViewport::resized()

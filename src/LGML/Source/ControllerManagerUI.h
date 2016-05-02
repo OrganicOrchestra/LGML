@@ -58,7 +58,6 @@ public:
 
     ControllerManagerUI * cmui;
 
-    void paint(Graphics &g) override;
     void resized() override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerViewport)
 };

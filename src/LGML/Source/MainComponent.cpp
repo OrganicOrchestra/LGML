@@ -30,21 +30,39 @@ MainContentComponent::MainContentComponent(Engine * e):
 
     DBG("Application Start");
 
+	addAndMakeVisible(shapeShifterManager.mainContainer);
+
     timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
+
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
-    nodeManagerUIViewport=new NodeManagerUIViewport(nodeManagerUI);
+    NodeManagerUIViewport * nodeManagerUIViewport = new NodeManagerUIViewport(nodeManagerUI);
+    
+    ControllerManagerViewport * controllerManagerViewport = new ControllerManagerViewport(ControllerManager::getInstance());
+	
+	controllableInspector = new ControllableInspector(nodeManagerUI);
+	ControllableInspectorViewPort * controllableInspectorViewPort = new ControllableInspectorViewPort(controllableInspector);
+	
+
+	//Shape Shifter initialization
+	//shapeShifterManager.mainContainer.direction = ShapeShifterContainer::Direction::VERTICAL;
+	ShapeShifterContainer * c1 = shapeShifterManager.mainContainer.insertContainerAt(0,ShapeShifterContainer::ContentType::PANELS,ShapeShifterContainer::Direction::HORIZONTAL);
+	c1->setPreferredHeight(45);
+
+	ShapeShifterContainer * c2 = shapeShifterManager.mainContainer.insertContainerAt(1, ShapeShifterContainer::ContentType::PANELS, ShapeShifterContainer::Direction::HORIZONTAL);
+
+	timeManagerPanel = new ShapeShifterPanel("Time Manager", timeManagerUI);
+	
+	nodeManagerPanel = new ShapeShifterPanel("Node Manager", nodeManagerUIViewport);
+	controllerManagerPanel = new ShapeShifterPanel("Controller Manager", controllerManagerViewport);
+	controllerManagerPanel->setPreferredWidth(300);
+	controllableInspectorPanel = new ShapeShifterPanel("Inspector", controllableInspectorViewPort);
+	controllableInspectorPanel->setPreferredWidth(200);
 
 
-    addAndMakeVisible(timeManagerUI);
-    addAndMakeVisible(nodeManagerUIViewport);
-
-    controllerManagerViewport = new ControllerManagerViewport(ControllerManager::getInstance());
-    addAndMakeVisible(controllerManagerViewport);
-
-
-    controllableInspector = new ControllableInspector(nodeManagerUI);
-    controllableInspectorViewPort = new ControllableInspectorViewPort(controllableInspector);
-    addAndMakeVisible(controllableInspectorViewPort);
+	c1->insertPanelAt(timeManagerPanel, 0);
+	c2->insertPanelAt(controllerManagerPanel, 0);
+	c2->insertPanelAt(nodeManagerPanel, 1);
+	c2->insertPanelAt(controllableInspectorPanel, 2);
 
     // resize after contentCreated
 
@@ -87,16 +105,10 @@ MainContentComponent::~MainContentComponent(){
 
 void MainContentComponent::resized()
 {
-    Rectangle<int> r = getLocalBounds();
-    timeManagerUI->setBounds(r.removeFromTop(25));
-    controllerManagerViewport->setBounds(r.removeFromLeft(300));
-
-    nodeManagerUIViewport->setBounds(r);
-
-    controllableInspector->setSize(300,controllableInspector->getHeight());
-    controllableInspectorViewPort->setBounds(r.removeFromRight(300));
+	Rectangle<int> r = getLocalBounds();
+	//timeManagerUI->setBounds(r.removeFromTop(25));
+	shapeShifterManager.mainContainer.setBounds(r);
 }
-
 
 void MainContentComponent::showAudioSettings()
 {
