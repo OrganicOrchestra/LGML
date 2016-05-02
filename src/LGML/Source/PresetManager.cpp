@@ -32,7 +32,7 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
         if (!p->isPresettable) continue;
         if (!p->isControllableExposed && !includeNotExposed) continue;
 
-        DBG("Add preset value " << p->niceName << " > " <<  p->stringValue());
+        //DBG("Add preset value " << p->niceName << " > " <<  p->stringValue());
 
         //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
         //vPresets.add(preVal);
@@ -86,4 +86,35 @@ void PresetManager::fillWithPresets(ComboBox * cb, String filter)
 void PresetManager::clear()
 {
     presets.clear();
+}
+
+var PresetManager::getJSONData()
+{
+	var data(new DynamicObject());
+	var presetDatas;
+
+	for (auto &p : presets)
+	{
+		presetDatas.append(p->getJSONData());
+	}
+
+	data.getDynamicObject()->setProperty("presets", presetDatas);
+
+	return data;
+}
+
+void PresetManager::loadJSONData(var data, bool clearBeforeLoad)
+{
+	if (clearBeforeLoad) clear();
+
+	Array<var> * presetDatas = data.getDynamicObject()->getProperty("presets").getArray();
+
+	for (auto &presetData : *presetDatas)
+	{
+		Preset * pre = new Preset(presetData.getDynamicObject()->getProperty("name"), presetData.getDynamicObject()->getProperty("filter"));
+		pre->loadJSONData(presetData);
+
+		presets.add(pre);
+	}
+
 }

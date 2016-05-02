@@ -54,6 +54,48 @@ public:
             presetValues.addArray(_presetValues);
         }
 
+		var getPresetValue(const String &targetControlAddress)
+		{
+			for (auto &pv : presetValues)
+			{
+
+				if (pv->paramControlAddress == targetControlAddress) return pv->presetValue;
+			}
+
+			return var();
+		}
+
+
+		var getJSONData()
+		{
+			var data(new DynamicObject());
+			data.getDynamicObject()->setProperty("name", name);
+			data.getDynamicObject()->setProperty("filter", filter);
+			var presetValuesData;
+
+			for (auto &pv : presetValues)
+			{
+				var pvData(new DynamicObject());
+				pvData.getDynamicObject()->setProperty("controlAddress", pv->paramControlAddress);
+				pvData.getDynamicObject()->setProperty("value", pv->presetValue);
+				presetValuesData.append(pvData);
+			}
+			
+			data.getDynamicObject()->setProperty("values", presetValuesData);
+			return data;
+		}
+
+		void loadJSONData(var data)
+		{
+			
+			Array<var> * pvDatas = data.getDynamicObject()->getProperty("values").getArray();
+
+			for (auto &pvData : *pvDatas)
+			{
+				addPresetValue(pvData.getProperty("controlAddress", var()),pvData.getProperty("value",var()));
+			}
+		}
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Preset)
     };
 
@@ -70,7 +112,12 @@ public:
     void fillWithPresets(ComboBox * cb, String filter);
 
     void clear();
-    //JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetManager)
+
+
+	var getJSONData();
+	void loadJSONData(var data, bool clearBeforeLoad = true);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetManager)
 };
 
 

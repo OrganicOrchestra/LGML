@@ -81,15 +81,14 @@ var Engine::getJSONData()
     var data(new DynamicObject());
     var metaData(new DynamicObject());
 
-    var nodeManagerData(new DynamicObject());
-    var controllerManagerData(new DynamicObject());
-
     metaData.getDynamicObject()->setProperty("LGMLVersion",ProjectInfo::versionString);
 
     data.getDynamicObject()->setProperty("meta", metaData);
-    data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
+	data.getDynamicObject()->setProperty("presetManager", PresetManager::getInstance()->getJSONData());
+	data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
     data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
 
+	data.getDynamicObject()->setProperty("metaData", metaData);
     return data;
 }
 
@@ -98,9 +97,10 @@ var Engine::getJSONData()
 
 void Engine::loadJSONData (var data, bool clearManagers)
 {
-    clear();
     //    TODO check version Compat
+	clear();
 
+	PresetManager::getInstance()->loadJSONData(data.getProperty("presetManager", var()), clearManagers);
     NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()), clearManagers);
     ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()), clearManagers);
 }

@@ -40,7 +40,6 @@ TimeManager::~TimeManager()
 }
 
 
-
 void TimeManager::incrementClock(int time){
     int lastBeat = getBeat();
 
@@ -145,9 +144,11 @@ int TimeManager::getNextGlobalQuantifiedTime(){
     return getNextQuantifiedTime(quantizedBarFraction->intValue());
 }
 int TimeManager::getNextQuantifiedTime(int barFraction){
-    if(barFraction==0){return timeInSample;}
+    if(barFraction==0){
+		return (int)timeInSample;
+	}
     const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
-    return (floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit;
+    return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
 }
 
 

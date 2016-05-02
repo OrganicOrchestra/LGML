@@ -69,8 +69,11 @@ public:
 
     PresetManager::Preset * currentPreset;
     virtual bool loadPreset(PresetManager::Preset * preset);
+	virtual void saveNewPreset(const String &name);
     virtual bool saveCurrentPreset();
     virtual bool resetFromPreset();
+	virtual String getPresetFilter();
+	virtual var getPresetValueFor(Parameter * p);//Any parameter that is part of a this preset can use this function
 
     void dispatchFeedback(Controllable * c);
 
@@ -78,6 +81,10 @@ public:
     virtual void parameterValueChanged(Parameter * p) override;
     // Inherited via Trigger::Listener
     virtual void triggerTriggered(Trigger * p) override;
+
+	virtual var getJSONData();
+	virtual void loadJSONData(var data);
+	virtual void loadJSONDataInternal(var data) { /* to be overriden by child classes */ }
 
     // can be overriden if custom editor wanted
     virtual Component * createControllableContainerEditor();
@@ -102,11 +109,13 @@ public:
     public:
         /** Destructor. */
         virtual ~Listener() {}
-        virtual void controllableAdded(Controllable * c) = 0;
-        virtual void controllableRemoved(Controllable * c) = 0;
-        virtual void controllableContainerAdded(ControllableContainer * cc) = 0;
-        virtual void controllableContainerRemoved(ControllableContainer * cc) = 0;
-        virtual void controllableFeedbackUpdate(Controllable *c) = 0;
+		virtual void controllableAdded(Controllable * ) {}
+        virtual void controllableRemoved(Controllable * ) {}
+        virtual void controllableContainerAdded(ControllableContainer *) {}
+        virtual void controllableContainerRemoved(ControllableContainer * ) {}
+        virtual void controllableFeedbackUpdate(Controllable * ) {}
+
+		virtual void controllableContainerPresetLoaded(ControllableContainer * ) {}
     };
 
     ListenerList<Listener> controllableContainerListeners;

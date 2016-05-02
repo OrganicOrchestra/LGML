@@ -31,9 +31,8 @@ public:
 
     virtual ControllerUI * createUI();
 
-    var getJSONData();
-    void loadJSONData(var data);
-
+	var getJSONData() override;
+	void loadJSONDataInternal(var data) override;
 
     class  Listener
     {

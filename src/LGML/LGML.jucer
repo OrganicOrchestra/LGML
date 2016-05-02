@@ -127,6 +127,17 @@
         <FILE id="Fa2WJ4" name="LookAndFeelOO.cpp" compile="1" resource="0"
               file="Source/LookAndFeelOO.cpp"/>
         <FILE id="ToSNQ0" name="LookAndFeelOO.h" compile="0" resource="0" file="Source/LookAndFeelOO.h"/>
+        <FILE id="qXxqIy" name="MovablePanel.cpp" compile="1" resource="0"
+              file="Source/MovablePanel.cpp"/>
+        <FILE id="T8sv14" name="MovablePanel.h" compile="0" resource="0" file="Source/MovablePanel.h"/>
+        <FILE id="OlFGWd" name="ShapeShifterContainer.cpp" compile="1" resource="0"
+              file="Source/ShapeShifterContainer.cpp"/>
+        <FILE id="vKDkGo" name="ShapeShifterContainer.h" compile="0" resource="0"
+              file="Source/ShapeShifterContainer.h"/>
+        <FILE id="F81ygJ" name="ShapeShifterManager.cpp" compile="1" resource="0"
+              file="Source/ShapeShifterManager.cpp"/>
+        <FILE id="a3XztR" name="ShapeShifterManager.h" compile="0" resource="0"
+              file="Source/ShapeShifterManager.h"/>
         <FILE id="AoaOQ9" name="Style.h" compile="0" resource="0" file="Source/Style.h"/>
         <FILE id="iwzvE6" name="UIHelpers.h" compile="0" resource="0" file="Source/UIHelpers.h"/>
       </GROUP>

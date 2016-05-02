@@ -12,7 +12,9 @@
 #include "PresetManager.h"
 
 
-NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X")
+NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X") ,
+ vuMeterIn(VuMeter::Type::IN),
+	vuMeterOut(VuMeter::Type::OUT)
 {
     node = nullptr;
     nodeUI = nullptr;
@@ -31,8 +33,16 @@ NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X")
 
 NodeBaseHeaderUI::~NodeBaseHeaderUI()
 {
-    if (node != nullptr && node->hasAudioOutputs) {
-        node->audioProcessor->removeRMSListener(&vuMeter);
+    if (node != nullptr)
+	{
+		if (node->hasAudioOutputs)
+		{
+			node->audioProcessor->removeRMSListener(&vuMeterOut);
+		}
+		if (node->hasAudioInputs)
+		{
+			node->audioProcessor->removeRMSListener(&vuMeterIn);
+		}
     }
 
 }
@@ -42,9 +52,18 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     this->node = _node;
     this->nodeUI = _nodeUI;
 
-    if (node != nullptr && node->hasAudioOutputs) {
-        node->audioProcessor->addRMSListener(&vuMeter);
-        addAndMakeVisible(vuMeter);
+    if (node != nullptr)
+	{
+		if (node->hasAudioOutputs) {
+			node->audioProcessor->addRMSListener(&vuMeterOut);
+			addAndMakeVisible(vuMeterOut);
+		}
+
+		if (node->hasAudioInputs)
+		{
+			node->audioProcessor->addRMSListener(&vuMeterIn);
+			addAndMakeVisible(vuMeterIn);
+		}
     }
 
     titleUI = node->nameParam->createStringParameterUI();
@@ -67,6 +86,9 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     addAndMakeVisible(presetCB);
     presetCB->addListener(this);
     presetCB->setTextWhenNothingSelected("Preset");
+
+	node->addControllableContainerListener(this);
+
     init();
 
 }
@@ -104,20 +126,28 @@ void NodeBaseHeaderUI::resized()
 
     Rectangle<int> r = getLocalBounds();
 
-    if (node->hasAudioOutputs) {
-        Rectangle<int> vuMeterRect = r.removeFromRight(vuMeterWidth).reduced(4);
-        vuMeter.setBounds(vuMeterRect);
+    if (node->hasAudioOutputs) 
+	{
+        vuMeterOut.setBounds(r.removeFromRight(vuMeterWidth).reduced(4));
     }
 
-    r.reduce(5, 2);
-    r.removeFromLeft(enabledUI->getWidth());
+	if (node->hasAudioInputs)
+	{
+		vuMeterIn.setBounds(r.removeFromLeft(vuMeterWidth).reduced(4));
+	}
+
+	r.reduce(5, 2);
+
+	enabledUI->setBounds(r.removeFromLeft(10).withSizeKeepingCentre(10, 10));
+    
+    r.removeFromLeft(3);
 
     removeBT.setBounds(r.removeFromRight(removeBTWidth));
+	r.removeFromRight(5);
     presetCB->setBounds(r.removeFromRight(presetCBWidth).reduced(0, 4));
     grabber.setBounds(r.removeFromRight(grabberWidth));
     titleUI->setBounds(r);
 
-    enabledUI->setTopLeftPosition(5, 5);
 
 }
 
@@ -172,6 +202,13 @@ void NodeBaseHeaderUI::buttonClicked(Button *)
 {
     node->remove(true);
 }
+
+void NodeBaseHeaderUI::controllableContainerPresetLoaded(ControllableContainer *)
+{
+	int numOptions = 3;
+	if (node->currentPreset != nullptr) presetCB->setSelectedItemIndex(node->currentPreset->presetId+numOptions-1, NotificationType::dontSendNotification);
+}
+
 
 void NodeBaseHeaderUI::Grabber::paint(Graphics & g)
 {

@@ -313,6 +313,12 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
     return true;
 }
 
+void ControllableContainer::saveNewPreset(const String & _name)
+{
+	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, true);
+	loadPreset(pre);
+}
+
 bool ControllableContainer::saveCurrentPreset()
 {
     DBG("save current preset, " << String(currentPreset != nullptr));
@@ -346,6 +352,21 @@ bool ControllableContainer::resetFromPreset()
     currentPreset = nullptr;
     return true;
 }
+
+var ControllableContainer::getPresetValueFor(Parameter * p)
+{
+	if (currentPreset == nullptr) return var();
+	return currentPreset->getPresetValue(p->getControlAddress(this));
+}
+
+
+
+
+String ControllableContainer::getPresetFilter()
+{
+	return shortName;
+}
+
 
 void ControllableContainer::dispatchFeedback(Controllable * c)
 {
@@ -416,4 +437,72 @@ Component * ControllableContainer::createControllableContainerEditor(){
     editor->setBounds(bounds);
     return editor;
 
+}
+
+
+
+
+var ControllableContainer::getJSONData()
+{
+	var data(new DynamicObject());
+	
+	var paramsData;
+
+	Array<Controllable *> cont = ControllableContainer::getAllControllables(true, true);
+
+	for (auto &c : cont) {
+		Parameter * base = dynamic_cast<Parameter*>(c);
+		if (base)
+		{
+			var pData(new DynamicObject());
+			pData.getDynamicObject()->setProperty("controlAddress", base->getControlAddress(this));
+			pData.getDynamicObject()->setProperty("value", base->value);
+			paramsData.append(pData);
+		}
+		else if (dynamic_cast<Trigger*>(c) != nullptr) {
+
+		}
+		else {
+			// should never happen un less another Controllable type than parameter or trigger has been introduced
+			jassertfalse;
+		}
+	}
+
+	if (currentPreset != nullptr)
+	{
+		data.getDynamicObject()->setProperty("preset", currentPreset->name);
+	}
+
+	data.getDynamicObject()->setProperty("parameters", paramsData);
+
+	return data;
+}
+
+void ControllableContainer::loadJSONData(var data)
+{
+
+	if (data.getDynamicObject()->hasProperty("preset"))
+	{
+		loadPreset(PresetManager::getInstance()->getPreset(getPresetFilter(), data.getProperty("preset",var())));
+	}
+
+	Array<var> * paramsData = data.getProperty("parameters", var()).getArray();
+
+	for (var &pData : *paramsData)
+	{
+		String pControlAddress = pData.getProperty("controlAddress", var());
+
+		Controllable * c = getControllableForAddress(pControlAddress, true, true);
+		if (Parameter * p = dynamic_cast<Parameter*>(c)) {
+			p->setValue(pData.getProperty("value", var()));
+		}
+		else {
+			DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");
+			jassertfalse;
+		}
+	}
+
+	loadJSONDataInternal(data);
+
+	controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerPresetLoaded, this);
 }

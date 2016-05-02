@@ -182,7 +182,7 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
             setTrackState(RECORDING);
         }
         else{
-            int waiting = 0;
+            //int waiting = 0;
         }
 
     }
@@ -378,11 +378,20 @@ void LooperTrack::setTrackState(TrackState newState) {
         recordNeedle = 0;
         playNeedle = 0;
         cleanAllQuantizeNeedles();
-        volume->setValue(defaultVolumeValue);
         newState = CLEARED;
         internalTrackState = BUFFER_STOPPED;
 
-
+		if (parentLooper->looperNode->currentPreset != nullptr)
+		{
+			volume->setValue(parentLooper->looperNode->getPresetValueFor(volume));
+			mute->setValue(parentLooper->looperNode->getPresetValueFor(mute));
+			solo->setValue(parentLooper->looperNode->getPresetValueFor(solo));
+		}else
+		{
+			volume->resetValue();
+			mute->resetValue();
+			solo->resetValue();
+		}
     }
 
 

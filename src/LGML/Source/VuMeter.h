@@ -16,15 +16,19 @@
 
 //TODO, move to more common place for use in other components
 class VuMeter : public ContourComponent, public NodeAudioProcessor::RMSListener {
-
 public:
+
+	enum Type { IN,OUT};
+
     float voldB;
+	Type type;
 
-
-    VuMeter() {
+    VuMeter(Type _type) : type(_type)
+	{
         setSize(8, 20);
         voldB = 0.f;
     }
+
     ~VuMeter(){
 
     }
@@ -42,7 +46,9 @@ public:
     }
 
 
-    void RMSChanged(float rms) override {
+    void RMSChanged(float rmsIn,float rmsOut) override {
+
+		float rms = (type == Type::IN) ? rmsIn : rmsOut;
 
         float newVoldB = jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,0.85f,1.0f);
 

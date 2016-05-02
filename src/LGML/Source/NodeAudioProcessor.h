@@ -60,28 +60,39 @@ public:
     virtual void processBlock(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) override ;
     virtual void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages) = 0;
 
+	//RMS
+	void updateRMS(const AudioBuffer<float>& buffer, float &targetRMSValue);
 
-    void updateRMS(const AudioBuffer<float>& buffer);
-    float alphaRMS = 0.05f;
-    float rmsValue = 0.f;
-    const int samplesBeforeRMSUpdate = 512;
-    int curSamplesForRMSUpdate = 0;
+	float alphaRMSIn = 0.05f;
+	float rmsValueIn = 0.f;
+	const int samplesBeforeRMSInUpdate = 512;
+	int curSamplesForRMSInUpdate = 0;
+	float alphaRMSOut = 0.05f;
+	float rmsValueOut = 0.f;
+	const int samplesBeforeRMSOutUpdate = 512;
+	int curSamplesForRMSOutUpdate = 0;
 
     //Listener are called from non audio thread
-    void handleAsyncUpdate() override{rmsListeners.call(&RMSListener::RMSChanged,rmsValue);}
+    void handleAsyncUpdate() override{
+		rmsListeners.call(&RMSListener::RMSChanged,rmsValueIn,rmsValueOut);
+	}
 
     class  RMSListener
     {
     public:
         /** Destructor. */
         virtual ~RMSListener() {}
-        virtual void RMSChanged(float ) = 0;
+        virtual void RMSChanged(float rmsInValue, float rmsOutValue) = 0;
 
     };
 
     ListenerList<RMSListener> rmsListeners;
     void addRMSListener(RMSListener* newListener) { rmsListeners.add(newListener); }
     void removeRMSListener(RMSListener* listener) { rmsListeners.remove(listener); }
+
+
+
+
 
     class NodeAudioProcessorListener{
     public:

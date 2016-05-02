@@ -20,7 +20,7 @@
 #include "VuMeter.h"
 #include "Style.h"
 
-class NodeBaseHeaderUI : public ContourComponent, public ComboBox::Listener, public Button::Listener
+class NodeBaseHeaderUI : public ContourComponent, public ComboBox::Listener, public Button::Listener, public ControllableContainer::Listener
 {
 public:
 
@@ -37,7 +37,8 @@ public:
 
     ScopedPointer<StringParameterUI> titleUI;
     ScopedPointer<BoolToggleUI> enabledUI;
-    VuMeter vuMeter;
+	VuMeter vuMeterIn;
+	VuMeter vuMeterOut;
 
     Grabber grabber;
     ImageButton removeBT;
@@ -58,10 +59,10 @@ public:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
 
+    // Inherited via Listener
+    virtual void buttonClicked(Button *) override;
 
-
-        // Inherited via Listener
-        virtual void buttonClicked(Button *) override;
+	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
 
 };
 

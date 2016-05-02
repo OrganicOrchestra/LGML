@@ -19,6 +19,19 @@
 void NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
                                                 MidiBuffer& midiMessages) {
 
+	bool doUpdateRMSIn = false;
+	bool doUpdateRMSOut = false;
+
+	if (rmsListeners.size()) {
+		updateRMS(buffer,rmsValueIn);
+		curSamplesForRMSInUpdate += buffer.getNumSamples();
+
+		if (curSamplesForRMSInUpdate >= samplesBeforeRMSInUpdate) {
+			doUpdateRMSIn = true;
+			curSamplesForRMSInUpdate = 0;
+		}
+	}
+
     if(isSuspended()){
         if(!wasSuspended){buffer.applyGainRamp(0, buffer.getNumSamples(), 1, 0);wasSuspended = true;}
         else{buffer.clear();}
@@ -29,15 +42,16 @@ void NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
     processBlockInternal(buffer, midiMessages);
 
     if(rmsListeners.size() ){
-        updateRMS(buffer);
-        curSamplesForRMSUpdate+= buffer.getNumSamples();
+        updateRMS(buffer,rmsValueOut);
+        curSamplesForRMSOutUpdate += buffer.getNumSamples();
 
-        if(curSamplesForRMSUpdate>=samplesBeforeRMSUpdate){
-            triggerAsyncUpdate();
-            curSamplesForRMSUpdate = 0;
+        if(curSamplesForRMSOutUpdate>=samplesBeforeRMSOutUpdate){
+			doUpdateRMSOut = true;
+            curSamplesForRMSOutUpdate = 0;
         }
     }
 
+	if(doUpdateRMSIn || doUpdateRMSOut) triggerAsyncUpdate();
 
 };
 
@@ -59,9 +73,10 @@ bool NodeAudioProcessor::setPreferedNumAudioOutput(int num){
     return true;
 }
 
-void NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer){
+void NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue){
     int numSamples = buffer.getNumSamples();
     int numChannels = buffer.getNumChannels();
+
 #ifdef HIGH_ACCURACY_RMS
     for(int i = numSamples-64; i>=0 ; i-=64){
         rmsValue += alphaRMS * (buffer.getRMSLevel(0, i, 64) - rmsValue);
@@ -76,12 +91,12 @@ void NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer){
 
 
         const double decayFactor = 0.99992;
-        if (s > rmsValue)
-            rmsValue = s;
-        else if (rmsValue > 0.001f)
-            rmsValue *= (float)decayFactor;
+        if (s > targetRmsValue)
+			targetRmsValue = s;
+        else if (targetRmsValue > 0.001f)
+			targetRmsValue *= (float)decayFactor;
         else
-            rmsValue = 0;
+			targetRmsValue = 0;
     }
 #endif
     //            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;

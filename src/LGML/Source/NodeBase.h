@@ -75,11 +75,7 @@ public:
     void removeFromAudioGraphIfNeeded();
 
 
-    virtual void saveNewPreset(const String &_name);
-    virtual bool loadPreset(PresetManager::Preset * pre) override;
-    virtual bool resetFromPreset() override;
-
-    virtual String getPresetFilter();
+	virtual String getPresetFilter() override;
 
     //ui
     virtual NodeBaseUI *  createUI() {
@@ -99,8 +95,8 @@ public:
     void numAudioOutputChanged(int newNum)override;
 
 
-    var getJSONData();
-    void loadJSONData(var data);
+	var getJSONData() override;
+	void loadJSONDataInternal(var data) override;
 
 
 public:
@@ -110,7 +106,8 @@ public:
     {
     public:
         virtual ~NodeListener() {}
-        virtual void askForRemoveNode(NodeBase *) = 0;
+		virtual void askForRemoveNode(NodeBase *) {}
+		
 
     };
 
