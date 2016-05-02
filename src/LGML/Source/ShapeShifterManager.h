@@ -11,8 +11,19 @@
 #ifndef SHAPESHIFTERMANAGER_H_INCLUDED
 #define SHAPESHIFTERMANAGER_H_INCLUDED
 
+#include "ShapeShifterContainer.h"
 
+class ShapeShifterManager
+{
+public:
+	juce_DeclareSingleton(ShapeShifterManager,true);
+	ShapeShifterManager();
+	~ShapeShifterManager();
 
+	ShapeShifterContainer mainContainer;
 
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterManager)
+
+};
 
 #endif  // SHAPESHIFTERMANAGER_H_INCLUDED

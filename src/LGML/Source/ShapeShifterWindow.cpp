@@ -1,11 +1,11 @@
 /*
   ==============================================================================
 
-    MovablePanel.cpp
-    Created: 2 May 2016 3:08:37pm
+    ShapeShifterWindow.cpp
+    Created: 2 May 2016 4:10:48pm
     Author:  bkupe
 
   ==============================================================================
 */
 
-#include "MovablePanel.h"
+#include "ShapeShifterWindow.h"

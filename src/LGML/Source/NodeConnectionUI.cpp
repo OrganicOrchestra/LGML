@@ -14,7 +14,6 @@
 
 //==============================================================================
 NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sourceConnector, Connector * destConnector) :
-    ContourComponent(Colours::red),
      candidateDropConnector(nullptr),
     connection(connection),
     sourceConnector(nullptr),destConnector(nullptr)
@@ -52,7 +51,6 @@ NodeConnectionUI::~NodeConnectionUI()
 
 void NodeConnectionUI::paint (Graphics& g)
 {
-    ContourComponent::paint(g);
 
     //DBG("PAINT !!");
     Point<float> sourcePos;

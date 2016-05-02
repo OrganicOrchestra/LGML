@@ -21,7 +21,7 @@
 
 */
 
-class NodeConnectionUI : public ContourComponent, public ComponentListener
+class NodeConnectionUI : public Component, public ComponentListener
 {
 public:
     typedef ConnectorComponent Connector;

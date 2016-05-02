@@ -13,12 +13,11 @@
 
 
 #include "ControllerUI.h"
-#include "UIHelpers.h"
 
 #include "BoolToggleUI.h"
 #include "StringParameterUI.h"
 
-class ControllerHeaderUI : public ContourComponent
+class ControllerHeaderUI : public Component
 {
 public:
     ControllerHeaderUI();

@@ -51,7 +51,6 @@ public:
 
     void clear();
 
-    void paint (Graphics&) override;
     void resized() override;
 
     // Inherited via Listener
@@ -111,10 +110,6 @@ private:
     };
     SelectingRect selectingBounds;
     void checkSelected();
-
-
-
-
 
 
 

@@ -10,7 +10,7 @@
 
 #include "ControllerHeaderUI.h"
 
-ControllerHeaderUI::ControllerHeaderUI() :ContourComponent(Colours::green)
+ControllerHeaderUI::ControllerHeaderUI()
   {
       setSize(40, 30);
   }
