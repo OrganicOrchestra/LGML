@@ -12,10 +12,9 @@
 #define NODEBASECONTENTUI_H_INCLUDED
 
 
-#include "UIHelpers.h"
 #include "NodeBaseUI.h"
 
-class NodeBaseContentUI : public ContourComponent
+class NodeBaseContentUI : public Component
 {
 public:
     NodeBaseContentUI();

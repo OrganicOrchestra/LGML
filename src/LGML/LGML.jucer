@@ -139,7 +139,6 @@
         <FILE id="a3XztR" name="ShapeShifterManager.h" compile="0" resource="0"
               file="Source/ShapeShifterManager.h"/>
         <FILE id="AoaOQ9" name="Style.h" compile="0" resource="0" file="Source/Style.h"/>
-        <FILE id="iwzvE6" name="UIHelpers.h" compile="0" resource="0" file="Source/UIHelpers.h"/>
       </GROUP>
       <GROUP id="{61D24830-3FF1-AA71-1066-07487B910808}" name="Settings">
         <FILE id="udYxwE" name="SettingsManager.cpp" compile="1" resource="0"

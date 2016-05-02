@@ -179,7 +179,7 @@ void NodeBaseUI::mouseDrag(const MouseEvent & e)
 
 
 // ======= CONNECTOR CONTAINER AND CONNECTOR COMPONENT ===================
-NodeBaseUI::ConnectorContainer::ConnectorContainer(ConnectorComponent::ConnectorIOType type) :ContourComponent(), type(type), displayLevel(ConnectorComponent::MINIMAL)
+NodeBaseUI::ConnectorContainer::ConnectorContainer(ConnectorComponent::ConnectorIOType type) : type(type), displayLevel(ConnectorComponent::MINIMAL)
 {
     setInterceptsMouseClicks(false, true);
 }
@@ -233,7 +233,6 @@ ConnectorComponent * NodeBaseUI::ConnectorContainer::getFirstConnector(NodeConne
 
 NodeBaseUI::MainContainer::MainContainer(NodeBaseUI * _nodeUI, NodeBaseContentUI * content, NodeBaseHeaderUI * header) :
 nodeUI(_nodeUI),
-ContourComponent(Colours::green),
 headerContainer(header), contentContainer(content)
 {
 

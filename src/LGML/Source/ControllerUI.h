@@ -12,11 +12,11 @@
 #define CONTROLLERUI_H_INCLUDED
 
 #include "Controller.h"
-#include "UIHelpers.h"
+
 class ControllerHeaderUI;
 class ControllerContentUI;
 
-class ControllerUI : public ContourComponent
+class ControllerUI : public Component
 {
 public:
     ControllerUI(Controller * controller, ControllerContentUI * contentUI = nullptr, ControllerHeaderUI * headerUI = nullptr);

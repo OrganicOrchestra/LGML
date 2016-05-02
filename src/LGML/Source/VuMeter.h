@@ -11,11 +11,10 @@
 #ifndef VUMETER_H_INCLUDED
 #define VUMETER_H_INCLUDED
 
-#include "UIHelpers.h"
 #include "NodeBase.h"
 
 //TODO, move to more common place for use in other components
-class VuMeter : public ContourComponent, public NodeAudioProcessor::RMSListener {
+class VuMeter : public Component, public NodeAudioProcessor::RMSListener {
 public:
 
 	enum Type { IN,OUT};

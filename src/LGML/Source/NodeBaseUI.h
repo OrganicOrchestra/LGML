@@ -12,7 +12,6 @@
 #define NODEBASEUI_H_INCLUDED
 
 #include "Style.h"
-#include "UIHelpers.h"
 #include "ConnectorComponent.h"
 
 #include "NodeBaseHeaderUI.h"
@@ -29,7 +28,7 @@ class NodeBaseContentUI;
 
 NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
-class NodeBaseUI    : public SelectableComponent,public Parameter::Listener
+class NodeBaseUI    : public SelectableComponent, public Parameter::Listener
 {
 public:
     NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer = nullptr, NodeBaseHeaderUI * headerContainer = nullptr);
@@ -59,7 +58,7 @@ public:
     void paintOverChildren(Graphics &) override {} //cancel default yellow border behavior
 
     //ui
-    class MainContainer : public ContourComponent
+    class MainContainer : public Component
     {
     public:
 
@@ -73,13 +72,13 @@ public:
         //ui components
         MainContainer(NodeBaseUI * nodeUI, NodeBaseContentUI * content = nullptr, NodeBaseHeaderUI * header = nullptr);
         void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
-        void paint(Graphics &g)override;
-        void resized()override;
+        void paint(Graphics &g) override;
+        void resized() override;
         void childBoundsChanged (Component*)override;
     };
 
 
-    class ConnectorContainer : public ContourComponent
+    class ConnectorContainer : public Component
     {
     public:
 

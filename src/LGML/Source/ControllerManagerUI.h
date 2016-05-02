@@ -19,9 +19,7 @@
 /*
 */
 
-
-
-class ControllerManagerUI : public ContourComponent, public ControllerManager::Listener
+class ControllerManagerUI : public Component, public ControllerManager::Listener
 {
 public:
     ControllerManagerUI(ControllerManager * manager);

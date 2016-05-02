@@ -9,3 +9,11 @@
 */
 
 #include "ShapeShifterContainer.h"
+
+ShapeShifterContainer::ShapeShifterContainer() : direction(NONE)
+{
+}
+
+ShapeShifterContainer::~ShapeShifterContainer()
+{
+}

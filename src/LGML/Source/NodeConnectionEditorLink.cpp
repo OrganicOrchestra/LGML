@@ -10,9 +10,7 @@
 
 
 #include "NodeConnectionEditorLink.h"
-
 #include "Style.h"
-#include "UIHelpers.h"
 
 //==============================================================================
 NodeConnectionEditorLink::NodeConnectionEditorLink(NodeConnectionEditorDataSlot * outSlot, NodeConnectionEditorDataSlot * inSlot) :

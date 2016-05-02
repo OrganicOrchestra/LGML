@@ -15,7 +15,6 @@
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(ControllerManager * manager) :
-    ContourComponent(Colours::red),
     manager(manager)
 {
 

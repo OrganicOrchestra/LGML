@@ -14,8 +14,7 @@
 
 ControllerUI::ControllerUI(Controller * controller, ControllerContentUI * contentUI, ControllerHeaderUI * headerUI) :
     controller(controller),
-    contentUI(contentUI), headerUI(headerUI),
-    ContourComponent(Colours::blue)
+    contentUI(contentUI), headerUI(headerUI)
 {
     if(this->headerUI == nullptr) this->headerUI = new ControllerHeaderUI();
     if (this->contentUI == nullptr) this->contentUI = new ControllerContentUI();
@@ -36,8 +35,6 @@ ControllerUI::~ControllerUI()
 
 void ControllerUI::paint(Graphics & g)
 {
-    ContourComponent::paint(g);
-
     g.setColour(PANEL_COLOR);
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
     g.setColour(PANEL_COLOR.darker());

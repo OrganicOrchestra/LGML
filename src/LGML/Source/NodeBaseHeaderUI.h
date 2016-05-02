@@ -12,7 +12,6 @@
 #define NODEBASEHEADERUI_H_INCLUDED
 
 
-#include "UIHelpers.h"
 #include "NodeBaseUI.h"
 
 #include "StringParameterUI.h"
@@ -20,7 +19,7 @@
 #include "VuMeter.h"
 #include "Style.h"
 
-class NodeBaseHeaderUI : public ContourComponent, public ComboBox::Listener, public Button::Listener, public ControllableContainer::Listener
+class NodeBaseHeaderUI : public Component, public ComboBox::Listener, public Button::Listener, public ControllableContainer::Listener
 {
 public:
 

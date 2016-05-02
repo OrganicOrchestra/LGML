@@ -12,9 +12,8 @@
 #define CONTROLLERCONTENTUI_H_INCLUDED
 
 #include "ControllerUI.h"
-#include "UIHelpers.h"
 
-class ControllerContentUI : public ContourComponent
+class ControllerContentUI : public Component
 {
 public:
     ControllerContentUI();

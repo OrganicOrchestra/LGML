@@ -9,3 +9,13 @@
 */
 
 #include "ShapeShifterManager.h"
+
+juce_ImplementSingleton(ShapeShifterManager);
+
+ShapeShifterManager::ShapeShifterManager()
+{
+}
+
+ShapeShifterManager::~ShapeShifterManager()
+{
+}

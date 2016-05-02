@@ -17,7 +17,6 @@
 #include "ControlManager.h"
 #include "ControllerManagerUI.h"
 
-#include "UIHelpers.h"
 #include "TimeManagerUI.h"
 
 #include "ControllableInspector.h"
