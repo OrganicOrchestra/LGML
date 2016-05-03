@@ -11,6 +11,7 @@
 #include "ControllableContainer.h"
 
 #include "ControllableContainerEditor.h"
+#include "ControllableUI.h"
 
 ControllableContainer::ControllableContainer(const String & niceName) :
 niceName(niceName),
@@ -36,6 +37,7 @@ FloatParameter * ControllableContainer::addFloatParameter(const String & _niceNa
     if (getControllableByName(niceName) != nullptr)
     {
         DBG("ControllableContainer::add parameter, short Name already exists : " + niceName);
+        jassertfalse;
         return nullptr;
     }
 
@@ -103,11 +105,14 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
 void ControllableContainer::removeControllable(Controllable * c)
 {
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
-    ControllableContainer * notified = parentContainer;
-    while(notified!=nullptr){
-        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
-        notified = notified->parentContainer;
-    }
+    // @ben remove nested callback as it's not needed anymore for ControllableContainerSync
+    // we may implement a special callback structure changed that triggered only by the root parent
+
+//    ControllableContainer * notified = parentContainer;
+//    while(notified!=nullptr){
+//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+//        notified = notified->parentContainer;
+//    }
     controllables.removeObject(c);
 }
 
@@ -146,20 +151,20 @@ void ControllableContainer::addChildControllableContainer(ControllableContainer 
     controllableContainers.add(container);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
     container->setParentContainer(this);
-    ControllableContainer * notified = parentContainer;
-    while(notified!=nullptr){
-        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
-        notified = notified->parentContainer;
-    }
+//    ControllableContainer * notified = parentContainer;
+//    while(notified!=nullptr){
+//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
+//        notified = notified->parentContainer;
+//    }
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
-    ControllableContainer * notified = parentContainer;
-    while(notified!=nullptr){
-        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
-        notified = notified->parentContainer;
-    }
+//    ControllableContainer * notified = parentContainer;
+//    while(notified!=nullptr){
+//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
+//        notified = notified->parentContainer;
+//    }
 
     container->setParentContainer(nullptr);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
@@ -399,42 +404,104 @@ void ControllableContainer::addParameterInternal(Parameter * p)
     controllables.add(p);
     p->addParameterListener(this);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
-    ControllableContainer * notified = parentContainer;
-    while(notified!=nullptr){
-        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
-        notified = notified->parentContainer;
-    }
+//    ControllableContainer * notified = parentContainer;
+//    while(notified!=nullptr){
+//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
+//        notified = notified->parentContainer;
+//    }
 }
 
 
-Component * ControllableContainer::createControllableContainerEditor(){
-    ControllableContainerEditor * editor = new ControllableContainerEditor(this,nullptr);
-    Rectangle<int> bounds;
+Component * ControllableContainer::createControllableContainerEditor(Component * reference){
+    ControllableContainerEditor * editor;
+    if(reference==nullptr){editor= new ControllableContainerEditor(this,nullptr);}
+    else{editor = (ControllableContainerEditor*)reference;}
+    jassert(editor!=nullptr);
 
-    int pad=3;
-    int curY = pad;
-    for(auto & c:controllables){
-        if(!c->hideInEditor){
-            ControllableUI * cUI = new NamedControllableUI(c->createDefaultControllableEditor(),100);
-            cUI->setTopLeftPosition(0, curY);
-            curY+=cUI->getHeight() + pad;
+//    DBG("=====Editor : "+editor->owner->niceName);
+    int idx = 0;
+    // tries to create only new 
+    Array<Controllable*> currentControllables;
+    for(auto &c:controllables){currentControllables.add(c);}
+
+    for(auto & c:currentControllables){
+        if(c->hideInEditor)continue;
+
+        ControllableUI * cUI =nullptr;
+        if( idx < editor->controllableUIs.size()){
+            ControllableUI* current = editor->controllableUIs.getUnchecked(idx);
+            if(current && current->controllable.get() && current->controllable == c){
+//                DBG("===Exist : "+current->controllable->niceName);
+                cUI = current;
+            }
+            else{
+                jassert(reference!=nullptr);
+//                DBG("===Remove : "+current->getName());
+                reference->removeChildComponent(current);
+            }
+        }
+        if(cUI==nullptr){
+            cUI= new NamedControllableUI(c->createControllableContainerEditor(),100);
+//            DBG("===Create: "+cUI->controllable->niceName);
             editor->addControlUI(cUI);
-            bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
         }
+
+
+        idx++;
     }
 
+    // delete if there is more
+    Array<ControllableUI*> oldControllables;
+    for(auto &c:editor->controllableUIs){oldControllables.add(c);}
+    for(int i = idx ; i <oldControllables.size() ; i++  ){
+        ControllableUI *c = oldControllables[i];
+//        DBG("===Remove : " << c->getName());
+        editor->removeChildComponent(c);
+        editor->controllableUIs.removeAllInstancesOf(c);
+        delete c;
+    }
 
-    for(auto &c:controllableContainers){
-        Component * cE=c->createControllableContainerEditor();
-        if(cE){
-            cE->setTopLeftPosition(0, curY);
-            curY+=cE->getHeight()+pad;
+    idx =0;
+        Array<ControllableContainer*> currentContainers;
+    for(auto &c:controllableContainers){currentContainers.add(c);}
+    for(auto &c:currentContainers){
+        ControllableContainerEditor * cE=nullptr;
+        if(idx < editor->editors.size()){
+
+            if(c == editor->editors.getUnchecked(idx)->owner){
+                cE = editor->editors.getUnchecked(idx);
+            }
+
+            else{
+                editor->removeChildComponent(cE);
+                editor->editors.removeAllInstancesOf(cE);
+                delete cE;
+            }
+        }
+        if(cE==nullptr){
+            cE=(ControllableContainerEditor*)c->createControllableContainerEditor(nullptr);
+            editor->editors.add(cE);
             editor->addAndMakeVisible(cE);
-            bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
+
         }
+        else{
+            cE = (ControllableContainerEditor*)c->createControllableContainerEditor(cE);
+        }
+
+        idx++;
     }
 
-    editor->setBounds(bounds);
+    // delete if there is more
+    Array<ControllableContainerEditor*> oldContainers;
+    for(auto &c:editor->editors){oldContainers.add(c);}
+    for(int i = idx ; i <oldContainers.size() ; i++  ){
+        ControllableContainerEditor *c = oldContainers[i];
+//        DBG("===Remove Container: " << c->getName());
+        editor->removeChildComponent(c);
+        editor->editors.removeAllInstancesOf(c);
+        delete c;
+    }
+
     return editor;
 
 }

@@ -22,7 +22,7 @@ showLabel(true)
 
 ParameterUI::~ParameterUI()
 {
-    if(parameter)parameter->removeParameterListener(this);
+    if(parameter.get())parameter->removeParameterListener(this);
 }
 
 

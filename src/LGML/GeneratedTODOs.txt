@@ -7,11 +7,6 @@
  ///////////////////////////////////////
 
 
-TimeManager.h
-	line : 27
-		// TODO check if we can use SingleThread Singleton for fast access in processAdio
-
-
 NodeManager.cpp
 	line : 264
 		//TODO synchronize this and implement it for data
@@ -22,22 +17,31 @@ NodeManager.cpp
 
 
 EngineFileDocument.cpp
-	line : 101
+	line : 99
 		//    TODO check version Compat
 
 
 VuMeter.h
-	line : 16
+	line : 15
 		//TODO, move to more common place for use in other components
 
 
 ControllableContainer.cpp
-	line : 351
+	line : 377
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 107
+		// @ben remove nested callback as it's not needed anymore for ControllableContainerSync
+		// we may implement a special callback structure changed that triggered only by the root parent
+		//    ControllableContainer * notified = parentContainer;
+		//    while(notified!=nullptr){
+		//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+		//        notified = notified->parentContainer;
+		//    }
 
 
 NodeBase.h
-	line : 128
+	line : 125
 		// @ben is it triggering error on your side?
 
 
@@ -52,9 +56,14 @@ NodeConnectionEditor.cpp
 
 
 NodeConnectionUI.cpp
-	line : 85
+	line : 83
 		//@ben I prefer that atm (at least it doesnt start with weird anchors)
 		//but I'm up for any other fancy complexoid cuved Path algos that never touch a node
+
+
+ShapeShifterContainer.cpp
+	line : 172
+		//@ben what to we do for that?
 
 
 DataProcessorGraph.cpp
@@ -64,16 +73,8 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.cpp
-	line : 96
-		// TODO :   -avoid recreating everything or this cheap refreshing
-		//          -try to merge common properties based on first by deleting non common params within candidateContainers
-		//    for(auto &c:removedContainers){
-		//        displayedEditor->removeContainerFromEditor(c);
-		//    }
-		//
-		//    for( auto &c:removedControllables){
-		//        displayedEditor->removeControllableFromEditor(c);
-		//    }
+	line : 85
+		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
 LooperTrack.cpp
@@ -83,17 +84,9 @@ LooperTrack.cpp
 		// for now reduce block approximation noise when quantized
 
 
-ControllableContainerSync.h
-	line : 16
-		// TODO handle controllableContainerAdded / Removed sync
-
-
-Controller.cpp
-	line : 72
-		//TODO : Move parameters save/load in ControllableContainer, so we only need to call ControllableContainer::loadJSONData() to handle parameters of a class inheriting CContainer;
-
-	line : 41
-		//TODO should be moved in ControllableContainer getJSON generic method, so every controllableContainer will have already save/load functions.
+TimeManager.h
+	line : 27
+		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
 VSTNode.h
@@ -108,15 +101,12 @@ VSTNode.h
 
 
 NodeBase.cpp
-	line : 195
+	line : 150
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
-
-	line : 211
-		//TODO : Move parameters save/load in ControllableContainer, so we only need to call ControllableContainer::loadJSONData() to handle parameters of a class inheriting CContainer;
 
 
 ControllableContainer.h
-	line : 88
+	line : 95
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -124,13 +114,13 @@ ControllableContainer.h
 
 
 Looper.cpp
-	line : 59
+	line : 60
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
 
 ControllableInspector.h
-	line : 20
+	line : 23
 		// TODO handle merging of multiple component of sameClass : almost there ....
 
 

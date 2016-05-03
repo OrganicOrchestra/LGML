@@ -30,7 +30,7 @@ public:
     ScopedPointer<BoolToggleUI>     monitoringButton;
 
     LooperNodeContentUI();
-
+    ~LooperNodeContentUI();
 
     Component trackContainer;
     Component headerContainer;

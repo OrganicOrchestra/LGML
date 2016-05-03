@@ -22,7 +22,7 @@ NodeBaseUI * AudioMixerNode::createUI()
 }
 
 
-AudioMixerNode::AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId, "AudioMixer", new AudioMixerAudioProcessor, nullptr) {
+AudioMixerNode::AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId, "AudioMixerNode", new AudioMixerAudioProcessor, nullptr) {
 
     addChildControllableContainer((AudioMixerAudioProcessor*) audioProcessor);
 }

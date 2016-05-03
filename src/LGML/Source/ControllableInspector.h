@@ -15,6 +15,8 @@
 
 #include "ControllableContainerEditor.h"
 #include "ControllableContainerSync.h"
+#include "SelectableComponent.h"
+#include "NodeManagerUI.h"
 
 #include "ShapeShifterContent.h"
 
@@ -43,13 +45,7 @@ private:
     // each inspector UI element is binded to one Controllable in proxy,
     // if changed , it notifies All corresponding candidateControllable
     ScopedPointer<ControllableContainerSync> controllableContainerSync;
-
-
     ScopedPointer<ControllableContainerEditor> displayedEditor;
-    Array<ControllableContainer *> candidateContainers;
-
-    Array<Controllable*> removedControllables;
-    Array<ControllableContainer*> removedContainers;
 
 
     void paint(Graphics &g) override;
@@ -63,6 +59,7 @@ private:
 
 
     void sourceUpdated(ControllableContainer*) override;
+    void structureChanged()override;
 
     NodeManagerUI * nmui;
 

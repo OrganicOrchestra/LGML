@@ -50,6 +50,7 @@ public:
             setNumInput(o->volumes.size());
         };
         ~OutputBusUI(){
+
         }
         void setNumInput(int numInput);
         void resized() override;
