@@ -32,7 +32,16 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 353
+	line : 107
+		// @ben remove nested callback as it's not needed anymore for ControllableContainerSync
+		// we may implement a special callback structure changed that triggered only by the root parent
+		//    ControllableContainer * notified = parentContainer;
+		//    while(notified!=nullptr){
+		//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+		//        notified = notified->parentContainer;
+		//    }
+
+	line : 356
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
@@ -64,9 +73,8 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.cpp
-	line : 87
-		// TODO :   -avoid recreating everything
-		//          -try to merge common properties based on first by deleting non common params within candidateContainers
+	line : 84
+		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
 LooperTrack.cpp
@@ -74,11 +82,6 @@ LooperTrack.cpp
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized
-
-
-ControllableContainerSync.h
-	line : 16
-		// TODO handle controllableContainerAdded / Removed sync
 
 
 Controller.cpp

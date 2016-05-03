@@ -33,7 +33,6 @@ public:
 
     Controllable(const Type &type, const String &niceName, const String &description, bool enabled = true);
     virtual ~Controllable() {
-        listeners.call(&Controllable::Listener::controllableBeingDeleted,this);
         Controllable::masterReference.clear();}
 
 
@@ -92,7 +91,7 @@ public:
     String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
     // used for generating editor
-    virtual ControllableUI * createControllableContainerEditor(bool tryToKeepControllableUIs) = 0;
+    virtual ControllableUI * createControllableContainerEditor() = 0;
 
 
 public:
@@ -103,7 +102,6 @@ public:
         virtual ~Listener() {}
         virtual void controllableStateChanged(Controllable * c) = 0;
         virtual void controllableControlAddressChanged(Controllable * c) = 0;
-        virtual void controllableBeingDeleted(Controllable *){}
     };
 
     ListenerList<Listener> listeners;

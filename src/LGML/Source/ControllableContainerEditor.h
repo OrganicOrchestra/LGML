@@ -27,13 +27,11 @@ public:
 
     void addControlUI(ControllableUI * c);
     void removeControlUI(ControllableUI * c);
-    void removeControllableFromEditor(Controllable * c);
-    void removeContainerFromEditor(ControllableContainer * toRemove);
+
     void childrenChanged()override;
     void paint(Graphics &g) override;
     void childBoundsChanged(Component *)override;
     void resized()override;
-    void syncUIElements();
     ControllableContainer * owner;
     Array<ControllableUI*> controllableUIs;
     Array<ControllableContainerEditor*> editors;

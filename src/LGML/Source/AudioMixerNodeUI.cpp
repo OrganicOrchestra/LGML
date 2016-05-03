@@ -64,7 +64,7 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
         }
     }
     else if(numInput<lastSize){
-        inputVolumes.removeLast(lastSize-numInput,false);
+        inputVolumes.removeLast(lastSize-numInput,true);
     }
     resized();
 }

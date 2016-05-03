@@ -25,6 +25,6 @@ StringParameterUI * StringParameter::createStringParameterUI()
     return new StringParameterUI(this);
 }
 
-ControllableUI* StringParameter::createControllableContainerEditor(bool tryToKeepControllableUIs){
+ControllableUI* StringParameter::createControllableContainerEditor(){
     return createStringParameterUI();
 };

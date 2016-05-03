@@ -20,7 +20,10 @@ nmui(_nmui)
 
 ControllableInspector::~ControllableInspector(){
     nmui->selectableHandler.removeSelectableHandlerListener(this);
-    if(controllableContainerSync)controllableContainerSync->removeContainerSyncListener(this);
+    if(controllableContainerSync){
+        controllableContainerSync->removeContainerSyncListener(this);
+        controllableContainerSync->removeControllableContainerListener(this);
+    }
 }
 
 void ControllableInspector::selectableChanged(SelectableComponent * _node,bool state)
@@ -39,6 +42,7 @@ void ControllableInspector::addOrMergeControllableContainerEditor(ControllableCo
     if(controllableContainerSync==nullptr){
         controllableContainerSync = new ControllableContainerSync(c,"editor");
         controllableContainerSync->addControllableContainerListener(this);
+        controllableContainerSync->addContainerSyncListener(this);
     }
     controllableContainerSync->addSyncedControllableIfNotAlreadyThere(c);
     generateFromCandidates();
@@ -49,6 +53,8 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
 {
     if(controllableContainerSync && controllableContainerSync->sourceContainer == c){
         controllableContainerSync->removeControllableContainerListener(this);
+        controllableContainerSync->removeContainerSyncListener(this);
+
         controllableContainerSync = nullptr;
         displayedEditor = nullptr;
         return;}
@@ -70,23 +76,13 @@ void ControllableInspector::generateFromCandidates()
         addAndMakeVisible(displayedEditor);
     }
 
-    // regenerate a new one
-//    else if(displayedEditor->owner!=nullptr && displayedEditor->owner!=controllableContainerSync->sourceContainer)
-//	{
-//        removeChildComponent(displayedEditor);
-//        displayedEditor = nullptr;
-//        displayedEditor = (ControllableContainerEditor*)controllableContainerSync->createControllableContainerEditor();
-//        addAndMakeVisible(displayedEditor);
-//
-//    }
+    // regenerate a new one based on existing one
     else{
         controllableContainerSync->createControllableContainerEditor(displayedEditor);
-        displayedEditor->syncUIElements();
     }
 
 
-    // TODO :   -avoid recreating everything
-    //          -try to merge common properties based on first by deleting non common params within candidateContainers
+    // TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
     displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
@@ -142,4 +138,8 @@ void ControllableInspector::sourceUpdated(ControllableContainer * c)
     displayedEditor = nullptr;
     addOrMergeControllableContainerEditor(c);
 
+};
+
+void ControllableInspector::structureChanged(){
+    generateFromCandidates();
 };

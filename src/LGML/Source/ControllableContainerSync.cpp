@@ -11,6 +11,9 @@
 #include "ControllableContainerSync.h"
 
 
+// =============
+// add athor container to be in sync
+
 void ControllableContainerSync::addSyncedControllableIfNotAlreadyThere(ControllableContainer * c){
     // check that we have same class
     jassert(typeid(c)==typeid(sourceContainer));
@@ -46,14 +49,16 @@ void ControllableContainerSync::removeSyncedControllable(ControllableContainer *
 
 
 
+// ====================
+// internal structural methods
+
 void ControllableContainerSync::deepCopyForContainer(ControllableContainer * container){
 
     for(auto & c:container->controllables){
         doAddControllable(c);
     }
     for(auto & c:container->controllableContainers){
-        ControllableContainerSync * cc = new ControllableContainerSync(c,groupName);
-        addChildControllableContainer(cc);
+        doAddContainer(c);
     }
     addSyncedControllableIfNotAlreadyThere(container);
 
@@ -93,6 +98,22 @@ void ControllableContainerSync::doRemoveControllable(Controllable * c){
     }
 }
 
+void ControllableContainerSync::doAddContainer(ControllableContainer *c){
+    ControllableContainerSync * cc = new ControllableContainerSync(c,groupName);
+    addChildControllableContainer(cc);
+
+}
+
+void ControllableContainerSync::doRemoveContainer(ControllableContainer *c){
+    for(auto & cc:controllableContainers){
+        if(areCompatible(c,cc)){
+            removeChildControllableContainer(cc);
+            break;
+        }
+    }
+
+    
+}
 void ControllableContainerSync::clear(){
     while(controllables.size()>0){
             removeControllable(controllables.getLast());
@@ -107,8 +128,7 @@ void ControllableContainerSync::clear(){
 
 
 // ===============================
-// sync controllables
-
+// sync propagation
 
 
 // from main
@@ -199,4 +219,33 @@ bool ControllableContainerSync::setControllableValue(Controllable * cOrigin,Cont
     return true;
 
 
+}
+
+
+// === sync listener{
+void ControllableContainerSync::notifyStructureChanged(){
+    containerSyncListeners.call(&ContainerSyncListener::structureChanged);
+    ControllableContainerSync * parent = dynamic_cast<ControllableContainerSync*>(parentContainer);
+    if(parent){
+        parent->notifyStructureChanged();
+    }
+}
+
+void ControllableContainerSync::controllableAdded(Controllable *c) {
+    doAddControllable(c);
+    notifyStructureChanged();
+
+}
+
+void ControllableContainerSync::controllableRemoved(Controllable *c){
+    doRemoveControllable(c);
+    notifyStructureChanged();
+}
+void ControllableContainerSync::controllableContainerAdded(ControllableContainer *  c) {
+    doAddContainer(c);
+    notifyStructureChanged();
+}
+void ControllableContainerSync::controllableContainerRemoved(ControllableContainer * c){
+    doRemoveContainer(c);
+    notifyStructureChanged();
 }

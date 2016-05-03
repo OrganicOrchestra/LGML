@@ -58,6 +58,7 @@ private:
 
 
     void sourceUpdated(ControllableContainer*) override;
+    void structureChanged()override;
 
     NodeManagerUI * nmui;
 

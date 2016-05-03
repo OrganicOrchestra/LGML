@@ -14,7 +14,7 @@
 // a ControllableContainerSync can fully syncronyze Controllables from a source container to a list of container
 // other containers have to be of the same kind
 // correspondences of Controllables is based on ControlAddress relative to ControllableContainers depth (i.e starting from the name of it
-// TODO handle controllableContainerAdded / Removed sync
+
 
 #include "ControllableContainer.h"
 
@@ -30,6 +30,7 @@ public:
     {
         setNiceName(produceGroupName(source->niceName));
         deepCopyForContainer(source);
+        
         
     }
 
@@ -51,6 +52,8 @@ public:
     void deepCopyForContainer(ControllableContainer * container);
     void doAddControllable(Controllable *c);
     void doRemoveControllable(Controllable * c);
+    void doAddContainer(ControllableContainer * );
+    void doRemoveContainer(ControllableContainer * );
     void clear();
 
     void addSyncedControllableIfNotAlreadyThere(ControllableContainer * );
@@ -60,10 +63,10 @@ public:
     Array<ControllableContainer*> targetSyncedContainers;
 
 
-    void controllableAdded(Controllable *c) override{doAddControllable(c);};
-    void controllableRemoved(Controllable *c)override{doRemoveControllable(c);};
-    void controllableContainerAdded(ControllableContainer *) override{};
-    void controllableContainerRemoved(ControllableContainer *)override{};
+    void controllableAdded(Controllable *c) override;
+    void controllableRemoved(Controllable *c)override;
+    void controllableContainerAdded(ControllableContainer *  c) override;
+    void controllableContainerRemoved(ControllableContainer * c)override;
     void controllableFeedbackUpdate(Controllable *c) override;
 
     
@@ -77,6 +80,7 @@ public:
 
         virtual void sourceUpdated(ControllableContainer * )=0;
         virtual void sourceDeleted(){};
+        virtual void structureChanged(){};
 
     };
 
@@ -88,7 +92,7 @@ public:
 
 private:
     Controllable * notifyingControllable;
-
+    void notifyStructureChanged();
     bool setControllableValue(Controllable * cOrigin,Controllable * c);
 };
 

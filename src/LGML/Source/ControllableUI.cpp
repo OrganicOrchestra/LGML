@@ -11,16 +11,18 @@
 #include "ControllableUI.h"
 
 ControllableUI::ControllableUI(Controllable * controllable) :
-    controllable(controllable)
+    controllable(controllable),
+Component(controllable->niceName)
 {
     jassert(controllable!=nullptr);
     updateTooltip();
     controllable->addControllableListener(this);
+
 }
 
 ControllableUI::~ControllableUI()
 {
-    if(controllable)controllable->removeControllableListener(this);
+    if(controllable.get())controllable->removeControllableListener(this);
 }
 
 void ControllableUI::controllableStateChanged(Controllable * c)
@@ -39,10 +41,3 @@ void ControllableUI::updateTooltip()
     setTooltip(tooltip);
 }
 
-
-void ControllableUI::controllableBeingDeleted(Controllable * c) {
-    if(c==controllable){
-    getParentComponent()->removeChildComponent(this);
-//        delete this;
-    }
-};
