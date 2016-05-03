@@ -64,7 +64,7 @@ void ShapeShifterPanelHeader::mouseDown(const MouseEvent & e)
 
 void ShapeShifterPanelHeader::mouseDrag(const MouseEvent & e)
 {
-	int minDetachDistance = 20;
+	int minDetachDistance = 10;
 
 	if (e.eventComponent == this)
 	{
@@ -88,10 +88,8 @@ void ShapeShifterPanelHeader::resized()
 	Rectangle<int> r = getLocalBounds();
 	if (r.getWidth() == 0 || r.getHeight() == 0) return;
 
-	DBG("Header local bounds " << r.toString());
 	for (auto &t : tabs)
 	{
-		DBG("get tab width from header " << t->getWidth());
 		t->setBounds(r.removeFromLeft(t->getWidth()));
 	}
 }

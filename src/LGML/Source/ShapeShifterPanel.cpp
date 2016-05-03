@@ -48,7 +48,6 @@ void ShapeShifterPanel::setCurrentContent(ShapeShifterContent * _content)
 		removeChildComponent(currentContent);
 	}
 
-	if(currentContent != nullptr && _content != nullptr) DBG("Set content : " << currentContent->getName() << " >> " << _content->getName());
 
 	currentContent = _content;
 
@@ -88,7 +87,8 @@ void ShapeShifterPanel::attachTab(ShapeShifterPanelTab * tab)
 void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab)
 {
 	ShapeShifterContent * content = tab->content;
-	Rectangle<int> tabBounds = content->getScreenBounds().withPosition(getScreenPosition());
+
+	Rectangle<int> r = getScreenBounds();
 
 	header.removeTab(tab,false);
 
@@ -107,7 +107,7 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab)
 	}
 
 	ShapeShifterPanel * newPanel = ShapeShifterManager::getInstance()->createPanel(content,tab);
-	ShapeShifterManager::getInstance()->showPanelWindow(newPanel, tabBounds);
+	ShapeShifterManager::getInstance()->showPanelWindow(newPanel,r);
 }
 
 void ShapeShifterPanel::addContent(ShapeShifterContent * content, bool setCurrent)

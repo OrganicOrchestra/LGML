@@ -69,7 +69,6 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     titleUI = node->nameParam->createStringParameterUI();
 
 
-    DBG("Node Header UI, name Param : " << node->nameParam->stringValue());
 
     titleUI->setNameLabelVisible(false);
     titleUI->setInterceptsMouseClicks(false, false);
@@ -95,7 +94,6 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 
 void NodeBaseHeaderUI::updatePresetComboBox()
 {
-    DBG("Update Preset Combobox : " << node->getPresetFilter());
 
     bool emptyFilter = node->getPresetFilter().isEmpty();
     presetCB->setEnabled(!emptyFilter);
@@ -116,7 +114,6 @@ void NodeBaseHeaderUI::init()
 
 void NodeBaseHeaderUI::resized()
 {
-    DBG("Header Resized !!");
     if (!node) return;
 
     int vuMeterWidth = 14;

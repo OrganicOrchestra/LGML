@@ -52,6 +52,7 @@ void ShapeShifterContainer::removePanel(ShapeShifterPanel * panel)
 	if (shifters.size() == 0)
 	{
 		//dispatch emptied container so parent container deletes it
+		containerListeners.call(&ShapeShifterContainerListener::containerEmptied, this);
 	}
 	else
 	{
@@ -69,6 +70,7 @@ ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(int index, Cont
 	ShapeShifterContainer * ssc = new ShapeShifterContainer(_contentType, _direction);
 	shifters.add(ssc);
 	containers.add(ssc);
+	ssc->addShapeShifterContainerListener(this);
 	addAndMakeVisible(ssc);
 
 
@@ -89,11 +91,13 @@ void ShapeShifterContainer::removeContainer(ShapeShifterContainer * container)
 {
 	int shifterIndex = shifters.indexOf(container);
 	shifters.removeAllInstancesOf(container);
+	container->removeShapeShifterContainerListener(this);
 	container->setParentContainer(nullptr);
 
 	if (shifters.size() == 0)
 	{
-		//dispatch emptied container so parent container deletes it
+		DBG("call container emptied");
+		containerListeners.call(&ShapeShifterContainerListener::containerEmptied, this);
 	}
 	else
 	{
@@ -112,7 +116,6 @@ void ShapeShifterContainer::resized()
 	Rectangle<int> r = getLocalBounds();
 	int gap = 6;
 	int totalSpace = (direction == HORIZONTAL) ? r.getWidth() : r.getHeight();
-
 
 	int numShifters = shifters.size();
 
@@ -174,7 +177,6 @@ void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, int dist)
 
 void ShapeShifterContainer::panelDetach(ShapeShifterPanel * panel)
 {
-	DBG("Container::PanelDetach");
 	Rectangle<int> panelBounds = panel->getScreenBounds();
 	removePanel(panel);
 	ShapeShifterManager::getInstance()->showPanelWindow(panel, panelBounds);
@@ -183,6 +185,12 @@ void ShapeShifterContainer::panelDetach(ShapeShifterPanel * panel)
 void ShapeShifterContainer::panelRemoved(ShapeShifterPanel * panel)
 {
 	removePanel(panel);
+}
+
+void ShapeShifterContainer::containerEmptied(ShapeShifterContainer * container)
+{
+	DBG("callback container emptied");
+	removeContainer(container);
 }
 
 

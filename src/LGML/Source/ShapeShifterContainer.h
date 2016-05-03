@@ -14,7 +14,29 @@
 #include "ShapeShifterPanel.h"
 #include "GapGrabber.h"
 
-class ShapeShifterContainer : public ShapeShifter, public GapGrabber::Listener, public ShapeShifterPanel::Listener
+
+class ShapeShifterContainer;
+
+class ShapeShifterContainerListener
+{
+public:
+	virtual ~ShapeShifterContainerListener() {}
+	virtual void panelAdded(ShapeShifterContainer *) {}
+	virtual void panelRemoved(ShapeShifterContainer *) {}
+
+	virtual void containerAdded(ShapeShifterContainer *) {}
+	virtual void containerRemoved(ShapeShifterContainer *) {}
+
+	virtual void containerEmptied(ShapeShifterContainer *) {}
+
+};
+
+
+//Listener
+class ShapeShifterContainer : public ShapeShifter,
+	public GapGrabber::Listener, 
+	public ShapeShifterPanel::Listener, 
+	public ShapeShifterContainerListener
 {
 public:
 	enum Direction { NONE, HORIZONTAL, VERTICAL};
@@ -46,31 +68,17 @@ public:
 	virtual void panelDetach(ShapeShifterPanel *) override;
 	virtual void panelRemoved(ShapeShifterPanel *) override;
 
-	//Listener
-	class Listener
-	{
-	public:
-		virtual ~Listener() {}
-		virtual void panelAdded(ShapeShifterContainer *) {}
-		virtual void panelRemoved(ShapeShifterContainer *) {}
+	virtual void containerEmptied(ShapeShifterContainer *) override;
 
-		virtual void containerAdded(ShapeShifterContainer *) {}
-		virtual void containerRemoved(ShapeShifterContainer *) {}
-
-		virtual void containerEmptied(ShapeShifterContainer *) {}
-
-	};
-
-	ListenerList<Listener> listeners;
-	void addNodeListener(Listener* newListener) { listeners.add(newListener); }
-	void removeNodeListener(Listener* listener) { listeners.remove(listener); }
-
-
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterContainer)
+	ListenerList<ShapeShifterContainerListener> containerListeners;
+	void addShapeShifterContainerListener(ShapeShifterContainerListener* newListener) { containerListeners.add(newListener); }
+	void removeShapeShifterContainerListener(ShapeShifterContainerListener* listener) { containerListeners.remove(listener); }
 
 	
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterContainer)
 };
+
 
 
 #endif  // SHAPESHIFTERCONTAINER_H_INCLUDED
