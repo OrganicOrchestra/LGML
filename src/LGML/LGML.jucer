@@ -125,6 +125,18 @@
       </GROUP>
       <GROUP id="{25464EB0-81C5-256B-F983-7775FBA00B84}" name="UI">
         <GROUP id="{30013ECC-6E48-9679-76F9-D5D186163A72}" name="ShapeShifter">
+          <FILE id="JAClVm" name="ShapeShifterPanelHeader.cpp" compile="1" resource="0"
+                file="Source/ShapeShifterPanelHeader.cpp"/>
+          <FILE id="ZvgGSR" name="ShapeShifterPanelHeader.h" compile="0" resource="0"
+                file="Source/ShapeShifterPanelHeader.h"/>
+          <FILE id="ct1PRj" name="ShapeShifterPanelTab.cpp" compile="1" resource="0"
+                file="Source/ShapeShifterPanelTab.cpp"/>
+          <FILE id="ij12fV" name="ShapeShifterPanelTab.h" compile="0" resource="0"
+                file="Source/ShapeShifterPanelTab.h"/>
+          <FILE id="waJrKo" name="ShapeShifterContent.cpp" compile="1" resource="0"
+                file="Source/ShapeShifterContent.cpp"/>
+          <FILE id="ajoSrm" name="ShapeShifterContent.h" compile="0" resource="0"
+                file="Source/ShapeShifterContent.h"/>
           <FILE id="jodjw5" name="ShapeShifter.cpp" compile="1" resource="0"
                 file="Source/ShapeShifter.cpp"/>
           <FILE id="zcKenT" name="ShapeShifter.h" compile="0" resource="0" file="Source/ShapeShifter.h"/>

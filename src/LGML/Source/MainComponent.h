@@ -46,22 +46,15 @@ public:
 
 	ShapeShifterManager shapeShifterManager;
 
-	TimeManagerUI * timeManagerUI;
+	ScopedPointer<TimeManagerUI> timeManagerUI;
+
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
 	ScopedPointer<ControllableInspector> controllableInspector;
+	ScopedPointer<ControllerManagerUI> controllerManagerUI;
 
-	ScopedPointer<ShapeShifterPanel> nodeManagerPanel;
-	ScopedPointer<ShapeShifterPanel> controllerManagerPanel;
-	ScopedPointer<ShapeShifterPanel> controllableInspectorPanel;
-	ScopedPointer<ShapeShifterPanel> timeManagerPanel;
-
-    
-	
 
     Engine * engine;
     AudioDeviceSelectorComponent audioSettingsComp;
-
-
 
     ScopedPointer<LookAndFeelOO> lookAndFeelOO;
 

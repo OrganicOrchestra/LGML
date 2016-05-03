@@ -11,51 +11,117 @@
 #include "ShapeShifterPanel.h"
 #include "Style.h"
 
-ShapeShifterPanel::ShapeShifterPanel(const String &_panelName, Component *_innerComponent) :
-	header(_panelName),
-	innerComponent(_innerComponent)	
+#include "ShapeShifterManager.h"
+
+ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifterPanelTab * sourceTab)
 {
 
-	addAndMakeVisible(&header);
-	addAndMakeVisible(innerComponent);
+	addAndMakeVisible(header);
+	header.addHeaderListener(this);
+
+	if (sourceTab == nullptr)
+	{
+		header.addTab(_content);
+		contents.add(_content);
+		setCurrentContent(_content);
+	}else
+	{
+		attachTab(sourceTab);
+	}
+
+	
 }
 
 ShapeShifterPanel::~ShapeShifterPanel()
 {
+	header.removeHeaderListener(this);
+	listeners.call(&Listener::panelRemoved, this);
 }
 
 
+void ShapeShifterPanel::setCurrentContent(ShapeShifterContent * _content)
+{
+	if (_content == currentContent) return;
+
+	if (currentContent != nullptr)
+	{
+		removeChildComponent(_content);
+	}
+
+	currentContent = _content;
+
+
+	if (currentContent != nullptr)
+	{
+		addAndMakeVisible(_content);
+	}
+	resized();
+}
+
 void ShapeShifterPanel::paint(Graphics & g)
 {
-	g.fillAll(BG_COLOR);
+	g.setColour(BG_COLOR);
+	g.fillRect(getLocalBounds().withTrimmedTop(headerHeight));
 }
 
 void ShapeShifterPanel::resized()
 {
 	Rectangle<int> r = getLocalBounds();
 	header.setBounds(r.removeFromTop(headerHeight));
-	innerComponent->setBounds(r);
+	if (currentContent != nullptr)
+	{
+		currentContent->setBounds(r);
+	}
 }
 
-ShapeShifterPanel::PanelHeader::PanelHeader(const String & _panelName)
+void ShapeShifterPanel::attachTab(ShapeShifterPanelTab * tab)
 {
-	addAndMakeVisible(&panelLabel);
-	panelLabel.setFont(12);
-	panelLabel.setColour(panelLabel.textColourId, Colours::white);
-	panelLabel.setText(_panelName, NotificationType::dontSendNotification);
+	header.attachTab(tab);
+	contents.add(tab->content);
+	setCurrentContent(tab->content);
 }
 
-ShapeShifterPanel::PanelHeader::~PanelHeader()
+void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab)
 {
+	ShapeShifterContent * content = tab->content;
+	Rectangle<int> tabBounds = content->getScreenBounds().withPosition(getScreenPosition());
+
+	
+	header.removeTab(tab,false);
+
+	int cIndex = contents.indexOf(content);
+	contents.removeAllInstancesOf(content);
+
+	if (currentContent == content)
+	{
+		if (contents.size() > 0)
+		{
+			setCurrentContent(contents[jmax<int>(cIndex, 0)]);
+		}else
+		{
+			listeners.call(&Listener::panelEmptied, this);
+		}
+	}
+
+	ShapeShifterPanel * newPanel = ShapeShifterManager::getInstance()->createPanel(content,tab);
+	DBG("Detach tab, content width = " << content->getWidth());
+	ShapeShifterManager::getInstance()->showPanelWindow(newPanel, tabBounds);
 }
 
-void ShapeShifterPanel::PanelHeader::paint(Graphics & g)
+
+void ShapeShifterPanel::tabDrag(ShapeShifterPanelTab * tab)
 {
-	g.setColour(BG_COLOR.brighter(.2f));
-	g.fillRoundedRectangle(getLocalBounds().reduced(2).toFloat(),2);
+	if(!isDetached() || contents.size() > 1) detachTab(tab);
+	else listeners.call(&Listener::tabDrag, this);
 }
 
-void ShapeShifterPanel::PanelHeader::resized()
+void ShapeShifterPanel::tabSelect(ShapeShifterPanelTab * tab)
 {
-	panelLabel.setBounds(getLocalBounds());
+	setCurrentContent(tab->content);
+}
+
+void ShapeShifterPanel::headerDrag()
+{
+	if (!isDetached()) listeners.call(&Listener::panelDetach, this);
+	else listeners.call(&Listener::headerDrag, this);
 }

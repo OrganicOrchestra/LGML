@@ -33,12 +33,14 @@ public:
 	{
 	public:
 		virtual ~Listener() {}
-		virtual void grabberGrabUpdate(GapGrabber *, float relativeDist) = 0;
+		virtual void grabberGrabUpdate(GapGrabber *, int relativeDist) = 0;
 	};
 
 	ListenerList<Listener> listeners;
 	void addGrabberListener(Listener* newListener) { listeners.add(newListener); }
 	void removeGrabberListener(Listener* listener) { listeners.remove(listener); }
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GapGrabber)
 };
 
 #endif  // GAPGRABBER_H_INCLUDED

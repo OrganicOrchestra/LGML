@@ -10,7 +10,8 @@
 
 #include "ShapeShifterContainer.h"
 #include "Style.h"
-#include "ShapeShifter.h"
+#include "ShapeShifterManager.h"
+
 
 ShapeShifterContainer::ShapeShifterContainer(ContentType _contentType, Direction _direction) : 
 	direction(_direction), contentType(_contentType)
@@ -26,6 +27,9 @@ void ShapeShifterContainer::insertPanelAt(ShapeShifterPanel * panel, int index)
 {
 	shifters.insert(index, panel);
 	addAndMakeVisible(panel);
+	panel->setParentContainer(this);
+	panel->addShapeShifterPanelListener(this);
+
 	if (shifters.size() > 1)
 	{
 		GapGrabber * gg = new GapGrabber(direction == HORIZONTAL?GapGrabber::HORIZONTAL:GapGrabber::VERTICAL);
@@ -40,8 +44,24 @@ void ShapeShifterContainer::insertPanelAt(ShapeShifterPanel * panel, int index)
 
 void ShapeShifterContainer::removePanel(ShapeShifterPanel * panel)
 {
+	int shifterIndex = shifters.indexOf(panel);
 	shifters.removeAllInstancesOf(panel);
+	panel->setParentContainer(nullptr);
+	panel->removeShapeShifterPanelListener(this);
+	
+	if (shifters.size() == 0)
+	{
+		//dispatch emptied container so parent container deletes it
+	}
+	else
+	{
+		GapGrabber * gg = grabbers.getUnchecked(jmin<int>(shifterIndex,grabbers.size()-1));
+		removeChildComponent(gg);
+		grabbers.remove(shifterIndex, true);
+	}
+
 	removeChildComponent(panel);
+	resized();
 }
 
 ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(int index, ContentType _contentType, Direction _direction)
@@ -50,6 +70,7 @@ ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(int index, Cont
 	shifters.add(ssc);
 	containers.add(ssc);
 	addAndMakeVisible(ssc);
+
 
 	if (shifters.size() > 1)
 	{
@@ -66,17 +87,30 @@ ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(int index, Cont
 
 void ShapeShifterContainer::removeContainer(ShapeShifterContainer * container)
 {
+	int shifterIndex = shifters.indexOf(container);
+	shifters.removeAllInstancesOf(container);
+	container->setParentContainer(nullptr);
+
+	if (shifters.size() == 0)
+	{
+		//dispatch emptied container so parent container deletes it
+	}
+	else
+	{
+		GapGrabber * gg = grabbers.getUnchecked(jmin<int>(shifterIndex, grabbers.size() - 1));
+		removeChildComponent(gg);
+		grabbers.remove(shifterIndex, true);
+	}
+
+	removeChildComponent(container);
+	resized();
 }
 
-void ShapeShifterContainer::paint(Graphics & g)
-{
-
-}
 
 void ShapeShifterContainer::resized()
 {
 	Rectangle<int> r = getLocalBounds();
-	int gap = 10;
+	int gap = 6;
 	int totalSpace = (direction == HORIZONTAL) ? r.getWidth() : r.getHeight();
 
 
@@ -116,7 +150,7 @@ void ShapeShifterContainer::resized()
 	}
 }
 
-void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, float dist)
+void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, int dist)
 {
 	ShapeShifter * firstShifter = shifters[grabbers.indexOf(gg)];
 	ShapeShifter * secondShifter = shifters[grabbers.indexOf(gg) + 1];
@@ -135,6 +169,20 @@ void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, float dist)
 	}
 
 	resized();
+}
+
+
+void ShapeShifterContainer::panelDetach(ShapeShifterPanel * panel)
+{
+	DBG("Container::PanelDetach");
+	Rectangle<int> panelBounds = panel->getScreenBounds();
+	removePanel(panel);
+	ShapeShifterManager::getInstance()->showPanelWindow(panel, panelBounds);
+}
+
+void ShapeShifterContainer::panelRemoved(ShapeShifterPanel * panel)
+{
+	removePanel(panel);
 }
 
 

@@ -33,29 +33,24 @@ MainContentComponent::MainContentComponent(Engine * e):
 	addAndMakeVisible(shapeShifterManager.mainContainer);
 
     timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
-
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
-    NodeManagerUIViewport * nodeManagerUIViewport = new NodeManagerUIViewport(nodeManagerUI);
-    
-    ControllerManagerViewport * controllerManagerViewport = new ControllerManagerViewport(ControllerManager::getInstance());
-	
-	controllableInspector = new ControllableInspector(nodeManagerUI);
-	ControllableInspectorViewPort * controllableInspectorViewPort = new ControllableInspectorViewPort(controllableInspector);
-	
+	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
 
+	controllableInspector = new ControllableInspector(nodeManagerUI); //Needs to be abstracted from NodeManager, and be able to inspect any ControllableContainer
+	
 	//Shape Shifter initialization
-	//shapeShifterManager.mainContainer.direction = ShapeShifterContainer::Direction::VERTICAL;
 	ShapeShifterContainer * c1 = shapeShifterManager.mainContainer.insertContainerAt(0,ShapeShifterContainer::ContentType::PANELS,ShapeShifterContainer::Direction::HORIZONTAL);
 	c1->setPreferredHeight(45);
 
 	ShapeShifterContainer * c2 = shapeShifterManager.mainContainer.insertContainerAt(1, ShapeShifterContainer::ContentType::PANELS, ShapeShifterContainer::Direction::HORIZONTAL);
 
-	timeManagerPanel = new ShapeShifterPanel("Time Manager", timeManagerUI);
-	
-	nodeManagerPanel = new ShapeShifterPanel("Node Manager", nodeManagerUIViewport);
-	controllerManagerPanel = new ShapeShifterPanel("Controller Manager", controllerManagerViewport);
+	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
+	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerUI);
+
+	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
 	controllerManagerPanel->setPreferredWidth(300);
-	controllableInspectorPanel = new ShapeShifterPanel("Inspector", controllableInspectorViewPort);
+
+	ShapeShifterPanel * controllableInspectorPanel = ShapeShifterManager::getInstance()->createPanel(controllableInspector);
 	controllableInspectorPanel->setPreferredWidth(200);
 
 
@@ -98,7 +93,9 @@ MainContentComponent::~MainContentComponent(){
 #endif
 //    LookAndFeelOO::deleteInstance();
 
+
     NodeConnectionEditor::deleteInstance();
+	ShapeShifterManager::deleteInstance();
 }
 
 

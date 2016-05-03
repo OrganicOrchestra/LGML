@@ -13,6 +13,7 @@
 
 
 TimeManagerUI::TimeManagerUI(TimeManager * _timeManager):
+ShapeShifterContent("Time Manager"),
 timeManager(_timeManager),
 timeBar(_timeManager){
 

@@ -72,10 +72,12 @@ void ControllableContainerEditor::paint(Graphics & g)
 }
 
 void ControllableContainerEditor::resized(){
+	Rectangle<int> r = getLocalBounds().reduced(5,0);
+
     if(embeddedComp){
-        embeddedComp->setBounds(getLocalBounds());
+        embeddedComp->setBounds(r);
     }
     for(auto &c:controllableUIs){
-        c->setSize(getWidth(), c->getHeight());
+        c->setSize(r.getWidth(), c->getHeight());
     }
 }

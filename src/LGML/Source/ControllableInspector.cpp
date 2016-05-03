@@ -12,6 +12,7 @@
 #include "Style.h"
 
 ControllableInspector::ControllableInspector(NodeManagerUI * _nmui):
+ShapeShifterContent("Inspector"),
 controllableContainerSync(nullptr),
 nmui(_nmui)
 {
@@ -110,9 +111,7 @@ void ControllableInspector::generateFromCandidates()
 
     addAndMakeVisible(displayedEditor);
     displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
-    setBounds(displayedEditor->getBounds().withPosition(0,0));
-
-
+    //setBounds(displayedEditor->getBounds().withPosition(0,0));
 }
 
 void ControllableInspector::paint(Graphics &)

@@ -9,9 +9,11 @@
 */
 
 #include "ShapeShifter.h"
+#include "ShapeShifterContainer.h"
 
 ShapeShifter::ShapeShifter() :
-	preferredWidth(-1), preferredHeight(-1)
+	preferredWidth(-1), preferredHeight(-1),
+	parentContainer(nullptr)
 {
 }
 
@@ -27,4 +29,15 @@ void ShapeShifter::setPreferredWidth(int newWidth)
 void ShapeShifter::setPreferredHeight(int newHeight)
 {
 	preferredHeight = jmax<int>(0, newHeight);
+}
+
+bool ShapeShifter::isDetached()
+{
+	return parentContainer == nullptr;
+}
+
+void ShapeShifter::setParentContainer(ShapeShifterContainer * _parent)
+{
+	if (_parent == parentContainer) return;
+	parentContainer = _parent;
 }

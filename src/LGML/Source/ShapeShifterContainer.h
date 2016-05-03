@@ -14,10 +14,10 @@
 #include "ShapeShifterPanel.h"
 #include "GapGrabber.h"
 
-class ShapeShifterContainer : public ShapeShifter, public GapGrabber::Listener
+class ShapeShifterContainer : public ShapeShifter, public GapGrabber::Listener, public ShapeShifterPanel::Listener
 {
 public:
-	enum Direction { NONE, HORIZONTAL, VERTICAL };
+	enum Direction { NONE, HORIZONTAL, VERTICAL};
 	enum Position { TOP, BOTTOM, LEFT ,RIGHT };
 	enum ContentType { CONTAINERS, PANELS };
 
@@ -25,7 +25,6 @@ public:
 	virtual ~ShapeShifterContainer();
 	
 
-	void paint(Graphics & g) override;
 	void resized() override;
 
 	ContentType contentType;
@@ -43,6 +42,10 @@ public:
 	void removeContainer(ShapeShifterContainer * container);
 	
 
+	virtual void grabberGrabUpdate(GapGrabber * gg, int dist) override;
+	virtual void panelDetach(ShapeShifterPanel *) override;
+	virtual void panelRemoved(ShapeShifterPanel *) override;
+
 	//Listener
 	class Listener
 	{
@@ -54,6 +57,7 @@ public:
 		virtual void containerAdded(ShapeShifterContainer *) {}
 		virtual void containerRemoved(ShapeShifterContainer *) {}
 
+		virtual void containerEmptied(ShapeShifterContainer *) {}
 
 	};
 
@@ -65,8 +69,7 @@ public:
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterContainer)
 
-	// Inherited via Listener
-	virtual void grabberGrabUpdate(GapGrabber * gg, float dist) override;
+	
 };
 
 

@@ -12,8 +12,9 @@
 #define SHAPESHIFTERMANAGER_H_INCLUDED
 
 #include "ShapeShifterContainer.h"
+#include "ShapeShifterWindow.h"
 
-class ShapeShifterManager
+class ShapeShifterManager : public ShapeShifterPanel::Listener
 {
 public:
 	juce_DeclareSingleton(ShapeShifterManager,true);
@@ -21,7 +22,18 @@ public:
 	~ShapeShifterManager();
 
 	ShapeShifterContainer mainContainer;
+	OwnedArray<ShapeShifterPanel> openedPanels;
+	OwnedArray<ShapeShifterWindow> openedWindows;
 
+
+	ShapeShifterPanel * createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab = nullptr);
+	void removePanel(ShapeShifterPanel * panel);
+
+	ShapeShifterWindow * showPanelWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds);
+	void closePanelWindow(ShapeShifterWindow * window);
+
+	void panelEmptied(ShapeShifterPanel * panel) override;
+	
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterManager)
 
 };

@@ -19,6 +19,7 @@ SelectableComponentHandler NodeManagerUI::selectableHandler;
 
 //==============================================================================
 NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
+ShapeShifterContent("Node Manager"),
 nodeManager(nodeManager),
 editingConnection(nullptr),
 isSelectingNodes(false)
@@ -491,11 +492,13 @@ void NodeManagerUI::childBoundsChanged(Component * ){
 
 
 void NodeManagerUI::resizeToFitNodes(){
-    Rectangle<int> _bounds = minBounds;
+	/*
+	Rectangle<int> _bounds = getLocalBounds();
+
     for(auto &n:nodesUI){
         Rectangle<int> r = n->getBoundsInParent();
         _bounds = _bounds.getUnion(r);
     }
     setBounds(_bounds);
-
+	*/
 }

@@ -15,8 +15,9 @@
 #include "FloatStepperUI.h"
 #include "TriggerBlinkUI.h"
 #include "IntStepperUI.h"
+#include "ShapeShifterContent.h"
 
-class TimeManagerUI : public Component,public Parameter::AsyncListener{
+class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener{
 
     public :
     TimeManagerUI(TimeManager * _timeManager);

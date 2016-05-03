@@ -15,11 +15,12 @@
 #include "ControlManager.h"
 #include "ControllerUI.h"
 
+#include "ShapeShifterContent.h"
 //==============================================================================
 /*
 */
 
-class ControllerManagerUI : public Component, public ControllerManager::Listener
+class ControllerManagerUI : public ShapeShifterContent, ControllerManager::Listener
 {
 public:
     ControllerManagerUI(ControllerManager * manager);
@@ -50,7 +51,7 @@ private:
 };
 
 
-
+/*
 class ControllerManagerViewport : public Viewport
 {
 public:
@@ -61,5 +62,6 @@ public:
     void resized() override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerViewport)
 };
+*/
 
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED

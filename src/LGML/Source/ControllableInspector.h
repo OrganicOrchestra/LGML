@@ -16,15 +16,16 @@
 #include "ControllableContainerEditor.h"
 #include "ControllableContainerSync.h"
 
+#include "ShapeShifterContent.h"
 
 // side bar component displaying editor of currently selected nodes
 // TODO handle merging of multiple component of sameClass : almost there ....
 
-class ControllableInspector:public SelectableComponentHandler::SelectableHandlerListener,
-public Component,
-public ControllableContainer::Listener,
-public ControllableContainerSync::ContainerSyncListener
-
+class ControllableInspector: 
+	public ShapeShifterContent,
+	public SelectableComponentHandler::SelectableHandlerListener,
+	public ControllableContainer::Listener,
+	public ControllableContainerSync::ContainerSyncListener
 {
 public:
     ControllableInspector(NodeManagerUI * _nmui);
@@ -69,7 +70,9 @@ private:
 
 };
 
-class ControllableInspectorViewPort:public Viewport{
+/*
+class ControllableInspectorViewPort: public public Viewport
+{
 public:
     ControllableInspectorViewPort(ControllableInspector * cI):Viewport("Inspector Viewport"),inspector(cI){
         setScrollBarsShown(true,true);
@@ -98,6 +101,6 @@ public:
 
 
 };
-
+*/
 
 #endif  // CONTROLLABLEINSPECTOR_H_INCLUDED

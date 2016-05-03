@@ -13,17 +13,25 @@
 
 #include "JuceHeader.h"
 
+class ShapeShifterContainer;
+
 class ShapeShifter : public juce::Component
 {
 public :
 	ShapeShifter();
 	virtual ~ShapeShifter();
+	ShapeShifterContainer * parentContainer;
 
 	int preferredWidth;
 	int preferredHeight;
 	void setPreferredWidth(int newWidth);
 	void setPreferredHeight(int newHeight);
 
+	
+	bool isDetached();
+	void setParentContainer(ShapeShifterContainer * _parent);
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifter)
 };
 
 

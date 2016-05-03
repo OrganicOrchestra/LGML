@@ -15,6 +15,7 @@
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(ControllerManager * manager) :
+	ShapeShifterContent("Controller Manager"),
     manager(manager)
 {
 
@@ -83,16 +84,22 @@ ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)
 
 void ControllerManagerUI::placeElements()
 {
+	if (controllersUI.size() == 0) return;
+
     Rectangle<int> r = getLocalBounds().reduced(5);
+	int gap = 2;
+	int totalHeight = 0;
     for (auto &cui : controllersUI)
     {
-        r.setHeight(cui->getHeight());
-        cui->setBounds(r);
-        r.translate(0, cui->getHeight() + 10);
+		cui->setBounds(r.removeFromTop(cui->getHeight()));
+		r.removeFromTop(gap);
+		totalHeight += cui->getHeight() + gap;
     }
 
-    int targetHeight = jmax<int>(r.getTopLeft().y, getParentComponent()->getHeight());
-    setSize(getWidth(), targetHeight);
+	if (totalHeight > getHeight())
+	{
+		setSize(getWidth(), totalHeight);
+	}
 }
 
 void ControllerManagerUI::paint (Graphics&)
@@ -102,10 +109,7 @@ void ControllerManagerUI::paint (Graphics&)
 
 void ControllerManagerUI::resized()
 {
-	for (auto &c : controllersUI)
-	{
-		c->setSize(getWidth(), c->getHeight());
-	}
+	placeElements();
 }
 
 
@@ -137,6 +141,7 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
 
 }
 
+/*
 ControllerManagerViewport::ControllerManagerViewport(ControllerManager * controllerManager)
 {
     cmui = new ControllerManagerUI(controllerManager);
@@ -152,3 +157,4 @@ void ControllerManagerViewport::resized()
         cmui->setBounds(r);
     }
 }
+*/

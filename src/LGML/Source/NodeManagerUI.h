@@ -15,6 +15,7 @@
 #include "NodeManager.h"
 #include "NodeBaseUI.h"
 #include "SelectableComponentHandler.h"
+#include "ShapeShifterContent.h"
 
 class NodeConnectionUI;
 
@@ -22,7 +23,7 @@ class NodeConnectionUI;
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public Component, public NodeManager::Listener, public SelectableComponent::SelectableListener
+class NodeManagerUI : public ShapeShifterContent, public NodeManager::Listener, public SelectableComponent::SelectableListener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
@@ -107,6 +108,7 @@ private:
 
 };
 
+/*
 class NodeManagerUIViewport : public Viewport{
 public:
     NodeManagerUIViewport(NodeManagerUI * _nmui):Viewport("NodeManagerViewPort"),nmui(_nmui){
@@ -125,6 +127,6 @@ public:
 
     NodeManagerUI * nmui;
 };
-
+*/
 
 #endif  // NODEMANAGERUI_H_INCLUDED
