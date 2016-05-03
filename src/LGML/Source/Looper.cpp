@@ -49,6 +49,7 @@ wasMonitoring(false)
 
 }
 Looper::~Looper(){
+    setNumTracks(0);
     if(TimeManager::getInstanceWithoutCreating()){
         TimeManager::getInstance()->playState->removeParameterListener(this);
     }
@@ -124,7 +125,7 @@ void Looper::setNumTracks(int numTracks) {
     }
     else {
         looperListeners.call(&Looper::Listener::trackNumChanged, numTracks);
-        for (int i = oldSize - 1; i > numTracks; --i) { removeTrack(i); }
+        for (int i = oldSize - 1; i >= numTracks; --i) { removeTrack(i); }
     }
 
 }

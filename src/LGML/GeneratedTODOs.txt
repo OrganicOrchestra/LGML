@@ -120,7 +120,7 @@ ControllableContainer.h
 
 
 Looper.cpp
-	line : 59
+	line : 60
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
