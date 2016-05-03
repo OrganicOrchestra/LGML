@@ -40,14 +40,6 @@ NodeManagerUI::~NodeManagerUI()
     }
 }
 
-/*
- void NodeManagerUI::setNodeManager(NodeManager * nodeManager)
- {
- this->nodeManager = nodeManager;
- nodeManager->addListener(this);
- }
- */
-
 void NodeManagerUI::clear()
 {
     nodesUI.clear();
@@ -56,10 +48,7 @@ void NodeManagerUI::clear()
 
 void NodeManagerUI::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-
-
+    
 }
 
 void NodeManagerUI::nodeAdded(NodeBase * node)
@@ -84,6 +73,15 @@ void NodeManagerUI::connectionRemoved(NodeConnection * connection)
 }
 
 
+void NodeManagerUI::componentSelected(SelectableComponent * sc)
+{
+	sc->toFront(true);
+}
+
+void NodeManagerUI::componentDeselected(SelectableComponent *)
+{
+}
+
 void NodeManagerUI::addNodeUI(NodeBase * node)
 {
 
@@ -92,6 +90,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
         NodeBaseUI * nui = node->createUI();
         nodesUI.add(nui);
         addAndMakeVisible(nui);
+		nui->addSelectableListener(this);
 
     }
     else
@@ -110,6 +109,7 @@ void NodeManagerUI::removeNodeUI(NodeBase * node)
     {
         nodesUI.removeObject(nui);
         removeChildComponent(nui);
+		nui->removeSelectableListener(this);
     }
     else
     {
@@ -321,55 +321,18 @@ void NodeManagerUI::finishEditingConnection()
 
     if (isDataConnection) //DATA
     {
-        //Delete the editing connection
-        //String targetDataName = "";
-        //String targetElementName = "";
-        //DataType targetDataType;
-
         bool success = editingConnection->finishEditing();
         if (success)
         {
             nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
         }
-
-        /*
-        if (editingData)
-        {
-            if(editingConnection->candidateDropConnector != nullptr) editingConnection->candidateDropConnector->selectDataAndElementPopup(targetDataName, targetElementName, targetDataType, editingDataType);
-        }
-
-        if (editingData != nullptr)
-        {
-
-            if (success)
-            {
-                NodeConnection * nc = nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
-                if (isEditingDataOutput)
-                {
-                    nc->addDataGraphConnection(editingData, targetDataName, targetElementName);
-                }
-                else
-                {
-                    nc->addDataGraphConnection(targetDataName, targetElementName, editingDataName, editingElementName);
-                }
-            }
-        }
-        */
-    }
-    else //AUDIO
+    }else //AUDIO
     {
         bool success = editingConnection->finishEditing();
 
-        //      int targetChannel = -1;//temp, will be able to edit channel later
-
         if (success)
         {
-            //          NodeConnection * nc =
             nodeManager->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
-
-            //handled in Node Connection Constructor ?
-            //            if(nc!=nullptr)
-            //                nc->addAudioGraphConnection(editingChannel, targetChannel);
         }
     }
 
@@ -469,7 +432,10 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
     {
         finishEditingConnection();
     }
-    if(!isSelectingNodes){selectableHandler.removeAllSelected();}
+    if(!isSelectingNodes){
+		selectableHandler.removeAllSelected();
+	}
+
     isSelectingNodes = false;
     selectingBounds.setVisible(false);
     selectingBounds.setSize(0, 0);
@@ -478,6 +444,7 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
 
 
 void NodeManagerUI::checkSelected(){
+
     // multiple ones
     if(isSelectingNodes){
         Array<SelectableComponent*> currentOnes;
@@ -498,8 +465,6 @@ void NodeManagerUI::checkSelected(){
                 n->askForSelection(true,false);
             }
         }
-
-
     }
     // only one
 

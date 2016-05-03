@@ -18,8 +18,8 @@
 #include "JuceHeader.h"
 class SelectableComponentHandler;
 
-class SelectableComponent : public Component {
-
+class SelectableComponent : public Component
+{
 
 public:
     SelectableComponent(SelectableComponentHandler * handler);
@@ -36,6 +36,20 @@ public:
 
     void setHandler(SelectableComponentHandler * h);
     virtual void paintOverChildren(Graphics & g) override;
+
+
+	//Listener
+	class SelectableListener
+	{
+	public:
+		virtual ~SelectableListener() {}
+		virtual void componentSelected(SelectableComponent *) {}
+		virtual void componentDeselected(SelectableComponent *) {}
+	};
+
+	ListenerList<SelectableListener> selectableListeners;
+	void addSelectableListener(SelectableListener* newListener) { selectableListeners.add(newListener); }
+	void removeSelectableListener(SelectableListener* listener) { selectableListeners.remove(listener); }
 
 protected:
 //    can change this if repaint is handled in setSelected

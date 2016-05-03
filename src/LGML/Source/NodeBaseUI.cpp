@@ -68,6 +68,7 @@ void NodeBaseUI::moved(){
 void NodeBaseUI::internalSetSelected(bool)
 {
     mainContainer.repaint();
+
 }
 
 
@@ -162,7 +163,9 @@ void NodeBaseUI::mouseDown(const juce::MouseEvent &e)
 
 void NodeBaseUI::mouseUp(const juce::MouseEvent &){
     NodeManagerUI * nmui = getNodeManagerUI();
-    if(nmui){nmui->setAllNodesToStartAtZero();}
+    if(nmui){
+		nmui->setAllNodesToStartAtZero();
+	}
     askForSelection(true,true);
 
 

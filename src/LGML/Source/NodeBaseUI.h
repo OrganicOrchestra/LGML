@@ -75,6 +75,8 @@ public:
         void paint(Graphics &g) override;
         void resized() override;
         void childBoundsChanged (Component*)override;
+
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContainer)
     };
 
 
@@ -112,7 +114,6 @@ public:
 
     //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
     ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
-
 
 
 private:

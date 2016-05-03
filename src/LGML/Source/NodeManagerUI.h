@@ -22,7 +22,7 @@ class NodeConnectionUI;
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public Component, public NodeManager::Listener
+class NodeManagerUI : public Component, public NodeManager::Listener, public SelectableComponent::SelectableListener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
@@ -36,19 +36,6 @@ public:
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI * editingConnection;
 
-    //Data * editingData;
-
-    //Data
-    /*
-    String editingDataName;
-    String editingElementName;
-    DataType editingDataType;
-    */
-
-    //Audio
-    //uint32 editingChannel;
-
-
     void clear();
 
     void resized() override;
@@ -59,6 +46,9 @@ public:
     virtual void connectionAdded(NodeConnection *) override;
     virtual void connectionRemoved(NodeConnection *) override;
 
+	//NodeUI Listener
+	virtual void componentSelected(SelectableComponent *) override;
+	virtual void componentDeselected(SelectableComponent *) override;
 
     void addNodeUI(NodeBase * node);
     void removeNodeUI(NodeBase * node);
