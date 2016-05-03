@@ -10,6 +10,7 @@
 
 #include "ShapeShifterWindow.h"
 #include "ShapeShifterManager.h"
+#include "Style.h"
 
 ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds) :
 	panel(_panel),
@@ -17,17 +18,19 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 	dragMode(PANEL)
 {
 	_panel->setBounds(bounds);
+
 	setContentNonOwned(_panel,true);
 
-	setAlwaysOnTop(true);
+	setBackgroundColour(BG_COLOR.darker(.1f).withAlpha(.3f));
+	//setAlwaysOnTop(true);
 
 	setResizable(true, true);
 	setDraggable(true);
 	
-	//setBounds(bounds);
 	setVisible(true);
 	toFront(true);
 
+	
 	addMouseListener(this,true);
 
 }
@@ -53,7 +56,16 @@ void ShapeShifterWindow::mouseDown(const MouseEvent & e)
 void ShapeShifterWindow::mouseDrag(const MouseEvent & e)
 {
 	if (dragMode == NONE) return;
+	panel->setTransparentBackground(true);
+	ShapeShifterManager::getInstance()->checkCandidateTargetForPanel(panel);
 	dragger.dragComponent(this, e, 0);
+}
+
+void ShapeShifterWindow::mouseUp(const MouseEvent & e)
+{
+	DBG("mouse up");
+	panel->setTransparentBackground(false);
+	ShapeShifterManager::getInstance()->setCurrentCandidatePanel(nullptr);
 }
 
 

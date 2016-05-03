@@ -13,7 +13,8 @@
 juce_ImplementSingleton(ShapeShifterManager);
 
 ShapeShifterManager::ShapeShifterManager() : 
-	mainContainer(ShapeShifterContainer::ContentType::CONTAINERS,ShapeShifterContainer::Direction::VERTICAL)
+	mainContainer(ShapeShifterContainer::ContentType::CONTAINERS,ShapeShifterContainer::Direction::VERTICAL),
+	currentCandidatePanel(nullptr)
 {
 
 }
@@ -21,6 +22,16 @@ ShapeShifterManager::ShapeShifterManager() :
 ShapeShifterManager::~ShapeShifterManager()
 {
 	openedWindows.clear();
+}
+
+void ShapeShifterManager::setCurrentCandidatePanel(ShapeShifterPanel * panel)
+{
+	if (currentCandidatePanel == panel) return;
+
+	if (currentCandidatePanel != nullptr) currentCandidatePanel->setTargetMode(false);
+	currentCandidatePanel = panel;
+	if (currentCandidatePanel != nullptr) currentCandidatePanel->setTargetMode(true);
+
 }
 
 ShapeShifterPanel * ShapeShifterManager::createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab)
@@ -49,6 +60,26 @@ ShapeShifterWindow * ShapeShifterManager::showPanelWindow(ShapeShifterPanel * _p
 void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window)
 {
 	openedWindows.removeObject(window, true);
+}
+
+ShapeShifterPanel * ShapeShifterManager::checkCandidateTargetForPanel(ShapeShifterPanel * panel)
+{
+	ShapeShifterPanel * candidate = nullptr;
+	
+	for (auto &p : openedPanels)
+	{
+		if (p == panel) continue;
+		
+		if (p->getLocalBounds().contains(p->getLocalPoint(panel, Point<float>()).toInt()))
+		{
+			candidate = p;
+		}
+	}
+	setCurrentCandidatePanel(candidate);
+
+	if(currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone(panel);
+
+	return candidate;
 }
 
 void ShapeShifterManager::panelEmptied(ShapeShifterPanel * panel)

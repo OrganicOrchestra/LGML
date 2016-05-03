@@ -21,6 +21,8 @@ class ShapeShifterContainer;
 class ShapeShifterPanel : public ShapeShifter, public ShapeShifterPanelHeader::Listener
 {
 public:
+	enum AttachZone {NONE, TOP, BOTTOM, LEFT, RIGHT, CENTER };
+
 	ShapeShifterPanel(ShapeShifterContent *innerComponent, ShapeShifterPanelTab * sourceTab = nullptr);
 	virtual ~ShapeShifterPanel();
 
@@ -32,9 +34,19 @@ public:
 	ShapeShifterContent * currentContent;
 	void setCurrentContent(ShapeShifterContent * content);
 	
-	
+	bool transparentBackground;
+
+	bool targetMode;
+	void setTargetMode(bool value);
+
+	Point<float> candidateTargetPoint;
+	AttachZone candidateZone;
+
 	void paint(Graphics & g) override;
+	void paintOverChildren(Graphics & g) override;
 	void resized() override;
+
+	void setTransparentBackground(bool value);
 
 	void attachTab(ShapeShifterPanelTab *);
 	void detachTab(ShapeShifterPanelTab *);
@@ -42,6 +54,11 @@ public:
 
 	void addContent(ShapeShifterContent * content, bool setCurrent = true);
 	
+	//Attach helpers
+
+	AttachZone checkAttachZone(ShapeShifterPanel * source);
+	void setCandidateZone(AttachZone zone);
+
 	virtual void tabDrag(ShapeShifterPanelTab *) override;
 	virtual void tabSelect(ShapeShifterPanelTab *) override;
 	virtual void headerDrag() override;

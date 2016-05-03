@@ -30,6 +30,11 @@ public :
 	
 	bool isDetached();
 	void setParentContainer(ShapeShifterContainer * _parent);
+	
+	virtual void mouseEnter(const MouseEvent &) override { DBG("Mouse ENTER !"); }
+	virtual void mouseExit(const MouseEvent &) override { DBG("Mouse EXIT !"); }
+	virtual void mouseMove(const MouseEvent &) override { DBG("Mouse OVER"); }
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifter)
 };

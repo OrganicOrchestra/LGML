@@ -14,7 +14,7 @@
 #include "ShapeShifterManager.h"
 
 ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifterPanelTab * sourceTab) :
-	currentContent(nullptr)
+	currentContent(nullptr), transparentBackground(false), targetMode(false), candidateZone(NONE), candidateTargetPoint(Point<float>())
 {
 	addAndMakeVisible(header);
 	header.addHeaderListener(this);
@@ -61,10 +61,45 @@ void ShapeShifterPanel::setCurrentContent(ShapeShifterContent * _content)
 	resized();
 }
 
+void ShapeShifterPanel::setTargetMode(bool value)
+{
+	if (targetMode == value) return;
+	targetMode = value;
+	repaint();
+}
+
 void ShapeShifterPanel::paint(Graphics & g)
 {
-	g.setColour(BG_COLOR);
+	g.setColour(BG_COLOR.withAlpha(transparentBackground?.3f:1));
 	g.fillRect(getLocalBounds().withTrimmedTop(headerHeight));
+}
+
+void ShapeShifterPanel::paintOverChildren(Graphics & g)
+{
+	DBG("Paint over children " << String(targetMode));
+	if (!targetMode) return;
+	Rectangle<int> r = getLocalBounds();
+	
+	Colour hc = HIGHLIGHT_COLOR.withAlpha(.5f);
+	Colour nc = NORMAL_COLOR.withAlpha(.2f);
+	int reduceAmount = 2;
+
+	
+	g.setColour(candidateZone == AttachZone::TOP ? hc : nc);
+	g.fillRect(r.removeFromTop(getHeight()*.2f).reduced(reduceAmount));
+
+	g.setColour(candidateZone == AttachZone::BOTTOM ? hc : nc);
+	g.fillRect(r.removeFromBottom(getHeight()*.2f).reduced(reduceAmount));
+
+	g.setColour(candidateZone == AttachZone::LEFT ? hc : nc);
+	g.fillRect(r.removeFromLeft(getWidth()*.2f).reduced(reduceAmount));
+
+	g.setColour(candidateZone == AttachZone::RIGHT ? hc : nc);
+	g.fillRect(r.removeFromRight(getWidth()*.2f).reduced(reduceAmount));
+
+
+	g.setColour(candidateZone == AttachZone::CENTER ? hc : nc);
+	g.fillRect(r);
 }
 
 void ShapeShifterPanel::resized()
@@ -75,6 +110,13 @@ void ShapeShifterPanel::resized()
 	{
 		currentContent->setBounds(r);
 	}
+}
+
+void ShapeShifterPanel::setTransparentBackground(bool value)
+{
+	if (transparentBackground == value) return;
+	transparentBackground = value;
+	repaint();
 }
 
 void ShapeShifterPanel::attachTab(ShapeShifterPanelTab * tab)
@@ -99,7 +141,8 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab)
 	{
 		if (contents.size() > 0)
 		{
-			setCurrentContent(contents[jmax<int>(cIndex, 0)]);
+			DBG("here !");
+			setCurrentContent(contents[juce::jlimit<int>(0,contents.size()-1, cIndex)]);
 		}else
 		{
 			listeners.call(&Listener::panelEmptied, this);
@@ -129,7 +172,7 @@ void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
 	{
 		if (contents.size() > 0)
 		{
-			setCurrentContent(contents[jmax<int>(cIndex, 0)]);
+			setCurrentContent(contents[juce::jmax<int>(cIndex, 0)]);
 		}
 		else
 		{
@@ -139,6 +182,40 @@ void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
 }
 
 
+
+ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone(ShapeShifterPanel * source)
+{
+	AttachZone z = AttachZone::NONE;
+
+	candidateTargetPoint = getLocalPoint(source, Point<float>());
+	
+	float rx = candidateTargetPoint.x / getWidth();
+	float ry = candidateTargetPoint.y / getHeight();
+
+	DBG("Check Attach Zone (" << header.getTabForContent(currentContent)->getName() << ") : " << rx << ", " << ry);
+
+	if (rx < 0 || rx > 1 || ry < 0 || ry > 1)
+	{
+		//keep none
+	}else
+	{
+		if (rx < .2f) z = AttachZone::LEFT;
+		else if (rx > .8f) z = AttachZone::RIGHT;
+		else if (ry < .2f) z = AttachZone::TOP;
+		else if (ry > .8f) z = AttachZone::BOTTOM;
+		else z = AttachZone::CENTER;
+	}
+
+	setCandidateZone(z);
+	return candidateZone;
+}
+
+void ShapeShifterPanel::setCandidateZone(AttachZone zone)
+{
+	if (candidateZone == zone) return;
+	candidateZone = zone;
+	repaint();
+}
 
 void ShapeShifterPanel::tabDrag(ShapeShifterPanelTab * tab)
 {

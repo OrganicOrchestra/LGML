@@ -25,12 +25,17 @@ public:
 	OwnedArray<ShapeShifterPanel> openedPanels;
 	OwnedArray<ShapeShifterWindow> openedWindows;
 
+	ShapeShifterPanel * currentCandidatePanel;
+	void setCurrentCandidatePanel(ShapeShifterPanel *);
 
 	ShapeShifterPanel * createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab = nullptr);
 	void removePanel(ShapeShifterPanel * panel);
 
 	ShapeShifterWindow * showPanelWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds);
 	void closePanelWindow(ShapeShifterWindow * window);
+
+
+	ShapeShifterPanel * checkCandidateTargetForPanel(ShapeShifterPanel * panel);
 
 	void panelEmptied(ShapeShifterPanel * panel) override;
 	
