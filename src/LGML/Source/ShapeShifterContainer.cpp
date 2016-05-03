@@ -169,6 +169,9 @@ void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, int dist)
 		if (firstShifter->preferredHeight >= 0) firstShifter->setPreferredHeight(firstShifter->preferredHeight + dist);
 		else secondShifter->setPreferredHeight(secondShifter->preferredHeight - dist);
 		break;
+        case NONE:
+            //@ben what to we do for that?
+            jassertfalse;
 	}
 
 	resized();

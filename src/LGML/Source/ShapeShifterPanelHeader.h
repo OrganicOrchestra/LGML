@@ -33,11 +33,12 @@ public:
 	void mouseDrag(const MouseEvent &e) override;
 
 	void paint(Graphics &g) override;
-	void resized();
+	void resized()override;
 
 	class Listener
 	{
 	public:
+        virtual ~Listener(){}
 		virtual void tabDrag(ShapeShifterPanelTab *) = 0;
 		virtual void tabSelect(ShapeShifterPanelTab *) = 0;
 		virtual void headerDrag() = 0;
