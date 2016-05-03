@@ -52,21 +52,23 @@ void ControllableContainerEditor::childBoundsChanged(Component * c){
 
 
 void ControllableContainerEditor::syncUIElements(){
-    if(owner==nullptr)return;
+//    if(owner==nullptr)return;
+//
+//    for(auto & c:owner->controllables){
+//        bool found = false;
+//        for(int i = 0 ; i < getNumChildComponents();i++){
+//            ControllableUI* cc =(ControllableUI*)getChildComponent(i);
+//            if( cc && (cc->controllable == c)){
+//                found = true;
+//                break;
+//            }
+//        }
+//        if(!found){
+//            addControlUI(new NamedControllableUI(c->createControllableContainerEditor(),100));
+//        }
+//
+//    }
 
-    for(auto & c:owner->controllables){
-        bool found = false;
-        for(auto & cc:controllableUIs){
-            if( cc->controllable == c){
-                found = true;
-                break;
-            }
-        }
-        if(!found){
-            addControlUI(new NamedControllableUI(c->createDefaultControllableEditor(),100));
-        }
-
-    }
 
 
 }

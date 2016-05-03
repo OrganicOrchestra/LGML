@@ -43,6 +43,6 @@ void ControllableUI::updateTooltip()
 void ControllableUI::controllableBeingDeleted(Controllable * c) {
     if(c==controllable){
     getParentComponent()->removeChildComponent(this);
-        delete this;
+//        delete this;
     }
 };

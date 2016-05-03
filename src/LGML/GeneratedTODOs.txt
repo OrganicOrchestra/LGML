@@ -64,7 +64,7 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.cpp
-	line : 86
+	line : 87
 		// TODO :   -avoid recreating everything
 		//          -try to merge common properties based on first by deleting non common params within candidateContainers
 

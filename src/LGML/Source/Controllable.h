@@ -32,7 +32,9 @@ public:
 
 
     Controllable(const Type &type, const String &niceName, const String &description, bool enabled = true);
-    virtual ~Controllable() {  listeners.call(&Controllable::Listener::controllableBeingDeleted,this);  Controllable::masterReference.clear();}
+    virtual ~Controllable() {
+        listeners.call(&Controllable::Listener::controllableBeingDeleted,this);
+        Controllable::masterReference.clear();}
 
 
     Type type;
@@ -90,7 +92,7 @@ public:
     String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
     // used for generating editor
-    virtual ControllableUI * createDefaultControllableEditor() = 0;
+    virtual ControllableUI * createControllableContainerEditor(bool tryToKeepControllableUIs) = 0;
 
 
 public:

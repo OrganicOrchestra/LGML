@@ -66,7 +66,7 @@ void ControllableInspector::generateFromCandidates()
 
     if(displayedEditor==nullptr )
 	{
-        displayedEditor = (ControllableContainerEditor*)controllableContainerSync->createControllableContainerEditor();
+        displayedEditor = (ControllableContainerEditor*)controllableContainerSync->createControllableContainerEditor(nullptr);
         addAndMakeVisible(displayedEditor);
     }
 
@@ -80,6 +80,7 @@ void ControllableInspector::generateFromCandidates()
 //
 //    }
     else{
+        controllableContainerSync->createControllableContainerEditor(displayedEditor);
         displayedEditor->syncUIElements();
     }
 

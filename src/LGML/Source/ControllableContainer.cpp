@@ -388,33 +388,85 @@ void ControllableContainer::addParameterInternal(Parameter * p)
 }
 
 
-Component * ControllableContainer::createControllableContainerEditor(){
-    ControllableContainerEditor * editor = new ControllableContainerEditor(this,nullptr);
+Component * ControllableContainer::createControllableContainerEditor(Component * reference){
+    ControllableContainerEditor * editor;
+    if(reference==nullptr){
+        editor= new ControllableContainerEditor(this,nullptr);
+    }
+    else{
+        editor = (ControllableContainerEditor*)reference;
+    }
+    jassert(editor!=nullptr);
+
     Rectangle<int> bounds;
 
     int pad=3;
     int curY = pad;
-    for(auto & c:controllables){
-        if(!c->hideInEditor){
-            ControllableUI * cUI = new NamedControllableUI(c->createDefaultControllableEditor(),100);
-            cUI->setTopLeftPosition(0, curY);
-            curY+=cUI->getHeight() + pad;
+
+    DBG("=====Editor : "+editor->owner->niceName);
+    int idx = 0;
+    Array<Controllable*> oldControllables;
+    for(auto &c:controllables){oldControllables.add(c);}
+    for(auto & c:oldControllables){
+        if(c->hideInEditor)continue;
+
+        ControllableUI * cUI =nullptr;
+        if( idx < editor->controllableUIs.size()){
+            ControllableUI* current = editor->controllableUIs.getUnchecked(idx);
+            if(current->controllable.get() && current->controllable == c){
+//                DBG("===Exist : "+cUI->controllable->niceName);
+                cUI = current;
+            }
+            else{
+                jassert(reference!=nullptr);
+//                DBG("===Remove : "+current->controllable->niceName);
+                reference->removeChildComponent(current);
+            }
+        }
+        if(cUI==nullptr){
+            cUI= new NamedControllableUI(c->createControllableContainerEditor(reference),100);
             editor->addControlUI(cUI);
-            bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
         }
+        cUI->setTopLeftPosition(0, curY);
+        curY+=cUI->getHeight() + pad;
+        bounds = bounds.getUnion(cUI->getBounds().expanded(0,pad));
+
+        idx++;
     }
 
-    for(auto &c:controllableContainers){
-        Component * cE=c->createControllableContainerEditor();
-        if(cE){
-            cE->setTopLeftPosition(0, curY);
-            curY+=cE->getHeight()+pad;
+    idx =0;
+        Array<ControllableContainer*> oldContainerControllables;
+    for(auto &c:controllableContainers){oldContainerControllables.add(c);}
+    for(auto &c:oldContainerControllables){
+        ControllableContainerEditor * cE=nullptr;
+        if(idx < editor->editors.size()){
+
+            if(c == editor->editors.getUnchecked(idx)->owner){
+                cE = editor->editors.getUnchecked(idx);
+            }
+
+            else{
+                reference->removeChildComponent(cE);
+            }
+        }
+        if(cE==nullptr){
+            cE=(ControllableContainerEditor*)c->createControllableContainerEditor(nullptr);
+            editor->editors.add(cE);
             editor->addAndMakeVisible(cE);
-            bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
-        }
-    }
 
+        }
+        else{
+            cE = (ControllableContainerEditor*)c->createControllableContainerEditor(cE);
+        }
+        
+        cE->setTopLeftPosition(0, curY);
+        curY+=cE->getHeight()+pad;
+        bounds = bounds.getUnion(cE->getBounds().expanded(0,pad));
+        idx++;
+    }
+    
+    
     editor->setBounds(bounds);
     return editor;
-
+    
 }

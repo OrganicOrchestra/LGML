@@ -24,7 +24,7 @@ public:
 
 
     StringParameterUI * createStringParameterUI();
-    ControllableUI* createDefaultControllableEditor() override;
+    ControllableUI* createControllableContainerEditor(bool tryToKeepControllableUIs) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameter)
 };
 
