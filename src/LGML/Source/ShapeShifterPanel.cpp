@@ -13,17 +13,15 @@
 
 #include "ShapeShifterManager.h"
 
-ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifterPanelTab * sourceTab)
+ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifterPanelTab * sourceTab) :
+	currentContent(nullptr)
 {
-
 	addAndMakeVisible(header);
 	header.addHeaderListener(this);
 
 	if (sourceTab == nullptr)
 	{
-		header.addTab(_content);
-		contents.add(_content);
-		setCurrentContent(_content);
+		addContent(_content);
 	}else
 	{
 		attachTab(sourceTab);
@@ -45,15 +43,21 @@ void ShapeShifterPanel::setCurrentContent(ShapeShifterContent * _content)
 
 	if (currentContent != nullptr)
 	{
-		removeChildComponent(_content);
+		ShapeShifterPanelTab * tab = header.getTabForContent(currentContent);
+		if(tab != nullptr) tab->setSelected(false);
+		removeChildComponent(currentContent);
 	}
+
+	if(currentContent != nullptr && _content != nullptr) DBG("Set content : " << currentContent->getName() << " >> " << _content->getName());
 
 	currentContent = _content;
 
-
 	if (currentContent != nullptr)
 	{
-		addAndMakeVisible(_content);
+		ShapeShifterPanelTab * tab = header.getTabForContent(currentContent);
+		if (tab != nullptr) tab->setSelected(true);
+		
+		addAndMakeVisible(currentContent);
 	}
 	resized();
 }
@@ -86,7 +90,6 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab)
 	ShapeShifterContent * content = tab->content;
 	Rectangle<int> tabBounds = content->getScreenBounds().withPosition(getScreenPosition());
 
-	
 	header.removeTab(tab,false);
 
 	int cIndex = contents.indexOf(content);
@@ -104,9 +107,37 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab)
 	}
 
 	ShapeShifterPanel * newPanel = ShapeShifterManager::getInstance()->createPanel(content,tab);
-	DBG("Detach tab, content width = " << content->getWidth());
 	ShapeShifterManager::getInstance()->showPanelWindow(newPanel, tabBounds);
 }
+
+void ShapeShifterPanel::addContent(ShapeShifterContent * content, bool setCurrent)
+{
+	header.addTab(content);
+	contents.add(content);
+	if(setCurrent) setCurrentContent(content);
+}
+
+void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
+{
+	ShapeShifterContent * content = tab->content;
+	header.removeTab(tab, true);
+
+	int cIndex = contents.indexOf(content);
+	contents.removeAllInstancesOf(content);
+
+	if (currentContent == content)
+	{
+		if (contents.size() > 0)
+		{
+			setCurrentContent(contents[jmax<int>(cIndex, 0)]);
+		}
+		else
+		{
+			listeners.call(&Listener::panelEmptied, this);
+		}
+	}
+}
+
 
 
 void ShapeShifterPanel::tabDrag(ShapeShifterPanelTab * tab)

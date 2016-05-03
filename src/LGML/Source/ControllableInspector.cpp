@@ -75,6 +75,7 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
 
 void ControllableInspector::generateFromCandidates()
 {
+
     removeAllChildren();
     if(candidateContainers.size()==0){return;}
 
@@ -109,8 +110,9 @@ void ControllableInspector::generateFromCandidates()
 		controllableContainerSync->addSyncedControllableIfNotAlreadyThere(candidate);
 	}
 
+	Rectangle<int> r = getLocalBounds().reduced(5);
     addAndMakeVisible(displayedEditor);
-    displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
+    displayedEditor->setBounds(r);
     //setBounds(displayedEditor->getBounds().withPosition(0,0));
 }
 

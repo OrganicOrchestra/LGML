@@ -22,6 +22,9 @@ public:
 	ShapeShifterContent * content;
 	Label panelLabel;
 
+	bool selected;
+	void setSelected(bool value);
+
 	void paint(Graphics &g) override;
 	void resized();
 

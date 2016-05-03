@@ -50,14 +50,15 @@ MainContentComponent::MainContentComponent(Engine * e):
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
 	controllerManagerPanel->setPreferredWidth(300);
 
-	ShapeShifterPanel * controllableInspectorPanel = ShapeShifterManager::getInstance()->createPanel(controllableInspector);
-	controllableInspectorPanel->setPreferredWidth(200);
+	controllerManagerPanel->addContent(controllableInspector);
+	//ShapeShifterPanel * controllableInspectorPanel = ShapeShifterManager::getInstance()->createPanel(controllableInspector);
+	//controllableInspectorPanel->setPreferredWidth(200);
 
 
 	c1->insertPanelAt(timeManagerPanel, 0);
 	c2->insertPanelAt(controllerManagerPanel, 0);
 	c2->insertPanelAt(nodeManagerPanel, 1);
-	c2->insertPanelAt(controllableInspectorPanel, 2);
+	//c2->insertPanelAt(controllableInspectorPanel, 2);
 
     // resize after contentCreated
 

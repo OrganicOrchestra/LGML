@@ -12,12 +12,13 @@
 #include "Style.h"
 
 
-ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent * _content) : content(_content)
+ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent * _content) : content(_content), selected(false)
 {
 	panelLabel.setInterceptsMouseClicks(false, false);
 
 	panelLabel.setFont(12);
 	panelLabel.setColour(panelLabel.textColourId, TEXT_COLOR);
+	panelLabel.setJustificationType(Justification::centred);
 	panelLabel.setText(content->getName(), NotificationType::dontSendNotification);
 
 	addAndMakeVisible(&panelLabel);
@@ -27,12 +28,21 @@ ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent * _content) : con
 
 ShapeShifterPanelTab::~ShapeShifterPanelTab()
 {
+
+}
+
+void ShapeShifterPanelTab::setSelected(bool value)
+{
+	selected = value;
+	repaint();
 }
 
 void ShapeShifterPanelTab::paint(Graphics & g)
 {
-	g.setColour(BG_COLOR);
-	g.fillRect(panelLabel.getLocalBounds());
+	g.setColour(selected?BG_COLOR:BG_COLOR.brighter(.15f));
+	Rectangle<int> r = getLocalBounds();
+	if (!selected) r.reduce(1,1);
+	g.fillRect(r);
 }
 
 void ShapeShifterPanelTab::resized()

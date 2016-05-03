@@ -26,6 +26,9 @@ public:
 	void removeTab(ShapeShifterPanelTab * tab, bool doRemove = true);
 	void attachTab(ShapeShifterPanelTab * tab);
 
+	ShapeShifterPanelTab * getTabForContent(ShapeShifterContent * content);
+
+
 	void mouseDown(const MouseEvent &e) override;
 	void mouseDrag(const MouseEvent &e) override;
 

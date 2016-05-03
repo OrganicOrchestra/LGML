@@ -38,6 +38,9 @@ public:
 
 	void attachTab(ShapeShifterPanelTab *);
 	void detachTab(ShapeShifterPanelTab *);
+	void removeTab(ShapeShifterPanelTab *);
+
+	void addContent(ShapeShifterContent * content, bool setCurrent = true);
 	
 	virtual void tabDrag(ShapeShifterPanelTab *) override;
 	virtual void tabSelect(ShapeShifterPanelTab *) override;

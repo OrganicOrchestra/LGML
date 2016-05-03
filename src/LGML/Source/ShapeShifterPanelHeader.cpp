@@ -43,6 +43,15 @@ void ShapeShifterPanelHeader::attachTab(ShapeShifterPanelTab * tab)
 	resized();
 }
 
+ShapeShifterPanelTab * ShapeShifterPanelHeader::getTabForContent(ShapeShifterContent * content)
+{
+	for (auto &t : tabs)
+	{
+		if (t->content == content) return t;
+	}
+	return nullptr;
+}
+
 void ShapeShifterPanelHeader::mouseDown(const MouseEvent & e)
 {
 	ShapeShifterPanelTab * tab = dynamic_cast<ShapeShifterPanelTab *>(e.eventComponent);
