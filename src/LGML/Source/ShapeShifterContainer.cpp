@@ -13,8 +13,8 @@
 #include "ShapeShifterManager.h"
 
 
-ShapeShifterContainer::ShapeShifterContainer(ContentType _contentType, Direction _direction) : 
-	direction(_direction), contentType(_contentType)
+ShapeShifterContainer::ShapeShifterContainer(Direction _direction) : 
+	direction(_direction)
 {
 
 }
@@ -41,6 +41,34 @@ void ShapeShifterContainer::insertPanelAt(ShapeShifterPanel * panel, int index)
 	resized();
 }
 
+void ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone)
+{
+	//TODO check direction and create sub container if needed
+	switch (zone)
+	{
+	case  ShapeShifterPanel::AttachZone::LEFT:
+		if (direction == HORIZONTAL) insertPanelAt(panel, shifters.indexOf(relativeTo));
+		else movePanelsInContainer(panel, relativeTo, HORIZONTAL,false);
+	break;
+
+	case  ShapeShifterPanel::AttachZone::RIGHT:
+		if (direction == HORIZONTAL) insertPanelAt(panel, shifters.indexOf(relativeTo)+1);
+		else movePanelsInContainer(panel, relativeTo, HORIZONTAL,true);
+	break; 
+	
+	case  ShapeShifterPanel::AttachZone::TOP:
+		if (direction == VERTICAL) insertPanelAt(panel, shifters.indexOf(relativeTo));
+		else movePanelsInContainer(panel, relativeTo, VERTICAL,false);
+	break; 
+	
+	case  ShapeShifterPanel::AttachZone::BOTTOM:
+		if (direction == VERTICAL) insertPanelAt(panel, shifters.indexOf(relativeTo)+1);
+		else movePanelsInContainer(panel, relativeTo, VERTICAL,true);
+	break;
+
+	}
+}
+
 
 void ShapeShifterContainer::removePanel(ShapeShifterPanel * panel)
 {
@@ -56,7 +84,7 @@ void ShapeShifterContainer::removePanel(ShapeShifterPanel * panel)
 	}
 	else
 	{
-		GapGrabber * gg = grabbers.getUnchecked(jmin<int>(shifterIndex,grabbers.size()-1));
+		GapGrabber * gg = grabbers[(jmin<int>(shifterIndex, grabbers.size() - 1))];
 		removeChildComponent(gg);
 		grabbers.remove(shifterIndex, true);
 	}
@@ -65,14 +93,13 @@ void ShapeShifterContainer::removePanel(ShapeShifterPanel * panel)
 	resized();
 }
 
-ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(int index, ContentType _contentType, Direction _direction)
+ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(int index, Direction _direction)
 {
-	ShapeShifterContainer * ssc = new ShapeShifterContainer(_contentType, _direction);
-	shifters.add(ssc);
+	ShapeShifterContainer * ssc = new ShapeShifterContainer(_direction);
+	shifters.insert(index,ssc);
 	containers.add(ssc);
 	ssc->addShapeShifterContainerListener(this);
 	addAndMakeVisible(ssc);
-
 
 	if (shifters.size() > 1)
 	{
@@ -96,7 +123,6 @@ void ShapeShifterContainer::removeContainer(ShapeShifterContainer * container)
 
 	if (shifters.size() == 0)
 	{
-		DBG("call container emptied");
 		containerListeners.call(&ShapeShifterContainerListener::containerEmptied, this);
 	}
 	else
@@ -108,6 +134,15 @@ void ShapeShifterContainer::removeContainer(ShapeShifterContainer * container)
 
 	removeChildComponent(container);
 	resized();
+}
+
+void ShapeShifterContainer::movePanelsInContainer(ShapeShifterPanel * containedPanel, ShapeShifterPanel * newPanel, Direction _newDir, bool secondBeforeFirst)
+{
+	DBG("Move Panel In Container");
+	ShapeShifterContainer * newContainer = insertContainerAt(shifters.indexOf(containedPanel), _newDir);
+	//removePanel(containedPanel);
+	//newContainer->insertPanelAt(containedPanel, 0);
+	newContainer->insertPanelAt(newPanel, secondBeforeFirst ? 0 : 1);
 }
 
 

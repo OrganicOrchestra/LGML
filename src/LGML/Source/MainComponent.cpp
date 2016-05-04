@@ -39,25 +39,30 @@ MainContentComponent::MainContentComponent(Engine * e):
 	controllableInspector = new ControllableInspector(nodeManagerUI); //Needs to be abstracted from NodeManager, and be able to inspect any ControllableContainer
 	
 	//Shape Shifter initialization
-	ShapeShifterContainer * c1 = shapeShifterManager.mainContainer.insertContainerAt(0,ShapeShifterContainer::ContentType::PANELS,ShapeShifterContainer::Direction::HORIZONTAL);
+	ShapeShifterContainer * c1 = shapeShifterManager.mainContainer.insertContainerAt(0,ShapeShifterContainer::Direction::HORIZONTAL);
 	c1->setPreferredHeight(45);
 
-	ShapeShifterContainer * c2 = shapeShifterManager.mainContainer.insertContainerAt(1, ShapeShifterContainer::ContentType::PANELS, ShapeShifterContainer::Direction::HORIZONTAL);
+	ShapeShifterContainer * c2 = shapeShifterManager.mainContainer.insertContainerAt(1, ShapeShifterContainer::Direction::HORIZONTAL);
 
 	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
 	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerUI);
-
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
-	controllerManagerPanel->setPreferredWidth(300);
 
-	controllerManagerPanel->addContent(controllableInspector);
+	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(controllableInspector);
+
+	controllerManagerPanel->setPreferredWidth(300);
+	//controllerManagerPanel->addContent(controllableInspector);
 	//ShapeShifterPanel * controllableInspectorPanel = ShapeShifterManager::getInstance()->createPanel(controllableInspector);
 	//controllableInspectorPanel->setPreferredWidth(200);
 
 
 	c1->insertPanelAt(timeManagerPanel, 0);
-	c2->insertPanelAt(controllerManagerPanel, 0);
 	c2->insertPanelAt(nodeManagerPanel, 1);
+
+	ShapeShifterContainer * vc = c2->insertContainerAt(0, ShapeShifterContainer::VERTICAL);
+	vc->insertPanelAt(controllerManagerPanel, 0);
+	vc->insertPanelAt(inspectorPanel, 1);
+	
 	//c2->insertPanelAt(controllableInspectorPanel, 2);
 
     // resize after contentCreated

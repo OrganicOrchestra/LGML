@@ -65,7 +65,7 @@ void ShapeShifterWindow::mouseUp(const MouseEvent & e)
 {
 	DBG("mouse up");
 	panel->setTransparentBackground(false);
-	ShapeShifterManager::getInstance()->setCurrentCandidatePanel(nullptr);
+	ShapeShifterManager::getInstance()->checkDropOnCandidateTarget(panel);
 }
 
 

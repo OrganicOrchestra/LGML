@@ -23,7 +23,7 @@ ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent * _content) : con
 
 	addAndMakeVisible(&panelLabel);
 
-	setSize(panelLabel.getFont().getStringWidth(panelLabel.getText()) + 20, 20);
+	setSize(getLabelWidth(), 20);
 }
 
 ShapeShifterPanelTab::~ShapeShifterPanelTab()
@@ -48,4 +48,9 @@ void ShapeShifterPanelTab::paint(Graphics & g)
 void ShapeShifterPanelTab::resized()
 {
 	panelLabel.setBounds(getLocalBounds());
+}
+
+int ShapeShifterPanelTab::getLabelWidth()
+{
+	return panelLabel.getFont().getStringWidth(panelLabel.getText()) + 20;
 }

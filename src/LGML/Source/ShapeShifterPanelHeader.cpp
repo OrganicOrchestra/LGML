@@ -64,15 +64,15 @@ void ShapeShifterPanelHeader::mouseDown(const MouseEvent & e)
 
 void ShapeShifterPanelHeader::mouseDrag(const MouseEvent & e)
 {
-	int minDetachDistance = 10;
+	int minDetachDistanceY = 20;
 
 	if (e.eventComponent == this)
 	{
-		if (e.getDistanceFromDragStart() > minDetachDistance) listeners.call(&Listener::headerDrag);
+		if (e.getDistanceFromDragStartY() > minDetachDistanceY) listeners.call(&Listener::headerDrag);
 	}else
 	{
 		ShapeShifterPanelTab * tab = dynamic_cast<ShapeShifterPanelTab *>(e.eventComponent);
-		if (e.getDistanceFromDragStart() > minDetachDistance && tab != nullptr) listeners.call(&Listener::tabDrag,tab);
+		if (e.getDistanceFromDragStartY() > minDetachDistanceY && tab != nullptr) listeners.call(&Listener::tabDrag,tab);
 	}
 	
 }
@@ -90,6 +90,6 @@ void ShapeShifterPanelHeader::resized()
 
 	for (auto &t : tabs)
 	{
-		t->setBounds(r.removeFromLeft(t->getWidth()));
+		t->setBounds(r.removeFromLeft(jmin<int>(getWidth(),t->getLabelWidth())));
 	}
 }

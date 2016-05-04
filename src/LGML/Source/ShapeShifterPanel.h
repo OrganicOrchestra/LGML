@@ -49,8 +49,10 @@ public:
 	void setTransparentBackground(bool value);
 
 	void attachTab(ShapeShifterPanelTab *);
-	void detachTab(ShapeShifterPanelTab *);
+	void detachTab(ShapeShifterPanelTab *, bool createNewPanel);
 	void removeTab(ShapeShifterPanelTab *);
+
+	bool attachPanel(ShapeShifterPanel *); //attach all tabs of a panel to this panel, or attach a panel to the parent container depending on attachZone
 
 	void addContent(ShapeShifterContent * content, bool setCurrent = true);
 	

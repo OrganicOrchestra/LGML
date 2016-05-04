@@ -28,6 +28,8 @@ public:
 	void paint(Graphics &g) override;
 	void resized();
 
+	int getLabelWidth();
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterPanelTab)
 };
 

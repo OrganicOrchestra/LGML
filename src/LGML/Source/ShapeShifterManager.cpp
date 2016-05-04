@@ -13,7 +13,7 @@
 juce_ImplementSingleton(ShapeShifterManager);
 
 ShapeShifterManager::ShapeShifterManager() : 
-	mainContainer(ShapeShifterContainer::ContentType::CONTAINERS,ShapeShifterContainer::Direction::VERTICAL),
+	mainContainer(ShapeShifterContainer::Direction::VERTICAL),
 	currentCandidatePanel(nullptr)
 {
 
@@ -59,6 +59,7 @@ ShapeShifterWindow * ShapeShifterManager::showPanelWindow(ShapeShifterPanel * _p
 
 void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window)
 {
+	window->removeFromDesktop();
 	openedWindows.removeObject(window, true);
 }
 
@@ -79,7 +80,29 @@ ShapeShifterPanel * ShapeShifterManager::checkCandidateTargetForPanel(ShapeShift
 
 	if(currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone(panel);
 
+	
 	return candidate;
+}
+
+bool ShapeShifterManager::checkDropOnCandidateTarget(ShapeShifterPanel * panel)
+{
+	if (currentCandidatePanel == nullptr) return false;
+
+	bool result = currentCandidatePanel->attachPanel(panel);
+	if (result) closePanelWindow(getWindowForPanel(panel));
+
+	setCurrentCandidatePanel(nullptr);
+	return true;
+}
+
+ShapeShifterWindow * ShapeShifterManager::getWindowForPanel(ShapeShifterPanel * panel)
+{
+	for (auto &w : openedWindows)
+	{
+		if (w->panel == panel) return w;
+	}
+
+	return nullptr;
 }
 
 void ShapeShifterManager::panelEmptied(ShapeShifterPanel * panel)

@@ -76,30 +76,28 @@ void ShapeShifterPanel::paint(Graphics & g)
 
 void ShapeShifterPanel::paintOverChildren(Graphics & g)
 {
-	DBG("Paint over children " << String(targetMode));
 	if (!targetMode) return;
+	DBG("Paint over children " << String(targetMode));
 	Rectangle<int> r = getLocalBounds();
 	
 	Colour hc = HIGHLIGHT_COLOR.withAlpha(.5f);
-	Colour nc = NORMAL_COLOR.withAlpha(.2f);
+	Colour nc = NORMAL_COLOR.withAlpha(.3f);
 	int reduceAmount = 2;
 
-	
 	g.setColour(candidateZone == AttachZone::TOP ? hc : nc);
-	g.fillRect(r.removeFromTop(getHeight()*.2f).reduced(reduceAmount));
+	g.fillRect(r.withHeight(jmin<int>(10,getHeight()/3)).reduced(jmin<int>(30,getWidth()/5),0));
 
 	g.setColour(candidateZone == AttachZone::BOTTOM ? hc : nc);
-	g.fillRect(r.removeFromBottom(getHeight()*.2f).reduced(reduceAmount));
+	g.fillRect(getLocalBounds().removeFromBottom(jmin<int>(10, getHeight() / 3)).reduced(jmin<int>(30,getWidth()/5), 0));
 
 	g.setColour(candidateZone == AttachZone::LEFT ? hc : nc);
-	g.fillRect(r.removeFromLeft(getWidth()*.2f).reduced(reduceAmount));
+	g.fillRect(r.withWidth(jmin<int>(10, getWidth() / 3)).reduced(0,jmin<int>(30,getHeight()/5)));
 
 	g.setColour(candidateZone == AttachZone::RIGHT ? hc : nc);
-	g.fillRect(r.removeFromRight(getWidth()*.2f).reduced(reduceAmount));
-
+	g.fillRect(getLocalBounds().removeFromRight(jmin<int>(10, getWidth() / 3)).withRight(getWidth()).reduced(0, jmin<int>(30,getHeight()/5)));
 
 	g.setColour(candidateZone == AttachZone::CENTER ? hc : nc);
-	g.fillRect(r);
+	g.fillRect(r.reduced(jmin<int>(50,getWidth()/3),jmin<int>(50,getHeight()/3)));
 }
 
 void ShapeShifterPanel::resized()
@@ -126,7 +124,7 @@ void ShapeShifterPanel::attachTab(ShapeShifterPanelTab * tab)
 	setCurrentContent(tab->content);
 }
 
-void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab)
+void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPanel)
 {
 	ShapeShifterContent * content = tab->content;
 
@@ -149,8 +147,11 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab)
 		}
 	}
 
-	ShapeShifterPanel * newPanel = ShapeShifterManager::getInstance()->createPanel(content,tab);
-	ShapeShifterManager::getInstance()->showPanelWindow(newPanel,r);
+	if (createNewPanel)
+	{
+		ShapeShifterPanel * newPanel = ShapeShifterManager::getInstance()->createPanel(content, tab);
+		ShapeShifterManager::getInstance()->showPanelWindow(newPanel, r);
+	}
 }
 
 void ShapeShifterPanel::addContent(ShapeShifterContent * content, bool setCurrent)
@@ -181,6 +182,34 @@ void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
 	}
 }
 
+bool ShapeShifterPanel::attachPanel(ShapeShifterPanel * panel)
+{
+	switch (candidateZone)
+	{
+	case LEFT:
+	case RIGHT:
+	case TOP:
+	case BOTTOM:
+		if (parentContainer != nullptr) parentContainer->insertPanelRelative(panel,this,candidateZone);
+		break;
+
+	case CENTER:
+		while(panel->header.tabs.size() > 0)
+		{
+			ShapeShifterPanelTab * t = panel->header.tabs[0];
+			panel->detachTab(t,false);
+			attachTab(t);
+		}
+		ShapeShifterManager::getInstance()->removePanel(panel);
+		break;
+
+	default:
+		return false;
+	}
+
+	return true;
+}
+
 
 
 ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone(ShapeShifterPanel * source)
@@ -191,8 +220,6 @@ ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone(ShapeShifterPan
 	
 	float rx = candidateTargetPoint.x / getWidth();
 	float ry = candidateTargetPoint.y / getHeight();
-
-	DBG("Check Attach Zone (" << header.getTabForContent(currentContent)->getName() << ") : " << rx << ", " << ry);
 
 	if (rx < 0 || rx > 1 || ry < 0 || ry > 1)
 	{
@@ -219,7 +246,7 @@ void ShapeShifterPanel::setCandidateZone(AttachZone zone)
 
 void ShapeShifterPanel::tabDrag(ShapeShifterPanelTab * tab)
 {
-	if(!isDetached() || contents.size() > 1) detachTab(tab);
+	if(!isDetached() || contents.size() > 1) detachTab(tab,true);
 	else listeners.call(&Listener::tabDrag, this);
 }
 
