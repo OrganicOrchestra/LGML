@@ -62,8 +62,12 @@ NodeConnectionUI.cpp
 
 
 ShapeShifterContainer.cpp
-	line : 172
+	line : 227
 		//@ben what to we do for that?
+		//@martin never gonna happen :)
+
+	line : 46
+		//TODO check direction and create sub container if needed
 
 
 DataProcessorGraph.cpp
@@ -73,7 +77,7 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.cpp
-	line : 85
+	line : 87
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
@@ -106,7 +110,7 @@ NodeBase.cpp
 
 
 ControllableContainer.h
-	line : 95
+	line : 94
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)

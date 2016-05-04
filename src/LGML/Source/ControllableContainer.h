@@ -86,8 +86,7 @@ public:
 	virtual void loadJSONData(var data);
 	virtual void loadJSONDataInternal(var data) { /* to be overriden by child classes */ }
 
-    // can be overriden if custom editor wanted
-    virtual Component * createControllableContainerEditor(Component * referenceComponent = nullptr);
+
 
 
 

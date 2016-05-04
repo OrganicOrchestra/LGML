@@ -14,29 +14,41 @@
 
 #include "JuceHeader.h"
 
+#include "ControllableContainer.h"
 class ControllableUI;
-class Controllable;
-class ControllableContainer;
+
+
 
 //  base class for displaying an UI presenting all control available in ControllableContainer
 
-class ControllableContainerEditor:public Component{
+class ControllableContainerEditor:public Component,public ControllableContainer::Listener{
 public:
     ControllableContainerEditor(ControllableContainer * ,Component*);
-    virtual ~ControllableContainerEditor(){deleteAllChildren();}
 
+
+    virtual ~ControllableContainerEditor();
+
+
+    void buildFromContainer(ControllableContainer * );
     void addControlUI(ControllableUI * c);
     void removeControlUI(ControllableUI * c);
 
     void childrenChanged()override;
     void paint(Graphics &g) override;
     void childBoundsChanged(Component *)override;
+
+    virtual void controllableAdded(Controllable * ) override ;
+    virtual void controllableRemoved(Controllable * ) override ;
+    virtual void controllableContainerAdded(ControllableContainer *) override ;
+    virtual void controllableContainerRemoved(ControllableContainer * ) override ;
+
     void resized()override;
     ControllableContainer * owner;
-    Array<ControllableUI*> controllableUIs;
-    Array<ControllableContainerEditor*> editors;
+    OwnedArray<ControllableUI> controllableUIs;
+    OwnedArray<ControllableContainerEditor> editors;
 protected:
     Component* embeddedComp;
+
 
 
 };
