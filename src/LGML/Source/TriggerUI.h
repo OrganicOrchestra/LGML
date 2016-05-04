@@ -20,7 +20,7 @@ public :
     TriggerUI(Trigger * trigger);
     virtual ~TriggerUI();
 
-    Trigger *  trigger;
+    Trigger*  trigger;
 
     // Inherited via Listener
     virtual void triggerTriggered(Trigger * p) override;

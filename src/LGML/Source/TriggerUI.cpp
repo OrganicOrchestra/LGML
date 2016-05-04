@@ -20,7 +20,7 @@ TriggerUI::TriggerUI(Trigger * trigger) :
 TriggerUI::~TriggerUI()
 {
 
-    trigger->removeTriggerListener(this);
+    if(controllable.get())trigger->removeTriggerListener(this);
 }
 
 void TriggerUI::triggerTriggered(Trigger *)

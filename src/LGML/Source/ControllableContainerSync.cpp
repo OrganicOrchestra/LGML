@@ -130,7 +130,7 @@ void ControllableContainerSync::doRemoveContainer(ControllableContainer *c){
     for(auto & cc:controllableContainers){
         if(areCompatible(c,cc)){
             removeChildControllableContainer(cc);
-            
+            delete cc;
             break;
         }
     }

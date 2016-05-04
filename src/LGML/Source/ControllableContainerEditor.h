@@ -28,7 +28,7 @@ public:
 
     virtual ~ControllableContainerEditor();
 
-    ControllableContainer * owner;
+    WeakReference<ControllableContainer> owner;
 
 
 protected:

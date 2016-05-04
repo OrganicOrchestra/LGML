@@ -30,6 +30,7 @@ ControllableContainer::~ControllableContainer()
     //DBG("CLEAR CONTROLLABLE CONTAINER");
 
     controllables.clear();
+    masterReference.clear();
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)

@@ -27,7 +27,7 @@ embeddedComp(_embeddedComp)
 }
 
 ControllableContainerEditor::~ControllableContainerEditor(){
-    owner->removeControllableContainerListener(this);
+    if(owner.get())owner->removeControllableContainerListener(this);
 }
 
 

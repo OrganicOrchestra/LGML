@@ -121,6 +121,12 @@ public:
     void addControllableContainerListener(Listener* newListener) { controllableContainerListeners.add(newListener);}
     void removeControllableContainerListener(Listener* listener) { controllableContainerListeners.remove(listener);}
 
+
+private:
+
+    WeakReference<ControllableContainer>::Master masterReference;
+    friend class WeakReference<ControllableContainer>;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableContainer)
 
 

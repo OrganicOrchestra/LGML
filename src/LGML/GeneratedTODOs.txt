@@ -27,10 +27,10 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 377
+	line : 378
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 107
+	line : 108
 		// @ben remove nested callback as it's not needed anymore for ControllableContainerSync
 		// we may implement a special callback structure changed that triggered only by the root parent
 		//    ControllableContainer * notified = parentContainer;
