@@ -49,5 +49,6 @@ profile
 **/CodeBlocks/*.layout
 **/Builds/AndroidStudio
 doxygen/doc
-src/Blooper/Builds/
+src/LGML/Builds/
 *.password
+src/LGML/Builds/VisualStudio2015/Debug 32bit/

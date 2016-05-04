@@ -1,0 +1,135 @@
+//////////////////////////////////////
+ Auto - Generated TODO list from source code with Scripts/generateTODOList.py
+ useless to overwrite !! but useful for rainy sunday code cleaning and improving
+ TODOs in source code are not meant to be features but improvement and cleaning of CODE
+ a discussion can be added after TODO comment line in source code (but not meant to be long) 
+ Of course this list can also be used to remove unnecessary TODOs...
+ ///////////////////////////////////////
+
+
+NodeManager.cpp
+	line : 264
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
+
+	line : 161
+		// TODO nicely handle file format errors?
+
+
+EngineFileDocument.cpp
+	line : 99
+		//    TODO check version Compat
+
+
+VuMeter.h
+	line : 15
+		//TODO, move to more common place for use in other components
+
+
+ControllableContainer.cpp
+	line : 378
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 108
+		// @ben remove nested callback as it's not needed anymore for ControllableContainerSync
+		// we may implement a special callback structure changed that triggered only by the root parent
+		//    ControllableContainer * notified = parentContainer;
+		//    while(notified!=nullptr){
+		//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+		//        notified = notified->parentContainer;
+		//    }
+
+
+NodeBase.h
+	line : 125
+		// @ben is it triggering error on your side?
+
+
+NodeConnectionEditor.cpp
+	line : 389
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+	line : 190
+		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
+		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
+		// should be fixed !!
+
+
+NodeConnectionUI.cpp
+	line : 83
+		//@ben I prefer that atm (at least it doesnt start with weird anchors)
+		//but I'm up for any other fancy complexoid cuved Path algos that never touch a node
+
+
+ShapeShifterContainer.cpp
+	line : 100
+		//TODO check direction and create sub container if needed
+
+	line : 231
+		//@ben what to we do for that?
+		//@martin never gonna happen :)
+
+
+DataProcessorGraph.cpp
+	line : 14
+		//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
+		//  thread.startThread();
+
+
+ControllableInspector.cpp
+	line : 87
+		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
+
+
+LooperTrack.cpp
+	line : 174
+		// TODO subBlock precision ?
+		// not sure -> triggers are updated at block size granularity
+		// for now reduce block approximation noise when quantized
+
+
+TimeManager.h
+	line : 27
+		// TODO check if we can use SingleThread Singleton for fast access in processAdio
+
+
+VSTNode.h
+	line : 88
+		// TODO check that it actually works
+
+	line : 105
+		//@Martin i addedd this because when not playing, it crashed
+
+	line : 109
+		// TODO check if scoped pointer deletes old innerPlugin
+
+
+NodeBase.cpp
+	line : 152
+		// TODO we could implement that for all node objects to be able to save any kind of custom data
+
+
+ControllableContainer.h
+	line : 94
+		//@ ben this is to avoid either:
+		//      adding controllableContainerListener for each implementation
+		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
+		//      or using dispatch feedback that triggers only exposedParams
+
+
+Looper.cpp
+	line : 60
+		// TODO check if we can optimize copies
+		// handle multiples channels outs
+
+
+ControllableInspector.h
+	line : 23
+		// TODO handle merging of multiple component of sameClass : almost there ....
+
+
+FloatSliderUI.h
+	line : 28
+		// TODO implement a numboxUI
+
+
