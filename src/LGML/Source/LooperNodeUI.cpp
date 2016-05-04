@@ -14,6 +14,9 @@ LooperNodeContentUI::LooperNodeContentUI(){
 
 }
 
+LooperNodeContentUI::~LooperNodeContentUI(){
+    looperNode->looper->removeLooperListener(this);
+}
 
 void LooperNodeContentUI::init(){
 

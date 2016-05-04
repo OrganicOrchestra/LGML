@@ -11,8 +11,13 @@
 #include "ControllableContainerEditor.h"
 
 
-ControllableContainerEditor::ControllableContainerEditor(ControllableContainer * cc,Component* _embeddedComp):owner(cc),embeddedComp(_embeddedComp){
+#include "ControllableUI.h"
+#include "ControllableContainer.h"
 
+ControllableContainerEditor::ControllableContainerEditor(ControllableContainer * cc,Component* _embeddedComp):
+owner(cc),
+embeddedComp(_embeddedComp)
+{
     if(embeddedComp){
         addAndMakeVisible(embeddedComp);
         setBounds(embeddedComp->getBounds());
@@ -30,39 +35,39 @@ void ControllableContainerEditor::removeControlUI(ControllableUI * c){
 
 }
 
-void ControllableContainerEditor::removeControllableFromEditor(Controllable * toRemove){
-    Array<ControllableUI *> arrayToRemove;
-    for(auto & c:controllableUIs){
-        if(c->controllable==toRemove){
-            arrayToRemove.add(c);
-        }
-    }
-    for(auto &r:arrayToRemove){
-        controllableUIs.removeAllInstancesOf(r);
-        delete r;
-    }
 
+void ControllableContainerEditor::childBoundsChanged(Component * c){
+    int y = 0;
+    int pad = 3;
+    int maxW = 0;
+    for(int i = 0 ; i < getNumChildComponents() ; i ++){
+        Component * ch= getChildComponent(i);
+        ch->setTopLeftPosition(0, y);
+        y+=ch->getHeight()+pad;
+        maxW = jmax(ch->getWidth(),maxW);
 
-    for(int i = 0 ; i < getNumChildComponents() ; i++){
-        if(ControllableContainerEditor* c = dynamic_cast<ControllableContainerEditor*>(getChildComponent(i))){
-            c->removeControllableFromEditor(toRemove);
-        }
     }
+    setSize(maxW,y);
 }
 
-void ControllableContainerEditor::removeContainerFromEditor(ControllableContainer * toRemove){
-    Array<Component *> arrayToRemove;
-    for(int i = 0 ; i < getNumChildComponents() ; i++){
-        if(ControllableContainerEditor* c = dynamic_cast<ControllableContainerEditor*>(getChildComponent(i))){
-            if(c->owner==toRemove){arrayToRemove.add(c);}
-            else{c->removeContainerFromEditor(toRemove);}
-        }
+
+
+
+void ControllableContainerEditor::childrenChanged(){
+
+    int y = 0;
+    int pad = 3;
+    int maxW = 0;
+    for(int i = 0 ; i < getNumChildComponents() ; i ++){
+        Component * ch= getChildComponent(i);
+        ch->setTopLeftPosition(0, y);
+        y+=ch->getHeight()+pad;
+        maxW = jmax(ch->getWidth(),maxW);
+
     }
-    for(auto &r:arrayToRemove){
-        removeChildComponent(r);
-        delete r;
-    }
-}
+    setSize(maxW,y);
+};
+
 
 void ControllableContainerEditor::paint(Graphics & g)
 {
@@ -74,7 +79,7 @@ void ControllableContainerEditor::resized(){
     if(embeddedComp){
         embeddedComp->setBounds(r);
     }
-    for(auto &c:controllableUIs){
-        c->setSize(r.getWidth(), c->getHeight());
+    for(int i = 0 ;i < getNumChildComponents() ; i++){
+        getChildComponent(i)->setSize(getWidth(), getChildComponent(i)->getHeight());
     }
 }

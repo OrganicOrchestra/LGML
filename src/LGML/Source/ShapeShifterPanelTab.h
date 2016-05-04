@@ -26,7 +26,7 @@ public:
 	void setSelected(bool value);
 
 	void paint(Graphics &g) override;
-	void resized();
+	void resized()override;
 
 	int getLabelWidth();
 

@@ -26,7 +26,7 @@ public:
 
     TriggerButtonUI * createButtonUI();
     TriggerBlinkUI * createBlinkUI();
-    ControllableUI * createDefaultControllableEditor()override;
+    ControllableUI * createControllableContainerEditor()override;
 
     void trigger()
     {

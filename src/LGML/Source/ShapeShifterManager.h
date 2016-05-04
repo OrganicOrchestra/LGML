@@ -19,7 +19,7 @@ class ShapeShifterManager : public ShapeShifterPanel::Listener
 public:
 	juce_DeclareSingleton(ShapeShifterManager,true);
 	ShapeShifterManager();
-	~ShapeShifterManager();
+	virtual ~ShapeShifterManager();
 
 	ShapeShifterContainer mainContainer;
 	OwnedArray<ShapeShifterPanel> openedPanels;

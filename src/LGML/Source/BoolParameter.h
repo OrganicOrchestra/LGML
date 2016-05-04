@@ -25,7 +25,7 @@ public:
 
     //ui creation
     BoolToggleUI * createToggle();
-    ControllableUI * createDefaultControllableEditor() override;
+    ControllableUI * createControllableContainerEditor() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
 };

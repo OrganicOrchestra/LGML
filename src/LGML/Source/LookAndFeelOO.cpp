@@ -964,7 +964,7 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
         g.drawRoundedRectangle(0, 0, (float)width, (float)height,2,2);
     }
 
-    const float outlineThickness = box.isEnabled() ? (isButtonDown ? 1.2f : 0.5f) : 0.3f;
+//    const float outlineThickness = box.isEnabled() ? (isButtonDown ? 1.2f : 0.5f) : 0.3f;
 
     const Colour baseColour (LookAndFeelHelpers::createBaseColour (box.findColour (ComboBox::buttonColourId),
                                                                    box.hasKeyboardFocus (true),

@@ -69,6 +69,7 @@ public:
 	class Listener
 	{
 	public:
+        virtual ~Listener(){};
 		virtual void panelDetach(ShapeShifterPanel *) {}
 		virtual void panelEmptied(ShapeShifterPanel *) {};
 		virtual void panelRemoved(ShapeShifterPanel *) {};

@@ -32,7 +32,7 @@ public:
     void removeController(Controller * c);
     void clear();
 
-    var getJSONData();
+    var getJSONData() override;
     void loadJSONData(var data, bool clearBeforeLoad = true);
 
     class  Listener
