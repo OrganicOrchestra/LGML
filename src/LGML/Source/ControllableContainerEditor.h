@@ -38,7 +38,6 @@ protected:
     void removeControlUI(ControllableUI * c);
 
     void childrenChanged()override;
-    void paint(Graphics &g) override;
     void childBoundsChanged(Component *)override;
 
     virtual void controllableAdded(Controllable * ) override ;

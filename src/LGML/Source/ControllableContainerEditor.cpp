@@ -42,7 +42,9 @@ void ControllableContainerEditor::removeControlUI(ControllableUI * c){
 }
 
 
-void ControllableContainerEditor::childBoundsChanged(Component * c){layoutChildrens();}
+void ControllableContainerEditor::childBoundsChanged(Component * ){
+	layoutChildrens();
+}
 
 void ControllableContainerEditor::childrenChanged(){layoutChildrens();};
 
@@ -57,10 +59,6 @@ void ControllableContainerEditor::layoutChildrens(){
 
     }
     setSize(getWidth(),y);
-}
-
-void ControllableContainerEditor::paint(Graphics & g)
-{
 }
 
 void ControllableContainerEditor::resized(){
