@@ -18,10 +18,16 @@ ControllableContainerEditor::ControllableContainerEditor(ControllableContainer *
 owner(cc),
 embeddedComp(_embeddedComp)
 {
+    buildFromContainer(cc);
     if(embeddedComp){
         addAndMakeVisible(embeddedComp);
         setBounds(embeddedComp->getBounds());
     }
+    cc->addControllableContainerListener(this);
+}
+
+ControllableContainerEditor::~ControllableContainerEditor(){
+    owner->removeControllableContainerListener(this);
 }
 
 
@@ -31,13 +37,12 @@ void ControllableContainerEditor::addControlUI(ControllableUI * c){
 }
 void ControllableContainerEditor::removeControlUI(ControllableUI * c){
     removeChildComponent(c);
-    controllableUIs.removeFirstMatchingValue(c);
+    controllableUIs.removeObject(c);
+
 }
 
 
-void ControllableContainerEditor::childBoundsChanged(Component * c)
-{
-	/*
+void ControllableContainerEditor::childBoundsChanged(Component * c){
     int y = 0;
     int pad = 3;
     int maxW = 0;
@@ -49,7 +54,6 @@ void ControllableContainerEditor::childBoundsChanged(Component * c)
 
     }
     setSize(maxW,y);
-	*/
 }
 
 
@@ -57,7 +61,6 @@ void ControllableContainerEditor::childBoundsChanged(Component * c)
 
 void ControllableContainerEditor::childrenChanged(){
 
-	/*
     int y = 0;
     int pad = 3;
     int maxW = 0;
@@ -69,9 +72,6 @@ void ControllableContainerEditor::childrenChanged(){
 
     }
     setSize(maxW,y);
-	*/
-
-	resized();
 };
 
 
@@ -85,11 +85,50 @@ void ControllableContainerEditor::resized(){
     if(embeddedComp){
         embeddedComp->setBounds(r);
     }
-
-	int gap = 5;
     for(int i = 0 ;i < getNumChildComponents() ; i++){
-		Component * c = getChildComponent(i);
-		c->setBounds(r.removeFromTop(20));
-		r.removeFromTop(gap);
+        getChildComponent(i)->setSize(getWidth(), getChildComponent(i)->getHeight());
     }
 }
+
+
+void ControllableContainerEditor::buildFromContainer(ControllableContainer * cc){
+    for(auto & c:cc->controllables){
+        ControllableUI *cUI= new NamedControllableUI(c->createControllableContainerEditor(),100);
+        addControlUI(cUI);
+    }
+
+    for(auto & c:cc->controllableContainers){
+        ControllableContainerEditor * cEd = new ControllableContainerEditor(c,nullptr);
+        addAndMakeVisible(cEd);
+        editors.add(cEd);
+    }
+
+}
+
+void ControllableContainerEditor::controllableAdded(Controllable * c) {
+    ControllableUI *cUI= new NamedControllableUI(c->createControllableContainerEditor(),100);
+    addControlUI(cUI);
+
+};
+void ControllableContainerEditor::controllableRemoved(Controllable * c) {
+    for(auto & cc:controllableUIs){
+        if(cc->controllable==c){
+            removeChildComponent(cc);
+        }
+    }
+
+};
+void ControllableContainerEditor::controllableContainerAdded(ControllableContainer * c) {
+    ControllableContainerEditor * cEd = new ControllableContainerEditor(c,nullptr);
+    addAndMakeVisible(cEd);
+    editors.add(cEd);
+
+};
+void ControllableContainerEditor::controllableContainerRemoved(ControllableContainer * c) {
+    for(auto & cc:editors){
+        if(cc->owner==c){
+            removeChildComponent(cc);
+        }
+    }
+};
+
