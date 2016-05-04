@@ -171,6 +171,29 @@
               file="Source/SettingsManager.h"/>
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
+        <GROUP id="{36D57403-1E0C-65BD-9157-C17EE1560F96}" name="rules">
+          <FILE id="OzYofE" name="ControlRule.cpp" compile="1" resource="0" file="Source/ControlRule.cpp"/>
+          <FILE id="MrvGpI" name="ControlRule.h" compile="0" resource="0" file="Source/ControlRule.h"/>
+          <FILE id="JPVX2y" name="ControlRuleManager.cpp" compile="1" resource="0"
+                file="Source/ControlRuleManager.cpp"/>
+          <FILE id="CThc0S" name="ControlRuleManager.h" compile="0" resource="0"
+                file="Source/ControlRuleManager.h"/>
+          <FILE id="E5gTmD" name="ControlRuleManagerUI.cpp" compile="1" resource="0"
+                file="Source/ControlRuleManagerUI.cpp"/>
+          <FILE id="ymAWfP" name="ControlRuleManagerUI.h" compile="0" resource="0"
+                file="Source/ControlRuleManagerUI.h"/>
+          <FILE id="OuEzpC" name="ControlRuleUI.cpp" compile="1" resource="0"
+                file="Source/ControlRuleUI.cpp"/>
+          <FILE id="GoicT1" name="ControlRuleUI.h" compile="0" resource="0" file="Source/ControlRuleUI.h"/>
+          <FILE id="c2Wegl" name="ParameterRule.cpp" compile="1" resource="0"
+                file="Source/ParameterRule.cpp"/>
+          <FILE id="VL1ZQR" name="ParameterRule.h" compile="0" resource="0" file="Source/ParameterRule.h"/>
+          <FILE id="vqOlIQ" name="ScriptedRule.cpp" compile="1" resource="0"
+                file="Source/ScriptedRule.cpp"/>
+          <FILE id="WSheQZ" name="ScriptedRule.h" compile="0" resource="0" file="Source/ScriptedRule.h"/>
+          <FILE id="YrCmQ7" name="TriggerRule.cpp" compile="1" resource="0" file="Source/TriggerRule.cpp"/>
+          <FILE id="srPvRp" name="TriggerRule.h" compile="0" resource="0" file="Source/TriggerRule.h"/>
+        </GROUP>
         <GROUP id="{4428FDD1-4E1A-F199-46F2-F7D32DF545CA}" name="controllers">
           <GROUP id="{AC428C7B-CE35-EA62-F640-20F5072B53F7}" name="base">
             <FILE id="I6uMd3" name="Controller.cpp" compile="1" resource="0" file="Source/Controller.cpp"/>
