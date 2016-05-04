@@ -29,7 +29,6 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 	
 	setVisible(true);
 	toFront(true);
-
 	
 	addMouseListener(this,true);
 
@@ -61,9 +60,8 @@ void ShapeShifterWindow::mouseDrag(const MouseEvent & e)
 	dragger.dragComponent(this, e, 0);
 }
 
-void ShapeShifterWindow::mouseUp(const MouseEvent & e)
+void ShapeShifterWindow::mouseUp(const MouseEvent &)
 {
-	DBG("mouse up");
 	panel->setTransparentBackground(false);
 	ShapeShifterManager::getInstance()->checkDropOnCandidateTarget(panel);
 }

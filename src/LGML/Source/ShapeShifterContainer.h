@@ -28,6 +28,7 @@ public:
 	virtual void containerRemoved(ShapeShifterContainer *) {}
 
 	virtual void containerEmptied(ShapeShifterContainer *) {}
+	virtual void oneShifterRemaining(ShapeShifterContainer *, ShapeShifter *) {}
 
 };
 
@@ -45,7 +46,11 @@ public:
 	ShapeShifterContainer(Direction _direction);
 	virtual ~ShapeShifterContainer();
 	
-
+	void paintOverChildren(Graphics & g) override
+	{
+		g.setColour(Colours::purple.withAlpha(.3f));
+		g.drawRect(getLocalBounds(),3);
+	}
 	void resized() override;
 
 	Direction direction;
@@ -56,11 +61,12 @@ public:
 	
 	void insertPanelAt(ShapeShifterPanel * panel, int index);
 	void insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone);
-	void removePanel(ShapeShifterPanel * panel);
+	void removePanel(ShapeShifterPanel * panel, bool deletePanel = false, bool silent = false);
 
 	OwnedArray<ShapeShifterContainer> containers;
 	ShapeShifterContainer * insertContainerAt(int index, Direction _direction);
-	void removeContainer(ShapeShifterContainer * container);
+	ShapeShifterContainer * insertContainerAt(int index, ShapeShifterContainer * container);
+	void removeContainer(ShapeShifterContainer * container, bool silent = false);
 	
 	void movePanelsInContainer(ShapeShifterPanel * containedPanel, ShapeShifterPanel * newPanel, Direction _newDir, bool secondBeforeFirst);
 
@@ -69,6 +75,7 @@ public:
 	virtual void panelRemoved(ShapeShifterPanel *) override;
 
 	virtual void containerEmptied(ShapeShifterContainer *) override;
+	virtual void oneShifterRemaining(ShapeShifterContainer * container, ShapeShifter * lastShifter) override;
 
 	ListenerList<ShapeShifterContainerListener> containerListeners;
 	void addShapeShifterContainerListener(ShapeShifterContainerListener* newListener) { containerListeners.add(newListener); }

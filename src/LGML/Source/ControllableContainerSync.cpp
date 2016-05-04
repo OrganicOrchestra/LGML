@@ -74,17 +74,17 @@ void ControllableContainerSync::doAddControllable(Controllable *c){
         FloatParameter * ef = addFloatParameter(produceGroupName(f->niceName),f->description,f->defaultValue,f->minimumValue,f->maximumValue);
         ef->setValue(f->floatValue());
     }
-    else if(IntParameter * f = dynamic_cast<IntParameter *>(c)){
-        IntParameter * ef = addIntParameter(produceGroupName(f->niceName),f->description,f->defaultValue,f->minimumValue,f->maximumValue);
-        ef->setValue(f->intValue());
+    else if(IntParameter * i = dynamic_cast<IntParameter *>(c)){
+        IntParameter * ef = addIntParameter(produceGroupName(i->niceName),i->description,i->defaultValue,i->minimumValue,i->maximumValue);
+        ef->setValue(i->intValue());
     }
-    else if(StringParameter * f = dynamic_cast<StringParameter *>(c)){
-        StringParameter * ef = addStringParameter(produceGroupName(f->niceName),f->description,f->defaultValue);
-        ef->setValue(f->stringValue());
+    else if(StringParameter * s = dynamic_cast<StringParameter *>(c)){
+        StringParameter * ef = addStringParameter(produceGroupName(s->niceName),s->description,s->defaultValue);
+        ef->setValue(s->stringValue());
     }
-    else if(BoolParameter * f = dynamic_cast<BoolParameter *>(c)){
-        BoolParameter * ef = addBoolParameter(produceGroupName(f->niceName),f->description,f->defaultValue);
-        ef->setValue(f->boolValue());
+    else if(BoolParameter * b = dynamic_cast<BoolParameter *>(c)){
+        BoolParameter * ef = addBoolParameter(produceGroupName(b->niceName),b->description,b->defaultValue);
+        ef->setValue(b->boolValue());
     }
 }
 

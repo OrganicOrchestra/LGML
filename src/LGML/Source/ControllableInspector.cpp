@@ -86,8 +86,8 @@ void ControllableInspector::generateFromCandidates()
     // TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
-    displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
-    setBounds(displayedEditor->getBounds().withPosition(0,0));
+	displayedEditor->setBounds(getLocalBounds());
+    //setBounds(displayedEditor->getBounds());
 
 
 }
@@ -107,15 +107,15 @@ void ControllableInspector::resized()
 }
 
 
-void ControllableInspector::controllableAdded(Controllable * c)
+void ControllableInspector::controllableAdded(Controllable *)
 {
     generateFromCandidates();
 };
-void ControllableInspector::controllableRemoved(Controllable * c)
+void ControllableInspector::controllableRemoved(Controllable *)
 {
     generateFromCandidates();
 };
-void ControllableInspector::controllableContainerAdded(ControllableContainer * c)
+void ControllableInspector::controllableContainerAdded(ControllableContainer *)
 {
     generateFromCandidates();
 };

@@ -18,9 +18,14 @@ class ShapeShifterContainer;
 class ShapeShifter : public juce::Component
 {
 public :
-	ShapeShifter();
+	enum Type {PANEL, CONTAINER};
+		
+	ShapeShifter(Type _type);
 	virtual ~ShapeShifter();
+	
 	ShapeShifterContainer * parentContainer;
+
+	Type shifterType;
 
 	int preferredWidth;
 	int preferredHeight;

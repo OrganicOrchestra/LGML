@@ -14,6 +14,7 @@
 #include "ShapeShifterManager.h"
 
 ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifterPanelTab * sourceTab) :
+	ShapeShifter(ShapeShifter::PANEL),
 	currentContent(nullptr), transparentBackground(false), targetMode(false), candidateZone(NONE), candidateTargetPoint(Point<float>())
 {
 	addAndMakeVisible(header);
@@ -77,7 +78,6 @@ void ShapeShifterPanel::paint(Graphics & g)
 void ShapeShifterPanel::paintOverChildren(Graphics & g)
 {
 	if (!targetMode) return;
-	DBG("Paint over children " << String(targetMode));
 	Rectangle<int> r = getLocalBounds();
 	
 	Colour hc = HIGHLIGHT_COLOR.withAlpha(.5f);
@@ -120,8 +120,10 @@ void ShapeShifterPanel::setTransparentBackground(bool value)
 void ShapeShifterPanel::attachTab(ShapeShifterPanelTab * tab)
 {
 	header.attachTab(tab);
+	
 	contents.add(tab->content);
 	setCurrentContent(tab->content);
+
 }
 
 void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPanel)
@@ -139,7 +141,6 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPane
 	{
 		if (contents.size() > 0)
 		{
-			DBG("here !");
 			setCurrentContent(contents[juce::jlimit<int>(0,contents.size()-1, cIndex)]);
 		}else
 		{
@@ -184,6 +185,8 @@ void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
 
 bool ShapeShifterPanel::attachPanel(ShapeShifterPanel * panel)
 {
+	
+
 	switch (candidateZone)
 	{
 	case LEFT:
@@ -193,18 +196,26 @@ bool ShapeShifterPanel::attachPanel(ShapeShifterPanel * panel)
 		if (parentContainer != nullptr) parentContainer->insertPanelRelative(panel,this,candidateZone);
 		break;
 
+	case NONE:
+		return false;
+	
 	case CENTER:
-		while(panel->header.tabs.size() > 0)
+
+		int numTabs = panel->header.tabs.size();
+		
+		while(numTabs > 0)
 		{
 			ShapeShifterPanelTab * t = panel->header.tabs[0];
 			panel->detachTab(t,false);
 			attachTab(t);
+			numTabs--;
 		}
+
 		ShapeShifterManager::getInstance()->removePanel(panel);
+
 		break;
 
-	default:
-		return false;
+
 	}
 
 	return true;

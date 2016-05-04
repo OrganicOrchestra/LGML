@@ -32,11 +32,12 @@ void ControllableContainerEditor::addControlUI(ControllableUI * c){
 void ControllableContainerEditor::removeControlUI(ControllableUI * c){
     removeChildComponent(c);
     controllableUIs.removeFirstMatchingValue(c);
-
 }
 
 
-void ControllableContainerEditor::childBoundsChanged(Component * c){
+void ControllableContainerEditor::childBoundsChanged(Component * c)
+{
+	/*
     int y = 0;
     int pad = 3;
     int maxW = 0;
@@ -48,6 +49,7 @@ void ControllableContainerEditor::childBoundsChanged(Component * c){
 
     }
     setSize(maxW,y);
+	*/
 }
 
 
@@ -55,6 +57,7 @@ void ControllableContainerEditor::childBoundsChanged(Component * c){
 
 void ControllableContainerEditor::childrenChanged(){
 
+	/*
     int y = 0;
     int pad = 3;
     int maxW = 0;
@@ -66,6 +69,9 @@ void ControllableContainerEditor::childrenChanged(){
 
     }
     setSize(maxW,y);
+	*/
+
+	resized();
 };
 
 
@@ -79,7 +85,11 @@ void ControllableContainerEditor::resized(){
     if(embeddedComp){
         embeddedComp->setBounds(r);
     }
+
+	int gap = 5;
     for(int i = 0 ;i < getNumChildComponents() ; i++){
-        getChildComponent(i)->setSize(getWidth(), getChildComponent(i)->getHeight());
+		Component * c = getChildComponent(i);
+		c->setBounds(r.removeFromTop(20));
+		r.removeFromTop(gap);
     }
 }
