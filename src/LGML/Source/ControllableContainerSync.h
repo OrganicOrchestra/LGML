@@ -20,8 +20,8 @@
 
 
 /**
-\brief a ControllableContainerSync can bi-directionnaly syncronyze a list of ControllableContainer  
- 
+\brief a ControllableContainerSync can bi-directionnaly syncronyze a list of ControllableContainer
+
  other containers have to be of the same kind
  correspondences of Controllables is based on ControlAddress relative to ControllableContainers depth (i.e starting from the name of it)
  */

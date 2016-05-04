@@ -68,7 +68,7 @@ void NodeBaseUI::moved(){
 
 void NodeBaseUI::internalSetSelected(bool)
 {
-    
+
     mainContainer.repaint();
 
 }

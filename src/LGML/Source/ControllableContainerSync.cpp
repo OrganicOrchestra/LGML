@@ -137,13 +137,13 @@ void ControllableContainerSync::doRemoveContainer(ControllableContainer *c){
         }
     }
 
-    
+
 }
 void ControllableContainerSync::clear(){
     while(controllables.size()>0){
             removeControllable(controllables.getLast());
     }
-    
+
     for(auto & c:controllableContainers){
         ControllableContainerSync* cc =(ControllableContainerSync*)c  ;
         delete cc;
@@ -283,4 +283,3 @@ String ControllableContainerSync::produceGroupName(const String & n){
     return n;
 #endif
 }
-

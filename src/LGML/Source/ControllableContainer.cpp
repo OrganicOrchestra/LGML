@@ -419,7 +419,7 @@ void ControllableContainer::addParameterInternal(Parameter * p)
 var ControllableContainer::getJSONData()
 {
 	var data(new DynamicObject());
-	
+
 	var paramsData;
 
 	Array<Controllable *> cont = ControllableContainer::getAllControllables(true, true);

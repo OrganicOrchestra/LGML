@@ -37,10 +37,10 @@ public:
 
 	ShapeShifterPanel * checkCandidateTargetForPanel(ShapeShifterPanel * panel);
 	bool checkDropOnCandidateTarget(ShapeShifterPanel * panel);
-	
+
 	ShapeShifterWindow * getWindowForPanel(ShapeShifterPanel * panel);
-	
-	
+
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterManager)
 
 };

@@ -122,7 +122,7 @@ void ControllableInspector::controllableContainerAdded(ControllableContainer *)
     generateFromCandidates();
 };
 
-void ControllableInspector::controllableContainerRemoved(ControllableContainer * c) 
+void ControllableInspector::controllableContainerRemoved(ControllableContainer * c)
 {
     if(c==displayedEditor->owner){
         displayedEditor = nullptr;
@@ -130,12 +130,12 @@ void ControllableInspector::controllableContainerRemoved(ControllableContainer *
     generateFromCandidates();
 }
 
-void ControllableInspector::controllableFeedbackUpdate(Controllable *) 
+void ControllableInspector::controllableFeedbackUpdate(Controllable *)
 {
 };
 
 
-void ControllableInspector::sourceUpdated(ControllableContainer * c) 
+void ControllableInspector::sourceUpdated(ControllableContainer * c)
 {
 
     displayedEditor = nullptr;

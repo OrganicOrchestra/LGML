@@ -23,7 +23,7 @@ FloatStepperUI::FloatStepperUI(Parameter * _parameter) :
 
 FloatStepperUI::~FloatStepperUI()
 {
-    
+
 }
 
 void FloatStepperUI::resized()

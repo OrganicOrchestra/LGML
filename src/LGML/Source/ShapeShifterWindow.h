@@ -29,7 +29,7 @@ public:
 	void mouseUp(const MouseEvent &e) override;
 
 	DragMode dragMode;
-	
+
 
 	void userTriedToCloseWindow() override;
 

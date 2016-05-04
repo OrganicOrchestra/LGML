@@ -126,7 +126,7 @@ void NodeBaseHeaderUI::resized()
 
     Rectangle<int> r = getLocalBounds();
 
-    if (node->hasAudioOutputs) 
+    if (node->hasAudioOutputs)
 	{
         vuMeterOut.setBounds(r.removeFromRight(vuMeterWidth).reduced(4));
     }
@@ -140,7 +140,7 @@ void NodeBaseHeaderUI::resized()
 	r.reduce(5, 2);
 
 	enabledUI->setBounds(r.removeFromLeft(10).withSizeKeepingCentre(10, 10));
-    
+
     r.removeFromLeft(3);
 
     removeBT.setBounds(r.removeFromRight(removeBTWidth));

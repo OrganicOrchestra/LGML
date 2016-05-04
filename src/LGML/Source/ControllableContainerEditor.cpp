@@ -112,4 +112,3 @@ void ControllableContainerEditor::controllableContainerRemoved(ControllableConta
         }
     }
 };
-

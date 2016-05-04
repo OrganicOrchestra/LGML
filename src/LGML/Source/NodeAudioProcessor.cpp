@@ -45,7 +45,7 @@ void NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
                 wasSuspended=false;
             }
         }
-        
+
         if(rmsListeners.size() ){
             updateRMS(buffer,rmsValueOut);
             curSamplesForRMSOutUpdate += buffer.getNumSamples();
@@ -116,5 +116,5 @@ void NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer, float &targ
     }
 #endif
     //            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;
-    
+
 }
