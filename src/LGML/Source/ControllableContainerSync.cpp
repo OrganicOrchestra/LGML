@@ -121,7 +121,7 @@ void ControllableContainerSync::doRemoveControllable(Controllable * c){
 }
 
 void ControllableContainerSync::doAddContainer(ControllableContainer *c){
-    ControllableContainerSync * cc = new ControllableContainerSync(c,groupName);
+    ControllableContainerSync * cc = new ControllableContainerSync(c,"");
     addChildControllableContainer(cc);
 
 }
@@ -130,6 +130,7 @@ void ControllableContainerSync::doRemoveContainer(ControllableContainer *c){
     for(auto & cc:controllableContainers){
         if(areCompatible(c,cc)){
             removeChildControllableContainer(cc);
+            
             break;
         }
     }
@@ -140,9 +141,10 @@ void ControllableContainerSync::clear(){
     while(controllables.size()>0){
             removeControllable(controllables.getLast());
     }
+    
     for(auto & c:controllableContainers){
-        ((ControllableContainerSync*)c)->clear();
-        delete c;
+        ControllableContainerSync* cc =(ControllableContainerSync*)c  ;
+        delete cc;
     }
     controllableContainers.clear();
 }

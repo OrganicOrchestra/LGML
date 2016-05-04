@@ -25,16 +25,20 @@ void SelectableComponent::setHandler(SelectableComponentHandler * h){
 }
 
 void SelectableComponent::askForSelection(bool _isSelected,bool unique ) {
-    bool changed = true;//(_isSelected!=isSelected);
+    bool changed = _isSelected!=isSelected;
     isSelected = _isSelected;
     internalSetSelected(isSelected);
     if(handler!=nullptr && changed) handler->internalSelected(this,isSelected,unique);
-    if(repaintOnSelection && changed) repaint();
+    isSelected = _isSelected;
 
 	if (changed)
 	{
 		selectableListeners.call(isSelected?&SelectableListener::componentSelected:&SelectableListener::componentDeselected,this);
 	}
+
+    if(repaintOnSelection && changed) repaint();
+
+
 };
 
 void SelectableComponent::paintOverChildren(juce::Graphics &g){
