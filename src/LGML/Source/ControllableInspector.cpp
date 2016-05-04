@@ -25,6 +25,8 @@ ControllableInspector::~ControllableInspector(){
         controllableContainerSync->removeContainerSyncListener(this);
         controllableContainerSync->removeControllableContainerListener(this);
     }
+    controllableContainerSync = nullptr;
+    displayedEditor = nullptr;
 }
 
 void ControllableInspector::selectableChanged(SelectableComponent * _node,bool state)
@@ -73,13 +75,13 @@ void ControllableInspector::generateFromCandidates()
 
     if(displayedEditor==nullptr )
 	{
-        displayedEditor = (ControllableContainerEditor*)controllableContainerSync->createControllableContainerEditor(nullptr);
+        displayedEditor = new ControllableContainerEditor(controllableContainerSync,nullptr);
         addAndMakeVisible(displayedEditor);
     }
 
     // regenerate a new one based on existing one
     else{
-        controllableContainerSync->createControllableContainerEditor(displayedEditor);
+//        controllableContainerSync->createControllableContainerEditor(displayedEditor);
     }
 
 
@@ -137,6 +139,7 @@ void ControllableInspector::sourceUpdated(ControllableContainer * c)
 {
 
     displayedEditor = nullptr;
+    controllableContainerSync = nullptr;
     addOrMergeControllableContainerEditor(c);
 
 };

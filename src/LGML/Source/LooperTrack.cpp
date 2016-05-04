@@ -417,6 +417,6 @@ void LooperTrack::cleanAllQuantizeNeedles() {
 }
 
 
-Component * LooperTrack::createControllableContainerEditor(Component * ) {
-    return nullptr;
-}
+//Component * LooperTrack::createControllableContainerEditor(Component * ) {
+//    return nullptr;
+//}
