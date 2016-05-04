@@ -14,10 +14,12 @@
 
 
 ControllableContainerSync::ControllableContainerSync(ControllableContainer * source,String overrideName):
-groupName(overrideName),
 ControllableContainer(overrideName!=""?overrideName:source->niceName),
 sourceContainer(source),
 notifyingControllable(nullptr)
+#if DEBUG_CONTROLLABLENAMES
+,groupName(overrideName)
+#endif
 {
     deepCopyForContainer(source);
 

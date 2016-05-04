@@ -8,17 +8,23 @@
  ==============================================================================
  */
 
+
+
+
 #ifndef ControllableContainerSync_H_INCLUDED
 #define ControllableContainerSync_H_INCLUDED
-
-// a ControllableContainerSync can fully syncronyze Controllables from a source container to a list of container
-// other containers have to be of the same kind
-// correspondences of Controllables is based on ControlAddress relative to ControllableContainers depth (i.e starting from the name of it
 
 #define DEBUG_CONTROLLABLENAMES 0
 
 #include "ControllableContainer.h"
 
+
+/**
+\brief a ControllableContainerSync can bi-directionnaly syncronyze a list of ControllableContainer  
+ 
+ other containers have to be of the same kind
+ correspondences of Controllables is based on ControlAddress relative to ControllableContainers depth (i.e starting from the name of it)
+ */
 
 class ControllableContainerSync :public ControllableContainer, public ControllableContainer::Listener{
 
@@ -27,12 +33,14 @@ public:
     virtual ~ControllableContainerSync();
 
 
-
+#if DEBUG_CONTROLLABLENAMES
     String groupName;
+#endif
     void clear();
 
-    void addSyncedControllableIfNotAlreadyThere(ControllableContainer * );
-    void removeSyncedControllable(ControllableContainer * );
+    void addSyncedControllableIfNotAlreadyThere(ControllableContainer * );///< tries to add a synced ControllableContainer
+    void removeSyncedControllable(ControllableContainer * );///< tries to remove a synced ControllableContainer
+
 
     ControllableContainer * sourceContainer;
 
