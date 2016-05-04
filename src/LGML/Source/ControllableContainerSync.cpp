@@ -11,6 +11,28 @@
 #include "ControllableContainerSync.h"
 
 
+
+
+ControllableContainerSync::ControllableContainerSync(ControllableContainer * source,String overrideName):
+groupName(overrideName),
+ControllableContainer(overrideName!=""?overrideName:source->niceName),
+sourceContainer(source),
+notifyingControllable(nullptr)
+{
+    deepCopyForContainer(source);
+
+}
+
+ControllableContainerSync::~ControllableContainerSync(){
+    for(auto &c:targetSyncedContainers){
+        c->removeControllableContainerListener(this);
+    }
+    if(sourceContainer)
+        sourceContainer->removeControllableContainerListener(this);
+
+    clear();
+}
+
 // =============
 // add athor container to be in sync
 
@@ -152,7 +174,7 @@ void ControllableContainerSync::onContainerTriggerTriggered(Trigger * c){
 }
 
 
-// from list
+// from synced list
 void ControllableContainerSync::controllableFeedbackUpdate(Controllable *c) {
     if(c->parentContainer ){
     if(areCompatible(c->parentContainer,this)){
@@ -249,3 +271,12 @@ void ControllableContainerSync::controllableContainerRemoved(ControllableContain
     doRemoveContainer(c);
     notifyStructureChanged();
 }
+
+String ControllableContainerSync::produceGroupName(const String & n){
+#if DEBUG_CONTROLLABLENAMES
+    return groupName+"_"+n;
+#else
+    return n;
+#endif
+}
+

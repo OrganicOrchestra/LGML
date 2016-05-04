@@ -34,6 +34,8 @@ public:
     virtual ~ControllableInspector();
 
     void selectableChanged(SelectableComponent*  c,bool isSelected) override;
+
+
 private:
 
     void addOrMergeControllableContainerEditor(ControllableContainer * c);

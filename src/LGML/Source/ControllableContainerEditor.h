@@ -28,7 +28,11 @@ public:
 
     virtual ~ControllableContainerEditor();
 
+    ControllableContainer * owner;
 
+
+protected:
+    
     void buildFromContainer(ControllableContainer * );
     void addControlUI(ControllableUI * c);
     void removeControlUI(ControllableUI * c);
@@ -43,10 +47,10 @@ public:
     virtual void controllableContainerRemoved(ControllableContainer * ) override ;
 
     void resized()override;
-    ControllableContainer * owner;
+
     OwnedArray<ControllableUI> controllableUIs;
     OwnedArray<ControllableContainerEditor> editors;
-protected:
+
     Component* embeddedComp;
     void layoutChildrens();
 
