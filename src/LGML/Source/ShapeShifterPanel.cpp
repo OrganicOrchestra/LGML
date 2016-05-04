@@ -34,7 +34,7 @@ ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifter
 ShapeShifterPanel::~ShapeShifterPanel()
 {
 	header.removeHeaderListener(this);
-	listeners.call(&Listener::panelRemoved, this);
+	listeners.call(&Listener::panelDestroyed, this);
 }
 
 
@@ -82,7 +82,6 @@ void ShapeShifterPanel::paintOverChildren(Graphics & g)
 	
 	Colour hc = HIGHLIGHT_COLOR.withAlpha(.5f);
 	Colour nc = NORMAL_COLOR.withAlpha(.3f);
-	int reduceAmount = 2;
 
 	g.setColour(candidateZone == AttachZone::TOP ? hc : nc);
 	g.fillRect(r.withHeight(jmin<int>(10,getHeight()/3)).reduced(jmin<int>(30,getWidth()/5),0));
@@ -185,8 +184,6 @@ void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
 
 bool ShapeShifterPanel::attachPanel(ShapeShifterPanel * panel)
 {
-	
-
 	switch (candidateZone)
 	{
 	case LEFT:
@@ -268,6 +265,10 @@ void ShapeShifterPanel::tabSelect(ShapeShifterPanelTab * tab)
 
 void ShapeShifterPanel::headerDrag()
 {
-	if (!isDetached()) listeners.call(&Listener::panelDetach, this);
+	if (!isDetached())
+	{
+		DBG("Call panelDetach");
+		listeners.call(&Listener::panelDetach, this);
+	}
 	else listeners.call(&Listener::headerDrag, this);
 }

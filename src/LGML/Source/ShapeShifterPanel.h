@@ -72,7 +72,7 @@ public:
         virtual ~Listener(){};
 		virtual void panelDetach(ShapeShifterPanel *) {}
 		virtual void panelEmptied(ShapeShifterPanel *) {};
-		virtual void panelRemoved(ShapeShifterPanel *) {};
+		virtual void panelDestroyed(ShapeShifterPanel *) {};
 
 		virtual void headerDrag(ShapeShifterPanel *) {}
 		virtual void tabDrag(ShapeShifterPanel *) {};

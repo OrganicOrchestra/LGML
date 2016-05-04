@@ -22,7 +22,7 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 	setContentNonOwned(_panel,true);
 
 	setBackgroundColour(BG_COLOR.darker(.1f).withAlpha(.3f));
-	//setAlwaysOnTop(true);
+	setAlwaysOnTop(true);
 
 	setResizable(true, true);
 	setDraggable(true);

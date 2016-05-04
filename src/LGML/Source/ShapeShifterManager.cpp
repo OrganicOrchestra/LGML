@@ -105,7 +105,3 @@ ShapeShifterWindow * ShapeShifterManager::getWindowForPanel(ShapeShifterPanel * 
 	return nullptr;
 }
 
-void ShapeShifterManager::panelEmptied(ShapeShifterPanel * panel)
-{
-	removePanel(panel);
-}

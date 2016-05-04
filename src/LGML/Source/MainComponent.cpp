@@ -46,10 +46,10 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 	shapeShifterManager.mainContainer.insertPanelAt(timeManagerPanel, 0);
 
-	ShapeShifterContainer * c2 = shapeShifterManager.mainContainer.insertContainerAt(1, ShapeShifterContainer::Direction::HORIZONTAL);
+	ShapeShifterContainer * c2 = shapeShifterManager.mainContainer.insertContainerAt(ShapeShifterContainer::Direction::HORIZONTAL,1);
 	c2->insertPanelAt(nodeManagerPanel, 1);
 
-	ShapeShifterContainer * vc = c2->insertContainerAt(0, ShapeShifterContainer::VERTICAL);
+	ShapeShifterContainer * vc = c2->insertContainerAt(ShapeShifterContainer::VERTICAL,0);
 	vc->insertPanelAt(controllerManagerPanel, 0);
 	vc->insertPanelAt(inspectorPanel, 1);
 

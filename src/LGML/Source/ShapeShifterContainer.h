@@ -45,12 +45,15 @@ public:
 
 	ShapeShifterContainer(Direction _direction);
 	virtual ~ShapeShifterContainer();
+
 	
 	void paintOverChildren(Graphics & g) override
 	{
 		g.setColour(Colours::purple.withAlpha(.3f));
 		g.drawRect(getLocalBounds(),3);
 	}
+	
+
 	void resized() override;
 
 	Direction direction;
@@ -59,20 +62,25 @@ public:
 	Array<ShapeShifter *> shifters;
 	
 	
+	//Generic handling
+	void insertShifterAt(ShapeShifter * shifter, int index);
+	void removeShifter(ShapeShifter * shifter, bool deleteShifter, bool silent = false);
+
 	void insertPanelAt(ShapeShifterPanel * panel, int index);
 	void insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone);
-	void removePanel(ShapeShifterPanel * panel, bool deletePanel = false, bool silent = false);
 
-	OwnedArray<ShapeShifterContainer> containers;
-	ShapeShifterContainer * insertContainerAt(int index, Direction _direction);
-	ShapeShifterContainer * insertContainerAt(int index, ShapeShifterContainer * container);
-	void removeContainer(ShapeShifterContainer * container, bool silent = false);
+	ShapeShifterContainer * insertContainerAt(Direction _direction, int index);
+	ShapeShifterContainer * insertContainerAt(ShapeShifterContainer * container, int index);
 	
 	void movePanelsInContainer(ShapeShifterPanel * containedPanel, ShapeShifterPanel * newPanel, Direction _newDir, bool secondBeforeFirst);
 
+
+	void clear();
+
 	virtual void grabberGrabUpdate(GapGrabber * gg, int dist) override;
 	virtual void panelDetach(ShapeShifterPanel *) override;
-	virtual void panelRemoved(ShapeShifterPanel *) override;
+	virtual void panelEmptied(ShapeShifterPanel * panel) override;
+	virtual void panelDestroyed(ShapeShifterPanel *) override;
 
 	virtual void containerEmptied(ShapeShifterContainer *) override;
 	virtual void oneShifterRemaining(ShapeShifterContainer * container, ShapeShifter * lastShifter) override;
