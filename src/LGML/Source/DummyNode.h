@@ -20,7 +20,7 @@ public:
     class DummyAudioProcessor : public NodeAudioProcessor
     {
     public:
-        DummyAudioProcessor():NodeAudioProcessor()
+        DummyAudioProcessor():NodeAudioProcessor("Dummy")
         {
             setPlayConfigDetails(2, 3, getSampleRate(), getBlockSize());
 

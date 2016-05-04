@@ -27,7 +27,7 @@ public:
     {
     public:
         AudioInProcessor():
-        NodeAudioProcessor(),
+        NodeAudioProcessor("AudioIn"),
         AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
         {
         NodeAudioProcessor::busArrangement.inputBuses.clear();

@@ -23,7 +23,7 @@ public:
 
 
 
-    class AudioMixerAudioProcessor : public NodeAudioProcessor,public ControllableContainer
+    class AudioMixerAudioProcessor : public NodeAudioProcessor
     {
     public:
 

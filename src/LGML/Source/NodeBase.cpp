@@ -122,12 +122,14 @@ void NodeBase::addToAudioGraphIfNeeded(){
     if(hasAudioInputs || hasAudioOutputs){
         nodeManager->audioGraph.addNode(audioProcessor,nodeId);
         audioProcessor->addNodeAudioProcessorListener(this);
+        addChildControllableContainer( audioProcessor);
     }
 }
 void NodeBase::removeFromAudioGraphIfNeeded(){
     if(hasAudioInputs || hasAudioOutputs){
         nodeManager->audioGraph.removeNode(nodeId);
         audioProcessor->removeNodeAudioProcessorListener(this);
+        removeChildControllableContainer( audioProcessor);
     }
 }
 

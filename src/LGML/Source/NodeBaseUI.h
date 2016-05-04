@@ -117,7 +117,7 @@ public:
 
 
 private:
-
+    bool dragIsLocked;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeBaseUI)
 };

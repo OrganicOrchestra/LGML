@@ -41,6 +41,9 @@ void NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
 
     processBlockInternal(buffer, midiMessages);
 
+    buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
+    lastVolume = outputVolume->floatValue();
+
     if(rmsListeners.size() ){
         updateRMS(buffer,rmsValueOut);
         curSamplesForRMSOutUpdate += buffer.getNumSamples();

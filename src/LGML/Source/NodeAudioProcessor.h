@@ -13,13 +13,18 @@
 
 
 #include "JuceHeader.h"
-
-class NodeAudioProcessor : public juce::AudioProcessor,public AsyncUpdater
+#include "ControllableContainer.h"
+class NodeAudioProcessor : public juce::AudioProcessor,public AsyncUpdater,public ControllableContainer
 {
 public:
 
 
-    NodeAudioProcessor() :AudioProcessor(){};
+    NodeAudioProcessor(const String Name) :AudioProcessor(),ControllableContainer(Name+"_audio"){
+        outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
+        lastVolume = outputVolume->floatValue();
+    };
+
+    FloatParameter * outputVolume;
     virtual ~NodeAudioProcessor(){};
 
     bool setPreferedNumAudioInput(int num);
@@ -106,6 +111,7 @@ public:
 
 
     bool wasSuspended;
+    float lastVolume;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeAudioProcessor)
 };

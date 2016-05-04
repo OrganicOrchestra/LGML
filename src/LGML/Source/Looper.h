@@ -18,7 +18,7 @@ class LooperTrack;
 
 #define MAX_NUM_TRACKS 32
 
-class Looper : public NodeAudioProcessor, public ControllableContainer
+class Looper : public NodeAudioProcessor
 {
 
 public:

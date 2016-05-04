@@ -70,7 +70,7 @@ public:
     class VSTProcessor : public NodeAudioProcessor{
 
     public:
-        VSTProcessor(VSTNode * _owner):owner(_owner){
+        VSTProcessor(VSTNode * _owner):NodeAudioProcessor("VST"),owner(_owner){
 
         }
         ~VSTProcessor(){}

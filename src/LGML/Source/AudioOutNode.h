@@ -26,7 +26,7 @@ public:
     {
     public:
         AudioOutProcessor():
-        NodeAudioProcessor(),
+        NodeAudioProcessor("AudioOut"),
         AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode){
             NodeAudioProcessor::busArrangement.outputBuses.clear();
         }

@@ -17,6 +17,7 @@
 
 #include "NodeBaseHeaderUI.h"
 #include "NodeBaseContentUI.h"
+#include "FloatSliderUI.h"
 
 //==============================================================================
 NodeBaseUI::NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer, NodeBaseHeaderUI * headerContainer) :
@@ -24,7 +25,8 @@ SelectableComponent(&NodeManagerUI::selectableHandler),
 inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
 mainContainer(this,contentContainer,headerContainer),
-node(node)
+node(node),
+dragIsLocked(false)
 {
 
     //DBG("Node Base UI Constructor");
@@ -158,6 +160,17 @@ ConnectorComponent * NodeBaseUI::getFirstConnector(NodeConnection::ConnectionTyp
 void NodeBaseUI::mouseDown(const juce::MouseEvent &e)
 {
     nodeInitPos = getBounds().getCentre();
+
+
+    // don't want to drag if over volume
+    if(FloatSliderUI * volumeUI = getHeaderContainer()->outputVolume){
+        Point<int> mouse = getMouseXYRelative();
+        Component * found = getComponentAt(mouse.x,mouse.y);
+
+        dragIsLocked = (dynamic_cast<FloatSliderUI *>(found) == volumeUI);
+
+
+    }
 }
 #pragma warning( default : 4100 )
 
@@ -168,12 +181,16 @@ void NodeBaseUI::mouseUp(const juce::MouseEvent &){
 		nmui->setAllNodesToStartAtZero();
 	}
     askForSelection(true,true);
+    dragIsLocked = false;
 
 
 }
 
 void NodeBaseUI::mouseDrag(const MouseEvent & e)
 {
+
+    if(dragIsLocked)return;
+
     Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
     Point <int> newPos = nodeInitPos + diff;
     node->xPosition->setValue((float)newPos.x);

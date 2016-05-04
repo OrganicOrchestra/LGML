@@ -105,7 +105,7 @@ VSTNode.h
 
 
 NodeBase.cpp
-	line : 150
+	line : 152
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 

@@ -15,7 +15,7 @@
 #include "LooperNode.h"
 
 Looper::Looper(LooperNode * looperNode) :
-ControllableContainer("InnerLooper"),
+NodeAudioProcessor("InnerLooper"),
 selectedTrack(nullptr),
 looperNode(looperNode),
 wasMonitoring(false)

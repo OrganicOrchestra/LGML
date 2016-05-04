@@ -19,6 +19,8 @@
 #include "VuMeter.h"
 #include "Style.h"
 
+class FloatSliderUI;
+
 class NodeBaseHeaderUI : public Component, public ComboBox::Listener, public Button::Listener, public ControllableContainer::Listener
 {
 public:
@@ -38,6 +40,7 @@ public:
     ScopedPointer<BoolToggleUI> enabledUI;
 	VuMeter vuMeterIn;
 	VuMeter vuMeterOut;
+    ScopedPointer<FloatSliderUI>  outputVolume;
 
     Grabber grabber;
     ImageButton removeBT;
