@@ -129,7 +129,9 @@ void NodeBase::removeFromAudioGraphIfNeeded(){
     if(hasAudioInputs || hasAudioOutputs){
         nodeManager->audioGraph.removeNode(nodeId);
         audioProcessor->removeNodeAudioProcessorListener(this);
-        removeChildControllableContainer( audioProcessor);
+
+		//@martin commented out because access violation error, is it needed ? (no leak detector when commented)
+        //removeChildControllableContainer( audioProcessor);
     }
 }
 
