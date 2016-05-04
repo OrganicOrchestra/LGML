@@ -46,13 +46,13 @@ public:
 	ShapeShifterContainer(Direction _direction);
 	virtual ~ShapeShifterContainer();
 
-	
+	/*
 	void paintOverChildren(Graphics & g) override
 	{
 		g.setColour(Colours::purple.withAlpha(.3f));
 		g.drawRect(getLocalBounds(),3);
 	}
-	
+	*/
 
 	void resized() override;
 
