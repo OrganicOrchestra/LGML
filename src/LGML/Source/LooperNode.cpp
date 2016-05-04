@@ -14,7 +14,7 @@
 #include "Looper.h"
 
 LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId,"Looper",new Looper(this)) {
-
+    looper = dynamic_cast<Looper*>(audioProcessor);
 }
 
 NodeBaseUI * LooperNode::createUI(){

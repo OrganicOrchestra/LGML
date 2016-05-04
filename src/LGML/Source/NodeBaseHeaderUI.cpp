@@ -7,15 +7,14 @@
 
  ==============================================================================
  */
-
+#include "NodeBaseUI.h"
 #include "NodeBaseHeaderUI.h"
 #include "PresetManager.h"
 #include "FloatSliderUI.h"
 
 NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X") ,
  vuMeterIn(VuMeter::Type::IN),
-	vuMeterOut(VuMeter::Type::OUT),
-outputVolume(nullptr)
+	vuMeterOut(VuMeter::Type::OUT)
 {
     node = nullptr;
     nodeUI = nullptr;
@@ -58,9 +57,7 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 		if (node->hasAudioOutputs) {
 			node->audioProcessor->addRMSListener(&vuMeterOut);
 			addAndMakeVisible(vuMeterOut);
-            outputVolume = node->audioProcessor->outputVolume->createSlider();
-            outputVolume->orientation = FloatSliderUI::Direction::VERTICAL;
-            addAndMakeVisible(outputVolume);
+
 		}
 
 		if (node->hasAudioInputs)
@@ -68,6 +65,7 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 			node->audioProcessor->addRMSListener(&vuMeterIn);
 			addAndMakeVisible(vuMeterIn);
 		}
+
     }
 
     titleUI = node->nameParam->createStringParameterUI();
@@ -131,7 +129,6 @@ void NodeBaseHeaderUI::resized()
     if (node->hasAudioOutputs) 
 	{
         vuMeterOut.setBounds(r.removeFromRight(vuMeterWidth).reduced(4));
-        if(outputVolume)outputVolume->setBounds(r.removeFromRight(vuMeterWidth).reduced(2));
     }
 
 	if (node->hasAudioInputs)

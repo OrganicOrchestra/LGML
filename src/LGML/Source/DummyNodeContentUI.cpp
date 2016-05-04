@@ -9,6 +9,7 @@
 */
 
 #include "DummyNodeContentUI.h"
+#include "NodeBaseUI.h"
 
 DummyNodeContentUI::DummyNodeContentUI() : NodeBaseContentUI()
 {

@@ -22,9 +22,11 @@ public:
     NodeAudioProcessor(const String Name) :AudioProcessor(),ControllableContainer(Name+"_audio"){
         outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
         lastVolume = outputVolume->floatValue();
+        bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
     };
 
     FloatParameter * outputVolume;
+    BoolParameter * bypass;
     virtual ~NodeAudioProcessor(){};
 
     bool setPreferedNumAudioInput(int num);

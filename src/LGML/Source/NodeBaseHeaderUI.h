@@ -12,13 +12,15 @@
 #define NODEBASEHEADERUI_H_INCLUDED
 
 
-#include "NodeBaseUI.h"
+
 
 #include "StringParameterUI.h"
 #include "BoolToggleUI.h"
 #include "VuMeter.h"
 #include "Style.h"
 
+
+class NodeBaseUI;
 class FloatSliderUI;
 
 class NodeBaseHeaderUI : public Component, public ComboBox::Listener, public Button::Listener, public ControllableContainer::Listener
@@ -39,8 +41,7 @@ public:
     ScopedPointer<StringParameterUI> titleUI;
     ScopedPointer<BoolToggleUI> enabledUI;
 	VuMeter vuMeterIn;
-	VuMeter vuMeterOut;
-    ScopedPointer<FloatSliderUI>  outputVolume;
+    VuMeter vuMeterOut;
 
     Grabber grabber;
     ImageButton removeBT;

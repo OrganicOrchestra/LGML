@@ -15,8 +15,7 @@
 #include "NodeManagerUI.h"
 #include "ConnectorComponent.h"
 
-#include "NodeBaseHeaderUI.h"
-#include "NodeBaseContentUI.h"
+
 #include "FloatSliderUI.h"
 
 //==============================================================================
@@ -163,11 +162,11 @@ void NodeBaseUI::mouseDown(const juce::MouseEvent &e)
 
 
     // don't want to drag if over volume
-    if(FloatSliderUI * volumeUI = getHeaderContainer()->outputVolume){
+    if(NodeBaseAudioCtlUI * ctlUI = mainContainer.audioCtlUIContainer){
         Point<int> mouse = getMouseXYRelative();
         Component * found = getComponentAt(mouse.x,mouse.y);
 
-        dragIsLocked = (dynamic_cast<FloatSliderUI *>(found) == volumeUI);
+        dragIsLocked = (dynamic_cast<NodeBaseAudioCtlUI *>(found) == ctlUI);
 
 
     }
@@ -254,7 +253,9 @@ ConnectorComponent * NodeBaseUI::ConnectorContainer::getFirstConnector(NodeConne
 
 NodeBaseUI::MainContainer::MainContainer(NodeBaseUI * _nodeUI, NodeBaseContentUI * content, NodeBaseHeaderUI * header) :
 nodeUI(_nodeUI),
-headerContainer(header), contentContainer(content)
+headerContainer(header),
+contentContainer(content),
+audioCtlUIContainer(nullptr)
 {
 
     if (headerContainer == nullptr) headerContainer = new NodeBaseHeaderUI();
@@ -263,12 +264,22 @@ headerContainer(header), contentContainer(content)
 
     addAndMakeVisible(headerContainer);
     addAndMakeVisible(contentContainer);
+
 }
 
 void NodeBaseUI::MainContainer::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 {
+    if(_node->hasAudioOutputs){
+        jassert(audioCtlUIContainer==nullptr);
+        audioCtlUIContainer = new NodeBaseAudioCtlUI();
+        addAndMakeVisible(audioCtlUIContainer);
+        audioCtlUIContainer->setNodeAndNodeUI(_node,_nodeUI);
+    }
+
     headerContainer->setNodeAndNodeUI(_node, _nodeUI);
     contentContainer->setNodeAndNodeUI(_node, _nodeUI);
+
+    resized();
 }
 
 void NodeBaseUI::MainContainer::paint(Graphics & g)
@@ -287,17 +298,23 @@ void NodeBaseUI::MainContainer::resized()
 
     // if changes in this layout take care to update  childBounds changed to update when child resize itself (NodeBaseContentUI::init()
     Rectangle<int> r = getLocalBounds();
+    if(r.getWidth()==0 || r.getHeight() == 0)return;
+
     Rectangle<int> headerBounds = r.removeFromTop(headerContainer->getHeight());
     headerContainer->setBounds(headerBounds);
+    if(audioCtlUIContainer){
+        r.removeFromRight(audioCtlContainerPadRight);
+        audioCtlUIContainer->setBounds(r.removeFromRight(10).reduced(0, 4));
+    }
     contentContainer->setBounds(r);
 }
 void NodeBaseUI::MainContainer::childBoundsChanged (Component* c){
-    if(c == contentContainer){
-        int destWidth = contentContainer->getWidth();
+    if(c == contentContainer || c== audioCtlUIContainer){
+        int destWidth = contentContainer->getWidth()+(audioCtlUIContainer?audioCtlUIContainer->getWidth()+audioCtlContainerPadRight:0);
         int destHeight = contentContainer->getHeight()+headerContainer->getHeight();
         if(getWidth() !=  destWidth||
            getHeight() != destHeight){
-            setSize(contentContainer->getWidth(),contentContainer->getHeight()+headerContainer->getHeight());
+            setSize(destWidth,destHeight);
         }
     }
 }
