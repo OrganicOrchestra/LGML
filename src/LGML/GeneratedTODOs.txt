@@ -62,12 +62,12 @@ NodeConnectionUI.cpp
 
 
 ShapeShifterContainer.cpp
-	line : 227
+	line : 100
+		//TODO check direction and create sub container if needed
+
+	line : 231
 		//@ben what to we do for that?
 		//@martin never gonna happen :)
-
-	line : 46
-		//TODO check direction and create sub container if needed
 
 
 DataProcessorGraph.cpp

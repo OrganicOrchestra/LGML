@@ -48,6 +48,7 @@ public:
     OwnedArray<ControllableContainerEditor> editors;
 protected:
     Component* embeddedComp;
+    void layoutChildrens();
 
 
 

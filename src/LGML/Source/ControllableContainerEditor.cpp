@@ -42,38 +42,22 @@ void ControllableContainerEditor::removeControlUI(ControllableUI * c){
 }
 
 
-void ControllableContainerEditor::childBoundsChanged(Component * c){
+void ControllableContainerEditor::childBoundsChanged(Component * c){layoutChildrens();}
+
+void ControllableContainerEditor::childrenChanged(){layoutChildrens();};
+
+
+void ControllableContainerEditor::layoutChildrens(){
     int y = 0;
     int pad = 3;
-    int maxW = 0;
     for(int i = 0 ; i < getNumChildComponents() ; i ++){
         Component * ch= getChildComponent(i);
         ch->setTopLeftPosition(0, y);
         y+=ch->getHeight()+pad;
-        maxW = jmax(ch->getWidth(),maxW);
 
     }
-    setSize(maxW,y);
+    setSize(getWidth(),y);
 }
-
-
-
-
-void ControllableContainerEditor::childrenChanged(){
-
-    int y = 0;
-    int pad = 3;
-    int maxW = 0;
-    for(int i = 0 ; i < getNumChildComponents() ; i ++){
-        Component * ch= getChildComponent(i);
-        ch->setTopLeftPosition(0, y);
-        y+=ch->getHeight()+pad;
-        maxW = jmax(ch->getWidth(),maxW);
-
-    }
-    setSize(maxW,y);
-};
-
 
 void ControllableContainerEditor::paint(Graphics & g)
 {
@@ -82,9 +66,8 @@ void ControllableContainerEditor::paint(Graphics & g)
 void ControllableContainerEditor::resized(){
 	Rectangle<int> r = getLocalBounds().reduced(5,0);
 
-    if(embeddedComp){
-        embeddedComp->setBounds(r);
-    }
+    if(embeddedComp){embeddedComp->setBounds(r);}
+
     for(int i = 0 ;i < getNumChildComponents() ; i++){
         getChildComponent(i)->setSize(getWidth(), getChildComponent(i)->getHeight());
     }
