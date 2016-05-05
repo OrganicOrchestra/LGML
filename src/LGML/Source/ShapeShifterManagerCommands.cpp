@@ -11,7 +11,12 @@ StringArray ShapeShifterManager::getMenuBarNames()
 PopupMenu ShapeShifterManager::getMenuForIndex(int topLevelMenuIndex, const String &)
 {
 	PopupMenu menu;
+#if __cplusplus < 201103L
+    Array<String> tmpNames;
+    tmpNames.add( "Panel1");tmpNames.add( "Panel2");tmpNames.add( "Panel3");
+#else
 	Array<String> tmpNames = { "Panel1","Panel2","Panel3" };
+#endif
 
 	if (topLevelMenuIndex == 0) // "Panels" menu
 	{

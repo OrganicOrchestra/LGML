@@ -41,7 +41,7 @@ ControllableContainer.cpp
 
 
 NodeBase.h
-	line : 125
+	line : 129
 		// @ben is it triggering error on your side?
 
 
@@ -62,12 +62,12 @@ NodeConnectionUI.cpp
 
 
 ShapeShifterContainer.cpp
-	line : 100
-		//TODO check direction and create sub container if needed
-
-	line : 231
+	line : 241
 		//@ben what to we do for that?
 		//@martin never gonna happen :)
+
+	line : 126
+		//@ben do we need to handle these?
 
 
 DataProcessorGraph.cpp
@@ -105,8 +105,12 @@ VSTNode.h
 
 
 NodeBase.cpp
-	line : 152
+	line : 155
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
+
+	line : 133
+		//@martin commented out because access violation error, is it needed ? (no leak detector when commented)
+		//removeChildControllableContainer( audioProcessor);
 
 
 ControllableContainer.h

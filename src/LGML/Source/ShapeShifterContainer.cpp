@@ -122,6 +122,12 @@ ShapeShifterPanel * ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel
 		if (direction == VERTICAL) insertPanelAt(panel, shifters.indexOf(relativeTo)+1);
 		else movePanelsInContainer(panel, relativeTo, VERTICAL,true);
 	break;
+        case ShapeShifterPanel::AttachZone::NONE:
+        case ShapeShifterPanel::AttachZone::CENTER:
+            //@ben do we need to handle these?
+            jassertfalse;
+            break;
+
 
 	}
 	
