@@ -25,28 +25,23 @@ JavascriptEnvironment::JavascriptEnvironment(){
 
 JavascriptEnvironment::~JavascriptEnvironment(){
     for(auto & n:linkedNamespaces){
-       if(n->container.get()) n->container->removeControllableContainerListener(this);
+        if(n.second.container.get()) n.second.container->removeControllableContainerListener(this);
     }
 }
 
 void JavascriptEnvironment::linkToControllableContainer(const String & jsNamespace,ControllableContainer * c){
     c->addControllableContainerListener(this);
-    JsNamespace * n = new JsNamespace(jsNamespace,c,createDynamicObjectFromContainer(c,nullptr));
-    registerNativeObject(jsNamespace, n->jsObject);
-    linkedNamespaces.add(n );
+    DynamicObject::Ptr obj = createDynamicObjectFromContainer(c,nullptr);
+
+    registerNativeObject(jsNamespace, obj);
+    linkedNamespaces[jsNamespace].container=c ;
+    linkedNamespaces[jsNamespace].jsObject=obj ;
 }
 
 
 void    JavascriptEnvironment::removeNamespace(const String & jsNamespace){
-    int idx = 0;
-    for(auto & n:linkedNamespaces){
-        if(jsNamespace == n->name){
-            linkedNamespaces.remove(idx);
-            registerNativeObject(jsNamespace, nullptr);
-            break;
-        }
-        idx++;
-    }
+    linkedNamespaces.erase(jsNamespace);
+    registerNativeObject(jsNamespace, nullptr);
 }
 
 
@@ -69,7 +64,7 @@ DynamicObject* JavascriptEnvironment::createDynamicObjectFromContainer(Controlla
 
         }
         else if(Trigger * t = dynamic_cast<Trigger*>(c)){
-             DynamicObject* dd= new DynamicObject();
+            DynamicObject* dd= new DynamicObject();
             dd->setMethod("t", JavascriptEnvironment::set);
             dd->setProperty("_ptr", (int64)t);
             d->setProperty(t->shortName, dd);
@@ -119,17 +114,33 @@ void JavascriptEnvironment::internalLoadFile(const File &f ){
     }
 }
 
+void JavascriptEnvironment::post(const String & s){
+    DBG(s);
+}
 var JavascriptEnvironment::post(const NativeFunctionArgs& a){
     DBG("posting : "+a.thisObject.toString());
     for(int i = 0 ; i < a.numArguments ;i++){
-        DBG(a.arguments[i].toString());
+        post(a.arguments[i].toString());
     }
     return var();
 
 }
 
+void JavascriptEnvironment::addToNamespace(const String & name,const String & elemName,DynamicObject *d){
+
+    DynamicObject * dd = localEnvironment->getProperty(name).getDynamicObject();
+    if(dd==nullptr)
+    {
+        dd= new DynamicObject();
+        localEnvironment->setProperty(name, dd);
+        registerNativeObject(name, dd);
+    }
+
+    dd->setProperty(elemName,d);
+}
+
 var JavascriptEnvironment::set(const NativeFunctionArgs& a){
-    
+
     DynamicObject * d = a.thisObject.getDynamicObject();
     Controllable * c = dynamic_cast<Controllable*>((Controllable*)(int64)d->getProperty("_ptr"));
     bool success = false;
@@ -193,8 +204,8 @@ void JavascriptEnvironment::childStructureChanged(ControllableContainer * c){
     bool found = false;
     while(inspected!=nullptr && !found){
         for(auto & n:linkedNamespaces){
-            if(n->container == inspected){
-                registerNativeObject(n->name, createDynamicObjectFromContainer(n->container, nullptr));
+            if(n.second.container == inspected){
+                registerNativeObject(n.first, createDynamicObjectFromContainer(n.second.container, nullptr));
                 found = true;
                 break;
             }

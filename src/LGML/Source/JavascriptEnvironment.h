@@ -11,7 +11,7 @@
 #ifndef JAVASCRIPTENVIRONNEMENT_H_INCLUDED
 #define JAVASCRIPTENVIRONNEMENT_H_INCLUDED
 
-
+#include <map>
 #include "JuceHeader.h"
 #include "ControllableContainer.h"
 class JavascriptEnvironment : public JavascriptEngine,public ControllableContainer::Listener{
@@ -26,6 +26,7 @@ public:
 
     static  DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
     void    linkToControllableContainer(const String & jsNamespace,ControllableContainer * c);
+    void    addToNamespace(const String & name,const String & elemName,DynamicObject *);
     void    removeNamespace(const String & jsNamespace);
     void    loadFile(const String & path);
 
@@ -55,13 +56,12 @@ public:
 
     class JsNamespace{
     public:
-        JsNamespace(String n,ControllableContainer * c,DynamicObject * o):name(n),container(c),jsObject(o){}
-        String name;
+//        JsNamespace(ControllableContainer * c,DynamicObject * o):container(c),jsObject(o){}
         WeakReference<ControllableContainer> container;
         DynamicObject::Ptr jsObject;
 
     };
-    OwnedArray<JsNamespace> linkedNamespaces;
+    std::map<String,JsNamespace > linkedNamespaces;
 
 
     StringArray loadedFiles;
@@ -69,6 +69,7 @@ public:
 
 private:
 
+    static void  post(const String & s);
     void internalLoadFile(const File &);
     void childStructureChanged(ControllableContainer * )override;
 
