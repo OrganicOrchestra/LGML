@@ -22,7 +22,7 @@ public:
     float voldB;
 	Type type;
 
-    VuMeter(Type _type) : type(_type)
+    VuMeter(Type _type) : type(_type), frozen(false)
 	{
         setSize(8, 20);
         voldB = 0.f;
@@ -51,12 +51,18 @@ public:
 
         float newVoldB = jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,0.85f,1.0f);
 
-        if(newVoldB>=0 && std::abs(newVoldB-voldB)>0.02f){
-            voldB = newVoldB;
-            repaint();
+        if(newVoldB >= 0 && std::abs(newVoldB-voldB)>0.02f){
+			setVoldB(newVoldB);
+           
         }
     };
 
+	void setVoldB(float value)
+	{
+		if (voldB == value) return;
+		voldB = value;
+		repaint();
+	}
 };
 
 

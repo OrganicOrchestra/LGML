@@ -23,7 +23,11 @@
 class NodeBaseUI;
 class FloatSliderUI;
 
-class NodeBaseHeaderUI : public Component, public ComboBox::Listener, public Button::Listener, public ControllableContainer::Listener
+class NodeBaseHeaderUI : public Component,
+	public ComboBox::Listener,
+	public Button::Listener,
+	public ControllableContainer::Listener,
+	public NodeBase::NodeListener
 {
 public:
 
@@ -57,15 +61,18 @@ public:
 
     virtual void resized() override;
 
-    // Inherited via Listener
+
+    // Inherited via Listeners
+	virtual void nodeEnableChanged(NodeBase *) override;
     virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
+	virtual void buttonClicked(Button *) override;
+	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
 
-    // Inherited via Listener
-    virtual void buttonClicked(Button *) override;
-
-	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
+   
+	
 
 };
 

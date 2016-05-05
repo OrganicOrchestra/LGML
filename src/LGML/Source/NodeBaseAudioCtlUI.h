@@ -26,6 +26,8 @@ public:
     NodeBaseAudioCtlUI();
 
     void setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI);
+	virtual void init();
+
     void resized() override;
 
     ScopedPointer<FloatSliderUI>  outputVolume;

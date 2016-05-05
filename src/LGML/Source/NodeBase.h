@@ -28,7 +28,11 @@ class NodeBaseUI;
 class NodeManager;
 
 
-class NodeBase : public ReferenceCountedObject, public DataProcessor::Listener,public NodeAudioProcessor::NodeAudioProcessorListener, public ControllableContainer
+class NodeBase : 
+	public ReferenceCountedObject, 
+	public DataProcessor::Listener,
+	public NodeAudioProcessor::NodeAudioProcessorListener, 
+	public ControllableContainer
 {
 
 public:
@@ -102,13 +106,13 @@ public:
 public:
 
     //Listener
-    class NodeListener
-    {
-    public:
-        virtual ~NodeListener() {}
+	class NodeListener
+	{
+	public:
+		virtual ~NodeListener() {}
 		virtual void askForRemoveNode(NodeBase *) {}
 
-
+		virtual void nodeEnableChanged(NodeBase *) {}
     };
 
     ListenerList<NodeListener> nodeListeners;

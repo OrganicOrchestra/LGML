@@ -27,25 +27,31 @@ class NodeManagerUI;
 
 NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
-class NodeBaseUI    : public SelectableComponent, public Parameter::Listener
+class NodeBaseUI    : 
+	public SelectableComponent, 
+	public Parameter::Listener
 {
 public:
     NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer = nullptr, NodeBaseHeaderUI * headerContainer = nullptr);
     virtual ~NodeBaseUI();
 
+	//layout
+	int connectorWidth;
+	//interaction
+	Point<int> nodeInitPos;
+
+
     NodeBase * node;
     virtual void setNode(NodeBase * node);
     // receives x y position from node parameters
-    void parameterValueChanged(Parameter * p) override;
     void paint (Graphics&)override;
     void resized()override;
+
+
     void childBoundsChanged (Component*)override;
+	void parameterValueChanged(Parameter * p) override;
 
-    //layout
-    int connectorWidth;
-
-    //interaction
-    Point<int> nodeInitPos;
+    
     void mouseDown(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e)  override;
@@ -61,6 +67,9 @@ public:
     {
     public:
 
+		//ui components
+		MainContainer(NodeBaseUI * nodeUI, NodeBaseContentUI * content = nullptr, NodeBaseHeaderUI * header = nullptr);
+
         //reference
         NodeBaseUI * nodeUI;
 
@@ -68,9 +77,9 @@ public:
         ScopedPointer<NodeBaseHeaderUI> headerContainer;
         ScopedPointer<NodeBaseContentUI> contentContainer;
         ScopedPointer<NodeBaseAudioCtlUI> audioCtlUIContainer;
+
         const int audioCtlContainerPadRight = 3;
-        //ui components
-        MainContainer(NodeBaseUI * nodeUI, NodeBaseContentUI * content = nullptr, NodeBaseHeaderUI * header = nullptr);
+       
         void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
         void paint(Graphics &g) override;
         void resized() override;

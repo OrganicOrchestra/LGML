@@ -28,7 +28,7 @@ void NodeBaseAudioCtlUI::resized() {
 
 
 
-void NodeBaseAudioCtlUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * _nodeUI){
+void NodeBaseAudioCtlUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI *){
     jassert(node->hasAudioOutputs);
     outputVolume = node->audioProcessor->outputVolume->createSlider();
     outputVolume->orientation = FloatSliderUI::Direction::VERTICAL;
@@ -36,5 +36,10 @@ void NodeBaseAudioCtlUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI * _nodeUI)
     bypassUI = node->audioProcessor->bypass->createToggle();
     addAndMakeVisible(bypassUI);
 
+	init(); //for child override
+}
 
+void NodeBaseAudioCtlUI::init()
+{
+	//to be override by child classes
 }

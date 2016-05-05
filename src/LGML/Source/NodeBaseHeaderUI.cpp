@@ -43,6 +43,9 @@ NodeBaseHeaderUI::~NodeBaseHeaderUI()
 		{
 			node->audioProcessor->removeRMSListener(&vuMeterIn);
 		}
+
+		node->removeControllableContainerListener(this);
+		node->removeNodeListener(this);
     }
 
 }
@@ -89,6 +92,7 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     presetCB->setTextWhenNothingSelected("Preset");
 
 	node->addControllableContainerListener(this);
+	node->addNodeListener(this);
 
     init();
     resized();
@@ -151,6 +155,16 @@ void NodeBaseHeaderUI::resized()
 
 
 
+}
+
+void NodeBaseHeaderUI::nodeEnableChanged(NodeBase *)
+{
+	if (!node->enabledParam->boolValue())
+	{
+		vuMeterOut.setVoldB(0);
+		
+	}
+	repaint();
 }
 
 void NodeBaseHeaderUI::comboBoxChanged(ComboBox * cb)

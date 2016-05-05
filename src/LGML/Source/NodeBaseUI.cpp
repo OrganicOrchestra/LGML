@@ -97,6 +97,17 @@ void NodeBaseUI::resized()
 
 }
 
+void NodeBaseUI::parameterValueChanged(Parameter * p) {
+	if (p == node->xPosition || p == node->yPosition) {
+		setCentrePosition((int)node->xPosition->value, (int)node->yPosition->value);
+	}
+	else if (p == node->enabledParam)
+	{
+		mainContainer.repaint();
+	}
+}
+
+
 // allow to react to custom mainContainer.contentContainer
 void NodeBaseUI::childBoundsChanged (Component* c){
     // if changes in this layout take care to update  childBounds changed to update when child resize itself (NodeBaseContentUI::init()
@@ -107,11 +118,6 @@ void NodeBaseUI::childBoundsChanged (Component* c){
            destHeight != getHeight()){
             setSize(destWidth, destHeight);
         }
-    }
-}
-void NodeBaseUI::parameterValueChanged(Parameter * p) {
-    if(p== node->xPosition||p==node->yPosition){
-        setCentrePosition((int)node->xPosition->value, (int)node->yPosition->value);
     }
 }
 
@@ -284,7 +290,7 @@ void NodeBaseUI::MainContainer::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * 
 
 void NodeBaseUI::MainContainer::paint(Graphics & g)
 {
-    g.setColour(PANEL_COLOR);
+    g.setColour(nodeUI->node->enabledParam->boolValue()? PANEL_COLOR:PANEL_COLOR.darker(.7f));
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
 
     g.setColour(nodeUI->isSelected ?HIGHLIGHT_COLOR:LIGHTCONTOUR_COLOR);

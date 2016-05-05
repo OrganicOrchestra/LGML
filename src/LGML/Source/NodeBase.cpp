@@ -100,7 +100,6 @@ void NodeBase::ouputRemoved(Data *)
 
 void NodeBase::parameterValueChanged(Parameter * p)
 {
-
     if (p == nameParam)
     {
         setNiceName(nameParam->stringValue());
@@ -109,12 +108,14 @@ void NodeBase::parameterValueChanged(Parameter * p)
         if(audioProcessor){
             audioProcessor->suspendProcessing(!enabledParam->boolValue());
         }
+
         if(dataProcessor){
             dataProcessor->enabled = enabledParam->boolValue();
         }
+		nodeListeners.call(&NodeListener::nodeEnableChanged, this);
     }
     else{
-            ControllableContainer::parameterValueChanged(p);
+          ControllableContainer::parameterValueChanged(p);
     }
 }
 
