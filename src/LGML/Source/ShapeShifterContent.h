@@ -22,8 +22,7 @@ public:
 	String contentName;
 	String getName() const;
 
-	int minWidth = 20;
-	int minHeight = 20;
+	bool contentIsFlexible;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterContent)
 };

@@ -9,3 +9,13 @@
 */
 
 #include "ControlRuleManagerUI.h"
+
+ControlRuleManagerUI::ControlRuleManagerUI(ControlRuleManager * _crm) :
+	crm(_crm),
+	ShapeShifterContent("Rules")
+{
+}
+
+ControlRuleManagerUI::~ControlRuleManagerUI()
+{
+}

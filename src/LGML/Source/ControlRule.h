@@ -11,7 +11,16 @@
 #ifndef CONTROLRULE_H_INCLUDED
 #define CONTROLRULE_H_INCLUDED
 
+#include "JuceHeader.h"
 
+class ControlRule
+{
+public:
+	ControlRule();
+	virtual ~ControlRule();
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlRule)
+};
 
 
 

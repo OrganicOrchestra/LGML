@@ -11,7 +11,16 @@
 #ifndef CONTROLRULEUI_H_INCLUDED
 #define CONTROLRULEUI_H_INCLUDED
 
+#include "ControlRule.h"
 
+class ControlRuleUI
+{
+public:
+	ControlRuleUI();
+	virtual ~ControlRuleUI();
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlRuleUI)
+};
 
 
 

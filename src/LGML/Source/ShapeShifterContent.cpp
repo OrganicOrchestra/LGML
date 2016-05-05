@@ -11,6 +11,7 @@
 #include "ShapeShifterContent.h"
 
 ShapeShifterContent::ShapeShifterContent(const String & _contentName) :
+	contentIsFlexible(false),
 	contentName(_contentName)
   {
   }

@@ -36,6 +36,7 @@ public :
 	bool isDetached();
 	void setParentContainer(ShapeShifterContainer * _parent);
 
+	virtual bool isFlexible();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifter)
 };

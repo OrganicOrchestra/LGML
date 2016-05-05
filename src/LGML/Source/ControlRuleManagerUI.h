@@ -11,8 +11,19 @@
 #ifndef CONTROLRULEMANAGERUI_H_INCLUDED
 #define CONTROLRULEMANAGERUI_H_INCLUDED
 
+#include "ControlRuleManager.h"
+#include "ShapeShifterContent.h"
 
+class ControlRuleManagerUI : public ShapeShifterContent
+{
+public:
+	ControlRuleManagerUI(ControlRuleManager * crm);
+	virtual ~ControlRuleManagerUI();
 
+	ControlRuleManager * crm;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlRuleManagerUI)
+};
 
 
 #endif  // CONTROLRULEMANAGERUI_H_INCLUDED

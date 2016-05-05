@@ -36,32 +36,37 @@ MainContentComponent::MainContentComponent(Engine * e):
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
 	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
 	controllableInspector = new ControllableInspector(nodeManagerUI); //Needs to be abstracted from NodeManager, and be able to inspect any ControllableContainer
+	ruleManagerUI = new ControlRuleManagerUI(ControlRuleManager::getInstance());
 
 	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
 	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerUI);
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
 	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(controllableInspector);
+	ShapeShifterPanel * rulesPanel = ShapeShifterManager::getInstance()->createPanel(ruleManagerUI);
 
 	timeManagerPanel->setPreferredHeight(50);
 
 	shapeShifterManager.mainContainer.insertPanelAt(timeManagerPanel, 0);
 
-	ShapeShifterContainer * c2 = shapeShifterManager.mainContainer.insertContainerAt(ShapeShifterContainer::Direction::HORIZONTAL,1);
-	c2->insertPanelAt(nodeManagerPanel, 1);
-
-	ShapeShifterContainer * vc = c2->insertContainerAt(ShapeShifterContainer::VERTICAL,0);
+	ShapeShifterContainer * c1 = shapeShifterManager.mainContainer.insertContainerAt(ShapeShifterContainer::Direction::HORIZONTAL,1);
+	
+	
+	ShapeShifterContainer * vc = c1->insertContainerAt(ShapeShifterContainer::VERTICAL,0);
 	vc->insertPanelAt(controllerManagerPanel, 0);
-	vc->insertPanelAt(inspectorPanel, 1);
+	vc->insertPanelAt(rulesPanel,1);
+	vc->setPreferredWidth(300);
+
+	c1->insertPanelAt(nodeManagerPanel, 1);
+
+	ShapeShifterContainer * vc2 = c1->insertContainerAt(ShapeShifterContainer::VERTICAL,2);
+	vc2->insertPanelAt(inspectorPanel, 0);
+	vc2->setPreferredWidth(300);
+
 
 	controllerManagerPanel->setPreferredWidth(300);
 	inspectorPanel->setPreferredWidth(300);
-	vc->setPreferredWidth(300);
+	rulesPanel->setPreferredWidth(300);
 
-
-
-	//c2->insertPanelAt(controllableInspectorPanel, 2);
-
-    // resize after contentCreated
 
     setSize(1500, 750);
 
@@ -94,7 +99,6 @@ MainContentComponent::~MainContentComponent(){
 
 #endif
 //    LookAndFeelOO::deleteInstance();
-
 
     NodeConnectionEditor::deleteInstance();
 	ShapeShifterManager::deleteInstance();

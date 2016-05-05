@@ -9,3 +9,11 @@
 */
 
 #include "ControlRuleUI.h"
+
+ControlRuleUI::ControlRuleUI()
+{
+}
+
+ControlRuleUI::~ControlRuleUI()
+{
+}

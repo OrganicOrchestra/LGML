@@ -34,6 +34,8 @@ void ShapeShifterManager::setCurrentCandidatePanel(ShapeShifterPanel * panel)
 
 }
 
+
+
 ShapeShifterPanel * ShapeShifterManager::createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab)
 {
 	ShapeShifterPanel * panel = new ShapeShifterPanel(content,sourceTab);
@@ -103,4 +105,17 @@ ShapeShifterWindow * ShapeShifterManager::getWindowForPanel(ShapeShifterPanel * 
 	}
 
 	return nullptr;
+}
+
+
+
+
+void ShapeShifterManager::registerContent(const String &contentID, ShapeShifterContent * content)
+{
+	definitions.add(new ShapeShifterContentDefinition(contentID, content));
+}
+
+void ShapeShifterManager::generateMenu()
+{
+	//How to ?
 }

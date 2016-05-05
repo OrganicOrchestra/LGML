@@ -16,11 +16,15 @@
 
 #include "ControlManager.h"
 #include "ControllerManagerUI.h"
+#include "ControllableInspector.h"
+
 #include "TimeManagerUI.h"
+
+#include "ControlRuleManager.h"
+#include "ControlRuleManagerUI.h"
 
 #include "ShapeShifterManager.h"
 
-#include "ControllableInspector.h"
 #include "Engine.h"
 
 #include "LookAndFeelOO.h"
@@ -52,6 +56,7 @@ public:
 	ScopedPointer<ControllableInspector> controllableInspector;
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
 
+	ScopedPointer<ControlRuleManagerUI> ruleManagerUI;
 
     Engine * engine;
     AudioDeviceSelectorComponent audioSettingsComp;

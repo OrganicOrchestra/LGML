@@ -9,3 +9,11 @@
 */
 
 #include "ControlRule.h"
+
+ControlRule::ControlRule()
+  {
+  }
+
+  ControlRule::~ControlRule()
+  {
+  }

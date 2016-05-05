@@ -30,6 +30,7 @@ Engine::~Engine(){
     NodeManager::deleteInstance();
     VSTManager::deleteInstance();
     PresetManager::deleteInstance();
+	ControlRuleManager::deleteInstance();
 }
 
 void Engine::parseCommandline(const String & commandLine){

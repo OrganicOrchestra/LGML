@@ -11,7 +11,19 @@
 #ifndef CONTROLRULEMANAGER_H_INCLUDED
 #define CONTROLRULEMANAGER_H_INCLUDED
 
+#include "JuceHeader.h"
 
+class ControlRuleManager
+{
+public:
+	juce_DeclareSingleton(ControlRuleManager, true)
+
+	ControlRuleManager();
+	virtual ~ControlRuleManager();
+
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlRuleManager)
+};
 
 
 

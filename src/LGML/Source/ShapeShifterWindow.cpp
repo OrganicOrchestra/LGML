@@ -39,6 +39,16 @@ ShapeShifterWindow::~ShapeShifterWindow()
 	removeMouseListener(this);
 }
 
+void ShapeShifterWindow::resized()
+{
+	ResizableWindow::resized();
+
+	if (panel == nullptr) return;
+
+	panel->setPreferredWidth(getWidth());
+	panel->setPreferredHeight(getHeight());
+}
+
 void ShapeShifterWindow::mouseDown(const MouseEvent & e)
 {
 	if (e.eventComponent == &panel->header || dynamic_cast<ShapeShifterPanelTab *>(e.eventComponent) != nullptr)

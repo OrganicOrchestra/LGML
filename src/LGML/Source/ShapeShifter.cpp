@@ -13,7 +13,7 @@
 
 ShapeShifter::ShapeShifter(Type _type) :
 	shifterType(_type),
-	preferredWidth(-1), preferredHeight(-1),
+	preferredWidth(300), preferredHeight(300),
 	parentContainer(nullptr)
 {
 }
@@ -41,4 +41,9 @@ void ShapeShifter::setParentContainer(ShapeShifterContainer * _parent)
 {
 	if (_parent == parentContainer) return;
 	parentContainer = _parent;
+}
+
+bool ShapeShifter::isFlexible()
+{
+	return false;
 }

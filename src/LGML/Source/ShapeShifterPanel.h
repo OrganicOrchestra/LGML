@@ -56,6 +56,8 @@ public:
 
 	void addContent(ShapeShifterContent * content, bool setCurrent = true);
 
+	bool isFlexible() override;
+
 	//Attach helpers
 
 	AttachZone checkAttachZone(ShapeShifterPanel * source);

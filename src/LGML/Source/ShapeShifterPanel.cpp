@@ -161,6 +161,12 @@ void ShapeShifterPanel::addContent(ShapeShifterContent * content, bool setCurren
 	if(setCurrent) setCurrentContent(content);
 }
 
+bool ShapeShifterPanel::isFlexible()
+{
+	if(currentContent == nullptr) return false;
+	return currentContent->contentIsFlexible;
+}
+
 void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
 {
 	ShapeShifterContent * content = tab->content;

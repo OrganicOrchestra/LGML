@@ -24,6 +24,7 @@ nodeManager(nodeManager),
 editingConnection(nullptr),
 isSelectingNodes(false)
 {
+	contentIsFlexible = true;
     nodeManager->addNodeManagerListener(this);
     setInterceptsMouseClicks(true, true);
     addAndMakeVisible(selectingBounds);

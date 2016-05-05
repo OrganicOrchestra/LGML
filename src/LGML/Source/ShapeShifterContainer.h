@@ -66,8 +66,8 @@ public:
 	void insertShifterAt(ShapeShifter * shifter, int index);
 	void removeShifter(ShapeShifter * shifter, bool deleteShifter, bool silent = false);
 
-	void insertPanelAt(ShapeShifterPanel * panel, int index);
-	void insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone);
+	ShapeShifterPanel * insertPanelAt(ShapeShifterPanel * panel, int index);
+	ShapeShifterPanel * insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone);
 
 	ShapeShifterContainer * insertContainerAt(Direction _direction, int index);
 	ShapeShifterContainer * insertContainerAt(ShapeShifterContainer * container, int index);
@@ -88,7 +88,6 @@ public:
 	ListenerList<ShapeShifterContainerListener> containerListeners;
 	void addShapeShifterContainerListener(ShapeShifterContainerListener* newListener) { containerListeners.add(newListener); }
 	void removeShapeShifterContainerListener(ShapeShifterContainerListener* listener) { containerListeners.remove(listener); }
-
 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterContainer)

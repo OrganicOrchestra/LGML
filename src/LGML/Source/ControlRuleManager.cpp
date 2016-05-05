@@ -9,3 +9,13 @@
 */
 
 #include "ControlRuleManager.h"
+
+juce_ImplementSingleton(ControlRuleManager)
+
+ControlRuleManager::ControlRuleManager()
+{
+}
+
+ControlRuleManager::~ControlRuleManager()
+{
+}

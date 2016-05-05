@@ -125,6 +125,8 @@
       </GROUP>
       <GROUP id="{25464EB0-81C5-256B-F983-7775FBA00B84}" name="UI">
         <GROUP id="{30013ECC-6E48-9679-76F9-D5D186163A72}" name="ShapeShifter">
+          <FILE id="ubNl00" name="ShapeShifterManagerCommands.cpp" compile="1"
+                resource="0" file="Source/ShapeShifterManagerCommands.cpp"/>
           <FILE id="JAClVm" name="ShapeShifterPanelHeader.cpp" compile="1" resource="0"
                 file="Source/ShapeShifterPanelHeader.cpp"/>
           <FILE id="ZvgGSR" name="ShapeShifterPanelHeader.h" compile="0" resource="0"

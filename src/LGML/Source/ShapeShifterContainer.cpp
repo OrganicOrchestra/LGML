@@ -22,7 +22,6 @@ ShapeShifterContainer::ShapeShifterContainer(Direction _direction) :
 
 ShapeShifterContainer::~ShapeShifterContainer()
 {
-	DBG("Container destroy !");
 	clear();
 }
 
@@ -45,13 +44,12 @@ void ShapeShifterContainer::insertShifterAt(ShapeShifter * shifter, int index)
 
 void ShapeShifterContainer::removeShifter(ShapeShifter * shifter, bool deleteShifter, bool silent)
 {
-	DBG("Remove Shifter, deleteShifter ? " << String(deleteShifter) << ", silent " << String(silent));
+	//DBG("Remove Shifter, deleteShifter ? " << String(deleteShifter) << ", silent " << String(silent));
 	int shifterIndex = shifters.indexOf(shifter);
 	shifters.removeAllInstancesOf(shifter);
 	shifter->setParentContainer(nullptr);
 
-	int cIndex = getIndexOfChildComponent(shifter);
-	DBG("REMOVE Shifter :: is in children ? " << cIndex);
+	//DBG("REMOVE Shifter :: is in children ? " << cIndex);
 	removeChildComponent(shifter);
 
 
@@ -76,29 +74,33 @@ void ShapeShifterContainer::removeShifter(ShapeShifter * shifter, bool deleteShi
 		//dispatch emptied container so parent container deletes it
 		if (!silent) containerListeners.call(&ShapeShifterContainerListener::containerEmptied, this);
 	}
-	else if (shifters.size() == 1)
+	else 
 	{
-		if (!silent) containerListeners.call(&ShapeShifterContainerListener::oneShifterRemaining, this, shifters[0]);
-	}else
-	{
-		GapGrabber * gg = grabbers[(jmin<int>(shifterIndex, grabbers.size() - 1))];
-		removeChildComponent(gg);
-		grabbers.remove(grabbers.indexOf(gg), true);
-		resized();
+		if (shifters.size() == 1 && !silent)
+		{
+			containerListeners.call(&ShapeShifterContainerListener::oneShifterRemaining, this, shifters[0]);
+		}
+		else
+		{
+			GapGrabber * gg = grabbers[(jmin<int>(shifterIndex, grabbers.size() - 1))];
+			removeChildComponent(gg);
+			grabbers.remove(grabbers.indexOf(gg), true);
+			resized();
+		}
 	}
 
 
 }
 
-void ShapeShifterContainer::insertPanelAt(ShapeShifterPanel * panel, int index)
+ShapeShifterPanel * ShapeShifterContainer::insertPanelAt(ShapeShifterPanel * panel, int index)
 {
 	insertShifterAt(panel, index);
 	panel->addShapeShifterPanelListener(this);
+	return panel;
 }
 
-void ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone)
+ShapeShifterPanel * ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone)
 {
-	//TODO check direction and create sub container if needed
 	switch (zone)
 	{
 	case  ShapeShifterPanel::AttachZone::LEFT:
@@ -122,6 +124,8 @@ void ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel * panel, Shape
 	break;
 
 	}
+	
+	return panel;
 }
 
 
@@ -168,11 +172,10 @@ void ShapeShifterContainer::resized()
 
 	for (auto &p : shifters)
 	{
-		int tp = (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
-		if (tp >= 0)
+		if (!p->isFlexible())
 		{
 			numDefaultSpace--;
-			reservedPreferredSpace += tp;
+			reservedPreferredSpace += (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
 		}
 	}
 
@@ -181,13 +184,20 @@ void ShapeShifterContainer::resized()
 	int panelIndex = 0;
 	for (auto &p : shifters)
 	{
+		bool lastShifter = panelIndex >= grabbers.size();
 		int tp = (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
-		int targetSpace = tp >= 0 ? tp : defaultSpace;
+		int targetSpace = (!p->isFlexible()) ? tp : defaultSpace;
+		
+		if(!lastShifter)
+		{ 
+			Rectangle<int> tr = (direction == HORIZONTAL) ? r.removeFromLeft(targetSpace) : r.removeFromTop(targetSpace);
+			p->setBounds(tr);
+		}else
+		{
+			p->setBounds(r);
+		}
 
-		Rectangle<int> tr = (direction == HORIZONTAL) ? r.removeFromLeft(targetSpace) : r.removeFromTop(targetSpace);
-		p->setBounds(tr);
-
-		if (panelIndex < grabbers.size())
+		if (!lastShifter)
 		{
 			Rectangle<int> gr = (direction == HORIZONTAL)?r.removeFromLeft(gap):r.removeFromTop(gap);
 			grabbers[panelIndex]->setBounds(gr);
@@ -199,15 +209,9 @@ void ShapeShifterContainer::resized()
 
 void ShapeShifterContainer::clear()
 {
-	int numShiftersToClear = shifters.size() > 0;
-
-	DBG("Container clear, num shifters to clear " << numShiftersToClear);
-
-	while (numShiftersToClear > 0)
+	while (shifters.size() > 0)
 	{
-		DBG(">> Remove shifter in clear");
-		removeShifter(shifters[0], true, true);
-		numShiftersToClear--;
+		removeShifter(shifters[0], true, true); 
 	}
 }
 
@@ -219,13 +223,13 @@ void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, int dist)
 	switch (direction)
 	{
 	case HORIZONTAL:
-		if (firstShifter->preferredWidth >= 0) firstShifter->setPreferredWidth(firstShifter->preferredWidth + dist);
-			else secondShifter->setPreferredWidth(secondShifter->preferredWidth - dist);
+			if (!firstShifter->isFlexible()) firstShifter->setPreferredWidth(firstShifter->preferredWidth + dist);
+			if (!secondShifter->isFlexible()) secondShifter->setPreferredWidth(secondShifter->preferredWidth - dist);
 			break;
 
 	case VERTICAL:
-		if (firstShifter->preferredHeight >= 0) firstShifter->setPreferredHeight(firstShifter->preferredHeight + dist);
-		else secondShifter->setPreferredHeight(secondShifter->preferredHeight - dist);
+		if (!firstShifter->isFlexible()) firstShifter->setPreferredHeight(firstShifter->preferredHeight + dist);
+		if (!secondShifter->isFlexible()) secondShifter->setPreferredHeight(secondShifter->preferredHeight - dist);
 		break;
 
         case NONE:
@@ -241,7 +245,6 @@ void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, int dist)
 
 void ShapeShifterContainer::panelDetach(ShapeShifterPanel * panel)
 {
-	DBG("Panel Detach");
 	Rectangle<int> panelBounds = panel->getScreenBounds();
 	removeShifter(panel,false);
 	ShapeShifterManager::getInstance()->showPanelWindow(panel, panelBounds);
@@ -249,35 +252,36 @@ void ShapeShifterContainer::panelDetach(ShapeShifterPanel * panel)
 
 void ShapeShifterContainer::panelEmptied(ShapeShifterPanel * panel)
 {
-	DBG("Panel emptied");
 	removeShifter(panel, true, false);
 }
 
 void ShapeShifterContainer::panelDestroyed(ShapeShifterPanel * panel)
 {
-	DBG("Panel destroyed");
 	removeShifter(panel, false, true);
 }
 
 void ShapeShifterContainer::containerEmptied(ShapeShifterContainer * container)
 {
-	DBG("CONTAINER EMPTIED");
 	removeShifter(container,true);
 }
 
 void ShapeShifterContainer::oneShifterRemaining(ShapeShifterContainer * container, ShapeShifter * lastShifter)
 {
-	DBG("ONE SHIFTER REMAINING");
 	int containerIndex = shifters.indexOf(container);
 
-	DBG("Remove shifter from child container");
+	//DBG("Remove shifter from child container");
 	container->removeShifter((ShapeShifterContainer *)lastShifter, false, true);
 
-	DBG("Insert last shifter in parent container");
-	if (lastShifter->shifterType == PANEL) insertPanelAt((ShapeShifterPanel *)lastShifter, containerIndex);
-	else insertContainerAt((ShapeShifterContainer *)lastShifter, containerIndex);
+	ShapeShifter * ss = nullptr;
 
-	DBG("Remove useless container");
+	//DBG("Insert last shifter in parent container");
+	if (lastShifter->shifterType == PANEL)  ss = insertPanelAt((ShapeShifterPanel *)lastShifter, containerIndex);
+	else ss = insertContainerAt((ShapeShifterContainer *)lastShifter, containerIndex);
+
+	ss->setPreferredWidth(container->preferredWidth);
+	ss->setPreferredHeight(container->preferredHeight);
+
+	//DBG("Remove useless container");
 	removeShifter(container,true,true);
 
 }
