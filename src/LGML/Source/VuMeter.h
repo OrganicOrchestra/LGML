@@ -22,7 +22,7 @@ public:
     float voldB;
 	Type type;
 
-    VuMeter(Type _type) : type(_type), frozen(false)
+    VuMeter(Type _type) : type(_type)
 	{
         setSize(8, 20);
         voldB = 0.f;
