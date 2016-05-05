@@ -17,6 +17,7 @@
 class JavascriptEnvironment : public JavascriptEngine,public ControllableContainer::Listener{
 public:
     JavascriptEnvironment();
+    ~JavascriptEnvironment();
 
     juce_DeclareSingleton(JavascriptEnvironment, true);
 
@@ -69,7 +70,7 @@ public:
 private:
 
     void internalLoadFile(const File &);
-    void structureChanged(ControllableContainer *)override;
+    void childStructureChanged(ControllableContainer * )override;
 
 
 };

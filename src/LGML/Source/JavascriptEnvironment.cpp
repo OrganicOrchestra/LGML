@@ -23,6 +23,11 @@ JavascriptEnvironment::JavascriptEnvironment(){
 
 }
 
+JavascriptEnvironment::~JavascriptEnvironment(){
+    for(auto & n:linkedNamespaces){
+       if(n->container.get()) n->container->removeControllableContainerListener(this);
+    }
+}
 
 void JavascriptEnvironment::linkToControllableContainer(const String & jsNamespace,ControllableContainer * c){
     c->addControllableContainerListener(this);
@@ -49,6 +54,7 @@ DynamicObject* JavascriptEnvironment::createDynamicObjectFromContainer(Controlla
     DynamicObject*  d = parent;
     if(!container->skipControllableNameInAddress)
         d= new DynamicObject();
+
 
     for(auto &c:container->controllables){
 
@@ -123,8 +129,7 @@ var JavascriptEnvironment::post(const NativeFunctionArgs& a){
 }
 
 var JavascriptEnvironment::set(const NativeFunctionArgs& a){
-    //    if(a.numArguments<1)jassertfalse;
-
+    
     DynamicObject * d = a.thisObject.getDynamicObject();
     Controllable * c = dynamic_cast<Controllable*>((Controllable*)(int64)d->getProperty("_ptr"));
     bool success = false;
@@ -183,13 +188,13 @@ var JavascriptEnvironment::set(const NativeFunctionArgs& a){
 }
 
 
-void JavascriptEnvironment::structureChanged(ControllableContainer * c){
+void JavascriptEnvironment::childStructureChanged(ControllableContainer * c){
     ControllableContainer * inspected = c;
     bool found = false;
     while(inspected!=nullptr && !found){
         for(auto & n:linkedNamespaces){
             if(n->container == inspected){
-                registerNativeObject(n->name, createDynamicObjectFromContainer(c, nullptr));
+                registerNativeObject(n->name, createDynamicObjectFromContainer(n->container, nullptr));
                 found = true;
                 break;
             }

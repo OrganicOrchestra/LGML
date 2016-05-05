@@ -58,10 +58,10 @@ private:
     void controllableContainerAdded(ControllableContainer * c)override ;
     void controllableContainerRemoved(ControllableContainer * c)override ;
     void controllableFeedbackUpdate(Controllable *) override;
-
+    void childStructureChanged(ControllableContainer * )override;
 
     void sourceUpdated(ControllableContainer*) override;
-    void structureChanged()override;
+
 
     NodeManagerUI * nmui;
 

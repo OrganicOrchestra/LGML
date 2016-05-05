@@ -108,8 +108,9 @@ void ControllableContainer::removeControllable(Controllable * c)
 {
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
     // @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
-    notifyStructureChanged();
+
     controllables.removeObject(c);
+    notifyStructureChanged();
 }
 
 
@@ -117,7 +118,7 @@ void ControllableContainer::notifyStructureChanged(){
 
     ControllableContainer * notified = this;
     while(notified!=nullptr){
-        notified->controllableContainerListeners.call(&ControllableContainer::Listener::structureChanged, this);
+        notified->controllableContainerListeners.call(&ControllableContainer::Listener::childStructureChanged, this);
         notified = notified->parentContainer;
     }
 }

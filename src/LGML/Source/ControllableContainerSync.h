@@ -50,7 +50,6 @@ public:
 
         virtual void sourceUpdated(ControllableContainer * )=0;
         virtual void sourceDeleted(){};
-        virtual void structureChanged(){};
 
     };
 
@@ -62,7 +61,6 @@ public:
 
 private:
     Controllable * notifyingControllable;
-    void notifyStructureChanged();
     bool setControllableValue(Controllable * cOrigin,Controllable * c);
 
 

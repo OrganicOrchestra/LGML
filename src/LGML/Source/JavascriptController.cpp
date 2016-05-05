@@ -12,6 +12,7 @@
 #include "NodeManager.h"
 
 JavascriptController::JavascriptController(){
+    nameParam->setValue( "JSController");
     jsEnv = JavascriptEnvironment::getInstance();
     jsEnv->linkToControllableContainer("node",NodeManager::getInstance());
     jsEnv->loadFile("/Users/Tintamar/Desktop/tst.js");

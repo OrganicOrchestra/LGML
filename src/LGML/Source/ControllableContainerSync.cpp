@@ -248,32 +248,20 @@ bool ControllableContainerSync::setControllableValue(Controllable * cOrigin,Cont
 }
 
 
-// === sync listener{
-void ControllableContainerSync::notifyStructureChanged(){
-    containerSyncListeners.call(&ContainerSyncListener::structureChanged);
-    ControllableContainerSync * parent = dynamic_cast<ControllableContainerSync*>(parentContainer);
-    if(parent){
-        parent->notifyStructureChanged();
-    }
-}
 
 void ControllableContainerSync::controllableAdded(Controllable *c) {
     doAddControllable(c);
-    notifyStructureChanged();
 
 }
 
 void ControllableContainerSync::controllableRemoved(Controllable *c){
     doRemoveControllable(c);
-    notifyStructureChanged();
 }
 void ControllableContainerSync::controllableContainerAdded(ControllableContainer *  c) {
     doAddContainer(c);
-    notifyStructureChanged();
 }
 void ControllableContainerSync::controllableContainerRemoved(ControllableContainer * c){
     doRemoveContainer(c);
-    notifyStructureChanged();
 }
 
 String ControllableContainerSync::produceGroupName(const String & n){

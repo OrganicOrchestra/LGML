@@ -144,6 +144,6 @@ void ControllableInspector::sourceUpdated(ControllableContainer * c)
 
 };
 
-void ControllableInspector::structureChanged(){
+void ControllableInspector::childStructureChanged(ControllableContainer * ){
     generateFromCandidates();
 };
