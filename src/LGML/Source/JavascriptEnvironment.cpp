@@ -10,11 +10,15 @@
 
 #include "JavascriptEnvironment.h"
 #include "NodeManager.h"
+#include "ControlManager.h"
 #include "ControllableContainer.h"
 
 JavascriptEnvironment::JavascriptEnvironment(){
     localEnvironment = new DynamicObject();
-
+    localEnvironment->setMethod("post", JavascriptEnvironment::post);
+    registerNativeObject("g", localEnvironment);
+    
+    buildEnvironment();
 
 }
 
@@ -23,10 +27,10 @@ void JavascriptEnvironment::buildEnvironment(){
     //        NodeManager;
 
 
-    localEnvironment->setProperty("node", createDynamicObjectFromContainer(NodeManager::getInstance()));
+    registerNativeObject("node", createDynamicObjectFromContainer(NodeManager::getInstance(),nullptr));
+    registerNativeObject("ctl", createDynamicObjectFromContainer(ControllerManager::getInstance(),nullptr));
 
-    localEnvironment->setMethod("post", JavascriptEnvironment::post);
-    localEnvironment->setMethod("set", JavascriptEnvironment::set);
+
     //        TimeManager;
     //        ControllerManager;
 
@@ -34,22 +38,33 @@ void JavascriptEnvironment::buildEnvironment(){
     //        PresetManager;
     //        ControlRuleManager;
 
-    registerNativeObject("g", localEnvironment);
+
 }
 
 
-DynamicObject* JavascriptEnvironment::createDynamicObjectFromContainer(ControllableContainer * container){
-
-    DynamicObject*  d= new DynamicObject();
+DynamicObject* JavascriptEnvironment::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent){
+    DynamicObject*  d = parent;
+    if(!container->skipControllableNameInAddress)
+        d= new DynamicObject();
 
     for(auto &c:container->controllables){
+
         if(Parameter * p = dynamic_cast<Parameter*>(c)){
-            d->setProperty(p->niceName, p->value);
+            DynamicObject* dd= new DynamicObject();
+
+            dd->setProperty("get", p->value);
+            dd->setProperty("_ptr", (int64)p);
+            dd->setMethod("set", JavascriptEnvironment::set);
+            d->setProperty(p->shortName, dd);
+
 
         }
     }
     for(auto &c:container->controllableContainers){
-        d->setProperty(c->niceName, createDynamicObjectFromContainer(c));
+        DynamicObject * childObject = createDynamicObjectFromContainer(c,d);
+        if(!c->skipControllableNameInAddress)
+            d->setProperty(c->shortName, childObject);
+
 
     }
 
@@ -86,81 +101,68 @@ var JavascriptEnvironment::post(const NativeFunctionArgs& a){
 }
 
 var JavascriptEnvironment::set(const NativeFunctionArgs& a){
-    if(a.numArguments<1)jassertfalse;
+    //    if(a.numArguments<1)jassertfalse;
 
-    StringArray addrArray;
-    addrArray.addTokens(a.arguments[0].toString(),juce::StringRef("/"), juce::StringRef("\""));
-    juce::Array<String> addSplit = addrArray.strings;
-
-
-    addSplit.remove(0);
-    String controller = addSplit[0];
-
+    DynamicObject * d = a.thisObject.getDynamicObject();
+    Controllable * c = dynamic_cast<Controllable*>((Controllable*)(int64)d->getProperty("_ptr"));
     bool success = false;
 
-
-    if (controller == "node")
+    if (c != nullptr)
     {
-        addSplit.remove(0);
-        Controllable * c = NodeManager::getInstance()->getControllableForAddress(addSplit);
+
+        success = true;
+
+        if(a.numArguments==0 && c->type==Controllable::Type::TRIGGER){
+            ((Trigger *)c)->trigger();
+        }
+
+        else{
+            var value = a.arguments[0];
+            switch (c->type)
+            {
+                case Controllable::Type::TRIGGER:
+                    if (value.isBool() && (bool)value)
+                        ((Trigger *)c)->trigger();
+                    else if((value.isDouble()||value.isInt() || value.isInt64())&& (float)value>0)
+                        ((Trigger *)c)->trigger();
+
+                    break;
+
+                case Controllable::Type::BOOL:
+                    if ( value.isBool())
+                        ((BoolParameter *)c)->setValue((bool)value);
+                    break;
+
+                case Controllable::Type::FLOAT:
+                    if(value.isDouble()||value.isInt() || value.isInt64())
+                        ((FloatParameter *)c)->setValue(value);
+                    break;
+                case Controllable::Type::INT:
+                    if(value.isInt() || value.isInt64())
+                        ((IntParameter *)c)->setValue(value);
+                    break;
 
 
-        if (c != nullptr)
-        {
+                case Controllable::Type::STRING:
+                    if(value.isString())
+                        ((StringParameter *)c)->setValue(value);
+                    break;
 
-            success = true;
-
-            if(a.numArguments==1 && c->type==Controllable::Type::TRIGGER){
-                ((Trigger *)c)->trigger();
-            }
-
-            else{
-                var value = a.arguments[1];
-                switch (c->type)
-                {
-                    case Controllable::Type::TRIGGER:
-                        if (value.isBool() && (bool)value)
-                            ((Trigger *)c)->trigger();
-                        else if((value.isDouble()||value.isInt() || value.isInt64())&& (float)value>0)
-                            ((Trigger *)c)->trigger();
-
-                        break;
-
-                    case Controllable::Type::BOOL:
-                        if ( value.isBool())
-                            ((BoolParameter *)c)->setValue((bool)value);
-                        break;
-
-                    case Controllable::Type::FLOAT:
-                        if(value.isDouble()||value.isInt() || value.isInt64())
-                            ((FloatParameter *)c)->setValue(value);
-                        break;
-                    case Controllable::Type::INT:
-                        if(value.isInt() || value.isInt64())
-                            ((IntParameter *)c)->setValue(value);
-                        break;
-
-
-                    case Controllable::Type::STRING:
-                        if(value.isString())
-                            ((StringParameter *)c)->setValue(value);
-                        break;
-
-                    default:
-                        success = false;
-                        break;
-
-                }
+                default:
+                    success = false;
+                    break;
+                    
             }
         }
     }
-
+    
+    
     return var();
 }
 
 
 void JavascriptEnvironment::loadTest(){
-
+    
     loadFile("/Users/Tintamar/Desktop/tst.js");
 }
 

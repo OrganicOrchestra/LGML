@@ -23,7 +23,7 @@ public:
     typedef juce::var::NativeFunctionArgs NativeFunctionArgs;
 
 
-    DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c);
+    DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
 
 
     void loadFile(const String & path);
