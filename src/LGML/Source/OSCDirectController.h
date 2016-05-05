@@ -19,7 +19,7 @@ public:
     OSCDirectController();
     virtual ~OSCDirectController();
 
-    void processMessage(const OSCMessage &msg) override;
+    virtual void processMessage(const OSCMessage &msg) override;
 
     ControllerUI * createUI() override;
 

@@ -53,7 +53,7 @@ public:
                 c = new OSCDirectController();
                 break;
             case ScriptedOSC:
-                c = new JavascriptController(new JavascriptEnvironment());
+                c = new JavascriptController();
                 break;
 
             case DMX:

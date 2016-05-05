@@ -17,14 +17,21 @@
 
 class JavascriptController : public OSCDirectController{
 public:
-    JavascriptController(JavascriptEnvironment *);
+    JavascriptController();
 
-    void callForMessage(const String & msg);
+    void processMessage(const OSCMessage &m)override;
+    void callForMessage(const OSCMessage & msg);
+
+
+    static var sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a);
 
 
 private:
     String getJavaScriptFunctionName(const String &);
     ScopedPointer<JavascriptEnvironment> jsEnv;
+    StringArray nonValidMessages;
+
+    DynamicObject * createOSCJsObject();
 
 };
 

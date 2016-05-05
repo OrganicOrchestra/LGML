@@ -9,27 +9,36 @@
 */
 
 #include "JavaScriptController.h"
+#include "NodeManager.h"
 
-JavascriptController::JavascriptController(JavascriptEnvironment * ev):jsEnv(ev){
-    jassert(ev);
-    jsEnv->loadTest();
+JavascriptController::JavascriptController(){
+    jsEnv = JavascriptEnvironment::getInstance();
+    jsEnv->linkToControllableContainer("node",NodeManager::getInstance());
+    jsEnv->loadFile("/Users/Tintamar/Desktop/tst.js");
 }
 
-void JavascriptController::callForMessage(const String & msg){
-    StringArray arr;
-    arr.addTokens(msg, " ");
-    if(arr.size()==0){
-        jassertfalse;
-        return;
+void JavascriptController::callForMessage(const OSCMessage & msg){
+
+    if(nonValidMessages.contains(msg.getAddressPattern().toString()))return;
+    
+    String functionName = getJavaScriptFunctionName(msg.getAddressPattern().toString());
+    JavascriptEnvironment::OwnedJsArgs args(jsEnv->localEnvironment);
+    for(auto & m:msg){
+        if(m.isFloat32()){
+            args.addArg(m.getFloat32());
+        }
+        if(m.isInt32()){
+            args.addArg(m.getInt32());
+        }
+        if(m.isString()){
+            args.addArg(m.getString());
+        }
     }
 
-    String functionName = getJavaScriptFunctionName(arr[0]);
-    arr.remove(0);
-    JavascriptEnvironment::OwnedJsArgs args(jsEnv->localEnvironment);
-    args.addArgs(arr);
     Result r(Result::ok());
     jsEnv->callFunction(functionName, args.getNativeArgs(),&r);
     if(r.failed()){
+        nonValidMessages.add(msg.getAddressPattern().toString());
         DBG("============Javascript error==============");
         DBG("error on function : "+ functionName);
         DBG(r.getErrorMessage());
@@ -39,7 +48,23 @@ void JavascriptController::callForMessage(const String & msg){
 
 }
 
+void JavascriptController::processMessage(const OSCMessage &m){
+    OSCDirectController::processMessage(m);
+    callForMessage(m);
+    
+}
+
 String JavascriptController::getJavaScriptFunctionName(const String & n){
     return "on"+n;
 
 }
+
+var JavascriptController::sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a){
+
+}
+
+DynamicObject * JavascriptController::createOSCJsObject(){
+    DynamicObject * d = new DynamicObject();
+    
+
+};

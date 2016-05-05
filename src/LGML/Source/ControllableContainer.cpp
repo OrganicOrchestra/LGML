@@ -100,23 +100,27 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
     t->addTriggerListener(this);
 
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, t);
+        notifyStructureChanged();
     return t;
 }
 
 void ControllableContainer::removeControllable(Controllable * c)
 {
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
-    // @ben remove nested callback as it's not needed anymore for ControllableContainerSync
-    // we may implement a special callback structure changed that triggered only by the root parent
-
-//    ControllableContainer * notified = parentContainer;
-//    while(notified!=nullptr){
-//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
-//        notified = notified->parentContainer;
-//    }
+    // @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
+    notifyStructureChanged();
     controllables.removeObject(c);
 }
 
+
+void ControllableContainer::notifyStructureChanged(){
+
+    ControllableContainer * notified = this;
+    while(notified!=nullptr){
+        notified->controllableContainerListeners.call(&ControllableContainer::Listener::structureChanged, this);
+        notified = notified->parentContainer;
+    }
+}
 
 
 void ControllableContainer::setNiceName(const String &_niceName) {
@@ -152,24 +156,17 @@ void ControllableContainer::addChildControllableContainer(ControllableContainer 
     controllableContainers.add(container);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
     container->setParentContainer(this);
-//    ControllableContainer * notified = parentContainer;
-//    while(notified!=nullptr){
-//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
-//        notified = notified->parentContainer;
-//    }
+    notifyStructureChanged();
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
-//    ControllableContainer * notified = parentContainer;
-//    while(notified!=nullptr){
-//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
-//        notified = notified->parentContainer;
-//    }
+
 
     container->setParentContainer(nullptr);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
     controllableContainers.removeAllInstancesOf(container);
+    notifyStructureChanged();
 }
 
 ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name)
@@ -405,11 +402,7 @@ void ControllableContainer::addParameterInternal(Parameter * p)
     controllables.add(p);
     p->addParameterListener(this);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
-//    ControllableContainer * notified = parentContainer;
-//    while(notified!=nullptr){
-//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
-//        notified = notified->parentContainer;
-//    }
+    notifyStructureChanged();
 }
 
 
