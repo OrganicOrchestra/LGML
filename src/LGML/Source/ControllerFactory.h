@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ControllerFactor.h
-    Created: 8 Mar 2016 10:25:48pm
-    Author:  bkupe
+ ControllerFactor.h
+ Created: 8 Mar 2016 10:25:48pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef CONTROLLERFACTOR_H_INCLUDED
 #define CONTROLLERFACTOR_H_INCLUDED
@@ -15,10 +15,11 @@
 #include "OSCDirectController.h"
 #include "DMXController.h"
 #include "MIDIController.h"
+#include "JavaScriptController.h"
 
 class ControllerManager;
 
-static const String controllerTypeNames[] = { "OSC Direct","DMX","MIDI" };
+static const String controllerTypeNames[] = { "OSC Direct","ScriptedOSC","DMX","MIDI" };
 
 class ControllerFactory
 {
@@ -26,6 +27,7 @@ public:
     enum ControllerType
     {
         OSCDirect,
+        ScriptedOSC,
         DMX,
         MIDI,
         UNKNOWN //has to be last
@@ -47,21 +49,24 @@ public:
 
         switch (controllerType)
         {
-        case OSCDirect:
-            c = new OSCDirectController();
-            break;
+            case OSCDirect:
+                c = new OSCDirectController();
+                break;
+            case ScriptedOSC:
+                c = new JavascriptController(new JavascriptEnvironment());
+                break;
 
-        case DMX:
-            c = new DMXController();
-            break;
+            case DMX:
+                c = new DMXController();
+                break;
 
-        case MIDI:
-            c = new MIDIController();
-            break;
+            case MIDI:
+                c = new MIDIController();
+                break;
 
-        default:
-            jassert(false);
-            break;
+            default:
+                jassert(false);
+                break;
         }
 
 
@@ -98,7 +103,7 @@ public:
         if (t<0 || t > UNKNOWN)return String::empty;
         return controllerTypeNames[(int)t];
     }
-
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerFactory)
 };
 

@@ -23,6 +23,7 @@ public:
         outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
         lastVolume = outputVolume->floatValue();
         bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
+        skipControllableNameInAddress = true;
     };
 
     FloatParameter * outputVolume;
