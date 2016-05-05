@@ -23,7 +23,7 @@
 // side bar component displaying editor of currently selected nodes
 // TODO handle merging of multiple component of sameClass : almost there ....
 
-class ControllableInspector: 
+class ControllableInspector:
 	public ShapeShifterContent,
 	public SelectableComponentHandler::SelectableHandlerListener,
 	public ControllableContainer::Listener,

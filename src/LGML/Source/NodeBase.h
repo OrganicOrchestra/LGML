@@ -107,7 +107,7 @@ public:
     public:
         virtual ~NodeListener() {}
 		virtual void askForRemoveNode(NodeBase *) {}
-		
+
 
     };
 

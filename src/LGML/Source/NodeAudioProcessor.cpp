@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    NodeAudioProcessor.cpp
-    Created: 24 Apr 2016 1:32:40pm
-    Author:  Martin Hermant
+ NodeAudioProcessor.cpp
+ Created: 24 Apr 2016 1:32:40pm
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "NodeAudioProcessor.h"
 
@@ -17,44 +17,57 @@
 // NodeAudioProcessor
 
 void NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
-                                                MidiBuffer& midiMessages) {
+                                      MidiBuffer& midiMessages) {
 
-	bool doUpdateRMSIn = false;
-	bool doUpdateRMSOut = false;
+    bool doUpdateRMSIn = false;
+    bool doUpdateRMSOut = false;
 
-	if (rmsListeners.size()) {
-		updateRMS(buffer,rmsValueIn);
-		curSamplesForRMSInUpdate += buffer.getNumSamples();
+    if (rmsListeners.size()) {
+        updateRMS(buffer,rmsValueIn);
+        curSamplesForRMSInUpdate += buffer.getNumSamples();
 
-		if (curSamplesForRMSInUpdate >= samplesBeforeRMSInUpdate) {
-			doUpdateRMSIn = true;
-			curSamplesForRMSInUpdate = 0;
-		}
-	}
-
-    if(isSuspended()){
-        if(!wasSuspended){buffer.applyGainRamp(0, buffer.getNumSamples(), 1, 0);wasSuspended = true;}
-        else{buffer.clear();}
-        return;
-    }
-    else if(wasSuspended){buffer.applyGainRamp(0, buffer.getNumSamples(), 0, 1);wasSuspended=false;}
-
-    processBlockInternal(buffer, midiMessages);
-
-    buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
-    lastVolume = outputVolume->floatValue();
-
-    if(rmsListeners.size() ){
-        updateRMS(buffer,rmsValueOut);
-        curSamplesForRMSOutUpdate += buffer.getNumSamples();
-
-        if(curSamplesForRMSOutUpdate>=samplesBeforeRMSOutUpdate){
-			doUpdateRMSOut = true;
-            curSamplesForRMSOutUpdate = 0;
+        if (curSamplesForRMSInUpdate >= samplesBeforeRMSInUpdate) {
+            doUpdateRMSIn = true;
+            curSamplesForRMSInUpdate = 0;
         }
     }
 
-	if(doUpdateRMSIn || doUpdateRMSOut) triggerAsyncUpdate();
+
+    if(!isSuspended())
+    {
+        if(!bypass->boolValue()){
+            processBlockInternal(buffer, midiMessages);
+            buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
+            lastVolume = outputVolume->floatValue();
+
+            if(wasSuspended){
+                buffer.applyGainRamp(0, buffer.getNumSamples(), 0, 1);
+                wasSuspended=false;
+            }
+        }
+
+        if(rmsListeners.size() ){
+            updateRMS(buffer,rmsValueOut);
+            curSamplesForRMSOutUpdate += buffer.getNumSamples();
+
+            if(curSamplesForRMSOutUpdate>=samplesBeforeRMSOutUpdate){
+                doUpdateRMSOut = true;
+                curSamplesForRMSOutUpdate = 0;
+            }
+        }
+
+        if(doUpdateRMSIn || doUpdateRMSOut) triggerAsyncUpdate();
+
+    }
+
+    else{
+        if(!wasSuspended){
+            buffer.applyGainRamp(0, buffer.getNumSamples(), 1, 0);wasSuspended = true;
+        }
+        else{
+            buffer.clear();
+        }
+    }
 
 };
 
@@ -95,11 +108,11 @@ void NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer, float &targ
 
         const double decayFactor = 0.99992;
         if (s > targetRmsValue)
-			targetRmsValue = s;
+            targetRmsValue = s;
         else if (targetRmsValue > 0.001f)
-			targetRmsValue *= (float)decayFactor;
+            targetRmsValue *= (float)decayFactor;
         else
-			targetRmsValue = 0;
+            targetRmsValue = 0;
     }
 #endif
     //            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;

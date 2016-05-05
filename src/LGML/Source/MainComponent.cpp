@@ -36,7 +36,7 @@ MainContentComponent::MainContentComponent(Engine * e):
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
 	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
 	controllableInspector = new ControllableInspector(nodeManagerUI); //Needs to be abstracted from NodeManager, and be able to inspect any ControllableContainer
-	
+
 	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
 	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerUI);
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
@@ -57,7 +57,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 	inspectorPanel->setPreferredWidth(300);
 	vc->setPreferredWidth(300);
 
-	
+
 
 	//c2->insertPanelAt(controllableInspectorPanel, 2);
 

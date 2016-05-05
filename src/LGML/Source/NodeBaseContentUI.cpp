@@ -10,7 +10,7 @@
 
 #include "NodeBaseContentUI.h"
 
-
+#include "NodeBaseUI.h"
 
   NodeBaseContentUI::NodeBaseContentUI()
   {

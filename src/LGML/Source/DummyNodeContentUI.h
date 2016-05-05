@@ -11,6 +11,9 @@
 #ifndef DUMMYNODECONTENTUI_H_INCLUDED
 #define DUMMYNODECONTENTUI_H_INCLUDED
 
+
+#include "DummyNode.h"
+
 #include "NodeBaseContentUI.h"
 #include "FloatSliderUI.h"
 #include "TriggerButtonUI.h"

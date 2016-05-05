@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.1.3"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.1.4"
               bundleIdentifier="org.anic.orchestra.Blooper" includeBinaryInAppConfig="1"
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -259,6 +259,10 @@
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
         <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
           <GROUP id="{A2D3A061-C57A-C7C0-F696-113F915DCD55}" name="UI">
+            <FILE id="nsdeUQ" name="NodeBaseAudioCtlUI.cpp" compile="1" resource="0"
+                  file="Source/NodeBaseAudioCtlUI.cpp"/>
+            <FILE id="AqNjww" name="NodeBaseAudioCtlUI.h" compile="0" resource="0"
+                  file="Source/NodeBaseAudioCtlUI.h"/>
             <FILE id="NDsjg3" name="NodeBaseHeaderUI.cpp" compile="1" resource="0"
                   file="Source/NodeBaseHeaderUI.cpp"/>
             <FILE id="iIJRHp" name="NodeBaseHeaderUI.h" compile="0" resource="0"

@@ -12,7 +12,7 @@
 
 juce_ImplementSingleton(ShapeShifterManager);
 
-ShapeShifterManager::ShapeShifterManager() : 
+ShapeShifterManager::ShapeShifterManager() :
 	mainContainer(ShapeShifterContainer::Direction::VERTICAL),
 	currentCandidatePanel(nullptr)
 {
@@ -45,7 +45,7 @@ ShapeShifterPanel * ShapeShifterManager::createPanel(ShapeShifterContent * conte
 
 void ShapeShifterManager::removePanel(ShapeShifterPanel * panel)
 {
-	panel->removeShapeShifterPanelListener(this); 
+	panel->removeShapeShifterPanelListener(this);
 	openedPanels.removeObject(panel, true);
 }
 
@@ -66,11 +66,11 @@ void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window)
 ShapeShifterPanel * ShapeShifterManager::checkCandidateTargetForPanel(ShapeShifterPanel * panel)
 {
 	ShapeShifterPanel * candidate = nullptr;
-	
+
 	for (auto &p : openedPanels)
 	{
 		if (p == panel) continue;
-		
+
 		if (p->getLocalBounds().contains(p->getLocalPoint(panel, Point<float>()).toInt()))
 		{
 			candidate = p;
@@ -80,7 +80,7 @@ ShapeShifterPanel * ShapeShifterManager::checkCandidateTargetForPanel(ShapeShift
 
 	if(currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone(panel);
 
-	
+
 	return candidate;
 }
 
@@ -104,4 +104,3 @@ ShapeShifterWindow * ShapeShifterManager::getWindowForPanel(ShapeShifterPanel * 
 
 	return nullptr;
 }
-

@@ -14,14 +14,13 @@
 #include "Style.h"
 #include "ConnectorComponent.h"
 
-#include "NodeBaseHeaderUI.h"
-#include "NodeBaseContentUI.h"
 #include "SelectableComponent.h"
 
 class NodeBase;
 class NodeManagerUI;
-class NodeBaseHeaderUI;
-class NodeBaseContentUI;
+#include "NodeBaseHeaderUI.h"
+#include "NodeBaseContentUI.h"
+#include "NodeBaseAudioCtlUI.h"
 
 //==============================================================================
 /*
@@ -68,7 +67,8 @@ public:
         //containers
         ScopedPointer<NodeBaseHeaderUI> headerContainer;
         ScopedPointer<NodeBaseContentUI> contentContainer;
-
+        ScopedPointer<NodeBaseAudioCtlUI> audioCtlUIContainer;
+        const int audioCtlContainerPadRight = 3;
         //ui components
         MainContainer(NodeBaseUI * nodeUI, NodeBaseContentUI * content = nullptr, NodeBaseHeaderUI * header = nullptr);
         void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);

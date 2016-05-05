@@ -11,8 +11,10 @@
 #ifndef NODEBASECONTENTUI_H_INCLUDED
 #define NODEBASECONTENTUI_H_INCLUDED
 
+#include "JuceHeader.h"
 
-#include "NodeBaseUI.h"
+class NodeBaseUI;
+class NodeBase;
 
 class NodeBaseContentUI : public Component
 {
@@ -26,7 +28,7 @@ public:
     virtual void setNodeAndNodeUI(NodeBase * node,NodeBaseUI * nodeUI);
     virtual void init();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseContentUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseContentUI);
 };
 
 #endif  // NODEBASECONTENTUI_H_INCLUDED

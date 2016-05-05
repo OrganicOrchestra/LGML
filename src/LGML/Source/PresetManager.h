@@ -80,14 +80,14 @@ public:
 				pvData.getDynamicObject()->setProperty("value", pv->presetValue);
 				presetValuesData.append(pvData);
 			}
-			
+
 			data.getDynamicObject()->setProperty("values", presetValuesData);
 			return data;
 		}
 
 		void loadJSONData(var data)
 		{
-			
+
 			Array<var> * pvDatas = data.getDynamicObject()->getProperty("values").getArray();
 
 			for (auto &pvData : *pvDatas)

@@ -28,7 +28,7 @@ ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifter
 		attachTab(sourceTab);
 	}
 
-	
+
 }
 
 ShapeShifterPanel::~ShapeShifterPanel()
@@ -56,7 +56,7 @@ void ShapeShifterPanel::setCurrentContent(ShapeShifterContent * _content)
 	{
 		ShapeShifterPanelTab * tab = header.getTabForContent(currentContent);
 		if (tab != nullptr) tab->setSelected(true);
-		
+
 		addAndMakeVisible(currentContent);
 	}
 	resized();
@@ -79,7 +79,7 @@ void ShapeShifterPanel::paintOverChildren(Graphics & g)
 {
 	if (!targetMode) return;
 	Rectangle<int> r = getLocalBounds();
-	
+
 	Colour hc = HIGHLIGHT_COLOR.withAlpha(.5f);
 	Colour nc = NORMAL_COLOR.withAlpha(.3f);
 
@@ -119,7 +119,7 @@ void ShapeShifterPanel::setTransparentBackground(bool value)
 void ShapeShifterPanel::attachTab(ShapeShifterPanelTab * tab)
 {
 	header.attachTab(tab);
-	
+
 	contents.add(tab->content);
 	setCurrentContent(tab->content);
 
@@ -195,11 +195,11 @@ bool ShapeShifterPanel::attachPanel(ShapeShifterPanel * panel)
 
 	case NONE:
 		return false;
-	
+
 	case CENTER:
 
 		int numTabs = panel->header.tabs.size();
-		
+
 		while(numTabs > 0)
 		{
 			ShapeShifterPanelTab * t = panel->header.tabs[0];
@@ -225,7 +225,7 @@ ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone(ShapeShifterPan
 	AttachZone z = AttachZone::NONE;
 
 	candidateTargetPoint = getLocalPoint(source, Point<float>());
-	
+
 	float rx = candidateTargetPoint.x / getWidth();
 	float ry = candidateTargetPoint.y / getHeight();
 

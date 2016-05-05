@@ -19,10 +19,10 @@ class ShapeShifter : public juce::Component
 {
 public :
 	enum Type {PANEL, CONTAINER};
-		
+
 	ShapeShifter(Type _type);
 	virtual ~ShapeShifter();
-	
+
 	ShapeShifterContainer * parentContainer;
 
 	Type shifterType;
@@ -32,10 +32,10 @@ public :
 	void setPreferredWidth(int newWidth);
 	void setPreferredHeight(int newHeight);
 
-	
+
 	bool isDetached();
 	void setParentContainer(ShapeShifterContainer * _parent);
-	
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifter)
 };

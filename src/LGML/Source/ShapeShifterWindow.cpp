@@ -26,10 +26,10 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 
 	setResizable(true, true);
 	setDraggable(true);
-	
+
 	setVisible(true);
 	toFront(true);
-	
+
 	addMouseListener(this,true);
 
 }
@@ -71,4 +71,3 @@ void ShapeShifterWindow::userTriedToCloseWindow()
 {
 	ShapeShifterManager::getInstance()->closePanelWindow(this);
 }
-

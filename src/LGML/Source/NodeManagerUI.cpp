@@ -49,7 +49,7 @@ void NodeManagerUI::clear()
 
 void NodeManagerUI::resized()
 {
-    
+
 }
 
 void NodeManagerUI::nodeAdded(NodeBase * node)

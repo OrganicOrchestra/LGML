@@ -40,4 +40,3 @@ void ControllableUI::updateTooltip()
     tooltip = controllable->description + "\nControl Address : " + controllable->controlAddress;
     setTooltip(tooltip);
 }
-

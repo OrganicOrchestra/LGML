@@ -18,7 +18,7 @@ ShapeShifterPanelHeader::ShapeShifterPanelHeader()
 
 ShapeShifterPanelHeader::~ShapeShifterPanelHeader()
 {
-	
+
 }
 
 void ShapeShifterPanelHeader::addTab(ShapeShifterContent * content)
@@ -59,7 +59,7 @@ void ShapeShifterPanelHeader::mouseDown(const MouseEvent & e)
 	{
 		listeners.call(&Listener::tabSelect, tab);
 	}
-		
+
 }
 
 void ShapeShifterPanelHeader::mouseDrag(const MouseEvent & e)
@@ -74,7 +74,7 @@ void ShapeShifterPanelHeader::mouseDrag(const MouseEvent & e)
 		ShapeShifterPanelTab * tab = dynamic_cast<ShapeShifterPanelTab *>(e.eventComponent);
 		if (abs(e.getDistanceFromDragStartY()) > minDetachDistanceY && tab != nullptr) listeners.call(&Listener::tabDrag,tab);
 	}
-	
+
 }
 
 void ShapeShifterPanelHeader::paint(Graphics & g)

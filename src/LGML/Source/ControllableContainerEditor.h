@@ -32,7 +32,7 @@ public:
 
 
 protected:
-    
+
     void buildFromContainer(ControllableContainer * );
     void addControlUI(ControllableUI * c);
     void removeControlUI(ControllableUI * c);

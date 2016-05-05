@@ -20,5 +20,5 @@ ShapeShifterContent::ShapeShifterContent(const String & _contentName) :
   }
 
   String ShapeShifterContent::getName() const {
-	  return contentName; 
+	  return contentName;
   }

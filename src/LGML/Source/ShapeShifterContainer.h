@@ -35,8 +35,8 @@ public:
 
 //Listener
 class ShapeShifterContainer : public ShapeShifter,
-	public GapGrabber::Listener, 
-	public ShapeShifterPanel::Listener, 
+	public GapGrabber::Listener,
+	public ShapeShifterPanel::Listener,
 	public ShapeShifterContainerListener
 {
 public:
@@ -58,10 +58,10 @@ public:
 
 	Direction direction;
 	OwnedArray<GapGrabber> grabbers;
-	
+
 	Array<ShapeShifter *> shifters;
-	
-	
+
+
 	//Generic handling
 	void insertShifterAt(ShapeShifter * shifter, int index);
 	void removeShifter(ShapeShifter * shifter, bool deleteShifter, bool silent = false);
@@ -71,7 +71,7 @@ public:
 
 	ShapeShifterContainer * insertContainerAt(Direction _direction, int index);
 	ShapeShifterContainer * insertContainerAt(ShapeShifterContainer * container, int index);
-	
+
 	void movePanelsInContainer(ShapeShifterPanel * containedPanel, ShapeShifterPanel * newPanel, Direction _newDir, bool secondBeforeFirst);
 
 
@@ -89,7 +89,7 @@ public:
 	void addShapeShifterContainerListener(ShapeShifterContainerListener* newListener) { containerListeners.add(newListener); }
 	void removeShapeShifterContainerListener(ShapeShifterContainerListener* listener) { containerListeners.remove(listener); }
 
-	
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterContainer)
 };

@@ -33,7 +33,7 @@ public:
 
 	ShapeShifterContent * currentContent;
 	void setCurrentContent(ShapeShifterContent * content);
-	
+
 	bool transparentBackground;
 
 	bool targetMode;
@@ -55,7 +55,7 @@ public:
 	bool attachPanel(ShapeShifterPanel *); //attach all tabs of a panel to this panel, or attach a panel to the parent container depending on attachZone
 
 	void addContent(ShapeShifterContent * content, bool setCurrent = true);
-	
+
 	//Attach helpers
 
 	AttachZone checkAttachZone(ShapeShifterPanel * source);
@@ -77,17 +77,17 @@ public:
 		virtual void headerDrag(ShapeShifterPanel *) {}
 		virtual void tabDrag(ShapeShifterPanel *) {};
 	};
-	
+
 	ListenerList<Listener> listeners;
 	void addShapeShifterPanelListener(Listener* newListener) { listeners.add(newListener); }
 	void removeShapeShifterPanelListener(Listener* listener) { listeners.remove(listener); }
 
-	
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterPanel)
 
-		
 
-		
+
+
 
 };
 
