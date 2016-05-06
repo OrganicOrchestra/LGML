@@ -14,7 +14,20 @@
 
 #include "JuceHeader.h"
 
-#define LOG(textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;tempDbgBuf << typeid(*this).name();tempDbgBuf << " : " ; tempDbgBuf << textToWrite; juce::Logger::writeToLog(tempDbgBuf);)
+
+// log informing file from where it was outputed
+#define LOG(textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
+String fullPath = String(__FILE__);\
+tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::separator) + 1 ,fullPath.lastIndexOfChar('.') ) << " : " <<  textToWrite;\
+juce::Logger::writeToLog(tempDbgBuf);)
+
+
+// named version where source name is user defined
+#define NLOG(__name,textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
+tempDbgBuf << __name;\
+tempDbgBuf << " : " ; tempDbgBuf << textToWrite; juce::Logger::writeToLog(tempDbgBuf);)
+
+
 
 inline String getLogSource(const String & logString) {
     return logString.substring(0, logString.indexOf(":")).trim();
@@ -39,4 +52,7 @@ private:
         StringArray _arr;
 
 };
+
+
+
 #endif  // DEBUGHELPERS_H_INCLUDED

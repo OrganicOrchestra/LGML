@@ -57,9 +57,8 @@ void JavascriptController::callForMessage(const OSCMessage & msg){
 
     if(r.failed()){
 
-        DBG("============Javascript error==============");
-        DBG("error on function : "+ functionName);
-        DBG(r.getErrorMessage());
+        LOG("error on function : "+ functionName);
+        LOG(r.getErrorMessage());
     }
     
 
@@ -90,12 +89,12 @@ String JavascriptController::getJavaScriptFunctionName(const String & n){
 var JavascriptController::sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a){
     if(a.numArguments<2 )return var::undefined();
     if( !a.arguments[0].isString() ){
-        DBG("jsOSC send first argument must be a string");
+        LOG("jsOSC send first argument must be a string");
         return var::undefined();
     }
         String address = a.arguments[0];
     if(!address.startsWithChar('/') ){
-        DBG("address should start with / ");
+        LOG("address should start with / ");
         return var::undefined();
     }
 
