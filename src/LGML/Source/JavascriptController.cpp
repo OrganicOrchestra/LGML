@@ -12,19 +12,25 @@
 #include "NodeManager.h"
 
 JavascriptController::JavascriptController(){
-    nameParam->setValue( "JSController");
+
     jsEnv = JavascriptEnvironment::getInstance();
     jsEnv->linkToControllableContainer("node",NodeManager::getInstance());
     jsEnv->addToNamespace("OSC", nameParam->value, createOSCJsObject());
     jsEnv->loadFile("/Users/Tintamar/Desktop/tst.js");
-}
 
+    jsName = "JSController";
+    nameParam->setValue( jsName);
+}
+JavascriptController::~JavascriptController(){
+    jsEnv->removeFromNamespace("OSC",nameParam->value);
+
+}
 void JavascriptController::callForMessage(const OSCMessage & msg){
 
     if(nonValidMessages.contains(msg.getAddressPattern().toString()))return;
     
     String functionName = getJavaScriptFunctionName(msg.getAddressPattern().toString());
-    JavascriptEnvironment::OwnedJsArgs args(jsEnv->localEnvironment);
+    JavascriptEnvironment::OwnedJsArgs args(jsEnv);
     for(auto & m:msg){
         if(m.isFloat32()){
             args.addArg(m.getFloat32());
@@ -98,3 +104,13 @@ DynamicObject * JavascriptController::createOSCJsObject(){
     return d;
 
 };
+
+void JavascriptController::onContainerParameterChanged(Parameter * p) {
+    OSCDirectController::onContainerParameterChanged(p);
+    if(p==nameParam){
+        jsEnv->removeFromNamespace("OSC", jsName);
+        jsName = nameParam->value;
+        jsEnv->addToNamespace("OSC", jsName,createOSCJsObject());
+    }
+};
+

@@ -17,30 +17,63 @@ JavascriptEnvironment::JavascriptEnvironment(){
     localEnvironment = new DynamicObject();
     localEnvironment->setMethod("post", JavascriptEnvironment::post);
     registerNativeObject("g", localEnvironment);
-
     linkToControllableContainer("time",TimeManager::getInstance());
 
 
 }
 
 JavascriptEnvironment::~JavascriptEnvironment(){
-    for(auto & n:linkedNamespaces){
-        if(n.second.container.get()) n.second.container->removeControllableContainerListener(this);
+    for(auto & n:linkedContainerNamespaces){
+        if(n->container.get()) n->container->removeControllableContainerListener(this);
     }
 }
 
 void JavascriptEnvironment::linkToControllableContainer(const String & jsNamespace,ControllableContainer * c){
     c->addControllableContainerListener(this);
     DynamicObject::Ptr obj = createDynamicObjectFromContainer(c,nullptr);
-
     registerNativeObject(jsNamespace, obj);
-    linkedNamespaces[jsNamespace].container=c ;
-    linkedNamespaces[jsNamespace].jsObject=obj ;
+    if(!existInContainerNamespace(jsNamespace)){
+        linkedContainerNamespaces.add(new JsContainerNamespace(jsNamespace,c,obj)) ;
+
+    }}
+
+bool JavascriptEnvironment::existInNamespace(const String & name,const String & module ){
+    return localEnvironment->getProperty(name).getDynamicObject()->getProperty(module).getDynamicObject() != nullptr;
 }
 
+JavascriptEnvironment::JsContainerNamespace* JavascriptEnvironment::getContainerNamespace(ControllableContainer * c){
+    JsContainerNamespace* result = nullptr;
+    jassert(c!=nullptr);
+    for(auto & n:linkedContainerNamespaces){
+        ControllableContainer * inspected = c;
+        while(inspected!=nullptr){
+            if(n->container == inspected){
+                return n;
+            }
+            inspected = inspected->parentContainer;
+        }
 
+    }
+    return result;
+}
+JavascriptEnvironment::JsContainerNamespace* JavascriptEnvironment::getContainerNamespace(const String & n){
+    JsContainerNamespace* result = nullptr;
+    for(auto & n:linkedContainerNamespaces){
+        if(n->nsName==n)
+            return n;
+
+    }
+    return result;
+}
+
+bool JavascriptEnvironment::existInContainerNamespace(const String & n){
+    return getContainerNamespace(n)!=nullptr;
+}
 void    JavascriptEnvironment::removeNamespace(const String & jsNamespace){
-    linkedNamespaces.erase(jsNamespace);
+    if(JsContainerNamespace * c = getContainerNamespace(jsNamespace)){
+        linkedContainerNamespaces.removeObject(c);
+        jassertfalse;
+    }
     registerNativeObject(jsNamespace, nullptr);
 }
 
@@ -117,6 +150,7 @@ void JavascriptEnvironment::internalLoadFile(const File &f ){
 void JavascriptEnvironment::post(const String & s){
     DBG(s);
 }
+
 var JavascriptEnvironment::post(const NativeFunctionArgs& a){
     DBG("posting : "+a.thisObject.toString());
     for(int i = 0 ; i < a.numArguments ;i++){
@@ -137,6 +171,11 @@ void JavascriptEnvironment::addToNamespace(const String & name,const String & el
     }
 
     dd->setProperty(elemName,d);
+}
+
+void JavascriptEnvironment::removeFromNamespace(const String & name,const String & elemName){
+    DynamicObject * dd = localEnvironment->getProperty(name).getDynamicObject();
+    if(dd!=nullptr) dd->removeProperty(elemName);
 }
 
 var JavascriptEnvironment::set(const NativeFunctionArgs& a){
@@ -193,24 +232,15 @@ var JavascriptEnvironment::set(const NativeFunctionArgs& a){
             }
         }
     }
-
-
+    
+    
     return var();
 }
 
 
 void JavascriptEnvironment::childStructureChanged(ControllableContainer * c){
-    ControllableContainer * inspected = c;
-    bool found = false;
-    while(inspected!=nullptr && !found){
-        for(auto & n:linkedNamespaces){
-            if(n.second.container == inspected){
-                registerNativeObject(n.first, createDynamicObjectFromContainer(n.second.container, nullptr));
-                found = true;
-                break;
-            }
-        }
-        inspected = inspected->parentContainer;
+    if(JsContainerNamespace * ns= getContainerNamespace(c)){
+        registerNativeObject(ns->nsName, createDynamicObjectFromContainer(ns->container, nullptr));
     }
 }
 

@@ -27,14 +27,35 @@ public:
     static  DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
     void    linkToControllableContainer(const String & jsNamespace,ControllableContainer * c);
     void    addToNamespace(const String & name,const String & elemName,DynamicObject *);
+    void removeFromNamespace(const String & name,const String & elemName);
     void    removeNamespace(const String & jsNamespace);
     void    loadFile(const String & path);
+    void rebuildAllNamespaces();
+
+    class JsContainerNamespace;
+    bool existInNamespace(const String & name,const String & module );
+    JsContainerNamespace* getContainerNamespace(ControllableContainer *);
+    JsContainerNamespace* getContainerNamespace(const String & );
+    bool existInContainerNamespace(const String &);
+
+    //////////////////
+    // helperclasses
+
+    class JsContainerNamespace{
+    public:
+        JsContainerNamespace(const String & n,ControllableContainer * c,DynamicObject * o):nsName (n),container(c),jsObject(o){}
+        WeakReference<ControllableContainer> container;
+        DynamicObject::Ptr jsObject;
+        String nsName;
+
+    };
+
 
     class OwnedJsArgs {
 
 
     public:
-        OwnedJsArgs(DynamicObject * _scope):scope(_scope){}
+        OwnedJsArgs(JavascriptEnvironment * env):scope(env->localEnvironment){}
         void addArg(float f){ownedArgs.add(new var(f));}
         void addArg(String f){ownedArgs.add(new var(f));}
         void addArgs(const StringArray & a){for(auto & s:a){addArg(s.getFloatValue());}}
@@ -48,30 +69,22 @@ public:
     };
 
 
-
-    static var post(const NativeFunctionArgs& a);
-    static var set(const NativeFunctionArgs& a);
+private:
 
     ReferenceCountedObjectPtr<DynamicObject> localEnvironment;
 
-    class JsNamespace{
-    public:
-//        JsNamespace(ControllableContainer * c,DynamicObject * o):container(c),jsObject(o){}
-        WeakReference<ControllableContainer> container;
-        DynamicObject::Ptr jsObject;
-
-    };
-    std::map<String,JsNamespace > linkedNamespaces;
-
+    OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
 
     StringArray loadedFiles;
-    void rebuildAllNamespaces();
 
-private:
 
     static void  post(const String & s);
     void internalLoadFile(const File &);
     void childStructureChanged(ControllableContainer * )override;
+
+    static var post(const NativeFunctionArgs& a);
+    static var set(const NativeFunctionArgs& a);
+
 
 
 };
