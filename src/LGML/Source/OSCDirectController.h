@@ -19,7 +19,7 @@ public:
     OSCDirectController();
     virtual ~OSCDirectController();
 
-    virtual void processMessage(const OSCMessage &msg) override;
+    virtual Result processMessage(const OSCMessage &msg) override;
 
     ControllerUI * createUI() override;
 
@@ -38,13 +38,15 @@ public:
         public:
             /** Destructor. */
             virtual ~OSCDirectListener() {}
-            virtual void messageProcessed(const OSCMessage & msg, bool success) = 0;
+            virtual void messageProcessed(const OSCMessage & msg, Result success) = 0;
         };
 
         ListenerList<OSCDirectListener> oscDirectlisteners;
         void addOSCDirectParameterListener(OSCDirectListener* newListener) { oscDirectlisteners.add(newListener); }
         void removeOSCDirectParameterListener(OSCDirectListener* listener) { oscDirectlisteners.remove(listener); }
 
+
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
 
 

@@ -70,11 +70,11 @@ void OSCDirectControllerContentUI::mouseDown(const MouseEvent &)
 {
 }
 
-void OSCDirectControllerContentUI::messageProcessed(const OSCMessage & msg, bool success)
+void OSCDirectControllerContentUI::messageProcessed(const OSCMessage & msg, Result success)
 {
-    DBG("Success ? " + String(success));
+    DBG("Success ? " + (success?"1":success.getErrorMessage()));
 
-    String m = msg.getAddressPattern().toString() + " (" + (success ? "Success" : "Failed") + ")";
+    String m = msg.getAddressPattern().toString() + " (" + (success ? "Success": success.getErrorMessage()) + ")";
     activityLines.add(m);
     if (activityLines.size() > 15) activityLines.remove(0);
 

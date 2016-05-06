@@ -25,7 +25,7 @@ OSCDirectController::~OSCDirectController()
     NodeManager::getInstance()->removeControllableContainerListener(this);
 }
 
-void OSCDirectController::processMessage(const OSCMessage & msg)
+Result OSCDirectController::processMessage(const OSCMessage & msg)
 {
      String addr = msg.getAddressPattern().toString();
      DBG("Process message");
@@ -37,7 +37,7 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
     addSplit.remove(0);
     String controller = addSplit[0];
 
-    bool success = false;
+    Result success = Result::fail("nothing processed");
 
     if (controller == "node")
     {
@@ -49,7 +49,7 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
         {
             if (!c->isControllableFeedbackOnly)
             {
-                success = true;
+                success = Result::ok();
 
                 switch (c->type)
                 {
@@ -91,7 +91,7 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
                     break;
 
                 default:
-                    success = false;
+                        success = Result::fail("no compatible cast");
                     break;
 
                 }
@@ -103,8 +103,9 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
         }
 
     }
-
+    
     oscDirectlisteners.call(&OSCDirectListener::messageProcessed, msg, success);
+    return success;
 }
 
 ControllerUI * OSCDirectController::createUI()

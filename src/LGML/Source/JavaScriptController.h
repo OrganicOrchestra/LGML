@@ -19,8 +19,8 @@ class JavascriptController : public OSCDirectController{
 public:
     JavascriptController();
     ~JavascriptController();
-    void processMessage(const OSCMessage &m)override;
-    void callForMessage(const OSCMessage & msg);
+    Result processMessage(const OSCMessage &m)override;
+    Result callForMessage(const OSCMessage & msg);
 
 
     static var sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a);

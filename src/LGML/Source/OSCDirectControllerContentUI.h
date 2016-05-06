@@ -42,7 +42,7 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectControllerContentUI)
 
     // Inherited via OSCDirectListener
-    virtual void messageProcessed(const OSCMessage & msg, bool success) override;
+    virtual void messageProcessed(const OSCMessage & msg, Result success) override;
 };
 
 

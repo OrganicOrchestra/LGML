@@ -74,7 +74,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 	rulesPanel->setPreferredWidth(300);
 
 
-    setSize(1200, 800);
+    setSize(getParentMonitorArea().getWidth()*.9,   getParentMonitorArea().getHeight()*.9);
 
     (&getCommandManager())->registerAllCommandsForTarget (this);
     (&getCommandManager())-> setFirstCommandTarget(this);
@@ -91,6 +91,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
     e->createNewGraph();
     LOG("LGMLv" <<ProjectInfo::versionString << "\n" << "by OrganicOrchestra");
+
     //e->initAudio();
 
 }

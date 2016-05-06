@@ -64,7 +64,7 @@ const String &  LGMLLoggerUI::getContentForRow(int r){
     int idx = 0;
     while (true ) {
         int nl = logElements[idx]->getNumLines();
-        if(count+nl>=r){
+        if(count+nl>r){
             return logElements[idx]->getLine(r-count);
         }
         count+=nl;
@@ -108,7 +108,8 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
         text = owner->getSourceForRow(rowNumber);
     else if(columnId==2)
         text = owner->getContentForRow(rowNumber);
-    
+    DBG(String(rowNumber) << text );
+
     g.drawFittedText(text, 0, 0, width, height, Justification::left, 1);
     
 };

@@ -30,18 +30,18 @@ JavascriptController::~JavascriptController(){
     jsEnv->removeFromNamespace("OSC",nameParam->value);
 
 }
-void JavascriptController::callForMessage(const OSCMessage & msg){
+Result JavascriptController::callForMessage(const OSCMessage & msg){
 
-    if(nonValidMessages.contains(msg.getAddressPattern().toString()))return;
+    if(nonValidMessages.contains(msg.getAddressPattern().toString()))return Result::ok();
     
     String functionName = getJavaScriptFunctionName(msg.getAddressPattern().toString());
 //    var jsObj = jsEnv->getRootObjectProperties().getVarPointer("OSC")->getProperty(jsName,"");
     var* jsRcv = jsEnv->getRootObjectProperties().getVarPointer("OSCRcv");
-    if(!jsRcv)return;
+    if(!jsRcv)return Result::fail("No");
     var jsObj = jsRcv->getProperty(functionName, var::undefined());
     if(jsObj==var::undefined()){
         nonValidMessages.add(msg.getAddressPattern().toString());
-        return;
+        return Result::fail("No");
     }
     jassert(jsObj.isObject());
     JavascriptEnvironment::OwnedJsArgs args(*jsRcv);
@@ -56,19 +56,28 @@ void JavascriptController::callForMessage(const OSCMessage & msg){
     var varRes = jsEnv->callFunction(functionName, args.getNativeArgs(),&r);
 
     if(r.failed()){
-
         LOG("error on function : "+ functionName);
         LOG(r.getErrorMessage());
     }
     
 
-
+    return r;
 }
 
-void JavascriptController::processMessage(const OSCMessage &m){
-    OSCDirectController::processMessage(m);
-    callForMessage(m);
-    
+Result JavascriptController::processMessage(const OSCMessage &m){
+    Result r1  =OSCDirectController::processMessage(m);
+    Result r2 = callForMessage(m);
+    if(!r1 && !r2){
+        NLOG("OSCController",r1.getErrorMessage());
+        NLOG("Javascript",r2.getErrorMessage());
+        return Result::fail("failed");
+    }
+
+    return Result::ok();
+
+
+
+
 }
 
 String JavascriptController::getJavaScriptFunctionName(const String & n){

@@ -24,8 +24,8 @@ juce::Logger::writeToLog(tempDbgBuf);)
 
 // named version where source name is user defined
 #define NLOG(__name,textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
-tempDbgBuf << __name;\
-tempDbgBuf << " : " ; tempDbgBuf << textToWrite; juce::Logger::writeToLog(tempDbgBuf);)
+tempDbgBuf << __name << " : " << textToWrite;\
+juce::Logger::writeToLog(tempDbgBuf);)
 
 
 

@@ -32,7 +32,7 @@ public:
     void setupReceiver();
     void setupSender();
 
-    virtual void processMessage(const OSCMessage & msg);
+    virtual Result processMessage(const OSCMessage & msg);
 
     virtual void onContainerParameterChanged(Parameter * p) override;
 
