@@ -23,6 +23,8 @@
 #include "ControlRuleManager.h"
 #include "ControlRuleManagerUI.h"
 
+#include "LGMLLoggerUI.h"
+
 #include "ShapeShifterManager.h"
 
 #include "Engine.h"
@@ -58,6 +60,9 @@ public:
 
 	ScopedPointer<ControlRuleManagerUI> ruleManagerUI;
 
+
+    ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;
+    
     Engine * engine;
     AudioDeviceSelectorComponent audioSettingsComp;
 

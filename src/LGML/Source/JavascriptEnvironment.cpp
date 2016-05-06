@@ -10,14 +10,16 @@
 
 #include "JavascriptEnvironment.h"
 #include "TimeManager.h"
+#include "NodeManager.h"
 
 juce_ImplementSingleton(JavascriptEnvironment);
 
 JavascriptEnvironment::JavascriptEnvironment(){
     localEnvironment = new DynamicObject();
-    localEnvironment->setMethod("post", JavascriptEnvironment::post);
-    registerNativeObject("g", localEnvironment);
-    linkToControllableContainer("time",TimeManager::getInstance());
+    getEnv()->setMethod("post", JavascriptEnvironment::post);
+    registerNativeObject("g", getEnv());
+//    linkToControllableContainer("time",TimeManager::getInstance());
+//    linkToControllableContainer("node",NodeManager::getInstance());
 
 
 }
@@ -38,7 +40,7 @@ void JavascriptEnvironment::linkToControllableContainer(const String & jsNamespa
     }}
 
 bool JavascriptEnvironment::existInNamespace(const String & name,const String & module ){
-    return localEnvironment->getProperty(name).getDynamicObject()->getProperty(module).getDynamicObject() != nullptr;
+    return getEnv()->getProperty(name).getDynamicObject()->getProperty(module).getDynamicObject() != nullptr;
 }
 
 JavascriptEnvironment::JsContainerNamespace* JavascriptEnvironment::getContainerNamespace(ControllableContainer * c){
@@ -138,7 +140,7 @@ void JavascriptEnvironment::rebuildAllNamespaces(){
 void JavascriptEnvironment::internalLoadFile(const File &f ){
     StringArray destLines;
     f.readLines(destLines);
-    String jsString = destLines.joinIntoString("");
+    String jsString = destLines.joinIntoString("\n");
 
     Result r=execute(jsString);
     if(r.failed()){
@@ -162,11 +164,11 @@ var JavascriptEnvironment::post(const NativeFunctionArgs& a){
 
 void JavascriptEnvironment::addToNamespace(const String & name,const String & elemName,DynamicObject *d){
 
-    DynamicObject * dd = localEnvironment->getProperty(name).getDynamicObject();
+    DynamicObject * dd = getEnv()->getProperty(name).getDynamicObject();
     if(dd==nullptr)
     {
         dd= new DynamicObject();
-        localEnvironment->setProperty(name, dd);
+        getEnv()->setProperty(name, dd);
         registerNativeObject(name, dd);
     }
 
@@ -174,7 +176,7 @@ void JavascriptEnvironment::addToNamespace(const String & name,const String & el
 }
 
 void JavascriptEnvironment::removeFromNamespace(const String & name,const String & elemName){
-    DynamicObject * dd = localEnvironment->getProperty(name).getDynamicObject();
+    DynamicObject * dd = getEnv()->getProperty(name).getDynamicObject();
     if(dd!=nullptr) dd->removeProperty(elemName);
 }
 

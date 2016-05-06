@@ -11,14 +11,19 @@
 #include "JavaScriptController.h"
 #include "NodeManager.h"
 
+#include "DebugHelpers.h"
+
 JavascriptController::JavascriptController(){
 
+    jsName = "JSController";
+
     jsEnv = JavascriptEnvironment::getInstance();
-    jsEnv->linkToControllableContainer("node",NodeManager::getInstance());
-    jsEnv->addToNamespace("OSC", nameParam->value, createOSCJsObject());
+//    jsEnv->linkToControllableContainer("node",NodeManager::getInstance());
+    jsEnv->addToNamespace("OSC", jsName, createOSCJsObject());
     jsEnv->loadFile("/Users/Tintamar/Desktop/tst.js");
 
-    jsName = "JSController";
+    DBGLOG(JSON::toString (var((DynamicObject *)jsEnv->root.get())));
+
     nameParam->setValue( jsName);
 }
 JavascriptController::~JavascriptController(){
@@ -30,28 +35,33 @@ void JavascriptController::callForMessage(const OSCMessage & msg){
     if(nonValidMessages.contains(msg.getAddressPattern().toString()))return;
     
     String functionName = getJavaScriptFunctionName(msg.getAddressPattern().toString());
-    JavascriptEnvironment::OwnedJsArgs args(jsEnv);
+//    var jsObj = jsEnv->getRootObjectProperties().getVarPointer("OSC")->getProperty(jsName,"");
+    var* jsRcv = jsEnv->getRootObjectProperties().getVarPointer("OSCRcv");
+    if(!jsRcv)return;
+    var jsObj = jsRcv->getProperty(functionName, var::undefined());
+    if(jsObj==var::undefined()){
+        nonValidMessages.add(msg.getAddressPattern().toString());
+        return;
+    }
+    jassert(jsObj.isObject());
+    JavascriptEnvironment::OwnedJsArgs args(*jsRcv);
     for(auto & m:msg){
-        if(m.isFloat32()){
-            args.addArg(m.getFloat32());
-        }
-        if(m.isInt32()){
-            args.addArg(m.getInt32());
-        }
-        if(m.isString()){
-            args.addArg(m.getString());
-        }
+        if(m.isFloat32()){args.addArg(m.getFloat32());}
+        if(m.isInt32()){args.addArg(m.getInt32());}
+        if(m.isString()){args.addArg(m.getString());}
     }
 
     Result r(Result::ok());
-    jsEnv->callFunction(functionName, args.getNativeArgs(),&r);
+
+    var varRes = jsEnv->callFunction(functionName, args.getNativeArgs(),&r);
+
     if(r.failed()){
-        nonValidMessages.add(msg.getAddressPattern().toString());
+
         DBG("============Javascript error==============");
         DBG("error on function : "+ functionName);
         DBG(r.getErrorMessage());
     }
-
+    
 
 
 }
@@ -63,7 +73,17 @@ void JavascriptController::processMessage(const OSCMessage &m){
 }
 
 String JavascriptController::getJavaScriptFunctionName(const String & n){
-    return "on"+n;
+    StringArray arr;
+    arr.addTokens(n, "/","");
+    arr.remove(0);
+    String methodName ="";
+    for(auto& a:arr.strings ){
+        String upperCase = a.replaceSection(0, 1, a.substring(0, 1).toUpperCase());
+        methodName+= upperCase;
+    }
+     arr.joinIntoString("");
+    return "on"+methodName;
+//    return "OSC."+jsName+".on"+methodName;
 
 }
 
@@ -88,8 +108,7 @@ var JavascriptController::sendOSCFromJS(const JavascriptEnvironment::NativeFunct
         if(v.isString())msg.addString(v);
         else if(v.isDouble())msg.addFloat32((float)v);
         else if(v.isInt())msg.addInt32(v);
-        else if (v.isInt64())
-            DBG("JavascriptOSC can't send int 64");
+        else if (v.isInt64())DBG("JavascriptOSC can't send int 64");
     }
 
     c->sender.send(msg);

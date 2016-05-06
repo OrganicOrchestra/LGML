@@ -5,6 +5,14 @@
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
+      <GROUP id="{0B73A05B-D99A-0E07-2FE5-0FB49520877B}" name="Logger">
+        <FILE id="wgewXF" name="DebugHelpers.h" compile="0" resource="0" file="Source/DebugHelpers.h"/>
+        <FILE id="gQT60U" name="LGMLLogger.cpp" compile="1" resource="0" file="Source/LGMLLogger.cpp"/>
+        <FILE id="qHhA9w" name="LGMLLogger.h" compile="0" resource="0" file="Source/LGMLLogger.h"/>
+        <FILE id="I6WNll" name="LGMLLoggerUI.cpp" compile="1" resource="0"
+              file="Source/LGMLLoggerUI.cpp"/>
+        <FILE id="awDkrd" name="LGMLLoggerUI.h" compile="0" resource="0" file="Source/LGMLLoggerUI.h"/>
+      </GROUP>
       <GROUP id="{CD34BC32-7051-468F-8C6F-D5720DD85230}" name="ScriptEnvironments">
         <GROUP id="{2F437B28-C238-7AD3-AA89-3D6FD2EDD7E2}" name="Javascript">
           <FILE id="frFd8w" name="JavascriptEnvironment.cpp" compile="1" resource="0"

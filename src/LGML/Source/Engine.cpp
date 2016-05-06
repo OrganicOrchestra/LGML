@@ -11,6 +11,8 @@
 #include "Engine.h"
 
 #include "NodeConnectionEditor.h"
+#include "LGMLLogger.h"
+
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
@@ -20,6 +22,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
                                     "Load a filter graph",
                                     "Save a filter graph"){
     initAudio();
+    Logger::setCurrentLogger (LGMLLogger::getInstance());
 }
 
 

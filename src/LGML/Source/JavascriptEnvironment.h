@@ -55,23 +55,25 @@ public:
 
 
     public:
-        OwnedJsArgs(JavascriptEnvironment * env):scope(env->localEnvironment){}
+        OwnedJsArgs(var _owner):owner(_owner){}
         void addArg(float f){ownedArgs.add(new var(f));}
         void addArg(String f){ownedArgs.add(new var(f));}
         void addArgs(const StringArray & a){for(auto & s:a){addArg(s.getFloatValue());}}
 
         NativeFunctionArgs getNativeArgs(){
-            return NativeFunctionArgs(scope,ownedArgs.getFirst(),ownedArgs.size());
+            return NativeFunctionArgs(owner,ownedArgs.getFirst(),ownedArgs.size());
         }
     private:
-        DynamicObject * scope;
+        var owner;
         OwnedArray<var> ownedArgs;
     };
 
 
+    DynamicObject * getEnv(){return localEnvironment.getDynamicObject();}
 private:
 
-    ReferenceCountedObjectPtr<DynamicObject> localEnvironment;
+    var localEnvironment;
+
 
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
 
