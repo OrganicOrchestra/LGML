@@ -22,7 +22,7 @@ JavascriptController::JavascriptController(){
     jsEnv->addToNamespace("OSC", jsName, createOSCJsObject());
     jsEnv->loadFile("/Users/Tintamar/Desktop/tst.js");
 
-    LOG(JSON::toString (var((DynamicObject *)jsEnv->root.get())));
+    DBG(jsEnv->printAllNamespace());
 
     nameParam->setValue( jsName);
 }
@@ -140,4 +140,6 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
         jsEnv->addToNamespace("OSC", jsName,createOSCJsObject());
     }
 };
+
+
 

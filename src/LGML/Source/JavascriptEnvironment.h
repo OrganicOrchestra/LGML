@@ -11,7 +11,6 @@
 #ifndef JAVASCRIPTENVIRONNEMENT_H_INCLUDED
 #define JAVASCRIPTENVIRONNEMENT_H_INCLUDED
 
-#include <map>
 #include "JuceHeader.h"
 #include "ControllableContainer.h"
 class JavascriptEnvironment : public JavascriptEngine,public ControllableContainer::Listener{
@@ -70,6 +69,8 @@ public:
 
 
     DynamicObject * getEnv(){return localEnvironment.getDynamicObject();}
+
+    String printAllNamespace();
 private:
 
     var localEnvironment;
@@ -87,7 +88,7 @@ private:
     static var post(const NativeFunctionArgs& a);
     static var set(const NativeFunctionArgs& a);
 
-
+    String namespaceToString(const NamedValueSet & v,int indentLevel = 0);
 
 };
 

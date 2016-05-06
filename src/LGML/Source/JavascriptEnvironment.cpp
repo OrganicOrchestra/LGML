@@ -18,8 +18,8 @@ JavascriptEnvironment::JavascriptEnvironment(){
     localEnvironment = new DynamicObject();
     getEnv()->setMethod("post", JavascriptEnvironment::post);
     registerNativeObject("g", getEnv());
-//    linkToControllableContainer("time",TimeManager::getInstance());
-//    linkToControllableContainer("node",NodeManager::getInstance());
+    //    linkToControllableContainer("time",TimeManager::getInstance());
+    //    linkToControllableContainer("node",NodeManager::getInstance());
 
 
 }
@@ -234,8 +234,8 @@ var JavascriptEnvironment::set(const NativeFunctionArgs& a){
             }
         }
     }
-    
-    
+
+
     return var();
 }
 
@@ -247,4 +247,29 @@ void JavascriptEnvironment::childStructureChanged(ControllableContainer * c){
 }
 
 
+String JavascriptEnvironment::printAllNamespace(){
+    return namespaceToString(getRootObjectProperties());
+
+}
+String JavascriptEnvironment::namespaceToString(const NamedValueSet & v,int indentlevel ){
+    String res;
+    for(int i = 0 ; i < v.size() ; i++){
+        var * vv = v.getVarPointerAt(i);
+        String name = v.getName(i).toString();
+        for(int  j = 0 ; j < indentlevel ; j ++ ){
+            res+=' ';
+        }
+        if(vv->isObject()){
+            DynamicObject * d = vv->getDynamicObject();
+            res+= name+":\n";
+            res+=namespaceToString(d->getProperties(),indentlevel+1);
+        }
+        else {
+
+            res+= name + " : "+ vv->toString() + '\n';
+        }
+    }
+    return res;
+    
+}
 
