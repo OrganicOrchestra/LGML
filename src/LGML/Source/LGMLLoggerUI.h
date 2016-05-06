@@ -17,15 +17,25 @@
 
 class LGMLLoggerUI : public ShapeShifterContent,public LGMLLogger::Listener{
 public:
-    LGMLLoggerUI(LGMLLogger * l):ShapeShifterContent("LGMLLogger"),logListComponent("LGMLLogger",&logList),logList(this),maxNumElement(999){
+    LGMLLoggerUI(LGMLLogger * l):ShapeShifterContent("LGMLLogger"),
+    logList(this),
+
+    maxNumElement(999){
         l->addLogListener(this);
         TableHeaderComponent * thc = new TableHeaderComponent();
         thc->addColumn("source", 1, 100);
         thc->addColumn("content", 2, 300);
-        logListComponent.setHeader (thc);
 
+
+        logListComponent = new TableListBox("LGMLLogger",&logList);
+        logListComponent->setHeader (thc);
         addAndMakeVisible(logListComponent);
 
+    }
+
+    ~LGMLLoggerUI(){
+
+//        logListComponent.setModel(nullptr);
     }
     class LogList : public TableListBoxModel{
     public:
@@ -52,7 +62,7 @@ public:
 
     void resized()override;
     LogList logList;
-    TableListBox logListComponent;
+    ScopedPointer<TableListBox> logListComponent;
     int maxNumElement;
 
 

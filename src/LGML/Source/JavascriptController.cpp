@@ -22,7 +22,7 @@ JavascriptController::JavascriptController(){
     jsEnv->addToNamespace("OSC", jsName, createOSCJsObject());
     jsEnv->loadFile("/Users/Tintamar/Desktop/tst.js");
 
-    DBGLOG(JSON::toString (var((DynamicObject *)jsEnv->root.get())));
+    LOG(JSON::toString (var((DynamicObject *)jsEnv->root.get())));
 
     nameParam->setValue( jsName);
 }

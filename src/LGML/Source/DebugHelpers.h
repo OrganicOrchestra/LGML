@@ -14,7 +14,7 @@
 
 #include "JuceHeader.h"
 
-#define DBGLOG(textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;tempDbgBuf << typeid(*this).name();tempDbgBuf << " : " ; tempDbgBuf << textToWrite; juce::Logger::writeToLog(tempDbgBuf);)
+#define LOG(textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;tempDbgBuf << typeid(*this).name();tempDbgBuf << " : " ; tempDbgBuf << textToWrite; juce::Logger::writeToLog(tempDbgBuf);)
 
 inline String getLogSource(const String & logString) {
     return logString.substring(0, logString.indexOf(":")).trim();

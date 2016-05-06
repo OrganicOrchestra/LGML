@@ -17,10 +17,6 @@ void LGMLLoggerUI::newMessage(const String & s) {
     LogElement * el = new LogElement(s);
     logElements.add(el);
     int newNumRow = oldNumRow + el->getNumLines() ;
-    for(int i = oldNumRow ; i < newNumRow;  i++){
-        logListComponent.refreshComponentForRow(i, false, nullptr);
-    }
-
     bool overFlow = false;
     while(newNumRow>maxNumElement){
         logElements.remove(0);
@@ -28,14 +24,15 @@ void LGMLLoggerUI::newMessage(const String & s) {
         overFlow = true;
     }
 //    if(overFlow)
-        logListComponent.updateContent();
+        logListComponent->updateContent();
 
+    logListComponent->scrollToEnsureRowIsOnscreen(newNumRow-1);
 
 };
 
 void LGMLLoggerUI::resized(){
     Rectangle<int> area = getLocalBounds();
-    logListComponent.setBounds(area);
+    logListComponent->setBounds(area);
 }
 
 
