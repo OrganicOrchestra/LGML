@@ -12,15 +12,16 @@
 #include "TimeManager.h"
 #include "NodeManager.h"
 
-juce_ImplementSingleton(JavascriptEnvironment);
+juce_ImplementSingleton(JavascriptEnvironment::GlobalEnvironment);
 
-JavascriptEnvironment::JavascriptEnvironment(){
-    localEnvironment = new DynamicObject();
-    getEnv()->setMethod("post", JavascriptEnvironment::post);
-    registerNativeObject("g", getEnv());
+
+JavascriptEnvironment::JavascriptEnvironment(const String & ns):localNamespace(ns){
+
+    registerNativeObject("g", getGlobalEnv());
+
+    //    // minimal
     //    linkToControllableContainer("time",TimeManager::getInstance());
     //    linkToControllableContainer("node",NodeManager::getInstance());
-
 
 }
 
@@ -32,15 +33,16 @@ JavascriptEnvironment::~JavascriptEnvironment(){
 
 void JavascriptEnvironment::linkToControllableContainer(const String & jsNamespace,ControllableContainer * c){
     c->addControllableContainerListener(this);
-    DynamicObject::Ptr obj = createDynamicObjectFromContainer(c,nullptr);
-    registerNativeObject(jsNamespace, obj);
+    DynamicObject * obj = createDynamicObjectFromContainer(c,nullptr);
+    getGlobalEnv()->setProperty(jsNamespace, obj);
     if(!existInContainerNamespace(jsNamespace)){
         linkedContainerNamespaces.add(new JsContainerNamespace(jsNamespace,c,obj)) ;
+    }
 
-    }}
+}
 
 bool JavascriptEnvironment::existInNamespace(const String & name,const String & module ){
-    return getEnv()->getProperty(name).getDynamicObject()->getProperty(module).getDynamicObject() != nullptr;
+    return getGlobalEnv()->getProperty(name).getDynamicObject()->getProperty(module).getDynamicObject() != nullptr;
 }
 
 JavascriptEnvironment::JsContainerNamespace* JavascriptEnvironment::getContainerNamespace(ControllableContainer * c){
@@ -74,9 +76,11 @@ bool JavascriptEnvironment::existInContainerNamespace(const String & n){
 void    JavascriptEnvironment::removeNamespace(const String & jsNamespace){
     if(JsContainerNamespace * c = getContainerNamespace(jsNamespace)){
         linkedContainerNamespaces.removeObject(c);
+        // you should'nt call this function for container namespace
         jassertfalse;
     }
-    registerNativeObject(jsNamespace, nullptr);
+    GlobalEnvironment::getInstance()->removeNamespace(jsNamespace);
+    registerNativeObject(getModuleName(), nullptr);
 }
 
 
@@ -162,24 +166,56 @@ var JavascriptEnvironment::post(const NativeFunctionArgs& a){
 
 }
 
-void JavascriptEnvironment::addToNamespace(const String & name,const String & elemName,DynamicObject *d){
+void JavascriptEnvironment::addToNamespace(const String & elemName,DynamicObject *target,DynamicObject * global){
+    jassert(target!=nullptr);
+    jassert(elemName!="");
+    int idx = elemName.indexOfChar('.');
 
-    DynamicObject * dd = getEnv()->getProperty(name).getDynamicObject();
-    if(dd==nullptr)
-    {
-        dd= new DynamicObject();
-        getEnv()->setProperty(name, dd);
-        registerNativeObject(name, dd);
+    bool lastElem =(idx==-1);
+
+    if(!lastElem){
+        String elem = elemName.substring(0,idx);
+        DynamicObject * dd = getGlobalEnv()->getProperty(elem).getDynamicObject();
+
+        if(dd==nullptr)
+        {
+            dd= new DynamicObject();
+            getGlobalEnv()->setProperty(elem, dd);
+        }
+
+        addToNamespace(elemName.substring(idx+1, elemName.length()), target,dd);
+    }
+    else{
+
+        global->setProperty(elemName, target);
+        registerNativeObject(elemName, target);
     }
 
-    dd->setProperty(elemName,d);
+
+}
+
+void JavascriptEnvironment::addToLocalNamespace(const String & elem,DynamicObject *target){
+    if(elem!="")
+        addToNamespace(localNamespace+"."+elem, target,getGlobalEnv());
+    else
+        addToNamespace(localNamespace, target,getGlobalEnv());
 }
 
 void JavascriptEnvironment::removeFromNamespace(const String & name,const String & elemName){
-    DynamicObject * dd = getEnv()->getProperty(name).getDynamicObject();
+    DynamicObject * dd = getGlobalEnv()->getProperty(name).getDynamicObject();
     if(dd!=nullptr) dd->removeProperty(elemName);
 }
 
+void JavascriptEnvironment::setNameSpaceName(const String & s){
+    DynamicObject * d = GlobalEnvironment::getInstance()->getNamespaceObject(localNamespace);
+    if(d){
+        DynamicObject * clone = new DynamicObject(*d);
+        removeNamespace(localNamespace);
+        localNamespace = s;
+        addToNamespace(localNamespace, clone);
+    }
+
+}
 var JavascriptEnvironment::set(const NativeFunctionArgs& a){
 
     DynamicObject * d = a.thisObject.getDynamicObject();
@@ -261,11 +297,12 @@ String JavascriptEnvironment::namespaceToString(const NamedValueSet & v,int inde
         }
         if(vv->isObject()){
             DynamicObject * d = vv->getDynamicObject();
-            res+= name+":\n";
-            res+=namespaceToString(d->getProperties(),indentlevel+1);
+            if(d!=nullptr){
+                res+= name+":\n";
+                res+=namespaceToString(d->getProperties(),indentlevel+1);}
         }
         else {
-
+            
             res+= name + " : "+ vv->toString() + '\n';
         }
     }
@@ -273,3 +310,14 @@ String JavascriptEnvironment::namespaceToString(const NamedValueSet & v,int inde
     
 }
 
+String JavascriptEnvironment::getModuleName(){
+    
+    int idx = localNamespace.indexOfChar('.');
+    if(idx==-1){
+        return  localNamespace;
+    }
+    else{
+        return localNamespace.substring(idx+1);
+    }
+    
+}

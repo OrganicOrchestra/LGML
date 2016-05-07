@@ -15,7 +15,7 @@
 #include "OSCDirectController.h"
 #include "JavascriptEnvironment.h"
 
-class JavascriptController : public OSCDirectController{
+class JavascriptController : public OSCDirectController ,public JavascriptEnvironment{
 public:
     JavascriptController();
     ~JavascriptController();
@@ -28,9 +28,8 @@ public:
 
 private:
     String getJavaScriptFunctionName(const String &);
-    ScopedPointer<JavascriptEnvironment> jsEnv;
     StringArray nonValidMessages;
-    String jsName;
+
     DynamicObject * createOSCJsObject();
 
 };

@@ -13,21 +13,18 @@
 
 #include "DebugHelpers.h"
 
-JavascriptController::JavascriptController(){
+JavascriptController::JavascriptController():JavascriptEnvironment("OSC.JSController"){
 
-    jsName = "JSController";
+    addToLocalNamespace("", createOSCJsObject());
+    loadFile("/Users/Tintamar/Desktop/tst.js");
 
-    jsEnv = JavascriptEnvironment::getInstance();
-//    jsEnv->linkToControllableContainer("node",NodeManager::getInstance());
-    jsEnv->addToNamespace("OSC", jsName, createOSCJsObject());
-    jsEnv->loadFile("/Users/Tintamar/Desktop/tst.js");
 
-    DBG(jsEnv->printAllNamespace());
+    DBG(printAllNamespace());
 
-    nameParam->setValue( jsName);
+
 }
 JavascriptController::~JavascriptController(){
-    jsEnv->removeFromNamespace("OSC",nameParam->value);
+    removeFromNamespace("OSC",nameParam->value);
 
 }
 Result JavascriptController::callForMessage(const OSCMessage & msg){
@@ -35,16 +32,17 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
     if(nonValidMessages.contains(msg.getAddressPattern().toString()))return Result::ok();
     
     String functionName = getJavaScriptFunctionName(msg.getAddressPattern().toString());
-//    var jsObj = jsEnv->getRootObjectProperties().getVarPointer("OSC")->getProperty(jsName,"");
-    var* jsRcv = jsEnv->getRootObjectProperties().getVarPointer("OSCRcv");
-    if(!jsRcv)return Result::fail("No");
+//    var jsObj = getRootObjectProperties().getVarPointer("OSC")->getProperty(jsName,"");
+    var* jsRcv = getRootObjectProperties().getVarPointer(getModuleName());
+    if(!jsRcv)return Result::fail("No object NS");
     var jsObj = jsRcv->getProperty(functionName, var::undefined());
     if(jsObj==var::undefined()){
         nonValidMessages.add(msg.getAddressPattern().toString());
-        return Result::fail("No");
+        return Result::fail("No function");
     }
-    jassert(jsObj.isObject());
-    JavascriptEnvironment::OwnedJsArgs args(*jsRcv);
+    if(!jsObj.isObject())return Result::fail("No valid function");
+
+    JavascriptEnvironment::OwnedJsArgs args(nullptr);
     for(auto & m:msg){
         if(m.isFloat32()){args.addArg(m.getFloat32());}
         if(m.isInt32()){args.addArg(m.getInt32());}
@@ -53,7 +51,7 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
 
     Result r(Result::ok());
 
-    var varRes = jsEnv->callFunction(functionName, args.getNativeArgs(),&r);
+    var varRes = callFunction(functionName, args.getNativeArgs(),&r);
 
     if(r.failed()){
         LOG("error on function : "+ functionName);
@@ -135,9 +133,7 @@ DynamicObject * JavascriptController::createOSCJsObject(){
 void JavascriptController::onContainerParameterChanged(Parameter * p) {
     OSCDirectController::onContainerParameterChanged(p);
     if(p==nameParam){
-        jsEnv->removeFromNamespace("OSC", jsName);
-        jsName = nameParam->value;
-        jsEnv->addToNamespace("OSC", jsName,createOSCJsObject());
+        setNameSpaceName("OSC."+nameParam->stringValue());
     }
 };
 

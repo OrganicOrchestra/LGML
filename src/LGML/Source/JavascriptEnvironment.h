@@ -15,17 +15,20 @@
 #include "ControllableContainer.h"
 class JavascriptEnvironment : public JavascriptEngine,public ControllableContainer::Listener{
 public:
-    JavascriptEnvironment();
+    JavascriptEnvironment(const String & ns);
     ~JavascriptEnvironment();
 
-    juce_DeclareSingleton(JavascriptEnvironment, true);
+
 
     typedef juce::var::NativeFunctionArgs NativeFunctionArgs;
 
 
     static  DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
     void    linkToControllableContainer(const String & jsNamespace,ControllableContainer * c);
-    void    addToNamespace(const String & name,const String & elemName,DynamicObject *);
+    void    addToNamespace(const String & elemName,DynamicObject *target,DynamicObject * global = getGlobalEnv());
+    void    addToLocalNamespace(const String & elem,DynamicObject *target);
+
+    void setNameSpaceName(const String &);
     void removeFromNamespace(const String & name,const String & elemName);
     void    removeNamespace(const String & jsNamespace);
     void    loadFile(const String & path);
@@ -62,18 +65,86 @@ public:
         NativeFunctionArgs getNativeArgs(){
             return NativeFunctionArgs(owner,ownedArgs.getFirst(),ownedArgs.size());
         }
+        NativeFunctionArgs getLocalSopeNativeArgs(){
+            return NativeFunctionArgs(nullptr,ownedArgs.getFirst(),ownedArgs.size());
+        }
     private:
         var owner;
         OwnedArray<var> ownedArgs;
     };
 
 
-    DynamicObject * getEnv(){return localEnvironment.getDynamicObject();}
+    static DynamicObject * getGlobalEnv(){return GlobalEnvironment::getInstance()->getEnv();}
 
     String printAllNamespace();
+
+    protected :
+    String localNamespace;
+    DynamicObject * localEnvironment;
+
+
+
+    String namespaceToString(const NamedValueSet & v,int indentLevel = 0);
+
+    String getModuleName();
+    
 private:
 
-    var localEnvironment;
+    class GlobalEnvironment{
+    public:
+        juce_DeclareSingleton(GlobalEnvironment, true);
+
+        GlobalEnvironment(){
+                env = new DynamicObject();
+                getEnv()->setMethod("post", JavascriptEnvironment::post);
+                
+        }
+
+        void removeNamespace(const String & ns){
+            removeNamespace(ns,getEnv());
+        }
+        void removeNamespace(const String & ns,DynamicObject * d){
+            if(d==nullptr){
+                DBG("js Ns removing failed : not found "+ns);
+            }
+            int idx = ns.indexOfChar('.');
+            bool lastElem =(idx==-1);
+            if(!lastElem){
+                String elem = ns.substring(0,idx);
+                return removeNamespace(ns.substring(idx+1, ns.length()),d->getProperty(elem).getDynamicObject());
+            }
+            else{
+                d->removeProperty(ns);
+            }
+        }
+
+        DynamicObject * getNamespaceObject(const String & ns){
+            return getNamespaceObject(ns,getEnv());
+        }
+        
+        DynamicObject *  getNamespaceObject(const String & ns,DynamicObject * d ){
+            if(d==nullptr)return nullptr;
+            int idx = ns.indexOfChar('.');
+
+            bool lastElem =(idx==-1);
+
+            if(!lastElem){
+                String elem = ns.substring(0,idx);
+                return getNamespaceObject(ns.substring(idx+1, ns.length()),d->getProperty(elem).getDynamicObject());
+            }
+            else{
+                return d->getProperty(ns).getDynamicObject();
+            }
+        }
+
+        DynamicObject * getEnv(){return env.getDynamicObject();}
+        
+    private:
+
+        var env;
+    };
+
+
 
 
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
@@ -87,8 +158,6 @@ private:
 
     static var post(const NativeFunctionArgs& a);
     static var set(const NativeFunctionArgs& a);
-
-    String namespaceToString(const NamedValueSet & v,int indentLevel = 0);
 
 };
 
