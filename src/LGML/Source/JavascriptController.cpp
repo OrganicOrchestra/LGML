@@ -15,6 +15,7 @@
 
 JavascriptController::JavascriptController():JavascriptEnvironment("OSC.JSController"){
 
+    nameParam->setValue("JSController");
     addToLocalNamespace("", createOSCJsObject());
     loadFile("/Users/Tintamar/Desktop/tst.js");
 

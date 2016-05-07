@@ -59,6 +59,7 @@ const String & LGMLLoggerUI::getSourceForRow(int r){
 
     return String::empty;
 }
+
 const String &  LGMLLoggerUI::getContentForRow(int r){
     int count = 0;
     int idx = 0;
@@ -91,8 +92,8 @@ void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
                                                 int rowNumber,
                                                 int width, int height,
                                                 bool rowIsSelected) {
-    g.setColour(Colours::grey);
-    g.drawRect(0, 0, width, height);
+    g.setColour(Colours::transparentBlack.withAlpha((rowNumber%2==0?0.1f:0.f)));
+    g.fillRect(0, 0, width, height);
 
 };
 
@@ -102,7 +103,7 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
                                        int width, int height,
                                        bool rowIsSelected) {
 
-    g.setColour(Colours::black);
+    g.setColour(TEXT_COLOR);
     String text;
     if(columnId==1)
         text = owner->getSourceForRow(rowNumber);

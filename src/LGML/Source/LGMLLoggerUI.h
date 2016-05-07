@@ -14,6 +14,7 @@
 #include "LGMLLogger.h"
 #include "ShapeShifterContent.h"
 #include "DebugHelpers.h"
+#include "Style.h"
 
 class LGMLLoggerUI : public ShapeShifterContent,public LGMLLogger::Listener{
 public:
@@ -28,6 +29,7 @@ public:
 
 
         logListComponent = new TableListBox("LGMLLogger",&logList);
+        logListComponent->setColour(TableListBox::backgroundColourId, BG_COLOR);
         logListComponent->setHeader (thc);
         addAndMakeVisible(logListComponent);
 
