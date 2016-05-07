@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    JavascriptEnvironnement.h
-    Created: 5 May 2016 9:03:35am
-    Author:  Martin Hermant
+ JavascriptEnvironnement.h
+ Created: 5 May 2016 9:03:35am
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef JAVASCRIPTENVIRONNEMENT_H_INCLUDED
 #define JAVASCRIPTENVIRONNEMENT_H_INCLUDED
@@ -31,8 +31,10 @@ public:
     void setNameSpaceName(const String &);
     void removeFromNamespace(const String & name,const String & elemName);
     void    removeNamespace(const String & jsNamespace);
-    void    loadFile(const String & path);
-    void rebuildAllNamespaces();
+    void    loadFile(const File & f);
+    void    reloadFile();
+    void showFile();
+
 
     class JsContainerNamespace;
     bool existInNamespace(const String & name,const String & module );
@@ -78,26 +80,18 @@ public:
 
     String printAllNamespace();
 
-    protected :
-    String localNamespace;
-    DynamicObject * localEnvironment;
 
 
 
-    String namespaceToString(const NamedValueSet & v,int indentLevel = 0);
-
-    String getModuleName();
-    
-private:
 
     class GlobalEnvironment{
     public:
         juce_DeclareSingleton(GlobalEnvironment, true);
 
         GlobalEnvironment(){
-                env = new DynamicObject();
-                getEnv()->setMethod("post", JavascriptEnvironment::post);
-                
+            env = new DynamicObject();
+            getEnv()->setMethod("post", JavascriptEnvironment::post);
+
         }
 
         void removeNamespace(const String & ns){
@@ -121,7 +115,7 @@ private:
         DynamicObject * getNamespaceObject(const String & ns){
             return getNamespaceObject(ns,getEnv());
         }
-        
+
         DynamicObject *  getNamespaceObject(const String & ns,DynamicObject * d ){
             if(d==nullptr)return nullptr;
             int idx = ns.indexOfChar('.');
@@ -138,27 +132,39 @@ private:
         }
 
         DynamicObject * getEnv(){return env.getDynamicObject();}
-        
+
     private:
+
 
         var env;
     };
 
+    protected :
+    String localNamespace;
 
 
+
+
+    String namespaceToString(const NamedValueSet & v,int indentLevel = 0);
+
+    String getModuleName();
+    File currentFile;
+
+
+private:
 
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
 
-    StringArray loadedFiles;
+
 
 
     static void  post(const String & s);
     void internalLoadFile(const File &);
     void childStructureChanged(ControllableContainer * )override;
-
+    
     static var post(const NativeFunctionArgs& a);
     static var set(const NativeFunctionArgs& a);
-
+    
 };
 
 

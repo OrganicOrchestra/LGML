@@ -34,6 +34,9 @@ Engine::~Engine(){
     VSTManager::deleteInstance();
     PresetManager::deleteInstance();
 	ControlRuleManager::deleteInstance();
+    JavascriptEnvironment::GlobalEnvironment::deleteInstance();
+    Logger::setCurrentLogger(nullptr);
+    LGMLLogger::deleteInstance();
 }
 
 void Engine::parseCommandline(const String & commandLine){

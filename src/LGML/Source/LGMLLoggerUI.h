@@ -20,7 +20,6 @@ class LGMLLoggerUI : public ShapeShifterContent,public LGMLLogger::Listener{
 public:
     LGMLLoggerUI(LGMLLogger * l):ShapeShifterContent("LGMLLogger"),
     logList(this),
-
     maxNumElement(999){
         l->addLogListener(this);
         TableHeaderComponent * thc = new TableHeaderComponent();
@@ -32,6 +31,8 @@ public:
         logListComponent->setColour(TableListBox::backgroundColourId, BG_COLOR);
         logListComponent->setHeader (thc);
         addAndMakeVisible(logListComponent);
+        LOG( "LGMLv" + String(ProjectInfo::versionString); + "\nby OrganicOrchestra");
+        LOG("please provide logFile for any bug report :\nlogFile in "+l->fileLog->getLogFile().getFullPathName());
 
     }
 

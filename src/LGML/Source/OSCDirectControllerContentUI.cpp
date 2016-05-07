@@ -32,9 +32,9 @@ OSCDirectControllerContentUI::~OSCDirectControllerContentUI()
 
 void OSCDirectControllerContentUI::init()
 {
-    oscd = (OSCDirectController *)controller;
+    oscd = dynamic_cast<OSCDirectController*>(controller);
 
-    oscd->addOSCDirectParameterListener(this);
+    oscd->addOSCDirectParameterListener(dynamic_cast<OSCDirectControllerContentUI*>(this));
 
     localPortUI = oscd->localPortParam->createStringParameterUI();
     remoteHostUI = oscd->remoteHostParam->createStringParameterUI();

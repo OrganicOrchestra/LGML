@@ -11,6 +11,7 @@
 #include "JavascriptEnvironment.h"
 #include "TimeManager.h"
 #include "NodeManager.h"
+#include "DebugHelpers.h"
 
 juce_ImplementSingleton(JavascriptEnvironment::GlobalEnvironment);
 
@@ -20,8 +21,8 @@ JavascriptEnvironment::JavascriptEnvironment(const String & ns):localNamespace(n
     registerNativeObject("g", getGlobalEnv());
 
     //    // minimal
-    //    linkToControllableContainer("time",TimeManager::getInstance());
-    //    linkToControllableContainer("node",NodeManager::getInstance());
+    linkToControllableContainer("time",TimeManager::getInstance());
+    linkToControllableContainer("node",NodeManager::getInstance());
 
 }
 
@@ -122,39 +123,44 @@ DynamicObject* JavascriptEnvironment::createDynamicObjectFromContainer(Controlla
 }
 
 
-void JavascriptEnvironment::loadFile(const String & path){
+void JavascriptEnvironment::loadFile(const File &f){
 
-    File f (path);
+
     if(f.existsAsFile() && f.getFileExtension() == ".js"){
-        loadedFiles.addIfNotAlreadyThere(path);
+
         internalLoadFile(f);
     }
 
 }
 
-void JavascriptEnvironment::rebuildAllNamespaces(){
-    for(auto & path:loadedFiles){
-        File f (path);
-        if(f.existsAsFile() && f.getFileExtension() == ".js"){
-            internalLoadFile(f);
-        }
-    }
+void JavascriptEnvironment::reloadFile(){
+    if(!currentFile.existsAsFile())return;
+    internalLoadFile(currentFile);
 }
+
+void JavascriptEnvironment::showFile(){
+    if(!currentFile.existsAsFile())return;
+    currentFile.startAsProcess();
+}
+
+
 
 void JavascriptEnvironment::internalLoadFile(const File &f ){
     StringArray destLines;
     f.readLines(destLines);
     String jsString = destLines.joinIntoString("\n");
-
+    currentFile = f;
     Result r=execute(jsString);
     if(r.failed()){
-        DBG("========Javascript error =================");
-        DBG(r.getErrorMessage());
+        LOG("========Javascript error =================\n"+r.getErrorMessage());
+    }
+    else{
+        LOG("script Loaded successfully : "+f.getFullPathName());
     }
 }
 
 void JavascriptEnvironment::post(const String & s){
-    DBG(s);
+    LOG(s);
 }
 
 var JavascriptEnvironment::post(const NativeFunctionArgs& a){

@@ -39,14 +39,9 @@ NodeBase.h
 		// @ben is it triggering error on your side?
 
 
-NodeConnectionEditor.cpp
-	line : 389
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
-	line : 190
-		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
-		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
-		// should be fixed !!
+LGMLLogger.h
+	line : 17
+		// TODO : create a parrallel file Log (with fileLogger)
 
 
 NodeConnectionUI.cpp
@@ -75,6 +70,27 @@ ControllableInspector.cpp
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
+VSTNode.h
+	line : 88
+		// TODO check that it actually works
+
+	line : 105
+		//@Martin i addedd this because when not playing, it crashed
+
+	line : 109
+		// TODO check if scoped pointer deletes old innerPlugin
+
+
+NodeConnectionEditor.cpp
+	line : 389
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+	line : 190
+		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
+		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
+		// should be fixed !!
+
+
 LooperTrack.cpp
 	line : 174
 		// TODO subBlock precision ?
@@ -87,15 +103,10 @@ TimeManager.h
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
-VSTNode.h
-	line : 88
-		// TODO check that it actually works
-
-	line : 105
-		//@Martin i addedd this because when not playing, it crashed
-
-	line : 109
-		// TODO check if scoped pointer deletes old innerPlugin
+JavascriptControllerUI.cpp
+	line : 12
+		// @ ben this structure in general avoid cyclic dependencyes and unnecessary includes in non UI class
+		// should we change every thing (compile time should decrease a bit..)
 
 
 NodeBase.cpp

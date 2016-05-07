@@ -13,11 +13,19 @@
 
 #include "JuceHeader.h"
 
+
+
+// TODO : create a parrallel file Log (with fileLogger)
+
 class LGMLLogger : public Logger{
     public :
 
     juce_DeclareSingleton(LGMLLogger, true);
 
+    LGMLLogger(){
+        fileLog = FileLogger::createDefaultAppLogger("LGML", "log", "");
+
+    }
     void logMessage (const String& message) override;
 
 
@@ -35,7 +43,7 @@ class LGMLLogger : public Logger{
     void addLogListener(Listener* newListener) { listeners.add(newListener); }
     void removeLogListener(Listener* listener) { listeners.remove(listener); }
 
-    
+    ScopedPointer<FileLogger> fileLog;
 
 };
 

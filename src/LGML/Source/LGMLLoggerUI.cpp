@@ -109,8 +109,7 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
         text = owner->getSourceForRow(rowNumber);
     else if(columnId==2)
         text = owner->getContentForRow(rowNumber);
-    DBG(String(rowNumber) << text );
-
+    
     g.drawFittedText(text, 0, 0, width, height, Justification::left, 1);
     
 };

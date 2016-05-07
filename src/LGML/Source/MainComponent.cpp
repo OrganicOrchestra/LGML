@@ -90,7 +90,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 
     e->createNewGraph();
-    LOG("LGMLv" <<ProjectInfo::versionString << "\n" << "by OrganicOrchestra");
+
 
     //e->initAudio();
 

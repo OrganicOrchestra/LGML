@@ -17,7 +17,7 @@ JavascriptController::JavascriptController():JavascriptEnvironment("OSC.JSContro
 
     nameParam->setValue("JSController");
     addToLocalNamespace("", createOSCJsObject());
-    loadFile("/Users/Tintamar/Desktop/tst.js");
+
 
 
     DBG(printAllNamespace());
@@ -137,6 +137,8 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
         setNameSpaceName("OSC."+nameParam->stringValue());
     }
 };
+
+
 
 
 

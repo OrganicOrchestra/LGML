@@ -245,6 +245,10 @@
                     file="Source/JavascriptController.cpp"/>
               <FILE id="d9PZZy" name="JavascriptController.h" compile="0" resource="0"
                     file="Source/JavascriptController.h"/>
+              <FILE id="HPZ2LN" name="JavascriptControllerUI.cpp" compile="1" resource="0"
+                    file="Source/JavascriptControllerUI.cpp"/>
+              <FILE id="pYoIs9" name="JavascriptControllerUI.h" compile="0" resource="0"
+                    file="Source/JavascriptControllerUI.h"/>
             </GROUP>
             <GROUP id="{D82D4191-3638-62ED-6D1B-3F21F55A088A}" name="direct">
               <FILE id="n6bZSA" name="OSCDirectController.cpp" compile="1" resource="0"

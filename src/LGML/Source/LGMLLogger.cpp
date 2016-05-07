@@ -13,7 +13,9 @@
 juce_ImplementSingleton(LGMLLogger);
 
 void LGMLLogger::logMessage (const String& message) {
-    DBG(message);
     listeners.call(&LGMLLogger::Listener::newMessage,message);
+    if(fileLog){
+        fileLog->logMessage(message);
+    }
     
 };

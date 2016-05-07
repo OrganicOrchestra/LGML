@@ -26,6 +26,9 @@ public:
     static var sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a);
     void onContainerParameterChanged(Parameter * p) override;
 
+    ControllerUI * createUI() override;
+
+
 private:
     String getJavaScriptFunctionName(const String &);
     StringArray nonValidMessages;
