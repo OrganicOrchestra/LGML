@@ -64,15 +64,14 @@ public:
         void addArg(String f){ownedArgs.add(new var(f));}
         void addArgs(const StringArray & a){for(auto & s:a){addArg(s.getFloatValue());}}
 
-        NativeFunctionArgs * getNativeArgs(){
+        NativeFunctionArgs *getNativeArgs(){
             nativeArgs = new NativeFunctionArgs(owner,ownedArgs.getFirst(),ownedArgs.size());
             return nativeArgs;
         }
-        NativeFunctionArgs  * getLocalSopeNativeArgs(){
+        NativeFunctionArgs *getLocalSopeNativeArgs(){
             // non dynamic var make call function in root namespace
-            nativeArgs = new NativeFunctionArgs(var::undefined(),ownedArgs.getFirst(),ownedArgs.size());
+            nativeArgs = new  NativeFunctionArgs(var::undefined(),ownedArgs.getFirst(),ownedArgs.size());
             return nativeArgs;
-
         }
     private:
         var owner;
@@ -152,12 +151,13 @@ public:
 
     String namespaceToString(const NamedValueSet & v,int indentLevel = 0);
 
-    String getModuleName();
-
     // sub classes can check new namespaces from this function
     virtual void newJsFileLoaded(){};
-    File currentFile;
     bool hasValidJsFile;
+
+    String getModuleName();
+    File currentFile;
+
 
 private:
 

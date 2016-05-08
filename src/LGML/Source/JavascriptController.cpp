@@ -66,11 +66,11 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
 void JavascriptController::callonAnyMsg(const OSCMessage & msg){
     if(hasAnyMsgMethod){
         JavascriptEnvironment::OwnedJsArgs args(var::undefined());
-    for(auto & m:msg){
-        if(m.isFloat32()){args.addArg(m.getFloat32());}
-        if(m.isInt32()){args.addArg(m.getInt32());}
-        if(m.isString()){args.addArg(m.getString());}
-    }
+        for(auto & m:msg){
+            if(m.isFloat32()){args.addArg(m.getFloat32());}
+            if(m.isInt32()){args.addArg(m.getInt32());}
+            if(m.isString()){args.addArg(m.getString());}
+        }
         Result r(Result::ok());
 
         var varRes = callFunction("onAnyMsg", *args.getNativeArgs(),&r);
@@ -81,7 +81,7 @@ Result JavascriptController::processMessage(const OSCMessage &m){
     Result r1  =OSCDirectController::processMessage(m);
     Result r2(Result::fail("no valid js file"));
     if(hasValidJsFile)
-     r2 = callForMessage(m);
+        r2 = callForMessage(m);
     if(!r1 && !r2){
         NLOG("OSCController",r1.getErrorMessage());
         NLOG("Javascript",r2.getErrorMessage());
@@ -159,9 +159,10 @@ void JavascriptController::newJsFileLoaded(){
     if(!hasValidJsFile) return;
 
     hasAnyMsgMethod = GlobalEnvironment::getInstance()->getNamespaceObject(localNamespace+".onAnyMsg")!=nullptr;
-
-
+    
+    
 }
+
 
 
 
