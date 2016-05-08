@@ -43,7 +43,7 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
     }
     if(!jsObj.isObject())return Result::fail("No valid function");
 
-    JavascriptEnvironment::OwnedJsArgs args(nullptr);
+    JavascriptEnvironment::OwnedJsArgs args(new var());
     for(auto & m:msg){
         if(m.isFloat32()){args.addArg(m.getFloat32());}
         if(m.isInt32()){args.addArg(m.getInt32());}

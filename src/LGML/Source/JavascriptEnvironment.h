@@ -64,11 +64,11 @@ public:
         void addArg(String f){ownedArgs.add(new var(f));}
         void addArgs(const StringArray & a){for(auto & s:a){addArg(s.getFloatValue());}}
 
-        NativeFunctionArgs getNativeArgs(){
+        NativeFunctionArgs &getNativeArgs(){
             return NativeFunctionArgs(owner,ownedArgs.getFirst(),ownedArgs.size());
         }
-        NativeFunctionArgs getLocalSopeNativeArgs(){
-            return NativeFunctionArgs(nullptr,ownedArgs.getFirst(),ownedArgs.size());
+        NativeFunctionArgs &getLocalSopeNativeArgs(){
+            return NativeFunctionArgs(var(),ownedArgs.getFirst(),ownedArgs.size());
         }
     private:
         var owner;
