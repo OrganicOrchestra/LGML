@@ -21,17 +21,21 @@ public:
     ~JavascriptController();
     Result processMessage(const OSCMessage &m)override;
     Result callForMessage(const OSCMessage & msg);
+    void callonAnyMsg(const OSCMessage & msg);
 
 
     static var sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a);
     void onContainerParameterChanged(Parameter * p) override;
 
+
+    void newJsFileLoaded()override;
     ControllerUI * createUI() override;
 
 
 private:
     String getJavaScriptFunctionName(const String &);
     StringArray nonValidMessages;
+    bool hasAnyMsgMethod;
 
     DynamicObject * createOSCJsObject();
 

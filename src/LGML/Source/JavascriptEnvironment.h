@@ -64,15 +64,20 @@ public:
         void addArg(String f){ownedArgs.add(new var(f));}
         void addArgs(const StringArray & a){for(auto & s:a){addArg(s.getFloatValue());}}
 
-        NativeFunctionArgs getNativeArgs(){
-            return NativeFunctionArgs(owner,ownedArgs.getFirst(),ownedArgs.size());
+        NativeFunctionArgs * getNativeArgs(){
+            nativeArgs = new NativeFunctionArgs(owner,ownedArgs.getFirst(),ownedArgs.size());
+            return nativeArgs;
         }
-        NativeFunctionArgs getLocalSopeNativeArgs(){
-            return NativeFunctionArgs(nullptr,ownedArgs.getFirst(),ownedArgs.size());
+        NativeFunctionArgs  * getLocalSopeNativeArgs(){
+            // non dynamic var make call function in root namespace
+            nativeArgs = new NativeFunctionArgs(var::undefined(),ownedArgs.getFirst(),ownedArgs.size());
+            return nativeArgs;
+
         }
     private:
         var owner;
         OwnedArray<var> ownedArgs;
+        ScopedPointer<NativeFunctionArgs> nativeArgs;
     };
 
 
@@ -148,8 +153,11 @@ public:
     String namespaceToString(const NamedValueSet & v,int indentLevel = 0);
 
     String getModuleName();
-    File currentFile;
 
+    // sub classes can check new namespaces from this function
+    virtual void newJsFileLoaded(){};
+    File currentFile;
+    bool hasValidJsFile;
 
 private:
 

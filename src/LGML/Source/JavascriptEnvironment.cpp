@@ -152,11 +152,14 @@ void JavascriptEnvironment::internalLoadFile(const File &f ){
     currentFile = f;
     Result r=execute(jsString);
     if(r.failed()){
+        hasValidJsFile = false;
         LOG("========Javascript error =================\n"+r.getErrorMessage());
     }
     else{
+                hasValidJsFile = true;
         LOG("script Loaded successfully : "+f.getFullPathName());
     }
+    newJsFileLoaded();
 }
 
 void JavascriptEnvironment::post(const String & s){
