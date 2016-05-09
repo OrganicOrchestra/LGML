@@ -130,31 +130,5 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
                 manager->addController((ControllerFactory::ControllerType)(result - 1));
             }
         }
-        else
-        {
-            if (event.mods.isCtrlDown())
-            {
-                manager->addController(ControllerFactory::ControllerType::OSCDirect);
-            }
-        }
-    }
-
-}
-
-/*
-ControllerManagerViewport::ControllerManagerViewport(ControllerManager * controllerManager)
-{
-    cmui = new ControllerManagerUI(controllerManager);
-    setViewedComponent(cmui);
-}
-
-void ControllerManagerViewport::resized()
-{
-    if (cmui->getHeight() < getHeight())
-    {
-        Rectangle<int> r = getLocalBounds();
-        r.removeFromRight(18); //scrollbar
-        cmui->setBounds(r);
     }
 }
-*/

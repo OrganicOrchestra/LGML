@@ -29,16 +29,16 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 {
     Controller * c = factory.createController(controllerType);
     controllers.add(c);
-    listeners.call(&Listener::controllerAdded, c);
-    c->addControllableListener(this);
+    listeners.call(&ControllerManager::Listener::controllerAdded, c);
+    c->addControllerListener(this);
     c->setParentContainer(this);
     return c;
 }
 
 void ControllerManager::removeController(Controller * c)
 {
-    c->removeListener(this);
-    listeners.call(&Listener::controllerRemoved, c);
+    c->removeControllerListener(this);
+    listeners.call(&ControllerManager::Listener::controllerRemoved, c);
     controllers.removeObject(c);
 }
 

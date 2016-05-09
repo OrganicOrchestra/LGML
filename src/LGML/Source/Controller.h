@@ -34,18 +34,18 @@ public:
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
-    class  Listener
+    class  ControllerListener
     {
     public:
         /** Destructor. */
-        virtual ~Listener() {}
+        virtual ~ControllerListener() {}
 
         virtual void askForRemoveController(Controller *) = 0;
     };
 
-    ListenerList<Listener> listeners;
-    void addControllableListener(Listener* newListener) { listeners.add(newListener); }
-    void removeListener(Listener* listener) { listeners.remove(listener); }
+    ListenerList<ControllerListener> controllerListeners;
+    void addControllerListener(ControllerListener* newListener) { controllerListeners.add(newListener); }
+    void removeControllerListener(ControllerListener* listener) { controllerListeners.remove(listener); }
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)

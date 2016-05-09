@@ -20,8 +20,8 @@
 
 #include "TimeManagerUI.h"
 
-#include "ControlRuleManager.h"
-#include "ControlRuleManagerUI.h"
+#include "RuleManager.h"
+#include "RuleManagerUI.h"
 
 #include "ShapeShifterManager.h"
 
@@ -56,7 +56,7 @@ public:
 	ScopedPointer<ControllableInspector> controllableInspector;
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
 
-	ScopedPointer<ControlRuleManagerUI> ruleManagerUI;
+	ScopedPointer<RuleManagerUI> ruleManagerUI;
 
     Engine * engine;
     AudioDeviceSelectorComponent audioSettingsComp;

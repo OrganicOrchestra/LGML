@@ -14,11 +14,9 @@
 
 #include "ControllerFactory.h"
 
-class ControllerManager : public Controller::Listener, public ControllableContainer
+class ControllerManager : public Controller::ControllerListener, public ControllableContainer
 {
 public:
-
-
 
     ControllerManager();
     ~ControllerManager();

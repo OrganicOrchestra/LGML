@@ -47,7 +47,7 @@ void Controller::loadJSONDataInternal(var data)
 
 void Controller::remove()
 {
-    listeners.call(&Controller::Listener::askForRemoveController, this);
+	controllerListeners.call(&ControllerListener::askForRemoveController, this);
 }
 
 void Controller::onContainerParameterChanged(Parameter * p)

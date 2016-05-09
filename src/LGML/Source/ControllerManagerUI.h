@@ -50,18 +50,4 @@ private:
     virtual void controllerRemoved(Controller *) override;
 };
 
-
-/*
-class ControllerManagerViewport : public Viewport
-{
-public:
-    ControllerManagerViewport(ControllerManager * controllerManager);
-
-    ControllerManagerUI * cmui;
-
-    void resized() override;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerViewport)
-};
-*/
-
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED

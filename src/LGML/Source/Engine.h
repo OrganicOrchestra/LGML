@@ -19,7 +19,7 @@
 #include "NodeManager.h"
 #include "VSTManager.h"
 #include "PresetManager.h"
-#include "ControlRuleManager.h"
+#include "RuleManager.h"
 
 class Engine:public FileBasedDocument{
 public:
