@@ -17,8 +17,15 @@
 class RuleEditor : public Component
 {
 public:
+	juce_DeclareSingleton(RuleEditor,false)
+
 	RuleEditor();
 	virtual ~RuleEditor();
+
+	Rule * currentRule;
+
+	void setCurrentRule(Rule * r);
+	void editRule(Rule * r);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleEditor)
 };

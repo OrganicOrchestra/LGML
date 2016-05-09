@@ -11,9 +11,9 @@
 #include "RuleConsequence.h"
 
 RuleConsequence::RuleConsequence()
-  {
-  }
+{
+}
 
-  RuleConsequence::~RuleConsequence()
-  {
-  }
+RuleConsequence::~RuleConsequence()
+{
+}

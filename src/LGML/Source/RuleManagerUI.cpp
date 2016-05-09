@@ -14,10 +14,12 @@ RuleManagerUI::RuleManagerUI(RuleManager * _ruleManager) :
 	ruleManager(_ruleManager),
 	ShapeShifterContent("Rules")
 {
+	ruleManager->addListener(this);
 }
 
 RuleManagerUI::~RuleManagerUI()
 {
+	ruleManager->removeListener(this);
 }
 
 void RuleManagerUI::mouseDown(const MouseEvent & e)
@@ -47,3 +49,54 @@ void RuleManagerUI::mouseDown(const MouseEvent & e)
 		}
 	}
 }
+
+void RuleManagerUI::resized()
+{
+	Rectangle<int> r = getLocalBounds().reduced(5);
+	for (auto &rui : rulesUI)
+	{
+		rui->setBounds(r.removeFromTop(20));
+		r.removeFromTop(3);
+	}
+}
+
+void RuleManagerUI::addRuleUI(Rule * r)
+{
+	DBG("Add rule UI");
+	RuleUI * rui = new RuleUI(r);
+	rulesUI.add(rui);
+	addAndMakeVisible(rui);
+	resized();
+}
+
+void RuleManagerUI::removeRuleUI(Rule * r)
+{
+	RuleUI * rui = getUIForRule(r);
+	if (rui == nullptr) return;
+
+	removeChildComponent(rui);
+	rulesUI.removeObject(rui);
+
+	resized();
+}
+
+RuleUI * RuleManagerUI::getUIForRule(Rule * r)
+{
+	for (auto &rui : rulesUI)
+	{
+		if (rui->rule == r) return rui;
+	}
+
+	return nullptr;
+}
+
+void RuleManagerUI::ruleAdded(Rule * r)
+{
+	addRuleUI(r);
+}
+
+void RuleManagerUI::ruleRemoved(Rule * r)
+{
+	removeRuleUI(r);
+}
+

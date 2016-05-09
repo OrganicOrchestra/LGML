@@ -51,9 +51,7 @@ public:
     ImageButton removeBT;
     ScopedPointer<ComboBox> presetCB;
 
-    void mouseDoubleClick(const MouseEvent & e)override;
-
-
+   
     virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
     virtual void updatePresetComboBox();
     virtual void init();

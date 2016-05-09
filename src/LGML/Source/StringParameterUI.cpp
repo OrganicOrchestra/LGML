@@ -27,7 +27,7 @@ StringParameterUI::StringParameterUI(Parameter * p) :
     valueLabel.setJustificationType(Justification::topLeft);
     valueLabel.setText(parameter->value,NotificationType::dontSendNotification);
     valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
-    valueLabel.setEditable(true);
+    valueLabel.setEditable(false,true);
     valueLabel.addListener(this);
 
     //valueLabel.setColour(valueLabel.textWhenEditingColourId, TEXTNAME_COLOR);

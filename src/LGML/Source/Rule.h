@@ -25,13 +25,38 @@ public:
 	virtual ~Rule();
 	
 	StringParameter * nameParam;
-
-	void onContainerParameterChanged(Parameter * p) override;
+	BoolParameter * enabledParam;
+	BoolParameter * isActiveParam;
+	bool isSelected; //for ui
 
 	OwnedArray<RuleCondition> conditions;
 	OwnedArray<RuleConditionGroup> conditionGroups;
-
 	OwnedArray<RuleConsequence> consequences;
+
+	void onContainerParameterChanged(Parameter * p) override;
+
+	void setSelected(bool value);
+
+	void select();
+	void remove();
+
+
+	class  RuleListener
+	{
+	public:
+		/** Destructor. */
+		virtual ~RuleListener() {}
+
+		virtual void askForSelectRule(Rule *) {}
+		virtual void askForRemoveRule(Rule *) {}
+
+		virtual void ruleSelectionChanged(Rule *) {}
+		virtual void ruleActivationChanged(Rule *) {}
+	};
+
+	ListenerList<RuleListener> ruleListeners;
+	void addRuleListener(RuleListener* newListener) { ruleListeners.add(newListener); }
+	void removeRuleListener(RuleListener* listener) { ruleListeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Rule)
 };

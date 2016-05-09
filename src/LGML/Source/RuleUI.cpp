@@ -9,11 +9,86 @@
 */
 
 #include "RuleUI.h"
+#include "Style.h"
 
-RuleUI::RuleUI()
+RuleUI::RuleUI(Rule * _rule) : rule(_rule)
 {
+	rule->addRuleListener(this);
+
+	enabledBT = rule->enabledParam->createToggle();
+	nameTF = rule->nameParam->createStringParameterUI();
+	nameTF->setNameLabelVisible(false);
+
+	addAndMakeVisible(enabledBT);
+	addAndMakeVisible(nameTF);
+
+	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
+
+	removeBT.setImages(false, true, true, removeImage,
+		0.7f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
+		0.5f);
+	removeBT.addListener(this);
+
+	addAndMakeVisible(&removeBT);
+
+	addMouseListener(this, true);
 }
 
 RuleUI::~RuleUI()
 {
+	rule->removeRuleListener(this);
+}
+
+void RuleUI::paint(Graphics & g)
+{
+	Rectangle<int> r = getLocalBounds();
+
+	g.setColour(NORMAL_COLOR.darker());
+	g.fillRoundedRectangle(r.toFloat(), 2);
+
+	if (rule->isSelected)
+	{
+		g.setColour(HIGHLIGHT_COLOR);
+		g.drawRoundedRectangle(r.toFloat(), 2, 2);
+	}
+
+	g.setColour(rule->isActiveParam->boolValue() ? (rule->enabledParam->boolValue()?Colours::lightgreen:Colours::yellow) : NORMAL_COLOR);
+	g.fillEllipse(r.removeFromRight(r.getHeight()).reduced(4).toFloat());
+
+	
+}
+
+void RuleUI::resized()
+{
+	Rectangle<int> r = getLocalBounds().reduced(2);
+	r.removeFromRight(15);
+	removeBT.setBounds(r.removeFromRight(20));
+	enabledBT->setBounds(r.removeFromLeft(r.getHeight()));
+	r.removeFromLeft(5);
+	nameTF->setBounds(r);
+}
+
+void RuleUI::mouseDown(const MouseEvent & e)
+{
+	rule->select();
+}
+
+void RuleUI::buttonClicked(Button * b)
+{
+	if (b == &removeBT)
+	{
+		rule->remove();
+	}
+}
+
+void RuleUI::ruleSelectionChanged(Rule * r)
+{
+	repaint();
+}
+
+void RuleUI::ruleActivationChanged(Rule *)
+{
+	repaint();
 }

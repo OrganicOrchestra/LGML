@@ -164,18 +164,19 @@ ConnectorComponent * NodeBaseUI::getFirstConnector(NodeConnection::ConnectionTyp
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
 void NodeBaseUI::mouseDown(const juce::MouseEvent &e)
 {
+	if (e.eventComponent != &mainContainer.headerContainer->grabber) return;
+
     nodeInitPos = getBounds().getCentre();
 
-
+	/*
     // don't want to drag if over volume
     if(NodeBaseAudioCtlUI * ctlUI = mainContainer.audioCtlUIContainer){
         Point<int> mouse = getMouseXYRelative();
         Component * found = getComponentAt(mouse.x,mouse.y);
 
         dragIsLocked = (dynamic_cast<NodeBaseAudioCtlUI *>(found) == ctlUI);
-
-
     }
+	*/
 }
 #pragma warning( default : 4100 )
 
@@ -186,15 +187,14 @@ void NodeBaseUI::mouseUp(const juce::MouseEvent &){
 		nmui->setAllNodesToStartAtZero();
 	}
     askForSelection(true,true);
-    dragIsLocked = false;
-
+   //dragIsLocked = false;
 
 }
 
 void NodeBaseUI::mouseDrag(const MouseEvent & e)
 {
-
-    if(dragIsLocked)return;
+	if (e.eventComponent != &mainContainer.headerContainer->grabber) return;
+    //if(dragIsLocked) return;
 
     Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
     Point <int> newPos = nodeInitPos + diff;
@@ -294,8 +294,10 @@ void NodeBaseUI::MainContainer::paint(Graphics & g)
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
 
     g.setColour(nodeUI->isSelected ?HIGHLIGHT_COLOR:LIGHTCONTOUR_COLOR);
-    g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1),4.f, nodeUI->isSelected?2.f:1.f);
+    g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1),4.f, nodeUI->isSelected?2.f:.5f);
 
+	headerContainer->repaint();
+	contentContainer->repaint();
 }
 
 

@@ -14,7 +14,7 @@
 #include "JuceHeader.h"
 #include "Rule.h"
 
-class RuleManager
+class RuleManager : public Rule::RuleListener
 {
 public:
 	juce_DeclareSingleton(RuleManager, true)
@@ -23,9 +23,15 @@ public:
 	virtual ~RuleManager();
 
 	OwnedArray<Rule> rules;
+	Rule * selectedRule;
 
 	Rule * addRule(const String &ruleName);
 	void removeRule(Rule * _rule);
+
+	void setSelectedRule(Rule * r);
+
+	void askForSelectRule(Rule *r);
+	void askForRemoveRule(Rule *r);
 
 	class  Listener
 	{
