@@ -14,20 +14,18 @@
 #include "DebugHelpers.h"
 
 JavascriptController::JavascriptController():JavascriptEnvironment("OSC.JSController"){
-
     nameParam->setValue("JSController");
-    addToLocalNamespace("", createOSCJsObject());
-
-
-
-    DBG(printAllNamespace());
-
 
 }
 JavascriptController::~JavascriptController(){
     removeFromNamespace("OSC",nameParam->value);
 
 }
+
+void JavascriptController::buildLocalNamespace(){
+        addToLocalNamespace("", createOSCJsObject());
+}
+
 Result JavascriptController::callForMessage(const OSCMessage & msg){
 
     if(nonValidMessages.contains(msg.getAddressPattern().toString()))return Result::ok();
@@ -157,7 +155,7 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
 
 void JavascriptController::newJsFileLoaded(){
     if(!hasValidJsFile) return;
-
+    nonValidMessages.clear();
     hasAnyMsgMethod = GlobalEnvironment::getInstance()->getNamespaceObject(localNamespace+".onAnyMsg")!=nullptr;
     
     

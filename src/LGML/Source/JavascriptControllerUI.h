@@ -12,6 +12,7 @@
 #define JAVASCRIPTCONTROLLERUI_H_INCLUDED
 #include "JavascriptController.h"
 #include "OSCDirectControllerContentUI.h"
+#include "DebugHelpers.h"
 
 class JavascriptControllerUI : public ControllerContentUI{
 public:
@@ -27,7 +28,6 @@ public:
     void init() override{
         oscUI->controller = controller;
         oscUI->cui = cui;
-
         oscUI->init();
     }
     class ScriptUI : public Component,public Button::Listener{
@@ -37,28 +37,35 @@ public:
             addAndMakeVisible(loadFileB);
             loadFileB.addListener(this);
 
-            reloadB.setButtonText("reload");
+            reloadB.setButtonText("Reload");
             addAndMakeVisible(reloadB);
             reloadB.addListener(this);
 
-            openB.setButtonText("open");
+            openB.setButtonText("Show");
             addAndMakeVisible(openB);
             openB.addListener(this);
+
+            logEnvB.setButtonText("LogEnv");
+            addAndMakeVisible(logEnvB);
+            logEnvB.addListener(this);
 
         }
 
         TextButton loadFileB;
         TextButton reloadB;
         TextButton openB;
+        TextButton logEnvB;
 
 
 
         void resized()override{
             Rectangle<int> area = getLocalBounds().reduced(2);
-            int step = area.getWidth()/3;
+            const int logEnvSize = 30;
+            const int step = (area.getWidth()- logEnvSize)/3 ;
             loadFileB.setBounds(area.removeFromLeft(step).reduced(2));
             reloadB.setBounds(area.removeFromLeft(step).reduced(2));
             openB.setBounds(area.removeFromLeft(step).reduced(2));
+            logEnvB.setBounds(area.removeFromLeft(logEnvSize).reduced(2));
 
         }
 
@@ -80,6 +87,9 @@ public:
             }
             else if (b== &reloadB){
                 env->reloadFile();
+            }
+            else if(b==&logEnvB){
+                LOG(env->printAllNamespace());
             }
         };
         JavascriptEnvironment * env;

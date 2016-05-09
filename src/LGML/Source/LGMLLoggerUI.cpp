@@ -102,7 +102,7 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
                                        int columnId,
                                        int width, int height,
                                        bool rowIsSelected) {
-
+    g.setFont(12);
     g.setColour(TEXT_COLOR);
     String text;
     if(columnId==1)

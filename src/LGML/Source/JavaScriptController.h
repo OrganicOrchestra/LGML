@@ -23,7 +23,7 @@ public:
     Result callForMessage(const OSCMessage & msg);
     void callonAnyMsg(const OSCMessage & msg);
 
-
+    void buildLocalNamespace() override;
     static var sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a);
     void onContainerParameterChanged(Parameter * p) override;
 

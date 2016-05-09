@@ -24,14 +24,15 @@ public:
         l->addLogListener(this);
         TableHeaderComponent * thc = new TableHeaderComponent();
         thc->addColumn("source", 1, 100);
-        thc->addColumn("content", 2, 300);
+        thc->addColumn("content", 2, 400);
 
 
         logListComponent = new TableListBox("LGMLLogger",&logList);
+        logListComponent->setRowHeight(13);
         logListComponent->setColour(TableListBox::backgroundColourId, BG_COLOR);
         logListComponent->setHeader (thc);
         addAndMakeVisible(logListComponent);
-        LOG( "LGMLv" + String(ProjectInfo::versionString); + "\nby OrganicOrchestra");
+        LOG( "LGMLv" + String(ProjectInfo::versionString) + "\nby OrganicOrchestra");
         LOG("please provide logFile for any bug report :\nlogFile in "+l->fileLog->getLogFile().getFullPathName());
 
     }

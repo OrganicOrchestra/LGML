@@ -150,13 +150,15 @@ void JavascriptEnvironment::internalLoadFile(const File &f ){
     f.readLines(destLines);
     String jsString = destLines.joinIntoString("\n");
     currentFile = f;
+    removeNamespace(localNamespace);
+    buildLocalNamespace();
     Result r=execute(jsString);
     if(r.failed()){
         hasValidJsFile = false;
         LOG("========Javascript error =================\n"+r.getErrorMessage());
     }
     else{
-                hasValidJsFile = true;
+        hasValidJsFile = true;
         LOG("script Loaded successfully : "+f.getFullPathName());
     }
     newJsFileLoaded();
@@ -296,28 +298,42 @@ String JavascriptEnvironment::printAllNamespace(){
     return namespaceToString(getRootObjectProperties());
 
 }
-String JavascriptEnvironment::namespaceToString(const NamedValueSet & v,int indentlevel ){
+String JavascriptEnvironment::namespaceToString(const NamedValueSet & v,int indentlevel ,bool showValue){
     String res;
+    res+=" (";
+    for(int i = 0 ; i < v.size() ; i++){
+        var * vv = v.getVarPointerAt(i);
+        if(!vv->isObject()){
+            String name = v.getName(i).toString();
+            res+= (i!=0?", ":"")+name + (showValue?'('+ vv->toString()+")":"") ;
+        }
+    }
+    res+=+ ")\n";
+
     for(int i = 0 ; i < v.size() ; i++){
         var * vv = v.getVarPointerAt(i);
         String name = v.getName(i).toString();
-        for(int  j = 0 ; j < indentlevel ; j ++ ){
-            res+=' ';
-        }
+
+
         if(vv->isObject()){
+            for(int  j = 0 ; j < indentlevel ; j ++ ){
+                res+='-';
+            }
+
             DynamicObject * d = vv->getDynamicObject();
             if(d!=nullptr){
-                res+= name+":\n";
-                res+=namespaceToString(d->getProperties(),indentlevel+1);}
+                res+= name+":";
+                res+=namespaceToString(d->getProperties(),indentlevel+1,showValue);}
         }
-        else {
-            
-            res+= name + " : "+ vv->toString() + '\n';
-        }
+        
     }
+    
     return res;
     
 }
+
+
+
 
 String JavascriptEnvironment::getModuleName(){
     

@@ -18,7 +18,8 @@ public:
     JavascriptEnvironment(const String & ns);
     ~JavascriptEnvironment();
 
-
+    // has to override that to specify members and methods accessible in namespace
+    virtual void buildLocalNamespace() = 0;
 
     typedef juce::var::NativeFunctionArgs NativeFunctionArgs;
 
@@ -33,7 +34,7 @@ public:
     void    removeNamespace(const String & jsNamespace);
     void    loadFile(const File & f);
     void    reloadFile();
-    void showFile();
+    void    showFile();
 
 
     class JsContainerNamespace;
@@ -104,6 +105,7 @@ public:
         void removeNamespace(const String & ns,DynamicObject * d){
             if(d==nullptr){
                 DBG("js Ns removing failed : not found "+ns);
+                return;
             }
             int idx = ns.indexOfChar('.');
             bool lastElem =(idx==-1);
@@ -149,7 +151,7 @@ public:
 
 
 
-    String namespaceToString(const NamedValueSet & v,int indentLevel = 0);
+    String namespaceToString(const NamedValueSet & v,int indentLevel = 0,bool showValue=true);
 
     // sub classes can check new namespaces from this function
     virtual void newJsFileLoaded(){};
