@@ -47,7 +47,7 @@ void StringParameterUI::setNameLabelVisible(bool visible)
 void StringParameterUI::resized()
 {
     Rectangle<int> r = getLocalBounds();
-    if(nameLabelIsVisible) nameLabel.setBounds(r.removeFromLeft(100));
+    if(nameLabelIsVisible) nameLabel.setBounds(r.removeFromLeft(getWidth()*(.4)));
     valueLabel.setBounds(r);
 }
 

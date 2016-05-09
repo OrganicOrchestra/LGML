@@ -56,11 +56,11 @@ void OSCDirectControllerContentUI::resized()
     Rectangle<int> r = getLocalBounds().reduced(5);
     activityTriggerUI->setBounds(r.getRight() - 20, 0, 20, 20);
 
-    localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()).withWidth(200));
+    localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));//.withWidth(200));
     r.removeFromTop(10);
-    remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()).withWidth(200));
+    remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));//.withWidth(200));
     r.removeFromTop(2);
-    remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()).withWidth(200));
+    remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()));//.withWidth(200));
     r.removeFromTop(10);
     activityLog.setBounds(r);
 

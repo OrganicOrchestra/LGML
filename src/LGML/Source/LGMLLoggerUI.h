@@ -16,7 +16,7 @@
 #include "DebugHelpers.h"
 #include "Style.h"
 
-class LGMLLoggerUI : public ShapeShifterContent,public LGMLLogger::Listener{
+class LGMLLoggerUI : public ShapeShifterContent,public LGMLLogger::Listener,public TextButton::Listener{
 public:
     LGMLLoggerUI(LGMLLogger * l):ShapeShifterContent("LGMLLogger"),
     logList(this),
@@ -34,6 +34,10 @@ public:
         addAndMakeVisible(logListComponent);
         LOG( "LGMLv" + String(ProjectInfo::versionString) + "\nby OrganicOrchestra");
         LOG("please provide logFile for any bug report :\nlogFile in "+l->fileLog->getLogFile().getFullPathName());
+
+        clearB.setButtonText("Clear");
+        clearB.addListener(this);
+        addAndMakeVisible(clearB);
 
     }
 
@@ -66,9 +70,11 @@ public:
 
     void resized()override;
     LogList logList;
+    TextButton clearB;
     ScopedPointer<TableListBox> logListComponent;
     int maxNumElement;
 
+    void buttonClicked (Button*) override;
 
 
     OwnedArray<LogElement> logElements;

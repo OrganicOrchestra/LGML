@@ -32,6 +32,8 @@ void LGMLLoggerUI::newMessage(const String & s) {
 
 void LGMLLoggerUI::resized(){
     Rectangle<int> area = getLocalBounds();
+    clearB.setBounds(area.removeFromBottom(30).reduced(5));
+
     logListComponent->setBounds(area);
 }
 
@@ -113,4 +115,11 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
     g.drawFittedText(text, 0, 0, width, height, Justification::left, 1);
     
 };
+
+void LGMLLoggerUI::buttonClicked (Button* b) {
+    if(b==&clearB){
+        logElements.clear();
+        logListComponent->updateContent();
+    }
+}
 

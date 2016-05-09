@@ -67,8 +67,8 @@ public:
 
     public:
         OwnedJsArgs(var _owner):owner(_owner){}
-        void addArg(float f){ownedArgs.add( var(f));}
-        void addArg(String f){ownedArgs.add( var(f));}
+        void addArg(var f){ownedArgs.add(f);}
+
         void addArgs(const StringArray & a){for(auto & s:a){addArg(s.getFloatValue());}}
 
         NativeFunctionArgs *getNativeArgs(){

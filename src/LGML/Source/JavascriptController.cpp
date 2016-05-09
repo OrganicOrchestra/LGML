@@ -42,11 +42,22 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
     if(!jsObj.isObject())return Result::fail("No valid function");
 
     JavascriptEnvironment::OwnedJsArgs args(var::undefined());
+
+    // this way add every osc element as separated argument of a function
+//    for(auto & m:msg){
+//        if(m.isFloat32()){args.addArg(m.getFloat32());}
+//        if(m.isInt32()){args.addArg(m.getInt32());}
+//        if(m.isString()){args.addArg(m.getString());}
+//    }
+
+    // this way add every osc element in an aray for variable size osc messages
+    var argArray;
     for(auto & m:msg){
-        if(m.isFloat32()){args.addArg(m.getFloat32());}
-        if(m.isInt32()){args.addArg(m.getInt32());}
-        if(m.isString()){args.addArg(m.getString());}
+        if(m.isFloat32()){argArray.append(m.getFloat32());}
+        if(m.isInt32()){argArray.append(m.getInt32());}
+        if(m.isString()){argArray.append(m.getString());}
     }
+    args.addArg(argArray);
 
     Result r(Result::ok());
 

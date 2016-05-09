@@ -15,22 +15,24 @@
 
 #include "JuceHeader.h"
 
+#include "Style.h"
+
 namespace LookAndFeelHelpers {
 
 
     // initialise the standard set of colours..
-    static const uint32 textButtonColour = 0xffbbbbff;
-    static const uint32 textHighlightColour = 0x401111ee;
+    static const uint32 textButtonColour = NORMAL_COLOR.getARGB();
+    static const uint32 textHighlightColour = HIGHLIGHT_COLOR.getARGB();
     static const uint32 standardOutlineColour = 0xb2808080;
 
     static const uint32 standardColours[] =
     {
         TextButton::buttonColourId,                 textButtonColour,
         TextButton::buttonOnColourId,               0xff4444ff,
-        TextButton::textColourOnId,                 0xff000000,
-        TextButton::textColourOffId,                0xff000000,
+        TextButton::textColourOnId,                 textHighlightColour,
+        TextButton::textColourOffId,                TEXT_COLOR.getARGB(),
 
-        ToggleButton::textColourId,                 0xff000000,
+        ToggleButton::textColourId,                 TEXT_COLOR.getARGB(),
 
         TextEditor::backgroundColourId,             0xffffffff,
         TextEditor::textColourId,                   0xff000000,
