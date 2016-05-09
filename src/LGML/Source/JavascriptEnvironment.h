@@ -21,6 +21,12 @@ public:
     // has to override that to specify members and methods accessible in namespace
     virtual void buildLocalNamespace() = 0;
 
+    // sub classes can check new namespaces from this function
+    virtual void newJsFileLoaded(){};
+
+    // can check that if want to avoid unnecessary (and potentially unsecure) method calls on non-valid jsFile
+    bool hasValidJsFile(){return _hasValidJsFile;}
+
     typedef juce::var::NativeFunctionArgs NativeFunctionArgs;
 
 
@@ -61,22 +67,22 @@ public:
 
     public:
         OwnedJsArgs(var _owner):owner(_owner){}
-        void addArg(float f){ownedArgs.add(new var(f));}
-        void addArg(String f){ownedArgs.add(new var(f));}
+        void addArg(float f){ownedArgs.add( var(f));}
+        void addArg(String f){ownedArgs.add( var(f));}
         void addArgs(const StringArray & a){for(auto & s:a){addArg(s.getFloatValue());}}
 
         NativeFunctionArgs *getNativeArgs(){
-            nativeArgs = new NativeFunctionArgs(owner,ownedArgs.getFirst(),ownedArgs.size());
+            nativeArgs = new NativeFunctionArgs(owner,ownedArgs.getRawDataPointer(),ownedArgs.size());
             return nativeArgs;
         }
         NativeFunctionArgs *getLocalSopeNativeArgs(){
             // non dynamic var make call function in root namespace
-            nativeArgs = new  NativeFunctionArgs(var::undefined(),ownedArgs.getFirst(),ownedArgs.size());
+            nativeArgs = new  NativeFunctionArgs(var::undefined(),ownedArgs.getRawDataPointer(),ownedArgs.size());
             return nativeArgs;
         }
     private:
         var owner;
-        OwnedArray<var> ownedArgs;
+        Array<var> ownedArgs;
         ScopedPointer<NativeFunctionArgs> nativeArgs;
     };
 
@@ -153,9 +159,7 @@ public:
 
     String namespaceToString(const NamedValueSet & v,int indentLevel = 0,bool showValue=true);
 
-    // sub classes can check new namespaces from this function
-    virtual void newJsFileLoaded(){};
-    bool hasValidJsFile;
+
 
     String getModuleName();
     File currentFile;
@@ -174,7 +178,9 @@ private:
     
     static var post(const NativeFunctionArgs& a);
     static var set(const NativeFunctionArgs& a);
-    
+
+    bool _hasValidJsFile;
+
 };
 
 

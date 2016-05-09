@@ -78,7 +78,7 @@ void JavascriptController::callonAnyMsg(const OSCMessage & msg){
 Result JavascriptController::processMessage(const OSCMessage &m){
     Result r1  =OSCDirectController::processMessage(m);
     Result r2(Result::fail("no valid js file"));
-    if(hasValidJsFile)
+    if(hasValidJsFile())
         r2 = callForMessage(m);
     if(!r1 && !r2){
         NLOG("OSCController",r1.getErrorMessage());
@@ -154,7 +154,7 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
 
 
 void JavascriptController::newJsFileLoaded(){
-    if(!hasValidJsFile) return;
+
     nonValidMessages.clear();
     hasAnyMsgMethod = GlobalEnvironment::getInstance()->getNamespaceObject(localNamespace+".onAnyMsg")!=nullptr;
     

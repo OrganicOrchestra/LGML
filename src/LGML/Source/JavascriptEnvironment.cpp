@@ -154,14 +154,15 @@ void JavascriptEnvironment::internalLoadFile(const File &f ){
     buildLocalNamespace();
     Result r=execute(jsString);
     if(r.failed()){
-        hasValidJsFile = false;
+        _hasValidJsFile = false;
         LOG("========Javascript error =================\n"+r.getErrorMessage());
     }
     else{
-        hasValidJsFile = true;
+        _hasValidJsFile = true;
         LOG("script Loaded successfully : "+f.getFullPathName());
+        newJsFileLoaded();
     }
-    newJsFileLoaded();
+
 }
 
 void JavascriptEnvironment::post(const String & s){
@@ -301,11 +302,17 @@ String JavascriptEnvironment::printAllNamespace(){
 String JavascriptEnvironment::namespaceToString(const NamedValueSet & v,int indentlevel ,bool showValue){
     String res;
     res+=" (";
+    bool initedComma = false;
     for(int i = 0 ; i < v.size() ; i++){
         var * vv = v.getVarPointerAt(i);
+
         if(!vv->isObject()){
-            String name = v.getName(i).toString();
-            res+= (i!=0?", ":"")+name + (showValue?'('+ vv->toString()+")":"") ;
+            Identifier name = v.getName(i);
+            static const Identifier ptrId("_ptr");
+            if(name!= ptrId){
+                res+= (initedComma?", ":"")+name.toString() + (showValue?'('+ vv->toString()+")":"") ;
+                initedComma = true;
+            }
         }
     }
     res+=+ ")\n";
@@ -317,7 +324,7 @@ String JavascriptEnvironment::namespaceToString(const NamedValueSet & v,int inde
 
         if(vv->isObject()){
             for(int  j = 0 ; j < indentlevel ; j ++ ){
-                res+='-';
+                res+="*.";
             }
 
             DynamicObject * d = vv->getDynamicObject();
