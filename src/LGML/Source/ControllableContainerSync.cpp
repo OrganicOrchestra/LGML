@@ -79,7 +79,8 @@ void ControllableContainerSync::removeSyncedControllable(ControllableContainer *
 void ControllableContainerSync::deepCopyForContainer(ControllableContainer * container){
 
     for(auto & c:container->controllables){
-        doAddControllable(c);
+		if (!c->isControllableExposed || c->isControllableFeedbackOnly) continue;
+		doAddControllable(c);
     }
     for(auto & c:container->controllableContainers){
         doAddContainer(c);
@@ -125,7 +126,6 @@ void ControllableContainerSync::doRemoveControllable(Controllable * c){
 void ControllableContainerSync::doAddContainer(ControllableContainer *c){
     ControllableContainerSync * cc = new ControllableContainerSync(c,"");
     addChildControllableContainer(cc);
-
 }
 
 void ControllableContainerSync::doRemoveContainer(ControllableContainer *c){

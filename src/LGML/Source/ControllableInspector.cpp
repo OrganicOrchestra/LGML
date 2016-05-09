@@ -11,16 +11,16 @@
 #include "ControllableInspector.h"
 #include "Style.h"
 
-ControllableInspector::ControllableInspector(NodeManagerUI * _nmui):
+ControllableInspector::ControllableInspector(SelectableComponentHandler * _handler):
 ShapeShifterContent("Inspector"),
 controllableContainerSync(nullptr),
-nmui(_nmui)
+handler(_handler)
 {
-    nmui->selectableHandler.addSelectableHandlerListener(this);
+    handler->addSelectableHandlerListener(this);
 }
 
 ControllableInspector::~ControllableInspector(){
-    nmui->selectableHandler.removeSelectableHandlerListener(this);
+   handler->removeSelectableHandlerListener(this);
     if(controllableContainerSync){
         controllableContainerSync->removeContainerSyncListener(this);
         controllableContainerSync->removeControllableContainerListener(this);
@@ -29,15 +29,13 @@ ControllableInspector::~ControllableInspector(){
     displayedEditor = nullptr;
 }
 
-void ControllableInspector::selectableChanged(SelectableComponent * _node,bool state)
+void ControllableInspector::selectableChanged(SelectableComponent * c ,bool state)
 {
-    NodeBaseUI * node = (NodeBaseUI*)_node;
-    if(node){
-        if(state)
-            addOrMergeControllableContainerEditor(node->node);
-        else
-            removeControllableContainerEditor(node->node);
-    }
+	ControllableContainer * cc = c->selectableRelatedContainer;
+    if(state)
+        addOrMergeControllableContainerEditor(cc);
+    else
+        removeControllableContainerEditor(cc);
 
 }
 void ControllableInspector::addOrMergeControllableContainerEditor(ControllableContainer * c)

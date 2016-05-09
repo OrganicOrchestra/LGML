@@ -14,17 +14,16 @@
 #include "NodeBase.h"
 #include "NodeManagerUI.h"
 #include "ConnectorComponent.h"
-
-
 #include "FloatSliderUI.h"
+#include "MainComponent.h"
 
 //==============================================================================
-NodeBaseUI::NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer, NodeBaseHeaderUI * headerContainer) :
-SelectableComponent(&NodeManagerUI::selectableHandler),
+NodeBaseUI::NodeBaseUI(NodeBase * _node, NodeBaseContentUI * _contentContainer, NodeBaseHeaderUI * _headerContainer) :
+SelectableComponent(&MainContentComponent::mainSelectableHandler, _node),
 inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
-mainContainer(this,contentContainer,headerContainer),
-node(node),
+mainContainer(this,_contentContainer,_headerContainer),
+node(_node),
 dragIsLocked(false)
 {
 
@@ -64,13 +63,6 @@ void NodeBaseUI::moved(){
         node->xPosition->setValue((float)getBounds().getCentreX());
         node->yPosition->setValue((float)getBounds().getCentreY());
     }
-}
-
-void NodeBaseUI::internalSetSelected(bool)
-{
-
-    mainContainer.repaint();
-
 }
 
 

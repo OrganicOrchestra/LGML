@@ -14,8 +14,9 @@
 #include "Rule.h"
 #include "BoolToggleUI.h"
 #include "StringParameterUI.h"
+#include "SelectableComponent.h"
 
-class RuleUI : public Component, public ButtonListener, public Rule::RuleListener
+class RuleUI : public SelectableComponent, public ButtonListener, public Rule::RuleListener
 {
 public:
 	RuleUI(Rule * _rule);
@@ -33,7 +34,7 @@ public:
 	void mouseDown(const MouseEvent &e) override;
 
 	void buttonClicked(Button * b);
-	virtual void ruleSelectionChanged(Rule * ) override;
+	
 	virtual void ruleActivationChanged(Rule *) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleUI)

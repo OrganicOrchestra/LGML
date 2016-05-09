@@ -10,8 +10,11 @@
 
 #include "RuleUI.h"
 #include "Style.h"
+#include "MainComponent.h"
 
-RuleUI::RuleUI(Rule * _rule) : rule(_rule)
+RuleUI::RuleUI(Rule * _rule) : 
+	SelectableComponent(&MainContentComponent::mainSelectableHandler, _rule),
+	rule(_rule)
 {
 	rule->addRuleListener(this);
 
@@ -48,7 +51,7 @@ void RuleUI::paint(Graphics & g)
 	g.setColour(NORMAL_COLOR.darker());
 	g.fillRoundedRectangle(r.toFloat(), 2);
 
-	if (rule->isSelected)
+	if (isSelected)
 	{
 		g.setColour(HIGHLIGHT_COLOR);
 		g.drawRoundedRectangle(r.toFloat(), 2, 2);
@@ -56,8 +59,6 @@ void RuleUI::paint(Graphics & g)
 
 	g.setColour(rule->isActiveParam->boolValue() ? (rule->enabledParam->boolValue()?Colours::lightgreen:Colours::yellow) : NORMAL_COLOR);
 	g.fillEllipse(r.removeFromRight(r.getHeight()).reduced(4).toFloat());
-
-	
 }
 
 void RuleUI::resized()
@@ -70,9 +71,9 @@ void RuleUI::resized()
 	nameTF->setBounds(r);
 }
 
-void RuleUI::mouseDown(const MouseEvent & e)
+void RuleUI::mouseDown(const MouseEvent &)
 {
-	rule->select();
+	askForSelection(true, true);
 }
 
 void RuleUI::buttonClicked(Button * b)
@@ -83,11 +84,12 @@ void RuleUI::buttonClicked(Button * b)
 	}
 }
 
+/*
 void RuleUI::ruleSelectionChanged(Rule * r)
 {
 	repaint();
 }
-
+*/
 void RuleUI::ruleActivationChanged(Rule *)
 {
 	repaint();

@@ -53,10 +53,15 @@ public:
 	ScopedPointer<TimeManagerUI> timeManagerUI;
 
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
-	ScopedPointer<ControllableInspector> controllableInspector;
+	
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
 
 	ScopedPointer<RuleManagerUI> ruleManagerUI;
+
+
+	ScopedPointer<ControllableInspector> controllableInspector;
+	static SelectableComponentHandler mainSelectableHandler;
+
 
     Engine * engine;
     AudioDeviceSelectorComponent audioSettingsComp;

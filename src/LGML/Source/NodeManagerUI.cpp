@@ -12,9 +12,7 @@
 #include "NodeConnectionUI.h"
 #include "NodeConnectionEditor.h"
 
-SelectableComponentHandler NodeManagerUI::selectableHandler;
-
-
+#include "MainComponent.h"
 
 
 //==============================================================================
@@ -435,7 +433,7 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
         finishEditingConnection();
     }
     if(!isSelectingNodes){
-		selectableHandler.removeAllSelected();
+		MainContentComponent::mainSelectableHandler.removeAllSelected();
 	}
 
     isSelectingNodes = false;
@@ -456,14 +454,14 @@ void NodeManagerUI::checkSelected(){
             }
         }
 
-        for(auto &n:selectableHandler.selected){
+        for(auto &n: MainContentComponent::mainSelectableHandler.selected){
             if(!currentOnes.contains(n)){
                 n->askForSelection(false,false);
             }
         }
 
         for(auto &n:currentOnes){
-            if(!selectableHandler.selected.contains(n)){
+            if(!MainContentComponent::mainSelectableHandler.selected.contains(n)){
                 n->askForSelection(true,false);
             }
         }

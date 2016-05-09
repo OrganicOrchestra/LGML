@@ -30,7 +30,7 @@ class ControllableInspector:
 	public ControllableContainerSync::ContainerSyncListener
 {
 public:
-    ControllableInspector(NodeManagerUI * _nmui);
+    ControllableInspector(SelectableComponentHandler * _handler);
     virtual ~ControllableInspector();
 
     void selectableChanged(SelectableComponent*  c,bool isSelected) override;
@@ -63,43 +63,10 @@ private:
     void sourceUpdated(ControllableContainer*) override;
     void structureChanged()override;
 
-    NodeManagerUI * nmui;
+    SelectableComponentHandler * handler;
 
 
 
 };
-
-/*
-class ControllableInspectorViewPort: public public Viewport
-{
-public:
-    ControllableInspectorViewPort(ControllableInspector * cI):Viewport("Inspector Viewport"),inspector(cI){
-        setScrollBarsShown(true,true);
-        setViewedComponent(cI,false);
-    }
-
-
-        void visibleAreaChanged (const Rectangle<int>&)override{
-//            Point <int> mouse = getMouseXYRelative();
-//            autoScroll(mouse.x, mouse.y, 100, 10);
-
-        }
-        void resized() override{
-//            inspector->setSize(getWidth(),jmax(inspector->getHeight(),getHeight()));
-//            if(getLocalBounds().contains(nmui->getLocalBounds())){
-//                inspector->minBounds = getLocalBounds();
-//            }
-			inspector->setBounds(getLocalBounds());
-        }
-
-
-    void viewedComponentChanged(Component * )override{
-
-    }
-        ControllableInspector * inspector;
-
-
-};
-*/
 
 #endif  // CONTROLLABLEINSPECTOR_H_INCLUDED

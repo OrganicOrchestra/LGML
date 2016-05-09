@@ -30,8 +30,6 @@ public:
     ~NodeManagerUI();
 
     NodeManager * nodeManager;
-    static SelectableComponentHandler selectableHandler;
-
 
     OwnedArray<NodeBaseUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
@@ -87,9 +85,6 @@ public:
     static void createNodeFromIndexAtPos(int modalResult,Viewport * c,int  maxResult);
     Rectangle<int> minBounds;
 
-
-
-
 private:
     bool isSelectingNodes;
     class SelectingRect :public Component{
@@ -102,31 +97,8 @@ private:
     SelectingRect selectingBounds;
     void checkSelected();
 
-
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 
 };
-
-/*
-class NodeManagerUIViewport : public Viewport{
-public:
-    NodeManagerUIViewport(NodeManagerUI * _nmui):Viewport("NodeManagerViewPort"),nmui(_nmui){
-        setScrollBarsShown(true,true);
-        setViewedComponent(nmui,false);
-    }
-    void visibleAreaChanged (const Rectangle<int>&)override{
-        Point <int> mouse = getMouseXYRelative();
-        autoScroll(mouse.x, mouse.y, 100, 10);
-
-    }
-    void resized() override{
-            nmui->minBounds = getLocalBounds();
-            nmui->resizeToFitNodes();
-    }
-
-    NodeManagerUI * nmui;
-};
-*/
 
 #endif  // NODEMANAGERUI_H_INCLUDED

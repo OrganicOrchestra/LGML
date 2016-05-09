@@ -11,6 +11,10 @@
 #include "MainComponent.h"
 #include "NodeConnectionEditor.h"
 
+
+SelectableComponentHandler MainContentComponent::mainSelectableHandler;
+
+
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)
 {
@@ -35,7 +39,7 @@ MainContentComponent::MainContentComponent(Engine * e):
     timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
 	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
-	controllableInspector = new ControllableInspector(nodeManagerUI); //Needs to be abstracted from NodeManager, and be able to inspect any ControllableContainer
+	controllableInspector = new ControllableInspector(&mainSelectableHandler);
 	ruleManagerUI = new RuleManagerUI(RuleManager::getInstance());
 
 	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);

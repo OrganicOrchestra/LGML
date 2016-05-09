@@ -12,8 +12,8 @@
 
 juce_ImplementSingleton(RuleManager)
 
-RuleManager::RuleManager() :
-	selectedRule(nullptr)
+RuleManager::RuleManager()
+	//selectedRule(nullptr)
 {
 }
 
@@ -30,7 +30,7 @@ Rule * RuleManager::addRule(const String &ruleName)
 
 	listeners.call(&Listener::ruleAdded, r);
 
-	setSelectedRule(r);
+	//setSelectedRule(r);
 	return r;
 }
 
@@ -40,6 +40,7 @@ void RuleManager::removeRule(Rule * _rule)
 	rules.removeObject(_rule);
 }
 
+/*
 void RuleManager::setSelectedRule(Rule * r)
 {
 	if (selectedRule == r) return;
@@ -61,6 +62,7 @@ void RuleManager::askForSelectRule(Rule * r)
 {
 	setSelectedRule(r);
 }
+*/
 
 void RuleManager::askForRemoveRule(Rule * r)
 {

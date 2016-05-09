@@ -11,8 +11,8 @@
 #include "Rule.h"
 
 Rule::Rule(const String &_name) :
-	ControllableContainer(_name),
-	isSelected(false)
+	ControllableContainer(_name)
+	//isSelected(false)
 {
 	nameParam = addStringParameter("Name", "Name of the rule", _name);
 	enabledParam = addBoolParameter("Enabled", "Enable / Disable the rule",true);
@@ -26,6 +26,7 @@ Rule::~Rule()
 }
 
 
+/*
 void Rule::setSelected(bool value)
 {
 	if (isSelected == value) return;
@@ -33,7 +34,7 @@ void Rule::setSelected(bool value)
 	isSelected = value;
 	ruleListeners.call(&RuleListener::ruleSelectionChanged, this);
 }
-
+*/
 
 void Rule::onContainerParameterChanged(Parameter * p)
 {
@@ -47,10 +48,12 @@ void Rule::onContainerParameterChanged(Parameter * p)
 	}
 }
 
+/*
 void Rule::select()
 {
 	ruleListeners.call(&RuleListener::askForSelectRule, this);
 }
+*/
 
 void Rule::remove()
 {

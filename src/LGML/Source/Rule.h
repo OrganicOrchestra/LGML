@@ -27,7 +27,7 @@ public:
 	StringParameter * nameParam;
 	BoolParameter * enabledParam;
 	BoolParameter * isActiveParam;
-	bool isSelected; //for ui
+	//bool isSelected; //for ui
 
 	OwnedArray<RuleCondition> conditions;
 	OwnedArray<RuleConditionGroup> conditionGroups;
@@ -35,9 +35,9 @@ public:
 
 	void onContainerParameterChanged(Parameter * p) override;
 
-	void setSelected(bool value);
+	//void setSelected(bool value);
+	//void select();
 
-	void select();
 	void remove();
 
 
@@ -47,7 +47,7 @@ public:
 		/** Destructor. */
 		virtual ~RuleListener() {}
 
-		virtual void askForSelectRule(Rule *) {}
+		//virtual void askForSelectRule(Rule *) {}
 		virtual void askForRemoveRule(Rule *) {}
 
 		virtual void ruleSelectionChanged(Rule *) {}
