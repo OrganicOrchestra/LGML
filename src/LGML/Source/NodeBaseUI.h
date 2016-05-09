@@ -14,7 +14,7 @@
 #include "Style.h"
 #include "ConnectorComponent.h"
 
-#include "SelectableComponent.h"
+#include "InspectableComponent.h"
 
 class NodeBase;
 class NodeManagerUI;
@@ -28,7 +28,7 @@ class NodeManagerUI;
 NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
 class NodeBaseUI    : 
-	public SelectableComponent, 
+	public InspectableComponent, 
 	public Parameter::Listener
 {
 public:

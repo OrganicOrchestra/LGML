@@ -22,6 +22,25 @@
         <FILE id="a4XrkQ" name="TimeManagerUI.h" compile="0" resource="0" file="Source/TimeManagerUI.h"/>
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
+        <GROUP id="{61D87EF1-3422-1DC8-D38C-6AFB74778DB0}" name="Inspector">
+          <FILE id="NPG3vZ" name="CustomEditor.cpp" compile="1" resource="0"
+                file="Source/CustomEditor.cpp"/>
+          <FILE id="omqUJT" name="CustomEditor.h" compile="0" resource="0" file="Source/CustomEditor.h"/>
+          <FILE id="E3lBba" name="GenericControllableContainerEditor.cpp" compile="1"
+                resource="0" file="Source/GenericControllableContainerEditor.cpp"/>
+          <FILE id="NZ4E1O" name="GenericControllableContainerEditor.h" compile="0"
+                resource="0" file="Source/GenericControllableContainerEditor.h"/>
+          <FILE id="mHgWDa" name="InspectableComponent.cpp" compile="1" resource="0"
+                file="Source/InspectableComponent.cpp"/>
+          <FILE id="lDBoze" name="InspectableComponent.h" compile="0" resource="0"
+                file="Source/InspectableComponent.h"/>
+          <FILE id="XIildO" name="Inspector.cpp" compile="1" resource="0" file="Source/Inspector.cpp"/>
+          <FILE id="qcZdcW" name="Inspector.h" compile="0" resource="0" file="Source/Inspector.h"/>
+          <FILE id="IIhXNR" name="InspectorEditor.cpp" compile="1" resource="0"
+                file="Source/InspectorEditor.cpp"/>
+          <FILE id="lfW5Lc" name="InspectorEditor.h" compile="0" resource="0"
+                file="Source/InspectorEditor.h"/>
+        </GROUP>
         <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
           <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="1"
                 resource="0" file="Source/ControllableContainerEditor.cpp"/>

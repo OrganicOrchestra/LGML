@@ -19,7 +19,7 @@
 
 //==============================================================================
 NodeBaseUI::NodeBaseUI(NodeBase * _node, NodeBaseContentUI * _contentContainer, NodeBaseHeaderUI * _headerContainer) :
-SelectableComponent(&MainContentComponent::mainSelectableHandler, _node),
+InspectableComponent(_node),
 inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
 mainContainer(this,_contentContainer,_headerContainer),
@@ -178,7 +178,10 @@ void NodeBaseUI::mouseUp(const juce::MouseEvent &){
     if(nmui){
 		nmui->setAllNodesToStartAtZero();
 	}
-    askForSelection(true,true);
+
+	selectThis();
+
+    //askForSelection(true,true);
    //dragIsLocked = false;
 
 }

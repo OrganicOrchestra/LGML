@@ -72,14 +72,9 @@ void NodeManagerUI::connectionRemoved(NodeConnection * connection)
     removeConnectionUI(connection);
 }
 
-
-void NodeManagerUI::componentSelected(SelectableComponent * sc)
+void NodeManagerUI::inspectableSelectionChanged(InspectableComponent * c)
 {
-	sc->toFront(true);
-}
-
-void NodeManagerUI::componentDeselected(SelectableComponent *)
-{
+	if (c->isSelected) c->toFront(true);
 }
 
 void NodeManagerUI::addNodeUI(NodeBase * node)
@@ -90,8 +85,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
         NodeBaseUI * nui = node->createUI();
         nodesUI.add(nui);
         addAndMakeVisible(nui);
-		nui->addSelectableListener(this);
-
+		nui->addInspectableListener(this);
     }
     else
     {
@@ -109,7 +103,7 @@ void NodeManagerUI::removeNodeUI(NodeBase * node)
     {
         nodesUI.removeObject(nui);
         removeChildComponent(nui);
-		nui->removeSelectableListener(this);
+		nui->removeInspectableListener(this);
     }
     else
     {
@@ -432,8 +426,9 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
     {
         finishEditingConnection();
     }
+
     if(!isSelectingNodes){
-		MainContentComponent::mainSelectableHandler.removeAllSelected();
+		MainContentComponent::inspector.setCurrentComponent(nullptr);
 	}
 
     isSelectingNodes = false;
@@ -446,6 +441,7 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
 void NodeManagerUI::checkSelected(){
 
     // multiple ones
+	/*
     if(isSelectingNodes){
         Array<SelectableComponent*> currentOnes;
         for(auto &n:nodesUI){
@@ -466,6 +462,8 @@ void NodeManagerUI::checkSelected(){
             }
         }
     }
+	*/
+
     // only one
 
 }

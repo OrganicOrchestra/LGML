@@ -32,6 +32,6 @@ IntStepperUI * IntParameter::createStepper(){
     return new IntStepperUI(this);
 }
 
-ControllableUI * IntParameter::createControllableContainerEditor(){
+ControllableUI * IntParameter::createDefaultUI(){
     return createStepper();
 };

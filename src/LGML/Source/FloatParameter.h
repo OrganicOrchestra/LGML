@@ -28,7 +28,7 @@ public:
 
     FloatSliderUI * createSlider();
     FloatStepperUI * createStepper();
-    ControllableUI * createControllableContainerEditor() override;
+    ControllableUI * createDefaultUI() override;
 
    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatParameter)
 };

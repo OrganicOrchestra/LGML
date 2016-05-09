@@ -14,8 +14,9 @@
 
 #include "NodeManager.h"
 #include "NodeBaseUI.h"
-#include "SelectableComponentHandler.h"
+//#include "SelectableComponentHandler.h"
 #include "ShapeShifterContent.h"
+#include "InspectableComponent.h"
 
 class NodeConnectionUI;
 
@@ -23,7 +24,7 @@ class NodeConnectionUI;
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public ShapeShifterContent, public NodeManager::Listener, public SelectableComponent::SelectableListener
+class NodeManagerUI : public ShapeShifterContent, public NodeManager::Listener, public InspectableComponent::InspectableListener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
@@ -46,8 +47,9 @@ public:
     virtual void connectionRemoved(NodeConnection *) override;
 
 	//NodeUI Listener
-	virtual void componentSelected(SelectableComponent *) override;
-	virtual void componentDeselected(SelectableComponent *) override;
+	//virtual void componentSelected(SelectableComponent *) override;
+	//virtual void componentDeselected(SelectableComponent *) override;
+	virtual void inspectableSelectionChanged(InspectableComponent *) override;
 
     void addNodeUI(NodeBase * node);
     void removeNodeUI(NodeBase * node);

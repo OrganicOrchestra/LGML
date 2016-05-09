@@ -16,6 +16,7 @@
 #include "ControllableContainerEditor.h"
 #include "ControllableContainerSync.h"
 #include "SelectableComponent.h"
+#include "SelectableComponentHandler.h"
 #include "NodeManagerUI.h"
 
 #include "ShapeShifterContent.h"
@@ -41,9 +42,11 @@ private:
     void addOrMergeControllableContainerEditor(ControllableContainer * c);
     void removeControllableContainerEditor(ControllableContainer * c);
     void generateFromCandidates();
-   static void addControllableListenerToEditor(ControllableContainerEditor * source,ControllableContainer * listener);
-    static bool hasSameControllableType(ControllableContainer * source,ControllableContainer * target);
-    // create Controllables binded to UI that dispatch to multiple Controllables
+
+    //static void addControllableListenerToEditor(ControllableContainerEditor * source,ControllableContainer * listener);
+    //static bool hasSameControllableType(ControllableContainer * source,ControllableContainer * target);
+    
+	// create Controllables binded to UI that dispatch to multiple Controllables
     // each inspector UI element is binded to one Controllable in proxy,
     // if changed , it notifies All corresponding candidateControllable
     ScopedPointer<ControllableContainerSync> controllableContainerSync;

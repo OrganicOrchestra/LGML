@@ -34,6 +34,6 @@ FloatStepperUI * FloatParameter::createStepper()
     return new FloatStepperUI(this);
 }
 
-ControllableUI * FloatParameter::createControllableContainerEditor() {
+ControllableUI * FloatParameter::createDefaultUI() {
     return createSlider();
 }

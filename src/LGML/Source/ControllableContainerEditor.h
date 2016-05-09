@@ -54,8 +54,6 @@ protected:
     Component* embeddedComp;
     void layoutChildrens();
 
-
-
 };
 
 

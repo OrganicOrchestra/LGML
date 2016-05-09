@@ -8,9 +8,8 @@
  ==============================================================================
  */
 
+
 #include "ControllableContainerSync.h"
-
-
 
 
 ControllableContainerSync::ControllableContainerSync(ControllableContainer * source,String overrideName):
@@ -276,10 +275,11 @@ void ControllableContainerSync::controllableContainerRemoved(ControllableContain
     notifyStructureChanged();
 }
 
-String ControllableContainerSync::produceGroupName(const String & n){
+String ControllableContainerSync::produceGroupName(const String & n) {
 #if DEBUG_CONTROLLABLENAMES
-    return groupName+"_"+n;
+	return groupName + "_" + n;
 #else
-    return n;
+	return n;
 #endif
+
 }

@@ -13,7 +13,7 @@
 #include "MainComponent.h"
 
 RuleUI::RuleUI(Rule * _rule) : 
-	SelectableComponent(&MainContentComponent::mainSelectableHandler, _rule),
+	InspectableComponent( _rule),
 	rule(_rule)
 {
 	rule->addRuleListener(this);
@@ -73,7 +73,7 @@ void RuleUI::resized()
 
 void RuleUI::mouseDown(const MouseEvent &)
 {
-	askForSelection(true, true);
+	selectThis();
 }
 
 void RuleUI::buttonClicked(Button * b)

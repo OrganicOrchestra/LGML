@@ -16,7 +16,9 @@
 
 #include "ControlManager.h"
 #include "ControllerManagerUI.h"
-#include "ControllableInspector.h"
+//#include "ControllableInspector.h"
+
+#include "Inspector.h"
 
 #include "TimeManagerUI.h"
 
@@ -59,8 +61,10 @@ public:
 	ScopedPointer<RuleManagerUI> ruleManagerUI;
 
 
-	ScopedPointer<ControllableInspector> controllableInspector;
-	static SelectableComponentHandler mainSelectableHandler;
+	//ScopedPointer<ControllableInspector> controllableInspector;
+	//static SelectableComponentHandler mainSelectableHandler;
+
+	static Inspector inspector;
 
 
     Engine * engine;

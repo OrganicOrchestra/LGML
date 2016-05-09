@@ -91,7 +91,7 @@ public:
     String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
     // used for generating editor
-    virtual ControllableUI * createControllableContainerEditor() = 0;
+    virtual ControllableUI * createDefaultUI() = 0;
 
 
 public:

@@ -14,16 +14,19 @@
 #include "ControllableUI.h"
 #include "ControllableContainer.h"
 
-ControllableContainerEditor::ControllableContainerEditor(ControllableContainer * cc,Component* _embeddedComp):
+ControllableContainerEditor::ControllableContainerEditor(ControllableContainer * cc, Component* _embeddedComp):
 owner(cc),
 embeddedComp(_embeddedComp)
 {
-    buildFromContainer(cc);
-
+   
     if(embeddedComp){
         addAndMakeVisible(embeddedComp);
         //setBounds(embeddedComp->getBounds());
-    }
+	}
+	else
+	{
+		buildFromContainer(cc);
+	}
 
     cc->addControllableContainerListener(this);
 }
@@ -80,7 +83,7 @@ void ControllableContainerEditor::buildFromContainer(ControllableContainer * cc,
     for(auto & c : cc->controllables)
 	{	
 		if (!c->isControllableExposed || c->isControllableFeedbackOnly) continue;
-        ControllableUI *cUI= new NamedControllableUI(c->createControllableContainerEditor(),100);
+        ControllableUI *cUI= new NamedControllableUI(c->createDefaultUI(),100);
         addControlUI(cUI);
     }
 
@@ -95,7 +98,7 @@ void ControllableContainerEditor::buildFromContainer(ControllableContainer * cc,
 }
 
 void ControllableContainerEditor::controllableAdded(Controllable * c) {
-    ControllableUI *cUI= new NamedControllableUI(c->createControllableContainerEditor(),100);
+    ControllableUI *cUI= new NamedControllableUI(c->createDefaultUI(),100);
     addControlUI(cUI);
 
 };

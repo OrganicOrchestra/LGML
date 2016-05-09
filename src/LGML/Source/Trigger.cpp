@@ -28,6 +28,7 @@ TriggerBlinkUI * Trigger::createBlinkUI()
 {
     return new TriggerBlinkUI(this);
 }
-ControllableUI * Trigger::createControllableContainerEditor(){
+
+ControllableUI * Trigger::createDefaultUI(){
     return createBlinkUI();
 }

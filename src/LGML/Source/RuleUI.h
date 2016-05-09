@@ -14,9 +14,9 @@
 #include "Rule.h"
 #include "BoolToggleUI.h"
 #include "StringParameterUI.h"
-#include "SelectableComponent.h"
+#include "InspectableComponent.h"
 
-class RuleUI : public SelectableComponent, public ButtonListener, public Rule::RuleListener
+class RuleUI : public InspectableComponent, public ButtonListener, public Rule::RuleListener
 {
 public:
 	RuleUI(Rule * _rule);

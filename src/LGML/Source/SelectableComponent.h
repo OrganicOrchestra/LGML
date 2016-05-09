@@ -34,7 +34,6 @@ public:
     void askForSelection(bool _isSelected, bool unique = false);
 
     bool isSelected;
-
 	bool drawDefaultContourOnSelection;
 
     // can be overriden for self update

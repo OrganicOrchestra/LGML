@@ -19,7 +19,8 @@ handler(_handler)
     handler->addSelectableHandlerListener(this);
 }
 
-ControllableInspector::~ControllableInspector(){
+ControllableInspector::~ControllableInspector()
+{
    handler->removeSelectableHandlerListener(this);
     if(controllableContainerSync){
         controllableContainerSync->removeContainerSyncListener(this);
@@ -69,7 +70,7 @@ void ControllableInspector::removeControllableContainerEditor(ControllableContai
 
 void ControllableInspector::generateFromCandidates()
 {
-    if(controllableContainerSync==nullptr){return;}
+    if(controllableContainerSync == nullptr){return;}
 
     if(displayedEditor==nullptr )
 	{
@@ -79,30 +80,23 @@ void ControllableInspector::generateFromCandidates()
 
     // regenerate a new one based on existing one
     else{
-//        controllableContainerSync->createControllableContainerEditor(displayedEditor);
+//        controllableContainerSync->createDefaultUI(displayedEditor);
     }
-
 
     // TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
-
 	displayedEditor->setBounds(getLocalBounds());
     //setBounds(displayedEditor->getBounds());
-
-
 }
-
-
 
 void ControllableInspector::paint(Graphics &)
 {
     //g.fillAll(PANEL_COLOR);
-
 }
 
 void ControllableInspector::resized()
 {
-    if(displayedEditor)displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
+    if(displayedEditor) displayedEditor->setSize(getWidth(), displayedEditor->getHeight());
     repaint();
 }
 
