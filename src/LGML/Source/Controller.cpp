@@ -9,8 +9,8 @@
 */
 
 #include "Controller.h"
-#include "ControllerUI.h"
 #include "ControllerFactory.h"
+#include "ControllerUI.h"
 
 Controller::Controller(const String &name) :
     ControllableContainer(name)
@@ -27,11 +27,6 @@ Controller::~Controller()
     DBG("Remove Controller");
 }
 
-ControllerUI * Controller::createUI()
-{
-    return new ControllerUI(this);
-}
-
 var Controller::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
@@ -42,6 +37,11 @@ var Controller::getJSONData()
 
 void Controller::loadJSONDataInternal(var data)
 {
+}
+
+ControllerUI * Controller::createUI()
+{
+	return new ControllerUI(this);
 }
 
 void Controller::addVariable(Controllable * variable)

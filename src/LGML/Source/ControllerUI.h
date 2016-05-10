@@ -11,20 +11,23 @@
 #ifndef CONTROLLERUI_H_INCLUDED
 #define CONTROLLERUI_H_INCLUDED
 
+#include "JuceHeader.h"
+
 #include "Controller.h"
 #include "InspectableComponent.h"
+#include "BoolToggleUI.h"
+#include "StringParameterUI.h"
 
-class ControllerHeaderUI;
-class ControllerContentUI;
 
-class ControllerUI : public InspectableComponent
+class ControllerUI : public InspectableComponent, public ButtonListener
 {
 public:
-    ControllerUI(Controller * controller, ControllerContentUI * contentUI = nullptr, ControllerHeaderUI * headerUI = nullptr);
+    ControllerUI(Controller * controller);
     virtual ~ControllerUI();
 
-    ScopedPointer<ControllerHeaderUI> headerUI;
-    ScopedPointer<ControllerContentUI> contentUI;
+	ScopedPointer<StringParameterUI> nameTF;
+	ScopedPointer<BoolToggleUI> enabledBT;
+	ImageButton removeBT;
 
     Controller * controller;
 
@@ -32,6 +35,7 @@ public:
     virtual void resized() override;
 
 	virtual void mouseDown(const MouseEvent &e) override;
+	virtual void buttonClicked(Button *) override;
 
 	virtual InspectorEditor * getEditor() override;
 

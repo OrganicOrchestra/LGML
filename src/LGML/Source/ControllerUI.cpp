@@ -9,31 +9,34 @@
 */
 
 #include "ControllerUI.h"
-#include "ControllerContentUI.h"
-#include "ControllerHeaderUI.h"
 #include "ControllerEditor.h"
+#include "Style.h"
 
-ControllerUI::ControllerUI(Controller * controller, ControllerContentUI * contentUI, ControllerHeaderUI * headerUI) :
-    controller(controller),
-    contentUI(contentUI), headerUI(headerUI)
+ControllerUI::ControllerUI(Controller * controller) :
+    controller(controller)
 {
-    if(this->headerUI == nullptr) this->headerUI = new ControllerHeaderUI();
-    if (this->contentUI == nullptr) this->contentUI = new ControllerContentUI();
-
-
-    this->headerUI->setControllerAndUI(controller, this);
-    this->contentUI->setControllerAndUI(controller, this);
-
-    addAndMakeVisible(this->headerUI);
-    addAndMakeVisible(this->contentUI);
-
 	addMouseListener(this, true);
+    
+	nameTF = controller->nameParam->createStringParameterUI();
+	nameTF->setNameLabelVisible(false);
+	addAndMakeVisible(nameTF);
 
-    if(getHeight() == 0) setSize(100,50);
+	enabledBT = controller->enabledParam->createToggle();
+	addAndMakeVisible(enabledBT);
+
+	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
+
+	removeBT.setImages(false, true, true, removeImage,
+		0.7f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
+		0.5f);
+	removeBT.addListener(this);
 }
 
 ControllerUI::~ControllerUI()
 {
+
 }
 
 void ControllerUI::paint(Graphics & g)
@@ -46,14 +49,25 @@ void ControllerUI::paint(Graphics & g)
 
 void ControllerUI::resized()
 {
-    Rectangle<int> r = getLocalBounds();
-    headerUI->setBounds(r.removeFromTop(headerUI->getHeight()));
-    contentUI->setBounds(r);
+	Rectangle<int> r = getLocalBounds().reduced(2);
+	r.removeFromRight(15);
+	removeBT.setBounds(r.removeFromRight(20));
+	enabledBT->setBounds(r.removeFromLeft(r.getHeight()));
+	r.removeFromLeft(5);
+	nameTF->setBounds(r);
 }
 
 void ControllerUI::mouseDown(const MouseEvent &)
 {
 	selectThis();
+}
+
+void ControllerUI::buttonClicked(Button * b)
+{
+	if (b == &removeBT)
+	{
+		controller->remove();
+	}
 }
 
 InspectorEditor * ControllerUI::getEditor()

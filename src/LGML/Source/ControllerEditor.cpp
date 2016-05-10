@@ -28,4 +28,11 @@ void ControllerEditor::resized()
 {
 	Rectangle<int> r = getLocalBounds();
 	controllerLabel.setBounds(r.removeFromTop(20));
+	r.removeFromTop(5);
+	resizedInternal(r);
+}
+
+void ControllerEditor::resizedInternal(Rectangle<int> r)
+{
+
 }

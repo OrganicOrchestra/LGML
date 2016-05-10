@@ -35,8 +35,6 @@ public:
 
     ControllerUI * getUIForController(Controller * controller);
 
-    void placeElements(); //update size when controllerUIs added or removed
-
     void paint (Graphics&)override;
     void resized()override;
 

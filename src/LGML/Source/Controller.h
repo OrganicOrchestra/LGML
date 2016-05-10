@@ -13,6 +13,7 @@
 
 
 #include "ControllableContainer.h"
+
 class ControllerUI;
 
 class Controller : public ControllableContainer
@@ -35,10 +36,11 @@ public:
     void remove(); //will dispatch askForRemoveController
     virtual void onContainerParameterChanged(Parameter * p) override;
 
-    virtual ControllerUI * createUI();
 
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
+
+	virtual ControllerUI * createUI();
 
     class  ControllerListener
     {

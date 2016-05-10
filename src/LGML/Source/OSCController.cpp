@@ -9,6 +9,7 @@
 */
 
 #include "OSCController.h"
+#include "OSCControllerUI.h"
 
 OSCController::OSCController(const String &name) :
     Controller(name)
@@ -45,9 +46,15 @@ void OSCController::setupSender()
     sender.connect(remoteHostParam->stringValue(), remotePortParam->stringValue().getIntValue());
 }
 
-void OSCController::processMessage(const OSCMessage &)
+void OSCController::processMessage(const OSCMessage & msg)
 {
-    //to override
+	bool result = processMessageInternal(msg);
+	oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
+}
+
+bool OSCController::processMessageInternal(const OSCMessage & msg)
+{
+	return false; //if not overriden, msg is not handled so result is false
 }
 
 void OSCController::onContainerParameterChanged(Parameter * p)
@@ -60,4 +67,17 @@ void OSCController::oscMessageReceived(const OSCMessage & message)
 {
     //DBG("Message received !");
     processMessage(message);
+}
+
+void OSCController::oscBundleReceived(const OSCBundle & bundle) 
+{
+	for (auto &m : bundle)
+	{
+		processMessage(m.getMessage());
+	}
+}
+
+ControllerUI * OSCController::createUI()
+{
+	return new OSCControllerUI(this);
 }

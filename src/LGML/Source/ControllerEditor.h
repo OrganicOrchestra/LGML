@@ -20,11 +20,12 @@ public:
 	ControllerEditor(ControllerUI * controllerUI);
 	virtual ~ControllerEditor();
 
+	Controller * controller;
 	Label controllerLabel;
 
-	void resized() override;
-
-	Controller * controller;
+	virtual void resized() override;
+	virtual void resizedInternal(Rectangle<int> bounds);
+	
 };
 
 

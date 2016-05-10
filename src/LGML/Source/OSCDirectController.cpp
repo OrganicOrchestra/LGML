@@ -9,14 +9,11 @@
 */
 
 #include "OSCDirectController.h"
-#include "OSCDirectControllerContentUI.h"
 #include "NodeManager.h"
 
 OSCDirectController::OSCDirectController() :
     OSCController("OSC Direct Controller")
 {
-    DBG("direct controller constructor");
-
     NodeManager::getInstance()->addControllableContainerListener(this);
 }
 
@@ -25,10 +22,9 @@ OSCDirectController::~OSCDirectController()
     NodeManager::getInstance()->removeControllableContainerListener(this);
 }
 
-void OSCDirectController::processMessage(const OSCMessage & msg)
+bool OSCDirectController::processMessageInternal(const OSCMessage & msg)
 {
      String addr = msg.getAddressPattern().toString();
-     DBG("Process message");
 
     StringArray addrArray;
     addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
@@ -104,12 +100,7 @@ void OSCDirectController::processMessage(const OSCMessage & msg)
 
     }
 
-    oscDirectlisteners.call(&OSCDirectListener::messageProcessed, msg, success);
-}
-
-ControllerUI * OSCDirectController::createUI()
-{
-    return new ControllerUI(this, new OSCDirectControllerContentUI());
+	return success;
 }
 
 void OSCDirectController::controllableAdded(Controllable *)
