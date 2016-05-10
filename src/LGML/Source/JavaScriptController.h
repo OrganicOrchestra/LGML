@@ -13,9 +13,9 @@
 
 
 #include "OSCDirectController.h"
-#include "JavascriptEnvironment.h"
+#include "JsEnvironment.h"
 
-class JavascriptController : public OSCDirectController ,public JavascriptEnvironment{
+class JavascriptController : public OSCDirectController ,public JsEnvironment{
 public:
     JavascriptController();
     ~JavascriptController();
@@ -23,8 +23,8 @@ public:
     Result callForMessage(const OSCMessage & msg);
     void callonAnyMsg(const OSCMessage & msg);
 
-    void buildLocalNamespace() override;
-    static var sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a);
+
+    static var sendOSCFromJS(const juce::var::NativeFunctionArgs& a);
     void onContainerParameterChanged(Parameter * p) override;
 
 
@@ -33,6 +33,7 @@ public:
 
 
 private:
+    void buildLocalEnv() override;
     String getJavaScriptFunctionName(const String &);
     StringArray nonValidMessages;
     bool hasAnyMsgMethod;

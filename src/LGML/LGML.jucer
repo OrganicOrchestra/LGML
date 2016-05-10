@@ -15,10 +15,18 @@
       </GROUP>
       <GROUP id="{CD34BC32-7051-468F-8C6F-D5720DD85230}" name="ScriptEnvironments">
         <GROUP id="{2F437B28-C238-7AD3-AA89-3D6FD2EDD7E2}" name="Javascript">
-          <FILE id="frFd8w" name="JavascriptEnvironment.cpp" compile="1" resource="0"
-                file="Source/JavascriptEnvironment.cpp"/>
-          <FILE id="d5u2LT" name="JavascriptEnvironment.h" compile="0" resource="0"
-                file="Source/JavascriptEnvironment.h"/>
+          <FILE id="ARYAND" name="JsContainerSync.cpp" compile="1" resource="0"
+                file="Source/JsContainerSync.cpp"/>
+          <FILE id="ApvfEI" name="JsContainerSync.h" compile="0" resource="0"
+                file="Source/JsContainerSync.h"/>
+          <FILE id="frFd8w" name="JsEnvironment.cpp" compile="1" resource="0"
+                file="Source/JsEnvironment.cpp"/>
+          <FILE id="d5u2LT" name="JsEnvironment.h" compile="0" resource="0" file="Source/JsEnvironment.h"/>
+          <FILE id="Nd6Xnl" name="JsGlobalEnvironment.cpp" compile="1" resource="0"
+                file="Source/JsGlobalEnvironment.cpp"/>
+          <FILE id="W19CFS" name="JsGlobalEnvironment.h" compile="0" resource="0"
+                file="Source/JsGlobalEnvironment.h"/>
+          <FILE id="xJyOLR" name="JsHelpers.h" compile="0" resource="0" file="Source/JsHelpers.h"/>
         </GROUP>
       </GROUP>
       <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
@@ -443,7 +451,7 @@
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
                        cppLanguageStandard="c++98" cppLibType="libstdc++" linkTimeOptimisation="1"/>
-        <CONFIGURATION name="DebugC++11" isDebug="1" osxSDK="10.9 SDK" osxCompatibility="10.8 SDK"
+        <CONFIGURATION name="DebugC++11" isDebug="1" osxSDK="default" osxCompatibility="10.8 SDK"
                        osxArchitecture="32BitUniversal" targetName="LGML_DebugC++11"
                        defines="JUCE_SUPPORTS_AUv3=0" cppLanguageStandard="c++11" cppLibType="libc++"/>
       </CONFIGURATIONS>

@@ -34,7 +34,7 @@ Engine::~Engine(){
     VSTManager::deleteInstance();
     PresetManager::deleteInstance();
 	ControlRuleManager::deleteInstance();
-    JavascriptEnvironment::GlobalEnvironment::deleteInstance();
+    JsGlobalEnvironment::deleteInstance();
     Logger::setCurrentLogger(nullptr);
     LGMLLogger::deleteInstance();
 }

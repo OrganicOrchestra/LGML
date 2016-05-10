@@ -17,7 +17,7 @@
 class JavascriptControllerUI : public ControllerContentUI{
 public:
 
-    JavascriptControllerUI(JavascriptEnvironment * env){
+    JavascriptControllerUI(JsEnvironment * env){
         oscUI = new OSCDirectControllerContentUI();
 
         scriptUI = new ScriptUI(env);
@@ -32,7 +32,7 @@ public:
     }
     class ScriptUI : public Component,public Button::Listener{
     public:
-        ScriptUI(JavascriptEnvironment * _env):env(_env){
+        ScriptUI(JsEnvironment * _env):env(_env){
             loadFileB.setButtonText("Load");
             addAndMakeVisible(loadFileB);
             loadFileB.addListener(this);
@@ -92,7 +92,7 @@ public:
                 LOG(env->printAllNamespace());
             }
         };
-        JavascriptEnvironment * env;
+        JsEnvironment * env;
     };
 
 

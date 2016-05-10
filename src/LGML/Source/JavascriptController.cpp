@@ -13,17 +13,20 @@
 
 #include "DebugHelpers.h"
 
-JavascriptController::JavascriptController():JavascriptEnvironment("OSC.JSController"){
+JavascriptController::JavascriptController():JsEnvironment("OSC.JSController"){
     nameParam->setValue("JSController");
+
+    buildLocalEnv();
 
 }
 JavascriptController::~JavascriptController(){
-    removeFromNamespace("OSC",nameParam->value);
+
 
 }
 
-void JavascriptController::buildLocalNamespace(){
-        addToLocalNamespace("", createOSCJsObject());
+void JavascriptController::buildLocalEnv(){
+    ScopedPointer<DynamicObject>  oscObj = createOSCJsObject();
+    setLocalNamespace(*oscObj);
 }
 
 Result JavascriptController::callForMessage(const OSCMessage & msg){
@@ -31,17 +34,16 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
     if(nonValidMessages.contains(msg.getAddressPattern().toString()))return Result::ok();
     
     String functionName = getJavaScriptFunctionName(msg.getAddressPattern().toString());
-//    var jsObj = getRootObjectProperties().getVarPointer("OSC")->getProperty(jsName,"");
-    var* jsRcv = getRootObjectProperties().getVarPointer(getModuleName());
-    if(!jsRcv)return Result::fail("No object NS");
-    var jsObj = jsRcv->getProperty(functionName, var::undefined());
-    if(jsObj==var::undefined()){
+
+    var jsFuncCall = getLocalEnv()->getProperty(functionName);
+
+    if(jsFuncCall==var::undefined()){
         nonValidMessages.add(msg.getAddressPattern().toString());
         return Result::fail("No function");
     }
-    if(!jsObj.isObject())return Result::fail("No valid function");
+    if(!jsFuncCall.isObject())return Result::fail("No valid function");
 
-    JavascriptEnvironment::OwnedJsArgs args(var::undefined());
+    OwnedJsArgs args(var::undefined());
 
     // this way add every osc element as separated argument of a function
 //    for(auto & m:msg){
@@ -74,7 +76,7 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
 
 void JavascriptController::callonAnyMsg(const OSCMessage & msg){
     if(hasAnyMsgMethod){
-        JavascriptEnvironment::OwnedJsArgs args(var::undefined());
+        OwnedJsArgs args(var::undefined());
         for(auto & m:msg){
             if(m.isFloat32()){args.addArg(m.getFloat32());}
             if(m.isInt32()){args.addArg(m.getInt32());}
@@ -119,7 +121,7 @@ String JavascriptController::getJavaScriptFunctionName(const String & n){
 
 }
 
-var JavascriptController::sendOSCFromJS(const JavascriptEnvironment::NativeFunctionArgs& a){
+var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
     if(a.numArguments<2 )return var::undefined();
     if( !a.arguments[0].isString() ){
         LOG("jsOSC send first argument must be a string");
@@ -167,7 +169,7 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
 void JavascriptController::newJsFileLoaded(){
 
     nonValidMessages.clear();
-    hasAnyMsgMethod = GlobalEnvironment::getInstance()->getNamespaceObject(localNamespace+".onAnyMsg")!=nullptr;
+    hasAnyMsgMethod = getRootObjectProperties().getVarPointer("onAnyMsg")!=nullptr;
     
     
 }
