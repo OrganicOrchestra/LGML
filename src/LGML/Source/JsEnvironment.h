@@ -19,7 +19,7 @@ public:
     JsEnvironment(const String & ns);
     virtual ~JsEnvironment();
 
-    // should be implemented to uild localenv
+    // should be implemented to build localenv
     virtual void buildLocalEnv() = 0;
 
     // sub classes can check new namespaces from this function
@@ -30,12 +30,11 @@ public:
 
     void    setNameSpaceName(const String &);
 
-
     // helpers
     void    addToLocalNamespace(const String & elem,DynamicObject *target);
-    void setLocalNamespace(DynamicObject & target);
-
+    void    setLocalNamespace(DynamicObject & target);
     void    removeNamespace(const String & jsNamespace);
+    void    clearNamespace();
     void    loadFile(const File & f);
     void    reloadFile();
     void    showFile();
@@ -45,10 +44,6 @@ public:
     DynamicObject * getLocalEnv(){return localEnvironment.getDynamicObject();}
     String printAllNamespace();
 
-    void clearNamespace();
-
-
-
     class Listener{
     public:
         virtual ~Listener(){};
@@ -56,13 +51,11 @@ public:
         virtual void newJsFileLoaded(bool state)=0;
 
     };
-
-
     void addListener(Listener * l){jsListeners.add(l);}
     void removeListener(Listener * l){jsListeners.remove(l);}
 
 
-    protected :
+protected :
     // dot separated string representing localNamespace
     String localNamespace;
     // module name is the last element of dot separated localNamespace
@@ -70,14 +63,13 @@ public:
     String getParentName();
     File currentFile;
 
-    // allow to call function
-    var callFunction (const Identifier& function, const var::NativeFunctionArgs& args, Result* result);
+
+    var callFunction  (const Identifier& function, const Array<var> & args, Result* result);
     const NamedValueSet & getRootObjectProperties();
 
 
 
 private:
-
     ListenerList<Listener> jsListeners;
 
     var localEnvironment;
@@ -87,7 +79,8 @@ private:
     
     
     JavascriptEngine jsEngine;
-    
+
+
 };
 
 

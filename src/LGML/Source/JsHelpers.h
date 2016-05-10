@@ -130,34 +130,6 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
 // helperclasses
 
 
-
-
-
-class OwnedJsArgs {
-
-
-public:
-    typedef juce::var::NativeFunctionArgs NativeFunctionArgs;
-    OwnedJsArgs(var _owner):owner(_owner){}
-    void addArg(var f){ownedArgs.add(f);}
-
-    void addArgs(const StringArray & a){for(auto & s:a){addArg(s.getFloatValue());}}
-
-    NativeFunctionArgs *getNativeArgs(){
-        nativeArgs = new NativeFunctionArgs(owner,ownedArgs.getRawDataPointer(),ownedArgs.size());
-        return nativeArgs;
-    }
-    NativeFunctionArgs *getLocalSopeNativeArgs(){
-        // non dynamic var make call function in root namespace
-        nativeArgs = new  NativeFunctionArgs(var::undefined(),ownedArgs.getRawDataPointer(),ownedArgs.size());
-        return nativeArgs;
-    }
-private:
-    var owner;
-    Array<var> ownedArgs;
-    ScopedPointer<NativeFunctionArgs> nativeArgs;
-};
-
 static const Identifier jsLocalIdentifier("l");
 static const Identifier jsGlobalIdentifier("g");
 static const Array<Identifier> coreJsClasses = {

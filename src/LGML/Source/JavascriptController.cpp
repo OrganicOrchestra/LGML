@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    JavaScriptController.cpp
-    Created: 5 May 2016 10:15:48am
-    Author:  Martin Hermant
+ JavaScriptController.cpp
+ Created: 5 May 2016 10:15:48am
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "JavaScriptController.h"
 #include "NodeManager.h"
@@ -35,61 +35,39 @@ void JavascriptController::buildLocalEnv(){
 
 Result JavascriptController::callForMessage(const OSCMessage & msg){
 
-    if(nonValidMessages.contains(msg.getAddressPattern().toString()))return Result::ok();
-    
     String functionName = getJavaScriptFunctionName(msg.getAddressPattern().toString());
-
-    var jsFuncCall = getLocalEnv()->getProperty(functionName);
-
-    if(jsFuncCall==var::undefined()){
-        nonValidMessages.add(msg.getAddressPattern().toString());
-        return Result::fail("No function");
-    }
-    if(!jsFuncCall.isObject())return Result::fail("No valid function");
-
-    OwnedJsArgs args(var::undefined());
-
-    // this way add every osc element as separated argument of a function
-//    for(auto & m:msg){
-//        if(m.isFloat32()){args.addArg(m.getFloat32());}
-//        if(m.isInt32()){args.addArg(m.getInt32());}
-//        if(m.isString()){args.addArg(m.getString());}
-//    }
-
-    // this way add every osc element in an aray for variable size osc messages
-    var argArray;
+    // here we choose to pass each argument as a separated value in function call i.e onMessage(arg1,arg2...)
+    Array<var> argArray;
     for(auto & m:msg){
-        if(m.isFloat32()){argArray.append(m.getFloat32());}
-        if(m.isInt32()){argArray.append(m.getInt32());}
-        if(m.isString()){argArray.append(m.getString());}
+        if(m.isFloat32()){argArray.add(m.getFloat32());}
+        if(m.isInt32()){argArray.add(m.getInt32());}
+        if(m.isString()){argArray.add(m.getString());}
     }
-    args.addArg(argArray);
 
     Result r(Result::ok());
-
-    var varRes = callFunction(functionName, *args.getNativeArgs(),&r);
+    var varRes = callFunction(functionName, argArray,&r);
 
     if(r.failed()){
         LOG("error on function : "+ functionName);
         LOG(r.getErrorMessage());
     }
-    
-
+    callonAnyMsg(msg);
     return r;
 }
 
 void JavascriptController::callonAnyMsg(const OSCMessage & msg){
-    if(hasAnyMsgMethod){
-        OwnedJsArgs args(var::undefined());
-        for(auto & m:msg){
-            if(m.isFloat32()){args.addArg(m.getFloat32());}
-            if(m.isInt32()){args.addArg(m.getInt32());}
-            if(m.isString()){args.addArg(m.getString());}
-        }
-        Result r(Result::ok());
+    var address = msg.getAddressPattern().toString();
 
-        var varRes = callFunction("onAnyMsg", *args.getNativeArgs(),&r);
+    var args;
+    for(auto & m:msg){
+        if(m.isFloat32()){args.append(m.getFloat32());}
+        if(m.isInt32()){args.append(m.getInt32());}
+        if(m.isString()){args.append(m.getString());}
     }
+    Result r(Result::ok());
+    Array<var> argList = {address,args};
+    var varRes = callFunction("onAnyMsg", argList,&r);
+
 }
 
 Result JavascriptController::processMessage(const OSCMessage &m){
@@ -119,9 +97,9 @@ String JavascriptController::getJavaScriptFunctionName(const String & n){
         String upperCase = a.replaceSection(0, 1, a.substring(0, 1).toUpperCase());
         methodName+= upperCase;
     }
-     arr.joinIntoString("");
+    arr.joinIntoString("");
     return "on"+methodName;
-//    return "OSC."+jsName+".on"+methodName;
+    //    return "OSC."+jsName+".on"+methodName;
 
 }
 
@@ -131,7 +109,7 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
         LOG("jsOSC send first argument must be a string");
         return var::undefined();
     }
-        String address = a.arguments[0];
+    String address = a.arguments[0];
     if(!address.startsWithChar('/') ){
         LOG("address should start with / ");
         return var::undefined();
@@ -174,10 +152,8 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
 
 
 void JavascriptController::newJsFileLoaded(){
-
-    nonValidMessages.clear();
     jsPath->setValue(currentFile.getFullPathName(),true);
-    hasAnyMsgMethod = getRootObjectProperties().getVarPointer("onAnyMsg")!=nullptr;
+    
     
     
 }

@@ -35,8 +35,7 @@ public:
 private:
     void buildLocalEnv() override;
     String getJavaScriptFunctionName(const String &);
-    StringArray nonValidMessages;
-    bool hasAnyMsgMethod;
+
 
     DynamicObject * createOSCJsObject();
 

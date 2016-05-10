@@ -13,30 +13,17 @@
 #include "NodeManager.h"
 #include "DebugHelpers.h"
 
-
-
-
-
 JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFile(false){
-
     localEnvironment = new DynamicObject();
-
     jsEngine.registerNativeObject(jsLocalIdentifier, getLocalEnv());
-
-
     jsEngine.registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
     addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
-
-
 }
 
-JsEnvironment::~JsEnvironment(){
-
-}
+JsEnvironment::~JsEnvironment(){}
 
 void JsEnvironment::clearNamespace(){
     while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
-
     // prune to get only core Methods and classes
     NamedValueSet root = jsEngine.getRootObjectProperties();
     for(int i = 0 ; i < root.size() ; i++){
@@ -77,7 +64,6 @@ void JsEnvironment::showFile(){
 }
 
 
-
 void JsEnvironment::internalLoadFile(const File &f ){
     StringArray destLines;
     f.readLines(destLines);
@@ -87,11 +73,9 @@ void JsEnvironment::internalLoadFile(const File &f ){
     clearNamespace();
     buildLocalEnv();
     Result r=jsEngine.execute(jsString);
-
-
     if(r.failed()){
         _hasValidJsFile = false;
-        LOG("========Js error =================\n"+r.getErrorMessage());
+        LOG(r.getErrorMessage());
     }
     else{
         _hasValidJsFile = true;
@@ -103,8 +87,13 @@ void JsEnvironment::internalLoadFile(const File &f ){
 
 }
 
-var JsEnvironment::callFunction (const Identifier& function, const var::NativeFunctionArgs& args, Result* result){
-    return jsEngine.callFunction(function,args,result);
+var JsEnvironment::callFunction (const Identifier& function, const Array<var>& args, Result* result){
+
+        // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
+        juce::var::NativeFunctionArgs Nargs(var::undefined(),&args.getReference(0),args.size());
+        return jsEngine.callFunction(function,Nargs,result);
+
+
 }
 
 const NamedValueSet & JsEnvironment::getRootObjectProperties()  {return jsEngine.getRootObjectProperties();}
