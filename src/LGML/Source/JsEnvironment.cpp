@@ -79,6 +79,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
     }
     else{
         _hasValidJsFile = true;
+        lastFileModTime = currentFile.getLastModificationTime();
         LOG("script Loaded successfully : "+f.getFullPathName());
         newJsFileLoaded();
     }
@@ -119,7 +120,22 @@ void JsEnvironment::setNameSpaceName(const String & s){
 
 }
 
+void JsEnvironment::setAutoWatch(bool s){
+    if(s){
+        startTimer(500);
+    }
+    else{
+        stopTimer();
+    }
+}
 
+void JsEnvironment::timerCallback(){
+    Time newTime = currentFile.getLastModificationTime();
+    if(newTime!=lastFileModTime){
+        loadFile(currentFile);
+        lastFileModTime = newTime;
+    }
+}
 String JsEnvironment::printAllNamespace()   {return namespaceToString(jsEngine.getRootObjectProperties(),0,false,false);}
 
 

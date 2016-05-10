@@ -35,6 +35,10 @@ public:
         addAndMakeVisible(logEnvB);
         logEnvB.addListener(this);
 
+        watchT.setButtonText("autoWatch");
+        watchT.setClickingTogglesState(true);
+        addAndMakeVisible(watchT);
+        watchT.addListener(this);
 
         validJsLed.setFill(FillType(Colours::red));
         addAndMakeVisible(validJsLed);
@@ -48,6 +52,7 @@ public:
     TextButton reloadB;
     TextButton openB;
     TextButton logEnvB;
+    TextButton watchT;
     DrawablePath validJsLed;
 
 
@@ -57,12 +62,13 @@ public:
         Rectangle<int> area = getLocalBounds().reduced(2);
         const int logEnvSize = 30;
         const int ledSize = 10;
-        const int step = (area.getWidth()- logEnvSize-ledSize)/3 ;
+        const int step = (area.getWidth()- logEnvSize-ledSize)/4 ;
         buildLed(ledSize);
         validJsLed.setBounds(area.removeFromLeft(ledSize).reduced(0, (area.getHeight()-ledSize)/2));
         loadFileB.setBounds(area.removeFromLeft(step).reduced(2));
         reloadB.setBounds(area.removeFromLeft(step).reduced(2));
         openB.setBounds(area.removeFromLeft(step).reduced(2));
+        watchT.setBounds(area.removeFromLeft(step).reduced(2));
         logEnvB.setBounds(area.removeFromLeft(logEnvSize).reduced(2));
 
     }
@@ -97,6 +103,9 @@ public:
         }
         else if(b==&logEnvB){
             LOG(env->printAllNamespace());
+        }
+        else if(b==&watchT){
+            env->setAutoWatch(watchT.getToggleState());
         }
     };
     JsEnvironment * env;

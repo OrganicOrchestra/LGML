@@ -14,7 +14,7 @@
 #include "JuceHeader.h"
 #include "JsGlobalEnvironment.h"
 
-class JsEnvironment {
+class JsEnvironment : public Timer {
 public:
     JsEnvironment(const String & ns);
     virtual ~JsEnvironment();
@@ -54,6 +54,7 @@ public:
     };
     void addListener(Listener * l){jsListeners.add(l);}
     void removeListener(Listener * l){jsListeners.remove(l);}
+    void setAutoWatch(bool );
 
 protected :
     // dot separated string representing localNamespace
@@ -80,6 +81,8 @@ private:
     
     JavascriptEngine jsEngine;
 
+    void timerCallback()override;
+    Time lastFileModTime;
 
 };
 
