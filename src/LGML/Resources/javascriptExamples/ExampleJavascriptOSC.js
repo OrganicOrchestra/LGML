@@ -5,9 +5,9 @@
 
 ///access to LGML environment:
 /// in any javascripted object we have two accessible namespaces :
-/// g (for global) that represent the whole LGML environment and let you change about any parameters
-/// l (for local) that is a shortcut to local object class 
-/// example the send method of javascriptOSCController named myController can be accessed via l.send(args) or g.OSC.myController(args)
+/// "lgml" that represent the whole LGML environment and let you change about any parameters
+/// "local" that is a shortcut to local object class 
+/// example the send method of javascriptOSCController named myController can be accessed via local.send(args) or lgml.OSC.myController(args)
 
 
 /// local code :
@@ -22,23 +22,23 @@
 
 
 /// special functions
-//// g.post : post a message in LGML Logger
+//// lgml.post : post a message in LGML Logger
 
 
 onFooBar  =function ( a,b){
-		g.post(this + "osc arguments :" + a + "," + b);
+		lgml.post(this + "osc arguments :" + a + "," + b);
 		// any send call will send a message on OSC controller out port
-		l.send("/lolo","l");
+		local.send("/lolo","l");
 };
 
 onAnyMsg = function (adress , args){
-	g.post(JSON.stringify(args));
+	lgml.post(JSON.stringify(args));
 };
 
 
 
 /// example of accessible functions from LGML
-g.node.audioInNode.yPosition.set(50);
+lgml.node.audioInNode.yPosition.set(50);
 
-g.node.audioInNode.masterVolume.set(0);
-g.time.play.t();
+lgml.node.audioInNode.masterVolume.set(0);
+lgml.time.play.t();

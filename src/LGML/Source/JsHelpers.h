@@ -130,8 +130,8 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
 // helperclasses
 
 
-static const Identifier jsLocalIdentifier("l");
-static const Identifier jsGlobalIdentifier("g");
+static const Identifier jsLocalIdentifier("local");
+static const Identifier jsGlobalIdentifier("lgml");
 static const Array<Identifier> coreJsClasses = {
     jsLocalIdentifier,
     jsGlobalIdentifier,

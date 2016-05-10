@@ -34,7 +34,6 @@ DynamicObject * JsGlobalEnvironment::getNamespaceObject(const String & ns){retur
 DynamicObject * JsGlobalEnvironment::getEnv(){return env.getDynamicObject();}
 
 var JsGlobalEnvironment::post(const juce::var::NativeFunctionArgs& a){
-    DBG("posting : "+a.thisObject.toString());
     for(int i = 0 ; i < a.numArguments ;i++){
         LOG(a.arguments[i].toString());
     }
