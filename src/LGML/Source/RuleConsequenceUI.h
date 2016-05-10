@@ -12,6 +12,19 @@
 #define RULECONSEQUENCEUI_H_INCLUDED
 
 
+#include "RuleConsequence.h"
+
+class RuleConsequenceUI : public Component
+{
+public:
+	RuleConsequenceUI(RuleConsequence * consequence);
+	virtual ~RuleConsequenceUI();
+
+	RuleConsequence * consequence;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleConsequenceUI)
+
+};
 
 
 

@@ -200,10 +200,10 @@
                   file="Source/RuleConditionGroupUI.cpp"/>
             <FILE id="HFx1Jv" name="RuleConditionGroupUI.h" compile="0" resource="0"
                   file="Source/RuleConditionGroupUI.h"/>
-            <FILE id="j85rFO" name="RuleConditionUI.cpp" compile="1" resource="0"
-                  file="Source/RuleConditionUI.cpp"/>
             <FILE id="IuGtIV" name="RuleConditionUI.h" compile="0" resource="0"
                   file="Source/RuleConditionUI.h"/>
+            <FILE id="j85rFO" name="RuleConditionUI.cpp" compile="1" resource="0"
+                  file="Source/RuleConditionUI.cpp"/>
             <FILE id="V6g0AN" name="RuleConsequenceUI.cpp" compile="1" resource="0"
                   file="Source/RuleConsequenceUI.cpp"/>
             <FILE id="WWaie0" name="RuleConsequenceUI.h" compile="0" resource="0"
@@ -238,10 +238,18 @@
                   file="Source/ControllerContentUI.cpp"/>
             <FILE id="NJmX1Y" name="ControllerContentUI.h" compile="0" resource="0"
                   file="Source/ControllerContentUI.h"/>
+            <FILE id="Y77xfT" name="ControllerEditor.cpp" compile="1" resource="0"
+                  file="Source/ControllerEditor.cpp"/>
+            <FILE id="vnGEqu" name="ControllerEditor.h" compile="0" resource="0"
+                  file="Source/ControllerEditor.h"/>
             <FILE id="se5mC9" name="ControllerHeaderUI.cpp" compile="1" resource="0"
                   file="Source/ControllerHeaderUI.cpp"/>
             <FILE id="lrbb4S" name="ControllerHeaderUI.h" compile="0" resource="0"
                   file="Source/ControllerHeaderUI.h"/>
+            <FILE id="pgZf2m" name="ControllerMeasureUI.cpp" compile="1" resource="0"
+                  file="Source/ControllerMeasureUI.cpp"/>
+            <FILE id="deo6S4" name="ControllerMeasureUI.h" compile="0" resource="0"
+                  file="Source/ControllerMeasureUI.h"/>
             <FILE id="YugMP3" name="ControllerUI.cpp" compile="1" resource="0"
                   file="Source/ControllerUI.cpp"/>
             <FILE id="OxWQWW" name="ControllerUI.h" compile="0" resource="0" file="Source/ControllerUI.h"/>

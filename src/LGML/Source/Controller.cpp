@@ -42,7 +42,12 @@ var Controller::getJSONData()
 
 void Controller::loadJSONDataInternal(var data)
 {
-	//params taken care in ControllableContainer::loadJSONData
+}
+
+void Controller::addVariable(Controllable * variable)
+{
+	variables.add(variable);
+	controllerListeners.call(&ControllerListener::variableAdded, this, variable);
 }
 
 void Controller::remove()

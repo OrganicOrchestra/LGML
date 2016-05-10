@@ -11,9 +11,12 @@
 #include "Rule.h"
 
 Rule::Rule(const String &_name) :
-	ControllableContainer(_name)
-	//isSelected(false)
+	ControllableContainer(_name),
+	activationType(OnActivate)
 {
+	rootConditionGroup = new RuleConditionGroup(nullptr);
+	rootConditionGroup->addCondition();
+
 	nameParam = addStringParameter("Name", "Name of the rule", _name);
 	enabledParam = addBoolParameter("Enabled", "Enable / Disable the rule",true);
 
@@ -25,35 +28,31 @@ Rule::~Rule()
 {
 }
 
-
-/*
-void Rule::setSelected(bool value)
+void Rule::addConsequence()
 {
-	if (isSelected == value) return;
-
-	isSelected = value;
-	ruleListeners.call(&RuleListener::ruleSelectionChanged, this);
+	RuleConsequence * c = new RuleConsequence();
+	consequences.add(c);
+	ruleListeners.call(&RuleListener::consequenceAdded,c);
 }
-*/
+
+void Rule::removeConsequence(RuleConsequence * c)
+{
+	ruleListeners.call(&RuleListener::consequenceRemoved, c);
+	consequences.removeObject(c);
+
+}
 
 void Rule::onContainerParameterChanged(Parameter * p)
 {
 	if (p == nameParam)
 	{
 		setNiceName(nameParam->stringValue());
-	}
-	else if (p == isActiveParam)
+	}else if (p == isActiveParam)
 	{
 		ruleListeners.call(&RuleListener::ruleActivationChanged, this);
 	}
 }
 
-/*
-void Rule::select()
-{
-	ruleListeners.call(&RuleListener::askForSelectRule, this);
-}
-*/
 
 void Rule::remove()
 {

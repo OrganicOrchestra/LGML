@@ -13,11 +13,38 @@
 
 #include "JuceHeader.h"
 
+class RuleConditionGroup;
+
 class RuleCondition
 {
 public:
-	RuleCondition();
+	RuleCondition(RuleConditionGroup * parent);
 	virtual ~RuleCondition();
+
+	RuleConditionGroup * parent;
+
+	bool isActive;
+	void setActive(bool value);
+
+
+
+	void process();
+	void remove();
+
+	class  RuleConditionListener
+	{
+	public:
+		virtual ~RuleConditionListener() {}
+
+		virtual void askForRemoveCondition(RuleCondition *) {}; 
+		
+		virtual void conditionActivationChanged(RuleCondition *) {}
+		
+	};
+
+	ListenerList<RuleConditionListener> conditionListeners;
+	void addConditionListener(RuleConditionListener* newListener) { conditionListeners.add(newListener); }
+	void removeConditionListener(RuleConditionListener* listener) { conditionListeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleCondition)
 };

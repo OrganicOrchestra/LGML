@@ -31,7 +31,7 @@ public:
 
 	Inspector * inspector;
 
-	InspectorEditor * getEditor();
+	virtual InspectorEditor * getEditor();
 	
 	ControllableContainer * relatedControllableContainer;
 	bool recursiveInspectionLevel;

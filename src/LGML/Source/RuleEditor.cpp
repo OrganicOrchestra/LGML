@@ -10,36 +10,39 @@
 
 #include "RuleEditor.h"
 
-juce_ImplementSingleton(RuleEditor)
-
-RuleEditor::RuleEditor() :
-	currentRule(nullptr)
-
+RuleEditor::RuleEditor(RuleUI * _ruleUI) :
+	CustomEditor(_ruleUI),
+	rule(_ruleUI->rule)
 {
+
 }
 
 RuleEditor::~RuleEditor()
 {
 }
 
-void RuleEditor::setCurrentRule(Rule * r)
+
+void RuleEditor::paint(Graphics &)
 {
-	if (currentRule == r) return;
 
-	if (currentRule != nullptr)
-	{
-		//
-	}
-
-	currentRule = r;
-
-	if (currentRule != nullptr)
-	{
-		//
-	}
 }
 
-  void RuleEditor::editRule(Rule * r)
-  {
-	  setCurrentRule(r);
-  }
+void RuleEditor::resized()
+{
+
+}
+
+void RuleEditor::addConditionGroupUI(RuleConditionGroup * c)
+{
+	RuleConditionGroupUI * cui = new RuleConditionGroupUI(c);
+	conditionGroupsUI.add(cui);
+	addAndMakeVisible(cui);
+}
+
+void RuleEditor::addConsequenceUI(RuleConsequence * c)
+{
+	RuleConsequenceUI * cui = new RuleConsequenceUI(c);
+	consequencesUI.add(cui);
+	addAndMakeVisible(cui);
+}
+

@@ -9,3 +9,12 @@
 */
 
 #include "RuleConsequenceUI.h"
+
+RuleConsequenceUI::RuleConsequenceUI(RuleConsequence * _consequence) :
+	consequence(_consequence)
+{
+}
+
+RuleConsequenceUI::~RuleConsequenceUI()
+{
+}

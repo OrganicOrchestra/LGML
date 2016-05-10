@@ -26,6 +26,12 @@ public:
     StringParameter * nameParam;
     BoolParameter * enabledParam;
 
+	OwnedArray<Controllable> variables; // These are values that can be set only by the external controller (osc, midi, serial...).
+										// they are stored so they can be used by other mechanisms in the software, such as rules.
+
+	void addVariable(Controllable * variable);
+
+
     void remove(); //will dispatch askForRemoveController
     virtual void onContainerParameterChanged(Parameter * p) override;
 
@@ -40,7 +46,8 @@ public:
         /** Destructor. */
         virtual ~ControllerListener() {}
 
-        virtual void askForRemoveController(Controller *) = 0;
+		virtual void askForRemoveController(Controller *) {}
+		virtual void variableAdded(Controller *, Controllable *) {}
     };
 
     ListenerList<ControllerListener> controllerListeners;

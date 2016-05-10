@@ -10,10 +10,30 @@
 
 #include "RuleCondition.h"
 
-RuleCondition::RuleCondition()
-  {
-  }
 
-  RuleCondition::~RuleCondition()
-  {
-  }
+RuleCondition::RuleCondition(RuleConditionGroup * _parent) :
+	parent(_parent),
+	isActive(false)
+{
+}
+
+RuleCondition::~RuleCondition()
+{
+}
+
+void RuleCondition::setActive(bool value)
+{
+	if (isActive == value) return;
+	isActive = value;
+	conditionListeners.call(&RuleConditionListener::conditionActivationChanged, this);
+}
+
+void RuleCondition::process()
+{
+	//check condition and setActive
+}
+
+void RuleCondition::remove()
+{
+	conditionListeners.call(&RuleConditionListener::askForRemoveCondition, this);
+}

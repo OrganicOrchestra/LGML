@@ -34,6 +34,8 @@ public:
 	void mouseDown(const MouseEvent &e) override;
 
 	void buttonClicked(Button * b);
+
+	virtual InspectorEditor * getEditor() override;
 	
 	virtual void ruleActivationChanged(Rule *) override;
 

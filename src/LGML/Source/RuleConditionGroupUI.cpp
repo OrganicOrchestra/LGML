@@ -9,3 +9,12 @@
 */
 
 #include "RuleConditionGroupUI.h"
+
+RuleConditionGroupUI::RuleConditionGroupUI(RuleConditionGroup * _conditionGroup) :
+	conditionGroup(_conditionGroup)
+{
+}
+
+RuleConditionGroupUI::~RuleConditionGroupUI()
+{
+}

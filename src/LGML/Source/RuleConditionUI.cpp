@@ -9,3 +9,13 @@
 */
 
 #include "RuleConditionUI.h"
+
+RuleConditionUI::RuleConditionUI(RuleCondition * _condition) :
+	condition(_condition)
+{
+}
+
+RuleConditionUI::~RuleConditionUI()
+{
+
+}

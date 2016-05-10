@@ -21,37 +21,43 @@
 class Rule : public ControllableContainer
 {
 public:
+	enum ActivationType
+	{
+		OnActivate,
+		OnDeactivate,
+		WhileActivated,
+		WhileDeactivated
+	};
+
 	Rule(const String &name);
 	virtual ~Rule();
 	
 	StringParameter * nameParam;
 	BoolParameter * enabledParam;
 	BoolParameter * isActiveParam;
-	//bool isSelected; //for ui
 
-	OwnedArray<RuleCondition> conditions;
-	OwnedArray<RuleConditionGroup> conditionGroups;
+	ActivationType activationType;
+
+	ScopedPointer<RuleConditionGroup> rootConditionGroup;
 	OwnedArray<RuleConsequence> consequences;
 
+	void addConsequence();
+	void removeConsequence(RuleConsequence *);
+
 	void onContainerParameterChanged(Parameter * p) override;
-
-	//void setSelected(bool value);
-	//void select();
-
 	void remove();
 
 
 	class  RuleListener
 	{
 	public:
-		/** Destructor. */
 		virtual ~RuleListener() {}
 
-		//virtual void askForSelectRule(Rule *) {}
 		virtual void askForRemoveRule(Rule *) {}
-
-		virtual void ruleSelectionChanged(Rule *) {}
 		virtual void ruleActivationChanged(Rule *) {}
+
+		virtual void consequenceAdded(RuleConsequence *) {}
+		virtual void consequenceRemoved(RuleConsequence *) {}
 	};
 
 	ListenerList<RuleListener> ruleListeners;

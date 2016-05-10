@@ -11,6 +11,7 @@
 #include "ControllerUI.h"
 #include "ControllerContentUI.h"
 #include "ControllerHeaderUI.h"
+#include "ControllerEditor.h"
 
 ControllerUI::ControllerUI(Controller * controller, ControllerContentUI * contentUI, ControllerHeaderUI * headerUI) :
     controller(controller),
@@ -26,6 +27,8 @@ ControllerUI::ControllerUI(Controller * controller, ControllerContentUI * conten
     addAndMakeVisible(this->headerUI);
     addAndMakeVisible(this->contentUI);
 
+	addMouseListener(this, true);
+
     if(getHeight() == 0) setSize(100,50);
 }
 
@@ -37,7 +40,7 @@ void ControllerUI::paint(Graphics & g)
 {
     g.setColour(PANEL_COLOR);
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
-    g.setColour(PANEL_COLOR.darker());
+	g.setColour(isSelected ? HIGHLIGHT_COLOR: PANEL_COLOR.darker());
     g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
 }
 
@@ -46,4 +49,14 @@ void ControllerUI::resized()
     Rectangle<int> r = getLocalBounds();
     headerUI->setBounds(r.removeFromTop(headerUI->getHeight()));
     contentUI->setBounds(r);
+}
+
+void ControllerUI::mouseDown(const MouseEvent &)
+{
+	selectThis();
+}
+
+InspectorEditor * ControllerUI::getEditor()
+{
+	return new ControllerEditor(this);
 }

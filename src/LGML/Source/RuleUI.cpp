@@ -11,6 +11,7 @@
 #include "RuleUI.h"
 #include "Style.h"
 #include "MainComponent.h"
+#include "RuleEditor.h"
 
 RuleUI::RuleUI(Rule * _rule) : 
 	InspectableComponent( _rule),
@@ -84,13 +85,14 @@ void RuleUI::buttonClicked(Button * b)
 	}
 }
 
-/*
-void RuleUI::ruleSelectionChanged(Rule * r)
-{
-	repaint();
-}
-*/
+
 void RuleUI::ruleActivationChanged(Rule *)
 {
 	repaint();
 }
+
+InspectorEditor * RuleUI::getEditor()
+{
+	return new RuleEditor(this);
+}
+
