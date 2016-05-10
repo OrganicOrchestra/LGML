@@ -13,10 +13,11 @@
 
 
 #include "ControllableContainer.h"
+#include "ControlVariable.h"
 
 class ControllerUI;
 
-class Controller : public ControllableContainer
+class Controller : public ControllableContainer, public ControlVariable::VariableListener
 {
 public:
     Controller(const String &name = "[Controller]");
@@ -27,15 +28,18 @@ public:
     StringParameter * nameParam;
     BoolParameter * enabledParam;
 
-	OwnedArray<Controllable> variables; // These are values that can be set only by the external controller (osc, midi, serial...).
-										// they are stored so they can be used by other mechanisms in the software, such as rules.
+	OwnedArray<ControlVariable> variables; // These are values that can be set only by the external controller (osc, midi, serial...).
+										   // they are stored so they can be used by other mechanisms in the software, such as rules.
 
-	void addVariable(Controllable * variable);
-
-
+	void addVariable(Parameter * p);
+	void removeVariable(ControlVariable * variable);
+	
+	ControlVariable * getVariableForAddress(const String &address);
+	
     void remove(); //will dispatch askForRemoveController
     virtual void onContainerParameterChanged(Parameter * p) override;
 
+	void askForRemoveVariable(ControlVariable * variable);
 
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
@@ -49,7 +53,9 @@ public:
         virtual ~ControllerListener() {}
 
 		virtual void askForRemoveController(Controller *) {}
-		virtual void variableAdded(Controller *, Controllable *) {}
+
+		virtual void variableAdded(Controller *, ControlVariable * ) {}
+		virtual void variableRemoved(Controller *, ControlVariable * ) {}
     };
 
     ListenerList<ControllerListener> controllerListeners;

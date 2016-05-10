@@ -20,6 +20,7 @@ public:
 	InspectorEditor(InspectableComponent * sourceComponent);
 	virtual ~InspectorEditor();
 
+
 	InspectableComponent * sourceComponent;
 
 	void resized() override;

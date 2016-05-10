@@ -19,6 +19,8 @@ InspectorEditor::~InspectorEditor()
 {
 }
 
+
+
 void InspectorEditor::resized()
 {
 }

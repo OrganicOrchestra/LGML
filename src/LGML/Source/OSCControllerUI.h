@@ -13,12 +13,11 @@
 
 #include "ControllerUI.h"
 #include "OSCController.h"
-#include "OSCControllerEditor.h"
 
 class OSCControllerUI : public ControllerUI
 {
 public:
-	OSCControllerUI(Controller * controller);
+	OSCControllerUI(OSCController * controller);
 	virtual ~OSCControllerUI();
 
 	OSCController * oscController;

@@ -18,7 +18,8 @@ Controllable::Controllable(const Type &type, const String & niceName, const Stri
     hasCustomShortName(false),
     isControllableExposed(true),
     isControllableFeedbackOnly(false),
-    hideInEditor(false)
+    hideInEditor(false),
+	replaceSlashesInShortName(true)
 {
     setEnabled(enabled);
     setNiceName(niceName);

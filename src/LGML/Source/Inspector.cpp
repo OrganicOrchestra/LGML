@@ -12,7 +12,8 @@
 
 Inspector::Inspector() :
 	ShapeShifterContent("Inspector"),
-	currentComponent(nullptr)
+	currentComponent(nullptr),
+	isEnabled(true)
 {
 }
 
@@ -21,11 +22,18 @@ Inspector::~Inspector()
 	clear();
 }
 
+void Inspector::setEnabled(bool value)
+{
+	if (isEnabled == value) return;
+	
+	if (!value) setCurrentComponent(nullptr);
+	isEnabled = value;
+}
+
 void Inspector::setCurrentComponent(InspectableComponent * c)
 {
 	if (c == currentComponent) return;
-
-	DBG("Set current Component");
+	if (!isEnabled) return;
 
 	if (currentComponent != nullptr)
 	{

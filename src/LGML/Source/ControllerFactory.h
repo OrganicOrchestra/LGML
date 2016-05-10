@@ -13,12 +13,13 @@
 
 
 #include "OSCDirectController.h"
+#include "OSCCustomController.h"
 #include "DMXController.h"
 #include "MIDIController.h"
 
 class ControllerManager;
 
-static const String controllerTypeNames[] = { "OSC Direct","DMX","MIDI" };
+static const String controllerTypeNames[] = { "OSC Direct", "OSC Custom", "DMX","MIDI" };
 
 class ControllerFactory
 {
@@ -26,6 +27,7 @@ public:
     enum ControllerType
     {
         OSCDirect,
+		OSCCustom,
         DMX,
         MIDI,
         UNKNOWN //has to be last
@@ -50,6 +52,10 @@ public:
         case OSCDirect:
             c = new OSCDirectController();
             break;
+
+		case OSCCustom:
+			c = new OSCCustomController();
+			break;
 
         case DMX:
             c = new DMXController();

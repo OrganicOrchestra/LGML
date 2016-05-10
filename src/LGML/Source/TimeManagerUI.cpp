@@ -26,11 +26,6 @@ timeBar(_timeManager){
     addAndMakeVisible(timeBar);
     bpmStepper = timeManager->BPM->createStepper();
 
-    //bpmStepper->assignOnMousePosDirect = false;
-    //bpmSlider->orientation = FloatSliderUI::VERTICAL;
-    //bpmStepper->displayText = true;
-    //bpmStepper->displayBar = false;
-    //bpmStepper->scaleFactor = 0.01;
     addAndMakeVisible(bpmStepper);
 
 

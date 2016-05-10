@@ -10,11 +10,11 @@
 
 #include "OSCControllerEditor.h"
 
-OSCControllerEditor::OSCControllerEditor(ControllerUI * controllerUI) :
+OSCControllerEditor::OSCControllerEditor(OSCControllerUI * controllerUI) :
 	ControllerEditor(controllerUI),
-	activityTrigger("Activity","OSC Activity indicator")
+	activityTrigger("Activity","OSC Activity indicator"),
+	oscController(controllerUI->oscController)
 {
-	oscController = (OSCController *)controller;
 
 	activityTriggerUI = activityTrigger.createBlinkUI();
 
@@ -49,7 +49,15 @@ void OSCControllerEditor::resizedInternal(Rectangle<int> r)
 	r.removeFromTop(2);
 	remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()));
 	r.removeFromTop(10);
-	activityLog.setBounds(r);
+	activityLog.setBounds(r.removeFromBottom(150));
+
+	resizedInternalOSC(r);
+
+}
+
+void OSCControllerEditor::resizedInternalOSC(Rectangle<int>)
+{
+	// to override by child classes
 }
 
 void OSCControllerEditor::messageProcessed(const OSCMessage & msg, bool success)

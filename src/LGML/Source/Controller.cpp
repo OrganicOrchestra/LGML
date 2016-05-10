@@ -13,12 +13,13 @@
 #include "ControllerUI.h"
 
 Controller::Controller(const String &name) :
-    ControllableContainer(name)
+	ControllableContainer(name)
 {
-    nameParam = addStringParameter("Name", "Set the name of the controller.",name);
+
+    nameParam = addStringParameter("Name", "Set the name of the controller.", name);
     enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
 
-    controllerTypeEnum = 0;//init
+    controllerTypeEnum = 0; //init
 }
 
 
@@ -44,10 +45,27 @@ ControllerUI * Controller::createUI()
 	return new ControllerUI(this);
 }
 
-void Controller::addVariable(Controllable * variable)
+void Controller::addVariable(Parameter * p)
 {
-	variables.add(variable);
-	controllerListeners.call(&ControllerListener::variableAdded, this, variable);
+	ControlVariable * v = new ControlVariable(p);
+	variables.add(v);
+	controllerListeners.call(&ControllerListener::variableAdded, this, v);
+}
+
+void Controller::removeVariable(ControlVariable * v)
+{
+	controllerListeners.call(&ControllerListener::variableRemoved, this, v);
+	variables.removeObject(v);
+}
+
+ControlVariable * Controller::getVariableForAddress(const String & address)
+{
+	for (auto &v : variables)
+	{
+		if (v->parameter->controlAddress == address) return v;
+	}
+
+	return nullptr;
 }
 
 void Controller::remove()
@@ -63,4 +81,9 @@ void Controller::onContainerParameterChanged(Parameter * p)
     {
         DBG("set Controller Enabled " + String(enabledParam->value));
     }
+}
+
+void Controller::askForRemoveVariable(ControlVariable * variable)
+{
+	removeVariable(variable);
 }

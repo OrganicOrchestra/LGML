@@ -11,16 +11,17 @@
 #ifndef OSCCONTROLLEREDITOR_H_INCLUDED
 #define OSCCONTROLLEREDITOR_H_INCLUDED
 
-#include "OSCController.h"
+#include "OSCControllerUI.h"
 #include "ControllerEditor.h"
 
 #include "TriggerBlinkUI.h"
 #include "StringParameterUI.h"
 
+
 class OSCControllerEditor : public ControllerEditor, public OSCController::OSCControllerListener
 {
 public:
-	OSCControllerEditor(ControllerUI * controllerUI);
+	OSCControllerEditor(OSCControllerUI * controllerUI);
 	virtual ~OSCControllerEditor();
 
 	OSCController * oscController;
@@ -36,6 +37,8 @@ public:
     Label activityLog;
 
 	void resizedInternal(Rectangle<int> bounds) override;
+
+	virtual void resizedInternalOSC(Rectangle<int> bounds); //to override by child editors classes, so osc parameters are still there
 
 	// Inherited via OSCControllerListener
 	virtual void messageProcessed(const OSCMessage & msg, bool success) override;

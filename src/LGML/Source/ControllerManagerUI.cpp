@@ -28,12 +28,9 @@ ControllerManagerUI::~ControllerManagerUI()
     manager->removeControllerListener(this);
 }
 
-
-
 void ControllerManagerUI::controllerAdded(Controller * c)
 {
-    DBG("Controller added, addUI");
-    addControllerUI(c);
+	addControllerUI(c);
 }
 
 void ControllerManagerUI::controllerRemoved(Controller * c)
@@ -52,6 +49,8 @@ ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
 	ControllerUI * cui = controller->createUI();
     controllersUI.add(cui);
     addAndMakeVisible(cui);
+
+	cui->selectThis();
 
 	resized();
     return cui;

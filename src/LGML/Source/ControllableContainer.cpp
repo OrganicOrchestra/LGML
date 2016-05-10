@@ -33,6 +33,11 @@ ControllableContainer::~ControllableContainer()
     masterReference.clear();
 }
 
+void ControllableContainer::addParameter(Parameter * p)
+{
+	addParameterInternal(p);
+}
+
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
     if (getControllableByName(niceName) != nullptr)
@@ -106,14 +111,6 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
 void ControllableContainer::removeControllable(Controllable * c)
 {
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
-    // @ben remove nested callback as it's not needed anymore for ControllableContainerSync
-    // we may implement a special callback structure changed that triggered only by the root parent
-
-//    ControllableContainer * notified = parentContainer;
-//    while(notified!=nullptr){
-//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
-//        notified = notified->parentContainer;
-//    }
     controllables.removeObject(c);
 }
 
@@ -405,11 +402,6 @@ void ControllableContainer::addParameterInternal(Parameter * p)
     controllables.add(p);
     p->addParameterListener(this);
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
-//    ControllableContainer * notified = parentContainer;
-//    while(notified!=nullptr){
-//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
-//        notified = notified->parentContainer;
-//    }
 }
 
 

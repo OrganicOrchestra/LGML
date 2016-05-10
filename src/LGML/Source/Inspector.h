@@ -25,6 +25,9 @@ public:
 
 	ScopedPointer<InspectorEditor> currentEditor;
 
+	bool isEnabled;
+	void setEnabled(bool value);
+
 	void setCurrentComponent(InspectableComponent * component);
 
 	void resized() override;

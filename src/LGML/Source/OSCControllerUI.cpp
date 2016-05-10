@@ -9,10 +9,11 @@
 */
 
 #include "OSCControllerUI.h"
+#include "OSCControllerEditor.h"
 
-OSCControllerUI::OSCControllerUI(Controller * controller) :
+OSCControllerUI::OSCControllerUI(OSCController * controller) :
 	ControllerUI(controller),
-	oscController((OSCController *)controller)
+	oscController(controller)
 {
 }
 

@@ -231,6 +231,16 @@
           <FILE id="CThc0S" name="RuleManager.h" compile="0" resource="0" file="Source/RuleManager.h"/>
         </GROUP>
         <GROUP id="{4428FDD1-4E1A-F199-46F2-F7D32DF545CA}" name="controllers">
+          <GROUP id="{342F6F3B-20C5-E920-E6FA-39C9A8531208}" name="variables">
+            <FILE id="S3eYKu" name="ControlVariable.cpp" compile="1" resource="0"
+                  file="Source/ControlVariable.cpp"/>
+            <FILE id="sa2ONX" name="ControlVariable.h" compile="0" resource="0"
+                  file="Source/ControlVariable.h"/>
+            <FILE id="NSHW03" name="ControlVariableUI.cpp" compile="1" resource="0"
+                  file="Source/ControlVariableUI.cpp"/>
+            <FILE id="GGrMf1" name="ControlVariableUI.h" compile="0" resource="0"
+                  file="Source/ControlVariableUI.h"/>
+          </GROUP>
           <GROUP id="{AC428C7B-CE35-EA62-F640-20F5072B53F7}" name="base">
             <FILE id="I6uMd3" name="Controller.cpp" compile="1" resource="0" file="Source/Controller.cpp"/>
             <FILE id="IUdrpc" name="Controller.h" compile="0" resource="0" file="Source/Controller.h"/>
@@ -254,6 +264,26 @@
                   file="Source/MIDIController.h"/>
           </GROUP>
           <GROUP id="{3554E0A1-9ED7-3CD1-782B-5AD2E7D8B75B}" name="osc">
+            <GROUP id="{D82D4191-3638-62ED-6D1B-3F21F55A088A}" name="direct">
+              <FILE id="n6bZSA" name="OSCDirectController.cpp" compile="1" resource="0"
+                    file="Source/OSCDirectController.cpp"/>
+              <FILE id="CFXtw0" name="OSCDirectController.h" compile="0" resource="0"
+                    file="Source/OSCDirectController.h"/>
+            </GROUP>
+            <GROUP id="{7DBD17EB-8FCA-E66F-5D95-E8DD5389A639}" name="custom">
+              <FILE id="KFx8wx" name="OSCCustomController.cpp" compile="1" resource="0"
+                    file="Source/OSCCustomController.cpp"/>
+              <FILE id="LSh9JF" name="OSCCustomController.h" compile="0" resource="0"
+                    file="Source/OSCCustomController.h"/>
+              <FILE id="HqxUyX" name="OSCCustomControllerEditor.cpp" compile="1"
+                    resource="0" file="Source/OSCCustomControllerEditor.cpp"/>
+              <FILE id="wUvps0" name="OSCCustomControllerEditor.h" compile="0" resource="0"
+                    file="Source/OSCCustomControllerEditor.h"/>
+              <FILE id="vOgve3" name="OSCCustomControllerUI.cpp" compile="1" resource="0"
+                    file="Source/OSCCustomControllerUI.cpp"/>
+              <FILE id="A9vEbB" name="OSCCustomControllerUI.h" compile="0" resource="0"
+                    file="Source/OSCCustomControllerUI.h"/>
+            </GROUP>
             <FILE id="TG6FwA" name="OSCControllerUI.cpp" compile="1" resource="0"
                   file="Source/OSCControllerUI.cpp"/>
             <FILE id="f7nJvq" name="OSCControllerUI.h" compile="0" resource="0"
@@ -262,12 +292,6 @@
                   file="Source/OSCControllerEditor.cpp"/>
             <FILE id="Oh9kF0" name="OSCControllerEditor.h" compile="0" resource="0"
                   file="Source/OSCControllerEditor.h"/>
-            <GROUP id="{D82D4191-3638-62ED-6D1B-3F21F55A088A}" name="direct">
-              <FILE id="n6bZSA" name="OSCDirectController.cpp" compile="1" resource="0"
-                    file="Source/OSCDirectController.cpp"/>
-              <FILE id="CFXtw0" name="OSCDirectController.h" compile="0" resource="0"
-                    file="Source/OSCDirectController.h"/>
-            </GROUP>
             <FILE id="csknSp" name="OSCController.cpp" compile="1" resource="0"
                   file="Source/OSCController.cpp"/>
             <FILE id="eBYQu2" name="OSCController.h" compile="0" resource="0" file="Source/OSCController.h"/>
