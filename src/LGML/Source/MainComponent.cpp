@@ -12,6 +12,8 @@
 #include "NodeConnectionEditor.h"
 #include "DebugHelpers.h"
 
+Inspector MainContentComponent::inspector;
+
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)
 {
@@ -36,14 +38,13 @@ MainContentComponent::MainContentComponent(Engine * e):
     timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
     nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
 	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
-    controllableInspector = new Inspector(); //Needs to be abstracted from NodeManager, and be able to inspect any ControllableContainer
     ruleManagerUI = new RuleManagerUI(RuleManager::getInstance());
     lgmlLoggerUI = new LGMLLoggerUI(LGMLLogger::getInstance());
 
 	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
 	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerUI);
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
-	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(controllableInspector);
+	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(&inspector);
 	ShapeShifterPanel * rulesPanel = ShapeShifterManager::getInstance()->createPanel(ruleManagerUI);
     ShapeShifterPanel * logPanel = ShapeShifterManager::getInstance()->createPanel(lgmlLoggerUI);
 

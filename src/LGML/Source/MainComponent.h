@@ -62,10 +62,6 @@ public:
 
 	ScopedPointer<RuleManagerUI> ruleManagerUI;
 
-
-	ScopedPointer<Inspector> controllableInspector;
-	//static SelectableComponentHandler mainSelectableHandler;
-
 	static Inspector inspector;
 
 

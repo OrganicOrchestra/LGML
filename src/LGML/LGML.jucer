@@ -295,6 +295,10 @@
                     file="Source/JavascriptController.cpp"/>
               <FILE id="d9PZZy" name="JavascriptController.h" compile="0" resource="0"
                     file="Source/JavascriptController.h"/>
+              <FILE id="AX2k9z" name="JavascriptControllerEditor.cpp" compile="1"
+                    resource="0" file="Source/JavascriptControllerEditor.cpp"/>
+              <FILE id="caUq1j" name="JavascriptControllerEditor.h" compile="0" resource="0"
+                    file="Source/JavascriptControllerEditor.h"/>
               <FILE id="HPZ2LN" name="JavascriptControllerUI.cpp" compile="1" resource="0"
                     file="Source/JavascriptControllerUI.cpp"/>
               <FILE id="pYoIs9" name="JavascriptControllerUI.h" compile="0" resource="0"

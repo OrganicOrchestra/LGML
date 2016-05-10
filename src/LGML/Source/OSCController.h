@@ -33,7 +33,7 @@ public:
     void setupSender();
 
     void processMessage(const OSCMessage & msg);
-	virtual bool processMessageInternal(const OSCMessage &msg);
+	virtual Result processMessageInternal(const OSCMessage &msg);
 
     virtual void onContainerParameterChanged(Parameter * p) override;
 

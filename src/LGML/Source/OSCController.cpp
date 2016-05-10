@@ -51,9 +51,9 @@ void OSCController::processMessage(const OSCMessage & msg)
 	oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
 }
 
-bool OSCController::processMessageInternal(const OSCMessage &)
+Result OSCController::processMessageInternal(const OSCMessage &)
 {
-	return false; //if not overriden, msg is not handled so result is false
+	return Result::fail("Not handled"); //if not overriden, msg is not handled so result is false
 }
 
 void OSCController::onContainerParameterChanged(Parameter * p)

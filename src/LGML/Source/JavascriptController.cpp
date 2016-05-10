@@ -10,8 +10,8 @@
 
 #include "JavaScriptController.h"
 #include "NodeManager.h"
-
 #include "DebugHelpers.h"
+#include "JavascriptControllerUI.h"
 
 JavascriptController::JavascriptController():JsEnvironment("OSC.JSController"){
     nameParam->setValue("JSController");
@@ -27,6 +27,7 @@ JavascriptController::~JavascriptController(){
 
 
 }
+
 
 void JavascriptController::buildLocalEnv(){
     ScopedPointer<DynamicObject>  oscObj = createOSCJsObject();
@@ -70,8 +71,10 @@ void JavascriptController::callonAnyMsg(const OSCMessage & msg){
 
 }
 
-Result JavascriptController::processMessage(const OSCMessage &m){
-    Result r1  =OSCDirectController::processMessage(m);
+Result JavascriptController::processMessageInternal(const OSCMessage &m){
+   
+	Result r1  = OSCDirectController::processMessageInternal(m);
+
     Result r2(Result::fail("no valid js file"));
     if(hasValidJsFile())
         r2 = callForMessage(m);
@@ -156,6 +159,11 @@ void JavascriptController::newJsFileLoaded(){
     
     
     
+}
+
+ControllerUI * JavascriptController::createUI()
+{
+	return new JavascriptControllerUI(this);
 }
 
 

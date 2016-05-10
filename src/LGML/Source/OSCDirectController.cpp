@@ -22,8 +22,10 @@ OSCDirectController::~OSCDirectController()
     NodeManager::getInstance()->removeControllableContainerListener(this);
 }
 
-bool OSCDirectController::processMessageInternal(const OSCMessage & msg)
+Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
 {
+	Result result = Result::ok();
+
      String addr = msg.getAddressPattern().toString();
 
     StringArray addrArray;
@@ -33,7 +35,6 @@ bool OSCDirectController::processMessageInternal(const OSCMessage & msg)
     addSplit.remove(0);
     String controller = addSplit[0];
 
-    bool success = false;
 
     if (controller == "node")
     {
@@ -45,8 +46,7 @@ bool OSCDirectController::processMessageInternal(const OSCMessage & msg)
         {
             if (!c->isControllableFeedbackOnly)
             {
-                success = true;
-
+				
                 switch (c->type)
                 {
                 case Controllable::Type::TRIGGER:
@@ -87,20 +87,25 @@ bool OSCDirectController::processMessageInternal(const OSCMessage & msg)
                     break;
 
                 default:
-                    success = false;
-                    break;
+					result = Result::fail("Controllable type not handled");
+					break;
 
                 }
             }
         }
         else
         {
+			result = Result::fail("Controllable not found");
+
             DBG("No Controllable for address : " + addr);
         }
+	}
+	else
+	{
+		result = Result::fail("address other than /node, not handler for now");
+	}
 
-    }
-
-	return success;
+	return result;
 }
 
 void OSCDirectController::controllableAdded(Controllable *)

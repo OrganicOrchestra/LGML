@@ -26,21 +26,21 @@ ControllerUI * OSCCustomController::createUI()
 	return new OSCCustomControllerUI(this);
 }
 
-bool OSCCustomController::processMessageInternal(const OSCMessage & msg)
+Result OSCCustomController::processMessageInternal(const OSCMessage & msg)
 {
 	String address = msg.getAddressPattern().toString();
 	DBG("Process message : " << address << " / " << msg.size() << "/" << String(msg[0].isFloat32()) );
 	
 	ControlVariable * v = getVariableForAddress(address);
 
-	if (v == nullptr) return false;
-	if (msg.size() == 0) return false;
-	if (!msg[0].isFloat32()) return false;
+	if (v == nullptr) return Result::fail("Variable not found");
+	if (msg.size() == 0) return Result::fail("No argument");
+	if (!msg[0].isFloat32()) return Result::fail("Argument is not a float");
 
 	DBG("Passed  ! : " << address);
 
 	v->parameter->setValue(msg[0].getFloat32());
 
-	return true;
+	return Result::ok();
 
 }

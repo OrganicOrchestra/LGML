@@ -20,7 +20,7 @@ public:
     virtual ~OSCDirectController();
 
 
-    bool processMessageInternal(const OSCMessage &msg) override;
+    Result processMessageInternal(const OSCMessage &msg) override;
 
 
 

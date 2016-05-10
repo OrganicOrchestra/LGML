@@ -10,39 +10,21 @@
 
 #ifndef JAVASCRIPTCONTROLLERUI_H_INCLUDED
 #define JAVASCRIPTCONTROLLERUI_H_INCLUDED
+
+
 #include "JavascriptController.h"
-#include "OSCDirectControllerContentUI.h"
+#include "OSCControllerUI.h"
 #include "JsEnvironmentUI.h"
 
 
-class JavascriptControllerUI : public ControllerContentUI{
+class JavascriptControllerUI : public OSCControllerUI{
 public:
+	JavascriptControllerUI(JavascriptController * jsController);
+	virtual ~JavascriptControllerUI();
 
-    JavascriptControllerUI(JsEnvironment * env){
-        oscUI = new OSCDirectControllerContentUI();
+	JavascriptController * jsController;
 
-        scriptUI = new JsEnvironmentUI(env);
-        addAndMakeVisible(oscUI);
-        addAndMakeVisible(scriptUI);
-    }
-
-    void init() override{
-        oscUI->controller = controller;
-        oscUI->cui = cui;
-        oscUI->init();
-    }
-
-
-
-    void resized()override{
-        Rectangle<int> area = getLocalBounds();
-        scriptUI->setBounds(area.removeFromTop(30));
-        oscUI->setBounds(area);
-    }
-    ScopedPointer<OSCDirectControllerContentUI> oscUI;
-    ScopedPointer<JsEnvironmentUI> scriptUI;
-    
-    
+	InspectorEditor * getEditor() override;
 };
 
 

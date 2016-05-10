@@ -22,7 +22,7 @@ public:
 	
 	virtual ControllerUI * createUI() override;
 
-	bool processMessageInternal(const OSCMessage& msg) override;
+	Result processMessageInternal(const OSCMessage& msg) override;
 
 
 };

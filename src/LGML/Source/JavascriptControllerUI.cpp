@@ -9,10 +9,19 @@
 */
 
 #include "JavascriptControllerUI.h"
+#include "JavascriptControllerEditor.h"
 
-// @ ben this structure in general avoid cyclic dependencyes and unnecessary includes in non UI class
-// should we change every thing (compile time should decrease a bit..)
+JavascriptControllerUI::JavascriptControllerUI(JavascriptController * _controller) :
+	OSCControllerUI(_controller),
+	jsController(_controller)
+{
+}
 
-ControllerUI * JavascriptController::createUI(){
-    return new ControllerUI(this, new JavascriptControllerUI(this));
+JavascriptControllerUI::~JavascriptControllerUI()
+{
+}
+
+InspectorEditor * JavascriptControllerUI::getEditor()
+{
+	return new JavascriptControllerEditor(this);
 }
