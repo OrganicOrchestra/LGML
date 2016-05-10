@@ -70,17 +70,6 @@ ControllableInspector.cpp
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
-VSTNode.h
-	line : 88
-		// TODO check that it actually works
-
-	line : 105
-		//@Martin i addedd this because when not playing, it crashed
-
-	line : 109
-		// TODO check if scoped pointer deletes old innerPlugin
-
-
 NodeConnectionEditor.cpp
 	line : 389
 		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
@@ -96,10 +85,15 @@ TimeManager.h
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
-JavascriptControllerUI.cpp
-	line : 12
-		// @ ben this structure in general avoid cyclic dependencyes and unnecessary includes in non UI class
-		// should we change every thing (compile time should decrease a bit..)
+VSTNode.h
+	line : 88
+		// TODO check that it actually works
+
+	line : 105
+		//@Martin i addedd this because when not playing, it crashed
+
+	line : 109
+		// TODO check if scoped pointer deletes old innerPlugin
 
 
 NodeBase.cpp

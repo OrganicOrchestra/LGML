@@ -10,7 +10,7 @@
 
 #include "JavascriptControllerEditor.h"
 #include "JsEnvironmentUI.h"
-#include "JsEnvironment.h"
+
 
 JavascriptControllerEditor::JavascriptControllerEditor(JavascriptControllerUI * jsControllerUI) :
 	OSCControllerEditor(jsControllerUI),
@@ -31,24 +31,5 @@ void JavascriptControllerEditor::resizedInternalOSC(Rectangle<int> r)
 }
 
 
-JavascriptControllerUI(JsEnvironment * env) {
-	oscUI = new OSCDirectControllerContentUI();
-
-	addAndMakeVisible(oscUI);
-	
-}
-
-void init() override {
-	oscUI->controller = controller;
-	oscUI->cui = cui;
-	oscUI->init();
-}
 
 
-
-void resized()override {
-	Rectangle<int> area = getLocalBounds();
-	oscUI->setBounds(area);
-}
-ScopedPointer<OSCDirectControllerContentUI> oscUI;
-ScopedPointer<JsEnvironmentUI> scriptUI;

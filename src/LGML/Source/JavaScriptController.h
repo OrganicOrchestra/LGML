@@ -13,7 +13,7 @@
 
 
 #include "OSCDirectController.h"
-class JsEnvironment;
+#include "JsEnvironment.h"
 
 class JavascriptController : public OSCDirectController ,public JsEnvironment{
 public:
