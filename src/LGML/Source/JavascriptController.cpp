@@ -18,6 +18,10 @@ JavascriptController::JavascriptController():JsEnvironment("OSC.JSController"){
 
     buildLocalEnv();
 
+    jsPath = addStringParameter("js File Path", "path from where to load JS", "");
+    jsPath->isControllableExposed = false;
+
+
 }
 JavascriptController::~JavascriptController(){
 
@@ -163,12 +167,16 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
     if(p==nameParam){
         setNameSpaceName("OSC."+nameParam->stringValue());
     }
+    else if (p==jsPath){
+        loadFile(File(jsPath->value));
+    }
 };
 
 
 void JavascriptController::newJsFileLoaded(){
 
     nonValidMessages.clear();
+    jsPath->setValue(currentFile.getFullPathName(),true);
     hasAnyMsgMethod = getRootObjectProperties().getVarPointer("onAnyMsg")!=nullptr;
     
     

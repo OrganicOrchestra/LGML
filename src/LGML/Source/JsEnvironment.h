@@ -31,8 +31,6 @@ public:
 
 
     // helpers
-
-
     void    addToLocalNamespace(const String & elem,DynamicObject *target);
     void setLocalNamespace(DynamicObject & target);
 
@@ -40,11 +38,6 @@ public:
     void    loadFile(const File & f);
     void    reloadFile();
     void    showFile();
-
-
-
-
-
 
     static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
 
@@ -61,6 +54,7 @@ public:
     String getParentName();
     File currentFile;
 
+    // allow to call function
     var callFunction (const Identifier& function, const var::NativeFunctionArgs& args, Result* result);
     const NamedValueSet & getRootObjectProperties();
 private:

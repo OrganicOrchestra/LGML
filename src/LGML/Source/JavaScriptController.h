@@ -40,6 +40,8 @@ private:
 
     DynamicObject * createOSCJsObject();
 
+
+    StringParameter * jsPath;
 };
 
 
