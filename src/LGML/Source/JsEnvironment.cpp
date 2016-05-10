@@ -99,6 +99,8 @@ void JsEnvironment::internalLoadFile(const File &f ){
         newJsFileLoaded();
     }
 
+    jsListeners.call(&Listener::newJsFileLoaded,(bool)r);
+
 }
 
 var JsEnvironment::callFunction (const Identifier& function, const var::NativeFunctionArgs& args, Result* result){

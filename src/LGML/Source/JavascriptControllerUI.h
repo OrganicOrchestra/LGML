@@ -30,9 +30,10 @@ public:
         oscUI->cui = cui;
         oscUI->init();
     }
-    class ScriptUI : public Component,public Button::Listener{
+    class ScriptUI : public Component,public Button::Listener,public JsEnvironment::Listener{
     public:
         ScriptUI(JsEnvironment * _env):env(_env){
+            env->addListener(this);
             loadFileB.setButtonText("Load");
             addAndMakeVisible(loadFileB);
             loadFileB.addListener(this);
@@ -45,23 +46,35 @@ public:
             addAndMakeVisible(openB);
             openB.addListener(this);
 
-            logEnvB.setButtonText("LogEnv");
+            logEnvB.setButtonText("Log");
             addAndMakeVisible(logEnvB);
             logEnvB.addListener(this);
 
+
+            validJsLed.setFill(FillType(Colours::red));
+            addAndMakeVisible(validJsLed);
+
+        }
+        ~ScriptUI(){
+            env->removeListener(this);
         }
 
         TextButton loadFileB;
         TextButton reloadB;
         TextButton openB;
         TextButton logEnvB;
+        DrawablePath validJsLed;
+
 
 
 
         void resized()override{
             Rectangle<int> area = getLocalBounds().reduced(2);
             const int logEnvSize = 30;
-            const int step = (area.getWidth()- logEnvSize)/3 ;
+            const int ledSize = 10;
+            const int step = (area.getWidth()- logEnvSize-ledSize)/3 ;
+            buildLed(ledSize);
+            validJsLed.setBounds(area.removeFromLeft(ledSize).reduced(0, (area.getHeight()-ledSize)/2));
             loadFileB.setBounds(area.removeFromLeft(step).reduced(2));
             reloadB.setBounds(area.removeFromLeft(step).reduced(2));
             openB.setBounds(area.removeFromLeft(step).reduced(2));
@@ -69,6 +82,15 @@ public:
 
         }
 
+        void buildLed( int size){
+            Path circle;
+            circle.addEllipse(Rectangle<float>(0,0,size,size));
+            validJsLed.setPath(circle);
+        }
+
+        void newJsFileLoaded(bool s) override{
+            validJsLed.setFill(FillType(s?Colours::green:Colours::red));
+        }
 
         void buttonClicked (Button* b) override {
             if(b== &loadFileB){

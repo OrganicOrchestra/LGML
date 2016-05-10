@@ -21,6 +21,7 @@ public:
 
     // should be implemented to uild localenv
     virtual void buildLocalEnv() = 0;
+
     // sub classes can check new namespaces from this function
     virtual void newJsFileLoaded(){};
 
@@ -46,6 +47,21 @@ public:
 
     void clearNamespace();
 
+
+
+    class Listener{
+    public:
+        virtual ~Listener(){};
+        // listeners can check new namespaces from this function
+        virtual void newJsFileLoaded(bool state)=0;
+
+    };
+
+
+    void addListener(Listener * l){jsListeners.add(l);}
+    void removeListener(Listener * l){jsListeners.remove(l);}
+
+
     protected :
     // dot separated string representing localNamespace
     String localNamespace;
@@ -57,14 +73,19 @@ public:
     // allow to call function
     var callFunction (const Identifier& function, const var::NativeFunctionArgs& args, Result* result);
     const NamedValueSet & getRootObjectProperties();
+
+
+
 private:
+
+    ListenerList<Listener> jsListeners;
 
     var localEnvironment;
     void internalLoadFile(const File &);
-    
+
     bool _hasValidJsFile;
-
-
+    
+    
     JavascriptEngine jsEngine;
     
 };
