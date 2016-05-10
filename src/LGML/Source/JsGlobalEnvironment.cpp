@@ -12,6 +12,7 @@
 #include "DebugHelpers.h"
 #include "TimeManager.h"
 #include "NodeManager.h"
+#include "ControlManager.h"
 
 
 juce_ImplementSingleton(JsGlobalEnvironment);
@@ -25,6 +26,8 @@ JsGlobalEnvironment::JsGlobalEnvironment(){
     linkToControllableContainer("time",TimeManager::getInstance());
     linkToControllableContainer("node",NodeManager::getInstance());
 
+    // TODO: use a bit of ControllableContainer in controllers, its empty atm
+//    linkToControllableContainer("controllers",ControllerManager::getInstance());
 }
 
 void JsGlobalEnvironment::removeNamespace(const String & ns){removeNamespaceFromObject(ns,getEnv());}

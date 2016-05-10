@@ -9,6 +9,7 @@
 */
 
 #include "JsContainerSync.h"
+#include "JsHelpers.h"
 
 
 void JsContainerSync::linkToControllableContainer(const String & controllableNamespace,ControllableContainer * c){
@@ -68,7 +69,7 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
             DynamicObject* dd= new DynamicObject();
 
             dd->setProperty("get", p->value);
-            dd->setProperty("_ptr", (int64)p);
+            dd->setProperty(ptrIdentifier, (int64)p);
             dd->setMethod("set", setControllable);
             d->setProperty(p->shortName, dd);
 
@@ -77,7 +78,7 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
         else if(Trigger * t = dynamic_cast<Trigger*>(c)){
             DynamicObject* dd= new DynamicObject();
             dd->setMethod("t", setControllable);
-            dd->setProperty("_ptr", (int64)t);
+            dd->setProperty(ptrIdentifier, (int64)t);
             d->setProperty(t->shortName, dd);
 
         }
@@ -86,8 +87,6 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
         DynamicObject * childObject = createDynamicObjectFromContainer(c,d);
         if(!c->skipControllableNameInAddress)
             d->setProperty(c->shortName, childObject);
-        
-        
     }
     
     return d;
@@ -95,8 +94,7 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
 
 var JsContainerSync::setControllable(const juce::var::NativeFunctionArgs& a){
 
-    DynamicObject * d = a.thisObject.getDynamicObject();
-    Controllable * c = dynamic_cast<Controllable*>((Controllable*)(int64)d->getProperty("_ptr"));
+    Controllable * c = getObjectPtrFromJS<Controllable>(a);
     bool success = false;
 
     if (c != nullptr)

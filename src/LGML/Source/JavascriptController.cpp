@@ -103,14 +103,13 @@ String JavascriptController::getJavaScriptFunctionName(const String & n){
     }
     arr.joinIntoString("");
     return "on"+methodName;
-    //    return "OSC."+jsName+".on"+methodName;
 
 }
 
 var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
     if(a.numArguments<2 )return var::undefined();
     if( !a.arguments[0].isString() ){
-        LOG("jsOSC send first argument must be a string");
+        LOG("jsOSC send first argument must be an address string");
         return var::undefined();
     }
     String address = a.arguments[0];
@@ -119,9 +118,7 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
         return var::undefined();
     }
 
-
-    DynamicObject * d = a.thisObject.getDynamicObject();
-    JavascriptController * c = dynamic_cast<JavascriptController*>((JavascriptController*)(int64)d->getProperty("_ptr"));
+    JavascriptController * c = getObjectPtrFromJS<JavascriptController>(a);
     OSCMessage msg(address);
     for(int i = 1 ; i < a.numArguments ; i++){
         var v = a.arguments[i];
@@ -138,7 +135,7 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
 
 DynamicObject * JavascriptController::createOSCJsObject(){
     DynamicObject * d = new DynamicObject();
-    d->setProperty("_ptr", (int64)this);
+    d->setProperty(ptrIdentifier, (int64)this);
     d->setMethod("send", sendOSCFromJS);
     return d;
 

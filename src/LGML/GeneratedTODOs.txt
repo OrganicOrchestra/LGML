@@ -50,6 +50,12 @@ NodeConnectionUI.cpp
 		//but I'm up for any other fancy complexoid cuved Path algos that never touch a node
 
 
+JsGlobalEnvironment.cpp
+	line : 28
+		// TODO: use a bit of ControllableContainer in controllers, its empty atm
+		//    linkToControllableContainer("controllers",ControllerManager::getInstance());
+
+
 ShapeShifterContainer.cpp
 	line : 241
 		//@ben what to we do for that?

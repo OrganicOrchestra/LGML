@@ -28,6 +28,7 @@ public:
     // can check that if want to avoid unnecessary (and potentially unsecure) method calls on non-valid jsFile
     bool hasValidJsFile(){return _hasValidJsFile;}
 
+    
     void    setNameSpaceName(const String &);
 
     // helpers
@@ -53,7 +54,6 @@ public:
     };
     void addListener(Listener * l){jsListeners.add(l);}
     void removeListener(Listener * l){jsListeners.remove(l);}
-
 
 protected :
     // dot separated string representing localNamespace
@@ -82,6 +82,8 @@ private:
 
 
 };
+
+
 
 
 

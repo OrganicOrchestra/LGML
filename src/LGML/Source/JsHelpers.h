@@ -11,11 +11,30 @@
 #ifndef JSHELPERS_H_INCLUDED
 #define JSHELPERS_H_INCLUDED
 
-#include <sstream>
-
-#include <iomanip>
 
 
+static const Identifier jsLocalIdentifier("local");
+static const Identifier jsGlobalIdentifier("lgml");
+static const Identifier ptrIdentifier("_ptr");
+static const Array<Identifier> coreJsClasses = {
+    jsLocalIdentifier,
+    jsGlobalIdentifier,
+    Identifier("Object"),
+    Identifier("Array"),
+    Identifier("String"),
+    Identifier("Math"),
+    Identifier("JSON"),
+    Identifier("Integer")
+};
+
+
+
+template<class T>
+inline T* getObjectPtrFromJS(const var::NativeFunctionArgs & a){
+    DynamicObject * d = a.thisObject.getDynamicObject();
+    if(d==nullptr)return nullptr;
+    return dynamic_cast<T*>((T*)(int64)d->getProperty(ptrIdentifier));
+}
 
 inline void addToNamespace(const String & elemName,DynamicObject *target,DynamicObject * global){
     jassert(target!=nullptr);
@@ -89,8 +108,8 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
 
         if(!vv->isObject()){
             Identifier name = v.getName(i);
-            static const Identifier ptrId("_ptr");
-            if(name!= ptrId){
+
+            if(name!= ptrIdentifier){
                 res+= (initedComma?", ":"")+name.toString() + (showValue?'('+ vv->toString()+")":"") ;
                 initedComma = true;
             }
@@ -125,23 +144,6 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
 }
 
 
-
-//////////////////
-// helperclasses
-
-
-static const Identifier jsLocalIdentifier("local");
-static const Identifier jsGlobalIdentifier("lgml");
-static const Array<Identifier> coreJsClasses = {
-    jsLocalIdentifier,
-    jsGlobalIdentifier,
-    Identifier("Object"),
-    Identifier("Array"),
-    Identifier("String"),
-    Identifier("Math"),
-    Identifier("JSON"),
-    Identifier("Integer")
-};
 
 
 #endif  // JSHELPERS_H_INCLUDED
