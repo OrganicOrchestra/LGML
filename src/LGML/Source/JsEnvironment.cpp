@@ -110,7 +110,7 @@ void JsEnvironment::setLocalNamespace(DynamicObject & target){
 }
 
 
-void JsEnvironment::setNameSpaceName(const String & s){
+void JsEnvironment::setNamespaceName(const String & s){
 
     DynamicObject * d = getNamespaceFromObject(getParentName(),getGlobalEnv());
     jassert(d!=nullptr);

@@ -28,21 +28,19 @@ public:
     // can check that if want to avoid unnecessary (and potentially unsecure) method calls on non-valid jsFile
     bool hasValidJsFile(){return _hasValidJsFile;}
 
-    
-    void    setNameSpaceName(const String &);
+    // dynamically update namespace name
+    void    setNamespaceName(const String &);
 
     // helpers
-    void    addToLocalNamespace(const String & elem,DynamicObject *target);
+
     void    setLocalNamespace(DynamicObject & target);
-    void    removeNamespace(const String & jsNamespace);
     void    clearNamespace();
+
     void    loadFile(const File & f);
     void    reloadFile();
     void    showFile();
 
-    static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
 
-    DynamicObject * getLocalEnv(){return localEnvironment.getDynamicObject();}
     String printAllNamespace();
 
     class Listener{
@@ -57,20 +55,32 @@ public:
     void setAutoWatch(bool );
 
 protected :
-    // dot separated string representing localNamespace
-    String localNamespace;
+
+    var callFunction  (const Identifier& function, const Array<var> & args, Result* result);
+
+    static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
+    DynamicObject * getLocalEnv(){return localEnvironment.getDynamicObject();}
+
+
     // module name is the last element of dot separated localNamespace
     String getModuleName();
     String getParentName();
-    File currentFile;
+    String getCurrentFilePath(){return currentFile.getFullPathName();};
 
-
-    var callFunction  (const Identifier& function, const Array<var> & args, Result* result);
     const NamedValueSet & getRootObjectProperties();
 
 
 
 private:
+
+
+    void    addToLocalNamespace(const String & elem,DynamicObject *target);
+    void    removeNamespace(const String & jsNamespace);
+
+    // dot separated string representing localNamespace
+    String localNamespace;
+    File currentFile;
+
     ListenerList<Listener> jsListeners;
 
     var localEnvironment;

@@ -144,7 +144,7 @@ DynamicObject * JavascriptController::createOSCJsObject(){
 void JavascriptController::onContainerParameterChanged(Parameter * p) {
     OSCDirectController::onContainerParameterChanged(p);
     if(p==nameParam){
-        setNameSpaceName("OSC."+nameParam->stringValue());
+        setNamespaceName("OSC."+nameParam->stringValue());
     }
     else if (p==jsPath){
         loadFile(File(jsPath->value));
@@ -153,7 +153,7 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
 
 
 void JavascriptController::newJsFileLoaded(){
-    jsPath->setValue(currentFile.getFullPathName(),true);
+    jsPath->setValue(getCurrentFilePath(),true);
     
     
     
