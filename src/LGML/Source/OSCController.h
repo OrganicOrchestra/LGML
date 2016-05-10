@@ -32,22 +32,33 @@ public:
     void setupReceiver();
     void setupSender();
 
-    virtual Result processMessage(const OSCMessage & msg);
+    void processMessage(const OSCMessage & msg);
+	virtual bool processMessageInternal(const OSCMessage &msg);
 
     virtual void onContainerParameterChanged(Parameter * p) override;
 
+	virtual void oscMessageReceived(const OSCMessage & message) override;
+	virtual void oscBundleReceived(const OSCBundle& bundle) override;
+
+
+	virtual ControllerUI * createUI() override;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCController)
 
-    // Inherited via Listener
-private:
-    virtual void oscMessageReceived(const OSCMessage & message) override;
-    virtual void oscBundleReceived(const OSCBundle& bundle) override {
+		//Listener
+	class  OSCControllerListener
+	{
+	public:
+		/** Destructor. */
+		virtual ~OSCControllerListener() {}
+		virtual void messageProcessed(const OSCMessage & msg, bool success) = 0;
+	};
 
-        for (auto &m : bundle)
-        {
-            processMessage(m.getMessage());
-        }
-    }
+	ListenerList<OSCControllerListener> oscListeners;
+	void addOSCControllerListener(OSCControllerListener* newListener) { oscListeners.add(newListener); }
+	void removeOSCControllerListener(OSCControllerListener* listener) { oscListeners.remove(listener); }
+
+    
 };
 
 

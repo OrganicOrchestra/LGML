@@ -14,8 +14,9 @@
 
 #include "NodeManager.h"
 #include "NodeBaseUI.h"
-#include "SelectableComponentHandler.h"
+//#include "SelectableComponentHandler.h"
 #include "ShapeShifterContent.h"
+#include "InspectableComponent.h"
 
 class NodeConnectionUI;
 
@@ -23,15 +24,13 @@ class NodeConnectionUI;
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public ShapeShifterContent, public NodeManager::Listener, public SelectableComponent::SelectableListener
+class NodeManagerUI : public ShapeShifterContent, public NodeManager::Listener, public InspectableComponent::InspectableListener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
     ~NodeManagerUI();
 
     NodeManager * nodeManager;
-    static SelectableComponentHandler selectableHandler;
-
 
     OwnedArray<NodeBaseUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
@@ -48,8 +47,9 @@ public:
     virtual void connectionRemoved(NodeConnection *) override;
 
 	//NodeUI Listener
-	virtual void componentSelected(SelectableComponent *) override;
-	virtual void componentDeselected(SelectableComponent *) override;
+	//virtual void componentSelected(SelectableComponent *) override;
+	//virtual void componentDeselected(SelectableComponent *) override;
+	virtual void inspectableSelectionChanged(InspectableComponent *) override;
 
     void addNodeUI(NodeBase * node);
     void removeNodeUI(NodeBase * node);
@@ -87,9 +87,6 @@ public:
     static void createNodeFromIndexAtPos(int modalResult,Viewport * c,int  maxResult);
     Rectangle<int> minBounds;
 
-
-
-
 private:
     bool isSelectingNodes;
     class SelectingRect :public Component{
@@ -102,31 +99,8 @@ private:
     SelectingRect selectingBounds;
     void checkSelected();
 
-
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 
 };
-
-/*
-class NodeManagerUIViewport : public Viewport{
-public:
-    NodeManagerUIViewport(NodeManagerUI * _nmui):Viewport("NodeManagerViewPort"),nmui(_nmui){
-        setScrollBarsShown(true,true);
-        setViewedComponent(nmui,false);
-    }
-    void visibleAreaChanged (const Rectangle<int>&)override{
-        Point <int> mouse = getMouseXYRelative();
-        autoScroll(mouse.x, mouse.y, 100, 10);
-
-    }
-    void resized() override{
-            nmui->minBounds = getLocalBounds();
-            nmui->resizeToFitNodes();
-    }
-
-    NodeManagerUI * nmui;
-};
-*/
 
 #endif  // NODEMANAGERUI_H_INCLUDED

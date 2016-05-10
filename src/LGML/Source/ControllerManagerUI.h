@@ -35,8 +35,6 @@ public:
 
     ControllerUI * getUIForController(Controller * controller);
 
-    void placeElements(); //update size when controllerUIs added or removed
-
     void paint (Graphics&)override;
     void resized()override;
 
@@ -49,19 +47,5 @@ private:
     virtual void controllerAdded(Controller *) override;
     virtual void controllerRemoved(Controller *) override;
 };
-
-
-/*
-class ControllerManagerViewport : public Viewport
-{
-public:
-    ControllerManagerViewport(ControllerManager * controllerManager);
-
-    ControllerManagerUI * cmui;
-
-    void resized() override;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerViewport)
-};
-*/
 
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED

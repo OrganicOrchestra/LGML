@@ -33,10 +33,11 @@ Engine::~Engine(){
     NodeManager::deleteInstance();
     VSTManager::deleteInstance();
     PresetManager::deleteInstance();
-	ControlRuleManager::deleteInstance();
+	ControllerManager::deleteInstance();
     JsGlobalEnvironment::deleteInstance();
     Logger::setCurrentLogger(nullptr);
     LGMLLogger::deleteInstance();
+    RuleManager::deleteInstance();
 }
 
 void Engine::parseCommandline(const String & commandLine){

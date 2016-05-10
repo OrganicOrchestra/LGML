@@ -25,6 +25,8 @@ public:
     var maximumValue;
     var value;
 
+	bool isEditable;
+
     bool isPresettable;
     bool isOverriden;
 
@@ -45,13 +47,14 @@ public:
     void notifyValueChanged();
 
     //Listener
-    class  Listener
-    {
-    public:
-        /** Destructor. */
-        virtual ~Listener() {}
-        virtual void parameterValueChanged(Parameter * p) = 0;
+	class  Listener
+	{
+	public:
+		/** Destructor. */
+		virtual ~Listener() {}
+		virtual void parameterValueChanged(Parameter * p) = 0;
     };
+
     ListenerList<Listener> listeners;
     void addParameterListener(Listener* newListener) { listeners.add(newListener); }
     void removeParameterListener(Listener* listener) { listeners.remove(listener); }

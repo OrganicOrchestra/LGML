@@ -14,7 +14,7 @@
 #include "Style.h"
 #include "ConnectorComponent.h"
 
-#include "SelectableComponent.h"
+#include "InspectableComponent.h"
 
 class NodeBase;
 class NodeManagerUI;
@@ -28,7 +28,7 @@ class NodeManagerUI;
 NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
 class NodeBaseUI    : 
-	public SelectableComponent, 
+	public InspectableComponent, 
 	public Parameter::Listener
 {
 public:
@@ -45,22 +45,18 @@ public:
     virtual void setNode(NodeBase * node);
     // receives x y position from node parameters
     void paint (Graphics&)override;
-    void resized()override;
+	void paintOverChildren(Graphics &) override {} //cancel default yellow border behavior
+
+	void resized()override;
 
 
     void childBoundsChanged (Component*)override;
 	void parameterValueChanged(Parameter * p) override;
-
     
     void mouseDown(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e)  override;
     void moved()override;
-
-
-    //SelectableComponent
-    void internalSetSelected(bool _selected)override;
-    void paintOverChildren(Graphics &) override {} //cancel default yellow border behavior
 
     //ui
     class MainContainer : public Component

@@ -19,9 +19,10 @@ public:
     OSCDirectController();
     virtual ~OSCDirectController();
 
-    virtual Result processMessage(const OSCMessage &msg) override;
 
-    ControllerUI * createUI() override;
+    bool processMessageInternal(const OSCMessage &msg) override;
+
+
 
     // Inherited via Listener
     virtual void controllableAdded(Controllable * c) override;
@@ -30,6 +31,7 @@ public:
     virtual void controllableContainerRemoved(ControllableContainer * cc) override;
 
     virtual void controllableFeedbackUpdate(Controllable * c) override;
+
 
     public:
         //Listener
@@ -44,6 +46,7 @@ public:
         ListenerList<OSCDirectListener> oscDirectlisteners;
         void addOSCDirectParameterListener(OSCDirectListener* newListener) { oscDirectlisteners.add(newListener); }
         void removeOSCDirectParameterListener(OSCDirectListener* listener) { oscDirectlisteners.remove(listener); }
+
 
 
     

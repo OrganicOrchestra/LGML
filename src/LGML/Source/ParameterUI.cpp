@@ -14,7 +14,8 @@
 ParameterUI::ParameterUI(Parameter * parameter) :
 parameter(parameter),
 ControllableUI(parameter),
-showLabel(true)
+showLabel(true),
+showValue(true)
 {
     parameter->addParameterListener(this);
 
@@ -24,6 +25,7 @@ ParameterUI::~ParameterUI()
 {
     if(parameter.get())parameter->removeParameterListener(this);
 }
+
 
 
 bool ParameterUI::shouldBailOut(){

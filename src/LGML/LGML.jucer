@@ -48,6 +48,25 @@
         <FILE id="a4XrkQ" name="TimeManagerUI.h" compile="0" resource="0" file="Source/TimeManagerUI.h"/>
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
+        <GROUP id="{61D87EF1-3422-1DC8-D38C-6AFB74778DB0}" name="Inspector">
+          <FILE id="NPG3vZ" name="CustomEditor.cpp" compile="1" resource="0"
+                file="Source/CustomEditor.cpp"/>
+          <FILE id="omqUJT" name="CustomEditor.h" compile="0" resource="0" file="Source/CustomEditor.h"/>
+          <FILE id="E3lBba" name="GenericControllableContainerEditor.cpp" compile="1"
+                resource="0" file="Source/GenericControllableContainerEditor.cpp"/>
+          <FILE id="NZ4E1O" name="GenericControllableContainerEditor.h" compile="0"
+                resource="0" file="Source/GenericControllableContainerEditor.h"/>
+          <FILE id="mHgWDa" name="InspectableComponent.cpp" compile="1" resource="0"
+                file="Source/InspectableComponent.cpp"/>
+          <FILE id="lDBoze" name="InspectableComponent.h" compile="0" resource="0"
+                file="Source/InspectableComponent.h"/>
+          <FILE id="XIildO" name="Inspector.cpp" compile="1" resource="0" file="Source/Inspector.cpp"/>
+          <FILE id="qcZdcW" name="Inspector.h" compile="0" resource="0" file="Source/Inspector.h"/>
+          <FILE id="IIhXNR" name="InspectorEditor.cpp" compile="1" resource="0"
+                file="Source/InspectorEditor.cpp"/>
+          <FILE id="lfW5Lc" name="InspectorEditor.h" compile="0" resource="0"
+                file="Source/InspectorEditor.h"/>
+        </GROUP>
         <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
           <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="1"
                 resource="0" file="Source/ControllableContainerEditor.cpp"/>
@@ -200,40 +219,61 @@
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
         <GROUP id="{36D57403-1E0C-65BD-9157-C17EE1560F96}" name="rules">
-          <FILE id="OzYofE" name="ControlRule.cpp" compile="1" resource="0" file="Source/ControlRule.cpp"/>
-          <FILE id="MrvGpI" name="ControlRule.h" compile="0" resource="0" file="Source/ControlRule.h"/>
-          <FILE id="JPVX2y" name="ControlRuleManager.cpp" compile="1" resource="0"
-                file="Source/ControlRuleManager.cpp"/>
-          <FILE id="CThc0S" name="ControlRuleManager.h" compile="0" resource="0"
-                file="Source/ControlRuleManager.h"/>
-          <FILE id="E5gTmD" name="ControlRuleManagerUI.cpp" compile="1" resource="0"
-                file="Source/ControlRuleManagerUI.cpp"/>
-          <FILE id="ymAWfP" name="ControlRuleManagerUI.h" compile="0" resource="0"
-                file="Source/ControlRuleManagerUI.h"/>
-          <FILE id="OuEzpC" name="ControlRuleUI.cpp" compile="1" resource="0"
-                file="Source/ControlRuleUI.cpp"/>
-          <FILE id="GoicT1" name="ControlRuleUI.h" compile="0" resource="0" file="Source/ControlRuleUI.h"/>
-          <FILE id="c2Wegl" name="ParameterRule.cpp" compile="1" resource="0"
-                file="Source/ParameterRule.cpp"/>
-          <FILE id="VL1ZQR" name="ParameterRule.h" compile="0" resource="0" file="Source/ParameterRule.h"/>
-          <FILE id="vqOlIQ" name="ScriptedRule.cpp" compile="1" resource="0"
-                file="Source/ScriptedRule.cpp"/>
-          <FILE id="WSheQZ" name="ScriptedRule.h" compile="0" resource="0" file="Source/ScriptedRule.h"/>
-          <FILE id="YrCmQ7" name="TriggerRule.cpp" compile="1" resource="0" file="Source/TriggerRule.cpp"/>
-          <FILE id="srPvRp" name="TriggerRule.h" compile="0" resource="0" file="Source/TriggerRule.h"/>
+          <GROUP id="{655CE5BA-C8E0-B650-7BA2-403CFAC89DA0}" name="ui">
+            <FILE id="bJHxBt" name="RuleEditor.cpp" compile="1" resource="0" file="Source/RuleEditor.cpp"/>
+            <FILE id="Zl2liz" name="RuleEditor.h" compile="0" resource="0" file="Source/RuleEditor.h"/>
+            <FILE id="AA8LJg" name="RuleConditionGroupUI.cpp" compile="1" resource="0"
+                  file="Source/RuleConditionGroupUI.cpp"/>
+            <FILE id="HFx1Jv" name="RuleConditionGroupUI.h" compile="0" resource="0"
+                  file="Source/RuleConditionGroupUI.h"/>
+            <FILE id="IuGtIV" name="RuleConditionUI.h" compile="0" resource="0"
+                  file="Source/RuleConditionUI.h"/>
+            <FILE id="j85rFO" name="RuleConditionUI.cpp" compile="1" resource="0"
+                  file="Source/RuleConditionUI.cpp"/>
+            <FILE id="V6g0AN" name="RuleConsequenceUI.cpp" compile="1" resource="0"
+                  file="Source/RuleConsequenceUI.cpp"/>
+            <FILE id="WWaie0" name="RuleConsequenceUI.h" compile="0" resource="0"
+                  file="Source/RuleConsequenceUI.h"/>
+            <FILE id="E5gTmD" name="RuleManagerUI.cpp" compile="1" resource="0"
+                  file="Source/RuleManagerUI.cpp"/>
+            <FILE id="ymAWfP" name="RuleManagerUI.h" compile="0" resource="0" file="Source/RuleManagerUI.h"/>
+            <FILE id="OuEzpC" name="RuleUI.cpp" compile="1" resource="0" file="Source/RuleUI.cpp"/>
+            <FILE id="GoicT1" name="RuleUI.h" compile="0" resource="0" file="Source/RuleUI.h"/>
+          </GROUP>
+          <FILE id="OzYofE" name="Rule.cpp" compile="1" resource="0" file="Source/Rule.cpp"/>
+          <FILE id="MrvGpI" name="Rule.h" compile="0" resource="0" file="Source/Rule.h"/>
+          <FILE id="LmzWTF" name="RuleCondition.cpp" compile="1" resource="0"
+                file="Source/RuleCondition.cpp"/>
+          <FILE id="NHF780" name="RuleCondition.h" compile="0" resource="0" file="Source/RuleCondition.h"/>
+          <FILE id="WsTckC" name="RuleConditionGroup.cpp" compile="1" resource="0"
+                file="Source/RuleConditionGroup.cpp"/>
+          <FILE id="nf5ZZb" name="RuleConditionGroup.h" compile="0" resource="0"
+                file="Source/RuleConditionGroup.h"/>
+          <FILE id="H4Rs1E" name="RuleConsequence.cpp" compile="1" resource="0"
+                file="Source/RuleConsequence.cpp"/>
+          <FILE id="k3aAY2" name="RuleConsequence.h" compile="0" resource="0"
+                file="Source/RuleConsequence.h"/>
+          <FILE id="JPVX2y" name="RuleManager.cpp" compile="1" resource="0" file="Source/RuleManager.cpp"/>
+          <FILE id="CThc0S" name="RuleManager.h" compile="0" resource="0" file="Source/RuleManager.h"/>
         </GROUP>
         <GROUP id="{4428FDD1-4E1A-F199-46F2-F7D32DF545CA}" name="controllers">
+          <GROUP id="{342F6F3B-20C5-E920-E6FA-39C9A8531208}" name="variables">
+            <FILE id="S3eYKu" name="ControlVariable.cpp" compile="1" resource="0"
+                  file="Source/ControlVariable.cpp"/>
+            <FILE id="sa2ONX" name="ControlVariable.h" compile="0" resource="0"
+                  file="Source/ControlVariable.h"/>
+            <FILE id="NSHW03" name="ControlVariableUI.cpp" compile="1" resource="0"
+                  file="Source/ControlVariableUI.cpp"/>
+            <FILE id="GGrMf1" name="ControlVariableUI.h" compile="0" resource="0"
+                  file="Source/ControlVariableUI.h"/>
+          </GROUP>
           <GROUP id="{AC428C7B-CE35-EA62-F640-20F5072B53F7}" name="base">
             <FILE id="I6uMd3" name="Controller.cpp" compile="1" resource="0" file="Source/Controller.cpp"/>
             <FILE id="IUdrpc" name="Controller.h" compile="0" resource="0" file="Source/Controller.h"/>
-            <FILE id="AC3XZX" name="ControllerContentUI.cpp" compile="1" resource="0"
-                  file="Source/ControllerContentUI.cpp"/>
-            <FILE id="NJmX1Y" name="ControllerContentUI.h" compile="0" resource="0"
-                  file="Source/ControllerContentUI.h"/>
-            <FILE id="se5mC9" name="ControllerHeaderUI.cpp" compile="1" resource="0"
-                  file="Source/ControllerHeaderUI.cpp"/>
-            <FILE id="lrbb4S" name="ControllerHeaderUI.h" compile="0" resource="0"
-                  file="Source/ControllerHeaderUI.h"/>
+            <FILE id="Y77xfT" name="ControllerEditor.cpp" compile="1" resource="0"
+                  file="Source/ControllerEditor.cpp"/>
+            <FILE id="vnGEqu" name="ControllerEditor.h" compile="0" resource="0"
+                  file="Source/ControllerEditor.h"/>
             <FILE id="YugMP3" name="ControllerUI.cpp" compile="1" resource="0"
                   file="Source/ControllerUI.cpp"/>
             <FILE id="OxWQWW" name="ControllerUI.h" compile="0" resource="0" file="Source/ControllerUI.h"/>
@@ -265,11 +305,29 @@
                     file="Source/OSCDirectController.cpp"/>
               <FILE id="CFXtw0" name="OSCDirectController.h" compile="0" resource="0"
                     file="Source/OSCDirectController.h"/>
-              <FILE id="c3uO0S" name="OSCDirectControllerContentUI.cpp" compile="1"
-                    resource="0" file="Source/OSCDirectControllerContentUI.cpp"/>
-              <FILE id="maPiOq" name="OSCDirectControllerContentUI.h" compile="0"
-                    resource="0" file="Source/OSCDirectControllerContentUI.h"/>
             </GROUP>
+            <GROUP id="{7DBD17EB-8FCA-E66F-5D95-E8DD5389A639}" name="custom">
+              <FILE id="KFx8wx" name="OSCCustomController.cpp" compile="1" resource="0"
+                    file="Source/OSCCustomController.cpp"/>
+              <FILE id="LSh9JF" name="OSCCustomController.h" compile="0" resource="0"
+                    file="Source/OSCCustomController.h"/>
+              <FILE id="HqxUyX" name="OSCCustomControllerEditor.cpp" compile="1"
+                    resource="0" file="Source/OSCCustomControllerEditor.cpp"/>
+              <FILE id="wUvps0" name="OSCCustomControllerEditor.h" compile="0" resource="0"
+                    file="Source/OSCCustomControllerEditor.h"/>
+              <FILE id="vOgve3" name="OSCCustomControllerUI.cpp" compile="1" resource="0"
+                    file="Source/OSCCustomControllerUI.cpp"/>
+              <FILE id="A9vEbB" name="OSCCustomControllerUI.h" compile="0" resource="0"
+                    file="Source/OSCCustomControllerUI.h"/>
+            </GROUP>
+            <FILE id="TG6FwA" name="OSCControllerUI.cpp" compile="1" resource="0"
+                  file="Source/OSCControllerUI.cpp"/>
+            <FILE id="f7nJvq" name="OSCControllerUI.h" compile="0" resource="0"
+                  file="Source/OSCControllerUI.h"/>
+            <FILE id="mmssET" name="OSCControllerEditor.cpp" compile="1" resource="0"
+                  file="Source/OSCControllerEditor.cpp"/>
+            <FILE id="Oh9kF0" name="OSCControllerEditor.h" compile="0" resource="0"
+                  file="Source/OSCControllerEditor.h"/>
             <FILE id="csknSp" name="OSCController.cpp" compile="1" resource="0"
                   file="Source/OSCController.cpp"/>
             <FILE id="eBYQu2" name="OSCController.h" compile="0" resource="0" file="Source/OSCController.h"/>

@@ -26,6 +26,7 @@
 #define AUDIO_COLOR     Colours::cadetblue
 #define DATA_COLOR      Colours::pink
 
+#define FEEDBACK_COLOR		Colour(0xff18b5ef)
 #define PARAMETER_FRONT_COLOR Colour(0xff99ff66)
 
 

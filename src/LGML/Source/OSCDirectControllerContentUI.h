@@ -11,12 +11,12 @@
 #ifndef OSCDIRECTCONTROLLERCONTENTUI_H_INCLUDED
 #define OSCDIRECTCONTROLLERCONTENTUI_H_INCLUDED
 
-#include "ControllerContentUI.h"
+
 #include "OSCDirectController.h"
 #include "StringParameterUI.h"
 #include "TriggerBlinkUI.h"
 
-class OSCDirectControllerContentUI : public ControllerContentUI, OSCDirectController::OSCDirectListener
+class OSCDirectControllerContentUI :public  OSCDirectController::OSCDirectListener
 {
 public:
     OSCDirectControllerContentUI();
@@ -34,7 +34,7 @@ public:
     StringArray activityLines;
     Label activityLog;
 
-    void init() override;
+
 
     void resized() override;
     void mouseDown(const MouseEvent &e) override;

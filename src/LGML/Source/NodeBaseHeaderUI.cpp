@@ -27,7 +27,7 @@ NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X") ,
                         removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
                         0.5f);
     removeBT.addListener(this);
-    setSize(20, 30);
+    setSize(20, 40);
 
 }
 
@@ -71,12 +71,8 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 
     }
 
-    titleUI = node->nameParam->createStringParameterUI();
-
-
-
+	titleUI = node->nameParam->createStringParameterUI();
     titleUI->setNameLabelVisible(false);
-    titleUI->setInterceptsMouseClicks(false, false);
     addAndMakeVisible(titleUI);
 
     enabledUI = node->enabledParam->createToggle();
@@ -108,11 +104,6 @@ void NodeBaseHeaderUI::updatePresetComboBox()
     if (!emptyFilter) PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
 }
 
-
-void NodeBaseHeaderUI::mouseDoubleClick(const MouseEvent &){
-    if(titleUI){titleUI->valueLabel.showEditor();}
-}
-
 void NodeBaseHeaderUI::init()
 {
     //to override
@@ -123,34 +114,38 @@ void NodeBaseHeaderUI::resized()
 {
     if (!node) return;
 
-    int vuMeterWidth = 14;
+    int vuMeterWidth = 8;
     int removeBTWidth = 15;
-    int grabberWidth = 40;
-    int presetCBWidth = 70;
+    int grabberHeight = 12;
+    int presetCBWidth = 100;
+
 
     Rectangle<int> r = getLocalBounds();
+	
+	grabber.setBounds(r.removeFromTop(grabberHeight));
+	r.reduce(4, 0);
+	r.removeFromTop(2);
 
     if (node->hasAudioOutputs)
 	{
-        vuMeterOut.setBounds(r.removeFromRight(vuMeterWidth).reduced(4));
+        vuMeterOut.setBounds(r.removeFromRight(vuMeterWidth));
     }
 
 	if (node->hasAudioInputs)
 	{
-		vuMeterIn.setBounds(r.removeFromLeft(vuMeterWidth).reduced(4));
+		vuMeterIn.setBounds(r.removeFromLeft(vuMeterWidth));
 
 	}
 
 	r.reduce(5, 2);
 
-	enabledUI->setBounds(r.removeFromLeft(10).withSizeKeepingCentre(10, 10));
+	enabledUI->setBounds(r.removeFromLeft(10));
 
     r.removeFromLeft(3);
-
     removeBT.setBounds(r.removeFromRight(removeBTWidth));
 	r.removeFromRight(5);
-    presetCB->setBounds(r.removeFromRight(presetCBWidth).reduced(0, 4));
-    grabber.setBounds(r.removeFromRight(grabberWidth));
+    presetCB->setBounds(r.removeFromRight(presetCBWidth));
+	r.removeFromRight(5);
     titleUI->setBounds(r);
 
 
@@ -228,10 +223,12 @@ void NodeBaseHeaderUI::controllableContainerPresetLoaded(ControllableContainer *
 
 void NodeBaseHeaderUI::Grabber::paint(Graphics & g)
 {
-    g.setColour(FRONT_COLOR);
-    Rectangle<float> r = getLocalBounds().reduced(5).toFloat();
-    g.drawLine(r.getTopLeft().x, r.getRelativePoint(0.f, .2f).y, r.getTopRight().x, r.getRelativePoint(0.f, .2f).y, .4f);
-    g.drawLine(r.getTopLeft().x, r.getCentreY(), r.getBottomRight().x, r.getCentreY(), .4f);
-    g.drawLine(r.getBottomLeft().x, r.getRelativePoint(0.f, .8f).y, r.getBottomRight().x, r.getRelativePoint(0.f, .8f).y, .4f);
+    g.setColour(PANEL_COLOR.brighter(.2f));
 
+	Rectangle<int> r = getLocalBounds().reduced(4);
+	float left = (float)r.getTopLeft().x;
+	float right = (float)r.getRight();
+	g.drawHorizontalLine(r.getTopLeft().y, left, right);
+	g.drawHorizontalLine(r.getCentreY(), left, right);
+	g.drawHorizontalLine(r.getBottom(), left, right);
 }

@@ -23,4 +23,4 @@ BoolToggleUI * BoolParameter::createToggle()
 }
 
 
-ControllableUI * BoolParameter::createControllableContainerEditor() {return createToggle();}
+ControllableUI * BoolParameter::createDefaultUI() {return createToggle();}

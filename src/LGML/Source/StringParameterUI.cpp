@@ -27,12 +27,14 @@ StringParameterUI::StringParameterUI(Parameter * p) :
     valueLabel.setJustificationType(Justification::topLeft);
     valueLabel.setText(parameter->value,NotificationType::dontSendNotification);
     valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
-    valueLabel.setEditable(true);
-    valueLabel.addListener(this);
+	valueLabel.setEditable(false,parameter->isEditable); 
+	valueLabel.addListener(this);
 
     //valueLabel.setColour(valueLabel.textWhenEditingColourId, TEXTNAME_COLOR);
     valueLabel.setColour(valueLabel.backgroundWhenEditingColourId, Colours::white);
     nameLabel.setTooltip(p->description);
+
+	
 
     setSize(200, 20);//default size
 }

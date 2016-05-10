@@ -13,9 +13,11 @@
 
 
 #include "ControllableContainer.h"
+#include "ControlVariable.h"
+
 class ControllerUI;
 
-class Controller : public ControllableContainer
+class Controller : public ControllableContainer, public ControlVariable::VariableListener
 {
 public:
     Controller(const String &name = "[Controller]");
@@ -26,26 +28,39 @@ public:
     StringParameter * nameParam;
     BoolParameter * enabledParam;
 
+	OwnedArray<ControlVariable> variables; // These are values that can be set only by the external controller (osc, midi, serial...).
+										   // they are stored so they can be used by other mechanisms in the software, such as rules.
+
+	void addVariable(Parameter * p);
+	void removeVariable(ControlVariable * variable);
+	
+	ControlVariable * getVariableForAddress(const String &address);
+	
     void remove(); //will dispatch askForRemoveController
     virtual void onContainerParameterChanged(Parameter * p) override;
 
-    virtual ControllerUI * createUI();
+	void askForRemoveVariable(ControlVariable * variable)override;
 
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
-    class  Listener
+	virtual ControllerUI * createUI();
+
+    class  ControllerListener
     {
     public:
         /** Destructor. */
-        virtual ~Listener() {}
+        virtual ~ControllerListener() {}
 
-        virtual void askForRemoveController(Controller *) = 0;
+		virtual void askForRemoveController(Controller *) {}
+
+		virtual void variableAdded(Controller *, ControlVariable * ) {}
+		virtual void variableRemoved(Controller *, ControlVariable * ) {}
     };
 
-    ListenerList<Listener> listeners;
-    void addControllableListener(Listener* newListener) { listeners.add(newListener); }
-    void removeListener(Listener* listener) { listeners.remove(listener); }
+    ListenerList<ControllerListener> controllerListeners;
+    void addControllerListener(ControllerListener* newListener) { controllerListeners.add(newListener); }
+    void removeControllerListener(ControllerListener* listener) { controllerListeners.remove(listener); }
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)

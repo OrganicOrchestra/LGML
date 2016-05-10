@@ -22,8 +22,6 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 class NodeManager: public NodeBase::NodeListener , public NodeConnection::Listener, public ControllableContainer
 {
 
-
-
 public:
     NodeManager();
     ~NodeManager();
@@ -35,7 +33,6 @@ public:
 
     AudioProcessorGraph audioGraph;
     DataProcessorGraph dataGraph;
-
 
     void clear();
     int getNumNodes() const noexcept { return nodes.size(); }

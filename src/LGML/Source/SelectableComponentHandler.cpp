@@ -25,8 +25,6 @@ void SelectableComponentHandler::internalSelected(SelectableComponent * c,bool s
         else selected.removeFirstMatchingValue(c);
         selectableHandlerListeners.call(&SelectableHandlerListener::selectableChanged,c, state);
     }
-
-
 }
 
 void SelectableComponentHandler::removeAllSelected(){

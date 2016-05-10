@@ -44,6 +44,7 @@ public:
     Array<ControllableContainer * > controllableContainers;
     ControllableContainer * parentContainer;
 
+	void addParameter(Parameter * p);
     FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
     IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
     BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);

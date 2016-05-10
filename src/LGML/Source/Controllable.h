@@ -41,12 +41,15 @@ public:
     String shortName;
     String description;
 
+	
     bool enabled;
     bool hasCustomShortName;
     bool isControllableExposed;
     bool isControllableFeedbackOnly;
     bool hideInEditor;
     String controlAddress;
+
+	bool replaceSlashesInShortName;
 
     ControllableContainer * parentContainer;
 
@@ -63,7 +66,7 @@ public:
 
     void setAutoShortName() {
         hasCustomShortName = false;
-        shortName = StringUtil::toShortName(niceName);
+        shortName = StringUtil::toShortName(niceName, replaceSlashesInShortName);
         updateControlAddress();
     }
 
@@ -91,7 +94,7 @@ public:
     String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
     // used for generating editor
-    virtual ControllableUI * createControllableContainerEditor() = 0;
+    virtual ControllableUI * createDefaultUI() = 0;
 
 
 public:

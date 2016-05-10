@@ -55,7 +55,7 @@ public:
     void onContainerParameterChanged(Parameter * p) override;
     void onContainerTriggerTriggered(Trigger * t) override;
 
-//    Component * createControllableContainerEditor(Component*)override;
+//    Component * createDefaultUI(Component*)override;
 
     void processBlock(AudioBuffer<float>& buffer, MidiBuffer & midi);
     void setSelected(bool isSelected);

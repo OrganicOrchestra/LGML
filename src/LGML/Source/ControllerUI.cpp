@@ -9,41 +9,68 @@
 */
 
 #include "ControllerUI.h"
-#include "ControllerContentUI.h"
-#include "ControllerHeaderUI.h"
+#include "ControllerEditor.h"
+#include "Style.h"
 
-ControllerUI::ControllerUI(Controller * controller, ControllerContentUI * contentUI, ControllerHeaderUI * headerUI) :
-    controller(controller),
-    contentUI(contentUI), headerUI(headerUI)
+ControllerUI::ControllerUI(Controller * controller) :
+    controller(controller)
 {
-    if(this->headerUI == nullptr) this->headerUI = new ControllerHeaderUI();
-    if (this->contentUI == nullptr) this->contentUI = new ControllerContentUI();
+	addMouseListener(this, true);
+    
+	nameTF = controller->nameParam->createStringParameterUI();
+	nameTF->setNameLabelVisible(false);
+	addAndMakeVisible(nameTF);
 
+	enabledBT = controller->enabledParam->createToggle();
+	addAndMakeVisible(enabledBT);
 
-    this->headerUI->setControllerAndUI(controller, this);
-    this->contentUI->setControllerAndUI(controller, this);
+	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
-    addAndMakeVisible(this->headerUI);
-    addAndMakeVisible(this->contentUI);
-
-    if(getHeight() == 0) setSize(100,50);
+	removeBT.setImages(false, true, true, removeImage,
+		0.7f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
+		0.5f);
+	removeBT.addListener(this);
 }
 
 ControllerUI::~ControllerUI()
 {
+
 }
 
 void ControllerUI::paint(Graphics & g)
 {
     g.setColour(PANEL_COLOR);
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
-    g.setColour(PANEL_COLOR.darker());
+	g.setColour(isSelected ? HIGHLIGHT_COLOR: PANEL_COLOR.darker());
     g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
 }
 
 void ControllerUI::resized()
 {
-    Rectangle<int> r = getLocalBounds();
-    headerUI->setBounds(r.removeFromTop(headerUI->getHeight()));
-    contentUI->setBounds(r);
+	Rectangle<int> r = getLocalBounds().reduced(2);
+	r.removeFromRight(15);
+	removeBT.setBounds(r.removeFromRight(20));
+	enabledBT->setBounds(r.removeFromLeft(r.getHeight()));
+	r.removeFromLeft(5);
+	nameTF->setBounds(r);
+}
+
+void ControllerUI::mouseDown(const MouseEvent &)
+{
+	selectThis();
+}
+
+void ControllerUI::buttonClicked(Button * b)
+{
+	if (b == &removeBT)
+	{
+		controller->remove();
+	}
+}
+
+InspectorEditor * ControllerUI::getEditor()
+{
+	return new ControllerEditor(this);
 }

@@ -26,10 +26,7 @@ public:
     //settings
     Direction orientation;
 
-    // TODO implement a numboxUI
-    bool displayText;
-    bool displayBar;
-    bool changeParamOnMouseUpOnly;
+	 bool changeParamOnMouseUpOnly;
     bool assignOnMousePosDirect;
     float scaleFactor;
 

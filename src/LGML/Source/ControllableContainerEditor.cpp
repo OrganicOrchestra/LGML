@@ -14,15 +14,20 @@
 #include "ControllableUI.h"
 #include "ControllableContainer.h"
 
-ControllableContainerEditor::ControllableContainerEditor(ControllableContainer * cc,Component* _embeddedComp):
+ControllableContainerEditor::ControllableContainerEditor(ControllableContainer * cc, Component* _embeddedComp):
 owner(cc),
 embeddedComp(_embeddedComp)
 {
-    buildFromContainer(cc);
+   
     if(embeddedComp){
         addAndMakeVisible(embeddedComp);
-        setBounds(embeddedComp->getBounds());
-    }
+        //setBounds(embeddedComp->getBounds());
+	}
+	else
+	{
+		buildFromContainer(cc);
+	}
+
     cc->addControllableContainerListener(this);
 }
 
@@ -64,7 +69,9 @@ void ControllableContainerEditor::layoutChildrens(){
 void ControllableContainerEditor::resized(){
 	Rectangle<int> r = getLocalBounds().reduced(5,0);
 
-    if(embeddedComp){embeddedComp->setBounds(r);}
+    if(embeddedComp){
+		embeddedComp->setBounds(r);
+	}
 
     for(int i = 0 ;i < getNumChildComponents() ; i++){
         getChildComponent(i)->setSize(getWidth(), getChildComponent(i)->getHeight());
@@ -72,22 +79,26 @@ void ControllableContainerEditor::resized(){
 }
 
 
-void ControllableContainerEditor::buildFromContainer(ControllableContainer * cc){
-    for(auto & c:cc->controllables){
-        ControllableUI *cUI= new NamedControllableUI(c->createControllableContainerEditor(),100);
+void ControllableContainerEditor::buildFromContainer(ControllableContainer * cc, bool recursive){
+    for(auto & c : cc->controllables)
+	{	
+		if (!c->isControllableExposed || c->isControllableFeedbackOnly) continue;
+        ControllableUI *cUI= new NamedControllableUI(c->createDefaultUI(),100);
         addControlUI(cUI);
     }
 
-    for(auto & c:cc->controllableContainers){
-        ControllableContainerEditor * cEd = new ControllableContainerEditor(c,nullptr);
-        addAndMakeVisible(cEd);
-        editors.add(cEd);
-    }
-
+	if(recursive)
+	{ 
+		for(auto & c:cc->controllableContainers){
+			ControllableContainerEditor * cEd = new ControllableContainerEditor(c,nullptr);
+			addAndMakeVisible(cEd);
+			editors.add(cEd);
+		}
+	}
 }
 
 void ControllableContainerEditor::controllableAdded(Controllable * c) {
-    ControllableUI *cUI= new NamedControllableUI(c->createControllableContainerEditor(),100);
+    ControllableUI *cUI= new NamedControllableUI(c->createDefaultUI(),100);
     addControlUI(cUI);
 
 };

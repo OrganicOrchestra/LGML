@@ -19,7 +19,7 @@ class JavascriptController : public OSCDirectController ,public JsEnvironment{
 public:
     JavascriptController();
     ~JavascriptController();
-    Result processMessage(const OSCMessage &m)override;
+    bool processMessageInternal(const OSCMessage &m)override;
     Result callForMessage(const OSCMessage & msg);
     void callonAnyMsg(const OSCMessage & msg);
 

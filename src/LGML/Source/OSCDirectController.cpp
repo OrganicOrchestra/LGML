@@ -9,14 +9,11 @@
 */
 
 #include "OSCDirectController.h"
-#include "OSCDirectControllerContentUI.h"
 #include "NodeManager.h"
 
 OSCDirectController::OSCDirectController() :
     OSCController("OSC Direct Controller")
 {
-    DBG("direct controller constructor");
-
     NodeManager::getInstance()->addControllableContainerListener(this);
 }
 
@@ -25,10 +22,9 @@ OSCDirectController::~OSCDirectController()
     NodeManager::getInstance()->removeControllableContainerListener(this);
 }
 
-Result OSCDirectController::processMessage(const OSCMessage & msg)
+bool OSCDirectController::processMessageInternal(const OSCMessage & msg)
 {
      String addr = msg.getAddressPattern().toString();
-     DBG("Process message");
 
     StringArray addrArray;
     addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
@@ -37,7 +33,7 @@ Result OSCDirectController::processMessage(const OSCMessage & msg)
     addSplit.remove(0);
     String controller = addSplit[0];
 
-    Result success = Result::fail("nothing processed");
+    bool success = false;
 
     if (controller == "node")
     {
@@ -49,7 +45,7 @@ Result OSCDirectController::processMessage(const OSCMessage & msg)
         {
             if (!c->isControllableFeedbackOnly)
             {
-                success = Result::ok();
+                success = true;
 
                 switch (c->type)
                 {
@@ -91,7 +87,7 @@ Result OSCDirectController::processMessage(const OSCMessage & msg)
                     break;
 
                 default:
-                        success = Result::fail("no compatible cast");
+                    success = false;
                     break;
 
                 }
@@ -103,14 +99,8 @@ Result OSCDirectController::processMessage(const OSCMessage & msg)
         }
 
     }
-    
-    oscDirectlisteners.call(&OSCDirectListener::messageProcessed, msg, success);
-    return success;
-}
 
-ControllerUI * OSCDirectController::createUI()
-{
-    return new ControllerUI(this, new OSCDirectControllerContentUI());
+	return success;
 }
 
 void OSCDirectController::controllableAdded(Controllable *)
@@ -149,7 +139,7 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
             sender.send(c->controlAddress, ((Parameter *)c)->stringValue());
             break;
         default:
-            DBG("OSC : unknown Controllable");
+            DBG("OSC range param not supported");
             jassertfalse;
             break;
     }

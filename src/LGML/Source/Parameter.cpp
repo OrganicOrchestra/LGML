@@ -11,19 +11,19 @@
 #include "Parameter.h"
 
 Parameter::Parameter(const Type &type, const String &niceName, const String &description, var initialValue, var minValue = var(), var maxValue = var(), bool enabled) :
-    Controllable(type, niceName, description, enabled)
+	Controllable(type, niceName, description, enabled),
+	isEditable(true),
+	isPresettable(true),
+	isOverriden(false)
 {
     minimumValue = minValue;
     maximumValue = maxValue;
     defaultValue = initialValue;
 
-    isOverriden = false;
-    isPresettable = true;
-
     resetValue();
 }
 
-void Parameter::resetValue()
+  void Parameter::resetValue()
 {
     isOverriden = false;
     setValue(defaultValue);

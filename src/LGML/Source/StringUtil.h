@@ -16,7 +16,7 @@
 class StringUtil
 {
 public:
-    static String toShortName(const String &niceName) {
+    static String toShortName(const String &niceName, bool replaceSlashes = false) {
         if (niceName.isEmpty()) return "";
 
         StringArray sa;
@@ -28,7 +28,7 @@ public:
             String initial = s.substring(0, 1);
             String upperCaseWord = s.replaceSection(0, 1, index == 0 ? initial.toLowerCase() : initial.toUpperCase());
             s.swapWith(upperCaseWord);
-            s = s.replace("/","_");
+            if(replaceSlashes) s = s.replace("/","_");
             index++;
         }
 

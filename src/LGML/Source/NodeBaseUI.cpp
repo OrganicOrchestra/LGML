@@ -14,23 +14,20 @@
 #include "NodeBase.h"
 #include "NodeManagerUI.h"
 #include "ConnectorComponent.h"
-
-
 #include "FloatSliderUI.h"
+#include "MainComponent.h"
 
 //==============================================================================
-NodeBaseUI::NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer, NodeBaseHeaderUI * headerContainer) :
-SelectableComponent(&NodeManagerUI::selectableHandler),
+NodeBaseUI::NodeBaseUI(NodeBase * _node, NodeBaseContentUI * _contentContainer, NodeBaseHeaderUI * _headerContainer) :
+InspectableComponent(_node),
 inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
-mainContainer(this,contentContainer,headerContainer),
-node(node),
+mainContainer(this,_contentContainer,_headerContainer),
+node(_node),
 dragIsLocked(false)
 {
 
     //DBG("Node Base UI Constructor");
-
-    this->node = node;
 
     connectorWidth = 10;
 
@@ -64,13 +61,6 @@ void NodeBaseUI::moved(){
         node->xPosition->setValue((float)getBounds().getCentreX());
         node->yPosition->setValue((float)getBounds().getCentreY());
     }
-}
-
-void NodeBaseUI::internalSetSelected(bool)
-{
-
-    mainContainer.repaint();
-
 }
 
 
@@ -164,18 +154,19 @@ ConnectorComponent * NodeBaseUI::getFirstConnector(NodeConnection::ConnectionTyp
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
 void NodeBaseUI::mouseDown(const juce::MouseEvent &e)
 {
+	if (e.eventComponent != &mainContainer.headerContainer->grabber) return;
+
     nodeInitPos = getBounds().getCentre();
 
-
+	/*
     // don't want to drag if over volume
     if(NodeBaseAudioCtlUI * ctlUI = mainContainer.audioCtlUIContainer){
         Point<int> mouse = getMouseXYRelative();
         Component * found = getComponentAt(mouse.x,mouse.y);
 
         dragIsLocked = (dynamic_cast<NodeBaseAudioCtlUI *>(found) == ctlUI);
-
-
     }
+	*/
 }
 #pragma warning( default : 4100 )
 
@@ -185,16 +176,18 @@ void NodeBaseUI::mouseUp(const juce::MouseEvent &){
     if(nmui){
 		nmui->setAllNodesToStartAtZero();
 	}
-    askForSelection(true,true);
-    dragIsLocked = false;
 
+	selectThis();
+
+    //askForSelection(true,true);
+   //dragIsLocked = false;
 
 }
 
 void NodeBaseUI::mouseDrag(const MouseEvent & e)
 {
-
-    if(dragIsLocked)return;
+	if (e.eventComponent != &mainContainer.headerContainer->grabber) return;
+    //if(dragIsLocked) return;
 
     Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
     Point <int> newPos = nodeInitPos + diff;
@@ -294,8 +287,10 @@ void NodeBaseUI::MainContainer::paint(Graphics & g)
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
 
     g.setColour(nodeUI->isSelected ?HIGHLIGHT_COLOR:LIGHTCONTOUR_COLOR);
-    g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1),4.f, nodeUI->isSelected?2.f:1.f);
+    g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1),4.f, nodeUI->isSelected?2.f:.5f);
 
+	headerContainer->repaint();
+	contentContainer->repaint();
 }
 
 

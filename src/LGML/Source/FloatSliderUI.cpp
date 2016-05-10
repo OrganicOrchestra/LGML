@@ -17,8 +17,6 @@ ParameterUI(parameter), fixedDecimals(2)
 {
     assignOnMousePosDirect = true;
     changeParamOnMouseUpOnly = false;
-    displayText = true;
-    displayBar = true;
     orientation = HORIZONTAL;
     setSize(100,10);
     scaleFactor = 1;
@@ -35,7 +33,8 @@ void FloatSliderUI::paint(Graphics & g)
 
     if(shouldBailOut())return;
 
-    Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : PARAMETER_FRONT_COLOR;
+	Colour baseColour = parameter->isEditable? PARAMETER_FRONT_COLOR :FEEDBACK_COLOR;
+    Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : baseColour;
 
     Rectangle<int> sliderBounds = getLocalBounds();
 
@@ -45,23 +44,21 @@ void FloatSliderUI::paint(Graphics & g)
     g.fillRoundedRectangle(sliderBounds.toFloat(), 2);
 
     g.setColour(c);
-    if(displayBar){
-        float drawPos = 0;
-        if (orientation == HORIZONTAL)
-        {
-            drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : normalizedValue*getWidth();
-            g.fillRoundedRectangle(sliderBounds.removeFromLeft((int)drawPos).toFloat(), 2.f);
-        }
-        else {
-            drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : normalizedValue*getHeight();
-            g.fillRoundedRectangle(sliderBounds.removeFromBottom((int)drawPos).toFloat(), 2.f);
-        }
+    float drawPos = 0;
+    if (orientation == HORIZONTAL)
+    {
+        drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : normalizedValue*getWidth();
+        g.fillRoundedRectangle(sliderBounds.removeFromLeft((int)drawPos).toFloat(), 2.f);
+    }
+    else {
+        drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : normalizedValue*getHeight();
+        g.fillRoundedRectangle(sliderBounds.removeFromBottom((int)drawPos).toFloat(), 2.f);
     }
 
 
-    if(displayText){
+    if(showLabel || showValue){
         Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::lightgrey;
-        g.setColour(displayBar?textColor:c);
+        g.setColour(textColor);
 
         sliderBounds = getLocalBounds();
         Rectangle<int> destRect;
@@ -77,14 +74,21 @@ void FloatSliderUI::paint(Graphics & g)
         {
             destRect = sliderBounds.withSizeKeepingCentre(sliderBounds.getWidth(), 12);
         }
-
-        String text = parameter->niceName + " : " + String::formatted("%." + String(fixedDecimals) + "f", parameter->floatValue());
+		String text = "";
+		if (showLabel)
+		{
+			text += parameter->niceName;
+			if (showValue) text += " : ";
+		}
+		if (showValue) text += String::formatted("%." + String(fixedDecimals) + "f", parameter->floatValue());
         g.drawFittedText(text, destRect, Justification::centred,1);
     }
 }
 
 void FloatSliderUI::mouseDown(const MouseEvent & e)
 {
+	if (!parameter->isEditable) return;
+
     initValue = getParamNormalizedValue();
     setMouseCursor(MouseCursor::NoCursor);
 
@@ -102,7 +106,9 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 
 void FloatSliderUI::mouseDrag(const MouseEvent & e)
 {
-    if(changeParamOnMouseUpOnly) repaint();
+	if (!parameter->isEditable) return;
+	
+	if(changeParamOnMouseUpOnly) repaint();
     else
     {
         if (assignOnMousePosDirect && !e.mods.isRightButtonDown()) setParamNormalizedValue(getValueFromMouse());
@@ -118,7 +124,9 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
 
 void FloatSliderUI::mouseUp(const MouseEvent &)
 {
-    BailOutChecker checker (this);
+	if (!parameter->isEditable) return;
+	
+	BailOutChecker checker (this);
     if (changeParamOnMouseUpOnly)
     {
         setParamNormalizedValue(getValueFromMouse());
@@ -155,5 +163,6 @@ float FloatSliderUI::getParamNormalizedValue()
 }
 
 void FloatSliderUI::valueChanged(const var &) {
+	DBG("Value changed");
     repaint();
 };

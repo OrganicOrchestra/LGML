@@ -17,7 +17,7 @@ NodeManager.cpp
 
 
 EngineFileDocument.cpp
-	line : 99
+	line : 101
 		//    TODO check version Compat
 
 
@@ -27,11 +27,11 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 376
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-	line : 109
+	line : 115
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
+
+	line : 382
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
 NodeBase.h
@@ -66,7 +66,7 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.cpp
-	line : 87
+	line : 85
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
@@ -91,13 +91,6 @@ NodeConnectionEditor.cpp
 		// should be fixed !!
 
 
-LooperTrack.cpp
-	line : 174
-		// TODO subBlock precision ?
-		// not sure -> triggers are updated at block size granularity
-		// for now reduce block approximation noise when quantized
-
-
 TimeManager.h
 	line : 27
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
@@ -110,16 +103,16 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 155
+	line : 157
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
-	line : 133
+	line : 135
 		//@martin commented out because access violation error, is it needed ? (no leak detector when commented)
 		//removeChildControllableContainer( audioProcessor);
 
 
 ControllableContainer.h
-	line : 94
+	line : 95
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -133,12 +126,14 @@ Looper.cpp
 
 
 ControllableInspector.h
-	line : 23
+	line : 24
 		// TODO handle merging of multiple component of sameClass : almost there ....
 
 
-FloatSliderUI.h
-	line : 28
-		// TODO implement a numboxUI
+LooperTrack.cpp
+	line : 174
+		// TODO subBlock precision ?
+		// not sure -> triggers are updated at block size granularity
+		// for now reduce block approximation noise when quantized
 
 

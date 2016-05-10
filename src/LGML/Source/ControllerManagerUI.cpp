@@ -28,12 +28,9 @@ ControllerManagerUI::~ControllerManagerUI()
     manager->removeControllerListener(this);
 }
 
-
-
 void ControllerManagerUI::controllerAdded(Controller * c)
 {
-    DBG("Controller added, addUI");
-    addControllerUI(c);
+	addControllerUI(c);
 }
 
 void ControllerManagerUI::controllerRemoved(Controller * c)
@@ -49,12 +46,13 @@ ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
         return nullptr;
     }
 
-    ControllerUI * cui = controller->createUI();
+	ControllerUI * cui = controller->createUI();
     controllersUI.add(cui);
     addAndMakeVisible(cui);
 
-    placeElements();
+	cui->selectThis();
 
+	resized();
     return cui;
 }
 
@@ -69,7 +67,7 @@ void ControllerManagerUI::removeControllerUI(Controller * controller)
 
     controllersUI.removeObject(cui);
     removeChildComponent(getIndexOfChildComponent(cui));
-    placeElements();
+    resized();
 }
 
 ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)
@@ -82,34 +80,20 @@ ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)
     return nullptr;
 }
 
-void ControllerManagerUI::placeElements()
+void ControllerManagerUI::resized()
 {
-	if (controllersUI.size() == 0) return;
-
-    Rectangle<int> r = getLocalBounds().reduced(5);
-	int gap = 2;
-	int totalHeight = 0;
+	Rectangle<int> r = getLocalBounds().reduced(5);
+	int gap = 5;
     for (auto &cui : controllersUI)
     {
-		cui->setBounds(r.removeFromTop(cui->getHeight()));
+		cui->setBounds(r.removeFromTop(20));
 		r.removeFromTop(gap);
-		totalHeight += cui->getHeight() + gap;
     }
-
-	if (totalHeight > getHeight())
-	{
-		setSize(getWidth(), totalHeight);
-	}
 }
 
 void ControllerManagerUI::paint (Graphics&)
 {
     //ContourComponent::paint(g);
-}
-
-void ControllerManagerUI::resized()
-{
-	placeElements();
 }
 
 
@@ -130,31 +114,5 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
                 manager->addController((ControllerFactory::ControllerType)(result - 1));
             }
         }
-        else
-        {
-            if (event.mods.isCtrlDown())
-            {
-                manager->addController(ControllerFactory::ControllerType::OSCDirect);
-            }
-        }
-    }
-
-}
-
-/*
-ControllerManagerViewport::ControllerManagerViewport(ControllerManager * controllerManager)
-{
-    cmui = new ControllerManagerUI(controllerManager);
-    setViewedComponent(cmui);
-}
-
-void ControllerManagerViewport::resized()
-{
-    if (cmui->getHeight() < getHeight())
-    {
-        Rectangle<int> r = getLocalBounds();
-        r.removeFromRight(18); //scrollbar
-        cmui->setBounds(r);
     }
 }
-*/

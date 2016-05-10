@@ -155,7 +155,6 @@ isSelected(false)
     addAndMakeVisible(clearButton);
     volumeSlider = track->volume->createSlider();
     volumeSlider->orientation = FloatSliderUI::VERTICAL;
-    //            volumeSlider->displayText=false;
     addAndMakeVisible(volumeSlider);
     addAndMakeVisible(stopButton);
     addAndMakeVisible(muteButton);

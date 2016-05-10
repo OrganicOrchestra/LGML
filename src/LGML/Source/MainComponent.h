@@ -16,12 +16,14 @@
 
 #include "ControlManager.h"
 #include "ControllerManagerUI.h"
-#include "ControllableInspector.h"
+//#include "ControllableInspector.h"
+
+#include "Inspector.h"
 
 #include "TimeManagerUI.h"
 
-#include "ControlRuleManager.h"
-#include "ControlRuleManagerUI.h"
+#include "RuleManager.h"
+#include "RuleManagerUI.h"
 
 #include "LGMLLoggerUI.h"
 
@@ -55,10 +57,17 @@ public:
 	ScopedPointer<TimeManagerUI> timeManagerUI;
 
 	ScopedPointer<NodeManagerUI> nodeManagerUI;
-	ScopedPointer<ControllableInspector> controllableInspector;
+	
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
 
-	ScopedPointer<ControlRuleManagerUI> ruleManagerUI;
+	ScopedPointer<RuleManagerUI> ruleManagerUI;
+
+
+	ScopedPointer<Inspector> controllableInspector;
+	//static SelectableComponentHandler mainSelectableHandler;
+
+	static Inspector inspector;
+
 
 
     ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;

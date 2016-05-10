@@ -9,27 +9,23 @@
 */
 
 #include "Controller.h"
-#include "ControllerUI.h"
 #include "ControllerFactory.h"
+#include "ControllerUI.h"
 
 Controller::Controller(const String &name) :
-    ControllableContainer(name)
+	ControllableContainer(name)
 {
-    nameParam = addStringParameter("Name", "Set the name of the controller.",name);
+
+    nameParam = addStringParameter("Name", "Set the name of the controller.", name);
     enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
 
-    controllerTypeEnum = 0;//init
+    controllerTypeEnum = 0; //init
 }
 
 
 Controller::~Controller()
 {
     DBG("Remove Controller");
-}
-
-ControllerUI * Controller::createUI()
-{
-    return new ControllerUI(this);
 }
 
 var Controller::getJSONData()
@@ -42,12 +38,39 @@ var Controller::getJSONData()
 
 void Controller::loadJSONDataInternal(var data)
 {
-	//params taken care in ControllableContainer::loadJSONData
+}
+
+ControllerUI * Controller::createUI()
+{
+	return new ControllerUI(this);
+}
+
+void Controller::addVariable(Parameter * p)
+{
+	ControlVariable * v = new ControlVariable(p);
+	variables.add(v);
+	controllerListeners.call(&ControllerListener::variableAdded, this, v);
+}
+
+void Controller::removeVariable(ControlVariable * v)
+{
+	controllerListeners.call(&ControllerListener::variableRemoved, this, v);
+	variables.removeObject(v);
+}
+
+ControlVariable * Controller::getVariableForAddress(const String & address)
+{
+	for (auto &v : variables)
+	{
+		if (v->parameter->controlAddress == address) return v;
+	}
+
+	return nullptr;
 }
 
 void Controller::remove()
 {
-    listeners.call(&Controller::Listener::askForRemoveController, this);
+	controllerListeners.call(&ControllerListener::askForRemoveController, this);
 }
 
 void Controller::onContainerParameterChanged(Parameter * p)
@@ -58,4 +81,9 @@ void Controller::onContainerParameterChanged(Parameter * p)
     {
         DBG("set Controller Enabled " + String(enabledParam->value));
     }
+}
+
+void Controller::askForRemoveVariable(ControlVariable * variable)
+{
+	removeVariable(variable);
 }

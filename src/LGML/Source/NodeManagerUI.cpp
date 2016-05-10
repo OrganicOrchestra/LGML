@@ -12,9 +12,7 @@
 #include "NodeConnectionUI.h"
 #include "NodeConnectionEditor.h"
 
-SelectableComponentHandler NodeManagerUI::selectableHandler;
-
-
+#include "MainComponent.h"
 
 
 //==============================================================================
@@ -74,14 +72,9 @@ void NodeManagerUI::connectionRemoved(NodeConnection * connection)
     removeConnectionUI(connection);
 }
 
-
-void NodeManagerUI::componentSelected(SelectableComponent * sc)
+void NodeManagerUI::inspectableSelectionChanged(InspectableComponent * c)
 {
-	sc->toFront(true);
-}
-
-void NodeManagerUI::componentDeselected(SelectableComponent *)
-{
+	if (c->isSelected) c->toFront(true);
 }
 
 void NodeManagerUI::addNodeUI(NodeBase * node)
@@ -92,8 +85,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
         NodeBaseUI * nui = node->createUI();
         nodesUI.add(nui);
         addAndMakeVisible(nui);
-		nui->addSelectableListener(this);
-
+		nui->addInspectableListener(this);
     }
     else
     {
@@ -111,7 +103,7 @@ void NodeManagerUI::removeNodeUI(NodeBase * node)
     {
         nodesUI.removeObject(nui);
         removeChildComponent(nui);
-		nui->removeSelectableListener(this);
+		nui->removeInspectableListener(this);
     }
     else
     {
@@ -434,8 +426,9 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
     {
         finishEditingConnection();
     }
+
     if(!isSelectingNodes){
-		selectableHandler.removeAllSelected();
+		MainContentComponent::inspector.setCurrentComponent(nullptr);
 	}
 
     isSelectingNodes = false;
@@ -448,6 +441,7 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
 void NodeManagerUI::checkSelected(){
 
     // multiple ones
+	/*
     if(isSelectingNodes){
         Array<SelectableComponent*> currentOnes;
         for(auto &n:nodesUI){
@@ -456,18 +450,20 @@ void NodeManagerUI::checkSelected(){
             }
         }
 
-        for(auto &n:selectableHandler.selected){
+        for(auto &n: MainContentComponent::mainSelectableHandler.selected){
             if(!currentOnes.contains(n)){
                 n->askForSelection(false,false);
             }
         }
 
         for(auto &n:currentOnes){
-            if(!selectableHandler.selected.contains(n)){
+            if(!MainContentComponent::mainSelectableHandler.selected.contains(n)){
                 n->askForSelection(true,false);
             }
         }
     }
+	*/
+
     // only one
 
 }

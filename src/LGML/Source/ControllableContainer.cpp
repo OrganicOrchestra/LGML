@@ -33,6 +33,11 @@ ControllableContainer::~ControllableContainer()
     masterReference.clear();
 }
 
+void ControllableContainer::addParameter(Parameter * p)
+{
+	addParameterInternal(p);
+}
+
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
     if (getControllableByName(niceName) != nullptr)
@@ -107,6 +112,7 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
 void ControllableContainer::removeControllable(Controllable * c)
 {
     controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+
     // @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
     controllables.removeObject(c);

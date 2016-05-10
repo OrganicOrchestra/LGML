@@ -22,8 +22,8 @@ public:
 
     WeakReference<Parameter> parameter;
 
-    //Label label;
-    bool showLabel;
+    bool showLabel;	
+	bool showValue;
 
 protected:
 

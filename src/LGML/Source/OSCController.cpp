@@ -9,12 +9,12 @@
 */
 
 #include "OSCController.h"
+#include "OSCControllerUI.h"
 
 OSCController::OSCController(const String &name) :
     Controller(name)
 {
 
-    DBG("OSC COntroller init");
     localPortParam = addStringParameter("Local Port", "The port to bind for the controller to receive OSC from it","11000");
 
     remoteHostParam = addStringParameter("Remote Host", "The host's IP of the remote controller","127.0.0.1");
@@ -45,10 +45,15 @@ void OSCController::setupSender()
     sender.connect(remoteHostParam->stringValue(), remotePortParam->stringValue().getIntValue());
 }
 
-Result OSCController::processMessage(const OSCMessage &)
+void OSCController::processMessage(const OSCMessage & msg)
 {
-    return  Result::fail("not overriden");
-    //to override
+	bool result = processMessageInternal(msg);
+	oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
+}
+
+bool OSCController::processMessageInternal(const OSCMessage &)
+{
+	return false; //if not overriden, msg is not handled so result is false
 }
 
 void OSCController::onContainerParameterChanged(Parameter * p)
@@ -61,4 +66,17 @@ void OSCController::oscMessageReceived(const OSCMessage & message)
 {
     //DBG("Message received !");
     processMessage(message);
+}
+
+void OSCController::oscBundleReceived(const OSCBundle & bundle) 
+{
+	for (auto &m : bundle)
+	{
+		processMessage(m.getMessage());
+	}
+}
+
+ControllerUI * OSCController::createUI()
+{
+	return new OSCControllerUI(this);
 }
