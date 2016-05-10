@@ -68,7 +68,7 @@ public:
 
     void buildLed( int size){
         Path circle;
-        circle.addEllipse(Rectangle<float>(0,0,size,size));
+        circle.addEllipse(Rectangle<float>(0,0,(float)size, (float)size));
         validJsLed.setPath(circle);
     }
 

@@ -65,18 +65,18 @@ const String & LGMLLoggerUI::getSourceForRow(int r){
 const String &  LGMLLoggerUI::getContentForRow(int r){
     int count = 0;
     int idx = 0;
-    while (true ) {
+
+    while (idx < logElements.size()) {
+
         int nl = logElements[idx]->getNumLines();
+
         if(count+nl>r){
             return logElements[idx]->getLine(r-count);
         }
+
         count+=nl;
         idx++;
-        if(idx >= logElements.size())return String::empty;
-
     }
-
-
 
     return String::empty;
 };
@@ -93,7 +93,7 @@ int LGMLLoggerUI::LogList::getNumRows() {
 void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
                                                 int rowNumber,
                                                 int width, int height,
-                                                bool rowIsSelected) {
+                                                bool) {
     g.setColour(Colours::transparentBlack.withAlpha((rowNumber%2==0?0.1f:0.f)));
     g.fillRect(0, 0, width, height);
 
@@ -103,7 +103,7 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
                                        int rowNumber,
                                        int columnId,
                                        int width, int height,
-                                       bool rowIsSelected) {
+                                       bool) {
     g.setFont(12);
     g.setColour(TEXT_COLOR);
     String text;

@@ -41,19 +41,22 @@ JsContainerSync::JsContainerNamespace* JsContainerSync::getContainerNamespace(Co
 }
 
 
-JsContainerSync::JsContainerNamespace* JsContainerSync::getContainerNamespace(const String & n){
+JsContainerSync::JsContainerNamespace* JsContainerSync::getContainerNamespace(const String & ns){
     JsContainerNamespace* result = nullptr;
-    for(auto & n:linkedContainerNamespaces){
-        if(n->nsName==n)
-            return n;
 
+    for(auto & n:linkedContainerNamespaces){
+        if(n->nsName == ns) return n;
     }
+
     return result;
 }
 
-bool JsContainerSync::existInContainerNamespace(const String & n){return getContainerNamespace(n)!=nullptr;}
+bool JsContainerSync::existInContainerNamespace(const String & ns){ 
+	return getContainerNamespace(ns)!=nullptr;
+}
 
-DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent){
+DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent)
+{
     DynamicObject*  d = parent;
     if(!container->skipControllableNameInAddress)
         d= new DynamicObject();

@@ -74,7 +74,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 	rulesPanel->setPreferredWidth(300);
 
 
-    setSize(getParentMonitorArea().getWidth()*.9,   getParentMonitorArea().getHeight()*.9);
+    setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.9f));
 
     (&getCommandManager())->registerAllCommandsForTarget (this);
     (&getCommandManager())-> setFirstCommandTarget(this);
