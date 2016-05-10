@@ -14,8 +14,6 @@
 
 #include "JavascriptController.h"
 #include "OSCControllerUI.h"
-#include "JsEnvironmentUI.h"
-
 
 class JavascriptControllerUI : public OSCControllerUI{
 public:

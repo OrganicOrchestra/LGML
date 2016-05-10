@@ -12,8 +12,9 @@
 #define JAVASCRIPTCONTROLLEREDITOR_H_INCLUDED
 
 #include "OSCControllerEditor.h"
-#include "JsEnvironmentUI.h"
 #include "JavascriptControllerUI.h"
+
+class JsEnvironmentUI;
 
 class JavascriptControllerEditor : public OSCControllerEditor
 {
@@ -24,6 +25,8 @@ public:
 	JavascriptController * jsController;
 
 	ScopedPointer<JsEnvironmentUI> scriptUI;
+
+	void resizedInternalOSC(Rectangle<int> bounds);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(JavascriptControllerEditor)
 };

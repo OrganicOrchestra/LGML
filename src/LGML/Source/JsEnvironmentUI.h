@@ -11,8 +11,9 @@
 #ifndef JSENVIRONMENTUI_H_INCLUDED
 #define JSENVIRONMENTUI_H_INCLUDED
 
-#include "JsEnvironment.h"
+
 #include "DebugHelpers.h"
+#include "JsEnvironment.h"
 
 class JsEnvironmentUI : public Component,public Button::Listener,public JsEnvironment::Listener{
 public:
