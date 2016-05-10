@@ -111,6 +111,8 @@ MainContentComponent::~MainContentComponent(){
 
     NodeConnectionEditor::deleteInstance();
 	ShapeShifterManager::deleteInstance();
+	
+	inspector.clear();
 }
 
 

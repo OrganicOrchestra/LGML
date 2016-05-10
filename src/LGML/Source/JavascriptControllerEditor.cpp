@@ -26,7 +26,7 @@ JavascriptControllerEditor::~JavascriptControllerEditor()
 
 void JavascriptControllerEditor::resizedInternalOSC(Rectangle<int> r)
 {
-	scriptUI->setBounds(r);
+	scriptUI->setBounds(r.removeFromTop(30));
 
 }
 

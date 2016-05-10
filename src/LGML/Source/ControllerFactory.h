@@ -16,10 +16,12 @@
 #include "DMXController.h"
 #include "MIDIController.h"
 #include "JavaScriptController.h"
+#include "OSCCustomController.h"
+
 
 class ControllerManager;
 
-static const String controllerTypeNames[] = { "OSC Direct","ScriptedOSC","DMX","MIDI" };
+static const String controllerTypeNames[] = { "OSC Direct","ScriptedOSC","OSC Custom","DMX","MIDI" };
 
 class ControllerFactory
 {
@@ -28,6 +30,7 @@ public:
     {
         OSCDirect,
         ScriptedOSC,
+		OSCCustom,
         DMX,
         MIDI,
         UNKNOWN //has to be last
@@ -55,7 +58,9 @@ public:
             case ScriptedOSC:
                 c = new JavascriptController();
                 break;
-
+			case OSCCustom:
+				c = new OSCCustomController();
+				break;
             case DMX:
                 c = new DMXController();
                 break;

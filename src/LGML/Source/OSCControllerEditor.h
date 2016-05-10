@@ -30,11 +30,7 @@ public:
 	ScopedPointer<StringParameterUI> remoteHostUI;
 	ScopedPointer<StringParameterUI> remotePortUI;
 
-	Trigger activityTrigger;
-    ScopedPointer<TriggerBlinkUI> activityTriggerUI;
 
-    StringArray activityLines;
-    Label activityLog;
 
 	void resizedInternal(Rectangle<int> bounds) override;
 
