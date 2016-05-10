@@ -17,12 +17,11 @@
 
 //==============================================================================
 NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
-ShapeShifterContent("Node Manager"),
 nodeManager(nodeManager),
 editingConnection(nullptr),
 isSelectingNodes(false)
 {
-	contentIsFlexible = true;
+
     nodeManager->addNodeManagerListener(this);
     setInterceptsMouseClicks(true, true);
     addAndMakeVisible(selectingBounds);
@@ -336,7 +335,7 @@ void NodeManagerUI::finishEditingConnection()
 
 }
 
-void NodeManagerUI::createNodeFromIndexAtPos(int modalResult, Viewport * c,int maxRes)
+void NodeManagerUI::createNodeFromIndexAtPos(int modalResult, Component * c,int maxRes)
 {
     if (modalResult >= 1 && modalResult <= maxRes)
     {
@@ -362,7 +361,7 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
             ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(0));
             menu.addSubMenu("Add Node", *addNodeMenu);
 
-            menu.show(0,0,0,0,ModalCallbackFunction::forComponent(&NodeManagerUI::createNodeFromIndexAtPos,(Viewport*)this,addNodeMenu->getNumItems()));
+            menu.show(0,0,0,0,ModalCallbackFunction::forComponent(&NodeManagerUI::createNodeFromIndexAtPos,(Component*)this,addNodeMenu->getNumItems()));
         }
         else
         {
@@ -489,13 +488,20 @@ void NodeManagerUI::childBoundsChanged(Component * ){
 
 
 void NodeManagerUI::resizeToFitNodes(){
-	/*
-	Rectangle<int> _bounds = getLocalBounds();
-
+	
+	Rectangle<int> _bounds(minBounds);
+    
     for(auto &n:nodesUI){
+
         Rectangle<int> r = n->getBoundsInParent();
         _bounds = _bounds.getUnion(r);
+
     }
     setBounds(_bounds);
-	*/
+
 }
+
+void NodeManagerUI::paint(Graphics&g) {
+//    g.setColour(Colours::red);
+//    g.fillAll();
+};

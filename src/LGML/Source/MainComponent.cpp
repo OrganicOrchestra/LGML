@@ -36,7 +36,9 @@ MainContentComponent::MainContentComponent(Engine * e):
 	addAndMakeVisible(shapeShifterManager.mainContainer);
 
     timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
-    nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
+    nodeManagerUI = new NodeManagerUIViewport(new NodeManagerUI(NodeManager::getInstance()));
+
+    
 	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
     ruleManagerUI = new RuleManagerUI(RuleManager::getInstance());
     lgmlLoggerUI = new LGMLLoggerUI(LGMLLogger::getInstance());

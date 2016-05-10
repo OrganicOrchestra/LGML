@@ -56,7 +56,7 @@ public:
 
 	ScopedPointer<TimeManagerUI> timeManagerUI;
 
-	ScopedPointer<NodeManagerUI> nodeManagerUI;
+	ScopedPointer<NodeManagerUIViewport> nodeManagerUI;
 	
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
 
@@ -67,7 +67,8 @@ public:
 
 
     ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;
-    
+
+
     Engine * engine;
     AudioDeviceSelectorComponent audioSettingsComp;
 

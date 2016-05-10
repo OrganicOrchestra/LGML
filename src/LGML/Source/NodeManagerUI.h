@@ -24,7 +24,7 @@ class NodeConnectionUI;
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public ShapeShifterContent, public NodeManager::Listener, public InspectableComponent::InspectableListener
+class NodeManagerUI : public Component, public NodeManager::Listener, public InspectableComponent::InspectableListener
 {
 public:
     NodeManagerUI(NodeManager * nodeManager);
@@ -39,6 +39,7 @@ public:
     void clear();
 
     void resized() override;
+    void paint(Graphics&) override;
 
     // Inherited via Listener
     virtual void nodeAdded(NodeBase *) override;
@@ -46,10 +47,10 @@ public:
     virtual void connectionAdded(NodeConnection *) override;
     virtual void connectionRemoved(NodeConnection *) override;
 
-	//NodeUI Listener
-	//virtual void componentSelected(SelectableComponent *) override;
-	//virtual void componentDeselected(SelectableComponent *) override;
-	virtual void inspectableSelectionChanged(InspectableComponent *) override;
+    //NodeUI Listener
+    //virtual void componentSelected(SelectableComponent *) override;
+    //virtual void componentDeselected(SelectableComponent *) override;
+    virtual void inspectableSelectionChanged(InspectableComponent *) override;
 
     void addNodeUI(NodeBase * node);
     void removeNodeUI(NodeBase * node);
@@ -84,7 +85,7 @@ public:
 
     void setAllNodesToStartAtZero();
     void resizeToFitNodes();
-    static void createNodeFromIndexAtPos(int modalResult,Viewport * c,int  maxResult);
+    static void createNodeFromIndexAtPos(int modalResult,Component * thisComponent,int  maxResult);
     Rectangle<int> minBounds;
 
 private:
@@ -101,6 +102,28 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 
+};
+
+class NodeManagerUIViewport: public ShapeShifterContent{
+    public :
+    NodeManagerUIViewport(NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContent("NodeManagerViewPort"){
+        vp.setViewedComponent(nmui,true);
+        vp.setScrollBarsShown(true, true);
+        vp.setScrollOnDragEnabled(false);
+        contentIsFlexible = true;
+        addAndMakeVisible(vp);
+
+        
+    }
+    void resized() override{
+        vp.setSize(getWidth(), getHeight());
+        nmui->setSize(jmax(getWidth(),nmui->getWidth()),
+                      jmax(getHeight(),nmui->getHeight()));
+        nmui->minBounds.setSize(getWidth(), getHeight());
+
+    }
+    Viewport vp;
+    NodeManagerUI * nmui;
 };
 
 #endif  // NODEMANAGERUI_H_INCLUDED
