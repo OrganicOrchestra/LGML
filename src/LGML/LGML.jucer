@@ -22,6 +22,8 @@
           <FILE id="frFd8w" name="JsEnvironment.cpp" compile="1" resource="0"
                 file="Source/JsEnvironment.cpp"/>
           <FILE id="d5u2LT" name="JsEnvironment.h" compile="0" resource="0" file="Source/JsEnvironment.h"/>
+          <FILE id="p6OV9N" name="JsEnvironmentUI.h" compile="0" resource="0"
+                file="Source/JsEnvironmentUI.h"/>
           <FILE id="Nd6Xnl" name="JsGlobalEnvironment.cpp" compile="1" resource="0"
                 file="Source/JsGlobalEnvironment.cpp"/>
           <FILE id="W19CFS" name="JsGlobalEnvironment.h" compile="0" resource="0"
