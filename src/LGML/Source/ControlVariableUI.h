@@ -32,8 +32,8 @@ public:
 
 	void resized() override;
 
-	void buttonClicked(Button * b);
-	void labelTextChanged(Label *b);
+	void buttonClicked(Button * b)override;
+	void labelTextChanged(Label *b)override;
 };
 
 

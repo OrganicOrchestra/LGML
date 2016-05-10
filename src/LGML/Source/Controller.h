@@ -39,7 +39,7 @@ public:
     void remove(); //will dispatch askForRemoveController
     virtual void onContainerParameterChanged(Parameter * p) override;
 
-	void askForRemoveVariable(ControlVariable * variable);
+	void askForRemoveVariable(ControlVariable * variable)override;
 
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;

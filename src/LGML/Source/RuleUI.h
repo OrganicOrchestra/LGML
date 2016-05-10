@@ -33,7 +33,7 @@ public:
 
 	void mouseDown(const MouseEvent &e) override;
 
-	void buttonClicked(Button * b);
+	void buttonClicked(Button * b)override;
 
 	virtual InspectorEditor * getEditor() override;
 	

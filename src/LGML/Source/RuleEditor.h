@@ -33,7 +33,7 @@ public:
 	OwnedArray<RuleConsequenceUI> consequencesUI;
 
 	void paint(Graphics &g) override;
-	void resized();
+	void resized()override;
 
 	void addConditionGroupUI(RuleConditionGroup * c);
 	void addConsequenceUI(RuleConsequence * c);

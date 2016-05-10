@@ -18,10 +18,8 @@ juce_ImplementSingleton(TimeManager);
 
 TimeManager::TimeManager():
 timeInSample(0),
-playState(false),
 beatTimeInSample(22050),
 sampleRate(44100),
-isSettingTempo(false),
 ControllableContainer("time")
 {
 
