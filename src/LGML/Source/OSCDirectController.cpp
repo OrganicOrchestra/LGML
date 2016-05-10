@@ -138,6 +138,10 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
         case Controllable::Type::STRING:
             sender.send(c->controlAddress, ((Parameter *)c)->stringValue());
             break;
+        default:
+            DBG("OSC range param not supported");
+            jassertfalse;
+            break;
     }
 
 #else

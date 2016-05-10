@@ -29,8 +29,6 @@ dragIsLocked(false)
 
     //DBG("Node Base UI Constructor");
 
-    this->node = node;
-
     connectorWidth = 10;
 
     inputContainer.setConnectorsFromNode(node);
