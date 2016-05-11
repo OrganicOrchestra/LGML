@@ -76,7 +76,7 @@ void ShapeShifterContainer::removeShifter(ShapeShifter * shifter, bool deleteShi
 	}
 	else 
 	{
-		if (shifters.size() == 1 && !silent)
+		if (shifters.size() == 1 && !silent && parentContainer != nullptr)
 		{
 			containerListeners.call(&ShapeShifterContainerListener::oneShifterRemaining, this, shifters[0]);
 		}
