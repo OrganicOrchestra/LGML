@@ -47,12 +47,15 @@ dragIsLocked(false)
     node->xPosition->hideInEditor = true;
     node->yPosition->hideInEditor = true;
 
-    //repaintOnSelection = false;
+	node->enabledParam->addParameterListener(this);
 
 }
 
 NodeBaseUI::~NodeBaseUI()
 {
+	node->xPosition->removeParameterListener(this);
+	node->yPosition->removeParameterListener(this);
+	node->enabledParam->removeParameterListener(this);
 }
 
 void NodeBaseUI::moved(){
@@ -88,11 +91,14 @@ void NodeBaseUI::resized()
 }
 
 void NodeBaseUI::parameterValueChanged(Parameter * p) {
+	DBG("HERE !");
+
 	if (p == node->xPosition || p == node->yPosition) {
 		setCentrePosition((int)node->xPosition->value, (int)node->yPosition->value);
 	}
 	else if (p == node->enabledParam)
 	{
+		DBG("HERE !");
 		mainContainer.repaint();
 	}
 }
@@ -289,10 +295,7 @@ void NodeBaseUI::MainContainer::paint(Graphics & g)
     g.setColour(nodeUI->isSelected ?HIGHLIGHT_COLOR:LIGHTCONTOUR_COLOR);
     g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1),4.f, nodeUI->isSelected?2.f:.5f);
 
-    // @ben never handle paintuing function from other painting function( has to be done by JUCE....)
-    // here it create infinite repaint cycles
-//	headerContainer->repaint();
-//	contentContainer->repaint();
+
 }
 
 
