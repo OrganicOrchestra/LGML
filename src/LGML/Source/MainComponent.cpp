@@ -48,6 +48,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerViewport);
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
 	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(inspectorViewport);
+	
 	ShapeShifterPanel * rulesPanel = ShapeShifterManager::getInstance()->createPanel(ruleManagerUI);
     ShapeShifterPanel * logPanel = ShapeShifterManager::getInstance()->createPanel(lgmlLoggerUI);
 
@@ -114,10 +115,7 @@ MainContentComponent::~MainContentComponent(){
 
 	DBG("Clear inspector");
 	inspector->clear();
-    NodeConnectionEditor::deleteInstance();
-	ShapeShifterManager::deleteInstance();
-	
-	
+	ShapeShifterManager::deleteInstance();	
 }
 
 

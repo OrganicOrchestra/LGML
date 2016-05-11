@@ -106,7 +106,10 @@ void NodeConnectionUI::paint (Graphics& g)
     p.quadraticTo(endAnchorX, endPos.y, endPos.x, endPos.y);
 
     Colour baseColor = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
-    g.setColour((candidateDropConnector != nullptr) ? Colours::yellow : isMouseOver()?Colours::orange:baseColor );
+	if (isMouseOver()) baseColor = Colours::red;
+	if (candidateDropConnector != nullptr) baseColor = Colours::yellow;
+	if (isSelected) baseColor = HIGHLIGHT_COLOR;
+    g.setColour(baseColor);
     g.strokePath(p, PathStrokeType(2.0f));
 
 }
@@ -157,19 +160,18 @@ void NodeConnectionUI::mouseDown(const MouseEvent & e)
         {
         case 1:
             //edit connection
-            NodeConnectionEditor::getInstance()->editConnection(connection);
+			selectThis();
             break;
 
         case 2:
             connection->remove();
             break;
         }
-    }
-    else  if (e.mods.isCtrlDown())
-    {
-        connection->remove();
-
-    }
+	}
+	else
+	{
+		selectThis();
+	}
 }
 
 void NodeConnectionUI::mouseEnter(const MouseEvent &)
@@ -182,10 +184,6 @@ void NodeConnectionUI::mouseExit(const MouseEvent &)
     repaint();
 }
 
-void NodeConnectionUI::mouseDoubleClick(const MouseEvent &)
-{
-    NodeConnectionEditor::getInstance()->editConnection(connection);
-}
 
 void NodeConnectionUI::setSourceConnector(Connector * c)
 {
@@ -263,6 +261,11 @@ bool NodeConnectionUI::finishEditing()
 
 
     return success;
+}
+
+InspectorEditor * NodeConnectionUI::getEditor()
+{
+	return new NodeConnectionEditor(this);
 }
 
 /*

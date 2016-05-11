@@ -17,7 +17,7 @@
 //==============================================================================
 /*
 */
-class NodeConnectionEditorLink    : public Component
+class NodeConnectionEditorLink    : public Component, public SettableTooltipClient
 {
 public:
     NodeConnectionEditorLink(NodeConnectionEditorDataSlot * outSlot, NodeConnectionEditorDataSlot * inSlot);
@@ -50,10 +50,11 @@ public:
     void paint (Graphics&)override;
     void resized()override;
 
-    void mouseEnter(const MouseEvent &) override { repaint(); };
-    void mouseExit(const MouseEvent &) override { repaint(); };
+	void mouseEnter(const MouseEvent &) override;
+	void mouseExit(const MouseEvent &) override;
+	void mouseDoubleClick(const MouseEvent &) override;
 
-    void remove() { listeners.call(&LinkListener::askForRemoveLink, this); }
+	void remove();
 
     //Listener
     class LinkListener

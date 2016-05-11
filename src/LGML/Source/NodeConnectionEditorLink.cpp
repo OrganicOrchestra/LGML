@@ -17,6 +17,8 @@ NodeConnectionEditorLink::NodeConnectionEditorLink(NodeConnectionEditorDataSlot 
     outSlot(outSlot), inSlot(inSlot), candidateDropSlot(nullptr)
 {
     isEditing = (outSlot != nullptr && inSlot == nullptr) || (outSlot == nullptr && inSlot != nullptr);
+	setTooltip("Double click to delete");
+
 }
 
 NodeConnectionEditorLink::~NodeConnectionEditorLink()
@@ -117,3 +119,11 @@ void NodeConnectionEditorLink::resized()
 {
     repaint();
 }
+
+void NodeConnectionEditorLink::mouseEnter(const MouseEvent &) { repaint(); }
+
+void NodeConnectionEditorLink::mouseExit(const MouseEvent &) { repaint(); }
+
+void NodeConnectionEditorLink::mouseDoubleClick(const MouseEvent &) { remove(); }
+
+void NodeConnectionEditorLink::remove() { listeners.call(&LinkListener::askForRemoveLink, this); }

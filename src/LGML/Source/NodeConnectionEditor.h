@@ -13,22 +13,21 @@
 
 
 
-#include "NodeConnection.h"
 #include "NodeConnectionEditorDataSlot.h"
 #include "NodeConnectionEditorLink.h"
+#include "CustomEditor.h"
+#include "NodeConnectionUI.h"
 
 //==============================================================================
 /*
 */
-class NodeConnectionEditor : public DocumentWindow,
+class NodeConnectionEditor : public CustomEditor,
     NodeConnectionEditorDataSlot::SlotListener, NodeConnectionEditorLink::LinkListener, NodeConnection::Listener
 {
 
 public:
-    NodeConnectionEditor();
+    NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI);
     ~NodeConnectionEditor();
-
-    juce_DeclareSingleton(NodeConnectionEditor, true);
 
     OwnedArray<NodeConnectionEditorDataSlot> outputSlots;
     OwnedArray<NodeConnectionEditorDataSlot> inputSlots;
@@ -44,13 +43,10 @@ public:
     NodeConnection::ConnectionType editingType;
 
     void setCurrentConnection(NodeConnection * _connection);
-    void editConnection(NodeConnection * _connection);
 
     void resized()override;
-    void closeButtonPressed() override;
-    void closeWindow();
 
-    NodeConnectionEditorLink * editingLink;
+    ScopedPointer<NodeConnectionEditorLink> editingLink;
 
 
     void mouseEnter(const MouseEvent &) override;

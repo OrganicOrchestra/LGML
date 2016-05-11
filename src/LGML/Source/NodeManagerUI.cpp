@@ -157,11 +157,6 @@ void NodeManagerUI::removeConnectionUI(NodeConnection * connection)
 
     connectionsUI.removeObject(nui);
     removeChildComponent(nui);
-
-    if (NodeConnectionEditor::getInstance()->currentConnection == connection)
-    {
-        NodeConnectionEditor::getInstance()->closeWindow();
-    }
 }
 
 NodeConnectionUI * NodeManagerUI::getUIForConnection(NodeConnection* connection)

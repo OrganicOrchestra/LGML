@@ -49,10 +49,6 @@
               file="Source/InspectorEditor.h"/>
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
-        <GROUP id="{123D65D5-31EA-DEA7-B546-CCB5968E1C6B}" name="Events">
-          <FILE id="HyuGRw" name="QueuedNotifier.h" compile="0" resource="0"
-                file="Source/QueuedNotifier.h"/>
-        </GROUP>
         <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
           <FILE id="AdpDDv" name="MIDIManager.cpp" compile="1" resource="0" file="Source/MIDIManager.cpp"/>
           <FILE id="tZ5Yo3" name="MIDIManager.h" compile="0" resource="0" file="Source/MIDIManager.h"/>

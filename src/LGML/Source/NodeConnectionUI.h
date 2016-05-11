@@ -21,7 +21,7 @@
 
 */
 
-class NodeConnectionUI : public Component, public ComponentListener
+class NodeConnectionUI : public InspectableComponent, public ComponentListener
 {
 public:
     typedef ConnectorComponent Connector;
@@ -53,7 +53,6 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
-    void mouseDoubleClick(const MouseEvent &e) override;
 
     Connector* getBaseConnector()
     {
@@ -76,6 +75,8 @@ public:
     bool finishEditing();
 
     Component * getNodeManagerUI() { return (Component *)findParentComponentOfClass<NodeManagerUI>(); }
+
+	InspectorEditor * getEditor() override;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionUI)
