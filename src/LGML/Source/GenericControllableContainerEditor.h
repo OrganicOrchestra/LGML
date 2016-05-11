@@ -64,13 +64,13 @@ public:
 	CCInnerContainer * getInnerContainerForCC(ControllableContainer * cc);
 	CCLinkBT * getCCLinkForCC(ControllableContainer * cc);
 
-	void controllableAdded(Controllable *);
-	void controllableRemoved(Controllable *);
-	void controllableContainerAdded(ControllableContainer *);
-	void controllableContainerRemoved(ControllableContainer *);
-	void childStructureChanged(ControllableContainer *);
+	void controllableAdded(Controllable *)override;
+	void controllableRemoved(Controllable *)override;
+	void controllableContainerAdded(ControllableContainer *)override;
+	void controllableContainerRemoved(ControllableContainer *)override;
+	void childStructureChanged(ControllableContainer *)override;
 
-	void buttonClicked(Button * b);
+	void buttonClicked(Button * b)override;
 };
 
 
@@ -90,7 +90,7 @@ public :
 	void resized() override;
 	void clear() override;
 
-	void buttonClicked(Button  *b);
+	void buttonClicked(Button  *b)override;
 	
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericControllableContainerEditor)

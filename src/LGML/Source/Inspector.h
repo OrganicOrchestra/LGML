@@ -35,7 +35,7 @@ public:
 	void clear();
 	void inspectCurrentComponent();
 
-	void inspectableRemoved(InspectableComponent * component);
+	void inspectableRemoved(InspectableComponent * component)override;
 };
 
 

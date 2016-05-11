@@ -107,7 +107,7 @@ public:
 
 
 
-	virtual void childStructureChanged(ControllableContainer *);
+	virtual void childStructureChanged(ControllableContainer *)override;
 
 
 private:
