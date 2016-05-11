@@ -1,21 +1,20 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    Logger.h
-    Created: 6 May 2016 1:37:41pm
-    Author:  Martin Hermant
+ Logger.h
+ Created: 6 May 2016 1:37:41pm
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef LGMLLOGGER_H_INCLUDED
 #define LGMLLOGGER_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "QueuedNotifier.h"
 
 
-
-// TODO : create a parrallel file Log (with fileLogger)
 
 class LGMLLogger : public Logger{
     public :
@@ -28,46 +27,15 @@ class LGMLLogger : public Logger{
     }
     void logMessage (const String& message) override;
 
-    // default to async listener
-    class Listener : public AsyncUpdater{
-    public:
-        Listener(){}
-        virtual ~Listener() {}
 
-        virtual void newMessage(const String&) = 0;
-
-
-
-
-    private:
-        void handleAsyncUpdate()override{
-            const ScopedLock lk(mu);
-            for(auto &v:newMessagesToBeSent){newMessage(v);}
-            newMessagesToBeSent.clear();
-        }
-
-        void notifyNextMessage(const String & s){
-            {
-                const ScopedLock lk(mu);
-                newMessagesToBeSent.add(s);
-            }
-
-            triggerAsyncUpdate();
-        };
-        friend class LGMLLogger;
-
-        StringArray newMessagesToBeSent;
-        CriticalSection mu;
-        
-    };
-
-
-    ListenerList<Listener> listeners;
-    void addLogListener(Listener* newListener) { listeners.add(newListener); }
-    void removeLogListener(Listener* listener) { listeners.remove(listener); }
-
+    QueuedNotifier<String> notifier;
+    typedef QueuedNotifier<String>::Listener Listener;
+    void addLogListener(Listener * l){notifier.addListener(l);}
+    void removeLogListener(Listener * l){notifier.removeListener(l);}
+    
+    
     ScopedPointer<FileLogger> fileLog;
-
+    
 };
 
 

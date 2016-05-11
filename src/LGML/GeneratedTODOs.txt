@@ -40,9 +40,14 @@ NodeConnectionUI.cpp
 		//but I'm up for any other fancy complexoid cuved Path algos that never touch a node
 
 
-LGMLLogger.h
-	line : 17
-		// TODO : create a parrallel file Log (with fileLogger)
+NodeConnectionEditor.cpp
+	line : 389
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+	line : 190
+		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
+		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
+		// should be fixed !!
 
 
 JsGlobalEnvironment.cpp
@@ -80,16 +85,6 @@ VSTNode.h
 
 	line : 109
 		// TODO check if scoped pointer deletes old innerPlugin
-
-
-NodeConnectionEditor.cpp
-	line : 389
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
-	line : 190
-		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
-		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
-		// should be fixed !!
 
 
 TimeManager.h

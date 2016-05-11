@@ -12,8 +12,12 @@
 
 juce_ImplementSingleton(LGMLLogger);
 
+
+
+
+
 void LGMLLogger::logMessage (const String& message) {
-    listeners.call(&LGMLLogger::Listener::notifyNextMessage,message);
+    notifier.addMessage(message);
     if(fileLog){
         fileLog->logMessage(message);
     }
