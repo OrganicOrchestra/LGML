@@ -60,7 +60,7 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 	addAndMakeVisible(innerContainer);
 
 	parentBT.setVisible(ccLevel > 0);
-	parentBT.setButtonText(String("Up (current level : ") + String(ccLevel) + String(")"));
+	parentBT.setButtonText("Up : " + cc->parentContainer->niceName);
 
 	resized();
 
