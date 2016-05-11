@@ -52,6 +52,9 @@
         <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
           <FILE id="AdpDDv" name="MIDIManager.cpp" compile="1" resource="0" file="Source/MIDIManager.cpp"/>
           <FILE id="tZ5Yo3" name="MIDIManager.h" compile="0" resource="0" file="Source/MIDIManager.h"/>
+          <FILE id="VlpomU" name="MIDIUIHelper.cpp" compile="1" resource="0"
+                file="Source/MIDIUIHelper.cpp"/>
+          <FILE id="aIOYF7" name="MIDIUIHelper.h" compile="0" resource="0" file="Source/MIDIUIHelper.h"/>
         </GROUP>
         <GROUP id="{CD34BC32-7051-468F-8C6F-D5720DD85230}" name="ScriptEnvironments">
           <GROUP id="{2F437B28-C238-7AD3-AA89-3D6FD2EDD7E2}" name="Javascript">

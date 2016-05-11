@@ -63,36 +63,6 @@ void MIDIManager::updateDeviceList(bool updateInput)
 
 	if (updateInput) inputDevices = deviceNames;
 	else outputDevices = deviceNames;
-	/*
-	if (hasDeviceListChanged(newDeviceNames, isInputDeviceList))
-	{
-
-		ReferenceCountedArray<MidiDeviceListEntry>& midiDevices
-			= isInputDeviceList ? midiInputs : midiOutputs;
-
-		closeUnpluggedDevices(newDeviceNames, isInputDeviceList);
-
-		ReferenceCountedArray<MidiDeviceListEntry> newDeviceList;
-
-		// add all currently plugged-in devices to the device list
-		for (int i = 0; i < newDeviceNames.size(); ++i)
-		{
-			MidiDeviceListEntry::Ptr entry = findDeviceWithName(newDeviceNames[i], isInputDeviceList);
-
-			if (entry == nullptr)
-				entry = new MidiDeviceListEntry(newDeviceNames[i]);
-
-			newDeviceList.add(entry);
-		}
-
-		// actually update the device list
-		midiDevices = newDeviceList;
-
-		// update the selection status of the combo-box
-		if (MidiDeviceListBox* midiSelector = isInputDeviceList ? midiInputSelector : midiOutputSelector)
-			midiSelector->syncSelectedItemsWithDeviceList(midiDevices);
-	}
-	*/
 }
 
 void MIDIManager::timerCallback()

@@ -19,12 +19,23 @@ MIDIController::MIDIController() :
 {
 }
 
-void MIDIController::ListenToMidiPort(const juce::String & name){
-    if(midiPortName!="")
-       getAudioDeviceManager().removeMidiInputCallback(midiPortName, this);
+void MIDIController::setCurrentDevice(const String & deviceName)
+{
+	if (deviceName == midiPortName) return;
 
-    getAudioDeviceManager().addMidiInputCallback(midiPortName, this);
+	if (!midiPortName.isEmpty())
+	{
+		getAudioDeviceManager().removeMidiInputCallback(midiPortName, this);
+	}
 
+	midiPortName = deviceName;
+
+	if (!midiPortName.isEmpty())
+	{
+		getAudioDeviceManager().addMidiInputCallback(midiPortName, this);
+	}
+
+	midiControllerListeners.call(&MIDIControllerListener::currentDeviceChanged, this);
 }
 
 ControllerUI * MIDIController::createUI()

@@ -12,11 +12,18 @@
 
 MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
 	CustomEditor(controllerUI),
-	midiController(controllerUI->midiController)
+	midiController(controllerUI->midiController),
+	deviceChooser(true)
 {
-
+	addAndMakeVisible(deviceChooser);
 }
 
 MIDIControllerEditor::~MIDIControllerEditor()
 {
+}
+
+void MIDIControllerEditor::resized()
+{
+	Rectangle<int> r = getLocalBounds();
+	deviceChooser.setBounds(r.removeFromTop(20));
 }

@@ -24,10 +24,17 @@ public:
     Label nameLabel;
     Label valueLabel;
 
+	String prefix;
+	String suffix;
+
+	void setPrefix(const String &_prefix);
+	void setSuffix(const String &_suffix);
+
     bool nameLabelIsVisible;
     void setNameLabelVisible(bool visible);
 
     void resized() override;
+
 
 protected:
     void valueChanged(const var & v) override;

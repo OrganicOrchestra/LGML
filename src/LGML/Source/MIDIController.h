@@ -18,15 +18,31 @@ class MIDIController : public Controller,public MidiInputCallback
 public :
     MIDIController();
 
-    void handleIncomingMidiMessage (MidiInput* source,
-                                            const MidiMessage& message) override;
+	String midiPortName;
 
-    void ListenToMidiPort(const String & );
+	void setCurrentDevice(const String &deviceName);
+	
+	void handleIncomingMidiMessage(MidiInput* source,
+		const MidiMessage& message) override;
 
 	ControllerUI * createUI() override;
-private:
 
-    String midiPortName;
+
+	class  MIDIControllerListener
+	{
+	public:
+		/** Destructor. */
+		virtual ~MIDIControllerListener() {}
+		virtual void currentDeviceChanged(MIDIController *) {}
+
+
+	};
+
+	ListenerList<MIDIControllerListener> midiControllerListeners;
+	void addMIDIControllerListener(MIDIControllerListener* newListener) { midiControllerListeners.add(newListener); }
+	void removeMIDIControllerListener(MIDIControllerListener* listener) { midiControllerListeners.remove(listener); }
+
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
 };
 
