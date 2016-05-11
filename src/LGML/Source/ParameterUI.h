@@ -36,8 +36,8 @@ protected:
     virtual void valueChanged(const var & ){};
 private:
     // see Parameter::AsyncListener
-    virtual void asyncParameterValueChanged(Parameter * ,var & v) override{
-        valueChanged(v);
+    virtual void newMessage(const Parameter::ParamWithValue & p) override{
+        valueChanged(p.value);
     };
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
 };

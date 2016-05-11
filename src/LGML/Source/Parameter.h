@@ -12,6 +12,7 @@
 #define PARAMETER_H_INCLUDED
 
 #include "Controllable.h"
+#include "QueuedNotifier.h"
 
 class Parameter : public Controllable
 {
@@ -62,63 +63,18 @@ public:
 
 
     // ASYNC
-
-    class AsyncListener : public AsyncUpdater,public Parameter::Listener{
+    class  ParamWithValue{
     public:
-        AsyncListener(bool onlyLast = true):getOnlyLastValue(onlyLast){}
-        virtual ~AsyncListener() {}
-
-        // allow to stack all values or get oly last updated value
-        bool getOnlyLastValue;
-
-        // allow asyncronous calls to be stacked(if !getOnlyLast) then called from the message thread
-        virtual void asyncParameterValueChanged(Parameter * p,var & v) = 0;
-
-        void handleAsyncUpdate()override{
-            const ScopedLock lk(mu);
-            for(auto &v:asyncVars){
-                asyncParameterValueChanged(v.parameter,v.value);
-            }
-            asyncVars.clear();
-        }
-    private:
-        void parameterValueChanged(Parameter * p) override{
-
-            {
-                const ScopedLock lk(mu);
-                if(getOnlyLastValue){
-                    bool found = false;
-                    for(auto & av:asyncVars){
-                        if(av.parameter==p){
-                            av.value = p->value;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if(!found){asyncVars.add(ParameterWithValue(p,p->value));}
-                }
-                else{asyncVars.add(ParameterWithValue(p,p->value));}
-            }
-
-            triggerAsyncUpdate();
-        };
-
-        friend class Parameter;
-        struct ParameterWithValue{
-            ParameterWithValue(Parameter * p,var v):parameter(p),value(v){}
-            void set(Parameter * p,var v){parameter=p;value =v;}
-            Parameter * parameter;
-            var value;
-        };
-        Array<ParameterWithValue> asyncVars;
-        CriticalSection mu;
+        ParamWithValue(Parameter * p,var v):parameter(p),value(v){}
+        Parameter * parameter;
+        var value;
 
     };
+    QueuedNotifier<ParamWithValue> queuedNotifier;
+    typedef QueuedNotifier<ParamWithValue>::Listener AsyncListener;
 
-
-    ListenerList<AsyncListener> asyncListeners;
-    void addParameterListener(AsyncListener* newListener) { asyncListeners.add(newListener); }
-    void removeParameterListener(AsyncListener* listener) { asyncListeners.remove(listener); }
+    void addParameterListener(AsyncListener* newListener) { queuedNotifier.addListener(newListener); }
+    void removeParameterListener(AsyncListener* listener) { queuedNotifier.removeListener(listener); }
 
 private:
     WeakReference<Parameter>::Master masterReference;

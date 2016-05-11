@@ -26,7 +26,7 @@ class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener
     void paint(Graphics &g) override;
     void resized()override;
 
-    void asyncParameterValueChanged(Parameter* p ,var & v) override;
+    void newMessage(const Parameter::ParamWithValue & pv) override;
 
 
     class TimeBar : public Component,public Timer{

@@ -32,14 +32,20 @@ public:
 
 
 
-    void addMessage(const ArrayClass & msg,bool forceSendNow = false){
+    void addMessage( ArrayClass * msg,bool forceSendNow = false){
+        if(listeners.size()==0){
+            delete msg;
+            return;
+        }
         forceSendNow |= MessageManager::getInstance()->isThisTheMessageThread();
-        if(forceSendNow){listeners.call(&Listener::newMessage,msg);}
-
+        if(forceSendNow){
+            listeners.call(&Listener::newMessage,*msg);
+            delete msg;
+        }
         else{
             if(getOnlyLastValue){
                 if(messageQueue.size()<1){messageQueue.add(msg);}
-                else{messageQueue[0] = msg;}
+                else{messageQueue.set(0, msg);}
             }
             else{messageQueue.add(msg);}
 
@@ -57,14 +63,14 @@ private:
         {
             const typename CriticalSectionToUse::ScopedLockType lk(messageQueue.getLock());
             for(auto &v:messageQueue){
-                listeners.call(&Listener::newMessage,v);
+                listeners.call(&Listener::newMessage,*v);
             }
         }
         messageQueue.clear();
 
     }
 
-    Array<ArrayClass,CriticalSection> messageQueue;
+    OwnedArray<ArrayClass,CriticalSectionToUse> messageQueue;
     
     ListenerList<Listener > listeners;
     

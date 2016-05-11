@@ -50,21 +50,21 @@ TimeManagerUI::~TimeManagerUI(){
 }
 
 
-void TimeManagerUI::asyncParameterValueChanged(Parameter* p ,var & v) {
-    if(p == timeManager->playState){
-        if((bool)v){timeBar.async_play();}
+void TimeManagerUI::newMessage(const Parameter::ParamWithValue & pv) {
+    if(pv.parameter == timeManager->playState){
+        if((bool)pv.value){timeBar.async_play();}
         else{ timeBar.async_stop();}
     }
-    else if(p==timeManager->isSettingTempo){
-        timeBar.isSettingTempo = v;
-        timeBar.showBeatComponents(!(bool)v);
+    else if(pv.parameter==timeManager->isSettingTempo){
+        timeBar.isSettingTempo = pv.value;
+        timeBar.showBeatComponents(!(bool)pv.value);
         timeBar.repaint();
     }
-    else if(p==timeManager->beatPerBar){
-        timeBar.initComponentsForNumBeats(v);
+    else if(pv.parameter==timeManager->beatPerBar){
+        timeBar.initComponentsForNumBeats(pv.value);
     }
-    else if(p==timeManager->currentBeat){
-        timeBar.async_newBeat(v);
+    else if(pv.parameter==timeManager->currentBeat){
+        timeBar.async_newBeat(pv.value);
     }
 }
 
