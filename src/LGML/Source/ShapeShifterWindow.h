@@ -23,6 +23,7 @@ public:
 
 	ShapeShifterPanel * panel;
 
+	void paintOverChildren(Graphics &g);
 	void resized() override;
 
 	ComponentDragger dragger;

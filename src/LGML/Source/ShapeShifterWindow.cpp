@@ -39,6 +39,12 @@ ShapeShifterWindow::~ShapeShifterWindow()
 	removeMouseListener(this);
 }
 
+void ShapeShifterWindow::paintOverChildren(Graphics & g)
+{
+	g.setColour(BG_COLOR.brighter());
+	g.drawRect(getLocalBounds());
+}
+
 void ShapeShifterWindow::resized()
 {
 	ResizableWindow::resized();

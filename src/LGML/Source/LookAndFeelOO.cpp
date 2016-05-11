@@ -477,6 +477,33 @@ void LookAndFeelOO::drawScrollbar (Graphics& g,
                                     bool /*isMouseOver*/,
                                     bool /*isMouseDown*/)
 {
+	
+	const Colour bgColour(scrollbar.findColour(ScrollBar::backgroundColourId));
+	const Colour thumbColour(scrollbar.findColour(ScrollBar::thumbColourId));
+	
+	float roundFactor = isScrollbarVertical ? width / 2.f : height / 2.f;
+
+	Rectangle<int> r = Rectangle<int>(x, y, width, height).reduced(2);
+
+	g.setColour(bgColour);
+	g.fillRoundedRectangle(r.toFloat(), roundFactor);
+
+	if (isScrollbarVertical)
+	{
+		r.setTop(thumbStartPosition);
+		r.setHeight(thumbSize);
+	}
+	else
+	{
+		r.setLeft(thumbStartPosition);
+		r.setWidth(thumbSize);
+
+	}
+
+	g.setColour(thumbColour);
+	g.fillRoundedRectangle(r.toFloat(), roundFactor);
+
+	/*
     g.fillAll (scrollbar.findColour (ScrollBar::backgroundColourId));
 
     Path slotPath, thumbPath;
@@ -536,7 +563,7 @@ void LookAndFeelOO::drawScrollbar (Graphics& g,
         trackColour1 = thumbColour.overlaidWith (Colour (0x44000000));
         trackColour2 = thumbColour.overlaidWith (Colour (0x19000000));
     }
-
+	/*
     g.setGradientFill (ColourGradient (trackColour1, gx1, gy1,
                                        trackColour2, gx2, gy2, false));
     g.fillPath (slotPath);
@@ -551,14 +578,14 @@ void LookAndFeelOO::drawScrollbar (Graphics& g,
         gy1 = y + height * 0.6f;
         gy2 = (float) y + height;
     }
-
+	/*
     g.setGradientFill (ColourGradient (Colours::transparentBlack,gx1, gy1,
                                        Colour (0x19000000), gx2, gy2, false));
     g.fillPath (slotPath);
 
     g.setColour (thumbColour);
     g.fillPath (thumbPath);
-
+	
     g.setGradientFill (ColourGradient (Colour (0x10000000), gx1, gy1,
                                        Colours::transparentBlack, gx2, gy2, false));
 
@@ -574,6 +601,7 @@ void LookAndFeelOO::drawScrollbar (Graphics& g,
 
     g.setColour (Colour (0x4c000000));
     g.strokePath (thumbPath, PathStrokeType (0.4f));
+	*/
 }
 
 ImageEffectFilter* LookAndFeelOO::getScrollbarEffect()
@@ -2128,6 +2156,9 @@ void LookAndFeelOO::drawTableHeaderBackground (Graphics& g, TableHeaderComponent
     Rectangle<int> area (header.getLocalBounds());
     area.removeFromTop (area.getHeight() / 2);
 
+	g.fillAll(BG_COLOR);
+
+	/*
     g.setGradientFill (ColourGradient (Colour (0xffe8ebf9), 0.0f, (float) area.getY(),
                                        Colour (0xfff6f8f9), 0.0f, (float) area.getBottom(),
                                        false));
@@ -2138,18 +2169,19 @@ void LookAndFeelOO::drawTableHeaderBackground (Graphics& g, TableHeaderComponent
 
     for (int i = header.getNumColumns (true); --i >= 0;)
         g.fillRect (header.getColumnPosition (i).removeFromRight (1));
+*/
 }
 
 void LookAndFeelOO::drawTableHeaderColumn (Graphics& g, const String& columnName, int /*columnId*/,
                                             int width, int height, bool isMouseOver, bool isMouseDown,
                                             int columnFlags)
 {
-    if (isMouseDown)
-        g.fillAll (Colour (0x8899aadd));
-    else if (isMouseOver)
-        g.fillAll (Colour (0x5599aadd));
+	Rectangle<int> area(width, height);
+	
+	Colour c = BG_COLOR.brighter(isMouseDown?.8f:(isMouseOver ? .6f : .3f));
+	g.setColour(c);
+    g.fillRoundedRectangle(area.reduced(2).toFloat(),2);
 
-    Rectangle<int> area (width, height);
     area.reduce (4, 0);
 
     if ((columnFlags & (TableHeaderComponent::sortedForwards | TableHeaderComponent::sortedBackwards)) != 0)
@@ -2163,7 +2195,7 @@ void LookAndFeelOO::drawTableHeaderColumn (Graphics& g, const String& columnName
         g.fillPath (sortArrow, sortArrow.getTransformToScaleToFit (area.removeFromRight (height / 2).reduced (2).toFloat(), true));
     }
 
-    g.setColour (Colours::black);
+    g.setColour (FRONT_COLOR);
     g.setFont (Font (height * 0.5f, Font::bold));
     g.drawFittedText (columnName, area, Justification::centredLeft, 1);
 }

@@ -17,7 +17,7 @@ NodeBaseUI * AudioMixerNode::createUI()
 {
 
     NodeBaseUI * ui = new NodeBaseUI(this,new AudioMixerNodeUI);
-	ui->recursiveInspectionLevel = 2;
+	ui->recursiveInspectionLevel = 1;
     return ui;
 
 }
