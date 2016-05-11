@@ -28,7 +28,8 @@
  */
 
 
-class ControllableContainerSync :public ControllableContainer, public ControllableContainer::Listener{
+class ControllableContainerSync :public ControllableContainer
+{
 
 public:
     ControllableContainerSync(ControllableContainer * source,String overrideName);

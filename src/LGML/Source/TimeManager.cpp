@@ -116,6 +116,10 @@ void TimeManager::togglePlay(){
         playTrigger->trigger();
 }
 
+void TimeManager::setBeatPerBar(int)
+{
+}
+
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
     // actualize beatTime in sample

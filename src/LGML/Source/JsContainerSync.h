@@ -14,7 +14,8 @@
 #include "ControllableContainer.h"
 #include "JuceHeader.h"
 //allow to keep structural changes from containers with js namespace
-class JsContainerSync:public ControllableContainer::Listener{
+class JsContainerSync: public ControllableContainerListener
+{
 
 public:
 

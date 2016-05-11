@@ -21,7 +21,24 @@
 
 class ControllableContainerEditor;
 
-class ControllableContainer : public Parameter::Listener, public Trigger::Listener
+class ControllableContainer;
+
+//Listener
+class  ControllableContainerListener
+{
+public:
+	/** Destructor. */
+	virtual ~ControllableContainerListener() {}
+	virtual void controllableAdded(Controllable *) {}
+	virtual void controllableRemoved(Controllable *) {}
+	virtual void controllableContainerAdded(ControllableContainer *) {}
+	virtual void controllableContainerRemoved(ControllableContainer *) {}
+	virtual void controllableFeedbackUpdate(Controllable *) {}
+	virtual void childStructureChanged(ControllableContainer *) {}
+	virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
+};
+
+class ControllableContainer : public Parameter::Listener, public Trigger::Listener, public ControllableContainerListener
 {
 public:
     ControllableContainer(const String &niceName);
@@ -90,6 +107,7 @@ public:
 
 
 
+	virtual void childStructureChanged(ControllableContainer *);
 
 
 private:
@@ -104,24 +122,11 @@ private:
     void addParameterInternal(Parameter * p);
 
 public:
-    //Listener
-    class  Listener
-    {
-    public:
-        /** Destructor. */
-        virtual ~Listener() {}
-		virtual void controllableAdded(Controllable * ) {}
-        virtual void controllableRemoved(Controllable * ) {}
-        virtual void controllableContainerAdded(ControllableContainer *) {}
-        virtual void controllableContainerRemoved(ControllableContainer * ) {}
-        virtual void controllableFeedbackUpdate(Controllable * ) {}
-        virtual void childStructureChanged(ControllableContainer * ){}
-		virtual void controllableContainerPresetLoaded(ControllableContainer * ) {}
-    };
+    
 
-    ListenerList<Listener> controllableContainerListeners;
-    void addControllableContainerListener(Listener* newListener) { controllableContainerListeners.add(newListener);}
-    void removeControllableContainerListener(Listener* listener) { controllableContainerListeners.remove(listener);}
+    ListenerList<ControllableContainerListener> controllableContainerListeners;
+    void addControllableContainerListener(ControllableContainerListener* newListener) { controllableContainerListeners.add(newListener);}
+    void removeControllableContainerListener(ControllableContainerListener* listener) { controllableContainerListeners.remove(listener);}
 
 
 private:

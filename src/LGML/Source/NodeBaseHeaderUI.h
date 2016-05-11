@@ -26,7 +26,7 @@ class FloatSliderUI;
 class NodeBaseHeaderUI : public Component,
 	public ComboBox::Listener,
 	public Button::Listener,
-	public ControllableContainer::Listener,
+	public ControllableContainerListener,
 	public NodeBase::NodeListener
 {
 public:

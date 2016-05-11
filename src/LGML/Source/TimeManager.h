@@ -20,7 +20,8 @@
 
 #include "NodeBase.h"
 
-class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
+class TimeManager : public AudioIODeviceCallback ,public ControllableContainer
+{
 
 
     public :
@@ -62,10 +63,11 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     double getBeatPercent();
     int getBar();
 
-
+	/*
     ListenerList<Listener> listeners;
     void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
     void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
+	*/
 
     uint64 timeInSample;
     int beatTimeInSample;

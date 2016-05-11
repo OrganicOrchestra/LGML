@@ -27,7 +27,7 @@
 class ControllableInspector:
 	public ShapeShifterContent,
 	public SelectableComponentHandler::SelectableHandlerListener,
-	public ControllableContainer::Listener,
+	public ControllableContainerListener,
 	public ControllableContainerSync::ContainerSyncListener
 {
 public:

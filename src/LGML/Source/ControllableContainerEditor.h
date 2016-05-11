@@ -21,7 +21,7 @@ class ControllableUI;
 
 //  base class for displaying an UI presenting all control available in ControllableContainer
 
-class ControllableContainerEditor: public Component, public ControllableContainer::Listener
+class ControllableContainerEditor: public Component, public ControllableContainerListener
 {
 public:
     ControllableContainerEditor(ControllableContainer * ,Component*);

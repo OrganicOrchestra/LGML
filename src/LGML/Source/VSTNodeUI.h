@@ -30,7 +30,7 @@ public:
     void newVSTSelected() override;
 };
 
-class VSTNodeContentUI:public NodeBaseContentUI,public Button::Listener, public VSTNode::VSTNodeListener,public ControllableContainer::Listener{
+class VSTNodeContentUI:public NodeBaseContentUI,public Button::Listener, public VSTNode::VSTNodeListener,public ControllableContainerListener{
 public:
     VSTNodeContentUI();
     ~VSTNodeContentUI();
