@@ -209,12 +209,10 @@ void JsEnvironment::checkUserControllableEventFunction(){
 
 void JsEnvironment::parameterValueChanged(Parameter * p) {
     Identifier functionName = "on_"+getJsFunctionNameFromAddress(p->getControlAddress());
-    Result r(Result::ok());
-    callFunction(functionName, p->value, &r);
+    callFunction(functionName, p->value);
 };
 void JsEnvironment::triggerTriggered(Trigger *p){
     Identifier functionName = "on_"+getJsFunctionNameFromAddress(p->getControlAddress());
-    Result r(Result::ok());
-    callFunction(functionName, var::undefined(), &r);
+    callFunction(functionName, var::undefined());
 
 }

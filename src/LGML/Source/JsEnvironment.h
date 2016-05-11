@@ -56,8 +56,8 @@ public:
 
 protected :
 
-    var callFunction  (const Identifier& function, const Array<var> & args, Result* result);
-    var callFunction (const Identifier& function, const var & arg, Result* result);
+    var callFunction  (const Identifier& function, const Array<var> & args, Result* result=nullptr);
+    var callFunction (const Identifier& function, const var & arg, Result* result = nullptr);
 
     static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
     DynamicObject * getLocalEnv(){return localEnvironment.getDynamicObject();}
