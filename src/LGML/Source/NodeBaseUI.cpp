@@ -289,8 +289,10 @@ void NodeBaseUI::MainContainer::paint(Graphics & g)
     g.setColour(nodeUI->isSelected ?HIGHLIGHT_COLOR:LIGHTCONTOUR_COLOR);
     g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1),4.f, nodeUI->isSelected?2.f:.5f);
 
-	headerContainer->repaint();
-	contentContainer->repaint();
+    // @ben never handle paintuing function from other painting function( has to be done by JUCE....)
+    // here it create infinite repaint cycles
+//	headerContainer->repaint();
+//	contentContainer->repaint();
 }
 
 

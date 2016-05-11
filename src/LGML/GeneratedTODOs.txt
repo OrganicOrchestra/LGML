@@ -30,24 +30,19 @@ ControllableContainer.cpp
 	line : 115
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
-	line : 381
+	line : 380
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-
-NodeBase.h
-	line : 129
-		// @ben is it triggering error on your side?
-
-
-LGMLLogger.h
-	line : 17
-		// TODO : create a parrallel file Log (with fileLogger)
 
 
 NodeConnectionUI.cpp
 	line : 83
 		//@ben I prefer that atm (at least it doesnt start with weird anchors)
 		//but I'm up for any other fancy complexoid cuved Path algos that never touch a node
+
+
+LGMLLogger.h
+	line : 17
+		// TODO : create a parrallel file Log (with fileLogger)
 
 
 JsGlobalEnvironment.cpp
@@ -95,6 +90,14 @@ NodeConnectionEditor.cpp
 		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
+
+
+NodeBaseUI.cpp
+	line : 291
+		// @ben never handle paintuing function from other painting function( has to be done by JUCE....)
+		// here it create infinite repaint cycles
+		//	headerContainer->repaint();
+		//	contentContainer->repaint();
 
 
 TimeManager.h
