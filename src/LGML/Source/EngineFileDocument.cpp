@@ -102,13 +102,13 @@ void Engine::loadJSONData (var data, bool clearManagers)
     //    TODO check version Compat
 	clear();
 
-	MainContentComponent::inspector.setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
+	MainContentComponent::inspector->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
 	PresetManager::getInstance()->loadJSONData(data.getProperty("presetManager", var()), clearManagers);
     NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()), clearManagers);
     ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()), clearManagers);
 
-	MainContentComponent::inspector.setEnabled(true); //Re enable editor
+	MainContentComponent::inspector->setEnabled(true); //Re enable editor
 
 }
 

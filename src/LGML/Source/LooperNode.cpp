@@ -21,6 +21,7 @@ LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :
 
 NodeBaseUI * LooperNode::createUI(){
     NodeBaseUI * ui = new NodeBaseUI(this, new LooperNodeContentUI);
-	ui->recursiveInspectionLevel = 1;
+	ui->recursiveInspectionLevel = 2;
+	ui->canInspectChildContainersBeyondRecursion = false;
 	return ui;
 }

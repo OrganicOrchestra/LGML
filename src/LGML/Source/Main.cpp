@@ -52,7 +52,6 @@ public:
         // Add your application's shutdown code here..
         mainWindow = nullptr; // (deletes our window)
         engine = nullptr;
-
     }
 
     //==============================================================================

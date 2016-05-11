@@ -25,6 +25,8 @@ public:
 
 	void resized() override;
 
+	virtual int getContentHeight();
+
 	virtual void clear();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InspectorEditor)

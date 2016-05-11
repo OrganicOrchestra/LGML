@@ -11,7 +11,6 @@
 #include "Inspector.h"
 
 Inspector::Inspector() :
-	ShapeShifterContent("Inspector"),
 	currentComponent(nullptr),
 	isEnabled(true)
 {
@@ -50,6 +49,8 @@ void Inspector::setCurrentComponent(InspectableComponent * c)
 		currentComponent->addInspectableListener(this);
 		inspectCurrentComponent();
 	}
+
+	listeners.call(&InspectorListener::currentComponentChanged, this);
 }
 
 void Inspector::resized()

@@ -14,11 +14,11 @@
 #include "GenericControllableContainerEditor.h"
 #include "MainComponent.h"
 
-InspectableComponent::InspectableComponent() : InspectableComponent(nullptr, &MainContentComponent::inspector)
+InspectableComponent::InspectableComponent() : InspectableComponent(nullptr, MainContentComponent::inspector)
 {
 }
 
-InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer) : InspectableComponent(relatedContainer, &MainContentComponent::inspector)
+InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer) : InspectableComponent(relatedContainer, MainContentComponent::inspector)
 {
 }
 

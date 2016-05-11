@@ -56,14 +56,17 @@ public:
 
 	ScopedPointer<TimeManagerUI> timeManagerUI;
 
-	ScopedPointer<NodeManagerUIViewport> nodeManagerUI;
+	static Inspector * inspector;
+	ScopedPointer<InspectorViewport> inspectorViewport;
+
+
+	ScopedPointer<NodeManagerUIViewport> nodeManagerViewport;
 	
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
 
 	ScopedPointer<RuleManagerUI> ruleManagerUI;
 
-	static Inspector inspector;
-
+	
 
 
     ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;

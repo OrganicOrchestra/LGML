@@ -427,7 +427,7 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
     }
 
     if(!isSelectingNodes){
-		MainContentComponent::inspector.setCurrentComponent(nullptr);
+		MainContentComponent::inspector->setCurrentComponent(nullptr);
 	}
 
     isSelectingNodes = false;

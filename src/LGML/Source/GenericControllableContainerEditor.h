@@ -87,10 +87,14 @@ public :
 
 	void setCurrentInspectedContainer(ControllableContainer *);
 	
+	virtual int getContentHeight() override;
+
 	void resized() override;
 	void clear() override;
 
 	void buttonClicked(Button  *b)override;
+
+
 	
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericControllableContainerEditor)

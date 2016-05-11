@@ -25,6 +25,11 @@ void InspectorEditor::resized()
 {
 }
 
+int InspectorEditor::getContentHeight()
+{
+	return getHeight();
+}
+
 void InspectorEditor::clear()
 {
 }

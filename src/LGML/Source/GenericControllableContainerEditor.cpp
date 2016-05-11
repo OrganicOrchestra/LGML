@@ -66,6 +66,12 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 
 }
 
+int GenericControllableContainerEditor::getContentHeight()
+{
+	if (innerContainer == nullptr) return InspectorEditor::getContentHeight();
+	else return innerContainer->getContentHeight() + parentBT.getHeight() + 5;
+}
+
 void GenericControllableContainerEditor::resized()
 {
 	if (innerContainer == nullptr) return;
@@ -125,7 +131,7 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 		{
 			addCCInnerUI(cc);
 		}
-	}else if (level == maxLevel)
+	}else if (level == maxLevel && canAccessLowerContainers)
 	{
 		for (auto &cc : container->controllableContainers)
 		{
@@ -271,13 +277,16 @@ void CCInnerContainer::resized()
 	}
 	r.removeFromTop(ccGap);
 
-	for (auto &cclink : lowerContainerLinks)
+	if (canAccessLowerContainers)
 	{
-		cclink->setBounds(r.removeFromTop(ccLinkHeight));
-		r.removeFromTop(gap);
-	}
+		for (auto &cclink : lowerContainerLinks)
+		{
+			cclink->setBounds(r.removeFromTop(ccLinkHeight));
+			r.removeFromTop(gap);
+		}
 
-	r.removeFromTop(ccGap);
+		r.removeFromTop(ccGap);
+	}
 
 	for (auto &ccui : innerContainers)
 	{

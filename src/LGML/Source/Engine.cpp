@@ -10,7 +10,6 @@
 
 #include "Engine.h"
 
-#include "NodeConnectionEditor.h"
 #include "LGMLLogger.h"
 
 
@@ -28,6 +27,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 
 Engine::~Engine(){
     stopAudio();
+
     TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
     ControllerManager::deleteInstance();
     NodeManager::deleteInstance();

@@ -12,7 +12,7 @@
 #include "NodeConnectionEditor.h"
 #include "DebugHelpers.h"
 
-Inspector MainContentComponent::inspector;
+Inspector * MainContentComponent::inspector = new Inspector();
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)
@@ -36,17 +36,18 @@ MainContentComponent::MainContentComponent(Engine * e):
 	addAndMakeVisible(shapeShifterManager.mainContainer);
 
     timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
-    nodeManagerUI = new NodeManagerUIViewport(new NodeManagerUI(NodeManager::getInstance()));
+    nodeManagerViewport = new NodeManagerUIViewport(new NodeManagerUI(NodeManager::getInstance()));
 
+	inspectorViewport = new InspectorViewport(inspector);
     
 	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
     ruleManagerUI = new RuleManagerUI(RuleManager::getInstance());
     lgmlLoggerUI = new LGMLLoggerUI(LGMLLogger::getInstance());
 
 	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
-	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerUI);
+	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerViewport);
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
-	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(&inspector);
+	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(inspectorViewport);
 	ShapeShifterPanel * rulesPanel = ShapeShifterManager::getInstance()->createPanel(ruleManagerUI);
     ShapeShifterPanel * logPanel = ShapeShifterManager::getInstance()->createPanel(lgmlLoggerUI);
 
@@ -111,10 +112,12 @@ MainContentComponent::~MainContentComponent(){
 #endif
 //    LookAndFeelOO::deleteInstance();
 
+	DBG("Clear inspector");
+	inspector->clear();
     NodeConnectionEditor::deleteInstance();
 	ShapeShifterManager::deleteInstance();
 	
-	inspector.clear();
+	
 }
 
 
