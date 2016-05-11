@@ -19,15 +19,9 @@ class AudioMixerNode : public NodeBase
 {
 
 public:
-
-
-
-
     class AudioMixerAudioProcessor : public NodeAudioProcessor
     {
     public:
-
-
         class OutputBus : public ControllableContainer{
         public:
             OutputBus(int _outputIndex,int numInput);

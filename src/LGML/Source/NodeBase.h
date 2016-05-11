@@ -126,9 +126,6 @@ private:
     int nodeTypeUID;
     friend class NodeFactory;
 
-    // we use parameterValue changed her to allow Derived Node to implement onContainerParameterChanged without having to call NodeBase::onContainerParameterChanged, less error prone
-    // @ben is it triggering error on your side?
-
     void parameterValueChanged(Parameter * p) override;
 
 

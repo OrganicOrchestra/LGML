@@ -40,7 +40,7 @@ void FloatSliderUI::paint(Graphics & g)
 
 
     float normalizedValue = getParamNormalizedValue();
-    g.setColour(BG_COLOR);
+    g.setColour(BG_COLOR.brighter(.2f));
     g.fillRoundedRectangle(sliderBounds.toFloat(), 2);
 
     g.setColour(c);
@@ -57,8 +57,9 @@ void FloatSliderUI::paint(Graphics & g)
 
 
     if(showLabel || showValue){
-        Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::lightgrey;
-        g.setColour(textColor);
+        //Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::grey;
+		
+		g.setColour(Colours::grey);
 
         sliderBounds = getLocalBounds();
         Rectangle<int> destRect;
@@ -163,6 +164,5 @@ float FloatSliderUI::getParamNormalizedValue()
 }
 
 void FloatSliderUI::valueChanged(const var &) {
-	DBG("Value changed");
     repaint();
 };

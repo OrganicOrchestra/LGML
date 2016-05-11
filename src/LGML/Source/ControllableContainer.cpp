@@ -161,19 +161,18 @@ Controllable * ControllableContainer::getControllableByName(const String & name)
 void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
 {
     controllableContainers.add(container);
-    controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
     container->setParentContainer(this);
-    notifyStructureChanged();
+	controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
+	notifyStructureChanged();
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
-
-
-    container->setParentContainer(nullptr);
-    controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
     controllableContainers.removeAllInstancesOf(container);
-    notifyStructureChanged();
+	controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
+	notifyStructureChanged();
+	container->setParentContainer(nullptr);
+
 }
 
 ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name)

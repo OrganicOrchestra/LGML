@@ -30,6 +30,7 @@ InspectableComponent::InspectableComponent(ControllableContainer * relatedContai
 	inspector(targetInspector),
 	relatedControllableContainer(relatedContainer),
 	recursiveInspectionLevel(0),
+	canInspectChildContainersBeyondRecursion(true),
 	isSelected(false),
 	repaintOnSelectionChanged(true)
 { 
@@ -38,6 +39,7 @@ InspectableComponent::InspectableComponent(ControllableContainer * relatedContai
 
 InspectableComponent::~InspectableComponent()
 {
+	listeners.call(&InspectableListener::inspectableRemoved,this);
 }
 
 InspectorEditor * InspectableComponent::getEditor()

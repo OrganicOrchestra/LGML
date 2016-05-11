@@ -501,7 +501,7 @@ void NodeManagerUI::resizeToFitNodes(){
 
 }
 
-void NodeManagerUI::paint(Graphics&g) {
+void NodeManagerUI::paint(Graphics& ) {
 //    g.setColour(Colours::red);
 //    g.fillAll();
 };

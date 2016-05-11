@@ -39,6 +39,7 @@ void Inspector::setCurrentComponent(InspectableComponent * c)
 	{
 		clear();
 		currentComponent->setSelected(false);
+		currentComponent->removeInspectableListener(this);
 	}
 
 	currentComponent = c;
@@ -46,6 +47,7 @@ void Inspector::setCurrentComponent(InspectableComponent * c)
 	if (currentComponent != nullptr)
 	{
 		currentComponent->setSelected(true);
+		currentComponent->addInspectableListener(this);
 		inspectCurrentComponent();
 	}
 }
@@ -71,4 +73,9 @@ void Inspector::inspectCurrentComponent()
 	currentEditor = currentComponent->getEditor();
 	addAndMakeVisible(currentEditor);
 	resized();
+}
+
+void Inspector::inspectableRemoved(InspectableComponent * component)
+{
+	if (component == currentComponent) setCurrentComponent(nullptr);
 }

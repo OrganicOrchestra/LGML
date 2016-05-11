@@ -17,6 +17,7 @@ NodeBaseUI * AudioMixerNode::createUI()
 {
 
     NodeBaseUI * ui = new NodeBaseUI(this,new AudioMixerNodeUI);
+	ui->recursiveInspectionLevel = 2;
     return ui;
 
 }
@@ -64,7 +65,7 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateInput(){
         }
 
     }
-    setPreferedNumAudioInput(numberOfInput->value);
+    setPreferedNumAudioInput(numberOfInput->intValue());
     suspendProcessing(false);
 
 }
@@ -73,24 +74,25 @@ void AudioMixerNode::AudioMixerAudioProcessor::updateOutput(){
     {
         const ScopedLock sl (getCallbackLock());
         suspendProcessing(true);
+
         if(numberOfOutput->intValue() > outBuses.size())
         {
             for(int i = outBuses.size() ; i < numberOfOutput->intValue() ; i++){
-                OutputBus * outB = new OutputBus(i,numberOfInput->value);
+                OutputBus * outB = new OutputBus(i,numberOfInput->intValue());
                 outBuses.add(outB);
                 addChildControllableContainer(outB);
             }
         }else if(numberOfOutput->intValue() < outBuses.size())
         {
-            for(int i = numberOfOutput->value;i<outBuses.size() ; i++){
+            for(int i = numberOfOutput->intValue();i<outBuses.size() ; i++){
                 OutputBus * outB = outBuses.getUnchecked(i);
                 removeChildControllableContainer(outB);
             }
-            outBuses.removeRange(numberOfOutput->value, outBuses.size()-numberOfOutput->intValue());
+            outBuses.removeRange(numberOfOutput->intValue(), outBuses.size()-numberOfOutput->intValue());
         }
     }
 
-    setPreferedNumAudioOutput(numberOfOutput->value);
+    setPreferedNumAudioOutput(numberOfOutput->intValue());
     suspendProcessing(false);
 
 }
@@ -114,15 +116,15 @@ void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<
     if(numInput>0 && numOutput > 0){
 
         for(int i = outBuses.size() -1 ; i >=0 ; --i){
-            cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,outBuses[i]->lastVolumes[0],outBuses[i]->volumes[0]->value);
+            cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,outBuses[i]->lastVolumes[0],outBuses[i]->volumes[0]->floatValue());
 
             for(int j = numInput-1 ; j >0  ; --j){
-                cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples, outBuses[i]->lastVolumes[j],outBuses[i]->volumes[j]->value);
+                cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples, outBuses[i]->lastVolumes[j],outBuses[i]->volumes[j]->floatValue());
             }
 
 
             for(int j = numInput-1 ; j>=0 ;--j){
-                outBuses[i]->lastVolumes.set(j, outBuses[i]->volumes[j]->value);
+                outBuses[i]->lastVolumes.set(j, outBuses[i]->volumes[j]->floatValue());
             }
         }
     }

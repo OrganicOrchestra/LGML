@@ -15,7 +15,7 @@
 #include "InspectableComponent.h"
 #include "InspectorEditor.h"
 
-class Inspector : public ShapeShifterContent
+class Inspector : public ShapeShifterContent, public InspectableComponent::InspectableListener
 {
 public:
 	Inspector();
@@ -34,6 +34,8 @@ public:
 
 	void clear();
 	void inspectCurrentComponent();
+
+	void inspectableRemoved(InspectableComponent * component);
 };
 
 

@@ -34,7 +34,8 @@ public:
 	virtual InspectorEditor * getEditor();
 	
 	ControllableContainer * relatedControllableContainer;
-	bool recursiveInspectionLevel;
+	int recursiveInspectionLevel;
+	bool canInspectChildContainersBeyondRecursion;
 
 	bool repaintOnSelectionChanged;
 
@@ -51,7 +52,8 @@ public:
 	public:
 		/** Destructor. */
 		virtual ~InspectableListener() {}
-		virtual void inspectableSelectionChanged(InspectableComponent * c) = 0;
+		virtual void inspectableSelectionChanged(InspectableComponent *) {};
+		virtual void inspectableRemoved(InspectableComponent *) {};
 	};
 
 	ListenerList<InspectableListener> listeners;

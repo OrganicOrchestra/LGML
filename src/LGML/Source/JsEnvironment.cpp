@@ -92,7 +92,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
         newJsFileLoaded();
     }
 
-    jsListeners.call(&Listener::newJsFileLoaded,(bool)r);
+    jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,(bool)r);
 
 }
 
