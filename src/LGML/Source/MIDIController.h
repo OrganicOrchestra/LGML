@@ -23,10 +23,13 @@ public :
     void handleIncomingMidiMessage (MidiInput* source,
                                             const MidiMessage& message) override;
 
-    void ListenToMidiPort(const String & );
+    void listenToMidiPort(int idx );
+    StringRef getDeviceName(int idx);
 private:
 
-    String midiPortName;
+    void checkMidiDevices();
+    StringArray midiDevices;
+    int currentDeviceIdx;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
 };
 
