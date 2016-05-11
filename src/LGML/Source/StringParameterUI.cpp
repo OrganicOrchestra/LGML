@@ -21,7 +21,7 @@ StringParameterUI::StringParameterUI(Parameter * p) :
     addAndMakeVisible(valueLabel);
 
     nameLabel.setJustificationType(Justification::topLeft);
-    nameLabel.setText(parameter->niceName, NotificationType::dontSendNotification);
+    nameLabel.setText(prefix+parameter->niceName+suffix, NotificationType::dontSendNotification);
     nameLabel.setColour(Label::ColourIds::textColourId, TEXTNAME_COLOR);
 
     valueLabel.setJustificationType(Justification::topLeft);
@@ -37,6 +37,20 @@ StringParameterUI::StringParameterUI(Parameter * p) :
 	
 
     setSize(200, 20);//default size
+}
+
+void StringParameterUI::setPrefix(const String & _prefix)
+{
+	if (prefix == _prefix) return;
+	prefix = _prefix;
+	valueChanged(parameter->stringValue());
+}
+
+void StringParameterUI::setSuffix(const String & _suffix)
+{
+	if (suffix == _suffix) return;
+	suffix = _suffix;
+	valueChanged(parameter->stringValue());
 }
 
 void StringParameterUI::setNameLabelVisible(bool visible)
@@ -56,10 +70,10 @@ void StringParameterUI::resized()
 
 void StringParameterUI::valueChanged(const var & v)
 {
-    valueLabel.setText(v,NotificationType::dontSendNotification);
+    valueLabel.setText(prefix+v.toString()+suffix,NotificationType::dontSendNotification);
 }
 
 void StringParameterUI::labelTextChanged(Label *)
 {
-    parameter->setValue(valueLabel.getText());
+    parameter->setValue(valueLabel.getText().removeCharacters(prefix).removeCharacters(suffix));
 }

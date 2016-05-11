@@ -9,60 +9,53 @@
  */
 
 #include "MIDIController.h"
-#include "DebugHelpers.h"
-
 #include "MIDIControllerUI.h"
 
+#include "DebugHelpers.h"
 
 AudioDeviceManager & getAudioDeviceManager();
 
 MIDIController::MIDIController() :
-	Controller("MIDI"),currentDeviceIdx(0)
+Controller("MIDI")
 {
-
-    checkMidiDevices();
-    listenToMidiPort(0);
-
 }
 
-void MIDIController::listenToMidiPort(int idx){
-    if(StringRef curName = getDeviceName(currentDeviceIdx)){
-        getAudioDeviceManager().setMidiInputEnabled(curName,false);
-        getAudioDeviceManager().removeMidiInputCallback(curName, this);
+void MIDIController::setCurrentDevice(const String & deviceName)
+{
+    if (deviceName == midiPortName) return;
+
+    if (!midiPortName.isEmpty())
+    {
+        getAudioDeviceManager().removeMidiInputCallback(midiPortName, this);
     }
 
-    currentDeviceIdx = idx;
-    if(StringRef curName = getDeviceName(currentDeviceIdx)){
-        getAudioDeviceManager().setMidiInputEnabled(curName,true);
-        getAudioDeviceManager().addMidiInputCallback(curName, this);
+    midiPortName = deviceName;
+
+
+    if (!midiPortName.isEmpty())
+    {
+        getAudioDeviceManager().addMidiInputCallback(midiPortName, this);
     }
 
-}
-
-void MIDIController::checkMidiDevices(){midiDevices = MidiInput::getDevices();}
-
-
-StringRef MIDIController::getDeviceName(int idx){
-    if(idx>=0 && idx <midiDevices.size())
-        return midiDevices.getReference(idx);
-    else
-        return StringRef("");
+    midiControllerListeners.call(&MIDIControllerListener::currentDeviceChanged, this);
 }
 
 ControllerUI * MIDIController::createUI()
 {
-	return new MIDIControllerUI(this);
+    return new MIDIControllerUI(this);
 }
 
 void MIDIController::handleIncomingMidiMessage (MidiInput* source,
-                                                const MidiMessage& message) 
+                                                const MidiMessage& message)
 {
+
     if(message.isController()){
-	LOG("Incoming midi message : " + String(source->getName()) + " / " + String(message.getControllerValue()));
+        LOG("Incoming midi message : " + String(source->getName()) + " / " + String(message.getControllerValue()));
     }
     else if(message.isNoteOnOrOff()){
-LOG("Incoming midi message : " + String(source->getName()) + " / " + String(message.getNoteNumber()) + " / "
-    + (message.isNoteOn()?"on":"off"));
+        LOG("Incoming midi message : " + String(source->getName()) + " / " + String(message.getNoteNumber()) + " / "
+            + (message.isNoteOn()?"on":"off"));
     }
-
+    
+    
 }

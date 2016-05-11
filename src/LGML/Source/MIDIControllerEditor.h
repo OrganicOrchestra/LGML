@@ -13,6 +13,7 @@
 
 #include "CustomEditor.h"
 #include "MIDIControllerUI.h"
+#include "MIDIUIHelper.h"
 
 class MIDIControllerEditor : public CustomEditor
 {
@@ -20,9 +21,11 @@ public:
 	MIDIControllerEditor(MIDIControllerUI * controllerUI);
 	virtual ~MIDIControllerEditor();
 
-	ComboBox MIDIDeviceChooser;
+	MIDIDeviceChooser deviceChooser;
 
 	MIDIController * midiController;
+
+	void resized() override;
 };
 
 
