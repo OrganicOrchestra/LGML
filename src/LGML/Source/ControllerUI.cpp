@@ -32,6 +32,7 @@ ControllerUI::ControllerUI(Controller * controller) :
 		removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
 		0.5f);
 	removeBT.addListener(this);
+	addAndMakeVisible(removeBT);
 }
 
 ControllerUI::~ControllerUI()
