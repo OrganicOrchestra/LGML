@@ -39,9 +39,7 @@ void MIDIController::listenToMidiPort(int idx){
 
 }
 
-void MIDIController::checkMidiDevices(){
-    midiDevices = MidiInput::getDevices();
-}
+void MIDIController::checkMidiDevices(){midiDevices = MidiInput::getDevices();}
 
 
 StringRef MIDIController::getDeviceName(int idx){
@@ -59,6 +57,12 @@ ControllerUI * MIDIController::createUI()
 void MIDIController::handleIncomingMidiMessage (MidiInput* source,
                                                 const MidiMessage& message) 
 {
+    if(message.isController()){
 	LOG("Incoming midi message : " + String(source->getName()) + " / " + String(message.getControllerValue()));
+    }
+    else if(message.isNoteOnOrOff()){
+LOG("Incoming midi message : " + String(source->getName()) + " / " + String(message.getNoteNumber()) + " / "
+    + (message.isNoteOn()?"on":"off"));
+    }
 
 }
