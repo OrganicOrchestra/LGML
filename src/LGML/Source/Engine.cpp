@@ -22,12 +22,15 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
                                     "Save a filter graph"){
     initAudio();
     Logger::setCurrentLogger (LGMLLogger::getInstance());
+
+	MIDIManager::getInstance()->init();
 }
 
 
 Engine::~Engine(){
     stopAudio();
 
+	MIDIManager::deleteInstance();
     TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
     ControllerManager::deleteInstance();
     NodeManager::deleteInstance();

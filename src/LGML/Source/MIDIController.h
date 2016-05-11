@@ -13,8 +13,6 @@
 
 #include "Controller.h"
 
-
-
 class MIDIController : public Controller,public MidiInputCallback
 {
 public :
@@ -24,6 +22,8 @@ public :
                                             const MidiMessage& message) override;
 
     void ListenToMidiPort(const String & );
+
+	ControllerUI * createUI() override;
 private:
 
     String midiPortName;

@@ -13,24 +13,6 @@
               file="Source/LGMLLoggerUI.cpp"/>
         <FILE id="awDkrd" name="LGMLLoggerUI.h" compile="0" resource="0" file="Source/LGMLLoggerUI.h"/>
       </GROUP>
-      <GROUP id="{CD34BC32-7051-468F-8C6F-D5720DD85230}" name="ScriptEnvironments">
-        <GROUP id="{2F437B28-C238-7AD3-AA89-3D6FD2EDD7E2}" name="Javascript">
-          <FILE id="ARYAND" name="JsContainerSync.cpp" compile="1" resource="0"
-                file="Source/JsContainerSync.cpp"/>
-          <FILE id="ApvfEI" name="JsContainerSync.h" compile="0" resource="0"
-                file="Source/JsContainerSync.h"/>
-          <FILE id="frFd8w" name="JsEnvironment.cpp" compile="1" resource="0"
-                file="Source/JsEnvironment.cpp"/>
-          <FILE id="d5u2LT" name="JsEnvironment.h" compile="0" resource="0" file="Source/JsEnvironment.h"/>
-          <FILE id="p6OV9N" name="JsEnvironmentUI.h" compile="0" resource="0"
-                file="Source/JsEnvironmentUI.h"/>
-          <FILE id="Nd6Xnl" name="JsGlobalEnvironment.cpp" compile="1" resource="0"
-                file="Source/JsGlobalEnvironment.cpp"/>
-          <FILE id="W19CFS" name="JsGlobalEnvironment.h" compile="0" resource="0"
-                file="Source/JsGlobalEnvironment.h"/>
-          <FILE id="xJyOLR" name="JsHelpers.h" compile="0" resource="0" file="Source/JsHelpers.h"/>
-        </GROUP>
-      </GROUP>
       <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
         <FILE id="tBFuYU" name="removeBT.png" compile="0" resource="1" file="Resources/removeBT.png"/>
         <FILE id="jsU7Hw" name="grandlouloup.png" compile="0" resource="1"
@@ -47,125 +29,151 @@
               file="Source/TimeManagerUI.cpp"/>
         <FILE id="a4XrkQ" name="TimeManagerUI.h" compile="0" resource="0" file="Source/TimeManagerUI.h"/>
       </GROUP>
+      <GROUP id="{61D87EF1-3422-1DC8-D38C-6AFB74778DB0}" name="Inspector">
+        <FILE id="NPG3vZ" name="CustomEditor.cpp" compile="1" resource="0"
+              file="Source/CustomEditor.cpp"/>
+        <FILE id="omqUJT" name="CustomEditor.h" compile="0" resource="0" file="Source/CustomEditor.h"/>
+        <FILE id="E3lBba" name="GenericControllableContainerEditor.cpp" compile="1"
+              resource="0" file="Source/GenericControllableContainerEditor.cpp"/>
+        <FILE id="NZ4E1O" name="GenericControllableContainerEditor.h" compile="0"
+              resource="0" file="Source/GenericControllableContainerEditor.h"/>
+        <FILE id="mHgWDa" name="InspectableComponent.cpp" compile="1" resource="0"
+              file="Source/InspectableComponent.cpp"/>
+        <FILE id="lDBoze" name="InspectableComponent.h" compile="0" resource="0"
+              file="Source/InspectableComponent.h"/>
+        <FILE id="XIildO" name="Inspector.cpp" compile="1" resource="0" file="Source/Inspector.cpp"/>
+        <FILE id="qcZdcW" name="Inspector.h" compile="0" resource="0" file="Source/Inspector.h"/>
+        <FILE id="IIhXNR" name="InspectorEditor.cpp" compile="1" resource="0"
+              file="Source/InspectorEditor.cpp"/>
+        <FILE id="lfW5Lc" name="InspectorEditor.h" compile="0" resource="0"
+              file="Source/InspectorEditor.h"/>
+      </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
-        <GROUP id="{61D87EF1-3422-1DC8-D38C-6AFB74778DB0}" name="Inspector">
-          <FILE id="NPG3vZ" name="CustomEditor.cpp" compile="1" resource="0"
-                file="Source/CustomEditor.cpp"/>
-          <FILE id="omqUJT" name="CustomEditor.h" compile="0" resource="0" file="Source/CustomEditor.h"/>
-          <FILE id="E3lBba" name="GenericControllableContainerEditor.cpp" compile="1"
-                resource="0" file="Source/GenericControllableContainerEditor.cpp"/>
-          <FILE id="NZ4E1O" name="GenericControllableContainerEditor.h" compile="0"
-                resource="0" file="Source/GenericControllableContainerEditor.h"/>
-          <FILE id="mHgWDa" name="InspectableComponent.cpp" compile="1" resource="0"
-                file="Source/InspectableComponent.cpp"/>
-          <FILE id="lDBoze" name="InspectableComponent.h" compile="0" resource="0"
-                file="Source/InspectableComponent.h"/>
-          <FILE id="XIildO" name="Inspector.cpp" compile="1" resource="0" file="Source/Inspector.cpp"/>
-          <FILE id="qcZdcW" name="Inspector.h" compile="0" resource="0" file="Source/Inspector.h"/>
-          <FILE id="IIhXNR" name="InspectorEditor.cpp" compile="1" resource="0"
-                file="Source/InspectorEditor.cpp"/>
-          <FILE id="lfW5Lc" name="InspectorEditor.h" compile="0" resource="0"
-                file="Source/InspectorEditor.h"/>
+        <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
+          <FILE id="AdpDDv" name="MIDIManager.cpp" compile="1" resource="0" file="Source/MIDIManager.cpp"/>
+          <FILE id="tZ5Yo3" name="MIDIManager.h" compile="0" resource="0" file="Source/MIDIManager.h"/>
         </GROUP>
-        <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
-          <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="1"
-                resource="0" file="Source/ControllableContainerEditor.cpp"/>
-          <FILE id="QNpqO3" name="ControllableContainerEditor.h" compile="0"
-                resource="0" file="Source/ControllableContainerEditor.h"/>
-          <FILE id="FIR3Kt" name="ControllableContainerSync.cpp" compile="1"
-                resource="0" file="Source/ControllableContainerSync.cpp"/>
-          <FILE id="ptJrDO" name="ControllableContainerSync.h" compile="0" resource="0"
-                file="Source/ControllableContainerSync.h"/>
-          <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
-                file="Source/ControllableInspector.cpp"/>
-          <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
-                file="Source/ControllableInspector.h"/>
-        </GROUP>
-        <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
-          <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="1"
-                resource="0" file="Source/SelectableComponentHandler.cpp"/>
-          <FILE id="cO1ryN" name="SelectableComponentHandler.h" compile="0" resource="0"
-                file="Source/SelectableComponentHandler.h"/>
-          <FILE id="WugEBC" name="SelectableComponent.h" compile="0" resource="0"
-                file="Source/SelectableComponent.h"/>
-          <FILE id="z9jnyI" name="SelectableComponent.cpp" compile="1" resource="0"
-                file="Source/SelectableComponent.cpp"/>
-          <GROUP id="{DAA3A1A3-F6F4-BC56-0152-800A0DA495A5}" name="viz">
-            <FILE id="CyjIBR" name="VuMeter.h" compile="0" resource="0" file="Source/VuMeter.h"/>
+        <GROUP id="{CD34BC32-7051-468F-8C6F-D5720DD85230}" name="ScriptEnvironments">
+          <GROUP id="{2F437B28-C238-7AD3-AA89-3D6FD2EDD7E2}" name="Javascript">
+            <FILE id="ARYAND" name="JsContainerSync.cpp" compile="1" resource="0"
+                  file="Source/JsContainerSync.cpp"/>
+            <FILE id="ApvfEI" name="JsContainerSync.h" compile="0" resource="0"
+                  file="Source/JsContainerSync.h"/>
+            <FILE id="frFd8w" name="JsEnvironment.cpp" compile="1" resource="0"
+                  file="Source/JsEnvironment.cpp"/>
+            <FILE id="d5u2LT" name="JsEnvironment.h" compile="0" resource="0" file="Source/JsEnvironment.h"/>
+            <FILE id="p6OV9N" name="JsEnvironmentUI.h" compile="0" resource="0"
+                  file="Source/JsEnvironmentUI.h"/>
+            <FILE id="Nd6Xnl" name="JsGlobalEnvironment.cpp" compile="1" resource="0"
+                  file="Source/JsGlobalEnvironment.cpp"/>
+            <FILE id="W19CFS" name="JsGlobalEnvironment.h" compile="0" resource="0"
+                  file="Source/JsGlobalEnvironment.h"/>
+            <FILE id="xJyOLR" name="JsHelpers.h" compile="0" resource="0" file="Source/JsHelpers.h"/>
           </GROUP>
-          <FILE id="YpRfx9" name="ControllableUI.cpp" compile="1" resource="0"
-                file="Source/ControllableUI.cpp"/>
-          <FILE id="wsPUhO" name="ControllableUI.h" compile="0" resource="0"
-                file="Source/ControllableUI.h"/>
-          <FILE id="F1WYW6" name="TriggerBlinkUI.cpp" compile="1" resource="0"
-                file="Source/TriggerBlinkUI.cpp"/>
-          <FILE id="YU6UcA" name="TriggerBlinkUI.h" compile="0" resource="0"
-                file="Source/TriggerBlinkUI.h"/>
-          <FILE id="ANg4jk" name="TriggerButtonUI.cpp" compile="1" resource="0"
-                file="Source/TriggerButtonUI.cpp"/>
-          <FILE id="c0uIkt" name="TriggerButtonUI.h" compile="0" resource="0"
-                file="Source/TriggerButtonUI.h"/>
-          <FILE id="OUrAS4" name="TriggerUI.cpp" compile="1" resource="0" file="Source/TriggerUI.cpp"/>
-          <FILE id="E4MhHL" name="TriggerUI.h" compile="0" resource="0" file="Source/TriggerUI.h"/>
         </GROUP>
-        <FILE id="K9s4xv" name="Controllable.cpp" compile="1" resource="0"
-              file="Source/Controllable.cpp"/>
-        <FILE id="H2nHBA" name="Controllable.h" compile="0" resource="0" file="Source/Controllable.h"/>
-        <FILE id="pm5PA0" name="ControllableContainer.cpp" compile="1" resource="0"
-              file="Source/ControllableContainer.cpp"/>
-        <FILE id="yWCKk0" name="ControllableContainer.h" compile="0" resource="0"
-              file="Source/ControllableContainer.h"/>
-        <FILE id="c9WgX8" name="ControllableIndexedContainer.cpp" compile="1"
-              resource="0" file="Source/ControllableIndexedContainer.cpp"/>
-        <FILE id="Y9EZlj" name="ControllableIndexedContainer.h" compile="0"
-              resource="0" file="Source/ControllableIndexedContainer.h"/>
-        <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
-        <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
-        <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
-        <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
-        <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
-          <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
-            <FILE id="amJhhJ" name="FloatStepperUI.cpp" compile="1" resource="0"
-                  file="Source/FloatStepperUI.cpp"/>
-            <FILE id="opUe88" name="FloatStepperUI.h" compile="0" resource="0"
-                  file="Source/FloatStepperUI.h"/>
-            <FILE id="Qqzkdl" name="BoolToggleUI.cpp" compile="1" resource="0"
-                  file="Source/BoolToggleUI.cpp"/>
-            <FILE id="PZG6XQ" name="BoolToggleUI.h" compile="0" resource="0" file="Source/BoolToggleUI.h"/>
-            <FILE id="No0Xmd" name="FloatSliderUI.cpp" compile="1" resource="0"
-                  file="Source/FloatSliderUI.cpp"/>
-            <FILE id="Fk8DYI" name="FloatSliderUI.h" compile="0" resource="0" file="Source/FloatSliderUI.h"/>
-            <FILE id="tnoC6e" name="IntSliderUI.cpp" compile="1" resource="0" file="Source/IntSliderUI.cpp"/>
-            <FILE id="nmz0Le" name="IntSliderUI.h" compile="0" resource="0" file="Source/IntSliderUI.h"/>
-            <FILE id="aoAqVv" name="IntStepperUI.cpp" compile="1" resource="0"
-                  file="Source/IntStepperUI.cpp"/>
-            <FILE id="IhFgI5" name="IntStepperUI.h" compile="0" resource="0" file="Source/IntStepperUI.h"/>
-            <FILE id="NF7928" name="ParameterUI.cpp" compile="1" resource="0" file="Source/ParameterUI.cpp"/>
-            <FILE id="qadrpo" name="ParameterUI.h" compile="0" resource="0" file="Source/ParameterUI.h"/>
-            <FILE id="hkkAX2" name="StringParameterUI.cpp" compile="1" resource="0"
-                  file="Source/StringParameterUI.cpp"/>
-            <FILE id="MCT8It" name="StringParameterUI.h" compile="0" resource="0"
-                  file="Source/StringParameterUI.h"/>
+        <GROUP id="{DAA3A1A3-F6F4-BC56-0152-800A0DA495A5}" name="viz">
+          <FILE id="CyjIBR" name="VuMeter.h" compile="0" resource="0" file="Source/VuMeter.h"/>
+        </GROUP>
+        <GROUP id="{8440F8E7-BEB3-0DE2-3DB3-984C73FFB0F6}" name="legacy">
+          <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
+            <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="1"
+                  resource="0" file="Source/SelectableComponentHandler.cpp"/>
+            <FILE id="cO1ryN" name="SelectableComponentHandler.h" compile="0" resource="0"
+                  file="Source/SelectableComponentHandler.h"/>
+            <FILE id="WugEBC" name="SelectableComponent.h" compile="0" resource="0"
+                  file="Source/SelectableComponent.h"/>
+            <FILE id="z9jnyI" name="SelectableComponent.cpp" compile="1" resource="0"
+                  file="Source/SelectableComponent.cpp"/>
+            <FILE id="YpRfx9" name="ControllableUI.cpp" compile="1" resource="0"
+                  file="Source/ControllableUI.cpp"/>
+            <FILE id="wsPUhO" name="ControllableUI.h" compile="0" resource="0"
+                  file="Source/ControllableUI.h"/>
+            <FILE id="F1WYW6" name="TriggerBlinkUI.cpp" compile="1" resource="0"
+                  file="Source/TriggerBlinkUI.cpp"/>
+            <FILE id="YU6UcA" name="TriggerBlinkUI.h" compile="0" resource="0"
+                  file="Source/TriggerBlinkUI.h"/>
+            <FILE id="ANg4jk" name="TriggerButtonUI.cpp" compile="1" resource="0"
+                  file="Source/TriggerButtonUI.cpp"/>
+            <FILE id="c0uIkt" name="TriggerButtonUI.h" compile="0" resource="0"
+                  file="Source/TriggerButtonUI.h"/>
+            <FILE id="OUrAS4" name="TriggerUI.cpp" compile="1" resource="0" file="Source/TriggerUI.cpp"/>
+            <FILE id="E4MhHL" name="TriggerUI.h" compile="0" resource="0" file="Source/TriggerUI.h"/>
           </GROUP>
-          <FILE id="mezBUW" name="BoolParameter.cpp" compile="1" resource="0"
-                file="Source/BoolParameter.cpp"/>
-          <FILE id="YWoigC" name="BoolParameter.h" compile="0" resource="0" file="Source/BoolParameter.h"/>
-          <FILE id="UquI0M" name="FloatParameter.cpp" compile="1" resource="0"
-                file="Source/FloatParameter.cpp"/>
-          <FILE id="uaeE3Q" name="FloatParameter.h" compile="0" resource="0"
-                file="Source/FloatParameter.h"/>
-          <FILE id="nFbmUB" name="IntParameter.cpp" compile="1" resource="0"
-                file="Source/IntParameter.cpp"/>
-          <FILE id="hxhJJT" name="IntParameter.h" compile="0" resource="0" file="Source/IntParameter.h"/>
-          <FILE id="mi3a1Z" name="Parameter.cpp" compile="1" resource="0" file="Source/Parameter.cpp"/>
-          <FILE id="CVykgt" name="Parameter.h" compile="0" resource="0" file="Source/Parameter.h"/>
-          <FILE id="ChdLZ1" name="PresetManager.cpp" compile="1" resource="0"
-                file="Source/PresetManager.cpp"/>
-          <FILE id="Crvsjm" name="PresetManager.h" compile="0" resource="0" file="Source/PresetManager.h"/>
-          <FILE id="wz5PBh" name="StringParameter.cpp" compile="1" resource="0"
-                file="Source/StringParameter.cpp"/>
-          <FILE id="IhX92R" name="StringParameter.h" compile="0" resource="0"
-                file="Source/StringParameter.h"/>
+          <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
+            <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="1"
+                  resource="0" file="Source/ControllableContainerEditor.cpp"/>
+            <FILE id="QNpqO3" name="ControllableContainerEditor.h" compile="0"
+                  resource="0" file="Source/ControllableContainerEditor.h"/>
+            <FILE id="FIR3Kt" name="ControllableContainerSync.cpp" compile="1"
+                  resource="0" file="Source/ControllableContainerSync.cpp"/>
+            <FILE id="ptJrDO" name="ControllableContainerSync.h" compile="0" resource="0"
+                  file="Source/ControllableContainerSync.h"/>
+            <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
+                  file="Source/ControllableInspector.cpp"/>
+            <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
+                  file="Source/ControllableInspector.h"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
+          <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
+            <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
+              <FILE id="amJhhJ" name="FloatStepperUI.cpp" compile="1" resource="0"
+                    file="Source/FloatStepperUI.cpp"/>
+              <FILE id="opUe88" name="FloatStepperUI.h" compile="0" resource="0"
+                    file="Source/FloatStepperUI.h"/>
+              <FILE id="Qqzkdl" name="BoolToggleUI.cpp" compile="1" resource="0"
+                    file="Source/BoolToggleUI.cpp"/>
+              <FILE id="PZG6XQ" name="BoolToggleUI.h" compile="0" resource="0" file="Source/BoolToggleUI.h"/>
+              <FILE id="No0Xmd" name="FloatSliderUI.cpp" compile="1" resource="0"
+                    file="Source/FloatSliderUI.cpp"/>
+              <FILE id="Fk8DYI" name="FloatSliderUI.h" compile="0" resource="0" file="Source/FloatSliderUI.h"/>
+              <FILE id="tnoC6e" name="IntSliderUI.cpp" compile="1" resource="0" file="Source/IntSliderUI.cpp"/>
+              <FILE id="nmz0Le" name="IntSliderUI.h" compile="0" resource="0" file="Source/IntSliderUI.h"/>
+              <FILE id="aoAqVv" name="IntStepperUI.cpp" compile="1" resource="0"
+                    file="Source/IntStepperUI.cpp"/>
+              <FILE id="IhFgI5" name="IntStepperUI.h" compile="0" resource="0" file="Source/IntStepperUI.h"/>
+              <FILE id="NF7928" name="ParameterUI.cpp" compile="1" resource="0" file="Source/ParameterUI.cpp"/>
+              <FILE id="qadrpo" name="ParameterUI.h" compile="0" resource="0" file="Source/ParameterUI.h"/>
+              <FILE id="hkkAX2" name="StringParameterUI.cpp" compile="1" resource="0"
+                    file="Source/StringParameterUI.cpp"/>
+              <FILE id="MCT8It" name="StringParameterUI.h" compile="0" resource="0"
+                    file="Source/StringParameterUI.h"/>
+            </GROUP>
+            <FILE id="mezBUW" name="BoolParameter.cpp" compile="1" resource="0"
+                  file="Source/BoolParameter.cpp"/>
+            <FILE id="YWoigC" name="BoolParameter.h" compile="0" resource="0" file="Source/BoolParameter.h"/>
+            <FILE id="UquI0M" name="FloatParameter.cpp" compile="1" resource="0"
+                  file="Source/FloatParameter.cpp"/>
+            <FILE id="uaeE3Q" name="FloatParameter.h" compile="0" resource="0"
+                  file="Source/FloatParameter.h"/>
+            <FILE id="nFbmUB" name="IntParameter.cpp" compile="1" resource="0"
+                  file="Source/IntParameter.cpp"/>
+            <FILE id="hxhJJT" name="IntParameter.h" compile="0" resource="0" file="Source/IntParameter.h"/>
+            <FILE id="mi3a1Z" name="Parameter.cpp" compile="1" resource="0" file="Source/Parameter.cpp"/>
+            <FILE id="CVykgt" name="Parameter.h" compile="0" resource="0" file="Source/Parameter.h"/>
+            <FILE id="ChdLZ1" name="PresetManager.cpp" compile="1" resource="0"
+                  file="Source/PresetManager.cpp"/>
+            <FILE id="Crvsjm" name="PresetManager.h" compile="0" resource="0" file="Source/PresetManager.h"/>
+            <FILE id="wz5PBh" name="StringParameter.cpp" compile="1" resource="0"
+                  file="Source/StringParameter.cpp"/>
+            <FILE id="IhX92R" name="StringParameter.h" compile="0" resource="0"
+                  file="Source/StringParameter.h"/>
+          </GROUP>
+          <FILE id="K9s4xv" name="Controllable.cpp" compile="1" resource="0"
+                file="Source/Controllable.cpp"/>
+          <FILE id="H2nHBA" name="Controllable.h" compile="0" resource="0" file="Source/Controllable.h"/>
+          <FILE id="pm5PA0" name="ControllableContainer.cpp" compile="1" resource="0"
+                file="Source/ControllableContainer.cpp"/>
+          <FILE id="yWCKk0" name="ControllableContainer.h" compile="0" resource="0"
+                file="Source/ControllableContainer.h"/>
+          <FILE id="c9WgX8" name="ControllableIndexedContainer.cpp" compile="1"
+                resource="0" file="Source/ControllableIndexedContainer.cpp"/>
+          <FILE id="Y9EZlj" name="ControllableIndexedContainer.h" compile="0"
+                resource="0" file="Source/ControllableIndexedContainer.h"/>
+          <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
+          <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
+          <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
+          <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
         </GROUP>
       </GROUP>
       <GROUP id="{25464EB0-81C5-256B-F983-7775FBA00B84}" name="UI">
@@ -288,6 +296,14 @@
                   file="Source/MIDIController.cpp"/>
             <FILE id="mqggWF" name="MIDIController.h" compile="0" resource="0"
                   file="Source/MIDIController.h"/>
+            <FILE id="xl0YNr" name="MIDIControllerEditor.cpp" compile="1" resource="0"
+                  file="Source/MIDIControllerEditor.cpp"/>
+            <FILE id="OpAxB3" name="MIDIControllerEditor.h" compile="0" resource="0"
+                  file="Source/MIDIControllerEditor.h"/>
+            <FILE id="rF0jhs" name="MIDIControllerUI.cpp" compile="1" resource="0"
+                  file="Source/MIDIControllerUI.cpp"/>
+            <FILE id="CSf6Vz" name="MIDIControllerUI.h" compile="0" resource="0"
+                  file="Source/MIDIControllerUI.h"/>
           </GROUP>
           <GROUP id="{3554E0A1-9ED7-3CD1-782B-5AD2E7D8B75B}" name="osc">
             <GROUP id="{B17C15AD-D7C0-3F67-09D0-6E8BD50F5801}" name="scripted">
