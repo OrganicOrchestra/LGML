@@ -18,8 +18,8 @@ MIDIControllerUI::MIDIControllerUI(MIDIController * controller) :
 }
 
 MIDIControllerUI::~MIDIControllerUI()
-  {
-  }
+{
+}
 
 InspectorEditor * MIDIControllerUI::getEditor()
 {

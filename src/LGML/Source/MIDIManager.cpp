@@ -10,6 +10,7 @@
 
 #include "MIDIManager.h"
 #include "LGMLLogger.h"
+#include "MainComponent.h"
 
 juce_ImplementSingleton(MIDIManager)
 
@@ -63,6 +64,76 @@ void MIDIManager::updateDeviceList(bool updateInput)
 
 	if (updateInput) inputDevices = deviceNames;
 	else outputDevices = deviceNames;
+}
+
+void MIDIManager::enableInputDevice(const String & deviceName)
+{
+	DBG("MIDIManager  Enable Input device : " << deviceName);
+	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);
+
+	if (duc == nullptr)
+	{
+		duc = new DeviceUsageCount(deviceName);
+		inputCounts.add(duc);
+	}
+
+	duc++;
+	if (duc->usageCount == 1)
+	{
+		DBG("AudioDeviceManager:Enable Input device : " << duc->deviceName);
+		getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, true);
+	}
+}
+
+void MIDIManager::enableOutputDevice(const String & deviceName)
+{
+	DeviceUsageCount * duc = getDUCForOutputDeviceName(deviceName);
+
+	if (duc == nullptr)
+	{
+		duc = new DeviceUsageCount(deviceName);
+		outputCounts.add(duc);
+	}
+
+	duc->usageCount++;
+	//if (duc->usageCount == 1) getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, true); //no output device handling ?
+}
+
+void MIDIManager::disableInputDevice(const String & deviceName)
+{
+	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);
+	if (duc == nullptr) return;
+	duc--;
+	if (duc->usageCount == 0)
+	{
+		DBG("Disable Input device : " << duc->deviceName);
+		getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, false);
+	}
+}
+
+void MIDIManager::disableOutputDevice(const String & deviceName)
+{
+	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);
+	if (duc == nullptr) return;
+	duc--;
+}
+
+MIDIManager::DeviceUsageCount * MIDIManager::getDUCForInputDeviceName(const String & deviceName)
+{
+	for (auto &duc : inputCounts)
+	{
+		if (duc->deviceName == deviceName) return duc;
+	}
+	return nullptr;
+}
+
+MIDIManager::DeviceUsageCount * MIDIManager::getDUCForOutputDeviceName(const String & deviceName)
+{
+	for (auto &duc : outputCounts)
+	{
+		if (duc->deviceName == deviceName) return duc;
+	}
+	return nullptr;
 }
 
 void MIDIManager::timerCallback()

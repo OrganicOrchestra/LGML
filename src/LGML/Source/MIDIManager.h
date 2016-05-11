@@ -16,6 +16,14 @@
 class MIDIManager : public Timer
 {
 public:
+	struct DeviceUsageCount
+	{
+	public:
+		DeviceUsageCount(const String &name) : deviceName(name), usageCount(0) {}
+		String deviceName;
+		int usageCount;
+	};
+
 	juce_DeclareSingleton(MIDIManager,true)
 
 	MIDIManager();
@@ -26,7 +34,18 @@ public:
 	StringArray inputDevices;
 	StringArray outputDevices;
 
+	OwnedArray<DeviceUsageCount> inputCounts;
+	OwnedArray<DeviceUsageCount> outputCounts;
+
 	void updateDeviceList(bool updateInput);
+	
+	void enableInputDevice(const String &deviceName);
+	void enableOutputDevice(const String &deviceName);
+	void disableInputDevice(const String &deviceName);
+	void disableOutputDevice(const String &deviceName);
+	
+	DeviceUsageCount * getDUCForInputDeviceName(const String &deviceName);
+	DeviceUsageCount * getDUCForOutputDeviceName(const String &deviceName);
 
 	void timerCallback() override;
 

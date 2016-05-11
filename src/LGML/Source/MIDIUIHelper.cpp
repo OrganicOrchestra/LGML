@@ -30,8 +30,15 @@ void MIDIDeviceChooser::fillDeviceList()
 	addItem("Choose a MIDI Device", 1);
 	StringArray deviceList = isInputChooser ? MIDIManager::getInstance()->inputDevices : MIDIManager::getInstance()->outputDevices;
 	addItemList(deviceList, 2);
+	if (!currentSelected.isEmpty())
+	{
+		setSelectedItemIndex(deviceList.indexOf(currentSelected) + 2,NotificationType::dontSendNotification); //Start with id 1
+	}
+	else
+	{
+		setSelectedId(1, NotificationType::dontSendNotification);
+	}
 
-	setSelectedItemIndex(deviceList.indexOf(currentSelected) + 2); //Start with id 1
 }
 
 void MIDIDeviceChooser::midiInputAdded(String &)

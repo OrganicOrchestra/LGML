@@ -15,7 +15,7 @@
 #include "MIDIControllerUI.h"
 #include "MIDIUIHelper.h"
 
-class MIDIControllerEditor : public CustomEditor
+class MIDIControllerEditor : public CustomEditor, ComboBoxListener
 {
 public:
 	MIDIControllerEditor(MIDIControllerUI * controllerUI);
@@ -26,6 +26,7 @@ public:
 	MIDIController * midiController;
 
 	void resized() override;
+	void comboBoxChanged(ComboBox *) override;
 };
 
 
