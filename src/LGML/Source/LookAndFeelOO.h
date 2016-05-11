@@ -48,8 +48,9 @@ namespace LookAndFeelHelpers {
         Label::textColourId,                        0xff000000,
         Label::outlineColourId,                     0x00000000,
 
-        ScrollBar::backgroundColourId,              Colours::whitesmoke.getARGB(),
-        ScrollBar::thumbColourId,                   0xffffffff,
+        ScrollBar::backgroundColourId,              BG_COLOR.brighter(.2f).getARGB(),
+        ScrollBar::thumbColourId,                   BG_COLOR.brighter(.6f).getARGB(),
+		ScrollBar::trackColourId,                   Colours::red.getARGB(),
 
         TreeView::linesColourId,                    0x4c000000,
         TreeView::backgroundColourId,               0x00000000,

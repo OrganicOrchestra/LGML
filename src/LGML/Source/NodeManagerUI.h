@@ -106,14 +106,15 @@ private:
 
 class NodeManagerUIViewport: public ShapeShifterContent{
     public :
-    NodeManagerUIViewport(NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContent("NodeManagerViewPort"){
+    NodeManagerUIViewport(NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContent("NodeManagerViewPort")
+	{
         vp.setViewedComponent(nmui,true);
         vp.setScrollBarsShown(true, true);
         vp.setScrollOnDragEnabled(false);
         contentIsFlexible = true;
         addAndMakeVisible(vp);
+		vp.setScrollBarThickness(10);
 
-        
     }
     void resized() override{
         vp.setSize(getWidth(), getHeight());
