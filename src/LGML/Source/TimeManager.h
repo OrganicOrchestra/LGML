@@ -52,7 +52,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
     int setBPMForLoopLength(int time);
 
 
-
+    void togglePlay();
     void setBeatPerBar(int bpb);
     int getBeat();
     int getNextGlobalQuantifiedTime();

@@ -108,7 +108,13 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
         playState->setValue(false);
     }
 }
-
+void TimeManager::togglePlay(){
+    if(playState->boolValue()){
+        stopTrigger->trigger();
+    }
+    else
+        playTrigger->trigger();
+}
 
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;

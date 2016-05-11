@@ -19,11 +19,13 @@ namespace CommandIDs
     static const int saveAs                 = 0x30002;
     static const int newFile                = 0x30003;
     static const int openLastDocument       = 0x30004;
+    static const int playPause              = 0x30010;
     static const int showPluginListEditor   = 0x30100;
     static const int showAudioSettings      = 0x30200;
     static const int aboutBox               = 0x30300;
     static const int allWindowsForward      = 0x30400;
     static const int toggleDoublePrecision  = 0x30500;
+
 }
 
 
@@ -84,6 +86,11 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             result.setInfo ("All Windows Forward", "Bring all plug-in windows forward", category, 0);
             result.addDefaultKeypress ('w', ModifierKeys::commandModifier);
             break;
+        case CommandIDs::playPause:
+            result.setInfo ("Play/pause", "Play or pause LGML", category, 0);
+            result.addDefaultKeypress (' ',ModifierKeys::noModifiers);
+            break;
+
 
         default:
             break;
@@ -103,7 +110,8 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
         CommandIDs::showAudioSettings,
         CommandIDs::toggleDoublePrecision,
         CommandIDs::aboutBox,
-        CommandIDs::allWindowsForward
+        CommandIDs::allWindowsForward,
+        CommandIDs::playPause
     };
 
     commands.addArray (ids, numElementsInArray (ids));
@@ -216,7 +224,10 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
                 }
                 break;
         }
-
+        case CommandIDs::playPause:
+            TimeManager::getInstance()->togglePlay();
+            break;
+            
         default:
             return false;
     }
