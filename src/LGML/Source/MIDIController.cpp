@@ -9,12 +9,15 @@
  */
 
 #include "MIDIController.h"
-
 #include "DebugHelpers.h"
+
+#include "MIDIControllerUI.h"
+
 
 AudioDeviceManager & getAudioDeviceManager();
 
-MIDIController::MIDIController():currentDeviceIdx(0)
+MIDIController::MIDIController() :
+	Controller("MIDI"),currentDeviceIdx(0)
 {
 
     checkMidiDevices();
@@ -48,8 +51,14 @@ StringRef MIDIController::getDeviceName(int idx){
         return StringRef("");
 }
 
-void MIDIController::handleIncomingMidiMessage (MidiInput* source,
-                                                const MidiMessage& message) {
+ControllerUI * MIDIController::createUI()
+{
+	return new MIDIControllerUI(this);
+}
 
+void MIDIController::handleIncomingMidiMessage (MidiInput* source,
+                                                const MidiMessage& message) 
+{
+	LOG("Incoming midi message : " + String(source->getName()) + " / " + String(message.getControllerValue()));
 
 }

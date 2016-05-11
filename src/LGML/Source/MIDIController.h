@@ -13,8 +13,6 @@
 
 #include "Controller.h"
 
-
-
 class MIDIController : public Controller,public MidiInputCallback
 {
 public :
@@ -25,6 +23,9 @@ public :
 
     void listenToMidiPort(int idx );
     StringRef getDeviceName(int idx);
+
+	ControllerUI * createUI() override;
+
 private:
 
     void checkMidiDevices();
