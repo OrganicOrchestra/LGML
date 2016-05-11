@@ -51,6 +51,8 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* source,
                                                 const MidiMessage& message)
 {
 
+	if (!enabledParam->boolValue()) return;
+
     if(message.isController()){
         LOG("Incoming controlChange message : " + String(source->getName()) + " / " + String(message.getControllerValue()));
     }

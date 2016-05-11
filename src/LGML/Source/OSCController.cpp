@@ -47,6 +47,8 @@ void OSCController::setupSender()
 
 void OSCController::processMessage(const OSCMessage & msg)
 {
+	if (!enabledParam->boolValue()) return;
+
 	bool result = processMessageInternal(msg);
 	oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
 }
