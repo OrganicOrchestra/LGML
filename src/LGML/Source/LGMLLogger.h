@@ -28,16 +28,39 @@ class LGMLLogger : public Logger{
     }
     void logMessage (const String& message) override;
 
-
-    //Listener
-    class  Listener
-    {
+    // default to async listener
+    class Listener : public AsyncUpdater{
     public:
-        /** Destructor. */
+        Listener(){}
         virtual ~Listener() {}
 
-        virtual void newMessage(const String &)=0;
+        virtual void newMessage(const String&) = 0;
+
+
+
+
+    private:
+        void handleAsyncUpdate()override{
+            const ScopedLock lk(mu);
+            for(auto &v:newMessagesToBeSent){newMessage(v);}
+            newMessagesToBeSent.clear();
+        }
+
+        void notifyNextMessage(const String & s){
+            {
+                const ScopedLock lk(mu);
+                newMessagesToBeSent.add(s);
+            }
+
+            triggerAsyncUpdate();
+        };
+        friend class LGMLLogger;
+
+        StringArray newMessagesToBeSent;
+        CriticalSection mu;
+        
     };
+
 
     ListenerList<Listener> listeners;
     void addLogListener(Listener* newListener) { listeners.add(newListener); }

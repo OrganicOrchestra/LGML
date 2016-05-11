@@ -24,7 +24,7 @@ public:
 	
 	InspectorEditor * getEditor() override;
 
-	void currentDeviceChanged(MIDIController *);
+	void currentDeviceChanged(MIDIController *)override;
 };
 
 #endif  // MIDICONTROLLERUI_H_INCLUDED

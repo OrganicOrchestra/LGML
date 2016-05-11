@@ -70,7 +70,7 @@ void StringParameterUI::resized()
 
 void StringParameterUI::valueChanged(const var & v)
 {
-    valueLabel.setText(prefix+v+suffix,NotificationType::dontSendNotification);
+    valueLabel.setText(prefix+v.toString()+suffix,NotificationType::dontSendNotification);
 }
 
 void StringParameterUI::labelTextChanged(Label *)
