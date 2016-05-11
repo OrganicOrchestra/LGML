@@ -13,7 +13,7 @@
 
 #include "OSCController.h"
 
-class OSCDirectController : public OSCController, public ControllableContainer::Listener
+class OSCDirectController : public OSCController
 {
 public:
     OSCDirectController();

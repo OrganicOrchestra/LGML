@@ -104,14 +104,14 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
     t->setParentContainer(this);
     t->addTriggerListener(this);
 
-    controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, t);
+    controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, t);
         notifyStructureChanged();
     return t;
 }
 
 void ControllableContainer::removeControllable(Controllable * c)
 {
-    controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
+    controllableContainerListeners.call(&ControllableContainerListener::controllableRemoved, c);
 
     // @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
@@ -122,11 +122,7 @@ void ControllableContainer::removeControllable(Controllable * c)
 
 void ControllableContainer::notifyStructureChanged(){
 
-    ControllableContainer * notified = this;
-    while(notified!=nullptr){
-        notified->controllableContainerListeners.call(&ControllableContainer::Listener::childStructureChanged, this);
-        notified = notified->parentContainer;
-    }
+	controllableContainerListeners.call(&ControllableContainerListener::childStructureChanged, this);
 }
 
 
@@ -161,18 +157,19 @@ Controllable * ControllableContainer::getControllableByName(const String & name)
 void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
 {
     controllableContainers.add(container);
+	container->addControllableContainerListener(this);
     container->setParentContainer(this);
-	controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerAdded, container);
+	controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded, container);
 	notifyStructureChanged();
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
-    controllableContainers.removeAllInstancesOf(container);
-	controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerRemoved, container);
+	this->controllableContainers.removeAllInstancesOf(container);
+	container->removeControllableContainerListener(this);
+	controllableContainerListeners.call(&ControllableContainerListener::controllableContainerRemoved, container);
 	notifyStructureChanged();
 	container->setParentContainer(nullptr);
-
 }
 
 ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name)
@@ -380,7 +377,7 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 {
     //    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
     if (parentContainer != nullptr){ parentContainer->dispatchFeedback(c); }
-    controllableContainerListeners.call(&ControllableContainer::Listener::controllableFeedbackUpdate, c);
+    controllableContainerListeners.call(&ControllableContainerListener::controllableFeedbackUpdate, c);
 
 }
 
@@ -406,7 +403,7 @@ void ControllableContainer::addParameterInternal(Parameter * p)
     p->setParentContainer(this);
     controllables.add(p);
     p->addParameterListener(this);
-    controllableContainerListeners.call(&ControllableContainer::Listener::controllableAdded, p);
+    controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, p);
     notifyStructureChanged();
 }
 
@@ -476,5 +473,10 @@ void ControllableContainer::loadJSONData(var data)
 
 	loadJSONDataInternal(data);
 
-	controllableContainerListeners.call(&ControllableContainer::Listener::controllableContainerPresetLoaded, this);
+	controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
+}
+
+void ControllableContainer::childStructureChanged(ControllableContainer *)
+{
+	notifyStructureChanged();
 }

@@ -27,11 +27,11 @@ VuMeter.h
 
 
 ControllableContainer.cpp
+	line : 377
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
 	line : 115
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
-
-	line : 380
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
 NodeConnectionUI.cpp
@@ -101,7 +101,7 @@ NodeBaseUI.cpp
 
 
 TimeManager.h
-	line : 27
+	line : 28
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
@@ -120,7 +120,7 @@ NodeBase.cpp
 
 
 ControllableContainer.h
-	line : 96
+	line : 114
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)

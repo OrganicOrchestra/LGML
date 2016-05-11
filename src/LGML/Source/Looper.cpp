@@ -49,7 +49,7 @@ wasMonitoring(false)
 
 }
 Looper::~Looper(){
-    setNumTracks(0);
+    //setNumTracks(0);
     if(TimeManager::getInstanceWithoutCreating()){
         TimeManager::getInstance()->playState->removeParameterListener(this);
     }
