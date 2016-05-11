@@ -13,41 +13,97 @@
 #include "ControllableUI.h"
 
 GenericControllableContainerEditor::GenericControllableContainerEditor(InspectableComponent * sourceComponent) :
-	InspectorEditor(sourceComponent)
+	InspectorEditor(sourceComponent),
+	parentBT("Up","Go back to parent container")
 {
-	sourceContainer = sourceComponent->relatedControllableContainer;
 
-	innerContainer = new CCInnerContainer(sourceContainer, 0, sourceComponent->recursiveInspectionLevel);
-	addAndMakeVisible(innerContainer);
+	parentBT.addListener(this);
+
+	sourceContainer = sourceComponent->relatedControllableContainer;
+	addChildComponent(parentBT);
+
+	setCurrentInspectedContainer(sourceContainer);
 
 	resized();
 }
 
 GenericControllableContainerEditor::~GenericControllableContainerEditor()
 {
+	parentBT.removeListener(this);
 	innerContainer->clear();
+}
+
+void GenericControllableContainerEditor::setCurrentInspectedContainer(ControllableContainer * cc)
+{
+	if (cc == nullptr) return;
+
+	if (innerContainer != nullptr)
+	{
+		if (cc == innerContainer->container) return;
+
+		removeChildComponent(innerContainer);
+		innerContainer = nullptr;
+	}
+
+
+	int ccLevel = 0;
+	ControllableContainer * tc = cc;
+	while (tc != sourceContainer)
+	{
+		ccLevel++;
+		tc = tc->parentContainer;
+
+		jassert(tc != nullptr); //If here, trying to inspect a container that is not a child of the source inspectable container
+	}
+
+	innerContainer = new CCInnerContainer(this,cc, 0, ccLevel == 0?sourceComponent->recursiveInspectionLevel:0, sourceComponent->canInspectChildContainersBeyondRecursion);
+	addAndMakeVisible(innerContainer);
+
+	parentBT.setVisible(ccLevel > 0);
+	parentBT.setButtonText(String("Up (current level : ") + String(ccLevel) + String(")"));
+
+	resized();
+
 }
 
 void GenericControllableContainerEditor::resized()
 {
-	innerContainer->setBounds(getLocalBounds());
+	if (innerContainer == nullptr) return;
+	Rectangle<int> r = getLocalBounds();
+
+	if (parentBT.isVisible())
+	{
+		parentBT.setBounds(r.removeFromTop(20));
+		r.removeFromTop(2);
+	}
+
+	innerContainer->setBounds(r);
 }
 
 void GenericControllableContainerEditor::clear()
 {
+	if (innerContainer == nullptr) return;
+
 	innerContainer->clear();
 }
 
-
-
+void GenericControllableContainerEditor::buttonClicked(Button * b)
+{
+	if (b == &parentBT)
+	{
+		setCurrentInspectedContainer(innerContainer->container->parentContainer);
+	}
+}
 
 
 //Inner Container
 
-CCInnerContainer::CCInnerContainer(ControllableContainer * _container, int _level, int _maxLevel) :
+CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor, ControllableContainer * _container, int _level, int _maxLevel, bool _canAccessLowerContainers) :
+	editor(_editor),
 	container(_container),
 	level(_level),
 	maxLevel(_maxLevel),
+	canAccessLowerContainers(_canAccessLowerContainers),
 	containerLabel("containerLabel",_container->niceName)
 {
 	container->addControllableContainerListener(this);
@@ -69,7 +125,13 @@ CCInnerContainer::CCInnerContainer(ControllableContainer * _container, int _leve
 		{
 			addCCInnerUI(cc);
 		}
-	}	
+	}else if (level == maxLevel)
+	{
+		for (auto &cc : container->controllableContainers)
+		{
+			addCCLink(cc);
+		}
+	}
 }
 
 CCInnerContainer::~CCInnerContainer()
@@ -80,8 +142,7 @@ CCInnerContainer::~CCInnerContainer()
 
 void CCInnerContainer::addCCInnerUI(ControllableContainer * cc)
 {
-	DBG("Add CC Inner UI !");
-	CCInnerContainer * ccui = new CCInnerContainer(cc, level + 1, maxLevel);
+	CCInnerContainer * ccui = new CCInnerContainer(editor, cc, level + 1, maxLevel, canAccessLowerContainers);
 	innerContainers.add(ccui);
 	addAndMakeVisible(ccui);
 }
@@ -95,7 +156,24 @@ void CCInnerContainer::removeCCInnerUI(ControllableContainer * cc)
 	innerContainers.removeObject(ccui);
 }
 
+void CCInnerContainer::addCCLink(ControllableContainer * cc)
+{
+	CCLinkBT * bt = new CCLinkBT(cc);
+	bt->addListener(this);
+	addAndMakeVisible(bt);
+	lowerContainerLinks.add(bt);
+}
 
+void CCInnerContainer::removeCCLink(ControllableContainer * cc)
+{
+	
+	CCLinkBT * bt = getCCLinkForCC(cc);
+	if (bt == nullptr) return;
+
+	bt->removeListener(this);
+	removeChildComponent(bt);
+	lowerContainerLinks.removeObject(bt);
+}
 
 void CCInnerContainer::addControllableUI(Controllable * c)
 {
@@ -136,13 +214,28 @@ CCInnerContainer * CCInnerContainer::getInnerContainerForCC(ControllableContaine
 	return nullptr;
 }
 
+CCInnerContainer::CCLinkBT * CCInnerContainer::getCCLinkForCC(ControllableContainer * cc)
+{
+	for (auto &cclink : lowerContainerLinks)
+	{
+		if (cclink->targetContainer == cc) return cclink;
+	}
+	
+	return nullptr;
+}
+
 int CCInnerContainer::getContentHeight()
 {
 	int gap = 2;
 	int ccGap = 5;
 	int controllableHeight = 15;
+	int ccLinkHeight = 20;
 	int margin = 5;
-	int h = controllablesUI.size() * (controllableHeight + gap);
+
+	int h = ccGap;
+	h += controllablesUI.size()* (controllableHeight + gap) + ccGap;
+	h += lowerContainerLinks.size() * (ccLinkHeight + gap) + ccGap;
+
 	for (auto &ccui : innerContainers) h += ccui->getContentHeight() + ccGap;
 
 	h += containerLabel.getHeight();
@@ -163,6 +256,7 @@ void CCInnerContainer::resized()
 	int gap = 2;
 	int ccGap = 5;
 	int controllableHeight = 15;
+	int ccLinkHeight = 20;
 	int margin = 5;
 
 	Rectangle<int> r = getLocalBounds();
@@ -177,6 +271,14 @@ void CCInnerContainer::resized()
 	}
 	r.removeFromTop(ccGap);
 
+	for (auto &cclink : lowerContainerLinks)
+	{
+		cclink->setBounds(r.removeFromTop(ccLinkHeight));
+		r.removeFromTop(gap);
+	}
+
+	r.removeFromTop(ccGap);
+
 	for (auto &ccui : innerContainers)
 	{
 		ccui->setBounds(r.removeFromTop(ccui->getContentHeight()));
@@ -188,6 +290,7 @@ void CCInnerContainer::clear()
 {
 	controllablesUI.clear();
 	innerContainers.clear();
+	lowerContainerLinks.clear();
 }
 
 void CCInnerContainer::controllableAdded(Controllable * c)
@@ -204,20 +307,34 @@ void CCInnerContainer::controllableRemoved(Controllable * c)
 
 void CCInnerContainer::controllableContainerAdded(ControllableContainer * cc)
 {
-	if (level >= maxLevel) return;
 	if (cc->parentContainer != container) return;
 	
-	addCCInnerUI(cc);
-
+	if (level < maxLevel) addCCInnerUI(cc);
+	else if (canAccessLowerContainers) addCCLink(cc);
 }
 
 void CCInnerContainer::controllableContainerRemoved(ControllableContainer * cc)
 {
 	removeCCInnerUI(cc);
+	removeCCLink(cc);
 }
 
 
 void CCInnerContainer::childStructureChanged(ControllableContainer *)
 {
 	resized();
+}
+
+void CCInnerContainer::buttonClicked(Button * b)
+{
+	CCLinkBT * bt = dynamic_cast<CCLinkBT *>(b);
+	if (bt == nullptr) return;
+
+	editor->setCurrentInspectedContainer(bt->targetContainer);
+}
+
+CCInnerContainer::CCLinkBT::CCLinkBT(ControllableContainer * _targetContainer) :
+	targetContainer(_targetContainer),
+	TextButton("[ Inspect "+_targetContainer->niceName+" >> ]")
+{
 }
