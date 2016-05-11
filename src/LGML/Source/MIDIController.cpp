@@ -10,6 +10,23 @@
 
 #include "MIDIController.h"
 
+
+AudioDeviceManager & getAudioDeviceManager();
+
 MIDIController::MIDIController()
   {
-  }
+        }
+
+void MIDIController::ListenToMidiPort(const juce::String & name){
+    if(midiPortName!="")
+       getAudioDeviceManager().removeMidiInputCallback(midiPortName, this);
+
+    getAudioDeviceManager().addMidiInputCallback(midiPortName, this);
+
+}
+
+void MIDIController::handleIncomingMidiMessage (MidiInput* source,
+                                                const MidiMessage& message) {
+
+    
+}

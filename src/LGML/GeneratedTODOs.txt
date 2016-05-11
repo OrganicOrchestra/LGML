@@ -92,14 +92,6 @@ NodeConnectionEditor.cpp
 		// should be fixed !!
 
 
-NodeBaseUI.cpp
-	line : 291
-		// @ben never handle paintuing function from other painting function( has to be done by JUCE....)
-		// here it create infinite repaint cycles
-		//	headerContainer->repaint();
-		//	contentContainer->repaint();
-
-
 TimeManager.h
 	line : 28
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio

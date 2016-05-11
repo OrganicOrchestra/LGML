@@ -13,10 +13,20 @@
 
 #include "Controller.h"
 
-class MIDIController : public Controller
+
+
+class MIDIController : public Controller,public MidiInputCallback
 {
 public :
     MIDIController();
+
+    void handleIncomingMidiMessage (MidiInput* source,
+                                            const MidiMessage& message) override;
+
+    void ListenToMidiPort(const String & );
+private:
+
+    String midiPortName;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
 };
 
