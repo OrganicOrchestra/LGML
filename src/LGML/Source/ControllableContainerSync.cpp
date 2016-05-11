@@ -13,7 +13,7 @@
 
 
 ControllableContainerSync::ControllableContainerSync(ControllableContainer * source,String overrideName):
-ControllableContainer(overrideName!=""?overrideName:source->niceName),
+ControllableContainer(overrideName!=StringRef()?overrideName:source->niceName),
 sourceContainer(source),
 notifyingControllable(nullptr)
 #if DEBUG_CONTROLLABLENAMES
@@ -123,7 +123,7 @@ void ControllableContainerSync::doRemoveControllable(Controllable * c){
 }
 
 void ControllableContainerSync::doAddContainer(ControllableContainer *c){
-    ControllableContainerSync * cc = new ControllableContainerSync(c,"");
+    ControllableContainerSync * cc = new ControllableContainerSync(c,StringRef());
     addChildControllableContainer(cc);
 }
 

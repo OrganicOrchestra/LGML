@@ -30,7 +30,7 @@ ControllableContainer.cpp
 	line : 115
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
-	line : 382
+	line : 381
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
@@ -76,6 +76,17 @@ ControllableInspector.cpp
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
+VSTNode.h
+	line : 88
+		// TODO check that it actually works
+
+	line : 105
+		//@Martin i addedd this because when not playing, it crashed
+
+	line : 109
+		// TODO check if scoped pointer deletes old innerPlugin
+
+
 NodeConnectionEditor.cpp
 	line : 389
 		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
@@ -91,15 +102,9 @@ TimeManager.h
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
-VSTNode.h
-	line : 88
-		// TODO check that it actually works
-
-	line : 105
-		//@Martin i addedd this because when not playing, it crashed
-
-	line : 109
-		// TODO check if scoped pointer deletes old innerPlugin
+JavascriptControllerUI.cpp
+	line : 14
+		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
 
 
 NodeBase.cpp
@@ -112,7 +117,7 @@ NodeBase.cpp
 
 
 ControllableContainer.h
-	line : 95
+	line : 96
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)

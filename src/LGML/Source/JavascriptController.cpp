@@ -11,7 +11,6 @@
 #include "JavaScriptController.h"
 #include "NodeManager.h"
 #include "DebugHelpers.h"
-#include "JavascriptControllerUI.h"
 #include "JsEnvironment.h"
 
 JavascriptController::JavascriptController():JsEnvironment("OSC.JSController"){
@@ -37,7 +36,7 @@ void JavascriptController::buildLocalEnv(){
 
 Result JavascriptController::callForMessage(const OSCMessage & msg){
 
-    String functionName = getJavaScriptFunctionName(msg.getAddressPattern().toString());
+    String functionName = "onCtl_"+getJsFunctionNameFromAddress(msg.getAddressPattern().toString());
     // here we choose to pass each argument as a separated value in function call i.e onMessage(arg1,arg2...)
     Array<var> argArray;
     for(auto & m:msg){
@@ -68,7 +67,7 @@ void JavascriptController::callonAnyMsg(const OSCMessage & msg){
     }
     Result r(Result::ok());
     Array<var> argList = {address,args};
-    var varRes = callFunction("onAnyMsg", argList,&r);
+    var varRes = callFunction("onCtl_AnyMsg", argList,&r);
 
 }
 
@@ -92,19 +91,7 @@ Result JavascriptController::processMessageInternal(const OSCMessage &m){
 
 }
 
-String JavascriptController::getJavaScriptFunctionName(const String & n){
-    StringArray arr;
-    arr.addTokens(n, "/","");
-    arr.remove(0);
-    String methodName ="";
-    for(auto& a:arr.strings ){
-        String upperCase = a.replaceSection(0, 1, a.substring(0, 1).toUpperCase());
-        methodName+= upperCase;
-    }
-    arr.joinIntoString("");
-    return "on"+methodName;
 
-}
 
 var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
     if(a.numArguments<2 )return var::undefined();
@@ -154,15 +141,9 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
 
 void JavascriptController::newJsFileLoaded(){
     jsPath->setValue(getCurrentFilePath(),true);
-    
-    
-    
 }
 
-ControllerUI * JavascriptController::createUI()
-{
-	return new JavascriptControllerUI(this);
-}
+
 
 
 

@@ -26,7 +26,7 @@ public :
 
     }
 
-    virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false) override;
+    virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false) override;
     //virtual Array<Controllable *> getAllControllables(bool recursive = false) override;
 
 };

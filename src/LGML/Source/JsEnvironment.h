@@ -14,7 +14,7 @@
 #include "JuceHeader.h"
 #include "JsGlobalEnvironment.h"
 
-class JsEnvironment : public Timer {
+class JsEnvironment : public Timer,public Parameter::Listener,public Trigger::Listener {
 public:
     JsEnvironment(const String & ns);
     virtual ~JsEnvironment();
@@ -57,6 +57,7 @@ public:
 protected :
 
     var callFunction  (const Identifier& function, const Array<var> & args, Result* result);
+    var callFunction (const Identifier& function, const var & arg, Result* result);
 
     static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
     DynamicObject * getLocalEnv(){return localEnvironment.getDynamicObject();}
@@ -66,6 +67,7 @@ protected :
     String getModuleName();
     String getParentName();
     String getCurrentFilePath(){return currentFile.getFullPathName();};
+
 
     const NamedValueSet & getRootObjectProperties();
 
@@ -94,6 +96,11 @@ private:
     void timerCallback()override;
     Time lastFileModTime;
 
+    void checkUserControllableEventFunction();
+    Array<WeakReference<Parameter> > listenedParameters;
+    Array<WeakReference<Trigger> > listenedTriggers;
+    void parameterValueChanged(Parameter * c) override;
+    void triggerTriggered(Trigger * p) override;
 };
 
 

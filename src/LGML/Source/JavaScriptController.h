@@ -34,8 +34,6 @@ public:
 
 private:
     void buildLocalEnv() override;
-    String getJavaScriptFunctionName(const String &);
-
 
     DynamicObject * createOSCJsObject();
 

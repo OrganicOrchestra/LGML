@@ -24,7 +24,7 @@ juce::Logger::writeToLog(tempDbgBuf);)
 
 // named version where source name is user defined
 #define NLOG(__name,textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
-tempDbgBuf << __name << " : " << textToWrite;\
+tempDbgBuf << __name << StringRef(" : ") << textToWrite;\
 juce::Logger::writeToLog(tempDbgBuf);)
 
 
@@ -40,7 +40,7 @@ inline String getLogContent(const String & logString) {
 class LogElement{
 public:
     LogElement(const String & log):source(getLogSource(log)),content(getLogContent(log)){
-        _arr.addTokens(content,"\n","");
+        _arr.addTokens(content,StringRef("\n"),StringRef());
     }
     String content;
     String source;

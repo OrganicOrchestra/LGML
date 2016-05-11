@@ -20,7 +20,7 @@ class Trigger : public Controllable
 {
 public:
     Trigger(const String &niceName, const String &description, bool enabled = true);
-    ~Trigger() {}
+    ~Trigger() {masterReference.clear();}
 
 
 
@@ -53,6 +53,10 @@ public:
     void addTriggerListener(Trigger::Listener* newListener) { listeners.add(newListener); }
     void removeTriggerListener(Trigger::Listener* listener) { listeners.remove(listener); }
 
+
+private:
+    WeakReference<Trigger>::Master masterReference;
+    friend class WeakReference<Trigger>;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Trigger)
 };

@@ -20,7 +20,14 @@ JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFi
     addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
 }
 
-JsEnvironment::~JsEnvironment(){}
+JsEnvironment::~JsEnvironment(){
+    for(auto & c:listenedParameters){
+        if(c.get()) c->removeParameterListener(this);
+    }
+    for(auto & c:listenedTriggers){
+        if(c.get()) c->removeTriggerListener(this);
+    }
+}
 
 void JsEnvironment::clearNamespace(){
     while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
@@ -80,6 +87,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
     else{
         _hasValidJsFile = true;
         lastFileModTime = currentFile.getLastModificationTime();
+        checkUserControllableEventFunction();
         LOG("script Loaded successfully : "+f.getFullPathName());
         newJsFileLoaded();
     }
@@ -89,12 +97,15 @@ void JsEnvironment::internalLoadFile(const File &f ){
 }
 
 var JsEnvironment::callFunction (const Identifier& function, const Array<var>& args, Result* result){
+    // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
+    juce::var::NativeFunctionArgs Nargs(var::undefined(),&args.getReference(0),args.size());
+    return jsEngine.callFunction(function,Nargs,result);
+}
 
-        // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
-        juce::var::NativeFunctionArgs Nargs(var::undefined(),&args.getReference(0),args.size());
-        return jsEngine.callFunction(function,Nargs,result);
-
-
+var JsEnvironment::callFunction (const Identifier& function, const var & arg, Result* result){
+    // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
+    juce::var::NativeFunctionArgs Nargs(var::undefined(),&arg,1);
+    return jsEngine.callFunction(function,Nargs,result);
 }
 
 const NamedValueSet & JsEnvironment::getRootObjectProperties()  {return jsEngine.getRootObjectProperties();}
@@ -143,4 +154,67 @@ String JsEnvironment::getModuleName(){
     int idx = localNamespace.indexOfChar('.');
     if(idx==-1){return  localNamespace;}
     else{return localNamespace.substring(idx+1);}
+}
+
+void JsEnvironment::checkUserControllableEventFunction(){
+    for(auto & c:listenedParameters){
+        if(c.get()) c->removeParameterListener(this);
+    }
+    listenedParameters.clear();
+    for(auto & c:listenedTriggers){
+        if(c.get()) c->removeTriggerListener(this);
+    }
+    listenedTriggers.clear();
+
+    StringArray userDefinedFunction;
+    NamedValueSet root = getRootObjectProperties();
+    Array<StringArray> functionNamespaces;
+    for(int i = 0 ; i < root.size() ; i++ ){
+        StringArray arr = splitFunctionName(root.getName(i));
+        if(arr.size()>1 && arr[0] == "on"){
+            arr.remove(0);
+            functionNamespaces.add(arr);
+        }
+    }
+    static const Array<ControllableContainer*> candidates={
+        (ControllableContainer*)NodeManager::getInstance(),
+        (ControllableContainer*)TimeManager::getInstance()
+    };
+
+
+    for(auto & candidate:candidates){
+        Array<StringArray> concernedMethods ;
+        for(auto & m:functionNamespaces){
+            if(candidate->shortName == m.getReference(0)){
+                StringArray localName = m;
+                localName.remove(0);
+                Controllable * c = candidate->getControllableForAddress(localName);
+                if(Parameter * p = dynamic_cast<Parameter*>(c))
+                    listenedParameters.addIfNotAlreadyThere(p);
+                else if(Trigger *t = dynamic_cast<Trigger*>(c))
+                    listenedTriggers.addIfNotAlreadyThere(t);
+            }
+        }
+    }
+    for(auto & c:listenedParameters){
+        c->addParameterListener(this);
+    }
+    for(auto & t:listenedTriggers){
+        t->addTriggerListener(this);
+    }
+
+
+
+}
+
+void JsEnvironment::parameterValueChanged(Parameter * p) {
+    Identifier functionName = "on_"+getJsFunctionNameFromAddress(p->getControlAddress());
+    Result r(Result::ok());
+    callFunction(functionName, p->value, &r);
+};
+void JsEnvironment::triggerTriggered(Trigger *p){
+    Identifier functionName = "on_"+getJsFunctionNameFromAddress(p->getControlAddress());
+    Result r(Result::ok());
+    callFunction(functionName, var::undefined(), &r);
+
 }

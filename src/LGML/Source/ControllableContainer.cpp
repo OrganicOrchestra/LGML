@@ -241,13 +241,12 @@ Controllable * ControllableContainer::getControllableForAddress(String address, 
 {
     StringArray addrArray;
     addrArray.addTokens(address, juce::StringRef("/"), juce::StringRef("\""));
-    juce::Array<String> addSplit = addrArray.strings;
-    addSplit.remove(0);
+    addrArray.remove(0);
 
-    return getControllableForAddress(addSplit, recursive, getNotExposed);
+    return getControllableForAddress(addrArray, recursive, getNotExposed);
 }
 
-Controllable * ControllableContainer::getControllableForAddress(Array<String> addressSplit, bool recursive, bool getNotExposed)
+Controllable * ControllableContainer::getControllableForAddress(StringArray addressSplit, bool recursive, bool getNotExposed)
 {
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
 

@@ -65,7 +65,8 @@ public:
     virtual Array<Parameter *> getAllParameters(bool recursive = false, bool getNotExposed = false);
 
     virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
-    virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false);
+
+    virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
 
 
     PresetManager::Preset * currentPreset;

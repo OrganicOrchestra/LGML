@@ -30,16 +30,16 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
 
     StringArray addrArray;
     addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
-    juce::Array<String> addSplit = addrArray.strings;
 
-    addSplit.remove(0);
-    String controller = addSplit[0];
+
+    addrArray.remove(0);
+    String controller = addrArray[0];
 
 
     if (controller == "node")
     {
-        addSplit.remove(0);
-        Controllable * c = NodeManager::getInstance()->getControllableForAddress(addSplit);
+        addrArray.remove(0);
+        Controllable * c = NodeManager::getInstance()->getControllableForAddress(addrArray);
 
 
         if (c != nullptr)

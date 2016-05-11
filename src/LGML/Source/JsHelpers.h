@@ -36,6 +36,20 @@ inline T* getObjectPtrFromJS(const var::NativeFunctionArgs & a){
     return dynamic_cast<T*>((T*)(int64)d->getProperty(ptrIdentifier));
 }
 
+inline String getJsFunctionNameFromAddress(const String & n){
+    StringArray arr;
+    arr.addTokens(n, "/","");
+    arr.remove(0);
+    return    arr.joinIntoString("_");
+
+}
+
+inline StringArray splitFunctionName(const Identifier & i){
+    StringArray res;
+    res.addTokens(i.toString(), "_","");
+    return res;
+
+}
 inline void addToNamespace(const String & elemName,DynamicObject *target,DynamicObject * global){
     jassert(target!=nullptr);
     jassert(elemName!="");
