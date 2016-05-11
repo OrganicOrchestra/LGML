@@ -15,7 +15,7 @@
 #include "InspectableComponent.h"
 #include "InspectorEditor.h"
 
-class Inspector : public Component, public InspectableComponent::InspectableListener
+class Inspector : public Component, public InspectableComponent::InspectableListener, public InspectorEditor::InspectorEditorListener
 {
 public:
 	Inspector();
@@ -35,8 +35,9 @@ public:
 	void clear();
 	void inspectCurrentComponent();
 
-	void inspectableRemoved(InspectableComponent * component)override;
+	void inspectableRemoved(InspectableComponent * component) override;
 
+	void contentSizeChanged(InspectorEditor *) override;
 	//Listener
 	class  InspectorListener
 	{
@@ -44,6 +45,7 @@ public:
 		/** Destructor. */
 		virtual ~InspectorListener() {}
 		virtual void currentComponentChanged(Inspector * ) {};
+		virtual void contentSizeChanged(Inspector *) {};
 	};
 
 	ListenerList<InspectorListener> listeners;
@@ -63,6 +65,7 @@ public:
 		contentIsFlexible = true;
 		addAndMakeVisible(vp);
 		vp.setScrollBarThickness(10);
+
 		inspector->addInspectorListener(this);
 
 	}
@@ -85,6 +88,7 @@ public:
 	Inspector * inspector;
 
 	void currentComponentChanged(Inspector *) override { resized(); }
+	void contentSizeChanged(Inspector *) override { resized(); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InspectorViewport)
 };

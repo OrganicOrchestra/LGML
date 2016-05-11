@@ -24,11 +24,14 @@ GenericControllableContainerEditor::GenericControllableContainerEditor(Inspectab
 
 	setCurrentInspectedContainer(sourceContainer);
 
+	sourceContainer->addControllableContainerListener(this);
+
 	resized();
 }
 
 GenericControllableContainerEditor::~GenericControllableContainerEditor()
 {
+	sourceContainer->removeControllableContainerListener(this);
 	parentBT.removeListener(this);
 	innerContainer->clear();
 }
@@ -99,6 +102,11 @@ void GenericControllableContainerEditor::buttonClicked(Button * b)
 	{
 		setCurrentInspectedContainer(innerContainer->container->parentContainer);
 	}
+}
+
+void GenericControllableContainerEditor::childStructureChanged(ControllableContainer *)
+{
+	listeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
 
@@ -331,7 +339,8 @@ void CCInnerContainer::controllableContainerRemoved(ControllableContainer * cc)
 
 void CCInnerContainer::childStructureChanged(ControllableContainer *)
 {
-	resized();
+	//resized();
+	
 }
 
 void CCInnerContainer::buttonClicked(Button * b)

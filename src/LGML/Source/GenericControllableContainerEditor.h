@@ -74,7 +74,7 @@ public:
 };
 
 
-class GenericControllableContainerEditor : public InspectorEditor, public ButtonListener
+class GenericControllableContainerEditor : public InspectorEditor, public ButtonListener, public ControllableContainerListener
 {
 public :
 	GenericControllableContainerEditor(InspectableComponent * sourceComponent);
@@ -94,7 +94,7 @@ public :
 
 	void buttonClicked(Button  *b)override;
 
-
+	void childStructureChanged(ControllableContainer *) override;
 	
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericControllableContainerEditor)
