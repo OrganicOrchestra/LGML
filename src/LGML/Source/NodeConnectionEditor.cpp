@@ -124,13 +124,13 @@ void NodeConnectionEditor::generateContentForAudio()
 {
     clearContent();
 
-    int numOutputChannels = currentConnection->sourceNode->audioProcessor->getTotalNumOutputChannels();
+    int numOutputChannels = currentConnection->sourceNode->getTotalNumOutputChannels();
 
-    int numInputChannels = currentConnection->destNode->audioProcessor->getTotalNumInputChannels();
+    int numInputChannels = currentConnection->destNode->getTotalNumInputChannels();
 
     for (int i = 0; i < numOutputChannels; i++)
     {
-		String oName = currentConnection->destNode->audioProcessor->getOutputChannelName(i);
+		String oName = currentConnection->destNode->getOutputChannelName(i);
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(oName,i,currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
         outputSlots.add(s);
         s->addSlotListener(this);
@@ -141,7 +141,7 @@ void NodeConnectionEditor::generateContentForAudio()
 
     for (int i = 0; i < numInputChannels; i++)
     {
-		String iName = currentConnection->destNode->audioProcessor->getInputChannelName(i);
+		String iName = currentConnection->destNode->getInputChannelName(i);
 		NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(iName, i, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::INPUT);
         inputSlots.add(s);
         s->addSlotListener(this);
@@ -167,12 +167,12 @@ void NodeConnectionEditor::generateContentForData()
     clearContent();
     //DBG("generate content for data");
 
-    int numOutputData = currentConnection->sourceNode->dataProcessor->getTotalNumOutputData();
-    int numInputData = currentConnection->destNode->dataProcessor->getTotalNumInputData();
+    int numOutputData = currentConnection->sourceNode->getTotalNumOutputData();
+    int numInputData = currentConnection->destNode->getTotalNumInputData();
 
     for (int i = 0; i < numOutputData; i++)
     {
-        Data * data = currentConnection->sourceNode->dataProcessor->outputDatas[i];
+        Data * data = currentConnection->sourceNode->outputDatas[i];
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(data->name + " (" + data->getTypeString() + ")",data, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
         s->setName("output"+data->name);
         s->addSlotListener(this);
@@ -183,7 +183,7 @@ void NodeConnectionEditor::generateContentForData()
 
     for (int i = 0; i < numInputData; i++)
     {
-        Data * data = currentConnection->destNode->dataProcessor->inputDatas[i];
+        Data * data = currentConnection->destNode->inputDatas[i];
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(data->name + " (" + data->getTypeString() + ")",data, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::INPUT);
         s->setName("input" + data->name);
         s->addSlotListener(this);

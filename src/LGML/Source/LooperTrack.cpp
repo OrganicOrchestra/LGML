@@ -12,11 +12,11 @@
 #include "LooperTrack.h"
 #include "TimeManager.h"
 
-#include "Looper.h"
+#include "LooperNode.h"
 
-LooperTrack::LooperTrack(Looper * looper, int _trackIdx) :
+LooperTrack::LooperTrack(LooperNode * looperNode, int _trackIdx) :
     ControllableContainer("Track " + String(_trackIdx)),
-    parentLooper(looper),
+    parentLooper(looperNode),
     quantizedRecordStart(0),
     quantizedRecordEnd(0),
     quantizedPlayStart(0),
@@ -281,7 +281,7 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
 }
 
 bool LooperTrack::askForBeingMasterTempoTrack() {
-    return TimeManager::getInstance()->askForBeingMasterNode(parentLooper->looperNode)
+    return TimeManager::getInstance()->askForBeingMasterNode(parentLooper)
         && parentLooper->askForBeingMasterTrack(this);
 }
 
@@ -318,7 +318,7 @@ void LooperTrack::setTrackState(TrackState newState) {
         }
         //            Record per default if triggering other rec while we are current master and we record recording
 
-        else if (TimeManager::getInstance()->isMasterNode(parentLooper->looperNode)) {
+        else if (TimeManager::getInstance()->isMasterNode(parentLooper)) {
                 newState = RECORDING;
                 TimeManager::getInstance()->isSettingTempo->setValue(false);
                 TimeManager::getInstance()->playState->setValue(true);
@@ -381,11 +381,11 @@ void LooperTrack::setTrackState(TrackState newState) {
         newState = CLEARED;
         internalTrackState = BUFFER_STOPPED;
 
-		if (parentLooper->looperNode->currentPreset != nullptr)
+		if (parentLooper->currentPreset != nullptr)
 		{
-			volume->setValue(parentLooper->looperNode->getPresetValueFor(volume));
-			mute->setValue(parentLooper->looperNode->getPresetValueFor(mute));
-			solo->setValue(parentLooper->looperNode->getPresetValueFor(solo));
+			volume->setValue(parentLooper->getPresetValueFor(volume));
+			mute->setValue(parentLooper->getPresetValueFor(mute));
+			solo->setValue(parentLooper->getPresetValueFor(solo));
 		}else
 		{
 			volume->resetValue();

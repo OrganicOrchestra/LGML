@@ -24,7 +24,7 @@ NodeConnectionEditorDataSlot::NodeConnectionEditorDataSlot(String label, int cha
     NodeConnection::ConnectionType connectionType, IOType ioType) :label(label), data(nullptr), channel(channel),
 connectionType(connectionType), ioType(ioType), currentEditingData(nullptr)
 {
-}
+} 
 
 NodeConnectionEditorDataSlot::~NodeConnectionEditorDataSlot()
 {

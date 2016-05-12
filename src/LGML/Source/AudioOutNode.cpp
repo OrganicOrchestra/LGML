@@ -11,18 +11,38 @@
 #include "AudioOutNode.h"
 #include "NodeBaseUI.h"
 
-NodeBaseUI * AudioOutNode::createUI() {
-    NodeBaseUI * ui = new NodeBaseUI(this);
-    return ui;
 
+AudioOutNode::AudioOutNode(NodeManager * nodeManager, uint32 nodeId) :
+	NodeBase(nodeManager, nodeId, "AudioOutNode"),
+	AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
+{
+	NodeBase::busArrangement.outputBuses.clear();
+
+	getAudioDeviceManager().addChangeListener(this);
+	updateIO();
 }
 
+AudioOutNode::~AudioOutNode() {
+	getAudioDeviceManager().removeChangeListener(this);
+}
 
-void AudioOutNode::AudioOutProcessor::changeListenerCallback (ChangeBroadcaster*) {
+void AudioOutNode::changeListenerCallback (ChangeBroadcaster*) {
     updateIO();
 };
 
-void AudioOutNode::AudioOutProcessor::updateIO(){
+void AudioOutNode::updateIO(){
     AudioIODevice * ad  =getAudioDeviceManager().getCurrentAudioDevice();
     setPreferedNumAudioInput(ad->getActiveOutputChannels().countNumberOfSetBits());
+}
+
+void AudioOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
+	AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+}
+
+
+
+NodeBaseUI * AudioOutNode::createUI() {
+	NodeBaseUI * ui = new NodeBaseUI(this);
+	return ui;
+
 }

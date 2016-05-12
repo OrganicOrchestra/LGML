@@ -393,18 +393,9 @@
             <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
             <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>
           </GROUP>
-          <GROUP id="{AF0BF0A3-60FB-031F-524D-3BF9CD91D07F}" name="audio">
-            <FILE id="Ghizny" name="NodeAudioProcessor.cpp" compile="1" resource="0"
-                  file="Source/NodeAudioProcessor.cpp"/>
-            <FILE id="TpAMPu" name="NodeAudioProcessor.h" compile="0" resource="0"
-                  file="Source/NodeAudioProcessor.h"/>
-          </GROUP>
           <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">
             <FILE id="LufRbo" name="Data.cpp" compile="1" resource="0" file="Source/Data.cpp"/>
             <FILE id="PrlybT" name="Data.h" compile="0" resource="0" file="Source/Data.h"/>
-            <FILE id="GVgHpr" name="DataProcessor.cpp" compile="1" resource="0"
-                  file="Source/DataProcessor.cpp"/>
-            <FILE id="jPUNwT" name="DataProcessor.h" compile="0" resource="0" file="Source/DataProcessor.h"/>
             <FILE id="pLs1Ug" name="DataProcessorGraph.cpp" compile="1" resource="0"
                   file="Source/DataProcessorGraph.cpp"/>
             <FILE id="MxBN89" name="DataProcessorGraph.h" compile="0" resource="0"
@@ -477,8 +468,6 @@
                   file="Source/AudioMixerNodeUI.h"/>
           </GROUP>
           <GROUP id="{5C55270A-43A6-03C9-B529-1BFE882AB7F6}" name="Looper">
-            <FILE id="MY5wl4" name="Looper.cpp" compile="1" resource="0" file="Source/Looper.cpp"/>
-            <FILE id="NqZunN" name="Looper.h" compile="0" resource="0" file="Source/Looper.h"/>
             <FILE id="lWXXbw" name="LooperNode.cpp" compile="1" resource="0" file="Source/LooperNode.cpp"/>
             <FILE id="p6VNxS" name="LooperNode.h" compile="0" resource="0" file="Source/LooperNode.h"/>
             <FILE id="C7ZscO" name="LooperNodeUI.cpp" compile="1" resource="0"

@@ -17,7 +17,7 @@ nodeManager(nodeManager), connectionId(connectionId), sourceNode(sourceNode), de
 
     // init with all possible Audio connections
     if(connectionType==AUDIO){
-        int maxCommonAudiConnections = jmin(sourceNode->audioProcessor->getTotalNumOutputChannels() , destNode->audioProcessor->getTotalNumInputChannels());
+        int maxCommonAudiConnections = jmin(sourceNode->getTotalNumOutputChannels() , destNode->getTotalNumInputChannels());
         for( int i = 0 ; i < maxCommonAudiConnections ; i ++){
             addAudioGraphConnection(i, i);
         }
@@ -150,7 +150,7 @@ void NodeConnection::loadJSONData(var data)
             {
                 String sourceName = linkVar.getProperty("sourceData", var());
                 String destName = linkVar.getProperty("destData", var());
-                addDataGraphConnection(sourceNode->dataProcessor->getOutputDataByName(sourceName), destNode->dataProcessor->getInputDataByName(destName));
+                addDataGraphConnection(sourceNode->getOutputDataByName(sourceName), destNode->getInputDataByName(destName));
             }
         }
     }

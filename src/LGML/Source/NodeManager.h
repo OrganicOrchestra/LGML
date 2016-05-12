@@ -78,7 +78,7 @@ public:
     void updateAudioGraph();
 
 private:
-    OwnedArray<NodeBase> nodes;
+    Array<NodeBase *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
     uint32 lastNodeId;
 
     OwnedArray<NodeConnection> connections;

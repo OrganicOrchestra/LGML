@@ -14,7 +14,7 @@
 #include "NodeBase.h"
 
 //TODO, move to more common place for use in other components
-class VuMeter : public Component, public NodeAudioProcessor::RMSListener {
+class VuMeter : public Component, public NodeBase::RMSListener {
 public:
 
 	enum Type { IN,OUT};

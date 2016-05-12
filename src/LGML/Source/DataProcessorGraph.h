@@ -12,10 +12,8 @@
 #define DATAPROCESSORGRAPH_H_INCLUDED
 
 
-#include "DataProcessor.h"
+#include "NodeBase.h"
 
-
-#include "DataProcessor.h"
 /*
 DataProcessoGraph handle a graph of DataProcessorGraph::Node,
     each Node refer to a dataProcessor and allow connections between them
@@ -76,7 +74,7 @@ public:
     void removeConnection(Connection * connection);
 
     private:
-        Array<DataProcessor *> processors;
+        Array<NodeBase *> processors;
         OwnedArray<Connection> connections;
         uint32 lastNodeId;
 

@@ -18,24 +18,16 @@
 
 #include "FloatSliderUI.h"
 
-class AudioMixerNodeUI : public NodeBaseContentUI,public NodeAudioProcessor::NodeAudioProcessorListener{
+class AudioMixerNodeUI : public NodeBaseContentUI,
+	public NodeBase::NodeAudioProcessorListener
+{
 public:
     AudioMixerNodeUI(){
 
     }
 
-    ~AudioMixerNodeUI(){
-        nodeMixer->removeNodeAudioProcessorListener(this);
-    }
-    void init() override{
-        nodeMixer = dynamic_cast<AudioMixerNode::AudioMixerAudioProcessor*>(node->audioProcessor);
-        numAudioOutputChanged(nodeMixer->numberOfOutput->value);
-        numAudioInputChanged(nodeMixer->numberOfInput->value);
-
-        nodeMixer->addNodeAudioProcessorListener(this);
-
-        nodeUI->setSize(250, 150);
-    }
+	~AudioMixerNodeUI();
+	void init() override;
 
     void numAudioInputChanged(int )override;
     void numAudioOutputChanged(int )override;
@@ -46,16 +38,17 @@ public:
         OwnedArray<FloatSliderUI> inputVolumes;
 
 
-        OutputBusUI(AudioMixerNode::AudioMixerAudioProcessor::OutputBus * o):owner(o){
+        OutputBusUI(AudioMixerNode::OutputBus * o):owner(o){
             setNumInput(o->volumes.size());
         };
+
         ~OutputBusUI(){
 
         }
         void setNumInput(int numInput);
         void resized() override;
         int outputIdx;
-        AudioMixerNode::AudioMixerAudioProcessor::OutputBus* owner;
+        AudioMixerNode::OutputBus* owner;
 
 
     };
@@ -63,7 +56,7 @@ public:
 
     void resized() override;
     OwnedArray<OutputBusUI> outputBusUIs;
-    AudioMixerNode::AudioMixerAudioProcessor * nodeMixer;
+    AudioMixerNode * mixerNode;
 
 };
 

@@ -15,23 +15,23 @@ LooperNodeContentUI::LooperNodeContentUI(){
 }
 
 LooperNodeContentUI::~LooperNodeContentUI(){
-    looperNode->looper->removeLooperListener(this);
+    looperNode->removeLooperListener(this);
 }
 
 void LooperNodeContentUI::init(){
 
     looperNode = dynamic_cast<LooperNode*> (node);
-    looperNode->looper->addLooperListener(this);
+    looperNode->addLooperListener(this);
 
-    recPlaySelectedButton = looperNode->looper->recPlaySelectedTrig->createBlinkUI();
-    clearSelectedButton = looperNode->looper->clearSelectedTrig->createBlinkUI();
-    stopSelectedButton = looperNode->looper->stopSelectedTrig->createBlinkUI();
+    recPlaySelectedButton = looperNode->recPlaySelectedTrig->createBlinkUI();
+    clearSelectedButton = looperNode->clearSelectedTrig->createBlinkUI();
+    stopSelectedButton = looperNode->stopSelectedTrig->createBlinkUI();
 
-    clearAllButton = looperNode->looper->clearAllTrig->createBlinkUI();
-    stopAllButton = looperNode->looper->stopAllTrig->createBlinkUI();
+    clearAllButton = looperNode->clearAllTrig->createBlinkUI();
+    stopAllButton = looperNode->stopAllTrig->createBlinkUI();
 
-    volumeSelectedSlider = looperNode->looper->volumeSelected->createSlider();
-    monitoringButton = looperNode->looper->isMonitoring->createToggle();
+    volumeSelectedSlider = looperNode->volumeSelected->createSlider();
+    monitoringButton = looperNode->isMonitoring->createToggle();
 
     headerContainer.addAndMakeVisible(recPlaySelectedButton);
     headerContainer.addAndMakeVisible(clearSelectedButton);
@@ -47,7 +47,7 @@ void LooperNodeContentUI::init(){
     setSize(650,180);
 
 
-    trackNumChanged(looperNode->looper->tracks.size());
+    trackNumChanged(looperNode->tracks.size());
 }
 
 void LooperNodeContentUI::resized(){
@@ -124,7 +124,7 @@ void LooperNodeContentUI::trackNumChanged(int num) {
     }
     else{
         for(int i = tracksUI.size() ; i < num ; i++){
-            TrackUI * t = new TrackUI(looperNode->looper->tracks.getUnchecked(i));
+            TrackUI * t = new TrackUI(looperNode->tracks.getUnchecked(i));
             tracksUI.add(t);
             trackContainer.addAndMakeVisible(t);
         }

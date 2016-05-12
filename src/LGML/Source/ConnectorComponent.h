@@ -21,7 +21,7 @@ class NodeBase;
 //==============================================================================
 /*
 */
-class ConnectorComponent : public Component, public SettableTooltipClient,public NodeAudioProcessor::NodeAudioProcessorListener
+class ConnectorComponent : public Component, public SettableTooltipClient,public NodeBase::NodeAudioProcessorListener
 {
 public:
 

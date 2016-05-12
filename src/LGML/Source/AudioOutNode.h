@@ -19,37 +19,19 @@
 AudioDeviceManager & getAudioDeviceManager() ;
 
 
-class AudioOutNode : public NodeBase
+class AudioOutNode : 
+	public NodeBase,
+	public juce::AudioProcessorGraph::AudioGraphIOProcessor, 
+	public ChangeListener
 {
 public:
-    class AudioOutProcessor : public juce::AudioProcessorGraph::AudioGraphIOProcessor, public NodeAudioProcessor,public ChangeListener
-    {
-    public:
-        AudioOutProcessor():
-        NodeAudioProcessor("AudioOut"),
-        AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode){
-            NodeAudioProcessor::busArrangement.outputBuses.clear();
-        }
-
-        void changeListenerCallback (ChangeBroadcaster* source)override;
-        void updateIO();
-        void processBlockInternal(AudioBuffer<float>& buffer,
-                          MidiBuffer& midiMessages) override{
-            AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
-        }
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioOutProcessor)
-    };
+	AudioOutNode(NodeManager * nodeManager, uint32 nodeId);;
+	~AudioOutNode();
 
 
-
-
-    AudioOutNode(NodeManager * nodeManager,uint32 nodeId)  : NodeBase(nodeManager,nodeId,"AudioOutNode",new AudioOutProcessor){
-        AudioOutProcessor* ap=(AudioOutProcessor*)audioProcessor;
-        getAudioDeviceManager().addChangeListener(ap);
-        ap->updateIO();
-    };
-    ~AudioOutNode(){getAudioDeviceManager().removeChangeListener((AudioOutProcessor*)audioProcessor);};
+	void changeListenerCallback(ChangeBroadcaster* source)override;
+	void updateIO();
+	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
     virtual NodeBaseUI * createUI() override;
 

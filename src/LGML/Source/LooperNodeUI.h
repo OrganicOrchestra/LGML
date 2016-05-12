@@ -14,10 +14,9 @@
 #include "NodeBaseUI.h"
 #include "TriggerBlinkUI.h"
 #include "FloatSliderUI.h"
-#include "Looper.h"
-#include "LooperTrack.h"
+#include "LooperNode.h"
 
-class LooperNodeContentUI: public NodeBaseContentUI , public Looper::Listener
+class LooperNodeContentUI: public NodeBaseContentUI , public LooperNode::LooperListener
 {
 public:
 

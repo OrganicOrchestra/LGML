@@ -37,11 +37,11 @@ NodeBaseHeaderUI::~NodeBaseHeaderUI()
 	{
 		if (node->hasAudioOutputs)
 		{
-			node->audioProcessor->removeRMSListener(&vuMeterOut);
+			node->removeRMSListener(&vuMeterOut);
 		}
 		if (node->hasAudioInputs)
 		{
-			node->audioProcessor->removeRMSListener(&vuMeterIn);
+			node->removeRMSListener(&vuMeterIn);
 		}
 
 		node->removeControllableContainerListener(this);
@@ -58,14 +58,14 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     if (node != nullptr)
 	{
 		if (node->hasAudioOutputs) {
-			node->audioProcessor->addRMSListener(&vuMeterOut);
+			node->addRMSListener(&vuMeterOut);
 			addAndMakeVisible(vuMeterOut);
 
 		}
 
 		if (node->hasAudioInputs)
 		{
-			node->audioProcessor->addRMSListener(&vuMeterIn);
+			node->addRMSListener(&vuMeterIn);
 			addAndMakeVisible(vuMeterIn);
 		}
 

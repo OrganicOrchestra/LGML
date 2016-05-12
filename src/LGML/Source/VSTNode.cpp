@@ -9,21 +9,17 @@
  */
 
 #include "VSTNode.h"
-
+#include "VSTNodeUI.h"
 #include "NodeManager.h"
 
-#include "VSTNodeUI.h"
-
-
-NodeBaseUI * VSTNode::createUI(){
-    return new NodeBaseUI(this,new VSTNodeContentUI,new VSTNodeHeaderUI);
-}
-
-
 VSTNode::VSTNode(NodeManager * nodeManager,uint32 nodeId) :
-NodeBase(nodeManager,nodeId,"VST",new VSTProcessor(this)),blockFeedback(false){
+	NodeBase(nodeManager,nodeId,"VST"),
+	blockFeedback(false)
+{
     identifierString = addStringParameter("VST Identifier","string that identify a VST","");
     addChildControllableContainer(&pluginWindowParameter);
+
+	DBG(VSTParameters.size());
 }
 
 
@@ -31,11 +27,6 @@ VSTNode::~VSTNode(){
     PluginWindow::closeCurrentlyOpenWindowsFor (this);
 }
 
-
-void VSTNode::generatePluginFromDescription(PluginDescription * desc){
-    VSTProcessor * vstProcessor = dynamic_cast<VSTProcessor*>(audioProcessor);
-    vstProcessor->generatePluginFromDescription(desc);
-}
 
 void  VSTNode::createPluginWindow(){
     if (PluginWindow* const w = PluginWindow::getWindowFor (this))
@@ -63,9 +54,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
         if(blockFeedback)return;
         for(int i = VSTParameters.size() -1; i>=0;--i){
             if(VSTParameters.getUnchecked(i) == p){
-                VSTProcessor * vstProcessor = dynamic_cast<VSTProcessor*>(audioProcessor);
-                vstProcessor->innerPlugin->setParameter(i, VSTParameters.getUnchecked(i)->value);
-
+                innerPlugin->setParameter(i, VSTParameters.getUnchecked(i)->value);
                 break;
             }
 
@@ -94,10 +83,64 @@ String VSTNode::getPresetFilter()
 }
 
 
-void VSTNode::VSTProcessor::numChannelsChanged(){
+void VSTNode::generatePluginFromDescription(PluginDescription * desc)
+{
+
+	innerPlugin = nullptr;
+	String errorMessage;
+	AudioDeviceManager::AudioDeviceSetup result;
+
+	// set max channels to this
+	// TODO check that it actually works
+	desc->numInputChannels = jmin(desc->numInputChannels, getMainBusNumInputChannels());
+	desc->numOutputChannels = jmin(desc->numOutputChannels, getMainBusNumOutputChannels());
+
+
+	getAudioDeviceManager().getAudioDeviceSetup(result);
+
+	if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
+		(*desc, result.sampleRate, result.bufferSize, errorMessage)) {
+		// try to align the precision of the processor and the graph
+		instance->setProcessingPrecision(singlePrecision);
+		instance->setPreferredBusArrangement(true, 0, AudioChannelSet::canonicalChannelSet(getMainBusNumInputChannels()));
+		instance->setPreferredBusArrangement(false, 0, AudioChannelSet::canonicalChannelSet(getMainBusNumOutputChannels()));
+		int numIn = instance->getMainBusNumInputChannels();
+		int numOut = instance->getMainBusNumOutputChannels();
+		setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
+
+		//@Martin i addedd this because when not playing, it crashed
+		if (TimeManager::getInstance()->playState) instance->prepareToPlay(result.sampleRate, result.bufferSize);
+
+
+		// TODO check if scoped pointer deletes old innerPlugin
+		innerPlugin = instance;
+		initParametersFromProcessor(instance);
+	}
+
+	else {
+
+		DBG(errorMessage);
+		jassertfalse;
+	}
+}
+
+void VSTNode::numChannelsChanged(){
     NodeManager::getInstance()->audioGraph.removeIllegalConnections();
     // hack to force update renderingops in audioGraph
     NodeManager::getInstance()->audioGraph.removeConnection(-1);
+}
+
+inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
+	if (innerPlugin) {
+		if (buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(), innerPlugin->getTotalNumOutputChannels()))
+		{
+			innerPlugin->processBlock(buffer, midiMessages);
+		}
+		else {
+			static int numFrameDropped = 0;
+			DBG("dropAudio " + String(numFrameDropped++));
+		}
+	}
 }
 
 
@@ -109,4 +152,11 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
     blockFeedback = true;
     VSTParameters.getUnchecked(parameterIndex)->setValue(newValue);
     blockFeedback = false;
+}
+
+
+
+
+NodeBaseUI * VSTNode::createUI() {
+	return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
 }

@@ -17,53 +17,24 @@
 
 AudioDeviceManager & getAudioDeviceManager() ;
 
-class AudioInNode : public NodeBase
+class AudioInNode : 
+	public NodeBase, 
+	public juce::AudioProcessorGraph::AudioGraphIOProcessor, 
+	public ChangeListener
 {
 
 public:
+	
+	AudioInNode(NodeManager * nodeManager, uint32 nodeId);;
+	~AudioInNode();
 
 
-    class AudioInProcessor : public juce::AudioProcessorGraph::AudioGraphIOProcessor, public NodeAudioProcessor,public ChangeListener
-    {
-    public:
-        AudioInProcessor():
-        NodeAudioProcessor("AudioIn"),
-        AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
-        {
-        NodeAudioProcessor::busArrangement.inputBuses.clear();
+	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
-        }
+	void changeListenerCallback(ChangeBroadcaster* source)override;
+	void updateIO();
 
-        ~AudioInProcessor(){
-
-
-        }
-
-        void changeListenerCallback (ChangeBroadcaster* source)override;
-        void updateIO();
-        void processBlockInternal(AudioBuffer<float>& buffer,MidiBuffer& midiMessages)override {
-            AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
-
-        }
-
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioInProcessor)
-    };
-
-
-
-
-
-
-
-    AudioInNode(NodeManager * nodeManager,uint32 nodeId)  :
-    NodeBase(nodeManager,nodeId,"AudioInNode",new AudioInProcessor){
-        AudioInProcessor * ap = dynamic_cast<AudioInProcessor*>(audioProcessor);
-        getAudioDeviceManager().addChangeListener(ap);
-        ap->updateIO();
-    };
-    ~AudioInNode(){getAudioDeviceManager().removeChangeListener(dynamic_cast<AudioInProcessor*>(audioProcessor));};
-
+   
     virtual NodeBaseUI * createUI() override;
 
 

@@ -18,13 +18,13 @@
 //==============================================================================
 /*
 */
-class DataInNodeContentUI    : public NodeBaseContentUI, DataInNode::Listener
+class DataInNodeContentUI    : public NodeBaseContentUI, DataInNode::DataInListener
 {
 public:
     DataInNodeContentUI();
     ~DataInNodeContentUI();
 
-    DataInNode * o2dNode;
+    DataInNode * dataInNode;
 
     OwnedArray<ParameterUI> parameterUIs;
 

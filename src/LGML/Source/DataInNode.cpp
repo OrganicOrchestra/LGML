@@ -13,7 +13,7 @@
 
 
 DataInNode::DataInNode(NodeManager * nodeManager, uint32 nodeId) :
-    NodeBase(nodeManager, nodeId, "DataIn", nullptr, new DataInNodeDataProcessor)
+    NodeBase(nodeManager, nodeId, "DataIn")
 {
     addFloatParamAndData("Test Param", 0, 0, 1);
 }
@@ -25,7 +25,7 @@ DataInNode::~DataInNode()
 
 void DataInNode::onContainerParameterChanged(Parameter * p)
 {
-  dataProcessor->updateOutputData(p->niceName, p->getNormalizedValue());
+  updateOutputData(p->niceName, p->getNormalizedValue());
 }
 
 NodeBaseUI * DataInNode::createUI()

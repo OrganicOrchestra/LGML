@@ -40,7 +40,7 @@ void FloatSliderUI::paint(Graphics & g)
 
 
     float normalizedValue = getParamNormalizedValue();
-    g.setColour(BG_COLOR.brighter(.2f));
+    g.setColour(BG_COLOR.brighter(.1f));
     g.fillRoundedRectangle(sliderBounds.toFloat(), 2);
 
     g.setColour(c);

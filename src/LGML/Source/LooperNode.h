@@ -14,17 +14,76 @@
 
 #include "NodeBase.h"
 #include "AudioHelpers.h"
+#include "LooperTrack.h"
 
-class Looper;
+#define MAX_NUM_TRACKS 32
 
 class LooperNode : public NodeBase
 {
 
 public:
     LooperNode(NodeManager * nodeManager, uint32 nodeId);
+	virtual ~LooperNode();
 
-    Looper * looper;
     NodeBaseUI * createUI() override;
+
+	OwnedArray<LooperTrack> tracks;
+	LooperTrack * selectedTrack;
+
+	LooperTrack * lastMasterTempoTrack;
+
+	//Parameters
+	Trigger * recPlaySelectedTrig;
+	Trigger * playSelectedTrig;
+	Trigger * clearSelectedTrig;
+	Trigger * stopSelectedTrig;
+
+	Trigger * selectAllTrig;
+	Trigger * clearAllTrig;
+	Trigger * stopAllTrig;
+
+	FloatParameter * volumeSelected;
+	BoolParameter * isMonitoring;
+	IntParameter * numberOfTracks;
+
+
+	AudioBuffer<float> bufferIn;
+	AudioBuffer<float>bufferOut;
+
+	void setNumTracks(int numTracks);
+	void addTrack();
+	void removeTrack(int i);
+
+	void selectMe(LooperTrack * t);
+
+
+	bool askForBeingMasterTrack(LooperTrack * t);
+	bool askForBeingAbleToPlayNow(LooperTrack *_t);
+	bool areAllTrackClearedButThis(LooperTrack * _t);
+
+
+	void onContainerTriggerTriggered(Trigger * t) override;
+	void onContainerParameterChanged(Parameter * p) override;
+	// internal
+	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
+	void checkIfNeedGlobalLooperStateUpdate();
+
+	bool wasMonitoring;
+
+	//Listener
+	class  LooperListener
+	{
+	public:
+
+		/** Destructor. */
+		virtual ~LooperListener() {}
+		virtual void trackNumChanged(int num) = 0;
+	};
+
+	ListenerList<LooperListener> looperListeners;
+	void addLooperListener(LooperListener* newListener) { looperListeners.add(newListener); }
+	void removeLooperListener(LooperListener* listener) { looperListeners.remove(listener); }
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
 };

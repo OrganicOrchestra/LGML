@@ -13,7 +13,8 @@
 
 #include "AudioHelpers.h"
 #include "ControllableContainer.h"
-#include "Looper.h"
+
+class LooperNode;
 
 #define MAX_LOOP_LENGTH_S 30
 
@@ -21,7 +22,7 @@ class LooperTrack : public ControllableContainer
 {
 
 public:
-    LooperTrack(Looper * looper, int _trackIdx);
+    LooperTrack(LooperNode * looper, int _trackIdx);
     ~LooperTrack() {}
 
     enum TrackState {
@@ -137,7 +138,7 @@ public:
     RingBuffer streamAudioBuffer;
     IntParameter * preDelayMs;
 
-    Looper * parentLooper;
+    LooperNode * parentLooper;
 
 
     void cleanAllQuantizeNeedles();

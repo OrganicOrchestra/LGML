@@ -64,7 +64,7 @@ public:
 
     NodeConnection::ConnectionType connectionType;
     IOType ioType;
-
+	 
     bool isAudio() { return connectionType == NodeConnection::ConnectionType::AUDIO; }
     bool isData() { return connectionType == NodeConnection::ConnectionType::DATA; }
 

@@ -88,7 +88,7 @@ bool NodeManager::removeNode(uint32 nodeId)
     removeChildControllableContainer(n);
 
     listeners.call(&NodeManager::Listener::nodeRemoved, n);
-    nodes.removeObject(n);
+    nodes.removeAllInstancesOf(n);
 
     return true;
 }

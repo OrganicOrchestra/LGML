@@ -20,7 +20,7 @@ DataInNodeContentUI::DataInNodeContentUI()
 
 DataInNodeContentUI::~DataInNodeContentUI()
 {
-    o2dNode->removeO2DListener(this);
+    dataInNode->removeDataInListener(this);
 }
 
 void DataInNodeContentUI::paint(Graphics&)
@@ -42,10 +42,10 @@ void DataInNodeContentUI::init()
 {
     setSize(150, 200);
 
-    o2dNode = (DataInNode *)node;
-    o2dNode->addO2DListener(this);
+    dataInNode = (DataInNode *)node;
+    dataInNode->addDataInListener(this);
 
-    for (auto &p : o2dNode->dynamicParameters)
+    for (auto &p : dataInNode->dynamicParameters)
     {
         addUIForParameter(p);
     }

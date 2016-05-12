@@ -6,14 +6,18 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::C
 {
     boxColor = dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
     setSize(10,10);
-    if(node->audioProcessor){node->audioProcessor->addNodeAudioProcessorListener(this);}
+    if(node){
+		node->addNodeAudioProcessorListener(this);
+	}
     generateToolTip();
 
 
 }
 
 ConnectorComponent::~ConnectorComponent(){
-    if(node->audioProcessor){node->audioProcessor->removeNodeAudioProcessorListener(this);}
+    if(node){
+		node->removeNodeAudioProcessorListener(this);
+	}
 }
 
 void ConnectorComponent::generateToolTip(){
@@ -21,12 +25,12 @@ void ConnectorComponent::generateToolTip(){
     tooltip += dataType == NodeConnection::ConnectionType::AUDIO?"Audio\n":"Data\n";
     if (dataType == NodeConnection::ConnectionType::AUDIO)
     {
-        tooltip += ioType == ConnectorIOType::INPUT? node->audioProcessor->getTotalNumInputChannels() : node->audioProcessor->getTotalNumOutputChannels();
+        tooltip += ioType == ConnectorIOType::INPUT? node->getTotalNumInputChannels() : node->getTotalNumOutputChannels();
         tooltip += " channels";
     }
     else
     {
-        StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->dataProcessor->getInputDataInfos() : node->dataProcessor->getOutputDataInfos();
+        StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->getInputDataInfos() : node->getOutputDataInfos();
         tooltip += dataInfos.joinIntoString("\n");
     }
       setTooltip(tooltip);

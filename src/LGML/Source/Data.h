@@ -13,7 +13,7 @@
 
 #include "JuceHeader.h"
 
-class DataProcessor;
+class NodeBase;
 
 class Data
 {
@@ -42,13 +42,13 @@ public:
     String name;
     DataType type;
 
-    DataProcessor * processor;
+    NodeBase * node;
 
     int numConnections;
 
     OwnedArray<DataElement> elements;
 
-    Data(DataProcessor * processor, String _name, DataType _type);
+    Data(NodeBase * node, String _name, DataType _type);
     ~Data();
 
     void addElement(const String &_name);

@@ -21,7 +21,21 @@ void AudioMixerNodeUI::resized() {
     }
 }
 
-void AudioMixerNodeUI::numAudioInputChanged(int numInput){
+AudioMixerNodeUI::~AudioMixerNodeUI() {
+	mixerNode->removeNodeAudioProcessorListener(this);
+}
+
+void AudioMixerNodeUI::init() {
+	 mixerNode = dynamic_cast<AudioMixerNode*>(node);
+	 numAudioOutputChanged(mixerNode->numberOfOutput->value);
+	 numAudioInputChanged(mixerNode->numberOfInput->value);
+
+	 mixerNode->addNodeAudioProcessorListener(this);
+
+	 nodeUI->setSize(250, 150);
+ }
+
+ void AudioMixerNodeUI::numAudioInputChanged(int numInput){
     for(auto & b:outputBusUIs){
         b->setNumInput(numInput);
     }
@@ -31,7 +45,7 @@ void AudioMixerNodeUI::numAudioOutputChanged(int newNum){
     int lastNum = outputBusUIs.size();
     if(newNum>lastNum){
         for(int i = lastNum ; i < newNum ; i++){
-            OutputBusUI * oo =new OutputBusUI(nodeMixer->outBuses[i]);
+            OutputBusUI * oo =new OutputBusUI(mixerNode->outBuses[i]);
             outputBusUIs.add(oo);
             addAndMakeVisible(oo);
         }

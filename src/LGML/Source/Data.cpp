@@ -10,7 +10,7 @@
 
 #include "Data.h"
 
-Data::Data(DataProcessor * processor, String _name, DataType _type) : processor(processor), name(_name), type(_type), numConnections(0)
+Data::Data(NodeBase * _node, String _name, DataType _type) : node(_node), name(_name), type(_type), numConnections(0)
 {
     switch (type)
     {
