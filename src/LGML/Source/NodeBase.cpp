@@ -20,7 +20,6 @@ ControllableContainer(name),
 nodeTypeUID(0) // UNKNOWNTYPE
 {
 
-    checkInputsAndOutputs();
     addToAudioGraphIfNeeded();
 
     //set Params
@@ -67,13 +66,24 @@ NodeBase::~NodeBase()
 	removeFromAudioGraphIfNeeded();
 }
 
-void NodeBase::checkInputsAndOutputs()
+bool NodeBase::hasAudioInputs()
 {
-    hasDataInputs = getTotalNumInputData()>0;
-    hasDataOutputs = getTotalNumOutputData()>0;
+	return getTotalNumInputChannels() > 0;
+}
 
-    hasAudioInputs = getTotalNumInputChannels() > 0;
-    hasAudioOutputs = getTotalNumOutputChannels() > 0;
+bool NodeBase::hasAudioOutputs()
+{
+	return getTotalNumOutputChannels() > 0;
+}
+
+bool NodeBase::hasDataInputs()
+{
+	return getTotalNumInputData()>0;
+}
+
+bool NodeBase::hasDataOutputs()
+{
+	return getTotalNumOutputData()>0;
 }
 
 void NodeBase::remove(bool askBeforeRemove)
@@ -104,13 +114,13 @@ void NodeBase::parameterValueChanged(Parameter * p)
 }
 
 void NodeBase::addToAudioGraphIfNeeded(){
-    if(hasAudioInputs || hasAudioOutputs){
+    if(hasAudioInputs() || hasAudioOutputs()){
         nodeManager->audioGraph.addNode(this,nodeId);
 	}
 }
 
 void NodeBase::removeFromAudioGraphIfNeeded(){
-    if(hasAudioInputs || hasAudioOutputs){
+    if(hasAudioInputs() || hasAudioOutputs()){
         nodeManager->audioGraph.removeNode(nodeId);
     }
 }

@@ -42,12 +42,10 @@ public:
 	uint32 nodeId;
 	NodeManager * nodeManager;
 
-	bool hasAudioInputs;
-	bool hasAudioOutputs;
-	bool hasDataInputs;
-	bool hasDataOutputs;
-
-	void checkInputsAndOutputs();
+	bool hasAudioInputs();
+	bool hasAudioOutputs();
+	bool hasDataInputs();
+	bool hasDataOutputs();
 
 	void remove(bool askBeforeRemove = false);
 

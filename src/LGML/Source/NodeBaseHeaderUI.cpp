@@ -35,11 +35,11 @@ NodeBaseHeaderUI::~NodeBaseHeaderUI()
 {
     if (node != nullptr)
 	{
-		if (node->hasAudioOutputs)
+		if (node->hasAudioOutputs())
 		{
 			node->removeRMSListener(&vuMeterOut);
 		}
-		if (node->hasAudioInputs)
+		if (node->hasAudioInputs())
 		{
 			node->removeRMSListener(&vuMeterIn);
 		}
@@ -57,13 +57,13 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 
     if (node != nullptr)
 	{
-		if (node->hasAudioOutputs) {
+		if (node->hasAudioOutputs()) {
 			node->addRMSListener(&vuMeterOut);
 			addAndMakeVisible(vuMeterOut);
 
 		}
 
-		if (node->hasAudioInputs)
+		if (node->hasAudioInputs())
 		{
 			node->addRMSListener(&vuMeterIn);
 			addAndMakeVisible(vuMeterIn);
@@ -126,12 +126,12 @@ void NodeBaseHeaderUI::resized()
 	r.reduce(4, 0);
 	r.removeFromTop(2);
 
-    if (node->hasAudioOutputs)
+    if (node->hasAudioOutputs())
 	{
         vuMeterOut.setBounds(r.removeFromRight(vuMeterWidth));
     }
 
-	if (node->hasAudioInputs)
+	if (node->hasAudioInputs())
 	{
 		vuMeterIn.setBounds(r.removeFromLeft(vuMeterWidth));
 

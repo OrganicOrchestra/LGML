@@ -29,7 +29,7 @@ void NodeBaseAudioCtlUI::resized() {
 
 
 void NodeBaseAudioCtlUI::setNodeAndNodeUI(NodeBase * node, NodeBaseUI *){
-    jassert(node->hasAudioOutputs);
+    jassert(node->hasAudioOutputs());
     outputVolume = node->outputVolume->createSlider();
     outputVolume->orientation = FloatSliderUI::Direction::VERTICAL;
     addAndMakeVisible(outputVolume);

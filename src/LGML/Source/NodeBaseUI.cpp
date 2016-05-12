@@ -224,8 +224,8 @@ void NodeBaseUI::ConnectorContainer::setConnectorsFromNode(NodeBase * _node)
     connectors.clear();
 
     //for later : this is the creation for minimal display level
-    bool hasAudio = (type == ConnectorComponent::INPUT) ? _node->hasAudioInputs : _node->hasAudioOutputs;
-    bool hasData = (type == ConnectorComponent::INPUT) ? _node->hasDataInputs : _node->hasDataOutputs;
+    bool hasAudio = (type == ConnectorComponent::INPUT) ? _node->hasAudioInputs() : _node->hasAudioOutputs();
+    bool hasData = (type == ConnectorComponent::INPUT) ? _node->hasDataInputs() : _node->hasDataOutputs();
 
     if (hasAudio)
     {
@@ -284,7 +284,7 @@ audioCtlUIContainer(nullptr)
 
 void NodeBaseUI::MainContainer::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
 {
-    if(_node->hasAudioOutputs){
+    if(_node->hasAudioOutputs()){
         jassert(audioCtlUIContainer==nullptr);
         audioCtlUIContainer = new NodeBaseAudioCtlUI();
         addAndMakeVisible(audioCtlUIContainer);
