@@ -128,7 +128,6 @@ void NodeConnectionEditor::generateContentForAudio()
 
     int numInputChannels = currentConnection->destNode->audioProcessor->getTotalNumInputChannels();
 
-    DBG("generate content for audio : " << currentConnection->sourceNode->niceName << " : " << numOutputChannels << " / " << currentConnection->destNode->niceName << " : " << numInputChannels);
     for (int i = 0; i < numOutputChannels; i++)
     {
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot("Output "+String(i+1),i,currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);

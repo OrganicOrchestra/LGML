@@ -28,7 +28,6 @@ NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sour
     }
 
     addComponentListener(this);
-
 }
 
 NodeConnectionUI::~NodeConnectionUI()
@@ -143,8 +142,6 @@ void NodeConnectionUI::updateBoundsFromNodes()
         repaint();
     }
 
-
-
 }
 
 void NodeConnectionUI::mouseDown(const MouseEvent & e)
@@ -171,6 +168,7 @@ void NodeConnectionUI::mouseDown(const MouseEvent & e)
 	else
 	{
 		selectThis();
+		
 	}
 }
 
@@ -184,6 +182,19 @@ void NodeConnectionUI::mouseExit(const MouseEvent &)
     repaint();
 }
 
+bool NodeConnectionUI::keyPressed(const KeyPress & key)
+{
+	//@Martin : don't know why, but this is never called (same code in NodeBaseUI works)
+	if (!isSelected) return false;
+
+	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
+	{
+		connection->remove();
+		return true;
+	}
+
+	return false;
+}
 
 void NodeConnectionUI::setSourceConnector(Connector * c)
 {
@@ -267,11 +278,3 @@ InspectorEditor * NodeConnectionUI::getEditor()
 {
 	return new NodeConnectionEditor(this);
 }
-
-/*
-void NodeConnectionUI::setEditingPos(Point<int> pos)
-{
-    editingPos = pos;
-    repaint();
-}
-*/

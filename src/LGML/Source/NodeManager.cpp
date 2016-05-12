@@ -28,7 +28,6 @@ NodeManager::~NodeManager()
 
 void NodeManager::clear()
 {
-    DBG("Clear NodeManager");
    while(nodes.size())
         nodes[0]->remove();
 

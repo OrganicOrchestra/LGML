@@ -124,7 +124,6 @@ NodeBaseUI * NodeManagerUI::getUIForNode(NodeBase * node)
 
 void NodeManagerUI::addConnectionUI(NodeConnection * connection)
 {
-    DBG("NMUI :: addConnectionUI From NodeManagerListener");
 
     if (getUIForConnection(connection) != nullptr)
     {
@@ -142,7 +141,6 @@ void NodeManagerUI::addConnectionUI(NodeConnection * connection)
     NodeConnectionUI * cui = new NodeConnectionUI(connection, c1,c2);
     connectionsUI.add(cui);
 
-    DBG("Add And MakeVisible connection");
     addAndMakeVisible(cui,0);
 }
 

@@ -68,7 +68,7 @@ void MIDIManager::updateDeviceList(bool updateInput)
 
 void MIDIManager::enableInputDevice(const String & deviceName)
 {
-	DBG("MIDIManager  Enable Input device : " << deviceName);
+	//DBG("MIDIManager  Enable Input device : " << deviceName);
 	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);
 
 	if (duc == nullptr)
@@ -80,7 +80,7 @@ void MIDIManager::enableInputDevice(const String & deviceName)
 	duc->usageCount++;
 	if (duc->usageCount == 1)
 	{
-		DBG("AudioDeviceManager:Enable Input device : " << duc->deviceName);
+		//DBG("AudioDeviceManager:Enable Input device : " << duc->deviceName);
 		getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, true);
 	}
 }

@@ -91,14 +91,12 @@ void NodeBaseUI::resized()
 }
 
 void NodeBaseUI::parameterValueChanged(Parameter * p) {
-	DBG("HERE !");
 
 	if (p == node->xPosition || p == node->yPosition) {
 		setCentrePosition((int)node->xPosition->value, (int)node->yPosition->value);
 	}
 	else if (p == node->enabledParam)
 	{
-		DBG("HERE !");
 		mainContainer.repaint();
 	}
 }
@@ -199,6 +197,18 @@ void NodeBaseUI::mouseDrag(const MouseEvent & e)
     Point <int> newPos = nodeInitPos + diff;
     node->xPosition->setValue((float)newPos.x);
     node->yPosition->setValue((float)newPos.y);
+}
+
+bool NodeBaseUI::keyPressed(const KeyPress & key)
+{
+	if (!isSelected) return false;
+	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
+	{
+		node->remove();
+		return true;
+	}
+
+	return false;
 }
 
 
