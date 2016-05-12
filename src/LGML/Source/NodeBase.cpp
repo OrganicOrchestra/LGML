@@ -63,7 +63,7 @@ NodeBase::~NodeBase()
 	inputDatas.clear();
 	outputDatas.clear();
 
-	removeFromAudioGraphIfNeeded();
+//	removeFromAudioGraphIfNeeded();
 }
 
 bool NodeBase::hasAudioInputs()
