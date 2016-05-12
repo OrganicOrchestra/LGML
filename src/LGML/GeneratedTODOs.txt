@@ -13,12 +13,12 @@ JsEnvironment.cpp
 
 
 NodeManager.cpp
-	line : 160
-		// TODO nicely handle file format errors?
-
-	line : 263
+	line : 264
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
+
+	line : 161
+		// TODO nicely handle file format errors?
 
 
 EngineFileDocument.cpp
@@ -51,7 +51,7 @@ VSTNode.cpp
 
 
 LooperNode.cpp
-	line : 62
+	line : 63
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
