@@ -17,6 +17,7 @@
 #include "RuleConsequence.h"
 
 #include "ControllableContainer.h"
+#include "ControlVariableReference.h"
 
 class Rule : public ControllableContainer
 {
@@ -38,8 +39,12 @@ public:
 
 	ActivationType activationType;
 
+	OwnedArray<ControlVariableReference> references;
 	ScopedPointer<RuleConditionGroup> rootConditionGroup;
 	OwnedArray<RuleConsequence> consequences;
+
+	ControlVariableReference * addReference();
+	void removeReference(ControlVariableReference *);
 
 	void addConsequence();
 	void removeConsequence(RuleConsequence *);
@@ -56,9 +61,13 @@ public:
 		virtual void askForRemoveRule(Rule *) {}
 		virtual void ruleActivationChanged(Rule *) {}
 
+		virtual void referenceAdded(ControlVariableReference *) {}
+		virtual void referenceRemoved(ControlVariableReference *) {}
+
 		virtual void consequenceAdded(RuleConsequence *) {}
 		virtual void consequenceRemoved(RuleConsequence *) {}
 	};
+		
 
 	ListenerList<RuleListener> ruleListeners;
 	void addRuleListener(RuleListener* newListener) { ruleListeners.add(newListener); }

@@ -16,9 +16,9 @@
 #include "RuleConditionUI.h"
 #include "RuleConditionGroupUI.h"
 #include "RuleConsequenceUI.h"
+#include "ControlVariableReferenceUI.h"
 
-
-class RuleEditor : public CustomEditor
+class RuleEditor : public CustomEditor, public ButtonListener, public Rule::RuleListener
 {
 public:
 	RuleEditor(RuleUI * _ruleUI);
@@ -26,17 +26,36 @@ public:
 
 	Rule * rule;
 	
-	Component conditionContainer;
+	TextButton addReferenceBT;
+	TextButton addConsequenceBT;
+	
+	Component referenceContainer;
 	Component consequenceContainer;
+	
 
-	OwnedArray<RuleConditionGroupUI> conditionGroupsUI;
+	OwnedArray<ControlVariableReferenceUI> referencesUI;
+	ScopedPointer<RuleConditionGroupUI> ruleConditionGroupUI;
 	OwnedArray<RuleConsequenceUI> consequencesUI;
 
 	void paint(Graphics &g) override;
 	void resized()override;
 
-	void addConditionGroupUI(RuleConditionGroup * c);
+	void addReferenceUI(ControlVariableReference * r);
+	void removeReferenceUI(ControlVariableReference * r);
+	
 	void addConsequenceUI(RuleConsequence * c);
+	void removeConsequenceUI(RuleConsequence * c);
+
+	ControlVariableReferenceUI * getUIForReference(ControlVariableReference * r);
+	RuleConsequenceUI * getUIForConsequence(RuleConsequence *c);
+
+	void referenceAdded(ControlVariableReference *) override;
+	void referenceRemoved(ControlVariableReference *) override;
+
+	void consequenceAdded(RuleConsequence *) override;
+	void consequenceRemoved(RuleConsequence *) override;
+
+	void buttonClicked(Button * b);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleEditor)
 };

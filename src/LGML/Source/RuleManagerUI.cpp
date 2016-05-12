@@ -66,6 +66,9 @@ void RuleManagerUI::addRuleUI(Rule * r)
 	RuleUI * rui = new RuleUI(r);
 	rulesUI.add(rui);
 	addAndMakeVisible(rui);
+
+	rui->selectThis();
+
 	resized();
 }
 

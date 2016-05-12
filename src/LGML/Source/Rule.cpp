@@ -28,6 +28,20 @@ Rule::~Rule()
 {
 }
 
+ControlVariableReference * Rule::addReference()
+{
+	ControlVariableReference * cvr = new ControlVariableReference();
+	references.add(cvr);
+	ruleListeners.call(&RuleListener::referenceRemoved, cvr);
+	return cvr;
+}
+
+void Rule::removeReference(ControlVariableReference * cvr)
+{
+	ruleListeners.call(&RuleListener::referenceRemoved, cvr);
+	references.removeObject(cvr);
+}
+
 void Rule::addConsequence()
 {
 	RuleConsequence * c = new RuleConsequence();

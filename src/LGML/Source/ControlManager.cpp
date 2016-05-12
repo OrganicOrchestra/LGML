@@ -30,7 +30,6 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
     Controller * c = factory.createController(controllerType);
     controllers.add(c);
 	c->addControllerListener(this);
-	DBG(c->nameParam->stringValue() << " / " << c->niceName << "/" << c->shortName);
 
 	c->nameParam->setValue(getUniqueNameInContainer(c->nameParam->stringValue()));
 

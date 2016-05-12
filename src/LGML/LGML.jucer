@@ -49,6 +49,8 @@
               file="Source/InspectorEditor.h"/>
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
+        <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
+        <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
         <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
           <FILE id="AdpDDv" name="MIDIManager.cpp" compile="1" resource="0" file="Source/MIDIManager.cpp"/>
           <FILE id="tZ5Yo3" name="MIDIManager.h" compile="0" resource="0" file="Source/MIDIManager.h"/>
@@ -118,6 +120,12 @@
           </GROUP>
         </GROUP>
         <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
+          <GROUP id="{B3184894-4077-D17A-2E3F-67A560988CD7}" name="ui">
+            <FILE id="u5Rdja" name="ControllableHelpers.cpp" compile="1" resource="0"
+                  file="Source/ControllableHelpers.cpp"/>
+            <FILE id="SYJSuB" name="ControllableHelpers.h" compile="0" resource="0"
+                  file="Source/ControllableHelpers.h"/>
+          </GROUP>
           <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
             <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
               <FILE id="amJhhJ" name="FloatStepperUI.cpp" compile="1" resource="0"
@@ -173,8 +181,6 @@
                 resource="0" file="Source/ControllableIndexedContainer.cpp"/>
           <FILE id="Y9EZlj" name="ControllableIndexedContainer.h" compile="0"
                 resource="0" file="Source/ControllableIndexedContainer.h"/>
-          <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
-          <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
           <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
           <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
         </GROUP>
@@ -231,6 +237,10 @@
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
         <GROUP id="{36D57403-1E0C-65BD-9157-C17EE1560F96}" name="rules">
           <GROUP id="{655CE5BA-C8E0-B650-7BA2-403CFAC89DA0}" name="ui">
+            <FILE id="cHwpa4" name="ControlVariableReferenceUI.cpp" compile="1"
+                  resource="0" file="Source/ControlVariableReferenceUI.cpp"/>
+            <FILE id="pLqWDd" name="ControlVariableReferenceUI.h" compile="0" resource="0"
+                  file="Source/ControlVariableReferenceUI.h"/>
             <FILE id="bJHxBt" name="RuleEditor.cpp" compile="1" resource="0" file="Source/RuleEditor.cpp"/>
             <FILE id="Zl2liz" name="RuleEditor.h" compile="0" resource="0" file="Source/RuleEditor.h"/>
             <FILE id="AA8LJg" name="RuleConditionGroupUI.cpp" compile="1" resource="0"
@@ -251,6 +261,10 @@
             <FILE id="OuEzpC" name="RuleUI.cpp" compile="1" resource="0" file="Source/RuleUI.cpp"/>
             <FILE id="GoicT1" name="RuleUI.h" compile="0" resource="0" file="Source/RuleUI.h"/>
           </GROUP>
+          <FILE id="vmYAru" name="ControlVariableReference.cpp" compile="1" resource="0"
+                file="Source/ControlVariableReference.cpp"/>
+          <FILE id="xZGAPs" name="ControlVariableReference.h" compile="0" resource="0"
+                file="Source/ControlVariableReference.h"/>
           <FILE id="OzYofE" name="Rule.cpp" compile="1" resource="0" file="Source/Rule.cpp"/>
           <FILE id="MrvGpI" name="Rule.h" compile="0" resource="0" file="Source/Rule.h"/>
           <FILE id="LmzWTF" name="RuleCondition.cpp" compile="1" resource="0"
