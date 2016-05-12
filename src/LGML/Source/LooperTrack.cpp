@@ -307,7 +307,8 @@ void LooperTrack::setTrackState(TrackState newState) {
         // are we able to set the tempo
         if (askForBeingMasterTempoTrack()) {
             TimeManager::getInstance()->isSettingTempo->setValue(true);
-            TimeManager::getInstance()->playTrigger->trigger();
+
+
 
             quantizedRecordStart = -1;
             setTrackState(RECORDING);

@@ -30,7 +30,7 @@ protected:
 
     // Inherited via Listener
     virtual void sliderValueChanged(Slider * slider) override;
-
+    void parameterRangeChanged(Parameter * p) override;
 };
 
 

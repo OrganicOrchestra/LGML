@@ -20,15 +20,6 @@ TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
 {
     setSize(30, 20);
 
-
-    nameLabel.setJustificationType(Justification::centred);
-    nameLabel.setText(t->niceName, NotificationType::dontSendNotification);
-    addAndMakeVisible(nameLabel);
-    nameLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
-    Font f = nameLabel.getFont();
-    f.setHeight(10);
-    nameLabel.setFont(f);
-    nameLabel.setInterceptsMouseClicks(false, false);
 }
 
 TriggerBlinkUI::~TriggerBlinkUI()
@@ -54,6 +45,9 @@ void TriggerBlinkUI::paint(Graphics& g)
 {
     g.setColour(NORMAL_COLOR.brighter(intensity));
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
+    g.setFont(10);
+    g.setColour(Colours::white.darker(.1f));
+    g.drawText(trigger->niceName, getLocalBounds().reduced(2).toFloat(), Justification::centred);
 
 }
 
@@ -73,13 +67,6 @@ void TriggerBlinkUI::timerCallback(){
 }
 
 
-void TriggerBlinkUI::resized()
-{
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-    nameLabel.setBounds(getLocalBounds());
-
-}
 
 void TriggerBlinkUI::mouseDown(const MouseEvent&) {
     trigger->trigger();

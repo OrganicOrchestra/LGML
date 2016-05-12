@@ -166,3 +166,5 @@ float FloatSliderUI::getParamNormalizedValue()
 void FloatSliderUI::valueChanged(const var &) {
     repaint();
 };
+
+

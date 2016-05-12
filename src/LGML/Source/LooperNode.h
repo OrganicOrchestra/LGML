@@ -45,6 +45,7 @@ public:
 	FloatParameter * volumeSelected;
 	BoolParameter * isMonitoring;
 	IntParameter * numberOfTracks;
+    IntParameter * selectTrack;
 
 
 	AudioBuffer<float> bufferIn;

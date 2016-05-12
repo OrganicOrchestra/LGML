@@ -22,9 +22,10 @@ public:
 
 
     var defaultValue;
+    var value;
     var minimumValue;
     var maximumValue;
-    var value;
+    void setRange(var,var);
 
 	bool isEditable;
 
@@ -54,6 +55,7 @@ public:
 		/** Destructor. */
 		virtual ~Listener() {}
 		virtual void parameterValueChanged(Parameter * p) = 0;
+        virtual void parameterRangeChanged(Parameter * p){};
     };
 
     ListenerList<Listener> listeners;
@@ -73,10 +75,17 @@ public:
     QueuedNotifier<ParamWithValue> queuedNotifier;
     typedef QueuedNotifier<ParamWithValue>::Listener AsyncListener;
 
-    void addParameterListener(AsyncListener* newListener) { queuedNotifier.addListener(newListener); }
-    void removeParameterListener(AsyncListener* listener) { queuedNotifier.removeListener(listener); }
+
+    void addAsyncParameterListener(AsyncListener* newListener) { queuedNotifier.addListener(newListener); }
+    void addAsyncCoalescedListener(AsyncListener* newListener) { queuedNotifier.addAsyncCoalescedListener(newListener); }
+    void removeAsyncParameterListener(AsyncListener* listener) { queuedNotifier.removeListener(listener); }
 
 private:
+
+
+
+
+
     WeakReference<Parameter>::Master masterReference;
     friend class WeakReference<Parameter>;
 

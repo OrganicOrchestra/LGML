@@ -20,6 +20,7 @@ LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :
 	numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
 
 	selectAllTrig = addTrigger("Select All", "Select All tracks, for all clear or main volume for instance");
+    selectTrack = addIntParameter("Select track", "set track selected", 0, 0, 0);
 	recPlaySelectedTrig = addTrigger("Rec Or Play",
 		"Tells the selected track to wait for the next bar and then start record or play");
 	playSelectedTrig = addTrigger("Play",
@@ -110,13 +111,14 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
 void LooperNode::addTrack() {
 	LooperTrack * t = new LooperTrack(this, tracks.size());
 	tracks.add(t);
+    selectTrack->setRange(0,tracks.size()-1);
 	addChildControllableContainer(t);
 }
 
 void LooperNode::removeTrack(int i) {
 	removeChildControllableContainer(tracks[i]);
 	tracks.remove(i);
-}
+    selectTrack->setRange(0,tracks.size()-1);}
 
 
 void LooperNode::setNumTracks(int numTracks) {
@@ -248,4 +250,15 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
 			}
 		}
 	}
+    else if(p==selectTrack){
+        bool changed = true;
+        if( selectedTrack!=nullptr)changed  = selectedTrack->trackIdx!=p->intValue();
+
+        if(changed){
+            if(selectTrack->intValue() < tracks.size()){
+                tracks.getUnchecked(selectTrack->intValue())->selectTrig->trigger();
+
+            }
+        }
+    }
 }

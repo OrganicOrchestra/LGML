@@ -490,7 +490,7 @@ void NodeManagerUI::resizeToFitNodes(){
         _bounds = _bounds.getUnion(r);
 
     }
-    setBounds(_bounds);
+    setSize(_bounds.getWidth(),_bounds.getHeight());
 
 }
 
