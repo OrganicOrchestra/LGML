@@ -31,7 +31,7 @@ public :
 
 	ControlVariableUI * getUIForVariable(ControlVariable *);
 	
-	void resizedInternalOSC(Rectangle<int> bounds) override;
+	void resized() override;
 
 	void buttonClicked(Button * b) override;
 	void variableAdded(Controller * , ControlVariable *) override;

@@ -15,7 +15,7 @@ OSCCustomControllerEditor::OSCCustomControllerEditor(OSCCustomControllerUI * con
 	customController(controllerUI->customController),
 	addVariableBT("Add Variable")
 {
-	addAndMakeVisible(&addVariableBT);
+	innerContainer.addAndMakeVisible(&addVariableBT);
 	addVariableBT.addListener(this);
 	customController->addControllerListener(this);
 
@@ -33,7 +33,7 @@ OSCCustomControllerEditor::~OSCCustomControllerEditor()
 void OSCCustomControllerEditor::addVariableUI(ControlVariable * v, bool doResize)
 {
 	ControlVariableUI * vui = new ControlVariableUI(v);
-	addAndMakeVisible(vui);
+	innerContainer.addAndMakeVisible(vui);
 	variablesUI.add(vui);
 
 	vui->setNameIsEditable(true);
@@ -45,7 +45,7 @@ void OSCCustomControllerEditor::removeVariableUI(ControlVariable * v, bool doRes
 {
 	ControlVariableUI * vui = getUIForVariable(v);
 	if (vui == nullptr) return;
-	removeChildComponent(vui);
+	innerContainer.removeChildComponent(vui);
 	variablesUI.removeObject(vui);
 	if(doResize) resized();
 }
@@ -60,8 +60,10 @@ ControlVariableUI * OSCCustomControllerEditor::getUIForVariable(ControlVariable 
 	return nullptr;
 }
 
-void OSCCustomControllerEditor::resizedInternalOSC(Rectangle<int> r)
+void OSCCustomControllerEditor::resized()
 {
+	OSCControllerEditor::resized();
+	Rectangle<int> r = innerContainer.getLocalBounds();
 	addVariableBT.setBounds(r.removeFromTop(20));
 	r.removeFromTop(10);
 	for (auto &vui : variablesUI)

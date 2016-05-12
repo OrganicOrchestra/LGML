@@ -22,14 +22,18 @@ OSCControllerEditor::OSCControllerEditor(OSCControllerUI * controllerUI) :
 	addAndMakeVisible(localPortUI);
 	addAndMakeVisible(remoteHostUI);
 	addAndMakeVisible(remotePortUI);
+
+	addAndMakeVisible(&innerContainer);
 }
 
 OSCControllerEditor::~OSCControllerEditor()
 {
 }
 
-void OSCControllerEditor::resizedInternal(Rectangle<int> r)
+void OSCControllerEditor::resized()
 {
+	Rectangle<int> r = getLocalBounds();
+	DBG(r.toString());
 	localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));
 	r.removeFromTop(10);
 	remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));
@@ -37,13 +41,8 @@ void OSCControllerEditor::resizedInternal(Rectangle<int> r)
 	remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()));
 	r.removeFromTop(10);
 
-	resizedInternalOSC(r);
+	innerContainer.setBounds(r);
 
-}
-
-void OSCControllerEditor::resizedInternalOSC(Rectangle<int>)
-{
-	// to override by child classes
 }
 
 void OSCControllerEditor::messageProcessed(const OSCMessage & , bool)

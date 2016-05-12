@@ -17,15 +17,17 @@ JavascriptControllerEditor::JavascriptControllerEditor(JavascriptControllerUI * 
 	jsController(jsControllerUI->jsController)
 {
 	scriptUI = new JsEnvironmentUI(jsController);
-	addAndMakeVisible(scriptUI);
+	innerContainer.addAndMakeVisible(scriptUI);
 }
 
 JavascriptControllerEditor::~JavascriptControllerEditor()
   {
   }
 
-void JavascriptControllerEditor::resizedInternalOSC(Rectangle<int> r)
+void JavascriptControllerEditor::resized()
 {
+	OSCControllerEditor::resized();
+	Rectangle<int> r = innerContainer.getLocalBounds();
 	scriptUI->setBounds(r.removeFromTop(30));
 
 }

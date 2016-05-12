@@ -21,11 +21,6 @@ public:
 	virtual ~ControllerEditor();
 
 	Controller * controller;
-	Label controllerLabel;
-
-	virtual void resized() override;
-	virtual void resizedInternal(Rectangle<int> bounds);
-	
 };
 
 

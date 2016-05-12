@@ -57,10 +57,6 @@ public:
 	ListenerList<OSCControllerListener> oscListeners;
 	void addOSCControllerListener(OSCControllerListener* newListener) { oscListeners.add(newListener); }
 	void removeOSCControllerListener(OSCControllerListener* listener) { oscListeners.remove(listener); }
-
-    
 };
-
-
 
 #endif  // OSCCONTROLLER_H_INCLUDED

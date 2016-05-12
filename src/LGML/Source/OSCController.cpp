@@ -24,6 +24,8 @@ OSCController::OSCController(const String &_name) :
     setupSender();
 
     receiver.addListener(this);
+
+	
 }
 
 OSCController::~OSCController()

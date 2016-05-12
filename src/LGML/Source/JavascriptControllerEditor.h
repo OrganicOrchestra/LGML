@@ -26,7 +26,7 @@ public:
 
 	ScopedPointer<JsEnvironmentUI> scriptUI;
 
-	void resizedInternalOSC(Rectangle<int> bounds);
+	void resized() override;
 
 
 

@@ -30,11 +30,9 @@ public:
 	ScopedPointer<StringParameterUI> remoteHostUI;
 	ScopedPointer<StringParameterUI> remotePortUI;
 
+	Component innerContainer;
 
-
-	void resizedInternal(Rectangle<int> bounds) override;
-
-	virtual void resizedInternalOSC(Rectangle<int> bounds); //to override by child editors classes, so osc parameters are still there
+	virtual void resized() override;
 
 	// Inherited via OSCControllerListener
 	virtual void messageProcessed(const OSCMessage & msg, bool success) override;

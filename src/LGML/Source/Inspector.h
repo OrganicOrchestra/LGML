@@ -81,8 +81,13 @@ public:
 		r.removeFromRight(vp.getScrollBarThickness());
 
 		vp.setBounds(r);
+		
 		if(inspector->currentEditor == nullptr) inspector->setBounds(r);
-		else inspector->setBounds(r.withHeight(inspector->currentEditor->getContentHeight()));
+		else
+		{
+			int cH = jmax(inspector->currentEditor->getContentHeight(), r.getHeight());
+			inspector->setBounds(r.withHeight(cH));
+		}
 	}
 	Viewport vp;
 	Inspector * inspector;
