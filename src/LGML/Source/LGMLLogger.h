@@ -25,7 +25,7 @@ class LGMLLogger : public Logger{
         fileLog = FileLogger::createDefaultAppLogger("LGML", "log", "");
 
     }
-    void logMessage (const String& message) override;
+	void logMessage(const String & message) override;
 
 
     QueuedNotifier<String> notifier;

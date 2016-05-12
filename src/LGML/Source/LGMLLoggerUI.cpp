@@ -40,8 +40,9 @@ maxNumElement(999)
 {
 	l->addLogListener(this);
 	TableHeaderComponent * thc = new TableHeaderComponent();
-	thc->addColumn("source", 1, 100);
-	thc->addColumn("content", 2, 400);
+	thc->addColumn("Time", 1, 60);
+	thc->addColumn("Source", 2, 80);
+	thc->addColumn("Content", 3, 400);
 
 
 	logListComponent = new TableListBox("LGMLLogger", &logList);
@@ -52,7 +53,7 @@ maxNumElement(999)
 	logListComponent->setColour(TableListBox::backgroundColourId, BG_COLOR);
 	logListComponent->setHeader(thc);
 	addAndMakeVisible(logListComponent);
-	LOG("LGMLv" + String(ProjectInfo::versionString) + "\nby OrganicOrchestra");
+	LOG("LGML v" + String(ProjectInfo::versionString) + "\nby OrganicOrchestra");
 	LOG("please provide logFile for any bug report :\nlogFile in " + l->fileLog->getLogFile().getFullPathName());
 
 	clearB.setButtonText("Clear");
@@ -66,9 +67,13 @@ void LGMLLoggerUI::resized(){
     Rectangle<int> area = getLocalBounds();
 	clearB.setBounds(area.removeFromBottom(30).reduced(5));
     logListComponent->setBounds(area);
-	int tw = jmax(getWidth() - logListComponent->getHeader().getColumnWidth(1), 100);
-	if (logListComponent->getViewport()->isVerticalScrollBarShown()) tw -= logListComponent->getViewport()->getScrollBarThickness();
-	logListComponent->getHeader().setColumnWidth(2, tw);
+
+	int tw = getWidth();
+	tw -= logListComponent->getHeader().getColumnWidth(1);
+	tw -= logListComponent->getHeader().getColumnWidth(2);
+	tw -= logListComponent->getViewport()->getScrollBarThickness();
+	tw = jmax(tw, 100);
+	logListComponent->getHeader().setColumnWidth(3, tw);
 }
 
 
@@ -115,6 +120,23 @@ const String &  LGMLLoggerUI::getContentForRow(int r){
     return String::empty;
 };
 
+String  LGMLLoggerUI::getTimeStringForRow(int r) {
+	int count = 0;
+	int idx = 0;
+	while (count <= r) {
+		if (count == r) {
+			return String(logElements[idx]->time.toString(false, true, true, true));
+		}
+		count += logElements[idx]->getNumLines();
+		idx++;
+		if (idx >= logElements.size()) return String::empty;
+
+	}
+
+	return String::empty;
+};
+
+
 
 //////////////
 // logList
@@ -146,10 +168,18 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
     g.setColour(TEXT_COLOR);
     String text;
 
-    if(columnId==1)
-        text = owner->getSourceForRow(rowNumber);
-    else if(columnId==2)
-        text = owner->getContentForRow(rowNumber);
+	switch (columnId)
+	{
+	case 1:
+		text = owner->getTimeStringForRow(rowNumber);
+		break;
+	case 2:
+		text = owner->getSourceForRow(rowNumber);
+		break;
+	case 3:
+		text = owner->getContentForRow(rowNumber);
+		break;
+	}
     
     g.drawFittedText(text, 0, 0, width, height, Justification::left, 1);
     

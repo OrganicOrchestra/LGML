@@ -65,6 +65,7 @@ private:
     int getTotalLogRow();
     const String & getSourceForRow(int r);
     const String & getContentForRow(int r);
+	String getTimeStringForRow(int r);
     friend class LogList;
 
 

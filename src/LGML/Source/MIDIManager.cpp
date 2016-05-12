@@ -52,13 +52,13 @@ void MIDIManager::updateDeviceList(bool updateInput)
 	for (auto &d : devicesToAdd)
 	{
 		listeners.call(updateInput ? &MIDIManagerListener::midiInputAdded : &MIDIManagerListener::midiOutputAdded, d);
-		LGMLLogger::getInstance()->logMessage("MIDI " + String(updateInput?"Input":"Output") + " Added : " + d);
+		NLOG("MIDIManager", "MIDI " + String(updateInput?"Input":"Output") + " Added : " + d);
 	}
 
 	for (auto &d : devicesToRemove)
 	{
 		listeners.call(updateInput ? &MIDIManagerListener::midiInputRemoved : &MIDIManagerListener::midiOutputRemoved, d);
-		LGMLLogger::getInstance()->logMessage("MIDI " + String(updateInput ? "Input" : "Output") + " Removed : " + d);
+		NLOG("MIDIManager", "MIDI " + String(updateInput ? "Input" : "Output") + " Removed : " + d);
 	}
 
 

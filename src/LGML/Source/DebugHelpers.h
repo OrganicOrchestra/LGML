@@ -18,30 +18,35 @@
 // log informing file from where it was outputed
 #define LOG(textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
 String fullPath = String(__FILE__);\
-tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::separator) + 1 ,fullPath.lastIndexOfChar('.') ) << " : " <<  textToWrite;\
+tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::separator) + 1 ,fullPath.lastIndexOfChar('.') ) << "::" <<  textToWrite;\
 juce::Logger::writeToLog(tempDbgBuf);)
 
 
 // named version where source name is user defined
 #define NLOG(__name,textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
-tempDbgBuf << __name << StringRef(" : ") << textToWrite;\
+tempDbgBuf << __name << StringRef("::") << textToWrite;\
 juce::Logger::writeToLog(tempDbgBuf);)
 
 
 
 inline String getLogSource(const String & logString) {
-    return logString.substring(0, logString.indexOf(":")).trim();
+    return logString.substring(0, logString.indexOf("::")).trim();
 }
 
 inline String getLogContent(const String & logString) {
-    return logString.substring( logString.indexOf(":")+1,logString.length()).trim();
+    return logString.substring( logString.indexOf("::")+2,logString.length()).trim();
 }
 
 class LogElement{
 public:
-    LogElement(const String & log):source(getLogSource(log)),content(getLogContent(log)){
+    LogElement(const String & log) :
+		source(getLogSource(log)),
+		content(getLogContent(log))
+	{
+		time = Time::getCurrentTime();
         _arr.addTokens(content,StringRef("\n"),StringRef());
     }
+	Time time;
     String content;
     String source;
     int getNumLines(){return  _arr.size();}
