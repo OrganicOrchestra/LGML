@@ -12,8 +12,8 @@
 
 juce_ImplementSingleton(RuleManager)
 
-RuleManager::RuleManager()
-	//selectedRule(nullptr)
+RuleManager::RuleManager() :
+	ControllableContainer("Rule")
 {
 }
 
@@ -27,8 +27,11 @@ Rule * RuleManager::addRule(const String &ruleName)
 	Rule * r = new Rule(ruleName);
 	rules.add(r);
 	r->addRuleListener(this);
+	
+	r->nameParam->setValue(getUniqueNameInContainer(r->nameParam->stringValue()));
+	addChildControllableContainer(r);
 
-	listeners.call(&Listener::ruleAdded, r);
+	ruleManagerListeners.call(&RuleManager::Listener::ruleAdded, r);
 
 	//setSelectedRule(r);
 	return r;
@@ -36,7 +39,7 @@ Rule * RuleManager::addRule(const String &ruleName)
 
 void RuleManager::removeRule(Rule * _rule)
 {
-	listeners.call(&Listener::ruleRemoved, _rule);
+	ruleManagerListeners.call(&RuleManager::Listener::ruleRemoved, _rule);
 	rules.removeObject(_rule);
 }
 

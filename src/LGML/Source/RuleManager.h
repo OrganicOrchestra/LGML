@@ -14,7 +14,7 @@
 #include "JuceHeader.h"
 #include "Rule.h"
 
-class RuleManager : public Rule::RuleListener
+class RuleManager : public Rule::RuleListener, public ControllableContainer
 {
 public:
 	juce_DeclareSingleton(RuleManager, true)
@@ -43,9 +43,9 @@ public:
 		virtual void ruleRemoved(Rule *) = 0;
 	};
 
-	ListenerList<Listener> listeners;
-	void addListener(Listener* newListener) { listeners.add(newListener); }
-	void removeListener(Listener* listener) { listeners.remove(listener); }
+	ListenerList<Listener> ruleManagerListeners;
+	void addRuleManagerListener(Listener* newListener) { ruleManagerListeners.add(newListener); }
+	void removeRuleManagerListener(Listener* listener) { ruleManagerListeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleManager)
 };

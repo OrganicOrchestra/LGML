@@ -14,12 +14,12 @@ RuleManagerUI::RuleManagerUI(RuleManager * _ruleManager) :
 	ruleManager(_ruleManager),
 	ShapeShifterContent("Rules")
 {
-	ruleManager->addListener(this);
+	ruleManager->addRuleManagerListener(this);
 }
 
 RuleManagerUI::~RuleManagerUI()
 {
-	ruleManager->removeListener(this);
+	ruleManager->removeRuleManagerListener(this);
 }
 
 void RuleManagerUI::mouseDown(const MouseEvent & e)
