@@ -78,7 +78,6 @@ NodeBase * NodeManager::addNode(NodeType nodeType, uint32 nodeId)
 
 bool NodeManager::removeNode(uint32 nodeId)
 {
-    DBG("Remove node from Node Manager, dispatch nodeRemoved to UI");
     NodeBase * n = getNodeForId(nodeId);
     Array<NodeConnection *> relatedConnections = getAllConnectionsForNode(n);
 

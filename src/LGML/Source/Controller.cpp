@@ -12,11 +12,10 @@
 #include "ControllerFactory.h"
 #include "ControllerUI.h"
 
-Controller::Controller(const String &name) :
-	ControllableContainer(name)
+Controller::Controller(const String &_name) :
+	ControllableContainer(_name)
 {
-
-    nameParam = addStringParameter("Name", "Set the name of the controller.", name);
+    nameParam = addStringParameter("Name", "Set the name of the controller.", _name);
     enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
 
     controllerTypeEnum = 0; //init
@@ -75,11 +74,13 @@ void Controller::remove()
 
 void Controller::onContainerParameterChanged(Parameter * p)
 {
-
-    if (p == nameParam) setNiceName(nameParam->value);
+	if (p == nameParam)
+	{
+		setNiceName(nameParam->stringValue());
+	}
     else if (p == enabledParam)
     {
-        DBG("set Controller Enabled " + String(enabledParam->value));
+       // DBG("set Controller Enabled " + String(enabledParam->boolValue()));
     }
 }
 

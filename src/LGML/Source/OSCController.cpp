@@ -11,8 +11,8 @@
 #include "OSCController.h"
 #include "OSCControllerUI.h"
 
-OSCController::OSCController(const String &name) :
-    Controller(name)
+OSCController::OSCController(const String &_name) :
+    Controller(_name)
 {
 
     localPortParam = addStringParameter("Local Port", "The port to bind for the controller to receive OSC from it","11000");
@@ -60,6 +60,8 @@ Result OSCController::processMessageInternal(const OSCMessage &)
 
 void OSCController::onContainerParameterChanged(Parameter * p)
 {
+	Controller::onContainerParameterChanged(p);
+
     if (p == localPortParam) setupReceiver();
     else if (p == remotePortParam || p == remoteHostParam) setupSender();
 }

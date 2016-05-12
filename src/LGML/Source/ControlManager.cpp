@@ -29,9 +29,13 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 {
     Controller * c = factory.createController(controllerType);
     controllers.add(c);
-    listeners.call(&ControllerManager::Listener::controllerAdded, c);
-    c->addControllerListener(this);
-    c->setParentContainer(this);
+	c->addControllerListener(this);
+	DBG(c->nameParam->stringValue() << " / " << c->niceName << "/" << c->shortName);
+
+	c->nameParam->setValue(getUniqueNameInContainer(c->nameParam->stringValue()));
+
+	addChildControllableContainer(c);
+	listeners.call(&ControllerManager::Listener::controllerAdded, c);
     return c;
 }
 

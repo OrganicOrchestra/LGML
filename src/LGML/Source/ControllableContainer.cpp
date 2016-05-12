@@ -14,14 +14,12 @@
 #include "ControllableUI.h"
 
 ControllableContainer::ControllableContainer(const String & niceName) :
-niceName(niceName),
 parentContainer(nullptr),
 hasCustomShortName(false),
 skipControllableNameInAddress(false),
 currentPreset(nullptr)
 {
     setNiceName(niceName);
-
 }
 
 ControllableContainer::~ControllableContainer()
@@ -112,8 +110,9 @@ void ControllableContainer::setCustomShortName(const String &_shortName){
 }
 
 void ControllableContainer::setAutoShortName() {
-    hasCustomShortName = false;
+	hasCustomShortName = false;
     shortName = StringUtil::toShortName(niceName);
+
     updateChildrenControlAddress();
 }
 
