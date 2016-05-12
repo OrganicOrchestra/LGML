@@ -80,7 +80,6 @@ public:
     void mouseMove(const MouseEvent& event) override;
     void mouseDrag(const MouseEvent& event) override;
     void mouseUp(const MouseEvent& event) override;
-
     void childBoundsChanged(Component * )override;
 
     void setAllNodesToStartAtZero();

@@ -54,8 +54,8 @@ public:
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
 	bool keyPressed(const KeyPress &key) override;
-	void focusGained(FocusChangeType cause) override { DBG("Focus Gained"); }
-	void focusLost(FocusChangeType cause) override { DBG("Focus Lost"); }
+	void focusGained(FocusChangeType) override { DBG("Focus Gained"); }
+	void focusLost(FocusChangeType) override { DBG("Focus Lost"); }
 
 	Connector* getBaseConnector()
     {
@@ -82,7 +82,7 @@ public:
 	InspectorEditor * getEditor() override;
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionUI)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnectionUI);
 };
 
 

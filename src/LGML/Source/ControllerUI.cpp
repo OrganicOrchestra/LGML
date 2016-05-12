@@ -71,6 +71,19 @@ void ControllerUI::buttonClicked(Button * b)
 	}
 }
 
+bool ControllerUI::keyPressed(const KeyPress & key)
+{
+	if (!isSelected) return false;
+
+	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
+	{
+		controller->remove();
+		return true;
+	}
+
+	return false;
+}
+
 InspectorEditor * ControllerUI::getEditor()
 {
 	return new ControllerEditor(this);

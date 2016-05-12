@@ -14,20 +14,21 @@
 
 //==============================================================================
 NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sourceConnector, Connector * destConnector) :
-     candidateDropConnector(nullptr),
-    connection(connection),
-    sourceConnector(nullptr),destConnector(nullptr)
+	candidateDropConnector(nullptr),
+	connection(connection),
+	sourceConnector(nullptr), destConnector(nullptr)
 {
 
-    setSourceConnector(sourceConnector);
-    setDestConnector(destConnector);
+	setSourceConnector(sourceConnector);
+	setDestConnector(destConnector);
 
-    if (sourceConnector == nullptr || destConnector == nullptr)
-    {
-        setInterceptsMouseClicks(false, false);
-    }
+	if (sourceConnector == nullptr || destConnector == nullptr)
+	{
+		setInterceptsMouseClicks(false, false);
+	}
 
-    addComponentListener(this);
+	addComponentListener(this);
+	setWantsKeyboardFocus(true);
 }
 
 NodeConnectionUI::~NodeConnectionUI()
@@ -46,12 +47,14 @@ NodeConnectionUI::~NodeConnectionUI()
     destConnector = nullptr;
 
     candidateDropConnector = nullptr;
+
 }
 
 void NodeConnectionUI::paint (Graphics& g)
 {
 
-    //DBG("PAINT !!");
+	//g.fillAll(Colours::purple.withAlpha(.2f));
+
     Point<float> sourcePos;
     Point<float> endPos;
 
@@ -69,25 +72,12 @@ void NodeConnectionUI::paint (Graphics& g)
 
     Point<float> midPoint = (sourcePos + endPos) / 2;
 
-//  int minDist = -200;
-//  int maxDist = 100;
-//  float minOffset = 0;
-//  float maxOffset = 150;
-//
-//  float anchorOffset = jmap<float>(endPos.x-sourcePos.x, maxDist, minDist, minOffset, maxOffset);
-//  anchorOffset = jmin<float>(jmax<float>(anchorOffset, minOffset), maxOffset);
-//
-//  int sourceAnchorX = (sourcePos.x + midPoint.x)/2 + anchorOffset;
-//  int endAnchorX = (endPos.x+midPoint.x)/2  - anchorOffset;
-
-    //@ben I prefer that atm (at least it doesnt start with weird anchors)
-    //but I'm up for any other fancy complexoid cuved Path algos that never touch a node
-
+	
     float smoothBigConnector = 1+ .01f*(jmax<float>(10,std::abs(endPos.x - sourcePos.x))-10);
     float anchorOffset = (endPos.x - sourcePos.x)/(2*smoothBigConnector);
     float sourceAnchorX = sourcePos.x + anchorOffset;
     float endAnchorX = endPos.x - anchorOffset;
-
+	
 
     int hitMargin = 10;
     hitPath.clear();
@@ -184,7 +174,6 @@ void NodeConnectionUI::mouseExit(const MouseEvent &)
 
 bool NodeConnectionUI::keyPressed(const KeyPress & key)
 {
-	//@Martin : don't know why, but this is never called (same code in NodeBaseUI works)
 	if (!isSelected) return false;
 
 	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)

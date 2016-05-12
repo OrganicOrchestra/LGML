@@ -85,6 +85,18 @@ void RuleUI::buttonClicked(Button * b)
 	}
 }
 
+bool RuleUI::keyPressed(const KeyPress & key)
+{
+	if (!isSelected) return false;
+
+	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
+	{
+		rule->remove();
+		return true;
+	}
+
+	return false;
+}
 
 void RuleUI::ruleActivationChanged(Rule *)
 {

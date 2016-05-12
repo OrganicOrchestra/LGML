@@ -32,9 +32,8 @@ public:
 	void resized() override;
 
 	void mouseDown(const MouseEvent &e) override;
-
 	void buttonClicked(Button * b)override;
-
+	bool keyPressed(const KeyPress &e) override;
 	virtual InspectorEditor * getEditor() override;
 	
 	virtual void ruleActivationChanged(Rule *) override;
