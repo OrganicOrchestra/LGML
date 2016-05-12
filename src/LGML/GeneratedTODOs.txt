@@ -7,13 +7,18 @@
  ///////////////////////////////////////
 
 
+JsEnvironment.cpp
+	line : 214
+		// @ben only supported if move semantics are too are they for you?
+
+
 NodeManager.cpp
-	line : 264
+	line : 160
+		// TODO nicely handle file format errors?
+
+	line : 263
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
-
-	line : 161
-		// TODO nicely handle file format errors?
 
 
 EngineFileDocument.cpp
@@ -27,27 +32,38 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 377
+	line : 347
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 115
+	line : 87
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
 
-NodeConnectionUI.cpp
-	line : 83
-		//@ben I prefer that atm (at least it doesnt start with weird anchors)
-		//but I'm up for any other fancy complexoid cuved Path algos that never touch a node
+VSTNode.cpp
+	line : 94
+		// TODO check that it actually works
+
+	line : 111
+		//@Martin i addedd this because when not playing, it crashed
+		// @ben it is necessary
+		// btw typo error made the next line always true so not sure if is necessary ..
+		//		if (TimeManager::getInstance()->playState->boolValue())
+
+
+LooperNode.cpp
+	line : 62
+		// TODO check if we can optimize copies
+		// handle multiples channels outs
 
 
 NodeConnectionEditor.cpp
-	line : 389
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
-	line : 190
+	line : 157
 		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
+
+	line : 358
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
 JsGlobalEnvironment.cpp
@@ -76,17 +92,6 @@ ControllableInspector.cpp
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
-VSTNode.h
-	line : 88
-		// TODO check that it actually works
-
-	line : 105
-		//@Martin i addedd this because when not playing, it crashed
-
-	line : 109
-		// TODO check if scoped pointer deletes old innerPlugin
-
-
 TimeManager.h
 	line : 28
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
@@ -98,26 +103,16 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 157
+	line : 143
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
-
-	line : 135
-		//@martin commented out because access violation error, is it needed ? (no leak detector when commented)
-		//removeChildControllableContainer( audioProcessor);
 
 
 ControllableContainer.h
-	line : 114
+	line : 112
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
 		//      or using dispatch feedback that triggers only exposedParams
-
-
-Looper.cpp
-	line : 60
-		// TODO check if we can optimize copies
-		// handle multiples channels outs
 
 
 ControllableInspector.h

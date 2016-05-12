@@ -20,28 +20,6 @@ Controller("MIDI")
 {
 }
 
-void MIDIController::setCurrentDevice(const String & deviceName)
-{
-    if (deviceName == midiPortName) return;
-
-    if (!midiPortName.isEmpty())
-    {
-		MIDIManager::getInstance()->disableInputDevice(midiPortName);
-        getAudioDeviceManager().removeMidiInputCallback(midiPortName, this);
-    }
-
-    midiPortName = deviceName;
-
-
-    if (!midiPortName.isEmpty())
-    {
-		MIDIManager::getInstance()->enableInputDevice(midiPortName);
-		getAudioDeviceManager().addMidiInputCallback(midiPortName, this);
-    }
-
-    midiControllerListeners.call(&MIDIControllerListener::currentDeviceChanged, this);
-}
-
 ControllerUI * MIDIController::createUI()
 {
     return new MIDIControllerUI(this);

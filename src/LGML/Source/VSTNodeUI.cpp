@@ -13,8 +13,10 @@
 
 VSTNodeContentUI::VSTNodeContentUI():
 VSTListShowButton("VSTs"),
-showPluginWindowButton("showWindow")
+showPluginWindowButton("showWindow"),
+midiDeviceChooser(true)
 {
+    midiDeviceChooser.addListener(this);
 
 }
 VSTNodeContentUI::~VSTNodeContentUI(){
@@ -23,12 +25,17 @@ VSTNodeContentUI::~VSTNodeContentUI(){
 }
 
 void VSTNodeContentUI::init() {
+
     vstNode = (VSTNode *)node;
+    addAndMakeVisible(midiDeviceChooser);
+
     VSTListShowButton.addListener(this);
     showPluginWindowButton.addListener(this);
+
     addAndMakeVisible(showPluginWindowButton);
     addAndMakeVisible(VSTListShowButton);
-    setSize(200, 100);
+
+    setSize(250, 100);
     updateVSTParameters();
 
     vstNode->addVSTNodeListener(this);
@@ -79,8 +86,10 @@ void VSTNodeContentUI::newVSTSelected() {
 }
 
 void VSTNodeContentUI::resized(){
-    Rectangle<int> area = getLocalBounds();
-    Rectangle<int> headerArea = area.removeFromTop(40);
+    Rectangle<int> area = getLocalBounds().reduced (2);
+    midiDeviceChooser.setBounds(area.removeFromTop(25));
+    
+    Rectangle<int> headerArea = area.removeFromTop(25);
     VSTListShowButton.setBounds(headerArea.removeFromLeft(headerArea.getWidth()/2));
     showPluginWindowButton.setBounds(headerArea);
     layoutSliderParameters(area.reduced(2));
@@ -121,6 +130,17 @@ void VSTNodeContentUI::vstSelected (int modalResult, Component *  originComp)
         if(originVSTNodeUI){
             originVSTNodeUI->vstNode->identifierString->setValue(VSTManager::getInstance()->knownPluginList.getType (index)->createIdentifierString());
 //            originVSTNodeUI->owner->generatePluginFromDescription(VSTManager::getInstance()->knownPluginList.getType (index));
+        }
+    }
+}
+
+void VSTNodeContentUI::comboBoxChanged(ComboBox *cb)
+{
+    if (cb == &midiDeviceChooser)
+    {
+        if (midiDeviceChooser.getSelectedItemIndex() > 0)
+        {
+            vstNode->setCurrentDevice(midiDeviceChooser.getItemText(midiDeviceChooser.getSelectedItemIndex()));
         }
     }
 }

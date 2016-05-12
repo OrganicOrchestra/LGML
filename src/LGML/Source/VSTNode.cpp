@@ -62,6 +62,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
     }
 };
 void VSTNode::initParametersFromProcessor(AudioProcessor * p){
+
     p->addListener(this);
 
     for(auto &c:VSTParameters){
@@ -109,11 +110,15 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 		setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
 
 		//@Martin i addedd this because when not playing, it crashed
-		if (TimeManager::getInstance()->playState) instance->prepareToPlay(result.sampleRate, result.bufferSize);
+        // @ben it is necessary
+        // btw typo error made the next line always true so not sure if is necessary ..
+
+//		if (TimeManager::getInstance()->playState->boolValue())
+            instance->prepareToPlay(result.sampleRate, result.bufferSize);
 
 
-		// TODO check if scoped pointer deletes old innerPlugin
-		innerPlugin = instance;
+        innerPlugin = instance;
+        messageCollector.reset (getSampleRate());
 		initParametersFromProcessor(instance);
 	}
 
@@ -130,11 +135,19 @@ void VSTNode::numChannelsChanged(){
     NodeManager::getInstance()->audioGraph.removeConnection(-1);
 }
 
-inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
+inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & ) {
 	if (innerPlugin) {
 		if (buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(), innerPlugin->getTotalNumOutputChannels()))
 		{
-			innerPlugin->processBlock(buffer, midiMessages);
+            incomingMidi.clear();
+            messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
+            if(incomingMidi.getNumEvents()>0){
+                int dbg = 0;
+            }
+			innerPlugin->processBlock(buffer, incomingMidi);
+            if(buffer.getRMSLevel(0, 0, buffer.getNumSamples())){
+                int dbg = 0;
+            }
 		}
 		else {
 			static int numFrameDropped = 0;
@@ -160,3 +173,10 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
 NodeBaseUI * VSTNode::createUI() {
 	return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
 }
+
+
+void VSTNode::handleIncomingMidiMessage(MidiInput* source,
+                               const MidiMessage& message) {
+    if (innerPlugin)messageCollector.addMessageToQueue (message);
+    
+};

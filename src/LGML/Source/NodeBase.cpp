@@ -327,7 +327,7 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 			targetRmsValue = 0;
 	}
 #endif
-	//            rmsValue = alphaRMS * buffer.getRMSLevel(0, 0, buffer.getNumSamples()) + (1.0-alphaRMS) * rmsValue;
+
 
 }
 

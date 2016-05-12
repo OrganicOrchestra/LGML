@@ -50,6 +50,9 @@
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
+          <FILE id="OTBSob" name="MIDIListener.cpp" compile="1" resource="0"
+                file="Source/MIDIListener.cpp"/>
+          <FILE id="pbPHVn" name="MIDIListener.h" compile="0" resource="0" file="Source/MIDIListener.h"/>
           <FILE id="AdpDDv" name="MIDIManager.cpp" compile="1" resource="0" file="Source/MIDIManager.cpp"/>
           <FILE id="tZ5Yo3" name="MIDIManager.h" compile="0" resource="0" file="Source/MIDIManager.h"/>
           <FILE id="VlpomU" name="MIDIUIHelper.cpp" compile="1" resource="0"

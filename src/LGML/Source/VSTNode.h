@@ -17,13 +17,15 @@
 
 #include "PluginWindow.h"
 #include "TimeManager.h"
+#include "MIDIListener.h"
 
 AudioDeviceManager& getAudioDeviceManager();
 
 
-class VSTNode : 
-	public NodeBase,
-	public AudioProcessorListener
+class VSTNode :
+public NodeBase,
+public AudioProcessorListener,
+public MIDIListener
 {
 
 public:
@@ -66,7 +68,7 @@ public:
 
     String getPresetFilter() override;
 
-    
+
     bool blockFeedback;
 
     //Listener
@@ -83,30 +85,42 @@ public:
     void removeVSTNodeListener(VSTNodeListener* listener) { vstNodeListeners.remove(listener); }
 
 
-	NodeBaseUI * createUI()override;
+    NodeBaseUI * createUI()override;
 
 
 
 
-	// AUDIO
-	AudioProcessorEditor * createEditor()override {
-		if (innerPlugin)return innerPlugin->createEditor();
-		else return nullptr;
-	}
+    // AUDIO
+    AudioProcessorEditor * createEditor()override {
+        if (innerPlugin)return innerPlugin->createEditor();
+        else return nullptr;
+    }
 
-	void generatePluginFromDescription(PluginDescription * desc);
+    void generatePluginFromDescription(PluginDescription * desc);
 
 
-	void numChannelsChanged()override;
-	void prepareToPlay(double _sampleRate, int _blockSize)override { if (innerPlugin) { innerPlugin->prepareToPlay(_sampleRate, _blockSize); } }
-	void releaseResources() override { if (innerPlugin) { innerPlugin->releaseResources(); } };
-	bool hasEditor() const override { if (innerPlugin) { return innerPlugin->hasEditor(); }return false; };
-	void getStateInformation(MemoryBlock & destData)override { if (innerPlugin) { innerPlugin->getStateInformation(destData); }; }
-	void setStateInformation(const void* data, int sizeInBytes)override { if (innerPlugin) { innerPlugin->setStateInformation(data, sizeInBytes); }; };
-	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;;
+    void numChannelsChanged()override;
+    void prepareToPlay(double _sampleRate, int _blockSize)override {
+        if (innerPlugin) {
+            innerPlugin->prepareToPlay(_sampleRate, _blockSize); }
+    }
+    void releaseResources() override { if (innerPlugin) { innerPlugin->releaseResources(); } };
+    bool hasEditor() const override { if (innerPlugin) { return innerPlugin->hasEditor(); }return false; };
+    void getStateInformation(MemoryBlock & destData)override { if (innerPlugin) { innerPlugin->getStateInformation(destData); }; }
+    void setStateInformation(const void* data, int sizeInBytes)override { if (innerPlugin) { innerPlugin->setStateInformation(data, sizeInBytes); }; };
+    void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;;
+    
+    ScopedPointer<AudioPluginInstance> innerPlugin;
 
-	ScopedPointer<AudioPluginInstance> innerPlugin;
 
+    ///// MIDI
+    
+    void handleIncomingMidiMessage(MidiInput* source,
+                                   const MidiMessage& message) override;
+
+    MidiMessageCollector messageCollector;
+        MidiBuffer incomingMidi;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)
 };
 

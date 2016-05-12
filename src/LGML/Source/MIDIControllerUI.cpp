@@ -26,7 +26,7 @@ InspectorEditor * MIDIControllerUI::getEditor()
 	return new MIDIControllerEditor(this);
 }
 
-void MIDIControllerUI::currentDeviceChanged(MIDIController *)
+void MIDIControllerUI::currentDeviceChanged(MIDIListener *)
 {
 	nameTF->setSuffix(" [" + midiController->midiPortName + "]");
 }

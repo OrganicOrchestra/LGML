@@ -16,6 +16,7 @@
 #include "NodeBaseUI.h"
 
 #include "FloatSliderUI.h"
+#include "MIDIUIHelper.h"
 
 class VSTNodeHeaderUI : public NodeBaseHeaderUI, public VSTNode::VSTNodeListener
 {
@@ -30,7 +31,7 @@ public:
     void newVSTSelected() override;
 };
 
-class VSTNodeContentUI:public NodeBaseContentUI,public Button::Listener, public VSTNode::VSTNodeListener,public ControllableContainerListener{
+class VSTNodeContentUI:public NodeBaseContentUI,public Button::Listener, public VSTNode::VSTNodeListener,public ControllableContainerListener,public ComboBoxListener{
 public:
     VSTNodeContentUI();
     ~VSTNodeContentUI();
@@ -56,7 +57,10 @@ public:
     TextButton VSTListShowButton;
     TextButton showPluginWindowButton;
     VSTNode * vstNode;
+    MIDIDeviceChooser midiDeviceChooser;
 
+
+    void comboBoxChanged(ComboBox *cb) override;
 
     static void vstSelected (int modalResult, Component *  originComp);
 
