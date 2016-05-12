@@ -41,9 +41,9 @@ private:
     };
 
     // never change this as value can be changed from other threads
-    void parameterValueChanged(Parameter * p) override{};
+    void parameterValueChanged(Parameter * ) override{};
     // range can be changed from Main thread
-     void parameterRangeChanged(Parameter * p)override{};
+     void parameterRangeChanged(Parameter * )override{};
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
 };
 

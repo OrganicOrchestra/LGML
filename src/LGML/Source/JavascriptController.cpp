@@ -38,15 +38,15 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
 
     String functionName = "onCtl_"+getJsFunctionNameFromAddress(msg.getAddressPattern().toString());
     // here we choose to pass each argument as a separated value in function call i.e onMessage(arg1,arg2...)
-    Array<var> argArray;
+    var argArray;
     for(auto & m:msg){
-        if(m.isFloat32()){argArray.add(m.getFloat32());}
-        if(m.isInt32()){argArray.add(m.getInt32());}
-        if(m.isString()){argArray.add(m.getString());}
+        if(m.isFloat32()){ argArray.append(m.getFloat32());}
+        if(m.isInt32()){ argArray.append(m.getInt32());}
+        if(m.isString()){ argArray.append(m.getString());}
     }
 
-    Result r(Result::ok());
-    var varRes = callFunction(functionName, argArray,&r);
+    Result r = Result::ok();
+    var varRes = callFunction(functionName, argArray, &r);
 
     if(r.failed()){
         LOG("error on function : "+ functionName);

@@ -116,11 +116,12 @@ private:
 
     class FunctionIdentifier{
     public:
-        FunctionIdentifier(const String & s):originString(s){
+        FunctionIdentifier(const String & s):originString(s)
+		{
             StringArray arr;
             arr.addTokens(s,"_","");
-            for(auto & s:arr.strings){
-                splitedName.add(s);
+            for(auto & ts : arr.strings){
+                splitedName.add(ts);
             }
         };
         bool compare(const String & s){
