@@ -54,6 +54,8 @@ public:
     ControllableContainer * parentContainer;
 
     void setNiceName(const String &_niceName) {
+		if (niceName == _niceName) return;
+
         this->niceName = _niceName;
         if (!hasCustomShortName) setAutoShortName();
     }

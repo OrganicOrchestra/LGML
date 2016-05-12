@@ -67,6 +67,7 @@ NodeBase * NodeManager::addNode(NodeType nodeType, uint32 nodeId)
     NodeBase * n = nodeFactory.createNode(this,nodeType, nodeId);
     nodes.add(n);
     n->addNodeListener(this);
+	n->nameParam->setValue(getUniqueNameInContainer(n->nameParam->stringValue()));
     addChildControllableContainer(n); //ControllableContainer
     listeners.call(&NodeManager::Listener::nodeAdded,n);
 

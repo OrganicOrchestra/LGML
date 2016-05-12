@@ -40,66 +40,40 @@ void ControllableContainer::addParameter(Parameter * p)
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
-    if (getControllableByName(niceName) != nullptr)
-    {
-        DBG("ControllableContainer::add parameter, short Name already exists : " + niceName);
-        jassertfalse;
-        return nullptr;
-    }
-
-    FloatParameter * p = new FloatParameter(_niceName, description, initialValue, minValue, maxValue, enabled);
+	String targetName = getUniqueNameInContainer(_niceName);
+    FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
     addParameterInternal(p);
     return p;
 }
 
 IntParameter * ControllableContainer::addIntParameter(const String & _niceName, const String & _description, const int & initialValue, const int & minValue, const int & maxValue, const bool & enabled)
 {
-    if (getControllableByName(_niceName) != nullptr)
-    {
-        DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
-        return nullptr;
-    }
-
-    IntParameter * p = new IntParameter(_niceName, _description, initialValue, minValue, maxValue, enabled);
+	String targetName = getUniqueNameInContainer(_niceName);
+    IntParameter * p = new IntParameter(targetName, _description, initialValue, minValue, maxValue, enabled);
     addParameterInternal(p);
     return p;
 }
 
 BoolParameter * ControllableContainer::addBoolParameter(const String & _niceName, const String & _description, const bool & value, const bool & enabled)
 {
-    if (getControllableByName(_niceName) != nullptr)
-    {
-        DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
-        return nullptr;
-    }
-
-    BoolParameter * p = new BoolParameter(_niceName, _description, value, enabled);
+	String targetName = getUniqueNameInContainer(_niceName);
+	BoolParameter * p = new BoolParameter(targetName, _description, value, enabled);
     addParameterInternal(p);
     return p;
 }
 
 StringParameter * ControllableContainer::addStringParameter(const String & _niceName, const String & _description, const String &value, const bool & enabled)
 {
-    if (getControllableByName(_niceName) != nullptr)
-    {
-        DBG("ControllableContainer::add parameter, short Name already exists : " + _niceName);
-        return nullptr;
-    }
-
-    StringParameter * p = new StringParameter(_niceName, _description, value, enabled);
+	String targetName = getUniqueNameInContainer(_niceName);
+	StringParameter * p = new StringParameter(targetName, _description, value, enabled);
     addParameterInternal(p);
     return p;
 }
 
 Trigger * ControllableContainer::addTrigger(const String & _niceName, const String & _description, const bool & enabled)
 {
-    if (getControllableByName(_niceName) != nullptr)
-    {
-        DBG("ControllableContainer::add trigger, short Name already exists : " + _niceName);
-        return nullptr;
-    }
-
-    Trigger * t = new Trigger(_niceName, _description, enabled);
+	String targetName = getUniqueNameInContainer(_niceName);
+	Trigger * t = new Trigger(targetName, _description, enabled);
     controllables.add(t);
     t->setParentContainer(this);
     t->addTriggerListener(this);
@@ -127,6 +101,7 @@ void ControllableContainer::notifyStructureChanged(){
 
 
 void ControllableContainer::setNiceName(const String &_niceName) {
+	if (niceName == _niceName) return;
     niceName = _niceName;
     if (!hasCustomShortName) setAutoShortName();
 }
@@ -144,18 +119,19 @@ void ControllableContainer::setAutoShortName() {
 
 
 
-Controllable * ControllableContainer::getControllableByName(const String & name)
+Controllable * ControllableContainer::getControllableByName(const String & name, bool searchNiceNameToo)
 {
     for (auto &c : controllables)
     {
-        if (c->shortName == name) return c;
+        if (c->shortName == name || (searchNiceNameToo && c->niceName == name)) return c;
     }
 
     return nullptr;
 }
 
 void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
-{
+{ 
+	
     controllableContainers.add(container);
 	container->addControllableContainerListener(this);
     container->setParentContainer(this);
@@ -172,11 +148,11 @@ void ControllableContainer::removeChildControllableContainer(ControllableContain
 	container->setParentContainer(nullptr);
 }
 
-ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name)
+ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name, bool searchNiceNameToo)
 {
     for (auto &cc : controllableContainers)
     {
-        if (cc->shortName == name) return cc;
+        if (cc->shortName == name || (searchNiceNameToo && cc->niceName == name)) return cc;
     }
 
     return nullptr;
@@ -304,7 +280,6 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
 
 bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 {
-    DBG("load preset, " << String(currentPreset != nullptr));
     if (preset == nullptr) return false;
 
     for (auto &pv : preset->presetValues)
@@ -326,7 +301,6 @@ void ControllableContainer::saveNewPreset(const String & _name)
 
 bool ControllableContainer::saveCurrentPreset()
 {
-    DBG("save current preset, " << String(currentPreset != nullptr));
     if (currentPreset == nullptr) return false;
 
     for (auto &pv : currentPreset->presetValues)
@@ -334,7 +308,6 @@ bool ControllableContainer::saveCurrentPreset()
         Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
         if (p != nullptr)
         {
-            DBG("set preset value : " << p->niceName << " > " << p->stringValue());
             pv->presetValue = p->value;
         }
     }
@@ -344,12 +317,10 @@ bool ControllableContainer::saveCurrentPreset()
 
 bool ControllableContainer::resetFromPreset()
 {
-    DBG("Reset from preset, " << String(currentPreset != nullptr));
     if (currentPreset == nullptr) return false;
 
     for (auto &pv : currentPreset->presetValues)
     {
-        DBG("Reset, check presetValue " << pv->paramControlAddress << " > " << pv->presetValue.toString());
         Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
         if (p != nullptr) p->resetValue();
     }
@@ -479,4 +450,21 @@ void ControllableContainer::loadJSONData(var data)
 void ControllableContainer::childStructureChanged(ControllableContainer *)
 {
 	notifyStructureChanged();
+}
+
+String ControllableContainer::getUniqueNameInContainer(const String & sourceName, int suffix)
+{
+	String resultName = sourceName;
+	if (suffix > 0) resultName += " " + String(suffix);
+
+	if (getControllableByName(resultName,true) != nullptr)
+	{
+		return getUniqueNameInContainer(sourceName, suffix + 1);
+	}
+	if (getControllableContainerByName(resultName,true) != nullptr)
+	{
+		return getUniqueNameInContainer(sourceName, suffix + 1);
+	}
+
+	return resultName;
 }

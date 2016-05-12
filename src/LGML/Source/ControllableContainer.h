@@ -69,11 +69,11 @@ public:
     Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
 
     void removeControllable(Controllable * c);
-    Controllable * getControllableByName(const String &name);
+    Controllable * getControllableByName(const String &name, bool searchNiceNameToo = false);
 
     void addChildControllableContainer(ControllableContainer * container);
     void removeChildControllableContainer(ControllableContainer *container);
-    ControllableContainer * getControllableContainerByName(const String &name);
+    ControllableContainer * getControllableContainerByName(const String &name, bool searchNiceNameToo = false);
 
 
     void setParentContainer(ControllableContainer * container);
@@ -105,11 +105,9 @@ public:
 	virtual void loadJSONData(var data);
 	virtual void loadJSONDataInternal(var data) { /* to be overriden by child classes */ }
 
-
-
 	virtual void childStructureChanged(ControllableContainer *)override;
 
-
+	String getUniqueNameInContainer(const String &sourceName, int suffix = 0);
 private:
     // internal callback that a controllableContainer can override to react to any of it's parameter change
     //@ ben this is to avoid either:
