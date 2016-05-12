@@ -46,7 +46,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
             }
             else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
         }
-        else{DBG("VST : no identifierStrind provided");}
+        else{DBG("VST : no identifierString provided");}
     }
 
     // a VSTParameter is changed
@@ -116,7 +116,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 //		if (TimeManager::getInstance()->playState->boolValue())
             instance->prepareToPlay(result.sampleRate, result.bufferSize);
 
-
+        instance->setPlayHead(getPlayHead());
         innerPlugin = instance;
         messageCollector.reset (getSampleRate());
 		initParametersFromProcessor(instance);
@@ -141,13 +141,8 @@ inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 		{
             incomingMidi.clear();
             messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
-            if(incomingMidi.getNumEvents()>0){
-                int dbg = 0;
-            }
+            innerPlugin->setPlayHead(getPlayHead());
 			innerPlugin->processBlock(buffer, incomingMidi);
-            if(buffer.getRMSLevel(0, 0, buffer.getNumSamples())){
-                int dbg = 0;
-            }
 		}
 		else {
 			static int numFrameDropped = 0;
