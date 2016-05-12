@@ -87,6 +87,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
     else{
         _hasValidJsFile = true;
         lastFileModTime = currentFile.getLastModificationTime();
+        updateUserDefinedFunctions();
         checkUserControllableEventFunction();
         LOG("script Loaded successfully : "+f.getFullPathName());
         newJsFileLoaded();
@@ -96,16 +97,62 @@ void JsEnvironment::internalLoadFile(const File &f ){
 
 }
 
-var JsEnvironment::callFunction (const Identifier& function, const Array<var>& args, Result* result){
-    // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
-    juce::var::NativeFunctionArgs Nargs(var::undefined(),&args.getReference(0),args.size());
-    return jsEngine.callFunction(function,Nargs,result);
+
+bool JsEnvironment::functionIsDefined(const juce::String & s){
+    bool found = false;
+    for(auto & f:userDefinedFunctions){
+        if(f.compare(s)){
+            found = true;
+            break;
+        }
+    }
+    return found;
 }
 
-var JsEnvironment::callFunction (const Identifier& function, const var & arg, Result* result){
+
+
+var JsEnvironment::callFunction (const String& function, const Array<var>& args, bool logResult){
+    Result * result = nullptr;
+    if(logResult)result = new Result(Result::ok());
+    if(!functionIsDefined(function)){
+        if(result!=nullptr)result->fail("no function Found");
+        return var::undefined();
+    }
+    return callFunctionFromIdentifier(function, args,result);
+}
+
+var JsEnvironment::callFunction (const String& function, const var& args,  bool logResult ){
+    Result * result = nullptr;
+    if(logResult)result = new Result(Result::ok());
+    if(!functionIsDefined(function)){
+        if(result!=nullptr)result->fail("no function Found");
+        return var::undefined();
+    }
+    return callFunctionFromIdentifier(function, args,result);
+}
+
+
+
+var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const Array<var>& args, Result* result){
+    // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
+    juce::var::NativeFunctionArgs Nargs(var::undefined(),&args.getReference(0),args.size());
+    var res =  jsEngine.callFunction(function,Nargs,result);
+    if(result!=nullptr && result->failed()){
+        LOG(result->getErrorMessage());
+    }
+
+    return res;
+}
+
+var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const var & arg, Result* result){
     // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
     juce::var::NativeFunctionArgs Nargs(var::undefined(),&arg,1);
-    return jsEngine.callFunction(function,Nargs,result);
+    var res =  jsEngine.callFunction(function,Nargs,result);
+    if(result!=nullptr && result->failed()){
+        LOG(result->getErrorMessage());
+    }
+
+    return res;
 }
 
 const NamedValueSet & JsEnvironment::getRootObjectProperties()  {return jsEngine.getRootObjectProperties();}
@@ -168,13 +215,13 @@ void JsEnvironment::checkUserControllableEventFunction(){
 
     StringArray userDefinedFunction;
     NamedValueSet root = getRootObjectProperties();
-    Array<StringArray> functionNamespaces;
-    for(int i = 0 ; i < root.size() ; i++ ){
-        StringArray arr = splitFunctionName(root.getName(i));
-        if(arr.size()>1 && arr[0] == "on"){
-            arr.remove(0);
-            functionNamespaces.add(arr);
-        }
+
+
+    Array<FunctionIdentifier*> functionNamespaces;
+
+    for(auto & f:userDefinedFunctions){
+            if(f.splitedName[0] == "on")functionNamespaces.add(&f);
+
     }
     static const Array<ControllableContainer*> candidates={
         (ControllableContainer*)NodeManager::getInstance(),
@@ -184,10 +231,14 @@ void JsEnvironment::checkUserControllableEventFunction(){
 
     for(auto & candidate:candidates){
         Array<StringArray> concernedMethods ;
-        for(auto & m:functionNamespaces){
-            if(candidate->shortName == m.getReference(0)){
-                StringArray localName = m;
+        for(auto & f:functionNamespaces){
+            if(candidate->shortName == f->splitedName[1]){
+                StringArray localName = f->splitedName;
+                // remove on
                 localName.remove(0);
+                //remove candidate Name
+                localName.remove(0);
+
                 Controllable * c = candidate->getControllableForAddress(localName);
                 if(Parameter * p = dynamic_cast<Parameter*>(c))
                     listenedParameters.addIfNotAlreadyThere(p);
@@ -207,12 +258,21 @@ void JsEnvironment::checkUserControllableEventFunction(){
 
 }
 
+void JsEnvironment::updateUserDefinedFunctions(){
+    userDefinedFunctions.clear();
+        NamedValueSet root = getRootObjectProperties();
+    for(int i = 0 ; i < root.size() ; i++ ){
+        // @ben only supported if move semantics are too are they for you?
+        userDefinedFunctions.add(FunctionIdentifier(root.getName(i).toString()));
+    }
+
+}
+
 void JsEnvironment::parameterValueChanged(Parameter * p) {
-    Identifier functionName = "on_"+getJsFunctionNameFromAddress(p->getControlAddress());
-    callFunction(functionName, p->value);
+    callFunction("on_"+getJsFunctionNameFromAddress(p->getControlAddress()), p->value);
+
 };
 void JsEnvironment::triggerTriggered(Trigger *p){
-    Identifier functionName = "on_"+getJsFunctionNameFromAddress(p->getControlAddress());
-    callFunction(functionName, var::undefined());
+    callFunction("on_"+getJsFunctionNameFromAddress(p->getControlAddress()), var::undefined());
 
 }

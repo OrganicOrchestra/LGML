@@ -67,7 +67,8 @@ void JavascriptController::callonAnyMsg(const OSCMessage & msg){
     }
     Result r(Result::ok());
     Array<var> argList = {address,args};
-    var varRes = callFunction("onCtl_AnyMsg", argList,&r);
+    static const Identifier onCtlAnyMsgIdentifier("onCtl_AnyMsg");
+    var varRes = callFunctionFromIdentifier(onCtlAnyMsgIdentifier, argList,&r);
 
 }
 

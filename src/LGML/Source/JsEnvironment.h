@@ -54,10 +54,16 @@ public:
     void removeListener(Listener * l){jsListeners.remove(l);}
     void setAutoWatch(bool );
 
-protected :
+    protected :
 
-    var callFunction  (const Identifier& function, const Array<var> & args, Result* result=nullptr);
-    var callFunction (const Identifier& function, const var & arg, Result* result = nullptr);
+
+    // this firstCheck if function exists to avoid poluting Identifier global pool
+    var callFunction (const String& function, const Array<var>& args, bool logResult = true);
+    var callFunction (const String& function, const var& args,  bool logResult = true);
+
+    var callFunctionFromIdentifier  (const Identifier& function, const Array<var> & args, Result* result=nullptr);
+    var callFunctionFromIdentifier (const Identifier& function, const var & arg, Result* result = nullptr);
+
 
     static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
     DynamicObject * getLocalEnv(){return localEnvironment.getDynamicObject();}
@@ -72,8 +78,10 @@ protected :
     const NamedValueSet & getRootObjectProperties();
 
 
-
+    bool functionIsDefined(const String &);
 private:
+
+
 
 
     void    addToLocalNamespace(const String & elem,DynamicObject *target);
@@ -89,8 +97,54 @@ private:
     void internalLoadFile(const File &);
 
     bool _hasValidJsFile;
-    
-    
+
+
+    void updateUserDefinedFunctions();
+
+
+    // store function name string as Array of Identifier i.e :on_myFunc_lala => ["on","MyFunc","lala"]
+    // the first objective of this function is to offer a simple way to test if a function exists without creating Identifiers each time (can be unsecure if a lot of message are recieved in OSC case)
+    // we can then compare them by elements to avoid polluting Identifier global stringpool exponnentially
+    //    i.e: on_track0_rec / on_track0_clear / on_track0_pause / on_track0_play /
+    //         on_track1_rec / on_track1_clear / on_track1_pause / on_track1_play /
+    //         on_track2_rec / on_track2_clear / on_track2_pause / on_track2_play /
+    //         on_track3_rec / on_track3_clear / on_track3_pause / on_track3_play /
+    //         on_track4_rec / on_track4_clear / on_track4_pause / on_track4_play /
+
+    // would need only 1+5+4 = 9 Identifier instead of 16 and so on when possible combinations grows
+
+
+    class FunctionIdentifier{
+    public:
+        FunctionIdentifier(const String & s):originString(s){
+            StringArray arr;
+            arr.addTokens(s,"_","");
+            for(auto & s:arr.strings){
+                splitedName.add(s);
+            }
+        };
+        bool compare(const String & s){
+            StringArray arr;
+            arr.addTokens(s,"_","");
+            return compare(arr);
+        }
+        bool compare(const StringArray & arr){
+            if(arr.size() != splitedName.size()){
+                return false;
+            }
+            for(int i = 0 ; i < arr.size() ; i++){
+                if(splitedName[i] != arr[i]){
+                    return false;
+                }
+            }
+            return true;
+
+        }
+        StringArray splitedName;
+        String originString;
+    };
+    Array<FunctionIdentifier> userDefinedFunctions;
+
     JavascriptEngine jsEngine;
 
     void timerCallback()override;
