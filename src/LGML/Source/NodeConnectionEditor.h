@@ -46,6 +46,8 @@ public:
 
     void resized()override;
 
+	int getContentHeight() override;
+
     ScopedPointer<NodeConnectionEditorLink> editingLink;
 
 

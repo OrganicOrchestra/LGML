@@ -85,7 +85,8 @@ public:
 		if(inspector->currentEditor == nullptr) inspector->setBounds(r);
 		else
 		{
-			int cH = jmax(inspector->currentEditor->getContentHeight(), r.getHeight());
+			int cH = inspector->currentEditor->getContentHeight();
+			if(cH == 0) cH = r.getHeight();
 			inspector->setBounds(r.withHeight(cH));
 		}
 	}

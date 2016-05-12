@@ -89,6 +89,11 @@ void NodeConnectionEditor::resized()
     }
 }
 
+int NodeConnectionEditor::getContentHeight()
+{
+	return 20+jmax(outputSlots.size() * 35, inputSlots.size()*35);
+}
+
 void NodeConnectionEditor::mouseEnter(const MouseEvent &)
 {
     //DBG("Editor mouse enter " << e.eventComponent->getName());
