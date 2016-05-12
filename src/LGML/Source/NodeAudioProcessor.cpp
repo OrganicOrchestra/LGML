@@ -16,6 +16,20 @@
 
 // NodeAudioProcessor
 
+NodeAudioProcessor::NodeAudioProcessor(const String Name) :AudioProcessor(), ControllableContainer(Name + "_audio") 
+{
+	outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
+	lastVolume = outputVolume->floatValue();
+	bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
+	skipControllableNameInAddress = true;
+
+	setInputChannelName(0, "Main Left");
+	setInputChannelName(1, "Main Right");
+	setOutputChannelName(0, "Main Left");
+	setOutputChannelName(1, "Main Right");
+}
+
+
 void NodeAudioProcessor::processBlock(AudioBuffer<float>& buffer,
                                       MidiBuffer& midiMessages) {
 
@@ -87,6 +101,62 @@ bool NodeAudioProcessor::setPreferedNumAudioOutput(int num){
                          getBlockSize());
     nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged,num);
     return true;
+}
+
+void NodeAudioProcessor::setInputChannelNames(int startChannel, StringArray names)
+{
+	for (int i = startChannel; i < startChannel + names.size(); i++)
+	{
+		setInputChannelName(i, names[i]);
+	}
+}
+
+void NodeAudioProcessor::setOutputChannelNames(int startChannel, StringArray names)
+{
+	for (int i = startChannel; i < startChannel + names.size(); i++)
+	{
+		setOutputChannelName(i, names[i]);
+	}
+}
+
+void NodeAudioProcessor::setInputChannelName(int channelIndex, const String & name)
+{
+	while (inputChannelNames.size() < (channelIndex + 1))
+	{
+		inputChannelNames.add(String::empty);
+	}
+
+	inputChannelNames.set(channelIndex,name);
+}
+
+void NodeAudioProcessor::setOutputChannelName(int channelIndex, const String & name)
+{
+	while (outputChannelNames.size() < (channelIndex + 1))
+	{
+		outputChannelNames.add(String::empty);
+	}
+
+	outputChannelNames.set(channelIndex, name);
+}
+
+String NodeAudioProcessor::getInputChannelName(int channelIndex)
+{
+	String defaultName = "Input " + String(channelIndex);
+	if (channelIndex < 0 || channelIndex >= inputChannelNames.size()) return defaultName;
+
+	String s = inputChannelNames[channelIndex];
+	if (s.isNotEmpty()) return s;
+	return defaultName;
+}
+
+String NodeAudioProcessor::getOutputChannelName(int channelIndex)
+{
+	String defaultName = "Output " + String(channelIndex);
+	if (channelIndex < 0 || channelIndex >= outputChannelNames.size()) return defaultName;
+
+	String s = outputChannelNames[channelIndex];
+	if (s.isNotEmpty()) return s;
+	return defaultName;
 }
 
 void NodeAudioProcessor::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue){

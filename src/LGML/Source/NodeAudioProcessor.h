@@ -19,20 +19,24 @@ class NodeAudioProcessor : public juce::AudioProcessor,public AsyncUpdater,publi
 public:
 
 
-    NodeAudioProcessor(const String Name) :AudioProcessor(),ControllableContainer(Name+"_audio"){
-        outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
-        lastVolume = outputVolume->floatValue();
-        bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
-        skipControllableNameInAddress = true;
-    };
+	NodeAudioProcessor(const String Name);
 
     FloatParameter * outputVolume;
     BoolParameter * bypass;
+	StringArray inputChannelNames;
+	StringArray outputChannelNames;
+
     virtual ~NodeAudioProcessor(){};
 
     bool setPreferedNumAudioInput(int num);
     bool setPreferedNumAudioOutput(int num);
 
+	void setInputChannelNames(int startChannel, StringArray names);
+	void setOutputChannelNames(int startChannel, StringArray names);
+	void setInputChannelName(int channelIndex, const String &name);
+	void setOutputChannelName(int channelIndex, const String &name);
+	String getInputChannelName(int channelIndex);
+	String getOutputChannelName(int channelIndex);
 
     virtual const String getName() const override { return "NodeBaseProcessor"; };
 
@@ -55,9 +59,7 @@ public:
     double getTailLengthSeconds() const override { return 0; }
     bool acceptsMidi() const override { return false; }
     bool producesMidi() const override { return false; }
-    void numChannelsChanged()override{
-        // int a = 0;
-    };
+	void numChannelsChanged()override {}
 
 
     // save procedures from host
