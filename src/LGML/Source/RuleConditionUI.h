@@ -13,7 +13,9 @@
 
 #include "RuleCondition.h"
 
-class RuleConditionUI : public Component
+class RuleConditionUI : 
+	public Component,
+	public RuleCondition::RuleConditionListener
 {
 public:
 	RuleConditionUI(RuleCondition * condition);
@@ -21,6 +23,9 @@ public:
 
 	RuleCondition * condition;
 
+	void paint(Graphics &g) override;
+
+	void conditionActivationChanged(RuleCondition *) override;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleConditionUI)
 
 };

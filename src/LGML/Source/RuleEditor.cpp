@@ -14,10 +14,14 @@ RuleEditor::RuleEditor(RuleUI * _ruleUI) :
 	CustomEditor(_ruleUI),
 	rule(_ruleUI->rule),
 	addReferenceBT("Add Reference"),
-	addConsequenceBT("Add Consequence")
+	addConsequenceBT("Add Consequence"),
+	ruleConditionGroupUI(nullptr),
+	scriptedConditionUI(nullptr)
 {
 
 	addReferenceBT.addListener(this);
+	addConsequenceBT.addListener(this);
+
 	addAndMakeVisible(&addReferenceBT);
 
 	addAndMakeVisible(&referenceContainer);
@@ -27,8 +31,17 @@ RuleEditor::RuleEditor(RuleUI * _ruleUI) :
 		addReferenceUI(r);
 	}
 
-	ruleConditionGroupUI = new RuleConditionGroupUI(rule->rootConditionGroup);
-	addAndMakeVisible(ruleConditionGroupUI);
+	if (rule->conditionType == Rule::ConditionType::VISUAL)
+	{
+		ruleConditionGroupUI = new RuleConditionGroupUI(rule->rootConditionGroup);
+		addAndMakeVisible(ruleConditionGroupUI);
+	}
+	else
+	{
+		scriptedConditionUI = new ScriptedConditionUI(rule->scriptedCondition);
+		addAndMakeVisible(scriptedConditionUI);
+	}
+
 
 	addAndMakeVisible(&addConsequenceBT);
 	addAndMakeVisible(&consequenceContainer);
@@ -60,12 +73,7 @@ void RuleEditor::resized()
 {
 	Rectangle<int> r = getLocalBounds();
 	
-	int listGap = 2;
-	int containerGap = 10;
-	int referenceHeight = 30;
-	int consequenceHeight = 25;
-	int containerMargin = 2;
-
+	
 	addReferenceBT.setBounds(r.removeFromTop(20));
 	r.removeFromTop(containerGap);
 	referenceContainer.setBounds(r.removeFromTop(referencesUI.size()*(referenceHeight + listGap)).reduced(containerMargin));
@@ -79,11 +87,20 @@ void RuleEditor::resized()
 
 	r.removeFromTop(containerGap);
 	
-	ruleConditionGroupUI->setBounds(r.removeFromTop(50));//will be dynamic
-	
+	if (ruleConditionGroupUI != nullptr)
+	{
+		ruleConditionGroupUI->setBounds(r.removeFromTop(50));//will be dynamic
+	}
+
+	if (scriptedConditionUI != nullptr)
+	{
+		scriptedConditionUI->setBounds(r.removeFromTop(scriptedConditionHeight));
+	}
+
 	r.removeFromTop(containerGap);
 
 	addConsequenceBT.setBounds(r.removeFromTop(20));
+
 	r.removeFromTop(containerGap);
 	consequenceContainer.setBounds(r.removeFromTop(consequencesUI.size()*(consequenceHeight + listGap)).reduced(containerMargin));
 
@@ -97,19 +114,17 @@ void RuleEditor::resized()
 
 int RuleEditor::getContentHeight()
 {
-	int listGap = 2;
-	int containerGap = 10;
-	int referenceHeight = 25;
-	int consequenceHeight = 25;
-	int containerMargin = 2;
-
 	int tH = 0;
 	tH += 20 * 2; //buttons
 	tH += containerGap * 6; //
 	tH += referencesUI.size()*(referenceHeight + listGap);
-	tH += ruleConditionGroupUI->getHeight();
+	
+	if(ruleConditionGroupUI != nullptr) tH += ruleConditionGroupUI->getHeight();
+	if (scriptedConditionUI != nullptr) tH += scriptedConditionHeight;
+
 	tH += consequencesUI.size()*(consequenceHeight + listGap);
 	tH += containerMargin * 4;
+	
 	return tH;
 }
 
@@ -133,7 +148,7 @@ void RuleEditor::removeReferenceUI(ControlVariableReference * r)
 
 void RuleEditor::addConsequenceUI(RuleConsequence * c)
 {
-	RuleConsequenceUI * cui = new RuleConsequenceUI(c);
+	RuleConsequenceUI * cui = c->createUI();
 	consequencesUI.add(cui);
 	consequenceContainer.addAndMakeVisible(cui);
 

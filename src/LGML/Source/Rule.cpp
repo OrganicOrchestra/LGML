@@ -12,20 +12,54 @@
 
 Rule::Rule(const String &_name) :
 	ControllableContainer(_name),
-	activationType(OnActivate)
+	activationType(OnActivate),
+	conditionType(NONE),
+	rootConditionGroup(nullptr),
+	scriptedCondition(nullptr)
 {
-	rootConditionGroup = new RuleConditionGroup(nullptr);
-	rootConditionGroup->addCondition();
-
+	
 	nameParam = addStringParameter("Name", "Name of the rule", _name);
 	enabledParam = addBoolParameter("Enabled", "Enable / Disable the rule",true);
 
 	isActiveParam = addBoolParameter("active", "Whether the rule is active or not.\nA rule is active if its conditions are validated.", false);
 	isActiveParam->isControllableFeedbackOnly = true;
+
+	setConditionType(ConditionType::SCRIPT);
 }
 
 Rule::~Rule()
 {
+}
+
+void Rule::setConditionType(ConditionType value)
+{
+	if (conditionType == value) return;
+
+	switch (conditionType)
+	{
+	case SCRIPT:
+		scriptedCondition = nullptr;
+		break;
+
+	case VISUAL:
+		rootConditionGroup = nullptr;
+		break;
+	}
+
+	conditionType = value;
+
+	switch (conditionType)
+	{
+	case SCRIPT:
+		scriptedCondition = new ScriptedCondition();
+		break;
+
+	case VISUAL:
+		rootConditionGroup = new RuleConditionGroup(nullptr);
+		break;
+	}
+
+	ruleListeners.call(&RuleListener::ruleConditionTypeChanged, this);
 }
 
 ControlVariableReference * Rule::addReference()
@@ -46,7 +80,7 @@ void Rule::removeReference(ControlVariableReference * cvr)
 
 void Rule::addConsequence()
 {
-	RuleConsequence * c = new RuleConsequence();
+	RuleConsequence * c = new ScriptedConsequence();
 	consequences.add(c);
 	ruleListeners.call(&RuleListener::consequenceAdded,c);
 }

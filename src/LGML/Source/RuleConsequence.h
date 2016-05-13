@@ -13,12 +13,17 @@
 
 #include "JuceHeader.h"
 
+class RuleConsequenceUI;
+
 class RuleConsequence
 {
 public:
 	RuleConsequence();
 	virtual ~RuleConsequence();
 
+	virtual void evaluate();
+
+	virtual RuleConsequenceUI * createUI();
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleConsequence)
 };
 

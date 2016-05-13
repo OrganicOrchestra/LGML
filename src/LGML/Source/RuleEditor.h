@@ -15,6 +15,7 @@
 #include "RuleUI.h"
 #include "RuleConditionUI.h"
 #include "RuleConditionGroupUI.h"
+#include "ScriptedConditionUI.h"
 #include "RuleConsequenceUI.h"
 #include "ControlVariableReferenceUI.h"
 
@@ -32,9 +33,19 @@ public:
 	Component referenceContainer;
 	Component consequenceContainer;
 	
+	//layout ui
+	const int listGap = 2;
+	const int containerGap = 10;
+	const int referenceHeight = 30;
+	const int consequenceHeight = 100;
+	const int containerMargin = 2;
+	const int scriptedConditionHeight = 100;
 
+	
 	OwnedArray<ControlVariableReferenceUI> referencesUI;
 	ScopedPointer<RuleConditionGroupUI> ruleConditionGroupUI;
+	ScopedPointer<ScriptedConditionUI> scriptedConditionUI;
+
 	OwnedArray<RuleConsequenceUI> consequencesUI;
 
 	void paint(Graphics &g) override;
@@ -56,6 +67,7 @@ public:
 
 	void consequenceAdded(RuleConsequence *) override;
 	void consequenceRemoved(RuleConsequence *) override;
+
 
 	void buttonClicked(Button * b);
 

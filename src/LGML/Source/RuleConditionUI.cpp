@@ -19,3 +19,13 @@ RuleConditionUI::~RuleConditionUI()
 {
 
 }
+
+void RuleConditionUI::paint(Graphics & g)
+{
+	g.fillAll(condition->isActive ? Colours::lightgreen : Colours::grey);
+}
+
+void RuleConditionUI::conditionActivationChanged(RuleCondition *)
+{
+	repaint();
+}

@@ -26,8 +26,6 @@ public:
 	bool isActive;
 	void setActive(bool value);
 
-
-
 	void process();
 	void remove();
 

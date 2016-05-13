@@ -16,8 +16,12 @@
 #include "RuleConditionGroup.h"
 #include "RuleConsequence.h"
 
+#include "ScriptedCondition.h"
+#include "ScriptedConsequence.h"
+
 #include "ControllableContainer.h"
 #include "ControlVariableReference.h"
+
 
 class Rule : 
 	public ControllableContainer,
@@ -34,6 +38,10 @@ public:
 
 	Rule(const String &name);
 	virtual ~Rule();
+
+	enum ConditionType {NONE, SCRIPT, VISUAL };
+	ConditionType conditionType;
+	void setConditionType(ConditionType value);
 	
 	StringParameter * nameParam;
 	BoolParameter * enabledParam;
@@ -43,6 +51,8 @@ public:
 
 	OwnedArray<ControlVariableReference> references;
 	ScopedPointer<RuleConditionGroup> rootConditionGroup;
+	ScopedPointer<ScriptedCondition> scriptedCondition;
+
 	OwnedArray<RuleConsequence> consequences;
 
 	ControlVariableReference * addReference();
@@ -64,12 +74,14 @@ public:
 
 		virtual void askForRemoveRule(Rule *) {}
 		virtual void ruleActivationChanged(Rule *) {}
-
+		virtual void ruleConditionTypeChanged(Rule *) {}
 		virtual void referenceAdded(ControlVariableReference *) {}
 		virtual void referenceRemoved(ControlVariableReference *) {}
 
 		virtual void consequenceAdded(RuleConsequence *) {}
 		virtual void consequenceRemoved(RuleConsequence *) {}
+
+
 	};
 		
 

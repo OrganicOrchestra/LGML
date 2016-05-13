@@ -9,6 +9,7 @@
 */
 
 #include "RuleConsequence.h"
+#include "RuleConsequenceUI.h"
 
 RuleConsequence::RuleConsequence()
 {
@@ -16,4 +17,13 @@ RuleConsequence::RuleConsequence()
 
 RuleConsequence::~RuleConsequence()
 {
+}
+
+void RuleConsequence::evaluate()
+{
+}
+
+RuleConsequenceUI * RuleConsequence::createUI()
+{
+	return new RuleConsequenceUI(this);
 }

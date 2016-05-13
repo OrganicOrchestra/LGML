@@ -243,6 +243,24 @@
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
         <GROUP id="{36D57403-1E0C-65BD-9157-C17EE1560F96}" name="rules">
+          <GROUP id="{F686A4E4-762D-D1B5-DCD5-C8B54C43DAFD}" name="scripted">
+            <FILE id="OuvMa2" name="ScriptedCondition.cpp" compile="1" resource="0"
+                  file="Source/ScriptedCondition.cpp"/>
+            <FILE id="TK9rHv" name="ScriptedCondition.h" compile="0" resource="0"
+                  file="Source/ScriptedCondition.h"/>
+            <FILE id="BibnJ1" name="ScriptedConditionUI.cpp" compile="1" resource="0"
+                  file="Source/ScriptedConditionUI.cpp"/>
+            <FILE id="xu9ZWf" name="ScriptedConditionUI.h" compile="0" resource="0"
+                  file="Source/ScriptedConditionUI.h"/>
+            <FILE id="I9IEMK" name="ScriptedConsequence.cpp" compile="1" resource="0"
+                  file="Source/ScriptedConsequence.cpp"/>
+            <FILE id="NORYJ1" name="ScriptedConsequence.h" compile="0" resource="0"
+                  file="Source/ScriptedConsequence.h"/>
+            <FILE id="ck6YlC" name="ScriptedConsequenceUI.cpp" compile="1" resource="0"
+                  file="Source/ScriptedConsequenceUI.cpp"/>
+            <FILE id="AfnQkI" name="ScriptedConsequenceUI.h" compile="0" resource="0"
+                  file="Source/ScriptedConsequenceUI.h"/>
+          </GROUP>
           <GROUP id="{655CE5BA-C8E0-B650-7BA2-403CFAC89DA0}" name="ui">
             <FILE id="cHwpa4" name="ControlVariableReferenceUI.cpp" compile="1"
                   resource="0" file="Source/ControlVariableReferenceUI.cpp"/>

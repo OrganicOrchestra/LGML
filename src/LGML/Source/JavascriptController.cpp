@@ -45,6 +45,7 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
         if(m.isString()){ argArray.append(m.getString());}
     }
 
+	//@martin why create a Result var to put in as a bool argument in callFunction()
     Result r = Result::ok();
     var varRes = callFunction(functionName, argArray, &r);
 
