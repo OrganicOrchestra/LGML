@@ -14,7 +14,7 @@
 #include "Parameter.h"
 #include "ControllableUI.h"
 
-class ParameterUI : public Parameter::AsyncListener, public ControllableUI
+class ParameterUI : public Parameter::AsyncListener, public Parameter::Listener,public ControllableUI
 {
 public:
     ParameterUI(Parameter * parameter);
@@ -39,6 +39,11 @@ private:
     virtual void newMessage(const Parameter::ParamWithValue & p) override{
         valueChanged(p.value);
     };
+
+    // never change this as value can be changed from other threads
+    void parameterValueChanged(Parameter * ) override{};
+    // range can be changed from Main thread
+     void parameterRangeChanged(Parameter * )override{};
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
 };
 

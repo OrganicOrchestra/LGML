@@ -27,7 +27,6 @@ public:
     virtual ~TriggerBlinkUI();
 
     void paint(Graphics&)override;
-    void resized()override;
     void mouseDown(const MouseEvent& event)override;
     void triggerTriggered(Trigger * p) override;
     void startBlink();
@@ -35,7 +34,6 @@ public:
     void setTriggerReference(Trigger * t);
     float intensity;
 
-    Label nameLabel;
 
 private:
 

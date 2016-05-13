@@ -81,8 +81,8 @@ void LooperNodeContentUI::reLayoutTracks(){
     int numCol = 8;
     int numRow = (int)ceil((tracksUI.size())*1.f / numCol);
 
-    float trackWidth =  80;// trackContainer.getWidth() / numCol;
-    float trackHeight = 150;// 1.0f / numRow;
+    float trackWidth =  40;// trackContainer.getWidth() / numCol;
+    float trackHeight = 130;// 1.0f / numRow;
     float gap = 5;
     float margin = 5;
 
@@ -186,20 +186,21 @@ void LooperNodeContentUI::TrackUI::paint(Graphics & g) {
 
 void LooperNodeContentUI::TrackUI::resized() {
     Rectangle<int> r = getLocalBounds().reduced(2);
-    r.removeFromTop(30);//header
-
-    volumeSlider->setBounds(r.removeFromRight(15));
+    r.removeFromTop(25);//header
+    int gap = 5;
+    int step = r.getHeight()/6 - gap;
+    volumeSlider->setBounds(r.removeFromRight(step));
     r.reduce(5,0);
-    muteButton->setBounds(r.removeFromTop(15));
-    r.removeFromTop(5);
-    soloButton->setBounds(r.removeFromTop(15));
-    r.removeFromTop(5);
-    clearButton->setBounds(r.removeFromTop(15));
-    r.removeFromTop(5);
-    stopButton->setBounds(r.removeFromTop(15));
-    r.removeFromTop(5);
+    muteButton->setBounds(r.removeFromTop(step));
+    r.removeFromTop(gap);
+    soloButton->setBounds(r.removeFromTop(step));
+    r.removeFromTop(gap);
+    clearButton->setBounds(r.removeFromTop(step));
+    r.removeFromTop(gap);
+    stopButton->setBounds(r.removeFromTop(step));
+    r.removeFromTop(gap);
     recPlayButton->setBounds(r);
-    r.removeFromTop(5);
+    r.removeFromTop(gap);
 
 }
 

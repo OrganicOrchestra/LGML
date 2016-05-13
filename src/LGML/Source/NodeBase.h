@@ -83,7 +83,6 @@ public:
 	public:
 		virtual ~NodeListener() {}
 		virtual void askForRemoveNode(NodeBase *) {}
-
 		virtual void nodeEnableChanged(NodeBase *) {}
 	};
 
@@ -160,11 +159,11 @@ public:
 	//RMS
 	void updateRMS(const AudioBuffer<float>& buffer, float &targetRMSValue);
 
-	float alphaRMSIn = 0.05f;
+	const float alphaRMSIn = 0.05f;
 	float rmsValueIn = 0.f;
 	const int samplesBeforeRMSInUpdate = 512;
 	int curSamplesForRMSInUpdate = 0;
-	float alphaRMSOut = 0.05f;
+	const float alphaRMSOut = 0.05f;
 	float rmsValueOut = 0.f;
 	const int samplesBeforeRMSOutUpdate = 512;
 	int curSamplesForRMSOutUpdate = 0;

@@ -89,6 +89,7 @@ bool NodeManager::removeNode(uint32 nodeId)
 
     listeners.call(&NodeManager::Listener::nodeRemoved, n);
     nodes.removeAllInstancesOf(n);
+    audioGraph.removeNode(nodeId);
 
     return true;
 }

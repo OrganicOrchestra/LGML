@@ -18,7 +18,9 @@
 
 class LGMLLoggerUI : public ShapeShifterContent,
 	public LGMLLogger::Listener,
-	public TextButton::Listener{
+	public TextButton::Listener,
+public AsyncUpdater
+{
 public:
 	LGMLLoggerUI(LGMLLogger * l);
 
@@ -62,12 +64,14 @@ public:
     OwnedArray<LogElement> logElements;
     void newMessage(const String & ) override;
 private:
-    int getTotalLogRow();
+    int totalLogRow;
+    void updateTotalLogRow();
     const String & getSourceForRow(int r);
     const String & getContentForRow(int r);
 	String getTimeStringForRow(int r);
     friend class LogList;
 
+    void handleAsyncUpdate()override;
 
 };
 

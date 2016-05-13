@@ -36,7 +36,7 @@ public:
 	int period2 = (int)(44100 * 1.0f / 300);
 	float amp = 1.f;
 
-	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
+	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override {
 
 		//DBG("process block internal dummy");
 

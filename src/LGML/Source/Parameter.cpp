@@ -40,6 +40,12 @@ void Parameter::setValue(var _value, bool silentSet, bool force)
     if (!silentSet) notifyValueChanged();
 }
 
+void Parameter::setRange(var min, var max){
+    minimumValue = min;
+    maximumValue = max;
+    listeners.call(&Listener::parameterRangeChanged,this);
+}
+
 void Parameter::setValueInternal(var _value) //to override by child classes
 {
     value = _value;

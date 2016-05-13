@@ -17,11 +17,11 @@ ShapeShifterContent("Time Manager"),
 timeManager(_timeManager),
 timeBar(_timeManager){
 
-    timeManager->isSettingTempo->addParameterListener(this);
-    timeManager->playState->addParameterListener(this);
-    timeManager->beatPerBar->addParameterListener(this);
-    timeManager->currentBeat->addParameterListener(this);
-    timeManager->currentBar->addParameterListener(this);
+    timeManager->isSettingTempo->addAsyncParameterListener(this);
+    timeManager->playState->addAsyncParameterListener(this);
+    timeManager->beatPerBar->addAsyncParameterListener(this);
+    timeManager->currentBeat->addAsyncParameterListener(this);
+    timeManager->currentBar->addAsyncParameterListener(this);
 
     addAndMakeVisible(timeBar);
     bpmStepper = timeManager->BPM->createStepper();
@@ -42,11 +42,11 @@ timeBar(_timeManager){
 
 
 TimeManagerUI::~TimeManagerUI(){
-    timeManager->isSettingTempo->removeParameterListener(this);
-    timeManager->playState->removeParameterListener(this);
-    timeManager->beatPerBar->removeParameterListener(this);
-    timeManager->currentBeat->removeParameterListener(this);
-    timeManager->currentBar->removeParameterListener(this);
+    timeManager->isSettingTempo->removeAsyncParameterListener(this);
+    timeManager->playState->removeAsyncParameterListener(this);
+    timeManager->beatPerBar->removeAsyncParameterListener(this);
+    timeManager->currentBeat->removeAsyncParameterListener(this);
+    timeManager->currentBar->removeAsyncParameterListener(this);
 }
 
 

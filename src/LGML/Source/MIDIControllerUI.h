@@ -14,7 +14,7 @@
 #include "MIDIController.h"
 #include "ControllerUI.h"
 
-class MIDIControllerUI : public  ControllerUI, public MIDIController::MIDIControllerListener
+class MIDIControllerUI : public  ControllerUI, public MIDIListener::Listener
 {
 public:
 	MIDIControllerUI(MIDIController * controller);
@@ -24,7 +24,7 @@ public:
 	
 	InspectorEditor * getEditor() override;
 
-	void currentDeviceChanged(MIDIController *)override;
+	void currentDeviceChanged(MIDIListener *)override;
 };
 
 #endif  // MIDICONTROLLERUI_H_INCLUDED

@@ -14,29 +14,32 @@
 
 void LGMLLoggerUI::newMessage(const String & s) 
 {
-
-    int oldNumRow = getTotalLogRow();
     LogElement * el = new LogElement(s);
     logElements.add(el);
 
-    int newNumRow = oldNumRow + el->getNumLines() ;
+     totalLogRow +=el->getNumLines() ;
     bool overFlow = false;
 
-    while(newNumRow>maxNumElement){
-
-        logElements.remove(0);
-        newNumRow = getTotalLogRow();
+    while(totalLogRow>maxNumElement){
+        LogElement * rmL = logElements.removeAndReturn(0);
+        totalLogRow -= rmL->getNumLines();
+        delete rmL;
         overFlow = true;
     }
-   
-	logListComponent->updateContent();
-    logListComponent->scrollToEnsureRowIsOnscreen(newNumRow-1);
+
+    //coalesce messa
+    triggerAsyncUpdate();
 
 };
+void LGMLLoggerUI::handleAsyncUpdate(){
+    logListComponent->updateContent();
+    logListComponent->scrollToEnsureRowIsOnscreen(totalLogRow-1);
+}
 
 LGMLLoggerUI::LGMLLoggerUI(LGMLLogger * l) : ShapeShifterContent("LGMLLogger"),
 logList(this),
-maxNumElement(999)
+maxNumElement(999),
+totalLogRow(0)
 {
 	l->addLogListener(this);
 	TableHeaderComponent * thc = new TableHeaderComponent();
@@ -78,12 +81,12 @@ void LGMLLoggerUI::resized(){
 
 
 
-int LGMLLoggerUI::getTotalLogRow(){
-    int res=0;
+void LGMLLoggerUI::updateTotalLogRow(){
+    totalLogRow=0;
     for(auto & l:logElements){
-        res+=l->getNumLines();
+        totalLogRow+=l->getNumLines();
     }
-    return res;
+
 }
 const String & LGMLLoggerUI::getSourceForRow(int r){
     int count = 0;
@@ -147,7 +150,7 @@ LGMLLoggerUI::LogList::LogList(LGMLLoggerUI * o) :owner(o)
 
 int LGMLLoggerUI::LogList::getNumRows() {
 
-    return owner->getTotalLogRow();
+    return owner->totalLogRow;
 };
 
 void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,

@@ -68,11 +68,11 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 
 bool TimeManager::askForBeingMasterNode(NodeBase * n){
     potentialTimeMasterNode.addIfNotAlreadyThere(n);
-    return potentialTimeMasterNode.size()==1;
+    return potentialTimeMasterNode.getUnchecked(0) == n;
 }
 
 bool TimeManager::isMasterNode(NodeBase * n){
-    return potentialTimeMasterNode.size()>0 && n==potentialTimeMasterNode[0];
+    return potentialTimeMasterNode.size()>0 && n==potentialTimeMasterNode.getUnchecked(0);
 }
 bool TimeManager::hasMasterNode(){
     return potentialTimeMasterNode.size()>0;
@@ -106,6 +106,7 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
 
     if(t==stopTrigger){
         playState->setValue(false);
+        isSettingTempo->setValue(false);
     }
 }
 void TimeManager::togglePlay(){
