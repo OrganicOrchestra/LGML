@@ -12,9 +12,15 @@
 #include "NodeManager.h"
 
 OSCDirectController::OSCDirectController() :
-    OSCController("OSC Direct Controller")
+    OSCDirectController("OSC Direct Controller")
 {
-    NodeManager::getInstance()->addControllableContainerListener(this);
+   
+}
+
+OSCDirectController::OSCDirectController(const String & name) :
+	OSCController(name)
+{
+	NodeManager::getInstance()->addControllableContainerListener(this);
 }
 
 OSCDirectController::~OSCDirectController()

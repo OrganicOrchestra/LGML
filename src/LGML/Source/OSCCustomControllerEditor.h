@@ -33,6 +33,8 @@ public :
 	
 	void resized() override;
 
+	int getContentHeight() override;
+
 	void buttonClicked(Button * b) override;
 	void variableAdded(Controller * , ControlVariable *) override;
 	void variableRemoved(Controller *, ControlVariable *) override;

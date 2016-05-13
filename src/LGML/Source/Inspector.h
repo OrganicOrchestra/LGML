@@ -78,16 +78,17 @@ public:
 
 	void resized() override {
 		Rectangle<int> r = getLocalBounds();
+		
+		vp.setBounds(r);
+
 		r.removeFromRight(vp.getScrollBarThickness());
 
-		vp.setBounds(r);
-		
 		if(inspector->currentEditor == nullptr) inspector->setBounds(r);
 		else
 		{
 			int cH = inspector->currentEditor->getContentHeight();
 			if(cH == 0) cH = r.getHeight();
-			inspector->setBounds(r.withHeight(cH));
+			inspector->setBounds(r.withPosition(inspector->getPosition()).withHeight(cH));
 		}
 	}
 	Viewport vp;

@@ -106,7 +106,7 @@ void GenericControllableContainerEditor::buttonClicked(Button * b)
 
 void GenericControllableContainerEditor::childStructureChanged(ControllableContainer *)
 {
-	listeners.call(&InspectorEditorListener::contentSizeChanged, this);
+	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
 

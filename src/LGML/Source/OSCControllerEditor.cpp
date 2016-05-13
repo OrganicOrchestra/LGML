@@ -45,6 +45,11 @@ void OSCControllerEditor::resized()
 
 }
 
+int OSCControllerEditor::getContentHeight()
+{
+	return localPortUI->getHeight() + remoteHostUI->getHeight() + remotePortUI->getHeight() + 30;
+}
+
 void OSCControllerEditor::messageProcessed(const OSCMessage & , bool)
 {
 

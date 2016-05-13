@@ -11,20 +11,21 @@
 #ifndef OSCCUSTOMCONTROLLER_H_INCLUDED
 #define OSCCUSTOMCONTROLLER_H_INCLUDED
 
-#include "OSCController.h"
+#include "OSCDirectController.h"
 
-class OSCCustomController : public OSCController
+class OSCCustomController : public OSCDirectController
 {
 public:
 	OSCCustomController();
 	virtual ~OSCCustomController();
 
 	
+	virtual var getJSONData();
+	virtual void loadJSONData(var data);
+
 	virtual ControllerUI * createUI() override;
 
-	Result processMessageInternal(const OSCMessage& msg) override;
-
-
+	juce::Result processMessageInternal(const OSCMessage& msg) override;
 };
 
 

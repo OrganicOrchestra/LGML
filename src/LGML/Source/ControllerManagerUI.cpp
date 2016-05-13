@@ -12,6 +12,7 @@
 
 #include "Style.h"
 #include "ControllerFactory.h"
+#include "MainComponent.h"
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(ControllerManager * manager) :
@@ -113,6 +114,11 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
             {
                 manager->addController((ControllerFactory::ControllerType)(result - 1));
             }
-        }
+		}
+		else
+		{
+			MainContentComponent::inspector->setCurrentComponent(nullptr);
+		}
     }
 }
+

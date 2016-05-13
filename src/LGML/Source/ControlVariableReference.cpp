@@ -42,4 +42,6 @@ void ControlVariableReference::setCurrentVariable(ControlVariable * v)
 	{
 		setNiceName("reference:none");
 	}
+
+	referenceListeners.call(&ControlVariableReferenceListener::currentReferenceChanged, this);
 }

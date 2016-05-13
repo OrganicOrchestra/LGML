@@ -17,7 +17,6 @@ RuleEditor::RuleEditor(RuleUI * _ruleUI) :
 	addConsequenceBT("Add Consequence")
 {
 
-	DBG("New RULE EDITOR !!");
 	addReferenceBT.addListener(this);
 	addAndMakeVisible(&addReferenceBT);
 
@@ -38,10 +37,12 @@ RuleEditor::RuleEditor(RuleUI * _ruleUI) :
 		addConsequenceUI(c);
 	}
 
+	rule->addRuleListener(this);
 }
 
 RuleEditor::~RuleEditor()
 {
+	rule->removeRuleListener(this);
 }
 
 
@@ -61,7 +62,7 @@ void RuleEditor::resized()
 	
 	int listGap = 2;
 	int containerGap = 10;
-	int referenceHeight = 25;
+	int referenceHeight = 30;
 	int consequenceHeight = 25;
 	int containerMargin = 2;
 
@@ -94,13 +95,29 @@ void RuleEditor::resized()
 	}
 ;}
 
+int RuleEditor::getContentHeight()
+{
+	int listGap = 2;
+	int containerGap = 10;
+	int referenceHeight = 25;
+	int consequenceHeight = 25;
+	int containerMargin = 2;
+
+	int tH = 0;
+	tH += 20 * 2; //buttons
+	tH += containerGap * 6; //
+	tH += referencesUI.size()*(referenceHeight + listGap);
+	tH += ruleConditionGroupUI->getHeight();
+	tH += consequencesUI.size()*(consequenceHeight + listGap);
+	tH += containerMargin * 4;
+	return tH;
+}
+
 void RuleEditor::addReferenceUI(ControlVariableReference * r)
 {
 	ControlVariableReferenceUI * rui = new ControlVariableReferenceUI(r);
 	referencesUI.add(rui);
 	referenceContainer.addAndMakeVisible(rui);
-
-	
 }
 
 void RuleEditor::removeReferenceUI(ControlVariableReference * r)
@@ -155,25 +172,25 @@ RuleConsequenceUI * RuleEditor::getUIForConsequence(RuleConsequence * c)
 void RuleEditor::referenceAdded(ControlVariableReference * cvr)
 {
 	addReferenceUI(cvr);
-	resized();
+	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
 void RuleEditor::referenceRemoved(ControlVariableReference * cvr)
 {
 	removeReferenceUI(cvr);
-	resized();
+	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
 void RuleEditor::consequenceAdded(RuleConsequence * c)
 {
 	addConsequenceUI(c);
-	resized();
+	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
 void RuleEditor::consequenceRemoved(RuleConsequence * c)
 {
 	removeConsequenceUI(c);
-	resized();
+	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
 

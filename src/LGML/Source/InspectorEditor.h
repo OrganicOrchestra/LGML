@@ -37,9 +37,9 @@ public:
 		virtual void contentSizeChanged(InspectorEditor *) {};
 	};
 
-	ListenerList<InspectorEditorListener> listeners;
-	void addInspectorEditorListener(InspectorEditorListener* newListener) { listeners.add(newListener); }
-	void removeInspectorEditorListener(InspectorEditorListener* listener) { listeners.remove(listener); }
+	ListenerList<InspectorEditorListener> inspectorEditorListeners;
+	void addInspectorEditorListener(InspectorEditorListener* newListener) { inspectorEditorListeners.add(newListener); }
+	void removeInspectorEditorListener(InspectorEditorListener* listener) { inspectorEditorListeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InspectorEditor)
 };

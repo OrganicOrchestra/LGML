@@ -34,6 +34,8 @@ public:
 
 	virtual void resized() override;
 
+	virtual int getContentHeight() override;
+
 	// Inherited via OSCControllerListener
 	virtual void messageProcessed(const OSCMessage & msg, bool success) override;
 };

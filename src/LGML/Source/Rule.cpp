@@ -32,7 +32,7 @@ ControlVariableReference * Rule::addReference()
 {
 	ControlVariableReference * cvr = new ControlVariableReference();
 	references.add(cvr);
-	ruleListeners.call(&RuleListener::referenceRemoved, cvr);
+	ruleListeners.call(&RuleListener::referenceAdded, cvr);
 	return cvr;
 }
 

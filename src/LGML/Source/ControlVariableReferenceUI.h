@@ -13,9 +13,10 @@
 
 #include "ControlVariableReference.h"
 #include "ControllableHelpers.h"
+#include "ParameterUI.h"
 
 
-class ControlVariableReferenceUI : public Component, public ButtonListener
+class ControlVariableReferenceUI : public Component, public ButtonListener, public ControlVariableReference::ControlVariableReferenceListener
 {
 public :
 	ControlVariableReferenceUI(ControlVariableReference * cvr);
@@ -26,9 +27,13 @@ public :
 	ScopedPointer<StringParameterUI> aliasUI;
 	Label referenceLabel;
 	TextButton chooseBT;
-	
+
+	ScopedPointer<ParameterUI> currentVariableParamUI;
+
 	void buttonClicked(Button * b);
 	void resized();
+
+	void currentReferenceChanged(ControlVariableReference *);
 	
 };
 

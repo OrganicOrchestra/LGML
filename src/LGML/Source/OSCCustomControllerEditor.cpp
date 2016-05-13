@@ -9,6 +9,7 @@
 */
 
 #include "OSCCustomControllerEditor.h"
+#include "DebugHelpers.h"
 
 OSCCustomControllerEditor::OSCCustomControllerEditor(OSCCustomControllerUI * controllerUI) :
 	OSCControllerEditor(controllerUI),
@@ -43,6 +44,7 @@ void OSCCustomControllerEditor::addVariableUI(ControlVariable * v, bool doResize
 
 void OSCCustomControllerEditor::removeVariableUI(ControlVariable * v, bool doResize)
 {
+	NLOG("OSCCustomControllerEditor","removeVariableUI");
 	ControlVariableUI * vui = getUIForVariable(v);
 	if (vui == nullptr) return;
 	innerContainer.removeChildComponent(vui);
@@ -62,22 +64,34 @@ ControlVariableUI * OSCCustomControllerEditor::getUIForVariable(ControlVariable 
 
 void OSCCustomControllerEditor::resized()
 {
+	int variableUIHeight = 20;
+	int listGap = 2;
+
 	OSCControllerEditor::resized();
 	Rectangle<int> r = innerContainer.getLocalBounds();
 	addVariableBT.setBounds(r.removeFromTop(20));
 	r.removeFromTop(10);
 	for (auto &vui : variablesUI)
 	{
-		vui->setBounds(r.removeFromTop(20));
-		r.removeFromTop(2);
+		vui->setBounds(r.removeFromTop(variableUIHeight));
+		r.removeFromTop(listGap);
 	}
+}
+
+int OSCCustomControllerEditor::getContentHeight()
+{
+	int variableUIHeight = 20;
+	int listGap = 2;
+
+	int baseHeight = OSCControllerEditor::getContentHeight();
+	return baseHeight + 30 + variablesUI.size()*(variableUIHeight + listGap);
 }
 
 void OSCCustomControllerEditor::buttonClicked(Button * b)
 {
 	if (b == &addVariableBT)
 	{
-		Parameter * p = new FloatParameter("New Variable", "Custom Variable", .5f, 0, 1);
+		Parameter * p = new FloatParameter(customController->getUniqueVariableNameFor("var"), "Custom Variable", 0, 0, 1);
 		p->replaceSlashesInShortName = false;
 		customController->addVariable(p);
 	}
@@ -86,9 +100,11 @@ void OSCCustomControllerEditor::buttonClicked(Button * b)
 void OSCCustomControllerEditor::variableAdded(Controller *, ControlVariable * v)
 {
 	addVariableUI(v);
+	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
 void OSCCustomControllerEditor::variableRemoved(Controller *, ControlVariable * v)
 {
 	removeVariableUI(v);
+	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }

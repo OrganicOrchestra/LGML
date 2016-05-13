@@ -12,7 +12,7 @@
 
 ControlVariableUI::ControlVariableUI(ControlVariable * _variable) :
 	variable(_variable),
-	pNameLabel("variableName","New Variable")
+	pNameLabel("variableName", _variable->parameter->niceName)
 {
 
 	addAndMakeVisible(&pNameLabel);

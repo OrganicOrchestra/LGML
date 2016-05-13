@@ -17,10 +17,11 @@ class OSCDirectController : public OSCController
 {
 public:
     OSCDirectController();
-    virtual ~OSCDirectController();
+	OSCDirectController(const String &name);
+	virtual ~OSCDirectController();
 
 
-    Result processMessageInternal(const OSCMessage &msg) override;
+    virtual Result processMessageInternal(const OSCMessage &msg) override;
 
 
 

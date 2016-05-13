@@ -26,6 +26,21 @@ public:
 	Parameter * referenceParam;
 	
 	void setCurrentVariable(ControlVariable * v);
+
+
+
+	class  ControlVariableReferenceListener
+	{
+	public:
+		virtual ~ControlVariableReferenceListener() {}
+
+		virtual void currentReferenceChanged(ControlVariableReference *) {};
+	};
+
+
+	ListenerList<ControlVariableReferenceListener> referenceListeners;
+	void addReferenceListener(ControlVariableReferenceListener* newListener) { referenceListeners.add(newListener); }
+	void removeReferenceListener(ControlVariableReferenceListener* listener) { referenceListeners.remove(listener); }
 };
 
 

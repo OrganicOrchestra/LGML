@@ -9,6 +9,7 @@
 */
 
 #include "ControlVariable.h"
+#include "DebugHelpers.h"
 
 ControlVariable::ControlVariable(Parameter * p) :
 	parameter(p)
@@ -22,5 +23,7 @@ ControlVariable::~ControlVariable()
 
 void ControlVariable::remove()
 {
+	NLOG("ControlVariable", "remove");
+
 	variableListeners.call(&VariableListener::askForRemoveVariable, this);
 }

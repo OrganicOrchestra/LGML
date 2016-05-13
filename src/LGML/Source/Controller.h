@@ -44,6 +44,11 @@ public:
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
+
+	//helper
+	String getUniqueVariableNameFor(const String &baseName, int index = 1);
+
+
 	virtual ControllerUI * createUI();
 
     class  ControllerListener

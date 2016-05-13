@@ -21,7 +21,6 @@ public:
 	RuleManagerUI(RuleManager * _ruleManager);
 	virtual ~RuleManagerUI();
 
-	void mouseDown(const MouseEvent &e) override;
 	
 	RuleManager * ruleManager;
 
@@ -32,11 +31,14 @@ public:
  	void addRuleUI(Rule * r);
 	void removeRuleUI(Rule * r);
 
+	RuleUI * getUIForRule(Rule * r);
+
 	// Inherited via Listener
 	virtual void ruleAdded(Rule *) override;
 	virtual void ruleRemoved(Rule *) override;
 
-	RuleUI * getUIForRule(Rule * r);
+	void mouseDown(const MouseEvent &e) override;
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleManagerUI)
 };

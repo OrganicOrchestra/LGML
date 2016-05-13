@@ -375,6 +375,10 @@
                 file="Source/ControllerManagerUI.cpp"/>
           <FILE id="X13lyg" name="ControllerManagerUI.h" compile="0" resource="0"
                 file="Source/ControllerManagerUI.h"/>
+          <FILE id="k3L4au" name="ControllerUIHelpers.cpp" compile="1" resource="0"
+                file="Source/ControllerUIHelpers.cpp"/>
+          <FILE id="wpoOkt" name="ControllerUIHelpers.h" compile="0" resource="0"
+                file="Source/ControllerUIHelpers.h"/>
         </GROUP>
         <FILE id="Fldwr5" name="ControllerFactory.h" compile="0" resource="0"
               file="Source/ControllerFactory.h"/>

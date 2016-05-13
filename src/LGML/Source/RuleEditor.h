@@ -40,6 +40,8 @@ public:
 	void paint(Graphics &g) override;
 	void resized()override;
 
+	int getContentHeight() override;
+
 	void addReferenceUI(ControlVariableReference * r);
 	void removeReferenceUI(ControlVariableReference * r);
 	

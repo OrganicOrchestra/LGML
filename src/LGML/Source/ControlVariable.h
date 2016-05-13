@@ -32,8 +32,8 @@ public :
 	};
 
 	ListenerList<VariableListener> variableListeners;
-	void addOSCControllerListener(VariableListener* newListener) { variableListeners.add(newListener); }
-	void removeOSCControllerListener(VariableListener* listener) { variableListeners.remove(listener); }
+	void addControlVariableListener(VariableListener* newListener) { variableListeners.add(newListener); }
+	void removeControlVariableListener(VariableListener* listener) { variableListeners.remove(listener); }
 };
 
 
