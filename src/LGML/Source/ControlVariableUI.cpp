@@ -74,7 +74,11 @@ void ControlVariableUI::labelTextChanged(Label * b)
 	if (b == &pNameLabel)
 	{
 		String t = b->getText();
-		if (t[0] == '/') t = t.substring(1);
+		if (t[0] == '/')
+		{
+			t = t.substring(1);
+			pNameLabel.setText(t, NotificationType::dontSendNotification);
+		}
 		variable->parameter->setNiceName(t);
 	}
 }

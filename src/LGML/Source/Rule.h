@@ -19,7 +19,9 @@
 #include "ControllableContainer.h"
 #include "ControlVariableReference.h"
 
-class Rule : public ControllableContainer
+class Rule : 
+	public ControllableContainer,
+	public ControlVariableReference::ControlVariableReferenceListener
 {
 public:
 	enum ActivationType
@@ -50,6 +52,8 @@ public:
 	void removeConsequence(RuleConsequence *);
 
 	void onContainerParameterChanged(Parameter * p) override;
+	void askForRemoveReference(ControlVariableReference * r) override;
+
 	void remove();
 
 

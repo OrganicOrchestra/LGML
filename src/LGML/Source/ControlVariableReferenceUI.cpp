@@ -19,6 +19,8 @@ ControlVariableReferenceUI::ControlVariableReferenceUI(ControlVariableReference 
 {
 	aliasUI = cvr->alias->createStringParameterUI();
 
+	aliasUI->parameter->addParameterListener(this);
+
 	addAndMakeVisible(aliasUI);
 	addAndMakeVisible(&chooseBT);
 	addAndMakeVisible(&referenceLabel);
@@ -28,44 +30,28 @@ ControlVariableReferenceUI::ControlVariableReferenceUI(ControlVariableReference 
 	chooseBT.addListener(this);
 
 	cvr->addReferenceListener(this);
+
+	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
+
+	removeBT.setImages(false, true, true, removeImage,
+		0.7f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
+		0.5f);
+	removeBT.addListener(this);
+
+	addAndMakeVisible(&removeBT);
+
+	updateCurrentReference();
 }
 
 ControlVariableReferenceUI::~ControlVariableReferenceUI()
 {
+	aliasUI->parameter->removeParameterListener(this);
 	cvr->removeReferenceListener(this);
 }
 
-void ControlVariableReferenceUI::buttonClicked(Button * b)
-{
-	if (b == &chooseBT)
-	{
-		ControlVariableChooser chooser;
-		ControlVariable * cv = chooser.showAndGetVariable();
-		if (cv != nullptr)
-		{
-			cvr->setCurrentVariable(cv);
-		}
-		
-	}
-}
-
-void ControlVariableReferenceUI::resized()
-{
-	Rectangle<int> r = getLocalBounds();
-	
-	Rectangle<int> rUI = r.removeFromBottom(10);
-	if (currentVariableParamUI != nullptr) currentVariableParamUI->setBounds(rUI);
-
-	chooseBT.setBounds(r.removeFromLeft(40));
-	r.removeFromLeft(2);
-	aliasUI->setBounds(r.removeFromRight(50));
-	r.reduce(5, 0);
-	referenceLabel.setBounds(r);
-
-
-}
-
-void ControlVariableReferenceUI::currentReferenceChanged(ControlVariableReference *)
+void ControlVariableReferenceUI::updateCurrentReference()
 {
 	if (currentVariableParamUI != nullptr)
 	{
@@ -81,8 +67,52 @@ void ControlVariableReferenceUI::currentReferenceChanged(ControlVariableReferenc
 	}
 	else
 	{
-		referenceLabel.setText("[None]",NotificationType::dontSendNotification);
+		referenceLabel.setText("[None]", NotificationType::dontSendNotification);
 	}
 
+	resized();
+}
+
+void ControlVariableReferenceUI::buttonClicked(Button * b)
+{
+	if (b == &chooseBT)
+	{
+		ControlVariableChooser chooser;
+		ControlVariable * cv = chooser.showAndGetVariable();
+		if (cv != nullptr)
+		{
+			cvr->setCurrentVariable(cv);
+		}
+		
+	}
+	else if (b == &removeBT)
+	{
+		cvr->remove();
+	}
+}
+
+void ControlVariableReferenceUI::resized()
+{
+	Rectangle<int> r = getLocalBounds();
+	
+	Rectangle<int> rUI = r.removeFromBottom(10);
+	if (currentVariableParamUI != nullptr) currentVariableParamUI->setBounds(rUI);
+
+	removeBT.setBounds(r.removeFromRight(r.getHeight()).reduced(2));
+	chooseBT.setBounds(r.removeFromLeft(40));
+	r.removeFromLeft(2);
+	aliasUI->setBounds(r.removeFromRight(100));
+	r.reduce(5, 0);
+	referenceLabel.setBounds(r);
+}
+
+void ControlVariableReferenceUI::currentReferenceChanged(ControlVariableReference *)
+{
+	updateCurrentReference();
+}
+
+void ControlVariableReferenceUI::parameterValueChanged(Parameter *)
+{
+	DBG("Resized here !");
 	resized();
 }

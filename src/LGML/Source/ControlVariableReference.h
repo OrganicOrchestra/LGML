@@ -27,13 +27,14 @@ public:
 	
 	void setCurrentVariable(ControlVariable * v);
 
+	void remove();
 
 
 	class  ControlVariableReferenceListener
 	{
 	public:
 		virtual ~ControlVariableReferenceListener() {}
-
+		virtual void askForRemoveReference(ControlVariableReference *) {};
 		virtual void currentReferenceChanged(ControlVariableReference *) {};
 	};
 

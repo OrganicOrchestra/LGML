@@ -40,7 +40,6 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 
 void ControllerManager::removeController(Controller * c)
 {
-	DBG("ControllerManager remove Controller !");
     c->removeControllerListener(this);
 	removeChildControllableContainer(c);
     listeners.call(&ControllerManager::Listener::controllerRemoved, c);
@@ -49,7 +48,6 @@ void ControllerManager::removeController(Controller * c)
 
 void ControllerManager::clear()
 {
-	DBG("ControllerManager CLEAR !");
 	while (controllers.size())
 	{
 		controllers[0]->remove();

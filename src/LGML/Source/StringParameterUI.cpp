@@ -13,7 +13,7 @@
 #include "Style.h"
 
 StringParameterUI::StringParameterUI(Parameter * p) :
-    ParameterUI(p)
+    ParameterUI(p), autoSize(false)
 {
 
     addChildComponent(nameLabel);
@@ -39,6 +39,12 @@ StringParameterUI::StringParameterUI(Parameter * p) :
     setSize(200, 20);//default size
 }
 
+void StringParameterUI::setAutoSize(bool value)
+{
+	autoSize = value;
+	valueChanged(parameter->value);
+}
+
 void StringParameterUI::setPrefix(const String & _prefix)
 {
 	if (prefix == _prefix) return;
@@ -60,17 +66,39 @@ void StringParameterUI::setNameLabelVisible(bool visible)
     nameLabel.setVisible(visible);
 }
 
+/*
+void StringParameterUI::paint(Graphics & g)
+{
+	g.fillAll(Colours::purple.withAlpha(.2f));
+}
+*/
+
 void StringParameterUI::resized()
 {
     Rectangle<int> r = getLocalBounds();
-    if(nameLabelIsVisible) nameLabel.setBounds(r.removeFromLeft((int)(getWidth()*.4f)));
-    valueLabel.setBounds(r);
+	int nameLabelWidth = nameLabel.getFont().getStringWidth(nameLabel.getText());
+    if(nameLabelIsVisible) nameLabel.setBounds(r.removeFromLeft(nameLabelWidth));
+
+	valueLabel.setBounds(r);
+
 }
 
 
 void StringParameterUI::valueChanged(const var & v)
 {
+	DBG("Value changed, " << v.toString());
     valueLabel.setText(prefix+v.toString()+suffix,NotificationType::dontSendNotification);
+
+	if (autoSize)
+	{
+		int nameLabelWidth = nameLabel.getFont().getStringWidth(nameLabel.getText());
+		int valueLabelWidth = valueLabel.getFont().getStringWidth(valueLabel.getText());
+		int tw = valueLabelWidth;
+		if (nameLabelIsVisible) tw += 5 + nameLabelWidth;
+		setSize(tw + 10,(int)valueLabel.getFont().getHeight());
+		DBG("New size " << getWidth());
+	}
+
 }
 
 void StringParameterUI::labelTextChanged(Label *)

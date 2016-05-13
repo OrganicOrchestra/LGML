@@ -44,7 +44,6 @@ void OSCCustomControllerEditor::addVariableUI(ControlVariable * v, bool doResize
 
 void OSCCustomControllerEditor::removeVariableUI(ControlVariable * v, bool doResize)
 {
-	NLOG("OSCCustomControllerEditor","removeVariableUI");
 	ControlVariableUI * vui = getUIForVariable(v);
 	if (vui == nullptr) return;
 	innerContainer.removeChildComponent(vui);
@@ -92,7 +91,6 @@ void OSCCustomControllerEditor::buttonClicked(Button * b)
 	if (b == &addVariableBT)
 	{
 		Parameter * p = new FloatParameter(customController->getUniqueVariableNameFor("var"), "Custom Variable", 0, 0, 1);
-		p->replaceSlashesInShortName = false;
 		customController->addVariable(p);
 	}
 }

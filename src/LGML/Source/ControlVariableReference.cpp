@@ -45,3 +45,8 @@ void ControlVariableReference::setCurrentVariable(ControlVariable * v)
 
 	referenceListeners.call(&ControlVariableReferenceListener::currentReferenceChanged, this);
 }
+
+void ControlVariableReference::remove()
+{
+	referenceListeners.call(&ControlVariableReferenceListener::askForRemoveReference, this);
+}

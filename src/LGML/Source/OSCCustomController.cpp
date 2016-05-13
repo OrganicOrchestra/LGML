@@ -44,7 +44,10 @@ void OSCCustomController::loadJSONData(var data)
 
 	for (auto &v : *vDataArray)
 	{
-		addVariable(new FloatParameter(v.getDynamicObject()->getProperty("name"),"variable",0));
+		Parameter * p = new FloatParameter("newVar", "variable", 0);
+		p->replaceSlashesInShortName = false;
+		p->setNiceName(v.getDynamicObject()->getProperty("name"));
+		addVariable(p);
 	}
 }
 
@@ -57,7 +60,6 @@ ControllerUI * OSCCustomController::createUI()
 Result OSCCustomController::processMessageInternal(const OSCMessage & msg)
 {
 	String address = msg.getAddressPattern().toString();
-	DBG("Process message : " << address << " / " << msg.size() << "/" << String(msg[0].isFloat32()) );
 	
 	ControlVariable * v = getVariableForAddress(address);
 	

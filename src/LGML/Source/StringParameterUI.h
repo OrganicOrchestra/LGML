@@ -27,12 +27,16 @@ public:
 	String prefix;
 	String suffix;
 
+	bool autoSize;
+	void setAutoSize(bool value);
+
 	void setPrefix(const String &_prefix);
 	void setSuffix(const String &_suffix);
 
     bool nameLabelIsVisible;
     void setNameLabelVisible(bool visible);
 
+	//void paint(Graphics &g) override;
     void resized() override;
 
 

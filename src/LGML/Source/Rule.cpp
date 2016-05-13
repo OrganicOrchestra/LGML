@@ -32,12 +32,14 @@ ControlVariableReference * Rule::addReference()
 {
 	ControlVariableReference * cvr = new ControlVariableReference();
 	references.add(cvr);
+	cvr->addReferenceListener(this);
 	ruleListeners.call(&RuleListener::referenceAdded, cvr);
 	return cvr;
 }
 
 void Rule::removeReference(ControlVariableReference * cvr)
 {
+	cvr->removeReferenceListener(this);
 	ruleListeners.call(&RuleListener::referenceRemoved, cvr);
 	references.removeObject(cvr);
 }
@@ -65,6 +67,11 @@ void Rule::onContainerParameterChanged(Parameter * p)
 	{
 		ruleListeners.call(&RuleListener::ruleActivationChanged, this);
 	}
+}
+
+void Rule::askForRemoveReference(ControlVariableReference * r)
+{
+	removeReference(r);
 }
 
 
