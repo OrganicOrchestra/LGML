@@ -28,11 +28,11 @@ ControllerManager::~ControllerManager()
 Controller * ControllerManager::addController(ControllerFactory::ControllerType controllerType)
 {
     Controller * c = factory.createController(controllerType);
-    controllers.add(c);
-	c->addControllerListener(this);
-
 	c->nameParam->setValue(getUniqueNameInContainer(c->nameParam->stringValue()));
-
+	
+	controllers.add(c);
+	c->addControllerListener(this);
+	
 	addChildControllableContainer(c);
 	listeners.call(&ControllerManager::Listener::controllerAdded, c);
     return c;
@@ -40,15 +40,20 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 
 void ControllerManager::removeController(Controller * c)
 {
+	DBG("ControllerManager remove Controller !");
     c->removeControllerListener(this);
+	removeChildControllableContainer(c);
     listeners.call(&ControllerManager::Listener::controllerRemoved, c);
     controllers.removeObject(c);
 }
 
 void ControllerManager::clear()
 {
-    while (controllers.size())
-        controllers[0]->remove();
+	DBG("ControllerManager CLEAR !");
+	while (controllers.size())
+	{
+		controllers[0]->remove();
+	}
 }
 
 var ControllerManager::getJSONData()
