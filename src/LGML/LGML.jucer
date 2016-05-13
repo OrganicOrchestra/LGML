@@ -49,9 +49,16 @@
               file="Source/InspectorEditor.h"/>
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
+        <GROUP id="{BFD87B3B-6E7A-6719-1089-92D656C17348}" name="Thread">
+          <FILE id="fzCybH" name="QueuedNotifier.h" compile="0" resource="0"
+                file="Source/QueuedNotifier.h"/>
+        </GROUP>
         <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
         <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
         <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
+          <FILE id="wLcUwY" name="MIDIListener.cpp" compile="1" resource="0"
+                file="Source/MIDIListener.cpp"/>
+          <FILE id="j6648n" name="MIDIListener.h" compile="0" resource="0" file="Source/MIDIListener.h"/>
           <FILE id="AdpDDv" name="MIDIManager.cpp" compile="1" resource="0" file="Source/MIDIManager.cpp"/>
           <FILE id="tZ5Yo3" name="MIDIManager.h" compile="0" resource="0" file="Source/MIDIManager.h"/>
           <FILE id="VlpomU" name="MIDIUIHelper.cpp" compile="1" resource="0"

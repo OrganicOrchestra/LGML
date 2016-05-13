@@ -170,7 +170,7 @@ NodeBaseUI * VSTNode::createUI() {
 }
 
 
-void VSTNode::handleIncomingMidiMessage(MidiInput* source,
+void VSTNode::handleIncomingMidiMessage(MidiInput* ,
                                const MidiMessage& message) {
     if (innerPlugin)messageCollector.addMessageToQueue (message);
     
