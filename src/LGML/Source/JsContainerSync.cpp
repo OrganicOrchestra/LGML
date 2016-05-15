@@ -89,7 +89,7 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
         jassert(c->shortName.isNotEmpty());
         bool isNumber = true;
         juce::String::CharPointerType cc = c->shortName.getCharPointer();
-        while (cc){
+        while (!cc.isEmpty()){
             isNumber &= cc.isDigit();
             cc.getAndAdvance();
         }
