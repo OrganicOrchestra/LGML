@@ -102,7 +102,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 	if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
 		(*desc, result.sampleRate, result.bufferSize, errorMessage)) {
 		// try to align the precision of the processor and the graph
-		instance->setProcessingPrecision(singlePrecision);
+
 		instance->setPreferredBusArrangement(true, 0, AudioChannelSet::canonicalChannelSet(getMainBusNumInputChannels()));
 		instance->setPreferredBusArrangement(false, 0, AudioChannelSet::canonicalChannelSet(getMainBusNumOutputChannels()));
 		int numIn = instance->getMainBusNumInputChannels();
@@ -111,9 +111,10 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 
 		//@Martin i addedd this because when not playing, it crashed
         // @ben it is necessary
-        // btw typo error made the next line always true so not sure if is necessary ..
+        // if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
+        // ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
 
-//		if (TimeManager::getInstance()->playState->boolValue())
+            instance->setProcessingPrecision(singlePrecision);
             instance->prepareToPlay(result.sampleRate, result.bufferSize);
 
         instance->setPlayHead(getPlayHead());

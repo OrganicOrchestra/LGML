@@ -102,6 +102,7 @@ public:
     void numChannelsChanged()override;
     void prepareToPlay(double _sampleRate, int _blockSize)override {
         if (innerPlugin) {
+            innerPlugin->setProcessingPrecision(singlePrecision);
             innerPlugin->prepareToPlay(_sampleRate, _blockSize); }
     }
     void releaseResources() override { if (innerPlugin) { innerPlugin->releaseResources(); } };
