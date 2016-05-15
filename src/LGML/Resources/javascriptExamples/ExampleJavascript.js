@@ -19,6 +19,7 @@
 
 /// all enumered elements can be accessed via array named elements
 // eg access to looper track 0 ==> lgml.node.looper.tracks.elements[0]
+// eg numtracks = lgml.node.looper.tracks.elements.length
 
 
 
