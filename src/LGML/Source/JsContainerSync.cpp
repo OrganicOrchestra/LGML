@@ -86,8 +86,15 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
         }
     }
     for(auto &c:container->controllableContainers){
-        if(c->shortName.getIntValue()>0 || (c->shortName.length()==1 && c->shortName.getIntValue()==0)){
-                DBG(container->niceName);
+        jassert(c->shortName.isNotEmpty());
+        bool isNumber = true;
+        juce::String::CharPointerType cc = c->shortName.getCharPointer();
+        while (cc){
+            isNumber &= cc.isDigit();
+            cc.getAndAdvance();
+        }
+        if(isNumber){
+
             static const Identifier ArrayIdentifier("elements");
 
             DynamicObject * currentArrayObject = new DynamicObject();
@@ -95,6 +102,8 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
                 var aVar;
                 DynamicObject * childObject = createDynamicObjectFromContainer(c,currentArrayObject);
                 aVar.append(childObject);
+                // skiping not handled
+                jassert(!c->skipControllableNameInAddress);
                 d->setProperty(ArrayIdentifier, aVar);
 
 
