@@ -10,6 +10,7 @@
 
 #include "MIDIControllerUI.h"
 #include "MIDIControllerEditor.h"
+#include "MIDIController.h"
 
 MIDIControllerUI::MIDIControllerUI(MIDIController * controller) :
 	ControllerUI(controller),

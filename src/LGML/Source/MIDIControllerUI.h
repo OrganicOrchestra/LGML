@@ -11,8 +11,11 @@
 #ifndef MIDICONTROLLERUI_H_INCLUDED
 #define MIDICONTROLLERUI_H_INCLUDED
 
-#include "MIDIController.h"
+
 #include "ControllerUI.h"
+#include "MIDIListener.h"
+
+class MIDIController;
 
 class MIDIControllerUI : public  ControllerUI, public MIDIListener::Listener
 {

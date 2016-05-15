@@ -14,6 +14,9 @@
 #include "CustomEditor.h"
 #include "MIDIControllerUI.h"
 #include "MIDIUIHelper.h"
+#include "JsEnvironmentUI.h"
+
+
 
 class MIDIControllerEditor : public CustomEditor, ComboBoxListener
 {
@@ -24,6 +27,7 @@ public:
 	MIDIDeviceChooser deviceChooser;
 
 	MIDIController * midiController;
+    JsEnvironmentUI jsUI;
 
 	void resized() override;
 	void comboBoxChanged(ComboBox *) override;

@@ -37,22 +37,15 @@ void JavascriptController::buildLocalEnv(){
 Result JavascriptController::callForMessage(const OSCMessage & msg){
 
     String functionName = "onCtl_"+getJsFunctionNameFromAddress(msg.getAddressPattern().toString());
-    // here we choose to pass each argument as a separated value in function call i.e onMessage(arg1,arg2...)
+    // here we choose to pass each argument as an element of a var Array value in function call i.e onMessage(ArrayList)
     var argArray;
     for(auto & m:msg){
         if(m.isFloat32()){ argArray.append(m.getFloat32());}
         if(m.isInt32()){ argArray.append(m.getInt32());}
         if(m.isString()){ argArray.append(m.getString());}
     }
-
-	//@martin why create a Result var to put in as a bool argument in callFunction()
-    Result r = Result::ok();
-    var varRes = callFunction(functionName, argArray, &r);
-
-    if(r.failed()){
-        LOG("error on function : "+ functionName);
-        LOG(r.getErrorMessage());
-    }
+    Result r(Result::ok());
+    var varRes = callFunction(functionName, argArray,false , &r);
     callonAnyMsg(msg);
     return r;
 }
@@ -66,10 +59,9 @@ void JavascriptController::callonAnyMsg(const OSCMessage & msg){
         if(m.isInt32()){args.append(m.getInt32());}
         if(m.isString()){args.append(m.getString());}
     }
-    Result r(Result::ok());
     Array<var> argList = {address,args};
     static const Identifier onCtlAnyMsgIdentifier("onCtl_AnyMsg");
-    var varRes = callFunctionFromIdentifier(onCtlAnyMsgIdentifier, argList,&r);
+    var varRes = callFunctionFromIdentifier(onCtlAnyMsgIdentifier, argList);
 
 }
 

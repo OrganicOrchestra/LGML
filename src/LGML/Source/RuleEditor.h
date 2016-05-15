@@ -69,7 +69,7 @@ public:
 	void consequenceRemoved(RuleConsequence *) override;
 
 
-	void buttonClicked(Button * b);
+	void buttonClicked(Button * b) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleEditor)
 };

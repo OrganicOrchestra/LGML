@@ -32,10 +32,10 @@ JsEnvironment::~JsEnvironment(){
 void JsEnvironment::clearNamespace(){
     while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
     // prune to get only core Methods and classes
-    NamedValueSet root = jsEngine.getRootObjectProperties();
-    for(int i = 0 ; i < root.size() ; i++){
-        if(!root.getVarPointerAt(i)->isMethod()){
-            Identifier id = root.getName(i);
+//    NamedValueSet root = jsEngine.getRootObjectProperties();
+    for(int i = 0 ; i < jsEngine.getRootObjectProperties().size() ; i++){
+        if(!jsEngine.getRootObjectProperties().getVarPointerAt(i)->isMethod()){
+            Identifier id = jsEngine.getRootObjectProperties().getName(i);
             if(!coreJsClasses.contains(id)){
                 jsEngine.registerNativeObject(id, nullptr);
             }
@@ -111,47 +111,67 @@ bool JsEnvironment::functionIsDefined(const juce::String & s){
 
 
 
-var JsEnvironment::callFunction (const String& function, const Array<var>& args, bool logResult){
-    Result * result = nullptr;
-    if(logResult)result = new Result(Result::ok());
+var JsEnvironment::callFunction (const String& function, const Array<var>& args, bool logResult,Result * result){
+
+    if(logResult)jassert( result!=nullptr);
+
     if(!functionIsDefined(function)){
         if(result!=nullptr)result->fail("no function Found");
         return var::undefined();
     }
-    return callFunctionFromIdentifier(function, args,result);
+    return callFunctionFromIdentifier(function, args,logResult,result);
 }
 
-var JsEnvironment::callFunction (const String& function, const var& args,  bool logResult ){
-    Result * result = nullptr;
-    if(logResult)result = new Result(Result::ok());
+var JsEnvironment::callFunction (const String& function, const var& args,  bool logResult ,Result * result){
+
     if(!functionIsDefined(function)){
         if(result!=nullptr)result->fail("no function Found");
         return var::undefined();
     }
-    return callFunctionFromIdentifier(function, args,result);
+    return callFunctionFromIdentifier(function, args,logResult,result);
 }
 
 
 
-var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const Array<var>& args, Result* result){
+var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const Array<var>& args,bool logResult , Result* result){
     // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
     juce::var::NativeFunctionArgs Nargs(var::undefined(),&args.getReference(0),args.size());
+    bool resOwned = false;
+    if(logResult && result==nullptr){
+        result = new Result(Result::ok());
+        resOwned = true;
+    }
+
+
     var res =  jsEngine.callFunction(function,Nargs,result);
-    if(result!=nullptr && result->failed()){
+    if(logResult && result->failed()){
         LOG(result->getErrorMessage());
     }
 
+    if(resOwned){
+        delete result;
+        result=nullptr;
+    }
     return res;
 }
 
-var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const var & arg, Result* result){
+var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const var & arg,bool logResult , Result* result){
+    bool resOwned = false;
+    if(logResult && result==nullptr){
+        result = new Result(Result::ok());
+        resOwned = true;
+    }
+
     // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
     juce::var::NativeFunctionArgs Nargs(var::undefined(),&arg,1);
     var res =  jsEngine.callFunction(function,Nargs,result);
-    if(result!=nullptr && result->failed()){
+    if(logResult && result->failed()){
         LOG(result->getErrorMessage());
     }
-
+    if(resOwned){
+        delete result;
+        result=nullptr;
+    }
     return res;
 }
 

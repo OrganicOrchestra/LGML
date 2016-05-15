@@ -16,8 +16,9 @@
 AudioDeviceManager & getAudioDeviceManager();
 
 MIDIController::MIDIController() :
-Controller("MIDI")
+Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
 {
+    setNamespaceName("MIDI."+nameParam->stringValue());
 }
 
 ControllerUI * MIDIController::createUI()
@@ -38,6 +39,55 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* source,
         LOG("Incoming note message : " + String(source->getName()) + " / " + String(message.getNoteNumber()) + " / "
             + (message.isNoteOn()?"on":"off"));
     }
+
+    callJs(message);
     
     
+}
+
+void MIDIController::callJs(const MidiMessage& message){
+    if(message.isController()){
+        static const Identifier onCCFunctionName("onCC");
+        Array<var> args;
+        args.add(message.getControllerNumber());
+        args.add(message.getControllerValue());
+        callFunctionFromIdentifier(onCCFunctionName, args);
+    }
+    if(message.isNoteOnOrOff()){
+        static const Identifier onCCFunctionName("onNote");
+        Array<var> args;
+        args.add(message.getNoteNumber());
+        args.add(message.isNoteOn()?message.getVelocity():0);
+        callFunctionFromIdentifier(onCCFunctionName, args);
+    }
+}
+
+void MIDIController::onContainerParameterChanged(Parameter * p){
+    if(p==nameParam){
+        setNamespaceName("MIDI."+nameParam->stringValue());
+    }
+}
+
+void MIDIController::buildLocalEnv(){
+    DynamicObject obj;
+    obj.setMethod("sendCC", sendCC);
+    obj.setProperty(ptrIdentifier, this);
+    obj.setMethod("sendNoteOnFor", sendNoteOnFor);
+    setLocalNamespace(obj);
+    
+};
+
+
+// @ben do we do the same as OSC MIDI IN/OUt controllers
+
+var MIDIController::sendCC(const var::NativeFunctionArgs & a){
+//    MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
+
+
+
+    return var::undefined();
+}
+var MIDIController::sendNoteOnFor(const var::NativeFunctionArgs & a){
+
+        return var::undefined();
 }

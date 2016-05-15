@@ -58,11 +58,11 @@ public:
 
 
     // this firstCheck if function exists to avoid poluting Identifier global pool
-    var callFunction (const String& function, const Array<var>& args, bool logResult = true);
-    var callFunction (const String& function, const var& args,  bool logResult = true);
+    var callFunction (const String& function, const Array<var>& args, bool logResult = true,Result * =nullptr);
+    var callFunction (const String& function, const var& args,  bool logResult = true,Result * =nullptr);
 
-    var callFunctionFromIdentifier  (const Identifier& function, const Array<var> & args, Result* result=nullptr);
-    var callFunctionFromIdentifier (const Identifier& function, const var & arg, Result* result = nullptr);
+    var callFunctionFromIdentifier  (const Identifier& function, const Array<var> & args,bool logResult = true, Result* result=nullptr);
+    var callFunctionFromIdentifier (const Identifier& function, const var & arg,bool logResult = true, Result* result = nullptr);
 
 
     static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}

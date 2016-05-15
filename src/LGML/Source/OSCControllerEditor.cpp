@@ -23,7 +23,7 @@ OSCControllerEditor::OSCControllerEditor(OSCControllerUI * controllerUI) :
 	addAndMakeVisible(remoteHostUI);
 	addAndMakeVisible(remotePortUI);
 
-	addAndMakeVisible(&innerContainer);
+	addAndMakeVisible(innerContainer);
 }
 
 OSCControllerEditor::~OSCControllerEditor()

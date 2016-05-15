@@ -20,8 +20,8 @@ public:
 	virtual ~OSCCustomController();
 
 	
-	virtual var getJSONData();
-	virtual void loadJSONData(var data);
+	virtual var getJSONData() override;
+	virtual void loadJSONData(var data) override;
 
 	virtual ControllerUI * createUI() override;
 

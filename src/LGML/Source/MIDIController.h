@@ -13,22 +13,26 @@
 
 #include "Controller.h"
 #include "MidiListener.h"
+#include "JsEnvironment.h"
 
-class MIDIController : public Controller,public MIDIListener
+class MIDIController : public Controller,public MIDIListener,public JsEnvironment
 {
 public :
     MIDIController();
 
 
 
-
+    // should be implemented to build localenv
+    void buildLocalEnv() override;
 	void handleIncomingMidiMessage(MidiInput* source,
 		const MidiMessage& message) override;
 
 	ControllerUI * createUI() override;
+    void    onContainerParameterChanged(Parameter * )override;
 
-
-
+    static var sendCC(const var::NativeFunctionArgs & v);
+    static var sendNoteOnFor(const var::NativeFunctionArgs & v);
+    void     callJs(const MidiMessage& message);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
 };
