@@ -27,7 +27,21 @@ public:
 
     NodeBaseUI * createUI() override;
 
+    class TrackGroup : public ControllableContainer{
+    public:
+        TrackGroup(LooperNode* l):ControllableContainer("tracks"),owner(l){};
+
+        	void setNumTracks(int numTracks);
+        void addTrack();
+        void removeTrack(int i);
+
+
 	OwnedArray<LooperTrack> tracks;
+        LooperNode * owner;
+
+    };
+
+    TrackGroup trackGroup;
 	LooperTrack * selectedTrack;
 
 	LooperTrack * lastMasterTempoTrack;
@@ -51,9 +65,8 @@ public:
 	AudioBuffer<float> bufferIn;
 	AudioBuffer<float>bufferOut;
 
-	void setNumTracks(int numTracks);
-	void addTrack();
-	void removeTrack(int i);
+
+
 
 	void selectMe(LooperTrack * t);
 

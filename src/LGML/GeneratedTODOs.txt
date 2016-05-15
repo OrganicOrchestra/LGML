@@ -51,7 +51,7 @@ VSTNode.cpp
 
 
 LooperNode.cpp
-	line : 63
+	line : 66
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 

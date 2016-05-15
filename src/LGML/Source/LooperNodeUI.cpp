@@ -47,7 +47,7 @@ void LooperNodeContentUI::init(){
     setSize(650,180);
 
 
-    trackNumChanged(looperNode->tracks.size());
+    trackNumChanged(looperNode->trackGroup.tracks.size());
 }
 
 void LooperNodeContentUI::resized(){
@@ -124,7 +124,7 @@ void LooperNodeContentUI::trackNumChanged(int num) {
     }
     else{
         for(int i = tracksUI.size() ; i < num ; i++){
-            TrackUI * t = new TrackUI(looperNode->tracks.getUnchecked(i));
+            TrackUI * t = new TrackUI(looperNode->trackGroup.tracks.getUnchecked(i));
             tracksUI.add(t);
             trackContainer.addAndMakeVisible(t);
         }

@@ -120,7 +120,8 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
     for(int i = 0 ; i < v.size() ; i++){
         var * vv = v.getVarPointerAt(i);
 
-        if(!vv->isObject()){
+
+        if(!vv->isObject() && !vv->isArray()){
             Identifier name = v.getName(i);
 
             if(name!= ptrIdentifier){
@@ -136,12 +137,19 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
         String name = v.getName(i).toString();
 
 
-        if(vv->isObject()){
+        if(vv->isObject() || vv->isArray()){
             for(int  j = 0 ; j < indentlevel ; j ++ ){
                 res+="*.";
             }
 
-            DynamicObject * d = vv->getDynamicObject();
+            DynamicObject * d;
+            if(vv->isArray() && vv->getArray()->size()>0){
+                res+="(Array["+String(vv->getArray()->size())+"])";
+                d = vv->getArray()->getFirst().getDynamicObject();
+            }
+            else{
+                d = vv->getDynamicObject();
+            }
             if(showptr){
                 res+="("+String::toHexString((int64)d)+")";
             }
@@ -150,6 +158,11 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
                 res+=namespaceToString(d->getProperties(),indentlevel+1,showValue,showptr);}
 
         }
+        else if(vv->isArray()){
+            res+="(Array)\n";
+
+        }
+
 
     }
 

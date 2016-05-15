@@ -15,7 +15,7 @@
 #include "LooperNode.h"
 
 LooperTrack::LooperTrack(LooperNode * looperNode, int _trackIdx) :
-    ControllableContainer("Track " + String(_trackIdx)),
+    ControllableContainer(String(_trackIdx)),
     parentLooper(looperNode),
     quantizedRecordStart(0),
     quantizedRecordEnd(0),
@@ -244,10 +244,10 @@ void LooperTrack::onContainerParameterChanged(Parameter * p)
     }
     if(p==solo){
         someOneIsSolo = false;
-        for(auto &t:parentLooper->tracks){
+        for(auto &t:parentLooper->trackGroup.tracks){
                 someOneIsSolo |= t->solo->boolValue();
         }
-        for(auto &t:parentLooper->tracks){
+        for(auto &t:parentLooper->trackGroup.tracks){
             t->someOneIsSolo = someOneIsSolo;
         }
     }

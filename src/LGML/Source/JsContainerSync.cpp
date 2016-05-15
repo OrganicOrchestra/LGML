@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    JsContainerSync.cpp
-    Created: 9 May 2016 6:21:50pm
-    Author:  Martin Hermant
+ JsContainerSync.cpp
+ Created: 9 May 2016 6:21:50pm
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "JsContainerSync.h"
 #include "JsHelpers.h"
@@ -52,12 +52,14 @@ JsContainerSync::JsContainerNamespace* JsContainerSync::getContainerNamespace(co
     return result;
 }
 
-bool JsContainerSync::existInContainerNamespace(const String & ns){ 
-	return getContainerNamespace(ns)!=nullptr;
+bool JsContainerSync::existInContainerNamespace(const String & ns){
+    return getContainerNamespace(ns)!=nullptr;
 }
 
 DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent)
 {
+
+
     DynamicObject*  d = parent;
     if(!container->skipControllableNameInAddress)
         d= new DynamicObject();
@@ -84,11 +86,39 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
         }
     }
     for(auto &c:container->controllableContainers){
-        DynamicObject * childObject = createDynamicObjectFromContainer(c,d);
-        if(!c->skipControllableNameInAddress)
-            d->setProperty(c->shortName, childObject);
+        if(c->shortName.getIntValue()>0 || (c->shortName.length()==1 && c->shortName.getIntValue()==0)){
+                DBG(container->niceName);
+            static const Identifier ArrayIdentifier("elements");
+
+            DynamicObject * currentArrayObject = new DynamicObject();
+            if(!d->hasProperty(ArrayIdentifier)){
+                var aVar;
+                DynamicObject * childObject = createDynamicObjectFromContainer(c,currentArrayObject);
+                aVar.append(childObject);
+                d->setProperty(ArrayIdentifier, aVar);
+
+
+            }
+            else{
+                Array<var> * arrVar;
+                arrVar = d->getProperty(ArrayIdentifier).getArray();
+                DynamicObject * childObject =createDynamicObjectFromContainer(c,currentArrayObject);
+                arrVar->add(childObject);
+//                d->setProperty(ArrayIdentifier, *arrVar);
+
+            }
+            //            if(!c->skipControllableNameInAddress)
+//            d->setProperty(ArrayIdentifier, arrVar);
+
+
+        }
+        else{
+            DynamicObject * childObject = createDynamicObjectFromContainer(c,d);
+            if(!c->skipControllableNameInAddress)
+                d->setProperty(c->shortName, childObject);
+        }
     }
-    
+
     return d;
 }
 
@@ -141,7 +171,7 @@ var JsContainerSync::setControllable(const juce::var::NativeFunctionArgs& a){
                 default:
                     success = false;
                     break;
-                    
+
             }
         }
     }
