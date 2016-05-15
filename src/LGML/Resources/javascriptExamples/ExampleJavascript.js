@@ -60,11 +60,16 @@ onCtl_AnyMsg = function (adress , args){
 
 //////////////////////////
 /// MIDI
+// example for script attached to MIDI controllers
+// atm sending MIDI is not handled in LGML
+
+// onCC on incoming CC
 onCC = function(cc,value){
 
 	lgml.post("CC : "+cc + " /" + value);
 };
 
+// onNote on incoming Note
 onNote = function(Note,Velocity){
 	if(Velocity>0){
 		lgml.node.looper.tracks.elements[Note-40].volume.set(0);
