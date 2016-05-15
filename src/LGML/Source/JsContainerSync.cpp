@@ -97,29 +97,24 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
 
             static const Identifier ArrayIdentifier("elements");
 
-            DynamicObject * currentArrayObject = new DynamicObject();
             if(!d->hasProperty(ArrayIdentifier)){
                 var aVar;
-                DynamicObject * childObject = createDynamicObjectFromContainer(c,currentArrayObject);
+                DynamicObject * childObject = createDynamicObjectFromContainer(c,d);
                 jassert(c->shortName.getIntValue() == 0);
                 aVar.append(childObject);
                 // skiping not handled
                 jassert(!c->skipControllableNameInAddress);
                 d->setProperty(ArrayIdentifier, aVar);
 
-
             }
             else{
                 Array<var> * arrVar;
                 arrVar = d->getProperty(ArrayIdentifier).getArray();
                 jassert(c->shortName.getIntValue() == arrVar->size());
-                DynamicObject * childObject =createDynamicObjectFromContainer(c,currentArrayObject);
+                DynamicObject * childObject =createDynamicObjectFromContainer(c,d);
                 arrVar->add(childObject);
-//                d->setProperty(ArrayIdentifier, *arrVar);
-
             }
-            //            if(!c->skipControllableNameInAddress)
-//            d->setProperty(ArrayIdentifier, arrVar);
+
 
 
         }
