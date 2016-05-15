@@ -25,6 +25,7 @@ public:
 	JavascriptController * jsController;
 
 	ScopedPointer<JsEnvironmentUI> scriptUI;
+    int getContentHeight()override;
 
 	void resized() override;
 

@@ -8,7 +8,7 @@
 
 
 JsEnvironment.cpp
-	line : 264
+	line : 284
 		// @ben only supported if move semantics are too are they for you?
 
 
@@ -46,8 +46,8 @@ VSTNode.cpp
 	line : 111
 		//@Martin i addedd this because when not playing, it crashed
 		// @ben it is necessary
-		// btw typo error made the next line always true so not sure if is necessary ..
-		//		if (TimeManager::getInstance()->playState->boolValue())
+		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
+		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
 
 
 LooperNode.cpp
@@ -90,6 +90,11 @@ DataProcessorGraph.cpp
 ControllableInspector.cpp
 	line : 85
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
+
+
+MIDIController.cpp
+	line : 80
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 
 TimeManager.h
