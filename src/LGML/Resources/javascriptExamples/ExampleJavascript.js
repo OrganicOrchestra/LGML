@@ -29,7 +29,7 @@ var smoothedVolume;
 var smoothFactor = .1;
 on_node_audioInNode_masterVolume = function(a) {
 	smoothedVolume = a*smoothFactor + (1.0-smoothFactor)*smoothedVolume;
-	lgml.node.looper.track0.volume.set(smoothedVolume);	
+	lgml.node.looper.tracks.elements[0].volume.set(smoothedVolume);	
 };
 
 
