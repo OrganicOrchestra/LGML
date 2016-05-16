@@ -25,7 +25,7 @@ OSCController::OSCController(const String &_name) :
 
     receiver.addListener(this);
 
-	
+
 }
 
 OSCController::~OSCController()
@@ -74,7 +74,7 @@ void OSCController::oscMessageReceived(const OSCMessage & message)
     processMessage(message);
 }
 
-void OSCController::oscBundleReceived(const OSCBundle & bundle) 
+void OSCController::oscBundleReceived(const OSCBundle & bundle)
 {
 	for (auto &m : bundle)
 	{

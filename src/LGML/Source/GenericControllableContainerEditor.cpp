@@ -180,7 +180,7 @@ void CCInnerContainer::addCCLink(ControllableContainer * cc)
 
 void CCInnerContainer::removeCCLink(ControllableContainer * cc)
 {
-	
+
 	CCLinkBT * bt = getCCLinkForCC(cc);
 	if (bt == nullptr) return;
 
@@ -205,7 +205,7 @@ void CCInnerContainer::removeControllableUI(Controllable * c)
 
 	removeChildComponent(cui);
 	controllablesUI.removeObject(cui);
-	
+
 }
 
 ControllableUI * CCInnerContainer::getUIForControllable(Controllable * c)
@@ -234,7 +234,7 @@ CCInnerContainer::CCLinkBT * CCInnerContainer::getCCLinkForCC(ControllableContai
 	{
 		if (cclink->targetContainer == cc) return cclink;
 	}
-	
+
 	return nullptr;
 }
 
@@ -325,7 +325,7 @@ void CCInnerContainer::controllableRemoved(Controllable * c)
 void CCInnerContainer::controllableContainerAdded(ControllableContainer * cc)
 {
 	if (cc->parentContainer != container) return;
-	
+
 	if (level < maxLevel) addCCInnerUI(cc);
 	else if (canAccessLowerContainers) addCCLink(cc);
 }
@@ -340,7 +340,7 @@ void CCInnerContainer::controllableContainerRemoved(ControllableContainer * cc)
 void CCInnerContainer::childStructureChanged(ControllableContainer *)
 {
 	//resized();
-	
+
 }
 
 void CCInnerContainer::buttonClicked(Button * b)

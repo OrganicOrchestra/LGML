@@ -24,7 +24,7 @@ Inspector::~Inspector()
 void Inspector::setEnabled(bool value)
 {
 	if (isEnabled == value) return;
-	
+
 	if (!value) setCurrentComponent(nullptr);
 	isEnabled = value;
 }

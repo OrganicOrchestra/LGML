@@ -27,7 +27,7 @@ public:
 
     // should return current env
     virtual DynamicObject * getEnv() = 0;
-    
+
     void    linkToControllableContainer(const String & jsNamespace,ControllableContainer * c);
 
     static  DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
@@ -54,7 +54,7 @@ private:
 
     static var setControllable(const juce::var::NativeFunctionArgs& a);
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
-    
+
 };
 
 

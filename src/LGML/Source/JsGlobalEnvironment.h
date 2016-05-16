@@ -36,7 +36,7 @@ private:
     static var post(const juce::var::NativeFunctionArgs& a);
 
     friend class JsEnvironment;
-    
+
     var env;
 };
 

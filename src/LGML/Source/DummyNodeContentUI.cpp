@@ -30,7 +30,7 @@ void DummyNodeContentUI::resized()
     testTriggerButton->setTopRightPosition(getWidth()-10, getHeight() - testTriggerButton->getHeight() - 10);
 }
 
-void DummyNodeContentUI::init() 
+void DummyNodeContentUI::init()
 {
     //no need to call NodeBase init because there is nothing inside and there should not be anything !
 

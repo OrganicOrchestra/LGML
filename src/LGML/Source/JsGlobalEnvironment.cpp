@@ -42,6 +42,3 @@ var JsGlobalEnvironment::post(const juce::var::NativeFunctionArgs& a){
     }
     return var();
 }
-
-
-

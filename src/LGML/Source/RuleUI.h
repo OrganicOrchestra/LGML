@@ -35,7 +35,7 @@ public:
 	void buttonClicked(Button * b)override;
 	bool keyPressed(const KeyPress &e) override;
 	virtual InspectorEditor * getEditor() override;
-	
+
 	virtual void ruleActivationChanged(Rule *) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleUI)

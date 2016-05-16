@@ -16,9 +16,9 @@
 #include "ParameterUI.h"
 
 
-class ControlVariableReferenceUI : 
+class ControlVariableReferenceUI :
 	public Component,
-	public ButtonListener, 
+	public ButtonListener,
 	public ControlVariableReference::ControlVariableReferenceListener,
 	public Parameter::Listener
 {
@@ -44,7 +44,7 @@ public :
 	void currentReferenceChanged(ControlVariableReference *);
 
 	void parameterValueChanged(Parameter * p);
-	
+
 };
 
 

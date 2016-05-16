@@ -60,9 +60,9 @@ ControllerUI * OSCCustomController::createUI()
 Result OSCCustomController::processMessageInternal(const OSCMessage & msg)
 {
 	String address = msg.getAddressPattern().toString();
-	
+
 	ControlVariable * v = getVariableForAddress(address);
-	
+
 	Result r(Result::ok());
 
 	if (v == nullptr) r = Result::fail("Variable not found");

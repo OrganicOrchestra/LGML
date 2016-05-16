@@ -240,7 +240,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
             //define master volume, or all volume ?
         }
     }
-    
+
     else if (p == TimeManager::getInstance()->playState) {
         if (!p->value) {
             for (auto &t : trackGroup.tracks) {
@@ -256,11 +256,11 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
     else if(p==selectTrack){
         bool changed = true;
         if( selectedTrack!=nullptr)changed  = selectedTrack->trackIdx!=p->intValue();
-        
+
         if(changed){
             if(selectTrack->intValue() < trackGroup.tracks.size()){
                 trackGroup.tracks.getUnchecked(selectTrack->intValue())->selectTrig->trigger();
-                
+
             }
         }
     }

@@ -27,8 +27,8 @@ class NodeManagerUI;
 
 NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
-class NodeBaseUI    : 
-	public InspectableComponent, 
+class NodeBaseUI    :
+	public InspectableComponent,
 	public Parameter::Listener
 {
 public:
@@ -52,7 +52,7 @@ public:
 
     void childBoundsChanged (Component*)override;
 	void parameterValueChanged(Parameter * p) override;
-    
+
     void mouseDown(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e)  override;
@@ -76,7 +76,7 @@ public:
         ScopedPointer<NodeBaseAudioCtlUI> audioCtlUIContainer;
 
         const int audioCtlContainerPadRight = 3;
-       
+
         void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
         void paint(Graphics &g) override;
         void resized() override;

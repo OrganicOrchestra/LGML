@@ -19,7 +19,7 @@ public:
 	OSCCustomController();
 	virtual ~OSCCustomController();
 
-	
+
 	virtual var getJSONData() override;
 	virtual void loadJSONData(var data) override;
 

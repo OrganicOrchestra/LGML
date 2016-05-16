@@ -74,7 +74,7 @@ void ShapeShifterContainer::removeShifter(ShapeShifter * shifter, bool deleteShi
 		//dispatch emptied container so parent container deletes it
 		if (!silent) containerListeners.call(&ShapeShifterContainerListener::containerEmptied, this);
 	}
-	else 
+	else
 	{
 		if (shifters.size() == 1 && !silent && parentContainer != nullptr)
 		{
@@ -130,7 +130,7 @@ ShapeShifterPanel * ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel
 
 
 	}
-	
+
 	return panel;
 }
 
@@ -193,9 +193,9 @@ void ShapeShifterContainer::resized()
 		bool lastShifter = panelIndex >= grabbers.size();
 		int tp = (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
 		int targetSpace = (!p->isFlexible()) ? tp : defaultSpace;
-		
+
 		if(!lastShifter)
-		{ 
+		{
 			Rectangle<int> tr = (direction == HORIZONTAL) ? r.removeFromLeft(targetSpace) : r.removeFromTop(targetSpace);
 			p->setBounds(tr);
 		}else
@@ -217,7 +217,7 @@ void ShapeShifterContainer::clear()
 {
 	while (shifters.size() > 0)
 	{
-		removeShifter(shifters[0], true, true); 
+		removeShifter(shifters[0], true, true);
 	}
 }
 

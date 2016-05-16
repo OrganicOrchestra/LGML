@@ -34,10 +34,10 @@ public:
 	public:
 		virtual ~RuleConditionListener() {}
 
-		virtual void askForRemoveCondition(RuleCondition *) {}; 
-		
+		virtual void askForRemoveCondition(RuleCondition *) {};
+
 		virtual void conditionActivationChanged(RuleCondition *) {}
-		
+
 	};
 
 	ListenerList<RuleConditionListener> conditionListeners;

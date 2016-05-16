@@ -33,7 +33,7 @@ InspectableComponent::InspectableComponent(ControllableContainer * relatedContai
 	canInspectChildContainersBeyondRecursion(true),
 	isSelected(false),
 	repaintOnSelectionChanged(true)
-{ 
+{
 
 }
 
@@ -58,9 +58,9 @@ void InspectableComponent::setSelected(bool value)
 	isSelected = value;
 
 	if (repaintOnSelectionChanged) repaint();
-	 
+
 	setSelectedInternal(value);
-	
+
 	listeners.call(&InspectableListener::inspectableSelectionChanged, this);
 }
 

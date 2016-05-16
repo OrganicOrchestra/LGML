@@ -121,4 +121,3 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
 		}
     }
 }
-

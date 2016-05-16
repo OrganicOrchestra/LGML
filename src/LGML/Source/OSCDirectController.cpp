@@ -14,7 +14,7 @@
 OSCDirectController::OSCDirectController() :
     OSCDirectController("OSC Direct Controller")
 {
-   
+
 }
 
 OSCDirectController::OSCDirectController(const String & name) :
@@ -52,7 +52,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
         {
             if (!c->isControllableFeedbackOnly)
             {
-				
+
                 switch (c->type)
                 {
                 case Controllable::Type::TRIGGER:

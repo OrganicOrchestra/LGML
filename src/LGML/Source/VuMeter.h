@@ -53,7 +53,7 @@ public:
 
         if(newVoldB >= 0 && std::abs(newVoldB-voldB)>0.02f){
 			setVoldB(newVoldB);
-           
+
         }
     };
 

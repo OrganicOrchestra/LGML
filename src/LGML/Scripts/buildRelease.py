@@ -5,7 +5,7 @@ import urllib;
 
 
 # configuration  = "Release"
-configuration  = "Debug"
+configuration  = "DebugC++11"
 bumpVersion = True
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
@@ -17,7 +17,7 @@ specificVersion = ""#0.1.1"
 localExportPath = "../Builds/MacOSX/builds/"
 localExportPath = os.path.abspath(localExportPath)
 
-proJucerPath = "~/Dev/JUCE/ProJucer.app/Contents/MacOS/ProJucer"
+proJucerPath = "/Applications/ProJucer.app/Contents/MacOS/ProJucer"
 JuceProjectPath = "../LGML.jucer"
 xcodeProjPath = "../Builds/MacOSX/" 
 executable_name = "LGML_"+("" if configuration=="Release" else configuration)

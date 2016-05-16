@@ -227,7 +227,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
         case CommandIDs::playPause:
             TimeManager::getInstance()->togglePlay();
             break;
-            
+
         default:
             return false;
     }

@@ -477,10 +477,10 @@ void LookAndFeelOO::drawScrollbar (Graphics& g,
                                     bool /*isMouseOver*/,
                                     bool /*isMouseDown*/)
 {
-	
+
 	const Colour bgColour(scrollbar.findColour(ScrollBar::backgroundColourId));
 	const Colour thumbColour(scrollbar.findColour(ScrollBar::thumbColourId));
-	
+
 	float roundFactor = isScrollbarVertical ? width / 2.f : height / 2.f;
 
 	Rectangle<int> r = Rectangle<int>(x, y, width, height).reduced(2);
@@ -585,7 +585,7 @@ void LookAndFeelOO::drawScrollbar (Graphics& g,
 
     g.setColour (thumbColour);
     g.fillPath (thumbPath);
-	
+
     g.setGradientFill (ColourGradient (Colour (0x10000000), gx1, gy1,
                                        Colours::transparentBlack, gx2, gy2, false));
 
@@ -2177,7 +2177,7 @@ void LookAndFeelOO::drawTableHeaderColumn (Graphics& g, const String& columnName
                                             int columnFlags)
 {
 	Rectangle<int> area(width, height);
-	
+
 	Colour c = BG_COLOR.brighter(isMouseDown?.8f:(isMouseOver ? .6f : .3f));
 	g.setColour(c);
     g.fillRoundedRectangle(area.reduced(2).toFloat(),2);

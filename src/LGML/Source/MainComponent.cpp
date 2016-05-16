@@ -39,7 +39,7 @@ MainContentComponent::MainContentComponent(Engine * e):
     nodeManagerViewport = new NodeManagerUIViewport(new NodeManagerUI(NodeManager::getInstance()));
 
 	inspectorViewport = new InspectorViewport(inspector);
-    
+
 	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
     ruleManagerUI = new RuleManagerUI(RuleManager::getInstance());
     lgmlLoggerUI = new LGMLLoggerUI(LGMLLogger::getInstance());
@@ -48,7 +48,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerViewport);
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
 	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(inspectorViewport);
-	
+
 	ShapeShifterPanel * rulesPanel = ShapeShifterManager::getInstance()->createPanel(ruleManagerUI);
     ShapeShifterPanel * logPanel = ShapeShifterManager::getInstance()->createPanel(lgmlLoggerUI);
 
@@ -57,8 +57,8 @@ MainContentComponent::MainContentComponent(Engine * e):
 	shapeShifterManager.mainContainer.insertPanelAt(timeManagerPanel, 0);
 
 	ShapeShifterContainer * c1 = shapeShifterManager.mainContainer.insertContainerAt(ShapeShifterContainer::Direction::HORIZONTAL,1);
-	
-	
+
+
 	ShapeShifterContainer * vc = c1->insertContainerAt(ShapeShifterContainer::VERTICAL,0);
 	vc->insertPanelAt(controllerManagerPanel, 0);
 	vc->insertPanelAt(rulesPanel,1);
@@ -115,7 +115,7 @@ MainContentComponent::~MainContentComponent(){
 
 	DBG("Clear inspector");
 	inspector->clear();
-	ShapeShifterManager::deleteInstance();	
+	ShapeShifterManager::deleteInstance();
 }
 
 

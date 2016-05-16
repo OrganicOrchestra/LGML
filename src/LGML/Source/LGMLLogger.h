@@ -32,10 +32,10 @@ class LGMLLogger : public Logger{
     typedef QueuedNotifier<String>::Listener Listener;
     void addLogListener(Listener * l){notifier.addListener(l);}
     void removeLogListener(Listener * l){notifier.removeListener(l);}
-    
-    
+
+
     ScopedPointer<FileLogger> fileLog;
-    
+
 };
 
 

@@ -86,7 +86,7 @@ public :
 	ScopedPointer<CCInnerContainer> innerContainer;
 
 	void setCurrentInspectedContainer(ControllableContainer *);
-	
+
 	virtual int getContentHeight() override;
 
 	void resized() override;
@@ -95,7 +95,7 @@ public :
 	void buttonClicked(Button  *b)override;
 
 	void childStructureChanged(ControllableContainer *) override;
-	
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericControllableContainerEditor)
 };

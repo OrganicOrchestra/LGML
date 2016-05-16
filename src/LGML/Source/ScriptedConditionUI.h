@@ -24,7 +24,7 @@ public :
 
 	CPlusPlusCodeTokeniser codeTokeniser;
 	CodeEditorComponent codeEditor;
-	
+
 	void resized() override;
 };
 

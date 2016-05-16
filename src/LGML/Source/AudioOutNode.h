@@ -19,9 +19,9 @@
 AudioDeviceManager & getAudioDeviceManager() ;
 
 
-class AudioOutNode : 
+class AudioOutNode :
 	public NodeBase,
-	public juce::AudioProcessorGraph::AudioGraphIOProcessor, 
+	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
 	public ChangeListener
 {
 public:

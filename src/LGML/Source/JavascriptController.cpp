@@ -66,7 +66,7 @@ void JavascriptController::callonAnyMsg(const OSCMessage & msg){
 }
 
 Result JavascriptController::processMessageInternal(const OSCMessage &m){
-   
+
 	Result r1  = OSCDirectController::processMessageInternal(m);
 
     Result r2(Result::fail("no valid js file"));
@@ -136,10 +136,3 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
 void JavascriptController::newJsFileLoaded(){
     jsPath->setValue(getCurrentFilePath(),true);
 }
-
-
-
-
-
-
-

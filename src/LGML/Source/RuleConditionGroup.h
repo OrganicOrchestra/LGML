@@ -42,20 +42,20 @@ public:
 
 	OwnedArray<RuleCondition> conditions;
 	OwnedArray<RuleConditionGroup> conditionGroups;
-	
+
 	RuleCondition * addCondition();
 	void removeCondition(RuleCondition *);
 
 	RuleConditionGroup * addConditionGroup();
 	void removeConditionGroup(RuleConditionGroup *);
 
-	
+
 
 	ListenerList<RuleConditionGroupListener> conditionGroupListeners;
 	void addConditionGroupListener(RuleConditionGroupListener* newListener) { conditionGroupListeners.add(newListener); }
 	void removeConditionGroupListener(RuleConditionGroupListener* listener) { conditionGroupListeners.remove(listener); }
 
-	
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleConditionGroup)
 };
 

@@ -16,12 +16,12 @@ juce_ImplementSingleton(MIDIManager)
 
 MIDIManager::MIDIManager()
 {
-	
+
 }
 
 MIDIManager::~MIDIManager()
 {
-	
+
 }
 
 void MIDIManager::init()
@@ -32,7 +32,7 @@ void MIDIManager::init()
 void MIDIManager::updateDeviceList(bool updateInput)
 {
 	StringArray deviceNames = updateInput ? MidiInput::getDevices() : MidiOutput::getDevices();
-	
+
 	StringArray sourceArray = updateInput ? inputDevices : outputDevices;
 
 	StringArray devicesToAdd;
@@ -141,4 +141,3 @@ void MIDIManager::timerCallback()
 	updateDeviceList(true); //update inputs
 	updateDeviceList(false); //update outputs
 }
-

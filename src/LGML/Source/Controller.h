@@ -33,9 +33,9 @@ public:
 
 	void addVariable(Parameter * p);
 	void removeVariable(ControlVariable * variable);
-	
+
 	ControlVariable * getVariableForAddress(const String &address);
-	
+
     void remove(); //will dispatch askForRemoveController
     virtual void onContainerParameterChanged(Parameter * p) override;
 

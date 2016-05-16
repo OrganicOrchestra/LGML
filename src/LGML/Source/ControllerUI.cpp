@@ -16,7 +16,7 @@ ControllerUI::ControllerUI(Controller * controller) :
     controller(controller)
 {
 	addMouseListener(this, true);
-    
+
 	nameTF = controller->nameParam->createStringParameterUI();
 	nameTF->setNameLabelVisible(false);
 	addAndMakeVisible(nameTF);

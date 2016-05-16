@@ -12,7 +12,7 @@
 
 
 
-void LGMLLoggerUI::newMessage(const String & s) 
+void LGMLLoggerUI::newMessage(const String & s)
 {
     LogElement * el = new LogElement(s);
     logElements.add(el);
@@ -156,7 +156,7 @@ int LGMLLoggerUI::LogList::getNumRows() {
 void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
                                                 int rowNumber,
                                                 int width, int height,
-                                                bool) 
+                                                bool)
 {
     g.setColour(Colours::transparentBlack.withAlpha((rowNumber%2==0?0.1f:0.f)));
     g.fillRect(0, 0, width, height);
@@ -183,9 +183,9 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
 		text = owner->getContentForRow(rowNumber);
 		break;
 	}
-    
+
     g.drawFittedText(text, 0, 0, width, height, Justification::left, 1);
-    
+
 };
 
 void LGMLLoggerUI::buttonClicked (Button* b) {
@@ -196,4 +196,3 @@ void LGMLLoggerUI::buttonClicked (Button* b) {
         logListComponent->updateContent();
     }
 }
-

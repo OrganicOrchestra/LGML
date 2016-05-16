@@ -110,18 +110,18 @@ public:
     void getStateInformation(MemoryBlock & destData)override { if (innerPlugin) { innerPlugin->getStateInformation(destData); }; }
     void setStateInformation(const void* data, int sizeInBytes)override { if (innerPlugin) { innerPlugin->setStateInformation(data, sizeInBytes); }; };
     void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;;
-    
+
     ScopedPointer<AudioPluginInstance> innerPlugin;
 
 
     ///// MIDI
-    
+
     void handleIncomingMidiMessage(MidiInput* source,
                                    const MidiMessage& message) override;
 
     MidiMessageCollector messageCollector;
         MidiBuffer incomingMidi;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)
 };
 

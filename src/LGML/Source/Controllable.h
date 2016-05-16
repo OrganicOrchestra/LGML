@@ -41,7 +41,7 @@ public:
     String shortName;
     String description;
 
-	
+
     bool enabled;
     bool hasCustomShortName;
     bool isControllableExposed;

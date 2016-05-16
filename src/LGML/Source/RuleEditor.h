@@ -26,13 +26,13 @@ public:
 	virtual ~RuleEditor();
 
 	Rule * rule;
-	
+
 	TextButton addReferenceBT;
 	TextButton addConsequenceBT;
-	
+
 	Component referenceContainer;
 	Component consequenceContainer;
-	
+
 	//layout ui
 	const int listGap = 2;
 	const int containerGap = 10;
@@ -41,7 +41,7 @@ public:
 	const int containerMargin = 2;
 	const int scriptedConditionHeight = 100;
 
-	
+
 	OwnedArray<ControlVariableReferenceUI> referencesUI;
 	ScopedPointer<RuleConditionGroupUI> ruleConditionGroupUI;
 	ScopedPointer<ScriptedConditionUI> scriptedConditionUI;
@@ -55,7 +55,7 @@ public:
 
 	void addReferenceUI(ControlVariableReference * r);
 	void removeReferenceUI(ControlVariableReference * r);
-	
+
 	void addConsequenceUI(RuleConsequence * c);
 	void removeConsequenceUI(RuleConsequence * c);
 

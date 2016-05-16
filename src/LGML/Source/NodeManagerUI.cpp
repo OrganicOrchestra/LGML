@@ -481,9 +481,9 @@ void NodeManagerUI::childBoundsChanged(Component * ){
 
 
 void NodeManagerUI::resizeToFitNodes(){
-	
+
 	Rectangle<int> _bounds(minBounds);
-    
+
     for(auto &n:nodesUI){
 
         Rectangle<int> r = n->getBoundsInParent();
