@@ -5,7 +5,7 @@ import urllib;
 
 
 # configuration  = "Release"
-configuration  = "DebugC++11"
+configuration  = "Debug"
 bumpVersion = True
 sendToOwncloud = True
 specificVersion = ""#0.1.1"

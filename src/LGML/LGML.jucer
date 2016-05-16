@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.1.5"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.1.4"
               bundleIdentifier="org.anic.orchestra.Blooper" includeBinaryInAppConfig="1"
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -560,15 +560,16 @@
                vstFolder="" vst3Folder="" postbuildCommand="" smallIcon="jsU7Hw"
                bigIcon="jsU7Hw">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
-                       isDebug="1" optimisation="1" targetName="LGML_Debug" cppLanguageStandard="c++98"
-                       cppLibType="libstdc++" binaryPath=""/>
+        <CONFIGURATION name="Debug_old" osxSDK="default" osxCompatibility="10.6 SDK"
+                       osxArchitecture="32BitUniversal" isDebug="1" optimisation="1"
+                       targetName="LGML_Debug_old" cppLanguageStandard="c++98" cppLibType="libstdc++"
+                       binaryPath=""/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
                        cppLanguageStandard="c++98" cppLibType="libstdc++" linkTimeOptimisation="1"/>
-        <CONFIGURATION name="DebugC++11" isDebug="1" osxSDK="default" osxCompatibility="10.8 SDK"
-                       osxArchitecture="32BitUniversal" targetName="LGML_DebugC++11"
-                       defines="JUCE_SUPPORTS_AUv3=0" cppLanguageStandard="c++11" cppLibType="libc++"/>
+        <CONFIGURATION name="Debug" isDebug="1" osxSDK="default" osxCompatibility="10.8 SDK"
+                       osxArchitecture="32BitUniversal" targetName="LGML_Debug" defines=""
+                       cppLanguageStandard="c++11" cppLibType="libc++"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../../../Dev/JUCE/modules"/>
