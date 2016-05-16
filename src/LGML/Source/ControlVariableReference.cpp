@@ -37,6 +37,7 @@ void ControlVariableReference::setCurrentVariable(ControlVariable * v)
 	{
 		referenceParam = currentVariable->parameter;
 		setNiceName("reference:" + v->parameter->niceName);
+		if (alias->stringValue() == "(alias)") alias->setValue(referenceParam->shortName);
 	}
 	else
 	{
