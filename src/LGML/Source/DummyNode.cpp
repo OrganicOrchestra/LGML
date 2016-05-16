@@ -16,7 +16,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
     NodeBase(nodeManager,nodeId, "DummyNode")
 {
 
-	
+
     freq1Param = addFloatParameter("Freq 1", "This is a test int slider",.23f);
     freq2Param = addFloatParameter("Freq 2", "This is a test int slider", .55f);
 

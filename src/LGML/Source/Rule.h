@@ -23,7 +23,7 @@
 #include "ControlVariableReference.h"
 
 
-class Rule : 
+class Rule :
 	public ControllableContainer,
 	public ControlVariableReference::ControlVariableReferenceListener
 {
@@ -42,7 +42,7 @@ public:
 	enum ConditionType {NONE, SCRIPT, VISUAL };
 	ConditionType conditionType;
 	void setConditionType(ConditionType value);
-	
+
 	StringParameter * nameParam;
 	BoolParameter * enabledParam;
 	BoolParameter * isActiveParam;
@@ -83,7 +83,7 @@ public:
 
 
 	};
-		
+
 
 	ListenerList<RuleListener> ruleListeners;
 	void addRuleListener(RuleListener* newListener) { ruleListeners.add(newListener); }

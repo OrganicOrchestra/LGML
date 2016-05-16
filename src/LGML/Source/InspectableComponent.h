@@ -32,7 +32,7 @@ public:
 	Inspector * inspector;
 
 	virtual InspectorEditor * getEditor();
-	
+
 	ControllableContainer * relatedControllableContainer;
 	int recursiveInspectionLevel;
 	bool canInspectChildContainersBeyondRecursion;

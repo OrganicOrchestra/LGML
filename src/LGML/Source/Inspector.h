@@ -78,7 +78,7 @@ public:
 
 	void resized() override {
 		Rectangle<int> r = getLocalBounds();
-		
+
 		vp.setBounds(r);
 
 		r.removeFromRight(vp.getScrollBarThickness());

@@ -88,7 +88,7 @@ void VSTNodeContentUI::newVSTSelected() {
 void VSTNodeContentUI::resized(){
     Rectangle<int> area = getLocalBounds().reduced (2);
     midiDeviceChooser.setBounds(area.removeFromTop(25));
-    
+
     Rectangle<int> headerArea = area.removeFromTop(25);
     VSTListShowButton.setBounds(headerArea.removeFromLeft(headerArea.getWidth()/2));
     showPluginWindowButton.setBounds(headerArea);

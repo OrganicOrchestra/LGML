@@ -29,10 +29,10 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 {
     Controller * c = factory.createController(controllerType);
 	c->nameParam->setValue(getUniqueNameInContainer(c->nameParam->stringValue()));
-	
+
 	controllers.add(c);
 	c->addControllerListener(this);
-	
+
 	addChildControllableContainer(c);
 	listeners.call(&ControllerManager::Listener::controllerAdded, c);
     return c;

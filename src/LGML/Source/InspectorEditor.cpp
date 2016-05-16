@@ -33,4 +33,3 @@ int InspectorEditor::getContentHeight()
 void InspectorEditor::clear()
 {
 }
-

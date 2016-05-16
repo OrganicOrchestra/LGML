@@ -24,7 +24,7 @@ public:
 	virtual ~MIDIControllerUI();
 
 	MIDIController * midiController;
-	
+
 	InspectorEditor * getEditor() override;
 
 	void currentDeviceChanged(MIDIListener *)override;

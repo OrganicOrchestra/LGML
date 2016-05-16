@@ -40,5 +40,3 @@ void MIDIListener::setCurrentDevice(const String & deviceName)
 
     MIDIListenerListeners.call(&MIDIListener::Listener::currentDeviceChanged, this);
 }
-
-

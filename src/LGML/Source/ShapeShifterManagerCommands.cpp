@@ -22,16 +22,16 @@ PopupMenu ShapeShifterManager::getMenuForIndex(int topLevelMenuIndex, const Stri
 	{
 		int startID = 1;
 		for (auto &s : tmpNames)
-		{		
+		{
 			menu.addItem(startID, s);
 			startID++;
 		}
-		
+
 	}if (topLevelMenuIndex == 1) // "Layout" menu
 	{
 		menu.addItem(1,"Revert to default Layout");
 	}
-	
+
 	return menu;
 }
 

@@ -45,7 +45,7 @@ private:
 
     //static void addControllableListenerToEditor(ControllableContainerEditor * source,ControllableContainer * listener);
     //static bool hasSameControllableType(ControllableContainer * source,ControllableContainer * target);
-    
+
 	// create Controllables binded to UI that dispatch to multiple Controllables
     // each inspector UI element is binded to one Controllable in proxy,
     // if changed , it notifies All corresponding candidateControllable

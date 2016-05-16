@@ -61,12 +61,12 @@ public:
 
 
 	ScopedPointer<NodeManagerUIViewport> nodeManagerViewport;
-	
+
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
 
 	ScopedPointer<RuleManagerUI> ruleManagerUI;
 
-	
+
 
 
     ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;

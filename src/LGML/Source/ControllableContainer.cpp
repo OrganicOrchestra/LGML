@@ -129,8 +129,8 @@ Controllable * ControllableContainer::getControllableByName(const String & name,
 }
 
 void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
-{ 
-	
+{
+
     controllableContainers.add(container);
 	container->addControllableContainerListener(this);
     container->setParentContainer(this);

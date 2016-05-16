@@ -24,7 +24,7 @@ public:
 
 	ControlVariable * currentVariable;
 	Parameter * referenceParam;
-	
+
 	void setCurrentVariable(ControlVariable * v);
 
 	void remove();

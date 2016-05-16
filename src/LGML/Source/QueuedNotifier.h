@@ -61,7 +61,7 @@ private:
 
     void handleAsyncUpdate() override
     {
-        
+
         {
             const typename CriticalSectionToUse::ScopedLockType lk(messageQueue.getLock());
             for(auto &v:messageQueue){
@@ -74,10 +74,10 @@ private:
     }
 
     OwnedArray<MessageClass,CriticalSectionToUse> messageQueue;
-    
+
     ListenerList<Listener > listeners;
     ListenerList<Listener > lastListeners;
-    
+
 };
 
 

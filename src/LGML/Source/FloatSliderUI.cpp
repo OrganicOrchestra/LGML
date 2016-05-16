@@ -58,7 +58,7 @@ void FloatSliderUI::paint(Graphics & g)
 
     if(showLabel || showValue){
         //Colour textColor = normalizedValue > .5f?Colours::darkgrey : Colours::grey;
-		
+
 		g.setColour(Colours::grey);
 
         sliderBounds = getLocalBounds();
@@ -108,7 +108,7 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 void FloatSliderUI::mouseDrag(const MouseEvent & e)
 {
 	if (!parameter->isEditable) return;
-	
+
 	if(changeParamOnMouseUpOnly) repaint();
     else
     {
@@ -126,7 +126,7 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
 void FloatSliderUI::mouseUp(const MouseEvent &)
 {
 	if (!parameter->isEditable) return;
-	
+
 	BailOutChecker checker (this);
     if (changeParamOnMouseUpOnly)
     {
@@ -166,5 +166,3 @@ float FloatSliderUI::getParamNormalizedValue()
 void FloatSliderUI::valueChanged(const var &) {
     repaint();
 };
-
-

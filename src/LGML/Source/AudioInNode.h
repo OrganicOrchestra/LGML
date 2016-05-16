@@ -17,14 +17,14 @@
 
 AudioDeviceManager & getAudioDeviceManager() ;
 
-class AudioInNode : 
-	public NodeBase, 
-	public juce::AudioProcessorGraph::AudioGraphIOProcessor, 
+class AudioInNode :
+	public NodeBase,
+	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
 	public ChangeListener
 {
 
 public:
-	
+
 	AudioInNode(NodeManager * nodeManager, uint32 nodeId);;
 	~AudioInNode();
 
@@ -34,7 +34,7 @@ public:
 	void changeListenerCallback(ChangeBroadcaster* source)override;
 	void updateIO();
 
-   
+
     virtual NodeBaseUI * createUI() override;
 
 

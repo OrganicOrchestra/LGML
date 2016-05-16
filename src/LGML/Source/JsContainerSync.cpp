@@ -181,8 +181,8 @@ var JsContainerSync::setControllable(const juce::var::NativeFunctionArgs& a){
             }
         }
     }
-    
-    
+
+
     return var();
 }
 

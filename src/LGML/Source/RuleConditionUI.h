@@ -13,7 +13,7 @@
 
 #include "RuleCondition.h"
 
-class RuleConditionUI : 
+class RuleConditionUI :
 	public Component,
 	public RuleCondition::RuleConditionListener
 {

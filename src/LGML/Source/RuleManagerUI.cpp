@@ -109,4 +109,3 @@ void RuleManagerUI::mouseDown(const MouseEvent & e)
 		MainContentComponent::inspector->setCurrentComponent(nullptr);
 	}
 }
-

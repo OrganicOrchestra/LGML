@@ -22,13 +22,13 @@ public:
 	ShapeShifterContent * content;
 };
 
-class ShapeShifterManager : 
+class ShapeShifterManager :
 	public ShapeShifterPanel::Listener,
 	public MenuBarModel
 {
 public:
 
-	
+
 	juce_DeclareSingleton(ShapeShifterManager,true);
 	ShapeShifterManager();
 	virtual ~ShapeShifterManager();
@@ -40,7 +40,7 @@ public:
 	ShapeShifterPanel * currentCandidatePanel;
 	void setCurrentCandidatePanel(ShapeShifterPanel *);
 
-	
+
 
 	ShapeShifterPanel * createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab = nullptr);
 	void removePanel(ShapeShifterPanel * panel);
@@ -63,7 +63,7 @@ public:
 	const int baseCommandID = 0x31000;
 	void getCommandInfo(int commandID, ApplicationCommandInfo &result);
 	String getNameForCommandID(int commandID) const;
-	
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterManager)
 
 

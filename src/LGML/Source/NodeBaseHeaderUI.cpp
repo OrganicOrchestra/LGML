@@ -121,7 +121,7 @@ void NodeBaseHeaderUI::resized()
 
 
     Rectangle<int> r = getLocalBounds();
-	
+
 	grabber.setBounds(r.removeFromTop(grabberHeight));
 	r.reduce(4, 0);
 	r.removeFromTop(2);
@@ -157,7 +157,7 @@ void NodeBaseHeaderUI::nodeEnableChanged(NodeBase *)
 	if (!node->enabledParam->boolValue())
 	{
 		vuMeterOut.setVoldB(0);
-		
+
 	}
 	repaint();
 }

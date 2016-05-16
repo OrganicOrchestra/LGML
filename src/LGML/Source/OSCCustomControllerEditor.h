@@ -30,7 +30,7 @@ public :
 	void removeVariableUI(ControlVariable *, bool doResize = true);
 
 	ControlVariableUI * getUIForVariable(ControlVariable *);
-	
+
 	void resized() override;
 
 	int getContentHeight() override;

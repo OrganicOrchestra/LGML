@@ -72,12 +72,12 @@ void NodeConnectionUI::paint (Graphics& g)
 
     Point<float> midPoint = (sourcePos + endPos) / 2;
 
-	
+
     float smoothBigConnector = 1+ .01f*(jmax<float>(10,std::abs(endPos.x - sourcePos.x))-10);
     float anchorOffset = (endPos.x - sourcePos.x)/(2*smoothBigConnector);
     float sourceAnchorX = sourcePos.x + anchorOffset;
     float endAnchorX = endPos.x - anchorOffset;
-	
+
 
     int hitMargin = 10;
     hitPath.clear();
@@ -158,7 +158,7 @@ void NodeConnectionUI::mouseDown(const MouseEvent & e)
 	else
 	{
 		selectThis();
-		
+
 	}
 }
 

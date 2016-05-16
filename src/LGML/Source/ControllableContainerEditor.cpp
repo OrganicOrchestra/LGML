@@ -18,7 +18,7 @@ ControllableContainerEditor::ControllableContainerEditor(ControllableContainer *
 owner(cc),
 embeddedComp(_embeddedComp)
 {
-   
+
     if(embeddedComp){
         addAndMakeVisible(embeddedComp);
         //setBounds(embeddedComp->getBounds());
@@ -81,14 +81,14 @@ void ControllableContainerEditor::resized(){
 
 void ControllableContainerEditor::buildFromContainer(ControllableContainer * cc, bool recursive){
     for(auto & c : cc->controllables)
-	{	
+	{
 		if (!c->isControllableExposed || c->isControllableFeedbackOnly) continue;
         ControllableUI *cUI= new NamedControllableUI(c->createDefaultUI(),100);
         addControlUI(cUI);
     }
 
 	if(recursive)
-	{ 
+	{
 		for(auto & c:cc->controllableContainers){
 			ControllableContainerEditor * cEd = new ControllableContainerEditor(c,nullptr);
 			addAndMakeVisible(cEd);

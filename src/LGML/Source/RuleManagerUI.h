@@ -21,7 +21,7 @@ public:
 	RuleManagerUI(RuleManager * _ruleManager);
 	virtual ~RuleManagerUI();
 
-	
+
 	RuleManager * ruleManager;
 
 	OwnedArray<RuleUI> rulesUI;

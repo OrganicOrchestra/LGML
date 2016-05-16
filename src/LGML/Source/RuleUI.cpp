@@ -13,7 +13,7 @@
 #include "MainComponent.h"
 #include "RuleEditor.h"
 
-RuleUI::RuleUI(Rule * _rule) : 
+RuleUI::RuleUI(Rule * _rule) :
 	InspectableComponent( _rule),
 	rule(_rule)
 {
@@ -107,4 +107,3 @@ InspectorEditor * RuleUI::getEditor()
 {
 	return new RuleEditor(this);
 }
-

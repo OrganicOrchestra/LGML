@@ -28,7 +28,7 @@ public:
 
 	MIDIManager();
 	~MIDIManager();
-	
+
 	void init();
 
 	StringArray inputDevices;
@@ -38,12 +38,12 @@ public:
 	OwnedArray<DeviceUsageCount> outputCounts;
 
 	void updateDeviceList(bool updateInput);
-	
+
 	void enableInputDevice(const String &deviceName);
 	void enableOutputDevice(const String &deviceName);
 	void disableInputDevice(const String &deviceName);
 	void disableOutputDevice(const String &deviceName);
-	
+
 	DeviceUsageCount * getDUCForInputDeviceName(const String &deviceName);
 	DeviceUsageCount * getDUCForOutputDeviceName(const String &deviceName);
 

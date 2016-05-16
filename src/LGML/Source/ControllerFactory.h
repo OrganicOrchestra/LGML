@@ -108,7 +108,7 @@ public:
         if (t<0 || t > UNKNOWN)return String::empty;
         return controllerTypeNames[(int)t];
     }
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerFactory)
 };
 

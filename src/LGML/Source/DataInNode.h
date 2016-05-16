@@ -13,7 +13,7 @@
 
 #include "NodeBase.h"
 
-class DataInNode : 
+class DataInNode :
 	public NodeBase
 {
 public:

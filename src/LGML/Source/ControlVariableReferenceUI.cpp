@@ -83,7 +83,7 @@ void ControlVariableReferenceUI::buttonClicked(Button * b)
 		{
 			cvr->setCurrentVariable(cv);
 		}
-		
+
 	}
 	else if (b == &removeBT)
 	{
@@ -94,7 +94,7 @@ void ControlVariableReferenceUI::buttonClicked(Button * b)
 void ControlVariableReferenceUI::resized()
 {
 	Rectangle<int> r = getLocalBounds();
-	
+
 	Rectangle<int> rUI = r.removeFromBottom(10);
 	if (currentVariableParamUI != nullptr) currentVariableParamUI->setBounds(rUI);
 

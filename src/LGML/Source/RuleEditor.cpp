@@ -25,7 +25,7 @@ RuleEditor::RuleEditor(RuleUI * _ruleUI) :
 	addAndMakeVisible(&addReferenceBT);
 
 	addAndMakeVisible(&referenceContainer);
-	
+
 	for (auto &r : rule->references)
 	{
 		addReferenceUI(r);
@@ -72,12 +72,12 @@ void RuleEditor::paint(Graphics &g)
 void RuleEditor::resized()
 {
 	Rectangle<int> r = getLocalBounds();
-	
-	
+
+
 	addReferenceBT.setBounds(r.removeFromTop(20));
 	r.removeFromTop(containerGap);
 	referenceContainer.setBounds(r.removeFromTop(referencesUI.size()*(referenceHeight + listGap)).reduced(containerMargin));
-	
+
 	Rectangle<int> rr = referenceContainer.getLocalBounds();
 	for (auto & refUI : referencesUI)
 	{
@@ -86,7 +86,7 @@ void RuleEditor::resized()
 	}
 
 	r.removeFromTop(containerGap);
-	
+
 	if (ruleConditionGroupUI != nullptr)
 	{
 		ruleConditionGroupUI->setBounds(r.removeFromTop(50));//will be dynamic
@@ -118,13 +118,13 @@ int RuleEditor::getContentHeight()
 	tH += 20 * 2; //buttons
 	tH += containerGap * 6; //
 	tH += referencesUI.size()*(referenceHeight + listGap);
-	
+
 	if(ruleConditionGroupUI != nullptr) tH += ruleConditionGroupUI->getHeight();
 	if (scriptedConditionUI != nullptr) tH += scriptedConditionHeight;
 
 	tH += consequencesUI.size()*(consequenceHeight + listGap);
 	tH += containerMargin * 4;
-	
+
 	return tH;
 }
 
@@ -142,7 +142,7 @@ void RuleEditor::removeReferenceUI(ControlVariableReference * r)
 
 	referenceContainer.removeChildComponent(rui);
 	referencesUI.removeObject(rui);
-	
+
 	resized();
 }
 
@@ -161,7 +161,7 @@ void RuleEditor::removeConsequenceUI(RuleConsequence * c)
 
 	consequenceContainer.removeChildComponent(cui);
 	consequencesUI.removeObject(cui);
-	
+
 }
 
 ControlVariableReferenceUI * RuleEditor::getUIForReference(ControlVariableReference * r)
@@ -220,6 +220,3 @@ void RuleEditor::buttonClicked(Button * b)
 		rule->addConsequence();
 	}
 }
-
-
-

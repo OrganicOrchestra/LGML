@@ -51,7 +51,7 @@ public:
     ImageButton removeBT;
     ScopedPointer<ComboBox> presetCB;
 
-   
+
     virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
     virtual void updatePresetComboBox();
     virtual void init();
@@ -69,8 +69,8 @@ public:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
 
-   
-	
+
+
 
 };
 

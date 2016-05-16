@@ -27,7 +27,7 @@ Rule * RuleManager::addRule(const String &ruleName)
 	Rule * r = new Rule(ruleName);
 	rules.add(r);
 	r->addRuleListener(this);
-	
+
 	r->nameParam->setValue(getUniqueNameInContainer(r->nameParam->stringValue()));
 	addChildControllableContainer(r);
 

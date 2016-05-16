@@ -41,8 +41,8 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* source,
     }
 
     callJs(message);
-    
-    
+
+
 }
 
 void MIDIController::callJs(const MidiMessage& message){
@@ -74,7 +74,7 @@ void MIDIController::buildLocalEnv(){
     obj.setProperty(ptrIdentifier, this);
     obj.setMethod("sendNoteOnFor", sendNoteOnFor);
     setLocalNamespace(obj);
-    
+
 };
 
 

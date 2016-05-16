@@ -53,7 +53,7 @@ public:
 	{
 	public:
 		/** Destructor. */
-		virtual ~Listener() {} 
+		virtual ~Listener() {}
 		virtual void parameterValueChanged(Parameter * p) = 0;
         virtual void parameterRangeChanged(Parameter * ){};
     };

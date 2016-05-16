@@ -21,7 +21,7 @@ class MIDIListener :public MidiInputCallback
     MIDIListener();
     virtual ~MIDIListener(){};
 
-    
+
     String midiPortName;
 
     void setCurrentDevice(const String &deviceName);
@@ -46,8 +46,8 @@ class MIDIListener :public MidiInputCallback
     ListenerList<Listener> MIDIListenerListeners;
     void addMIDIListenerListener(Listener* newListener) { MIDIListenerListeners.add(newListener); }
     void removeMIDIListenerListener(Listener* listener) { MIDIListenerListeners.remove(listener); }
-    
-    
+
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIListener)
 };
 
