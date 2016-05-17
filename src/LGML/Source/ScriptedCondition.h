@@ -25,7 +25,7 @@ public :
 	
 	CodeDocument codeDocument;
 
-	virtual bool evaluateInternal();
+    virtual bool evaluateInternal() override;
 
 	// Inherited via JsEnvironment
 	virtual void buildLocalEnv() override;

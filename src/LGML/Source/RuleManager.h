@@ -31,7 +31,7 @@ public:
 	Rule * addRule(const String &ruleName);
 	void removeRule(Rule * _rule);
 
-	void askForRemoveRule(Rule *r);
+    void askForRemoveRule(Rule *r) override;
 
 	virtual void clear();
 

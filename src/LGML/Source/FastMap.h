@@ -19,6 +19,7 @@ class FastMap;
 class FastMapListener
 {
 public:
+    virtual ~FastMapListener(){}
 	virtual void fastMapReferenceChanged(FastMap *) {};
 	virtual void fastMapTargetChanged(FastMap *) {};
 

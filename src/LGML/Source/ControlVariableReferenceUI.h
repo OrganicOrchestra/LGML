@@ -39,8 +39,8 @@ public :
 
 	void updateCurrentReference();
 
-	void buttonClicked(Button * b);
-	void resized();
+    void buttonClicked(Button * b) override;
+    void resized() override;
 
 	void referenceVariableChanged(ControlVariableReference *) override;
 	void referenceVariableNameChanged(ControlVariableReference *) override;

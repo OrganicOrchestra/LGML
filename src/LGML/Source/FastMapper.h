@@ -20,6 +20,7 @@ class FastMapper;
 class FastMapperListener
 {
 public:
+    virtual ~FastMapperListener() {}
 	virtual void fastMapAdded(FastMap *) {}
 	virtual void fastMapRemoved(FastMap *) {}
 };
@@ -47,7 +48,7 @@ public:
 	void addFastMapperListener(FastMapperListener* newListener) { fastMapperListeners.add(newListener); }
 	void removeFastMapperListener(FastMapperListener* listener) { fastMapperListeners.remove(listener); }
 
-	virtual void askForRemoveFastMap(FastMap *);
+	virtual void askForRemoveFastMap(FastMap *) override;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapper)
 
 };

@@ -563,7 +563,7 @@ void LookAndFeelOO::drawScrollbar (Graphics& g,
         trackColour1 = thumbColour.overlaidWith (Colour (0x44000000));
         trackColour2 = thumbColour.overlaidWith (Colour (0x19000000));
     }
-     /*
+     
     g.setGradientFill (ColourGradient (trackColour1, gx1, gy1,
                                        trackColour2, gx2, gy2, false));
     g.fillPath (slotPath);
@@ -578,7 +578,7 @@ void LookAndFeelOO::drawScrollbar (Graphics& g,
         gy1 = y + height * 0.6f;
         gy2 = (float) y + height;
     }
-     /*
+     
     g.setGradientFill (ColourGradient (Colours::transparentBlack,gx1, gy1,
                                        Colour (0x19000000), gx2, gy2, false));
     g.fillPath (slotPath);

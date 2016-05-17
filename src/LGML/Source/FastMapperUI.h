@@ -20,6 +20,7 @@ class FastMapperUI;
 class FastMapperUIListener
 {
 public:
+    virtual ~FastMapperUIListener() {}
 	virtual void fastMapperContentChanged(FastMapperUI *) {}
 };
 
