@@ -21,11 +21,16 @@ class  ControlVariableListener
 public:
 	/** Destructor. */
 	virtual ~ControlVariableListener() {}
+	
+	virtual void variableNameChanged(ControlVariable *) {};
+
 	virtual void askForRemoveVariable(ControlVariable *) {};
 	virtual void variableRemoved(ControlVariable *) {};
+
 };
 
-class ControlVariable
+class ControlVariable :
+	public Controllable::Listener
 {
 public :
 	ControlVariable(Controller * c, Parameter * p);
@@ -36,7 +41,7 @@ public :
 
 	void remove();
 
-	
+	virtual void controllableNameChanged(Controllable *) override;
 
 	ListenerList<ControlVariableListener> variableListeners;
 	void addControlVariableListener(ControlVariableListener* newListener) { variableListeners.add(newListener); }

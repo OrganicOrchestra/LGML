@@ -40,7 +40,7 @@ public:
 
 	FastMapUI * getUIForFastMap(FastMap *);
 	 
-	const int mapHeight = 30;
+	const int mapHeight = 35;
 	const int gap = 5;
 	int getContentHeight();
 

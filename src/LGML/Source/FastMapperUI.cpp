@@ -23,7 +23,6 @@ FastMapperUI::~FastMapperUI()
 
 void FastMapperUI::addFastMapUI(FastMap * f)
 {
-	DBG("Add Fast Map ui !");
 	FastMapUI * fui = new FastMapUI(f);
 	mapsUI.add(fui);
 	addAndMakeVisible(fui);
@@ -58,7 +57,7 @@ int FastMapperUI::getContentHeight()
 
 void FastMapperUI::resized()
 {
-	Rectangle<int> r = getLocalBounds();
+	Rectangle<int> r = getLocalBounds().reduced(2);
 	for (auto & fui : mapsUI)
 	{
 		fui->setBounds(r.removeFromTop(mapHeight));

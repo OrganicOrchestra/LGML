@@ -52,6 +52,7 @@ void FastMap::process()
 		}else
 		{
 			float targetVal = jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
+			targetVal = jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(),targetVal);
 			((Parameter *)target)->setValue(targetVal);
 
 		}

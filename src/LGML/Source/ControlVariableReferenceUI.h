@@ -28,10 +28,12 @@ public :
 	ControlVariableReference * cvr;
 
 	ScopedPointer<StringParameterUI> aliasUI;
-	Label referenceLabel;
 	TextButton chooseBT;
 
 	ImageButton removeBT;
+
+	void setAliasVisible(bool value);
+	void setRemoveBTVisible(bool value);
 
 	ScopedPointer<ParameterUI> currentVariableParamUI;
 
@@ -41,8 +43,9 @@ public :
 	void resized();
 
 	void referenceVariableChanged(ControlVariableReference *) override;
+	void referenceVariableNameChanged(ControlVariableReference *) override;
 
-	void parameterValueChanged(Parameter * p);
+	void parameterValueChanged(Parameter * p) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlVariableReferenceUI)
 
