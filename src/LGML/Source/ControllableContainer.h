@@ -49,11 +49,8 @@ public:
     bool hasCustomShortName;
 
     bool skipControllableNameInAddress;
-
     void setNiceName(const String &_niceName);
-
     void setCustomShortName(const String &_shortName);
-
     void setAutoShortName();
 
 
@@ -101,6 +98,8 @@ public:
     // Inherited via Trigger::Listener
     virtual void triggerTriggered(Trigger * p) override;
 
+
+	bool saveAndLoadRecursiveData;
 	virtual var getJSONData();
 	virtual void loadJSONData(var data);
 	virtual void loadJSONDataInternal(var data) { /* to be overriden by child classes */ }

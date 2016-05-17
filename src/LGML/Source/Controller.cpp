@@ -11,7 +11,9 @@
 #include "Controller.h"
 #include "ControllerFactory.h"
 #include "ControllerUI.h"
+#include "ControlVariable.h"
 #include "DebugHelpers.h"
+
 
 Controller::Controller(const String &_name) :
 	ControllableContainer(_name)
@@ -62,7 +64,7 @@ ControllerUI * Controller::createUI()
 
 void Controller::addVariable(Parameter * p)
 {
-	ControlVariable * v = new ControlVariable(p);
+	ControlVariable * v = new ControlVariable(this, p);
 	p->replaceSlashesInShortName = false;
 	variables.add(v);
 	v->addControlVariableListener(this);

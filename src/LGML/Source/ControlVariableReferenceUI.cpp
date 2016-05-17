@@ -106,13 +106,12 @@ void ControlVariableReferenceUI::resized()
 	referenceLabel.setBounds(r);
 }
 
-void ControlVariableReferenceUI::currentReferenceChanged(ControlVariableReference *)
+void ControlVariableReferenceUI::referenceVariableChanged(ControlVariableReference *)
 {
 	updateCurrentReference();
 }
 
 void ControlVariableReferenceUI::parameterValueChanged(Parameter *)
 {
-	DBG("Resized here !");
 	resized();
 }

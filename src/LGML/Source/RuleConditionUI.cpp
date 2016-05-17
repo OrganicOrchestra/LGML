@@ -13,11 +13,12 @@
 RuleConditionUI::RuleConditionUI(RuleCondition * _condition) :
 	condition(_condition)
 {
+	condition->addConditionListener(this);
 }
 
 RuleConditionUI::~RuleConditionUI()
 {
-
+	condition->removeConditionListener(this);
 }
 
 void RuleConditionUI::paint(Graphics & g)
@@ -27,5 +28,6 @@ void RuleConditionUI::paint(Graphics & g)
 
 void RuleConditionUI::conditionActivationChanged(RuleCondition *)
 {
+	DBG("Condition activation changed in UI");
 	repaint();
 }

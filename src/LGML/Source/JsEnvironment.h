@@ -37,6 +37,8 @@ public:
     void    clearNamespace();
 
     void    loadFile(const File & f);
+	Result 	loadScriptContent(const String &content);
+
     void    reloadFile();
     void    showFile();
 
@@ -47,7 +49,8 @@ public:
     public:
         virtual ~Listener(){};
         // listeners can check new namespaces from this function
-        virtual void newJsFileLoaded(bool state)=0;
+		virtual void newJsFileLoaded(bool ) {};
+		virtual void jsScriptLoaded(bool ) {};
 
     };
     void addListener(Listener * l){jsListeners.add(l);}
@@ -96,6 +99,7 @@ private:
     var localEnvironment;
     void internalLoadFile(const File &);
 
+	
     bool _hasValidJsFile;
 
 

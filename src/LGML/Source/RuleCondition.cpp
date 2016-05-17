@@ -9,16 +9,20 @@
 */
 
 #include "RuleCondition.h"
+#include "DebugHelpers.h"
+#include "Rule.h"
 
-
-RuleCondition::RuleCondition(RuleConditionGroup * _parent) :
+RuleCondition::RuleCondition(Rule * r, RuleConditionGroup * _parent) :
+	rule(r),
 	parent(_parent),
 	isActive(false)
 {
+	rule->addRuleListener(this);
 }
 
 RuleCondition::~RuleCondition()
 {
+	rule->removeRuleListener(this);
 }
 
 void RuleCondition::setActive(bool value)
@@ -28,12 +32,36 @@ void RuleCondition::setActive(bool value)
 	conditionListeners.call(&RuleConditionListener::conditionActivationChanged, this);
 }
 
-void RuleCondition::process()
+void RuleCondition::evaluate()
 {
-	//check condition and setActive
+	bool result = evaluateInternal();
+	setActive(result);
+}
+
+bool RuleCondition::evaluateInternal()
+{
+	return false;
+}
+
+void RuleCondition::referenceValueUpdate(Rule *, ControlVariableReference *)
+{
+	evaluate();
+}
+
+void RuleCondition::referenceAliasChanged(Rule *, ControlVariableReference *)
+{
 }
 
 void RuleCondition::remove()
 {
 	conditionListeners.call(&RuleConditionListener::askForRemoveCondition, this);
+}
+
+var RuleCondition::getJSONData()
+{
+	return var();
+}
+
+void RuleCondition::loadJSONData(var data)
+{
 }

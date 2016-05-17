@@ -37,6 +37,7 @@ void AudioInNode::changeListenerCallback (ChangeBroadcaster*) {
 
 void AudioInNode::updateIO(){
     AudioIODevice * ad  =getAudioDeviceManager().getCurrentAudioDevice();
+	if (ad == nullptr) return;
     setPreferedNumAudioOutput(ad->getActiveInputChannels().countNumberOfSetBits());
 }
 

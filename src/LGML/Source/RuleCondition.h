@@ -13,32 +13,32 @@
 
 #include "JuceHeader.h"
 
-class RuleConditionGroup;
+#include "Rule.h"
 
-class RuleCondition
+
+class RuleCondition : 
+	public RuleListener
 {
 public:
-	RuleCondition(RuleConditionGroup * parent);
+	RuleCondition(Rule * r, RuleConditionGroup * parent);
 	virtual ~RuleCondition();
 
+	Rule * rule;
 	RuleConditionGroup * parent;
 
 	bool isActive;
 	void setActive(bool value);
 
-	void process();
+	virtual void evaluate();
+	virtual bool evaluateInternal();
+
+	virtual void referenceValueUpdate(Rule *, ControlVariableReference *) override;
+	virtual void referenceAliasChanged(Rule *, ControlVariableReference *) override;
+
 	void remove();
 
-	class  RuleConditionListener
-	{
-	public:
-		virtual ~RuleConditionListener() {}
-
-		virtual void askForRemoveCondition(RuleCondition *) {};
-
-		virtual void conditionActivationChanged(RuleCondition *) {}
-
-	};
+	virtual var getJSONData();
+	virtual void loadJSONData(var data);
 
 	ListenerList<RuleConditionListener> conditionListeners;
 	void addConditionListener(RuleConditionListener* newListener) { conditionListeners.add(newListener); }

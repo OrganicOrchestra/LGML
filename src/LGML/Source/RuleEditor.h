@@ -12,6 +12,7 @@
 #define RULEEDITOR_H_INCLUDED
 
 #include "CustomEditor.h"
+
 #include "RuleUI.h"
 #include "RuleConditionUI.h"
 #include "RuleConditionGroupUI.h"
@@ -19,7 +20,10 @@
 #include "RuleConsequenceUI.h"
 #include "ControlVariableReferenceUI.h"
 
-class RuleEditor : public CustomEditor, public ButtonListener, public Rule::RuleListener
+class RuleEditor : 
+	public CustomEditor, 
+	public ButtonListener, 
+	public RuleListener
 {
 public:
 	RuleEditor(RuleUI * _ruleUI);
@@ -37,9 +41,9 @@ public:
 	const int listGap = 2;
 	const int containerGap = 10;
 	const int referenceHeight = 30;
-	const int consequenceHeight = 100;
+	const int consequenceHeight = 200;
 	const int containerMargin = 2;
-	const int scriptedConditionHeight = 100;
+	const int scriptedConditionHeight = 150;
 
 
 	OwnedArray<ControlVariableReferenceUI> referencesUI;
@@ -62,8 +66,8 @@ public:
 	ControlVariableReferenceUI * getUIForReference(ControlVariableReference * r);
 	RuleConsequenceUI * getUIForConsequence(RuleConsequence *c);
 
-	void referenceAdded(ControlVariableReference *) override;
-	void referenceRemoved(ControlVariableReference *) override;
+	void referenceAdded(Rule *, ControlVariableReference *) override;
+	void referenceRemoved(Rule *, ControlVariableReference *) override;
 
 	void consequenceAdded(RuleConsequence *) override;
 	void consequenceRemoved(RuleConsequence *) override;

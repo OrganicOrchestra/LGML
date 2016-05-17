@@ -12,15 +12,32 @@
 #define SCRIPTEDCONDITION_H_INCLUDED
 
 #include "RuleCondition.h"
+#include "JsEnvironment.h"
 
-class ScriptedCondition : public RuleCondition
+class ScriptedCondition : 
+	public RuleCondition, 
+	public JsEnvironment
 {
 public :
-	ScriptedCondition();
+	ScriptedCondition(Rule * r);
 	virtual ~ScriptedCondition();
 
+	
 	CodeDocument codeDocument;
+
+	virtual bool evaluateInternal();
+
+	// Inherited via JsEnvironment
+	virtual void buildLocalEnv() override;
+	void reloadScript();
+
+	virtual var getJSONData() override;
+	virtual void loadJSONData(var data) override;
+
+	virtual void referenceAliasChanged(Rule * r, ControlVariableReference * cvr) override;
+
 };
+	
 
 
 

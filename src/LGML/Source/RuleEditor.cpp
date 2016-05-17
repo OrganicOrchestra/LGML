@@ -184,13 +184,13 @@ RuleConsequenceUI * RuleEditor::getUIForConsequence(RuleConsequence * c)
 	return nullptr;
 }
 
-void RuleEditor::referenceAdded(ControlVariableReference * cvr)
+void RuleEditor::referenceAdded(Rule *, ControlVariableReference * cvr)
 {
 	addReferenceUI(cvr);
 	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
-void RuleEditor::referenceRemoved(ControlVariableReference * cvr)
+void RuleEditor::referenceRemoved(Rule *, ControlVariableReference * cvr)
 {
 	removeReferenceUI(cvr);
 	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);

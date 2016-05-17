@@ -15,17 +15,34 @@
 void LGMLLoggerUI::newMessage(const String & s)
 {
     LogElement * el = new LogElement(s);
-    logElements.add(el);
+    
+	
+	//@martin i did that so i could clear the log, but the scollbar still goes down after clearing
+	if (totalLogRow >= maxNumElement)
+	{
+		logElements.clear();
+		totalLogRow = 0;
+		logListComponent->updateContent();
+		
+	}
+	
 
-     totalLogRow +=el->getNumLines() ;
-    bool overFlow = false;
+	logElements.add(el);
+	totalLogRow += el->getNumLines();
 
-    while(totalLogRow>maxNumElement){
-        LogElement * rmL = logElements.removeAndReturn(0);
+
+	//@martin problems here
+	/*
+	//bool overFlow = false;
+	
+	while (totalLogRow > maxNumElement) {
+		LogElement * rmL = logElements[0];
         totalLogRow -= rmL->getNumLines();
-        delete rmL;
-        overFlow = true;
+		logElements.removeObject(logElements[0]);
+		logListComponent->updateContent();
+       // overFlow = true;
     }
+	*/
 
     //coalesce messa
     triggerAsyncUpdate();
@@ -38,7 +55,7 @@ void LGMLLoggerUI::handleAsyncUpdate(){
 
 LGMLLoggerUI::LGMLLoggerUI(LGMLLogger * l) : ShapeShifterContent("LGMLLogger"),
 logList(this),
-maxNumElement(999),
+maxNumElement(500),
 totalLogRow(0)
 {
 	l->addLogListener(this);
@@ -193,6 +210,8 @@ void LGMLLoggerUI::buttonClicked (Button* b) {
     if(b==&clearB)
 	{
         logElements.clear();
+		totalLogRow = 0;
         logListComponent->updateContent();
+		LOG("Cleared.");
     }
 }

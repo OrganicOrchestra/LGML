@@ -17,7 +17,8 @@ ControllableContainer::ControllableContainer(const String & niceName) :
 parentContainer(nullptr),
 hasCustomShortName(false),
 skipControllableNameInAddress(false),
-currentPreset(nullptr)
+currentPreset(nullptr),
+saveAndLoadRecursiveData(true)
 {
     setNiceName(niceName);
 }
@@ -387,7 +388,7 @@ var ControllableContainer::getJSONData()
 
 	var paramsData;
 
-	Array<Controllable *> cont = ControllableContainer::getAllControllables(true, true);
+	Array<Controllable *> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
 
 	for (auto &c : cont) {
 		Parameter * base = dynamic_cast<Parameter*>(c);
@@ -427,17 +428,21 @@ void ControllableContainer::loadJSONData(var data)
 
 	Array<var> * paramsData = data.getProperty("parameters", var()).getArray();
 
-	for (var &pData : *paramsData)
+	if (paramsData != nullptr)
 	{
-		String pControlAddress = pData.getProperty("controlAddress", var());
+		for (var &pData : *paramsData)
+		{
+			String pControlAddress = pData.getProperty("controlAddress", var());
 
-		Controllable * c = getControllableForAddress(pControlAddress, true, true);
-		if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-			p->setValue(pData.getProperty("value", var()));
-		}
-		else {
-			DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");
-			jassertfalse;
+			Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
+
+			if (Parameter * p = dynamic_cast<Parameter*>(c)) {
+				p->setValue(pData.getProperty("value", var()));
+			}
+			else {
+				DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");
+				jassertfalse;
+			}
 		}
 	}
 

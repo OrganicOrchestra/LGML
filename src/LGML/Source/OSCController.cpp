@@ -35,14 +35,14 @@ OSCController::~OSCController()
 
 void OSCController::setupReceiver()
 {
-    DBG("setupReceiver");
+   // DBG("setupReceiver");
     receiver.disconnect();
     receiver.connect(localPortParam->stringValue().getIntValue());
     //DBG("Receiver connected" + String(result));
 }
 void OSCController::setupSender()
 {
-    DBG("Resetup sender with " << remoteHostParam->stringValue() << ":" << remotePortParam->stringValue().getIntValue());
+    //DBG("Resetup sender with " << remoteHostParam->stringValue() << ":" << remotePortParam->stringValue().getIntValue());
     sender.disconnect();
     sender.connect(remoteHostParam->stringValue(), remotePortParam->stringValue().getIntValue());
 }

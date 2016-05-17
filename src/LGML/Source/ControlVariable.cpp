@@ -10,8 +10,10 @@
 
 #include "ControlVariable.h"
 #include "DebugHelpers.h"
+#include "Controller.h"
 
-ControlVariable::ControlVariable(Parameter * p) :
+ControlVariable::ControlVariable(Controller * c, Parameter * p) :
+	controller(c),
 	parameter(p)
 {
 	p->isEditable = false;
@@ -19,11 +21,12 @@ ControlVariable::ControlVariable(Parameter * p) :
 
 ControlVariable::~ControlVariable()
 {
+	variableListeners.call(&ControlVariableListener::variableRemoved, this);
 }
 
 void ControlVariable::remove()
 {
 	NLOG("ControlVariable", "remove");
 
-	variableListeners.call(&VariableListener::askForRemoveVariable, this);
+	variableListeners.call(&ControlVariableListener::askForRemoveVariable, this);
 }

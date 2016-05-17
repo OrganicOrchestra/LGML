@@ -13,6 +13,8 @@
 #include "TriggerButtonUI.h"
 #include "TriggerBlinkUI.h"
 
+#include "JsHelpers.h"
+
 Trigger::Trigger(const String & niceName, const String &description, bool enabled) :
 Controllable(TRIGGER, niceName, description, enabled),
 isTriggering(false)
@@ -31,4 +33,13 @@ TriggerBlinkUI * Trigger::createBlinkUI()
 
 ControllableUI * Trigger::createDefaultUI(){
     return createBlinkUI();
+}
+
+DynamicObject * Trigger::createDynamicObject()
+{
+	DynamicObject* dObject = Controllable::createDynamicObject();
+	dObject->setMethod("trigger", setControllableValue);
+	dObject->setProperty(ptrIdentifier, (int64)this);
+	
+	return dObject;
 }

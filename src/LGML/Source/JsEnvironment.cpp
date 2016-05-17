@@ -76,25 +76,36 @@ void JsEnvironment::internalLoadFile(const File &f ){
     f.readLines(destLines);
     String jsString = destLines.joinIntoString("\n");
     currentFile = f;
-    // rebuild to clean namespace
-    clearNamespace();
-    buildLocalEnv();
-    Result r=jsEngine.execute(jsString);
-    if(r.failed()){
-        _hasValidJsFile = false;
-        LOG(r.getErrorMessage());
-    }
-    else{
-        _hasValidJsFile = true;
-        lastFileModTime = currentFile.getLastModificationTime();
-        updateUserDefinedFunctions();
-        checkUserControllableEventFunction();
-        LOG("script Loaded successfully : "+f.getFullPathName());
-        newJsFileLoaded();
-    }
+   
+	Result r = loadScriptContent(jsString);
 
     jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,(bool)r);
 
+}
+
+Result JsEnvironment::loadScriptContent(const String & content)
+{
+	// rebuild to clean namespace
+	clearNamespace();
+	buildLocalEnv();
+	Result r = jsEngine.execute(content);
+
+	if (r.failed()) {
+		_hasValidJsFile = false;
+		NLOG("JS",r.getErrorMessage());
+	}
+	else {
+		_hasValidJsFile = true;
+		lastFileModTime = currentFile.getLastModificationTime();
+		updateUserDefinedFunctions();
+		checkUserControllableEventFunction();
+		newJsFileLoaded();
+		NLOG("JS", "Content loaded sucessfully");
+	}
+
+	jsListeners.call(&JsEnvironment::Listener::jsScriptLoaded, (bool)r);
+
+	return r;
 }
 
 
@@ -135,13 +146,14 @@ var JsEnvironment::callFunction (const String& function, const var& args,  bool 
 
 var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const Array<var>& args,bool logResult , Result* result){
     // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
-    juce::var::NativeFunctionArgs Nargs(var::undefined(),&args.getReference(0),args.size());
-    bool resOwned = false;
-    if(logResult && result==nullptr){
-        result = new Result(Result::ok());
-        resOwned = true;
-    }
+	bool resOwned = false;
+	if (logResult && result == nullptr) {
+		result = new Result(Result::ok());
+		resOwned = true;
+	}
 
+	var * v = new var(); //@martin can this give a memory leak ? need to handle calls without arguments
+	juce::var::NativeFunctionArgs Nargs(var::undefined(), (args.size()>0)?&args.getReference(0):v, args.size());
 
     var res =  jsEngine.callFunction(function,Nargs,result);
     if(logResult && result->failed()){
@@ -152,6 +164,7 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
         delete result;
         result=nullptr;
     }
+
     return res;
 }
 

@@ -71,7 +71,7 @@ void MIDIController::onContainerParameterChanged(Parameter * p){
 void MIDIController::buildLocalEnv(){
     DynamicObject obj;
     obj.setMethod("sendCC", sendCC);
-    obj.setProperty(ptrIdentifier, this);
+    obj.setProperty(ptrIdentifier, (int64)this);
     obj.setMethod("sendNoteOnFor", sendNoteOnFor);
     setLocalNamespace(obj);
 
@@ -80,14 +80,14 @@ void MIDIController::buildLocalEnv(){
 
 // @ben do we do the same as OSC MIDI IN/OUt controllers
 
-var MIDIController::sendCC(const var::NativeFunctionArgs & a){
+var MIDIController::sendCC(const var::NativeFunctionArgs &){
 //    MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
 
 
 
     return var::undefined();
 }
-var MIDIController::sendNoteOnFor(const var::NativeFunctionArgs & a){
+var MIDIController::sendNoteOnFor(const var::NativeFunctionArgs &){
 
         return var::undefined();
 }

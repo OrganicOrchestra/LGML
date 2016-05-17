@@ -15,11 +15,10 @@
 #include "ControllableHelpers.h"
 #include "ParameterUI.h"
 
-
 class ControlVariableReferenceUI :
 	public Component,
 	public ButtonListener,
-	public ControlVariableReference::ControlVariableReferenceListener,
+	public ControlVariableReferenceListener,
 	public Parameter::Listener
 {
 public :
@@ -41,7 +40,7 @@ public :
 	void buttonClicked(Button * b);
 	void resized();
 
-	void currentReferenceChanged(ControlVariableReference *);
+	void referenceVariableChanged(ControlVariableReference *) override;
 
 	void parameterValueChanged(Parameter * p);
 

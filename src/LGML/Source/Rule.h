@@ -12,30 +12,21 @@
 #define RULE_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "RuleCondition.h"
-#include "RuleConditionGroup.h"
-#include "RuleConsequence.h"
-
-#include "ScriptedCondition.h"
-#include "ScriptedConsequence.h"
-
 #include "ControllableContainer.h"
 #include "ControlVariableReference.h"
 
+#include "RuleListeners.h"
+
+class ScriptedCondition;
 
 class Rule :
 	public ControllableContainer,
-	public ControlVariableReference::ControlVariableReferenceListener
+	public ControlVariableReferenceListener,
+	public RuleConditionListener,
+	public RuleConditionGroupListener,
+	public RuleConsequenceListener
 {
 public:
-	enum ActivationType
-	{
-		OnActivate,
-		OnDeactivate,
-		WhileActivated,
-		WhileDeactivated
-	};
-
 	Rule(const String &name);
 	virtual ~Rule();
 
@@ -47,8 +38,6 @@ public:
 	BoolParameter * enabledParam;
 	BoolParameter * isActiveParam;
 
-	ActivationType activationType;
-
 	OwnedArray<ControlVariableReference> references;
 	ScopedPointer<RuleConditionGroup> rootConditionGroup;
 	ScopedPointer<ScriptedCondition> scriptedCondition;
@@ -58,32 +47,26 @@ public:
 	ControlVariableReference * addReference();
 	void removeReference(ControlVariableReference *);
 
-	void addConsequence();
+	RuleConsequence * addConsequence();
 	void removeConsequence(RuleConsequence *);
+	void askForRemoveConsequence(RuleConsequence *) override;
 
 	void onContainerParameterChanged(Parameter * p) override;
 	void askForRemoveReference(ControlVariableReference * r) override;
 
+	void referenceAliasChanged(ControlVariableReference * r) override;
+	void referenceValueChanged(ControlVariableReference * r) override;
+
+	void conditionActivationChanged(RuleCondition * c) override;
+	
+	bool isActive();
+
+	void clear();
+
 	void remove();
 
-
-	class  RuleListener
-	{
-	public:
-		virtual ~RuleListener() {}
-
-		virtual void askForRemoveRule(Rule *) {}
-		virtual void ruleActivationChanged(Rule *) {}
-		virtual void ruleConditionTypeChanged(Rule *) {}
-		virtual void referenceAdded(ControlVariableReference *) {}
-		virtual void referenceRemoved(ControlVariableReference *) {}
-
-		virtual void consequenceAdded(RuleConsequence *) {}
-		virtual void consequenceRemoved(RuleConsequence *) {}
-
-
-	};
-
+	virtual var getJSONData() override;
+	virtual void loadJSONDataInternal(var data) override;
 
 	ListenerList<RuleListener> ruleListeners;
 	void addRuleListener(RuleListener* newListener) { ruleListeners.add(newListener); }

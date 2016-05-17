@@ -66,15 +66,15 @@ Result OSCCustomController::processMessageInternal(const OSCMessage & msg)
 	Result r(Result::ok());
 
 	if (v == nullptr) r = Result::fail("Variable not found");
+	
 	if (msg.size() == 0) r = Result::fail("No argument");
-	if (!msg[0].isFloat32()) r = Result::fail("Argument is not a float");
-
+	else if (!msg[0].isFloat32()) r = Result::fail("Argument is not a float");
+	
 	if (r != Result::ok())
 	{
 		return OSCDirectController::processMessageInternal(msg);
 	}
 
-	DBG("Passed  ! : " << address);
 	v->parameter->setValue(msg[0].getFloat32());
 
 	return r;

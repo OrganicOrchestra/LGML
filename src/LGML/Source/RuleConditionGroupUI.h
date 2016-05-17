@@ -11,6 +11,7 @@
 #ifndef RULEConditionGroupGROUPUI_H_INCLUDED
 #define RULEConditionGroupGROUPUI_H_INCLUDED
 
+#include "JuceHeader.h"
 #include "RuleConditionGroup.h"
 
 class RuleConditionGroupUI : public Component

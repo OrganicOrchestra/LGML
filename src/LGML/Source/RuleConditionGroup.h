@@ -11,34 +11,22 @@
 #ifndef RULECONDITIONGROUP_H_INCLUDED
 #define RULECONDITIONGROUP_H_INCLUDED
 
-#include "RuleCondition.h"
+#include "Rule.h"
 
-class RuleConditionGroup;
-
-class  RuleConditionGroupListener
+class RuleConditionGroup :
+	public RuleConditionListener,
+	public RuleConditionGroupListener
 {
 public:
-	virtual ~RuleConditionGroupListener() {}
+	enum GroupOperator { AND, OR };
 
-	virtual void conditionAdded(RuleCondition *) {}
-	virtual void conditionRemoved(RuleCondition *) {}
-
-	virtual void conditionGroupAdded(RuleConditionGroup *) {}
-	virtual void conditionGroupRemoved(RuleConditionGroup *) {}
-
-	virtual void conditionGroupActivationChanged(RuleConditionGroup *) {}
-};
-
-
-class RuleConditionGroup : public RuleCondition::RuleConditionListener, public RuleConditionGroupListener
-{
-public:
-	enum Operator { AND, OR };
-
-	RuleConditionGroup(RuleConditionGroup * _parent);
+	RuleConditionGroup(Rule * r, RuleConditionGroup * _parent);
 	virtual ~RuleConditionGroup();
 
+	Rule * rule;
 	RuleConditionGroup * parent;
+
+	GroupOperator groupOperator;
 
 	OwnedArray<RuleCondition> conditions;
 	OwnedArray<RuleConditionGroup> conditionGroups;
@@ -49,7 +37,10 @@ public:
 	RuleConditionGroup * addConditionGroup();
 	void removeConditionGroup(RuleConditionGroup *);
 
+	bool isActive();
 
+	virtual var getJSONData();
+	virtual void loadJSONData(var data);
 
 	ListenerList<RuleConditionGroupListener> conditionGroupListeners;
 	void addConditionGroupListener(RuleConditionGroupListener* newListener) { conditionGroupListeners.add(newListener); }

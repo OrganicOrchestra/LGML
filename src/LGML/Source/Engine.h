@@ -55,7 +55,7 @@ public:
 
     // our Saving methods
     var getJSONData();
-    void loadJSONData(var data, bool clearManagers = true);
+    void loadJSONData(var data);
 
 };
 

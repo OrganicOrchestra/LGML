@@ -12,9 +12,12 @@
 #define RULEMANAGER_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "Rule.h"
+#include "RuleListeners.h"
+#include "ControllableContainer.h"
 
-class RuleManager : public Rule::RuleListener, public ControllableContainer
+class RuleManager : 
+	public RuleListener, 
+	public ControllableContainer
 {
 public:
 	juce_DeclareSingleton(RuleManager, true)
@@ -28,10 +31,12 @@ public:
 	Rule * addRule(const String &ruleName);
 	void removeRule(Rule * _rule);
 
-	//void setSelectedRule(Rule * r);
-
-	//void askForSelectRule(Rule *r);
 	void askForRemoveRule(Rule *r);
+
+	virtual void clear();
+
+	virtual var getJSONData() override;
+	virtual void loadJSONDataInternal(var data) override;
 
 	class  Listener
 	{

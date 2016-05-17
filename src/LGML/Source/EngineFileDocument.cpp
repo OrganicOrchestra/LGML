@@ -84,29 +84,31 @@ var Engine::getJSONData()
     var metaData(new DynamicObject());
 
     metaData.getDynamicObject()->setProperty("LGMLVersion",ProjectInfo::versionString);
+	data.getDynamicObject()->setProperty("metaData", metaData);
 
-    data.getDynamicObject()->setProperty("meta", metaData);
 	data.getDynamicObject()->setProperty("presetManager", PresetManager::getInstance()->getJSONData());
 	data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
     data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
+	data.getDynamicObject()->setProperty("ruleManager", RuleManager::getInstance()->getJSONData());
 
-	data.getDynamicObject()->setProperty("metaData", metaData);
+	
     return data;
 }
 
 /// ===================
 // loading
 
-void Engine::loadJSONData (var data, bool clearManagers)
+void Engine::loadJSONData (var data)
 {
     //    TODO check version Compat
 	clear();
 
 	MainContentComponent::inspector->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
-	PresetManager::getInstance()->loadJSONData(data.getProperty("presetManager", var()), clearManagers);
-    NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()), clearManagers);
-    ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()), clearManagers);
+	PresetManager::getInstance()->loadJSONData(data.getProperty("presetManager", var()));
+    NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()));
+    ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()));
+	RuleManager::getInstance()->loadJSONData(data.getProperty("ruleManager", var()));
 
 	MainContentComponent::inspector->setEnabled(true); //Re enable editor
 

@@ -16,7 +16,10 @@
 #include "StringParameterUI.h"
 #include "InspectableComponent.h"
 
-class RuleUI : public InspectableComponent, public ButtonListener, public Rule::RuleListener
+class RuleUI : 
+	public InspectableComponent, 
+	public ButtonListener, 
+	public RuleListener
 {
 public:
 	RuleUI(Rule * _rule);

@@ -9,17 +9,19 @@
 */
 
 #include "RuleManager.h"
+#include "Rule.h"
 
 juce_ImplementSingleton(RuleManager)
 
 RuleManager::RuleManager() :
 	ControllableContainer("Rule")
 {
+	saveAndLoadRecursiveData = false;
 }
 
 RuleManager::~RuleManager()
 {
-
+	clear();
 }
 
 Rule * RuleManager::addRule(const String &ruleName)
@@ -40,34 +42,47 @@ Rule * RuleManager::addRule(const String &ruleName)
 void RuleManager::removeRule(Rule * _rule)
 {
 	ruleManagerListeners.call(&RuleManager::Listener::ruleRemoved, _rule);
+	removeChildControllableContainer(_rule);
 	rules.removeObject(_rule);
 }
 
-/*
-void RuleManager::setSelectedRule(Rule * r)
-{
-	if (selectedRule == r) return;
-
-	if (selectedRule != nullptr)
-	{
-		selectedRule->setSelected(false);
-	}
-
-	selectedRule = r;
-
-	if (selectedRule != nullptr)
-	{
-		selectedRule->setSelected(true);
-	}
-}
-
-void RuleManager::askForSelectRule(Rule * r)
-{
-	setSelectedRule(r);
-}
-*/
 
 void RuleManager::askForRemoveRule(Rule * r)
 {
 	removeRule(r);
+}
+
+void RuleManager::clear()
+{
+	while (rules.size() > 0)
+	{
+		rules[0]->remove();
+	}
+}
+
+var RuleManager::getJSONData()
+{
+	var data = ControllableContainer::getJSONData();
+
+	var rulesData;
+	for (auto &r : rules)
+	{
+		rulesData.append(r->getJSONData());
+	}
+
+	data.getDynamicObject()->setProperty("rules", rulesData);
+
+	return data;
+}
+
+void RuleManager::loadJSONDataInternal(var data)
+{
+	clear();
+
+	Array<var> * rulesData = data.getDynamicObject()->getProperty("rules").getArray();
+	for (auto &rData : *rulesData)
+	{
+		Rule * r = addRule(rData.getDynamicObject()->getProperty("name"));
+		r->loadJSONData(rData);
+	}
 }

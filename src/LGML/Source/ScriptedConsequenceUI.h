@@ -13,19 +13,21 @@
 
 #include "RuleConsequenceUI.h"
 #include "ScriptedConsequence.h"
+#include "JsLiveEditor.h"
 
-class ScriptedConsequenceUI : public RuleConsequenceUI
+class ScriptedConsequenceUI : public RuleConsequenceUI, public Button::Listener
 {
 public:
 	ScriptedConsequenceUI(ScriptedConsequence * consequence);
 	virtual ~ScriptedConsequenceUI();
 
 	ScriptedConsequence * scriptedConsequence;
-
-	CPlusPlusCodeTokeniser codeTokeniser;
-	CodeEditorComponent codeEditor;
+	JsLiveEditor jsEditor;
+	TextButton reloadBT;
 
 	void resized() override;
+
+	void buttonClicked(Button * b) override;
 
 };
 

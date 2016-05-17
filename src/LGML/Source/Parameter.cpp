@@ -9,6 +9,8 @@
 */
 
 #include "Parameter.h"
+#include "JsHelpers.h"
+
 
 Parameter::Parameter(const Type &type, const String &niceName, const String &description, var initialValue, var minValue = var(), var maxValue = var(), bool enabled) :
 	Controllable(type, niceName, description, enabled),
@@ -65,3 +67,21 @@ void Parameter::notifyValueChanged() {
     listeners.call(&Listener::parameterValueChanged, this);
     queuedNotifier.addMessage(new ParamWithValue(this,value));
 }
+
+DynamicObject * Parameter::createDynamicObject()
+{
+	DynamicObject * dObject = Controllable::createDynamicObject();
+	dObject->setMethod("get", Parameter::getValue);
+	dObject->setMethod("set", setControllableValue);
+
+	return dObject;
+}
+
+var Parameter::getValue(const juce::var::NativeFunctionArgs & a)
+{
+	Parameter * c = getObjectPtrFromJS<Parameter>(a);
+	if(c == nullptr) return var();
+	return c->value;
+}
+
+//JS Helper
