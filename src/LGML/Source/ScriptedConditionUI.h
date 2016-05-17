@@ -15,7 +15,9 @@
 #include "RuleConditionUI.h"
 #include "JsLiveEditor.h"
 
-class ScriptedConditionUI : public RuleConditionUI, public Button::Listener
+class ScriptedConditionUI : 
+	public RuleConditionUI, 
+	public Button::Listener
 {
 public :
 	ScriptedConditionUI(ScriptedCondition * condition);

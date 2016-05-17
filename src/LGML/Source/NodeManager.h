@@ -54,8 +54,8 @@ public:
     int getNumConnections();
 
     //save / load
-    var getJSONData() const;
-    void loadJSONData(var data, bool clearBeforeLoad = true);
+    var getJSONData() override;
+	void loadJSONDataInternal(var data) override;
 
     //Listener
     class  Listener

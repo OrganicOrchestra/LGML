@@ -13,27 +13,34 @@
 
 #include "Parameter.h"
 
+class Controller;
+class ControlVariable;
+
+class  ControlVariableListener
+{
+public:
+	/** Destructor. */
+	virtual ~ControlVariableListener() {}
+	virtual void askForRemoveVariable(ControlVariable *) {};
+	virtual void variableRemoved(ControlVariable *) {};
+};
+
 class ControlVariable
 {
 public :
-	ControlVariable(Parameter * p);
+	ControlVariable(Controller * c, Parameter * p);
 	virtual ~ControlVariable();
 
+	Controller * controller;
 	ScopedPointer<Parameter> parameter;
 
 	void remove();
 
-	class  VariableListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~VariableListener() {}
-		virtual void askForRemoveVariable(ControlVariable *) {};
-	};
+	
 
-	ListenerList<VariableListener> variableListeners;
-	void addControlVariableListener(VariableListener* newListener) { variableListeners.add(newListener); }
-	void removeControlVariableListener(VariableListener* listener) { variableListeners.remove(listener); }
+	ListenerList<ControlVariableListener> variableListeners;
+	void addControlVariableListener(ControlVariableListener* newListener) { variableListeners.add(newListener); }
+	void removeControlVariableListener(ControlVariableListener* listener) { variableListeners.remove(listener); }
 };
 
 

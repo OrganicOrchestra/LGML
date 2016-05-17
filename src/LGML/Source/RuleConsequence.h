@@ -12,14 +12,12 @@
 #define RULECONSEQUENCE_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "ControlVariableReference.h"
 #include "Rule.h"
 
 class RuleConsequenceUI;
 
-class RuleConsequence: public Parameter::Listener,
-	public ControlVariableReference::ControlVariableReferenceListener,
-	public Rule::RuleListener
+class RuleConsequence:
+	public RuleListener
 {
 public:
 	RuleConsequence(Rule * r);
@@ -27,23 +25,21 @@ public:
 
 	Rule * rule;
 
-
-	Array<ControlVariableReference *> references;
-	virtual void setReferences(OwnedArray<ControlVariableReference> * _ref);
-
-
 	virtual void run();
 
-
 	// Inherited via Listener
-	virtual void parameterValueChanged(Parameter * p) override;
-
-	virtual void currentReferenceChanged(ControlVariableReference *, ControlVariable * oldVariable, ControlVariable * newVariable) override;
-	virtual void referenceAliasChanged(ControlVariableReference *) override {};
-
+	virtual void referenceValueUpdate(Rule * r, ControlVariableReference * cvr) override;
 	virtual void ruleActivationChanged(Rule * r) override;
 
-	void clearListeners();
+	virtual var getJSONData();
+	virtual void loadJSONData(var data);
+
+	void remove();
+
+	ListenerList<RuleConsequenceListener> consequenceListeners;
+	void addConsequenceListener(RuleConsequenceListener* newListener) { consequenceListeners.add(newListener); }
+	void removeConsequenceListener(RuleConsequenceListener* listener) { consequenceListeners.remove(listener); }
+
 
 	virtual RuleConsequenceUI * createUI();
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleConsequence)

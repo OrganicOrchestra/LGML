@@ -92,7 +92,7 @@ DynamicObject * Controllable::createDynamicObject()
 //STATIC 
 
 
-var Controllable::setControllable(const juce::var::NativeFunctionArgs& a) {
+var Controllable::setControllableValue(const juce::var::NativeFunctionArgs& a) {
 
 	Controllable * c = getObjectPtrFromJS<Controllable>(a);
 	bool success = false;
@@ -108,34 +108,39 @@ var Controllable::setControllable(const juce::var::NativeFunctionArgs& a) {
 
 		else {
 			var value = a.arguments[0];
+			bool valueIsABool = value.isBool();
+			bool valueIsANumber = value.isDouble() || value.isInt() || value.isInt64();
+
 			switch (c->type)
 			{
 			case Controllable::Type::TRIGGER:
-				if (value.isBool() && (bool)value)
-					((Trigger *)c)->trigger();
-				else if ((value.isDouble() || value.isInt() || value.isInt64()) && (float)value>0)
-					((Trigger *)c)->trigger();
+				if (valueIsABool)
+				{
+					if ((bool)value) ((Trigger *)c)->trigger();
+				}
+				else if (valueIsANumber)
+				{
+					if ((float)value >= 1) ((Trigger *)c)->trigger();
+				}
 
 				break;
 
 			case Controllable::Type::BOOL:
-				if (value.isBool())
-					((BoolParameter *)c)->setValue((bool)value);
+				DBG("Set bool value : " + value.toString());
+				if (valueIsABool) ((BoolParameter *)c)->setValue((bool)value);
+				else if (valueIsANumber) ((BoolParameter *)c)->setValue((float)value > .5);
 				break;
 
 			case Controllable::Type::FLOAT:
-				if (value.isDouble() || value.isInt() || value.isInt64())
-					((FloatParameter *)c)->setValue(value);
+				if (valueIsABool || valueIsANumber) ((FloatParameter *)c)->setValue(value);
 				break;
 			case Controllable::Type::INT:
-				if (value.isInt() || value.isInt64())
-					((IntParameter *)c)->setValue(value);
+				if (valueIsABool || valueIsANumber) ((IntParameter *)c)->setValue(value);
 				break;
 
 
 			case Controllable::Type::STRING:
-				if (value.isString())
-					((StringParameter *)c)->setValue(value);
+				if (value.isString()) ((StringParameter *)c)->setValue(value);
 				break;
 
 			default:

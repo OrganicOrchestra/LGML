@@ -10,46 +10,30 @@
 
 #include "RuleCondition.h"
 #include "DebugHelpers.h"
+#include "Rule.h"
 
-
-RuleCondition::RuleCondition(RuleConditionGroup * _parent) :
+RuleCondition::RuleCondition(Rule * r, RuleConditionGroup * _parent) :
+	rule(r),
 	parent(_parent),
 	isActive(false)
 {
+	rule->addRuleListener(this);
 }
 
 RuleCondition::~RuleCondition()
 {
-	clearListeners();
+	rule->removeRuleListener(this);
 }
 
 void RuleCondition::setActive(bool value)
 {
 	if (isActive == value) return;
 	isActive = value;
-	DBG("Rule Condition setActive : " + String(isActive));
 	conditionListeners.call(&RuleConditionListener::conditionActivationChanged, this);
-}
-
-
-void RuleCondition::setReferences(OwnedArray<ControlVariableReference> * _ref)
-{
-	clearListeners();
-
-	references.clear();
-
-	for (auto & r : *_ref)
-	{
-		references.add(r);
-
-		r->addReferenceListener(this); 
-		
-	}
 }
 
 void RuleCondition::evaluate()
 {
-	
 	bool result = evaluateInternal();
 	setActive(result);
 }
@@ -59,29 +43,25 @@ bool RuleCondition::evaluateInternal()
 	return false;
 }
 
+void RuleCondition::referenceValueUpdate(Rule *, ControlVariableReference *)
+{
+	evaluate();
+}
+
+void RuleCondition::referenceAliasChanged(Rule *, ControlVariableReference *)
+{
+}
+
 void RuleCondition::remove()
 {
 	conditionListeners.call(&RuleConditionListener::askForRemoveCondition, this);
 }
 
-void RuleCondition::parameterValueChanged(Parameter *)
+var RuleCondition::getJSONData()
 {
-	evaluate();
+	return var();
 }
 
-void RuleCondition::currentReferenceChanged(ControlVariableReference * , ControlVariable * oldVariable, ControlVariable * newVariable)
+void RuleCondition::loadJSONData(var data)
 {
-	if (oldVariable != nullptr) oldVariable->parameter->removeParameterListener(this);
-	if (newVariable != nullptr) newVariable->parameter->addParameterListener(this);
-}
-
-
-void RuleCondition::clearListeners()
-{
-	for (auto &r : references)
-	{
-		r->removeReferenceListener(this);
-
-		if (r->referenceParam != nullptr) r->referenceParam->removeParameterListener(this);
-	}
 }

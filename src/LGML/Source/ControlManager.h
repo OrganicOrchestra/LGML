@@ -31,7 +31,7 @@ public:
     void clear();
 
     var getJSONData() override;
-    void loadJSONData(var data, bool clearBeforeLoad = true);
+    void loadJSONDataInternal(var data) override;
 
     class  Listener
     {

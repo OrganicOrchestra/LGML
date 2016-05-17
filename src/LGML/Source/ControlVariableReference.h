@@ -14,32 +14,43 @@
 #include "ControlVariable.h"
 #include "ControllableContainer.h"
 
-class ControlVariableReference : public ControllableContainer
+class ControlVariableReference;
+
+class  ControlVariableReferenceListener
+{
+public:
+	virtual ~ControlVariableReferenceListener() {}
+	virtual void askForRemoveReference(ControlVariableReference *) {};
+
+	virtual void referenceVariableChanged(ControlVariableReference *) {};
+	virtual void referenceValueChanged(ControlVariableReference *) {};
+	virtual void referenceAliasChanged(ControlVariableReference *) {};
+};
+
+
+class ControlVariableReference : 
+	public ControllableContainer,
+	public ControlVariableListener
 {
 public:
 	ControlVariableReference();
 	virtual ~ControlVariableReference();
 
 	StringParameter * alias;
-
 	ControlVariable * currentVariable;
-	Parameter * referenceParam;
+	
+	var getValue();
 
 	void setCurrentVariable(ControlVariable * v);
 
 	void onContainerParameterChanged(Parameter * p) override;
+	void parameterValueChanged(Parameter * p) override;
 	void remove();
 
-
-	class  ControlVariableReferenceListener
-	{
-	public:
-		virtual ~ControlVariableReferenceListener() {}
-		virtual void askForRemoveReference(ControlVariableReference *) {};
-		virtual void currentReferenceChanged(ControlVariableReference *, ControlVariable * , ControlVariable * ) {};
-		virtual void referenceAliasChanged(ControlVariableReference *) {};
-	};
-
+	virtual var getJSONData() override;
+	virtual void loadJSONDataInternal(var data) override;
+	
+	virtual void variableRemoved(ControlVariable *) override;
 
 	ListenerList<ControlVariableReferenceListener> referenceListeners;
 	void addReferenceListener(ControlVariableReferenceListener* newListener) { referenceListeners.add(newListener); }

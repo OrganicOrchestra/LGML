@@ -104,11 +104,13 @@ void Engine::clear(){
     //    do we need to stop audio?
     //stopAudio();
 
+	 TimeManager::getInstance()->playState->setValue(false);
 
-    TimeManager::getInstance()->playState->setValue(false);
-    ControllerManager::getInstance()->clear();
+	RuleManager::getInstance()->clear();
+	ControllerManager::getInstance()->clear();
     NodeManager::getInstance()->clear();
     PresetManager::getInstance()->clear();
+	
 
     changed();    //fileDocument
 }

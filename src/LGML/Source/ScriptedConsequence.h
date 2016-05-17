@@ -14,7 +14,8 @@
 #include "RuleConsequence.h"
 #include "JsEnvironment.h"
 
-class ScriptedConsequence : public RuleConsequence,
+class ScriptedConsequence :
+	public RuleConsequence,
 	public JsEnvironment
 {
 public:
@@ -30,11 +31,12 @@ public:
 
 	void reloadScript();
 
-	virtual void currentReferenceChanged(ControlVariableReference *, ControlVariable * oldVariable, ControlVariable * newVariable) override;
-	virtual void referenceAliasChanged(ControlVariableReference *) override;
-
+	virtual void referenceAliasChanged(Rule * r, ControlVariableReference *) override;
 	virtual void ruleActivationChanged(Rule * r) override;
 
+	virtual var getJSONData() override;
+	virtual void loadJSONData(var data) override;
+	
 	RuleConsequenceUI * createUI() override;
 };
 

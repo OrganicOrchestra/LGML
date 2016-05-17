@@ -33,7 +33,6 @@ OSCControllerEditor::~OSCControllerEditor()
 void OSCControllerEditor::resized()
 {
 	Rectangle<int> r = getLocalBounds();
-	DBG(r.toString());
 	localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));
 	r.removeFromTop(10);
 	remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));

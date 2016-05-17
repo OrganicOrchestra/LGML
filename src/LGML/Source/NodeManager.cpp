@@ -17,6 +17,7 @@ juce_ImplementSingleton(NodeManager);
 NodeManager::NodeManager() :
     ControllableContainer("Node Manager")
 {
+	saveAndLoadRecursiveData = false;
     setCustomShortName("node");
 }
 
@@ -110,9 +111,9 @@ int NodeManager::getNumConnections(){
     return connections.size();
 }
 
-var NodeManager::getJSONData() const
+var NodeManager::getJSONData()
 {
-    var data(new DynamicObject());
+	var data = ControllableContainer::getJSONData();
     var nodesData;
 
     for (auto &n : nodes)
@@ -132,9 +133,9 @@ var NodeManager::getJSONData() const
     return data;
 }
 
-void NodeManager::loadJSONData(var data, bool clearBeforeLoad)
+void NodeManager::loadJSONDataInternal(var data)
 {
-    if (clearBeforeLoad) clear();
+    clear();
 
     Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
     for (var &nData : *nodesData)

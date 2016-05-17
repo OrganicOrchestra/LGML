@@ -103,9 +103,9 @@ var PresetManager::getJSONData()
 	return data;
 }
 
-void PresetManager::loadJSONData(var data, bool clearBeforeLoad)
+void PresetManager::loadJSONData(var data)
 {
-	if (clearBeforeLoad) clear();
+	clear();
 
 	Array<var> * presetDatas = data.getDynamicObject()->getProperty("presets").getArray();
     if(presetDatas==nullptr){

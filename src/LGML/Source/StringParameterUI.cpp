@@ -86,7 +86,6 @@ void StringParameterUI::resized()
 
 void StringParameterUI::valueChanged(const var & v)
 {
-	DBG("Value changed, " << v.toString());
     valueLabel.setText(prefix+v.toString()+suffix,NotificationType::dontSendNotification);
 
 	if (autoSize)
@@ -96,7 +95,6 @@ void StringParameterUI::valueChanged(const var & v)
 		int tw = valueLabelWidth;
 		if (nameLabelIsVisible) tw += 5 + nameLabelWidth;
 		setSize(tw + 10,(int)valueLabel.getFont().getHeight());
-		DBG("New size " << getWidth());
 	}
 
 }

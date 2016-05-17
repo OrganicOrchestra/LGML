@@ -72,7 +72,7 @@ DynamicObject * Parameter::createDynamicObject()
 {
 	DynamicObject * dObject = Controllable::createDynamicObject();
 	dObject->setMethod("get", Parameter::getValue);
-	dObject->setMethod("set", setControllable);
+	dObject->setMethod("set", setControllableValue);
 
 	return dObject;
 }

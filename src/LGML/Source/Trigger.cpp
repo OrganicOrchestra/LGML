@@ -38,7 +38,7 @@ ControllableUI * Trigger::createDefaultUI(){
 DynamicObject * Trigger::createDynamicObject()
 {
 	DynamicObject* dObject = Controllable::createDynamicObject();
-	dObject->setMethod("trigger", setControllable);
+	dObject->setMethod("trigger", setControllableValue);
 	dObject->setProperty(ptrIdentifier, (int64)this);
 	
 	return dObject;

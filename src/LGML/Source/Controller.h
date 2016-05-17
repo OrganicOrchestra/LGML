@@ -17,7 +17,9 @@
 
 class ControllerUI;
 
-class Controller : public ControllableContainer, public ControlVariable::VariableListener
+class Controller : 
+	public ControllableContainer, 
+	public ControlVariableListener
 {
 public:
     Controller(const String &name = "[Controller]");

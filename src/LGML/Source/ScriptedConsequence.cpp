@@ -10,6 +10,7 @@
 
 #include "ScriptedConsequence.h"
 #include "ScriptedConsequenceUI.h"
+#include "Rule.h"
 
 ScriptedConsequence::ScriptedConsequence(Rule * r) :
 	RuleConsequence(r),
@@ -37,11 +38,11 @@ void ScriptedConsequence::buildLocalEnv()
 	DynamicObject obj;
 
 	obj.setProperty(ptrIdentifier, (int64)this);
-	for (auto &r : references)
+	for (auto &r : rule->references)
 	{
-		if (r->referenceParam == nullptr) continue;
+		if (r->currentVariable == nullptr) continue;
 
-		obj.setProperty(r->alias->stringValue(), r->referenceParam->createDynamicObject());
+		obj.setProperty(r->alias->stringValue(), r->currentVariable->parameter->createDynamicObject());
 	}
 
 	setLocalNamespace(obj);
@@ -52,13 +53,7 @@ void ScriptedConsequence::reloadScript()
 	loadScriptContent(codeDocument.getAllContent());
 }
 
-void ScriptedConsequence::currentReferenceChanged(ControlVariableReference * cvr, ControlVariable * o, ControlVariable * n)
-{
-	RuleConsequence::currentReferenceChanged(cvr, o, n);
-	reloadScript();
-}
-
-void ScriptedConsequence::referenceAliasChanged(ControlVariableReference *)
+void ScriptedConsequence::referenceAliasChanged(Rule * , ControlVariableReference *)
 {
 	reloadScript();
 }
@@ -70,6 +65,26 @@ void ScriptedConsequence::ruleActivationChanged(Rule * r)
 	Array<var> args;
 	callFunctionFromIdentifier(Identifier(rule->isActive() ? "onActive" : "onInactive"), args);
 }
+
+
+
+var ScriptedConsequence::getJSONData()
+{
+	DynamicObject * d = new DynamicObject();
+	var data(d);
+
+	d->setProperty("script", codeDocument.getAllContent());
+
+	return data;
+}
+
+void ScriptedConsequence::loadJSONData(var data)
+{
+	codeDocument.replaceAllContent(data.getDynamicObject()->getProperty("script"));
+	codeDocument.clearUndoHistory();
+	reloadScript();
+}
+
 
 RuleConsequenceUI * ScriptedConsequence::createUI()
 {

@@ -310,6 +310,7 @@
                 file="Source/RuleConsequence.cpp"/>
           <FILE id="k3aAY2" name="RuleConsequence.h" compile="0" resource="0"
                 file="Source/RuleConsequence.h"/>
+          <FILE id="YavARy" name="RuleListeners.h" compile="0" resource="0" file="Source/RuleListeners.h"/>
           <FILE id="JPVX2y" name="RuleManager.cpp" compile="1" resource="0" file="Source/RuleManager.cpp"/>
           <FILE id="CThc0S" name="RuleManager.h" compile="0" resource="0" file="Source/RuleManager.h"/>
         </GROUP>

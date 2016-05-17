@@ -15,7 +15,7 @@
 
 class RuleConditionUI :
 	public Component,
-	public RuleCondition::RuleConditionListener
+	public RuleConditionListener
 {
 public:
 	RuleConditionUI(RuleCondition * condition);
