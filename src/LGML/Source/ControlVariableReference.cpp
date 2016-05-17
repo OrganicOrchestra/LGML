@@ -24,7 +24,10 @@ ControlVariableReference::~ControlVariableReference()
 
 void ControlVariableReference::setCurrentVariable(ControlVariable * v)
 {
+
 	if (currentVariable == v) return;
+
+	ControlVariable * oldVariable = currentVariable;
 
 	if (currentVariable != nullptr)
 	{
@@ -44,10 +47,19 @@ void ControlVariableReference::setCurrentVariable(ControlVariable * v)
 		setNiceName("reference:none");
 	}
 
-	referenceListeners.call(&ControlVariableReferenceListener::currentReferenceChanged, this);
+	referenceListeners.call(&ControlVariableReferenceListener::currentReferenceChanged, this, oldVariable, currentVariable);
+}
+
+void ControlVariableReference::onContainerParameterChanged(Parameter * p)
+{
+	if (p == alias)
+	{
+		referenceListeners.call(&ControlVariableReferenceListener::referenceAliasChanged, this);
+	}
 }
 
 void ControlVariableReference::remove()
 {
 	referenceListeners.call(&ControlVariableReferenceListener::askForRemoveReference, this);
 }
+

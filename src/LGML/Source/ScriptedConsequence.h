@@ -12,16 +12,28 @@
 #define SCRIPTEDCONSEQUENCE_H_INCLUDED
 
 #include "RuleConsequence.h"
+#include "JsEnvironment.h"
 
-class ScriptedConsequence : public RuleConsequence
+class ScriptedConsequence : public RuleConsequence,
+	public JsEnvironment
 {
 public:
-	ScriptedConsequence();
+	ScriptedConsequence(Rule * r);
 	virtual ~ScriptedConsequence();
 
 	CodeDocument codeDocument;
 
-	virtual void evaluate() override;
+	virtual void run() override;
+
+	// Inherited via JsEnvironment
+	virtual void buildLocalEnv() override;
+
+	void reloadScript();
+
+	virtual void currentReferenceChanged(ControlVariableReference *, ControlVariable * oldVariable, ControlVariable * newVariable) override;
+	virtual void referenceAliasChanged(ControlVariableReference *) override;
+
+	virtual void ruleActivationChanged(Rule * r) override;
 
 	RuleConsequenceUI * createUI() override;
 };

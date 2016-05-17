@@ -13,13 +13,34 @@
 
 #include "RuleCondition.h"
 
-class ScriptedCondition : public RuleCondition
+#include "JsEnvironment.h"
+
+class ScriptedCondition : 
+	public RuleCondition, 
+	public JsEnvironment
 {
 public :
 	ScriptedCondition();
 	virtual ~ScriptedCondition();
 
+	
 	CodeDocument codeDocument;
+
+	virtual void setReferences(OwnedArray<ControlVariableReference> *_ref) override;
+
+	virtual bool evaluateInternal();
+
+	// Inherited via JsEnvironment
+	virtual void buildLocalEnv() override;
+
+	void reloadScript();
+
+	virtual void currentReferenceChanged(ControlVariableReference *, ControlVariable * oldVariable, ControlVariable * newVariable) override;
+	virtual void referenceAliasChanged(ControlVariableReference *) override;
+
+
+
+
 };
 
 

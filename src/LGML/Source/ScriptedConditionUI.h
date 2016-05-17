@@ -13,8 +13,9 @@
 
 #include "ScriptedCondition.h"
 #include "RuleConditionUI.h"
+#include "JsLiveEditor.h"
 
-class ScriptedConditionUI : public RuleConditionUI
+class ScriptedConditionUI : public RuleConditionUI, public Button::Listener
 {
 public :
 	ScriptedConditionUI(ScriptedCondition * condition);
@@ -22,10 +23,12 @@ public :
 
 	ScriptedCondition * scriptedCondition;
 
-	CPlusPlusCodeTokeniser codeTokeniser;
-	CodeEditorComponent codeEditor;
+	JsLiveEditor jsEditor;
+	TextButton reloadBT;
 
 	void resized() override;
+
+	void buttonClicked(Button * b) override;
 };
 
 

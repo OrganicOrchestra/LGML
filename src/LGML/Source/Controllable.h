@@ -53,51 +53,22 @@ public:
 
     ControllableContainer * parentContainer;
 
-    void setNiceName(const String &_niceName) {
-		if (niceName == _niceName) return;
+	void setNiceName(const String &_niceName);
+	void setCustomShortName(const String &_shortName);
+	void setAutoShortName();
 
-        this->niceName = _niceName;
-        if (!hasCustomShortName) setAutoShortName();
-    }
+	void setEnabled(bool value, bool silentSet = false, bool force = false);
 
-    void setCustomShortName(const String &_shortName)
-    {
-        this->shortName = _shortName;
-        hasCustomShortName = true;
-    }
-
-    void setAutoShortName() {
-        hasCustomShortName = false;
-        shortName = StringUtil::toShortName(niceName, replaceSlashesInShortName);
-        updateControlAddress();
-    }
-
-    void setEnabled(bool value, bool silentSet = false, bool force = false)
-    {
-        if (!force && value == enabled) return;
-
-        enabled = value;
-        if(!silentSet) listeners.call(&Listener::controllableStateChanged, this);
-    }
-
-    void setParentContainer(ControllableContainer * container)
-    {
-        this->parentContainer = container;
-        updateControlAddress();
-    }
-
-    void updateControlAddress()
-    {
-        this->controlAddress = getControlAddress();
-        listeners.call(&Listener::controllableControlAddressChanged, this);
-    }
-
+	void setParentContainer(ControllableContainer * container);
+	void updateControlAddress();
 
     String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
     // used for generating editor
     virtual ControllableUI * createDefaultUI() = 0;
 
+	//used for script variables
+	virtual DynamicObject * createDynamicObject();
 
 public:
     class  Listener
@@ -114,8 +85,9 @@ public:
     void removeControllableListener(Listener* listener) { listeners.remove(listener); }
 
 
-
-
+	//Script set method handling
+	static var Controllable::setControllable(const juce::var::NativeFunctionArgs& a);
+	
 private:
 
     WeakReference<Controllable>::Master masterReference;

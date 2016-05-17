@@ -52,3 +52,11 @@ void RuleConditionGroup::removeConditionGroup(RuleConditionGroup * c)
 	c->removeConditionGroupListener(this);
 	conditionGroups.removeObject(c);
 }
+
+bool RuleConditionGroup::isActive()
+{
+	for (auto &c : conditions) if (!c->isActive) return false;
+	for (auto &cg : conditionGroups) if (!cg->isActive()) return false;
+
+	return true;
+}

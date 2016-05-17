@@ -14,10 +14,13 @@
   ScriptedConsequenceUI::ScriptedConsequenceUI(ScriptedConsequence * consequence) :
 	  RuleConsequenceUI(consequence),
 	  scriptedConsequence(consequence),
-	  codeEditor(consequence->codeDocument, &codeTokeniser)
+	  jsEditor(&consequence->codeDocument),
+	  reloadBT("Reload Script")
 
   {
-	  addAndMakeVisible(codeEditor);
+	  addAndMakeVisible(jsEditor);
+	  addAndMakeVisible(&reloadBT);
+	  reloadBT.addListener(this);
   }
 
   ScriptedConsequenceUI::~ScriptedConsequenceUI()
@@ -28,5 +31,13 @@
   void ScriptedConsequenceUI::resized()
   {
 	  Rectangle<int> r = getLocalBounds().reduced(2);
-	  codeEditor.setBounds(r);
+	  reloadBT.setBounds(r.removeFromBottom(15));
+	  jsEditor.setBounds(r);
   }
+
+
+  void ScriptedConsequenceUI::buttonClicked(Button * b)
+  {
+	  if (b == &reloadBT) scriptedConsequence->reloadScript();
+  }
+

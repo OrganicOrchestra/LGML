@@ -27,6 +27,7 @@ public:
 
 	void setCurrentVariable(ControlVariable * v);
 
+	void onContainerParameterChanged(Parameter * p) override;
 	void remove();
 
 
@@ -35,13 +36,15 @@ public:
 	public:
 		virtual ~ControlVariableReferenceListener() {}
 		virtual void askForRemoveReference(ControlVariableReference *) {};
-		virtual void currentReferenceChanged(ControlVariableReference *) {};
+		virtual void currentReferenceChanged(ControlVariableReference *, ControlVariable * , ControlVariable * ) {};
+		virtual void referenceAliasChanged(ControlVariableReference *) {};
 	};
 
 
 	ListenerList<ControlVariableReferenceListener> referenceListeners;
 	void addReferenceListener(ControlVariableReferenceListener* newListener) { referenceListeners.add(newListener); }
 	void removeReferenceListener(ControlVariableReferenceListener* listener) { referenceListeners.remove(listener); }
+
 };
 
 

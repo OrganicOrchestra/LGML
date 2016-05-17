@@ -14,18 +14,21 @@
 #include "JuceHeader.h"
 #include "RuleCondition.h"
 #include "RuleConditionGroup.h"
-#include "RuleConsequence.h"
 
 #include "ScriptedCondition.h"
-#include "ScriptedConsequence.h"
+
 
 #include "ControllableContainer.h"
 #include "ControlVariableReference.h"
 
+class RuleConsequence;
+
 
 class Rule :
 	public ControllableContainer,
-	public ControlVariableReference::ControlVariableReferenceListener
+	public ControlVariableReference::ControlVariableReferenceListener,
+	public RuleCondition::RuleConditionListener,
+	public RuleConditionGroupListener
 {
 public:
 	enum ActivationType
@@ -58,11 +61,19 @@ public:
 	ControlVariableReference * addReference();
 	void removeReference(ControlVariableReference *);
 
+	void updateReferencesInCondition();
+	void updateReferencesInConsequences();
+
 	void addConsequence();
 	void removeConsequence(RuleConsequence *);
 
 	void onContainerParameterChanged(Parameter * p) override;
 	void askForRemoveReference(ControlVariableReference * r) override;
+
+
+	void conditionActivationChanged(RuleCondition * c) override;
+	
+	bool isActive();
 
 	void remove();
 

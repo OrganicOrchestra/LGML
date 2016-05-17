@@ -12,10 +12,11 @@
 #define RULECONDITION_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "ControlVariableReference.h"
 
 class RuleConditionGroup;
 
-class RuleCondition
+class RuleCondition : public Parameter::Listener, public ControlVariableReference::ControlVariableReferenceListener
 {
 public:
 	RuleCondition(RuleConditionGroup * parent);
@@ -26,7 +27,20 @@ public:
 	bool isActive;
 	void setActive(bool value);
 
-	void process();
+	Array<ControlVariableReference *> references;
+	virtual void setReferences(OwnedArray<ControlVariableReference> * _ref);
+
+	virtual void evaluate();
+	virtual bool evaluateInternal();
+
+	// Inherited via Listener
+	virtual void parameterValueChanged(Parameter * p) override;
+
+	virtual void currentReferenceChanged(ControlVariableReference *, ControlVariable * oldVariable, ControlVariable * newVariable) override;
+	virtual void referenceAliasChanged(ControlVariableReference *) override {};
+
+	void clearListeners();
+
 	void remove();
 
 	class  RuleConditionListener
@@ -45,6 +59,8 @@ public:
 	void removeConditionListener(RuleConditionListener* listener) { conditionListeners.remove(listener); }
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RuleCondition)
+
+		
 };
 
 

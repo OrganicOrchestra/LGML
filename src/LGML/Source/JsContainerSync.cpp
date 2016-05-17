@@ -20,7 +20,6 @@ void JsContainerSync::linkToControllableContainer(const String & controllableNam
     }
 
     getEnv()->setProperty(controllableNamespace, obj);
-
 }
 
 
@@ -58,33 +57,15 @@ bool JsContainerSync::existInContainerNamespace(const String & ns){
 
 DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent)
 {
-
-
     DynamicObject*  d = parent;
     if(!container->skipControllableNameInAddress)
-        d= new DynamicObject();
+        d = new DynamicObject();
 
 
     for(auto &c:container->controllables){
-
-        if(Parameter * p = dynamic_cast<Parameter*>(c)){
-            DynamicObject* dd= new DynamicObject();
-
-            dd->setProperty("get", p->value);
-            dd->setProperty(ptrIdentifier, (int64)p);
-            dd->setMethod("set", setControllable);
-            d->setProperty(p->shortName, dd);
-
-
-        }
-        else if(Trigger * t = dynamic_cast<Trigger*>(c)){
-            DynamicObject* dd= new DynamicObject();
-            dd->setMethod("t", setControllable);
-            dd->setProperty(ptrIdentifier, (int64)t);
-            d->setProperty(t->shortName, dd);
-
-        }
+		d->setProperty(c->shortName, c->createDynamicObject());
     }
+
     for(auto &c:container->controllableContainers){
         jassert(c->shortName.isNotEmpty());
         bool isNumber = true;
@@ -114,9 +95,6 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
                 DynamicObject * childObject =createDynamicObjectFromContainer(c,d);
                 arrVar->add(childObject);
             }
-
-
-
         }
         else{
             DynamicObject * childObject = createDynamicObjectFromContainer(c,d);
@@ -126,64 +104,6 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
     }
 
     return d;
-}
-
-var JsContainerSync::setControllable(const juce::var::NativeFunctionArgs& a){
-
-    Controllable * c = getObjectPtrFromJS<Controllable>(a);
-    bool success = false;
-
-    if (c != nullptr)
-    {
-
-        success = true;
-
-        if(a.numArguments==0 && c->type==Controllable::Type::TRIGGER){
-            ((Trigger *)c)->trigger();
-        }
-
-        else{
-            var value = a.arguments[0];
-            switch (c->type)
-            {
-                case Controllable::Type::TRIGGER:
-                    if (value.isBool() && (bool)value)
-                        ((Trigger *)c)->trigger();
-                    else if((value.isDouble()||value.isInt() || value.isInt64())&& (float)value>0)
-                        ((Trigger *)c)->trigger();
-
-                    break;
-
-                case Controllable::Type::BOOL:
-                    if ( value.isBool())
-                        ((BoolParameter *)c)->setValue((bool)value);
-                    break;
-
-                case Controllable::Type::FLOAT:
-                    if(value.isDouble()||value.isInt() || value.isInt64())
-                        ((FloatParameter *)c)->setValue(value);
-                    break;
-                case Controllable::Type::INT:
-                    if(value.isInt() || value.isInt64())
-                        ((IntParameter *)c)->setValue(value);
-                    break;
-
-
-                case Controllable::Type::STRING:
-                    if(value.isString())
-                        ((StringParameter *)c)->setValue(value);
-                    break;
-
-                default:
-                    success = false;
-                    break;
-
-            }
-        }
-    }
-
-
-    return var();
 }
 
 

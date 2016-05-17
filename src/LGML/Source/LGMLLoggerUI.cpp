@@ -27,6 +27,8 @@ void LGMLLoggerUI::newMessage(const String & s)
         overFlow = true;
     }
 
+
+
     //coalesce messa
     triggerAsyncUpdate();
 
@@ -38,7 +40,7 @@ void LGMLLoggerUI::handleAsyncUpdate(){
 
 LGMLLoggerUI::LGMLLoggerUI(LGMLLogger * l) : ShapeShifterContent("LGMLLogger"),
 logList(this),
-maxNumElement(999),
+maxNumElement(500),
 totalLogRow(0)
 {
 	l->addLogListener(this);
@@ -194,5 +196,6 @@ void LGMLLoggerUI::buttonClicked (Button* b) {
 	{
         logElements.clear();
         logListComponent->updateContent();
+		LOG("Cleared.");
     }
 }

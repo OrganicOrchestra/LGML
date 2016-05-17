@@ -41,7 +41,7 @@ public :
 	void buttonClicked(Button * b);
 	void resized();
 
-	void currentReferenceChanged(ControlVariableReference *);
+	void currentReferenceChanged(ControlVariableReference *, ControlVariable * oldVariable, ControlVariable * newVariable) override;
 
 	void parameterValueChanged(Parameter * p);
 

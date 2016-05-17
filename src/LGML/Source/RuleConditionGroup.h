@@ -49,7 +49,7 @@ public:
 	RuleConditionGroup * addConditionGroup();
 	void removeConditionGroup(RuleConditionGroup *);
 
-
+	bool isActive();
 
 	ListenerList<RuleConditionGroupListener> conditionGroupListeners;
 	void addConditionGroupListener(RuleConditionGroupListener* newListener) { conditionGroupListeners.add(newListener); }

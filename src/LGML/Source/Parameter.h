@@ -48,6 +48,8 @@ public:
 
     void notifyValueChanged();
 
+	virtual DynamicObject * createDynamicObject() override;
+
     //Listener
 	class  Listener
 	{
@@ -80,11 +82,11 @@ public:
     void addAsyncCoalescedListener(AsyncListener* newListener) { queuedNotifier.addAsyncCoalescedListener(newListener); }
     void removeAsyncParameterListener(AsyncListener* listener) { queuedNotifier.removeListener(listener); }
 
+
+	//JS Helper
+	static var getValue(const juce::var::NativeFunctionArgs &a);
+
 private:
-
-
-
-
 
     WeakReference<Parameter>::Master masterReference;
     friend class WeakReference<Parameter>;

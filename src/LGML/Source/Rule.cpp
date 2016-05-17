@@ -9,6 +9,8 @@
  */
 
 #include "Rule.h"
+#include "RuleConsequence.h"
+#include "ScriptedConsequence.h"
 
 Rule::Rule(const String &_name) :
 ControllableContainer(_name),
@@ -38,11 +40,14 @@ void Rule::setConditionType(ConditionType value)
     switch (conditionType)
     {
         case SCRIPT:
+			if(scriptedCondition != nullptr) scriptedCondition->removeConditionListener(this);
             scriptedCondition = nullptr;
             break;
 
         case VISUAL:
-            rootConditionGroup = nullptr;
+			if (rootConditionGroup != nullptr) rootConditionGroup->removeConditionGroupListener(this);
+			rootConditionGroup = nullptr;
+
             break;
         default:
             break;
@@ -54,10 +59,13 @@ void Rule::setConditionType(ConditionType value)
     {
         case SCRIPT:
             scriptedCondition = new ScriptedCondition();
+			scriptedCondition->setReferences(&references);
+			scriptedCondition->addConditionListener(this);
             break;
 
         case VISUAL:
             rootConditionGroup = new RuleConditionGroup(nullptr);
+			rootConditionGroup->addConditionGroupListener(this);
             break;
         default:
             break;
@@ -72,6 +80,10 @@ ControlVariableReference * Rule::addReference()
     references.add(cvr);
     cvr->addReferenceListener(this);
     ruleListeners.call(&RuleListener::referenceAdded, cvr);
+
+	updateReferencesInCondition();
+	updateReferencesInConsequences();
+
     return cvr;
 }
 
@@ -80,19 +92,37 @@ void Rule::removeReference(ControlVariableReference * cvr)
     cvr->removeReferenceListener(this);
     ruleListeners.call(&RuleListener::referenceRemoved, cvr);
     references.removeObject(cvr);
+	updateReferencesInCondition();
+	updateReferencesInConsequences();
+}
+
+void Rule::updateReferencesInCondition()
+{
+	if (conditionType == SCRIPT)
+	{
+		scriptedCondition->setReferences(&references);
+		
+	}
+}
+
+void Rule::updateReferencesInConsequences()
+{
+	for (auto &c : consequences) c->setReferences(&references);
 }
 
 void Rule::addConsequence()
 {
-    RuleConsequence * c = new ScriptedConsequence();
+    RuleConsequence * c = new ScriptedConsequence(this);
     consequences.add(c);
     ruleListeners.call(&RuleListener::consequenceAdded,c);
+	updateReferencesInConsequences();
 }
 
 void Rule::removeConsequence(RuleConsequence * c)
 {
     ruleListeners.call(&RuleListener::consequenceRemoved, c);
     consequences.removeObject(c);
+	updateReferencesInConsequences();
 
 }
 
@@ -110,6 +140,17 @@ void Rule::onContainerParameterChanged(Parameter * p)
 void Rule::askForRemoveReference(ControlVariableReference * r)
 {
     removeReference(r);
+	
+}
+
+void Rule::conditionActivationChanged(RuleCondition *)
+{
+	isActiveParam->setValue((conditionType == SCRIPT)?scriptedCondition->isActive:rootConditionGroup->isActive());
+}
+
+bool Rule::isActive()
+{
+	return isActiveParam->boolValue();
 }
 
 

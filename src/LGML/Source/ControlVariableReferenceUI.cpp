@@ -106,7 +106,7 @@ void ControlVariableReferenceUI::resized()
 	referenceLabel.setBounds(r);
 }
 
-void ControlVariableReferenceUI::currentReferenceChanged(ControlVariableReference *)
+void ControlVariableReferenceUI::currentReferenceChanged(ControlVariableReference *, ControlVariable * oldVariable, ControlVariable * newVariable)
 {
 	updateCurrentReference();
 }

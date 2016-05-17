@@ -13,9 +13,12 @@
 ScriptedConditionUI::ScriptedConditionUI(ScriptedCondition * condition) :
 	RuleConditionUI(condition),
 	scriptedCondition(condition),
-	codeEditor(condition->codeDocument,&codeTokeniser)
+	jsEditor(&condition->codeDocument),
+	reloadBT("Reload Script")
 {
-	addAndMakeVisible(&codeEditor);
+	addAndMakeVisible(&jsEditor);
+	addAndMakeVisible(&reloadBT);
+	reloadBT.addListener(this);
 }
 
 ScriptedConditionUI::~ScriptedConditionUI()
@@ -25,5 +28,12 @@ ScriptedConditionUI::~ScriptedConditionUI()
 void ScriptedConditionUI::resized()
 {
 	Rectangle<int> r = getLocalBounds().reduced(2);
-	codeEditor.setBounds(r);
+	reloadBT.setBounds(r.removeFromBottom(15));
+	jsEditor.setBounds(r);
 }
+
+void ScriptedConditionUI::buttonClicked(Button * b)
+{
+	if (b == &reloadBT) scriptedCondition->reloadScript();
+}
+

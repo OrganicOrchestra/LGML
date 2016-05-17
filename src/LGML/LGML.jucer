@@ -67,6 +67,15 @@
         </GROUP>
         <GROUP id="{CD34BC32-7051-468F-8C6F-D5720DD85230}" name="ScriptEnvironments">
           <GROUP id="{2F437B28-C238-7AD3-AA89-3D6FD2EDD7E2}" name="Javascript">
+            <GROUP id="{370BD2C4-3CBD-F571-7B75-8FBABDD7867A}" name="ui">
+              <FILE id="XIC13d" name="JsEnvironmentUI.cpp" compile="1" resource="0"
+                    file="Source/JsEnvironmentUI.cpp"/>
+              <FILE id="p6OV9N" name="JsEnvironmentUI.h" compile="0" resource="0"
+                    file="Source/JsEnvironmentUI.h"/>
+              <FILE id="qFieBe" name="JsLiveEditor.cpp" compile="1" resource="0"
+                    file="Source/JsLiveEditor.cpp"/>
+              <FILE id="Taaqc9" name="JsLiveEditor.h" compile="0" resource="0" file="Source/JsLiveEditor.h"/>
+            </GROUP>
             <FILE id="ARYAND" name="JsContainerSync.cpp" compile="1" resource="0"
                   file="Source/JsContainerSync.cpp"/>
             <FILE id="ApvfEI" name="JsContainerSync.h" compile="0" resource="0"
@@ -74,8 +83,6 @@
             <FILE id="frFd8w" name="JsEnvironment.cpp" compile="1" resource="0"
                   file="Source/JsEnvironment.cpp"/>
             <FILE id="d5u2LT" name="JsEnvironment.h" compile="0" resource="0" file="Source/JsEnvironment.h"/>
-            <FILE id="p6OV9N" name="JsEnvironmentUI.h" compile="0" resource="0"
-                  file="Source/JsEnvironmentUI.h"/>
             <FILE id="Nd6Xnl" name="JsGlobalEnvironment.cpp" compile="1" resource="0"
                   file="Source/JsGlobalEnvironment.cpp"/>
             <FILE id="W19CFS" name="JsGlobalEnvironment.h" compile="0" resource="0"

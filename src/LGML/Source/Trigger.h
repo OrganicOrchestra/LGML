@@ -28,6 +28,8 @@ public:
     TriggerBlinkUI * createBlinkUI();
     ControllableUI * createDefaultUI() override;
 
+	virtual DynamicObject * createDynamicObject() override;
+
     void trigger()
     {
         if (enabled && !isTriggering){

@@ -50,9 +50,6 @@ public:
 
 private:
 
-
-
-    static var setControllable(const juce::var::NativeFunctionArgs& a);
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
 
 };

@@ -40,6 +40,7 @@ Rule * RuleManager::addRule(const String &ruleName)
 void RuleManager::removeRule(Rule * _rule)
 {
 	ruleManagerListeners.call(&RuleManager::Listener::ruleRemoved, _rule);
+	removeChildControllableContainer(_rule);
 	rules.removeObject(_rule);
 }
 

@@ -71,7 +71,7 @@ void MIDIController::onContainerParameterChanged(Parameter * p){
 void MIDIController::buildLocalEnv(){
     DynamicObject obj;
     obj.setMethod("sendCC", sendCC);
-    obj.setProperty(ptrIdentifier, this);
+    obj.setProperty(ptrIdentifier, (int64)this);
     obj.setMethod("sendNoteOnFor", sendNoteOnFor);
     setLocalNamespace(obj);
 
