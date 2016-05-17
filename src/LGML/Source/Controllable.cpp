@@ -26,23 +26,31 @@ Controllable::Controllable(const Type &type, const String & niceName, const Stri
     setNiceName(niceName);
 }
 
+Controllable::~Controllable() {
+	Controllable::masterReference.clear();
+	listeners.call(&Controllable::Listener::controllableRemoved, this);
+}
+
 void Controllable::setNiceName(const String & _niceName) {
 	if (niceName == _niceName) return;
 
 	this->niceName = _niceName;
 	if (!hasCustomShortName) setAutoShortName();
+	else listeners.call(&Listener::controllableNameChanged, this);
 }
 
 void Controllable::setCustomShortName(const String & _shortName)
 {
 	this->shortName = _shortName;
 	hasCustomShortName = true;
+	listeners.call(&Listener::controllableNameChanged, this);
 }
 
 void Controllable::setAutoShortName() {
 	hasCustomShortName = false;
 	shortName = StringUtil::toShortName(niceName, replaceSlashesInShortName);
 	updateControlAddress();
+	listeners.call(&Listener::controllableNameChanged, this);
 }
 
 void Controllable::setEnabled(bool value, bool silentSet, bool force)

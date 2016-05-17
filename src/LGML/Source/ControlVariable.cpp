@@ -17,6 +17,7 @@ ControlVariable::ControlVariable(Controller * c, Parameter * p) :
 	parameter(p)
 {
 	p->isEditable = false;
+	p->addControllableListener(this);
 }
 
 ControlVariable::~ControlVariable()
@@ -29,4 +30,9 @@ void ControlVariable::remove()
 	NLOG("ControlVariable", "remove");
 
 	variableListeners.call(&ControlVariableListener::askForRemoveVariable, this);
+}
+
+void ControlVariable::controllableNameChanged(Controllable *)
+{
+	variableListeners.call(&ControlVariableListener::variableNameChanged, this);
 }

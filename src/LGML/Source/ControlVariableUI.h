@@ -34,6 +34,8 @@ public:
 
 	void buttonClicked(Button * b)override;
 	void labelTextChanged(Label *b)override;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlVariableUI)
 };
 
 

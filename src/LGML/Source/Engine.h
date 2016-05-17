@@ -20,6 +20,7 @@
 #include "VSTManager.h"
 #include "PresetManager.h"
 #include "RuleManager.h"
+#include "FastMapper.h"
 
 
 class Engine:public FileBasedDocument{

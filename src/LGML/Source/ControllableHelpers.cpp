@@ -11,30 +11,84 @@
 #include "ControllableHelpers.h"
 #include "DebugHelpers.h"
 
+#include "NodeManager.h"
 ControllableContainerPopupMenu::ControllableContainerPopupMenu(ControllableContainer * rootContainer)
 {
-	populateMenu(this,rootContainer);
+	int id = 1;
+	if (rootContainer == nullptr) rootContainer = NodeManager::getInstance(); //to replace with global app container containing nodes, controllers, rules, etc...
+	populateMenu(this, rootContainer,id);
 }
 
 ControllableContainerPopupMenu::~ControllableContainerPopupMenu()
 {
 }
 
-void ControllableContainerPopupMenu::populateMenu(PopupMenu * subMenu, ControllableContainer * container, int currentId)
+
+void ControllableContainerPopupMenu::populateMenu(PopupMenu * subMenu, ControllableContainer * container, int &currentId)
 {
-	NLOG("CC PopupMenu","Populate menu " << container->niceName << " : " << currentId);
 	for (auto &c : container->controllables)
 	{
-		LOG(" >> " << c->niceName);
-		if (c->isControllableExposed) subMenu->addItem(currentId, c->niceName);
-		currentId++;
+		if (c->isControllableExposed)
+		{
+			subMenu->addItem(currentId, c->niceName);
+			controllableList.add(c);
+			currentId++;
+		}
 	}
 
 	for (auto &cc : container->controllableContainers)
 	{
-		LOG(" >> Container : " << cc->niceName);
 		PopupMenu p;
-		populateMenu(&p, cc, currentId);
+		populateMenu(&p, cc,currentId);
 		subMenu->addSubMenu(cc->niceName, p);
 	}
+}
+
+Controllable * ControllableContainerPopupMenu::showAndGetControllable()
+{
+	int result = show();
+
+	if (result == 0) return nullptr;
+	
+	return controllableList[result-1];
+}
+
+
+
+ControllableChooser::ControllableChooser(ControllableContainer * container) :
+	rootContainer(container),
+	TextButton("Target")
+{
+	addListener(this);
+	setTooltip("Choose a target");
+}
+
+ControllableChooser::~ControllableChooser()
+{
+	removeListener(this);
+}
+
+void ControllableChooser::setCurrentControllale(Controllable * c)
+{
+	if (currentControllable == c) return;
+	currentControllable = c;
+
+	if(c != nullptr)
+	{
+		setTooltip("Current Controllable :" + c->niceName + String("\n") + c->controlAddress);
+		setButtonText(c->niceName);
+	}else
+	{
+		setTooltip("Choose a controllable");
+		setButtonText("Target");
+	}
+
+	listeners.call(&Listener::choosedControllableChanged, c);
+}
+
+void ControllableChooser::buttonClicked(Button *)
+{
+	ControllableContainerPopupMenu p(rootContainer);
+	Controllable * c = p.showAndGetControllable();
+	if(c != nullptr) setCurrentControllale(c);
 }

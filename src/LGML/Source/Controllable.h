@@ -32,8 +32,7 @@ public:
 
 
     Controllable(const Type &type, const String &niceName, const String &description, bool enabled = true);
-    virtual ~Controllable() {
-        Controllable::masterReference.clear();}
+	virtual ~Controllable();
 
 
     Type type;
@@ -76,8 +75,10 @@ public:
     public:
         /** Destructor. */
         virtual ~Listener() {}
-        virtual void controllableStateChanged(Controllable * c) = 0;
-        virtual void controllableControlAddressChanged(Controllable * c) = 0;
+		virtual void controllableStateChanged(Controllable * ) {};
+		virtual void controllableControlAddressChanged(Controllable * ) {};
+		virtual void controllableNameChanged(Controllable *) {};
+		virtual void controllableRemoved(Controllable * ) {};
     };
 
     ListenerList<Listener> listeners;

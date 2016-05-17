@@ -114,3 +114,8 @@ void ControlVariableReference::variableRemoved(ControlVariable *)
 	setCurrentVariable(nullptr);
 }
 
+void ControlVariableReference::variableNameChanged(ControlVariable *)
+{
+	referenceListeners.call(&ControlVariableReferenceListener::referenceVariableNameChanged, this);
+}
+

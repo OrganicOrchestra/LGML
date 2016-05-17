@@ -30,6 +30,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 Engine::~Engine(){
     stopAudio();
 
+	FastMapper::deleteInstance();
 	MIDIManager::deleteInstance();
     TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
     ControllerManager::deleteInstance();
@@ -104,8 +105,9 @@ void Engine::clear(){
     //    do we need to stop audio?
     //stopAudio();
 
-	 TimeManager::getInstance()->playState->setValue(false);
+	TimeManager::getInstance()->playState->setValue(false);
 
+	FastMapper::getInstance()->clear();
 	RuleManager::getInstance()->clear();
 	ControllerManager::getInstance()->clear();
     NodeManager::getInstance()->clear();

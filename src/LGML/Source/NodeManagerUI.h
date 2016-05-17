@@ -105,7 +105,7 @@ private:
 
 class NodeManagerUIViewport: public ShapeShifterContent{
     public :
-    NodeManagerUIViewport(NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContent("NodeManagerViewPort")
+    NodeManagerUIViewport(NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContent("Node Manager")
 	{
         vp.setViewedComponent(nmui,true);
         vp.setScrollBarsShown(true, true);

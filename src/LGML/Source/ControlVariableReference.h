@@ -23,8 +23,10 @@ public:
 	virtual void askForRemoveReference(ControlVariableReference *) {};
 
 	virtual void referenceVariableChanged(ControlVariableReference *) {};
+	virtual void referenceVariableNameChanged(ControlVariableReference *) {};
 	virtual void referenceValueChanged(ControlVariableReference *) {};
 	virtual void referenceAliasChanged(ControlVariableReference *) {};
+	
 };
 
 
@@ -51,10 +53,13 @@ public:
 	virtual void loadJSONDataInternal(var data) override;
 	
 	virtual void variableRemoved(ControlVariable *) override;
+	virtual void variableNameChanged(ControlVariable *) override;
 
 	ListenerList<ControlVariableReferenceListener> referenceListeners;
 	void addReferenceListener(ControlVariableReferenceListener* newListener) { referenceListeners.add(newListener); }
 	void removeReferenceListener(ControlVariableReferenceListener* listener) { referenceListeners.remove(listener); }
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlVariableReference)
 
 };
 

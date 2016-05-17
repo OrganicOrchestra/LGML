@@ -23,8 +23,6 @@ ControlVariableReferenceUI::ControlVariableReferenceUI(ControlVariableReference 
 
 	addAndMakeVisible(aliasUI);
 	addAndMakeVisible(&chooseBT);
-	addAndMakeVisible(&referenceLabel);
-	referenceLabel.setColour(referenceLabel.textColourId, TEXTNAME_COLOR);
 
 	aliasUI->setNameLabelVisible(false);
 	chooseBT.addListener(this);
@@ -51,6 +49,18 @@ ControlVariableReferenceUI::~ControlVariableReferenceUI()
 	cvr->removeReferenceListener(this);
 }
 
+void ControlVariableReferenceUI::setAliasVisible(bool value)
+{
+	aliasUI->setVisible(value);
+	resized();
+}
+
+void ControlVariableReferenceUI::setRemoveBTVisible(bool value)
+{
+	removeBT.setVisible(value);
+	resized();
+}
+
 void ControlVariableReferenceUI::updateCurrentReference()
 {
 	if (currentVariableParamUI != nullptr)
@@ -61,13 +71,13 @@ void ControlVariableReferenceUI::updateCurrentReference()
 
 	if (cvr->currentVariable != nullptr)
 	{
-		referenceLabel.setText(cvr->currentVariable->parameter->niceName, NotificationType::dontSendNotification);
+		chooseBT.setButtonText(cvr->currentVariable->parameter->niceName);
 		currentVariableParamUI = (ParameterUI *)cvr->currentVariable->parameter->createDefaultUI();
 		addAndMakeVisible(currentVariableParamUI);
 	}
 	else
 	{
-		referenceLabel.setText("[None]", NotificationType::dontSendNotification);
+		chooseBT.setButtonText("[Source]");
 	}
 
 	resized();
@@ -98,17 +108,20 @@ void ControlVariableReferenceUI::resized()
 	Rectangle<int> rUI = r.removeFromBottom(10);
 	if (currentVariableParamUI != nullptr) currentVariableParamUI->setBounds(rUI);
 
-	removeBT.setBounds(r.removeFromRight(r.getHeight()).reduced(2));
-	chooseBT.setBounds(r.removeFromLeft(40));
-	r.removeFromLeft(2);
-	aliasUI->setBounds(r.removeFromRight(100));
-	r.reduce(5, 0);
-	referenceLabel.setBounds(r);
+	if (removeBT.isVisible()) removeBT.setBounds(r.removeFromRight(r.getHeight()).reduced(2));
+	r.removeFromRight(2); 
+	if (aliasUI->isVisible()) aliasUI->setBounds(r.removeFromRight(r.getWidth()-100));
+	chooseBT.setBounds(r);	
 }
 
 void ControlVariableReferenceUI::referenceVariableChanged(ControlVariableReference *)
 {
 	updateCurrentReference();
+}
+
+void ControlVariableReferenceUI::referenceVariableNameChanged(ControlVariableReference *)
+{
+	chooseBT.setButtonText(cvr->currentVariable->parameter->niceName);
 }
 
 void ControlVariableReferenceUI::parameterValueChanged(Parameter *)
