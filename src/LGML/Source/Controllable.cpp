@@ -26,6 +26,11 @@ Controllable::Controllable(const Type &type, const String & niceName, const Stri
     setNiceName(niceName);
 }
 
+Controllable::~Controllable() {
+	Controllable::masterReference.clear();
+	listeners.call(&Controllable::Listener::controllableRemoved, this);
+}
+
 void Controllable::setNiceName(const String & _niceName) {
 	if (niceName == _niceName) return;
 

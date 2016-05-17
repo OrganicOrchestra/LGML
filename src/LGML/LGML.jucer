@@ -249,6 +249,19 @@
               file="Source/SettingsManager.h"/>
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
+        <GROUP id="{A326863C-B189-20A5-543D-C57FC06E6800}" name="fastmapper">
+          <GROUP id="{7629E103-F9D3-D20D-742F-E6B9391E53CB}" name="ui">
+            <FILE id="LT0Rms" name="FastMapperUI.cpp" compile="1" resource="0"
+                  file="Source/FastMapperUI.cpp"/>
+            <FILE id="lvzE0P" name="FastMapperUI.h" compile="0" resource="0" file="Source/FastMapperUI.h"/>
+            <FILE id="Wk7cz0" name="FastMapUI.cpp" compile="1" resource="0" file="Source/FastMapUI.cpp"/>
+            <FILE id="nBXvJJ" name="FastMapUI.h" compile="0" resource="0" file="Source/FastMapUI.h"/>
+          </GROUP>
+          <FILE id="CxUJPV" name="FastMap.cpp" compile="1" resource="0" file="Source/FastMap.cpp"/>
+          <FILE id="RxMkjk" name="FastMap.h" compile="0" resource="0" file="Source/FastMap.h"/>
+          <FILE id="hnnPv6" name="FastMapper.cpp" compile="1" resource="0" file="Source/FastMapper.cpp"/>
+          <FILE id="vwhJZQ" name="FastMapper.h" compile="0" resource="0" file="Source/FastMapper.h"/>
+        </GROUP>
         <GROUP id="{36D57403-1E0C-65BD-9157-C17EE1560F96}" name="rules">
           <GROUP id="{F686A4E4-762D-D1B5-DCD5-C8B54C43DAFD}" name="scripted">
             <FILE id="OuvMa2" name="ScriptedCondition.cpp" compile="1" resource="0"

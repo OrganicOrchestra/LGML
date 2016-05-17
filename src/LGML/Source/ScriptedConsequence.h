@@ -38,6 +38,9 @@ public:
 	virtual void loadJSONData(var data) override;
 	
 	RuleConsequenceUI * createUI() override;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptedConsequence)
+
 };
 
 #endif  // SCRIPTEDCONSEQUENCE_H_INCLUDED

@@ -25,6 +25,9 @@
 #include "RuleManager.h"
 #include "RuleManagerUI.h"
 
+#include "FastMapper.h"
+#include "FastMapperUI.h"
+
 #include "LGMLLoggerUI.h"
 
 #include "ShapeShifterManager.h"
@@ -59,15 +62,10 @@ public:
 	static Inspector * inspector;
 	ScopedPointer<InspectorViewport> inspectorViewport;
 
-
 	ScopedPointer<NodeManagerUIViewport> nodeManagerViewport;
-
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
-
 	ScopedPointer<RuleManagerUI> ruleManagerUI;
-
-
-
+	ScopedPointer<FastMapperViewport> fastMapperViewport;
 
     ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;
 

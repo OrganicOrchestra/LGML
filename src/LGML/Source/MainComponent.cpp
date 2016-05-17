@@ -43,14 +43,17 @@ MainContentComponent::MainContentComponent(Engine * e):
 	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
     ruleManagerUI = new RuleManagerUI(RuleManager::getInstance());
     lgmlLoggerUI = new LGMLLoggerUI(LGMLLogger::getInstance());
+	fastMapperViewport = new FastMapperViewport(new FastMapperUI(FastMapper::getInstance()));
 
 	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
 	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerViewport);
 	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
 	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(inspectorViewport);
 
-	ShapeShifterPanel * rulesPanel = ShapeShifterManager::getInstance()->createPanel(ruleManagerUI);
-    ShapeShifterPanel * logPanel = ShapeShifterManager::getInstance()->createPanel(lgmlLoggerUI);
+	ShapeShifterPanel * rulesAndFMPanel = ShapeShifterManager::getInstance()->createPanel(ruleManagerUI);
+	rulesAndFMPanel->addContent(fastMapperViewport);
+
+	ShapeShifterPanel * logPanel = ShapeShifterManager::getInstance()->createPanel(lgmlLoggerUI);
 
 	timeManagerPanel->setPreferredHeight(50);
 
@@ -61,9 +64,10 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 	ShapeShifterContainer * vc = c1->insertContainerAt(ShapeShifterContainer::VERTICAL,0);
 	vc->insertPanelAt(controllerManagerPanel, 0);
-	vc->insertPanelAt(rulesPanel,1);
+	vc->insertPanelAt(rulesAndFMPanel,1);
 	vc->setPreferredWidth(300);
 
+	
 	c1->insertPanelAt(nodeManagerPanel, 1);
 
 	ShapeShifterContainer * vc2 = c1->insertContainerAt(ShapeShifterContainer::VERTICAL,2);
@@ -76,7 +80,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 	controllerManagerPanel->setPreferredWidth(300);
 	inspectorPanel->setPreferredWidth(300);
-	rulesPanel->setPreferredWidth(300);
+	rulesAndFMPanel->setPreferredWidth(300);
 
 
     setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.9f));

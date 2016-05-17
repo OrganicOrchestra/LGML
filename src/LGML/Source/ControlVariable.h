@@ -41,6 +41,8 @@ public :
 	ListenerList<ControlVariableListener> variableListeners;
 	void addControlVariableListener(ControlVariableListener* newListener) { variableListeners.add(newListener); }
 	void removeControlVariableListener(ControlVariableListener* listener) { variableListeners.remove(listener); }
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlVariable)
 };
 
 

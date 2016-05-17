@@ -56,6 +56,8 @@ public:
 	void addReferenceListener(ControlVariableReferenceListener* newListener) { referenceListeners.add(newListener); }
 	void removeReferenceListener(ControlVariableReferenceListener* listener) { referenceListeners.remove(listener); }
 
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControlVariableReference)
+
 };
 
 
