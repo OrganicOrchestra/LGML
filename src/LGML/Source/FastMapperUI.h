@@ -51,7 +51,7 @@ public:
 
 	virtual void fastMapAdded(FastMap *) override;
 	virtual void fastMapRemoved(FastMap *) override;
-	
+
 	ListenerList<FastMapperUIListener> fastMapperUIListeners;
 	void addFastMapperUIListener(FastMapperUIListener* newListener) { fastMapperUIListeners.add(newListener); }
 	void removeFastMapperUIListener(FastMapperUIListener* listener) { fastMapperUIListeners.remove(listener); }

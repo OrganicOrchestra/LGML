@@ -9,6 +9,7 @@
 */
 
 #include "FastMapUI.h"
+#include "BoolToggleUI.h"
 
 FastMapUI::
 FastMapUI(FastMap * f) :
@@ -20,6 +21,9 @@ FastMapUI(FastMap * f) :
 	refUI = new ControlVariableReferenceUI(f->reference);
 	refUI->setAliasVisible(false);
 	refUI->setRemoveBTVisible(false);
+
+	enabledUI = fastMap->enabledParam->createToggle();
+	addAndMakeVisible(enabledUI);
 
 	minInputUI = fastMap->minInputVal->createSlider();
 	maxInputUI = fastMap->maxInputVal->createSlider();
@@ -61,29 +65,44 @@ void FastMapUI::paint(Graphics & g)
 void FastMapUI::resized()
 {
 	Rectangle<int> r = getLocalBounds().reduced(3);
+	enabledUI->setBounds(r.removeFromLeft(15));
 	removeBT.setBounds(r.removeFromRight(r.getHeight()).reduced(4));
 
-	refUI->setBounds(r.removeFromLeft((int)(getWidth()*.3f)));
-	chooseTargetBT.setBounds(r.removeFromRight((int)(getWidth()*.2f)).reduced(2,1));
+	int w = r.getWidth();
+	int h = r.getHeight();
+	refUI->setBounds(r.removeFromLeft((int)(w*.3f)));
+	chooseTargetBT.setBounds(r.removeFromRight((int)(w*.2f)).reduced(2,3));
 	
-	Rectangle<int> inR = r.removeFromLeft((int)(getWidth()*.2f));
-	minInputUI->setBounds(inR.removeFromTop((int)(getHeight()*.35f)));
-	maxInputUI->setBounds(inR.removeFromBottom((int)(getHeight()*.35f)));
+	Rectangle<int> inR = r.removeFromLeft((int)(w*.2f));
+	minInputUI->setBounds(inR.removeFromTop((int)(h*.4f)));
+	maxInputUI->setBounds(inR.removeFromBottom((int)(h*.4f)));
 
-	Rectangle<int> outR = r.removeFromRight((int)(getWidth()*.2f));
-	minOutputUI->setBounds(outR.removeFromTop((int)(getHeight()*.35f)));
-	maxOutputUI->setBounds(outR.removeFromBottom((int)(getHeight()*.35f)));
+	Rectangle<int> outR = r.removeFromRight((int)(w*.2f));
+	minOutputUI->setBounds(outR.removeFromTop((int)(h*.4f)));
+	maxOutputUI->setBounds(outR.removeFromBottom((int)(h*.4f)));
 
 }
 
 void FastMapUI::choosedControllableChanged(Controllable * c)
 {
 	fastMap->setTarget(c);
+}
 
-	if (c != nullptr)
+void FastMapUI::fastMapTargetChanged(FastMap *f)
+{
+	if (f->target != nullptr)
 	{
-		minOutputUI->setVisible(c->type != Controllable::TRIGGER && c->type != Controllable::BOOL);
-		maxOutputUI->setVisible(c->type != Controllable::TRIGGER && c->type != Controllable::BOOL);
+		chooseTargetBT.setButtonText(f->target->niceName);
+		chooseTargetBT.setTooltip("Current Controllable :" + f->target->niceName + String("\n") + f->target->controlAddress);
+
+		minOutputUI->setVisible(f->target->type != Controllable::TRIGGER && f->target->type != Controllable::BOOL);
+		maxOutputUI->setVisible(f->target->type != Controllable::TRIGGER && f->target->type != Controllable::BOOL);
+	}
+	else
+	{
+		chooseTargetBT.setButtonText("[Target]");
+		chooseTargetBT.setTooltip("Choose a target");
+
 	}
 }
 

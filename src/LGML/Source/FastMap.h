@@ -51,8 +51,10 @@ public:
 
 	void setReference(ControlVariableReference * r);
 	void setTarget(Controllable * c);
-	
-	
+
+	virtual var getJSONData() override;	
+	virtual void loadJSONDataInternal(var data) override;
+
 	void remove();
 
 	ListenerList<FastMapListener> fastMapListeners;

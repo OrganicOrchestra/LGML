@@ -90,7 +90,7 @@ var Engine::getJSONData()
 	data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
     data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
 	data.getDynamicObject()->setProperty("ruleManager", RuleManager::getInstance()->getJSONData());
-
+	data.getDynamicObject()->setProperty("fastMapper", FastMapper::getInstance()->getJSONData());
 	
     return data;
 }
@@ -105,10 +105,13 @@ void Engine::loadJSONData (var data)
 
 	MainContentComponent::inspector->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
-	PresetManager::getInstance()->loadJSONData(data.getProperty("presetManager", var()));
-    NodeManager::getInstance()->loadJSONData(data.getProperty("nodeManager", var()));
-    ControllerManager::getInstance()->loadJSONData(data.getProperty("controllerManager", var()));
-	RuleManager::getInstance()->loadJSONData(data.getProperty("ruleManager", var()));
+	DynamicObject * d = data.getDynamicObject();
+
+	if (d->hasProperty("presetManager")) PresetManager::getInstance()->loadJSONData(d->getProperty("presetManager"));
+	if (d->hasProperty("nodeManager")) NodeManager::getInstance()->loadJSONData(d->getProperty("nodeManager"));
+	if (d->hasProperty("controllerManager")) ControllerManager::getInstance()->loadJSONData(d->getProperty("controllerManager"));
+	if (d->hasProperty("ruleManager"))RuleManager::getInstance()->loadJSONData(d->getProperty("ruleManager"));
+	if(d->hasProperty("fastMapper")) FastMapper::getInstance()->loadJSONData(d->getProperty("fastMapper"));
 
 	MainContentComponent::inspector->setEnabled(true); //Re enable editor
 

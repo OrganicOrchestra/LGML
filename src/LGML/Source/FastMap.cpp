@@ -9,6 +9,7 @@
 */
 
 #include "FastMap.h"
+#include "NodeManager.h"
 
 FastMap::FastMap() :
 	reference(nullptr),
@@ -17,6 +18,8 @@ FastMap::FastMap() :
 {
 	reference = new ControlVariableReference();
 	reference->addReferenceListener(this);
+
+	enabledParam = addBoolParameter("Enabled", "Enabled / Disable Fast Map", true);
 
 	minInputVal = addFloatParameter("In Min", "Minimum Input Value", 0, 0, 1);
 	maxInputVal = addFloatParameter("In Max", "Maximum Input Value", 1, 0, 1);
@@ -35,6 +38,8 @@ FastMap::~FastMap()
 
 void FastMap::process()
 {
+	if (!enabledParam->boolValue()) return;
+
 	float sourceVal = (float)reference->getValue();
 	if (target == nullptr) return;
 	
@@ -51,10 +56,12 @@ void FastMap::process()
 			((BoolParameter *)target)->setValue(newIsInRange);
 		}else
 		{
-			float targetVal = jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
-			targetVal = jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(),targetVal);
-			((Parameter *)target)->setValue(targetVal);
-
+			if (minOutputVal->floatValue() < maxOutputVal->floatValue())
+			{
+				float targetVal = juce::jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
+				targetVal = juce::jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(), targetVal);
+				((Parameter *)target)->setValue(targetVal);
+			}
 		}
 	}
 
@@ -79,7 +86,6 @@ void FastMap::setReference(ControlVariableReference * r)
 
 void FastMap::setTarget(Controllable * c)
 {
-	DBG("Set Target !");
 	if (target == c) return;
 
 	if (target != nullptr)
@@ -94,6 +100,26 @@ void FastMap::setTarget(Controllable * c)
 	}
 
 	fastMapListeners.call(&FastMapListener::fastMapTargetChanged, this);
+}
+
+var FastMap::getJSONData()
+{
+	var data = ControllableContainer::getJSONData();
+	data.getDynamicObject()->setProperty("reference", reference->getJSONData());
+	data.getDynamicObject()->setProperty("target", target->getControlAddress()); //Need to be global
+
+	return data;
+}
+
+void FastMap::loadJSONDataInternal(var data)
+{
+	reference->loadJSONData(data.getDynamicObject()->getProperty("reference"));
+	String cAddress = data.getDynamicObject()->getProperty("target").toString();
+
+	//Need to be global
+	cAddress = cAddress.substring(1);
+	
+	setTarget(NodeManager::getInstance()->getControllableForAddress(cAddress));
 }
 
 void FastMap::remove()

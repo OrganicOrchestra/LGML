@@ -40,6 +40,9 @@ public:
 	FastMap * addFastMap();
 	void removeFastmap(FastMap * f);
 
+	virtual var getJSONData() override;
+	virtual void loadJSONDataInternal(var data) override;
+
 	ListenerList<FastMapperListener> fastMapperListeners;
 	void addFastMapperListener(FastMapperListener* newListener) { fastMapperListeners.add(newListener); }
 	void removeFastMapperListener(FastMapperListener* listener) { fastMapperListeners.remove(listener); }

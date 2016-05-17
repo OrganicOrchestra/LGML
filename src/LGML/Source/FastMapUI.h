@@ -30,6 +30,8 @@ public:
 
 	ScopedPointer<ControlVariableReferenceUI> refUI;
 
+	ScopedPointer<BoolToggleUI> enabledUI;
+
 	ScopedPointer<FloatSliderUI> minInputUI;
 	ScopedPointer<FloatSliderUI> maxInputUI;
 	ScopedPointer<FloatSliderUI> minOutputUI;
@@ -46,7 +48,8 @@ public:
 	void resized() override;
 
 	virtual void choosedControllableChanged(Controllable *) override;
-		
+
+	virtual void fastMapTargetChanged(FastMap *) override;
 	void buttonClicked(Button * b) override;
 	
 

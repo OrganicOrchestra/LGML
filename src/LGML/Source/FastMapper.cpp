@@ -15,6 +15,7 @@ juce_ImplementSingleton(FastMapper)
 FastMapper::FastMapper() :
 	ControllableContainer("FastMapper")
 {
+	saveAndLoadRecursiveData = false;
 }
 
 FastMapper::~FastMapper()
@@ -46,6 +47,34 @@ void FastMapper::removeFastmap(FastMap * f)
 	f->removeFastMapListener(this);
 	fastMapperListeners.call(&FastMapperListener::fastMapRemoved, f);
 	maps.removeObject(f);
+}
+
+var FastMapper::getJSONData()
+{
+	var data = ControllableContainer::getJSONData();
+
+	var mData;
+	for (auto &f : maps)
+	{
+		mData.append(f->getJSONData());
+	}
+	data.getDynamicObject()->setProperty("fastMaps",mData);
+
+	return data;
+}
+
+void FastMapper::loadJSONDataInternal(var data)
+{
+	Array<var> * mData = data.getDynamicObject()->getProperty("fastMaps").getArray();
+
+	if (mData != nullptr)
+	{
+		for (auto &fData : *mData)
+		{
+			FastMap * f = addFastMap();
+			f->loadJSONData(fData);
+		}
+	}
 }
 
 void FastMapper::askForRemoveFastMap(FastMap * f)
