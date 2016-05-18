@@ -36,6 +36,8 @@ public:
 
 	OwnedArray<FastMapUI> mapsUI;
 
+	void clear();
+
 	void addFastMapUI(FastMap *);
 	void removeFastMapUI(FastMap *);
 
@@ -46,7 +48,6 @@ public:
 	int getContentHeight();
 
 	void resized() override;
-	void clear();
 
 	void mouseDown(const MouseEvent &e) override;
 
@@ -67,9 +68,9 @@ class FastMapperViewport :
 	public FastMapperUIListener
 {
 public:
-	FastMapperViewport(FastMapperUI * _fastMapperUI) :
+	FastMapperViewport(const String &contentName, FastMapperUI * _fastMapperUI) :
 		fastMapperUI(_fastMapperUI), 
-		ShapeShifterContent("FastMapper")
+		ShapeShifterContent(contentName)
 	{
 		vp.setViewedComponent(fastMapperUI, true);
 		vp.setScrollBarsShown(true, false);

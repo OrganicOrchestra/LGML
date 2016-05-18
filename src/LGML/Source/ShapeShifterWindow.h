@@ -33,8 +33,9 @@ public:
 
 	DragMode dragMode;
 
-
 	void userTriedToCloseWindow() override;
+
+	virtual var getCurrentLayout();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterWindow)
 };

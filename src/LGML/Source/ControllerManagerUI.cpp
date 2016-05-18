@@ -12,22 +12,38 @@
 
 #include "Style.h"
 #include "ControllerFactory.h"
-#include "MainComponent.h"
+#include "Inspector.h"
+#include "ShapeShifterManager.h"
 
 //==============================================================================
-ControllerManagerUI::ControllerManagerUI(ControllerManager * manager) :
-	ShapeShifterContent("Controller Manager"),
+ControllerManagerUI::ControllerManagerUI(const String &contentName, ControllerManager * manager) :
+	ShapeShifterContent(contentName),
     manager(manager)
 {
 
     manager->addControllerListener(this);
+
+	for (auto &c : manager->controllers)
+	{
+		addControllerUI(c);
+	}
 
 }
 
 ControllerManagerUI::~ControllerManagerUI()
 {
     manager->removeControllerListener(this);
+	clear();
 }
+
+void ControllerManagerUI::clear()
+{
+	while(controllersUI.size() > 0)
+	{
+		removeControllerUI(controllersUI[0]->controller);
+	}
+}
+
 
 void ControllerManagerUI::controllerAdded(Controller * c)
 {
@@ -117,7 +133,8 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
 		}
 		else
 		{
-			MainContentComponent::inspector->setCurrentComponent(nullptr);
+			if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setCurrentComponent(nullptr);
 		}
     }
 }
+

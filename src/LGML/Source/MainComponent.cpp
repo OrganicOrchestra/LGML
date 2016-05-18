@@ -12,7 +12,6 @@
 #include "NodeConnectionEditor.h"
 #include "DebugHelpers.h"
 
-Inspector * MainContentComponent::inspector = new Inspector();
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)
@@ -31,60 +30,9 @@ MainContentComponent::MainContentComponent(Engine * e):
 
     setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
 
-    DBG("Application Start");
-
-	addAndMakeVisible(shapeShifterManager.mainContainer);
-
-    timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
-    nodeManagerViewport = new NodeManagerUIViewport(new NodeManagerUI(NodeManager::getInstance()));
-
-	inspectorViewport = new InspectorViewport(inspector);
-
-	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
-    ruleManagerUI = new RuleManagerUI(RuleManager::getInstance());
-    lgmlLoggerUI = new LGMLLoggerUI(LGMLLogger::getInstance());
-	fastMapperViewport = new FastMapperViewport(new FastMapperUI(FastMapper::getInstance()));
-
-	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
-	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerViewport);
-	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
-	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(inspectorViewport);
-
-	ShapeShifterPanel * rulesAndFMPanel = ShapeShifterManager::getInstance()->createPanel(ruleManagerUI);
-	rulesAndFMPanel->addContent(fastMapperViewport);
-
-	ShapeShifterPanel * logPanel = ShapeShifterManager::getInstance()->createPanel(lgmlLoggerUI);
-
-	timeManagerPanel->setPreferredHeight(50);
-
-	shapeShifterManager.mainContainer.insertPanelAt(timeManagerPanel, 0);
-
-	ShapeShifterContainer * c1 = shapeShifterManager.mainContainer.insertContainerAt(ShapeShifterContainer::Direction::HORIZONTAL,1);
-
-
-	ShapeShifterContainer * vc = c1->insertContainerAt(ShapeShifterContainer::VERTICAL,0);
-	vc->insertPanelAt(controllerManagerPanel, 0);
-	vc->insertPanelAt(rulesAndFMPanel,1);
-	vc->setPreferredWidth(300);
-
-	
-	c1->insertPanelAt(nodeManagerPanel, 1);
-
-	ShapeShifterContainer * vc2 = c1->insertContainerAt(ShapeShifterContainer::VERTICAL,2);
-	vc2->insertPanelAt(inspectorPanel, 0);
-    vc2->insertPanelAt(logPanel, 1);
-	vc2->setPreferredWidth(300);
-
-
-
-
-	controllerManagerPanel->setPreferredWidth(300);
-	inspectorPanel->setPreferredWidth(300);
-	rulesAndFMPanel->setPreferredWidth(300);
-
-
-    setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.9f));
-
+	addAndMakeVisible(&ShapeShifterManager::getInstance()->mainContainer);
+	ShapeShifterManager::getInstance()->loadDefaultLayoutFile();
+    
     (&getCommandManager())->registerAllCommandsForTarget (this);
     (&getCommandManager())-> setFirstCommandTarget(this);
 
@@ -103,6 +51,8 @@ MainContentComponent::MainContentComponent(Engine * e):
 
     //e->initAudio();
 
+	setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.9f));
+
 }
 
 
@@ -117,8 +67,8 @@ MainContentComponent::~MainContentComponent(){
 #endif
 //    LookAndFeelOO::deleteInstance();
 
-	DBG("Clear inspector");
-	inspector->clear();
+	//DBG("Clear inspector"); 
+
 	ShapeShifterManager::deleteInstance();
 }
 
@@ -128,7 +78,9 @@ void MainContentComponent::resized()
 {
 	Rectangle<int> r = getLocalBounds();
 	//timeManagerUI->setBounds(r.removeFromTop(25));
-	shapeShifterManager.mainContainer.setBounds(r);
+	//DBG("Resized in main component :" << getLocalBounds().toString());
+
+	ShapeShifterManager::getInstance()->mainContainer.setBounds(r);
 }
 
 void MainContentComponent::showAudioSettings()

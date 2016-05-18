@@ -14,11 +14,18 @@ FastMapperUI::FastMapperUI(FastMapper * _fastMapper) :
 	fastMapper(_fastMapper)
 {
 	fastMapper->addFastMapperListener(this);
+
+	for (auto &f : fastMapper->maps)
+	{
+		addFastMapUI(f);
+	}
 }
 
 FastMapperUI::~FastMapperUI()
 {
 	fastMapper->removeFastMapperListener(this);
+	clear();
+
 }
 
 void FastMapperUI::addFastMapUI(FastMap * f)
@@ -67,6 +74,10 @@ void FastMapperUI::resized()
 
 void FastMapperUI::clear()
 {
+	while (mapsUI.size() > 0)
+	{
+		removeFastMapUI(mapsUI[0]->fastMap);
+	}
 }
 
 void FastMapperUI::mouseDown(const MouseEvent & e)

@@ -23,28 +23,32 @@ class ShapeShifterPanel : public ShapeShifter, public ShapeShifterPanelHeader::L
 public:
 	enum AttachZone {NONE, TOP, BOTTOM, LEFT, RIGHT, CENTER };
 
-	ShapeShifterPanel(ShapeShifterContent *innerComponent, ShapeShifterPanelTab * sourceTab = nullptr);
+	ShapeShifterPanel(ShapeShifterContent *innerComponent = nullptr, ShapeShifterPanelTab * sourceTab = nullptr);
 	virtual ~ShapeShifterPanel();
 
 	const int headerHeight = 20;
 	ShapeShifterPanelHeader header;
 
-	Array<ShapeShifterContent *> contents;
-
-	ShapeShifterContent * currentContent;
-	void setCurrentContent(ShapeShifterContent * content);
+	OwnedArray<ShapeShifterContent> contents;
 
 	bool transparentBackground;
-
 	bool targetMode;
-	void setTargetMode(bool value);
-
+	
 	Point<float> candidateTargetPoint;
 	AttachZone candidateZone;
 
+
+	ShapeShifterContent * currentContent;
+	void setCurrentContent(ShapeShifterContent * content);
+	void setCurrentContent(const String &name);
+
+	
 	void paint(Graphics & g) override;
 	void paintOverChildren(Graphics & g) override;
 	void resized() override;
+
+
+	void setTargetMode(bool value);
 
 	void setTransparentBackground(bool value);
 
@@ -56,13 +60,20 @@ public:
 
 	void addContent(ShapeShifterContent * content, bool setCurrent = true);
 
-	bool isFlexible() override;
+	bool hasContent(ShapeShifterContent * content);
+	bool hasContent(const String & name);
+	ShapeShifterContent * getContentForName(const String &name);
 
+	bool isFlexible() override;
+	
 	//Attach helpers
 
 	AttachZone checkAttachZone(ShapeShifterPanel * source);
 	void setCandidateZone(AttachZone zone);
 
+	virtual var getCurrentLayout() override;
+	virtual void loadLayoutInternal(var layout) override;
+	
 	virtual void tabDrag(ShapeShifterPanelTab *) override;
 	virtual void tabSelect(ShapeShifterPanelTab *) override;
 	virtual void headerDrag() override;

@@ -12,7 +12,8 @@
 
 ShapeShifterContent::ShapeShifterContent(const String & _contentName) :
 	contentIsFlexible(false),
-	contentName(_contentName)
+	contentName(_contentName),
+	contentIsShown(false)
   {
   }
 
@@ -20,6 +21,3 @@ ShapeShifterContent::ShapeShifterContent(const String & _contentName) :
   {
   }
 
-  String ShapeShifterContent::getName() const {
-	  return contentName;
-  }

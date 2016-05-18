@@ -34,6 +34,9 @@ public:
     AudioProcessorGraph audioGraph;
     DataProcessorGraph dataGraph;
 
+	Array<NodeBase *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
+	OwnedArray<NodeConnection> connections;
+	
     void clear();
     int getNumNodes() const noexcept { return nodes.size(); }
 
@@ -78,11 +81,9 @@ public:
     void updateAudioGraph();
 
 private:
-    Array<NodeBase *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
     uint32 lastNodeId;
 
-    OwnedArray<NodeConnection> connections;
-    uint32 lastConnectionId;
+	int32 lastConnectionId;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeManager)
 

@@ -11,6 +11,7 @@
 #include "MIDIManager.h"
 #include "LGMLLogger.h"
 #include "MainComponent.h"
+#include "DebugHelpers.h"
 
 juce_ImplementSingleton(MIDIManager)
 
@@ -52,13 +53,13 @@ void MIDIManager::updateDeviceList(bool updateInput)
 	for (auto &d : devicesToAdd)
 	{
 		listeners.call(updateInput ? &MIDIManagerListener::midiInputAdded : &MIDIManagerListener::midiOutputAdded, d);
-		NLOG("MIDIManager", "MIDI " + String(updateInput?"Input":"Output") + " Added : " + d);
+		//NLOG("MIDIManager", "MIDI " + String(updateInput?"Input":"Output") + " Added : " + d);
 	}
 
 	for (auto &d : devicesToRemove)
 	{
 		listeners.call(updateInput ? &MIDIManagerListener::midiInputRemoved : &MIDIManagerListener::midiOutputRemoved, d);
-		NLOG("MIDIManager", "MIDI " + String(updateInput ? "Input" : "Output") + " Removed : " + d);
+		//NLOG("MIDIManager", "MIDI " + String(updateInput ? "Input" : "Output") + " Removed : " + d);
 	}
 
 
@@ -106,7 +107,7 @@ void MIDIManager::disableInputDevice(const String & deviceName)
 	duc->usageCount--;
 	if (duc->usageCount == 0)
 	{
-		DBG("Disable Input device : " << duc->deviceName);
+		//DBG("Disable Input device : " << duc->deviceName);
 		getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, false);
 	}
 }

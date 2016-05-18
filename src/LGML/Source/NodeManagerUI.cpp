@@ -11,9 +11,7 @@
 #include "NodeManagerUI.h"
 #include "NodeConnectionUI.h"
 #include "NodeConnectionEditor.h"
-
-#include "MainComponent.h"
-
+#include "Inspector.h"
 
 //==============================================================================
 NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
@@ -26,6 +24,16 @@ isSelectingNodes(false)
     setInterceptsMouseClicks(true, true);
     addAndMakeVisible(selectingBounds);
 
+	for (auto &n : nodeManager->nodes)
+	{
+		addNodeUI(n);
+
+	}
+	for (auto &c: nodeManager->connections)
+	{
+		addConnectionUI(c);
+	}
+	
 }
 
 NodeManagerUI::~NodeManagerUI()
@@ -37,11 +45,22 @@ NodeManagerUI::~NodeManagerUI()
         delete editingConnection;
         editingConnection = nullptr;
     }
+	clear();
+
 }
 
 void NodeManagerUI::clear()
 {
-    nodesUI.clear();
+	while (connectionsUI.size() > 0)
+	{
+		removeConnectionUI(connectionsUI[0]->connection);
+	}
+
+	while (nodesUI.size() > 0)
+	{
+		removeNodeUI(nodesUI[0]->node);
+	}
+	
 }
 
 
@@ -85,6 +104,7 @@ void NodeManagerUI::addNodeUI(NodeBase * node)
         nodesUI.add(nui);
         addAndMakeVisible(nui);
 		nui->addInspectableListener(this);
+		nui->setTopLeftPosition(node->xPosition->intValue(), node->yPosition->intValue());
     }
     else
     {
@@ -358,14 +378,6 @@ void NodeManagerUI::mouseDown(const MouseEvent & event)
         }
         else
         {
-            /*
-            if (event.mods.isCtrlDown())
-            {
-                NodeBase * n = nodeManager->addNode(NodeType::Dummy);
-                n->xPosition->setValue((float)getMouseXYRelative().x);
-                n->yPosition->setValue((float)getMouseXYRelative().y);
-            }
-            */
 
             Point<int> mouse = getMouseXYRelative();
             selectingBounds.setTopLeftPosition(mouse.x,mouse.y);
@@ -420,7 +432,7 @@ void NodeManagerUI::mouseUp(const MouseEvent &)
     }
 
     if(!isSelectingNodes){
-		MainContentComponent::inspector->setCurrentComponent(nullptr);
+		if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setCurrentComponent(nullptr);
 	}
 
     isSelectingNodes = false;

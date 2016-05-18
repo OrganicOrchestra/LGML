@@ -12,8 +12,8 @@
 
 
 
-TimeManagerUI::TimeManagerUI(TimeManager * _timeManager):
-ShapeShifterContent("Time Manager"),
+TimeManagerUI::TimeManagerUI(const String &contentName, TimeManager * _timeManager):
+ShapeShifterContent(contentName),
 timeManager(_timeManager),
 timeBar(_timeManager){
 

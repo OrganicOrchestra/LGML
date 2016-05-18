@@ -9,10 +9,8 @@
  */
 
 #include "Engine.h"
-
 #include "NodeFactory.h"
-
-#include "MainComponent.h"
+#include "Inspector.h"
 
 /*================================
  this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
@@ -102,8 +100,7 @@ void Engine::loadJSONData (var data)
 {
     //    TODO check version Compat
 	clear();
-
-	MainContentComponent::inspector->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
+	if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
 	DynamicObject * d = data.getDynamicObject();
 
@@ -113,7 +110,7 @@ void Engine::loadJSONData (var data)
 	if (d->hasProperty("ruleManager"))RuleManager::getInstance()->loadJSONData(d->getProperty("ruleManager"));
 	if(d->hasProperty("fastMapper")) FastMapper::getInstance()->loadJSONData(d->getProperty("fastMapper"));
 
-	MainContentComponent::inspector->setEnabled(true); //Re enable editor
+	if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(true); //Re enable editor
 
 }
 

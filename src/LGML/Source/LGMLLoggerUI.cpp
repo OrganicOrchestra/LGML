@@ -53,12 +53,14 @@ void LGMLLoggerUI::handleAsyncUpdate(){
     logListComponent->scrollToEnsureRowIsOnscreen(totalLogRow-1);
 }
 
-LGMLLoggerUI::LGMLLoggerUI(LGMLLogger * l) : ShapeShifterContent("LGMLLogger"),
-logList(this),
-maxNumElement(500),
-totalLogRow(0)
+LGMLLoggerUI::LGMLLoggerUI(const String &contentName, LGMLLogger * l) : 
+	logger(l),
+	ShapeShifterContent(contentName),
+	logList(this),
+	maxNumElement(500),
+	totalLogRow(0)
 {
-	l->addLogListener(this);
+	logger->addLogListener(this);
 	TableHeaderComponent * thc = new TableHeaderComponent();
 	thc->addColumn("Time", 1, 60);
 	thc->addColumn("Source", 2, 80);
@@ -80,6 +82,12 @@ totalLogRow(0)
 	clearB.addListener(this);
 	addAndMakeVisible(clearB);
 
+}
+
+LGMLLoggerUI::~LGMLLoggerUI() {
+
+	//        logListComponent.setModel(nullptr);
+	logger->removeLogListener(this);
 }
 
 void LGMLLoggerUI::resized(){

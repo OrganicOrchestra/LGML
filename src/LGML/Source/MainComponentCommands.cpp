@@ -118,12 +118,11 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
 }
 
 
-PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
-                                   const String& /*menuName*/) {
+PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, const String& menuName) {
     PopupMenu menu;
-
-    if (topLevelMenuIndex == 0)
-    {
+	
+	if(menuName == "File")
+	{
         // "File" menu
         menu.addCommandItem (&getCommandManager(), CommandIDs::newFile);
         menu.addCommandItem (&getCommandManager(), CommandIDs::open);
@@ -141,8 +140,8 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
         menu.addCommandItem (&getCommandManager(), CommandIDs::saveAs);
         menu.addSeparator();
         menu.addCommandItem (&getCommandManager(), StandardApplicationCommandIDs::quit);
-    }
-    else if (topLevelMenuIndex == 1)
+
+    }else if (menuName == "Plugins")
     {
         // "Plugins" menu
         PopupMenu pluginsMenu;
@@ -150,8 +149,7 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
         menu.addSubMenu ("Create plugin", pluginsMenu);
         menu.addSeparator();
         menu.addItem (250, "Delete all plugins");
-    }
-    else if (topLevelMenuIndex == 2)
+    } else if (menuName == "Options")
     {
         // "Options" menu
 
@@ -161,11 +159,14 @@ PopupMenu MainContentComponent::getMenuForIndex (int topLevelMenuIndex,
 
         menu.addSeparator();
         menu.addCommandItem (&getCommandManager(), CommandIDs::aboutBox);
-    }
-    else if (topLevelMenuIndex == 3)
+    } else if (menuName == "Windows")
     {
         menu.addCommandItem (&getCommandManager(), CommandIDs::allWindowsForward);
-    }
+	}
+	else if (menuName == "Panels")
+	{
+		return ShapeShifterManager::getInstance()->getPanelsMenu();
+	}
 
     return menu;
 }
@@ -235,8 +236,19 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
     return true;
 }
 
+void MainContentComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
+{
+	
+	String menuName = getMenuBarNames()[topLevelMenuIndex];
+	if (menuName == "Panels")
+	{
+		ShapeShifterManager::getInstance()->handleMenuPanelCommand(menuItemID);
+	}
+	
+}
+
 
 StringArray MainContentComponent::getMenuBarNames() {
-    const char* const names[] = { "File", "Plugins", "Options", "Windows", nullptr };
+    const char* const names[] = { "File", "Plugins", "Options", "Windows","Panels", nullptr };
     return StringArray (names);
 }

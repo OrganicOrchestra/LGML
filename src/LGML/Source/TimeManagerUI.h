@@ -20,7 +20,7 @@
 class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener{
 
     public :
-    TimeManagerUI(TimeManager * _timeManager);
+    TimeManagerUI(const String &contentName, TimeManager * _timeManager);
     ~TimeManagerUI();
 
     void paint(Graphics &g) override;

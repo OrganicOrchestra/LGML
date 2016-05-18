@@ -18,13 +18,16 @@
 class RuleManagerUI : public ShapeShifterContent, public RuleManager::Listener
 {
 public:
-	RuleManagerUI(RuleManager * _ruleManager);
+	RuleManagerUI(const String &contentName, RuleManager * _ruleManager);
 	virtual ~RuleManagerUI();
 
 
 	RuleManager * ruleManager;
 
 	OwnedArray<RuleUI> rulesUI;
+
+	void clear();
+
 
 	void resized() override;
 
@@ -33,6 +36,7 @@ public:
 
 	RuleUI * getUIForRule(Rule * r);
 
+	
 	// Inherited via Listener
 	virtual void ruleAdded(Rule *) override;
 	virtual void ruleRemoved(Rule *) override;

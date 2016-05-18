@@ -9,15 +9,19 @@
 */
 
 #include "Inspector.h"
+juce_ImplementSingleton(Inspector)
 
 Inspector::Inspector() :
+	currentEditor(nullptr),
 	currentComponent(nullptr),
 	isEnabled(true)
 {
+	DBG("Inspector constructor !");
 }
 
 Inspector::~Inspector()
 {
+	DBG("Inspector destroy !" << String(currentEditor != nullptr));
 	clear();
 }
 
@@ -29,6 +33,11 @@ void Inspector::setEnabled(bool value)
 	isEnabled = value;
 }
 
+void Inspector::clear()
+{
+	setCurrentComponent(nullptr);
+}
+
 void Inspector::setCurrentComponent(InspectableComponent * c)
 {
 	if (c == currentComponent) return;
@@ -36,7 +45,7 @@ void Inspector::setCurrentComponent(InspectableComponent * c)
 
 	if (currentComponent != nullptr)
 	{
-		clear();
+		clearEditor();
 		currentComponent->setSelected(false);
 		currentComponent->removeInspectableListener(this);
 	}
@@ -58,8 +67,9 @@ void Inspector::resized()
 	if (currentEditor != nullptr) currentEditor->setBounds(getLocalBounds().reduced(5));
 }
 
-void Inspector::clear()
+void Inspector::clearEditor()
 {
+	DBG("Inspector clear");
 	if (currentEditor != nullptr)
 	{
 		removeChildComponent(currentEditor);
@@ -75,6 +85,9 @@ void Inspector::inspectCurrentComponent()
 	currentEditor = currentComponent->getEditor();
 	if (currentEditor != nullptr) currentEditor->addInspectorEditorListener(this);
 	addAndMakeVisible(currentEditor);
+	
+	getTopLevelComponent()->toFront(true);
+
 	resized();
 }
 

@@ -13,40 +13,32 @@
 
 #include "ShapeShifterContainer.h"
 #include "ShapeShifterWindow.h"
-
-class ShapeShifterContentDefinition
-{
-public:
-	ShapeShifterContentDefinition(const String &_panelID, ShapeShifterContent* _content) :panelID(_panelID), content(_content) {}
-	String panelID;
-	ShapeShifterContent * content;
-};
+#include "ShapeShifterFactory.h"
 
 class ShapeShifterManager :
-	public ShapeShifterPanel::Listener,
-	public MenuBarModel
+	public ShapeShifterPanel::Listener
 {
 public:
-
-
 	juce_DeclareSingleton(ShapeShifterManager,true);
 	ShapeShifterManager();
 	virtual ~ShapeShifterManager();
 
 	ShapeShifterContainer mainContainer;
+	
 	OwnedArray<ShapeShifterPanel> openedPanels;
 	OwnedArray<ShapeShifterWindow> openedWindows;
 
 	ShapeShifterPanel * currentCandidatePanel;
 	void setCurrentCandidatePanel(ShapeShifterPanel *);
 
-
-
+	ShapeShifterPanel * getPanelForContent(ShapeShifterContent * content);
+	ShapeShifterPanel * getPanelForContentName(const String & name);
 	ShapeShifterPanel * createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab = nullptr);
 	void removePanel(ShapeShifterPanel * panel);
 
 	ShapeShifterWindow * showPanelWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds);
-	void closePanelWindow(ShapeShifterWindow * window);
+	ShapeShifterWindow * showPanelWindowForContent(PanelName panelName);
+	void closePanelWindow(ShapeShifterWindow * window, bool doRemovePanel);
 
 
 	ShapeShifterPanel * checkCandidateTargetForPanel(ShapeShifterPanel * panel);
@@ -54,23 +46,22 @@ public:
 
 	ShapeShifterWindow * getWindowForPanel(ShapeShifterPanel * panel);
 
+	void loadLayout(var layoutObject);
+	var getCurrentLayout();
+	void loadLayoutFromFile(int fileIndexInLayoutFolder =-1);
+	void loadDefaultLayoutFile();
+	void saveCurrentLayout();
+	Array<File> getLayoutFiles();
 
-	//Content registration & menu
-	OwnedArray<ShapeShifterContentDefinition> definitions;
-	void registerContent(const String &contentID, ShapeShifterContent * content);
-	void generateMenu();
+	void clearAllPanelsAndWindows();
 
-	const int baseCommandID = 0x31000;
-	void getCommandInfo(int commandID, ApplicationCommandInfo &result);
-	String getNameForCommandID(int commandID) const;
+	const int baseMenuCommandID = 0x31000;
+	const int baseSpecialMenuCommandID = 0x32000;
+	PopupMenu getPanelsMenu();
+
+	void handleMenuPanelCommand(int commandID);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterManager)
-
-
-	// Inherited via MenuBarModel
-	virtual StringArray getMenuBarNames() override;
-	virtual PopupMenu getMenuForIndex(int topLevelMenuIndex, const String & menuName) override;
-	virtual void menuItemSelected(int menuItemID, int topLevelMenuIndex) override;
 };
 
 #endif  // SHAPESHIFTERMANAGER_H_INCLUDED

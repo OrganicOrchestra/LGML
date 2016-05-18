@@ -47,3 +47,20 @@ bool ShapeShifter::isFlexible()
 {
 	return false;
 }
+
+var ShapeShifter::getCurrentLayout()
+{
+	var layout(new DynamicObject());
+	layout.getDynamicObject()->setProperty("type", (int)shifterType);
+	layout.getDynamicObject()->setProperty("width", preferredWidth);
+	layout.getDynamicObject()->setProperty("height", preferredHeight);
+	return layout;
+}
+
+void ShapeShifter::loadLayout(var layout)
+{
+	setPreferredWidth(layout.getDynamicObject()->getProperty("width"));
+	setPreferredHeight(layout.getDynamicObject()->getProperty("height"));
+
+	loadLayoutInternal(layout);
+}

@@ -22,12 +22,9 @@ class LGMLLoggerUI : public ShapeShifterContent,
 public AsyncUpdater
 {
 public:
-	LGMLLoggerUI(LGMLLogger * l);
+	LGMLLoggerUI(const String &contentName, LGMLLogger * l);
+	~LGMLLoggerUI();
 
-    ~LGMLLoggerUI(){
-
-//        logListComponent.setModel(nullptr);
-    }
     class LogList : public juce::TableListBoxModel
 	{
     public:
@@ -51,6 +48,8 @@ public:
 
         LGMLLoggerUI * owner;
     };
+
+	LGMLLogger * logger;
 
     void resized()override;
     LogList logList;

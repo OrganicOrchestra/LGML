@@ -18,6 +18,7 @@
 class Inspector : public Component, public InspectableComponent::InspectableListener, public InspectorEditor::InspectorEditorListener
 {
 public:
+	juce_DeclareSingleton(Inspector, false);
 	Inspector();
 	virtual ~Inspector();
 
@@ -28,11 +29,13 @@ public:
 	bool isEnabled;
 	void setEnabled(bool value);
 
+	void clear();
+
 	void setCurrentComponent(InspectableComponent * component);
 
 	void resized() override;
 
-	void clear();
+	void clearEditor();
 	void inspectCurrentComponent();
 
 	void inspectableRemoved(InspectableComponent * component) override;
@@ -57,12 +60,12 @@ public:
 
 class InspectorViewport : public ShapeShifterContent, public Inspector::InspectorListener {
 public:
-	InspectorViewport(Inspector * _inspector) :inspector(_inspector), ShapeShifterContent("Inspector")
+	InspectorViewport(const String &contentName, Inspector * _inspector) :inspector(_inspector), ShapeShifterContent(contentName)
 	{
-		vp.setViewedComponent(inspector, true);
+		vp.setViewedComponent(inspector, false);
 		vp.setScrollBarsShown(true, false);
 		vp.setScrollOnDragEnabled(false);
-		contentIsFlexible = true;
+		contentIsFlexible = false;
 		addAndMakeVisible(vp);
 		vp.setScrollBarThickness(10);
 
@@ -72,8 +75,7 @@ public:
 
 	virtual ~InspectorViewport()
 	{
-		inspector->clear();
-		inspector->removeInspectorListener(this);
+		Inspector::deleteInstance();
 	}
 
 	void resized() override {

@@ -27,6 +27,8 @@ ShapeShifterContainer::~ShapeShifterContainer()
 
 void ShapeShifterContainer::insertShifterAt(ShapeShifter * shifter, int index)
 {
+	if (index == -1) index = shifters.size();
+
 	shifters.insert(index, shifter);
 	addAndMakeVisible(shifter);
 	shifter->setParentContainer(this);
@@ -49,7 +51,6 @@ void ShapeShifterContainer::removeShifter(ShapeShifter * shifter, bool deleteShi
 	shifters.removeAllInstancesOf(shifter);
 	shifter->setParentContainer(nullptr);
 
-	//DBG("REMOVE Shifter :: is in children ? " << cIndex);
 	removeChildComponent(shifter);
 
 
@@ -143,6 +144,7 @@ ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(Direction _dire
 
 ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(ShapeShifterContainer * container, int index)
 {
+	
 	insertShifterAt(container, index);
 	container->addShapeShifterContainerListener(this);
 	resized();
@@ -165,6 +167,12 @@ void ShapeShifterContainer::movePanelsInContainer(ShapeShifterPanel * newPanel, 
 void ShapeShifterContainer::resized()
 {
 
+	if (parentContainer == nullptr && shifters.size() == 1) //Main container, only one item
+	{
+		shifters[0]->setBounds(getLocalBounds());
+		return;
+	}
+
 	Rectangle<int> r = getLocalBounds();
 	int gap = 6;
 	int totalSpace = (direction == HORIZONTAL) ? r.getWidth() : r.getHeight();
@@ -173,8 +181,6 @@ void ShapeShifterContainer::resized()
 
 	int numDefaultSpace = numShifters;
 	int reservedPreferredSpace = 0;
-
-
 
 	for (auto &p : shifters)
 	{
@@ -218,6 +224,46 @@ void ShapeShifterContainer::clear()
 	while (shifters.size() > 0)
 	{
 		removeShifter(shifters[0], true, true);
+	}
+}
+
+var ShapeShifterContainer::getCurrentLayout()
+{
+	var layout = ShapeShifter::getCurrentLayout();
+	layout.getDynamicObject()->setProperty("direction", (int)direction);
+
+	var sData;
+	for (auto &s : shifters)
+	{
+		sData.append(s->getCurrentLayout());
+	}
+	layout.getDynamicObject()->setProperty("shifters", sData);
+	return layout;
+}
+
+void ShapeShifterContainer::loadLayoutInternal(var layout)
+{
+
+	Array<var> * sArray = layout.getDynamicObject()->getProperty("shifters").getArray();
+
+	if (sArray != nullptr)
+	{
+		for (auto &sData : *sArray)
+		{
+			Type t = (Type)(int)(sData.getDynamicObject()->getProperty("type"));
+			if (t == PANEL)
+			{
+				ShapeShifterPanel * c = ShapeShifterManager::getInstance()->createPanel(nullptr);
+				c->loadLayout(sData);
+				insertPanelAt(c);
+			}
+			else if (t == CONTAINER)
+			{
+				Direction dir = (Direction)(int)sData.getDynamicObject()->getProperty("direction");
+				ShapeShifterContainer * sc = insertContainerAt(dir);
+				sc->loadLayout(sData);
+			}
+		}
 	}
 }
 

@@ -13,21 +13,9 @@
 #include "CustomEditor.h"
 #include "GenericControllableContainerEditor.h"
 #include "MainComponent.h"
+#include "ShapeShifterFactory.h"
 
-InspectableComponent::InspectableComponent() : InspectableComponent(nullptr, MainContentComponent::inspector)
-{
-}
-
-InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer) : InspectableComponent(relatedContainer, MainContentComponent::inspector)
-{
-}
-
-InspectableComponent::InspectableComponent(Inspector * targetInspector) : InspectableComponent(nullptr, targetInspector)
-{
-}
-
-InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer, Inspector * targetInspector) :
-	inspector(targetInspector),
+InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer) :
 	relatedControllableContainer(relatedContainer),
 	recursiveInspectionLevel(0),
 	canInspectChildContainersBeyondRecursion(true),
@@ -49,7 +37,11 @@ InspectorEditor * InspectableComponent::getEditor()
 
 void InspectableComponent::selectThis()
 {
-	inspector->setCurrentComponent(this);
+	if (Inspector::getInstanceWithoutCreating() == nullptr)
+	{
+		ShapeShifterManager::getInstance()->showPanelWindowForContent(PanelName::InspectorPanel);
+	}
+	Inspector::getInstance()->setCurrentComponent(this);
 }
 
 void InspectableComponent::setSelected(bool value)

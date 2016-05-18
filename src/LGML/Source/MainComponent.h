@@ -10,16 +10,14 @@
 #define MAINCOMPONENT_H_INCLUDED
 
 
+#include "Inspector.h"
 
+/*
 #include "NodeManager.h"
 #include "NodeManagerUI.h"
 
 #include "ControlManager.h"
 #include "ControllerManagerUI.h"
-//#include "ControllableInspector.h"
-
-#include "Inspector.h"
-
 #include "TimeManagerUI.h"
 
 #include "RuleManager.h"
@@ -29,11 +27,10 @@
 #include "FastMapperUI.h"
 
 #include "LGMLLoggerUI.h"
+*/
 
 #include "ShapeShifterManager.h"
-
 #include "Engine.h"
-
 #include "LookAndFeelOO.h"
 //==============================================================================
 /*
@@ -55,11 +52,9 @@ public:
     // just need to create one of these and leave it
     // there to do its work..
 
-	ShapeShifterManager shapeShifterManager;
 
+	/*
 	ScopedPointer<TimeManagerUI> timeManagerUI;
-
-	static Inspector * inspector;
 	ScopedPointer<InspectorViewport> inspectorViewport;
 
 	ScopedPointer<NodeManagerUIViewport> nodeManagerViewport;
@@ -68,7 +63,7 @@ public:
 	ScopedPointer<FastMapperViewport> fastMapperViewport;
 
     ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;
-
+	*/
 
     Engine * engine;
     AudioDeviceSelectorComponent audioSettingsComp;
@@ -102,8 +97,7 @@ public:
     virtual bool perform (const InvocationInfo& info) override ;
     StringArray getMenuBarNames() override ;
     virtual PopupMenu getMenuForIndex (int topLevelMenuIndex,const String& menuName) override;
-    void menuItemSelected (int /*menuItemID*/,int /*topLevelMenuIndex*/) override{}
-
+	void menuItemSelected(int /*menuItemID*/, int /*topLevelMenuIndex*/) override;
 
 
 private:

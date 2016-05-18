@@ -423,21 +423,21 @@ void ControllableContainer::loadJSONData(var data)
 
 	if (data.getDynamicObject()->hasProperty("preset"))
 	{
-		loadPreset(PresetManager::getInstance()->getPreset(getPresetFilter(), data.getProperty("preset",var())));
+		loadPreset(PresetManager::getInstance()->getPreset(getPresetFilter(), data.getDynamicObject()->getProperty("preset")));
 	}
 
-	Array<var> * paramsData = data.getProperty("parameters", var()).getArray();
+	Array<var> * paramsData = data.getDynamicObject()->getProperty("parameters").getArray();
 
 	if (paramsData != nullptr)
 	{
 		for (var &pData : *paramsData)
 		{
-			String pControlAddress = pData.getProperty("controlAddress", var());
+			String pControlAddress = pData.getDynamicObject()->getProperty("controlAddress");
 
 			Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
 
 			if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-				p->setValue(pData.getProperty("value", var()));
+				p->setValue(pData.getDynamicObject()->getProperty("value"));
 			}
 			else {
 				DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");

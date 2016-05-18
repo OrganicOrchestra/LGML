@@ -29,7 +29,6 @@ public:
 
 	virtual void containerEmptied(ShapeShifterContainer *) {}
 	virtual void oneShifterRemaining(ShapeShifterContainer *, ShapeShifter *) {}
-
 };
 
 
@@ -66,16 +65,19 @@ public:
 	void insertShifterAt(ShapeShifter * shifter, int index);
 	void removeShifter(ShapeShifter * shifter, bool deleteShifter, bool silent = false);
 
-	ShapeShifterPanel * insertPanelAt(ShapeShifterPanel * panel, int index);
+	ShapeShifterPanel * insertPanelAt(ShapeShifterPanel * panel, int index = -1);
 	ShapeShifterPanel * insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone);
 
-	ShapeShifterContainer * insertContainerAt(Direction _direction, int index);
-	ShapeShifterContainer * insertContainerAt(ShapeShifterContainer * container, int index);
+	ShapeShifterContainer * insertContainerAt(Direction _direction, int index = -1);
+	ShapeShifterContainer * insertContainerAt(ShapeShifterContainer * container, int index = -1);
 
 	void movePanelsInContainer(ShapeShifterPanel * containedPanel, ShapeShifterPanel * newPanel, Direction _newDir, bool secondBeforeFirst);
 
 
 	void clear();
+
+	virtual var getCurrentLayout() override;
+	virtual void loadLayoutInternal(var layout) override;
 
 	virtual void grabberGrabUpdate(GapGrabber * gg, int dist) override;
 	virtual void panelDetach(ShapeShifterPanel *) override;

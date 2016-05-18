@@ -10,19 +10,34 @@
 
 #include "RuleManagerUI.h"
 #include "MainComponent.h"
+#include "Inspector.h"
 
-RuleManagerUI::RuleManagerUI(RuleManager * _ruleManager) :
+RuleManagerUI::RuleManagerUI(const String &contentName, RuleManager * _ruleManager) :
 	ruleManager(_ruleManager),
-	ShapeShifterContent("Rules")
+	ShapeShifterContent(contentName)
 {
 	ruleManager->addRuleManagerListener(this);
+
+	for (auto &r : ruleManager->rules)
+	{
+		addRuleUI(r);
+	}
 }
 
 RuleManagerUI::~RuleManagerUI()
 {
 	ruleManager->removeRuleManagerListener(this);
+	clear();
 }
 
+
+void RuleManagerUI::clear()
+{
+	while (rulesUI.size() > 0)
+	{
+		removeRuleUI(rulesUI[0]->rule);
+	}
+}
 
 void RuleManagerUI::resized()
 {
@@ -106,6 +121,6 @@ void RuleManagerUI::mouseDown(const MouseEvent & e)
 	}
 	else
 	{
-		MainContentComponent::inspector->setCurrentComponent(nullptr);
+		if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setCurrentComponent(nullptr);
 	}
 }

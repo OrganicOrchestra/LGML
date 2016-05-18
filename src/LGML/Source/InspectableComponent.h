@@ -21,10 +21,7 @@ class InspectorEditor;
 class InspectableComponent : public Component
 {
 public:
-	InspectableComponent();
-	InspectableComponent(ControllableContainer * relatedContainer);
-	InspectableComponent(Inspector * targetInspector);
-	InspectableComponent(ControllableContainer * relatedContainer,Inspector * targetInspector);
+	InspectableComponent(ControllableContainer * relatedContainer = nullptr);
 
 
 	virtual ~InspectableComponent();

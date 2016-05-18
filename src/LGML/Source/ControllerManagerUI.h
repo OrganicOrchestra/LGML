@@ -23,7 +23,7 @@
 class ControllerManagerUI : public ShapeShifterContent, ControllerManager::Listener
 {
 public:
-    ControllerManagerUI(ControllerManager * manager);
+    ControllerManagerUI(const String &contentName, ControllerManager * manager);
     ~ControllerManagerUI();
 
     ControllerManager * manager;
@@ -40,7 +40,7 @@ public:
 
     void mouseDown(const MouseEvent &e) override;
 
-
+	void clear();
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUI)
 
