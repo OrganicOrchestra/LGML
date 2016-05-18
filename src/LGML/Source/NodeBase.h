@@ -36,11 +36,10 @@ class NodeBase :
 {
 
 public:
-	NodeBase(NodeManager * nodeManager, uint32 nodeId, const String &name = "[NodeBase]");
+	NodeBase(uint32 nodeId, const String &name = "[NodeBase]");
 	virtual ~NodeBase();
 
 	uint32 nodeId;
-	NodeManager * nodeManager;
 
 	bool hasAudioInputs();
 	bool hasAudioOutputs();

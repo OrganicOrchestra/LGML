@@ -25,7 +25,7 @@ class AudioOutNode :
 	public ChangeListener
 {
 public:
-	AudioOutNode(NodeManager * nodeManager, uint32 nodeId);;
+	AudioOutNode(uint32 nodeId);;
 	~AudioOutNode();
 
 

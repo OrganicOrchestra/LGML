@@ -22,7 +22,7 @@ class LooperNode : public NodeBase
 {
 
 public:
-    LooperNode(NodeManager * nodeManager, uint32 nodeId);
+    LooperNode(uint32 nodeId);
 	virtual ~LooperNode();
 
     NodeBaseUI * createUI() override;

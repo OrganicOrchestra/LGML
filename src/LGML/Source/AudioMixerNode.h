@@ -30,7 +30,7 @@ public:
 	};
 
 
-    AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) ;
+    AudioMixerNode(uint32 nodeId) ;
 
 	OwnedArray<OutputBus> outBuses;
 	AudioBuffer<float> cachedBuffer;

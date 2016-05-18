@@ -9,3 +9,8 @@
 */
 
 #include "SpatNode.h"
+#include "NodeBaseUI.h"
+
+NodeBaseUI * SpatNode::createUI() { 
+	return new NodeBaseUI(this); 
+}

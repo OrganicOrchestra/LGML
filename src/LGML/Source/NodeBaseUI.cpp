@@ -136,11 +136,6 @@ Array<ConnectorComponent*> NodeBaseUI::getComplementaryConnectors(ConnectorCompo
     return result;
 }
 
-NodeManagerUI * NodeBaseUI::getNodeManagerUI() const noexcept
-{
-    return findParentComponentOfClass<NodeManagerUI>();
-}
-
 //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
 
 ConnectorComponent * NodeBaseUI::getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType)
@@ -176,16 +171,7 @@ void NodeBaseUI::mouseDown(const juce::MouseEvent &e)
 
 
 void NodeBaseUI::mouseUp(const juce::MouseEvent &){
-    NodeManagerUI * nmui = getNodeManagerUI();
-    if(nmui){
-		nmui->setAllNodesToStartAtZero();
-	}
-
 	selectThis();
-
-    //askForSelection(true,true);
-   //dragIsLocked = false;
-
 }
 
 void NodeBaseUI::mouseDrag(const MouseEvent & e)

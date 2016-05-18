@@ -10,9 +10,10 @@
 
 #include "LooperNode.h"
 #include "LooperNodeUI.h"
+#include "TimeManager.h"
 
-LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :
-NodeBase(nodeManager,nodeId,"Looper"),
+LooperNode::LooperNode(uint32 nodeId) :
+NodeBase(nodeId,"Looper"),
 selectedTrack(nullptr),
 wasMonitoring(false),
 trackGroup(this)

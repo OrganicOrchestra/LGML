@@ -13,8 +13,7 @@
 #include "TimeManager.h"
 
 
-NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, const String &name) :
-nodeManager(nodeManager),
+NodeBase::NodeBase(uint32 _nodeId, const String &name) :
 nodeId(_nodeId),
 ControllableContainer(name),
 nodeTypeUID(0) // UNKNOWNTYPE
@@ -115,13 +114,19 @@ void NodeBase::parameterValueChanged(Parameter * p)
 
 void NodeBase::addToAudioGraphIfNeeded(){
     if(hasAudioInputs() || hasAudioOutputs()){
-        nodeManager->audioGraph.addNode(this,nodeId);
+		if (NodeManager::getInstanceWithoutCreating() != nullptr)
+		{
+			NodeManager::getInstance()->audioGraph.addNode(this, nodeId);
+		}
 	}
 }
 
 void NodeBase::removeFromAudioGraphIfNeeded(){
     if(hasAudioInputs() || hasAudioOutputs()){
-        nodeManager->audioGraph.removeNode(nodeId);
+		if (NodeManager::getInstanceWithoutCreating() != nullptr)
+		{
+			NodeManager::getInstance()->audioGraph.removeNode(nodeId);
+		}
     }
 }
 
@@ -230,7 +235,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 		getSampleRate(),
 		getBlockSize());
 
-	nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(), (int)nodeManager->audioGraph.getSampleRate());
+	NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
 	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioInputChanged, num);
 
 	return true;
@@ -239,8 +244,10 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 	setPlayConfigDetails(getTotalNumInputChannels(), num,
 		getSampleRate(),
 		getBlockSize());
-
-	nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(), (int)nodeManager->audioGraph.getSampleRate());
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
+	}
 	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged, num);
 	return true;
 }

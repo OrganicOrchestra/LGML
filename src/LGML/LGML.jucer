@@ -445,7 +445,18 @@
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
         <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
+          <FILE id="dJmP5S" name="NodeContainer.cpp" compile="1" resource="0"
+                file="Source/NodeContainer.cpp"/>
+          <FILE id="ZvvtSp" name="NodeContainer.h" compile="0" resource="0" file="Source/NodeContainer.h"/>
           <GROUP id="{A2D3A061-C57A-C7C0-F696-113F915DCD55}" name="UI">
+            <FILE id="BngKpc" name="NodeContainerViewer.cpp" compile="1" resource="0"
+                  file="Source/NodeContainerViewer.cpp"/>
+            <FILE id="PvncTg" name="NodeContainerViewer.h" compile="0" resource="0"
+                  file="Source/NodeContainerViewer.h"/>
+            <FILE id="TffGGE" name="NodeContainerUI.cpp" compile="1" resource="0"
+                  file="Source/NodeContainerUI.cpp"/>
+            <FILE id="e5pPRn" name="NodeContainerUI.h" compile="0" resource="0"
+                  file="Source/NodeContainerUI.h"/>
             <FILE id="nsdeUQ" name="NodeBaseAudioCtlUI.cpp" compile="1" resource="0"
                   file="Source/NodeBaseAudioCtlUI.cpp"/>
             <FILE id="AqNjww" name="NodeBaseAudioCtlUI.h" compile="0" resource="0"

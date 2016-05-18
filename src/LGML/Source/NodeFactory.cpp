@@ -11,40 +11,40 @@
 #include "NodeFactory.h"
 
 
-NodeBase * NodeFactory::createNode(NodeManager * nodeManager, NodeType nodeType, uint32 nodeId)
+NodeBase * NodeFactory::createNode(NodeType nodeType, uint32 nodeId)
 {
     NodeBase * n = nullptr;
 
     switch (nodeType)
     {
         case NodeType::DummyType:
-            n = new DummyNode(nodeManager, nodeId);
+            n = new DummyNode(nodeId);
             break;
 
         case NodeType::AudioMixerType:
-            n = new AudioMixerNode(nodeManager, nodeId);
+            n = new AudioMixerNode(nodeId);
             break;
 
         case NodeType::DataInType:
-            n = new DataInNode(nodeManager, nodeId);
+            n = new DataInNode(nodeId);
             break;
 
         case NodeType::SpatType:
-            n = new SpatNode(nodeManager, nodeId);
+            n = new SpatNode(nodeId);
             break;
         case NodeType::LooperType:
-            n = new LooperNode(nodeManager, nodeId);
+            n = new LooperNode(nodeId);
             break;
         case NodeType::VSTType:
-            n = new VSTNode(nodeManager, nodeId);
+            n = new VSTNode(nodeId);
             break;
 
         case NodeType::AudioInType:
-            n = new AudioInNode(nodeManager, nodeId);
+            n = new AudioInNode(nodeId);
             break;
 
         case NodeType::AudioOutType:
-            n = new AudioOutNode(nodeManager, nodeId);
+            n = new AudioOutNode(nodeId);
             break;
 
         case NodeType::UNKNOWN_TYPE:
@@ -64,7 +64,7 @@ PopupMenu * NodeFactory::getNodeTypesMenu(int menuIdOffset)
     PopupMenu * p = new PopupMenu();
     for (int i = 0; i < numElementsInArray(nodeTypeNames); i++)
     {
-        p->addItem(menuIdOffset + i + 1, nodeTypeNames[i]);
+        p->addItem(menuIdOffset + i, nodeTypeNames[i]);
     }
 
     return p;

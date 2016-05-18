@@ -10,7 +10,6 @@
 
 #include "VSTNodeUI.h"
 
-
 VSTNodeContentUI::VSTNodeContentUI():
 VSTListShowButton("VSTs"),
 showPluginWindowButton("showWindow"),

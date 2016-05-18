@@ -14,9 +14,10 @@
 
 
 #include "NodeBaseUI.h"
-
 #include "FloatSliderUI.h"
 #include "MIDIUIHelper.h"
+#include "VSTNode.h"
+
 
 class VSTNodeHeaderUI : public NodeBaseHeaderUI, public VSTNode::VSTNodeListener
 {
@@ -31,40 +32,45 @@ public:
     void newVSTSelected() override;
 };
 
-class VSTNodeContentUI:public NodeBaseContentUI,public Button::Listener, public VSTNode::VSTNodeListener,public ControllableContainerListener,public ComboBoxListener{
+class VSTNodeContentUI:
+	public NodeBaseContentUI,
+	public Button::Listener, 
+	public VSTNode::VSTNodeListener,
+	public ControllableContainerListener,
+	public ComboBoxListener
+{
 public:
     VSTNodeContentUI();
     ~VSTNodeContentUI();
     OwnedArray<FloatSliderUI> paramSliders;
 
+	VSTNode * vstNode;
+
+	TextButton VSTListShowButton;
+	TextButton showPluginWindowButton;
+
+	MIDIDeviceChooser midiDeviceChooser;
+
+
     void init() override;
+	void resized()override;
 
     void updateVSTParameters();
-
-    void controllableAdded(Controllable * c)override ;
-    void controllableRemoved(Controllable * c)override;
-    void controllableContainerAdded(ControllableContainer * cc)override;
-    void controllableContainerRemoved(ControllableContainer * cc) override;
-    void controllableFeedbackUpdate(Controllable *c) override;
-
     void newVSTSelected() override;
 
-
-    void resized()override;
-
     void layoutSliderParameters(Rectangle<int> pArea);
-
-    TextButton VSTListShowButton;
-    TextButton showPluginWindowButton;
-    VSTNode * vstNode;
-    MIDIDeviceChooser midiDeviceChooser;
-
-
     void comboBoxChanged(ComboBox *cb) override;
+    void buttonClicked(Button* button) override;
 
-    static void vstSelected (int modalResult, Component *  originComp);
 
-    void buttonClicked (Button* button) override;
+	void controllableAdded(Controllable * c)override;
+	void controllableRemoved(Controllable * c)override;
+	void controllableContainerAdded(ControllableContainer * cc)override;
+	void controllableContainerRemoved(ControllableContainer * cc) override;
+	void controllableFeedbackUpdate(Controllable *c) override;
+
+
+	static void vstSelected(int modalResult, Component *  originComp);
 
 };
 

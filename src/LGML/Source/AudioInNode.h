@@ -25,7 +25,7 @@ class AudioInNode :
 
 public:
 
-	AudioInNode(NodeManager * nodeManager, uint32 nodeId);;
+	AudioInNode(uint32 nodeId);;
 	~AudioInNode();
 
 

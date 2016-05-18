@@ -20,7 +20,8 @@ InspectableComponent::InspectableComponent(ControllableContainer * relatedContai
 	recursiveInspectionLevel(0),
 	canInspectChildContainersBeyondRecursion(true),
 	isSelected(false),
-	repaintOnSelectionChanged(true)
+	repaintOnSelectionChanged(true),
+	bringToFrontOnSelect(true)
 {
 
 }
@@ -49,7 +50,9 @@ void InspectableComponent::setSelected(bool value)
 	if (value == isSelected) return;
 	isSelected = value;
 
+	if (bringToFrontOnSelect) toFront(true);
 	if (repaintOnSelectionChanged) repaint();
+	
 
 	setSelectedInternal(value);
 

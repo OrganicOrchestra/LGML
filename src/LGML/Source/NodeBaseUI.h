@@ -13,14 +13,12 @@
 
 #include "Style.h"
 #include "ConnectorComponent.h"
-
 #include "InspectableComponent.h"
-
-class NodeBase;
-class NodeManagerUI;
 #include "NodeBaseHeaderUI.h"
 #include "NodeBaseContentUI.h"
 #include "NodeBaseAudioCtlUI.h"
+
+class NodeBase;
 
 //==============================================================================
 /*
@@ -115,7 +113,6 @@ public:
     NodeBaseHeaderUI * getHeaderContainer() { return mainContainer.headerContainer; }
 
     Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector);
-    NodeManagerUI * getNodeManagerUI() const noexcept;
 
 
     //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes

@@ -120,10 +120,10 @@ void Engine::clear(){
 void Engine::createNewGraph(){
     clear();
 
-    NodeBase * node = NodeManager::getInstance()->addNode(NodeType::AudioInType);
+    NodeBase * node = NodeManager::getInstance()->mainContainer.addNode(NodeType::AudioInType);
     node->xPosition->setValue(150);
     node->yPosition->setValue(100);
-    node = NodeManager::getInstance()->addNode(NodeType::AudioOutType);
+    node = NodeManager::getInstance()->mainContainer.addNode(NodeType::AudioOutType);
     node->xPosition->setValue(450);
     node->yPosition->setValue(100);
     changed();

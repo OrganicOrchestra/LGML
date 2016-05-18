@@ -52,7 +52,7 @@ public:
 
     }
 
-    NodeBase * createNode(NodeManager * nodeManager, NodeType nodeType, uint32 nodeId = 0);
+    static NodeBase * createNode(NodeType nodeType, uint32 nodeId = 0);
 
     static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0);
 

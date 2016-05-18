@@ -11,19 +11,19 @@ Author:  bkupe
 #ifndef CONNECTORCOMPONENT_H_INCLUDED
 #define CONNECTORCOMPONENT_H_INCLUDED
 
-#include "NodeBaseUI.h"
-#include "NodeManager.h"
-
-class NodeBaseUI;
-class NodeManagerUI;
+#include "NodeConnection.h"
 class NodeBase;
+class NodeBaseUI;
+class NodeContainerViewer;
 
 //==============================================================================
 /*
 */
-class ConnectorComponent : public Component, public SettableTooltipClient,public NodeBase::NodeAudioProcessorListener
+class ConnectorComponent : public Component, 
+	public SettableTooltipClient,
+	public NodeBase::NodeAudioProcessorListener
 {
-public:
+public: 
 
     enum ConnectorIOType
     {
@@ -48,7 +48,7 @@ public:
     bool isHovered;
 
     ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
-    ~ConnectorComponent();
+    ~ConnectorComponent(); 
     void paint(Graphics &g)override;
 
     void mouseDown(const MouseEvent &e) override;
@@ -58,12 +58,10 @@ public:
 
     //void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataType &selectedDataType, const DataType &filterType = DataType::Unknown);
 
-    NodeManagerUI * getNodeManagerUI() const noexcept;
+    NodeContainerViewer * getNodeContainerViewer() const noexcept;
     NodeBaseUI * getNodeUI() const noexcept;
 
-
-
-     void numAudioInputChanged(int newNum)override;
+    void numAudioInputChanged(int newNum)override;
     void numAudioOutputChanged(int newNum)override;
 
 

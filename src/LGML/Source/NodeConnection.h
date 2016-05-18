@@ -33,7 +33,6 @@ public:
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }
     bool isData() { return connectionType == ConnectionType::DATA; }
 
-    NodeManager * nodeManager;
     NodeBase * sourceNode;
     NodeBase * destNode;
 
@@ -42,7 +41,7 @@ public:
     Array<DataProcessorGraph::Connection *> dataConnections;
 
 
-    NodeConnection(NodeManager* nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
+    NodeConnection(uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
     virtual ~NodeConnection();
 
     //Audio

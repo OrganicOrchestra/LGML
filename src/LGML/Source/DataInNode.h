@@ -17,7 +17,7 @@ class DataInNode :
 	public NodeBase
 {
 public:
-    DataInNode(NodeManager * nodeManager, uint32 nodeId);
+    DataInNode(uint32 nodeId);
     ~DataInNode();
 
     Array<Parameter *> dynamicParameters;

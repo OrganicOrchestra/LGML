@@ -19,9 +19,9 @@
 class SpatNode : public NodeBase
 {
 public:
-    SpatNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId) {}
+    SpatNode(uint32 nodeId) :NodeBase(nodeId) {}
 
-
+	NodeBaseUI * createUI();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpatNode)
 };
 

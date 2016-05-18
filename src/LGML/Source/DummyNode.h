@@ -17,7 +17,7 @@
 class DummyNode : public NodeBase
 {
 public:
-    DummyNode(NodeManager * nodeManager,uint32 nodeId);
+    DummyNode(uint32 nodeId);
     ~DummyNode();
 
     //parameters

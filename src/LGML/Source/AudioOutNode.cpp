@@ -12,8 +12,8 @@
 #include "NodeBaseUI.h"
 
 
-AudioOutNode::AudioOutNode(NodeManager * nodeManager, uint32 nodeId) :
-	NodeBase(nodeManager, nodeId, "AudioOutNode"),
+AudioOutNode::AudioOutNode(uint32 nodeId) :
+	NodeBase(nodeId, "AudioOutNode"),
 	AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
 	NodeBase::busArrangement.outputBuses.clear();

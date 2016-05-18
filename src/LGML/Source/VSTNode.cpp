@@ -12,8 +12,8 @@
 #include "VSTNodeUI.h"
 #include "NodeManager.h"
 
-VSTNode::VSTNode(NodeManager * nodeManager,uint32 nodeId) :
-	NodeBase(nodeManager,nodeId,"VST"),
+VSTNode::VSTNode(uint32 nodeId) :
+	NodeBase(nodeId,"VST"),
 	blockFeedback(false)
 {
     identifierString = addStringParameter("VST Identifier","string that identify a VST","");
@@ -131,9 +131,12 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 }
 
 void VSTNode::numChannelsChanged(){
-    NodeManager::getInstance()->audioGraph.removeIllegalConnections();
-    // hack to force update renderingops in audioGraph
-    NodeManager::getInstance()->audioGraph.removeConnection(-1);
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		NodeManager::getInstance()->audioGraph.removeIllegalConnections();
+		// hack to force update renderingops in audioGraph
+		NodeManager::getInstance()->audioGraph.removeConnection(-1);
+	}
 }
 
 inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & ) {
