@@ -12,8 +12,8 @@
 #include "DataInNodeUI.h"
 
 
-DataInNode::DataInNode(uint32 nodeId) :
-    NodeBase(nodeId, "DataIn")
+DataInNode::DataInNode() :
+    NodeBase("DataIn",NodeType::DataInType)
 {
     addFloatParamAndData("Test Param", 0, 0, 1);
 }

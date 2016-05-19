@@ -25,11 +25,11 @@ void NodeContainerUI::clear()
 {
 }
 
-void NodeContainerUI::nodeAdded(NodeBase *)
+void NodeContainerUI::nodeAdded(ConnectableNode *)
 {
 }
 
-void NodeContainerUI::nodeRemoved(NodeBase *)
+void NodeContainerUI::nodeRemoved(ConnectableNode *)
 {
 }
 

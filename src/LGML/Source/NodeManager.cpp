@@ -40,6 +40,18 @@ void NodeManager::clear()
 	dataGraph.clear();
 }
 
+var NodeManager::getJSONData()
+{
+	var data = ControllableContainer::getJSONData();
+	data.getDynamicObject()->setProperty("mainContainer", mainContainer.getJSONData());
+	return data;
+}
+
+void NodeManager::loadJSONDataInternal(var data)
+{
+	mainContainer.loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
+}
+
 void NodeManager::updateAudioGraph() {
 	AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
 	audioGraph.prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());

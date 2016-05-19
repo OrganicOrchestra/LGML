@@ -17,7 +17,7 @@
 class DummyNode : public NodeBase
 {
 public:
-    DummyNode(uint32 nodeId);
+    DummyNode();
     ~DummyNode();
 
     //parameters
@@ -55,7 +55,7 @@ public:
 
 	//DATA
 
-	void dataChanged(Data *d) override
+	void processInputDataChanged(Data *d) override
 	{
 		DBG("DummyNode :: Input data changed " << d->name);
 

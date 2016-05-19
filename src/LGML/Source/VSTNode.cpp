@@ -15,8 +15,8 @@
 AudioDeviceManager& getAudioDeviceManager();
 
 
-VSTNode::VSTNode(uint32 nodeId) :
-	NodeBase(nodeId,"VST"),
+VSTNode::VSTNode() :
+	NodeBase("VST",NodeType::VSTType),
 	blockFeedback(false)
 {
     identifierString = addStringParameter("VST Identifier","string that identify a VST","");

@@ -11,6 +11,11 @@
 #include "SpatNode.h"
 #include "NodeBaseUI.h"
 
-NodeBaseUI * SpatNode::createUI() { 
+SpatNode::SpatNode() :
+	NodeBase("Spat",NodeType::SpatType) 
+{
+}
+
+  NodeBaseUI * SpatNode::createUI() {
 	return new NodeBaseUI(this); 
 }

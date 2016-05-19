@@ -19,7 +19,6 @@
 
 
 
-#include "Data.h"
 #include "ControllableContainer.h"
 #include "PresetManager.h"
 #include "ConnectableNode.h"
@@ -36,10 +35,10 @@ class NodeBase :
 {
 
 public:
-	NodeBase(uint32 nodeId, const String &name = "[NodeBase]");
+	NodeBase(const String &name = "[NodeBase]", NodeType type = UNKNOWN_TYPE);
 	virtual ~NodeBase();
 
-	uint32 nodeId;
+	
 
 	virtual bool hasAudioInputs() override;
 	virtual bool hasAudioOutputs() override;
@@ -51,10 +50,7 @@ public:
 
 	void parameterValueChanged(Parameter * p) override;
 
-	//audio
-	void addToAudioGraphIfNeeded();
-	void removeFromAudioGraphIfNeeded();
-
+	
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
@@ -71,27 +67,18 @@ public:
 		return niceName;
 	}
 
-private:
-	int nodeTypeUID;
-	friend class NodeFactory;
 	
 
 	//AUDIO PROCESSOR
-public:
-	FloatParameter * outputVolume;
-	BoolParameter * bypass;
-	StringArray inputChannelNames;
-	StringArray outputChannelNames;
+
+	AudioProcessorGraph::Node * audioNode;
+
+	virtual AudioProcessorGraph::Node * getAudioNode(bool isInputNode = true) override;
+	void addToAudioGraph() override;
+	void removeFromAudioGraph() override;
 
 	bool setPreferedNumAudioInput(int num);
 	bool setPreferedNumAudioOutput(int num);
-
-	void setInputChannelNames(int startChannel, StringArray names);
-	void setOutputChannelNames(int startChannel, StringArray names);
-	void setInputChannelName(int channelIndex, const String &name);
-	void setOutputChannelName(int channelIndex, const String &name);
-	String getInputChannelName(int channelIndex);
-	String getOutputChannelName(int channelIndex);
 
 
 	virtual void prepareToPlay(double, int) override {};
@@ -170,7 +157,10 @@ public:
 	float lastVolume;
 
 	//DATA
-public:
+	virtual Data* getInputData(int dataIndex) override;
+	virtual Data* getOutputData(int dataIndex) override;
+	
+
 	typedef Data::DataType DataType;
 	typedef Data::DataElement DataElement;
 
@@ -192,43 +182,20 @@ public:
 	virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0);
 
 
-	int getTotalNumInputData() const { return inputDatas.size(); }
-	int getTotalNumOutputData() const { return outputDatas.size(); }
+	int getTotalNumInputData() override;
+	int getTotalNumOutputData() override;
 
-	StringArray getInputDataInfos();
+	StringArray getInputDataInfos() override;
+	StringArray getOutputDataInfos() override;
 
-	StringArray getOutputDataInfos();
+	Data::DataType getInputDataType(const String &dataName, const String &elementName) override;
+	Data::DataType getOutputDataType(const String &dataName, const String &elementName) override;
 
-	Data::DataType getInputDataType(const String &dataName, const String &elementName);
-	Data::DataType getOutputDataType(const String &dataName, const String &elementName);
+	Data * getOutputDataByName(const String &dataName) override;
+	Data * getInputDataByName(const String &dataName) override;
 
-
-	Data * getOutputDataByName(const String &dataName);
-	Data * getInputDataByName(const String &dataName);
-
-	//Listener
-	class  NodeDataProcessorListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~NodeDataProcessorListener() {}
-
-		virtual void inputAdded(Data *) {}
-		virtual void inputRemoved(Data *) {}
-
-		virtual void outputAdded(Data *) {}
-		virtual void ouputRemoved(Data *) {}
-
-		virtual void inputDataChanged(Data *) {}
-	};
-
-	ListenerList<NodeDataProcessorListener> dataProcessorListeners;
-	void addDataProcessorListener(NodeDataProcessorListener* newListener) { dataProcessorListeners.add(newListener); }
-	void removeDataProcessorListener(NodeDataProcessorListener* listener) { dataProcessorListeners.remove(listener); }
-
-
-	private:
-		virtual void dataChanged(Data *) override;
+	virtual void dataChanged(Data *) override;
+	virtual void processInputDataChanged(Data *);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 

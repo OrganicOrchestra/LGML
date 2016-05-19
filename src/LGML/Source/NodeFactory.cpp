@@ -14,8 +14,8 @@
 #include "DataInNode.h"
 #include "SpatNode.h"
 #include "VSTNode.h"
-#include "AudioInNode.h"
-#include "AudioOutNode.h"
+#include "AudioDeviceInNode.h"
+#include "AudioDeviceOutNode.h"
 #include "LooperNode.h"
 
 NodeFactory::NodeFactory()
@@ -26,40 +26,40 @@ NodeFactory::~NodeFactory()
 {
 }
 
-NodeBase * NodeFactory::createNode(NodeType nodeType, uint32 nodeId)
+NodeBase * NodeFactory::createNode(NodeType nodeType)
 {
     NodeBase * n = nullptr;
 
     switch (nodeType)
     {
         case NodeType::DummyType:
-            n = new DummyNode(nodeId);
+            n = new DummyNode();
             break;
 
         case NodeType::AudioMixerType:
-            n = new AudioMixerNode(nodeId);
+            n = new AudioMixerNode();
             break;
 
         case NodeType::DataInType:
-            n = new DataInNode(nodeId);
+            n = new DataInNode();
             break;
 
         case NodeType::SpatType:
-            n = new SpatNode(nodeId);
+            n = new SpatNode();
             break;
         case NodeType::LooperType:
-            n = new LooperNode(nodeId);
+            n = new LooperNode();
             break;
         case NodeType::VSTType:
-            n = new VSTNode(nodeId);
+            n = new VSTNode();
             break;
 
-        case NodeType::AudioInType:
-            n = new AudioInNode(nodeId);
+        case NodeType::AudioDeviceInType:
+            n = new AudioDeviceInNode();
             break;
 
-        case NodeType::AudioOutType:
-            n = new AudioOutNode(nodeId);
+        case NodeType::AudioDeviceOutType:
+            n = new AudioDeviceOutNode();
             break;
 
         case NodeType::UNKNOWN_TYPE:
@@ -69,7 +69,6 @@ NodeBase * NodeFactory::createNode(NodeType nodeType, uint32 nodeId)
             jassert(false);
             break;
     }
-    n->nodeTypeUID = (int)nodeType;
 
     return n;
 }
@@ -77,9 +76,12 @@ NodeBase * NodeFactory::createNode(NodeType nodeType, uint32 nodeId)
 PopupMenu * NodeFactory::getNodeTypesMenu(int menuIdOffset)
 {
     PopupMenu * p = new PopupMenu();
-    for (int i = 0; i < numElementsInArray(nodeTypeNames); i++)
+	int numElements = numElementsInArray(nodeTypeNames) - userCanAddStartType;
+
+    for (int i = 0; i < numElements; i++)
     {
-        p->addItem(menuIdOffset + i, nodeTypeNames[i]);
+		int index = i + userCanAddStartType;
+        p->addItem(index+menuIdOffset, nodeTypeNames[index]);
     }
 
     return p;
@@ -99,5 +101,5 @@ String NodeFactory::nodeTypeToString(NodeType t) {
 }
 
 String NodeFactory::nodeToString(NodeBase * n) {
-    return nodeTypeToString((NodeType)n->nodeTypeUID);
+    return nodeTypeToString(n->type);
 }

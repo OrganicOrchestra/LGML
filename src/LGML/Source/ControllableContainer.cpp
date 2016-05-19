@@ -18,7 +18,8 @@ parentContainer(nullptr),
 hasCustomShortName(false),
 skipControllableNameInAddress(false),
 currentPreset(nullptr),
-saveAndLoadRecursiveData(true)
+saveAndLoadRecursiveData(true),
+canHavePresets(true)
 {
     setNiceName(niceName);
 }

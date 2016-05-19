@@ -28,8 +28,8 @@ public:
 	NodeContainer * nodeContainer;
 
 	// Inherited via NodeContainerListener
-	virtual void nodeAdded(NodeBase *) override;
-	virtual void nodeRemoved(NodeBase *) override;
+	virtual void nodeAdded(ConnectableNode *) override;
+	virtual void nodeRemoved(ConnectableNode *) override;
 	virtual void connectionAdded(NodeConnection *) override;
 	virtual void connectionRemoved(NodeConnection *) override;
 };

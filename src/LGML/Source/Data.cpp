@@ -70,7 +70,6 @@ void Data::updateFromSourceData(Data * sourceData)
     int numElements = elements.size();
     for (int i = 0; i < numElements; i++)
     {
-        DBG(sourceData->elements[i]->value << "< >" << elements[i]->value);
 
         if (sourceData->elements[i]->value != elements[i]->value)
         {
@@ -99,7 +98,6 @@ void Data::update(const float & value1, const float & value2, const float & valu
 
     for (int i = 0; i < numElements; i++)
     {
-        DBG(String(elements[i]->value) << " < > " << values[i]);
         if (elements[i]->value != values[i])
         {
             elements[i]->value = values[i];

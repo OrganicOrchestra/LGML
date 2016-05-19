@@ -48,6 +48,8 @@ public:
     String shortName;
     bool hasCustomShortName;
 
+	bool canHavePresets;
+
     bool skipControllableNameInAddress;
     void setNiceName(const String &_niceName);
     void setCustomShortName(const String &_shortName);

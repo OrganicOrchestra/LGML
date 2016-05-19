@@ -11,8 +11,9 @@
 #include "ConnectableNode.h"
 
 
-  ConnectableNode::ConnectableNode(const String & name) :
-	  type(NodeType::UNKNOWN_TYPE),
+  ConnectableNode::ConnectableNode(const String & name, NodeType _type) :
+	  type(_type),
+	  canBeRemovedByUser(true),
 	  ControllableContainer(name)
   {
 	  //set Params
@@ -73,6 +74,7 @@ void ConnectableNode::parameterValueChanged(Parameter * p)
 	}
 }
 
+
 void ConnectableNode::remove(bool askBeforeRemove)
 {
 	if (askBeforeRemove)
@@ -94,3 +96,146 @@ void ConnectableNode::loadJSONDataInternal(var data)
 {
 	ControllableContainer::loadJSONDataInternal(data);
 }
+
+
+
+/////////////////////////////  AUDIO
+
+AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool)
+{
+	//to override
+	return nullptr;
+}
+
+
+void ConnectableNode::addToAudioGraph()
+{
+	//to override
+}
+
+void ConnectableNode::removeFromAudioGraph()
+{
+	//To override
+}
+
+
+
+void ConnectableNode::setInputChannelNames(int startChannel, StringArray names)
+{
+	for (int i = startChannel; i < startChannel + names.size(); i++)
+	{
+		setInputChannelName(i, names[i]);
+	}
+}
+
+void ConnectableNode::setOutputChannelNames(int startChannel, StringArray names)
+{
+	for (int i = startChannel; i < startChannel + names.size(); i++)
+	{
+		setOutputChannelName(i, names[i]);
+	}
+}
+
+void ConnectableNode::setInputChannelName(int channelIndex, const String & name)
+{
+	while (inputChannelNames.size() < (channelIndex + 1))
+	{
+		inputChannelNames.add(String::empty);
+	}
+
+	inputChannelNames.set(channelIndex, name);
+}
+
+void ConnectableNode::setOutputChannelName(int channelIndex, const String & name)
+{
+	while (outputChannelNames.size() < (channelIndex + 1))
+	{
+		outputChannelNames.add(String::empty);
+	}
+
+	outputChannelNames.set(channelIndex, name);
+}
+
+String ConnectableNode::getInputChannelName(int channelIndex)
+{
+	String defaultName = "Input " + String(channelIndex);
+	if (channelIndex < 0 || channelIndex >= inputChannelNames.size()) return defaultName;
+
+	String s = inputChannelNames[channelIndex];
+	if (s.isNotEmpty()) return s;
+	return defaultName;
+}
+
+String ConnectableNode::getOutputChannelName(int channelIndex)
+{
+	String defaultName = "Output " + String(channelIndex);
+	if (channelIndex < 0 || channelIndex >= outputChannelNames.size()) return defaultName;
+
+	String s = outputChannelNames[channelIndex];
+	if (s.isNotEmpty()) return s;
+	return defaultName;
+}
+
+
+/////////////////////////////  DATA
+Data * ConnectableNode::getInputData(int)
+{
+	//to override
+	return nullptr;
+}
+
+Data * ConnectableNode::getOutputData(int)
+{
+	//to override
+	return nullptr;
+}
+
+int ConnectableNode::getTotalNumInputData()
+{
+	//to override
+	return 0;
+}
+
+int ConnectableNode::getTotalNumOutputData()
+{
+	//to override
+	return 0;
+}
+
+StringArray ConnectableNode::getInputDataInfos()
+{
+	return StringArray();
+}
+
+StringArray ConnectableNode::getOutputDataInfos()
+{
+	return StringArray();
+}
+
+Data::DataType ConnectableNode::getInputDataType(const String & , const String & )
+{
+	//to override
+	return Data::DataType::Unknown;
+}
+
+Data::DataType ConnectableNode::getOutputDataType(const String & , const String & )
+{
+	//to override
+	return Data::DataType::Unknown;
+}
+
+Data * ConnectableNode::getOutputDataByName(const String & )
+{
+	//to override
+	return nullptr;
+}
+
+Data * ConnectableNode::getInputDataByName(const String & )
+{
+	//to override
+	return nullptr;
+}
+
+
+
+

@@ -15,12 +15,15 @@
 class NodeBase;
 class NodeManager;
 
-const static String nodeTypeNames[] = {"Container", "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioIn","AudioOut" };
+const static String nodeTypeNames[] = {"ContainerIn","ContainerOut", "Container", "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioDeviceIn","AudioDeviceOut" };
 
 //Added type to not mess with class names
 enum NodeType
 {
     UNKNOWN_TYPE =0,
+	ContainerInType,
+	ContainerOutType,
+
 	ContainerType,
     DummyType ,
     AudioMixerType,
@@ -28,9 +31,8 @@ enum NodeType
     SpatType,
     LooperType,
     VSTType,
-    AudioInType,
-    AudioOutType
-
+    AudioDeviceInType,
+    AudioDeviceOutType
 };
 
 class NodeFactory
@@ -38,7 +40,10 @@ class NodeFactory
 public:
 	NodeFactory();
 	~NodeFactory();
-    static NodeBase * createNode(NodeType nodeType, uint32 nodeId = 0);
+	
+	const static int userCanAddStartType = (int)ContainerType;
+
+    static NodeBase * createNode(NodeType nodeType);
 
     static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0);
 

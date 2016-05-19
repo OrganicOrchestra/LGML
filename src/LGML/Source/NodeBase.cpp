@@ -13,15 +13,12 @@
 #include "TimeManager.h"
 
 
-NodeBase::NodeBase(uint32 _nodeId, const String &name) :
-	ConnectableNode(name),
-nodeId(_nodeId),
-nodeTypeUID(0) // UNKNOWNTYPE
+NodeBase::NodeBase(const String &name,NodeType _type) :
+	ConnectableNode(name,_type),
+	audioNode(nullptr)
 {
+    addToAudioGraph();
 
-    addToAudioGraphIfNeeded();
-
-    
 	//Audio
 	outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
 	lastVolume = outputVolume->floatValue();
@@ -86,23 +83,7 @@ void NodeBase::parameterValueChanged(Parameter * p)
 	}
 }
 
-void NodeBase::addToAudioGraphIfNeeded(){
-    if(hasAudioInputs() || hasAudioOutputs()){
-		if (NodeManager::getInstanceWithoutCreating() != nullptr)
-		{
-			NodeManager::getInstance()->audioGraph.addNode(this, nodeId);
-		}
-	}
-}
 
-void NodeBase::removeFromAudioGraphIfNeeded(){
-    if(hasAudioInputs() || hasAudioOutputs()){
-		if (NodeManager::getInstanceWithoutCreating() != nullptr)
-		{
-			NodeManager::getInstance()->audioGraph.removeNode(nodeId);
-		}
-    }
-}
 
 String NodeBase::getPresetFilter()
 {
@@ -116,8 +97,6 @@ var NodeBase::getJSONData()
 {
 	var data = ConnectableNode::getJSONData();
     data.getDynamicObject()->setProperty("nodeType", NodeFactory::nodeToString(this));
-    data.getDynamicObject()->setProperty("nodeId", String(nodeId));
-
    MemoryBlock m;
 
     // TODO we could implement that for all node objects to be able to save any kind of custom data
@@ -148,6 +127,26 @@ void NodeBase::loadJSONDataInternal(var data)
 
 
 /////////////////////////////////////// AUDIO
+
+AudioProcessorGraph::Node * NodeBase::getAudioNode(bool)
+{
+	return audioNode;
+}
+
+void NodeBase::addToAudioGraph() {
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		audioNode = NodeManager::getInstance()->audioGraph.addNode(this);
+	}
+}
+
+void NodeBase::removeFromAudioGraph() {
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		if (audioNode != nullptr) NodeManager::getInstance()->audioGraph.removeNode(audioNode);
+	}
+	
+}
 
 void NodeBase::processBlock(AudioBuffer<float>& buffer,
 	MidiBuffer& midiMessages) {
@@ -204,8 +203,6 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
 };
 
-
-
 bool NodeBase::setPreferedNumAudioInput(int num) {
 	setPlayConfigDetails(num, getTotalNumOutputChannels(),
 		getSampleRate(),
@@ -226,62 +223,6 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 	}
 	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged, num);
 	return true;
-}
-
-void NodeBase::setInputChannelNames(int startChannel, StringArray names)
-{
-	for (int i = startChannel; i < startChannel + names.size(); i++)
-	{
-		setInputChannelName(i, names[i]);
-	}
-}
-
-void NodeBase::setOutputChannelNames(int startChannel, StringArray names)
-{
-	for (int i = startChannel; i < startChannel + names.size(); i++)
-	{
-		setOutputChannelName(i, names[i]);
-	}
-}
-
-void NodeBase::setInputChannelName(int channelIndex, const String & name)
-{
-	while (inputChannelNames.size() < (channelIndex + 1))
-	{
-		inputChannelNames.add(String::empty);
-	}
-
-	inputChannelNames.set(channelIndex, name);
-}
-
-void NodeBase::setOutputChannelName(int channelIndex, const String & name)
-{
-	while (outputChannelNames.size() < (channelIndex + 1))
-	{
-		outputChannelNames.add(String::empty);
-	}
-
-	outputChannelNames.set(channelIndex, name);
-}
-
-String NodeBase::getInputChannelName(int channelIndex)
-{
-	String defaultName = "Input " + String(channelIndex);
-	if (channelIndex < 0 || channelIndex >= inputChannelNames.size()) return defaultName;
-
-	String s = inputChannelNames[channelIndex];
-	if (s.isNotEmpty()) return s;
-	return defaultName;
-}
-
-String NodeBase::getOutputChannelName(int channelIndex)
-{
-	String defaultName = "Output " + String(channelIndex);
-	if (channelIndex < 0 || channelIndex >= outputChannelNames.size()) return defaultName;
-
-	String s = outputChannelNames[channelIndex];
-	if (s.isNotEmpty()) return s;
-	return defaultName;
 }
 
 void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue) {
@@ -319,6 +260,17 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 
 //////////////////////////////////   DATA
 
+Data * NodeBase::getInputData(int dataIndex)
+{
+	return inputDatas[dataIndex];
+}
+
+
+Data * NodeBase::getOutputData(int dataIndex)
+{
+	return outputDatas[dataIndex];
+}
+
 
 Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 {
@@ -326,8 +278,6 @@ Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 	inputDatas.add(d);
 
 	d->addDataListener(this);
-
-	dataProcessorListeners.call(&NodeDataProcessorListener::inputAdded, d);
 
 	return d;
 }
@@ -337,8 +287,6 @@ Data * NodeBase::addOutputData(const String & name, DataType dataType)
 	Data * d = new Data(this, name, dataType);
 	outputDatas.add(d);
 
-	dataProcessorListeners.call(&NodeDataProcessorListener::outputAdded, d);
-
 	return d;
 }
 
@@ -347,7 +295,6 @@ void NodeBase::removeInputData(const String & name)
 	Data * d = getInputDataByName(name);
 	if (d == nullptr) return;
 
-	dataProcessorListeners.call(&NodeDataProcessorListener::inputRemoved, d);
 	inputDatas.removeObject(d, true);
 }
 
@@ -355,7 +302,6 @@ void NodeBase::removeOutputData(const String & name)
 {
 	Data * d = getOutputDataByName(name);
 	if (d == nullptr) return;
-	dataProcessorListeners.call(&NodeDataProcessorListener::ouputRemoved, d);
 	outputDatas.removeObject(d, true);
 }
 
@@ -363,6 +309,14 @@ void NodeBase::updateOutputData(String & dataName, const float & value1, const f
 {
 	Data * d = getOutputDataByName(dataName);
 	if (d != nullptr) d->update(value1, value2, value3);
+}
+
+int NodeBase::getTotalNumInputData() { 
+	return inputDatas.size(); 
+}
+
+int NodeBase::getTotalNumOutputData() { 
+	return outputDatas.size(); 
 }
 
 StringArray NodeBase::getInputDataInfos()
@@ -451,6 +405,10 @@ Data * NodeBase::getInputDataByName(const String & dataName)
 void NodeBase::dataChanged(Data * d)
 {
 	if (enabled) {
-		dataProcessorListeners.call(&NodeDataProcessorListener::inputDataChanged, d);
+		processInputDataChanged(d);
 	}
+}
+
+void NodeBase::processInputDataChanged(Data *)
+{
 }

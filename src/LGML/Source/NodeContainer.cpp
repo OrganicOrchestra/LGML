@@ -10,10 +10,19 @@
 
 #include "NodeContainer.h"
 #include "NodeManager.h"
+#include "NodeConnection.h"
 
-NodeContainer::NodeContainer(const String &name) : 
-	ConnectableNode(name)
+NodeContainer::NodeContainer(const String &name, NodeContainer * _parentNodeContainer) :
+	parentNodeContainer(_parentNodeContainer),
+	ConnectableNode(name,NodeType::ContainerType)
 {
+	saveAndLoadRecursiveData = false;
+
+	//if (parentNodeContainer != nullptr)
+	//{
+		containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
+		containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
+	//}
 }
 
 
@@ -30,53 +39,28 @@ void NodeContainer::clear()
 
 	connections.clear();
 
-	lastNodeId = 0;
-	lastConnectionId = 0;
 }
 
 
-NodeBase * NodeContainer::getNodeForId(const uint32 nodeId) const
+ConnectableNode * NodeContainer::addNode(NodeType nodeType)
 {
-	for (int i = nodes.size(); --i >= 0;)
-		if (nodes.getUnchecked(i)->nodeId == nodeId)
-			return nodes.getUnchecked(i);
-
-	return nullptr;
+	NodeBase * n = NodeFactory::createNode(nodeType);
+	return addNode(n);
 }
 
-NodeBase * NodeContainer::addNode(NodeType nodeType, uint32 nodeId)
+ConnectableNode * NodeContainer::addNode(ConnectableNode * n)
 {
-	if (nodeId == 0)
-	{
-		nodeId = ++lastNodeId;
-	}
-	else
-	{
-		// you can't add a node with an id that already exists in the graph..
-		jassert(getNodeForId(nodeId) == nullptr);
-		//DBG("Remove node because id already exists and pointer is null");
-		
-		NodeBase * rn = getNodeForId(nodeId);
-		removeNode(rn);
-
-		if (nodeId > lastNodeId)
-			lastNodeId = nodeId;
-	}
-
-
-	NodeBase * n = NodeFactory::createNode(nodeType, nodeId);
 	nodes.add(n);
 	n->addNodeListener(this);
 	n->nameParam->setValue(getUniqueNameInContainer(n->nameParam->stringValue()));
 	addChildControllableContainer(n); //ControllableContainer
 	nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
-
 	return n;
 }
 
 
 
-bool NodeContainer::removeNode(NodeBase * n)
+bool NodeContainer::removeNode(ConnectableNode * n)
 {
 	Array<NodeConnection *> relatedConnections = getAllConnectionsForNode(n);
 
@@ -89,23 +73,22 @@ bool NodeContainer::removeNode(NodeBase * n)
 	nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
 	nodes.removeAllInstancesOf(n);
 
-	if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(n->nodeId);
+	n->removeFromAudioGraph();
+
+	//if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(n->audioNode);
 
 	return true;
 }
 
-
-
-NodeConnection * NodeContainer::getConnectionForId(const uint32 connectionId) const
+ConnectableNode * NodeContainer::getNodeForName(const String & name)
 {
-	for (int i = connections.size(); --i >= 0;)
+	for (auto &n : nodes)
 	{
-		NodeConnection * c = connections.getUnchecked(i);
-		if (c->connectionId == connectionId) return c;
+		if (n->shortName == name) return n;
 	}
-
 	return nullptr;
 }
+
 
 
 int NodeContainer::getNumConnections() {
@@ -142,18 +125,19 @@ void NodeContainer::loadJSONDataInternal(var data)
 	for (var &nData : *nodesData)
 	{
 		NodeType nodeType = NodeFactory::getTypeFromString(nData.getProperty("nodeType", var()));
-		int nodeId = nData.getProperty("nodeId", var());
-		NodeBase* node = addNode(nodeType, nodeId);
+		ConnectableNode * node = addNode(nodeType);
 		node->loadJSONData(nData);
 	}
 
 	Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
+
 	if (connectionsData)
 	{
 		for (var &cData : *connectionsData)
 		{
-			NodeBase * srcNode = getNodeForId((int)(cData.getProperty("srcNodeId", var())));
-			NodeBase * dstNode = getNodeForId((int)(cData.getProperty("dstNodeId", var())));
+			ConnectableNode * srcNode = getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString());
+			ConnectableNode * dstNode = getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString());
+
 			int cType = cData.getProperty("connectionType", var());
 
 			if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
@@ -172,7 +156,7 @@ void NodeContainer::loadJSONDataInternal(var data)
 }
 
 
-NodeConnection * NodeContainer::getConnectionBetweenNodes(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType)
+NodeConnection * NodeContainer::getConnectionBetweenNodes(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
 	for (int i = connections.size(); --i >= 0;)
 	{
@@ -183,7 +167,7 @@ NodeConnection * NodeContainer::getConnectionBetweenNodes(NodeBase * sourceNode,
 	return nullptr;
 }
 
-Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(NodeBase * node)
+Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode * node)
 {
 	Array<NodeConnection*> result;
 	for (auto &connection : connections)
@@ -194,7 +178,7 @@ Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(NodeBase * node)
 	return result;
 }
 
-NodeConnection * NodeContainer::addConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType, uint32 connectionId)
+NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
 	if (getConnectionBetweenNodes(sourceNode, destNode, connectionType) != nullptr)
 	{
@@ -203,22 +187,7 @@ NodeConnection * NodeContainer::addConnection(NodeBase * sourceNode, NodeBase * 
 		return nullptr;
 	}
 
-	if (connectionId == 0)
-	{
-		connectionId = ++lastConnectionId;
-	}
-	else
-	{
-		// you can't add a node with an id that already exists in the graph..
-		jassert(getConnectionForId(connectionId) == nullptr);
-		removeConnection(connectionId);
-
-		if ((int)connectionId > (int)lastConnectionId)
-			lastConnectionId = connectionId;
-	}
-
-
-	NodeConnection * c = new NodeConnection(connectionId, sourceNode, destNode, connectionType);
+	NodeConnection * c = new NodeConnection(sourceNode, destNode, connectionType);
 	connections.add(c);
 	c->addConnectionListener(this);
 
@@ -228,12 +197,6 @@ NodeConnection * NodeContainer::addConnection(NodeBase * sourceNode, NodeBase * 
 	return c;
 }
 
-bool NodeContainer::removeConnection(uint32 connectionId)
-{
-	//DBG("Remove connection from Node Manager, dispatch connectionRemoved to UI");
-	NodeConnection * c = getConnectionForId(connectionId);
-	return removeConnection(c);
-}
 
 bool NodeContainer::removeConnection(NodeConnection * c)
 {
@@ -258,7 +221,19 @@ void NodeContainer::askForRemoveNode(ConnectableNode * node)
 
 void NodeContainer::askForRemoveConnection(NodeConnection *connection)
 {
-	removeConnection(connection->connectionId);
+	removeConnection(connection);
+}
+
+AudioProcessorGraph::Node * NodeContainer::getAudioNode(bool isInput)
+{
+	if (isInput)
+	{
+		return containerInNode == nullptr ? nullptr : containerInNode->getAudioNode();
+	}
+	else
+	{
+		return containerOutNode == nullptr ? nullptr : containerOutNode->getAudioNode();
+	}
 }
 
 

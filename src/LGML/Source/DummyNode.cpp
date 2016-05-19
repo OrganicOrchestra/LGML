@@ -12,8 +12,8 @@
 #include "NodeBaseUI.h"
 #include "DummyNodeContentUI.h"
 
-DummyNode::DummyNode(uint32 nodeId) :
-    NodeBase(nodeId, "DummyNode")
+DummyNode::DummyNode() :
+    NodeBase("DummyNode",NodeType::DummyType)
 {
 
 

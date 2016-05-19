@@ -11,10 +11,14 @@
 #ifndef NODECONTAINER_H_INCLUDED
 #define NODECONTAINER_H_INCLUDED
 
-#include "NodeBase.h"
-#include "NodeConnection.h"
+
 #include "NodeFactory.h"
 #include "ConnectableNode.h"
+#include "NodeConnection.h"
+
+#include "ContainerInNode.h"
+#include "ContainerOutNode.h"
+
 
 //Listener
 class  NodeContainerListener
@@ -23,8 +27,8 @@ public:
 	/** Destructor. */
 	virtual ~NodeContainerListener() {}
 
-	virtual void nodeAdded(NodeBase *) = 0;
-	virtual void nodeRemoved(NodeBase *) = 0;
+	virtual void nodeAdded(ConnectableNode *) = 0;
+	virtual void nodeRemoved(ConnectableNode *) = 0;
 
 	virtual void connectionAdded(NodeConnection *) = 0;
 	virtual void connectionRemoved(NodeConnection *) = 0;
@@ -37,24 +41,35 @@ class NodeContainer :
 	public NodeConnection::Listener
 {
 public:
-	NodeContainer(const String &name);
+	NodeContainer(const String &name, NodeContainer * _parentNodeContainer = nullptr);
 	virtual ~NodeContainer();
 
-	Array<NodeBase *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
+
+	//CONTAINER RELATED
+
+	NodeContainer * parentNodeContainer;
+
+	//Container nodes, not removable by user, handled separately
+	ContainerInNode * containerInNode;
+	ContainerOutNode * containerOutNode;
+
+
+	//NODE AND CONNECTION MANAGEMENT
+
+	Array<ConnectableNode *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
 	OwnedArray<NodeConnection> connections;
 
-	NodeBase* getNode(const int index) const noexcept { return nodes[index]; }
-	NodeBase* getNodeForId(const uint32 nodeId) const;
-	NodeBase* addNode(NodeType nodeType, uint32 nodeId = 0);
-	bool removeNode(NodeBase * n);
+	ConnectableNode* addNode(NodeType nodeType);
+	ConnectableNode* addNode(ConnectableNode * node);
+	bool removeNode(ConnectableNode * n);
+
+	ConnectableNode * getNodeForName(const String &name);
 
 	NodeConnection * getConnection(const int index) const noexcept { return connections[index]; }
-	NodeConnection * getConnectionForId(const uint32 connectionId) const;
-	NodeConnection * getConnectionBetweenNodes(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType);
-	Array<NodeConnection *> getAllConnectionsForNode(NodeBase * node);
+	NodeConnection * getConnectionBetweenNodes(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType);
+	Array<NodeConnection *> getAllConnectionsForNode(ConnectableNode * node);
 
-	NodeConnection * addConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType, uint32 connectionId = 0);
-	bool removeConnection(uint32 connectionId);
+	NodeConnection * addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType);
 	bool removeConnection(NodeConnection * c);
 	void removeIllegalConnections();
 	int getNumConnections();
@@ -90,11 +105,12 @@ public:
 	void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener); }
 
 
+	//AUDIO 
+	AudioProcessorGraph::Node * getAudioNode(bool isInput) override;
+
+	//DATA
 
 private:
-	uint32 lastNodeId;
-	int32 lastConnectionId;
-
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainer)
 };
 

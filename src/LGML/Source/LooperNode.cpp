@@ -12,8 +12,8 @@
 #include "LooperNodeUI.h"
 #include "TimeManager.h"
 
-LooperNode::LooperNode(uint32 nodeId) :
-NodeBase(nodeId,"Looper"),
+LooperNode::LooperNode() :
+NodeBase("Looper",NodeType::LooperType),
 selectedTrack(nullptr),
 wasMonitoring(false),
 trackGroup(this)

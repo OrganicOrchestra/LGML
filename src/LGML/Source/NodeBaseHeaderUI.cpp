@@ -27,6 +27,7 @@ NodeBaseHeaderUI::NodeBaseHeaderUI() : removeBT("X") ,
                         removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
                         0.5f);
     removeBT.addListener(this);
+
     setSize(20, 40);
 
 }
@@ -79,13 +80,18 @@ void NodeBaseHeaderUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
     addAndMakeVisible(enabledUI);
 
     addAndMakeVisible(grabber);
-    addAndMakeVisible(removeBT);
+
+	if(node->canBeRemovedByUser) addAndMakeVisible(removeBT);
+
 
     presetCB = new ComboBox("preset");
-    updatePresetComboBox();
-    addAndMakeVisible(presetCB);
-    presetCB->addListener(this);
-    presetCB->setTextWhenNothingSelected("Preset");
+	if (node->canHavePresets)
+	{
+		updatePresetComboBox();
+		addAndMakeVisible(presetCB);
+		presetCB->addListener(this);
+		presetCB->setTextWhenNothingSelected("Preset");
+	}
 
 	node->addControllableContainerListener(this);
 	node->addNodeListener(this);
@@ -142,10 +148,18 @@ void NodeBaseHeaderUI::resized()
 	enabledUI->setBounds(r.removeFromLeft(10));
 
     r.removeFromLeft(3);
-    removeBT.setBounds(r.removeFromRight(removeBTWidth));
-	r.removeFromRight(5);
-    presetCB->setBounds(r.removeFromRight(presetCBWidth));
-	r.removeFromRight(5);
+	if (node->canBeRemovedByUser)
+	{
+		removeBT.setBounds(r.removeFromRight(removeBTWidth));
+		r.removeFromRight(5);
+	}
+	
+	if (node->canHavePresets)
+	{
+		presetCB->setBounds(r.removeFromRight(presetCBWidth));
+		r.removeFromRight(5);
+	}
+
     titleUI->setBounds(r);
 
 
@@ -216,6 +230,8 @@ void NodeBaseHeaderUI::buttonClicked(Button *)
 
 void NodeBaseHeaderUI::controllableContainerPresetLoaded(ControllableContainer *)
 {
+	if (!node->canHavePresets) return;
+
 	int numOptions = 3;
 	if (node->currentPreset != nullptr) presetCB->setSelectedItemIndex(node->currentPreset->presetId+numOptions-1, NotificationType::dontSendNotification);
 }

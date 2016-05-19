@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.1.7"
-              bundleIdentifier="org.anic.orchestra.Blooper" includeBinaryInAppConfig="1"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.0"
+              bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
@@ -520,21 +520,36 @@
                 file="Source/NodeConnectionUI.h"/>
         </GROUP>
         <GROUP id="{90D03868-3FD4-352F-D8F2-C231A68FF418}" name="nodes">
+          <GROUP id="{D50B9974-FB09-4491-041A-EC9D95F501CB}" name="ContainerOut">
+            <FILE id="PKaky5" name="ContainerOutNode.cpp" compile="1" resource="0"
+                  file="Source/ContainerOutNode.cpp"/>
+            <FILE id="CmjDOl" name="ContainerOutNode.h" compile="0" resource="0"
+                  file="Source/ContainerOutNode.h"/>
+          </GROUP>
+          <GROUP id="{0970214F-084E-9562-CD8E-DA53F560AD57}" name="ContainerIn">
+            <FILE id="Q0H2tu" name="ContainerInNode.cpp" compile="1" resource="0"
+                  file="Source/ContainerInNode.cpp"/>
+            <FILE id="m4Zmk6" name="ContainerInNode.h" compile="0" resource="0"
+                  file="Source/ContainerInNode.h"/>
+          </GROUP>
+          <GROUP id="{5417A4A0-D810-BE2F-ADD2-883B526A6B39}" name="AudioDeviceOut">
+            <FILE id="coUiVY" name="AudioDeviceInNode.cpp" compile="1" resource="0"
+                  file="Source/AudioDeviceInNode.cpp"/>
+            <FILE id="OqrdZW" name="AudioDeviceInNode.h" compile="0" resource="0"
+                  file="Source/AudioDeviceInNode.h"/>
+          </GROUP>
+          <GROUP id="{66F2191E-E08B-68BC-4E06-5881A101974F}" name="AudioDeviceIn">
+            <FILE id="bZx2fD" name="AudioDeviceOutNode.cpp" compile="1" resource="0"
+                  file="Source/AudioDeviceOutNode.cpp"/>
+            <FILE id="cr0dso" name="AudioDeviceOutNode.h" compile="0" resource="0"
+                  file="Source/AudioDeviceOutNode.h"/>
+          </GROUP>
           <GROUP id="{188EEA22-1910-946C-A8A8-4B25F7BDDA65}" name="DataIn">
             <FILE id="q7jbL6" name="DataInNode.cpp" compile="1" resource="0" file="Source/DataInNode.cpp"/>
             <FILE id="gse7SE" name="DataInNode.h" compile="0" resource="0" file="Source/DataInNode.h"/>
             <FILE id="lhhusd" name="DataInNodeUI.cpp" compile="1" resource="0"
                   file="Source/DataInNodeUI.cpp"/>
             <FILE id="aQrTAH" name="DataInNodeUI.h" compile="0" resource="0" file="Source/DataInNodeUI.h"/>
-          </GROUP>
-          <GROUP id="{83B99C76-9727-E032-6D0F-014884937604}" name="AudioOut">
-            <FILE id="fQzeSW" name="AudioOutNode.cpp" compile="1" resource="0"
-                  file="Source/AudioOutNode.cpp"/>
-            <FILE id="p7hEKJ" name="AudioOutNode.h" compile="0" resource="0" file="Source/AudioOutNode.h"/>
-          </GROUP>
-          <GROUP id="{EF2D37F3-7377-F588-4856-CFF84927A472}" name="AudioIn">
-            <FILE id="zgumfG" name="AudioInNode.cpp" compile="1" resource="0" file="Source/AudioInNode.cpp"/>
-            <FILE id="RPhhcb" name="AudioInNode.h" compile="0" resource="0" file="Source/AudioInNode.h"/>
           </GROUP>
           <GROUP id="{EA2B191A-C936-B14E-A8BC-F8E388834EC9}" name="Dummy">
             <FILE id="EJL9RW" name="DummyNode.cpp" compile="1" resource="0" file="Source/DummyNode.cpp"/>
@@ -608,9 +623,9 @@
                        osxArchitecture="32BitUniversal" isDebug="1" optimisation="1"
                        targetName="LGML_Debug_old" cppLanguageStandard="c++98" cppLibType="libstdc++"
                        binaryPath=""/>
-        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.8 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
-                       cppLanguageStandard="c++98" cppLibType="libstdc++" linkTimeOptimisation="1"/>
+                       cppLanguageStandard="c++11" cppLibType="libc++" linkTimeOptimisation="1"/>
         <CONFIGURATION name="Debug" isDebug="1" osxSDK="default" osxCompatibility="10.8 SDK"
                        osxArchitecture="32BitUniversal" targetName="LGML_Debug" defines=""
                        cppLanguageStandard="c++11" cppLibType="libc++"/>

@@ -23,7 +23,7 @@ NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 	DBG("Node Container Viewer : nodes In container = " << nodeContainer->nodes.size());
 	for (auto &n : nodeContainer->nodes)
 	{
-		addNodeUI(n);
+		addNodeUI((NodeBase*)n);
 
 	}
 	for (auto &c : nodeContainer->connections)
@@ -62,14 +62,14 @@ void NodeContainerViewer::resized()
 {
 }
 
-void NodeContainerViewer::nodeAdded(NodeBase * node)
+void NodeContainerViewer::nodeAdded(ConnectableNode * node)
 {
-	addNodeUI(node);
+	addNodeUI((NodeBase*)node);
 }
 
-void NodeContainerViewer::nodeRemoved(NodeBase * node)
+void NodeContainerViewer::nodeRemoved(ConnectableNode * node)
 {
-	removeNodeUI(node);
+	removeNodeUI((NodeBase*)node);
 }
 
 
@@ -137,8 +137,8 @@ void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
 		return;
 	}
 
-	NodeBaseUI * n1 = getUIForNode(connection->sourceNode);
-	NodeBaseUI * n2 = getUIForNode(connection->destNode);
+	NodeBaseUI * n1 = getUIForNode((NodeBase*)connection->sourceNode);
+	NodeBaseUI * n2 = getUIForNode((NodeBase*)connection->destNode);
 
 	ConnectorComponent * c1 = (n1 != nullptr) ? n1->getFirstConnector(connection->connectionType, ConnectorComponent::OUTPUT) : nullptr;
 	ConnectorComponent * c2 = (n2 != nullptr) ? n2->getFirstConnector(connection->connectionType, ConnectorComponent::INPUT) : nullptr;
@@ -332,15 +332,16 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
 		if (event.mods.isRightButtonDown())
 		{
 
+			int menuOffset = 1;
 			PopupMenu   menu;//(new PopupMenu());
-			ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(1));
+			ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(menuOffset));
 			menu.addSubMenu("Add Node", *addNodeMenu);
 
-			int result = menu.show();// 0, 0, 0, 0, ModalCallbackFunction::forComponent(&NodeContainerViewer::createNodeFromIndexAtPos, (Component*)this, addNodeMenu->getNumItems()));
+			int result = menu.show();
 
-			if (result > 0 && result < addNodeMenu->getNumItems() + 1)
+			if (result > 0 && result < addNodeMenu->getNumItems() + menuOffset)
 			{
-				NodeBase * n = nodeContainer->addNode((NodeType)result);
+				NodeBase * n = (NodeBase*)nodeContainer->addNode((NodeType)(result- menuOffset));
 				Point<int> mousePos = getMouseXYRelative();
 				n->xPosition->setValue((float)mousePos.x);
 				n->yPosition->setValue((float)mousePos.y);

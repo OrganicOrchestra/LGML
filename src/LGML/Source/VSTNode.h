@@ -31,7 +31,7 @@ public:
     Array<FloatParameter *> VSTParameters;
 
 
-    VSTNode(uint32 nodeId);
+    VSTNode();
     ~VSTNode();
 
     class PluginWindowParameters : public ControllableContainer{
