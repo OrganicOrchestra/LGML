@@ -17,25 +17,27 @@ AudioDeviceManager& getAudioDeviceManager();
 juce_ImplementSingleton(NodeManager);
 
 NodeManager::NodeManager() :
-    ControllableContainer("Node Manager"),
-	mainContainer("mainContainer")
+    ControllableContainer("Node Manager")
 {
 	saveAndLoadRecursiveData = false;
     setCustomShortName("node");
-	mainContainer.skipControllableNameInAddress = true;
-	//mainContainer.addNodeContainerListener(this);
-	addChildControllableContainer(&mainContainer);
+	
+	mainContainer = new NodeContainer("mainContainer");
+	addChildControllableContainer(mainContainer);
+	mainContainer->skipControllableNameInAddress = true;
+
 }
 
 NodeManager::~NodeManager()
 {
-    clear();
+	clear();
 
 }
 
 void NodeManager::clear()
 {
-	mainContainer.clear();
+	
+	mainContainer->clear(); 
 	audioGraph.clear();
 	dataGraph.clear();
 }
@@ -43,13 +45,14 @@ void NodeManager::clear()
 var NodeManager::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
-	data.getDynamicObject()->setProperty("mainContainer", mainContainer.getJSONData());
+	data.getDynamicObject()->setProperty("mainContainer", mainContainer->getJSONData());
 	return data;
 }
 
 void NodeManager::loadJSONDataInternal(var data)
 {
-	mainContainer.loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
+	clear();
+	mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
 }
 
 void NodeManager::updateAudioGraph() {

@@ -16,6 +16,6 @@ SpatNode::SpatNode() :
 {
 }
 
-  NodeBaseUI * SpatNode::createUI() {
+ConnectableNodeUI * SpatNode::createUI() {
 	return new NodeBaseUI(this); 
 }

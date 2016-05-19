@@ -16,6 +16,8 @@
 #include "NodeFactory.h"
 #include "Data.h"
 
+class ConnectableNodeUI;
+
 class ConnectableNode : 
 	public ControllableContainer
 {
@@ -47,6 +49,8 @@ public:
 
 	void parameterValueChanged(Parameter * p) override;
 
+	//ui
+	virtual ConnectableNodeUI *  createUI();
 
 	//Listener
 	class ConnectableNodeListener

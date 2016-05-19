@@ -25,7 +25,7 @@ public:
     LooperNode();
 	virtual ~LooperNode();
 
-    NodeBaseUI * createUI() override;
+	ConnectableNodeUI * createUI() override;
 
     class TrackGroup : public ControllableContainer{
     public:

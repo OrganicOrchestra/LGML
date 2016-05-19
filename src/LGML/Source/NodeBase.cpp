@@ -123,6 +123,14 @@ void NodeBase::loadJSONDataInternal(var data)
     setStateInformation(m.getData(), (int)m.getSize());
 }
 
+//ui
+
+ConnectableNodeUI * NodeBase::createUI() {
+	DBG("No implementation in child node class !");
+	jassert(false);
+	return nullptr;
+}
+
 
 
 

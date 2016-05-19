@@ -1,5 +1,6 @@
 #include "ConnectorComponent.h"
 #include "NodeContainerViewer.h"
+#include "Style.h"
 
 ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, NodeBase * _node) :
     ioType(_ioType), 
@@ -74,7 +75,7 @@ NodeContainerViewer * ConnectorComponent::getNodeContainerViewer() const noexcep
     return findParentComponentOfClass<NodeContainerViewer>();
 }
 
-NodeBaseUI * ConnectorComponent::getNodeUI() const noexcept
+ConnectableNodeUI * ConnectorComponent::getNodeUI() const noexcept
 {
-    return findParentComponentOfClass<NodeBaseUI>();
+    return findParentComponentOfClass<ConnectableNodeUI>();
 }

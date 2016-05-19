@@ -16,14 +16,12 @@ NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
 nodeManager(nodeManager),
 currentViewer(nullptr)
 {
-	setCurrentViewedContainer(&nodeManager->mainContainer);
+	setCurrentViewedContainer(nodeManager->mainContainer);
 }
 
 NodeManagerUI::~NodeManagerUI()
 {
-    
 	clear();
-
 }
 
 void NodeManagerUI::clear()

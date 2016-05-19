@@ -10,6 +10,8 @@
 
 #include "ConnectableNode.h"
 
+#include "ConnectableNodeUI.h"
+
 
   ConnectableNode::ConnectableNode(const String & name, NodeType _type) :
 	  type(_type),
@@ -72,6 +74,13 @@ void ConnectableNode::parameterValueChanged(Parameter * p)
 	else {
 		ControllableContainer::parameterValueChanged(p);
 	}
+}
+
+ConnectableNodeUI * ConnectableNode::createUI()
+{
+	DBG("No implementation in child node class !");
+	jassert(false);
+	return nullptr;
 }
 
 

@@ -44,7 +44,7 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 
 
 
-NodeBaseUI * AudioDeviceOutNode::createUI() {
+ConnectableNodeUI * AudioDeviceOutNode::createUI() {
 	NodeBaseUI * ui = new NodeBaseUI(this);
 	return ui;
 

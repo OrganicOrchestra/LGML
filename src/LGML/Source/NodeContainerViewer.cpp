@@ -23,8 +23,7 @@ NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 	DBG("Node Container Viewer : nodes In container = " << nodeContainer->nodes.size());
 	for (auto &n : nodeContainer->nodes)
 	{
-		addNodeUI((NodeBase*)n);
-
+		addNodeUI(n);
 	}
 	for (auto &c : nodeContainer->connections)
 	{
@@ -54,7 +53,7 @@ void NodeContainerViewer::clear()
 
 	while (nodesUI.size() > 0)
 	{
-		removeNodeUI(nodesUI[0]->node);
+		removeNodeUI(nodesUI[0]->connectableNode);
 	}
 }
 
@@ -64,12 +63,12 @@ void NodeContainerViewer::resized()
 
 void NodeContainerViewer::nodeAdded(ConnectableNode * node)
 {
-	addNodeUI((NodeBase*)node);
+	addNodeUI(node);
 }
 
 void NodeContainerViewer::nodeRemoved(ConnectableNode * node)
 {
-	removeNodeUI((NodeBase*)node);
+	removeNodeUI(node);
 }
 
 
@@ -83,12 +82,12 @@ void NodeContainerViewer::connectionRemoved(NodeConnection * connection)
 	removeConnectionUI(connection);
 }
 
-void NodeContainerViewer::addNodeUI(NodeBase * node)
+void NodeContainerViewer::addNodeUI(ConnectableNode * node)
 {
-
+	DBG("Add Node UI !" << node->niceName);
 	if (getUIForNode(node) == nullptr)
 	{
-		NodeBaseUI * nui = node->createUI();
+		ConnectableNodeUI * nui = node->createUI();
 		nodesUI.add(nui);
 		addAndMakeVisible(nui);
 		nui->setTopLeftPosition(node->xPosition->intValue(), node->yPosition->intValue());
@@ -101,10 +100,10 @@ void NodeContainerViewer::addNodeUI(NodeBase * node)
 
 
 
-void NodeContainerViewer::removeNodeUI(NodeBase * node)
+void NodeContainerViewer::removeNodeUI(ConnectableNode * node)
 {
 	//DBG("Remove NodeUI");
-	NodeBaseUI * nui = getUIForNode(node);
+	ConnectableNodeUI * nui = getUIForNode(node);
 	if (nui != nullptr)
 	{
 		nodesUI.removeObject(nui);
@@ -112,17 +111,17 @@ void NodeContainerViewer::removeNodeUI(NodeBase * node)
 	}
 	else
 	{
-		//nodeBaseUI isn't in list
+		//ConnectableNodeUI isn't in list
 	}
 }
 
 
-NodeBaseUI * NodeContainerViewer::getUIForNode(NodeBase * node)
+ConnectableNodeUI * NodeContainerViewer::getUIForNode(ConnectableNode * node)
 {
 	for (int i = nodesUI.size(); --i >= 0;)
 	{
-		NodeBaseUI * nui = nodesUI.getUnchecked(i);
-		if (nui->node == node) return nui;
+		ConnectableNodeUI * nui = nodesUI.getUnchecked(i);
+		if (nui->connectableNode == node) return nui;
 	}
 
 	return nullptr;
@@ -137,8 +136,8 @@ void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
 		return;
 	}
 
-	NodeBaseUI * n1 = getUIForNode((NodeBase*)connection->sourceNode);
-	NodeBaseUI * n2 = getUIForNode((NodeBase*)connection->destNode);
+	ConnectableNodeUI * n1 = getUIForNode((ConnectableNode*)connection->sourceNode);
+	ConnectableNodeUI * n2 = getUIForNode((ConnectableNode*)connection->destNode);
 
 	ConnectorComponent * c1 = (n1 != nullptr) ? n1->getFirstConnector(connection->connectionType, ConnectorComponent::OUTPUT) : nullptr;
 	ConnectorComponent * c2 = (n2 != nullptr) ? n2->getFirstConnector(connection->connectionType, ConnectorComponent::INPUT) : nullptr;
@@ -339,9 +338,11 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
 
 			int result = menu.show();
 
+			DBG("RESULT : " << result << " / menuOffset " << menuOffset);
+
 			if (result > 0 && result < addNodeMenu->getNumItems() + menuOffset)
 			{
-				NodeBase * n = (NodeBase*)nodeContainer->addNode((NodeType)(result- menuOffset));
+				ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode((NodeType)(result- menuOffset));
 				Point<int> mousePos = getMouseXYRelative();
 				n->xPosition->setValue((float)mousePos.x);
 				n->yPosition->setValue((float)mousePos.y);

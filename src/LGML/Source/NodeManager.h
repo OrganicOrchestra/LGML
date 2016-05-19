@@ -33,7 +33,7 @@ public:
     AudioProcessorGraph audioGraph;
     DataProcessorGraph dataGraph;
 
-	NodeContainer mainContainer;
+	ScopedPointer<NodeContainer> mainContainer;
 
 	void updateAudioGraph();
 

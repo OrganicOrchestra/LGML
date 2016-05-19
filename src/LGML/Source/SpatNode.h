@@ -21,7 +21,7 @@ class SpatNode : public NodeBase
 public:
 	SpatNode();
 
-	NodeBaseUI * createUI();
+	ConnectableNodeUI * createUI() override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpatNode)
 };
 

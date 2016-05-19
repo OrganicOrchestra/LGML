@@ -29,7 +29,7 @@ public:
 	void updateIO();
 	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
-	virtual NodeBaseUI * createUI() override;
+	virtual ConnectableNodeUI * createUI() override;
 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioDeviceOutNode)

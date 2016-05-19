@@ -43,7 +43,7 @@ void AudioDeviceInNode::updateIO() {
 }
 
 
-NodeBaseUI * AudioDeviceInNode::createUI() {
+ConnectableNodeUI * AudioDeviceInNode::createUI() {
 	NodeBaseUI * ui = new NodeBaseUI(this);
 	return ui;
 

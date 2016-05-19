@@ -83,7 +83,7 @@ public:
     void removeVSTNodeListener(VSTNodeListener* listener) { vstNodeListeners.remove(listener); }
 
 
-    NodeBaseUI * createUI()override;
+	ConnectableNodeUI * createUI()override;
 
 
 

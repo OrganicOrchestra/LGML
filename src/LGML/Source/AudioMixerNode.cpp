@@ -21,7 +21,6 @@ AudioMixerNode::AudioMixerNode() :
 
 	updateInput();
 	updateOutput();
-
 }
 
 
@@ -153,7 +152,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
 
 
 
-NodeBaseUI * AudioMixerNode::createUI()
+ConnectableNodeUI * AudioMixerNode::createUI()
 {
 
 	NodeBaseUI * ui = new NodeBaseUI(this, new AudioMixerNodeUI);

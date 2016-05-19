@@ -11,6 +11,7 @@
 #include "NodeContainer.h"
 #include "NodeManager.h"
 #include "NodeConnection.h"
+#include "NodeContainerUI.h"
 
 NodeContainer::NodeContainer(const String &name, NodeContainer * _parentNodeContainer) :
 	parentNodeContainer(_parentNodeContainer),
@@ -28,23 +29,33 @@ NodeContainer::NodeContainer(const String &name, NodeContainer * _parentNodeCont
 
 NodeContainer::~NodeContainer()
 {
-	clear();
+	clear(false);
 }
 
-void NodeContainer::clear()
+void NodeContainer::clear(bool recreateContainerNodes)
 {
 
-	while (nodes.size())
+	while (nodes.size() > 0)
+	{
 		nodes[0]->remove();
+	}
 
 	connections.clear();
 
+	containerInNode = nullptr;
+	containerOutNode = nullptr;
+
+	if (recreateContainerNodes)
+	{
+		containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
+		containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
+	}
 }
 
 
 ConnectableNode * NodeContainer::addNode(NodeType nodeType)
 {
-	NodeBase * n = NodeFactory::createNode(nodeType);
+	ConnectableNode * n = NodeFactory::createNode(nodeType);
 	return addNode(n);
 }
 
@@ -119,7 +130,7 @@ var NodeContainer::getJSONData()
 
 void NodeContainer::loadJSONDataInternal(var data)
 {
-	clear();
+	clear(true);
 
 	Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
 	for (var &nData : *nodesData)
@@ -222,6 +233,11 @@ void NodeContainer::askForRemoveNode(ConnectableNode * node)
 void NodeContainer::askForRemoveConnection(NodeConnection *connection)
 {
 	removeConnection(connection);
+}
+
+ConnectableNodeUI * NodeContainer::createUI()
+{
+	return new NodeContainerUI(this);
 }
 
 AudioProcessorGraph::Node * NodeContainer::getAudioNode(bool isInput)

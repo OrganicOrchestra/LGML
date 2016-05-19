@@ -12,6 +12,7 @@ Author:  bkupe
 #define CONNECTORCOMPONENT_H_INCLUDED
 
 #include "NodeConnection.h"
+
 class NodeBase;
 class NodeBaseUI;
 class NodeContainerViewer;
@@ -19,7 +20,8 @@ class NodeContainerViewer;
 //==============================================================================
 /*
 */
-class ConnectorComponent : public Component, 
+class ConnectorComponent : 
+	public Component, 
 	public SettableTooltipClient,
 	public NodeBase::NodeAudioProcessorListener
 {
@@ -59,7 +61,7 @@ public:
     //void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataType &selectedDataType, const DataType &filterType = DataType::Unknown);
 
     NodeContainerViewer * getNodeContainerViewer() const noexcept;
-    NodeBaseUI * getNodeUI() const noexcept;
+    ConnectableNodeUI * getNodeUI() const noexcept;
 
     void numAudioInputChanged(int newNum)override;
     void numAudioOutputChanged(int newNum)override;

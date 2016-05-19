@@ -18,6 +18,8 @@
 #include "AudioDeviceOutNode.h"
 #include "LooperNode.h"
 
+#include "NodeContainer.h"
+
 NodeFactory::NodeFactory()
 {
 }
@@ -26,12 +28,21 @@ NodeFactory::~NodeFactory()
 {
 }
 
-NodeBase * NodeFactory::createNode(NodeType nodeType)
+ConnectableNode * NodeFactory::createNode(NodeType nodeType)
 {
-    NodeBase * n = nullptr;
+	
+    ConnectableNode * n = nullptr;
 
     switch (nodeType)
     {
+		case NodeType::ContainerType:
+			n = new NodeContainer("",nullptr);
+			break;
+
+		case NodeType::ContainerInType:
+			n = new ContainerInNode();
+				break;
+
         case NodeType::DummyType:
             n = new DummyNode();
             break;
@@ -64,12 +75,12 @@ NodeBase * NodeFactory::createNode(NodeType nodeType)
 
         case NodeType::UNKNOWN_TYPE:
             DBG("NodeFactory : not found type for node");
-            return nullptr;
+
         default:
-            jassert(false);
             break;
     }
 
+	jassert(n != nullptr);
     return n;
 }
 
@@ -81,7 +92,7 @@ PopupMenu * NodeFactory::getNodeTypesMenu(int menuIdOffset)
     for (int i = 0; i < numElements; i++)
     {
 		int index = i + userCanAddStartType;
-        p->addItem(index+menuIdOffset, nodeTypeNames[index]);
+        p->addItem(index+menuIdOffset +1, nodeTypeNames[index]); //+1 to offset unknown type
     }
 
     return p;
@@ -100,6 +111,6 @@ String NodeFactory::nodeTypeToString(NodeType t) {
     return nodeTypeNames[(int)t-1];
 }
 
-String NodeFactory::nodeToString(NodeBase * n) {
+String NodeFactory::nodeToString(ConnectableNode * n) {
     return nodeTypeToString(n->type);
 }

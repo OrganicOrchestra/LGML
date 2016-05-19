@@ -12,7 +12,7 @@
 #define NODEFACTORY_H_INCLUDED
 
 #include "JuceHeader.h"
-class NodeBase;
+class ConnectableNode;
 class NodeManager;
 
 const static String nodeTypeNames[] = {"ContainerIn","ContainerOut", "Container", "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioDeviceIn","AudioDeviceOut" };
@@ -41,16 +41,16 @@ public:
 	NodeFactory();
 	~NodeFactory();
 	
-	const static int userCanAddStartType = (int)ContainerType;
+	const static int userCanAddStartType = UNKNOWN_TYPE;
 
-    static NodeBase * createNode(NodeType nodeType);
+    static ConnectableNode * createNode(NodeType nodeType);
 
     static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0);
 
     static NodeType getTypeFromString(const String & s);
 
     static String nodeTypeToString(NodeType t);
-    static String nodeToString(NodeBase *  n);
+    static String nodeToString(ConnectableNode *  n);
 
 };
 

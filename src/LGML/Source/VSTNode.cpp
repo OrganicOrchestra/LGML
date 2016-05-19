@@ -172,7 +172,7 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
 
 
 
-NodeBaseUI * VSTNode::createUI() {
+ConnectableNodeUI * VSTNode::createUI() {
 	return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
 }
 

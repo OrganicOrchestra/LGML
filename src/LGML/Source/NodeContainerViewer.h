@@ -12,7 +12,7 @@
 #define NODECONTAINERVIEWER_H_INCLUDED
 
 #include "NodeContainer.h"
-#include "NodeBaseUI.h"
+#include "ConnectableNodeUI.h"
 
 class NodeConnectionUI;
 
@@ -26,7 +26,7 @@ public :
 
 	NodeContainer * nodeContainer;
 
-	OwnedArray<NodeBaseUI> nodesUI;
+	OwnedArray<ConnectableNodeUI> nodesUI;
 	OwnedArray<NodeConnectionUI>  connectionsUI;
 	NodeConnectionUI * editingConnection;
 
@@ -40,9 +40,9 @@ public :
 	virtual void connectionAdded(NodeConnection *) override;
 	virtual void connectionRemoved(NodeConnection *) override;
 
-	void addNodeUI(NodeBase * node);
-	void removeNodeUI(NodeBase * node);
-	NodeBaseUI * getUIForNode(NodeBase * node);
+	void addNodeUI(ConnectableNode * node);
+	void removeNodeUI(ConnectableNode * node);
+	ConnectableNodeUI * getUIForNode(ConnectableNode * node);
 
 	void addConnectionUI(NodeConnection * connection);
 	void removeConnectionUI(NodeConnection * connection);

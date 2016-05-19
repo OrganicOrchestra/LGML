@@ -28,7 +28,7 @@ void ContainerInNode::processInputDataChanged(Data * d)
 	od->updateFromSourceData(d);
 }
 
-NodeBaseUI * ContainerInNode::createUI()
+ConnectableNodeUI * ContainerInNode::createUI()
 {
 	return new NodeBaseUI(this);
 }

@@ -28,7 +28,7 @@ void DataInNode::onContainerParameterChanged(Parameter * p)
   updateOutputData(p->niceName, p->getNormalizedValue());
 }
 
-NodeBaseUI * DataInNode::createUI()
+ConnectableNodeUI * DataInNode::createUI()
 {
     return new NodeBaseUI(this,new DataInNodeContentUI);
 }

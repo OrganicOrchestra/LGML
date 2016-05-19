@@ -23,7 +23,7 @@
 #include "PresetManager.h"
 #include "ConnectableNode.h"
 
-class NodeBaseUI;
+class ConnectableNodeUI;
 class NodeManager;
 
 
@@ -56,11 +56,7 @@ public:
 
 
 	//ui
-	virtual NodeBaseUI *  createUI() {
-		DBG("No implementation in child node class !");
-		jassert(false);
-		return nullptr;
-	}
+	virtual ConnectableNodeUI *  createUI() override;;
 
 	virtual const String getName() const override
 	{

@@ -46,7 +46,7 @@ public:
 	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override;
 	void onContainerParameterChanged(Parameter * p) override;
 
-    NodeBaseUI * createUI() override;
+	ConnectableNodeUI * createUI() override;
 
 
 private:

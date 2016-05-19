@@ -119,10 +119,10 @@ void Engine::clear(){
 void Engine::createNewGraph(){
     clear();
 
-    ConnectableNode * node = NodeManager::getInstance()->mainContainer.addNode(NodeType::AudioDeviceInType);
+    ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
     node->xPosition->setValue(150);
     node->yPosition->setValue(100);
-    node = NodeManager::getInstance()->mainContainer.addNode(NodeType::AudioDeviceOutType);
+    node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
     node->xPosition->setValue(450);
     node->yPosition->setValue(100);
     changed();

@@ -50,7 +50,7 @@ DummyNode::DummyNode() :
      }
  }
 
- NodeBaseUI * DummyNode::createUI()
+ ConnectableNodeUI * DummyNode::createUI()
 {
 
     NodeBaseUI * ui = new NodeBaseUI(this,new DummyNodeContentUI());

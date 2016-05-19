@@ -32,6 +32,8 @@ public:
 	virtual void nodeRemoved(ConnectableNode *) override;
 	virtual void connectionAdded(NodeConnection *) override;
 	virtual void connectionRemoved(NodeConnection *) override;
+
+
 };
 
 

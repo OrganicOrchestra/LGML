@@ -12,7 +12,6 @@
 #define NODEBASEUI_H_INCLUDED
 
 #include "Style.h"
-#include "ConnectorComponent.h"
 #include "ConnectableNodeUI.h"
 #include "NodeBaseHeaderUI.h"
 #include "NodeBaseContentUI.h"
@@ -33,8 +32,6 @@ public:
     NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer = nullptr, NodeBaseHeaderUI * headerContainer = nullptr);
     virtual ~NodeBaseUI();
 
-	//layout
-	int connectorWidth;
 	//interaction
 	Point<int> nodeInitPos;
 
@@ -84,41 +81,14 @@ public:
     };
 
 
-    class ConnectorContainer : public Component
-    {
-    public:
-
-        OwnedArray<ConnectorComponent> connectors;
-
-        ConnectorComponent::ConnectorDisplayLevel displayLevel;
-        ConnectorComponent::ConnectorIOType type;
-
-        ConnectorContainer(ConnectorComponent::ConnectorIOType type);
-
-        void setConnectorsFromNode(NodeBase * node);
-        void addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
-        void resized();
-
-        ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType dataType);
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorContainer)
-    };
-
-
     MainContainer mainContainer;
-    ConnectorContainer inputContainer;
-    ConnectorContainer outputContainer;
-
+    
     NodeBaseContentUI * getContentContainer() { return mainContainer.contentContainer; }
     NodeBaseHeaderUI * getHeaderContainer() { return mainContainer.headerContainer; }
 
-    Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector);
+    
 
-
-    //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
-    ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
-
-
+   
 private:
     bool dragIsLocked;
 

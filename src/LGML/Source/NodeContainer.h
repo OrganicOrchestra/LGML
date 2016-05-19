@@ -50,8 +50,8 @@ public:
 	NodeContainer * parentNodeContainer;
 
 	//Container nodes, not removable by user, handled separately
-	ContainerInNode * containerInNode;
-	ContainerOutNode * containerOutNode;
+	ScopedPointer<ContainerInNode> containerInNode;
+	ScopedPointer<ContainerOutNode> containerOutNode;
 
 
 	//NODE AND CONNECTION MANAGEMENT
@@ -86,7 +86,7 @@ public:
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
-	void clear();
+	void clear(bool keepContainerNodes = false);
 
 	// Inherited via NodeBase::Listener
 	virtual void askForRemoveNode(ConnectableNode *) override;
@@ -104,6 +104,8 @@ public:
 	void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }
 	void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener); }
 
+
+	virtual ConnectableNodeUI * createUI();
 
 	//AUDIO 
 	AudioProcessorGraph::Node * getAudioNode(bool isInput) override;
