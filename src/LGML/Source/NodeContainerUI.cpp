@@ -11,7 +11,7 @@
 #include "NodeContainerUI.h"
 
 NodeContainerUI::NodeContainerUI(NodeContainer * nc) :
-	InspectableComponent(nc),
+	ConnectableNodeUI(nc),
 	nodeContainer(nc)
 {
 }

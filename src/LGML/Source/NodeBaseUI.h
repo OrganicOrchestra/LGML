@@ -13,7 +13,7 @@
 
 #include "Style.h"
 #include "ConnectorComponent.h"
-#include "InspectableComponent.h"
+#include "ConnectableNodeUI.h"
 #include "NodeBaseHeaderUI.h"
 #include "NodeBaseContentUI.h"
 #include "NodeBaseAudioCtlUI.h"
@@ -26,7 +26,7 @@ class NodeBase;
 NodeBaseUI provide UI for blocks seen in NodeManagerUI
 */
 class NodeBaseUI    :
-	public InspectableComponent,
+	public ConnectableNodeUI,
 	public Parameter::Listener
 {
 public:

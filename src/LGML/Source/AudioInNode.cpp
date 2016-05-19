@@ -11,6 +11,7 @@
 #include "AudioInNode.h"
 #include "NodeBaseUI.h"
 
+AudioDeviceManager& getAudioDeviceManager();
 
 AudioInNode::AudioInNode(uint32 nodeId) :
 	NodeBase(nodeId, "AudioInNode"),

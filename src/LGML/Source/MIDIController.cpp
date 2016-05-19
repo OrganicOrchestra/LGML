@@ -13,7 +13,6 @@
 #include "MIDIManager.h"
 #include "DebugHelpers.h"
 
-AudioDeviceManager & getAudioDeviceManager();
 
 MIDIController::MIDIController() :
 Controller("MIDI"),JsEnvironment("MIDI.MIDIController")

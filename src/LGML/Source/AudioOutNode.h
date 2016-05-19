@@ -15,10 +15,6 @@
 
 #include "NodeBase.h"
 
-
-AudioDeviceManager & getAudioDeviceManager() ;
-
-
 class AudioOutNode :
 	public NodeBase,
 	public juce::AudioProcessorGraph::AudioGraphIOProcessor,

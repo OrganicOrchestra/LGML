@@ -22,15 +22,15 @@
 #include "Data.h"
 #include "ControllableContainer.h"
 #include "PresetManager.h"
-
+#include "ConnectableNode.h"
 
 class NodeBaseUI;
 class NodeManager;
 
 
 class NodeBase :
+	public ConnectableNode,
 	public ReferenceCountedObject,
-	public ControllableContainer,
 	public juce::AudioProcessor, public AsyncUpdater, //Audio
 	public Data::DataListener //Data
 {
@@ -41,27 +41,23 @@ public:
 
 	uint32 nodeId;
 
-	bool hasAudioInputs();
-	bool hasAudioOutputs();
-	bool hasDataInputs();
-	bool hasDataOutputs();
-
-	void remove(bool askBeforeRemove = false);
+	virtual bool hasAudioInputs() override;
+	virtual bool hasAudioOutputs() override;
+	virtual bool hasDataInputs() override;
+	virtual bool hasDataOutputs() override;
 
 
-	//Controllables (from ControllableContainer)
-	StringParameter * nameParam;
-	BoolParameter * enabledParam;
-	FloatParameter * xPosition;
-	FloatParameter * yPosition;
+	virtual String getPresetFilter() override;
 
+	void parameterValueChanged(Parameter * p) override;
 
 	//audio
 	void addToAudioGraphIfNeeded();
 	void removeFromAudioGraphIfNeeded();
 
+	var getJSONData() override;
+	void loadJSONDataInternal(var data) override;
 
-	virtual String getPresetFilter() override;
 
 	//ui
 	virtual NodeBaseUI *  createUI() {
@@ -70,42 +66,15 @@ public:
 		return nullptr;
 	}
 
-	var getJSONData() override;
-	void loadJSONDataInternal(var data) override;
-
-
-public:
-
-	//Listener
-	class NodeListener
-	{
-	public:
-		virtual ~NodeListener() {}
-		virtual void askForRemoveNode(NodeBase *) {}
-		virtual void nodeEnableChanged(NodeBase *) {}
-	};
-
-	ListenerList<NodeListener> nodeListeners;
-	void addNodeListener(NodeListener* newListener) { nodeListeners.add(newListener); }
-	void removeNodeListener(NodeListener* listener) { nodeListeners.remove(listener); }
-
-
 	virtual const String getName() const override
 	{
 		return niceName;
 	}
 
-
 private:
-
 	int nodeTypeUID;
 	friend class NodeFactory;
-
-	void parameterValueChanged(Parameter * p) override;
-
-
-
-
+	
 
 	//AUDIO PROCESSOR
 public:
@@ -200,11 +169,6 @@ public:
 	bool wasSuspended;
 	float lastVolume;
 
-
-
-
-
-
 	//DATA
 public:
 	typedef Data::DataType DataType;
@@ -265,13 +229,6 @@ public:
 
 	private:
 		virtual void dataChanged(Data *) override;
-
-
-
-
-
-
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 

@@ -12,6 +12,8 @@
 #include "DummyNode.h"
 
 
+AudioDeviceManager& getAudioDeviceManager();
+
 juce_ImplementSingleton(NodeManager);
 
 NodeManager::NodeManager() :

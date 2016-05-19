@@ -9,9 +9,8 @@
  */
 
 #include "Engine.h"
-
 #include "LGMLLogger.h"
-
+#include "MainComponent.h"
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";

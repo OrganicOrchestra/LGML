@@ -445,10 +445,20 @@
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
         <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
+          <FILE id="sCyEGf" name="NodeBase.h" compile="0" resource="0" file="Source/NodeBase.h"/>
+          <FILE id="pLpoL1" name="NodeBase.cpp" compile="1" resource="0" file="Source/NodeBase.cpp"/>
+          <FILE id="FpKDbk" name="ConnectableNode.cpp" compile="1" resource="0"
+                file="Source/ConnectableNode.cpp"/>
+          <FILE id="yNHEO5" name="ConnectableNode.h" compile="0" resource="0"
+                file="Source/ConnectableNode.h"/>
           <FILE id="dJmP5S" name="NodeContainer.cpp" compile="1" resource="0"
                 file="Source/NodeContainer.cpp"/>
           <FILE id="ZvvtSp" name="NodeContainer.h" compile="0" resource="0" file="Source/NodeContainer.h"/>
           <GROUP id="{A2D3A061-C57A-C7C0-F696-113F915DCD55}" name="UI">
+            <FILE id="OpaZEJ" name="ConnectableNodeUI.h" compile="0" resource="0"
+                  file="Source/ConnectableNodeUI.h"/>
+            <FILE id="f3Grav" name="ConnectableNodeUI.cpp" compile="1" resource="0"
+                  file="Source/ConnectableNodeUI.cpp"/>
             <FILE id="BngKpc" name="NodeContainerViewer.cpp" compile="1" resource="0"
                   file="Source/NodeContainerViewer.cpp"/>
             <FILE id="PvncTg" name="NodeContainerViewer.h" compile="0" resource="0"
@@ -480,8 +490,6 @@
             <FILE id="MxBN89" name="DataProcessorGraph.h" compile="0" resource="0"
                   file="Source/DataProcessorGraph.h"/>
           </GROUP>
-          <FILE id="sCyEGf" name="NodeBase.h" compile="0" resource="0" file="Source/NodeBase.h"/>
-          <FILE id="pLpoL1" name="NodeBase.cpp" compile="1" resource="0" file="Source/NodeBase.cpp"/>
         </GROUP>
         <GROUP id="{BA13D1BE-1F46-C45E-3568-F1B617CE7E74}" name="connection">
           <GROUP id="{2E0F7B5F-7DD6-5314-CC6E-B8D149005290}" name="connectionEditor">

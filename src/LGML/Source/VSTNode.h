@@ -19,8 +19,6 @@
 #include "TimeManager.h"
 #include "MIDIListener.h"
 
-AudioDeviceManager& getAudioDeviceManager();
-
 
 class VSTNode :
 public NodeBase,

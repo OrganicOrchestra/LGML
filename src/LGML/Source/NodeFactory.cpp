@@ -9,7 +9,22 @@
  */
 
 #include "NodeFactory.h"
+#include "DummyNode.h"
+#include "AudioMixerNode.h"
+#include "DataInNode.h"
+#include "SpatNode.h"
+#include "VSTNode.h"
+#include "AudioInNode.h"
+#include "AudioOutNode.h"
+#include "LooperNode.h"
 
+NodeFactory::NodeFactory()
+{
+}
+
+NodeFactory::~NodeFactory()
+{
+}
 
 NodeBase * NodeFactory::createNode(NodeType nodeType, uint32 nodeId)
 {

@@ -19,16 +19,13 @@
 
 //==============================================================================
 NodeBaseUI::NodeBaseUI(NodeBase * _node, NodeBaseContentUI * _contentContainer, NodeBaseHeaderUI * _headerContainer) :
-InspectableComponent(_node),
+ConnectableNodeUI(_node),
 inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
 mainContainer(this,_contentContainer,_headerContainer),
 node(_node),
 dragIsLocked(false)
 {
-
-    //DBG("Node Base UI Constructor");
-
     connectorWidth = 10;
 
     inputContainer.setConnectorsFromNode(node);

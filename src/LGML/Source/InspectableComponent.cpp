@@ -23,7 +23,6 @@ InspectableComponent::InspectableComponent(ControllableContainer * relatedContai
 	repaintOnSelectionChanged(true),
 	bringToFrontOnSelect(true)
 {
-
 }
 
 InspectableComponent::~InspectableComponent()

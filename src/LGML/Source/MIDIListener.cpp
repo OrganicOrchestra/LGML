@@ -12,8 +12,7 @@
 
 #include "MIDIManager.h"
 #include "DebugHelpers.h"
-
-AudioDeviceManager & getAudioDeviceManager();
+#include "MainComponent.h"
 
 MIDIListener::MIDIListener()
 {

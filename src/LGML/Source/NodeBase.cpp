@@ -14,27 +14,14 @@
 
 
 NodeBase::NodeBase(uint32 _nodeId, const String &name) :
+	ConnectableNode(name),
 nodeId(_nodeId),
-ControllableContainer(name),
 nodeTypeUID(0) // UNKNOWNTYPE
 {
 
     addToAudioGraphIfNeeded();
 
-    //set Params
-    nameParam = addStringParameter("Name", "Set the name of the node.", name);
-    enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
-    xPosition = addFloatParameter("xPosition","x position on canvas",0,0,99999);
-    yPosition= addFloatParameter("yPosition","y position on canvas",0,0,99999);
-
-    xPosition->isControllableExposed = false;
-    yPosition->isControllableExposed = false;
-    xPosition->isPresettable = false;
-    yPosition->isPresettable = false;
-    nameParam->isPresettable = false;
-    enabledParam->isPresettable = false;
-
-
+    
 	//Audio
 	outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
 	lastVolume = outputVolume->floatValue();
@@ -45,8 +32,6 @@ nodeTypeUID(0) // UNKNOWNTYPE
 	setInputChannelName(1, "Main Right");
 	setOutputChannelName(0, "Main Left");
 	setOutputChannelName(1, "Main Right");
-
-
 }
 
 
@@ -65,51 +50,40 @@ NodeBase::~NodeBase()
 //	removeFromAudioGraphIfNeeded();
 }
 
+
 bool NodeBase::hasAudioInputs()
 {
+	//to override
 	return getTotalNumInputChannels() > 0;
 }
 
 bool NodeBase::hasAudioOutputs()
 {
+	//to override
 	return getTotalNumOutputChannels() > 0;
 }
 
 bool NodeBase::hasDataInputs()
 {
+	//to override
 	return getTotalNumInputData()>0;
 }
 
 bool NodeBase::hasDataOutputs()
 {
+	//to override
 	return getTotalNumOutputData()>0;
 }
 
-void NodeBase::remove(bool askBeforeRemove)
-{
-    if (askBeforeRemove)
-    {
-        int result = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Remove node", "Do you want to remove the node ?");
-        if (result == 0) return;
-    }
-
-    nodeListeners.call(&NodeBase::NodeListener::askForRemoveNode,this);
-}
 
 void NodeBase::parameterValueChanged(Parameter * p)
 {
-    if (p == nameParam)
-    {
-        setNiceName(nameParam->stringValue());
-    }else if (p == enabledParam)
+	ConnectableNode::parameterValueChanged(p);
+
+	if (p == enabledParam)
 	{
-        suspendProcessing(!enabledParam->boolValue());
-		DBG("Node Enabled changed !");
-		nodeListeners.call(&NodeListener::nodeEnableChanged, this);
-    }
-    else{
-          ControllableContainer::parameterValueChanged(p);
-    }
+		suspendProcessing(!enabledParam->boolValue());
+	}
 }
 
 void NodeBase::addToAudioGraphIfNeeded(){
@@ -140,7 +114,7 @@ String NodeBase::getPresetFilter()
 
 var NodeBase::getJSONData()
 {
-	var data = ControllableContainer::getJSONData();
+	var data = ConnectableNode::getJSONData();
     data.getDynamicObject()->setProperty("nodeType", NodeFactory::nodeToString(this));
     data.getDynamicObject()->setProperty("nodeId", String(nodeId));
 
@@ -160,6 +134,8 @@ var NodeBase::getJSONData()
 
 void NodeBase::loadJSONDataInternal(var data)
 {
+	ConnectableNode::loadJSONDataInternal(data);
+
     var audioProcessorData = data.getProperty("audioProcessor", var());
     String audioProcessorStateData = audioProcessorData.getProperty("state",var());
 
@@ -344,9 +320,9 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 //////////////////////////////////   DATA
 
 
-Data * NodeBase::addInputData(const String & name, Data::DataType type)
+Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 {
-	Data *d = new Data(this, name, type);
+	Data *d = new Data(this, name, dataType);
 	inputDatas.add(d);
 
 	d->addDataListener(this);
@@ -356,9 +332,9 @@ Data * NodeBase::addInputData(const String & name, Data::DataType type)
 	return d;
 }
 
-Data * NodeBase::addOutputData(const String & name, DataType type)
+Data * NodeBase::addOutputData(const String & name, DataType dataType)
 {
-	Data * d = new Data(this, name, type);
+	Data * d = new Data(this, name, dataType);
 	outputDatas.add(d);
 
 	dataProcessorListeners.call(&NodeDataProcessorListener::outputAdded, d);

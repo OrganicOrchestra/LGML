@@ -152,7 +152,7 @@ void NodeBaseHeaderUI::resized()
 
 }
 
-void NodeBaseHeaderUI::nodeEnableChanged(NodeBase *)
+void NodeBaseHeaderUI::nodeEnableChanged(ConnectableNode *)
 {
 	if (!node->enabledParam->boolValue())
 	{

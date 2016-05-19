@@ -14,6 +14,7 @@
 #include "NodeBase.h"
 #include "NodeConnection.h"
 #include "NodeFactory.h"
+#include "ConnectableNode.h"
 
 //Listener
 class  NodeContainerListener
@@ -31,9 +32,9 @@ public:
 
 
 class NodeContainer : 
-	public NodeBase::NodeListener, 
-	public NodeConnection::Listener, 
-	public ControllableContainer
+	public ConnectableNode,
+	public ConnectableNode::ConnectableNodeListener, 
+	public NodeConnection::Listener
 {
 public:
 	NodeContainer(const String &name);
@@ -45,7 +46,7 @@ public:
 	NodeBase* getNode(const int index) const noexcept { return nodes[index]; }
 	NodeBase* getNodeForId(const uint32 nodeId) const;
 	NodeBase* addNode(NodeType nodeType, uint32 nodeId = 0);
-	bool removeNode(uint32 nodeId);
+	bool removeNode(NodeBase * n);
 
 	NodeConnection * getConnection(const int index) const noexcept { return connections[index]; }
 	NodeConnection * getConnectionForId(const uint32 connectionId) const;
@@ -60,6 +61,11 @@ public:
 
 	int getNumNodes() const noexcept { return nodes.size(); }
 
+	//Container related
+	
+	//NodeContainer * addContainer();
+	//void removeContainer(NodeContainer * c);
+
 
 	//save / load
 	var getJSONData() override;
@@ -68,7 +74,7 @@ public:
 	void clear();
 
 	// Inherited via NodeBase::Listener
-	virtual void askForRemoveNode(NodeBase *) override;
+	virtual void askForRemoveNode(ConnectableNode *) override;
 
 	// Inherited via NodeConnection::Listener
 	virtual void askForRemoveConnection(NodeConnection *) override;

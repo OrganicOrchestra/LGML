@@ -13,9 +13,10 @@
 
 #include "NodeContainer.h"
 #include "InspectableComponent.h"
+#include "ConnectableNodeUI.h"
 
 class NodeContainerUI :
-	public InspectableComponent,
+	public ConnectableNodeUI,
 	public NodeContainerListener
 {
 public:

@@ -12,6 +12,9 @@
 #include "VSTNodeUI.h"
 #include "NodeManager.h"
 
+AudioDeviceManager& getAudioDeviceManager();
+
+
 VSTNode::VSTNode(uint32 nodeId) :
 	NodeBase(nodeId,"VST"),
 	blockFeedback(false)

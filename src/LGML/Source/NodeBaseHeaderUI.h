@@ -27,7 +27,7 @@ class NodeBaseHeaderUI : public Component,
 	public ComboBox::Listener,
 	public Button::Listener,
 	public ControllableContainerListener,
-	public NodeBase::NodeListener
+	public ConnectableNode::ConnectableNodeListener
 {
 public:
 
@@ -61,7 +61,7 @@ public:
 
 
     // Inherited via Listeners
-	virtual void nodeEnableChanged(NodeBase *) override;
+	virtual void nodeEnableChanged(ConnectableNode *) override;
     virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
 	virtual void buttonClicked(Button *) override;
 	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;

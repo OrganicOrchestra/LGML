@@ -12,7 +12,7 @@
 #include "NodeManager.h"
 
 NodeContainer::NodeContainer(const String &name) : 
-	ControllableContainer(name)
+	ConnectableNode(name)
 {
 }
 
@@ -55,7 +55,9 @@ NodeBase * NodeContainer::addNode(NodeType nodeType, uint32 nodeId)
 		// you can't add a node with an id that already exists in the graph..
 		jassert(getNodeForId(nodeId) == nullptr);
 		//DBG("Remove node because id already exists and pointer is null");
-		removeNode(nodeId);
+		
+		NodeBase * rn = getNodeForId(nodeId);
+		removeNode(rn);
 
 		if (nodeId > lastNodeId)
 			lastNodeId = nodeId;
@@ -74,9 +76,8 @@ NodeBase * NodeContainer::addNode(NodeType nodeType, uint32 nodeId)
 
 
 
-bool NodeContainer::removeNode(uint32 nodeId)
+bool NodeContainer::removeNode(NodeBase * n)
 {
-	NodeBase * n = getNodeForId(nodeId);
 	Array<NodeConnection *> relatedConnections = getAllConnectionsForNode(n);
 
 	for (auto &connection : relatedConnections) removeConnection(connection);
@@ -88,7 +89,7 @@ bool NodeContainer::removeNode(uint32 nodeId)
 	nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
 	nodes.removeAllInstancesOf(n);
 
-	if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(nodeId);
+	if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(n->nodeId);
 
 	return true;
 }
@@ -249,9 +250,9 @@ bool NodeContainer::removeConnection(NodeConnection * c)
 
 
 //From NodeBase Listener
-void NodeContainer::askForRemoveNode(NodeBase * node)
+void NodeContainer::askForRemoveNode(ConnectableNode * node)
 {
-	removeNode(node->nodeId);
+	removeNode((NodeBase*)node);
 }
 
 

@@ -15,7 +15,6 @@
 
 #include "NodeBase.h"
 
-AudioDeviceManager & getAudioDeviceManager() ;
 
 class AudioInNode :
 	public NodeBase,
