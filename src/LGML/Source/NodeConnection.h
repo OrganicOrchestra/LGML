@@ -16,7 +16,9 @@
 class NodeManager;
 class NodeBase;
 
-class NodeConnection : public ReferenceCountedObject
+class NodeConnection : 
+	public ReferenceCountedObject,
+	public NodeBase::NodeBaseListener
 {
 public:
     enum ConnectionType
@@ -29,7 +31,7 @@ public:
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }
     bool isData() { return connectionType == ConnectionType::DATA; }
 
-    ConnectableNode * sourceNode;
+	ConnectableNode * sourceNode;
 	ConnectableNode * destNode;
 
     typedef std::pair<int,int> AudioConnection;
@@ -52,8 +54,14 @@ public:
 
     void remove();
 
+	virtual void audioInputAdded(NodeBase *, int /* channel */) override {}
+	virtual void audioInputRemoved(NodeBase *, int /* channel */) override {}
 
-    // save / load
+	virtual void dataInputAdded(NodeBase *, Data *) override {}
+	virtual void dataInputRemoved(NodeBase *, Data *) override  {}
+	
+	
+	// save / load
 
     var getJSONData();
     void loadJSONData(var data);

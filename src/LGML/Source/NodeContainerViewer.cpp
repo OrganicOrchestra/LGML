@@ -14,13 +14,15 @@
 #include "Inspector.h"
 
 NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
+	InspectableComponent(container),
 	nodeContainer(container),
 	editingConnection(nullptr)
 {
 	setInterceptsMouseClicks(true, true);
-
 	nodeContainer->addNodeContainerListener(this);
-	DBG("Node Container Viewer : nodes In container = " << nodeContainer->nodes.size());
+	
+	canInspectChildContainersBeyondRecursion = false;
+	
 	for (auto &n : nodeContainer->nodes)
 	{
 		addNodeUI(n);
@@ -388,7 +390,7 @@ void NodeContainerViewer::mouseUp(const MouseEvent &)
 	}
 	else
 	{
-		if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setCurrentComponent(nullptr);
+		selectThis();
 	}
 
 }

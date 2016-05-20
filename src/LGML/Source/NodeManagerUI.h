@@ -106,7 +106,6 @@ public :
 
 		while (c != nullptr)
 		{
-			DBG("Add path button " << c->niceName);
 			TextButton * b = new TextButton(c->niceName);
 			if (c == nmui->currentViewer->nodeContainer) b->setEnabled(false);
 			
@@ -125,7 +124,7 @@ public :
     void resized() override{
 		Rectangle<int> r = getLocalBounds();
 
-		Rectangle<int> buttonR = r.removeFromTop(30);
+		Rectangle<int> buttonR = r.removeFromTop(30).reduced(5);
 				
 		for (auto & b : pathButtons)
 		{

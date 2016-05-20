@@ -17,7 +17,7 @@
 class NodeConnectionUI;
 
 class NodeContainerViewer :
-	public Component,
+	public InspectableComponent,
 	public NodeContainerListener
 {
 public :

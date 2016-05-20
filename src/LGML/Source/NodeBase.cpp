@@ -211,6 +211,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 };
 
 bool NodeBase::setPreferedNumAudioInput(int num) {
+
+	
 	setPlayConfigDetails(num, getTotalNumOutputChannels(),
 		getSampleRate(),
 		getBlockSize());
@@ -220,7 +222,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
 	}
 
-	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioInputChanged, this,num);
+	nodeBaseListeners.call(&NodeBaseListener::numAudioInputChanged, this,num);
 
 	return true;
 }
@@ -232,7 +234,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 	{
 		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
 	}
-	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged,this,num);
+	nodeBaseListeners.call(&NodeBaseListener::numAudioOutputChanged,this,num);
 	return true;
 }
 
@@ -293,6 +295,7 @@ Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 
 	d->addDataListener(this);
 
+	nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
 	return d;
 }
 
@@ -301,6 +304,7 @@ Data * NodeBase::addOutputData(const String & name, DataType dataType)
 	Data * d = new Data(this, name, dataType);
 	outputDatas.add(d);
 
+	nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
 	return d;
 }
 
@@ -310,6 +314,7 @@ void NodeBase::removeInputData(const String & name)
 	if (d == nullptr) return;
 
 	inputDatas.removeObject(d, true);
+	nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
 }
 
 void NodeBase::removeOutputData(const String & name)
@@ -317,6 +322,8 @@ void NodeBase::removeOutputData(const String & name)
 	Data * d = getOutputDataByName(name);
 	if (d == nullptr) return;
 	outputDatas.removeObject(d, true);
+
+	nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
 }
 
 void NodeBase::updateOutputData(String & dataName, const float & value1, const float & value2, const float & value3)

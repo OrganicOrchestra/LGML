@@ -15,6 +15,7 @@ NodeContainerUI::NodeContainerUI(NodeContainer * nc) :
 	ConnectableNodeUI(nc,new NodeContainerContentUI()),
 	nodeContainer(nc)
 {
+	recursiveInspectionLevel = 2;
 }
 
 NodeContainerUI::~NodeContainerUI()

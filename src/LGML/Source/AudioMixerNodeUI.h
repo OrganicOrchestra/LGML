@@ -19,7 +19,7 @@
 #include "FloatSliderUI.h"
 
 class AudioMixerNodeUI : public NodeBaseContentUI,
-	public NodeBase::NodeAudioProcessorListener
+	public NodeBase::NodeBaseListener
 {
 public:
     AudioMixerNodeUI(){

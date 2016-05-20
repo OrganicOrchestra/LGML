@@ -23,7 +23,7 @@ class NodeContainerViewer;
 class ConnectorComponent : 
 	public Component, 
 	public SettableTooltipClient,
-	public NodeBase::NodeAudioProcessorListener
+	public NodeBase::NodeBaseListener
 {
 public: 
 
@@ -41,7 +41,7 @@ public:
 
     NodeConnection::ConnectionType dataType;
     ConnectorIOType ioType;
-    ConnectableNode * node;
+    NodeBase * node;
 
     //layout
 
@@ -49,24 +49,41 @@ public:
     Colour boxColor;
     bool isHovered;
 
-    ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * node);
+    ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * cnode);
     ~ConnectorComponent(); 
+
     void paint(Graphics &g)override;
 
     void mouseDown(const MouseEvent &e) override;
     void mouseEnter (const MouseEvent&)override;
     void mouseExit  (const MouseEvent&)override;
 
+	void updateVisibility();
 
     //void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataType &selectedDataType, const DataType &filterType = DataType::Unknown);
 
     NodeContainerViewer * getNodeContainerViewer() const noexcept;
     ConnectableNodeUI * getNodeUI() const noexcept;
 
-    void numAudioInputChanged(NodeBase *, int newNum)override;
-    void numAudioOutputChanged(NodeBase *, int newNum)override;
+    void numAudioInputChanged(NodeBase *, int newNum) override;
+	void numAudioOutputChanged(NodeBase *, int newNum) override;
+	void numDataInputChanged(NodeBase *, int newNum) override;
+	void numDataOutputChanged(NodeBase *, int newNum) override;
 
 
+	//Listener
+	class  ConnectorListener
+	{
+	public:
+		/** Destructor. */
+		virtual ~ConnectorListener() {}
+
+		virtual void connectorVisibilityChanged(ConnectorComponent *) {};
+	};
+
+	ListenerList<ConnectorListener> connectorListeners;
+	void addConnectorListener(ConnectorListener* newListener) { connectorListeners.add(newListener); }
+	void removeConnectorListener(ConnectorListener* listener) { connectorListeners.remove(listener); }
 private:
     void generateToolTip();
 
