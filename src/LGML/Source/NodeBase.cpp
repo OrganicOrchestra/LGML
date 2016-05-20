@@ -172,10 +172,12 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
 	if (!isSuspended())
 	{
-		if (hasMainAudioControl && !bypass->boolValue()) {
+		if (!hasMainAudioControl || (hasMainAudioControl && !bypass->boolValue()) ){
 			processBlockInternal(buffer, midiMessages);
-			buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
-			lastVolume = outputVolume->floatValue();
+            if(hasMainAudioControl){
+                buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
+                lastVolume = outputVolume->floatValue();
+            }
 
 			if (wasSuspended) {
 				buffer.applyGainRamp(0, buffer.getNumSamples(), 0, 1);
