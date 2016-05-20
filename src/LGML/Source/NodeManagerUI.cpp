@@ -64,6 +64,7 @@ void NodeManagerUI::setCurrentViewedContainer(NodeContainer * c)
 		addAndMakeVisible(currentViewer);
 	}
 	resized();
+	nodeManagerUIListeners.call(&NodeManagerUIListener::currentViewedContainerChanged);
 }
 void NodeManagerUI::childBoundsChanged(Component * )
 {
