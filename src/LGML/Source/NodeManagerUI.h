@@ -40,7 +40,7 @@ public:
 	int getContentWidth();
 	int getContentHeight();
 
-	void managerCleared();
+	void managerCleared() override;
 
 	void setCurrentViewedContainer(NodeContainer * c);
     
