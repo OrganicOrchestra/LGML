@@ -47,7 +47,7 @@ public:
 
 		void setConnectorsFromNode(ConnectableNode * node);
 		void addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * node);
-		void resized();
+		void resized() override;
 
 		void connectorVisibilityChanged(ConnectorComponent *) override;
 
