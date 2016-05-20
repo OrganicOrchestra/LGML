@@ -14,12 +14,11 @@
 
 
 ContainerOutNode::ContainerOutNode() :
-	NodeBase("Container Out", NodeType::ContainerOutType)
+	NodeBase("Container Out", NodeType::ContainerOutType, false)
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;
 	userCanAccessOutputs = false;
-	hasMainAudioControl = false;
 
 }
 

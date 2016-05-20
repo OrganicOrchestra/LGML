@@ -17,10 +17,9 @@ NodeContainer::NodeContainer(const String &name) :
 	parentNodeContainer(nullptr),
 	containerInNode(nullptr),
 	containerOutNode(nullptr),
-	ConnectableNode(name, NodeType::ContainerType)
+	ConnectableNode(name, NodeType::ContainerType,false)
 {
 	canHavePresets = false;
-	hasMainAudioControl = false;
 
 	saveAndLoadRecursiveData = false;
 }

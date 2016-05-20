@@ -38,6 +38,8 @@ void NodeManager::clear()
 	mainContainer->clear(); 
 	audioGraph.clear();
 	dataGraph.clear();
+
+	nodeManagerListeners.call(&NodeManagerListener::managerCleared);
 }
 
 var NodeManager::getJSONData()

@@ -22,7 +22,7 @@ class ConnectableNode :
 	public ControllableContainer
 {
 public:
-	ConnectableNode(const String &name, NodeType type);
+	ConnectableNode(const String &name, NodeType type, bool _hasMainAudioControl = true);
 	virtual ~ConnectableNode();
 
 	NodeType type;

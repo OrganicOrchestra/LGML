@@ -12,6 +12,7 @@
 #define NODEMANAGERUI_H_INCLUDED
 
 
+#include "NodeManager.h"
 #include "ShapeShifterContent.h"
 #include "NodeContainerViewer.h"
 
@@ -21,7 +22,8 @@
  Draw all connected Nodes and Connections
  */
 class NodeManagerUI : 
-	public Component
+	public Component,
+	public NodeManager::NodeManagerListener
 {
 public:
 	
@@ -37,6 +39,8 @@ public:
 
 	int getContentWidth();
 	int getContentHeight();
+
+	void managerCleared();
 
 	void setCurrentViewedContainer(NodeContainer * c);
     

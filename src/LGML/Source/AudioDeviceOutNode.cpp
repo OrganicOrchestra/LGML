@@ -14,7 +14,7 @@ Author:  Martin Hermant
 AudioDeviceManager& getAudioDeviceManager();
 
 AudioDeviceOutNode::AudioDeviceOutNode() :
-	NodeBase("AudioDeviceOut",NodeType::AudioDeviceOutType),
+	NodeBase("AudioDeviceOut",NodeType::AudioDeviceOutType, false),
 	AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
 	canHavePresets = false;

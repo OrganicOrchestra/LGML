@@ -13,12 +13,12 @@
 #include "TimeManager.h"
 
 
-NodeBase::NodeBase(const String &name,NodeType _type) :
-	ConnectableNode(name,_type),
+NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
+	ConnectableNode(name,_type,_hasMainAudioControl),
 	audioNode(nullptr)
 {
     addToAudioGraph();
-	lastVolume = outputVolume->floatValue();
+	lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
 
 }
 
@@ -172,7 +172,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
 	if (!isSuspended())
 	{
-		if (!bypass->boolValue()) {
+		if (hasMainAudioControl && !bypass->boolValue()) {
 			processBlockInternal(buffer, midiMessages);
 			buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
 			lastVolume = outputVolume->floatValue();

@@ -35,7 +35,7 @@ class NodeBase :
 {
 
 public:
-	NodeBase(const String &name = "[NodeBase]", NodeType type = UNKNOWN_TYPE);
+	NodeBase(const String &name = "[NodeBase]", NodeType type = UNKNOWN_TYPE, bool _hasMainAudioControl = true);
 	virtual ~NodeBase();
 
 	

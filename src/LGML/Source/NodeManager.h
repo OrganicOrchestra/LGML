@@ -42,24 +42,20 @@ public:
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
-	/*
+	
     //Listener
-    class  Listener
+    class  NodeManagerListener
     {
     public:
-        virtual ~Listener() {}
+        virtual ~NodeManagerListener() {}
 
-        virtual void nodeAdded(NodeBase *) = 0;
-        virtual void nodeRemoved(NodeBase *) = 0;
-
-        virtual void connectionAdded(NodeConnection *) = 0;
-        virtual void connectionRemoved(NodeConnection *) = 0;
+		virtual void managerCleared() {};
     };
 
-    ListenerList<Listener> listeners;
-    void addNodeManagerListener(Listener* newListener) { listeners.add(newListener); }
-    void removeNodeManagerListener(Listener* listener) { listeners.remove(listener); }
-	*/
+    ListenerList<NodeManagerListener> nodeManagerListeners;
+    void addNodeManagerListener(NodeManagerListener* newListener) { nodeManagerListeners.add(newListener); }
+    void removeNodeManagerListener(NodeManagerListener* listener) { nodeManagerListeners.remove(listener); }
+	
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeManager)
 

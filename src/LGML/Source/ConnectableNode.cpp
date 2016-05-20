@@ -13,7 +13,8 @@
 #include "ConnectableNodeUI.h"
 
 
-  ConnectableNode::ConnectableNode(const String & name, NodeType _type) :
+  ConnectableNode::ConnectableNode(const String & name, NodeType _type, bool _hasMainAudioControl):
+	  hasMainAudioControl(_hasMainAudioControl),
 	  type(_type),
 	  canBeRemovedByUser(true),
 	  ControllableContainer(name),
@@ -35,10 +36,10 @@
 
 
 	  //Audio
-      if(type!=ContainerType){
-	  outputVolume = addFloatParameter("masterVolume", "master volume for this node", 1.);
-	  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
-      }
+      if(hasMainAudioControl){
+		  outputVolume = addFloatParameter("masterVolume", "master volume for this node", 1.);
+		  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
+	}
 
 
 	  setInputChannelName(0, "Main Left");

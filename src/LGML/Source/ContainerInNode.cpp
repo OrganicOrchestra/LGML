@@ -13,12 +13,11 @@
 #include "NodeContainer.h"
 
 ContainerInNode::ContainerInNode() :
-	NodeBase("Container IN", NodeType::ContainerInType)
+	NodeBase("Container IN", NodeType::ContainerInType, false)
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;
 	userCanAccessInputs = false;
-	hasMainAudioControl = false;
 }
 
 ContainerInNode::~ContainerInNode()

@@ -16,17 +16,21 @@ NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
 nodeManager(nodeManager),
 currentViewer(nullptr)
 {
+	nodeManager->addNodeManagerListener(this); 
 	setCurrentViewedContainer(nodeManager->mainContainer);
 }
 
 NodeManagerUI::~NodeManagerUI()
 {
+	nodeManager->removeNodeManagerListener(this);
 	clear();
+	setCurrentViewedContainer(nullptr);
+	
 }
 
 void NodeManagerUI::clear()
 {
-	setCurrentViewedContainer(nullptr);
+	setCurrentViewedContainer(nodeManager->mainContainer);
 }
 
 void NodeManagerUI::resized()
@@ -46,6 +50,11 @@ int NodeManagerUI::getContentWidth()
 int NodeManagerUI::getContentHeight()
 {
 	return (currentViewer == nullptr) ? 0 : currentViewer->getHeight();
+}
+
+void NodeManagerUI::managerCleared()
+{
+	clear();
 }
 
 void NodeManagerUI::setCurrentViewedContainer(NodeContainer * c)
