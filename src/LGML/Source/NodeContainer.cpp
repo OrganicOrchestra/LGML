@@ -135,7 +135,7 @@ int NodeContainer::getNumConnections() {
 
 var NodeContainer::getJSONData()
 {
-	var data = ControllableContainer::getJSONData();
+	var data = ConnectableNode::getJSONData();
 	var nodesData;
 
 	for (auto &n : nodes)
@@ -157,7 +157,7 @@ var NodeContainer::getJSONData()
 
 void NodeContainer::loadJSONDataInternal(var data)
 {
-	clear(true);
+	clear(false);
 
 	Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
 	for (var &nData : *nodesData)

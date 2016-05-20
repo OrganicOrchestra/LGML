@@ -35,7 +35,6 @@ NodeManager::~NodeManager()
 
 void NodeManager::clear()
 {
-	
 	mainContainer->clear(); 
 	audioGraph.clear();
 	dataGraph.clear();

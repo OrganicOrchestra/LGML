@@ -53,12 +53,14 @@
 bool ConnectableNode::hasAudioInputs()
 {
 	//to override
+	if (getAudioNode(true) == nullptr) return false;
 	return getAudioNode(true)->getProcessor()->getTotalNumInputChannels() > 0;
 }
 
 bool ConnectableNode::hasAudioOutputs()
 {
 	//to override
+	if (getAudioNode(false) == nullptr) return false;
 	return getAudioNode(false)->getProcessor()->getTotalNumOutputChannels() > 0;
 }
 
@@ -117,6 +119,7 @@ void ConnectableNode::clear()
 var ConnectableNode::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
+	data.getDynamicObject()->setProperty("nodeType", NodeFactory::nodeToString(this));
 	return data;
 }
 

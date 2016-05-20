@@ -93,7 +93,7 @@ String NodeBase::getPresetFilter()
 var NodeBase::getJSONData()
 {
 	var data = ConnectableNode::getJSONData();
-    data.getDynamicObject()->setProperty("nodeType", NodeFactory::nodeToString(this));
+  
    MemoryBlock m;
 
     // TODO we could implement that for all node objects to be able to save any kind of custom data

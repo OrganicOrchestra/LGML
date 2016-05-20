@@ -140,6 +140,7 @@ public :
 
 	void currentViewedContainerChanged()
 	{
+		DBG("Reconstruct");
 		reconstructViewerPath();
 	}
 
