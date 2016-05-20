@@ -29,7 +29,7 @@ public:
     {
         // This method is where you should put your application's initialisation code..
 
-#ifdef LGML_UNIT_TESTS
+#if LGML_UNIT_TESTS
         UnitTestRunner tstRunner;
         tstRunner.runAllTests();
 
