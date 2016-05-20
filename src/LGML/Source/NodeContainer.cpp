@@ -162,7 +162,11 @@ void NodeContainer::loadJSONDataInternal(var data)
 	for (var &nData : *nodesData)
 	{
 		NodeType nodeType = NodeFactory::getTypeFromString(nData.getProperty("nodeType", var()));
+
 		ConnectableNode * node = addNode(nodeType);
+		if (node->type == NodeType::ContainerInType) containerInNode = (ContainerInNode *)node;
+		else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
+
 		node->loadJSONData(nData);
 	}
 
