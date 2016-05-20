@@ -1,8 +1,9 @@
 #include "ConnectorComponent.h"
 #include "NodeContainerViewer.h"
+#include "NodeFactory.h"
 #include "Style.h"
 
-ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, NodeBase * _node) :
+ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, ConnectableNode * _node) :
     ioType(_ioType), 
 	dataType(_dataType), 
 	node(_node),
@@ -10,15 +11,26 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::
 {
     boxColor = dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
     setSize(10,10);
-    if(node){
-		node->addNodeAudioProcessorListener(this);
+
+    if(node->type == NodeType::ContainerType){
+		if(ioType == ConnectorIOType::INPUT) ((NodeContainer *)node)->containerInNode->addNodeAudioProcessorListener(this);
+		else ((NodeContainer *)node)->containerOutNode->addNodeAudioProcessorListener(this);
+	}
+	else
+	{
+		((NodeBase *)node)->addNodeAudioProcessorListener(this);
 	}
     generateToolTip();
 }
 
 ConnectorComponent::~ConnectorComponent(){
-    if(node){
-		node->removeNodeAudioProcessorListener(this);
+	if (node->type == NodeType::ContainerType) {
+		if (ioType == ConnectorIOType::INPUT)((NodeContainer *)node)->containerInNode->removeNodeAudioProcessorListener(this);
+		else ((NodeContainer *)node)->containerOutNode->removeNodeAudioProcessorListener(this);
+	}
+	else
+	{
+		((NodeBase *)node)->removeNodeAudioProcessorListener(this);
 	}
 }
 
@@ -27,8 +39,17 @@ void ConnectorComponent::generateToolTip(){
     tooltip += dataType == NodeConnection::ConnectionType::AUDIO?"Audio\n":"Data\n";
     if (dataType == NodeConnection::ConnectionType::AUDIO)
     {
-        tooltip += ioType == ConnectorIOType::INPUT? node->getTotalNumInputChannels() : node->getTotalNumOutputChannels();
-        tooltip += " channels";
+		bool isInput = ioType == ConnectorIOType::INPUT;
+		AudioProcessorGraph::Node * tAudioNode = node->getAudioNode(isInput);
+		if (tAudioNode != nullptr)
+		{
+			tooltip += isInput? tAudioNode->getProcessor()->getTotalNumInputChannels() : tAudioNode->getProcessor()->getTotalNumOutputChannels();
+			tooltip += " channels";
+		}
+		else
+		{
+			tooltip = "[Error accessing audio processor]";
+		}
     }
     else
     {
@@ -67,8 +88,12 @@ void ConnectorComponent::mouseExit  (const MouseEvent&){
     repaint();
 }
 
-void ConnectorComponent::numAudioInputChanged(int){generateToolTip();}
-void ConnectorComponent::numAudioOutputChanged(int){generateToolTip();}
+void ConnectorComponent::numAudioInputChanged(NodeBase *, int){
+	generateToolTip();
+}
+void ConnectorComponent::numAudioOutputChanged(NodeBase *, int){
+	generateToolTip();
+}
  
 NodeContainerViewer * ConnectorComponent::getNodeContainerViewer() const noexcept
 {

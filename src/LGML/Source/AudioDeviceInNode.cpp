@@ -17,7 +17,10 @@ AudioDeviceInNode::AudioDeviceInNode() :
 	NodeBase("AudioDeviceIn",NodeType::AudioDeviceInType),
 	AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
 {
-	NodeBase::busArrangement.inputBuses.clear();
+	canHavePresets = false;
+	//hasMainAudioControl = false;
+
+	AudioProcessor::busArrangement.inputBuses.clear();
 	getAudioDeviceManager().addChangeListener(this);
 	this->updateIO();
 }

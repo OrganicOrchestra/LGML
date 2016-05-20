@@ -19,11 +19,7 @@ NodeContainer::NodeContainer(const String &name, NodeContainer * _parentNodeCont
 {
 	saveAndLoadRecursiveData = false;
 
-	//if (parentNodeContainer != nullptr)
-	//{
-		containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
-		containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
-	//}
+	clear(true); // Create containerIn + Out nodes
 }
 
 
@@ -40,8 +36,10 @@ void NodeContainer::clear(bool recreateContainerNodes)
 		nodes[0]->remove();
 	}
 
+	
 	connections.clear();
 
+	/*
 	containerInNode = nullptr;
 	containerOutNode = nullptr;
 
@@ -49,7 +47,11 @@ void NodeContainer::clear(bool recreateContainerNodes)
 	{
 		containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
 		containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
+		
+		containerInNode->addRMSListener(this);
+		containerOutNode->addRMSListener(this);
 	}
+	*/
 }
 
 
@@ -62,6 +64,7 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType)
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n)
 {
 	nodes.add(n);
+
 	n->addNodeListener(this);
 	n->nameParam->setValue(getUniqueNameInContainer(n->nameParam->stringValue()));
 	addChildControllableContainer(n); //ControllableContainer
@@ -84,6 +87,7 @@ bool NodeContainer::removeNode(ConnectableNode * n)
 	nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
 	nodes.removeAllInstancesOf(n);
 
+	n->clear();
 	n->removeFromAudioGraph();
 
 	//if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(n->audioNode);
@@ -235,6 +239,14 @@ void NodeContainer::askForRemoveConnection(NodeConnection *connection)
 	removeConnection(connection);
 }
 
+void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float _rmsOutValue)
+{
+	if (node == containerInNode) rmsInValue = _rmsInValue;
+	else if (node == containerOutNode) rmsOutValue = _rmsOutValue;
+
+	rmsListeners.call(&RMSListener::RMSChanged, this, rmsInValue, rmsOutValue);
+}
+
 ConnectableNodeUI * NodeContainer::createUI()
 {
 	return new NodeContainerUI(this);
@@ -251,6 +263,7 @@ AudioProcessorGraph::Node * NodeContainer::getAudioNode(bool isInput)
 		return containerOutNode == nullptr ? nullptr : containerOutNode->getAudioNode();
 	}
 }
+
 
 
 

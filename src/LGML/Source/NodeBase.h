@@ -39,7 +39,6 @@ public:
 	virtual ~NodeBase();
 
 	
-
 	virtual bool hasAudioInputs() override;
 	virtual bool hasAudioOutputs() override;
 	virtual bool hasDataInputs() override;
@@ -50,6 +49,7 @@ public:
 
 	void parameterValueChanged(Parameter * p) override;
 
+	virtual void clear() override;
 	
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
@@ -68,6 +68,8 @@ public:
 	//AUDIO PROCESSOR
 
 	AudioProcessorGraph::Node * audioNode;
+
+	
 
 	virtual AudioProcessorGraph::Node * getAudioNode(bool isInputNode = true) override;
 	void addToAudioGraph() override;
@@ -103,7 +105,6 @@ public:
 	virtual void getStateInformation(juce::MemoryBlock&) override {};
 	virtual void setStateInformation(const void*, int) override {};
 
-
 	virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 	virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/ , MidiBuffer& /*midiMessage*/ ) {};
 
@@ -120,28 +121,14 @@ public:
 	int curSamplesForRMSOutUpdate = 0;
 
 	//Listener are called from non audio thread
-	void handleAsyncUpdate() override {
-		rmsListeners.call(&RMSListener::RMSChanged, rmsValueIn, rmsValueOut);
-	}
+	void handleAsyncUpdate() override;
 
-	class  RMSListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~RMSListener() {}
-		virtual void RMSChanged(float rmsInValue, float rmsOutValue) = 0;
-
-	};
-
-	ListenerList<RMSListener> rmsListeners;
-	void addRMSListener(RMSListener* newListener) { rmsListeners.add(newListener); }
-	void removeRMSListener(RMSListener* listener) { rmsListeners.remove(listener); }
-
+	
 	class NodeAudioProcessorListener {
 	public:
 		virtual ~NodeAudioProcessorListener() {};
-		virtual void numAudioInputChanged(int) {};
-		virtual void numAudioOutputChanged(int) {};
+		virtual void numAudioInputChanged(NodeBase *, int /*newNumInput*/) {};
+		virtual void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) {};
 	};
 
 	ListenerList<NodeAudioProcessorListener> nodeAudioProcessorListeners;

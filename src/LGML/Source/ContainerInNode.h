@@ -22,6 +22,7 @@ public:
 	~ContainerInNode();
 
 	//AUDIO
+	void setNumAudioChannels(int channels);
 
 	//DATA
 	void processInputDataChanged(Data * d) override;

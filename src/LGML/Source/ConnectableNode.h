@@ -29,7 +29,9 @@ public:
 
 	//Interaction
 	bool canBeRemovedByUser;
-	
+	bool userCanAccessInputs;
+	bool userCanAccessOutputs;
+
 	virtual bool hasAudioInputs();
 	virtual bool hasAudioOutputs();
 	virtual bool hasDataInputs();
@@ -42,6 +44,8 @@ public:
 	FloatParameter * yPosition;
 
 	void remove(bool askBeforeRemove = false);
+
+	virtual void clear();
 
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
@@ -69,6 +73,7 @@ public:
 
 
 	//AUDIO
+	bool hasMainAudioControl;
 
 	FloatParameter * outputVolume;
 	BoolParameter * bypass;
@@ -86,6 +91,21 @@ public:
 	String getInputChannelName(int channelIndex);
 	String getOutputChannelName(int channelIndex);
 
+	class  RMSListener
+	{
+	public:
+		/** Destructor. */
+		virtual ~RMSListener() {}
+		virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) = 0;
+	};
+
+	ListenerList<RMSListener> rmsListeners;
+	void addRMSListener(RMSListener* newListener) { rmsListeners.add(newListener); }
+	void removeRMSListener(RMSListener* listener) { rmsListeners.remove(listener); }
+
+
+
+
 	//DATA
 	virtual Data* getInputData(int dataIndex);
 	virtual Data* getOutputData(int dataIndex);
@@ -101,6 +121,8 @@ public:
 
 	virtual Data * getOutputDataByName(const String &dataName);
 	virtual Data * getInputDataByName(const String &dataName);
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectableNode)
 };
 
 

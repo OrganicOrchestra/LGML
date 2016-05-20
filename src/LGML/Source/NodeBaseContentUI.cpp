@@ -2,7 +2,7 @@
   ==============================================================================
 
     NodeBaseContentUI.cpp
-    Created: 8 Mar 2016 5:53:45pm
+    Created: 20 May 2016 12:52:16am
     Author:  bkupe
 
   ==============================================================================
@@ -10,28 +10,10 @@
 
 #include "NodeBaseContentUI.h"
 
-#include "NodeBaseUI.h"
+NodeBaseContentUI::NodeBaseContentUI()
+{
+}
 
-  NodeBaseContentUI::NodeBaseContentUI()
-  {
-      node = nullptr;
-      nodeUI = nullptr;
-
-  }
-
-  NodeBaseContentUI::~NodeBaseContentUI()
-  {
-  }
-
-
-  void NodeBaseContentUI::setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI)
-  {
-      this->node = _node;
-      this->nodeUI = _nodeUI;
-
-      init();
-  }
-
-  void NodeBaseContentUI::init()
-  {
-  }
+NodeBaseContentUI::~NodeBaseContentUI()
+{
+}

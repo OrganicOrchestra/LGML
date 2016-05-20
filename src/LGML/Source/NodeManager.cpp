@@ -31,7 +31,6 @@ NodeManager::NodeManager() :
 NodeManager::~NodeManager()
 {
 	clear();
-
 }
 
 void NodeManager::clear()

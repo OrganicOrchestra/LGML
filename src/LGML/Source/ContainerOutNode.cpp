@@ -17,11 +17,21 @@ ContainerOutNode::ContainerOutNode() :
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;
+	userCanAccessOutputs = false;
+	hasMainAudioControl = false;
+
 }
 
 ContainerOutNode::~ContainerOutNode()
 {
 }
+
+void ContainerOutNode::setNumAudioChannels(int channels)
+{
+	setPreferedNumAudioInput(channels);
+	setPreferedNumAudioOutput(channels);
+}
+
 
 void ContainerOutNode::processInputDataChanged(Data * d)
 {

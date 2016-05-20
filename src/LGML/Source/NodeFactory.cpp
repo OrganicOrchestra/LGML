@@ -43,6 +43,10 @@ ConnectableNode * NodeFactory::createNode(NodeType nodeType)
 			n = new ContainerInNode();
 				break;
 
+		case NodeType::ContainerOutType:
+			n = new ContainerOutNode();
+			break;
+
         case NodeType::DummyType:
             n = new DummyNode();
             break;

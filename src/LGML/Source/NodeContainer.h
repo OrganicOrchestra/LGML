@@ -38,15 +38,18 @@ public:
 class NodeContainer : 
 	public ConnectableNode,
 	public ConnectableNode::ConnectableNodeListener, 
-	public NodeConnection::Listener
+	public NodeConnection::Listener,
+	public ConnectableNode::RMSListener
 {
 public:
 	NodeContainer(const String &name, NodeContainer * _parentNodeContainer = nullptr);
 	virtual ~NodeContainer();
 
+	//Keep value of containerIn RMS and containerOutRMS to dispatch in one time
+	float rmsInValue;
+	float rmsOutValue;
 
 	//CONTAINER RELATED
-
 	NodeContainer * parentNodeContainer;
 
 	//Container nodes, not removable by user, handled separately
@@ -58,7 +61,7 @@ public:
 
 	Array<ConnectableNode *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
 	OwnedArray<NodeConnection> connections;
-
+	
 	ConnectableNode* addNode(NodeType nodeType);
 	ConnectableNode* addNode(ConnectableNode * node);
 	bool removeNode(ConnectableNode * n);
@@ -76,17 +79,13 @@ public:
 
 	int getNumNodes() const noexcept { return nodes.size(); }
 
-	//Container related
 	
-	//NodeContainer * addContainer();
-	//void removeContainer(NodeContainer * c);
-
-
 	//save / load
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
-	void clear(bool keepContainerNodes = false);
+	void clear() override { clear(false); }
+	void clear(bool keepContainerNodes);
 
 	// Inherited via NodeBase::Listener
 	virtual void askForRemoveNode(ConnectableNode *) override;
@@ -100,9 +99,9 @@ public:
 	virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection &) override {}
 	virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection &) override {}
 
-	ListenerList<NodeContainerListener> nodeContainerListeners;
-	void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }
-	void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener); }
+	
+	// Inherited via RMSListener
+	virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) override;
 
 
 	virtual ConnectableNodeUI * createUI();
@@ -110,10 +109,16 @@ public:
 	//AUDIO 
 	AudioProcessorGraph::Node * getAudioNode(bool isInput) override;
 
+	
 	//DATA
 
-private:
+	ListenerList<NodeContainerListener> nodeContainerListeners;
+	void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }
+	void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener); }
+
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainer)
+
 };
 
 

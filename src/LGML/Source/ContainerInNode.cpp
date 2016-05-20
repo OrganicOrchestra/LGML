@@ -16,10 +16,18 @@ ContainerInNode::ContainerInNode() :
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;
+	userCanAccessInputs = false;
+	hasMainAudioControl = false;
 }
 
 ContainerInNode::~ContainerInNode()
 {
+}
+
+void ContainerInNode::setNumAudioChannels(int channels)
+{
+	setPreferedNumAudioInput(channels);
+	setPreferedNumAudioOutput(channels);
 }
 
 void ContainerInNode::processInputDataChanged(Data * d)

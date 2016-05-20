@@ -13,8 +13,8 @@ Author:  bkupe
 
 #include "NodeConnection.h"
 
-class NodeBase;
-class NodeBaseUI;
+class ConnectableNode;
+class ConnectableNodeUI;
 class NodeContainerViewer;
 
 //==============================================================================
@@ -41,7 +41,7 @@ public:
 
     NodeConnection::ConnectionType dataType;
     ConnectorIOType ioType;
-    NodeBase * node;
+    ConnectableNode * node;
 
     //layout
 
@@ -49,7 +49,7 @@ public:
     Colour boxColor;
     bool isHovered;
 
-    ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
+    ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * node);
     ~ConnectorComponent(); 
     void paint(Graphics &g)override;
 
@@ -63,9 +63,8 @@ public:
     NodeContainerViewer * getNodeContainerViewer() const noexcept;
     ConnectableNodeUI * getNodeUI() const noexcept;
 
-    void numAudioInputChanged(int newNum)override;
-    void numAudioOutputChanged(int newNum)override;
-
+    void numAudioInputChanged(NodeBase *, int newNum)override;
+    void numAudioOutputChanged(NodeBase *, int newNum)override;
 
 
 private:

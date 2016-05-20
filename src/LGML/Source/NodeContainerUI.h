@@ -33,7 +33,7 @@ public:
 	virtual void connectionAdded(NodeConnection *) override;
 	virtual void connectionRemoved(NodeConnection *) override;
 
-
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainerUI)
 };
 
 

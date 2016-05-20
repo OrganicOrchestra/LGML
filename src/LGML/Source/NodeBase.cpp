@@ -18,33 +18,14 @@ NodeBase::NodeBase(const String &name,NodeType _type) :
 	audioNode(nullptr)
 {
     addToAudioGraph();
-
-	//Audio
-	outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
 	lastVolume = outputVolume->floatValue();
-	bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
 
-
-	setInputChannelName(0, "Main Left");
-	setInputChannelName(1, "Main Right");
-	setOutputChannelName(0, "Main Left");
-	setOutputChannelName(1, "Main Right");
 }
 
 
 NodeBase::~NodeBase()
 {
-    // get called after deletion of TimeManager on app exit
-    TimeManager * tm = TimeManager::getInstanceWithoutCreating();
-    if(tm!=nullptr)
-        tm->releaseMasterNode(this);
-
-
-	//Data
-	inputDatas.clear();
-	outputDatas.clear();
-
-//	removeFromAudioGraphIfNeeded();
+	clear();
 }
 
 
@@ -81,6 +62,22 @@ void NodeBase::parameterValueChanged(Parameter * p)
 	{
 		suspendProcessing(!enabledParam->boolValue());
 	}
+}
+
+void NodeBase::clear()
+{
+	// get called after deletion of TimeManager on app exit
+	TimeManager * tm = TimeManager::getInstanceWithoutCreating();
+	if (tm != nullptr)
+	{
+		tm->releaseMasterNode(this);
+	}
+
+	//Data
+	inputDatas.clear();
+	outputDatas.clear();
+
+	//removeFromAudioGraph();
 }
 
 
@@ -216,8 +213,12 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 		getSampleRate(),
 		getBlockSize());
 
-	NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
-	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioInputChanged, num);
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
+	}
+
+	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioInputChanged, this,num);
 
 	return true;
 }
@@ -229,7 +230,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 	{
 		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
 	}
-	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged, num);
+	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged,this,num);
 	return true;
 }
 
@@ -264,7 +265,10 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 }
 
 
-
+void NodeBase::handleAsyncUpdate()
+{
+	rmsListeners.call(&RMSListener::RMSChanged, this, rmsValueIn, rmsValueOut);
+}
 
 //////////////////////////////////   DATA
 

@@ -16,7 +16,9 @@
   ConnectableNode::ConnectableNode(const String & name, NodeType _type) :
 	  type(_type),
 	  canBeRemovedByUser(true),
-	  ControllableContainer(name)
+	  ControllableContainer(name),
+	  userCanAccessInputs(true),
+	  userCanAccessOutputs(true)
   {
 	  //set Params
 	  nameParam = addStringParameter("Name", "Set the name of the node.", name);
@@ -30,6 +32,17 @@
 	  yPosition->isPresettable = false;
 	  nameParam->isPresettable = false;
 	  enabledParam->isPresettable = false;
+
+
+	  //Audio
+	  outputVolume = addFloatParameter("masterVolume", "master volume for this node", 1.);
+	  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
+
+
+	  setInputChannelName(0, "Main Left");
+	  setInputChannelName(1, "Main Right");
+	  setOutputChannelName(0, "Main Left");
+	  setOutputChannelName(1, "Main Right");
   }
 
   ConnectableNode::~ConnectableNode()
@@ -93,6 +106,11 @@ void ConnectableNode::remove(bool askBeforeRemove)
 	}
 
 	nodeListeners.call(&ConnectableNode::ConnectableNodeListener::askForRemoveNode, this);
+}
+
+void ConnectableNode::clear()
+{
+	//to override
 }
 
 var ConnectableNode::getJSONData()

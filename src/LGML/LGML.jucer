@@ -455,32 +455,50 @@
                 file="Source/NodeContainer.cpp"/>
           <FILE id="ZvvtSp" name="NodeContainer.h" compile="0" resource="0" file="Source/NodeContainer.h"/>
           <GROUP id="{A2D3A061-C57A-C7C0-F696-113F915DCD55}" name="UI">
-            <FILE id="OpaZEJ" name="ConnectableNodeUI.h" compile="0" resource="0"
-                  file="Source/ConnectableNodeUI.h"/>
-            <FILE id="f3Grav" name="ConnectableNodeUI.cpp" compile="1" resource="0"
-                  file="Source/ConnectableNodeUI.cpp"/>
-            <FILE id="BngKpc" name="NodeContainerViewer.cpp" compile="1" resource="0"
-                  file="Source/NodeContainerViewer.cpp"/>
-            <FILE id="PvncTg" name="NodeContainerViewer.h" compile="0" resource="0"
-                  file="Source/NodeContainerViewer.h"/>
-            <FILE id="TffGGE" name="NodeContainerUI.cpp" compile="1" resource="0"
-                  file="Source/NodeContainerUI.cpp"/>
-            <FILE id="e5pPRn" name="NodeContainerUI.h" compile="0" resource="0"
-                  file="Source/NodeContainerUI.h"/>
-            <FILE id="nsdeUQ" name="NodeBaseAudioCtlUI.cpp" compile="1" resource="0"
-                  file="Source/NodeBaseAudioCtlUI.cpp"/>
-            <FILE id="AqNjww" name="NodeBaseAudioCtlUI.h" compile="0" resource="0"
-                  file="Source/NodeBaseAudioCtlUI.h"/>
-            <FILE id="NDsjg3" name="NodeBaseHeaderUI.cpp" compile="1" resource="0"
-                  file="Source/NodeBaseHeaderUI.cpp"/>
-            <FILE id="iIJRHp" name="NodeBaseHeaderUI.h" compile="0" resource="0"
-                  file="Source/NodeBaseHeaderUI.h"/>
-            <FILE id="FzpBRR" name="NodeBaseContentUI.cpp" compile="1" resource="0"
-                  file="Source/NodeBaseContentUI.cpp"/>
-            <FILE id="PCMBA4" name="NodeBaseContentUI.h" compile="0" resource="0"
-                  file="Source/NodeBaseContentUI.h"/>
-            <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
-            <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>
+            <GROUP id="{B3261A6C-5F3C-2CDF-D89A-B1D0232F257F}" name="NodeContainer">
+              <FILE id="BngKpc" name="NodeContainerViewer.cpp" compile="1" resource="0"
+                    file="Source/NodeContainerViewer.cpp"/>
+              <FILE id="PvncTg" name="NodeContainerViewer.h" compile="0" resource="0"
+                    file="Source/NodeContainerViewer.h"/>
+              <FILE id="TffGGE" name="NodeContainerUI.cpp" compile="1" resource="0"
+                    file="Source/NodeContainerUI.cpp"/>
+              <FILE id="e5pPRn" name="NodeContainerUI.h" compile="0" resource="0"
+                    file="Source/NodeContainerUI.h"/>
+            </GROUP>
+            <GROUP id="{31DDBD7C-F7C7-AF5B-8458-C3CCD1246E25}" name="NodeBase">
+              <FILE id="PLrDpy" name="NodeBaseAudioCtlUI.cpp" compile="1" resource="0"
+                    file="Source/NodeBaseAudioCtlUI.cpp"/>
+              <FILE id="pBZQEt" name="NodeBaseAudioCtlUI.h" compile="0" resource="0"
+                    file="Source/NodeBaseAudioCtlUI.h"/>
+              <FILE id="IZju7F" name="NodeBaseContentUI.cpp" compile="1" resource="0"
+                    file="Source/NodeBaseContentUI.cpp"/>
+              <FILE id="T74zlA" name="NodeBaseContentUI.h" compile="0" resource="0"
+                    file="Source/NodeBaseContentUI.h"/>
+              <FILE id="BfEThv" name="NodeBaseHeaderUI.cpp" compile="1" resource="0"
+                    file="Source/NodeBaseHeaderUI.cpp"/>
+              <FILE id="XfT9SL" name="NodeBaseHeaderUI.h" compile="0" resource="0"
+                    file="Source/NodeBaseHeaderUI.h"/>
+              <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
+              <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>
+            </GROUP>
+            <GROUP id="{29B40ECA-96F2-5947-9850-691EAA989D76}" name="ConnectableNode">
+              <FILE id="xfpgqy" name="ConnectableNodeContentUI.cpp" compile="1" resource="0"
+                    file="Source/ConnectableNodeContentUI.cpp"/>
+              <FILE id="rcLc6W" name="ConnectableNodeContentUI.h" compile="0" resource="0"
+                    file="Source/ConnectableNodeContentUI.h"/>
+              <FILE id="nsdeUQ" name="ConnectableNodeAudioCtlUI.cpp" compile="1"
+                    resource="0" file="Source/ConnectableNodeAudioCtlUI.cpp"/>
+              <FILE id="AqNjww" name="ConnectableNodeAudioCtlUI.h" compile="0" resource="0"
+                    file="Source/ConnectableNodeAudioCtlUI.h"/>
+              <FILE id="NDsjg3" name="ConnectableNodeHeaderUI.cpp" compile="1" resource="0"
+                    file="Source/ConnectableNodeHeaderUI.cpp"/>
+              <FILE id="iIJRHp" name="ConnectableNodeHeaderUI.h" compile="0" resource="0"
+                    file="Source/ConnectableNodeHeaderUI.h"/>
+              <FILE id="FzpBRR" name="ConnectableNodeUI.cpp" compile="1" resource="0"
+                    file="Source/ConnectableNodeUI.cpp"/>
+              <FILE id="PCMBA4" name="ConnectableNodeUI.h" compile="0" resource="0"
+                    file="Source/ConnectableNodeUI.h"/>
+            </GROUP>
           </GROUP>
           <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">
             <FILE id="LufRbo" name="Data.cpp" compile="1" resource="0" file="Source/Data.cpp"/>
@@ -532,13 +550,13 @@
             <FILE id="m4Zmk6" name="ContainerInNode.h" compile="0" resource="0"
                   file="Source/ContainerInNode.h"/>
           </GROUP>
-          <GROUP id="{5417A4A0-D810-BE2F-ADD2-883B526A6B39}" name="AudioDeviceOut">
+          <GROUP id="{5417A4A0-D810-BE2F-ADD2-883B526A6B39}" name="AudioDeviceIn">
             <FILE id="coUiVY" name="AudioDeviceInNode.cpp" compile="1" resource="0"
                   file="Source/AudioDeviceInNode.cpp"/>
             <FILE id="OqrdZW" name="AudioDeviceInNode.h" compile="0" resource="0"
                   file="Source/AudioDeviceInNode.h"/>
           </GROUP>
-          <GROUP id="{66F2191E-E08B-68BC-4E06-5881A101974F}" name="AudioDeviceIn">
+          <GROUP id="{66F2191E-E08B-68BC-4E06-5881A101974F}" name="AudioDeviceOut">
             <FILE id="bZx2fD" name="AudioDeviceOutNode.cpp" compile="1" resource="0"
                   file="Source/AudioDeviceOutNode.cpp"/>
             <FILE id="cr0dso" name="AudioDeviceOutNode.h" compile="0" resource="0"

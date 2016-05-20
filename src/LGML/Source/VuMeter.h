@@ -45,7 +45,7 @@ public:
     }
 
 
-    void RMSChanged(float rmsIn,float rmsOut) override {
+    void RMSChanged(ConnectableNode *, float rmsIn,float rmsOut) override {
 
 		float rms = (type == Type::IN) ? rmsIn : rmsOut;
 
