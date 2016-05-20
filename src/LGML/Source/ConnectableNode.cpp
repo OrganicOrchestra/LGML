@@ -35,8 +35,10 @@
 
 
 	  //Audio
+      if(type!=ContainerType){
 	  outputVolume = addFloatParameter("masterVolume", "master volume for this node", 1.);
 	  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
+      }
 
 
 	  setInputChannelName(0, "Main Left");
