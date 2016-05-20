@@ -13,6 +13,7 @@
 #include "TimeManager.h"
 
 
+
 NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
 	ConnectableNode(name,_type,_hasMainAudioControl),
 	audioNode(nullptr)
@@ -217,7 +218,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 
 	if (NodeManager::getInstanceWithoutCreating() != nullptr)
 	{
-		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
+        NodeManager::getInstance()->updateAudioGraph();
 	}
 
 	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioInputChanged, this,num);
@@ -230,8 +231,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 		getBlockSize());
 	if (NodeManager::getInstanceWithoutCreating() != nullptr)
 	{
-		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
-	}
+        NodeManager::getInstance()->updateAudioGraph();
+    }
 	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged,this,num);
 	return true;
 }

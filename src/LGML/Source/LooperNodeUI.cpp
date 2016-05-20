@@ -228,6 +228,7 @@ void LooperNodeContentUI::TrackUI::trackStateChangedAsync(const LooperTrack::Tra
             break;
 
         case LooperTrack::TrackState::STOPPED:
+        case LooperTrack::TrackState::SHOULD_STOP:
             mainColour = Colours::grey.darker();
             break;
 

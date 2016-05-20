@@ -19,7 +19,19 @@
 
 // (You can add your own code in this section, and the Projucer will not overwrite it)
 
+
+
+// set following to zero or not to avoid recompiling everything
+#define JUCE_IS_REPAINT_DEBUGGING_ACTIVE 0
+// dont touch this, change following JUCE_IS_REPAINT_DEBUGGING_ACTIVE to avoid recompiling
+#define JUCE_ENABLE_REPAINT_DEBUGGING 1
+
 #define LGML_UNIT_TESTS 0
+
+
+
+// on osx this prevent to repaint useless part of ui (every thing inside the intersection of all rect repainted...)
+#define JUCE_COREGRAPHICS_RENDER_WITH_MULTIPLE_PAINT_CALLS 1
 // [END_USER_CODE_SECTION]
 
 //==============================================================================
@@ -168,7 +180,7 @@
 // juce_gui_basics flags:
 
 #ifndef    JUCE_ENABLE_REPAINT_DEBUGGING
- //#define JUCE_ENABLE_REPAINT_DEBUGGING
+// #define JUCE_ENABLE_REPAINT_DEBUGGING 1
 #endif
 
 #ifndef    JUCE_USE_XSHM

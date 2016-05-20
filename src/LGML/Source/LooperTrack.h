@@ -25,12 +25,16 @@ public:
     LooperTrack(LooperNode * looper, int _trackIdx);
     ~LooperTrack() {}
 
+    // only SHOULD value can be accessed from other thread than audio
+    // then state is updated from audioThread
     enum TrackState {
         SHOULD_RECORD = 0,
-        RECORDING,
         SHOULD_PLAY,
-        PLAYING,
         SHOULD_CLEAR,
+        SHOULD_STOP,
+
+        RECORDING,
+        PLAYING,
         CLEARED,
         STOPPED
     };
@@ -79,6 +83,7 @@ public:
         //                called from here
         void internalTrackStateChanged(const TrackState &state) {
             stateToBeNotified = state;
+
             trackStateChanged(state);
             triggerAsyncUpdate();
         }
