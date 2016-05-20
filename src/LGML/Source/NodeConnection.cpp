@@ -89,6 +89,26 @@ void NodeConnection::remove()
     listeners.call(&NodeConnection::Listener::askForRemoveConnection,this);
 }
 
+void audioInputAdded(NodeBase * n, int channel) 
+{
+	//TODO HANDLE THAT !!!!
+}
+
+void audioInputRemoved(NodeBase * n, int channel)
+{
+	//TODO HANDLE THAT !!!!
+}
+
+void dataInputAdded(NodeBase * n, Data *) 
+{
+	//TODO HANDLE THAT !!!!
+}
+
+void dataInputRemoved(NodeBase * n, Data *) 
+{
+	//TODO HANDLE THAT !!!!
+}
+
 var NodeConnection::getJSONData()
 {
     var data(new DynamicObject());

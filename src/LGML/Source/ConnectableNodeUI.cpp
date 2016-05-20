@@ -110,6 +110,7 @@ void ConnectableNodeUI::parameterValueChanged(Parameter * p) {
 }
 
 
+
 // allow to react to custom mainContainer.contentContainer
 void ConnectableNodeUI::childBoundsChanged(Component* c) {
 	// if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
@@ -253,6 +254,7 @@ void ConnectableNodeUI::MainContainer::childBoundsChanged(Component* c) {
 ConnectableNodeUI::ConnectorContainer::ConnectorContainer(ConnectorComponent::ConnectorIOType type) : type(type), displayLevel(ConnectorComponent::MINIMAL)
 {
 	setInterceptsMouseClicks(false, true);
+
 }
 
 void ConnectableNodeUI::ConnectorContainer::setConnectorsFromNode(ConnectableNode * _node)
@@ -280,38 +282,41 @@ void ConnectableNodeUI::ConnectorContainer::setConnectorsFromNode(ConnectableNod
 	}
 
 
-	//for later : this is the creation for minimal display level
-	bool hasAudio = (type == ConnectorComponent::INPUT) ? targetNode->hasAudioInputs() : targetNode->hasAudioOutputs();
-	bool hasData = (type == ConnectorComponent::INPUT) ? targetNode->hasDataInputs() : targetNode->hasDataOutputs();
+	addConnector(type, NodeConnection::ConnectionType::AUDIO, targetNode);
+	addConnector(type, NodeConnection::ConnectionType::DATA, targetNode);
 
-	DBG("Has audio / has data " << String(hasAudio) << " / " << String(hasData));
+	resized();
 
-	if (hasAudio)
-	{
-		addConnector(type, NodeConnection::ConnectionType::AUDIO, targetNode);
-	}
-
-	if (hasData)
-	{
-		addConnector(type, NodeConnection::ConnectionType::DATA, targetNode);
-	}
 }
 
 void ConnectableNodeUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * _node)
 {
 	ConnectorComponent * c = new ConnectorComponent(ioType, dataType, _node);
-
-	c->setTopLeftPosition(0, 10 + getNumChildComponents()*(getHeight() + 30));
-
 	connectors.add(c);
-	addAndMakeVisible(c);
+	addChildComponent(c);
+
+	c->addConnectorListener(this);
 }
+
+void ConnectableNodeUI::ConnectorContainer::connectorVisibilityChanged(ConnectorComponent *)
+{
+	resized();
+}
+
 
 void ConnectableNodeUI::ConnectorContainer::resized()
 {
-	for (int i = connectors.size() - 1; i >= 0; --i)
+	Rectangle<int> r = getLocalBounds();
+
+	r.removeFromTop(10);
+	for (auto &c : connectors)
 	{
-		getChildComponent(i)->setSize(getWidth(), getWidth());
+		DBG("Connector is Visible ? " << String(c->isVisible()));
+		if (!c->isVisible()) continue;
+		
+		c->setBounds(r.removeFromTop(r.getWidth()));
+		r.removeFromTop(15);
+		
 	}
 }
 

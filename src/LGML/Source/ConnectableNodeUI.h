@@ -31,7 +31,9 @@ public:
 	ConnectableNode * connectableNode;
 
 
-	class ConnectorContainer : public Component
+	class ConnectorContainer : 
+		public Component,
+		public ConnectorComponent::ConnectorListener
 	{
 	public:
 		OwnedArray<ConnectorComponent> connectors;
@@ -46,6 +48,9 @@ public:
 		void setConnectorsFromNode(ConnectableNode * node);
 		void addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * node);
 		void resized();
+
+		void connectorVisibilityChanged(ConnectorComponent *) override;
+
 
 		ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType dataType);
 
@@ -116,6 +121,7 @@ public:
 	void childBoundsChanged(Component*)override;
 	void parameterValueChanged(Parameter * p) override;
 
+	
 	void mouseDown(const MouseEvent &e) override;
 	void mouseUp(const MouseEvent &e) override;
 	void mouseDrag(const MouseEvent &e)  override;

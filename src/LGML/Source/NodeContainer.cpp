@@ -20,7 +20,6 @@ NodeContainer::NodeContainer(const String &name) :
 	ConnectableNode(name, NodeType::ContainerType,false)
 {
 	canHavePresets = false;
-
 	saveAndLoadRecursiveData = false;
 }
 

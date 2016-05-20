@@ -92,11 +92,11 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 313
+	line : 312
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
-	line : 188
+	line : 187
 		// TODO nicely handle file format errors?
 
 
@@ -133,5 +133,19 @@ LooperTrack.cpp
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized
+
+
+NodeConnection.cpp
+	line : 98
+		//TODO HANDLE THAT !!!!
+
+	line : 108
+		//TODO HANDLE THAT !!!!
+
+	line : 93
+		//TODO HANDLE THAT !!!!
+
+	line : 103
+		//TODO HANDLE THAT !!!!
 
 

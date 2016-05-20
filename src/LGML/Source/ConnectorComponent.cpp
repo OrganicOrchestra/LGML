@@ -3,37 +3,28 @@
 #include "NodeFactory.h"
 #include "Style.h"
 
-ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, ConnectableNode * _node) :
+ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, ConnectableNode * _cnode) :
     ioType(_ioType), 
 	dataType(_dataType), 
-	node(_node),
+	node((NodeBase *)_cnode),
 	isHovered(false)
 {
-    boxColor = dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
+	jassert(node->type != NodeType::ContainerType);
+	((NodeBase *)node)->addNodeBaseListener(this);
+	
+	
+	
+    boxColor = (dataType == NodeConnection::ConnectionType::AUDIO)? AUDIO_COLOR : DATA_COLOR;
     setSize(10,10);
-
-    if(node->type == NodeType::ContainerType){
-		DBG("SHOULD NOT BE THERE, CONTAINER SHOULD HAVE LINKED TO INNER IN/OUT NODES IN SETCONNECTORFROMCOMPONENT");
-		//if(ioType == ConnectorIOType::INPUT) ((NodeContainer *)node)->containerInNode->addNodeAudioProcessorListener(this);
-		//else ((NodeContainer *)node)->containerOutNode->addNodeAudioProcessorListener(this);
-	}
-	else
-	{
-		((NodeBase *)node)->addNodeAudioProcessorListener(this);
-	}
-
+	
+	node->addNodeBaseListener(this);
     generateToolTip();
+
+	updateVisibility();
 }
 
 ConnectorComponent::~ConnectorComponent(){
-	if (node->type == NodeType::ContainerType) {
-		if (ioType == ConnectorIOType::INPUT)((NodeContainer *)node)->containerInNode->removeNodeAudioProcessorListener(this);
-		else ((NodeContainer *)node)->containerOutNode->removeNodeAudioProcessorListener(this);
-	}
-	else
-	{
-		((NodeBase *)node)->removeNodeAudioProcessorListener(this);
-	}
+	 node->removeNodeBaseListener(this);
 }
 
 void ConnectorComponent::generateToolTip(){
@@ -90,11 +81,46 @@ void ConnectorComponent::mouseExit  (const MouseEvent&){
     repaint();
 }
 
-void ConnectorComponent::numAudioInputChanged(NodeBase *, int){
-	generateToolTip();
+void ConnectorComponent::updateVisibility()
+{
+	
+	bool isAudio = dataType == NodeConnection::ConnectionType::AUDIO;
+	bool isInput = ioType == ConnectorIOType::INPUT;
+	
+	DBG("IS AUDIO " << String(isAudio) << " / IS INPUT " << String(isInput));
+
+	if (isAudio) setVisible(isInput ? node->hasAudioInputs() : node->hasAudioOutputs());
+	else setVisible(isInput ? node->hasDataInputs() : node->hasDataOutputs());
+
+	connectorListeners.call(&ConnectorListener::connectorVisibilityChanged, this);
 }
-void ConnectorComponent::numAudioOutputChanged(NodeBase *, int){
+
+void ConnectorComponent::numAudioInputChanged(NodeBase *, int)
+{
+	if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::INPUT) return;
 	generateToolTip();
+	updateVisibility();
+}
+
+void ConnectorComponent::numAudioOutputChanged(NodeBase *, int)
+{
+	if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
+	generateToolTip();
+	updateVisibility();
+}
+
+void ConnectorComponent::numDataInputChanged(NodeBase *, int)
+{
+	if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::INPUT) return;
+	generateToolTip();
+	updateVisibility();
+}
+
+void ConnectorComponent::numDataOutputChanged(NodeBase *, int)
+{
+	if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::OUTPUT) return;
+	generateToolTip();
+	updateVisibility();
 }
  
 NodeContainerViewer * ConnectorComponent::getNodeContainerViewer() const noexcept

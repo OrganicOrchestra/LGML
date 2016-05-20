@@ -20,6 +20,7 @@ ContainerOutNode::ContainerOutNode() :
 	canHavePresets = false;
 	userCanAccessOutputs = false;
 
+	addOutputData("Data Kool", DataType::Position);
 }
 
 ContainerOutNode::~ContainerOutNode()

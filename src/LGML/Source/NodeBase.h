@@ -63,7 +63,24 @@ public:
 		return niceName;
 	}
 
-	
+	class NodeBaseListener {
+	public:
+		virtual ~NodeBaseListener() {};
+		virtual void numAudioInputChanged(NodeBase *, int /*newNumInput*/) {};
+		virtual void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) {};
+		virtual void numDataInputChanged(NodeBase *, int /*newNumInput*/) {};
+		virtual void numDataOutputChanged(NodeBase *, int /*newNumOutput*/) {};
+
+		virtual void audioInputAdded(NodeBase *, int /*channel*/) {}
+		virtual void audioInputRemoved(NodeBase *, int /*channel*/) {}
+
+		virtual void dataInputAdded(NodeBase *, Data *) {}
+		virtual void dataInputRemoved(NodeBase *, Data *) {}
+	};
+
+	ListenerList<NodeBaseListener> nodeBaseListeners;
+	void addNodeBaseListener(NodeBaseListener* newListener) { nodeBaseListeners.add(newListener); }
+	void removeNodeBaseListener(NodeBaseListener* listener) { nodeBaseListeners.remove(listener); }
 
 	//AUDIO PROCESSOR
 
@@ -124,17 +141,9 @@ public:
 	void handleAsyncUpdate() override;
 
 	
-	class NodeAudioProcessorListener {
-	public:
-		virtual ~NodeAudioProcessorListener() {};
-		virtual void numAudioInputChanged(NodeBase *, int /*newNumInput*/) {};
-		virtual void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) {};
-	};
+	
 
-	ListenerList<NodeAudioProcessorListener> nodeAudioProcessorListeners;
-	void addNodeAudioProcessorListener(NodeAudioProcessorListener* newListener) { nodeAudioProcessorListeners.add(newListener); }
-	void removeNodeAudioProcessorListener(NodeAudioProcessorListener* listener) { nodeAudioProcessorListeners.remove(listener); }
-
+	
 
 	bool wasSuspended;
 	float lastVolume;
