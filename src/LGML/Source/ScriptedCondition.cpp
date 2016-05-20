@@ -72,5 +72,3 @@ void ScriptedCondition::reloadScript()
 {
 	loadScriptContent(codeDocument.getAllContent());
 }
-
-

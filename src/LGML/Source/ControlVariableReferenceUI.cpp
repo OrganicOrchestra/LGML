@@ -109,9 +109,9 @@ void ControlVariableReferenceUI::resized()
 	if (currentVariableParamUI != nullptr) currentVariableParamUI->setBounds(rUI);
 
 	if (removeBT.isVisible()) removeBT.setBounds(r.removeFromRight(r.getHeight()).reduced(2));
-	r.removeFromRight(2); 
+	r.removeFromRight(2);
 	if (aliasUI->isVisible()) aliasUI->setBounds(r.removeFromRight(r.getWidth()-100));
-	chooseBT.setBounds(r);	
+	chooseBT.setBounds(r);
 }
 
 void ControlVariableReferenceUI::referenceVariableChanged(ControlVariableReference *)

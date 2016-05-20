@@ -26,7 +26,7 @@ ScriptedConsequence::~ScriptedConsequence()
 
 void ScriptedConsequence::run()
 {
-	
+
 	RuleConsequence::run();
 
 	Array<var> args;
@@ -90,4 +90,3 @@ RuleConsequenceUI * ScriptedConsequence::createUI()
 {
 	return new ScriptedConsequenceUI(this);
 }
-

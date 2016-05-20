@@ -21,7 +21,7 @@ class  ControlVariableListener
 public:
 	/** Destructor. */
 	virtual ~ControlVariableListener() {}
-	
+
 	virtual void variableNameChanged(ControlVariable *) {};
 
 	virtual void askForRemoveVariable(ControlVariable *) {};

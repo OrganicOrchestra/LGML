@@ -97,7 +97,7 @@ DynamicObject * Controllable::createDynamicObject()
 }
 
 
-//STATIC 
+//STATIC
 
 
 var Controllable::setControllableValue(const juce::var::NativeFunctionArgs& a) {

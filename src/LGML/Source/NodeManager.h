@@ -36,7 +36,7 @@ public:
 
 	Array<NodeBase *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
 	OwnedArray<NodeConnection> connections;
-	
+
     void clear();
     int getNumNodes() const noexcept { return nodes.size(); }
 

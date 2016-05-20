@@ -15,7 +15,7 @@ CPlusPlusCodeTokeniser  JsLiveEditor::codeTokeniser;
 JsLiveEditor::JsLiveEditor(CodeDocument * document) :
 	CodeEditorComponent(*document,&codeTokeniser)
 {
-	
+
 }
 
 JsLiveEditor::~JsLiveEditor()

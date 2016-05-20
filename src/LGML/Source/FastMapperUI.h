@@ -24,7 +24,7 @@ public:
 	virtual void fastMapperContentChanged(FastMapperUI *) {}
 };
 
-class FastMapperUI : 
+class FastMapperUI :
 	public Component,
 	public FastMapperListener
 {
@@ -42,7 +42,7 @@ public:
 	void removeFastMapUI(FastMap *);
 
 	FastMapUI * getUIForFastMap(FastMap *);
-	 
+
 	const int mapHeight = 35;
 	const int gap = 5;
 	int getContentHeight();
@@ -63,13 +63,13 @@ public:
 
 };
 
-class FastMapperViewport : 
+class FastMapperViewport :
 	public ShapeShifterContent,
 	public FastMapperUIListener
 {
 public:
 	FastMapperViewport(const String &contentName, FastMapperUI * _fastMapperUI) :
-		fastMapperUI(_fastMapperUI), 
+		fastMapperUI(_fastMapperUI),
 		ShapeShifterContent(contentName)
 	{
 		vp.setViewedComponent(fastMapperUI, true);

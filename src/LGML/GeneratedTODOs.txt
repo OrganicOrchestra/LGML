@@ -8,21 +8,20 @@
 
 
 JsEnvironment.cpp
-	line : 284
+	line : 297
 		// @ben only supported if move semantics are too are they for you?
 
 
-NodeManager.cpp
-	line : 264
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
+LGMLLoggerUI.cpp
+	line : 33
+		//@martin problems here
 
-	line : 161
-		// TODO nicely handle file format errors?
+	line : 19
+		//@martin i did that so i could clear the log, but the scollbar still goes down after clearing
 
 
 EngineFileDocument.cpp
-	line : 101
+	line : 100
 		//    TODO check version Compat
 
 
@@ -32,11 +31,11 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 347
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-	line : 87
+	line : 88
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
+
+	line : 348
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
 VSTNode.cpp
@@ -73,11 +72,11 @@ JsGlobalEnvironment.cpp
 
 
 ShapeShifterContainer.cpp
-	line : 241
+	line : 287
 		//@ben what to we do for that?
 		//@martin never gonna happen :)
 
-	line : 126
+	line : 127
 		//@ben do we need to handle these?
 
 
@@ -113,7 +112,7 @@ NodeBase.cpp
 
 
 ControllableContainer.h
-	line : 112
+	line : 111
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -130,5 +129,14 @@ LooperTrack.cpp
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized
+
+
+NodeManager.cpp
+	line : 265
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
+
+	line : 162
+		// TODO nicely handle file format errors?
 
 

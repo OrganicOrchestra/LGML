@@ -33,7 +33,7 @@ isSelectingNodes(false)
 	{
 		addConnectionUI(c);
 	}
-	
+
 }
 
 NodeManagerUI::~NodeManagerUI()
@@ -60,7 +60,7 @@ void NodeManagerUI::clear()
 	{
 		removeNodeUI(nodesUI[0]->node);
 	}
-	
+
 }
 
 

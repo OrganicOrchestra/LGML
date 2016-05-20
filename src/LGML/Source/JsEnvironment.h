@@ -99,7 +99,7 @@ private:
     var localEnvironment;
     void internalLoadFile(const File &);
 
-	
+
     bool _hasValidJsFile;
 
 

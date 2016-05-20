@@ -28,7 +28,7 @@ public:
 	virtual void fastMapRemoved(FastMap *) {};
 };
 
-class FastMap : 
+class FastMap :
 	public ControllableContainer,
 	public ControlVariableReferenceListener,
 	public Controllable::Listener
@@ -38,7 +38,7 @@ public:
 	virtual ~FastMap();
 
 	BoolParameter * enabledParam;
-	
+
 	FloatParameter * minInputVal;
 	FloatParameter * maxInputVal;
 	FloatParameter * minOutputVal;
@@ -53,7 +53,7 @@ public:
 	void setReference(ControlVariableReference * r);
 	void setTarget(Controllable * c);
 
-	virtual var getJSONData() override;	
+	virtual var getJSONData() override;
 	virtual void loadJSONDataInternal(var data) override;
 
 	void remove();

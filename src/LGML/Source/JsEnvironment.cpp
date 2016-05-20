@@ -76,7 +76,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
     f.readLines(destLines);
     String jsString = destLines.joinIntoString("\n");
     currentFile = f;
-   
+
 	Result r = loadScriptContent(jsString);
 
     jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,(bool)r);

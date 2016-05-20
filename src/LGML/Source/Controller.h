@@ -17,8 +17,8 @@
 
 class ControllerUI;
 
-class Controller : 
-	public ControllableContainer, 
+class Controller :
+	public ControllableContainer,
 	public ControlVariableListener
 {
 public:

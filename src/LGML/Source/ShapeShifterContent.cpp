@@ -20,4 +20,3 @@ ShapeShifterContent::ShapeShifterContent(const String & _contentName) :
   ShapeShifterContent::~ShapeShifterContent()
   {
   }
-

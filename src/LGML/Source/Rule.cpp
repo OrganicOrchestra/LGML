@@ -170,8 +170,8 @@ void Rule::remove()
 var Rule::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
-	
-	
+
+
 	var refData;
 	for (auto &r : references) refData.append(r->getJSONData());
 	data.getDynamicObject()->setProperty("references", refData);

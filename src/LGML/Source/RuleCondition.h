@@ -16,7 +16,7 @@
 #include "Rule.h"
 
 
-class RuleCondition : 
+class RuleCondition :
 	public RuleListener
 {
 public:

@@ -33,7 +33,7 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 	setVisible(true);
 	toFront(true);
 
-	
+
 	addMouseListener(this,true);
 
 }
