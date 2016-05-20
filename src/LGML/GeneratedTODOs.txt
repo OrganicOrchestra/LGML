@@ -20,29 +20,24 @@ LGMLLoggerUI.cpp
 		//@martin i did that so i could clear the log, but the scollbar still goes down after clearing
 
 
-EngineFileDocument.cpp
-	line : 100
-		//    TODO check version Compat
-
-
 VuMeter.h
 	line : 15
 		//TODO, move to more common place for use in other components
 
 
 ControllableContainer.cpp
-	line : 402
+	line : 403
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 102
+	line : 103
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
 
 VSTNode.cpp
-	line : 94
+	line : 97
 		// TODO check that it actually works
 
-	line : 111
+	line : 114
 		//@Martin i addedd this because when not playing, it crashed
 		// @ben it is necessary
 		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
@@ -50,18 +45,18 @@ VSTNode.cpp
 
 
 LooperNode.cpp
-	line : 66
+	line : 67
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
 
 NodeConnectionEditor.cpp
-	line : 157
+	line : 156
 		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
 
-	line : 358
+	line : 357
 		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
@@ -92,8 +87,17 @@ ControllableInspector.cpp
 
 
 MIDIController.cpp
-	line : 83
+	line : 82
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
+
+
+NodeContainer.cpp
+	line : 304
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
+
+	line : 185
+		// TODO nicely handle file format errors?
 
 
 TimeManager.h
@@ -107,12 +111,12 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 143
+	line : 98
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
 ControllableContainer.h
-	line : 123
+	line : 125
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -129,14 +133,5 @@ LooperTrack.cpp
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized
-
-
-NodeManager.cpp
-	line : 265
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
-
-	line : 162
-		// TODO nicely handle file format errors?
 
 

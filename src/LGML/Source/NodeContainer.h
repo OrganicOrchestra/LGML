@@ -108,7 +108,7 @@ public:
 	virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) override;
 
 
-	virtual ConnectableNodeUI * createUI();
+	virtual ConnectableNodeUI * createUI() override;
 
 	//AUDIO 
 	

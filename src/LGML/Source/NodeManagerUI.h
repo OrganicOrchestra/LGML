@@ -40,7 +40,7 @@ public:
 
 	void setCurrentViewedContainer(NodeContainer * c);
     
-	void childBoundsChanged(Component * c);
+	void childBoundsChanged(Component * c)override;
 
 	class  NodeManagerUIListener
 	{
@@ -138,12 +138,12 @@ public :
 
     }
 
-	void currentViewedContainerChanged()
+	void currentViewedContainerChanged()override
 	{
 		reconstructViewerPath();
 	}
 
-	void buttonClicked(Button * b)
+	void buttonClicked(Button * b)override
 	{
 		int bIndex = pathButtons.indexOf((TextButton *)b);
 		if (bIndex == -1)
