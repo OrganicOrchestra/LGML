@@ -71,11 +71,11 @@ void Parameter::notifyValueChanged() {
 DynamicObject * Parameter::createDynamicObject()
 {
 	DynamicObject * dObject = Controllable::createDynamicObject();
-    static const Identifier jsGetIdentifier("get");
-	dObject->setMethod(jsGetIdentifier, Parameter::getValue);
+    static const Identifier _jsGetIdentifier("get");
+	dObject->setMethod(_jsGetIdentifier, Parameter::getValue);
     
-    static const Identifier jsSetIdentifier("set");
-    dObject->setMethod(jsSetIdentifier, setControllableValue);
+    static const Identifier _jsSetIdentifier("set");
+    dObject->setMethod(_jsSetIdentifier, setControllableValue);
 
 	return dObject;
 }

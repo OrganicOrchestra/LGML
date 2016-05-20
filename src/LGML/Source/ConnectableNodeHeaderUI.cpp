@@ -37,14 +37,8 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
 {
     if (node != nullptr)
 	{
-		if (node->hasAudioOutputs())
-		{
-			node->removeRMSListener(&vuMeterOut);
-		}
-		if (node->hasAudioInputs())
-		{
-			node->removeRMSListener(&vuMeterIn);
-		}
+		node->removeRMSListener(&vuMeterOut);
+		node->removeRMSListener(&vuMeterIn);
 
 		node->removeControllableContainerListener(this);
 		node->removeNodeListener(this);
