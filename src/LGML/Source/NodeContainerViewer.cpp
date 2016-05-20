@@ -129,6 +129,7 @@ ConnectableNodeUI * NodeContainerViewer::getUIForNode(ConnectableNode * node)
 
 void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
 {
+	DBG("Add Connection UI !");
 
 	if (getUIForConnection(connection) != nullptr)
 	{

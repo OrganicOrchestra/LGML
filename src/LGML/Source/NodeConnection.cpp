@@ -92,8 +92,12 @@ void NodeConnection::remove()
 var NodeConnection::getJSONData()
 {
     var data(new DynamicObject());
-    data.getDynamicObject()->setProperty("srcNode", sourceNode->shortName);
-    data.getDynamicObject()->setProperty("dstNode", destNode->shortName);
+	
+	ConnectableNode * tSource = (sourceNode->type == ContainerOutType) ? ((ContainerOutNode *)sourceNode)->getParentNodeContainer():sourceNode;
+	ConnectableNode * tDest = (destNode->type == ContainerInType) ? ((ContainerInNode *)destNode)->getParentNodeContainer() : destNode;
+
+    data.getDynamicObject()->setProperty("srcNode", tSource->shortName);
+    data.getDynamicObject()->setProperty("dstNode", tDest->shortName);
     data.getDynamicObject()->setProperty("connectionType", (int)connectionType);
 
     var links;
