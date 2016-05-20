@@ -266,7 +266,7 @@ void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float 
 	if (node == containerInNode) rmsInValue = _rmsInValue;
 	else if (node == containerOutNode) rmsOutValue = _rmsOutValue;
 
-	rmsListeners.call(&RMSListener::RMSChanged, this, rmsInValue, rmsOutValue);
+    rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, this, rmsInValue, rmsOutValue);
 }
 
 ConnectableNodeUI * NodeContainer::createUI()

@@ -28,7 +28,7 @@ public :
 
 	void resized() override;
 
-	void init();
+	void init()override;
 
 	void buttonClicked(Button * b) override;
 

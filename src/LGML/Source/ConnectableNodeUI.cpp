@@ -13,6 +13,11 @@
 #include "ContainerInNode.h"
 #include "ContainerOutNode.h"
 
+
+// needed because main component need to know it for its scopedPointer
+#include "FloatSliderUI.h"
+
+
 ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeContentUI * contentUI, ConnectableNodeHeaderUI * headerUI) :
 	InspectableComponent(cn),
 	connectableNode(cn),

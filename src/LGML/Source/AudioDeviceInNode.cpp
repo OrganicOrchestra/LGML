@@ -20,7 +20,7 @@ AudioDeviceInNode::AudioDeviceInNode() :
 	canHavePresets = false;
 	//hasMainAudioControl = false;
 
-	AudioProcessor::busArrangement.inputBuses.clear();
+    NodeBase::busArrangement.inputBuses.clear();
 	getAudioDeviceManager().addChangeListener(this);
 	this->updateIO();
 }

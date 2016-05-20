@@ -19,7 +19,7 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 {
 	canHavePresets = false;
 	
-	AudioProcessor::busArrangement.outputBuses.clear();
+	NodeBase::busArrangement.outputBuses.clear();
 
 	getAudioDeviceManager().addChangeListener(this);
 	updateIO();
