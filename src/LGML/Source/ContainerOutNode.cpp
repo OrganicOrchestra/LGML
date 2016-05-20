@@ -13,7 +13,7 @@
 #include "NodeBaseUI.h"
 
 ContainerOutNode::ContainerOutNode() :
-	NodeBase("Container Out", NodeType::UNKNOWN_TYPE)
+	NodeBase("Container Out", NodeType::ContainerOutType)
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;

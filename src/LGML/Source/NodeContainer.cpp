@@ -39,11 +39,11 @@ void NodeContainer::clear(bool recreateContainerNodes)
 	
 	connections.clear();
 
-	/*
+	
 	containerInNode = nullptr;
 	containerOutNode = nullptr;
 
-	if (recreateContainerNodes)
+	if (recreateContainerNodes && parentNodeContainer != nullptr)
 	{
 		containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
 		containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
@@ -51,7 +51,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 		containerInNode->addRMSListener(this);
 		containerOutNode->addRMSListener(this);
 	}
-	*/
+	
 }
 
 
@@ -64,7 +64,7 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType)
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n)
 {
 	nodes.add(n);
-
+	if (n->type == NodeType::ContainerType) nodeContainers.add((NodeContainer *)n);
 	n->addNodeListener(this);
 	n->nameParam->setValue(getUniqueNameInContainer(n->nameParam->stringValue()));
 	addChildControllableContainer(n); //ControllableContainer
@@ -89,6 +89,8 @@ bool NodeContainer::removeNode(ConnectableNode * n)
 
 	n->clear();
 	n->removeFromAudioGraph();
+
+	if (n->type == NodeType::ContainerType) nodeContainers.removeObject((NodeContainer*)n);
 
 	//if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(n->audioNode);
 

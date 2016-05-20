@@ -29,6 +29,7 @@ parentContainer(nullptr),
 hasCustomShortName(false),
 skipControllableNameInAddress(false),
 currentPreset(nullptr),
+canHavePresets(true),
 saveAndLoadRecursiveData(true),
 numContainerIndexed(0),
 localIndexedPosition(-1)

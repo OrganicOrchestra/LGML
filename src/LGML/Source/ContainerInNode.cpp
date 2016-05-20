@@ -12,7 +12,7 @@
 #include "NodeBaseUI.h"
 
 ContainerInNode::ContainerInNode() :
-	NodeBase("Container IN", NodeType::UNKNOWN_TYPE)
+	NodeBase("Container IN", NodeType::ContainerInType)
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;

@@ -53,15 +53,16 @@ public:
 	NodeContainer * parentNodeContainer;
 
 	//Container nodes, not removable by user, handled separately
-	ScopedPointer<ContainerInNode> containerInNode;
-	ScopedPointer<ContainerOutNode> containerOutNode;
+	ContainerInNode * containerInNode;
+	ContainerOutNode * containerOutNode;
 
 
 	//NODE AND CONNECTION MANAGEMENT
 
 	Array<ConnectableNode *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
 	OwnedArray<NodeConnection> connections;
-	
+	OwnedArray<NodeContainer> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
+
 	ConnectableNode* addNode(NodeType nodeType);
 	ConnectableNode* addNode(ConnectableNode * node);
 	bool removeNode(ConnectableNode * n);
