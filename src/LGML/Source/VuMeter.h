@@ -14,7 +14,7 @@
 #include "NodeBase.h"
 
 //TODO, move to more common place for use in other components
-class VuMeter : public Component, public NodeBase::RMSListener {
+class VuMeter : public Component, public NodeBase::RMSListener ,Timer{
 public:
 
 	enum Type { IN,OUT};
@@ -22,10 +22,14 @@ public:
     float voldB;
 	Type type;
 
+    bool volChanged;
+
     VuMeter(Type _type) : type(_type)
 	{
         setSize(8, 20);
         voldB = 0.f;
+        volChanged = true;
+        startTimer(1000/40);
     }
 
     ~VuMeter(){
@@ -61,8 +65,15 @@ public:
 	{
 		if (voldB == value) return;
 		voldB = value;
-		repaint();
+        volChanged = true;
+
 	}
+
+    void timerCallback()override{
+		if(volChanged)repaint();
+        volChanged = false;
+
+    }
 };
 
 
