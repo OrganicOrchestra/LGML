@@ -19,7 +19,7 @@
 #include "Trigger.h"
 #include "PresetManager.h"
 
-class ControllableContainerEditor;
+
 
 class ControllableContainer;
 

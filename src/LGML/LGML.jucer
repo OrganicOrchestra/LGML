@@ -97,14 +97,32 @@
         </GROUP>
         <GROUP id="{8440F8E7-BEB3-0DE2-3DB3-984C73FFB0F6}" name="legacy">
           <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
-            <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="1"
+            <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="0"
                   resource="0" file="Source/SelectableComponentHandler.cpp"/>
             <FILE id="cO1ryN" name="SelectableComponentHandler.h" compile="0" resource="0"
                   file="Source/SelectableComponentHandler.h"/>
             <FILE id="WugEBC" name="SelectableComponent.h" compile="0" resource="0"
                   file="Source/SelectableComponent.h"/>
-            <FILE id="z9jnyI" name="SelectableComponent.cpp" compile="1" resource="0"
+            <FILE id="z9jnyI" name="SelectableComponent.cpp" compile="0" resource="0"
                   file="Source/SelectableComponent.cpp"/>
+          </GROUP>
+          <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
+            <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="0"
+                  resource="0" file="Source/ControllableContainerEditor.cpp"/>
+            <FILE id="QNpqO3" name="ControllableContainerEditor.h" compile="0"
+                  resource="0" file="Source/ControllableContainerEditor.h"/>
+            <FILE id="FIR3Kt" name="ControllableContainerSync.cpp" compile="0"
+                  resource="0" file="Source/ControllableContainerSync.cpp"/>
+            <FILE id="ptJrDO" name="ControllableContainerSync.h" compile="0" resource="0"
+                  file="Source/ControllableContainerSync.h"/>
+            <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="0" resource="0"
+                  file="Source/ControllableInspector.cpp"/>
+            <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
+                  file="Source/ControllableInspector.h"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
+          <GROUP id="{B3184894-4077-D17A-2E3F-67A560988CD7}" name="ui">
             <FILE id="YpRfx9" name="ControllableUI.cpp" compile="1" resource="0"
                   file="Source/ControllableUI.cpp"/>
             <FILE id="wsPUhO" name="ControllableUI.h" compile="0" resource="0"
@@ -119,24 +137,6 @@
                   file="Source/TriggerButtonUI.h"/>
             <FILE id="OUrAS4" name="TriggerUI.cpp" compile="1" resource="0" file="Source/TriggerUI.cpp"/>
             <FILE id="E4MhHL" name="TriggerUI.h" compile="0" resource="0" file="Source/TriggerUI.h"/>
-          </GROUP>
-          <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
-            <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="1"
-                  resource="0" file="Source/ControllableContainerEditor.cpp"/>
-            <FILE id="QNpqO3" name="ControllableContainerEditor.h" compile="0"
-                  resource="0" file="Source/ControllableContainerEditor.h"/>
-            <FILE id="FIR3Kt" name="ControllableContainerSync.cpp" compile="1"
-                  resource="0" file="Source/ControllableContainerSync.cpp"/>
-            <FILE id="ptJrDO" name="ControllableContainerSync.h" compile="0" resource="0"
-                  file="Source/ControllableContainerSync.h"/>
-            <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="1" resource="0"
-                  file="Source/ControllableInspector.cpp"/>
-            <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
-                  file="Source/ControllableInspector.h"/>
-          </GROUP>
-        </GROUP>
-        <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
-          <GROUP id="{B3184894-4077-D17A-2E3F-67A560988CD7}" name="ui">
             <FILE id="u5Rdja" name="ControllableHelpers.cpp" compile="1" resource="0"
                   file="Source/ControllableHelpers.cpp"/>
             <FILE id="SYJSuB" name="ControllableHelpers.h" compile="0" resource="0"
