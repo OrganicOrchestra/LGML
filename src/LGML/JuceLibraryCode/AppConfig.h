@@ -19,6 +19,7 @@
 
 // (You can add your own code in this section, and the Projucer will not overwrite it)
 
+#define LGML_UNIT_TESTS 0
 // [END_USER_CODE_SECTION]
 
 //==============================================================================

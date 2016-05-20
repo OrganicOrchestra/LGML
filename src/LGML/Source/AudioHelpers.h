@@ -81,7 +81,8 @@ class RingBuffer{
 public:
 
     RingBuffer(int size):ringSize(size),writeNeedle(0),contiguousWriteNeedle(0){
-        buf.setSize(1, size);
+        buf.setSize(2, size);
+        buf.clear();
 
     }
     AudioSampleBuffer buf;
@@ -121,7 +122,7 @@ public:
             updateContiguousBuffer(num);
         }
         else{
-            DBG("alreadyComputed");
+
         }
         return contiguousBuffer.getReadPointer(channel);
     }
@@ -131,7 +132,7 @@ private:
 
     void updateContiguousBuffer(int num){
 
-        jassert(num < (int)ringSize);
+        jassert(num <= (int)ringSize);
         contiguousBuffer.setSize(buf.getNumChannels(),num);
         int startIdx = writeNeedle-num;
         if(startIdx>=0){
@@ -155,7 +156,77 @@ private:
 };
 
 
+//==============================================================================
+//==============================================================================
+#if LGML_UNIT_TESTS
 
+class RingBufferTest  : public UnitTest
+{
+public:
+    RingBufferTest() : UnitTest ("Ring buffer Test") {}
+
+
+
+    void runTest() override
+    {
+        beginTest ("RingBufferTest");
+
+
+        int numBlocks = 2;
+        int blockSize = 512;
+        int numChannels = 2;
+
+        int ringSize = numBlocks*blockSize;
+        int copiedSize = (numBlocks+2)*(blockSize);
+
+
+        RingBuffer ring(ringSize);
+
+        AudioBuffer<float> tstBuf;
+        tstBuf.setSize(numChannels,blockSize);
+
+        AudioBuffer<float> expected;
+        expected.setSize(numChannels,ringSize);
+
+
+        for (int i = 0 ; i < copiedSize ; i++){
+
+            float dstValue = i;
+            for (int c = 0 ;  c < numChannels ; c++){
+                tstBuf.setSample(c, i%blockSize, dstValue);
+
+            }
+            if((i+1)%blockSize ==0){
+                ring.writeBlock(tstBuf);
+            }
+
+            if(i-(copiedSize - ringSize)>=0){
+                for (int c = 0 ;  c < numChannels ; c++){
+                    expected.setSample(c, i-(copiedSize - ringSize), dstValue);
+                }
+            }
+
+
+        }
+
+
+        for(int c = 0  ;c < numChannels ; c++){
+            const float * ptr = ring.getLastBlock(ringSize,c);
+            for(int i = 0 ; i < expected.getNumSamples() ;i++){
+                    float fexpected =  expected.getSample(c, i);
+                    float found = ptr[i];
+                    expect(found == fexpected ,
+                           "failed at :"+String(i)+ ",expect: "+String(fexpected)+"found: "+String(found) );
+                    
+
+            }
+        }
+    }
+};
+
+static RingBufferTest ringBufferTest;
+
+#endif
 
 
 

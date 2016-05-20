@@ -28,6 +28,12 @@ public:
     void initialise (const String& commandLine) override
     {
         // This method is where you should put your application's initialisation code..
+
+#ifdef LGML_UNIT_TESTS
+        UnitTestRunner tstRunner;
+        tstRunner.runAllTests();
+
+#else
         PropertiesFile::Options options;
         options.applicationName     = "LGML";
         options.filenameSuffix      = "settings";
@@ -43,7 +49,7 @@ public:
 
         engine->parseCommandline(commandLine);
 
-
+#endif
 
     }
 
