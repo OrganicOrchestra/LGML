@@ -141,6 +141,18 @@ public:
     void removeControllableContainerListener(ControllableContainerListener* listener) { controllableContainerListeners.remove(listener);}
 
 
+
+protected :
+
+    /// identifiers
+
+    static const Identifier presetIdentifier;
+    static const Identifier paramIdentifier;
+
+    static const Identifier controlAddressIdentifier;
+    static const Identifier valueIdentifier;
+
+
 private:
 
 
@@ -148,6 +160,10 @@ private:
 
     WeakReference<ControllableContainer>::Master masterReference;
     friend class WeakReference<ControllableContainer>;
+
+
+
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableContainer)
 

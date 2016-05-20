@@ -17,7 +17,7 @@ static const Identifier jsLocalIdentifier("local");
 static const Identifier jsGlobalIdentifier("lgml");
 static const Identifier jsPtrIdentifier("_ptr");
 static const Identifier jsGetIdentifier("get");
-static const Identifier jsTriggerIdentifier("t");
+static const Identifier jsTriggerIdentifier("trigger");
 static const Identifier jsSetIdentifier("set");
 static const Identifier jsArrayIdentifier("elements");
 

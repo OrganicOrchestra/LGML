@@ -13,6 +13,17 @@
 #include "ControllableContainerEditor.h"
 #include "ControllableUI.h"
 
+
+
+
+const Identifier ControllableContainer::presetIdentifier("preset");
+const Identifier ControllableContainer::paramIdentifier("parameters");
+
+
+const Identifier ControllableContainer::controlAddressIdentifier("controlAddress");
+const Identifier ControllableContainer::valueIdentifier("value");
+
+
 ControllableContainer::ControllableContainer(const String & niceName) :
 parentContainer(nullptr),
 hasCustomShortName(false),
@@ -439,8 +450,8 @@ var ControllableContainer::getJSONData()
         if (base)
         {
             var pData(new DynamicObject());
-            pData.getDynamicObject()->setProperty("controlAddress", base->getControlAddress(this));
-            pData.getDynamicObject()->setProperty("value", base->value);
+            pData.getDynamicObject()->setProperty(controlAddressIdentifier, base->getControlAddress(this));
+            pData.getDynamicObject()->setProperty(valueIdentifier, base->value);
             paramsData.append(pData);
         }
         else if (dynamic_cast<Trigger*>(c) != nullptr) {
@@ -454,10 +465,12 @@ var ControllableContainer::getJSONData()
 
     if (currentPreset != nullptr)
     {
-        data.getDynamicObject()->setProperty("preset", currentPreset->name);
+
+        data.getDynamicObject()->setProperty(presetIdentifier, currentPreset->name);
     }
 
-    data.getDynamicObject()->setProperty("parameters", paramsData);
+
+    data.getDynamicObject()->setProperty(paramIdentifier, paramsData);
 
     return data;
 }
@@ -466,23 +479,23 @@ void ControllableContainer::loadJSONData(var data)
 {
 
 
-	if (data.getDynamicObject()->hasProperty("preset"))
+	if (data.getDynamicObject()->hasProperty(presetIdentifier))
 	{
 		loadPreset(PresetManager::getInstance()->getPreset(getPresetFilter(), data.getDynamicObject()->getProperty("preset")));
 	}
 
-	Array<var> * paramsData = data.getDynamicObject()->getProperty("parameters").getArray();
+	Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();
 
 	if (paramsData != nullptr)
 	{
 		for (var &pData : *paramsData)
 		{
-			String pControlAddress = pData.getDynamicObject()->getProperty("controlAddress");
+			String pControlAddress = pData.getDynamicObject()->getProperty(controlAddressIdentifier);
 
 			Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
 
 			if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-				p->setValue(pData.getDynamicObject()->getProperty("value"));
+				p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
 			}
 			else {
 				DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");
