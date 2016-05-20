@@ -35,7 +35,7 @@ public:
 	virtual ~FastMapper();
 
 	OwnedArray<FastMap> maps;
-	
+
 	void clear();
 
 	FastMap * addFastMap();

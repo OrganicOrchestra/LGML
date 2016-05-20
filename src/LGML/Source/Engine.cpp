@@ -111,7 +111,7 @@ void Engine::clear(){
 	ControllerManager::getInstance()->clear();
     NodeManager::getInstance()->clear();
     PresetManager::getInstance()->clear();
-	
+
 
     changed();    //fileDocument
 }

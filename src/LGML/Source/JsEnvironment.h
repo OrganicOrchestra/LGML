@@ -99,7 +99,7 @@ private:
     var localEnvironment;
     void internalLoadFile(const File &);
 
-	
+
     bool _hasValidJsFile;
 
 
@@ -115,12 +115,12 @@ private:
     //         on_track3_rec / on_track3_clear / on_track3_pause / on_track3_play /
     //         on_track4_rec / on_track4_clear / on_track4_pause / on_track4_play /
 
-    // would need only 1+5+4 = 9 Identifier instead of 16 and so on when possible combinations grows
+    // would need only 1+5+4 = 9 Strings instead of 16 and so on when possible combinations grows
 
 
     class FunctionIdentifier{
     public:
-        FunctionIdentifier(const String & s):originString(s)
+        FunctionIdentifier(const String & s)
 		{
             StringArray arr;
             arr.addTokens(s,"_","");
@@ -145,8 +145,7 @@ private:
             return true;
 
         }
-        StringArray splitedName;
-        String originString;
+        Array<String> splitedName;
     };
     Array<FunctionIdentifier> userDefinedFunctions;
 

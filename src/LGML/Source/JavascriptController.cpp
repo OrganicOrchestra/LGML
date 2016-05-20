@@ -116,8 +116,9 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
 
 DynamicObject * JavascriptController::createOSCJsObject(){
     DynamicObject * d = new DynamicObject();
-    d->setProperty(ptrIdentifier, (int64)this);
-    d->setMethod("send", sendOSCFromJS);
+    d->setProperty(jsPtrIdentifier, (int64)this);
+    static const Identifier jsSendIdentifier("send");
+    d->setMethod(jsSendIdentifier, sendOSCFromJS);
     return d;
 
 };

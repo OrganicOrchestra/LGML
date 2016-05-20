@@ -36,7 +36,7 @@ void JsEnvironment::clearNamespace(){
     for(int i = 0 ; i < jsEngine.getRootObjectProperties().size() ; i++){
         if(!jsEngine.getRootObjectProperties().getVarPointerAt(i)->isMethod()){
             Identifier id = jsEngine.getRootObjectProperties().getName(i);
-            if(!coreJsClasses.contains(id)){
+            if(!jsCoreClasses.contains(id)){
                 jsEngine.registerNativeObject(id, nullptr);
             }
 
@@ -76,7 +76,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
     f.readLines(destLines);
     String jsString = destLines.joinIntoString("\n");
     currentFile = f;
-   
+
 	Result r = loadScriptContent(jsString);
 
     jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,(bool)r);
@@ -246,10 +246,7 @@ void JsEnvironment::checkUserControllableEventFunction(){
     }
     listenedTriggers.clear();
 
-    StringArray userDefinedFunction;
     NamedValueSet root = getRootObjectProperties();
-
-
     Array<FunctionIdentifier*> functionNamespaces;
 
     for(auto & f:userDefinedFunctions){
@@ -265,12 +262,13 @@ void JsEnvironment::checkUserControllableEventFunction(){
     for(auto & candidate:candidates){
         Array<StringArray> concernedMethods ;
         for(auto & f:functionNamespaces){
-            if(candidate->shortName == f->splitedName[1]){
-                StringArray localName = f->splitedName;
-                // remove on
-                localName.remove(0);
-                //remove candidate Name
-                localName.remove(0);
+            if(f->splitedName.size()>2 && (candidate->shortName == f->splitedName[1]) ){
+                StringArray localName;
+                // remove on and candidate Name
+                for(int i  = 2 ; i < f->splitedName.size() ; i++){
+                    localName.add(f->splitedName.getUnchecked(i));
+                }
+
 
                 Controllable * c = candidate->getControllableForAddress(localName);
                 if(Parameter * p = dynamic_cast<Parameter*>(c))

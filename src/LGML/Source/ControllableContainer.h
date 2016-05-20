@@ -72,6 +72,18 @@ public:
 
     void addChildControllableContainer(ControllableContainer * container);
     void removeChildControllableContainer(ControllableContainer *container);
+    // add indexed container (ensure localIndex and position in the child container array are the same)
+    // idx of -1 add after the ast indexed (may be not the last, array can contain other non indexed elements)
+    void addChildIndexedControllableContainer(ControllableContainer * container,int idx = -1);
+    void removeChildIndexedControllableContainer(int idx);
+    int getNumberOfIndexedContainer();
+    int getIndexedPosition();
+    bool hasIndexedContainers();
+    bool isIndexedContainer();
+    // can be overriden if indexed container are removed from the middle of the list,
+    // allowing Indexed containers to react to index change
+    virtual void localIndexChanged();
+
     ControllableContainer * getControllableContainerByName(const String &name, bool searchNiceNameToo = false);
 
 
@@ -120,12 +132,27 @@ private:
     virtual void onContainerTriggerTriggered(Trigger *) {};
     void addParameterInternal(Parameter * p);
 
+    int numContainerIndexed;
+    int localIndexedPosition;
+
 public:
 
 
     ListenerList<ControllableContainerListener> controllableContainerListeners;
     void addControllableContainerListener(ControllableContainerListener* newListener) { controllableContainerListeners.add(newListener);}
     void removeControllableContainerListener(ControllableContainerListener* listener) { controllableContainerListeners.remove(listener);}
+
+
+
+protected :
+
+    /// identifiers
+
+    static const Identifier presetIdentifier;
+    static const Identifier paramIdentifier;
+
+    static const Identifier controlAddressIdentifier;
+    static const Identifier valueIdentifier;
 
 
 private:
@@ -135,6 +162,10 @@ private:
 
     WeakReference<ControllableContainer>::Master masterReference;
     friend class WeakReference<ControllableContainer>;
+
+
+
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableContainer)
 

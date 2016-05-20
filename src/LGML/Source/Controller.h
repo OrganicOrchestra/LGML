@@ -17,8 +17,8 @@
 
 class ControllerUI;
 
-class Controller : 
-	public ControllableContainer, 
+class Controller :
+	public ControllableContainer,
 	public ControlVariableListener
 {
 public:
@@ -69,6 +69,9 @@ public:
     void addControllerListener(ControllerListener* newListener) { controllerListeners.add(newListener); }
     void removeControllerListener(ControllerListener* listener) { controllerListeners.remove(listener); }
 
+
+    // identifiers
+    static const Identifier controllerTypeIdentifier;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)
 };

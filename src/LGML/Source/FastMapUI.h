@@ -18,7 +18,7 @@
 
 
 
-class FastMapUI : 
+class FastMapUI :
 	public Component,
 	public FastMapListener,
 	public  ControllableChooser::Listener,
@@ -51,7 +51,7 @@ public:
 
 	virtual void fastMapTargetChanged(FastMap *) override;
 	void buttonClicked(Button * b) override;
-	
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapUI)
 

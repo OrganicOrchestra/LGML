@@ -49,7 +49,7 @@ Controllable * ControllableContainerPopupMenu::showAndGetControllable()
 	int result = show();
 
 	if (result == 0) return nullptr;
-	
+
 	return controllableList[result-1];
 }
 

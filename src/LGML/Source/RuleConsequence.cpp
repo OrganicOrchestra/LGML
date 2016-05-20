@@ -9,9 +9,9 @@
 */
 
 #include "RuleConsequence.h"
-#include "RuleConsequenceUI.h" 
+#include "RuleConsequenceUI.h"
 
-RuleConsequence::RuleConsequence(Rule * r) : 
+RuleConsequence::RuleConsequence(Rule * r) :
 	rule(r)
 {
 	rule->addRuleListener(this);

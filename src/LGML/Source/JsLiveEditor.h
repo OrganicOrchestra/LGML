@@ -14,7 +14,7 @@
 #include "JuceHeader.h"
 #include "JsEnvironment.h"
 
-class JsLiveEditor : 
+class JsLiveEditor :
 	public CodeEditorComponent
 {
 public:
@@ -22,7 +22,7 @@ public:
 	virtual ~JsLiveEditor();
 
 	static CPlusPlusCodeTokeniser codeTokeniser;
-	
+
 };
 
 

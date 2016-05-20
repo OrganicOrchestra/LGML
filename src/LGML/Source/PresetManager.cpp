@@ -23,7 +23,7 @@ PresetManager::~PresetManager()
     presets.clear();
 }
 
-PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const String &name, String filter, ControllableContainer * container, bool recursive, bool includeNotExposed)
+PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const String &name, const String & filter, ControllableContainer * container, bool recursive, bool includeNotExposed)
 {
     //Array<PresetValue *> vPresets;
     Preset * pre = new Preset(name,filter);

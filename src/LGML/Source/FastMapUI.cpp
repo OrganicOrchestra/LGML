@@ -29,7 +29,7 @@ FastMapUI(FastMap * f) :
 	maxInputUI = fastMap->maxInputVal->createSlider();
 	minOutputUI = fastMap->minOutputVal->createSlider();
 	maxOutputUI = fastMap->maxOutputVal->createSlider();
-	
+
 	addAndMakeVisible(refUI);
 	addAndMakeVisible(chooseTargetBT);
 	addAndMakeVisible(minInputUI);
@@ -72,7 +72,7 @@ void FastMapUI::resized()
 	int h = r.getHeight();
 	refUI->setBounds(r.removeFromLeft((int)(w*.3f)));
 	chooseTargetBT.setBounds(r.removeFromRight((int)(w*.2f)).reduced(2,3));
-	
+
 	Rectangle<int> inR = r.removeFromLeft((int)(w*.2f));
 	minInputUI->setBounds(inR.removeFromTop((int)(h*.4f)));
 	maxInputUI->setBounds(inR.removeFromBottom((int)(h*.4f)));
@@ -110,5 +110,3 @@ void FastMapUI::buttonClicked(Button * b)
 {
 	if(b == &removeBT) fastMap->remove();
 }
-
- 

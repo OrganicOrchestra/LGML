@@ -36,7 +36,7 @@ public:
 
 	RuleUI * getUIForRule(Rule * r);
 
-	
+
 	// Inherited via Listener
 	virtual void ruleAdded(Rule *) override;
 	virtual void ruleRemoved(Rule *) override;

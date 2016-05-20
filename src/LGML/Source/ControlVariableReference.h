@@ -26,11 +26,11 @@ public:
 	virtual void referenceVariableNameChanged(ControlVariableReference *) {};
 	virtual void referenceValueChanged(ControlVariableReference *) {};
 	virtual void referenceAliasChanged(ControlVariableReference *) {};
-	
+
 };
 
 
-class ControlVariableReference : 
+class ControlVariableReference :
 	public ControllableContainer,
 	public ControlVariableListener
 {
@@ -40,7 +40,7 @@ public:
 
 	StringParameter * alias;
 	ControlVariable * currentVariable;
-	
+
 	var getValue();
 
 	void setCurrentVariable(ControlVariable * v);
@@ -51,7 +51,7 @@ public:
 
 	virtual var getJSONData() override;
 	virtual void loadJSONDataInternal(var data) override;
-	
+
 	virtual void variableRemoved(ControlVariable *) override;
 	virtual void variableNameChanged(ControlVariable *) override;
 

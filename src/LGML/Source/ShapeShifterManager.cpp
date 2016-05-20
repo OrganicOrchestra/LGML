@@ -60,9 +60,9 @@ ShapeShifterPanel * ShapeShifterManager::getPanelForContentName(const String & n
 ShapeShifterPanel * ShapeShifterManager::createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab)
 {
 	ShapeShifterPanel * panel = new ShapeShifterPanel(content,sourceTab);
-	
+
 	//if(content != nullptr) panel->setSize(content->getWidth(), content->getHeight());
-	
+
 	panel->addShapeShifterPanelListener(this);
 	openedPanels.add(panel);
 	return panel;
@@ -92,7 +92,7 @@ ShapeShifterWindow * ShapeShifterManager::showPanelWindowForContent(PanelName pa
 	ShapeShifterPanel * newP = createPanel(c);
 	Rectangle<int> r(300, 500);
 	ShapeShifterWindow * w = showPanelWindow(newP, r);
-	return w;	
+	return w;
 }
 
 void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window, bool doRemovePanel)
@@ -101,7 +101,7 @@ void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window, bool doR
 	window->removeFromDesktop();
 	if (doRemovePanel) removePanel(window->panel);
 	openedWindows.removeObject(window, true);
-	
+
 }
 
 ShapeShifterPanel * ShapeShifterManager::checkCandidateTargetForPanel(ShapeShifterPanel * panel)
@@ -173,7 +173,7 @@ var ShapeShifterManager::getCurrentLayout()
 	DynamicObject * d = new DynamicObject();
 	var layout(d);
 	d->setProperty("mainLayout", mainContainer.getCurrentLayout());
-	
+
 	var wData;
 	for (auto &w : openedWindows)
 	{
@@ -192,7 +192,7 @@ void ShapeShifterManager::loadLayoutFromFile(int fileIndexInLayoutFolder)
 	{
 		destDir.createDirectory();
 	}
-	
+
 	File layoutFile;
 	if (fileIndexInLayoutFolder == -1)
 	{
@@ -206,7 +206,7 @@ void ShapeShifterManager::loadLayoutFromFile(int fileIndexInLayoutFolder)
 		layoutFile = layoutFiles[fileIndexInLayoutFolder];
 	}
 
-	
+
 	ScopedPointer<InputStream> is(layoutFile.createInputStream());
 	var data = JSON::parse(*is);
 	loadLayout(data);
@@ -341,7 +341,7 @@ void ShapeShifterManager::handleMenuPanelCommand(int commandID)
 	}else
 	{
 		ShapeShifterContent * c = ShapeShifterFactory::createContentForIndex((PanelName)relCommandID);
-		
+
 		if (c == nullptr) return;
 
 		ShapeShifterPanel * newP = createPanel(c);

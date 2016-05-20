@@ -20,7 +20,8 @@ juce_ImplementSingleton(JsGlobalEnvironment);
 
 JsGlobalEnvironment::JsGlobalEnvironment(){
     env = new DynamicObject();
-    getEnv()->setMethod("post", JsGlobalEnvironment::post);
+    static const Identifier jsPostIdentifier("post");
+    getEnv()->setMethod(jsPostIdentifier, JsGlobalEnvironment::post);
 
     // default in global namespace
     linkToControllableContainer("time",TimeManager::getInstance());

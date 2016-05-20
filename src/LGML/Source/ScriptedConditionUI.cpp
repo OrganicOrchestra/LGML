@@ -36,4 +36,3 @@ void ScriptedConditionUI::buttonClicked(Button * b)
 {
 	if (b == &reloadBT) scriptedCondition->reloadScript();
 }
-

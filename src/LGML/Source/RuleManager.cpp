@@ -80,7 +80,7 @@ void RuleManager::loadJSONDataInternal(var data)
 	clear();
 
 	Array<var> * rulesData = data.getDynamicObject()->getProperty("rules").getArray();
-	
+
 	if (rulesData != nullptr)
 	{
 		for (auto &rData : *rulesData)

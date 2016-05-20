@@ -69,9 +69,12 @@ void MIDIController::onContainerParameterChanged(Parameter * p){
 
 void MIDIController::buildLocalEnv(){
     DynamicObject obj;
-    obj.setMethod("sendCC", sendCC);
-    obj.setProperty(ptrIdentifier, (int64)this);
-    obj.setMethod("sendNoteOnFor", sendNoteOnFor);
+    static const Identifier jsSendCCIdentifier("sendCC");
+    obj.setMethod(jsSendCCIdentifier, sendCC);
+    obj.setProperty(jsPtrIdentifier, this);
+
+    static const Identifier jsSendNoteOnForIdentifier("sendNoteOnFor");
+    obj.setMethod(jsSendNoteOnForIdentifier, sendNoteOnFor);
     setLocalNamespace(obj);
 
 };

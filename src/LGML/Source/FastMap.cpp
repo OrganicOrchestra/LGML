@@ -42,7 +42,7 @@ void FastMap::process()
 
 	float sourceVal = (float)reference->getValue();
 	if (target == nullptr) return;
-	
+
 	bool newIsInRange = (sourceVal >= minInputVal->floatValue() && sourceVal < maxInputVal->floatValue());
 
 	if (target->type == Controllable::TRIGGER)
@@ -118,7 +118,7 @@ void FastMap::loadJSONDataInternal(var data)
 
 	//Need to be global
 	cAddress = cAddress.substring(1);
-	
+
 	setTarget(NodeManager::getInstance()->getControllableForAddress(cAddress));
 }
 

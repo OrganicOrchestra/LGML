@@ -58,7 +58,7 @@ public:
 	void referenceValueChanged(ControlVariableReference * r) override;
 
 	void conditionActivationChanged(RuleCondition * c) override;
-	
+
 	bool isActive();
 
 	void clear();

@@ -118,4 +118,3 @@ void ControlVariableReference::variableNameChanged(ControlVariable *)
 {
 	referenceListeners.call(&ControlVariableReferenceListener::referenceVariableNameChanged, this);
 }
-

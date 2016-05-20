@@ -15,8 +15,8 @@
 #include "RuleListeners.h"
 #include "ControllableContainer.h"
 
-class RuleManager : 
-	public RuleListener, 
+class RuleManager :
+	public RuleListener,
 	public ControllableContainer
 {
 public:

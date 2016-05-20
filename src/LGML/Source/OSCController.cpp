@@ -10,6 +10,7 @@
 
 #include "OSCController.h"
 #include "OSCControllerUI.h"
+#include "DebugHelpers.h"
 
 OSCController::OSCController(const String &_name) :
     Controller(_name)
@@ -37,14 +38,19 @@ void OSCController::setupReceiver()
 {
    // DBG("setupReceiver");
     receiver.disconnect();
-    receiver.connect(localPortParam->stringValue().getIntValue());
+
+    if(!receiver.connect(localPortParam->stringValue().getIntValue())){
+        LOG("can't connect to local port : " +localPortParam->stringValue());
+    };
     //DBG("Receiver connected" + String(result));
 }
 void OSCController::setupSender()
 {
     //DBG("Resetup sender with " << remoteHostParam->stringValue() << ":" << remotePortParam->stringValue().getIntValue());
     sender.disconnect();
-    sender.connect(remoteHostParam->stringValue(), remotePortParam->stringValue().getIntValue());
+    if(!sender.connect(remoteHostParam->stringValue(), remotePortParam->stringValue().getIntValue())){
+        LOG("can't connect to send port : " +remoteHostParam->stringValue()+":"+ remotePortParam->stringValue());
+    };
 }
 
 void OSCController::processMessage(const OSCMessage & msg)

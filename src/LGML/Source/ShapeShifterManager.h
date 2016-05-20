@@ -24,7 +24,7 @@ public:
 	virtual ~ShapeShifterManager();
 
 	ShapeShifterContainer mainContainer;
-	
+
 	OwnedArray<ShapeShifterPanel> openedPanels;
 	OwnedArray<ShapeShifterWindow> openedWindows;
 

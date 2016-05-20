@@ -88,7 +88,7 @@ public:
 
 	//Script set method handling
 	static var setControllableValue(const juce::var::NativeFunctionArgs& a);
-	
+
 private:
 
     WeakReference<Controllable>::Master masterReference;

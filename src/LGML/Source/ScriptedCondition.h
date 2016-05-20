@@ -14,15 +14,15 @@
 #include "RuleCondition.h"
 #include "JsEnvironment.h"
 
-class ScriptedCondition : 
-	public RuleCondition, 
+class ScriptedCondition :
+	public RuleCondition,
 	public JsEnvironment
 {
 public :
 	ScriptedCondition(Rule * r);
 	virtual ~ScriptedCondition();
 
-	
+
 	CodeDocument codeDocument;
 
     virtual bool evaluateInternal() override;
@@ -40,7 +40,7 @@ public :
 
 
 };
-	
+
 
 
 

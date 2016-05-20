@@ -28,14 +28,15 @@ bool ScriptedCondition::evaluateInternal()
 {
 	//Evaluate script
 	Array<var> args;
-	var result = callFunctionFromIdentifier(Identifier("evaluate"), args);
+    static const Identifier evalIdentifier("evaluate");
+	var result = callFunctionFromIdentifier(evalIdentifier, args);
 	return (bool)result;
 }
 
 void ScriptedCondition::buildLocalEnv()
 {
 	DynamicObject obj;
-	obj.setProperty(ptrIdentifier, (int64)this);
+	obj.setProperty(jsPtrIdentifier, (int64)this);
 	for (auto &r : rule->references)
 	{
 		if (r->currentVariable == nullptr) continue;
@@ -72,5 +73,3 @@ void ScriptedCondition::reloadScript()
 {
 	loadScriptContent(codeDocument.getAllContent());
 }
-
-

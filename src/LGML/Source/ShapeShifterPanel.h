@@ -33,7 +33,7 @@ public:
 
 	bool transparentBackground;
 	bool targetMode;
-	
+
 	Point<float> candidateTargetPoint;
 	AttachZone candidateZone;
 
@@ -42,7 +42,7 @@ public:
 	void setCurrentContent(ShapeShifterContent * content);
 	void setCurrentContent(const String &name);
 
-	
+
 	void paint(Graphics & g) override;
 	void paintOverChildren(Graphics & g) override;
 	void resized() override;
@@ -65,7 +65,7 @@ public:
 	ShapeShifterContent * getContentForName(const String &name);
 
 	bool isFlexible() override;
-	
+
 	//Attach helpers
 
 	AttachZone checkAttachZone(ShapeShifterPanel * source);
@@ -73,7 +73,7 @@ public:
 
 	virtual var getCurrentLayout() override;
 	virtual void loadLayoutInternal(var layout) override;
-	
+
 	virtual void tabDrag(ShapeShifterPanelTab *) override;
 	virtual void tabSelect(ShapeShifterPanelTab *) override;
 	virtual void headerDrag() override;

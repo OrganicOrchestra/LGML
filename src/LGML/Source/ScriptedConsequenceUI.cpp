@@ -40,4 +40,3 @@
   {
 	  if (b == &reloadBT) scriptedConsequence->reloadScript();
   }
-

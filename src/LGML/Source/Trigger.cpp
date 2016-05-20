@@ -38,8 +38,8 @@ ControllableUI * Trigger::createDefaultUI(){
 DynamicObject * Trigger::createDynamicObject()
 {
 	DynamicObject* dObject = Controllable::createDynamicObject();
-	dObject->setMethod("trigger", setControllableValue);
-	dObject->setProperty(ptrIdentifier, (int64)this);
-	
+	dObject->setMethod(jsTriggerIdentifier, setControllableValue);
+	dObject->setProperty(jsPtrIdentifier, (int64)this);
+
 	return dObject;
 }

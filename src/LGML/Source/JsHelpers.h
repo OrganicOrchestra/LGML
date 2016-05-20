@@ -12,11 +12,16 @@
 #define JSHELPERS_H_INCLUDED
 
 
-
+// static identifier allowing fast instanciation of js namespace identifiers
 static const Identifier jsLocalIdentifier("local");
 static const Identifier jsGlobalIdentifier("lgml");
-static const Identifier ptrIdentifier("_ptr");
-static const Array<Identifier> coreJsClasses = {
+static const Identifier jsPtrIdentifier("_ptr");
+static const Identifier jsGetIdentifier("get");
+static const Identifier jsTriggerIdentifier("trigger");
+static const Identifier jsSetIdentifier("set");
+static const Identifier jsArrayIdentifier("elements");
+
+static const Array<Identifier> jsCoreClasses = {
     jsLocalIdentifier,
     jsGlobalIdentifier,
     Identifier("Object"),
@@ -33,7 +38,7 @@ template<class T>
 inline T* getObjectPtrFromJS(const var::NativeFunctionArgs & a){
     DynamicObject * d = a.thisObject.getDynamicObject();
     if(d==nullptr)return nullptr;
-    return dynamic_cast<T*>((T*)(int64)d->getProperty(ptrIdentifier));
+    return dynamic_cast<T*>((T*)(int64)d->getProperty(jsPtrIdentifier));
 }
 
 inline String getJsFunctionNameFromAddress(const String & n){
@@ -124,7 +129,7 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
         if(!vv->isObject() && !vv->isArray()){
             Identifier name = v.getName(i);
 
-            if(name!= ptrIdentifier){
+            if(name!= jsPtrIdentifier){
                 res+= (initedComma?", ":"")+name.toString() + (showValue?'('+ vv->toString()+")":"") ;
                 initedComma = true;
             }
@@ -167,6 +172,28 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
     }
 
     return res;
+
+}
+
+inline Identifier getNumericIdentifier(int n){
+
+    static const Array<Identifier> preAllocatedIds{
+        Identifier("0"),Identifier("1"),Identifier("2"),Identifier("3"),Identifier("4"),
+        Identifier("5"),Identifier("6"),Identifier("7"),Identifier("8"),Identifier("9"),
+        Identifier("10"),Identifier("11"),Identifier("12"),Identifier("13"),Identifier("14"),
+        Identifier("15"),Identifier("16"),Identifier("17"),Identifier("18"),Identifier("19"),
+        Identifier("20"),Identifier("21"),Identifier("22"),Identifier("23"),Identifier("24"),
+        Identifier("25"),Identifier("26"),Identifier("27"),Identifier("28"),Identifier("29"),
+        Identifier("30"),Identifier("31"),Identifier("32")
+    };
+
+    if(n<preAllocatedIds.size()){
+        return preAllocatedIds.getUnchecked(n);
+    }
+    else{
+        return Identifier(String(n));
+    }
+
 
 }
 

@@ -16,9 +16,9 @@
 #include "StringParameterUI.h"
 #include "InspectableComponent.h"
 
-class RuleUI : 
-	public InspectableComponent, 
-	public ButtonListener, 
+class RuleUI :
+	public InspectableComponent,
+	public ButtonListener,
 	public RuleListener
 {
 public:

@@ -116,7 +116,7 @@ void LooperNode::TrackGroup::addTrack() {
     LooperTrack * t = new LooperTrack(owner, tracks.size());
     tracks.add(t);
     owner->selectTrack->setRange(0,tracks.size()-1);
-    addChildControllableContainer(t);
+    addChildIndexedControllableContainer(t);
 }
 
 void LooperNode::TrackGroup::removeTrack(int i) {

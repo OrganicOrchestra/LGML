@@ -144,7 +144,7 @@ ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(Direction _dire
 
 ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(ShapeShifterContainer * container, int index)
 {
-	
+
 	insertShifterAt(container, index);
 	container->addShapeShifterContainerListener(this);
 	resized();

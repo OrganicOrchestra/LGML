@@ -85,7 +85,7 @@ void Inspector::inspectCurrentComponent()
 	currentEditor = currentComponent->getEditor();
 	if (currentEditor != nullptr) currentEditor->addInspectorEditorListener(this);
 	addAndMakeVisible(currentEditor);
-	
+
 	getTopLevelComponent()->toFront(true);
 
 	resized();

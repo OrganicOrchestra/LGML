@@ -20,9 +20,9 @@
 #include "RuleConsequenceUI.h"
 #include "ControlVariableReferenceUI.h"
 
-class RuleEditor : 
-	public CustomEditor, 
-	public ButtonListener, 
+class RuleEditor :
+	public CustomEditor,
+	public ButtonListener,
 	public RuleListener
 {
 public:

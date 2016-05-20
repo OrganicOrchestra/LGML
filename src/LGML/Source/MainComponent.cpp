@@ -32,7 +32,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 	addAndMakeVisible(&ShapeShifterManager::getInstance()->mainContainer);
 	ShapeShifterManager::getInstance()->loadDefaultLayoutFile();
-    
+
     (&getCommandManager())->registerAllCommandsForTarget (this);
     (&getCommandManager())-> setFirstCommandTarget(this);
 
@@ -67,7 +67,7 @@ MainContentComponent::~MainContentComponent(){
 #endif
 //    LookAndFeelOO::deleteInstance();
 
-	//DBG("Clear inspector"); 
+	//DBG("Clear inspector");
 
 	ShapeShifterManager::deleteInstance();
 }

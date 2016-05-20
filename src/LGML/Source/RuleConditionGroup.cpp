@@ -16,8 +16,8 @@ RuleConditionGroup::RuleConditionGroup(Rule * r,RuleConditionGroup * _parent) :
 	rule(r),
 	parent(_parent),
 	groupOperator(AND)
-{ 
-} 
+{
+}
 
 RuleConditionGroup::~RuleConditionGroup()
 {

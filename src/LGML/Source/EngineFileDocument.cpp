@@ -91,7 +91,7 @@ var Engine::getJSONData()
     data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
 	data.getDynamicObject()->setProperty("ruleManager", RuleManager::getInstance()->getJSONData());
 	data.getDynamicObject()->setProperty("fastMapper", FastMapper::getInstance()->getJSONData());
-	
+
     return data;
 }
 

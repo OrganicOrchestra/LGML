@@ -120,7 +120,7 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
 
 PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, const String& menuName) {
     PopupMenu menu;
-	
+
 	if(menuName == "File")
 	{
         // "File" menu
@@ -238,13 +238,13 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
 void MainContentComponent::menuItemSelected(int menuItemID, int topLevelMenuIndex)
 {
-	
+
 	String menuName = getMenuBarNames()[topLevelMenuIndex];
 	if (menuName == "Panels")
 	{
 		ShapeShifterManager::getInstance()->handleMenuPanelCommand(menuItemID);
 	}
-	
+
 }
 
 

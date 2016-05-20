@@ -15,6 +15,8 @@
 #include "DebugHelpers.h"
 
 
+const Identifier Controller::controllerTypeIdentifier("controllerType");
+
 Controller::Controller(const String &_name) :
 	ControllableContainer(_name)
 {
@@ -33,7 +35,7 @@ Controller::~Controller()
 var Controller::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
-    data.getDynamicObject()->setProperty("controllerType", ControllerFactory::controllerToString(this));
+    data.getDynamicObject()->setProperty(controllerTypeIdentifier, ControllerFactory::controllerToString(this));
 
     return data;
 }

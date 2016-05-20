@@ -16,10 +16,10 @@
 
 ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifterPanelTab * sourceTab) :
 	ShapeShifter(ShapeShifter::PANEL),
-	currentContent(nullptr), 
-	transparentBackground(false), 
-	targetMode(false), 
-	candidateZone(NONE), 
+	currentContent(nullptr),
+	transparentBackground(false),
+	targetMode(false),
+	candidateZone(NONE),
 	candidateTargetPoint(Point<float>())
 {
 	addAndMakeVisible(header);
@@ -69,7 +69,7 @@ void ShapeShifterPanel::setCurrentContent(ShapeShifterContent * _content)
 		if (tab != nullptr) tab->setSelected(true);
 
 		addAndMakeVisible(currentContent);
-		
+
 		currentContent->contentIsShown = true;
 	}
 	resized();
@@ -119,7 +119,7 @@ void ShapeShifterPanel::paintOverChildren(Graphics & g)
 
 	g.setColour(candidateZone == AttachZone::CENTER ? hc : nc);
 	g.fillRect(r.reduced(jmin<int>(50, getWidth() / 3), jmin<int>(50, getHeight() / 3)));
-	
+
 }
 
 void ShapeShifterPanel::resized()
@@ -141,7 +141,7 @@ void ShapeShifterPanel::setTransparentBackground(bool value)
 
 void ShapeShifterPanel::attachTab(ShapeShifterPanelTab * tab)
 {
-	
+
 	header.attachTab(tab);
 
 	contents.add(tab->content);
