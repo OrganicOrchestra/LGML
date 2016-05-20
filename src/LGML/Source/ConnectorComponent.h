@@ -11,19 +11,21 @@ Author:  bkupe
 #ifndef CONNECTORCOMPONENT_H_INCLUDED
 #define CONNECTORCOMPONENT_H_INCLUDED
 
-#include "NodeBaseUI.h"
-#include "NodeManager.h"
+#include "NodeConnection.h"
 
-class NodeBaseUI;
-class NodeManagerUI;
-class NodeBase;
+class ConnectableNode;
+class ConnectableNodeUI;
+class NodeContainerViewer;
 
 //==============================================================================
 /*
 */
-class ConnectorComponent : public Component, public SettableTooltipClient,public NodeBase::NodeAudioProcessorListener
+class ConnectorComponent : 
+	public Component, 
+	public SettableTooltipClient,
+	public NodeBase::NodeAudioProcessorListener
 {
-public:
+public: 
 
     enum ConnectorIOType
     {
@@ -39,7 +41,7 @@ public:
 
     NodeConnection::ConnectionType dataType;
     ConnectorIOType ioType;
-    NodeBase * node;
+    ConnectableNode * node;
 
     //layout
 
@@ -47,8 +49,8 @@ public:
     Colour boxColor;
     bool isHovered;
 
-    ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node);
-    ~ConnectorComponent();
+    ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * node);
+    ~ConnectorComponent(); 
     void paint(Graphics &g)override;
 
     void mouseDown(const MouseEvent &e) override;
@@ -58,14 +60,11 @@ public:
 
     //void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataType &selectedDataType, const DataType &filterType = DataType::Unknown);
 
-    NodeManagerUI * getNodeManagerUI() const noexcept;
-    NodeBaseUI * getNodeUI() const noexcept;
+    NodeContainerViewer * getNodeContainerViewer() const noexcept;
+    ConnectableNodeUI * getNodeUI() const noexcept;
 
-
-
-     void numAudioInputChanged(int newNum)override;
-    void numAudioOutputChanged(int newNum)override;
-
+    void numAudioInputChanged(NodeBase *, int newNum)override;
+    void numAudioOutputChanged(NodeBase *, int newNum)override;
 
 
 private:

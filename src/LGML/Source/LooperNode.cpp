@@ -10,9 +10,10 @@
 
 #include "LooperNode.h"
 #include "LooperNodeUI.h"
+#include "TimeManager.h"
 
-LooperNode::LooperNode(NodeManager * nodeManager,uint32 nodeId) :
-NodeBase(nodeManager,nodeId,"Looper"),
+LooperNode::LooperNode() :
+NodeBase("Looper",NodeType::LooperType),
 selectedTrack(nullptr),
 wasMonitoring(false),
 trackGroup(this)
@@ -53,7 +54,7 @@ LooperNode::~LooperNode()
     }
 }
 
-NodeBaseUI * LooperNode::createUI(){
+ConnectableNodeUI * LooperNode::createUI(){
     NodeBaseUI * ui = new NodeBaseUI(this, new LooperNodeContentUI);
     ui->recursiveInspectionLevel = 2;
     ui->canInspectChildContainersBeyondRecursion = false;

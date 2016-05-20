@@ -104,6 +104,17 @@ void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window, bool doR
 
 }
 
+ShapeShifterContent * ShapeShifterManager::getContentForName(PanelName contentName)
+{
+	String name = globalPanelNames[contentName];
+	for (auto &p : openedPanels)
+	{
+		if (p->hasContent(name)) return p->getContentForName(name);
+	}
+
+	return nullptr;
+}
+
 ShapeShifterPanel * ShapeShifterManager::checkCandidateTargetForPanel(ShapeShifterPanel * panel)
 {
 	ShapeShifterPanel * candidate = nullptr;

@@ -19,8 +19,6 @@
 #include "TimeManager.h"
 #include "MIDIListener.h"
 
-AudioDeviceManager& getAudioDeviceManager();
-
 
 class VSTNode :
 public NodeBase,
@@ -33,7 +31,7 @@ public:
     Array<FloatParameter *> VSTParameters;
 
 
-    VSTNode(NodeManager * nodeManager,uint32 nodeId);
+    VSTNode();
     ~VSTNode();
 
     class PluginWindowParameters : public ControllableContainer{
@@ -85,7 +83,7 @@ public:
     void removeVSTNodeListener(VSTNodeListener* listener) { vstNodeListeners.remove(listener); }
 
 
-    NodeBaseUI * createUI()override;
+	ConnectableNodeUI * createUI()override;
 
 
 

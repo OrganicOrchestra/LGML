@@ -40,6 +40,7 @@ public:
 	ShapeShifterWindow * showPanelWindowForContent(PanelName panelName);
 	void closePanelWindow(ShapeShifterWindow * window, bool doRemovePanel);
 
+	ShapeShifterContent * getContentForName(PanelName contentName);
 
 	ShapeShifterPanel * checkCandidateTargetForPanel(ShapeShifterPanel * panel);
 	bool checkDropOnCandidateTarget(ShapeShifterPanel * panel);

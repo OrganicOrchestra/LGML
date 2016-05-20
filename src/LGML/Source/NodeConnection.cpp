@@ -11,14 +11,16 @@
 #include "NodeConnection.h"
 #include "NodeManager.h"
 
-NodeConnection::NodeConnection(NodeManager * nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType) :
-nodeManager(nodeManager), connectionId(connectionId), sourceNode(sourceNode), destNode(destNode), connectionType(connectionType)
+NodeConnection::NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType) :
+sourceNode(sourceNode), 
+destNode(destNode), 
+connectionType(connectionType)
 {
 
     // init with all possible Audio connections
     if(connectionType==AUDIO){
-        int maxCommonAudiConnections = jmin(sourceNode->getTotalNumOutputChannels() , destNode->getTotalNumInputChannels());
-        for( int i = 0 ; i < maxCommonAudiConnections ; i ++){
+        int maxCommonAudioConnections = jmin(sourceNode->getAudioNode(true)->getProcessor()->getTotalNumOutputChannels() , destNode->getAudioNode(false)->getProcessor()->getTotalNumInputChannels());
+        for( int i = 0 ; i < maxCommonAudioConnections ; i ++){
             addAudioGraphConnection(i, i);
         }
     }
@@ -36,16 +38,15 @@ void NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destCh
 {
     AudioConnection ac = AudioConnection(sourceChannel, destChannel);
     audioConnections.add(ac);
-    nodeManager->audioGraph.addConnection(sourceNode->nodeId, sourceChannel, destNode->nodeId, destChannel);
+    NodeManager::getInstance()->audioGraph.addConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
     listeners.call(&Listener::connectionAudioLinkAdded, ac);
 }
 
 void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
     AudioConnection ac = AudioConnection(sourceChannel, destChannel);
-    nodeManager->audioGraph.removeConnection(sourceNode->nodeId, sourceChannel, destNode->nodeId, destChannel);
+	if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
     audioConnections.removeAllInstancesOf(ac);
-    DBG("Remove audio graph connection and dispatch linkRemoved");
     listeners.call(&Listener::connectionAudioLinkRemoved, ac);
 
 
@@ -61,16 +62,16 @@ void NodeConnection::removeAllAudioGraphConnections()
 }
 void NodeConnection::addDataGraphConnection(Data * sourceData, Data * destData)
 {
-    DataProcessorGraph::Connection * c = nodeManager->dataGraph.addConnection(sourceData, destData);
+    DataProcessorGraph::Connection * c = NodeManager::getInstance()->dataGraph.addConnection(sourceData, destData);
     dataConnections.add(c);
     listeners.call(&Listener::connectionDataLinkAdded, c);
 }
 
 void NodeConnection::removeDataGraphConnection(Data * sourceData, Data * destData)
 {
-    DataProcessorGraph::Connection * c = nodeManager->dataGraph.getConnectionBetween(sourceData, destData);
+    DataProcessorGraph::Connection * c = NodeManager::getInstance()->dataGraph.getConnectionBetween(sourceData, destData);
     dataConnections.removeAllInstancesOf(c);
-    nodeManager->dataGraph.removeConnection(c);
+	NodeManager::getInstance()->dataGraph.removeConnection(c);
     listeners.call(&Listener::connectionDataLinkRemoved, c);
 }
 
@@ -91,8 +92,8 @@ void NodeConnection::remove()
 var NodeConnection::getJSONData()
 {
     var data(new DynamicObject());
-    data.getDynamicObject()->setProperty("srcNodeId", (int)sourceNode->nodeId);
-    data.getDynamicObject()->setProperty("dstNodeId", (int)destNode->nodeId);
+    data.getDynamicObject()->setProperty("srcNode", sourceNode->shortName);
+    data.getDynamicObject()->setProperty("dstNode", destNode->shortName);
     data.getDynamicObject()->setProperty("connectionType", (int)connectionType);
 
     var links;

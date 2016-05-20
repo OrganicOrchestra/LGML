@@ -12,8 +12,8 @@
 #include "NodeBaseUI.h"
 #include "DummyNodeContentUI.h"
 
-DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
-    NodeBase(nodeManager,nodeId, "DummyNode")
+DummyNode::DummyNode() :
+    NodeBase("DummyNode",NodeType::DummyType)
 {
 
 
@@ -50,7 +50,7 @@ DummyNode::DummyNode(NodeManager * nodeManager,uint32 nodeId) :
      }
  }
 
- NodeBaseUI * DummyNode::createUI()
+ ConnectableNodeUI * DummyNode::createUI()
 {
 
     NodeBaseUI * ui = new NodeBaseUI(this,new DummyNodeContentUI());

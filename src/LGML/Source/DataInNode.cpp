@@ -12,8 +12,8 @@
 #include "DataInNodeUI.h"
 
 
-DataInNode::DataInNode(NodeManager * nodeManager, uint32 nodeId) :
-    NodeBase(nodeManager, nodeId, "DataIn")
+DataInNode::DataInNode() :
+    NodeBase("DataIn",NodeType::DataInType)
 {
     addFloatParamAndData("Test Param", 0, 0, 1);
 }
@@ -28,7 +28,7 @@ void DataInNode::onContainerParameterChanged(Parameter * p)
   updateOutputData(p->niceName, p->getNormalizedValue());
 }
 
-NodeBaseUI * DataInNode::createUI()
+ConnectableNodeUI * DataInNode::createUI()
 {
     return new NodeBaseUI(this,new DataInNodeContentUI);
 }

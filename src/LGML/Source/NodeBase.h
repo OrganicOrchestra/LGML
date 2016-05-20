@@ -19,111 +19,64 @@
 
 
 
-#include "Data.h"
 #include "ControllableContainer.h"
 #include "PresetManager.h"
+#include "ConnectableNode.h"
 
-
-class NodeBaseUI;
+class ConnectableNodeUI;
 class NodeManager;
 
 
 class NodeBase :
+	public ConnectableNode,
 	public ReferenceCountedObject,
-	public ControllableContainer,
 	public juce::AudioProcessor, public AsyncUpdater, //Audio
 	public Data::DataListener //Data
 {
 
 public:
-	NodeBase(NodeManager * nodeManager, uint32 nodeId, const String &name = "[NodeBase]");
+	NodeBase(const String &name = "[NodeBase]", NodeType type = UNKNOWN_TYPE);
 	virtual ~NodeBase();
 
-	uint32 nodeId;
-	NodeManager * nodeManager;
-
-	bool hasAudioInputs();
-	bool hasAudioOutputs();
-	bool hasDataInputs();
-	bool hasDataOutputs();
-
-	void remove(bool askBeforeRemove = false);
-
-
-	//Controllables (from ControllableContainer)
-	StringParameter * nameParam;
-	BoolParameter * enabledParam;
-	FloatParameter * xPosition;
-	FloatParameter * yPosition;
-
-
-	//audio
-	void addToAudioGraphIfNeeded();
-	void removeFromAudioGraphIfNeeded();
+	
+	virtual bool hasAudioInputs() override;
+	virtual bool hasAudioOutputs() override;
+	virtual bool hasDataInputs() override;
+	virtual bool hasDataOutputs() override;
 
 
 	virtual String getPresetFilter() override;
 
-	//ui
-	virtual NodeBaseUI *  createUI() {
-		DBG("No implementation in child node class !");
-		jassert(false);
-		return nullptr;
-	}
+	void parameterValueChanged(Parameter * p) override;
 
+	virtual void clear() override;
+	
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
 
-public:
-
-	//Listener
-	class NodeListener
-	{
-	public:
-		virtual ~NodeListener() {}
-		virtual void askForRemoveNode(NodeBase *) {}
-		virtual void nodeEnableChanged(NodeBase *) {}
-	};
-
-	ListenerList<NodeListener> nodeListeners;
-	void addNodeListener(NodeListener* newListener) { nodeListeners.add(newListener); }
-	void removeNodeListener(NodeListener* listener) { nodeListeners.remove(listener); }
-
+	//ui
+	virtual ConnectableNodeUI *  createUI() override;;
 
 	virtual const String getName() const override
 	{
 		return niceName;
 	}
 
-
-private:
-
-	int nodeTypeUID;
-	friend class NodeFactory;
-
-	void parameterValueChanged(Parameter * p) override;
-
-
-
-
+	
 
 	//AUDIO PROCESSOR
-public:
-	FloatParameter * outputVolume;
-	BoolParameter * bypass;
-	StringArray inputChannelNames;
-	StringArray outputChannelNames;
+
+	AudioProcessorGraph::Node * audioNode;
+
+	
+
+	virtual AudioProcessorGraph::Node * getAudioNode(bool isInputNode = true) override;
+	void addToAudioGraph() override;
+	void removeFromAudioGraph() override;
 
 	bool setPreferedNumAudioInput(int num);
 	bool setPreferedNumAudioOutput(int num);
-
-	void setInputChannelNames(int startChannel, StringArray names);
-	void setOutputChannelNames(int startChannel, StringArray names);
-	void setInputChannelName(int channelIndex, const String &name);
-	void setOutputChannelName(int channelIndex, const String &name);
-	String getInputChannelName(int channelIndex);
-	String getOutputChannelName(int channelIndex);
 
 
 	virtual void prepareToPlay(double, int) override {};
@@ -152,7 +105,6 @@ public:
 	virtual void getStateInformation(juce::MemoryBlock&) override {};
 	virtual void setStateInformation(const void*, int) override {};
 
-
 	virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 	virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/ , MidiBuffer& /*midiMessage*/ ) {};
 
@@ -169,28 +121,14 @@ public:
 	int curSamplesForRMSOutUpdate = 0;
 
 	//Listener are called from non audio thread
-	void handleAsyncUpdate() override {
-		rmsListeners.call(&RMSListener::RMSChanged, rmsValueIn, rmsValueOut);
-	}
+	void handleAsyncUpdate() override;
 
-	class  RMSListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~RMSListener() {}
-		virtual void RMSChanged(float rmsInValue, float rmsOutValue) = 0;
-
-	};
-
-	ListenerList<RMSListener> rmsListeners;
-	void addRMSListener(RMSListener* newListener) { rmsListeners.add(newListener); }
-	void removeRMSListener(RMSListener* listener) { rmsListeners.remove(listener); }
-
+	
 	class NodeAudioProcessorListener {
 	public:
 		virtual ~NodeAudioProcessorListener() {};
-		virtual void numAudioInputChanged(int) {};
-		virtual void numAudioOutputChanged(int) {};
+		virtual void numAudioInputChanged(NodeBase *, int /*newNumInput*/) {};
+		virtual void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) {};
 	};
 
 	ListenerList<NodeAudioProcessorListener> nodeAudioProcessorListeners;
@@ -201,13 +139,11 @@ public:
 	bool wasSuspended;
 	float lastVolume;
 
-
-
-
-
-
 	//DATA
-public:
+	virtual Data* getInputData(int dataIndex) override;
+	virtual Data* getOutputData(int dataIndex) override;
+	
+
 	typedef Data::DataType DataType;
 	typedef Data::DataElement DataElement;
 
@@ -229,50 +165,20 @@ public:
 	virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0);
 
 
-	int getTotalNumInputData() const { return inputDatas.size(); }
-	int getTotalNumOutputData() const { return outputDatas.size(); }
+	int getTotalNumInputData() override;
+	int getTotalNumOutputData() override;
 
-	StringArray getInputDataInfos();
+	StringArray getInputDataInfos() override;
+	StringArray getOutputDataInfos() override;
 
-	StringArray getOutputDataInfos();
+	Data::DataType getInputDataType(const String &dataName, const String &elementName) override;
+	Data::DataType getOutputDataType(const String &dataName, const String &elementName) override;
 
-	Data::DataType getInputDataType(const String &dataName, const String &elementName);
-	Data::DataType getOutputDataType(const String &dataName, const String &elementName);
+	Data * getOutputDataByName(const String &dataName) override;
+	Data * getInputDataByName(const String &dataName) override;
 
-
-	Data * getOutputDataByName(const String &dataName);
-	Data * getInputDataByName(const String &dataName);
-
-	//Listener
-	class  NodeDataProcessorListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~NodeDataProcessorListener() {}
-
-		virtual void inputAdded(Data *) {}
-		virtual void inputRemoved(Data *) {}
-
-		virtual void outputAdded(Data *) {}
-		virtual void ouputRemoved(Data *) {}
-
-		virtual void inputDataChanged(Data *) {}
-	};
-
-	ListenerList<NodeDataProcessorListener> dataProcessorListeners;
-	void addDataProcessorListener(NodeDataProcessorListener* newListener) { dataProcessorListeners.add(newListener); }
-	void removeDataProcessorListener(NodeDataProcessorListener* listener) { dataProcessorListeners.remove(listener); }
-
-
-	private:
-		virtual void dataChanged(Data *) override;
-
-
-
-
-
-
-
+	virtual void dataChanged(Data *) override;
+	virtual void processInputDataChanged(Data *);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 

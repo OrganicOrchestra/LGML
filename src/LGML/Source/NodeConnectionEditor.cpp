@@ -129,9 +129,8 @@ void NodeConnectionEditor::generateContentForAudio()
 {
     clearContent();
 
-    int numOutputChannels = currentConnection->sourceNode->getTotalNumOutputChannels();
-
-    int numInputChannels = currentConnection->destNode->getTotalNumInputChannels();
+    int numOutputChannels = currentConnection->sourceNode->getAudioNode(true)->getProcessor()->getTotalNumOutputChannels();
+    int numInputChannels = currentConnection->destNode->getAudioNode(false)->getProcessor()->getTotalNumInputChannels();
 
     for (int i = 0; i < numOutputChannels; i++)
     {
@@ -177,7 +176,7 @@ void NodeConnectionEditor::generateContentForData()
 
     for (int i = 0; i < numOutputData; i++)
     {
-        Data * data = currentConnection->sourceNode->outputDatas[i];
+		Data * data = currentConnection->sourceNode->getOutputData(i);
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(data->name + " (" + data->getTypeString() + ")",data, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
         s->setName("output"+data->name);
         s->addSlotListener(this);
@@ -188,7 +187,7 @@ void NodeConnectionEditor::generateContentForData()
 
     for (int i = 0; i < numInputData; i++)
     {
-        Data * data = currentConnection->destNode->inputDatas[i];
+		Data * data = currentConnection->destNode->getInputData(i);
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(data->name + " (" + data->getTypeString() + ")",data, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::INPUT);
         s->setName("input" + data->name);
         s->addSlotListener(this);

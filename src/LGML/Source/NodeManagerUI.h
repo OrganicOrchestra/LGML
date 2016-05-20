@@ -12,99 +12,59 @@
 #define NODEMANAGERUI_H_INCLUDED
 
 
-#include "NodeManager.h"
-#include "NodeBaseUI.h"
-//#include "SelectableComponentHandler.h"
 #include "ShapeShifterContent.h"
-#include "InspectableComponent.h"
+#include "NodeContainerViewer.h"
 
-class NodeConnectionUI;
 
 //==============================================================================
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : public Component, public NodeManager::Listener, public InspectableComponent::InspectableListener
+class NodeManagerUI : 
+	public Component
 {
 public:
+	
     NodeManagerUI(NodeManager * nodeManager);
     ~NodeManagerUI();
 
     NodeManager * nodeManager;
-
-    OwnedArray<NodeBaseUI> nodesUI;
-    OwnedArray<NodeConnectionUI>  connectionsUI;
-    NodeConnectionUI * editingConnection;
+	ScopedPointer<NodeContainerViewer> currentViewer;
 
     void clear();
 
     void resized() override;
-    void paint(Graphics&) override;
 
-    // Inherited via Listener
-    virtual void nodeAdded(NodeBase *) override;
-    virtual void nodeRemoved(NodeBase *) override;
-    virtual void connectionAdded(NodeConnection *) override;
-    virtual void connectionRemoved(NodeConnection *) override;
+	int getContentWidth();
+	int getContentHeight();
 
-    //NodeUI Listener
-    //virtual void componentSelected(SelectableComponent *) override;
-    //virtual void componentDeselected(SelectableComponent *) override;
-    virtual void inspectableSelectionChanged(InspectableComponent *) override;
+	void setCurrentViewedContainer(NodeContainer * c);
+    
+	void childBoundsChanged(Component * c);
 
-    void addNodeUI(NodeBase * node);
-    void removeNodeUI(NodeBase * node);
-    NodeBaseUI * getUIForNode(NodeBase * node);
+	class  NodeManagerUIListener
+	{
+	public:
+		/** Destructor. */
+		virtual ~NodeManagerUIListener() {}
+		virtual void currentViewedContainerChanged() {};
+	};
 
+	ListenerList<NodeManagerUIListener> nodeManagerUIListeners;
+	void addNodeManagerUIListener(NodeManagerUIListener* newListener) { nodeManagerUIListeners.add(newListener); }
+	void removeNodeManagerUIListener(NodeManagerUIListener* listener) { nodeManagerUIListeners.remove(listener); }
 
-    void addConnectionUI(NodeConnection * connection);
-    void removeConnectionUI(NodeConnection * connection);
-    NodeConnectionUI * getUIForConnection(NodeConnection * connection);
-
-    //connection creation / editing
-    typedef ConnectorComponent Connector;
-    void createDataConnectionFromConnector(Connector * baseConnector);
-    void createAudioConnectionFromConnector(Connector * baseConnector);
-
-    void updateEditingConnection();
-    bool isEditingConnection() { return editingConnection != nullptr; }
-    bool checkDropCandidates();
-    bool setCandidateDropConnector(Connector * c);
-    void cancelCandidateDropConnector();
-    void finishEditingConnection();
-
-
-
-    //Mouse event
-    void mouseDown(const MouseEvent& event) override;
-    void mouseMove(const MouseEvent& event) override;
-    void mouseDrag(const MouseEvent& event) override;
-    void mouseUp(const MouseEvent& event) override;
-    void childBoundsChanged(Component * )override;
-
-    void setAllNodesToStartAtZero();
-    void resizeToFitNodes();
-    static void createNodeFromIndexAtPos(int modalResult,Component * thisComponent,int  maxResult);
-    Rectangle<int> minBounds;
-
-private:
-    bool isSelectingNodes;
-    class SelectingRect :public Component{
-    public:
-        void paint(Graphics & g) override{
-            g.setColour(Colours::whitesmoke.withAlpha(.1f));
-            g.fillRect(getLocalBounds());
-        }
-    };
-    SelectingRect selectingBounds;
-    void checkSelected();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
-
+	
 };
 
-class NodeManagerUIViewport: public ShapeShifterContent{
-    public :
+class NodeManagerUIViewport :
+	public ShapeShifterContent,
+	public NodeManagerUI::NodeManagerUIListener,
+	public ButtonListener
+{
+public :
     NodeManagerUIViewport(const String &contentName, NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContent(contentName)
 	{
         vp.setViewedComponent(nmui,true);
@@ -114,14 +74,92 @@ class NodeManagerUIViewport: public ShapeShifterContent{
         addAndMakeVisible(vp);
 		vp.setScrollBarThickness(10);
 
-    }
-    void resized() override{
-        vp.setSize(getWidth(), getHeight());
-        nmui->setSize(jmax(getWidth(),nmui->getWidth()),
-                      jmax(getHeight(),nmui->getHeight()));
-        nmui->minBounds.setSize(getWidth(), getHeight());
+		nmui->addNodeManagerUIListener(this);
+
+		reconstructViewerPath();
 
     }
+
+	virtual ~NodeManagerUIViewport()
+	{
+		nmui->removeNodeManagerUIListener(this);
+
+	}
+	
+	OwnedArray<TextButton> pathButtons;
+
+	void reconstructViewerPath()
+	{
+		for (auto &b : pathButtons)
+		{
+			removeChildComponent(b);
+			b->removeListener(this);
+		}
+
+		pathButtons.clear();
+
+		NodeContainer * c = nmui->currentViewer->nodeContainer;
+
+		while (c != nullptr)
+		{
+			DBG("Add path button " << c->niceName);
+			TextButton * b = new TextButton(c->niceName);
+			if (c == nmui->currentViewer->nodeContainer) b->setEnabled(false);
+			
+			pathButtons.insert(0, b);
+			addAndMakeVisible(b); 
+			b->addListener(this); 
+			
+			c = c->parentNodeContainer;
+			
+		}
+
+
+		resized();
+	}
+
+    void resized() override{
+		Rectangle<int> r = getLocalBounds();
+
+		Rectangle<int> buttonR = r.removeFromTop(30);
+				
+		for (auto & b : pathButtons)
+		{
+			b->setBounds(buttonR.removeFromLeft(100));
+			buttonR.removeFromLeft(5);
+		}
+
+		r.removeFromTop(2);
+
+		vp.setBounds(r);
+		nmui->setBounds(r);
+		nmui->setSize(nmui->getContentWidth() == 0?getWidth():nmui->getContentWidth(),
+					  nmui->getContentHeight() == 0?getHeight():nmui->getContentHeight());
+
+    }
+
+	void currentViewedContainerChanged()
+	{
+		reconstructViewerPath();
+	}
+
+	void buttonClicked(Button * b)
+	{
+		int bIndex = pathButtons.indexOf((TextButton *)b);
+		if (bIndex == -1)
+		{
+			DBG("WTF ?");
+		}
+		NodeContainer * c = nmui->currentViewer->nodeContainer;
+		for (int i = pathButtons.size() - 1; i > bIndex; i--)
+		{
+			c = c->parentNodeContainer;
+		}
+
+		nmui->setCurrentViewedContainer(c);
+
+	}
+
     Viewport vp;
     NodeManagerUI * nmui;
 };

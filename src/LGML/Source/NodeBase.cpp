@@ -13,117 +13,74 @@
 #include "TimeManager.h"
 
 
-NodeBase::NodeBase(NodeManager * nodeManager,uint32 _nodeId, const String &name) :
-nodeManager(nodeManager),
-nodeId(_nodeId),
-ControllableContainer(name),
-nodeTypeUID(0) // UNKNOWNTYPE
+NodeBase::NodeBase(const String &name,NodeType _type) :
+	ConnectableNode(name,_type),
+	audioNode(nullptr)
 {
-
-    addToAudioGraphIfNeeded();
-
-    //set Params
-    nameParam = addStringParameter("Name", "Set the name of the node.", name);
-    enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
-    xPosition = addFloatParameter("xPosition","x position on canvas",0,0,99999);
-    yPosition= addFloatParameter("yPosition","y position on canvas",0,0,99999);
-
-    xPosition->isControllableExposed = false;
-    yPosition->isControllableExposed = false;
-    xPosition->isPresettable = false;
-    yPosition->isPresettable = false;
-    nameParam->isPresettable = false;
-    enabledParam->isPresettable = false;
-
-
-	//Audio
-	outputVolume = addFloatParameter("masterVolume", "mester volume for this node", 1.);
+    addToAudioGraph();
 	lastVolume = outputVolume->floatValue();
-	bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
-
-
-	setInputChannelName(0, "Main Left");
-	setInputChannelName(1, "Main Right");
-	setOutputChannelName(0, "Main Left");
-	setOutputChannelName(1, "Main Right");
-
 
 }
 
 
 NodeBase::~NodeBase()
 {
-    // get called after deletion of TimeManager on app exit
-    TimeManager * tm = TimeManager::getInstanceWithoutCreating();
-    if(tm!=nullptr)
-        tm->releaseMasterNode(this);
-
-
-	//Data
-	inputDatas.clear();
-	outputDatas.clear();
-
-//	removeFromAudioGraphIfNeeded();
+	clear();
 }
+
 
 bool NodeBase::hasAudioInputs()
 {
+	//to override
 	return getTotalNumInputChannels() > 0;
 }
 
 bool NodeBase::hasAudioOutputs()
 {
+	//to override
 	return getTotalNumOutputChannels() > 0;
 }
 
 bool NodeBase::hasDataInputs()
 {
+	//to override
 	return getTotalNumInputData()>0;
 }
 
 bool NodeBase::hasDataOutputs()
 {
+	//to override
 	return getTotalNumOutputData()>0;
 }
 
-void NodeBase::remove(bool askBeforeRemove)
-{
-    if (askBeforeRemove)
-    {
-        int result = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Remove node", "Do you want to remove the node ?");
-        if (result == 0) return;
-    }
-
-    nodeListeners.call(&NodeBase::NodeListener::askForRemoveNode,this);
-}
 
 void NodeBase::parameterValueChanged(Parameter * p)
 {
-    if (p == nameParam)
-    {
-        setNiceName(nameParam->stringValue());
-    }else if (p == enabledParam)
-	{
-        suspendProcessing(!enabledParam->boolValue());
-		DBG("Node Enabled changed !");
-		nodeListeners.call(&NodeListener::nodeEnableChanged, this);
-    }
-    else{
-          ControllableContainer::parameterValueChanged(p);
-    }
-}
+	ConnectableNode::parameterValueChanged(p);
 
-void NodeBase::addToAudioGraphIfNeeded(){
-    if(hasAudioInputs() || hasAudioOutputs()){
-        nodeManager->audioGraph.addNode(this,nodeId);
+	if (p == enabledParam)
+	{
+		suspendProcessing(!enabledParam->boolValue());
 	}
 }
 
-void NodeBase::removeFromAudioGraphIfNeeded(){
-    if(hasAudioInputs() || hasAudioOutputs()){
-        nodeManager->audioGraph.removeNode(nodeId);
-    }
+void NodeBase::clear()
+{
+	// get called after deletion of TimeManager on app exit
+	TimeManager * tm = TimeManager::getInstanceWithoutCreating();
+	if (tm != nullptr)
+	{
+		tm->releaseMasterNode(this);
+	}
+
+	//Data
+	inputDatas.clear();
+	outputDatas.clear();
+
+	//removeFromAudioGraph();
 }
+
+
 
 String NodeBase::getPresetFilter()
 {
@@ -135,10 +92,8 @@ String NodeBase::getPresetFilter()
 
 var NodeBase::getJSONData()
 {
-	var data = ControllableContainer::getJSONData();
+	var data = ConnectableNode::getJSONData();
     data.getDynamicObject()->setProperty("nodeType", NodeFactory::nodeToString(this));
-    data.getDynamicObject()->setProperty("nodeId", String(nodeId));
-
    MemoryBlock m;
 
     // TODO we could implement that for all node objects to be able to save any kind of custom data
@@ -155,6 +110,8 @@ var NodeBase::getJSONData()
 
 void NodeBase::loadJSONDataInternal(var data)
 {
+	ConnectableNode::loadJSONDataInternal(data);
+
     var audioProcessorData = data.getProperty("audioProcessor", var());
     String audioProcessorStateData = audioProcessorData.getProperty("state",var());
 
@@ -163,10 +120,38 @@ void NodeBase::loadJSONDataInternal(var data)
     setStateInformation(m.getData(), (int)m.getSize());
 }
 
+//ui
+
+ConnectableNodeUI * NodeBase::createUI() {
+	DBG("No implementation in child node class !");
+	jassert(false);
+	return nullptr;
+}
+
 
 
 
 /////////////////////////////////////// AUDIO
+
+AudioProcessorGraph::Node * NodeBase::getAudioNode(bool)
+{
+	return audioNode;
+}
+
+void NodeBase::addToAudioGraph() {
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		audioNode = NodeManager::getInstance()->audioGraph.addNode(this);
+	}
+}
+
+void NodeBase::removeFromAudioGraph() {
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		if (audioNode != nullptr) NodeManager::getInstance()->audioGraph.removeNode(audioNode);
+	}
+	
+}
 
 void NodeBase::processBlock(AudioBuffer<float>& buffer,
 	MidiBuffer& midiMessages) {
@@ -223,15 +208,17 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
 };
 
-
-
 bool NodeBase::setPreferedNumAudioInput(int num) {
 	setPlayConfigDetails(num, getTotalNumOutputChannels(),
 		getSampleRate(),
 		getBlockSize());
 
-	nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(), (int)nodeManager->audioGraph.getSampleRate());
-	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioInputChanged, num);
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
+	}
+
+	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioInputChanged, this,num);
 
 	return true;
 }
@@ -239,66 +226,12 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 	setPlayConfigDetails(getTotalNumInputChannels(), num,
 		getSampleRate(),
 		getBlockSize());
-
-	nodeManager->audioGraph.prepareToPlay(nodeManager->audioGraph.getBlockSize(), (int)nodeManager->audioGraph.getSampleRate());
-	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged, num);
+	if (NodeManager::getInstanceWithoutCreating() != nullptr)
+	{
+		NodeManager::getInstance()->audioGraph.prepareToPlay(NodeManager::getInstance()->audioGraph.getBlockSize(), (int)NodeManager::getInstance()->audioGraph.getSampleRate());
+	}
+	nodeAudioProcessorListeners.call(&NodeAudioProcessorListener::numAudioOutputChanged,this,num);
 	return true;
-}
-
-void NodeBase::setInputChannelNames(int startChannel, StringArray names)
-{
-	for (int i = startChannel; i < startChannel + names.size(); i++)
-	{
-		setInputChannelName(i, names[i]);
-	}
-}
-
-void NodeBase::setOutputChannelNames(int startChannel, StringArray names)
-{
-	for (int i = startChannel; i < startChannel + names.size(); i++)
-	{
-		setOutputChannelName(i, names[i]);
-	}
-}
-
-void NodeBase::setInputChannelName(int channelIndex, const String & name)
-{
-	while (inputChannelNames.size() < (channelIndex + 1))
-	{
-		inputChannelNames.add(String::empty);
-	}
-
-	inputChannelNames.set(channelIndex, name);
-}
-
-void NodeBase::setOutputChannelName(int channelIndex, const String & name)
-{
-	while (outputChannelNames.size() < (channelIndex + 1))
-	{
-		outputChannelNames.add(String::empty);
-	}
-
-	outputChannelNames.set(channelIndex, name);
-}
-
-String NodeBase::getInputChannelName(int channelIndex)
-{
-	String defaultName = "Input " + String(channelIndex);
-	if (channelIndex < 0 || channelIndex >= inputChannelNames.size()) return defaultName;
-
-	String s = inputChannelNames[channelIndex];
-	if (s.isNotEmpty()) return s;
-	return defaultName;
-}
-
-String NodeBase::getOutputChannelName(int channelIndex)
-{
-	String defaultName = "Output " + String(channelIndex);
-	if (channelIndex < 0 || channelIndex >= outputChannelNames.size()) return defaultName;
-
-	String s = outputChannelNames[channelIndex];
-	if (s.isNotEmpty()) return s;
-	return defaultName;
 }
 
 void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue) {
@@ -332,29 +265,39 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 }
 
 
-
+void NodeBase::handleAsyncUpdate()
+{
+	rmsListeners.call(&RMSListener::RMSChanged, this, rmsValueIn, rmsValueOut);
+}
 
 //////////////////////////////////   DATA
 
-
-Data * NodeBase::addInputData(const String & name, Data::DataType type)
+Data * NodeBase::getInputData(int dataIndex)
 {
-	Data *d = new Data(this, name, type);
+	return inputDatas[dataIndex];
+}
+
+
+Data * NodeBase::getOutputData(int dataIndex)
+{
+	return outputDatas[dataIndex];
+}
+
+
+Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
+{
+	Data *d = new Data(this, name, dataType);
 	inputDatas.add(d);
 
 	d->addDataListener(this);
 
-	dataProcessorListeners.call(&NodeDataProcessorListener::inputAdded, d);
-
 	return d;
 }
 
-Data * NodeBase::addOutputData(const String & name, DataType type)
+Data * NodeBase::addOutputData(const String & name, DataType dataType)
 {
-	Data * d = new Data(this, name, type);
+	Data * d = new Data(this, name, dataType);
 	outputDatas.add(d);
-
-	dataProcessorListeners.call(&NodeDataProcessorListener::outputAdded, d);
 
 	return d;
 }
@@ -364,7 +307,6 @@ void NodeBase::removeInputData(const String & name)
 	Data * d = getInputDataByName(name);
 	if (d == nullptr) return;
 
-	dataProcessorListeners.call(&NodeDataProcessorListener::inputRemoved, d);
 	inputDatas.removeObject(d, true);
 }
 
@@ -372,7 +314,6 @@ void NodeBase::removeOutputData(const String & name)
 {
 	Data * d = getOutputDataByName(name);
 	if (d == nullptr) return;
-	dataProcessorListeners.call(&NodeDataProcessorListener::ouputRemoved, d);
 	outputDatas.removeObject(d, true);
 }
 
@@ -380,6 +321,14 @@ void NodeBase::updateOutputData(String & dataName, const float & value1, const f
 {
 	Data * d = getOutputDataByName(dataName);
 	if (d != nullptr) d->update(value1, value2, value3);
+}
+
+int NodeBase::getTotalNumInputData() { 
+	return inputDatas.size(); 
+}
+
+int NodeBase::getTotalNumOutputData() { 
+	return outputDatas.size(); 
 }
 
 StringArray NodeBase::getInputDataInfos()
@@ -468,6 +417,10 @@ Data * NodeBase::getInputDataByName(const String & dataName)
 void NodeBase::dataChanged(Data * d)
 {
 	if (enabled) {
-		dataProcessorListeners.call(&NodeDataProcessorListener::inputDataChanged, d);
+		processInputDataChanged(d);
 	}
+}
+
+void NodeBase::processInputDataChanged(Data *)
+{
 }

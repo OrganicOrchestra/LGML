@@ -9,9 +9,8 @@
  */
 
 #include "Engine.h"
-
 #include "LGMLLogger.h"
-
+#include "MainComponent.h"
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
@@ -120,10 +119,10 @@ void Engine::clear(){
 void Engine::createNewGraph(){
     clear();
 
-    NodeBase * node = NodeManager::getInstance()->addNode(NodeType::AudioInType);
+    ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
     node->xPosition->setValue(150);
     node->yPosition->setValue(100);
-    node = NodeManager::getInstance()->addNode(NodeType::AudioOutType);
+    node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
     node->xPosition->setValue(450);
     node->yPosition->setValue(100);
     changed();

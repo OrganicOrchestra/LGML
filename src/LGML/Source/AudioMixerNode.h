@@ -30,7 +30,7 @@ public:
 	};
 
 
-    AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) ;
+    AudioMixerNode() ;
 
 	OwnedArray<OutputBus> outBuses;
 	AudioBuffer<float> cachedBuffer;
@@ -46,7 +46,7 @@ public:
 	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override;
 	void onContainerParameterChanged(Parameter * p) override;
 
-    NodeBaseUI * createUI() override;
+	ConnectableNodeUI * createUI() override;
 
 
 private:

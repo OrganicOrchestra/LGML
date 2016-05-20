@@ -16,12 +16,10 @@ Inspector::Inspector() :
 	currentComponent(nullptr),
 	isEnabled(true)
 {
-	DBG("Inspector constructor !");
 }
 
 Inspector::~Inspector()
 {
-	DBG("Inspector destroy !" << String(currentEditor != nullptr));
 	clear();
 }
 
@@ -69,7 +67,6 @@ void Inspector::resized()
 
 void Inspector::clearEditor()
 {
-	DBG("Inspector clear");
 	if (currentEditor != nullptr)
 	{
 		removeChildComponent(currentEditor);

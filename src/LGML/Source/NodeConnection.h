@@ -12,8 +12,6 @@
 #define NODECONNECTION_H_INCLUDED
 
 
-
-
 #include "DataProcessorGraph.h"
 class NodeManager;
 class NodeBase;
@@ -26,23 +24,20 @@ public:
         AUDIO, DATA, UNDEFINED
     };
 
-    uint32 connectionId;
-
     ConnectionType connectionType;
 
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }
     bool isData() { return connectionType == ConnectionType::DATA; }
 
-    NodeManager * nodeManager;
-    NodeBase * sourceNode;
-    NodeBase * destNode;
+    ConnectableNode * sourceNode;
+	ConnectableNode * destNode;
 
     typedef std::pair<int,int> AudioConnection;
     Array<AudioConnection> audioConnections;
     Array<DataProcessorGraph::Connection *> dataConnections;
 
 
-    NodeConnection(NodeManager* nodeManager,uint32 connectionId, NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
+    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType);
     virtual ~NodeConnection();
 
     //Audio

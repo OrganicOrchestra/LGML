@@ -22,10 +22,10 @@ class LooperNode : public NodeBase
 {
 
 public:
-    LooperNode(NodeManager * nodeManager, uint32 nodeId);
+    LooperNode();
 	virtual ~LooperNode();
 
-    NodeBaseUI * createUI() override;
+	ConnectableNodeUI * createUI() override;
 
     class TrackGroup : public ControllableContainer{
     public:

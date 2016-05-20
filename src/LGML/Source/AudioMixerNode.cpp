@@ -13,14 +13,14 @@
 
 #include "AudioMixerNodeUI.h"
 
-AudioMixerNode::AudioMixerNode(NodeManager * nodeManager, uint32 nodeId) :NodeBase(nodeManager, nodeId, "AudioMixerNode")
+AudioMixerNode::AudioMixerNode() :
+	NodeBase("AudioMixerNode",NodeType::AudioMixerType)
 {
 	numberOfInput = addIntParameter("numInput", "number of input", 8, 1, 32);
 	numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
 
 	updateInput();
 	updateOutput();
-
 }
 
 
@@ -152,7 +152,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
 
 
 
-NodeBaseUI * AudioMixerNode::createUI()
+ConnectableNodeUI * AudioMixerNode::createUI()
 {
 
 	NodeBaseUI * ui = new NodeBaseUI(this, new AudioMixerNodeUI);

@@ -11,55 +11,47 @@
 #ifndef NODEFACTORY_H_INCLUDED
 #define NODEFACTORY_H_INCLUDED
 
-#include "DummyNode.h"
-#include "AudioMixerNode.h"
-#include "DataInNode.h"
-#include "SpatNode.h"
-#include "VSTNode.h"
-#include "AudioInNode.h"
-#include "AudioOutNode.h"
-#include "LooperNode.h"
-
+#include "JuceHeader.h"
+class ConnectableNode;
 class NodeManager;
 
-const static String nodeTypeNames[] = { "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioIn","AudioOut" };
+const static String nodeTypeNames[] = {"ContainerIn","ContainerOut", "Container", "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioDeviceIn","AudioDeviceOut" };
 
 //Added type to not mess with class names
 enum NodeType
 {
-    UNKNOWN_TYPE =0,
+    UNKNOWN_TYPE,
+	ContainerInType,
+	ContainerOutType,
+
+	ContainerType,
     DummyType ,
     AudioMixerType,
     DataInType,
     SpatType,
     LooperType,
     VSTType,
-    AudioInType,
-    AudioOutType
-
+    AudioDeviceInType,
+    AudioDeviceOutType
 };
 
 class NodeFactory
 {
 public:
-    NodeFactory()
-    {
+	NodeFactory();
+	~NodeFactory();
+	
+	const static int userCanAddStartType = ContainerType;
 
-    }
-
-    ~NodeFactory()
-    {
-
-    }
-
-    NodeBase * createNode(NodeManager * nodeManager, NodeType nodeType, uint32 nodeId = 0);
+    static ConnectableNode * createNode(NodeType type);
 
     static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0);
 
     static NodeType getTypeFromString(const String & s);
+	static NodeType getTypeForIndex(int nodeTypeIndex, bool includeUserOffset);
 
     static String nodeTypeToString(NodeType t);
-    static String nodeToString(NodeBase *  n);
+    static String nodeToString(ConnectableNode *  n);
 
 };
 

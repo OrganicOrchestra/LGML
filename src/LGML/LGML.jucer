@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.1.7"
-              bundleIdentifier="org.anic.orchestra.Blooper" includeBinaryInAppConfig="1"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.0"
+              bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
@@ -445,21 +445,64 @@
       </GROUP>
       <GROUP id="{35BF8DC0-F3AB-53B1-75FB-31CC0CBE6D51}" name="Node">
         <GROUP id="{D40FA29B-A47E-63A3-0BE9-FEE816AD3664}" name="Base">
+          <FILE id="sCyEGf" name="NodeBase.h" compile="0" resource="0" file="Source/NodeBase.h"/>
+          <FILE id="pLpoL1" name="NodeBase.cpp" compile="1" resource="0" file="Source/NodeBase.cpp"/>
+          <FILE id="FpKDbk" name="ConnectableNode.cpp" compile="1" resource="0"
+                file="Source/ConnectableNode.cpp"/>
+          <FILE id="yNHEO5" name="ConnectableNode.h" compile="0" resource="0"
+                file="Source/ConnectableNode.h"/>
+          <FILE id="dJmP5S" name="NodeContainer.cpp" compile="1" resource="0"
+                file="Source/NodeContainer.cpp"/>
+          <FILE id="ZvvtSp" name="NodeContainer.h" compile="0" resource="0" file="Source/NodeContainer.h"/>
           <GROUP id="{A2D3A061-C57A-C7C0-F696-113F915DCD55}" name="UI">
-            <FILE id="nsdeUQ" name="NodeBaseAudioCtlUI.cpp" compile="1" resource="0"
-                  file="Source/NodeBaseAudioCtlUI.cpp"/>
-            <FILE id="AqNjww" name="NodeBaseAudioCtlUI.h" compile="0" resource="0"
-                  file="Source/NodeBaseAudioCtlUI.h"/>
-            <FILE id="NDsjg3" name="NodeBaseHeaderUI.cpp" compile="1" resource="0"
-                  file="Source/NodeBaseHeaderUI.cpp"/>
-            <FILE id="iIJRHp" name="NodeBaseHeaderUI.h" compile="0" resource="0"
-                  file="Source/NodeBaseHeaderUI.h"/>
-            <FILE id="FzpBRR" name="NodeBaseContentUI.cpp" compile="1" resource="0"
-                  file="Source/NodeBaseContentUI.cpp"/>
-            <FILE id="PCMBA4" name="NodeBaseContentUI.h" compile="0" resource="0"
-                  file="Source/NodeBaseContentUI.h"/>
-            <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
-            <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>
+            <GROUP id="{B3261A6C-5F3C-2CDF-D89A-B1D0232F257F}" name="NodeContainer">
+              <FILE id="H9F8HW" name="NodeContainerContentUI.cpp" compile="1" resource="0"
+                    file="Source/NodeContainerContentUI.cpp"/>
+              <FILE id="ah4oav" name="NodeContainerContentUI.h" compile="0" resource="0"
+                    file="Source/NodeContainerContentUI.h"/>
+              <FILE id="BngKpc" name="NodeContainerViewer.cpp" compile="1" resource="0"
+                    file="Source/NodeContainerViewer.cpp"/>
+              <FILE id="PvncTg" name="NodeContainerViewer.h" compile="0" resource="0"
+                    file="Source/NodeContainerViewer.h"/>
+              <FILE id="TffGGE" name="NodeContainerUI.cpp" compile="1" resource="0"
+                    file="Source/NodeContainerUI.cpp"/>
+              <FILE id="e5pPRn" name="NodeContainerUI.h" compile="0" resource="0"
+                    file="Source/NodeContainerUI.h"/>
+            </GROUP>
+            <GROUP id="{31DDBD7C-F7C7-AF5B-8458-C3CCD1246E25}" name="NodeBase">
+              <FILE id="PLrDpy" name="NodeBaseAudioCtlUI.cpp" compile="1" resource="0"
+                    file="Source/NodeBaseAudioCtlUI.cpp"/>
+              <FILE id="pBZQEt" name="NodeBaseAudioCtlUI.h" compile="0" resource="0"
+                    file="Source/NodeBaseAudioCtlUI.h"/>
+              <FILE id="IZju7F" name="NodeBaseContentUI.cpp" compile="1" resource="0"
+                    file="Source/NodeBaseContentUI.cpp"/>
+              <FILE id="T74zlA" name="NodeBaseContentUI.h" compile="0" resource="0"
+                    file="Source/NodeBaseContentUI.h"/>
+              <FILE id="BfEThv" name="NodeBaseHeaderUI.cpp" compile="1" resource="0"
+                    file="Source/NodeBaseHeaderUI.cpp"/>
+              <FILE id="XfT9SL" name="NodeBaseHeaderUI.h" compile="0" resource="0"
+                    file="Source/NodeBaseHeaderUI.h"/>
+              <FILE id="yzDl5O" name="NodeBaseUI.cpp" compile="1" resource="0" file="Source/NodeBaseUI.cpp"/>
+              <FILE id="kSKBjf" name="NodeBaseUI.h" compile="0" resource="0" file="Source/NodeBaseUI.h"/>
+            </GROUP>
+            <GROUP id="{29B40ECA-96F2-5947-9850-691EAA989D76}" name="ConnectableNode">
+              <FILE id="xfpgqy" name="ConnectableNodeContentUI.cpp" compile="1" resource="0"
+                    file="Source/ConnectableNodeContentUI.cpp"/>
+              <FILE id="rcLc6W" name="ConnectableNodeContentUI.h" compile="0" resource="0"
+                    file="Source/ConnectableNodeContentUI.h"/>
+              <FILE id="nsdeUQ" name="ConnectableNodeAudioCtlUI.cpp" compile="1"
+                    resource="0" file="Source/ConnectableNodeAudioCtlUI.cpp"/>
+              <FILE id="AqNjww" name="ConnectableNodeAudioCtlUI.h" compile="0" resource="0"
+                    file="Source/ConnectableNodeAudioCtlUI.h"/>
+              <FILE id="NDsjg3" name="ConnectableNodeHeaderUI.cpp" compile="1" resource="0"
+                    file="Source/ConnectableNodeHeaderUI.cpp"/>
+              <FILE id="iIJRHp" name="ConnectableNodeHeaderUI.h" compile="0" resource="0"
+                    file="Source/ConnectableNodeHeaderUI.h"/>
+              <FILE id="FzpBRR" name="ConnectableNodeUI.cpp" compile="1" resource="0"
+                    file="Source/ConnectableNodeUI.cpp"/>
+              <FILE id="PCMBA4" name="ConnectableNodeUI.h" compile="0" resource="0"
+                    file="Source/ConnectableNodeUI.h"/>
+            </GROUP>
           </GROUP>
           <GROUP id="{3E34AE51-026F-DC02-1688-02A8D485A848}" name="data">
             <FILE id="LufRbo" name="Data.cpp" compile="1" resource="0" file="Source/Data.cpp"/>
@@ -469,8 +512,6 @@
             <FILE id="MxBN89" name="DataProcessorGraph.h" compile="0" resource="0"
                   file="Source/DataProcessorGraph.h"/>
           </GROUP>
-          <FILE id="sCyEGf" name="NodeBase.h" compile="0" resource="0" file="Source/NodeBase.h"/>
-          <FILE id="pLpoL1" name="NodeBase.cpp" compile="1" resource="0" file="Source/NodeBase.cpp"/>
         </GROUP>
         <GROUP id="{BA13D1BE-1F46-C45E-3568-F1B617CE7E74}" name="connection">
           <GROUP id="{2E0F7B5F-7DD6-5314-CC6E-B8D149005290}" name="connectionEditor">
@@ -501,21 +542,36 @@
                 file="Source/NodeConnectionUI.h"/>
         </GROUP>
         <GROUP id="{90D03868-3FD4-352F-D8F2-C231A68FF418}" name="nodes">
+          <GROUP id="{D50B9974-FB09-4491-041A-EC9D95F501CB}" name="ContainerOut">
+            <FILE id="PKaky5" name="ContainerOutNode.cpp" compile="1" resource="0"
+                  file="Source/ContainerOutNode.cpp"/>
+            <FILE id="CmjDOl" name="ContainerOutNode.h" compile="0" resource="0"
+                  file="Source/ContainerOutNode.h"/>
+          </GROUP>
+          <GROUP id="{0970214F-084E-9562-CD8E-DA53F560AD57}" name="ContainerIn">
+            <FILE id="Q0H2tu" name="ContainerInNode.cpp" compile="1" resource="0"
+                  file="Source/ContainerInNode.cpp"/>
+            <FILE id="m4Zmk6" name="ContainerInNode.h" compile="0" resource="0"
+                  file="Source/ContainerInNode.h"/>
+          </GROUP>
+          <GROUP id="{5417A4A0-D810-BE2F-ADD2-883B526A6B39}" name="AudioDeviceIn">
+            <FILE id="coUiVY" name="AudioDeviceInNode.cpp" compile="1" resource="0"
+                  file="Source/AudioDeviceInNode.cpp"/>
+            <FILE id="OqrdZW" name="AudioDeviceInNode.h" compile="0" resource="0"
+                  file="Source/AudioDeviceInNode.h"/>
+          </GROUP>
+          <GROUP id="{66F2191E-E08B-68BC-4E06-5881A101974F}" name="AudioDeviceOut">
+            <FILE id="bZx2fD" name="AudioDeviceOutNode.cpp" compile="1" resource="0"
+                  file="Source/AudioDeviceOutNode.cpp"/>
+            <FILE id="cr0dso" name="AudioDeviceOutNode.h" compile="0" resource="0"
+                  file="Source/AudioDeviceOutNode.h"/>
+          </GROUP>
           <GROUP id="{188EEA22-1910-946C-A8A8-4B25F7BDDA65}" name="DataIn">
             <FILE id="q7jbL6" name="DataInNode.cpp" compile="1" resource="0" file="Source/DataInNode.cpp"/>
             <FILE id="gse7SE" name="DataInNode.h" compile="0" resource="0" file="Source/DataInNode.h"/>
             <FILE id="lhhusd" name="DataInNodeUI.cpp" compile="1" resource="0"
                   file="Source/DataInNodeUI.cpp"/>
             <FILE id="aQrTAH" name="DataInNodeUI.h" compile="0" resource="0" file="Source/DataInNodeUI.h"/>
-          </GROUP>
-          <GROUP id="{83B99C76-9727-E032-6D0F-014884937604}" name="AudioOut">
-            <FILE id="fQzeSW" name="AudioOutNode.cpp" compile="1" resource="0"
-                  file="Source/AudioOutNode.cpp"/>
-            <FILE id="p7hEKJ" name="AudioOutNode.h" compile="0" resource="0" file="Source/AudioOutNode.h"/>
-          </GROUP>
-          <GROUP id="{EF2D37F3-7377-F588-4856-CFF84927A472}" name="AudioIn">
-            <FILE id="zgumfG" name="AudioInNode.cpp" compile="1" resource="0" file="Source/AudioInNode.cpp"/>
-            <FILE id="RPhhcb" name="AudioInNode.h" compile="0" resource="0" file="Source/AudioInNode.h"/>
           </GROUP>
           <GROUP id="{EA2B191A-C936-B14E-A8BC-F8E388834EC9}" name="Dummy">
             <FILE id="EJL9RW" name="DummyNode.cpp" compile="1" resource="0" file="Source/DummyNode.cpp"/>
@@ -589,9 +645,9 @@
                        osxArchitecture="32BitUniversal" isDebug="1" optimisation="1"
                        targetName="LGML_Debug_old" cppLanguageStandard="c++98" cppLibType="libstdc++"
                        binaryPath=""/>
-        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.6 SDK" osxArchitecture="32BitUniversal"
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.8 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
-                       cppLanguageStandard="c++98" cppLibType="libstdc++" linkTimeOptimisation="1"/>
+                       cppLanguageStandard="c++11" cppLibType="libc++" linkTimeOptimisation="1"/>
         <CONFIGURATION name="Debug" isDebug="1" osxSDK="default" osxCompatibility="10.8 SDK"
                        osxArchitecture="32BitUniversal" targetName="LGML_Debug" defines=""
                        cppLanguageStandard="c++11" cppLibType="libc++"/>

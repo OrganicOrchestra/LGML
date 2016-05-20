@@ -35,6 +35,7 @@ public:
 	bool canInspectChildContainersBeyondRecursion;
 
 	bool repaintOnSelectionChanged;
+	bool bringToFrontOnSelect;
 
 	bool isSelected;
 	virtual void selectThis();

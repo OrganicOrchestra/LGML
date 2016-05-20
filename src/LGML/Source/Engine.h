@@ -28,9 +28,7 @@ public:
     Engine();
     ~Engine();
 
-
     // Audio
-
     AudioProcessorPlayer graphPlayer;
 
     void createNewGraph();
@@ -57,6 +55,10 @@ public:
     // our Saving methods
     var getJSONData();
     void loadJSONData(var data);
+
+	bool checkFileVersion(DynamicObject * metaData);
+	int versionStringToInt(const String &version);
+	String getMinimumRequiredFileVersion();
 
 };
 

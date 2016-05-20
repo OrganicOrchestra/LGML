@@ -17,7 +17,7 @@ class DataInNode :
 	public NodeBase
 {
 public:
-    DataInNode(NodeManager * nodeManager, uint32 nodeId);
+    DataInNode();
     ~DataInNode();
 
     Array<Parameter *> dynamicParameters;
@@ -41,7 +41,7 @@ public:
 
     void onContainerParameterChanged(Parameter * p) override;
 
-    virtual NodeBaseUI * createUI() override;
+    virtual ConnectableNodeUI * createUI() override;
 
     //Listener
     class DataInListener

@@ -17,7 +17,7 @@
 class DummyNode : public NodeBase
 {
 public:
-    DummyNode(NodeManager * nodeManager,uint32 nodeId);
+    DummyNode();
     ~DummyNode();
 
     //parameters
@@ -55,7 +55,7 @@ public:
 
 	//DATA
 
-	void dataChanged(Data *d) override
+	void processInputDataChanged(Data *d) override
 	{
 		DBG("DummyNode :: Input data changed " << d->name);
 
@@ -67,7 +67,7 @@ public:
 
 
 
-    virtual NodeBaseUI * createUI() override;
+    virtual ConnectableNodeUI * createUI() override;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNode)
