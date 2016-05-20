@@ -153,18 +153,12 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPane
 {
 	ShapeShifterContent * content = tab->content;
 
-	Rectangle<int> r = getScreenBounds();
-
-	header.removeTab(tab,false);
-
-	int cIndex = contents.indexOf(content);
-	contents.removeObject(content,false);
-
+	
 	if (currentContent == content)
 	{
 		if (contents.size() > 0)
 		{
-			setCurrentContent(contents[juce::jlimit<int>(0,contents.size()-1, cIndex)]);
+			setCurrentContent(contents[juce::jlimit<int>(0,contents.size()-1, contents.indexOf(content))]);
 		}else
 		{
 			listeners.call(&Listener::panelEmptied, this);
@@ -173,9 +167,14 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPane
 
 	if (createNewPanel)
 	{
+		Rectangle<int> r = getScreenBounds();
 		ShapeShifterPanel * newPanel = ShapeShifterManager::getInstance()->createPanel(content, tab);
 		ShapeShifterManager::getInstance()->showPanelWindow(newPanel, r);
 	}
+
+	header.removeTab(tab, false);
+	contents.removeObject(content, false);
+
 }
 
 void ShapeShifterPanel::addContent(ShapeShifterContent * content, bool setCurrent)
@@ -220,22 +219,23 @@ bool ShapeShifterPanel::isFlexible()
 void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
 {
 	ShapeShifterContent * content = tab->content;
+	contents.removeObject(content, false);
 	header.removeTab(tab, true);
-
-	int cIndex = contents.indexOf(content);
-	contents.removeObject(content,false);
-
 	if (currentContent == content)
 	{
 		if (contents.size() > 0)
 		{
-			setCurrentContent(contents[juce::jmax<int>(cIndex, 0)]);
+			setCurrentContent(contents[juce::jlimit<int>(0, contents.size() - 1, contents.indexOf(content)-1)]);
 		}
 		else
 		{
 			listeners.call(&Listener::panelEmptied, this);
 		}
 	}
+	
+	listeners.call(&Listener::contentRemoved, content);
+	delete content;
+	
 }
 
 bool ShapeShifterPanel::attachPanel(ShapeShifterPanel * panel)
@@ -357,6 +357,11 @@ void ShapeShifterPanel::tabDrag(ShapeShifterPanelTab * tab)
 void ShapeShifterPanel::tabSelect(ShapeShifterPanelTab * tab)
 {
 	setCurrentContent(tab->content);
+}
+
+void ShapeShifterPanel::askForRemoveTab(ShapeShifterPanelTab * tab)
+{
+	removeTab(tab);
 }
 
 void ShapeShifterPanel::headerDrag()

@@ -11,6 +11,7 @@
 #include "Engine.h"
 #include "LGMLLogger.h"
 #include "MainComponent.h"
+#include "DebugHelpers.h"
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
@@ -46,13 +47,14 @@ Engine::~Engine(){
 void Engine::parseCommandline(const String & commandLine){
 
     StringArray args;
-
-    args.addTokens (commandLine, false);
+	args.addTokens (commandLine, true);
     args.trim();
 
+	DBG("Parse commandline : " << args[0]);
 
     int parsingIdx=0;
-    while(parsingIdx<args.size()){
+    while(parsingIdx<args.size())
+	{
         String command = "";
         bool isParameter = args[parsingIdx].startsWith("-");
         if(isParameter){
@@ -60,17 +62,19 @@ void Engine::parseCommandline(const String & commandLine){
             parsingIdx++;
             if(parsingIdx>=args.size()){break;}
         }
-        String argument = File::createLegalPathName(args[parsingIdx]);
 
-        DBG("parsing commandline :" << command << " " << argument);
+		String argument = args[parsingIdx].removeCharacters(juce::StringRef("\""));
 
+        //DBG("parsing commandline, command : " << command << ", argument :" << argument << " / parsingIdx : " << parsingIdx);
 
         if(command== "f"|| parsingIdx==0){
-            if (File::isAbsolutePath(argument)) {
-                File f(argument);
-                if (f.existsAsFile()) loadDocument(f);
-            }
-            else{DBG("not found file : " << argument << " please provide a valid absolute path");}
+			if (File::isAbsolutePath(argument)) {
+				File f(argument);
+				if (f.existsAsFile()) loadDocument(f);
+			}
+			else { 
+				NLOG("Engine","File : " << argument << " not found."); 
+			}
         }
 
 

@@ -76,19 +76,21 @@ public:
 
 	virtual void tabDrag(ShapeShifterPanelTab *) override;
 	virtual void tabSelect(ShapeShifterPanelTab *) override;
+	virtual void askForRemoveTab(ShapeShifterPanelTab *) override;
 	virtual void headerDrag() override;
 
 	//Listener
 	class Listener
 	{
 	public:
-        virtual ~Listener(){};
+		virtual ~Listener() {};
 		virtual void panelDetach(ShapeShifterPanel *) {}
 		virtual void panelEmptied(ShapeShifterPanel *) {};
 		virtual void panelDestroyed(ShapeShifterPanel *) {};
 
 		virtual void headerDrag(ShapeShifterPanel *) {}
 		virtual void tabDrag(ShapeShifterPanel *) {};
+		virtual void contentRemoved(ShapeShifterContent *) {}
 	};
 
 	ListenerList<Listener> listeners;

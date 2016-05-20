@@ -34,7 +34,7 @@ ControlVariableReferenceUI::ControlVariableReferenceUI(ControlVariableReference 
 	removeBT.setImages(false, true, true, removeImage,
 		0.7f, Colours::transparentBlack,
 		removeImage, 1.0f, Colours::transparentBlack,
-		removeImage, 1.0f, Colours::pink.withAlpha(0.8f),
+		removeImage, 1.0f, Colours::white.withAlpha(.7f),
 		0.5f);
 	removeBT.addListener(this);
 

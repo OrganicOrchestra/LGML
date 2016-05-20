@@ -9,8 +9,11 @@
 
 namespace BinaryData
 {
+    extern const char*   littleredridinghoodmd_png;
+    const int            littleredridinghoodmd_pngSize = 37657;
+
     extern const char*   default_lgmllayout;
-    const int            default_lgmllayoutSize = 2319;
+    const int            default_lgmllayoutSize = 2422;
 
     extern const char*   removeBT_png;
     const int            removeBT_pngSize = 58335;
@@ -28,7 +31,7 @@ namespace BinaryData
     extern const char* namedResourceList[];
 
     // Number of elements in the namedResourceList array.
-    const int namedResourceListSize = 5;
+    const int namedResourceListSize = 6;
 
     // If you provide the name of one of the binary resource variables above, this function will
     // return the corresponding data and its size (or a null pointer if the name isn't found).

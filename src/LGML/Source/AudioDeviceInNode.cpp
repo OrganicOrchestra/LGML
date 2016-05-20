@@ -31,7 +31,6 @@ AudioDeviceInNode::~AudioDeviceInNode() {
 
 void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
 	AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
-
 }
 
 void AudioDeviceInNode::changeListenerCallback(ChangeBroadcaster*) {
