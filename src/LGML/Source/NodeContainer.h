@@ -42,7 +42,7 @@ class NodeContainer :
 	public ConnectableNode::RMSListener
 {
 public:
-	NodeContainer(const String &name, NodeContainer * _parentNodeContainer = nullptr);
+	NodeContainer(const String &name = "Container");
 	virtual ~NodeContainer();
 
 	//Keep value of containerIn RMS and containerOutRMS to dispatch in one time
@@ -56,6 +56,9 @@ public:
 	ContainerInNode * containerInNode;
 	ContainerOutNode * containerOutNode;
 
+
+	//Container
+	void setParentNodeContainer(NodeContainer * _parentNodeContainer); // ? Could / Should be included in ControllableContainer::setParentContainer logic (override and assign)
 
 	//NODE AND CONNECTION MANAGEMENT
 
@@ -108,10 +111,13 @@ public:
 	virtual ConnectableNodeUI * createUI();
 
 	//AUDIO 
+	
 	AudioProcessorGraph::Node * getAudioNode(bool isInput) override;
 
 	
 	//DATA
+	bool hasDataInputs() override;
+	bool hasDataOutputs() override;
 
 	ListenerList<NodeContainerListener> nodeContainerListeners;
 	void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }

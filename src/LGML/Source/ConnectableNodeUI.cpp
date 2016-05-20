@@ -9,6 +9,9 @@
 */
 
 #include "ConnectableNodeUI.h"
+#include "NodeContainer.h"
+#include "ContainerInNode.h"
+#include "ContainerOutNode.h"
 
 ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeContentUI * contentUI, ConnectableNodeHeaderUI * headerUI) :
 	InspectableComponent(cn),
@@ -251,18 +254,41 @@ void ConnectableNodeUI::ConnectorContainer::setConnectorsFromNode(ConnectableNod
 {
 	connectors.clear();
 
+	//If container, go for containerIn / containerOut
+	ConnectableNode * targetNode = _node;
+	if (_node->type == NodeType::ContainerType)
+	{
+		if (type == ConnectorComponent::INPUT)
+		{
+			targetNode = ((NodeContainer *)_node)->containerInNode;
+		}
+		else
+		{
+			targetNode = ((NodeContainer *)_node)->containerOutNode;
+		}
+	}
+
+	if (targetNode == nullptr)
+	{
+		DBG("Target Node nullptr !");
+		return;
+	}
+
+
 	//for later : this is the creation for minimal display level
-	bool hasAudio = (type == ConnectorComponent::INPUT) ? _node->hasAudioInputs() : _node->hasAudioOutputs();
-	bool hasData = (type == ConnectorComponent::INPUT) ? _node->hasDataInputs() : _node->hasDataOutputs();
+	bool hasAudio = (type == ConnectorComponent::INPUT) ? targetNode->hasAudioInputs() : targetNode->hasAudioOutputs();
+	bool hasData = (type == ConnectorComponent::INPUT) ? targetNode->hasDataInputs() : targetNode->hasDataOutputs();
+
+	DBG("Has audio / has data " << String(hasAudio) << " / " << String(hasData));
 
 	if (hasAudio)
 	{
-		addConnector(type, NodeConnection::ConnectionType::AUDIO, _node);
+		addConnector(type, NodeConnection::ConnectionType::AUDIO, targetNode);
 	}
 
 	if (hasData)
 	{
-		addConnector(type, NodeConnection::ConnectionType::DATA, _node);
+		addConnector(type, NodeConnection::ConnectionType::DATA, targetNode);
 	}
 }
 

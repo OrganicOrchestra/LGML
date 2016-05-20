@@ -30,13 +30,16 @@ NodeFactory::~NodeFactory()
 
 ConnectableNode * NodeFactory::createNode(NodeType nodeType)
 {
-	
     ConnectableNode * n = nullptr;
 
     switch (nodeType)
     {
+	case NodeType::UNKNOWN_TYPE:
+		DBG("NodeFactory : not found type for node");
+		break;
+
 		case NodeType::ContainerType:
-			n = new NodeContainer("",nullptr);
+			n = new NodeContainer();
 			break;
 
 		case NodeType::ContainerInType:
@@ -77,9 +80,7 @@ ConnectableNode * NodeFactory::createNode(NodeType nodeType)
             n = new AudioDeviceOutNode();
             break;
 
-        case NodeType::UNKNOWN_TYPE:
-            DBG("NodeFactory : not found type for node");
-
+        
         default:
             break;
     }
@@ -95,9 +96,8 @@ PopupMenu * NodeFactory::getNodeTypesMenu(int menuIdOffset)
 
     for (int i = 0; i < numElements; i++)
     {
-		int index = i + userCanAddStartType;
-        p->addItem(index+menuIdOffset +1, nodeTypeNames[index]); //+1 to offset unknown type
-    }
+        p->addItem(i+menuIdOffset, nodeTypeNames[i+userCanAddStartType-1]);
+    } 
 
     return p;
 }
@@ -108,6 +108,12 @@ NodeType NodeFactory::getTypeFromString(const String & s) {
         if (s == nodeTypeNames[i]) { return NodeType(i+1); }
     }
     return UNKNOWN_TYPE;
+}
+
+NodeType NodeFactory::getTypeForIndex(int nodeTypeIndex, bool includeUserOffset)
+{
+	int targetIndex = nodeTypeIndex + (includeUserOffset ? userCanAddStartType : 0);
+	return (NodeType)(targetIndex);
 }
 
 String NodeFactory::nodeTypeToString(NodeType t) {

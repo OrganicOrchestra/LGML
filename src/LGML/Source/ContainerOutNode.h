@@ -14,12 +14,15 @@
 
 #include "NodeBase.h"
 
+class NodeContainer;
 
 class ContainerOutNode : public NodeBase
 {
 public:
 	ContainerOutNode();
 	~ContainerOutNode();
+
+	NodeContainer * getParentNodeContainer();
 
 	//AUDIO
 	void setNumAudioChannels(int channels);

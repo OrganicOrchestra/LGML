@@ -136,8 +136,13 @@ void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
 		return;
 	}
 
-	ConnectableNodeUI * n1 = getUIForNode((ConnectableNode*)connection->sourceNode);
-	ConnectableNodeUI * n2 = getUIForNode((ConnectableNode*)connection->destNode);
+	ConnectableNode * sourceNode = (ConnectableNode*)connection->sourceNode;
+	ConnectableNode * destNode = (ConnectableNode*)connection->destNode;
+	if (sourceNode->type == NodeType::ContainerOutType) sourceNode = ((ContainerOutNode *)sourceNode)->getParentNodeContainer();
+	if (destNode->type == NodeType::ContainerInType) destNode = ((ContainerInNode *)destNode)->getParentNodeContainer();
+
+	ConnectableNodeUI * n1 = getUIForNode(sourceNode);
+	ConnectableNodeUI * n2 = getUIForNode(destNode);
 
 	ConnectorComponent * c1 = (n1 != nullptr) ? n1->getFirstConnector(connection->connectionType, ConnectorComponent::OUTPUT) : nullptr;
 	ConnectorComponent * c2 = (n2 != nullptr) ? n2->getFirstConnector(connection->connectionType, ConnectorComponent::INPUT) : nullptr;
@@ -338,11 +343,13 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
 
 			int result = menu.show();
 
-			DBG("RESULT : " << result << " / menuOffset " << menuOffset);
 
 			if (result > 0 && result < addNodeMenu->getNumItems() + menuOffset)
 			{
-				ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode((NodeType)(result- menuOffset));
+				
+				ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(NodeFactory::getTypeForIndex(result - menuOffset,true));
+				jassert(n != nullptr);
+
 				Point<int> mousePos = getMouseXYRelative();
 				n->xPosition->setValue((float)mousePos.x);
 				n->yPosition->setValue((float)mousePos.y);

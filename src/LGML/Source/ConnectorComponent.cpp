@@ -13,13 +13,15 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::
     setSize(10,10);
 
     if(node->type == NodeType::ContainerType){
-		if(ioType == ConnectorIOType::INPUT) ((NodeContainer *)node)->containerInNode->addNodeAudioProcessorListener(this);
-		else ((NodeContainer *)node)->containerOutNode->addNodeAudioProcessorListener(this);
+		DBG("SHOULD NOT BE THERE, CONTAINER SHOULD HAVE LINKED TO INNER IN/OUT NODES IN SETCONNECTORFROMCOMPONENT");
+		//if(ioType == ConnectorIOType::INPUT) ((NodeContainer *)node)->containerInNode->addNodeAudioProcessorListener(this);
+		//else ((NodeContainer *)node)->containerOutNode->addNodeAudioProcessorListener(this);
 	}
 	else
 	{
 		((NodeBase *)node)->addNodeAudioProcessorListener(this);
 	}
+
     generateToolTip();
 }
 

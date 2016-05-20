@@ -9,9 +9,10 @@
 */
 
 #include "NodeContainerUI.h"
+#include "NodeContainerContentUI.h"
 
 NodeContainerUI::NodeContainerUI(NodeContainer * nc) :
-	ConnectableNodeUI(nc),
+	ConnectableNodeUI(nc,new NodeContainerContentUI()),
 	nodeContainer(nc)
 {
 }

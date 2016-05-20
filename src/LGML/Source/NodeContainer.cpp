@@ -13,13 +13,16 @@
 #include "NodeConnection.h"
 #include "NodeContainerUI.h"
 
-NodeContainer::NodeContainer(const String &name, NodeContainer * _parentNodeContainer) :
-	parentNodeContainer(_parentNodeContainer),
-	ConnectableNode(name,NodeType::ContainerType)
+NodeContainer::NodeContainer(const String &name) :
+	parentNodeContainer(nullptr),
+	containerInNode(nullptr),
+	containerOutNode(nullptr),
+	ConnectableNode(name, NodeType::ContainerType)
 {
-	saveAndLoadRecursiveData = false;
+	canHavePresets = false;
+	hasMainAudioControl = false;
 
-	clear(true); // Create containerIn + Out nodes
+	saveAndLoadRecursiveData = false;
 }
 
 
@@ -36,9 +39,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 		nodes[0]->remove();
 	}
 
-	
 	connections.clear();
-
 	
 	containerInNode = nullptr;
 	containerOutNode = nullptr;
@@ -47,13 +48,27 @@ void NodeContainer::clear(bool recreateContainerNodes)
 	{
 		containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
 		containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
-		
+
+		containerInNode->xPosition->setValue(150);
+		containerInNode->yPosition->setValue(100);
+		containerOutNode->xPosition->setValue(450);
+		containerOutNode->yPosition->setValue(100);
+
 		containerInNode->addRMSListener(this);
 		containerOutNode->addRMSListener(this);
+		
+		//maybe keep it ?
+		addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
 	}
 	
 }
 
+
+void NodeContainer::setParentNodeContainer(NodeContainer * _parentNodeContainer)
+{
+	parentNodeContainer = _parentNodeContainer;
+	clear(true);
+}
 
 ConnectableNode * NodeContainer::addNode(NodeType nodeType)
 {
@@ -64,7 +79,13 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType)
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n)
 {
 	nodes.add(n);
-	if (n->type == NodeType::ContainerType) nodeContainers.add((NodeContainer *)n);
+	if (n->type == NodeType::ContainerType)
+	{
+		nodeContainers.add((NodeContainer *)n);
+		((NodeContainer *)n)->setParentNodeContainer(this);
+		DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
+	}
+
 	n->addNodeListener(this);
 	n->nameParam->setValue(getUniqueNameInContainer(n->nameParam->stringValue()));
 	addChildControllableContainer(n); //ControllableContainer
@@ -169,7 +190,6 @@ void NodeContainer::loadJSONDataInternal(var data)
 	}
 
 	removeIllegalConnections();
-
 }
 
 
@@ -253,6 +273,18 @@ ConnectableNodeUI * NodeContainer::createUI()
 {
 	return new NodeContainerUI(this);
 }
+
+
+bool NodeContainer::hasDataInputs()
+{
+	return containerInNode != nullptr ? containerInNode->hasDataInputs() : false;
+}
+
+bool NodeContainer::hasDataOutputs()
+{
+	return containerOutNode != nullptr ? containerOutNode->hasDataOutputs() : false;
+}
+
 
 AudioProcessorGraph::Node * NodeContainer::getAudioNode(bool isInput)
 {

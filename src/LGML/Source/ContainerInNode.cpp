@@ -10,6 +10,7 @@
 
 #include "ContainerInNode.h"
 #include "NodeBaseUI.h"
+#include "NodeContainer.h"
 
 ContainerInNode::ContainerInNode() :
 	NodeBase("Container IN", NodeType::ContainerInType)
@@ -22,6 +23,11 @@ ContainerInNode::ContainerInNode() :
 
 ContainerInNode::~ContainerInNode()
 {
+}
+
+NodeContainer * ContainerInNode::getParentNodeContainer()
+{
+	return (NodeContainer *)parentContainer;
 }
 
 void ContainerInNode::setNumAudioChannels(int channels)

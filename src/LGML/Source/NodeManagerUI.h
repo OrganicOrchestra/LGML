@@ -24,6 +24,7 @@ class NodeManagerUI :
 	public Component
 {
 public:
+	
     NodeManagerUI(NodeManager * nodeManager);
     ~NodeManagerUI();
 
@@ -45,8 +46,9 @@ public:
 	
 };
 
-class NodeManagerUIViewport: public ShapeShifterContent{
-    public :
+class NodeManagerUIViewport: public ShapeShifterContent
+{
+public :
     NodeManagerUIViewport(const String &contentName, NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContent(contentName)
 	{
         vp.setViewedComponent(nmui,true);

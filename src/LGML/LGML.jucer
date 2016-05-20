@@ -456,6 +456,10 @@
           <FILE id="ZvvtSp" name="NodeContainer.h" compile="0" resource="0" file="Source/NodeContainer.h"/>
           <GROUP id="{A2D3A061-C57A-C7C0-F696-113F915DCD55}" name="UI">
             <GROUP id="{B3261A6C-5F3C-2CDF-D89A-B1D0232F257F}" name="NodeContainer">
+              <FILE id="H9F8HW" name="NodeContainerContentUI.cpp" compile="1" resource="0"
+                    file="Source/NodeContainerContentUI.cpp"/>
+              <FILE id="ah4oav" name="NodeContainerContentUI.h" compile="0" resource="0"
+                    file="Source/NodeContainerContentUI.h"/>
               <FILE id="BngKpc" name="NodeContainerViewer.cpp" compile="1" resource="0"
                     file="Source/NodeContainerViewer.cpp"/>
               <FILE id="PvncTg" name="NodeContainerViewer.h" compile="0" resource="0"

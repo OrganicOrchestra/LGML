@@ -9,8 +9,9 @@
 */
 
 #include "ContainerOutNode.h"
-
 #include "NodeBaseUI.h"
+#include "NodeContainer.h"
+
 
 ContainerOutNode::ContainerOutNode() :
 	NodeBase("Container Out", NodeType::ContainerOutType)
@@ -24,6 +25,12 @@ ContainerOutNode::ContainerOutNode() :
 
 ContainerOutNode::~ContainerOutNode()
 {
+}
+
+
+NodeContainer * ContainerOutNode::getParentNodeContainer()
+{
+	return (NodeContainer *)parentContainer;
 }
 
 void ContainerOutNode::setNumAudioChannels(int channels)

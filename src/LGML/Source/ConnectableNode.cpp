@@ -49,16 +49,17 @@
 {
 }
 
+
 bool ConnectableNode::hasAudioInputs()
 {
 	//to override
-	return false;
+	return getAudioNode(true)->getProcessor()->getTotalNumInputChannels() > 0;
 }
 
 bool ConnectableNode::hasAudioOutputs()
 {
 	//to override
-	return false;
+	return getAudioNode(false)->getProcessor()->getTotalNumOutputChannels() > 0;
 }
 
 bool ConnectableNode::hasDataInputs()

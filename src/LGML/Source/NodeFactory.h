@@ -20,7 +20,7 @@ const static String nodeTypeNames[] = {"ContainerIn","ContainerOut", "Container"
 //Added type to not mess with class names
 enum NodeType
 {
-    UNKNOWN_TYPE =0,
+    UNKNOWN_TYPE,
 	ContainerInType,
 	ContainerOutType,
 
@@ -41,13 +41,14 @@ public:
 	NodeFactory();
 	~NodeFactory();
 	
-	const static int userCanAddStartType = UNKNOWN_TYPE;
+	const static int userCanAddStartType = ContainerType;
 
-    static ConnectableNode * createNode(NodeType nodeType);
+    static ConnectableNode * createNode(NodeType type);
 
     static PopupMenu * getNodeTypesMenu(int menuIdOffset = 0);
 
     static NodeType getTypeFromString(const String & s);
+	static NodeType getTypeForIndex(int nodeTypeIndex, bool includeUserOffset);
 
     static String nodeTypeToString(NodeType t);
     static String nodeToString(ConnectableNode *  n);
