@@ -198,10 +198,13 @@ void NodeContainer::loadJSONDataInternal(var data)
 
 NodeConnection * NodeContainer::getConnectionBetweenNodes(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
+	ConnectableNode * tSourceNode = (sourceNode->type == ContainerType) ? ((NodeContainer *)sourceNode)->containerOutNode : sourceNode;
+	ConnectableNode * tDestNode = (destNode->type == ContainerType) ? ((NodeContainer *)destNode)->containerInNode : destNode;
+
 	for (int i = connections.size(); --i >= 0;)
 	{
 		NodeConnection * c = connections.getUnchecked(i);
-		if (c->sourceNode == sourceNode && c->destNode == destNode && c->connectionType == connectionType) return c;
+		if (c->sourceNode == tSourceNode && c->destNode == tDestNode && c->connectionType == connectionType) return c;
 	}
 
 	return nullptr;
@@ -210,9 +213,12 @@ NodeConnection * NodeContainer::getConnectionBetweenNodes(ConnectableNode * sour
 Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode * node)
 {
 	Array<NodeConnection*> result;
+	ConnectableNode * tSourceNode = (node->type == ContainerType) ? ((NodeContainer *)node)->containerOutNode : node;
+	ConnectableNode * tDestNode = (node->type == ContainerType) ? ((NodeContainer *)node)->containerInNode : node;
+
 	for (auto &connection : connections)
 	{
-		if (connection->sourceNode == node || connection->destNode == node) result.add(connection);
+		if (connection->sourceNode == tSourceNode || connection->destNode == tDestNode) result.add(connection);
 	}
 
 	return result;
