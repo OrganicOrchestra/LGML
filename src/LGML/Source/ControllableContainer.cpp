@@ -18,7 +18,10 @@ parentContainer(nullptr),
 hasCustomShortName(false),
 skipControllableNameInAddress(false),
 currentPreset(nullptr),
-saveAndLoadRecursiveData(true)
+saveAndLoadRecursiveData(true),
+numContainerIndexed(0),
+localIndexedPosition(-1)
+
 {
     setNiceName(niceName);
 }
@@ -34,12 +37,12 @@ ControllableContainer::~ControllableContainer()
 
 void ControllableContainer::addParameter(Parameter * p)
 {
-	addParameterInternal(p);
+    addParameterInternal(p);
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
-	String targetName = getUniqueNameInContainer(_niceName);
+    String targetName = getUniqueNameInContainer(_niceName);
     FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
     addParameterInternal(p);
     return p;
@@ -47,7 +50,7 @@ FloatParameter * ControllableContainer::addFloatParameter(const String & _niceNa
 
 IntParameter * ControllableContainer::addIntParameter(const String & _niceName, const String & _description, const int & initialValue, const int & minValue, const int & maxValue, const bool & enabled)
 {
-	String targetName = getUniqueNameInContainer(_niceName);
+    String targetName = getUniqueNameInContainer(_niceName);
     IntParameter * p = new IntParameter(targetName, _description, initialValue, minValue, maxValue, enabled);
     addParameterInternal(p);
     return p;
@@ -55,30 +58,30 @@ IntParameter * ControllableContainer::addIntParameter(const String & _niceName, 
 
 BoolParameter * ControllableContainer::addBoolParameter(const String & _niceName, const String & _description, const bool & value, const bool & enabled)
 {
-	String targetName = getUniqueNameInContainer(_niceName);
-	BoolParameter * p = new BoolParameter(targetName, _description, value, enabled);
+    String targetName = getUniqueNameInContainer(_niceName);
+    BoolParameter * p = new BoolParameter(targetName, _description, value, enabled);
     addParameterInternal(p);
     return p;
 }
 
 StringParameter * ControllableContainer::addStringParameter(const String & _niceName, const String & _description, const String &value, const bool & enabled)
 {
-	String targetName = getUniqueNameInContainer(_niceName);
-	StringParameter * p = new StringParameter(targetName, _description, value, enabled);
+    String targetName = getUniqueNameInContainer(_niceName);
+    StringParameter * p = new StringParameter(targetName, _description, value, enabled);
     addParameterInternal(p);
     return p;
 }
 
 Trigger * ControllableContainer::addTrigger(const String & _niceName, const String & _description, const bool & enabled)
 {
-	String targetName = getUniqueNameInContainer(_niceName);
-	Trigger * t = new Trigger(targetName, _description, enabled);
+    String targetName = getUniqueNameInContainer(_niceName);
+    Trigger * t = new Trigger(targetName, _description, enabled);
     controllables.add(t);
     t->setParentContainer(this);
     t->addTriggerListener(this);
 
     controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, t);
-        notifyStructureChanged();
+    notifyStructureChanged();
     return t;
 }
 
@@ -95,12 +98,12 @@ void ControllableContainer::removeControllable(Controllable * c)
 
 void ControllableContainer::notifyStructureChanged(){
 
-	controllableContainerListeners.call(&ControllableContainerListener::childStructureChanged, this);
+    controllableContainerListeners.call(&ControllableContainerListener::childStructureChanged, this);
 }
 
 
 void ControllableContainer::setNiceName(const String &_niceName) {
-	if (niceName == _niceName) return;
+    if (niceName == _niceName) return;
     niceName = _niceName;
     if (!hasCustomShortName) setAutoShortName();
 }
@@ -111,7 +114,7 @@ void ControllableContainer::setCustomShortName(const String &_shortName){
 }
 
 void ControllableContainer::setAutoShortName() {
-	hasCustomShortName = false;
+    hasCustomShortName = false;
     shortName = StringUtil::toShortName(niceName);
 
     updateChildrenControlAddress();
@@ -133,20 +136,60 @@ void ControllableContainer::addChildControllableContainer(ControllableContainer 
 {
 
     controllableContainers.add(container);
-	container->addControllableContainerListener(this);
+    container->addControllableContainerListener(this);
     container->setParentContainer(this);
-	controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded, container);
-	notifyStructureChanged();
+    controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded, container);
+    notifyStructureChanged();
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
-	this->controllableContainers.removeAllInstancesOf(container);
-	container->removeControllableContainerListener(this);
-	controllableContainerListeners.call(&ControllableContainerListener::controllableContainerRemoved, container);
-	notifyStructureChanged();
-	container->setParentContainer(nullptr);
+    if(numContainerIndexed>0 &&
+       container->localIndexedPosition>=0 &&
+       controllableContainers.getUnchecked(container->localIndexedPosition) == container){
+        numContainerIndexed--;
+    }
+    this->controllableContainers.removeAllInstancesOf(container);
+    container->removeControllableContainerListener(this);
+    controllableContainerListeners.call(&ControllableContainerListener::controllableContainerRemoved, container);
+    notifyStructureChanged();
+    container->setParentContainer(nullptr);
 }
+
+void ControllableContainer::addChildIndexedControllableContainer(ControllableContainer * container,int idx){
+    if(idx == -1 )idx = numContainerIndexed;
+    jassert(idx<=numContainerIndexed);
+
+    controllableContainers.insert(idx, container);
+    container->localIndexedPosition = idx;
+    numContainerIndexed++;
+
+    container->addControllableContainerListener(this);
+    container->setParentContainer(this);
+    controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded, container);
+    notifyStructureChanged();
+}
+
+void ControllableContainer::removeChildIndexedControllableContainer(int idx){
+    if(idx == -1 )idx = numContainerIndexed-1;
+    jassert(idx<numContainerIndexed);
+
+
+    removeChildControllableContainer(controllableContainers.getUnchecked(idx));
+    numContainerIndexed--;
+
+    for(int i = idx ; i < numContainerIndexed ; i ++){
+        controllableContainers.getUnchecked(i)->localIndexedPosition = i;
+        controllableContainers.getUnchecked(i)->localIndexChanged();
+    }
+
+}
+
+int ControllableContainer::getNumberOfIndexedContainer(){return numContainerIndexed;}
+int ControllableContainer::getIndexedPosition(){return localIndexedPosition;}
+bool ControllableContainer::hasIndexedContainers(){return numContainerIndexed>0;}
+bool ControllableContainer::isIndexedContainer(){return localIndexedPosition>=0;}
+void ControllableContainer::localIndexChanged(){};
 
 ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name, bool searchNiceNameToo)
 {
@@ -295,8 +338,8 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 
 void ControllableContainer::saveNewPreset(const String & _name)
 {
-	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, true);
-	loadPreset(pre);
+    PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, true);
+    loadPreset(pre);
 }
 
 bool ControllableContainer::saveCurrentPreset()
@@ -331,8 +374,8 @@ bool ControllableContainer::resetFromPreset()
 
 var ControllableContainer::getPresetValueFor(Parameter * p)
 {
-	if (currentPreset == nullptr) return var();
-	return currentPreset->getPresetValue(p->getControlAddress(this));
+    if (currentPreset == nullptr) return var();
+    return currentPreset->getPresetValue(p->getControlAddress(this));
 }
 
 
@@ -340,7 +383,7 @@ var ControllableContainer::getPresetValueFor(Parameter * p)
 
 String ControllableContainer::getPresetFilter()
 {
-	return shortName;
+    return shortName;
 }
 
 
@@ -384,42 +427,44 @@ void ControllableContainer::addParameterInternal(Parameter * p)
 
 var ControllableContainer::getJSONData()
 {
-	var data(new DynamicObject());
+    var data(new DynamicObject());
 
-	var paramsData;
+    var paramsData;
+
 
 	Array<Controllable *> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
 
-	for (auto &c : cont) {
-		Parameter * base = dynamic_cast<Parameter*>(c);
-		if (base)
-		{
-			var pData(new DynamicObject());
-			pData.getDynamicObject()->setProperty("controlAddress", base->getControlAddress(this));
-			pData.getDynamicObject()->setProperty("value", base->value);
-			paramsData.append(pData);
-		}
-		else if (dynamic_cast<Trigger*>(c) != nullptr) {
+    for (auto &c : cont) {
+        Parameter * base = dynamic_cast<Parameter*>(c);
+        if (base)
+        {
+            var pData(new DynamicObject());
+            pData.getDynamicObject()->setProperty("controlAddress", base->getControlAddress(this));
+            pData.getDynamicObject()->setProperty("value", base->value);
+            paramsData.append(pData);
+        }
+        else if (dynamic_cast<Trigger*>(c) != nullptr) {
 
-		}
-		else {
-			// should never happen un less another Controllable type than parameter or trigger has been introduced
-			jassertfalse;
-		}
-	}
+        }
+        else {
+            // should never happen un less another Controllable type than parameter or trigger has been introduced
+            jassertfalse;
+        }
+    }
 
-	if (currentPreset != nullptr)
-	{
-		data.getDynamicObject()->setProperty("preset", currentPreset->name);
-	}
+    if (currentPreset != nullptr)
+    {
+        data.getDynamicObject()->setProperty("preset", currentPreset->name);
+    }
 
-	data.getDynamicObject()->setProperty("parameters", paramsData);
+    data.getDynamicObject()->setProperty("parameters", paramsData);
 
-	return data;
+    return data;
 }
 
 void ControllableContainer::loadJSONData(var data)
 {
+
 
 	if (data.getDynamicObject()->hasProperty("preset"))
 	{
@@ -446,29 +491,30 @@ void ControllableContainer::loadJSONData(var data)
 		}
 	}
 
-	loadJSONDataInternal(data);
 
-	controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
+    loadJSONDataInternal(data);
+
+    controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
 }
 
 void ControllableContainer::childStructureChanged(ControllableContainer *)
 {
-	notifyStructureChanged();
+    notifyStructureChanged();
 }
 
 String ControllableContainer::getUniqueNameInContainer(const String & sourceName, int suffix)
 {
-	String resultName = sourceName;
-	if (suffix > 0) resultName += " " + String(suffix);
-
-	if (getControllableByName(resultName,true) != nullptr)
-	{
-		return getUniqueNameInContainer(sourceName, suffix + 1);
-	}
-	if (getControllableContainerByName(resultName,true) != nullptr)
-	{
-		return getUniqueNameInContainer(sourceName, suffix + 1);
-	}
-
-	return resultName;
+    String resultName = sourceName;
+    if (suffix > 0) resultName += " " + String(suffix);
+    
+    if (getControllableByName(resultName,true) != nullptr)
+    {
+        return getUniqueNameInContainer(sourceName, suffix + 1);
+    }
+    if (getControllableContainerByName(resultName,true) != nullptr)
+    {
+        return getUniqueNameInContainer(sourceName, suffix + 1);
+    }
+    
+    return resultName;
 }

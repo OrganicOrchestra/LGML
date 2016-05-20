@@ -92,7 +92,7 @@ String Controllable::getControlAddress(ControllableContainer * relativeTo)
 DynamicObject * Controllable::createDynamicObject()
 {
 	DynamicObject* dObject = new DynamicObject();
-	dObject->setProperty(ptrIdentifier, (int64)this);
+	dObject->setProperty(jsPtrIdentifier, (int64)this);
 	return dObject;
 }
 

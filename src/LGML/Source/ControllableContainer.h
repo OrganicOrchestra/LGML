@@ -70,6 +70,18 @@ public:
 
     void addChildControllableContainer(ControllableContainer * container);
     void removeChildControllableContainer(ControllableContainer *container);
+    // add indexed container (ensure localIndex and position in the child container array are the same)
+    // idx of -1 add after the ast indexed (may be not the last, array can contain other non indexed elements)
+    void addChildIndexedControllableContainer(ControllableContainer * container,int idx = -1);
+    void removeChildIndexedControllableContainer(int idx);
+    int getNumberOfIndexedContainer();
+    int getIndexedPosition();
+    bool hasIndexedContainers();
+    bool isIndexedContainer();
+    // can be overriden if indexed container are removed from the middle of the list,
+    // allowing Indexed containers to react to index change
+    virtual void localIndexChanged();
+
     ControllableContainer * getControllableContainerByName(const String &name, bool searchNiceNameToo = false);
 
 
@@ -117,6 +129,9 @@ private:
     virtual void onContainerParameterChanged(Parameter *) {};
     virtual void onContainerTriggerTriggered(Trigger *) {};
     void addParameterInternal(Parameter * p);
+
+    int numContainerIndexed;
+    int localIndexedPosition;
 
 public:
 

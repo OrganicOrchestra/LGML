@@ -13,9 +13,9 @@
 /// example of accessible functions from LGML
 
 // lgml.node.audioInNode.yPosition.set(150);
-// lgml.node.audioInNode.masterVolume.set(.8);
+lgml.node.audioInNode.masterVolume.set(.5);
 // lgml.node.zouzou.audioOutNode.set("bambi");
-// lgml.time.play.t();
+lgml.time.play.trigger();
 
 /// all enumered elements can be accessed via array named elements
 // eg access to looper track 0 ==> lgml.node.looper.tracks.elements[0]

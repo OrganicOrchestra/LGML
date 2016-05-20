@@ -23,7 +23,7 @@ JsEnvironmentUI::JsEnvironmentUI(JsEnvironment * _env) :env(_env) {
 	addAndMakeVisible(watchT);
 	watchT.addListener(this);
 
-	validJsLed.setFill(FillType(Colours::red));
+    newJsFileLoaded(env->hasValidJsFile());
 	addAndMakeVisible(validJsLed);
 
 }

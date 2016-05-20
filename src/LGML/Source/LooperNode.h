@@ -36,7 +36,7 @@ public:
         void removeTrack(int i);
 
 
-	OwnedArray<LooperTrack> tracks;
+        OwnedArray<LooperTrack> tracks;
         LooperNode * owner;
 
     };

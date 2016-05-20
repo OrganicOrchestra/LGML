@@ -30,14 +30,18 @@ void ScriptedConsequence::run()
 	RuleConsequence::run();
 
 	Array<var> args;
-	callFunctionFromIdentifier(Identifier(rule->isActive()?"whileActive":"whileInactive"), args);
+
+    static const Identifier whileActiveIdentifier("whileActive");
+    static const Identifier whileInActiveIdentifier("whileInActive");
+
+    callFunctionFromIdentifier(rule->isActive()?whileActiveIdentifier:whileInActiveIdentifier, args);
 }
 
 void ScriptedConsequence::buildLocalEnv()
 {
 	DynamicObject obj;
 
-	obj.setProperty(ptrIdentifier, (int64)this);
+	obj.setProperty(jsPtrIdentifier, (int64)this);
 	for (auto &r : rule->references)
 	{
 		if (r->currentVariable == nullptr) continue;
@@ -63,7 +67,9 @@ void ScriptedConsequence::ruleActivationChanged(Rule * r)
 	RuleConsequence::ruleActivationChanged(r);
 
 	Array<var> args;
-	callFunctionFromIdentifier(Identifier(rule->isActive() ? "onActive" : "onInactive"), args);
+    static const Identifier onActiveIdentifier("onActive");
+    static const Identifier onInActiveIdentifier("onInactive");
+	callFunctionFromIdentifier(rule->isActive() ?onActiveIdentifier : onInActiveIdentifier, args);
 }
 
 
