@@ -120,6 +120,19 @@ void Engine::clear(){
     changed();    //fileDocument
 }
 
+void Engine::stimulateAudio( bool s){
+    if(s){
+        stimulator= new AudioFucker(&getAudioDeviceManager());
+        getAudioDeviceManager().addAudioCallback(stimulator);
+
+    }
+    else{
+        getAudioDeviceManager().removeAudioCallback(stimulator);
+        stimulator=nullptr;
+    }
+
+}
+
 void Engine::createNewGraph(){
     clear();
 

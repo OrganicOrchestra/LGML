@@ -100,6 +100,8 @@ public:
 	void menuItemSelected(int /*menuItemID*/, int /*topLevelMenuIndex*/) override;
 
 
+    void updateStimulateAudioItem (ApplicationCommandInfo& info);
+
 private:
     //==============================================================================
 

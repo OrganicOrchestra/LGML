@@ -143,14 +143,22 @@ void LooperNode::TrackGroup::setNumTracks(int numTracks) {
 void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
     if(TimeManager::getInstance()->hasMasterNode()){
         bool needToReleaseMasterTempo = true;
+        bool needToStop = TimeManager::getInstance()->playState->boolValue() && TimeManager::getInstance()->isMasterNode(this);
         for (auto & t : trackGroup.tracks) {
 //            DBG("s"+LooperTrack::trackStateToString(t->trackState));
             needToReleaseMasterTempo &= (t->trackState == LooperTrack::TrackState::CLEARED ||
                                          t->trackState == LooperTrack::TrackState::SHOULD_CLEAR);
+            needToStop &=   (t->trackState == LooperTrack::TrackState::CLEARED ||
+                            t->trackState == LooperTrack::TrackState::SHOULD_CLEAR)||
+                            (t->trackState == LooperTrack::TrackState::STOPPED ||
+                            t->trackState == LooperTrack::TrackState::SHOULD_STOP);
         }
 
         if (needToReleaseMasterTempo) {
             TimeManager::getInstance()->releaseMasterNode(this);
+        }
+        if (needToStop){
+            TimeManager::getInstance()->stopTrigger->trigger();
         }
     }
 }
@@ -164,7 +172,6 @@ bool LooperNode::askForBeingMasterTrack(LooperTrack * t) {
 
 bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
     bool result = true;
-    if(TimeManager::getInstance()->timeInSample< 1024)return result;
     for (auto & t : trackGroup.tracks) {
         if (t != _t)result &=
             (t->trackState == LooperTrack::TrackState::STOPPED) ||
@@ -257,6 +264,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
             }
         }
         else {
+            // prevent time manager to update track internal state before all tracks are updated
             TimeManager::getInstance()->lockTime(true);
             for (auto &t : trackGroup.tracks) {
                 t->setTrackState(LooperTrack::TrackState::SHOULD_PLAY,0);

@@ -85,8 +85,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
     // PLAYING
     // allow circular reading , although not sure that overflow need to be handled as its written with same block sizes than read
-    // we may need it if we start to use a different clock  than looperState in OOServer that has a granularity of blockSize
-    // or if we dynamicly change blockSize
+    // we may need it if we dynamicly change blockSize
     if ((internalTrackState == BUFFER_PLAYING || lastInternalTrackState == BUFFER_PLAYING)
         && recordNeedle>0 && loopSample.getNumSamples())
     {
@@ -94,7 +93,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
         {
 
             //assert false for now see above
-            jassert(false);
+            jassertfalse;
             int firstSegmentLength = recordNeedle - playNeedle;
             int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
@@ -197,15 +196,15 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
         trackState = STOPPED;
         internalTrackState = BUFFER_STOPPED;
         cleanAllQuantizeNeedles();
-//        playNeedle = -1;
+        //        playNeedle = -1;
         stateChanged = true;
     }
     else if(trackState==SHOULD_CLEAR){
         trackState = CLEARED;
         internalTrackState = BUFFER_STOPPED;
         cleanAllQuantizeNeedles();
-//        playNeedle = -1;
-//        recordNeedle=-1;
+        //        playNeedle = -1;
+        //        recordNeedle=-1;
         stateChanged = true;
     }
 
@@ -250,10 +249,11 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
     }
 
-    if(internalTrackState == BUFFER_RECORDING && playNeedle>=0){
+    if(internalTrackState == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
         if((curTime%recordNeedle)!=playNeedle){
+            LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%recordNeedle));
             playNeedle = curTime%recordNeedle;
-            LOG("dropping frames needle was :" + String(playNeedle)+" but time is"+String(curTime%recordNeedle));
+
         }
     }
     if(stateChanged){
@@ -366,49 +366,63 @@ void LooperTrack::askForSelection(bool) {
 
 void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
 
+    TimeManager * timeManager = TimeManager::getInstance();
     if(newState==trackState)return;
 
-    // quantify
     if (newState == SHOULD_RECORD) {
         // are we able to set the tempo
         if (askForBeingMasterTempoTrack()) {
-            TimeManager::getInstance()->isSettingTempo->setValue(true);
+            timeManager->isSettingTempo->setValue(true);
             // start As soon as possible
             quantizedRecordStart = 0;
             return;
         }
-        else if (!TimeManager::getInstance()->isSettingTempo->boolValue()) {
-            quantizedRecordStart = TimeManager::getInstance()->getNextQuantifiedTime(quantizeTime);
+
+        else if (!timeManager->isSettingTempo->boolValue()) {
+            quantizedRecordStart = timeManager->getNextQuantifiedTime(quantizeTime);
         }
         //            Record per default if triggering other rec while we are current master and we are recording
 
-        else if (TimeManager::getInstance()->isMasterNode(parentLooper)) {
-            TimeManager::getInstance()->isSettingTempo->setValue(false);
-            TimeManager::getInstance()->playState->setValue(true);
+        else if (timeManager->isMasterNode(parentLooper)) {
+            timeManager->isSettingTempo->setValue(false);
+            timeManager->playState->setValue(true);
             parentLooper->lastMasterTempoTrack->setTrackState(SHOULD_PLAY);
 
         }
     }
 
 
-    // on true end recording
+    // on should play
     else if (newState == SHOULD_PLAY) {
 
 
         // end of first track
-        if (askForBeingMasterTempoTrack() && trackState == RECORDING &&  !TimeManager::getInstance()->playState->boolValue()) {
+        if (askForBeingMasterTempoTrack() && trackState == RECORDING &&  !timeManager->playState->boolValue()) {
             quantizedRecordEnd = -1;
 
-            TimeManager::getInstance()->isSettingTempo->setValue(false);
-            TimeManager::getInstance()->playTrigger->trigger();
+            timeManager->isSettingTempo->setValue(false);
+            timeManager->lockTime(true);
+            timeManager->playTrigger->trigger();
+            trackState=SHOULD_PLAY;
             quantizedPlayStart = 0;
+            timeManager->lockTime(false);
         }
 
 
-
+        // if every one else is stopped
         else if(parentLooper->askForBeingAbleToPlayNow(this) && trackState == STOPPED) {
             quantizedRecordEnd = -1;
+
+            if(timeManager->isMasterNode(parentLooper)){
+                trackState=SHOULD_PLAY;
+                timeManager->lockTime(true);
+                timeManager->playTrigger->trigger();
+                quantizedPlayStart = 0;
+                timeManager->lockTime(false);
+            }
+            else{
             quantizedPlayStart = 0;
+            }
         }
         // a cleared track can't be played
         else  if(trackState==CLEARED){
@@ -416,13 +430,13 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         }
 
         else if( trackState == RECORDING && !askForBeingMasterTempoTrack() )  {
-            quantizedRecordEnd = TimeManager::getInstance()->getNextQuantifiedTime(quantizeTime);
+            quantizedRecordEnd = timeManager->getNextQuantifiedTime(quantizeTime);
         }
 
         // on ask for play
-        else if(TimeManager::getInstance()->playState->boolValue()){
+        else if(timeManager->playState->boolValue()){
             cleanAllQuantizeNeedles();
-            quantizedPlayStart = TimeManager::getInstance()->getNextQuantifiedTime(quantizeTime);
+            quantizedPlayStart = timeManager->getNextQuantifiedTime(quantizeTime);
         }
     }
 
@@ -457,8 +471,8 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         trackState = newState;
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
     }
-
-    if((trackState==CLEARED || trackState==SHOULD_CLEAR) ){
+    
+    if((trackState==CLEARED || trackState==SHOULD_CLEAR || trackState==STOPPED || trackState==SHOULD_STOP) ){
         parentLooper->checkIfNeedGlobalLooperStateUpdate();
     }
 };

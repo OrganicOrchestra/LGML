@@ -25,6 +25,7 @@ namespace CommandIDs
     static const int aboutBox               = 0x30300;
     static const int allWindowsForward      = 0x30400;
     static const int toggleDoublePrecision  = 0x30500;
+    static const int stimulateCPU           = 0x30600;
 
 }
 
@@ -90,6 +91,9 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             result.setInfo ("Play/pause", "Play or pause LGML", category, 0);
             result.addDefaultKeypress (' ',ModifierKeys::noModifiers);
             break;
+        case CommandIDs::stimulateCPU:
+            updateStimulateAudioItem(result);
+            break;
 
 
         default:
@@ -111,7 +115,8 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
         CommandIDs::toggleDoublePrecision,
         CommandIDs::aboutBox,
         CommandIDs::allWindowsForward,
-        CommandIDs::playPause
+        CommandIDs::playPause,
+        CommandIDs::stimulateCPU
     };
 
     commands.addArray (ids, numElementsInArray (ids));
@@ -155,6 +160,7 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
 
         menu.addCommandItem (&getCommandManager(), CommandIDs::showPluginListEditor);
         menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
+        menu.addCommandItem(&getCommandManager(), CommandIDs::stimulateCPU);
         menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
 
         menu.addSeparator();
@@ -197,6 +203,14 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
         case CommandIDs::saveAs:
             engine->saveAs (File::nonexistent, true, true, true);
+            break;
+        case CommandIDs::stimulateCPU:
+            engine->stimulateAudio(engine->stimulator==nullptr);
+        {
+            ApplicationCommandInfo cmdInfo (info.commandID);
+            updateStimulateAudioItem (cmdInfo);
+            menuItemsChanged();
+        }
             break;
 
         case CommandIDs::toggleDoublePrecision:
@@ -251,4 +265,10 @@ void MainContentComponent::menuItemSelected(int menuItemID, int topLevelMenuInde
 StringArray MainContentComponent::getMenuBarNames() {
     const char* const names[] = { "File", "Plugins", "Options", "Windows","Panels", nullptr };
     return StringArray (names);
+}
+
+void MainContentComponent::updateStimulateAudioItem (ApplicationCommandInfo& info)
+{
+    info.setInfo ("stimulate CPU", "Simulate heavy CPU Usage", "General", 0);
+    info.setTicked (engine->stimulator!=nullptr);
 }

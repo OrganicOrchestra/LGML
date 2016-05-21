@@ -21,6 +21,7 @@
 #include "PresetManager.h"
 #include "RuleManager.h"
 #include "FastMapper.h"
+#include "AudioHelpers.h"
 
 
 class Engine:public FileBasedDocument{
@@ -59,6 +60,9 @@ public:
 	bool checkFileVersion(DynamicObject * metaData);
 	int versionStringToInt(const String &version);
 	String getMinimumRequiredFileVersion();
+
+    void  stimulateAudio(bool);
+    ScopedPointer<AudioFucker> stimulator;
 
 };
 
