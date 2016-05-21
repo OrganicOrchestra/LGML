@@ -258,7 +258,7 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
     }
     if(stateChanged){
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
-        DBG("a:"+trackStateToString(trackState));
+//        DBG("a:"+trackStateToString(trackState));
 
     }
 
@@ -465,7 +465,7 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         else if (trackState == SHOULD_CLEAR) { newState = SHOULD_CLEAR; }
     }
     //DBG(newState <<","<<trackState );
-    DBG(trackStateToString(trackState));
+//    DBG(trackStateToString(trackState));
 
     if(trackState!=newState){
         trackState = newState;
