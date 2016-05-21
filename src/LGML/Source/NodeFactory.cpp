@@ -92,7 +92,7 @@ ConnectableNode * NodeFactory::createNode(NodeType nodeType)
 PopupMenu * NodeFactory::getNodeTypesMenu(int menuIdOffset)
 {
     PopupMenu * p = new PopupMenu();
-	int numElements = numElementsInArray(nodeTypeNames) - userCanAddStartType;
+	int numElements = numElementsInArray(nodeTypeNames) - userCanAddStartType +1;
 
     for (int i = 0; i < numElements; i++)
     {

@@ -46,6 +46,7 @@ public:
 
     Grabber grabber;
     ImageButton removeBT;
+	TextButton miniModeBT;
     ScopedPointer<ComboBox> presetCB;
 
 
@@ -56,6 +57,8 @@ public:
 
     virtual void resized() override;
 
+	bool miniMode;
+	virtual void setMiniMode(bool value);
 
     // Inherited via Listeners
 	virtual void nodeEnableChanged(ConnectableNode *) override;

@@ -24,7 +24,8 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
 	mainContainer(this, contentUI, headerUI),
-	dragIsLocked(false)
+	dragIsLocked(false),
+	miniMode(false)
 {
 	 connectorWidth = 10;
 
@@ -73,6 +74,26 @@ void ConnectableNodeUI::moved() {
 	}
 }
 
+
+void ConnectableNodeUI::setMiniMode(bool value)
+{
+	if (miniMode == value) return;
+	DBG("CUI set miniMode");
+	miniMode = value;
+
+	mainContainer.setMiniMode(miniMode);
+	setSize(getMiniModeWidth(miniMode),getMiniModeHeight(miniMode));
+}
+
+int ConnectableNodeUI::getMiniModeWidth(bool forMiniMode)
+{ 
+	return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (mainContainer.audioCtlUIContainer?mainContainer.audioCtlUIContainer->getWidth()+mainContainer.audioCtlContainerPadRight:0)); 
+}
+
+int ConnectableNodeUI::getMiniModeHeight(bool forMiniMode)
+{
+	return getHeaderContainer()->getBottom() + (forMiniMode?10:getContentContainer()->getHeight());
+}
 
 void ConnectableNodeUI::paint(Graphics&)
 {
@@ -172,14 +193,15 @@ bool ConnectableNodeUI::keyPressed(const KeyPress & key)
 	return false;
 }
 
-
+////////////    MAIN CONTAINER
 
 
 ConnectableNodeUI::MainContainer::MainContainer(ConnectableNodeUI * _nodeUI, ConnectableNodeContentUI * content, ConnectableNodeHeaderUI * header) :
 	connectableNodeUI(_nodeUI),
 	headerContainer(header),
 	contentContainer(content),
-	audioCtlUIContainer(nullptr)
+	audioCtlUIContainer(nullptr),
+	miniMode(false)
 {
 
 	if (headerContainer == nullptr) headerContainer = new ConnectableNodeHeaderUI();
@@ -213,8 +235,6 @@ void ConnectableNodeUI::MainContainer::paint(Graphics & g)
 
 	g.setColour(connectableNodeUI->isSelected ? HIGHLIGHT_COLOR : LIGHTCONTOUR_COLOR);
 	g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1), 4.f, connectableNodeUI->isSelected ? 2.f : .5f);
-
-
 }
 
 
@@ -227,12 +247,36 @@ void ConnectableNodeUI::MainContainer::resized()
 
 	Rectangle<int> headerBounds = r.removeFromTop(headerContainer->getHeight());
 	headerContainer->setBounds(headerBounds);
-	if (audioCtlUIContainer) {
-		r.removeFromRight(audioCtlContainerPadRight);
-		audioCtlUIContainer->setBounds(r.removeFromRight(10).reduced(0, 4));
+
+	if (!miniMode)
+	{
+		if (audioCtlUIContainer) {
+			r.removeFromRight(audioCtlContainerPadRight);
+			audioCtlUIContainer->setBounds(r.removeFromRight(10).reduced(0, 4));
+		}
+		contentContainer->setBounds(r);
 	}
-	contentContainer->setBounds(r);
 }
+
+void ConnectableNodeUI::MainContainer::setMiniMode(bool value)
+{
+	if (miniMode == value) return;
+	miniMode = value;
+
+	if (miniMode)
+	{
+		removeChildComponent(contentContainer);
+		if(audioCtlUIContainer) removeChildComponent(audioCtlUIContainer);
+	}else
+	{
+		addChildComponent(contentContainer);
+		if (audioCtlUIContainer) addChildComponent(audioCtlUIContainer);
+	}
+
+	headerContainer->setMiniMode(miniMode);
+
+}
+
 void ConnectableNodeUI::MainContainer::childBoundsChanged(Component* c) {
 	if (c == contentContainer || c == audioCtlUIContainer) {
 		int destWidth = contentContainer->getWidth() + (audioCtlUIContainer ? audioCtlUIContainer->getWidth() + audioCtlContainerPadRight : 0);

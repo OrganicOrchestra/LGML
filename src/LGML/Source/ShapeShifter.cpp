@@ -32,6 +32,16 @@ void ShapeShifter::setPreferredHeight(int newHeight)
 	preferredHeight = jmax<int>(0, newHeight);
 }
 
+int ShapeShifter::getPreferredWidth()
+{
+	return preferredWidth;
+}
+
+int ShapeShifter::getPreferredHeight()
+{
+	return preferredHeight;
+}
+
 bool ShapeShifter::isDetached()
 {
 	return parentContainer == nullptr;

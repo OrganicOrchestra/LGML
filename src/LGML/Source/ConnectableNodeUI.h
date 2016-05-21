@@ -43,8 +43,6 @@ public:
 
 		ConnectorContainer(ConnectorComponent::ConnectorIOType type);
 
-
-
 		void setConnectorsFromNode(ConnectableNode * node);
 		void addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * node);
 		void resized() override;
@@ -80,6 +78,10 @@ public:
 		void setNodeAndNodeUI(ConnectableNode * node, ConnectableNodeUI * nodeUI);
 		void paint(Graphics &g) override;
 		void resized() override;
+
+		bool miniMode;
+		virtual void setMiniMode(bool value);
+
 		void childBoundsChanged(Component*)override;
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContainer)
@@ -90,9 +92,13 @@ public:
 	//layout
 	int connectorWidth;
 
+	bool miniMode;
+	
 	//interaction
 	Point<int> nodeInitPos;
 	bool dragIsLocked;
+
+
 
 
 	MainContainer mainContainer;
@@ -110,8 +116,10 @@ public:
 	void resized()override;
 
 
+	virtual void setMiniMode(bool value);
+	virtual int getMiniModeWidth(bool forMiniMode); 
+	virtual int getMiniModeHeight(bool forMiniMode);
 	
-
 	Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector); 
 
 	//Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes

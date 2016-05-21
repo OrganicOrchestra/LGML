@@ -153,7 +153,16 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPane
 {
 	ShapeShifterContent * content = tab->content;
 
-	
+	header.removeTab(tab, false);
+	contents.removeObject(content, false);
+
+	if (createNewPanel)
+	{
+		Rectangle<int> r = getScreenBounds();
+		ShapeShifterPanel * newPanel = ShapeShifterManager::getInstance()->createPanel(content, tab);
+		ShapeShifterManager::getInstance()->showPanelWindow(newPanel, r);
+	}
+
 	if (currentContent == content)
 	{
 		if (contents.size() > 0)
@@ -165,15 +174,9 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPane
 		}
 	}
 
-	if (createNewPanel)
-	{
-		Rectangle<int> r = getScreenBounds();
-		ShapeShifterPanel * newPanel = ShapeShifterManager::getInstance()->createPanel(content, tab);
-		ShapeShifterManager::getInstance()->showPanelWindow(newPanel, r);
-	}
+	
 
-	header.removeTab(tab, false);
-	contents.removeObject(content, false);
+	
 
 }
 

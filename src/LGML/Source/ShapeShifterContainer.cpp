@@ -191,6 +191,12 @@ void ShapeShifterContainer::resized()
 		}
 	}
 
+	int backOffsetAmount = 0; //amount to subtract from each fixed-size panel so every panel is visible
+	if (reservedPreferredSpace > totalSpace)
+	{
+		backOffsetAmount = (reservedPreferredSpace - totalSpace) / (numShifters - numDefaultSpace);
+	}
+
 	int defaultSpace =  numDefaultSpace == 0?0:(totalSpace-reservedPreferredSpace) / numDefaultSpace - gap*(numShifters - 1);
 
 	int panelIndex = 0;
@@ -198,8 +204,8 @@ void ShapeShifterContainer::resized()
 	{
 		bool lastShifter = panelIndex >= grabbers.size();
 		int tp = (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
-		int targetSpace = (!p->isFlexible()) ? tp : defaultSpace;
-
+		int targetSpace = (!p->isFlexible()) ? (tp-backOffsetAmount) : defaultSpace;
+		
 		if(!lastShifter)
 		{
 			Rectangle<int> tr = (direction == HORIZONTAL) ? r.removeFromLeft(targetSpace) : r.removeFromTop(targetSpace);

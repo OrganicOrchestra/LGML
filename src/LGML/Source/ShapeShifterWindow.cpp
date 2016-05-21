@@ -22,6 +22,7 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 
 	panel->setPreferredWidth(getWidth());
 	panel->setPreferredHeight(getHeight());
+	panel->addShapeShifterPanelListener(this);
 
 	setContentNonOwned(_panel,true);
 
@@ -41,6 +42,8 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 ShapeShifterWindow::~ShapeShifterWindow()
 {
 	removeMouseListener(this);
+	panel->removeShapeShifterPanelListener(this);
+
 }
 
 void ShapeShifterWindow::paintOverChildren(Graphics & g)
@@ -101,4 +104,9 @@ var ShapeShifterWindow::getCurrentLayout()
 	data.getDynamicObject()->setProperty("width", getWidth());
 	data.getDynamicObject()->setProperty("height", getHeight());
 	return data;
+}
+
+void ShapeShifterWindow::panelEmptied(ShapeShifterPanel *)
+{
+	ShapeShifterManager::getInstance()->closePanelWindow(this, true);
 }

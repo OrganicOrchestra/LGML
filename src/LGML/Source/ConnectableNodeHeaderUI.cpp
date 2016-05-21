@@ -13,9 +13,12 @@
 #include "PresetManager.h"
 #include "FloatSliderUI.h"
 
-ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() : removeBT("X") ,
- vuMeterIn(VuMeter::Type::IN),
-	vuMeterOut(VuMeter::Type::OUT)
+ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() : 
+	vuMeterIn(VuMeter::Type::IN),
+	vuMeterOut(VuMeter::Type::OUT),
+	removeBT("X"),
+	miniModeBT("-"),
+	miniMode(false)
 {
     node = nullptr;
     nodeUI = nullptr;
@@ -29,8 +32,9 @@ ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() : removeBT("X") ,
                         0.5f);
     removeBT.addListener(this);
 
-    setSize(20, 40);
+	miniModeBT.addListener(this);
 
+    setSize(20, 40);
 }
 
 ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
@@ -78,6 +82,8 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 
 	if(node->canBeRemovedByUser) addAndMakeVisible(removeBT);
 
+	addAndMakeVisible(miniModeBT);
+
 
     presetCB = new ComboBox("preset");
 	if (node->canHavePresets)
@@ -116,6 +122,7 @@ void ConnectableNodeHeaderUI::resized()
     if (!node) return;
 
     int vuMeterWidth = 8;
+	int miniModeBTWidth = 15;
     int removeBTWidth = 15;
     int grabberHeight = 12;
     int presetCBWidth = 100;
@@ -140,16 +147,19 @@ void ConnectableNodeHeaderUI::resized()
 
 	r.reduce(5, 2);
 
-	enabledUI->setBounds(r.removeFromLeft(10));
+	enabledUI->setBounds(r.removeFromLeft(10).reduced(0,2));
 
     r.removeFromLeft(3);
 	if (node->canBeRemovedByUser)
 	{
 		removeBT.setBounds(r.removeFromRight(removeBTWidth));
-		r.removeFromRight(5);
+		r.removeFromRight(2);
 	}
+
+	miniModeBT.setBounds(r.removeFromRight(miniModeBTWidth).reduced(0,2));
+	r.removeFromRight(2);
 	
-	if (node->canHavePresets)
+	if (node->canHavePresets && !miniMode)
 	{
 		presetCB->setBounds(r.removeFromRight(presetCBWidth));
 		r.removeFromRight(5);
@@ -160,6 +170,23 @@ void ConnectableNodeHeaderUI::resized()
 
 
 }
+
+void ConnectableNodeHeaderUI::setMiniMode(bool value)
+{
+	if (miniMode == value) return;
+	miniMode = value;
+
+	if (miniMode)
+	{
+		if(node->canHavePresets) removeChildComponent(presetCB);
+		miniModeBT.setButtonText("+");
+	} else
+	{
+		if (node->canHavePresets) addChildComponent(presetCB);
+		miniModeBT.setButtonText("-");
+	}
+}
+
 
 void ConnectableNodeHeaderUI::nodeEnableChanged(ConnectableNode *)
 {
@@ -218,9 +245,16 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
 
 }
 
-void ConnectableNodeHeaderUI::buttonClicked(Button *)
+void ConnectableNodeHeaderUI::buttonClicked(Button * b)
 {
-    node->remove(true);
+	if (b == &removeBT)
+	{
+		node->remove(true);
+	} else if(b == &miniModeBT)
+	{
+		DBG("HERE");
+		nodeUI->setMiniMode(!nodeUI->miniMode);
+	}
 }
 
 void ConnectableNodeHeaderUI::controllableContainerPresetLoaded(ControllableContainer *)
