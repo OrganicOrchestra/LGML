@@ -62,47 +62,7 @@ NodeConnectionUI::~NodeConnectionUI()
 
 void NodeConnectionUI::paint (Graphics& g)
 {
-
-	//g.fillAll(Colours::purple.withAlpha(.2f));
-
-    Point<float> sourcePos;
-    Point<float> endPos;
-
-    if (isEditing())
-    {
-        sourcePos = getLocalPoint(getBaseConnector(),getBaseConnector()->getLocalBounds().getCentre()).toFloat();
-        endPos = (candidateDropConnector != nullptr)?
-        getLocalPoint(candidateDropConnector, candidateDropConnector->getLocalBounds().getCentre()).toFloat():
-        getMouseXYRelative().toFloat();
-    }else
-    {
-        sourcePos = getLocalPoint(sourceConnector, sourceConnector->getLocalBounds().getCentre()).toFloat();
-        endPos = getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre()).toFloat();
-    }
-
-    Point<float> midPoint = (sourcePos + endPos) / 2;
-
-
-    float smoothBigConnector = 1+ .01f*(jmax<float>(10,std::abs(endPos.x - sourcePos.x))-10);
-    float anchorOffset = (endPos.x - sourcePos.x)/(2*smoothBigConnector);
-    float sourceAnchorX = sourcePos.x + anchorOffset;
-    float endAnchorX = endPos.x - anchorOffset;
-
-
-    int hitMargin = 10;
-    hitPath.clear();
-    hitPath.startNewSubPath(sourcePos.x, sourcePos.y - hitMargin);
-    hitPath.quadraticTo(sourceAnchorX, sourcePos.y - hitMargin, midPoint.x, midPoint.y - hitMargin);
-    hitPath.quadraticTo(endAnchorX, endPos.y - hitMargin, endPos.x, endPos.y - hitMargin);
-    hitPath.lineTo(endPos.x, endPos.y + hitMargin);
-    hitPath.quadraticTo(endAnchorX, endPos.y + hitMargin, midPoint.x, midPoint.y + hitMargin);
-    hitPath.quadraticTo(sourceAnchorX, sourcePos.y + hitMargin, sourcePos.x, sourcePos.y + hitMargin);
-    hitPath.closeSubPath();
-
-    Path p;
-    p.startNewSubPath(sourcePos.x, sourcePos.y);
-    p.quadraticTo(sourceAnchorX, sourcePos.y, midPoint.x, midPoint.y);
-    p.quadraticTo(endAnchorX, endPos.y, endPos.x, endPos.y);
+	buildPath();
 
 	bool isAudio = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO;
     Colour baseColor = isAudio ? AUDIO_COLOR : DATA_COLOR;
@@ -117,7 +77,7 @@ void NodeConnectionUI::paint (Graphics& g)
 	if (candidateDropConnector != nullptr) baseColor = Colours::yellow;
 	if (isSelected) baseColor = HIGHLIGHT_COLOR;
     g.setColour(baseColor);
-    g.strokePath(p, PathStrokeType(2.0f));
+    g.strokePath(path, PathStrokeType(2.0f));
 
 }
 
@@ -127,6 +87,75 @@ void NodeConnectionUI::resized()
     // components that your component contains..
 
 }
+
+void NodeConnectionUI::buildPath()
+{
+	path.clear();
+
+	Point<float> sourcePos;
+	Point<float> endPos;
+
+	if (isEditing())
+	{
+		Point<float> t1 = getLocalPoint(getBaseConnector(), getBaseConnector()->getLocalBounds().getCentre()).toFloat();
+		Point<float> t2 = (candidateDropConnector != nullptr) ?
+			getLocalPoint(candidateDropConnector, candidateDropConnector->getLocalBounds().getCentre()).toFloat() :
+			getMouseXYRelative().toFloat();
+
+		sourcePos = getBaseConnector() == sourceConnector ? t1 : t2;
+		endPos = getBaseConnector() == sourceConnector ? t2 : t1;
+
+	} else
+	{
+		sourcePos = getLocalPoint(sourceConnector, sourceConnector->getLocalBounds().getCentre()).toFloat();
+		endPos = getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre()).toFloat();
+	}
+
+	//NORMAL CURVE
+	if (sourcePos.x < endPos.x - 20)
+	{
+		float cubicFactor = .5f;
+		float txDist = (endPos.x - sourcePos.x)*cubicFactor;
+
+		path.startNewSubPath(sourcePos.x, sourcePos.y);
+		path.cubicTo(sourcePos.translated(txDist,0), endPos.translated(-txDist,0),endPos);
+		
+	} else
+	{
+		Path p;
+		float nodeMargin = 20;
+		float destMidY = sourcePos.y + (endPos.y - sourcePos.y) / 2;
+		float limitY1 = getBaseConnector() == sourceConnector ? sourcePos.y : endPos.y;
+		float limitY2 = getBaseConnector() == sourceConnector ? endPos.y : sourcePos.y;
+
+		bool pathGoUp = getBaseConnector() == sourceConnector ? endPos.x < sourcePos.y : endPos.x > sourcePos.y;
+
+		float cy = (float)getBaseConnector()->getBounds().getCentreY();
+		limitY1 = sourcePos.y + (pathGoUp ? -cy - 10 : getBaseConnector()->getParentComponent()->getHeight() - cy + 10);
+
+		if (getSecondConnector() != nullptr)
+		{
+			float cy2 = (float)getSecondConnector()->getBounds().getCentreY();
+			limitY2 = endPos.y + (!pathGoUp ? -cy2 - 10 : getSecondConnector()->getParentComponent()->getHeight() - cy2 + 10);
+		}
+
+		destMidY = jlimit<float>(jmin<float>(limitY1, limitY2), jmax<float>(limitY1, limitY2), destMidY);
+		
+		Point<float> t1 = sourcePos.translated(nodeMargin,0);
+		Point<float> t2 = t1.withY(destMidY);
+		Point<float> t3 = t2.withX(endPos.x - nodeMargin);
+		Point<float> t4 = t3.withY(endPos.y);
+		
+		const Array<Point<float>> points = { t1,t2,t3,t4 };
+
+		p.startNewSubPath(sourcePos.x, sourcePos.y);
+		for (auto &tp : points) p.lineTo(tp);
+		p.lineTo(endPos);
+
+		path.addPath(p.createPathWithRoundedCorners(20));
+	}
+}
+
 
 void NodeConnectionUI::updateBoundsFromNodes()
 {

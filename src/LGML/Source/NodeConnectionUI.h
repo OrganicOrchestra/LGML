@@ -43,14 +43,17 @@ public:
     void setDestConnector(Connector * c);
 
 
-    Path hitPath;
+    Path path;
 
     void paint(Graphics&)override;
     void resized()override;
+
+	void buildPath();
+
     void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
 
     void updateBoundsFromNodes();
-    virtual bool hitTest(int x, int y) override{ return hitPath.contains((float)x, (float)y); }
+    virtual bool hitTest(int x, int y) override{ return path.contains((float)x, (float)y,10); }
 
     //interaction
     void mouseDown(const MouseEvent &e) override;
@@ -64,6 +67,11 @@ public:
     {
         return sourceConnector != nullptr ? sourceConnector : destConnector;
     }
+
+	Connector* getSecondConnector()
+	{
+		return sourceConnector != nullptr ? destConnector : sourceConnector;
+	}
 
     //From Component Listener
     void componentMovedOrResized(Component& component, bool wasMoved, bool wasResize)override;
