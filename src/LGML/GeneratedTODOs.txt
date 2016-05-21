@@ -13,11 +13,22 @@ JsEnvironment.cpp
 
 
 LGMLLoggerUI.cpp
-	line : 33
-		//@martin problems here
-
 	line : 19
 		//@martin i did that so i could clear the log, but the scollbar still goes down after clearing
+		// @ben I cant see the problem here but we never want to clear everything at once no?
+		//  could you explain the problem so that i can see what happen
+		// when I log more than 50000 lines it works as expected for me
+		//	if (totalLogRow >= maxNumElement)
+		//	{
+		//		logElements.clear();
+		//		totalLogRow = 0;
+		//		logListComponent->updateContent();
+		//
+		//	}
+
+	line : 38
+		//@martin problems here
+		//bool overFlow = false;
 
 
 VuMeter.h

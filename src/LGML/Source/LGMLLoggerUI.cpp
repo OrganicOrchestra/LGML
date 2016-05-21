@@ -18,13 +18,18 @@ void LGMLLoggerUI::newMessage(const String & s)
 
 
 	//@martin i did that so i could clear the log, but the scollbar still goes down after clearing
-	if (totalLogRow >= maxNumElement)
-	{
-		logElements.clear();
-		totalLogRow = 0;
-		logListComponent->updateContent();
 
-	}
+    // @ben I cant see the problem here but we never want to clear everything at once no?
+    //  could you explain the problem so that i can see what happen
+    // when I log more than 50000 lines it works as expected for me
+
+//	if (totalLogRow >= maxNumElement)
+//	{
+//		logElements.clear();
+//		totalLogRow = 0;
+//		logListComponent->updateContent();
+//
+//	}
 
 
 	logElements.add(el);
@@ -32,19 +37,18 @@ void LGMLLoggerUI::newMessage(const String & s)
 
 
 	//@martin problems here
-	/*
+
 	//bool overFlow = false;
 
 	while (totalLogRow > maxNumElement) {
 		LogElement * rmL = logElements[0];
         totalLogRow -= rmL->getNumLines();
-		logElements.removeObject(logElements[0]);
-		logListComponent->updateContent();
+		logElements.remove(0);
        // overFlow = true;
     }
-	*/
 
-    //coalesce messa
+
+    //coalesce messages
     triggerAsyncUpdate();
 
 };
