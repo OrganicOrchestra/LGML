@@ -20,7 +20,8 @@ ContainerOutNode::ContainerOutNode() :
 	canHavePresets = false;
 	userCanAccessOutputs = false;
 
-	addOutputData("Data Kool", DataType::Position);
+	numInputChannels = addIntParameter("Num Audio Outputs", "Number of output channels for this container", 2, 0, 100);
+	numInputData = addIntParameter("Num Data Outputs", "Number of data outputs for this container", 0, 0, 100);
 }
 
 ContainerOutNode::~ContainerOutNode()
@@ -49,4 +50,23 @@ void ContainerOutNode::processInputDataChanged(Data * d)
 ConnectableNodeUI * ContainerOutNode::createUI()
 {
 	return new NodeBaseUI(this);
+}
+
+void ContainerOutNode::onContainerParameterChanged(Parameter * p)
+{
+	if (p == numInputChannels)
+	{
+		setNumAudioChannels(p->intValue());
+	}
+	else if (p == numInputData)
+	{
+		if (p->intValue() < getTotalNumOutputData())
+		{
+			removeOutputData(outputDatas[outputDatas.size() - 1]->name);
+		}
+		else 
+		{
+			addOutputData("Output Data " + String(outputDatas.size()), DataType::Number);
+		}
+	}
 }

@@ -213,7 +213,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
 bool NodeBase::setPreferedNumAudioInput(int num) {
 
-	
+	int oldNumChannels = getTotalNumInputChannels();
+
 	setPlayConfigDetails(num, getTotalNumOutputChannels(),
 		getSampleRate(),
 		getBlockSize());
@@ -223,11 +224,30 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
         NodeManager::getInstance()->updateAudioGraph();
 	}
 
+	int newNum = getTotalNumInputChannels();
+	if (newNum > oldNumChannels)
+	{
+		for (int i = oldNumChannels; i < newNum; i++)
+		{
+			nodeBaseListeners.call(&NodeBaseListener::audioInputAdded, this, i);
+		}
+	}
+	else
+	{
+		for (int i = oldNumChannels - 1; i >= newNum; i--)
+		{
+			nodeBaseListeners.call(&NodeBaseListener::audioInputRemoved, this, i);
+		}
+	}
+
 	nodeBaseListeners.call(&NodeBaseListener::numAudioInputChanged, this,num);
 
 	return true;
 }
 bool NodeBase::setPreferedNumAudioOutput(int num) {
+
+	int oldNumChannels = getTotalNumOutputChannels();
+
 	setPlayConfigDetails(getTotalNumInputChannels(), num,
 		getSampleRate(),
 		getBlockSize());
@@ -235,6 +255,22 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 	{
         NodeManager::getInstance()->updateAudioGraph();
     }
+
+	int newNum = getTotalNumInputChannels();
+	if (newNum > oldNumChannels)
+	{
+		for (int i = oldNumChannels; i < newNum; i++)
+		{
+			nodeBaseListeners.call(&NodeBaseListener::audioOutputAdded, this, i);
+		}
+	}else
+	{
+		for (int i = oldNumChannels-1; i >= newNum; i--)
+		{
+			nodeBaseListeners.call(&NodeBaseListener::audioOutputRemoved, this, i);
+		}
+	}
+
 	nodeBaseListeners.call(&NodeBaseListener::numAudioOutputChanged,this,num);
 
 	return true;
@@ -297,6 +333,7 @@ Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 
 	d->addDataListener(this);
 
+	nodeBaseListeners.call(&NodeBaseListener::dataInputAdded, this, d);
 	nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
 	return d;
 }
@@ -306,6 +343,7 @@ Data * NodeBase::addOutputData(const String & name, DataType dataType)
 	Data * d = new Data(this, name, dataType);
 	outputDatas.add(d);
 
+	nodeBaseListeners.call(&NodeBaseListener::dataOutputAdded, this, d);
 	nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
 	return d;
 }
@@ -315,17 +353,21 @@ void NodeBase::removeInputData(const String & name)
 	Data * d = getInputDataByName(name);
 	if (d == nullptr) return;
 
-	inputDatas.removeObject(d, true);
+	inputDatas.removeObject(d, false);
+	nodeBaseListeners.call(&NodeBaseListener::dataInputRemoved, this, d);
 	nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
+	delete d;
 }
 
 void NodeBase::removeOutputData(const String & name)
 {
 	Data * d = getOutputDataByName(name);
 	if (d == nullptr) return;
-	outputDatas.removeObject(d, true);
 
+	outputDatas.removeObject(d, false);
+	nodeBaseListeners.call(&NodeBaseListener::dataOutputRemoved, this, d);
 	nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
+	delete d;
 }
 
 void NodeBase::updateOutputData(String & dataName, const float & value1, const float & value2, const float & value3)

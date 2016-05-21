@@ -31,15 +31,15 @@ public:
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }
     bool isData() { return connectionType == ConnectionType::DATA; }
 
-	ConnectableNode * sourceNode;
-	ConnectableNode * destNode;
+	NodeBase * sourceNode;
+	NodeBase * destNode;
 
     typedef std::pair<int,int> AudioConnection;
     Array<AudioConnection> audioConnections;
     Array<DataProcessorGraph::Connection *> dataConnections;
 
 
-    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType);
+    NodeConnection(NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
     virtual ~NodeConnection();
 
     //Audio
@@ -47,19 +47,22 @@ public:
     void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
     void removeAllAudioGraphConnections();
 
+	void removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel);
+
     //Data
     void addDataGraphConnection(Data * sourceData, Data * destData);
     void removeDataGraphConnection(Data * sourceData, Data * destData);
     void removeAllDataGraphConnections();
 
+	void removeAllDataGraphConnectionsForData(Data *, bool isSourceData);
+
     void remove();
 
-	virtual void audioInputAdded(NodeBase *, int /* channel */) override {}
-	virtual void audioInputRemoved(NodeBase *, int /* channel */) override {}
+	virtual void audioInputRemoved(NodeBase *, int /* channel */) override;
+	virtual void audioOutputRemoved(NodeBase *, int /* channel */) override;
+	virtual void dataInputRemoved(NodeBase *, Data *) override;
+	virtual void dataOutputRemoved(NodeBase *, Data *) override;
 
-	virtual void dataInputAdded(NodeBase *, Data *) override {}
-	virtual void dataInputRemoved(NodeBase *, Data *) override  {}
-	
 	
 	// save / load
 
@@ -73,13 +76,13 @@ public:
         /** Destructor. */
         virtual ~Listener() {}
 
-        virtual void askForRemoveConnection(NodeConnection *) = 0;
+		virtual void askForRemoveConnection(NodeConnection *) {}
 
-        virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) = 0;
-        virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) = 0;
+		virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * ) {}
+        virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * ) {}
 
-        virtual void connectionAudioLinkAdded(const AudioConnection &audioConnection) = 0;
-        virtual void connectionAudioLinkRemoved(const AudioConnection &audioConnection) = 0;
+        virtual void connectionAudioLinkAdded(const AudioConnection &) {}
+        virtual void connectionAudioLinkRemoved(const AudioConnection &) {}
     };
 
     ListenerList<Listener> listeners;

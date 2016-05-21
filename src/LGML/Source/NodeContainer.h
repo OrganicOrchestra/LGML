@@ -76,7 +76,7 @@ public:
 	NodeConnection * getConnectionBetweenNodes(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType);
 	Array<NodeConnection *> getAllConnectionsForNode(ConnectableNode * node);
 
-	NodeConnection * addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType);
+	NodeConnection * addConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType);
 	bool removeConnection(NodeConnection * c);
 	void removeIllegalConnections();
 	int getNumConnections();
@@ -97,13 +97,6 @@ public:
 	// Inherited via NodeConnection::Listener
 	virtual void askForRemoveConnection(NodeConnection *) override;
 
-	// Inherited via Listener
-	virtual void connectionDataLinkAdded(DataProcessorGraph::Connection *) override {}
-	virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection *) override {}
-	virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection &) override {}
-	virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection &) override {}
-
-	
 	// Inherited via RMSListener
 	virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) override;
 

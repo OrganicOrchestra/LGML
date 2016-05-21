@@ -21,7 +21,10 @@
 
 */
 
-class NodeConnectionUI : public InspectableComponent, public ComponentListener
+class NodeConnectionUI : 
+	public InspectableComponent, 
+	public ComponentListener,
+	public NodeConnection::Listener
 {
 public:
     typedef ConnectorComponent Connector;
@@ -77,12 +80,22 @@ public:
 
     bool finishEditing();
 
+
+	// Inherited via Listener
+	virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) override;
+	virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) override;
+	virtual void connectionAudioLinkAdded(const std::pair<int,int> &audioConnection) override;
+	virtual void connectionAudioLinkRemoved(const std::pair<int, int> & audioConnection) override;
+
+
     Component * getNodeManagerUI() { return (Component *)findParentComponentOfClass<NodeManagerUI>(); }
 
 	InspectorEditor * getEditor() override;
 
-private:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnectionUI);
+
+
+	
 };
 
 

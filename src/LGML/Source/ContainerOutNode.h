@@ -25,12 +25,17 @@ public:
 	NodeContainer * getParentNodeContainer();
 
 	//AUDIO
+	IntParameter * numInputChannels;
 	void setNumAudioChannels(int channels);
 
 	//DATA
+	IntParameter * numInputData;
 	void processInputDataChanged(Data * d) override;
 
 	virtual ConnectableNodeUI * createUI() override;
+
+	void onContainerParameterChanged(Parameter *) override;
+
 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContainerOutNode)

@@ -175,8 +175,8 @@ void NodeContainer::loadJSONDataInternal(var data)
 	{
 		for (var &cData : *connectionsData)
 		{
-			ConnectableNode * srcNode = getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString());
-			ConnectableNode * dstNode = getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString());
+			NodeBase * srcNode = (NodeBase *)getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString());
+			NodeBase * dstNode = (NodeBase *)getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString());
 
 			int cType = cData.getProperty("connectionType", var());
 
@@ -223,7 +223,7 @@ Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode *
 	return result;
 }
 
-NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
+NodeConnection * NodeContainer::addConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType)
 {
 	if (getConnectionBetweenNodes(sourceNode, destNode, connectionType) != nullptr)
 	{

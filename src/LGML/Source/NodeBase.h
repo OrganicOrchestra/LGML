@@ -73,9 +73,15 @@ public:
 
 		virtual void audioInputAdded(NodeBase *, int /*channel*/) {}
 		virtual void audioInputRemoved(NodeBase *, int /*channel*/) {}
+		virtual void audioOutputAdded(NodeBase *, int /*channel*/) {}
+		virtual void audioOutputRemoved(NodeBase *, int /*channel*/) {}
+
 
 		virtual void dataInputAdded(NodeBase *, Data *) {}
 		virtual void dataInputRemoved(NodeBase *, Data *) {}
+		virtual void dataOutputAdded(NodeBase *, Data *) {}
+		virtual void dataOutputRemoved(NodeBase *, Data *) {}
+
 	};
 
 	ListenerList<NodeBaseListener> nodeBaseListeners;

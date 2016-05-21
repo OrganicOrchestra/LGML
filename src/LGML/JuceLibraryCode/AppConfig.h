@@ -180,7 +180,7 @@
 // juce_gui_basics flags:
 
 #ifndef    JUCE_ENABLE_REPAINT_DEBUGGING
-// #define JUCE_ENABLE_REPAINT_DEBUGGING 1
+ //#define JUCE_ENABLE_REPAINT_DEBUGGING
 #endif
 
 #ifndef    JUCE_USE_XSHM

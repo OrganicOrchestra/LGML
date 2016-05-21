@@ -22,6 +22,11 @@ NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sour
 	setSourceConnector(sourceConnector);
 	setDestConnector(destConnector);
 
+	if (connection != nullptr)
+	{
+		connection->addConnectionListener(this);
+	}
+
 	if (sourceConnector == nullptr || destConnector == nullptr)
 	{
 		setInterceptsMouseClicks(false, false);
@@ -44,10 +49,15 @@ NodeConnectionUI::~NodeConnectionUI()
     {
         destConnector->getNodeUI()->removeComponentListener(this);
     }
+
     destConnector = nullptr;
 
     candidateDropConnector = nullptr;
 
+	if (connection != nullptr)
+	{
+		connection->removeConnectionListener(this);
+	}
 }
 
 void NodeConnectionUI::paint (Graphics& g)
@@ -94,7 +104,15 @@ void NodeConnectionUI::paint (Graphics& g)
     p.quadraticTo(sourceAnchorX, sourcePos.y, midPoint.x, midPoint.y);
     p.quadraticTo(endAnchorX, endPos.y, endPos.x, endPos.y);
 
-    Colour baseColor = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
+	bool isAudio = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO;
+    Colour baseColor = isAudio ? AUDIO_COLOR : DATA_COLOR;
+	
+	if (connection != nullptr)
+	{
+		if (isAudio && connection->audioConnections.size() == 0) baseColor = NORMAL_COLOR;
+		if (!isAudio && connection->dataConnections.size() == 0) baseColor = NORMAL_COLOR;
+	}
+
 	if (isMouseOver()) baseColor = Colours::red;
 	if (candidateDropConnector != nullptr) baseColor = Colours::yellow;
 	if (isSelected) baseColor = HIGHLIGHT_COLOR;
@@ -266,4 +284,25 @@ bool NodeConnectionUI::finishEditing()
 InspectorEditor * NodeConnectionUI::getEditor()
 {
 	return new NodeConnectionEditor(this);
+}
+
+
+void NodeConnectionUI::connectionDataLinkAdded(DataProcessorGraph::Connection *)
+{
+	repaint();
+}
+
+void NodeConnectionUI::connectionDataLinkRemoved(DataProcessorGraph::Connection *)
+{
+	repaint();
+}
+
+void NodeConnectionUI::connectionAudioLinkAdded(const std::pair<int, int> &)
+{
+	repaint();
+}
+
+void NodeConnectionUI::connectionAudioLinkRemoved(const std::pair<int, int> &)
+{
+	repaint();
 }
