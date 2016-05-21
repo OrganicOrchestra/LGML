@@ -45,7 +45,7 @@ VSTNode.cpp
 
 
 LooperNode.cpp
-	line : 67
+	line : 68
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
@@ -129,7 +129,7 @@ ControllableInspector.h
 
 
 LooperTrack.cpp
-	line : 142
+	line : 144
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized

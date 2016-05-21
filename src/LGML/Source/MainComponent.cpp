@@ -21,11 +21,7 @@ MainContentComponent* createMainContentComponent(Engine * e)
 
 
 MainContentComponent::MainContentComponent(Engine * e):
-    engine(e),
-    audioSettingsComp(getAudioDeviceManager(),
-        0, 256,
-        0, 256,
-        false,false, false,false)
+    engine(e)
 {
 
     setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
@@ -85,6 +81,10 @@ void MainContentComponent::resized()
 
 void MainContentComponent::showAudioSettings()
 {
+    AudioDeviceSelectorComponent audioSettingsComp(getAudioDeviceManager(),
+                                                   0, 256,
+                                                   0, 256,
+                                                   false,false, false,false);
     audioSettingsComp.setSize (500, 450);
 
     DialogWindow::LaunchOptions o;

@@ -66,12 +66,12 @@ public:
     void setSelected(bool isSelected);
 
 
-    void setTrackState(TrackState state);
+    void setTrackState(TrackState state,int quantification = -1);
 
     // from events like UI
     void askForSelection(bool isSelected);
     bool askForBeingMasterTempoTrack();
-
+    bool isMasterTempoTrack();
 
     //Listener
     class  Listener : public AsyncUpdater

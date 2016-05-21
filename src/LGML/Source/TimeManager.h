@@ -52,7 +52,9 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer
 
     int setBPMForLoopLength(int time);
 
-
+    // used when triggering multiple change
+    void lockTime(bool );
+    bool isLocked();
     void togglePlay();
     void setBeatPerBar(int bpb);
     int getBeat();
@@ -92,6 +94,7 @@ private:
     virtual void audioDeviceStopped() override{
 
     };
+    bool _isLocked;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)

@@ -66,7 +66,7 @@ public:
 	*/
 
     Engine * engine;
-    AudioDeviceSelectorComponent audioSettingsComp;
+
 
     ScopedPointer<LookAndFeelOO> lookAndFeelOO;
 

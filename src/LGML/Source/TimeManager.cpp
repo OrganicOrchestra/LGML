@@ -20,7 +20,8 @@ TimeManager::TimeManager():
 timeInSample(0),
 beatTimeInSample(22050),
 sampleRate(44100),
-ControllableContainer("time")
+ControllableContainer("time"),
+_isLocked(false)
 {
 
     BPM = addFloatParameter("bpm","current BPM",120,10,600);
@@ -39,6 +40,7 @@ TimeManager::~TimeManager()
 
 
 void TimeManager::incrementClock(int time){
+    if(_isLocked)return;
     int lastBeat = getBeat();
 
     if(playState->boolValue()){
@@ -153,9 +155,13 @@ int TimeManager::getNextGlobalQuantifiedTime(){
     return getNextQuantifiedTime(quantizedBarFraction->intValue());
 }
 int TimeManager::getNextQuantifiedTime(int barFraction){
+    if (barFraction==-1){
+        barFraction=quantizedBarFraction->intValue();
+    }
     if(barFraction==0){
 		return (int)timeInSample;
 	}
+
     const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
     return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
 }
@@ -165,3 +171,10 @@ int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample)
 double TimeManager::getBeatPercent(){return timeInSample*1.0/beatTimeInSample-getBeat();}
 
 int TimeManager::getBar(){return (int)(floor(getBeat()*1.0/beatPerBar->intValue() ));}
+
+void TimeManager::lockTime(bool s){
+    _isLocked = s;
+}
+bool TimeManager::isLocked(){
+    return _isLocked;
+}
