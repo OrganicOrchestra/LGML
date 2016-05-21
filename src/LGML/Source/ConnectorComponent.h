@@ -20,12 +20,12 @@ class NodeContainerViewer;
 //==============================================================================
 /*
 */
-class ConnectorComponent : 
-	public Component, 
+class ConnectorComponent :
+	public Component,
 	public SettableTooltipClient,
 	public NodeBase::NodeBaseListener
 {
-public: 
+public:
 
     enum ConnectorIOType
     {
@@ -50,7 +50,7 @@ public:
     bool isHovered;
 
     ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * cnode);
-    ~ConnectorComponent(); 
+    ~ConnectorComponent();
 
     void paint(Graphics &g)override;
 

@@ -12,10 +12,10 @@
 #include "NodeBaseUI.h"
 
 SpatNode::SpatNode() :
-	NodeBase("Spat",NodeType::SpatType) 
+	NodeBase("Spat",NodeType::SpatType)
 {
 }
 
 ConnectableNodeUI * SpatNode::createUI() {
-	return new NodeBaseUI(this); 
+	return new NodeBaseUI(this);
 }

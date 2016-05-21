@@ -21,7 +21,7 @@ NodeManager::NodeManager() :
 {
 	saveAndLoadRecursiveData = false;
     setCustomShortName("node");
-	
+
 	mainContainer = new NodeContainer("mainContainer");
 	addChildControllableContainer(mainContainer);
 	mainContainer->skipControllableNameInAddress = true;
@@ -35,7 +35,7 @@ NodeManager::~NodeManager()
 
 void NodeManager::clear()
 {
-	mainContainer->clear(); 
+	mainContainer->clear();
 	audioGraph.clear();
 	dataGraph.clear();
 
@@ -60,5 +60,3 @@ void NodeManager::updateAudioGraph() {
     ScopedLock lk( getAudioDeviceManager().getAudioCallbackLock());
 	audioGraph.prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());
 }
-
-

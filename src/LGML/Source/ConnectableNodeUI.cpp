@@ -86,8 +86,8 @@ void ConnectableNodeUI::setMiniMode(bool value)
 }
 
 int ConnectableNodeUI::getMiniModeWidth(bool forMiniMode)
-{ 
-	return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (mainContainer.audioCtlUIContainer?mainContainer.audioCtlUIContainer->getWidth()+mainContainer.audioCtlContainerPadRight:0)); 
+{
+	return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (mainContainer.audioCtlUIContainer?mainContainer.audioCtlUIContainer->getWidth()+mainContainer.audioCtlContainerPadRight:0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight(bool forMiniMode)
@@ -357,10 +357,10 @@ void ConnectableNodeUI::ConnectorContainer::resized()
 	{
 		DBG("Connector is Visible ? " << String(c->isVisible()));
 		if (!c->isVisible()) continue;
-		
+
 		c->setBounds(r.removeFromTop(r.getWidth()));
 		r.removeFromTop(15);
-		
+
 	}
 }
 

@@ -34,7 +34,7 @@ public:
 
 class VSTNodeContentUI:
 	public NodeBaseContentUI,
-	public Button::Listener, 
+	public Button::Listener,
 	public VSTNode::VSTNodeListener,
 	public ControllableContainerListener,
 	public ComboBoxListener

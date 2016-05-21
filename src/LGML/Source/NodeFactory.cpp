@@ -80,7 +80,7 @@ ConnectableNode * NodeFactory::createNode(NodeType nodeType)
             n = new AudioDeviceOutNode();
             break;
 
-        
+
         default:
             break;
     }
@@ -97,7 +97,7 @@ PopupMenu * NodeFactory::getNodeTypesMenu(int menuIdOffset)
     for (int i = 0; i < numElements; i++)
     {
         p->addItem(i+menuIdOffset, nodeTypeNames[i+userCanAddStartType-1]);
-    } 
+    }
 
     return p;
 }

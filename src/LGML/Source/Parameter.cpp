@@ -73,7 +73,7 @@ DynamicObject * Parameter::createDynamicObject()
 	DynamicObject * dObject = Controllable::createDynamicObject();
     static const Identifier _jsGetIdentifier("get");
 	dObject->setMethod(_jsGetIdentifier, Parameter::getValue);
-    
+
     static const Identifier _jsSetIdentifier("set");
     dObject->setMethod(_jsSetIdentifier, setControllableValue);
 

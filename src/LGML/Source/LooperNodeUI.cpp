@@ -53,7 +53,7 @@ void LooperNodeContentUI::init(){
 
 void LooperNodeContentUI::resized(){
     Rectangle<int> area = getLocalBounds();
-    headerContainer.setBounds(area.removeFromTop(50));
+    headerContainer.setBounds(area.removeFromTop(30));
     trackContainer.setBounds(area);
     reLayoutHeader();
     reLayoutTracks();
@@ -64,16 +64,16 @@ void LooperNodeContentUI::resized(){
 void LooperNodeContentUI::reLayoutHeader(){
 
     float selectedW = .4f;
-    Rectangle<int> area = headerContainer.getBounds();
-    int pad = 3;
+    Rectangle<int> area = headerContainer.getBounds().reduced(4, 0);
+    int pad = 2;
     Rectangle<int> selTrackArea = area.removeFromLeft((int)(selectedW*area.getWidth()));
-    recPlaySelectedButton->setBounds(selTrackArea.removeFromTop((int)(.6f*selTrackArea.getHeight())).reduced(pad));
-    stopSelectedButton->setBounds(selTrackArea.removeFromLeft((int)(.5f*selTrackArea.getWidth())).reduced(pad));
+    recPlaySelectedButton->setBounds(selTrackArea.removeFromLeft((int)(.5f*selTrackArea.getWidth())).reduced(pad));
+    stopSelectedButton->setBounds(selTrackArea.removeFromTop((int)(.5f*selTrackArea.getHeight())).reduced(pad));
     clearSelectedButton->setBounds(selTrackArea.reduced(pad));
 
     stopAllButton->setBounds(area.removeFromLeft(area.getWidth()/3).reduced(pad));
     clearAllButton->setBounds(area.removeFromLeft(area.getWidth()/2).reduced(pad));
-    monitoringButton->setBounds(area.removeFromTop(area.getHeight()/3).reduced(pad));
+    monitoringButton->setBounds(area.removeFromTop(area.getHeight()).reduced(pad));
 
 }
 void LooperNodeContentUI::reLayoutTracks(){

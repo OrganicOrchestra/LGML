@@ -20,7 +20,7 @@
 #include "ConnectableNodeAudioCtlUI.h"
 
 
-class ConnectableNodeUI : 
+class ConnectableNodeUI :
 	public InspectableComponent,
 	public Parameter::Listener
 {
@@ -31,7 +31,7 @@ public:
 	ConnectableNode * connectableNode;
 
 
-	class ConnectorContainer : 
+	class ConnectorContainer :
 		public Component,
 		public ConnectorComponent::ConnectorListener
 	{
@@ -87,13 +87,13 @@ public:
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContainer)
 	};
 
-	
+
 
 	//layout
 	int connectorWidth;
 
 	bool miniMode;
-	
+
 	//interaction
 	Point<int> nodeInitPos;
 	bool dragIsLocked;
@@ -104,7 +104,7 @@ public:
 	MainContainer mainContainer;
 	ConnectableNodeContentUI * getContentContainer() { return mainContainer.contentContainer; }
 	ConnectableNodeHeaderUI * getHeaderContainer() { return mainContainer.headerContainer; }
-	
+
 	ConnectorContainer inputContainer;
 	ConnectorContainer outputContainer;
 
@@ -117,19 +117,19 @@ public:
 
 
 	virtual void setMiniMode(bool value);
-	virtual int getMiniModeWidth(bool forMiniMode); 
+	virtual int getMiniModeWidth(bool forMiniMode);
 	virtual int getMiniModeHeight(bool forMiniMode);
-	
-	Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector); 
+
+	Array<ConnectorComponent *> getComplementaryConnectors(ConnectorComponent * baseConnector);
 
 	//Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
 	ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
 
-	 
+
 	void childBoundsChanged(Component*)override;
 	void parameterValueChanged(Parameter * p) override;
 
-	
+
 	void mouseDown(const MouseEvent &e) override;
 	void mouseUp(const MouseEvent &e) override;
 	void mouseDrag(const MouseEvent &e)  override;

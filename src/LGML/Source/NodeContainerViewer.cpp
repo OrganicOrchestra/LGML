@@ -20,9 +20,9 @@ NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 {
 	setInterceptsMouseClicks(true, true);
 	nodeContainer->addNodeContainerListener(this);
-	
+
 	canInspectChildContainersBeyondRecursion = false;
-	
+
 	for (auto &n : nodeContainer->nodes)
 	{
 		addNodeUI(n);
@@ -31,7 +31,7 @@ NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 	{
 		addConnectionUI(c);
 	}
-} 
+}
 
 NodeContainerViewer::~NodeContainerViewer()
 {
@@ -349,7 +349,7 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
 
 			if (result > 0 && result < addNodeMenu->getNumItems() + menuOffset)
 			{
-				
+
 				ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(NodeFactory::getTypeForIndex(result - menuOffset,true));
 				jassert(n != nullptr);
 

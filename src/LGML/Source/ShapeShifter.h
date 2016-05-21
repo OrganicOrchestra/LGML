@@ -31,7 +31,7 @@ public :
 	int preferredHeight;
 	void setPreferredWidth(int newWidth);
 	void setPreferredHeight(int newHeight);
-	
+
 	virtual int getPreferredWidth();
 	virtual int getPreferredHeight();
 

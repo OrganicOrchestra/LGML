@@ -21,12 +21,12 @@
 /*
  Draw all connected Nodes and Connections
  */
-class NodeManagerUI : 
+class NodeManagerUI :
 	public Component,
 	public NodeManager::NodeManagerListener
 {
 public:
-	
+
     NodeManagerUI(NodeManager * nodeManager);
     ~NodeManagerUI();
 
@@ -43,7 +43,7 @@ public:
 	void managerCleared() override;
 
 	void setCurrentViewedContainer(NodeContainer * c);
-    
+
 	void childBoundsChanged(Component * c)override;
 
 	class  NodeManagerUIListener
@@ -60,7 +60,7 @@ public:
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
-	
+
 };
 
 class NodeManagerUIViewport :
@@ -89,7 +89,7 @@ public :
 		nmui->removeNodeManagerUIListener(this);
 
 	}
-	
+
 	OwnedArray<TextButton> pathButtons;
 
 	void reconstructViewerPath()
@@ -108,13 +108,13 @@ public :
 		{
 			TextButton * b = new TextButton(c->niceName);
 			if (c == nmui->currentViewer->nodeContainer) b->setEnabled(false);
-			
+
 			pathButtons.insert(0, b);
-			addAndMakeVisible(b); 
-			b->addListener(this); 
-			
+			addAndMakeVisible(b);
+			b->addListener(this);
+
 			c = c->parentNodeContainer;
-			
+
 		}
 
 
@@ -125,7 +125,7 @@ public :
 		Rectangle<int> r = getLocalBounds();
 
 		Rectangle<int> buttonR = r.removeFromTop(30).reduced(5);
-				
+
 		for (auto & b : pathButtons)
 		{
 			b->setBounds(buttonR.removeFromLeft(100));

@@ -217,7 +217,7 @@ public:
                     float found = ptr[i];
                     expect(found == fexpected ,
                            "failed at :"+String(i)+ ",expect: "+String(fexpected)+"found: "+String(found) );
-                    
+
 
             }
         }

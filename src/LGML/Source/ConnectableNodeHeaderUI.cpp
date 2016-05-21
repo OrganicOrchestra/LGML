@@ -13,7 +13,7 @@
 #include "PresetManager.h"
 #include "FloatSliderUI.h"
 
-ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() : 
+ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
 	vuMeterIn(VuMeter::Type::IN),
 	vuMeterOut(VuMeter::Type::OUT),
 	removeBT("X"),
@@ -158,7 +158,7 @@ void ConnectableNodeHeaderUI::resized()
 
 	miniModeBT.setBounds(r.removeFromRight(miniModeBTWidth).reduced(0,2));
 	r.removeFromRight(2);
-	
+
 	if (node->canHavePresets && !miniMode)
 	{
 		presetCB->setBounds(r.removeFromRight(presetCBWidth));

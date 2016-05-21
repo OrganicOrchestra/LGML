@@ -40,7 +40,7 @@ class NodeFactory
 public:
 	NodeFactory();
 	~NodeFactory();
-	
+
 	const static int userCanAddStartType = ContainerType;
 
     static ConnectableNode * createNode(NodeType type);

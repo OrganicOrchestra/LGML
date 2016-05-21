@@ -271,7 +271,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
         if(changed){
             if(selectTrack->intValue() < trackGroup.tracks.size()){
                 trackGroup.tracks.getUnchecked(selectTrack->intValue())->selectTrig->trigger();
-                
+
             }
         }
     }

@@ -38,7 +38,7 @@ public:
 	NodeBase(const String &name = "[NodeBase]", NodeType type = UNKNOWN_TYPE, bool _hasMainAudioControl = true);
 	virtual ~NodeBase();
 
-	
+
 	virtual bool hasAudioInputs() override;
 	virtual bool hasAudioOutputs() override;
 	virtual bool hasDataInputs() override;
@@ -50,7 +50,7 @@ public:
 	void parameterValueChanged(Parameter * p) override;
 
 	virtual void clear() override;
-	
+
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
@@ -92,7 +92,7 @@ public:
 
 	AudioProcessorGraph::Node * audioNode;
 
-	
+
 
 	virtual AudioProcessorGraph::Node * getAudioNode(bool isInputNode = true) override;
 	void addToAudioGraph() override;
@@ -146,10 +146,10 @@ public:
 	//Listener are called from non audio thread
 	void handleAsyncUpdate() override;
 
-	
-	
 
-	
+
+
+
 
 	bool wasSuspended;
 	float lastVolume;
@@ -157,7 +157,7 @@ public:
 	//DATA
 	virtual Data* getInputData(int dataIndex) override;
 	virtual Data* getOutputData(int dataIndex) override;
-	
+
 
 	typedef Data::DataType DataType;
 	typedef Data::DataElement DataElement;

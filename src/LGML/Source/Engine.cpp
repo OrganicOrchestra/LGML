@@ -72,8 +72,8 @@ void Engine::parseCommandline(const String & commandLine){
 				File f(argument);
 				if (f.existsAsFile()) loadDocument(f);
 			}
-			else { 
-				NLOG("Engine","File : " << argument << " not found."); 
+			else {
+				NLOG("Engine","File : " << argument << " not found.");
 			}
         }
 

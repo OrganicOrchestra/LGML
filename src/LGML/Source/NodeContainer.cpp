@@ -38,7 +38,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 	}
 
 	connections.clear();
-	
+
 	containerInNode = nullptr;
 	containerOutNode = nullptr;
 
@@ -54,11 +54,11 @@ void NodeContainer::clear(bool recreateContainerNodes)
 
 		containerInNode->addRMSListener(this);
 		containerOutNode->addRMSListener(this);
-		
+
 		//maybe keep it ?
 		addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
 	}
-	
+
 }
 
 
@@ -317,4 +317,3 @@ void NodeContainer::removeIllegalConnections() {
 		jassert(!NodeManager::getInstance()->audioGraph.removeIllegalConnections());
 	}
 }
-

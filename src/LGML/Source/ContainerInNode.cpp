@@ -18,7 +18,7 @@ ContainerInNode::ContainerInNode() :
 	canBeRemovedByUser = false;
 	canHavePresets = false;
 	userCanAccessInputs = false;
-	
+
 	numInputChannels = addIntParameter("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);
 	numInputData = addIntParameter("Num Data Inputs", "Number of data inputs for this container", 0, 0, 100);
 }

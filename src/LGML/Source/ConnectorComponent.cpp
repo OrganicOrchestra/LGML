@@ -4,19 +4,19 @@
 #include "Style.h"
 
 ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, ConnectableNode * _cnode) :
-    ioType(_ioType), 
-	dataType(_dataType), 
+    ioType(_ioType),
+	dataType(_dataType),
 	node((NodeBase *)_cnode),
 	isHovered(false)
 {
 	jassert(node->type != NodeType::ContainerType);
 	((NodeBase *)node)->addNodeBaseListener(this);
-	
-	
-	
+
+
+
     boxColor = (dataType == NodeConnection::ConnectionType::AUDIO)? AUDIO_COLOR : DATA_COLOR;
     setSize(10,10);
-	
+
 	node->addNodeBaseListener(this);
     generateToolTip();
 
@@ -83,10 +83,10 @@ void ConnectorComponent::mouseExit  (const MouseEvent&){
 
 void ConnectorComponent::updateVisibility()
 {
-	
+
 	bool isAudio = dataType == NodeConnection::ConnectionType::AUDIO;
 	bool isInput = ioType == ConnectorIOType::INPUT;
-	
+
 	DBG("IS AUDIO " << String(isAudio) << " / IS INPUT " << String(isInput));
 
 	if (isAudio) setVisible(isInput ? node->hasAudioInputs() : node->hasAudioOutputs());
@@ -122,7 +122,7 @@ void ConnectorComponent::numDataOutputChanged(NodeBase *, int)
 	generateToolTip();
 	updateVisibility();
 }
- 
+
 NodeContainerViewer * ConnectorComponent::getNodeContainerViewer() const noexcept
 {
     return findParentComponentOfClass<NodeContainerViewer>();

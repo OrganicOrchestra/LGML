@@ -13,7 +13,7 @@
 
 #include "ShapeShifterPanel.h"
 
-class ShapeShifterWindow : 
+class ShapeShifterWindow :
 	public ResizableWindow,
 	public ShapeShifterPanel::Listener
 {

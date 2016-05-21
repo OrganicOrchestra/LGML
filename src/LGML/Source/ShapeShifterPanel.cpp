@@ -174,9 +174,9 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPane
 		}
 	}
 
-	
 
-	
+
+
 
 }
 
@@ -235,10 +235,10 @@ void ShapeShifterPanel::removeTab(ShapeShifterPanelTab * tab)
 			listeners.call(&Listener::panelEmptied, this);
 		}
 	}
-	
+
 	listeners.call(&Listener::contentRemoved, content);
 	delete content;
-	
+
 }
 
 bool ShapeShifterPanel::attachPanel(ShapeShifterPanel * panel)

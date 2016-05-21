@@ -35,9 +35,9 @@ public:
 };
 
 
-class NodeContainer : 
+class NodeContainer :
 	public ConnectableNode,
-	public ConnectableNode::ConnectableNodeListener, 
+	public ConnectableNode::ConnectableNodeListener,
 	public NodeConnection::Listener,
 	public ConnectableNode::RMSListener
 {
@@ -83,7 +83,7 @@ public:
 
 	int getNumNodes() const noexcept { return nodes.size(); }
 
-	
+
 	//save / load
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
@@ -103,11 +103,11 @@ public:
 
 	virtual ConnectableNodeUI * createUI() override;
 
-	//AUDIO 
-	
+	//AUDIO
+
 	AudioProcessorGraph::Node * getAudioNode(bool isInput) override;
 
-	
+
 	//DATA
 	bool hasDataInputs() override;
 	bool hasDataOutputs() override;

@@ -269,7 +269,3 @@ Data * ConnectableNode::getInputDataByName(const String & )
 	//to override
 	return nullptr;
 }
-
-
-
-

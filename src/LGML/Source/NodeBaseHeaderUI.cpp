@@ -11,7 +11,7 @@
 #include "NodeBaseHeaderUI.h"
 
 NodeBaseHeaderUI::NodeBaseHeaderUI()
-{ 
+{
 }
 
 NodeBaseHeaderUI::~NodeBaseHeaderUI()

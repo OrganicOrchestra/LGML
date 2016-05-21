@@ -18,7 +18,7 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 	AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
 	canHavePresets = false;
-	
+
 	NodeBase::busArrangement.outputBuses.clear();
 
 	getAudioDeviceManager().addChangeListener(this);

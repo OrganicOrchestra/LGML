@@ -18,7 +18,7 @@
 
 class ConnectableNodeUI;
 
-class ConnectableNode : 
+class ConnectableNode :
 	public ControllableContainer
 {
 public:
@@ -109,7 +109,7 @@ public:
 	//DATA
 	virtual Data* getInputData(int dataIndex);
 	virtual Data* getOutputData(int dataIndex);
-	
+
 	virtual int getTotalNumInputData();
 	virtual int getTotalNumOutputData();
 

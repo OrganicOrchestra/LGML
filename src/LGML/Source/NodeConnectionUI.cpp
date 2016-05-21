@@ -66,7 +66,7 @@ void NodeConnectionUI::paint (Graphics& g)
 
 	bool isAudio = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO;
     Colour baseColor = isAudio ? AUDIO_COLOR : DATA_COLOR;
-	
+
 	if (connection != nullptr)
 	{
 		if (isAudio && connection->audioConnections.size() == 0) baseColor = NORMAL_COLOR;
@@ -119,7 +119,7 @@ void NodeConnectionUI::buildPath()
 
 		path.startNewSubPath(sourcePos.x, sourcePos.y);
 		path.cubicTo(sourcePos.translated(txDist,0), endPos.translated(-txDist,0),endPos);
-		
+
 	} else
 	{
 		Path p;
@@ -140,12 +140,12 @@ void NodeConnectionUI::buildPath()
 		}
 
 		destMidY = jlimit<float>(jmin<float>(limitY1, limitY2), jmax<float>(limitY1, limitY2), destMidY);
-		
+
 		Point<float> t1 = sourcePos.translated(nodeMargin,0);
 		Point<float> t2 = t1.withY(destMidY);
 		Point<float> t3 = t2.withX(endPos.x - nodeMargin);
 		Point<float> t4 = t3.withY(endPos.y);
-		
+
 		const Array<Point<float>> points = { t1,t2,t3,t4 };
 
 		p.startNewSubPath(sourcePos.x, sourcePos.y);

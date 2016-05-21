@@ -205,7 +205,7 @@ void ShapeShifterContainer::resized()
 		bool lastShifter = panelIndex >= grabbers.size();
 		int tp = (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
 		int targetSpace = (!p->isFlexible()) ? (tp-backOffsetAmount) : defaultSpace;
-		
+
 		if(!lastShifter)
 		{
 			Rectangle<int> tr = (direction == HORIZONTAL) ? r.removeFromLeft(targetSpace) : r.removeFromTop(targetSpace);

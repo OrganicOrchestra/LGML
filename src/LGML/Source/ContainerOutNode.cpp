@@ -64,7 +64,7 @@ void ContainerOutNode::onContainerParameterChanged(Parameter * p)
 		{
 			removeOutputData(outputDatas[outputDatas.size() - 1]->name);
 		}
-		else 
+		else
 		{
 			addOutputData("Output Data " + String(outputDatas.size()), DataType::Number);
 		}

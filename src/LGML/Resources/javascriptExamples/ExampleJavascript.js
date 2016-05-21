@@ -48,10 +48,10 @@ on_node_audioInNode_masterVolume = function(a) {
 /// special functions
 //// lgml.post : post a message in LGML Logger
 
-onCtl_Foo_Bar  =function ( a,b){
-		lgml.post(this + "osc arguments :" + a + "," + b);
-		// any send call will send a message on OSC controller out port
-		local.send("/lolo","l");
+onCtl_Foo_Bar  = function ( a , b ){
+	lgml.post(this + "osc arguments :" + a + "," + b );
+	// any send call will send a message on OSC controller out port
+	local.send("/lolo","l");
 };
 
 onCtl_AnyMsg = function (adress , args){
@@ -77,8 +77,8 @@ onNote = function(Note,Velocity){
 		
 	}
 	else{
-	lgml.post("Note : "+Note + " /" + Velocity);
-}
+		lgml.post("Note : "+Note + " /" + Velocity);
+	}
 };
 
 

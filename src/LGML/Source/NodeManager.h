@@ -20,7 +20,7 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 #include "NodeFactory.h"
 #include "NodeContainer.h"
 
-class NodeManager: 
+class NodeManager:
 	public ControllableContainer
 {
 
@@ -29,7 +29,7 @@ public:
     ~NodeManager();
 
     juce_DeclareSingleton(NodeManager, true);
-	
+
     AudioProcessorGraph audioGraph;
     DataProcessorGraph dataGraph;
 
@@ -38,11 +38,11 @@ public:
 	void updateAudioGraph();
 
     void clear();
-   
+
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
 
-	
+
     //Listener
     class  NodeManagerListener
     {
@@ -55,11 +55,11 @@ public:
     ListenerList<NodeManagerListener> nodeManagerListeners;
     void addNodeManagerListener(NodeManagerListener* newListener) { nodeManagerListeners.add(newListener); }
     void removeNodeManagerListener(NodeManagerListener* listener) { nodeManagerListeners.remove(listener); }
-	
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeManager)
 
-	
+
 };
 
 

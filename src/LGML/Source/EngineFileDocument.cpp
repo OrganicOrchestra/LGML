@@ -100,7 +100,7 @@ var Engine::getJSONData()
 
 void Engine::loadJSONData (var data)
 {
-	
+
 	DynamicObject * md = data.getDynamicObject()->getProperty("metaData").getDynamicObject();
 	bool versionChecked = checkFileVersion(md);
 
@@ -111,7 +111,7 @@ void Engine::loadJSONData (var data)
 		AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon, "You're old, bitch !", "File version (" + versionString + ") is not supported anymore.\n(Minimum supported version : " + getMinimumRequiredFileVersion() + ")");
 		return;
 	}
-	
+
 
 	clear();
 	if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file

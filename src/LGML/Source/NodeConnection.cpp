@@ -12,8 +12,8 @@
 #include "NodeManager.h"
 
 NodeConnection::NodeConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType) :
-sourceNode(sourceNode), 
-destNode(destNode), 
+sourceNode(sourceNode),
+destNode(destNode),
 connectionType(connectionType)
 {
 
@@ -175,8 +175,8 @@ void NodeConnection::dataOutputRemoved(NodeBase * n , Data * d)
 var NodeConnection::getJSONData()
 {
     var data(new DynamicObject());
-	
-	ConnectableNode * tSource = sourceNode; 
+
+	ConnectableNode * tSource = sourceNode;
 	if (sourceNode->type == ContainerOutType) tSource = ((ContainerOutNode *)sourceNode)->getParentNodeContainer();
 
 	ConnectableNode * tDest = destNode;

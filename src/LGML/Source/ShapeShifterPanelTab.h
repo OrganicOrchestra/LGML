@@ -13,7 +13,7 @@
 
 #include "ShapeShifterContent.h"
 
-class ShapeShifterPanelTab : 
+class ShapeShifterPanelTab :
 	public Component,
 	public ButtonListener
 {

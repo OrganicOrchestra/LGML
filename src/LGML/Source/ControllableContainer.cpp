@@ -520,7 +520,7 @@ String ControllableContainer::getUniqueNameInContainer(const String & sourceName
 {
     String resultName = sourceName;
     if (suffix > 0) resultName += " " + String(suffix);
-    
+
     if (getControllableByName(resultName,true) != nullptr)
     {
         return getUniqueNameInContainer(sourceName, suffix + 1);
@@ -529,6 +529,6 @@ String ControllableContainer::getUniqueNameInContainer(const String & sourceName
     {
         return getUniqueNameInContainer(sourceName, suffix + 1);
     }
-    
+
     return resultName;
 }

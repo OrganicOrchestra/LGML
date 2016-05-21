@@ -14,7 +14,7 @@
 #include "ConnectableNodeContentUI.h"
 class NodeContainer;
 
-class NodeContainerContentUI : 
+class NodeContainerContentUI :
 	public ConnectableNodeContentUI,
 	public ButtonListener
 {

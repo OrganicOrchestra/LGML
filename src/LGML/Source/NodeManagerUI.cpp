@@ -16,7 +16,7 @@ NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
 nodeManager(nodeManager),
 currentViewer(nullptr)
 {
-	nodeManager->addNodeManagerListener(this); 
+	nodeManager->addNodeManagerListener(this);
 	setCurrentViewedContainer(nodeManager->mainContainer);
 }
 
@@ -25,7 +25,7 @@ NodeManagerUI::~NodeManagerUI()
 	nodeManager->removeNodeManagerListener(this);
 	clear();
 	setCurrentViewedContainer(nullptr);
-	
+
 }
 
 void NodeManagerUI::clear()

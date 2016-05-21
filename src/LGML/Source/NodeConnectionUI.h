@@ -21,8 +21,8 @@
 
 */
 
-class NodeConnectionUI : 
-	public InspectableComponent, 
+class NodeConnectionUI :
+	public InspectableComponent,
 	public ComponentListener,
 	public NodeConnection::Listener
 {
@@ -103,7 +103,7 @@ public:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnectionUI);
 
 
-	
+
 };
 
 

@@ -51,7 +51,7 @@ void InspectableComponent::setSelected(bool value)
 
 	if (bringToFrontOnSelect) toFront(true);
 	if (repaintOnSelectionChanged) repaint();
-	
+
 
 	setSelectedInternal(value);
 

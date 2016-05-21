@@ -16,7 +16,7 @@
 #include "NodeBase.h"
 class NodeContainer;
 
-class ContainerInNode : 
+class ContainerInNode :
 	public NodeBase
 {
 public:
@@ -25,7 +25,7 @@ public:
 
 	//Container
 	NodeContainer * getParentNodeContainer();
-	
+
 	//AUDIO
 	IntParameter * numInputChannels;
 	void setNumAudioChannels(int channels);

@@ -16,7 +16,7 @@
 class NodeManager;
 class NodeBase;
 
-class NodeConnection : 
+class NodeConnection :
 	public ReferenceCountedObject,
 	public NodeBase::NodeBaseListener
 {
@@ -63,7 +63,7 @@ public:
 	virtual void dataInputRemoved(NodeBase *, Data *) override;
 	virtual void dataOutputRemoved(NodeBase *, Data *) override;
 
-	
+
 	// save / load
 
     var getJSONData();

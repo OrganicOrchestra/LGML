@@ -94,7 +94,7 @@ String NodeBase::getPresetFilter()
 var NodeBase::getJSONData()
 {
 	var data = ConnectableNode::getJSONData();
-  
+
    MemoryBlock m;
 
     // TODO we could implement that for all node objects to be able to save any kind of custom data
@@ -151,7 +151,7 @@ void NodeBase::removeFromAudioGraph() {
 	{
 		if (audioNode != nullptr) NodeManager::getInstance()->audioGraph.removeNode(audioNode);
 	}
-	
+
 }
 
 void NodeBase::processBlock(AudioBuffer<float>& buffer,
@@ -376,12 +376,12 @@ void NodeBase::updateOutputData(String & dataName, const float & value1, const f
 	if (d != nullptr) d->update(value1, value2, value3);
 }
 
-int NodeBase::getTotalNumInputData() { 
-	return inputDatas.size(); 
+int NodeBase::getTotalNumInputData() {
+	return inputDatas.size();
 }
 
-int NodeBase::getTotalNumOutputData() { 
-	return outputDatas.size(); 
+int NodeBase::getTotalNumOutputData() {
+	return outputDatas.size();
 }
 
 StringArray NodeBase::getInputDataInfos()
