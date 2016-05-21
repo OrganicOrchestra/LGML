@@ -6,7 +6,7 @@ import urllib;
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = False
+bumpVersion = True
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
 

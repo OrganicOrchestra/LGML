@@ -471,7 +471,7 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         trackState = newState;
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
     }
-    
+
     if((trackState==CLEARED || trackState==SHOULD_CLEAR || trackState==STOPPED || trackState==SHOULD_STOP) ){
         parentLooper->checkIfNeedGlobalLooperStateUpdate();
     }
