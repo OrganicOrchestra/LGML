@@ -57,45 +57,50 @@ bool JsContainerSync::existInContainerNamespace(const String & ns){
 
 DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent)
 {
-    DynamicObject*  d = parent;
+    DynamicObject*  myParent = parent;
     // create an object only if not skipping , if not add to parent
     if(!container->skipControllableNameInAddress)
-        d = new DynamicObject();
+        myParent = new DynamicObject();
+    else{
+        jassert(parent!=nullptr);
 
+    }
 
     for(auto &c:container->controllables){
-		d->setProperty(c->shortName, c->createDynamicObject());
+		myParent->setProperty(c->shortName, c->createDynamicObject());
+
 
     }
 
     for(auto &c:container->controllableContainers){
         if(c->isIndexedContainer()){
 
-            if(!d->hasProperty(jsArrayIdentifier)){
+            if(!myParent->hasProperty(jsArrayIdentifier)){
                 var aVar;
-                DynamicObject * childObject = createDynamicObjectFromContainer(c,d);
+                DynamicObject * childObject = createDynamicObjectFromContainer(c,myParent);
                 //check names are aligned with order (first one)
                 jassert(c->getIndexedPosition() == 0);
                 aVar.append(childObject);
-                d->setProperty(jsArrayIdentifier, aVar);
+                myParent->setProperty(jsArrayIdentifier, aVar);
 
             }
             else{
                 Array<var> * arrVar;
-                arrVar = d->getProperty(jsArrayIdentifier).getArray();
+                arrVar = myParent->getProperty(jsArrayIdentifier).getArray();
                 //check names are aligned with order (others)
                 jassert(c->getIndexedPosition() == arrVar->size());
-                DynamicObject * childObject =createDynamicObjectFromContainer(c,d);
+                DynamicObject * childObject =createDynamicObjectFromContainer(c,myParent);
                 arrVar->add(childObject);
             }
         }
         else{
-            DynamicObject * childObject = createDynamicObjectFromContainer(c,d);
-            d->setProperty(c->shortName, childObject);
+            DynamicObject * childObject = createDynamicObjectFromContainer(c,myParent);
+            if(!c->skipControllableNameInAddress && childObject!=nullptr)
+                myParent->setProperty(c->shortName, var(childObject));
         }
     }
 
-    return d;
+    return myParent;
 }
 
 

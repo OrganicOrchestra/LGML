@@ -8,7 +8,7 @@
 
 
 JsEnvironment.cpp
-	line : 295
+	line : 296
 		// @ben only supported if move semantics are too are they for you?
 
 
@@ -67,7 +67,7 @@ JsGlobalEnvironment.cpp
 
 
 ShapeShifterContainer.cpp
-	line : 287
+	line : 293
 		//@ben what to we do for that?
 		//@martin never gonna happen :)
 
@@ -133,19 +133,5 @@ LooperTrack.cpp
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized
-
-
-NodeConnection.cpp
-	line : 98
-		//TODO HANDLE THAT !!!!
-
-	line : 108
-		//TODO HANDLE THAT !!!!
-
-	line : 93
-		//TODO HANDLE THAT !!!!
-
-	line : 103
-		//TODO HANDLE THAT !!!!
 
 

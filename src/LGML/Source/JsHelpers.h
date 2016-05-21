@@ -140,6 +140,7 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
     for(int i = 0 ; i < v.size() ; i++){
         var * vv = v.getVarPointerAt(i);
         String name = v.getName(i).toString();
+        jassert(name != "");
 
 
         if(vv->isObject() || vv->isArray()){
@@ -160,13 +161,15 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
             }
             if(d!=nullptr){
                 res+= name+":";
-                res+=namespaceToString(d->getProperties(),indentlevel+1,showValue,showptr);}
+                res+=namespaceToString(d->getProperties(),indentlevel+1,showValue,showptr);
+
+            }
+            else{
+                jassertfalse;
+            }
 
         }
-        else if(vv->isArray()){
-            res+="(Array)\n";
 
-        }
 
 
     }

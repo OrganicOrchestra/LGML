@@ -14,7 +14,7 @@
 #include "DebugHelpers.h"
 
 JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFile(false){
-    localEnvironment = new DynamicObject();
+    localEnvironment = var(new DynamicObject());
     jsEngine.registerNativeObject(jsLocalIdentifier, getLocalEnv());
     jsEngine.registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
     addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
@@ -27,6 +27,7 @@ JsEnvironment::~JsEnvironment(){
     for(auto & c:listenedTriggers){
         if(c.get()) c->removeTriggerListener(this);
     }
+    localEnvironment = var::undefined();
 }
 
 void JsEnvironment::clearNamespace(){
@@ -227,7 +228,7 @@ void JsEnvironment::timerCallback(){
         lastFileModTime = newTime;
     }
 }
-String JsEnvironment::printAllNamespace()   {return namespaceToString(jsEngine.getRootObjectProperties(),0,false,false);}
+String JsEnvironment::printAllNamespace()   {return namespaceToString(jsEngine.getRootObjectProperties(),0,true,false);}
 
 
 String JsEnvironment::getModuleName(){
