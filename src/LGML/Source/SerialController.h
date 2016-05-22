@@ -40,7 +40,7 @@ public:
 	virtual void portClosed(SerialPort *) override;
 	virtual void portRemoved(SerialPort *) override;
 
-	ControllerUI * createUI();
+	ControllerUI * createUI() override;
 
 
 	class SerialControllerListener

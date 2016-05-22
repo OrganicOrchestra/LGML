@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.1"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.2"
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -686,7 +686,7 @@
         <CONFIGURATION name="Debug_old" osxSDK="default" osxCompatibility="10.6 SDK"
                        osxArchitecture="32BitUniversal" isDebug="1" optimisation="1"
                        targetName="LGML_Debug_old" cppLanguageStandard="c++98" cppLibType="libstdc++"
-                       binaryPath=""/>
+                       binaryPath="" headerPath="..\..\External\serial\include"/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.8 SDK" osxArchitecture="32BitUniversal"
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
                        cppLanguageStandard="c++11" cppLibType="libc++" linkTimeOptimisation="1"
@@ -766,7 +766,7 @@
                JUCE_PLUGINHOST_AU="enabled" JUCE_WEB_BROWSER="disabled" JUCE_ASIO="enabled"
                JUCE_WASAPI="enabled" JUCE_DIRECTSOUND="enabled" JUCE_LOG_ASSERTIONS="enabled"/>
   <LIVE_SETTINGS>
-    <WINDOWS/>
+    <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>
