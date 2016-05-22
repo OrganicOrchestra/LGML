@@ -9,6 +9,7 @@
  */
 
 #include "Engine.h"
+#include "SerialManager.h"
 #include "LGMLLogger.h"
 #include "MainComponent.h"
 #include "DebugHelpers.h"
@@ -24,6 +25,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
     Logger::setCurrentLogger (LGMLLogger::getInstance());
 
 	MIDIManager::getInstance()->init();
+	SerialManager::getInstance()->init();
 }
 
 
@@ -31,7 +33,6 @@ Engine::~Engine(){
     stopAudio();
 
 	FastMapper::deleteInstance();
-	MIDIManager::deleteInstance();
     TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
     ControllerManager::deleteInstance();
     NodeManager::deleteInstance();
@@ -42,6 +43,9 @@ Engine::~Engine(){
     Logger::setCurrentLogger(nullptr);
     LGMLLogger::deleteInstance();
     RuleManager::deleteInstance();
+
+	MIDIManager::deleteInstance();
+	SerialManager::deleteInstance();
 }
 
 void Engine::parseCommandline(const String & commandLine){

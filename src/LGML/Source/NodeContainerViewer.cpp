@@ -86,7 +86,6 @@ void NodeContainerViewer::connectionRemoved(NodeConnection * connection)
 
 void NodeContainerViewer::addNodeUI(ConnectableNode * node)
 {
-	DBG("Add Node UI !" << node->niceName);
 	if (getUIForNode(node) == nullptr)
 	{
 		ConnectableNodeUI * nui = node->createUI();

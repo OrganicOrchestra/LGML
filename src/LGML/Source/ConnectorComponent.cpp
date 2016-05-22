@@ -87,8 +87,6 @@ void ConnectorComponent::updateVisibility()
 	bool isAudio = dataType == NodeConnection::ConnectionType::AUDIO;
 	bool isInput = ioType == ConnectorIOType::INPUT;
 
-	DBG("IS AUDIO " << String(isAudio) << " / IS INPUT " << String(isInput));
-
 	if (isAudio) setVisible(isInput ? node->hasAudioInputs() : node->hasAudioOutputs());
 	else setVisible(isInput ? node->hasDataInputs() : node->hasDataOutputs());
 
@@ -99,14 +97,12 @@ void ConnectorComponent::numAudioInputChanged(NodeBase *, int)
 {
 	if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::INPUT) return;
 	generateToolTip();
-	updateVisibility();
 }
 
 void ConnectorComponent::numAudioOutputChanged(NodeBase *, int)
 {
 	if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
 	generateToolTip();
-	updateVisibility();
 }
 
 void ConnectorComponent::numDataInputChanged(NodeBase *, int)

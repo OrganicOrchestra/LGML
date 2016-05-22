@@ -17,11 +17,12 @@
 #include "MIDIController.h"
 #include "JavaScriptController.h"
 #include "OSCCustomController.h"
+#include "SerialController.h"
 
 
 class ControllerManager;
 
-static const String controllerTypeNames[] = { "OSC Direct","ScriptedOSC","OSC Custom","DMX","MIDI" };
+static const String controllerTypeNames[] = { "OSC Direct","ScriptedOSC","OSC Custom","DMX","MIDI","Serial" };
 
 class ControllerFactory
 {
@@ -33,6 +34,7 @@ public:
 		OSCCustom,
         DMX,
         MIDI,
+		SERIAL,
         UNKNOWN //has to be last
     };
 
@@ -68,6 +70,10 @@ public:
             case MIDI:
                 c = new MIDIController();
                 break;
+
+			case SERIAL:
+				c = new SerialController();
+				break;
 
             default:
                 jassert(false);

@@ -23,7 +23,6 @@ ControllableContainerPopupMenu::~ControllableContainerPopupMenu()
 {
 }
 
-
 void ControllableContainerPopupMenu::populateMenu(PopupMenu * subMenu, ControllableContainer * container, int &currentId)
 {
 	for (auto &c : container->controllables)

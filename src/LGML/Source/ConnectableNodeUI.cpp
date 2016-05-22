@@ -355,7 +355,6 @@ void ConnectableNodeUI::ConnectorContainer::resized()
 	r.removeFromTop(10);
 	for (auto &c : connectors)
 	{
-		DBG("Connector is Visible ? " << String(c->isVisible()));
 		if (!c->isVisible()) continue;
 
 		c->setBounds(r.removeFromTop(r.getWidth()));
