@@ -18,7 +18,6 @@ ControllerUI::ControllerUI(Controller * controller) :
 	addMouseListener(this, true);
 
 	nameTF = controller->nameParam->createStringParameterUI();
-	nameTF->setNameLabelVisible(false);
 	addAndMakeVisible(nameTF);
 
 	enabledBT = controller->enabledParam->createToggle();

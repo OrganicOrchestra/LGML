@@ -193,14 +193,14 @@ void CCInnerContainer::addControllableUI(Controllable * c)
 {
 	if (c->isControllableFeedbackOnly || !c->isControllableExposed) return;
 
-	ControllableUI * cui = c->createDefaultUI();
+	NamedControllableUI * cui = new NamedControllableUI(c->createDefaultUI(), 100);
 	controllablesUI.add(cui);
 	addAndMakeVisible(cui);
 }
 
 void CCInnerContainer::removeControllableUI(Controllable * c)
 {
-	ControllableUI * cui = getUIForControllable(c);
+	NamedControllableUI * cui = getUIForControllable(c);
 	if (cui == nullptr) return;
 
 	removeChildComponent(cui);
@@ -208,7 +208,7 @@ void CCInnerContainer::removeControllableUI(Controllable * c)
 
 }
 
-ControllableUI * CCInnerContainer::getUIForControllable(Controllable * c)
+NamedControllableUI * CCInnerContainer::getUIForControllable(Controllable * c)
 {
 	for (auto &cui : controllablesUI)
 	{

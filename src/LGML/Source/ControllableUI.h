@@ -38,7 +38,8 @@ protected :
 
 //    this class allow to automaticly generate label / ui element for parameter listing in editor
 //    it owns the created component
-class NamedControllableUI : public ControllableUI{
+class NamedControllableUI : public ControllableUI
+{
 public:
     NamedControllableUI(ControllableUI * ui,int _labelWidth):
     ControllableUI(ui->controllable),
@@ -60,6 +61,7 @@ public:
     void resized()override{
         Rectangle<int> area  = getLocalBounds();
         controllableLabel.setBounds(area.removeFromLeft(labelWidth));
+		area.removeFromLeft(10);
         ownedControllableUI->setBounds(area);
     }
     Label controllableLabel;

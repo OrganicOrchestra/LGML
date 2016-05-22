@@ -51,6 +51,8 @@ ConnectableNodeUI * ContainerInNode::createUI()
 
 void ContainerInNode::onContainerParameterChanged(Parameter * p)
 {
+	NodeBase::onContainerParameterChanged(p);
+
 	if (p == numInputChannels)
 	{
 		setNumAudioChannels(p->intValue());

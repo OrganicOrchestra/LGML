@@ -24,7 +24,6 @@ ControlVariableReferenceUI::ControlVariableReferenceUI(ControlVariableReference 
 	addAndMakeVisible(aliasUI);
 	addAndMakeVisible(&chooseBT);
 
-	aliasUI->setNameLabelVisible(false);
 	chooseBT.addListener(this);
 
 	cvr->addReferenceListener(this);

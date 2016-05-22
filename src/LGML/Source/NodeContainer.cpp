@@ -277,6 +277,16 @@ void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float 
     rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, this, rmsInValue, rmsOutValue);
 }
 
+void NodeContainer::onContainerParameterChanged(Parameter * p)
+{
+	ConnectableNode::onContainerParameterChanged(p);
+	if (p == enabledParam)
+	{
+		if (containerInNode != nullptr) containerInNode->enabledParam->setValue(enabledParam->boolValue());
+		if (containerOutNode != nullptr) containerOutNode->enabledParam->setValue(enabledParam->boolValue());
+	}
+}
+
 ConnectableNodeUI * NodeContainer::createUI()
 {
 	return new NodeContainerUI(this);

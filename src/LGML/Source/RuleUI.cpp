@@ -21,7 +21,6 @@ RuleUI::RuleUI(Rule * _rule) :
 
 	enabledBT = rule->enabledParam->createToggle();
 	nameTF = rule->nameParam->createStringParameterUI();
-	nameTF->setNameLabelVisible(false);
 
 	addAndMakeVisible(enabledBT);
 	addAndMakeVisible(nameTF);

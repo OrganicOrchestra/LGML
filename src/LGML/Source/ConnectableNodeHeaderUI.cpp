@@ -72,7 +72,6 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
     }
 
 	titleUI = node->nameParam->createStringParameterUI();
-    titleUI->setNameLabelVisible(false);
     addAndMakeVisible(titleUI);
 
     enabledUI = node->enabledParam->createToggle();

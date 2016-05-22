@@ -80,7 +80,7 @@ bool ConnectableNode::hasDataOutputs()
 }
 
 
-void ConnectableNode::parameterValueChanged(Parameter * p)
+void ConnectableNode::onContainerParameterChanged(Parameter * p)
 {
 	if (p == nameParam)
 	{
@@ -89,9 +89,6 @@ void ConnectableNode::parameterValueChanged(Parameter * p)
 	else if (p == enabledParam)
 	{
 		nodeListeners.call(&ConnectableNodeListener::nodeEnableChanged, this);
-	}
-	else {
-		ControllableContainer::parameterValueChanged(p);
 	}
 }
 

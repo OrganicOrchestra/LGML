@@ -10,7 +10,7 @@
 namespace BinaryData
 {
     extern const char*   default_lgmllayout;
-    const int            default_lgmllayoutSize = 2319;
+    const int            default_lgmllayoutSize = 2422;
 
     extern const char*   removeBT_png;
     const int            removeBT_pngSize = 58335;

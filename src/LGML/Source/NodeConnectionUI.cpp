@@ -137,6 +137,9 @@ void NodeConnectionUI::buildPath()
 		{
 			float cy2 = (float)getSecondConnector()->getBounds().getCentreY();
 			limitY2 = endPos.y + (!pathGoUp ? -cy2 - 10 : getSecondConnector()->getParentComponent()->getHeight() - cy2 + 10);
+		} else
+		{
+			limitY2 += pathGoUp ? 30 : -30;
 		}
 
 		destMidY = jlimit<float>(jmin<float>(limitY1, limitY2), jmax<float>(limitY1, limitY2), destMidY);

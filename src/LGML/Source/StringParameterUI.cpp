@@ -17,7 +17,7 @@ StringParameterUI::StringParameterUI(Parameter * p) :
 {
 
     addChildComponent(nameLabel);
-    setNameLabelVisible(true);
+    setNameLabelVisible(false);
     addAndMakeVisible(valueLabel);
 
     nameLabel.setJustificationType(Justification::topLeft);

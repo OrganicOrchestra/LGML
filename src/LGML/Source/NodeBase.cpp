@@ -55,9 +55,9 @@ bool NodeBase::hasDataOutputs()
 }
 
 
-void NodeBase::parameterValueChanged(Parameter * p)
+void NodeBase::onContainerParameterChanged(Parameter * p)
 {
-	ConnectableNode::parameterValueChanged(p);
+	ConnectableNode::onContainerParameterChanged(p);
 
 	if (p == enabledParam)
 	{

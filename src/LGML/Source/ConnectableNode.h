@@ -51,7 +51,7 @@ public:
 	void loadJSONDataInternal(var data) override;
 
 
-	void parameterValueChanged(Parameter * p) override;
+	void onContainerParameterChanged(Parameter * p) override;
 
 	//ui
 	virtual ConnectableNodeUI *  createUI();

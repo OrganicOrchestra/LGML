@@ -47,7 +47,7 @@ public:
 
 	virtual String getPresetFilter() override;
 
-	void parameterValueChanged(Parameter * p) override;
+	void onContainerParameterChanged(Parameter * p) override;
 
 	virtual void clear() override;
 

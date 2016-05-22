@@ -13,11 +13,14 @@
 
 #include "InspectorEditor.h"
 #include "ControllableContainer.h"
-
+#include "ControllableUI.h"
 
 class GenericControllableContainerEditor;
 
-class CCInnerContainer : public Component, public ControllableContainerListener, public ButtonListener
+class CCInnerContainer : 
+	public Component, 
+	public ControllableContainerListener, 
+	public ButtonListener
 {
 public:
 	class CCLinkBT : public TextButton
@@ -34,7 +37,7 @@ public:
 	Label containerLabel;
 
 	ControllableContainer * container;
-	OwnedArray<ControllableUI> controllablesUI;
+	OwnedArray<NamedControllableUI> controllablesUI;
 	OwnedArray<CCInnerContainer> innerContainers;
 	OwnedArray<CCLinkBT> lowerContainerLinks;
 
@@ -60,7 +63,7 @@ public:
 
 	int getContentHeight();
 
-	ControllableUI * getUIForControllable(Controllable * c);
+	NamedControllableUI * getUIForControllable(Controllable * c);
 	CCInnerContainer * getInnerContainerForCC(ControllableContainer * cc);
 	CCLinkBT * getCCLinkForCC(ControllableContainer * cc);
 

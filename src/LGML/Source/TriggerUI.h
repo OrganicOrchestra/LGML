@@ -21,6 +21,7 @@ public :
     virtual ~TriggerUI();
 
     Trigger*  trigger;
+	bool showLabel;
 
     // Inherited via Listener
     virtual void triggerTriggered(Trigger * p) override;

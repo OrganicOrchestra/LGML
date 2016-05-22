@@ -174,14 +174,14 @@ public:
     double targetCPU;
     double adaptationSpeed;
     int iterationCount;
-    virtual void audioDeviceIOCallback (const float** inputChannelData,
-                                        int numInputChannels,
-                                        float** outputChannelData,
-                                        int numOutputChannels,
-                                        int numSamples) {
+    virtual void audioDeviceIOCallback (const float** /*inputChannelData*/,
+                                        int /*numInputChannels*/,
+                                        float** /*outputChannelData*/,
+                                        int /*numOutputChannels*/,
+                                        int /*numSamples*/) {
 
         double currentCPU = manager->getCpuUsage()*100.0;
-        iterationCount += adaptationSpeed* (targetCPU -currentCPU);
+        iterationCount += (int)(adaptationSpeed* (targetCPU -currentCPU));
         iterationCount = jmax(0,iterationCount);
 //        DBG(iterationCount);
         uint64  i = 0 ;
@@ -197,8 +197,8 @@ public:
             j*=2;
             j/=3;
         }
-    }
-    virtual void audioDeviceAboutToStart (AudioIODevice* device) {}
+    } 
+    virtual void audioDeviceAboutToStart (AudioIODevice* /*device*/) {}
 
     /** Called to indicate that the device has stopped. */
     virtual void audioDeviceStopped() {}

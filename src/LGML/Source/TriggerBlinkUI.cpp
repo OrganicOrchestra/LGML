@@ -47,8 +47,7 @@ void TriggerBlinkUI::paint(Graphics& g)
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
     g.setFont(10);
     g.setColour(Colours::white.darker(.1f));
-    g.drawText(trigger->niceName, getLocalBounds().reduced(2).toFloat(), Justification::centred);
-
+    if(showLabel) g.drawFittedText(trigger->niceName, getLocalBounds().reduced(2), Justification::centred,1);
 }
 
 

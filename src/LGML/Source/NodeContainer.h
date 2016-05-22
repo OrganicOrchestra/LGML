@@ -100,6 +100,7 @@ public:
 	// Inherited via RMSListener
 	virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) override;
 
+	virtual void onContainerParameterChanged(Parameter * p) override;
 
 	virtual ConnectableNodeUI * createUI() override;
 

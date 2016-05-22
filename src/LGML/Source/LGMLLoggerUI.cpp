@@ -36,8 +36,6 @@ void LGMLLoggerUI::newMessage(const String & s)
 	totalLogRow += el->getNumLines();
 
 
-	//@martin problems here
-
 	//bool overFlow = false;
 
 	while (totalLogRow > maxNumElement) {
@@ -53,15 +51,17 @@ void LGMLLoggerUI::newMessage(const String & s)
 
 };
 void LGMLLoggerUI::handleAsyncUpdate(){
+	DBG("Handle Async Update");
     logListComponent->updateContent();
     logListComponent->scrollToEnsureRowIsOnscreen(totalLogRow-1);
+	repaint();
 }
 
 LGMLLoggerUI::LGMLLoggerUI(const String &contentName, LGMLLogger * l) :
 	logger(l),
 	ShapeShifterContent(contentName),
 	logList(this),
-	maxNumElement(500),
+	maxNumElement(20),
 	totalLogRow(0)
 {
 	logger->addLogListener(this);
