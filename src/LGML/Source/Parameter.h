@@ -88,6 +88,10 @@ public:
 
 private:
 
+
+
+    void checkVarIsConsistentWithType();
+
     WeakReference<Parameter>::Master masterReference;
     friend class WeakReference<Parameter>;
 

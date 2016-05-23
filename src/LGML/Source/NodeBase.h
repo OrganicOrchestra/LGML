@@ -47,7 +47,11 @@ public:
 
 	virtual String getPresetFilter() override;
 
+//  TODO:  this should not be implemented in Node to avoid overriding this method
+//    create onNodeParameterChanged();
 	void onContainerParameterChanged(Parameter * p) override;
+public:
+
 
 	virtual void clear() override;
 

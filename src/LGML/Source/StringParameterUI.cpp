@@ -101,5 +101,6 @@ void StringParameterUI::valueChanged(const var & v)
 
 void StringParameterUI::labelTextChanged(Label *)
 {
-    parameter->setValue(valueLabel.getText().removeCharacters(prefix).removeCharacters(suffix));
+    String  originalString =valueLabel.getText().removeCharacters(prefix).removeCharacters(suffix);
+    parameter->setValue(originalString);
 }

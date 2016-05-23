@@ -39,6 +39,7 @@ DummyNode::DummyNode() :
 
  void DummyNode::onContainerParameterChanged(Parameter * p)
  {
+         NodeBase::onContainerParameterChanged(p);
      if (p == freq1Param)
      {
          //       ((DummyAudioProcessor*)audioProcessor)->amp = p->getNormalizedValue();

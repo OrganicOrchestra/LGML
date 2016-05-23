@@ -26,10 +26,6 @@ LGMLLoggerUI.cpp
 		//
 		//	}
 
-	line : 38
-		//@martin problems here
-		//bool overFlow = false;
-
 
 VuMeter.h
 	line : 15
@@ -44,15 +40,10 @@ ControllableContainer.cpp
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
 
-VSTNode.cpp
-	line : 97
-		// TODO check that it actually works
-
-	line : 114
-		//@Martin i addedd this because when not playing, it crashed
-		// @ben it is necessary
-		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
-		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
+NodeBase.h
+	line : 49
+		//  TODO:  this should not be implemented in Node to avoid overriding this method
+		//    create onNodeParameterChanged();
 
 
 LooperNode.cpp
@@ -103,11 +94,11 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 312
+	line : 337
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
-	line : 187
+	line : 190
 		// TODO nicely handle file format errors?
 
 
@@ -119,6 +110,17 @@ TimeManager.h
 JavascriptControllerUI.cpp
 	line : 14
 		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
+
+
+VSTNode.cpp
+	line : 98
+		// TODO check that it actually works
+
+	line : 115
+		//@Martin i addedd this because when not playing, it crashed
+		// @ben it is necessary
+		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
+		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
 
 
 NodeBase.cpp
