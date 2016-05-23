@@ -58,6 +58,9 @@ void SerialController::buildLocalEnv() {
 void SerialController::portOpened(SerialPort *)
 {
 	serialControllerListeners.call(&SerialControllerListener::portOpened);
+
+	//tmp
+	port->writeString("i");
 }
 
 void SerialController::portClosed(SerialPort *)
@@ -68,6 +71,11 @@ void SerialController::portClosed(SerialPort *)
 void SerialController::portRemoved(SerialPort *)
 {
 	setCurrentPort(nullptr);
+}
+
+void SerialController::serialDataReceived(const var & data)
+{
+	DBG("Data received in controller : " << data.toString());
 }
 
 var SerialController::sendMessageFromScript(const var::NativeFunctionArgs &) {

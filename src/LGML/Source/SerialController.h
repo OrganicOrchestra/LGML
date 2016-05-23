@@ -39,6 +39,7 @@ public:
 	virtual void portOpened(SerialPort *) override;
 	virtual void portClosed(SerialPort *) override;
 	virtual void portRemoved(SerialPort *) override;
+	virtual void serialDataReceived(const var &data) override;
 
 	ControllerUI * createUI() override;
 
@@ -55,8 +56,6 @@ public:
 	ListenerList<SerialControllerListener> serialControllerListeners;
 	void addSerialControllerListener(SerialControllerListener* newListener) { serialControllerListeners.add(newListener); }
 	void removeSerialControllerListener(SerialControllerListener* listener) { serialControllerListeners.remove(listener); }
-
-
 
 
 	// Inherited via SerialManagerListener

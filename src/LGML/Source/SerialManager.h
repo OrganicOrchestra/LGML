@@ -13,8 +13,36 @@
 
 #include "JuceHeader.h"
 #include "serial/serial.h"
+#include "QueuedNotifier.h"
 
 using namespace serial;
+
+class SerialPort;
+
+class SerialReadThread :
+	public Thread
+{
+public:
+
+	SerialReadThread(String name, SerialPort * _port);
+	virtual ~SerialReadThread();
+
+	SerialPort * port;
+	bool shouldExit;
+
+	virtual void run() override;
+
+	
+
+	// ASYNC
+	QueuedNotifier<var> queuedNotifier;
+	typedef QueuedNotifier<var>::Listener AsyncListener;
+
+	void addAsyncSerialListener(AsyncListener* newListener) { queuedNotifier.addListener(newListener); }
+	//void addAsyncCoalescedListener(AsyncListener* newListener) { queuedNotifier.addAsyncCoalescedListener(newListener); }
+	void removeAsyncSerialListener(AsyncListener* listener) { queuedNotifier.removeListener(listener); }
+
+};
 
 class SerialPortInfo
 {
@@ -28,21 +56,34 @@ public:
 	String port;
 	String description;
 	String hardwareID;
+	
+	
 };
 
-class SerialPort
+class SerialPort : public SerialReadThread::AsyncListener
 {
 public:
-	SerialPort(Serial *port,SerialPortInfo * info);
+	SerialReadThread thread;
+
+	enum PortMode { LINES, DATA255, RAW, COBS };
+	
+	SerialPort(Serial *port, SerialPortInfo * info, PortMode mode = LINES);
 	virtual ~SerialPort();
 
 	SerialPortInfo * info;
 	ScopedPointer<Serial> port;
-
+	PortMode mode;
+	
 	void open();
 	void close();
 
 	bool isOpen();
+
+	//write functions
+	int writeString(String message, bool endLine = true);
+	int writeBytes(Array<uint8_t> data);
+
+	virtual void newMessage(const var &data) override;;
 
 	class SerialPortListener
 	{
@@ -52,7 +93,8 @@ public:
 		//serial data here
 		virtual void portOpened(SerialPort  *) {};
 		virtual void portClosed(SerialPort  *) {};
-		virtual void portRemoved(SerialPort *) {}
+		virtual void portRemoved(SerialPort *) {};
+		virtual void serialDataReceived(const var &) {};
 	};
 
 	ListenerList<SerialPortListener> listeners;
@@ -60,7 +102,8 @@ public:
 	void removeSerialPortListener(SerialPortListener* listener);
 };
 
-class SerialManager : public Timer
+class SerialManager : 
+	public Timer
 {
 public:
 	juce_DeclareSingleton(SerialManager, true);
