@@ -14,68 +14,14 @@
 
 #include "JuceHeader.h"
 
-/*
- helper class for bipartite buffer
- allowing having constant access to contiguous memory in a circular buffer
- */
-class BipBuffer{
 
-public:
-    BipBuffer(int size){
-        phantomSize = size;
-        buf.setSize(1,3*size);
-        writeNeedle = 0;
-    }
-
-    void writeBlock(AudioSampleBuffer & newBuf){
-
-        buf.setSize(newBuf.getNumChannels(),buf.getNumSamples());
-
-
-        int toCopy = newBuf.getNumSamples();
-
-        if( phantomSize+writeNeedle + toCopy > 3*phantomSize){
-            int firstSeg = 3*phantomSize-(phantomSize+writeNeedle) ;
-            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-                safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
-            }
-            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-                safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
-            }
-        }
-        else{
-            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-                safeCopy(newBuf.getReadPointer(i),toCopy,i);
-            }
-        }
-    }
-
-
-    const float* getLastBlock(int num,int channel=0){
-        jassert(num<phantomSize);
-        return buf.getReadPointer(channel, phantomSize + writeNeedle - num);
-    }
-
-    AudioSampleBuffer buf;
-private:
-    void safeCopy(const float * b,int s,int channel){
-        buf.copyFrom(channel, phantomSize+writeNeedle, b, s);
-
-        if(writeNeedle>2*phantomSize){
-            buf.copyFrom(channel, writeNeedle-2*phantomSize,b,s);
-        }
-        writeNeedle+=s;
-        writeNeedle%=2*phantomSize;
-
-    }
-    int writeNeedle;
-    int phantomSize;
-
-
-
-
+inline float float01ToGain(float f){
+    return Decibels::decibelsToGain(jmap<float>(f,0.8f,1.0f,0.0f,6.0f));
 };
 
+inline float rmsToGain01(float rms){
+        return jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,0.8f,1.0f);
+}
 
 class RingBuffer{
 public:
@@ -204,6 +150,9 @@ public:
     virtual void audioDeviceStopped() {}
 };
 
+
+
+
 //==============================================================================
 //==============================================================================
 #if LGML_UNIT_TESTS
@@ -276,6 +225,68 @@ static RingBufferTest ringBufferTest;
 
 #endif
 
-
+//not used atm
+/*
+ helper class for bipartite buffer
+ allowing having constant access to contiguous memory in a circular buffer
+ */
+//class BipBuffer{
+//
+//public:
+//    BipBuffer(int size){
+//        phantomSize = size;
+//        buf.setSize(1,3*size);
+//        writeNeedle = 0;
+//    }
+//
+//    void writeBlock(AudioSampleBuffer & newBuf){
+//
+//        buf.setSize(newBuf.getNumChannels(),buf.getNumSamples());
+//
+//
+//        int toCopy = newBuf.getNumSamples();
+//
+//        if( phantomSize+writeNeedle + toCopy > 3*phantomSize){
+//            int firstSeg = 3*phantomSize-(phantomSize+writeNeedle) ;
+//            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
+//                safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
+//            }
+//            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
+//                safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
+//            }
+//        }
+//        else{
+//            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
+//                safeCopy(newBuf.getReadPointer(i),toCopy,i);
+//            }
+//        }
+//    }
+//
+//
+//    const float* getLastBlock(int num,int channel=0){
+//        jassert(num<phantomSize);
+//        return buf.getReadPointer(channel, phantomSize + writeNeedle - num);
+//    }
+//
+//    AudioSampleBuffer buf;
+//private:
+//    void safeCopy(const float * b,int s,int channel){
+//        buf.copyFrom(channel, phantomSize+writeNeedle, b, s);
+//
+//        if(writeNeedle>2*phantomSize){
+//            buf.copyFrom(channel, writeNeedle-2*phantomSize,b,s);
+//        }
+//        writeNeedle+=s;
+//        writeNeedle%=2*phantomSize;
+//
+//    }
+//    int writeNeedle;
+//    int phantomSize;
+//    
+//    
+//    
+//    
+//};
+//
 
 #endif  // AUDIOHELPERS_H_INCLUDED

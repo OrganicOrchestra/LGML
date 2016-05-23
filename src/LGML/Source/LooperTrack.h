@@ -46,6 +46,7 @@ public:
     Trigger * stopTrig;
     StringParameter  * stateParameterString;
     FloatParameter * volume;
+    float logVolume;
     BoolParameter * mute;
     BoolParameter * solo;
 
