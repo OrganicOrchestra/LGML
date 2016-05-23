@@ -41,13 +41,14 @@ NodeConnection::~NodeConnection()
     }
 
     dataConnections.clear();
-    if(sourceNode->type!=NodeType::ContainerType){
-        ((NodeBase*)sourceNode)->removeNodeBaseListener(this);
+	if (sourceNode->type != NodeType::ContainerType && dynamic_cast<NodeBase *>(sourceNode) != nullptr)
+	{
+		((NodeBase*)sourceNode)->removeNodeBaseListener(this);
     }
 
     sourceNode = nullptr;
 
-    if(destNode->type!=NodeType::ContainerType ){
+    if(destNode->type!=NodeType::ContainerType && dynamic_cast<NodeBase *>(destNode) != nullptr){
         ((NodeBase*)destNode)->removeNodeBaseListener(this);
     }
     destNode = nullptr;

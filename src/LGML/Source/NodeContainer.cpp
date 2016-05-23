@@ -28,19 +28,26 @@ NodeContainer::NodeContainer(const String &name) :
 
 NodeContainer::~NodeContainer()
 {
+	//connections.clear();
 	clear(false);
 }
 
 void NodeContainer::clear(bool recreateContainerNodes)
 {
 
+	while (connections.size() > 0)
+	{
+		connections[0]->remove();
+	}
+
 	while (nodes.size() > 0)
 	{
 		nodes[0]->remove();
 	}
 
-	connections.clear();
+	//connections.clear();
 
+	
 	containerInNode = nullptr;
 	containerOutNode = nullptr;
 
@@ -61,6 +68,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 		addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
 	}
 
+	ConnectableNode::clear();
 }
 
 
