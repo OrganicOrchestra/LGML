@@ -62,6 +62,8 @@ public:
 
     // Inherited via Listeners
 	virtual void nodeEnableChanged(ConnectableNode *) override;
+	virtual void nodeBypassChanged(ConnectableNode *) override;
+
     virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
 	virtual void buttonClicked(Button *) override;
 	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;

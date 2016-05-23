@@ -63,6 +63,7 @@ public:
 		virtual ~ConnectableNodeListener() {}
 		virtual void askForRemoveNode(ConnectableNode *) {}
 		virtual void nodeEnableChanged(ConnectableNode *) {}
+		virtual void nodeBypassChanged(ConnectableNode *) {}
 	};
 
 	ListenerList<ConnectableNodeListener> nodeListeners;

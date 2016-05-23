@@ -150,7 +150,7 @@ public :
 	{
 		DBG("Reconstruct");
 		reconstructViewerPath();
-		nmui->setBounds(getLocalBounds());
+		//nmui->setBounds(getLocalBounds().withTop(30));
 		resized();
 	}
 

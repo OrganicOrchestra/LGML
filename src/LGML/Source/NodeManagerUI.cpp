@@ -35,13 +35,12 @@ void NodeManagerUI::clear()
 
 void NodeManagerUI::resized()
 {
-	/*
+	
 	Rectangle<int> r = getLocalBounds();
 	if (currentViewer != nullptr)
 	{
-		currentViewer->setBounds(r);
+		currentViewer->setSize(jmax<int>(getWidth(), currentViewer->getWidth()), jmax<int>(getHeight(), currentViewer->getHeight()));
 	}
-	*/
 }
 
 int NodeManagerUI::getContentWidth()
@@ -73,7 +72,9 @@ void NodeManagerUI::setCurrentViewedContainer(NodeContainer * c)
 	{
 		currentViewer = new NodeContainerViewer(c);
 		addAndMakeVisible(currentViewer);
+		
 	}
+	setSize(0, 0);
 	resized();
 	nodeManagerUIListeners.call(&NodeManagerUIListener::currentViewedContainerChanged);
 }

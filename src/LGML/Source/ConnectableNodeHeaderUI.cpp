@@ -197,6 +197,13 @@ void ConnectableNodeHeaderUI::nodeEnableChanged(ConnectableNode *)
 	repaint();
 }
 
+void ConnectableNodeHeaderUI::nodeBypassChanged(ConnectableNode *)
+{
+	Colour c =  node->bypass->boolValue() ? Colours::orangered : Colours::lightgreen;
+	vuMeterIn.colorLow = c;
+	vuMeterOut.colorLow = c;
+}
+
 void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
 {
     DBG("Combobox ! " << cb->getSelectedId());

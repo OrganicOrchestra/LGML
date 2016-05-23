@@ -89,6 +89,9 @@ void ConnectableNode::onContainerParameterChanged(Parameter * p)
 	else if (p == enabledParam)
 	{
 		nodeListeners.call(&ConnectableNodeListener::nodeEnableChanged, this);
+	} else if (p == bypass)
+	{
+		nodeListeners.call(&ConnectableNodeListener::nodeBypassChanged, this);
 	}
 }
 

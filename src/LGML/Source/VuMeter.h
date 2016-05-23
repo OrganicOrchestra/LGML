@@ -23,6 +23,8 @@ public:
 	Type type;
 
     bool volChanged;
+	Colour colorHigh;
+	Colour colorLow;
 
     VuMeter(Type _type) : type(_type)
 	{
@@ -30,6 +32,8 @@ public:
         voldB = 0.f;
         volChanged = true;
         startTimer(1000/40);
+		colorHigh = Colours::red;
+		colorLow = Colours::lightgreen;
     }
 
     ~VuMeter(){
@@ -43,7 +47,7 @@ public:
         g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
         if (voldB > 0)
         {
-            g.setGradientFill(ColourGradient(Colours::lightgreen, 0.f, getHeight()*.5f, Colours::red, 0.f, getHeight()*0.1f, false));
+            g.setGradientFill(ColourGradient(colorLow, 0.f, getHeight()*.5f, colorHigh, 0.f, getHeight()*0.1f, false));
             g.fillRoundedRectangle(getLocalBounds().removeFromBottom((int)(getHeight()*(voldB))).toFloat(), 2.f);
         }
     }
