@@ -121,6 +121,12 @@ public :
 		resized();
 	}
 
+	void paint(Graphics &g) override
+	{
+		g.setColour(BG_COLOR.darker(.2f));
+		g.fillRect(getLocalBounds().removeFromTop(30));
+	}
+
     void resized() override{
 		Rectangle<int> r = getLocalBounds();
 
@@ -136,8 +142,8 @@ public :
 
 		vp.setBounds(r);
 		nmui->setBounds(r);
-		nmui->setSize(nmui->getContentWidth() == 0?getWidth():nmui->getContentWidth(),
-					  nmui->getContentHeight() == 0?getHeight():nmui->getContentHeight());
+		nmui->setSize(nmui->getContentWidth() == 0?r.getWidth():nmui->getContentWidth(),
+					  nmui->getContentHeight() == 0?r.getHeight():nmui->getContentHeight());
 
     }
 

@@ -73,12 +73,14 @@ void NodeConnectionUI::paint (Graphics& g)
 		if (!isAudio && connection->dataConnections.size() == 0) baseColor = NORMAL_COLOR;
 	}
 
+	//g.setColour(Colours::yellow.withAlpha(.8f));
+	//g.strokePath(hitPath, PathStrokeType(2.f));
+
 	if (isMouseOver()) baseColor = Colours::red;
 	if (candidateDropConnector != nullptr) baseColor = Colours::yellow;
 	if (isSelected) baseColor = HIGHLIGHT_COLOR;
     g.setColour(baseColor);
-    g.strokePath(path, PathStrokeType(2.0f));
-
+	g.strokePath(path, PathStrokeType(2.0f));
 }
 
 void NodeConnectionUI::resized()
@@ -111,6 +113,8 @@ void NodeConnectionUI::buildPath()
 		endPos = getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre()).toFloat();
 	}
 
+	Array<Point<float>> hitPoints;
+
 	//NORMAL CURVE
 	if (sourcePos.x < endPos.x - 20)
 	{
@@ -120,6 +124,11 @@ void NodeConnectionUI::buildPath()
 		path.startNewSubPath(sourcePos.x, sourcePos.y);
 		path.cubicTo(sourcePos.translated(txDist,0), endPos.translated(-txDist,0),endPos);
 
+		int numPoints = 10;
+		for (int i = 0; i <= numPoints; i++)
+		{
+			hitPoints.add(path.getPointAlongPath(path.getLength()*i / numPoints));
+		}
 	} else
 	{
 		Path p;
@@ -156,7 +165,55 @@ void NodeConnectionUI::buildPath()
 		p.lineTo(endPos);
 
 		path.addPath(p.createPathWithRoundedCorners(20));
+
+		hitPoints.add(sourcePos);
+		hitPoints.addArray(points);
+		hitPoints.add(endPos);
 	}
+
+	buildHitPath(hitPoints);
+}
+
+void NodeConnectionUI::buildHitPath(Array<Point<float>> points)
+{
+	int margin = 10;
+
+	hitPath.clear();
+	Array<Point<float>> firstPoints;
+	Array<Point<float>> secondPoints;
+	int numPoints = points.size();
+	for (int i = 0; i < numPoints; i++)
+	{
+		Point<float> tp;
+		Point<float> sp;
+		if (i == 0 || i == numPoints - 1)
+		{
+			tp = points[i].translated(0,-margin);
+			sp = points[i].translated(0, margin);
+		} else
+		{
+			float angle1 = points[i].getAngleToPoint(points[i - 1]);
+			float angle2 = points[i].getAngleToPoint(points[i + 1]);
+			if (angle1 < 0) angle1 += float_Pi * 2;
+			if (angle2 < 0) angle2 += float_Pi * 2;
+			
+			float angle = (angle1 + angle2) / 2.f;
+			
+			if (angle1 < angle2) angle += float_Pi;
+			DBG("Point " << i << ", angle : " << angle << " >>  " << String(angle1>angle2));
+
+			tp = points[i].getPointOnCircumference(margin, angle + float_Pi);
+			sp = points[i].getPointOnCircumference(margin, angle);
+		}
+
+		firstPoints.add(tp);
+		secondPoints.insert(0,sp);
+	}
+
+	hitPath.startNewSubPath(firstPoints[0]);
+	for (int i = 1; i < firstPoints.size(); i++) hitPath.lineTo(firstPoints[i]);
+	for (int i = 0; i < secondPoints.size(); i++) hitPath.lineTo(secondPoints[i]);
+	hitPath.closeSubPath();
 }
 
 

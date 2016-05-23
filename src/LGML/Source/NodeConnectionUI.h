@@ -44,16 +44,16 @@ public:
 
 
     Path path;
+	Path hitPath;
 
     void paint(Graphics&)override;
     void resized()override;
 
 	void buildPath();
-
-    void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
+	void buildHitPath(Array<Point<float>> points);
 
     void updateBoundsFromNodes();
-    virtual bool hitTest(int x, int y) override{ return path.contains((float)x, (float)y,10); }
+    virtual bool hitTest(int x, int y) override{ return hitPath.contains((float)x, (float)y); }
 
     //interaction
     void mouseDown(const MouseEvent &e) override;
@@ -62,6 +62,8 @@ public:
 	bool keyPressed(const KeyPress &key) override;
 	void focusGained(FocusChangeType) override { DBG("Focus Gained"); }
 	void focusLost(FocusChangeType) override { DBG("Focus Lost"); }
+
+	void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
 
 	Connector* getBaseConnector()
     {

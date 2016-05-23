@@ -177,6 +177,9 @@ void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
 
 	Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
 	Point <int> newPos = nodeInitPos + diff;
+	newPos.x = jmax<int>(newPos.x, 0);
+	newPos.y = jmax<int>(newPos.y, 60); //find a way to top to 0
+
 	connectableNode->xPosition->setValue((float)newPos.x);
 	connectableNode->yPosition->setValue((float)newPos.y);
 }
