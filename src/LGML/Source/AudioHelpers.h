@@ -197,7 +197,7 @@ public:
             j*=2;
             j/=3;
         }
-    } 
+    }
     virtual void audioDeviceAboutToStart (AudioIODevice* /*device*/) {}
 
     /** Called to indicate that the device has stopped. */

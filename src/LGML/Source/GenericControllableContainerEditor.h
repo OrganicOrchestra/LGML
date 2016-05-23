@@ -17,9 +17,9 @@
 
 class GenericControllableContainerEditor;
 
-class CCInnerContainer : 
-	public Component, 
-	public ControllableContainerListener, 
+class CCInnerContainer :
+	public Component,
+	public ControllableContainerListener,
 	public ButtonListener
 {
 public:

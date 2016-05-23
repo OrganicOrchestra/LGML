@@ -314,14 +314,14 @@ Serial::SerialImpl::available ()
   return static_cast<size_t>(cs.cbInQue);
 }
 
-#pragma warning( disable : 4702 ) 
+#pragma warning( disable : 4702 )
 bool
 Serial::SerialImpl::waitReadable (uint32_t /*timeout*/)
 {
   THROW (IOException, "waitReadable is not implemented on Windows.");
   return false;
 }
-#pragma warning( disable : 4702 ) 
+#pragma warning( disable : 4702 )
 
 void
 Serial::SerialImpl::waitByteTimes (size_t /*count*/)
@@ -639,4 +639,3 @@ Serial::SerialImpl::writeUnlock()
 }
 
 #endif // #if defined(_WIN32)
-

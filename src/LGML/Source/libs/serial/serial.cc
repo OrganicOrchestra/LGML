@@ -157,7 +157,7 @@ Serial::read (size_t size)
   return buffer;
 }
 
-#pragma warning( disable : 4127 ) 
+#pragma warning( disable : 4127 )
 size_t
 Serial::readline (string &buffer, size_t size, string eol)
 {
@@ -184,7 +184,7 @@ Serial::readline (string &buffer, size_t size, string eol)
   buffer.append(reinterpret_cast<const char*> (buffer_), read_so_far);
   return read_so_far;
 }
-#pragma warning( default : 4127 ) 
+#pragma warning( default : 4127 )
 
 string
 Serial::readline (size_t size, string eol)

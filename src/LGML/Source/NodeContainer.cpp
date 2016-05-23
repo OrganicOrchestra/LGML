@@ -178,8 +178,8 @@ void NodeContainer::loadJSONDataInternal(var data)
 	{
 		for (var &cData : *connectionsData)
 		{
-            NodeBase * srcNode = (NodeBase *)getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString());
-			NodeBase * dstNode = (NodeBase *)getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString());
+            NodeBase * srcNode = dynamic_cast<NodeBase*>(getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString())) ;
+			NodeBase * dstNode = dynamic_cast<NodeBase*>(getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString()));
 
 			int cType = cData.getProperty("connectionType", var());
 

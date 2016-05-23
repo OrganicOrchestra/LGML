@@ -92,4 +92,3 @@ void SerialController::portAdded(SerialPortInfo * info)
 void SerialController::portRemoved(SerialPortInfo *)
 {
 }
-

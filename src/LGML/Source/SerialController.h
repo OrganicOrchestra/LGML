@@ -12,13 +12,13 @@
 #define SERIALCONTROLLER_H_INCLUDED
 
 #include "SerialManager.h"
-#include "Controller.h" 
+#include "Controller.h"
 #include "JsEnvironment.h"
 
 class ControllerUI;
 
 
-class SerialController : public Controller, public JsEnvironment, 
+class SerialController : public Controller, public JsEnvironment,
 	public SerialPort::SerialPortListener,
 	public SerialManager::SerialManagerListener
 {
@@ -35,7 +35,7 @@ public:
 	static var sendMessageFromScript(const var::NativeFunctionArgs & v);
 
 	// Inherited via SerialPortListener
-	
+
 	virtual void portOpened(SerialPort *) override;
 	virtual void portClosed(SerialPort *) override;
 	virtual void portRemoved(SerialPort *) override;

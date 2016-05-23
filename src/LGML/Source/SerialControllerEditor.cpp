@@ -16,8 +16,8 @@ SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI
 {
 	addAndMakeVisible(deviceChooser);
 	deviceChooser.addListener(this);
-	
-	
+
+
 
 	addAndMakeVisible(&connectPortBT);
 	connectPortBT.addListener(this);

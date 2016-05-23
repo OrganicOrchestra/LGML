@@ -30,7 +30,7 @@ void SerialDeviceChooser::fillDeviceList()
 	int menuIndex = 2;
 
 	int newSelectedId = 1;
-	
+
 	for (auto &pi : SerialManager::getInstance()->portInfos)
 	{
 		if (pi->description == currentSelected) newSelectedId = menuIndex;

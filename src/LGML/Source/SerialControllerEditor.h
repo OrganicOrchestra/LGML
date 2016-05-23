@@ -17,7 +17,7 @@
 #include "SerialUIHelper.h"
 #include "JsEnvironmentUI.h"
 
-class SerialControllerEditor : 
+class SerialControllerEditor :
 	public CustomEditor, ComboBoxListener,
 	public SerialController::SerialControllerListener,
 	public ButtonListener
