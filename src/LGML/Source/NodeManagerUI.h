@@ -141,9 +141,8 @@ public :
 		r.removeFromTop(2);
 
 		vp.setBounds(r);
-		nmui->setBounds(r);
-		nmui->setSize(nmui->getContentWidth() == 0?r.getWidth():nmui->getContentWidth(),
-					  nmui->getContentHeight() == 0?r.getHeight():nmui->getContentHeight());
+		nmui->setTopLeftPosition(r.getTopLeft());
+		nmui->setSize(jmax<int>(r.getWidth(), nmui->getContentWidth()), jmax<int>(r.getHeight(), nmui->getContentHeight()));
 
     }
 
@@ -151,6 +150,8 @@ public :
 	{
 		DBG("Reconstruct");
 		reconstructViewerPath();
+		nmui->setBounds(getLocalBounds());
+		resized();
 	}
 
 	void buttonClicked(Button * b)override

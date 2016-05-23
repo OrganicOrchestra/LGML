@@ -31,6 +31,8 @@ NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 	{
 		addConnectionUI(c);
 	}
+
+	resizeToFitNodes();
 }
 
 NodeContainerViewer::~NodeContainerViewer()
@@ -57,6 +59,7 @@ void NodeContainerViewer::clear()
 	{
 		removeNodeUI(nodesUI[0]->connectableNode);
 	}
+
 }
 
 void NodeContainerViewer::resized()

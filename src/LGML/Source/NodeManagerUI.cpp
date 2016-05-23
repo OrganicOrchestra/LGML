@@ -35,11 +35,13 @@ void NodeManagerUI::clear()
 
 void NodeManagerUI::resized()
 {
+	/*
 	Rectangle<int> r = getLocalBounds();
 	if (currentViewer != nullptr)
 	{
 		currentViewer->setBounds(r);
 	}
+	*/
 }
 
 int NodeManagerUI::getContentWidth()

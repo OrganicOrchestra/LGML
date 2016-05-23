@@ -100,8 +100,8 @@ void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window, bool doR
 	DBG("Remove Window");
 	if (window == nullptr) return;
 	ShapeShifterPanel * p = window->panel;
-	if (doRemovePanel) removePanel(p); 
 	window->removeFromDesktop();
+	if (doRemovePanel) removePanel(p);
 	openedWindows.removeObject(window, true);
 	
 }
