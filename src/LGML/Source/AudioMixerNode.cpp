@@ -26,6 +26,7 @@ AudioMixerNode::AudioMixerNode() :
 
 
 void AudioMixerNode::onContainerParameterChanged(Parameter *p){
+        NodeBase::onContainerParameterChanged(p);
     if(p == numberOfInput){
         updateInput();
     }

@@ -113,7 +113,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             playNeedle %= recordNeedle;
         }
 
-        float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : volume->floatValue();
+        float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume;
         // fade out on buffer_stop (clear or stop)
         if((lastInternalTrackState == BUFFER_PLAYING ) && (internalTrackState==BUFFER_STOPPED) ){
             newVolume = 0;
@@ -302,6 +302,7 @@ void LooperTrack::onContainerParameterChanged(Parameter * p)
     if (p == volume)
     {
         if (parentLooper->selectedTrack == this) parentLooper->volumeSelected->setValue(volume->floatValue());
+        logVolume = float01ToGain(volume->value);
     }
     if(p==solo){
         someOneIsSolo = false;

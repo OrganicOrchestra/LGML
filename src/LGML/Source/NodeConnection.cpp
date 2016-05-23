@@ -11,7 +11,7 @@
 #include "NodeConnection.h"
 #include "NodeManager.h"
 
-NodeConnection::NodeConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType) :
+NodeConnection::NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType) :
 sourceNode(sourceNode),
 destNode(destNode),
 connectionType(connectionType)
@@ -24,21 +24,32 @@ connectionType(connectionType)
             addAudioGraphConnection(i, i);
         }
     }
+    if(sourceNode->type!=NodeType::ContainerType){
+        ((NodeBase*)sourceNode)->addNodeBaseListener(this);
+    }
 
-	sourceNode->addNodeBaseListener(this);
-	destNode->addNodeBaseListener(this);
+    if(destNode->type!=NodeType::ContainerType){
+        ((NodeBase*)destNode)->addNodeBaseListener(this);
+    }
+
 }
 
 NodeConnection::~NodeConnection()
 {
     if(connectionType==AUDIO){
-		removeAllAudioGraphConnections();
-	}
+        removeAllAudioGraphConnections();
+    }
 
     dataConnections.clear();
-	sourceNode->removeNodeBaseListener(this);
+    if(sourceNode->type!=NodeType::ContainerType){
+        ((NodeBase*)sourceNode)->removeNodeBaseListener(this);
+    }
+
     sourceNode = nullptr;
-	destNode->removeNodeBaseListener(this);
+
+    if(destNode->type!=NodeType::ContainerType ){
+        ((NodeBase*)destNode)->removeNodeBaseListener(this);
+    }
     destNode = nullptr;
 }
 
@@ -53,7 +64,7 @@ void NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destCh
 void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
     AudioConnection ac = AudioConnection(sourceChannel, destChannel);
-	if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
+    if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
     audioConnections.removeAllInstancesOf(ac);
     listeners.call(&Listener::connectionAudioLinkRemoved, ac);
 
@@ -71,16 +82,16 @@ void NodeConnection::removeAllAudioGraphConnections()
 
 void NodeConnection::removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel)
 {
-	Array<AudioConnection> connectionsToRemove;
+    Array<AudioConnection> connectionsToRemove;
 
-	for (auto c : audioConnections) {
-		if ((isSourceChannel && c.first == channel) || (!isSourceChannel && c.second == channel))
-		{
-			connectionsToRemove.add(c);
-		}
-	}
+    for (auto c : audioConnections) {
+        if ((isSourceChannel && c.first == channel) || (!isSourceChannel && c.second == channel))
+        {
+            connectionsToRemove.add(c);
+        }
+    }
 
-	for(auto &tc : connectionsToRemove) removeAudioGraphConnection(tc.first, tc.second);
+    for(auto &tc : connectionsToRemove) removeAudioGraphConnection(tc.first, tc.second);
 
 
 }
@@ -96,35 +107,35 @@ void NodeConnection::removeDataGraphConnection(Data * sourceData, Data * destDat
 {
     DataProcessorGraph::Connection * c = NodeManager::getInstance()->dataGraph.getConnectionBetween(sourceData, destData);
     dataConnections.removeAllInstancesOf(c);
-	 listeners.call(&Listener::connectionDataLinkRemoved, c);
-	 NodeManager::getInstance()->dataGraph.removeConnection(c);
+    listeners.call(&Listener::connectionDataLinkRemoved, c);
+    NodeManager::getInstance()->dataGraph.removeConnection(c);
 
 }
 
 void NodeConnection::removeAllDataGraphConnections()
 {
     while(dataConnections.size() > 0)
-	{
+    {
         removeDataGraphConnection(dataConnections[0]->sourceData,dataConnections[0]->destData);
     }
 
-	//useless ?
+    //useless ?
     dataConnections.clear();
 }
 
 
 void NodeConnection::removeAllDataGraphConnectionsForData(Data * data, bool isSourceData)
 {
-	Array<DataProcessorGraph::Connection *> connectionsToRemove;
+    Array<DataProcessorGraph::Connection *> connectionsToRemove;
 
-	for (auto &c : dataConnections) {
-		if ((isSourceData && c->sourceData == data) || (!isSourceData && c->destData == data))
-		{
-			connectionsToRemove.add(c);
-		}
-	}
+    for (auto &c : dataConnections) {
+        if ((isSourceData && c->sourceData == data) || (!isSourceData && c->destData == data))
+        {
+            connectionsToRemove.add(c);
+        }
+    }
 
-	for(auto &tc : connectionsToRemove) removeDataGraphConnection(tc->sourceData, tc->destData);
+    for(auto &tc : connectionsToRemove) removeDataGraphConnection(tc->sourceData, tc->destData);
 
 }
 
@@ -137,50 +148,50 @@ void NodeConnection::remove()
 
 void NodeConnection::audioInputRemoved(NodeBase * n, int channel)
 {
-	if (n == destNode)
-	{
-		removeAllAudioGraphConnectionsForChannel(channel, false);
-		if (n->getTotalNumInputChannels() == 0) remove();
-	}
+    if (n == destNode)
+    {
+        removeAllAudioGraphConnectionsForChannel(channel, false);
+        if (n->getTotalNumInputChannels() == 0) remove();
+    }
 }
 
 void NodeConnection::audioOutputRemoved(NodeBase * n, int channel)
 {
-	if (n == sourceNode)
-	{
-		removeAllAudioGraphConnectionsForChannel(channel, true);
-		if (n->getTotalNumOutputChannels() == 0) remove();
-	}
+    if (n == sourceNode)
+    {
+        removeAllAudioGraphConnectionsForChannel(channel, true);
+        if (n->getTotalNumOutputChannels() == 0) remove();
+    }
 }
 
 
 void NodeConnection::dataInputRemoved(NodeBase * n, Data * d)
 {
-	if (n == destNode)
-	{
-		removeAllDataGraphConnectionsForData(d, false);
-		if (n->getTotalNumInputData() == 0) remove();
-	}
+    if (n == destNode)
+    {
+        removeAllDataGraphConnectionsForData(d, false);
+        if (n->getTotalNumInputData() == 0) remove();
+    }
 }
 
 void NodeConnection::dataOutputRemoved(NodeBase * n , Data * d)
 {
-	if (n == sourceNode)
-	{
-		removeAllDataGraphConnectionsForData(d, true);
-		if (n->getTotalNumOutputData() == 0) remove();
-	}
+    if (n == sourceNode)
+    {
+        removeAllDataGraphConnectionsForData(d, true);
+        if (n->getTotalNumOutputData() == 0) remove();
+    }
 }
 
 var NodeConnection::getJSONData()
 {
     var data(new DynamicObject());
 
-	ConnectableNode * tSource = sourceNode;
-	if (sourceNode->type == ContainerOutType) tSource = ((ContainerOutNode *)sourceNode)->getParentNodeContainer();
+    ConnectableNode * tSource = sourceNode;
+    if (sourceNode->type == ContainerOutType) tSource = ((ContainerOutNode *)sourceNode)->getParentNodeContainer();
 
-	ConnectableNode * tDest = destNode;
-	if(destNode->type == ContainerInType) tDest = ((ContainerInNode *)destNode)->getParentNodeContainer();
+    ConnectableNode * tDest = destNode;
+    if(destNode->type == ContainerInType) tDest = ((ContainerInNode *)destNode)->getParentNodeContainer();
 
     data.getDynamicObject()->setProperty("srcNode", tSource->shortName);
     data.getDynamicObject()->setProperty("dstNode", tDest->shortName);

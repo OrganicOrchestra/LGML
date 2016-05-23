@@ -6,7 +6,7 @@ import urllib;
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = True
+bumpVersion = False
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
 
@@ -14,8 +14,8 @@ specificVersion = ""#0.1.1"
 
 
 
-localExportPath = "../Builds/MacOSX/builds/"
-localExportPath = os.path.abspath(localExportPath)
+localExportPath = "../Builds/MacOSX/build/"
+localExportPath = os.path.abspath(localExportPath)+"/"
 
 proJucerPath = "/Applications/ProJucer.app/Contents/MacOS/ProJucer"
 JuceProjectPath = "../LGML.jucer"

@@ -242,6 +242,7 @@ void LooperNode::selectMe(LooperTrack * t) {
 }
 
 void LooperNode::onContainerParameterChanged(Parameter * p) {
+    NodeBase::onContainerParameterChanged(p);
     if (p == numberOfTracks) {
         trackGroup.setNumTracks(numberOfTracks->value);
     }

@@ -25,6 +25,7 @@ DataInNode::~DataInNode()
 
 void DataInNode::onContainerParameterChanged(Parameter * p)
 {
+        NodeBase::onContainerParameterChanged(p);
   updateOutputData(p->niceName, p->getNormalizedValue());
 }
 

@@ -13,6 +13,8 @@
 #include "NodeConnection.h"
 #include "NodeContainerUI.h"
 
+
+#include "DebugHelpers.h"
 NodeContainer::NodeContainer(const String &name) :
 	parentNodeContainer(nullptr),
 	containerInNode(nullptr),
@@ -167,6 +169,7 @@ void NodeContainer::loadJSONDataInternal(var data)
 		else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
 
 		node->loadJSONData(nData);
+
 	}
 
 	Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
@@ -175,8 +178,9 @@ void NodeContainer::loadJSONDataInternal(var data)
 	{
 		for (var &cData : *connectionsData)
 		{
-			NodeBase * srcNode = (NodeBase *)getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString());
-			NodeBase * dstNode = (NodeBase *)getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString());
+
+            ConnectableNode * srcNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString())) ;
+			ConnectableNode * dstNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString()));
 
 			int cType = cData.getProperty("connectionType", var());
 
@@ -186,6 +190,18 @@ void NodeContainer::loadJSONDataInternal(var data)
 			}
 			else {
 				// TODO nicely handle file format errors?
+
+                if(srcNode==nullptr){
+                    NLOG("loadJSON","no srcnode for shortName : "+cData.getDynamicObject()->getProperty("srcNode").toString());
+                }
+                if(dstNode==nullptr){
+                    NLOG("loadJSON","no dstnode for shortName : "+cData.getDynamicObject()->getProperty("dstNode").toString());
+                }
+                LOG("Available Nodes in "+ shortName+" : ");
+                for (auto &node : nodes)
+                {
+                    DBG(node->niceName+"//"+ node->shortName);
+                }
 				jassertfalse;
 			}
 		}
@@ -223,7 +239,7 @@ Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode *
 	return result;
 }
 
-NodeConnection * NodeContainer::addConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType)
+NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
 	if (getConnectionBetweenNodes(sourceNode, destNode, connectionType) != nullptr)
 	{

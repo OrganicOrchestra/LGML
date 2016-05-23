@@ -41,6 +41,7 @@ void VSTNode::closePluginWindow(){
 }
 
 void VSTNode::onContainerParameterChanged(Parameter * p) {
+    NodeBase::onContainerParameterChanged(p);
     if(p==identifierString){
         if(identifierString->value!=""){
             PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);

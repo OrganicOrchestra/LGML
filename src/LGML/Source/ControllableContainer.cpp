@@ -13,7 +13,7 @@
 
 #include "ControllableUI.h"
 
-
+#include "DebugHelpers.h"
 
 
 const Identifier ControllableContainer::presetIdentifier("preset");
@@ -444,7 +444,7 @@ var ControllableContainer::getJSONData()
     var paramsData;
 
 
-	Array<Controllable *> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
+    Array<Controllable *> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
 
     for (auto &c : cont) {
         Parameter * base = dynamic_cast<Parameter*>(c);
@@ -480,30 +480,32 @@ void ControllableContainer::loadJSONData(var data)
 {
 
 
-	if (data.getDynamicObject()->hasProperty(presetIdentifier))
-	{
-		loadPreset(PresetManager::getInstance()->getPreset(getPresetFilter(), data.getDynamicObject()->getProperty("preset")));
-	}
+    if (data.getDynamicObject()->hasProperty(presetIdentifier))
+    {
+        loadPreset(PresetManager::getInstance()->getPreset(getPresetFilter(), data.getDynamicObject()->getProperty("preset")));
+    }
 
-	Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();
+    Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();
 
-	if (paramsData != nullptr)
-	{
-		for (var &pData : *paramsData)
-		{
-			String pControlAddress = pData.getDynamicObject()->getProperty(controlAddressIdentifier);
+    if (paramsData != nullptr)
+    {
+        for (var &pData : *paramsData)
+        {
+            String pControlAddress = pData.getDynamicObject()->getProperty(controlAddressIdentifier);
 
-			Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
+            Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
 
-			if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-				p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
-			}
-			else {
-				DBG("NodeBase::loadJSONData -> other Controllable than Parameters?");
-				jassertfalse;
-			}
-		}
-	}
+            if (Parameter * p = dynamic_cast<Parameter*>(c)) {
+                p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
+            }
+            else {
+                NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
+
+            }
+        }
+    }
+
+
 
 
     loadJSONDataInternal(data);
