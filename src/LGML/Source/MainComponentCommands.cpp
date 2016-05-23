@@ -184,17 +184,36 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
 
         case CommandIDs::newFile:
-            engine->createNewGraph();
-
+		{
+			int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before creating a new one ?");
+			if (result != 0)
+			{
+				if (result == 1) engine->save(true, true);
+				engine->createNewGraph();
+			}
+		}
             break;
 
         case CommandIDs::open:
-            engine->loadFromUserSpecifiedFile (true);
-
+		{
+			int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before opening a new one ?");
+			if (result != 0)
+			{
+				if (result == 1) engine->save(true, true);
+				engine->loadFromUserSpecifiedFile(true);
+			}
+		}
             break;
 
         case CommandIDs::openLastDocument:
-            engine->loadDocument(engine->getLastDocumentOpened());
+		{
+			int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before opening the last one ?");
+			if (result != 0)
+			{
+				if (result == 1) engine->save(true, true);
+				engine->loadDocument(engine->getLastDocumentOpened());
+			}
+		}
             break;
 
         case CommandIDs::save:
