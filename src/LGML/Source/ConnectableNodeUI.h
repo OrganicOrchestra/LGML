@@ -22,7 +22,7 @@
 
 class ConnectableNodeUI :
 	public InspectableComponent,
-	public Parameter::Listener
+	public ConnectableNode::ConnectableNodeListener
 {
 public:
 	ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeContentUI * contentUI = nullptr, ConnectableNodeHeaderUI * headerUI = nullptr);
@@ -127,7 +127,7 @@ public:
 
 
 	void childBoundsChanged(Component*)override;
-	void parameterValueChanged(Parameter * p) override;
+	void nodeParameterChanged(ConnectableNode*, Parameter * p) override;
 
 
 	void mouseDown(const MouseEvent &e) override;

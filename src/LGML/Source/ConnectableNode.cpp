@@ -26,6 +26,7 @@
 	  enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
 	  xPosition = addFloatParameter("xPosition", "x position on canvas", 0, 0, 99999);
 	  yPosition = addFloatParameter("yPosition", "y position on canvas", 0, 0, 99999);
+	  miniMode = addBoolParameter("miniMode", "Mini Mode", false);
 
 	  xPosition->isControllableExposed = false;
 	  yPosition->isControllableExposed = false;
@@ -86,13 +87,8 @@ void ConnectableNode::onContainerParameterChanged(Parameter * p)
 	{
 		setNiceName(nameParam->stringValue());
 	}
-	else if (p == enabledParam)
-	{
-		nodeListeners.call(&ConnectableNodeListener::nodeEnableChanged, this);
-	} else if (p == bypass)
-	{
-		nodeListeners.call(&ConnectableNodeListener::nodeBypassChanged, this);
-	}
+
+	nodeListeners.call(&ConnectableNodeListener::nodeParameterChanged, this, p);
 }
 
 ConnectableNodeUI * ConnectableNode::createUI()

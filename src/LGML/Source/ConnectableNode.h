@@ -40,8 +40,11 @@ public:
 	//Controllables (from ControllableContainer)
 	StringParameter * nameParam;
 	BoolParameter * enabledParam;
+
+	//ui params
 	FloatParameter * xPosition;
 	FloatParameter * yPosition;
+	BoolParameter * miniMode;
 
 	void remove(bool askBeforeRemove = false);
 
@@ -62,8 +65,7 @@ public:
 	public:
 		virtual ~ConnectableNodeListener() {}
 		virtual void askForRemoveNode(ConnectableNode *) {}
-		virtual void nodeEnableChanged(ConnectableNode *) {}
-		virtual void nodeBypassChanged(ConnectableNode *) {}
+		virtual void nodeParameterChanged(ConnectableNode *,Parameter *) {}
 	};
 
 	ListenerList<ConnectableNodeListener> nodeListeners;

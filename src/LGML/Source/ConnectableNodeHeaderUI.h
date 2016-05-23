@@ -61,8 +61,7 @@ public:
 	virtual void setMiniMode(bool value);
 
     // Inherited via Listeners
-	virtual void nodeEnableChanged(ConnectableNode *) override;
-	virtual void nodeBypassChanged(ConnectableNode *) override;
+	virtual void nodeParameterChanged(ConnectableNode *,Parameter *) override;
 
     virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
 	virtual void buttonClicked(Button *) override;

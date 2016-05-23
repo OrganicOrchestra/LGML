@@ -32,7 +32,4 @@ node(_node)
 
 NodeBaseUI::~NodeBaseUI()
 {
-	node->xPosition->removeParameterListener(this);
-	node->yPosition->removeParameterListener(this);
-	node->enabledParam->removeParameterListener(this);
 }

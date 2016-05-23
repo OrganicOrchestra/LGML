@@ -48,20 +48,18 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 	 mainContainer.setNodeAndNodeUI(connectableNode, this);
 	 if (getWidth() == 0 || getHeight() == 0) setSize(180, 100);
 
-	 connectableNode->xPosition->addParameterListener(this);
-	 connectableNode->yPosition->addParameterListener(this);
+	 connectableNode->addNodeListener(this);
 	 connectableNode->xPosition->hideInEditor = true;
 	 connectableNode->yPosition->hideInEditor = true;
+	 //connectableNode->miniMode->hideInEditor = true;
 
-	 connectableNode->enabledParam->addParameterListener(this);
-
+	 setMiniMode(connectableNode->miniMode->boolValue());
 }
 
 ConnectableNodeUI::~ConnectableNodeUI()
 {
-	connectableNode->xPosition->removeParameterListener(this);
-	connectableNode->yPosition->removeParameterListener(this);
-	connectableNode->enabledParam->removeParameterListener(this);
+
+	connectableNode->removeNodeListener(this);
 }
 
 
@@ -119,14 +117,17 @@ void ConnectableNodeUI::resized()
 	mainContainer.setBounds(r);
 }
 
-void ConnectableNodeUI::parameterValueChanged(Parameter * p) {
-
+void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
+{
 	if (p == connectableNode->xPosition || p == connectableNode->yPosition) {
 		setCentrePosition((int)connectableNode->xPosition->value, (int)connectableNode->yPosition->value);
 	}
 	else if (p == connectableNode->enabledParam)
 	{
 		mainContainer.repaint();
+	} else if (p == connectableNode->miniMode)
+	{
+		setMiniMode(connectableNode->miniMode->boolValue());
 	}
 }
 
@@ -144,7 +145,6 @@ void ConnectableNodeUI::childBoundsChanged(Component* c) {
 		}
 	}
 }
-
 
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
 void ConnectableNodeUI::mouseDown(const juce::MouseEvent &e)

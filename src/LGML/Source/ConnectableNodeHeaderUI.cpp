@@ -186,22 +186,23 @@ void ConnectableNodeHeaderUI::setMiniMode(bool value)
 	}
 }
 
-
-void ConnectableNodeHeaderUI::nodeEnableChanged(ConnectableNode *)
+void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter *p)
 {
-	if (!node->enabledParam->boolValue())
+	if (p == node->enabledParam)
 	{
-		vuMeterOut.setVoldB(0);
+		if (!node->enabledParam->boolValue())
+		{
+			vuMeterOut.setVoldB(0);
 
-	}
-	repaint();
-}
+		}
+		repaint();
+	}else if (p == node->bypass)
+	{
+		Colour c = node->bypass->boolValue() ? Colours::orangered : Colours::lightgreen;
+		vuMeterIn.colorLow = c;
+		vuMeterOut.colorLow = c;
+	} 
 
-void ConnectableNodeHeaderUI::nodeBypassChanged(ConnectableNode *)
-{
-	Colour c =  node->bypass->boolValue() ? Colours::orangered : Colours::lightgreen;
-	vuMeterIn.colorLow = c;
-	vuMeterOut.colorLow = c;
 }
 
 void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
@@ -259,7 +260,7 @@ void ConnectableNodeHeaderUI::buttonClicked(Button * b)
 	} else if(b == &miniModeBT)
 	{
 		DBG("HERE");
-		nodeUI->setMiniMode(!nodeUI->miniMode);
+		node->miniMode->setValue(!node->miniMode->boolValue());
 	}
 }
 
