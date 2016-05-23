@@ -98,10 +98,12 @@ ShapeShifterWindow * ShapeShifterManager::showPanelWindowForContent(PanelName pa
 void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window, bool doRemovePanel)
 {
 	DBG("Remove Window");
+	if (window == nullptr) return;
+	ShapeShifterPanel * p = window->panel;
+	if (doRemovePanel) removePanel(p); 
 	window->removeFromDesktop();
-	if (doRemovePanel) removePanel(window->panel);
 	openedWindows.removeObject(window, true);
-
+	
 }
 
 ShapeShifterContent * ShapeShifterManager::getContentForName(PanelName contentName)
