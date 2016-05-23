@@ -31,15 +31,15 @@ public:
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }
     bool isData() { return connectionType == ConnectionType::DATA; }
 
-	NodeBase * sourceNode;
-	NodeBase * destNode;
+	ConnectableNode * sourceNode;
+	ConnectableNode * destNode;
 
     typedef std::pair<int,int> AudioConnection;
     Array<AudioConnection> audioConnections;
     Array<DataProcessorGraph::Connection *> dataConnections;
 
 
-    NodeConnection(NodeBase * sourceNode, NodeBase * destNode, ConnectionType connectionType);
+    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType);
     virtual ~NodeConnection();
 
     //Audio
