@@ -32,7 +32,6 @@ public :
 
 	void clear();
 
-	void paint(Graphics &g) override;
 	void resized() override;
 
 	// Inherited via NodeContainerListener

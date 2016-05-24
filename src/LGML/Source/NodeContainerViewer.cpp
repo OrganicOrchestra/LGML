@@ -33,6 +33,7 @@ NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 	}
 
 	resizeToFitNodes();
+
 }
 
 NodeContainerViewer::~NodeContainerViewer()
@@ -62,13 +63,10 @@ void NodeContainerViewer::clear()
 
 }
 
-void NodeContainerViewer::paint(Graphics & g)
-{
-
-}
 
 void NodeContainerViewer::resized()
 {
+	
 }
 
 void NodeContainerViewer::nodeAdded(ConnectableNode * node)
@@ -138,7 +136,6 @@ ConnectableNodeUI * NodeContainerViewer::getUIForNode(ConnectableNode * node)
 
 void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
 {
-	DBG("Add Connection UI !");
 
 	if (getUIForConnection(connection) != nullptr)
 	{

@@ -64,12 +64,10 @@ ConnectableNodeUI::~ConnectableNodeUI()
 
 
 
-void ConnectableNodeUI::moved() {
-
-	if (connectableNode->xPosition->intValue() != getBounds().getCentreX() || connectableNode->yPosition->intValue() != getBounds().getCentreY()) {
-		connectableNode->xPosition->setValue((float)getBounds().getCentreX());
-		connectableNode->yPosition->setValue((float)getBounds().getCentreY());
-	}
+void ConnectableNodeUI::moved()
+{
+	connectableNode->xPosition->setValue(getPosition().x,true);
+	connectableNode->yPosition->setValue(getPosition().y,true);
 }
 
 
@@ -100,6 +98,7 @@ void ConnectableNodeUI::paint(Graphics&)
 
 void ConnectableNodeUI::resized()
 {
+	
 	Rectangle<int> r = getLocalBounds();
 	Rectangle<int> inputBounds = r.removeFromLeft(connectorWidth);
 	Rectangle<int> outputBounds = r.removeFromRight(connectorWidth);
@@ -120,7 +119,7 @@ void ConnectableNodeUI::resized()
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
 	if (p == connectableNode->xPosition || p == connectableNode->yPosition) {
-		setCentrePosition((int)connectableNode->xPosition->value, (int)connectableNode->yPosition->value);
+		setTopLeftPosition(connectableNode->xPosition->intValue(), connectableNode->yPosition->intValue());
 	}
 	else if (p == connectableNode->enabledParam)
 	{
@@ -151,17 +150,7 @@ void ConnectableNodeUI::mouseDown(const juce::MouseEvent &e)
 {
 	if (e.eventComponent != &mainContainer.headerContainer->grabber) return;
 
-	nodeInitPos = getBounds().getCentre();
-
-	/*
-	// don't want to drag if over volume
-	if(ConnectableNodeAudioCtlUI * ctlUI = mainContainer.audioCtlUIContainer){
-	Point<int> mouse = getMouseXYRelative();
-	Component * found = getComponentAt(mouse.x,mouse.y);
-
-	dragIsLocked = (dynamic_cast<ConnectableNodeAudioCtlUI *>(found) == ctlUI);
-	}
-	*/
+	nodeInitPos = getBounds().getPosition();
 }
 #pragma warning( default : 4100 )
 
@@ -177,11 +166,10 @@ void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
 
 	Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
 	Point <int> newPos = nodeInitPos + diff;
-	newPos.x = jmax<int>(newPos.x, 0);
-	newPos.y = jmax<int>(newPos.y, 60); //find a way to top to 0
 
-	connectableNode->xPosition->setValue((float)newPos.x);
+	connectableNode->xPosition->setValue((float)newPos.x,true);
 	connectableNode->yPosition->setValue((float)newPos.y);
+	
 }
 
 bool ConnectableNodeUI::keyPressed(const KeyPress & key)

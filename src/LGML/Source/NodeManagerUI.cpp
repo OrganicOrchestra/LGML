@@ -39,6 +39,7 @@ void NodeManagerUI::resized()
 	Rectangle<int> r = getLocalBounds();
 	if (currentViewer != nullptr)
 	{
+		currentViewer->setTopLeftPosition(0, 0);
 		currentViewer->setSize(jmax<int>(getWidth(), currentViewer->getWidth()), jmax<int>(getHeight(), currentViewer->getHeight()));
 	}
 }
@@ -72,6 +73,7 @@ void NodeManagerUI::setCurrentViewedContainer(NodeContainer * c)
 	{
 		currentViewer = new NodeContainerViewer(c);
 		addAndMakeVisible(currentViewer);
+		currentViewer->setTopLeftPosition(0, 0);
 
 	}
 	setSize(0, 0);

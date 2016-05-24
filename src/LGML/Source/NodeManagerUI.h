@@ -128,6 +128,7 @@ public :
 	}
 
     void resized() override{
+
 		Rectangle<int> r = getLocalBounds();
 
 		Rectangle<int> buttonR = r.removeFromTop(30).reduced(5);
@@ -148,7 +149,6 @@ public :
 
 	void currentViewedContainerChanged()override
 	{
-		DBG("Reconstruct");
 		reconstructViewerPath();
 		//nmui->setBounds(getLocalBounds().withTop(30));
 		resized();
