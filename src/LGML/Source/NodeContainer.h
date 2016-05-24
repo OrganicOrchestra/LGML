@@ -52,7 +52,8 @@ public:
 
 	//Container nodes, not removable by user, handled separately
 	ContainerInNode * containerInNode;
-	ContainerOutNode * containerOutNode;
+    ContainerOutNode * containerOutNode;
+
 
 
 	//NODE AND CONNECTION MANAGEMENT
@@ -78,6 +79,13 @@ public:
 	int getNumConnections();
 
 	int getNumNodes() const noexcept { return nodes.size(); }
+
+    // called to bypass this container
+    void bypassNode(bool bypass);
+    // used for saving state when bypassed
+    OwnedArray<NodeConnection > containerInConnections;
+    OwnedArray<NodeConnection > containerOutConnections;
+
 
 	//Preset
 	virtual bool loadPreset(PresetManager::Preset * preset) override;

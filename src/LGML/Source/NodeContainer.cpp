@@ -363,8 +363,42 @@ void NodeContainer::onContainerParameterChanged(Parameter * p)
     ConnectableNode::onContainerParameterChanged(p);
     if (p == enabledParam)
     {
-        if (containerInNode != nullptr) containerInNode->enabledParam->setValue(enabledParam->boolValue());
-        if (containerOutNode != nullptr) containerOutNode->enabledParam->setValue(enabledParam->boolValue());
+
+        bypassNode(!enabledParam->boolValue());
+
+    }
+}
+void NodeContainer::bypassNode(bool bypass){
+    if(bypass){
+        jassert(containerInNode!=nullptr &&containerOutNode!=nullptr);
+//        save old ones
+        Array<NodeConnection*> connectionPointers;
+        connectionPointers = getAllConnectionsForNode(containerInNode);
+        containerInConnections.clear();
+        for(auto &c: connectionPointers){containerInConnections.add(new NodeConnection(c->sourceNode,c->destNode,c->connectionType));}
+        for(auto & c:connectionPointers){removeConnection(c);}
+
+
+        containerOutConnections.clear();
+        connectionPointers = getAllConnectionsForNode(containerOutNode);
+        for(auto &c: connectionPointers){containerOutConnections.add(new NodeConnection(c->sourceNode,c->destNode,c->connectionType));}
+        for(auto & c:connectionPointers){removeConnection(c);}
+        // add a pass-thru
+        addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::AUDIO);
+        addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::DATA);
+        }
+    else{
+        // remove pass thru
+        Array<NodeConnection * > bypassConnection = getAllConnectionsForNode(containerInNode);
+        jassert(bypassConnection.size()==2);
+        for(auto & c:bypassConnection) {removeConnection(c);}
+        bypassConnection = getAllConnectionsForNode(containerOutNode);
+        jassert(bypassConnection.size()==0);
+
+        for(auto & c:containerInConnections){addConnection(c->sourceNode, c->destNode, c->connectionType);}
+        for(auto & c:containerOutConnections){addConnection(c->sourceNode, c->destNode, c->connectionType);}
+        
+
     }
 }
 

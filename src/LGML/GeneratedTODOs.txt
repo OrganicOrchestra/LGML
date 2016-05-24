@@ -8,7 +8,7 @@
 
 
 NodeContainer.h
-	line : 63
+	line : 64
 		//@ben callNodeAdded allow caller to call it later when lode is fully modified (needed for valid uid when filling preset comboboxes
 
 
@@ -108,14 +108,14 @@ NodeContainer.cpp
 	line : 226
 		// TODO nicely handle file format errors?
 
-	line : 403
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
-
 	line : 269
 		// @ ben why??? name should be updated from loadJSONData
 		// it erase custom names
 		//	node->nameParam->setValue(newNodeName);
+
+	line : 437
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
 
 
 TimeManager.h
