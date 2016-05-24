@@ -201,7 +201,7 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
 		Colour c = node->bypass->boolValue() ? Colours::orangered : Colours::lightgreen;
 		vuMeterIn.colorLow = c;
 		vuMeterOut.colorLow = c;
-	} 
+	}
 
 }
 

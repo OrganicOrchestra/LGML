@@ -60,7 +60,7 @@ void TriggerBlinkUI::startBlink(){
 }
 
 void TriggerBlinkUI::timerCallback(){
-    
+
 	if (animateIntensity)
 	{
 		intensity -= refreshPeriod*1.0f / blinkTime;

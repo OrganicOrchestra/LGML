@@ -17,7 +17,7 @@
 
 class MIDIController;
 
-class MIDIControllerUI : public  ControllerUI, 
+class MIDIControllerUI : public  ControllerUI,
 	public MIDIListener::Listener
 {
 public:
@@ -25,7 +25,7 @@ public:
 	virtual ~MIDIControllerUI();
 
 	MIDIController * midiController;
-	
+
 
 	void currentDeviceChanged(MIDIListener *)override;
 

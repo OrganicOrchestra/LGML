@@ -94,11 +94,11 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 346
+	line : 354
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
-	line : 199
+	line : 207
 		// TODO nicely handle file format errors?
 
 

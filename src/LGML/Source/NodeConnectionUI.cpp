@@ -63,7 +63,7 @@ NodeConnectionUI::~NodeConnectionUI()
 void NodeConnectionUI::paint (Graphics& g)
 {
 
-	DBG("ConnectionUI paint");
+
 
 	bool isAudio = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO;
     Colour baseColor = isAudio ? AUDIO_COLOR : DATA_COLOR;

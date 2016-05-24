@@ -33,4 +33,3 @@ void MIDIControllerUI::currentDeviceChanged(MIDIListener *)
 {
 	//nameTF->setSuffix(" [" + midiController->midiPortName + "]");
 }
-

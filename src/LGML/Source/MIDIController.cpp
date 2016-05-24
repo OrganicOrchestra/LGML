@@ -70,7 +70,7 @@ void MIDIController::buildLocalEnv(){
     DynamicObject obj;
     static const Identifier jsSendCCIdentifier("sendCC");
     obj.setMethod(jsSendCCIdentifier, sendCC);
-    obj.setProperty(jsPtrIdentifier, this);
+    obj.setProperty(jsPtrIdentifier, (int64)this);
 
     static const Identifier jsSendNoteOnForIdentifier("sendNoteOnFor");
     obj.setMethod(jsSendNoteOnForIdentifier, sendNoteOnFor);
