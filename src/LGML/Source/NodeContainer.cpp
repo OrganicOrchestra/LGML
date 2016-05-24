@@ -91,8 +91,6 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
 
     n->addNodeListener(this);
     String targetName = (nodeName.isNotEmpty())?nodeName:n->nameParam->stringValue();
-
-    DBG("Target Name for new node :" << targetName);
     n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
     addChildControllableContainer(n); //ControllableContainer
@@ -245,12 +243,24 @@ void NodeContainer::loadJSONDataInternal(var data)
     removeIllegalConnections();
 }
 
-ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData, const String &baseName)
+ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
 {
-    NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
+	Array<var> * params = nodeData.getDynamicObject()->getProperty("parameters").getArray();
+	String sourceName = "";
+	for (auto &v : *params)
+	{
 
-    ConnectableNode * node = addNode(nodeType, baseName,false);
-//    String newNodeName = node->niceName;
+		if (v.getDynamicObject()->getProperty("controlAddress") == "/name")
+		{
+			sourceName = v.getDynamicObject()->getProperty("value").toString();
+			break;
+		}
+	}
+
+	
+	NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
+    ConnectableNode * node = addNode(nodeType, sourceName,false);
+    String safeNodeName = node->niceName;
 
     if (node->type == NodeType::ContainerInType)
     {
@@ -262,14 +272,11 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData, const String &bas
         containerOutNode->addRMSListener(this);
     }
 
-    // @ben
+    
     node->loadJSONData(nodeData);
+	node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
 
-    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
-
-    // @ ben why??? name should be updated from loadJSONData
-    // it erase custom names
-    //	node->nameParam->setValue(newNodeName);
+    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);	
 
     return node;
 
@@ -281,10 +288,9 @@ NodeConnection * NodeContainer::getConnectionBetweenNodes(ConnectableNode * sour
     ConnectableNode * tSourceNode = (sourceNode->type == ContainerType) ? ((NodeContainer *)sourceNode)->containerOutNode : sourceNode;
     ConnectableNode * tDestNode = (destNode->type == ContainerType) ? ((NodeContainer *)destNode)->containerInNode : destNode;
 
-    for (int i = connections.size(); --i >= 0;)
-    {
-        NodeConnection * c = connections.getUnchecked(i);
-        if (c->sourceNode == tSourceNode && c->destNode == tDestNode && c->connectionType == connectionType) return c;
+    for(auto &c: connections)
+	{
+		if (c->sourceNode == tSourceNode && c->destNode == tDestNode && c->connectionType == connectionType) return c;
     }
 
     return nullptr;

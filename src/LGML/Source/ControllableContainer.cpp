@@ -531,12 +531,27 @@ void ControllableContainer::childStructureChanged(ControllableContainer *)
 String ControllableContainer::getUniqueNameInContainer(const String & sourceName, int suffix)
 {
     String resultName = sourceName;
-    if (suffix > 0) resultName += " " + String(suffix);
+	if (suffix > 0)
+	{
+		StringArray sa;
+		sa.addTokens(resultName,false);
+		if (sa.size() > 1 && (sa[sa.size()-1].getIntValue() != 0 || sa[sa.size()-1].containsOnly("0")))
+		{
+			int num = sa[sa.size() - 1].getIntValue() + suffix;
+			sa.remove(sa.size() - 1);
+			sa.add(String(num));
+			resultName = sa.joinIntoString(" ");
+		} else
+		{
+			resultName += " " + String(suffix);
+		}
+	}
 
     if (getControllableByName(resultName,true) != nullptr)
     {
         return getUniqueNameInContainer(sourceName, suffix + 1);
     }
+
     if (getControllableContainerByName(resultName,true) != nullptr)
     {
         return getUniqueNameInContainer(sourceName, suffix + 1);
