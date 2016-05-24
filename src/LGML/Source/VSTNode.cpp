@@ -216,7 +216,7 @@ void VSTNode::loadPresetInternal(PresetManager::Preset * preset){
     jassert(v.isUndefined() || v.isString());
     MemoryBlock m;
     m.fromBase64Encoding(v.toString());
-    setStateInformation(m.getData(), m.getSize());
+    setStateInformation(m.getData(),(int)m.getSize());
 
 
 };

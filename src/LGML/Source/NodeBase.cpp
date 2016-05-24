@@ -60,10 +60,13 @@ void NodeBase::onContainerParameterChanged(Parameter * p)
 {
 	ConnectableNode::onContainerParameterChanged(p);
 
+	//ENABLE PARAM ACT AS A BYPASS
+	/*
 	if (p == enabledParam)
 	{
 		suspendProcessing(!enabledParam->boolValue());
 	}
+	*/
 }
 
 void NodeBase::clear()
@@ -169,7 +172,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
 	if (!isSuspended())
 	{
-		if (!hasMainAudioControl || (hasMainAudioControl && !bypass->boolValue()) ){
+		if (!hasMainAudioControl || (hasMainAudioControl && enabledParam->boolValue()) ){
 			processBlockInternal(buffer, midiMessages);
             if(hasMainAudioControl){
                 buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
@@ -465,7 +468,7 @@ Data * NodeBase::getInputDataByName(const String & dataName)
 
 void NodeBase::dataChanged(Data * d)
 {
-	if (enabled) {
+	if (enabledParam->boolValue()) {
 		processInputDataChanged(d);
 	}
 }

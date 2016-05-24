@@ -24,7 +24,7 @@
   {
 	  //set Params
 	  nameParam = addStringParameter("Name", "Set the name of the node.", name);
-	  enabledParam = addBoolParameter("Enabled", "Set whether the node is enabled or disabled", true);
+	  enabledParam = addBoolParameter("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
 	  xPosition = addFloatParameter("xPosition", "x position on canvas", 0, 0, 99999);
 	  yPosition = addFloatParameter("yPosition", "y position on canvas", 0, 0, 99999);
 	  miniMode = addBoolParameter("miniMode", "Mini Mode", false);
@@ -40,7 +40,7 @@
 	  //Audio
       if(hasMainAudioControl){
 		  outputVolume = addFloatParameter("masterVolume", "master volume for this node", 1.);
-		  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
+		//  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
 	}
 
 	  /*

@@ -31,7 +31,7 @@ public:
     void resized() override;
 
     ScopedPointer<FloatSliderUI>  outputVolume;
-    ScopedPointer<BoolToggleUI>  bypassUI;
+    //ScopedPointer<BoolToggleUI>  bypassUI;
 
 
 

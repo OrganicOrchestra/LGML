@@ -195,12 +195,17 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
 			vuMeterOut.setVoldB(0);
 
 		}
-		repaint();
-	}else if (p == node->bypass)
-	{
-		Colour c = node->bypass->boolValue() ? Colours::orangered : Colours::lightgreen;
+		
+		
+		Colour c = !node->enabledParam->boolValue() ? Colour(0xff3cacd5) : Colours::lightgreen;
+		Colour c2 = !node->enabledParam->boolValue() ? Colours::blue.brighter(.6f) : Colours::red;
 		vuMeterIn.colorLow = c;
 		vuMeterOut.colorLow = c;
+		vuMeterIn.colorHigh = c2;
+		vuMeterOut.colorHigh = c2;
+
+		repaint();
+
 	}
 
 }

@@ -508,8 +508,7 @@ void ControllableContainer::loadJSONData(var data)
                 p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
             }
             else {
-                NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
-
+                NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);	
             }
         }
     }

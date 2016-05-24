@@ -84,7 +84,7 @@ public:
 	bool hasMainAudioControl;
 
 	FloatParameter * outputVolume;
-	BoolParameter * bypass;
+	//BoolParameter * bypass;
 	StringArray inputChannelNames;
 	StringArray outputChannelNames;
 

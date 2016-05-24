@@ -16,13 +16,16 @@
 #include "ConnectableNode.h"
 #include "ConnectableNodeUI.h"
 
-ConnectableNodeAudioCtlUI::ConnectableNodeAudioCtlUI():outputVolume(nullptr),bypassUI(nullptr){
+ConnectableNodeAudioCtlUI::ConnectableNodeAudioCtlUI():
+	outputVolume(nullptr)
+	//,bypassUI(nullptr)
+{
 
 
 }
 void ConnectableNodeAudioCtlUI::resized() {
     Rectangle<int > outCtl = getLocalBounds();
-    if(bypassUI)bypassUI->setBounds(outCtl.removeFromTop(outCtl.getWidth()));
+    //if(bypassUI)bypassUI->setBounds(outCtl.removeFromTop(outCtl.getWidth()));
     if(outputVolume)outputVolume->setBounds(outCtl);
 }
 
@@ -33,8 +36,8 @@ void ConnectableNodeAudioCtlUI::setNodeAndNodeUI(ConnectableNode * node, Connect
     outputVolume = node->outputVolume->createSlider();
     outputVolume->orientation = FloatSliderUI::Direction::VERTICAL;
     addAndMakeVisible(outputVolume);
-    bypassUI = node->bypass->createToggle();
-    addAndMakeVisible(bypassUI);
+    //bypassUI = node->bypass->createToggle();
+    //addAndMakeVisible(bypassUI);
 
 	init(); //for child override
 }
