@@ -62,7 +62,8 @@ public:
 	OwnedArray<NodeConnection> connections;
 	OwnedArray<NodeContainer> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
 
-    //@ben callNodeAdded allow caller to call it later when lode is fully modified (needed for valid uid when filling preset comboboxes
+    //@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
+	//(todo : find a way to have simpler event flow)
     ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty,bool callNodeAddedNow=true);
 	ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty,bool callNodeAddedNow=true);
 	bool removeNode(ConnectableNode * n);
@@ -96,7 +97,7 @@ public:
 	//save / load
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
-	ConnectableNode * addNodeFromJSON(var nodeData, const String &baseName = String::empty);
+	ConnectableNode * addNodeFromJSON(var nodeData);
 
 	void clear() override { clear(false); }
 	void clear(bool keepContainerNodes);

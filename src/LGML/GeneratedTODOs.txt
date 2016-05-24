@@ -9,7 +9,8 @@
 
 NodeContainer.h
 	line : 64
-		//@ben callNodeAdded allow caller to call it later when lode is fully modified (needed for valid uid when filling preset comboboxes
+		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
+		//(todo : find a way to have simpler event flow)
 
 
 JsEnvironment.cpp
@@ -102,18 +103,10 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 264
-		// @ben
-
-	line : 226
+	line : 224
 		// TODO nicely handle file format errors?
 
-	line : 269
-		// @ ben why??? name should be updated from loadJSONData
-		// it erase custom names
-		//	node->nameParam->setValue(newNodeName);
-
-	line : 437
+	line : 443
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 

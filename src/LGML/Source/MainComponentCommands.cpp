@@ -296,31 +296,25 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 		case CommandIDs::copySelection:
 		case CommandIDs::cutSelection:
 		{
-			DBG("Copy selection");
 			InspectableComponent * ic = Inspector::getInstance()->currentComponent;
 			if (ic != nullptr)
 			{
-				DBG(" > IC not null");
 				ControllableContainer * cc = Inspector::getInstance()->currentComponent->relatedControllableContainer;
 				if (cc != nullptr)
 				{
-					DBG(" > CC not null");
 
 					var data(new DynamicObject());
 					data.getDynamicObject()->setProperty("type", ic->inspectableType);
 					data.getDynamicObject()->setProperty("data", cc->getJSONData());
-					data.getDynamicObject()->setProperty("name", cc->niceName);
 
 					if (info.commandID == CommandIDs::cutSelection)
 					{
-						DBG(" > CUT !");
 						if (ic->inspectableType == "node") ((ConnectableNode *)cc)->remove();
 						else if (ic->inspectableType == "controller") ((Controller *)cc)->remove();
 						else if (ic->inspectableType == "rule") ((Rule *)cc)->remove();
 						else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
 					}
 
-					DBG(" > copy to clipboard");
 					SystemClipboard::copyTextToClipboard(JSON::toString(data));
 				}
 			}
@@ -329,30 +323,25 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
 		case CommandIDs::pasteSelection:
 		{
-			DBG("Paste selection");
 			String clipboard = SystemClipboard::getTextFromClipboard();
 
 			var data = JSON::parse(clipboard);
 			if (data != var::null)
 			{
-				DBG(" > Data not null");
 				DynamicObject * d = data.getDynamicObject();
 				if (d != nullptr && d->hasProperty("type"))
 				{
 
 					String type = d->getProperty("type");
-					DBG(" > dataType :" << type);
 					if (Inspector::getInstance()->currentComponent != nullptr)
 					{
 						if (type == "node" && Inspector::getInstance()->currentComponent->inspectableType == "node")
 						{
 							ConnectableNode * cn = dynamic_cast<ConnectableNode *>(Inspector::getInstance()->currentComponent->relatedControllableContainer);
-							DBG("CN Type  = " << cn->type);
 							NodeContainer * container = (cn->type == ContainerType) ? dynamic_cast<NodeContainer *>(cn) : cn->parentNodeContainer;
-							DBG("Container type : " << cn->type);
 							if (cn != nullptr)
 							{
-								ConnectableNode * n = container->addNodeFromJSON(d->getProperty("data"), d->getProperty("name"));
+								ConnectableNode * n = container->addNodeFromJSON(d->getProperty("data"));
 								n->xPosition->setValue(n->xPosition->intValue() + 100, true);
 								n->yPosition->setValue(n->xPosition->intValue() + 50);
 							}
