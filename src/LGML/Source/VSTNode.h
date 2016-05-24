@@ -114,6 +114,8 @@ public:
 
     ///// MIDI
 
+	Trigger * midiActivityTrigger;
+
     void handleIncomingMidiMessage(MidiInput* source,
                                    const MidiMessage& message) override;
 

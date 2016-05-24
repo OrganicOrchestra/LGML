@@ -9,6 +9,7 @@
  */
 
 #include "VSTNodeUI.h"
+#include "TriggerBlinkUI.h"
 
 VSTNodeContentUI::VSTNodeContentUI():
 VSTListShowButton("VSTs"),
@@ -34,11 +35,21 @@ void VSTNodeContentUI::init() {
     addAndMakeVisible(showPluginWindowButton);
     addAndMakeVisible(VSTListShowButton);
 
-    setSize(250, 100);
-    updateVSTParameters();
+  
+    
 
-    vstNode->addVSTNodeListener(this);
-    vstNode->addControllableContainerListener(this);
+
+	activityBlink = vstNode->midiActivityTrigger->createBlinkUI();
+	activityBlink->showLabel = false;
+	addAndMakeVisible(activityBlink);
+
+
+
+	updateVSTParameters();
+	setSize(250, 100);
+
+	vstNode->addVSTNodeListener(this);
+	vstNode->addControllableContainerListener(this);
 
 }
 
@@ -86,8 +97,11 @@ void VSTNodeContentUI::newVSTSelected() {
 
 void VSTNodeContentUI::resized(){
     Rectangle<int> area = getLocalBounds().reduced (2);
-    midiDeviceChooser.setBounds(area.removeFromTop(25));
+	Rectangle<int> midiR = area.removeFromTop(25);
+	activityBlink->setBounds(midiR.removeFromRight(midiR.getHeight()).reduced(2));
+    midiDeviceChooser.setBounds(midiR);
 
+	area.removeFromTop(2);
     Rectangle<int> headerArea = area.removeFromTop(25);
     VSTListShowButton.setBounds(headerArea.removeFromLeft(headerArea.getWidth()/2));
     showPluginWindowButton.setBounds(headerArea);

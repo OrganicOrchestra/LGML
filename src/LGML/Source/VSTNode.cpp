@@ -22,6 +22,7 @@ VSTNode::VSTNode() :
     identifierString = addStringParameter("VST Identifier","string that identify a VST","");
     addChildControllableContainer(&pluginWindowParameter);
 
+	midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
 }
 
 
@@ -182,6 +183,7 @@ void VSTNode::handleIncomingMidiMessage(MidiInput* ,
     if (innerPlugin)
         messageCollector.addMessageToQueue (message);
 
+	midiActivityTrigger->trigger();
 };
 
 void VSTNode::getStateInformation(MemoryBlock & destData) {

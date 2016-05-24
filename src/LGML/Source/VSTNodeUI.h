@@ -51,6 +51,7 @@ public:
 
 	MIDIDeviceChooser midiDeviceChooser;
 
+	ScopedPointer<TriggerBlinkUI> activityBlink;
 
     void init() override;
 	void resized()override;
