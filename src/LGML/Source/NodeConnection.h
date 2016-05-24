@@ -36,6 +36,7 @@ public:
 
     typedef std::pair<int,int> AudioConnection;
     Array<AudioConnection> audioConnections;
+	Array<AudioConnection> ghostConnections;
     Array<DataProcessorGraph::Connection *> dataConnections;
 
 
@@ -43,11 +44,11 @@ public:
     virtual ~NodeConnection();
 
     //Audio
-    void addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
-    void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
+    bool addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
+    void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel, bool keepInGhost = false);
     void removeAllAudioGraphConnections();
 
-	void removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel);
+	void removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel, bool keepInGhost = false);
 
     //Data
     void addDataGraphConnection(Data * sourceData, Data * destData);
@@ -57,6 +58,9 @@ public:
 	void removeAllDataGraphConnectionsForData(Data *, bool isSourceData);
 
     void remove();
+
+	virtual void audioInputAdded(NodeBase *, int /*channel*/) override;
+	virtual void audioOutputAdded(NodeBase *, int /*channel*/) override;
 
 	virtual void audioInputRemoved(NodeBase *, int /* channel */) override;
 	virtual void audioOutputRemoved(NodeBase *, int /* channel */) override;

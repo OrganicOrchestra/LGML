@@ -252,7 +252,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
         NodeManager::getInstance()->updateAudioGraph();
     }
 
-	int newNum = getTotalNumInputChannels();
+	int newNum = getTotalNumOutputChannels();
 	if (newNum > oldNumChannels)
 	{
 		for (int i = oldNumChannels; i < newNum; i++)
