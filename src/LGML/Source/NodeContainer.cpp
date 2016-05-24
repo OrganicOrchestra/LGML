@@ -16,7 +16,6 @@
 
 #include "DebugHelpers.h"
 NodeContainer::NodeContainer(const String &name) :
-	parentNodeContainer(nullptr),
 	containerInNode(nullptr),
 	containerOutNode(nullptr),
 	ConnectableNode(name, NodeType::ContainerType,false)
@@ -72,30 +71,31 @@ void NodeContainer::clear(bool recreateContainerNodes)
 }
 
 
-void NodeContainer::setParentNodeContainer(NodeContainer * _parentNodeContainer)
-{
-	parentNodeContainer = _parentNodeContainer;
-	clear(true);
-}
-
-ConnectableNode * NodeContainer::addNode(NodeType nodeType)
+ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeName)
 {
 	ConnectableNode * n = NodeFactory::createNode(nodeType);
-	return addNode(n);
+	return addNode(n,nodeName);
 }
 
-ConnectableNode * NodeContainer::addNode(ConnectableNode * n)
+ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName)
 {
 	nodes.add(n);
+	n->setParentNodeContainer(this);
+	
 	if (n->type == NodeType::ContainerType)
 	{
 		nodeContainers.add((NodeContainer *)n);
-		((NodeContainer *)n)->setParentNodeContainer(this);
-		DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
+		((NodeContainer *)n)->clear(true);
+		//DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
 	}
 
+
 	n->addNodeListener(this);
-	n->nameParam->setValue(getUniqueNameInContainer(n->nameParam->stringValue()));
+	String targetName = (nodeName.isNotEmpty())?nodeName:n->nameParam->stringValue();
+	
+	DBG("Target Name for new node :" << targetName);
+	n->nameParam->setValue(getUniqueNameInContainer(targetName));
+
 	addChildControllableContainer(n); //ControllableContainer
 	nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
 	return n;
@@ -170,22 +170,7 @@ void NodeContainer::loadJSONDataInternal(var data)
 	Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
 	for (var &nData : *nodesData)
 	{
-		NodeType nodeType = NodeFactory::getTypeFromString(nData.getProperty("nodeType", var()));
-
-		ConnectableNode * node = addNode(nodeType);
-		if (node->type == NodeType::ContainerInType)
-		{
-			containerInNode = (ContainerInNode *)node;
-			containerInNode->addRMSListener(this);
-		}
-		else if (node->type == NodeType::ContainerOutType)
-		{
-			containerOutNode = (ContainerOutNode *)node;
-			containerOutNode->addRMSListener(this);
-		}
-
-		node->loadJSONData(nData);
-
+		addNodeFromJSON(nData);
 	}
 
 	Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
@@ -224,6 +209,31 @@ void NodeContainer::loadJSONDataInternal(var data)
 	}
 
 	removeIllegalConnections();
+}
+
+ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData, const String &baseName)
+{
+	NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
+
+	ConnectableNode * node = addNode(nodeType, baseName);
+	String newNodeName = node->niceName;
+
+	if (node->type == NodeType::ContainerInType)
+	{
+		containerInNode = (ContainerInNode *)node;
+		containerInNode->addRMSListener(this);
+	} else if (node->type == NodeType::ContainerOutType)
+	{
+		containerOutNode = (ContainerOutNode *)node;
+		containerOutNode->addRMSListener(this);
+	}
+	
+	node->loadJSONData(nodeData);
+	
+	node->nameParam->setValue(newNodeName);
+
+	return node;
+
 }
 
 

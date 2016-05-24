@@ -13,6 +13,7 @@
 
 FastMapUI::
 FastMapUI(FastMap * f) :
+	InspectableComponent(f,"fastMap"),
 	fastMap(f)
 {
 	fastMap->addFastMapListener(this);

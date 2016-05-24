@@ -49,16 +49,11 @@ public:
 	float rmsInValue;
 	float rmsOutValue;
 
-	//CONTAINER RELATED
-	NodeContainer * parentNodeContainer;
 
 	//Container nodes, not removable by user, handled separately
 	ContainerInNode * containerInNode;
 	ContainerOutNode * containerOutNode;
 
-
-	//Container
-	void setParentNodeContainer(NodeContainer * _parentNodeContainer); // ? Could / Should be included in ControllableContainer::setParentContainer logic (override and assign)
 
 	//NODE AND CONNECTION MANAGEMENT
 
@@ -66,8 +61,8 @@ public:
 	OwnedArray<NodeConnection> connections;
 	OwnedArray<NodeContainer> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
 
-	ConnectableNode* addNode(NodeType nodeType);
-	ConnectableNode* addNode(ConnectableNode * node);
+	ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty);
+	ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty);
 	bool removeNode(ConnectableNode * n);
 
 	ConnectableNode * getNodeForName(const String &name);
@@ -83,10 +78,10 @@ public:
 
 	int getNumNodes() const noexcept { return nodes.size(); }
 
-
 	//save / load
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
+	ConnectableNode * addNodeFromJSON(var nodeData, const String &baseName = String::empty);
 
 	void clear() override { clear(false); }
 	void clear(bool keepContainerNodes);

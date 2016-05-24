@@ -19,7 +19,7 @@
 
 
 ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeContentUI * contentUI, ConnectableNodeHeaderUI * headerUI) :
-	InspectableComponent(cn),
+	InspectableComponent(cn,"node"),
 	connectableNode(cn),
 	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),

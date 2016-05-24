@@ -14,6 +14,7 @@
 
 
   ConnectableNode::ConnectableNode(const String & name, NodeType _type, bool _hasMainAudioControl):
+	  parentNodeContainer(nullptr),
 	  hasMainAudioControl(_hasMainAudioControl),
 	  type(_type),
 	  canBeRemovedByUser(true),
@@ -51,6 +52,12 @@
 
   ConnectableNode::~ConnectableNode()
 {
+}
+
+
+void ConnectableNode::setParentNodeContainer(NodeContainer * _parentNodeContainer)
+{
+	parentNodeContainer = _parentNodeContainer;
 }
 
 

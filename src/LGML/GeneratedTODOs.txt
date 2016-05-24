@@ -94,12 +94,12 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 354
+	line : 192
+		// TODO nicely handle file format errors?
+
+	line : 364
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
-
-	line : 207
-		// TODO nicely handle file format errors?
 
 
 TimeManager.h

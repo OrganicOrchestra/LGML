@@ -14,6 +14,7 @@
 #include "TriggerBlinkUI.h"
 
 ControllerUI::ControllerUI(Controller * controller) :
+	InspectableComponent(controller, "controller"),
     controller(controller)
 {
 	addMouseListener(this, true);

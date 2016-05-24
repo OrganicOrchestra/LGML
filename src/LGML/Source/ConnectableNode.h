@@ -16,6 +16,8 @@
 #include "NodeFactory.h"
 #include "Data.h"
 
+class NodeContainer;
+
 class ConnectableNodeUI;
 
 class ConnectableNode :
@@ -26,6 +28,9 @@ public:
 	virtual ~ConnectableNode();
 
 	NodeType type;
+
+	NodeContainer * parentNodeContainer;
+	virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer); 
 
 	//Interaction
 	bool canBeRemovedByUser;

@@ -14,7 +14,7 @@
 #include "RuleEditor.h"
 
 RuleUI::RuleUI(Rule * _rule) :
-	InspectableComponent( _rule),
+	InspectableComponent( _rule, "rule"),
 	rule(_rule)
 {
 	rule->addRuleListener(this);
