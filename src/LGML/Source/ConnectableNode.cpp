@@ -196,7 +196,7 @@ void ConnectableNode::setOutputChannelName(int channelIndex, const String & name
 
 String ConnectableNode::getInputChannelName(int channelIndex)
 {
-	String defaultName = "Input " + String(channelIndex);
+	String defaultName = "Input " + String(channelIndex+1);
 	if (channelIndex < 0 || channelIndex >= inputChannelNames.size()) return defaultName;
 
 	String s = inputChannelNames[channelIndex];
@@ -206,7 +206,7 @@ String ConnectableNode::getInputChannelName(int channelIndex)
 
 String ConnectableNode::getOutputChannelName(int channelIndex)
 {
-	String defaultName = "Output " + String(channelIndex);
+	String defaultName = "Output " + String(channelIndex+1);
 	if (channelIndex < 0 || channelIndex >= outputChannelNames.size()) return defaultName;
 
 	String s = outputChannelNames[channelIndex];
