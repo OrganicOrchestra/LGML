@@ -62,6 +62,11 @@ void NodeContainerViewer::clear()
 
 }
 
+void NodeContainerViewer::paint(Graphics & g)
+{
+	DBG("Viewer repaint");
+}
+
 void NodeContainerViewer::resized()
 {
 }
