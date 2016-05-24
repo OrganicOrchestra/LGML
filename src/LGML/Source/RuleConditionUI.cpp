@@ -28,6 +28,5 @@ void RuleConditionUI::paint(Graphics & g)
 
 void RuleConditionUI::conditionActivationChanged(RuleCondition *)
 {
-	DBG("Condition activation changed in UI");
 	repaint();
 }

@@ -103,7 +103,7 @@ void PresetManager::loadJSONData(var data)
 
 	Array<var> * presetDatas = data.getDynamicObject()->getProperty("presets").getArray();
     if(presetDatas==nullptr){
-        DBG("no preset Loaded");
+        //DBG("no preset Loaded");
         return;
     }
 	for (auto &presetData : *presetDatas)

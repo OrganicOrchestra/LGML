@@ -90,7 +90,7 @@ ControllerUI * SerialController::createUI()
 
 void SerialController::portAdded(SerialPortInfo * info)
 {
-	DBG("SerialController, portAdded >" << info->hardwareID << "< > " << lastOpenedPortID);
+	//DBG("SerialController, portAdded >" << info->hardwareID << "< > " << lastOpenedPortID);
 	if (port == nullptr && lastOpenedPortID == info->hardwareID)
 	{
 		setCurrentPort(SerialManager::getInstance()->getPort(info));

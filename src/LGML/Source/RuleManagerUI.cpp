@@ -51,7 +51,6 @@ void RuleManagerUI::resized()
 
 void RuleManagerUI::addRuleUI(Rule * r)
 {
-	DBG("Add rule UI");
 	RuleUI * rui = new RuleUI(r);
 	rulesUI.add(rui);
 	addAndMakeVisible(rui);

@@ -74,7 +74,7 @@ void ConnectableNodeUI::moved()
 void ConnectableNodeUI::setMiniMode(bool value)
 {
 	if (miniMode == value) return;
-	DBG("CUI set miniMode");
+	
 	miniMode = value;
 
 	mainContainer.setMiniMode(miniMode);

@@ -156,7 +156,7 @@ void NodeConnection::remove()
 
 void NodeConnection::audioInputAdded(NodeBase * n, int channel)
 {
-	DBG("Audio Input Added " << channel << " ( " << ghostConnections.size() << " ghosts )");
+	//DBG("Audio Input Added " << channel << " ( " << ghostConnections.size() << " ghosts )");
 
 	Array<AudioConnection> connectionsToAdd;
 	for (auto &c : ghostConnections)
@@ -164,7 +164,7 @@ void NodeConnection::audioInputAdded(NodeBase * n, int channel)
 		if (n == destNode && c.second == channel) connectionsToAdd.add(c);
 	}
 
-	DBG(" >> connections to add : " << connectionsToAdd.size());
+	//DBG(" >> connections to add : " << connectionsToAdd.size());
 	for (auto &c : connectionsToAdd)
 	{
 		bool result = addAudioGraphConnection(c.first, c.second);
@@ -174,7 +174,7 @@ void NodeConnection::audioInputAdded(NodeBase * n, int channel)
 
 void NodeConnection::audioOutputAdded(NodeBase * n, int channel)
 {
-	DBG("Audio Output added " << channel << " ( " << ghostConnections.size() << " ghosts )");
+	//DBG("Audio Output added " << channel << " ( " << ghostConnections.size() << " ghosts )");
 	Array<AudioConnection> connectionsToAdd;
 	for (auto &c : ghostConnections)
 	{
@@ -190,7 +190,7 @@ void NodeConnection::audioOutputAdded(NodeBase * n, int channel)
 
 void NodeConnection::audioInputRemoved(NodeBase * n, int channel)
 {
-	DBG("Audio Input removed " << channel);
+	//DBG("Audio Input removed " << channel);
     if (n == destNode)
     {
         removeAllAudioGraphConnectionsForChannel(channel, false,true);
@@ -200,7 +200,7 @@ void NodeConnection::audioInputRemoved(NodeBase * n, int channel)
 
 void NodeConnection::audioOutputRemoved(NodeBase * n, int channel)
 {
-	DBG("Audio Output Removed "  << channel);
+	//DBG("Audio Output Removed "  << channel);
     if (n == sourceNode)
     {
         removeAllAudioGraphConnectionsForChannel(channel, true,true);
@@ -272,7 +272,7 @@ void NodeConnection::loadJSONData(var data)
 {
     //srcNodeId, destNodeId & connectionType set at creation, not in this load
 
-    DBG("Load JSON Data Node COnnection !");
+    //DBG("Load JSON Data Node COnnection !");
     const Array<var> * links = data.getProperty("links",var()).getArray();
 
     if (links != nullptr)
@@ -284,7 +284,7 @@ void NodeConnection::loadJSONData(var data)
             {
                 int sourceChannel = linkVar.getProperty("sourceChannel", var());
                 int destChannel = linkVar.getProperty("destChannel", var());
-                DBG("Add from JSON, " << sourceChannel << " > " <<destChannel);
+                //DBG("Add from JSON, " << sourceChannel << " > " <<destChannel);
 
                 addAudioGraphConnection(sourceChannel, destChannel);
             }

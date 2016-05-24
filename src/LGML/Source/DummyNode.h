@@ -57,7 +57,7 @@ public:
 
 	void processInputDataChanged(Data *d) override
 	{
-		DBG("DummyNode :: Input data changed " << d->name);
+		//DBG("DummyNode :: Input data changed " << d->name);
 
 		if (d->name == "IN Number")
 		{

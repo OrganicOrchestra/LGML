@@ -212,7 +212,6 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
 
 void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
 {
-    DBG("Combobox ! " << cb->getSelectedId());
     int presetID = cb->getSelectedId();
 
     if (presetID == PresetChoice::SaveCurrent)

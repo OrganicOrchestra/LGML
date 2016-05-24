@@ -31,7 +31,7 @@ Controller::Controller(const String &_name) :
 
 Controller::~Controller()
 {
-    DBG("Remove Controller");
+    //DBG("Remove Controller");
 }
 
 var Controller::getJSONData()

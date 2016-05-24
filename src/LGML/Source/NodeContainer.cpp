@@ -233,7 +233,7 @@ void NodeContainer::loadJSONDataInternal(var data)
                 LOG("Available Nodes in "+ shortName+" : ");
                 for (auto &node : nodes)
                 {
-                    DBG(node->niceName+"//"+ node->shortName);
+                    DBG(" > " + node->niceName+"//"+ node->shortName);
                 }
                 jassertfalse;
             }

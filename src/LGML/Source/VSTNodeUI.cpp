@@ -46,7 +46,7 @@ void VSTNodeContentUI::init() {
 	vstNode->addVSTNodeListener(this);
 	vstNode->addControllableContainerListener(this);
 
-	DBG("Set Node and ui -> " << vstNode->midiPortNameParam->stringValue());
+	//DBG("Set Node and ui -> " << vstNode->midiPortNameParam->stringValue());
 	midiDeviceChooser.setSelectedDevice(vstNode->midiPortNameParam->stringValue());
 
 }

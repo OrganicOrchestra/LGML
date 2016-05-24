@@ -32,9 +32,9 @@ void RuleConsequence::referenceValueUpdate(Rule *, ControlVariableReference *)
 	run();
 }
 
-void RuleConsequence::ruleActivationChanged(Rule * r)
+void RuleConsequence::ruleActivationChanged(Rule *)
 {
-	DBG("Rule Consequence Rule Activation changed ! " << String(r->isActive()));
+	//DBG("Rule Consequence Rule Activation changed ! " << String(r->isActive()));
 }
 
 

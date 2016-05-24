@@ -70,7 +70,7 @@ void DataInNodeContentUI::addParameterUI(ParameterUI * pui)
 {
     parameterUIs.add(pui);
     addAndMakeVisible(pui);
-    DBG("Add Parameter UI : "+getLocalBounds().toString());
+    //DBG("Add Parameter UI : "+getLocalBounds().toString());
     setBounds(getLocalBounds().withHeight(parameterUIs.size() * 30));
 }
 

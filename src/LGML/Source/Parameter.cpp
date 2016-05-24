@@ -59,7 +59,7 @@ void Parameter::setValueInternal(var _value) //to override by child classes
 }
 
 void Parameter::checkVarIsConsistentWithType(){
-    if      (type == Type::STRING)  {jassert(value.isString());DBG(value.toString());}
+    if      (type == Type::STRING)  jassert(value.isString());
     else if (type == Type::INT)     jassert(value.isInt());
     else if (type == Type::BOOL)    jassert(value.isBool());
     else if (type == Type::FLOAT)   jassert(value.isDouble());

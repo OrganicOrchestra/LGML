@@ -104,7 +104,7 @@ PopupMenu * NodeFactory::getNodeTypesMenu(int menuIdOffset)
 
 NodeType NodeFactory::getTypeFromString(const String & s) {
 
-	DBG("Get type from string " << s);
+	//DBG("Get type from string " << s);
 
     for (int i = 0; i < numElementsInArray(nodeTypeNames); i++)
     {
