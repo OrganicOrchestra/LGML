@@ -43,11 +43,12 @@
 		  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
 	}
 
-
+	  /*
 	  setInputChannelName(0, "Main Left");
 	  setInputChannelName(1, "Main Right");
 	  setOutputChannelName(0, "Main Left");
 	  setOutputChannelName(1, "Main Right");
+	  */
   }
 
   ConnectableNode::~ConnectableNode()
