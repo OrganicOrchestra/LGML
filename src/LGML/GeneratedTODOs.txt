@@ -121,10 +121,10 @@ JavascriptControllerUI.cpp
 
 
 VSTNode.cpp
-	line : 97
+	line : 98
 		// TODO check that it actually works
 
-	line : 114
+	line : 115
 		//@Martin i addedd this because when not playing, it crashed
 		// @ben it is necessary
 		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
