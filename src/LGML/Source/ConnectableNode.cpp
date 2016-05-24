@@ -88,6 +88,11 @@ bool ConnectableNode::hasDataOutputs()
 	return false;
 }
 
+String ConnectableNode::getPresetFilter()
+{
+    return NodeFactory::nodeToString(this) + String("_") + uid.toString();
+}
+
 
 void ConnectableNode::onContainerParameterChanged(Parameter * p)
 {

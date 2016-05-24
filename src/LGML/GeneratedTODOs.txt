@@ -44,7 +44,7 @@ ControllableContainer.cpp
 
 
 NodeBase.h
-	line : 49
+	line : 48
 		//  TODO:  this should not be implemented in Node to avoid overriding this method
 		//    create onNodeParameterChanged();
 
@@ -97,14 +97,14 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 403
+	line : 400
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
-	line : 229
+	line : 226
 		// TODO nicely handle file format errors?
 
-	line : 269
+	line : 266
 		// @ ben why??? name should be updated from loadJSONData
 		// it erase custom names
 		//	node->nameParam->setValue(newNodeName);
@@ -121,10 +121,10 @@ JavascriptControllerUI.cpp
 
 
 VSTNode.cpp
-	line : 97
+	line : 98
 		// TODO check that it actually works
 
-	line : 114
+	line : 115
 		//@Martin i addedd this because when not playing, it crashed
 		// @ben it is necessary
 		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
@@ -132,7 +132,7 @@ VSTNode.cpp
 
 
 NodeBase.cpp
-	line : 100
+	line : 95
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 

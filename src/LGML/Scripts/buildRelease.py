@@ -73,7 +73,7 @@ def buildApp(xcodeProjPath,configuration,appPath):
 		
 		+" xcodebuild -project LGML.xcodeproj" \
 		+" -configuration "+configuration
-		+" -jobs 4")
+		+" -jobs 4 ")
 
 def createAppdmgJSON(appPath ,destPath):
 	jdata =  {

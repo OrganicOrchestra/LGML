@@ -113,6 +113,7 @@ public:
 
 
 
+    String getPresetFilter()override;
 
 	//DATA
 	virtual Data* getInputData(int dataIndex);
