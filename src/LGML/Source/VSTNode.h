@@ -66,7 +66,7 @@ public:
     void initParametersFromProcessor(AudioProcessor * p);
 
 
-    String getPresetFilter() override;
+    //String getPresetFilter() override;
 
 
     bool blockFeedback;

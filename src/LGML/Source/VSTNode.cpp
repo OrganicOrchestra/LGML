@@ -88,10 +88,12 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
     vstNodeListeners.call(&VSTNodeListener::newVSTSelected);
 }
 
+/*
 String VSTNode::getPresetFilter()
 {
     return identifierString->stringValue();
 }
+*/
 
 
 void VSTNode::generatePluginFromDescription(PluginDescription * desc)
