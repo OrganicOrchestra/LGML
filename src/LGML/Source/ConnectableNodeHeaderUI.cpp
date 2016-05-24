@@ -107,13 +107,16 @@ void ConnectableNodeHeaderUI::updatePresetComboBox()
     bool emptyFilter = node->getPresetFilter().isEmpty();
     presetCB->setEnabled(!emptyFilter);
 
-    if (!emptyFilter) PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
+	if (!emptyFilter)
+	{
+		PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
+		if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
+	}
 }
 
 void ConnectableNodeHeaderUI::init()
 {
     //to override
-
 }
 
 void ConnectableNodeHeaderUI::resized()
@@ -124,7 +127,7 @@ void ConnectableNodeHeaderUI::resized()
 	int miniModeBTWidth = 15;
     int removeBTWidth = 15;
     int grabberHeight = 12;
-    int presetCBWidth = 100;
+    int presetCBWidth = 80;
 
 
     Rectangle<int> r = getLocalBounds();
@@ -165,9 +168,6 @@ void ConnectableNodeHeaderUI::resized()
 	}
 
     titleUI->setBounds(r);
-
-
-
 }
 
 void ConnectableNodeHeaderUI::setMiniMode(bool value)

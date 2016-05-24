@@ -46,14 +46,6 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
     return pre;
 }
 
-ComboBox * PresetManager::getPresetSelector(String filter)
-{
-    ComboBox * cb = new ComboBox("Presets");
-    fillWithPresets(cb, filter );
-
-    return cb;
-}
-
 PresetManager::Preset * PresetManager::getPreset(String filter, const String & name)
 {
     for (auto &pre : presets)
@@ -71,7 +63,7 @@ void PresetManager::fillWithPresets(ComboBox * cb, String filter)
     cb->addItem("Save to new preset", SaveToNew);
     cb->addItem("Reset to default", ResetToDefault);
 
-    int pIndex = 1;
+	int pIndex = 1;
     for (auto &pre : presets)
     {
         if (pre->filter == filter)

@@ -20,7 +20,6 @@ NodeContainer::NodeContainer(const String &name) :
 	containerOutNode(nullptr),
 	ConnectableNode(name, NodeType::ContainerType,false)
 {
-	canHavePresets = false;
 	saveAndLoadRecursiveData = false;
 }
 
@@ -139,6 +138,43 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
 
 int NodeContainer::getNumConnections() {
 	return connections.size();
+}
+
+bool NodeContainer::loadPreset(PresetManager::Preset * preset)
+{
+	if(!ControllableContainer::loadPreset(preset)) return false;
+	
+	for (auto &n : nodes) n->loadPresetWithName(preset->name);
+
+	return true;
+}
+
+void NodeContainer::saveNewPreset(const String & name)
+{
+	ControllableContainer::saveNewPreset(name);
+	for (auto &n : nodes) n->saveNewPreset(name);
+}
+
+bool NodeContainer::saveCurrentPreset()
+{
+	if (!ControllableContainer::saveCurrentPreset()) return false;
+
+	for (auto &n : nodes) n->saveCurrentPreset();
+	return true;
+}
+
+bool NodeContainer::resetFromPreset()
+{
+	if (!ControllableContainer::resetFromPreset()) return false;
+	
+	for (auto &n : nodes) n->resetFromPreset();
+
+	return true;
+}
+
+String NodeContainer::getPresetFilter()
+{
+	return ConnectableNode::getPresetFilter() + String("_") + uid.toString();
 }
 
 var NodeContainer::getJSONData()
