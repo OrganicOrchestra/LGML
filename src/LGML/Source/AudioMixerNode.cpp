@@ -133,7 +133,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
 
     if(numInput>volumes.size()){
         for(int i = volumes.size();i<numInput ; i++){
-            volumes.add(addFloatParameter("In "+String(i)+ " > Out "+String(outputIndex), "mixer volume from input"+String(i), 1.0f));
+            volumes.add(addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), 1.0f));
         }
     }
     else if(numInput<volumes.size()){
