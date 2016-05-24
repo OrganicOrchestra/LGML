@@ -10,7 +10,8 @@
 
 
 #include "MainComponent.h"
-
+#include "Rule.h"
+#include "FastMap.h"
 
 namespace CommandIDs
 {
@@ -20,7 +21,10 @@ namespace CommandIDs
     static const int newFile                = 0x30003;
     static const int openLastDocument       = 0x30004;
     static const int playPause              = 0x30010;
-    static const int showPluginListEditor   = 0x30100;
+	static const int copySelection			= 0x30020;
+	static const int cutSelection			= 0x30021;
+	static const int pasteSelection			= 0x30022;
+	static const int showPluginListEditor   = 0x30100;
     static const int showAudioSettings      = 0x30200;
     static const int aboutBox               = 0x30300;
     static const int allWindowsForward      = 0x30400;
@@ -91,6 +95,22 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             result.setInfo ("Play/pause", "Play or pause LGML", category, 0);
             result.addDefaultKeypress (' ',ModifierKeys::noModifiers);
             break;
+
+		case CommandIDs::copySelection:
+			result.setInfo("Copy selection", "Copy current selection", category, 0);
+			result.addDefaultKeypress('c', ModifierKeys::commandModifier);
+			break;
+
+		case CommandIDs::cutSelection:
+			result.setInfo("Cut selection", "Cut current selection", category, 0);
+			result.addDefaultKeypress('x', ModifierKeys::commandModifier);
+			break;
+
+		case CommandIDs::pasteSelection:
+			result.setInfo("Paste selection", "Paste previously copied item into selected object if possible", category, 0);
+			result.addDefaultKeypress('v', ModifierKeys::commandModifier);
+			break;
+
         case CommandIDs::stimulateCPU:
             updateStimulateAudioItem(result);
             break;
@@ -116,6 +136,9 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
         CommandIDs::aboutBox,
         CommandIDs::allWindowsForward,
         CommandIDs::playPause,
+		CommandIDs::copySelection,
+		CommandIDs::cutSelection,
+		CommandIDs::pasteSelection,
         CommandIDs::stimulateCPU
     };
 
@@ -146,7 +169,15 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
         menu.addSeparator();
         menu.addCommandItem (&getCommandManager(), StandardApplicationCommandIDs::quit);
 
-    }else if (menuName == "Plugins")
+	} else if (menuName == "Edit")
+	{
+		menu.addCommandItem(&getCommandManager(), CommandIDs::playPause);
+		menu.addSeparator();
+		menu.addCommandItem(&getCommandManager(), CommandIDs::copySelection);
+		menu.addCommandItem(&getCommandManager(), CommandIDs::cutSelection);
+		menu.addCommandItem(&getCommandManager(), CommandIDs::pasteSelection);
+
+	} else if (menuName == "Plugins")
     {
         // "Plugins" menu
         PopupMenu pluginsMenu;
@@ -262,6 +293,76 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
             TimeManager::getInstance()->togglePlay();
             break;
 
+		case CommandIDs::copySelection:
+		case CommandIDs::cutSelection:
+		{
+			DBG("Copy selection");
+			InspectableComponent * ic = Inspector::getInstance()->currentComponent;
+			if (ic != nullptr)
+			{
+				DBG(" > IC not null");
+				ControllableContainer * cc = Inspector::getInstance()->currentComponent->relatedControllableContainer;
+				if (cc != nullptr)
+				{
+					DBG(" > CC not null");
+
+					var data(new DynamicObject());
+					data.getDynamicObject()->setProperty("type", ic->inspectableType);
+					data.getDynamicObject()->setProperty("data", cc->getJSONData());
+					data.getDynamicObject()->setProperty("name", cc->niceName);
+
+					if (info.commandID == CommandIDs::cutSelection)
+					{
+						DBG(" > CUT !");
+						if (ic->inspectableType == "node") ((ConnectableNode *)cc)->remove();
+						else if (ic->inspectableType == "controller") ((Controller *)cc)->remove();
+						else if (ic->inspectableType == "rule") ((Rule *)cc)->remove();
+						else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
+					}
+
+					DBG(" > copy to clipboard");
+					SystemClipboard::copyTextToClipboard(JSON::toString(data));
+				}
+			}
+		}
+			break;
+
+		case CommandIDs::pasteSelection:
+		{
+			DBG("Paste selection");
+			String clipboard = SystemClipboard::getTextFromClipboard();
+			
+			var data = JSON::parse(clipboard);
+			if (data != var::null)
+			{
+				DBG(" > Data not null");
+				DynamicObject * d = data.getDynamicObject();
+				if (d != nullptr && d->hasProperty("type"))
+				{
+
+					String type = d->getProperty("type");
+					DBG(" > dataType :" << type);
+					if (Inspector::getInstance()->currentComponent != nullptr)
+					{
+						if (type == "node" && Inspector::getInstance()->currentComponent->inspectableType == "node")
+						{
+							ConnectableNode * cn = dynamic_cast<ConnectableNode *>(Inspector::getInstance()->currentComponent->relatedControllableContainer);
+							DBG("CN Type  = " << cn->type);
+							NodeContainer * container = (cn->type == ContainerType) ? dynamic_cast<NodeContainer *>(cn) : cn->parentNodeContainer;
+							DBG("Container type : " << cn->type);
+							if (cn != nullptr)
+							{
+								ConnectableNode * n = container->addNodeFromJSON(d->getProperty("data"), d->getProperty("name"));
+								n->xPosition->setValue(n->xPosition->intValue() + 100, true);
+								n->yPosition->setValue(n->xPosition->intValue() + 50);
+							}
+						}
+					}
+				}
+			}
+		}
+			break;
+
         default:
             return false;
     }
@@ -282,7 +383,7 @@ void MainContentComponent::menuItemSelected(int menuItemID, int topLevelMenuInde
 
 
 StringArray MainContentComponent::getMenuBarNames() {
-    const char* const names[] = { "File", "Plugins", "Options", "Windows","Panels", nullptr };
+    const char* const names[] = { "File", "Edit", "Plugins", "Options", "Windows","Panels", nullptr };
     return StringArray (names);
 }
 

@@ -478,8 +478,6 @@ var ControllableContainer::getJSONData()
 
 void ControllableContainer::loadJSONData(var data)
 {
-
-
     if (data.getDynamicObject()->hasProperty(presetIdentifier))
     {
         loadPreset(PresetManager::getInstance()->getPreset(getPresetFilter(), data.getDynamicObject()->getProperty("preset")));

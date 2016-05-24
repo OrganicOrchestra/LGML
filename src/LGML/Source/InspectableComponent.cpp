@@ -15,7 +15,8 @@
 #include "MainComponent.h"
 #include "ShapeShifterFactory.h"
 
-InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer) :
+InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer, const String &_inspectableType) :
+	inspectableType(_inspectableType),
 	relatedControllableContainer(relatedContainer),
 	recursiveInspectionLevel(0),
 	canInspectChildContainersBeyondRecursion(true),

@@ -21,12 +21,12 @@ class InspectorEditor;
 class InspectableComponent : public Component
 {
 public:
-	InspectableComponent(ControllableContainer * relatedContainer = nullptr);
-
-
+	InspectableComponent(ControllableContainer * relatedContainer = nullptr, const String &inspectableType = "none");
+	
 	virtual ~InspectableComponent();
 
 	Inspector * inspector;
+	const String inspectableType;
 
 	virtual InspectorEditor * getEditor();
 

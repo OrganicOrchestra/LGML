@@ -14,7 +14,7 @@
 #include "Inspector.h"
 
 NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
-	InspectableComponent(container),
+	InspectableComponent(container,"node"),
 	nodeContainer(container),
 	editingConnection(nullptr)
 {

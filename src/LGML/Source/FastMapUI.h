@@ -15,11 +15,11 @@
 #include "ControlVariableReferenceUI.h"
 #include "ControllableHelpers.h"
 #include "FloatSliderUI.h"
-
+#include "InspectableComponent.h"
 
 
 class FastMapUI :
-	public Component,
+	public InspectableComponent,
 	public FastMapListener,
 	public  ControllableChooser::Listener,
 	public ButtonListener
