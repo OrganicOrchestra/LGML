@@ -84,13 +84,15 @@ public:
      This class implements the desktop window that contains an instance of
      our MainContentComponent class.
      */
-    class MainWindow    : public DocumentWindow
+    class MainWindow    : public DocumentWindow, public Timer
     {
     public:
         MainWindow (String name,Engine * e)  : DocumentWindow (name,
                                                                Colours::lightgrey,
                                                                DocumentWindow::allButtons)
         {
+			startTimer(1000);
+
             setUsingNativeTitleBar (true);
             MainContentComponent * mainComponent = createMainContentComponent(e);
             setContentOwned (mainComponent, true);
@@ -111,6 +113,8 @@ public:
             // whatever you need.
             JUCEApplication::getInstance()->systemRequestedQuit();
         }
+
+		void timerCallback() override;
 
         /* Note: Be careful if you override any DocumentWindow methods - the base
          class uses a lot of them, so by overriding you might break its functionality.
@@ -143,3 +147,8 @@ UndoManager & getAppUndoManager()                      { return getApp().undoMan
 //==============================================================================
 // This macro generates the main() routine that launches the app.
 START_JUCE_APPLICATION (LGMLApplication)
+
+void LGMLApplication::MainWindow::timerCallback()
+{
+	setName("LGML "+ String(ProjectInfo::versionString)+String(" (CPU : ")+String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
+}
