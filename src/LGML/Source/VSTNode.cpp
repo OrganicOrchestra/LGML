@@ -189,7 +189,24 @@ void VSTNode::getStateInformation(MemoryBlock & destData) {
         innerPlugin->getStateInformation(destData);
     };
 }
+
 void VSTNode::setStateInformation(const void* data, int sizeInBytes) {
     if (innerPlugin) {
         innerPlugin->setStateInformation(data, sizeInBytes); };
+};
+
+void VSTNode::loadPresetInternal(PresetManager::Preset * preset){
+    var v = preset->getPresetValue("/rawData");
+    jassert(v.isUndefined() || v.isString());
+    MemoryBlock m;
+    m.fromBase64Encoding(v.toString());
+
+
+};
+void VSTNode::savePresetInternal(PresetManager::Preset * preset){
+
+    MemoryBlock m;
+    getStateInformation(m);
+    preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
+
 };

@@ -39,7 +39,6 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
         pre->addPresetValue(p->getControlAddress(container), p->value.clone());
 
     }
-    pre->addPresetValue("/rawData", getJSONData());
 
     presets.add(pre);
 
