@@ -46,6 +46,8 @@ public:
     Trigger * stopTrig;
     StringParameter  * stateParameterString;
     FloatParameter * volume;
+    IntParameter * beatLength;
+    int startBeat;
     float logVolume;
     BoolParameter * mute;
     BoolParameter * solo;

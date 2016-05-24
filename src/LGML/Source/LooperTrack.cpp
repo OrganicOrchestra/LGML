@@ -44,6 +44,7 @@ lastInternalTrackState(BUFFER_STOPPED)
     volume = addFloatParameter("Volume", "Set the volume of the track", defaultVolumeValue, 0, 1);
     mute = addBoolParameter("Mute", "Sets the track muted (or not.)", false);
     solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
+    beatLength = addIntParameter("Length", "length in bar", 0, 0, 200);
 
     preDelayMs = addIntParameter("Pre Delay MS", "Pre process delay (in milliseconds)", 40, 0, 200);
 
@@ -226,6 +227,7 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
             else {
                 recordNeedle = 0;
             }
+            startBeat = TimeManager::getInstance()->getBeat();
         }
 
         if (internalTrackState == BUFFER_PLAYING && lastInternalTrackState == BUFFER_RECORDING) {
@@ -244,6 +246,7 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
             }
             playNeedle = 0;
+            beatLength->setValue(TimeManager::getInstance()->getBeat() - startBeat);
         }
 
 
@@ -438,6 +441,7 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         else if(timeManager->playState->boolValue()){
             cleanAllQuantizeNeedles();
             quantizedPlayStart = timeManager->getNextQuantifiedTime(quantizeTime);
+//            quantizedPlayStart = timeManager->getTimeInBeats(beatLength->value);
         }
     }
 

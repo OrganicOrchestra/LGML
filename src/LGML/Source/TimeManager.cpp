@@ -166,6 +166,11 @@ int TimeManager::getNextQuantifiedTime(int barFraction){
     return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
 }
 
+uint64 TimeManager::getTimeInBeats(int beats){
+    const int samplesPerUnit = (beatTimeInSample*beats);
+    if(beats == 0)return timeInSample;
+    return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
+}
 
 int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample));}
 double TimeManager::getBeatPercent(){return timeInSample*1.0/beatTimeInSample-getBeat();}
