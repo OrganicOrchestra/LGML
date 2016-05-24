@@ -23,6 +23,8 @@ public:
 	bool isInputChooser;
 	void fillDeviceList();
 
+	void setSelectedDevice(const String &deviceName, bool silent = true);
+
 	// Inherited via MIDIManagerListener
 	virtual void midiInputAdded(String & inputName) override;
 	virtual void midiInputRemoved(String & inputName) override;

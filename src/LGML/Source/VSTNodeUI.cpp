@@ -35,21 +35,19 @@ void VSTNodeContentUI::init() {
     addAndMakeVisible(showPluginWindowButton);
     addAndMakeVisible(VSTListShowButton);
 
-  
-    
-
-
 	activityBlink = vstNode->midiActivityTrigger->createBlinkUI();
 	activityBlink->showLabel = false;
 	addAndMakeVisible(activityBlink);
 
-
-
+	
 	updateVSTParameters();
 	setSize(250, 100);
 
 	vstNode->addVSTNodeListener(this);
 	vstNode->addControllableContainerListener(this);
+
+	DBG("Set Node and ui -> " << vstNode->midiPortNameParam->stringValue());
+	midiDeviceChooser.setSelectedDevice(vstNode->midiPortNameParam->stringValue());
 
 }
 
@@ -93,6 +91,11 @@ void VSTNodeContentUI::controllableFeedbackUpdate(Controllable *) {};
 //Listener From VSTNode
 void VSTNodeContentUI::newVSTSelected() {
     updateVSTParameters();
+}
+
+void VSTNodeContentUI::midiDeviceChanged()
+{
+	midiDeviceChooser.setSelectedDevice(vstNode->midiPortNameParam->stringValue());
 }
 
 void VSTNodeContentUI::resized(){

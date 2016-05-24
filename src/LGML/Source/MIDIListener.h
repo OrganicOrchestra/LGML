@@ -24,7 +24,7 @@ class MIDIListener :public MidiInputCallback
 
     String midiPortName;
 
-    void setCurrentDevice(const String &deviceName);
+    virtual void setCurrentDevice(const String &deviceName);
 
     // need to implement this from MidiInputCallback
 //    virtual void handleIncomingMidiMessage(MidiInput* source,

@@ -41,6 +41,14 @@ void MIDIDeviceChooser::fillDeviceList()
 
 }
 
+void MIDIDeviceChooser::setSelectedDevice(const String & deviceName, bool silent)
+{
+	StringArray deviceList = isInputChooser ? MIDIManager::getInstance()->inputDevices : MIDIManager::getInstance()->outputDevices;
+	int dIndex = deviceList.indexOf(deviceName);
+	if (dIndex == -1) return;
+	setSelectedItemIndex(dIndex+1,silent?NotificationType::dontSendNotification:NotificationType::sendNotification);
+}
+
 void MIDIDeviceChooser::midiInputAdded(String &)
 {
 	if (!isInputChooser) return;

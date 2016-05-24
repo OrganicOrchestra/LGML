@@ -23,6 +23,8 @@ VSTNode::VSTNode() :
     addChildControllableContainer(&pluginWindowParameter);
 
 	midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
+	midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
+	midiPortNameParam->hideInEditor = true;
 }
 
 
@@ -51,7 +53,11 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
             else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
         }
         else{DBG("VST : no identifierString provided");}
-    }
+	}if (p == midiPortNameParam)
+	{
+		setCurrentDevice(midiPortNameParam->stringValue());
+		vstNodeListeners.call(&VSTNodeListener::midiDeviceChanged);
+	}
 
     // a VSTParameter is changed
     else{
@@ -177,6 +183,12 @@ ConnectableNodeUI * VSTNode::createUI() {
 	return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
 }
 
+
+void VSTNode::setCurrentDevice(const String & deviceName)
+{
+	MIDIListener::setCurrentDevice(deviceName);
+	midiPortNameParam->setValue(deviceName, true);
+}
 
 void VSTNode::handleIncomingMidiMessage(MidiInput* ,
                                const MidiMessage& message) {

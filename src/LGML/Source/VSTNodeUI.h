@@ -30,6 +30,7 @@ public:
 
     // Inherited via ChangeListener
     void newVSTSelected() override;
+	void midiDeviceChanged() override {}
 };
 
 class VSTNodeContentUI:
@@ -58,6 +59,7 @@ public:
 
     void updateVSTParameters();
     void newVSTSelected() override;
+	void midiDeviceChanged() override;
 
     void layoutSliderParameters(Rectangle<int> pArea);
     void comboBoxChanged(ComboBox *cb) override;

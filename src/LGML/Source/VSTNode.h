@@ -77,7 +77,7 @@ public:
     public:
         virtual ~VSTNodeListener() {}
         virtual void newVSTSelected() = 0;
-
+		virtual void midiDeviceChanged() = 0;
     };
 
     ListenerList<VSTNodeListener> vstNodeListeners;
@@ -86,8 +86,6 @@ public:
 
 
 	ConnectableNodeUI * createUI()override;
-
-
 
 
     // AUDIO
@@ -115,9 +113,10 @@ public:
 
 
     ///// MIDI
-
+	StringParameter * midiPortNameParam;
 	Trigger * midiActivityTrigger;
 
+	void setCurrentDevice(const String &deviceName) override;
     void handleIncomingMidiMessage(MidiInput* source,
                                    const MidiMessage& message) override;
 
