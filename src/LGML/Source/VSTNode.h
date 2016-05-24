@@ -60,6 +60,8 @@ public:
     void audioProcessorChanged (AudioProcessor*) override{};
 
 
+    void loadPresetInternal(PresetManager::Preset * preset)override;
+    void savePresetInternal(PresetManager::Preset * preset)override;
 
     void initParametersFromProcessor(AudioProcessor * p);
 

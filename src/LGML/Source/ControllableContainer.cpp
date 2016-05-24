@@ -349,9 +349,8 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
         Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
         if (p != nullptr) p->setValue(pv->presetValue);
     }
+    loadPresetInternal(preset);
 
-    var v = preset->getPresetValue("/rawData");
-    loadJSONData(v);
     currentPreset = preset;
 
     return true;
@@ -360,6 +359,7 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 void ControllableContainer::saveNewPreset(const String & _name)
 {
     PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, true);
+    savePresetInternal(pre);
     loadPreset(pre);
 }
 
@@ -375,6 +375,7 @@ bool ControllableContainer::saveCurrentPreset()
             pv->presetValue = p->value;
         }
     }
+    savePresetInternal(currentPreset);
 
     return true;
 }
@@ -388,6 +389,8 @@ bool ControllableContainer::resetFromPreset()
         Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
         if (p != nullptr) p->resetValue();
     }
+    // @ben not sure
+    savePresetInternal(currentPreset);
 
     currentPreset = nullptr;
     return true;
@@ -540,3 +543,6 @@ String ControllableContainer::getUniqueNameInContainer(const String & sourceName
 
     return resultName;
 }
+
+
+
