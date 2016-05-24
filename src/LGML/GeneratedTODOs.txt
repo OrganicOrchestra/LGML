@@ -58,7 +58,7 @@ NodeConnectionEditor.cpp
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
 
-	line : 357
+	line : 367
 		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
@@ -89,16 +89,16 @@ ControllableInspector.cpp
 
 
 MIDIController.cpp
-	line : 82
+	line : 81
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 
 NodeContainer.cpp
-	line : 338
+	line : 346
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
-	line : 191
+	line : 199
 		// TODO nicely handle file format errors?
 
 

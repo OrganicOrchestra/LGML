@@ -14,7 +14,7 @@
 
 #include "Style.h"
 
-
+#include "DebugHelpers.h"
 
 //==============================================================================
 NodeConnectionEditor::NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI) :
@@ -205,6 +205,16 @@ void NodeConnectionEditor::generateContentForData()
 
 void NodeConnectionEditor::addAudioLink(int sourceChannel, int destChannel)
 {
+    if(sourceChannel>outputSlots.size()){
+        LOG("Channel not found in output Slots");
+        return;
+    }
+    if(destChannel>inputSlots.size()){
+        LOG("Channel not found  in input Slots");
+        return;
+    }
+
+
     NodeConnectionEditorDataSlot * os = outputSlots[sourceChannel];
     NodeConnectionEditorDataSlot * is = inputSlots[destChannel];
     NodeConnectionEditorLink * l = new NodeConnectionEditorLink(os, is);

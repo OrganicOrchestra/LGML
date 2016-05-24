@@ -35,7 +35,7 @@ void NodeManagerUI::clear()
 
 void NodeManagerUI::resized()
 {
-	
+
 	Rectangle<int> r = getLocalBounds();
 	if (currentViewer != nullptr)
 	{
@@ -72,7 +72,7 @@ void NodeManagerUI::setCurrentViewedContainer(NodeContainer * c)
 	{
 		currentViewer = new NodeContainerViewer(c);
 		addAndMakeVisible(currentViewer);
-		
+
 	}
 	setSize(0, 0);
 	resized();

@@ -32,7 +32,7 @@ public:
 
 	virtual void run() override;
 
-	
+
 
 	// ASYNC
 	QueuedNotifier<var> queuedNotifier;
@@ -56,8 +56,8 @@ public:
 	String port;
 	String description;
 	String hardwareID;
-	
-	
+
+
 };
 
 class SerialPort : public SerialReadThread::AsyncListener
@@ -66,14 +66,14 @@ public:
 	SerialReadThread thread;
 
 	enum PortMode { LINES, DATA255, RAW, COBS };
-	
+
 	SerialPort(Serial *port, SerialPortInfo * info, PortMode mode = LINES);
 	virtual ~SerialPort();
 
 	SerialPortInfo * info;
 	ScopedPointer<Serial> port;
 	PortMode mode;
-	
+
 	void open();
 	void close();
 
@@ -102,7 +102,7 @@ public:
 	void removeSerialPortListener(SerialPortListener* listener);
 };
 
-class SerialManager : 
+class SerialManager :
 	public Timer
 {
 public:

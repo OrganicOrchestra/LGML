@@ -14,7 +14,7 @@ juce_ImplementSingleton(SerialManager)
 
 SerialManager::SerialManager()
 {
-	
+
 }
 
 SerialManager::~SerialManager()
@@ -34,7 +34,7 @@ void SerialManager::updateDeviceList()
 	std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
 
 	OwnedArray<SerialPortInfo> newInfos;
-	
+
 	Array<SerialPortInfo *> portsToNotifyAdded;
 	Array<SerialPortInfo *> portsToNotifyRemoved;
 
@@ -84,12 +84,12 @@ void SerialManager::updateDeviceList()
 	}
 
 	//check removed devices
-	
-	
+
+
 	for (auto &p : portsToNotifyRemoved)
 	{
 		DBG("Port Removed " << p->description);
-		
+
 
 		portInfos.removeObject(p,false);
 		listeners.call(&SerialManagerListener::portRemoved, p);
@@ -102,7 +102,7 @@ void SerialManager::updateDeviceList()
 	for (auto &p : portsToNotifyAdded)
 	{
 		DBG("Port added " << p->description);
-		
+
 		newInfos.removeObject(p, false);
 		portInfos.add(p);
 		listeners.call(&SerialManagerListener::portAdded, p);

@@ -103,7 +103,7 @@ void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window, bool doR
 	window->removeFromDesktop();
 	if (doRemovePanel) removePanel(p);
 	openedWindows.removeObject(window, true);
-	
+
 }
 
 ShapeShifterContent * ShapeShifterManager::getContentForName(PanelName contentName)

@@ -196,9 +196,9 @@ void NodeConnectionUI::buildHitPath(Array<Point<float>> points)
 			float angle2 = points[i].getAngleToPoint(points[i + 1]);
 			if (angle1 < 0) angle1 += float_Pi * 2;
 			if (angle2 < 0) angle2 += float_Pi * 2;
-			
+
 			float angle = (angle1 + angle2) / 2.f;
-			
+
 			if (angle1 < angle2) angle += float_Pi;
 			DBG("Point " << i << ", angle : " << angle << " >>  " << String(angle1>angle2));
 

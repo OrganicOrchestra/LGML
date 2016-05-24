@@ -14,7 +14,9 @@
 
 #include "JuceHeader.h"
 
-
+// create a gain value for a float  between 0 and 1
+// 0.8  -> 0dB
+// 1    -> +6dB
 inline float float01ToGain(float f){
     return Decibels::decibelsToGain(jmap<float>(f,0.8f,1.0f,0.0f,6.0f));
 };
@@ -282,10 +284,10 @@ static RingBufferTest ringBufferTest;
 //    }
 //    int writeNeedle;
 //    int phantomSize;
-//    
-//    
-//    
-//    
+//
+//
+//
+//
 //};
 //
 

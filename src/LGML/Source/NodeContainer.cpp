@@ -47,7 +47,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 
 	//connections.clear();
 
-	
+
 	containerInNode = nullptr;
 	containerOutNode = nullptr;
 
