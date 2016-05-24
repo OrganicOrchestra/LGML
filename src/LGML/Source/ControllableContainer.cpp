@@ -350,7 +350,8 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
         if (p != nullptr) p->setValue(pv->presetValue);
     }
 
-    loadJSONData(preset->getPresetValue("/rawData"));
+    var v = preset->getPresetValue("/rawData");
+    loadJSONData(v);
     currentPreset = preset;
 
     return true;

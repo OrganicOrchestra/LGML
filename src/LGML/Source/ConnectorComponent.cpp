@@ -17,14 +17,14 @@ ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::
     boxColor = (dataType == NodeConnection::ConnectionType::AUDIO)? AUDIO_COLOR : DATA_COLOR;
     setSize(10,10);
 
-	node->addNodeBaseListener(this);
+
     generateToolTip();
 
 	updateVisibility();
 }
 
 ConnectorComponent::~ConnectorComponent(){
-	 node->removeNodeBaseListener(this);
+	 if(node.get())node->removeNodeBaseListener(this);
 }
 
 void ConnectorComponent::generateToolTip(){

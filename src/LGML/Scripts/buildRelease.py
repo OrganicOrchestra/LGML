@@ -6,7 +6,7 @@ import urllib;
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = True
+bumpVersion = False
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
 
@@ -73,7 +73,7 @@ def buildApp(xcodeProjPath,configuration,appPath):
 		
 		+" xcodebuild -project LGML.xcodeproj" \
 		+" -configuration "+configuration
-		+" -jobs 4 ")
+		+" -jobs 4")
 
 def createAppdmgJSON(appPath ,destPath):
 	jdata =  {

@@ -33,7 +33,7 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 409
+	line : 410
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 	line : 102
@@ -94,17 +94,17 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 268
-		// @ ben why??? name should be updated from loadJSONData
-		// it erase custom names
-		//	node->nameParam->setValue(newNodeName);
-
-	line : 402
+	line : 403
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
-	line : 228
+	line : 229
 		// TODO nicely handle file format errors?
+
+	line : 269
+		// @ ben why??? name should be updated from loadJSONData
+		// it erase custom names
+		//	node->nameParam->setValue(newNodeName);
 
 
 TimeManager.h
@@ -129,7 +129,7 @@ VSTNode.cpp
 
 
 NodeBase.cpp
-	line : 99
+	line : 100
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 

@@ -199,6 +199,9 @@ public:
 	virtual void dataChanged(Data *) override;
 	virtual void processInputDataChanged(Data *);
 
+    WeakReference<NodeBase>::Master masterReference;
+    friend class WeakReference<NodeBase>;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 
 };

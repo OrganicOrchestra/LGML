@@ -41,7 +41,7 @@ public:
 
     NodeConnection::ConnectionType dataType;
     ConnectorIOType ioType;
-    NodeBase * node;
+    WeakReference<NodeBase> node;
 
     //layout
 
