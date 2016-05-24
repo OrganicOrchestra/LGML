@@ -173,8 +173,16 @@ void NodeContainer::loadJSONDataInternal(var data)
 		NodeType nodeType = NodeFactory::getTypeFromString(nData.getProperty("nodeType", var()));
 
 		ConnectableNode * node = addNode(nodeType);
-		if (node->type == NodeType::ContainerInType) containerInNode = (ContainerInNode *)node;
-		else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
+		if (node->type == NodeType::ContainerInType)
+		{
+			containerInNode = (ContainerInNode *)node;
+			containerInNode->addRMSListener(this);
+		}
+		else if (node->type == NodeType::ContainerOutType)
+		{
+			containerOutNode = (ContainerOutNode *)node;
+			containerOutNode->addRMSListener(this);
+		}
 
 		node->loadJSONData(nData);
 
