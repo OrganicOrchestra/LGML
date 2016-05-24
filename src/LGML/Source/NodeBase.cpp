@@ -84,11 +84,6 @@ void NodeBase::clear()
 
 
 
-String NodeBase::getPresetFilter()
-{
-    return NodeFactory::nodeToString(this);
-}
-
 
 //Save / Load
 

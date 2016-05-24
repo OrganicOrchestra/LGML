@@ -172,10 +172,7 @@ bool NodeContainer::resetFromPreset()
     return true;
 }
 
-String NodeContainer::getPresetFilter()
-{
-    return ConnectableNode::getPresetFilter() + String("_") + uid.toString();
-}
+
 
 var NodeContainer::getJSONData()
 {

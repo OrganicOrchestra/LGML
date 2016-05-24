@@ -35,8 +35,8 @@ void VSTNodeContentUI::init() {
     addAndMakeVisible(showPluginWindowButton);
     addAndMakeVisible(VSTListShowButton);
 
-  
-    
+
+
 
 
 	activityBlink = vstNode->midiActivityTrigger->createBlinkUI();
