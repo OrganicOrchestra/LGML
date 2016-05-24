@@ -62,7 +62,7 @@ NodeConnectionUI::~NodeConnectionUI()
 
 void NodeConnectionUI::paint (Graphics& g)
 {
-	buildPath();
+
 
 	bool isAudio = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO;
     Colour baseColor = isAudio ? AUDIO_COLOR : DATA_COLOR;
@@ -87,7 +87,7 @@ void NodeConnectionUI::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
-
+    buildPath();
 }
 
 void NodeConnectionUI::buildPath()
@@ -200,7 +200,7 @@ void NodeConnectionUI::buildHitPath(Array<Point<float>> points)
 			float angle = (angle1 + angle2) / 2.f;
 
 			if (angle1 < angle2) angle += float_Pi;
-			DBG("Point " << i << ", angle : " << angle << " >>  " << String(angle1>angle2));
+//			DBG("Point " << i << ", angle : " << angle << " >>  " << String(angle1>angle2));
 
 			tp = points[i].getPointOnCircumference(margin, angle + float_Pi);
 			sp = points[i].getPointOnCircumference(margin, angle);
