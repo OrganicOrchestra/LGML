@@ -22,7 +22,7 @@ class InspectableComponent : public Component
 {
 public:
 	InspectableComponent(ControllableContainer * relatedContainer = nullptr, const String &inspectableType = "none");
-	
+
 	virtual ~InspectableComponent();
 
 	Inspector * inspector;

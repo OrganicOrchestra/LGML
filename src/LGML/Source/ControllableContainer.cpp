@@ -339,10 +339,12 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 
     for (auto &pv : preset->presetValues)
     {
+
         Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
         if (p != nullptr) p->setValue(pv->presetValue);
     }
 
+    loadJSONData(preset->getPresetValue("/rawData"));
     currentPreset = preset;
 
     return true;

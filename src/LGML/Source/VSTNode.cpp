@@ -22,7 +22,6 @@ VSTNode::VSTNode() :
     identifierString = addStringParameter("VST Identifier","string that identify a VST","");
     addChildControllableContainer(&pluginWindowParameter);
 
-	DBG(VSTParameters.size());
 }
 
 
@@ -180,6 +179,17 @@ ConnectableNodeUI * VSTNode::createUI() {
 
 void VSTNode::handleIncomingMidiMessage(MidiInput* ,
                                const MidiMessage& message) {
-    if (innerPlugin)messageCollector.addMessageToQueue (message);
+    if (innerPlugin)
+        messageCollector.addMessageToQueue (message);
 
+};
+
+void VSTNode::getStateInformation(MemoryBlock & destData) {
+    if (innerPlugin) {
+        innerPlugin->getStateInformation(destData);
+    };
+}
+void VSTNode::setStateInformation(const void* data, int sizeInBytes) {
+    if (innerPlugin) {
+        innerPlugin->setStateInformation(data, sizeInBytes); };
 };

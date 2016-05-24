@@ -33,7 +33,7 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 403
+	line : 405
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 	line : 103
@@ -97,7 +97,12 @@ NodeContainer.cpp
 	line : 192
 		// TODO nicely handle file format errors?
 
-	line : 364
+	line : 232
+		// @ ben why??? name should be updated from loadJSONData
+		// it erase custom names
+		//	node->nameParam->setValue(newNodeName);
+
+	line : 366
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
@@ -113,10 +118,10 @@ JavascriptControllerUI.cpp
 
 
 VSTNode.cpp
-	line : 98
+	line : 97
 		// TODO check that it actually works
 
-	line : 115
+	line : 114
 		//@Martin i addedd this because when not playing, it crashed
 		// @ben it is necessary
 		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)

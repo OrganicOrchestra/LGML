@@ -30,7 +30,7 @@ public:
 	NodeType type;
 
 	NodeContainer * parentNodeContainer;
-	virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer); 
+	virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer);
 
 	//Interaction
 	bool canBeRemovedByUser;

@@ -66,7 +66,7 @@ void NodeContainerViewer::clear()
 
 void NodeContainerViewer::resized()
 {
-	
+
 }
 
 void NodeContainerViewer::nodeAdded(ConnectableNode * node)

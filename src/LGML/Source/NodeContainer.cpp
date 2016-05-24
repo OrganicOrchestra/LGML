@@ -81,7 +81,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
 {
 	nodes.add(n);
 	n->setParentNodeContainer(this);
-	
+
 	if (n->type == NodeType::ContainerType)
 	{
 		nodeContainers.add((NodeContainer *)n);
@@ -92,7 +92,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
 
 	n->addNodeListener(this);
 	String targetName = (nodeName.isNotEmpty())?nodeName:n->nameParam->stringValue();
-	
+
 	DBG("Target Name for new node :" << targetName);
 	n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
@@ -227,10 +227,12 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData, const String &bas
 		containerOutNode = (ContainerOutNode *)node;
 		containerOutNode->addRMSListener(this);
 	}
-	
+
 	node->loadJSONData(nodeData);
-	
-	node->nameParam->setValue(newNodeName);
+
+    // @ ben why??? name should be updated from loadJSONData
+    // it erase custom names
+    //	node->nameParam->setValue(newNodeName);
 
 	return node;
 

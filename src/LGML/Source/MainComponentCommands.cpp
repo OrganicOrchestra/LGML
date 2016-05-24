@@ -331,7 +331,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 		{
 			DBG("Paste selection");
 			String clipboard = SystemClipboard::getTextFromClipboard();
-			
+
 			var data = JSON::parse(clipboard);
 			if (data != var::null)
 			{

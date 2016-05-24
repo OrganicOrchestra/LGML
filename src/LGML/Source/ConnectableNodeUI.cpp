@@ -98,7 +98,7 @@ void ConnectableNodeUI::paint(Graphics&)
 
 void ConnectableNodeUI::resized()
 {
-	
+
 	Rectangle<int> r = getLocalBounds();
 	Rectangle<int> inputBounds = r.removeFromLeft(connectorWidth);
 	Rectangle<int> outputBounds = r.removeFromRight(connectorWidth);
@@ -169,7 +169,7 @@ void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
 
 	connectableNode->xPosition->setValue((float)newPos.x,true);
 	connectableNode->yPosition->setValue((float)newPos.y);
-	
+
 }
 
 bool ConnectableNodeUI::keyPressed(const KeyPress & key)

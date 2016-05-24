@@ -105,8 +105,8 @@ public:
     }
     void releaseResources() override { if (innerPlugin) { innerPlugin->releaseResources(); } };
     bool hasEditor() const override { if (innerPlugin) { return innerPlugin->hasEditor(); }return false; };
-    void getStateInformation(MemoryBlock & destData)override { if (innerPlugin) { innerPlugin->getStateInformation(destData); }; }
-    void setStateInformation(const void* data, int sizeInBytes)override { if (innerPlugin) { innerPlugin->setStateInformation(data, sizeInBytes); }; };
+    void getStateInformation(MemoryBlock & destData)override ;
+    void setStateInformation(const void* data, int sizeInBytes)override ;
     void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;;
 
     ScopedPointer<AudioPluginInstance> innerPlugin;
