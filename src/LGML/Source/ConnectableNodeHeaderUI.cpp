@@ -259,7 +259,6 @@ void ConnectableNodeHeaderUI::buttonClicked(Button * b)
 		node->remove(true);
 	} else if(b == &miniModeBT)
 	{
-		DBG("HERE");
 		node->miniMode->setValue(!node->miniMode->boolValue());
 	}
 }

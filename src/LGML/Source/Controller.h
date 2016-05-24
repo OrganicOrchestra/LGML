@@ -30,6 +30,8 @@ public:
     StringParameter * nameParam;
     BoolParameter * enabledParam;
 
+	Trigger * activityTrigger;
+
 	OwnedArray<ControlVariable> variables; // These are values that can be set only by the external controller (osc, midi, serial...).
 										   // they are stored so they can be used by other mechanisms in the software, such as rules.
 

@@ -22,7 +22,8 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 
 	panel->setPreferredWidth(getWidth());
 	panel->setPreferredHeight(getHeight());
-	panel->addShapeShifterPanelListener(this);
+	
+	// panel->addShapeShifterPanelListener(this); //is it necessary ?
 
 	setContentNonOwned(_panel,true);
 
@@ -42,7 +43,8 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 ShapeShifterWindow::~ShapeShifterWindow()
 {
 	removeMouseListener(this);
-	panel->removeShapeShifterPanelListener(this);
+	
+	//panel->removeShapeShifterPanelListener(this);
 
 }
 

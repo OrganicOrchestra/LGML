@@ -40,8 +40,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* source,
     }
 
     callJs(message);
-
-
+	activityTrigger->trigger();
 }
 
 void MIDIController::callJs(const MidiMessage& message){

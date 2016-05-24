@@ -23,6 +23,8 @@ Controller::Controller(const String &_name) :
     nameParam = addStringParameter("Name", "Set the name of the controller.", _name);
     enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
 
+	activityTrigger = addTrigger("activity", "Activity indicator");
+
     controllerTypeEnum = 0; //init
 }
 

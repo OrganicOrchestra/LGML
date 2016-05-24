@@ -11,6 +11,7 @@
 #include "ControllerUI.h"
 #include "ControllerEditor.h"
 #include "Style.h"
+#include "TriggerBlinkUI.h"
 
 ControllerUI::ControllerUI(Controller * controller) :
     controller(controller)
@@ -32,6 +33,12 @@ ControllerUI::ControllerUI(Controller * controller) :
 		0.5f);
 	removeBT.addListener(this);
 	addAndMakeVisible(removeBT);
+
+
+	activityBlink = controller->activityTrigger->createBlinkUI();
+	//activityBlink->animateIntensity = false;
+	activityBlink->showLabel = false;
+	addAndMakeVisible(activityBlink);
 }
 
 ControllerUI::~ControllerUI()
@@ -52,6 +59,8 @@ void ControllerUI::resized()
 	Rectangle<int> r = getLocalBounds().reduced(2);
 	r.removeFromRight(15);
 	removeBT.setBounds(r.removeFromRight(20));
+	r.removeFromRight(2);
+	activityBlink->setBounds(r.removeFromRight(r.getHeight()).reduced(2));
 	enabledBT->setBounds(r.removeFromLeft(r.getHeight()));
 	r.removeFromLeft(5);
 	nameTF->setBounds(r);

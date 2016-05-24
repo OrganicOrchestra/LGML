@@ -17,17 +17,19 @@
 
 class MIDIController;
 
-class MIDIControllerUI : public  ControllerUI, public MIDIListener::Listener
+class MIDIControllerUI : public  ControllerUI, 
+	public MIDIListener::Listener
 {
 public:
 	MIDIControllerUI(MIDIController * controller);
 	virtual ~MIDIControllerUI();
 
 	MIDIController * midiController;
-
-	InspectorEditor * getEditor() override;
+	
 
 	void currentDeviceChanged(MIDIListener *)override;
+
+	InspectorEditor * getEditor() override;
 };
 
 #endif  // MIDICONTROLLERUI_H_INCLUDED

@@ -21,7 +21,6 @@ public :
     MIDIController();
 
 
-
     // should be implemented to build localenv
     void buildLocalEnv() override;
 	void handleIncomingMidiMessage(MidiInput* source,
@@ -33,6 +32,19 @@ public :
     static var sendCC(const var::NativeFunctionArgs & v);
     static var sendNoteOnFor(const var::NativeFunctionArgs & v);
     void     callJs(const MidiMessage& message);
+
+
+	class MIDIControllerListener
+	{
+	public:
+		virtual ~MIDIControllerListener() {}
+		virtual void midiMessageReceived(const MidiMessage&) {}
+	};
+
+	ListenerList<MIDIControllerListener> midiControllerListeners;
+	void addMIDIControllerListener(MIDIControllerListener* newListener) { midiControllerListeners.add(newListener); }
+	void removeMIDIControllerListener(MIDIControllerListener* listener) { midiControllerListeners.remove(listener); }
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
 };

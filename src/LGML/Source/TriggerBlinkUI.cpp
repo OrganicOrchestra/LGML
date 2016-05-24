@@ -13,10 +13,13 @@ Author:  bkupe
 #include "Style.h"
 //==============================================================================
 TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
-    TriggerUI(t),
-    blinkTime(200),
-    refreshPeriod(50),
-    intensity(0)
+	TriggerUI(t),
+	blinkTime(100),
+	refreshPeriod(50),
+	intensity(0),
+	animateIntensity(true),
+	offColor(NORMAL_COLOR),
+	onColor(HIGHLIGHT_COLOR)
 {
     setSize(30, 20);
 
@@ -43,7 +46,7 @@ void TriggerBlinkUI::triggerTriggered(Trigger *) {
 
 void TriggerBlinkUI::paint(Graphics& g)
 {
-    g.setColour(NORMAL_COLOR.brighter(intensity));
+	g.setColour(offColor.interpolatedWith(onColor,intensity));
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
     g.setFont(10);
     g.setColour(Colours::white.darker(.1f));
@@ -53,15 +56,24 @@ void TriggerBlinkUI::paint(Graphics& g)
 
 void TriggerBlinkUI::startBlink(){
     intensity = 1;
-    startTimer(refreshPeriod);
+    startTimer(animateIntensity?refreshPeriod:blinkTime);
 }
 
 void TriggerBlinkUI::timerCallback(){
-    intensity-= refreshPeriod*1.0f/blinkTime;
-    if(intensity<0){
-    intensity = 0;
-    stopTimer();
-    }
+    
+	if (animateIntensity)
+	{
+		intensity -= refreshPeriod*1.0f / blinkTime;
+
+		if (intensity < 0) {
+			intensity = 0;
+			stopTimer();
+		}
+	} else
+	{
+		intensity = 0;
+	}
+
     repaint();
 }
 

@@ -21,7 +21,6 @@ public:
 	virtual ~OSCControllerUI();
 
 	OSCController * oscController;
-
 	InspectorEditor * getEditor() override;
 };
 

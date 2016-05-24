@@ -29,6 +29,8 @@ public:
 	ScopedPointer<BoolToggleUI> enabledBT;
 	ImageButton removeBT;
 
+	ScopedPointer<TriggerBlinkUI> activityBlink;
+
     Controller * controller;
 
     virtual void paint(Graphics &g) override;

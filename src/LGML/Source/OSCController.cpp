@@ -59,6 +59,8 @@ void OSCController::processMessage(const OSCMessage & msg)
 
 	bool result = processMessageInternal(msg);
 	oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
+
+	activityTrigger->trigger();
 }
 
 Result OSCController::processMessageInternal(const OSCMessage &)

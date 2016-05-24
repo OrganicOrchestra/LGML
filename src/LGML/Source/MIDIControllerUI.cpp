@@ -12,11 +12,13 @@
 #include "MIDIControllerEditor.h"
 #include "MIDIController.h"
 
+
 MIDIControllerUI::MIDIControllerUI(MIDIController * controller) :
 	ControllerUI(controller),
 	midiController(controller)
 {
 }
+
 
 MIDIControllerUI::~MIDIControllerUI()
 {
@@ -29,5 +31,6 @@ InspectorEditor * MIDIControllerUI::getEditor()
 
 void MIDIControllerUI::currentDeviceChanged(MIDIListener *)
 {
-	nameTF->setSuffix(" [" + midiController->midiPortName + "]");
+	//nameTF->setSuffix(" [" + midiController->midiPortName + "]");
 }
+
