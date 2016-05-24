@@ -19,9 +19,13 @@ OSCControllerEditor::OSCControllerEditor(OSCControllerUI * controllerUI) :
 	remoteHostUI = oscController->remoteHostParam->createStringParameterUI();
 	remotePortUI = oscController->remotePortParam->createStringParameterUI();
 
+    logIncomingOSC = oscController->logIncomingOSC->createToggle();
+
+
 	addAndMakeVisible(localPortUI);
 	addAndMakeVisible(remoteHostUI);
 	addAndMakeVisible(remotePortUI);
+    addAndMakeVisible(logIncomingOSC);
 
 	addAndMakeVisible(innerContainer);
 }
@@ -38,7 +42,9 @@ void OSCControllerEditor::resized()
 	remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));
 	r.removeFromTop(2);
 	remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()));
-	r.removeFromTop(10);
+	r.removeFromTop(2);
+    logIncomingOSC->setBounds(r.removeFromTop(20));
+
 
 	innerContainer.setBounds(r);
 

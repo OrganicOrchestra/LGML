@@ -70,13 +70,13 @@ void NodeContainer::clear(bool recreateContainerNodes)
 }
 
 
-ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeName)
+ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeName,bool callNodeAddedNow)
 {
     ConnectableNode * n = NodeFactory::createNode(nodeType);
-    return addNode(n,nodeName);
+    return addNode(n,nodeName,callNodeAddedNow);
 }
 
-ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName)
+ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName,bool callNodeAddedNow)
 {
     nodes.add(n);
     n->setParentNodeContainer(this);
@@ -96,7 +96,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
     n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
     addChildControllableContainer(n); //ControllableContainer
-    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
+   if(callNodeAddedNow) nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
     return n;
 }
 
@@ -249,8 +249,8 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData, const String &bas
 {
     NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
 
-    ConnectableNode * node = addNode(nodeType, baseName);
-    String newNodeName = node->niceName;
+    ConnectableNode * node = addNode(nodeType, baseName,false);
+//    String newNodeName = node->niceName;
 
     if (node->type == NodeType::ContainerInType)
     {
@@ -262,7 +262,10 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData, const String &bas
         containerOutNode->addRMSListener(this);
     }
 
+    // @ben
     node->loadJSONData(nodeData);
+
+    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
 
     // @ ben why??? name should be updated from loadJSONData
     // it erase custom names

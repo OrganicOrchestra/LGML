@@ -167,7 +167,7 @@ public:
 
 	OwnedArray<Data> inputDatas;
 	OwnedArray<Data> outputDatas;
-	
+
 
 	Data * addInputData(const String &name, DataType type);
 	Data * addOutputData(const String &name, DataType type);

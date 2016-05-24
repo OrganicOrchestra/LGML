@@ -10,7 +10,7 @@
 
 #include "OSCDirectController.h"
 #include "NodeManager.h"
-
+#include "DebugHelpers.h"
 OSCDirectController::OSCDirectController() :
     OSCDirectController("OSC Direct Controller")
 {

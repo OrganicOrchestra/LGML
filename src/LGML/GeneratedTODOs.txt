@@ -7,6 +7,11 @@
  ///////////////////////////////////////
 
 
+NodeContainer.h
+	line : 63
+		//@ben callNodeAdded allow caller to call it later when lode is fully modified (needed for valid uid when filling preset comboboxes
+
+
 JsEnvironment.cpp
 	line : 296
 		// @ben only supported if move semantics are too are they for you?
@@ -97,14 +102,17 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 400
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
+	line : 264
+		// @ben
 
 	line : 226
 		// TODO nicely handle file format errors?
 
-	line : 266
+	line : 403
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
+
+	line : 269
 		// @ ben why??? name should be updated from loadJSONData
 		// it erase custom names
 		//	node->nameParam->setValue(newNodeName);
@@ -132,7 +140,7 @@ VSTNode.cpp
 
 
 NodeBase.cpp
-	line : 95
+	line : 98
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 

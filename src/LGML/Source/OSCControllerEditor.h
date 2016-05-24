@@ -29,6 +29,7 @@ public:
 	ScopedPointer<StringParameterUI> localPortUI;
 	ScopedPointer<StringParameterUI> remoteHostUI;
 	ScopedPointer<StringParameterUI> remotePortUI;
+    ScopedPointer<BoolToggleUI> logIncomingOSC;
 
 	Component innerContainer;
 

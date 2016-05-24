@@ -195,8 +195,8 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
 			vuMeterOut.setVoldB(0);
 
 		}
-		
-		
+
+
 		Colour c = !node->enabledParam->boolValue() ? Colour(0xff3cacd5) : Colours::lightgreen;
 		Colour c2 = !node->enabledParam->boolValue() ? Colours::blue.brighter(.6f) : Colours::red;
 		vuMeterIn.colorLow = c;

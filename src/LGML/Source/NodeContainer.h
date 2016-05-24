@@ -61,8 +61,9 @@ public:
 	OwnedArray<NodeConnection> connections;
 	OwnedArray<NodeContainer> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
 
-	ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty);
-	ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty);
+    //@ben callNodeAdded allow caller to call it later when lode is fully modified (needed for valid uid when filling preset comboboxes
+    ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty,bool callNodeAddedNow=true);
+	ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty,bool callNodeAddedNow=true);
 	bool removeNode(ConnectableNode * n);
 
 	ConnectableNode * getNodeForName(const String &name);

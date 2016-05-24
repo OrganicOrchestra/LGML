@@ -21,6 +21,8 @@ OSCController::OSCController(const String &_name) :
     remoteHostParam = addStringParameter("Remote Host", "The host's IP of the remote controller","127.0.0.1");
     remotePortParam = addStringParameter("Remote Port", "The port bound by the controller to send OSC to it","8000");
 
+    logIncomingOSC = addBoolParameter("logIncomingOSC", "log the incoming OSC Messages", false);
+
     setupReceiver();
     setupSender();
 
@@ -55,8 +57,21 @@ void OSCController::setupSender()
 
 void OSCController::processMessage(const OSCMessage & msg)
 {
-	if (!enabledParam->boolValue()) return;
+    if (logIncomingOSC->boolValue())
+    {
+        String log;
+        log = msg.getAddressPattern().toString()+":";
+        for(int i = 0 ; i < msg.size() ; i++){
+            OSCArgument a = msg[i];
+            if(a.isInt32())log+=String(msg[i].getInt32())+" ";
+            else if(a.isFloat32())log+=String(msg[i].getFloat32())+" ";
+            else if(a.isString())log+=String(msg[i].getString())+" ";
 
+        }
+        NLOG(niceName,log);
+
+    }
+	if (!enabledParam->boolValue()) return;
 	bool result = processMessageInternal(msg);
 	oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
 

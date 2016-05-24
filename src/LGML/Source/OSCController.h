@@ -28,6 +28,7 @@ public:
     StringParameter * localPortParam;
     StringParameter * remoteHostParam;
     StringParameter * remotePortParam;
+    BoolParameter * logIncomingOSC;
 
     void setupReceiver();
     void setupSender();

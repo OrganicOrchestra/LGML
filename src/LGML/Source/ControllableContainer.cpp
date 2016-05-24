@@ -481,6 +481,8 @@ var ControllableContainer::getJSONData()
     }
 
 
+    data.getDynamicObject()->setProperty("uid",uid.toString());
+
     data.getDynamicObject()->setProperty(paramIdentifier, paramsData);
 
     return data;
@@ -508,7 +510,7 @@ void ControllableContainer::loadJSONData(var data)
                 p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
             }
             else {
-                NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);	
+                NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
             }
         }
     }

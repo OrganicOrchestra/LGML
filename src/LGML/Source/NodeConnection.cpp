@@ -57,7 +57,7 @@ NodeConnection::~NodeConnection()
 
 bool NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
-    
+
     bool result = NodeManager::getInstance()->audioGraph.addConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
 	if (result)
 	{

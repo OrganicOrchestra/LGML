@@ -67,6 +67,7 @@ void PresetManager::fillWithPresets(ComboBox * cb, String filter)
 	int pIndex = 1;
     for (auto &pre : presets)
     {
+
         if (pre->filter == filter)
         {
             pre->presetId = pIndex;
