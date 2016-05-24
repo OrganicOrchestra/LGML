@@ -290,7 +290,7 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 	for (int j = 0; j <numSamples; ++j)
 	{
 		float s = 0;
-		for (int i = numChannels - 1; i >0; --i)
+		for (int i = numChannels - 1; i >=0; --i)
 			s = jmax(s, std::abs(buffer.getSample(i, j)));
 
 

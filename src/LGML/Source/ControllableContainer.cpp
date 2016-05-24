@@ -543,6 +543,3 @@ String ControllableContainer::getUniqueNameInContainer(const String & sourceName
 
     return resultName;
 }
-
-
-
