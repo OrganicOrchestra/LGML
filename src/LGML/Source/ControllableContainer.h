@@ -55,6 +55,7 @@ public:
     void setCustomShortName(const String &_shortName);
     void setAutoShortName();
 
+	Uuid uid;
 
     OwnedArray<Controllable> controllables;
     Array<ControllableContainer * > controllableContainers;
@@ -98,6 +99,7 @@ public:
 
 
     PresetManager::Preset * currentPreset;
+	virtual bool loadPresetWithName(const String &name);
     virtual bool loadPreset(PresetManager::Preset * preset);
 	virtual void saveNewPreset(const String &name);
     virtual bool saveCurrentPreset();

@@ -16,6 +16,7 @@ NodeContainerUI::NodeContainerUI(NodeContainer * nc) :
 	nodeContainer(nc)
 {
 	recursiveInspectionLevel = 2;
+	setSize(250, 100);
 }
 
 NodeContainerUI::~NodeContainerUI()

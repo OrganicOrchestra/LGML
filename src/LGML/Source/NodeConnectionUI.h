@@ -60,8 +60,6 @@ public:
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
 	bool keyPressed(const KeyPress &key) override;
-	void focusGained(FocusChangeType) override { DBG("Focus Gained"); }
-	void focusLost(FocusChangeType) override { DBG("Focus Lost"); }
 
 	void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
 

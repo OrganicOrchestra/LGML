@@ -33,10 +33,10 @@ VuMeter.h
 
 
 ControllableContainer.cpp
-	line : 405
+	line : 409
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 103
+	line : 102
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
 
@@ -94,17 +94,17 @@ MIDIController.cpp
 
 
 NodeContainer.cpp
-	line : 192
-		// TODO nicely handle file format errors?
-
-	line : 232
+	line : 268
 		// @ ben why??? name should be updated from loadJSONData
 		// it erase custom names
 		//	node->nameParam->setValue(newNodeName);
 
-	line : 366
+	line : 402
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
+
+	line : 228
+		// TODO nicely handle file format errors?
 
 
 TimeManager.h
@@ -134,7 +134,7 @@ NodeBase.cpp
 
 
 ControllableContainer.h
-	line : 125
+	line : 127
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)

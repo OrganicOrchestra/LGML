@@ -107,7 +107,6 @@ public:
     virtual ~PresetManager();
 
     Preset * addPresetFromControllableContainer(const String &name, const String & filter, ControllableContainer * container, bool recursive = false, bool includeNotExposed = false);
-    ComboBox * getPresetSelector(String filter);
     Preset * getPreset(String filter, const String &name);
     void fillWithPresets(ComboBox * cb, String filter);
 

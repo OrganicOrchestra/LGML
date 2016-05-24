@@ -33,7 +33,6 @@ canHavePresets(true),
 saveAndLoadRecursiveData(true),
 numContainerIndexed(0),
 localIndexedPosition(-1)
-
 {
     setNiceName(niceName);
 }
@@ -333,6 +332,13 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
 }
 
 
+bool ControllableContainer::loadPresetWithName(const String & name)
+{
+	PresetManager::Preset * preset = PresetManager::getInstance()->getPreset(getPresetFilter(), name);
+	if (preset == nullptr) return false;
+	return loadPreset(preset);
+}
+
 bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 {
     if (preset == nullptr) return false;
@@ -391,8 +397,6 @@ var ControllableContainer::getPresetValueFor(Parameter * p)
     if (currentPreset == nullptr) return var();
     return currentPreset->getPresetValue(p->getControlAddress(this));
 }
-
-
 
 
 String ControllableContainer::getPresetFilter()
@@ -480,9 +484,10 @@ var ControllableContainer::getJSONData()
 
 void ControllableContainer::loadJSONData(var data)
 {
+	if (data.getDynamicObject()->hasProperty("uid")) uid = data.getDynamicObject()->getProperty("uid");
     if (data.getDynamicObject()->hasProperty(presetIdentifier))
     {
-        loadPreset(PresetManager::getInstance()->getPreset(getPresetFilter(), data.getDynamicObject()->getProperty("preset")));
+        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
     }
 
     Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();

@@ -78,6 +78,13 @@ public:
 
 	int getNumNodes() const noexcept { return nodes.size(); }
 
+	//Preset
+	virtual bool loadPreset(PresetManager::Preset * preset) override;
+	virtual void saveNewPreset(const String &name) override;
+	virtual bool saveCurrentPreset() override;
+	virtual bool resetFromPreset() override;
+	virtual String getPresetFilter() override;
+
 	//save / load
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
