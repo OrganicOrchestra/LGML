@@ -39,7 +39,7 @@ void VSTNodeContentUI::init() {
 	activityBlink->showLabel = false;
 	addAndMakeVisible(activityBlink);
 
-	
+
 	updateVSTParameters();
 	setSize(250, 100);
 
