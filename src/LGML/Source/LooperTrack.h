@@ -82,7 +82,7 @@ public:
     public:
 
         /** Destructor. */
-        virtual ~Listener() {}
+        virtual ~Listener() {cancelPendingUpdate();}
         //                called from here
         void internalTrackStateChanged(const TrackState &state) {
             stateToBeNotified = state;

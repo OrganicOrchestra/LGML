@@ -27,6 +27,7 @@ NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl)
 NodeBase::~NodeBase()
 {
     NodeBase::masterReference.clear();
+    cancelPendingUpdate();
 	clear();
 }
 

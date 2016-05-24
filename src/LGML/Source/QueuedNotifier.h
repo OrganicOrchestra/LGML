@@ -18,7 +18,7 @@ class QueuedNotifier:public  AsyncUpdater{
 public:
 
     QueuedNotifier(){}
-    virtual ~QueuedNotifier() {}
+    virtual ~QueuedNotifier() {cancelPendingUpdate();}
 
 
 
