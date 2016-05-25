@@ -27,7 +27,8 @@ MainContentComponent::MainContentComponent(Engine * e):
     setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
 
 	addAndMakeVisible(&ShapeShifterManager::getInstance()->mainContainer);
-	ShapeShifterManager::getInstance()->loadDefaultLayoutFile();
+
+	ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
 
     (&getCommandManager())->registerAllCommandsForTarget (this);
     (&getCommandManager())-> setFirstCommandTarget(this);

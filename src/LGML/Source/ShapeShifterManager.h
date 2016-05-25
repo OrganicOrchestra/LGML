@@ -50,8 +50,11 @@ public:
 	void loadLayout(var layoutObject);
 	var getCurrentLayout();
 	void loadLayoutFromFile(int fileIndexInLayoutFolder =-1);
+	void loadLayoutFromFile(const File &fromFile);
+	void loadLastSessionLayoutFile();
 	void loadDefaultLayoutFile();
 	void saveCurrentLayout();
+	void saveCurrentLayoutToFile(const File &toFile);
 	Array<File> getLayoutFiles();
 
 	void clearAllPanelsAndWindows();

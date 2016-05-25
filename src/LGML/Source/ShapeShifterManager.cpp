@@ -24,6 +24,9 @@ ShapeShifterManager::ShapeShifterManager() :
 ShapeShifterManager::~ShapeShifterManager()
 {
 	openedWindows.clear();
+	File lastFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile("LGML/layouts/_lastSession.lgmllayout");
+	saveCurrentLayoutToFile(lastFile);
+
 }
 
 void ShapeShifterManager::setCurrentCandidatePanel(ShapeShifterPanel * panel)
@@ -70,7 +73,6 @@ ShapeShifterPanel * ShapeShifterManager::createPanel(ShapeShifterContent * conte
 
 void ShapeShifterManager::removePanel(ShapeShifterPanel * panel)
 {
-	DBG("Remove Panel");
 	panel->removeShapeShifterPanelListener(this);
 	openedPanels.removeObject(panel, true);
 }
@@ -97,7 +99,6 @@ ShapeShifterWindow * ShapeShifterManager::showPanelWindowForContent(PanelName pa
 
 void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window, bool doRemovePanel)
 {
-	DBG("Remove Window");
 	if (window == nullptr) return;
 	ShapeShifterPanel * p = window->panel;
 	window->removeFromDesktop();
@@ -175,7 +176,6 @@ void ShapeShifterManager::loadLayout(var layout)
 			ShapeShifterPanel * p = createPanel(nullptr);
 			p->loadLayout(d->getProperty("panel"));
 			Rectangle<int> bounds(d->getProperty("x"),d->getProperty("y"),d->getProperty("width"),d->getProperty("height"));
-			DBG("Window bounds " << bounds.toString());
 			showPanelWindow(p,bounds);
 		}
 	}
@@ -212,19 +212,33 @@ void ShapeShifterManager::loadLayoutFromFile(int fileIndexInLayoutFolder)
 		FileChooser fc("Load layout", destDir, "*.lgmllayout");
 		if (!fc.browseForFileToOpen()) return;
 		layoutFile = fc.getResult();
-	}
-	else
+	} else
 	{
 		Array<File> layoutFiles = getLayoutFiles();
 		layoutFile = layoutFiles[fileIndexInLayoutFolder];
 	}
 
+	loadLayoutFromFile(layoutFile);
+}
 
-	ScopedPointer<InputStream> is(layoutFile.createInputStream());
+void ShapeShifterManager::loadLayoutFromFile(const File & fromFile)
+{
+	ScopedPointer<InputStream> is(fromFile.createInputStream());
 	var data = JSON::parse(*is);
 	loadLayout(data);
+}
 
-	NLOG("SS", "Layout loaded");
+void ShapeShifterManager::loadLastSessionLayoutFile()
+{
+	File lastFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile("LGML/layouts/_lastSession.lgmllayout");
+	if (lastFile.exists())
+	{
+		loadLayoutFromFile(lastFile);
+	} else
+	{
+
+		loadDefaultLayoutFile();
+	}
 }
 
 void ShapeShifterManager::loadDefaultLayoutFile()
@@ -241,18 +255,22 @@ void ShapeShifterManager::saveCurrentLayout()
 	FileChooser fc("Save layout", destDir, "*.lgmllayout");
 	if (fc.browseForFileToSave(true))
 	{
-		File layoutFile = fc.getResult();
-		if (layoutFile.exists())
-		{
-			layoutFile.deleteFile();
-			layoutFile.create();
-		}
-		ScopedPointer<OutputStream> os(layoutFile.createOutputStream());
-		JSON::writeToStream(*os, getCurrentLayout());
-		os->flush();
+		saveCurrentLayoutToFile(fc.getResult());
+		
+	}
+}
+
+void ShapeShifterManager::saveCurrentLayoutToFile(const File &toFile)
+{
+	if (toFile.exists())
+	{
+		toFile.deleteFile();
+		toFile.create();
 	}
 
-	NLOG("SS","Layout saved");
+	ScopedPointer<OutputStream> os(toFile.createOutputStream());
+	JSON::writeToStream(*os, getCurrentLayout());
+	os->flush();
 }
 
 Array<File> ShapeShifterManager::getLayoutFiles()
