@@ -224,6 +224,9 @@ void NodeConnectionUI::updateBoundsFromNodes()
     if (!isEditing())
     {
         Component * nmui = getNodeManagerUI();
+		if (nmui == nullptr) return;
+		if (sourceConnector == nullptr || destConnector == nullptr) return;
+
         Point<int> cPos = nmui->getLocalPoint(sourceConnector, sourceConnector->getLocalBounds().getCentre());
         Point<int> mPos = nmui->getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre());
 

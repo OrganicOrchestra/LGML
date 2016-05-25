@@ -301,10 +301,10 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 	// faster implementation taken from juce Device Settings input meter
 	
 	float globalS = 0;
-	float s = 0;
 	for (int i = numChannels - 1; i >= 0; --i)
 	{
 		
+		float s = 0;
 		for (int j = 0; j < numSamples; ++j)
 		{
 			s = jmax(s, std::abs(buffer.getSample(i, j)));
