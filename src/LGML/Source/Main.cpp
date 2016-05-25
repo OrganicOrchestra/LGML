@@ -98,7 +98,7 @@ public:
             setContentOwned (mainComponent, true);
             setResizable (true, true);
 
-            centreWithSize (getWidth(), getHeight());
+            setBounds (50,50,getWidth(), getHeight());
             setVisible (true);
 
 #if JUCE_WINDOWS

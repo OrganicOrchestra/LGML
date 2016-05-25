@@ -82,16 +82,3 @@ void LGML::updateInputValue(int inputIndex, float value)
   values[inputIndex] = value;
 }
   
-/*
-void LGML::updateInputValue(String name, float value)
-{
-  if(!isIdentified) return;
-  
-  serial.print("u "); //update
-  serial.print(name);
-  serial.print(" ");
-  serial.print(value);
-  serial.print("\n");
-}
-*/
-  

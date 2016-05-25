@@ -34,6 +34,14 @@ public:
 	void buildLocalEnv() override;
 	static var sendMessageFromScript(const var::NativeFunctionArgs & v);
 
+	//Device info
+	String deviceID;
+
+	//LGML Serial functions
+
+	void sendIdentificationQuery();
+	virtual void processMessage(const String &message);
+
 	// Inherited via SerialPortListener
 
 	virtual void portOpened(SerialPort *) override;

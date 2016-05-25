@@ -42,6 +42,7 @@ void TriggerBlinkUI::setTriggerReference(Trigger * t) {
 
 void TriggerBlinkUI::triggerTriggered(Trigger *) {
     startBlink();
+	
 }
 
 void TriggerBlinkUI::paint(Graphics& g)
@@ -50,13 +51,18 @@ void TriggerBlinkUI::paint(Graphics& g)
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
     g.setFont(10);
     g.setColour(Colours::white.darker(.1f));
-    if(showLabel) g.drawFittedText(trigger->niceName, getLocalBounds().reduced(2), Justification::centred,1);
+	if (showLabel)
+	{
+		g.drawFittedText(trigger->niceName, getLocalBounds().reduced(2), Justification::centred, 1);
+	}
 }
 
 
 void TriggerBlinkUI::startBlink(){
     intensity = 1;
-    startTimer(animateIntensity?refreshPeriod:blinkTime);
+	if (!animateIntensity) repaint();
+	startTimer(animateIntensity ? refreshPeriod : blinkTime);	
+   
 }
 
 void TriggerBlinkUI::timerCallback(){
@@ -72,6 +78,7 @@ void TriggerBlinkUI::timerCallback(){
 	} else
 	{
 		intensity = 0;
+		stopTimer();
 	}
 
     repaint();

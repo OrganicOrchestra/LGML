@@ -9,15 +9,16 @@
 */
 
 #include "SerialControllerEditor.h"
+#include "FloatSliderUI.h"
 
 SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI) :
 	CustomEditor(controllerUI),
 	serialController(controllerUI->serialController)
 {
+	serialController->addControllerListener(this);
+
 	addAndMakeVisible(deviceChooser);
 	deviceChooser.addListener(this);
-
-
 
 	addAndMakeVisible(&connectPortBT);
 	connectPortBT.addListener(this);
@@ -25,11 +26,45 @@ SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI
 	serialController->addSerialControllerListener(this);
 
 	updateConnectBTAndIndic();
+
+	for (auto &v : serialController->variables)
+	{
+		addVariableUI(v);
+	}
 }
 
 SerialControllerEditor::~SerialControllerEditor()
 {
+	serialController->removeControllerListener(this);
 	serialController->removeSerialControllerListener(this);
+}
+
+void SerialControllerEditor::addVariableUI(ControlVariable * v)
+{
+	ParameterUI * vui = (ParameterUI *)v->parameter->createDefaultUI();
+	variablesUI.add(vui);
+	addAndMakeVisible(vui);
+	resized();
+}
+
+void SerialControllerEditor::removeVariableUI(ControlVariable * v)
+{
+	ParameterUI * vui = getUIForVariable(v);
+	if (vui != nullptr)
+	{
+		removeChildComponent(vui);
+		variablesUI.removeObject(vui);
+	}
+	resized();
+}
+
+ParameterUI * SerialControllerEditor::getUIForVariable(ControlVariable * v)
+{
+	for (auto & vui : variablesUI)
+	{
+		if (vui->parameter == v->parameter) return vui;
+	}
+	return nullptr;
 }
 
 void SerialControllerEditor::paint(Graphics & g)
@@ -51,6 +86,13 @@ void SerialControllerEditor::resized()
 	Rectangle<int> connectR = r.removeFromTop(20);
 	connectR.removeFromRight(40);
 	connectPortBT.setBounds(connectR);
+
+	r.removeFromTop(20);
+	for (auto &vui : variablesUI)
+	{
+		vui->setBounds(r.removeFromTop(10));
+		r.removeFromTop(2);
+	}
 }
 
 void SerialControllerEditor::updateConnectBTAndIndic()
@@ -91,7 +133,7 @@ void SerialControllerEditor::buttonClicked(Button * b)
 		}
 
 		updateConnectBTAndIndic();
-	}
+	} 
 }
 
 void SerialControllerEditor::portOpened()
@@ -107,4 +149,14 @@ void SerialControllerEditor::portClosed()
 void SerialControllerEditor::currentPortChanged()
 {
 	updateConnectBTAndIndic();
+}
+
+void SerialControllerEditor::variableAdded(Controller *, ControlVariable *v)
+{
+	addVariableUI(v);
+}
+
+void SerialControllerEditor::variableRemoved(Controller *, ControlVariable *v)
+{
+	removeVariableUI(v);
 }

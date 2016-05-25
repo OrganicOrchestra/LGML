@@ -54,8 +54,6 @@ void Engine::parseCommandline(const String & commandLine){
 	args.addTokens (commandLine, true);
     args.trim();
 
-	DBG("Parse commandline : " << args[0]);
-
     int parsingIdx=0;
     while(parsingIdx<args.size())
 	{

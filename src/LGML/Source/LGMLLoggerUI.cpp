@@ -51,7 +51,7 @@ void LGMLLoggerUI::newMessage(const String & s)
 
 };
 void LGMLLoggerUI::handleAsyncUpdate(){
-	DBG("Handle Async Update");
+	//DBG("Handle Async Update");
     logListComponent->updateContent();
     logListComponent->scrollToEnsureRowIsOnscreen(totalLogRow-1);
 	repaint();

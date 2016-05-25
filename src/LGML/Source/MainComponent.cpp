@@ -48,8 +48,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
     //e->initAudio();
 
-	setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.9f));
-
+	setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.6f));
 }
 
 

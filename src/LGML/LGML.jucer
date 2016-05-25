@@ -40,6 +40,8 @@
           <FILE id="v0kT6w" name="SerialManager.cpp" compile="1" resource="0"
                 file="Source/SerialManager.cpp"/>
           <FILE id="ntbM8q" name="SerialManager.h" compile="0" resource="0" file="Source/SerialManager.h"/>
+          <FILE id="FWkPgS" name="SerialPort.cpp" compile="1" resource="0" file="Source/SerialPort.cpp"/>
+          <FILE id="QobZAq" name="SerialPort.h" compile="0" resource="0" file="Source/SerialPort.h"/>
           <FILE id="FrjdRt" name="SerialUIHelper.cpp" compile="1" resource="0"
                 file="Source/SerialUIHelper.cpp"/>
           <FILE id="x2QjdS" name="SerialUIHelper.h" compile="0" resource="0"

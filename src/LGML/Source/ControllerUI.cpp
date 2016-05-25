@@ -37,7 +37,6 @@ ControllerUI::ControllerUI(Controller * controller) :
 
 
 	activityBlink = controller->activityTrigger->createBlinkUI();
-	//activityBlink->animateIntensity = false;
 	activityBlink->showLabel = false;
 	addAndMakeVisible(activityBlink);
 }

@@ -20,7 +20,8 @@
 class SerialControllerEditor :
 	public CustomEditor, ComboBoxListener,
 	public SerialController::SerialControllerListener,
-	public ButtonListener
+	public ButtonListener,
+	public Controller::ControllerListener
 {
 public:
 	SerialControllerEditor(SerialControllerUI * controllerUI);
@@ -30,6 +31,12 @@ public:
 
 	SerialController * serialController;
 	TextButton connectPortBT;
+
+	OwnedArray<ParameterUI> variablesUI;
+
+	void addVariableUI(ControlVariable *);
+	void removeVariableUI(ControlVariable *);
+	ParameterUI * getUIForVariable(ControlVariable *);
 
 	void paint(Graphics &g) override;
 	void resized() override;
@@ -43,6 +50,8 @@ public:
 	void portClosed() override;
 	void currentPortChanged() override;
 
+	void variableAdded(Controller *, ControlVariable * ) override;
+	void variableRemoved(Controller *, ControlVariable *) override;
 
 };
 

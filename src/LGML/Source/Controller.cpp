@@ -77,7 +77,6 @@ void Controller::addVariable(Parameter * p)
 
 void Controller::removeVariable(ControlVariable * v)
 {
-	NLOG("Controller", "removeVariable");
 	v->removeControlVariableListener(this);
 	controllerListeners.call(&ControllerListener::variableRemoved, this, v);
 	variables.removeObject(v);
@@ -90,6 +89,15 @@ ControlVariable * Controller::getVariableForAddress(const String & address)
 		if (v->parameter->controlAddress == address) return v;
 	}
 
+	return nullptr;
+}
+
+ControlVariable * Controller::getVariableForName(const String & name)
+{
+	for (auto &v : variables)
+	{
+		if (v->parameter->niceName == name) return v;
+	}
 	return nullptr;
 }
 

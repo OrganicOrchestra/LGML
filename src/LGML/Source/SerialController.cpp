@@ -41,6 +41,7 @@ void SerialController::setCurrentPort(SerialPort * _port)
 	{
 		port->addSerialPortListener(this);
 		lastOpenedPortID = port->info->hardwareID;
+		sendIdentificationQuery();
 	}
 
 	serialControllerListeners.call(&SerialControllerListener::currentPortChanged);
@@ -59,8 +60,7 @@ void SerialController::portOpened(SerialPort *)
 {
 	serialControllerListeners.call(&SerialControllerListener::portOpened);
 
-	//tmp
-	port->writeString("i");
+	sendIdentificationQuery();
 }
 
 void SerialController::portClosed(SerialPort *)
@@ -75,12 +75,51 @@ void SerialController::portRemoved(SerialPort *)
 
 void SerialController::serialDataReceived(const var & data)
 {
-	DBG("Data received in controller : " << data.toString());
+	activityTrigger->trigger();
+	processMessage(data.toString());
 }
 
 var SerialController::sendMessageFromScript(const var::NativeFunctionArgs &) {
 	//    SerialController * c = getObjectPtrFromJS<SerialController>(a);
 	return var::undefined();
+}
+
+void SerialController::sendIdentificationQuery()
+{
+	port->writeString("i");
+}
+
+void SerialController::processMessage(const String & message)
+{
+	StringArray split;
+	split.addTokens(message.removeCharacters("\n"),true);
+	String command = split[0];
+	if (command == "i")
+	{
+		//identification
+		deviceID = split[1];
+		while (variables.size() > 0) removeVariable(variables[0]);
+
+	} else if (command == "a")
+	{
+		if (getVariableForName(split[1]) == nullptr)
+		{
+			addVariable(new FloatParameter(split[1], split[1], 0));
+		}
+	} else if (command == "d")
+	{
+		if (getVariableForName(split[1]) == nullptr)
+		{
+			addVariable(new BoolParameter(split[1], split[1], false));
+		}
+	} else if (command == "u")
+	{
+		ControlVariable *  v = getVariableForName(split[1]);
+		if (v != nullptr)
+		{
+			v->parameter->setValue(split[2].getFloatValue());
+		}
+	}
 }
 
 ControllerUI * SerialController::createUI()
