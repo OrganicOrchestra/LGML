@@ -29,7 +29,6 @@ AudioDeviceInNodeContentUI::~AudioDeviceInNodeContentUI()
 
 void AudioDeviceInNodeContentUI::init()
 {
-	DBG("HERE");
 	audioInNode = (AudioDeviceInNode *)node;
 	audioInNode->addNodeBaseListener(this);
 	updateVuMeters();
