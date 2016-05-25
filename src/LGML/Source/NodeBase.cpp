@@ -334,7 +334,7 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 
 void NodeBase::handleAsyncUpdate()
 {
-	rmsListeners.call(&RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut);
+	rmsListeners.call(&RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut); 
 	for (int i = 0; i < getTotalNumInputChannels(); i++)
 	{
 		rmsListeners.call(&RMSListener::channelRMSInChanged, this, rmsValuesIn[i], i);

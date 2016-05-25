@@ -35,6 +35,10 @@ public:
 
 	void updateVuMeters();
 
+	void addVuMeter();
+	void removeLastVuMeter();
+
+
 	virtual void numAudioOutputChanged(NodeBase *, int newNum) override;
 	//virtual void numAudioOutputChanged() { DBG("Output changed !"); }
 
