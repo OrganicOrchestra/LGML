@@ -27,7 +27,7 @@ void AudioDeviceInNodeContentUI::init()
 	DBG("HERE");
 	audioInNode = (AudioDeviceInNode *)node;
 	audioInNode->addNodeBaseListener(this);
-	numAudioInputChanged();
+	updateVuMeters();
 	
 }
 
@@ -46,19 +46,18 @@ void AudioDeviceInNodeContentUI::resized()
 	}
 }
 
-void AudioDeviceInNodeContentUI::numAudioInputChanged()
+void AudioDeviceInNodeContentUI::updateVuMeters()
 {
-	
-	while (vuMeters.size() < audioInNode->AudioGraphIOProcessor::getTotalNumInputChannels())
+	while (vuMeters.size() < audioInNode->AudioGraphIOProcessor::getTotalNumOutputChannels())
 	{
-		VuMeter * v = new VuMeter(VuMeter::Type::IN);
+		VuMeter * v = new VuMeter(VuMeter::Type::OUT);
 		v->targetChannel = vuMeters.size();
 		audioInNode->addRMSListener(v);
 		addAndMakeVisible(v);
 		vuMeters.add(v);
 	}
 
-	while (vuMeters.size() > audioInNode->NodeBase::getTotalNumInputChannels())
+	while (vuMeters.size() > audioInNode->NodeBase::getTotalNumOutputChannels())
 	{
 		VuMeter * v = vuMeters[vuMeters.size() - 1];
 		audioInNode->removeRMSListener(v);
@@ -68,4 +67,10 @@ void AudioDeviceInNodeContentUI::numAudioInputChanged()
 
 	DBG("Num audio input changed AUI < " << vuMeters.size());
 	resized();
+}
+
+void AudioDeviceInNodeContentUI::numAudioOutputChanged(NodeBase *, int)
+{
+	
+	updateVuMeters();
 }

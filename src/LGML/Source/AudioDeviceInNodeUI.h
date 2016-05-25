@@ -33,9 +33,10 @@ public:
 
 	void resized() override;
 
-	//
-	virtual void numAudioInputChanged();
-	virtual void numAudioOutputChanged() { DBG("Output changed !"); }
+	void updateVuMeters();
+
+	virtual void numAudioOutputChanged(NodeBase *, int newNum) override;
+	//virtual void numAudioOutputChanged() { DBG("Output changed !"); }
 
 };
 

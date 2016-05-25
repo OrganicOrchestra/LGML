@@ -24,6 +24,8 @@ NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl)
 	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
 	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
 
+	DBG("Node Base constructor, get total " << getTotalNumInputChannels());
+
 }
 
 
@@ -298,24 +300,32 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 #else
 	// faster implementation taken from juce Device Settings input meter
 	
+	float globalS = 0;
+	float s = 0;
 	for (int i = numChannels - 1; i >= 0; --i)
 	{
-		float s = 0;
+		
 		for (int j = 0; j < numSamples; ++j)
 		{
 			s = jmax(s, std::abs(buffer.getSample(i, j)));
 		}
 
 		targetRMSChannelValues.set(i, s);
-
-		const double decayFactor = 0.99992;
-		if (s > targetRmsValue)
-			targetRmsValue = s;
-		else if (targetRmsValue > 0.001f)
-			targetRmsValue *= (float)decayFactor;
-		else
-			targetRmsValue = 0;
+		globalS = jmax(s, globalS);
 	}
+
+	targetRmsValue = globalS;
+
+	/*
+	const double decayFactor = 0.99992;
+	if (globalS > targetRmsValue)
+		targetRmsValue = globalS;
+	else if (targetRmsValue > 0.001f)
+		targetRmsValue *= (float)decayFactor;
+	else
+		targetRmsValue = 0;
+		*/
+
 #endif
 
 
