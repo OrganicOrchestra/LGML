@@ -12,12 +12,15 @@
 #define VUMETER_H_INCLUDED
 
 #include "NodeBase.h"
+#include "Style.h"
 
 //TODO, move to more common place for use in other components
 class VuMeter : public Component, public NodeBase::RMSListener ,Timer{
 public:
 
 	enum Type { IN,OUT};
+
+	int targetChannel;
 
     float voldB;
 	Type type;
@@ -28,6 +31,7 @@ public:
 
     VuMeter(Type _type) : type(_type)
 	{
+		targetChannel = -1;
         setSize(8, 20);
         voldB = 0.f;
         volChanged = true;
@@ -52,18 +56,32 @@ public:
         }
     }
 
+	void updateValue(float value)
+	{
+		float newVoldB = jmap<float>(20.0f*log10(value / 0.74f), 0.0f, 6.0f, 0.85f, 1.0f);
+
+		if (newVoldB >= 0 && std::abs(newVoldB - voldB)>0.02f) {
+			setVoldB(newVoldB);
+		}
+	}
 
     void RMSChanged(ConnectableNode *, float rmsIn,float rmsOut) override {
 
+		if (targetChannel > -1) return;
+
 		float rms = (type == Type::IN) ? rmsIn : rmsOut;
 
-        float newVoldB = jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,0.85f,1.0f);
-
-        if(newVoldB >= 0 && std::abs(newVoldB-voldB)>0.02f){
-			setVoldB(newVoldB);
-
-        }
+		updateValue(rms);
     };
+
+	void channelRMSInChanged(ConnectableNode *, float rmsIn, int channel) override 
+	{
+		if (targetChannel == channel && type == Type::IN) updateValue(rmsIn);
+	}
+	void channelRMSOutChanged(ConnectableNode *, float rmsOut, int channel) override 
+	{
+		if (targetChannel == channel && type == Type::OUT) updateValue(rmsOut);
+	}
 
 	void setVoldB(float value)
 	{

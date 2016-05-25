@@ -135,16 +135,18 @@ public:
 	virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/ , MidiBuffer& /*midiMessage*/ ) {};
 
 	//RMS
-	void updateRMS(const AudioBuffer<float>& buffer, float &targetRMSValue);
+	void updateRMS(const AudioBuffer<float>& buffer, float &targetRMSValue, Array<float> &targetRMSValues);
 
-	const float alphaRMSIn = 0.05f;
-	float rmsValueIn = 0.f;
-	const int samplesBeforeRMSInUpdate = 512;
+	const float alphaRMS = 0.05f;
+	const int samplesBeforeRMSUpdate = 512;
 	int curSamplesForRMSInUpdate = 0;
-	const float alphaRMSOut = 0.05f;
-	float rmsValueOut = 0.f;
-	const int samplesBeforeRMSOutUpdate = 512;
 	int curSamplesForRMSOutUpdate = 0;
+	float globalRMSValueIn = 0.f;
+	float globalRMSValueOut = 0.f;
+
+	Array<float> rmsValuesIn;
+	Array<float> rmsValuesOut;
+	
 
 	//Listener are called from non audio thread
 	void handleAsyncUpdate() override;

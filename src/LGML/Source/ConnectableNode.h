@@ -105,6 +105,8 @@ public:
 		/** Destructor. */
 		virtual ~RMSListener() {}
 		virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) = 0;
+		virtual void channelRMSInChanged(ConnectableNode * node, float rmsInValue, int channel) = 0;
+		virtual void channelRMSOutChanged(ConnectableNode * node, float rmsOutValue, int channel) = 0;
 	};
 
 	ListenerList<RMSListener> rmsListeners;

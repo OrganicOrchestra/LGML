@@ -424,6 +424,14 @@ bool NodeContainer::hasDataOutputs()
     return containerOutNode != nullptr ? containerOutNode->hasDataOutputs() : false;
 }
 
+void NodeContainer::channelRMSInChanged(ConnectableNode * , float , int )
+{
+}
+
+void NodeContainer::channelRMSOutChanged(ConnectableNode * , float , int )
+{
+}
+
 
 AudioProcessorGraph::Node * NodeContainer::getAudioNode(bool isInput)
 {

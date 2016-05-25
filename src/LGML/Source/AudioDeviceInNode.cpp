@@ -8,8 +8,10 @@ Author:  Martin Hermant
 ==============================================================================
 */
 
+
 #include "AudioDeviceInNode.h"
 #include "NodeBaseUI.h"
+#include "AudioDeviceInNodeUI.h"
 
 AudioDeviceManager& getAudioDeviceManager();
 
@@ -46,7 +48,7 @@ void AudioDeviceInNode::updateIO() {
 
 
 ConnectableNodeUI * AudioDeviceInNode::createUI() {
-	NodeBaseUI * ui = new NodeBaseUI(this);
+	NodeBaseUI * ui = new NodeBaseUI(this,new AudioDeviceInNodeContentUI());
 	return ui;
 
 }

@@ -510,12 +510,20 @@
                   file="Source/AudioDeviceInNode.cpp"/>
             <FILE id="OqrdZW" name="AudioDeviceInNode.h" compile="0" resource="0"
                   file="Source/AudioDeviceInNode.h"/>
+            <FILE id="LoaIn8" name="AudioDeviceInNodeUI.cpp" compile="1" resource="0"
+                  file="Source/AudioDeviceInNodeUI.cpp"/>
+            <FILE id="LqC06a" name="AudioDeviceInNodeUI.h" compile="0" resource="0"
+                  file="Source/AudioDeviceInNodeUI.h"/>
           </GROUP>
           <GROUP id="{66F2191E-E08B-68BC-4E06-5881A101974F}" name="AudioDeviceOut">
             <FILE id="bZx2fD" name="AudioDeviceOutNode.cpp" compile="1" resource="0"
                   file="Source/AudioDeviceOutNode.cpp"/>
             <FILE id="cr0dso" name="AudioDeviceOutNode.h" compile="0" resource="0"
                   file="Source/AudioDeviceOutNode.h"/>
+            <FILE id="Of2JWJ" name="AudioDeviceOutNodeUI.cpp" compile="1" resource="0"
+                  file="Source/AudioDeviceOutNodeUI.cpp"/>
+            <FILE id="jz5WA9" name="AudioDeviceOutNodeUI.h" compile="0" resource="0"
+                  file="Source/AudioDeviceOutNodeUI.h"/>
           </GROUP>
           <GROUP id="{188EEA22-1910-946C-A8A8-4B25F7BDDA65}" name="DataIn">
             <FILE id="q7jbL6" name="DataInNode.cpp" compile="1" resource="0" file="Source/DataInNode.cpp"/>

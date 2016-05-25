@@ -21,6 +21,9 @@ NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl)
     addToAudioGraph();
 	lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
 
+	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
+	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
+
 }
 
 
@@ -161,10 +164,10 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 	bool doUpdateRMSOut = false;
 
 	if (rmsListeners.size()) {
-		updateRMS(buffer, rmsValueIn);
+		updateRMS(buffer, globalRMSValueIn,rmsValuesIn);
 		curSamplesForRMSInUpdate += buffer.getNumSamples();
 
-		if (curSamplesForRMSInUpdate >= samplesBeforeRMSInUpdate) {
+		if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate) {
 			doUpdateRMSIn = true;
 			curSamplesForRMSInUpdate = 0;
 		}
@@ -187,10 +190,10 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 		}
 
 		if (rmsListeners.size()) {
-			updateRMS(buffer, rmsValueOut);
+			updateRMS(buffer, globalRMSValueOut,rmsValuesOut);
 			curSamplesForRMSOutUpdate += buffer.getNumSamples();
 
-			if (curSamplesForRMSOutUpdate >= samplesBeforeRMSOutUpdate) {
+			if (curSamplesForRMSOutUpdate >= samplesBeforeRMSUpdate) {
 				doUpdateRMSOut = true;
 				curSamplesForRMSOutUpdate = 0;
 			}
@@ -215,9 +218,13 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 
 	int oldNumChannels = getTotalNumInputChannels();
 
+
 	setPlayConfigDetails(num, getTotalNumOutputChannels(),
 		getSampleRate(),
 		getBlockSize());
+
+	rmsValuesIn.clear();
+	for (int i = 0; i < getTotalNumInputChannels(); i++) rmsValuesIn.add(0);
 
 	if (NodeManager::getInstanceWithoutCreating() != nullptr)
 	{
@@ -251,6 +258,10 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 	setPlayConfigDetails(getTotalNumInputChannels(), num,
 		getSampleRate(),
 		getBlockSize());
+
+	rmsValuesOut.clear();
+	for (int i = 0; i < getTotalNumOutputChannels(); i++) rmsValuesIn.add(0);
+	
 	if (NodeManager::getInstanceWithoutCreating() != nullptr)
 	{
         NodeManager::getInstance()->updateAudioGraph();
@@ -276,7 +287,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 	return true;
 }
 
-void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue) {
+void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues) {
 	int numSamples = buffer.getNumSamples();
 	int numChannels = buffer.getNumChannels();
 
@@ -286,12 +297,16 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 	}
 #else
 	// faster implementation taken from juce Device Settings input meter
-	for (int j = 0; j <numSamples; ++j)
+	
+	for (int i = numChannels - 1; i >= 0; --i)
 	{
 		float s = 0;
-		for (int i = numChannels - 1; i >=0; --i)
+		for (int j = 0; j < numSamples; ++j)
+		{
 			s = jmax(s, std::abs(buffer.getSample(i, j)));
+		}
 
+		targetRMSChannelValues.set(i, s);
 
 		const double decayFactor = 0.99992;
 		if (s > targetRmsValue)
@@ -309,7 +324,16 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 
 void NodeBase::handleAsyncUpdate()
 {
-	rmsListeners.call(&RMSListener::RMSChanged, this, rmsValueIn, rmsValueOut);
+	rmsListeners.call(&RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut);
+	for (int i = 0; i < getTotalNumInputChannels(); i++)
+	{
+		rmsListeners.call(&RMSListener::channelRMSInChanged, this, rmsValuesIn[i], i);
+	}
+
+	for (int i = 0; i < getTotalNumOutputChannels(); i++)
+	{
+		rmsListeners.call(&RMSListener::channelRMSOutChanged, this, rmsValuesOut[i], i);
+	}
 }
 
 //////////////////////////////////   DATA
