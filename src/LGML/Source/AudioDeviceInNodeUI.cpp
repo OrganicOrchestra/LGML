@@ -32,7 +32,6 @@ void AudioDeviceInNodeContentUI::init()
 	audioInNode = (AudioDeviceInNode *)node;
 	audioInNode->addNodeBaseListener(this);
 	updateVuMeters();
-	
 }
 
 void AudioDeviceInNodeContentUI::resized()
@@ -61,8 +60,6 @@ void AudioDeviceInNodeContentUI::updateVuMeters()
 	{
 		removeLastVuMeter();
 	}
-
-	DBG("Num audio input changed AUI < " << vuMeters.size());
 	resized();
 }
 
