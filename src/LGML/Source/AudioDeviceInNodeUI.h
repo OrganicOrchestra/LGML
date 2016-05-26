@@ -19,12 +19,14 @@ class AudioDeviceInNode;
 
 class AudioDeviceInNodeContentUI :
 	public NodeBaseContentUI,
-	public NodeBase::NodeBaseListener
+	public NodeBase::NodeBaseListener,
+	public ConnectableNode::ConnectableNodeListener
 {
 public:
 	AudioDeviceInNodeContentUI();
 	virtual ~AudioDeviceInNodeContentUI();
 
+	OwnedArray<BoolToggleUI> muteToggles;
 	OwnedArray<VuMeter> vuMeters;
 
 	AudioDeviceInNode * audioInNode;
@@ -38,6 +40,7 @@ public:
 	void addVuMeter();
 	void removeLastVuMeter();
 
+	virtual void nodeParameterChanged(ConnectableNode*, Parameter *) override;
 
 	virtual void numAudioOutputChanged(NodeBase *, int newNum) override;
 	//virtual void numAudioOutputChanged() { DBG("Output changed !"); }

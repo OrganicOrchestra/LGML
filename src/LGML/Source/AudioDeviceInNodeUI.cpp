@@ -11,15 +11,18 @@
 #include "AudioDeviceInNodeUI.h"
 #include "AudioDeviceInNode.h"
 #include "VuMeter.h"
+#include "BoolToggleUI.h"
 
 AudioDeviceInNodeContentUI::AudioDeviceInNodeContentUI() :
 	NodeBaseContentUI()
 {
+	
 }
 
 AudioDeviceInNodeContentUI::~AudioDeviceInNodeContentUI()
 {
 	audioInNode->removeNodeBaseListener(this);
+	audioInNode->removeNodeListener(this);
 
 	while (vuMeters.size() > 0)
 	{
@@ -31,7 +34,10 @@ void AudioDeviceInNodeContentUI::init()
 {
 	audioInNode = (AudioDeviceInNode *)node;
 	audioInNode->addNodeBaseListener(this);
+	audioInNode->addNodeListener(this);
 	updateVuMeters();
+
+	setSize(240, 80);
 }
 
 void AudioDeviceInNodeContentUI::resized()
@@ -42,9 +48,12 @@ void AudioDeviceInNodeContentUI::resized()
 
 	int gap = 5;
 	int vWidth = (r.getWidth() / vuMeters.size()) - gap;
-	for (auto &v : vuMeters)
+	for (int i = 0; i < vuMeters.size();i++)
 	{
-		v->setBounds(r.removeFromLeft(vWidth));
+		Rectangle<int> vr = r.removeFromLeft(vWidth);
+		muteToggles[i]->setBounds(vr.removeFromBottom(20));
+		vr.removeFromBottom(2);
+		vuMeters[i]->setBounds(vr);
 		r.removeFromLeft(gap);
 	}
 }
@@ -70,6 +79,11 @@ void AudioDeviceInNodeContentUI::addVuMeter()
 	audioInNode->addRMSListener(v);
 	addAndMakeVisible(v);
 	vuMeters.add(v);
+
+	BoolToggleUI * b = audioInNode->inMutes[muteToggles.size()]->createToggle();
+	b->invertVisuals = true;
+	muteToggles.add(b);
+	addAndMakeVisible(b);
 }
 
 void AudioDeviceInNodeContentUI::removeLastVuMeter()
@@ -78,10 +92,26 @@ void AudioDeviceInNodeContentUI::removeLastVuMeter()
 	audioInNode->removeRMSListener(v);
 	removeChildComponent(v);
 	vuMeters.removeLast();
+
+	removeChildComponent(muteToggles[muteToggles.size() - 1]);
+	muteToggles.removeLast();
+}
+
+void AudioDeviceInNodeContentUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
+{
+	int index = 0;
+	for (auto &m : muteToggles)
+	{
+		if (p == m->parameter)
+		{
+			if(p->boolValue()) vuMeters[index]->setVoldB(0);
+		}
+		index++;
+	}
 }
 
 void AudioDeviceInNodeContentUI::numAudioOutputChanged(NodeBase *, int)
 {
-	
+	DBG("Output changed in NodeUI");
 	updateVuMeters();
 }

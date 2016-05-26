@@ -47,12 +47,15 @@ public:
     void paint(Graphics &g)override {
 
 		Rectangle<int> r = getLocalBounds();
+		/*
 		if (targetChannel != -1)
 		{
 			g.setColour(TEXTNAME_COLOR);
 			g.drawFittedText(String(targetChannel + 1), r.removeFromBottom(10), Justification::centred, 1);
 			r.removeFromBottom(2);
 		}
+		*/
+
         g.setColour(NORMAL_COLOR);
         g.fillRoundedRectangle(r.toFloat(), 2);
         if (voldB > 0)
@@ -94,11 +97,10 @@ public:
 		if (voldB == value) return;
 		voldB = value;
         volChanged = true;
-
 	}
 
     void timerCallback()override{
-		if(volChanged)repaint();
+		if (volChanged) repaint();
         volChanged = false;
 
     }

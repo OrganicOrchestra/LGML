@@ -22,17 +22,33 @@ AudioDeviceInNode::AudioDeviceInNode() :
 	canHavePresets = false;
 	//hasMainAudioControl = false;
 
+	addNodeBaseListener(this);
     NodeBase::busArrangement.inputBuses.clear();
 	getAudioDeviceManager().addChangeListener(this);
+	
+	for (int i = 0; i < NodeBase::getTotalNumOutputChannels(); i++) addMute();
+
 	this->updateIO();
+
 }
 
 AudioDeviceInNode::~AudioDeviceInNode() {
+	removeNodeBaseListener(this);
 	getAudioDeviceManager().removeChangeListener(this);
 }
 
 void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
+	
 	AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+	int numChannels = buffer.getNumChannels();
+	int numSamples = buffer.getNumSamples();
+	for (int i = 0; i < numChannels; i++) 
+	{
+		float gain = inMutes[i]->boolValue() ? 0.f : 1.f;
+		buffer.applyGain(i, 0, numSamples, gain);
+	}
+	
+	
 }
 
 void AudioDeviceInNode::changeListenerCallback(ChangeBroadcaster*) {
@@ -48,8 +64,30 @@ void AudioDeviceInNode::updateIO() {
 
 
 
+void AudioDeviceInNode::addMute()
+{
+	inMutes.add(addBoolParameter(String("#") + String(inMutes.size() + 1), "Mute if disabled", false));
+}
+
+void AudioDeviceInNode::removeMute()
+{
+	BoolParameter * b = inMutes[inMutes.size() - 1];
+	removeControllable(b);
+}
+
 ConnectableNodeUI * AudioDeviceInNode::createUI() {
 	NodeBaseUI * ui = new NodeBaseUI(this,new AudioDeviceInNodeContentUI());
 	return ui;
 
+}
+
+void AudioDeviceInNode::audioOutputAdded(NodeBase *, int)
+{
+	DBG("Output added in Node");
+	addMute();
+}
+
+void AudioDeviceInNode::audioOutputRemoved(NodeBase *, int)
+{
+	removeMute();
 }

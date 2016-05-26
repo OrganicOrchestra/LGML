@@ -41,7 +41,10 @@ void AudioDeviceOutNode::updateIO() {
 }
 
 void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
-	AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+	if (enabledParam->boolValue())
+	{
+		AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+	}
 }
 
 

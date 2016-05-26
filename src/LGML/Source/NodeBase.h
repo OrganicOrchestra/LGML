@@ -146,15 +146,9 @@ public:
 
 	Array<float> rmsValuesIn;
 	Array<float> rmsValuesOut;
-	
 
 	//Listener are called from non audio thread
 	void handleAsyncUpdate() override;
-
-
-
-
-
 
 	bool wasSuspended;
 	float lastVolume;

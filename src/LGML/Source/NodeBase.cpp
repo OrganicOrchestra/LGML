@@ -177,7 +177,9 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 	if (!isSuspended())
 	{
 		if (!hasMainAudioControl || (hasMainAudioControl && enabledParam->boolValue()) ){
+
 			processBlockInternal(buffer, midiMessages);
+
             if(hasMainAudioControl){
                 buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
                 lastVolume = outputVolume->floatValue();
