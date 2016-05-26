@@ -109,7 +109,7 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
         else if (v.isInt64())DBG("JavascriptOSC can't send int 64");
     }
 
-    c->sender.send(msg);
+    c->sendOSC(msg);
     return var();
 
 }

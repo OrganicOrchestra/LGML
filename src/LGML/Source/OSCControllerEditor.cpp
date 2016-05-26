@@ -23,13 +23,15 @@ OSCControllerEditor::OSCControllerEditor(OSCControllerUI * controllerUI) :
 	remotePortUI->setNameLabelVisible(true);
 
     logIncomingOSC = oscController->logIncomingOSC->createToggle();
-
+    logOutOSC = oscController->logOutGoingOSC->createToggle();
 
 	addAndMakeVisible(localPortUI);
 	addAndMakeVisible(remoteHostUI);
 	addAndMakeVisible(remotePortUI);
     addAndMakeVisible(logIncomingOSC);
+    addAndMakeVisible(logOutOSC);
 
+    
 	addAndMakeVisible(innerContainer);
 }
 
@@ -47,6 +49,8 @@ void OSCControllerEditor::resized()
 	remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()));
 	r.removeFromTop(2);
     logIncomingOSC->setBounds(r.removeFromTop(15));
+	r.removeFromTop(2);
+    logOutOSC->setBounds(r.removeFromTop(15));
 
 
 	innerContainer.setBounds(r);

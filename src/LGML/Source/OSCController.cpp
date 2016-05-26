@@ -22,7 +22,7 @@ OSCController::OSCController(const String &_name) :
     remotePortParam = addStringParameter("Remote Port", "The port bound by the controller to send OSC to it","8000");
 
     logIncomingOSC = addBoolParameter("logIncomingOSC", "log the incoming OSC Messages", false);
-
+    logOutGoingOSC = addBoolParameter("logOutGoingOSC", "log the outGoing OSC Messages", false);
     setupReceiver();
     setupSender();
 
@@ -59,16 +59,7 @@ void OSCController::processMessage(const OSCMessage & msg)
 {
     if (logIncomingOSC->boolValue())
     {
-        String log;
-        log = msg.getAddressPattern().toString()+":";
-        for(int i = 0 ; i < msg.size() ; i++){
-            OSCArgument a = msg[i];
-            if(a.isInt32())log+=String(msg[i].getInt32())+" ";
-            else if(a.isFloat32())log+=String(msg[i].getFloat32())+" ";
-            else if(a.isString())log+=String(msg[i].getString())+" ";
-
-        }
-        NLOG(niceName,log);
+        logMessage(msg,"In:");
 
     }
 	if (!enabledParam->boolValue()) return;
@@ -76,6 +67,20 @@ void OSCController::processMessage(const OSCMessage & msg)
 	oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
 
 	activityTrigger->trigger();
+}
+
+
+void OSCController::logMessage(const OSCMessage & msg,const String & prefix){
+    String log = prefix;
+    log = msg.getAddressPattern().toString()+":";
+    for(int i = 0 ; i < msg.size() ; i++){
+        OSCArgument a = msg[i];
+        if(a.isInt32())log+=String(msg[i].getInt32())+" ";
+        else if(a.isFloat32())log+=String(msg[i].getFloat32())+" ";
+        else if(a.isString())log+=String(msg[i].getString())+" ";
+
+    }
+    NLOG(niceName,log);
 }
 
 Result OSCController::processMessageInternal(const OSCMessage &)

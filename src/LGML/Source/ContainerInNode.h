@@ -23,7 +23,7 @@ public:
 	ContainerInNode();
 	~ContainerInNode();
 
-	void setParentNodeContainer(NodeContainer * nc);
+	void setParentNodeContainer(NodeContainer * nc)override;
 
 	//AUDIO
 	IntParameter * numInputChannels;

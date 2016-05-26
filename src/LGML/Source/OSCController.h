@@ -22,14 +22,14 @@ public:
     virtual ~OSCController();
 
 
-    OSCReceiver receiver;
-    OSCSender sender;
+
 
     StringParameter * localPortParam;
     StringParameter * remoteHostParam;
     StringParameter * remotePortParam;
     BoolParameter * logIncomingOSC;
-
+    BoolParameter * logOutGoingOSC;
+    
     void setupReceiver();
     void setupSender();
 
@@ -60,6 +60,29 @@ public:
 	ListenerList<OSCControllerListener> oscListeners;
 	void addOSCControllerListener(OSCControllerListener* newListener) { oscListeners.add(newListener); }
 	void removeOSCControllerListener(OSCControllerListener* listener) { oscListeners.remove(listener); }
+
+#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
+    template <typename... Args>
+    bool sendOSC (const OSCAddressPattern& address, Args&&... args)
+    {
+        OSCMessage m = OSCMessage (address, std::forward<Args> (args)...);
+        if(logOutGoingOSC->boolValue()){logMessage(m);}
+        return sender.send (m);
+    }
+#endif
+    
+    bool sendOSC (OSCMessage & m)
+    {
+        if(logOutGoingOSC->boolValue()){logMessage(m);}
+        return sender.send (m);
+    }
+
+    void logMessage(const OSCMessage & m,const String & prefix = "");
+
+private:
+    // should use sendOSC for centralizing every call
+    OSCReceiver receiver;
+    OSCSender sender;
 };
 
 #endif  // OSCCONTROLLER_H_INCLUDED

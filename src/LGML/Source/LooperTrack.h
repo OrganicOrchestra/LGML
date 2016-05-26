@@ -52,6 +52,7 @@ public:
     BoolParameter * mute;
     BoolParameter * solo;
 
+    bool isSelected;
     TrackState trackState;
 
     bool someOneIsSolo;

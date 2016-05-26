@@ -31,7 +31,8 @@ trackState(CLEARED),
 trackIdx(_trackIdx),
 someOneIsSolo(false),
 internalTrackState(BUFFER_STOPPED),
-lastInternalTrackState(BUFFER_STOPPED)
+lastInternalTrackState(BUFFER_STOPPED),
+isSelected (false)
 {
 
     //setCustomShortName("track/" + String(_trackIdx)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
@@ -360,7 +361,8 @@ bool LooperTrack::isMasterTempoTrack(){
 
 
 
-void LooperTrack::setSelected(bool isSelected) {
+void LooperTrack::setSelected(bool _isSelected) {
+    isSelected=_isSelected;
     trackStateListeners.call(&LooperTrack::Listener::trackSelected, isSelected);
 }
 

@@ -6,7 +6,7 @@ import urllib;
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = False
+bumpVersion = True
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
 
@@ -48,7 +48,8 @@ def formatCode(sourceFolder):
 	# sh(proJucerPath+ " --remove-tabs "+sourceFolder);
 	sh(proJucerPath+ " --tidy-divider-comments "+sourceFolder);
 	sh(proJucerPath+ " --trim-whitespace "+sourceFolder);
-	
+
+def updateVersion():
 	if(bumpVersion):
 		sh(proJucerPath+ " --bump-version " + JuceProjectPath)
 	elif specificVersion:
@@ -116,6 +117,7 @@ def sendToOwnCloud(originPath,destPath):
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
 # formatCode("../Source");
+updateVersion();
 buildJUCE(JuceProjectPath);
 buildApp(xcodeProjPath,configuration,appPath);
 if sendToOwncloud:
