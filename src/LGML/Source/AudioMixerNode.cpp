@@ -16,11 +16,16 @@
 AudioMixerNode::AudioMixerNode() :
 	NodeBase("AudioMixerNode",NodeType::AudioMixerType)
 {
-	numberOfInput = addIntParameter("numInput", "number of input", 8, 1, 32);
+	numberOfInput = addIntParameter("numInput", "number of input", 2, 1, 32);
 	numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
-
+	
 	updateInput();
 	updateOutput();
+
+	outBuses[0]->volumes[0]->setValue(1);
+	outBuses[0]->volumes[1]->setValue(0);
+	outBuses[1]->volumes[0]->setValue(0);
+	outBuses[1]->volumes[1]->setValue(1);
 }
 
 
@@ -133,7 +138,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
 
     if(numInput>volumes.size()){
         for(int i = volumes.size();i<numInput ; i++){
-            volumes.add(addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), 1.0f));
+            volumes.add(addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?1:0));
         }
     }
     else if(numInput<volumes.size()){
@@ -147,7 +152,6 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
 
 
     lastVolumes.resize(numInput);
-    for(auto &v:volumes){v->setValue( 1.0f);}
 }
 
 
