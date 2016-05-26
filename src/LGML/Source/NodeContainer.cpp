@@ -43,8 +43,8 @@ void NodeContainer::clear(bool recreateContainerNodes)
         nodes[0]->remove();
     }
 
-    //connections.clear();
-
+	containerInGhostConnections.clear();
+	containerOutGhostConnections.clear();
 
     containerInNode = nullptr;
     containerOutNode = nullptr;
@@ -58,9 +58,6 @@ void NodeContainer::clear(bool recreateContainerNodes)
         containerInNode->yPosition->setValue(100);
         containerOutNode->xPosition->setValue(450);
         containerOutNode->yPosition->setValue(100);
-
-        containerInNode->addRMSListener(this);
-        containerOutNode->addRMSListener(this);
 
         //maybe keep it ?
         addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
@@ -191,6 +188,21 @@ var NodeContainer::getJSONData()
 
     data.getDynamicObject()->setProperty("nodes", nodesData);
     data.getDynamicObject()->setProperty("connections", connectionsData);
+
+	var ghostConnectionsInData;
+	for (auto &c : containerInGhostConnections)
+	{
+		ghostConnectionsInData.append(c->getJSONData());
+	}
+	data.getDynamicObject()->setProperty("ghostConnectionsIn", ghostConnectionsInData);
+	
+
+	var ghostConnectionsOutData;
+	for (auto &c : containerOutGhostConnections)
+	{
+		ghostConnectionsOutData.append(c->getJSONData());
+	}
+	data.getDynamicObject()->setProperty("ghostConnectionsOut", ghostConnectionsOutData);
     return data;
 }
 
@@ -205,6 +217,7 @@ void NodeContainer::loadJSONDataInternal(var data)
             addNodeFromJSON(nData);
         }
     }
+
     Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
 
     if (connectionsData)
@@ -240,6 +253,47 @@ void NodeContainer::loadJSONDataInternal(var data)
         }
     }
 
+
+
+	Array<var> * ghostConnectionInData = data.getProperty("ghostConnectionsIn", var()).getArray();
+
+	if (ghostConnectionInData)
+	{
+		for (var &cData : *ghostConnectionInData)
+		{
+			ConnectableNode * srcNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString()));
+			ConnectableNode * dstNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString()));
+
+			int cType = cData.getProperty("connectionType", var());
+
+			if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
+				NodeConnection * c = new NodeConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType),true);
+				c->loadJSONData(cData);
+				containerInGhostConnections.add(c);
+			}
+		}
+	}
+
+	Array<var> * ghostConnectionOutData = data.getProperty("ghostConnectionsOut", var()).getArray();
+
+	if (ghostConnectionOutData)
+	{
+		for (var &cData : *ghostConnectionOutData)
+		{
+			ConnectableNode * srcNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString()));
+			ConnectableNode * dstNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString()));
+
+			int cType = cData.getProperty("connectionType", var());
+
+			if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
+				NodeConnection * c = new NodeConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType), true);
+				c->loadJSONData(cData);
+				containerOutGhostConnections.add(c);
+			}
+		}
+	}
+
+
     removeIllegalConnections();
 }
 
@@ -265,11 +319,10 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
     if (node->type == NodeType::ContainerInType)
     {
         containerInNode = (ContainerInNode *)node;
-        containerInNode->addRMSListener(this);
+        
     } else if (node->type == NodeType::ContainerOutType)
     {
         containerOutNode = (ContainerOutNode *)node;
-        containerOutNode->addRMSListener(this);
     }
 
     
@@ -384,20 +437,38 @@ void NodeContainer::bypassNode(bool bypass){
 //        save old ones
         Array<NodeConnection*> connectionPointers;
         connectionPointers = getAllConnectionsForNode(containerInNode);
-        containerInConnections.clear();
-        for(auto &c: connectionPointers){containerInConnections.add(new NodeConnection(c->sourceNode,c->destNode,c->connectionType));}
-        for(auto & c:connectionPointers){removeConnection(c);}
+        containerInGhostConnections.clear();
+        for(auto &c: connectionPointers){
+
+			NodeConnection * nc = new NodeConnection(c->sourceNode, c->destNode, c->connectionType, true);
+			nc->loadJSONData(c->getJSONData());
+			containerInGhostConnections.add(nc);
+
+		}
+        for(auto & c:connectionPointers){
+			removeConnection(c);
+		}
 
 
-        containerOutConnections.clear();
+        containerOutGhostConnections.clear();
         connectionPointers = getAllConnectionsForNode(containerOutNode);
-        for(auto &c: connectionPointers){containerOutConnections.add(new NodeConnection(c->sourceNode,c->destNode,c->connectionType));}
-        for(auto & c:connectionPointers){removeConnection(c);}
-        // add a pass-thru
-        addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::AUDIO);
-        addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::DATA);
-        }
-    else{
+        for(auto &c: connectionPointers){
+
+			NodeConnection * nc = new NodeConnection(c->sourceNode, c->destNode, c->connectionType, true);
+			nc->loadJSONData(c->getJSONData());
+			containerOutGhostConnections.add(nc);
+		}
+
+        for(auto & c:connectionPointers){
+			removeConnection(c);
+		}
+
+		// add a pass-thru
+		addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::AUDIO);
+		addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::DATA);
+
+    }else
+	{
         // remove pass thru
         Array<NodeConnection * > bypassConnection = getAllConnectionsForNode(containerInNode);
         jassert(bypassConnection.size()==2);
@@ -405,8 +476,19 @@ void NodeContainer::bypassNode(bool bypass){
         bypassConnection = getAllConnectionsForNode(containerOutNode);
         jassert(bypassConnection.size()==0);
 
-        for(auto & c:containerInConnections){if(c->sourceNode!=nullptr&& c->destNode!=nullptr)addConnection(c->sourceNode, c->destNode, c->connectionType);}
-        for(auto & c:containerOutConnections){if(c->sourceNode!=nullptr&& c->destNode!=nullptr)addConnection(c->sourceNode, c->destNode, c->connectionType);}
+        for(auto & c:containerInGhostConnections){
+            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
+			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
+			nc->loadJSONData(c->getJSONData());
+            }
+		}
+        for(auto & c:containerOutGhostConnections){
+            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
+			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
+			nc->loadJSONData(c->getJSONData());
+            }
+		}
+
         
 
     }

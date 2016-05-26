@@ -25,12 +25,27 @@ ContainerInNode::ContainerInNode() :
 
 ContainerInNode::~ContainerInNode()
 {
+	if (parentNodeContainer != nullptr)
+	{
+		addRMSListener(parentNodeContainer);
+	}
 }
 
-NodeContainer * ContainerInNode::getParentNodeContainer()
+
+void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
 {
-	return (NodeContainer *)parentContainer;
+	if (parentNodeContainer != nullptr)
+	{
+		removeRMSListener(parentNodeContainer);
+	}
+	NodeBase::setParentNodeContainer(nc);
+
+	if (parentNodeContainer != nullptr)
+	{
+		addRMSListener(parentNodeContainer);
+	}
 }
+
 
 void ContainerInNode::setNumAudioChannels(int channels)
 {

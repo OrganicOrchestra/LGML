@@ -22,11 +22,12 @@ public:
 	ContainerOutNode();
 	~ContainerOutNode();
 
-	NodeContainer * getParentNodeContainer();
 
 	//AUDIO
 	IntParameter * numInputChannels;
 	void setNumAudioChannels(int channels);
+
+	void setParentNodeContainer(NodeContainer *) override;
 
 	//DATA
 	IntParameter * numInputData;

@@ -26,18 +26,32 @@ ContainerOutNode::ContainerOutNode() :
 
 ContainerOutNode::~ContainerOutNode()
 {
+	if (parentNodeContainer != nullptr)
+	{
+		removeRMSListener(parentNodeContainer);
+	}
 }
 
 
-NodeContainer * ContainerOutNode::getParentNodeContainer()
-{
-	return (NodeContainer *)parentContainer;
-}
 
 void ContainerOutNode::setNumAudioChannels(int channels)
 {
 	setPreferedNumAudioInput(channels);
 	setPreferedNumAudioOutput(channels);
+}
+
+void ContainerOutNode::setParentNodeContainer(NodeContainer * nc)
+{
+	if (parentNodeContainer != nullptr)
+	{
+		removeRMSListener(parentNodeContainer);
+	}
+	NodeBase::setParentNodeContainer(nc);
+	
+	if (parentNodeContainer != nullptr)
+	{
+		addRMSListener(parentNodeContainer);
+	}
 }
 
 

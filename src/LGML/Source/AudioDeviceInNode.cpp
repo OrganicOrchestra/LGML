@@ -44,7 +44,7 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 
 	int numChannels = buffer.getNumChannels();
 	int numSamples = buffer.getNumSamples();
-	float enabledFactor = enabledParam->boolValue()?1:0;
+	float enabledFactor = enabledParam->boolValue()?1.f:0.f;
 	for (int i = 0; i < numChannels; i++) 
 	{
 		float gain = inMutes[i]->boolValue() ? 0.f : 1.f;
@@ -69,7 +69,9 @@ void AudioDeviceInNode::updateIO() {
 
 void AudioDeviceInNode::addMute()
 {
-	inMutes.add(addBoolParameter(String("_") + String(inMutes.size() + 1), "Mute if disabled", false));
+	BoolParameter * p = addBoolParameter(String(inMutes.size() + 1), "Mute if disabled", false);
+	p->setCustomShortName(String("mute") + String(inMutes.size() + 1));
+	inMutes.add(p);
 }
 
 void AudioDeviceInNode::removeMute()

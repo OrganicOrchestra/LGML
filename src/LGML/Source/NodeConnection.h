@@ -40,8 +40,11 @@ public:
     Array<DataProcessorGraph::Connection *> dataConnections;
 
 
-    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType);
+    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType, bool isGhostConnection = false);
     virtual ~NodeConnection();
+
+	//Ghosting (Container enabled / disabled)
+	bool isGhostConnection;
 
     //Audio
     bool addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);

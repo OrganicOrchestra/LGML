@@ -34,6 +34,7 @@ NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 
 	resizeToFitNodes();
 
+	
 }
 
 NodeContainerViewer::~NodeContainerViewer()
@@ -145,8 +146,8 @@ void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
 
 	ConnectableNode * sourceNode = (ConnectableNode*)connection->sourceNode;
 	ConnectableNode * destNode = (ConnectableNode*)connection->destNode;
-	if (sourceNode->type == NodeType::ContainerOutType) sourceNode = ((ContainerOutNode *)sourceNode)->getParentNodeContainer();
-	if (destNode->type == NodeType::ContainerInType) destNode = ((ContainerInNode *)destNode)->getParentNodeContainer();
+	if (sourceNode->type == NodeType::ContainerOutType) sourceNode = ((ContainerOutNode *)sourceNode)->parentNodeContainer;
+	if (destNode->type == NodeType::ContainerInType) destNode = ((ContainerInNode *)destNode)->parentNodeContainer;
 
 	ConnectableNodeUI * n1 = getUIForNode(sourceNode);
 	ConnectableNodeUI * n2 = getUIForNode(destNode);
