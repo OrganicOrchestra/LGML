@@ -48,7 +48,7 @@ void LooperNodeContentUI::init(){
 
 
     trackNumChanged(looperNode->trackGroup.tracks.size());
-    looperNode->trackGroup.tracks.getUnchecked(looperNode->selectTrack->intValue())->setSelected(true);
+    if(looperNode->selectTrack->intValue()>=0)looperNode->trackGroup.tracks.getUnchecked(looperNode->selectTrack->intValue())->setSelected(true);
 }
 
 void LooperNodeContentUI::resized(){

@@ -57,6 +57,7 @@ lastInternalTrackState(BUFFER_STOPPED)
 
     // post init
     volume->setValue(defaultVolumeValue);
+    logVolume = float01ToGain(volume->value);
 }
 
 void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
@@ -115,7 +116,8 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
         }
 
         float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume;
-        // fade out on buffer_stop (clear or stop)
+
+// fade out on buffer_stop (clear or stop)
         if((lastInternalTrackState == BUFFER_PLAYING ) && (internalTrackState==BUFFER_STOPPED) ){
             newVolume = 0;
         }

@@ -11,6 +11,7 @@
 #include "OSCDirectController.h"
 #include "NodeManager.h"
 #include "DebugHelpers.h"
+#include "TimeManager.h"
 OSCDirectController::OSCDirectController() :
     OSCDirectController("OSC Direct Controller")
 {
@@ -42,11 +43,12 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
     String controller = addrArray[0];
 
 
-    if (controller == "node")
+    if (controller == "node" || controller=="time")
     {
         addrArray.remove(0);
-        Controllable * c = NodeManager::getInstance()->getControllableForAddress(addrArray);
-
+        Controllable * c = nullptr;
+        if(controller=="node")c=NodeManager::getInstance()->getControllableForAddress(addrArray);
+        else if (controller=="time")c=TimeManager::getInstance()->getControllableForAddress(addrArray);
 
         if (c != nullptr)
         {

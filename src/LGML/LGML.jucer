@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.35"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.36"
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
