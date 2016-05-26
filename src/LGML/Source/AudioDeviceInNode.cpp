@@ -69,7 +69,7 @@ void AudioDeviceInNode::updateIO() {
 
 void AudioDeviceInNode::addMute()
 {
-	inMutes.add(addBoolParameter(String("#") + String(inMutes.size() + 1), "Mute if disabled", false));
+	inMutes.add(addBoolParameter(String("_") + String(inMutes.size() + 1), "Mute if disabled", false));
 }
 
 void AudioDeviceInNode::removeMute()
