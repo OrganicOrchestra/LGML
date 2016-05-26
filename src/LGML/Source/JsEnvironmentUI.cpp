@@ -14,14 +14,16 @@ JsEnvironmentUI::JsEnvironmentUI(JsEnvironment * _env) :env(_env) {
 	addAndMakeVisible(openB);
 	openB.addListener(this);
 
-	logEnvB.setButtonText("Log");
-	addAndMakeVisible(logEnvB);
-	logEnvB.addListener(this);
-
 	watchT.setButtonText("autoWatch");
 	watchT.setClickingTogglesState(true);
 	addAndMakeVisible(watchT);
 	watchT.addListener(this);
+
+	logEnvB.setButtonText("Log");
+	addAndMakeVisible(logEnvB);
+	logEnvB.addListener(this);
+
+	
 
     newJsFileLoaded(env->hasValidJsFile());
 	addAndMakeVisible(validJsLed);
@@ -30,7 +32,7 @@ JsEnvironmentUI::JsEnvironmentUI(JsEnvironment * _env) :env(_env) {
 
 void JsEnvironmentUI::resized() {
 	Rectangle<int> area = getLocalBounds().reduced(2);
-	const int logEnvSize = 30;
+	const int logEnvSize = 40;
 	const int ledSize = 10;
 	const int step = (area.getWidth() - logEnvSize - ledSize) / 4;
 	buildLed(ledSize);

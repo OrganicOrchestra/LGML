@@ -76,7 +76,7 @@ void StringParameterUI::paint(Graphics & g)
 void StringParameterUI::resized()
 {
     Rectangle<int> r = getLocalBounds();
-	int nameLabelWidth = nameLabel.getFont().getStringWidth(nameLabel.getText());
+	int nameLabelWidth = 100;// nameLabel.getFont().getStringWidth(nameLabel.getText());
     if(nameLabelIsVisible) nameLabel.setBounds(r.removeFromLeft(nameLabelWidth));
 
 	valueLabel.setBounds(r);

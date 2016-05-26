@@ -22,15 +22,14 @@
 
 class ControllerManager;
 
-static const String controllerTypeNames[] = { "OSC Direct","ScriptedOSC","OSC Custom","DMX","MIDI","Serial" };
+static const String controllerTypeNames[] = {"ScriptedOSC","OSC Custom","DMX","MIDI","Serial" };
 
 class ControllerFactory
 {
 public:
     enum ControllerType
     {
-        OSCDirect,
-        ScriptedOSC,
+		ScriptedOSC,
 		OSCCustom,
         DMX,
         MIDI,
@@ -54,9 +53,7 @@ public:
 
         switch (controllerType)
         {
-            case OSCDirect:
-                c = new OSCDirectController();
-                break;
+           
             case ScriptedOSC:
                 c = new JavascriptController();
                 break;

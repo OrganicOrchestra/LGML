@@ -32,8 +32,6 @@ public:
 
 	virtual void run() override;
 
-
-
 	// ASYNC
 	QueuedNotifier<var> queuedNotifier;
 	typedef QueuedNotifier<var>::Listener AsyncListener;

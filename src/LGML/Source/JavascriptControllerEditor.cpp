@@ -28,8 +28,7 @@ void JavascriptControllerEditor::resized()
 {
 	OSCControllerEditor::resized();
 	Rectangle<int> r = innerContainer.getLocalBounds();
-	scriptUI->setBounds(r);
-
+	scriptUI->setBounds(r.removeFromTop(30));
 }
 
 
