@@ -106,7 +106,7 @@ NodeContainer.cpp
 	line : 224
 		// TODO nicely handle file format errors?
 
-	line : 451
+	line : 455
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
