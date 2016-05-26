@@ -23,7 +23,6 @@ NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl)
 
 	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
 	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
-
 }
 
 

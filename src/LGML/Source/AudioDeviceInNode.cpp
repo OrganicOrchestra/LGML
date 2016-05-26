@@ -20,7 +20,7 @@ AudioDeviceInNode::AudioDeviceInNode() :
 	AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
 {
 	canHavePresets = false;
-	//hasMainAudioControl = false;
+	hasMainAudioControl = false;
 
 	addNodeBaseListener(this);
     NodeBase::busArrangement.inputBuses.clear();
@@ -39,13 +39,16 @@ AudioDeviceInNode::~AudioDeviceInNode() {
 
 void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
 	
+	
 	AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+
 	int numChannels = buffer.getNumChannels();
 	int numSamples = buffer.getNumSamples();
+	float enabledFactor = enabledParam->boolValue()?1:0;
 	for (int i = 0; i < numChannels; i++) 
 	{
 		float gain = inMutes[i]->boolValue() ? 0.f : 1.f;
-		buffer.applyGain(i, 0, numSamples, gain);
+		buffer.applyGain(i, 0, numSamples, gain*enabledFactor);
 	}
 	
 	
