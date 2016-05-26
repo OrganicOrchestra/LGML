@@ -22,7 +22,7 @@ trackGroup(this)
     numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
 
     selectAllTrig = addTrigger("Select All", "Select All tracks, for all clear or main volume for instance");
-    selectTrack = addIntParameter("Select track", "set track selected", 0, 0, 0);
+    selectTrack = addIntParameter("Select track", "set track selected", 0, -1, 0);
     recPlaySelectedTrig = addTrigger("Rec Or Play",
                                      "Tells the selected track to wait for the next bar and then start record or play");
     playSelectedTrig = addTrigger("Play",
@@ -116,14 +116,14 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
 void LooperNode::TrackGroup::addTrack() {
     LooperTrack * t = new LooperTrack(owner, tracks.size());
     tracks.add(t);
-    owner->selectTrack->setRange(0,tracks.size()-1);
+    owner->selectTrack->setRange(-1,tracks.size()-1);
     addChildIndexedControllableContainer(t);
 }
 
 void LooperNode::TrackGroup::removeTrack(int i) {
     removeChildControllableContainer(tracks[i]);
     tracks.remove(i);
-    owner->selectTrack->setRange(0,tracks.size()-1);}
+    owner->selectTrack->setRange(-1,tracks.size()-1);}
 
 
 void LooperNode::TrackGroup::setNumTracks(int numTracks) {
@@ -145,13 +145,13 @@ void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
         bool needToReleaseMasterTempo = true;
         bool needToStop = TimeManager::getInstance()->playState->boolValue() && TimeManager::getInstance()->isMasterNode(this);
         for (auto & t : trackGroup.tracks) {
-//            DBG("s"+LooperTrack::trackStateToString(t->trackState));
+            //            DBG("s"+LooperTrack::trackStateToString(t->trackState));
             needToReleaseMasterTempo &= (t->trackState == LooperTrack::TrackState::CLEARED ||
                                          t->trackState == LooperTrack::TrackState::SHOULD_CLEAR);
             needToStop &=   (t->trackState == LooperTrack::TrackState::CLEARED ||
-                            t->trackState == LooperTrack::TrackState::SHOULD_CLEAR)||
-                            (t->trackState == LooperTrack::TrackState::STOPPED ||
-                            t->trackState == LooperTrack::TrackState::SHOULD_STOP);
+                             t->trackState == LooperTrack::TrackState::SHOULD_CLEAR)||
+            (t->trackState == LooperTrack::TrackState::STOPPED ||
+             t->trackState == LooperTrack::TrackState::SHOULD_STOP);
         }
 
         if (needToReleaseMasterTempo) {
@@ -238,6 +238,7 @@ void LooperNode::selectMe(LooperTrack * t) {
     if (selectedTrack != nullptr) {
         selectedTrack->setSelected(true);
         volumeSelected->setValue(selectedTrack->volume->floatValue());
+        selectTrack->setValue(selectedTrack->trackIdx);
     }
 }
 
@@ -278,9 +279,15 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
         if( selectedTrack!=nullptr)changed  = selectedTrack->trackIdx!=p->intValue();
 
         if(changed){
-            if(selectTrack->intValue() < trackGroup.tracks.size()){
-                trackGroup.tracks.getUnchecked(selectTrack->intValue())->selectTrig->trigger();
-
+            if(selectTrack->intValue()>=0){
+                if(selectTrack->intValue() < trackGroup.tracks.size()){
+                    trackGroup.tracks.getUnchecked(selectTrack->intValue())->selectTrig->trigger();
+                    
+                }
+                
+            }
+            else{
+                selectMe(nullptr);
             }
         }
     }

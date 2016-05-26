@@ -115,7 +115,7 @@ def sendToOwnCloud(originPath,destPath):
 
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
-formatCode("../Source");
+# formatCode("../Source");
 buildJUCE(JuceProjectPath);
 buildApp(xcodeProjPath,configuration,appPath);
 if sendToOwncloud:
