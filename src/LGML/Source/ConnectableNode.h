@@ -133,6 +133,10 @@ public:
 	virtual Data * getOutputDataByName(const String &dataName);
 	virtual Data * getInputDataByName(const String &dataName);
 
+private:
+    WeakReference<ConnectableNode>::Master masterReference;
+    friend class WeakReference<ConnectableNode>;
+
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectableNode)
 };
 

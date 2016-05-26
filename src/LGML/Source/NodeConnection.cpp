@@ -24,11 +24,11 @@ connectionType(connectionType)
             addAudioGraphConnection(i, i);
         }
     }
-	if (sourceNode->type != NodeType::ContainerType) {
+    if (sourceNode->type != NodeType::ContainerType) {
         ((NodeBase*)sourceNode)->addNodeBaseListener(this);
     }
 
-	if (destNode->type != NodeType::ContainerType) {
+    if (destNode->type != NodeType::ContainerType) {
         ((NodeBase*)destNode)->addNodeBaseListener(this);
     }
 
@@ -42,30 +42,31 @@ NodeConnection::~NodeConnection()
     }
 
     dataConnections.clear();
-	if (sourceNode->type != NodeType::ContainerType && dynamic_cast<NodeBase *>(sourceNode) != nullptr)
-	{
-		((NodeBase*)sourceNode)->removeNodeBaseListener(this);
+    if(sourceNode.get()){
+        if (sourceNode->type != NodeType::ContainerType && dynamic_cast<NodeBase *>(sourceNode.get()) != nullptr)
+        {
+            ((NodeBase*)sourceNode.get())->removeNodeBaseListener(this);
+        }
     }
 
-    sourceNode = nullptr;
-
-    if(destNode->type!=NodeType::ContainerType && dynamic_cast<NodeBase *>(destNode) != nullptr){
-        ((NodeBase*)destNode)->removeNodeBaseListener(this);
+    if(destNode.get()){
+        if(destNode->type!=NodeType::ContainerType && dynamic_cast<NodeBase *>(destNode.get()) != nullptr){
+            ((NodeBase*)destNode.get())->removeNodeBaseListener(this);
+        }
     }
-    destNode = nullptr;
 }
 
 bool NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
 
     bool result = NodeManager::getInstance()->audioGraph.addConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
-	if (result)
-	{
-		AudioConnection ac = AudioConnection(sourceChannel, destChannel);
-		audioConnections.add(ac);
-		listeners.call(&Listener::connectionAudioLinkAdded, ac);
-	}
-	return result;
+    if (result)
+    {
+        AudioConnection ac = AudioConnection(sourceChannel, destChannel);
+        audioConnections.add(ac);
+        listeners.call(&Listener::connectionAudioLinkAdded, ac);
+    }
+    return result;
 }
 
 void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel, bool keepInGhost)
@@ -73,7 +74,7 @@ void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 des
     AudioConnection ac = AudioConnection(sourceChannel, destChannel);
     if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
     audioConnections.removeAllInstancesOf(ac);
-	if (keepInGhost) ghostConnections.add(ac);
+    if (keepInGhost) ghostConnections.add(ac);
     listeners.call(&Listener::connectionAudioLinkRemoved, ac);
 
 
@@ -156,51 +157,51 @@ void NodeConnection::remove()
 
 void NodeConnection::audioInputAdded(NodeBase * n, int channel)
 {
-	//DBG("Audio Input Added " << channel << " ( " << ghostConnections.size() << " ghosts )");
+    //DBG("Audio Input Added " << channel << " ( " << ghostConnections.size() << " ghosts )");
 
-	Array<AudioConnection> connectionsToAdd;
-	for (auto &c : ghostConnections)
-	{
-		if (n == destNode && c.second == channel) connectionsToAdd.add(c);
-	}
+    Array<AudioConnection> connectionsToAdd;
+    for (auto &c : ghostConnections)
+    {
+        if (n == destNode && c.second == channel) connectionsToAdd.add(c);
+    }
 
-	//DBG(" >> connections to add : " << connectionsToAdd.size());
-	for (auto &c : connectionsToAdd)
-	{
-		bool result = addAudioGraphConnection(c.first, c.second);
-		if (result) ghostConnections.removeAllInstancesOf(c);
-	}
+    //DBG(" >> connections to add : " << connectionsToAdd.size());
+    for (auto &c : connectionsToAdd)
+    {
+        bool result = addAudioGraphConnection(c.first, c.second);
+        if (result) ghostConnections.removeAllInstancesOf(c);
+    }
 }
 
 void NodeConnection::audioOutputAdded(NodeBase * n, int channel)
 {
-	//DBG("Audio Output added " << channel << " ( " << ghostConnections.size() << " ghosts )");
-	Array<AudioConnection> connectionsToAdd;
-	for (auto &c : ghostConnections)
-	{
-		if (n == sourceNode && c.first == channel) connectionsToAdd.add(c);
-	}
+    //DBG("Audio Output added " << channel << " ( " << ghostConnections.size() << " ghosts )");
+    Array<AudioConnection> connectionsToAdd;
+    for (auto &c : ghostConnections)
+    {
+        if (n == sourceNode && c.first == channel) connectionsToAdd.add(c);
+    }
 
-	for (auto &c : connectionsToAdd)
-	{
-		bool result = addAudioGraphConnection(c.first, c.second);
-		if (result) ghostConnections.removeAllInstancesOf(c);
-	}
+    for (auto &c : connectionsToAdd)
+    {
+        bool result = addAudioGraphConnection(c.first, c.second);
+        if (result) ghostConnections.removeAllInstancesOf(c);
+    }
 }
 
 void NodeConnection::audioInputRemoved(NodeBase * n, int channel)
 {
-	//DBG("Audio Input removed " << channel);
+    //DBG("Audio Input removed " << channel);
     if (n == destNode)
     {
         removeAllAudioGraphConnectionsForChannel(channel, false,true);
-		//if (n->getTotalNumInputChannels() == 0) remove(); //not that useful with ghost support
+        //if (n->getTotalNumInputChannels() == 0) remove(); //not that useful with ghost support
     }
 }
 
 void NodeConnection::audioOutputRemoved(NodeBase * n, int channel)
 {
-	//DBG("Audio Output Removed "  << channel);
+    //DBG("Audio Output Removed "  << channel);
     if (n == sourceNode)
     {
         removeAllAudioGraphConnectionsForChannel(channel, true,true);
@@ -232,10 +233,10 @@ var NodeConnection::getJSONData()
     var data(new DynamicObject());
 
     ConnectableNode * tSource = sourceNode;
-    if (sourceNode->type == ContainerOutType) tSource = ((ContainerOutNode *)sourceNode)->getParentNodeContainer();
+    if (sourceNode->type == ContainerOutType) tSource = ((ContainerOutNode *)sourceNode.get())->getParentNodeContainer();
 
     ConnectableNode * tDest = destNode;
-    if(destNode->type == ContainerInType) tDest = ((ContainerInNode *)destNode)->getParentNodeContainer();
+    if(destNode->type == ContainerInType) tDest = ((ContainerInNode *)destNode.get())->getParentNodeContainer();
 
     data.getDynamicObject()->setProperty("srcNode", tSource->shortName);
     data.getDynamicObject()->setProperty("dstNode", tDest->shortName);

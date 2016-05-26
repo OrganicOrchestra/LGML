@@ -31,8 +31,8 @@ public:
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }
     bool isData() { return connectionType == ConnectionType::DATA; }
 
-	ConnectableNode * sourceNode;
-	ConnectableNode * destNode;
+	WeakReference<ConnectableNode> sourceNode;
+	WeakReference<ConnectableNode> destNode;
 
     typedef std::pair<int,int> AudioConnection;
     Array<AudioConnection> audioConnections;

@@ -52,7 +52,7 @@
   }
 
   ConnectableNode::~ConnectableNode()
-{
+{masterReference.clear();
 }
 
 
