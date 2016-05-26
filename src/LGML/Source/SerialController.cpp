@@ -13,6 +13,7 @@
 
 SerialController::SerialController() :
 	JsEnvironment("Serial.serial"),
+	Controller("Serial"),
 	port(nullptr)
 {
 	SerialManager::getInstance()->addSerialManagerListener(this);
