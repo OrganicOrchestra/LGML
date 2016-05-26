@@ -338,6 +338,10 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
 
 NodeConnection * NodeContainer::getConnectionBetweenNodes(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
+    if(sourceNode==nullptr || destNode == nullptr){
+        DBG("wrong Connection");
+        return nullptr;
+    }
     ConnectableNode * tSourceNode = (sourceNode->type == ContainerType) ? ((NodeContainer *)sourceNode)->containerOutNode : sourceNode;
     ConnectableNode * tDestNode = (destNode->type == ContainerType) ? ((NodeContainer *)destNode)->containerInNode : destNode;
 
@@ -473,13 +477,18 @@ void NodeContainer::bypassNode(bool bypass){
         jassert(bypassConnection.size()==0);
 
         for(auto & c:containerInGhostConnections){
+            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
 			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
 			nc->loadJSONData(c->getJSONData());
+            }
 		}
         for(auto & c:containerOutGhostConnections){
+            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
 			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
 			nc->loadJSONData(c->getJSONData());
+            }
 		}
+
         
 
     }
