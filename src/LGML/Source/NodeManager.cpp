@@ -25,7 +25,9 @@ NodeManager::NodeManager() :
 	mainContainer = new NodeContainer("mainContainer");
 	addChildControllableContainer(mainContainer);
 	mainContainer->skipControllableNameInAddress = true;
-
+	mainContainer->enabledParam->isControllableExposed = false;
+	mainContainer->miniMode->isControllableExposed = false;
+	mainContainer->nameParam->isControllableExposed = false;
 }
 
 NodeManager::~NodeManager()

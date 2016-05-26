@@ -58,10 +58,7 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 	}
 
 	AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
-
-
 }
-
 
 
 void AudioDeviceOutNode::addMute()

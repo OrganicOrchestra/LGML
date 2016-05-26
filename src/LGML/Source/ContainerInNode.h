@@ -23,8 +23,7 @@ public:
 	ContainerInNode();
 	~ContainerInNode();
 
-	//Container
-	NodeContainer * getParentNodeContainer();
+	void setParentNodeContainer(NodeContainer * nc);
 
 	//AUDIO
 	IntParameter * numInputChannels;

@@ -83,9 +83,10 @@ public:
 
     // called to bypass this container
     void bypassNode(bool bypass);
+
     // used for saving state when bypassed
-    OwnedArray<NodeConnection > containerInConnections;
-    OwnedArray<NodeConnection > containerOutConnections;
+    OwnedArray<NodeConnection > containerInGhostConnections;
+    OwnedArray<NodeConnection > containerOutGhostConnections;
 
 
 	//Preset
