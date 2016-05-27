@@ -72,7 +72,7 @@ void OSCController::processMessage(const OSCMessage & msg)
 
 void OSCController::logMessage(const OSCMessage & msg,const String & prefix){
     String log = prefix;
-    log = msg.getAddressPattern().toString()+":";
+    log += msg.getAddressPattern().toString()+":";
     for(int i = 0 ; i < msg.size() ; i++){
         OSCArgument a = msg[i];
         if(a.isInt32())log+=String(msg[i].getInt32())+" ";

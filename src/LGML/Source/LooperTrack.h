@@ -57,7 +57,7 @@ public:
 
     bool someOneIsSolo;
 
-    const float defaultVolumeValue = 0.8f;
+    const float defaultVolumeValue = DB0_FOR_01;
     int trackIdx;
 
     static String trackStateToString(const TrackState & ts);
@@ -138,7 +138,10 @@ public:
 
     AudioSampleBuffer loopSample;
     float lastVolume;
-    // represent audioProcessor behaviour
+    bool isFadingIn;
+
+
+
 
 
 

@@ -148,7 +148,7 @@ int TimeManager::setBPMForLoopLength(int time){
     else if(beatTime > 1){beatTime/=2;barLength*=2;}
 
     BPM->setValue( 60.0/beatTime);
-    return barLength;
+    return barLength*beatPerBar->intValue();
 }
 
 int TimeManager::getNextGlobalQuantifiedTime(){

@@ -32,7 +32,8 @@ trackIdx(_trackIdx),
 someOneIsSolo(false),
 internalTrackState(BUFFER_STOPPED),
 lastInternalTrackState(BUFFER_STOPPED),
-isSelected (false)
+isSelected (false),
+isFadingIn(false)
 {
 
     //setCustomShortName("track/" + String(_trackIdx)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
@@ -115,6 +116,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             playNeedle += buffer.getNumSamples();
             playNeedle %= recordNeedle;
         }
+        if(isFadingIn){ lastVolume = 0;isFadingIn = false;}
 
         float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume;
 
@@ -219,7 +221,7 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
         stateChanged=true;
         if (internalTrackState == BUFFER_RECORDING) {
             if (isMasterTempoTrack()) {
-                DBG("init predelay : "+String (trackIdx));
+//                DBG("init predelay : "+String (trackIdx));
                 int samplesToGet = (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
                 for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
                     loopSample.copyFrom(i, 0, streamAudioBuffer.getLastBlock(samplesToGet, i), samplesToGet);
@@ -235,22 +237,25 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
         if (internalTrackState == BUFFER_PLAYING && lastInternalTrackState == BUFFER_RECORDING) {
             if (isMasterTempoTrack()) {
-                DBG("release predelay : "+String (trackIdx));
+//                DBG("release predelay : "+String (trackIdx));
                 recordNeedle -= (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
 
                 const int fadeNumSamples = (int)(parentLooper->getSampleRate()*0.022f);
                 if (fadeNumSamples>0 && recordNeedle>2 * fadeNumSamples) {
                     for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
+
                         loopSample.applyGainRamp(i, 0, fadeNumSamples, 0, 1);
                         loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, 0);
                     }
                 }
-                TimeManager::getInstance()->setBPMForLoopLength(recordNeedle);
+                beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(recordNeedle));
 
             }
+            else{
+                beatLength->setValue(TimeManager::getInstance()->getBeat() - startBeat);
+            }
             playNeedle = 0;
-            beatLength->setValue(TimeManager::getInstance()->getBeat() - startBeat);
-        }
+            }
 
 
     }
@@ -258,7 +263,9 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
     if(internalTrackState == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
         if((curTime%recordNeedle)!=playNeedle){
             LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%recordNeedle));
+            isFadingIn = true;
             playNeedle = curTime%recordNeedle;
+            
 
         }
     }
@@ -308,7 +315,8 @@ void LooperTrack::onContainerParameterChanged(Parameter * p)
     if (p == volume)
     {
         if (parentLooper->selectedTrack == this) parentLooper->volumeSelected->setValue(volume->floatValue());
-        logVolume = float01ToGain(volume->value);
+         logVolume = float01ToGain(volume->value);
+
     }
     if(p==solo){
         someOneIsSolo = false;

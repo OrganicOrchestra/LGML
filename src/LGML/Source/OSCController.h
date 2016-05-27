@@ -66,14 +66,14 @@ public:
     bool sendOSC (const OSCAddressPattern& address, Args&&... args)
     {
         OSCMessage m = OSCMessage (address, std::forward<Args> (args)...);
-        if(logOutGoingOSC->boolValue()){logMessage(m);}
+        if(logOutGoingOSC->boolValue()){logMessage(m,"Out;");}
         return sender.send (m);
     }
 #endif
     
     bool sendOSC (OSCMessage & m)
     {
-        if(logOutGoingOSC->boolValue()){logMessage(m);}
+        if(logOutGoingOSC->boolValue()){logMessage(m,"Out:");}
         return sender.send (m);
     }
 
