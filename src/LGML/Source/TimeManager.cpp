@@ -140,7 +140,7 @@ void TimeManager::setBPMInternal(double){
 int TimeManager::setBPMForLoopLength(int time){
     double time_seconds = time* 1.0/ sampleRate;
     double beatTime = time_seconds* 1.0/beatPerBar->intValue();
-    int barLength = 1;
+    float barLength = 1;
 
     // over 150 bpm
     if(beatTime < .40){beatTime*=2;barLength/=2;}
@@ -166,10 +166,9 @@ int TimeManager::getNextQuantifiedTime(int barFraction){
     return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
 }
 
-uint64 TimeManager::getTimeInBeats(int beats){
-    const int samplesPerUnit = (beatTimeInSample*beats);
-    if(beats == 0)return timeInSample;
-    return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
+uint64 TimeManager::getTimeForNextBeats(int beats){
+    return (getBeat()+ beats)*beatTimeInSample;
+
 }
 
 int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample));}

@@ -249,7 +249,6 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
                     }
                 }
                 beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(recordNeedle));
-
             }
             else{
                 beatLength->setValue(TimeManager::getInstance()->getBeat() - startBeat);
@@ -261,12 +260,11 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
     }
 
     if(internalTrackState == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
-        if((curTime%recordNeedle)!=playNeedle){
-            LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%recordNeedle));
+        const int minQuantifiedFraction =TimeManager::getInstance()->beatTimeInSample / 16;
+        if((curTime%minQuantifiedFraction)!=(playNeedle%minQuantifiedFraction)){
+            LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%minQuantifiedFraction));
             isFadingIn = true;
-            playNeedle = curTime%recordNeedle;
-            
-
+            playNeedle = curTime%minQuantifiedFraction;
         }
     }
     if(stateChanged){
@@ -453,7 +451,9 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         else if(timeManager->playState->boolValue()){
             cleanAllQuantizeNeedles();
             quantizedPlayStart = timeManager->getNextQuantifiedTime(quantizeTime);
-//            quantizedPlayStart = timeManager->getTimeInBeats(beatLength->value);
+//            quantizedPlayStart = timeManager->getNextQuantifiedTime(1.0/beatLength->intValue());
+//            quantizedPlayStart = timeManager->getTimeForNextBeats(beatLength->value);
+
         }
     }
 

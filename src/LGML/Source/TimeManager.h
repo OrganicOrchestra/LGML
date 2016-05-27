@@ -60,7 +60,7 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer
     int getBeat();
     int getNextGlobalQuantifiedTime();
     int getNextQuantifiedTime(int barFraction);
-    uint64 getTimeInBeats(int beats);
+    uint64 getTimeForNextBeats(int beats);
 
 
     //return percent in beat
