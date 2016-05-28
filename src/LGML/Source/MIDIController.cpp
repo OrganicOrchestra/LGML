@@ -19,6 +19,7 @@ Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
 {
     setNamespaceName("MIDI."+nameParam->stringValue());
     deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
+    scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
 }
 
 ControllerUI * MIDIController::createUI()
@@ -68,6 +69,9 @@ void MIDIController::onContainerParameterChanged(Parameter * p){
     else if (p==midiPortName){
         setCurrentDevice(deviceInName->stringValue());
     }
+    else if(p==scriptPath){
+        loadFile(scriptPath->stringValue());
+    }
 }
 
 void MIDIController::buildLocalEnv(){
@@ -84,7 +88,7 @@ void MIDIController::buildLocalEnv(){
 
 
 void MIDIController::newJsFileLoaded(){
-    if(hasValidJsFile())scriptPath->setValue(currentFile.getFullPathName());
+    scriptPath->setValue(currentFile.getFullPathName());
 };
 
 // @ben do we do the same as OSC MIDI IN/OUt controllers
