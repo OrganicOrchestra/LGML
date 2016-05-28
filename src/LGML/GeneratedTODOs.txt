@@ -123,7 +123,7 @@ TimeManager.cpp
 
 
 MIDIController.cpp
-	line : 81
+	line : 89
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 

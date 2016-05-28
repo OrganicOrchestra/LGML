@@ -29,6 +29,7 @@ public:
             String upperCaseWord = s.replaceSection(0, 1, index == 0 ? initial.toLowerCase() : initial.toUpperCase());
             s.swapWith(upperCaseWord);
             if(replaceSlashes) s = s.replace("/","_");
+            s = s.replace("#","_");
             index++;
         }
 

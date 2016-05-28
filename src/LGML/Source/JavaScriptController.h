@@ -23,7 +23,6 @@ public:
     Result callForMessage(const OSCMessage & msg);
     void callonAnyMsg(const OSCMessage & msg);
 
-
     static var sendOSCFromJS(const juce::var::NativeFunctionArgs& a);
     void onContainerParameterChanged(Parameter * p) override;
 

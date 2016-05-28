@@ -132,7 +132,7 @@ AudioMixerNode::OutputBus::OutputBus(int _outputIndex,int numInput):
 outputIndex(_outputIndex),
 ControllableContainer("outputBus : "+String(_outputIndex)){
     setNumInput(numInput);
-    setCustomShortName(String(_outputIndex+1));
+    setCustomShortName("Out_"+String(_outputIndex+1));
 
 }
 
@@ -142,7 +142,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
     if(numInput>volumes.size()){
         for(int i = volumes.size();i<numInput ; i++){
             FloatParameter * p = addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?DB0_FOR_01:0);
-            p->setCustomShortName(String(i+1));
+            p->setCustomShortName("In_"+String(i+1));
             volumes.add(p);
         }
     }

@@ -19,7 +19,9 @@
 // 1            -> +6dB
 inline float float01ToGain(float f){
     if(f==0)return 0;
-    return Decibels::decibelsToGain(jmap<float>(f,DB0_FOR_01,1.0f,0.0f,6.0f));
+    float minus6Pos = (1-2*(1-DB0_FOR_01));
+    if(f>minus6Pos) return Decibels::decibelsToGain(jmap<float>(f,DB0_FOR_01,1.0f,0.0f,6.0f));
+    return Decibels::decibelsToGain(jmap<float>(f,0,minus6Pos,-70.0f,-6.0f));
 };
 
 inline float rmsToGain01(float rms){

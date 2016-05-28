@@ -82,6 +82,7 @@ public:
 
 
     bool functionIsDefined(const String &);
+    File currentFile;
 private:
 
 
@@ -92,7 +93,7 @@ private:
 
     // dot separated string representing localNamespace
     String localNamespace;
-    File currentFile;
+
 
     ListenerList<Listener> jsListeners;
 

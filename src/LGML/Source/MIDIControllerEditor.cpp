@@ -40,7 +40,7 @@ void MIDIControllerEditor::comboBoxChanged(ComboBox *cb)
 	{
 		if (deviceChooser.getSelectedItemIndex() > 0)
 		{
-			midiController->setCurrentDevice(deviceChooser.getItemText(deviceChooser.getSelectedItemIndex()));
+			midiController->deviceInName->setValue(deviceChooser.getItemText(deviceChooser.getSelectedItemIndex()));
 		}
 	}
 }

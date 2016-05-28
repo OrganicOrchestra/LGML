@@ -28,7 +28,7 @@ void MIDIListener::setCurrentDevice(const String & deviceName)
         getAudioDeviceManager().removeMidiInputCallback(midiPortName, this);
     }
 
-    midiPortName = deviceName;
+    midiPortName =  deviceName;
 
 
     if (!midiPortName.isEmpty())
