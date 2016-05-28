@@ -156,7 +156,7 @@ void VSTNodeContentUI::comboBoxChanged(ComboBox *cb)
     {
         if (midiDeviceChooser.getSelectedItemIndex() > 0)
         {
-            vstNode->setCurrentDevice(midiDeviceChooser.getItemText(midiDeviceChooser.getSelectedItemIndex()));
+            vstNode->midiPortNameParam->setValue(midiDeviceChooser.getItemText(midiDeviceChooser.getSelectedItemIndex()));
         }
     }
 }
