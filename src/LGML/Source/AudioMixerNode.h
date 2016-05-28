@@ -24,7 +24,9 @@ public:
 		OutputBus(int _outputIndex, int numInput);
 		void setNumInput(int numInput);
 
+        void onContainerParameterChanged(Parameter *p)override;
 		Array<FloatParameter*> volumes;
+        Array<float> logVolumes;
 		Array<float> lastVolumes;
 		int outputIndex;
 	};
@@ -47,6 +49,7 @@ public:
 	void onContainerParameterChanged(Parameter * p) override;
 
 	ConnectableNodeUI * createUI() override;
+
 
 
 private:

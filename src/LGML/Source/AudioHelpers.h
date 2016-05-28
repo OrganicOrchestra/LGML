@@ -13,10 +13,10 @@
 
 
 #include "JuceHeader.h"
-#define DB0_FOR_01 0.85f
+#define DB0_FOR_01 0.8f
 // create a gain value for a float  between 0 and 1
-// 0.85  -> 0dB
-// 1    -> +6dB
+// DB0_FOR_01   -> 0dB
+// 1            -> +6dB
 inline float float01ToGain(float f){
     if(f==0)return 0;
     return Decibels::decibelsToGain(jmap<float>(f,DB0_FOR_01,1.0f,0.0f,6.0f));

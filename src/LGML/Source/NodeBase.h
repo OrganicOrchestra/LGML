@@ -151,6 +151,7 @@ public:
 	void handleAsyncUpdate() override;
 
 	bool wasSuspended;
+    float logVolume;
 	float lastVolume;
 
 	//DATA

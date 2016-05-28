@@ -11,7 +11,7 @@
 #include "ConnectableNode.h"
 
 #include "ConnectableNodeUI.h"
-
+#include "AudioHelpers.h"
 
   ConnectableNode::ConnectableNode(const String & name, NodeType _type, bool _hasMainAudioControl):
 	  parentNodeContainer(nullptr),
@@ -39,7 +39,7 @@
 
 	  //Audio
       if(hasMainAudioControl){
-		  outputVolume = addFloatParameter("masterVolume", "master volume for this node", 1.);
+		  outputVolume = addFloatParameter("masterVolume", "master volume for this node", DB0_FOR_01);
 		//  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
 	}
 

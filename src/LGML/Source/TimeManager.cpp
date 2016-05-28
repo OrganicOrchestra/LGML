@@ -119,9 +119,7 @@ void TimeManager::togglePlay(){
         playTrigger->trigger();
 }
 
-void TimeManager::setBeatPerBar(int)
-{
-}
+
 
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
@@ -159,8 +157,8 @@ int TimeManager::getNextQuantifiedTime(int barFraction){
         barFraction=quantizedBarFraction->intValue();
     }
     if(barFraction==0){
-		return (int)timeInSample;
-	}
+        return (int)timeInSample;
+    }
 
     const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
     return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
@@ -182,3 +180,18 @@ void TimeManager::lockTime(bool s){
 bool TimeManager::isLocked(){
     return _isLocked;
 }
+bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
+    result.bpm = BPM->floatValue();
+    result.isPlaying = playState->boolValue();
+    result.isRecording = isSettingTempo->boolValue();
+    //TODO: check
+    result.ppqPosition = timeInSample/(beatTimeInSample*sampleRate*4);
+    result.timeSigNumerator = 4;
+    result.timeSigDenominator = 4;
+    result.timeInSamples = timeInSample;
+    result.timeInSeconds = timeInSample*sampleRate;
+    result.ppqPositionOfLastBarStart = getBar()*result.timeSigNumerator*beatTimeInSample*4;
+    result.isLooping=true;
+    return true;
+}
+

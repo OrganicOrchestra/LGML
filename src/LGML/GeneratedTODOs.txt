@@ -7,37 +7,6 @@
  ///////////////////////////////////////
 
 
-NodeContainer.h
-	line : 64
-		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
-		//(todo : find a way to have simpler event flow)
-
-
-JsEnvironment.cpp
-	line : 296
-		// @ben only supported if move semantics are too are they for you?
-
-
-LGMLLoggerUI.cpp
-	line : 19
-		//@martin i did that so i could clear the log, but the scollbar still goes down after clearing
-		// @ben I cant see the problem here but we never want to clear everything at once no?
-		//  could you explain the problem so that i can see what happen
-		// when I log more than 50000 lines it works as expected for me
-		//	if (totalLogRow >= maxNumElement)
-		//	{
-		//		logElements.clear();
-		//		totalLogRow = 0;
-		//		logListComponent->updateContent();
-		//
-		//	}
-
-
-VuMeter.h
-	line : 16
-		//TODO, move to more common place for use in other components
-
-
 ControllableContainer.cpp
 	line : 413
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
@@ -49,57 +18,41 @@ ControllableContainer.cpp
 		// @ben not sure
 
 
-NodeBase.h
-	line : 48
-		//  TODO:  this should not be implemented in Node to avoid overriding this method
-		//    create onNodeParameterChanged();
-
-
-LooperNode.cpp
-	line : 68
-		// TODO check if we can optimize copies
-		// handle multiples channels outs
-
-
-NodeConnectionEditor.cpp
-	line : 370
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
-	line : 159
-		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
-		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
-		// should be fixed !!
-
-
-JsGlobalEnvironment.cpp
-	line : 29
-		// TODO: use a bit of ControllableContainer in controllers, its empty atm
-		//    linkToControllableContainer("controllers",ControllerManager::getInstance());
-
-
-ShapeShifterContainer.cpp
-	line : 293
-		//@ben what to we do for that?
-		//@martin never gonna happen :)
-
-	line : 127
-		//@ben do we need to handle these?
-
-
-DataProcessorGraph.cpp
-	line : 14
-		//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
-		//  thread.startThread();
-
-
 ControllableInspector.cpp
 	line : 85
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
-MIDIController.cpp
-	line : 81
-		// @ben do we do the same as OSC MIDI IN/OUt controllers
+NodeBase.cpp
+	line : 105
+		// TODO we could implement that for all node objects to be able to save any kind of custom data
+
+
+NodeContainer.h
+	line : 64
+		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
+		//(todo : find a way to have simpler event flow)
+
+
+VSTNode.cpp
+	line : 106
+		// TODO check that it actually works
+
+	line : 123
+		//@Martin i addedd this because when not playing, it crashed
+		// @ben it is necessary
+		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
+		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
+
+
+VuMeter.h
+	line : 16
+		//TODO, move to more common place for use in other components
+
+
+JsEnvironment.cpp
+	line : 296
+		// @ben only supported if move semantics are too are they for you?
 
 
 NodeContainer.cpp
@@ -121,20 +74,57 @@ JavascriptControllerUI.cpp
 		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
 
 
-VSTNode.cpp
-	line : 106
-		// TODO check that it actually works
+LGMLLoggerUI.cpp
+	line : 19
+		//@martin i did that so i could clear the log, but the scollbar still goes down after clearing
+		// @ben I cant see the problem here but we never want to clear everything at once no?
+		//  could you explain the problem so that i can see what happen
+		// when I log more than 50000 lines it works as expected for me
+		//	if (totalLogRow >= maxNumElement)
+		//	{
+		//		logElements.clear();
+		//		totalLogRow = 0;
+		//		logListComponent->updateContent();
+		//
+		//	}
 
-	line : 123
-		//@Martin i addedd this because when not playing, it crashed
-		// @ben it is necessary
-		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
-		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
+
+JsGlobalEnvironment.cpp
+	line : 29
+		// TODO: use a bit of ControllableContainer in controllers, its empty atm
+		//    linkToControllableContainer("controllers",ControllerManager::getInstance());
 
 
-NodeBase.cpp
-	line : 101
-		// TODO we could implement that for all node objects to be able to save any kind of custom data
+NodeBase.h
+	line : 48
+		//  TODO:  this should not be implemented in Node to avoid overriding this method
+		//    create onNodeParameterChanged();
+
+
+NodeConnectionEditor.cpp
+	line : 370
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+	line : 159
+		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
+		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
+		// should be fixed !!
+
+
+LooperNode.cpp
+	line : 68
+		// TODO check if we can optimize copies
+		// handle multiples channels outs
+
+
+TimeManager.cpp
+	line : 186
+		//TODO: check
+
+
+MIDIController.cpp
+	line : 81
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 
 ControllableContainer.h
@@ -145,9 +135,13 @@ ControllableContainer.h
 		//      or using dispatch feedback that triggers only exposedParams
 
 
-ControllableInspector.h
-	line : 24
-		// TODO handle merging of multiple component of sameClass : almost there ....
+ShapeShifterContainer.cpp
+	line : 293
+		//@ben what to we do for that?
+		//@martin never gonna happen :)
+
+	line : 127
+		//@ben do we need to handle these?
 
 
 LooperTrack.cpp
@@ -155,5 +149,16 @@ LooperTrack.cpp
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized
+
+
+DataProcessorGraph.cpp
+	line : 14
+		//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
+		//  thread.startThread();
+
+
+ControllableInspector.h
+	line : 24
+		// TODO handle merging of multiple component of sameClass : almost there ....
 
 

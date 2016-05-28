@@ -157,7 +157,7 @@ inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 		{
             incomingMidi.clear();
             messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
-            innerPlugin->setPlayHead(getPlayHead());
+            innerPlugin->setPlayHead(NodeBase::getPlayHead());
 			innerPlugin->processBlock(buffer, incomingMidi);
 		}
 		else {

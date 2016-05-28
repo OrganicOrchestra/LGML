@@ -12,7 +12,7 @@
 #include "NodeManager.h"
 #include "TimeManager.h"
 
-
+#include "AudioHelpers.h"
 
 NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
 	ConnectableNode(name,_type,_hasMainAudioControl),
@@ -62,6 +62,10 @@ bool NodeBase::hasDataOutputs()
 void NodeBase::onContainerParameterChanged(Parameter * p)
 {
 	ConnectableNode::onContainerParameterChanged(p);
+
+    if(p==outputVolume){
+        logVolume = float01ToGain(outputVolume->floatValue());
+    }
 
 	//ENABLE PARAM ACT AS A BYPASS
 	/*
@@ -180,8 +184,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 			processBlockInternal(buffer, midiMessages);
 
             if(hasMainAudioControl){
-                buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
-                lastVolume = outputVolume->floatValue();
+                buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, logVolume);
+                lastVolume = logVolume;
             }
 
 			if (wasSuspended) {
