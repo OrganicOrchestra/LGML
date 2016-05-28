@@ -34,7 +34,7 @@ public:
     // helpers
 
     void    setLocalNamespace(DynamicObject & target);
-    void    clearNamespace();
+    virtual void    clearNamespace();
 
     void    loadFile(const File & f);
 	Result 	loadScriptContent(const String &content);

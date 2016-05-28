@@ -495,6 +495,12 @@
                 file="Source/NodeConnectionUI.h"/>
         </GROUP>
         <GROUP id="{90D03868-3FD4-352F-D8F2-C231A68FF418}" name="nodes">
+          <GROUP id="{82334F23-E6FE-04CA-EF7A-BE1651A9A2B1}" name="JsNode">
+            <FILE id="Qzisra" name="JsNode.cpp" compile="1" resource="0" file="Source/JsNode.cpp"/>
+            <FILE id="ToEYUI" name="JsNode.h" compile="0" resource="0" file="Source/JsNode.h"/>
+            <FILE id="uD4xjf" name="JsNodeUI.cpp" compile="1" resource="0" file="Source/JsNodeUI.cpp"/>
+            <FILE id="d4hV8h" name="JsNodeUI.h" compile="0" resource="0" file="Source/JsNodeUI.h"/>
+          </GROUP>
           <GROUP id="{D50B9974-FB09-4491-041A-EC9D95F501CB}" name="ContainerOut">
             <FILE id="PKaky5" name="ContainerOutNode.cpp" compile="1" resource="0"
                   file="Source/ContainerOutNode.cpp"/>
