@@ -19,7 +19,8 @@ enum PresetChoice
 {
     SaveCurrent = -3,
     SaveToNew = -2,
-    ResetToDefault = -1
+    ResetToDefault = -1,
+    deleteStartId = 1000
 };
 
 class PresetManager

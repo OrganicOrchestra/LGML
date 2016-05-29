@@ -101,8 +101,9 @@ public:
     PresetManager::Preset * currentPreset;
 	virtual bool loadPresetWithName(const String &name);
     virtual bool loadPreset(PresetManager::Preset * preset);
-	virtual void saveNewPreset(const String &name);
+	virtual PresetManager::Preset* saveNewPreset(const String &name);
     virtual bool saveCurrentPreset();
+
     virtual bool resetFromPreset();
 
     //    to be overriden

@@ -343,25 +343,29 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 {
     if (preset == nullptr) return false;
 
+    loadPresetInternal(preset);
+    
     for (auto &pv : preset->presetValues)
     {
 
         Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
         if (p != nullptr) p->setValue(pv->presetValue);
     }
-    loadPresetInternal(preset);
+
 
     currentPreset = preset;
 
     return true;
 }
 
-void ControllableContainer::saveNewPreset(const String & _name)
+PresetManager::Preset* ControllableContainer::saveNewPreset(const String & _name)
 {
     PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, true);
     savePresetInternal(pre);
     loadPreset(pre);
+    return pre;
 }
+
 
 bool ControllableContainer::saveCurrentPreset()
 {
@@ -389,8 +393,7 @@ bool ControllableContainer::resetFromPreset()
         Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
         if (p != nullptr) p->resetValue();
     }
-    // @ben not sure
-    savePresetInternal(currentPreset);
+
 
     currentPreset = nullptr;
     return true;

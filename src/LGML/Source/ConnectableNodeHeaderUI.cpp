@@ -232,10 +232,10 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
         if (nameResult)
         {
             String presetName = nameWindow.getTextEditorContents("newPresetName");
-            node->saveNewPreset(presetName);
+            PresetManager::Preset * p = node->saveNewPreset(presetName);
             cb->clear(NotificationType::dontSendNotification);
             updatePresetComboBox();
-            cb->setSelectedItemIndex(cb->getNumItems() - 1, NotificationType::dontSendNotification);
+            cb->setSelectedId(p->presetId, NotificationType::dontSendNotification);
         }
         else
         {
@@ -248,10 +248,16 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
         node->resetFromPreset();
         cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
     }
-    else
+    else if(presetID < PresetChoice::deleteStartId)
     {
         PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(node->getPresetFilter(), cb->getItemText(cb->getSelectedItemIndex()));
         node->loadPreset(pre);
+    }
+    else{
+        PresetManager * pm =PresetManager::getInstance();
+        PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), cb->getItemText(cb->getSelectedItemIndex()-PresetChoice::deleteStartId));
+        pm->presets.removeObject(pre);
+
     }
 
 }

@@ -65,6 +65,7 @@ void PresetManager::fillWithPresets(ComboBox * cb, String filter)
     cb->addItem("Reset to default", ResetToDefault);
 
 	int pIndex = 1;
+
     for (auto &pre : presets)
     {
 
@@ -75,6 +76,15 @@ void PresetManager::fillWithPresets(ComboBox * cb, String filter)
             pIndex++;
         }
     }
+    for (auto &pre : presets)
+    {
+
+        if (pre->filter == filter)
+        {
+            cb->addItem("delete "+pre->name, PresetChoice::deleteStartId + pre->presetId);
+        }
+    }
+
 }
 
 void PresetManager::clear()

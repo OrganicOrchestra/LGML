@@ -296,6 +296,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues) {
 	int numSamples = buffer.getNumSamples();
 	int numChannels = buffer.getNumChannels();
+    if(targetRMSChannelValues.size()!=numChannels)
+        targetRMSChannelValues.resize(numChannels);
 
 #ifdef HIGH_ACCURACY_RMS
 	for (int i = numSamples - 64; i >= 0; i -= 64) {
@@ -305,30 +307,36 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 	// faster implementation taken from juce Device Settings input meter
 	
 	float globalS = 0;
+
+    // @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
+    const double decayFactor = 0.99;
+    const float lowThresh = 0.0001f;
+
+
 	for (int i = numChannels - 1; i >= 0; --i)
 	{
-		
+
 		float s = 0;
 		for (int j = 0; j < numSamples; ++j)
 		{
 			s = jmax(s, std::abs(buffer.getSample(i, j)));
 		}
 
-		targetRMSChannelValues.set(i, s);
+
+        targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
+                                        s>lowThresh?targetRMSChannelValues.getUnchecked(i)*decayFactor:
+                                        0);
 		globalS = jmax(s, globalS);
 	}
 
-	targetRmsValue = globalS;
 
-	/*
-	const double decayFactor = 0.99992;
 	if (globalS > targetRmsValue)
 		targetRmsValue = globalS;
-	else if (targetRmsValue > 0.001f)
+	else if (targetRmsValue > lowThresh)
 		targetRmsValue *= (float)decayFactor;
 	else
 		targetRmsValue = 0;
-		*/
+
 
 #endif
 
