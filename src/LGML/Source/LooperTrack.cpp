@@ -100,14 +100,16 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
             //assert false for now see above
             jassertfalse;
-            int firstSegmentLength = recordNeedle - playNeedle;
-            int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
-            }
-            playNeedle = secondSegmentLength;
+            // crop buffer to ensure not coming back
+            recordNeedle = (playNeedle + buffer.getNumSamples());
+//            int firstSegmentLength = recordNeedle - playNeedle;
+//            int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
+//            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+//                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+//                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
+//                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
+//            }
+//            playNeedle = secondSegmentLength;
 
         }
         else {
@@ -360,7 +362,7 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
         if (trackState == CLEARED) {
             setTrackState(SHOULD_RECORD);
         }
-        else  {
+        else  if(trackState!=SHOULD_RECORD){
             setTrackState(SHOULD_PLAY);
         }
 
@@ -452,8 +454,9 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
             if(timeManager->isMasterNode(parentLooper)){
                 trackState=SHOULD_PLAY;
                 timeManager->lockTime(true);
+                    quantizedPlayStart = 0;
                 timeManager->playTrigger->trigger();
-                quantizedPlayStart = 0;
+
                 timeManager->lockTime(false);
             }
             else{
