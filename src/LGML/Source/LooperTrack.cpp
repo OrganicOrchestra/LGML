@@ -33,7 +33,8 @@ someOneIsSolo(false),
 internalTrackState(BUFFER_STOPPED),
 lastInternalTrackState(BUFFER_STOPPED),
 isSelected (false),
-isFadingIn(false)
+isFadingIn(false),
+isCrossFading(false)
 {
 
     //setCustomShortName("track/" + String(_trackIdx)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
@@ -116,10 +117,16 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             playNeedle += buffer.getNumSamples();
             playNeedle %= recordNeedle;
         }
+
         if(isFadingIn){ lastVolume = 0;isFadingIn = false;}
 
         float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume;
+        // fadeOut
+        if(isCrossFading){
 
+            if(!isFadingIn){ newVolume = 0; isFadingIn = true;}
+            else isCrossFading = false;
+        }
 // fade out on buffer_stop (clear or stop)
         if((lastInternalTrackState == BUFFER_PLAYING ) && (internalTrackState==BUFFER_STOPPED) ){
             newVolume = 0;
@@ -263,7 +270,8 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
         const int minQuantifiedFraction =TimeManager::getInstance()->beatTimeInSample / 16;
         if((curTime%minQuantifiedFraction)!=(playNeedle%minQuantifiedFraction)){
             LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%minQuantifiedFraction));
-            isFadingIn = true;
+            isFadingIn = false;
+            isCrossFading = true;
             playNeedle = curTime%minQuantifiedFraction;
         }
     }

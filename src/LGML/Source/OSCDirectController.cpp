@@ -22,11 +22,14 @@ OSCDirectController::OSCDirectController(const String & name) :
 	OSCController(name)
 {
 	NodeManager::getInstance()->addControllableContainerListener(this);
+    TimeManager::getInstance()->addControllableContainerListener(this);
 }
 
 OSCDirectController::~OSCDirectController()
 {
     NodeManager::getInstance()->removeControllableContainerListener(this);
+    if(TimeManager * tm = TimeManager::getInstanceWithoutCreating()){tm->removeControllableContainerListener(this);}
+
 }
 
 Result OSCDirectController::processMessageInternal(const OSCMessage & msg)

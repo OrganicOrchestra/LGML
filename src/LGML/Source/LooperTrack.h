@@ -139,6 +139,7 @@ public:
     AudioSampleBuffer loopSample;
     float lastVolume;
     bool isFadingIn;
+    bool isCrossFading;
 
 
 

@@ -27,8 +27,8 @@ _isLocked(false)
     BPM = addFloatParameter("bpm","current BPM",120,10,600);
     playState = addBoolParameter("Play_Stop", "play or stop global transport", false);
     isSettingTempo = addBoolParameter("isSettingTempo", "is someone setting tempo (recording first loop)", false);
-    currentBar  = addIntParameter("currentBar", "currentBar in transport", 0, 0, 4);
-    currentBeat  = addIntParameter("currentBeat", "currentBeat in transport", 0, 0, 4);
+    currentBar  = addIntParameter("currentBar", "currentBar in transport", 0, 0, 9999999);
+    currentBeat  = addIntParameter("currentBeat", "currentBeat in transport", 0, 0, 999999);
     beatPerBar = addIntParameter("beatPerBar", "beat Per Bar", 4, 1, 8);
     playTrigger = addTrigger("play", "trigger play");
     stopTrigger = addTrigger("stop", "trigger stop");
