@@ -71,11 +71,7 @@ public:
     }
 #endif
     
-    bool sendOSC (OSCMessage & m)
-    {
-        if(logOutGoingOSC->boolValue()){logMessage(m,"Out:");}
-        return sender.send (m);
-    }
+    bool sendOSC (OSCMessage & m);
 
     void logMessage(const OSCMessage & m,const String & prefix = "");
 

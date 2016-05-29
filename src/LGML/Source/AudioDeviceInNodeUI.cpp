@@ -32,7 +32,7 @@ AudioDeviceInNodeContentUI::~AudioDeviceInNodeContentUI()
 
 void AudioDeviceInNodeContentUI::init()
 {
-	audioInNode = (AudioDeviceInNode *)node;
+	audioInNode = (AudioDeviceInNode *)node.get();
 	audioInNode->addNodeBaseListener(this);
 	audioInNode->addNodeListener(this);
 	updateVuMeters();

@@ -23,7 +23,7 @@ public:
     virtual ~ConnectableNodeContentUI();
 
     ConnectableNodeUI * nodeUI;
-    ConnectableNode * node;
+    WeakReference<ConnectableNode> node;
 
     virtual void setNodeAndNodeUI(ConnectableNode * node,ConnectableNodeUI * nodeUI);
     virtual void init();

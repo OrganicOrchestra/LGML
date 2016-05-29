@@ -34,7 +34,7 @@ void DummyNodeContentUI::init()
 {
     //no need to call NodeBase init because there is nothing inside and there should not be anything !
 
-    dummyNode = (DummyNode *)node;
+    dummyNode = (DummyNode *)node.get();
 
     freq1Slider = dummyNode->freq1Param->createSlider();
     addAndMakeVisible(freq1Slider);

@@ -19,6 +19,7 @@ NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl)
 	audioNode(nullptr)
 {
     addToAudioGraph();
+    logVolume = float01ToGain(DB0_FOR_01);
 	lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
 
 	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);

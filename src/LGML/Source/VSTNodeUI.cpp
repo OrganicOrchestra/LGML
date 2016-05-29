@@ -26,7 +26,7 @@ VSTNodeContentUI::~VSTNodeContentUI(){
 
 void VSTNodeContentUI::init() {
 
-    vstNode = (VSTNode *)node;
+    vstNode = (VSTNode *)node.get();
     addAndMakeVisible(midiDeviceChooser);
 
     VSTListShowButton.addListener(this);

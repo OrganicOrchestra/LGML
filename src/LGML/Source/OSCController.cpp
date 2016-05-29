@@ -110,6 +110,12 @@ void OSCController::oscBundleReceived(const OSCBundle & bundle)
 	}
 }
 
+bool OSCController::sendOSC (OSCMessage & m)
+{
+    if(logOutGoingOSC->boolValue()){logMessage(m,"Out:");}
+    return sender.send (m);
+}
+
 ControllerUI * OSCController::createUI()
 {
 	return new OSCControllerUI(this);

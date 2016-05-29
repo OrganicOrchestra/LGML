@@ -14,22 +14,26 @@
 #include "JsEnvironmentUI.h"
 #include "NodeBaseUI.h"
 
-class JsNodeUI : public NodeBaseContentUI{
+class JsNodeUI : public NodeBaseContentUI,public ControllableContainerListener,JsEnvironment::Listener{
 
 
 public:
-    JsNodeUI(){
-        
-    };
+    JsNodeUI();
+    ~JsNodeUI();
     
 
     void init()override;
 
-    void resized() override{
-        jsUI->setBounds(getLocalBounds());
+    void resized() override;
 
-    }
+    void newJsFileLoaded(bool )override;
     ScopedPointer<JsEnvironmentUI> jsUI;
+
+    OwnedArray<ControllableUI> varUI;
+    void layoutUI();
+
+    void controllableAdded(Controllable *) override;
+    void controllableRemoved(Controllable *) override;
     
     
 };

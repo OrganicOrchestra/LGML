@@ -19,7 +19,8 @@
 
 class JsNode : public NodeBase,public JsEnvironment{
     public :
-    JsNode():JsEnvironment("JsNode"){
+    JsNode():NodeBase("JsNode",NodeType::JsNodeType,false),JsEnvironment("JsNode"){
+        canHavePresets = false;
         scriptPath = NodeBase::addStringParameter("ScriptPath","path for js script","");
     };
 
@@ -30,6 +31,7 @@ class JsNode : public NodeBase,public JsEnvironment{
         for(auto & p:jsParameters){
             removeControllable(p);
         }
+        jsParameters.clear();
 
 
     }
@@ -68,6 +70,7 @@ class JsNode : public NodeBase,public JsEnvironment{
     };
 
     void onContainerParameterChanged(Parameter * p) override{
+        NodeBase::onContainerParameterChanged(p);
         if(p==scriptPath){
             loadFile(scriptPath->stringValue());
         }

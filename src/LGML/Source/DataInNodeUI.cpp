@@ -42,7 +42,7 @@ void DataInNodeContentUI::init()
 {
     setSize(150, 200);
 
-    dataInNode = (DataInNode *)node;
+    dataInNode = (DataInNode *)node.get();
     dataInNode->addDataInListener(this);
 
     for (auto &p : dataInNode->dynamicParameters)

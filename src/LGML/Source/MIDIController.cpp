@@ -66,7 +66,7 @@ void MIDIController::onContainerParameterChanged(Parameter * p){
     if(p==nameParam){
         setNamespaceName("MIDI."+nameParam->stringValue());
     }
-    else if (p==midiPortName){
+    else if (p==deviceInName){
         setCurrentDevice(deviceInName->stringValue());
     }
     else if(p==scriptPath){

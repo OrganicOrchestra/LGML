@@ -26,7 +26,7 @@ AudioMixerNodeUI::~AudioMixerNodeUI() {
 }
 
 void AudioMixerNodeUI::init() {
-	 mixerNode = dynamic_cast<AudioMixerNode*>(node);
+	 mixerNode = (AudioMixerNode*)node.get();
 	 numAudioOutputChanged(mixerNode, mixerNode->numberOfOutput->intValue());
 	 numAudioInputChanged(mixerNode, mixerNode->numberOfInput->intValue());
 
