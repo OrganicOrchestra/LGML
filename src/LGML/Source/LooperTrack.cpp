@@ -34,7 +34,8 @@ internalTrackState(BUFFER_STOPPED),
 lastInternalTrackState(BUFFER_STOPPED),
 isSelected (false),
 isFadingIn(false),
-isCrossFading(false)
+isCrossFading(false),
+isJumping(false)
 {
 
     //setCustomShortName("track/" + String(_trackIdx)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
@@ -110,6 +111,20 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
         }
         else {
+            // stitch audio jumps by quick fadeIn/Out
+            if(isJumping){
+                const int halfBlock =  buffer.getNumSamples()/2;
+                for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+                    int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+                    buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, startJumpNeedle, halfBlock);
+                    buffer.applyGainRamp(i, 0, halfBlock, 1.0f, 0.0f);
+                    buffer.copyFrom(i, halfBlock, loopSample, maxChannelFromRecorded, playNeedle, halfBlock);
+                    buffer.applyGainRamp(i, 0, halfBlock, 0.0f, 1.0f);
+
+                }
+
+                isJumping = false;
+            }
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
                 int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
                 buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, buffer.getNumSamples());
@@ -127,7 +142,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             if(!isFadingIn){ newVolume = 0; isFadingIn = true;}
             else isCrossFading = false;
         }
-// fade out on buffer_stop (clear or stop)
+        // fade out on buffer_stop (clear or stop)
         if((lastInternalTrackState == BUFFER_PLAYING ) && (internalTrackState==BUFFER_STOPPED) ){
             newVolume = 0;
         }
@@ -228,7 +243,7 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
         stateChanged=true;
         if (internalTrackState == BUFFER_RECORDING) {
             if (isMasterTempoTrack()) {
-//                DBG("init predelay : "+String (trackIdx));
+                //                DBG("init predelay : "+String (trackIdx));
                 int samplesToGet = (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
                 for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
                     loopSample.copyFrom(i, 0, streamAudioBuffer.getLastBlock(samplesToGet, i), samplesToGet);
@@ -244,13 +259,12 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
         if (internalTrackState == BUFFER_PLAYING && lastInternalTrackState == BUFFER_RECORDING) {
             if (isMasterTempoTrack()) {
-//                DBG("release predelay : "+String (trackIdx));
+                //                DBG("release predelay : "+String (trackIdx));
                 recordNeedle -= (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
 
                 const int fadeNumSamples = (int)(parentLooper->getSampleRate()*0.022f);
                 if (fadeNumSamples>0 && recordNeedle>2 * fadeNumSamples) {
                     for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-
                         loopSample.applyGainRamp(i, 0, fadeNumSamples, 0, 1);
                         loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, 0);
                     }
@@ -261,7 +275,7 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
                 beatLength->setValue(TimeManager::getInstance()->getBeat() - startBeat);
             }
             playNeedle = 0;
-            }
+        }
 
 
     }
@@ -270,14 +284,14 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
         const int minQuantifiedFraction =TimeManager::getInstance()->beatTimeInSample / 16;
         if((curTime%minQuantifiedFraction)!=(playNeedle%minQuantifiedFraction)){
             LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%minQuantifiedFraction));
-            isFadingIn = false;
-            isCrossFading = true;
+            isJumping = true;
+            startJumpNeedle = playNeedle;
             playNeedle = curTime%minQuantifiedFraction;
         }
     }
     if(stateChanged){
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
-//        DBG("a:"+trackStateToString(trackState));
+        //        DBG("a:"+trackStateToString(trackState));
 
     }
 
@@ -321,7 +335,7 @@ void LooperTrack::onContainerParameterChanged(Parameter * p)
     if (p == volume)
     {
         if (parentLooper->selectedTrack == this) parentLooper->volumeSelected->setValue(volume->floatValue());
-         logVolume = float01ToGain(volume->value);
+        logVolume = float01ToGain(volume->value);
 
     }
     if(p==solo){
@@ -443,7 +457,7 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
                 timeManager->lockTime(false);
             }
             else{
-            quantizedPlayStart = 0;
+                quantizedPlayStart = 0;
             }
         }
         // a cleared track can't be played
@@ -459,8 +473,8 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         else if(timeManager->playState->boolValue()){
             cleanAllQuantizeNeedles();
             quantizedPlayStart = timeManager->getNextQuantifiedTime(quantizeTime);
-//            quantizedPlayStart = timeManager->getNextQuantifiedTime(1.0/beatLength->intValue());
-//            quantizedPlayStart = timeManager->getTimeForNextBeats(beatLength->value);
+            //            quantizedPlayStart = timeManager->getNextQuantifiedTime(1.0/beatLength->intValue());
+            //            quantizedPlayStart = timeManager->getTimeForNextBeats(beatLength->value);
 
         }
     }
@@ -490,13 +504,13 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         else if (trackState == SHOULD_CLEAR) { newState = SHOULD_CLEAR; }
     }
     //DBG(newState <<","<<trackState );
-//    DBG(trackStateToString(trackState));
-
+    //    DBG(trackStateToString(trackState));
+    
     if(trackState!=newState){
         trackState = newState;
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
     }
-
+    
     if((trackState==CLEARED || trackState==SHOULD_CLEAR || trackState==STOPPED || trackState==SHOULD_STOP) ){
         parentLooper->checkIfNeedGlobalLooperStateUpdate();
     }

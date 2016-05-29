@@ -130,7 +130,8 @@ public:
     int recordNeedle;
     int quantizedRecordEnd, quantizedRecordStart;
 
-    int playNeedle;
+    int playNeedle,startJumpNeedle;
+    bool isJumping;
     int quantizedPlayStart, quantizedPlayEnd;
 
     void updatePendingLooperTrackState(const uint64 curTime, int blockSize);
