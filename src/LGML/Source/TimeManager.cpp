@@ -185,11 +185,13 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
     result.isPlaying = playState->boolValue();
     result.isRecording = isSettingTempo->boolValue();
     //TODO: check
-    result.ppqPosition = timeInSample/(beatTimeInSample*sampleRate*4);
+    static const int mainPPQ = 960;
+    result.ppqPosition = timeInSample*mainPPQ/(beatTimeInSample);
     result.timeSigNumerator = 4;
     result.timeSigDenominator = 4;
     result.timeInSamples = timeInSample;
     result.timeInSeconds = timeInSample*sampleRate;
+
     result.ppqPositionOfLastBarStart = getBar()*result.timeSigNumerator*beatTimeInSample*4;
     result.isLooping=true;
     return true;

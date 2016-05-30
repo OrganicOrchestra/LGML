@@ -12,6 +12,7 @@
 #include "AudioDeviceInNode.h"
 #include "VuMeter.h"
 #include "BoolToggleUI.h"
+#include "FloatSliderUI.h"
 
 AudioDeviceInNodeContentUI::AudioDeviceInNodeContentUI() :
 	NodeBaseContentUI()
@@ -53,7 +54,8 @@ void AudioDeviceInNodeContentUI::resized()
 		Rectangle<int> vr = r.removeFromLeft(vWidth);
 		muteToggles[i]->setBounds(vr.removeFromBottom(20));
 		vr.removeFromBottom(2);
-		vuMeters[i]->setBounds(vr);
+		vuMeters[i]->setBounds(vr.removeFromLeft(vr.getWidth()/2).reduced(2));
+        volumes[i]->setBounds(vr.reduced(2));
 		r.removeFromLeft(gap);
 	}
 }
@@ -84,6 +86,12 @@ void AudioDeviceInNodeContentUI::addVuMeter()
 	b->invertVisuals = true;
 	muteToggles.add(b);
 	addAndMakeVisible(b);
+
+
+    FloatSliderUI * vol  = audioInNode->volumes.getLast()->createSlider();
+    vol->orientation = FloatSliderUI::Direction::VERTICAL;
+    volumes.add(vol);
+    addAndMakeVisible(vol);
 }
 
 void AudioDeviceInNodeContentUI::removeLastVuMeter()
@@ -95,6 +103,9 @@ void AudioDeviceInNodeContentUI::removeLastVuMeter()
 
 	removeChildComponent(muteToggles[muteToggles.size() - 1]);
 	muteToggles.removeLast();
+    
+    removeChildComponent(volumes.getLast());
+    volumes.removeLast();
 }
 
 void AudioDeviceInNodeContentUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
@@ -102,12 +113,13 @@ void AudioDeviceInNodeContentUI::nodeParameterChanged(ConnectableNode *, Paramet
 	int index = 0;
 	for (auto &m : muteToggles)
 	{
-		if (p == m->parameter)
+		if (p == m->parameter.get())
 		{
 			if(p->boolValue()) vuMeters[index]->setVoldB(0);
 		}
 		index++;
 	}
+
 }
 
 void AudioDeviceInNodeContentUI::numAudioOutputChanged(NodeBase *, int)

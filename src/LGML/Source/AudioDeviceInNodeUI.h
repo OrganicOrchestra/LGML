@@ -27,6 +27,7 @@ public:
 	virtual ~AudioDeviceInNodeContentUI();
 
 	OwnedArray<BoolToggleUI> muteToggles;
+    OwnedArray<FloatSliderUI> volumes;
 	OwnedArray<VuMeter> vuMeters;
 
 	AudioDeviceInNode * audioInNode;
