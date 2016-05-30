@@ -124,12 +124,13 @@ void TimeManager::togglePlay(){
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
     // actualize beatTime in sample
-    beatTimeInSample = (int)(sampleRate*60.0f / (float)BPM->value);
+    beatTimeInSample = (int)(sampleRate*60.0f / BPM->floatValue());
 }
 
 void TimeManager::setBPMInternal(double){
     isSettingTempo->setValue(false);
-    beatTimeInSample =(int)(sampleRate*60.0f / (float)BPM->value);
+    float dbgBPM = BPM->floatValue();
+    beatTimeInSample =(int)(sampleRate*60.0f / BPM->floatValue());
     timeInSample = 0;
 }
 

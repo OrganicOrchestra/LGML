@@ -27,6 +27,7 @@ public :
 		const MidiMessage& message) override;
     StringParameter * deviceInName;
     StringParameter * scriptPath;
+    BoolParameter * logIncoming;
 
 
 	ControllerUI * createUI() override;

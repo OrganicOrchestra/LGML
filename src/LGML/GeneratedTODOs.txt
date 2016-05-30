@@ -35,10 +35,10 @@ NodeContainer.h
 
 
 VSTNode.cpp
-	line : 106
+	line : 107
 		// TODO check that it actually works
 
-	line : 123
+	line : 124
 		//@Martin i addedd this because when not playing, it crashed
 		// @ben it is necessary
 		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
@@ -123,12 +123,12 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 186
+	line : 187
 		//TODO: check
 
 
 MIDIController.cpp
-	line : 93
+	line : 96
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 

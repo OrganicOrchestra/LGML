@@ -23,6 +23,7 @@ VSTNode::VSTNode() :
     addChildControllableContainer(&pluginWindowParameter);
 
 	midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
+    midiActivityTrigger->isControllableExposed = false;
 	midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
 	midiPortNameParam->hideInEditor = true;
 }

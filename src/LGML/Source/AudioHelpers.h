@@ -43,8 +43,9 @@ public:
 
     void writeBlock(AudioSampleBuffer & newBuf){
         int numChans =newBuf.getNumChannels();
-        buf.setSize(numChans,buf.getNumSamples());
         int toCopy = newBuf.getNumSamples();
+        buf.setSize(numChans,toCopy,true,true);
+
 
         if( writeNeedle + toCopy > ringSize){
             int firstSeg = ringSize-writeNeedle ;

@@ -47,7 +47,8 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 	int numSamples = buffer.getNumSamples();
 	float enabledFactor = enabledParam->boolValue()?1.f:0.f;
 
-	for (int i = 0; i < numChannels; i++) 
+    int maxNumChannels = jmin(numChannels, inMutes.size());
+	for (int i = 0; i < maxNumChannels; i++) 
 	{
 		float newVolume = inMutes[i]->boolValue() ? 0.f : logVolumes[i]*enabledFactor;
         buffer.applyGainRamp(i,0, numSamples, lastVolumes[i], newVolume);

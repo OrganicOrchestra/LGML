@@ -81,7 +81,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                     if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
                     {
                         float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        ((FloatParameter *)c)->setNormalizedValue(value); //normalized or not ? can user decide ?
+                        ((FloatParameter *)c)->setValue((float)value); //normalized or not ? can user decide ?
                     }
                     break;
 

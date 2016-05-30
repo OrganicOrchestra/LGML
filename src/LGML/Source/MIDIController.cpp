@@ -20,6 +20,7 @@ Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
     setNamespaceName("MIDI."+nameParam->stringValue());
     deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
     scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
+    logIncoming = addBoolParameter("logIncoming","log Incoming midi message",false);
 }
 
 ControllerUI * MIDIController::createUI()
@@ -31,18 +32,20 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* source,
                                                 const MidiMessage& message)
 {
 
-	if (!enabledParam->boolValue()) return;
+    if (!enabledParam->boolValue()) return;
 
-    if(message.isController()){
-        LOG("Incoming controlChange message : " + String(source->getName()) + " / " + String(message.getControllerValue()));
-    }
-    else if(message.isNoteOnOrOff()){
-        LOG("Incoming note message : " + String(source->getName()) + " / " + String(message.getNoteNumber()) + " / "
-            + (message.isNoteOn()?"on":"off"));
+    if(logIncoming->boolValue()){
+        if(message.isController()){
+            LOG("Incoming controlChange message : " + String(source->getName()) + " / " + String(message.getControllerValue()));
+        }
+        else if(message.isNoteOnOrOff()){
+            LOG("Incoming note message : " + String(source->getName()) + " / " + String(message.getNoteNumber()) + " / "
+                + (message.isNoteOn()?"on":"off"));
+        }
     }
 
     callJs(message);
-	activityTrigger->trigger();
+    activityTrigger->trigger();
 }
 
 void MIDIController::callJs(const MidiMessage& message){
@@ -94,13 +97,13 @@ void MIDIController::newJsFileLoaded(){
 // @ben do we do the same as OSC MIDI IN/OUt controllers
 
 var MIDIController::sendCC(const var::NativeFunctionArgs &){
-//    MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
+    //    MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
 
 
 
     return var::undefined();
 }
 var MIDIController::sendNoteOnFor(const var::NativeFunctionArgs &){
-
-        return var::undefined();
+    
+    return var::undefined();
 }
