@@ -90,7 +90,8 @@ void SerialPort::removeSerialPortListener(SerialPortListener * listener) {
 
 SerialReadThread::SerialReadThread(String name, SerialPort * _port) :
 	Thread(name + "_thread"),
-	port(_port)
+	port(_port),
+    queuedNotifier(100)
 {
 }
 

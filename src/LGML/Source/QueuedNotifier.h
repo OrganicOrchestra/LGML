@@ -17,7 +17,11 @@ template<typename MessageClass,class CriticalSectionToUse = CriticalSection>
 class QueuedNotifier:public  AsyncUpdater{
 public:
 
-    QueuedNotifier(){}
+    QueuedNotifier(int _maxSize){
+        maxSize = _maxSize;
+        writeIdx = 0;
+    }
+
     virtual ~QueuedNotifier() {cancelPendingUpdate();}
 
 
@@ -40,13 +44,22 @@ public:
             listeners.call(&Listener::newMessage,*msg);
             lastListeners.call(&Listener::newMessage,*msg);
             delete msg;
+            return;
         }
         else{
             if(listeners.size()==0){
-                if(messageQueue.size()<1){messageQueue.add(msg);}
-                else{messageQueue.set(0, msg);}
+                const ScopedLock lk(mutex);
+                writeIdx = 0;
             }
-            else{messageQueue.add(msg);}
+            // add if we are in a decent array size
+            if(messageQueue.size()<maxSize && writeIdx>messageQueue.size()){messageQueue.add(msg);}
+            else{messageQueue.set(writeIdx%messageQueue.size(),msg);}
+
+            {
+                    const ScopedLock lk(mutex);
+                    writeIdx++;
+            }
+
 
             triggerAsyncUpdate();
         }
@@ -61,18 +74,29 @@ private:
 
     void handleAsyncUpdate() override
     {
+        const ScopedLock lk(mutex);
+        int start = 0;
+        int end =writeIdx;
+        if(writeIdx>messageQueue.size()){
+            start =  writeIdx-messageQueue.size();
+            end = writeIdx-1;
+        }
 
         {
             const typename CriticalSectionToUse::ScopedLockType lk(messageQueue.getLock());
-            for(auto &v:messageQueue){
-                listeners.call(&Listener::newMessage,*v);
+            for(int i = start ; i < end ; i++){
+                listeners.call(&Listener::newMessage,*messageQueue.getUnchecked(i));
             }
-            lastListeners.call(&Listener::newMessage,*messageQueue.getLast());
+            if(writeIdx>0)lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(end));
         }
-        messageQueue.clear();
+        writeIdx = 0;
+
 
     }
 
+
+    int writeIdx,maxSize;
+    CriticalSection mutex;
     OwnedArray<MessageClass,CriticalSectionToUse> messageQueue;
 
     ListenerList<Listener > listeners;
