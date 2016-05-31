@@ -83,7 +83,7 @@ private:
         }
 
         {
-            const typename CriticalSectionToUse::ScopedLockType lk(messageQueue.getLock());
+            const typename CriticalSectionToUse::ScopedLockType _lk(messageQueue.getLock());
             for(int i = start ; i < end ; i++){
                 listeners.call(&Listener::newMessage,*messageQueue.getUnchecked(i));
             }

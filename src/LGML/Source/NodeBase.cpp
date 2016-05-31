@@ -324,7 +324,7 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 
 
         targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
-                                        s>lowThresh?targetRMSChannelValues.getUnchecked(i)*decayFactor:
+                                        s>lowThresh?targetRMSChannelValues.getUnchecked(i)*(float)decayFactor:
                                         0);
 		globalS = jmax(s, globalS);
 	}

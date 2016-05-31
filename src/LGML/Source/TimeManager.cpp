@@ -129,7 +129,7 @@ void TimeManager::setSampleRate(int sr){
 
 void TimeManager::setBPMInternal(double){
     isSettingTempo->setValue(false);
-    float dbgBPM = BPM->floatValue();
+    //float dbgBPM = BPM->floatValue();
     beatTimeInSample =(int)(sampleRate*60.0f / BPM->floatValue());
     timeInSample = 0;
 }
@@ -147,7 +147,7 @@ int TimeManager::setBPMForLoopLength(int time){
     else if(beatTime > 1){beatTime/=2;barLength*=2;}
 
     BPM->setValue( 60.0/beatTime);
-    return barLength*beatPerBar->intValue();
+    return (int) (barLength*beatPerBar->intValue());
 }
 
 int TimeManager::getNextGlobalQuantifiedTime(){
@@ -187,11 +187,11 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
     result.isRecording = isSettingTempo->boolValue();
     //TODO: check
     static const int mainPPQ = 960;
-    result.ppqPosition = timeInSample*mainPPQ/(beatTimeInSample);
+    result.ppqPosition = (double)(timeInSample)*mainPPQ/(beatTimeInSample);
     result.timeSigNumerator = 4;
     result.timeSigDenominator = 4;
     result.timeInSamples = timeInSample;
-    result.timeInSeconds = timeInSample*sampleRate;
+    result.timeInSeconds = (double)(timeInSample)*sampleRate;
 
     result.ppqPositionOfLastBarStart = getBar()*result.timeSigNumerator*beatTimeInSample*4;
     result.isLooping=true;

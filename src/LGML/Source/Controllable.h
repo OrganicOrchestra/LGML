@@ -26,7 +26,8 @@ public:
         INT,
         BOOL,
         STRING,
-        RANGE
+        RANGE,
+		PROXY
 
     };
 

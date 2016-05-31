@@ -174,6 +174,10 @@
             <FILE id="hxhJJT" name="IntParameter.h" compile="0" resource="0" file="Source/IntParameter.h"/>
             <FILE id="mi3a1Z" name="Parameter.cpp" compile="1" resource="0" file="Source/Parameter.cpp"/>
             <FILE id="CVykgt" name="Parameter.h" compile="0" resource="0" file="Source/Parameter.h"/>
+            <FILE id="rpfYZ4" name="ParameterProxy.cpp" compile="1" resource="0"
+                  file="Source/ParameterProxy.cpp"/>
+            <FILE id="rxmDp4" name="ParameterProxy.h" compile="0" resource="0"
+                  file="Source/ParameterProxy.h"/>
             <FILE id="ChdLZ1" name="PresetManager.cpp" compile="1" resource="0"
                   file="Source/PresetManager.cpp"/>
             <FILE id="Crvsjm" name="PresetManager.h" compile="0" resource="0" file="Source/PresetManager.h"/>

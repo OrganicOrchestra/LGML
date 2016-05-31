@@ -18,6 +18,7 @@
 
 #include "ContainerInNode.h"
 #include "ContainerOutNode.h"
+#include "ParameterProxy.h"
 
 
 //Listener
@@ -54,7 +55,7 @@ public:
 	ContainerInNode * containerInNode;
     ContainerOutNode * containerOutNode;
 
-
+	Array<ParameterProxy *> proxyParams;
 
 	//NODE AND CONNECTION MANAGEMENT
 
@@ -87,6 +88,10 @@ public:
     // used for saving state when bypassed
     OwnedArray<NodeConnection > containerInGhostConnections;
     OwnedArray<NodeConnection > containerOutGhostConnections;
+
+
+	void addProxyParam(Parameter * sourceParam);
+	void removeProxyParam(ParameterProxy * pp);
 
 
 	//Preset
