@@ -43,6 +43,7 @@ void Controllable::setCustomShortName(const String & _shortName)
 {
 	this->shortName = _shortName;
 	hasCustomShortName = true;
+	updateControlAddress();
 	listeners.call(&Listener::controllableNameChanged, this);
 }
 

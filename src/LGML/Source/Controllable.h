@@ -65,7 +65,7 @@ public:
     String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
     // used for generating editor
-    virtual ControllableUI * createDefaultUI() = 0;
+    virtual ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) = 0;
 
 	//used for script variables
 	virtual DynamicObject * createDynamicObject();

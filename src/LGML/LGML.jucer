@@ -140,6 +140,10 @@
           </GROUP>
           <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
             <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
+              <FILE id="lriir5" name="ParameterProxyUI.cpp" compile="1" resource="0"
+                    file="Source/ParameterProxyUI.cpp"/>
+              <FILE id="EhMeoR" name="ParameterProxyUI.h" compile="0" resource="0"
+                    file="Source/ParameterProxyUI.h"/>
               <FILE id="amJhhJ" name="FloatStepperUI.cpp" compile="1" resource="0"
                     file="Source/FloatStepperUI.cpp"/>
               <FILE id="opUe88" name="FloatStepperUI.h" compile="0" resource="0"

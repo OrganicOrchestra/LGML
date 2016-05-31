@@ -24,9 +24,9 @@ public:
 
 
 
-    TriggerButtonUI * createButtonUI();
-    TriggerBlinkUI * createBlinkUI();
-    ControllableUI * createDefaultUI() override;
+    TriggerButtonUI * createButtonUI(Trigger * target = nullptr);
+    TriggerBlinkUI * createBlinkUI(Trigger * target = nullptr);
+    ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 
 	virtual DynamicObject * createDynamicObject() override;
 

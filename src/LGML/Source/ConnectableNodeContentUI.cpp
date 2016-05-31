@@ -9,29 +9,28 @@
 */
 
 #include "ConnectableNodeContentUI.h"
-
 #include "ConnectableNodeUI.h"
 
-  ConnectableNodeContentUI::ConnectableNodeContentUI()
-  {
-      node = nullptr;
-      nodeUI = nullptr;
+ConnectableNodeContentUI::ConnectableNodeContentUI()
+{
+    node = nullptr;
+    nodeUI = nullptr;
 
-  }
+}
 
-  ConnectableNodeContentUI::~ConnectableNodeContentUI()
-  {
-  }
+ConnectableNodeContentUI::~ConnectableNodeContentUI()
+{
+}
 
 
-  void ConnectableNodeContentUI::setNodeAndNodeUI(ConnectableNode * _node, ConnectableNodeUI * _nodeUI)
-  {
-      this->node = _node;
-      this->nodeUI = _nodeUI;
+void ConnectableNodeContentUI::setNodeAndNodeUI(ConnectableNode * _node, ConnectableNodeUI * _nodeUI)
+{
+    this->node = _node;
+    this->nodeUI = _nodeUI;
 
-      init();
-  }
+    init();
+}
 
-  void ConnectableNodeContentUI::init()
-  {
-  }
+void ConnectableNodeContentUI::init()
+{
+}

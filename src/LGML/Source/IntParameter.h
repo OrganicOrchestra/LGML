@@ -24,9 +24,9 @@ public:
 
     void setValueInternal(var _value) override;
 
-    IntSliderUI * createSlider();
-    IntStepperUI * createStepper();
-    ControllableUI * createDefaultUI()override;
+    IntSliderUI * createSlider(IntParameter * target = nullptr);
+    IntStepperUI * createStepper(IntParameter * target = nullptr);
+    ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IntParameter)
 };
 

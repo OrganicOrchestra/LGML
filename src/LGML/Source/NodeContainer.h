@@ -28,11 +28,15 @@ public:
 	/** Destructor. */
 	virtual ~NodeContainerListener() {}
 
-	virtual void nodeAdded(ConnectableNode *) = 0;
-	virtual void nodeRemoved(ConnectableNode *) = 0;
+	virtual void nodeAdded(ConnectableNode *) {};
+	virtual void nodeRemoved(ConnectableNode *) {};
 
-	virtual void connectionAdded(NodeConnection *) = 0;
-	virtual void connectionRemoved(NodeConnection *) = 0;
+	virtual void connectionAdded(NodeConnection *) {};
+	virtual void connectionRemoved(NodeConnection *) {};
+
+	virtual void paramProxyAdded(ParameterProxy *) {};
+	virtual void paramProxyRemoved(ParameterProxy *) {};
+
 };
 
 
@@ -90,8 +94,8 @@ public:
     OwnedArray<NodeConnection > containerOutGhostConnections;
 
 
-	void addProxyParam(Parameter * sourceParam);
-	void removeProxyParam(ParameterProxy * pp);
+	ParameterProxy * addParamProxy();
+	void removeParamProxy(ParameterProxy * pp);
 
 
 	//Preset

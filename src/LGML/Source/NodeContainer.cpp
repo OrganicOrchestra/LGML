@@ -63,6 +63,11 @@ void NodeContainer::clear(bool recreateContainerNodes)
         addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
     }
 
+	while (proxyParams.size() > 0)
+	{
+		removeParamProxy(proxyParams[0]);
+	}
+
     ConnectableNode::clear();
 }
 
@@ -135,18 +140,23 @@ int NodeContainer::getNumConnections() {
     return connections.size();
 }
 
-void NodeContainer::addProxyParam(Parameter * sourceParam)
+ParameterProxy * NodeContainer::addParamProxy()
 {
-	ParameterProxy * p = new ParameterProxy(sourceParam);
+	ParameterProxy * p = new ParameterProxy();
 	addParameter(p);
 	proxyParams.add(p);
+	nodeContainerListeners.call(&NodeContainerListener::paramProxyAdded, p);
+
+	return p;
 }
 
-void NodeContainer::removeProxyParam(ParameterProxy * pp)
+void NodeContainer::removeParamProxy(ParameterProxy * pp)
 {
-	removeControllable(pp);
 	proxyParams.removeAllInstancesOf(pp);
+	removeControllable(pp);
+	nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
 }
+	
 
 bool NodeContainer::loadPreset(PresetManager::Preset * preset)
 {
@@ -217,6 +227,16 @@ var NodeContainer::getJSONData()
 		ghostConnectionsOutData.append(c->getJSONData());
 	}
 	data.getDynamicObject()->setProperty("ghostConnectionsOut", ghostConnectionsOutData);
+
+
+	var proxiesData;
+	for (auto &pp : proxyParams)
+	{
+		proxiesData.append(pp->getJSONData());
+	}
+
+	data.getDynamicObject()->setProperty("proxies", proxiesData);
+
     return data;
 }
 
@@ -307,8 +327,20 @@ void NodeContainer::loadJSONDataInternal(var data)
 		}
 	}
 
+   
+	Array<var> * proxiesData = data.getProperty("proxies", var()).getArray();
 
-    removeIllegalConnections();
+	if (proxiesData)
+	{
+		for (var &pData : *proxiesData)
+		{
+			ParameterProxy * p = addParamProxy();
+			p->loadJSONData(pData);
+		}
+	}
+
+
+	removeIllegalConnections();
 }
 
 ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)

@@ -44,6 +44,7 @@ private:
     void parameterValueChanged(Parameter * ) override{};
     // range can be changed from Main thread
      void parameterRangeChanged(Parameter * )override{};
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
 };
 

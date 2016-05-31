@@ -24,8 +24,8 @@ public:
     bool value;
 
     //ui creation
-    BoolToggleUI * createToggle();
-    ControllableUI * createDefaultUI() override;
+    BoolToggleUI * createToggle(BoolParameter * target = nullptr);
+    ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
 };

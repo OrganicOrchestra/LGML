@@ -12,25 +12,42 @@
 #define NODECONTAINERCONTENTUI_H_INCLUDED
 
 #include "ConnectableNodeContentUI.h"
-class NodeContainer;
+#include "ParameterProxy.h"
+#include "NodeContainer.h"
 
 class NodeContainerContentUI :
 	public ConnectableNodeContentUI,
-	public ButtonListener
+	public ButtonListener,
+	public NodeContainerListener
 {
 public :
 	NodeContainerContentUI();
 	virtual ~NodeContainerContentUI();
 
 	NodeContainer * nodeContainer;
-
 	TextButton editContainerBT;
+	TextButton addParamProxyBT;
 
-	void resized() override;
+	OwnedArray<ControllableUI> proxiesUI;
+
+	const int proxyUIHeight = 40;
+	const int listGap = 2;
+
+	void addParamProxyUI(ParameterProxy *);
+	void removeParamProxyUI(ParameterProxy *);
+
+	ControllableUI * getUIForProxy(ParameterProxy *);
+
+
+	void updateSize();
 
 	void init()override;
+	void resized() override;
 
 	void buttonClicked(Button * b) override;
+
+	virtual void paramProxyAdded(ParameterProxy *) override;
+	virtual void paramProxyRemoved(ParameterProxy *) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainerContentUI)
 };

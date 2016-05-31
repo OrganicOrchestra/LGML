@@ -42,12 +42,15 @@ void OSCCustomController::loadJSONData(var data)
 	OSCController::loadJSONData(data);
 	Array<var>* vDataArray = data.getDynamicObject()->getProperty("variables").getArray();
 
-	for (auto &v : *vDataArray)
+	if (vDataArray != nullptr)
 	{
-		Parameter * p = new FloatParameter("newVar", "variable", 0);
-		p->replaceSlashesInShortName = false;
-		p->setNiceName(v.getDynamicObject()->getProperty("name"));
-		addVariable(p);
+		for (auto &v : *vDataArray)
+		{
+			Parameter * p = new FloatParameter("newVar", "variable", 0);
+			p->replaceSlashesInShortName = false;
+			p->setNiceName(v.getDynamicObject()->getProperty("name"));
+			addVariable(p);
+		}
 	}
 }
 

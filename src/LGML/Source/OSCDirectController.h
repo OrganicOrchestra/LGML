@@ -24,7 +24,7 @@ public:
     virtual Result processMessageInternal(const OSCMessage &msg) override;
 
 
-
+	
     // Inherited via Listener
     virtual void controllableAdded(Controllable * c) override;
     virtual void controllableRemoved(Controllable * c) override;
@@ -32,6 +32,7 @@ public:
     virtual void controllableContainerRemoved(ControllableContainer * cc) override;
 
     virtual void controllableFeedbackUpdate(Controllable * c) override;
+
 
 
     public:

@@ -177,7 +177,11 @@ bool ConnectableNodeUI::keyPressed(const KeyPress & key)
 	if (!isSelected) return false;
 	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
 	{
-		connectableNode->remove();
+		if (connectableNode->canBeRemovedByUser)
+		{
+			connectableNode->remove();
+		}
+		
 		return true;
 	}
 

@@ -57,8 +57,10 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
         {
             if (!c->isControllableFeedbackOnly)
             {
+				Controllable::Type targetType = c->type;
+				if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
 
-                switch (c->type)
+                switch (targetType)
                 {
                 case Controllable::Type::TRIGGER:
                     if (msg.size() == 0) ((Trigger *)c)->trigger();
@@ -97,6 +99,8 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                     ((Parameter *)c)->setValue(msg[0].getString());
                     break;
 
+
+
                 default:
 					result = Result::fail("Controllable type not handled");
 					break;
@@ -130,35 +134,44 @@ void OSCDirectController::controllableRemoved(Controllable *)
 
 void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
 {
-    //DBG("Send OSC with address : " + c->controlAddress + " to " + remoteHostParam->stringValue() + ":" + String(remotePortParam->stringValue().getIntValue()));
-
 #if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
-    switch (c->type)
+
+	String cAddress = c->controlAddress;
+	Controllable::Type targetType = c->type;
+	if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
+
+    switch (targetType)
     {
         case Controllable::Type::TRIGGER:
-            sendOSC(c->controlAddress,1);
+            sendOSC(cAddress,1);
             break;
 
         case Controllable::Type::BOOL:
-            sendOSC(c->controlAddress,((Parameter *)c)->intValue());
+            sendOSC(cAddress,((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::FLOAT:
-            sendOSC(c->controlAddress, ((Parameter *)c)->floatValue());
+            sendOSC(cAddress, ((Parameter *)c)->floatValue());
             break;
 
         case Controllable::Type::INT:
-            sendOSC(c->controlAddress, ((Parameter *)c)->intValue());
+            sendOSC(cAddress, ((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::STRING:
-            sendOSC(c->controlAddress, ((Parameter *)c)->stringValue());
+            sendOSC(cAddress, ((Parameter *)c)->stringValue());
             break;
+
         default:
-            DBG("OSC range param not supported");
+            DBG("Type not supported " << targetType);
             jassertfalse;
             break;
     }
+
+
+
+
+
 
 #else
 

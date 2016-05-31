@@ -12,27 +12,44 @@
 #define PARAMETERPROXY_H_INCLUDED
 
 #include "Parameter.h"
+#include "StringParameter.h"
 
 class ParameterProxy : 
 	public Parameter,
 	public Parameter::Listener
 {
 public:
-	ParameterProxy(Parameter * linkedParam);
+	ParameterProxy();
 	virtual ~ParameterProxy();
 
 	WeakReference<Parameter> linkedParam;
 
-	bool isUpdatingLinkedParam;
+	StringParameter proxyAlias;
 
+	bool isUpdatingLinkedParam;
 	virtual void setValueInternal(var _value) override;
 
 	// Inherited via Listener
 	virtual void parameterValueChanged(Parameter * p) override;
-
+	virtual void setLinkedParam(Parameter * p);
 
 	// Inherited via Parameter
-	virtual ControllableUI * createDefaultUI() override;
+	virtual ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
+
+
+	var getJSONData();
+	void loadJSONData(var data);
+
+	class ParameterProxyListener
+	{
+	public:
+		virtual ~ParameterProxyListener() {}
+		virtual void linkedParamChanged(Parameter * c) = 0;
+	};
+
+	ListenerList<ParameterProxyListener> proxyListeners;
+	void addParameterProxyListener(ParameterProxyListener* newListener) { proxyListeners.add(newListener); }
+	void removeParameterProxyListener(ParameterProxyListener* listener) { proxyListeners.remove(listener); }
 
 };
 

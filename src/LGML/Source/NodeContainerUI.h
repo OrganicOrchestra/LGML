@@ -16,22 +16,17 @@
 #include "ConnectableNodeUI.h"
 
 class NodeContainerUI :
-	public ConnectableNodeUI,
-	public NodeContainerListener
+	public ConnectableNodeUI
 {
 public:
 	NodeContainerUI(NodeContainer * nc);
 	virtual ~NodeContainerUI();
-
-
-	void clear();
+	
 	NodeContainer * nodeContainer;
 
-	// Inherited via NodeContainerListener
-	virtual void nodeAdded(ConnectableNode *) override;
-	virtual void nodeRemoved(ConnectableNode *) override;
-	virtual void connectionAdded(NodeConnection *) override;
-	virtual void connectionRemoved(NodeConnection *) override;
+	void clear();
+
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainerUI)
 };

@@ -21,18 +21,20 @@ isTriggering(false)
 {
 }
 
-TriggerButtonUI * Trigger::createButtonUI()
+TriggerButtonUI * Trigger::createButtonUI(Trigger * target)
 {
-    return new TriggerButtonUI(this);
+	if (target == nullptr) target = this;
+    return new TriggerButtonUI(target);
 }
 
-TriggerBlinkUI * Trigger::createBlinkUI()
+TriggerBlinkUI * Trigger::createBlinkUI(Trigger * target)
 {
-    return new TriggerBlinkUI(this);
+	if (target == nullptr) target = this;
+	return new TriggerBlinkUI(target);
 }
 
-ControllableUI * Trigger::createDefaultUI(){
-    return createBlinkUI();
+ControllableUI * Trigger::createDefaultUI(Controllable * targetControllable){
+    return createBlinkUI(dynamic_cast<Trigger *>(targetControllable));
 }
 
 DynamicObject * Trigger::createDynamicObject()
