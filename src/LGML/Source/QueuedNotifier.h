@@ -19,7 +19,7 @@ public:
 
     QueuedNotifier(int _maxSize){
         maxSize = _maxSize;
-        writeIdx = 0;
+        fifo.setTotalSize(_maxSize);
     }
 
     virtual ~QueuedNotifier() {cancelPendingUpdate();}
@@ -47,20 +47,23 @@ public:
             return;
         }
         else{
-            if(listeners.size()==0){
-                const ScopedLock lk(mutex);
-                writeIdx = 0;
-            }
+
             // add if we are in a decent array size
-            if(messageQueue.size()<maxSize && writeIdx>messageQueue.size()){messageQueue.add(msg);}
-            else{messageQueue.set(writeIdx%messageQueue.size(),msg);}
-
             {
-                    const ScopedLock lk(mutex);
-                    writeIdx++;
+            int start1,size1,start2,size2;
+            fifo.prepareToWrite(1, start1, size1, start2, size2);
+                if(size1>0){
+                    if(messageQueue.size()<maxSize){messageQueue.add(msg);}
+                    else{messageQueue.set(start1,msg);}
+                }
+                if(size2>0){
+                    if(messageQueue.size()<maxSize){messageQueue.add(msg);}
+                    else{messageQueue.set(start2,msg);}
+                }
+
+            fifo.finishedWrite (size1 + size2);
+
             }
-
-
             triggerAsyncUpdate();
         }
 
@@ -74,29 +77,35 @@ private:
 
     void handleAsyncUpdate() override
     {
-        const ScopedLock lk(mutex);
-        int start = 0;
-        int end =writeIdx;
-        if(writeIdx>messageQueue.size()){
-            start =  writeIdx-messageQueue.size();
-            end = writeIdx-1;
-        }
 
-        {
-            const typename CriticalSectionToUse::ScopedLockType lk(messageQueue.getLock());
-            for(int i = start ; i < end ; i++){
+        
+            int start1,size1,start2,size2;
+            fifo.prepareToRead(fifo.getNumReady(), start1, size1, start2, size2);
+
+                for(int i = start1 ;i <start1+ size1 ; i++){
+                    listeners.call(&Listener::newMessage,*messageQueue.getUnchecked(i));
+                }
+
+            for(int i = start2 ;i <start2+ size2 ; i++){
                 listeners.call(&Listener::newMessage,*messageQueue.getUnchecked(i));
             }
-            if(writeIdx>0)lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(end));
-        }
-        writeIdx = 0;
+
+            if(size2>0)
+                lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start2+size2));
+            else if(size1>0)
+                lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start1+size1));
+
+            fifo.finishedRead(size1 + size2);
+            
+
 
 
     }
 
 
-    int writeIdx,maxSize;
-    CriticalSection mutex;
+
+    AbstractFifo fifo;
+    int maxSize;
     OwnedArray<MessageClass,CriticalSectionToUse> messageQueue;
 
     ListenerList<Listener > listeners;
