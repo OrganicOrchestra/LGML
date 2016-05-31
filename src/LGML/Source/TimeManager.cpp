@@ -129,7 +129,6 @@ void TimeManager::setSampleRate(int sr){
 
 void TimeManager::setBPMInternal(double){
     isSettingTempo->setValue(false);
-    float dbgBPM = BPM->floatValue();
     beatTimeInSample =(int)(sampleRate*60.0f / BPM->floatValue());
     timeInSample = 0;
 }

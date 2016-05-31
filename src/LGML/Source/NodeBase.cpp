@@ -168,10 +168,9 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 	bool doUpdateRMSOut = false;
 
 	if (rmsListeners.size()) {
-		updateRMS(buffer, globalRMSValueIn,rmsValuesIn);
 		curSamplesForRMSInUpdate += buffer.getNumSamples();
-
 		if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate) {
+            updateRMS(buffer, globalRMSValueIn,rmsValuesIn);
 			doUpdateRMSIn = true;
 			curSamplesForRMSInUpdate = 0;
 		}
@@ -196,10 +195,11 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 		}
 
 		if (rmsListeners.size()) {
-			updateRMS(buffer, globalRMSValueOut,rmsValuesOut);
+
 			curSamplesForRMSOutUpdate += buffer.getNumSamples();
 
 			if (curSamplesForRMSOutUpdate >= samplesBeforeRMSUpdate) {
+                updateRMS(buffer, globalRMSValueOut,rmsValuesOut);
 				doUpdateRMSOut = true;
 				curSamplesForRMSOutUpdate = 0;
 			}
@@ -309,7 +309,7 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 	float globalS = 0;
 
     // @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-    const double decayFactor = 0.99;
+    const double decayFactor = 0.95;
     const float lowThresh = 0.0001f;
 
 
@@ -317,10 +317,13 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 	{
 
 		float s = 0;
-		for (int j = 0; j < numSamples; ++j)
-		{
-			s = jmax(s, std::abs(buffer.getSample(i, j)));
-		}
+//		for (int j = 0; j < numSamples; ++j)
+//		{
+//			s = jmax(s, std::abs(buffer.getSample(i, j)));
+//		}
+        Range<float> minMax = FloatVectorOperations::findMinAndMax(buffer.getReadPointer(i), numSamples);
+        s = jmax(s,-minMax.getStart());
+        s = jmax(s,minMax.getEnd());
 
 
         targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:

@@ -17,9 +17,9 @@ template<typename MessageClass,class CriticalSectionToUse = CriticalSection>
 class QueuedNotifier:public  AsyncUpdater{
 public:
 
-    QueuedNotifier(int _maxSize){
+    QueuedNotifier(int _maxSize):fifo(_maxSize){
         maxSize = _maxSize;
-        fifo.setTotalSize(_maxSize);
+
     }
 
     virtual ~QueuedNotifier() {cancelPendingUpdate();}
@@ -78,7 +78,7 @@ private:
     void handleAsyncUpdate() override
     {
 
-        
+
             int start1,size1,start2,size2;
             fifo.prepareToRead(fifo.getNumReady(), start1, size1, start2, size2);
 
@@ -91,9 +91,9 @@ private:
             }
 
             if(size2>0)
-                lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start2+size2));
+                lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start2+size2-1));
             else if(size1>0)
-                lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start1+size1));
+                lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start1+size1-1));
 
             fifo.finishedRead(size1 + size2);
             
