@@ -73,7 +73,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                     if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
                     {
                         float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        ((BoolParameter *)c)->setValue(val > 0);
+                        ((Parameter *)c)->setValue(val > 0);
                     }
                     break;
 
@@ -81,7 +81,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                     if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
                     {
                         float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        ((FloatParameter *)c)->setValue((float)value); //normalized or not ? can user decide ?
+                        ((Parameter *)c)->setValue((float)value); //normalized or not ? can user decide ?
                     }
                     break;
 
@@ -89,7 +89,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                     if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
                     {
                         float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        ((IntParameter *)c)->setValue((int)value); //normalized or not ? can user decide ?
+                        ((Parameter *)c)->setValue((int)value); //normalized or not ? can user decide ?
                     }
                     break;
 

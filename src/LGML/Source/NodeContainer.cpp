@@ -135,6 +135,19 @@ int NodeContainer::getNumConnections() {
     return connections.size();
 }
 
+void NodeContainer::addProxyParam(Parameter * sourceParam)
+{
+	ParameterProxy * p = new ParameterProxy(sourceParam);
+	addParameter(p);
+	proxyParams.add(p);
+}
+
+void NodeContainer::removeProxyParam(ParameterProxy * pp)
+{
+	removeControllable(pp);
+	proxyParams.removeAllInstancesOf(pp);
+}
+
 bool NodeContainer::loadPreset(PresetManager::Preset * preset)
 {
     if(!ControllableContainer::loadPreset(preset)) return false;

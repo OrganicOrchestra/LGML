@@ -29,7 +29,7 @@ NodeBase.cpp
 
 
 NodeContainer.h
-	line : 64
+	line : 65
 		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
 		//(todo : find a way to have simpler event flow)
 
@@ -56,17 +56,17 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 538
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
-
-	line : 155
+	line : 168
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 238
+	line : 251
 		// TODO nicely handle file format errors?
+
+	line : 551
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
 
 
 TimeManager.h

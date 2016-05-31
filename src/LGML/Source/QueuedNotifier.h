@@ -79,6 +79,7 @@ private:
     {
 
 
+
             int start1,size1,start2,size2;
             fifo.prepareToRead(fifo.getNumReady(), start1, size1, start2, size2);
 

@@ -52,7 +52,6 @@ public:
 	BoolParameter * miniMode;
 
 	void remove(bool askBeforeRemove = false);
-
 	virtual void clear();
 
 	var getJSONData() override;
