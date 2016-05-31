@@ -52,11 +52,12 @@ public:
     BoolParameter * mute;
     BoolParameter * solo;
 
+    bool isSelected;
     TrackState trackState;
 
     bool someOneIsSolo;
 
-    const float defaultVolumeValue = 0.8f;
+    const float defaultVolumeValue = DB0_FOR_01;
     int trackIdx;
 
     static String trackStateToString(const TrackState & ts);
@@ -129,7 +130,8 @@ public:
     int recordNeedle;
     int quantizedRecordEnd, quantizedRecordStart;
 
-    int playNeedle;
+    int playNeedle,startJumpNeedle;
+    bool isJumping;
     int quantizedPlayStart, quantizedPlayEnd;
 
     void updatePendingLooperTrackState(const uint64 curTime, int blockSize);
@@ -137,7 +139,11 @@ public:
 
     AudioSampleBuffer loopSample;
     float lastVolume;
-    // represent audioProcessor behaviour
+    bool isFadingIn;
+    bool isCrossFading;
+
+
+
 
 
 

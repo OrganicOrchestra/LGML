@@ -139,22 +139,23 @@ bool NodeContainer::loadPreset(PresetManager::Preset * preset)
 {
     if(!ControllableContainer::loadPreset(preset)) return false;
 
-    for (auto &n : nodes) n->loadPresetWithName(preset->name);
+//    for (auto &n : nodes) n->loadPresetWithName(preset->name);
 
     return true;
 }
 
-void NodeContainer::saveNewPreset(const String & name)
+PresetManager::Preset* NodeContainer::saveNewPreset(const String & name)
 {
-    ControllableContainer::saveNewPreset(name);
-    for (auto &n : nodes) n->saveNewPreset(name);
+    return ControllableContainer::saveNewPreset(name);
+//    for (auto &n : nodes) n->saveNewPreset(name);
 }
 
 bool NodeContainer::saveCurrentPreset()
 {
     if (!ControllableContainer::saveCurrentPreset()) return false;
-
-    for (auto &n : nodes) n->saveCurrentPreset();
+    //@ben remove recursive for now (not useful and duplicating values...)
+    //
+//    for (auto &n : nodes) n->saveCurrentPreset();
     return true;
 }
 
@@ -162,7 +163,7 @@ bool NodeContainer::resetFromPreset()
 {
     if (!ControllableContainer::resetFromPreset()) return false;
 
-    for (auto &n : nodes) n->resetFromPreset();
+//    for (auto &n : nodes) n->resetFromPreset();
 
     return true;
 }

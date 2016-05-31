@@ -69,8 +69,8 @@ public:
 	{
 		float newVoldB = jmap<float>(20.0f*log10(value / 0.74f), 0.0f, 6.0f, 0.85f, 1.0f);
 
-		if (newVoldB >= 0 && std::abs(newVoldB - voldB)>0.02f) {
-			setVoldB(newVoldB);
+		if ((newVoldB >= 0 || voldB!=0) && std::abs(newVoldB - voldB)>0.02f) {
+			setVoldB(jmax(0.0f,newVoldB));
 		}
 	}
 
@@ -102,6 +102,7 @@ public:
     void timerCallback()override{
 		if (volChanged) repaint();
         volChanged = false;
+
 
     }
 };

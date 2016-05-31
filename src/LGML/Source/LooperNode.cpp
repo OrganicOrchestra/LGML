@@ -215,7 +215,7 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
         for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
             trackGroup.tracks[i]->clearTrig->trigger();
         }
-        trackGroup.tracks[0]->askForSelection(true);
+        selectTrack->setValue(0);
     }
     if (t == stopAllTrig) {
         for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
@@ -224,13 +224,17 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
     }
     if (t == selectAllTrig)
     {
-        selectMe(nullptr);
+        selectTrack->setValue(-1);
+
     }
 }
 
 void LooperNode::selectMe(LooperTrack * t) {
-    if (selectedTrack != nullptr) {
-        selectedTrack->setSelected(false);
+    if (t != nullptr) {
+        for(auto &tt:trackGroup.tracks){
+            if(tt->isSelected)
+                tt->setSelected(false);
+        };
     }
 
     selectedTrack = t;
@@ -288,6 +292,10 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
             }
             else{
                 selectMe(nullptr);
+                for(auto & t:trackGroup.tracks){
+                    t->setSelected(true);
+                }
+
             }
         }
     }

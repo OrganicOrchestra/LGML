@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.36"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.41"
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -495,6 +495,12 @@
                 file="Source/NodeConnectionUI.h"/>
         </GROUP>
         <GROUP id="{90D03868-3FD4-352F-D8F2-C231A68FF418}" name="nodes">
+          <GROUP id="{82334F23-E6FE-04CA-EF7A-BE1651A9A2B1}" name="JsNode">
+            <FILE id="Qzisra" name="JsNode.cpp" compile="1" resource="0" file="Source/JsNode.cpp"/>
+            <FILE id="ToEYUI" name="JsNode.h" compile="0" resource="0" file="Source/JsNode.h"/>
+            <FILE id="uD4xjf" name="JsNodeUI.cpp" compile="1" resource="0" file="Source/JsNodeUI.cpp"/>
+            <FILE id="d4hV8h" name="JsNodeUI.h" compile="0" resource="0" file="Source/JsNodeUI.h"/>
+          </GROUP>
           <GROUP id="{D50B9974-FB09-4491-041A-EC9D95F501CB}" name="ContainerOut">
             <FILE id="PKaky5" name="ContainerOutNode.cpp" compile="1" resource="0"
                   file="Source/ContainerOutNode.cpp"/>
@@ -697,8 +703,11 @@
                        isDebug="0" optimisation="3" targetName="LGML" binaryPath=""
                        cppLanguageStandard="c++11" cppLibType="libc++" linkTimeOptimisation="1"
                        headerPath="../External/serial/include"/>
-        <CONFIGURATION name="Debug" isDebug="1" osxSDK="default" osxCompatibility="10.8 SDK"
+        <CONFIGURATION name="Debug" isDebug="1" osxSDK="default" osxCompatibility="10.7 SDK"
                        osxArchitecture="32BitUniversal" targetName="LGML_Debug" defines=""
+                       cppLanguageStandard="c++11" cppLibType="libc++" headerPath="../../External/serial/include"/>
+        <CONFIGURATION name="Debug_64" isDebug="1" osxSDK="default" osxCompatibility="10.7 SDK"
+                       osxArchitecture="64BitIntel" targetName="LGML_Debug_64" defines=""
                        cppLanguageStandard="c++11" cppLibType="libc++" headerPath="../../External/serial/include"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

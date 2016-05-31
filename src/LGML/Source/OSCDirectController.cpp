@@ -22,11 +22,14 @@ OSCDirectController::OSCDirectController(const String & name) :
 	OSCController(name)
 {
 	NodeManager::getInstance()->addControllableContainerListener(this);
+    TimeManager::getInstance()->addControllableContainerListener(this);
 }
 
 OSCDirectController::~OSCDirectController()
 {
     NodeManager::getInstance()->removeControllableContainerListener(this);
+    if(TimeManager * tm = TimeManager::getInstanceWithoutCreating()){tm->removeControllableContainerListener(this);}
+
 }
 
 Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
@@ -78,7 +81,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                     if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
                     {
                         float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        ((FloatParameter *)c)->setNormalizedValue(value); //normalized or not ? can user decide ?
+                        ((FloatParameter *)c)->setValue((float)value); //normalized or not ? can user decide ?
                     }
                     break;
 
@@ -133,23 +136,23 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
     switch (c->type)
     {
         case Controllable::Type::TRIGGER:
-            sender.send(c->controlAddress,1);
+            sendOSC(c->controlAddress,1);
             break;
 
         case Controllable::Type::BOOL:
-            sender.send(c->controlAddress,((Parameter *)c)->intValue());
+            sendOSC(c->controlAddress,((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::FLOAT:
-            sender.send(c->controlAddress, ((Parameter *)c)->floatValue());
+            sendOSC(c->controlAddress, ((Parameter *)c)->floatValue());
             break;
 
         case Controllable::Type::INT:
-            sender.send(c->controlAddress, ((Parameter *)c)->intValue());
+            sendOSC(c->controlAddress, ((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::STRING:
-            sender.send(c->controlAddress, ((Parameter *)c)->stringValue());
+            sendOSC(c->controlAddress, ((Parameter *)c)->stringValue());
             break;
         default:
             DBG("OSC range param not supported");

@@ -27,8 +27,8 @@ _isLocked(false)
     BPM = addFloatParameter("bpm","current BPM",120,10,600);
     playState = addBoolParameter("Play_Stop", "play or stop global transport", false);
     isSettingTempo = addBoolParameter("isSettingTempo", "is someone setting tempo (recording first loop)", false);
-    currentBar  = addIntParameter("currentBar", "currentBar in transport", 0, 0, 4);
-    currentBeat  = addIntParameter("currentBeat", "currentBeat in transport", 0, 0, 4);
+    currentBar  = addIntParameter("currentBar", "currentBar in transport", 0, 0, 9999999);
+    currentBeat  = addIntParameter("currentBeat", "currentBeat in transport", 0, 0, 999999);
     beatPerBar = addIntParameter("beatPerBar", "beat Per Bar", 4, 1, 8);
     playTrigger = addTrigger("play", "trigger play");
     stopTrigger = addTrigger("stop", "trigger stop");
@@ -119,19 +119,18 @@ void TimeManager::togglePlay(){
         playTrigger->trigger();
 }
 
-void TimeManager::setBeatPerBar(int)
-{
-}
+
 
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
     // actualize beatTime in sample
-    beatTimeInSample = (int)(sampleRate*60.0f / (float)BPM->value);
+    beatTimeInSample = (int)(sampleRate*60.0f / BPM->floatValue());
 }
 
 void TimeManager::setBPMInternal(double){
     isSettingTempo->setValue(false);
-    beatTimeInSample =(int)(sampleRate*60.0f / (float)BPM->value);
+    float dbgBPM = BPM->floatValue();
+    beatTimeInSample =(int)(sampleRate*60.0f / BPM->floatValue());
     timeInSample = 0;
 }
 
@@ -140,7 +139,7 @@ void TimeManager::setBPMInternal(double){
 int TimeManager::setBPMForLoopLength(int time){
     double time_seconds = time* 1.0/ sampleRate;
     double beatTime = time_seconds* 1.0/beatPerBar->intValue();
-    int barLength = 1;
+    float barLength = 1;
 
     // over 150 bpm
     if(beatTime < .40){beatTime*=2;barLength/=2;}
@@ -148,7 +147,7 @@ int TimeManager::setBPMForLoopLength(int time){
     else if(beatTime > 1){beatTime/=2;barLength*=2;}
 
     BPM->setValue( 60.0/beatTime);
-    return barLength;
+    return barLength*beatPerBar->intValue();
 }
 
 int TimeManager::getNextGlobalQuantifiedTime(){
@@ -159,17 +158,16 @@ int TimeManager::getNextQuantifiedTime(int barFraction){
         barFraction=quantizedBarFraction->intValue();
     }
     if(barFraction==0){
-		return (int)timeInSample;
-	}
+        return (int)timeInSample;
+    }
 
     const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
     return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
 }
 
-uint64 TimeManager::getTimeInBeats(int beats){
-    const int samplesPerUnit = (beatTimeInSample*beats);
-    if(beats == 0)return timeInSample;
-    return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
+uint64 TimeManager::getTimeForNextBeats(int beats){
+    return (getBeat()+ beats)*beatTimeInSample;
+
 }
 
 int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample));}
@@ -183,3 +181,20 @@ void TimeManager::lockTime(bool s){
 bool TimeManager::isLocked(){
     return _isLocked;
 }
+bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
+    result.bpm = BPM->floatValue();
+    result.isPlaying = playState->boolValue();
+    result.isRecording = isSettingTempo->boolValue();
+    //TODO: check
+    static const int mainPPQ = 960;
+    result.ppqPosition = timeInSample*mainPPQ/(beatTimeInSample);
+    result.timeSigNumerator = 4;
+    result.timeSigDenominator = 4;
+    result.timeInSamples = timeInSample;
+    result.timeInSeconds = timeInSample*sampleRate;
+
+    result.ppqPositionOfLastBarStart = getBar()*result.timeSigNumerator*beatTimeInSample*4;
+    result.isLooping=true;
+    return true;
+}
+

@@ -7,15 +7,76 @@
  ///////////////////////////////////////
 
 
+ControllableContainer.cpp
+	line : 416
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 102
+		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
+
+
+ControllableInspector.cpp
+	line : 85
+		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
+
+
+NodeBase.cpp
+	line : 106
+		// TODO we could implement that for all node objects to be able to save any kind of custom data
+
+	line : 310
+		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
+
+
 NodeContainer.h
 	line : 64
 		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
 		//(todo : find a way to have simpler event flow)
 
 
+VSTNode.cpp
+	line : 107
+		// TODO check that it actually works
+
+	line : 124
+		//@Martin i addedd this because when not playing, it crashed
+		// @ben it is necessary
+		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
+		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
+
+
+VuMeter.h
+	line : 16
+		//TODO, move to more common place for use in other components
+
+
 JsEnvironment.cpp
 	line : 296
 		// @ben only supported if move semantics are too are they for you?
+
+
+NodeContainer.cpp
+	line : 538
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
+
+	line : 155
+		//@ben remove recursive for now (not useful and duplicating values...)
+		//
+		//    for (auto &n : nodes) n->saveCurrentPreset();
+
+	line : 238
+		// TODO nicely handle file format errors?
+
+
+TimeManager.h
+	line : 28
+		// TODO check if we can use SingleThread Singleton for fast access in processAdio
+
+
+JavascriptControllerUI.cpp
+	line : 14
+		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
 
 
 LGMLLoggerUI.cpp
@@ -33,32 +94,16 @@ LGMLLoggerUI.cpp
 		//	}
 
 
-VuMeter.h
-	line : 16
-		//TODO, move to more common place for use in other components
-
-
-ControllableContainer.cpp
-	line : 413
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-	line : 102
-		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
-
-	line : 391
-		// @ben not sure
+JsGlobalEnvironment.cpp
+	line : 29
+		// TODO: use a bit of ControllableContainer in controllers, its empty atm
+		//    linkToControllableContainer("controllers",ControllerManager::getInstance());
 
 
 NodeBase.h
 	line : 48
 		//  TODO:  this should not be implemented in Node to avoid overriding this method
 		//    create onNodeParameterChanged();
-
-
-LooperNode.cpp
-	line : 68
-		// TODO check if we can optimize copies
-		// handle multiples channels outs
 
 
 NodeConnectionEditor.cpp
@@ -71,10 +116,28 @@ NodeConnectionEditor.cpp
 		// should be fixed !!
 
 
-JsGlobalEnvironment.cpp
-	line : 29
-		// TODO: use a bit of ControllableContainer in controllers, its empty atm
-		//    linkToControllableContainer("controllers",ControllerManager::getInstance());
+LooperNode.cpp
+	line : 68
+		// TODO check if we can optimize copies
+		// handle multiples channels outs
+
+
+TimeManager.cpp
+	line : 187
+		//TODO: check
+
+
+MIDIController.cpp
+	line : 96
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
+
+
+ControllableContainer.h
+	line : 133
+		//@ ben this is to avoid either:
+		//      adding controllableContainerListener for each implementation
+		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
+		//      or using dispatch feedback that triggers only exposedParams
 
 
 ShapeShifterContainer.cpp
@@ -86,74 +149,21 @@ ShapeShifterContainer.cpp
 		//@ben do we need to handle these?
 
 
+LooperTrack.cpp
+	line : 173
+		// TODO subBlock precision ?
+		// not sure -> triggers are updated at block size granularity
+		// for now reduce block approximation noise when quantized
+
+
 DataProcessorGraph.cpp
 	line : 14
 		//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
 		//  thread.startThread();
 
 
-ControllableInspector.cpp
-	line : 85
-		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
-
-
-MIDIController.cpp
-	line : 81
-		// @ben do we do the same as OSC MIDI IN/OUt controllers
-
-
-NodeContainer.cpp
-	line : 537
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
-
-	line : 237
-		// TODO nicely handle file format errors?
-
-
-TimeManager.h
-	line : 28
-		// TODO check if we can use SingleThread Singleton for fast access in processAdio
-
-
-JavascriptControllerUI.cpp
-	line : 14
-		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
-
-
-VSTNode.cpp
-	line : 106
-		// TODO check that it actually works
-
-	line : 123
-		//@Martin i addedd this because when not playing, it crashed
-		// @ben it is necessary
-		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
-		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
-
-
-NodeBase.cpp
-	line : 101
-		// TODO we could implement that for all node objects to be able to save any kind of custom data
-
-
-ControllableContainer.h
-	line : 132
-		//@ ben this is to avoid either:
-		//      adding controllableContainerListener for each implementation
-		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
-		//      or using dispatch feedback that triggers only exposedParams
-
-
 ControllableInspector.h
 	line : 24
 		// TODO handle merging of multiple component of sameClass : almost there ....
-
-
-LooperTrack.cpp
-	line : 146
-		// TODO subBlock precision ?
-		// not sure -> triggers are updated at block size granularity
-		// for now reduce block approximation noise when quantized
 
 

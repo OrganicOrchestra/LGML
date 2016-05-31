@@ -31,12 +31,16 @@ public:
 	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
 	void changeListenerCallback(ChangeBroadcaster* source)override;
+    void onContainerParameterChanged(Parameter *)override;
 	void updateIO();
 
 	Array<BoolParameter *> inMutes;
+    Array<FloatParameter * > volumes;
+    Array<float > logVolumes,lastVolumes;
 
-	void addMute();
-	void removeMute();
+
+	void addVolMute();
+	void removeVolMute();
 
 	virtual ConnectableNodeUI * createUI() override;
 

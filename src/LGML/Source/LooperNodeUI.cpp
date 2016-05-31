@@ -20,7 +20,7 @@ LooperNodeContentUI::~LooperNodeContentUI(){
 
 void LooperNodeContentUI::init(){
 
-    looperNode = dynamic_cast<LooperNode*> (node);
+    looperNode = (LooperNode*)node.get();
     looperNode->addLooperListener(this);
 
     recPlaySelectedButton = looperNode->recPlaySelectedTrig->createBlinkUI();

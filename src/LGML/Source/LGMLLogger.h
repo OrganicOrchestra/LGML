@@ -21,7 +21,7 @@ class LGMLLogger : public Logger{
 
     juce_DeclareSingleton(LGMLLogger, true);
 
-    LGMLLogger(){
+    LGMLLogger():notifier(100){
         fileLog = FileLogger::createDefaultAppLogger("LGML", "log", "");
 
     }
@@ -35,6 +35,8 @@ class LGMLLogger : public Logger{
 
 
     ScopedPointer<FileLogger> fileLog;
+
+
 
 };
 

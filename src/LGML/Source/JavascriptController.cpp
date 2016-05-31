@@ -73,8 +73,8 @@ Result JavascriptController::processMessageInternal(const OSCMessage &m){
     if(hasValidJsFile())
         r2 = callForMessage(m);
     if(!r1 && !r2){
-        NLOG("OSCController",r1.getErrorMessage());
-        NLOG("Javascript",r2.getErrorMessage());
+//        NLOG("OSCController",r1.getErrorMessage());
+//        NLOG("Javascript",r2.getErrorMessage());
         return Result::fail("failed");
     }
 
@@ -109,7 +109,7 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
         else if (v.isInt64())DBG("JavascriptOSC can't send int 64");
     }
 
-    c->sender.send(msg);
+    c->sendOSC(msg);
     return var();
 
 }

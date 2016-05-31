@@ -34,7 +34,7 @@ public:
     // helpers
 
     void    setLocalNamespace(DynamicObject & target);
-    void    clearNamespace();
+    virtual void    clearNamespace();
 
     void    loadFile(const File & f);
 	Result 	loadScriptContent(const String &content);
@@ -82,6 +82,7 @@ public:
 
 
     bool functionIsDefined(const String &);
+    File currentFile;
 private:
 
 
@@ -92,7 +93,7 @@ private:
 
     // dot separated string representing localNamespace
     String localNamespace;
-    File currentFile;
+
 
     ListenerList<Listener> jsListeners;
 

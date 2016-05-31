@@ -12,26 +12,27 @@
 #include "NodeBaseUI.h"
 
 #include "AudioMixerNodeUI.h"
+#include "AudioHelpers.h"
 
 AudioMixerNode::AudioMixerNode() :
-	NodeBase("AudioMixerNode",NodeType::AudioMixerType)
+NodeBase("AudioMixerNode",NodeType::AudioMixerType)
 {
-	numberOfInput = addIntParameter("numInput", "number of input", 2, 1, 32);
-	numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
-	
-	updateInput();
-	updateOutput();
+    numberOfInput = addIntParameter("numInput", "number of input", 2, 1, 32);
+    numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
 
-	outBuses[0]->volumes[0]->setValue(1);
-	outBuses[0]->volumes[1]->setValue(0);
-	outBuses[1]->volumes[0]->setValue(0);
-	outBuses[1]->volumes[1]->setValue(1);
+    updateInput();
+    updateOutput();
+
+    outBuses[0]->volumes[0]->setValue(DB0_FOR_01);
+    outBuses[0]->volumes[1]->setValue(0);
+    outBuses[1]->volumes[0]->setValue(0);
+    outBuses[1]->volumes[1]->setValue(DB0_FOR_01);
 }
 
 
 
 void AudioMixerNode::onContainerParameterChanged(Parameter *p){
-        NodeBase::onContainerParameterChanged(p);
+    NodeBase::onContainerParameterChanged(p);
     if(p == numberOfInput){
         updateInput();
     }
@@ -82,6 +83,7 @@ void AudioMixerNode::updateOutput(){
 
 }
 
+
 void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
     int numInput = getTotalNumInputChannels();
@@ -130,6 +132,7 @@ AudioMixerNode::OutputBus::OutputBus(int _outputIndex,int numInput):
 outputIndex(_outputIndex),
 ControllableContainer("outputBus : "+String(_outputIndex)){
     setNumInput(numInput);
+    setCustomShortName("Out_"+String(_outputIndex+1));
 
 }
 
@@ -138,7 +141,9 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
 
     if(numInput>volumes.size()){
         for(int i = volumes.size();i<numInput ; i++){
-            volumes.add(addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?1:0));
+            FloatParameter * p = addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?DB0_FOR_01:0);
+            p->setCustomShortName("In_"+String(i+1));
+            volumes.add(p);
         }
     }
     else if(numInput<volumes.size()){
@@ -154,15 +159,25 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
     lastVolumes.resize(numInput);
 }
 
+void AudioMixerNode::OutputBus::onContainerParameterChanged(Parameter *p){
+    if(volumes.contains((FloatParameter*)p)){
+        logVolumes.resize(volumes.size());
+        int i = 0;
+        for(auto & v:logVolumes){
+            v = float01ToGain(volumes.getUnchecked(i)->floatValue());
+            i++;
+        }
+    }
+}
 
 
 
 ConnectableNodeUI * AudioMixerNode::createUI()
 {
-
-	NodeBaseUI * ui = new NodeBaseUI(this, new AudioMixerNodeUI);
-	ui->recursiveInspectionLevel = 2;
-	return ui;
-
-
+    
+    NodeBaseUI * ui = new NodeBaseUI(this, new AudioMixerNodeUI);
+    ui->recursiveInspectionLevel = 2;
+    return ui;
+    
+    
 }

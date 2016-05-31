@@ -12,13 +12,14 @@
 #include "NodeManager.h"
 #include "TimeManager.h"
 
-
+#include "AudioHelpers.h"
 
 NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
 	ConnectableNode(name,_type,_hasMainAudioControl),
 	audioNode(nullptr)
 {
     addToAudioGraph();
+    logVolume = float01ToGain(DB0_FOR_01);
 	lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
 
 	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
@@ -62,6 +63,10 @@ bool NodeBase::hasDataOutputs()
 void NodeBase::onContainerParameterChanged(Parameter * p)
 {
 	ConnectableNode::onContainerParameterChanged(p);
+
+    if(p==outputVolume){
+        logVolume = float01ToGain(outputVolume->floatValue());
+    }
 
 	//ENABLE PARAM ACT AS A BYPASS
 	/*
@@ -180,8 +185,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 			processBlockInternal(buffer, midiMessages);
 
             if(hasMainAudioControl){
-                buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, outputVolume->floatValue());
-                lastVolume = outputVolume->floatValue();
+                buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, logVolume);
+                lastVolume = logVolume;
             }
 
 			if (wasSuspended) {
@@ -291,6 +296,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues) {
 	int numSamples = buffer.getNumSamples();
 	int numChannels = buffer.getNumChannels();
+    if(targetRMSChannelValues.size()!=numChannels)
+        targetRMSChannelValues.resize(numChannels);
 
 #ifdef HIGH_ACCURACY_RMS
 	for (int i = numSamples - 64; i >= 0; i -= 64) {
@@ -300,30 +307,36 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 	// faster implementation taken from juce Device Settings input meter
 	
 	float globalS = 0;
+
+    // @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
+    const double decayFactor = 0.99;
+    const float lowThresh = 0.0001f;
+
+
 	for (int i = numChannels - 1; i >= 0; --i)
 	{
-		
+
 		float s = 0;
 		for (int j = 0; j < numSamples; ++j)
 		{
 			s = jmax(s, std::abs(buffer.getSample(i, j)));
 		}
 
-		targetRMSChannelValues.set(i, s);
+
+        targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
+                                        s>lowThresh?targetRMSChannelValues.getUnchecked(i)*decayFactor:
+                                        0);
 		globalS = jmax(s, globalS);
 	}
 
-	targetRmsValue = globalS;
 
-	/*
-	const double decayFactor = 0.99992;
 	if (globalS > targetRmsValue)
 		targetRmsValue = globalS;
-	else if (targetRmsValue > 0.001f)
+	else if (targetRmsValue > lowThresh)
 		targetRmsValue *= (float)decayFactor;
 	else
 		targetRmsValue = 0;
-		*/
+
 
 #endif
 

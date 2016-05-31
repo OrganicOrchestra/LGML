@@ -31,7 +31,7 @@ void NodeContainerContentUI::resized()
 
 void NodeContainerContentUI::init()
 {
-	nodeContainer = (NodeContainer *)node;
+	nodeContainer = (NodeContainer *)node.get();
 }
 
 void NodeContainerContentUI::buttonClicked(Button * b)

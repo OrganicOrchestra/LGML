@@ -20,7 +20,7 @@
 
 #include "NodeBase.h"
 
-class TimeManager : public AudioIODeviceCallback ,public ControllableContainer
+class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead
 {
 
 
@@ -56,11 +56,11 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer
     void lockTime(bool );
     bool isLocked();
     void togglePlay();
-    void setBeatPerBar(int bpb);
+
     int getBeat();
     int getNextGlobalQuantifiedTime();
     int getNextQuantifiedTime(int barFraction);
-    uint64 getTimeInBeats(int beats);
+    uint64 getTimeForNextBeats(int beats);
 
 
     //return percent in beat
@@ -84,6 +84,8 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer
     void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) override;
 
 
+    bool getCurrentPosition (CurrentPositionInfo& result)override;
+
 private:
     void setBPMInternal(double BPM);
 
@@ -97,7 +99,9 @@ private:
 
     };
     bool _isLocked;
+    void updateCurrentPositionInfo();
 
+    CurrentPositionInfo currentPositionInfo;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
 

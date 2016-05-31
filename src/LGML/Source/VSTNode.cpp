@@ -23,6 +23,7 @@ VSTNode::VSTNode() :
     addChildControllableContainer(&pluginWindowParameter);
 
 	midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
+    midiActivityTrigger->isControllableExposed = false;
 	midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
 	midiPortNameParam->hideInEditor = true;
 }
@@ -157,7 +158,7 @@ inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 		{
             incomingMidi.clear();
             messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
-            innerPlugin->setPlayHead(getPlayHead());
+            innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
 			innerPlugin->processBlock(buffer, incomingMidi);
 		}
 		else {
@@ -227,3 +228,4 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
     preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
 
 };
+

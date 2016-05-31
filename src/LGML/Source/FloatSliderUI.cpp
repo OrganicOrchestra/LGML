@@ -123,11 +123,14 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
     }
 }
 
-void FloatSliderUI::mouseUp(const MouseEvent &)
+void FloatSliderUI::mouseUp(const MouseEvent &me)
 {
 	if (!parameter->isEditable) return;
 
 	BailOutChecker checker (this);
+    if(me.getNumberOfClicks()>=2){
+        parameter->resetValue();
+    }
     if (changeParamOnMouseUpOnly)
     {
         setParamNormalizedValue(getValueFromMouse());

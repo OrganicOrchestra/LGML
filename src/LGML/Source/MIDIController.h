@@ -25,6 +25,10 @@ public :
     void buildLocalEnv() override;
 	void handleIncomingMidiMessage(MidiInput* source,
 		const MidiMessage& message) override;
+    StringParameter * deviceInName;
+    StringParameter * scriptPath;
+    BoolParameter * logIncoming;
+
 
 	ControllerUI * createUI() override;
     void    onContainerParameterChanged(Parameter * )override;
@@ -32,7 +36,7 @@ public :
     static var sendCC(const var::NativeFunctionArgs & v);
     static var sendNoteOnFor(const var::NativeFunctionArgs & v);
     void     callJs(const MidiMessage& message);
-
+    void newJsFileLoaded()override;
 
 	class MIDIControllerListener
 	{

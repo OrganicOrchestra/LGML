@@ -17,6 +17,7 @@
 #include "AudioDeviceInNode.h"
 #include "AudioDeviceOutNode.h"
 #include "LooperNode.h"
+#include "JsNode.h"
 
 #include "NodeContainer.h"
 
@@ -80,6 +81,9 @@ ConnectableNode * NodeFactory::createNode(NodeType nodeType)
             n = new AudioDeviceOutNode();
             break;
 
+        case NodeType::JsNodeType:
+            n= new JsNode();
+            break;
 
         default:
             break;
