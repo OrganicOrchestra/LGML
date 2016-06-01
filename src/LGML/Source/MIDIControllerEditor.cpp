@@ -21,6 +21,9 @@ MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
 	deviceChooser.addListener(this);
 
     addAndMakeVisible(jsUI);
+
+    incomingToogle = midiController->logIncoming->createToggle();
+    addAndMakeVisible(incomingToogle);
 }
 
 MIDIControllerEditor::~MIDIControllerEditor()
@@ -30,7 +33,8 @@ MIDIControllerEditor::~MIDIControllerEditor()
 void MIDIControllerEditor::resized()
 {
 	Rectangle<int> r = getLocalBounds();
-	deviceChooser.setBounds(r.removeFromTop(20));
+	deviceChooser.setBounds(r.removeFromTop(30));
+    incomingToogle->setBounds(r.removeFromTop(20));
     jsUI.setBounds(r.removeFromTop(20));
 }
 

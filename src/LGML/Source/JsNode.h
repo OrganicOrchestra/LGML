@@ -57,10 +57,18 @@ class JsNode : public NodeBase,public JsEnvironment{
     }
 
 
+    void onContainerParameterChanged(Parameter * p) override{
+        NodeBase::onContainerParameterChanged(p);
+        if(p==scriptPath){
+            loadFile(scriptPath->stringValue());
+        }
+    }
+
+
     static var addIntParameter(const var::NativeFunctionArgs & a){
 
         JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
-        if(a.numArguments<3){
+        if(a.numArguments<5){
             LOG("wrong number of arg for addIntParameter");
             return var::undefined();
         };
@@ -68,13 +76,6 @@ class JsNode : public NodeBase,public JsEnvironment{
 
         return var::undefined();
     };
-
-    void onContainerParameterChanged(Parameter * p) override{
-        NodeBase::onContainerParameterChanged(p);
-        if(p==scriptPath){
-            loadFile(scriptPath->stringValue());
-        }
-    }
 
     static var addFloatParameter(const var::NativeFunctionArgs & a){
 

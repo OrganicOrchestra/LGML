@@ -31,8 +31,10 @@ Result Engine::loadDocument (const File& file){
 
     ScopedPointer<InputStream> is( file.createInputStream());
     var data = JSON::parse(*is);
+    stopAudio();
     loadJSONData(data);
     setLastDocumentOpened(file);
+    initAudio();
     return Result::ok();
 }
 

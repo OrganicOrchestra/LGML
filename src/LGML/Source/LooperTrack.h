@@ -16,7 +16,7 @@
 
 class LooperNode;
 
-#define MAX_LOOP_LENGTH_S 30
+#define MAX_LOOP_LENGTH_S 60
 
 class LooperTrack : public ControllableContainer
 {
@@ -134,8 +134,8 @@ public:
     bool isJumping;
     int quantizedPlayStart, quantizedPlayEnd;
 
-    void updatePendingLooperTrackState(const uint64 curTime, int blockSize);
-
+    bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
+    void padBufferIfNeeded();
 
     AudioSampleBuffer loopSample;
     float lastVolume;

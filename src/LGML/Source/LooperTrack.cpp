@@ -67,8 +67,9 @@ isJumping(false)
 void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
-    updatePendingLooperTrackState(TimeManager::getInstance()->timeInSample, buffer.getNumSamples());
-
+    if(updatePendingLooperTrackState(TimeManager::getInstance()->timeInSample, buffer.getNumSamples())){
+        padBufferIfNeeded();
+    }
 
     // RECORDING
     if (internalTrackState == BUFFER_RECORDING)
@@ -102,14 +103,14 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             jassertfalse;
             // crop buffer to ensure not coming back
             recordNeedle = (playNeedle + buffer.getNumSamples());
-//            int firstSegmentLength = recordNeedle - playNeedle;
-//            int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
-//            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-//                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-//                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
-//                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
-//            }
-//            playNeedle = secondSegmentLength;
+            //            int firstSegmentLength = recordNeedle - playNeedle;
+            //            int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
+            //            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+            //                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+            //                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
+            //                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
+            //            }
+            //            playNeedle = secondSegmentLength;
 
         }
         else {
@@ -167,7 +168,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
 }
-void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _blockSize) {
+bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _blockSize) {
 
     bool stateChanged = false;
 
@@ -239,10 +240,39 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
     }
 
 
-
-    //    process changed internalState
     if (internalTrackState != lastInternalTrackState) {
         stateChanged=true;
+    }
+
+    if(internalTrackState == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
+        const int minQuantifiedFraction =TimeManager::getInstance()->beatTimeInSample / 16;
+        if((curTime%minQuantifiedFraction)!=(playNeedle%minQuantifiedFraction)){
+            LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%minQuantifiedFraction));
+            isJumping = true;
+            startJumpNeedle = playNeedle;
+            playNeedle = curTime%minQuantifiedFraction;
+        }
+    }
+    if(stateChanged){
+        trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
+        //        DBG("a:"+trackStateToString(trackState));
+
+    }
+
+
+    return stateChanged;
+
+
+
+
+
+}
+
+void LooperTrack::padBufferIfNeeded(){
+
+    if (internalTrackState != lastInternalTrackState) {
+        //    process changed internalState
+
         if (internalTrackState == BUFFER_RECORDING) {
             if (isMasterTempoTrack()) {
                 //                DBG("init predelay : "+String (trackIdx));
@@ -281,24 +311,6 @@ void LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
 
     }
-
-    if(internalTrackState == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
-        const int minQuantifiedFraction =TimeManager::getInstance()->beatTimeInSample / 16;
-        if((curTime%minQuantifiedFraction)!=(playNeedle%minQuantifiedFraction)){
-            LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%minQuantifiedFraction));
-            isJumping = true;
-            startJumpNeedle = playNeedle;
-            playNeedle = curTime%minQuantifiedFraction;
-        }
-    }
-    if(stateChanged){
-        trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
-        //        DBG("a:"+trackStateToString(trackState));
-
-    }
-
-
-
 
 
 }
@@ -435,7 +447,9 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
 
 
         // end of first track
-        if (askForBeingMasterTempoTrack() && trackState == RECORDING &&  !timeManager->playState->boolValue()) {
+        if (askForBeingMasterTempoTrack() && trackState == RECORDING
+//            &&  !timeManager->playState->boolValue()
+            ) {
             quantizedRecordEnd = -1;
 
             timeManager->isSettingTempo->setValue(false);
@@ -454,7 +468,7 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
             if(timeManager->isMasterNode(parentLooper)){
                 trackState=SHOULD_PLAY;
                 timeManager->lockTime(true);
-                    quantizedPlayStart = 0;
+                quantizedPlayStart = 0;
                 timeManager->playTrigger->trigger();
 
                 timeManager->lockTime(false);

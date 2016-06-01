@@ -29,7 +29,7 @@ NodeBase.cpp
 
 
 NodeContainer.h
-	line : 65
+	line : 69
 		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
 		//(todo : find a way to have simpler event flow)
 
@@ -56,17 +56,17 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 168
+	line : 178
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 251
-		// TODO nicely handle file format errors?
-
-	line : 551
+	line : 583
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
+
+	line : 271
+		// TODO nicely handle file format errors?
 
 
 TimeManager.h
@@ -150,7 +150,7 @@ ShapeShifterContainer.cpp
 
 
 LooperTrack.cpp
-	line : 173
+	line : 174
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized
