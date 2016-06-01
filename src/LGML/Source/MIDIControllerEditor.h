@@ -28,7 +28,7 @@ public:
 
 	MIDIController * midiController;
     JsEnvironmentUI jsUI;
-    BoolToggleUI * incomingToogle;
+    ScopedPointer<BoolToggleUI> incomingToogle;
 	void resized() override;
 	void comboBoxChanged(ComboBox *) override;
 };

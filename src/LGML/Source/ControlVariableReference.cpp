@@ -87,8 +87,11 @@ void ControlVariableReference::remove()
 var ControlVariableReference::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
-	data.getDynamicObject()->setProperty("controllerName", currentVariable->controller->shortName);
-	data.getDynamicObject()->setProperty("variableName", currentVariable->parameter->shortName);
+	if (currentVariable != nullptr)
+	{
+		data.getDynamicObject()->setProperty("controllerName", currentVariable->controller->shortName);
+		data.getDynamicObject()->setProperty("variableName", currentVariable->parameter->shortName);
+	}
 	return data;
 }
 

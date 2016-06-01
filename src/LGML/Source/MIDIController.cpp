@@ -21,6 +21,24 @@ Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
     deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
     scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
     logIncoming = addBoolParameter("logIncoming","log Incoming midi message",false);
+
+	for (int i = 0; i < 127; i++)
+	{
+		String noteName = MidiMessage::getMidiNoteName(i, true, true, 0);
+		FloatParameter * fp = new FloatParameter(noteName, "Value for " + noteName, 0, 0, 1);
+		addVariable(fp);
+	}
+
+	for (int i = 0; i < 127; i++)
+	{
+		FloatParameter *fp = new FloatParameter(String("CC ") + String(i), String("ControlChange ") + String(i), 0, 0, 1);
+		addVariable(fp);
+	}
+}
+
+MIDIController::~MIDIController()
+{
+	setCurrentDevice(String::empty);
 }
 
 ControllerUI * MIDIController::createUI()
@@ -28,20 +46,29 @@ ControllerUI * MIDIController::createUI()
     return new MIDIControllerUI(this);
 }
 
-void MIDIController::handleIncomingMidiMessage (MidiInput* source,
+void MIDIController::handleIncomingMidiMessage (MidiInput* ,
                                                 const MidiMessage& message)
 {
 
     if (!enabledParam->boolValue()) return;
 
-    if(logIncoming->boolValue()){
-        if(message.isController()){
-            LOG("Incoming controlChange message : " + String(source->getName()) + " / " + String(message.getControllerValue()));
-        }
-        else if(message.isNoteOnOrOff()){
-            LOG("Incoming note message : " + String(source->getName()) + " / " + String(message.getNoteNumber()) + " / "
-                + (message.isNoteOn()?"on":"off"));
-        }
+    if(message.isController()){
+		if (logIncoming->boolValue())
+		{
+			NLOG("MIDI","CC "+String(message.getControllerNumber()) + " > " + String(message.getControllerValue()));
+		}
+
+		int variableIndex = 128 + message.getControllerNumber();
+		variables[variableIndex]->parameter->setValue(message.getControllerValue()*1.f / 127.f);
+    }
+    else if(message.isNoteOnOrOff()){
+		if (logIncoming->boolValue())
+		{
+			NLOG("MIDI", "Note " + String(message.isNoteOn() ? "on" : "off") + " : " + String(message.getNoteNumber()) + " > " + String(message.getVelocity()));
+		}
+
+		int variableIndex = message.getNoteNumber();
+		variables[variableIndex]->parameter->setValue(message.getVelocity()*1.f / 127.f);
     }
 
     callJs(message);

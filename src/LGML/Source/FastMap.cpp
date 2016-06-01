@@ -105,21 +105,33 @@ void FastMap::setTarget(Controllable * c)
 var FastMap::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
-	data.getDynamicObject()->setProperty("reference", reference->getJSONData());
-	data.getDynamicObject()->setProperty("target", target->getControlAddress()); //Need to be global
+	if (reference != nullptr)
+	{
+		data.getDynamicObject()->setProperty("reference", reference->getJSONData());
+	}
+
+	if (target != nullptr)
+	{
+		data.getDynamicObject()->setProperty("target", target->getControlAddress()); //Need to be global
+	}
 
 	return data;
 }
 
 void FastMap::loadJSONDataInternal(var data)
 {
-	reference->loadJSONData(data.getDynamicObject()->getProperty("reference"));
-	String cAddress = data.getDynamicObject()->getProperty("target").toString();
+	if (data.getDynamicObject()->hasProperty("reference"))
+	{
+		reference->loadJSONData(data.getDynamicObject()->getProperty("reference"));
+	}
 
-	//Need to be global
-	cAddress = cAddress.substring(1);
-
-	setTarget(NodeManager::getInstance()->getControllableForAddress(cAddress));
+	if (data.getDynamicObject()->hasProperty("target"))
+	{
+		String cAddress = data.getDynamicObject()->getProperty("target").toString();
+		//Need to be global
+		cAddress = cAddress.substring(1);
+		setTarget(NodeManager::getInstance()->getControllableForAddress(cAddress));
+	}
 }
 
 void FastMap::remove()

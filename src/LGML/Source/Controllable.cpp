@@ -81,7 +81,7 @@ String Controllable::getControlAddress(ControllableContainer * relativeTo)
 
     ControllableContainer * pc = parentContainer;
 
-    while (pc != relativeTo)
+    while (pc != relativeTo && pc != nullptr)
     {
         if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
         pc = pc->parentContainer;

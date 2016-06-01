@@ -19,7 +19,7 @@ class MIDIController : public Controller,public MIDIListener,public JsEnvironmen
 {
 public :
     MIDIController();
-
+	virtual ~MIDIController();
 
     // should be implemented to build localenv
     void buildLocalEnv() override;
