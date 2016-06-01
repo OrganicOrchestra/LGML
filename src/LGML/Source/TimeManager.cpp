@@ -186,7 +186,7 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
     result.isRecording = isSettingTempo->boolValue();
     //TODO: check
     static const int mainPPQ = 960;
-    result.ppqPosition = (double)(timeInSample)*mainPPQ/(beatTimeInSample);
+    result.ppqPosition = (double)(timeInSample)*mainPPQ*1.0/(beatTimeInSample);
     result.timeSigNumerator = 4;
     result.timeSigDenominator = 4;
     result.timeInSamples = timeInSample;

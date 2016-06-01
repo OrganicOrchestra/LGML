@@ -118,9 +118,8 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 
 		instance->setPreferredBusArrangement(true, 0, AudioChannelSet::canonicalChannelSet(getMainBusNumInputChannels()));
 		instance->setPreferredBusArrangement(false, 0, AudioChannelSet::canonicalChannelSet(getMainBusNumOutputChannels()));
-		int numIn = instance->getMainBusNumInputChannels();
-		int numOut = instance->getMainBusNumOutputChannels();
-		setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
+
+
 
 		//@Martin i addedd this because when not playing, it crashed
         // @ben it is necessary
@@ -129,6 +128,12 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 
             instance->setProcessingPrecision(singlePrecision);
             instance->prepareToPlay(result.sampleRate, result.bufferSize);
+
+        int numIn = instance->getTotalNumInputChannels();
+        int numOut = instance->getTotalNumOutputChannels();
+        setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
+
+        DBG("buffer sizes" + String(instance->getTotalNumInputChannels())+','+ String(instance->getTotalNumOutputChannels()));
 
         instance->setPlayHead(getPlayHead());
         innerPlugin = instance;
@@ -163,7 +168,9 @@ inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 		}
 		else {
 			static int numFrameDropped = 0;
+
 			DBG("dropAudio " + String(numFrameDropped++));
+
 		}
 	}
 }

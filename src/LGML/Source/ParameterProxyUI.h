@@ -29,7 +29,7 @@ public:
 	ScopedPointer<StringParameterUI> aliasParam;
 	ScopedPointer<ParameterUI> linkedParamUI;
 
-	void resized();
+	void resized()override ;
 
 	void setLinkedParamUI(Parameter *);
 
