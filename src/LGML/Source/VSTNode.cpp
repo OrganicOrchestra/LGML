@@ -168,7 +168,6 @@ inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 		}
 		else {
 			static int numFrameDropped = 0;
-
 			DBG("dropAudio " + String(numFrameDropped++));
 
 		}

@@ -185,15 +185,17 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
     result.isPlaying = playState->boolValue();
     result.isRecording = isSettingTempo->boolValue();
     //TODO: check
-    static const int mainPPQ = 960;
-    result.ppqPosition = (double)(timeInSample)*mainPPQ*1.0/(beatTimeInSample);
-    result.timeSigNumerator = 4;
+    result.ppqPosition = (double)(getBeat()+getBeatPercent())/beatPerBar->intValue();
+    result.ppqPositionOfLastBarStart = (double)(getBar()*beatPerBar->intValue());
+    result.ppqLoopStart = 0;
+    result.ppqLoopEnd = 0;
+    result.timeSigNumerator = beatPerBar->intValue();
     result.timeSigDenominator = 4;
     result.timeInSamples = timeInSample;
     result.timeInSeconds = (double)(timeInSample)*sampleRate;
+    result.editOriginTime = 0;
 
-    result.ppqPositionOfLastBarStart = getBar()*result.timeSigNumerator*beatTimeInSample*4;
-    result.isLooping=true;
+    result.isLooping=false;
     return true;
 }
 
