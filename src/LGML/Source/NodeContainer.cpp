@@ -266,7 +266,12 @@ void NodeContainer::loadJSONDataInternal(var data)
 
             if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
                 NodeConnection * c = addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
-                c->loadJSONData(cData);
+                // if c == null connection already exist, should never happen loading JSON but safer to check
+                if(c){
+                    c->loadJSONData(cData);
+                }
+
+
             }
             else {
                 // TODO nicely handle file format errors?
@@ -525,13 +530,16 @@ void NodeContainer::bypassNode(bool bypass){
         for(auto & c:containerInGhostConnections){
             if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
 			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
-			nc->loadJSONData(c->getJSONData());
+                if(nc){
+                    nc->loadJSONData(c->getJSONData());
+
+                }
             }
 		}
         for(auto & c:containerOutGhostConnections){
             if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
 			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
-			nc->loadJSONData(c->getJSONData());
+			if(nc)nc->loadJSONData(c->getJSONData());
             }
 		}
 
