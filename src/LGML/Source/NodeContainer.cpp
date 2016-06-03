@@ -91,7 +91,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
     }
 
 
-    n->addNodeListener(this);
+    n->addConnectableNodeListener(this);
     String targetName = (nodeName.isNotEmpty())?nodeName:n->nameParam->stringValue();
     n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
@@ -109,7 +109,7 @@ bool NodeContainer::removeNode(ConnectableNode * n)
     for (auto &connection : relatedConnections) removeConnection(connection);
 
     if (n == nullptr) return false;
-    n->removeNodeListener(this);
+    n->removeConnectableNodeListener(this);
     removeChildControllableContainer(n);
 
     nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);

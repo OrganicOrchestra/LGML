@@ -15,6 +15,12 @@ ControllableContainer.cpp
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
 
+AudioDeviceOutNode.cpp
+	line : 56
+		//        TODO check
+		// we update mutes on main message threads possible bug here when audio device changing and audio active
+
+
 ControllableInspector.cpp
 	line : 85
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers

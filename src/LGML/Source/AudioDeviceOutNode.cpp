@@ -51,9 +51,12 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 
 	int numChannels = buffer.getNumChannels();
 	int numSamples = buffer.getNumSamples();
+
 	for (int i = 0; i < numChannels; i++)
 	{
-		float gain = outMutes[i]->boolValue() ? 0.f : 1.f;
+        //        TODO check
+        // we update mutes on main message threads possible bug here when audio device changing and audio active
+        float gain = i<outMutes.size() ? (outMutes[i]->boolValue() ? 0.f : 1.f):0.0f;
 		buffer.applyGain(i, 0, numSamples, gain);
 	}
 

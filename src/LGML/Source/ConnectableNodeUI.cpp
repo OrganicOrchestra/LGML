@@ -48,7 +48,7 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 	 mainContainer.setNodeAndNodeUI(connectableNode, this);
 	 if (getWidth() == 0 || getHeight() == 0) setSize(180, 100);
 
-	 connectableNode->addNodeListener(this);
+	 connectableNode->addConnectableNodeListener(this);
 	 connectableNode->xPosition->hideInEditor = true;
 	 connectableNode->yPosition->hideInEditor = true;
 	 //connectableNode->miniMode->hideInEditor = true;
@@ -59,7 +59,7 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 ConnectableNodeUI::~ConnectableNodeUI()
 {
 
-	connectableNode->removeNodeListener(this);
+	connectableNode->removeConnectableNodeListener(this);
 }
 
 

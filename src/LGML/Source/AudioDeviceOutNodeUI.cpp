@@ -26,7 +26,7 @@ AudioDeviceOutNodeContentUI::AudioDeviceOutNodeContentUI() :
 AudioDeviceOutNodeContentUI::~AudioDeviceOutNodeContentUI()
 {
 	audioInNode->removeNodeBaseListener(this);
-	audioInNode->removeNodeListener(this);
+	audioInNode->removeConnectableNodeListener(this);
 
 	while (vuMeters.size() > 0)
 	{
@@ -38,7 +38,7 @@ void AudioDeviceOutNodeContentUI::init()
 {
 	audioInNode = (AudioDeviceOutNode *)node.get();
 	audioInNode->addNodeBaseListener(this);
-	audioInNode->addNodeListener(this);
+	audioInNode->addConnectableNodeListener(this);
 	updateVuMeters();
 
 	setSize(240, 80);
@@ -52,6 +52,7 @@ void AudioDeviceOutNodeContentUI::resized()
 
 	int gap = 5;
 	int vWidth = (r.getWidth() / vuMeters.size()) - gap;
+
 	for (int i = 0; i < vuMeters.size(); i++)
 	{
 		Rectangle<int> vr = r.removeFromLeft(vWidth);
@@ -108,7 +109,7 @@ void AudioDeviceOutNodeContentUI::nodeParameterChanged(ConnectableNode *, Parame
 	{
 		if (p == m->parameter)
 		{
-			if (p->boolValue()) vuMeters[index]->setVoldB(0);
+			if (p && p->boolValue()) vuMeters[index]->setVoldB(0);
 		}
 		index++;
 	}

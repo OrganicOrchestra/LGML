@@ -45,7 +45,7 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
 		node->removeRMSListener(&vuMeterIn);
 
 		node->removeControllableContainerListener(this);
-		node->removeNodeListener(this);
+		node->removeConnectableNodeListener(this);
     }
 
 }
@@ -94,7 +94,7 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 	}
 
 	node->addControllableContainerListener(this);
-	node->addNodeListener(this);
+	node->addConnectableNodeListener(this);
 
     init();
     resized();

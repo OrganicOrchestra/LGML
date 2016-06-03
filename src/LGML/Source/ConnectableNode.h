@@ -73,8 +73,8 @@ public:
 	};
 
 	ListenerList<ConnectableNodeListener> nodeListeners;
-	void addNodeListener(ConnectableNodeListener* newListener) { nodeListeners.add(newListener); }
-	void removeNodeListener(ConnectableNodeListener* listener) { nodeListeners.remove(listener); }
+	void addConnectableNodeListener(ConnectableNodeListener* newListener) { nodeListeners.add(newListener); }
+	void removeConnectableNodeListener(ConnectableNodeListener* listener) { nodeListeners.remove(listener); }
 
 
 

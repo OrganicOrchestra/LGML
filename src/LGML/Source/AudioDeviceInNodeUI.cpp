@@ -23,7 +23,7 @@ AudioDeviceInNodeContentUI::AudioDeviceInNodeContentUI() :
 AudioDeviceInNodeContentUI::~AudioDeviceInNodeContentUI()
 {
 	audioInNode->removeNodeBaseListener(this);
-	audioInNode->removeNodeListener(this);
+	audioInNode->removeConnectableNodeListener(this);
 
 	while (vuMeters.size() > 0)
 	{
@@ -35,7 +35,7 @@ void AudioDeviceInNodeContentUI::init()
 {
 	audioInNode = (AudioDeviceInNode *)node.get();
 	audioInNode->addNodeBaseListener(this);
-	audioInNode->addNodeListener(this);
+	audioInNode->addConnectableNodeListener(this);
 	updateVuMeters();
 
 	setSize(240, 80);
@@ -47,12 +47,12 @@ void AudioDeviceInNodeContentUI::resized()
 
 	Rectangle<int> r = getLocalBounds().reduced(10);
 
-	int gap = 5;
+	int gap = 0;
 	int vWidth = (r.getWidth() / vuMeters.size()) - gap;
 	for (int i = 0; i < vuMeters.size();i++)
 	{
 		Rectangle<int> vr = r.removeFromLeft(vWidth);
-		muteToggles[i]->setBounds(vr.removeFromBottom(20));
+		muteToggles[i]->setBounds(vr.removeFromBottom(20).reduced(2));
 		vr.removeFromBottom(2);
 		vuMeters[i]->setBounds(vr.removeFromLeft(vr.getWidth()/2).reduced(2));
         volumes[i]->setBounds(vr.reduced(2));
@@ -62,12 +62,14 @@ void AudioDeviceInNodeContentUI::resized()
 
 void AudioDeviceInNodeContentUI::updateVuMeters()
 {
-	while (vuMeters.size() < audioInNode->AudioGraphIOProcessor::getTotalNumOutputChannels())
+    int actualNumberOfMutes = jmin(audioInNode->desiredNumAudioInput->intValue(),
+                                   audioInNode->AudioGraphIOProcessor::getTotalNumOutputChannels());
+	while (vuMeters.size() <actualNumberOfMutes)
 	{
 		addVuMeter();
 	}
 
-	while (vuMeters.size() > audioInNode->NodeBase::getTotalNumOutputChannels())
+	while (vuMeters.size() > actualNumberOfMutes)
 	{
 		removeLastVuMeter();
 	}
@@ -82,13 +84,14 @@ void AudioDeviceInNodeContentUI::addVuMeter()
 	addAndMakeVisible(v);
 	vuMeters.add(v);
 
-	BoolToggleUI * b = audioInNode->inMutes[muteToggles.size()]->createToggle();
+    int curVuMeterNum = muteToggles.size();
+	BoolToggleUI * b = audioInNode->inMutes[curVuMeterNum]->createToggle();
 	b->invertVisuals = true;
 	muteToggles.add(b);
 	addAndMakeVisible(b);
 
 
-    FloatSliderUI * vol  = audioInNode->volumes.getLast()->createSlider();
+    FloatSliderUI * vol  = audioInNode->volumes[curVuMeterNum]->createSlider();
     vol->orientation = FloatSliderUI::Direction::VERTICAL;
     volumes.add(vol);
     addAndMakeVisible(vol);
@@ -96,15 +99,16 @@ void AudioDeviceInNodeContentUI::addVuMeter()
 
 void AudioDeviceInNodeContentUI::removeLastVuMeter()
 {
-	VuMeter * v = vuMeters[vuMeters.size() - 1];
+    int curVuMeterNum = vuMeters.size() - 1;
+	VuMeter * v = vuMeters[curVuMeterNum];
 	audioInNode->removeRMSListener(v);
 	removeChildComponent(v);
 	vuMeters.removeLast();
 
-	removeChildComponent(muteToggles[muteToggles.size() - 1]);
+	removeChildComponent(muteToggles[curVuMeterNum]);
 	muteToggles.removeLast();
     
-    removeChildComponent(volumes.getLast());
+    removeChildComponent(volumes[curVuMeterNum]);
     volumes.removeLast();
 }
 
