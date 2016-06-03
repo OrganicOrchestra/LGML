@@ -35,7 +35,8 @@ public:
 	virtual void controllableContainerRemoved(ControllableContainer *) {}
 	virtual void controllableFeedbackUpdate(Controllable *) {}
 	virtual void childStructureChanged(ControllableContainer *) {}
-	virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
+    virtual void childAddressChanged(ControllableContainer * ){};
+    virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
 
 class ControllableContainer : public Parameter::Listener, public Trigger::Listener, public ControllableContainerListener

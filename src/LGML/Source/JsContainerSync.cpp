@@ -110,3 +110,11 @@ void JsContainerSync::childStructureChanged(ControllableContainer * c){
         getEnv()->setProperty(ns->nsName, createDynamicObjectFromContainer(ns->container, nullptr));
     }
 }
+void JsContainerSync::childAddressChanged(ControllableContainer * c){
+    // for now we rebuild all js (calls are made from root containers like node or time
+    // we could implement a nicer implementation where only changed child get's updated
+    
+    if(JsContainerNamespace * ns= getContainerNamespace(c)){
+        getEnv()->setProperty(ns->nsName, createDynamicObjectFromContainer(ns->container, nullptr));
+    }
+}

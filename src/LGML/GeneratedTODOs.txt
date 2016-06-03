@@ -8,7 +8,7 @@
 
 
 ControllableContainer.cpp
-	line : 416
+	line : 419
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 	line : 102
@@ -139,7 +139,7 @@ MIDIController.cpp
 
 
 ControllableContainer.h
-	line : 133
+	line : 134
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)

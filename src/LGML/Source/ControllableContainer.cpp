@@ -122,13 +122,15 @@ void ControllableContainer::setNiceName(const String &_niceName) {
 void ControllableContainer::setCustomShortName(const String &_shortName){
     shortName = _shortName;
     hasCustomShortName = true;
+    updateChildrenControlAddress();
+    controllableContainerListeners.call(&ControllableContainerListener::childAddressChanged,this);
 }
 
 void ControllableContainer::setAutoShortName() {
     hasCustomShortName = false;
     shortName = StringUtil::toShortName(niceName);
-
     updateChildrenControlAddress();
+    controllableContainerListeners.call(&ControllableContainerListener::childAddressChanged,this);
 }
 
 
@@ -225,6 +227,7 @@ void ControllableContainer::updateChildrenControlAddress()
 {
     for (auto &c : controllables) c->updateControlAddress();
     for (auto &cc : controllableContainers) cc->updateChildrenControlAddress();
+
 
 }
 

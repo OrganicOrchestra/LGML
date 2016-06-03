@@ -47,7 +47,7 @@ public:
     JsContainerNamespace* getContainerNamespace(const String & );
 
     void childStructureChanged(ControllableContainer * )override;
-
+    void childAddressChanged(ControllableContainer * c) override;
 private:
 
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
