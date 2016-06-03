@@ -28,10 +28,11 @@ public:
 	AudioDeviceOutNodeContentUI();
 	virtual ~AudioDeviceOutNodeContentUI();
 
-	OwnedArray<BoolToggleUI> muteToggles;
-	OwnedArray<VuMeter> vuMeters;
+    OwnedArray<BoolToggleUI> muteToggles;
+    OwnedArray<FloatSliderUI> volumes;
+    OwnedArray<VuMeter> vuMeters;
 
-	AudioDeviceOutNode * audioInNode;
+	AudioDeviceOutNode * audioOutNode;
 
 	void init() override;
 

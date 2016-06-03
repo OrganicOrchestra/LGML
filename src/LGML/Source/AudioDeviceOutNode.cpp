@@ -12,6 +12,8 @@ Author:  Martin Hermant
 #include "NodeBaseUI.h"
 #include "AudioDeviceOutNodeUI.h"
 
+#include "AudioHelpers.h"
+
 AudioDeviceManager& getAudioDeviceManager();
 
 AudioDeviceOutNode::AudioDeviceOutNode() :
@@ -25,10 +27,14 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 	NodeBase::busArrangement.outputBuses.clear();
 
 	getAudioDeviceManager().addChangeListener(this);
-	
-	for (int i = 0; i < NodeBase::getTotalNumInputChannels(); i++) addMute();
 
-	updateIO();
+    AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
+    
+    desiredNumAudioOutput = addIntParameter("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
+                                            ad?ad->getActiveInputChannels().countNumberOfSetBits():0, 0, 32);
+    lastNumberOfOutputs = 0;
+    updateVolMutes();
+
 }
 
 AudioDeviceOutNode::~AudioDeviceOutNode() {
@@ -36,14 +42,33 @@ AudioDeviceOutNode::~AudioDeviceOutNode() {
 }
 
 void AudioDeviceOutNode::changeListenerCallback(ChangeBroadcaster*) {
-	updateIO();
+	updateVolMutes();
 };
 
-void AudioDeviceOutNode::updateIO() {
+void AudioDeviceOutNode::onContainerParameterChanged(Parameter * p){
 
-	AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
-	if (ad == nullptr) return;
-	setPreferedNumAudioInput(ad->getActiveOutputChannels().countNumberOfSetBits());
+    if(p==desiredNumAudioOutput){
+        updateVolMutes();
+    }
+    else{
+        int foundIdx = volumes.indexOf((FloatParameter*)p);
+        if(foundIdx>=0){
+            logVolumes.set(foundIdx, float01ToGain(volumes[foundIdx]->floatValue()));
+        }
+    }
+        NodeBase::onContainerParameterChanged(p);
+
+};
+
+
+void AudioDeviceOutNode::updateVolMutes(){
+    while(lastNumberOfOutputs < desiredNumAudioOutput->intValue()){
+        addVolMute();
+    }
+    while (lastNumberOfOutputs>desiredNumAudioOutput->intValue()) {
+        removeVolMute();
+    }
+    setPreferedNumAudioInput(desiredNumAudioOutput->intValue());
 }
 
 void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
@@ -64,17 +89,31 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 }
 
 
-void AudioDeviceOutNode::addMute()
+void AudioDeviceOutNode::addVolMute()
 {
 	BoolParameter * p = addBoolParameter(String(outMutes.size() + 1), "Mute if disabled", false);
 	p->setCustomShortName(String("mute") + String(outMutes.size() + 1));
 	outMutes.add(p);
+
+    FloatParameter * v = addFloatParameter("volume"+String(volumes.size()), "volume", DB0_FOR_01);
+    volumes.add(v);
+    lastVolumes.add(0);
+    logVolumes.add(float01ToGain(DB0_FOR_01));
+    lastNumberOfOutputs++;
 }
 
-void AudioDeviceOutNode::removeMute()
+void AudioDeviceOutNode::removeVolMute()
 {
+    if(outMutes.size()==0)return;
 	BoolParameter * b = outMutes[outMutes.size() - 1];
 	removeControllable(b);
+    outMutes.removeAllInstancesOf(b);
+
+    removeControllable(volumes.getLast());
+    lastVolumes.removeLast();
+    volumes.removeLast();
+    logVolumes.removeLast();
+    lastNumberOfOutputs--;
 }
 
 ConnectableNodeUI * AudioDeviceOutNode::createUI() {
@@ -83,13 +122,3 @@ ConnectableNodeUI * AudioDeviceOutNode::createUI() {
 
 }
 
-void AudioDeviceOutNode::audioInputAdded(NodeBase *, int)
-{
-	DBG("Output added in Node");
-	addMute();
-}
-
-void AudioDeviceOutNode::audioInputRemoved(NodeBase *, int)
-{
-	removeMute();
-}

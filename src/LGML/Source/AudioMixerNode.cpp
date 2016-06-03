@@ -143,6 +143,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
         for(int i = volumes.size();i<numInput ; i++){
             FloatParameter * p = addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?DB0_FOR_01:0);
             p->setCustomShortName("In_"+String(i+1));
+            p->defaultValue = DB0_FOR_01;
             volumes.add(p);
         }
     }

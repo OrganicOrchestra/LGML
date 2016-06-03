@@ -23,20 +23,21 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
     canHavePresets = false;
     hasMainAudioControl = false;
 
-    addNodeBaseListener(this);
     NodeBase::busArrangement.inputBuses.clear();
     getAudioDeviceManager().addChangeListener(this);
 
-    desiredNumAudioInput = addIntParameter("numAudioInput", "desired numAudioInputs (independent of audio settings)", 0, 0, 32);
+    AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
+    desiredNumAudioInput = addIntParameter("numAudioInput", "desired numAudioInputs (independent of audio settings)",
+                                           ad?ad->getActiveInputChannels().countNumberOfSetBits():0, 0, 32);
+
+
     lastNumberOfInputs = 0;
-//    audioOutputAdded(this,0);
-//    for (int i = 0; i < NodeBase::getTotalNumOutputChannels(); i++) addVolMute();
+    updateVolMutes();
 
 
 }
 
 AudioDeviceInNode::~AudioDeviceInNode() {
-    removeNodeBaseListener(this);
     getAudioDeviceManager().removeChangeListener(this);
 }
 
@@ -65,7 +66,7 @@ void AudioDeviceInNode::changeListenerCallback(ChangeBroadcaster*) {
     updateVolMutes();
 }
 void AudioDeviceInNode::onContainerParameterChanged(Parameter * p){
-    NodeBase::onContainerParameterChanged(p);
+
     if(p==desiredNumAudioInput){
         updateVolMutes();
     }
@@ -75,6 +76,8 @@ void AudioDeviceInNode::onContainerParameterChanged(Parameter * p){
             logVolumes.set(foundIdx, float01ToGain(volumes[foundIdx]->floatValue()));
         }
     }
+
+    NodeBase::onContainerParameterChanged(p);
 
 };
 
@@ -125,14 +128,4 @@ ConnectableNodeUI * AudioDeviceInNode::createUI() {
 
 }
 
-void AudioDeviceInNode::audioOutputAdded(NodeBase *, int)
-{
-    DBG("Output added in Node");
-//    addVolMute();
 
-}
-
-void AudioDeviceInNode::audioOutputRemoved(NodeBase *, int)
-{
-//    removeVolMute();
-}

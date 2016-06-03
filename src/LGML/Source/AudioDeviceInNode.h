@@ -19,8 +19,7 @@ Author:  Martin Hermant
 class AudioDeviceInNode :
 	public NodeBase,
 	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
-	public ChangeListener,
-	public NodeBase::NodeBaseListener
+	public ChangeListener
 {
 
 public:
@@ -45,8 +44,7 @@ public:
 
 	virtual ConnectableNodeUI * createUI() override;
 
-	virtual void audioOutputAdded(NodeBase *, int) override;
-	virtual void audioOutputRemoved(NodeBase *, int) override;
+
 
 private:
     int lastNumberOfInputs;

@@ -16,7 +16,7 @@ ControllableContainer.cpp
 
 
 AudioDeviceOutNode.cpp
-	line : 56
+	line : 81
 		//        TODO check
 		// we update mutes on main message threads possible bug here when audio device changing and audio active
 
