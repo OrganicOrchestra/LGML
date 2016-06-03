@@ -242,7 +242,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 			if (result != 0)
 			{
 				if (result == 1) engine->save(true, true);
-				engine->loadDocument(engine->getLastDocumentOpened());
+				engine->loadFrom(engine->getLastDocumentOpened(),true);
 			}
 		}
             break;
