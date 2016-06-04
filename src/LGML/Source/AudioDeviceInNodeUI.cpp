@@ -13,15 +13,21 @@
 #include "VuMeter.h"
 #include "BoolToggleUI.h"
 #include "FloatSliderUI.h"
+#include "Style.h"
+
+AudioDeviceManager& getAudioDeviceManager();
+
 
 AudioDeviceInNodeContentUI::AudioDeviceInNodeContentUI() :
 	NodeBaseContentUI()
 {
-	
+	getAudioDeviceManager().addChangeListener(this);
 }
 
 AudioDeviceInNodeContentUI::~AudioDeviceInNodeContentUI()
 {
+	getAudioDeviceManager().removeChangeListener(this);
+
 	audioInNode->removeNodeBaseListener(this);
 	audioInNode->removeConnectableNodeListener(this);
 
@@ -62,16 +68,26 @@ void AudioDeviceInNodeContentUI::resized()
 
 void AudioDeviceInNodeContentUI::updateVuMeters()
 {
-    int actualNumberOfMutes = jmin(audioInNode->desiredNumAudioInput->intValue(),
+
+	int desiredNumInputs = audioInNode->desiredNumAudioInput->intValue();
+    int actualNumberOfMutes = jmin(desiredNumInputs,
                                    audioInNode->AudioGraphIOProcessor::getTotalNumOutputChannels());
-	while (vuMeters.size() <actualNumberOfMutes)
+	
+	
+	while (vuMeters.size() < desiredNumInputs)
 	{
 		addVuMeter();
 	}
 
-	while (vuMeters.size() > actualNumberOfMutes)
+	while (vuMeters.size() > desiredNumInputs)
 	{
 		removeLastVuMeter();
+	}
+
+	for (int i = 0; i < desiredNumInputs; i++)
+	{
+		volumes[i]->defaultColor = i < actualNumberOfMutes ? PARAMETER_FRONT_COLOR : Colours::lightgrey;
+		volumes[i]->repaint();
 	}
 	resized();
 }
@@ -128,6 +144,10 @@ void AudioDeviceInNodeContentUI::nodeParameterChanged(ConnectableNode *, Paramet
 
 void AudioDeviceInNodeContentUI::numAudioOutputChanged(NodeBase *, int)
 {
-	DBG("Output changed in NodeUI");
+	updateVuMeters();
+}
+
+void AudioDeviceInNodeContentUI::changeListenerCallback(ChangeBroadcaster *)
+{
 	updateVuMeters();
 }

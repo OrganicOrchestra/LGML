@@ -20,7 +20,8 @@ class AudioDeviceInNode;
 class AudioDeviceInNodeContentUI :
 	public NodeBaseContentUI,
 	public NodeBase::NodeBaseListener,
-	public ConnectableNode::ConnectableNodeListener
+	public ConnectableNode::ConnectableNodeListener,
+	public ChangeListener
 {
 public:
 	AudioDeviceInNodeContentUI();
@@ -45,6 +46,10 @@ public:
 
 	virtual void numAudioOutputChanged(NodeBase *, int newNum) override;
 	//virtual void numAudioOutputChanged() { DBG("Output changed !"); }
+
+
+	// Inherited via ChangeListener
+	virtual void changeListenerCallback(ChangeBroadcaster * source) override;
 
 };
 
