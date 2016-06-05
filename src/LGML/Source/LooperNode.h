@@ -17,8 +17,12 @@
 #include "LooperTrack.h"
 
 #define MAX_NUM_TRACKS 32
+#include "TimeMasterCandidate.h"
 
-class LooperNode : public NodeBase
+
+class LooperNode :
+public NodeBase,
+public TimeMasterCandidate
 {
 
 public:
@@ -98,6 +102,8 @@ public:
 	void addLooperListener(LooperListener* newListener) { looperListeners.add(newListener); }
 	void removeLooperListener(LooperListener* listener) { looperListeners.remove(listener); }
 
+
+    void clearInternal()override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
 };

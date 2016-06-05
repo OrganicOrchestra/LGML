@@ -141,9 +141,9 @@ void LooperNode::TrackGroup::setNumTracks(int numTracks) {
 
 
 void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
-    if(TimeManager::getInstance()->hasMasterNode()){
+    if(TimeManager::getInstance()->hasMasterCandidate()){
         bool needToReleaseMasterTempo = true;
-        bool needToStop = TimeManager::getInstance()->playState->boolValue() && TimeManager::getInstance()->isMasterNode(this);
+        bool needToStop = TimeManager::getInstance()->playState->boolValue() && TimeManager::getInstance()->isMasterCandidate(this);
         for (auto & t : trackGroup.tracks) {
             //            DBG("s"+LooperTrack::trackStateToString(t->trackState));
             needToReleaseMasterTempo &= (t->trackState == LooperTrack::TrackState::CLEARED ||
@@ -155,7 +155,7 @@ void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
         }
 
         if (needToReleaseMasterTempo) {
-            TimeManager::getInstance()->releaseMasterNode(this);
+            TimeManager::getInstance()->releaseMasterCandidate(this);
         }
         if (needToStop){
             TimeManager::getInstance()->stopTrigger->trigger();
@@ -299,4 +299,14 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
             }
         }
     }
+}
+
+void LooperNode::clearInternal(){
+    // get called after deletion of TimeManager on app exit
+    TimeManager * tm = TimeManager::getInstanceWithoutCreating();
+    if (tm != nullptr)
+    {
+        tm->releaseMasterCandidate(this);
+    }
+
 }

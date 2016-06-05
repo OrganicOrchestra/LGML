@@ -49,6 +49,8 @@ public:
 //  TODO:  this should not be implemented in Node to avoid overriding this method
 //    create onNodeParameterChanged();
 	void onContainerParameterChanged(Parameter * p) override;
+    // can be oerriden to react to clear
+    virtual void clearInternal() {};
 public:
 
 

@@ -21,6 +21,7 @@ timeInSample(0),
 beatTimeInSample(22050),
 sampleRate(44100),
 ControllableContainer("time"),
+
 _isLocked(false)
 {
 
@@ -68,20 +69,20 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
         zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
 }
 
-bool TimeManager::askForBeingMasterNode(NodeBase * n){
-    potentialTimeMasterNode.addIfNotAlreadyThere(n);
-    return potentialTimeMasterNode.getUnchecked(0) == n;
+bool TimeManager::askForBeingMasterCandidate(TimeMasterCandidate * n){
+    potentialTimeMasterCandidate.addIfNotAlreadyThere(n);
+    return potentialTimeMasterCandidate.getUnchecked(0) == n;
 }
 
-bool TimeManager::isMasterNode(NodeBase * n){
-    return potentialTimeMasterNode.size()>0 && n==potentialTimeMasterNode.getUnchecked(0);
+bool TimeManager::isMasterCandidate(TimeMasterCandidate * n){
+    return potentialTimeMasterCandidate.size()>0 && n==potentialTimeMasterCandidate.getUnchecked(0);
 }
-bool TimeManager::hasMasterNode(){
-    return potentialTimeMasterNode.size()>0;
+bool TimeManager::hasMasterCandidate(){
+    return potentialTimeMasterCandidate.size()>0;
 }
-void TimeManager::releaseMasterNode(NodeBase * n){
-    potentialTimeMasterNode.removeFirstMatchingValue(n);
-    if(potentialTimeMasterNode.size()==0){stopTrigger->trigger();}
+void TimeManager::releaseMasterCandidate(TimeMasterCandidate * n){
+    potentialTimeMasterCandidate.removeFirstMatchingValue(n);
+    if(potentialTimeMasterCandidate.size()==0){stopTrigger->trigger();}
 }
 
 void TimeManager::onContainerParameterChanged(Parameter * p){

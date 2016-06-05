@@ -27,11 +27,11 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 106
-		// TODO we could implement that for all node objects to be able to save any kind of custom data
-
-	line : 310
+	line : 305
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
+
+	line : 101
+		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
 NodeContainer.h
@@ -76,7 +76,7 @@ NodeContainer.cpp
 
 
 TimeManager.h
-	line : 28
+	line : 31
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
@@ -129,7 +129,7 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 186
+	line : 187
 		//TODO: check
 
 

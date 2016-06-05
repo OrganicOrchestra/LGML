@@ -391,12 +391,12 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
 }
 
 bool LooperTrack::askForBeingMasterTempoTrack() {
-    return TimeManager::getInstance()->askForBeingMasterNode(parentLooper)
+    return TimeManager::getInstance()->askForBeingMasterCandidate(parentLooper)
     && parentLooper->askForBeingMasterTrack(this);
 }
 
 bool LooperTrack::isMasterTempoTrack(){
-    return TimeManager::getInstance()->isMasterNode(parentLooper)
+    return TimeManager::getInstance()->isMasterCandidate(parentLooper)
     && parentLooper->lastMasterTempoTrack  == this;
 }
 
@@ -433,7 +433,7 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         }
         //            Record per default if triggering other rec while we are current master and we are recording
 
-        else if (timeManager->isMasterNode(parentLooper)) {
+        else if (timeManager->isMasterCandidate(parentLooper)) {
             timeManager->isSettingTempo->setValue(false);
             timeManager->playState->setValue(true);
             parentLooper->lastMasterTempoTrack->setTrackState(SHOULD_PLAY);
@@ -465,7 +465,7 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
         else if(parentLooper->askForBeingAbleToPlayNow(this) && trackState == STOPPED) {
             quantizedRecordEnd = -1;
 
-            if(timeManager->isMasterNode(parentLooper)){
+            if(timeManager->isMasterCandidate(parentLooper)){
                 trackState=SHOULD_PLAY;
                 timeManager->lockTime(true);
                 quantizedPlayStart = 0;

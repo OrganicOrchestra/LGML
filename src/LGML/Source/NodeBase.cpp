@@ -79,12 +79,7 @@ void NodeBase::onContainerParameterChanged(Parameter * p)
 
 void NodeBase::clear()
 {
-	// get called after deletion of TimeManager on app exit
-	TimeManager * tm = TimeManager::getInstanceWithoutCreating();
-	if (tm != nullptr)
-	{
-		tm->releaseMasterNode(this);
-	}
+    clearInternal();
 
 	//Data
 	inputDatas.clear();

@@ -632,6 +632,10 @@
         <FILE id="Gv1zB9" name="TimeManagerUI.cpp" compile="1" resource="0"
               file="Source/TimeManagerUI.cpp"/>
         <FILE id="a4XrkQ" name="TimeManagerUI.h" compile="0" resource="0" file="Source/TimeManagerUI.h"/>
+        <FILE id="ZsrySj" name="TimeMasterCandidate.cpp" compile="1" resource="0"
+              file="Source/TimeMasterCandidate.cpp"/>
+        <FILE id="EMDMu8" name="TimeMasterCandidate.h" compile="0" resource="0"
+              file="Source/TimeMasterCandidate.h"/>
       </GROUP>
       <GROUP id="{FB8BE149-7E66-F373-A52A-23FC32230381}" name="Project">
         <FILE id="DxNPgG" name="ProjectManager.cpp" compile="1" resource="0"

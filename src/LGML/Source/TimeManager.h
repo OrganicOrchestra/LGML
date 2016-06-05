@@ -20,7 +20,10 @@
 
 #include "NodeBase.h"
 
-class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead
+#include "TimeMasterCandidate.h"
+
+class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead,
+public TimeMasterCandidate
 {
 
 
@@ -76,11 +79,11 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,p
     uint64 timeInSample;
     int beatTimeInSample;
     int sampleRate;
-    Array<NodeBase *>  potentialTimeMasterNode;
-    bool isMasterNode(NodeBase * n);
-    bool hasMasterNode();
-    void releaseMasterNode(NodeBase * n);
-    bool askForBeingMasterNode(NodeBase * n);
+    Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;
+    bool isMasterCandidate(TimeMasterCandidate * n);
+    bool hasMasterCandidate();
+    void releaseMasterCandidate(TimeMasterCandidate * n);
+    bool askForBeingMasterCandidate(TimeMasterCandidate * n);
     void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) override;
 
 
