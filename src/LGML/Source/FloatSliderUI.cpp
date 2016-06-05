@@ -13,7 +13,8 @@
 
 //==============================================================================
 FloatSliderUI::FloatSliderUI(Parameter * parameter) :
-ParameterUI(parameter), fixedDecimals(2)
+ParameterUI(parameter), fixedDecimals(2),
+defaultColor(PARAMETER_FRONT_COLOR)
 {
     assignOnMousePosDirect = true;
     changeParamOnMouseUpOnly = false;
@@ -33,7 +34,7 @@ void FloatSliderUI::paint(Graphics & g)
 
     if(shouldBailOut())return;
 
-	Colour baseColour = parameter->isEditable? PARAMETER_FRONT_COLOR :FEEDBACK_COLOR;
+	Colour baseColour = parameter->isEditable? defaultColor :FEEDBACK_COLOR;
     Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : baseColour;
 
     Rectangle<int> sliderBounds = getLocalBounds();
