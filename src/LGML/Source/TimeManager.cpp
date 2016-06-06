@@ -82,15 +82,23 @@ bool TimeManager::hasMasterCandidate(){
 }
 void TimeManager::releaseMasterCandidate(TimeMasterCandidate * n){
     potentialTimeMasterCandidate.removeFirstMatchingValue(n);
-    if(potentialTimeMasterCandidate.size()==0){stopTrigger->trigger();}
+    if(potentialTimeMasterCandidate.size()==0||
+       (potentialTimeMasterCandidate.size()==1 && potentialTimeMasterCandidate.getUnchecked(0)==this)  ){
+        stopTrigger->trigger();
+    }
 }
 
 void TimeManager::onContainerParameterChanged(Parameter * p){
     if(p==playState){
         if(!playState->boolValue()){
+            releaseMasterCandidate(this);
             timeInSample = 0;
         }
-        else{}
+        else{
+            if (!hasMasterCandidate()) {
+                askForBeingMasterCandidate(this);
+            }
+        }
     }
     else if(p==BPM){
         setBPMInternal(BPM->floatValue());

@@ -21,8 +21,6 @@ public:
     BoolParameter(const String &niceName, const String &description, const bool &initialValue, bool enabled = true);
     ~BoolParameter() {}
 
-    bool value;
-
     //ui creation
     BoolToggleUI * createToggle(BoolParameter * target = nullptr);
     ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
