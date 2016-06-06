@@ -151,7 +151,7 @@ AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool)
 }
 
 
-void ConnectableNode::addToAudioGraph()
+void ConnectableNode::addToAudioGraph(AudioProcessorGraph*)
 {
 	//to override
 }

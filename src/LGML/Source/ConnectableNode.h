@@ -88,7 +88,7 @@ public:
 	StringArray outputChannelNames;
 
 	virtual AudioProcessorGraph::Node * getAudioNode(bool forInput = true);
-	virtual void addToAudioGraph();
+	virtual void addToAudioGraph(AudioProcessorGraph*);
 	virtual void removeFromAudioGraph();
 
 	void setInputChannelNames(int startChannel, StringArray names);
@@ -104,15 +104,24 @@ public:
 		/** Destructor. */
 		virtual ~RMSListener() {}
 		virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) = 0;
-		virtual void channelRMSInChanged(ConnectableNode * node, float rmsInValue, int channel) = 0;
-		virtual void channelRMSOutChanged(ConnectableNode * node, float rmsOutValue, int channel) = 0;
 	};
 
-	ListenerList<RMSListener> rmsListeners;
-	void addRMSListener(RMSListener* newListener) { rmsListeners.add(newListener); }
-	void removeRMSListener(RMSListener* listener) { rmsListeners.remove(listener); }
+
+    ListenerList<RMSListener> rmsListeners;
+    void addRMSListener(RMSListener* newListener) { rmsListeners.add(newListener); }
+    void removeRMSListener(RMSListener* listener) { rmsListeners.remove(listener); }
+
+    class RMSChannelListener{
+    public:
+        virtual ~RMSChannelListener(){}
+        virtual void channelRMSInChanged(ConnectableNode * node, float rmsInValue, int channel) = 0;
+        virtual void channelRMSOutChanged(ConnectableNode * node, float rmsOutValue, int channel) = 0;
+    };
 
 
+    ListenerList<RMSChannelListener> rmsChannelListeners;
+    void addRMSChannelListener(RMSChannelListener* newListener) { rmsChannelListeners.add(newListener); }
+    void removeRMSChannelListener(RMSChannelListener* listener) { rmsChannelListeners.remove(listener); }
 
     String getPresetFilter()override;
 

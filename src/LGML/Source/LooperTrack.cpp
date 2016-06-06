@@ -161,9 +161,8 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     }
     else {
         // silence output buffer
-        for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-            buffer.applyGain(i, 0, buffer.getNumSamples(), 0);
-        }
+        buffer.clear();
+
     }
 
     lastInternalTrackState = internalTrackState;

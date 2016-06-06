@@ -30,7 +30,7 @@ class NodeManager;
 class NodeBase :
 	public ConnectableNode,
 	public ReferenceCountedObject,
-	public juce::AudioProcessor, public AsyncUpdater, //Audio
+	public juce::AudioProcessor, public Timer, //Audio
 	public Data::DataListener //Data
 {
 
@@ -96,11 +96,11 @@ public:
 	//AUDIO PROCESSOR
 
 	AudioProcessorGraph::Node * audioNode;
-
+    AudioProcessorGraph * parentGraph;
 
 
 	virtual AudioProcessorGraph::Node * getAudioNode(bool isInputNode = true) override;
-	void addToAudioGraph() override;
+	void addToAudioGraph(AudioProcessorGraph*) override;
 	void removeFromAudioGraph() override;
 
 	bool setPreferedNumAudioInput(int num);
@@ -137,7 +137,7 @@ public:
 	virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/ , MidiBuffer& /*midiMessage*/ ) {};
 
 	//RMS
-	void updateRMS(const AudioBuffer<float>& buffer, float &targetRMSValue, Array<float> &targetRMSValues);
+	void updateRMS(const AudioBuffer<float>& buffer, float &targetRMSValue, Array<float> &targetRMSValues,bool skipChannelComputation = true);
 
 	const float alphaRMS = 0.05f;
 	const int samplesBeforeRMSUpdate = 512;
@@ -150,7 +150,7 @@ public:
 	Array<float> rmsValuesOut;
 
 	//Listener are called from non audio thread
-	void handleAsyncUpdate() override;
+	void timerCallback() override;
 
 	bool wasSuspended;
     float logVolume;

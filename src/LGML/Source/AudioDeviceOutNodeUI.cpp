@@ -85,7 +85,7 @@ void AudioDeviceOutNodeContentUI::addVuMeter()
 {
     VuMeter * v = new VuMeter(VuMeter::Type::OUT);
     v->targetChannel = vuMeters.size();
-    audioOutNode->addRMSListener(v);
+    audioOutNode->addRMSChannelListener(v);
     addAndMakeVisible(v);
     vuMeters.add(v);
 
@@ -106,7 +106,7 @@ void AudioDeviceOutNodeContentUI::removeLastVuMeter()
 {
     int curVuMeterNum = vuMeters.size() - 1;
     VuMeter * v = vuMeters[curVuMeterNum];
-    audioOutNode->removeRMSListener(v);
+    audioOutNode->removeRMSChannelListener(v);
     removeChildComponent(v);
     vuMeters.removeLast();
 

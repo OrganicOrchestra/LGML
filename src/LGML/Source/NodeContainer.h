@@ -120,8 +120,6 @@ public:
 
 	// Inherited via RMSListener
 	virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) override;
-	virtual void channelRMSInChanged(ConnectableNode * node, float rmsInValue, int channel) override;
-	virtual void channelRMSOutChanged(ConnectableNode * node, float rmsOutValue, int channel) override;
 
 	virtual void onContainerParameterChanged(Parameter * p) override;
 

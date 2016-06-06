@@ -27,7 +27,7 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 305
+	line : 299
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 101
@@ -62,6 +62,10 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
+	line : 585
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
+
 	line : 178
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
@@ -69,10 +73,6 @@ NodeContainer.cpp
 
 	line : 276
 		// TODO nicely handle file format errors?
-
-	line : 591
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
 
 
 TimeManager.h
@@ -156,7 +156,7 @@ ShapeShifterContainer.cpp
 
 
 LooperTrack.cpp
-	line : 176
+	line : 175
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized

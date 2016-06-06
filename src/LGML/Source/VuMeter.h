@@ -15,7 +15,7 @@
 #include "Style.h"
 
 //TODO, move to more common place for use in other components
-class VuMeter : public Component, public NodeBase::RMSListener ,Timer{
+class VuMeter : public Component, public NodeBase::RMSListener ,public NodeBase::RMSChannelListener,Timer{
 public:
 
 	enum Type { IN,OUT};

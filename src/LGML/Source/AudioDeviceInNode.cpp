@@ -96,6 +96,7 @@ void AudioDeviceInNode::updateVolMutes(){
 
 void AudioDeviceInNode::addVolMute()
 {
+    const ScopedLock lk (parentGraph->getCallbackLock());
     BoolParameter * p = addBoolParameter(String(inMutes.size() + 1), "Mute if disabled", false);
     p->setCustomShortName(String("mute") + String(inMutes.size() + 1));
     inMutes.add(p);
@@ -110,7 +111,9 @@ void AudioDeviceInNode::addVolMute()
 
 void AudioDeviceInNode::removeVolMute()
 {
+
     if(inMutes.size()==0)return;
+    const ScopedLock lk (parentGraph->getCallbackLock());
     BoolParameter * b = inMutes[inMutes.size() - 1];
     removeControllable(b);
     inMutes.removeAllInstancesOf(b);
