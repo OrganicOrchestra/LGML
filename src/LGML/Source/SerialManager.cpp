@@ -137,4 +137,3 @@ void SerialManager::timerCallback()
 {
 	updateDeviceList();
 }
-

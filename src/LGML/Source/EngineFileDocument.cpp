@@ -155,7 +155,7 @@ bool Engine::checkFileVersion(DynamicObject * metaData)
         int minV = minVersionSplit[i].getIntValue();
         if (fV < minV) return false;
     }
-    
+
     return true;
 }
 

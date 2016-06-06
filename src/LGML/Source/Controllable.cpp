@@ -135,7 +135,7 @@ var Controllable::setControllableValue(const juce::var::NativeFunctionArgs& a) {
 				break;
 
 			case Controllable::Type::BOOL:
-				
+
 				if (valueIsABool) ((BoolParameter *)c)->setValue((bool)value);
 				else if (valueIsANumber) ((BoolParameter *)c)->setValue((float)value > .5);
 				break;

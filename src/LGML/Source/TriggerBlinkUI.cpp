@@ -42,7 +42,7 @@ void TriggerBlinkUI::setTriggerReference(Trigger * t) {
 
 void TriggerBlinkUI::triggerTriggered(Trigger *) {
     startBlink();
-	
+
 }
 
 void TriggerBlinkUI::paint(Graphics& g)
@@ -61,8 +61,8 @@ void TriggerBlinkUI::paint(Graphics& g)
 void TriggerBlinkUI::startBlink(){
     intensity = 1;
 	if (!animateIntensity) repaint();
-	startTimer(animateIntensity ? refreshPeriod : blinkTime);	
-   
+	startTimer(animateIntensity ? refreshPeriod : blinkTime);
+
 }
 
 void TriggerBlinkUI::timerCallback(){

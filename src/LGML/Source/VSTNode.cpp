@@ -234,4 +234,3 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
     preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
 
 };
-

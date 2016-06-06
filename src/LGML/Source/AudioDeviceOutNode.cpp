@@ -21,7 +21,7 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 	AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
 	canHavePresets = false;
-	
+
 	addNodeBaseListener(this);
 
 	NodeBase::busArrangement.outputBuses.clear();
@@ -29,7 +29,7 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 	getAudioDeviceManager().addChangeListener(this);
 
     AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
-    
+
     desiredNumAudioOutput = addIntParameter("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
                                             ad?ad->getActiveInputChannels().countNumberOfSetBits():0, 0, 32);
     lastNumberOfOutputs = 0;
@@ -121,4 +121,3 @@ ConnectableNodeUI * AudioDeviceOutNode::createUI() {
 	return ui;
 
 }
-

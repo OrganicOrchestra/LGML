@@ -38,7 +38,7 @@ public:
     IntParameter * desiredNumAudioInput;
 
 
-    
+
 	void addVolMute();
 	void removeVolMute();
 

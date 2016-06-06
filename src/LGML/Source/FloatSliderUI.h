@@ -47,7 +47,7 @@ public:
     virtual void setParamNormalizedValue(float value);
     virtual float getParamNormalizedValue();
 
-	
+
 protected:
     void valueChanged(const var &) override ;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FloatSliderUI)

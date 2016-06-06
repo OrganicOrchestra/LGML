@@ -130,5 +130,3 @@ ConnectableNodeUI * AudioDeviceInNode::createUI() {
     return ui;
 
 }
-
-

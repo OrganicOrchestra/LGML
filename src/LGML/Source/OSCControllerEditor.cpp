@@ -31,7 +31,7 @@ OSCControllerEditor::OSCControllerEditor(OSCControllerUI * controllerUI) :
     addAndMakeVisible(logIncomingOSC);
     addAndMakeVisible(logOutOSC);
 
-    
+
 	addAndMakeVisible(innerContainer);
 }
 

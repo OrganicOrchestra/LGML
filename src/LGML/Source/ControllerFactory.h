@@ -53,7 +53,7 @@ public:
 
         switch (controllerType)
         {
-           
+
             case ScriptedOSC:
                 c = new JavascriptController();
                 break;

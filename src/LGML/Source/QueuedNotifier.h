@@ -97,7 +97,7 @@ private:
                 lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start1+size1-1));
 
             fifo.finishedRead(size1 + size2);
-            
+
 
 
 

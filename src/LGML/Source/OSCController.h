@@ -29,7 +29,7 @@ public:
     StringParameter * remotePortParam;
     BoolParameter * logIncomingOSC;
     BoolParameter * logOutGoingOSC;
-    
+
     void setupReceiver();
     void setupSender();
 
@@ -70,7 +70,7 @@ public:
         return sender.send (m);
     }
 #endif
-    
+
     bool sendOSC (OSCMessage & m);
 
     void logMessage(const OSCMessage & m,const String & prefix = "");

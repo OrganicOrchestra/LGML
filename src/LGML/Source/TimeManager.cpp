@@ -207,4 +207,3 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
     result.isLooping=false;
     return true;
 }
-

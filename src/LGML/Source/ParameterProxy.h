@@ -14,7 +14,7 @@
 #include "Parameter.h"
 #include "StringParameter.h"
 
-class ParameterProxy : 
+class ParameterProxy :
 	public Parameter,
 	public Parameter::Listener
 {

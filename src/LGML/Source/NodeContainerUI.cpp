@@ -17,7 +17,7 @@ NodeContainerUI::NodeContainerUI(NodeContainer * nc) :
 {
 	recursiveInspectionLevel = 1;
 	canInspectChildContainersBeyondRecursion = true;
-	
+
 }
 
 NodeContainerUI::~NodeContainerUI()

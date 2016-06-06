@@ -84,7 +84,7 @@ class JsNode : public NodeBase,public JsEnvironment{
             LOG("wrong number of arg for addFloatParameter");
             return var::undefined();
         };
-        
+
         jsNode->jsParameters.add(jsNode->ControllableContainer::addFloatParameter(a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
 
         return var::undefined();

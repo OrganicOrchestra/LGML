@@ -33,7 +33,7 @@ void SerialPort::open()
 	{
 		port->open();
 	}
-	
+
 	port->setDTR();
 	port->setRTS();
 
@@ -63,7 +63,7 @@ bool SerialPort::isOpen() {
 
 int SerialPort::writeString(String message, bool endLine)
 {
-	
+
 	if (!port->isOpen()) return 0;
 
 	DBG("Write string : " << message << " -- endline ? " << String(endLine));
@@ -109,7 +109,7 @@ void SerialReadThread::run()
 
 		if (port == nullptr) return;
 		if (!port->isOpen()) return;
-		
+
 		try
 		{
 
@@ -178,8 +178,8 @@ void SerialReadThread::run()
 			DBG("### Serial Problem ");
 		}
 
-		
+
 	}
 
-	
+
 }

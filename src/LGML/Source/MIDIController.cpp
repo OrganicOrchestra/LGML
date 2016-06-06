@@ -131,6 +131,6 @@ var MIDIController::sendCC(const var::NativeFunctionArgs &){
     return var::undefined();
 }
 var MIDIController::sendNoteOnFor(const var::NativeFunctionArgs &){
-    
+
     return var::undefined();
 }

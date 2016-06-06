@@ -24,7 +24,7 @@ isGhostConnection(_isGhostConnection)
 		for (int i = 0; i < maxCommonAudioConnections; i++) {
 			addAudioGraphConnection(i, i);
 		}
-		
+
     }
 
     if (sourceNode->type != NodeType::ContainerType) {
@@ -73,7 +73,7 @@ bool NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destCh
 			result = false;
 		}
 	}
-	
+
 	if (result)
     {
         AudioConnection ac = AudioConnection(sourceChannel, destChannel);
@@ -90,7 +90,7 @@ void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 des
 	{
 		if (NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
 	}
-	
+
 	audioConnections.removeAllInstancesOf(ac);
     if (keepInGhost) ghostConnections.add(ac);
     listeners.call(&Listener::connectionAudioLinkRemoved, ac);

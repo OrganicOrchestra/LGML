@@ -347,7 +347,7 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
     if (preset == nullptr) return false;
 
     loadPresetInternal(preset);
-    
+
     for (auto &pv : preset->presetValues)
     {
 

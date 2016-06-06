@@ -146,4 +146,3 @@ void AudioMixerNodeUI::OutputBusUI::resized() {
         idx++;
     }
 }
-

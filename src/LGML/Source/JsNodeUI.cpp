@@ -87,7 +87,6 @@ void JsNodeUI::controllableRemoved(Controllable * c) {
 
 
     layoutUI();
-    
-    
-};
 
+
+};

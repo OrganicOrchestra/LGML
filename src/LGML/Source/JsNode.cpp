@@ -17,5 +17,5 @@ ConnectableNodeUI * JsNode::createUI()
 
     NodeBaseUI * ui = new NodeBaseUI(this,new JsNodeUI());
     return ui;
-    
+
 }

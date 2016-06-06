@@ -133,7 +133,7 @@ void SerialControllerEditor::buttonClicked(Button * b)
 		}
 
 		updateConnectBTAndIndic();
-	} 
+	}
 }
 
 void SerialControllerEditor::portOpened()

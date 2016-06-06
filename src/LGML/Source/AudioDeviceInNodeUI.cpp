@@ -72,8 +72,8 @@ void AudioDeviceInNodeContentUI::updateVuMeters()
 	int desiredNumInputs = audioInNode->desiredNumAudioInput->intValue();
     int actualNumberOfMutes = jmin(desiredNumInputs,
                                    audioInNode->AudioGraphIOProcessor::getTotalNumOutputChannels());
-	
-	
+
+
 	while (vuMeters.size() < desiredNumInputs)
 	{
 		addVuMeter();
@@ -123,7 +123,7 @@ void AudioDeviceInNodeContentUI::removeLastVuMeter()
 
 	removeChildComponent(muteToggles[curVuMeterNum]);
 	muteToggles.removeLast();
-    
+
     removeChildComponent(volumes[curVuMeterNum]);
     volumes.removeLast();
 }

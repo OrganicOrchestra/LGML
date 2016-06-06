@@ -156,7 +156,7 @@ void NodeContainer::removeParamProxy(ParameterProxy * pp)
 	removeControllable(pp);
 	nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
 }
-	
+
 
 bool NodeContainer::loadPreset(PresetManager::Preset * preset)
 {
@@ -219,7 +219,7 @@ var NodeContainer::getJSONData()
 		ghostConnectionsInData.append(c->getJSONData());
 	}
 	data.getDynamicObject()->setProperty("ghostConnectionsIn", ghostConnectionsInData);
-	
+
 
 	var ghostConnectionsOutData;
 	for (auto &c : containerOutGhostConnections)
@@ -332,7 +332,7 @@ void NodeContainer::loadJSONDataInternal(var data)
 		}
 	}
 
-   
+
 	Array<var> * proxiesData = data.getProperty("proxies", var()).getArray();
 
 	if (proxiesData)
@@ -362,7 +362,7 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
 		}
 	}
 
-	
+
 	NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
     ConnectableNode * node = addNode(nodeType, sourceName,false);
     String safeNodeName = node->niceName;
@@ -370,17 +370,17 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
     if (node->type == NodeType::ContainerInType)
     {
         containerInNode = (ContainerInNode *)node;
-        
+
     } else if (node->type == NodeType::ContainerOutType)
     {
         containerOutNode = (ContainerOutNode *)node;
     }
 
-    
+
     node->loadJSONData(nodeData);
 	node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
 
-    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);	
+    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
 
     return node;
 
@@ -543,7 +543,7 @@ void NodeContainer::bypassNode(bool bypass){
             }
 		}
 
-        
+
 
     }
 }

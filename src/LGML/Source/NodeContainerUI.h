@@ -21,7 +21,7 @@ class NodeContainerUI :
 public:
 	NodeContainerUI(NodeContainer * nc);
 	virtual ~NodeContainerUI();
-	
+
 	NodeContainer * nodeContainer;
 
 	void clear();

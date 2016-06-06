@@ -14,7 +14,7 @@
 #include "ParameterProxy.h"
 #include "ParameterUI.h"
 #include "ControllableHelpers.h"
-class ParameterProxyUI : 
+class ParameterProxyUI :
 	public ParameterUI,
 	public ParameterProxy::ParameterProxyListener,
 	public ControllableChooser::Listener
@@ -24,7 +24,7 @@ public:
 	virtual ~ParameterProxyUI();
 
 	ControllableChooser chooser;
-	
+
 	ParameterProxy * paramProxy;
 	ScopedPointer<StringParameterUI> aliasParam;
 	ScopedPointer<ParameterUI> linkedParamUI;

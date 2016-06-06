@@ -63,7 +63,7 @@ void ParameterProxy::setLinkedParam(Parameter * p)
 		description = String("Proxy Param for "+linkedParam->getControlAddress(parentContainer));
 		setRange(linkedParam->minimumValue, linkedParam->maximumValue);
 		setValue(linkedParam->value, true, true);
-		
+
 	}
 
 	proxyListeners.call(&ParameterProxyListener::linkedParamChanged, linkedParam);

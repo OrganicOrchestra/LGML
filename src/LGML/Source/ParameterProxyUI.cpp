@@ -62,7 +62,7 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 	if (linkedParamUI != nullptr)
 	{
 		addAndMakeVisible(linkedParamUI);
-		updateTooltip(); 
+		updateTooltip();
 		linkedParamUI->setTooltip(getTooltip());
 	}
 

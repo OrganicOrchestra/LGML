@@ -439,7 +439,7 @@ Data::DataType NodeBase::getInputDataType(const String &dataName, const String &
     for (int i = inputDatas.size(); --i >= 0;)
     {
         Data* d = inputDatas.getUnchecked(i);
-        
+
         if (d->name == dataName)
         {
             if (elementName.isEmpty())
@@ -454,7 +454,7 @@ Data::DataType NodeBase::getInputDataType(const String &dataName, const String &
             }
         }
     }
-    
+
     return DataType::Unknown;
 }
 
@@ -463,7 +463,7 @@ Data::DataType NodeBase::getOutputDataType(const String &dataName, const String 
     for (int i = outputDatas.size(); --i >= 0;)
     {
         Data* d = outputDatas.getUnchecked(i);
-        
+
         if (d->name == dataName)
         {
             if (elementName.isEmpty())
@@ -478,9 +478,9 @@ Data::DataType NodeBase::getOutputDataType(const String &dataName, const String 
             }
         }
     }
-    
+
     return DataType::Unknown;
-    
+
 }
 
 Data * NodeBase::getOutputDataByName(const String & dataName)
@@ -489,7 +489,7 @@ Data * NodeBase::getOutputDataByName(const String & dataName)
     {
         if (d->name == dataName) return d;
     }
-    
+
     return nullptr;
 }
 
@@ -499,7 +499,7 @@ Data * NodeBase::getInputDataByName(const String & dataName)
     {
         if (d->name == dataName) return d;
     }
-    
+
     return nullptr;
 }
 

@@ -74,7 +74,7 @@ void ConnectableNodeUI::moved()
 void ConnectableNodeUI::setMiniMode(bool value)
 {
 	if (miniMode == value) return;
-	
+
 	miniMode = value;
 
 	mainContainer.setMiniMode(miniMode);
@@ -181,7 +181,7 @@ bool ConnectableNodeUI::keyPressed(const KeyPress & key)
 		{
 			connectableNode->remove();
 		}
-		
+
 		return true;
 	}
 

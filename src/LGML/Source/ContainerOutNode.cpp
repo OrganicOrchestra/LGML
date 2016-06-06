@@ -47,7 +47,7 @@ void ContainerOutNode::setParentNodeContainer(NodeContainer * nc)
 		removeRMSListener(parentNodeContainer);
 	}
 	NodeBase::setParentNodeContainer(nc);
-	
+
 	if (parentNodeContainer != nullptr)
 	{
 		addRMSListener(parentNodeContainer);

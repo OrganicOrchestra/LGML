@@ -24,7 +24,7 @@ NodeContainerContentUI::NodeContainerContentUI() :
 	addParamProxyBT.addListener(this);
 
 	setSize(250, 100);
-	
+
 }
 
 NodeContainerContentUI::~NodeContainerContentUI()
