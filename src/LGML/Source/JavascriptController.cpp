@@ -88,11 +88,14 @@ Result JavascriptController::processMessageInternal(const OSCMessage &m){
 
 
 var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
-    if(a.numArguments<2 )return var::undefined();
-    if( !a.arguments[0].isString() ){
+    
+	if(a.numArguments<2 )return var::undefined();
+    
+	if( !a.arguments[0].isString() ){
         LOG("jsOSC send first argument must be an address string");
         return var::undefined();
     }
+
     String address = a.arguments[0];
     if(!address.startsWithChar('/') ){
         LOG("address should start with / ");
@@ -102,11 +105,12 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
     JavascriptController * c = getObjectPtrFromJS<JavascriptController>(a);
     OSCMessage msg(address);
     for(int i = 1 ; i < a.numArguments ; i++){
-        var v = a.arguments[i];
+		var v = a.arguments[i];
+
         if(v.isString())msg.addString(v);
         else if(v.isDouble())msg.addFloat32((float)v);
-        else if(v.isInt())msg.addInt32(v);
-        else if (v.isInt64())DBG("JavascriptOSC can't send int 64");
+        else if(v.isInt()) msg.addInt32(v);
+		else if (v.isInt64()) msg.addInt32((int)v);// DBG("JavascriptOSC can't send int 64");
     }
 
     c->sendOSC(msg);
