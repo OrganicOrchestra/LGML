@@ -18,6 +18,8 @@
 #include "BoolToggleUI.h"
 #include "FloatSliderUI.h"
 
+AudioDeviceManager& getAudioDeviceManager();
+
 AudioDeviceOutNodeContentUI::AudioDeviceOutNodeContentUI() :
 	NodeBaseContentUI()
 {
@@ -33,6 +35,12 @@ AudioDeviceOutNodeContentUI::~AudioDeviceOutNodeContentUI()
 	{
 		removeLastVuMeter();
 	}
+    getAudioDeviceManager().removeChangeListener(this);
+
+}
+
+void AudioDeviceOutNodeContentUI::changeListenerCallback (ChangeBroadcaster* source){
+    updateVuMeters();
 }
 
 void AudioDeviceOutNodeContentUI::init()
@@ -40,6 +48,8 @@ void AudioDeviceOutNodeContentUI::init()
 	audioOutNode = (AudioDeviceOutNode *)node.get();
 	audioOutNode->addNodeBaseListener(this);
 	audioOutNode->addConnectableNodeListener(this);
+    getAudioDeviceManager().addChangeListener(this);
+
 	updateVuMeters();
 
 	setSize(240, 80);
@@ -67,17 +77,25 @@ void AudioDeviceOutNodeContentUI::resized()
 
 void AudioDeviceOutNodeContentUI::updateVuMeters()
 {
-    int actualNumberOfTracks = jmin(audioOutNode->desiredNumAudioOutput->intValue(),
+    int desiredNumOutputs = audioOutNode->desiredNumAudioOutput->intValue();
+    int validNumberOfTracks = jmin(audioOutNode->desiredNumAudioOutput->intValue(),
                                    audioOutNode->AudioGraphIOProcessor::getTotalNumInputChannels());
-	while (vuMeters.size() < actualNumberOfTracks)
+	while (vuMeters.size() < desiredNumOutputs)
 	{
 		addVuMeter();
 	}
 
-	while (vuMeters.size() > actualNumberOfTracks)
+	while (vuMeters.size() > desiredNumOutputs)
 	{
 		removeLastVuMeter();
 	}
+
+
+    for (int i = 0; i < desiredNumOutputs; i++)
+    {
+        volumes[i]->defaultColor = i < validNumberOfTracks ? PARAMETER_FRONT_COLOR : Colours::lightgrey;
+        volumes[i]->repaint();
+    }
 	resized();
 }
 

@@ -19,11 +19,11 @@
 #include "FloatSliderUI.h"
 
 class AudioMixerNodeUI : public NodeBaseContentUI,
-	public NodeBase::NodeBaseListener
+	public NodeBase::NodeBaseListener,
+public Parameter::Listener
 {
 public:
     AudioMixerNodeUI(){
-
     }
 
 	~AudioMixerNodeUI();
@@ -49,14 +49,21 @@ public:
         void resized() override;
         int outputIdx;
         AudioMixerNode::OutputBus* owner;
-
+        BigInteger visibleChanels;
+        void setOneVisible(int num);
+        int getNumOfVisibleChannels();
+        void updateVisibleChannels();
+        void setAllVisible();
 
     };
 
 
+    void parameterValueChanged(Parameter * p) override;
     void resized() override;
     OwnedArray<OutputBusUI> outputBusUIs;
     AudioMixerNode * mixerNode;
+
+    void setOneToOne(bool);
 
 };
 

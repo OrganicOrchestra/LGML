@@ -79,8 +79,6 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 
 	for (int i = 0; i < numChannels; i++)
 	{
-        //        TODO check
-        // we update mutes on main message threads possible bug here when audio device changing and audio active
         float gain = i<outMutes.size() ? (outMutes[i]->boolValue() ? 0.f : 1.f):0.0f;
 		buffer.applyGain(i, 0, numSamples, gain);
 	}
@@ -91,6 +89,7 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 
 void AudioDeviceOutNode::addVolMute()
 {
+    const ScopedLock lk (parentGraph->getCallbackLock());
 	BoolParameter * p = addBoolParameter(String(outMutes.size() + 1), "Mute if disabled", false);
 	p->setCustomShortName(String("mute") + String(outMutes.size() + 1));
 	outMutes.add(p);
@@ -105,6 +104,7 @@ void AudioDeviceOutNode::addVolMute()
 void AudioDeviceOutNode::removeVolMute()
 {
     if(outMutes.size()==0)return;
+    const ScopedLock lk (parentGraph->getCallbackLock());
 	BoolParameter * b = outMutes[outMutes.size() - 1];
 	removeControllable(b);
     outMutes.removeAllInstancesOf(b);

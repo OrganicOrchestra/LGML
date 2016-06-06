@@ -19,6 +19,7 @@ NodeBase("AudioMixerNode",NodeType::AudioMixerType)
 {
     numberOfInput = addIntParameter("numInput", "number of input", 2, 1, 32);
     numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
+    oneToOne = addBoolParameter("OneToOne", "is this mixer only concerned about one to one volumes (diagonal)", false);
 
     updateInput();
     updateOutput();
@@ -102,17 +103,37 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
     if(numInput>0 && numOutput > 0){
 
-        for(int i = outBuses.size() -1 ; i >=0 ; --i){
-            cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,outBuses[i]->lastVolumes[0],outBuses[i]->volumes[0]->floatValue());
-
-            for(int j = numInput-1 ; j >0  ; --j){
-                cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples, outBuses[i]->lastVolumes[j],outBuses[i]->volumes[j]->floatValue());
+        if(oneToOne->boolValue()){
+            for(int i = outBuses.size() -1 ; i >=0 ; --i){
+                if(i<outBuses[i]->volumes.size()){
+                    cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
+                                                  outBuses[i]->lastVolumes[i],outBuses[i]->volumes[i]->floatValue());
+                }
+                else{
+                    cachedBuffer.clear(i, 0, numSamples);
+                }
             }
+        }
+        else{
 
 
+            for(int i = outBuses.size() -1 ; i >=0 ; --i){
+                cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
+                                              outBuses[i]->lastVolumes[0],outBuses[i]->volumes[0]->floatValue());
+
+                for(int j = numInput-1 ; j >0  ; --j){
+                    cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples,
+                                                 outBuses[i]->lastVolumes[j],outBuses[i]->volumes[j]->floatValue());
+                }
+            }
+        }
+
+
+        for(int i = outBuses.size() -1 ; i >=0 ; --i){
             for(int j = numInput-1 ; j>=0 ;--j){
                 outBuses[i]->lastVolumes.set(j, outBuses[i]->volumes[j]->floatValue());
             }
+
         }
     }
 
@@ -175,10 +196,10 @@ void AudioMixerNode::OutputBus::onContainerParameterChanged(Parameter *p){
 
 ConnectableNodeUI * AudioMixerNode::createUI()
 {
-    
+
     NodeBaseUI * ui = new NodeBaseUI(this, new AudioMixerNodeUI);
     ui->recursiveInspectionLevel = 2;
     return ui;
-    
-    
+
+
 }
