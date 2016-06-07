@@ -49,7 +49,8 @@ profile
 **/CodeBlocks/*.layout
 **/Builds/AndroidStudio
 doxygen/doc
-src/LGML/Builds/
+src/LGML/Builds/MacOSX
+src/LGML/Builds/VisualStudio2015
 *.password
 src/LGML/Builds/VisualStudio2015/Debug 32bit/
 *.stackdump
