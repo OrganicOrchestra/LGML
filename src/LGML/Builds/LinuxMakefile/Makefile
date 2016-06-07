@@ -15,7 +15,7 @@ ifeq ($(CONFIG),Debug)
   OUTDIR := build
 
   ifeq ($(TARGET_ARCH),)
-    TARGET_ARCH := -march=armv7
+    TARGET_ARCH := -march=armv6
   endif
 
   CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_6D53C8B4=1" -D "JUCE_APP_VERSION=0.2.42" -D "JUCE_APP_VERSION_HEX=0x22a" -I /usr/include -I /usr/include/freetype2 -I ~/SDKs/VST3\ SDK -I ../../JuceLibraryCode -I D:/Softwares/Juce\ 4.2.1/JUCE/modules
@@ -35,7 +35,7 @@ ifeq ($(CONFIG),Release)
   OUTDIR := build
 
   ifeq ($(TARGET_ARCH),)
-    TARGET_ARCH := -march=armv7
+    TARGET_ARCH := -march=armv6
   endif
 
   CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_6D53C8B4=1" -D "JUCE_APP_VERSION=0.2.42" -D "JUCE_APP_VERSION_HEX=0x22a" -I /usr/include -I /usr/include/freetype2 -I ~/SDKs/VST3\ SDK -I ../../JuceLibraryCode -I D:/Softwares/Juce\ 4.2.1/JUCE/modules
