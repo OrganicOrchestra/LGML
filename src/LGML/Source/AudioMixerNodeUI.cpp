@@ -16,7 +16,7 @@ void AudioMixerNodeUI::resized() {
     Rectangle<int> area = getLocalBounds();
     if(mixerNode->oneToOne->boolValue()){
         int diagoNum = jmin(mixerNode->numberOfInput->intValue(),mixerNode->numberOfOutput->intValue());
-        float step = area.getWidth()/ diagoNum;
+        float step = (float)(area.getWidth()/ diagoNum);
         const int pad = 3;
         for(int i = 0 ; i < outputBusUIs.size() ; i ++){
             OutputBusUI * o = outputBusUIs.getUnchecked(i);

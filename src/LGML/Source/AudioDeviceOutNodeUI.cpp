@@ -39,7 +39,7 @@ AudioDeviceOutNodeContentUI::~AudioDeviceOutNodeContentUI()
 
 }
 
-void AudioDeviceOutNodeContentUI::changeListenerCallback (ChangeBroadcaster* source){
+void AudioDeviceOutNodeContentUI::changeListenerCallback (ChangeBroadcaster*){
     updateVuMeters();
 }
 

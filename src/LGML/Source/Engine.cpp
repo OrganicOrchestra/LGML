@@ -45,7 +45,9 @@ Engine::~Engine(){
     RuleManager::deleteInstance();
 
 	MIDIManager::deleteInstance();
+
 	SerialManager::deleteInstance();
+
 }
 
 void Engine::parseCommandline(const String & commandLine){
