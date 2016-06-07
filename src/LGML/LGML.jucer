@@ -794,7 +794,7 @@
         <MODULEPATH id="juce_audio_processors" path="D:\Softwares\Juce 4.2.1\JUCE\modules"/>
         <MODULEPATH id="juce_audio_formats" path="D:\Softwares\Juce 4.2.1\JUCE\modules"/>
         <MODULEPATH id="juce_audio_devices" path="D:\Softwares\Juce 4.2.1\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_basics" path="D:\Softwares\Juce 4.2.1\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_basics" path="~/dev/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
