@@ -3,7 +3,7 @@
  * Additional Contributors: Christopher Baker @bakercp
  */
 
-#if !defined(_WIN32)
+#if !defined(_WIN32)  && !defined(__arm__)
 
 #include <stdio.h>
 #include <string.h>
@@ -19,7 +19,7 @@
 #include <sys/param.h>
 #include <pthread.h>
 
-#if defined(__linux__)
+#if defined(__linux__)  
 # include <linux/serial.h>
 #endif
 

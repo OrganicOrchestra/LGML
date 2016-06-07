@@ -1,7 +1,8 @@
 /* Copyright 2012 William Woodall and John Harrison */
+#if !defined(__arm__)
 #include <algorithm>
 
-#if !defined(_WIN32) && !defined(__OpenBSD__) && !defined(__FreeBSD__)
+#if !defined(_WIN32) && !defined(__OpenBSD__) && !defined(__FreeBSD__) 
 # include <alloca.h>
 #endif
 
@@ -9,13 +10,17 @@
 # define alloca __builtin_alloca
 #endif
 
+
 #include "serial/serial.h"
+
 
 #ifdef _WIN32
 #include "serial/impl/win.h"
 #else
 #include "serial/impl/unix.h"
 #endif
+
+
 
 using std::invalid_argument;
 using std::min;
@@ -414,3 +419,5 @@ bool Serial::getCD ()
 {
   return pimpl_->getCD ();
 }
+
+#endif
