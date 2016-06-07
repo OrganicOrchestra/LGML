@@ -12,7 +12,7 @@
 #define MIDICONTROLLER_H_INCLUDED
 
 #include "Controller.h"
-#include "MidiListener.h"
+#include "MIDIListener.h"
 #include "JsEnvironment.h"
 
 class MIDIController : public Controller,public MIDIListener,public JsEnvironment
