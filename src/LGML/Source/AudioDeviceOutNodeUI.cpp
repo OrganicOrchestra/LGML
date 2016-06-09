@@ -101,7 +101,7 @@ void AudioDeviceOutNodeContentUI::updateVuMeters()
 
 void AudioDeviceOutNodeContentUI::addVuMeter()
 {
-    VuMeter * v = new VuMeter(VuMeter::Type::OUT);
+    VuMeter * v = new VuMeter(VuMeter::Type::IN);
     v->targetChannel = vuMeters.size();
     audioOutNode->addRMSChannelListener(v);
     addAndMakeVisible(v);

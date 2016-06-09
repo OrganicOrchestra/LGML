@@ -64,6 +64,7 @@ public:
 	BoolParameter * isMonitoring;
 	IntParameter * numberOfTracks;
     IntParameter * selectTrack;
+    IntParameter * preDelayMs;
 
 
 	AudioBuffer<float> bufferIn;

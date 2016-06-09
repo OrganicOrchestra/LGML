@@ -39,6 +39,8 @@ trackGroup(this)
     stopAllTrig = addTrigger("StopAll",
                              "Tells all tracks to stop it's content if got any");
     isMonitoring = addBoolParameter("monitor", "do we monitor audio input ? ", false);
+    preDelayMs = addIntParameter("Pre Delay MS", "Pre process delay (in milliseconds)", 80, 0, 250);
+
 
     addChildControllableContainer(&trackGroup);
 

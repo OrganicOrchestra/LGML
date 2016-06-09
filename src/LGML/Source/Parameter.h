@@ -42,6 +42,7 @@ public:
 
     //helpers for fast typing
     float floatValue() { return (float)value; }
+    double doubleValue(){return (double)value;}
     int intValue() { return (int)value; }
     bool boolValue() { return (bool)value; }
     String stringValue() { return value.toString(); }

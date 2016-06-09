@@ -4,119 +4,8 @@
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.1" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
-    <GROUP id="{C68E9507-35D5-5638-647F-927BCD14DEE2}" name="libs">
-      <GROUP id="{9C018D91-2739-118F-8DBA-591CADFABE15}" name="serial">
-        <GROUP id="{1D4342B6-680C-F84B-7379-6B985F73F5F7}" name="impl">
-          <GROUP id="{35EA5022-B6A6-5529-C9A7-374730751C28}" name="list_ports">
-            <FILE id="GOJvkC" name="list_ports_linux.cc" compile="1" resource="0"
-                  file="Source/libs/serial/impl/list_ports/list_ports_linux.cc"/>
-            <FILE id="fOgj7T" name="list_ports_osx.cc" compile="1" resource="0"
-                  file="Source/libs/serial/impl/list_ports/list_ports_osx.cc"/>
-            <FILE id="ZQSC0g" name="list_ports_win.cc" compile="1" resource="0"
-                  file="Source/libs/serial/impl/list_ports/list_ports_win.cc"/>
-          </GROUP>
-          <FILE id="Z7vCRC" name="unix.cc" compile="1" resource="0" file="Source/libs/serial/impl/unix.cc"/>
-          <FILE id="n9Jkh3" name="win.cc" compile="1" resource="0" file="Source/libs/serial/impl/win.cc"/>
-        </GROUP>
-        <FILE id="jVoUE6" name="serial.cc" compile="1" resource="0" file="Source/libs/serial/serial.cc"/>
-      </GROUP>
-    </GROUP>
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
-      <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
-        <FILE id="SL4b92" name="little-red-riding-hood-md.png" compile="0"
-              resource="1" file="Resources/little-red-riding-hood-md.png"/>
-        <FILE id="pCwaW8" name="default.lgmllayout" compile="0" resource="1"
-              file="Resources/default.lgmllayout"/>
-        <FILE id="tBFuYU" name="removeBT.png" compile="0" resource="1" file="Resources/removeBT.png"/>
-        <FILE id="jsU7Hw" name="grandlouloup.png" compile="0" resource="1"
-              file="Resources/grandlouloup.png" xcodeResource="0"/>
-        <FILE id="jLWFzR" name="wolf_footprint.png" compile="0" resource="1"
-              file="Resources/wolf_footprint.png"/>
-        <FILE id="PfjWQr" name="wolf_footprint_debug.png" compile="0" resource="1"
-              file="Resources/wolf_footprint_debug.png"/>
-      </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
-        <GROUP id="{D9F67300-E767-ABD0-5A4C-F7B0B21D577C}" name="Serial">
-          <FILE id="v0kT6w" name="SerialManager.cpp" compile="1" resource="0"
-                file="Source/SerialManager.cpp"/>
-          <FILE id="ntbM8q" name="SerialManager.h" compile="0" resource="0" file="Source/SerialManager.h"/>
-          <FILE id="FWkPgS" name="SerialPort.cpp" compile="1" resource="0" file="Source/SerialPort.cpp"/>
-          <FILE id="QobZAq" name="SerialPort.h" compile="0" resource="0" file="Source/SerialPort.h"/>
-          <FILE id="FrjdRt" name="SerialUIHelper.cpp" compile="1" resource="0"
-                file="Source/SerialUIHelper.cpp"/>
-          <FILE id="x2QjdS" name="SerialUIHelper.h" compile="0" resource="0"
-                file="Source/SerialUIHelper.h"/>
-        </GROUP>
-        <GROUP id="{BFD87B3B-6E7A-6719-1089-92D656C17348}" name="Thread">
-          <FILE id="fzCybH" name="QueuedNotifier.h" compile="0" resource="0"
-                file="Source/QueuedNotifier.h"/>
-        </GROUP>
-        <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
-        <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
-        <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
-          <FILE id="wLcUwY" name="MIDIListener.cpp" compile="1" resource="0"
-                file="Source/MIDIListener.cpp"/>
-          <FILE id="j6648n" name="MIDIListener.h" compile="0" resource="0" file="Source/MIDIListener.h"/>
-          <FILE id="AdpDDv" name="MIDIManager.cpp" compile="1" resource="0" file="Source/MIDIManager.cpp"/>
-          <FILE id="tZ5Yo3" name="MIDIManager.h" compile="0" resource="0" file="Source/MIDIManager.h"/>
-          <FILE id="VlpomU" name="MIDIUIHelper.cpp" compile="1" resource="0"
-                file="Source/MIDIUIHelper.cpp"/>
-          <FILE id="aIOYF7" name="MIDIUIHelper.h" compile="0" resource="0" file="Source/MIDIUIHelper.h"/>
-        </GROUP>
-        <GROUP id="{CD34BC32-7051-468F-8C6F-D5720DD85230}" name="ScriptEnvironments">
-          <GROUP id="{2F437B28-C238-7AD3-AA89-3D6FD2EDD7E2}" name="Javascript">
-            <GROUP id="{370BD2C4-3CBD-F571-7B75-8FBABDD7867A}" name="ui">
-              <FILE id="XIC13d" name="JsEnvironmentUI.cpp" compile="1" resource="0"
-                    file="Source/JsEnvironmentUI.cpp"/>
-              <FILE id="p6OV9N" name="JsEnvironmentUI.h" compile="0" resource="0"
-                    file="Source/JsEnvironmentUI.h"/>
-              <FILE id="qFieBe" name="JsLiveEditor.cpp" compile="1" resource="0"
-                    file="Source/JsLiveEditor.cpp"/>
-              <FILE id="Taaqc9" name="JsLiveEditor.h" compile="0" resource="0" file="Source/JsLiveEditor.h"/>
-            </GROUP>
-            <FILE id="ARYAND" name="JsContainerSync.cpp" compile="1" resource="0"
-                  file="Source/JsContainerSync.cpp"/>
-            <FILE id="ApvfEI" name="JsContainerSync.h" compile="0" resource="0"
-                  file="Source/JsContainerSync.h"/>
-            <FILE id="frFd8w" name="JsEnvironment.cpp" compile="1" resource="0"
-                  file="Source/JsEnvironment.cpp"/>
-            <FILE id="d5u2LT" name="JsEnvironment.h" compile="0" resource="0" file="Source/JsEnvironment.h"/>
-            <FILE id="Nd6Xnl" name="JsGlobalEnvironment.cpp" compile="1" resource="0"
-                  file="Source/JsGlobalEnvironment.cpp"/>
-            <FILE id="W19CFS" name="JsGlobalEnvironment.h" compile="0" resource="0"
-                  file="Source/JsGlobalEnvironment.h"/>
-            <FILE id="xJyOLR" name="JsHelpers.h" compile="0" resource="0" file="Source/JsHelpers.h"/>
-          </GROUP>
-        </GROUP>
-        <GROUP id="{DAA3A1A3-F6F4-BC56-0152-800A0DA495A5}" name="viz">
-          <FILE id="CyjIBR" name="VuMeter.h" compile="0" resource="0" file="Source/VuMeter.h"/>
-        </GROUP>
-        <GROUP id="{8440F8E7-BEB3-0DE2-3DB3-984C73FFB0F6}" name="legacy">
-          <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
-            <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="0"
-                  resource="0" file="Source/SelectableComponentHandler.cpp"/>
-            <FILE id="cO1ryN" name="SelectableComponentHandler.h" compile="0" resource="0"
-                  file="Source/SelectableComponentHandler.h"/>
-            <FILE id="WugEBC" name="SelectableComponent.h" compile="0" resource="0"
-                  file="Source/SelectableComponent.h"/>
-            <FILE id="z9jnyI" name="SelectableComponent.cpp" compile="0" resource="0"
-                  file="Source/SelectableComponent.cpp"/>
-          </GROUP>
-          <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
-            <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="0"
-                  resource="0" file="Source/ControllableContainerEditor.cpp"/>
-            <FILE id="QNpqO3" name="ControllableContainerEditor.h" compile="0"
-                  resource="0" file="Source/ControllableContainerEditor.h"/>
-            <FILE id="FIR3Kt" name="ControllableContainerSync.cpp" compile="0"
-                  resource="0" file="Source/ControllableContainerSync.cpp"/>
-            <FILE id="ptJrDO" name="ControllableContainerSync.h" compile="0" resource="0"
-                  file="Source/ControllableContainerSync.h"/>
-            <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="0" resource="0"
-                  file="Source/ControllableInspector.cpp"/>
-            <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
-                  file="Source/ControllableInspector.h"/>
-          </GROUP>
-        </GROUP>
         <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
           <GROUP id="{B3184894-4077-D17A-2E3F-67A560988CD7}" name="ui">
             <FILE id="YpRfx9" name="ControllableUI.cpp" compile="1" resource="0"
@@ -203,6 +92,93 @@
                 resource="0" file="Source/ControllableIndexedContainer.h"/>
           <FILE id="DqT70c" name="Trigger.cpp" compile="1" resource="0" file="Source/Trigger.cpp"/>
           <FILE id="aqPYZL" name="Trigger.h" compile="0" resource="0" file="Source/Trigger.h"/>
+        </GROUP>
+        <GROUP id="{47C49D7C-57C1-2802-9458-4AB50A9508DE}" name="Audio">
+          <FILE id="evse9I" name="AudioFucker.h" compile="0" resource="0" file="Source/AudioFucker.h"/>
+          <FILE id="J7iGNZ" name="AudioHelpers.h" compile="0" resource="0" file="Source/AudioHelpers.h"/>
+          <FILE id="mfsKGO" name="PlayableBuffer.h" compile="0" resource="0"
+                file="Source/PlayableBuffer.h"/>
+          <FILE id="jPxc7W" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
+        </GROUP>
+        <GROUP id="{D9F67300-E767-ABD0-5A4C-F7B0B21D577C}" name="Serial">
+          <FILE id="v0kT6w" name="SerialManager.cpp" compile="1" resource="0"
+                file="Source/SerialManager.cpp"/>
+          <FILE id="ntbM8q" name="SerialManager.h" compile="0" resource="0" file="Source/SerialManager.h"/>
+          <FILE id="FWkPgS" name="SerialPort.cpp" compile="1" resource="0" file="Source/SerialPort.cpp"/>
+          <FILE id="QobZAq" name="SerialPort.h" compile="0" resource="0" file="Source/SerialPort.h"/>
+          <FILE id="FrjdRt" name="SerialUIHelper.cpp" compile="1" resource="0"
+                file="Source/SerialUIHelper.cpp"/>
+          <FILE id="x2QjdS" name="SerialUIHelper.h" compile="0" resource="0"
+                file="Source/SerialUIHelper.h"/>
+        </GROUP>
+        <GROUP id="{BFD87B3B-6E7A-6719-1089-92D656C17348}" name="Thread">
+          <FILE id="fzCybH" name="QueuedNotifier.h" compile="0" resource="0"
+                file="Source/QueuedNotifier.h"/>
+        </GROUP>
+        <FILE id="DtSaF2" name="StringUtil.h" compile="0" resource="0" file="Source/StringUtil.h"/>
+        <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
+          <FILE id="wLcUwY" name="MIDIListener.cpp" compile="1" resource="0"
+                file="Source/MIDIListener.cpp"/>
+          <FILE id="j6648n" name="MIDIListener.h" compile="0" resource="0" file="Source/MIDIListener.h"/>
+          <FILE id="AdpDDv" name="MIDIManager.cpp" compile="1" resource="0" file="Source/MIDIManager.cpp"/>
+          <FILE id="tZ5Yo3" name="MIDIManager.h" compile="0" resource="0" file="Source/MIDIManager.h"/>
+          <FILE id="VlpomU" name="MIDIUIHelper.cpp" compile="1" resource="0"
+                file="Source/MIDIUIHelper.cpp"/>
+          <FILE id="aIOYF7" name="MIDIUIHelper.h" compile="0" resource="0" file="Source/MIDIUIHelper.h"/>
+        </GROUP>
+        <GROUP id="{CD34BC32-7051-468F-8C6F-D5720DD85230}" name="ScriptEnvironments">
+          <GROUP id="{2F437B28-C238-7AD3-AA89-3D6FD2EDD7E2}" name="Javascript">
+            <GROUP id="{370BD2C4-3CBD-F571-7B75-8FBABDD7867A}" name="ui">
+              <FILE id="XIC13d" name="JsEnvironmentUI.cpp" compile="1" resource="0"
+                    file="Source/JsEnvironmentUI.cpp"/>
+              <FILE id="p6OV9N" name="JsEnvironmentUI.h" compile="0" resource="0"
+                    file="Source/JsEnvironmentUI.h"/>
+              <FILE id="qFieBe" name="JsLiveEditor.cpp" compile="1" resource="0"
+                    file="Source/JsLiveEditor.cpp"/>
+              <FILE id="Taaqc9" name="JsLiveEditor.h" compile="0" resource="0" file="Source/JsLiveEditor.h"/>
+            </GROUP>
+            <FILE id="ARYAND" name="JsContainerSync.cpp" compile="1" resource="0"
+                  file="Source/JsContainerSync.cpp"/>
+            <FILE id="ApvfEI" name="JsContainerSync.h" compile="0" resource="0"
+                  file="Source/JsContainerSync.h"/>
+            <FILE id="frFd8w" name="JsEnvironment.cpp" compile="1" resource="0"
+                  file="Source/JsEnvironment.cpp"/>
+            <FILE id="d5u2LT" name="JsEnvironment.h" compile="0" resource="0" file="Source/JsEnvironment.h"/>
+            <FILE id="Nd6Xnl" name="JsGlobalEnvironment.cpp" compile="1" resource="0"
+                  file="Source/JsGlobalEnvironment.cpp"/>
+            <FILE id="W19CFS" name="JsGlobalEnvironment.h" compile="0" resource="0"
+                  file="Source/JsGlobalEnvironment.h"/>
+            <FILE id="xJyOLR" name="JsHelpers.h" compile="0" resource="0" file="Source/JsHelpers.h"/>
+          </GROUP>
+        </GROUP>
+        <GROUP id="{DAA3A1A3-F6F4-BC56-0152-800A0DA495A5}" name="viz">
+          <FILE id="CyjIBR" name="VuMeter.h" compile="0" resource="0" file="Source/VuMeter.h"/>
+        </GROUP>
+        <GROUP id="{8440F8E7-BEB3-0DE2-3DB3-984C73FFB0F6}" name="legacy">
+          <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
+            <FILE id="bX8tjA" name="SelectableComponentHandler.cpp" compile="0"
+                  resource="0" file="Source/SelectableComponentHandler.cpp"/>
+            <FILE id="cO1ryN" name="SelectableComponentHandler.h" compile="0" resource="0"
+                  file="Source/SelectableComponentHandler.h"/>
+            <FILE id="WugEBC" name="SelectableComponent.h" compile="0" resource="0"
+                  file="Source/SelectableComponent.h"/>
+            <FILE id="z9jnyI" name="SelectableComponent.cpp" compile="0" resource="0"
+                  file="Source/SelectableComponent.cpp"/>
+          </GROUP>
+          <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
+            <FILE id="vzwv3F" name="ControllableContainerEditor.cpp" compile="0"
+                  resource="0" file="Source/ControllableContainerEditor.cpp"/>
+            <FILE id="QNpqO3" name="ControllableContainerEditor.h" compile="0"
+                  resource="0" file="Source/ControllableContainerEditor.h"/>
+            <FILE id="FIR3Kt" name="ControllableContainerSync.cpp" compile="0"
+                  resource="0" file="Source/ControllableContainerSync.cpp"/>
+            <FILE id="ptJrDO" name="ControllableContainerSync.h" compile="0" resource="0"
+                  file="Source/ControllableContainerSync.h"/>
+            <FILE id="WUMfZI" name="ControllableInspector.cpp" compile="0" resource="0"
+                  file="Source/ControllableInspector.cpp"/>
+            <FILE id="oRwwuf" name="ControllableInspector.h" compile="0" resource="0"
+                  file="Source/ControllableInspector.h"/>
+          </GROUP>
         </GROUP>
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
@@ -694,6 +670,19 @@
         <FILE id="ToSNQ0" name="LookAndFeelOO.h" compile="0" resource="0" file="Source/LookAndFeelOO.h"/>
         <FILE id="AoaOQ9" name="Style.h" compile="0" resource="0" file="Source/Style.h"/>
       </GROUP>
+      <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
+        <FILE id="SL4b92" name="little-red-riding-hood-md.png" compile="0"
+              resource="1" file="Resources/little-red-riding-hood-md.png"/>
+        <FILE id="pCwaW8" name="default.lgmllayout" compile="0" resource="1"
+              file="Resources/default.lgmllayout"/>
+        <FILE id="tBFuYU" name="removeBT.png" compile="0" resource="1" file="Resources/removeBT.png"/>
+        <FILE id="jsU7Hw" name="grandlouloup.png" compile="0" resource="1"
+              file="Resources/grandlouloup.png" xcodeResource="0"/>
+        <FILE id="jLWFzR" name="wolf_footprint.png" compile="0" resource="1"
+              file="Resources/wolf_footprint.png"/>
+        <FILE id="PfjWQr" name="wolf_footprint_debug.png" compile="0" resource="1"
+              file="Resources/wolf_footprint_debug.png"/>
+      </GROUP>
       <FILE id="Z0ukeN" name="Engine.cpp" compile="1" resource="0" file="Source/Engine.cpp"/>
       <FILE id="Mmqzc5" name="Engine.h" compile="0" resource="0" file="Source/Engine.h"/>
       <FILE id="rpB1Vz" name="EngineFileDocument.cpp" compile="1" resource="0"
@@ -704,6 +693,23 @@
       <FILE id="U1Atk6" name="MainComponentCommands.cpp" compile="1" resource="0"
             file="Source/MainComponentCommands.cpp"/>
       <FILE id="gEsmKk" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+    <GROUP id="{C68E9507-35D5-5638-647F-927BCD14DEE2}" name="libs">
+      <GROUP id="{9C018D91-2739-118F-8DBA-591CADFABE15}" name="serial">
+        <GROUP id="{1D4342B6-680C-F84B-7379-6B985F73F5F7}" name="impl">
+          <GROUP id="{35EA5022-B6A6-5529-C9A7-374730751C28}" name="list_ports">
+            <FILE id="GOJvkC" name="list_ports_linux.cc" compile="1" resource="0"
+                  file="Source/libs/serial/impl/list_ports/list_ports_linux.cc"/>
+            <FILE id="fOgj7T" name="list_ports_osx.cc" compile="1" resource="0"
+                  file="Source/libs/serial/impl/list_ports/list_ports_osx.cc"/>
+            <FILE id="ZQSC0g" name="list_ports_win.cc" compile="1" resource="0"
+                  file="Source/libs/serial/impl/list_ports/list_ports_win.cc"/>
+          </GROUP>
+          <FILE id="Z7vCRC" name="unix.cc" compile="1" resource="0" file="Source/libs/serial/impl/unix.cc"/>
+          <FILE id="n9Jkh3" name="win.cc" compile="1" resource="0" file="Source/libs/serial/impl/win.cc"/>
+        </GROUP>
+        <FILE id="jVoUE6" name="serial.cc" compile="1" resource="0" file="Source/libs/serial/serial.cc"/>
+      </GROUP>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

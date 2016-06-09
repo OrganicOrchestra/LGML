@@ -161,7 +161,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
                             MidiBuffer& midiMessages) {
 
 
-    if (rmsListeners.size()) {
+    if (rmsListeners.size() || rmsChannelListeners.size()) {
         curSamplesForRMSInUpdate += buffer.getNumSamples();
         if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate) {
             updateRMS(buffer, globalRMSValueIn,rmsValuesIn,rmsChannelListeners.size()==0);
@@ -187,7 +187,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
             }
         }
 
-        if (rmsListeners.size()) {
+        if (rmsListeners.size() || rmsChannelListeners.size()) {
             curSamplesForRMSOutUpdate += buffer.getNumSamples();
             if (curSamplesForRMSOutUpdate >= samplesBeforeRMSUpdate) {
                 updateRMS(buffer, globalRMSValueOut,rmsValuesOut,rmsChannelListeners.size()==0);
@@ -302,7 +302,15 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
     const float lowThresh = 0.0001f;
 
     if(skipChannelComputation){
+        for (int i = numChannels - 1; i >= 0; --i)
+        {
 
+            float s = 0;
+            Range<float> minMax = FloatVectorOperations::findMinAndMax(buffer.getReadPointer(i), numSamples);
+            s = jmax(s,-minMax.getStart());
+            s = jmax(s,minMax.getEnd());
+            globalS = jmax(s, globalS);
+        }
     }
     else{
         for (int i = numChannels - 1; i >= 0; --i)

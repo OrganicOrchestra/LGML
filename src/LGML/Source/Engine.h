@@ -21,7 +21,8 @@
 #include "PresetManager.h"
 #include "RuleManager.h"
 #include "FastMapper.h"
-#include "AudioHelpers.h"
+
+#include "AudioFucker.h"
 
 
 class Engine:public FileBasedDocument{

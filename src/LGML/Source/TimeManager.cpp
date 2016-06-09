@@ -101,7 +101,7 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
         }
     }
     else if(p==BPM){
-        setBPMInternal(BPM->floatValue());
+        setBPMInternal(BPM->doubleValue());
     }
     else if(p==beatPerBar){
         currentBeat->maximumValue = beatPerBar->intValue();
@@ -133,12 +133,12 @@ void TimeManager::togglePlay(){
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
     // actualize beatTime in sample
-    beatTimeInSample = (int)(sampleRate*60.0f / BPM->floatValue());
+    beatTimeInSample = (int)(sampleRate*60.0f / BPM->doubleValue());
 }
 
 void TimeManager::setBPMInternal(double){
     isSettingTempo->setValue(false);
-    beatTimeInSample =(int)(sampleRate*60.0f / BPM->floatValue());
+    beatTimeInSample =(int)(sampleRate*60.0f / BPM->doubleValue());
     timeInSample = 0;
 }
 
@@ -190,7 +190,7 @@ bool TimeManager::isLocked(){
     return _isLocked;
 }
 bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
-    result.bpm = BPM->floatValue();
+    result.bpm = BPM->doubleValue();
     result.isPlaying = playState->boolValue();
     result.isRecording = isSettingTempo->boolValue();
     //TODO: check

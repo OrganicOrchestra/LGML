@@ -117,7 +117,7 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 68
+	line : 70
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
@@ -150,7 +150,7 @@ ShapeShifterContainer.cpp
 
 
 LooperTrack.cpp
-	line : 175
+	line : 124
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized

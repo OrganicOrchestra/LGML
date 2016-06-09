@@ -11,7 +11,9 @@
 #ifndef LOOPERTRACK_H_INCLUDED
 #define LOOPERTRACK_H_INCLUDED
 
+#include "RingBuffer.h"
 #include "AudioHelpers.h"
+#include "PlayableBuffer.h"
 #include "ControllableContainer.h"
 
 class LooperNode;
@@ -116,28 +118,18 @@ public:
     ScopedPointer<AsyncTrackStateStringSynchroizer> stateParameterStringSynchronizer;
 
 
-    enum InternalTrackState {
-        BUFFER_STOPPED = 0,
-        BUFFER_PLAYING,
-        BUFFER_RECORDING
-
-    };
 
 
-    InternalTrackState internalTrackState;
-    InternalTrackState lastInternalTrackState;
-
-    int recordNeedle;
     int quantizedRecordEnd, quantizedRecordStart;
 
-    int playNeedle,startJumpNeedle;
+
     bool isJumping;
     int quantizedPlayStart, quantizedPlayEnd;
 
     bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
     void padBufferIfNeeded();
 
-    AudioSampleBuffer loopSample;
+    PlayableBuffer loopSample;
     float lastVolume;
     bool isFadingIn;
     bool isCrossFading;
@@ -146,11 +138,10 @@ public:
 
 
 
-
+    double originBPM ;
     // keeps track of few bits of audio
     // to readjust the loop when controllers are delayed
     RingBuffer streamAudioBuffer;
-    IntParameter * preDelayMs;
 
     LooperNode * parentLooper;
 

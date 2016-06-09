@@ -23,22 +23,18 @@ quantizedRecordStart(-1),
 quantizedRecordEnd(-1),
 quantizedPlayStart(-1),
 quantizedPlayEnd(-1),
-recordNeedle(0),
-playNeedle(0),
 streamAudioBuffer(16384),// 16000 ~ 300ms and 256*64
 loopSample(1, 44100 * MAX_LOOP_LENGTH_S),
 trackState(CLEARED),
 trackIdx(_trackIdx),
 someOneIsSolo(false),
-internalTrackState(BUFFER_STOPPED),
-lastInternalTrackState(BUFFER_STOPPED),
 isSelected (false),
 isFadingIn(false),
 isCrossFading(false),
-isJumping(false)
+isJumping(false),
+originBPM(0)
 {
 
-    //setCustomShortName("track/" + String(_trackIdx)); //can't use "/" in shortName, will use ControllableIndexedContainer for that when ready.
 
     selectTrig = addTrigger("Select", "Select this track");
     recPlayTrig = addTrigger("Rec Or Play", "Tells the track to wait for the next bar and then start record or play");
@@ -50,13 +46,12 @@ isJumping(false)
     solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
     beatLength = addIntParameter("Length", "length in bar", 0, 0, 200);
 
-    preDelayMs = addIntParameter("Pre Delay MS", "Pre process delay (in milliseconds)", 40, 0, 200);
 
     stateParameterString = addStringParameter("state", "track state", "");
     stateParameterStringSynchronizer = new AsyncTrackStateStringSynchroizer(stateParameterString);
     addTrackListener(stateParameterStringSynchronizer);
     stateParameterString->isControllableFeedbackOnly = true;
-    preDelayMs->isControllableExposed = false;
+
 
 
     // post init
@@ -72,17 +67,12 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     }
 
     // RECORDING
-    if (internalTrackState == BUFFER_RECORDING)
+    if (loopSample.isRecording())
     {
-        if (recordNeedle + buffer.getNumSamples()> parentLooper->getSampleRate() * MAX_LOOP_LENGTH_S) {
+        if(!loopSample.writeAudioBlock(buffer)){
             setTrackState(STOPPED);
         }
-        else {
-            for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-                loopSample.copyFrom(i, recordNeedle, buffer, i, 0, buffer.getNumSamples());
-            }
-            recordNeedle += buffer.getNumSamples();
-        }
+
 
     }
 
@@ -93,51 +83,9 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     // PLAYING
     // allow circular reading , although not sure that overflow need to be handled as its written with same block sizes than read
     // we may need it if we dynamicly change blockSize
-    if ((internalTrackState == BUFFER_PLAYING || lastInternalTrackState == BUFFER_PLAYING)
-        && recordNeedle>0 && loopSample.getNumSamples())
+    if (loopSample.isOrWasPlaying() )
     {
-        if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
-        {
-
-            //assert false for now see above
-            jassertfalse;
-            //            // crop buffer to ensure not coming back
-            //            recordNeedle = (playNeedle + buffer.getNumSamples());
-            int firstSegmentLength = recordNeedle - playNeedle;
-            int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
-            }
-            playNeedle = secondSegmentLength;
-
-
-        }
-
-        // stitch audio jumps by quick fadeIn/Out
-        if(isJumping){
-            const int halfBlock =  buffer.getNumSamples()/2;
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, startJumpNeedle, halfBlock);
-                buffer.applyGainRamp(i, 0, halfBlock, 1.0f, 0.0f);
-                buffer.copyFrom(i, halfBlock, loopSample, maxChannelFromRecorded, playNeedle, halfBlock);
-                buffer.applyGainRamp(i, 0, halfBlock, 0.0f, 1.0f);
-
-            }
-
-            isJumping = false;
-        }
-        else{
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, buffer.getNumSamples());
-            }
-        }
-        playNeedle += buffer.getNumSamples();
-        playNeedle %= recordNeedle;
-        //        }
+        loopSample.readNextBlock(buffer);
 
         if(isFadingIn){ lastVolume = 0;isFadingIn = false;}
 
@@ -148,7 +96,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             else isCrossFading = false;
         }
         // fade out on buffer_stop (clear or stop)
-        if((lastInternalTrackState == BUFFER_PLAYING ) && (internalTrackState==BUFFER_STOPPED) ){
+        if(loopSample.isStopping() ){
             newVolume = 0;
         }
         for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
@@ -157,7 +105,6 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
         lastVolume = newVolume;
 
-
     }
     else {
         // silence output buffer
@@ -165,7 +112,9 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
     }
 
-    lastInternalTrackState = internalTrackState;
+
+    loopSample.endProcessBlock();
+
 
 
 }
@@ -181,10 +130,8 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
     if (quantizedRecordStart>=0) {
         if (triggeringTime >= quantizedRecordStart) {
             trackState = RECORDING;
-            internalTrackState = BUFFER_RECORDING;
+            loopSample.setState( PlayableBuffer::BUFFER_RECORDING);
             quantizedRecordStart = -1;
-            recordNeedle = 0;
-            playNeedle = -1;
             stateChanged = true;
         }
         else{
@@ -195,9 +142,8 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
     else if (quantizedRecordEnd>=0) {
         if (triggeringTime >= quantizedRecordEnd) {
             trackState = PLAYING;
-            internalTrackState = BUFFER_PLAYING;
+            loopSample.setState( PlayableBuffer::BUFFER_PLAYING);
             quantizedRecordEnd = -1;
-            playNeedle = 0;
             stateChanged = true;
 
         }
@@ -208,16 +154,15 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
     if (quantizedPlayStart>=0) {
         if (triggeringTime >= quantizedPlayStart) {
             trackState =  PLAYING;
-            internalTrackState = BUFFER_PLAYING;
+            loopSample.setState( PlayableBuffer::BUFFER_PLAYING);
             quantizedPlayStart = -1;
-            playNeedle = 0;
             stateChanged = true;
         }
     }
     else if (quantizedPlayEnd>=0) {
         if (triggeringTime >= quantizedPlayEnd) {
             trackState = STOPPED;
-            internalTrackState = BUFFER_STOPPED;
+            loopSample.setState( PlayableBuffer::BUFFER_STOPPED);
             quantizedPlayEnd = -1;
             stateChanged = true;
         }
@@ -226,39 +171,26 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
     if(trackState == SHOULD_STOP){
         trackState = STOPPED;
-        internalTrackState = BUFFER_STOPPED;
+        loopSample.setState( PlayableBuffer::BUFFER_STOPPED);
         cleanAllQuantizeNeedles();
-        //        playNeedle = -1;
         stateChanged = true;
     }
     else if(trackState==SHOULD_CLEAR){
         trackState = CLEARED;
-        internalTrackState = BUFFER_STOPPED;
+        loopSample.setState( PlayableBuffer::BUFFER_STOPPED);
         cleanAllQuantizeNeedles();
-        //        playNeedle = -1;
-        //        recordNeedle=-1;
         stateChanged = true;
     }
 
+    stateChanged|=loopSample.stateChanged;
 
-    if (internalTrackState != lastInternalTrackState) {
-        stateChanged=true;
-    }
-
-    if(internalTrackState == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
-//        const int blockSize = parentLooper->getBlockSize();
-        const int minQuantifiedFraction = recordNeedle;//floor(TimeManager::getInstance()->beatTimeInSample / (16.0*blockSize))*blockSize;
-        if((curTime%minQuantifiedFraction)!=(playNeedle%minQuantifiedFraction)){
-            LOG("dropping play needle was :" + String(playNeedle)+" but time is"+String(curTime%minQuantifiedFraction));
-            isJumping = true;
-            startJumpNeedle = playNeedle;
-            playNeedle = playNeedle - (playNeedle%minQuantifiedFraction) + curTime%minQuantifiedFraction ;
-        }
+    if (!loopSample.checkTimeAlignment(curTime)) {
+        LOG("dropping play needle was :" + String(loopSample.getPlayPos())+" but time is"+String(curTime%loopSample.getRecordedLength()));
     }
     //    DBG(playNeedle);
     if(stateChanged){
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
-//        DBG("a:"+trackStateToString(trackState));
+        //        DBG("a:"+trackStateToString(trackState));
 
     }
 
@@ -273,43 +205,33 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
 void LooperTrack::padBufferIfNeeded(){
 
-    if (internalTrackState != lastInternalTrackState) {
+    if (loopSample.stateChanged) {
         //    process changed internalState
 
-        if (internalTrackState == BUFFER_RECORDING) {
+        if (loopSample.firstRecordedFrame()) {
+            loopSample.startRecord();
             if (isMasterTempoTrack()) {
                 //                DBG("init predelay : "+String (trackIdx));
-                int samplesToGet = (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
-                for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-                    loopSample.copyFrom(i, 0, streamAudioBuffer.getLastBlock(samplesToGet, i), samplesToGet);
-                }
-                recordNeedle = samplesToGet;
+                int samplesToGet = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
+                loopSample.writeAudioBlock(streamAudioBuffer.getLastBlock(samplesToGet));
             }
 
-            else {
-                recordNeedle = 0;
-            }
             startBeat = TimeManager::getInstance()->getBeat();
         }
 
-        if (internalTrackState == BUFFER_PLAYING && lastInternalTrackState == BUFFER_RECORDING) {
+        if (loopSample.isFirstPlayingFrameAfterRecord()) {
             if (isMasterTempoTrack()) {
                 //                DBG("release predelay : "+String (trackIdx));
-                recordNeedle -= (int)(preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
+                loopSample.cropEndOfRecording((int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate()));
+                loopSample.fadeInOut ((int)(parentLooper->getSampleRate()*0.001f));
 
-                const int fadeNumSamples = (int)(parentLooper->getSampleRate()*0.022f);
-                if (fadeNumSamples>0 && recordNeedle>2 * fadeNumSamples) {
-                    for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-                        loopSample.applyGainRamp(i, 0, fadeNumSamples, 0, 1);
-                        loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, 0);
-                    }
-                }
-                beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(recordNeedle));
+                beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength()));
             }
             else{
                 beatLength->setValue(TimeManager::getInstance()->getBeat() - startBeat);
             }
-            playNeedle = 0;
+            originBPM = TimeManager::getInstance()->BPM->doubleValue();
+            loopSample.startPlay();
         }
 
 
