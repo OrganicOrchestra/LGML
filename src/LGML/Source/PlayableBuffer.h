@@ -181,6 +181,7 @@ class PlayableBuffer {
 
     void endProcessBlock(){
         lastState = state;
+		stateChanged =false;
     }
 
     BufferState getState(){
