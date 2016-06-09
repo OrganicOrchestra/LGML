@@ -19,7 +19,7 @@
 #include <sys/param.h>
 #include <pthread.h>
 
-#if defined(__linux__)  
+#if defined(__linux__)
 # include <linux/serial.h>
 #endif
 

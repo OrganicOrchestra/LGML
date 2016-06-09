@@ -88,9 +88,9 @@ Result JavascriptController::processMessageInternal(const OSCMessage &m){
 
 
 var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
-    
+
 	if(a.numArguments<2 )return var::undefined();
-    
+
 	if( !a.arguments[0].isString() ){
         LOG("jsOSC send first argument must be an address string");
         return var::undefined();

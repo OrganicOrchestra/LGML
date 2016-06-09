@@ -86,7 +86,7 @@ public:
 	virtual ~SerialPort();
 
 	SerialPortInfo * info;
-	
+
 	PortMode mode;
 
 	void open();

@@ -2,7 +2,7 @@
 #if !defined(__arm__)
 #include <algorithm>
 
-#if !defined(_WIN32) && !defined(__OpenBSD__) && !defined(__FreeBSD__) 
+#if !defined(_WIN32) && !defined(__OpenBSD__) && !defined(__FreeBSD__)
 # include <alloca.h>
 #endif
 
