@@ -2,14 +2,16 @@
 import os;
 import json;
 import urllib;
+import multiprocessing
 
+njobs = multiprocessing.cpu_count()
 
 # configuration  = "Release"
 configuration  = "Debug"
 bumpVersion = False
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
-
+cleanFirst = False;
 
 
 
@@ -66,15 +68,20 @@ def buildJUCE(JuceProjectPath):
 	sh(proJucerPath+ " --resave "+JuceProjectPath)
 
 
-def buildApp(xcodeProjPath,configuration,appPath):
+def buildApp(xcodeProjPath,configuration,appPathm,njobs,clean = False):
 	if len(appPath)>10:
 		sh("rm -rf "+appPath)
 
-	sh("cd "+xcodeProjPath+ " && "\
-		
+	if clean:
+		sh("cd "+xcodeProjPath+ " && "\
 		+" xcodebuild -project LGML.xcodeproj" \
 		+" -configuration "+configuration
-		+" -jobs 4 ")
+		+" clean")
+
+	sh("cd "+xcodeProjPath+ " && "\
+		+" xcodebuild -project LGML.xcodeproj" \
+		+" -configuration "+configuration
+		+" -jobs "+str(njobs))
 
 def createAppdmgJSON(appPath ,destPath):
 	jdata =  {
@@ -119,7 +126,7 @@ def sendToOwnCloud(originPath,destPath):
 formatCode("../Source");
 updateVersion();
 buildJUCE(JuceProjectPath);
-buildApp(xcodeProjPath,configuration,appPath);
+buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
 if sendToOwncloud:
 	localPath = localExportPath+generateProductBaseName();
 	createDmg(localPath,appPath);
