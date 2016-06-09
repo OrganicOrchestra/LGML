@@ -29,7 +29,7 @@ void SerialManager::init()
 
 void SerialManager::updateDeviceList()
 {
-
+#if SERIALSUPPORT
 	std::vector<serial::PortInfo> devices_found = serial::list_ports();
 	std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
 
@@ -108,10 +108,12 @@ void SerialManager::updateDeviceList()
 		listeners.call(&SerialManagerListener::portAdded, p);
 
 	}
+#endif
 }
 
 SerialPort * SerialManager::getPort(SerialPortInfo * portInfo, bool createIfNotThere, int openBaudRate)
 {
+#if SERIALSUPPORT
 	for (auto & sp : openedPorts)
 	{
 		if (sp->info->hardwareID == portInfo->hardwareID) return sp;
@@ -124,6 +126,7 @@ SerialPort * SerialManager::getPort(SerialPortInfo * portInfo, bool createIfNotT
 		openedPorts.add(p);
 		return p;
 	}
+#endif
 
 	return nullptr;
 }
