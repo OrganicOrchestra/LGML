@@ -15,7 +15,7 @@
 class AudioFucker : public AudioIODeviceCallback{
 
 public:
-    AudioFucker(AudioDeviceManager *_manager,double _targetCPU = 80):manager(_manager),targetCPU(_targetCPU){
+    AudioFucker(AudioDeviceManager *_manager,double _targetCPU = 100):manager(_manager),targetCPU(_targetCPU){
         iterationCount = 100;
         adaptationSpeed = .7;
     }

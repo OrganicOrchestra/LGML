@@ -31,7 +31,7 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
     AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
 
     desiredNumAudioOutput = addIntParameter("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
-                                            ad?ad->getActiveInputChannels().countNumberOfSetBits():0, 0, 32);
+                                            ad?ad->getActiveInputChannels().countNumberOfSetBits():2, 0, 32);
     lastNumberOfOutputs = 0;
     updateVolMutes();
 

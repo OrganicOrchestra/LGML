@@ -143,6 +143,12 @@ void TimeManager::setBPMInternal(double){
 }
 
 
+void TimeManager::jump(int amount){
+	if (playState->boolValue()) {
+		timeInSample+=amount;
+	}
+}
+
 
 int TimeManager::setBPMForLoopLength(int time){
     double time_seconds = time* 1.0/ sampleRate;
@@ -166,11 +172,11 @@ int TimeManager::getNextQuantifiedTime(int barFraction){
         barFraction=quantizedBarFraction->intValue();
     }
     if(barFraction==0){
-        return (int)timeInSample;
+        return (int)timeInSample.get();
     }
 
     const int samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
-    return (int) ((floor(timeInSample/samplesPerUnit) + 1)*samplesPerUnit);
+    return (int) ((floor(timeInSample.get()/samplesPerUnit) + 1)*samplesPerUnit);
 }
 
 uint64 TimeManager::getTimeForNextBeats(int beats){
@@ -178,8 +184,8 @@ uint64 TimeManager::getTimeForNextBeats(int beats){
 
 }
 
-int TimeManager::getBeat(){return (int)(floor(timeInSample*1.0/beatTimeInSample));}
-double TimeManager::getBeatPercent(){return timeInSample*1.0/beatTimeInSample-getBeat();}
+int TimeManager::getBeat(){return (int)(floor(timeInSample.get()*1.0/beatTimeInSample));}
+double TimeManager::getBeatPercent(){return timeInSample.get()*1.0/beatTimeInSample-getBeat();}
 
 int TimeManager::getBar(){return (int)(floor(getBeat()*1.0/beatPerBar->intValue() ));}
 
@@ -200,8 +206,8 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
     result.ppqLoopEnd = 0;
     result.timeSigNumerator = beatPerBar->intValue();
     result.timeSigDenominator = 4;
-    result.timeInSamples = timeInSample;
-    result.timeInSeconds = (double)(timeInSample)*sampleRate;
+    result.timeInSamples = timeInSample.get();
+    result.timeInSeconds = (double)(timeInSample.get())*sampleRate;
     result.editOriginTime = 0;
 
     result.isLooping=false;

@@ -30,7 +30,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 
 
 Engine::~Engine(){
-    stopAudio();
+    closeAudio();
 
 	FastMapper::deleteInstance();
     TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
@@ -101,7 +101,15 @@ void Engine::initAudio(){
 }
 
 
-void Engine::stopAudio(){
+void Engine::suspendAudio(bool shouldBeSuspended){
+	if(AudioProcessor * ap =graphPlayer.getCurrentProcessor())
+		ap->suspendProcessing (shouldBeSuspended);
+	
+	TimeManager::getInstance()->lockTime(shouldBeSuspended);
+	
+}
+
+void Engine::closeAudio(){
     getAudioDeviceManager().removeAudioCallback (&graphPlayer);
     getAudioDeviceManager().removeAudioCallback(TimeManager::getInstance());
     getAudioDeviceManager().closeAudioDevice();
@@ -139,12 +147,13 @@ void Engine::stimulateAudio( bool s){
 
 void Engine::createNewGraph(){
     clear();
-
+	suspendAudio(true);
     ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
     node->xPosition->setValue(150);
     node->yPosition->setValue(100);
     node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
     node->xPosition->setValue(450);
     node->yPosition->setValue(100);
+	suspendAudio(false);
     changed();
 }

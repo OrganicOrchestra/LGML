@@ -36,8 +36,11 @@ public:
     void createNewGraph();
     void clear();
     void initAudio();
-    void stopAudio();
+    void closeAudio();
 
+	
+	void suspendAudio(bool);
+	
     void parseCommandline(const String & );
 
     //==============================================================================

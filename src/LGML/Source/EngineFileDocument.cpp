@@ -32,13 +32,13 @@ Result Engine::loadDocument (const File& file){
 
 
     ScopedPointer<InputStream> is( file.createInputStream());
-    stopAudio();
+    suspendAudio(true);
     {
         var data = JSON::parse(*is);
         loadJSONData(data);
     }// deletes data before launching audio, (data not needed after loaded)
     setLastDocumentOpened(file);
-    initAudio();
+    suspendAudio(false);
     return Result::ok();
 }
 

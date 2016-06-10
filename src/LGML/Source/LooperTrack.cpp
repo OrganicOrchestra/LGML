@@ -62,7 +62,7 @@ originBPM(0)
 void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
-    if(updatePendingLooperTrackState(TimeManager::getInstance()->timeInSample, buffer.getNumSamples())){
+    if(updatePendingLooperTrackState(TimeManager::getInstance()->timeInSample.get(), buffer.getNumSamples())){
         padBufferIfNeeded();
     }
 
@@ -121,7 +121,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _blockSize) {
 
     bool stateChanged = false;
-
+	jassert (curTime>=0);
     // TODO subBlock precision ?
     // not sure -> triggers are updated at block size granularity
 
@@ -213,6 +213,7 @@ void LooperTrack::padBufferIfNeeded(){
             if (isMasterTempoTrack()) {
                 //                DBG("init predelay : "+String (trackIdx));
                 int samplesToGet = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
+				TimeManager::getInstance()->jump(samplesToGet);
                 loopSample.writeAudioBlock(streamAudioBuffer.getLastBlock(samplesToGet));
             }
 
@@ -223,8 +224,10 @@ void LooperTrack::padBufferIfNeeded(){
             if (isMasterTempoTrack()) {
                 //                DBG("release predelay : "+String (trackIdx));
                 loopSample.cropEndOfRecording((int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate()));
-                loopSample.fadeInOut ((int)(parentLooper->getSampleRate()*0.001f));
-
+//                loopSample.fadeInOut ((int)(parentLooper->getSampleRate()*0.04f),0.05);
+//                loopSample.fadeInOut ((int)(parentLooper->getSampleRate()*0.002f),0.000);
+				loopSample.fadeInOut (500,0.200);
+                loopSample.fadeInOut (100,0.000);
                 beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength()));
             }
             else{

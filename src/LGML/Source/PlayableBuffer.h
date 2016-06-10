@@ -113,11 +113,11 @@ class PlayableBuffer {
         recordNeedle-=sampletoRemove;
     }
 
-    void fadeInOut(int fadeNumSamples){
+    void fadeInOut(int fadeNumSamples,double mingain){
         if (fadeNumSamples>0 && recordNeedle>2 * fadeNumSamples) {
             for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-                loopSample.applyGainRamp(i, 0, fadeNumSamples, 0, 1);
-                loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, 0);
+                loopSample.applyGainRamp(i, 0, fadeNumSamples, mingain, 1);
+                loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, mingain);
             }
         }
     }
@@ -144,10 +144,13 @@ class PlayableBuffer {
         if(state == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
             //        const int blockSize = parentLooper->getBlockSize();
             const int minQuantifiedFraction = recordNeedle;//floor(TimeManager::getInstance()->beatTimeInSample / (16.0*blockSize))*blockSize;
-            if((curTime%minQuantifiedFraction)!=(playNeedle%minQuantifiedFraction)){
+			int globalPos =(curTime%minQuantifiedFraction);
+			int localPos =(playNeedle%minQuantifiedFraction);
+            if(globalPos!=localPos){
                 isJumping = true;
                 startJumpNeedle = playNeedle;
-                playNeedle = playNeedle - (playNeedle%minQuantifiedFraction) + curTime%minQuantifiedFraction ;
+				playNeedle = (playNeedle - localPos) + globalPos;
+				
             }
         }
         return !isJumping;
@@ -195,7 +198,7 @@ class PlayableBuffer {
     bool isOrWasPlaying(){
         return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();
     }
-    int getRecordedLength(){return recordNeedle;}
+    int getRecordedLength(){return recordNeedle+1;}
 
     int getPlayPos(){return playNeedle;}
 

@@ -44,7 +44,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 
     e->createNewGraph();
-
+	e->setChangedFlag(false);
 
     //e->initAudio();
 

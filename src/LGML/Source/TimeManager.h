@@ -54,6 +54,9 @@ public TimeMasterCandidate
     void setSampleRate(int sr);
 
     int setBPMForLoopLength(int time);
+	
+	
+	void jump(int amount);
 
     // used when triggering multiple change
     void lockTime(bool );
@@ -76,7 +79,7 @@ public TimeMasterCandidate
     void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
 	*/
 
-    uint64 timeInSample;
+    Atomic<uint64> timeInSample;
     int beatTimeInSample;
     int sampleRate;
     Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;

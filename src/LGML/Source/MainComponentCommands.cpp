@@ -238,6 +238,8 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
         case CommandIDs::openLastDocument:
 		{
+			// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
+//			int result = engine->saveIfNeededAndUserAgrees();
 			int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before opening the last one ?");
 			if (result != 0)
 			{
