@@ -150,7 +150,7 @@ class PlayableBuffer {
                 isJumping = true;
                 startJumpNeedle = playNeedle;
 				playNeedle = (playNeedle - localPos) + globalPos;
-				
+
             }
         }
         return !isJumping;

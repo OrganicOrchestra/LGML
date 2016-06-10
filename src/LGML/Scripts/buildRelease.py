@@ -8,7 +8,7 @@ njobs = multiprocessing.cpu_count()
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = False
+bumpVersion = True
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
 cleanFirst = False;
@@ -123,10 +123,10 @@ def sendToOwnCloud(originPath,destPath):
 
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
-formatCode("../Source");
-updateVersion();
-buildJUCE(JuceProjectPath);
-buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
+# formatCode("../Source");
+# updateVersion();
+# buildJUCE(JuceProjectPath);
+# buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
 if sendToOwncloud:
 	localPath = localExportPath+generateProductBaseName();
 	createDmg(localPath,appPath);

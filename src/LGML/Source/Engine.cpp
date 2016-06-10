@@ -104,9 +104,9 @@ void Engine::initAudio(){
 void Engine::suspendAudio(bool shouldBeSuspended){
 	if(AudioProcessor * ap =graphPlayer.getCurrentProcessor())
 		ap->suspendProcessing (shouldBeSuspended);
-	
+
 	TimeManager::getInstance()->lockTime(shouldBeSuspended);
-	
+
 }
 
 void Engine::closeAudio(){

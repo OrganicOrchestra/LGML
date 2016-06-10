@@ -38,9 +38,9 @@ public:
     void initAudio();
     void closeAudio();
 
-	
+
 	void suspendAudio(bool);
-	
+
     void parseCommandline(const String & );
 
     //==============================================================================

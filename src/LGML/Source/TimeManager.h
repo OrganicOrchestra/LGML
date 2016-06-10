@@ -54,8 +54,8 @@ public TimeMasterCandidate
     void setSampleRate(int sr);
 
     int setBPMForLoopLength(int time);
-	
-	
+
+
 	void jump(int amount);
 
     // used when triggering multiple change
