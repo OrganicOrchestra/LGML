@@ -35,19 +35,25 @@ NodeContainer.h
 
 
 VSTNode.cpp
-	line : 123
+	line : 124
 		//@Martin i addedd this because when not playing, it crashed
 		// @ben it is necessary
 		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
 		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
 
-	line : 107
+	line : 108
 		// TODO check that it actually works
 
 
 VuMeter.h
 	line : 16
 		//TODO, move to more common place for use in other components
+
+
+MainComponentCommands.cpp
+	line : 240
+		// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
+		//			int result = engine->saveIfNeededAndUserAgrees();
 
 
 JsEnvironment.cpp
@@ -123,7 +129,7 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 195
+	line : 201
 		//TODO: check
 
 
@@ -150,7 +156,7 @@ ShapeShifterContainer.cpp
 
 
 LooperTrack.cpp
-	line : 124
+	line : 123
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized

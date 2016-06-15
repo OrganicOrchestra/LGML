@@ -130,7 +130,7 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 
 	for (auto &c : container->controllables)
 	{
-		addControllableUI(c);
+		if(!c->hideInEditor)addControllableUI(c);
 	}
 
 	if (level < maxLevel)
