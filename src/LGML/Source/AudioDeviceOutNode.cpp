@@ -79,8 +79,9 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 
 	for (int i = 0; i < numChannels; i++)
 	{
-        float gain = i<outMutes.size() ? (outMutes[i]->boolValue() ? 0.f : 1.f):0.0f;
-		buffer.applyGain(i, 0, numSamples, gain);
+        float gain = i<outMutes.size() ? (outMutes[i]->boolValue() ? 0.f : logVolumes[i]):0.0f;
+		buffer.applyGainRamp(i, 0, numSamples,lastVolumes[i],gain);
+        lastVolumes.set(i ,gain);
 	}
 
 	AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);

@@ -218,6 +218,7 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
             trackGroup.tracks[i]->clearTrig->trigger();
         }
         selectTrack->setValue(0);
+        outputVolume->setValue(DB0_FOR_01);
     }
     if (t == stopAllTrig) {
         for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {

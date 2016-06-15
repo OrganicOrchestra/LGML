@@ -57,7 +57,7 @@ MainComponentCommands.cpp
 
 
 JsEnvironment.cpp
-	line : 296
+	line : 302
 		// @ben only supported if move semantics are too are they for you?
 
 

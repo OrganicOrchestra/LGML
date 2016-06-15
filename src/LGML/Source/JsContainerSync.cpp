@@ -75,10 +75,7 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
     // create an object only if not skipping , if not add to parent
     if(!container->skipControllableNameInAddress)
         myParent = new DynamicObject();
-    else{
-        jassert(parent!=nullptr);
-
-    }
+    else{jassert(parent!=nullptr);}
 
     for(auto &c:container->controllables){
         myParent->setProperty(c->shortName, c->createDynamicObject());
