@@ -412,22 +412,31 @@ Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode *
 
     for (auto &connection : connections)
     {
-        if (connection->sourceNode == tSourceNode || connection->destNode == tDestNode) result.add(connection);
+		if (connection->sourceNode == tSourceNode || connection->destNode == tDestNode)
+		{
+			result.add(connection);
+		}
     }
+
+	
 
     return result;
 }
 
 NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
-    if (getConnectionBetweenNodes(sourceNode, destNode, connectionType) != nullptr)
+
+	ConnectableNode * tSourceNode = (sourceNode->type == ContainerType) ? ((NodeContainer *)sourceNode)->containerOutNode : sourceNode;
+	ConnectableNode * tDestNode = (destNode->type == ContainerType) ? ((NodeContainer *)destNode)->containerInNode : destNode;
+	
+	if (getConnectionBetweenNodes(tSourceNode, tDestNode, connectionType) != nullptr)
     {
         //connection already exists
         DBG("Connection already exists");
         return nullptr;
     }
 
-    NodeConnection * c = new NodeConnection(sourceNode, destNode, connectionType);
+    NodeConnection * c = new NodeConnection(tSourceNode, tDestNode, connectionType);
     connections.add(c);
     c->addConnectionListener(this);
 
