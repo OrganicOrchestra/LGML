@@ -108,8 +108,12 @@ class PlayableBuffer {
 
     void setPlayNeedle(int n){
         if(playNeedle!=n){
+            if(!isJumping){
+                startJumpNeedle = playNeedle;
+            }
             isJumping = true;
-            startJumpNeedle = playNeedle;
+
+
         }
 
         playNeedle = n;
@@ -150,12 +154,10 @@ class PlayableBuffer {
         playNeedle = 0;
     }
 
-    bool checkTimeAlignment(uint64 curTime,int minQuantifiedFraction=0){
+    bool checkTimeAlignment(uint64 curTime,const int minQuantifiedFraction){
 
         if(state == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
 
-
-            if( minQuantifiedFraction==0){minQuantifiedFraction = recordNeedle;}
 
             int globalPos =(curTime%minQuantifiedFraction);
             int localPos =(playNeedle%minQuantifiedFraction);

@@ -50,6 +50,7 @@ public:
     String content;
     String source;
     int getNumLines(){return  _arr.size();}
+    void trimToFit(int num){if(_arr.size()>num)_arr.removeRange(0,_arr.size()-num);}
     const String & getLine(int i){return _arr[i]; }
 
 

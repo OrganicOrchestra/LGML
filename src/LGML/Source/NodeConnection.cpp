@@ -99,9 +99,17 @@ void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 des
 }
 void NodeConnection::removeAllAudioGraphConnections()
 {
-    for(auto c:audioConnections){
-        removeAudioGraphConnection(c.first,c.second,false);
+
+    if(sourceNode.get() && destNode.get()){
+    for(int i = 0 ; i < sourceNode->getAudioNode()->getProcessor()->getTotalNumOutputChannels() ; i++){
+        for(int j = 0 ; j < destNode->getAudioNode()->getProcessor()->getTotalNumInputChannels() ; j++){
+            removeAudioGraphConnection(i,j,false);
+        }
     }
+    }
+//    for(auto c:audioConnections){
+//        removeAudioGraphConnection(c.first,c.second,false);
+//    }
 
     audioConnections.clear();
 

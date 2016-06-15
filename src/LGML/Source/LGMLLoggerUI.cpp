@@ -40,8 +40,18 @@ void LGMLLoggerUI::newMessage(const String & s)
 
 	while (totalLogRow > maxNumElement) {
 		LogElement * rmL = logElements[0];
-        totalLogRow -= rmL->getNumLines();
-		logElements.remove(0);
+        int removedLine = rmL->getNumLines();
+        if(totalLogRow-removedLine < maxNumElement){
+            int numToDisplay = maxNumElement - (totalLogRow-removedLine);
+            removedLine =  totalLogRow - numToDisplay;
+            rmL->trimToFit(numToDisplay);
+
+        }
+        else{
+            logElements.remove(0);
+        }
+        totalLogRow -= removedLine ;
+
        // overFlow = true;
     }
 
