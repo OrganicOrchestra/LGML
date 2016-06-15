@@ -150,6 +150,8 @@ void TimeManager::jump(int amount){
 }
 
 
+
+
 int TimeManager::setBPMForLoopLength(int time){
     double time_seconds = time* 1.0/ sampleRate;
     double beatTime = time_seconds* 1.0/beatPerBar->intValue();

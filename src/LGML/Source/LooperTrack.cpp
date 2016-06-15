@@ -73,7 +73,6 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
             setTrackState(STOPPED);
         }
 
-
     }
 
     else {
@@ -184,9 +183,8 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
     stateChanged|=loopSample.stateChanged;
 
-    if (!loopSample.checkTimeAlignment(curTime)) {
-        LOG("dropping play needle was :" + String(loopSample.getPlayPos())+" but time is"+String(curTime%loopSample.getRecordedLength()));
-    }
+    loopSample.checkTimeAlignment(curTime);
+
     //    DBG(playNeedle);
     if(stateChanged){
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
@@ -209,6 +207,7 @@ void LooperTrack::padBufferIfNeeded(){
         //    process changed internalState
 
         if (loopSample.firstRecordedFrame()) {
+            DBG("a:firstRec");
             loopSample.startRecord();
             if (isMasterTempoTrack()) {
                 //                DBG("init predelay : "+String (trackIdx));
@@ -221,20 +220,38 @@ void LooperTrack::padBufferIfNeeded(){
         }
 
         if (loopSample.isFirstPlayingFrameAfterRecord()) {
+            DBG("a:firstPlay");
+            int offsetForPlay = 0;
             if (isMasterTempoTrack()) {
                 //                DBG("release predelay : "+String (trackIdx));
-                loopSample.cropEndOfRecording((int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate()));
-//                loopSample.fadeInOut ((int)(parentLooper->getSampleRate()*0.04f),0.05);
-//                loopSample.fadeInOut ((int)(parentLooper->getSampleRate()*0.002f),0.000);
+                const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
+                const int blkSize  = parentLooper->getBlockSize();
+
+                const int idealLength = loopSample.getRecordedLength()-sampleToRemove;
+                // this is a length that is a multiple of blockSize
+                // it avoids overflow due to time granularity being blockSize
+                // i.e each call processblock access to a continuous block
+                const int blkSizeLength = idealLength - idealLength%blkSize;
+
+                loopSample.cropEndOfRecording(loopSample.getRecordedLength() - blkSizeLength);
+                jassert((loopSample.getRecordedLength()%blkSize)==0);
+
+                
+                offsetForPlay=(sampleToRemove-sampleToRemove%blkSize);
+                jassert((offsetForPlay>=0) && (offsetForPlay%blkSize==0));
+
 				loopSample.fadeInOut (500,0.200);
                 loopSample.fadeInOut (100,0.000);
                 beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength()));
+                TimeManager::getInstance()->jump(offsetForPlay);
+
+
             }
             else{
                 beatLength->setValue(TimeManager::getInstance()->getBeat() - startBeat);
             }
             originBPM = TimeManager::getInstance()->BPM->doubleValue();
-            loopSample.startPlay();
+            loopSample.setPlayNeedle(offsetForPlay);
         }
 
 

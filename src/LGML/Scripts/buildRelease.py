@@ -8,7 +8,7 @@ njobs = multiprocessing.cpu_count()
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = True
+bumpVersion = False
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
 cleanFirst = False;
@@ -81,7 +81,7 @@ def buildApp(xcodeProjPath,configuration,appPathm,njobs,clean = False):
 	sh("cd "+xcodeProjPath+ " && "\
 		+" xcodebuild -project LGML.xcodeproj" \
 		+" -configuration "+configuration
-		+" -jobs "+str(njobs))
+		+" -verbose -jobs "+str(njobs))
 
 def createAppdmgJSON(appPath ,destPath):
 	jdata =  {
@@ -124,9 +124,9 @@ def sendToOwnCloud(originPath,destPath):
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
 # formatCode("../Source");
-# updateVersion();
-# buildJUCE(JuceProjectPath);
-# buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
+updateVersion();
+buildJUCE(JuceProjectPath);
+buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
 if sendToOwncloud:
 	localPath = localExportPath+generateProductBaseName();
 	createDmg(localPath,appPath);

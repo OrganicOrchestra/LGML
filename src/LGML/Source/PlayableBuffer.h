@@ -12,6 +12,7 @@
 #define PLAYABLEBUFFER_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "DebugHelpers.h"
 
 
 
@@ -27,6 +28,10 @@ class PlayableBuffer {
     lastState(BUFFER_STOPPED)
     {
 
+//        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
+//            for(int i = 0 ; i < numChannels ; i++){loopSample.addSample(i, j, v);}
+//        }
+                loopSample.clear();
     }
 
     bool writeAudioBlock(const AudioBuffer<float> & buffer){
@@ -45,11 +50,11 @@ class PlayableBuffer {
         return true;
     }
 
-    int getNumSamples(){return loopSample.getNumSamples();}
+    int getNumSamples() const{return loopSample.getNumSamples();}
 
     void readNextBlock(AudioBuffer<float> & buffer){
 
-        if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
+        if ((playNeedle + buffer.getNumSamples()) > recordNeedle+1)
         {
 
             //assert false for now see above
@@ -69,18 +74,19 @@ class PlayableBuffer {
         }
 
         // stitch audio jumps by quick fadeIn/Out
-        if(isJumping){
+        if(isJumping && playNeedle!=startJumpNeedle){
+            LOG("a:jump "<<startJumpNeedle <<","<< playNeedle);
             const int halfBlock =  buffer.getNumSamples()/2;
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
                 int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
                 buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, startJumpNeedle, halfBlock);
                 buffer.applyGainRamp(i, 0, halfBlock, 1.0f, 0.0f);
-                buffer.copyFrom(i, halfBlock, loopSample, maxChannelFromRecorded, playNeedle, halfBlock);
+                buffer.copyFrom(i, halfBlock, loopSample, maxChannelFromRecorded, playNeedle+halfBlock, halfBlock);
                 buffer.applyGainRamp(i, 0, halfBlock, 0.0f, 1.0f);
 
             }
 
-            isJumping = false;
+
         }
         else{
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
@@ -88,9 +94,11 @@ class PlayableBuffer {
                 buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, buffer.getNumSamples());
             }
         }
+        isJumping = false;
+
         playNeedle += buffer.getNumSamples();
-        playNeedle %= recordNeedle;
-        //        }
+        playNeedle %= recordNeedle+1;
+
 
 
 
@@ -110,6 +118,7 @@ class PlayableBuffer {
     }
 
     void cropEndOfRecording(int sampletoRemove){
+        jassert(sampletoRemove<recordNeedle);
         recordNeedle-=sampletoRemove;
     }
 
@@ -124,13 +133,13 @@ class PlayableBuffer {
     bool isFirstPlayingFrameAfterRecord(){
         return lastState == BUFFER_RECORDING && state == BUFFER_PLAYING;
     }
-    bool isStopping(){
+    bool isStopping() const{
         return (lastState == BUFFER_PLAYING ) && (state==BUFFER_STOPPED);
     }
-    bool isRecording(){
+    bool isRecording() const{
         return state == BUFFER_RECORDING;
     }
-    bool firstRecordedFrame(){
+    bool firstRecordedFrame() const{
         return state == BUFFER_RECORDING && (lastState!=BUFFER_RECORDING);
     }
     void startRecord(){
@@ -140,19 +149,23 @@ class PlayableBuffer {
     void startPlay(){
         playNeedle = 0;
     }
+
     bool checkTimeAlignment(uint64 curTime){
+
         if(state == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
-            //        const int blockSize = parentLooper->getBlockSize();
-            const int minQuantifiedFraction = recordNeedle;//floor(TimeManager::getInstance()->beatTimeInSample / (16.0*blockSize))*blockSize;
-			int globalPos =(curTime%minQuantifiedFraction);
-			int localPos =(playNeedle%minQuantifiedFraction);
+
+            const int minQuantifiedFraction = recordNeedle+1;
+
+            int globalPos =(curTime%minQuantifiedFraction);
+            int localPos =(playNeedle%minQuantifiedFraction);
             if(globalPos!=localPos){
                 isJumping = true;
                 startJumpNeedle = playNeedle;
-				playNeedle = (playNeedle - localPos) + globalPos;
+                playNeedle = (playNeedle - localPos) + globalPos;
 
             }
         }
+
         return !isJumping;
     }
 
@@ -184,39 +197,40 @@ class PlayableBuffer {
 
     void endProcessBlock(){
         lastState = state;
-		stateChanged =false;
+        stateChanged =false;
     }
 
-    BufferState getState(){
+    BufferState getState() const{
         return state;
     }
 
-    BufferState getLastState(){
+    BufferState getLastState() const{
         return lastState;
     }
 
-    bool isOrWasPlaying(){
+    bool isOrWasPlaying() const{
         return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();
     }
-    int getRecordedLength(){return recordNeedle+1;}
+    int getRecordedLength() const{return recordNeedle+1;}
 
-    int getPlayPos(){return playNeedle;}
+    int getPlayPos() const{return playNeedle;}
 
 
     bool stateChanged;
 
-
-
-
+    int getStartJumpPos() const{return startJumpNeedle;}
+    
+    
+    
 private:
-
+    
     BufferState state;
     BufferState lastState;
     bool isJumping;
     AudioSampleBuffer loopSample;
-
+    
     int recordNeedle,playNeedle,startJumpNeedle;
-
+    
 };
 
 
