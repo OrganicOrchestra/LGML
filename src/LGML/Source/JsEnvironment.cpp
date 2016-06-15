@@ -55,6 +55,12 @@ String JsEnvironment::getParentName(){
     return localNamespace.substring(0, idx);
 }
 
+
+void JsEnvironment::loadFile(const String &path) {
+	File f(File::createFileWithoutCheckingPath(path));
+	loadFile(f);
+}
+
 void JsEnvironment::loadFile(const File &f){
     if(f.existsAsFile() && f.getFileExtension() == ".js"){
         internalLoadFile(f);

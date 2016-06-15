@@ -120,6 +120,7 @@ void Engine::loadJSONData (var data)
 
 
     clear();
+
     if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
     DynamicObject * d = data.getDynamicObject();

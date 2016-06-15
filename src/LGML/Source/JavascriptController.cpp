@@ -133,7 +133,7 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
         setNamespaceName("OSC."+nameParam->stringValue());
     }
     else if (p==jsPath){
-        loadFile(File(jsPath->value));
+        loadFile(jsPath->stringValue());
     }
 };
 
