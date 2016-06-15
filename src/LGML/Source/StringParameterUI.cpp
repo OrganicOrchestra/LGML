@@ -13,7 +13,7 @@
 #include "Style.h"
 
 StringParameterUI::StringParameterUI(Parameter * p) :
-    ParameterUI(p), autoSize(false)
+    ParameterUI(p), autoSize(false), maxFontHeight(12)
 {
 
     addChildComponent(nameLabel);
@@ -77,9 +77,15 @@ void StringParameterUI::resized()
 {
     Rectangle<int> r = getLocalBounds();
 	int nameLabelWidth = 100;// nameLabel.getFont().getStringWidth(nameLabel.getText());
-    if(nameLabelIsVisible) nameLabel.setBounds(r.removeFromLeft(nameLabelWidth));
+	if (nameLabelIsVisible)
+	{
+		nameLabel.setBounds(r.removeFromLeft(nameLabelWidth));
+		nameLabel.setFont(nameLabel.getFont().withHeight(jmin<float>((float)r.getHeight(), maxFontHeight)));
+
+	}
 
 	valueLabel.setBounds(r);
+	valueLabel.setFont(valueLabel.getFont().withHeight(jmin<float>((float)r.getHeight(), maxFontHeight)));
 
 }
 

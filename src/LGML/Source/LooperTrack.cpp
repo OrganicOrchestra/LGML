@@ -117,7 +117,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
 }
-bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _blockSize) {
+bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blockSize*/) {
 
     bool stateChanged = false;
 	jassert (curTime>=0);

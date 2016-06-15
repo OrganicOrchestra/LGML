@@ -27,6 +27,8 @@ public:
 	String prefix;
 	String suffix;
 
+	float maxFontHeight;
+
 	bool autoSize;
 	void setAutoSize(bool value);
 

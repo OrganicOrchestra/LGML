@@ -20,7 +20,7 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 	NodeBase("AudioDeviceOut",NodeType::AudioDeviceOutType, false),
 	AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
-	canHavePresets = false;
+	//CanHavePresets = false;
 
 	addNodeBaseListener(this);
 

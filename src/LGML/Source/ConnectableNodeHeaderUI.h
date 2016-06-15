@@ -40,7 +40,8 @@ public:
     ConnectableNodeUI * nodeUI;
 
     ScopedPointer<StringParameterUI> titleUI;
-    ScopedPointer<BoolToggleUI> enabledUI;
+	ScopedPointer<StringParameterUI> descriptionUI; 
+	ScopedPointer<BoolToggleUI> enabledUI;
 	VuMeter vuMeterIn;
     VuMeter vuMeterOut;
 

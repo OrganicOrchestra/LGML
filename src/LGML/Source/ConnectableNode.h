@@ -44,7 +44,7 @@ public:
 
 	//Controllables (from ControllableContainer)
 	StringParameter * nameParam;
-    StringParameter * controlNameParam;
+    StringParameter * descriptionParam;
 	BoolParameter * enabledParam;
 
 	//ui params

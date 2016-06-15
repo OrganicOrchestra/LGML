@@ -35,6 +35,7 @@ numContainerIndexed(0),
 localIndexedPosition(-1)
 {
     setNiceName(niceName);
+	currentPresetName = addStringParameter("Preset", "Current Preset", "");
 }
 
 ControllableContainer::~ControllableContainer()
@@ -357,7 +358,9 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 
 
     currentPreset = preset;
+	currentPresetName->setValue(currentPreset->name, true);
 
+	controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
     return true;
 }
 
@@ -399,6 +402,7 @@ bool ControllableContainer::resetFromPreset()
 
 
     currentPreset = nullptr;
+	currentPresetName->setValue("", true);
     return true;
 }
 
@@ -427,8 +431,11 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
-    onContainerParameterChanged(p);
-    if (p->isControllableExposed) dispatchFeedback(p);
+	if (p == currentPresetName) loadPresetWithName(p->stringValue());
+	
+	onContainerParameterChanged(p);
+	
+	if (p->isControllableExposed) dispatchFeedback(p);
 }
 
 void ControllableContainer::triggerTriggered(Trigger * t)
@@ -480,15 +487,15 @@ var ControllableContainer::getJSONData()
         }
     }
 
+	/*
     if (currentPreset != nullptr)
     {
-
         data.getDynamicObject()->setProperty(presetIdentifier, currentPreset->name);
     }
+	*/
 
 
     data.getDynamicObject()->setProperty("uid",uid.toString());
-
     data.getDynamicObject()->setProperty(paramIdentifier, paramsData);
 
     return data;
@@ -497,11 +504,12 @@ var ControllableContainer::getJSONData()
 void ControllableContainer::loadJSONData(var data)
 {
 	if (data.getDynamicObject()->hasProperty("uid")) uid = data.getDynamicObject()->getProperty("uid");
+
     if (data.getDynamicObject()->hasProperty(presetIdentifier))
     {
         loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
     }
-
+	 
     Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();
 
     if (paramsData != nullptr)
@@ -526,7 +534,7 @@ void ControllableContainer::loadJSONData(var data)
 
     loadJSONDataInternal(data);
 
-    controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
+   
 }
 
 void ControllableContainer::childStructureChanged(ControllableContainer *)

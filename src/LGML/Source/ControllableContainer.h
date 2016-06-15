@@ -50,7 +50,10 @@ public:
     bool hasCustomShortName;
 
 	bool canHavePresets;
+	StringParameter * currentPresetName;
+	PresetManager::Preset * currentPreset;
 
+	
     bool skipControllableNameInAddress;
     void setNiceName(const String &_niceName);
     void setCustomShortName(const String &_shortName);
@@ -99,7 +102,7 @@ public:
     virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
 
 
-    PresetManager::Preset * currentPreset;
+    
 	virtual bool loadPresetWithName(const String &name);
     virtual bool loadPreset(PresetManager::Preset * preset);
 	virtual PresetManager::Preset* saveNewPreset(const String &name);

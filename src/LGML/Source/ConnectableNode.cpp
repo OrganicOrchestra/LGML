@@ -24,7 +24,7 @@
   {
 	  //set Params
       nameParam = addStringParameter("Name", "Set the visible name of the node.", name);
-      controlNameParam = addStringParameter("controlName", "Set the control name of the node.", StringUtil::toShortName(name));
+      descriptionParam = addStringParameter("Description", "Set a custom description for this node.", "Description");
 	  enabledParam = addBoolParameter("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
 	  xPosition = addFloatParameter("xPosition", "x position on canvas", 0, 0, 99999);
 	  yPosition = addFloatParameter("yPosition", "y position on canvas", 0, 0, 99999);
@@ -35,8 +35,8 @@
 	  xPosition->isPresettable = false;
 	  yPosition->isPresettable = false;
 	  nameParam->isPresettable = false;
-      nameParam->hideInEditor = true;
-      controlNameParam->isPresettable = false;
+      
+      descriptionParam->isPresettable = false;
 	  enabledParam->isPresettable = false;
 
 
@@ -103,13 +103,7 @@ void ConnectableNode::onContainerParameterChanged(Parameter * p)
 	{
 		setNiceName(nameParam->stringValue());
 	}
-    else if (p==controlNameParam){
 
-        String oldName = p->stringValue();
-        String validName = (StringUtil::toShortName(oldName));
-        if(oldName!=validName){p->setValue(validName);}
-        else{setCustomShortName(validName);}
-    }
 	nodeListeners.call(&ConnectableNodeListener::nodeParameterChanged, this, p);
 }
 

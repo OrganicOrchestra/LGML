@@ -62,7 +62,7 @@ void AudioDeviceOutNodeContentUI::resized()
 	Rectangle<int> r = getLocalBounds().reduced(10);
 
 	int gap = 0;
-	int vWidth = (r.getWidth() / vuMeters.size()) - gap;
+	int vWidth = jmin<int>((r.getWidth() / vuMeters.size()) - gap, 30);
 
 	for (int i = 0; i < vuMeters.size(); i++)
 	{

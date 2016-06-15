@@ -74,6 +74,10 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 	titleUI = node->nameParam->createStringParameterUI();
     addAndMakeVisible(titleUI);
 
+	descriptionUI = node->descriptionParam->createStringParameterUI();
+	addAndMakeVisible(descriptionUI);
+	descriptionUI->valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR.darker(.3f));
+
     enabledUI = node->enabledParam->createToggle();
     addAndMakeVisible(enabledUI);
 
@@ -83,7 +87,6 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 
 	addAndMakeVisible(miniModeBT);
 
-
     presetCB = new ComboBox("preset");
 	if (node->canHavePresets)
 	{
@@ -91,6 +94,7 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 		addAndMakeVisible(presetCB);
 		presetCB->addListener(this);
 		presetCB->setTextWhenNothingSelected("Preset");
+		presetCB->setTooltip("Set the current preset at :\n" + node->currentPresetName->getControlAddress() + " <presetName>");
 	}
 
 	node->addControllableContainerListener(this);
@@ -167,7 +171,9 @@ void ConnectableNodeHeaderUI::resized()
 		r.removeFromRight(5);
 	}
 
-    titleUI->setBounds(r);
+
+    titleUI->setBounds(r.removeFromTop(12));
+	descriptionUI->setBounds(r);
 }
 
 void ConnectableNodeHeaderUI::setMiniMode(bool value)
@@ -275,6 +281,7 @@ void ConnectableNodeHeaderUI::buttonClicked(Button * b)
 
 void ConnectableNodeHeaderUI::controllableContainerPresetLoaded(ControllableContainer *)
 {
+	
 	if (!node->canHavePresets) return;
 
 	int numOptions = 3;
