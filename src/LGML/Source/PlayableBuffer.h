@@ -54,7 +54,7 @@ class PlayableBuffer {
 
     void readNextBlock(AudioBuffer<float> & buffer){
 
-        if ((playNeedle + buffer.getNumSamples()) > recordNeedle+1)
+        if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
         {
 
             //assert false for now see above
@@ -97,7 +97,7 @@ class PlayableBuffer {
         isJumping = false;
 
         playNeedle += buffer.getNumSamples();
-        playNeedle %= recordNeedle+1;
+        playNeedle %= recordNeedle;
 
 
 
@@ -150,11 +150,12 @@ class PlayableBuffer {
         playNeedle = 0;
     }
 
-    bool checkTimeAlignment(uint64 curTime){
+    bool checkTimeAlignment(uint64 curTime,int minQuantifiedFraction=0){
 
         if(state == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
 
-            const int minQuantifiedFraction = recordNeedle+1;
+
+            if( minQuantifiedFraction==0){minQuantifiedFraction = recordNeedle;}
 
             int globalPos =(curTime%minQuantifiedFraction);
             int localPos =(playNeedle%minQuantifiedFraction);
@@ -211,7 +212,7 @@ class PlayableBuffer {
     bool isOrWasPlaying() const{
         return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();
     }
-    int getRecordedLength() const{return recordNeedle+1;}
+    int getRecordedLength() const{return recordNeedle;}
 
     int getPlayPos() const{return playNeedle;}
 

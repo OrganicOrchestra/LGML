@@ -125,7 +125,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
     // not sure -> triggers are updated at block size granularity
 
     // for now reduce block approximation noise when quantized
-    const uint64 triggeringTime = curTime + _blockSize / 2;
+    const uint64 triggeringTime = curTime;
     if (quantizedRecordStart>=0) {
         if (triggeringTime >= quantizedRecordStart) {
             trackState = RECORDING;
@@ -183,7 +183,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int _block
 
     stateChanged|=loopSample.stateChanged;
 
-    loopSample.checkTimeAlignment(curTime);
+    loopSample.checkTimeAlignment(curTime,TimeManager::getInstance()->beatTimeInSample);
 
     //    DBG(playNeedle);
     if(stateChanged){

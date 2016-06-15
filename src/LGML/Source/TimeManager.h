@@ -82,6 +82,7 @@ public TimeMasterCandidate
     Atomic<uint64> timeInSample;
     int beatTimeInSample;
     int sampleRate;
+    int blockSize;
     Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;
     bool isMasterCandidate(TimeMasterCandidate * n);
     bool hasMasterCandidate();
