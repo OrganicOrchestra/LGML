@@ -16,27 +16,36 @@
 
 
 
-class LGMLLogger : public Logger{
+class LGMLLogger : public Logger {
     public :
 
     juce_DeclareSingleton(LGMLLogger, true);
 
     LGMLLogger():notifier(100){
-        fileLog = FileLogger::createDefaultAppLogger("LGML", "log", "");
-
+        addLogListener(&fileWriter);
     }
+
 	void logMessage(const String & message) override;
 
 
     QueuedNotifier<String> notifier;
     typedef QueuedNotifier<String>::Listener Listener;
+
+
+
     void addLogListener(Listener * l){notifier.addListener(l);}
     void removeLogListener(Listener * l){notifier.removeListener(l);}
 
+    class FileWriter : public Listener{
+    public:
+        FileWriter(){fileLog = FileLogger::createDefaultAppLogger("LGML", "log", "");}
 
-    ScopedPointer<FileLogger> fileLog;
+        void newMessage(const String& s) override{if (fileLog) {fileLog->logMessage(s);}}
+        String getFilePath(){return fileLog->getLogFile().getFullPathName();}
+        ScopedPointer<FileLogger> fileLog;
+    };
 
-
+    FileWriter fileWriter;
 
 };
 

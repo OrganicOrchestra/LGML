@@ -58,7 +58,7 @@ class PlayableBuffer {
         {
 
             //assert false for now see above
-            jassertfalse;
+            LOG("buffer not a multiple of blockSize");
             //            // crop buffer to ensure not coming back
             //            recordNeedle = (playNeedle + buffer.getNumSamples());
             int firstSegmentLength = recordNeedle - playNeedle;

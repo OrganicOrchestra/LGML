@@ -90,7 +90,7 @@ LGMLLoggerUI::LGMLLoggerUI(const String &contentName, LGMLLogger * l) :
 	logListComponent->setHeader(thc);
 	addAndMakeVisible(logListComponent);
 	LOG("LGML v" + String(ProjectInfo::versionString) + "\nby OrganicOrchestra");
-	LOG("please provide logFile for any bug report :\nlogFile in " + l->fileLog->getLogFile().getFullPathName());
+	LOG("please provide logFile for any bug report :\nlogFile in " + l->fileWriter.getFilePath());
 
 	clearB.setButtonText("Clear");
 	clearB.addListener(this);
