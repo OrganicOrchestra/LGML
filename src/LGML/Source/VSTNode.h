@@ -28,6 +28,8 @@ public MIDIListener
 
 public:
     StringParameter *  identifierString;
+    
+
     Array<FloatParameter *> VSTParameters;
 
 
@@ -50,6 +52,8 @@ public:
     PluginWindowParameters pluginWindowParameter;
     void createPluginWindow();
     void closePluginWindow();
+
+
 
     void onContainerParameterChanged(Parameter * p) override;
 

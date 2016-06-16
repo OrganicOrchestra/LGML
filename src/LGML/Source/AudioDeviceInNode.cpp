@@ -46,7 +46,8 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 
     AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
 
-    int numChannels = buffer.getNumChannels();
+    jassert(NodeBase::getTotalNumOutputChannels() == desiredNumAudioInput->intValue());
+    int numChannels = jmin(NodeBase::getTotalNumOutputChannels() , AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumOutputChannels());
     int numSamples = buffer.getNumSamples();
     float enabledFactor = enabledParam->boolValue()?1.f:0.f;
 

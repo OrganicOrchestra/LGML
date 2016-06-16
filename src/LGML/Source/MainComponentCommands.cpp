@@ -221,6 +221,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 			{
 				if (result == 1) engine->save(true, true);
 				engine->createNewGraph();
+                
 			}
 		}
             break;

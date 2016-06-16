@@ -103,7 +103,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
         if(loopSample.isStopping() ){
             newVolume = 0;
         }
-        for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+        for (int i = parentLooper->getTotalNumOutputChannels() - 1; i >= 0; --i) {
             buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume, newVolume);
         }
 

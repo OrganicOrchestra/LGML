@@ -71,25 +71,26 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
     // TODO check if we can optimize copies
     // handle multiples channels outs
 
-    bufferIn.setSize(buffer.getNumChannels(), buffer.getNumSamples());
-    bufferOut.setSize(buffer.getNumChannels(), buffer.getNumSamples());
+    jassert(buffer.getNumChannels()>= jmax(getTotalNumInputChannels(),getTotalNumOutputChannels()));
+    bufferIn.setSize(getTotalNumInputChannels(), buffer.getNumSamples());
+    bufferOut.setSize(getTotalNumOutputChannels(), buffer.getNumSamples());
 
     if (isMonitoring->boolValue()) {
         if (!wasMonitoring) {
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+            for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
                 bufferOut.copyFromWithRamp(i, 0, buffer.getReadPointer(i), buffer.getNumSamples(), 0.0f, 1.0f);
             }
             wasMonitoring = true;
         }
         else {
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+            for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
                 bufferOut.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
             }
         }
     }
     else {
         if (wasMonitoring) {
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+            for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
                 bufferOut.copyFromWithRamp(i, 0, buffer.getReadPointer(i), buffer.getNumSamples(), 1.0f, 0.0f);
             }
             wasMonitoring = false;
@@ -98,17 +99,17 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
             bufferOut.clear();
         }
     }
-    for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+    for (int i = bufferIn.getNumChannels() - 1; i >= 0; --i) {
         bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
     }
     for (auto & t : trackGroup.tracks) {
         t->processBlock(buffer, midiMessages);
-        for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+        for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
             bufferOut.addFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
             buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
         }
     }
-    for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+    for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
         buffer.copyFrom(i, 0, bufferOut, i, 0, buffer.getNumSamples());
 
     }

@@ -155,7 +155,7 @@ void Engine::createNewGraph(){
     node->xPosition->setValue(450);
     node->yPosition->setValue(100);
     suspendAudio(false);
-    changed();
+    setFile(File());
 }
 
 

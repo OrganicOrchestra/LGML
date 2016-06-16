@@ -21,7 +21,7 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 299
+	line : 305
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 101
@@ -35,14 +35,15 @@ NodeContainer.h
 
 
 VSTNode.cpp
-	line : 123
-		//@Martin i addedd this because when not playing, it crashed
-		// @ben it is necessary
-		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
-		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
-
-	line : 107
+	line : 113
 		// TODO check that it actually works
+		//    desc->numInputChannels = jmin(desc->numInputChannels, getMainBusNumInputChannels());
+		//    desc->numOutputChannels = jmin(desc->numOutputChannels, getMainBusNumOutputChannels());
+
+
+PlayableBuffer.h
+	line : 67
+		// TODO sync size because buffer can be larger and we save few useless iteration
 
 
 VuMeter.h
@@ -51,7 +52,7 @@ VuMeter.h
 
 
 MainComponentCommands.cpp
-	line : 240
+	line : 241
 		// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
 		//			int result = engine->saveIfNeededAndUserAgrees();
 

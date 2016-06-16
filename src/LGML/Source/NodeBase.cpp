@@ -164,7 +164,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
     if (rmsListeners.size() || rmsChannelListeners.size()) {
         curSamplesForRMSInUpdate += buffer.getNumSamples();
         if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate) {
-            updateRMS(buffer, globalRMSValueIn,rmsValuesIn,rmsChannelListeners.size()==0);
+            updateRMS(true,buffer, globalRMSValueIn,rmsValuesIn,rmsChannelListeners.size()==0);
             curSamplesForRMSInUpdate = 0;
         }
     }
@@ -172,7 +172,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
     if (!isSuspended())
     {
-        if (!hasMainAudioControl || (hasMainAudioControl && enabledParam->boolValue()) ){
+        if (enabledParam->boolValue() ){
 
             processBlockInternal(buffer, midiMessages);
 
@@ -186,11 +186,17 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
                 wasSuspended = false;
             }
         }
+        // be sure to delete out if we are not enabled and a random buffer enters
+        // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
+        else if(getTotalNumInputChannels()==0){
+            buffer.clear();
+
+        }
 
         if (rmsListeners.size() || rmsChannelListeners.size()) {
             curSamplesForRMSOutUpdate += buffer.getNumSamples();
             if (curSamplesForRMSOutUpdate >= samplesBeforeRMSUpdate) {
-                updateRMS(buffer, globalRMSValueOut,rmsValuesOut,rmsChannelListeners.size()==0);
+                updateRMS(false,buffer, globalRMSValueOut,rmsValuesOut,rmsChannelListeners.size()==0);
                 curSamplesForRMSOutUpdate = 0;
             }
         }
@@ -214,7 +220,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
     int oldNumChannels = getTotalNumInputChannels();
 
 
-    setPlayConfigDetails(num, getTotalNumOutputChannels(),
+    NodeBase::setPlayConfigDetails(num, getTotalNumOutputChannels(),
                          getSampleRate(),
                          getBlockSize());
 
@@ -282,9 +288,9 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
     return true;
 }
 
-void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues,bool skipChannelComputation) {
+void NodeBase::updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues,bool skipChannelComputation) {
     int numSamples = buffer.getNumSamples();
-    int numChannels = buffer.getNumChannels();
+    int numChannels = jmin((isInput?getTotalNumInputChannels():getTotalNumOutputChannels()),buffer.getNumChannels());
     if(targetRMSChannelValues.size()!=numChannels)
         targetRMSChannelValues.resize(numChannels);
 

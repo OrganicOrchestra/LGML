@@ -16,16 +16,16 @@ AudioDeviceManager& getAudioDeviceManager();
 
 
 VSTNode::VSTNode() :
-	NodeBase("VST",NodeType::VSTType),
-	blockFeedback(false)
+NodeBase("VST",NodeType::VSTType),
+blockFeedback(false)
 {
     identifierString = addStringParameter("VST Identifier","string that identify a VST","");
     addChildControllableContainer(&pluginWindowParameter);
 
-	midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
+    midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
     midiActivityTrigger->isControllableExposed = false;
-	midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
-	midiPortNameParam->hideInEditor = true;
+    midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
+    midiPortNameParam->hideInEditor = true;
 }
 
 
@@ -54,11 +54,17 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
             else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
         }
         else{DBG("VST : no identifierString provided");}
-	}if (p == midiPortNameParam)
-	{
-		setCurrentDevice(midiPortNameParam->stringValue());
-		vstNodeListeners.call(&VSTNodeListener::midiDeviceChanged);
-	}
+    }
+    else if (p == midiPortNameParam)
+    {
+        setCurrentDevice(midiPortNameParam->stringValue());
+        vstNodeListeners.call(&VSTNodeListener::midiDeviceChanged);
+    }
+
+    else if(p==enabledParam && innerPlugin){
+        innerPlugin->suspendProcessing(!enabledParam->boolValue());
+        
+    }
 
     // a VSTParameter is changed
     else{
@@ -90,88 +96,87 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
 }
 
 /*
-String VSTNode::getPresetFilter()
-{
-    return identifierString->stringValue();
-}
-*/
+ String VSTNode::getPresetFilter()
+ {
+ return identifierString->stringValue();
+ }
+ */
 
 
 void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 {
 
-	innerPlugin = nullptr;
-	String errorMessage;
-	AudioDeviceManager::AudioDeviceSetup result;
+    innerPlugin = nullptr;
+    String errorMessage;
+    AudioDeviceManager::AudioDeviceSetup result;
 
-	// set max channels to this
-	// TODO check that it actually works
-	desc->numInputChannels = jmin(desc->numInputChannels, getMainBusNumInputChannels());
-	desc->numOutputChannels = jmin(desc->numOutputChannels, getMainBusNumOutputChannels());
-
-
-	getAudioDeviceManager().getAudioDeviceSetup(result);
-
-	if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
-		(*desc, result.sampleRate, result.bufferSize, errorMessage)) {
-		// try to align the precision of the processor and the graph
-
-		instance->setPreferredBusArrangement(true, 0, AudioChannelSet::canonicalChannelSet(getMainBusNumInputChannels()));
-		instance->setPreferredBusArrangement(false, 0, AudioChannelSet::canonicalChannelSet(getMainBusNumOutputChannels()));
+    // set max channels to this
+    // TODO check that it actually works
+//    desc->numInputChannels = jmin(desc->numInputChannels, getMainBusNumInputChannels());
+//    desc->numOutputChannels = jmin(desc->numOutputChannels, getMainBusNumOutputChannels());
 
 
+    getAudioDeviceManager().getAudioDeviceSetup(result);
 
-		//@Martin i addedd this because when not playing, it crashed
-        // @ben it is necessary
+    if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
+        (*desc, result.sampleRate, result.bufferSize, errorMessage)) {
+        // try to align the precision of the processor and the graph
+
+        instance->setPreferredBusArrangement(true, 0, AudioChannelSet::canonicalChannelSet(2));
+        instance->setPreferredBusArrangement(false, 0, AudioChannelSet::canonicalChannelSet(2));
+
+
         // if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
         // ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
 
-            instance->setProcessingPrecision(singlePrecision);
-            instance->prepareToPlay(result.sampleRate, result.bufferSize);
+        instance->setProcessingPrecision(singlePrecision);
+        instance->prepareToPlay(result.sampleRate, result.bufferSize);
 
         int numIn = instance->getTotalNumInputChannels();
         int numOut = instance->getTotalNumOutputChannels();
-        setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
-
+//        NodeBase::setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
+        setPreferedNumAudioInput(numIn);
+        setPreferedNumAudioOutput(numOut);
         DBG("buffer sizes" + String(instance->getTotalNumInputChannels())+','+ String(instance->getTotalNumOutputChannels()));
 
         instance->setPlayHead(getPlayHead());
         innerPlugin = instance;
         messageCollector.reset (getSampleRate());
-		initParametersFromProcessor(instance);
-	}
+        initParametersFromProcessor(instance);
+    }
 
-	else {
+    else {
 
-		DBG(errorMessage);
-		jassertfalse;
-	}
+        DBG(errorMessage);
+        jassertfalse;
+    }
 }
 
 void VSTNode::numChannelsChanged(){
-	if (NodeManager::getInstanceWithoutCreating() != nullptr)
-	{
-		NodeManager::getInstance()->audioGraph.removeIllegalConnections();
-		// hack to force update renderingops in audioGraph
-		NodeManager::getInstance()->audioGraph.removeConnection(-1);
-	}
+    NodeBase::numChannelsChanged();
+    if (NodeManager::getInstanceWithoutCreating() != nullptr)
+    {
+        NodeManager::getInstance()->audioGraph.removeIllegalConnections();
+        // hack to force update renderingops in audioGraph
+        NodeManager::getInstance()->audioGraph.removeConnection(-1);
+    }
 }
 
 inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & ) {
-	if (innerPlugin) {
-		if (buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(), innerPlugin->getTotalNumOutputChannels()))
-		{
+    if (innerPlugin) {
+        if (buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(), innerPlugin->getTotalNumOutputChannels()))
+        {
             incomingMidi.clear();
             messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
             innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
-			innerPlugin->processBlock(buffer, incomingMidi);
-		}
-		else {
-			static int numFrameDropped = 0;
-			DBG("dropAudio " + String(numFrameDropped++));
+            innerPlugin->processBlock(buffer, incomingMidi);
+        }
+        else {
+            static int numFrameDropped = 0;
+            DBG("dropAudio " + String(numFrameDropped++));
 
-		}
-	}
+        }
+    }
 }
 
 
@@ -188,23 +193,24 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
 
 
 
+
 ConnectableNodeUI * VSTNode::createUI() {
-	return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
+    return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
 }
 
 
 void VSTNode::setCurrentDevice(const String & deviceName)
 {
-	MIDIListener::setCurrentDevice(deviceName);
-	midiPortNameParam->setValue(deviceName, true);
+    MIDIListener::setCurrentDevice(deviceName);
+    midiPortNameParam->setValue(deviceName, true);
 }
 
 void VSTNode::handleIncomingMidiMessage(MidiInput* ,
-                               const MidiMessage& message) {
+                                        const MidiMessage& message) {
     if (innerPlugin)
         messageCollector.addMessageToQueue (message);
 
-	midiActivityTrigger->trigger();
+    midiActivityTrigger->trigger();
 };
 
 void VSTNode::getStateInformation(MemoryBlock & destData) {
@@ -224,13 +230,13 @@ void VSTNode::loadPresetInternal(PresetManager::Preset * preset){
     MemoryBlock m;
     m.fromBase64Encoding(v.toString());
     setStateInformation(m.getData(),(int)m.getSize());
-
-
+    
+    
 };
 void VSTNode::savePresetInternal(PresetManager::Preset * preset){
-
+    
     MemoryBlock m;
     getStateInformation(m);
     preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
-
+    
 };

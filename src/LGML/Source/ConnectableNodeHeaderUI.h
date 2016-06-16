@@ -24,7 +24,8 @@ class ConnectableNodeHeaderUI : public Component,
 	public ComboBox::Listener,
 	public Button::Listener,
 	public ControllableContainerListener,
-	public ConnectableNode::ConnectableNodeListener
+	public ConnectableNode::ConnectableNodeListener,
+    public NodeBase::NodeBaseListener
 {
 public:
 
@@ -58,6 +59,8 @@ public:
 
     virtual void resized() override;
 
+    void updateVuMeters();
+
 	bool miniMode;
 	virtual void setMiniMode(bool value);
 
@@ -68,6 +71,9 @@ public:
 	virtual void buttonClicked(Button *) override;
 	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
 
+
+     void numAudioInputChanged(NodeBase *, int /*newNumInput*/) override;
+     void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectableNodeHeaderUI)
 

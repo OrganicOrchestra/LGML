@@ -74,7 +74,8 @@ void AudioDeviceOutNode::updateVolMutes(){
 void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
 	if (!enabledParam->boolValue()) return;
 
-	int numChannels = buffer.getNumChannels();
+    jassert(NodeBase::getTotalNumInputChannels()==desiredNumAudioOutput->intValue());
+    int numChannels = jmin(NodeBase::getTotalNumInputChannels() , AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumInputChannels());
 	int numSamples = buffer.getNumSamples();
 
 	for (int i = 0; i < numChannels; i++)

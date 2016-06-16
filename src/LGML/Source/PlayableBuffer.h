@@ -65,6 +65,8 @@ class PlayableBuffer {
             //            recordNeedle = (playNeedle + buffer.getNumSamples());
             int firstSegmentLength = recordNeedle - playNeedle;
             int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
+            // TODO sync size because buffer can be larger and we save few useless iteration
+
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
                 int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
                 buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);

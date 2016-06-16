@@ -34,6 +34,7 @@ ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
 
 	miniModeBT.addListener(this);
 
+
     setSize(20, 40);
 }
 
@@ -46,6 +47,7 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
 
 		node->removeControllableContainerListener(this);
 		node->removeConnectableNodeListener(this);
+        if(NodeBase *kk = dynamic_cast<NodeBase*>(node)){kk->removeNodeBaseListener(this);}
     }
 
 }
@@ -57,17 +59,8 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 
     if (node != nullptr)
 	{
-		if (node->hasAudioOutputs()) {
-			node->addRMSListener(&vuMeterOut);
-			addAndMakeVisible(vuMeterOut);
-
-		}
-
-		if (node->hasAudioInputs())
-		{
-			node->addRMSListener(&vuMeterIn);
-			addAndMakeVisible(vuMeterIn);
-		}
+        if(NodeBase *kk = dynamic_cast<NodeBase*>(node)){kk->addNodeBaseListener(this);}
+        updateVuMeters();
 
     }
 
@@ -103,6 +96,28 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
     init();
     resized();
 
+}
+
+void ConnectableNodeHeaderUI::updateVuMeters(){
+    if (!vuMeterOut.isVisible() && node->hasAudioOutputs()) {
+        node->addRMSListener(&vuMeterOut);
+        addAndMakeVisible(vuMeterOut);
+
+    }
+    else if(vuMeterOut.isVisible() && !node->hasAudioOutputs()){
+        node->removeRMSListener(&vuMeterOut);
+        vuMeterOut.setVisible(false);
+    }
+
+    if (!vuMeterIn.isVisible() &&node->hasAudioInputs())
+    {
+        node->addRMSListener(&vuMeterIn);
+        addAndMakeVisible(vuMeterIn);
+    }
+    else if(vuMeterIn.isVisible() && !node->hasAudioInputs()){
+        node->removeRMSListener(&vuMeterIn);
+        vuMeterIn.setVisible(false);
+    }
 }
 
 void ConnectableNodeHeaderUI::updatePresetComboBox()
@@ -300,3 +315,6 @@ void ConnectableNodeHeaderUI::Grabber::paint(Graphics & g)
 	g.drawHorizontalLine(r.getCentreY(), left, right);
 	g.drawHorizontalLine(r.getBottom(), left, right);
 }
+
+void ConnectableNodeHeaderUI::numAudioInputChanged(NodeBase *, int /*newNumInput*/) {updateVuMeters();resized();}
+void ConnectableNodeHeaderUI::numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) {updateVuMeters();resized();}

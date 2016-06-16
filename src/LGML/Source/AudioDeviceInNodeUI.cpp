@@ -147,6 +147,7 @@ void AudioDeviceInNodeContentUI::numAudioOutputChanged(NodeBase *, int)
 	updateVuMeters();
 }
 
+
 void AudioDeviceInNodeContentUI::changeListenerCallback(ChangeBroadcaster *)
 {
 	updateVuMeters();
