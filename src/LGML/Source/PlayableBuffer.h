@@ -112,8 +112,6 @@ class PlayableBuffer {
                 startJumpNeedle = playNeedle;
             }
             isJumping = true;
-
-
         }
 
         playNeedle = n;

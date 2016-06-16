@@ -107,7 +107,7 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
             for(int i = outBuses.size() -1 ; i >=0 ; --i){
                 if(i<outBuses[i]->volumes.size()){
                     cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
-                                                  outBuses[i]->lastVolumes[i],outBuses[i]->volumes[i]->floatValue());
+                                                  outBuses[i]->lastVolumes[i],outBuses[i]->logVolumes[i]);
                 }
                 else{
                     cachedBuffer.clear(i, 0, numSamples);
@@ -119,11 +119,11 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
             for(int i = outBuses.size() -1 ; i >=0 ; --i){
                 cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
-                                              outBuses[i]->lastVolumes[0],outBuses[i]->volumes[0]->floatValue());
+                                              outBuses[i]->lastVolumes[0],outBuses[i]->logVolumes[0]);
 
                 for(int j = numInput-1 ; j >0  ; --j){
                     cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples,
-                                                 outBuses[i]->lastVolumes[j],outBuses[i]->volumes[j]->floatValue());
+                                                 outBuses[i]->lastVolumes[j],outBuses[i]->logVolumes[j]);
                 }
             }
         }
@@ -131,7 +131,7 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
         for(int i = outBuses.size() -1 ; i >=0 ; --i){
             for(int j = numInput-1 ; j>=0 ;--j){
-                outBuses[i]->lastVolumes.set(j, outBuses[i]->volumes[j]->floatValue());
+                outBuses[i]->lastVolumes.set(j, outBuses[i]->logVolumes[j]);
             }
 
         }
@@ -166,6 +166,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
             p->setCustomShortName("In_"+String(i+1));
             p->defaultValue = DB0_FOR_01;
             volumes.add(p);
+            logVolumes.add(float01ToGain(p->floatValue()));
         }
     }
     else if(numInput<volumes.size()){
@@ -174,6 +175,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
         for(int i = volumes.size()-1;i>=numInput;i--){
             removeControllable(volumes[i]);
             volumes.removeLast();
+            logVolumes.removeLast();
         }
     }
 
