@@ -25,6 +25,17 @@ ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
 
 	aliasParam = paramProxy->proxyAlias.createStringParameterUI();
 	addAndMakeVisible(aliasParam);
+
+	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
+
+	removeBT.setImages(false, true, true, removeImage,
+		0.7f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::white.withAlpha(.7f),
+		0.5f);
+	removeBT.addListener(this);
+
+	addAndMakeVisible(&removeBT);
 }
 
 ParameterProxyUI::~ParameterProxyUI()
@@ -37,12 +48,13 @@ void ParameterProxyUI::resized()
 {
 	Rectangle<int> r = getLocalBounds();
 	if (r.getWidth() == 0 || r.getHeight() == 0) return;
-	Rectangle<int> firstLine = r.removeFromTop(20);
-	chooser.setBounds(firstLine.removeFromLeft(50));
-	firstLine.removeFromLeft(2);
-	aliasParam->setBounds(firstLine);
-	r.removeFromTop(2);
-	if (linkedParamUI != nullptr) linkedParamUI->setBounds(r);
+
+	removeBT.setBounds(r.removeFromRight(r.getHeight()));
+	Rectangle<int> paramR = r.removeFromRight(50);
+	if (linkedParamUI != nullptr) linkedParamUI->setBounds(paramR);
+	r.removeFromRight(5);
+	chooser.setBounds(r.removeFromLeft(50));
+	aliasParam->setBounds(r);
 }
 
 void ParameterProxyUI::setLinkedParamUI(Parameter * p)
@@ -67,6 +79,14 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 	}
 
 	resized();
+}
+
+void ParameterProxyUI::buttonClicked(Button * b)
+{
+	if (b == &removeBT)
+	{
+		paramProxy->remove();
+	}
 }
 
 void ParameterProxyUI::linkedParamChanged(Parameter * p)

@@ -25,13 +25,16 @@ ControllableContainerPopupMenu::~ControllableContainerPopupMenu()
 
 void ControllableContainerPopupMenu::populateMenu(PopupMenu * subMenu, ControllableContainer * container, int &currentId)
 {
-	for (auto &c : container->controllables)
+	if (subMenu != this)
 	{
-		if (c->isControllableExposed)
+		for (auto &c : container->controllables)
 		{
-			subMenu->addItem(currentId, c->niceName);
-			controllableList.add(c);
-			currentId++;
+			if (c->isControllableExposed)
+			{
+				subMenu->addItem(currentId, c->niceName);
+				controllableList.add(c);
+				currentId++;
+			}
 		}
 	}
 

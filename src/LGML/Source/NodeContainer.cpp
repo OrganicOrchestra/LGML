@@ -145,6 +145,7 @@ ParameterProxy * NodeContainer::addParamProxy()
 	ParameterProxy * p = new ParameterProxy();
 	addParameter(p);
 	proxyParams.add(p);
+	p->addParameterProxyListener(this);
 	nodeContainerListeners.call(&NodeContainerListener::paramProxyAdded, p);
 
 	return p;
@@ -152,9 +153,11 @@ ParameterProxy * NodeContainer::addParamProxy()
 
 void NodeContainer::removeParamProxy(ParameterProxy * pp)
 {
+	pp->removeParameterProxyListener(this);
+	
+	nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
 	proxyParams.removeAllInstancesOf(pp);
 	removeControllable(pp);
-	nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
 }
 
 
@@ -465,6 +468,11 @@ bool NodeContainer::removeConnection(NodeConnection * c)
 void NodeContainer::askForRemoveNode(ConnectableNode * node)
 {
     removeNode((NodeBase*)node);
+}
+
+void NodeContainer::askForRemoveProxy(ParameterProxy * p)
+{
+	removeParamProxy(p);
 }
 
 

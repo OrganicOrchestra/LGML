@@ -29,7 +29,7 @@ NodeBase.cpp
 
 
 NodeContainer.h
-	line : 69
+	line : 70
 		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
 		//(todo : find a way to have simpler event flow)
 
@@ -62,17 +62,17 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 178
+	line : 602
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
+
+	line : 181
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 276
+	line : 279
 		// TODO nicely handle file format errors?
-
-	line : 594
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
 
 
 TimeManager.h
@@ -134,7 +134,7 @@ TimeManager.cpp
 
 
 MIDIController.cpp
-	line : 123
+	line : 124
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 

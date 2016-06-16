@@ -44,7 +44,8 @@ class NodeContainer :
 	public ConnectableNode,
 	public ConnectableNode::ConnectableNodeListener,
 	public NodeConnection::Listener,
-	public ConnectableNode::RMSListener
+	public ConnectableNode::RMSListener,
+	public ParameterProxy::ParameterProxyListener
 {
 public:
 	NodeContainer(const String &name = "Container");
@@ -115,11 +116,14 @@ public:
 	// Inherited via NodeBase::Listener
 	virtual void askForRemoveNode(ConnectableNode *) override;
 
+	virtual void askForRemoveProxy(ParameterProxy * p) override;
+
 	// Inherited via NodeConnection::Listener
 	virtual void askForRemoveConnection(NodeConnection *) override;
 
 	// Inherited via RMSListener
 	virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) override;
+
 
 	virtual void onContainerParameterChanged(Parameter * p) override;
 

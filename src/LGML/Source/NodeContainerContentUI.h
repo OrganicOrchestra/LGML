@@ -30,7 +30,7 @@ public :
 
 	OwnedArray<ControllableUI> proxiesUI;
 
-	const int proxyUIHeight = 40;
+	const int proxyUIHeight = 20;
 	const int listGap = 2;
 
 	void addParamProxyUI(ParameterProxy *);
@@ -48,6 +48,7 @@ public :
 
 	virtual void paramProxyAdded(ParameterProxy *) override;
 	virtual void paramProxyRemoved(ParameterProxy *) override;
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainerContentUI)
 };

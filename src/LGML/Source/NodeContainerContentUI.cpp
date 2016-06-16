@@ -36,10 +36,12 @@ void NodeContainerContentUI::resized()
 {
 
 	Rectangle<int> r = getLocalBounds().reduced(5);
+
 	editContainerBT.setBounds(r.removeFromTop(20));
-	r.removeFromTop(2);
-	addParamProxyBT.setBounds(r.removeFromTop(20));
 	r.removeFromTop(5);
+
+	addParamProxyBT.setBounds(r.removeFromTop(20));
+	r.removeFromTop(10);
 
 	for (auto &pui : proxiesUI)
 	{

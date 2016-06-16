@@ -17,7 +17,8 @@
 class ParameterProxyUI :
 	public ParameterUI,
 	public ParameterProxy::ParameterProxyListener,
-	public ControllableChooser::Listener
+	public ControllableChooser::Listener,
+	public ButtonListener
 {
 public:
 	ParameterProxyUI(ParameterProxy * proxy);
@@ -28,10 +29,13 @@ public:
 	ParameterProxy * paramProxy;
 	ScopedPointer<StringParameterUI> aliasParam;
 	ScopedPointer<ParameterUI> linkedParamUI;
+	ImageButton removeBT;
 
 	void resized()override ;
 
 	void setLinkedParamUI(Parameter *);
+
+	void buttonClicked(Button * b)override;
 
 	virtual void linkedParamChanged(Parameter * c) override;
 	virtual void choosedControllableChanged(Controllable * c) override;
