@@ -33,6 +33,9 @@ public:
 	virtual void parameterValueChanged(Parameter * p) override;
 	virtual void setLinkedParam(Parameter * p);
 
+
+	void remove();
+
 	// Inherited via Parameter
 	virtual ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 
@@ -44,7 +47,8 @@ public:
 	{
 	public:
 		virtual ~ParameterProxyListener() {}
-		virtual void linkedParamChanged(Parameter * c) = 0;
+		virtual void linkedParamChanged(Parameter *) {};
+		virtual void askForRemoveProxy(ParameterProxy *) {};
 	};
 
 	ListenerList<ParameterProxyListener> proxyListeners;

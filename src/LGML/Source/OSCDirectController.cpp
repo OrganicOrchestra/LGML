@@ -90,7 +90,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                     case Controllable::Type::INT:
                         if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
                         {
-                            int value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+                            int value = msg[0].isInt32() ? msg[0].getInt32() : (int)msg[0].getFloat32();
                             ((Parameter *)c)->setValue(value);
                         }
                         break;
@@ -99,7 +99,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                         if (msg.size() > 0){
                             // cast number to strings
                             if  (msg[0].isInt32() || msg[0].isFloat32()){
-                                int value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+                                float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
                                 ((Parameter *)c)->setValue(String(value));
                             }
                             else if (msg[0].isString()){

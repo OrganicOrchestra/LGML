@@ -69,6 +69,12 @@ void ParameterProxy::setLinkedParam(Parameter * p)
 	proxyListeners.call(&ParameterProxyListener::linkedParamChanged, linkedParam);
 }
 
+void ParameterProxy::remove()
+{
+	DBG("dispatch askForRemove");
+	proxyListeners.call(&ParameterProxyListener::askForRemoveProxy, this);
+}
+
 ControllableUI * ParameterProxy::createDefaultUI(Controllable * targetControllable)
 {
 	if (targetControllable == nullptr) targetControllable = this;
