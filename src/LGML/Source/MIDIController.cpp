@@ -58,7 +58,8 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
 			NLOG("MIDI","CC "+String(message.getControllerNumber()) + " > " + String(message.getControllerValue()));
 		}
 
-		int variableIndex = 128 + message.getControllerNumber();
+		int variableIndex = 128 + message.getControllerNumber() -1;
+		DBG("Variable name " << variables[variableIndex]->parameter->niceName);
 		variables[variableIndex]->parameter->setValue(message.getControllerValue()*1.f / 127.f);
     }
     else if(message.isNoteOnOrOff()){
