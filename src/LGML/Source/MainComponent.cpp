@@ -98,6 +98,7 @@ void MainContentComponent::showAudioSettings()
 
 
     o.runModal();
+
     engine->audioSettingsHandler.saveCurrent();
 
 

@@ -16,6 +16,8 @@
 
 #include "DebugHelpers.h"
 
+
+
 LooperTrack::LooperTrack(LooperNode * looperNode, int _trackIdx) :
 ControllableContainer(String(_trackIdx)),
 parentLooper(looperNode),
@@ -64,6 +66,9 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
     if(updatePendingLooperTrackState(TimeManager::getInstance()->timeInSample.get(), buffer.getNumSamples())){
         padBufferIfNeeded();
+#ifdef BLOCKSIZEGRANULARITY
+        if(trackState==PLAYING)jassert((TimeManager::getInstance()->beatTimeInSample%parentLooper->getBlockSize())==0);
+#endif
     }
 
     // RECORDING
@@ -225,6 +230,7 @@ void LooperTrack::padBufferIfNeeded(){
             if (isMasterTempoTrack()) {
                 //                DBG("release predelay : "+String (trackIdx));
                 const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
+#ifdef BLOCKSIZEGRANULARITY
                 const int blkSize  = parentLooper->getBlockSize();
 
                 const int idealLength = loopSample.getRecordedLength()-sampleToRemove;
@@ -236,13 +242,18 @@ void LooperTrack::padBufferIfNeeded(){
                 loopSample.cropEndOfRecording(loopSample.getRecordedLength() - blkSizeLength);
                 jassert((loopSample.getRecordedLength()%blkSize)==0);
 
-                
                 offsetForPlay=(sampleToRemove-sampleToRemove%blkSize);
                 jassert((offsetForPlay>=0) && (offsetForPlay%blkSize==0));
-
+#else
+                loopSample.cropEndOfRecording(sampleToRemove);
+#endif
 				loopSample.fadeInOut (500,0.200);
                 loopSample.fadeInOut (100,0.000);
+#ifdef BLOCKSIZEGRANULARITY
+                beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength(),parentLooper->getBlockSize()));
+#else
                 beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength()));
+#endif
                 TimeManager::getInstance()->jump(offsetForPlay);
 
 

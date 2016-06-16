@@ -133,12 +133,12 @@ void TimeManager::togglePlay(){
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
     // actualize beatTime in sample
-    beatTimeInSample = (int)(sampleRate*60.0f / BPM->doubleValue());
+    beatTimeInSample = (int)(sampleRate*60.0 / BPM->doubleValue());
 }
 
 void TimeManager::setBPMInternal(double){
     isSettingTempo->setValue(false);
-    beatTimeInSample =(int)(sampleRate*60.0f / BPM->doubleValue());
+    beatTimeInSample =(int)(sampleRate*60.0 / BPM->doubleValue());
     timeInSample = 0;
 }
 
@@ -152,7 +152,7 @@ void TimeManager::jump(int amount){
 
 
 
-int TimeManager::setBPMForLoopLength(int time){
+int TimeManager::setBPMForLoopLength(int time,int granularity){
     double time_seconds = time* 1.0/ sampleRate;
     double beatTime = time_seconds* 1.0/beatPerBar->intValue();
     float barLength = 1;
@@ -161,6 +161,12 @@ int TimeManager::setBPMForLoopLength(int time){
     if(beatTime < .40){beatTime*=2;barLength/=2;}
     // under 60 bpm
     else if(beatTime > 1){beatTime/=2;barLength*=2;}
+    if(granularity>0){
+        int beatInSample = beatTime*sampleRate;
+        beatInSample = beatInSample - beatInSample%granularity;
+        beatTime = beatInSample*1.0/sampleRate;
+    }
+
 
     BPM->setValue( 60.0/beatTime);
     return (int) (barLength*beatPerBar->intValue());

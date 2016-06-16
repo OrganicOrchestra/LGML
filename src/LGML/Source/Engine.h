@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    Engine.h
-    Created: 2 Apr 2016 11:03:21am
-    Author:  Martin Hermant
+ Engine.h
+ Created: 2 Apr 2016 11:03:21am
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef ENGINE_H_INCLUDED
 #define ENGINE_H_INCLUDED
@@ -39,7 +39,7 @@ public:
     void closeAudio();
 
 
-	void suspendAudio(bool);
+    void suspendAudio(bool);
 
     void parseCommandline(const String & );
 
@@ -61,24 +61,27 @@ public:
     var getJSONData();
     void loadJSONData(var data);
 
-	bool checkFileVersion(DynamicObject * metaData);
-	int versionStringToInt(const String &version);
-	String getMinimumRequiredFileVersion();
+    bool checkFileVersion(DynamicObject * metaData);
+    int versionStringToInt(const String &version);
+    String getMinimumRequiredFileVersion();
 
     void  stimulateAudio(bool);
     ScopedPointer<AudioFucker> stimulator;
 
-    class MultipleAudioSettingsHandler : public ChangeListener{
+    class MultipleAudioSettingsHandler : public ChangeListener,public Timer{
     public:
         MultipleAudioSettingsHandler():oldSettingsId("oldAudioSettings"){}
         Identifier oldSettingsId;
         void changeListenerCallback(ChangeBroadcaster * )override;
         void saveCurrent();
         String getConfigName();
+        void load();
         String lastConfigName;
+        void timerCallback()override;
+
     };
     MultipleAudioSettingsHandler audioSettingsHandler;
-
+    
 };
 
 

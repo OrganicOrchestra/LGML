@@ -129,7 +129,7 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 203
+	line : 209
 		//TODO: check
 
 
@@ -156,7 +156,7 @@ ShapeShifterContainer.cpp
 
 
 LooperTrack.cpp
-	line : 123
+	line : 128
 		// TODO subBlock precision ?
 		// not sure -> triggers are updated at block size granularity
 		// for now reduce block approximation noise when quantized

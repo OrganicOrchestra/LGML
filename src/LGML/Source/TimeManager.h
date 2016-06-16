@@ -53,7 +53,7 @@ public TimeMasterCandidate
     void onContainerTriggerTriggered(Trigger * ) override;
     void setSampleRate(int sr);
 
-    int setBPMForLoopLength(int time);
+    int setBPMForLoopLength(int time,int granularity=0);
 
 
 	void jump(int amount);

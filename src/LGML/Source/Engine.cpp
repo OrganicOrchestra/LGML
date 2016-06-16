@@ -160,6 +160,11 @@ void Engine::createNewGraph(){
 
 
 void Engine::MultipleAudioSettingsHandler::changeListenerCallback(ChangeBroadcaster *){
+//    Trick allowing to defer all changes have the last word
+    startTimer(1);
+}
+void Engine::MultipleAudioSettingsHandler::timerCallback(){
+
     String configName = getConfigName();
     if(lastConfigName == configName){return;}
     ScopedPointer<XmlElement> oldSetupXml = getAppProperties().getUserSettings()->getXmlValue(oldSettingsId);
@@ -167,17 +172,33 @@ void Engine::MultipleAudioSettingsHandler::changeListenerCallback(ChangeBroadcas
 
     XmlElement * xml = oldSetupXml->getChildByName(configName);
     lastConfigName = configName;
+
+
     if(xml!=nullptr){
-            getAudioDeviceManager().initialise(64, 64, xml->getChildElement(0), true);
+        XmlElement * xmlSetup = xml->getChildElement(0);
+        if(xmlSetup){
+            AudioDeviceManager::AudioDeviceSetup setup ;
+            getAudioDeviceManager().getAudioDeviceSetup(setup);
+            setup.bufferSize = xmlSetup->getIntAttribute("audioDeviceBufferSize",setup.bufferSize);
+            setup.sampleRate = xmlSetup->getDoubleAttribute("audioDeviceRate",setup.sampleRate);
+
+            setup.inputChannels .parseString (xmlSetup->getStringAttribute ("audioDeviceInChans",  "11"), 2);
+            setup.outputChannels.parseString (xmlSetup->getStringAttribute ("audioDeviceOutChans", "11"), 2);
+            setup.useDefaultInputChannels=false;
+            setup.useDefaultOutputChannels = false;
+
+            getAudioDeviceManager().setAudioDeviceSetup(setup, true);
+        }
     }
 
+    stopTimer();
 
 }
 
 String Engine::MultipleAudioSettingsHandler::getConfigName(){
-    juce::AudioDeviceManager::AudioDeviceSetup result;
-    getAudioDeviceManager().getAudioDeviceSetup(result);
-    String idealName = result.inputDeviceName+"_"+result.outputDeviceName;
+    AudioDeviceManager::AudioDeviceSetup setup ;
+    getAudioDeviceManager().getAudioDeviceSetup(setup);
+    String idealName = setup.inputDeviceName+"_"+setup.outputDeviceName;
     String escaped = StringUtil::toShortName(idealName);
     return escaped;
 
@@ -189,21 +210,14 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent(){
     ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
     getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
     ScopedPointer<XmlElement> oldXml = getAppProperties().getUserSettings()->getXmlValue(oldSettingsId);
-    if(!oldXml){
-        oldXml = new XmlElement(oldSettingsId);
-
-    }
+    if(!oldXml){oldXml = new XmlElement(oldSettingsId);}
     
     String configName = getConfigName();
-
     XmlElement * oldConfig = oldXml->getChildByName(configName);
 
-    if(oldConfig){
-        oldXml->removeChildElement(oldConfig, true);
-    }
+    if(oldConfig){oldXml->removeChildElement(oldConfig, true);}
     oldConfig = oldXml->createNewChildElement(configName) ;
     oldConfig->addChildElement(getAudioDeviceManager().createStateXml());
-
 
     
     getAppProperties().getUserSettings()->setValue(oldSettingsId.toString(), oldXml);
