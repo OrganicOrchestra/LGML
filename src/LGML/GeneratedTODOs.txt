@@ -8,10 +8,10 @@
 
 
 ControllableContainer.cpp
-	line : 419
+	line : 423
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 102
+	line : 103
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
 
@@ -62,10 +62,6 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 585
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
-
 	line : 178
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
@@ -73,6 +69,10 @@ NodeContainer.cpp
 
 	line : 276
 		// TODO nicely handle file format errors?
+
+	line : 594
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
 
 
 TimeManager.h
@@ -139,7 +139,7 @@ MIDIController.cpp
 
 
 ControllableContainer.h
-	line : 134
+	line : 137
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
