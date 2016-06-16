@@ -60,7 +60,7 @@ void NodeManager::loadJSONDataInternal(var data)
 void NodeManager::updateAudioGraph() {
 	AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
     if(ad == nullptr) return;
-    ScopedLock lk( getAudioDeviceManager().getAudioCallbackLock());
+    ScopedLock lk( audioGraph.getCallbackLock());
     audioGraph.prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());
 
 }

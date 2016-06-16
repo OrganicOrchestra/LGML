@@ -21,7 +21,7 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 305
+	line : 307
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 101

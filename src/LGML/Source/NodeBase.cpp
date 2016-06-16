@@ -224,13 +224,13 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
                          getSampleRate(),
                          getBlockSize());
 
-    rmsValuesIn.clear();
-    for (int i = 0; i < getTotalNumInputChannels(); i++) rmsValuesIn.add(0);
 
-    if (NodeManager::getInstanceWithoutCreating() != nullptr)
-    {
+
+    if (NodeManager::getInstanceWithoutCreating() != nullptr){
         NodeManager::getInstance()->updateAudioGraph();
     }
+    rmsValuesIn.clear();
+    for (int i = 0; i < getTotalNumInputChannels(); i++) rmsValuesIn.add(0);
 
     int newNum = getTotalNumInputChannels();
     if (newNum > oldNumChannels)
@@ -260,14 +260,16 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
                          getSampleRate(),
                          getBlockSize());
 
-    rmsValuesOut.clear();
-    for (int i = 0; i < getTotalNumOutputChannels(); i++) rmsValuesIn.add(0);
+
 
     if (NodeManager::getInstanceWithoutCreating() != nullptr)
     {
         NodeManager::getInstance()->updateAudioGraph();
     }
 
+    rmsValuesOut.clear();
+    for (int i = 0; i < getTotalNumOutputChannels(); i++) rmsValuesOut.add(0);
+    
     int newNum = getTotalNumOutputChannels();
     if (newNum > oldNumChannels)
     {

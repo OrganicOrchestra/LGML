@@ -62,6 +62,7 @@ void AudioDeviceOutNode::onContainerParameterChanged(Parameter * p){
 
 
 void AudioDeviceOutNode::updateVolMutes(){
+    NodeBase::suspendProcessing(true);
     while(lastNumberOfOutputs < desiredNumAudioOutput->intValue()){
         addVolMute();
     }
@@ -69,6 +70,7 @@ void AudioDeviceOutNode::updateVolMutes(){
         removeVolMute();
     }
     setPreferedNumAudioInput(desiredNumAudioOutput->intValue());
+    NodeBase::suspendProcessing(false);
 }
 
 void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
