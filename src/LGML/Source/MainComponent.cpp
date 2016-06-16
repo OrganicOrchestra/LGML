@@ -96,11 +96,9 @@ void MainContentComponent::showAudioSettings()
     o.useNativeTitleBar             = false;
     o.resizable                     = false;
 
+
     o.runModal();
+    engine->audioSettingsHandler.saveCurrent();
 
-    ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
-
-    getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
-    getAppProperties().getUserSettings()->saveIfNeeded();
 
 }

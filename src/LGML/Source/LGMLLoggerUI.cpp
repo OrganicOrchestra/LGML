@@ -89,6 +89,7 @@ LGMLLoggerUI::LGMLLoggerUI(const String &contentName, LGMLLogger * l) :
 	logListComponent->setColour(TableListBox::backgroundColourId, BG_COLOR);
 	logListComponent->setHeader(thc);
 	addAndMakeVisible(logListComponent);
+
 	LOG("LGML v" + String(ProjectInfo::versionString) + "\nby OrganicOrchestra");
 	LOG("please provide logFile for any bug report :\nlogFile in " + l->fileWriter.getFilePath());
 

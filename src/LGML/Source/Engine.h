@@ -68,6 +68,17 @@ public:
     void  stimulateAudio(bool);
     ScopedPointer<AudioFucker> stimulator;
 
+    class MultipleAudioSettingsHandler : public ChangeListener{
+    public:
+        MultipleAudioSettingsHandler():oldSettingsId("oldAudioSettings"){}
+        Identifier oldSettingsId;
+        void changeListenerCallback(ChangeBroadcaster * )override;
+        void saveCurrent();
+        String getConfigName();
+        String lastConfigName;
+    };
+    MultipleAudioSettingsHandler audioSettingsHandler;
+
 };
 
 
