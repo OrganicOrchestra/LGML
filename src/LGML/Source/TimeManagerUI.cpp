@@ -24,7 +24,7 @@ timeBar(_timeManager){
     timeManager->currentBar->addAsyncParameterListener(this);
 
     addAndMakeVisible(timeBar);
-    bpmStepper = timeManager->BPM->createStepper();
+    bpmStepper = timeManager->BPM->createSlider();
 
     addAndMakeVisible(bpmStepper);
 
@@ -51,6 +51,7 @@ TimeManagerUI::~TimeManagerUI(){
 
 
 void TimeManagerUI::newMessage(const Parameter::ParamWithValue & pv) {
+
     if(pv.parameter == timeManager->playState){
         if((bool)pv.value){timeBar.async_play();}
         else{ timeBar.async_stop();}
@@ -144,6 +145,7 @@ void TimeManagerUI::TimeBar::zeroOutBeatComponents(){
 void TimeManagerUI::TimeBar::showBeatComponents(bool show){
     for(int i = 0 ; i< beatComponents.size() ; i++){beatComponents.getUnchecked(i)->setVisible(show);}
 }
+
 void TimeManagerUI::TimeBar::timerCallback(){
     if(isSettingTempo){repaint();}
     else{
