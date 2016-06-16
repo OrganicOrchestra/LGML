@@ -133,12 +133,12 @@ void TimeManager::togglePlay(){
 void TimeManager::setSampleRate(int sr){
     sampleRate = sr;
     // actualize beatTime in sample
-    beatTimeInSample = (int)(sampleRate*60.0 / BPM->doubleValue());
+    beatTimeInSample = (int)(sampleRate*60.0 / BPM->floatValue());
 }
 
 void TimeManager::setBPMInternal(double){
     isSettingTempo->setValue(false);
-    beatTimeInSample =(int)(sampleRate*60.0 / BPM->doubleValue());
+    beatTimeInSample =(float)(sampleRate*60.0 / BPM->floatValue());
     timeInSample = 0;
 }
 
@@ -162,13 +162,13 @@ int TimeManager::setBPMForLoopLength(int time,int granularity){
     // under 60 bpm
     else if(beatTime > 1){beatTime/=2;barLength*=2;}
     if(granularity>0){
-        int beatInSample = beatTime*sampleRate;
+		int beatInSample = (int)(beatTime*sampleRate);
         beatInSample = beatInSample - beatInSample%granularity;
         beatTime = beatInSample*1.0/sampleRate;
     }
 
 
-    BPM->setValue( 60.0/beatTime);
+    BPM->setValue(60.0/beatTime);
     return (int) (barLength*beatPerBar->intValue());
 }
 
@@ -204,7 +204,7 @@ bool TimeManager::isLocked(){
     return _isLocked;
 }
 bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
-    result.bpm = BPM->doubleValue();
+    result.bpm = BPM->floatValue();
     result.isPlaying = playState->boolValue();
     result.isRecording = isSettingTempo->boolValue();
     //TODO: check

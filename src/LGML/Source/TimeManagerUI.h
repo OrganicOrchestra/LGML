@@ -13,6 +13,7 @@
 
 #include "TimeManager.h"
 #include "FloatStepperUI.h"
+#include "FloatSliderUI.h"
 #include "TriggerBlinkUI.h"
 #include "IntStepperUI.h"
 #include "ShapeShifterContent.h"
@@ -73,7 +74,7 @@ class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener
 
     };
 
-    ScopedPointer<FloatStepperUI>  bpmStepper;
+    ScopedPointer<FloatSliderUI>  bpmStepper;
     ScopedPointer<IntStepperUI> quantizStepper;
     ScopedPointer<TriggerBlinkUI> playTrig,stopTrig;
 
