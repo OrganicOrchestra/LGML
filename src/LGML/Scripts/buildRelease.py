@@ -6,8 +6,8 @@ import multiprocessing
 
 njobs = multiprocessing.cpu_count()
 
-# configuration  = "Release"
-configuration  = "Debug"
+configuration  = "Release"
+# configuration  = "Debug"
 bumpVersion = False
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
@@ -22,7 +22,7 @@ localExportPath = os.path.abspath(localExportPath)+"/"
 proJucerPath = "/Applications/ProJucer.app/Contents/MacOS/ProJucer"
 JuceProjectPath = "../LGML.jucer"
 xcodeProjPath = "../Builds/MacOSX/" 
-executable_name = "LGML_"+("" if configuration=="Release" else configuration)
+executable_name = "LGML"+("" if configuration=="Release" else "_"+configuration)
 gitPath = "../../../"
 appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
@@ -39,7 +39,7 @@ def getVersion():
 	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
 	
 def generateProductBaseName():
-	return executable_name+("" if configuration=="Release" else "_v"+str(getVersion()))
+	return executable_name+ "_v"+str(getVersion())
 
 
 getVersion()
