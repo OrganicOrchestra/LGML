@@ -86,7 +86,9 @@ void AudioDeviceInNodeContentUI::updateVuMeters()
 
 	for (int i = 0; i < desiredNumInputs; i++)
 	{
-		volumes[i]->defaultColor = i < actualNumberOfMutes ? PARAMETER_FRONT_COLOR : Colours::lightgrey;
+        bool isActive = i < actualNumberOfMutes;
+		volumes[i]->defaultColor = isActive ? PARAMETER_FRONT_COLOR : Colours::lightgrey;
+        vuMeters[i]->isActive = isActive;
 		volumes[i]->repaint();
 	}
 	resized();

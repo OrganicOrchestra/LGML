@@ -26,6 +26,7 @@ public:
 	Type type;
 
     bool volChanged;
+    bool isActive;
 	Colour colorHigh;
 	Colour colorLow;
 
@@ -38,6 +39,7 @@ public:
         startTimer(1000/40);
 		colorHigh = Colours::red;
 		colorLow = Colours::lightgreen;
+        isActive = true;
     }
 
     ~VuMeter(){
@@ -65,8 +67,10 @@ public:
         }
     }
 
+
 	void updateValue(float value)
 	{
+        if(!isActive){setVoldB(0);return;}
 		float newVoldB = jmap<float>(20.0f*log10(value / 0.74f), 0.0f, 6.0f, 0.85f, 1.0f);
 
 		if ((newVoldB >= 0 || voldB!=0) && std::abs(newVoldB - voldB)>0.02f) {
