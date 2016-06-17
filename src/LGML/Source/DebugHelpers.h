@@ -43,19 +43,20 @@ public:
 		source(getLogSource(log)),
 		content(getLogContent(log))
 	{
+        _arr = new StringArray();
 		time = Time::getCurrentTime();
-        _arr.addTokens(content,StringRef("\n"),StringRef());
+        _arr->addTokens(content,StringRef("\n"),StringRef());
     }
 	Time time;
     String content;
     String source;
-    int getNumLines(){return  _arr.size();}
-    void trimToFit(int num){if(_arr.size()>num)_arr.removeRange(0,_arr.size()-num);}
-    const String & getLine(int i){return _arr[i]; }
+    int getNumLines(){return  _arr->size();}
+    void trimToFit(int num){if(_arr->size()>num)_arr->removeRange(0,_arr->size()-num);}
+    const String & getLine(int i){return _arr->getReference(i); }
 
 
 private:
-        StringArray _arr;
+        ScopedPointer<StringArray> _arr;
 
 };
 

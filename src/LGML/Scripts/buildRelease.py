@@ -6,8 +6,8 @@ import multiprocessing
 
 njobs = multiprocessing.cpu_count()
 
-configuration  = "Release"
-# configuration  = "Debug"
+# configuration  = "Release"
+configuration  = "Debug"
 bumpVersion = False
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
