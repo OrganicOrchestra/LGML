@@ -35,7 +35,7 @@ class PlayableBuffer {
     }
 
     bool writeAudioBlock(const AudioBuffer<float> & buffer){
-
+        jassert(state==BUFFER_RECORDING);
         if (recordNeedle + buffer.getNumSamples()> loopSample.getNumSamples()) {
             jassertfalse;
             return false;
@@ -53,7 +53,7 @@ class PlayableBuffer {
     int getNumSamples() const{return loopSample.getNumSamples();}
 
     void readNextBlock(AudioBuffer<float> & buffer){
-
+        jassert(isOrWasPlaying());
         if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
         {
 
@@ -78,7 +78,7 @@ class PlayableBuffer {
         }
 
         // stitch audio jumps by quick fadeIn/Out
-        if(isJumping && playNeedle!=startJumpNeedle){
+        if(isJumping && playNeedle!=startJumpNeedle && state!=BUFFER_STOPPED){
             LOG("a:jump "<<startJumpNeedle <<","<< playNeedle);
             const int halfBlock =  buffer.getNumSamples()/2;
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
@@ -153,7 +153,7 @@ class PlayableBuffer {
     }
 
     void startPlay(){
-        playNeedle = 0;
+        setPlayNeedle(0);
     }
 
     bool checkTimeAlignment(uint64 curTime,const int minQuantifiedFraction){
@@ -188,12 +188,13 @@ class PlayableBuffer {
         switch (newState){
             case BUFFER_RECORDING:
                 recordNeedle = 0;
-                playNeedle = -1;
+                setPlayNeedle(0);
                 break;
             case BUFFER_PLAYING:
-                playNeedle = 0;
+                setPlayNeedle( 0);
                 break;
             case BUFFER_STOPPED:
+                setPlayNeedle(0);
                 break;
         }
         state = newState;
@@ -203,6 +204,7 @@ class PlayableBuffer {
     void endProcessBlock(){
         lastState = state;
         stateChanged =false;
+        isJumping = false;
     }
 
     BufferState getState() const{

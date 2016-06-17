@@ -47,12 +47,8 @@ public TimeMasterCandidate
 
 
     IntParameter * quantizedBarFraction;
-    void incrementClock(int time);
 
-    void onContainerParameterChanged(Parameter * )override;
-    void onContainerTriggerTriggered(Trigger * ) override;
     void setSampleRate(int sr);
-
     int setBPMForLoopLength(int time,int granularity=0);
 
 
@@ -61,12 +57,15 @@ public TimeMasterCandidate
     // used when triggering multiple change
     void lockTime(bool );
     bool isLocked();
+
+
     void togglePlay();
 
     int getBeat();
     int getNextGlobalQuantifiedTime();
     int getNextQuantifiedTime(int barFraction);
     uint64 getTimeForNextBeats(int beats);
+    uint64 getTimeInSample();
 
 
     //return percent in beat
@@ -79,7 +78,6 @@ public TimeMasterCandidate
     void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
 	*/
 
-    Atomic<uint64> timeInSample;
     int beatTimeInSample;
     int sampleRate;
     int blockSize;
@@ -94,6 +92,27 @@ public TimeMasterCandidate
     bool getCurrentPosition (CurrentPositionInfo& result)override;
 
 private:
+
+    struct TimeState{
+        TimeState():isPlaying(false),time(0){}
+        bool isPlaying;
+        uint64 time;
+    };
+
+    TimeState timeState,desiredTimeState;
+    
+    void shouldStop();
+    void shouldPlay();
+    void shouldRestart(bool );
+    void shouldGoToZero();
+    
+    void updateState();
+    void incrementClock(int time);
+
+    void onContainerParameterChanged(Parameter * )override;
+    void onContainerTriggerTriggered(Trigger * ) override;
+
+
     void setBPMInternal(double BPM);
 
     virtual void audioDeviceAboutToStart (AudioIODevice* device)override {

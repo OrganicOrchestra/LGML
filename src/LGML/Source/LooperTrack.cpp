@@ -64,7 +64,7 @@ originBPM(0)
 void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
-    if(updatePendingLooperTrackState(TimeManager::getInstance()->timeInSample.get(), buffer.getNumSamples())){
+    if(updatePendingLooperTrackState(TimeManager::getInstance()->getTimeInSample(), buffer.getNumSamples())){
         padBufferIfNeeded();
 #ifdef BLOCKSIZEGRANULARITY
         if(trackState==PLAYING)jassert((TimeManager::getInstance()->beatTimeInSample%parentLooper->getBlockSize())==0);
@@ -232,13 +232,13 @@ void LooperTrack::padBufferIfNeeded(){
                 const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
 #ifdef BLOCKSIZEGRANULARITY
                 const int blkSize  = parentLooper->getBlockSize();
+                beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength(),blkSize));
 
-                const int idealLength = loopSample.getRecordedLength()-sampleToRemove;
                 // this is a length that is a multiple of blockSize
                 // it avoids overflow due to time granularity being blockSize
                 // i.e each call processblock access to a continuous block
-                const int blkSizeLength = idealLength - idealLength%blkSize;
-
+                const int blkSizeLength = beatLength->intValue() * TimeManager::getInstance()->beatTimeInSample;
+                jassert(blkSizeLength<= loopSample.getRecordedLength());
                 loopSample.cropEndOfRecording(loopSample.getRecordedLength() - blkSizeLength);
                 jassert((loopSample.getRecordedLength()%blkSize)==0);
 
@@ -246,14 +246,13 @@ void LooperTrack::padBufferIfNeeded(){
                 jassert((offsetForPlay>=0) && (offsetForPlay%blkSize==0));
 #else
                 loopSample.cropEndOfRecording(sampleToRemove);
-#endif
-				loopSample.fadeInOut (500,0.200);
-                loopSample.fadeInOut (100,0.000);
-#ifdef BLOCKSIZEGRANULARITY
-                beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength(),parentLooper->getBlockSize()));
-#else
                 beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength()));
 #endif
+
+
+
+                loopSample.fadeInOut (500,0.200);
+                loopSample.fadeInOut (100,0.000);
                 TimeManager::getInstance()->jump(offsetForPlay);
 
 
