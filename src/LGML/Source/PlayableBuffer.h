@@ -28,10 +28,10 @@ class PlayableBuffer {
     lastState(BUFFER_STOPPED)
     {
 
-//        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
-//            for(int i = 0 ; i < numChannels ; i++){loopSample.addSample(i, j, v);}
-//        }
-                loopSample.clear();
+        //        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
+        //            for(int i = 0 ; i < numChannels ; i++){loopSample.addSample(i, j, v);}
+        //        }
+        loopSample.clear();
     }
 
     bool writeAudioBlock(const AudioBuffer<float> & buffer){
@@ -54,28 +54,7 @@ class PlayableBuffer {
 
     void readNextBlock(AudioBuffer<float> & buffer){
         jassert(isOrWasPlaying());
-        if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
-        {
 
-            //assert false for now see above
-#ifdef BLOCKSIZEGRANULARITY
-            LOG("buffer not a multiple of blockSize");
-#endif
-            //            // crop buffer to ensure not coming back
-            //            recordNeedle = (playNeedle + buffer.getNumSamples());
-            int firstSegmentLength = recordNeedle - playNeedle;
-            int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
-            // TODO sync size because buffer can be larger and we save few useless iteration
-
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
-            }
-            playNeedle = secondSegmentLength;
-
-
-        }
 
         // stitch audio jumps by quick fadeIn/Out
         if(isJumping && playNeedle!=startJumpNeedle && state!=BUFFER_STOPPED){
@@ -93,9 +72,33 @@ class PlayableBuffer {
 
         }
         else{
-            for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-                int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-                buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, buffer.getNumSamples());
+            if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
+            {
+
+                //assert false for now see above
+#ifdef BLOCKSIZEGRANULARITY
+                LOG("buffer not a multiple of blockSize");
+#endif
+                //            // crop buffer to ensure not coming back
+                //            recordNeedle = (playNeedle + buffer.getNumSamples());
+                int firstSegmentLength = recordNeedle - playNeedle;
+                int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
+                // TODO sync size because buffer can be larger and we save few useless iteration
+
+                for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+                    int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+                    buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
+                    buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
+                }
+                playNeedle = secondSegmentLength;
+
+
+            }
+            else{
+                for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
+                    int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+                    buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, buffer.getNumSamples());
+                }
             }
         }
         isJumping = false;
@@ -221,8 +224,8 @@ class PlayableBuffer {
     int getRecordedLength() const{return recordNeedle;}
 
     int getPlayPos() const{return playNeedle;}
-
-
+    
+    
     bool stateChanged;
 
     int getStartJumpPos() const{return startJumpNeedle;}

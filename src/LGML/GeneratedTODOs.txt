@@ -21,7 +21,7 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 307
+	line : 306
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 101
@@ -42,7 +42,7 @@ VSTNode.cpp
 
 
 PlayableBuffer.h
-	line : 67
+	line : 85
 		// TODO sync size because buffer can be larger and we save few useless iteration
 
 

@@ -28,8 +28,6 @@ public MIDIListener
 
 public:
     StringParameter *  identifierString;
-    
-
     Array<FloatParameter *> VSTParameters;
 
 
