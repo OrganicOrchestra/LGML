@@ -12,7 +12,7 @@ bumpVersion = False
 sendToOwncloud = True
 specificVersion = ""#0.1.1"
 cleanFirst = False;
-
+architecture = "i386"
 
 
 
@@ -81,6 +81,7 @@ def buildApp(xcodeProjPath,configuration,appPathm,njobs,clean = False):
 	sh("cd "+xcodeProjPath+ " && "\
 		+" xcodebuild -project LGML.xcodeproj" \
 		+" -configuration "+configuration
+		+" -arch "+architecture
 		+" -verbose -jobs "+str(njobs))
 
 def createAppdmgJSON(appPath ,destPath):
