@@ -37,8 +37,6 @@ NodeContainer.h
 VSTNode.cpp
 	line : 113
 		// TODO check that it actually works
-		//    desc->numInputChannels = jmin(desc->numInputChannels, getMainBusNumInputChannels());
-		//    desc->numOutputChannels = jmin(desc->numOutputChannels, getMainBusNumOutputChannels());
 
 
 PlayableBuffer.h
