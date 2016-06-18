@@ -11,6 +11,7 @@
 #include "VSTNode.h"
 #include "VSTNodeUI.h"
 #include "NodeManager.h"
+#include "DebugHelpers.h"
 
 AudioDeviceManager& getAudioDeviceManager();
 
@@ -147,7 +148,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 
     else {
 
-        DBG(errorMessage);
+        LOG(errorMessage);
         jassertfalse;
     }
 }
