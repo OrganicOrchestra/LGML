@@ -215,21 +215,20 @@ void LooperNodeContentUI::TrackUI::trackStateChangedAsync(const LooperTrack::Tra
             mainColour = Colours::green.brighter(.3f);
             break;
 
-        case LooperTrack::TrackState::SHOULD_RECORD:
+        case LooperTrack::TrackState::WILL_RECORD:
             mainColour = Colours::orange;
             break;
 
-        case LooperTrack::TrackState::SHOULD_PLAY:
+        case LooperTrack::TrackState::WILL_PLAY:
             mainColour = Colours::cadetblue;
             break;
 
-        case LooperTrack::TrackState::SHOULD_CLEAR:
         case LooperTrack::TrackState::CLEARED:
             mainColour = Colours::grey;
             break;
 
         case LooperTrack::TrackState::STOPPED:
-        case LooperTrack::TrackState::SHOULD_STOP:
+        case LooperTrack::TrackState::WILL_STOP:
             mainColour = Colours::grey.darker();
             break;
 

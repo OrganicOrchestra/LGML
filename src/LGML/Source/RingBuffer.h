@@ -13,84 +13,79 @@
 
 #include "JuceHeader.h"
 
-class RingBuffer{
+
+
+/*
+ helper class for bipartite buffer
+ allowing having constant access to contiguous memory in a circular buffer
+ */
+class BipBuffer{
+
 public:
-
-    RingBuffer(int size):ringSize(size),writeNeedle(0),contiguousWriteNeedle(0){
-        buf.setSize(2, size);
-        buf.clear();
-
+    BipBuffer(int _channels,int size,int maxBlockSize):numChannels(_channels){
+        phantomSize = size;
+        buf.setSize(_channels,3*size,false,true);
+        writeNeedle = 0;
     }
-    AudioSampleBuffer buf;
-
-    uint32 ringSize;
-    uint32 writeNeedle;
 
     void writeBlock(AudioSampleBuffer & newBuf){
-        int numChans =newBuf.getNumChannels();
+
+
+        jassert(newBuf.getNumChannels()>=numChannels);
         int toCopy = newBuf.getNumSamples();
-        buf.setSize(numChans,buf.getNumSamples(),true,true);
 
-
-        if( writeNeedle + toCopy > ringSize){
-            int firstSeg = ringSize-writeNeedle ;
-            for(int i = numChans-1;i>=0 ;--i){
-                buf.copyFrom(i, writeNeedle, newBuf, i, 0, firstSeg);
+        if( writeNeedle + toCopy > 2*phantomSize){
+            int firstSeg = 2*phantomSize-(writeNeedle) ;
+            jassert(firstSeg<newBuf.getNumSamples());
+            for(int i = numChannels-1;i>=0 ;--i){
+                safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
             }
-            for(int i = numChans-1;i>=0 ;--i){
-                buf.copyFrom(i,0,newBuf,i,firstSeg,toCopy-firstSeg);
+            for(int i = numChannels-1;i>=0 ;--i){
+                safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
             }
         }
         else{
-            for(int i = numChans-1;i>=0 ;--i){
-                buf.copyFrom(i, writeNeedle, newBuf,i, 0, toCopy);            }
+            for(int i = numChannels-1;i>=0 ;--i){
+                safeCopy(newBuf.getReadPointer(i),toCopy,i);
+            }
         }
-        writeNeedle+=toCopy;
-        writeNeedle%=ringSize;
-
-        // avoid wrapping errors when checking if contiguous need update
-        contiguousWriteNeedle+=1;
     }
 
 
     const AudioBuffer<float> & getLastBlock(int num){
-
-        if(num!=contiguousBuffer.getNumSamples() || writeNeedle!=contiguousWriteNeedle){
-            updateContiguousBuffer(num);
+        jassert(num<phantomSize);
+        pointers.ensureStorageAllocated(numChannels);
+        for(int i = 0 ; i < numChannels ; i++){
+            pointers.set(i,buf.getArrayOfWritePointers()[i] + phantomSize+ writeNeedle-num);
+            DBG((uint64)pointers[i]);
         }
-        else{
-
-        }
+        contiguousBuffer.setDataToReferTo(pointers.getRawDataPointer(), numChannels, num);
         return contiguousBuffer;
     }
 
-
+    AudioSampleBuffer buf;
 private:
+    void safeCopy(const float * b,int s,int channel){
+        buf.copyFrom(channel, phantomSize+writeNeedle, b, s);
 
-    void updateContiguousBuffer(int num){
-
-        jassert(num <= (int)ringSize);
-        contiguousBuffer.setSize(buf.getNumChannels(),num);
-        int startIdx = writeNeedle-num;
-        if(startIdx>=0){
-            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
-                contiguousBuffer.copyFrom(i, 0, buf, i, startIdx, num);
-            }
+        if(writeNeedle>phantomSize){
+            buf.copyFrom(channel, writeNeedle,b,s);
         }
-        else{
+        writeNeedle+=s;
+        writeNeedle%=2*phantomSize;
 
-            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
-                contiguousBuffer.copyFrom(i, 0, buf, i, ringSize+startIdx, -startIdx);
-            }
-            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
-                contiguousBuffer.copyFrom(i,-startIdx,buf,i,0,num+startIdx);
-            }
-        }
-        contiguousWriteNeedle = writeNeedle;
     }
-    AudioSampleBuffer contiguousBuffer;
-    uint32 contiguousWriteNeedle = 0 ;
+    int writeNeedle;
+    int phantomSize;
+    int numChannels ;
+    AudioBuffer<float> contiguousBuffer;
+    Array<float*> pointers ;
+    
+    
+    
+    
 };
+
 
 
 
@@ -171,68 +166,90 @@ static RingBufferTest ringBufferTest;
 
 
 //not used atm
-/*
- helper class for bipartite buffer
- allowing having constant access to contiguous memory in a circular buffer
- */
-//class BipBuffer{
+// triggers glith in some time first time buffer is allocated...
+
 //
+//class RingBuffer{
 //public:
-//    BipBuffer(int size){
-//        phantomSize = size;
-//        buf.setSize(1,3*size);
-//        writeNeedle = 0;
+//
+//    RingBuffer(int _channels,int size,int maxBlockSize):channels(_channels),ringSize(size),writeNeedle(0),contiguousWriteNeedle(0){
+//        buf.setSize(channels, size);
+//        buf.clear();
+//        contiguousBuffer.setSize(channels, maxBlockSize);
+//        contiguousOutDated = true;
+//
 //    }
+//    AudioSampleBuffer buf;
+//    bool contiguousOutDated;
+//
+//    uint32 ringSize;
+//    uint32 writeNeedle;
 //
 //    void writeBlock(AudioSampleBuffer & newBuf){
-//
-//        buf.setSize(newBuf.getNumChannels(),buf.getNumSamples());
-//
-//
+//        int numChans =channels;
 //        int toCopy = newBuf.getNumSamples();
+//        buf.setSize(numChans,buf.getNumSamples(),true,true,true);
 //
-//        if( phantomSize+writeNeedle + toCopy > 3*phantomSize){
-//            int firstSeg = 3*phantomSize-(phantomSize+writeNeedle) ;
-//            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-//                safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
+//
+//        if( writeNeedle + toCopy > ringSize){
+//            int firstSeg = ringSize-writeNeedle ;
+//            for(int i = numChans-1;i>=0 ;--i){
+//                buf.copyFrom(i, writeNeedle, newBuf, i, 0, firstSeg);
 //            }
-//            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-//                safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
+//            for(int i = numChans-1;i>=0 ;--i){
+//                buf.copyFrom(i,0,newBuf,i,firstSeg,toCopy-firstSeg);
 //            }
 //        }
 //        else{
-//            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-//                safeCopy(newBuf.getReadPointer(i),toCopy,i);
+//            for(int i = numChans-1;i>=0 ;--i){
+//                buf.copyFrom(i, writeNeedle, newBuf,i, 0, toCopy);            }
+//        }
+//        writeNeedle+=toCopy;
+//        writeNeedle%=ringSize;
+//
+//        // avoid wrapping errors when checking if contiguous need update
+//        contiguousOutDated = true;
+//    }
+//
+//
+//    const AudioBuffer<float> & getLastBlock(int num){
+//
+//        if(num!=contiguousBuffer.getNumSamples() || contiguousOutDated){
+//            updateContiguousBuffer(num);
+//        }
+//
+//        return contiguousBuffer;
+//    }
+//
+//
+//private:
+//
+//    void updateContiguousBuffer(int num){
+//
+//        jassert(num <= (int)ringSize);
+//        contiguousBuffer.setSize(buf.getNumChannels(),num,false,false,true);
+//        int startIdx = writeNeedle-num;
+//        if(startIdx>=0){
+//            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
+//                contiguousBuffer.copyFrom(i, 0, buf, i, startIdx, num);
 //            }
 //        }
-//    }
+//        else{
 //
-//
-//    const float* getLastBlock(int num,int channel=0){
-//        jassert(num<phantomSize);
-//        return buf.getReadPointer(channel, phantomSize + writeNeedle - num);
-//    }
-//
-//    AudioSampleBuffer buf;
-//private:
-//    void safeCopy(const float * b,int s,int channel){
-//        buf.copyFrom(channel, phantomSize+writeNeedle, b, s);
-//
-//        if(writeNeedle>2*phantomSize){
-//            buf.copyFrom(channel, writeNeedle-2*phantomSize,b,s);
+//            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
+//                contiguousBuffer.copyFrom(i, 0, buf, i, ringSize+startIdx, -startIdx);
+//            }
+//            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
+//                contiguousBuffer.copyFrom(i,-startIdx,buf,i,0,num+startIdx);
+//            }
 //        }
-//        writeNeedle+=s;
-//        writeNeedle%=2*phantomSize;
-//
+//        contiguousWriteNeedle = writeNeedle;
+//        contiguousOutDated = false;
 //    }
-//    int writeNeedle;
-//    int phantomSize;
-//
-//
-//
-//
+//    AudioSampleBuffer contiguousBuffer;
+//    uint32 contiguousWriteNeedle = 0 ;
+//    int channels;
 //};
-//
 
 
 #endif  // RINGBUFFER_H_INCLUDED

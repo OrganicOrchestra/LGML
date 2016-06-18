@@ -45,6 +45,10 @@ void TimeManager::incrementClock(int time){
     if(_isLocked)return;
     int lastBeat = getBeat();
 
+    if(timeState.isJumping){
+        timeState.time=timeState.nextTime;
+        timeState.isJumping=false;
+    }
 
     if(timeState.isPlaying){
         timeState.time+=time;
@@ -103,6 +107,7 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
             if (!hasMasterCandidate()) {
                 askForBeingMasterCandidate(this);
             }
+            shouldGoToZero();
             shouldPlay();
         }
     }
@@ -117,15 +122,15 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
 
 void TimeManager::shouldStop(){
     desiredTimeState.isPlaying = false;
-    desiredTimeState.time = 0;
+    desiredTimeState.jumpTo(0);
 }
 
 void TimeManager::shouldRestart(bool playing){
     desiredTimeState.isPlaying=playing;
-    desiredTimeState.time = 0;
+    desiredTimeState.jumpTo( 0);
 }
 void TimeManager::shouldGoToZero(){
-    desiredTimeState.time = 0;
+    desiredTimeState.jumpTo(0);
 }
 void TimeManager::shouldPlay(){
     desiredTimeState.isPlaying = true;
@@ -133,22 +138,25 @@ void TimeManager::shouldPlay(){
 
 void TimeManager::updateState(){
     String dbg;
-//    if(timeState.isPlaying != desiredTimeState.isPlaying){
-//        dbg+="play:"+String(timeState.isPlaying)+"/"+String(desiredTimeState.isPlaying);
-//    }
-//    if(timeState.time != desiredTimeState.time){
-//        dbg+=" ::: time:"+String(timeState.time)+"/"+String(desiredTimeState.time);
-//    }
-//    if(dbg!=""){
-//        LOG(dbg);
-//    }
+    if(timeState.isPlaying != desiredTimeState.isPlaying){
+        dbg+="play:"+String(timeState.isPlaying)+"/"+String(desiredTimeState.isPlaying);
+    }
+    if(timeState.time != desiredTimeState.time){
+        dbg+=" ::: time:"+String(timeState.time)+"/"+String(desiredTimeState.time);
+    }
+    if(desiredTimeState.isJumping){
+        dbg+="time jumping to : " + String(desiredTimeState.nextTime);
+    }
+    if(dbg!=""){
+        LOG(dbg);
+    }
 
     timeState = desiredTimeState;
 }
 
 void TimeManager::onContainerTriggerTriggered(Trigger * t) {
     if(t == playTrigger){
-        playState->setValue(false);
+//        playState->setValue(false);
         playState->setValue(true);
     }
 
@@ -193,9 +201,9 @@ int TimeManager::setBPMForLoopLength(int time,int granularity){
     float barLength = 1;
 
     // over 150 bpm
-    if(beatTime < .40){beatTime*=2;barLength/=2;}
+    while(beatTime < .40){beatTime*=2;barLength/=2;}
     // under 60 bpm
-    else if(beatTime > 1){beatTime/=2;barLength*=2;}
+    while(beatTime > 1){beatTime/=2;barLength*=2;}
     if(granularity>0){
 		int beatInSample = (int)(beatTime*sampleRate);
         beatInSample = beatInSample - beatInSample%granularity;

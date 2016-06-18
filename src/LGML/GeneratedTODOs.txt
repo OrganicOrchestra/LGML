@@ -42,7 +42,7 @@ VSTNode.cpp
 
 
 PlayableBuffer.h
-	line : 85
+	line : 89
 		// TODO sync size because buffer can be larger and we save few useless iteration
 
 
@@ -115,7 +115,7 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 246
+	line : 254
 		//TODO: check
 
 
@@ -139,13 +139,6 @@ ShapeShifterContainer.cpp
 
 	line : 127
 		//@ben do we need to handle these?
-
-
-LooperTrack.cpp
-	line : 128
-		// TODO subBlock precision ?
-		// not sure -> triggers are updated at block size granularity
-		// for now reduce block approximation noise when quantized
 
 
 Main.cpp

@@ -25,7 +25,8 @@ class PlayableBuffer {
     recordNeedle(0),
     playNeedle(0),isJumping(false),
     state(BUFFER_STOPPED),
-    lastState(BUFFER_STOPPED)
+    lastState(BUFFER_STOPPED),
+    stateChanged(false)
     {
 
         //        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
@@ -42,7 +43,8 @@ class PlayableBuffer {
         }
         else{
             for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-                loopSample.copyFrom(i, recordNeedle, buffer, i, 0, buffer.getNumSamples());
+                int maxChannel = jmin(i,buffer.getNumChannels());
+                loopSample.copyFrom(maxChannel, recordNeedle, buffer, maxChannel, 0, buffer.getNumSamples());
             }
             recordNeedle += buffer.getNumSamples();
         }
@@ -59,6 +61,8 @@ class PlayableBuffer {
         // stitch audio jumps by quick fadeIn/Out
         if(isJumping && playNeedle!=startJumpNeedle && state!=BUFFER_STOPPED){
             LOG("a:jump "<<startJumpNeedle <<","<< playNeedle);
+
+            
             const int halfBlock =  buffer.getNumSamples()/2;
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
                 int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);

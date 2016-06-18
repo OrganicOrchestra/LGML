@@ -30,15 +30,13 @@ public:
     // only SHOULD value can be accessed from other thread than audio
     // then state is updated from audioThread
     enum TrackState {
-        SHOULD_RECORD = 0,
-        SHOULD_PLAY,
-        SHOULD_CLEAR,
-        SHOULD_STOP,
-
         RECORDING,
+        WILL_RECORD,
         PLAYING,
+        WILL_PLAY,
         CLEARED,
-        STOPPED
+        STOPPED,
+        WILL_STOP
     };
 
     Trigger * selectTrig;
@@ -54,10 +52,7 @@ public:
     BoolParameter * mute;
     BoolParameter * solo;
 
-    bool isSelected;
-    TrackState trackState;
 
-    bool someOneIsSolo;
 
     const float defaultVolumeValue = DB0_FOR_01;
     int trackIdx;
@@ -89,7 +84,6 @@ public:
         //                called from here
         void internalTrackStateChanged(const TrackState &state) {
             stateToBeNotified = state;
-
             trackStateChanged(state);
             triggerAsyncUpdate();
         }
@@ -118,12 +112,21 @@ public:
     ScopedPointer<AsyncTrackStateStringSynchroizer> stateParameterStringSynchronizer;
 
 
+     TrackState trackState,desiredState;
+
+    bool isSelected;
+    
+private:
+
+
+
+
+    bool someOneIsSolo;
+
+    
 
 
     int quantizedRecordEnd, quantizedRecordStart;
-
-
-    bool isJumping;
     int quantizedPlayStart, quantizedPlayEnd;
 
     bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
@@ -141,7 +144,7 @@ public:
     double originBPM ;
     // keeps track of few bits of audio
     // to readjust the loop when controllers are delayed
-    RingBuffer streamAudioBuffer;
+    BipBuffer streamAudioBuffer;
 
     LooperNode * parentLooper;
 
