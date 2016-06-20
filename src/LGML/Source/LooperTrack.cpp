@@ -205,7 +205,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
     //    DBG(playNeedle);
     if(stateChanged){
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
-        //        DBG("a:"+trackStateToString(trackState));
+                DBG("a:"+trackStateToString(trackState));
 
     }
 
@@ -495,8 +495,7 @@ void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
 
     if (newState == WILL_STOP) {
         // force a track to stay in cleared state if stop triggered
-        if (trackState == CLEARED) { newState = CLEARED; }
-        else if (trackState == CLEARED) { newState = CLEARED; }
+        if (trackState == CLEARED || desiredState==CLEARED) { newState = CLEARED; }
     }
     //DBG(newState <<","<<trackState );
     //    DBG(trackStateToString(trackState));
