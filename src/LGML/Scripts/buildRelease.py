@@ -118,7 +118,7 @@ def createDmg(exportFileBaseName,appPath):
 def sendToOwnCloud(originPath,destPath):
 	credPath = os.path.dirname(os.path.abspath(__file__));
 	credPath = os.path.join(credPath,"owncloud.password")
-	
+
 	with open(credPath) as json_data:
 		credentials = json.loads(json_data.read())
 
