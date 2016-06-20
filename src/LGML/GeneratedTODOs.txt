@@ -107,13 +107,13 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 70
+	line : 62
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
 
 TimeManager.cpp
-	line : 257
+	line : 255
 		//TODO: check
 
 

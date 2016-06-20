@@ -64,6 +64,7 @@ public:
 	BoolParameter * isMonitoring;
 	IntParameter * numberOfTracks;
     IntParameter * selectTrack;
+  IntParameter * quantif;
     IntParameter * preDelayMs;
 
 

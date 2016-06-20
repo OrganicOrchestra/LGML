@@ -202,6 +202,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
     loopSample.checkTimeAlignment(curTime,TimeManager::getInstance()->beatTimeInSample);
 
+
     //    DBG(playNeedle);
     if(stateChanged){
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
@@ -382,8 +383,8 @@ void LooperTrack::askForSelection(bool) {
 }
 
 
-void LooperTrack::setTrackState(TrackState newState,int quantizeTime) {
-
+void LooperTrack::setTrackState(TrackState newState) {
+  int quantizeTime = parentLooper->quantif->intValue();
     TimeManager * timeManager = TimeManager::getInstance();
     if(newState==desiredState)return;
 

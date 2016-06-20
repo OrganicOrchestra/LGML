@@ -67,7 +67,7 @@ public:
     void setSelected(bool isSelected);
 
 
-    void setTrackState(TrackState state,int quantification = -1);
+    void setTrackState(TrackState state);
 
     // from events like UI
     void askForSelection(bool isSelected);
