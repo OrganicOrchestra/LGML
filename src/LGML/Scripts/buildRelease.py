@@ -9,9 +9,10 @@ njobs = multiprocessing.cpu_count()
 # configuration  = "Release"
 configuration  = "Debug"
 bumpVersion = False
-sendToOwncloud = True
+sendToOwncloud = False
 specificVersion = ""#0.1.1"
 cleanFirst = False;
+localExportPath2 = "/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/";
 architecture = "i386"
 
 
@@ -107,6 +108,7 @@ def createDmg(exportFileBaseName,appPath):
 		sh("rm -f \""+dmgPath+"\"")
 		sh("appdmg "+jsonPath+" \""+dmgPath+"\"")
 		sh("rm "+jsonPath)
+		return dmgPath
 
 	else:
 		print "no appdmg exporter : using zip"
@@ -128,9 +130,12 @@ def sendToOwnCloud(originPath,destPath):
 updateVersion();
 buildJUCE(JuceProjectPath);
 buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
+
+localPath = localExportPath+generateProductBaseName();
+dmgPath = createDmg(localPath,appPath);
+if localExportPath2!="":
+	sh("cp "+dmgPath+" "+localExportPath2+generateProductBaseName()+".dmg")
 if sendToOwncloud:
-	localPath = localExportPath+generateProductBaseName();
-	createDmg(localPath,appPath);
 	ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
 	sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
 # gitCommit()
