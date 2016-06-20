@@ -40,12 +40,14 @@ class JsNode : public NodeBase,public JsEnvironment{
         static  Identifier addIntParameterIdentifier ("addIntParameter");
         static Identifier addFloatParameterIdentifier("addFloatParameter");
         static Identifier addStringParameterIdentifier("addStringParameter");
+      static Identifier addTriggerIdentifier("addTrigger");
 
         DynamicObject d;
         d.setProperty(jsPtrIdentifier, (int64)this);
         d.setMethod(addIntParameterIdentifier, JsNode::addIntParameter);
         d.setMethod(addFloatParameterIdentifier, JsNode::addFloatParameter);
         d.setMethod(addStringParameterIdentifier, JsNode::addStringParameter);
+        d.setMethod(addTriggerIdentifier, JsNode::addTrigger);
 
 
         setLocalNamespace(d);
@@ -101,9 +103,22 @@ class JsNode : public NodeBase,public JsEnvironment{
         return var::undefined();
     };
 
+  static var addTrigger(const var::NativeFunctionArgs & a){
+
+    JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
+    if(a.numArguments<2){
+      LOG("wrong number of arg for addTrigger");
+      return var::undefined();
+    };
+    jsNode->jsParameters.add(jsNode->ControllableContainer::addTrigger(a.arguments[0], a.arguments[1]));
+
+    return var::undefined();
+  };
+
+
     virtual ConnectableNodeUI * createUI() override;
 
-    Array<Parameter * > jsParameters;
+    Array<Controllable * > jsParameters;
 
 
 };
