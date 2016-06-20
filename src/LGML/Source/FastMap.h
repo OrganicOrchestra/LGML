@@ -43,6 +43,7 @@ public:
 	FloatParameter * maxInputVal;
 	FloatParameter * minOutputVal;
 	FloatParameter * maxOutputVal;
+	BoolParameter * invertParam;
 
 	ScopedPointer<ControlVariableReference> reference;
 	Controllable * target;
