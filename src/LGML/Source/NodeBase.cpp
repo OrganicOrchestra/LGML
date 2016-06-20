@@ -30,6 +30,7 @@ audioNode(nullptr)
 
 NodeBase::~NodeBase()
 {
+    stopTimer();
     NodeBase::masterReference.clear();
     clear();
 }
