@@ -161,7 +161,11 @@ void NodeBase::removeFromAudioGraph() {
 void NodeBase::processBlock(AudioBuffer<float>& buffer,
                             MidiBuffer& midiMessages) {
 
-
+  // be sure to delete input if we are not enabled and a random buffer enters
+  // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
+  for(int i = getTotalNumInputChannels();i < buffer.getNumChannels() ; i++){
+    buffer.clear(i,0,buffer.getNumSamples());
+  }
     if (rmsListeners.size() || rmsChannelListeners.size()) {
         curSamplesForRMSInUpdate += buffer.getNumSamples();
         if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate) {

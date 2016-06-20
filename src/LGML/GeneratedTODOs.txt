@@ -21,11 +21,11 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 307
-		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-
 	line : 102
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
+
+	line : 311
+		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 
 NodeContainer.h
@@ -113,7 +113,7 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 254
+	line : 257
 		//TODO: check
 
 

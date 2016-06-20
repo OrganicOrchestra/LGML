@@ -100,7 +100,10 @@ void TimeManager::releaseMasterCandidate(TimeMasterCandidate * n){
 void TimeManager::onContainerParameterChanged(Parameter * p){
     if(p==playState){
         if(!playState->boolValue()){
-            releaseMasterCandidate(this);
+          if(isMasterCandidate(this)){
+            potentialTimeMasterCandidate.clear();
+
+          }
             shouldStop();
         }
         else{

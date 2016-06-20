@@ -351,6 +351,7 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
     }
     else if (t == clearTrig) {
         setTrackState(CLEARED);
+        volume->setValue(DB0_FOR_01);
     }
     else if (t == stopTrig) {
         setTrackState(WILL_STOP);
