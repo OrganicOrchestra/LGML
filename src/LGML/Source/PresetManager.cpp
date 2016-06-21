@@ -47,7 +47,7 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
     return pre;
 }
 
-PresetManager::Preset * PresetManager::getPreset(String filter, const String & name)
+PresetManager::Preset * PresetManager::getPreset(String filter, const String & name) const
 {
     for (auto &pre : presets)
     {
@@ -57,7 +57,7 @@ PresetManager::Preset * PresetManager::getPreset(String filter, const String & n
     return nullptr;
 }
 
-void PresetManager::fillWithPresets(ComboBox * cb, String filter)
+void PresetManager::fillWithPresets(ComboBox * cb,const  String & filter) const
 {
     cb->clear();
     cb->addItem("Save current preset", SaveCurrent);
@@ -87,6 +87,28 @@ void PresetManager::fillWithPresets(ComboBox * cb, String filter)
 
 }
 
+void PresetManager::removePresetForIdx(int idx){
+  if(idx >0 && idx < presets.size()){
+    presets.remove(idx);
+  }
+
+}
+
+int PresetManager::getNumPresetForFilter (const String & filter) const{
+  int num = 0;
+  for (auto &pre : presets)
+  {
+
+    if (pre->filter == filter)
+    {
+      num++;
+    }
+  }
+  return num;
+}
+int PresetManager::getNumOption(){
+  return 3;
+}
 void PresetManager::clear()
 {
     presets.clear();

@@ -230,7 +230,7 @@ void LooperTrack::padBufferIfNeeded(){
             if (isMasterTempoTrack()) {
                 //                DBG("init predelay : "+String (trackIdx));
                 int samplesToGet = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
-                TimeManager::getInstance()->jump(samplesToGet);
+                TimeManager::getInstance()->goToTime(samplesToGet);
                 loopSample.writeAudioBlock(streamAudioBuffer.getLastBlock(samplesToGet));
             }
 
@@ -266,7 +266,7 @@ void LooperTrack::padBufferIfNeeded(){
 
                 loopSample.fadeInOut (500,0.200);
                 loopSample.fadeInOut (100,0.000);
-                TimeManager::getInstance()->jump(offsetForPlay);
+                TimeManager::getInstance()->goToTime(offsetForPlay);
 
 
             }

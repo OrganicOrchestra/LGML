@@ -53,6 +53,7 @@ public TimeMasterCandidate
 
 
 	void jump(int amount);
+  void goToTime(uint64 time);
 
     // used when triggering multiple change
     void lockTime(bool );

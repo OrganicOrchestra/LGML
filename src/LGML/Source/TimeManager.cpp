@@ -192,9 +192,14 @@ uint64 TimeManager::getTimeInSample(){return timeState.time;}
 
 
 void TimeManager::jump(int amount){
-    desiredTimeState.time = timeState.time+amount;
-}
+    goToTime(timeState.time+amount);
 
+
+}
+void TimeManager::goToTime(uint64 time){
+  desiredTimeState.nextTime = time;
+  desiredTimeState.isJumping = true;
+}
 
 
 

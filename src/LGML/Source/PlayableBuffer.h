@@ -171,9 +171,10 @@ class PlayableBuffer {
             int globalPos =(curTime%minQuantifiedFraction);
             int localPos =(playNeedle%minQuantifiedFraction);
             if(globalPos!=localPos){
-                isJumping = true;
-                startJumpNeedle = playNeedle;
-                playNeedle = (playNeedle - localPos) + globalPos;
+              if(!isJumping)startJumpNeedle = playNeedle;
+              playNeedle = (playNeedle - localPos) + globalPos;
+              isJumping = true;
+
 
             }
         }
