@@ -142,6 +142,7 @@ public:
 	void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }
 	void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener); }
 
+  void removeIllegalGhostConnections();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainer)
 

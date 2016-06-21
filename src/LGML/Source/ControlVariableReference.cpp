@@ -97,7 +97,6 @@ var ControlVariableReference::getJSONData()
 
 void ControlVariableReference::loadJSONDataInternal(var data)
 {
-
 	if (!data.getDynamicObject()->hasProperty("controllerName") || !data.getDynamicObject()->hasProperty("variableName")) return;
 
 	String controllerName = data.getDynamicObject()->getProperty("controllerName").toString();

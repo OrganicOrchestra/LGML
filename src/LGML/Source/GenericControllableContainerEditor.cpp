@@ -31,7 +31,7 @@ GenericControllableContainerEditor::GenericControllableContainerEditor(Inspectab
 
 GenericControllableContainerEditor::~GenericControllableContainerEditor()
 {
-	sourceContainer->removeControllableContainerListener(this);
+	if(sourceContainer.get())sourceContainer->removeControllableContainerListener(this);
 	parentBT.removeListener(this);
 	innerContainer->clear();
 }

@@ -61,17 +61,17 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 602
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
+	line : 290
+		// TODO nicely handle file format errors?
 
 	line : 181
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 279
-		// TODO nicely handle file format errors?
+	line : 613
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
 
 
 TimeManager.h

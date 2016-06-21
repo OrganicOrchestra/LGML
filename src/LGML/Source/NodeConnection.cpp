@@ -258,6 +258,11 @@ var NodeConnection::getJSONData()
 {
     var data(new DynamicObject());
 
+  if(sourceNode.get()==nullptr || destNode.get() ==nullptr){
+    DBG("try to save outdated connection"); // TODO clean ghostConnection Nodes
+    jassertfalse;
+    return data;
+  }
     ConnectableNode * tSource = sourceNode;
     if (sourceNode->type == ContainerOutType) tSource = ((ContainerOutNode *)sourceNode.get())->parentNodeContainer;
 
@@ -300,6 +305,7 @@ void NodeConnection::loadJSONData(var data)
     //srcNodeId, destNodeId & connectionType set at creation, not in this load
 
     //DBG("Load JSON Data Node COnnection !");
+
     const Array<var> * links = data.getProperty("links",var()).getArray();
 
     if (links != nullptr)

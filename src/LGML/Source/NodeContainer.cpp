@@ -198,6 +198,7 @@ bool NodeContainer::resetFromPreset()
 
 var NodeContainer::getJSONData()
 {
+    removeIllegalGhostConnections();
     var data = ConnectableNode::getJSONData();
     var nodesData;
 
@@ -241,6 +242,16 @@ var NodeContainer::getJSONData()
 	data.getDynamicObject()->setProperty("proxies", proxiesData);
 
     return data;
+}
+
+void NodeContainer::removeIllegalGhostConnections(){
+  Array<NodeConnection * > toRemove;
+  for (auto &c : containerInGhostConnections)if (c->sourceNode.get()==nullptr || c->destNode==nullptr) {toRemove.add(c);}
+  for(auto & c:toRemove){containerInGhostConnections.removeObject(c);}
+  toRemove.clear();
+  for (auto &c : containerOutGhostConnections) if (c->sourceNode.get()==nullptr || c->destNode==nullptr) {toRemove.add(c);}
+  for(auto & c:toRemove){containerOutGhostConnections.removeObject(c);}
+
 }
 
 void NodeContainer::loadJSONDataInternal(var data)

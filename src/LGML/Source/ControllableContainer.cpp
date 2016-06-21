@@ -503,6 +503,7 @@ var ControllableContainer::getJSONData()
 
 void ControllableContainer::loadJSONData(var data)
 {
+
 	if (data.getDynamicObject()->hasProperty("uid")) uid = data.getDynamicObject()->getProperty("uid");
 
     if (data.getDynamicObject()->hasProperty(presetIdentifier))

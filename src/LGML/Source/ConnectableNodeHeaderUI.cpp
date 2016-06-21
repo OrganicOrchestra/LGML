@@ -241,7 +241,7 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
     if(result) cb->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
     else cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
 
-  }if (presetID == PresetChoice::SaveToNew)
+  }else if (presetID == PresetChoice::SaveToNew)
   {
     AlertWindow nameWindow("Save a new Preset","Choose a name for the new preset",AlertWindow::AlertIconType::QuestionIcon,this);
     nameWindow.addTextEditor("newPresetName", "New Preset");
@@ -269,12 +269,12 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
     node->resetFromPreset();
     cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
   }
-  else if(presetID < PresetChoice::deleteStartId)
+  else if(presetID >=0 && presetID < PresetChoice::deleteStartId)
   {
     PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(node->getPresetFilter(), cb->getItemText(cb->getSelectedItemIndex()));
     node->loadPreset(pre);
   }
-  else{
+  else if (presetID >= PresetChoice::deleteStartId){
     PresetManager * pm =PresetManager::getInstance();
     int originId = cb->getSelectedId()-PresetChoice::deleteStartId - 1;
     String originText = cb->getItemText(pm->getNumOption() + originId);
@@ -283,6 +283,9 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
     updatePresetComboBox();
 
 
+  }
+  else{
+      jassertfalse;
   }
 
 }
