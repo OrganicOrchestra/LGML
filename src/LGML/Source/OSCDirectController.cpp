@@ -213,7 +213,7 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
             break;
     }
     
-    sender.send(msg);
+  sendOSC(msg);
     
 #endif
     

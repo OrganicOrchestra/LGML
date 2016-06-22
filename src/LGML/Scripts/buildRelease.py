@@ -15,7 +15,7 @@ cleanFirst = False;
 localExportPath2 = "/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/";
 architecture = "i386"
 
-
+ 
 
 localExportPath = "../Builds/MacOSX/build/"
 localExportPath = os.path.abspath(localExportPath)+"/"
