@@ -13,7 +13,10 @@
 #include "DebugHelpers.h"
 
 OSCController::OSCController(const String &_name) :
-Controller(_name)
+Controller(_name),
+blockFeedback(true),
+isProcessingOSC(false)
+
 {
 
   localPortParam = addStringParameter("Local Port", "The port to bind for the controller to receive OSC from it","11000");
@@ -63,7 +66,11 @@ void OSCController::processMessage(const OSCMessage & msg)
 
   }
   if (!enabledParam->boolValue()) return;
+
+  if(blockFeedback){lastAddressReceived = msg.getAddressPattern().toString();}
+  isProcessingOSC = true;
   bool result = processMessageInternal(msg);
+  isProcessingOSC = false;
   oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
 
   activityTrigger->trigger();
@@ -112,11 +119,12 @@ void OSCController::oscBundleReceived(const OSCBundle & bundle)
 
 bool OSCController::sendOSC (OSCMessage & m)
 {
-  if(enabledParam->boolValue()){
+  if(enabledParam->boolValue() &&  (!blockFeedback || !isProcessingOSC || lastAddressReceived!=m.getAddressPattern().toString())){
     if(logOutGoingOSC->boolValue()){logMessage(m,"Out:");}
     return sender.send (m);
   }
-  else return false;
+
+  return false;
 }
 
 ControllerUI * OSCController::createUI()

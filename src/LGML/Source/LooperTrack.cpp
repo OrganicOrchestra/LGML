@@ -34,7 +34,8 @@ someOneIsSolo(false),
 isSelected (false),
 isFadingIn(false),
 isCrossFading(false),
-originBPM(0)
+originBPM(0),
+lastVolume(0)
 {
 
 
@@ -243,6 +244,7 @@ void LooperTrack::padBufferIfNeeded(){
             if (isMasterTempoTrack()) {
                 //                DBG("release predelay : "+String (trackIdx));
                 const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
+                
 #ifdef BLOCKSIZEGRANULARITY
                 const int blkSize  = parentLooper->getBlockSize();
                 beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength(),blkSize));
@@ -262,8 +264,8 @@ void LooperTrack::padBufferIfNeeded(){
                 beatLength->setValue(TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength()));
 #endif
 
+                
 
-                loopSample.fadeInOut (100,0.000);
                 TimeManager::getInstance()->goToTime(offsetForPlay);
 
 
@@ -271,6 +273,7 @@ void LooperTrack::padBufferIfNeeded(){
             else{
                 beatLength->setValue(TimeManager::getInstance()->getBeat() - startBeat);
             }
+            loopSample.fadeInOut (100,0.000);
             originBPM = TimeManager::getInstance()->BPM->doubleValue();
             loopSample.setPlayNeedle(offsetForPlay);
         }

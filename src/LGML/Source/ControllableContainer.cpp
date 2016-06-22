@@ -506,10 +506,12 @@ void ControllableContainer::loadJSONData(var data)
 
 	if (data.getDynamicObject()->hasProperty("uid")) uid = data.getDynamicObject()->getProperty("uid");
 
-    if (data.getDynamicObject()->hasProperty(presetIdentifier))
-    {
-        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
-    }
+  // @ ben we don't want to load preset when loading from file, do we?
+  
+//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
+//    {
+//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
+//    }
 	 
     Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();
 
@@ -522,7 +524,9 @@ void ControllableContainer::loadJSONData(var data)
             Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
 
             if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-                p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
+//                we don't load preset when already loading a state
+                if(p->shortName!=presetIdentifier.toString())p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
+                
             }
             else {
                 //NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);

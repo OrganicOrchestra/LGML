@@ -159,7 +159,7 @@ void TimeManager::updateState(){
 
 void TimeManager::onContainerTriggerTriggered(Trigger * t) {
     if(t == playTrigger){
-//        playState->setValue(false);
+        playState->setValue(false);
         playState->setValue(true);
     }
 

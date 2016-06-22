@@ -119,9 +119,7 @@ class PlayableBuffer {
 
     void setPlayNeedle(int n){
         if(playNeedle!=n){
-            if(!isJumping){
-                startJumpNeedle = playNeedle;
-            }
+            if(!isJumping){startJumpNeedle = playNeedle;}
             isJumping = true;
         }
 

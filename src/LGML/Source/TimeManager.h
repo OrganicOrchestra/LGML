@@ -97,15 +97,10 @@ private:
     struct TimeState{
         TimeState():isJumping(false),nextTime(-1),isPlaying(false),time(0){}
         bool isPlaying;
-
-
         void jumpTo(uint64 t){
             isJumping = true;
             nextTime = t;
         }
-
-
-
         bool isJumping;
         uint64 nextTime;
         uint64 time;

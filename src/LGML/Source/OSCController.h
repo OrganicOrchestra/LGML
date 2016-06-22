@@ -30,6 +30,9 @@ public:
   BoolParameter * logIncomingOSC;
   BoolParameter * logOutGoingOSC;
 
+
+  bool blockFeedback ; // if a parameter is updated from processOSC , stops any osc out with same address
+
   void setupReceiver();
   void setupSender();
 
@@ -65,13 +68,8 @@ public:
   template <typename... Args>
   bool sendOSC (const OSCAddressPattern& address, Args&&... args)
   {
-
-    if(enabledParam->boolValue()){
-      OSCMessage m = OSCMessage (address, std::forward<Args> (args)...);
-      if(logOutGoingOSC->boolValue()){logMessage(m,"Out;");}
-      return sender.send (m);
-    }
-    else{return false;}
+    OSCMessage m =OSCMessage (address, std::forward<Args> (args)...);
+    return sendOSC(m);
   }
 #endif
 
@@ -83,6 +81,8 @@ private:
   // should use sendOSC for centralizing every call
   OSCReceiver receiver;
   OSCSender sender;
+  String lastAddressReceived;
+  bool isProcessingOSC;
 };
 
 #endif  // OSCCONTROLLER_H_INCLUDED
