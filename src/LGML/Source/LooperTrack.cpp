@@ -263,8 +263,6 @@ void LooperTrack::padBufferIfNeeded(){
 #endif
 
 
-
-                loopSample.fadeInOut (500,0.200);
                 loopSample.fadeInOut (100,0.000);
                 TimeManager::getInstance()->goToTime(offsetForPlay);
 
@@ -353,6 +351,7 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
     else if (t == clearTrig) {
         setTrackState(CLEARED);
         volume->setValue(DB0_FOR_01);
+        mute->setValue(false);
     }
     else if (t == stopTrig) {
         setTrackState(WILL_STOP);
