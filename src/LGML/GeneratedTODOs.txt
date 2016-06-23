@@ -57,7 +57,7 @@ VuMeter.h
 
 
 MainComponentCommands.cpp
-	line : 241
+	line : 244
 		// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
 		//			int result = engine->saveIfNeededAndUserAgrees();
 
@@ -114,7 +114,7 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 62
+	line : 66
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 

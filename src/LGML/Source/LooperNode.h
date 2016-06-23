@@ -107,6 +107,12 @@ public:
 
     void clearInternal()override;
 
+private:
+  // keeps track of few bits of audio
+  // to readjust the loop when controllers are delayed
+  BipBuffer streamAudioBuffer;
+  friend class LooperTrack;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
 };
 

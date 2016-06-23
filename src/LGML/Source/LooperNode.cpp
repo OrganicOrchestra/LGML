@@ -16,7 +16,8 @@ LooperNode::LooperNode() :
 NodeBase("Looper",NodeType::LooperType),
 selectedTrack(nullptr),
 wasMonitoring(false),
-trackGroup(this)
+trackGroup(this),
+streamAudioBuffer(1,16384,512)// 16000 ~ 300ms and 256*64
 {
 
   numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
@@ -59,6 +60,9 @@ ConnectableNodeUI * LooperNode::createUI(){
 
 
 void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &midiMessages) {
+
+
+  streamAudioBuffer.writeBlock(buffer);
 
   // TODO check if we can optimize copies
   // handle multiples channels outs
@@ -302,5 +306,5 @@ void LooperNode::clearInternal(){
   {
     tm->releaseMasterCandidate(this);
   }
-
+  
 }

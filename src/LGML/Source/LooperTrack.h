@@ -142,9 +142,7 @@ private:
 
 
     double originBPM ;
-    // keeps track of few bits of audio
-    // to readjust the loop when controllers are delayed
-    BipBuffer streamAudioBuffer;
+
 
     LooperNode * parentLooper;
 

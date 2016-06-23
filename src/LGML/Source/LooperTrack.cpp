@@ -25,7 +25,6 @@ quantizedRecordStart(-1),
 quantizedRecordEnd(-1),
 quantizedPlayStart(-1),
 quantizedPlayEnd(-1),
-streamAudioBuffer(1,16384,512),// 16000 ~ 300ms and 256*64
 loopSample(1, 44100 * MAX_LOOP_LENGTH_S),
 trackState(CLEARED),
 desiredState(CLEARED),
@@ -82,9 +81,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
     }
 
-    else {
-        streamAudioBuffer.writeBlock(buffer);
-    }
+
 
     // PLAYING
     // allow circular reading , although not sure that overflow need to be handled as its written with same block sizes than read
@@ -232,7 +229,7 @@ void LooperTrack::padBufferIfNeeded(){
                 //                DBG("init predelay : "+String (trackIdx));
                 int samplesToGet = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
                 TimeManager::getInstance()->goToTime(samplesToGet);
-                loopSample.writeAudioBlock(streamAudioBuffer.getLastBlock(samplesToGet));
+                loopSample.writeAudioBlock(parentLooper->streamAudioBuffer.getLastBlock(samplesToGet));
             }
 
             startBeat = TimeManager::getInstance()->getBeat();
