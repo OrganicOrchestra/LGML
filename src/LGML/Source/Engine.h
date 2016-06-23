@@ -25,6 +25,8 @@
 #include "AudioFucker.h"
 
 
+
+
 class Engine:public FileBasedDocument{
 public:
     Engine();
@@ -81,8 +83,13 @@ public:
 
     };
     MultipleAudioSettingsHandler audioSettingsHandler;
+
+
     
 };
+
+
+static String lastFileListKey = "recentNodeGraphFiles";
 
 
 #endif  // ENGINE_H_INCLUDED

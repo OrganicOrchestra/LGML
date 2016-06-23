@@ -61,7 +61,7 @@ Result Engine::saveDocument (const File& file){
 File Engine::getLastDocumentOpened() {
     RecentlyOpenedFilesList recentFiles;
     recentFiles.restoreFromString (getAppProperties().getUserSettings()
-                                   ->getValue ("recentNodeGraphFiles"));
+                                   ->getValue (lastFileListKey));
 
     return recentFiles.getFile (0);
 }
@@ -73,11 +73,11 @@ void Engine::setLastDocumentOpened (const File& file) {
 
     RecentlyOpenedFilesList recentFiles;
     recentFiles.restoreFromString (getAppProperties().getUserSettings()
-                                   ->getValue ("recentNodeGraphFiles"));
+                                   ->getValue (lastFileListKey));
 
     recentFiles.addFile (file);
 
-    getAppProperties().getUserSettings()->setValue ("recentNodeGraphFiles", recentFiles.toString());
+    getAppProperties().getUserSettings()->setValue (lastFileListKey, recentFiles.toString());
 
 }
 
