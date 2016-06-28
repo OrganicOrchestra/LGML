@@ -12,7 +12,10 @@ bumpVersion = False
 sendToOwncloud = False
 specificVersion = ""#0.1.1"
 cleanFirst = False;
-localExportPath2 = "/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/";
+localExportPath2 = [
+"/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/"
+,"/Volumes/Pguillerme/Documents/LGML/"
+];
 architecture = "i386"
 
 
@@ -133,8 +136,8 @@ buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
 
 localPath = localExportPath+generateProductBaseName();
 dmgPath = createDmg(localPath,appPath);
-if localExportPath2!="":
-	sh("cp "+dmgPath+" "+localExportPath2+generateProductBaseName()+".dmg")
+for p in localExportPath2:
+	sh("cp "+dmgPath+" "+p+generateProductBaseName()+".dmg")
 if sendToOwncloud:
 	ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
 	sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))

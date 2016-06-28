@@ -11,7 +11,7 @@ ControllableContainer.cpp
 	line : 423
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 508
+	line : 510
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -114,7 +114,7 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 66
+	line : 67
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 

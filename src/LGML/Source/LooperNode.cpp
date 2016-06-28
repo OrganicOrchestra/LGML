@@ -33,7 +33,8 @@ streamAudioBuffer(1,16384,512)// 16000 ~ 300ms and 256*64
   stopAllTrig = addTrigger("StopAll",             "Tells all tracks to stop it's content if got any");
   isMonitoring = addBoolParameter("monitor",      "do we monitor audio input ? ", false);
   preDelayMs = addIntParameter("Pre Delay MS",    "Pre process delay (in milliseconds)", 80, 0, 250);
-  quantif = addIntParameter("quantization",       "quantization for this looper - 1 is global", -1, -1, 32);
+  quantization = addIntParameter("quantization",       "quantization for this looper - 1 is global", -1, -1, 32);
+  isOneShot =  addBoolParameter("isOneShot", "do we play once or loop track", false);
 
   addChildControllableContainer(&trackGroup);
 
@@ -184,7 +185,9 @@ bool LooperNode::areAllTrackClearedButThis(LooperTrack * _t) {
   }
   return result;
 }
-
+int LooperNode::getQuantization(){
+  return quantization->intValue()>=0?quantization->intValue():TimeManager::getInstance()->quantizedBarFraction->intValue();
+}
 void LooperNode::onContainerTriggerTriggered(Trigger * t) {
   if (t == recPlaySelectedTrig) {
 

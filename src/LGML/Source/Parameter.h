@@ -28,7 +28,7 @@ public:
     void setRange(var,var);
 
 	bool isEditable;
-
+    bool isSavable;
     bool isPresettable;
     bool isOverriden;
 

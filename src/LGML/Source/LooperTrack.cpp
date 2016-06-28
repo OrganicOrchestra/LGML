@@ -53,6 +53,7 @@ lastVolume(0)
     stateParameterStringSynchronizer = new AsyncTrackStateStringSynchroizer(stateParameterString);
     addTrackListener(stateParameterStringSynchronizer);
     stateParameterString->isControllableFeedbackOnly = true;
+    stateParameterString->isSavable = false;
 
 
 
@@ -123,9 +124,16 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 }
 bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blockSize*/) {
 
-    bool stateChanged = (trackState != desiredState);
+
     jassert (curTime>=0);
 
+  if(parentLooper->isOneShot->boolValue()){
+    if(trackState == PLAYING && TimeManager::getInstance()->getBeat()>(startBeat + beatLength->intValue())){
+      desiredState = STOPPED;
+    }
+  }
+
+    bool stateChanged = (trackState != desiredState);
     if(stateChanged){
 //        LOG(trackStateToString(trackState) << ":" << trackStateToString(desiredState));
         if(desiredState == WILL_STOP ||desiredState == STOPPED ){
@@ -146,7 +154,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
     if (quantizedRecordStart>=0) {
         if (triggeringTime >= quantizedRecordStart) {
             if(isMasterTempoTrack()){
-                TimeManager::getInstance()->playState->setValue(true);
+                if(!TimeManager::getInstance()->playState->boolValue())TimeManager::getInstance()->playState->setValue(true);
             }
             desiredState = RECORDING;
             loopSample.setState( PlayableBuffer::BUFFER_RECORDING);
@@ -160,10 +168,14 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
     }
     else if (quantizedRecordEnd>=0) {
         if (triggeringTime >= quantizedRecordEnd) {
-            desiredState = PLAYING;
-            loopSample.setState( PlayableBuffer::BUFFER_PLAYING);
+            if(parentLooper->isOneShot->boolValue())
+              desiredState = STOPPED;
+            else{
+              desiredState = PLAYING;
+              loopSample.setState( PlayableBuffer::BUFFER_PLAYING);
+                  quantizedPlayStart = 0;
+            }
             quantizedRecordEnd = -1;
-            quantizedPlayStart = 0;
             stateChanged = true;
 
         }
@@ -198,11 +210,15 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
     trackState = desiredState ;
 
-    loopSample.checkTimeAlignment(curTime,TimeManager::getInstance()->beatTimeInSample);
+
 
 
     //    DBG(playNeedle);
     if(stateChanged){
+      if(getQuantization()>0){
+        TimeManager * tm = TimeManager::getInstance();
+        loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
+      }
         trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
                 DBG("a:"+trackStateToString(trackState));
 
@@ -217,6 +233,10 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
 }
 
+int LooperTrack::getQuantization(){
+  return parentLooper->getQuantization();
+}
+
 void LooperTrack::padBufferIfNeeded(){
 
     if (loopSample.stateChanged) {
@@ -228,11 +248,13 @@ void LooperTrack::padBufferIfNeeded(){
             if (isMasterTempoTrack()) {
                 //                DBG("init predelay : "+String (trackIdx));
                 int samplesToGet = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
-                TimeManager::getInstance()->goToTime(samplesToGet);
+//                TimeManager::getInstance()->goToTime(samplesToGet);
                 loopSample.writeAudioBlock(parentLooper->streamAudioBuffer.getLastBlock(samplesToGet));
+                startBeat = 0;
             }
-
+            else{
             startBeat = TimeManager::getInstance()->getBeat();
+            }
         }
 
         if (loopSample.isFirstPlayingFrameAfterRecord()) {
@@ -383,7 +405,7 @@ void LooperTrack::askForSelection(bool) {
 
 
 void LooperTrack::setTrackState(TrackState newState) {
-  int quantizeTime = parentLooper->quantif->intValue();
+  int quantizeTime = getQuantization();
     TimeManager * timeManager = TimeManager::getInstance();
     if(newState==desiredState)return;
 
@@ -419,8 +441,6 @@ void LooperTrack::setTrackState(TrackState newState) {
             timeManager->isSettingTempo->setValue(false);
             //            timeManager->lockTime(true);
 
-
-
             int minRecordTime = parentLooper->getSampleRate()*0.5f;
             if(loopSample.getRecordedLength()< minRecordTime){
                 // avoid feedBack when trigger play;
@@ -429,9 +449,13 @@ void LooperTrack::setTrackState(TrackState newState) {
                 quantizedRecordEnd =minRecordTime;
             }
             else{
-
+              if(parentLooper->isOneShot->boolValue()){
+                newState=WILL_STOP;
+              }
+              else{
                 newState=WILL_PLAY;
                 quantizedPlayStart = 0;
+              }
             }
 
 

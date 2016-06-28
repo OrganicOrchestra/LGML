@@ -722,7 +722,7 @@
                        cppLanguageStandard="c++11" cppLibType="libc++" linkTimeOptimisation="1"
                        headerPath="../../External/serial/include"/>
         <CONFIGURATION name="Debug" isDebug="1" osxSDK="default" osxCompatibility="10.7 SDK"
-                       osxArchitecture="64BitUniversal" targetName="LGML_Debug" defines="BLOCKSIZEGRANULARITY=0"
+                       osxArchitecture="64BitUniversal" targetName="LGML_Debug" defines=""
                        cppLanguageStandard="c++11" cppLibType="libc++" headerPath="../../External/serial/include"
                        customXcodeFlags="ONLY_ACTIVE_ARCH=1"/>
       </CONFIGURATIONS>
@@ -749,7 +749,7 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="LGML" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include&#10;"
-                       libraryPath="" defines="BLOCKSIZEGRANULARITY=0"/>
+                       libraryPath="" defines=""/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="LGML" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"/>
         <CONFIGURATION name="Debug 32bit" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"

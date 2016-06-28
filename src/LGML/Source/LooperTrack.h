@@ -138,6 +138,7 @@ private:
     bool isCrossFading;
 
 
+  int getQuantization();
 
 
 

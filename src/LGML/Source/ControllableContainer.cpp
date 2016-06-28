@@ -471,12 +471,14 @@ var ControllableContainer::getJSONData()
 
     for (auto &c : cont) {
         Parameter * base = dynamic_cast<Parameter*>(c);
-        if (base)
+        if (base )
         {
+            if(base->isSavable){
             var pData(new DynamicObject());
             pData.getDynamicObject()->setProperty(controlAddressIdentifier, base->getControlAddress(this));
             pData.getDynamicObject()->setProperty(valueIdentifier, base->value);
             paramsData.append(pData);
+            }
         }
         else if (dynamic_cast<Trigger*>(c) != nullptr) {
 
@@ -525,7 +527,7 @@ void ControllableContainer::loadJSONData(var data)
 
             if (Parameter * p = dynamic_cast<Parameter*>(c)) {
 //                we don't load preset when already loading a state
-                if(p->shortName!=presetIdentifier.toString())p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
+                if(p->shortName!=presetIdentifier.toString() && p->isSavable)p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
                 
             }
             else {
