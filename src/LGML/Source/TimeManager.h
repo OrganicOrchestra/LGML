@@ -62,7 +62,8 @@ public TimeMasterCandidate
 
     void togglePlay();
 
-    int getBeat();
+    int getBeatInt();
+    double getBeat();
     int getNextGlobalQuantifiedTime();
     int getNextQuantifiedTime(int barFraction);
     uint64 getTimeForNextBeats(int beats);

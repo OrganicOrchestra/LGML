@@ -14,7 +14,7 @@ specificVersion = ""#0.1.1"
 cleanFirst = False;
 localExportPath2 = [
 "/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/"
-,"/Volumes/Pguillerme/Documents/LGML/"
+# ,"/Volumes/Pguillerme/Documents/LGML/"
 ];
 architecture = "i386"
 

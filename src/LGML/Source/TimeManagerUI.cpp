@@ -149,7 +149,7 @@ void TimeManagerUI::TimeBar::showBeatComponents(bool show){
 void TimeManagerUI::TimeBar::timerCallback(){
     if(isSettingTempo){repaint();}
     else{
-        int lastBeat =timeManager->getBeat()%beatComponents.size();
+        int lastBeat =timeManager->getBeatInt()%beatComponents.size();
         for(int i = 0 ; i< beatComponents.size() ; i++){
             BeatComponent * bc = beatComponents.getUnchecked(i);
             if(i==lastBeat){

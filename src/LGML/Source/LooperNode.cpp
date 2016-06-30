@@ -155,7 +155,7 @@ void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
     if (needToReleaseMasterTempo) {
       TimeManager::getInstance()->releaseMasterCandidate(this);
     }
-    if (needToStop){
+    if (!isOneShot->boolValue() && needToStop){
       TimeManager::getInstance()->stopTrigger->trigger();
     }
   }
@@ -169,6 +169,7 @@ bool LooperNode::askForBeingMasterTrack(LooperTrack * t) {
 }
 
 bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
+  if(isOneShot->boolValue())return true;
   bool result = true;
   for (auto & t : trackGroup.tracks) {
     if (t != _t)result &=
@@ -270,7 +271,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
         t->stopTrig->trigger();
       }
     }
-    else {
+    else if(!isOneShot->boolValue()){
       // prevent time manager to update track internal state before all tracks are updated
       TimeManager::getInstance()->lockTime(true);
       for (auto &t : trackGroup.tracks) {

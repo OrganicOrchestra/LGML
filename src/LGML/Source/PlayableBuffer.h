@@ -26,7 +26,8 @@ class PlayableBuffer {
   playNeedle(0),isJumping(false),
   state(BUFFER_STOPPED),
   lastState(BUFFER_STOPPED),
-  stateChanged(false)
+  stateChanged(false),
+  numTimePlayed(0)
   {
 
     //        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
@@ -43,7 +44,7 @@ class PlayableBuffer {
     }
     else{
       for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-        int maxChannel = jmin(i,buffer.getNumChannels());
+        int maxChannel = jmin(i,buffer.getNumChannels()-1);
         loopSample.copyFrom(maxChannel, recordNeedle, buffer, maxChannel, 0, buffer.getNumSamples());
       }
       recordNeedle += buffer.getNumSamples();
@@ -69,7 +70,7 @@ class PlayableBuffer {
         buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, startJumpNeedle, halfBlock);
         buffer.applyGainRamp(i, 0, halfBlock, 1.0f, 0.0f);
         buffer.copyFrom(i, halfBlock, loopSample, maxChannelFromRecorded, playNeedle+halfBlock, halfBlock);
-        buffer.applyGainRamp(i, halfBlock, halfBlock, 0.0f, 1.0f);
+        buffer.applyGainRamp(i, halfBlock-1, halfBlock, 0.0f, 1.0f);
 
       }
 
@@ -108,7 +109,9 @@ class PlayableBuffer {
     isJumping = false;
 
     playNeedle += buffer.getNumSamples();
-
+    if(playNeedle>=recordNeedle){
+      numTimePlayed ++;
+    }
     playNeedle %= recordNeedle;
 
 
@@ -120,7 +123,9 @@ class PlayableBuffer {
 
   void setPlayNeedle(int n){
     if(playNeedle!=n){
-      if(!isJumping){startJumpNeedle = playNeedle;}
+      if(!isJumping){
+        startJumpNeedle = playNeedle;
+      }
       isJumping = true;
     }
 
@@ -144,6 +149,15 @@ class PlayableBuffer {
   }
   bool isFirstPlayingFrameAfterRecord(){
     return lastState == BUFFER_RECORDING && state == BUFFER_PLAYING;
+  }
+  bool isFirstStopAfterRec(){
+    return lastState == BUFFER_RECORDING && state == BUFFER_STOPPED;
+  }
+  bool isFirstPlayingFrame(){
+    return lastState!=BUFFER_PLAYING && state == BUFFER_PLAYING;
+  }
+  bool isFirstRecordingFrame(){
+    return lastState!=BUFFER_RECORDING && state == BUFFER_RECORDING;
   }
   bool isStopping() const{
     return (lastState == BUFFER_PLAYING ) && (state==BUFFER_STOPPED);
@@ -198,12 +212,14 @@ class PlayableBuffer {
     switch (newState){
       case BUFFER_RECORDING:
         recordNeedle = 0;
+        numTimePlayed = 0;
         setPlayNeedle(0);
         break;
       case BUFFER_PLAYING:
         setPlayNeedle( 0);
         break;
       case BUFFER_STOPPED:
+        numTimePlayed = 0;
         setPlayNeedle(0);
         break;
     }
@@ -236,13 +252,14 @@ class PlayableBuffer {
   int getStartJumpPos() const{return startJumpNeedle;}
 
 
-
+  int numTimePlayed;
 private:
 
   BufferState state;
   BufferState lastState;
   bool isJumping;
   AudioSampleBuffer loopSample;
+
 
   int recordNeedle,playNeedle,startJumpNeedle;
 
