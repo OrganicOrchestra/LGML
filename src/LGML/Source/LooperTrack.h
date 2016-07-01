@@ -118,16 +118,10 @@ public:
     
 private:
 
-
-
-
     bool someOneIsSolo;
 
-    
-
-
-    int quantizedRecordEnd, quantizedRecordStart;
-    int quantizedPlayStart, quantizedPlayEnd;
+    Atomic<int> quantizedRecordEnd, quantizedRecordStart;
+    Atomic<int> quantizedPlayStart, quantizedPlayEnd;
 
     bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
     void padBufferIfNeeded();
