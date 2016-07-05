@@ -47,7 +47,7 @@ VSTNode.cpp
 
 
 PlayableBuffer.h
-	line : 90
+	line : 94
 		// TODO sync size because buffer can be larger and we save few useless iteration
 
 

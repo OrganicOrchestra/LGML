@@ -228,7 +228,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
   //    DBG(playNeedle);
   if(stateChanged){
-    if(getQuantization()>0){
+    if(getQuantization()>0) {
       TimeManager * tm = TimeManager::getInstance();
       loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
     }

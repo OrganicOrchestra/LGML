@@ -58,8 +58,13 @@ class PlayableBuffer {
   void readNextBlock(AudioBuffer<float> & buffer){
     jassert(isOrWasPlaying());
 
+    // we want to read Last Block for fade out if stopped
+    if(state==BUFFER_STOPPED){playNeedle = startJumpNeedle;}
+
 
     // stitch audio jumps by quick fadeIn/Out
+
+
     if(isJumping && playNeedle!=startJumpNeedle && state!=BUFFER_STOPPED){
       LOG("a:jump "<<startJumpNeedle <<","<< playNeedle);
 
@@ -73,9 +78,8 @@ class PlayableBuffer {
         buffer.applyGainRamp(i, halfBlock-1, halfBlock, 0.0f, 1.0f);
 
       }
-
-
     }
+
     else{
       if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
       {
@@ -108,12 +112,16 @@ class PlayableBuffer {
     }
     isJumping = false;
 
-    playNeedle += buffer.getNumSamples();
-    if(playNeedle>=recordNeedle){
-      numTimePlayed ++;
-    }
-    playNeedle %= recordNeedle;
+    // revert to beginning after reading last block of stopped
+    if(state==BUFFER_STOPPED){playNeedle = 0;}
+    else{
 
+      playNeedle += buffer.getNumSamples();
+      if(playNeedle>=recordNeedle){
+        numTimePlayed ++;
+      }
+      playNeedle %= recordNeedle;
+    }
 
 
 
@@ -147,37 +155,16 @@ class PlayableBuffer {
       }
     }
   }
-  bool isFirstPlayingFrameAfterRecord(){
-    return lastState == BUFFER_RECORDING && state == BUFFER_PLAYING;
-  }
-  bool isFirstStopAfterRec(){
-    return lastState == BUFFER_RECORDING && state == BUFFER_STOPPED;
-  }
-  bool isFirstPlayingFrame(){
-    return lastState!=BUFFER_PLAYING && state == BUFFER_PLAYING;
-  }
-  bool isFirstRecordingFrame(){
-    return lastState!=BUFFER_RECORDING && state == BUFFER_RECORDING;
-  }
-  bool isStopping() const{
-    return (lastState == BUFFER_PLAYING ) && (state==BUFFER_STOPPED);
-  }
-  bool isRecording() const{
-    return state == BUFFER_RECORDING;
-  }
-  bool firstRecordedFrame() const{
-    return state == BUFFER_RECORDING && (lastState!=BUFFER_RECORDING);
-  }
-  void startRecord(){
-    recordNeedle = 0;
-  }
-  bool isOrWasPlaying() const{
-    return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();
-  }
-
-  void startPlay(){
-    setPlayNeedle(0);
-  }
+  bool isFirstPlayingFrameAfterRecord(){return lastState == BUFFER_RECORDING && state == BUFFER_PLAYING;}
+  bool isFirstStopAfterRec(){return lastState == BUFFER_RECORDING && state == BUFFER_STOPPED;}
+  bool isFirstPlayingFrame(){return lastState!=BUFFER_PLAYING && state == BUFFER_PLAYING;}
+  bool isFirstRecordingFrame(){return lastState!=BUFFER_RECORDING && state == BUFFER_RECORDING;}
+  bool isStopping() const{return (lastState == BUFFER_PLAYING  ) && (state==BUFFER_STOPPED);}
+  bool isRecording() const{return state == BUFFER_RECORDING;}
+  bool firstRecordedFrame() const{return state == BUFFER_RECORDING && (lastState!=BUFFER_RECORDING);}
+  void startRecord(){recordNeedle = 0;}
+  bool isOrWasPlaying() const{return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();}
+  void startPlay(){setPlayNeedle(0);}
 
   bool checkTimeAlignment(uint64 curTime,const int minQuantifiedFraction){
 
@@ -254,15 +241,15 @@ class PlayableBuffer {
 
   int numTimePlayed;
 private:
-
+  
   BufferState state;
   BufferState lastState;
   bool isJumping;
   AudioSampleBuffer loopSample;
-
-
+  
+  
   int recordNeedle,playNeedle,startJumpNeedle;
-
+  
 };
 
 
