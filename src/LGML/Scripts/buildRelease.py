@@ -8,7 +8,7 @@ njobs = multiprocessing.cpu_count()
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = True
+bumpVersion = False
 sendToOwncloud = False
 specificVersion = ""#0.1.1"
 cleanFirst = False;

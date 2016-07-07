@@ -162,7 +162,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
   const uint64 triggeringTime = curTime;
   if (quantizedRecordStart.get()>=0) {
     if (triggeringTime >= quantizedRecordStart.get()) {
-      if(isMasterTempoTrack()){
+      if(isMasterTempoTrack() ){
         if(!TimeManager::getInstance()->playState->boolValue())TimeManager::getInstance()->playState->setValue(true);
       }
       desiredState = RECORDING;
@@ -178,10 +178,14 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
   }
   else if (quantizedRecordEnd.get()>=0) {
     if (triggeringTime >= quantizedRecordEnd.get()) {
+
       if(parentLooper->isOneShot->boolValue()){
         desiredState = STOPPED;
       }
       else{
+				if(isMasterTempoTrack()){
+					TimeManager::getInstance()->playState->setValue(true,false,true);
+				}
         desiredState = PLAYING;
         loopSample.setState( PlayableBuffer::BUFFER_PLAYING);
         startPlayBeat = TimeManager::getInstance()->getBeat();
@@ -197,9 +201,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
   if (quantizedPlayStart.get()>=0) {
     if (triggeringTime >= quantizedPlayStart.get()) {
-      if(isMasterTempoTrack()){
-        TimeManager::getInstance()->playState->setValue(true,false,true);
-      }
+
       desiredState =  PLAYING;
       loopSample.setState( PlayableBuffer::BUFFER_PLAYING);
       startPlayBeat = TimeManager::getInstance()->getBeat();
@@ -460,7 +462,7 @@ void LooperTrack::setTrackState(TrackState newState) {
 
     }
     // if every one else is stopped
-    else if(parentLooper->askForBeingAbleToPlayNow(this) ) {
+    else if(parentLooper->askForBeingAbleToPlayNow(this) && !loopSample.isOrWasPlaying()) {
       quantizedRecordEnd = -1;
 
       if(timeManager->isMasterCandidate(parentLooper)){
