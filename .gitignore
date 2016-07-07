@@ -48,6 +48,7 @@ profile
 **/CodeBlocks/*.depend
 **/CodeBlocks/*.layout
 **/Builds/AndroidStudio
+**/Builds/LinuxMakefile
 doxygen/doc
 src/LGML/Builds/MacOSX
 src/LGML/Builds/VisualStudio2015
