@@ -419,7 +419,15 @@ void LooperTrack::setTrackState(TrackState newState) {
     }
 
     else if (!timeManager->isSettingTempo->boolValue()) {
-      quantizedRecordStart = timeManager->getNextQuantifiedTime(quantizeTime);
+			if(parentLooper->askForBeingAbleToPlayNow(this) && !timeManager->playState->boolValue()) {
+				timeManager->playTrigger->trigger();
+				quantizedRecordStart = 0;
+				
+			}
+			else{
+				quantizedRecordStart = timeManager->getNextQuantifiedTime(quantizeTime);
+
+			}
     }
     //            Record per default if triggering other rec while we are current master and we are recording
 
@@ -456,6 +464,7 @@ void LooperTrack::setTrackState(TrackState newState) {
       }
       else{
           if(!askForBeingMasterTempoTrack() )  {
+						
           quantizedRecordEnd = timeManager->getNextQuantifiedTime(quantizeTime);
         }
       }
