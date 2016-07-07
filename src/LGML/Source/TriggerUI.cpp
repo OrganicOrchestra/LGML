@@ -15,15 +15,15 @@ TriggerUI::TriggerUI(Trigger * trigger) :
     trigger(trigger),
 	showLabel(true)
 {
-    trigger->addTriggerListener(this);
+    trigger->addAsyncTriggerListener(this);
 }
 
 TriggerUI::~TriggerUI()
 {
-
-    if(controllable.get())trigger->removeTriggerListener(this);
+    if(controllable.get())trigger->removeAsyncTriggerListener(this);
 }
 
-void TriggerUI::triggerTriggered(Trigger *)
+void TriggerUI::newMessage(const WeakReference<Trigger> & t)
 {
+	triggerTriggered(t.get());
 }

@@ -32,15 +32,15 @@ TriggerBlinkUI::~TriggerBlinkUI()
 
 void TriggerBlinkUI::setTriggerReference(Trigger * t) {
     if (trigger != nullptr) {
-        trigger->removeTriggerListener(this);
+        trigger->removeAsyncTriggerListener(this);
     }
 
     trigger = t;
 
-    trigger->addTriggerListener(this);
+    trigger->addAsyncTriggerListener(this);
 }
 
-void TriggerBlinkUI::triggerTriggered(Trigger *) {
+void TriggerBlinkUI::triggerTriggered(const Trigger *) {
     startBlink();
 
 }

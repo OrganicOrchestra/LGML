@@ -25,7 +25,7 @@ TriggerButtonUI::~TriggerButtonUI()
 
 }
 
-void TriggerButtonUI::triggerTriggered(Trigger *){
+void TriggerButtonUI::triggerTriggered(const Trigger *){
     repaint();
 }
 

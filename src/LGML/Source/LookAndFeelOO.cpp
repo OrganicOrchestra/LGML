@@ -937,6 +937,10 @@ void LookAndFeelOO::drawMenuBarItem (Graphics& g, int width, int height,
     g.drawFittedText (itemText, 0, 0, width, height, Justification::centred, 1);
 }
 
+
+Component* LookAndFeelOO::getParentComponentForMenuOptions(const PopupMenu::Options &options){
+return options.getParentComponent();
+}
 //==============================================================================
 void LookAndFeelOO::fillTextEditorBackground (Graphics& g, int /*width*/, int /*height*/, TextEditor& textEditor)
 {

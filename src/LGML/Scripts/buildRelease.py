@@ -8,12 +8,12 @@ njobs = multiprocessing.cpu_count()
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = False
+bumpVersion = True
 sendToOwncloud = False
 specificVersion = ""#0.1.1"
 cleanFirst = False;
 localExportPath2 = [
-"/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/"
+# "/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/"
 # ,"/Volumes/Pguillerme/Documents/LGML/"
 ];
 architecture = "i386"
