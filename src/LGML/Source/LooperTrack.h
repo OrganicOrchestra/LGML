@@ -118,6 +118,7 @@ public:
     
 private:
 
+    friend class LooperNode;
     bool someOneIsSolo;
 
     Atomic<int> quantizedRecordEnd, quantizedRecordStart;

@@ -239,13 +239,17 @@ class PlayableBuffer {
   int getStartJumpPos() const{return startJumpNeedle;}
 
 
+
+
   int numTimePlayed;
+  AudioSampleBuffer loopSample;
+  
 private:
   
   BufferState state;
   BufferState lastState;
   bool isJumping;
-  AudioSampleBuffer loopSample;
+
   
   
   int recordNeedle,playNeedle,startJumpNeedle;

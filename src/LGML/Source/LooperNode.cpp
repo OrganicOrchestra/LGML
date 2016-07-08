@@ -21,7 +21,7 @@ streamAudioBuffer(1,16384,512)// 16000 ~ 300ms and 256*64
 {
 
   numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-
+  exportAudio = addTrigger("exportAudio", "export audio of all recorded Tracks");
   selectAllTrig = addTrigger("Select All",        "Select All tracks, for all clear or main volume for instance");
   selectTrack = addIntParameter("Select track",   "set track selected", 0, -1, 0);
   recPlaySelectedTrig = addTrigger("Rec Or Play","Tells the selected track to wait for the next bar and then start record or play");
@@ -229,6 +229,40 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
     selectTrack->setValue(-1);
 
   }
+
+  if(t==exportAudio){
+    FileChooser myChooser("Please select the directory for exporting audio ...");
+
+    if (myChooser.browseForDirectory())
+    {
+      File folder(myChooser.getResult());
+      WavAudioFormat format;
+
+
+
+      for(auto & t:trackGroup.tracks){
+        if(t->loopSample.getRecordedLength()){
+        File f(myChooser.getResult().getChildFile(nameParam->stringValue()+"_"+String(t->trackIdx)+".wav"));
+        ScopedPointer<FileOutputStream> fp;
+        if((fp = f.createOutputStream())){
+          ScopedPointer<AudioFormatWriter> afw= format.createWriterFor(fp,
+                                                         getSampleRate(),
+                                                         t->loopSample.loopSample.getNumChannels(),
+                                                         24,
+                                                         StringPairArray(),0);
+          if(afw){
+          fp.release();
+          afw->writeFromAudioSampleBuffer(t->loopSample.loopSample,0,t->loopSample.getRecordedLength());
+          afw->flush();
+
+          }
+        }
+        }
+      }
+
+    }
+  }
+
 }
 
 void LooperNode::selectMe(LooperTrack * t) {

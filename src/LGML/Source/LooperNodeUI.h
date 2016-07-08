@@ -28,6 +28,7 @@ public:
     ScopedPointer<TriggerBlinkUI>   stopAllButton;
     ScopedPointer<BoolToggleUI>     monitoringButton;
 
+
     LooperNodeContentUI();
     ~LooperNodeContentUI();
 
@@ -71,6 +72,7 @@ public:
     void resized() override;
     void reLayoutTracks();
     void reLayoutHeader();
+
 
     OwnedArray<TrackUI> tracksUI;
     LooperNode * looperNode;

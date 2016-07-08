@@ -67,7 +67,7 @@ public:
   IntParameter * quantization;
     IntParameter * preDelayMs;
   BoolParameter * isOneShot;
-
+  Trigger * exportAudio;
 
 	AudioBuffer<float> bufferIn;
 	AudioBuffer<float>bufferOut;
