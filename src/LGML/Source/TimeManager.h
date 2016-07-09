@@ -96,7 +96,7 @@ public TimeMasterCandidate
 private:
 
     struct TimeState{
-        TimeState():isJumping(false),nextTime(-1),isPlaying(false),time(0){}
+        TimeState():isJumping(false),nextTime((uint64)-1),isPlaying(false),time((uint64)0){}
         bool isPlaying;
         void jumpTo(uint64 t){
             isJumping = true;

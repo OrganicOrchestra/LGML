@@ -288,7 +288,7 @@ void LooperTrack::padBufferIfNeeded(){
       else{
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
       }
-      loopSample.fadeInOut (parentLooper->getSampleRate() * 0.01,0);
+      loopSample.fadeInOut ((int)(parentLooper->getSampleRate() * 0.01),0);
       originBPM = TimeManager::getInstance()->BPM->doubleValue();
       loopSample.setPlayNeedle(offsetForPlay);
     }
@@ -450,7 +450,7 @@ void LooperTrack::setTrackState(TrackState newState) {
         timeManager->isSettingTempo->setValue(false);
         //            timeManager->lockTime(true);
 
-        int minRecordTime = parentLooper->getSampleRate()*0.5f;
+        int minRecordTime = (int)(parentLooper->getSampleRate()*0.5f);
         if(loopSample.getRecordedLength()< minRecordTime){
           // avoid feedBack when trigger play;
           newState = WILL_RECORD;

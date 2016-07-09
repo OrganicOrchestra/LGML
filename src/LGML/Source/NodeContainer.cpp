@@ -297,6 +297,7 @@ void NodeContainer::loadJSONDataInternal(var data)
                     NLOG("loadJSON","no dstnode for shortName : "+cData.getDynamicObject()->getProperty("dstNode").toString());
                 }
                 LOG("Available Nodes in "+ shortName+" : ");
+				
                 for (auto &node : nodes)
                 {
                     DBG(" > " + node->niceName+"//"+ node->shortName);

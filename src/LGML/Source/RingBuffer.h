@@ -22,7 +22,7 @@
 class BipBuffer{
 
 public:
-    BipBuffer(int _channels,int size,int maxBlockSize):numChannels(_channels){
+    BipBuffer(int _channels,int size,int /*maxBlockSize*/):numChannels(_channels){
         phantomSize = size;
         buf.setSize(_channels,3*size,false,true);
         writeNeedle = 0;
