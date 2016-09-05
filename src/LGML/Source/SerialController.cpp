@@ -16,6 +16,12 @@ SerialController::SerialController() :
 	Controller("Serial"),
 	port(nullptr)
 {
+
+	setNamespaceName("Serial." + nameParam->stringValue());
+	scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
+	logIncoming = addBoolParameter("logIncoming", "log Incoming midi message", false);
+
+
 	SerialManager::getInstance()->addSerialManagerListener(this);
 }
 
@@ -48,11 +54,22 @@ void SerialController::setCurrentPort(SerialPort * _port)
 	serialControllerListeners.call(&SerialControllerListener::currentPortChanged);
 }
 
+void SerialController::newJsFileLoaded()
+{
+	scriptPath->setValue(currentFile.getFullPathName());
+}
+
 void SerialController::buildLocalEnv() {
+
 	DynamicObject obj;
 	static const Identifier jsSendMessageIdentifier("sendMessage");
 	obj.setMethod(jsSendMessageIdentifier, sendMessageFromScript);
 	obj.setProperty(jsPtrIdentifier, (int64)this);
+
+	for (auto &v : variables)
+	{
+		obj.setProperty(v->parameter->shortName, v->parameter->createDynamicObject());
+	}
 
 	setLocalNamespace(obj);
 }
@@ -99,19 +116,25 @@ void SerialController::processMessage(const String & message)
 	{
 		//identification
 		deviceID = split[1];
-		while (variables.size() > 0) removeVariable(variables[0]);
+		while (serialVariables.size() > 0)
+		{
+			removeVariable(serialVariables[0]);
+			serialVariables.removeAllInstancesOf(serialVariables[0]);
+		}
 
 	} else if (command == "a")
 	{
 		if (getVariableForName(split[1]) == nullptr)
 		{
-			addVariable(new FloatParameter(split[1], split[1], 0));
+			ControlVariable * v = addVariable(new FloatParameter(split[1], split[1], 0));
+			serialVariables.add(v);
 		}
 	} else if (command == "d")
 	{
 		if (getVariableForName(split[1]) == nullptr)
 		{
-			addVariable(new BoolParameter(split[1], split[1], false));
+			ControlVariable * v = addVariable(new BoolParameter(split[1], split[1], false));
+			serialVariables.add(v);
 		}
 	} else if (command == "u")
 	{

@@ -12,8 +12,9 @@
 #include "FloatSliderUI.h"
 
 SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI) :
-	CustomEditor(controllerUI),
-	serialController(controllerUI->serialController)
+	ControllerEditor(controllerUI),
+	serialController(controllerUI->serialController),
+	jsUI(controllerUI->serialController)
 {
 	serialController->addControllerListener(this);
 
@@ -23,14 +24,21 @@ SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI
 	addAndMakeVisible(&connectPortBT);
 	connectPortBT.addListener(this);
 
+	addAndMakeVisible(jsUI);
+
+	incomingToogle = serialController->logIncoming->createToggle();
+	addAndMakeVisible(incomingToogle);
+
 	serialController->addSerialControllerListener(this);
 
 	updateConnectBTAndIndic();
-
+	
+	/*
 	for (auto &v : serialController->variables)
 	{
 		addVariableUI(v);
 	}
+	*/
 }
 
 SerialControllerEditor::~SerialControllerEditor()
@@ -39,6 +47,7 @@ SerialControllerEditor::~SerialControllerEditor()
 	serialController->removeSerialControllerListener(this);
 }
 
+/*
 void SerialControllerEditor::addVariableUI(ControlVariable * v)
 {
 	ParameterUI * vui = (ParameterUI *)v->parameter->createDefaultUI();
@@ -66,6 +75,7 @@ ParameterUI * SerialControllerEditor::getUIForVariable(ControlVariable * v)
 	}
 	return nullptr;
 }
+*/
 
 void SerialControllerEditor::paint(Graphics & g)
 {
@@ -80,19 +90,36 @@ void SerialControllerEditor::paint(Graphics & g)
 
 void SerialControllerEditor::resized()
 {
+	ControllerEditor::resized();
+
 	Rectangle<int> r = getLocalBounds();
+	DBG("Local bounds " + r.toString());
+	r.removeFromTop(ControllerEditor::getContentHeight()+10);
+
+	incomingToogle->setBounds(r.removeFromTop(20));
+	jsUI.setBounds(r.removeFromTop(20));
 	deviceChooser.setBounds(r.removeFromTop(20));
 	r.removeFromTop(2);
+
 	Rectangle<int> connectR = r.removeFromTop(20);
 	connectR.removeFromRight(40);
 	connectPortBT.setBounds(connectR);
 
+	/*
 	r.removeFromTop(20);
+	
 	for (auto &vui : variablesUI)
 	{
 		vui->setBounds(r.removeFromTop(10));
 		r.removeFromTop(2);
 	}
+	*/
+}
+
+
+int SerialControllerEditor::getContentHeight()
+{
+	return ControllerEditor::getContentHeight() + 10 + 130;
 }
 
 void SerialControllerEditor::updateConnectBTAndIndic()
@@ -124,6 +151,8 @@ void SerialControllerEditor::comboBoxChanged(ComboBox *cb)
 
 void SerialControllerEditor::buttonClicked(Button * b)
 {
+	ControllerEditor::buttonClicked(b);
+
 	if (b == &connectPortBT)
 	{
 		if (serialController->port != nullptr)
@@ -151,8 +180,10 @@ void SerialControllerEditor::currentPortChanged()
 	updateConnectBTAndIndic();
 }
 
+/*
 void SerialControllerEditor::variableAdded(Controller *, ControlVariable *v)
 {
+
 	addVariableUI(v);
 }
 
@@ -160,3 +191,4 @@ void SerialControllerEditor::variableRemoved(Controller *, ControlVariable *v)
 {
 	removeVariableUI(v);
 }
+*/

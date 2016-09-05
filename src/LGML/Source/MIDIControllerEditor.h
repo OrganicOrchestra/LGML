@@ -11,14 +11,14 @@
 #ifndef MIDICONTROLLEREDITOR_H_INCLUDED
 #define MIDICONTROLLEREDITOR_H_INCLUDED
 
-#include "CustomEditor.h"
+#include "ControllerEditor.h"
 #include "MIDIControllerUI.h"
 #include "MIDIUIHelper.h"
 #include "JsEnvironmentUI.h"
 
 
 
-class MIDIControllerEditor : public CustomEditor, ComboBoxListener
+class MIDIControllerEditor : public ControllerEditor, ComboBoxListener
 {
 public:
 	MIDIControllerEditor(MIDIControllerUI * controllerUI);
@@ -31,6 +31,8 @@ public:
     ScopedPointer<BoolToggleUI> incomingToogle;
 	void resized() override;
 	void comboBoxChanged(ComboBox *) override;
+
+	int getContentHeight() override;
 };
 
 

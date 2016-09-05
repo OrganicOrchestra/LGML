@@ -89,13 +89,14 @@ ControllerUI * Controller::createUI()
 	return new ControllerUI(this);
 }
 
-void Controller::addVariable(Parameter * p)
+ControlVariable * Controller::addVariable(Parameter * p)
 {
 	ControlVariable * v = new ControlVariable(this, p);
 	p->replaceSlashesInShortName = false;
 	variables.add(v);
 	v->addControlVariableListener(this);
 	controllerListeners.call(&ControllerListener::variableAdded, this, v);
+	return v;
 }
 
 void Controller::removeVariable(ControlVariable * v)

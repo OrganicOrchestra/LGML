@@ -12,16 +12,14 @@
 #define SERIALCONTROLLEREDITOR_H_INCLUDED
 
 
-#include "CustomEditor.h"
+#include "ControllerEditor.h"
 #include "SerialControllerUI.h"
 #include "SerialUIHelper.h"
 #include "JsEnvironmentUI.h"
 
 class SerialControllerEditor :
-	public CustomEditor, ComboBoxListener,
-	public SerialController::SerialControllerListener,
-	public ButtonListener,
-	public Controller::ControllerListener
+	public ControllerEditor, ComboBoxListener,
+	public SerialController::SerialControllerListener
 {
 public:
 	SerialControllerEditor(SerialControllerUI * controllerUI);
@@ -32,11 +30,18 @@ public:
 	SerialController * serialController;
 	TextButton connectPortBT;
 
+	JsEnvironmentUI jsUI;
+	ScopedPointer<BoolToggleUI> incomingToogle;
+
 	OwnedArray<ParameterUI> variablesUI;
 
+	int getContentHeight() override;
+
+	/*
 	void addVariableUI(ControlVariable *);
 	void removeVariableUI(ControlVariable *);
 	ParameterUI * getUIForVariable(ControlVariable *);
+	*/
 
 	void paint(Graphics &g) override;
 	void resized() override;
@@ -50,9 +55,10 @@ public:
 	void portClosed() override;
 	void currentPortChanged() override;
 
+	/*
 	void variableAdded(Controller *, ControlVariable * ) override;
 	void variableRemoved(Controller *, ControlVariable *) override;
-
+	*/
 };
 
 

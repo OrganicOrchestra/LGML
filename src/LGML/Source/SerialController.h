@@ -31,6 +31,16 @@ public:
 	SerialPort * port;
 	void setCurrentPort(SerialPort *port);
 
+	Array<ControlVariable *> serialVariables;
+
+	//Script
+	StringParameter * scriptPath;
+	BoolParameter * logIncoming;
+
+	void newJsFileLoaded() override;
+	
+
+
 	void buildLocalEnv() override;
 	static var sendMessageFromScript(const var::NativeFunctionArgs & v);
 

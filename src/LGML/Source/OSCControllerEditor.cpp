@@ -44,6 +44,7 @@ void OSCControllerEditor::resized()
 	ControllerEditor::resized();
 
 	Rectangle<int> r = getLocalBounds();
+
 	r.removeFromTop(ControllerEditor::getContentHeight() + 10);
 	localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));
 	r.removeFromTop(10);
