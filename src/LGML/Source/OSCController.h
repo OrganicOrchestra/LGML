@@ -21,9 +21,6 @@ public:
   OSCController(const String &name);
   virtual ~OSCController();
 
-
-
-
   StringParameter * localPortParam;
   StringParameter * remoteHostParam;
   StringParameter * remotePortParam;

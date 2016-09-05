@@ -24,34 +24,13 @@ var OSCCustomController::getJSONData()
 {
 	var data = OSCController::getJSONData();
 
-	var vDataArray;
-	for (auto &v : variables)
-	{
-		var vData(new DynamicObject());
-		vData.getDynamicObject()->setProperty("name", v->parameter->niceName);
-		vDataArray.append(vData);
-	}
-
-	data.getDynamicObject()->setProperty("variables", vDataArray);
-
+	
 	return data;
 }
 
 void OSCCustomController::loadJSONData(var data)
 {
-	OSCController::loadJSONData(data);
-	Array<var>* vDataArray = data.getDynamicObject()->getProperty("variables").getArray();
-
-	if (vDataArray != nullptr)
-	{
-		for (auto &v : *vDataArray)
-		{
-			Parameter * p = new FloatParameter("newVar", "variable", 0);
-			p->replaceSlashesInShortName = false;
-			p->setNiceName(v.getDynamicObject()->getProperty("name"));
-			addVariable(p);
-		}
-	}
+	
 }
 
 ControllerUI * OSCCustomController::createUI()

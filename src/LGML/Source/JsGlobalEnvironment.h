@@ -20,7 +20,8 @@
 // this class holds global namespace
 // each JSEnvironment will be binded to this and so accessible from within each others
 
-class JsGlobalEnvironment:public JsContainerSync{
+class JsGlobalEnvironment: public JsContainerSync
+{
 public:
     juce_DeclareSingleton(JsGlobalEnvironment, true);
 
@@ -33,11 +34,17 @@ public:
 
 private:
 
+	
+
     static var post(const juce::var::NativeFunctionArgs& a);
+	static var getMillis(const juce::var::NativeFunctionArgs& a);
+
 
     friend class JsEnvironment;
 
     var env;
+
+	
 };
 
 

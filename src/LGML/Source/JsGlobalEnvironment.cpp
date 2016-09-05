@@ -21,11 +21,13 @@ juce_ImplementSingleton(JsGlobalEnvironment);
 JsGlobalEnvironment::JsGlobalEnvironment(){
     env = new DynamicObject();
     static const Identifier jsPostIdentifier("post");
+	static const Identifier jsGetMillisIdentifier("getMillis");
     getEnv()->setMethod(jsPostIdentifier, JsGlobalEnvironment::post);
-
+	getEnv()->setMethod(jsGetMillisIdentifier, JsGlobalEnvironment::getMillis);
     // default in global namespace
     linkToControllableContainer("time",TimeManager::getInstance());
     linkToControllableContainer("node",NodeManager::getInstance());
+
 
     // TODO: use a bit of ControllableContainer in controllers, its empty atm
 //    linkToControllableContainer("controllers",ControllerManager::getInstance());
@@ -42,4 +44,8 @@ var JsGlobalEnvironment::post(const juce::var::NativeFunctionArgs& a){
         LOG(a.arguments[i].toString());
     }
     return var();
+}
+
+var JsGlobalEnvironment::getMillis(const juce::var::NativeFunctionArgs& /*a*/) {
+	return var((int)Time::getMillisecondCounter());
 }

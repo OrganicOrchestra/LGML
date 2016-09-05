@@ -39,11 +39,34 @@ var Controller::getJSONData()
 	var data = ControllableContainer::getJSONData();
     data.getDynamicObject()->setProperty(controllerTypeIdentifier, ControllerFactory::controllerToString(this));
 
+	var vDataArray;
+	for (auto &v : variables)
+	{
+		var vData(new DynamicObject());
+		vData.getDynamicObject()->setProperty("name", v->parameter->niceName);
+		vDataArray.append(vData);
+	}
+
+	data.getDynamicObject()->setProperty("variables", vDataArray);
+
+
     return data;
 }
 
 void Controller::loadJSONDataInternal(var data)
 {
+	Array<var>* vDataArray = data.getDynamicObject()->getProperty("variables").getArray();
+
+	if (vDataArray != nullptr)
+	{
+		for (auto &v : *vDataArray)
+		{
+			Parameter * p = new FloatParameter("newVar", "variable", 0);
+			p->replaceSlashesInShortName = false;
+			p->setNiceName(v.getDynamicObject()->getProperty("name"));
+			addVariable(p);
+		}
+	}
 }
 
 

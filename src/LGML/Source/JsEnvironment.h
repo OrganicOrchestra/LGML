@@ -14,7 +14,10 @@
 #include "JuceHeader.h"
 #include "JsGlobalEnvironment.h"
 
-class JsEnvironment : public Timer,public Parameter::Listener,public Trigger::Listener {
+class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
+					  public Parameter::Listener,
+					  public Trigger::Listener 
+{
 public:
     JsEnvironment(const String & ns);
     virtual ~JsEnvironment();
@@ -153,7 +156,7 @@ private:
 
     JavascriptEngine jsEngine;
 
-    void timerCallback()override;
+    void timerCallback(int timerID)override;
     Time lastFileModTime;
 
     void checkUserControllableEventFunction();
