@@ -93,7 +93,6 @@ void SerialControllerEditor::resized()
 	ControllerEditor::resized();
 
 	Rectangle<int> r = getLocalBounds();
-	DBG("Local bounds " + r.toString());
 	r.removeFromTop(ControllerEditor::getContentHeight()+10);
 
 	incomingToogle->setBounds(r.removeFromTop(20));
@@ -139,7 +138,8 @@ void SerialControllerEditor::comboBoxChanged(ComboBox *cb)
 {
 	if (cb == &deviceChooser)
 	{
-		if (deviceChooser.getSelectedId() >  1)
+		DBG("Device chooser changed, selectedId = " + String(deviceChooser.getSelectedId()));
+		if (deviceChooser.getSelectedId() >= 2)
 		{
 			SerialPort * p = SerialManager::getInstance()->getPort(SerialManager::getInstance()->portInfos[deviceChooser.getSelectedId() - 2]);
 			serialController->setCurrentPort(p);

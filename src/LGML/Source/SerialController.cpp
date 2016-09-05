@@ -37,20 +37,30 @@ SerialController::~SerialController()
 
 void SerialController::setCurrentPort(SerialPort * _port)
 {
+	
 	if (port == _port) return;
+	
+	
 	if (port != nullptr)
 	{
+
 		port->removeSerialPortListener(this);
 	}
+
 	port = _port;
 
 	if (port != nullptr)
 	{
+		DBG("Set port " + _port->info->port);
 		port->addSerialPortListener(this);
 		lastOpenedPortID = port->info->hardwareID;
 		sendIdentificationQuery();
+	} else
+	{
+		DBG("set port null");
 	}
 
+	DBG("current port changed");
 	serialControllerListeners.call(&SerialControllerListener::currentPortChanged);
 }
 

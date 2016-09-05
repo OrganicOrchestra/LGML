@@ -78,7 +78,6 @@ void ControllerEditor::resized()
 		vui->setBounds(r.removeFromTop(variableUIHeight));
 		r.removeFromTop(listGap);
 	}
-	DBG("controller editor resized");
 }
 
 int ControllerEditor::getContentHeight()

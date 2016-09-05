@@ -32,7 +32,9 @@ void loop() {
   lgml.update();
    for(int i=0;i<NUM_DIGITAL_INPUTS;i++)
   {
-    float val = digitalRead(digitalPins[i])?1:0;
+    float val = !digitalRead(digitalPins[i])?1:0;
+    if(i == 0) val = !val; //Une des 2 pedales a un bouton qui fonctionne à l'inverse
+   
     if(lgml.values[i] != val)
     {
       lgml.updateInputValue(i, val);

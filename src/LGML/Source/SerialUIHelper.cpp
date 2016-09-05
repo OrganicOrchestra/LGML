@@ -33,8 +33,9 @@ void SerialDeviceChooser::fillDeviceList()
 
 	for (auto &pi : SerialManager::getInstance()->portInfos)
 	{
-		if (pi->description == currentSelected) newSelectedId = menuIndex;
-		addItem(pi->description,menuIndex);
+		String mName = pi->description + String("(") + pi->port + String(")");
+		if (mName == currentSelected) newSelectedId = menuIndex;
+		addItem(mName,menuIndex);
 		menuIndex++;
 	}
 
