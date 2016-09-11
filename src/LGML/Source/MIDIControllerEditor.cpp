@@ -12,7 +12,7 @@
 #include "MIDIController.h"
 
 MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
-	CustomEditor(controllerUI),
+	ControllerEditor(controllerUI),
 	midiController(controllerUI->midiController),
 	deviceChooser(true),
     jsUI(controllerUI->midiController)
@@ -32,10 +32,17 @@ MIDIControllerEditor::~MIDIControllerEditor()
 
 void MIDIControllerEditor::resized()
 {
+	//ControllerEditor::resized();
 	Rectangle<int> r = getLocalBounds();
+	//r.removeFromTop(ControllerEditor::getContentHeight() + 10);
 	deviceChooser.setBounds(r.removeFromTop(30));
     incomingToogle->setBounds(r.removeFromTop(20));
     jsUI.setBounds(r.removeFromTop(20));
+}
+
+int MIDIControllerEditor::getContentHeight()
+{
+	return 100;
 }
 
 void MIDIControllerEditor::comboBoxChanged(ComboBox *cb)

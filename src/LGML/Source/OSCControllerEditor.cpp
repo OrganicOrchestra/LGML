@@ -39,9 +39,13 @@ OSCControllerEditor::~OSCControllerEditor()
 {
 }
 
-void OSCControllerEditor::resized()
+void OSCControllerEditor::resized() 
 {
+	ControllerEditor::resized();
+
 	Rectangle<int> r = getLocalBounds();
+
+	r.removeFromTop(ControllerEditor::getContentHeight() + 10);
 	localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));
 	r.removeFromTop(10);
 	remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));
@@ -59,7 +63,7 @@ void OSCControllerEditor::resized()
 
 int OSCControllerEditor::getContentHeight()
 {
-	return localPortUI->getHeight() + remoteHostUI->getHeight() + remotePortUI->getHeight() + 60;
+	return ControllerEditor::getContentHeight()+10+localPortUI->getHeight() + remoteHostUI->getHeight() + remotePortUI->getHeight() + 60;
 }
 
 void OSCControllerEditor::messageProcessed(const OSCMessage & , bool)

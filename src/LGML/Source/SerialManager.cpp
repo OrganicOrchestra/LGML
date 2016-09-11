@@ -101,7 +101,6 @@ void SerialManager::updateDeviceList()
 
 	for (auto &p : portsToNotifyAdded)
 	{
-		DBG("Port added " << p->description);
 
 		newInfos.removeObject(p, false);
 		portInfos.add(p);
@@ -116,7 +115,8 @@ SerialPort * SerialManager::getPort(SerialPortInfo * portInfo, bool createIfNotT
 #if SERIALSUPPORT
 	for (auto & sp : openedPorts)
 	{
-		if (sp->info->hardwareID == portInfo->hardwareID) return sp;
+		
+		if (sp->info->hardwareID == portInfo->hardwareID && sp->info->port == portInfo->port) return sp;
 	}
 
 	if (createIfNotThere)
