@@ -63,7 +63,7 @@ MainComponentCommands.cpp
 
 
 JsEnvironment.cpp
-	line : 302
+	line : 311
 		// @ben only supported if move semantics are too are they for you?
 
 
@@ -92,7 +92,7 @@ JavascriptControllerUI.cpp
 
 
 JsGlobalEnvironment.cpp
-	line : 29
+	line : 31
 		// TODO: use a bit of ControllableContainer in controllers, its empty atm
 		//    linkToControllableContainer("controllers",ControllerManager::getInstance());
 

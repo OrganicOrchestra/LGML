@@ -50,7 +50,7 @@ void SerialManager::updateDeviceList()
 		bool found = false;
 		for (auto &sourceD : portInfos)
 		{
-			if (sourceD->hardwareID == newD->hardwareID)
+			if (sourceD->hardwareID == newD->hardwareID && sourceD->port == newD->port)
 			{
 				found = true;
 				break;
@@ -69,7 +69,7 @@ void SerialManager::updateDeviceList()
 		bool found = false;
 		for (auto &newD : newInfos)
 		{
-			if (sourceD->hardwareID == newD->hardwareID)
+			if (sourceD->hardwareID == newD->hardwareID && sourceD->port == newD->port)
 			{
 				found = true;
 				break;
@@ -129,6 +129,19 @@ SerialPort * SerialManager::getPort(SerialPortInfo * portInfo, bool createIfNotT
 #endif
 
 	return nullptr;
+}
+
+SerialPort * SerialManager::getPort(String hardwareID, String portName, bool createIfNotThere)
+{
+#if SERIALSUPPORT
+  for (auto & pi:portInfos)
+  {
+
+    if (pi->hardwareID == hardwareID & pi->port == portName) return getPort(pi,createIfNotThere);
+  }
+#endif
+
+  return nullptr;
 }
 
 void SerialManager::removePort(SerialPort * p)

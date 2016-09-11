@@ -21,6 +21,8 @@ SerialController::SerialController() :
 	scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
 	logIncoming = addBoolParameter("logIncoming", "log Incoming midi message", false);
 
+  selectedHardwareID = addStringParameter("selectedHardwareID","Id of the selected hardware", "");
+  selectedPort = addStringParameter("selectedPort","Name of the selected hardware", "");
 
 	SerialManager::getInstance()->addSerialManagerListener(this);
 }
@@ -51,9 +53,12 @@ void SerialController::setCurrentPort(SerialPort * _port)
 
 	if (port != nullptr)
 	{
-		DBG("Set port " + _port->info->port);
-		port->addSerialPortListener(this);
-		lastOpenedPortID = port->info->hardwareID;
+    port->addSerialPortListener(this);
+		lastOpenedPortID = port->info->port;
+
+    selectedPort->setValue(port->info->port);
+    selectedHardwareID->setValue(port->info->hardwareID);
+
 		sendIdentificationQuery();
 	} else
 	{
@@ -68,6 +73,25 @@ void SerialController::newJsFileLoaded()
 {
 	scriptPath->setValue(currentFile.getFullPathName());
 }
+
+void SerialController::onContainerParameterChanged(Parameter * p) {
+  Controller::onContainerParameterChanged(p);
+  if(p==nameParam){
+    setNamespaceName("Serial."+nameParam->stringValue());
+  }
+  else if (p==scriptPath){
+    loadFile(scriptPath->stringValue());
+  }else if(p == selectedHardwareID || p == selectedPort)
+  {
+    SerialPort * port  = SerialManager::getInstance()->getPort(selectedHardwareID->stringValue(), selectedPort->stringValue(),true);
+    if(port != nullptr)
+    {
+      setCurrentPort(port);
+    }
+  }
+
+
+};
 
 void SerialController::buildLocalEnv() {
 
@@ -84,9 +108,9 @@ void SerialController::buildLocalEnv() {
 	setLocalNamespace(obj);
 }
 
-void SerialController::portOpened(SerialPort *)
+void SerialController::portOpened(SerialPort * p)
 {
-	serialControllerListeners.call(&SerialControllerListener::portOpened);
+  serialControllerListeners.call(&SerialControllerListener::portOpened);
 
 	sendIdentificationQuery();
 }
@@ -164,7 +188,7 @@ ControllerUI * SerialController::createUI()
 void SerialController::portAdded(SerialPortInfo * info)
 {
 	//DBG("SerialController, portAdded >" << info->hardwareID << "< > " << lastOpenedPortID);
-	if (port == nullptr && lastOpenedPortID == info->hardwareID)
+	if (port == nullptr && lastOpenedPortID == info->port)
 	{
 		setCurrentPort(SerialManager::getInstance()->getPort(info));
 	}

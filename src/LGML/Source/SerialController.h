@@ -28,6 +28,9 @@ public:
 
 	String lastOpenedPortID; //for ghosting
 
+
+  StringParameter * selectedPort;
+  StringParameter * selectedHardwareID;
 	SerialPort * port;
 	void setCurrentPort(SerialPort *port);
 
@@ -37,6 +40,7 @@ public:
 	StringParameter * scriptPath;
 	BoolParameter * logIncoming;
 
+  void onContainerParameterChanged(Parameter * p) override;
 	void newJsFileLoaded() override;
 	
 
@@ -46,6 +50,7 @@ public:
 
 	//Device info
 	String deviceID;
+
 
 	//LGML Serial functions
 
@@ -58,6 +63,7 @@ public:
 	virtual void portClosed(SerialPort *) override;
 	virtual void portRemoved(SerialPort *) override;
 	virtual void serialDataReceived(const var &data) override;
+
 
 	ControllerUI * createUI() override;
 
