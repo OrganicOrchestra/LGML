@@ -9,8 +9,8 @@ njobs = multiprocessing.cpu_count()
 # configuration  = "Release"
 configuration  = "Debug"
 bumpVersion = False
-sendToOwncloud = False
-specificVersion = ""#0.1.1"
+sendToOwncloud = True
+specificVersion = ""
 cleanFirst = False;
 localExportPath2 = [
 # "/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/"
@@ -125,7 +125,7 @@ def sendToOwnCloud(originPath,destPath):
 	with open(credPath) as json_data:
 		credentials = json.loads(json_data.read())
 
-	sh("curl -X PUT \"http://195.154.11.18/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"])
+	sh("curl -X PUT \"http://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"])
 
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
