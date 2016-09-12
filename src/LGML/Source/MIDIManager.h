@@ -33,14 +33,15 @@ public:
 
 	StringArray inputDevices;
 	StringArray outputDevices;
-
+	
+	
 	OwnedArray<DeviceUsageCount> inputCounts;
 	OwnedArray<DeviceUsageCount> outputCounts;
 
 	void updateDeviceList(bool updateInput);
 
 	void enableInputDevice(const String &deviceName);
-	void enableOutputDevice(const String &deviceName);
+	MidiOutput * enableOutputDevice(const String &deviceName);
 	void disableInputDevice(const String &deviceName);
 	void disableOutputDevice(const String &deviceName);
 
@@ -56,10 +57,13 @@ public:
 	public:
 		/** Destructor. */
 		virtual ~MIDIManagerListener() {}
-		virtual void midiInputAdded(String &inputName) = 0;
-		virtual void midiInputRemoved(String &inputName) = 0;
-		virtual void midiOutputAdded(String &outputName) = 0;
-		virtual void midiOutputRemoved(String &outputName) = 0;
+		virtual void midiInputAdded(String &) {}
+		virtual void midiInputRemoved(String &) {}
+		virtual void midiInputsChanged() {}
+
+		virtual void midiOutputAdded(String &) {}
+		virtual void midiOutputRemoved(String &) {}
+		virtual void midiOutputsChanged() {}
 
 
 	};

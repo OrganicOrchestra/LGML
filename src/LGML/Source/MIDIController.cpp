@@ -65,7 +65,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
   else if(message.isNoteOnOrOff()){
     if (logIncoming->boolValue())
     {
-      NLOG("MIDI", "Note " + String(message.isNoteOn() ? "on" : "off") + " : " + String(message.getNoteNumber()) + " > " + String(message.getVelocity()));
+      NLOG("MIDI", "Note " + String(message.isNoteOn() ? "on" : "off") + " : " + MidiMessage::getMidiNoteName(message.getNoteNumber(), true, true, 0); String() + " > " + String(message.getVelocity()));
     }
     int variableIndex = message.getNoteNumber();
     variables[variableIndex]->parameter->setValue(message.getVelocity()*1.f / 127.f);
@@ -119,13 +119,25 @@ void MIDIController::onContainerParameterChanged(Parameter * p){
 
 void MIDIController::buildLocalEnv(){
   DynamicObject obj;
-  static const Identifier jsSendCCIdentifier("sendCC");
-  obj.setMethod(jsSendCCIdentifier, sendCC);
-  obj.setProperty(jsPtrIdentifier, (int64)this);
 
-  static const Identifier jsSendNoteOnForIdentifier("sendNoteOnFor");
-  obj.setMethod(jsSendNoteOnForIdentifier, sendNoteOnFor);
+  static const Identifier jsSendNoteOnIdentifier("sendNoteOn");
+  obj.setMethod(jsSendNoteOnIdentifier, sendNoteOnFromJS);
+
+  static const Identifier jsSendNoteOffIdentifier("sendNoteOff");
+  obj.setMethod(jsSendNoteOffIdentifier, sendNoteOffFromJS);
+
+  static const Identifier jsSendCCIdentifier("sendCC");
+  obj.setMethod(jsSendCCIdentifier, sendCCFromJS);
+  
+  static const Identifier jsSendSysExIdentifier("sendSysEx");
+  obj.setMethod(jsSendSysExIdentifier, sendSysExFromJS);
+  
+  
+  
+  obj.setProperty(jsPtrIdentifier, (int64)this); 
   setLocalNamespace(obj);
+
+  
 
 };
 
@@ -136,14 +148,64 @@ void MIDIController::newJsFileLoaded(){
 
 // @ben do we do the same as OSC MIDI IN/OUt controllers
 
-var MIDIController::sendCC(const var::NativeFunctionArgs &){
-  //    MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
+var MIDIController::sendNoteOnFromJS(const var::NativeFunctionArgs & a ) {
 
+	MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
 
+	if (a.numArguments < 3)
+	{
+		NLOG("MidiController", "Incorrect number of arguments for sendNoteOn");
+		return var(false);
+	}
 
-  return var::undefined();
+	c->sendNoteOn((int)(a.arguments[0]) + 1, a.arguments[1], a.arguments[2]);
+	return var(true);
 }
-var MIDIController::sendNoteOnFor(const var::NativeFunctionArgs &){
 
-  return var::undefined();
+
+var MIDIController::sendNoteOffFromJS(const var::NativeFunctionArgs & a) {
+
+	MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
+
+	if (a.numArguments < 3)
+	{
+		NLOG("MidiController", "Incorrect number of arguments for sendNoteOff");
+		return var(false);
+	}
+
+	c->sendNoteOff((int)(a.arguments[0])+1, a.arguments[1], a.arguments[2]);
+	return var(true);
+}
+
+var MIDIController::sendCCFromJS(const var::NativeFunctionArgs & a){
+	MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
+  
+	if (a.numArguments < 3)
+	{
+		NLOG("MidiController", "Incorrect number of arguments for sendCC");
+		return var(false);
+	}
+
+	c->sendCC((int)(a.arguments[0]) + 1, a.arguments[1], a.arguments[2]);
+	return var(true);
+}
+
+var MIDIController::sendSysExFromJS(const var::NativeFunctionArgs & a)
+{
+	MIDIController * c = getObjectPtrFromJS<MIDIController>(a);
+
+	if (a.numArguments > 8)
+	{
+		NLOG("MidiController", "Incorrect number of arguments for sendSysEx");
+		return var(false);
+	}
+	uint8 bytes[8];
+	for (int i = 0; i < a.numArguments; i++)
+	{
+		
+		bytes[i] = (uint8)(int)a.arguments[i];
+		LOG("Byte : " << String(bytes[i]));
+	}
+	c->sendSysEx(bytes,a.numArguments);
+	return var(true);
 }

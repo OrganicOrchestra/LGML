@@ -26,10 +26,15 @@ public:
 	void setSelectedDevice(const String &deviceName, bool silent = true);
 
 	// Inherited via MIDIManagerListener
+	/*
 	virtual void midiInputAdded(String & inputName) override;
 	virtual void midiInputRemoved(String & inputName) override;
 	virtual void midiOutputAdded(String & outputName) override;
 	virtual void midiOutputRemoved(String & outputName) override;
+	*/
+
+	virtual void midiInputsChanged() override;
+	virtual void midiOutputsChanged() override;
 };
 
 #endif  // MIDIUIHELPER_H_INCLUDED

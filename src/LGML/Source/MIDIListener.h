@@ -12,6 +12,7 @@
 #define MIDILISTENER_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "MIDIManager.h"
 
 // abstract base class that provide midi callback handle and keeps MIDIManager in sync
 
@@ -19,18 +20,19 @@ class MIDIListener :public MidiInputCallback
 {
     public :
     MIDIListener();
-    virtual ~MIDIListener(){};
+    virtual ~MIDIListener();
 
 
     String midiPortName;
-
+	
     virtual void setCurrentDevice(const String &deviceName);
-
-    // need to implement this from MidiInputCallback
-//    virtual void handleIncomingMidiMessage(MidiInput* source,
-//                                   const MidiMessage& message) =0;
-
-
+	
+	//Output
+	ScopedPointer<MidiOutput> midiOutDevice;
+	void sendNoteOn(int channel, int pitch, int velocity);
+	void sendNoteOff(int channel, int pitch, int velocity);
+	void sendCC(int channel, int number, int value);
+	void sendSysEx(uint8 * data, int dataCount);
 
 
     class  Listener

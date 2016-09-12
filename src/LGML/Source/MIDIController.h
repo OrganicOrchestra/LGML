@@ -33,9 +33,12 @@ public :
 	ControllerUI * createUI() override;
     void    onContainerParameterChanged(Parameter * )override;
 
-    static var sendCC(const var::NativeFunctionArgs & v);
-    static var sendNoteOnFor(const var::NativeFunctionArgs & v);
-    void     callJs(const MidiMessage& message);
+    static var sendCCFromJS(const var::NativeFunctionArgs & v);
+    static var sendNoteOnFromJS(const var::NativeFunctionArgs & v);
+	static var sendNoteOffFromJS(const var::NativeFunctionArgs & v);
+	static var sendSysExFromJS(const var::NativeFunctionArgs &v);
+
+    void callJs(const MidiMessage& message);
     void newJsFileLoaded()override;
 
 	class MIDIControllerListener

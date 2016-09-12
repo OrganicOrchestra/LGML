@@ -50,21 +50,27 @@ void MIDIManager::updateDeviceList(bool updateInput)
 		if (!deviceNames.contains(sourceD)) devicesToRemove.add(sourceD);
 	}
 
+	if (updateInput) inputDevices = deviceNames;
+	else outputDevices = deviceNames;
+
 	for (auto &d : devicesToAdd)
 	{
 		listeners.call(updateInput ? &MIDIManagerListener::midiInputAdded : &MIDIManagerListener::midiOutputAdded, d);
-		//NLOG("MIDIManager", "MIDI " + String(updateInput?"Input":"Output") + " Added : " + d);
+		NLOG("MIDIManager", "MIDI " + String(updateInput?"Input":"Output") + " Added : " + d);
 	}
 
 	for (auto &d : devicesToRemove)
 	{
 		listeners.call(updateInput ? &MIDIManagerListener::midiInputRemoved : &MIDIManagerListener::midiOutputRemoved, d);
-		//NLOG("MIDIManager", "MIDI " + String(updateInput ? "Input" : "Output") + " Removed : " + d);
+		NLOG("MIDIManager", "MIDI " + String(updateInput ? "Input" : "Output") + " Removed : " + d);
 	}
 
+	if (devicesToAdd.size() > 0 || devicesToRemove.size() > 0)
+	{
+		listeners.call(updateInput?&MIDIManagerListener::midiInputsChanged : &MIDIManagerListener::midiOutputsChanged);
+	}
 
-	if (updateInput) inputDevices = deviceNames;
-	else outputDevices = deviceNames;
+	
 }
 
 void MIDIManager::enableInputDevice(const String & deviceName)
@@ -84,9 +90,11 @@ void MIDIManager::enableInputDevice(const String & deviceName)
 		//DBG("AudioDeviceManager:Enable Input device : " << duc->deviceName);
 		getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, true);
 	}
+
+	
 }
 
-void MIDIManager::enableOutputDevice(const String & deviceName)
+MidiOutput * MIDIManager::enableOutputDevice(const String & deviceName)
 {
 	DeviceUsageCount * duc = getDUCForOutputDeviceName(deviceName);
 
@@ -97,7 +105,15 @@ void MIDIManager::enableOutputDevice(const String & deviceName)
 	}
 
 	duc->usageCount++;
+
 	//if (duc->usageCount == 1) getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, true); //no output device handling ?
+
+	StringArray inD = MidiOutput::getDevices();
+	StringRef dRef(deviceName);
+	MidiOutput * out = MidiOutput::openDevice(inD.indexOf(dRef));
+
+	LOG("Midi Out opened : " << out->getName());
+	return out;
 }
 
 void MIDIManager::disableInputDevice(const String & deviceName)
