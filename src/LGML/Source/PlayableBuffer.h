@@ -60,7 +60,9 @@ class PlayableBuffer {
     jassert(isOrWasPlaying());
 
     // we want to read Last Block for fade out if stopped
-    if(state==BUFFER_STOPPED){playNeedle = startJumpNeedle;}
+    if(state==BUFFER_STOPPED){
+        playNeedle = startJumpNeedle;
+    }
 
 
     // stitch audio jumps by quick fadeIn/Out
@@ -85,19 +87,19 @@ class PlayableBuffer {
       if ((playNeedle + buffer.getNumSamples()) > recordNeedle)
       {
 
-        //assert false for now see above
-#ifdef BLOCKSIZEGRANULARITY
-        LOG("buffer not a multiple of blockSize");
-#endif
-        //            // crop buffer to ensure not coming back
-        //            recordNeedle = (playNeedle + buffer.getNumSamples());
-        int firstSegmentLength = jmax(0,recordNeedle - playNeedle);
-        int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
-          if(firstSegmentLength>=0 && secondSegmentLength>0){
-        // TODO sync size because buffer can be larger and we save few useless iteration
 
-        for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-          int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+#ifdef BLOCKSIZEGRANULARITY
+        //assert false for now see above
+          LOG("buffer not a multiple of blockSize");
+#endif
+
+        int firstSegmentLength =recordNeedle - playNeedle;
+        int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
+
+          if(firstSegmentLength>0 && secondSegmentLength>0){
+
+          const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
+        for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
           buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
           buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
         }
@@ -154,7 +156,9 @@ class PlayableBuffer {
   }
 
   void fadeInOut(int fadeNumSamples,double mingain){
-    if (fadeNumSamples>0 && recordNeedle>2 * fadeNumSamples) {
+      if (fadeNumSamples>0 ){
+          
+      if(recordNeedle>2 * fadeNumSamples -1) {fadeNumSamples = recordNeedle/2 - 1;}
       for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
         loopSample.applyGainRamp(i, 0, fadeNumSamples, (float)mingain, 1);
         loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, (float)mingain);
@@ -206,6 +210,7 @@ class PlayableBuffer {
       case BUFFER_RECORDING:
         recordNeedle = 0;
         numTimePlayed = 0;
+        startJumpNeedle = 0;
         setPlayNeedle(0);
         break;
       case BUFFER_PLAYING:
@@ -213,7 +218,7 @@ class PlayableBuffer {
         break;
       case BUFFER_STOPPED:
         numTimePlayed = 0;
-        setPlayNeedle(0);
+        //setPlayNeedle(0);
         break;
     }
     state = newState;
