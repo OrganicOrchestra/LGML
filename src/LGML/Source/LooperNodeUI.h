@@ -50,7 +50,7 @@ public:
         void mouseUp(const MouseEvent &) override{track->askForSelection(true);}
 
         void resized()override;
-        void trackSelected(bool _isSelected)override{ isSelected = _isSelected;repaint();}
+        void trackSelectedAsync(bool _isSelected)override{ isSelected = _isSelected;repaint();}
         void trackStateChangedAsync(const LooperTrack::TrackState & state)override;
         LooperTrack * track;
         Colour mainColour;

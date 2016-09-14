@@ -15,7 +15,7 @@
 #include "MIDIListener.h"
 #include "JsEnvironment.h"
 
-class MIDIController : public Controller,public MIDIListener,public JsEnvironment,ChangeListener,ChangeBroadcaster
+class MIDIController : public Controller,public MIDIListener,public JsEnvironment
 {
 public :
     MIDIController();
@@ -32,7 +32,7 @@ public :
 
   MidiMessageCollector midiCollector;
 
-  void changeListenerCallback (ChangeBroadcaster* source) override;
+
 
 
 

@@ -41,13 +41,10 @@ Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
   getAudioDeviceManager().getAudioDeviceSetup(setup);
   midiCollector.reset(setup.sampleRate);
 
-  addChangeListener(this);
-
 }
 
 MIDIController::~MIDIController()
 {
-
   setCurrentDevice(String::empty);
 }
 
@@ -62,19 +59,6 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
 
   if (!enabledParam->boolValue()) return;
 
-  midiCollector.addMessageToQueue(message);
-  sendChangeMessage();
-
-}
-
-void MIDIController::changeListenerCallback (ChangeBroadcaster* source) {
-
-  MidiBuffer internalMidiBuffer;
-  midiCollector.removeNextBlockOfMessages(internalMidiBuffer,1);
-  MidiMessage message;
-  MidiBuffer::Iterator iterator(internalMidiBuffer);
-  int samplePosition = 0;
-  while(iterator.getNextEvent(message, samplePosition)){
 
     if(message.isController()){
       if (logIncoming->boolValue())
@@ -104,10 +88,10 @@ void MIDIController::changeListenerCallback (ChangeBroadcaster* source) {
 
     callJs(message);
     activityTrigger->trigger();
-  }
-
-
 }
+
+
+
 
 void MIDIController::callJs(const MidiMessage& message){
   if(message.isController()){

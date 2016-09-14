@@ -83,17 +83,41 @@ public:
         virtual ~Listener() {cancelPendingUpdate();}
         //                called from here
         void internalTrackStateChanged(const TrackState &state) {
+            notifyStateChange = true;
             stateToBeNotified = state;
             trackStateChanged(state);
             triggerAsyncUpdate();
+            
+        }
+        
+        void internalTrackSetSelected(bool t){
+            notifySelectChange = true;
+            isSelected = t;
+            trackSelected(isSelected);
+            triggerAsyncUpdate();
         }
         TrackState stateToBeNotified;
+        bool notifyStateChange = false;
+        
+        bool isSelected;
+        bool notifySelectChange = false;
 
         // dispatched to listeners
         virtual void trackStateChanged(const TrackState &) {};
         virtual void trackStateChangedAsync(const TrackState & state) = 0;
-        void handleAsyncUpdate() override { trackStateChangedAsync(stateToBeNotified); }
+        void handleAsyncUpdate() override {
+            if(notifyStateChange){
+            trackStateChangedAsync(stateToBeNotified);
+                notifyStateChange = false;
+            }
+            if(notifySelectChange){
+                trackSelectedAsync(isSelected);
+                notifySelectChange = false;
+            }
+        
+        }
         virtual void trackSelected(bool) {};
+        virtual void trackSelectedAsync(bool) {};
     };
 
     ListenerList<Listener> trackStateListeners;

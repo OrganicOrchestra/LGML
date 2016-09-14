@@ -399,7 +399,7 @@ bool LooperTrack::isMasterTempoTrack(){
 
 void LooperTrack::setSelected(bool _isSelected) {
   isSelected=_isSelected;
-  trackStateListeners.call(&LooperTrack::Listener::trackSelected, isSelected);
+  trackStateListeners.call(&LooperTrack::Listener::internalTrackSetSelected, isSelected);
 }
 
 

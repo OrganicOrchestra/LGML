@@ -23,6 +23,7 @@ class PlayableBuffer {
   PlayableBuffer(int numChannels,int numSamples):
   loopSample(numChannels,numSamples),
   recordNeedle(0),
+  startJumpNeedle(0),
   playNeedle(0),isJumping(false),
   state(BUFFER_STOPPED),
   lastState(BUFFER_STOPPED),
@@ -90,8 +91,9 @@ class PlayableBuffer {
 #endif
         //            // crop buffer to ensure not coming back
         //            recordNeedle = (playNeedle + buffer.getNumSamples());
-        int firstSegmentLength = recordNeedle - playNeedle;
+        int firstSegmentLength = jmax(0,recordNeedle - playNeedle);
         int secondSegmentLength = buffer.getNumSamples() - firstSegmentLength;
+          if(firstSegmentLength>=0 && secondSegmentLength>0){
         // TODO sync size because buffer can be larger and we save few useless iteration
 
         for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
@@ -100,6 +102,10 @@ class PlayableBuffer {
           buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
         }
         playNeedle = secondSegmentLength;
+          }
+          else{
+              jassertfalse;
+          }
 
 
       }
@@ -151,7 +157,7 @@ class PlayableBuffer {
     if (fadeNumSamples>0 && recordNeedle>2 * fadeNumSamples) {
       for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
         loopSample.applyGainRamp(i, 0, fadeNumSamples, (float)mingain, 1);
-        loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, (float)mingain);
+        loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples+1, fadeNumSamples, 1, (float)mingain);
       }
     }
   }
