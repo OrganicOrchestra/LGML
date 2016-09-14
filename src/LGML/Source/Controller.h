@@ -43,6 +43,7 @@ public:
 
     void remove(); //will dispatch askForRemoveController
     virtual void onContainerParameterChanged(Parameter * p) override;
+  virtual void onContainerTriggerTriggered(Trigger * ) override;
 
 	void askForRemoveVariable(ControlVariable * variable)override;
 

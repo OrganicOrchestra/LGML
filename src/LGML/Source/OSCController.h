@@ -26,9 +26,11 @@ public:
   StringParameter * remotePortParam;
   BoolParameter * logIncomingOSC;
   BoolParameter * logOutGoingOSC;
+  BoolParameter * blockFeedback;// if a parameter is updated from processOSC , stops any osc out with same address
+  Trigger * sendAllParameters;
 
 
-  bool blockFeedback ; // if a parameter is updated from processOSC , stops any osc out with same address
+
 
   void setupReceiver();
   void setupSender();
@@ -39,10 +41,11 @@ public:
 
 
   virtual void onContainerParameterChanged(Parameter * p) override;
+  virtual void onContainerTriggerTriggered(Trigger *t) override;
 
   virtual void oscMessageReceived(const OSCMessage & message) override;
   virtual void oscBundleReceived(const OSCBundle& bundle) override;
-
+  void sendAllControllableStates(ControllableContainer *c,int & sentControllable );
 
   virtual ControllerUI * createUI() override;
 

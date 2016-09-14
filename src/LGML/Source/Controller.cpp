@@ -142,6 +142,8 @@ void Controller::onContainerParameterChanged(Parameter * p)
     }
 }
 
+void Controller::onContainerTriggerTriggered(Trigger *){}
+
 void Controller::askForRemoveVariable(ControlVariable * variable)
 {
 	removeVariable(variable);

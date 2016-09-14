@@ -12,9 +12,11 @@
 #include "OSCControllerUI.h"
 #include "DebugHelpers.h"
 
+#include "NodeManager.h"
+
 OSCController::OSCController(const String &_name) :
 Controller(_name),
-blockFeedback(true),
+
 isProcessingOSC(false)
 
 {
@@ -26,6 +28,9 @@ isProcessingOSC(false)
 
   logIncomingOSC = addBoolParameter("logIncomingOSC", "log the incoming OSC Messages", false);
   logOutGoingOSC = addBoolParameter("logOutGoingOSC", "log the outGoing OSC Messages", false);
+
+  blockFeedback = addBoolParameter("blockFeedback", "block osc feedback (resending updated message to controller)", true);
+  sendAllParameters = addTrigger("sendAll", "send all parameter states to initialize ", true);
   setupReceiver();
   setupSender();
 
@@ -67,7 +72,7 @@ void OSCController::processMessage(const OSCMessage & msg)
   }
   if (!enabledParam->boolValue()) return;
 
-  if(blockFeedback){lastAddressReceived = msg.getAddressPattern().toString();}
+  if(blockFeedback->boolValue()){lastAddressReceived = msg.getAddressPattern().toString();}
   isProcessingOSC = true;
   bool result = processMessageInternal(msg);
   isProcessingOSC = false;
@@ -101,6 +106,15 @@ void OSCController::onContainerParameterChanged(Parameter * p)
 
   if (p == localPortParam) setupReceiver();
   else if (p == remotePortParam || p == remoteHostParam) setupSender();
+
+}
+
+void OSCController::onContainerTriggerTriggered(Trigger *t){
+  Controller::onContainerTriggerTriggered(t);
+   if(t==sendAllParameters){
+    int sentCount = 0;
+    sendAllControllableStates(NodeManager::getInstance(), sentCount);
+  }
 }
 
 void OSCController::oscMessageReceived(const OSCMessage & message)
@@ -119,7 +133,7 @@ void OSCController::oscBundleReceived(const OSCBundle & bundle)
 
 bool OSCController::sendOSC (OSCMessage & m)
 {
-  if(enabledParam->boolValue() &&  (!blockFeedback || !isProcessingOSC || lastAddressReceived!=m.getAddressPattern().toString())){
+  if(enabledParam->boolValue() &&  (!blockFeedback->boolValue() || !isProcessingOSC || lastAddressReceived!=m.getAddressPattern().toString())){
     if(logOutGoingOSC->boolValue()){logMessage(m,"Out:");}
     return sender.send (m);
   }
@@ -130,4 +144,21 @@ bool OSCController::sendOSC (OSCMessage & m)
 ControllerUI * OSCController::createUI()
 {
   return new OSCControllerUI(this);
+}
+
+void OSCController::sendAllControllableStates(ControllableContainer *c,int & sentControllable){
+  if(c){
+    for(auto & controllable:c->getAllControllables()){
+      controllableFeedbackUpdate(controllable);
+      sentControllable++;
+      if((sentControllable%60)==0){
+        sleep(0.01);
+      }
+    }
+    for(auto & container:c->controllableContainers){
+      sendAllControllableStates(container,sentControllable);
+
+    }
+  }
+  
 }
