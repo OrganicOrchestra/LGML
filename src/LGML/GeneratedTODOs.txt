@@ -125,7 +125,10 @@ TimeManager.cpp
 
 
 MIDIController.cpp
-	line : 172
+	line : 38
+		// TODO : we may need to listen to sR changes
+
+	line : 175
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 

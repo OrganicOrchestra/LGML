@@ -36,13 +36,18 @@ Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
     addVariable(fp);
   }
 
-  getAudioDeviceManager().addAudioCallback(this);
+  // TODO : we may need to listen to sR changes
+  juce::AudioDeviceManager::AudioDeviceSetup setup;
+  getAudioDeviceManager().getAudioDeviceSetup(setup);
+  midiCollector.reset(setup.sampleRate);
+
+  addChangeListener(this);
 
 }
 
 MIDIController::~MIDIController()
 {
-  getAudioDeviceManager().removeAudioCallback(this);
+
   setCurrentDevice(String::empty);
 }
 
@@ -58,16 +63,14 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
   if (!enabledParam->boolValue()) return;
 
   midiCollector.addMessageToQueue(message);
+  sendChangeMessage();
 
 }
 
-void MIDIController::audioDeviceIOCallback (const float** inputChannelData,
-                                            int numInputChannels,
-                                            float** outputChannelData,
-                                            int numOutputChannels,
-                                            int numSamples){
-MidiBuffer internalMidiBuffer;
-  midiCollector.removeNextBlockOfMessages(internalMidiBuffer,numSamples);
+void MIDIController::changeListenerCallback (ChangeBroadcaster* source) {
+
+  MidiBuffer internalMidiBuffer;
+  midiCollector.removeNextBlockOfMessages(internalMidiBuffer,1);
   MidiMessage message;
   MidiBuffer::Iterator iterator(internalMidiBuffer);
   int samplePosition = 0;

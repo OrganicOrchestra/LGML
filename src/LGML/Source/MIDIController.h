@@ -15,7 +15,7 @@
 #include "MIDIListener.h"
 #include "JsEnvironment.h"
 
-class MIDIController : public Controller,public MIDIListener,public JsEnvironment,AudioIODeviceCallback
+class MIDIController : public Controller,public MIDIListener,public JsEnvironment,ChangeListener,ChangeBroadcaster
 {
 public :
     MIDIController();
@@ -31,15 +31,9 @@ public :
 
 
   MidiMessageCollector midiCollector;
-  void audioDeviceIOCallback (const float** inputChannelData,
-                                      int numInputChannels,
-                                      float** outputChannelData,
-                                      int numOutputChannels,
-                                      int numSamples)override;
-  virtual void audioDeviceAboutToStart (AudioIODevice* device) override{midiCollector.reset(device->getCurrentSampleRate());};
 
-  /** Called to indicate that the device has stopped. */
-  virtual void audioDeviceStopped() override{};
+  void changeListenerCallback (ChangeBroadcaster* source) override;
+
 
 
 	ControllerUI * createUI() override;

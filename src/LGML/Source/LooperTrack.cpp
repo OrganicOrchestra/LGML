@@ -288,9 +288,12 @@ void LooperTrack::padBufferIfNeeded(){
       else{
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
       }
-      loopSample.fadeInOut ((int)(parentLooper->getSampleRate() * 0.01),0);
       originBPM = TimeManager::getInstance()->BPM->doubleValue();
       loopSample.setPlayNeedle(offsetForPlay);
+    }
+
+    if(loopSample.isFirstStopAfterRec() || loopSample.isFirstPlayingFrameAfterRecord()){
+      loopSample.fadeInOut ((int)(parentLooper->getSampleRate() * 0.01),0);
     }
 
 
