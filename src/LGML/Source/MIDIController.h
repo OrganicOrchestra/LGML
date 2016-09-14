@@ -15,7 +15,7 @@
 #include "MIDIListener.h"
 #include "JsEnvironment.h"
 
-class MIDIController : public Controller,public MIDIListener,public JsEnvironment
+class MIDIController : public Controller,public MIDIListener,public JsEnvironment,AudioIODeviceCallback
 {
 public :
     MIDIController();
@@ -28,6 +28,18 @@ public :
     StringParameter * deviceInName;
     StringParameter * scriptPath;
     BoolParameter * logIncoming;
+
+
+  MidiMessageCollector midiCollector;
+  void audioDeviceIOCallback (const float** inputChannelData,
+                                      int numInputChannels,
+                                      float** outputChannelData,
+                                      int numOutputChannels,
+                                      int numSamples)override;
+  virtual void audioDeviceAboutToStart (AudioIODevice* device) override{midiCollector.reset(device->getCurrentSampleRate());};
+
+  /** Called to indicate that the device has stopped. */
+  virtual void audioDeviceStopped() override{};
 
 
 	ControllerUI * createUI() override;
@@ -52,6 +64,8 @@ public :
 	void addMIDIControllerListener(MIDIControllerListener* newListener) { midiControllerListeners.add(newListener); }
 	void removeMIDIControllerListener(MIDIControllerListener* listener) { midiControllerListeners.remove(listener); }
 
+private:
+  
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
 };
