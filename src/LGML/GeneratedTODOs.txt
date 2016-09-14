@@ -151,6 +151,12 @@ Main.cpp
 		//@martin added but commented for testing (relou behavior)
 
 
+MIDIManager.cpp
+	line : 135
+		// @Ben seems weird mixing duc
+		// btw do we really need that for output??
+
+
 DataProcessorGraph.cpp
 	line : 14
 		//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing

@@ -133,6 +133,8 @@ void MIDIManager::disableInputDevice(const String & deviceName)
 	}
 }
 
+// @Ben seems weird mixing duc
+// btw do we really need that for output??
 void MIDIManager::disableOutputDevice(const String & deviceName)
 {
 	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);

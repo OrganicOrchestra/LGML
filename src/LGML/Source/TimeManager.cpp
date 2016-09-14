@@ -209,9 +209,9 @@ int TimeManager::setBPMForLoopLength(int time,int granularity){
   double beatTime = time_seconds* 1.0/beatPerBar->intValue();
 
   // over 150 bpm
-  while(beatTime < .40){beatTime*=2;barLength/=2;}
+  while(beatTime < .40){beatTime*=2.0;barLength/=2.0;}
   // under 60 bpm
-  while(beatTime > .85 && barLength*beatPerBar->intValue()<1){beatTime/=2;barLength*=2;}
+  while(beatTime > .85 ){beatTime/=2.0;barLength*=2.0;}
 
   if(granularity>0){
     int beatInSample = (int)(beatTime*sampleRate);
