@@ -13,12 +13,13 @@ outliner:
 script :  acces controllable container child par nom (exposer getControllableByAddress )
 parameter : ajouter proxyParameter
 script : addProxyParameter
-
+looper out toute pistes
 
 
 
 /////////////////////////////
 ///// refactor 
+AudioProcessorGraph par nodeContainer
 script universel : 
 	- tout les controllableContainer , generation local namespace
 	- administrable dans inspector
@@ -29,7 +30,9 @@ suprimer OSCCustomController (script simple)
 supprimer controllableControllerProxy
 
 
-
+///////////////
+// ez
+vue trans container
 
 
 
