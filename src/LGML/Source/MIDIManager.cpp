@@ -112,7 +112,12 @@ MidiOutput * MIDIManager::enableOutputDevice(const String & deviceName)
 	StringRef dRef(deviceName);
 	MidiOutput * out = MidiOutput::openDevice(inD.indexOf(dRef));
 
-	LOG("Midi Out opened : " << out->getName());
+  if(out){
+    LOG("Midi Out opened : " << out->getName());
+  }
+  else {
+    LOG("can't open MIDI device : " << deviceName);
+  }
 	return out;
 }
 
