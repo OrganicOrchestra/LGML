@@ -30,6 +30,11 @@ public:
             s.swapWith(upperCaseWord);
             if(replaceSlashes) s = s.replace("/","_");
             s = s.replace("#","_");
+            s = s.replace("(","_");
+            s = s.replace(")","_");
+            s = s.replace("<","_lt_");
+            s = s.replace(">","_gt_");
+
             index++;
         }
 

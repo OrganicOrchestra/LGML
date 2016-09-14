@@ -63,6 +63,11 @@ void NodeContainer::clear(bool recreateContainerNodes)
         addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
     }
 
+	while (proxyParams.size() > 0)
+	{
+		removeParamProxy(proxyParams[0]);
+	}
+
     ConnectableNode::clear();
 }
 
@@ -86,7 +91,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
     }
 
 
-    n->addNodeListener(this);
+    n->addConnectableNodeListener(this);
     String targetName = (nodeName.isNotEmpty())?nodeName:n->nameParam->stringValue();
     n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
@@ -104,7 +109,7 @@ bool NodeContainer::removeNode(ConnectableNode * n)
     for (auto &connection : relatedConnections) removeConnection(connection);
 
     if (n == nullptr) return false;
-    n->removeNodeListener(this);
+    n->removeConnectableNodeListener(this);
     removeChildControllableContainer(n);
 
     nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
@@ -134,6 +139,27 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
 int NodeContainer::getNumConnections() {
     return connections.size();
 }
+
+ParameterProxy * NodeContainer::addParamProxy()
+{
+	ParameterProxy * p = new ParameterProxy();
+	addParameter(p);
+	proxyParams.add(p);
+	p->addParameterProxyListener(this);
+	nodeContainerListeners.call(&NodeContainerListener::paramProxyAdded, p);
+
+	return p;
+}
+
+void NodeContainer::removeParamProxy(ParameterProxy * pp)
+{
+	pp->removeParameterProxyListener(this);
+	
+	nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
+	proxyParams.removeAllInstancesOf(pp);
+	removeControllable(pp);
+}
+
 
 bool NodeContainer::loadPreset(PresetManager::Preset * preset)
 {
@@ -172,6 +198,7 @@ bool NodeContainer::resetFromPreset()
 
 var NodeContainer::getJSONData()
 {
+    removeIllegalGhostConnections();
     var data = ConnectableNode::getJSONData();
     var nodesData;
 
@@ -196,7 +223,7 @@ var NodeContainer::getJSONData()
 		ghostConnectionsInData.append(c->getJSONData());
 	}
 	data.getDynamicObject()->setProperty("ghostConnectionsIn", ghostConnectionsInData);
-	
+
 
 	var ghostConnectionsOutData;
 	for (auto &c : containerOutGhostConnections)
@@ -204,7 +231,27 @@ var NodeContainer::getJSONData()
 		ghostConnectionsOutData.append(c->getJSONData());
 	}
 	data.getDynamicObject()->setProperty("ghostConnectionsOut", ghostConnectionsOutData);
+
+
+	var proxiesData;
+	for (auto &pp : proxyParams)
+	{
+		proxiesData.append(pp->getJSONData());
+	}
+
+	data.getDynamicObject()->setProperty("proxies", proxiesData);
+
     return data;
+}
+
+void NodeContainer::removeIllegalGhostConnections(){
+  Array<NodeConnection * > toRemove;
+  for (auto &c : containerInGhostConnections)if (c->sourceNode.get()==nullptr || c->destNode==nullptr) {toRemove.add(c);}
+  for(auto & c:toRemove){containerInGhostConnections.removeObject(c);}
+  toRemove.clear();
+  for (auto &c : containerOutGhostConnections) if (c->sourceNode.get()==nullptr || c->destNode==nullptr) {toRemove.add(c);}
+  for(auto & c:toRemove){containerOutGhostConnections.removeObject(c);}
+
 }
 
 void NodeContainer::loadJSONDataInternal(var data)
@@ -233,7 +280,12 @@ void NodeContainer::loadJSONDataInternal(var data)
 
             if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
                 NodeConnection * c = addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
-                c->loadJSONData(cData);
+                // if c == null connection already exist, should never happen loading JSON but safer to check
+                if(c){
+                    c->loadJSONData(cData);
+                }
+
+
             }
             else {
                 // TODO nicely handle file format errors?
@@ -245,6 +297,7 @@ void NodeContainer::loadJSONDataInternal(var data)
                     NLOG("loadJSON","no dstnode for shortName : "+cData.getDynamicObject()->getProperty("dstNode").toString());
                 }
                 LOG("Available Nodes in "+ shortName+" : ");
+				
                 for (auto &node : nodes)
                 {
                     DBG(" > " + node->niceName+"//"+ node->shortName);
@@ -295,7 +348,19 @@ void NodeContainer::loadJSONDataInternal(var data)
 	}
 
 
-    removeIllegalConnections();
+	Array<var> * proxiesData = data.getProperty("proxies", var()).getArray();
+
+	if (proxiesData)
+	{
+		for (var &pData : *proxiesData)
+		{
+			ParameterProxy * p = addParamProxy();
+			p->loadJSONData(pData);
+		}
+	}
+
+
+	removeIllegalConnections();
 }
 
 ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
@@ -312,7 +377,7 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
 		}
 	}
 
-	
+
 	NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
     ConnectableNode * node = addNode(nodeType, sourceName,false);
     String safeNodeName = node->niceName;
@@ -320,17 +385,17 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
     if (node->type == NodeType::ContainerInType)
     {
         containerInNode = (ContainerInNode *)node;
-        
+
     } else if (node->type == NodeType::ContainerOutType)
     {
         containerOutNode = (ContainerOutNode *)node;
     }
 
-    
+
     node->loadJSONData(nodeData);
 	node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
 
-    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);	
+    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
 
     return node;
 
@@ -362,22 +427,31 @@ Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode *
 
     for (auto &connection : connections)
     {
-        if (connection->sourceNode == tSourceNode || connection->destNode == tDestNode) result.add(connection);
+		if (connection->sourceNode == tSourceNode || connection->destNode == tDestNode)
+		{
+			result.add(connection);
+		}
     }
+
+	
 
     return result;
 }
 
 NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
-    if (getConnectionBetweenNodes(sourceNode, destNode, connectionType) != nullptr)
+
+	ConnectableNode * tSourceNode = (sourceNode->type == ContainerType) ? ((NodeContainer *)sourceNode)->containerOutNode : sourceNode;
+	ConnectableNode * tDestNode = (destNode->type == ContainerType) ? ((NodeContainer *)destNode)->containerInNode : destNode;
+	
+	if (getConnectionBetweenNodes(tSourceNode, tDestNode, connectionType) != nullptr)
     {
         //connection already exists
         DBG("Connection already exists");
         return nullptr;
     }
 
-    NodeConnection * c = new NodeConnection(sourceNode, destNode, connectionType);
+    NodeConnection * c = new NodeConnection(tSourceNode, tDestNode, connectionType);
     connections.add(c);
     c->addConnectionListener(this);
 
@@ -406,6 +480,11 @@ bool NodeContainer::removeConnection(NodeConnection * c)
 void NodeContainer::askForRemoveNode(ConnectableNode * node)
 {
     removeNode((NodeBase*)node);
+}
+
+void NodeContainer::askForRemoveProxy(ParameterProxy * p)
+{
+	removeParamProxy(p);
 }
 
 
@@ -480,17 +559,20 @@ void NodeContainer::bypassNode(bool bypass){
         for(auto & c:containerInGhostConnections){
             if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
 			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
-			nc->loadJSONData(c->getJSONData());
+                if(nc){
+                    nc->loadJSONData(c->getJSONData());
+
+                }
             }
 		}
         for(auto & c:containerOutGhostConnections){
             if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
 			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
-			nc->loadJSONData(c->getJSONData());
+			if(nc)nc->loadJSONData(c->getJSONData());
             }
 		}
 
-        
+
 
     }
 }
@@ -511,13 +593,7 @@ bool NodeContainer::hasDataOutputs()
     return containerOutNode != nullptr ? containerOutNode->hasDataOutputs() : false;
 }
 
-void NodeContainer::channelRMSInChanged(ConnectableNode * , float , int )
-{
-}
 
-void NodeContainer::channelRMSOutChanged(ConnectableNode * , float , int )
-{
-}
 
 
 AudioProcessorGraph::Node * NodeContainer::getAudioNode(bool isInput)

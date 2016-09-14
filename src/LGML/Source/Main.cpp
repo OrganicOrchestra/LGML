@@ -20,6 +20,14 @@ public:
     //==============================================================================
     LGMLApplication() {}
 
+	ApplicationCommandManager commandManager;
+	ScopedPointer<ApplicationProperties> appProperties;
+	AudioDeviceManager deviceManager;
+	UndoManager undoManager;
+
+	ScopedPointer<Engine> engine;
+
+
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override       { return false; }
@@ -56,6 +64,8 @@ public:
     void shutdown() override
     {
         // Add your application's shutdown code here..
+
+		
         mainWindow = nullptr; // (deletes our window)
         engine = nullptr;
     }
@@ -111,6 +121,18 @@ public:
             // This is called when the user tries to close this window. Here, we'll just
             // ask the app to quit when this happens, but you can change this to do
             // whatever you need.
+
+			//@martin added but commented for testing (relou behavior)
+			/*
+			int result = AlertWindow::showOkCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
+			if (result != 0)
+			{
+				if (result == 1) ((LGMLApplication *)LGMLApplication::getInstance())->engine->save(true, true);
+			}
+			*/
+
+
+
             JUCEApplication::getInstance()->systemRequestedQuit();
         }
 
@@ -127,14 +149,8 @@ public:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
     };
 
-    ApplicationCommandManager commandManager;
-    ScopedPointer<ApplicationProperties> appProperties;
-    AudioDeviceManager deviceManager;
-    UndoManager undoManager;
-
-    ScopedPointer<Engine> engine;
-private:
-    ScopedPointer<MainWindow> mainWindow;
+	private:
+		ScopedPointer<MainWindow> mainWindow;
 
 };
 
@@ -150,5 +166,10 @@ START_JUCE_APPLICATION (LGMLApplication)
 
 void LGMLApplication::MainWindow::timerCallback()
 {
-	setName("LGML "+ String(ProjectInfo::versionString)+String(" (CPU : ")+String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
+    File loadedFile = getApp().engine->getFile();
+    String loadedName = "";
+    if(loadedFile.existsAsFile()){
+       loadedName =  loadedFile.getFileNameWithoutExtension() + " : ";
+    }
+	setName(loadedName+"LGML "+ String(ProjectInfo::versionString)+String(" (CPU : ")+String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
 }

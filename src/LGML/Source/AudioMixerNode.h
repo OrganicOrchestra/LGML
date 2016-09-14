@@ -40,6 +40,7 @@ public:
 
 	IntParameter * numberOfInput;
 	IntParameter * numberOfOutput;
+    BoolParameter * oneToOne;
 
 	void updateInput();
 	void updateOutput();

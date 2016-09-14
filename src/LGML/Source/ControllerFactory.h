@@ -22,7 +22,15 @@
 
 class ControllerManager;
 
-static const String controllerTypeNames[] = {"ScriptedOSC","OSC Custom","DMX","MIDI","Serial" };
+static const String controllerTypeNames[] = {
+	"ScriptedOSC",
+	"OSC Custom",
+	"DMX",
+	"MIDI"
+#if SERIALSUPPORT
+	,"Serial"
+#endif
+	};
 
 class ControllerFactory
 {
@@ -33,7 +41,9 @@ public:
 		OSCCustom,
         DMX,
         MIDI,
+#if SERIALSUPPORT
 		SERIAL,
+#endif
         UNKNOWN //has to be last
     };
 
@@ -53,7 +63,7 @@ public:
 
         switch (controllerType)
         {
-           
+
             case ScriptedOSC:
                 c = new JavascriptController();
                 break;
@@ -68,9 +78,11 @@ public:
                 c = new MIDIController();
                 break;
 
+#if SERIALSUPPORT
 			case SERIAL:
 				c = new SerialController();
 				break;
+#endif
 
             default:
                 jassert(false);

@@ -15,8 +15,10 @@
 Parameter::Parameter(const Type &type, const String &niceName, const String &description, var initialValue, var minValue = var(), var maxValue = var(), bool enabled) :
 	Controllable(type, niceName, description, enabled),
 	isEditable(true),
+    isSavable(true),
 	isPresettable(true),
-	isOverriden(false)
+	isOverriden(false),
+    queuedNotifier(100)
 {
     minimumValue = minValue;
     maximumValue = maxValue;

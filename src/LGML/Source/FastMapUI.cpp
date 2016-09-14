@@ -30,6 +30,7 @@ FastMapUI(FastMap * f) :
 	maxInputUI = fastMap->maxInputVal->createSlider();
 	minOutputUI = fastMap->minOutputVal->createSlider();
 	maxOutputUI = fastMap->maxOutputVal->createSlider();
+	invertUI = fastMap->invertParam->createToggle();
 
 	addAndMakeVisible(refUI);
 	addAndMakeVisible(chooseTargetBT);
@@ -37,6 +38,7 @@ FastMapUI(FastMap * f) :
 	addAndMakeVisible(maxInputUI);
 	addAndMakeVisible(minOutputUI);
 	addAndMakeVisible(maxOutputUI);
+	addAndMakeVisible(invertUI);
 
 	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
@@ -78,9 +80,13 @@ void FastMapUI::resized()
 	minInputUI->setBounds(inR.removeFromTop((int)(h*.4f)));
 	maxInputUI->setBounds(inR.removeFromBottom((int)(h*.4f)));
 
-	Rectangle<int> outR = r.removeFromRight((int)(w*.2f));
+	
+	Rectangle<int> outR = r.removeFromRight((int)(w*.3f));
+	invertUI->setBounds(outR.removeFromRight(30));
 	minOutputUI->setBounds(outR.removeFromTop((int)(h*.4f)));
 	maxOutputUI->setBounds(outR.removeFromBottom((int)(h*.4f)));
+	
+	
 
 }
 

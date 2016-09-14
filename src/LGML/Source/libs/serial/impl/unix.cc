@@ -3,7 +3,7 @@
  * Additional Contributors: Christopher Baker @bakercp
  */
 
-#if !defined(_WIN32)
+#if !defined(_WIN32)  && !defined(__arm__)
 
 #include <stdio.h>
 #include <string.h>

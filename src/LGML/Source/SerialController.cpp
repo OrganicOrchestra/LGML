@@ -16,6 +16,14 @@ SerialController::SerialController() :
 	Controller("Serial"),
 	port(nullptr)
 {
+
+	setNamespaceName("Serial." + nameParam->stringValue());
+	scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
+	logIncoming = addBoolParameter("logIncoming", "log Incoming midi message", false);
+
+  selectedHardwareID = addStringParameter("selectedHardwareID","Id of the selected hardware", "");
+  selectedPort = addStringParameter("selectedPort","Name of the selected hardware", "");
+
 	SerialManager::getInstance()->addSerialManagerListener(this);
 }
 
@@ -31,35 +39,78 @@ SerialController::~SerialController()
 
 void SerialController::setCurrentPort(SerialPort * _port)
 {
+	
 	if (port == _port) return;
+	
+	
 	if (port != nullptr)
 	{
+
 		port->removeSerialPortListener(this);
 	}
+
 	port = _port;
 
 	if (port != nullptr)
 	{
-		port->addSerialPortListener(this);
-		lastOpenedPortID = port->info->hardwareID;
+    port->addSerialPortListener(this);
+		lastOpenedPortID = port->info->port;
+
+    selectedPort->setValue(port->info->port);
+    selectedHardwareID->setValue(port->info->hardwareID);
+
 		sendIdentificationQuery();
+	} else
+	{
+		DBG("set port null");
 	}
 
+	DBG("current port changed");
 	serialControllerListeners.call(&SerialControllerListener::currentPortChanged);
 }
 
+void SerialController::newJsFileLoaded()
+{
+	scriptPath->setValue(currentFile.getFullPathName());
+}
+
+void SerialController::onContainerParameterChanged(Parameter * p) {
+  Controller::onContainerParameterChanged(p);
+  if(p==nameParam){
+    setNamespaceName("Serial."+nameParam->stringValue());
+  }
+  else if (p==scriptPath){
+    loadFile(scriptPath->stringValue());
+  }else if(p == selectedHardwareID || p == selectedPort)
+  {
+    SerialPort * port  = SerialManager::getInstance()->getPort(selectedHardwareID->stringValue(), selectedPort->stringValue(),true);
+    if(port != nullptr)
+    {
+      setCurrentPort(port);
+    }
+  }
+
+
+};
+
 void SerialController::buildLocalEnv() {
+
 	DynamicObject obj;
 	static const Identifier jsSendMessageIdentifier("sendMessage");
 	obj.setMethod(jsSendMessageIdentifier, sendMessageFromScript);
 	obj.setProperty(jsPtrIdentifier, (int64)this);
 
+	for (auto &v : variables)
+	{
+		obj.setProperty(v->parameter->shortName, v->parameter->createDynamicObject());
+	}
+
 	setLocalNamespace(obj);
 }
 
-void SerialController::portOpened(SerialPort *)
+void SerialController::portOpened(SerialPort * p)
 {
-	serialControllerListeners.call(&SerialControllerListener::portOpened);
+  serialControllerListeners.call(&SerialControllerListener::portOpened);
 
 	sendIdentificationQuery();
 }
@@ -99,19 +150,25 @@ void SerialController::processMessage(const String & message)
 	{
 		//identification
 		deviceID = split[1];
-		while (variables.size() > 0) removeVariable(variables[0]);
+		while (serialVariables.size() > 0)
+		{
+			removeVariable(serialVariables[0]);
+			serialVariables.removeAllInstancesOf(serialVariables[0]);
+		}
 
 	} else if (command == "a")
 	{
 		if (getVariableForName(split[1]) == nullptr)
 		{
-			addVariable(new FloatParameter(split[1], split[1], 0));
+			ControlVariable * v = addVariable(new FloatParameter(split[1], split[1], 0));
+			serialVariables.add(v);
 		}
 	} else if (command == "d")
 	{
 		if (getVariableForName(split[1]) == nullptr)
 		{
-			addVariable(new BoolParameter(split[1], split[1], false));
+			ControlVariable * v = addVariable(new BoolParameter(split[1], split[1], false));
+			serialVariables.add(v);
 		}
 	} else if (command == "u")
 	{
@@ -131,7 +188,7 @@ ControllerUI * SerialController::createUI()
 void SerialController::portAdded(SerialPortInfo * info)
 {
 	//DBG("SerialController, portAdded >" << info->hardwareID << "< > " << lastOpenedPortID);
-	if (port == nullptr && lastOpenedPortID == info->hardwareID)
+	if (port == nullptr && lastOpenedPortID == info->port)
 	{
 		setCurrentPort(SerialManager::getInstance()->getPort(info));
 	}

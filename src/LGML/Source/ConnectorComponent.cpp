@@ -97,12 +97,14 @@ void ConnectorComponent::numAudioInputChanged(NodeBase *, int)
 {
 	if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::INPUT) return;
 	generateToolTip();
+    updateVisibility();
 }
 
 void ConnectorComponent::numAudioOutputChanged(NodeBase *, int)
 {
 	if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
 	generateToolTip();
+    updateVisibility();
 }
 
 void ConnectorComponent::numDataInputChanged(NodeBase *, int)

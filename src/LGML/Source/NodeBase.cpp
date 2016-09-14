@@ -15,82 +15,78 @@
 #include "AudioHelpers.h"
 
 NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
-	ConnectableNode(name,_type,_hasMainAudioControl),
-	audioNode(nullptr)
+ConnectableNode(name,_type,_hasMainAudioControl),
+audioNode(nullptr)
 {
-    addToAudioGraph();
+    addToAudioGraph(&NodeManager::getInstance()->audioGraph);
     logVolume = float01ToGain(DB0_FOR_01);
-	lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
+    lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
 
-	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
-	for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
+    for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
+    for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
+    startTimerHz(30);
 }
 
 
 NodeBase::~NodeBase()
 {
+    stopTimer();
     NodeBase::masterReference.clear();
-    cancelPendingUpdate();
-	clear();
+    clear();
 }
 
 
 bool NodeBase::hasAudioInputs()
 {
-	//to override
-	return getTotalNumInputChannels() > 0;
+    //to override
+    return getTotalNumInputChannels() > 0;
 }
 
 bool NodeBase::hasAudioOutputs()
 {
-	//to override
-	return getTotalNumOutputChannels() > 0;
+    //to override
+    return getTotalNumOutputChannels() > 0;
 }
 
 bool NodeBase::hasDataInputs()
 {
-	//to override
-	return getTotalNumInputData()>0;
+    //to override
+    return getTotalNumInputData()>0;
 }
 
 bool NodeBase::hasDataOutputs()
 {
-	//to override
-	return getTotalNumOutputData()>0;
+    //to override
+    return getTotalNumOutputData()>0;
 }
 
 
 void NodeBase::onContainerParameterChanged(Parameter * p)
 {
-	ConnectableNode::onContainerParameterChanged(p);
+    ConnectableNode::onContainerParameterChanged(p);
 
     if(p==outputVolume){
         logVolume = float01ToGain(outputVolume->floatValue());
     }
 
-	//ENABLE PARAM ACT AS A BYPASS
-	/*
-	if (p == enabledParam)
-	{
-		suspendProcessing(!enabledParam->boolValue());
-	}
-	*/
+    //ENABLE PARAM ACT AS A BYPASS
+    /*
+     if (p == enabledParam)
+     {
+     suspendProcessing(!enabledParam->boolValue());
+     }
+     */
 }
 
 void NodeBase::clear()
 {
-	// get called after deletion of TimeManager on app exit
-	TimeManager * tm = TimeManager::getInstanceWithoutCreating();
-	if (tm != nullptr)
-	{
-		tm->releaseMasterNode(this);
-	}
+    clearInternal();
 
-	//Data
-	inputDatas.clear();
-	outputDatas.clear();
+    //Data
+    inputDatas.clear();
+    outputDatas.clear();
 
-	//removeFromAudioGraph();
+    //removeFromAudioGraph();
 }
 
 
@@ -100,9 +96,9 @@ void NodeBase::clear()
 
 var NodeBase::getJSONData()
 {
-	var data = ConnectableNode::getJSONData();
+    var data = ConnectableNode::getJSONData();
 
-   MemoryBlock m;
+    MemoryBlock m;
 
     // TODO we could implement that for all node objects to be able to save any kind of custom data
     getStateInformation(m);
@@ -118,7 +114,7 @@ var NodeBase::getJSONData()
 
 void NodeBase::loadJSONDataInternal(var data)
 {
-	ConnectableNode::loadJSONDataInternal(data);
+    ConnectableNode::loadJSONDataInternal(data);
 
     var audioProcessorData = data.getProperty("audioProcessor", var());
     String audioProcessorStateData = audioProcessorData.getProperty("state",var());
@@ -131,9 +127,9 @@ void NodeBase::loadJSONDataInternal(var data)
 //ui
 
 ConnectableNodeUI * NodeBase::createUI() {
-	DBG("No implementation in child node class !");
-	jassert(false);
-	return nullptr;
+    DBG("No implementation in child node class !");
+    jassert(false);
+    return nullptr;
 }
 
 
@@ -143,199 +139,213 @@ ConnectableNodeUI * NodeBase::createUI() {
 
 AudioProcessorGraph::Node * NodeBase::getAudioNode(bool)
 {
-	return audioNode;
+    return audioNode;
 }
 
-void NodeBase::addToAudioGraph() {
-	if (NodeManager::getInstanceWithoutCreating() != nullptr)
-	{
-		audioNode = NodeManager::getInstance()->audioGraph.addNode(this);
-	}
+void NodeBase::addToAudioGraph(AudioProcessorGraph * parent) {
+    if (NodeManager::getInstanceWithoutCreating() != nullptr)
+    {
+        audioNode = parent->addNode(this);
+        parentGraph=parent;
+    }
 }
 
 void NodeBase::removeFromAudioGraph() {
-	if (NodeManager::getInstanceWithoutCreating() != nullptr)
-	{
-		if (audioNode != nullptr) NodeManager::getInstance()->audioGraph.removeNode(audioNode);
-	}
+    if (NodeManager::getInstanceWithoutCreating() != nullptr)
+    {
+        if (audioNode != nullptr && parentGraph!=nullptr) parentGraph->removeNode(audioNode);
+    }
 
 }
 
 void NodeBase::processBlock(AudioBuffer<float>& buffer,
-	MidiBuffer& midiMessages) {
+                            MidiBuffer& midiMessages) {
 
-	bool doUpdateRMSIn = false;
-	bool doUpdateRMSOut = false;
+  // be sure to delete input if we are not enabled and a random buffer enters
+  // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
+  for(int i = getTotalNumInputChannels();i < buffer.getNumChannels() ; i++){
+    buffer.clear(i,0,buffer.getNumSamples());
+  }
+    if (rmsListeners.size() || rmsChannelListeners.size()) {
+        curSamplesForRMSInUpdate += buffer.getNumSamples();
+        if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate) {
+            updateRMS(true,buffer, globalRMSValueIn,rmsValuesIn,rmsChannelListeners.size()==0);
+            curSamplesForRMSInUpdate = 0;
+        }
+    }
 
-	if (rmsListeners.size()) {
-		updateRMS(buffer, globalRMSValueIn,rmsValuesIn);
-		curSamplesForRMSInUpdate += buffer.getNumSamples();
 
-		if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate) {
-			doUpdateRMSIn = true;
-			curSamplesForRMSInUpdate = 0;
-		}
-	}
+    if (!isSuspended())
+    {
+        if (enabledParam->boolValue() ){
 
-
-	if (!isSuspended())
-	{
-		if (!hasMainAudioControl || (hasMainAudioControl && enabledParam->boolValue()) ){
-
-			processBlockInternal(buffer, midiMessages);
+            processBlockInternal(buffer, midiMessages);
 
             if(hasMainAudioControl){
                 buffer.applyGainRamp(0, buffer.getNumSamples(), lastVolume, logVolume);
                 lastVolume = logVolume;
             }
 
-			if (wasSuspended) {
-				buffer.applyGainRamp(0, buffer.getNumSamples(), 0, 1);
-				wasSuspended = false;
-			}
-		}
+            if (wasSuspended) {
+                buffer.applyGainRamp(0, buffer.getNumSamples(), 0, 1);
+                wasSuspended = false;
+            }
+        }
+        // be sure to delete out if we are not enabled and a random buffer enters
+        // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
+        for(int i = getTotalNumOutputChannels();i < buffer.getNumChannels() ; i++){
+            buffer.clear(i,0,buffer.getNumSamples());
+        }
 
-		if (rmsListeners.size()) {
-			updateRMS(buffer, globalRMSValueOut,rmsValuesOut);
-			curSamplesForRMSOutUpdate += buffer.getNumSamples();
+        if (rmsListeners.size() || rmsChannelListeners.size()) {
+            curSamplesForRMSOutUpdate += buffer.getNumSamples();
+            if (curSamplesForRMSOutUpdate >= samplesBeforeRMSUpdate) {
+                updateRMS(false,buffer, globalRMSValueOut,rmsValuesOut,rmsChannelListeners.size()==0);
+                curSamplesForRMSOutUpdate = 0;
+            }
+        }
 
-			if (curSamplesForRMSOutUpdate >= samplesBeforeRMSUpdate) {
-				doUpdateRMSOut = true;
-				curSamplesForRMSOutUpdate = 0;
-			}
-		}
 
-		if (doUpdateRMSIn || doUpdateRMSOut) triggerAsyncUpdate();
+    }
 
-	}
-
-	else {
-		if (!wasSuspended) {
-			buffer.applyGainRamp(0, buffer.getNumSamples(), 1, 0); wasSuspended = true;
-		}
-		else {
-			buffer.clear();
-		}
-	}
+    else {
+        if (!wasSuspended) {
+            buffer.applyGainRamp(0, buffer.getNumSamples(), 1, 0); wasSuspended = true;
+        }
+        else {
+            buffer.clear();
+        }
+    }
 
 };
 
 bool NodeBase::setPreferedNumAudioInput(int num) {
 
-	int oldNumChannels = getTotalNumInputChannels();
+    int oldNumChannels = getTotalNumInputChannels();
 
 
-	setPlayConfigDetails(num, getTotalNumOutputChannels(),
-		getSampleRate(),
-		getBlockSize());
+    NodeBase::setPlayConfigDetails(num, getTotalNumOutputChannels(),
+                         getSampleRate(),
+                         getBlockSize());
 
-	rmsValuesIn.clear();
-	for (int i = 0; i < getTotalNumInputChannels(); i++) rmsValuesIn.add(0);
 
-	if (NodeManager::getInstanceWithoutCreating() != nullptr)
-	{
+
+    if (NodeManager::getInstanceWithoutCreating() != nullptr){
         NodeManager::getInstance()->updateAudioGraph();
-	}
+    }
+    rmsValuesIn.clear();
+    for (int i = 0; i < getTotalNumInputChannels(); i++) rmsValuesIn.add(0);
 
-	int newNum = getTotalNumInputChannels();
-	if (newNum > oldNumChannels)
-	{
-		for (int i = oldNumChannels; i < newNum; i++)
-		{
-			nodeBaseListeners.call(&NodeBaseListener::audioInputAdded, this, i);
-		}
-	}
-	else
-	{
-		for (int i = oldNumChannels - 1; i >= newNum; i--)
-		{
-			nodeBaseListeners.call(&NodeBaseListener::audioInputRemoved, this, i);
-		}
-	}
+    int newNum = getTotalNumInputChannels();
+    if (newNum > oldNumChannels)
+    {
+        for (int i = oldNumChannels; i < newNum; i++)
+        {
+            nodeBaseListeners.call(&NodeBaseListener::audioInputAdded, this, i);
+        }
+    }
+    else
+    {
+        for (int i = oldNumChannels - 1; i >= newNum; i--)
+        {
+            nodeBaseListeners.call(&NodeBaseListener::audioInputRemoved, this, i);
+        }
+    }
 
-	nodeBaseListeners.call(&NodeBaseListener::numAudioInputChanged, this,num);
+    nodeBaseListeners.call(&NodeBaseListener::numAudioInputChanged, this,num);
 
-	return true;
+    return true;
 }
 bool NodeBase::setPreferedNumAudioOutput(int num) {
 
-	int oldNumChannels = getTotalNumOutputChannels();
+    int oldNumChannels = getTotalNumOutputChannels();
 
-	setPlayConfigDetails(getTotalNumInputChannels(), num,
-		getSampleRate(),
-		getBlockSize());
+    setPlayConfigDetails(getTotalNumInputChannels(), num,
+                         getSampleRate(),
+                         getBlockSize());
 
-	rmsValuesOut.clear();
-	for (int i = 0; i < getTotalNumOutputChannels(); i++) rmsValuesIn.add(0);
-	
-	if (NodeManager::getInstanceWithoutCreating() != nullptr)
-	{
+
+
+    if (NodeManager::getInstanceWithoutCreating() != nullptr)
+    {
         NodeManager::getInstance()->updateAudioGraph();
     }
 
-	int newNum = getTotalNumOutputChannels();
-	if (newNum > oldNumChannels)
-	{
-		for (int i = oldNumChannels; i < newNum; i++)
-		{
-			nodeBaseListeners.call(&NodeBaseListener::audioOutputAdded, this, i);
-		}
-	}else
-	{
-		for (int i = oldNumChannels-1; i >= newNum; i--)
-		{
-			nodeBaseListeners.call(&NodeBaseListener::audioOutputRemoved, this, i);
-		}
-	}
+    rmsValuesOut.clear();
+    for (int i = 0; i < getTotalNumOutputChannels(); i++) rmsValuesOut.add(0);
+    
+    int newNum = getTotalNumOutputChannels();
+    if (newNum > oldNumChannels)
+    {
+        for (int i = oldNumChannels; i < newNum; i++)
+        {
+            nodeBaseListeners.call(&NodeBaseListener::audioOutputAdded, this, i);
+        }
+    }else
+    {
+        for (int i = oldNumChannels-1; i >= newNum; i--)
+        {
+            nodeBaseListeners.call(&NodeBaseListener::audioOutputRemoved, this, i);
+        }
+    }
 
-	nodeBaseListeners.call(&NodeBaseListener::numAudioOutputChanged,this,num);
+    nodeBaseListeners.call(&NodeBaseListener::numAudioOutputChanged,this,num);
 
-	return true;
+    return true;
 }
 
-void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues) {
-	int numSamples = buffer.getNumSamples();
-	int numChannels = buffer.getNumChannels();
+void NodeBase::updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues,bool skipChannelComputation) {
+    int numSamples = buffer.getNumSamples();
+    int numChannels = jmin((isInput?getTotalNumInputChannels():getTotalNumOutputChannels()),buffer.getNumChannels());
     if(targetRMSChannelValues.size()!=numChannels)
         targetRMSChannelValues.resize(numChannels);
 
 #ifdef HIGH_ACCURACY_RMS
-	for (int i = numSamples - 64; i >= 0; i -= 64) {
-		rmsValue += alphaRMS * (buffer.getRMSLevel(0, i, 64) - rmsValue);
-	}
+    for (int i = numSamples - 64; i >= 0; i -= 64) {
+        rmsValue += alphaRMS * (buffer.getRMSLevel(0, i, 64) - rmsValue);
+    }
 #else
-	// faster implementation taken from juce Device Settings input meter
-	
-	float globalS = 0;
+    // faster implementation taken from juce Device Settings input meter
+
+    float globalS = 0;
 
     // @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-    const double decayFactor = 0.99;
+    const double decayFactor = 0.95;
     const float lowThresh = 0.0001f;
 
+    if(skipChannelComputation){
+        for (int i = numChannels - 1; i >= 0; --i)
+        {
 
-	for (int i = numChannels - 1; i >= 0; --i)
-	{
+            float s = 0;
+            Range<float> minMax = FloatVectorOperations::findMinAndMax(buffer.getReadPointer(i), numSamples);
+            s = jmax(s,-minMax.getStart());
+            s = jmax(s,minMax.getEnd());
+            globalS = jmax(s, globalS);
+        }
+    }
+    else{
+        for (int i = numChannels - 1; i >= 0; --i)
+        {
 
-		float s = 0;
-		for (int j = 0; j < numSamples; ++j)
-		{
-			s = jmax(s, std::abs(buffer.getSample(i, j)));
-		}
+            float s = 0;
+            Range<float> minMax = FloatVectorOperations::findMinAndMax(buffer.getReadPointer(i), numSamples);
+            s = jmax(s,-minMax.getStart());
+            s = jmax(s,minMax.getEnd());
+            targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
+                                       s>lowThresh?targetRMSChannelValues.getUnchecked(i)*(float)decayFactor:
+                                       0);
 
+            globalS = jmax(s, globalS);
+        }
+    }
 
-        targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
-                                        s>lowThresh?targetRMSChannelValues.getUnchecked(i)*decayFactor:
-                                        0);
-		globalS = jmax(s, globalS);
-	}
-
-
-	if (globalS > targetRmsValue)
-		targetRmsValue = globalS;
-	else if (targetRmsValue > lowThresh)
-		targetRmsValue *= (float)decayFactor;
-	else
-		targetRmsValue = 0;
+    if (globalS > targetRmsValue)
+        targetRmsValue = globalS;
+    else if (targetRmsValue > lowThresh)
+        targetRmsValue *= (float)decayFactor;
+    else
+        targetRmsValue = 0;
 
 
 #endif
@@ -344,180 +354,180 @@ void NodeBase::updateRMS(const AudioBuffer<float>& buffer, float &targetRmsValue
 }
 
 
-void NodeBase::handleAsyncUpdate()
+void NodeBase::timerCallback()
 {
-	rmsListeners.call(&RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut); 
-	for (int i = 0; i < getTotalNumInputChannels(); i++)
-	{
-		rmsListeners.call(&RMSListener::channelRMSInChanged, this, rmsValuesIn[i], i);
-	}
+    rmsListeners.call(&RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut);
+    for (int i = 0; i < getTotalNumInputChannels(); i++)
+    {
+        rmsChannelListeners.call(&RMSChannelListener::channelRMSInChanged, this, rmsValuesIn[i], i);
+    }
 
-	for (int i = 0; i < getTotalNumOutputChannels(); i++)
-	{
-		rmsListeners.call(&RMSListener::channelRMSOutChanged, this, rmsValuesOut[i], i);
-	}
+    for (int i = 0; i < getTotalNumOutputChannels(); i++)
+    {
+        rmsChannelListeners.call(&RMSChannelListener::channelRMSOutChanged, this, rmsValuesOut[i], i);
+    }
 }
 
 //////////////////////////////////   DATA
 
 Data * NodeBase::getInputData(int dataIndex)
 {
-	return inputDatas[dataIndex];
+    return inputDatas[dataIndex];
 }
 
 
 Data * NodeBase::getOutputData(int dataIndex)
 {
-	return outputDatas[dataIndex];
+    return outputDatas[dataIndex];
 }
 
 
 Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 {
-	Data *d = new Data(this, name, dataType);
-	inputDatas.add(d);
+    Data *d = new Data(this, name, dataType);
+    inputDatas.add(d);
 
-	d->addDataListener(this);
+    d->addDataListener(this);
 
-	nodeBaseListeners.call(&NodeBaseListener::dataInputAdded, this, d);
-	nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
-	return d;
+    nodeBaseListeners.call(&NodeBaseListener::dataInputAdded, this, d);
+    nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
+    return d;
 }
 
 Data * NodeBase::addOutputData(const String & name, DataType dataType)
 {
-	Data * d = new Data(this, name, dataType);
-	outputDatas.add(d);
+    Data * d = new Data(this, name, dataType);
+    outputDatas.add(d);
 
-	nodeBaseListeners.call(&NodeBaseListener::dataOutputAdded, this, d);
-	nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
-	return d;
+    nodeBaseListeners.call(&NodeBaseListener::dataOutputAdded, this, d);
+    nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
+    return d;
 }
 
 void NodeBase::removeInputData(const String & name)
 {
-	Data * d = getInputDataByName(name);
-	if (d == nullptr) return;
+    Data * d = getInputDataByName(name);
+    if (d == nullptr) return;
 
-	inputDatas.removeObject(d, false);
-	nodeBaseListeners.call(&NodeBaseListener::dataInputRemoved, this, d);
-	nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
-	delete d;
+    inputDatas.removeObject(d, false);
+    nodeBaseListeners.call(&NodeBaseListener::dataInputRemoved, this, d);
+    nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
+    delete d;
 }
 
 void NodeBase::removeOutputData(const String & name)
 {
-	Data * d = getOutputDataByName(name);
-	if (d == nullptr) return;
+    Data * d = getOutputDataByName(name);
+    if (d == nullptr) return;
 
-	outputDatas.removeObject(d, false);
-	nodeBaseListeners.call(&NodeBaseListener::dataOutputRemoved, this, d);
-	nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
-	delete d;
+    outputDatas.removeObject(d, false);
+    nodeBaseListeners.call(&NodeBaseListener::dataOutputRemoved, this, d);
+    nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
+    delete d;
 }
 
 void NodeBase::updateOutputData(String & dataName, const float & value1, const float & value2, const float & value3)
 {
-	Data * d = getOutputDataByName(dataName);
-	if (d != nullptr) d->update(value1, value2, value3);
+    Data * d = getOutputDataByName(dataName);
+    if (d != nullptr) d->update(value1, value2, value3);
 }
 
 int NodeBase::getTotalNumInputData() {
-	return inputDatas.size();
+    return inputDatas.size();
 }
 
 int NodeBase::getTotalNumOutputData() {
-	return outputDatas.size();
+    return outputDatas.size();
 }
 
 StringArray NodeBase::getInputDataInfos()
 {
-	StringArray dataInfos;
-	for (auto &d : inputDatas) dataInfos.add(d->name + " (" + d->getTypeString() + ")");
-	return dataInfos;
+    StringArray dataInfos;
+    for (auto &d : inputDatas) dataInfos.add(d->name + " (" + d->getTypeString() + ")");
+    return dataInfos;
 }
 
 StringArray NodeBase::getOutputDataInfos()
 {
-	StringArray dataInfos;
-	for (auto &d : outputDatas) dataInfos.add(d->name + " (" + d->getTypeString() + ")");
-	return dataInfos;
+    StringArray dataInfos;
+    for (auto &d : outputDatas) dataInfos.add(d->name + " (" + d->getTypeString() + ")");
+    return dataInfos;
 }
 
 Data::DataType NodeBase::getInputDataType(const String &dataName, const String &elementName)
 {
-	for (int i = inputDatas.size(); --i >= 0;)
-	{
-		Data* d = inputDatas.getUnchecked(i);
+    for (int i = inputDatas.size(); --i >= 0;)
+    {
+        Data* d = inputDatas.getUnchecked(i);
 
-		if (d->name == dataName)
-		{
-			if (elementName.isEmpty())
-			{
-				return d->type;
-			}
-			else
-			{
-				DataElement * e = d->getElement(elementName);
-				if (e == nullptr) return DataType::Unknown;
-				return e->type;
-			}
-		}
-	}
+        if (d->name == dataName)
+        {
+            if (elementName.isEmpty())
+            {
+                return d->type;
+            }
+            else
+            {
+                DataElement * e = d->getElement(elementName);
+                if (e == nullptr) return DataType::Unknown;
+                return e->type;
+            }
+        }
+    }
 
-	return DataType::Unknown;
+    return DataType::Unknown;
 }
 
 Data::DataType NodeBase::getOutputDataType(const String &dataName, const String &elementName)
 {
-	for (int i = outputDatas.size(); --i >= 0;)
-	{
-		Data* d = outputDatas.getUnchecked(i);
+    for (int i = outputDatas.size(); --i >= 0;)
+    {
+        Data* d = outputDatas.getUnchecked(i);
 
-		if (d->name == dataName)
-		{
-			if (elementName.isEmpty())
-			{
-				return d->type;
-			}
-			else
-			{
-				DataElement * e = d->getElement(elementName);
-				if (e == nullptr) return DataType::Unknown;
-				return e->type;
-			}
-		}
-	}
+        if (d->name == dataName)
+        {
+            if (elementName.isEmpty())
+            {
+                return d->type;
+            }
+            else
+            {
+                DataElement * e = d->getElement(elementName);
+                if (e == nullptr) return DataType::Unknown;
+                return e->type;
+            }
+        }
+    }
 
-	return DataType::Unknown;
+    return DataType::Unknown;
 
 }
 
 Data * NodeBase::getOutputDataByName(const String & dataName)
 {
-	for (auto &d : outputDatas)
-	{
-		if (d->name == dataName) return d;
-	}
+    for (auto &d : outputDatas)
+    {
+        if (d->name == dataName) return d;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 Data * NodeBase::getInputDataByName(const String & dataName)
 {
-	for (auto &d : inputDatas)
-	{
-		if (d->name == dataName) return d;
-	}
+    for (auto &d : inputDatas)
+    {
+        if (d->name == dataName) return d;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 void NodeBase::dataChanged(Data * d)
 {
-	if (enabledParam->boolValue()) {
-		processInputDataChanged(d);
-	}
+    if (enabledParam->boolValue()) {
+        processInputDataChanged(d);
+    }
 }
 
 void NodeBase::processInputDataChanged(Data *)

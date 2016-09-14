@@ -35,7 +35,8 @@ public:
 	virtual void controllableContainerRemoved(ControllableContainer *) {}
 	virtual void controllableFeedbackUpdate(Controllable *) {}
 	virtual void childStructureChanged(ControllableContainer *) {}
-	virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
+    virtual void childAddressChanged(ControllableContainer * ){};
+    virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
 
 class ControllableContainer : public Parameter::Listener, public Trigger::Listener, public ControllableContainerListener
@@ -49,7 +50,10 @@ public:
     bool hasCustomShortName;
 
 	bool canHavePresets;
+	StringParameter * currentPresetName;
+	PresetManager::Preset * currentPreset;
 
+	
     bool skipControllableNameInAddress;
     void setNiceName(const String &_niceName);
     void setCustomShortName(const String &_shortName);
@@ -98,7 +102,7 @@ public:
     virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
 
 
-    PresetManager::Preset * currentPreset;
+    
 	virtual bool loadPresetWithName(const String &name);
     virtual bool loadPreset(PresetManager::Preset * preset);
 	virtual PresetManager::Preset* saveNewPreset(const String &name);

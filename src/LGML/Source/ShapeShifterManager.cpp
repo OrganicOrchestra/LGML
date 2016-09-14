@@ -256,7 +256,7 @@ void ShapeShifterManager::saveCurrentLayout()
 	if (fc.browseForFileToSave(true))
 	{
 		saveCurrentLayoutToFile(fc.getResult());
-		
+
 	}
 }
 

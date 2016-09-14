@@ -19,6 +19,7 @@ NodeBase("AudioMixerNode",NodeType::AudioMixerType)
 {
     numberOfInput = addIntParameter("numInput", "number of input", 2, 1, 32);
     numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
+    oneToOne = addBoolParameter("OneToOne", "is this mixer only concerned about one to one volumes (diagonal)", false);
 
     updateInput();
     updateOutput();
@@ -44,7 +45,7 @@ void AudioMixerNode::onContainerParameterChanged(Parameter *p){
 
 void AudioMixerNode::updateInput(){
     {
-        const ScopedLock sl (getCallbackLock());
+        const ScopedLock sl (parentGraph->getCallbackLock());
         suspendProcessing(true);
         for(auto & bus:outBuses){
             bus->setNumInput(numberOfInput->intValue());
@@ -58,7 +59,7 @@ void AudioMixerNode::updateInput(){
 
 void AudioMixerNode::updateOutput(){
     {
-        const ScopedLock sl (getCallbackLock());
+        const ScopedLock sl (parentGraph->getCallbackLock());
         suspendProcessing(true);
 
         if(numberOfOutput->intValue() > outBuses.size())
@@ -102,17 +103,37 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
     if(numInput>0 && numOutput > 0){
 
+        if(oneToOne->boolValue()){
+            for(int i = outBuses.size() -1 ; i >=0 ; --i){
+                if(i<outBuses[i]->volumes.size()){
+                    cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
+                                                  outBuses[i]->lastVolumes[i],outBuses[i]->logVolumes[i]);
+                }
+                else{
+                    cachedBuffer.clear(i, 0, numSamples);
+                }
+            }
+        }
+        else{
+
+
+            for(int i = outBuses.size() -1 ; i >=0 ; --i){
+                cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
+                                              outBuses[i]->lastVolumes[0],outBuses[i]->logVolumes[0]);
+
+                for(int j = numInput-1 ; j >0  ; --j){
+                    cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples,
+                                                 outBuses[i]->lastVolumes[j],outBuses[i]->logVolumes[j]);
+                }
+            }
+        }
+
+
         for(int i = outBuses.size() -1 ; i >=0 ; --i){
-            cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,outBuses[i]->lastVolumes[0],outBuses[i]->volumes[0]->floatValue());
-
-            for(int j = numInput-1 ; j >0  ; --j){
-                cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples, outBuses[i]->lastVolumes[j],outBuses[i]->volumes[j]->floatValue());
-            }
-
-
             for(int j = numInput-1 ; j>=0 ;--j){
-                outBuses[i]->lastVolumes.set(j, outBuses[i]->volumes[j]->floatValue());
+                outBuses[i]->lastVolumes.set(j, outBuses[i]->logVolumes[j]);
             }
+
         }
     }
 
@@ -143,7 +164,9 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
         for(int i = volumes.size();i<numInput ; i++){
             FloatParameter * p = addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?DB0_FOR_01:0);
             p->setCustomShortName("In_"+String(i+1));
+            p->defaultValue = DB0_FOR_01;
             volumes.add(p);
+            logVolumes.add(float01ToGain(p->floatValue()));
         }
     }
     else if(numInput<volumes.size()){
@@ -152,6 +175,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
         for(int i = volumes.size()-1;i>=numInput;i--){
             removeControllable(volumes[i]);
             volumes.removeLast();
+            logVolumes.removeLast();
         }
     }
 
@@ -174,10 +198,10 @@ void AudioMixerNode::OutputBus::onContainerParameterChanged(Parameter *p){
 
 ConnectableNodeUI * AudioMixerNode::createUI()
 {
-    
+
     NodeBaseUI * ui = new NodeBaseUI(this, new AudioMixerNodeUI);
     ui->recursiveInspectionLevel = 2;
     return ui;
-    
-    
+
+
 }

@@ -22,7 +22,6 @@ public :
 	ScriptedCondition(Rule * r);
 	virtual ~ScriptedCondition();
 
-
 	CodeDocument codeDocument;
 
     virtual bool evaluateInternal() override;

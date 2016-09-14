@@ -20,7 +20,10 @@
 
 #include "NodeBase.h"
 
-class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead
+#include "TimeMasterCandidate.h"
+
+class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead,
+public TimeMasterCandidate
 {
 
 
@@ -44,23 +47,27 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,p
 
 
     IntParameter * quantizedBarFraction;
-    void incrementClock(int time);
 
-    void onContainerParameterChanged(Parameter * )override;
-    void onContainerTriggerTriggered(Trigger * ) override;
     void setSampleRate(int sr);
+    int setBPMForLoopLength(int time,int granularity=0);
 
-    int setBPMForLoopLength(int time);
+
+	void jump(int amount);
+  void goToTime(uint64 time);
 
     // used when triggering multiple change
     void lockTime(bool );
     bool isLocked();
+
+
     void togglePlay();
 
-    int getBeat();
+    int getBeatInt();
+    double getBeat();
     int getNextGlobalQuantifiedTime();
     int getNextQuantifiedTime(int barFraction);
     uint64 getTimeForNextBeats(int beats);
+    uint64 getTimeInSample();
 
 
     //return percent in beat
@@ -73,20 +80,47 @@ class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,p
     void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
 	*/
 
-    uint64 timeInSample;
     int beatTimeInSample;
     int sampleRate;
-    Array<NodeBase *>  potentialTimeMasterNode;
-    bool isMasterNode(NodeBase * n);
-    bool hasMasterNode();
-    void releaseMasterNode(NodeBase * n);
-    bool askForBeingMasterNode(NodeBase * n);
+    int blockSize;
+    Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;
+    bool isMasterCandidate(TimeMasterCandidate * n);
+    bool hasMasterCandidate();
+    void releaseMasterCandidate(TimeMasterCandidate * n);
+    bool askForBeingMasterCandidate(TimeMasterCandidate * n);
     void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) override;
 
 
     bool getCurrentPosition (CurrentPositionInfo& result)override;
 
 private:
+
+    struct TimeState{
+        TimeState():isJumping(false),nextTime((uint64)-1),isPlaying(false),time((uint64)0){}
+        bool isPlaying;
+        void jumpTo(uint64 t){
+            isJumping = true;
+            nextTime = t;
+        }
+        bool isJumping;
+        uint64 nextTime;
+        uint64 time;
+    };
+
+    TimeState timeState,desiredTimeState;
+    
+    void shouldStop();
+    void shouldPlay();
+    void shouldRestart(bool );
+    void shouldGoToZero();
+    
+    void updateState();
+    void incrementClock(int time);
+
+    void onContainerParameterChanged(Parameter * )override;
+    void onContainerTriggerTriggered(Trigger * ) override;
+
+
     void setBPMInternal(double BPM);
 
     virtual void audioDeviceAboutToStart (AudioIODevice* device)override {

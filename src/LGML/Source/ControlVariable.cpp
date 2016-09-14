@@ -16,7 +16,7 @@ ControlVariable::ControlVariable(Controller * c, Parameter * p) :
 	controller(c),
 	parameter(p)
 {
-	p->isEditable = false;
+	p->isEditable = true;
 	p->addControllableListener(this);
 }
 

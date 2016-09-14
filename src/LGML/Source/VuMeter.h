@@ -15,7 +15,7 @@
 #include "Style.h"
 
 //TODO, move to more common place for use in other components
-class VuMeter : public Component, public NodeBase::RMSListener ,Timer{
+class VuMeter : public Component, public NodeBase::RMSListener ,public NodeBase::RMSChannelListener,Timer{
 public:
 
 	enum Type { IN,OUT};
@@ -26,6 +26,7 @@ public:
 	Type type;
 
     bool volChanged;
+    bool isActive;
 	Colour colorHigh;
 	Colour colorLow;
 
@@ -38,6 +39,7 @@ public:
         startTimer(1000/40);
 		colorHigh = Colours::red;
 		colorLow = Colours::lightgreen;
+        isActive = true;
     }
 
     ~VuMeter(){
@@ -65,8 +67,10 @@ public:
         }
     }
 
+
 	void updateValue(float value)
 	{
+        if(!isActive){setVoldB(0);return;}
 		float newVoldB = jmap<float>(20.0f*log10(value / 0.74f), 0.0f, 6.0f, 0.85f, 1.0f);
 
 		if ((newVoldB >= 0 || voldB!=0) && std::abs(newVoldB - voldB)>0.02f) {
@@ -83,11 +87,11 @@ public:
 		updateValue(rms);
     };
 
-	void channelRMSInChanged(ConnectableNode *, float rmsIn, int channel) override 
+	void channelRMSInChanged(ConnectableNode *, float rmsIn, int channel) override
 	{
 		if (targetChannel == channel && type == Type::IN) updateValue(rmsIn);
 	}
-	void channelRMSOutChanged(ConnectableNode *, float rmsOut, int channel) override 
+	void channelRMSOutChanged(ConnectableNode *, float rmsOut, int channel) override
 	{
 		if (targetChannel == channel && type == Type::OUT) updateValue(rmsOut);
 	}

@@ -32,6 +32,8 @@ public:
 	void updateDeviceList();
 
 	SerialPort * getPort(SerialPortInfo *  portInfo, bool createIfNotThere = true, int openBaudRate = 9600);
+  SerialPort * getPort(String hardwareID, String portName, bool createIfNotThere);
+  
 	void removePort(SerialPort * p);
 
 	class SerialManagerListener

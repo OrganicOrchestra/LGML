@@ -2,15 +2,21 @@
 import os;
 import json;
 import urllib;
+import multiprocessing
 
+njobs = multiprocessing.cpu_count()
 
 # configuration  = "Release"
 configuration  = "Debug"
 bumpVersion = False
 sendToOwncloud = True
-specificVersion = ""#0.1.1"
-
-
+specificVersion = ""
+cleanFirst = False;
+localExportPath2 = [
+# "/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/"
+# ,"/Volumes/Pguillerme/Documents/LGML/"
+];
+architecture = "i386"
 
 
 
@@ -20,7 +26,7 @@ localExportPath = os.path.abspath(localExportPath)+"/"
 proJucerPath = "/Applications/ProJucer.app/Contents/MacOS/ProJucer"
 JuceProjectPath = "../LGML.jucer"
 xcodeProjPath = "../Builds/MacOSX/" 
-executable_name = "LGML_"+("" if configuration=="Release" else configuration)
+executable_name = "LGML"+("" if configuration=="Release" else "_"+configuration)
 gitPath = "../../../"
 appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
@@ -37,7 +43,7 @@ def getVersion():
 	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
 	
 def generateProductBaseName():
-	return executable_name+("" if configuration=="Release" else "_v"+str(getVersion()))
+	return executable_name+ "_v"+str(getVersion())
 
 
 getVersion()
@@ -66,15 +72,21 @@ def buildJUCE(JuceProjectPath):
 	sh(proJucerPath+ " --resave "+JuceProjectPath)
 
 
-def buildApp(xcodeProjPath,configuration,appPath):
+def buildApp(xcodeProjPath,configuration,appPathm,njobs,clean = False):
 	if len(appPath)>10:
 		sh("rm -rf "+appPath)
 
-	sh("cd "+xcodeProjPath+ " && "\
-		
+	if clean:
+		sh("cd "+xcodeProjPath+ " && "\
 		+" xcodebuild -project LGML.xcodeproj" \
 		+" -configuration "+configuration
-		+" -jobs 4 ")
+		+" clean")
+
+	sh("cd "+xcodeProjPath+ " && "\
+		+" xcodebuild -project LGML.xcodeproj" \
+		+" -configuration "+configuration
+		+" -arch "+architecture
+		+" -verbose -jobs "+str(njobs))
 
 def createAppdmgJSON(appPath ,destPath):
 	jdata =  {
@@ -99,6 +111,7 @@ def createDmg(exportFileBaseName,appPath):
 		sh("rm -f \""+dmgPath+"\"")
 		sh("appdmg "+jsonPath+" \""+dmgPath+"\"")
 		sh("rm "+jsonPath)
+		return dmgPath
 
 	else:
 		print "no appdmg exporter : using zip"
@@ -108,21 +121,24 @@ def createDmg(exportFileBaseName,appPath):
 def sendToOwnCloud(originPath,destPath):
 	credPath = os.path.dirname(os.path.abspath(__file__));
 	credPath = os.path.join(credPath,"owncloud.password")
-	
+
 	with open(credPath) as json_data:
 		credentials = json.loads(json_data.read())
 
-	sh("curl -X PUT \"http://195.154.11.18/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"])
+	sh("curl -X PUT \"http://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"])
 
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
 # formatCode("../Source");
 updateVersion();
 buildJUCE(JuceProjectPath);
-buildApp(xcodeProjPath,configuration,appPath);
+buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
+
+localPath = localExportPath+generateProductBaseName();
+dmgPath = createDmg(localPath,appPath);
+for p in localExportPath2:
+	sh("cp "+dmgPath+" "+p+generateProductBaseName()+".dmg")
 if sendToOwncloud:
-	localPath = localExportPath+generateProductBaseName();
-	createDmg(localPath,appPath);
 	ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
 	sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
 # gitCommit()

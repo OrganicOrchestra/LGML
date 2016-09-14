@@ -39,11 +39,34 @@ var Controller::getJSONData()
 	var data = ControllableContainer::getJSONData();
     data.getDynamicObject()->setProperty(controllerTypeIdentifier, ControllerFactory::controllerToString(this));
 
+	var vDataArray;
+	for (auto &v : variables)
+	{
+		var vData(new DynamicObject());
+		vData.getDynamicObject()->setProperty("name", v->parameter->niceName);
+		vDataArray.append(vData);
+	}
+
+	data.getDynamicObject()->setProperty("variables", vDataArray);
+
+
     return data;
 }
 
 void Controller::loadJSONDataInternal(var data)
 {
+	Array<var>* vDataArray = data.getDynamicObject()->getProperty("variables").getArray();
+
+	if (vDataArray != nullptr)
+	{
+		for (auto &v : *vDataArray)
+		{
+			Parameter * p = new FloatParameter("newVar", "variable", 0);
+			p->replaceSlashesInShortName = false;
+			p->setNiceName(v.getDynamicObject()->getProperty("name"));
+			addVariable(p);
+		}
+	}
 }
 
 
@@ -66,13 +89,14 @@ ControllerUI * Controller::createUI()
 	return new ControllerUI(this);
 }
 
-void Controller::addVariable(Parameter * p)
+ControlVariable * Controller::addVariable(Parameter * p)
 {
 	ControlVariable * v = new ControlVariable(this, p);
 	p->replaceSlashesInShortName = false;
 	variables.add(v);
 	v->addControlVariableListener(this);
 	controllerListeners.call(&ControllerListener::variableAdded, this, v);
+	return v;
 }
 
 void Controller::removeVariable(ControlVariable * v)
@@ -117,6 +141,8 @@ void Controller::onContainerParameterChanged(Parameter * p)
        // DBG("set Controller Enabled " + String(enabledParam->boolValue()));
     }
 }
+
+void Controller::onContainerTriggerTriggered(Trigger *){}
 
 void Controller::askForRemoveVariable(ControlVariable * variable)
 {

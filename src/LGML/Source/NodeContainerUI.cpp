@@ -15,8 +15,9 @@ NodeContainerUI::NodeContainerUI(NodeContainer * nc) :
 	ConnectableNodeUI(nc,new NodeContainerContentUI()),
 	nodeContainer(nc)
 {
-	recursiveInspectionLevel = 2;
-	setSize(250, 100);
+	recursiveInspectionLevel = 1;
+	canInspectChildContainersBeyondRecursion = true;
+
 }
 
 NodeContainerUI::~NodeContainerUI()
@@ -25,21 +26,5 @@ NodeContainerUI::~NodeContainerUI()
 }
 
 void NodeContainerUI::clear()
-{
-}
-
-void NodeContainerUI::nodeAdded(ConnectableNode *)
-{
-}
-
-void NodeContainerUI::nodeRemoved(ConnectableNode *)
-{
-}
-
-void NodeContainerUI::connectionAdded(NodeConnection *)
-{
-}
-
-void NodeContainerUI::connectionRemoved(NodeConnection *)
 {
 }

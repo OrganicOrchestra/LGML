@@ -49,25 +49,33 @@ void MIDIDeviceChooser::setSelectedDevice(const String & deviceName, bool silent
 	setSelectedItemIndex(dIndex+1,silent?NotificationType::dontSendNotification:NotificationType::sendNotification);
 }
 
+/*
 void MIDIDeviceChooser::midiInputAdded(String &)
 {
-	if (!isInputChooser) return;
-	fillDeviceList();
+
 }
 
 void MIDIDeviceChooser::midiInputRemoved(String &)
 {
-	if (!isInputChooser) return;
-	fillDeviceList();
 }
 
 void MIDIDeviceChooser::midiOutputAdded(String &)
 {
-	if (isInputChooser) return;
-	fillDeviceList();
 }
 
 void MIDIDeviceChooser::midiOutputRemoved(String &)
+{
+	
+}
+*/
+
+void MIDIDeviceChooser::midiInputsChanged()
+{
+	if (!isInputChooser) return;
+	fillDeviceList();
+}
+
+void MIDIDeviceChooser::midiOutputsChanged()
 {
 	if (isInputChooser) return;
 	fillDeviceList();

@@ -31,7 +31,7 @@ GenericControllableContainerEditor::GenericControllableContainerEditor(Inspectab
 
 GenericControllableContainerEditor::~GenericControllableContainerEditor()
 {
-	sourceContainer->removeControllableContainerListener(this);
+	if(sourceContainer.get())sourceContainer->removeControllableContainerListener(this);
 	parentBT.removeListener(this);
 	innerContainer->clear();
 }
@@ -130,7 +130,7 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 
 	for (auto &c : container->controllables)
 	{
-		addControllableUI(c);
+		if(!c->hideInEditor)addControllableUI(c);
 	}
 
 	if (level < maxLevel)

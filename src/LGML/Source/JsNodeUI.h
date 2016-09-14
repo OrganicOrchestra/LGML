@@ -20,7 +20,7 @@ class JsNodeUI : public NodeBaseContentUI,public ControllableContainerListener,J
 public:
     JsNodeUI();
     ~JsNodeUI();
-    
+
 
     void init()override;
 
@@ -34,8 +34,8 @@ public:
 
     void controllableAdded(Controllable *) override;
     void controllableRemoved(Controllable *) override;
-    
-    
+
+
 };
 
 

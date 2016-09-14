@@ -15,6 +15,8 @@
 
 class ControllableContainer;
 
+
+// if adding option take care to change static function get num options
 enum PresetChoice
 {
     SaveCurrent = -3,
@@ -22,6 +24,7 @@ enum PresetChoice
     ResetToDefault = -1,
     deleteStartId = 1000
 };
+
 
 class PresetManager
 {
@@ -108,8 +111,11 @@ public:
     virtual ~PresetManager();
 
     Preset * addPresetFromControllableContainer(const String &name, const String & filter, ControllableContainer * container, bool recursive = false, bool includeNotExposed = false);
-    Preset * getPreset(String filter, const String &name);
-    void fillWithPresets(ComboBox * cb, String filter);
+    Preset * getPreset (String filter, const String &name) const;
+    void fillWithPresets (ComboBox * cb, const String & filter) const;
+    void removePresetForIdx(int idx);
+  int getNumPresetForFilter (const String &) const;
+    static int getNumOption();
 
     void clear();
 

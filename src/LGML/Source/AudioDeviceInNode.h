@@ -19,8 +19,7 @@ Author:  Martin Hermant
 class AudioDeviceInNode :
 	public NodeBase,
 	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
-	public ChangeListener,
-	public NodeBase::NodeBaseListener
+	public ChangeListener
 {
 
 public:
@@ -32,11 +31,12 @@ public:
 
 	void changeListenerCallback(ChangeBroadcaster* source)override;
     void onContainerParameterChanged(Parameter *)override;
-	void updateIO();
 
 	Array<BoolParameter *> inMutes;
     Array<FloatParameter * > volumes;
     Array<float > logVolumes,lastVolumes;
+    IntParameter * desiredNumAudioInput;
+
 
 
 	void addVolMute();
@@ -44,9 +44,11 @@ public:
 
 	virtual ConnectableNodeUI * createUI() override;
 
-	virtual void audioOutputAdded(NodeBase *, int) override;
-	virtual void audioOutputRemoved(NodeBase *, int) override;
 
+
+private:
+    int lastNumberOfInputs;
+    void    updateVolMutes();
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioDeviceInNode)
 };
 

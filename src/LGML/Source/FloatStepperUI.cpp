@@ -17,7 +17,7 @@ FloatStepperUI::FloatStepperUI(Parameter * _parameter) :
     slider = new Slider(Slider::SliderStyle::IncDecButtons, Slider::TextEntryBoxPosition::TextBoxLeft);
     addAndMakeVisible(slider);
     slider->setRange(parameter->minimumValue, parameter->maximumValue,1);
-    slider->setValue(parameter->value);
+    slider->setValue(parameter->floatValue());
     slider->addListener(this);
 	slider->setTextBoxIsEditable(_parameter->isEditable);
 }
@@ -44,6 +44,6 @@ void FloatStepperUI::sliderValueChanged(Slider * _slider)
 	parameter->setValue(_slider->getValue());
 }
 void FloatStepperUI::parameterRangeChanged(Parameter * p){
-    slider->setRange((int)p->minimumValue, (int)p->maximumValue,1);
+    slider->setRange((float)p->minimumValue, (float)p->maximumValue,1);
 
 }

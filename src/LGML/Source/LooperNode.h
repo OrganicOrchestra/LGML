@@ -17,8 +17,12 @@
 #include "LooperTrack.h"
 
 #define MAX_NUM_TRACKS 32
+#include "TimeMasterCandidate.h"
 
-class LooperNode : public NodeBase
+
+class LooperNode :
+public NodeBase,
+public TimeMasterCandidate
 {
 
 public:
@@ -60,12 +64,15 @@ public:
 	BoolParameter * isMonitoring;
 	IntParameter * numberOfTracks;
     IntParameter * selectTrack;
-
+  IntParameter * quantization;
+    IntParameter * preDelayMs;
+  BoolParameter * isOneShot;
+  Trigger * exportAudio;
 
 	AudioBuffer<float> bufferIn;
 	AudioBuffer<float>bufferOut;
 
-
+  int getQuantization();
 
 
 	void selectMe(LooperTrack * t);
@@ -98,6 +105,14 @@ public:
 	void addLooperListener(LooperListener* newListener) { looperListeners.add(newListener); }
 	void removeLooperListener(LooperListener* listener) { looperListeners.remove(listener); }
 
+
+    void clearInternal()override;
+
+private:
+  // keeps track of few bits of audio
+  // to readjust the loop when controllers are delayed
+  BipBuffer streamAudioBuffer;
+  friend class LooperTrack;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
 };

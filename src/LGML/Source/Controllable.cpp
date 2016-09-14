@@ -43,6 +43,7 @@ void Controllable::setCustomShortName(const String & _shortName)
 {
 	this->shortName = _shortName;
 	hasCustomShortName = true;
+	updateControlAddress();
 	listeners.call(&Listener::controllableNameChanged, this);
 }
 
@@ -80,7 +81,7 @@ String Controllable::getControlAddress(ControllableContainer * relativeTo)
 
     ControllableContainer * pc = parentContainer;
 
-    while (pc != relativeTo)
+    while (pc != relativeTo && pc != nullptr)
     {
         if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
         pc = pc->parentContainer;
@@ -134,7 +135,7 @@ var Controllable::setControllableValue(const juce::var::NativeFunctionArgs& a) {
 				break;
 
 			case Controllable::Type::BOOL:
-				
+
 				if (valueIsABool) ((BoolParameter *)c)->setValue((bool)value);
 				else if (valueIsANumber) ((BoolParameter *)c)->setValue((float)value > .5);
 				break;

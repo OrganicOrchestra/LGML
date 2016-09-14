@@ -28,14 +28,29 @@ public:
 
 	String lastOpenedPortID; //for ghosting
 
+
+  StringParameter * selectedPort;
+  StringParameter * selectedHardwareID;
 	SerialPort * port;
 	void setCurrentPort(SerialPort *port);
+
+	Array<ControlVariable *> serialVariables;
+
+	//Script
+	StringParameter * scriptPath;
+	BoolParameter * logIncoming;
+
+  void onContainerParameterChanged(Parameter * p) override;
+	void newJsFileLoaded() override;
+	
+
 
 	void buildLocalEnv() override;
 	static var sendMessageFromScript(const var::NativeFunctionArgs & v);
 
 	//Device info
 	String deviceID;
+
 
 	//LGML Serial functions
 
@@ -48,6 +63,7 @@ public:
 	virtual void portClosed(SerialPort *) override;
 	virtual void portRemoved(SerialPort *) override;
 	virtual void serialDataReceived(const var &data) override;
+
 
 	ControllerUI * createUI() override;
 

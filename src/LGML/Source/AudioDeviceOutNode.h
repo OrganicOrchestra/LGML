@@ -27,19 +27,22 @@ public:
 
 
 	void changeListenerCallback(ChangeBroadcaster* source)override;
-	void updateIO();
 	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
 	Array<BoolParameter *> outMutes;
+    Array<FloatParameter * > volumes;
+    Array<float > logVolumes,lastVolumes;
+    IntParameter * desiredNumAudioOutput;
 
-	void addMute();
-	void removeMute();
+	void addVolMute();
+	void removeVolMute();
 
 	virtual ConnectableNodeUI * createUI() override;
 
-	virtual void audioInputAdded(NodeBase *, int) override;
-	virtual void audioInputRemoved(NodeBase *, int) override;
-
+    void onContainerParameterChanged(Parameter * p) override;
+    private :
+    void updateVolMutes();
+    int lastNumberOfOutputs;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioDeviceOutNode)
 };
 

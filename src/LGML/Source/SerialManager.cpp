@@ -29,7 +29,7 @@ void SerialManager::init()
 
 void SerialManager::updateDeviceList()
 {
-
+#if SERIALSUPPORT
 	std::vector<serial::PortInfo> devices_found = serial::list_ports();
 	std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
 
@@ -50,7 +50,7 @@ void SerialManager::updateDeviceList()
 		bool found = false;
 		for (auto &sourceD : portInfos)
 		{
-			if (sourceD->hardwareID == newD->hardwareID)
+			if (sourceD->hardwareID == newD->hardwareID && sourceD->port == newD->port)
 			{
 				found = true;
 				break;
@@ -69,7 +69,7 @@ void SerialManager::updateDeviceList()
 		bool found = false;
 		for (auto &newD : newInfos)
 		{
-			if (sourceD->hardwareID == newD->hardwareID)
+			if (sourceD->hardwareID == newD->hardwareID && sourceD->port == newD->port)
 			{
 				found = true;
 				break;
@@ -101,20 +101,22 @@ void SerialManager::updateDeviceList()
 
 	for (auto &p : portsToNotifyAdded)
 	{
-		DBG("Port added " << p->description);
 
 		newInfos.removeObject(p, false);
 		portInfos.add(p);
 		listeners.call(&SerialManagerListener::portAdded, p);
 
 	}
+#endif
 }
 
 SerialPort * SerialManager::getPort(SerialPortInfo * portInfo, bool createIfNotThere, int openBaudRate)
 {
+#if SERIALSUPPORT
 	for (auto & sp : openedPorts)
 	{
-		if (sp->info->hardwareID == portInfo->hardwareID) return sp;
+		
+		if (sp->info->hardwareID == portInfo->hardwareID && sp->info->port == portInfo->port) return sp;
 	}
 
 	if (createIfNotThere)
@@ -124,8 +126,22 @@ SerialPort * SerialManager::getPort(SerialPortInfo * portInfo, bool createIfNotT
 		openedPorts.add(p);
 		return p;
 	}
+#endif
 
 	return nullptr;
+}
+
+SerialPort * SerialManager::getPort(String hardwareID, String portName, bool createIfNotThere)
+{
+#if SERIALSUPPORT
+  for (auto & pi:portInfos)
+  {
+
+    if (pi->hardwareID == hardwareID & pi->port == portName) return getPort(pi,createIfNotThere);
+  }
+#endif
+
+  return nullptr;
 }
 
 void SerialManager::removePort(SerialPort * p)
@@ -137,4 +153,3 @@ void SerialManager::timerCallback()
 {
 	updateDeviceList();
 }
-

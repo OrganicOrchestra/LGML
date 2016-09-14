@@ -18,6 +18,7 @@
 
 #include "ContainerInNode.h"
 #include "ContainerOutNode.h"
+#include "ParameterProxy.h"
 
 
 //Listener
@@ -27,11 +28,15 @@ public:
 	/** Destructor. */
 	virtual ~NodeContainerListener() {}
 
-	virtual void nodeAdded(ConnectableNode *) = 0;
-	virtual void nodeRemoved(ConnectableNode *) = 0;
+	virtual void nodeAdded(ConnectableNode *) {};
+	virtual void nodeRemoved(ConnectableNode *) {};
 
-	virtual void connectionAdded(NodeConnection *) = 0;
-	virtual void connectionRemoved(NodeConnection *) = 0;
+	virtual void connectionAdded(NodeConnection *) {};
+	virtual void connectionRemoved(NodeConnection *) {};
+
+	virtual void paramProxyAdded(ParameterProxy *) {};
+	virtual void paramProxyRemoved(ParameterProxy *) {};
+
 };
 
 
@@ -39,7 +44,8 @@ class NodeContainer :
 	public ConnectableNode,
 	public ConnectableNode::ConnectableNodeListener,
 	public NodeConnection::Listener,
-	public ConnectableNode::RMSListener
+	public ConnectableNode::RMSListener,
+	public ParameterProxy::ParameterProxyListener
 {
 public:
 	NodeContainer(const String &name = "Container");
@@ -54,7 +60,7 @@ public:
 	ContainerInNode * containerInNode;
     ContainerOutNode * containerOutNode;
 
-
+	Array<ParameterProxy *> proxyParams;
 
 	//NODE AND CONNECTION MANAGEMENT
 
@@ -89,6 +95,10 @@ public:
     OwnedArray<NodeConnection > containerOutGhostConnections;
 
 
+	ParameterProxy * addParamProxy();
+	void removeParamProxy(ParameterProxy * pp);
+
+
 	//Preset
 	virtual bool loadPreset(PresetManager::Preset * preset) override;
     virtual PresetManager::Preset* saveNewPreset(const String &name) override;
@@ -106,13 +116,14 @@ public:
 	// Inherited via NodeBase::Listener
 	virtual void askForRemoveNode(ConnectableNode *) override;
 
+	virtual void askForRemoveProxy(ParameterProxy * p) override;
+
 	// Inherited via NodeConnection::Listener
 	virtual void askForRemoveConnection(NodeConnection *) override;
 
 	// Inherited via RMSListener
 	virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) override;
-	virtual void channelRMSInChanged(ConnectableNode * node, float rmsInValue, int channel) override;
-	virtual void channelRMSOutChanged(ConnectableNode * node, float rmsOutValue, int channel) override;
+
 
 	virtual void onContainerParameterChanged(Parameter * p) override;
 
@@ -131,11 +142,12 @@ public:
 	void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }
 	void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener); }
 
+  void removeIllegalGhostConnections();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainer)
 
 
-	
+
 };
 
 

@@ -1,27 +1,27 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    OSCDirectController.cpp
-    Created: 8 Mar 2016 10:27:37pm
-    Author:  bkupe
+ OSCDirectController.cpp
+ Created: 8 Mar 2016 10:27:37pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "OSCDirectController.h"
 #include "NodeManager.h"
 #include "DebugHelpers.h"
 #include "TimeManager.h"
 OSCDirectController::OSCDirectController() :
-    OSCDirectController("OSC Direct Controller")
+OSCDirectController("OSC Direct Controller")
 {
 
 }
 
 OSCDirectController::OSCDirectController(const String & name) :
-	OSCController(name)
+OSCController(name)
 {
-	NodeManager::getInstance()->addControllableContainerListener(this);
+    NodeManager::getInstance()->addControllableContainerListener(this);
     TimeManager::getInstance()->addControllableContainerListener(this);
 }
 
@@ -34,9 +34,9 @@ OSCDirectController::~OSCDirectController()
 
 Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
 {
-	Result result = Result::ok();
+    Result result = Result::ok();
 
-     String addr = msg.getAddressPattern().toString();
+    String addr = msg.getAddressPattern().toString();
 
     StringArray addrArray;
     addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
@@ -57,66 +57,79 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
         {
             if (!c->isControllableFeedbackOnly)
             {
+                Controllable::Type targetType = c->type;
+                if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
 
-                switch (c->type)
+                switch (targetType)
                 {
-                case Controllable::Type::TRIGGER:
-                    if (msg.size() == 0) ((Trigger *)c)->trigger();
-                    else if (msg[0].isInt32() || msg[0].isFloat32())
-                    {
-                        float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        if (val > 0) ((Trigger *)c)->trigger();
-                    }
-                    break;
+                    case Controllable::Type::TRIGGER:
+                        if (msg.size() == 0) ((Trigger *)c)->trigger();
+                        else if (msg[0].isInt32() || msg[0].isFloat32())
+                        {
+                            float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+                            if (val > 0) ((Trigger *)c)->trigger();
+                        }
+                        break;
 
-                case Controllable::Type::BOOL:
-                    if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
-                    {
-                        float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        ((BoolParameter *)c)->setValue(val > 0);
-                    }
-                    break;
+                    case Controllable::Type::BOOL:
+                        if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+                        {
+                            float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+                            ((Parameter *)c)->setValue(val > 0);
+                        }
+                        break;
 
-                case Controllable::Type::FLOAT:
-                    if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
-                    {
-                        float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        ((FloatParameter *)c)->setNormalizedValue(value); //normalized or not ? can user decide ?
-                    }
-                    break;
+                    case Controllable::Type::FLOAT:
+                        if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+                        {
+                            float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+                            ((Parameter *)c)->setValue((float)value); //normalized or not ? can user decide ?
+                        }
+                        break;
 
-                case Controllable::Type::INT:
-                    if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
-                    {
-                        float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
-                        ((IntParameter *)c)->setValue((int)value); //normalized or not ? can user decide ?
-                    }
-                    break;
+                    case Controllable::Type::INT:
+                        if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+                        {
+                            int value = msg[0].isInt32() ? msg[0].getInt32() : (int)msg[0].getFloat32();
+                            ((Parameter *)c)->setValue(value);
+                        }
+                        break;
 
-                case Controllable::Type::STRING:
-                    ((Parameter *)c)->setValue(msg[0].getString());
-                    break;
+                    case Controllable::Type::STRING:
+                        if (msg.size() > 0){
+                            // cast number to strings
+                            if  (msg[0].isInt32() || msg[0].isFloat32()){
+                                float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+                                ((Parameter *)c)->setValue(String(value));
+                            }
+                            else if (msg[0].isString()){
+                                ((Parameter *)c)->setValue(msg[0].getString());
+                            }
+                        }
+                        break;
 
-                default:
-					result = Result::fail("Controllable type not handled");
-					break;
+
+
+                    default:
+                        result = Result::fail("Controllable type not handled");
+                        break;
 
                 }
             }
         }
         else
         {
-			result = Result::fail("Controllable not found");
+            result = Result::fail("Controllable not found");
 
             DBG("No Controllable for address : " + addr);
         }
-	}
-	else
-	{
-		result = Result::fail("address other than /node, not handler for now");
-	}
+    }
+    else
+    {
+        result = Result::fail("address other than /node, not handler for now");
+    }
 
-	return result;
+    return result;
 }
 
 void OSCDirectController::controllableAdded(Controllable *)
@@ -128,37 +141,48 @@ void OSCDirectController::controllableRemoved(Controllable *)
 
 }
 
+
+
 void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
 {
-    //DBG("Send OSC with address : " + c->controlAddress + " to " + remoteHostParam->stringValue() + ":" + String(remotePortParam->stringValue().getIntValue()));
-
 #if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
-    switch (c->type)
+
+    String cAddress = c->controlAddress;
+    Controllable::Type targetType = c->type;
+    if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
+
+    switch (targetType)
     {
         case Controllable::Type::TRIGGER:
-            sendOSC(c->controlAddress,1);
+            sendOSC(cAddress,1);
             break;
 
         case Controllable::Type::BOOL:
-            sendOSC(c->controlAddress,((Parameter *)c)->intValue());
+            sendOSC(cAddress,((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::FLOAT:
-            sendOSC(c->controlAddress, ((Parameter *)c)->floatValue());
+            sendOSC(cAddress, ((Parameter *)c)->floatValue());
             break;
 
         case Controllable::Type::INT:
-            sendOSC(c->controlAddress, ((Parameter *)c)->intValue());
+            sendOSC(cAddress, ((Parameter *)c)->intValue());
             break;
 
         case Controllable::Type::STRING:
-            sendOSC(c->controlAddress, ((Parameter *)c)->stringValue());
+            sendOSC(cAddress, ((Parameter *)c)->stringValue());
             break;
+
         default:
-            DBG("OSC range param not supported");
+            DBG("Type not supported " << targetType);
             jassertfalse;
             break;
     }
+
+
+
+
+
 
 #else
 
@@ -176,26 +200,26 @@ void OSCDirectController::controllableFeedbackUpdate(Controllable * c)
         case Controllable::Type::FLOAT:
             msg.addFloat32(((Parameter *)c)->floatValue());
             break;
-
+            
         case Controllable::Type::INT:
             msg.addInt32(((Parameter *)c)->intValue());
             break;
-
+            
         case Controllable::Type::STRING:
             msg.addString(((Parameter *)c)->stringValue());
             break;
-
+            
         default:
             DBG("OSC : unknown Controllable");
             jassertfalse;
             break;
     }
-
-    sender.send(msg);
-
+    
+  sendOSC(msg);
+    
 #endif
-
-
+    
+    
 }
 
 void OSCDirectController::controllableContainerAdded(ControllableContainer *)

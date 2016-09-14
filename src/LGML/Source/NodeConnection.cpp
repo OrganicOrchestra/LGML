@@ -24,7 +24,7 @@ isGhostConnection(_isGhostConnection)
 		for (int i = 0; i < maxCommonAudioConnections; i++) {
 			addAudioGraphConnection(i, i);
 		}
-		
+
     }
 
     if (sourceNode->type != NodeType::ContainerType) {
@@ -73,7 +73,7 @@ bool NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destCh
 			result = false;
 		}
 	}
-	
+
 	if (result)
     {
         AudioConnection ac = AudioConnection(sourceChannel, destChannel);
@@ -90,7 +90,7 @@ void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 des
 	{
 		if (NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
 	}
-	
+
 	audioConnections.removeAllInstancesOf(ac);
     if (keepInGhost) ghostConnections.add(ac);
     listeners.call(&Listener::connectionAudioLinkRemoved, ac);
@@ -99,9 +99,17 @@ void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 des
 }
 void NodeConnection::removeAllAudioGraphConnections()
 {
-    for(auto c:audioConnections){
-        removeAudioGraphConnection(c.first,c.second,false);
+
+    if(sourceNode.get() && destNode.get()){
+    for(int i = 0 ; i < sourceNode->getAudioNode()->getProcessor()->getTotalNumOutputChannels() ; i++){
+        for(int j = 0 ; j < destNode->getAudioNode()->getProcessor()->getTotalNumInputChannels() ; j++){
+            removeAudioGraphConnection(i,j,false);
+        }
     }
+    }
+//    for(auto c:audioConnections){
+//        removeAudioGraphConnection(c.first,c.second,false);
+//    }
 
     audioConnections.clear();
 
@@ -250,6 +258,11 @@ var NodeConnection::getJSONData()
 {
     var data(new DynamicObject());
 
+  if(sourceNode.get()==nullptr || destNode.get() ==nullptr){
+    DBG("try to save outdated connection"); // TODO clean ghostConnection Nodes
+    jassertfalse;
+    return data;
+  }
     ConnectableNode * tSource = sourceNode;
     if (sourceNode->type == ContainerOutType) tSource = ((ContainerOutNode *)sourceNode.get())->parentNodeContainer;
 
@@ -292,6 +305,7 @@ void NodeConnection::loadJSONData(var data)
     //srcNodeId, destNodeId & connectionType set at creation, not in this load
 
     //DBG("Load JSON Data Node COnnection !");
+
     const Array<var> * links = data.getProperty("links",var()).getArray();
 
     if (links != nullptr)

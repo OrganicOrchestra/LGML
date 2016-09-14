@@ -23,7 +23,7 @@ JsEnvironmentUI::JsEnvironmentUI(JsEnvironment * _env) :env(_env) {
 	addAndMakeVisible(logEnvB);
 	logEnvB.addListener(this);
 
-	
+
 
     newJsFileLoaded(env->hasValidJsFile());
 	addAndMakeVisible(validJsLed);

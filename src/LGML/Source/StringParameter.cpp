@@ -20,11 +20,13 @@ StringParameter::StringParameter(const String & niceName, const String &descript
 
 
 
-StringParameterUI * StringParameter::createStringParameterUI()
+StringParameterUI * StringParameter::createStringParameterUI(StringParameter * target)
 {
-    return new StringParameterUI(this);
+	if (target == nullptr) target = this;
+    return new StringParameterUI(target);
 }
 
-ControllableUI* StringParameter::createDefaultUI(){
-    return createStringParameterUI();
+ControllableUI* StringParameter::createDefaultUI(Controllable * targetControllable){
+
+    return createStringParameterUI(dynamic_cast<StringParameter *>(targetControllable));
 };

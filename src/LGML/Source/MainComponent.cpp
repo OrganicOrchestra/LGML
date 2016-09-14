@@ -44,7 +44,7 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 
     e->createNewGraph();
-
+	e->setChangedFlag(false);
 
     //e->initAudio();
 
@@ -96,11 +96,10 @@ void MainContentComponent::showAudioSettings()
     o.useNativeTitleBar             = false;
     o.resizable                     = false;
 
+
     o.runModal();
 
-    ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
+    engine->audioSettingsHandler.saveCurrent();
 
-    getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
-    getAppProperties().getUserSettings()->saveIfNeeded();
 
 }

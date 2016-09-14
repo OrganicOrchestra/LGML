@@ -25,8 +25,9 @@ public:
 
     //settings
     Direction orientation;
+	Colour defaultColor;
 
-	 bool changeParamOnMouseUpOnly;
+	bool changeParamOnMouseUpOnly;
     bool assignOnMousePosDirect;
     float scaleFactor;
 

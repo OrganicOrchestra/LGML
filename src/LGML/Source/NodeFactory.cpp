@@ -90,6 +90,7 @@ ConnectableNode * NodeFactory::createNode(NodeType nodeType)
     }
 
 	jassert(n != nullptr);
+
     return n;
 }
 

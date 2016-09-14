@@ -12,6 +12,20 @@
 #include "JsHelpers.h"
 
 
+JsContainerSync::~JsContainerSync(){
+    for(auto & n:linkedContainerNamespaces){
+
+        if(n->container.get()) removeAllListeners(n->container);
+    }
+}
+
+void JsContainerSync::removeAllListeners(ControllableContainer * c){
+    for(auto & cc:c->controllableContainers){
+        cc->removeControllableContainerListener(this);
+        removeAllListeners(cc);
+    }
+}
+
 void JsContainerSync::linkToControllableContainer(const String & controllableNamespace,ControllableContainer * c){
     c->addControllableContainerListener(this);
     DynamicObject * obj = createDynamicObjectFromContainer(c,nullptr);
@@ -61,18 +75,16 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
     // create an object only if not skipping , if not add to parent
     if(!container->skipControllableNameInAddress)
         myParent = new DynamicObject();
-    else{
-        jassert(parent!=nullptr);
-
-    }
+    else{jassert(parent!=nullptr);}
 
     for(auto &c:container->controllables){
-		myParent->setProperty(c->shortName, c->createDynamicObject());
+        myParent->setProperty(c->shortName, c->createDynamicObject());
 
 
     }
 
     for(auto &c:container->controllableContainers){
+        container->addControllableContainerListener(this);
         if(c->isIndexedContainer()){
 
             if(!myParent->hasProperty(jsArrayIdentifier)){
@@ -103,10 +115,64 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
     return myParent;
 }
 
+void JsContainerSync::updateControllableNamespace(ControllableContainer * c){
+    if(c==nullptr){DBG("Empty container check");return;}
+    Array<Identifier> jsNamespace;
+    ControllableContainer * inspected = c;
 
+    JsContainerNamespace * originNs=nullptr;
+    while(inspected &&!originNs){
+        DBG("look" << inspected->shortName << (inspected->skipControllableNameInAddress?"skip":""));
+        if(!inspected->skipControllableNameInAddress){
+            jsNamespace.add(inspected->shortName);
+        }
+        for(auto & n:linkedContainerNamespaces){
+            if (inspected==n->container){originNs = n;}
+        }
+
+        inspected = inspected->parentContainer;
+    }
+
+
+    jsNamespace.removeLast();
+
+
+    if(!originNs){
+        jassertfalse;
+    }
+
+    if(jsNamespace.size()==0){
+        getEnv()->setProperty(originNs->nsName,createDynamicObjectFromContainer(originNs->container, nullptr));
+    }
+    else{
+
+        DynamicObject * dyn = getEnv()->getProperty(originNs->nsName).getDynamicObject();
+
+        bool found = true;
+        for(int i = jsNamespace.size()-1 ; i>=1 ; i--){
+            dyn = dyn->getProperty(jsNamespace[i]).getDynamicObject();
+            if(dyn== nullptr){
+                found = false;
+                DBG("notFound Dynamic at " +jsNamespace[i].toString());
+                break;
+            }
+            DBG(jsNamespace[i].toString());
+        }
+
+
+        if(found) dyn->setProperty(jsNamespace[0], createDynamicObjectFromContainer(c, dyn));
+        else DBG("proprety not found for Controllable "+c->shortName);
+    }
+
+}
 
 void JsContainerSync::childStructureChanged(ControllableContainer * c){
-    if(JsContainerNamespace * ns= getContainerNamespace(c)){
-        getEnv()->setProperty(ns->nsName, createDynamicObjectFromContainer(ns->container, nullptr));
-    }
+    aggregChanges.addNs(getContainerNamespace(c));
+    //    updateControllableNamespace(c);
+    
+}
+void JsContainerSync::childAddressChanged(ControllableContainer * c){
+    aggregChanges.addNs(getContainerNamespace(c));
+    //    updateControllableNamespace(c->parentContainer);
+    
 }

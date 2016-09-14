@@ -27,7 +27,7 @@ ContainerInNode::~ContainerInNode()
 {
 	if (parentNodeContainer != nullptr)
 	{
-		addRMSListener(parentNodeContainer);
+		removeRMSListener(parentNodeContainer);
 	}
 }
 

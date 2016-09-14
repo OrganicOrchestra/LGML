@@ -28,7 +28,7 @@ public:
 
     void paint(Graphics&)override;
     void mouseDown(const MouseEvent& event)override;
-    void triggerTriggered(Trigger * p) override;
+    void triggerTriggered(const Trigger * p) override;
     void startBlink();
     void timerCallback()override;
     void setTriggerReference(Trigger * t);

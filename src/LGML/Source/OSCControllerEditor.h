@@ -30,9 +30,11 @@ public:
 	ScopedPointer<StringParameterUI> remoteHostUI;
 	ScopedPointer<StringParameterUI> remotePortUI;
     ScopedPointer<BoolToggleUI> logIncomingOSC,logOutOSC;
+  ScopedPointer<BoolToggleUI> blockFeedback;
+  ScopedPointer<TriggerBlinkUI> sendAllTrigger;
 
 	Component innerContainer;
-
+  
 	virtual void resized() override;
 
 	virtual int getContentHeight() override;

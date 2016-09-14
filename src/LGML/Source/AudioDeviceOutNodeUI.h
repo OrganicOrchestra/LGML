@@ -22,16 +22,18 @@ class AudioDeviceOutNode;
 class AudioDeviceOutNodeContentUI :
 	public NodeBaseContentUI,
 	public NodeBase::NodeBaseListener,
-	public ConnectableNode::ConnectableNodeListener
+	public ConnectableNode::ConnectableNodeListener,
+    public ChangeListener
 {
 public:
 	AudioDeviceOutNodeContentUI();
 	virtual ~AudioDeviceOutNodeContentUI();
 
-	OwnedArray<BoolToggleUI> muteToggles;
-	OwnedArray<VuMeter> vuMeters;
+    OwnedArray<BoolToggleUI> muteToggles;
+    OwnedArray<FloatSliderUI> volumes;
+    OwnedArray<VuMeter> vuMeters;
 
-	AudioDeviceOutNode * audioInNode;
+	AudioDeviceOutNode * audioOutNode;
 
 	void init() override;
 
@@ -45,6 +47,9 @@ public:
 	virtual void nodeParameterChanged(ConnectableNode*, Parameter *) override;
 
 	virtual void numAudioOutputChanged(NodeBase *, int newNum) override;
+
+
+    void changeListenerCallback (ChangeBroadcaster* source)override;
 	//virtual void numAudioOutputChanged() { DBG("Output changed !"); }
 
 };

@@ -13,10 +13,21 @@
 
 #include "JuceHeader.h"
 
-#include "serial/serial.h"
+
+
 #include "QueuedNotifier.h"
 
+#if !defined __arm__
+	#define SERIALSUPPORT 1
+#else
+	#define SERIALSUPPORT 0
+#endif
+
+#if SERIALSUPPORT
+#include "serial/serial.h"
 using namespace serial;
+#endif
+
 
 class SerialPort;
 
@@ -65,11 +76,17 @@ public:
 
 	enum PortMode { LINES, DATA255, RAW, COBS };
 
-	SerialPort(Serial *port, SerialPortInfo * info, PortMode mode = LINES);
+	#if SERIALSUPPORT
+		SerialPort(Serial *port, SerialPortInfo * info, PortMode mode = LINES);
+		ScopedPointer<Serial> port;
+	#else
+		SerialPort(SerialPortInfo * info, PortMode mode = LINES);
+	#endif
+
 	virtual ~SerialPort();
 
 	SerialPortInfo * info;
-	ScopedPointer<Serial> port;
+
 	PortMode mode;
 
 	void open();

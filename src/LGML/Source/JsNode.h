@@ -40,12 +40,14 @@ class JsNode : public NodeBase,public JsEnvironment{
         static  Identifier addIntParameterIdentifier ("addIntParameter");
         static Identifier addFloatParameterIdentifier("addFloatParameter");
         static Identifier addStringParameterIdentifier("addStringParameter");
+      static Identifier addTriggerIdentifier("addTrigger");
 
         DynamicObject d;
         d.setProperty(jsPtrIdentifier, (int64)this);
         d.setMethod(addIntParameterIdentifier, JsNode::addIntParameter);
         d.setMethod(addFloatParameterIdentifier, JsNode::addFloatParameter);
         d.setMethod(addStringParameterIdentifier, JsNode::addStringParameter);
+        d.setMethod(addTriggerIdentifier, JsNode::addTrigger);
 
 
         setLocalNamespace(d);
@@ -57,10 +59,18 @@ class JsNode : public NodeBase,public JsEnvironment{
     }
 
 
+    void onContainerParameterChanged(Parameter * p) override{
+        NodeBase::onContainerParameterChanged(p);
+        if(p==scriptPath){
+            loadFile(scriptPath->stringValue());
+        }
+    }
+
+
     static var addIntParameter(const var::NativeFunctionArgs & a){
 
         JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
-        if(a.numArguments<3){
+        if(a.numArguments<5){
             LOG("wrong number of arg for addIntParameter");
             return var::undefined();
         };
@@ -69,13 +79,6 @@ class JsNode : public NodeBase,public JsEnvironment{
         return var::undefined();
     };
 
-    void onContainerParameterChanged(Parameter * p) override{
-        NodeBase::onContainerParameterChanged(p);
-        if(p==scriptPath){
-            loadFile(scriptPath->stringValue());
-        }
-    }
-
     static var addFloatParameter(const var::NativeFunctionArgs & a){
 
         JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
@@ -83,7 +86,7 @@ class JsNode : public NodeBase,public JsEnvironment{
             LOG("wrong number of arg for addFloatParameter");
             return var::undefined();
         };
-        
+
         jsNode->jsParameters.add(jsNode->ControllableContainer::addFloatParameter(a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
 
         return var::undefined();
@@ -100,9 +103,22 @@ class JsNode : public NodeBase,public JsEnvironment{
         return var::undefined();
     };
 
+  static var addTrigger(const var::NativeFunctionArgs & a){
+
+    JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
+    if(a.numArguments<2){
+      LOG("wrong number of arg for addTrigger");
+      return var::undefined();
+    };
+    jsNode->jsParameters.add(jsNode->ControllableContainer::addTrigger(a.arguments[0], a.arguments[1]));
+
+    return var::undefined();
+  };
+
+
     virtual ConnectableNodeUI * createUI() override;
 
-    Array<Parameter * > jsParameters;
+    Array<Controllable * > jsParameters;
 
 
 };

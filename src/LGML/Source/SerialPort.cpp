@@ -11,14 +11,24 @@
 #include "SerialPort.h"
 #include "SerialManager.h"
 
-SerialPort::SerialPort(Serial * _port, SerialPortInfo  * _info, PortMode _mode) :
-	info(_info),
-	port(_port),
-	mode(_mode),
-	thread(_info->port, this)
-{
-	open();
-}
+#if SERIALSUPPORT
+	SerialPort::SerialPort(Serial * _port, SerialPortInfo  * _info, PortMode _mode) :
+		info(_info),
+		port(_port),
+		mode(_mode),
+		thread(_info->port, this)
+	{
+		open();
+	}
+#else
+	SerialPort::SerialPort(SerialPortInfo  * _info, PortMode _mode) :
+		info(_info),
+		mode(_mode),
+		thread(_info->port, this)
+	{
+		open();
+	}
+#endif
 
 SerialPort::~SerialPort()
 {
@@ -29,11 +39,12 @@ SerialPort::~SerialPort()
 
 void SerialPort::open()
 {
+#if SERIALSUPPORT
 	if (!port->isOpen())
 	{
 		port->open();
 	}
-	
+
 	port->setDTR();
 	port->setRTS();
 
@@ -43,10 +54,12 @@ void SerialPort::open()
 		thread.addAsyncSerialListener(this);
 		listeners.call(&SerialPortListener::portOpened, this);
 	}
+#endif
 }
 
 void SerialPort::close()
 {
+#if SERIALSUPPORT
 	if (port->isOpen())
 	{
 		thread.removeAsyncSerialListener(this);
@@ -54,27 +67,39 @@ void SerialPort::close()
 		port->close();
 		listeners.call(&SerialPortListener::portClosed, this);
 	}
+#endif
 }
 
 bool SerialPort::isOpen() {
+#if SERIALSUPPORT
 	if (port == nullptr) return false;
 	return port->isOpen();
+#else
+	return false;
+#endif
 }
 
 int SerialPort::writeString(String message, bool endLine)
 {
-	
+#if SERIALSUPPORT
 	if (!port->isOpen()) return 0;
 
 	DBG("Write string : " << message << " -- endline ? " << String(endLine));
 	String m = message;
 	if (endLine) m += "\n";
 	return (int)port->write(m.toStdString());
+#else
+	return 0;
+#endif
 }
 
 int SerialPort::writeBytes(Array<uint8_t> data)
 {
+#if SERIALSUPPORT
 	return (int)port->write(data.getRawDataPointer(), data.size());
+#else
+	return 0;
+#endif
 }
 
 void SerialPort::newMessage(const var & data) {
@@ -90,7 +115,8 @@ void SerialPort::removeSerialPortListener(SerialPortListener * listener) {
 
 SerialReadThread::SerialReadThread(String name, SerialPort * _port) :
 	Thread(name + "_thread"),
-	port(_port)
+	port(_port),
+    queuedNotifier(100)
 {
 }
 
@@ -101,6 +127,7 @@ SerialReadThread::~SerialReadThread()
 
 void SerialReadThread::run()
 {
+#if SERIALSUPPORT
 	Array<int> byteBuffer;
 	while (!threadShouldExit())
 	{
@@ -108,7 +135,7 @@ void SerialReadThread::run()
 
 		if (port == nullptr) return;
 		if (!port->isOpen()) return;
-		
+
 		try
 		{
 
@@ -177,8 +204,8 @@ void SerialReadThread::run()
 			DBG("### Serial Problem ");
 		}
 
-		
-	}
 
-	
+	}
+#endif
+
 }

@@ -14,28 +14,50 @@
 void AudioMixerNodeUI::resized() {
     if(outputBusUIs.size()==0)return;
     Rectangle<int> area = getLocalBounds();
-    float step = area.getHeight()/ (float)outputBusUIs.size();
-    const int pad = 3;
-    for(auto & o:outputBusUIs){
-        o->setBounds(area.removeFromTop((int)step).reduced(pad));
+    if(mixerNode->oneToOne->boolValue()){
+        int diagoNum = jmin(mixerNode->numberOfInput->intValue(),mixerNode->numberOfOutput->intValue());
+        float step = (float)(area.getWidth()/ diagoNum);
+        const int pad = 3;
+        for(int i = 0 ; i < outputBusUIs.size() ; i ++){
+            OutputBusUI * o = outputBusUIs.getUnchecked(i);
+            if(i<diagoNum){
+                o->setOneVisible(i);
+                o->setVisible(true);
+                o->setBounds(area.removeFromLeft((int)step).reduced(pad));
+            }
+            else{
+                o->setVisible(false);
+            }
+        }
+    }
+    else{
+
+        float step = area.getHeight()/ (float)outputBusUIs.size();
+        const int pad = 3;
+        for(auto & o:outputBusUIs){
+            o->setVisible(true);
+            o->setBounds(area.removeFromTop((int)step).reduced(pad));
+            o->setAllVisible();
+        }
     }
 }
 
 AudioMixerNodeUI::~AudioMixerNodeUI() {
-	mixerNode->removeNodeBaseListener(this);
+    mixerNode->removeNodeBaseListener(this);
+    mixerNode->oneToOne->removeParameterListener(this);
 }
 
 void AudioMixerNodeUI::init() {
-	 mixerNode = (AudioMixerNode*)node.get();
-	 numAudioOutputChanged(mixerNode, mixerNode->numberOfOutput->intValue());
-	 numAudioInputChanged(mixerNode, mixerNode->numberOfInput->intValue());
+    mixerNode = (AudioMixerNode*)node.get();
+    numAudioOutputChanged(mixerNode, mixerNode->numberOfOutput->intValue());
+    numAudioInputChanged(mixerNode, mixerNode->numberOfInput->intValue());
 
-	 mixerNode->addNodeBaseListener(this);
+    mixerNode->addNodeBaseListener(this);
+    mixerNode->oneToOne->addParameterListener(this);
+    nodeUI->setSize(250, 150);
+}
 
-	 nodeUI->setSize(250, 150);
- }
-
- void AudioMixerNodeUI::numAudioInputChanged(NodeBase *, int numInput){
+void AudioMixerNodeUI::numAudioInputChanged(NodeBase *, int numInput){
     for(auto & b:outputBusUIs){
         b->setNumInput(numInput);
     }
@@ -56,6 +78,10 @@ void AudioMixerNodeUI::numAudioOutputChanged(NodeBase *, int newNum){
     resized();
 
 };
+void AudioMixerNodeUI::parameterValueChanged(Parameter * p) {
+    if(p==mixerNode->oneToOne)resized();
+};
+
 
 
 
@@ -64,6 +90,27 @@ void AudioMixerNodeUI::numAudioOutputChanged(NodeBase *, int newNum){
 // OutputBusUI
 
 
+void AudioMixerNodeUI::OutputBusUI::setOneVisible(int num){
+    visibleChanels.clear();
+    visibleChanels.setBit(num);
+    updateVisibleChannels();
+}
+
+void AudioMixerNodeUI::OutputBusUI::setAllVisible(){
+    visibleChanels.setRange(0, inputVolumes.size(), true);
+    updateVisibleChannels();
+}
+
+int AudioMixerNodeUI::OutputBusUI::getNumOfVisibleChannels(){
+    return visibleChanels.countNumberOfSetBits();
+}
+void AudioMixerNodeUI::OutputBusUI::updateVisibleChannels(){
+    for(int i = 0 ; i < inputVolumes.size() ; i++){
+        inputVolumes.getUnchecked(i)->setVisible(visibleChanels[i]);
+    }
+    resized();
+
+}
 
 void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
     int lastSize = inputVolumes.size();
@@ -73,9 +120,10 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
             v->orientation = FloatSliderUI::Direction::VERTICAL;
             inputVolumes.add(v);
             addAndMakeVisible(v);
-            resized();
+            visibleChanels.setBit(i);
 
         }
+        updateVisibleChannels();
     }
     else if(numInput<lastSize){
         inputVolumes.removeLast(lastSize-numInput,true);
@@ -88,9 +136,13 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
 void AudioMixerNodeUI::OutputBusUI::resized() {
     if(inputVolumes.size()==0)return;
     Rectangle<int> area = getLocalBounds();
-    float step = area.getWidth()/(float)inputVolumes.size();
+    int numToBeDisplayed = getNumOfVisibleChannels();
+    float step = area.getWidth()*1.0f/numToBeDisplayed;
     const int pad = 2;
+    int idx = 0;
     for(auto & o:inputVolumes){
-        o->setBounds(area.removeFromLeft((int)step).reduced(pad));
+        if(visibleChanels[idx])
+            o->setBounds(area.removeFromLeft((int)step).reduced(pad));
+        idx++;
     }
 }

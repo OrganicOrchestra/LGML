@@ -17,7 +17,11 @@ template<typename MessageClass,class CriticalSectionToUse = CriticalSection>
 class QueuedNotifier:public  AsyncUpdater{
 public:
 
-    QueuedNotifier(){}
+    QueuedNotifier(int _maxSize):fifo(_maxSize){
+        maxSize = _maxSize;
+
+    }
+
     virtual ~QueuedNotifier() {cancelPendingUpdate();}
 
 
@@ -40,14 +44,26 @@ public:
             listeners.call(&Listener::newMessage,*msg);
             lastListeners.call(&Listener::newMessage,*msg);
             delete msg;
+            return;
         }
         else{
-            if(listeners.size()==0){
-                if(messageQueue.size()<1){messageQueue.add(msg);}
-                else{messageQueue.set(0, msg);}
-            }
-            else{messageQueue.add(msg);}
 
+            // add if we are in a decent array size
+            {
+            int start1,size1,start2,size2;
+            fifo.prepareToWrite(1, start1, size1, start2, size2);
+                if(size1>0){
+                    if(messageQueue.size()<maxSize){messageQueue.add(msg);}
+                    else{messageQueue.set(start1,msg);}
+                }
+                if(size2>0){
+                    if(messageQueue.size()<maxSize){messageQueue.add(msg);}
+                    else{messageQueue.set(start2,msg);}
+                }
+
+            fifo.finishedWrite (size1 + size2);
+
+            }
             triggerAsyncUpdate();
         }
 
@@ -62,17 +78,35 @@ private:
     void handleAsyncUpdate() override
     {
 
-        {
-            const typename CriticalSectionToUse::ScopedLockType lk(messageQueue.getLock());
-            for(auto &v:messageQueue){
-                listeners.call(&Listener::newMessage,*v);
+
+
+            int start1,size1,start2,size2;
+            fifo.prepareToRead(fifo.getNumReady(), start1, size1, start2, size2);
+
+                for(int i = start1 ;i <start1+ size1 ; i++){
+                    listeners.call(&Listener::newMessage,*messageQueue.getUnchecked(i));
+                }
+
+            for(int i = start2 ;i <start2+ size2 ; i++){
+                listeners.call(&Listener::newMessage,*messageQueue.getUnchecked(i));
             }
-            lastListeners.call(&Listener::newMessage,*messageQueue.getLast());
-        }
-        messageQueue.clear();
+
+            if(size2>0)
+                lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start2+size2-1));
+            else if(size1>0)
+                lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start1+size1-1));
+
+            fifo.finishedRead(size1 + size2);
+
+
+
 
     }
 
+
+
+    AbstractFifo fifo;
+    int maxSize;
     OwnedArray<MessageClass,CriticalSectionToUse> messageQueue;
 
     ListenerList<Listener > listeners;

@@ -21,7 +21,7 @@
 
 
 
-// set following to zero or not to avoid recompiling everything
+// set following to zero or not to avoid recompiling everything (it jumps some but still long)
 #define JUCE_IS_REPAINT_DEBUGGING_ACTIVE 0
 // dont touch this, change following JUCE_IS_REPAINT_DEBUGGING_ACTIVE to avoid recompiling
 #define JUCE_ENABLE_REPAINT_DEBUGGING 1
@@ -30,7 +30,7 @@
 
 
 
-// on osx this prevent to repaint useless part of ui (every thing inside the intersection of all rect repainted...)
+// on osx this prevent to repaint useless part of ui (every thing inside the union of all rect repainted...)
 #define JUCE_COREGRAPHICS_RENDER_WITH_MULTIPLE_PAINT_CALLS 1
 // [END_USER_CODE_SECTION]
 

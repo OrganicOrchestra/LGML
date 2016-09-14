@@ -34,7 +34,7 @@ NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 
 	resizeToFitNodes();
 
-	
+
 }
 
 NodeContainerViewer::~NodeContainerViewer()

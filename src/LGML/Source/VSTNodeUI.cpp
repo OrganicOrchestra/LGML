@@ -199,5 +199,5 @@ void VSTNodeHeaderUI::init()
 
 void VSTNodeHeaderUI::newVSTSelected()
 {
-    updatePresetComboBox();
+//    updatePresetComboBox();
 }

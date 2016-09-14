@@ -14,7 +14,10 @@
 #include "JuceHeader.h"
 #include "JsGlobalEnvironment.h"
 
-class JsEnvironment : public Timer,public Parameter::Listener,public Trigger::Listener {
+class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
+					  public Parameter::Listener,
+					  public Trigger::Listener 
+{
 public:
     JsEnvironment(const String & ns);
     virtual ~JsEnvironment();
@@ -36,7 +39,8 @@ public:
     void    setLocalNamespace(DynamicObject & target);
     virtual void    clearNamespace();
 
-    void    loadFile(const File & f);
+    void    loadFile(const String & path);
+	void    loadFile(const File & f);
 	Result 	loadScriptContent(const String &content);
 
     void    reloadFile();
@@ -152,7 +156,7 @@ private:
 
     JavascriptEngine jsEngine;
 
-    void timerCallback()override;
+    void timerCallback(int timerID)override;
     Time lastFileModTime;
 
     void checkUserControllableEventFunction();

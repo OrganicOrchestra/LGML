@@ -35,6 +35,7 @@ numContainerIndexed(0),
 localIndexedPosition(-1)
 {
     setNiceName(niceName);
+	currentPresetName = addStringParameter("Preset", "Current Preset", "");
 }
 
 ControllableContainer::~ControllableContainer()
@@ -122,13 +123,15 @@ void ControllableContainer::setNiceName(const String &_niceName) {
 void ControllableContainer::setCustomShortName(const String &_shortName){
     shortName = _shortName;
     hasCustomShortName = true;
+    updateChildrenControlAddress();
+    controllableContainerListeners.call(&ControllableContainerListener::childAddressChanged,this);
 }
 
 void ControllableContainer::setAutoShortName() {
     hasCustomShortName = false;
     shortName = StringUtil::toShortName(niceName);
-
     updateChildrenControlAddress();
+    controllableContainerListeners.call(&ControllableContainerListener::childAddressChanged,this);
 }
 
 
@@ -225,6 +228,7 @@ void ControllableContainer::updateChildrenControlAddress()
 {
     for (auto &c : controllables) c->updateControlAddress();
     for (auto &cc : controllableContainers) cc->updateChildrenControlAddress();
+
 
 }
 
@@ -344,7 +348,7 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
     if (preset == nullptr) return false;
 
     loadPresetInternal(preset);
-    
+
     for (auto &pv : preset->presetValues)
     {
 
@@ -354,7 +358,9 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 
 
     currentPreset = preset;
+	currentPresetName->setValue(currentPreset->name, true);
 
+	controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
     return true;
 }
 
@@ -396,6 +402,7 @@ bool ControllableContainer::resetFromPreset()
 
 
     currentPreset = nullptr;
+	currentPresetName->setValue("", true);
     return true;
 }
 
@@ -424,8 +431,11 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
-    onContainerParameterChanged(p);
-    if (p->isControllableExposed) dispatchFeedback(p);
+	if (p == currentPresetName) loadPresetWithName(p->stringValue());
+	
+	onContainerParameterChanged(p);
+	
+	if (p->isControllableExposed) dispatchFeedback(p);
 }
 
 void ControllableContainer::triggerTriggered(Trigger * t)
@@ -461,12 +471,14 @@ var ControllableContainer::getJSONData()
 
     for (auto &c : cont) {
         Parameter * base = dynamic_cast<Parameter*>(c);
-        if (base)
+        if (base )
         {
+            if(base->isSavable){
             var pData(new DynamicObject());
             pData.getDynamicObject()->setProperty(controlAddressIdentifier, base->getControlAddress(this));
             pData.getDynamicObject()->setProperty(valueIdentifier, base->value);
             paramsData.append(pData);
+            }
         }
         else if (dynamic_cast<Trigger*>(c) != nullptr) {
 
@@ -477,15 +489,15 @@ var ControllableContainer::getJSONData()
         }
     }
 
+	/*
     if (currentPreset != nullptr)
     {
-
         data.getDynamicObject()->setProperty(presetIdentifier, currentPreset->name);
     }
+	*/
 
 
     data.getDynamicObject()->setProperty("uid",uid.toString());
-
     data.getDynamicObject()->setProperty(paramIdentifier, paramsData);
 
     return data;
@@ -493,12 +505,16 @@ var ControllableContainer::getJSONData()
 
 void ControllableContainer::loadJSONData(var data)
 {
-	if (data.getDynamicObject()->hasProperty("uid")) uid = data.getDynamicObject()->getProperty("uid");
-    if (data.getDynamicObject()->hasProperty(presetIdentifier))
-    {
-        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
-    }
 
+	if (data.getDynamicObject()->hasProperty("uid")) uid = data.getDynamicObject()->getProperty("uid");
+
+  // @ ben we don't want to load preset when loading from file, do we?
+  
+//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
+//    {
+//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
+//    }
+	 
     Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();
 
     if (paramsData != nullptr)
@@ -510,10 +526,12 @@ void ControllableContainer::loadJSONData(var data)
             Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
 
             if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-                p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
+//                we don't load preset when already loading a state
+                if(p->shortName!=presetIdentifier.toString() && p->isSavable)p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
+                
             }
             else {
-                NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
+                //NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
             }
         }
     }
@@ -523,7 +541,7 @@ void ControllableContainer::loadJSONData(var data)
 
     loadJSONDataInternal(data);
 
-    controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
+   
 }
 
 void ControllableContainer::childStructureChanged(ControllableContainer *)

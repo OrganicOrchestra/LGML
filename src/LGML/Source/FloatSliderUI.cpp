@@ -13,9 +13,10 @@
 
 //==============================================================================
 FloatSliderUI::FloatSliderUI(Parameter * parameter) :
-ParameterUI(parameter), fixedDecimals(2)
+ParameterUI(parameter), fixedDecimals(2),
+defaultColor(PARAMETER_FRONT_COLOR)
 {
-    assignOnMousePosDirect = true;
+    assignOnMousePosDirect = false;
     changeParamOnMouseUpOnly = false;
     orientation = HORIZONTAL;
     setSize(100,10);
@@ -33,7 +34,7 @@ void FloatSliderUI::paint(Graphics & g)
 
     if(shouldBailOut())return;
 
-	Colour baseColour = parameter->isEditable? PARAMETER_FRONT_COLOR :FEEDBACK_COLOR;
+	Colour baseColour = parameter->isEditable? defaultColor :FEEDBACK_COLOR;
     Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : baseColour;
 
     Rectangle<int> sliderBounds = getLocalBounds();
@@ -93,7 +94,11 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
     initValue = getParamNormalizedValue();
     setMouseCursor(MouseCursor::NoCursor);
 
-    if (assignOnMousePosDirect && !e.mods.isRightButtonDown())
+	if (e.mods.isRightButtonDown()) {
+		parameter->resetValue();
+	}
+
+    if (e.mods.isLeftButtonDown() && assignOnMousePosDirect)
     {
         setParamNormalizedValue(getValueFromMouse());
     }
@@ -112,14 +117,19 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
 	if(changeParamOnMouseUpOnly) repaint();
     else
     {
-        if (assignOnMousePosDirect && !e.mods.isRightButtonDown()) setParamNormalizedValue(getValueFromMouse());
-        else
-        {
-            float diffValue = getValueFromPosition((e.getPosition()-e.getMouseDownPosition()));
-            if (orientation == VERTICAL) diffValue -= 1;
+		if (e.mods.isLeftButtonDown())
+		{
+			if (assignOnMousePosDirect)
+			{
+				setParamNormalizedValue(getValueFromMouse());
+			}else
+			{
+				float diffValue = getValueFromPosition((e.getPosition() - e.getMouseDownPosition()));
+				if (orientation == VERTICAL) diffValue -= 1;
 
-            setParamNormalizedValue(initValue + diffValue*scaleFactor);
-        }
+				setParamNormalizedValue(initValue + diffValue*scaleFactor);
+			}
+		}
     }
 }
 
@@ -128,9 +138,22 @@ void FloatSliderUI::mouseUp(const MouseEvent &me)
 	if (!parameter->isEditable) return;
 
 	BailOutChecker checker (this);
-    if(me.getNumberOfClicks()>=2){
-        parameter->resetValue();
-    }
+
+	if (me.getNumberOfClicks() >= 2) {
+		AlertWindow nameWindow("Set a value", "Set a new value for this parameter", AlertWindow::AlertIconType::NoIcon, this);
+		nameWindow.addTextEditor("newValue", parameter->stringValue());
+		nameWindow.addButton("OK", 1, KeyPress(KeyPress::returnKey));
+		nameWindow.addButton("Cancel", 0, KeyPress(KeyPress::escapeKey));
+
+		int result = nameWindow.runModalLoop();
+
+		if (result)
+		{
+			float newValue = nameWindow.getTextEditorContents("newValue").getFloatValue();
+			parameter->setValue(newValue);
+		}
+	}
+	
     if (changeParamOnMouseUpOnly)
     {
         setParamNormalizedValue(getValueFromMouse());

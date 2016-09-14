@@ -18,6 +18,8 @@ JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFi
     jsEngine.registerNativeObject(jsLocalIdentifier, getLocalEnv());
     jsEngine.registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
     addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
+
+	startTimer(1, 20); // 50fps on update Timer
 }
 
 JsEnvironment::~JsEnvironment(){
@@ -53,6 +55,12 @@ void    JsEnvironment::removeNamespace(const String & jsNamespace){
 String JsEnvironment::getParentName(){
     int idx = localNamespace.indexOfChar('.');
     return localNamespace.substring(0, idx);
+}
+
+
+void JsEnvironment::loadFile(const String &path) {
+	File f(File::createFileWithoutCheckingPath(path));
+	loadFile(f);
 }
 
 void JsEnvironment::loadFile(const File &f){
@@ -214,19 +222,26 @@ void JsEnvironment::setNamespaceName(const String & s){
 
 void JsEnvironment::setAutoWatch(bool s){
     if(s){
-        startTimer(500);
+		startTimer(0,500);
     }
     else{
-        stopTimer();
+        stopTimer(0);
     }
 }
 
-void JsEnvironment::timerCallback(){
-    Time newTime = currentFile.getLastModificationTime();
-    if(newTime!=lastFileModTime){
-        loadFile(currentFile);
-        lastFileModTime = newTime;
-    }
+void JsEnvironment::timerCallback(int timerID){
+	if (timerID == 0)
+	{
+		Time newTime = currentFile.getLastModificationTime();
+		if (newTime != lastFileModTime) {
+			loadFile(currentFile);
+			lastFileModTime = newTime;
+		}
+	} else if (timerID == 1)
+	{
+		static const Identifier onUpdateIdentifier("update");
+		callFunction("onUpdate",var());
+	}
 }
 String JsEnvironment::printAllNamespace()   {return namespaceToString(jsEngine.getRootObjectProperties(),0,true,false);}
 

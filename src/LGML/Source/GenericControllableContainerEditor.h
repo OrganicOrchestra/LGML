@@ -85,7 +85,7 @@ public :
 
 	TextButton parentBT;
 
-	ControllableContainer * sourceContainer;
+	WeakReference<ControllableContainer> sourceContainer;
 	ScopedPointer<CCInnerContainer> innerContainer;
 
 	void setCurrentInspectedContainer(ControllableContainer *);

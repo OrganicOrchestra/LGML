@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    JsContainerSync.h
-    Created: 9 May 2016 6:21:50pm
-    Author:  Martin Hermant
+ JsContainerSync.h
+ Created: 9 May 2016 6:21:50pm
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef JSCONTAINERSYNC_H_INCLUDED
 #define JSCONTAINERSYNC_H_INCLUDED
@@ -19,18 +19,19 @@ class JsContainerSync: public ControllableContainerListener
 
 public:
 
-    virtual ~JsContainerSync(){
-        for(auto & n:linkedContainerNamespaces){
-            if(n->container.get()) n->container->removeControllableContainerListener(this);
-        }
-    }
+    JsContainerSync():aggregChanges(this){};
+    virtual ~JsContainerSync();
+
+    void removeAllListeners(ControllableContainer * c);
+
+    void updateControllableNamespace(ControllableContainer * c);
 
     // should return current env
     virtual DynamicObject * getEnv() = 0;
 
     void    linkToControllableContainer(const String & jsNamespace,ControllableContainer * c);
 
-    static  DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
+    DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
 
     bool existInContainerNamespace(const String &);
 
@@ -47,11 +48,41 @@ public:
     JsContainerNamespace* getContainerNamespace(const String & );
 
     void childStructureChanged(ControllableContainer * )override;
+    void childAddressChanged(ControllableContainer * c) override;
 
+    class AggregChanges : public Timer{
+    public:
+        AggregChanges(JsContainerSync * _owner):owner(_owner){
+            startTimer(1000);
+        }
+
+        void timerCallback() override{
+            if(nsToUpdate.size()){
+                Array<JsContainerNamespace * > processed;
+                for(auto & ns:nsToUpdate){
+                    if(!processed.contains(ns)){
+                        owner->getEnv()->setProperty(ns->nsName, owner->createDynamicObjectFromContainer(ns->container, nullptr));
+                        processed.add(ns);
+                    }
+                }
+                nsToUpdate.clear();
+            }
+        }
+        void addNs(JsContainerNamespace * ns){
+            if(ns==nullptr){
+                return;
+            }
+            nsToUpdate.addIfNotAlreadyThere(ns);
+        }
+        Array<JsContainerNamespace * > nsToUpdate;
+        JsContainerSync * owner;
+    };
+
+    AggregChanges aggregChanges;
 private:
 
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
-
+    
 };
 
 

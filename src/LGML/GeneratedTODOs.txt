@@ -8,10 +8,17 @@
 
 
 ControllableContainer.cpp
-	line : 416
+	line : 423
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 102
+	line : 510
+		// @ ben we don't want to load preset when loading from file, do we?
+		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
+		//    {
+		//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
+		//    }
+
+	line : 103
 		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
 
 
@@ -21,28 +28,27 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 106
+	line : 102
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
-	line : 310
+	line : 311
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 
 NodeContainer.h
-	line : 64
+	line : 70
 		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
 		//(todo : find a way to have simpler event flow)
 
 
 VSTNode.cpp
-	line : 106
+	line : 114
 		// TODO check that it actually works
 
-	line : 123
-		//@Martin i addedd this because when not playing, it crashed
-		// @ben it is necessary
-		// if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
-		// ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
+
+PlayableBuffer.h
+	line : 94
+		// TODO sync size because buffer can be larger and we save few useless iteration
 
 
 VuMeter.h
@@ -50,27 +56,33 @@ VuMeter.h
 		//TODO, move to more common place for use in other components
 
 
+MainComponentCommands.cpp
+	line : 244
+		// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
+		//			int result = engine->saveIfNeededAndUserAgrees();
+
+
 JsEnvironment.cpp
-	line : 296
+	line : 311
 		// @ben only supported if move semantics are too are they for you?
 
 
 NodeContainer.cpp
-	line : 538
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
+	line : 290
+		// TODO nicely handle file format errors?
 
-	line : 155
+	line : 181
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 238
-		// TODO nicely handle file format errors?
+	line : 614
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
 
 
 TimeManager.h
-	line : 28
+	line : 31
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
@@ -79,23 +91,8 @@ JavascriptControllerUI.cpp
 		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
 
 
-LGMLLoggerUI.cpp
-	line : 19
-		//@martin i did that so i could clear the log, but the scollbar still goes down after clearing
-		// @ben I cant see the problem here but we never want to clear everything at once no?
-		//  could you explain the problem so that i can see what happen
-		// when I log more than 50000 lines it works as expected for me
-		//	if (totalLogRow >= maxNumElement)
-		//	{
-		//		logElements.clear();
-		//		totalLogRow = 0;
-		//		logListComponent->updateContent();
-		//
-		//	}
-
-
 JsGlobalEnvironment.cpp
-	line : 29
+	line : 31
 		// TODO: use a bit of ControllableContainer in controllers, its empty atm
 		//    linkToControllableContainer("controllers",ControllerManager::getInstance());
 
@@ -117,23 +114,26 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 68
+	line : 67
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
 
 TimeManager.cpp
-	line : 186
+	line : 260
 		//TODO: check
 
 
 MIDIController.cpp
-	line : 93
+	line : 38
+		// TODO : we may need to listen to sR changes
+
+	line : 175
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 
 ControllableContainer.h
-	line : 133
+	line : 137
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -149,11 +149,15 @@ ShapeShifterContainer.cpp
 		//@ben do we need to handle these?
 
 
-LooperTrack.cpp
-	line : 173
-		// TODO subBlock precision ?
-		// not sure -> triggers are updated at block size granularity
-		// for now reduce block approximation noise when quantized
+Main.cpp
+	line : 124
+		//@martin added but commented for testing (relou behavior)
+
+
+MIDIManager.cpp
+	line : 135
+		// @Ben seems weird mixing duc
+		// btw do we really need that for output??
 
 
 DataProcessorGraph.cpp

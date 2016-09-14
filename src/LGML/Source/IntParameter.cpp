@@ -23,15 +23,18 @@ void IntParameter::setValueInternal(var _value)
     this->value = jlimit<int>(minimumValue, maximumValue, _value);
 }
 
-IntSliderUI * IntParameter::createSlider()
+IntSliderUI * IntParameter::createSlider(IntParameter * target)
 {
-    return new IntSliderUI(this);
+	if (target == nullptr) target = this;
+	return new IntSliderUI(target);
 }
 
-IntStepperUI * IntParameter::createStepper(){
-    return new IntStepperUI(this);
+IntStepperUI * IntParameter::createStepper(IntParameter * target)
+{
+	if (target == nullptr) target = this;
+	return new IntStepperUI(target);
 }
 
-ControllableUI * IntParameter::createDefaultUI(){
-    return createStepper();
+ControllableUI * IntParameter::createDefaultUI(Controllable * targetControllable){
+    return createStepper(dynamic_cast<IntParameter *>(targetControllable));
 };

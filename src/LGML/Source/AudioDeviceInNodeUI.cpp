@@ -13,17 +13,23 @@
 #include "VuMeter.h"
 #include "BoolToggleUI.h"
 #include "FloatSliderUI.h"
+#include "Style.h"
+
+AudioDeviceManager& getAudioDeviceManager();
+
 
 AudioDeviceInNodeContentUI::AudioDeviceInNodeContentUI() :
 	NodeBaseContentUI()
 {
-	
+	getAudioDeviceManager().addChangeListener(this);
 }
 
 AudioDeviceInNodeContentUI::~AudioDeviceInNodeContentUI()
 {
+	getAudioDeviceManager().removeChangeListener(this);
+
 	audioInNode->removeNodeBaseListener(this);
-	audioInNode->removeNodeListener(this);
+	audioInNode->removeConnectableNodeListener(this);
 
 	while (vuMeters.size() > 0)
 	{
@@ -35,7 +41,7 @@ void AudioDeviceInNodeContentUI::init()
 {
 	audioInNode = (AudioDeviceInNode *)node.get();
 	audioInNode->addNodeBaseListener(this);
-	audioInNode->addNodeListener(this);
+	audioInNode->addConnectableNodeListener(this);
 	updateVuMeters();
 
 	setSize(240, 80);
@@ -47,12 +53,12 @@ void AudioDeviceInNodeContentUI::resized()
 
 	Rectangle<int> r = getLocalBounds().reduced(10);
 
-	int gap = 5;
-	int vWidth = (r.getWidth() / vuMeters.size()) - gap;
+	int gap = 0;
+	int vWidth = jmin<int>((r.getWidth() / vuMeters.size()) - gap, 30);
 	for (int i = 0; i < vuMeters.size();i++)
 	{
 		Rectangle<int> vr = r.removeFromLeft(vWidth);
-		muteToggles[i]->setBounds(vr.removeFromBottom(20));
+		muteToggles[i]->setBounds(vr.removeFromBottom(20).reduced(2));
 		vr.removeFromBottom(2);
 		vuMeters[i]->setBounds(vr.removeFromLeft(vr.getWidth()/2).reduced(2));
         volumes[i]->setBounds(vr.reduced(2));
@@ -62,14 +68,28 @@ void AudioDeviceInNodeContentUI::resized()
 
 void AudioDeviceInNodeContentUI::updateVuMeters()
 {
-	while (vuMeters.size() < audioInNode->AudioGraphIOProcessor::getTotalNumOutputChannels())
+
+	int desiredNumInputs = audioInNode->desiredNumAudioInput->intValue();
+    int actualNumberOfMutes = jmin(desiredNumInputs,
+                                   audioInNode->AudioGraphIOProcessor::getTotalNumOutputChannels());
+
+
+	while (vuMeters.size() < desiredNumInputs)
 	{
 		addVuMeter();
 	}
 
-	while (vuMeters.size() > audioInNode->NodeBase::getTotalNumOutputChannels())
+	while (vuMeters.size() > desiredNumInputs)
 	{
 		removeLastVuMeter();
+	}
+
+	for (int i = 0; i < desiredNumInputs; i++)
+	{
+        bool isActive = i < actualNumberOfMutes;
+		volumes[i]->defaultColor = isActive ? PARAMETER_FRONT_COLOR : Colours::lightgrey;
+        vuMeters[i]->isActive = isActive;
+		volumes[i]->repaint();
 	}
 	resized();
 }
@@ -78,17 +98,18 @@ void AudioDeviceInNodeContentUI::addVuMeter()
 {
 	VuMeter * v = new VuMeter(VuMeter::Type::OUT);
 	v->targetChannel = vuMeters.size();
-	audioInNode->addRMSListener(v);
+	audioInNode->addRMSChannelListener(v);
 	addAndMakeVisible(v);
 	vuMeters.add(v);
 
-	BoolToggleUI * b = audioInNode->inMutes[muteToggles.size()]->createToggle();
+    int curVuMeterNum = muteToggles.size();
+	BoolToggleUI * b = audioInNode->inMutes[curVuMeterNum]->createToggle();
 	b->invertVisuals = true;
 	muteToggles.add(b);
 	addAndMakeVisible(b);
 
 
-    FloatSliderUI * vol  = audioInNode->volumes.getLast()->createSlider();
+    FloatSliderUI * vol  = audioInNode->volumes[curVuMeterNum]->createSlider();
     vol->orientation = FloatSliderUI::Direction::VERTICAL;
     volumes.add(vol);
     addAndMakeVisible(vol);
@@ -96,15 +117,16 @@ void AudioDeviceInNodeContentUI::addVuMeter()
 
 void AudioDeviceInNodeContentUI::removeLastVuMeter()
 {
-	VuMeter * v = vuMeters[vuMeters.size() - 1];
-	audioInNode->removeRMSListener(v);
+    int curVuMeterNum = vuMeters.size() - 1;
+	VuMeter * v = vuMeters[curVuMeterNum];
+	audioInNode->removeRMSChannelListener(v);
 	removeChildComponent(v);
 	vuMeters.removeLast();
 
-	removeChildComponent(muteToggles[muteToggles.size() - 1]);
+	removeChildComponent(muteToggles[curVuMeterNum]);
 	muteToggles.removeLast();
-    
-    removeChildComponent(volumes.getLast());
+
+    removeChildComponent(volumes[curVuMeterNum]);
     volumes.removeLast();
 }
 
@@ -124,6 +146,11 @@ void AudioDeviceInNodeContentUI::nodeParameterChanged(ConnectableNode *, Paramet
 
 void AudioDeviceInNodeContentUI::numAudioOutputChanged(NodeBase *, int)
 {
-	DBG("Output changed in NodeUI");
+	updateVuMeters();
+}
+
+
+void AudioDeviceInNodeContentUI::changeListenerCallback(ChangeBroadcaster *)
+{
 	updateVuMeters();
 }

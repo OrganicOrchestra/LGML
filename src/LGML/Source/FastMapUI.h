@@ -36,6 +36,7 @@ public:
 	ScopedPointer<FloatSliderUI> maxInputUI;
 	ScopedPointer<FloatSliderUI> minOutputUI;
 	ScopedPointer<FloatSliderUI> maxOutputUI;
+	ScopedPointer<BoolToggleUI> invertUI;
 
 	ControllableChooser chooseTargetBT;
 
