@@ -40,7 +40,8 @@ public:
 
 	ControlVariable * getVariableForAddress(const String &address);
 	ControlVariable * getVariableForName(const String &name);
-
+    virtual void internalVariableAdded(ControlVariable * ){};
+    virtual void internalVariableRemoved(ControlVariable * ){};
     void remove(); //will dispatch askForRemoveController
     virtual void onContainerParameterChanged(Parameter * p) override;
   virtual void onContainerTriggerTriggered(Trigger * ) override;

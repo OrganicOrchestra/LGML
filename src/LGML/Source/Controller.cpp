@@ -95,13 +95,16 @@ ControlVariable * Controller::addVariable(Parameter * p)
 	p->replaceSlashesInShortName = false;
 	variables.add(v);
 	v->addControlVariableListener(this);
+    internalVariableAdded(v);
 	controllerListeners.call(&ControllerListener::variableAdded, this, v);
+
 	return v;
 }
 
 void Controller::removeVariable(ControlVariable * v)
 {
 	v->removeControlVariableListener(this);
+    internalVariableRemoved(v);
 	controllerListeners.call(&ControllerListener::variableRemoved, this, v);
 	variables.removeObject(v);
 }

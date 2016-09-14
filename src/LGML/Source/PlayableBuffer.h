@@ -157,7 +157,7 @@ class PlayableBuffer {
     if (fadeNumSamples>0 && recordNeedle>2 * fadeNumSamples) {
       for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
         loopSample.applyGainRamp(i, 0, fadeNumSamples, (float)mingain, 1);
-        loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples+1, fadeNumSamples, 1, (float)mingain);
+        loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, (float)mingain);
       }
     }
   }

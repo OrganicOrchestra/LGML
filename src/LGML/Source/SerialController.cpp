@@ -131,6 +131,13 @@ void SerialController::serialDataReceived(const var & data)
 	processMessage(data.toString());
 }
 
+void SerialController::internalVariableAdded(ControlVariable*){
+    loadFile(scriptPath->stringValue());
+}
+void SerialController::internalVariableRemoved(ControlVariable*){
+        loadFile(scriptPath->stringValue());
+    
+}
 var SerialController::sendMessageFromScript(const var::NativeFunctionArgs &) {
 	//    SerialController * c = getObjectPtrFromJS<SerialController>(a);
 	return var::undefined();

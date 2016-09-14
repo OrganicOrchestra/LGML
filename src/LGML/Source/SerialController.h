@@ -35,7 +35,8 @@ public:
 	void setCurrentPort(SerialPort *port);
 
 	Array<ControlVariable *> serialVariables;
-
+    void internalVariableAdded(ControlVariable*) override;
+    void internalVariableRemoved(ControlVariable*) override;
 	//Script
 	StringParameter * scriptPath;
 	BoolParameter * logIncoming;
