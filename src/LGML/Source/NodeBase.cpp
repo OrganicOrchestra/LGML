@@ -85,6 +85,7 @@ void NodeBase::clear()
     //Data
     inputDatas.clear();
     outputDatas.clear();
+    stopTimer();
 
     //removeFromAudioGraph();
 }

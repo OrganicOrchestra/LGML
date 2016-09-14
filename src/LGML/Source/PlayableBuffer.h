@@ -103,7 +103,7 @@ class PlayableBuffer {
           buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
           buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
         }
-        playNeedle = secondSegmentLength;
+              playNeedle = secondSegmentLength;
           }
           else{
               jassertfalse;
@@ -158,7 +158,7 @@ class PlayableBuffer {
   void fadeInOut(int fadeNumSamples,double mingain){
       if (fadeNumSamples>0 ){
           
-      if(recordNeedle>2 * fadeNumSamples -1) {fadeNumSamples = recordNeedle/2 - 1;}
+      if(recordNeedle<2 * fadeNumSamples -1) {fadeNumSamples = recordNeedle/2 - 1;}
       for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
         loopSample.applyGainRamp(i, 0, fadeNumSamples, (float)mingain, 1);
         loopSample.applyGainRamp(i, recordNeedle - fadeNumSamples, fadeNumSamples, 1, (float)mingain);
@@ -218,7 +218,7 @@ class PlayableBuffer {
         break;
       case BUFFER_STOPPED:
         numTimePlayed = 0;
-        //setPlayNeedle(0);
+        setPlayNeedle(0);
         break;
     }
     state = newState;
@@ -229,6 +229,7 @@ class PlayableBuffer {
     lastState = state;
     stateChanged =false;
     isJumping = false;
+      startJumpNeedle=0;
   }
 
   BufferState getState() const{
