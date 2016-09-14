@@ -34,7 +34,7 @@ public:
   ScopedPointer<TriggerBlinkUI> sendAllTrigger;
 
 	Component innerContainer;
-
+  
 	virtual void resized() override;
 
 	virtual int getContentHeight() override;
