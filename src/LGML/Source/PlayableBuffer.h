@@ -100,8 +100,8 @@ class PlayableBuffer {
 
           const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
         for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-          buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, firstSegmentLength);
-          buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, 0, secondSegmentLength);
+          buffer.copyFrom(i, 0, loopSample, i, playNeedle, firstSegmentLength);
+          buffer.copyFrom(i, 0, loopSample, i, 0, secondSegmentLength);
         }
               playNeedle = secondSegmentLength;
           }
@@ -112,9 +112,9 @@ class PlayableBuffer {
 
       }
       else{
-        for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-          int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-          buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, playNeedle, buffer.getNumSamples());
+        const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
+        for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
+          buffer.copyFrom(i, 0, loopSample, i, playNeedle, buffer.getNumSamples());
         }
       }
     }
