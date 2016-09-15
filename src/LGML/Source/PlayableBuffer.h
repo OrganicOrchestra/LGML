@@ -172,7 +172,7 @@ class PlayableBuffer {
   bool isStopping() const{return (lastState == BUFFER_PLAYING  ) && (state==BUFFER_STOPPED);}
   bool isRecording() const{return state == BUFFER_RECORDING;}
   bool firstRecordedFrame() const{return state == BUFFER_RECORDING && (lastState!=BUFFER_RECORDING);}
-  void startRecord(){recordNeedle = 0;}
+    void startRecord(){recordNeedle = 0;playNeedle=0;}
   bool isOrWasPlaying() const{return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();}
   void startPlay(){setPlayNeedle(0);}
 
