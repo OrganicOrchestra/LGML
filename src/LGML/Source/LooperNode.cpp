@@ -32,7 +32,7 @@ streamAudioBuffer(1,16384,512)// 16000 ~ 300ms and 256*64
   clearAllTrig = addTrigger("ClearAll",           "Tells all tracks to clear it's content if got any");
   stopAllTrig = addTrigger("StopAll",             "Tells all tracks to stop it's content if got any");
   isMonitoring = addBoolParameter("monitor",      "do we monitor audio input ? ", false);
-  preDelayMs = addIntParameter("Pre Delay MS",    "Pre process delay (in milliseconds)", 80, 0, 250);
+  preDelayMs = addIntParameter("Pre Delay MS",    "Pre process delay (in milliseconds)", 0, 0, 250);
   quantization = addIntParameter("quantization",       "quantization for this looper - 1 is global", -1, -1, 32);
   isOneShot =  addBoolParameter("isOneShot", "do we play once or loop track", false);
 

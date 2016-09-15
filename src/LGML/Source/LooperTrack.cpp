@@ -17,14 +17,14 @@
 #include "DebugHelpers.h"
 
 
-
+#define NO_QUANTIZE ULLONG_MAX
 LooperTrack::LooperTrack(LooperNode * looperNode, int _trackIdx) :
 ControllableContainer(String(_trackIdx)),
 parentLooper(looperNode),
-quantizedRecordStart(-1),
-quantizedRecordEnd(-1),
-quantizedPlayStart(-1),
-quantizedPlayEnd(-1),
+quantizedRecordStart(NO_QUANTIZE),
+quantizedRecordEnd(NO_QUANTIZE),
+quantizedPlayStart(NO_QUANTIZE),
+quantizedPlayEnd(NO_QUANTIZE),
 loopSample(2, 44100 * MAX_LOOP_LENGTH_S),
 trackState(CLEARED),
 desiredState(CLEARED),
@@ -160,8 +160,8 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
   ////
   // apply quantization on play / rec
   const uint64 triggeringTime = curTime;
-  if (quantizedRecordStart.get()>=0) {
-    if (triggeringTime >= quantizedRecordStart.get()) {
+  if (quantizedRecordStart.get()!=NO_QUANTIZE) {
+    if (triggeringTime >= quantizedRecordStart.get() ) {
       if(isMasterTempoTrack() ){
         if(!TimeManager::getInstance()->playState->boolValue())TimeManager::getInstance()->playState->setValue(true);
           
@@ -169,7 +169,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
       desiredState = RECORDING;
       loopSample.setState( PlayableBuffer::BUFFER_RECORDING);
       startRecBeat = TimeManager::getInstance()->getBeat();
-      quantizedRecordStart = -1;
+      quantizedRecordStart = NO_QUANTIZE;
       stateChanged = true;
     }
     else{
@@ -177,7 +177,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
     }
 
   }
-  else if (quantizedRecordEnd.get()>=0) {
+  else if (quantizedRecordEnd.get()!=NO_QUANTIZE) {
     if (triggeringTime >= quantizedRecordEnd.get()) {
 
       if(parentLooper->isOneShot->boolValue()){
@@ -192,7 +192,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
         startPlayBeat = TimeManager::getInstance()->getBeat();
         quantizedPlayStart = 0;
       }
-      quantizedRecordEnd = -1;
+      quantizedRecordEnd = NO_QUANTIZE;
       stateChanged = true;
 
     }
@@ -200,21 +200,21 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
 
 
-  if (quantizedPlayStart.get()>=0) {
+  if (quantizedPlayStart.get()!=NO_QUANTIZE) {
     if (triggeringTime >= quantizedPlayStart.get()) {
 
       desiredState =  PLAYING;
       loopSample.setState( PlayableBuffer::BUFFER_PLAYING);
       startPlayBeat = TimeManager::getInstance()->getBeat();
-      quantizedPlayStart = -1;
+      quantizedPlayStart = NO_QUANTIZE;
       stateChanged = true;
     }
   }
-  else if (quantizedPlayEnd.get()>=0) {
+  else if (quantizedPlayEnd.get()!=NO_QUANTIZE) {
     if (triggeringTime >= quantizedPlayEnd.get()) {
       desiredState = STOPPED;
       loopSample.setState( PlayableBuffer::BUFFER_STOPPED);
-      quantizedPlayEnd = -1;
+      quantizedPlayEnd = NO_QUANTIZE;
       stateChanged = true;
     }
   }
@@ -231,7 +231,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
   //    DBG(playNeedle);
   if(stateChanged){
-    if(getQuantization()>0) {
+    if(getQuantization()>0 && !isMasterTempoTrack()) {
       TimeManager * tm = TimeManager::getInstance();
       loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
     }
@@ -460,11 +460,11 @@ void LooperTrack::setTrackState(TrackState newState) {
     // end of first track
     if ( trackState == RECORDING ){
       if(isMasterTempoTrack() ) {
-        quantizedRecordEnd = -1;
+        quantizedRecordEnd = 0;
         timeManager->isSettingTempo->setValue(false);
         //            timeManager->lockTime(true);
 
-        int minRecordTime = (int)(parentLooper->getSampleRate()*0.5f);
+        int minRecordTime = (int)(parentLooper->getSampleRate()*0.1f);
         if(loopSample.getRecordedLength()< minRecordTime){
           // avoid feedBack when trigger play;
           newState = WILL_RECORD;
@@ -555,10 +555,10 @@ void LooperTrack::setTrackState(TrackState newState) {
 };
 
 void LooperTrack::cleanAllQuantizeNeedles() {
-  quantizedPlayEnd = -1;
-  quantizedPlayStart = -1;
-  quantizedRecordEnd = -1;
-  quantizedRecordStart = -1;
+  quantizedPlayEnd = NO_QUANTIZE;
+  quantizedPlayStart = NO_QUANTIZE;
+  quantizedRecordEnd = NO_QUANTIZE;
+  quantizedRecordStart = NO_QUANTIZE;
 }
 
 
