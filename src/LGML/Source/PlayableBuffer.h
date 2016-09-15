@@ -241,14 +241,14 @@ class PlayableBuffer {
   }
 
 
-  int getRecordedLength() const{return recordNeedle;}
+  uint64 getRecordedLength() const{return recordNeedle;}
 
-  int getPlayPos() const{return playNeedle;}
+  uint64 getPlayPos() const{return playNeedle;}
 
 
   bool stateChanged;
 
-  int getStartJumpPos() const{return startJumpNeedle;}
+  uint64 getStartJumpPos() const{return startJumpNeedle;}
 
 
 
@@ -264,7 +264,7 @@ private:
 
   
   
-  int recordNeedle,playNeedle,startJumpNeedle;
+  uint64 recordNeedle,playNeedle,startJumpNeedle;
   
 };
 

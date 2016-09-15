@@ -145,8 +145,8 @@ private:
     friend class LooperNode;
     bool someOneIsSolo;
 
-    Atomic<int> quantizedRecordEnd, quantizedRecordStart;
-    Atomic<int> quantizedPlayStart, quantizedPlayEnd;
+    Atomic<uint64> quantizedRecordEnd, quantizedRecordStart;
+    Atomic<uint64> quantizedPlayStart, quantizedPlayEnd;
 
     bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
     void padBufferIfNeeded();
