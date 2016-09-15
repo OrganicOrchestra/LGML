@@ -28,11 +28,11 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 102
-		// TODO we could implement that for all node objects to be able to save any kind of custom data
-
-	line : 311
+	line : 312
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
+
+	line : 103
+		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
 NodeContainer.h
@@ -44,11 +44,6 @@ NodeContainer.h
 VSTNode.cpp
 	line : 114
 		// TODO check that it actually works
-
-
-PlayableBuffer.h
-	line : 94
-		// TODO sync size because buffer can be larger and we save few useless iteration
 
 
 VuMeter.h
@@ -68,17 +63,24 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 290
+	line : 291
 		// TODO nicely handle file format errors?
 
-	line : 181
+	line : 621
+		//TODO synchronize this and implement it for data
+		// it's not indispensable
+
+	line : 182
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 614
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
+	line : 483
+		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
+		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
+		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
+		//         nb->stopTimer();
+		//        }
 
 
 TimeManager.h
@@ -128,7 +130,7 @@ MIDIController.cpp
 	line : 38
 		// TODO : we may need to listen to sR changes
 
-	line : 175
+	line : 159
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 

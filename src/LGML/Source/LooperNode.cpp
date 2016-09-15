@@ -143,21 +143,21 @@ void LooperNode::TrackGroup::setNumTracks(int numTracks) {
 void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
   if(TimeManager::getInstance()->hasMasterCandidate()){
     bool needToReleaseMasterTempo = true;
-    bool needToStop = TimeManager::getInstance()->playState->boolValue() && TimeManager::getInstance()->isMasterCandidate(this);
+//    bool needToStop = TimeManager::getInstance()->playState->boolValue() && TimeManager::getInstance()->isMasterCandidate(this);
     for (auto & t : trackGroup.tracks) {
       //            DBG("s"+LooperTrack::trackStateToString(t->trackState));
       needToReleaseMasterTempo &= (t->desiredState == LooperTrack::TrackState::CLEARED);
-      needToStop &=   (t->desiredState == LooperTrack::TrackState::CLEARED ||
-                       t->desiredState == LooperTrack::TrackState::STOPPED ||
-                       t->desiredState == LooperTrack::TrackState::WILL_STOP);
+//      needToStop &=   (t->desiredState == LooperTrack::TrackState::CLEARED ||
+//                       t->desiredState == LooperTrack::TrackState::STOPPED ||
+//                       t->desiredState == LooperTrack::TrackState::WILL_STOP);
     }
 
     if (needToReleaseMasterTempo) {
       TimeManager::getInstance()->releaseMasterCandidate(this);
     }
-    if (!isOneShot->boolValue() && needToStop){
-      TimeManager::getInstance()->stopTrigger->trigger();
-    }
+//    if (!isOneShot->boolValue() && needToStop){
+//      TimeManager::getInstance()->stopTrigger->trigger();
+//    }
   }
 }
 

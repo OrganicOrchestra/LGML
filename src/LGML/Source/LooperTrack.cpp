@@ -384,8 +384,11 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
 }
 
 bool LooperTrack::askForBeingMasterTempoTrack() {
-  if(getQuantization()>0){return TimeManager::getInstance()->askForBeingMasterCandidate(parentLooper)
-    && parentLooper->askForBeingMasterTrack(this);}
+  if(getQuantization()>0){
+    bool looperIsMaster = TimeManager::getInstance()->askForBeingMasterCandidate(parentLooper);
+    bool trackIsMaster = parentLooper->askForBeingMasterTrack(this);
+    return looperIsMaster && trackIsMaster;
+  }
   else return false;
 }
 

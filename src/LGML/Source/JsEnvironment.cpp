@@ -101,7 +101,7 @@ Result JsEnvironment::loadScriptContent(const String & content)
 
 	if (r.failed()) {
 		_hasValidJsFile = false;
-		NLOG("JS",r.getErrorMessage());
+		NLOG(localNamespace,r.getErrorMessage());
 	}
 	else {
 		_hasValidJsFile = true;
@@ -109,7 +109,7 @@ Result JsEnvironment::loadScriptContent(const String & content)
 		updateUserDefinedFunctions();
 		checkUserControllableEventFunction();
 		newJsFileLoaded();
-		NLOG("JS", "Content loaded sucessfully");
+		NLOG(localNamespace, "Content loaded sucessfully");
 	}
 
 	jsListeners.call(&JsEnvironment::Listener::jsScriptLoaded, (bool)r);
@@ -161,12 +161,12 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
 		resOwned = true;
 	}
 
-	var * v = new var(); //@martin can this give a memory leak ? need to handle calls without arguments
-	juce::var::NativeFunctionArgs Nargs(var::undefined(), (args.size()>0)?&args.getReference(0):v, args.size());
+  var  v ;
+	juce::var::NativeFunctionArgs Nargs(var::undefined(), (args.size()>0)?&args.getReference(0):&v, args.size());
 
     var res =  jsEngine.callFunction(function,Nargs,result);
     if(logResult && result->failed()){
-        LOG(result->getErrorMessage());
+        NLOG(localNamespace,result->getErrorMessage());
     }
 
     if(resOwned){
@@ -188,7 +188,7 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
     juce::var::NativeFunctionArgs Nargs(var::undefined(),&arg,1);
     var res =  jsEngine.callFunction(function,Nargs,result);
     if(logResult && result->failed()){
-        LOG(result->getErrorMessage());
+        NLOG(localNamespace,result->getErrorMessage());
     }
     if(resOwned){
         delete result;
