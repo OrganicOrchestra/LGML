@@ -164,6 +164,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
     if (triggeringTime >= quantizedRecordStart.get()) {
       if(isMasterTempoTrack() ){
         if(!TimeManager::getInstance()->playState->boolValue())TimeManager::getInstance()->playState->setValue(true);
+          
       }
       desiredState = RECORDING;
       loopSample.setState( PlayableBuffer::BUFFER_RECORDING);
@@ -294,6 +295,7 @@ void LooperTrack::padBufferIfNeeded(){
 
     if(loopSample.isFirstStopAfterRec() || loopSample.isFirstPlayingFrameAfterRecord()){
       loopSample.fadeInOut ((int)(parentLooper->getSampleRate() * 0.01),0);
+      parentLooper->lastMasterTempoTrack =nullptr;
     }
 
 
@@ -385,9 +387,14 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
 
 bool LooperTrack::askForBeingMasterTempoTrack() {
   if(getQuantization()>0){
-    bool looperIsMaster = TimeManager::getInstance()->askForBeingMasterCandidate(parentLooper);
-    bool trackIsMaster = parentLooper->askForBeingMasterTrack(this);
-    return looperIsMaster && trackIsMaster;
+
+      if(TimeManager::getInstance()->askForBeingMasterCandidate(parentLooper))
+      {
+          if(parentLooper->askForBeingMasterTrack(this)){
+              return true;
+          }
+      }
+      return false;
   }
   else return false;
 }
@@ -439,6 +446,7 @@ void LooperTrack::setTrackState(TrackState newState) {
 
     else if (timeManager->isMasterCandidate(parentLooper)) {
       timeManager->isSettingTempo->setValue(false);
+        jassert(parentLooper->lastMasterTempoTrack);
       parentLooper->lastMasterTempoTrack->setTrackState(WILL_PLAY);
       quantizedRecordStart = 0;
     }
@@ -451,7 +459,7 @@ void LooperTrack::setTrackState(TrackState newState) {
 
     // end of first track
     if ( trackState == RECORDING ){
-      if(askForBeingMasterTempoTrack() ) {
+      if(isMasterTempoTrack() ) {
         quantizedRecordEnd = -1;
         timeManager->isSettingTempo->setValue(false);
         //            timeManager->lockTime(true);
