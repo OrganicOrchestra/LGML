@@ -16,7 +16,7 @@
 
 // abstract base class that provide midi callback handle and keeps MIDIManager in sync
 
-class MIDIListener :public MidiInputCallback
+class MIDIListener :public MidiInputCallback,MIDIManager::MIDIManagerListener
 {
     public :
     MIDIListener();
@@ -34,7 +34,14 @@ class MIDIListener :public MidiInputCallback
 	void sendCC(int channel, int number, int value);
 	void sendSysEx(uint8 * data, int dataCount);
 
-
+    virtual void midiInputAdded(String & s) override{ if(s==midiPortName){setCurrentDevice(midiPortName);}}
+//    virtual void midiInputRemoved(String &) {}
+//    virtual void midiInputsChanged() {}
+    
+    virtual void midiOutputAdded(String & s)override {if(s==midiPortName){setCurrentDevice(midiPortName);}}
+//    virtual void midiOutputRemoved(String &) {}
+//    virtual void midiOutputsChanged() {}
+    
     class  Listener
     {
     public:

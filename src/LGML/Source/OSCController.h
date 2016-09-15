@@ -15,7 +15,7 @@
 #include "StringParameter.h"
 
 
-class OSCController : public Controller, public OSCReceiver::Listener<OSCReceiver::MessageLoopCallback>
+class OSCController : public Controller, public OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
 {
 public:
   OSCController(const String &name);

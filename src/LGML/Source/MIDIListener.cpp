@@ -13,11 +13,13 @@
 #include "MainComponent.h"
 
 MIDIListener::MIDIListener()
-{
+{midiPortName = String::empty;
+    MIDIManager::getInstance()->addMIDIListener(this);
 }
 
 MIDIListener::~MIDIListener()
 {
+        MIDIManager::getInstance()->removeMIDIListener(this);
 	midiPortName = String::empty;
 }
 
