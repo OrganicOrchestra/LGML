@@ -16,7 +16,8 @@
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
 					  public Parameter::Listener,
-					  public Trigger::Listener 
+					  public Trigger::Listener ,
+            public ControllableContainerListener
 {
 public:
     JsEnvironment(const String & ns);
@@ -162,8 +163,11 @@ private:
     void checkUserControllableEventFunction();
     Array<WeakReference<Parameter> > listenedParameters;
     Array<WeakReference<Trigger> > listenedTriggers;
+  Array<WeakReference<ControllableContainer> > listenedContainers;
     void parameterValueChanged(Parameter * c) override;
     void triggerTriggered(Trigger * p) override;
+
+  void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *)     override;
 };
 
 

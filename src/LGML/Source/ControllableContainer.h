@@ -33,7 +33,7 @@ public:
 	virtual void controllableRemoved(Controllable *) {}
 	virtual void controllableContainerAdded(ControllableContainer *) {}
 	virtual void controllableContainerRemoved(ControllableContainer *) {}
-	virtual void controllableFeedbackUpdate(Controllable *) {}
+	virtual void controllableFeedbackUpdate(ControllableContainer *,Controllable *) {}
 	virtual void childStructureChanged(ControllableContainer *) {}
     virtual void childAddressChanged(ControllableContainer * ){};
     virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
@@ -90,7 +90,7 @@ public:
     virtual void localIndexChanged();
 
     ControllableContainer * getControllableContainerByName(const String &name, bool searchNiceNameToo = false);
-
+    ControllableContainer * getControllableContainerForAddress( StringArray  address);
 
     void setParentContainer(ControllableContainer * container);
     void updateChildrenControlAddress();
@@ -100,7 +100,7 @@ public:
     virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
 
     virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
-
+    String getControlAddress(ControllableContainer * relativeTo=nullptr);
 
     
 	virtual bool loadPresetWithName(const String &name);

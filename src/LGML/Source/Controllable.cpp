@@ -76,18 +76,7 @@ void Controllable::updateControlAddress()
 
 String Controllable::getControlAddress(ControllableContainer * relativeTo)
 {
-    StringArray addressArray;
-    addressArray.add(shortName);
-
-    ControllableContainer * pc = parentContainer;
-
-    while (pc != relativeTo && pc != nullptr)
-    {
-        if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
-        pc = pc->parentContainer;
-    }
-
-    return "/" + addressArray.joinIntoString("/");
+  return parentContainer->getControlAddress(relativeTo) + "/"+shortName;
 }
 
 DynamicObject * Controllable::createDynamicObject()

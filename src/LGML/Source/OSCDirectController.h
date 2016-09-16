@@ -32,7 +32,7 @@ public:
     virtual void controllableContainerAdded(ControllableContainer * cc) override;
     virtual void controllableContainerRemoved(ControllableContainer * cc) override;
 
-    virtual void controllableFeedbackUpdate(Controllable * c) override;
+    virtual void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable * c) override;
 
 
 

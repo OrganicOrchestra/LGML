@@ -149,7 +149,7 @@ ControllerUI * OSCController::createUI()
 void OSCController::sendAllControllableStates(ControllableContainer *c,int & sentControllable){
   if(c){
     for(auto & controllable:c->getAllControllables()){
-      controllableFeedbackUpdate(controllable);
+      controllableFeedbackUpdate(c,controllable);
       sentControllable++;
       if((sentControllable%60)==0){
         sleep(0.01);

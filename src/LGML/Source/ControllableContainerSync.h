@@ -82,7 +82,7 @@ private:
     void controllableRemoved(Controllable *c)override;
     void controllableContainerAdded(ControllableContainer *  c) override;
     void controllableContainerRemoved(ControllableContainer * c)override;
-    void controllableFeedbackUpdate(Controllable *c) override;
+    void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *c) override;
 
 
     void onContainerParameterChanged(Parameter*)override;

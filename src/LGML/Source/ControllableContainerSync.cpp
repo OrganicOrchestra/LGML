@@ -178,7 +178,7 @@ void ControllableContainerSync::onContainerTriggerTriggered(Trigger * c){
 
 
 // from synced list
-void ControllableContainerSync::controllableFeedbackUpdate(Controllable *c) {
+void ControllableContainerSync::controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *c) {
     if(c->parentContainer ){
     if(areCompatible(c->parentContainer,this)){
         for(auto & cc:controllables){

@@ -8,10 +8,10 @@
 
 
 ControllableContainer.cpp
-	line : 423
+	line : 487
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 510
+	line : 574
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -58,7 +58,7 @@ MainComponentCommands.cpp
 
 
 JsEnvironment.cpp
-	line : 311
+	line : 345
 		// @ben only supported if move semantics are too are they for you?
 
 

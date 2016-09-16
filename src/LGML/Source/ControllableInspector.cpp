@@ -122,7 +122,7 @@ void ControllableInspector::controllableContainerRemoved(ControllableContainer *
     generateFromCandidates();
 }
 
-void ControllableInspector::controllableFeedbackUpdate(Controllable *)
+void ControllableInspector::controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *)
 {
 };
 
