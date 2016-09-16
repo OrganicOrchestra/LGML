@@ -365,8 +365,13 @@ void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originCont
   if(Parameter * p = dynamic_cast<Parameter*>(c))
     v=p->value;
 
-  var add = c->getControlAddress(originContainer);
-  Array<var> argList = {add,v};
+  String address = c->getControlAddress(originContainer);
+  StringArray sArr ;sArr.addTokens(address, "/","");
+  jassert(sArr.size()>0);
+  sArr.remove(0);
+  Array<var> add;
+  for(auto & s:sArr){add.add(s);}
+  Array<var> argList = {var(add),v};
   callFunction("on_"+getJsFunctionNameFromAddress(originContainer->getControlAddress()), argList,false);
 }
 

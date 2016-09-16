@@ -40,6 +40,7 @@ class JsNode : public NodeBase,public JsEnvironment{
         static  Identifier addIntParameterIdentifier ("addIntParameter");
         static Identifier addFloatParameterIdentifier("addFloatParameter");
         static Identifier addStringParameterIdentifier("addStringParameter");
+      static Identifier addBoolParameterIdentifier("addBoolParameter");
       static Identifier addTriggerIdentifier("addTrigger");
 
         DynamicObject d;
@@ -47,6 +48,10 @@ class JsNode : public NodeBase,public JsEnvironment{
         d.setMethod(addIntParameterIdentifier, JsNode::addIntParameter);
         d.setMethod(addFloatParameterIdentifier, JsNode::addFloatParameter);
         d.setMethod(addStringParameterIdentifier, JsNode::addStringParameter);
+        d.setMethod(addBoolParameterIdentifier, JsNode::addBoolParameter);
+
+
+
         d.setMethod(addTriggerIdentifier, JsNode::addTrigger);
 
 
@@ -102,7 +107,17 @@ class JsNode : public NodeBase,public JsEnvironment{
 
         return var::undefined();
     };
+  static var addBoolParameter(const var::NativeFunctionArgs & a){
 
+    JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
+    if(a.numArguments<3){
+      LOG("wrong number of arg for addStringParameter");
+      return var::undefined();
+    };
+    jsNode->jsParameters.add(jsNode->ControllableContainer::addBoolParameter(a.arguments[0], a.arguments[1], a.arguments[2]));
+
+    return var::undefined();
+  };
   static var addTrigger(const var::NativeFunctionArgs & a){
 
     JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
