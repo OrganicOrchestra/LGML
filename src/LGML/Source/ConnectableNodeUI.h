@@ -136,6 +136,12 @@ public:
 	bool keyPressed(const KeyPress &key) override;
 	void moved()override;
 
+
+void handleCommandMessage(int id) override;
+enum{
+  repaintId  
+}CommandMessages;
+
 };
 
 

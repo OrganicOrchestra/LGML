@@ -123,14 +123,22 @@ void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 	}
 	else if (p == connectableNode->enabledParam)
 	{
-		mainContainer.repaint();
+		postCommandMessage(repaintId);
 	} else if (p == connectableNode->miniMode)
 	{
 		setMiniMode(connectableNode->miniMode->boolValue());
 	}
 }
 
-
+void ConnectableNodeUI::handleCommandMessage(int commandId){
+    switch(commandId){
+        case repaintId:
+            repaint();
+            break;
+        default:
+            break;
+    }
+}
 
 // allow to react to custom mainContainer.contentContainer
 void ConnectableNodeUI::childBoundsChanged(Component* c) {

@@ -92,6 +92,15 @@ Result JavascriptController::processMessageInternal(const OSCMessage &m){
 
 }
 
+inline bool appendVarToMsg(OSCMessage & msg,var & v){
+    if(v.isString())msg.addString(v);
+    else if(v.isDouble())msg.addFloat32((float)v);
+    else if(v.isInt()) msg.addInt32(v);
+    else if (v.isInt64()) msg.addInt32((int)v);// DBG("JavascriptOSC can't send int 64");
+    else return false;
+    
+    return true;
+}
 
 
 var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
@@ -113,11 +122,15 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
     OSCMessage msg(address);
     for(int i = 1 ; i < a.numArguments ; i++){
 		var v = a.arguments[i];
+        
+        if(appendVarToMsg(msg, v)){}
 
-        if(v.isString())msg.addString(v);
-        else if(v.isDouble())msg.addFloat32((float)v);
-        else if(v.isInt()) msg.addInt32(v);
-		else if (v.isInt64()) msg.addInt32((int)v);// DBG("JavascriptOSC can't send int 64");
+        else if(v.isArray()){
+            Array<var> * arr = v.getArray();
+            for (int i = 0 ; i < arr->size() ; i++){
+                appendVarToMsg(msg, arr->getReference(i));
+            }
+        }
     }
 
     c->sendOSC(msg);
