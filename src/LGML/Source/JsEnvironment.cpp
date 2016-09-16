@@ -11,6 +11,7 @@
 #include "JsEnvironment.h"
 #include "TimeManager.h"
 #include "NodeManager.h"
+#include "ControlManager.h"
 #include "DebugHelpers.h"
 
 JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFile(false){
@@ -281,7 +282,8 @@ void JsEnvironment::checkUserControllableEventFunction(){
   }
   static const Array<ControllableContainer*> candidates={
     (ControllableContainer*)NodeManager::getInstance(),
-    (ControllableContainer*)TimeManager::getInstance()
+    (ControllableContainer*)TimeManager::getInstance(),
+    (ControllableContainer *)ControllerManager::getInstance()
   };
 
 
@@ -320,7 +322,7 @@ void JsEnvironment::checkUserControllableEventFunction(){
             fName+=n+"_";
           }
           fName = fName.substring(0, fName.length()-1);
-          NLOG(localNamespace,"not found controller for function : "+fName);
+          NLOG(localNamespace,"not found controllable/Container for function : "+fName);
         }
       }
     }

@@ -27,10 +27,9 @@ JsGlobalEnvironment::JsGlobalEnvironment(){
     // default in global namespace
     linkToControllableContainer("time",TimeManager::getInstance());
     linkToControllableContainer("node",NodeManager::getInstance());
+    linkToControllableContainer("controller",ControllerManager::getInstance());
 
 
-    // TODO: use a bit of ControllableContainer in controllers, its empty atm
-//    linkToControllableContainer("controllers",ControllerManager::getInstance());
 }
 
 void JsGlobalEnvironment::removeNamespace(const String & ns){removeNamespaceFromObject(ns,getEnv());}

@@ -14,6 +14,10 @@
 #include "JuceHeader.h"
 #include "JsGlobalEnvironment.h"
 
+
+
+/// TODO need to be able to clean root name space user functions are never cleaned
+// may be by recreating a new JsEngine
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
 					  public Parameter::Listener,
 					  public Trigger::Listener ,

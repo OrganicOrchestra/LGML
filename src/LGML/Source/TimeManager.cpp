@@ -221,7 +221,7 @@ int TimeManager::setBPMForLoopLength(int time,int granularity){
 
   BPM->setValue(60.0/beatTime);
   shouldGoToZero();
-  jassert((int)(barLength*beatPerBar->intValue())>0);
+  //jassert((int)(barLength*beatPerBar->intValue())>0);
   return (int) (barLength*beatPerBar->intValue());
 }
 
