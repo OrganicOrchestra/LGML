@@ -74,6 +74,13 @@ public:
 
      void numAudioInputChanged(NodeBase *, int /*newNumInput*/) override;
      void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) override;
+    
+    
+    void handleCommandMessage(int id) override;
+    enum {
+        updatePresetCBID,
+        repaintId
+    }DrawingCommand;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectableNodeHeaderUI)
 

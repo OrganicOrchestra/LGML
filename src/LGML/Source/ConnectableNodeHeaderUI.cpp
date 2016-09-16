@@ -225,8 +225,7 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
     vuMeterIn.colorHigh = c2;
     vuMeterOut.colorHigh = c2;
 
-    repaint();
-
+      postCommandMessage(repaintId);
   }
 
 }
@@ -307,9 +306,26 @@ void ConnectableNodeHeaderUI::controllableContainerPresetLoaded(ControllableCont
   if (!node->canHavePresets) return;
 
   //  int numOptions = PresetManager::getNumOption();
-  if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
+    if (node->currentPreset != nullptr) postCommandMessage(updatePresetCBID);
 }
 
+void ConnectableNodeHeaderUI::handleCommandMessage(int id){
+    switch(id){
+        case updatePresetCBID:
+    
+            if (!node->canHavePresets) return;
+    
+            //  int numOptions = PresetManager::getNumOption();
+            if (node->currentPreset != nullptr)presetCB->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
+            break;
+            
+        case repaintId:
+            repaint();
+            break;
+        default:
+            break;
+    }
+}
 
 void ConnectableNodeHeaderUI::Grabber::paint(Graphics & g)
 {

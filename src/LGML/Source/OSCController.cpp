@@ -134,7 +134,9 @@ void OSCController::oscBundleReceived(const OSCBundle & bundle)
 bool OSCController::sendOSC (OSCMessage & m)
 {
   if(enabledParam->boolValue() &&  (!blockFeedback->boolValue() || !isProcessingOSC || lastAddressReceived!=m.getAddressPattern().toString())){
-    if(logOutGoingOSC->boolValue()){logMessage(m,"Out:");}
+    if(logOutGoingOSC->boolValue()){
+        logMessage(m,"Out:");
+    }
     return sender.send (m);
   }
 
