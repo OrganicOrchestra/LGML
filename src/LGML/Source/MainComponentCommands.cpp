@@ -313,6 +313,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
           data.getDynamicObject()->setProperty("type", ic->inspectableType);
           data.getDynamicObject()->setProperty("data", cc->getJSONData());
 
+
           if (info.commandID == CommandIDs::cutSelection)
           {
             if (ic->inspectableType == "node") ((ConnectableNode *)cc)->remove();

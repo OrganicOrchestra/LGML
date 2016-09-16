@@ -36,10 +36,10 @@ on_node_audioInNode_masterVolume = function(a) {
 
 
 /// lgml containerChanges
-// listen to all params inside a container, then parsing can be ma
+// listen to all params inside a container, then parsing can be made from relative address list passed (osc address splitted in list)
 
-on_node_audioInNode = function(relativeAddress,v) {
-	if(relativeAddress=="/enabled"){
+on_node_audioInNode = function(relativeAddressList,v) {
+	if(relativeAddress[0]=="enabled"){
 		lgml.node.looper.enabled.set(v);	
 	};
 };
