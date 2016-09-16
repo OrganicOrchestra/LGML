@@ -289,7 +289,7 @@ void LooperTrack::padBufferIfNeeded(){
       else{
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
       }
-      originBPM = TimeManager::getInstance()->BPM->doubleValue();
+      if(getQuantization()>0)originBPM = TimeManager::getInstance()->BPM->doubleValue();
       loopSample.setPlayNeedle(offsetForPlay);
     }
 
@@ -477,7 +477,7 @@ void LooperTrack::setTrackState(TrackState newState) {
         }
       }
       else{
-          if(!askForBeingMasterTempoTrack() )  {
+          if(!isMasterTempoTrack() )  {
 						
           quantizedRecordEnd = timeManager->getNextQuantifiedTime(quantizeTime);
         }
