@@ -35,6 +35,16 @@ on_node_audioInNode_masterVolume = function(a) {
 };
 
 
+/// lgml containerChanges
+// listen to all params inside a container, then parsing can be ma
+
+on_node_audioInNode = function(relativeAddress,v) {
+	if(relativeAddress=="/enabled"){
+		lgml.node.looper.enabled.set(v);	
+	};
+};
+
+
 
 
 
