@@ -375,3 +375,12 @@ void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originCont
   callFunction("on_"+getJsFunctionNameFromAddress(originContainer->getControlAddress()), argList,false);
 }
 
+
+void JsEnvironment::sendAllParametersToJS(){
+  for(auto & t:listenedTriggers){triggerTriggered(t);}
+  for(auto & t:listenedParameters){parameterValueChanged(t);}
+  for(auto & t:listenedContainers){
+    Array<Controllable*> conts = t->getAllControllables();
+    for(auto & c:conts){controllableFeedbackUpdate(t,c);}
+  }
+}

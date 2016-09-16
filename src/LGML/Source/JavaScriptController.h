@@ -25,6 +25,8 @@ public:
 
     static var sendOSCFromJS(const juce::var::NativeFunctionArgs& a);
     void onContainerParameterChanged(Parameter * p) override;
+    void onContainerTriggerTriggered(Trigger * ) override;
+
 
 
     void newJsFileLoaded()override;

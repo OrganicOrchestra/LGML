@@ -157,7 +157,19 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
     }
 };
 
+void JavascriptController::onContainerTriggerTriggered(Trigger * t) {
+
+  if(t==sendAllParameters){
+    sendAllParametersToJS();
+
+  }
+  OSCDirectController::onContainerTriggerTriggered(t);
+
+};
+
 
 void JavascriptController::newJsFileLoaded(){
     jsPath->setValue(getCurrentFilePath(),true);
 }
+
+

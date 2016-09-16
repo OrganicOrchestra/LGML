@@ -58,7 +58,7 @@ MainComponentCommands.cpp
 
 
 JsEnvironment.cpp
-	line : 345
+	line : 347
 		// @ben only supported if move semantics are too are they for you?
 
 
@@ -91,12 +91,6 @@ TimeManager.h
 JavascriptControllerUI.cpp
 	line : 14
 		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
-
-
-JsGlobalEnvironment.cpp
-	line : 31
-		// TODO: use a bit of ControllableContainer in controllers, its empty atm
-		//    linkToControllableContainer("controllers",ControllerManager::getInstance());
 
 
 NodeBase.h

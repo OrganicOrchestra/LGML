@@ -92,6 +92,12 @@ public:
 
     bool functionIsDefined(const String &);
     File currentFile;
+
+  protected :
+  Array<WeakReference<Parameter> > listenedParameters;
+  Array<WeakReference<Trigger> > listenedTriggers;
+  Array<WeakReference<ControllableContainer> > listenedContainers;
+  void sendAllParametersToJS();
 private:
 
 
@@ -165,9 +171,6 @@ private:
     Time lastFileModTime;
 
     void checkUserControllableEventFunction();
-    Array<WeakReference<Parameter> > listenedParameters;
-    Array<WeakReference<Trigger> > listenedTriggers;
-  Array<WeakReference<ControllableContainer> > listenedContainers;
     void parameterValueChanged(Parameter * c) override;
     void triggerTriggered(Trigger * p) override;
 
