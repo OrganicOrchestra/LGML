@@ -56,7 +56,11 @@ class PlayableBuffer {
     
     int getNumSamples() const{return loopSample.getNumSamples();}
     
-    void readNextBlock(AudioBuffer<float> & buffer){
+    void readNextBlock(AudioBuffer<float> & buffer
+#ifdef BLOCKSIZEGRANULARITY
+                       ,bool checkForAlignment
+#endif
+        ){
         jassert(isOrWasPlaying());
 
 
@@ -100,8 +104,10 @@ class PlayableBuffer {
 #ifdef BLOCKSIZEGRANULARITY
                 //assert false for debug purpose
                 //(if no predelay are set and blockSize is constant the size and play needle are multiple of blockSize
+                if(checkForAlignment){
                 jassertfalse;
                 LOG("buffer not a multiple of blockSize");
+                }
 #endif
 
                 int firstSegmentLength =recordNeedle - playNeedle;
@@ -140,7 +146,7 @@ class PlayableBuffer {
             }
             playNeedle %= recordNeedle;
 #ifdef BLOCKSIZEGRANULARITY
-          if(numSamples>0){
+          if(checkForAlignment && numSamples>0){
           jassert(playNeedle%numSamples==0);
           jassert(recordNeedle%numSamples==0);
           }

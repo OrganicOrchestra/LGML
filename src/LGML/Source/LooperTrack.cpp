@@ -68,7 +68,13 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   if(updatePendingLooperTrackState(TimeManager::getInstance()->getTimeInSample(), buffer.getNumSamples())){
     padBufferIfNeeded();
 #ifdef BLOCKSIZEGRANULARITY
-    if(trackState==PLAYING)jassert((TimeManager::getInstance()->beatTimeInSample%parentLooper->getBlockSize())==0);
+      jassert(parentLooper->getBlockSize()==buffer.getNumSamples());
+      if(getQuantization()>0 && trackState==PLAYING ){
+          int beatTime = TimeManager::getInstance()->beatTimeInSample;
+          int offset = (beatTime*beatLength->intValue())%buffer.getNumSamples();
+          jassert(offset==0);
+          
+      }
 #endif
   }
 
@@ -88,7 +94,11 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   // PLAYING
   if (loopSample.isOrWasPlaying() )
   {
-    loopSample.readNextBlock(buffer);
+    loopSample.readNextBlock(buffer
+#ifdef BLOCKSIZEGRANULARITY
+                             ,getQuantization()>0
+#endif
+      );
 
     if(isFadingIn){ lastVolume = 0;isFadingIn = false;}
 
