@@ -236,7 +236,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
       loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
     }
     trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
-    DBG("a:"+trackStateToString(trackState));
+    // DBG("a:"+trackStateToString(trackState));
 
   }
 

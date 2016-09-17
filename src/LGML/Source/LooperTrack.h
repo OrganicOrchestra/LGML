@@ -11,6 +11,7 @@
 #ifndef LOOPERTRACK_H_INCLUDED
 #define LOOPERTRACK_H_INCLUDED
 
+#define BLOCKSIZEGRANULARITY
 #include "RingBuffer.h"
 #include "AudioHelpers.h"
 #include "PlayableBuffer.h"

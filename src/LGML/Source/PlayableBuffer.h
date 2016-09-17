@@ -58,7 +58,16 @@ class PlayableBuffer {
     
     void readNextBlock(AudioBuffer<float> & buffer){
         jassert(isOrWasPlaying());
+
+
         int numSamples = buffer.getNumSamples();
+#ifdef BLOCKSIZEGRANULARITY
+      // check if block size is always the same
+      if(numSamples>0){
+        static int originBlockSize = numSamples;
+        jassert(originBlockSize == numSamples);
+      }
+#endif
         // we want to read Last Block for fade out if stopped
         if(state==BUFFER_STOPPED){
             playNeedle = startJumpNeedle;
@@ -70,9 +79,8 @@ class PlayableBuffer {
         
         // stitch audio jumps by quick fadeIn/Out
         if(isJumping && playNeedle!=startJumpNeedle && state!=BUFFER_STOPPED){
-            LOG("a:jump "<<startJumpNeedle <<","<< playNeedle);
-            
-            
+          //LOG("a:jump "<<startJumpNeedle <<","<< playNeedle);
+
             const int halfBlock =  numSamples/2;
             for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
                 int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
@@ -90,10 +98,12 @@ class PlayableBuffer {
                 
                 
 #ifdef BLOCKSIZEGRANULARITY
-                //assert false for now see above
+                //assert false for debug purpose
+                //(if no predelay are set and blockSize is constant the size and play needle are multiple of blockSize
+                jassertfalse;
                 LOG("buffer not a multiple of blockSize");
 #endif
-                
+
                 int firstSegmentLength =recordNeedle - playNeedle;
                 int secondSegmentLength = numSamples - firstSegmentLength;
                 
@@ -121,7 +131,7 @@ class PlayableBuffer {
         }
         
         // revert to beginning after reading last block of stopped
-        if(state==BUFFER_STOPPED){playNeedle = 0;}
+      if(state==BUFFER_STOPPED){playNeedle = 0;startJumpNeedle = 0;}
         else{
             
             playNeedle += numSamples;
@@ -129,6 +139,12 @@ class PlayableBuffer {
                 numTimePlayed ++;
             }
             playNeedle %= recordNeedle;
+#ifdef BLOCKSIZEGRANULARITY
+          if(numSamples>0){
+          jassert(playNeedle%numSamples==0);
+          jassert(recordNeedle%numSamples==0);
+          }
+#endif
         }
         
         
@@ -178,7 +194,7 @@ class PlayableBuffer {
     
     bool checkTimeAlignment(uint64 curTime,const int minQuantifiedFraction){
         
-        if(state == BUFFER_PLAYING && playNeedle>=0 && recordNeedle>0){
+        if(state == BUFFER_PLAYING  && recordNeedle>0){
             
             
             int globalPos =(curTime%minQuantifiedFraction);
