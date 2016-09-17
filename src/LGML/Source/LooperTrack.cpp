@@ -70,7 +70,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 #ifdef BLOCKSIZEGRANULARITY
       jassert(parentLooper->getBlockSize()==buffer.getNumSamples());
       if(getQuantization()>0 && trackState==PLAYING ){
-          int beatTime = TimeManager::getInstance()->beatTimeInSample;
+          uint beatTime = TimeManager::getInstance()->beatTimeInSample;
           int offset = (beatTime*beatLength->intValue())%buffer.getNumSamples();
           jassert(offset==0);
           
@@ -459,6 +459,10 @@ void LooperTrack::setTrackState(TrackState newState) {
         jassert(parentLooper->lastMasterTempoTrack);
       parentLooper->lastMasterTempoTrack->setTrackState(WILL_PLAY);
       quantizedRecordStart = 0;
+    }
+    // ignore in other cases (ask recording while another is setting tempo)
+    else{
+      newState = desiredState;
     }
   }
 

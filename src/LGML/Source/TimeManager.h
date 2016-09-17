@@ -80,7 +80,7 @@ public TimeMasterCandidate
     void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
 	*/
 
-    int beatTimeInSample;
+    uint beatTimeInSample;
     int sampleRate;
     int blockSize;
     Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;
