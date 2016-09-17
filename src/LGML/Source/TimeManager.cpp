@@ -18,7 +18,7 @@ juce_ImplementSingleton(TimeManager);
 
 
 TimeManager::TimeManager():
-beatTimeInSample(22050),
+beatTimeInSample(0),
 sampleRate(44100),
 ControllableContainer("time"),
 
@@ -218,7 +218,7 @@ int TimeManager::setBPMForLoopLength(int time,int granularity){
     beatInSample = beatInSample - beatInSample%granularity;
     beatTime = beatInSample*1.0/sampleRate;
   }
-
+    
   BPM->setValue(60.0/beatTime);
   shouldGoToZero();
   //jassert((int)(barLength*beatPerBar->intValue())>0);
