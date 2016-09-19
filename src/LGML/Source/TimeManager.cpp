@@ -203,8 +203,8 @@ void TimeManager::goToTime(uint64 time){
 
 
 
-int TimeManager::setBPMForLoopLength(uint64 time,int granularity){
-  float barLength = 1;
+double TimeManager::setBPMForLoopLength(uint64 time,int granularity){
+  double barLength = 1;
   double time_seconds = time* 1.0/ sampleRate;
   double beatTime = time_seconds* 1.0/beatPerBar->intValue();
 
@@ -224,7 +224,7 @@ int TimeManager::setBPMForLoopLength(uint64 time,int granularity){
   DBG("beat Sample : " << String(beatTimeInSample) << " : " << time);
   shouldGoToZero();
   //jassert((int)(barLength*beatPerBar->intValue())>0);
-  return (int) (barLength*beatPerBar->intValue());
+  return (barLength*beatPerBar->intValue());
 }
 
 uint64 TimeManager::getNextGlobalQuantifiedTime(){

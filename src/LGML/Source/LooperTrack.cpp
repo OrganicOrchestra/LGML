@@ -290,7 +290,9 @@ void LooperTrack::padBufferIfNeeded(int granularity){
         //                DBG("release predelay : "+String (trackIdx));
         const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
         if(sampleToRemove>0){loopSample.cropEndOfRecording(sampleToRemove);}
-        TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength(),0);//parentLooper->getBlockSize());
+        double actualLength = TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength(),parentLooper->getBlockSize());
+        uint64 desiredSize = actualLength*TimeManager::getInstance()->beatTimeInSample;
+        loopSample.setSizePaddingIfNeeded(desiredSize);
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
         TimeManager::getInstance()->goToTime(offsetForPlay);
 

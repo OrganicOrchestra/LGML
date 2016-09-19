@@ -177,10 +177,19 @@ class PlayableBuffer {
         jassert(sampletoRemove<recordNeedle);
         recordNeedle-=sampletoRemove;
     }
-  void padEndOfRecording(int sampletoAdd){
-    jassert(recordNeedle + sampletoAdd<loopSample.getNumSamples());
-    loopSample.clear(recordNeedle, sampletoAdd);
-    recordNeedle+=sampletoAdd;
+  void padEndOfRecording(int sampleToAdd){
+    loopSample.clear(recordNeedle, sampleToAdd);
+    recordNeedle+=sampleToAdd;
+  }
+  void setSizePaddingIfNeeded(uint64 targetSamples){
+    jassert(targetSamples<loopSample.getNumSamples());
+    if(targetSamples>recordNeedle){
+      padEndOfRecording((int)(targetSamples - recordNeedle));
+    }
+    else{
+      cropEndOfRecording((int)(recordNeedle - targetSamples));
+    }
+
   }
 
     void fadeInOut(int fadeNumSamples,double mingain){
