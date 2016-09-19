@@ -143,9 +143,10 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
   if(stateChanged){
     //        LOG(trackStateToString(trackState) << ":" << trackStateToString(desiredState));
-    if(desiredState == WILL_STOP ||desiredState == STOPPED ){
-      desiredState = STOPPED;
+    if(desiredState == WILL_STOP  ){
+      
       loopSample.setState( PlayableBuffer::BUFFER_STOPPED);
+        desiredState = STOPPED;
       cleanAllQuantizeNeedles();
       stateChanged = true;
     }
@@ -154,7 +155,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
       desiredState = CLEARED;
       loopSample.setState( PlayableBuffer::BUFFER_STOPPED);
       cleanAllQuantizeNeedles();
-      stateChanged = true;
+      stateChanged = loopSample.stateChanged;
     }
   }
   // stop oneShot if needed
@@ -198,7 +199,6 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 					TimeManager::getInstance()->playState->setValue(true,false,true);
 				}
         desiredState = PLAYING;
-        loopSample.setState( PlayableBuffer::BUFFER_PLAYING);
         startPlayBeat = TimeManager::getInstance()->getBeat();
         quantizedPlayStart = 0;
       }
@@ -241,10 +241,10 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
   //    DBG(playNeedle);
   if(stateChanged){
-    if(getQuantization()>0 && !isMasterTempoTrack()) {
-      TimeManager * tm = TimeManager::getInstance();
-      loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
-    }
+//    if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
+//      TimeManager * tm = TimeManager::getInstance();
+      //loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
+//    }
     trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
     // DBG("a:"+trackStateToString(trackState));
 
@@ -263,7 +263,7 @@ int LooperTrack::getQuantization(){
   return parentLooper->getQuantization();
 }
 
-void LooperTrack::padBufferIfNeeded(){
+void LooperTrack::padBufferIfNeeded(int granularity){
 
   if (loopSample.stateChanged) {
     //    process changed internalState
@@ -290,7 +290,7 @@ void LooperTrack::padBufferIfNeeded(){
         //                DBG("release predelay : "+String (trackIdx));
         const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
         if(sampleToRemove>0){loopSample.cropEndOfRecording(sampleToRemove);}
-        TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength());
+          TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength(),0);//parentLooper->getBlockSize());
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
         TimeManager::getInstance()->goToTime(offsetForPlay);
 
@@ -565,10 +565,11 @@ void LooperTrack::setTrackState(TrackState newState) {
   if(desiredState!=newState){
     desiredState = newState;
     trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, desiredState);
-  }
+  
   
   if((desiredState==CLEARED  || desiredState==STOPPED || desiredState==WILL_STOP) ){
     parentLooper->checkIfNeedGlobalLooperStateUpdate();
+  }
   }
 };
 

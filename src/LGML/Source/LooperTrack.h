@@ -150,7 +150,7 @@ private:
     Atomic<uint64> quantizedPlayStart, quantizedPlayEnd;
 
     bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
-    void padBufferIfNeeded();
+    void padBufferIfNeeded(int granularity = 0);
 
     PlayableBuffer loopSample;
     float lastVolume;
