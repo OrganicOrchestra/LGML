@@ -168,6 +168,7 @@ class PlayableBuffer {
         }
         
         playNeedle = n;
+//        std::cout << playNeedle << " : " << std::hex << this << std::endl;
         
         
     }
