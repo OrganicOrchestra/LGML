@@ -443,7 +443,8 @@ void LooperTrack::setTrackState(TrackState newState) {
 
     else if (!timeManager->isSettingTempo->boolValue()) {
 			if(parentLooper->askForBeingAbleToPlayNow(this) && !timeManager->playState->boolValue()) {
-				timeManager->playTrigger->trigger();
+				if(getQuantization()>0)
+          timeManager->playTrigger->trigger();
 				quantizedRecordStart = 0;
 				
 			}
@@ -478,23 +479,25 @@ void LooperTrack::setTrackState(TrackState newState) {
         timeManager->isSettingTempo->setValue(false);
         //            timeManager->lockTime(true);
 
-        int minRecordTime = (int)(parentLooper->getSampleRate()*0.1f);
-        if(loopSample.getRecordedLength()< minRecordTime){
-          // avoid feedBack when trigger play;
-          newState = WILL_RECORD;
-          desiredState = WILL_RECORD;
-          quantizedRecordEnd =minRecordTime;
-        }
-        else{
+//        int minRecordTime = (int)(parentLooper->getSampleRate()*0.1f);
+//        minRecordTime-= minRecordTime%parentLooper->getBlockSize();
+//        if(loopSample.getRecordedLength()< minRecordTime){
+//          // avoid feedBack when trigger play;
+//          newState = WILL_RECORD;
+//          desiredState = WILL_RECORD;
+//          quantizedRecordEnd =minRecordTime;
+//        }
+//        else{
             newState=WILL_PLAY;
             quantizedPlayStart = 0;
-        }
+//        }
       }
       else{
-          if(!isMasterTempoTrack() )  {
-						
+        if(getQuantization()>0)
           quantizedRecordEnd = timeManager->getNextQuantifiedTime(quantizeTime);
-        }
+        else
+          quantizedRecordEnd = 0;
+
       }
 
     }
@@ -523,9 +526,10 @@ void LooperTrack::setTrackState(TrackState newState) {
 
 
     // on ask for play
-    else if(timeManager->playState->boolValue()){
+    else{// if(timeManager->playState->boolValue()){
       cleanAllQuantizeNeedles();
-      quantizedPlayStart = timeManager->getNextQuantifiedTime(quantizeTime);
+      if(getQuantization()==0) quantizedPlayStart=0;
+      else quantizedPlayStart = timeManager->getNextQuantifiedTime(quantizeTime);
       //            quantizedPlayStart = timeManager->getNextQuantifiedTime(1.0/beatLength->intValue());
       //            quantizedPlayStart = timeManager->getTimeForNextBeats(beatLength->value);
 
