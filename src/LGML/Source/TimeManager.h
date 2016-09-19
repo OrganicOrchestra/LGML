@@ -49,7 +49,7 @@ public TimeMasterCandidate
     IntParameter * quantizedBarFraction;
 
     void setSampleRate(int sr);
-    int setBPMForLoopLength(int time,int granularity=0);
+    int setBPMForLoopLength(uint64 time,int granularity=0);
 
 
 	void jump(int amount);

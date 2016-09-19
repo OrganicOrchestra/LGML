@@ -203,7 +203,7 @@ void TimeManager::goToTime(uint64 time){
 
 
 
-int TimeManager::setBPMForLoopLength(int time,int granularity){
+int TimeManager::setBPMForLoopLength(uint64 time,int granularity){
   float barLength = 1;
   double time_seconds = time* 1.0/ sampleRate;
   double beatTime = time_seconds* 1.0/beatPerBar->intValue();
@@ -212,16 +212,16 @@ int TimeManager::setBPMForLoopLength(int time,int granularity){
   while(beatTime < .40){beatTime*=2.0;barLength/=2.0;}
   // under 60 bpm
   while(beatTime > .85 ){beatTime/=2.0;barLength*=2.0;}
-int beatInSample = (int)(beatTime*sampleRate);
-    if(granularity>0){
-        beatInSample = beatInSample - beatInSample%granularity;
-        beatTime = beatInSample*1.0/sampleRate;
-    }
-    
+  int beatInSample = (int)(beatTime*sampleRate);
+  if(granularity>0){
+    beatInSample = beatInSample - beatInSample%granularity;
+    beatTime = beatInSample*1.0/sampleRate;
+  }
+
   BPM->setValue(60.0/beatTime);
-    // force exact beatTimeInSample
+  // force exact beatTimeInSample
   beatTimeInSample = beatInSample;
-    DBG("beat Sample : " << String(beatTimeInSample) << " : " << time);
+  DBG("beat Sample : " << String(beatTimeInSample) << " : " << time);
   shouldGoToZero();
   //jassert((int)(barLength*beatPerBar->intValue())>0);
   return (int) (barLength*beatPerBar->intValue());
@@ -239,8 +239,8 @@ uint64 TimeManager::getNextQuantifiedTime(int barFraction){
   }
 
   const uint64 samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
-    const uint64 res = (uint64) ((floor(timeState.time*1.0/samplesPerUnit) + 1)*samplesPerUnit);
-    DBG(res);
+  const uint64 res = (uint64) ((floor(timeState.time*1.0/samplesPerUnit) + 1)*samplesPerUnit);
+  DBG(res);
   return res;
 }
 

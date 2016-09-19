@@ -84,14 +84,14 @@ void NodeConnectionEditorLink::paint (Graphics& g)
 
     if (isEditing)
     {
-        sourcePos = getLocalPoint(getBaseSlot(), getBaseSlot()->getLocalBounds().getRelativePoint(baseIsOutput?1:0,.5f)).toFloat();
+        sourcePos = getLocalPoint(getBaseSlot(), getBaseSlot()->getLocalBounds().getRelativePoint(baseIsOutput?1.f:0.f,.5f)).toFloat();
         endPos = (candidateDropSlot != nullptr) ?
-        getLocalPoint(candidateDropSlot, candidateDropSlot->getLocalBounds().getRelativePoint(baseIsOutput ?0:1, .5f)).toFloat() :
+        getLocalPoint(candidateDropSlot, candidateDropSlot->getLocalBounds().getRelativePoint(baseIsOutput ?0.f:1.f, .5f)).toFloat() :
         getMouseXYRelative().toFloat();
     }else
     {
-        sourcePos = getLocalPoint(outSlot, outSlot->getLocalBounds().getRelativePoint(1, .5f)).toFloat();
-        endPos = getLocalPoint(inSlot, inSlot->getLocalBounds().getRelativePoint(0, .5f)).toFloat();
+        sourcePos = getLocalPoint(outSlot, outSlot->getLocalBounds().getRelativePoint(1.f, .5f)).toFloat();
+        endPos = getLocalPoint(inSlot, inSlot->getLocalBounds().getRelativePoint(0.f, .5f)).toFloat();
     }
 
     Point<float> midPoint = (sourcePos + endPos) / 2;

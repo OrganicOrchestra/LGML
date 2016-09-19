@@ -715,6 +715,8 @@ void LookAndFeelOO::drawBubble (Graphics& g, BubbleComponent& comp,
 
 
 //==============================================================================
+
+void LookAndFeelOO::preparePopupMenuWindow (Component& newWindow) {};
 Font LookAndFeelOO::getPopupMenuFont()
 {
     return Font (17.0f);

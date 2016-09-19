@@ -177,7 +177,12 @@ class PlayableBuffer {
         jassert(sampletoRemove<recordNeedle);
         recordNeedle-=sampletoRemove;
     }
-    
+  void padEndOfRecording(int sampletoAdd){
+    jassert(recordNeedle + sampletoAdd<loopSample.getNumSamples());
+    loopSample.clear(recordNeedle, sampletoAdd);
+    recordNeedle+=sampletoAdd;
+  }
+
     void fadeInOut(int fadeNumSamples,double mingain){
         if (fadeNumSamples>0 ){
             

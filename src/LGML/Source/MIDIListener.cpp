@@ -95,7 +95,7 @@ void MIDIListener::sendSysEx(uint8 * data, int dataCount)
 {
 	if (midiOutDevice == nullptr)
 	{
-		"MIDI Out is null";
+		DBG("MIDI Out is null");
 		return;
 	}
 

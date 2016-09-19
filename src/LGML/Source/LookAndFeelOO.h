@@ -312,6 +312,8 @@ public:
     void drawLasso (Graphics&, Component&) override;
 
     //==============================================================================
+
+  void preparePopupMenuWindow (Component& newWindow) override ;
     void drawPopupMenuBackground (Graphics&, int width, int height) override;
 
     void drawPopupMenuItem (Graphics&, const Rectangle<int>& area,

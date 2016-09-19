@@ -372,7 +372,7 @@ bool NodeConnectionEditor::checkDropCandidates()
             }
             else
             {
-                float dist = (float)(slot->getMouseXYRelative().getDistanceFrom(slot->getLocalBounds().getRelativePoint(targetIsInput?0:1,.5f)));
+                float dist = (float)(slot->getMouseXYRelative().getDistanceFrom(slot->getLocalBounds().getRelativePoint(targetIsInput?0:1.f,.5f)));
                 if (dist < 20)
                 {
                     return setCandidateDropSlot(slot);
