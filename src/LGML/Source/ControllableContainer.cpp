@@ -318,7 +318,11 @@ Array<Parameter*> ControllableContainer::getAllParameters(bool recursive, bool g
   for (auto &c : controllables)
   {
     if (c->type == Controllable::Type::TRIGGER) continue;
-    if (getNotExposed || c->isControllableExposed) result.add((Parameter *)c);
+      if (getNotExposed || c->isControllableExposed){
+          if(Parameter * cc = dynamic_cast<Parameter*>(c)){
+          result.add(cc);
+          }
+      }
   }
 
   if (recursive)
@@ -402,27 +406,35 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
 
 bool ControllableContainer::loadPresetWithName(const String & name)
 {
+    // TODO weird feedback when loading preset on parameter presetName
+    if(isLoadingPreset){jassertfalse;return false;}
+    if(name=="") return false;
+    isLoadingPreset = true;
+
   PresetManager::Preset * preset = PresetManager::getInstance()->getPreset(getPresetFilter(), name);
-  if (preset == nullptr) return false;
-  return loadPreset(preset);
+    if (preset == nullptr){isLoadingPreset = false;currentPresetName->setValue("", true); return false;}
+  bool hasLoaded = loadPreset(preset);
+    isLoadingPreset = false;
+    return hasLoaded;
+
 }
 
 bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 {
-  if (preset == nullptr) return false;
+    if (preset == nullptr){currentPresetName->setValue("", true); return false;}
 
   loadPresetInternal(preset);
 
   for (auto &pv : preset->presetValues)
   {
 
-    Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
+    Parameter * p = dynamic_cast<Parameter *>(getControllableForAddress(pv->paramControlAddress));
     if (p != nullptr) p->setValue(pv->presetValue);
   }
 
 
   currentPreset = preset;
-  currentPresetName->setValue(currentPreset->name, true);
+//  currentPresetName->setValue(currentPreset->name, true);
 
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
   return true;
@@ -443,10 +455,10 @@ bool ControllableContainer::saveCurrentPreset()
 
   for (auto &pv : currentPreset->presetValues)
   {
-    Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
-    if (p != nullptr)
+    Parameter * p = dynamic_cast<Parameter*> (getControllableForAddress(pv->paramControlAddress));
+    if (p != nullptr && p!=currentPresetName)
     {
-      pv->presetValue = p->value;
+      pv->presetValue = p->value.clone();
     }
   }
   savePresetInternal(currentPreset);

@@ -22,7 +22,9 @@ public:
     StringParameter(const String &niceName, const String &description, const String &initialValue, bool enabled=true);
 
 
-
+    // need to override this function because var Strings comparison  is based on pointer (we need full string comp)
+    void setValue(var v,bool silentSet=false,bool force=false)override;
+    void setValueInternal(var&)override;
     StringParameterUI * createStringParameterUI(StringParameter * target = nullptr);
     ControllableUI* createDefaultUI(Controllable * targetControllable = nullptr) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameter)

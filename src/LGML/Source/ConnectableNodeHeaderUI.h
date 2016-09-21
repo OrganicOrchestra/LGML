@@ -53,7 +53,7 @@ public:
 
 
     virtual void setNodeAndNodeUI(ConnectableNode * node, ConnectableNodeUI * nodeUI);
-    virtual void updatePresetComboBox();
+    virtual void updatePresetComboBox(bool forceUpdate = false);
     virtual void init();
 
 

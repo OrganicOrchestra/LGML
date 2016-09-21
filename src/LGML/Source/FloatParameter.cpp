@@ -19,7 +19,7 @@ FloatParameter::FloatParameter(const String & niceName, const String &descriptio
 
 }
 
-void FloatParameter::setValueInternal(var _value)
+void FloatParameter::setValueInternal(var & _value)
 {
     value = jlimit<double>(minimumValue, maximumValue, _value);
 }

@@ -45,7 +45,8 @@ class NodeContainer :
 	public ConnectableNode::ConnectableNodeListener,
 	public NodeConnection::Listener,
 	public ConnectableNode::RMSListener,
-	public ParameterProxy::ParameterProxyListener
+	public ParameterProxy::ParameterProxyListener,
+    public AsyncUpdater
 {
 public:
 	NodeContainer(const String &name = "Container");
@@ -132,7 +133,7 @@ public:
 	//AUDIO
 
 	AudioProcessorGraph::Node * getAudioNode(bool isInput) override;
-
+    void handleAsyncUpdate() override;
 
 	//DATA
 	bool hasDataInputs() override;

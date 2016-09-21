@@ -72,7 +72,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     if(getQuantization()>0 && trackState==PLAYING ){
       uint beatTime = TimeManager::getInstance()->beatTimeInSample;
       int offset = (beatTime*beatLength->intValue())%buffer.getNumSamples();
-      jassert(offset==0);
+      //jassert(offset==0);
 
     }
 #endif
@@ -306,7 +306,7 @@ void LooperTrack::padBufferIfNeeded(int granularity){
     }
 
     if(loopSample.isFirstStopAfterRec() || loopSample.isFirstPlayingFrameAfterRecord()){
-      loopSample.fadeInOut ((int)(parentLooper->getSampleRate() * 0.01),0);
+      loopSample.fadeInOut ((int)(80),0);
       parentLooper->lastMasterTempoTrack =nullptr;
     }
 

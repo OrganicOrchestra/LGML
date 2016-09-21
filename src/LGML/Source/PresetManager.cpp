@@ -30,9 +30,10 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
     for (auto &p : container->getAllParameters(recursive,includeNotExposed))
     {
         if (!p->isPresettable) continue;
+        if(p==(Parameter*)container->currentPresetName){ continue; }
         if (!p->isControllableExposed && !includeNotExposed) continue;
 
-        //DBG("Add preset value " << p->niceName << " > " <<  p->stringValue());
+        //DBG("Add preset value " << p->niceName << " > " <<  p->value.toString() << p->stringValue());
 
         //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
         //vPresets.add(preVal);

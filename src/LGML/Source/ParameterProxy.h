@@ -27,7 +27,7 @@ public:
 	StringParameter proxyAlias;
 
 	bool isUpdatingLinkedParam;
-	virtual void setValueInternal(var _value) override;
+	virtual void setValueInternal(var & _value) override;
 
 	// Inherited via Listener
 	virtual void parameterValueChanged(Parameter * p) override;

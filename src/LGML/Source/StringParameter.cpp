@@ -30,3 +30,22 @@ ControllableUI* StringParameter::createDefaultUI(Controllable * targetControllab
 
     return createStringParameterUI(dynamic_cast<StringParameter *>(targetControllable));
 };
+
+
+void StringParameter::setValue(var _value,bool silentSet,bool force ){
+    
+    DBG(shortName << " : " << value.toString() << " :new " <<  _value.toString());
+    if (!force && value.toString() == _value.toString()) return;
+    
+    setValueInternal(_value);
+    
+    
+    if(_value != defaultValue) isOverriden = true;
+    
+    if (!silentSet) notifyValueChanged();
+};
+
+void  StringParameter::setValueInternal(var & newVal){
+    value = newVal.toString();
+};
+

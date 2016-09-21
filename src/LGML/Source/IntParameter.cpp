@@ -18,7 +18,7 @@ IntParameter::IntParameter(const String & niceName, const String &description, c
 
 }
 
-void IntParameter::setValueInternal(var _value)
+void IntParameter::setValueInternal(var & _value)
 {
     this->value = jlimit<int>(minimumValue, maximumValue, _value);
 }

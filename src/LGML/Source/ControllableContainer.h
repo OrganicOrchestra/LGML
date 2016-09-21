@@ -146,6 +146,10 @@ private:
 
     int numContainerIndexed;
     int localIndexedPosition;
+    
+    
+    // anti feedback when loading preset ( see loadPresetWithName)
+    bool isLoadingPreset = false;
 
 public:
 
