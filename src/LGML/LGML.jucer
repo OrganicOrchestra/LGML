@@ -713,7 +713,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder"
+    <XCODE_MAC targetFolder="Builds/MacOSX" extraCompilerFlags="-Wno-reorder&#10;-Weffc++"
                vstFolder="" vst3Folder="" postbuildCommand="" smallIcon="jsU7Hw"
                bigIcon="jsU7Hw" documentExtensions="lgml">
       <CONFIGURATIONS>

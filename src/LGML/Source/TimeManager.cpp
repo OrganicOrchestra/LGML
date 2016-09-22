@@ -214,7 +214,9 @@ double TimeManager::setBPMForLoopLength(uint64 time,int granularity){
   while(beatTime > .85 ){beatTime/=2.0;barLength*=2.0;}
   int beatInSample = (int)(beatTime*sampleRate);
   if(granularity>0){
-    beatInSample = beatInSample - beatInSample%granularity;
+    int offset =beatInSample%granularity;
+    if(offset>granularity/2){offset = -(granularity-offset);}
+    beatInSample = beatInSample - offset;
     beatTime = beatInSample*1.0/sampleRate;
   }
 

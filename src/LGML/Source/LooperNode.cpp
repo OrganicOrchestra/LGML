@@ -252,7 +252,7 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
                                                          StringPairArray(),0);
           if(afw){
           fp.release();
-          afw->writeFromAudioSampleBuffer(t->loopSample.loopSample,0,t->loopSample.getRecordedLength());
+          afw->writeFromAudioSampleBuffer(t->loopSample.loopSample,0,(int)t->loopSample.getRecordedLength());
           afw->flush();
 
           }

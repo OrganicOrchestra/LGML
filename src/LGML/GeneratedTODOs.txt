@@ -116,7 +116,7 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 264
+	line : 266
 		//TODO: check
 
 
@@ -143,6 +143,11 @@ ShapeShifterContainer.cpp
 
 	line : 127
 		//@ben do we need to handle these?
+
+
+LooperTrack.cpp
+	line : 200
+		// TODO handle triggeringTime-quantizedRecordEnd !=0 (non BLOCKSIZEGRANULARITY not defined)
 
 
 Main.cpp

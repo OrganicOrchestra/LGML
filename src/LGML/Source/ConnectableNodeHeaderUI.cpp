@@ -271,6 +271,7 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
   else if(presetID >=0 && presetID < PresetChoice::deleteStartId)
   {
     PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(node->getPresetFilter(), cb->getItemText(cb->getSelectedItemIndex()));
+    jassert(pre);
     node->loadPreset(pre);
   }
   else if (presetID >= PresetChoice::deleteStartId){

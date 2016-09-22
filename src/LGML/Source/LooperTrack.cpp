@@ -198,6 +198,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
         if(isMasterTempoTrack()){
           TimeManager::getInstance()->playState->setValue(true,false,true);
         }
+        // TODO handle triggeringTime-quantizedRecordEnd !=0 (non BLOCKSIZEGRANULARITY not defined)
         desiredState = PLAYING;
         startPlayBeat = TimeManager::getInstance()->getBeat();
         quantizedPlayStart = 0;
@@ -241,10 +242,10 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
 
   //    DBG(playNeedle);
   if(stateChanged){
-    //    if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
-    //      TimeManager * tm = TimeManager::getInstance();
-    //loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
-    //    }
+//    if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
+//      TimeManager * tm = TimeManager::getInstance();
+//      loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
+//    }
     trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
     // DBG("a:"+trackStateToString(trackState));
 
@@ -290,8 +291,13 @@ void LooperTrack::padBufferIfNeeded(int granularity){
         //                DBG("release predelay : "+String (trackIdx));
         const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
         if(sampleToRemove>0){loopSample.cropEndOfRecording(sampleToRemove);}
-        double actualLength = TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength(),parentLooper->getBlockSize());
+        double actualLength = TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength()
+#ifdef BLOCKSIZEGRANULARITY
+                                                                              ,parentLooper->getBlockSize()
+#endif
+                                                                              );
         uint64 desiredSize = actualLength*TimeManager::getInstance()->beatTimeInSample;
+        DBG("resizing loop : " << (int)desiredSize-(int)loopSample.getRecordedLength());
         loopSample.setSizePaddingIfNeeded(desiredSize);
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
         TimeManager::getInstance()->goToTime(offsetForPlay);
@@ -568,7 +574,7 @@ void LooperTrack::setTrackState(TrackState newState) {
     desiredState = newState;
     trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, desiredState);
 
-    
+
     if((desiredState==CLEARED  || desiredState==STOPPED || desiredState==WILL_STOP) ){
       parentLooper->checkIfNeedGlobalLooperStateUpdate();
     }
