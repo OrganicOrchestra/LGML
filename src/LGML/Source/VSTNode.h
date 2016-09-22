@@ -42,6 +42,7 @@ public:
             x = addFloatParameter("x","x position of plugin window", (float)Random::getSystemRandom().nextInt(500),0.f,1000.f);
             y = addFloatParameter("y","y position of plugin window", (float)Random::getSystemRandom().nextInt (500),0.f,1000.f);
             isDisplayed = addBoolParameter("isDisplayed","is the plugin window displayed",false);
+            currentPresetName->isPresettable = false;
         }
 
         FloatParameter * x;

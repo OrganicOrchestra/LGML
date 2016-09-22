@@ -25,7 +25,7 @@ ParameterProxy::~ParameterProxy()
 	setLinkedParam(nullptr);
 }
 
-void ParameterProxy::setValueInternal(var _value)
+void ParameterProxy::setValueInternal(var & _value)
 {
 	Parameter::setValueInternal(_value);
 

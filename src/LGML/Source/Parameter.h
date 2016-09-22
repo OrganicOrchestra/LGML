@@ -33,8 +33,8 @@ public:
     bool isOverriden;
 
     void resetValue();
-    void setValue(var _value, bool silentSet = false, bool force = false);
-    virtual void setValueInternal(var _value);
+    virtual void setValue(var _value, bool silentSet = false, bool force = false);
+    virtual void setValueInternal(var & _value);
 
     //For Number type parameters
     void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false);

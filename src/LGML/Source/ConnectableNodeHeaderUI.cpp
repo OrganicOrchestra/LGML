@@ -120,7 +120,7 @@ void ConnectableNodeHeaderUI::updateVuMeters(){
   }
 }
 
-void ConnectableNodeHeaderUI::updatePresetComboBox()
+void ConnectableNodeHeaderUI::updatePresetComboBox(bool forceUpdate)
 {
 
   bool emptyFilter = node->getPresetFilter().isEmpty();
@@ -129,7 +129,7 @@ void ConnectableNodeHeaderUI::updatePresetComboBox()
   if (!emptyFilter)
   {
     PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
-    if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
+      if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId,forceUpdate?NotificationType::sendNotification: NotificationType::dontSendNotification);
   }
 }
 
@@ -270,9 +270,9 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
   }
   else if(presetID >=0 && presetID < PresetChoice::deleteStartId)
   {
-    PresetManager::Preset * pre = PresetManager::getInstance()->getPreset(node->getPresetFilter(), cb->getItemText(cb->getSelectedItemIndex()));
-    jassert(pre);
-    node->loadPreset(pre);
+      String nameOfPreset = cb->getItemText(cb->getSelectedItemIndex());
+      node->currentPresetName->setValue(nameOfPreset);
+
   }
   else if (presetID >= PresetChoice::deleteStartId){
     PresetManager * pm =PresetManager::getInstance();
@@ -280,7 +280,7 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
     String originText = cb->getItemText(pm->getNumOption() + originId);
     PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), originText);
     pm->presets.removeObject(pre);
-    updatePresetComboBox();
+    updatePresetComboBox(true);
 
 
   }

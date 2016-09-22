@@ -312,7 +312,7 @@ void LooperTrack::padBufferIfNeeded(int granularity){
     }
 
     if(loopSample.isFirstStopAfterRec() || loopSample.isFirstPlayingFrameAfterRecord()){
-      loopSample.fadeInOut ((int)(parentLooper->getSampleRate() * 0.01),0);
+      loopSample.fadeInOut ((int)(80),0);
       parentLooper->lastMasterTempoTrack =nullptr;
     }
 

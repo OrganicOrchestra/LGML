@@ -513,11 +513,15 @@ void NodeContainer::onContainerParameterChanged(Parameter * p)
     ConnectableNode::onContainerParameterChanged(p);
     if (p == enabledParam)
     {
-
-        bypassNode(!enabledParam->boolValue());
-
+        
+        NodeContainer::triggerAsyncUpdate();
     }
 }
+void NodeContainer::handleAsyncUpdate() {
+    bypassNode(!enabledParam->boolValue());
+
+};
+
 void NodeContainer::bypassNode(bool bypass){
     if(bypass){
         jassert(containerInNode!=nullptr &&containerOutNode!=nullptr);

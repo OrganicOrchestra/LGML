@@ -123,6 +123,7 @@ class PlayableBuffer {
         }
         else{
           jassertfalse;
+
         }
 
 
@@ -147,8 +148,12 @@ class PlayableBuffer {
 #ifdef BLOCKSIZEGRANULARITY
       if(checkForAlignment && numSamples>0){
         jassert(playNeedle%numSamples==0);
-        jassert(recordNeedle%numSamples==0);
+        if(recordNeedle%numSamples!=0){
+          jassertfalse;
+          recordNeedle-= recordNeedle%numSamples;
+        }
       }
+    
 #endif
     }
 

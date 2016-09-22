@@ -51,7 +51,7 @@ void Parameter::setRange(var min, var max){
     listeners.call(&Listener::parameterRangeChanged,this);
 }
 
-void Parameter::setValueInternal(var _value) //to override by child classes
+void Parameter::setValueInternal(var & _value) //to override by child classes
 {
 
     value = _value;
