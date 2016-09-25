@@ -61,9 +61,7 @@ public:
                                          int parameterIndex,
                                          float newValue) override;
 
-    void audioProcessorChanged (AudioProcessor*) override{};
-
-
+  void audioProcessorChanged (AudioProcessor*) override;
     void loadPresetInternal(PresetManager::Preset * preset)override;
     void savePresetInternal(PresetManager::Preset * preset)override;
 

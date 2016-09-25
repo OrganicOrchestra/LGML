@@ -591,6 +591,7 @@ void ControllableContainer::loadJSONData(var data)
   //        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
   //    }
 
+  // TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
   Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();
 
   if (paramsData != nullptr)

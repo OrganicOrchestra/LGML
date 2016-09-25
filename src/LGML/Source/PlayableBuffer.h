@@ -44,9 +44,9 @@ class PlayableBuffer {
       return false;
     }
     else{
-      for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-        int maxChannel = jmin(i,buffer.getNumChannels()-1);
-        loopSample.copyFrom(maxChannel, (int)recordNeedle, buffer, maxChannel, 0, buffer.getNumSamples());
+      const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
+      for (int i =  maxChannel- 1; i >= 0; --i) {
+        loopSample.copyFrom(i, (int)recordNeedle, buffer, i, 0, buffer.getNumSamples());
       }
       recordNeedle += buffer.getNumSamples();
     }
@@ -157,9 +157,6 @@ class PlayableBuffer {
 #endif
     }
 
-
-
-
   }
 
 
@@ -235,6 +232,8 @@ class PlayableBuffer {
 
     return !isJumping;
   }
+
+
 
 
   enum BufferState {

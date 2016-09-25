@@ -148,3 +148,61 @@ void PresetManager::loadJSONData(var data)
 	}
 
 }
+
+
+
+//////////////////////////////
+// Presets
+
+
+void PresetManager::Preset::addPresetValue(const String &controlAddress, var value)
+{
+  presetValues.add(new PresetValue(controlAddress, value));
+}
+
+void PresetManager::Preset::addPresetValues(Array<PresetValue *> _presetValues)
+{
+  presetValues.addArray(_presetValues);
+}
+
+var PresetManager::Preset::getPresetValue(const String &targetControlAddress)
+{
+  for (auto &pv : presetValues)
+  {
+
+				if (pv->paramControlAddress == targetControlAddress) return pv->presetValue;
+  }
+
+  return var();
+}
+
+
+var PresetManager::Preset::getJSONData()
+{
+  var data(new DynamicObject());
+  data.getDynamicObject()->setProperty("name", name);
+  data.getDynamicObject()->setProperty("filter", filter);
+  var presetValuesData;
+
+  for (auto &pv : presetValues)
+  {
+				var pvData(new DynamicObject());
+				pvData.getDynamicObject()->setProperty(ControllableContainer::controlAddressIdentifier, pv->paramControlAddress);
+				pvData.getDynamicObject()->setProperty("value", pv->presetValue);
+				presetValuesData.append(pvData);
+  }
+
+  data.getDynamicObject()->setProperty("values", presetValuesData);
+  return data;
+}
+
+void PresetManager::Preset::loadJSONData(var data)
+{
+
+  Array<var> * pvDatas = data.getDynamicObject()->getProperty("values").getArray();
+
+  for (auto &pvData : *pvDatas)
+  {
+				addPresetValue(pvData.getProperty(ControllableContainer::controlAddressIdentifier, var()),pvData.getProperty("value",var()));
+  }
+}

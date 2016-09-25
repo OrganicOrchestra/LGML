@@ -371,7 +371,7 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
 	for (auto &v : *params)
 	{
 
-		if (v.getDynamicObject()->getProperty("controlAddress") == "/name")
+		if (v.getDynamicObject()->getProperty(controlAddressIdentifier) == "/name")
 		{
 			sourceName = v.getDynamicObject()->getProperty("value").toString();
 			break;

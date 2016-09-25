@@ -20,80 +20,81 @@ VSTNode::VSTNode() :
 NodeBase("VST",NodeType::VSTType),
 blockFeedback(false)
 {
-    identifierString = addStringParameter("VST Identifier","string that identify a VST","");
-    addChildControllableContainer(&pluginWindowParameter);
+  identifierString = addStringParameter("VST Identifier","string that identify a VST","");
+  addChildControllableContainer(&pluginWindowParameter);
 
-    midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
-    midiActivityTrigger->isControllableExposed = false;
-    midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
-    midiPortNameParam->hideInEditor = true;
+  midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
+  midiActivityTrigger->isControllableExposed = false;
+  midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
+  midiPortNameParam->hideInEditor = true;
 }
 
 
 VSTNode::~VSTNode(){
-    PluginWindow::closeCurrentlyOpenWindowsFor (this);
+  PluginWindow::closeCurrentlyOpenWindowsFor (this);
 }
 
 
 void  VSTNode::createPluginWindow(){
-    if (PluginWindow* const w = PluginWindow::getWindowFor (this))
-        w->toFront (true);
+  if (PluginWindow* const w = PluginWindow::getWindowFor (this))
+    w->toFront (true);
 }
 
 void VSTNode::closePluginWindow(){
-    PluginWindow::closeCurrentlyOpenWindowsFor (this);
+  PluginWindow::closeCurrentlyOpenWindowsFor (this);
 }
 
 void VSTNode::onContainerParameterChanged(Parameter * p) {
-    NodeBase::onContainerParameterChanged(p);
-    if(p==identifierString){
-        if(identifierString->value!=""){
-            PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
-            if(pd){
-                generatePluginFromDescription(pd);
-            }
-            else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
-        }
-        else{DBG("VST : no identifierString provided");}
+  NodeBase::onContainerParameterChanged(p);
+  if(p==identifierString){
+    if(identifierString->value!=""){
+      PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
+      if(pd){
+        generatePluginFromDescription(pd);
+      }
+      else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
     }
-    else if (p == midiPortNameParam)
-    {
-        setCurrentDevice(midiPortNameParam->stringValue());
-        vstNodeListeners.call(&VSTNodeListener::midiDeviceChanged);
-    }
+    else{DBG("VST : no identifierString provided");}
+  }
+  else if (p == midiPortNameParam)
+  {
+    setCurrentDevice(midiPortNameParam->stringValue());
+    vstNodeListeners.call(&VSTNodeListener::midiDeviceChanged);
+  }
 
-    else if(p==enabledParam && innerPlugin){
-        innerPlugin->suspendProcessing(!enabledParam->boolValue());
-        
-    }
+  else if(p==enabledParam && innerPlugin){
+    innerPlugin->suspendProcessing(!enabledParam->boolValue());
 
-    // a VSTParameter is changed
-    else{
-        if(blockFeedback)return;
-        for(int i = VSTParameters.size() -1; i>=0;--i){
-            if(VSTParameters.getUnchecked(i) == p){
-                innerPlugin->setParameter(i, VSTParameters.getUnchecked(i)->value);
-                break;
-            }
+  }
 
-        }
+  // a VSTParameter is changed
+  else{
+    if(blockFeedback)return;
+    for(int i = VSTParameters.size() -1; i>=0;--i){
+      if(VSTParameters.getUnchecked(i) == p){
+        innerPlugin->setParameter(i, VSTParameters.getUnchecked(i)->value);
+        break;
+      }
+
     }
+  }
 };
 void VSTNode::initParametersFromProcessor(AudioProcessor * p){
 
-    p->addListener(this);
+  // will check if not already here
+  p->addListener(this);
 
-    for(auto &c:VSTParameters){
-        removeControllable(c);
-    }
+  for(auto &c:VSTParameters){
+    removeControllable(c);
+  }
 
-    VSTParameters.clear();
+  VSTParameters.clear();
 
-    for(int i = 0 ; i < p->getNumParameters() ; i++){
-        VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
-    }
+  for(int i = 0 ; i < p->getNumParameters() ; i++){
+    VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
+  }
 
-    vstNodeListeners.call(&VSTNodeListener::newVSTSelected);
+  vstNodeListeners.call(&VSTNodeListener::newVSTSelected);
 }
 
 /*
@@ -107,77 +108,92 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
 void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 {
 
-    innerPlugin = nullptr;
-    String errorMessage;
-    AudioDeviceManager::AudioDeviceSetup result;
+  innerPlugin = nullptr;
+  String errorMessage;
+  AudioDeviceManager::AudioDeviceSetup result;
 
-    // set max channels to this
-    // TODO check that it actually works
-    desc->numInputChannels = jmin(desc->numInputChannels, getMainBusNumInputChannels());
-    desc->numOutputChannels = jmin(desc->numOutputChannels, getMainBusNumOutputChannels());
-
-
-    getAudioDeviceManager().getAudioDeviceSetup(result);
-
-    if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
-        (*desc, result.sampleRate, result.bufferSize, errorMessage)) {
-        // try to align the precision of the processor and the graph
-
-        instance->setPreferredBusArrangement(true, 0, AudioChannelSet::canonicalChannelSet(2));
-        instance->setPreferredBusArrangement(false, 0, AudioChannelSet::canonicalChannelSet(2));
+  // set max channels to this
+  // TODO check that it actually works
+  desc->numInputChannels = jmin(desc->numInputChannels, getMainBusNumInputChannels());
+  desc->numOutputChannels = jmin(desc->numOutputChannels, getMainBusNumOutputChannels());
 
 
-        // if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
-        // ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
+  getAudioDeviceManager().getAudioDeviceSetup(result);
 
-        instance->setProcessingPrecision(singlePrecision);
-        instance->prepareToPlay(result.sampleRate, result.bufferSize);
+  if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
+      (*desc, result.sampleRate, result.bufferSize, errorMessage)) {
+    // try to align the precision of the processor and the graph
 
-        int numIn = instance->getTotalNumInputChannels();
-        int numOut = instance->getTotalNumOutputChannels();
-//        NodeBase::setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
-        setPreferedNumAudioInput(numIn);
-        setPreferedNumAudioOutput(numOut);
-        DBG("buffer sizes" + String(instance->getTotalNumInputChannels())+','+ String(instance->getTotalNumOutputChannels()));
+    instance->setPreferredBusArrangement(true, 0, AudioChannelSet::canonicalChannelSet(2));
+    instance->setPreferredBusArrangement(false, 0, AudioChannelSet::canonicalChannelSet(2));
 
-        instance->setPlayHead(getPlayHead());
-        innerPlugin = instance;
-        messageCollector.reset (getSampleRate());
-        initParametersFromProcessor(instance);
-    }
 
-    else {
+    // if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
+    // ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
 
-        LOG(errorMessage);
-        jassertfalse;
-    }
+    instance->setProcessingPrecision(singlePrecision);
+    instance->prepareToPlay(result.sampleRate, result.bufferSize);
+
+    int numIn = instance->getTotalNumInputChannels();
+    int numOut = instance->getTotalNumOutputChannels();
+    //        NodeBase::setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
+    setPreferedNumAudioInput(numIn);
+    setPreferedNumAudioOutput(numOut);
+    DBG("buffer sizes" + String(instance->getTotalNumInputChannels())+','+ String(instance->getTotalNumOutputChannels()));
+
+    instance->setPlayHead(getPlayHead());
+    innerPlugin = instance;
+    messageCollector.reset (getSampleRate());
+    initParametersFromProcessor(instance);
+  }
+
+  else {
+
+    LOG(errorMessage);
+    jassertfalse;
+  }
 }
 
-void VSTNode::numChannelsChanged(){
-    NodeBase::numChannelsChanged();
-    if (NodeManager::getInstanceWithoutCreating() != nullptr)
-    {
-        NodeManager::getInstance()->audioGraph.removeIllegalConnections();
-        // hack to force update renderingops in audioGraph
-        NodeManager::getInstance()->audioGraph.removeConnection(-1);
+void VSTNode::audioProcessorChanged(juce::AudioProcessor * p ){
+  if (!innerPlugin || p!=innerPlugin) return;
+
+  if(innerPlugin->getNumParameters() != VSTParameters.size()){
+    DBG("rebuildingParameters");
+    initParametersFromProcessor(innerPlugin);
+  }
+  else{
+    for(int i = 0 ; i < VSTParameters.size() ; i++){
+      float val  = innerPlugin->getParameter(i);
+      VSTParameters.getUnchecked(i)->setValue(val);
     }
+  }
+
+}
+void VSTNode::numChannelsChanged(){
+  NodeBase::numChannelsChanged();
+  if (NodeManager::getInstanceWithoutCreating() != nullptr)
+  {
+    NodeManager::getInstance()->audioGraph.removeIllegalConnections();
+    // hack to force update renderingops in audioGraph
+    NodeManager::getInstance()->audioGraph.removeConnection(-1);
+  }
 }
 
 inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & ) {
-    if (innerPlugin) {
-        if (buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(), innerPlugin->getTotalNumOutputChannels()))
-        {
-            incomingMidi.clear();
-            messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
-            innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
-            innerPlugin->processBlock(buffer, incomingMidi);
-        }
-        else {
-            static int numFrameDropped = 0;
-            DBG("dropAudio " + String(numFrameDropped++));
-
-        }
+  if (innerPlugin) {
+    if (buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(), innerPlugin->getTotalNumOutputChannels()))
+    {
+      incomingMidi.clear();
+      messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
+      innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
+      innerPlugin->processBlock(buffer, incomingMidi);
     }
+    else {
+      static int numFrameDropped = 0;
+      DBG("dropAudio " + String(numFrameDropped++));
+
+    }
+  }
 }
 
 
@@ -185,10 +201,10 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
                                               int parameterIndex,
                                               float newValue) {
 
-    jassert(parameterIndex<VSTParameters.size());
-    blockFeedback = true;
-    VSTParameters.getUnchecked(parameterIndex)->setValue(newValue);
-    blockFeedback = false;
+  jassert(parameterIndex<VSTParameters.size());
+  blockFeedback = true;
+  VSTParameters.getUnchecked(parameterIndex)->setValue(newValue);
+  blockFeedback = false;
 }
 
 
@@ -196,55 +212,55 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
 
 
 ConnectableNodeUI * VSTNode::createUI() {
-    return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
+  return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
 }
 
 
 void VSTNode::setCurrentDevice(const String & deviceName)
 {
-    MIDIListener::setCurrentDevice(deviceName);
-    midiPortNameParam->setValue(deviceName, true);
+  MIDIListener::setCurrentDevice(deviceName);
+  midiPortNameParam->setValue(deviceName, true);
 }
 
 void VSTNode::handleIncomingMidiMessage(MidiInput* ,
                                         const MidiMessage& message) {
-    if (innerPlugin)
-        messageCollector.addMessageToQueue (message);
+  if (innerPlugin)
+    messageCollector.addMessageToQueue (message);
 
-    midiActivityTrigger->trigger();
+  midiActivityTrigger->trigger();
 };
 
 void VSTNode::getStateInformation(MemoryBlock & destData) {
-    if (innerPlugin) {
-        innerPlugin->getStateInformation(destData);
-    };
+  if (innerPlugin) {
+    innerPlugin->getStateInformation(destData);
+  };
 }
 
 void VSTNode::setStateInformation(const void* data, int sizeInBytes) {
-    if (innerPlugin) {
-        DBG("loading state for vst "+ niceName +(parentContainer?"in : "+parentContainer->niceName:""));
-        innerPlugin->setStateInformation(data, sizeInBytes);
-    };
+  if (innerPlugin) {
+    DBG("loading state for vst "+ niceName +(parentContainer?"in : "+parentContainer->niceName:""));
+    innerPlugin->setStateInformation(data, sizeInBytes);
+  };
 };
 
 void VSTNode::loadPresetInternal(PresetManager::Preset * preset){
-    presetToLoad = preset;
-    triggerAsyncUpdate();
-    
-    
+  presetToLoad = preset;
+  triggerAsyncUpdate();
+
+
 };
 
 void VSTNode::handleAsyncUpdate(){
-    var v = presetToLoad->getPresetValue("/rawData");
-    jassert(v.isUndefined() || v.isString());
-    MemoryBlock m;
-    m.fromBase64Encoding(v.toString());
-    setStateInformation(m.getData(),(int)m.getSize());
+  var v = presetToLoad->getPresetValue("/rawData");
+  jassert(v.isUndefined() || v.isString());
+  MemoryBlock m;
+  m.fromBase64Encoding(v.toString());
+  setStateInformation(m.getData(),(int)m.getSize());
 }
 void VSTNode::savePresetInternal(PresetManager::Preset * preset){
-    
-    MemoryBlock m;
-    getStateInformation(m);
-    preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
-    
+
+  MemoryBlock m;
+  getStateInformation(m);
+  preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
+
 };
