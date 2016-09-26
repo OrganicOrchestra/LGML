@@ -150,7 +150,7 @@ ShapeShifterContainer.cpp
 
 
 LooperTrack.cpp
-	line : 200
+	line : 180
 		// TODO handle triggeringTime-quantizedRecordEnd !=0 (non BLOCKSIZEGRANULARITY not defined)
 
 

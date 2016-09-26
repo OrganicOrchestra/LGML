@@ -111,7 +111,7 @@ public:
             setBounds (50,50,getWidth(), getHeight());
             setVisible (true);
 
-#if JUCE_WINDOWS
+#if ! JUCE_MAC
             setMenuBar(mainComponent);
 #endif
         }

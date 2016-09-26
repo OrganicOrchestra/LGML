@@ -154,7 +154,7 @@ void OSCController::sendAllControllableStates(ControllableContainer *c,int & sen
       controllableFeedbackUpdate(c,controllable);
       sentControllable++;
       if((sentControllable%60)==0){
-        sleep(0.01);
+        Thread::sleep(10);
       }
     }
     for(auto & container:c->controllableContainers){

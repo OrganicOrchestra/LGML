@@ -11,7 +11,7 @@
 #ifndef LOOPERTRACK_H_INCLUDED
 #define LOOPERTRACK_H_INCLUDED
 
-#define BLOCKSIZEGRANULARITY
+//#define BLOCKSIZEGRANULARITY
 #include "RingBuffer.h"
 #include "AudioHelpers.h"
 #include "PlayableBuffer.h"
@@ -151,6 +151,7 @@ private:
 
     bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
     void padBufferIfNeeded(int granularity = 0);
+  void fillBufferIfNeeded();
 
     PlayableBuffer loopSample;
     float lastVolume;

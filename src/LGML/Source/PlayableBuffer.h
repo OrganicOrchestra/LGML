@@ -28,17 +28,55 @@ class PlayableBuffer {
   state(BUFFER_STOPPED),
   lastState(BUFFER_STOPPED),
   stateChanged(false),
-  numTimePlayed(0)
+  numTimePlayed(0),
+  sampleOffsetBeforeNewState(0),
+  hasBeenFaded (false)
   {
-    jassert(numSamples < INT_MAX);
+
+    jassert(numSamples < std::numeric_limits<int>::max());
     //        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
     //            for(int i = 0 ; i < numChannels ; i++){loopSample.addSample(i, j, v);}
     //        }
     loopSample.clear();
   }
 
-  bool writeAudioBlock(const AudioBuffer<float> & buffer){
-    jassert(state==BUFFER_RECORDING);
+  bool processNextBlock(AudioBuffer<float> & buffer){
+    bool succeeded = true;
+    if (isFirstRecordingFrame()){
+      succeeded = writeAudioBlock(buffer, sampleOffsetBeforeNewState);
+    }
+    else if(isRecording() ){
+      succeeded = writeAudioBlock(buffer);
+    }
+    else if( wasLastRecordingFrame()){
+      succeeded = writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState);
+      fadeInOut(80, 0);
+
+    }
+
+
+    if(isStopping()){
+      buffer.clear(sampleOffsetBeforeNewState, buffer.getNumSamples() - sampleOffsetBeforeNewState);
+    }
+
+   else if(isStopped()){
+      buffer.clear();
+    }
+
+    if(isPlaying()){
+      readNextBlock(buffer,sampleOffsetBeforeNewState);
+    }
+
+
+
+
+    return succeeded;
+  }
+
+
+  inline bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1){
+
+    samplesToWrite= samplesToWrite==-1?buffer.getNumSamples()-fromSample:samplesToWrite;
     if (recordNeedle + buffer.getNumSamples()> loopSample.getNumSamples()) {
       jassertfalse;
       return false;
@@ -46,31 +84,22 @@ class PlayableBuffer {
     else{
       const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
       for (int i =  maxChannel- 1; i >= 0; --i) {
-        loopSample.copyFrom(i, (int)recordNeedle, buffer, i, 0, buffer.getNumSamples());
+        loopSample.copyFrom(i, (int)recordNeedle, buffer, i, fromSample, samplesToWrite );
       }
-      recordNeedle += buffer.getNumSamples();
+      recordNeedle += samplesToWrite;
     }
 
     return true;
   }
 
 
-  void readNextBlock(AudioBuffer<float> & buffer
-#ifdef BLOCKSIZEGRANULARITY
-                     ,bool checkForAlignment
-#endif
-  ){
+  inline void readNextBlock(AudioBuffer<float> & buffer,int fromSample = 0  ){
     jassert(isOrWasPlaying());
 
 
-    int numSamples = buffer.getNumSamples();
-#ifdef BLOCKSIZEGRANULARITY
-    // check if block size is always the same
-    if(numSamples>0){
-      static int originBlockSize = numSamples;
-      jassert(originBlockSize == numSamples);
-    }
-#endif
+    int numSamples = buffer.getNumSamples()-fromSample;
+
+
     // we want to read Last Block for fade out if stopped
     if(state==BUFFER_STOPPED){
       playNeedle = startJumpNeedle;
@@ -86,11 +115,11 @@ class PlayableBuffer {
 
       const int halfBlock =  numSamples/2;
       for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-        int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-        buffer.copyFrom(i, 0, loopSample, maxChannelFromRecorded, (int)startJumpNeedle, halfBlock);
-        buffer.applyGainRamp(i, 0, halfBlock, 1.0f, 0.0f);
-        buffer.copyFrom(i, halfBlock, loopSample, maxChannelFromRecorded, (int)playNeedle+halfBlock, halfBlock);
-        buffer.applyGainRamp(i, halfBlock-1, halfBlock, 0.0f, 1.0f);
+        const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
+        buffer.copyFrom(i, fromSample, loopSample, maxChannelFromRecorded, (int)startJumpNeedle, halfBlock);
+        buffer.applyGainRamp(i, fromSample, halfBlock, 1.0f, 0.0f);
+        buffer.copyFrom(i, fromSample+halfBlock, loopSample, maxChannelFromRecorded, (int)playNeedle+halfBlock, halfBlock);
+        buffer.applyGainRamp(i, fromSample+halfBlock-1, halfBlock, 0.0f, 1.0f);
 
       }
     }
@@ -100,15 +129,6 @@ class PlayableBuffer {
       {
 
 
-#ifdef BLOCKSIZEGRANULARITY
-        //assert false for debug purpose
-        //(if no predelay are set and blockSize is constant the size and play needle are multiple of blockSize
-        if(checkForAlignment){
-          jassertfalse;
-          LOG("buffer not a multiple of blockSize");
-        }
-#endif
-
         int firstSegmentLength =(int)(recordNeedle - playNeedle);
         int secondSegmentLength = numSamples - firstSegmentLength;
 
@@ -116,22 +136,19 @@ class PlayableBuffer {
 
           const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
           for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-            buffer.copyFrom(i, 0, loopSample, i, (int)playNeedle, firstSegmentLength);
-            buffer.copyFrom(i, 0, loopSample, i, 0, secondSegmentLength);
+            buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, firstSegmentLength);
+            buffer.copyFrom(i, fromSample, loopSample, i, 0, secondSegmentLength);
           }
           playNeedle = secondSegmentLength;
         }
-        else{
-          jassertfalse;
-
-        }
+        else{jassertfalse;}
 
 
       }
       else{
         const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
         for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-          buffer.copyFrom(i, 0, loopSample, i, (int)playNeedle, numSamples);
+          buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, numSamples);
         }
       }
     }
@@ -145,16 +162,7 @@ class PlayableBuffer {
         numTimePlayed ++;
       }
       playNeedle %= recordNeedle;
-#ifdef BLOCKSIZEGRANULARITY
-      if(checkForAlignment && numSamples>0){
-        jassert(playNeedle%numSamples==0);
-        if(recordNeedle%numSamples!=0){
-          jassertfalse;
-          recordNeedle-= recordNeedle%numSamples;
-        }
-      }
-    
-#endif
+
     }
 
   }
@@ -202,16 +210,22 @@ class PlayableBuffer {
       }
     }
   }
-  bool isFirstPlayingFrameAfterRecord(){return lastState == BUFFER_RECORDING && state == BUFFER_PLAYING;}
-  bool isFirstStopAfterRec(){return lastState == BUFFER_RECORDING && state == BUFFER_STOPPED;}
-  bool isFirstPlayingFrame(){return lastState!=BUFFER_PLAYING && state == BUFFER_PLAYING;}
-  bool isFirstRecordingFrame(){return lastState!=BUFFER_RECORDING && state == BUFFER_RECORDING;}
-  bool isStopping() const{return (lastState == BUFFER_PLAYING  ) && (state==BUFFER_STOPPED);}
-  bool isRecording() const{return state == BUFFER_RECORDING;}
-  bool firstRecordedFrame() const{return state == BUFFER_RECORDING && (lastState!=BUFFER_RECORDING);}
+  inline bool isFirstPlayingFrameAfterRecord()const{return lastState == BUFFER_RECORDING && state == BUFFER_PLAYING;}
+  inline bool isFirstStopAfterRec()const{return lastState == BUFFER_RECORDING && state == BUFFER_STOPPED;}
+  inline bool isFirstPlayingFrame()const{return lastState!=BUFFER_PLAYING && state == BUFFER_PLAYING;}
+  inline bool isFirstRecordingFrame()const{return lastState!=BUFFER_RECORDING && state == BUFFER_RECORDING;}
+  inline bool wasLastRecordingFrame()const{return lastState==BUFFER_RECORDING && state != BUFFER_RECORDING;}
+  inline bool isStopping() const{return (lastState != BUFFER_STOPPED  ) && (state==BUFFER_STOPPED);}
+  inline bool isStopped() const{return (state==BUFFER_STOPPED);}
+  inline bool isRecording() const{return state == BUFFER_RECORDING;}
+  inline bool isPlaying() const{return state == BUFFER_PLAYING;}
+  inline bool isFirstRecordedFrame() const{return state == BUFFER_RECORDING && (lastState!=BUFFER_RECORDING);}
+  inline bool isOrWasPlaying() const{return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();}
+  inline bool isOrWasRecording() const{return (state==BUFFER_RECORDING || lastState==BUFFER_RECORDING) && loopSample.getNumSamples();}
+
+
   void startRecord(){recordNeedle = 0;playNeedle=0;}
-  bool isOrWasPlaying() const{return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();}
-  void startPlay(){setPlayNeedle(0);}
+  inline void startPlay(){setPlayNeedle(0);}
 
   bool checkTimeAlignment(uint64 curTime,const int minQuantifiedFraction){
 
@@ -243,11 +257,12 @@ class PlayableBuffer {
 
   };
 
-  void setState(BufferState newState){
+  void setState(BufferState newState,int _sampleOffsetBeforeNewState=0){
     //        lastState = state;
     stateChanged |=newState!=state;
     switch (newState){
       case BUFFER_RECORDING:
+        hasBeenFaded = false;
         recordNeedle = 0;
         numTimePlayed = 0;
         startJumpNeedle = 0;
@@ -262,7 +277,7 @@ class PlayableBuffer {
         break;
     }
     state = newState;
-
+    sampleOffsetBeforeNewState = _sampleOffsetBeforeNewState;
   }
 
   void endProcessBlock(){
@@ -270,6 +285,7 @@ class PlayableBuffer {
     stateChanged =false;
     isJumping = false;
     startJumpNeedle=0;
+    sampleOffsetBeforeNewState = 0;
   }
 
   BufferState getState() const{
@@ -301,9 +317,10 @@ private:
   BufferState state;
   BufferState lastState;
   bool isJumping;
+  bool hasBeenFaded;
 
 
-
+  int sampleOffsetBeforeNewState;
   uint64 recordNeedle,playNeedle,startJumpNeedle;
 
 };
