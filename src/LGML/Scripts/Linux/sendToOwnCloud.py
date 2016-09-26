@@ -1,12 +1,15 @@
 import urllib
 import os
 import json
-localExportPath = os.path.abspath("../../Builds/LinuxMakefile/build/")
-localAppPath = localExportPath+'/LGML'
-localExportPath = localExportPath+"/LGML.tar.gz"
+
+execName = "LGML"
+localMakePath = os.path.abspath("../../Builds/LinuxMakefile/")+'/'
+localExportPath = localMakePath+'build/'
+localAppFile = localExportPath+execName
+localExportFile = localAppFile+".tar.gz"
 
 
-
+config = 'Ubuntu'
 
 def sh(cmd):
 	print ("exec : "+cmd);
@@ -23,9 +26,9 @@ def sendToOwnCloud(originPath,destPath):
 	sh("curl -X PUT \"http://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"])
 
 
-
-sh('tar -zcvf '+localExportPath+' '+localAppPath)
+# sh('cd '+localMakePath+' && make CONFIG='+config+' -j2');
+# sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName)
 ownCloudPath = "Tools/LGML/App-Dev/Linux/Ubuntu/x86-64/LGML.tar.gz"
-sendToOwnCloud(localExportPath,urllib.pathname2url(ownCloudPath))
+sendToOwnCloud(localExportFile,urllib.pathname2url(ownCloudPath))
 
 
