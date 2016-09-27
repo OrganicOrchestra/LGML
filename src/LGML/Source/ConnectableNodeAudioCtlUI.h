@@ -15,7 +15,6 @@
 
 
 class FloatSliderUI;
-class BoolToggleUI;
 class ConnectableNode;
 class ConnectableNodeUI;
 

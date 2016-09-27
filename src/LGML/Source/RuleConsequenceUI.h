@@ -13,6 +13,7 @@
 
 
 #include "RuleConsequence.h"
+
 class RuleConsequenceUI : public Component
 {
 public:

@@ -17,7 +17,6 @@
 
 
 class ConnectableNodeUI;
-class FloatSliderUI;
 
 class ConnectableNodeHeaderUI : public Component,
 	public ComboBox::Listener,

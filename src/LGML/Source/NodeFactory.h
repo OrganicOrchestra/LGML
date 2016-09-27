@@ -13,7 +13,6 @@
 
 #include "JuceHeader.h"
 class ConnectableNode;
-class NodeManager;
 
 const static String nodeTypeNames[] = {"ContainerIn","ContainerOut", "Container", "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioDeviceIn","AudioDeviceOut","JsNode" };
 

@@ -12,7 +12,7 @@
 #define NODECONNECTIONEDITORLINK_H_INCLUDED
 
 
-#include "NodeConnectionEditorDataSlot.h"
+#include "NodeConnectionEditorDataSlot.h"//keep
 //==============================================================================
 /*
 */

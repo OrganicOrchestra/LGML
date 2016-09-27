@@ -16,7 +16,6 @@ class ShapeShifterPanelTab;
 #include "ShapeShifterContent.h"
 #include "ShapeShifterPanelHeader.h"
 
-class ShapeShifterContainer;
 
 class ShapeShifterPanel : public ShapeShifter, public ShapeShifterPanelHeader::Listener
 {

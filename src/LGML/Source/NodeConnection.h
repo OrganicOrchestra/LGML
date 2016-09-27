@@ -15,7 +15,6 @@
 #include "DataProcessorGraph.h"
 #include "NodeBase.h"
 
-class NodeManager;
 
 
 class NodeConnection :

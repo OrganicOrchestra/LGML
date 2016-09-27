@@ -9,8 +9,9 @@
 */
 
 
-#include "NodeConnectionEditorLink.h"
+
 #include "Style.h"
+#include "NodeConnectionEditorLink.h"
 
 //==============================================================================
 NodeConnectionEditorLink::NodeConnectionEditorLink(NodeConnectionEditorDataSlot * outSlot, NodeConnectionEditorDataSlot * inSlot) :
