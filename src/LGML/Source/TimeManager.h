@@ -53,6 +53,7 @@ public TimeMasterCandidate
 
 	void jump(int amount);
   void goToTime(uint64 time);
+  void advanceTime(uint64 );
 
     // used when triggering multiple change
     void lockTime(bool );
@@ -92,7 +93,9 @@ public TimeMasterCandidate
 
     bool getCurrentPosition (CurrentPositionInfo& result)override;
 
+#if !LGML_UNIT_TESTS
 private:
+#endif
 
     struct TimeState{
         TimeState():isJumping(false),nextTime((uint64)-1),isPlaying(false),time((uint64)0){}
@@ -135,6 +138,8 @@ private:
     void updateCurrentPositionInfo();
 
     CurrentPositionInfo currentPositionInfo;
+
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
 

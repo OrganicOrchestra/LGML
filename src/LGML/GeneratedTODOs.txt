@@ -116,13 +116,13 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 62
+	line : 63
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
 
 TimeManager.cpp
-	line : 266
+	line : 282
 		//TODO: check
 
 
@@ -152,7 +152,7 @@ ShapeShifterContainer.cpp
 
 
 LooperTrack.cpp
-	line : 180
+	line : 183
 		// TODO handle triggeringTime-quantizedRecordEnd !=0 (non BLOCKSIZEGRANULARITY not defined)
 
 

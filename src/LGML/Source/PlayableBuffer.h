@@ -53,17 +53,21 @@ class PlayableBuffer {
     }
 
 
+
+
+
+
+    if(isOrWasPlaying()){
+      readNextBlock(buffer,sampleOffsetBeforeNewState);
+    }
+    else{
+      buffer.clear();
+    }
+    
     if(isStopping()){
       buffer.clear(sampleOffsetBeforeNewState, buffer.getNumSamples() - sampleOffsetBeforeNewState);
     }
 
-   else if(isStopped()){
-      buffer.clear();
-    }
-
-    if(isPlaying()){
-      readNextBlock(buffer,sampleOffsetBeforeNewState);
-    }
 
 
 
@@ -94,6 +98,7 @@ class PlayableBuffer {
   inline void readNextBlock(AudioBuffer<float> & buffer,int fromSample = 0  ){
     if(recordNeedle==0){
       buffer.clear();
+      jassertfalse;
       return;
     }
     jassert(isOrWasPlaying());
@@ -314,8 +319,9 @@ class PlayableBuffer {
   int numTimePlayed;
   AudioSampleBuffer loopSample;
 
+#if !LGML_UNIT_TESTS
 private:
-
+#endif
   BufferState state;
   BufferState lastState;
   bool isJumping;

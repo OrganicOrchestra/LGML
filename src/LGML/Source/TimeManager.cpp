@@ -50,8 +50,9 @@ void TimeManager::incrementClock(int time){
     timeState.isJumping=false;
   }
 
-  if(timeState.isPlaying){
+  else if(timeState.isPlaying){
     timeState.time+=time;
+    timeState.nextTime = timeState.time+time;
   }
 
   int newBeat = getBeatInt();
@@ -67,13 +68,16 @@ void TimeManager::incrementClock(int time){
 }
 
 
+
+
 void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
                                          int /*numInputChannels*/,
                                          float** outputChannelData,
                                          int numOutputChannels,
                                          int numSamples) {
+#if !LGML_UNIT_TESTS
   incrementClock(numSamples);
-
+#endif
   for (int i = 0; i < numOutputChannels; ++i)
     zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
 }
@@ -135,6 +139,16 @@ void TimeManager::shouldRestart(bool playing){
 void TimeManager::shouldGoToZero(){
   desiredTimeState.jumpTo(0);
 }
+void TimeManager::advanceTime(uint64 a){
+
+  if(desiredTimeState.isJumping){
+  desiredTimeState.nextTime+=a;
+  }
+  else{
+    desiredTimeState.jumpTo(timeState.nextTime+a);
+  }
+
+}
 void TimeManager::shouldPlay(){
   desiredTimeState.isPlaying = true;
 }
@@ -188,7 +202,9 @@ void TimeManager::setBPMInternal(double ){
   isSettingTempo->setValue(false);
   beatTimeInSample =(uint)(sampleRate *1.0/ BPM->doubleValue()*60.0);
 }
-uint64 TimeManager::getTimeInSample(){return timeState.time;}
+uint64 TimeManager::getTimeInSample(){
+    return timeState.time;
+}
 
 
 void TimeManager::jump(int amount){

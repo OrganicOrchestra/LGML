@@ -139,8 +139,10 @@ public:
      TrackState trackState,desiredState;
 
     bool isSelected;
-    
+
+#if !LGML_UNIT_TESTS
 private:
+#endif
 
     friend class LooperNode;
     bool someOneIsSolo;
@@ -169,6 +171,7 @@ private:
 
 
     void cleanAllQuantizeNeedles();
+
     //friend class Looper;
 };
 

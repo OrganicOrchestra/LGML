@@ -88,15 +88,16 @@ private:
     if(writeNeedle < phantomSize && writeNeedle+numSample>phantomSize){
       int overflow = writeNeedle+numSample - phantomSize;
       int left = numSample-overflow;
-      jassert (left>0);
-      if(left>0) buf.copyFrom(channel, phantomSize+writeNeedle,b,left);
+      buf.copyFrom(channel, phantomSize+writeNeedle,b,left);
       buf.copyFrom(channel, phantomSize+writeNeedle+left,b+left,overflow);
       buf.copyFrom(channel, writeNeedle+left-phantomSize,b+left,overflow);
     }
+    // second phantomZone
     else if (writeNeedle+numSample>phantomSize){
       buf.copyFrom(channel, phantomSize+writeNeedle,b,numSample);
       buf.copyFrom(channel, writeNeedle-phantomSize,b,numSample);
     }
+    // first phantomZone
     else{
       buf.copyFrom(channel, phantomSize+writeNeedle, b, numSample);
     }

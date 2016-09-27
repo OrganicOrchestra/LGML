@@ -143,16 +143,19 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int /*_blo
   ////
   // apply quantization on play / rec
   const uint64 triggeringTime = curTime;
-
+  TimeManager * tm = TimeManager::getInstance();
   
   if (quantizedRecordStart.get()!=NO_QUANTIZE) {
     if (triggeringTime >= quantizedRecordStart.get() ) {
-      if(isMasterTempoTrack() ){
-        if(!TimeManager::getInstance()->playState->boolValue())TimeManager::getInstance()->playState->setValue(true);
-
-      }
       int offset = quantizedRecordStart.get();
       offset = offset>0?triggeringTime - offset:0;
+      if(isMasterTempoTrack() ){
+        if(!tm->playState->boolValue())tm->playState->setValue(true);
+        // we will handle the block in this call 
+        tm->goToTime(parentLooper->getBlockSize()-offset);
+
+      }
+
       desiredState = RECORDING;
       loopSample.setState( PlayableBuffer::BUFFER_RECORDING,offset);
       startRecBeat = TimeManager::getInstance()->getBeat();
@@ -250,14 +253,15 @@ int LooperTrack::getQuantization(){
 }
 
 void LooperTrack::fillBufferIfNeeded(){
-
+  TimeManager * tm = TimeManager::getInstance();
   if (loopSample.stateChanged) {
     //    process changed internalState
 
     if (loopSample.isFirstRecordedFrame()) {
       if (isMasterTempoTrack()) {
         int samplesToGet = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
-        TimeManager::getInstance()->goToTime(samplesToGet);
+//        we need to advance because pat of the block may have be processed
+        tm->advanceTime(samplesToGet);
         if(samplesToGet>0){ loopSample.writeAudioBlock(parentLooper->streamAudioBuffer.getLastBlock(samplesToGet));}
         startRecBeat = 0;
       }
@@ -273,7 +277,8 @@ void LooperTrack::padBufferIfNeeded(int granularity){
     if (loopSample.stateChanged) {
     if (loopSample.wasLastRecordingFrame() ){
       //            DBG("a:firstPlay");
-      int offsetForPlay = 0;
+      // get howMuch we have allready played in loopSample
+      int offsetForPlay = loopSample.getPlayPos();
       if (isMasterTempoTrack()) {
         //                DBG("release predelay : "+String (trackIdx));
         const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
@@ -291,7 +296,7 @@ void LooperTrack::padBufferIfNeeded(int granularity){
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
       }
       if(getQuantization()>0)originBPM = TimeManager::getInstance()->BPM->doubleValue();
-      loopSample.setPlayNeedle(offsetForPlay);
+//      loopSample.setPlayNeedle(offsetForPlay);
     }
 
     if(loopSample.wasLastRecordingFrame()){
