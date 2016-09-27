@@ -14,7 +14,6 @@
 #pragma warning( disable : 4505 )
 
 #include "JuceHeader.h"
-
 #include "Style.h"
 
 namespace LookAndFeelHelpers {

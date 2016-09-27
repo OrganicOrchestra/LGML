@@ -10,6 +10,7 @@
 
 #include "ScriptedCondition.h"
 #include "Rule.h"
+#include "JsHelpers.h"
 
 ScriptedCondition::ScriptedCondition(Rule *r) :
 	RuleCondition(r,nullptr),

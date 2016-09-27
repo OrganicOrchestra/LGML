@@ -12,7 +12,6 @@
 #define CONTROLLERFACTOR_H_INCLUDED
 
 
-#include "OSCDirectController.h"
 #include "DMXController.h"
 #include "MIDIController.h"
 #include "JavaScriptController.h"

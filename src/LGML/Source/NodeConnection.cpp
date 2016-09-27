@@ -10,6 +10,7 @@
 
 #include "NodeConnection.h"
 #include "NodeManager.h"
+#include "NodeContainer.h"
 
 NodeConnection::NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType, bool _isGhostConnection) :
 sourceNode(sourceNode),

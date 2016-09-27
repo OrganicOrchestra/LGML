@@ -12,6 +12,8 @@
 #include "NodeManager.h"
 #include "DebugHelpers.h"
 #include "TimeManager.h"
+#include "ParameterProxy.h"
+
 OSCDirectController::OSCDirectController() :
 OSCDirectController("OSC Direct Controller")
 {

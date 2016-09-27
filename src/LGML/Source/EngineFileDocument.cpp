@@ -12,10 +12,12 @@
 #include "NodeFactory.h"
 #include "Inspector.h"
 
+
 /*================================
  this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
  */
 
+ApplicationProperties & getAppProperties();
 
 String Engine::getDocumentTitle() {
     if (! getFile().exists())

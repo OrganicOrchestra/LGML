@@ -11,7 +11,6 @@
 #ifndef NODEBASEUI_H_INCLUDED
 #define NODEBASEUI_H_INCLUDED
 
-#include "Style.h"
 #include "ConnectableNodeUI.h"
 
 #include "NodeBaseContentUI.h"

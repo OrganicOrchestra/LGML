@@ -11,6 +11,7 @@
 #include "Controllable.h"
 #include "ControllableContainer.h"
 #include "JsHelpers.h"
+#include "StringUtil.h"
 
 Controllable::Controllable(const Type &type, const String & niceName, const String &description, bool enabled) :
     type(type),

@@ -12,6 +12,9 @@
 #include "MainComponent.h"
 #include "Rule.h"
 #include "FastMap.h"
+#include "Engine.h"
+#include "Inspector.h"
+#include "NodeContainer.h"
 
 namespace CommandIDs
 {

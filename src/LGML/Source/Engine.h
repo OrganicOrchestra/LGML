@@ -13,19 +13,14 @@
 
 
 
-#include "MIDIManager.h"
 #include "ControlManager.h"
-#include "TimeManager.h"
 #include "NodeManager.h"
-#include "VSTManager.h"
 #include "PresetManager.h"
-#include "RuleManager.h"
 #include "FastMapper.h"
-
 #include "AudioFucker.h"
-
-
-
+#include "TimeManager.h"
+#include "RuleManager.h"
+#include "VSTManager.h"
 
 class Engine:public FileBasedDocument{
 public:

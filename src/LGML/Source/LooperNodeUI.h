@@ -11,10 +11,10 @@
 #ifndef LOOPERNODEUI_H_INCLUDED
 #define LOOPERNODEUI_H_INCLUDED
 
-#include "NodeBaseUI.h"
 #include "TriggerBlinkUI.h"
 #include "FloatSliderUI.h"
 #include "LooperNode.h"
+#include "NodeBaseContentUI.h"
 
 class LooperNodeContentUI: public NodeBaseContentUI , public LooperNode::LooperListener
 {

@@ -10,6 +10,7 @@
 
 #include "DataInNode.h"
 #include "DataInNodeUI.h"
+#include "NodeBaseUI.h"
 
 
 DataInNode::DataInNode() :

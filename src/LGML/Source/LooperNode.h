@@ -13,11 +13,12 @@
 
 
 #include "NodeBase.h"
-#include "AudioHelpers.h"
 #include "LooperTrack.h"
 
 #define MAX_NUM_TRACKS 32
 #include "TimeMasterCandidate.h"
+
+#include "RingBuffer.h"
 
 
 class LooperNode :

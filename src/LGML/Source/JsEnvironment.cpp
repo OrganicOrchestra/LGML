@@ -13,6 +13,7 @@
 #include "NodeManager.h"
 #include "ControlManager.h"
 #include "DebugHelpers.h"
+#include "JsHelpers.h"
 
 JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFile(false){
   localEnvironment = var(new DynamicObject());

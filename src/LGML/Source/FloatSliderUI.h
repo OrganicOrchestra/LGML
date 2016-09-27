@@ -12,7 +12,6 @@
 #define FLOATSLIDERUI_H_INCLUDED
 
 #include "ParameterUI.h"
-#include "FloatParameter.h"
 
 class FloatSliderUI    : public ParameterUI
 {

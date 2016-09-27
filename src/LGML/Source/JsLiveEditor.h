@@ -12,7 +12,6 @@
 #define JSLIVEEDITOR_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "JsEnvironment.h"
 
 class JsLiveEditor :
 	public CodeEditorComponent

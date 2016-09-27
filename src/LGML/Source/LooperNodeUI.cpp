@@ -10,6 +10,18 @@
 
 #include "LooperNodeUI.h"
 
+#include "NodeBaseUI.h"
+
+
+ConnectableNodeUI * LooperNode::createUI(){
+  NodeBaseUI * ui = new NodeBaseUI(this, new LooperNodeContentUI);
+  ui->recursiveInspectionLevel = 2;
+  ui->canInspectChildContainersBeyondRecursion = false;
+  return ui;
+}
+
+
+
 LooperNodeContentUI::LooperNodeContentUI(){
 
 }

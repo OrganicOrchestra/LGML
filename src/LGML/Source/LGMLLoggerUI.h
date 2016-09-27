@@ -14,7 +14,6 @@
 #include "LGMLLogger.h"
 #include "ShapeShifterContent.h"
 #include "DebugHelpers.h"
-#include "Style.h"
 
 class LGMLLoggerUI : public ShapeShifterContent,
 	public LGMLLogger::Listener,

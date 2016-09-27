@@ -12,7 +12,6 @@
 #define CONTROLVARIABLEREFERENCEUI_H_INCLUDED
 
 #include "ControlVariableReference.h"
-#include "ControllableHelpers.h"
 #include "ParameterUI.h"
 
 class ControlVariableReferenceUI :

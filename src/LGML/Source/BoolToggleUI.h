@@ -12,7 +12,6 @@
 #define BOOLTOGGLEUI_H_INCLUDED
 
 #include "ParameterUI.h"
-#include "BoolParameter.h"
 
 
 class BoolToggleUI : public ParameterUI

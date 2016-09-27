@@ -12,6 +12,7 @@
 #include "MIDIControllerUI.h"
 #include "MIDIManager.h"
 #include "DebugHelpers.h"
+#include "JsHelpers.h"
 
 extern AudioDeviceManager &  getAudioDeviceManager();
 

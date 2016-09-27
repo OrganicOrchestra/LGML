@@ -13,7 +13,6 @@
 
 
 #include "ParameterUI.h"
-#include "StringParameter.h"
 
 class StringParameterUI : public ParameterUI, public Label::Listener
 {

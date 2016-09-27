@@ -13,11 +13,11 @@
 
 
 
-#include "NodeBaseUI.h"
 #include "FloatSliderUI.h"
 #include "MIDIUIHelper.h"
 #include "VSTNode.h"
-
+#include "NodeBaseHeaderUI.h"
+#include "NodeBaseContentUI.h"
 
 class VSTNodeHeaderUI : public NodeBaseHeaderUI, public VSTNode::VSTNodeListener
 {

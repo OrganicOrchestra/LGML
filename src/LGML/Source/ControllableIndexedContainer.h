@@ -12,7 +12,6 @@
 #define CONTROLLABLEINDEXEDCONTAINER_H_INCLUDED
 
 
-#include "ControllableContainer.h"
 
 // DO NOT USE FOR NOW !!!!!! WIP !!
 

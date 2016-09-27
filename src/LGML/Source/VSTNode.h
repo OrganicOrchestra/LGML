@@ -12,13 +12,10 @@
 #define VSTNODE_H_INCLUDED
 
 
-#include "VSTManager.h"
 #include "NodeBase.h"
 
 #include "PluginWindow.h"
-#include "TimeManager.h"
 #include "MIDIListener.h"
-
 
 class VSTNode :
 public NodeBase,

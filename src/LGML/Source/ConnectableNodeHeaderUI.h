@@ -14,7 +14,6 @@
 #include "StringParameterUI.h"
 #include "BoolToggleUI.h"
 #include "VuMeter.h"
-#include "Style.h"
 
 
 class ConnectableNodeUI;

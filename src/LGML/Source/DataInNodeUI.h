@@ -11,9 +11,9 @@
 #ifndef DATAINNODEUI_H_INCLUDED
 #define DATAINNODEUI_H_INCLUDED
 
-#include "NodeBaseUI.h"
 #include "ParameterUI.h"
 #include "DataInNode.h"
+#include "NodeBaseContentUI.h"
 
 //==============================================================================
 /*

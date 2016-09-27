@@ -14,7 +14,9 @@
 
 
 //#include "NodeBase.h"
-#include "NodeBaseUI.h"
+#include "JuceHeader.h"
+#include "NodeConnection.h"
+class Data;
 
 //==============================================================================
 /*

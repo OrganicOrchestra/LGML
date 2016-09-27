@@ -8,12 +8,15 @@
 
 
 DataInNode.cpp
-	line : 28
+	line : 29
 		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
 
 
 ControllableContainer.cpp
-	line : 593
+	line : 416
+		// TODO weird feedback when loading preset on parameter presetName
+
+	line : 594
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -21,11 +24,8 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 506
+	line : 507
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-	line : 415
-		// TODO weird feedback when loading preset on parameter presetName
 
 
 ControllableInspector.cpp
@@ -48,7 +48,7 @@ NodeContainer.h
 
 
 VSTNode.cpp
-	line : 115
+	line : 117
 		// TODO check that it actually works
 
 
@@ -58,13 +58,13 @@ VuMeter.h
 
 
 MainComponentCommands.cpp
-	line : 244
+	line : 247
 		// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
 		//			int result = engine->saveIfNeededAndUserAgrees();
 
 
 JsEnvironment.cpp
-	line : 347
+	line : 348
 		// @ben only supported if move semantics are too are they for you?
 
 
@@ -100,7 +100,7 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.h
-	line : 48
+	line : 47
 		//  TODO:  this should not be implemented in Node to avoid overriding this method
 		//    create onNodeParameterChanged();
 
@@ -116,7 +116,7 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 67
+	line : 62
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
@@ -127,15 +127,15 @@ TimeManager.cpp
 
 
 MIDIController.cpp
-	line : 38
-		// TODO : we may need to listen to sR changes
-
-	line : 159
+	line : 160
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
+
+	line : 39
+		// TODO : we may need to listen to sR changes
 
 
 ControllableContainer.h
-	line : 137
+	line : 138
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -157,7 +157,7 @@ LooperTrack.cpp
 
 
 Main.cpp
-	line : 148
+	line : 149
 		//@martin added but commented for testing (relou behavior)
 
 
@@ -174,7 +174,7 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.h
-	line : 24
+	line : 23
 		// TODO handle merging of multiple component of sameClass : almost there ....
 
 

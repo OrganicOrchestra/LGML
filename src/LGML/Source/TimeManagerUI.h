@@ -12,7 +12,6 @@
 #define TIMEMANAGERUI_H_INCLUDED
 
 #include "TimeManager.h"
-#include "FloatStepperUI.h"
 #include "FloatSliderUI.h"
 #include "TriggerBlinkUI.h"
 #include "IntStepperUI.h"

@@ -11,6 +11,7 @@
 #include "ScriptedConsequence.h"
 #include "ScriptedConsequenceUI.h"
 #include "Rule.h"
+#include "JsHelpers.h"
 
 ScriptedConsequence::ScriptedConsequence(Rule * r) :
 	RuleConsequence(r),

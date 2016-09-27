@@ -14,6 +14,7 @@
 #include "ControllableUI.h"
 
 #include "DebugHelpers.h"
+#include "StringUtil.h"
 
 
 const Identifier ControllableContainer::presetIdentifier("preset");

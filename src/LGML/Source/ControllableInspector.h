@@ -17,7 +17,6 @@
 #include "ControllableContainerSync.h"
 #include "SelectableComponent.h"
 #include "SelectableComponentHandler.h"
-#include "NodeManagerUI.h"
 
 #include "ShapeShifterContent.h"
 

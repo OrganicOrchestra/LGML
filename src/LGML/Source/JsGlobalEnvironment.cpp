@@ -14,7 +14,7 @@
 #include "NodeManager.h"
 #include "ControlManager.h"
 
-
+#include "JsHelpers.h"
 juce_ImplementSingleton(JsGlobalEnvironment);
 
 

@@ -10,6 +10,14 @@
 
 #include "VSTNodeUI.h"
 #include "TriggerBlinkUI.h"
+#include "VSTManager.h"
+#include "NodeBaseUI.h"
+
+ConnectableNodeUI * VSTNode::createUI() {
+  return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
+}
+
+
 
 VSTNodeContentUI::VSTNodeContentUI():
 VSTListShowButton("VSTs"),

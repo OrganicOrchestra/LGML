@@ -10,6 +10,7 @@
 
 
 #include "MainComponent.h"
+#include "Engine.h"
 
 MainContentComponent* createMainContentComponent(Engine* e);
 

@@ -12,7 +12,9 @@
 #define CONTROLLERUIHELPERS_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "ControlManager.h"
+class ControlVariable;
+#include"ControlManager.h"
+
 
 class ControlVariableChooser : public PopupMenu
 {

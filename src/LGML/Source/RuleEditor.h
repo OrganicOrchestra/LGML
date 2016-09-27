@@ -14,7 +14,6 @@
 #include "CustomEditor.h"
 
 #include "RuleUI.h"
-#include "RuleConditionUI.h"
 #include "RuleConditionGroupUI.h"
 #include "ScriptedConditionUI.h"
 #include "RuleConsequenceUI.h"

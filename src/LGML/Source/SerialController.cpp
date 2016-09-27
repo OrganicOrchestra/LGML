@@ -10,6 +10,7 @@
 
 #include "SerialController.h"
 #include "SerialControllerUI.h"
+#include "JsHelpers.h"
 
 SerialController::SerialController() :
 	JsEnvironment("Serial.serial"),

@@ -12,10 +12,10 @@
 #define LOOPERTRACK_H_INCLUDED
 
 //#define BLOCKSIZEGRANULARITY
-#include "RingBuffer.h"
 #include "AudioHelpers.h"
-#include "PlayableBuffer.h"
 #include "ControllableContainer.h"
+
+#include "PlayableBuffer.h"
 
 class LooperNode;
 

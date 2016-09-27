@@ -18,9 +18,9 @@
  then can dispatch synchronous or asynchronous event via TimeManager::Listener
  */
 
-#include "NodeBase.h"
-
+#include "JuceHeader.h"
 #include "TimeMasterCandidate.h"
+#include "ControllableContainer.h"
 
 class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead,
 public TimeMasterCandidate

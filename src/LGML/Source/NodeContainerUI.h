@@ -12,7 +12,6 @@
 #define NODECONTAINERUI_H_INCLUDED
 
 #include "NodeContainer.h"
-#include "InspectableComponent.h"
 #include "ConnectableNodeUI.h"
 
 class NodeContainerUI :

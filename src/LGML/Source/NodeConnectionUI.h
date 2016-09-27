@@ -12,7 +12,6 @@
 #define NODECONNECTIONUI_H_INCLUDED
 
 
-#include "NodeBaseUI.h"
 #include "NodeManagerUI.h"
 
 //==============================================================================

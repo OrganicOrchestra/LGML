@@ -10,7 +10,7 @@
 
 #include "NodeManager.h"
 #include "DummyNode.h"
-
+#include "NodeContainer.h"
 
 AudioDeviceManager& getAudioDeviceManager();
 

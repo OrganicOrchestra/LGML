@@ -9,7 +9,7 @@
  */
 
 #include "LGMLLoggerUI.h"
-
+#include "Style.h"
 
 
 void LGMLLoggerUI::newMessage(const String & s)

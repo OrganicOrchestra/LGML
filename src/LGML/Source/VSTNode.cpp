@@ -12,6 +12,8 @@
 #include "VSTNodeUI.h"
 #include "NodeManager.h"
 #include "DebugHelpers.h"
+#include "VSTManager.h"
+#include "TimeManager.h"
 
 AudioDeviceManager& getAudioDeviceManager();
 
@@ -207,13 +209,6 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
   blockFeedback = false;
 }
 
-
-
-
-
-ConnectableNodeUI * VSTNode::createUI() {
-  return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
-}
 
 
 void VSTNode::setCurrentDevice(const String & deviceName)

@@ -12,6 +12,7 @@
 #include "NodeManager.h"
 #include "DebugHelpers.h"
 #include "JsEnvironment.h"
+#include "JsHelpers.h"
 
 JavascriptController::JavascriptController():JsEnvironment("OSC.JSController"){
     nameParam->setValue("JSController");

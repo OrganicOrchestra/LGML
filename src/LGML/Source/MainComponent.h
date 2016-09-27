@@ -10,7 +10,6 @@
 #define MAINCOMPONENT_H_INCLUDED
 
 
-#include "Inspector.h"
 
 /*
 #include "NodeManager.h"
@@ -30,7 +29,6 @@
 */
 
 #include "ShapeShifterManager.h"
-#include "Engine.h"
 #include "LookAndFeelOO.h"
 //==============================================================================
 /*
@@ -41,6 +39,8 @@
 ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
+
+class Engine;
 
 
 class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel
