@@ -28,7 +28,7 @@ public:
     return *this;
   }
   operator bool(){
-    return isEmpty();
+    return !isEmpty();
   }
 
 };
@@ -115,7 +115,7 @@ public:
       // handles no command args at the begining
       if (res.size()==0){res.add(CommandLineElement());}
 
-      res.getLast().args.add(argument);
+      (res.end()-1)->args.add(argument);
       //DBG("parsing commandline, command : " << command << ", argument :" << argument << " / parsingIdx : " << parsingIdx);
 
       parsingIdx++;

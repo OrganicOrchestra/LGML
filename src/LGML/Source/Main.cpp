@@ -11,6 +11,7 @@
 
 #include "MainComponent.h"
 #include "Engine.h"
+#include "StringUtil.h"
 
 MainContentComponent* createMainContentComponent(Engine* e);
 

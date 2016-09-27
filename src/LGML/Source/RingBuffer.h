@@ -22,8 +22,8 @@ class BipBuffer{
 
 public:
   BipBuffer(int _channels,int size):numChannels(_channels){
-    phantomSize = size;
-    buf.setSize(_channels,3*size,false,true);
+    phantomSize = ceil(size*2.0/3.0);
+    buf.setSize(_channels,3*phantomSize,false,true);
     writeNeedle = 0;
   }
 
@@ -39,39 +39,68 @@ public:
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
       }
+      writeNeedle+=firstSeg;
+      writeNeedle%=2*phantomSize;
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
       }
+      writeNeedle+=toCopy-firstSeg;
+      writeNeedle%=2*phantomSize;
     }
     else{
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i),toCopy,i);
       }
+      writeNeedle+=toCopy;
+      writeNeedle%=2*phantomSize;
     }
   }
 
 
   const AudioBuffer<float> & getLastBlock(int num){
-    jassert(num<=phantomSize);
+    jassert(num<=buf.getNumSamples()/2);
     pointers.ensureStorageAllocated(numChannels);
     for(int i = 0 ; i < numChannels ; i++){
       pointers.set(i,buf.getArrayOfWritePointers()[i] + phantomSize+ writeNeedle-num);
-      DBG((uint64)pointers[i]);
     }
     contiguousBuffer.setDataToReferTo(pointers.getRawDataPointer(), numChannels, num);
     return contiguousBuffer;
   }
 
+  const void printContent(){
+    String niceOutput;
+    for(int i = 0 ; i < buf.getNumSamples() ; i++){
+      for(int c = 0 ;c < numChannels ; c++){niceOutput+="\t  "+String(buf.getSample(c,i));}
+      if(i== phantomSize+ writeNeedle){niceOutput+="\t  writeNeedle";}
+      if(i%phantomSize==0){niceOutput+="\t  phantomLimit";}
+      niceOutput+="\n";
+    }
+    DBG(niceOutput);
+  }
+  
+
+
   AudioSampleBuffer buf;
 private:
-  void safeCopy(const float * b,int s,int channel){
-    buf.copyFrom(channel, phantomSize+writeNeedle, b, s);
+  void safeCopy(const float * b,int numSample,int channel){
 
-    if(writeNeedle>phantomSize){
-      buf.copyFrom(channel, writeNeedle,b,s);
+    // overLapping
+    if(writeNeedle < phantomSize && writeNeedle+numSample>phantomSize){
+      int overflow = writeNeedle+numSample - phantomSize;
+      int left = numSample-overflow;
+      jassert (left>0);
+      if(left>0) buf.copyFrom(channel, phantomSize+writeNeedle,b,left);
+      buf.copyFrom(channel, phantomSize+writeNeedle+left,b+left,overflow);
+      buf.copyFrom(channel, writeNeedle+left-phantomSize,b+left,overflow);
     }
-    writeNeedle+=s;
-    writeNeedle%=2*phantomSize;
+    else if (writeNeedle+numSample>phantomSize){
+      buf.copyFrom(channel, phantomSize+writeNeedle,b,numSample);
+      buf.copyFrom(channel, writeNeedle-phantomSize,b,numSample);
+    }
+    else{
+      buf.copyFrom(channel, phantomSize+writeNeedle, b, numSample);
+    }
+
 
   }
   int writeNeedle;
@@ -95,17 +124,17 @@ private:
 class BipBufferTest  : public UnitTest
 {
 public:
-  BipBufferTest() : UnitTest ("Ring buffer Test") {}
+  BipBufferTest() : UnitTest ("RingBufferTest") {}
 
 
 
   void runTest() override
   {
-    beginTest ("RingBufferTest");
+    beginTest ("readBack");
 
 
     int numBlocks = 2;
-    int blockSize = 512;
+    int blockSize = 10;
     int numChannels = 2;
 
     int ringSize = numBlocks*blockSize;
@@ -129,36 +158,33 @@ public:
 
       }
       if((i+1)%blockSize ==0){
+        expect(tstBuf.getMagnitude(0, tstBuf.getNumSamples())>0, "setting empty buffer");
         ring.writeBlock(tstBuf);
       }
 
-    if(i-(copiedSize - ringSize)>=0){
-      for (int c = 0 ;  c < numChannels ; c++){
-        expected.setSample(c, i-(copiedSize - ringSize), dstValue);
-      }
-    }
-
-
-    }
-
-
-    // reading back
-    for(int i = 0 ; i <copiedSize ;i+=blockSize){
-      AudioBuffer<float>  b = ring.getLastBlock(blockSize);
-      for(int c = 0  ;c < numChannels ; c++){
-        for( int j = 0 ; j < blockSize ; j++){
-        float fexpected =  expected.getSample(c, i*blockSize+j);
-        float found = b.getSample(c,j);
-          String err = "failed at :"+String(i)+ ",expect: "+String(fexpected)+"found: "+String(found) ;
-          err+= " content of buffer in channel "+String(c)+" : \n";
-          for( int k = 0 ; k < b.getNumSamples();k++){
-            err+="\n "+String(k)+" : "+String (b.getSample(c,k));
-          }
-        expect(found == fexpected ,err);
-
+      if(i>=(copiedSize - ringSize)){
+        for (int c = 0 ;  c < numChannels ; c++){
+          expected.setSample(c, i-(copiedSize - ringSize), dstValue);
         }
       }
+
+
     }
+
+
+    // reading last
+    int blockNum = ceil(ringSize/blockSize);
+      const AudioBuffer<float>  b = ring.getLastBlock(blockNum*blockSize);
+      for(int c = 0  ;c < numChannels ; c++){
+        for( int j = 0 ; j < blockNum*blockSize ; j++){
+          float fexpected =  expected.getSample(c, j);
+          float found = b.getSample(c,j);
+          String err = "failed at :"+String(j)+ ",expect: "+String(fexpected)+"found: "+String(found) ;
+          expect(found == fexpected ,err);
+          
+        }
+      }
+
   }
 };
 

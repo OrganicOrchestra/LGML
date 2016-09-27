@@ -7,8 +7,6 @@
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
       <FILE id="m35Qyt" name="NodeChildProofer.cpp" compile="1" resource="0"
             file="Tests/NodeChildProofer.cpp"/>
-      <FILE id="F0nqJX" name="NodeChildProofer.h" compile="0" resource="0"
-            file="Tests/NodeChildProofer.h"/>
     </GROUP>
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">

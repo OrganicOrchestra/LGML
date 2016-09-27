@@ -17,7 +17,7 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 
 #include "DataProcessorGraph.h"
 #include "ControllableContainer.h"
-class NodeContainer;
+#include "NodeContainer.h"//keep
 
 
 class NodeManager:

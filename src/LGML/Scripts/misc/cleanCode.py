@@ -54,7 +54,7 @@ for file,linesToChange in processedFiles.iteritems():
 			return True;
 		for l in originLines:
 			if className+"::" in l:
-				if showIgnored :print 'using internal class Call for '+className
+				if showIgnored :print '\t  using internal class Call for '+className
 				return True;
 		return False
 
