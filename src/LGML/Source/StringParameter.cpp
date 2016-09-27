@@ -34,7 +34,7 @@ ControllableUI* StringParameter::createDefaultUI(Controllable * targetControllab
 
 void StringParameter::setValue(var _value,bool silentSet,bool force ){
     
-    DBG(shortName << " : " << value.toString() << " :new " <<  _value.toString());
+   
     if (!force && value.toString() == _value.toString()) return;
     
     setValueInternal(_value);

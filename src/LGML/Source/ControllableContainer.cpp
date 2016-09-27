@@ -101,8 +101,10 @@ void ControllableContainer::removeControllable(Controllable * c)
 {
   controllableContainerListeners.call(&ControllableContainerListener::controllableRemoved, c);
 
-  // @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
-
+  if(Parameter * p = dynamic_cast<Parameter*>(c)){
+    p->removeParameterListener(this);
+    p->removeAsyncParameterListener(this);
+  }
   controllables.removeObject(c);
   notifyStructureChanged();
 }
@@ -113,7 +115,12 @@ void ControllableContainer::notifyStructureChanged(){
   controllableContainerListeners.call(&ControllableContainerListener::childStructureChanged, this);
 }
 
-
+void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
+  if(pv.parameter==currentPresetName){
+    loadPresetWithName(pv.parameter->stringValue());
+  }
+  onContainerParameterChangedAsync(pv.parameter, pv.value);
+}
 void ControllableContainer::setNiceName(const String &_niceName) {
   if (niceName == _niceName) return;
   niceName = _niceName;
@@ -507,12 +514,11 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
-  if (p == currentPresetName) loadPresetWithName(p->stringValue());
-
   onContainerParameterChanged(p);
 
   if (p->isControllableExposed) dispatchFeedback(p);
 }
+
 
 void ControllableContainer::triggerTriggered(Trigger * t)
 {
@@ -528,6 +534,7 @@ void ControllableContainer::addParameterInternal(Parameter * p)
   p->setParentContainer(this);
   controllables.add(p);
   p->addParameterListener(this);
+  p->addAsyncParameterListener(this);
   controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, p);
   notifyStructureChanged();
 }

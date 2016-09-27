@@ -82,7 +82,7 @@ public TimeMasterCandidate
 
     uint beatTimeInSample;
     int sampleRate;
-    int blockSize;
+
     Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;
     bool isMasterCandidate(TimeMasterCandidate * n);
     bool hasMasterCandidate();

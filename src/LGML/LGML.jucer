@@ -4,6 +4,12 @@
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.4" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
+    <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
+      <FILE id="m35Qyt" name="NodeChildProofer.cpp" compile="1" resource="0"
+            file="Tests/NodeChildProofer.cpp"/>
+      <FILE id="F0nqJX" name="NodeChildProofer.h" compile="0" resource="0"
+            file="Tests/NodeChildProofer.h"/>
+    </GROUP>
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
@@ -723,6 +729,10 @@
                        headerPath="../../External/serial/include"/>
         <CONFIGURATION name="Debug" isDebug="1" osxSDK="default" osxCompatibility="10.7 SDK"
                        osxArchitecture="64BitUniversal" targetName="LGML_Debug" defines=""
+                       cppLanguageStandard="c++11" cppLibType="libc++" headerPath="../../External/serial/include"
+                       customXcodeFlags="ONLY_ACTIVE_ARCH=1"/>
+        <CONFIGURATION name="Test" isDebug="1" osxSDK="default" osxCompatibility="10.7 SDK"
+                       osxArchitecture="64BitUniversal" targetName="LGML_Debug" defines="LGML_UNIT_TESTS=1"
                        cppLanguageStandard="c++11" cppLibType="libc++" headerPath="../../External/serial/include"
                        customXcodeFlags="ONLY_ACTIVE_ARCH=1"/>
       </CONFIGURATIONS>

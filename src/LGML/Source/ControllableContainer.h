@@ -39,7 +39,7 @@ public:
     virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
 
-class ControllableContainer : public Parameter::Listener, public Trigger::Listener, public ControllableContainerListener
+class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public Trigger::Listener, public ControllableContainerListener
 {
 public:
     ControllableContainer(const String &niceName);
@@ -142,6 +142,7 @@ private:
 
     virtual void onContainerParameterChanged(Parameter *) {};
     virtual void onContainerTriggerTriggered(Trigger *) {};
+    virtual void onContainerParameterChangedAsync(Parameter *,const var & value){};
     void addParameterInternal(Parameter * p);
 
     int numContainerIndexed;
@@ -175,6 +176,7 @@ private:
 
 
     void notifyStructureChanged();
+  void newMessage(const Parameter::ParamWithValue&)override;
 
     WeakReference<ControllableContainer>::Master masterReference;
     friend class WeakReference<ControllableContainer>;

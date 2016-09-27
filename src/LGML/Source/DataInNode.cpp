@@ -26,7 +26,9 @@ DataInNode::~DataInNode()
 void DataInNode::onContainerParameterChanged(Parameter * p)
 {
         NodeBase::onContainerParameterChanged(p);
-  updateOutputData(p->niceName, p->getNormalizedValue());
+  // @ben string obviously can't send float in updateOutputData, so updating everything but string for now
+    if(dynamic_cast<StringParameter*>(p)==nullptr){
+    updateOutputData(p->niceName, p->getNormalizedValue());}
 }
 
 ConnectableNodeUI * DataInNode::createUI()

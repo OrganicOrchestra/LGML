@@ -17,7 +17,7 @@ NodeBase("Looper",NodeType::LooperType),
 selectedTrack(nullptr),
 wasMonitoring(false),
 trackGroup(this),
-streamAudioBuffer(1,16384,512)// 16000 ~ 300ms and 256*64
+streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
 {
 
   numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
@@ -229,7 +229,7 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
     selectTrack->setValue(-1);
 
   }
-
+#if !LGML_UNIT_TESTS
   if(t==exportAudio){
     FileChooser myChooser("Please select the directory for exporting audio ...");
 
@@ -262,6 +262,7 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
 
     }
   }
+#endif
 
 }
 

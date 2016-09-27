@@ -13,7 +13,7 @@
 
 
 #include "NodeBase.h"
-class NodeBaseUI;
+
 
 class AudioMixerNode : public NodeBase
 {

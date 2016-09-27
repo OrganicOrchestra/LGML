@@ -76,7 +76,12 @@ void Controllable::updateControlAddress()
 
 String Controllable::getControlAddress(ControllableContainer * relativeTo)
 {
+  // we may need empty parentContainer in unit tests
+#if LGML_UNIT_TESTS
+  return (parentContainer?parentContainer->getControlAddress(relativeTo):"") + "/"+shortName;
+#else
   return parentContainer->getControlAddress(relativeTo) + "/"+shortName;
+#endif
 }
 
 DynamicObject * Controllable::createDynamicObject()

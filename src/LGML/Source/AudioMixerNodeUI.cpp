@@ -9,7 +9,7 @@
  */
 
 #include "AudioMixerNodeUI.h"
-
+#include "ConnectableNodeUI.h"
 
 void AudioMixerNodeUI::resized() {
     if(outputBusUIs.size()==0)return;

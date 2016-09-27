@@ -245,18 +245,15 @@ void VSTNode::setStateInformation(const void* data, int sizeInBytes) {
 
 void VSTNode::loadPresetInternal(PresetManager::Preset * preset){
   presetToLoad = preset;
-  triggerAsyncUpdate();
-
-
-};
-
-void VSTNode::handleAsyncUpdate(){
   var v = presetToLoad->getPresetValue("/rawData");
   jassert(v.isUndefined() || v.isString());
   MemoryBlock m;
   m.fromBase64Encoding(v.toString());
   setStateInformation(m.getData(),(int)m.getSize());
-}
+
+};
+
+
 void VSTNode::savePresetInternal(PresetManager::Preset * preset){
 
   MemoryBlock m;

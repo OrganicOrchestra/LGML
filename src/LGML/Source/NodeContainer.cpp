@@ -423,6 +423,7 @@ NodeConnection * NodeContainer::getConnectionBetweenNodes(ConnectableNode * sour
 Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode * node)
 {
     Array<NodeConnection*> result;
+
     ConnectableNode * tSourceNode = (node->type == ContainerType) ? ((NodeContainer *)node)->containerOutNode : node;
     ConnectableNode * tDestNode = (node->type == ContainerType) ? ((NodeContainer *)node)->containerInNode : node;
 
@@ -511,15 +512,13 @@ void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float 
 void NodeContainer::onContainerParameterChanged(Parameter * p)
 {
     ConnectableNode::onContainerParameterChanged(p);
-    if (p == enabledParam)
-    {
-        
-        NodeContainer::triggerAsyncUpdate();
-    }
-}
-void NodeContainer::handleAsyncUpdate() {
-    bypassNode(!enabledParam->boolValue());
 
+}
+void NodeContainer::onContainerParameterChangedAsync(Parameter * p ,const var & value) {
+  if (p == enabledParam)
+  {
+    bypassNode(!enabledParam->boolValue());
+  }
 };
 
 void NodeContainer::bypassNode(bool bypass){

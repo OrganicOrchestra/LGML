@@ -94,6 +94,10 @@ class PlayableBuffer {
 
 
   inline void readNextBlock(AudioBuffer<float> & buffer,int fromSample = 0  ){
+    if(recordNeedle==0){
+      buffer.clear();
+      return;
+    }
     jassert(isOrWasPlaying());
 
 

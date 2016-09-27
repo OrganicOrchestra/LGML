@@ -58,7 +58,7 @@ public:
 		/** Destructor. */
 		virtual ~Listener() {}
 		virtual void parameterValueChanged(Parameter * p) = 0;
-        virtual void parameterRangeChanged(Parameter * ){};
+    virtual void parameterRangeChanged(Parameter * ){};
     };
 
     ListenerList<Listener> listeners;

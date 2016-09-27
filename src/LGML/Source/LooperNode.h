@@ -35,10 +35,9 @@ public:
     public:
         TrackGroup(LooperNode* l):ControllableContainer("tracks"),owner(l){};
 
-        	void setNumTracks(int numTracks);
+        void setNumTracks(int numTracks);
         void addTrack();
         void removeTrack(int i);
-
 
         OwnedArray<LooperTrack> tracks;
         LooperNode * owner;

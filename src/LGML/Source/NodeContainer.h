@@ -45,8 +45,7 @@ class NodeContainer :
 	public ConnectableNode::ConnectableNodeListener,
 	public NodeConnection::Listener,
 	public ConnectableNode::RMSListener,
-	public ParameterProxy::ParameterProxyListener,
-    public AsyncUpdater
+	public ParameterProxy::ParameterProxyListener
 {
 public:
 	NodeContainer(const String &name = "Container");
@@ -127,13 +126,14 @@ public:
 
 
 	virtual void onContainerParameterChanged(Parameter * p) override;
+  virtual void onContainerParameterChangedAsync(Parameter * p ,const var & value)override;
 
 	virtual ConnectableNodeUI * createUI() override;
 
 	//AUDIO
 
 	AudioProcessorGraph::Node * getAudioNode(bool isInput) override;
-    void handleAsyncUpdate() override;
+
 
 	//DATA
 	bool hasDataInputs() override;

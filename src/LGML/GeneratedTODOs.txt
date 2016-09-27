@@ -7,11 +7,13 @@
  ///////////////////////////////////////
 
 
-ControllableContainer.cpp
-	line : 408
-		// TODO weird feedback when loading preset on parameter presetName
+DataInNode.cpp
+	line : 28
+		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
 
-	line : 586
+
+ControllableContainer.cpp
+	line : 593
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -19,11 +21,11 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 499
+	line : 506
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 103
-		// @ben change nested callback for a special callback allowing listener to synchronize themselves without having to listen to every container
+	line : 415
+		// TODO weird feedback when loading preset on parameter presetName
 
 
 ControllableInspector.cpp
@@ -40,7 +42,7 @@ NodeBase.cpp
 
 
 NodeContainer.h
-	line : 71
+	line : 70
 		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
 		//(todo : find a way to have simpler event flow)
 
@@ -67,24 +69,24 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 625
+	line : 624
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
 	line : 291
 		// TODO nicely handle file format errors?
 
-	line : 182
-		//@ben remove recursive for now (not useful and duplicating values...)
-		//
-		//    for (auto &n : nodes) n->saveCurrentPreset();
-
-	line : 483
+	line : 484
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
+
+	line : 182
+		//@ben remove recursive for now (not useful and duplicating values...)
+		//
+		//    for (auto &n : nodes) n->saveCurrentPreset();
 
 
 TimeManager.h
@@ -155,7 +157,7 @@ LooperTrack.cpp
 
 
 Main.cpp
-	line : 124
+	line : 148
 		//@martin added but commented for testing (relou behavior)
 
 

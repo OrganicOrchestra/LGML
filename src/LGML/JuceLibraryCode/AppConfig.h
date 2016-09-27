@@ -26,7 +26,11 @@
 // dont touch this, change following JUCE_IS_REPAINT_DEBUGGING_ACTIVE to avoid recompiling
 #define JUCE_ENABLE_REPAINT_DEBUGGING 1
 
+
+// this will execute only unit tests
+#ifndef LGML_UNIT_TESTS
 #define LGML_UNIT_TESTS 0
+#endif
 
 
 

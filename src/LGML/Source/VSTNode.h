@@ -23,8 +23,7 @@
 class VSTNode :
 public NodeBase,
 public AudioProcessorListener,
-public MIDIListener,
-AsyncUpdater
+public MIDIListener
 {
 
 public:
@@ -69,7 +68,7 @@ public:
 
 
 // load state on message thread (some plugin crash if not)
-    void handleAsyncUpdate()override;
+    
 PresetManager::Preset * presetToLoad;
 
 //    String getPresetFilter() override;

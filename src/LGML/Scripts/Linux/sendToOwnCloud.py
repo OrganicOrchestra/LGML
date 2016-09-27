@@ -26,8 +26,8 @@ def sendToOwnCloud(originPath,destPath):
 	sh("curl -X PUT \"http://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"])
 
 
-# sh('cd '+localMakePath+' && make CONFIG='+config+' -j2');
-# sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName)
+sh('cd '+localMakePath+' && make CONFIG='+config+' -j2');
+sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName)
 ownCloudPath = "Tools/LGML/App-Dev/Linux/Ubuntu/x86-64/LGML.tar.gz"
 sendToOwnCloud(localExportFile,urllib.pathname2url(ownCloudPath))
 
