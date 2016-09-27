@@ -12,8 +12,7 @@
 #define OSCCONTROLLER_H_INCLUDED
 
 #include "Controller.h"
-#include "StringParameter.h"
-
+class StringParameter;
 
 class OSCController : public Controller, public OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
 {

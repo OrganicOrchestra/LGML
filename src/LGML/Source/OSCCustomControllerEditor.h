@@ -12,7 +12,9 @@
 #define OSCCUSTOMCONTROLLEREDITOR_H_INCLUDED
 
 #include "OSCControllerEditor.h"
-#include "OSCCustomControllerUI.h"
+
+#include "OSCCustomControllerUI.h"//keep
+#include "OSCCustomController.h"//keep
 
 class OSCCustomControllerEditor : public OSCControllerEditor
 {

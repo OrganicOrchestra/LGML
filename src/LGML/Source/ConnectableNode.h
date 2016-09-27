@@ -11,7 +11,6 @@
 #ifndef CONNECTABLENODE_H_INCLUDED
 #define CONNECTABLENODE_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "ControllableContainer.h"
 #include "NodeFactory.h"
 #include "Data.h"

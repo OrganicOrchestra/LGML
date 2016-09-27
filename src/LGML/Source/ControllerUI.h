@@ -11,9 +11,8 @@
 #ifndef CONTROLLERUI_H_INCLUDED
 #define CONTROLLERUI_H_INCLUDED
 
-#include "JuceHeader.h"
 
-#include "Controller.h"
+#include "Controller.h"//keep
 #include "InspectableComponent.h"
 #include "BoolToggleUI.h"
 #include "StringParameterUI.h"

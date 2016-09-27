@@ -10,6 +10,7 @@
 
 #include "SerialControllerEditor.h"
 #include "FloatSliderUI.h"
+#include "SerialControllerUI.h"//keep
 
 SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI) :
 	ControllerEditor(controllerUI),

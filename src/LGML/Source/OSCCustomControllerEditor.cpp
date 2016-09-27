@@ -10,6 +10,7 @@
 
 #include "OSCCustomControllerEditor.h"
 #include "DebugHelpers.h"
+#include "OSCControllerUI.h"
 
 OSCCustomControllerEditor::OSCCustomControllerEditor(OSCCustomControllerUI * controllerUI) :
 	OSCControllerEditor(controllerUI),

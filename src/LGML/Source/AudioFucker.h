@@ -11,6 +11,7 @@
 #ifndef AUDIOFUCKER_H_INCLUDED
 #define AUDIOFUCKER_H_INCLUDED
 
+#include "JuceHeader.h"//keep
 
 class AudioFucker : public AudioIODeviceCallback{
 

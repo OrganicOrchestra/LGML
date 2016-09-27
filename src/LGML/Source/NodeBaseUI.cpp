@@ -17,8 +17,7 @@
 #include "FloatSliderUI.h"
 #include "MainComponent.h"
 
-#include "NodeBaseContentUI.h"
-#include "NodeBaseHeaderUI.h"
+
 
 
 //==============================================================================

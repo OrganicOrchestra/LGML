@@ -15,6 +15,7 @@
 #include "Style.h"
 
 #include "DebugHelpers.h"
+#include "NodeConnectionUI.h"
 
 //==============================================================================
 NodeConnectionEditor::NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI) :

@@ -19,11 +19,9 @@
 
 
 
-#include "PresetManager.h"
 #include "ConnectableNode.h"
 
 class ConnectableNodeUI;
-class NodeManager;
 
 
 class NodeBase :

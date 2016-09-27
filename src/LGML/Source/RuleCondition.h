@@ -11,10 +11,8 @@
 #ifndef RULECONDITION_H_INCLUDED
 #define RULECONDITION_H_INCLUDED
 
-#include "JuceHeader.h"
 
-#include "Rule.h"
-
+#include "Rule.h"//keep
 
 class RuleCondition :
 	public RuleListener

@@ -12,7 +12,8 @@
 #define MIDICONTROLLEREDITOR_H_INCLUDED
 
 #include "ControllerEditor.h"
-#include "MIDIControllerUI.h"
+class MIDIControllerUI;
+class MIDIController;
 #include "MIDIUIHelper.h"
 #include "JsEnvironmentUI.h"
 

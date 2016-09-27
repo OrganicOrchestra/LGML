@@ -13,8 +13,9 @@
 
 
 #include "DataProcessorGraph.h"
-class NodeManager;
-class NodeBase;
+#include "NodeBase.h"
+
+
 
 class NodeConnection :
 	public ReferenceCountedObject,

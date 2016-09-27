@@ -12,7 +12,7 @@
 #define NODECONTAINERCONTENTUI_H_INCLUDED
 
 #include "ConnectableNodeContentUI.h"
-#include "ParameterProxy.h"
+class ParameterProxy;
 #include "NodeContainer.h"
 
 class NodeContainerContentUI :

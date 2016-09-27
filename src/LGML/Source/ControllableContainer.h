@@ -12,13 +12,14 @@
 #define CONTROLLABLECONTAINER_H_INCLUDED
 
 #include "Controllable.h"
-#include "FloatParameter.h"
-#include "IntParameter.h"
-#include "BoolParameter.h"
-#include "StringParameter.h"
+#include "FloatParameter.h" //keep
+#include "IntParameter.h" //keep
+#include "BoolParameter.h" //keep
+#include "StringParameter.h" //keep
 #include "Trigger.h"
 #include "PresetManager.h"
-
+#include "DebugHelpers.h" //keep
+#include "AudioHelpers.h"//keep
 
 
 

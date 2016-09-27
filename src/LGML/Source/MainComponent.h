@@ -28,7 +28,6 @@
 #include "LGMLLoggerUI.h"
 */
 
-#include "ShapeShifterManager.h"
 #include "LookAndFeelOO.h"
 //==============================================================================
 /*
@@ -41,7 +40,8 @@ ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
 class Engine;
-
+#include "ShapeShifterManager.h"//keep
+#include "DebugHelpers.h"//keep
 
 class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel
 

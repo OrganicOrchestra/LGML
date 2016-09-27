@@ -10,7 +10,8 @@
 
 #include "JavascriptControllerEditor.h"
 #include "JsEnvironmentUI.h"
-
+#include "JavascriptController.h"
+#include "JavascriptControllerUI.h"
 
 JavascriptControllerEditor::JavascriptControllerEditor(JavascriptControllerUI * jsControllerUI) :
 	OSCControllerEditor(jsControllerUI),

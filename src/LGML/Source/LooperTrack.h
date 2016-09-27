@@ -12,7 +12,6 @@
 #define LOOPERTRACK_H_INCLUDED
 
 //#define BLOCKSIZEGRANULARITY
-#include "AudioHelpers.h"
 #include "ControllableContainer.h"
 
 #include "PlayableBuffer.h"

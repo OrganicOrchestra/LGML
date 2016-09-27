@@ -11,8 +11,7 @@
 #ifndef RULECONDITIONGROUP_H_INCLUDED
 #define RULECONDITIONGROUP_H_INCLUDED
 
-#include "Rule.h"
-
+#include "Rule.h"//keep
 class RuleConditionGroup :
 	public RuleConditionListener,
 	public RuleConditionGroupListener

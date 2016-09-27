@@ -11,7 +11,7 @@
 #ifndef ConnectableNodeCONTENTUI_H_INCLUDED
 #define ConnectableNodeCONTENTUI_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "JuceHeader.h"//keep
 
 class ConnectableNodeUI;
 class ConnectableNode;

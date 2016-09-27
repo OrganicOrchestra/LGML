@@ -11,7 +11,6 @@
 #ifndef STRINGUTIL_H_INCLUDED
 #define STRINGUTIL_H_INCLUDED
 
-#include "JuceHeader.h"
 
 class CommandLineElement{
 public:

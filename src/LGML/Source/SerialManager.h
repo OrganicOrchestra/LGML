@@ -11,7 +11,6 @@
 #ifndef SERIALMANAGER_H_INCLUDED
 #define SERIALMANAGER_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "SerialPort.h"
 
 

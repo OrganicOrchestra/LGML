@@ -12,11 +12,10 @@
 #define MOVABLEPANEL_H_INCLUDED
 
 #include "ShapeShifter.h"
-#include "ShapeShifterPanelTab.h"
+class ShapeShifterPanelTab;
 #include "ShapeShifterContent.h"
 #include "ShapeShifterPanelHeader.h"
 
-class ShapeShifterContainer;
 
 class ShapeShifterPanel : public ShapeShifter, public ShapeShifterPanelHeader::Listener
 {

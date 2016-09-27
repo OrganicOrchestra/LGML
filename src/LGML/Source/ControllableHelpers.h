@@ -11,9 +11,9 @@
 #ifndef CONTROLLABLEHELPERS_H_INCLUDED
 #define CONTROLLABLEHELPERS_H_INCLUDED
 
-#include "JuceHeader.h"
-#include "ControllableContainer.h"
-
+#include "JuceHeader.h"//keep
+class ControllableContainer;
+class Controllable;
 
 
 class ControllableContainerPopupMenu : public PopupMenu

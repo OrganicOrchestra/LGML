@@ -14,6 +14,7 @@
 #include "DebugHelpers.h"
 #include "VSTManager.h"
 #include "TimeManager.h"
+#include "PluginWindow.h"//keep
 
 AudioDeviceManager& getAudioDeviceManager();
 

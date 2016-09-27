@@ -11,9 +11,8 @@
 #ifndef DATAPROCESSORGRAPH_H_INCLUDED
 #define DATAPROCESSORGRAPH_H_INCLUDED
 
-
-#include "NodeBase.h"
-
+#include "Data.h"//keep
+class NodeBase;
 /*
 DataProcessoGraph handle a graph of DataProcessorGraph::Node,
     each Node refer to a dataProcessor and allow connections between them

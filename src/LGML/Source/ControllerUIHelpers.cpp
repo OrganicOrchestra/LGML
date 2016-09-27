@@ -9,7 +9,7 @@
 */
 
 #include "ControllerUIHelpers.h"
-
+#include "ControlManager.h"
 ControlVariableChooser::ControlVariableChooser()
 {
 	int controllerIndex = 1;

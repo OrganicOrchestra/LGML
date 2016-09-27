@@ -11,11 +11,11 @@
 #ifndef SHAPESHIFTER_H_INCLUDED
 #define SHAPESHIFTER_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "JuceHeader.h"//keep
 
 class ShapeShifterContainer;
 
-class ShapeShifter : public juce::Component
+class ShapeShifter : public Component
 {
 public :
 	enum Type {PANEL, CONTAINER};

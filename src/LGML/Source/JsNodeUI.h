@@ -12,7 +12,7 @@
 #define JSNODEEDITOR_H_INCLUDED
 
 #include "JsEnvironmentUI.h"
-#include "NodeBaseUI.h"
+#include "NodeBaseUI.h"//keep
 
 class JsNodeUI : public NodeBaseContentUI,public ControllableContainerListener,JsEnvironment::Listener{
 

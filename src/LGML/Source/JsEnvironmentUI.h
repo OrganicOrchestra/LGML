@@ -14,6 +14,7 @@
 
 #include "JsEnvironment.h"
 
+
 class JsEnvironmentUI : public Component,public Button::Listener,public JsEnvironment::Listener{
 public:
 	JsEnvironmentUI(JsEnvironment * _env);

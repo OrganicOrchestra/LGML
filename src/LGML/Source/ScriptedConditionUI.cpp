@@ -10,6 +10,7 @@
 
 #include "ScriptedConditionUI.h"
 
+
 ScriptedConditionUI::ScriptedConditionUI(ScriptedCondition * condition) :
 	RuleConditionUI(condition),
 	scriptedCondition(condition),

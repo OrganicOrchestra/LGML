@@ -14,7 +14,6 @@
 
 
 //#include "NodeBase.h"
-#include "JuceHeader.h"
 #include "NodeConnection.h"
 class Data;
 

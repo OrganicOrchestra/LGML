@@ -18,7 +18,6 @@
  then can dispatch synchronous or asynchronous event via TimeManager::Listener
  */
 
-#include "JuceHeader.h"
 #include "TimeMasterCandidate.h"
 #include "ControllableContainer.h"
 

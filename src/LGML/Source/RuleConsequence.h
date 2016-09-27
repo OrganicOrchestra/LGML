@@ -11,9 +11,7 @@
 #ifndef RULECONSEQUENCE_H_INCLUDED
 #define RULECONSEQUENCE_H_INCLUDED
 
-#include "JuceHeader.h"
-#include "Rule.h"
-
+#include "Rule.h"//keep
 class RuleConsequenceUI;
 
 class RuleConsequence:

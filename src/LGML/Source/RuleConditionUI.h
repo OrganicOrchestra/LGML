@@ -11,7 +11,7 @@
 #ifndef RULECONDITIONUI_H_INCLUDED
 #define RULECONDITIONUI_H_INCLUDED
 
-#include "RuleCondition.h"
+#include "RuleCondition.h"//keep
 
 class RuleConditionUI :
 	public Component,

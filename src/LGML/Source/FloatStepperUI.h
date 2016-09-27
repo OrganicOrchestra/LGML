@@ -12,7 +12,6 @@
 #define FLOATSTEPPERUI_H_INCLUDED
 
 #include "ParameterUI.h"
-#include "JuceHeader.h"
 
 class FloatStepperUI : public ParameterUI, public Slider::Listener
 {

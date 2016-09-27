@@ -19,7 +19,6 @@
 #include "SerialController.h"
 
 
-class ControllerManager;
 
 static const String controllerTypeNames[] = {
 	"ScriptedOSC",

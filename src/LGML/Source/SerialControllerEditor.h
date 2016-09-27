@@ -13,9 +13,10 @@
 
 
 #include "ControllerEditor.h"
-#include "SerialControllerUI.h"
+class SerialControllerUI;
 #include "SerialUIHelper.h"
 #include "JsEnvironmentUI.h"
+#include "SerialController.h"//keep
 
 class SerialControllerEditor :
 	public ControllerEditor, ComboBoxListener,

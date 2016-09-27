@@ -12,7 +12,7 @@
 #define VUMETER_H_INCLUDED
 
 #include "NodeBase.h"
-#include "Style.h"
+#include "Style.h"//keep
 
 //TODO, move to more common place for use in other components
 class VuMeter : public Component, public NodeBase::RMSListener ,public NodeBase::RMSChannelListener,Timer{

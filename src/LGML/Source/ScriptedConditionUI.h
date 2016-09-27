@@ -11,7 +11,7 @@
 #ifndef SCRIPTEDCONDITIONUI_H_INCLUDED
 #define SCRIPTEDCONDITIONUI_H_INCLUDED
 
-#include "ScriptedCondition.h"
+#include "ScriptedCondition.h"//keep
 #include "RuleConditionUI.h"
 #include "JsLiveEditor.h"
 
