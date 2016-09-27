@@ -11,8 +11,7 @@
 #ifndef PRESETMANAGER_H_INCLUDED
 #define PRESETMANAGER_H_INCLUDED
 
-#include "JuceHeader.h"
-
+#include "JuceHeader.h"//keep
 class ControllableContainer;
 
 

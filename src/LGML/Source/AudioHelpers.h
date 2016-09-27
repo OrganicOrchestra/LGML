@@ -12,7 +12,6 @@
 #define AUDIOHELPERS_H_INCLUDED
 
 
-#include "JuceHeader.h"
 #define DB0_FOR_01 0.8f
 // create a gain value for a float  between 0 and 1
 // DB0_FOR_01   -> 0dB

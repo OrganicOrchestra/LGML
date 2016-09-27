@@ -11,7 +11,6 @@
 #ifndef MIDILISTENER_H_INCLUDED
 #define MIDILISTENER_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "MIDIManager.h"
 
 // abstract base class that provide midi callback handle and keeps MIDIManager in sync

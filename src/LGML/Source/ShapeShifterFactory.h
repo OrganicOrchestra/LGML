@@ -11,7 +11,8 @@
 #ifndef SHAPESHIFTERFACTORY_H_INCLUDED
 #define SHAPESHIFTERFACTORY_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "JuceHeader.h"//keep
+
 class ShapeShifterContent;
 
 const static StringArray globalPanelNames = { "Node Manager", "Time Manager", "Inpector","Logger","Controllers","Rules","Fast Mapper" };

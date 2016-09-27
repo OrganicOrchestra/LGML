@@ -12,7 +12,6 @@
 #define DEBUGHELPERS_H_INCLUDED
 //  header (build and link-time cheap) to include everywhere we need LGML specific debug macros
 
-#include "JuceHeader.h"
 
 
 // log informing file from where it was outputed

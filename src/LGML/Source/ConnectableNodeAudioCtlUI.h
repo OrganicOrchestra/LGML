@@ -11,13 +11,12 @@
 #ifndef CONNECTABLENODEAUDIOCTLUI_H_INCLUDED
 #define CONNECTABLENODEAUDIOCTLUI_H_INCLUDED
 
-#include "JuceHeader.h"
 
 
 class FloatSliderUI;
 class ConnectableNode;
 class ConnectableNodeUI;
-
+#include "JuceHeader.h"//keep
 
 class ConnectableNodeAudioCtlUI:public Component{
 

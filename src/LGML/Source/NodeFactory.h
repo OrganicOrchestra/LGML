@@ -11,7 +11,8 @@
 #ifndef NODEFACTORY_H_INCLUDED
 #define NODEFACTORY_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "JuceHeader.h"//keep
+
 class ConnectableNode;
 
 const static String nodeTypeNames[] = {"ContainerIn","ContainerOut", "Container", "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioDeviceIn","AudioDeviceOut","JsNode" };

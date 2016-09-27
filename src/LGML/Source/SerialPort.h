@@ -11,7 +11,6 @@
 #ifndef SERIALPORT_H_INCLUDED
 #define SERIALPORT_H_INCLUDED
 
-#include "JuceHeader.h"
 
 
 

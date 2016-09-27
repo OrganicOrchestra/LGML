@@ -12,7 +12,6 @@
 #define CONTROLLABLEEDITOR_H_INCLUDED
 
 
-#include "JuceHeader.h"
 
 #include "ControllableContainer.h"
 class ControllableUI;

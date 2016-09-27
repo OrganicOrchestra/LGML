@@ -11,8 +11,7 @@
 #ifndef INSPECTABLECOMPONENT_H_INCLUDED
 #define INSPECTABLECOMPONENT_H_INCLUDED
 
-#include "JuceHeader.h"
-
+#include "JuceHeader.h"//keep
 
 class ControllableContainer;
 class Inspector;

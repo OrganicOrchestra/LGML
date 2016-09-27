@@ -11,7 +11,7 @@
 #ifndef JSLIVEEDITOR_H_INCLUDED
 #define JSLIVEEDITOR_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "JuceHeader.h"//keep
 
 class JsLiveEditor :
 	public CodeEditorComponent

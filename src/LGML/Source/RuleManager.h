@@ -11,7 +11,6 @@
 #ifndef RULEMANAGER_H_INCLUDED
 #define RULEMANAGER_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "RuleListeners.h"
 #include "ControllableContainer.h"
 

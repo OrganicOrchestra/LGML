@@ -11,7 +11,6 @@
 #ifndef RULE_H_INCLUDED
 #define RULE_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "ControllableContainer.h"
 #include "ControlVariableReference.h"
 

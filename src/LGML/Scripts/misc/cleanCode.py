@@ -105,15 +105,20 @@ for l in linesNoNeedInclude:
 print processedFiles
 
 
-
+globalIgnore = [""]
+showIgnored = True
+dryRun = True;
 
 for file,linesToChange in processedFiles.iteritems():
 	with open(os.path.abspath(rootPath+file),'r') as f:
 		originLines  = f.readlines()
 	def checkInnerMethod(className,originLines):
+		if(className in globalIgnore):
+			if showIgnored : print ' \t ignoring '+className
+			return True;
 		for l in originLines:
 			if className+"::" in l:
-				print 'using internal class Call for '+className
+				if showIgnored :print 'using internal class Call for '+className
 				return True;
 		return False
 
@@ -121,22 +126,23 @@ for file,linesToChange in processedFiles.iteritems():
 		line =l[0]-1
 		className = l[1]
 		if not '//keep' in originLines[line]:
-			if not (file == className+"UI") or not checkInnerMethod(className,originLines):
+			if not (file in [className+"UI.h",className+"Editor.h"]) and not checkInnerMethod(className,originLines):
 				print "deleting "+className + " from : "+file
 				originLines[line] = ""
 		else:
-			print " \t prevent delete "+className + " from : "+file
+			if showIgnored : print " \t prevent delete "+className + " from : "+file
 
 	for l in linesToChange["forward"]:
 		line =l[0]-1
 		className = l[1]
 		if not '//keep' in originLines[line]:
-			if not (file == className+"UI") or not checkInnerMethod(className,originLines):
+			if not (file in [className+"UI.h",className+"Editor.h"]) and not checkInnerMethod(className,originLines):
 				print "forwarding "+className + " from : "+file
 				originLines[line] = "class "+className+";\n"
 		else:
-			print " \t prevent forward "+className + " from : "+file
+			if showIgnored : print " \t prevent forward "+className + " from : "+file
 
-	# with open(os.path.abspath(rootPath+file),'w') as f:
-	# 	f.writelines(originLines)
+	if not dryRun:
+		with open(os.path.abspath(rootPath+file),'w') as f:
+			f.writelines(originLines)
 

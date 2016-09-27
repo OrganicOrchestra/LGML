@@ -13,7 +13,7 @@
 
 #include "CustomEditor.h"
 
-#include "RuleUI.h"
+#include "RuleUI.h"//keep
 #include "RuleConditionGroupUI.h"
 #include "ScriptedConditionUI.h"
 #include "RuleConsequenceUI.h"

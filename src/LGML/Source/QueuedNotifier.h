@@ -12,7 +12,7 @@
 #define QUEUEDNOTIFIER_H_INCLUDED
 
 
-
+#include "JuceHeader.h"//keep
 template<typename MessageClass,class CriticalSectionToUse = CriticalSection>
 class QueuedNotifier:public  AsyncUpdater{
 public:

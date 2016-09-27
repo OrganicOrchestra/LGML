@@ -11,7 +11,6 @@
 #ifndef JAVASCRIPTGLOBALENVIRONMENT_H_INCLUDED
 #define JAVASCRIPTGLOBALENVIRONMENT_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "JsContainerSync.h"
 
 

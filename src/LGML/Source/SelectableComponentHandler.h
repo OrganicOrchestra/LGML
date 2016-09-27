@@ -11,7 +11,6 @@
 #ifndef SELECTABLECOMPONENTHANDLER_H_INCLUDED
 #define SELECTABLECOMPONENTHANDLER_H_INCLUDED
 
-#include "JuceHeader.h"
 class SelectableComponent;
 
 

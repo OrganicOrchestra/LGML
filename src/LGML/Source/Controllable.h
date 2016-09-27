@@ -12,10 +12,9 @@
 #define CONTROLLABLE_H_INCLUDED
 
 
-
+#include "JuceHeader.h"//keep
 class ControllableContainer;
 class ControllableUI;
-#include "JuceHeader.h"
 
 class Controllable
 {

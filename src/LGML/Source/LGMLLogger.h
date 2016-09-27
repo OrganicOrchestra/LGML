@@ -11,7 +11,6 @@
 #ifndef LGMLLOGGER_H_INCLUDED
 #define LGMLLOGGER_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "QueuedNotifier.h"
 
 

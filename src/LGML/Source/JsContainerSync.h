@@ -12,7 +12,6 @@
 #define JSCONTAINERSYNC_H_INCLUDED
 
 #include "ControllableContainer.h"
-#include "JuceHeader.h"
 //allow to keep structural changes from containers with js namespace
 class JsContainerSync: public ControllableContainerListener
 {
