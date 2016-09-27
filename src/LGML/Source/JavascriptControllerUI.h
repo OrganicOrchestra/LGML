@@ -12,7 +12,7 @@
 #define JAVASCRIPTCONTROLLERUI_H_INCLUDED
 
 
-#include "JavascriptController.h"
+class JavascriptController;
 #include "OSCControllerUI.h"
 
 class JavascriptControllerUI : public OSCControllerUI{

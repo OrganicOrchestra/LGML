@@ -11,8 +11,7 @@
 #ifndef SHAPESHIFTERPANELTAB_H_INCLUDED
 #define SHAPESHIFTERPANELTAB_H_INCLUDED
 
-#include "ShapeShifterContent.h"
-
+#include "ShapeShifterContent.h"//keep
 class ShapeShifterPanelTab :
 	public Component,
 	public ButtonListener

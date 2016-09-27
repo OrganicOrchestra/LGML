@@ -13,7 +13,6 @@
 
 
 #include "Controllable.h"
-
 #include "Style.h"
 
 class ControllableUI : public Component, public SettableTooltipClient, public Controllable::Listener

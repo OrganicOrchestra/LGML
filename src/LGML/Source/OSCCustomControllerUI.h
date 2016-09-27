@@ -12,8 +12,7 @@
 #define OSCCUSTOMCONTROLLERUI_H_INCLUDED
 
 #include "OSCControllerUI.h"
-#include "OSCCustomController.h"
-
+class OSCCustomController;
 class OSCCustomControllerUI : public OSCControllerUI
 {
 public:

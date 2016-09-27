@@ -14,7 +14,6 @@
 
 #include "NodeBase.h"
 
-#include "PluginWindow.h"
 #include "MIDIListener.h"
 
 class VSTNode :

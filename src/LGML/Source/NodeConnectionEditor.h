@@ -16,8 +16,7 @@
 #include "NodeConnectionEditorDataSlot.h"
 #include "NodeConnectionEditorLink.h"
 #include "CustomEditor.h"
-#include "NodeConnectionUI.h"
-
+class NodeConnectionUI;
 //==============================================================================
 /*
 */

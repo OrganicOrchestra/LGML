@@ -14,6 +14,7 @@
 #include "GenericControllableContainerEditor.h"
 #include "MainComponent.h"
 #include "ShapeShifterFactory.h"
+#include "ShapeShifterManager.h"
 
 InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer, const String &_inspectableType) :
 	inspectableType(_inspectableType),

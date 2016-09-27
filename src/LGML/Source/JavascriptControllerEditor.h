@@ -12,8 +12,8 @@
 #define JAVASCRIPTCONTROLLEREDITOR_H_INCLUDED
 
 #include "OSCControllerEditor.h"
-#include "JavascriptControllerUI.h"
-
+class JavascriptControllerUI;
+class JavascriptController;
 class JsEnvironmentUI;
 
 class JavascriptControllerEditor : public OSCControllerEditor

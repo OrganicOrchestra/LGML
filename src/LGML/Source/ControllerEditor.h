@@ -12,7 +12,7 @@
 #define CONTROLLEREDITOR_H_INCLUDED
 
 #include "CustomEditor.h"
-#include "ControllerUI.h"
+#include "ControllerUI.h" //keep
 #include "ControlVariableUI.h"
 
 class ControllerEditor : public CustomEditor,

@@ -12,15 +12,16 @@
 #define ENGINE_H_INCLUDED
 
 
-
-#include "ControlManager.h"
-#include "NodeManager.h"
-#include "PresetManager.h"
-#include "FastMapper.h"
-#include "AudioFucker.h"
-#include "TimeManager.h"
-#include "RuleManager.h"
-#include "VSTManager.h"
+#include "MIDIManager.h"//keep
+#include "ControlManager.h"//keep
+#include "NodeManager.h"//keep
+#include "PresetManager.h"//keep
+#include "AudioFucker.h"//keep
+#include "TimeManager.h"//keep
+#include "RuleManager.h"//keep
+#include "FastMapper.h"//keep
+#include "VSTManager.h"//keep
+class AudioFucker;
 
 class Engine:public FileBasedDocument{
 public:

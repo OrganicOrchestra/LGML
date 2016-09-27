@@ -13,7 +13,6 @@
 
 #include "JuceHeader.h"
 class ControlVariable;
-#include"ControlManager.h"
 
 
 class ControlVariableChooser : public PopupMenu

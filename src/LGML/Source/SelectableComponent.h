@@ -16,8 +16,7 @@
 // Juce handle focus but its exclusive
 // ( so abstract that any component can use that as long as there is a manager to handle it)
 #include "JuceHeader.h"
-#include "ControllableContainer.h"
-
+class ControllableContainer;
 
 class SelectableComponentHandler;
 

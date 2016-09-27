@@ -10,6 +10,7 @@
 
 #include "ParameterProxy.h"
 #include "ParameterProxyUI.h"
+#include "ControllableContainer.h"
 
 ParameterProxy::ParameterProxy() :
 	linkedParam(nullptr),

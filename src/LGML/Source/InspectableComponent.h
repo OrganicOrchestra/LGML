@@ -13,7 +13,7 @@
 
 #include "JuceHeader.h"
 
-class CustomEditor;
+
 class ControllableContainer;
 class Inspector;
 class InspectorEditor;

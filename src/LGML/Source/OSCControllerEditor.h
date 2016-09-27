@@ -11,12 +11,12 @@
 #ifndef OSCCONTROLLEREDITOR_H_INCLUDED
 #define OSCCONTROLLEREDITOR_H_INCLUDED
 
-#include "OSCControllerUI.h"
+class OSCControllerUI;
 #include "ControllerEditor.h"
 
 #include "TriggerBlinkUI.h"
 #include "StringParameterUI.h"
-
+#include "OSCController.h"
 
 class OSCControllerEditor : public ControllerEditor, public OSCController::OSCControllerListener
 {

@@ -15,7 +15,7 @@
 
 #include "ControllableContainerEditor.h"
 #include "ControllableContainerSync.h"
-#include "SelectableComponent.h"
+class SelectableComponent;
 #include "SelectableComponentHandler.h"
 
 #include "ShapeShifterContent.h"

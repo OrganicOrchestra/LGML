@@ -16,7 +16,6 @@
 class ControllableContainer;
 class ControllableUI;
 #include "JuceHeader.h"
-#include "DebugHelpers.h"
 
 class Controllable
 {

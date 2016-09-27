@@ -11,7 +11,7 @@
 #ifndef CONTROLVARIABLEUI_H_INCLUDED
 #define CONTROLVARIABLEUI_H_INCLUDED
 
-#include "ControlVariable.h"
+#include "ControlVariable.h"//keep
 #include "ParameterUI.h"
 
 class ControlVariableUI : public Component, public ButtonListener,  public LabelListener

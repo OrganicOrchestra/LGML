@@ -9,9 +9,8 @@
  */
 
 #include "MainComponent.h"
-#include "NodeConnectionEditor.h"
-#include "DebugHelpers.h"
 #include "Engine.h"
+
 
 
 // (This function is called by the app startup code to create our main component)

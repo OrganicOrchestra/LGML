@@ -13,9 +13,8 @@
 
 #include "ConnectableNodeUI.h"
 
-#include "NodeBaseContentUI.h"
-#include "NodeBaseHeaderUI.h"
-
+#include "NodeBaseContentUI.h"//keep
+#include "NodeBaseHeaderUI.h"//keep
 class NodeBase;
 
 //==============================================================================

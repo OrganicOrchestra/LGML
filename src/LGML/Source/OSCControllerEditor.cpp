@@ -9,6 +9,7 @@
  */
 
 #include "OSCControllerEditor.h"
+#include "OSCControllerUI.h"
 
 OSCControllerEditor::OSCControllerEditor(OSCControllerUI * controllerUI) :
 ControllerEditor(controllerUI),

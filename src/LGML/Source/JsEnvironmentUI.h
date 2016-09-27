@@ -13,6 +13,7 @@
 
 
 #include "JsEnvironment.h"
+#include "NodeBaseUI.h"
 
 class JsEnvironmentUI : public Component,public Button::Listener,public JsEnvironment::Listener{
 public:

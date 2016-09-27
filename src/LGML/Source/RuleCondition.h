@@ -13,8 +13,7 @@
 
 #include "JuceHeader.h"
 
-#include "Rule.h"
-
+#include "Rule.h"//keep
 
 class RuleCondition :
 	public RuleListener

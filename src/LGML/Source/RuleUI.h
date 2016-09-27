@@ -11,7 +11,7 @@
 #ifndef RULEUI_H_INCLUDED
 #define RULEUI_H_INCLUDED
 
-#include "Rule.h"
+#include "Rule.h"//keep
 #include "BoolToggleUI.h"
 #include "StringParameterUI.h"
 #include "InspectableComponent.h"

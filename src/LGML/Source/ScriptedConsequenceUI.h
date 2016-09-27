@@ -12,7 +12,7 @@
 #define SCRIPTEDCONSEQUENCEUI_H_INCLUDED
 
 #include "RuleConsequenceUI.h"
-#include "ScriptedConsequence.h"
+#include "ScriptedConsequence.h"//keep
 #include "JsLiveEditor.h"
 
 class ScriptedConsequenceUI : public RuleConsequenceUI, public Button::Listener

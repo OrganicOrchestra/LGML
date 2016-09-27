@@ -11,7 +11,7 @@
 #ifndef NODECONTAINERUI_H_INCLUDED
 #define NODECONTAINERUI_H_INCLUDED
 
-#include "NodeContainer.h"
+class NodeContainer;
 #include "ConnectableNodeUI.h"
 
 class NodeContainerUI :
