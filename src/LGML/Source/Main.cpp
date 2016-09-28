@@ -54,7 +54,7 @@ public:
 
     engine = new Engine();
 #if LGML_UNIT_TESTS
-    
+
     UnitTestRunner tstRunner;
     CommandLineElements commandLineElements = StringUtil::parseCommandLine(commandLine);
     if(CommandLineElement elem = commandLineElements.getCommandLineElement("t","")){
@@ -76,7 +76,7 @@ public:
       tstRunner.runTests(testsToRun);
     }
     else{
-    tstRunner.runAllTests();
+      tstRunner.runAllTests();
     }
     quit();
 #else
@@ -138,11 +138,12 @@ public:
       setContentOwned (mainComponent, true);
       setResizable (true, true);
 
+
 	  int tx = getAppProperties().getCommonSettings(true)->getIntValue("windowX");
 	  int ty = getAppProperties().getCommonSettings(true)->getIntValue("windowY");
 	  int tw = getAppProperties().getCommonSettings(true)->getIntValue("windowWidth");
 	  int th = getAppProperties().getCommonSettings(true)->getIntValue("windowHeight");
-	  bool fs = getAppProperties().getCommonSettings(true)->getBoolValue("fullscreen");
+	  bool fs = getAppProperties().getCommonSettings(true)->getBoolValue("fullscreen",true);
 
 	 
       setBounds (jmax<int>(tx,20), jmax<int>(ty,20), jmax<int>(tw,100), jmax<int>(th,100));
@@ -162,8 +163,8 @@ public:
       // whatever you need.
 
       //@martin added but commented for testing (relou behavior)
-      
-       int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
+      int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
+
        if (result == 0)  return; //prevent exit
        
 	   if (result == 1)
@@ -174,6 +175,9 @@ public:
 		   case juce::FileBasedDocument::SaveResult::userCancelledSave:
 		   case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
 				   return;
+
+         case FileBasedDocument::SaveResult::savedOk:
+           break;
 		   }
 	   }
 
@@ -189,6 +193,7 @@ public:
 
 
        JUCEApplication::getInstance()->systemRequestedQuit();
+
     }
 
     void timerCallback() override;

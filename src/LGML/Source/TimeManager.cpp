@@ -27,16 +27,14 @@ TimeManager::TimeManager():
 beatTimeInSample(1000),
 sampleRate(44100),
 ControllableContainer("time"),
-beatTimeGuessRange(.4,.85), 
+beatTimeGuessRange(.4,.85),
 BPMRange(10,600),
 _isLocked(false),
 settingTempoFromCandidate(false),
 currentBeatPeriod(.5),
 lastTaped(0),
 tapInRow(0),
-clickFadeTime(1000),
-clickFadeIn(1000),
-clickFadeOut(0)
+clickFader(10000,10000,true,1.0/3.0)
 {
 
   BPM = addFloatParameter("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
@@ -73,7 +71,7 @@ void TimeManager::incrementClock(int time){
     timeState.time+=time;
   }
   timeState.nextTime = timeState.time+time;
-int lastBeat = getBeatInt();
+  int lastBeat = getBeatInt();
   int newBeat = getBeatInt();
   if(lastBeat!=newBeat){
     currentBeat->setValue(newBeat);
@@ -100,44 +98,35 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 
     bool isFirstBeat = (getClosestBeat()%beatPerBar->intValue()) == 0;
     const int sinFreq = sampleRate /(isFirstBeat?660:440);
-//    const int sinPeriod = sampleRate / sinFreq;
+    //    const int sinPeriod = sampleRate / sinFreq;
     const double k = 40.0;
 
 
 
     if(desiredTimeState.isJumping){
-      clickFadeOut = clickFadeTime;
+      clickFader.startFadeOut();
     }
 
-      for(int i = 0 ; i < numSamples;i++){
-        double carg = sinCount*1.0/sinFreq;
-        double env = lastEnv;
-        if(clickFadeOut>0){
-          double fadeFactor = clickFadeOut*1.0/clickFadeTime;
-          env=lastEnv*fadeFactor*fadeFactor;
-          clickFadeOut--;
-          if(clickFadeOut == 0){
-            clickFadeIn = clickFadeTime;
-          }
-        }
+    for(int i = 0 ; i < numSamples;i++){
 
-        else{
-          double x = (getBeatInNextSamples(i)-getBeatInt() ) ;
-          double h = k*fmod((double)x+1.0/k,1.0);
-          double fadeFactor = (1.0-clickFadeIn*1.0/clickFadeTime);
-          env = fadeFactor*fadeFactor*jmax(0.0,h*exp(1.0-h));
-          clickFadeIn = jmax(clickFadeIn-1,0);
-        }
-        float res = (env* cos(2.0*M_PI*carg ));
-        lastEnv = env;
-        for(int c = 0 ;c < numOutputChannels ; c++ ){outputChannelData[c][i] = res;}
+      double carg = sinCount*1.0/sinFreq;
 
-        sinCount = (sinCount+1)%(sinFreq);
+      double x = (getBeatInNextSamples(i)-getBeatInt() ) ;
+      double h = k*fmod((double)x+1.0/k,1.0);
+      double env = clickFader.getCurrentFade()*jmax(0.0,h*exp(1.0-h));
+
+      float res = (env* cos(2.0*M_PI*carg ));
+
+      for(int c = 0 ;c < numOutputChannels ; c++ ){outputChannelData[c][i] = res;}
+
+      sinCount = (sinCount+1)%(sinFreq);
+//      DBG(clickFader.getCurrentFade());
+      clickFader.incrementFade();
     }
   }
   else{
-  for (int i = 0; i < numOutputChannels; ++i)
-    zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
+    for (int i = 0; i < numOutputChannels; ++i)
+      zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
   }
 
 
@@ -163,7 +152,7 @@ void TimeManager::releaseMasterCandidate(TimeMasterCandidate * n){
      (potentialTimeMasterCandidate.size()==1 && potentialTimeMasterCandidate.getUnchecked(0)==this)  ){
     stopTrigger->trigger();
     BPMLocked->setValue(false);
-    
+
   }
 }
 
@@ -172,16 +161,18 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
     if(!playState->boolValue()){
       if(isMasterCandidate(this)){potentialTimeMasterCandidate.clear();}
       shouldStop();
+      clickFader.startFadeOut();
     }
     else{
       if (!hasMasterCandidate()) {askForBeingMasterCandidate(this);}
       shouldGoToZero();
       shouldPlay();
+      clickFader.startFadeIn();
     }
   }
   else if(p==BPM){
     setBPMInternal(BPM->doubleValue());
-    clickFadeOut = clickFadeTime;
+    clickFader.startFadeOut();
 
   }
   else if (p==BPMLocked){
@@ -246,30 +237,30 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
   else if (t == tapTempo)
   {
     if(!BPMLocked->boolValue())
-	{
+    {
 
       if(!playState->boolValue())
-	  {
-		  playState->setValue(true);
-		  currentBeatPeriod = (uint64)0.7; //@Martin 0.7 for a uint64 ??
-	  }
+      {
+        playState->setValue(true);
+        currentBeatPeriod = (uint64)0.7; //@Martin 0.7 for a uint64 ??
+      }
 
       uint64 currentTime = Time().getMillisecondCounter();//timeState.time;
       uint64 delta = currentTime-lastTaped;
       lastTaped = currentTime;
       if((delta>100) && (delta<1000)){
-//        const int maxTapInRow = 4;
+        //        const int maxTapInRow = 4;
         tapInRow = (tapInRow+1)%beatPerBar->intValue();
         const double alpha =.25;// 1. - tapInRow/maxTapInRow *.75 ;
         currentBeatPeriod = alpha*delta + (1-alpha)*currentBeatPeriod;
 
-//        int targetBeatInt = tapInRow;
+        //        int targetBeatInt = tapInRow;
 
         double targetBeat =getBeat();
         if(targetBeat - (int)targetBeat>0.5){targetBeat+=1;}
         int targetBeatInt = floor(targetBeat);
 
-//        int targetBeatInt = ceil(targetBeat);
+        //        int targetBeatInt = ceil(targetBeat);
 
         goToTime(targetBeatInt*currentBeatPeriod*44.1);//(deltaBeat*beatTimeInSample);
 
@@ -306,7 +297,7 @@ void TimeManager::setBPMInternal(double ){
   beatTimeInSample =(uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
 }
 uint64 TimeManager::getTimeInSample(){
-    return timeState.time;
+  return timeState.time;
 }
 uint64 TimeManager::getNextTimeInSample(){
   if(desiredTimeState.isJumping)return desiredTimeState.nextTime;
@@ -400,7 +391,7 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
   result.timeInSamples = timeState.time;
   result.timeInSeconds = (double)(timeState.time)*sampleRate;
   result.editOriginTime = 0;
-
+  
   result.isLooping=false;
   return true;
 }

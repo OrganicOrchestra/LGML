@@ -66,7 +66,21 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
   }
 
   else if(p==enabledParam && innerPlugin){
-    innerPlugin->suspendProcessing(!enabledParam->boolValue());
+    // send NoteOff on disable
+    if(!enabledParam->boolValue()){
+      double ts = Time::getMillisecondCounterHiRes();
+      for(int i = 1 ; i < 17 ; i++){
+        MidiMessage msg = MidiMessage::allNotesOff(i);
+        msg.setTimeStamp(ts);
+        messageCollector.handleIncomingMidiMessage(nullptr, msg);
+      }
+//      incomingMidi.clear();
+//      AudioBuffer<float> buffer(jmax(innerPlugin->getTotalNumInputChannels(),innerPlugin->getTotalNumOutputChannels()),innerPlugin->getBlockSize());
+//      messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
+//      innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
+//      innerPlugin->processBlock(buffer, incomingMidi);
+    }
+
 
   }
 
@@ -190,6 +204,7 @@ inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
       messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
       innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
       innerPlugin->processBlock(buffer, incomingMidi);
+
     }
     else {
       static int numFrameDropped = 0;
@@ -220,8 +235,9 @@ void VSTNode::setCurrentDevice(const String & deviceName)
 
 void VSTNode::handleIncomingMidiMessage(MidiInput* ,
                                         const MidiMessage& message) {
-  if (innerPlugin)
+  if (innerPlugin){
     messageCollector.addMessageToQueue (message);
+  }
 
   midiActivityTrigger->trigger();
 };
@@ -255,5 +271,5 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
   MemoryBlock m;
   getStateInformation(m);
   preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
-
+  
 };

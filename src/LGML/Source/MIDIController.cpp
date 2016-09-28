@@ -105,7 +105,12 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
       }
     }
 
+  if(message.isNoteOff()){
+    callJs(MidiMessage::noteOff(message.getChannel(), message.getNoteNumber(), 0.0f));
+  }
+  else{
     callJs(message);
+  }
     activityTrigger->trigger();
 }
 
