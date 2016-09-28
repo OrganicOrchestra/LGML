@@ -7,8 +7,14 @@
 
  ==============================================================================
  */
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#include <cmath>
+#endif
+
 
 #include "TimeManager.h"
+
 
 
 juce_ImplementSingleton(TimeManager);
@@ -33,7 +39,7 @@ clickFadeIn(1000),
 clickFadeOut(0)
 {
 
-  BPM = addFloatParameter("bpm","current BPM",120,BPMRange.getStart(),BPMRange.getEnd());
+  BPM = addFloatParameter("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
   playState = addBoolParameter("Play_Stop", "play or stop global transport", false);
   BPMLocked = addBoolParameter("bpmLocked", "bpm is locked by somebody", false);
   BPMLocked->isControllableFeedbackOnly = true;
@@ -237,9 +243,17 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
     isSettingTempo->setValue(false);
   }
 
-  else if (t == tapTempo){
-    if(!BPMLocked->boolValue()){
-      if(!playState->boolValue()){playState->setValue(true);currentBeatPeriod = 0.7;}
+  else if (t == tapTempo)
+  {
+    if(!BPMLocked->boolValue())
+	{
+
+      if(!playState->boolValue())
+	  {
+		  playState->setValue(true);
+		  currentBeatPeriod = (uint64)0.7; //@Martin 0.7 for a uint64 ??
+	  }
+
       uint64 currentTime = Time().getMillisecondCounter();//timeState.time;
       uint64 delta = currentTime-lastTaped;
       lastTaped = currentTime;

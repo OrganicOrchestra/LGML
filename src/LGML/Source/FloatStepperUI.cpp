@@ -14,7 +14,8 @@ FloatStepperUI::FloatStepperUI(Parameter * _parameter) :
     ParameterUI(_parameter)
 
 {
-    slider = new Slider(Slider::SliderStyle::IncDecButtons, Slider::TextEntryBoxPosition::TextBoxLeft);
+	slider = new BetterStepper(tooltip);
+	
     addAndMakeVisible(slider);
     slider->setRange(parameter->minimumValue, parameter->maximumValue,1);
     slider->setValue(parameter->floatValue());

@@ -149,17 +149,22 @@ public:
       // whatever you need.
 
       //@martin added but commented for testing (relou behavior)
-      /*
-       int result = AlertWindow::showOkCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
-       if (result != 0)
-       {
-       if (result == 1) ((LGMLApplication *)LGMLApplication::getInstance())->engine->save(true, true);
-       }
-       */
+      
+       int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
+       if (result == 0)  return; //prevent exit
+       
+	   if (result == 1)
+	   {
+		   juce::FileBasedDocument::SaveResult sr = ((LGMLApplication *)LGMLApplication::getInstance())->engine->save(true, true);
+		   switch (sr)
+		   {
+		   case juce::FileBasedDocument::SaveResult::userCancelledSave:
+		   case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
+				   return;
+		   }
+	   }
 
-
-
-      JUCEApplication::getInstance()->systemRequestedQuit();
+       JUCEApplication::getInstance()->systemRequestedQuit();
     }
 
     void timerCallback() override;

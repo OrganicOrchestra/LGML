@@ -12,6 +12,7 @@
 #define FLOATSTEPPERUI_H_INCLUDED
 
 #include "ParameterUI.h"
+#include "BetterStepper.h"
 
 class FloatStepperUI : public ParameterUI, public Slider::Listener
 {
@@ -20,7 +21,7 @@ public:
     FloatStepperUI(Parameter * _parameter);
     virtual ~FloatStepperUI();
 
-    ScopedPointer<Slider> slider;
+    ScopedPointer<BetterStepper> slider;
 
     void resized() override;
 protected:

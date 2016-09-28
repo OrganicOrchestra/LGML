@@ -24,6 +24,8 @@ Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
 	scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
 	logIncoming = addBoolParameter("logIncoming","log Incoming midi message",false);
 
+	channelFilter = addIntParameter("Channel", "Channel to filter message (0 = accept all channels)",0,0,16);
+
 	for (int i = 0; i < 127; i++)
 	{
 		String noteName = MidiMessage::getMidiNoteName(i, true, true, 0);
@@ -72,24 +74,28 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
 
   if (!enabledParam->boolValue()) return;
 
+	if (channelFilter->intValue() > 0 && message.getChannel() != channelFilter->intValue())
+	{
+		return;
+	}
 
     if(message.isController()){
       if (logIncoming->boolValue())
       {
-        NLOG("MIDI","CC "+String(message.getControllerNumber()) + " > " + String(message.getControllerValue()));
+        NLOG("MIDI","CC "+String(message.getControllerNumber()) + " > " + String(message.getControllerValue())+" (Channel "+String(message.getChannel())+")");
       }
 
       int variableIndex = 128 + message.getControllerNumber() -1;
-      DBG("Variable name " << variables[variableIndex]->parameter->niceName);
+      //DBG("Variable name " << variables[variableIndex]->parameter->niceName);
       variables[variableIndex]->parameter->setValue(message.getControllerValue()*1.f / 127.f);
     }
     else if(message.isNoteOnOrOff()){
       if (logIncoming->boolValue())
       {
-        NLOG("MIDI", "Note " + String(message.isNoteOn() ? "on" : "off") + " : " + MidiMessage::getMidiNoteName(message.getNoteNumber(), true, true, 0); String() + " > " + String(message.getVelocity()));
+        NLOG("MIDI", "Note " + String(message.isNoteOn() ? "on" : "off") + " : " + MidiMessage::getMidiNoteName(message.getNoteNumber(), true, true, 0) + " > " + String(message.getVelocity()) + " (Channel " + String(message.getChannel()) + ")");
       }
       int variableIndex = message.getNoteNumber();
-      variables[variableIndex]->parameter->setValue(message.getVelocity()*1.f / 127.f);
+      variables[variableIndex]->parameter->setValue(message.isNoteOn()?(message.getVelocity()*1.f / 127.f):0);
     }
 
     else if (message.isPitchWheel()){
