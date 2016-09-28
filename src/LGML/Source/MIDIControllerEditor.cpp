@@ -11,6 +11,7 @@
 #include "MIDIControllerEditor.h"
 #include "MIDIController.h"
 #include "MIDIControllerUI.h"
+#include "MIDIListener.h"
 
 MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
 	ControllerEditor(controllerUI),
@@ -20,15 +21,19 @@ MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
 {
 	addAndMakeVisible(deviceChooser);
 	deviceChooser.addListener(this);
+	deviceChooser.setSelectedDevice(midiController->midiPortName,true);
 
     addAndMakeVisible(jsUI);
 
     incomingToogle = midiController->logIncoming->createToggle();
     addAndMakeVisible(incomingToogle);
+
+	midiController->addMIDIListenerListener(this);
 }
 
 MIDIControllerEditor::~MIDIControllerEditor()
 {
+	midiController->removeMIDIListenerListener(this);
 }
 
 void MIDIControllerEditor::resized()
@@ -44,6 +49,12 @@ void MIDIControllerEditor::resized()
 int MIDIControllerEditor::getContentHeight()
 {
 	return 100;
+}
+
+void MIDIControllerEditor::currentDeviceChanged(MIDIListener *)
+{
+	DBG("Current device changed : " << midiController->midiPortName);
+	deviceChooser.setSelectedDevice(midiController->midiPortName, true);
 }
 
 void MIDIControllerEditor::comboBoxChanged(ComboBox *cb)

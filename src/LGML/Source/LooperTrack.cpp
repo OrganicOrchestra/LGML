@@ -16,8 +16,8 @@
 
 #include "DebugHelpers.h"
 
+#define NO_QUANTIZE (uint64)-1 //std::numeric_limits<uint64>::max()
 
-#define NO_QUANTIZE std::numeric_limits<uint64>::max()
 LooperTrack::LooperTrack(LooperNode * looperNode, int _trackIdx) :
 ControllableContainer(String(_trackIdx)),
 parentLooper(looperNode),
@@ -148,7 +148,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
   if (quantizedRecordStart.get()!=NO_QUANTIZE) {
     if (triggeringTime >= quantizedRecordStart.get() ) {
       int firstPart = jmax(0, (int)(quantizedRecordStart.get()-curTime));
-      int secondPart = triggeringTime-firstPart;
+      int secondPart = (int)(triggeringTime-firstPart);
 
 
       if(isMasterTempoTrack() ){
@@ -274,19 +274,23 @@ void LooperTrack::handleStartOfRecording(){
     }
   }
 }
-void LooperTrack::handleEndOfRecording(int granularity){
+
+void LooperTrack::handleEndOfRecording(){
+
   if (loopSample.stateChanged) {
     if (loopSample.wasLastRecordingFrame() ){
       //            DBG("a:firstPlay");
       // get howMuch we have allready played in loopSample
-      int offsetForPlay = loopSample.getPlayPos();
+      int offsetForPlay = (int)loopSample.getPlayPos();
       if (isMasterTempoTrack()) {
         //                DBG("release predelay : "+String (trackIdx));
         const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
         if(sampleToRemove>0){loopSample.cropEndOfRecording(sampleToRemove);}
         double actualLength = TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength());
-        uint64 desiredSize = actualLength*TimeManager::getInstance()->beatTimeInSample;
+        uint64 desiredSize = (uint64)(actualLength*TimeManager::getInstance()->beatTimeInSample);
+
         DBG("resizing loop : " << (int)(desiredSize-loopSample.getRecordedLength()));
+
         loopSample.setSizePaddingIfNeeded(desiredSize);
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
         TimeManager::getInstance()->goToTime(offsetForPlay);
@@ -500,7 +504,7 @@ void LooperTrack::setTrackState(TrackState newState) {
     }
     // if every one else is stopped
     else if(parentLooper->askForBeingAbleToPlayNow(this) && !loopSample.isOrWasPlaying()) {
-      quantizedRecordEnd = -1;
+      quantizedRecordEnd = (uint64)-1;
 
       if(timeManager->isMasterCandidate(parentLooper)){
         newState=WILL_PLAY;

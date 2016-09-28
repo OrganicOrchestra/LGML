@@ -31,8 +31,6 @@ tapInRow(0),
 clickFadeTime(1000),
 clickFadeIn(1000),
 clickFadeOut(0)
-
-
 {
 
   BPM = addFloatParameter("bpm","current BPM",120,BPMRange.getStart(),BPMRange.getEnd());
@@ -286,12 +284,12 @@ void TimeManager::togglePlay(){
 void TimeManager::setSampleRate(int sr){
   sampleRate = sr;
   // actualize beatTime in sample
-  beatTimeInSample = (uint)(sampleRate*1.0 / BPM->doubleValue() *60.0);
+  beatTimeInSample = (uint64)(sampleRate*1.0 / BPM->doubleValue() *60.0);
 }
 
 void TimeManager::setBPMInternal(double ){
   isSettingTempo->setValue(false);
-  beatTimeInSample =(uint)(sampleRate *1.0/ BPM->doubleValue()*60.0);
+  beatTimeInSample =(uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
 }
 uint64 TimeManager::getTimeInSample(){
     return timeState.time;

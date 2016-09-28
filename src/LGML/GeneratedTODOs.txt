@@ -69,24 +69,24 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 624
+	line : 627
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
 	line : 291
 		// TODO nicely handle file format errors?
 
-	line : 484
+	line : 182
+		//@ben remove recursive for now (not useful and duplicating values...)
+		//
+		//    for (auto &n : nodes) n->saveCurrentPreset();
+
+	line : 487
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
-
-	line : 182
-		//@ben remove recursive for now (not useful and duplicating values...)
-		//
-		//    for (auto &n : nodes) n->saveCurrentPreset();
 
 
 TimeManager.h
@@ -122,12 +122,12 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 380
+	line : 378
 		//TODO: check
 
 
 MIDIController.cpp
-	line : 160
+	line : 172
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 	line : 39
@@ -157,7 +157,7 @@ Main.cpp
 
 
 MIDIManager.cpp
-	line : 135
+	line : 138
 		// @Ben seems weird mixing duc
 		// btw do we really need that for output??
 

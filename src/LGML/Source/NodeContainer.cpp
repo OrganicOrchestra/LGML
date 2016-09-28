@@ -299,10 +299,13 @@ void NodeContainer::loadJSONDataInternal(var data)
                 }
                 LOG("Available Nodes in "+ shortName+" : ");
 				
+				#if defined DEBUG
                 for (auto &node : nodes)
                 {
                     DBG(" > " + node->niceName+"//"+ node->shortName);
                 }
+				#endif
+
                 jassertfalse;
             }
         }
@@ -514,7 +517,7 @@ void NodeContainer::onContainerParameterChanged(Parameter * p)
     ConnectableNode::onContainerParameterChanged(p);
 
 }
-void NodeContainer::onContainerParameterChangedAsync(Parameter * p ,const var & value) {
+void NodeContainer::onContainerParameterChangedAsync(Parameter * p ,const var & /*value*/) {
   if (p == enabledParam)
   {
     bypassNode(!enabledParam->boolValue());

@@ -232,19 +232,19 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
 
 
 
-      for(auto & t:trackGroup.tracks){
-        if(t->loopSample.getRecordedLength()){
-        File f(myChooser.getResult().getChildFile(nameParam->stringValue()+"_"+String(t->trackIdx)+".wav"));
+      for(auto & tr:trackGroup.tracks){
+        if(tr->loopSample.getRecordedLength()){
+        File f(myChooser.getResult().getChildFile(nameParam->stringValue()+"_"+String(tr->trackIdx)+".wav"));
         ScopedPointer<FileOutputStream> fp;
         if((fp = f.createOutputStream())){
           ScopedPointer<AudioFormatWriter> afw= format.createWriterFor(fp,
                                                          getSampleRate(),
-                                                         t->loopSample.loopSample.getNumChannels(),
+                                                         tr->loopSample.loopSample.getNumChannels(),
                                                          24,
                                                          StringPairArray(),0);
           if(afw){
           fp.release();
-          afw->writeFromAudioSampleBuffer(t->loopSample.loopSample,0,(int)t->loopSample.getRecordedLength());
+          afw->writeFromAudioSampleBuffer(tr->loopSample.loopSample,0,(int)tr->loopSample.getRecordedLength());
           afw->flush();
 
           }

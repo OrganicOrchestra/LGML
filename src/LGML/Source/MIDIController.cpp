@@ -19,34 +19,46 @@ extern AudioDeviceManager &  getAudioDeviceManager();
 MIDIController::MIDIController() :
 Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
 {
-  setNamespaceName("MIDI."+nameParam->stringValue());
-  deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
-  scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
-  logIncoming = addBoolParameter("logIncoming","log Incoming midi message",false);
+	setNamespaceName("MIDI."+nameParam->stringValue());
+	deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
+	scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
+	logIncoming = addBoolParameter("logIncoming","log Incoming midi message",false);
 
-  for (int i = 0; i < 127; i++)
-  {
-    String noteName = MidiMessage::getMidiNoteName(i, true, true, 0);
-    FloatParameter * fp = new FloatParameter(noteName, "Value for " + noteName, 0, 0, 1);
-    addVariable(fp);
-  }
+	for (int i = 0; i < 127; i++)
+	{
+		String noteName = MidiMessage::getMidiNoteName(i, true, true, 0);
+		FloatParameter * fp = new FloatParameter(noteName, "Value for " + noteName, 0, 0, 1);
+		addVariable(fp);
+	}
 
-  for (int i = 0; i < 127; i++)
-  {
-    FloatParameter *fp = new FloatParameter(String("CC ") + String(i), String("ControlChange ") + String(i), 0, 0, 1);
-    addVariable(fp);
-  }
+	for (int i = 0; i < 127; i++)
+	{
+		FloatParameter *fp = new FloatParameter(String("CC ") + String(i), String("ControlChange ") + String(i), 0, 0, 1);
+		addVariable(fp);
+	}
 
-  // TODO : we may need to listen to sR changes
-  juce::AudioDeviceManager::AudioDeviceSetup setup;
-  getAudioDeviceManager().getAudioDeviceSetup(setup);
-  midiCollector.reset(setup.sampleRate);
+	// TODO : we may need to listen to sR changes
+	juce::AudioDeviceManager::AudioDeviceSetup setup;
+	getAudioDeviceManager().getAudioDeviceSetup(setup);
+	midiCollector.reset(setup.sampleRate);
+
+	addMIDIListenerListener(this);
 
 }
 
 MIDIController::~MIDIController()
 {
-  setCurrentDevice(String::empty);
+	removeMIDIListenerListener(this);
+	setCurrentDevice(String::empty);
+  
+}
+
+void MIDIController::currentDeviceChanged(MIDIListener *)
+{
+	if (midiPortName != deviceInName->stringValue())
+	{
+		deviceInName->setValue(midiPortName, true);
+	}
 }
 
 ControllerUI * MIDIController::createUI()

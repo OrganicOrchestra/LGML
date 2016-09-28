@@ -274,14 +274,28 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
       node->currentPresetName->setValue(nameOfPreset);
 
   }
-  else if (presetID >= PresetChoice::deleteStartId){
-    PresetManager * pm =PresetManager::getInstance();
-    int originId = cb->getSelectedId()-PresetChoice::deleteStartId - 1;
-    String originText = cb->getItemText(pm->getNumOption() + originId);
-    PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), originText);
-    pm->presets.removeObject(pre);
-    updatePresetComboBox(true);
-
+  else if (presetID >= PresetChoice::deleteStartId)
+  {
+	bool ok = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Oh man, d'ya know watcha doin' ?", "Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man.", "Oh yeah", "F* No");
+	if (ok)
+	{
+		PresetManager * pm = PresetManager::getInstance();
+		int originId = cb->getSelectedId() - PresetChoice::deleteStartId - 1;
+		String originText = cb->getItemText(pm->getNumOption() + originId);
+		PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), originText);
+		pm->presets.removeObject(pre);
+		updatePresetComboBox(true);
+	} else
+	{
+		//reselect last Id
+		if (node->currentPreset != nullptr)
+		{
+			cb->setSelectedId(node->currentPreset->presetId, juce::dontSendNotification);
+		} else
+		{
+			cb->setSelectedId(0, juce::dontSendNotification);
+		}
+	}
 
   }
   else{

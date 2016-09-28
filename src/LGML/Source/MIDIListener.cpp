@@ -25,21 +25,33 @@ MIDIListener::~MIDIListener()
 
 void MIDIListener::setCurrentDevice(const String & deviceName)
 {
-    if (deviceName == midiPortName) return;
+	//if (deviceName == midiPortName) return;
 
-    if (!midiPortName.isEmpty())
+	if (deviceName.isNotEmpty())
+	{
+		if (MIDIManager::getInstance()->inputDevices.indexOf(deviceName) == -1)
+		{
+			ghostPortName = deviceName;
+			setCurrentDevice(String::empty);
+			return;
+		}
+	}
+
+    if (midiPortName.isNotEmpty())
     {
         MIDIManager::getInstance()->disableInputDevice(midiPortName);
 		MIDIManager::getInstance()->disableOutputDevice(midiPortName);
         getAudioDeviceManager().removeMidiInputCallback(midiPortName, this);
     }
 
-    midiPortName =  deviceName;
+	
+
+	midiPortName = deviceName;
 
 
-    if (!midiPortName.isEmpty())
+    if (midiPortName.isNotEmpty())
     {
-        MIDIManager::getInstance()->enableInputDevice(midiPortName);
+		MIDIManager::getInstance()->enableInputDevice(midiPortName);
 		midiOutDevice = MIDIManager::getInstance()->enableOutputDevice(midiPortName);
         getAudioDeviceManager().addMidiInputCallback(midiPortName, this);
     }
@@ -103,4 +115,40 @@ void MIDIListener::sendSysEx(uint8 * data, int dataCount)
 
 	MidiMessage msg = MidiMessage::createSysExMessage(data,dataCount);
 	midiOutDevice->sendMessageNow(msg);
+}
+
+void MIDIListener::midiInputAdded(String & s) 
+{
+	DBG("MIDIListener :: inputAdded " << s << ",portName = " << midiPortName << ", ghost = " << ghostPortName);
+
+	if (s == midiPortName)
+	{
+		setCurrentDevice(midiPortName);
+		ghostPortName = String::empty;
+	} else if (s == ghostPortName)
+	{
+		setCurrentDevice(ghostPortName);
+		ghostPortName = String::empty;
+	}
+}
+
+void MIDIListener::midiInputRemoved(String & s)
+{
+	if (s == midiPortName)
+	{
+		ghostPortName = s;
+		setCurrentDevice(String::empty);
+	}
+}
+
+void MIDIListener::midiOutputAdded(String & s) {
+	if (s == midiPortName)
+	{
+		setCurrentDevice(midiPortName);
+	}
+}
+
+void MIDIListener::midiOutputRemoved(String & /*s*/)
+{
+	//
 }

@@ -145,7 +145,7 @@ void OSCDirectController::controllableRemoved(Controllable *)
 
 
 
-void OSCDirectController::controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable * c)
+void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
 {
 #if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 

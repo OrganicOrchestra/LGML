@@ -318,11 +318,16 @@ class PlayableBuffer {
 
   int numTimePlayed;
   AudioSampleBuffer loopSample;
+
   int getSampleOffsetBeforeNewState(){return sampleOffsetBeforeNewState;};
+
+
 
 #if !LGML_UNIT_TESTS
 private:
 #endif
+
+  int sampleOffsetBeforeNewState;
   BufferState state;
   BufferState lastState;
   bool isJumping;
@@ -330,7 +335,7 @@ private:
   int fadeSamples;
 
 
-  int sampleOffsetBeforeNewState;
+  
   uint64 recordNeedle,playNeedle,startJumpNeedle;
 
 };

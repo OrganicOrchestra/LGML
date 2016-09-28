@@ -75,19 +75,21 @@ void MIDIManager::updateDeviceList(bool updateInput)
 
 void MIDIManager::enableInputDevice(const String & deviceName)
 {
-	//DBG("MIDIManager  Enable Input device : " << deviceName);
 	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);
+	DBG("MIDIManager  Enable Input device : " << deviceName << ", duc != null ?" << String(duc != nullptr));
 
 	if (duc == nullptr)
 	{
 		duc = new DeviceUsageCount(deviceName);
 		inputCounts.add(duc);
 	}
+	DBG("MIDIManager deviceCount before increment : " << duc->usageCount);
 
 	duc->usageCount++;
-	if (duc->usageCount == 1)
+	DBG("MIDIManager deviceCount after increment : " << duc->usageCount);
+	if (duc->usageCount >= 1)
 	{
-		//DBG("AudioDeviceManager:Enable Input device : " << duc->deviceName);
+		DBG("AudioDeviceManager:Enable Input device : " << duc->deviceName);
 		getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, true);
 	}
 
@@ -126,9 +128,10 @@ void MIDIManager::disableInputDevice(const String & deviceName)
 	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);
 	if (duc == nullptr) return;
 	duc->usageCount--;
+
 	if (duc->usageCount == 0)
 	{
-		//DBG("Disable Input device : " << duc->deviceName);
+		DBG("Disable Input device : " << duc->deviceName);
 		getAudioDeviceManager().setMidiInputEnabled(duc->deviceName, false);
 	}
 }
@@ -137,7 +140,7 @@ void MIDIManager::disableInputDevice(const String & deviceName)
 // btw do we really need that for output??
 void MIDIManager::disableOutputDevice(const String & deviceName)
 {
-	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);
+	DeviceUsageCount * duc = getDUCForOutputDeviceName(deviceName);
 	if (duc == nullptr) return;
 	duc->usageCount--;
 }

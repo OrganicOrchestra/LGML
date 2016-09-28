@@ -152,7 +152,7 @@ private:
 
   bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
   void handleStartOfRecording();
-  void handleEndOfRecording(int granularity = 0);
+  void handleEndOfRecording( );
 
 
   PlayableBuffer loopSample;

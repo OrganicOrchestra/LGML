@@ -92,7 +92,7 @@ void VSTNodeContentUI::controllableRemoved(Controllable * c){
 }
 void VSTNodeContentUI::controllableContainerAdded(ControllableContainer *){};
 void VSTNodeContentUI::controllableContainerRemoved(ControllableContainer *) {};
-void VSTNodeContentUI::controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *) {};
+void VSTNodeContentUI::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable *) {};
 
 
 

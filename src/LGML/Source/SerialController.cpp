@@ -84,10 +84,10 @@ void SerialController::onContainerParameterChanged(Parameter * p) {
     loadFile(scriptPath->stringValue());
   }else if(p == selectedHardwareID || p == selectedPort)
   {
-    SerialPort * port  = SerialManager::getInstance()->getPort(selectedHardwareID->stringValue(), selectedPort->stringValue(),true);
-    if(port != nullptr)
+    SerialPort * _port  = SerialManager::getInstance()->getPort(selectedHardwareID->stringValue(), selectedPort->stringValue(),true);
+    if(_port != nullptr)
     {
-      setCurrentPort(port);
+      setCurrentPort(_port);
     }
   }
 
@@ -109,7 +109,7 @@ void SerialController::buildLocalEnv() {
 	setLocalNamespace(obj);
 }
 
-void SerialController::portOpened(SerialPort * p)
+void SerialController::portOpened(SerialPort * )
 {
   serialControllerListeners.call(&SerialControllerListener::portOpened);
 

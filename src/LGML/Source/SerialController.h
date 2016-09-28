@@ -29,8 +29,8 @@ public:
 	String lastOpenedPortID; //for ghosting
 
 
-  StringParameter * selectedPort;
-  StringParameter * selectedHardwareID;
+	StringParameter * selectedPort;
+	StringParameter * selectedHardwareID;
 	SerialPort * port;
 	void setCurrentPort(SerialPort *port);
 
@@ -41,7 +41,7 @@ public:
 	StringParameter * scriptPath;
 	BoolParameter * logIncoming;
 
-  void onContainerParameterChanged(Parameter * p) override;
+	void onContainerParameterChanged(Parameter * p) override;
 	void newJsFileLoaded() override;
 	
 

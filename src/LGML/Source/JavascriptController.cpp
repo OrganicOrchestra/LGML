@@ -128,8 +128,8 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
 
         else if(v.isArray()){
             Array<var> * arr = v.getArray();
-            for (int i = 0 ; i < arr->size() ; i++){
-                appendVarToMsg(msg, arr->getReference(i));
+            for (int j = 0 ; j < arr->size() ; j++){
+                appendVarToMsg(msg, arr->getReference(j));
             }
         }
     }
