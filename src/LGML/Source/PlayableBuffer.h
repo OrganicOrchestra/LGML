@@ -28,7 +28,7 @@ class PlayableBuffer {
   stateChanged(false),
   numTimePlayed(0),
   sampleOffsetBeforeNewState(0),
-  hasBeenFaded (false)
+  hasBeenFaded (false),fadeSamples(80)
   {
 
     jassert(numSamples < std::numeric_limits<int>::max());
@@ -48,7 +48,7 @@ class PlayableBuffer {
     }
     else if( wasLastRecordingFrame()){
       succeeded = writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState);
-      fadeInOut(80, 0);
+      fadeInOut(fadeSamples, 0);
 
     }
 
@@ -326,6 +326,7 @@ private:
   BufferState lastState;
   bool isJumping;
   bool hasBeenFaded;
+  int fadeSamples;
 
 
   int sampleOffsetBeforeNewState;

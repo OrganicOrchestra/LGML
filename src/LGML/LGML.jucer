@@ -792,7 +792,7 @@
                        targetName="LGML" linuxArchitecture="-march=armv6" headerPath="../../External/serial/include"/>
         <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
                        targetName="LGML" linuxArchitecture="-march=armv6"/>
-        <CONFIGURATION name="Ubuntu" libraryPath="/usr/X11R6/lib/" headerPath="../../External/serial/include"
+        <CONFIGURATION name="Ubuntu" libraryPath="/usr/X11R6/lib/" headerPath="../../External/serial/include&#10;../../Source"
                        isDebug="1" optimisation="5" targetName="LGML"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

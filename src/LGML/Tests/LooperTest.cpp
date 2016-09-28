@@ -21,11 +21,12 @@ public:
   }
   LooperNode * currentLooper;
   AudioBuffer<float> testBuffer;
-  
+
   const int recordSizeInBlock = 1000;
+  int fadeSample = 80;
 
   void processBlock(){
-     // it should ideally be independent of order between TimeManager and LooperProcessBlock
+    // it should ideally be independent of order between TimeManager and LooperProcessBlock
     static bool isBefore = true;// Random().nextBool();
     if(isBefore) TimeManager::getInstance()->incrementClock(getBlockSize());
     fillBufferWithTime(testBuffer);
@@ -50,7 +51,7 @@ public:
   }
   void fillBufferWithTime(AudioBuffer<float> & b){
 
-    
+
     for(int i = 0 ; i < b.getNumSamples() ; i++){
       float s = getBufferSampleForTime(TimeManager::getInstance()->timeState.time+i);
       for(int j = 0 ; j  < b.getNumChannels() ; j ++){
@@ -63,16 +64,19 @@ public:
   bool checkBufferAlignedForTime(AudioBuffer<float> & b,uint64 startTime){
     // byPass fade
     bool res = true;
-    for(int i = 80 ; i < b.getNumSamples()-80 ; i++){
+    for(int i = fadeSample ; i < b.getNumSamples()-fadeSample ; i++){
       float expected = getBufferSampleForTime(startTime+i);
       for(int j = 0 ; j  < b.getNumChannels() ; j ++){
         float actual = b.getSample(j, i);
+        if(actual!=expected)DBG(actual<<","<< expected);
         res&=(actual==expected);
       }
     }
     return  res;
 
   }
+
+
   int getBlockSize(){return currentLooper->getBlockSize();}
   int getRecordedLength(){return getBlockSize()*recordSizeInBlock;}
 
@@ -93,10 +97,10 @@ public:
     beginTest("basic playBackTest");
     expect(30*recordSizeInBlock*blockSize < std::numeric_limits<int>::max(),"integer not enough on this platform");
     LooperTrack * track1 = currentLooper->trackGroup.tracks[0];
+    fadeSample = track1->loopSample.fadeSamples;
     track1->recPlayTrig->trigger();
     for(int i = 0 ;i < recordSizeInBlock ; i++){
       processBlock();
-      DBG(track1->loopSample.recordNeedle);
       float magnitude = testBuffer.getMagnitude(0,testBuffer.getNumSamples());
       expect(magnitude==0,"still monitoring");
     }
@@ -108,7 +112,7 @@ public:
       int offsetTime = 0;
       int wallTime =tm->getTimeInSample()%(recordSizeInBlock*blockSize);
       if(i==0){
-        offsetTime = (tm->getTimeInSample())%(recordSizeInBlock*blockSize);
+        offsetTime = 0;//(tm->getNextTimeInSample())%(recordSizeInBlock*blockSize);
         wallTime = offsetTime;
       }
       float magnitude = testBuffer.getMagnitude(0,testBuffer.getNumSamples());
@@ -124,7 +128,7 @@ public:
     int recLen =track1->loopSample.getRecordedLength() ;
     int offset = recLen%(tm->beatTimeInSample);
     expect(recLen== getRecordedLength(),"wrong recorded Length");
-    expect(offset==0);
+    expect(offset==0,"wrong quantization");
     float bL1 = track1->beatLength->floatValue();
     expect(bL1==(int)bL1,"beatLength not an integer : "+String(bL1));
     double sB1=track1->startPlayBeat;
@@ -162,19 +166,24 @@ public:
     expect(bL2==(int)bL2,"beatLength not an integer : "+String(bL2));
     double sB2=track2->startPlayBeat;
     expect(sB2 == (int)sB2 , "startBeat not integer : "+String(sB2));
-
+    expect(startRec ==sB2*tm->beatTimeInSample,"wrong start beat");
     beginTest("check sampleAccurate align");
+    int minCommonSamples = jmin(track2->loopSample.getRecordedLength(),track1->loopSample.getRecordedLength());
     int maxCommonSamples = jmax(track2->loopSample.getRecordedLength(),track1->loopSample.getRecordedLength());
-    for(int i = 80 ; i < maxCommonSamples-80;i++){
+    for(int i = fadeSample  ; i <  maxCommonSamples-fadeSample;i++){
       int j1 = i%getRecordedLength();
-      double beatsPerRecord = getRecordedLength()/tm->beatTimeInSample;
-      int j2 = (int)(i + floor(sB2/beatsPerRecord)*beatsPerRecord*tm->beatTimeInSample)%(track2->loopSample.getRecordedLength());
-      for(int c  = 0 ; c < numChannels ; c++){
-        float normal1 = getBufferSampleForTime(j1);
-        float normal2 = getBufferSampleForTime(j2);
-        float track1Val =(int)(track1->loopSample.loopSample.getSample(c, j1));
-        float track2Val =(int)(track2->loopSample.loopSample.getSample(c, j2));
-        expect(track1Val==track2Val,"loops not aligned at: "+String (i)+" :: " + String(j1) + ","+String(j2));
+//      double beatsPerRecord = getRecordedLength()/tm->beatTimeInSample;
+      int j2 = (int)(i )%(track2->loopSample.getRecordedLength());
+      if(j1>fadeSample && getRecordedLength()-j1 > fadeSample && j2>fadeSample && track2->loopSample.getRecordedLength() - j2>fadeSample){
+        for(int c  = 0 ; c < numChannels ; c++){
+          float normal1 = getBufferSampleForTime(j1);
+          float normal2 = getBufferSampleForTime(j2+sB2*tm->beatTimeInSample);
+          float track1Val =(int)(track1->loopSample.loopSample.getSample(c, j1));
+          float track2Val =(int)(track2->loopSample.loopSample.getSample(c, j2));
+          expect(normal1==track1Val,"wrong alignement test on track 1");
+          expect(normal2==track2Val,"wrong alignement test on track 2");
+          if(i < minCommonSamples - fadeSample)expect(track1Val==track2Val,"loops not aligned at: "+String (i)+" :: " + String(j1) + ","+String(j2));
+        }
       }
     }
     

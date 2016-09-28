@@ -205,6 +205,10 @@ void TimeManager::setBPMInternal(double ){
 uint64 TimeManager::getTimeInSample(){
     return timeState.time;
 }
+uint64 TimeManager::getNextTimeInSample(){
+  if(desiredTimeState.isJumping)return desiredTimeState.nextTime;
+  else return  timeState.nextTime;
+}
 
 
 void TimeManager::jump(int amount){
@@ -266,6 +270,7 @@ uint64 TimeManager::getTimeForNextBeats(int beats){return (getBeatInt()+ beats)*
 
 int TimeManager::getBeatInt(){return (int)floor(getBeat());}
 double TimeManager::getBeat(){return (timeState.time*1.0/beatTimeInSample);}
+double TimeManager::getBeatInSamples(int numSamplesToAdd){return ((timeState.time+numSamplesToAdd)*1.0/beatTimeInSample);}
 double TimeManager::getBeatPercent(){return timeState.time*1.0/beatTimeInSample-getBeatInt();}
 
 int TimeManager::getBar(){return (int)(floor(getBeatInt()*1.0/beatPerBar->intValue() ));}

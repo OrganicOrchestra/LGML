@@ -68,6 +68,8 @@ public TimeMasterCandidate
     uint64 getNextQuantifiedTime(int barFraction);
     uint64 getTimeForNextBeats(int beats);
     uint64 getTimeInSample();
+    uint64 getNextTimeInSample();
+    double getBeatInSamples(int numSampleToAdd);
 
 
     //return percent in beat
