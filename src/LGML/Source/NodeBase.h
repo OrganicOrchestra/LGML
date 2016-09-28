@@ -20,6 +20,7 @@
 
 
 #include "ConnectableNode.h"
+#include "AudioHelpers.h"
 
 class ConnectableNodeUI;
 
@@ -196,6 +197,9 @@ public:
 
     WeakReference<NodeBase>::Master masterReference;
     friend class WeakReference<NodeBase>;
+
+  FadeInOut enableFader;
+  bool wasEnabled;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
 

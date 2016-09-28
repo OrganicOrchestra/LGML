@@ -21,6 +21,7 @@
 
 #include "TimeMasterCandidate.h"
 #include "ControllableContainer.h"
+#include "AudioHelpers.h"
 
 class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead,
 public TimeMasterCandidate
@@ -156,8 +157,10 @@ private:
   uint64 lastTaped;
   uint64 currentBeatPeriod;
   int tapInRow;
-  double lastEnv;
-  int clickFadeOut,clickFadeIn,clickFadeTime;
+
+  FadeInOut clickFader;
+//  double lastEnv;
+//  int clickFadeOut,clickFadeIn,clickFadeTime;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
 
 };

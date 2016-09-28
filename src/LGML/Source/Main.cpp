@@ -50,7 +50,7 @@ public:
 
     engine = new Engine();
 #if LGML_UNIT_TESTS
-    
+
     UnitTestRunner tstRunner;
     CommandLineElements commandLineElements = StringUtil::parseCommandLine(commandLine);
     if(CommandLineElement elem = commandLineElements.getCommandLineElement("t","")){
@@ -72,7 +72,7 @@ public:
       tstRunner.runTests(testsToRun);
     }
     else{
-    tstRunner.runAllTests();
+      tstRunner.runAllTests();
     }
     quit();
 #else
@@ -149,22 +149,25 @@ public:
       // whatever you need.
 
       //@martin added but commented for testing (relou behavior)
-      
-       int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
-       if (result == 0)  return; //prevent exit
-       
-	   if (result == 1)
-	   {
-		   juce::FileBasedDocument::SaveResult sr = ((LGMLApplication *)LGMLApplication::getInstance())->engine->save(true, true);
-		   switch (sr)
-		   {
-		   case juce::FileBasedDocument::SaveResult::userCancelledSave:
-		   case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
-				   return;
-		   }
-	   }
 
-       JUCEApplication::getInstance()->systemRequestedQuit();
+      int result = AlertWindow::showYesNoCancelBox(AlertWindow::QuestionIcon, "Save document", "Do you want to save the document before quitting ?");
+      if (result == 0)  return; //prevent exit
+
+      if (result == 1)
+      {
+        juce::FileBasedDocument::SaveResult sr = ((LGMLApplication *)LGMLApplication::getInstance())->engine->save(true, true);
+        switch (sr)
+        {
+          case juce::FileBasedDocument::SaveResult::userCancelledSave:
+          case juce::FileBasedDocument::SaveResult::failedToWriteToFile:
+            return;
+
+          case FileBasedDocument::SaveResult::savedOk:
+            break;
+        }
+      }
+
+      JUCEApplication::getInstance()->systemRequestedQuit();
     }
 
     void timerCallback() override;

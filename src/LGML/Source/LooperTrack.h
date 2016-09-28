@@ -15,6 +15,7 @@
 #include "ControllableContainer.h"
 
 #include "PlayableBuffer.h"
+#include "AudioHelpers.h"
 
 class LooperNode;
 

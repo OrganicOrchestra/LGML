@@ -28,6 +28,58 @@ inline float rmsToGain01(float rms){
 }
 
 
+// helper for handling sample level fading in and out, autoCrossFade relaunches a fadeIn whenFadeOutEnds
+class FadeInOut{
+public:
+  FadeInOut(int _fadeInSamples,int _fadeOutSamples,bool autoCrossFade = false,double _skew = 1): fadeInNumSamples(_fadeInSamples), fadeOutNumSamples(_fadeOutSamples),crossFade(autoCrossFade),skew(_skew){
+    fadeOutCount = 0;
+    fadeInCount = -1;
+  }
+
+  double getCurrentFade(){
+    if(fadeInCount>=0){
+      if(skew==1)return (1.0 - fadeInCount*1.0/fadeInNumSamples);
+      return pow(1.0-fadeInCount*1.0/fadeInNumSamples,skew);
+    }
+    if(fadeOutCount>=0){
+      if(skew==1)return fadeOutCount*1.0/fadeOutNumSamples;
+      return pow(fadeOutCount*1.0/fadeOutNumSamples,skew);
+    }
+
+    jassertfalse;
+    return 0.0;
+  }
+
+  void startFadeOut(){
+    if(fadeOutCount>=0)return;
+    fadeOutCount = fadeInCount>0?fadeInCount*fadeOutNumSamples*1.0/fadeInNumSamples :fadeOutNumSamples;
+    fadeInCount = -1;
+  }
+
+  void startFadeIn(){
+    if(fadeInCount>=0)return;
+    fadeInCount = fadeOutCount>0?fadeOutCount*fadeInNumSamples*1.0/fadeOutNumSamples :fadeInNumSamples;
+    fadeOutCount = -1;
+  }
+  // should be called at each sample to compute resulting fade
+  void incrementFade(int i = 1){
+    if(fadeOutCount>0){
+      fadeOutCount-=i;
+      fadeOutCount = jmax(0,fadeOutCount);
+      if(crossFade && fadeOutCount<=0){
+        fadeInCount = fadeInNumSamples;
+      }
+    }
+    else if(fadeInCount>0){fadeInCount-=i;fadeInCount = jmax(0,fadeInCount);}
+  }
+
+  int fadeInNumSamples;
+  int fadeOutNumSamples;
+  int fadeInCount,fadeOutCount;
+  double skew;
+  bool crossFade;
+
+};
 
 
 

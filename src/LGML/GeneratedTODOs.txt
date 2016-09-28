@@ -34,11 +34,11 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 312
-		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-
-	line : 103
+	line : 106
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
+
+	line : 327
+		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 
 NodeContainer.h
@@ -48,7 +48,7 @@ NodeContainer.h
 
 
 VSTNode.cpp
-	line : 118
+	line : 132
 		// TODO check that it actually works
 
 
@@ -69,7 +69,7 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 627
+	line : 624
 		//TODO synchronize this and implement it for data
 		// it's not indispensable
 
@@ -90,7 +90,7 @@ NodeContainer.cpp
 
 
 TimeManager.h
-	line : 31
+	line : 32
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
@@ -100,7 +100,7 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.h
-	line : 45
+	line : 46
 		//  TODO:  this should not be implemented in Node to avoid overriding this method
 		//    create onNodeParameterChanged();
 
@@ -122,16 +122,16 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 378
+	line : 383
 		//TODO: check
 
 
 MIDIController.cpp
-	line : 172
-		// @ben do we do the same as OSC MIDI IN/OUt controllers
-
-	line : 39
+	line : 41
 		// TODO : we may need to listen to sR changes
+
+	line : 178
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 
 ControllableContainer.h

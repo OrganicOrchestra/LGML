@@ -517,11 +517,8 @@ void NodeContainer::onContainerParameterChanged(Parameter * p)
     ConnectableNode::onContainerParameterChanged(p);
 
 }
-void NodeContainer::onContainerParameterChangedAsync(Parameter * p ,const var & /*value*/) {
-  if (p == enabledParam)
-  {
-    bypassNode(!enabledParam->boolValue());
-  }
+void NodeContainer::onContainerParameterChangedAsync(Parameter * p ,const var & value) {
+//  ConnectableNode::onContainerParameterChangedAsync(p   ,value);
 };
 
 void NodeContainer::bypassNode(bool bypass){
