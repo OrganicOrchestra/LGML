@@ -58,6 +58,7 @@
 
   ConnectableNode::~ConnectableNode()
 {masterReference.clear();
+  parentNodeContainer = nullptr;
 }
 
 
@@ -140,6 +141,7 @@ void ConnectableNode::remove(bool askBeforeRemove)
 
 void ConnectableNode::clear()
 {
+  ControllableContainer::clear();
 	//to override
 }
 

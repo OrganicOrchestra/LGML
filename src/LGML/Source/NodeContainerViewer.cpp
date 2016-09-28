@@ -345,6 +345,7 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
 		{
 
 			int menuOffset = 1;
+      Point<int> mousePos = getMouseXYRelative();
 			PopupMenu   menu;//(new PopupMenu());
 			ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(menuOffset));
 			menu.addSubMenu("Add Node", *addNodeMenu);
@@ -358,7 +359,7 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
 				ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(NodeFactory::getTypeForIndex(result - menuOffset,true));
 				jassert(n != nullptr);
 
-				Point<int> mousePos = getMouseXYRelative();
+
 				n->xPosition->setValue((float)mousePos.x);
 				n->yPosition->setValue((float)mousePos.y);
 			}

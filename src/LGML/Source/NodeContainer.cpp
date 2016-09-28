@@ -18,7 +18,7 @@
 
 
 AudioDeviceManager& getAudioDeviceManager();
-
+bool isEngineLoadingFile();
 
 NodeContainer::NodeContainer(const String &name) :
 containerInNode(nullptr),
@@ -71,26 +71,26 @@ void NodeContainer::clear(bool recreateContainerNodes)
   {
     removeParamProxy(proxyParams[0]);
   }
+  if(!recreateContainerNodes)ConnectableNode::clear();
 
-  ConnectableNode::clear();
 }
 
 
-ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeName,bool callNodeAddedNow)
+ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeName)
 {
   ConnectableNode * n = NodeFactory::createNode(nodeType);
-  return addNode(n,nodeName,callNodeAddedNow);
+  return addNode(n,nodeName);
 }
 
-ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName,bool callNodeAddedNow)
+ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName)
 {
   nodes.add(n);
-  n->setParentNodeContainer(this);
+  if(!isEngineLoadingFile()) n->setParentNodeContainer(this);
 
-  if (n->type == NodeType::ContainerType)
+  if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n))
   {
     nodeContainers.add((NodeContainer *)n);
-    ((NodeContainer *)n)->clear(true);
+    nc->NodeContainer::clear(true);
     //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
   }
 
@@ -100,7 +100,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
   n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
   addChildControllableContainer(n); //ControllableContainer
-  if(callNodeAddedNow) nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
+  if(!isEngineLoadingFile()) nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
   return n;
 }
 
@@ -122,9 +122,10 @@ bool NodeContainer::removeNode(ConnectableNode * n)
   n->clear();
   n->removeFromAudioGraph();
 
-  if (n->type == NodeType::ContainerType) nodeContainers.removeObject((NodeContainer*)n);
+  if (n->type == NodeType::ContainerType) nodeContainers.removeFirstMatchingValue((NodeContainer*)n);
 
-  //if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(n->audioNode);
+  //if(NodeManager::getInstanceWithoutCreating() != nullptr)
+  AudioProcessorGraph::removeNode(n->audioNode);
 
   return true;
 }
@@ -334,7 +335,7 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
 
 
   NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
-  ConnectableNode * node = addNode(nodeType, sourceName,false);
+  ConnectableNode * node = addNode(nodeType, sourceName);
   String safeNodeName = node->niceName;
 
   if (node->type == NodeType::ContainerInType)
@@ -350,7 +351,7 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
   node->loadJSONData(nodeData);
   node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
 
-  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
+  if(isEngineLoadingFile())nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
 
   return node;
 

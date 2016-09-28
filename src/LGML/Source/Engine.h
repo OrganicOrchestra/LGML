@@ -80,7 +80,7 @@ public:
     };
     MultipleAudioSettingsHandler audioSettingsHandler;
 
-
+  bool isLoadingFile;
     
 };
 

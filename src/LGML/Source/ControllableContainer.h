@@ -160,7 +160,7 @@ public:
     ListenerList<ControllableContainerListener> controllableContainerListeners;
     void addControllableContainerListener(ControllableContainerListener* newListener) { controllableContainerListeners.add(newListener);}
     void removeControllableContainerListener(ControllableContainerListener* listener) { controllableContainerListeners.remove(listener);}
-
+  void clear();
 
 
 protected :

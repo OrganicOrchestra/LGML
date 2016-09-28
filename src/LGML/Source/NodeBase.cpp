@@ -269,10 +269,9 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 
 
 
-  if (NodeManager::getInstanceWithoutCreating() != nullptr)
-  {
-    NodeManager::getInstance()->rebuildAudioGraph();
-  }
+if(parentNodeContainer)
+   parentNodeContainer->updateAudioGraph();
+
 
   rmsValuesOut.clear();
   for (int i = 0; i < getTotalNumOutputChannels(); i++) rmsValuesOut.add(0);

@@ -59,7 +59,7 @@ public:
 
 	//Container nodes, not removable by user, handled separately
 	ContainerInNode * containerInNode;
-    ContainerOutNode * containerOutNode;
+  ContainerOutNode * containerOutNode;
 
   virtual AudioProcessor * getAudioProcessor()override{return this;}
 
@@ -69,12 +69,11 @@ public:
 
 	Array<ConnectableNode *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
 	OwnedArray<NodeConnection> connections;
-	OwnedArray<NodeContainer> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
+	Array<NodeContainer*> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
 
-    //@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
-	//(todo : find a way to have simpler event flow)
-    ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty,bool callNodeAddedNow=true);
-	ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty,bool callNodeAddedNow=true);
+
+    ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty);
+	ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty);
 	bool removeNode(ConnectableNode * n);
 
 	ConnectableNode * getNodeForName(const String &name);

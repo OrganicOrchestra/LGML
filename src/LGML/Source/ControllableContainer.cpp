@@ -44,8 +44,12 @@ ControllableContainer::~ControllableContainer()
   //controllables.clear();
   //DBG("CLEAR CONTROLLABLE CONTAINER");
 
-  controllables.clear();
+  clear();
   masterReference.clear();
+}
+void ControllableContainer::clear(){
+  controllables.clear();
+  controllableContainers.clear();
 }
 
 void ControllableContainer::addParameter(Parameter * p)

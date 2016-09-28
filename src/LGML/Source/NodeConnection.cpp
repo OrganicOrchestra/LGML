@@ -187,7 +187,7 @@ void NodeConnection::audioInputAdded(NodeBase * n, int channel)
     //DBG(" >> connections to add : " << connectionsToAdd.size());
     for (auto &c : connectionsToAdd)
     {
-        bool result = addAudioGraphConnection(c.first, c.second);
+       addAudioGraphConnection(c.first, c.second);
     }
 }
 
@@ -197,7 +197,7 @@ void NodeConnection::audioOutputAdded(NodeBase * n, int channel)
     Array<AudioConnection> connectionsToAdd;
     for (auto &c : connectionsToAdd)
     {
-        bool result = addAudioGraphConnection(c.first, c.second);
+        addAudioGraphConnection(c.first, c.second);
     }
 }
 

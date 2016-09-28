@@ -13,10 +13,7 @@ DataInNode.cpp
 
 
 ControllableContainer.cpp
-	line : 418
-		// TODO weird feedback when loading preset on parameter presetName
-
-	line : 596
+	line : 600
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -24,8 +21,11 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 509
+	line : 513
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 422
+		// TODO weird feedback when loading preset on parameter presetName
 
 
 ControllableInspector.cpp
@@ -34,17 +34,11 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 314
+	line : 313
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 108
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
-
-
-NodeContainer.h
-	line : 73
-		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
-		//(todo : find a way to have simpler event flow)
 
 
 VSTNode.cpp
@@ -69,20 +63,20 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 193
+	line : 280
+		// TODO nicely handle file format errors?
+
+	line : 194
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 438
+	line : 439
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
-
-	line : 279
-		// TODO nicely handle file format errors?
 
 
 TimeManager.h

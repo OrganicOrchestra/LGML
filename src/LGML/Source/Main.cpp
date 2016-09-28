@@ -221,6 +221,7 @@ ApplicationProperties& getAppProperties()           { return *getApp().appProper
 AudioDeviceManager & getAudioDeviceManager()        { return getApp().deviceManager;}
 UndoManager & getAppUndoManager()                      { return getApp().undoManager;}
 Engine & getEngine()                              { return *getApp().engine;}
+bool & isEngineLoadingFile()                            {return getEngine().isLoadingFile;}
 //==============================================================================
 // This macro generates the main() routine that launches the app.
 START_JUCE_APPLICATION (LGMLApplication)
