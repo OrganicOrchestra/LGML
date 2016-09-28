@@ -17,10 +17,12 @@
 NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
 ConnectableNode(name,_type,_hasMainAudioControl),
 audioNode(nullptr),
-enableFader(5000,5000,false,0.1)
+enableFader(5000,5000,false,1),
+lastDryVolume(0)
 {
   addToAudioGraph(&NodeManager::getInstance()->audioGraph);
   logVolume = float01ToGain(DB0_FOR_01);
+
   lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
   enableFader.startFadeIn();
 
@@ -199,18 +201,22 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
   if (!isSuspended())
   {
+    double curVolume = logVolume*fadeValue;
+    double curDryVolume = logVolume*(1.0-fadeValue);
     if (fadeValue>0 ){
-
+      if(fadeValue!=1){crossFadeBuffer.makeCopyOf(buffer);}
       processBlockInternal(buffer, midiMessages);
-
       if(fadeValue!=1 || hasMainAudioControl){
-        double curVolume = logVolume*fadeValue;
         buffer.applyGainRamp(0, numSample, lastVolume, curVolume);
-        lastVolume = curVolume;
       }
-
-
+      if(fadeValue!=1){
+        for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
+          buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(i), numSample, lastDryVolume,curDryVolume);
+        }
+      }
     }
+    lastVolume = curVolume;
+    lastDryVolume = curDryVolume;
 
   }
   else{

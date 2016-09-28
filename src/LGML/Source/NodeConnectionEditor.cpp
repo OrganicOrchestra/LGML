@@ -21,7 +21,8 @@
 NodeConnectionEditor::NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI) :
 	CustomEditor(nodeConnectionUI),
 	currentConnection(nullptr),
-	editingLink(nullptr)
+	editingLink(nullptr),
+	selectedLink(nullptr)
 {
     addAndMakeVisible(&outputsContainer);
     addAndMakeVisible(&inputsContainer);
@@ -32,12 +33,30 @@ NodeConnectionEditor::NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI) 
 
 NodeConnectionEditor::~NodeConnectionEditor()
 {
+	
     setCurrentConnection(nullptr);
+}
+
+void NodeConnectionEditor::setSelectedLink(NodeConnectionEditorLink * link)
+{
+	if (selectedLink != nullptr)
+	{
+		selectedLink->setSelected(false);
+	}
+
+	selectedLink = link;
+
+	if(selectedLink != nullptr)
+	{
+		selectedLink->setSelected(true);
+	}
 }
 
 void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
 {
     if (currentConnection == _connection) return;
+
+	setSelectedLink(nullptr);
 
     if (currentConnection != nullptr)
     {
@@ -54,6 +73,8 @@ void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
         if (currentConnection->isAudio()) generateContentForAudio();
         else generateContentForData();
     }
+
+	
 }
 
 void NodeConnectionEditor::resized()
@@ -481,6 +502,11 @@ void NodeConnectionEditor::askForRemoveLink(NodeConnectionEditorLink * target)
     {
         currentConnection->removeDataGraphConnection(target->outSlot->data, target->inSlot->data);
     }
+}
+
+void NodeConnectionEditor::selectLink(NodeConnectionEditorLink * target)
+{
+	setSelectedLink(target);
 }
 
 
