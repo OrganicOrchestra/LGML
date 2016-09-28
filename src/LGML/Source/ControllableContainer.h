@@ -144,7 +144,7 @@ private:
 
     virtual void onContainerParameterChanged(Parameter *) {};
     virtual void onContainerTriggerTriggered(Trigger *) {};
-    virtual void onContainerParameterChangedAsync(Parameter *,const var & value){};
+    virtual void onContainerParameterChangedAsync(Parameter *,const var & /*value*/){};
     void addParameterInternal(Parameter * p);
 
     int numContainerIndexed;

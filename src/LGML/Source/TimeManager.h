@@ -82,7 +82,7 @@ public TimeMasterCandidate
     void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
 	*/
 
-    uint beatTimeInSample;
+    uint64 beatTimeInSample;
     int sampleRate;
 
     Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;

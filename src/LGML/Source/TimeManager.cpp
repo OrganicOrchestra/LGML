@@ -21,7 +21,7 @@ TimeManager::TimeManager():
 beatTimeInSample(0),
 sampleRate(44100),
 ControllableContainer("time"),
-beatTimeGuessRange(.4,.85),
+beatTimeGuessRange(.4f,.85f),
 _isLocked(false)
 {
 
@@ -195,12 +195,12 @@ void TimeManager::togglePlay(){
 void TimeManager::setSampleRate(int sr){
   sampleRate = sr;
   // actualize beatTime in sample
-  beatTimeInSample = (uint)(sampleRate*1.0 / BPM->doubleValue() *60.0);
+  beatTimeInSample = (uint64)(sampleRate*1.0 / BPM->doubleValue() *60.0);
 }
 
 void TimeManager::setBPMInternal(double ){
   isSettingTempo->setValue(false);
-  beatTimeInSample =(uint)(sampleRate *1.0/ BPM->doubleValue()*60.0);
+  beatTimeInSample =(uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
 }
 uint64 TimeManager::getTimeInSample(){
     return timeState.time;

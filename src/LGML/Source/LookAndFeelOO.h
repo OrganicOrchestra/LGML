@@ -313,7 +313,7 @@ public:
 
     //==============================================================================
 
-  void preparePopupMenuWindow (Component& newWindow) override ;
+	void preparePopupMenuWindow (Component& newWindow) override ;
     void drawPopupMenuBackground (Graphics&, int width, int height) override;
 
     void drawPopupMenuItem (Graphics&, const Rectangle<int>& area,

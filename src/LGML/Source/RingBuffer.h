@@ -22,7 +22,7 @@ class BipBuffer{
 
 public:
   BipBuffer(int _channels,int size):numChannels(_channels){
-    phantomSize = ceil(size*2.0/3.0);
+    phantomSize = (int)ceil(size*2.0/3.0);
     buf.setSize(_channels,3*phantomSize,false,true);
     writeNeedle = 0;
   }

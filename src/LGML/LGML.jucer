@@ -757,32 +757,32 @@
             bigIcon="SL4b92" externalLibraries="setupapi.lib">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="LGML" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include&#10;"
+                       isDebug="1" optimisation="1" targetName="LGML_x64_Debug" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include&#10;"
                        libraryPath="" defines=""/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="LGML" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"/>
+                       isDebug="0" optimisation="3" targetName="LGML_x64" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"/>
         <CONFIGURATION name="Debug 32bit" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="LGML" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"/>
+                       isDebug="1" optimisation="1" targetName="LGML_86_Debug" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"/>
         <CONFIGURATION name="Release 32bit" winWarningLevel="4" generateManifest="1"
-                       winArchitecture="32-bit" isDebug="0" optimisation="3" targetName="LGML"
+                       winArchitecture="32-bit" isDebug="0" optimisation="3" targetName="LGML_x86"
                        headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"
                        libraryPath=""/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_events" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_graphics" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_data_structures" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_gui_basics" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_gui_extra" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_cryptography" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_opengl" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_basics" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_devices" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_formats" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_processors" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_utils" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
-        <MODULEPATH id="juce_osc" path="D:\Softwares\Juce 4.2.3\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_cryptography" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_opengl" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_basics" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_osc" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" smallIcon="SL4b92"
