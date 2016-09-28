@@ -15,7 +15,7 @@
 #include "MIDIListener.h"
 #include "JsEnvironment.h"
 
-class MIDIController : public Controller,public MIDIListener,public JsEnvironment
+class MIDIController : public Controller,public MIDIListener, public MIDIListener::Listener,public JsEnvironment
 {
 public :
     MIDIController();
@@ -25,16 +25,16 @@ public :
     void buildLocalEnv() override;
 	void handleIncomingMidiMessage(MidiInput* source,
 		const MidiMessage& message) override;
+
     StringParameter * deviceInName;
+
     StringParameter * scriptPath;
     BoolParameter * logIncoming;
 
 
-  MidiMessageCollector midiCollector;
+	MidiMessageCollector midiCollector;
 
-
-
-
+	void currentDeviceChanged(MIDIListener * m) override;
 
 	ControllerUI * createUI() override;
     void    onContainerParameterChanged(Parameter * )override;

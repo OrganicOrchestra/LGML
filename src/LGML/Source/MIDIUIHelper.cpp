@@ -24,50 +24,42 @@ MIDIDeviceChooser::~MIDIDeviceChooser()
 
 void MIDIDeviceChooser::fillDeviceList()
 {
-	String currentSelected = getItemText(getSelectedItemIndex());
+	String currentSelected = currentDeviceName;// getSelectedId() > 1 ? getItemText(getSelectedItemIndex()) : String::empty;
 
+	
 	clear();
 	addItem("Choose a MIDI Device", 1);
 	StringArray deviceList = isInputChooser ? MIDIManager::getInstance()->inputDevices : MIDIManager::getInstance()->outputDevices;
 	addItemList(deviceList, 2);
-	if (!currentSelected.isEmpty())
-	{
-		setSelectedItemIndex(deviceList.indexOf(currentSelected) + 2,NotificationType::dontSendNotification); //Start with id 1
-	}
-	else
-	{
-		setSelectedId(1, NotificationType::dontSendNotification);
-	}
+
+	setSelectedDevice(currentSelected, true);
 
 }
 
 void MIDIDeviceChooser::setSelectedDevice(const String & deviceName, bool silent)
 {
+	currentDeviceName = deviceName;
+
+	if (deviceName.isEmpty())
+	{
+		setSelectedId(1, NotificationType::dontSendNotification);
+		return;
+	}
+
 	StringArray deviceList = isInputChooser ? MIDIManager::getInstance()->inputDevices : MIDIManager::getInstance()->outputDevices;
 	int dIndex = deviceList.indexOf(deviceName);
-	if (dIndex == -1) return;
-	setSelectedItemIndex(dIndex+1,silent?NotificationType::dontSendNotification:NotificationType::sendNotification);
+
+	if (dIndex == -1)
+	{
+		setSelectedId(1,NotificationType::dontSendNotification);
+	} else
+	{
+		setSelectedItemIndex(dIndex + 1, silent ? NotificationType::dontSendNotification : NotificationType::sendNotification);
+	}
+
+
 }
 
-/*
-void MIDIDeviceChooser::midiInputAdded(String &)
-{
-
-}
-
-void MIDIDeviceChooser::midiInputRemoved(String &)
-{
-}
-
-void MIDIDeviceChooser::midiOutputAdded(String &)
-{
-}
-
-void MIDIDeviceChooser::midiOutputRemoved(String &)
-{
-	
-}
-*/
 
 void MIDIDeviceChooser::midiInputsChanged()
 {

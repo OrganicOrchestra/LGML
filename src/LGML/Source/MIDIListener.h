@@ -23,7 +23,8 @@ class MIDIListener :public MidiInputCallback,MIDIManager::MIDIManagerListener
 
 
     String midiPortName;
-	
+	String ghostPortName;
+
     virtual void setCurrentDevice(const String &deviceName);
 	
 	//Output
@@ -33,12 +34,12 @@ class MIDIListener :public MidiInputCallback,MIDIManager::MIDIManagerListener
 	void sendCC(int channel, int number, int value);
 	void sendSysEx(uint8 * data, int dataCount);
 
-    virtual void midiInputAdded(String & s) override{ if(s==midiPortName){setCurrentDevice(midiPortName);}}
-//    virtual void midiInputRemoved(String &) {}
+	virtual void midiInputAdded(String & s) override;
+	virtual void midiInputRemoved(String & s) override;
 //    virtual void midiInputsChanged() {}
     
-    virtual void midiOutputAdded(String & s)override {if(s==midiPortName){setCurrentDevice(midiPortName);}}
-//    virtual void midiOutputRemoved(String &) {}
+	virtual void midiOutputAdded(String & s) override;
+	virtual void midiOutputRemoved(String & s) override;
 //    virtual void midiOutputsChanged() {}
     
     class  Listener

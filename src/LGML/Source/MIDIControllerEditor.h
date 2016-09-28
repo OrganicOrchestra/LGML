@@ -14,12 +14,13 @@
 #include "ControllerEditor.h"
 class MIDIControllerUI;
 class MIDIController;
+#include "MIDIListener.h"
 #include "MIDIUIHelper.h"
 #include "JsEnvironmentUI.h"
 
 
 
-class MIDIControllerEditor : public ControllerEditor, ComboBoxListener
+class MIDIControllerEditor : public ControllerEditor, ComboBoxListener, MIDIListener::Listener
 {
 public:
 	MIDIControllerEditor(MIDIControllerUI * controllerUI);
@@ -34,6 +35,8 @@ public:
 	void comboBoxChanged(ComboBox *) override;
 
 	int getContentHeight() override;
+
+	void currentDeviceChanged(MIDIListener *) override;
 };
 
 
