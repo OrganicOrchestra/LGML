@@ -23,6 +23,7 @@ public:
 
     var defaultValue;
     var value;
+    var lastValue;
     var minimumValue;
     var maximumValue;
     void setRange(var,var);
@@ -73,6 +74,7 @@ public:
         ParamWithValue(Parameter * p,var v):parameter(p),value(v){}
         Parameter * parameter;
         var value;
+        bool isRange() const{return value.isArray();}
 
     };
     QueuedNotifier<ParamWithValue> queuedNotifier;

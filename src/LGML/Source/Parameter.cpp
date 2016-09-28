@@ -37,6 +37,7 @@ void Parameter::setValue(var _value, bool silentSet, bool force)
 {
 
     if (!force && this->value == _value) return;
+    lastValue = value.clone();
     setValueInternal(_value);
 
 
@@ -49,6 +50,8 @@ void Parameter::setRange(var min, var max){
     minimumValue = min;
     maximumValue = max;
     listeners.call(&Listener::parameterRangeChanged,this);
+  var arr;arr.append(minimumValue);arr.append(maximumValue);
+  queuedNotifier.addMessage(new ParamWithValue(this,arr));
 }
 
 void Parameter::setValueInternal(var & _value) //to override by child classes
@@ -74,6 +77,10 @@ void Parameter::setNormalizedValue(const float & normalizedValue, bool silentSet
 }
 
 float Parameter::getNormalizedValue() {
+  if(minimumValue==maximumValue){
+    return 0.0;
+  }
+  else
     return jmap<float>((float)value, (float)minimumValue, (float)maximumValue, 0.f, 1.f);
 }
 

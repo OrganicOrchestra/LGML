@@ -67,6 +67,7 @@ public:
   IntParameter * quantization;
     IntParameter * preDelayMs;
   BoolParameter * isOneShot;
+  BoolParameter*  firstTrackSetTempo;
   Trigger * exportAudio;
 
 	AudioBuffer<float> bufferIn;

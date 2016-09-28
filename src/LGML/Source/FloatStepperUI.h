@@ -25,11 +25,11 @@ public:
     void resized() override;
 protected:
     void valueChanged(const var &) override;
-
+    void rangeChanged(Parameter * p) override;
 
     // Inherited via Listener
     virtual void sliderValueChanged(Slider * slider) override;
-    void parameterRangeChanged(Parameter * p) override;
+
 };
 
 

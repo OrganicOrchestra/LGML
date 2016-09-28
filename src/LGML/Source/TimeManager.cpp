@@ -18,15 +18,27 @@ juce_ImplementSingleton(TimeManager);
 
 
 TimeManager::TimeManager():
-beatTimeInSample(0),
+beatTimeInSample(1000),
 sampleRate(44100),
 ControllableContainer("time"),
-beatTimeGuessRange(.4,.85),
-_isLocked(false)
+beatTimeGuessRange(.4,.85), 
+BPMRange(10,600),
+_isLocked(false),
+settingTempoFromCandidate(false),
+currentBeatPeriod(.5),
+lastTaped(0),
+tapInRow(0),
+clickFadeTime(1000),
+clickFadeIn(1000),
+clickFadeOut(0)
+
+
 {
 
-  BPM = addFloatParameter("bpm","current BPM",120,10,600);
+  BPM = addFloatParameter("bpm","current BPM",120,BPMRange.getStart(),BPMRange.getEnd());
   playState = addBoolParameter("Play_Stop", "play or stop global transport", false);
+  BPMLocked = addBoolParameter("bpmLocked", "bpm is locked by somebody", false);
+  BPMLocked->isControllableFeedbackOnly = true;
   isSettingTempo = addBoolParameter("isSettingTempo", "is someone setting tempo (recording first loop)", false);
   currentBar  = addIntParameter("currentBar", "currentBar in transport", 0, 0, 9999999);
   currentBeat  = addIntParameter("currentBeat", "currentBeat in transport", 0, 0, 999999);
@@ -34,6 +46,9 @@ _isLocked(false)
   playTrigger = addTrigger("play", "trigger play");
   stopTrigger = addTrigger("stop", "trigger stop");
   quantizedBarFraction = addIntParameter("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
+  tapTempo = addTrigger("tapTempo", "tap the tempo");
+  click = addBoolParameter("metronome", "metronome", false);
+  setBPMInternal(BPM->doubleValue());
 }
 TimeManager::~TimeManager()
 {
@@ -43,7 +58,7 @@ TimeManager::~TimeManager()
 void TimeManager::incrementClock(int time){
   updateState();
   if(_isLocked)return;
-  int lastBeat = getBeatInt();
+
 
   if(timeState.isJumping){
     timeState.time=timeState.nextTime;
@@ -52,9 +67,9 @@ void TimeManager::incrementClock(int time){
 
   else if(timeState.isPlaying){
     timeState.time+=time;
-    timeState.nextTime = timeState.time+time;
   }
-
+  timeState.nextTime = timeState.time+time;
+int lastBeat = getBeatInt();
   int newBeat = getBeatInt();
   if(lastBeat!=newBeat){
     currentBeat->setValue(newBeat);
@@ -75,11 +90,56 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
                                          float** outputChannelData,
                                          int numOutputChannels,
                                          int numSamples) {
+
+  if(click->boolValue()&&timeState.isPlaying){
+    static uint64 sinCount = 0;
+
+    bool isFirstBeat = (getClosestBeat()%beatPerBar->intValue()) == 0;
+    const int sinFreq = sampleRate /(isFirstBeat?660:440);
+//    const int sinPeriod = sampleRate / sinFreq;
+    const double k = 40.0;
+
+
+
+    if(desiredTimeState.isJumping){
+      clickFadeOut = clickFadeTime;
+    }
+
+      for(int i = 0 ; i < numSamples;i++){
+        double carg = sinCount*1.0/sinFreq;
+        double env = lastEnv;
+        if(clickFadeOut>0){
+          double fadeFactor = clickFadeOut*1.0/clickFadeTime;
+          env=lastEnv*fadeFactor*fadeFactor;
+          clickFadeOut--;
+          if(clickFadeOut == 0){
+            clickFadeIn = clickFadeTime;
+          }
+        }
+
+        else{
+          double x = (getBeatInNextSamples(i)-getBeatInt() ) ;
+          double h = k*fmod((double)x+1.0/k,1.0);
+          double fadeFactor = (1.0-clickFadeIn*1.0/clickFadeTime);
+          env = fadeFactor*fadeFactor*jmax(0.0,h*exp(1.0-h));
+          clickFadeIn = jmax(clickFadeIn-1,0);
+        }
+        float res = (env* cos(2.0*M_PI*carg ));
+        lastEnv = env;
+        for(int c = 0 ;c < numOutputChannels ; c++ ){outputChannelData[c][i] = res;}
+
+        sinCount = (sinCount+1)%(sinFreq);
+    }
+  }
+  else{
+  for (int i = 0; i < numOutputChannels; ++i)
+    zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
+  }
+
+
 #if !LGML_UNIT_TESTS
   incrementClock(numSamples);
 #endif
-  for (int i = 0; i < numOutputChannels; ++i)
-    zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
 }
 
 bool TimeManager::askForBeingMasterCandidate(TimeMasterCandidate * n){
@@ -98,32 +158,34 @@ void TimeManager::releaseMasterCandidate(TimeMasterCandidate * n){
   if(potentialTimeMasterCandidate.size()==0||
      (potentialTimeMasterCandidate.size()==1 && potentialTimeMasterCandidate.getUnchecked(0)==this)  ){
     stopTrigger->trigger();
+    BPMLocked->setValue(false);
+    
   }
 }
 
 void TimeManager::onContainerParameterChanged(Parameter * p){
   if(p==playState){
     if(!playState->boolValue()){
-      if(isMasterCandidate(this)){
-        potentialTimeMasterCandidate.clear();
-
-      }
+      if(isMasterCandidate(this)){potentialTimeMasterCandidate.clear();}
       shouldStop();
     }
     else{
-      if (!hasMasterCandidate()) {
-        askForBeingMasterCandidate(this);
-      }
+      if (!hasMasterCandidate()) {askForBeingMasterCandidate(this);}
       shouldGoToZero();
       shouldPlay();
     }
   }
   else if(p==BPM){
     setBPMInternal(BPM->doubleValue());
+    clickFadeOut = clickFadeTime;
+
   }
-  else if(p==beatPerBar){
-    currentBeat->maximumValue = beatPerBar->intValue();
+  else if (p==BPMLocked){
+    if(BPMLocked->boolValue()){BPM->setRange(BPM->doubleValue(),BPM->doubleValue());}
+    else                      {BPM->setRange(BPMRange.getStart(),BPMRange.getEnd());}
   }
+  else if(p==beatPerBar){currentBeat->maximumValue = beatPerBar->intValue();}
+
 
 };
 
@@ -141,12 +203,8 @@ void TimeManager::shouldGoToZero(){
 }
 void TimeManager::advanceTime(uint64 a){
 
-  if(desiredTimeState.isJumping){
-  desiredTimeState.nextTime+=a;
-  }
-  else{
-    desiredTimeState.jumpTo(timeState.nextTime+a);
-  }
+  if(desiredTimeState.isJumping){desiredTimeState.nextTime+=a;}
+  else                          {desiredTimeState.jumpTo(timeState.nextTime+a);}
 
 }
 void TimeManager::shouldPlay(){
@@ -176,10 +234,43 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
     playState->setValue(false);
     playState->setValue(true);
   }
-
-  if(t==stopTrigger){
+  else if(t==stopTrigger){
     playState->setValue(false);
     isSettingTempo->setValue(false);
+  }
+
+  else if (t == tapTempo){
+    if(!BPMLocked->boolValue()){
+      if(!playState->boolValue()){playState->setValue(true);currentBeatPeriod = 0.7;}
+      uint64 currentTime = Time().getMillisecondCounter();//timeState.time;
+      uint64 delta = currentTime-lastTaped;
+      lastTaped = currentTime;
+      if((delta>100) && (delta<1000)){
+//        const int maxTapInRow = 4;
+        tapInRow = (tapInRow+1)%beatPerBar->intValue();
+        const double alpha =.25;// 1. - tapInRow/maxTapInRow *.75 ;
+        currentBeatPeriod = alpha*delta + (1-alpha)*currentBeatPeriod;
+
+//        int targetBeatInt = tapInRow;
+
+        double targetBeat =getBeat();
+        if(targetBeat - (int)targetBeat>0.5){targetBeat+=1;}
+        int targetBeatInt = floor(targetBeat);
+
+//        int targetBeatInt = ceil(targetBeat);
+
+        goToTime(targetBeatInt*currentBeatPeriod*44.1);//(deltaBeat*beatTimeInSample);
+
+        BPM->setValue(60000.0/currentBeatPeriod);
+        DBG(targetBeatInt << "," << BPM->doubleValue());
+
+
+
+      }
+      else if (tapInRow>0){tapInRow --;}
+
+    }
+
   }
 }
 void TimeManager::togglePlay(){
@@ -239,13 +330,18 @@ double TimeManager::setBPMForLoopLength(uint64 time,int granularity){
     beatInSample = beatInSample - offset;
     beatTime = beatInSample*1.0/sampleRate;
   }
-
+  settingTempoFromCandidate = true;
   BPM->setValue(60.0/beatTime);
+  settingTempoFromCandidate = false;
   // force exact beatTimeInSample
   beatTimeInSample = beatInSample;
   DBG("beat Sample : " << String(beatTimeInSample) << " : " << time);
   shouldGoToZero();
   //jassert((int)(barLength*beatPerBar->intValue())>0);
+
+  // lockBPM for now
+  BPMLocked->setValue(true);
+
   return (barLength*beatPerBar->intValue());
 }
 
@@ -253,25 +349,22 @@ uint64 TimeManager::getNextGlobalQuantifiedTime(){
   return getNextQuantifiedTime(quantizedBarFraction->intValue());
 }
 uint64 TimeManager::getNextQuantifiedTime(int barFraction){
-  if (barFraction==-1){
-    barFraction=quantizedBarFraction->intValue();
-  }
-  if(barFraction==0){
-    return timeState.time;
-  }
+  if (barFraction==-1){barFraction=quantizedBarFraction->intValue();}
+  if(barFraction==0){return timeState.time;}
 
   const uint64 samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
   const uint64 res = (uint64) ((floor(timeState.time*1.0/samplesPerUnit) + 1)*samplesPerUnit);
-  DBG(res);
   return res;
 }
 
 uint64 TimeManager::getTimeForNextBeats(int beats){return (getBeatInt()+ beats)*beatTimeInSample;}
 
-int TimeManager::getBeatInt(){return (int)floor(getBeat());}
-double TimeManager::getBeat(){return (timeState.time*1.0/beatTimeInSample);}
-double TimeManager::getBeatInNextSamples(int numSamplesToAdd){return ((timeState.time+numSamplesToAdd)*1.0/beatTimeInSample);}
-double TimeManager::getBeatPercent(){return timeState.time*1.0/beatTimeInSample-getBeatInt();}
+int     TimeManager::getBeatInt()   {return (int)floor(getBeat());}
+double  TimeManager::getBeat()      {return (double)(timeState.time*1.0/beatTimeInSample);}
+int     TimeManager::getClosestBeat(){return (int)floor(getBeat()+0.5);}
+double  TimeManager::getBeatPercent() {return (double)(timeState.time*1.0/beatTimeInSample-getBeatInt());}
+double  TimeManager::getBeatInNextSamples(int numSamplesToAdd){return(double) ((timeState.time+numSamplesToAdd)*1.0/beatTimeInSample);}
+
 
 int TimeManager::getBar(){return (int)(floor(getBeatInt()*1.0/beatPerBar->intValue() ));}
 

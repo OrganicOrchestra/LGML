@@ -29,7 +29,7 @@ public:
   int sampleRate = 44100;
   int originTargetBeatSize = 0.6*sampleRate;
   const int numBeats = 4;
-  const int recordSizeInBlock = numBeats*originTargetBeatSize*1.0/blockSize+1;
+  const int recordSizeInBlock = floor(numBeats*originTargetBeatSize*1.0/blockSize);
   int fadeSample = 80;
 
   void processBlock(){
@@ -124,18 +124,20 @@ public:
 
     for(int i = 0 ;i < 2.3*recordSizeInBlock ; i++){
       processBlock();
-      int offsetTime = 0;
-      int wallTime =tm->getTimeInSample()%(recordSizeInBlock*blockSize);
-      if(i==0){
-        offsetTime = 0;//(tm->getNextTimeInSample())%(recordSizeInBlock*blockSize);
-        wallTime = offsetTime;
-      }
+
+
+      int startWallTime =tm->getTimeInSample()%(recordSizeInBlock*blockSize);
+      int endWallTime = (tm->getNextTimeInSample())%(recordSizeInBlock*blockSize);
+
+
+      expect(track1->loopSample.playNeedle==(endWallTime%track1->loopSample.recordNeedle),"unaligned PlayNeedle : "+String(track1->loopSample.playNeedle)+" , "+String(endWallTime%track1->loopSample.recordNeedle) );
+
       float magnitude = testBuffer.getMagnitude(0,testBuffer.getNumSamples());
       expect(magnitude>0,"not Playing");
-      int localTime =(i*blockSize+offsetTime)%(recordSizeInBlock*blockSize);
+      int localTime =(i*blockSize)%(recordSizeInBlock*blockSize);
 
-      expect(localTime==wallTime,"localTime not aligned : "+String(localTime)+","+String(wallTime));
-      expect(checkBufferAlignedForTime(testBuffer,localTime),"buffer not aligned with time : "+String(wallTime));
+      expect(localTime==startWallTime,"localTime not aligned : "+String(localTime)+","+String(startWallTime));
+      expect(checkBufferAlignedForTime(testBuffer,startWallTime),"buffer not aligned with time : "+String(startWallTime));
 
     }
     expect(targetBeatSize ==tm->beatTimeInSample,"targetBeatSize not reached : "+String(targetBeatSize-(int)tm->beatTimeInSample));

@@ -45,6 +45,9 @@ public:
 
     virtual void setParamNormalizedValue(float value);
     virtual float getParamNormalizedValue();
+    void rangeChanged(Parameter * )override{
+      repaint();
+    };
 
 
 protected:

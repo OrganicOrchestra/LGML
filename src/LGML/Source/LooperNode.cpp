@@ -35,7 +35,7 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   preDelayMs = addIntParameter("Pre Delay MS",    "Pre process delay (in milliseconds)", 0, 0, 250);
   quantization = addIntParameter("quantization",       "quantization for this looper - 1 is global", -1, -1, 32);
   isOneShot =  addBoolParameter("isOneShot", "do we play once or loop track", false);
-
+  firstTrackSetTempo = addBoolParameter("firstTrackSetTempo", "do the first track sets the global tempo or use quantization", true);
   addChildControllableContainer(&trackGroup);
 
   trackGroup.setNumTracks(numberOfTracks->intValue());
@@ -139,13 +139,9 @@ void LooperNode::TrackGroup::setNumTracks(int numTracks) {
 void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
   if(TimeManager::getInstance()->hasMasterCandidate()){
     bool needToReleaseMasterTempo = true;
-//    bool needToStop = TimeManager::getInstance()->playState->boolValue() && TimeManager::getInstance()->isMasterCandidate(this);
     for (auto & t : trackGroup.tracks) {
-      //            DBG("s"+LooperTrack::trackStateToString(t->trackState));
       needToReleaseMasterTempo &= (t->desiredState == LooperTrack::TrackState::CLEARED);
-//      needToStop &=   (t->desiredState == LooperTrack::TrackState::CLEARED ||
-//                       t->desiredState == LooperTrack::TrackState::STOPPED ||
-//                       t->desiredState == LooperTrack::TrackState::WILL_STOP);
+
     }
 
     if (needToReleaseMasterTempo) {
@@ -159,7 +155,7 @@ void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
 
 
 bool LooperNode::askForBeingMasterTrack(LooperTrack * t) {
-  bool res = areAllTrackClearedButThis(t);
+  bool res = firstTrackSetTempo->boolValue() && areAllTrackClearedButThis(t);
   if (res)lastMasterTempoTrack = t;
   return res;
 }

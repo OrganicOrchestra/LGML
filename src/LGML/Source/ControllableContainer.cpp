@@ -120,7 +120,9 @@ void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
   if(pv.parameter==currentPresetName){
     loadPresetWithName(pv.parameter->stringValue());
   }
+  if(!pv.isRange()){
   onContainerParameterChangedAsync(pv.parameter, pv.value);
+  }
 }
 void ControllableContainer::setNiceName(const String &_niceName) {
   if (niceName == _niceName) return;

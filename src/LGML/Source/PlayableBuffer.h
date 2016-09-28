@@ -202,7 +202,7 @@ class PlayableBuffer {
     if(targetSamples>recordNeedle){
       padEndOfRecording((int)(targetSamples - recordNeedle));
     }
-    else{
+    else if (targetSamples<recordNeedle){
       cropEndOfRecording((int)(recordNeedle - targetSamples));
     }
 
@@ -318,6 +318,7 @@ class PlayableBuffer {
 
   int numTimePlayed;
   AudioSampleBuffer loopSample;
+  int getSampleOffsetBeforeNewState(){return sampleOffsetBeforeNewState;};
 
 #if !LGML_UNIT_TESTS
 private:

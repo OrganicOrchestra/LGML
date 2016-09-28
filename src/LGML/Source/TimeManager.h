@@ -38,17 +38,20 @@ public TimeMasterCandidate
     BoolParameter * playState;
     Trigger * playTrigger;
     Trigger * stopTrigger;
+    Trigger * tapTempo;
     BoolParameter * isSettingTempo;
     FloatParameter *  BPM;
     IntParameter * currentBeat;
     IntParameter * currentBar;
     IntParameter * beatPerBar;
-
+  BoolParameter * BPMLocked;
+  BoolParameter * click;
 
     IntParameter * quantizedBarFraction;
 
     void setSampleRate(int sr);
-    double setBPMForLoopLength(uint64 time,int granularity=0);
+  // granularity ensure that beat sample is divisible by 16 (8,4,2 ... 1)
+    double setBPMForLoopLength(uint64 time,int granularity=16);
 
 
 	void jump(int amount);
@@ -69,6 +72,7 @@ public TimeMasterCandidate
     uint64 getTimeForNextBeats(int beats);
     uint64 getTimeInSample();
     uint64 getNextTimeInSample();
+    int getClosestBeat();
     double getBeatInNextSamples(int numSampleToAdd);
 
 
@@ -141,8 +145,18 @@ private:
 
     CurrentPositionInfo currentPositionInfo;
 
-  Range<float> beatTimeGuessRange;
+  // used for guessing tempo
+  Range<double> beatTimeGuessRange;
+  // used for manual setting of tempo
+  Range<double> BPMRange;
 
+  bool settingTempoFromCandidate;
+
+  uint64 lastTaped;
+  uint64 currentBeatPeriod;
+  int tapInRow;
+  double lastEnv;
+  int clickFadeOut,clickFadeIn,clickFadeTime;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
 
 };

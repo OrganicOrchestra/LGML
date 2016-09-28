@@ -85,8 +85,10 @@ void Engine::initAudio(){
   ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
   getAudioDeviceManager().initialise (64, 64, savedAudioState, true);
   getAudioDeviceManager().addChangeListener(&audioSettingsHandler);
-  getAudioDeviceManager().addAudioCallback (&graphPlayer);
+  // timeManager should be the first audio Callback added to ensure that time is updated each new block
   getAudioDeviceManager().addAudioCallback(TimeManager::getInstance());
+  getAudioDeviceManager().addAudioCallback (&graphPlayer);
+
   DBG("init audio");
 
 }

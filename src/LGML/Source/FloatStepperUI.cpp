@@ -43,7 +43,7 @@ void FloatStepperUI::sliderValueChanged(Slider * _slider)
 {
 	parameter->setValue(_slider->getValue());
 }
-void FloatStepperUI::parameterRangeChanged(Parameter * p){
+void FloatStepperUI::rangeChanged(Parameter * p){
     slider->setRange((float)p->minimumValue, (float)p->maximumValue,1);
 
 }

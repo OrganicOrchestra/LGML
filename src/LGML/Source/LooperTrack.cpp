@@ -69,7 +69,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   updatePendingLooperTrackState(TimeManager::getInstance()->getTimeInSample(), buffer.getNumSamples());
 
 
-  fillBufferIfNeeded();
+  handleStartOfRecording();
 
 
 
@@ -78,7 +78,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     setTrackState(STOPPED);
   }
 
-  padBufferIfNeeded();
+  handleEndOfRecording();
 
   if(isFadingIn){ lastVolume = 0;isFadingIn = false;}
 
@@ -253,7 +253,7 @@ int LooperTrack::getQuantization(){
   return parentLooper->getQuantization();
 }
 
-void LooperTrack::fillBufferIfNeeded(){
+void LooperTrack::handleStartOfRecording(){
   TimeManager * tm = TimeManager::getInstance();
   if (loopSample.stateChanged) {
     //    process changed internalState
@@ -267,14 +267,14 @@ void LooperTrack::fillBufferIfNeeded(){
         startRecBeat = 0;
       }
       else{
-        startRecBeat = TimeManager::getInstance()->getBeatInNextSamples(loopSample.sampleOffsetBeforeNewState);
+        startRecBeat = TimeManager::getInstance()->getBeatInNextSamples(loopSample.getSampleOffsetBeforeNewState());
 
       }
 
     }
   }
 }
-void LooperTrack::padBufferIfNeeded(int granularity){
+void LooperTrack::handleEndOfRecording(int granularity){
   if (loopSample.stateChanged) {
     if (loopSample.wasLastRecordingFrame() ){
       //            DBG("a:firstPlay");
@@ -299,17 +299,14 @@ void LooperTrack::padBufferIfNeeded(int granularity){
       }
       if(getQuantization()>0)originBPM = TimeManager::getInstance()->BPM->doubleValue();
       //      loopSample.setPlayNeedle(offsetForPlay);
-    }
 
-    if(loopSample.wasLastRecordingFrame()){
-      //      loopSample.fadeInOut ((int)(80),0);
       parentLooper->lastMasterTempoTrack =nullptr;
     }
-
-
   }
+
+
   if( loopSample.isFirstPlayingFrame()){
-    startPlayBeat = TimeManager::getInstance()->getBeatInNextSamples(loopSample.sampleOffsetBeforeNewState);
+    startPlayBeat = TimeManager::getInstance()->getBeatInNextSamples(loopSample.getSampleOffsetBeforeNewState());
   }
 
 
@@ -510,8 +507,6 @@ void LooperTrack::setTrackState(TrackState newState) {
         timeManager->lockTime(true);
         timeManager->playTrigger->trigger();
         quantizedPlayStart = 0;
-
-
         timeManager->lockTime(false);
       }
       else{
