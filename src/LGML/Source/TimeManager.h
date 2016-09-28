@@ -69,7 +69,7 @@ public TimeMasterCandidate
     uint64 getTimeForNextBeats(int beats);
     uint64 getTimeInSample();
     uint64 getNextTimeInSample();
-    double getBeatInSamples(int numSampleToAdd);
+    double getBeatInNextSamples(int numSampleToAdd);
 
 
     //return percent in beat
@@ -141,7 +141,7 @@ private:
 
     CurrentPositionInfo currentPositionInfo;
 
-
+  Range<float> beatTimeGuessRange;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
 

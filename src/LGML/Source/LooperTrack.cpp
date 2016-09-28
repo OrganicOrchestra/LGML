@@ -153,14 +153,14 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
       if(isMasterTempoTrack() ){
         if(!tm->playState->boolValue())tm->playState->setValue(true);
-        // we will handle the block in this call
+        // we will handle the block in this call so we notify time to be in sync with what we play
         tm->goToTime(secondPart);
 
       }
 
       desiredState = RECORDING;
       loopSample.setState( PlayableBuffer::BUFFER_RECORDING,firstPart);
-      startRecBeat = TimeManager::getInstance()->getBeat();
+      startRecBeat = TimeManager::getInstance()->getBeatInNextSamples(firstPart);
       quantizedRecordStart = NO_QUANTIZE;
       stateChanged = true;
     }
@@ -181,11 +181,11 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
       else{
         if(isMasterTempoTrack()){
           TimeManager::getInstance()->playState->setValue(true,false,true);
+
         }
 
         loopSample.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
         desiredState = PLAYING;
-        startPlayBeat = TimeManager::getInstance()->getBeatInSamples(firstPart);
         quantizedPlayStart = curTime+firstPart;
       }
       quantizedRecordEnd = NO_QUANTIZE;
@@ -203,7 +203,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
       desiredState =  PLAYING;
       loopSample.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
-      startPlayBeat = TimeManager::getInstance()->getBeatInSamples(firstPart);
+      startPlayBeat = TimeManager::getInstance()->getBeatInNextSamples(firstPart);
       quantizedPlayStart = NO_QUANTIZE;
       stateChanged = true;
     }
@@ -267,7 +267,7 @@ void LooperTrack::fillBufferIfNeeded(){
         startRecBeat = 0;
       }
       else{
-        startRecBeat = TimeManager::getInstance()->getBeat();
+        startRecBeat = TimeManager::getInstance()->getBeatInNextSamples(loopSample.sampleOffsetBeforeNewState);
 
       }
 
@@ -292,6 +292,7 @@ void LooperTrack::padBufferIfNeeded(int granularity){
         TimeManager::getInstance()->goToTime(offsetForPlay);
 
 
+
       }
       else{
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
@@ -308,7 +309,7 @@ void LooperTrack::padBufferIfNeeded(int granularity){
 
   }
   if( loopSample.isFirstPlayingFrame()){
-    startPlayBeat = TimeManager::getInstance()->getBeatInSamples(loopSample.sampleOffsetBeforeNewState);
+    startPlayBeat = TimeManager::getInstance()->getBeatInNextSamples(loopSample.sampleOffsetBeforeNewState);
   }
 
 

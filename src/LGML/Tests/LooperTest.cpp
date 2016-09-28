@@ -13,7 +13,10 @@
 #include "LooperNode.h"
 #include "TimeManager.h"
 
-inline String BufToString(AudioBuffer<float> & b){String res;for(int i = 0 ; i < b.getNumSamples();i++){res+=String(b.getSample(0,i))+",";}return res;}
+inline String BufToString(AudioBuffer<float> & b,int start = 0 ,int numSamples =-1){
+  String res;if(numSamples==-1)numSamples = b.getNumSamples();
+  for(int i = start ; i < numSamples;i++){res+=String(b.getSample(0,i))+",";}
+  return res;}
 class LooperTest:public UnitTest{
 public:
   LooperTest():UnitTest("LooperTest"){
@@ -22,7 +25,11 @@ public:
   LooperNode * currentLooper;
   AudioBuffer<float> testBuffer;
 
-  const int recordSizeInBlock = 1000;
+  int blockSize = 256;
+  int sampleRate = 44100;
+  int originTargetBeatSize = 0.6*sampleRate;
+  const int numBeats = 4;
+  const int recordSizeInBlock = numBeats*originTargetBeatSize*1.0/blockSize+1;
   int fadeSample = 80;
 
   void processBlock(){
@@ -68,7 +75,7 @@ public:
       float expected = getBufferSampleForTime(startTime+i);
       for(int j = 0 ; j  < b.getNumChannels() ; j ++){
         float actual = b.getSample(j, i);
-        if(actual!=expected)DBG(actual<<","<< expected);
+        if( j==0 && actual!=expected)DBG(actual<<","<< expected);
         res&=(actual==expected);
       }
     }
@@ -84,18 +91,26 @@ public:
   void runTest()override{
 
     currentLooper  = new LooperNode();
+    TimeManager * tm= TimeManager::getInstance();
+    currentLooper->setPlayConfigDetails(2,2, sampleRate, blockSize);
     currentLooper->isMonitoring->setValue(false);
     currentLooper->quantization->setValue(-1);
     const int blockSize = currentLooper->getBlockSize();
     const int numChannels = currentLooper->getTotalNumOutputChannels();
 
+    int targetBeatSize = recordSizeInBlock*blockSize/numBeats;
+
+    beginTest("basic playBackTest");
+    expect((originTargetBeatSize>tm->beatTimeGuessRange.getStart()*sampleRate )&& (originTargetBeatSize<tm->beatTimeGuessRange.getEnd()*sampleRate),"wrong choice of tempo");
+
     jassert(blockSize>0 );
     jassert(numChannels>0 );
     testBuffer.setSize(numChannels, blockSize);
-    TimeManager * tm= TimeManager::getInstance();
 
-    beginTest("basic playBackTest");
+
+
     expect(30*recordSizeInBlock*blockSize < std::numeric_limits<int>::max(),"integer not enough on this platform");
+    expect(blockSize ==getBlockSize(),"looper has the wrong blockSize");
     LooperTrack * track1 = currentLooper->trackGroup.tracks[0];
     fadeSample = track1->loopSample.fadeSamples;
     track1->recPlayTrig->trigger();
@@ -123,7 +138,7 @@ public:
       expect(checkBufferAlignedForTime(testBuffer,localTime),"buffer not aligned with time : "+String(wallTime));
 
     }
-
+    expect(targetBeatSize ==tm->beatTimeInSample,"targetBeatSize not reached : "+String(targetBeatSize-(int)tm->beatTimeInSample));
 
     int recLen =track1->loopSample.getRecordedLength() ;
     int offset = recLen%(tm->beatTimeInSample);
@@ -166,7 +181,7 @@ public:
     expect(bL2==(int)bL2,"beatLength not an integer : "+String(bL2));
     double sB2=track2->startPlayBeat;
     expect(sB2 == (int)sB2 , "startBeat not integer : "+String(sB2));
-    expect(startRec ==sB2*tm->beatTimeInSample,"wrong start beat");
+    expect(endRec ==sB2*tm->beatTimeInSample,"wrong start beat");
     beginTest("check sampleAccurate align");
     int minCommonSamples = jmin(track2->loopSample.getRecordedLength(),track1->loopSample.getRecordedLength());
     int maxCommonSamples = jmax(track2->loopSample.getRecordedLength(),track1->loopSample.getRecordedLength());

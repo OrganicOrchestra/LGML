@@ -21,7 +21,7 @@ TimeManager::TimeManager():
 beatTimeInSample(0),
 sampleRate(44100),
 ControllableContainer("time"),
-
+beatTimeGuessRange(.4,.85),
 _isLocked(false)
 {
 
@@ -228,10 +228,10 @@ double TimeManager::setBPMForLoopLength(uint64 time,int granularity){
   double time_seconds = time* 1.0/ sampleRate;
   double beatTime = time_seconds* 1.0/beatPerBar->intValue();
 
-  // over 150 bpm
-  while(beatTime < .40){beatTime*=2.0;barLength/=2.0;}
-  // under 60 bpm
-  while(beatTime > .85 ){beatTime/=2.0;barLength*=2.0;}
+  // over 150 bpm (0.4s)
+  while(beatTime < beatTimeGuessRange.getStart()){beatTime*=2.0;barLength/=2.0;}
+  // under 70 bpm (0.85s)
+  while(beatTime > beatTimeGuessRange.getEnd() ){beatTime/=2.0;barLength*=2.0;}
   int beatInSample = (int)(beatTime*sampleRate);
   if(granularity>0){
     int offset =beatInSample%granularity;
@@ -270,7 +270,7 @@ uint64 TimeManager::getTimeForNextBeats(int beats){return (getBeatInt()+ beats)*
 
 int TimeManager::getBeatInt(){return (int)floor(getBeat());}
 double TimeManager::getBeat(){return (timeState.time*1.0/beatTimeInSample);}
-double TimeManager::getBeatInSamples(int numSamplesToAdd){return ((timeState.time+numSamplesToAdd)*1.0/beatTimeInSample);}
+double TimeManager::getBeatInNextSamples(int numSamplesToAdd){return ((timeState.time+numSamplesToAdd)*1.0/beatTimeInSample);}
 double TimeManager::getBeatPercent(){return timeState.time*1.0/beatTimeInSample-getBeatInt();}
 
 int TimeManager::getBar(){return (int)(floor(getBeatInt()*1.0/beatPerBar->intValue() ));}
