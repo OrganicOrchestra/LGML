@@ -13,6 +13,7 @@ Author:  Martin Hermant
 #include "AudioDeviceOutNodeUI.h"
 
 #include "AudioHelpers.h"
+#include "NodeManager.h"
 
 AudioDeviceManager& getAudioDeviceManager();
 
@@ -22,7 +23,7 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 {
 	//CanHavePresets = false;
 
-	addNodeBaseListener(this);
+	addConnectableNodeListener(this);
 
 	NodeBase::busArrangement.outputBuses.clear();
 
@@ -33,8 +34,14 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
     desiredNumAudioOutput = addIntParameter("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
                                             ad?ad->getActiveInputChannels().countNumberOfSetBits():2, 0, 32);
     lastNumberOfOutputs = 0;
-    updateVolMutes();
 
+
+}
+
+void AudioDeviceOutNode::setParentNodeContainer(NodeContainer * parent){
+  NodeBase::setParentNodeContainer(parent);
+  jassert((AudioProcessorGraph* )parent == NodeManager::getInstance()->mainContainer);
+  updateVolMutes();
 }
 
 AudioDeviceOutNode::~AudioDeviceOutNode() {
@@ -93,7 +100,7 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 
 void AudioDeviceOutNode::addVolMute()
 {
-    const ScopedLock lk (parentGraph->getCallbackLock());
+    const ScopedLock lk (parentNodeContainer->getCallbackLock());
 	BoolParameter * p = addBoolParameter(String(outMutes.size() + 1), "Mute if disabled", false);
 	p->setCustomShortName(String("mute") + String(outMutes.size() + 1));
 	outMutes.add(p);
@@ -108,7 +115,7 @@ void AudioDeviceOutNode::addVolMute()
 void AudioDeviceOutNode::removeVolMute()
 {
     if(outMutes.size()==0)return;
-    const ScopedLock lk (parentGraph->getCallbackLock());
+    const ScopedLock lk (parentNodeContainer->getCallbackLock());
 	BoolParameter * b = outMutes[outMutes.size() - 1];
 	removeControllable(b);
     outMutes.removeAllInstancesOf(b);

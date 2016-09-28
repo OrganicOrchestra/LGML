@@ -31,7 +31,7 @@ public:
 
 	void changeListenerCallback(ChangeBroadcaster* source)override;
     void onContainerParameterChanged(Parameter *)override;
-
+  void setParentNodeContainer(NodeContainer*)override;
 	Array<BoolParameter *> inMutes;
     Array<FloatParameter * > volumes;
     Array<float > logVolumes,lastVolumes;

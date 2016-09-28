@@ -16,11 +16,11 @@
 
 NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
 ConnectableNode(name,_type,_hasMainAudioControl),
-audioNode(nullptr),
 enableFader(5000,5000,false,1),
 lastDryVolume(0)
+
 {
-  addToAudioGraph(&NodeManager::getInstance()->audioGraph);
+  
   logVolume = float01ToGain(DB0_FOR_01);
 
   lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
@@ -143,26 +143,7 @@ ConnectableNodeUI * NodeBase::createUI() {
 
 /////////////////////////////////////// AUDIO
 
-AudioProcessorGraph::Node * NodeBase::getAudioNode(bool)
-{
-  return audioNode;
-}
 
-void NodeBase::addToAudioGraph(AudioProcessorGraph * parent) {
-  if (NodeManager::getInstanceWithoutCreating() != nullptr)
-  {
-    audioNode = parent->addNode(this);
-    parentGraph=parent;
-  }
-}
-
-void NodeBase::removeFromAudioGraph() {
-  if (NodeManager::getInstanceWithoutCreating() != nullptr)
-  {
-    if (audioNode != nullptr && parentGraph!=nullptr) parentGraph->removeNode(audioNode);
-  }
-
-}
 
 void NodeBase::processBlock(AudioBuffer<float>& buffer,
                             MidiBuffer& midiMessages) {
@@ -252,8 +233,8 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 
 
 
-  if (NodeManager::getInstanceWithoutCreating() != nullptr){
-    NodeManager::getInstance()->updateAudioGraph();
+  if (parentNodeContainer != nullptr){
+    parentNodeContainer->updateAudioGraph();
   }
   rmsValuesIn.clear();
   for (int i = 0; i < getTotalNumInputChannels(); i++) rmsValuesIn.add(0);
@@ -263,18 +244,18 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   {
     for (int i = oldNumChannels; i < newNum; i++)
     {
-      nodeBaseListeners.call(&NodeBaseListener::audioInputAdded, this, i);
+      nodeListeners.call(&ConnectableNodeListener::audioInputAdded, this, i);
     }
   }
   else
   {
     for (int i = oldNumChannels - 1; i >= newNum; i--)
     {
-      nodeBaseListeners.call(&NodeBaseListener::audioInputRemoved, this, i);
+      nodeListeners.call(&ConnectableNodeListener::audioInputRemoved, this, i);
     }
   }
 
-  nodeBaseListeners.call(&NodeBaseListener::numAudioInputChanged, this,num);
+  nodeListeners.call(&ConnectableNodeListener::numAudioInputChanged, this,num);
 
   return true;
 }
@@ -290,7 +271,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 
   if (NodeManager::getInstanceWithoutCreating() != nullptr)
   {
-    NodeManager::getInstance()->updateAudioGraph();
+    NodeManager::getInstance()->rebuildAudioGraph();
   }
 
   rmsValuesOut.clear();
@@ -301,17 +282,17 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
   {
     for (int i = oldNumChannels; i < newNum; i++)
     {
-      nodeBaseListeners.call(&NodeBaseListener::audioOutputAdded, this, i);
+      nodeListeners.call(&ConnectableNodeListener::audioOutputAdded, this, i);
     }
   }else
   {
     for (int i = oldNumChannels-1; i >= newNum; i--)
     {
-      nodeBaseListeners.call(&NodeBaseListener::audioOutputRemoved, this, i);
+      nodeListeners.call(&ConnectableNodeListener::audioOutputRemoved, this, i);
     }
   }
 
-  nodeBaseListeners.call(&NodeBaseListener::numAudioOutputChanged,this,num);
+  nodeListeners.call(&ConnectableNodeListener::numAudioOutputChanged,this,num);
 
   return true;
 }
@@ -378,15 +359,15 @@ void NodeBase::updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &t
 
 void NodeBase::timerCallback()
 {
-  rmsListeners.call(&RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut);
+  ConnectableNode::rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut);
   for (int i = 0; i < getTotalNumInputChannels(); i++)
   {
-    rmsChannelListeners.call(&RMSChannelListener::channelRMSInChanged, this, rmsValuesIn[i], i);
+    ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSInChanged, this, rmsValuesIn[i], i);
   }
 
   for (int i = 0; i < getTotalNumOutputChannels(); i++)
   {
-    rmsChannelListeners.call(&RMSChannelListener::channelRMSOutChanged, this, rmsValuesOut[i], i);
+    ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSOutChanged, this, rmsValuesOut[i], i);
   }
 }
 
@@ -411,8 +392,8 @@ Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 
   d->addDataListener(this);
 
-  nodeBaseListeners.call(&NodeBaseListener::dataInputAdded, this, d);
-  nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
+  nodeListeners.call(&ConnectableNodeListener::dataInputAdded, this, d);
+  nodeListeners.call(&ConnectableNodeListener::numDataInputChanged, this, inputDatas.size());
   return d;
 }
 
@@ -421,8 +402,8 @@ Data * NodeBase::addOutputData(const String & name, DataType dataType)
   Data * d = new Data(this, name, dataType);
   outputDatas.add(d);
 
-  nodeBaseListeners.call(&NodeBaseListener::dataOutputAdded, this, d);
-  nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
+  nodeListeners.call(&ConnectableNodeListener::dataOutputAdded, this, d);
+  nodeListeners.call(&ConnectableNodeListener::numDataOutputChanged, this, inputDatas.size());
   return d;
 }
 
@@ -432,8 +413,8 @@ void NodeBase::removeInputData(const String & name)
   if (d == nullptr) return;
 
   inputDatas.removeObject(d, false);
-  nodeBaseListeners.call(&NodeBaseListener::dataInputRemoved, this, d);
-  nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
+  nodeListeners.call(&ConnectableNodeListener::dataInputRemoved, this, d);
+  nodeListeners.call(&ConnectableNodeListener::numDataInputChanged, this, inputDatas.size());
   delete d;
 }
 
@@ -443,8 +424,8 @@ void NodeBase::removeOutputData(const String & name)
   if (d == nullptr) return;
 
   outputDatas.removeObject(d, false);
-  nodeBaseListeners.call(&NodeBaseListener::dataOutputRemoved, this, d);
-  nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
+  nodeListeners.call(&ConnectableNodeListener::dataOutputRemoved, this, d);
+  nodeListeners.call(&ConnectableNodeListener::numDataOutputChanged, this, inputDatas.size());
   delete d;
 }
 

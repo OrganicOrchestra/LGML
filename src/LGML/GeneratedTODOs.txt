@@ -34,15 +34,15 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
+	line : 314
+		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
+
 	line : 108
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
-	line : 333
-		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-
 
 NodeContainer.h
-	line : 70
+	line : 73
 		//@ben callNodeAdded allow caller to call it later when node is fully modified (needed for valid uid when filling preset comboboxes
 		//(todo : find a way to have simpler event flow)
 
@@ -69,24 +69,20 @@ JsEnvironment.cpp
 
 
 NodeContainer.cpp
-	line : 624
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
-
-	line : 291
-		// TODO nicely handle file format errors?
-
-	line : 182
+	line : 193
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 487
+	line : 438
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
+
+	line : 279
+		// TODO nicely handle file format errors?
 
 
 TimeManager.h
@@ -100,7 +96,7 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.h
-	line : 46
+	line : 48
 		//  TODO:  this should not be implemented in Node to avoid overriding this method
 		//    create onNodeParameterChanged();
 

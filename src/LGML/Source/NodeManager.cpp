@@ -37,8 +37,9 @@ NodeManager::~NodeManager()
 
 void NodeManager::clear()
 {
-	mainContainer->clear();
-	audioGraph.clear();
+  // maincontainer will automaticly delete all nodes with him
+//	mainContainer->clear();
+
 	dataGraph.clear();
 
 	nodeManagerListeners.call(&NodeManagerListener::managerCleared);
@@ -57,10 +58,7 @@ void NodeManager::loadJSONDataInternal(var data)
 	mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
 }
 
-void NodeManager::updateAudioGraph() {
-	AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
-    if(ad == nullptr) return;
-    ScopedLock lk( audioGraph.getCallbackLock());
-    audioGraph.prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());
-
+void NodeManager::rebuildAudioGraph() {
+  mainContainer->updateAudioGraph();
+	
 }

@@ -23,13 +23,13 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 	connectableNode(cn),
 	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
-	mainContainer(this, contentUI, headerUI),
+	MainComponentContainer(this, contentUI, headerUI),
 	dragIsLocked(false),
 	miniMode(false)
 {
 	 connectorWidth = 10;
 
-	 addAndMakeVisible(mainContainer);
+	 addAndMakeVisible(MainComponentContainer);
 
 	 if (connectableNode->userCanAccessInputs)
 	 {
@@ -45,7 +45,7 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 
 	 getHeaderContainer()->addMouseListener(this, true);// (true, true);
 
-	 mainContainer.setNodeAndNodeUI(connectableNode, this);
+	 MainComponentContainer.setNodeAndNodeUI(connectableNode, this);
 	 if (getWidth() == 0 || getHeight() == 0) setSize(180, 100);
 
 	 connectableNode->addConnectableNodeListener(this);
@@ -77,13 +77,13 @@ void ConnectableNodeUI::setMiniMode(bool value)
 
 	miniMode = value;
 
-	mainContainer.setMiniMode(miniMode);
+	MainComponentContainer.setMiniMode(miniMode);
 	setSize(getMiniModeWidth(miniMode),getMiniModeHeight(miniMode));
 }
 
 int ConnectableNodeUI::getMiniModeWidth(bool forMiniMode)
 {
-	return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (mainContainer.audioCtlUIContainer?mainContainer.audioCtlUIContainer->getWidth()+mainContainer.audioCtlContainerPadRight:0));
+	return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (MainComponentContainer.audioCtlUIContainer?MainComponentContainer.audioCtlUIContainer->getWidth()+MainComponentContainer.audioCtlContainerPadRight:0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight(bool forMiniMode)
@@ -113,7 +113,7 @@ void ConnectableNodeUI::resized()
 		outputContainer.setBounds(outputBounds);
 	}
 
-	mainContainer.setBounds(r);
+	MainComponentContainer.setBounds(r);
 }
 
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
@@ -140,12 +140,12 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
     }
 }
 
-// allow to react to custom mainContainer.contentContainer
+// allow to react to custom MainComponentContainer.contentContainer
 void ConnectableNodeUI::childBoundsChanged(Component* c) {
 	// if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
-	if (c == &mainContainer) {
-		int destWidth = mainContainer.getWidth() + 2 * connectorWidth;
-		int destHeight = mainContainer.getHeight();
+	if (c == &MainComponentContainer) {
+		int destWidth = MainComponentContainer.getWidth() + 2 * connectorWidth;
+		int destHeight = MainComponentContainer.getHeight();
 		if (getWidth() != destWidth ||
 			destHeight != getHeight()) {
 			setSize(destWidth, destHeight);
@@ -156,7 +156,7 @@ void ConnectableNodeUI::childBoundsChanged(Component* c) {
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
 void ConnectableNodeUI::mouseDown(const juce::MouseEvent &e)
 {
-	if (e.eventComponent != &mainContainer.headerContainer->grabber) return;
+	if (e.eventComponent != &MainComponentContainer.headerContainer->grabber) return;
 
 	nodeInitPos = getBounds().getPosition();
 }
@@ -169,7 +169,7 @@ void ConnectableNodeUI::mouseUp(const juce::MouseEvent &) {
 
 void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
 {
-	if (e.eventComponent != &mainContainer.headerContainer->grabber) return;
+	if (e.eventComponent != &MainComponentContainer.headerContainer->grabber) return;
 	//if(dragIsLocked) return;
 
 	Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
@@ -199,7 +199,7 @@ bool ConnectableNodeUI::keyPressed(const KeyPress & key)
 ////////////    MAIN CONTAINER
 
 
-ConnectableNodeUI::MainContainer::MainContainer(ConnectableNodeUI * _nodeUI, ConnectableNodeContentUI * content, ConnectableNodeHeaderUI * header) :
+ConnectableNodeUI::MainComponentContainer::MainComponentContainer(ConnectableNodeUI * _nodeUI, ConnectableNodeContentUI * content, ConnectableNodeHeaderUI * header) :
 	connectableNodeUI(_nodeUI),
 	headerContainer(header),
 	contentContainer(content),
@@ -216,7 +216,7 @@ ConnectableNodeUI::MainContainer::MainContainer(ConnectableNodeUI * _nodeUI, Con
 
 }
 
-void ConnectableNodeUI::MainContainer::setNodeAndNodeUI(ConnectableNode * _node, ConnectableNodeUI * _nodeUI)
+void ConnectableNodeUI::MainComponentContainer::setNodeAndNodeUI(ConnectableNode * _node, ConnectableNodeUI * _nodeUI)
 {
 	if (_node->hasAudioOutputs() && _node->hasMainAudioControl) {
 		jassert(audioCtlUIContainer == nullptr);
@@ -231,7 +231,7 @@ void ConnectableNodeUI::MainContainer::setNodeAndNodeUI(ConnectableNode * _node,
 	resized();
 }
 
-void ConnectableNodeUI::MainContainer::paint(Graphics & g)
+void ConnectableNodeUI::MainComponentContainer::paint(Graphics & g)
 {
 	g.setColour(connectableNodeUI->connectableNode->enabledParam->boolValue() ? PANEL_COLOR : PANEL_COLOR.darker(.7f));
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
@@ -241,7 +241,7 @@ void ConnectableNodeUI::MainContainer::paint(Graphics & g)
 }
 
 
-void ConnectableNodeUI::MainContainer::resized()
+void ConnectableNodeUI::MainComponentContainer::resized()
 {
 
 	// if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
@@ -261,7 +261,7 @@ void ConnectableNodeUI::MainContainer::resized()
 	}
 }
 
-void ConnectableNodeUI::MainContainer::setMiniMode(bool value)
+void ConnectableNodeUI::MainComponentContainer::setMiniMode(bool value)
 {
 	if (miniMode == value) return;
 	miniMode = value;
@@ -280,7 +280,7 @@ void ConnectableNodeUI::MainContainer::setMiniMode(bool value)
 
 }
 
-void ConnectableNodeUI::MainContainer::childBoundsChanged(Component* c) {
+void ConnectableNodeUI::MainComponentContainer::childBoundsChanged(Component* c) {
 	if (c == contentContainer || c == audioCtlUIContainer) {
 		int destWidth = contentContainer->getWidth() + (audioCtlUIContainer ? audioCtlUIContainer->getWidth() + audioCtlContainerPadRight : 0);
 		int destHeight = contentContainer->getHeight() + headerContainer->getHeight();
@@ -308,19 +308,7 @@ void ConnectableNodeUI::ConnectorContainer::setConnectorsFromNode(ConnectableNod
 {
 	connectors.clear();
 
-	//If container, go for containerIn / containerOut
 	ConnectableNode * targetNode = _node;
-	if (_node->type == NodeType::ContainerType)
-	{
-		if (type == ConnectorComponent::INPUT)
-		{
-			targetNode = ((NodeContainer *)_node)->containerInNode;
-		}
-		else
-		{
-			targetNode = ((NodeContainer *)_node)->containerOutNode;
-		}
-	}
 
 	if (targetNode == nullptr)
 	{

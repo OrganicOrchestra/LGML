@@ -42,6 +42,7 @@ public:
 
 class NodeContainer :
 	public ConnectableNode,
+  public AudioProcessorGraph,
 	public ConnectableNode::ConnectableNodeListener,
 	public NodeConnection::Listener,
 	public ConnectableNode::RMSListener,
@@ -59,6 +60,8 @@ public:
 	//Container nodes, not removable by user, handled separately
 	ContainerInNode * containerInNode;
     ContainerOutNode * containerOutNode;
+
+  virtual AudioProcessor * getAudioProcessor()override{return this;}
 
 	Array<ParameterProxy *> proxyParams;
 
@@ -89,11 +92,6 @@ public:
 
     // called to bypass this container
     void bypassNode(bool bypass);
-
-    // used for saving state when bypassed
-    OwnedArray<NodeConnection > containerInGhostConnections;
-    OwnedArray<NodeConnection > containerOutGhostConnections;
-
 
 	ParameterProxy * addParamProxy();
 	void removeParamProxy(ParameterProxy * pp);
@@ -132,10 +130,9 @@ public:
 
 	//AUDIO
 
-	AudioProcessorGraph::Node * getAudioNode(bool isInput) override;
-
-
-	//DATA
+  void updateAudioGraph() ;
+  
+  //DATA
 	bool hasDataInputs() override;
 	bool hasDataOutputs() override;
 
@@ -143,7 +140,6 @@ public:
 	void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }
 	void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener); }
 
-  void removeIllegalGhostConnections();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainer)
 

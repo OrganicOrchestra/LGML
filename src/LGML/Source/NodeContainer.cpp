@@ -15,468 +15,419 @@
 
 
 #include "DebugHelpers.h"
+
+
+AudioDeviceManager& getAudioDeviceManager();
+
+
 NodeContainer::NodeContainer(const String &name) :
 containerInNode(nullptr),
 containerOutNode(nullptr),
 ConnectableNode(name, NodeType::ContainerType,false)
 {
-    saveAndLoadRecursiveData = false;
+  saveAndLoadRecursiveData = false;
 }
 
 
 NodeContainer::~NodeContainer()
 {
-    //connections.clear();
-    clear(false);
+  //connections.clear();
+  clear(false);
 }
 
 void NodeContainer::clear(bool recreateContainerNodes)
 {
 
-    while (connections.size() > 0)
-    {
-        connections[0]->remove();
-    }
+  while (connections.size() > 0)
+  {
+    connections[0]->remove();
+  }
 
-    while (nodes.size() > 0)
-    {
-        nodes[0]->remove();
-        
-    }
+  while (nodes.size() > 0)
+  {
+    nodes[0]->remove();
 
-	containerInGhostConnections.clear();
-	containerOutGhostConnections.clear();
+  }
 
-    containerInNode = nullptr;
-    containerOutNode = nullptr;
 
-    if (recreateContainerNodes && parentNodeContainer != nullptr)
-    {
-        containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
-        containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
+  containerInNode = nullptr;
+  containerOutNode = nullptr;
 
-        containerInNode->xPosition->setValue(150);
-        containerInNode->yPosition->setValue(100);
-        containerOutNode->xPosition->setValue(450);
-        containerOutNode->yPosition->setValue(100);
+  if (recreateContainerNodes && parentNodeContainer != nullptr)
+  {
+    containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
+    containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
 
-        //maybe keep it ?
-        addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
-    }
+    containerInNode->xPosition->setValue(150);
+    containerInNode->yPosition->setValue(100);
+    containerOutNode->xPosition->setValue(450);
+    containerOutNode->yPosition->setValue(100);
 
-	while (proxyParams.size() > 0)
-	{
-		removeParamProxy(proxyParams[0]);
-	}
+    //maybe keep it ?
+    addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
+  }
 
-    ConnectableNode::clear();
+  while (proxyParams.size() > 0)
+  {
+    removeParamProxy(proxyParams[0]);
+  }
+
+  ConnectableNode::clear();
 }
 
 
 ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeName,bool callNodeAddedNow)
 {
-    ConnectableNode * n = NodeFactory::createNode(nodeType);
-    return addNode(n,nodeName,callNodeAddedNow);
+  ConnectableNode * n = NodeFactory::createNode(nodeType);
+  return addNode(n,nodeName,callNodeAddedNow);
 }
 
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName,bool callNodeAddedNow)
 {
-    nodes.add(n);
-    n->setParentNodeContainer(this);
+  nodes.add(n);
+  n->setParentNodeContainer(this);
 
-    if (n->type == NodeType::ContainerType)
-    {
-        nodeContainers.add((NodeContainer *)n);
-        ((NodeContainer *)n)->clear(true);
-        //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
-    }
+  if (n->type == NodeType::ContainerType)
+  {
+    nodeContainers.add((NodeContainer *)n);
+    ((NodeContainer *)n)->clear(true);
+    //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
+  }
 
 
-    n->addConnectableNodeListener(this);
-    String targetName = (nodeName.isNotEmpty())?nodeName:n->nameParam->stringValue();
-    n->nameParam->setValue(getUniqueNameInContainer(targetName));
+  n->addConnectableNodeListener(this);
+  String targetName = (nodeName.isNotEmpty())?nodeName:n->nameParam->stringValue();
+  n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
-    addChildControllableContainer(n); //ControllableContainer
-   if(callNodeAddedNow) nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
-    return n;
+  addChildControllableContainer(n); //ControllableContainer
+  if(callNodeAddedNow) nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
+  return n;
 }
 
 
 
 bool NodeContainer::removeNode(ConnectableNode * n)
 {
-    Array<NodeConnection *> relatedConnections = getAllConnectionsForNode(n);
+  Array<NodeConnection *> relatedConnections = getAllConnectionsForNode(n);
 
-    for (auto &connection : relatedConnections) removeConnection(connection);
+  for (auto &connection : relatedConnections) removeConnection(connection);
 
-    if (n == nullptr) return false;
-    n->removeConnectableNodeListener(this);
-    removeChildControllableContainer(n);
+  if (n == nullptr){jassertfalse; return false;}
+  n->removeConnectableNodeListener(this);
+  removeChildControllableContainer(n);
 
-    nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
-    nodes.removeAllInstancesOf(n);
+  nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
+  nodes.removeAllInstancesOf(n);
 
-    n->clear();
-    n->removeFromAudioGraph();
+  n->clear();
+  n->removeFromAudioGraph();
 
-    if (n->type == NodeType::ContainerType) nodeContainers.removeObject((NodeContainer*)n);
+  if (n->type == NodeType::ContainerType) nodeContainers.removeObject((NodeContainer*)n);
 
-    //if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(n->audioNode);
+  //if(NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeNode(n->audioNode);
 
-    return true;
+  return true;
 }
 
 ConnectableNode * NodeContainer::getNodeForName(const String & name)
 {
-    for (auto &n : nodes)
-    {
-        if (n->shortName == name) return n;
-    }
-    return nullptr;
+  for (auto &n : nodes)
+  {
+    if (n->shortName == name) return n;
+  }
+  return nullptr;
+}
+
+void NodeContainer::updateAudioGraph() {
+  AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
+  if(ad == nullptr) return;
+  ScopedLock lk( getCallbackLock());
+  prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());
+
 }
 
 
 
 int NodeContainer::getNumConnections() {
-    return connections.size();
+  return connections.size();
 }
 
 ParameterProxy * NodeContainer::addParamProxy()
 {
-	ParameterProxy * p = new ParameterProxy();
-	addParameter(p);
-	proxyParams.add(p);
-	p->addParameterProxyListener(this);
-	nodeContainerListeners.call(&NodeContainerListener::paramProxyAdded, p);
+  ParameterProxy * p = new ParameterProxy();
+  ControllableContainer::addParameter(p);
+  proxyParams.add(p);
+  p->addParameterProxyListener(this);
+  nodeContainerListeners.call(&NodeContainerListener::paramProxyAdded, p);
 
-	return p;
+  return p;
 }
 
 void NodeContainer::removeParamProxy(ParameterProxy * pp)
 {
-	pp->removeParameterProxyListener(this);
-	
-	nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
-	proxyParams.removeAllInstancesOf(pp);
-	removeControllable(pp);
+  pp->removeParameterProxyListener(this);
+
+  nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
+  proxyParams.removeAllInstancesOf(pp);
+  removeControllable(pp);
 }
 
 
 bool NodeContainer::loadPreset(PresetManager::Preset * preset)
 {
-    if(!ControllableContainer::loadPreset(preset)) return false;
+  if(!ControllableContainer::loadPreset(preset)) return false;
 
-//    for (auto &n : nodes) n->loadPresetWithName(preset->name);
+  //    for (auto &n : nodes) n->loadPresetWithName(preset->name);
 
-    return true;
+  return true;
 }
 
 PresetManager::Preset* NodeContainer::saveNewPreset(const String & name)
 {
-    return ControllableContainer::saveNewPreset(name);
-//    for (auto &n : nodes) n->saveNewPreset(name);
+  return ControllableContainer::saveNewPreset(name);
+  //    for (auto &n : nodes) n->saveNewPreset(name);
 }
 
 bool NodeContainer::saveCurrentPreset()
 {
-    if (!ControllableContainer::saveCurrentPreset()) return false;
-    //@ben remove recursive for now (not useful and duplicating values...)
-    //
-//    for (auto &n : nodes) n->saveCurrentPreset();
-    return true;
+  if (!ControllableContainer::saveCurrentPreset()) return false;
+  //@ben remove recursive for now (not useful and duplicating values...)
+  //
+  //    for (auto &n : nodes) n->saveCurrentPreset();
+  return true;
 }
 
 bool NodeContainer::resetFromPreset()
 {
-    if (!ControllableContainer::resetFromPreset()) return false;
+  if (!ControllableContainer::resetFromPreset()) return false;
 
-//    for (auto &n : nodes) n->resetFromPreset();
+  //    for (auto &n : nodes) n->resetFromPreset();
 
-    return true;
+  return true;
 }
 
 
 
 var NodeContainer::getJSONData()
 {
-    removeIllegalGhostConnections();
-    var data = ConnectableNode::getJSONData();
-    var nodesData;
 
-    for (auto &n : nodes)
-    {
-        nodesData.append(n->getJSONData());
-    }
+  var data = ConnectableNode::getJSONData();
+  var nodesData;
 
-    var connectionsData;
+  for (auto &n : nodes)
+  {
+    nodesData.append(n->getJSONData());
+  }
 
-    for (auto &c : connections)
-    {
-        connectionsData.append(c->getJSONData());
-    }
+  var connectionsData;
 
-    data.getDynamicObject()->setProperty("nodes", nodesData);
-    data.getDynamicObject()->setProperty("connections", connectionsData);
+  for (auto &c : connections)
+  {
+    connectionsData.append(c->getJSONData());
+  }
 
-	var ghostConnectionsInData;
-	for (auto &c : containerInGhostConnections)
-	{
-		ghostConnectionsInData.append(c->getJSONData());
-	}
-	data.getDynamicObject()->setProperty("ghostConnectionsIn", ghostConnectionsInData);
+  data.getDynamicObject()->setProperty("nodes", nodesData);
+  data.getDynamicObject()->setProperty("connections", connectionsData);
 
 
-	var ghostConnectionsOutData;
-	for (auto &c : containerOutGhostConnections)
-	{
-		ghostConnectionsOutData.append(c->getJSONData());
-	}
-	data.getDynamicObject()->setProperty("ghostConnectionsOut", ghostConnectionsOutData);
 
+  var proxiesData;
+  for (auto &pp : proxyParams)
+  {
+    proxiesData.append(pp->getJSONData());
+  }
 
-	var proxiesData;
-	for (auto &pp : proxyParams)
-	{
-		proxiesData.append(pp->getJSONData());
-	}
+  data.getDynamicObject()->setProperty("proxies", proxiesData);
 
-	data.getDynamicObject()->setProperty("proxies", proxiesData);
-
-    return data;
+  return data;
 }
 
-void NodeContainer::removeIllegalGhostConnections(){
-  Array<NodeConnection * > toRemove;
-  for (auto &c : containerInGhostConnections)if (c->sourceNode.get()==nullptr || c->destNode==nullptr) {toRemove.add(c);}
-  for(auto & c:toRemove){containerInGhostConnections.removeObject(c);}
-  toRemove.clear();
-  for (auto &c : containerOutGhostConnections) if (c->sourceNode.get()==nullptr || c->destNode==nullptr) {toRemove.add(c);}
-  for(auto & c:toRemove){containerOutGhostConnections.removeObject(c);}
-
-}
 
 void NodeContainer::loadJSONDataInternal(var data)
 {
-    clear(false);
+  clear(false);
 
-    Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
-    if(nodesData!=nullptr){
-        for (var &nData : *nodesData)
-        {
-            addNodeFromJSON(nData);
-        }
-    }
-
-    Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
-
-    if (connectionsData)
+  Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
+  if(nodesData!=nullptr){
+    for (var &nData : *nodesData)
     {
-        for (var &cData : *connectionsData)
-        {
-
-            ConnectableNode * srcNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString())) ;
-            ConnectableNode * dstNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString()));
-
-            int cType = cData.getProperty("connectionType", var());
-
-            if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
-                NodeConnection * c = addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
-                // if c == null connection already exist, should never happen loading JSON but safer to check
-                if(c){
-                    c->loadJSONData(cData);
-                }
-
-
-            }
-            else {
-                // TODO nicely handle file format errors?
-
-                if(srcNode==nullptr){
-                    NLOG("loadJSON","no srcnode for shortName : "+cData.getDynamicObject()->getProperty("srcNode").toString());
-                }
-                if(dstNode==nullptr){
-                    NLOG("loadJSON","no dstnode for shortName : "+cData.getDynamicObject()->getProperty("dstNode").toString());
-                }
-                LOG("Available Nodes in "+ shortName+" : ");
-				
-				#if defined DEBUG
-                for (auto &node : nodes)
-                {
-                    DBG(" > " + node->niceName+"//"+ node->shortName);
-                }
-				#endif
-
-                jassertfalse;
-            }
-        }
+      addNodeFromJSON(nData);
     }
+  }
+
+  Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
+
+  if (connectionsData)
+  {
+    for (var &cData : *connectionsData)
+    {
+
+      ConnectableNode * srcNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString())) ;
+      ConnectableNode * dstNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString()));
+
+      int cType = cData.getProperty("connectionType", var());
+
+      if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
+        NodeConnection * c = addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
+        // if c == null connection already exist, should never happen loading JSON but safer to check
+        if(c){
+          c->loadJSONData(cData);
+        }
+
+
+      }
+      else {
+        // TODO nicely handle file format errors?
+
+        if(srcNode==nullptr){
+          NLOG("loadJSON","no srcnode for shortName : "+cData.getDynamicObject()->getProperty("srcNode").toString());
+        }
+        if(dstNode==nullptr){
+          NLOG("loadJSON","no dstnode for shortName : "+cData.getDynamicObject()->getProperty("dstNode").toString());
+        }
+        LOG("Available Nodes in "+ shortName+" : ");
+
+#if defined DEBUG
+        for (auto &node : nodes)
+        {
+          DBG(" > " + node->niceName+"//"+ node->shortName);
+        }
+#endif
+
+        jassertfalse;
+      }
+    }
+  }
 
 
 
-	Array<var> * ghostConnectionInData = data.getProperty("ghostConnectionsIn", var()).getArray();
-
-	if (ghostConnectionInData)
-	{
-		for (var &cData : *ghostConnectionInData)
-		{
-			ConnectableNode * srcNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString()));
-			ConnectableNode * dstNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString()));
-
-			int cType = cData.getProperty("connectionType", var());
-
-			if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
-				NodeConnection * c = new NodeConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType),true);
-				c->loadJSONData(cData);
-				containerInGhostConnections.add(c);
-			}
-		}
-	}
-
-	Array<var> * ghostConnectionOutData = data.getProperty("ghostConnectionsOut", var()).getArray();
-
-	if (ghostConnectionOutData)
-	{
-		for (var &cData : *ghostConnectionOutData)
-		{
-			ConnectableNode * srcNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("srcNode").toString()));
-			ConnectableNode * dstNode = (ConnectableNode*)(getNodeForName(cData.getDynamicObject()->getProperty("dstNode").toString()));
-
-			int cType = cData.getProperty("connectionType", var());
-
-			if (srcNode && dstNode && isPositiveAndBelow(cType, (int)NodeConnection::ConnectionType::UNDEFINED)) {
-				NodeConnection * c = new NodeConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType), true);
-				c->loadJSONData(cData);
-				containerOutGhostConnections.add(c);
-			}
-		}
-	}
 
 
-	Array<var> * proxiesData = data.getProperty("proxies", var()).getArray();
+  Array<var> * proxiesData = data.getProperty("proxies", var()).getArray();
 
-	if (proxiesData)
-	{
-		for (var &pData : *proxiesData)
-		{
-			ParameterProxy * p = addParamProxy();
-			p->loadJSONData(pData);
-		}
-	}
+  if (proxiesData)
+  {
+    for (var &pData : *proxiesData)
+    {
+      ParameterProxy * p = addParamProxy();
+      p->loadJSONData(pData);
+    }
+  }
 
 
-	removeIllegalConnections();
+  removeIllegalConnections();
 }
 
 ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
 {
-	Array<var> * params = nodeData.getDynamicObject()->getProperty("parameters").getArray();
-	String sourceName = "";
-	for (auto &v : *params)
-	{
+  Array<var> * params = nodeData.getDynamicObject()->getProperty("parameters").getArray();
+  String sourceName = "";
+  for (auto &v : *params)
+  {
 
-		if (v.getDynamicObject()->getProperty(controlAddressIdentifier) == "/name")
-		{
-			sourceName = v.getDynamicObject()->getProperty("value").toString();
-			break;
-		}
-	}
-
-
-	NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
-    ConnectableNode * node = addNode(nodeType, sourceName,false);
-    String safeNodeName = node->niceName;
-
-    if (node->type == NodeType::ContainerInType)
+    if (v.getDynamicObject()->getProperty(controlAddressIdentifier) == "/name")
     {
-        containerInNode = (ContainerInNode *)node;
-
-    } else if (node->type == NodeType::ContainerOutType)
-    {
-        containerOutNode = (ContainerOutNode *)node;
+      sourceName = v.getDynamicObject()->getProperty("value").toString();
+      break;
     }
+  }
 
 
-    node->loadJSONData(nodeData);
-	node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
+  NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
+  ConnectableNode * node = addNode(nodeType, sourceName,false);
+  String safeNodeName = node->niceName;
 
-    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
+  if (node->type == NodeType::ContainerInType)
+  {
+    containerInNode = (ContainerInNode *)node;
 
-    return node;
+  } else if (node->type == NodeType::ContainerOutType)
+  {
+    containerOutNode = (ContainerOutNode *)node;
+  }
+
+
+  node->loadJSONData(nodeData);
+  node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
+
+  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
+
+  return node;
 
 }
 
 
 NodeConnection * NodeContainer::getConnectionBetweenNodes(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
-    if(sourceNode==nullptr || destNode == nullptr){
-        DBG("wrong Connection");
-        return nullptr;
-    }
-    ConnectableNode * tSourceNode = (sourceNode->type == ContainerType) ? ((NodeContainer *)sourceNode)->containerOutNode : sourceNode;
-    ConnectableNode * tDestNode = (destNode->type == ContainerType) ? ((NodeContainer *)destNode)->containerInNode : destNode;
-
-    for(auto &c: connections)
-	{
-		if (c->sourceNode == tSourceNode && c->destNode == tDestNode && c->connectionType == connectionType) return c;
-    }
-
+  if(sourceNode==nullptr || destNode == nullptr){
+    DBG("wrong Connection");
     return nullptr;
+  }
+  ConnectableNode * tSourceNode =  sourceNode;
+  ConnectableNode * tDestNode =  destNode;
+
+  for(auto &c: connections)
+  {
+    if (c->sourceNode == tSourceNode && c->destNode == tDestNode && c->connectionType == connectionType) return c;
+  }
+
+  return nullptr;
 }
 
 Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode * node)
 {
-    Array<NodeConnection*> result;
+  Array<NodeConnection*> result;
 
-    ConnectableNode * tSourceNode = (node->type == ContainerType) ? ((NodeContainer *)node)->containerOutNode : node;
-    ConnectableNode * tDestNode = (node->type == ContainerType) ? ((NodeContainer *)node)->containerInNode : node;
+  ConnectableNode * tSourceNode = node;
+  ConnectableNode * tDestNode = node;
 
-    for (auto &connection : connections)
+  for (auto &connection : connections)
+  {
+    if (connection->sourceNode == tSourceNode || connection->destNode == tDestNode)
     {
-		if (connection->sourceNode == tSourceNode || connection->destNode == tDestNode)
-		{
-			result.add(connection);
-		}
+      result.add(connection);
     }
+  }
 
-	
 
-    return result;
+
+  return result;
 }
 
 NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
 {
 
-	ConnectableNode * tSourceNode = (sourceNode->type == ContainerType) ? ((NodeContainer *)sourceNode)->containerOutNode : sourceNode;
-	ConnectableNode * tDestNode = (destNode->type == ContainerType) ? ((NodeContainer *)destNode)->containerInNode : destNode;
-	
-	if (getConnectionBetweenNodes(tSourceNode, tDestNode, connectionType) != nullptr)
-    {
-        //connection already exists
-        DBG("Connection already exists");
-        return nullptr;
-    }
+  ConnectableNode * tSourceNode = sourceNode;
+  ConnectableNode * tDestNode =  destNode;
 
-    NodeConnection * c = new NodeConnection(tSourceNode, tDestNode, connectionType);
-    connections.add(c);
-    c->addConnectionListener(this);
+  if (getConnectionBetweenNodes(tSourceNode, tDestNode, connectionType) != nullptr)
+  {
+    //connection already exists
+    DBG("Connection already exists");
+    return nullptr;
+  }
 
-    // DBG("Dispatch connection Added from NodeManager");
-    nodeContainerListeners.call(&NodeContainerListener::connectionAdded, c);
+  NodeConnection * c = new NodeConnection(tSourceNode, tDestNode, connectionType);
+  connections.add(c);
+  c->addConnectionListener(this);
+  updateAudioGraph();
+  // DBG("Dispatch connection Added from NodeManager");
+  nodeContainerListeners.call(&NodeContainerListener::connectionAdded, c);
 
-    return c;
+  return c;
 }
 
 
 bool NodeContainer::removeConnection(NodeConnection * c)
 {
-    if (c == nullptr) return false;
-    c->removeConnectionListener(this);
+  if (c == nullptr) return false;
+  c->removeConnectionListener(this);
 
-    connections.removeObject(c);
+  connections.removeObject(c);
 
-    nodeContainerListeners.call(&NodeContainerListener::connectionRemoved, c);
+  nodeContainerListeners.call(&NodeContainerListener::connectionRemoved, c);
 
-    return true;
+  return true;
 }
 
 
@@ -484,148 +435,136 @@ bool NodeContainer::removeConnection(NodeConnection * c)
 //From NodeBase Listener
 void NodeContainer::askForRemoveNode(ConnectableNode * node)
 {
-    if(    removeNode(node)){
-        // TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
-        // for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
-//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
-//         nb->stopTimer();
-//        }
-    }
+  if(    removeNode(node)){
+    // TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
+    // for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
+    //        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
+    //         nb->stopTimer();
+    //        }
+  }
 }
 
 void NodeContainer::askForRemoveProxy(ParameterProxy * p)
 {
-	removeParamProxy(p);
+  removeParamProxy(p);
 }
 
 
 void NodeContainer::askForRemoveConnection(NodeConnection *connection)
 {
-    removeConnection(connection);
+  removeConnection(connection);
 }
 
 void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float _rmsOutValue)
 {
-    if (node == containerInNode) rmsInValue = _rmsInValue;
-    else if (node == containerOutNode) rmsOutValue = _rmsOutValue;
+  if (node == containerInNode) rmsInValue = _rmsOutValue;
+  else if (node == containerOutNode) rmsOutValue = _rmsInValue;
 
-    rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, this, rmsInValue, rmsOutValue);
+  rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, this, rmsInValue, rmsOutValue);
 }
 
 void NodeContainer::onContainerParameterChanged(Parameter * p)
 {
-    ConnectableNode::onContainerParameterChanged(p);
+  ConnectableNode::onContainerParameterChanged(p);
 
 }
 void NodeContainer::onContainerParameterChangedAsync(Parameter * p ,const var & value) {
-//  ConnectableNode::onContainerParameterChangedAsync(p   ,value);
+  //  ConnectableNode::onContainerParameterChangedAsync(p   ,value);
 };
 
 void NodeContainer::bypassNode(bool bypass){
-    if(bypass){
-        jassert(containerInNode!=nullptr &&containerOutNode!=nullptr);
-//        save old ones
-        Array<NodeConnection*> connectionPointers;
-        connectionPointers = getAllConnectionsForNode(containerInNode);
-        containerInGhostConnections.clear();
-        for(auto &c: connectionPointers){
-
-			NodeConnection * nc = new NodeConnection(c->sourceNode, c->destNode, c->connectionType, true);
-			nc->loadJSONData(c->getJSONData());
-			containerInGhostConnections.add(nc);
-
-		}
-        for(auto & c:connectionPointers){
-			removeConnection(c);
-		}
-
-
-        containerOutGhostConnections.clear();
-        connectionPointers = getAllConnectionsForNode(containerOutNode);
-        for(auto &c: connectionPointers){
-
-			NodeConnection * nc = new NodeConnection(c->sourceNode, c->destNode, c->connectionType, true);
-			nc->loadJSONData(c->getJSONData());
-			containerOutGhostConnections.add(nc);
-		}
-
-        for(auto & c:connectionPointers){
-			removeConnection(c);
-		}
-
-		// add a pass-thru
-		addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::AUDIO);
-		addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::DATA);
-
-    }else
-	{
-        // remove pass thru
-        Array<NodeConnection * > bypassConnection = getAllConnectionsForNode(containerInNode);
-        jassert(bypassConnection.size()==2);
-        for(auto & c:bypassConnection) {removeConnection(c);}
-        bypassConnection = getAllConnectionsForNode(containerOutNode);
-        jassert(bypassConnection.size()==0);
-
-        for(auto & c:containerInGhostConnections){
-            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
-			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
-                if(nc){
-                    nc->loadJSONData(c->getJSONData());
-
-                }
-            }
-		}
-        for(auto & c:containerOutGhostConnections){
-            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
-			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
-			if(nc)nc->loadJSONData(c->getJSONData());
-            }
-		}
-
-
-
-    }
+  //    if(bypass){
+  //        jassert(containerInNode!=nullptr &&containerOutNode!=nullptr);
+  ////        save old ones
+  //        Array<NodeConnection*> connectionPointers;
+  //        connectionPointers = getAllConnectionsForNode(containerInNode);
+  //        for(auto &c: connectionPointers){
+  //
+  //			NodeConnection * nc = new NodeConnection(c->sourceNode, c->destNode, c->connectionType);
+  //			nc->loadJSONData(c->getJSONData());
+  //			containerInGhostConnections.add(nc);
+  //
+  //		}
+  //        for(auto & c:connectionPointers){
+  //			removeConnection(c);
+  //		}
+  //
+  //
+  //        containerOutGhostConnections.clear();
+  //        connectionPointers = getAllConnectionsForNode(containerOutNode);
+  //        for(auto &c: connectionPointers){
+  //
+  //			NodeConnection * nc = new NodeConnection(c->sourceNode, c->destNode, c->connectionType);
+  //			nc->loadJSONData(c->getJSONData());
+  //			containerOutGhostConnections.add(nc);
+  //		}
+  //
+  //        for(auto & c:connectionPointers){
+  //			removeConnection(c);
+  //		}
+  //
+  //		// add a pass-thru
+  //		addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::AUDIO);
+  //		addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::DATA);
+  //
+  //    }else
+  //	{
+  //        // remove pass thru
+  //        Array<NodeConnection * > bypassConnection = getAllConnectionsForNode(containerInNode);
+  //        jassert(bypassConnection.size()==2);
+  //        for(auto & c:bypassConnection) {removeConnection(c);}
+  //        bypassConnection = getAllConnectionsForNode(containerOutNode);
+  //        jassert(bypassConnection.size()==0);
+  //
+  //        for(auto & c:containerInGhostConnections){
+  //            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
+  //			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
+  //                if(nc){
+  //                    nc->loadJSONData(c->getJSONData());
+  //
+  //                }
+  //            }
+  //		}
+  //        for(auto & c:containerOutGhostConnections){
+  //            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
+  //			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
+  //			if(nc)nc->loadJSONData(c->getJSONData());
+  //            }
+  //		}
+  //
+  //
+  //
+  //    }
 }
 
 ConnectableNodeUI * NodeContainer::createUI()
 {
-    return new NodeContainerUI(this);
+  return new NodeContainerUI(this);
 }
 
 
 bool NodeContainer::hasDataInputs()
 {
-    return containerInNode != nullptr ? containerInNode->hasDataInputs() : false;
+  return containerInNode != nullptr ? containerInNode->hasDataInputs() : false;
 }
 
 bool NodeContainer::hasDataOutputs()
 {
-    return containerOutNode != nullptr ? containerOutNode->hasDataOutputs() : false;
+  return containerOutNode != nullptr ? containerOutNode->hasDataOutputs() : false;
 }
 
 
 
 
-AudioProcessorGraph::Node * NodeContainer::getAudioNode(bool isInput)
-{
-    if (isInput)
-    {
-        return containerInNode == nullptr ? nullptr : containerInNode->getAudioNode();
-    }
-    else
-    {
-        return containerOutNode == nullptr ? nullptr : containerOutNode->getAudioNode();
-    }
-}
+
 
 
 
 
 void NodeContainer::removeIllegalConnections() {
-    //TODO synchronize this and implement it for data
-    // it's not indispensable
-    if (NodeManager::getInstanceWithoutCreating() != nullptr)
-    {
-        jassert(!NodeManager::getInstance()->audioGraph.removeIllegalConnections());
-    }
+  AudioProcessorGraph::removeIllegalConnections();
+  for(auto & c:nodeContainers){
+    c->removeIllegalConnections();
+  }
+
 }

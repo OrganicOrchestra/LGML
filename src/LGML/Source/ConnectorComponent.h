@@ -23,7 +23,7 @@ class NodeContainerViewer;
 class ConnectorComponent :
 	public Component,
 	public SettableTooltipClient,
-	public NodeBase::NodeBaseListener
+	public ConnectableNode::ConnectableNodeListener
 {
 public:
 
@@ -41,7 +41,8 @@ public:
 
     NodeConnection::ConnectionType dataType;
     ConnectorIOType ioType;
-    WeakReference<NodeBase> node;
+    WeakReference<ConnectableNode> node;
+  NodeBase * getNodeBase();
 
     //layout
 

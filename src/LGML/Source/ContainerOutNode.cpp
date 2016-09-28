@@ -14,7 +14,8 @@
 
 
 ContainerOutNode::ContainerOutNode() :
-	NodeBase("Container Out", NodeType::ContainerOutType, false)
+	NodeBase("Container Out", NodeType::ContainerOutType, false),
+AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;
@@ -53,7 +54,11 @@ void ContainerOutNode::setParentNodeContainer(NodeContainer * nc)
 		addRMSListener(parentNodeContainer);
 	}
 }
-
+void ContainerOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
+  AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+  int a ;
+  a = 0;
+};
 
 void ContainerOutNode::processInputDataChanged(Data * d)
 {

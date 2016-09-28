@@ -17,13 +17,15 @@
 class NodeContainer;
 
 class ContainerInNode :
-	public NodeBase
+	public NodeBase,
+public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
 	ContainerInNode();
 	~ContainerInNode();
 
 	void setParentNodeContainer(NodeContainer * nc)override;
+  void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) override;
 
 	//AUDIO
 	IntParameter * numInputChannels;

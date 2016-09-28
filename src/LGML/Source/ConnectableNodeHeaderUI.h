@@ -22,8 +22,7 @@ class ConnectableNodeHeaderUI : public Component,
 	public ComboBox::Listener,
 	public Button::Listener,
 	public ControllableContainerListener,
-	public ConnectableNode::ConnectableNodeListener,
-    public NodeBase::NodeBaseListener
+	public ConnectableNode::ConnectableNodeListener
 {
 public:
 

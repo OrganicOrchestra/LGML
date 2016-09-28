@@ -190,9 +190,9 @@ void VSTNode::numChannelsChanged(){
   NodeBase::numChannelsChanged();
   if (NodeManager::getInstanceWithoutCreating() != nullptr)
   {
-    NodeManager::getInstance()->audioGraph.removeIllegalConnections();
+    parentNodeContainer->removeIllegalConnections();
     // hack to force update renderingops in audioGraph
-    NodeManager::getInstance()->audioGraph.removeConnection(-1);
+    parentNodeContainer->AudioProcessorGraph::removeConnection(-1);
   }
 }
 

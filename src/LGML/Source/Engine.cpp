@@ -81,7 +81,7 @@ void Engine::parseCommandline(const String & commandLine){
 
 void Engine::initAudio(){
 
-  graphPlayer.setProcessor(&NodeManager::getInstance()->audioGraph);
+  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer);
   ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
   getAudioDeviceManager().initialise (64, 64, savedAudioState, true);
   getAudioDeviceManager().addChangeListener(&audioSettingsHandler);

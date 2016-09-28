@@ -13,6 +13,7 @@
 #include "NodeBaseUI.h"
 #include "AudioDeviceInNodeUI.h"
 #include "AudioHelpers.h"
+#include "NodeManager.h"
 
 AudioDeviceManager& getAudioDeviceManager();
 
@@ -20,6 +21,7 @@ AudioDeviceInNode::AudioDeviceInNode() :
 NodeBase("AudioDeviceIn",NodeType::AudioDeviceInType),
 AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
 {
+
     //canHavePresets = false;
     hasMainAudioControl = false;
 
@@ -32,7 +34,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 
 
     lastNumberOfInputs = 0;
-    updateVolMutes();
+    
 
 
 }
@@ -62,6 +64,15 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 
 
 }
+
+
+
+void AudioDeviceInNode::setParentNodeContainer(NodeContainer * parent){
+  NodeBase::setParentNodeContainer(parent);
+  jassert((AudioProcessorGraph* )parent == NodeManager::getInstance()->mainContainer);
+  updateVolMutes();
+}
+
 
 void AudioDeviceInNode::changeListenerCallback(ChangeBroadcaster*) {
     updateVolMutes();
@@ -99,7 +110,7 @@ void AudioDeviceInNode::updateVolMutes(){
 
 void AudioDeviceInNode::addVolMute()
 {
-    const ScopedLock lk (parentGraph->getCallbackLock());
+    const ScopedLock lk (parentNodeContainer->getCallbackLock());
     BoolParameter * p = addBoolParameter(String(inMutes.size() + 1), "Mute if disabled", false);
     p->setCustomShortName(String("mute") + String(inMutes.size() + 1));
     inMutes.add(p);
@@ -116,7 +127,7 @@ void AudioDeviceInNode::removeVolMute()
 {
 
     if(inMutes.size()==0)return;
-    const ScopedLock lk (parentGraph->getCallbackLock());
+    const ScopedLock lk (parentNodeContainer->getCallbackLock());
     BoolParameter * b = inMutes[inMutes.size() - 1];
     removeControllable(b);
     inMutes.removeAllInstancesOf(b);

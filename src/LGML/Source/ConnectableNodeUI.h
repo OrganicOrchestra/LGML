@@ -58,12 +58,12 @@ public:
 	};
 
 	//ui
-	class MainContainer : public Component
+	class MainComponentContainer : public Component
 	{
 	public:
 
 		//ui y
-		MainContainer(ConnectableNodeUI * nodeUI, ConnectableNodeContentUI * content = nullptr, ConnectableNodeHeaderUI * header = nullptr);
+		MainComponentContainer(ConnectableNodeUI * nodeUI, ConnectableNodeContentUI * content = nullptr, ConnectableNodeHeaderUI * header = nullptr);
 
 		//reference
 		ConnectableNodeUI * connectableNodeUI;
@@ -84,7 +84,7 @@ public:
 
 		void childBoundsChanged(Component*)override;
 
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContainer)
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponentContainer)
 	};
 
 
@@ -101,9 +101,9 @@ public:
 
 
 
-	MainContainer mainContainer;
-	ConnectableNodeContentUI * getContentContainer() { return mainContainer.contentContainer; }
-	ConnectableNodeHeaderUI * getHeaderContainer() { return mainContainer.headerContainer; }
+	MainComponentContainer MainComponentContainer;
+	ConnectableNodeContentUI * getContentContainer() { return MainComponentContainer.contentContainer; }
+	ConnectableNodeHeaderUI * getHeaderContainer() { return MainComponentContainer.headerContainer; }
 
 	ConnectorContainer inputContainer;
 	ConnectorContainer outputContainer;

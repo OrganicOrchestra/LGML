@@ -28,8 +28,8 @@ AudioDeviceInNodeContentUI::~AudioDeviceInNodeContentUI()
 {
 	getAudioDeviceManager().removeChangeListener(this);
 
-	audioInNode->removeNodeBaseListener(this);
 	audioInNode->removeConnectableNodeListener(this);
+
 
 	while (vuMeters.size() > 0)
 	{
@@ -40,8 +40,8 @@ AudioDeviceInNodeContentUI::~AudioDeviceInNodeContentUI()
 void AudioDeviceInNodeContentUI::init()
 {
 	audioInNode = (AudioDeviceInNode *)node.get();
-	audioInNode->addNodeBaseListener(this);
 	audioInNode->addConnectableNodeListener(this);
+	
 	updateVuMeters();
 
 	setSize(240, 80);

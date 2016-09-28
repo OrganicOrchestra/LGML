@@ -30,12 +30,12 @@ public:
 
     juce_DeclareSingleton(NodeManager, true);
 
-    AudioProcessorGraph audioGraph;
+    
     DataProcessorGraph dataGraph;
 
 	ScopedPointer<NodeContainer> mainContainer;
 
-	void updateAudioGraph();
+	void rebuildAudioGraph();
 
     void clear();
 

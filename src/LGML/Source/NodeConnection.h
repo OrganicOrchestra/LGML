@@ -19,7 +19,7 @@
 
 class NodeConnection :
 	public ReferenceCountedObject,
-	public NodeBase::NodeBaseListener
+	public ConnectableNode::ConnectableNodeListener
 {
 public:
     enum ConnectionType
@@ -37,22 +37,21 @@ public:
 
     typedef std::pair<int,int> AudioConnection;
     Array<AudioConnection> audioConnections;
-	Array<AudioConnection> ghostConnections;
+
     Array<DataProcessorGraph::Connection *> dataConnections;
 
 
-    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType, bool isGhostConnection = false);
+    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType);
     virtual ~NodeConnection();
 
-	//Ghosting (Container enabled / disabled)
-	bool isGhostConnection;
+	
 
     //Audio
     bool addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
-    void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel, bool keepInGhost = false);
+    void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
     void removeAllAudioGraphConnections();
 
-	void removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel, bool keepInGhost = false);
+	void removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel);
 
     //Data
     void addDataGraphConnection(Data * sourceData, Data * destData);
@@ -96,6 +95,8 @@ public:
     ListenerList<Listener> listeners;
     void addConnectionListener(Listener* newListener) { listeners.add(newListener); }
     void removeConnectionListener(Listener* listener) { listeners.remove(listener); }
+
+  AudioProcessorGraph * getParentGraph();
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnection)

@@ -13,7 +13,8 @@
 #include "NodeContainer.h"
 
 ContainerInNode::ContainerInNode() :
-	NodeBase("Container IN", NodeType::ContainerInType, false)
+	NodeBase("Container IN", NodeType::ContainerInType, false),
+AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;
@@ -31,6 +32,11 @@ ContainerInNode::~ContainerInNode()
 	}
 }
 
+void ContainerInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
+  AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+  int a ;
+  a = 0;
+};
 
 void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
 {

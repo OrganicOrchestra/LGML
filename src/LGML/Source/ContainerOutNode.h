@@ -16,24 +16,28 @@
 
 class NodeContainer;
 
-class ContainerOutNode : public NodeBase
+class ContainerOutNode : public NodeBase,public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
 	ContainerOutNode();
 	~ContainerOutNode();
 
 
+  void setParentNodeContainer(NodeContainer *) override;
+  
+
 	//AUDIO
 	IntParameter * numInputChannels;
 	void setNumAudioChannels(int channels);
+  void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages)override;
 
-	void setParentNodeContainer(NodeContainer *) override;
 
 	//DATA
 	IntParameter * numInputData;
 	void processInputDataChanged(Data * d) override;
 
 	virtual ConnectableNodeUI * createUI() override;
+
 
 	void onContainerParameterChanged(Parameter *) override;
 

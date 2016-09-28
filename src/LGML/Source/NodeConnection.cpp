@@ -12,11 +12,10 @@
 #include "NodeManager.h"
 #include "NodeContainer.h"
 
-NodeConnection::NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType, bool _isGhostConnection) :
+NodeConnection::NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType) :
 sourceNode(sourceNode),
 destNode(destNode),
-connectionType(connectionType),
-isGhostConnection(_isGhostConnection)
+connectionType(connectionType)
 {
 
     // init with all possible Audio connections
@@ -28,13 +27,10 @@ isGhostConnection(_isGhostConnection)
 
     }
 
-    if (sourceNode->type != NodeType::ContainerType) {
-        ((NodeBase*)sourceNode)->addNodeBaseListener(this);
-    }
 
-    if (destNode->type != NodeType::ContainerType) {
-        ((NodeBase*)destNode)->addNodeBaseListener(this);
-    }
+        (sourceNode)->addConnectableNodeListener(this);
+        (destNode)->addConnectableNodeListener(this);
+
 
 
 }
@@ -47,33 +43,34 @@ NodeConnection::~NodeConnection()
 
     dataConnections.clear();
     if(sourceNode.get()){
-        if (sourceNode->type != NodeType::ContainerType && dynamic_cast<NodeBase *>(sourceNode.get()) != nullptr)
-        {
-            ((NodeBase*)sourceNode.get())->removeNodeBaseListener(this);
-        }
+
+            (sourceNode.get())->removeConnectableNodeListener(this);
+
     }
 
     if(destNode.get()){
-        if(destNode->type!=NodeType::ContainerType && dynamic_cast<NodeBase *>(destNode.get()) != nullptr){
-            ((NodeBase*)destNode.get())->removeNodeBaseListener(this);
-        }
+
+            (destNode.get())->removeConnectableNodeListener(this);
+        
     }
 }
+AudioProcessorGraph * NodeConnection::getParentGraph(){
+  jassert(sourceNode->parentNodeContainer == destNode->parentNodeContainer );
+  return sourceNode->parentNodeContainer;
 
+}
 bool NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
 
 	bool result = true;
-	if (!isGhostConnection)
-	{
-		if (NodeManager::getInstanceWithoutCreating() != nullptr)
-		{
-			result = NodeManager::getInstance()->audioGraph.addConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
+
+    if(AudioProcessorGraph * g = getParentGraph()){
+			result = g->addConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
 		} else
 		{
 			result = false;
 		}
-	}
+
 
 	if (result)
     {
@@ -84,16 +81,15 @@ bool NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destCh
     return result;
 }
 
-void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel, bool keepInGhost)
+void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)
 {
     AudioConnection ac = AudioConnection(sourceChannel, destChannel);
-	if (!isGhostConnection)
-	{
-		if (NodeManager::getInstanceWithoutCreating() != nullptr) NodeManager::getInstance()->audioGraph.removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
-	}
+
+    if(AudioProcessorGraph * g = getParentGraph())
+		 g->removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
+
 
 	audioConnections.removeAllInstancesOf(ac);
-    if (keepInGhost) ghostConnections.add(ac);
     listeners.call(&Listener::connectionAudioLinkRemoved, ac);
 
 
@@ -104,7 +100,7 @@ void NodeConnection::removeAllAudioGraphConnections()
     if(sourceNode.get() && destNode.get()){
     for(int i = 0 ; i < sourceNode->getAudioNode()->getProcessor()->getTotalNumOutputChannels() ; i++){
         for(int j = 0 ; j < destNode->getAudioNode()->getProcessor()->getTotalNumInputChannels() ; j++){
-            removeAudioGraphConnection(i,j,false);
+            removeAudioGraphConnection(i,j);
         }
     }
     }
@@ -116,7 +112,7 @@ void NodeConnection::removeAllAudioGraphConnections()
 
 }
 
-void NodeConnection::removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel,bool keepInGhost)
+void NodeConnection::removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel)
 {
     Array<AudioConnection> connectionsToRemove;
 
@@ -127,7 +123,7 @@ void NodeConnection::removeAllAudioGraphConnectionsForChannel(int channel, bool 
         }
     }
 
-    for(auto &tc : connectionsToRemove) removeAudioGraphConnection(tc.first, tc.second,keepInGhost);
+    for(auto &tc : connectionsToRemove) removeAudioGraphConnection(tc.first, tc.second);
 
 
 }
@@ -187,32 +183,21 @@ void NodeConnection::audioInputAdded(NodeBase * n, int channel)
     //DBG("Audio Input Added " << channel << " ( " << ghostConnections.size() << " ghosts )");
 
     Array<AudioConnection> connectionsToAdd;
-    for (auto &c : ghostConnections)
-    {
-        if (n == destNode && c.second == channel) connectionsToAdd.add(c);
-    }
 
     //DBG(" >> connections to add : " << connectionsToAdd.size());
     for (auto &c : connectionsToAdd)
     {
         bool result = addAudioGraphConnection(c.first, c.second);
-        if (result) ghostConnections.removeAllInstancesOf(c);
     }
 }
 
 void NodeConnection::audioOutputAdded(NodeBase * n, int channel)
 {
-    //DBG("Audio Output added " << channel << " ( " << ghostConnections.size() << " ghosts )");
-    Array<AudioConnection> connectionsToAdd;
-    for (auto &c : ghostConnections)
-    {
-        if (n == sourceNode && c.first == channel) connectionsToAdd.add(c);
-    }
 
+    Array<AudioConnection> connectionsToAdd;
     for (auto &c : connectionsToAdd)
     {
         bool result = addAudioGraphConnection(c.first, c.second);
-        if (result) ghostConnections.removeAllInstancesOf(c);
     }
 }
 
@@ -221,7 +206,7 @@ void NodeConnection::audioInputRemoved(NodeBase * n, int channel)
     //DBG("Audio Input removed " << channel);
     if (n == destNode)
     {
-        removeAllAudioGraphConnectionsForChannel(channel, false,true);
+        removeAllAudioGraphConnectionsForChannel(channel, false);
         //if (n->getTotalNumInputChannels() == 0) remove(); //not that useful with ghost support
     }
 }
@@ -231,7 +216,7 @@ void NodeConnection::audioOutputRemoved(NodeBase * n, int channel)
     //DBG("Audio Output Removed "  << channel);
     if (n == sourceNode)
     {
-        removeAllAudioGraphConnectionsForChannel(channel, true,true);
+        removeAllAudioGraphConnectionsForChannel(channel, true);
         //if (n->getTotalNumOutputChannels() == 0) remove(); //not useful with ghost support
     }
 }
@@ -330,7 +315,7 @@ void NodeConnection::loadJSONData(var data)
             {
                 String sourceName = linkVar.getProperty("sourceData", var());
                 String destName = linkVar.getProperty("destData", var());
-				if (!isGhostConnection)  addDataGraphConnection(sourceNode->getOutputDataByName(sourceName), destNode->getInputDataByName(destName));
+				 addDataGraphConnection(sourceNode->getOutputDataByName(sourceName), destNode->getInputDataByName(destName));
             }
         }
     }

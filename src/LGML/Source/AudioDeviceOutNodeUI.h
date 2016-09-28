@@ -21,7 +21,6 @@ class AudioDeviceOutNode;
 
 class AudioDeviceOutNodeContentUI :
 	public NodeBaseContentUI,
-	public NodeBase::NodeBaseListener,
 	public ConnectableNode::ConnectableNodeListener,
     public ChangeListener
 {

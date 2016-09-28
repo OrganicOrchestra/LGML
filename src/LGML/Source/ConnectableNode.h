@@ -29,7 +29,13 @@ public:
 	NodeType type;
 
 	NodeContainer * parentNodeContainer;
+  
 	virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer);
+  AudioProcessorGraph::Node * audioNode;
+  
+
+
+  virtual AudioProcessor * getAudioProcessor() {return getAudioNode()->getProcessor();};
 
 	//Interaction
 	bool canBeRemovedByUser;
@@ -70,9 +76,26 @@ public:
 		virtual ~ConnectableNodeListener() {}
 		virtual void askForRemoveNode(ConnectableNode *) {}
 		virtual void nodeParameterChanged(ConnectableNode *,Parameter *) {}
-	};
 
-	ListenerList<ConnectableNodeListener> nodeListeners;
+
+    virtual void numAudioInputChanged(NodeBase *, int /*newNumInput*/) {};
+    virtual void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) {};
+    virtual void numDataInputChanged(NodeBase *, int /*newNumInput*/) {};
+    virtual void numDataOutputChanged(NodeBase *, int /*newNumOutput*/) {};
+
+    virtual void audioInputAdded(NodeBase *, int /*channel*/) {}
+    virtual void audioInputRemoved(NodeBase *, int /*channel*/) {}
+    virtual void audioOutputAdded(NodeBase *, int /*channel*/) {}
+    virtual void audioOutputRemoved(NodeBase *, int /*channel*/) {}
+
+
+    virtual void dataInputAdded(NodeBase *, Data *) {}
+    virtual void dataInputRemoved(NodeBase *, Data *) {}
+    virtual void dataOutputAdded(NodeBase *, Data *) {}
+    virtual void dataOutputRemoved(NodeBase *, Data *) {}
+  };
+  
+  ListenerList<ConnectableNodeListener> nodeListeners;
 	void addConnectableNodeListener(ConnectableNodeListener* newListener) { nodeListeners.add(newListener); }
 	void removeConnectableNodeListener(ConnectableNodeListener* listener) { nodeListeners.remove(listener); }
 

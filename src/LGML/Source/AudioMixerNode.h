@@ -33,6 +33,7 @@ public:
 
 
     AudioMixerNode() ;
+  void setParentNodeContainer(NodeContainer * c)override;
 
 	OwnedArray<OutputBus> outBuses;
 	AudioBuffer<float> cachedBuffer;

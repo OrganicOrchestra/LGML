@@ -12,6 +12,7 @@
 
 #include "ConnectableNodeUI.h"
 #include "AudioHelpers.h"
+#include "NodeContainer.h"
 
   ConnectableNode::ConnectableNode(const String & name, NodeType _type, bool _hasMainAudioControl):
 	  parentNodeContainer(nullptr),
@@ -20,7 +21,8 @@
 	  canBeRemovedByUser(true),
 	  ControllableContainer(name),
 	  userCanAccessInputs(true),
-	  userCanAccessOutputs(true)
+	  userCanAccessOutputs(true),
+    audioNode(nullptr)
   {
 	  //set Params
       nameParam = addStringParameter("Name", "Set the visible name of the node.", name);
@@ -61,8 +63,18 @@
 
 void ConnectableNode::setParentNodeContainer(NodeContainer * _parentNodeContainer)
 {
+    addToAudioGraph(_parentNodeContainer);
 	parentNodeContainer = _parentNodeContainer;
+
+
 }
+
+AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool)
+{
+  return audioNode;
+}
+
+
 
 
 bool ConnectableNode::hasAudioInputs()
@@ -147,21 +159,17 @@ void ConnectableNode::loadJSONDataInternal(var data)
 
 /////////////////////////////  AUDIO
 
-AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool)
-{
-	//to override
-	return nullptr;
-}
 
-
-void ConnectableNode::addToAudioGraph(AudioProcessorGraph*)
+void ConnectableNode::addToAudioGraph(AudioProcessorGraph* g)
 {
-	//to override
+  audioNode = g->addNode(getAudioProcessor());
 }
 
 void ConnectableNode::removeFromAudioGraph()
 {
-	//To override
+  parentNodeContainer->AudioProcessorGraph::removeNode(getAudioNode());
+
+
 }
 
 

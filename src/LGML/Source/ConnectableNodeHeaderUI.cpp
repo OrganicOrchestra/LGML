@@ -47,7 +47,6 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
 
     node->removeControllableContainerListener(this);
     node->removeConnectableNodeListener(this);
-    if(NodeBase *kk = dynamic_cast<NodeBase*>(node)){kk->removeNodeBaseListener(this);}
   }
 
 }
@@ -57,12 +56,11 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
   this->node = _node;
   this->nodeUI = _nodeUI;
 
-  if (node != nullptr)
-  {
-    if(NodeBase *kk = dynamic_cast<NodeBase*>(node)){kk->addNodeBaseListener(this);}
-    updateVuMeters();
 
-  }
+  node->addConnectableNodeListener(this);
+  updateVuMeters();
+
+
 
   titleUI = node->nameParam->createStringParameterUI();
   addAndMakeVisible(titleUI);
@@ -91,7 +89,7 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
   }
 
   node->addControllableContainerListener(this);
-  node->addConnectableNodeListener(this);
+
 
   init();
   resized();
@@ -129,7 +127,7 @@ void ConnectableNodeHeaderUI::updatePresetComboBox(bool forceUpdate)
   if (!emptyFilter)
   {
     PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
-      if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId,forceUpdate?NotificationType::sendNotification: NotificationType::dontSendNotification);
+    if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId,forceUpdate?NotificationType::sendNotification: NotificationType::dontSendNotification);
   }
 }
 
@@ -225,7 +223,7 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
     vuMeterIn.colorHigh = c2;
     vuMeterOut.colorHigh = c2;
 
-      postCommandMessage(repaintId);
+    postCommandMessage(repaintId);
   }
 
 }
@@ -270,36 +268,36 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
   }
   else if(presetID >=0 && presetID < PresetChoice::deleteStartId)
   {
-      String nameOfPreset = cb->getItemText(cb->getSelectedItemIndex());
-      node->currentPresetName->setValue(nameOfPreset);
+    String nameOfPreset = cb->getItemText(cb->getSelectedItemIndex());
+    node->currentPresetName->setValue(nameOfPreset);
 
   }
   else if (presetID >= PresetChoice::deleteStartId)
   {
-	bool ok = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Oh man, d'ya know watcha doin' ?", "Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man.", "Oh yeah", "F* No");
-	if (ok)
-	{
-		PresetManager * pm = PresetManager::getInstance();
-		int originId = cb->getSelectedId() - PresetChoice::deleteStartId - 1;
-		String originText = cb->getItemText(pm->getNumOption() + originId);
-		PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), originText);
-		pm->presets.removeObject(pre);
-		updatePresetComboBox(true);
-	} else
-	{
-		//reselect last Id
-		if (node->currentPreset != nullptr)
-		{
-			cb->setSelectedId(node->currentPreset->presetId, juce::dontSendNotification);
-		} else
-		{
-			cb->setSelectedId(0, juce::dontSendNotification);
-		}
-	}
+    bool ok = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Oh man, d'ya know watcha doin' ?", "Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man.", "Oh yeah", "F* No");
+    if (ok)
+    {
+      PresetManager * pm = PresetManager::getInstance();
+      int originId = cb->getSelectedId() - PresetChoice::deleteStartId - 1;
+      String originText = cb->getItemText(pm->getNumOption() + originId);
+      PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), originText);
+      pm->presets.removeObject(pre);
+      updatePresetComboBox(true);
+    } else
+    {
+      //reselect last Id
+      if (node->currentPreset != nullptr)
+      {
+        cb->setSelectedId(node->currentPreset->presetId, juce::dontSendNotification);
+      } else
+      {
+        cb->setSelectedId(0, juce::dontSendNotification);
+      }
+    }
 
   }
   else{
-      jassertfalse;
+    jassertfalse;
   }
 
 }
@@ -321,25 +319,25 @@ void ConnectableNodeHeaderUI::controllableContainerPresetLoaded(ControllableCont
   if (!node->canHavePresets) return;
 
   //  int numOptions = PresetManager::getNumOption();
-    if (node->currentPreset != nullptr) postCommandMessage(updatePresetCBID);
+  if (node->currentPreset != nullptr) postCommandMessage(updatePresetCBID);
 }
 
 void ConnectableNodeHeaderUI::handleCommandMessage(int id){
-    switch(id){
-        case updatePresetCBID:
-    
-            if (!node->canHavePresets) return;
-    
-            //  int numOptions = PresetManager::getNumOption();
-            if (node->currentPreset != nullptr)presetCB->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
-            break;
-            
-        case repaintId:
-            repaint();
-            break;
-        default:
-            break;
-    }
+  switch(id){
+    case updatePresetCBID:
+
+      if (!node->canHavePresets) return;
+
+      //  int numOptions = PresetManager::getNumOption();
+      if (node->currentPreset != nullptr)presetCB->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
+      break;
+
+    case repaintId:
+      repaint();
+      break;
+    default:
+      break;
+  }
 }
 
 void ConnectableNodeHeaderUI::Grabber::paint(Graphics & g)

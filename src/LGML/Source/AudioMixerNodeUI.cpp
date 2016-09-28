@@ -43,7 +43,7 @@ void AudioMixerNodeUI::resized() {
 }
 
 AudioMixerNodeUI::~AudioMixerNodeUI() {
-    mixerNode->removeNodeBaseListener(this);
+    mixerNode->removeConnectableNodeListener(this);
     mixerNode->oneToOne->removeParameterListener(this);
 }
 
@@ -52,7 +52,7 @@ void AudioMixerNodeUI::init() {
     numAudioOutputChanged(mixerNode, mixerNode->numberOfOutput->intValue());
     numAudioInputChanged(mixerNode, mixerNode->numberOfInput->intValue());
 
-    mixerNode->addNodeBaseListener(this);
+    mixerNode->addConnectableNodeListener(this);
     mixerNode->oneToOne->addParameterListener(this);
     nodeUI->setSize(250, 150);
 }

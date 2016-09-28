@@ -19,7 +19,7 @@ class AudioDeviceOutNode :
 	public NodeBase,
 	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
 	public ChangeListener,
-	public NodeBase::NodeBaseListener
+	public ConnectableNode::ConnectableNodeListener
 {
 public:
 	AudioDeviceOutNode();
@@ -43,6 +43,8 @@ public:
     private :
     void updateVolMutes();
     int lastNumberOfOutputs;
+
+  void  setParentNodeContainer(NodeContainer * parent)override;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioDeviceOutNode)
 };
 

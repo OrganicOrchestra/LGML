@@ -25,8 +25,8 @@ AudioDeviceOutNodeContentUI::AudioDeviceOutNodeContentUI() :
 
 AudioDeviceOutNodeContentUI::~AudioDeviceOutNodeContentUI()
 {
-	audioOutNode->removeNodeBaseListener(this);
 	audioOutNode->removeConnectableNodeListener(this);
+
 
 	while (vuMeters.size() > 0)
 	{
@@ -43,8 +43,8 @@ void AudioDeviceOutNodeContentUI::changeListenerCallback (ChangeBroadcaster*){
 void AudioDeviceOutNodeContentUI::init()
 {
 	audioOutNode = (AudioDeviceOutNode *)node.get();
-	audioOutNode->addNodeBaseListener(this);
 	audioOutNode->addConnectableNodeListener(this);
+	
     getAudioDeviceManager().addChangeListener(this);
 
 	updateVuMeters();
