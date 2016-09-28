@@ -37,6 +37,7 @@ localIndexedPosition(-1)
 {
   setNiceName(niceName);
   currentPresetName = addStringParameter("Preset", "Current Preset", "");
+  savePresetTrigger = addTrigger("Save Preset", "Save current preset");
 }
 
 ControllableContainer::~ControllableContainer()
@@ -525,12 +526,18 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 
 void ControllableContainer::triggerTriggered(Trigger * t)
 {
-  onContainerTriggerTriggered(t);
-  if (t->isControllableExposed) dispatchFeedback(t);
+	if (t == savePresetTrigger)
+	{
+		saveCurrentPreset();
+		
+	} else
+	{
+		onContainerTriggerTriggered(t);
+	}
+
+    if (t->isControllableExposed) dispatchFeedback(t);
 }
-
-
-
+	
 
 void ControllableContainer::addParameterInternal(Parameter * p)
 {

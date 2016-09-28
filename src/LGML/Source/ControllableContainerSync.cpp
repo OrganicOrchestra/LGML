@@ -167,6 +167,7 @@ void ControllableContainerSync::onContainerParameterChanged(Parameter * c){
     }
 }
 void ControllableContainerSync::onContainerTriggerTriggered(Trigger * c){
+	
     for(auto & listener:targetSyncedContainers){
         for(auto t:listener->controllables){
             if(areCompatible(t ,c)){

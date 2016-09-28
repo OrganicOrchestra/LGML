@@ -53,6 +53,7 @@ public:
 
 	bool canHavePresets;
 	StringParameter * currentPresetName;
+	Trigger * savePresetTrigger;
 	PresetManager::Preset * currentPreset;
 
 	
@@ -143,7 +144,7 @@ private:
     //      or using dispatch feedback that triggers only exposedParams
 
     virtual void onContainerParameterChanged(Parameter *) {};
-    virtual void onContainerTriggerTriggered(Trigger *) {};
+	virtual void onContainerTriggerTriggered(Trigger *) {};
     virtual void onContainerParameterChangedAsync(Parameter *,const var & /*value*/){};
     void addParameterInternal(Parameter * p);
 
