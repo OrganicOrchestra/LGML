@@ -16,7 +16,8 @@
 //==============================================================================
 /*
 */
-class NodeConnectionEditorLink    : public Component, public SettableTooltipClient
+class NodeConnectionEditorLink    : public Component, 
+	public SettableTooltipClient
 {
 public:
     NodeConnectionEditorLink(NodeConnectionEditorDataSlot * outSlot, NodeConnectionEditorDataSlot * inSlot);
@@ -24,6 +25,14 @@ public:
 
     NodeConnectionEditorDataSlot * outSlot;
     NodeConnectionEditorDataSlot * inSlot;
+
+	bool isSelected;
+	void setSelected(bool value)
+	{
+		isSelected = value;
+		DBG("repaint");
+		repaint();
+	}
 
     bool isEditing;
     void setEditing(bool value)
@@ -51,7 +60,10 @@ public:
 
 	void mouseEnter(const MouseEvent &) override;
 	void mouseExit(const MouseEvent &) override;
+	void mouseDown(const MouseEvent &) override;
+
 	void mouseDoubleClick(const MouseEvent &) override;
+	bool keyPressed(const KeyPress &key) override;
 
 	void remove();
 
@@ -62,6 +74,7 @@ public:
         /** Destructor. */
         virtual ~LinkListener() {}
         virtual void askForRemoveLink(NodeConnectionEditorLink * target) = 0;
+		virtual void selectLink(NodeConnectionEditorLink * link) = 0;
     };
 
     ListenerList<LinkListener> listeners;

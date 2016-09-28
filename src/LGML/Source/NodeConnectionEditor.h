@@ -32,11 +32,15 @@ public:
     OwnedArray<NodeConnectionEditorDataSlot> inputSlots;
     OwnedArray<NodeConnectionEditorLink> links;
 
+
     Component mainContainer;
 
     Component inputsContainer;
     Component outputsContainer;
     Component linksContainer;
+
+	NodeConnectionEditorLink * selectedLink;
+	void setSelectedLink(NodeConnectionEditorLink *);
 
     NodeConnection * currentConnection;
     NodeConnection::ConnectionType editingType;
@@ -92,6 +96,7 @@ private:
 
     // Inherited via LinkListener
     virtual void askForRemoveLink(NodeConnectionEditorLink * target) override;
+	virtual void selectLink(NodeConnectionEditorLink * target) override;
 
     // Inherited via Listener
     virtual void askForRemoveConnection(NodeConnection *) override {};
