@@ -46,7 +46,11 @@ public:
 
     appProperties = new ApplicationProperties();
     appProperties->setStorageParameters (options);
-    Process::setPriority (Process::HighPriority);
+
+	
+
+
+	Process::setPriority (Process::HighPriority);
 
     engine = new Engine();
 #if LGML_UNIT_TESTS
@@ -134,7 +138,16 @@ public:
       setContentOwned (mainComponent, true);
       setResizable (true, true);
 
-      setBounds (50,50,getWidth(), getHeight());
+	  int tx = getAppProperties().getCommonSettings(true)->getIntValue("windowX");
+	  int ty = getAppProperties().getCommonSettings(true)->getIntValue("windowY");
+	  int tw = getAppProperties().getCommonSettings(true)->getIntValue("windowWidth");
+	  int th = getAppProperties().getCommonSettings(true)->getIntValue("windowHeight");
+	  bool fs = getAppProperties().getCommonSettings(true)->getBoolValue("fullscreen");
+
+	 
+      setBounds (jmax<int>(tx,20), jmax<int>(ty,20), jmax<int>(tw,100), jmax<int>(th,100));
+	  setFullScreen(fs);
+
       setVisible (true);
 
 #if ! JUCE_MAC
@@ -163,6 +176,17 @@ public:
 				   return;
 		   }
 	   }
+
+	   var boundsVar = var(new DynamicObject());
+	   Rectangle<int> r = getScreenBounds();
+
+	   getAppProperties().getCommonSettings(true)->setValue("windowX",r.getPosition().x);
+	   getAppProperties().getCommonSettings(true)->setValue("windowY", r.getPosition().y); 
+	   getAppProperties().getCommonSettings(true)->setValue("windowWidth", r.getWidth()); 
+	   getAppProperties().getCommonSettings(true)->setValue("windowHeight", r.getHeight());
+	   getAppProperties().getCommonSettings(true)->setValue("fullscreen", isFullScreen());
+	   getAppProperties().getCommonSettings(true)->saveIfNeeded();
+
 
        JUCEApplication::getInstance()->systemRequestedQuit();
     }
