@@ -164,7 +164,8 @@ private:
     };
     Array<FunctionIdentifier> userDefinedFunctions;
 
-    JavascriptEngine jsEngine;
+    ScopedPointer<JavascriptEngine> jsEngine;
+    CriticalSection engineLock;
 
     void timerCallback(int timerID)override;
     Time lastFileModTime;

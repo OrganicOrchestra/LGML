@@ -17,8 +17,9 @@
 
 JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFile(false){
   localEnvironment = var(new DynamicObject());
-  jsEngine.registerNativeObject(jsLocalIdentifier, getLocalEnv());
-  jsEngine.registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
+  jsEngine = new JavascriptEngine();
+  jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
+  jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
   addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
 
   startTimer(1, 20); // 50fps on update Timer
@@ -38,14 +39,17 @@ JsEnvironment::~JsEnvironment(){
 }
 
 void JsEnvironment::clearNamespace(){
+ const  ScopedLock lk(engineLock);
+ jsEngine = new JavascriptEngine();
+
   while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
   // prune to get only core Methods and classes
-  //    NamedValueSet root = jsEngine.getRootObjectProperties();
-  for(int i = 0 ; i < jsEngine.getRootObjectProperties().size() ; i++){
-    if(!jsEngine.getRootObjectProperties().getVarPointerAt(i)->isMethod()){
-      Identifier id = jsEngine.getRootObjectProperties().getName(i);
+  //    NamedValueSet root = jsEngine->getRootObjectProperties();
+  for(int i = 0 ; i < jsEngine->getRootObjectProperties().size() ; i++){
+    if(!jsEngine->getRootObjectProperties().getVarPointerAt(i)->isMethod()){
+      Identifier id = jsEngine->getRootObjectProperties().getName(i);
       if(!jsCoreClasses.contains(id)){
-        jsEngine.registerNativeObject(id, nullptr);
+        jsEngine->registerNativeObject(id, nullptr);
       }
 
     }
@@ -102,7 +106,14 @@ Result JsEnvironment::loadScriptContent(const String & content)
   // rebuild to clean namespace
   clearNamespace();
   buildLocalEnv();
-  Result r = jsEngine.execute(content);
+
+  // thread safe if the  environment class is not multithreaded
+  Result r = Result::fail("can't lock environment");
+  {
+    const ScopedLock lk(engineLock);
+   r= jsEngine->execute(content);
+  }
+
 
   if (r.failed()) {
     _hasValidJsFile = false;
@@ -170,8 +181,11 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
 
   var  v ;
   juce::var::NativeFunctionArgs Nargs(var::undefined(), (args.size()>0)?&args.getReference(0):&v, args.size());
-
-  var res =  jsEngine.callFunction(function,Nargs,result);
+  var res;
+  {
+    const ScopedLock lk(engineLock);
+    res =  jsEngine->callFunction(function,Nargs,result);
+  }
   if(logResult && result->failed()){
     NLOG(localNamespace,result->getErrorMessage());
   }
@@ -193,7 +207,7 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
 
   // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
   juce::var::NativeFunctionArgs Nargs(var::undefined(),&arg,1);
-  var res =  jsEngine.callFunction(function,Nargs,result);
+  var res =  jsEngine->callFunction(function,Nargs,result);
   if(logResult && result->failed()){
     NLOG(localNamespace,result->getErrorMessage());
   }
@@ -204,7 +218,7 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
   return res;
 }
 
-const NamedValueSet & JsEnvironment::getRootObjectProperties()  {return jsEngine.getRootObjectProperties();}
+const NamedValueSet & JsEnvironment::getRootObjectProperties()  {const ScopedLock lk(engineLock);return jsEngine->getRootObjectProperties();}
 void JsEnvironment::addToLocalNamespace(const String & elem,DynamicObject *target)  {addToNamespace(elem, target,getLocalEnv());}
 
 
@@ -250,7 +264,10 @@ void JsEnvironment::timerCallback(int timerID){
     callFunction("onUpdate",var(),false);
   }
 }
-String JsEnvironment::printAllNamespace()   {return namespaceToString(jsEngine.getRootObjectProperties(),0,true,false);}
+String JsEnvironment::printAllNamespace()   {
+  const ScopedLock lk(engineLock);
+  return namespaceToString(jsEngine->getRootObjectProperties(),0,true,false);
+}
 
 
 String JsEnvironment::getModuleName(){
