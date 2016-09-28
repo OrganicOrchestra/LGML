@@ -670,6 +670,9 @@
           <FILE id="a3XztR" name="ShapeShifterManager.h" compile="0" resource="0"
                 file="Source/ShapeShifterManager.h"/>
         </GROUP>
+        <FILE id="tKeH3Z" name="BetterStepper.cpp" compile="1" resource="0"
+              file="Source/BetterStepper.cpp"/>
+        <FILE id="LIiKTa" name="BetterStepper.h" compile="0" resource="0" file="Source/BetterStepper.h"/>
         <FILE id="Fa2WJ4" name="LookAndFeelOO.cpp" compile="1" resource="0"
               file="Source/LookAndFeelOO.cpp"/>
         <FILE id="ToSNQ0" name="LookAndFeelOO.h" compile="0" resource="0" file="Source/LookAndFeelOO.h"/>
