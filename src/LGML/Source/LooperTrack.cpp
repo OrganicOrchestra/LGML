@@ -279,7 +279,7 @@ void LooperTrack::padBufferIfNeeded(int /*granularity*/){
     if (loopSample.wasLastRecordingFrame() ){
       //            DBG("a:firstPlay");
       // get howMuch we have allready played in loopSample
-      int offsetForPlay = (uint64)loopSample.getPlayPos();
+      int offsetForPlay = (int)loopSample.getPlayPos();
       if (isMasterTempoTrack()) {
         //                DBG("release predelay : "+String (trackIdx));
         const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());

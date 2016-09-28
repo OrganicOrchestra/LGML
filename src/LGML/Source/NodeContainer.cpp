@@ -299,10 +299,13 @@ void NodeContainer::loadJSONDataInternal(var data)
                 }
                 LOG("Available Nodes in "+ shortName+" : ");
 				
+				#if defined DEBUG
                 for (auto &node : nodes)
                 {
                     DBG(" > " + node->niceName+"//"+ node->shortName);
                 }
+				#endif
+
                 jassertfalse;
             }
         }

@@ -53,7 +53,7 @@ MIDIController::~MIDIController()
   
 }
 
-void MIDIController::currentDeviceChanged(MIDIListener * m)
+void MIDIController::currentDeviceChanged(MIDIListener *)
 {
 	if (midiPortName != deviceInName->stringValue())
 	{
