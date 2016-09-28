@@ -30,6 +30,7 @@ public :
 
     StringParameter * scriptPath;
     BoolParameter * logIncoming;
+	IntParameter * channelFilter;
 
 
 	MidiMessageCollector midiCollector;

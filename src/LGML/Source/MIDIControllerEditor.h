@@ -26,11 +26,15 @@ public:
 	MIDIControllerEditor(MIDIControllerUI * controllerUI);
 	virtual ~MIDIControllerEditor();
 
-	MIDIDeviceChooser deviceChooser;
-
 	MIDIController * midiController;
-    JsEnvironmentUI jsUI;
-    ScopedPointer<BoolToggleUI> incomingToogle;
+	JsEnvironmentUI jsUI;
+
+	MIDIDeviceChooser deviceChooser;
+	ScopedPointer<NamedControllableUI> channelStepper;
+	ScopedPointer<BoolToggleUI> incomingToogle;
+
+	 
+
 	void resized() override;
 	void comboBoxChanged(ComboBox *) override;
 

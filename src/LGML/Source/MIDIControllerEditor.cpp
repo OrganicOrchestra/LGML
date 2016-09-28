@@ -12,6 +12,7 @@
 #include "MIDIController.h"
 #include "MIDIControllerUI.h"
 #include "MIDIListener.h"
+#include "IntStepperUI.h"
 
 MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
 	ControllerEditor(controllerUI),
@@ -28,6 +29,9 @@ MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
     incomingToogle = midiController->logIncoming->createToggle();
     addAndMakeVisible(incomingToogle);
 
+	channelStepper = new NamedControllableUI(midiController->channelFilter->createStepper(),50);
+	addAndMakeVisible(channelStepper);
+
 	midiController->addMIDIListenerListener(this);
 }
 
@@ -42,13 +46,15 @@ void MIDIControllerEditor::resized()
 	Rectangle<int> r = getLocalBounds();
 	//r.removeFromTop(ControllerEditor::getContentHeight() + 10);
 	deviceChooser.setBounds(r.removeFromTop(30));
-    incomingToogle->setBounds(r.removeFromTop(20));
-    jsUI.setBounds(r.removeFromTop(20));
+	channelStepper->setBounds(r.removeFromTop(20));
+	r.removeFromTop(5);
+	incomingToogle->setBounds(r.removeFromTop(20));
+    jsUI.setBounds(r.removeFromTop(30));
 }
 
 int MIDIControllerEditor::getContentHeight()
 {
-	return 100;
+	return 120;
 }
 
 void MIDIControllerEditor::currentDeviceChanged(MIDIListener *)

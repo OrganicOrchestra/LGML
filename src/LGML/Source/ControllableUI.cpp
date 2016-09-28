@@ -55,6 +55,7 @@ labelWidth(_labelWidth){
   controllableLabel.setJustificationType(Justification::centredLeft);
   controllableLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
   controllableLabel.setText(ui->controllable->niceName, dontSendNotification);
+  controllableLabel.setTooltip(ui->tooltip);
 
   addAndMakeVisible(ui);
   setBounds(ownedControllableUI->getBounds()
