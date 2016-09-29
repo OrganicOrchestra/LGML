@@ -74,8 +74,8 @@ public:
 
 
 
-  bool setPreferedNumAudioInput(int num);
-  bool setPreferedNumAudioOutput(int num);
+  virtual bool setPreferedNumAudioInput(int num);
+   virtual bool setPreferedNumAudioOutput(int num);
 
 
   virtual void prepareToPlay(double, int) override {};

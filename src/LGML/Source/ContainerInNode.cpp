@@ -34,8 +34,7 @@ ContainerInNode::~ContainerInNode()
 
 void ContainerInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
   AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
-  int a ;
-  a = 0;
+
 };
 
 void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
@@ -57,6 +56,9 @@ void ContainerInNode::setNumAudioChannels(int channels)
 {
 	setPreferedNumAudioInput(channels);
 	setPreferedNumAudioOutput(channels);
+  jassert(parentNodeContainer);
+  // only handle one container in per container for now
+  parentNodeContainer->setPreferedNumAudioInput(channels);
 }
 
 void ContainerInNode::processInputDataChanged(Data * d)

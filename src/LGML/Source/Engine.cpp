@@ -81,7 +81,7 @@ void Engine::parseCommandline(const String & commandLine){
 
 void Engine::initAudio(){
 
-  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer);
+  graphPlayer.setProcessor((AudioProcessorGraph*)NodeManager::getInstance()->mainContainer);
   ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
   getAudioDeviceManager().initialise (64, 64, savedAudioState, true);
   getAudioDeviceManager().addChangeListener(&audioSettingsHandler);
@@ -113,13 +113,19 @@ void Engine::clear(){
   //    do we need to stop audio?
   //stopAudio();
 
+
   TimeManager::getInstance()->playState->setValue(false);
 
   FastMapper::getInstance()->clear();
   RuleManager::getInstance()->clear();
   ControllerManager::getInstance()->clear();
+  graphPlayer.setProcessor(nullptr);
+  getAudioDeviceManager().removeAudioCallback (&graphPlayer);
   NodeManager::getInstance()->clear();
+graphPlayer.setProcessor((AudioProcessorGraph*)NodeManager::getInstance()->mainContainer);
+getAudioDeviceManager().addAudioCallback (&graphPlayer);
   PresetManager::getInstance()->clear();
+
 
 
   changed();    //fileDocument
@@ -141,12 +147,14 @@ void Engine::stimulateAudio( bool s){
 void Engine::createNewGraph(){
   clear();
   suspendAudio(true);
+  isLoadingFile = true;
   ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
   node->xPosition->setValue(150);
   node->yPosition->setValue(100);
   node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
   node->xPosition->setValue(450);
   node->yPosition->setValue(100);
+  isLoadingFile = false;
   suspendAudio(false);
   setFile(File());
 }

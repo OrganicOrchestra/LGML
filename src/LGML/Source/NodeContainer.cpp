@@ -17,13 +17,14 @@
 #include "DebugHelpers.h"
 
 
+
 AudioDeviceManager& getAudioDeviceManager();
 bool isEngineLoadingFile();
 
 NodeContainer::NodeContainer(const String &name) :
 containerInNode(nullptr),
 containerOutNode(nullptr),
-ConnectableNode(name, NodeType::ContainerType,false)
+NodeBase(name, NodeType::ContainerType,false)
 {
   saveAndLoadRecursiveData = false;
 }
@@ -85,7 +86,7 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeNa
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName)
 {
   nodes.add(n);
-  if(!isEngineLoadingFile()) n->setParentNodeContainer(this);
+ n->setParentNodeContainer(this);
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n))
   {
@@ -100,7 +101,8 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
   n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
   addChildControllableContainer(n); //ControllableContainer
-  if(!isEngineLoadingFile()) nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
+
+    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
   return n;
 }
 
@@ -140,14 +142,20 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
 }
 
 void NodeContainer::updateAudioGraph() {
-  AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
-  if(ad == nullptr) return;
-  ScopedLock lk( getCallbackLock());
-  prepareToPlay(ad->getCurrentSampleRate(), ad->getDefaultBufferSize());
 
+  {
+  const ScopedLock lk( AudioProcessorGraph::getCallbackLock());
+    AudioProcessorGraph::prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+
+  }
 }
 
-
+bool NodeContainer::setPreferedNumAudioInput(int num) {
+  NodeBase::setPreferedNumAudioInput(num);
+  AudioProcessorGraph::setPlayConfigDetails(num, NodeBase::getTotalNumOutputChannels(),
+                                            NodeBase::getSampleRate(),
+                                            NodeBase::getBlockSize());
+}
 
 int NodeContainer::getNumConnections() {
   return connections.size();
@@ -557,6 +565,28 @@ bool NodeContainer::hasDataOutputs()
 
 
 
+ void NodeContainer::prepareToPlay(double d, int i) {
+
+  if(parentNodeContainer){
+//    const ScopedLock lk(parentNodeContainer->NodeBase::getCallbackLock());
+    parentNodeContainer->getAudioProcessor()->suspendProcessing(true);
+    AudioProcessorGraph::prepareToPlay(d, i);
+    // TODO :  handle change of in out numChannels
+    // wiill need to call on change
+    parentNodeContainer->prepareToPlay(d,i);
+    parentNodeContainer->NodeBase::suspendProcessing(false);
+
+
+  }
+  else{
+    // mainContainer
+    const ScopedLock lk(getAudioDeviceManager().getAudioCallbackLock());
+    AudioProcessorGraph::prepareToPlay(d, i);
+  }
+
+  NodeBase::prepareToPlay(d,i);
+
+};
 
 
 

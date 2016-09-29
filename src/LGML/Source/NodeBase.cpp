@@ -204,8 +204,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
     // crossfade if we have a dry mix i.e at least one input channel 
       if(crossfadeValue!=1 && crossFadeBuffer.getNumChannels()>0){
         for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
-          int maxCommonChannels = jmin(getTotalNumInputChannels(),getTotalNumOutputChannels());
-          buffer.addFromWithRamp(maxCommonChannels, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, lastDryVolume,curDryVolume);
+          int maxCommonChannels = jmin(getTotalNumInputChannels(),getTotalNumOutputChannels())-1;
+          buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, lastDryVolume,curDryVolume);
         }
       }
     
@@ -242,12 +242,13 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 
   int oldNumChannels = getTotalNumInputChannels();
 
-
+  {
+  const ScopedLock lk( getAudioProcessor()->getCallbackLock());
   NodeBase::setPlayConfigDetails(num, getTotalNumOutputChannels(),
                                  getSampleRate(),
                                  getBlockSize());
 
-
+  }
 
   if (parentNodeContainer != nullptr){
     parentNodeContainer->updateAudioGraph();

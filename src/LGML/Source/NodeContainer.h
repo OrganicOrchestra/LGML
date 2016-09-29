@@ -21,6 +21,7 @@
 #include "ParameterProxy.h"
 
 
+
 //Listener
 class  NodeContainerListener
 {
@@ -41,7 +42,7 @@ public:
 
 
 class NodeContainer :
-public ConnectableNode,
+public NodeBase,
 public AudioProcessorGraph,
 public ConnectableNode::ConnectableNodeListener,
 public NodeConnection::Listener,
@@ -61,7 +62,6 @@ public:
   ContainerInNode * containerInNode;
   ContainerOutNode * containerOutNode;
 
-  virtual AudioProcessor * getAudioProcessor()override{return this;}
 
   Array<ParameterProxy *> proxyParams;
 
@@ -130,10 +130,28 @@ public:
   //AUDIO
 
   void updateAudioGraph() ;
+  bool setPreferedNumAudioInput(int num) override;
+
 
   //DATA
   bool hasDataInputs() override;
   bool hasDataOutputs() override;
+  virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override{
+    NodeBase::processBlock(buffer, midiMessages);}
+  void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override{
+    AudioProcessorGraph::processBlock(buffer,midiMessage);};
+
+
+  virtual void prepareToPlay(double d, int i) override ;
+  virtual void releaseResources() override {
+    NodeBase::releaseResources();
+    AudioProcessorGraph::releaseResources();};
+
+  void numChannelsChanged()override {
+    AudioProcessorGraph::numChannelsChanged();}
+
+    virtual AudioProcessor * getAudioProcessor()override
+  {return (AudioProcessorGraph*)this;}
 
   ListenerList<NodeContainerListener> nodeContainerListeners;
   void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }

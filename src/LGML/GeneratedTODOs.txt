@@ -101,15 +101,19 @@ NodeConnectionEditor.cpp
 
 
 NodeContainer.cpp
-	line : 280
+	line : 288
 		// TODO nicely handle file format errors?
 
-	line : 194
+	line : 202
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 439
+	line : 573
+		// TODO :  handle change of in out numChannels
+		// wiill need to call on change
+
+	line : 447
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
@@ -133,7 +137,7 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 329
+	line : 330
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 111

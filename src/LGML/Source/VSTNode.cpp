@@ -159,7 +159,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 
     instance->setPlayHead(getPlayHead());
     innerPlugin = instance;
-    messageCollector.reset (getSampleRate());
+    messageCollector.reset (result.sampleRate);
     initParametersFromProcessor(instance);
   }
 

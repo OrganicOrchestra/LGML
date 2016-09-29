@@ -38,7 +38,10 @@ NodeManager::~NodeManager()
 void NodeManager::clear()
 {
   // maincontainer will automaticly delete all nodes with him
-//	mainContainer->clear();
+//  removeChildControllableContainer(mainContainer);
+//mainContainer = new NodeContainer("mainContainer");
+//  addChildControllableContainer(mainContainer);
+  mainContainer->clear();
 
 	dataGraph.clear();
 

@@ -32,10 +32,12 @@ Result Engine::loadDocument (const File& file){
 
 
 
-
+  clear();
 
     ScopedPointer<InputStream> is( file.createInputStream());
+  graphPlayer.setProcessor(nullptr);
     suspendAudio(true);
+
   isLoadingFile = true;
     {
         var data = JSON::parse(*is);
@@ -43,7 +45,9 @@ Result Engine::loadDocument (const File& file){
     }// deletes data before launching audio, (data not needed after loaded)
   isLoadingFile = false;
     setLastDocumentOpened(file);
+
     suspendAudio(false);
+  graphPlayer.setProcessor((AudioProcessorGraph*)NodeManager::getInstance()->mainContainer);
     return Result::ok();
 }
 

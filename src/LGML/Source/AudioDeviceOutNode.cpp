@@ -100,7 +100,7 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 
 void AudioDeviceOutNode::addVolMute()
 {
-    const ScopedLock lk (parentNodeContainer->getCallbackLock());
+    const ScopedLock lk (parentNodeContainer->getAudioProcessor()->getCallbackLock());
 	BoolParameter * p = addBoolParameter(String(outMutes.size() + 1), "Mute if disabled", false);
 	p->setCustomShortName(String("mute") + String(outMutes.size() + 1));
 	outMutes.add(p);
@@ -115,7 +115,7 @@ void AudioDeviceOutNode::addVolMute()
 void AudioDeviceOutNode::removeVolMute()
 {
     if(outMutes.size()==0)return;
-    const ScopedLock lk (parentNodeContainer->getCallbackLock());
+    const ScopedLock lk (parentNodeContainer->getAudioProcessor()->getCallbackLock());
 	BoolParameter * b = outMutes[outMutes.size() - 1];
 	removeControllable(b);
     outMutes.removeAllInstancesOf(b);

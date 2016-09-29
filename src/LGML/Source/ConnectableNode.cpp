@@ -71,6 +71,7 @@ void ConnectableNode::setParentNodeContainer(NodeContainer * _parentNodeContaine
 
 AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool)
 {
+  jassert(audioNode->getProcessor() == getAudioProcessor());
   return audioNode;
 }
 
@@ -140,7 +141,7 @@ void ConnectableNode::remove(bool askBeforeRemove)
 
 void ConnectableNode::clear()
 {
-  ControllableContainer::clear();
+//  ControllableContainer::clear();
 	//to override
 }
 
