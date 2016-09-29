@@ -171,6 +171,8 @@ public:
 
 	void removeInputData(const String &name);
 	void removeOutputData(const String &name);
+	void removeAllInputDatas();
+	void removeAllOutputDatas();
 
 	void inputDataChanged(Data *)
 	{

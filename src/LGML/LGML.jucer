@@ -564,8 +564,16 @@
             <FILE id="eXj0vo" name="LooperTrack.h" compile="0" resource="0" file="Source/LooperTrack.h"/>
           </GROUP>
           <GROUP id="{CB5E1C7D-6C04-4382-6371-7CE987E3A0BF}" name="Spat">
+            <FILE id="OQEdfJ" name="Spat2DViewer.cpp" compile="1" resource="0"
+                  file="Source/Spat2DViewer.cpp"/>
+            <FILE id="wQeFU6" name="Spat2DViewer.h" compile="0" resource="0" file="Source/Spat2DViewer.h"/>
+            <FILE id="qeufCb" name="Spat3DViewer.cpp" compile="1" resource="0"
+                  file="Source/Spat3DViewer.cpp"/>
+            <FILE id="HTFI8t" name="Spat3DViewer.h" compile="0" resource="0" file="Source/Spat3DViewer.h"/>
             <FILE id="Yv1aON" name="SpatNode.cpp" compile="1" resource="0" file="Source/SpatNode.cpp"/>
             <FILE id="xdFuwd" name="SpatNode.h" compile="0" resource="0" file="Source/SpatNode.h"/>
+            <FILE id="OpHoAq" name="SpatNodeUI.cpp" compile="1" resource="0" file="Source/SpatNodeUI.cpp"/>
+            <FILE id="hNlN1P" name="SpatNodeUI.h" compile="0" resource="0" file="Source/SpatNodeUI.h"/>
           </GROUP>
           <GROUP id="{43D6AD7F-A710-EDE9-A28C-2FFC47798A32}" name="VST">
             <FILE id="YnJwtS" name="PluginWindow.cpp" compile="1" resource="0"

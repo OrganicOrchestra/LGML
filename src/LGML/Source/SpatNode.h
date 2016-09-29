@@ -20,6 +20,39 @@ class SpatNode : public NodeBase
 {
 public:
 	SpatNode();
+	
+	const Identifier Beam2DId = "Beam2D";
+	const Identifier Beam3DId = "Beam3D";
+	const Identifier Proxy2DId = "Proxy2D";
+	const Identifier Proxy3DId = "Proxy3D";
+
+	EnumParameter * spatMode; //2D Beam, 2D Proxy, 3D Beam, 3D Proxy
+	IntParameter * numSpatInputs;
+	IntParameter * numSpatOutputs;
+
+	void updateInputOutputDataSlots();
+
+	bool modeIs2D();
+	bool modeIsBeam();
+
+	void onContainerParameterChanged(Parameter *) override;
+
+	//Listener
+	class  SpatNodeListener
+	{
+	public:
+
+		/** Destructor. */
+		virtual ~SpatNodeListener() {}
+		virtual void modeChanged() = 0;
+		virtual void numSpatInputsChanged() = 0;
+		virtual void numSpatOutputsChanged() = 0;
+	};
+
+	ListenerList<SpatNodeListener> spatNodeListeners;
+	void addLooperListener(SpatNodeListener* newListener) { spatNodeListeners.add(newListener); }
+	void removeLooperListener(SpatNodeListener* listener) { spatNodeListeners.remove(listener); }
+
 
 	ConnectableNodeUI * createUI() override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpatNode)

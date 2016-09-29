@@ -448,6 +448,22 @@ void NodeBase::removeOutputData(const String & name)
   delete d;
 }
 
+void NodeBase::removeAllInputDatas()
+{
+	while (inputDatas.size() > 0)
+	{
+		removeInputData(inputDatas[0]->name);
+	}
+}
+
+void NodeBase::removeAllOutputDatas()
+{
+	while (outputDatas.size() > 0)
+	{
+		removeOutputData(outputDatas[0]->name);
+	}
+}
+
 void NodeBase::updateOutputData(String & dataName, const float & value1, const float & value2, const float & value3)
 {
   Data * d = getOutputDataByName(dataName);
