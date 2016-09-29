@@ -23,9 +23,13 @@ void DummyNodeContentUI::resized()
 {
     if (node == nullptr) return;
     Rectangle<int> r = getLocalBounds().reduced(10);
-    freq1Slider->setBounds(r.removeFromTop(25));
+	modeUI->setBounds(r.removeFromTop(20));
+	r.removeFromTop(10);
+	freq1Slider->setBounds(r.removeFromTop(25));
     r.removeFromTop(10);
     freq2Slider->setBounds(r.removeFromTop(25));
+
+	
 
     testTriggerButton->setTopRightPosition(getWidth()-10, getHeight() - testTriggerButton->getHeight() - 10);
 }
@@ -45,5 +49,8 @@ void DummyNodeContentUI::init()
     testTriggerButton = dummyNode->testTrigger->createButtonUI();
     addAndMakeVisible(testTriggerButton);
 
-    nodeUI->setSize(250, 150);
+	modeUI = dummyNode->enumParam->createUI();
+	addAndMakeVisible(modeUI);
+
+	nodeUI->setSize(250, 150);
 }

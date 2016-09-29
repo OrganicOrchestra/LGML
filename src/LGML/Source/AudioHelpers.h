@@ -52,13 +52,13 @@ public:
 
   void startFadeOut(){
     if(fadeOutCount>=0)return;
-    fadeOutCount = fadeInCount>0?fadeInCount*fadeOutNumSamples*1.0/fadeInNumSamples :fadeOutNumSamples;
+    fadeOutCount = (int)(fadeInCount>0?fadeInCount*fadeOutNumSamples*1.0/fadeInNumSamples :fadeOutNumSamples);
     fadeInCount = -1;
   }
 
   void startFadeIn(){
     if(fadeInCount>=0)return;
-    fadeInCount = fadeOutCount>0?fadeOutCount*fadeInNumSamples*1.0/fadeOutNumSamples :fadeInNumSamples;
+	fadeInCount = (int)(fadeOutCount > 0 ? fadeOutCount*fadeInNumSamples*1.0 / fadeOutNumSamples : fadeInNumSamples);
     fadeOutCount = -1;
   }
   // should be called at each sample to compute resulting fade

@@ -207,15 +207,15 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
       if(fadeValue!=1){crossFadeBuffer.makeCopyOf(buffer);}
       processBlockInternal(buffer, midiMessages);
       if(fadeValue!=1 || hasMainAudioControl){
-        buffer.applyGainRamp(0, numSample, lastVolume, curVolume);
+        buffer.applyGainRamp(0, numSample, lastVolume, (float)curVolume);
       }
       if(fadeValue!=1){
         for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
-          buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(i), numSample, lastDryVolume,curDryVolume);
+          buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(i), numSample, (float)lastDryVolume,(float)curDryVolume);
         }
       }
     }
-    lastVolume = curVolume;
+    lastVolume = (float)curVolume;
     lastDryVolume = curDryVolume;
 
   }

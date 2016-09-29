@@ -34,6 +34,10 @@
           </GROUP>
           <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
             <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
+              <FILE id="dYvxwa" name="EnumParameterUI.cpp" compile="1" resource="0"
+                    file="Source/EnumParameterUI.cpp"/>
+              <FILE id="eKc7hQ" name="EnumParameterUI.h" compile="0" resource="0"
+                    file="Source/EnumParameterUI.h"/>
               <FILE id="lriir5" name="ParameterProxyUI.cpp" compile="1" resource="0"
                     file="Source/ParameterProxyUI.cpp"/>
               <FILE id="EhMeoR" name="ParameterProxyUI.h" compile="0" resource="0"
@@ -63,6 +67,9 @@
             <FILE id="mezBUW" name="BoolParameter.cpp" compile="1" resource="0"
                   file="Source/BoolParameter.cpp"/>
             <FILE id="YWoigC" name="BoolParameter.h" compile="0" resource="0" file="Source/BoolParameter.h"/>
+            <FILE id="WJtJpE" name="EnumParameter.cpp" compile="1" resource="0"
+                  file="Source/EnumParameter.cpp"/>
+            <FILE id="PxJq8L" name="EnumParameter.h" compile="0" resource="0" file="Source/EnumParameter.h"/>
             <FILE id="UquI0M" name="FloatParameter.cpp" compile="1" resource="0"
                   file="Source/FloatParameter.cpp"/>
             <FILE id="uaeE3Q" name="FloatParameter.h" compile="0" resource="0"

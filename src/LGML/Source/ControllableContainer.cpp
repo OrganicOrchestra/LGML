@@ -86,6 +86,14 @@ StringParameter * ControllableContainer::addStringParameter(const String & _nice
   return p;
 }
 
+EnumParameter * ControllableContainer::addEnumParameter(const String & _niceName, const String & _description, const bool & enabled)
+{
+	String targetName = getUniqueNameInContainer(_niceName);
+	EnumParameter * p = new EnumParameter(targetName, _description, enabled);
+	addParameterInternal(p);
+	return p;
+}
+
 Trigger * ControllableContainer::addTrigger(const String & _niceName, const String & _description, const bool & enabled)
 {
   String targetName = getUniqueNameInContainer(_niceName);
