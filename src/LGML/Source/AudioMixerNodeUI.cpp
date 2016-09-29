@@ -57,13 +57,13 @@ void AudioMixerNodeUI::init() {
     nodeUI->setSize(250, 150);
 }
 
-void AudioMixerNodeUI::numAudioInputChanged(NodeBase *, int numInput){
+void AudioMixerNodeUI::numAudioInputChanged(ConnectableNode *, int numInput){
     for(auto & b:outputBusUIs){
         b->setNumInput(numInput);
     }
     resized();
 };
-void AudioMixerNodeUI::numAudioOutputChanged(NodeBase *, int newNum){
+void AudioMixerNodeUI::numAudioOutputChanged(ConnectableNode *, int newNum){
     int lastNum = outputBusUIs.size();
     if(newNum>lastNum){
         for(int i = lastNum ; i < newNum ; i++){

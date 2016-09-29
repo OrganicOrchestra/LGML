@@ -25,7 +25,7 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
 	MainComponentContainer(this, contentUI, headerUI),
 	dragIsLocked(false),
-	miniMode(false)
+	bMiniMode(false)
 {
 	 connectorWidth = 10;
 
@@ -73,12 +73,12 @@ void ConnectableNodeUI::moved()
 
 void ConnectableNodeUI::setMiniMode(bool value)
 {
-	if (miniMode == value) return;
+	if (bMiniMode == value) return;
 
-	miniMode = value;
+	bMiniMode = value;
 
-	MainComponentContainer.setMiniMode(miniMode);
-	setSize(getMiniModeWidth(miniMode),getMiniModeHeight(miniMode));
+	MainComponentContainer.setMiniMode(bMiniMode);
+	setSize(getMiniModeWidth(bMiniMode),getMiniModeHeight(bMiniMode));
 }
 
 int ConnectableNodeUI::getMiniModeWidth(bool forMiniMode)
@@ -126,7 +126,7 @@ void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 		postCommandMessage(repaintId);
 	} else if (p == connectableNode->miniMode)
 	{
-		setMiniMode(connectableNode->miniMode->boolValue());
+    postCommandMessage(setMiniModeId);
 	}
 }
 
@@ -135,6 +135,8 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
         case repaintId:
             repaint();
             break;
+      case setMiniModeId:
+        setMiniMode(connectableNode->miniMode->boolValue());
         default:
             break;
     }

@@ -43,7 +43,7 @@ public:
 
 	virtual void nodeParameterChanged(ConnectableNode*, Parameter *) override;
 
-	virtual void numAudioOutputChanged(NodeBase *, int newNum) override;
+	virtual void numAudioOutputChanged(ConnectableNode *, int newNum) override;
 	//virtual void numAudioOutputChanged() { DBG("Output changed !"); }
 
 

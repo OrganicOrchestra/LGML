@@ -92,7 +92,8 @@ public:
 	//layout
 	int connectorWidth;
 
-	bool miniMode;
+  // @ben conflit avec le parametre ;)
+	bool bMiniMode;
 
 	//interaction
 	Point<int> nodeInitPos;
@@ -139,7 +140,8 @@ public:
 
 void handleCommandMessage(int id) override;
 enum{
-  repaintId  
+  repaintId  ,
+  setMiniModeId
 }CommandMessages;
 
 };

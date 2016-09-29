@@ -16,7 +16,8 @@
 
 NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
 ConnectableNode(name,_type,_hasMainAudioControl),
-enableFader(5000,5000,false,1),
+dryWetFader(5000,5000,false,1),
+muteFader(1000,1000,false,1),
 lastDryVolume(0)
 
 {
@@ -24,7 +25,9 @@ lastDryVolume(0)
   logVolume = float01ToGain(DB0_FOR_01);
 
   lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
-  enableFader.startFadeIn();
+  dryWetFader.setFadedIn();
+  muteFader.startFadeIn();
+
 
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
@@ -77,8 +80,8 @@ void NodeBase::onContainerParameterChanged(Parameter * p)
 
   if (p == enabledParam)
   {
-    if(enabledParam->boolValue()){enableFader.startFadeIn();}
-    else {enableFader.startFadeOut();}
+    if(enabledParam->boolValue()){dryWetFader.startFadeIn();}
+    else {dryWetFader.startFadeOut();}
   }
 
 }
@@ -165,36 +168,49 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
 
 
-  const double fadeValue = enableFader.getCurrentFade();
-  enableFader.incrementFade(numSample);
+  const double crossfadeValue = dryWetFader.getCurrentFade();
+  const double muteFadeValue =muteFader.getCurrentFade();
+  muteFader.incrementFade(numSample);
+  dryWetFader.incrementFade(numSample);
   
   // on disable
-  if(wasEnabled && fadeValue==0 ){
+  if(wasEnabled && crossfadeValue==0 ){
 
 //    suspendProcessing(true);
     wasEnabled = false;
   }
   // on Enable
-  if(!wasEnabled && fadeValue>0 ){
+  if(!wasEnabled && crossfadeValue>0 ){
 //    suspendProcessing(false);
     wasEnabled = true;
   }
 
   if (!isSuspended())
   {
-    double curVolume = logVolume*fadeValue;
-    double curDryVolume = logVolume*(1.0-fadeValue);
-    if (fadeValue>0 ){
-      if(fadeValue!=1){crossFadeBuffer.makeCopyOf(buffer);}
-      processBlockInternal(buffer, midiMessages);
-      if(fadeValue!=1 || hasMainAudioControl){
-        buffer.applyGainRamp(0, numSample, lastVolume, curVolume);
-      }
-      if(fadeValue!=1){
-        for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
-          buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(i), numSample, lastDryVolume,curDryVolume);
+    double curVolume = logVolume*crossfadeValue*muteFadeValue;
+    double curDryVolume = logVolume*(1.0-crossfadeValue)*muteFadeValue;
+
+      if(crossfadeValue!=1){
+        // copy only what we are expecting
+        crossFadeBuffer.setSize(getTotalNumInputChannels(), numSample);
+        for(int i = 0 ; i < getTotalNumInputChannels() ; i++){
+        crossFadeBuffer.copyFrom(i, 0, buffer, i, 0, numSample);
         }
       }
+      processBlockInternal(buffer, midiMessages);
+      if(crossfadeValue!=1 || hasMainAudioControl){
+        buffer.applyGainRamp(0, numSample, lastVolume, curVolume);
+      }
+    // crossfade if we have a dry mix i.e at least one input channel 
+      if(crossfadeValue!=1 && crossFadeBuffer.getNumChannels()>0){
+        for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
+          int maxCommonChannels = jmin(getTotalNumInputChannels(),getTotalNumOutputChannels());
+          buffer.addFromWithRamp(maxCommonChannels, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, lastDryVolume,curDryVolume);
+        }
+      }
+    
+    if(muteFadeValue == 0){
+      buffer.clear();
     }
     lastVolume = curVolume;
     lastDryVolume = curDryVolume;

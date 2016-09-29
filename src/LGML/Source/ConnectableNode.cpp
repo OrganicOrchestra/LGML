@@ -31,7 +31,6 @@
 	  xPosition = addFloatParameter("xPosition", "x position on canvas", 0, 0, 99999);
 	  yPosition = addFloatParameter("yPosition", "y position on canvas", 0, 0, 99999);
 	  miniMode = addBoolParameter("miniMode", "Mini Mode", false);
-
 	  xPosition->isControllableExposed = false;
 	  yPosition->isControllableExposed = false;
 	  xPosition->isPresettable = false;

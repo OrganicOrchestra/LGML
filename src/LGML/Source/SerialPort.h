@@ -97,7 +97,7 @@ public:
 	int writeString(String message, bool endLine = true);
 	int writeBytes(Array<uint8_t> data);
 
-	virtual void newMessage(const var &data) override;;
+	virtual void newMessage(const var &data) override;
 
 	class SerialPortListener
 	{

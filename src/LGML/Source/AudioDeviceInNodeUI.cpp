@@ -144,7 +144,7 @@ void AudioDeviceInNodeContentUI::nodeParameterChanged(ConnectableNode *, Paramet
 
 }
 
-void AudioDeviceInNodeContentUI::numAudioOutputChanged(NodeBase *, int)
+void AudioDeviceInNodeContentUI::numAudioOutputChanged(ConnectableNode *, int)
 {
 	updateVuMeters();
 }

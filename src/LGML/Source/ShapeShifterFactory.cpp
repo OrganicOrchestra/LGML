@@ -28,31 +28,31 @@ ShapeShifterContent * ShapeShifterFactory::createContentForIndex(PanelName pn)
 	{
 	case NodeManagerPanel:
 		return new NodeManagerUIViewport(contentName, new NodeManagerUI(NodeManager::getInstance()));
-		break;
+		
 
 	case TimeManagerPanel:
 		return new TimeManagerUI(contentName, TimeManager::getInstance());
-		break;
+
 
 	case InspectorPanel:
 		return new InspectorViewport(contentName, Inspector::getInstance());
-		break;
+
 
 	case LoggerPanel:
 		return new LGMLLoggerUI(contentName, LGMLLogger::getInstance());
-		break;
+
 
 	case ControllerPanel:
 		return new ControllerManagerUI(contentName, ControllerManager::getInstance());
-		break;
+
 
 	case RulesPanel:
 		return new RuleManagerUI(contentName, RuleManager::getInstance());
-		break;
+
 
 	case FastMapperPanel:
 		return new FastMapperViewport(contentName, new FastMapperUI(FastMapper::getInstance()));
-		break;
+
 
 	default:
 		DBG("Panel not handled : " << contentName << ", index in names = " << globalPanelNames.strings.indexOf(contentName));

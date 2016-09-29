@@ -22,7 +22,7 @@ public:
   LooperTest():UnitTest("LooperTest"){
 
   }
-  LooperNode * currentLooper;
+  ScopedPointer<LooperNode> currentLooper;
   AudioBuffer<float> testBuffer;
 
   int blockSize = 256;
@@ -33,16 +33,12 @@ public:
   int fadeSample = 80;
 
   void processBlock(){
-    // it should ideally be independent of order between TimeManager and LooperProcessBlock
-    static bool isBefore = true;// Random().nextBool();
-    if(isBefore) TimeManager::getInstance()->incrementClock(getBlockSize());
+    // Time is the firs call back in DSP cycle
+    TimeManager::getInstance()->incrementClock(getBlockSize());
     fillBufferWithTime(testBuffer);
     expect(getBlockSize() == testBuffer.getNumSamples(),"wrong buffer size ");
     MidiBuffer dumyMidi;
     currentLooper->processBlock(testBuffer,dumyMidi );
-
-
-    if(!isBefore)TimeManager::getInstance()->incrementClock(getBlockSize());
   }
 
   void fillBufferWithRamp(AudioBuffer<float> & b){
@@ -117,8 +113,9 @@ public:
     for(int i = 0 ;i < recordSizeInBlock ; i++){
       processBlock();
       float magnitude = testBuffer.getMagnitude(0,testBuffer.getNumSamples());
-      expect(magnitude==0,"still monitoring");
+      expect(magnitude==0,"still monitoring : "+String(magnitude));
     }
+    expect(track1->loopSample.recordNeedle == recordSizeInBlock*blockSize,"jumped a block while recording : "+String(track1->loopSample.recordNeedle)+" : "+String(recordSizeInBlock*blockSize));
     track1->recPlayTrig->trigger();
 
 
@@ -128,7 +125,17 @@ public:
 
       int startWallTime =tm->getTimeInSample()%(recordSizeInBlock*blockSize);
       int endWallTime = (tm->getNextTimeInSample())%(recordSizeInBlock*blockSize);
-
+      int offset = 0;
+      // need to be first playedSample
+      if(i==0){
+        expect(track1->loopSample.isPlaying(),"not Playing");
+        offset =(recordSizeInBlock*blockSize)-tm->getTimeInSample();
+        startWallTime=(startWallTime+offset)%(recordSizeInBlock*blockSize);
+        int recLen =track1->loopSample.getRecordedLength() ;
+        int offset = recLen%(tm->beatTimeInSample);
+        expect(recLen== getRecordedLength(),"wrong recorded Length found : "+String(recLen)+" for "+String( getRecordedLength()));
+        expect(offset==0,"wrong quantization");
+      }
 
       expect(track1->loopSample.playNeedle==(endWallTime%track1->loopSample.recordNeedle),"unaligned PlayNeedle : "+String(track1->loopSample.playNeedle)+" , "+String(endWallTime%track1->loopSample.recordNeedle) );
 
@@ -142,10 +149,7 @@ public:
     }
     expect(targetBeatSize ==tm->beatTimeInSample,"targetBeatSize not reached : "+String(targetBeatSize-(int)tm->beatTimeInSample));
 
-    int recLen =track1->loopSample.getRecordedLength() ;
-    int offset = recLen%(tm->beatTimeInSample);
-    expect(recLen== getRecordedLength(),"wrong recorded Length");
-    expect(offset==0,"wrong quantization");
+
     float bL1 = track1->beatLength->floatValue();
     expect(bL1==(int)bL1,"beatLength not an integer : "+String(bL1));
     double sB1=track1->startPlayBeat;
@@ -174,9 +178,10 @@ public:
       processBlock();
     }
     expect(track2->loopSample.isPlaying(),"not ended recording");
-    recLen =track2->loopSample.getRecordedLength() ;
+
+    uint64 recLen =track2->loopSample.getRecordedLength() ;
     int recDiff = recLen - (endRec - startRec);
-    offset = recLen%(tm->beatTimeInSample);
+    uint offset = recLen%(tm->beatTimeInSample);
     expect(recDiff == 0,"wrong recorded Length");
     expect(offset==0,"unaligned recorded length");
     float bL2 = track2->beatLength->floatValue();
@@ -204,7 +209,7 @@ public:
       }
     }
     
-    
+    currentLooper = nullptr;
     
   }
   

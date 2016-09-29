@@ -60,7 +60,7 @@ public:
 
     bool isComplex() { return elements.size() > 1; }
 
-    bool isTypeCompatible(const DataType &targetType);;
+    bool isTypeCompatible(const DataType &targetType);
 
     int getNumElementsForType(const DataType &_type);
 

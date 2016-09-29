@@ -18,7 +18,7 @@ vuMeterIn(VuMeter::Type::IN),
 vuMeterOut(VuMeter::Type::OUT),
 removeBT("X"),
 miniModeBT("-"),
-miniMode(false)
+bMiniMode(false)
 {
   node = nullptr;
   nodeUI = nullptr;
@@ -178,7 +178,7 @@ void ConnectableNodeHeaderUI::resized()
   miniModeBT.setBounds(r.removeFromRight(miniModeBTWidth).reduced(0,2));
   r.removeFromRight(2);
 
-  if (node->canHavePresets && !miniMode)
+  if (node->canHavePresets && !bMiniMode)
   {
     presetCB->setBounds(r.removeFromRight(presetCBWidth));
     r.removeFromRight(5);
@@ -191,10 +191,10 @@ void ConnectableNodeHeaderUI::resized()
 
 void ConnectableNodeHeaderUI::setMiniMode(bool value)
 {
-  if (miniMode == value) return;
-  miniMode = value;
+  if (bMiniMode == value) return;
+  bMiniMode = value;
 
-  if (miniMode)
+  if (bMiniMode)
   {
     if(node->canHavePresets) removeChildComponent(presetCB);
     miniModeBT.setButtonText("+");
@@ -352,5 +352,5 @@ void ConnectableNodeHeaderUI::Grabber::paint(Graphics & g)
   g.drawHorizontalLine(r.getBottom(), left, right);
 }
 
-void ConnectableNodeHeaderUI::numAudioInputChanged(NodeBase *, int /*newNumInput*/) {updateVuMeters();resized();}
-void ConnectableNodeHeaderUI::numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) {updateVuMeters();resized();}
+void ConnectableNodeHeaderUI::numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {updateVuMeters();resized();}
+void ConnectableNodeHeaderUI::numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {updateVuMeters();resized();}

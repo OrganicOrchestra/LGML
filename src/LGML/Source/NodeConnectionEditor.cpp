@@ -10,7 +10,6 @@
 
 
 #include "NodeConnectionEditor.h"
-#include "NodeBase.h"
 
 #include "Style.h"
 

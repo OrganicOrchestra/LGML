@@ -122,18 +122,18 @@ int Data::getNumElementsForType(const DataType & _type)
     case Number:
     case Boolean:
         return 1;
-        break;
+        
 
     case Position:
     case Orientation:
     case Color:
         return 3;
-        break;
+
 
     default:
         DBG("Type not exist for data");
         return 0;
-        break;
+
     }
 }
 

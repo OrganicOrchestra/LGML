@@ -58,7 +58,7 @@ public:
 
     void updateVuMeters();
 
-	bool miniMode;
+	bool bMiniMode;
 	virtual void setMiniMode(bool value);
 
     // Inherited via Listeners
@@ -69,8 +69,8 @@ public:
 	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
 
 
-     void numAudioInputChanged(NodeBase *, int /*newNumInput*/) override;
-     void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) override;
+     void numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) override;
+     void numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) override;
     
     
     void handleCommandMessage(int id) override;

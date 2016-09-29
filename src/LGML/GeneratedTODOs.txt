@@ -7,9 +7,20 @@
  ///////////////////////////////////////
 
 
-DataInNode.cpp
-	line : 29
-		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
+ConnectableNodeUI.h
+	line : 94
+		// @ben conflit avec le parametre ;)
+
+
+Main.cpp
+	line : 164
+		//@martin added but commented for testing (relou behavior)
+
+
+MIDIManager.cpp
+	line : 138
+		// @Ben seems weird mixing duc
+		// btw do we really need that for output??
 
 
 ControllableContainer.cpp
@@ -28,27 +39,16 @@ ControllableContainer.cpp
 		// TODO weird feedback when loading preset on parameter presetName
 
 
-ControllableInspector.cpp
-	line : 85
-		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
+NodeBase.h
+	line : 48
+		//  TODO:  this should not be implemented in Node to avoid overriding this method
+		//    create onNodeParameterChanged();
 
 
-NodeBase.cpp
-	line : 313
-		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-
-	line : 108
-		// TODO we could implement that for all node objects to be able to save any kind of custom data
-
-
-VSTNode.cpp
-	line : 132
-		// TODO check that it actually works
-
-
-VuMeter.h
-	line : 16
-		//TODO, move to more common place for use in other components
+LooperNode.cpp
+	line : 63
+		// TODO check if we can optimize copies
+		// handle multiples channels outs
 
 
 MainComponentCommands.cpp
@@ -57,9 +57,47 @@ MainComponentCommands.cpp
 		//			int result = engine->saveIfNeededAndUserAgrees();
 
 
-JsEnvironment.cpp
-	line : 365
-		// @ben only supported if move semantics are too are they for you?
+ShapeShifterContainer.cpp
+	line : 293
+		//@ben what to we do for that?
+		//@martin never gonna happen :)
+
+	line : 127
+		//@ben do we need to handle these?
+
+
+DataProcessorGraph.cpp
+	line : 14
+		//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
+		//  thread.startThread();
+
+
+ControllableInspector.cpp
+	line : 85
+		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
+
+
+MIDIController.cpp
+	line : 41
+		// TODO : we may need to listen to sR changes
+
+	line : 183
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
+
+
+TimeManager.cpp
+	line : 383
+		//TODO: check
+
+
+NodeConnectionEditor.cpp
+	line : 180
+		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
+		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
+		// should be fixed !!
+
+	line : 391
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
 NodeContainer.cpp
@@ -79,6 +117,11 @@ NodeContainer.cpp
 		//        }
 
 
+DataInNode.cpp
+	line : 29
+		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
+
+
 TimeManager.h
 	line : 32
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
@@ -89,39 +132,12 @@ JavascriptControllerUI.cpp
 		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
 
 
-NodeBase.h
-	line : 48
-		//  TODO:  this should not be implemented in Node to avoid overriding this method
-		//    create onNodeParameterChanged();
+NodeBase.cpp
+	line : 329
+		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
-
-NodeConnectionEditor.cpp
-	line : 392
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
-	line : 181
-		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
-		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
-		// should be fixed !!
-
-
-LooperNode.cpp
-	line : 63
-		// TODO check if we can optimize copies
-		// handle multiples channels outs
-
-
-TimeManager.cpp
-	line : 383
-		//TODO: check
-
-
-MIDIController.cpp
-	line : 41
-		// TODO : we may need to listen to sR changes
-
-	line : 183
-		// @ben do we do the same as OSC MIDI IN/OUt controllers
+	line : 111
+		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
 ControllableContainer.h
@@ -132,34 +148,13 @@ ControllableContainer.h
 		//      or using dispatch feedback that triggers only exposedParams
 
 
-ShapeShifterContainer.cpp
-	line : 293
-		//@ben what to we do for that?
-		//@martin never gonna happen :)
-
-	line : 127
-		//@ben do we need to handle these?
-
-
-Main.cpp
-	line : 164
-		//@martin added but commented for testing (relou behavior)
-
-
-MIDIManager.cpp
-	line : 138
-		// @Ben seems weird mixing duc
-		// btw do we really need that for output??
-
-
-DataProcessorGraph.cpp
-	line : 14
-		//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
-		//  thread.startThread();
-
-
 ControllableInspector.h
 	line : 23
 		// TODO handle merging of multiple component of sameClass : almost there ....
+
+
+VuMeter.h
+	line : 16
+		//TODO, move to more common place for use in other components
 
 

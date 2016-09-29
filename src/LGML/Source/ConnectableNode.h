@@ -32,9 +32,6 @@ public:
   
 	virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer);
   AudioProcessorGraph::Node * audioNode;
-  
-
-
   virtual AudioProcessor * getAudioProcessor() {return getAudioNode()->getProcessor();};
 
 	//Interaction
@@ -78,21 +75,21 @@ public:
 		virtual void nodeParameterChanged(ConnectableNode *,Parameter *) {}
 
 
-    virtual void numAudioInputChanged(NodeBase *, int /*newNumInput*/) {};
-    virtual void numAudioOutputChanged(NodeBase *, int /*newNumOutput*/) {};
-    virtual void numDataInputChanged(NodeBase *, int /*newNumInput*/) {};
-    virtual void numDataOutputChanged(NodeBase *, int /*newNumOutput*/) {};
+    virtual void numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {};
+    virtual void numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {};
+    virtual void numDataInputChanged(ConnectableNode *, int /*newNumInput*/) {};
+    virtual void numDataOutputChanged(ConnectableNode *, int /*newNumOutput*/) {};
 
-    virtual void audioInputAdded(NodeBase *, int /*channel*/) {}
-    virtual void audioInputRemoved(NodeBase *, int /*channel*/) {}
-    virtual void audioOutputAdded(NodeBase *, int /*channel*/) {}
-    virtual void audioOutputRemoved(NodeBase *, int /*channel*/) {}
+    virtual void audioInputAdded(ConnectableNode *, int /*channel*/) {}
+    virtual void audioInputRemoved(ConnectableNode *, int /*channel*/) {}
+    virtual void audioOutputAdded(ConnectableNode *, int /*channel*/) {}
+    virtual void audioOutputRemoved(ConnectableNode *, int /*channel*/) {}
 
 
-    virtual void dataInputAdded(NodeBase *, Data *) {}
-    virtual void dataInputRemoved(NodeBase *, Data *) {}
-    virtual void dataOutputAdded(NodeBase *, Data *) {}
-    virtual void dataOutputRemoved(NodeBase *, Data *) {}
+    virtual void dataInputAdded(ConnectableNode *, Data *) {}
+    virtual void dataInputRemoved(ConnectableNode *, Data *) {}
+    virtual void dataOutputAdded(ConnectableNode *, Data *) {}
+    virtual void dataOutputRemoved(ConnectableNode *, Data *) {}
   };
   
   ListenerList<ConnectableNodeListener> nodeListeners;

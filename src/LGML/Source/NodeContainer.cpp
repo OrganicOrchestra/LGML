@@ -469,11 +469,12 @@ void NodeContainer::onContainerParameterChanged(Parameter * p)
   ConnectableNode::onContainerParameterChanged(p);
 
 }
-void NodeContainer::onContainerParameterChangedAsync(Parameter * p ,const var & value) {
+void NodeContainer::onContainerParameterChangedAsync(Parameter *  ,const var & ) {
   //  ConnectableNode::onContainerParameterChangedAsync(p   ,value);
 };
 
-void NodeContainer::bypassNode(bool bypass){
+void NodeContainer::bypassNode(bool ){
+
   //    if(bypass){
   //        jassert(containerInNode!=nullptr &&containerOutNode!=nullptr);
   ////        save old ones

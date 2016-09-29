@@ -61,7 +61,7 @@ public:
 
 
   //ui
-  virtual ConnectableNodeUI *  createUI() override;;
+  virtual ConnectableNodeUI *  createUI() override;
 
   virtual const String getName() const override
   {
@@ -171,7 +171,8 @@ public:
   WeakReference<NodeBase>::Master masterReference;
   friend class WeakReference<NodeBase>;
   
-  FadeInOut enableFader;
+  FadeInOut dryWetFader,muteFader;
+
   double lastDryVolume;
   bool wasEnabled;
   AudioBuffer<float> crossFadeBuffer;

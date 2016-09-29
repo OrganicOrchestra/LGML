@@ -43,7 +43,7 @@ var RuleConsequence::getJSONData()
 	return var();
 }
 
-void RuleConsequence::loadJSONData(var data)
+void RuleConsequence::loadJSONData(var )
 {
 }
 

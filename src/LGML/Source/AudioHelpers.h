@@ -55,6 +55,16 @@ public:
     fadeOutCount = fadeInCount>0?fadeInCount*fadeOutNumSamples*1.0/fadeInNumSamples :fadeOutNumSamples;
     fadeInCount = -1;
   }
+  void setFadedOut(){
+    fadeOutCount = 0;
+    fadeInCount = -1;
+  }
+
+  void setFadedIn(){
+    fadeInCount = 0;
+    fadeOutCount = -1;
+  }
+
 
   void startFadeIn(){
     if(fadeInCount>=0)return;

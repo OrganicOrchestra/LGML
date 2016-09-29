@@ -11,6 +11,7 @@
 #include "NodeConnection.h"
 #include "NodeManager.h"
 #include "NodeContainer.h"
+#include "ConnectableNode.h"
 
 NodeConnection::NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType) :
 sourceNode(sourceNode),
@@ -178,7 +179,7 @@ void NodeConnection::remove()
     listeners.call(&NodeConnection::Listener::askForRemoveConnection,this);
 }
 
-void NodeConnection::audioInputAdded(NodeBase * n, int channel)
+void NodeConnection::audioInputAdded(ConnectableNode * , int )
 {
     //DBG("Audio Input Added " << channel << " ( " << ghostConnections.size() << " ghosts )");
 
@@ -191,7 +192,7 @@ void NodeConnection::audioInputAdded(NodeBase * n, int channel)
     }
 }
 
-void NodeConnection::audioOutputAdded(NodeBase * n, int channel)
+void NodeConnection::audioOutputAdded(ConnectableNode * , int )
 {
 
     Array<AudioConnection> connectionsToAdd;
@@ -201,7 +202,7 @@ void NodeConnection::audioOutputAdded(NodeBase * n, int channel)
     }
 }
 
-void NodeConnection::audioInputRemoved(NodeBase * n, int channel)
+void NodeConnection::audioInputRemoved(ConnectableNode * n, int channel)
 {
     //DBG("Audio Input removed " << channel);
     if (n == destNode)
@@ -211,7 +212,7 @@ void NodeConnection::audioInputRemoved(NodeBase * n, int channel)
     }
 }
 
-void NodeConnection::audioOutputRemoved(NodeBase * n, int channel)
+void NodeConnection::audioOutputRemoved(ConnectableNode * n, int channel)
 {
     //DBG("Audio Output Removed "  << channel);
     if (n == sourceNode)
@@ -222,7 +223,7 @@ void NodeConnection::audioOutputRemoved(NodeBase * n, int channel)
 }
 
 
-void NodeConnection::dataInputRemoved(NodeBase * n, Data * d)
+void NodeConnection::dataInputRemoved(ConnectableNode * n, Data * d)
 {
     if (n == destNode)
     {
@@ -231,7 +232,7 @@ void NodeConnection::dataInputRemoved(NodeBase * n, Data * d)
     }
 }
 
-void NodeConnection::dataOutputRemoved(NodeBase * n , Data * d)
+void NodeConnection::dataOutputRemoved(ConnectableNode * n , Data * d)
 {
     if (n == sourceNode)
     {

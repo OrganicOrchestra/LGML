@@ -33,7 +33,7 @@ public:
 	void buildLed(int size);
 
 	void newJsFileLoaded(bool s) override;
-	void buttonClicked(Button* b) override;;
+	void buttonClicked(Button* b) override;
 
     JsEnvironment * env;
 };

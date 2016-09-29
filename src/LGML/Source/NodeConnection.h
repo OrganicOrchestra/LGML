@@ -62,13 +62,13 @@ public:
 
     void remove();
 
-	virtual void audioInputAdded(NodeBase *, int /*channel*/) override;
-	virtual void audioOutputAdded(NodeBase *, int /*channel*/) override;
+	virtual void audioInputAdded(ConnectableNode *, int /*channel*/) override;
+	virtual void audioOutputAdded(ConnectableNode *, int /*channel*/) override;
 
-	virtual void audioInputRemoved(NodeBase *, int /* channel */) override;
-	virtual void audioOutputRemoved(NodeBase *, int /* channel */) override;
-	virtual void dataInputRemoved(NodeBase *, Data *) override;
-	virtual void dataOutputRemoved(NodeBase *, Data *) override;
+	virtual void audioInputRemoved(ConnectableNode *, int /* channel */) override;
+	virtual void audioOutputRemoved(ConnectableNode *, int /* channel */) override;
+	virtual void dataInputRemoved(ConnectableNode *, Data *) override;
+	virtual void dataOutputRemoved(ConnectableNode *, Data *) override;
 
 
 	// save / load

@@ -28,7 +28,7 @@ var OSCCustomController::getJSONData()
 	return data;
 }
 
-void OSCCustomController::loadJSONData(var data)
+void OSCCustomController::loadJSONData(var /*data*/)
 {
 	
 }

@@ -29,8 +29,8 @@ public:
 	~AudioMixerNodeUI();
 	void init() override;
 
-    void numAudioInputChanged(NodeBase *,int )override;
-    void numAudioOutputChanged(NodeBase*, int )override;
+    void numAudioInputChanged(ConnectableNode *,int )override;
+    void numAudioOutputChanged(ConnectableNode*, int )override;
 
     class OutputBusUI : public Component {
     public:

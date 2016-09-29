@@ -66,10 +66,10 @@ public:
     NodeContainerViewer * getNodeContainerViewer() const noexcept;
     ConnectableNodeUI * getNodeUI() const noexcept;
 
-    void numAudioInputChanged(NodeBase *, int newNum) override;
-	void numAudioOutputChanged(NodeBase *, int newNum) override;
-	void numDataInputChanged(NodeBase *, int newNum) override;
-	void numDataOutputChanged(NodeBase *, int newNum) override;
+    void numAudioInputChanged(ConnectableNode *, int newNum) override;
+	void numAudioOutputChanged(ConnectableNode *, int newNum) override;
+	void numDataInputChanged(ConnectableNode *, int newNum) override;
+	void numDataOutputChanged(ConnectableNode *, int newNum) override;
 
 
 	//Listener

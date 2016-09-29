@@ -41,6 +41,9 @@ JsEnvironment::~JsEnvironment(){
 void JsEnvironment::clearNamespace(){
  const  ScopedLock lk(engineLock);
  jsEngine = new JavascriptEngine();
+  jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
+  jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
+  addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
 
   while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
   // prune to get only core Methods and classes
@@ -207,7 +210,11 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
 
   // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
   juce::var::NativeFunctionArgs Nargs(var::undefined(),&arg,1);
-  var res =  jsEngine->callFunction(function,Nargs,result);
+  var res ;
+  {
+  const ScopedLock lk(engineLock);
+   res = jsEngine->callFunction(function,Nargs,result);
+  }
   if(logResult && result->failed()){
     NLOG(localNamespace,result->getErrorMessage());
   }
@@ -363,7 +370,6 @@ void JsEnvironment::updateUserDefinedFunctions(){
   userDefinedFunctions.clear();
   NamedValueSet root = getRootObjectProperties();
   for(int i = 0 ; i < root.size() ; i++ ){
-    // @ben only supported if move semantics are too are they for you?
     userDefinedFunctions.add(FunctionIdentifier(root.getName(i).toString()));
   }
 

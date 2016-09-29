@@ -62,6 +62,6 @@ var RuleCondition::getJSONData()
 	return var();
 }
 
-void RuleCondition::loadJSONData(var data)
+void RuleCondition::loadJSONData(var )
 {
 }

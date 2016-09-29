@@ -130,7 +130,7 @@ public:
 	bool saveAndLoadRecursiveData;
 	virtual var getJSONData();
 	virtual void loadJSONData(var data);
-	virtual void loadJSONDataInternal(var data) { /* to be overriden by child classes */ }
+	virtual void loadJSONDataInternal(var /*data*/) { /* to be overriden by child classes */ }
 
 	virtual void childStructureChanged(ControllableContainer *)override;
 

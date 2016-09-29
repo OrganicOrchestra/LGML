@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.60"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.60a"
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.4" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -732,7 +732,7 @@
         <CONFIGURATION name="Debug" isDebug="1" osxSDK="default" osxCompatibility="10.7 SDK"
                        osxArchitecture="64BitUniversal" targetName="LGML_Debug" defines=""
                        cppLanguageStandard="c++11" cppLibType="libc++" headerPath="../../External/serial/include"
-                       customXcodeFlags="ONLY_ACTIVE_ARCH=1"/>
+                       customXcodeFlags="ONLY_ACTIVE_ARCH=1, GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE"/>
         <CONFIGURATION name="Test" isDebug="1" osxSDK="default" osxCompatibility="10.7 SDK"
                        osxArchitecture="64BitUniversal" targetName="LGML_Debug" defines="LGML_UNIT_TESTS=1"
                        cppLanguageStandard="c++11" cppLibType="libc++" headerPath="../../External/serial/include"
@@ -789,7 +789,7 @@
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" smallIcon="SL4b92"
-                bigIcon="SL4b92" cppLanguageStandard="-std=c++11">
+                bigIcon="SL4b92" cppLanguageStandard="-std=c++11" extraLinkerFlags="-static -libstdc++">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="LGML" linuxArchitecture="-march=armv6" headerPath="../../External/serial/include"/>

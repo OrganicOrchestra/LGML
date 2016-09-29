@@ -97,28 +97,28 @@ void ConnectorComponent::updateVisibility()
   connectorListeners.call(&ConnectorListener::connectorVisibilityChanged, this);
 }
 
-void ConnectorComponent::numAudioInputChanged(NodeBase *, int)
+void ConnectorComponent::numAudioInputChanged(ConnectableNode *, int)
 {
   if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::INPUT) return;
   generateToolTip();
   updateVisibility();
 }
 
-void ConnectorComponent::numAudioOutputChanged(NodeBase *, int)
+void ConnectorComponent::numAudioOutputChanged(ConnectableNode *, int)
 {
   if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
   generateToolTip();
   updateVisibility();
 }
 
-void ConnectorComponent::numDataInputChanged(NodeBase *, int)
+void ConnectorComponent::numDataInputChanged(ConnectableNode *, int)
 {
   if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::INPUT) return;
   generateToolTip();
   updateVisibility();
 }
 
-void ConnectorComponent::numDataOutputChanged(NodeBase *, int)
+void ConnectorComponent::numDataOutputChanged(ConnectableNode *, int)
 {
   if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::OUTPUT) return;
   generateToolTip();
