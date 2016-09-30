@@ -59,7 +59,9 @@ void NodeContainerContentUI::updateSize()
 
 void NodeContainerContentUI::init()
 {
-	nodeContainer = (NodeContainer *)node.get();
+  NodeContainer * nc = dynamic_cast<NodeContainer*>(node.get());
+  if(!nc){jassertfalse;return;}
+  nodeContainer = nc;
 	nodeContainer->addNodeContainerListener(this);
 
 	for (auto &p : nodeContainer->proxyParams)

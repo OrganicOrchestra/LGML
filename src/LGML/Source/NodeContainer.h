@@ -42,7 +42,7 @@ public:
 
 
 class NodeContainer :
-public NodeBase,
+public virtual NodeBase,
 public AudioProcessorGraph,
 public ConnectableNode::ConnectableNodeListener,
 public NodeConnection::Listener,

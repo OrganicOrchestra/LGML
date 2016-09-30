@@ -28,7 +28,7 @@ class ConnectableNodeUI;
 class NodeBase :
 public ConnectableNode,
 public ReferenceCountedObject,
-public juce::AudioProcessor, public Timer, //Audio
+public virtual juce::AudioProcessor, public Timer, //Audio
 public Data::DataListener //Data
 {
 

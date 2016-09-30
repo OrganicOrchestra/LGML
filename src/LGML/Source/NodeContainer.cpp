@@ -90,7 +90,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n))
   {
-    nodeContainers.add((NodeContainer *)n);
+    nodeContainers.add(nc);
     nc->NodeContainer::clear(true);
     //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
   }
@@ -124,7 +124,7 @@ bool NodeContainer::removeNode(ConnectableNode * n)
   n->clear();
   n->removeFromAudioGraph();
 
-  if (n->type == NodeType::ContainerType) nodeContainers.removeFirstMatchingValue((NodeContainer*)n);
+  if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n)) nodeContainers.removeFirstMatchingValue(nc);
 
   //if(NodeManager::getInstanceWithoutCreating() != nullptr)
   AudioProcessorGraph::removeNode(n->audioNode);
@@ -574,17 +574,16 @@ bool NodeContainer::hasDataOutputs()
     // TODO :  handle change of in out numChannels
     // wiill need to call on change
     parentNodeContainer->prepareToPlay(d,i);
-    parentNodeContainer->NodeBase::suspendProcessing(false);
+    parentNodeContainer->suspendProcessing(false);
 
 
   }
   else{
     // mainContainer
     const ScopedLock lk(getAudioDeviceManager().getAudioCallbackLock());
-    AudioProcessorGraph::prepareToPlay(d, i);
+    prepareToPlay(d, i);
   }
 
-  NodeBase::prepareToPlay(d,i);
 
 };
 
