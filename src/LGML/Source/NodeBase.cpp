@@ -247,7 +247,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 
   {
   const ScopedLock lk( getCallbackLock());
-  NodeBase::setPlayConfigDetails(num, getTotalNumOutputChannels(),
+  setPlayConfigDetails(num, getTotalNumOutputChannels(),
                                  getSampleRate(),
                                  getBlockSize());
 
@@ -276,18 +276,24 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   }
 
   nodeListeners.call(&ConnectableNodeListener::numAudioInputChanged, this,num);
+  if(oldNumChannels!=newNum){
+    numChannelsChanged();
+  }
 
   return true;
 }
+
+
 bool NodeBase::setPreferedNumAudioOutput(int num) {
 
   int oldNumChannels = getTotalNumOutputChannels();
-
+  {
+  const ScopedLock lk (getCallbackLock());
   setPlayConfigDetails(getTotalNumInputChannels(), num,
                        getSampleRate(),
                        getBlockSize());
 
-
+  }
 
 if(parentNodeContainer)
    parentNodeContainer->updateAudioGraph();
@@ -312,7 +318,9 @@ if(parentNodeContainer)
   }
 
   nodeListeners.call(&ConnectableNodeListener::numAudioOutputChanged,this,num);
-
+  if(oldNumChannels!=newNum){
+    numChannelsChanged();
+  }
   return true;
 }
 

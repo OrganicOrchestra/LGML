@@ -77,6 +77,7 @@ public:
 
   virtual bool setPreferedNumAudioInput(int num);
    virtual bool setPreferedNumAudioOutput(int num);
+  virtual void numChannelsChanged() override{};
 
 
   virtual void prepareToPlay(double, int) override {};
@@ -98,7 +99,7 @@ public:
   double getTailLengthSeconds() const override { return 0; }
   bool acceptsMidi() const override { return false; }
   bool producesMidi() const override { return false; }
-  void numChannelsChanged()override {}
+  
 
 
   // save procedures from host

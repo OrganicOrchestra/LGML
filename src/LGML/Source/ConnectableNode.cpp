@@ -165,6 +165,8 @@ void ConnectableNode::loadJSONDataInternal(var data)
 void ConnectableNode::addToAudioGraph(AudioProcessorGraph* g)
 {
   audioNode = g->addNode(getAudioProcessor());
+  getAudioProcessor()->setRateAndBufferSizeDetails (g->getSampleRate(), g->getBlockSize());
+  
 }
 
 void ConnectableNode::removeFromAudioGraph()

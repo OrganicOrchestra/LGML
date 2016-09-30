@@ -130,9 +130,8 @@ public:
   //AUDIO
 
   void updateAudioGraph() ;
-  bool setPreferedNumAudioInput(int num) override;
-
-
+  void numChannelsChanged() override;
+  
   //DATA
   bool hasDataInputs() override;
   bool hasDataOutputs() override;
@@ -146,10 +145,6 @@ public:
   virtual void releaseResources() override {
     NodeBase::releaseResources();
     getAudioGraph()->releaseResources();};
-
-  void numChannelsChanged()override {
-    getAudioGraph()->numChannelsChanged();
-  }
 
 
 

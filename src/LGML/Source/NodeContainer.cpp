@@ -76,6 +76,12 @@ void NodeContainer::clear(bool recreateContainerNodes)
   }
   if(!recreateContainerNodes)ConnectableNode::clear();
 
+  // init with global sample rate and blockSize
+  AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
+  if(ad){
+  prepareToPlay(ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples());
+  }
+
 }
 
 
@@ -145,20 +151,19 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
 
 void NodeContainer::updateAudioGraph() {
 
-  {
+  if(parentNodeContainer){
+    const ScopedLock lkp (parentNodeContainer->getCallbackLock());
+    const ScopedLock lk( getAudioGraph()->getCallbackLock());
+    getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+  }
+  else{
+    
   const ScopedLock lk( getAudioGraph()->getCallbackLock());
     getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
 
   }
 }
 
-bool NodeContainer::setPreferedNumAudioInput(int num) {
-  NodeBase::setPreferedNumAudioInput(num);
-  getAudioGraph()->setPlayConfigDetails(num, NodeBase::getTotalNumOutputChannels(),
-                                            NodeBase::getSampleRate(),
-                                            NodeBase::getBlockSize());
-  return true;
-}
 
 int NodeContainer::getNumConnections() {
   return connections.size();
@@ -362,7 +367,7 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
   node->loadJSONData(nodeData);
   node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
 
-  if(isEngineLoadingFile())nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
+  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
 
   return node;
 
@@ -568,7 +573,13 @@ bool NodeContainer::hasDataOutputs()
 }
 
 
+void NodeContainer::numChannelsChanged(){
+  //  getAudioGraph()->numChannelsChanged(); useless
+const ScopedLock lk(getCallbackLock());
 
+  removeIllegalConnections();
+      getAudioGraph()->setPlayConfigDetails(getTotalNumInputChannels(), getTotalNumOutputChannels(), getSampleRate(), getBlockSize());
+}
  void NodeContainer::prepareToPlay(double d, int i) {
 
   if(parentNodeContainer){
@@ -577,7 +588,7 @@ bool NodeContainer::hasDataOutputs()
     const ScopedLock lk(getAudioGraph()->getCallbackLock());
     jassert(getSampleRate());
     jassert(getBlockSize());
-    getAudioGraph()->setPlayConfigDetails(getTotalNumInputChannels(), getTotalNumOutputChannels(), getSampleRate(), getBlockSize());
+    numChannelsChanged();
     getAudioGraph()->prepareToPlay(d, i);
     // TODO :  handle change of in out numChannels
     // wiill need to call on change
@@ -589,8 +600,12 @@ bool NodeContainer::hasDataOutputs()
   else{
     // mainContainer
     const ScopedLock lk(getAudioDeviceManager().getAudioCallbackLock());
-    getAudioGraph()->prepareToPlay(d, i);
+    jassert(d);//ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples()
+    jassert(i);//ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples()
+//    AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
+    getAudioGraph()->prepareToPlay(d,i);
   }
+  
 
 
 };
