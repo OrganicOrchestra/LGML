@@ -70,6 +70,8 @@ public:
 		virtual ~ConnectableNodeListener() {}
 		virtual void askForRemoveNode(ConnectableNode *) {}
 		virtual void nodeParameterChanged(ConnectableNode *,Parameter *) {}
+		virtual void nodeInputDataChanged(ConnectableNode *, Data *) {}
+		virtual void nodeOutputDataUpdated(ConnectableNode *, Data *) {}
 	};
 
 	ListenerList<ConnectableNodeListener> nodeListeners;

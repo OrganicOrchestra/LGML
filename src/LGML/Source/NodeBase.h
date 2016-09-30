@@ -174,11 +174,6 @@ public:
 	void removeAllInputDatas();
 	void removeAllOutputDatas();
 
-	void inputDataChanged(Data *)
-	{
-		//to be overriden by child classes
-	}
-
 	virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0);
 
 
@@ -195,7 +190,9 @@ public:
 	Data * getInputDataByName(const String &dataName) override;
 
 	virtual void dataChanged(Data *) override;
-	virtual void processInputDataChanged(Data *);
+
+	virtual void processInputDataChanged(Data *) {} // to be overriden by child classes
+	virtual void processOutputDataUpdated(Data *) {} // to be overriden by child classes
 
     WeakReference<NodeBase>::Master masterReference;
     friend class WeakReference<NodeBase>;

@@ -12,7 +12,7 @@
 #include "DummyNode.h"
 #include "AudioMixerNode.h"
 #include "DataInNode.h"
-#include "SpatNode.h"
+#include "Spat2DNode.h"
 #include "VSTNode.h"
 #include "AudioDeviceInNode.h"
 #include "AudioDeviceOutNode.h"
@@ -63,8 +63,8 @@ ConnectableNode * NodeFactory::createNode(NodeType nodeType)
             n = new DataInNode();
             break;
 
-        case NodeType::SpatType:
-            n = new SpatNode();
+        case NodeType::Spat2DType:
+            n = new Spat2DNode();
             break;
         case NodeType::LooperType:
             n = new LooperNode();

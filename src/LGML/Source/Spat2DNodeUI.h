@@ -13,42 +13,39 @@
 
 #include "NodeBaseContentUI.h"
 #include "EnumParameterUI.h"
-#include "SpatNode.h"
+#include "Spat2DNode.h"
 #include "Spat2DViewer.h"
 #include "Spat3DViewer.h"
 
-class SpatNodeContentUI : 
+class Spat2DNodeContentUI : 
 	public NodeBaseContentUI, 
-	public SpatNode::SpatNodeListener
+	public Spat2DNode::ConnectableNodeListener
 {
 public:
-	SpatNodeContentUI();
-	virtual ~SpatNodeContentUI();
+	Spat2DNodeContentUI();
+	virtual ~Spat2DNodeContentUI();
 
-	SpatNode * spatNode;
+	Spat2DNode * spatNode;
 
 	ScopedPointer<Spat2DViewer> viewer2D;
-	ScopedPointer<Spat3DViewer> viewer3D;
 
 	ScopedPointer<EnumParameterUI> spatModeUI;
 	ScopedPointer<NamedControllableUI> inputStepper;
 	ScopedPointer<NamedControllableUI> outputStepper;
-
-	void updateSpatModeView();
+	ScopedPointer<FloatSliderUI> globalRadiusUI;
+	ScopedPointer<EnumParameterUI> shapeModeUI;
+	ScopedPointer<FloatSliderUI> circleRadiusUI;
+	ScopedPointer<FloatSliderUI> circleRotationUI;
 
 	void resized() override;
 	void init() override;
 
+	void updateShapeModeView();
 	
-	// Inherited via SpatNodeListener
-	virtual void modeChanged() override;
-	virtual void numSpatInputsChanged() override;
-	virtual void numSpatOutputsChanged() override;
-
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpatNodeContentUI)
-
+	void nodeParameterChanged(ConnectableNode *, Parameter * p) override;
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spat2DNodeContentUI)
 };
+
 
 
 

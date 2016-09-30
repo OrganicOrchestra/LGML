@@ -10,7 +10,8 @@
 
 #include "Data.h"
 
-Data::Data(NodeBase * _node, String _name, DataType _type) : node(_node), name(_name), type(_type), numConnections(0)
+Data::Data(NodeBase * _node, String _name, DataType _type, IOType _ioType) :
+	node(_node), name(_name), type(_type), numConnections(0), ioType(_ioType)
 {
     switch (type)
     {
@@ -94,7 +95,7 @@ void Data::update(const float & value1, const float & value2, const float & valu
     // const Array<float> values = { value1, value2, value3 };
     // above not compiling with c++ 98 / libstdc / Xcode
     Array<float> values;
-    values.resize(3); values.set(0, value1); values.set(2, value2); values.set(3, value3);
+    values.resize(3); values.set(0, value1); values.set(1, value2); values.set(2, value3);
 
     for (int i = 0; i < numElements; i++)
     {

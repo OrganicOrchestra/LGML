@@ -36,7 +36,7 @@ Parameter::Parameter(const Type &type, const String &niceName, const String &des
 void Parameter::setValue(var _value, bool silentSet, bool force)
 {
 
-    if (!force && this->value == _value) return;
+    if (!force && checkValueIsTheSame(_value, value)) return;
     lastValue = value.clone();
     setValueInternal(_value);
 
@@ -63,12 +63,16 @@ void Parameter::setValueInternal(var & _value) //to override by child classes
 #endif
 }
 
+bool Parameter::checkValueIsTheSame(var newValue, var oldValue)
+{
+	return newValue == oldValue;
+}
+
 void Parameter::checkVarIsConsistentWithType(){
     if      (type == Type::STRING)  jassert(value.isString());
     else if (type == Type::INT)     jassert(value.isInt());
     else if (type == Type::BOOL)    jassert(value.isBool());
     else if (type == Type::FLOAT)   jassert(value.isDouble());
-
 }
 
 void Parameter::setNormalizedValue(const float & normalizedValue, bool silentSet, bool force)

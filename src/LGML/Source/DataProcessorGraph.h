@@ -50,8 +50,8 @@ public:
         Data * destData;
 
     private:
-        //==============================================================================
-        JUCE_LEAK_DETECTOR(Connection)
+			//==============================================================================
+			JUCE_LEAK_DETECTOR(Connection)
 
             // Inherited via DataListener
             virtual void dataChanged(Data *) override;

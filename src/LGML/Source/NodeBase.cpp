@@ -205,7 +205,10 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
     double curDryVolume = logVolume*(1.0-fadeValue);
     if (fadeValue>0 ){
       if(fadeValue!=1){crossFadeBuffer.makeCopyOf(buffer);}
-      processBlockInternal(buffer, midiMessages);
+      
+	  processBlockInternal(buffer, midiMessages);
+
+
       if(fadeValue!=1 || hasMainAudioControl){
         buffer.applyGainRamp(0, numSample, lastVolume, (float)curVolume);
       }
@@ -408,7 +411,7 @@ Data * NodeBase::getOutputData(int dataIndex)
 
 Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 {
-  Data *d = new Data(this, name, dataType);
+  Data *d = new Data(this, name, dataType, Data::Input);
   inputDatas.add(d);
 
   d->addDataListener(this);
@@ -420,8 +423,10 @@ Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 
 Data * NodeBase::addOutputData(const String & name, DataType dataType)
 {
-  Data * d = new Data(this, name, dataType);
+  Data * d = new Data(this, name, dataType,Data::Output);
   outputDatas.add(d);
+
+  d->addDataListener(this);
 
   nodeBaseListeners.call(&NodeBaseListener::dataOutputAdded, this, d);
   nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
@@ -432,7 +437,7 @@ void NodeBase::removeInputData(const String & name)
 {
   Data * d = getInputDataByName(name);
   if (d == nullptr) return;
-
+  d->removeDataListener(this);
   inputDatas.removeObject(d, false);
   nodeBaseListeners.call(&NodeBaseListener::dataInputRemoved, this, d);
   nodeBaseListeners.call(&NodeBaseListener::numDataInputChanged, this, inputDatas.size());
@@ -443,7 +448,7 @@ void NodeBase::removeOutputData(const String & name)
 {
   Data * d = getOutputDataByName(name);
   if (d == nullptr) return;
-
+  d->removeDataListener(this);
   outputDatas.removeObject(d, false);
   nodeBaseListeners.call(&NodeBaseListener::dataOutputRemoved, this, d);
   nodeBaseListeners.call(&NodeBaseListener::numDataOutputChanged, this, inputDatas.size());
@@ -565,11 +570,18 @@ Data * NodeBase::getInputDataByName(const String & dataName)
 
 void NodeBase::dataChanged(Data * d)
 {
-  if (enabledParam->boolValue()) {
-    processInputDataChanged(d);
-  }
-}
-
-void NodeBase::processInputDataChanged(Data *)
-{
+	DBG("Data changed, ioType " << (d->ioType == Data::Input ? "input" : "output"));
+	if (d->ioType == Data::Input)
+	{
+		if (enabledParam->boolValue()) {
+			processInputDataChanged(d);
+		}
+		nodeListeners.call(&ConnectableNodeListener::nodeInputDataChanged, this, d);
+	} else
+	{
+		if (enabledParam->boolValue()) {
+			processOutputDataUpdated(d);
+		}
+		nodeListeners.call(&ConnectableNodeListener::nodeOutputDataUpdated, this, d);
+	}
 }
