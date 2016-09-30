@@ -14,33 +14,63 @@
 #include "JuceHeader.h"
 #include "SpatNode.h"
 
-class Spat2DSource : public Component
+class Spat2DHandle : public Component
 {
 public:
-	Spat2DSource();
-	~Spat2DSource();
+	enum HandleType { SOURCE, TARGET};
+	Spat2DHandle(HandleType type, int index, float size, Colour color);
+	~Spat2DHandle();
 
-	void paint(Graphics &g) override;
-	void mouseDrag(const MouseEvent &e) override;
+	virtual void paint(Graphics &g) override;
+	virtual void mouseDown(const MouseEvent &e) override;
+	virtual void mouseDrag(const MouseEvent &e) override;
 
+	virtual void resized() override;
+
+	HandleType type;
+	int index;
+	Colour color;
+	float size;
 	Point<float> position;
+
+	class  Listener
+	{
+	public:
+
+		/** Destructor. */
+		virtual ~Listener() {}
+		virtual void positionChanged(Spat2DHandle * handle) = 0;
+	};
+
+	ListenerList<Listener> handleListeners;
+	void addHandleListener(Listener* newListener) { handleListeners.add(newListener); }
+	void removeHandleListener(Listener* listener) { handleListeners.remove(listener); }
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spat2DHandle)
+};
+
+class Spat2DSource : public Spat2DHandle
+{
+public:
+	Spat2DSource(int index);
 	float angle;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spat2DSource)
 };
 
-class Spat2DTarget : public Component
+class Spat2DTarget : public Spat2DHandle
 {
 public:
-	Spat2DTarget();
-	~Spat2DTarget();
+	Spat2DTarget(int index);
+	float radius;
+	float influence;
 
 	void paint(Graphics &g) override;
-	void mouseDrag(const MouseEvent &e) override;
 
-	Point<float> position;
-	float radius;
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spat2DTarget)
 };
 
-class Spat2DViewer : public Component
+class Spat2DViewer : public Component, public Spat2DHandle::Listener
 {
 public:
 	Spat2DViewer(SpatNode * node);
@@ -51,11 +81,18 @@ public:
 
 	SpatNode * node;
 	
+	void computeInfluences();
+
 	void setNumSources(int numSources);
 	void setNumTargets(int numTargets);
 	
 	void resized() override;
 	void paint(Graphics &g) override;
+
+	// Inherited via Listener
+	virtual void positionChanged(Spat2DHandle * handle) override;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spat2DViewer)
 };
 
 

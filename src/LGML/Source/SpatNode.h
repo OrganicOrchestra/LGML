@@ -29,7 +29,11 @@ public:
 	EnumParameter * spatMode; //2D Beam, 2D Proxy, 3D Beam, 3D Proxy
 	IntParameter * numSpatInputs;
 	IntParameter * numSpatOutputs;
+	Array<FloatParameter *> targetsX;
+	Array<FloatParameter *> targetsY;
 
+	void setSourcePosition(int index, const Point<float> &position);
+	void setTargetPosition(int index, const Point<float> &position);
 	void updateInputOutputDataSlots();
 
 	bool modeIs2D();

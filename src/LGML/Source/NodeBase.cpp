@@ -394,13 +394,15 @@ void NodeBase::timerCallback()
 
 Data * NodeBase::getInputData(int dataIndex)
 {
-  return inputDatas[dataIndex];
+	if (inputDatas.size() <= dataIndex) return nullptr;
+	return inputDatas[dataIndex];
 }
 
 
 Data * NodeBase::getOutputData(int dataIndex)
 {
-  return outputDatas[dataIndex];
+	if (outputDatas.size() <= dataIndex) return nullptr;
+	return outputDatas[dataIndex];
 }
 
 

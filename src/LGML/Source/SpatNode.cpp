@@ -36,16 +36,29 @@ SpatNode::SpatNode() :
 	updateInputOutputDataSlots();
 }
 
+void SpatNode::setSourcePosition(int index, const Point<float>& position)
+{
+	Data * d = getInputData(index);
+	if (d == nullptr) return;
+	d->update(position.x, position.y, 0);
+}
+
+void SpatNode::setTargetPosition(int index, const Point<float>& position)
+{
+	targetsX[index]->setValue(position.x);
+	targetsY[index]->setValue(position.y);
+}
+
 void SpatNode::updateInputOutputDataSlots()
 {
 	if (numSpatInputs == nullptr || numSpatOutputs == nullptr) return;
 
 
+	//INPUT
 	while (getTotalNumInputData() > numSpatInputs->intValue())
 	{
 		removeInputData("Input " + String(getTotalNumInputData()));
 	}
-
 
 	DataType dt = modeIsBeam()? DataType::Orientation : DataType::Position;
 	while (getTotalNumInputData() < numSpatInputs->intValue())
@@ -53,15 +66,24 @@ void SpatNode::updateInputOutputDataSlots()
 		addInputData("Input " + String(getTotalNumInputData() + 1), dt);
 	}
 
+	//OUTPUT
 	while (getTotalNumOutputData() > numSpatOutputs->intValue())
 	{
-		removeOutputData("Weight " + String(getTotalNumOutputData()));
+		removeOutputData("Influence " + String(getTotalNumOutputData()));
+		FloatParameter * px = targetsX[getTotalNumOutputData() - 1];
+		FloatParameter * py = targetsY[getTotalNumOutputData() - 1];
+		targetsX.removeAllInstancesOf(px);
+		targetsY.removeAllInstancesOf(py);
+		removeControllable(px);
+		removeControllable(py);
 	}
 
 
 	while (getTotalNumOutputData() < numSpatOutputs->intValue())
 	{
-		addOutputData("Weight " + String(getTotalNumOutputData() + 1), DataType::Number);
+		addOutputData("Influence " + String(getTotalNumOutputData() + 1), DataType::Number);
+		targetsX.add(addFloatParameter("TargetX" + String(getTotalNumOutputData() + 1), "", 0, -1, 1));
+		targetsY.add(addFloatParameter("TargetY" + String(getTotalNumOutputData() + 1), "", 0, -1, 1));
 	}
 }
 
