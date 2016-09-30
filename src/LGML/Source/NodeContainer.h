@@ -138,7 +138,8 @@ public:
   bool hasDataOutputs() override;
 
   void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override{
-    getAudioGraph()->processBlock(buffer,midiMessage);};
+    getAudioGraph()->processBlock(buffer,midiMessage);
+  };
 
 
   virtual void prepareToPlay(double d, int i) override ;
@@ -147,7 +148,8 @@ public:
     getAudioGraph()->releaseResources();};
 
   void numChannelsChanged()override {
-    getAudioGraph()->numChannelsChanged();}
+    getAudioGraph()->numChannelsChanged();
+  }
 
 
 

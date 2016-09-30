@@ -233,8 +233,10 @@ String ConnectableNode::getOutputChannelName(int channelIndex)
 }
 
 AudioProcessor * ConnectableNode::getAudioProcessor() {
-  if(audioNode)
+  if(audioNode){
+    jassert(audioNode->getProcessor() == dynamic_cast<NodeBase * >(this));
     return audioNode->getProcessor();
+  }
   return dynamic_cast<NodeBase * >(this);
 };
 

@@ -101,22 +101,22 @@ NodeConnectionEditor.cpp
 
 
 NodeContainer.cpp
-	line : 449
+	line : 450
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
 
-	line : 290
+	line : 291
 		// TODO nicely handle file format errors?
 
-	line : 204
+	line : 205
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 575
+	line : 581
 		// TODO :  handle change of in out numChannels
 		// wiill need to call on change
 

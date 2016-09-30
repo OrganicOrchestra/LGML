@@ -54,6 +54,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 
   containerInNode = nullptr;
   containerOutNode = nullptr;
+  
 
   if (recreateContainerNodes && parentNodeContainer != nullptr)
   {
@@ -476,10 +477,11 @@ void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float 
 
 void NodeContainer::onContainerParameterChanged(Parameter * p)
 {
-  ConnectableNode::onContainerParameterChanged(p);
+  NodeBase::onContainerParameterChanged(p);
 
 }
-void NodeContainer::onContainerParameterChangedAsync(Parameter *  ,const var & ) {
+void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var & v) {
+  NodeBase::onContainerParameterChanged(p,v);
   //  ConnectableNode::onContainerParameterChangedAsync(p   ,value);
 };
 
@@ -572,6 +574,10 @@ bool NodeContainer::hasDataOutputs()
   if(parentNodeContainer){
 //    const ScopedLock lk(parentNodeContainer->NodeBase::getCallbackLock());
     parentNodeContainer->suspendProcessing(true);
+    const ScopedLock lk(getAudioGraph()->getCallbackLock());
+    jassert(getSampleRate());
+    jassert(getBlockSize());
+    getAudioGraph()->setPlayConfigDetails(getTotalNumInputChannels(), getTotalNumOutputChannels(), getSampleRate(), getBlockSize());
     getAudioGraph()->prepareToPlay(d, i);
     // TODO :  handle change of in out numChannels
     // wiill need to call on change
