@@ -17,11 +17,28 @@ DataInNode::DataInNode() :
     NodeBase("DataIn",NodeType::DataInType)
 {
     addFloatParamAndData("Test Param", 0, 0, 1);
+	
 }
 
 DataInNode::~DataInNode()
 {
 
+}
+
+inline FloatParameter * DataInNode::addFloatParamAndData(const String & name, float initialValue, float minVal, float maxVal)
+{
+	FloatParameter * p = addFloatParameter(name, "OSC Control for " + name, initialValue, minVal, maxVal);
+	addOutputData(name, Data::DataType::Number);
+	dynamicParameters.add(p);
+	dataInListeners.call(&DataInListener::parameterAdded, p);
+	return p;
+}
+
+inline void DataInNode::removeFloatParamAndData(FloatParameter * p)
+{
+	removeControllable(p);
+	removeOutputData(p->niceName);
+	dataInListeners.call(&DataInListener::parameterRemoved, p);
 }
 
 void DataInNode::onContainerParameterChanged(Parameter * p)

@@ -44,6 +44,7 @@ public:
         virtual ~Connection()
         {
             if (sourceData != nullptr) sourceData->removeDataListener(this);
+			if (destData != nullptr) destData->removeDataListener(this);
         }
 
         Data * sourceData;

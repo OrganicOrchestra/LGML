@@ -24,6 +24,8 @@ public:
     FloatParameter * freq1Param;
     FloatParameter * freq2Param;
 	EnumParameter * enumParam;
+	FloatParameter * pxParam;
+	FloatParameter * pyParam;
 
     Trigger * testTrigger;
 

@@ -22,21 +22,8 @@ public:
 
     Array<Parameter *> dynamicParameters;
 
-    FloatParameter * addFloatParamAndData(const String &name, float initialValue, float minVal, float maxVal)
-    {
-        FloatParameter * p = addFloatParameter(name, "OSC Control for " + name, initialValue, minVal, maxVal);
-        addOutputData(name, Data::DataType::Number);
-        dynamicParameters.add(p);
-		dataInListeners.call(&DataInListener::parameterAdded, p);
-        return p;
-    }
-
-    void removeFloatParamAndData(FloatParameter * p)
-    {
-        removeControllable(p);
-        removeOutputData(p->niceName);
-		dataInListeners.call(&DataInListener::parameterRemoved, p);
-    }
+	FloatParameter * addFloatParamAndData(const String &name, float initialValue, float minVal, float maxVal);
+	void removeFloatParamAndData(FloatParameter * p);
 
 
     void onContainerParameterChanged(Parameter * p) override;

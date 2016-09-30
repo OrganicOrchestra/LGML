@@ -32,10 +32,13 @@ DummyNode::DummyNode() :
 
 	//DATA
 	addInputData("IN Number", DataType::Number);
-	addInputData("IN Position", DataType::Position);
+	addInputData("IN Orientation", DataType::Orientation);
 
 	addOutputData("OUT Number", DataType::Number);
-	addOutputData("OUT Orientation", DataType::Orientation);
+	addOutputData("OUT Position", DataType::Position);
+
+	pxParam = addFloatParameter("PointX", "X", 0, 0, 1);
+	pyParam = addFloatParameter("PointY", "Y", 0, 0, 1);
 }
 
  DummyNode::~DummyNode()
@@ -56,6 +59,9 @@ DummyNode::DummyNode() :
 	 } else if (p == enumParam)
 	 {
 		 //DBG("Enum param changed : " << enumParam->stringValue() << " / " << enumParam->getValueData().toString());
+	 } else if (p == pxParam || p == pyParam)
+	 {
+		 updateOutputData(String("OUT Position"), pxParam->floatValue(), pyParam->floatValue());
 	 }
  }
 
