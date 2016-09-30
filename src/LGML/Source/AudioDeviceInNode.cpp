@@ -69,7 +69,7 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 
 void AudioDeviceInNode::setParentNodeContainer(NodeContainer * parent){
   NodeBase::setParentNodeContainer(parent);
-  jassert((AudioProcessorGraph* )parent == NodeManager::getInstance()->mainContainer);
+  jassert(parent == NodeManager::getInstance()->mainContainer);
   updateVolMutes();
 }
 
@@ -110,7 +110,7 @@ void AudioDeviceInNode::updateVolMutes(){
 
 void AudioDeviceInNode::addVolMute()
 {
-  const ScopedLock lk (parentNodeContainer->getAudioProcessor()->getCallbackLock());
+  const ScopedLock lk (parentNodeContainer->getCallbackLock());
     BoolParameter * p = addBoolParameter(String(inMutes.size() + 1), "Mute if disabled", false);
     p->setCustomShortName(String("mute") + String(inMutes.size() + 1));
     inMutes.add(p);
@@ -127,7 +127,7 @@ void AudioDeviceInNode::removeVolMute()
 {
 
     if(inMutes.size()==0)return;
-  const ScopedLock lk (parentNodeContainer->getAudioProcessor()->getCallbackLock());
+  const ScopedLock lk (parentNodeContainer->getCallbackLock());
     BoolParameter * b = inMutes[inMutes.size() - 1];
     removeControllable(b);
     inMutes.removeAllInstancesOf(b);

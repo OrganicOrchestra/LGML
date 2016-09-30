@@ -27,6 +27,7 @@ containerOutNode(nullptr),
 NodeBase(name, NodeType::ContainerType,false)
 {
   saveAndLoadRecursiveData = false;
+  innerGraph = new AudioProcessorGraph();
 }
 
 
@@ -127,7 +128,7 @@ bool NodeContainer::removeNode(ConnectableNode * n)
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n)) nodeContainers.removeFirstMatchingValue(nc);
 
   //if(NodeManager::getInstanceWithoutCreating() != nullptr)
-  AudioProcessorGraph::removeNode(n->audioNode);
+  getAudioGraph()->removeNode(n->audioNode);
 
   return true;
 }
@@ -144,17 +145,18 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
 void NodeContainer::updateAudioGraph() {
 
   {
-  const ScopedLock lk( AudioProcessorGraph::getCallbackLock());
-    AudioProcessorGraph::prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+  const ScopedLock lk( getAudioGraph()->getCallbackLock());
+    getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
 
   }
 }
 
 bool NodeContainer::setPreferedNumAudioInput(int num) {
   NodeBase::setPreferedNumAudioInput(num);
-  AudioProcessorGraph::setPlayConfigDetails(num, NodeBase::getTotalNumOutputChannels(),
+  getAudioGraph()->setPlayConfigDetails(num, NodeBase::getTotalNumOutputChannels(),
                                             NodeBase::getSampleRate(),
                                             NodeBase::getBlockSize());
+  return true;
 }
 
 int NodeContainer::getNumConnections() {
@@ -569,8 +571,8 @@ bool NodeContainer::hasDataOutputs()
 
   if(parentNodeContainer){
 //    const ScopedLock lk(parentNodeContainer->NodeBase::getCallbackLock());
-    parentNodeContainer->getAudioProcessor()->suspendProcessing(true);
-    AudioProcessorGraph::prepareToPlay(d, i);
+    parentNodeContainer->suspendProcessing(true);
+    getAudioGraph()->prepareToPlay(d, i);
     // TODO :  handle change of in out numChannels
     // wiill need to call on change
     parentNodeContainer->prepareToPlay(d,i);
@@ -581,7 +583,7 @@ bool NodeContainer::hasDataOutputs()
   else{
     // mainContainer
     const ScopedLock lk(getAudioDeviceManager().getAudioCallbackLock());
-    prepareToPlay(d, i);
+    getAudioGraph()->prepareToPlay(d, i);
   }
 
 
@@ -593,7 +595,7 @@ bool NodeContainer::hasDataOutputs()
 
 
 void NodeContainer::removeIllegalConnections() {
-  AudioProcessorGraph::removeIllegalConnections();
+  getAudioGraph()->removeIllegalConnections();
   for(auto & c:nodeContainers){
     c->removeIllegalConnections();
   }

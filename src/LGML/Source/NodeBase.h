@@ -28,7 +28,7 @@ class ConnectableNodeUI;
 class NodeBase :
 public ConnectableNode,
 public ReferenceCountedObject,
-public virtual juce::AudioProcessor, public Timer, //Audio
+public juce::AudioProcessor, public Timer, //Audio
 public Data::DataListener //Data
 {
 
@@ -42,7 +42,7 @@ public:
   virtual bool hasDataInputs() override;
   virtual bool hasDataOutputs() override;
 
-  virtual AudioProcessor * getAudioProcessor()override{return this;}
+  
 
 
 

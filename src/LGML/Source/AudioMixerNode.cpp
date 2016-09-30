@@ -49,7 +49,7 @@ void AudioMixerNode::onContainerParameterChanged(Parameter *p){
 
 void AudioMixerNode::updateInput(){
     {
-        const ScopedLock lk (parentNodeContainer->getAudioProcessor()->getCallbackLock());
+        const ScopedLock lk (parentNodeContainer->getCallbackLock());
         suspendProcessing(true);
         for(auto & bus:outBuses){
             bus->setNumInput(numberOfInput->intValue());
@@ -63,7 +63,7 @@ void AudioMixerNode::updateInput(){
 
 void AudioMixerNode::updateOutput(){
     {
-        const ScopedLock lk (parentNodeContainer->getAudioProcessor()->getCallbackLock());
+        const ScopedLock lk (parentNodeContainer->getCallbackLock());
         suspendProcessing(true);
 
         if(numberOfOutput->intValue() > outBuses.size())

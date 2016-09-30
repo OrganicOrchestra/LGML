@@ -32,7 +32,7 @@ public:
   
 	virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer);
   AudioProcessorGraph::Node * audioNode;
-  virtual AudioProcessor * getAudioProcessor() {return getAudioNode()->getProcessor();};
+  AudioProcessor * getAudioProcessor();
 
 	//Interaction
 	bool canBeRemovedByUser;

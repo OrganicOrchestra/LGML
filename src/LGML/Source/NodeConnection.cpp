@@ -57,7 +57,7 @@ NodeConnection::~NodeConnection()
 }
 AudioProcessorGraph * NodeConnection::getParentGraph(){
   jassert(sourceNode->parentNodeContainer == destNode->parentNodeContainer );
-  return sourceNode->parentNodeContainer;
+  return sourceNode->parentNodeContainer->getAudioGraph();
 
 }
 bool NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel)

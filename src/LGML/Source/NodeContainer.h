@@ -42,8 +42,7 @@ public:
 
 
 class NodeContainer :
-public virtual NodeBase,
-public AudioProcessorGraph,
+public NodeBase,
 public ConnectableNode::ConnectableNodeListener,
 public NodeConnection::Listener,
 public ConnectableNode::RMSListener,
@@ -61,7 +60,8 @@ public:
   //Container nodes, not removable by user, handled separately
   ContainerInNode * containerInNode;
   ContainerOutNode * containerOutNode;
-
+  ScopedPointer<AudioProcessorGraph> innerGraph;
+  AudioProcessorGraph * getAudioGraph(){return innerGraph;};
 
   Array<ParameterProxy *> proxyParams;
 
@@ -136,22 +136,20 @@ public:
   //DATA
   bool hasDataInputs() override;
   bool hasDataOutputs() override;
-  virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override{
-    NodeBase::processBlock(buffer, midiMessages);}
+
   void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override{
-    AudioProcessorGraph::processBlock(buffer,midiMessage);};
+    getAudioGraph()->processBlock(buffer,midiMessage);};
 
 
   virtual void prepareToPlay(double d, int i) override ;
   virtual void releaseResources() override {
     NodeBase::releaseResources();
-    AudioProcessorGraph::releaseResources();};
+    getAudioGraph()->releaseResources();};
 
   void numChannelsChanged()override {
-    AudioProcessorGraph::numChannelsChanged();}
+    getAudioGraph()->numChannelsChanged();}
 
-    virtual AudioProcessor * getAudioProcessor()override
-  {return (AudioProcessorGraph*)this;}
+
 
   ListenerList<NodeContainerListener> nodeContainerListeners;
   void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }

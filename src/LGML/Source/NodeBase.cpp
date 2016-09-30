@@ -243,7 +243,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   int oldNumChannels = getTotalNumInputChannels();
 
   {
-  const ScopedLock lk( getAudioProcessor()->getCallbackLock());
+  const ScopedLock lk( getCallbackLock());
   NodeBase::setPlayConfigDetails(num, getTotalNumOutputChannels(),
                                  getSampleRate(),
                                  getBlockSize());

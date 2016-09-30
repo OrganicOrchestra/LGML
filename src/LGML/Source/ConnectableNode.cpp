@@ -63,7 +63,7 @@
 
 void ConnectableNode::setParentNodeContainer(NodeContainer * _parentNodeContainer)
 {
-    addToAudioGraph(_parentNodeContainer);
+    addToAudioGraph(_parentNodeContainer->getAudioGraph());
 	parentNodeContainer = _parentNodeContainer;
 
 
@@ -169,7 +169,7 @@ void ConnectableNode::addToAudioGraph(AudioProcessorGraph* g)
 
 void ConnectableNode::removeFromAudioGraph()
 {
-  parentNodeContainer->AudioProcessorGraph::removeNode(getAudioNode());
+  parentNodeContainer->getAudioGraph()->removeNode(getAudioNode());
 
 
 }
@@ -232,6 +232,11 @@ String ConnectableNode::getOutputChannelName(int channelIndex)
 	return defaultName;
 }
 
+AudioProcessor * ConnectableNode::getAudioProcessor() {
+  if(audioNode)
+    return audioNode->getProcessor();
+  return dynamic_cast<NodeBase * >(this);
+};
 
 /////////////////////////////  DATA
 Data * ConnectableNode::getInputData(int)

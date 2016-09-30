@@ -81,7 +81,7 @@ void Engine::parseCommandline(const String & commandLine){
 
 void Engine::initAudio(){
 
-  graphPlayer.setProcessor((AudioProcessorGraph*)NodeManager::getInstance()->mainContainer);
+  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
   ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
   getAudioDeviceManager().initialise (64, 64, savedAudioState, true);
   getAudioDeviceManager().addChangeListener(&audioSettingsHandler);
@@ -120,10 +120,10 @@ void Engine::clear(){
   RuleManager::getInstance()->clear();
   ControllerManager::getInstance()->clear();
   graphPlayer.setProcessor(nullptr);
-  getAudioDeviceManager().removeAudioCallback (&graphPlayer);
+//  getAudioDeviceManager().removeAudioCallback (&graphPlayer);
   NodeManager::getInstance()->clear();
-graphPlayer.setProcessor((AudioProcessorGraph*)NodeManager::getInstance()->mainContainer);
-getAudioDeviceManager().addAudioCallback (&graphPlayer);
+graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+//getAudioDeviceManager().addAudioCallback (&graphPlayer);
   PresetManager::getInstance()->clear();
 
 

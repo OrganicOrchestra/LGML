@@ -45,9 +45,9 @@ Result Engine::loadDocument (const File& file){
     }// deletes data before launching audio, (data not needed after loaded)
   isLoadingFile = false;
     setLastDocumentOpened(file);
-
+    graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
     suspendAudio(false);
-  graphPlayer.setProcessor((AudioProcessorGraph*)NodeManager::getInstance()->mainContainer);
+
     return Result::ok();
 }
 
