@@ -42,11 +42,11 @@ public:
     float getNormalizedValue();
 
     //helpers for fast typing
-    float floatValue() { return (float)value; }
-    double doubleValue(){return (double)value;}
-    int intValue() { return (int)value; }
-    bool boolValue() { return (bool)value; }
-    String stringValue() { return value.toString(); }
+    virtual float floatValue() { return (float)value; }
+	virtual double doubleValue(){return (double)value;}
+	virtual int intValue() { return (int)value; }
+	virtual bool boolValue() { return (bool)value; }
+	virtual String stringValue() { return value.toString(); }
 
     void notifyValueChanged();
 
@@ -65,7 +65,7 @@ public:
     ListenerList<Listener> listeners;
     void addParameterListener(Listener* newListener) { listeners.add(newListener); }
     void removeParameterListener(Listener* listener) { listeners.remove(listener); }
-
+	
 
 
     // ASYNC

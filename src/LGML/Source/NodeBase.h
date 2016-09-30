@@ -49,6 +49,7 @@ public:
   //  TODO:  this should not be implemented in Node to avoid overriding this method
   //    create onNodeParameterChanged();
   void onContainerParameterChanged(Parameter * p) override;
+  void onContainerParameterChangedAsync(Parameter *,const var & /*value*/)override{};
   // can be oerriden to react to clear
   virtual void clearInternal() {};
 public:
@@ -142,8 +143,13 @@ public:
   Data * addInputData(const String &name, DataType type);
   Data * addOutputData(const String &name, DataType type);
 
+
   void removeInputData(const String &name);
   void removeOutputData(const String &name);
+
+	void removeAllInputDatas();
+	void removeAllOutputDatas();
+
 
   void inputDataChanged(Data *)
   {

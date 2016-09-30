@@ -481,8 +481,8 @@ void NodeContainer::onContainerParameterChanged(Parameter * p)
 
 }
 void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var & v) {
-  NodeBase::onContainerParameterChanged(p,v);
-  //  ConnectableNode::onContainerParameterChangedAsync(p   ,value);
+
+    NodeBase::onContainerParameterChangedAsync(p ,v);
 };
 
 void NodeContainer::bypassNode(bool ){

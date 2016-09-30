@@ -37,6 +37,7 @@ localIndexedPosition(-1)
 {
   setNiceName(niceName);
   currentPresetName = addStringParameter("Preset", "Current Preset", "");
+  savePresetTrigger = addTrigger("Save Preset", "Save current preset");
 }
 
 ControllableContainer::~ControllableContainer()
@@ -87,6 +88,14 @@ StringParameter * ControllableContainer::addStringParameter(const String & _nice
   StringParameter * p = new StringParameter(targetName, _description, value, enabled);
   addParameterInternal(p);
   return p;
+}
+
+EnumParameter * ControllableContainer::addEnumParameter(const String & _niceName, const String & _description, const bool & enabled)
+{
+	String targetName = getUniqueNameInContainer(_niceName);
+	EnumParameter * p = new EnumParameter(targetName, _description, enabled);
+	addParameterInternal(p);
+	return p;
 }
 
 Trigger * ControllableContainer::addTrigger(const String & _niceName, const String & _description, const bool & enabled)
@@ -529,12 +538,18 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 
 void ControllableContainer::triggerTriggered(Trigger * t)
 {
-  onContainerTriggerTriggered(t);
-  if (t->isControllableExposed) dispatchFeedback(t);
+	if (t == savePresetTrigger)
+	{
+		saveCurrentPreset();
+		
+	} else
+	{
+		onContainerTriggerTriggered(t);
+	}
+
+    if (t->isControllableExposed) dispatchFeedback(t);
 }
-
-
-
+	
 
 void ControllableContainer::addParameterInternal(Parameter * p)
 {

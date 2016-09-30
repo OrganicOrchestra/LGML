@@ -16,6 +16,7 @@
 #include "IntParameter.h" //keep
 #include "BoolParameter.h" //keep
 #include "StringParameter.h" //keep
+#include "EnumParameter.h"
 #include "Trigger.h"
 #include "PresetManager.h"
 #include "DebugHelpers.h" //keep
@@ -53,6 +54,7 @@ public:
 
 	bool canHavePresets;
 	StringParameter * currentPresetName;
+	Trigger * savePresetTrigger;
 	PresetManager::Preset * currentPreset;
 
 	
@@ -72,7 +74,8 @@ public:
     IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
     BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);
     StringParameter * addStringParameter(const String &niceName, const String &description, const String &value, const bool &enabled = true);
-    Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
+	EnumParameter * addEnumParameter(const String &niceName, const String &description, const bool &enabled = true);
+	Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
 
     void removeControllable(Controllable * c);
     Controllable * getControllableByName(const String &name, bool searchNiceNameToo = false);
@@ -143,7 +146,7 @@ private:
     //      or using dispatch feedback that triggers only exposedParams
 
     virtual void onContainerParameterChanged(Parameter *) {};
-    virtual void onContainerTriggerTriggered(Trigger *) {};
+	virtual void onContainerTriggerTriggered(Trigger *) {};
     virtual void onContainerParameterChangedAsync(Parameter *,const var & /*value*/){};
     void addParameterInternal(Parameter * p);
 

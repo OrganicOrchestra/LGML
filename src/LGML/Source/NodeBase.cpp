@@ -198,21 +198,24 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
         }
       }
       processBlockInternal(buffer, midiMessages);
+
       if(crossfadeValue!=1 || hasMainAudioControl){
-        buffer.applyGainRamp(0, numSample, lastVolume, curVolume);
+        buffer.applyGainRamp(0, numSample, lastVolume, (float)curVolume);
+
       }
     // crossfade if we have a dry mix i.e at least one input channel 
       if(crossfadeValue!=1 && crossFadeBuffer.getNumChannels()>0){
         for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
           int maxCommonChannels = jmin(getTotalNumInputChannels(),getTotalNumOutputChannels())-1;
-          buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, lastDryVolume,curDryVolume);
+          buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, (float)lastDryVolume,(float)curDryVolume);
+
         }
       }
     
     if(muteFadeValue == 0){
       buffer.clear();
     }
-    lastVolume = curVolume;
+    lastVolume = (float)curVolume;
     lastDryVolume = curDryVolume;
 
   }
@@ -391,13 +394,15 @@ void NodeBase::timerCallback()
 
 Data * NodeBase::getInputData(int dataIndex)
 {
-  return inputDatas[dataIndex];
+	if (inputDatas.size() <= dataIndex) return nullptr;
+	return inputDatas[dataIndex];
 }
 
 
 Data * NodeBase::getOutputData(int dataIndex)
 {
-  return outputDatas[dataIndex];
+	if (outputDatas.size() <= dataIndex) return nullptr;
+	return outputDatas[dataIndex];
 }
 
 
@@ -443,6 +448,22 @@ void NodeBase::removeOutputData(const String & name)
   nodeListeners.call(&ConnectableNodeListener::dataOutputRemoved, this, d);
   nodeListeners.call(&ConnectableNodeListener::numDataOutputChanged, this, inputDatas.size());
   delete d;
+}
+
+void NodeBase::removeAllInputDatas()
+{
+	while (inputDatas.size() > 0)
+	{
+		removeInputData(inputDatas[0]->name);
+	}
+}
+
+void NodeBase::removeAllOutputDatas()
+{
+	while (outputDatas.size() > 0)
+	{
+		removeOutputData(outputDatas[0]->name);
+	}
 }
 
 void NodeBase::updateOutputData(String & dataName, const float & value1, const float & value2, const float & value3)

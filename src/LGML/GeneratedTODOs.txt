@@ -24,7 +24,10 @@ MIDIManager.cpp
 
 
 ControllableContainer.cpp
-	line : 600
+	line : 522
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 615
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -32,10 +35,7 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 513
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-	line : 422
+	line : 431
 		// TODO weird feedback when loading preset on parameter presetName
 
 
@@ -137,7 +137,7 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 330
+	line : 333
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 111
@@ -145,7 +145,7 @@ NodeBase.cpp
 
 
 ControllableContainer.h
-	line : 139
+	line : 142
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)

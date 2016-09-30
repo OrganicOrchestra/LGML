@@ -12,7 +12,7 @@
 #define DUMMYNODE_H_INCLUDED
 
 #include "NodeBase.h"
-
+#include "EnumParameter.h"
 
 class DummyNode : public NodeBase
 {
@@ -23,6 +23,7 @@ public:
     //parameters
     FloatParameter * freq1Param;
     FloatParameter * freq2Param;
+	EnumParameter * enumParam;
 
     Trigger * testTrigger;
 
@@ -36,36 +37,10 @@ public:
 	int period2 = (int)(44100 * 1.0f / 300);
 	float amp = 1.f;
 
-	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override {
-
-		//DBG("process block internal dummy");
-
-
-		for (int i = 0; i < buffer.getNumSamples(); i++) {
-			buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step1*1.0 / period1)));
-			buffer.addSample(1, i, (float)(amp*cos(2.0*double_Pi*step2*1.0 / period2)));
-			step1++;
-			step2++;
-			if (step1>period1) { step1 = 0; }
-			if (step2>period2) { step2 = 0; }
-		}
-
-
-
-
-	}
+	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override;
 
 	//DATA
-
-	void processInputDataChanged(Data *d) override
-	{
-		//DBG("DummyNode :: Input data changed " << d->name);
-
-		if (d->name == "IN Number")
-		{
-			amp = d->getElement("value")->value;
-		}
-	}
+	void processInputDataChanged(Data *d) override;
 
 
 
