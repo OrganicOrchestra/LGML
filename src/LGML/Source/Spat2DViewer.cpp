@@ -279,7 +279,7 @@ void Spat2DHandle::setPosition(Point<float> newPosition)
 bool Spat2DHandle::hitTest(int x, int y) {
 	if (!isEnabled()) return false;
 
-	Component * parent = getParentComponent();
+//	Component * parent = getParentComponent();
 	Point<float> relPoint(x, y);
 	float dist = relPoint.getDistanceFrom(getLocalBounds().getCentre().toFloat());
 	return dist < size / 2;
