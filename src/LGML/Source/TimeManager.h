@@ -78,6 +78,10 @@ public TimeMasterCandidate
   double getBeatInNextSamples(int numSampleToAdd);
 
 
+  bool isPlaying();
+  bool isFirstPlayingFrame();
+  bool isJumping();
+
   //return percent in beat
   double getBeatPercent();
   int getBar();
@@ -157,6 +161,8 @@ private:
   uint64 lastTaped;
   uint64 currentBeatPeriod;
   int tapInRow;
+
+  bool firstPlayingFrame,hasJumped;
 
   FadeInOut clickFader;
 //  double lastEnv;

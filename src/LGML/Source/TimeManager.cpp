@@ -34,7 +34,9 @@ settingTempoFromCandidate(false),
 currentBeatPeriod(.5),
 lastTaped(0),
 tapInRow(0),
-clickFader(10000,10000,true,1.0/3.0)
+clickFader(10000,10000,true,1.0/3.0),
+firstPlayingFrame(false),
+hasJumped(false)
 {
 
   BPM = addFloatParameter("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
@@ -61,7 +63,7 @@ void TimeManager::incrementClock(int time){
   updateState();
   if(_isLocked)return;
 
-
+  hasJumped = timeState.isJumping;
   if(timeState.isJumping){
     timeState.time=timeState.nextTime;
     timeState.isJumping=false;
@@ -133,6 +135,16 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 #if !LGML_UNIT_TESTS
   incrementClock(numSamples);
 #endif
+}
+
+bool TimeManager::isPlaying(){
+  return timeState.isPlaying;
+}
+bool TimeManager::isFirstPlayingFrame(){
+  return desiredTimeState.isPlaying && !timeState.isPlaying;
+}
+bool TimeManager::isJumping(){
+  return timeState.isJumping;
 }
 
 bool TimeManager::askForBeingMasterCandidate(TimeMasterCandidate * n){
@@ -220,6 +232,8 @@ void TimeManager::updateState(){
   if(dbg!=""){
     LOG(dbg);
   }
+
+  firstPlayingFrame = desiredTimeState.isPlaying && timeState.isPlaying;
 
   timeState = desiredTimeState;
 }

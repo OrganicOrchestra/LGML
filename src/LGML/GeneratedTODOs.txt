@@ -86,7 +86,7 @@ MIDIController.cpp
 
 
 TimeManager.cpp
-	line : 383
+	line : 397
 		//TODO: check
 
 
