@@ -2,8 +2,8 @@
   ==============================================================================
 
     NodeBaseAudioCtlUI.h
-    Created: 4 May 2016 5:18:01pm
-    Author:  Martin Hermant
+    Created: 20 May 2016 12:52:30am
+    Author:  bkupe
 
   ==============================================================================
 */
@@ -11,29 +11,8 @@
 #ifndef NODEBASEAUDIOCTLUI_H_INCLUDED
 #define NODEBASEAUDIOCTLUI_H_INCLUDED
 
-#include "JuceHeader.h"
 
 
-class FloatSliderUI;
-class BoolToggleUI;
-class NodeBase;
-class NodeBaseUI;
-
-
-class NodeBaseAudioCtlUI:public Component{
-
-public:
-    NodeBaseAudioCtlUI();
-
-    void setNodeAndNodeUI(NodeBase * _node, NodeBaseUI * _nodeUI);
-    void resized() override;
-
-    ScopedPointer<FloatSliderUI>  outputVolume;
-    ScopedPointer<BoolToggleUI>  bypassUI;
-
-
-
-};
 
 
 #endif  // NODEBASEAUDIOCTLUI_H_INCLUDED

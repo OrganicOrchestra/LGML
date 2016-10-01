@@ -31,8 +31,9 @@ DataProcessorGraph::Connection::Connection(Data * sourceData, Data * destData) n
 
 void DataProcessorGraph::Connection::dataChanged(Data * d)
 {
-    if (destData != nullptr) destData->updateFromSourceData(d);
+	if (destData != nullptr) destData->updateFromSourceData(d);
 }
+
 
 
 void DataProcessorGraph::clear()

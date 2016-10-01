@@ -16,83 +16,158 @@
 /*
  This singleton handle time at sample Level
  then can dispatch synchronous or asynchronous event via TimeManager::Listener
+ Also provide basic click ability, and tap tempo via its parameters click and tapTempo
  */
 
-#include "NodeBase.h"
+#include "TimeMasterCandidate.h"
+#include "ControllableContainer.h"
+#include "AudioHelpers.h"
 
-class TimeManager : public AudioIODeviceCallback ,public ControllableContainer{
-
-
-    public :
-
-    // TODO check if we can use SingleThread Singleton for fast access in processAdio
-    juce_DeclareSingleton(TimeManager, true);
-
-    TimeManager();
-    ~TimeManager();
+class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead,
+public TimeMasterCandidate
+{
 
 
-    BoolParameter * playState;
-    Trigger * playTrigger;
-    Trigger * stopTrigger;
-    BoolParameter * isSettingTempo;
-    FloatParameter *  BPM;
-    IntParameter * currentBeat;
-    IntParameter * currentBar;
-    IntParameter * beatPerBar;
+  public :
+
+  // TODO check if we can use SingleThread Singleton for fast access in processAdio
+  juce_DeclareSingleton(TimeManager, true);
+
+  TimeManager();
+  ~TimeManager();
 
 
-    IntParameter * quantizedBarFraction;
-    void incrementClock(int time);
+  BoolParameter * playState;
+  Trigger * playTrigger;
+  Trigger * stopTrigger;
+  Trigger * tapTempo;
+  BoolParameter * isSettingTempo;
+  FloatParameter *  BPM;
+  IntParameter * currentBeat;
+  IntParameter * currentBar;
+  IntParameter * beatPerBar;
+  BoolParameter * BPMLocked;
+  BoolParameter * click;
 
-    void onContainerParameterChanged(Parameter * )override;
-    void onContainerTriggerTriggered(Trigger * ) override;
-    void setSampleRate(int sr);
+  IntParameter * quantizedBarFraction;
 
-    int setBPMForLoopLength(int time);
-
-
-
-    void setBeatPerBar(int bpb);
-    int getBeat();
-    int getNextGlobalQuantifiedTime();
-    int getNextQuantifiedTime(int barFraction);
-
-    //return percent in beat
-    double getBeatPercent();
-    int getBar();
+  void setSampleRate(int sr);
+  // granularity ensure that beat sample is divisible by 16 (8,4,2 ... 1) for further sub quantifs
+  double setBPMForLoopLength(uint64 time,int granularity=16);
 
 
-    ListenerList<Listener> listeners;
-    void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
-    void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
+  void jump(int amount);
+  void goToTime(uint64 time);
+  void advanceTime(uint64 );
 
-    uint64 timeInSample;
-    int beatTimeInSample;
-    int sampleRate;
-    Array<NodeBase *>  potentialTimeMasterNode;
-    bool isMasterNode(NodeBase * n);
-    bool hasMasterNode();
-    void releaseMasterNode(NodeBase * n);
-    bool askForBeingMasterNode(NodeBase * n);
-    void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) override;
+  // used when triggering multiple change
+  void lockTime(bool );
+  bool isLocked();
 
 
+  void togglePlay();
+
+  int getBeatInt();
+  double getBeat();
+  uint64 getNextGlobalQuantifiedTime();
+  uint64 getNextQuantifiedTime(int barFraction);
+  uint64 getTimeForNextBeats(int beats);
+  uint64 getTimeInSample();
+  uint64 getNextTimeInSample();
+  int getClosestBeat();
+  double getBeatInNextSamples(int numSampleToAdd);
+
+
+  bool isPlaying();
+  bool isFirstPlayingFrame();
+  bool isJumping();
+
+  //return percent in beat
+  double getBeatPercent();
+  int getBar();
+
+  /*
+   ListenerList<Listener> listeners;
+   void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
+   void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
+   */
+
+  uint64 beatTimeInSample;
+  int sampleRate;
+
+  Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;
+  bool isMasterCandidate(TimeMasterCandidate * n);
+  bool hasMasterCandidate();
+  void releaseMasterCandidate(TimeMasterCandidate * n);
+  bool askForBeingMasterCandidate(TimeMasterCandidate * n);
+  void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) override;
+
+
+  bool getCurrentPosition (CurrentPositionInfo& result)override;
+
+#if !LGML_UNIT_TESTS
 private:
-    void setBPMInternal(double BPM);
+#endif
 
-    virtual void audioDeviceAboutToStart (AudioIODevice* device)override {
-        setSampleRate((int)device->getCurrentSampleRate());
-        // should we notify blockSize?
-    };
+  struct TimeState{
+    TimeState():isJumping(false),nextTime((uint64)-1),isPlaying(false),time((uint64)0){}
+    bool isPlaying;
+    void jumpTo(uint64 t){
+      isJumping = true;
+      nextTime = t;
+    }
+    bool isJumping;
+    uint64 nextTime;
+    uint64 time;
+  };
 
-    /** Called to indicate that the device has stopped. */
-    virtual void audioDeviceStopped() override{
+  TimeState timeState,desiredTimeState;
 
-    };
+  void shouldStop();
+  void shouldPlay();
+  void shouldRestart(bool );
+  void shouldGoToZero();
+
+  void updateState();
+  void incrementClock(int time);
+
+  void onContainerParameterChanged(Parameter * )override;
+  void onContainerTriggerTriggered(Trigger * ) override;
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
+  void setBPMInternal(double BPM);
+
+  virtual void audioDeviceAboutToStart (AudioIODevice* device)override {
+    setSampleRate((int)device->getCurrentSampleRate());
+    // should we notify blockSize?
+  };
+
+  /** Called to indicate that the device has stopped. */
+  virtual void audioDeviceStopped() override{
+
+  };
+  bool _isLocked;
+  void updateCurrentPositionInfo();
+
+  CurrentPositionInfo currentPositionInfo;
+
+  // used for guessing tempo
+  Range<double> beatTimeGuessRange;
+  // used for manual setting of tempo
+  Range<double> BPMRange;
+
+  bool settingTempoFromCandidate;
+
+  uint64 lastTaped;
+  uint64 currentBeatPeriod;
+  int tapInRow;
+
+  bool firstPlayingFrame,hasJumped;
+
+  FadeInOut clickFader;
+//  double lastEnv;
+//  int clickFadeOut,clickFadeIn,clickFadeTime;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
 
 };
 

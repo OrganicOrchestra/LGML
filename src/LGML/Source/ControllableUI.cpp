@@ -40,3 +40,32 @@ void ControllableUI::updateTooltip()
     tooltip = controllable->description + "\nControl Address : " + controllable->controlAddress;
     setTooltip(tooltip);
 }
+
+
+//////////////////
+// NamedControllableUI
+
+NamedControllableUI::NamedControllableUI(ControllableUI * ui,int _labelWidth):
+ControllableUI(ui->controllable),
+ownedControllableUI(ui),
+labelWidth(_labelWidth){
+
+  addAndMakeVisible(controllableLabel);
+
+  controllableLabel.setJustificationType(Justification::centredLeft);
+  controllableLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
+  controllableLabel.setText(ui->controllable->niceName, dontSendNotification);
+  controllableLabel.setTooltip(ui->tooltip);
+
+  addAndMakeVisible(ui);
+  setBounds(ownedControllableUI->getBounds()
+            .withTrimmedRight(-labelWidth)
+            .withHeight(jmax((int)controllableLabel.getFont().getHeight() + 4,ownedControllableUI->getHeight())));
+}
+
+void NamedControllableUI::resized(){
+  Rectangle<int> area  = getLocalBounds();
+  controllableLabel.setBounds(area.removeFromLeft(labelWidth));
+		area.removeFromLeft(10);
+  ownedControllableUI->setBounds(area);
+}

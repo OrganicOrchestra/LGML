@@ -13,7 +13,9 @@
 
 #include "ShapeShifterPanel.h"
 
-class ShapeShifterWindow : public ResizableWindow
+class ShapeShifterWindow :
+	public ResizableWindow,
+	public ShapeShifterPanel::Listener
 {
 public:
 	ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds);
@@ -23,6 +25,9 @@ public:
 
 	ShapeShifterPanel * panel;
 
+	void paintOverChildren(Graphics &g)override;
+	void resized() override;
+
 	ComponentDragger dragger;
 	void mouseDown(const MouseEvent& e) override;
 	void mouseDrag(const MouseEvent& e) override;
@@ -30,8 +35,11 @@ public:
 
 	DragMode dragMode;
 
-
 	void userTriedToCloseWindow() override;
+
+	virtual var getCurrentLayout();
+
+	void panelEmptied(ShapeShifterPanel *) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterWindow)
 };

@@ -12,39 +12,42 @@
 #define MOVABLEPANEL_H_INCLUDED
 
 #include "ShapeShifter.h"
-#include "ShapeShifterPanelTab.h"
+class ShapeShifterPanelTab;
 #include "ShapeShifterContent.h"
 #include "ShapeShifterPanelHeader.h"
 
-class ShapeShifterContainer;
 
 class ShapeShifterPanel : public ShapeShifter, public ShapeShifterPanelHeader::Listener
 {
 public:
 	enum AttachZone {NONE, TOP, BOTTOM, LEFT, RIGHT, CENTER };
 
-	ShapeShifterPanel(ShapeShifterContent *innerComponent, ShapeShifterPanelTab * sourceTab = nullptr);
+	ShapeShifterPanel(ShapeShifterContent *innerComponent = nullptr, ShapeShifterPanelTab * sourceTab = nullptr);
 	virtual ~ShapeShifterPanel();
 
 	const int headerHeight = 20;
 	ShapeShifterPanelHeader header;
 
-	Array<ShapeShifterContent *> contents;
-
-	ShapeShifterContent * currentContent;
-	void setCurrentContent(ShapeShifterContent * content);
+	OwnedArray<ShapeShifterContent> contents;
 
 	bool transparentBackground;
-
 	bool targetMode;
-	void setTargetMode(bool value);
 
 	Point<float> candidateTargetPoint;
 	AttachZone candidateZone;
 
+
+	ShapeShifterContent * currentContent;
+	void setCurrentContent(ShapeShifterContent * content);
+	void setCurrentContent(const String &name);
+
+
 	void paint(Graphics & g) override;
 	void paintOverChildren(Graphics & g) override;
 	void resized() override;
+
+
+	void setTargetMode(bool value);
 
 	void setTransparentBackground(bool value);
 
@@ -56,26 +59,37 @@ public:
 
 	void addContent(ShapeShifterContent * content, bool setCurrent = true);
 
+	bool hasContent(ShapeShifterContent * content);
+	bool hasContent(const String & name);
+	ShapeShifterContent * getContentForName(const String &name);
+
+	bool isFlexible() override;
+
 	//Attach helpers
 
 	AttachZone checkAttachZone(ShapeShifterPanel * source);
 	void setCandidateZone(AttachZone zone);
 
+	virtual var getCurrentLayout() override;
+	virtual void loadLayoutInternal(var layout) override;
+
 	virtual void tabDrag(ShapeShifterPanelTab *) override;
 	virtual void tabSelect(ShapeShifterPanelTab *) override;
+	virtual void askForRemoveTab(ShapeShifterPanelTab *) override;
 	virtual void headerDrag() override;
 
 	//Listener
 	class Listener
 	{
 	public:
-        virtual ~Listener(){};
+		virtual ~Listener() {};
 		virtual void panelDetach(ShapeShifterPanel *) {}
 		virtual void panelEmptied(ShapeShifterPanel *) {};
 		virtual void panelDestroyed(ShapeShifterPanel *) {};
 
 		virtual void headerDrag(ShapeShifterPanel *) {}
 		virtual void tabDrag(ShapeShifterPanel *) {};
+		virtual void contentRemoved(ShapeShifterContent *) {}
 	};
 
 	ListenerList<Listener> listeners;

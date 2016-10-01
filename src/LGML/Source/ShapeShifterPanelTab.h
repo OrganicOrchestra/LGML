@@ -11,9 +11,10 @@
 #ifndef SHAPESHIFTERPANELTAB_H_INCLUDED
 #define SHAPESHIFTERPANELTAB_H_INCLUDED
 
-#include "ShapeShifterContent.h"
-
-class ShapeShifterPanelTab : public Component
+#include "ShapeShifterContent.h"//keep
+class ShapeShifterPanelTab :
+	public Component,
+	public ButtonListener
 {
 public:
 	ShapeShifterPanelTab(ShapeShifterContent * _content);
@@ -21,6 +22,7 @@ public:
 
 	ShapeShifterContent * content;
 	Label panelLabel;
+	ImageButton closePanelBT;
 
 	bool selected;
 	void setSelected(bool value);
@@ -29,6 +31,21 @@ public:
 	void resized()override;
 
 	int getLabelWidth();
+
+	void buttonClicked(Button * b) override;
+
+	//Listener
+	class TabListener
+	{
+	public:
+		virtual ~TabListener() {};
+		virtual void askForRemoveTab(ShapeShifterPanelTab *) {};
+	};
+
+	ListenerList<TabListener> tabListeners;
+	void addShapeShifterTabListener(TabListener* newListener) { tabListeners.add(newListener); }
+	void removeShapeShifterTabListener(TabListener* listener) { tabListeners.remove(listener); }
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterPanelTab)
 };

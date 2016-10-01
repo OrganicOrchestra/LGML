@@ -11,13 +11,12 @@
 #ifndef LOOPERNODEUI_H_INCLUDED
 #define LOOPERNODEUI_H_INCLUDED
 
-#include "NodeBaseUI.h"
 #include "TriggerBlinkUI.h"
 #include "FloatSliderUI.h"
-#include "Looper.h"
-#include "LooperTrack.h"
+#include "LooperNode.h"
+#include "NodeBaseContentUI.h"
 
-class LooperNodeContentUI: public NodeBaseContentUI , public Looper::Listener
+class LooperNodeContentUI: public NodeBaseContentUI , public LooperNode::LooperListener
 {
 public:
 
@@ -28,6 +27,7 @@ public:
     ScopedPointer<TriggerBlinkUI>   clearAllButton;
     ScopedPointer<TriggerBlinkUI>   stopAllButton;
     ScopedPointer<BoolToggleUI>     monitoringButton;
+
 
     LooperNodeContentUI();
     ~LooperNodeContentUI();
@@ -50,7 +50,7 @@ public:
         void mouseUp(const MouseEvent &) override{track->askForSelection(true);}
 
         void resized()override;
-        void trackSelected(bool _isSelected)override{ isSelected = _isSelected;repaint();}
+        void trackSelectedAsync(bool _isSelected)override{ isSelected = _isSelected;repaint();}
         void trackStateChangedAsync(const LooperTrack::TrackState & state)override;
         LooperTrack * track;
         Colour mainColour;
@@ -72,6 +72,7 @@ public:
     void resized() override;
     void reLayoutTracks();
     void reLayoutHeader();
+
 
     OwnedArray<TrackUI> tracksUI;
     LooperNode * looperNode;

@@ -9,12 +9,22 @@
  */
 
 #include "VSTNodeUI.h"
+#include "TriggerBlinkUI.h"
+#include "VSTManager.h"
+#include "NodeBaseUI.h"
+
+ConnectableNodeUI * VSTNode::createUI() {
+  return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
+}
+
 
 
 VSTNodeContentUI::VSTNodeContentUI():
 VSTListShowButton("VSTs"),
-showPluginWindowButton("showWindow")
+showPluginWindowButton("showWindow"),
+midiDeviceChooser(true)
 {
+    midiDeviceChooser.addListener(this);
 
 }
 VSTNodeContentUI::~VSTNodeContentUI(){
@@ -23,16 +33,29 @@ VSTNodeContentUI::~VSTNodeContentUI(){
 }
 
 void VSTNodeContentUI::init() {
-    vstNode = (VSTNode *)node;
+
+    vstNode = (VSTNode *)node.get();
+    addAndMakeVisible(midiDeviceChooser);
+
     VSTListShowButton.addListener(this);
     showPluginWindowButton.addListener(this);
+
     addAndMakeVisible(showPluginWindowButton);
     addAndMakeVisible(VSTListShowButton);
-    setSize(200, 100);
-    updateVSTParameters();
 
-    vstNode->addVSTNodeListener(this);
-    vstNode->addControllableContainerListener(this);
+	activityBlink = vstNode->midiActivityTrigger->createBlinkUI();
+	activityBlink->showLabel = false;
+	addAndMakeVisible(activityBlink);
+
+
+	updateVSTParameters();
+	setSize(250, 100);
+
+	vstNode->addVSTNodeListener(this);
+	vstNode->addControllableContainerListener(this);
+
+	//DBG("Set Node and ui -> " << vstNode->midiPortNameParam->stringValue());
+	midiDeviceChooser.setSelectedDevice(vstNode->midiPortNameParam->stringValue());
 
 }
 
@@ -69,7 +92,7 @@ void VSTNodeContentUI::controllableRemoved(Controllable * c){
 }
 void VSTNodeContentUI::controllableContainerAdded(ControllableContainer *){};
 void VSTNodeContentUI::controllableContainerRemoved(ControllableContainer *) {};
-void VSTNodeContentUI::controllableFeedbackUpdate(Controllable *) {};
+void VSTNodeContentUI::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable *) {};
 
 
 
@@ -78,9 +101,19 @@ void VSTNodeContentUI::newVSTSelected() {
     updateVSTParameters();
 }
 
+void VSTNodeContentUI::midiDeviceChanged()
+{
+	midiDeviceChooser.setSelectedDevice(vstNode->midiPortNameParam->stringValue());
+}
+
 void VSTNodeContentUI::resized(){
-    Rectangle<int> area = getLocalBounds();
-    Rectangle<int> headerArea = area.removeFromTop(40);
+    Rectangle<int> area = getLocalBounds().reduced (2);
+	Rectangle<int> midiR = area.removeFromTop(25);
+	activityBlink->setBounds(midiR.removeFromRight(midiR.getHeight()).reduced(2));
+    midiDeviceChooser.setBounds(midiR);
+
+	area.removeFromTop(2);
+    Rectangle<int> headerArea = area.removeFromTop(25);
     VSTListShowButton.setBounds(headerArea.removeFromLeft(headerArea.getWidth()/2));
     showPluginWindowButton.setBounds(headerArea);
     layoutSliderParameters(area.reduced(2));
@@ -125,6 +158,17 @@ void VSTNodeContentUI::vstSelected (int modalResult, Component *  originComp)
     }
 }
 
+void VSTNodeContentUI::comboBoxChanged(ComboBox *cb)
+{
+    if (cb == &midiDeviceChooser)
+    {
+        if (midiDeviceChooser.getSelectedItemIndex() > 0)
+        {
+            vstNode->midiPortNameParam->setValue(midiDeviceChooser.getItemText(midiDeviceChooser.getSelectedItemIndex()));
+        }
+    }
+}
+
 void VSTNodeContentUI::buttonClicked (Button* button)
 {
     if (button == &VSTListShowButton){
@@ -163,5 +207,5 @@ void VSTNodeHeaderUI::init()
 
 void VSTNodeHeaderUI::newVSTSelected()
 {
-    updatePresetComboBox();
+//    updatePresetComboBox();
 }

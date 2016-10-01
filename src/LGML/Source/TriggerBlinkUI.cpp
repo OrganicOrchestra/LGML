@@ -13,22 +13,16 @@ Author:  bkupe
 #include "Style.h"
 //==============================================================================
 TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
-    TriggerUI(t),
-    blinkTime(200),
-    refreshPeriod(50),
-    intensity(0)
+	TriggerUI(t),
+	blinkTime(100),
+	refreshPeriod(50),
+	intensity(0),
+	animateIntensity(true),
+	offColor(NORMAL_COLOR),
+	onColor(HIGHLIGHT_COLOR)
 {
     setSize(30, 20);
 
-
-    nameLabel.setJustificationType(Justification::centred);
-    nameLabel.setText(t->niceName, NotificationType::dontSendNotification);
-    addAndMakeVisible(nameLabel);
-    nameLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
-    Font f = nameLabel.getFont();
-    f.setHeight(10);
-    nameLabel.setFont(f);
-    nameLabel.setInterceptsMouseClicks(false, false);
 }
 
 TriggerBlinkUI::~TriggerBlinkUI()
@@ -38,48 +32,59 @@ TriggerBlinkUI::~TriggerBlinkUI()
 
 void TriggerBlinkUI::setTriggerReference(Trigger * t) {
     if (trigger != nullptr) {
-        trigger->removeTriggerListener(this);
+        trigger->removeAsyncTriggerListener(this);
     }
 
     trigger = t;
 
-    trigger->addTriggerListener(this);
+    trigger->addAsyncTriggerListener(this);
 }
 
-void TriggerBlinkUI::triggerTriggered(Trigger *) {
+void TriggerBlinkUI::triggerTriggered(const Trigger *) {
     startBlink();
+
 }
 
 void TriggerBlinkUI::paint(Graphics& g)
 {
-    g.setColour(NORMAL_COLOR.brighter(intensity));
+	g.setColour(offColor.interpolatedWith(onColor,intensity));
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
-
+    g.setFont(10);
+    g.setColour(Colours::white.darker(.1f));
+	if (showLabel)
+	{
+		g.drawFittedText(trigger->niceName, getLocalBounds().reduced(2), Justification::centred, 1);
+	}
 }
 
 
 void TriggerBlinkUI::startBlink(){
     intensity = 1;
-    startTimer(refreshPeriod);
+	if (!animateIntensity) repaint();
+	startTimer(animateIntensity ? refreshPeriod : blinkTime);
+
 }
 
 void TriggerBlinkUI::timerCallback(){
-    intensity-= refreshPeriod*1.0f/blinkTime;
-    if(intensity<0){
-    intensity = 0;
-    stopTimer();
-    }
+
+	if (animateIntensity)
+	{
+		intensity -= refreshPeriod*1.0f / blinkTime;
+
+		if (intensity < 0) {
+			intensity = 0;
+			stopTimer();
+		}
+	} else
+	{
+		intensity = 0;
+		stopTimer();
+	}
+
     repaint();
 }
 
 
-void TriggerBlinkUI::resized()
-{
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-    nameLabel.setBounds(getLocalBounds());
-
-}
 
 void TriggerBlinkUI::mouseDown(const MouseEvent&) {
     trigger->trigger();

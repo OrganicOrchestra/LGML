@@ -34,7 +34,7 @@ public:
     void mouseUp(const MouseEvent& event) override;
     void mouseEnter(const MouseEvent& event) override;
     void mouseExit(const MouseEvent& event) override;
-    void triggerTriggered(Trigger * p) override ;
+    void triggerTriggered(const Trigger * p) override ;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TriggerButtonUI)

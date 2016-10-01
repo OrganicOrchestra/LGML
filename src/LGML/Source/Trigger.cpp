@@ -13,21 +13,36 @@
 #include "TriggerButtonUI.h"
 #include "TriggerBlinkUI.h"
 
+#include "JsHelpers.h"
+
 Trigger::Trigger(const String & niceName, const String &description, bool enabled) :
 Controllable(TRIGGER, niceName, description, enabled),
-isTriggering(false)
+isTriggering(false),
+queuedNotifier(5)
 {
 }
 
-TriggerButtonUI * Trigger::createButtonUI()
+TriggerButtonUI * Trigger::createButtonUI(Trigger * target)
 {
-    return new TriggerButtonUI(this);
+	if (target == nullptr) target = this;
+    return new TriggerButtonUI(target);
 }
 
-TriggerBlinkUI * Trigger::createBlinkUI()
+TriggerBlinkUI * Trigger::createBlinkUI(Trigger * target)
 {
-    return new TriggerBlinkUI(this);
+	if (target == nullptr) target = this;
+	return new TriggerBlinkUI(target);
 }
-ControllableUI * Trigger::createControllableContainerEditor(){
-    return createBlinkUI();
+
+ControllableUI * Trigger::createDefaultUI(Controllable * targetControllable){
+    return createBlinkUI(dynamic_cast<Trigger *>(targetControllable));
+}
+
+DynamicObject * Trigger::createDynamicObject()
+{
+	DynamicObject* dObject = Controllable::createDynamicObject();
+	dObject->setMethod(jsTriggerIdentifier, setControllableValue);
+	dObject->setProperty(jsPtrIdentifier, (int64)this);
+
+	return dObject;
 }

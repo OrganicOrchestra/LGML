@@ -17,10 +17,13 @@ BoolParameter::BoolParameter(const String & niceName, const String &description,
     setValue(initialValue);
 }
 
-BoolToggleUI * BoolParameter::createToggle()
+BoolToggleUI * BoolParameter::createToggle(BoolParameter * target)
 {
-    return new BoolToggleUI(this);
+	if (target == nullptr) target = this;
+    return new BoolToggleUI(target);
 }
 
 
-ControllableUI * BoolParameter::createControllableContainerEditor() {return createToggle();}
+ControllableUI * BoolParameter::createDefaultUI(Controllable * targetControllable) {
+	return createToggle(dynamic_cast<BoolParameter *>(targetControllable));
+}

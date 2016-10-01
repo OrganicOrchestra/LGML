@@ -14,31 +14,23 @@
 
 #include "AudioMixerNode.h"
 #include "NodeBaseContentUI.h"
-#include "NodeBaseUI.h"
+
 
 #include "FloatSliderUI.h"
 
-class AudioMixerNodeUI : public NodeBaseContentUI,public NodeAudioProcessor::NodeAudioProcessorListener{
+class AudioMixerNodeUI : public NodeBaseContentUI,
+	public ConnectableNode::ConnectableNodeListener,
+public Parameter::Listener
+{
 public:
     AudioMixerNodeUI(){
-
     }
 
-    ~AudioMixerNodeUI(){
-        nodeMixer->removeNodeAudioProcessorListener(this);
-    }
-    void init() override{
-        nodeMixer = dynamic_cast<AudioMixerNode::AudioMixerAudioProcessor*>(node->audioProcessor);
-        numAudioOutputChanged(nodeMixer->numberOfOutput->value);
-        numAudioInputChanged(nodeMixer->numberOfInput->value);
+	~AudioMixerNodeUI();
+	void init() override;
 
-        nodeMixer->addNodeAudioProcessorListener(this);
-
-        nodeUI->setSize(250, 150);
-    }
-
-    void numAudioInputChanged(int )override;
-    void numAudioOutputChanged(int )override;
+    void numAudioInputChanged(ConnectableNode *,int )override;
+    void numAudioOutputChanged(ConnectableNode*, int )override;
 
     class OutputBusUI : public Component {
     public:
@@ -46,24 +38,32 @@ public:
         OwnedArray<FloatSliderUI> inputVolumes;
 
 
-        OutputBusUI(AudioMixerNode::AudioMixerAudioProcessor::OutputBus * o):owner(o){
+        OutputBusUI(AudioMixerNode::OutputBus * o):owner(o){
             setNumInput(o->volumes.size());
         };
+
         ~OutputBusUI(){
 
         }
         void setNumInput(int numInput);
         void resized() override;
         int outputIdx;
-        AudioMixerNode::AudioMixerAudioProcessor::OutputBus* owner;
-
+        AudioMixerNode::OutputBus* owner;
+        BigInteger visibleChanels;
+        void setOneVisible(int num);
+        int getNumOfVisibleChannels();
+        void updateVisibleChannels();
+        void setAllVisible();
 
     };
 
 
+    void parameterValueChanged(Parameter * p) override;
     void resized() override;
     OwnedArray<OutputBusUI> outputBusUIs;
-    AudioMixerNode::AudioMixerAudioProcessor * nodeMixer;
+    AudioMixerNode * mixerNode;
+
+    void setOneToOne(bool);
 
 };
 

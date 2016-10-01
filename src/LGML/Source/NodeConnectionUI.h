@@ -12,7 +12,6 @@
 #define NODECONNECTIONUI_H_INCLUDED
 
 
-#include "NodeBaseUI.h"
 #include "NodeManagerUI.h"
 
 //==============================================================================
@@ -21,7 +20,10 @@
 
 */
 
-class NodeConnectionUI : public Component, public ComponentListener
+class NodeConnectionUI :
+	public InspectableComponent,
+	public ComponentListener,
+	public NodeConnection::Listener
 {
 public:
     typedef ConnectorComponent Connector;
@@ -40,11 +42,14 @@ public:
     void setDestConnector(Connector * c);
 
 
-    Path hitPath;
+    Path path;
+	Path hitPath;
 
     void paint(Graphics&)override;
     void resized()override;
-    void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
+
+	void buildPath();
+	void buildHitPath(Array<Point<float>> points);
 
     void updateBoundsFromNodes();
     virtual bool hitTest(int x, int y) override{ return hitPath.contains((float)x, (float)y); }
@@ -53,14 +58,19 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
-    void mouseDoubleClick(const MouseEvent &e) override;
+	bool keyPressed(const KeyPress &key) override;
 
-	void showEditor();
+	void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }
 
-    Connector* getBaseConnector()
+	Connector* getBaseConnector()
     {
         return sourceConnector != nullptr ? sourceConnector : destConnector;
     }
+
+	Connector* getSecondConnector()
+	{
+		return sourceConnector != nullptr ? destConnector : sourceConnector;
+	}
 
     //From Component Listener
     void componentMovedOrResized(Component& component, bool wasMoved, bool wasResize)override;
@@ -77,10 +87,22 @@ public:
 
     bool finishEditing();
 
+
+	// Inherited via Listener
+	virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) override;
+	virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) override;
+	virtual void connectionAudioLinkAdded(const std::pair<int,int> &audioConnection) override;
+	virtual void connectionAudioLinkRemoved(const std::pair<int, int> & audioConnection) override;
+
+
     Component * getNodeManagerUI() { return (Component *)findParentComponentOfClass<NodeManagerUI>(); }
 
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnectionUI)
+	InspectorEditor * getEditor() override;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnectionUI);
+
+
+
 };
 
 

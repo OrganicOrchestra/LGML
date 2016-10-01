@@ -11,11 +11,8 @@
 #ifndef DATAPROCESSORGRAPH_H_INCLUDED
 #define DATAPROCESSORGRAPH_H_INCLUDED
 
-
-#include "DataProcessor.h"
-
-
-#include "DataProcessor.h"
+#include "Data.h"//keep
+class NodeBase;
 /*
 DataProcessoGraph handle a graph of DataProcessorGraph::Node,
     each Node refer to a dataProcessor and allow connections between them
@@ -47,14 +44,15 @@ public:
         virtual ~Connection()
         {
             if (sourceData != nullptr) sourceData->removeDataListener(this);
+			if (destData != nullptr) destData->removeDataListener(this);
         }
 
         Data * sourceData;
         Data * destData;
 
     private:
-        //==============================================================================
-        JUCE_LEAK_DETECTOR(Connection)
+			//==============================================================================
+			JUCE_LEAK_DETECTOR(Connection)
 
             // Inherited via DataListener
             virtual void dataChanged(Data *) override;
@@ -76,7 +74,7 @@ public:
     void removeConnection(Connection * connection);
 
     private:
-        Array<DataProcessor *> processors;
+        Array<NodeBase *> processors;
         OwnedArray<Connection> connections;
         uint32 lastNodeId;
 

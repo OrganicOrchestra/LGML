@@ -35,7 +35,7 @@ void NodeConnectionEditorDataSlot::paint (Graphics& g)
 {
 
     g.setColour (isMouseOver() ? HIGHLIGHT_COLOR:TEXTNAME_COLOR);
-    g.setFont (14.0f);
+    g.setFont(12);
 
     g.drawText (label, getLocalBounds(),Justification::centred, true);   // draw some placeholder text
 

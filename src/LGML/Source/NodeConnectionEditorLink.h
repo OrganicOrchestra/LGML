@@ -12,12 +12,12 @@
 #define NODECONNECTIONEDITORLINK_H_INCLUDED
 
 
-#include "NodeConnectionEditorDataSlot.h"
-
+#include "NodeConnectionEditorDataSlot.h"//keep
 //==============================================================================
 /*
 */
-class NodeConnectionEditorLink    : public Component
+class NodeConnectionEditorLink    : public Component, 
+	public SettableTooltipClient
 {
 public:
     NodeConnectionEditorLink(NodeConnectionEditorDataSlot * outSlot, NodeConnectionEditorDataSlot * inSlot);
@@ -25,6 +25,14 @@ public:
 
     NodeConnectionEditorDataSlot * outSlot;
     NodeConnectionEditorDataSlot * inSlot;
+
+	bool isSelected;
+	void setSelected(bool value)
+	{
+		isSelected = value;
+		DBG("repaint");
+		repaint();
+	}
 
     bool isEditing;
     void setEditing(bool value)
@@ -50,10 +58,14 @@ public:
     void paint (Graphics&)override;
     void resized()override;
 
-    void mouseEnter(const MouseEvent &) override { repaint(); };
-    void mouseExit(const MouseEvent &) override { repaint(); };
+	void mouseEnter(const MouseEvent &) override;
+	void mouseExit(const MouseEvent &) override;
+	void mouseDown(const MouseEvent &) override;
 
-    void remove() { listeners.call(&LinkListener::askForRemoveLink, this); }
+	void mouseDoubleClick(const MouseEvent &) override;
+	bool keyPressed(const KeyPress &key) override;
+
+	void remove();
 
     //Listener
     class LinkListener
@@ -62,6 +74,7 @@ public:
         /** Destructor. */
         virtual ~LinkListener() {}
         virtual void askForRemoveLink(NodeConnectionEditorLink * target) = 0;
+		virtual void selectLink(NodeConnectionEditorLink * link) = 0;
     };
 
     ListenerList<LinkListener> listeners;

@@ -1,144 +1,136 @@
-#include "NodeManagerUI.h"
 #include "ConnectorComponent.h"
+#include "NodeContainerViewer.h"
+#include "NodeFactory.h"
+#include "Style.h"
+#include "NodeBase.h"
 
-ConnectorComponent::ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, NodeBase * node) :
-    ioType(ioType), dataType(dataType), node(node),isHovered(false)
+ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, ConnectableNode * _cnode) :
+ioType(_ioType),
+dataType(_dataType),
+node((ConnectableNode *)_cnode),
+isHovered(false)
 {
-    boxColor = dataType == NodeConnection::ConnectionType::AUDIO ? AUDIO_COLOR : DATA_COLOR;
-    setSize(10,10);
-    if(node->audioProcessor){node->audioProcessor->addNodeAudioProcessorListener(this);}
-    generateToolTip();
 
 
+    node->addConnectableNodeListener(this);
+
+  boxColor = (dataType == NodeConnection::ConnectionType::AUDIO)? AUDIO_COLOR : DATA_COLOR;
+  setSize(10,10);
+
+
+  generateToolTip();
+
+  updateVisibility();
 }
 
 ConnectorComponent::~ConnectorComponent(){
-    if(node->audioProcessor){node->audioProcessor->removeNodeAudioProcessorListener(this);}
+     node->removeConnectableNodeListener(this);
+}
+
+NodeBase * ConnectorComponent::getNodeBase(){
+  return dynamic_cast<NodeBase *>(node.get());
 }
 
 void ConnectorComponent::generateToolTip(){
-    String tooltip;
-    tooltip += dataType == NodeConnection::ConnectionType::AUDIO?"Audio\n":"Data\n";
-    if (dataType == NodeConnection::ConnectionType::AUDIO)
+  String tooltip;
+  tooltip += dataType == NodeConnection::ConnectionType::AUDIO?"Audio\n":"Data\n";
+  if (dataType == NodeConnection::ConnectionType::AUDIO)
+  {
+    bool isInput = ioType == ConnectorIOType::INPUT;
+    AudioProcessorGraph::Node * tAudioNode = node->getAudioNode(isInput);
+    if (tAudioNode != nullptr)
     {
-        tooltip += ioType == ConnectorIOType::INPUT? node->audioProcessor->getTotalNumInputChannels() : node->audioProcessor->getTotalNumOutputChannels();
-        tooltip += " channels";
+      tooltip += isInput? tAudioNode->getProcessor()->getTotalNumInputChannels() : tAudioNode->getProcessor()->getTotalNumOutputChannels();
+      tooltip += " channels";
     }
     else
     {
-        StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->dataProcessor->getInputDataInfos() : node->dataProcessor->getOutputDataInfos();
-        tooltip += dataInfos.joinIntoString("\n");
+      tooltip = "[Error accessing audio processor]";
     }
-      setTooltip(tooltip);
+  }
+  else
+  {
+    StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->getInputDataInfos() : node->getOutputDataInfos();
+    tooltip += dataInfos.joinIntoString("\n");
+  }
+  setTooltip(tooltip);
 }
 void ConnectorComponent::paint(Graphics & g)
 {
-    g.setGradientFill(ColourGradient(isHovered?boxColor.brighter(5.f):boxColor, (float)(getLocalBounds().getCentreY()),(float)(getLocalBounds().getCentreY()), boxColor.darker(), 0.f,0.f, true));
-    g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
+  g.setGradientFill(ColourGradient(isHovered?boxColor.brighter(5.f):boxColor, (float)(getLocalBounds().getCentreY()),(float)(getLocalBounds().getCentreY()), boxColor.darker(), 0.f,0.f, true));
+  g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 }
 
 void ConnectorComponent::mouseDown(const MouseEvent &)
 {
-    NodeManagerUI * nmui = getNodeManagerUI();
+  NodeContainerViewer * containerViewer = getNodeContainerViewer();
 
-    if (dataType == NodeConnection::ConnectionType::DATA)
-    {
+  if (dataType == NodeConnection::ConnectionType::DATA)
+  {
 
-        nmui->createDataConnectionFromConnector(this);
-    }
-    else
-    {
-        nmui->createAudioConnectionFromConnector(this);
-    }
+    containerViewer->createDataConnectionFromConnector(this);
+  }
+  else
+  {
+    containerViewer->createAudioConnectionFromConnector(this);
+  }
 }
 
 void ConnectorComponent::mouseEnter (const MouseEvent&){
-    isHovered = true;
-    repaint();
+  isHovered = true;
+  repaint();
 }
 void ConnectorComponent::mouseExit  (const MouseEvent&){
-    isHovered = false;
-    repaint();
+  isHovered = false;
+  repaint();
 }
 
-/*
-void ConnectorComponent::selectDataAndElementPopup(String & selectedDataName, String & selectedElementName,
-    DataType &selectedDataType, const DataType &filterType)
+void ConnectorComponent::updateVisibility()
 {
 
-    DBG("Select :: filter Type = " + String(filterType));
-    int numDatas = 0;
-    OwnedArray<Data>* datas;
+  bool isAudio = dataType == NodeConnection::ConnectionType::AUDIO;
+  bool isInput = ioType == ConnectorIOType::INPUT;
 
-    if (ioType == ConnectorIOType::INPUT)
-    {
-        numDatas = node->dataProcessor->getTotalNumInputData();
-        datas = &node->dataProcessor->inputDatas;
-    }
-    else
-    {
-        numDatas = node->dataProcessor->getTotalNumOutputData();
-        datas = &node->dataProcessor->outputDatas;
-    }
+  if (isAudio) setVisible(isInput ? node->hasAudioInputs() : node->hasAudioOutputs());
+  else setVisible(isInput ? node->hasDataInputs() : node->hasDataOutputs());
 
-
-    ScopedPointer<PopupMenu> menu (new PopupMenu());
-
-    const int maxElementPerData = 10;
-
-    for (int i = 0; i < numDatas; i++)
-    {
-        ScopedPointer<PopupMenu> dataMenu( new PopupMenu());
-        Data * d = datas->getUnchecked(i);
-        int itemID = i *  maxElementPerData + 1; //max 10 element per data anyway, 1 to not start from 0
-
-        DBG("Is data compatible ? "+ String(d->isTypeCompatible(filterType)));
-
-        menu->addItem(itemID,d->name + " ("+d->getTypeString()+")", d->isTypeCompatible(filterType));
-
-        for (int j = 0; j < d->elements.size(); j++)
-        {
-            menu->addItem(itemID + (j + 1), ".    | "+d->elements[j]->name, d->elements[j]->isTypeCompatible(filterType));
-            //dataMenu->addItem(itemID + (j + 1), d->elements[j]->name,d->elements[j]->isTypeCompatible(filterType));
-            //DBG(" > Is element compatible ? " + String(d->elements[j]->isTypeCompatible(filterType)))
-        }
-
-        //menu->addSubMenu(d->name, *dataMenu, true, nullptr, false, d->isTypeCompatible(filterType)?itemID:0);
-    }
-
-    int resultID = menu->show();
-
-    if (resultID > 0)
-    {
-        int offsetID = resultID - 1;
-
-        int dataID = (int)floor(offsetID / 10);
-        int elementID = offsetID % maxElementPerData;
-
-        selectedDataName = datas->getUnchecked(dataID)->name;
-        if (elementID > 0)
-        {
-            selectedElementName = datas->getUnchecked(dataID)->elements[elementID - 1]->name;
-            selectedDataType = datas->getUnchecked(dataID)->elements[elementID - 1]->type;
-        }
-        else
-        {
-            selectedDataType = datas->getUnchecked(dataID)->type;
-        }
-    }
-}
-*/
-
-
-void ConnectorComponent::numAudioInputChanged(int){generateToolTip();}
-void ConnectorComponent::numAudioOutputChanged(int){generateToolTip();}
-
-NodeManagerUI * ConnectorComponent::getNodeManagerUI() const noexcept
-{
-    return findParentComponentOfClass<NodeManagerUI>();
+  connectorListeners.call(&ConnectorListener::connectorVisibilityChanged, this);
 }
 
-NodeBaseUI * ConnectorComponent::getNodeUI() const noexcept
+void ConnectorComponent::numAudioInputChanged(ConnectableNode *, int)
 {
-    return findParentComponentOfClass<NodeBaseUI>();
+  if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::INPUT) return;
+  generateToolTip();
+  updateVisibility();
+}
+
+void ConnectorComponent::numAudioOutputChanged(ConnectableNode *, int)
+{
+  if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
+  generateToolTip();
+  updateVisibility();
+}
+
+void ConnectorComponent::numDataInputChanged(ConnectableNode *, int)
+{
+  if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::INPUT) return;
+  generateToolTip();
+  updateVisibility();
+}
+
+void ConnectorComponent::numDataOutputChanged(ConnectableNode *, int)
+{
+  if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::OUTPUT) return;
+  generateToolTip();
+  updateVisibility();
+}
+
+NodeContainerViewer * ConnectorComponent::getNodeContainerViewer() const noexcept
+{
+  return findParentComponentOfClass<NodeContainerViewer>();
+}
+
+ConnectableNodeUI * ConnectorComponent::getNodeUI() const noexcept
+{
+  return findParentComponentOfClass<ConnectableNodeUI>();
 }

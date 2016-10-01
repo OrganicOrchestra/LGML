@@ -19,21 +19,23 @@ FloatParameter::FloatParameter(const String & niceName, const String &descriptio
 
 }
 
-void FloatParameter::setValueInternal(var _value)
+void FloatParameter::setValueInternal(var & _value)
 {
-    value = jlimit<float>(minimumValue, maximumValue, _value);
+    value = jlimit<double>(minimumValue, maximumValue, _value);
 }
 
-FloatSliderUI * FloatParameter::createSlider()
+FloatSliderUI * FloatParameter::createSlider(FloatParameter * target)
 {
-    return new FloatSliderUI(this);
+	if (target == nullptr) target = this;
+    return new FloatSliderUI(target);
 }
 
-FloatStepperUI * FloatParameter::createStepper()
+FloatStepperUI * FloatParameter::createStepper(FloatParameter * target)
 {
-    return new FloatStepperUI(this);
+	if (target == nullptr) target = this;
+	return new FloatStepperUI(target);
 }
 
-ControllableUI * FloatParameter::createControllableContainerEditor() {
-    return createSlider();
+ControllableUI * FloatParameter::createDefaultUI(Controllable * targetControllable) {
+    return createSlider(dynamic_cast<FloatParameter *>(targetControllable));
 }

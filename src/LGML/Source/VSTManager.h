@@ -11,9 +11,8 @@
 #ifndef VSTMANAGER_H_INCLUDED
 #define VSTMANAGER_H_INCLUDED
 
+#include "JuceHeader.h"//keep
 
-
-#include "JuceHeader.h"
 
 ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();

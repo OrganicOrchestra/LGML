@@ -10,7 +10,7 @@
 
 #include "ShapeShifterPanelTab.h"
 #include "Style.h"
-
+#include "ShapeShifterManager.h"
 
 ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent * _content) : content(_content), selected(false)
 {
@@ -19,9 +19,21 @@ ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent * _content) : con
 	panelLabel.setFont(12);
 	panelLabel.setColour(panelLabel.textColourId, TEXT_COLOR);
 	panelLabel.setJustificationType(Justification::centred);
-	panelLabel.setText(content->getName(), NotificationType::dontSendNotification);
+	panelLabel.setText(content == nullptr?"[No content]":content->contentName, NotificationType::dontSendNotification);
 
 	addAndMakeVisible(&panelLabel);
+
+	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
+
+	closePanelBT.setImages(false, true, true, removeImage,
+		0.7f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::transparentBlack,
+		removeImage, 1.0f, Colours::white.withAlpha(.7f),
+		0.5f);
+	closePanelBT.addListener(this);
+
+	addAndMakeVisible(closePanelBT);
+
 
 	setSize(getLabelWidth(), 20);
 }
@@ -47,10 +59,17 @@ void ShapeShifterPanelTab::paint(Graphics & g)
 
 void ShapeShifterPanelTab::resized()
 {
-	panelLabel.setBounds(getLocalBounds());
+	Rectangle<int> r = getLocalBounds();
+	closePanelBT.setBounds(r.removeFromRight(r.getHeight()).reduced(3));
+	panelLabel.setBounds(r);
 }
 
 int ShapeShifterPanelTab::getLabelWidth()
 {
-	return panelLabel.getFont().getStringWidth(panelLabel.getText()) + 20;
+	return panelLabel.getFont().getStringWidth(panelLabel.getText()) + 30;
+}
+
+void ShapeShifterPanelTab::buttonClicked(Button * b)
+{
+	if(b == &closePanelBT) tabListeners.call(&TabListener::askForRemoveTab, this);
 }

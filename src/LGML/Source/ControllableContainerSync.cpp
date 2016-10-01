@@ -8,13 +8,12 @@
  ==============================================================================
  */
 
+
 #include "ControllableContainerSync.h"
 
 
-
-
 ControllableContainerSync::ControllableContainerSync(ControllableContainer * source,String overrideName):
-ControllableContainer(overrideName!=""?overrideName:source->niceName),
+ControllableContainer(overrideName!=StringRef()?overrideName:source->niceName),
 sourceContainer(source),
 notifyingControllable(nullptr)
 #if DEBUG_CONTROLLABLENAMES
@@ -79,7 +78,8 @@ void ControllableContainerSync::removeSyncedControllable(ControllableContainer *
 void ControllableContainerSync::deepCopyForContainer(ControllableContainer * container){
 
     for(auto & c:container->controllables){
-        doAddControllable(c);
+		if (!c->isControllableExposed || c->isControllableFeedbackOnly) continue;
+		doAddControllable(c);
     }
     for(auto & c:container->controllableContainers){
         doAddContainer(c);
@@ -123,9 +123,8 @@ void ControllableContainerSync::doRemoveControllable(Controllable * c){
 }
 
 void ControllableContainerSync::doAddContainer(ControllableContainer *c){
-    ControllableContainerSync * cc = new ControllableContainerSync(c,"");
+    ControllableContainerSync * cc = new ControllableContainerSync(c,StringRef());
     addChildControllableContainer(cc);
-
 }
 
 void ControllableContainerSync::doRemoveContainer(ControllableContainer *c){
@@ -168,6 +167,7 @@ void ControllableContainerSync::onContainerParameterChanged(Parameter * c){
     }
 }
 void ControllableContainerSync::onContainerTriggerTriggered(Trigger * c){
+	
     for(auto & listener:targetSyncedContainers){
         for(auto t:listener->controllables){
             if(areCompatible(t ,c)){
@@ -179,7 +179,7 @@ void ControllableContainerSync::onContainerTriggerTriggered(Trigger * c){
 
 
 // from synced list
-void ControllableContainerSync::controllableFeedbackUpdate(Controllable *c) {
+void ControllableContainerSync::controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *c) {
     if(c->parentContainer ){
     if(areCompatible(c->parentContainer,this)){
         for(auto & cc:controllables){
@@ -248,38 +248,27 @@ bool ControllableContainerSync::setControllableValue(Controllable * cOrigin,Cont
 }
 
 
-// === sync listener{
-void ControllableContainerSync::notifyStructureChanged(){
-    containerSyncListeners.call(&ContainerSyncListener::structureChanged);
-    ControllableContainerSync * parent = dynamic_cast<ControllableContainerSync*>(parentContainer);
-    if(parent){
-        parent->notifyStructureChanged();
-    }
-}
 
 void ControllableContainerSync::controllableAdded(Controllable *c) {
     doAddControllable(c);
-    notifyStructureChanged();
 
 }
 
 void ControllableContainerSync::controllableRemoved(Controllable *c){
     doRemoveControllable(c);
-    notifyStructureChanged();
 }
 void ControllableContainerSync::controllableContainerAdded(ControllableContainer *  c) {
     doAddContainer(c);
-    notifyStructureChanged();
 }
 void ControllableContainerSync::controllableContainerRemoved(ControllableContainer * c){
     doRemoveContainer(c);
-    notifyStructureChanged();
 }
 
-String ControllableContainerSync::produceGroupName(const String & n){
+String ControllableContainerSync::produceGroupName(const String & n) {
 #if DEBUG_CONTROLLABLENAMES
-    return groupName+"_"+n;
+	return groupName + "_" + n;
 #else
-    return n;
+	return n;
 #endif
+
 }

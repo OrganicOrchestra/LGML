@@ -11,6 +11,7 @@
 
 
 
+/*
 #include "NodeManager.h"
 #include "NodeManagerUI.h"
 
@@ -18,10 +19,14 @@
 #include "ControllerManagerUI.h"
 #include "TimeManagerUI.h"
 
-#include "ShapeShifterManager.h"
+#include "RuleManager.h"
+#include "RuleManagerUI.h"
 
-#include "ControllableInspector.h"
-#include "Engine.h"
+#include "FastMapper.h"
+#include "FastMapperUI.h"
+
+#include "LGMLLoggerUI.h"
+*/
 
 #include "LookAndFeelOO.h"
 //==============================================================================
@@ -34,6 +39,9 @@ ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
+class Engine;
+#include "ShapeShifterManager.h"//keep
+#include "DebugHelpers.h"//keep
 
 class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel
 
@@ -44,17 +52,21 @@ public:
     // just need to create one of these and leave it
     // there to do its work..
 
-	ShapeShifterManager shapeShifterManager;
 
+	/*
 	ScopedPointer<TimeManagerUI> timeManagerUI;
+	ScopedPointer<InspectorViewport> inspectorViewport;
 
-	ScopedPointer<NodeManagerUI> nodeManagerUI;
-	ScopedPointer<ControllableInspector> controllableInspector;
+	ScopedPointer<NodeManagerUIViewport> nodeManagerViewport;
 	ScopedPointer<ControllerManagerUI> controllerManagerUI;
+	ScopedPointer<RuleManagerUI> ruleManagerUI;
+	ScopedPointer<FastMapperViewport> fastMapperViewport;
 
+    ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;
+	*/
 
     Engine * engine;
-    AudioDeviceSelectorComponent audioSettingsComp;
+
 
     ScopedPointer<LookAndFeelOO> lookAndFeelOO;
 
@@ -85,9 +97,10 @@ public:
     virtual bool perform (const InvocationInfo& info) override ;
     StringArray getMenuBarNames() override ;
     virtual PopupMenu getMenuForIndex (int topLevelMenuIndex,const String& menuName) override;
-    void menuItemSelected (int /*menuItemID*/,int /*topLevelMenuIndex*/) override{}
+	void menuItemSelected(int /*menuItemID*/, int /*topLevelMenuIndex*/) override;
 
 
+    void updateStimulateAudioItem (ApplicationCommandInfo& info);
 
 private:
     //==============================================================================

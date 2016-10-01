@@ -12,24 +12,23 @@
 #define CONTROLLABLEINDEXEDCONTAINER_H_INCLUDED
 
 
-#include "ControllableContainer.h"
 
 // DO NOT USE FOR NOW !!!!!! WIP !!
 
-
-class ControllableIndexedContainer : public ControllableContainer
-{
-public :
-    ControllableIndexedContainer(const String &niceName) :
-        ControllableContainer(niceName)
-    {
-
-    }
-
-    virtual Controllable * getControllableForAddress(Array<String> addressSplit, bool recursive = true, bool getNotExposed = false) override;
-    //virtual Array<Controllable *> getAllControllables(bool recursive = false) override;
-
-};
+//
+//class ControllableIndexedContainer : public ControllableContainer
+//{
+//public :
+//    ControllableIndexedContainer(const String &niceName) :
+//        ControllableContainer(niceName)
+//    {
+//
+//    }
+//
+//    virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false) override;
+//    //virtual Array<Controllable *> getAllControllables(bool recursive = false) override;
+//
+//};
 
 
 #endif  // CONTROLLABLEINDEXEDCONTAINER_H_INCLUDED

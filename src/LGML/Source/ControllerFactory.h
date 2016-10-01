@@ -1,33 +1,47 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ControllerFactor.h
-    Created: 8 Mar 2016 10:25:48pm
-    Author:  bkupe
+ ControllerFactor.h
+ Created: 8 Mar 2016 10:25:48pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef CONTROLLERFACTOR_H_INCLUDED
 #define CONTROLLERFACTOR_H_INCLUDED
 
 
-#include "OSCDirectController.h"
 #include "DMXController.h"
 #include "MIDIController.h"
+#include "JavaScriptController.h"
+#include "OSCCustomController.h"
+#include "SerialController.h"
 
-class ControllerManager;
 
-static const String controllerTypeNames[] = { "OSC Direct","DMX","MIDI" };
+
+static const String controllerTypeNames[] = {
+	"ScriptedOSC",
+	"OSC Custom",
+	"DMX",
+	"MIDI"
+#if SERIALSUPPORT
+	,"Serial"
+#endif
+	};
 
 class ControllerFactory
 {
 public:
     enum ControllerType
     {
-        OSCDirect,
+		ScriptedOSC,
+		OSCCustom,
         DMX,
         MIDI,
+#if SERIALSUPPORT
+		SERIAL,
+#endif
         UNKNOWN //has to be last
     };
 
@@ -47,21 +61,30 @@ public:
 
         switch (controllerType)
         {
-        case OSCDirect:
-            c = new OSCDirectController();
-            break;
 
-        case DMX:
-            c = new DMXController();
-            break;
+            case ScriptedOSC:
+                c = new JavascriptController();
+                break;
+			case OSCCustom:
+				c = new OSCCustomController();
+				break;
+            case DMX:
+                c = new DMXController();
+                break;
 
-        case MIDI:
-            c = new MIDIController();
-            break;
+            case MIDI:
+                c = new MIDIController();
+                break;
 
-        default:
-            jassert(false);
-            break;
+#if SERIALSUPPORT
+			case SERIAL:
+				c = new SerialController();
+				break;
+#endif
+
+            default:
+                jassert(false);
+                break;
         }
 
 

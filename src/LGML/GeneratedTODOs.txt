@@ -7,67 +7,63 @@
  ///////////////////////////////////////
 
 
-NodeManager.cpp
-	line : 264
-		//TODO synchronize this and implement it for data
-		// it's not indispensable
-
-	line : 161
-		// TODO nicely handle file format errors?
+ConnectableNodeUI.h
+	line : 94
+		// @ben conflit avec le parametre ;)
 
 
-EngineFileDocument.cpp
-	line : 99
-		//    TODO check version Compat
+Main.cpp
+	line : 164
+		//@martin added but commented for testing (relou behavior)
 
 
-VuMeter.h
-	line : 15
-		//TODO, move to more common place for use in other components
+MIDIManager.cpp
+	line : 138
+		// @Ben seems weird mixing duc
+		// btw do we really need that for output??
 
 
 ControllableContainer.cpp
-	line : 378
+	line : 538
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 108
-		// @ben remove nested callback as it's not needed anymore for ControllableContainerSync
-		// we may implement a special callback structure changed that triggered only by the root parent
-		//    ControllableContainer * notified = parentContainer;
-		//    while(notified!=nullptr){
-		//        notified->controllableContainerListeners.call(&ControllableContainer::Listener::controllableRemoved, c);
-		//        notified = notified->parentContainer;
+	line : 631
+		// @ ben we don't want to load preset when loading from file, do we?
+		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
+		//    {
+		//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
 		//    }
+		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
+
+	line : 447
+		// TODO weird feedback when loading preset on parameter presetName
 
 
 NodeBase.h
-	line : 125
-		// @ben is it triggering error on your side?
+	line : 48
+		//  TODO:  this should not be implemented in Node to avoid overriding this method
+		//    create onNodeParameterChanged();
 
 
-NodeConnectionEditor.cpp
-	line : 389
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
-	line : 190
-		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
-		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
-		// should be fixed !!
+LooperNode.cpp
+	line : 63
+		// TODO check if we can optimize copies
+		// handle multiples channels outs
 
 
-NodeConnectionUI.cpp
-	line : 83
-		//@ben I prefer that atm (at least it doesnt start with weird anchors)
-		//but I'm up for any other fancy complexoid cuved Path algos that never touch a node
+MainComponentCommands.cpp
+	line : 247
+		// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
+		//			int result = engine->saveIfNeededAndUserAgrees();
 
 
 ShapeShifterContainer.cpp
-	line : 100
-		//TODO check direction and create sub container if needed
-
-	line : 231
+	line : 293
 		//@ben what to we do for that?
 		//@martin never gonna happen :)
+
+	line : 127
+		//@ben do we need to handle these?
 
 
 DataProcessorGraph.cpp
@@ -77,50 +73,83 @@ DataProcessorGraph.cpp
 
 
 ControllableInspector.cpp
-	line : 87
+	line : 85
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
 
 
-LooperTrack.cpp
-	line : 174
-		// TODO subBlock precision ?
-		// not sure -> triggers are updated at block size granularity
-		// for now reduce block approximation noise when quantized
+MIDIController.cpp
+	line : 41
+		// TODO : we may need to listen to sR changes
+
+	line : 183
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
+
+
+TimeManager.cpp
+	line : 397
+		//TODO: check
+
+
+NodeConnectionEditor.cpp
+	line : 180
+		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
+		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
+		// should be fixed !!
+
+	line : 391
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+
+NodeContainer.cpp
+	line : 296
+		// TODO nicely handle file format errors?
+
+	line : 529
+		// TODO :  handle change of in out numChannels
+		// wiill need to call on change
+
+	line : 210
+		//@ben remove recursive for now (not useful and duplicating values...)
+		//
+		//    for (auto &n : nodes) n->saveCurrentPreset();
+
+	line : 455
+		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
+		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
+		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
+		//         nb->stopTimer();
+		//        }
+
+
+DataInNode.cpp
+	line : 46
+		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
 
 
 TimeManager.h
-	line : 27
+	line : 32
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
-VSTNode.h
-	line : 88
-		// TODO check that it actually works
-
-	line : 105
-		//@Martin i addedd this because when not playing, it crashed
-
-	line : 109
-		// TODO check if scoped pointer deletes old innerPlugin
+JavascriptControllerUI.cpp
+	line : 14
+		// @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
 
 
 NodeBase.cpp
-	line : 152
+	line : 342
+		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
+
+	line : 111
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
 ControllableContainer.h
-	line : 94
+	line : 147
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
 		//      or using dispatch feedback that triggers only exposedParams
-
-
-Looper.cpp
-	line : 60
-		// TODO check if we can optimize copies
-		// handle multiples channels outs
 
 
 ControllableInspector.h
@@ -128,8 +157,8 @@ ControllableInspector.h
 		// TODO handle merging of multiple component of sameClass : almost there ....
 
 
-FloatSliderUI.h
-	line : 28
-		// TODO implement a numboxUI
+VuMeter.h
+	line : 16
+		//TODO, move to more common place for use in other components
 
 

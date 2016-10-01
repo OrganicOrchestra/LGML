@@ -9,7 +9,9 @@
  */
 
 #include "MainComponent.h"
-#include "NodeConnectionEditor.h"
+#include "Engine.h"
+
+
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)
@@ -19,51 +21,14 @@ MainContentComponent* createMainContentComponent(Engine * e)
 
 
 MainContentComponent::MainContentComponent(Engine * e):
-    engine(e),
-    audioSettingsComp(getAudioDeviceManager(),
-        0, 256,
-        0, 256,
-        false,false, false,false)
+    engine(e)
 {
 
     setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
 
-    DBG("Application Start");
+	addAndMakeVisible(&ShapeShifterManager::getInstance()->mainContainer);
 
-	addAndMakeVisible(shapeShifterManager.mainContainer);
-
-    timeManagerUI = new TimeManagerUI(TimeManager::getInstance());
-    nodeManagerUI = new NodeManagerUI(NodeManager::getInstance());
-	controllerManagerUI = new ControllerManagerUI(ControllerManager::getInstance());
-	controllableInspector = new ControllableInspector(nodeManagerUI); //Needs to be abstracted from NodeManager, and be able to inspect any ControllableContainer
-
-	ShapeShifterPanel * timeManagerPanel = ShapeShifterManager::getInstance()->createPanel(timeManagerUI);
-	ShapeShifterPanel * nodeManagerPanel = ShapeShifterManager::getInstance()->createPanel(nodeManagerUI);
-	ShapeShifterPanel * controllerManagerPanel = ShapeShifterManager::getInstance()->createPanel(controllerManagerUI);
-	ShapeShifterPanel * inspectorPanel = ShapeShifterManager::getInstance()->createPanel(controllableInspector);
-
-	timeManagerPanel->setPreferredHeight(50);
-
-	shapeShifterManager.mainContainer.insertPanelAt(timeManagerPanel, 0);
-
-	ShapeShifterContainer * c2 = shapeShifterManager.mainContainer.insertContainerAt(ShapeShifterContainer::Direction::HORIZONTAL,1);
-	c2->insertPanelAt(nodeManagerPanel, 1);
-
-	ShapeShifterContainer * vc = c2->insertContainerAt(ShapeShifterContainer::VERTICAL,0);
-	vc->insertPanelAt(controllerManagerPanel, 0);
-	vc->insertPanelAt(inspectorPanel, 1);
-
-	controllerManagerPanel->setPreferredWidth(300);
-	inspectorPanel->setPreferredWidth(300);
-	vc->setPreferredWidth(300);
-
-
-
-	//c2->insertPanelAt(controllableInspectorPanel, 2);
-
-    // resize after contentCreated
-
-    setSize(1500, 750);
+	ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
 
     (&getCommandManager())->registerAllCommandsForTarget (this);
     (&getCommandManager())-> setFirstCommandTarget(this);
@@ -79,8 +44,11 @@ MainContentComponent::MainContentComponent(Engine * e):
 
 
     e->createNewGraph();
+	e->setChangedFlag(false);
+
     //e->initAudio();
 
+	setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.6f));
 }
 
 
@@ -95,8 +63,8 @@ MainContentComponent::~MainContentComponent(){
 #endif
 //    LookAndFeelOO::deleteInstance();
 
+	//DBG("Clear inspector");
 
-    NodeConnectionEditor::deleteInstance();
 	ShapeShifterManager::deleteInstance();
 }
 
@@ -106,11 +74,17 @@ void MainContentComponent::resized()
 {
 	Rectangle<int> r = getLocalBounds();
 	//timeManagerUI->setBounds(r.removeFromTop(25));
-	shapeShifterManager.mainContainer.setBounds(r);
+	//DBG("Resized in main component :" << getLocalBounds().toString());
+
+	ShapeShifterManager::getInstance()->mainContainer.setBounds(r);
 }
 
 void MainContentComponent::showAudioSettings()
 {
+    AudioDeviceSelectorComponent audioSettingsComp(getAudioDeviceManager(),
+                                                   0, 256,
+                                                   0, 256,
+                                                   true,true, false,false);
     audioSettingsComp.setSize (500, 450);
 
     DialogWindow::LaunchOptions o;
@@ -122,11 +96,10 @@ void MainContentComponent::showAudioSettings()
     o.useNativeTitleBar             = false;
     o.resizable                     = false;
 
+
     o.runModal();
 
-    ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
+    engine->audioSettingsHandler.saveCurrent();
 
-    getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
-    getAppProperties().getUserSettings()->saveIfNeeded();
 
 }

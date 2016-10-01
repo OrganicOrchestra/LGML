@@ -13,7 +13,6 @@
 
 
 #include "ParameterUI.h"
-#include "StringParameter.h"
 
 class StringParameterUI : public ParameterUI, public Label::Listener
 {
@@ -24,10 +23,23 @@ public:
     Label nameLabel;
     Label valueLabel;
 
+	String prefix;
+	String suffix;
+
+	float maxFontHeight;
+
+	bool autoSize;
+	void setAutoSize(bool value);
+
+	void setPrefix(const String &_prefix);
+	void setSuffix(const String &_suffix);
+
     bool nameLabelIsVisible;
     void setNameLabelVisible(bool visible);
 
+	//void paint(Graphics &g) override;
     void resized() override;
+
 
 protected:
     void valueChanged(const var & v) override;

@@ -13,15 +13,18 @@
 
 #include "OSCController.h"
 
-class OSCDirectController : public OSCController, public ControllableContainer::Listener
+class OSCDirectController : public OSCController
 {
 public:
     OSCDirectController();
-    virtual ~OSCDirectController();
+	OSCDirectController(const String &name);
+	virtual ~OSCDirectController();
 
-    void processMessage(const OSCMessage &msg) override;
 
-    ControllerUI * createUI() override;
+    virtual Result processMessageInternal(const OSCMessage &msg) override;
+
+  
+
 
     // Inherited via Listener
     virtual void controllableAdded(Controllable * c) override;
@@ -29,7 +32,9 @@ public:
     virtual void controllableContainerAdded(ControllableContainer * cc) override;
     virtual void controllableContainerRemoved(ControllableContainer * cc) override;
 
-    virtual void controllableFeedbackUpdate(Controllable * c) override;
+    virtual void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable * c) override;
+
+
 
     public:
         //Listener
@@ -38,12 +43,15 @@ public:
         public:
             /** Destructor. */
             virtual ~OSCDirectListener() {}
-            virtual void messageProcessed(const OSCMessage & msg, bool success) = 0;
+            virtual void messageProcessed(const OSCMessage & msg, Result success) = 0;
         };
 
         ListenerList<OSCDirectListener> oscDirectlisteners;
         void addOSCDirectParameterListener(OSCDirectListener* newListener) { oscDirectlisteners.add(newListener); }
         void removeOSCDirectParameterListener(OSCDirectListener* listener) { oscDirectlisteners.remove(listener); }
+
+
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
 

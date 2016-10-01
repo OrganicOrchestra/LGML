@@ -12,7 +12,6 @@
 #define FLOATSLIDERUI_H_INCLUDED
 
 #include "ParameterUI.h"
-#include "FloatParameter.h"
 
 class FloatSliderUI    : public ParameterUI
 {
@@ -25,11 +24,9 @@ public:
 
     //settings
     Direction orientation;
+	Colour defaultColor;
 
-    // TODO implement a numboxUI
-    bool displayText;
-    bool displayBar;
-    bool changeParamOnMouseUpOnly;
+	bool changeParamOnMouseUpOnly;
     bool assignOnMousePosDirect;
     float scaleFactor;
 
@@ -48,6 +45,10 @@ public:
 
     virtual void setParamNormalizedValue(float value);
     virtual float getParamNormalizedValue();
+    void rangeChanged(Parameter * )override{
+      repaint();
+    };
+
 
 protected:
     void valueChanged(const var &) override ;

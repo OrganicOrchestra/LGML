@@ -22,12 +22,13 @@ ShapeShifterContainer::ShapeShifterContainer(Direction _direction) :
 
 ShapeShifterContainer::~ShapeShifterContainer()
 {
-	DBG("Container destroy !");
 	clear();
 }
 
 void ShapeShifterContainer::insertShifterAt(ShapeShifter * shifter, int index)
 {
+	if (index == -1) index = shifters.size();
+
 	shifters.insert(index, shifter);
 	addAndMakeVisible(shifter);
 	shifter->setParentContainer(this);
@@ -45,13 +46,11 @@ void ShapeShifterContainer::insertShifterAt(ShapeShifter * shifter, int index)
 
 void ShapeShifterContainer::removeShifter(ShapeShifter * shifter, bool deleteShifter, bool silent)
 {
-	DBG("Remove Shifter, deleteShifter ? " << String(deleteShifter) << ", silent " << String(silent));
+	//DBG("Remove Shifter, deleteShifter ? " << String(deleteShifter) << ", silent " << String(silent));
 	int shifterIndex = shifters.indexOf(shifter);
 	shifters.removeAllInstancesOf(shifter);
 	shifter->setParentContainer(nullptr);
 
-	int cIndex = getIndexOfChildComponent(shifter);
-	DBG("REMOVE Shifter :: is in children ? " << cIndex);
 	removeChildComponent(shifter);
 
 
@@ -76,29 +75,33 @@ void ShapeShifterContainer::removeShifter(ShapeShifter * shifter, bool deleteShi
 		//dispatch emptied container so parent container deletes it
 		if (!silent) containerListeners.call(&ShapeShifterContainerListener::containerEmptied, this);
 	}
-	else if (shifters.size() == 1)
+	else
 	{
-		if (!silent) containerListeners.call(&ShapeShifterContainerListener::oneShifterRemaining, this, shifters[0]);
-	}else
-	{
-		GapGrabber * gg = grabbers[(jmin<int>(shifterIndex, grabbers.size() - 1))];
-		removeChildComponent(gg);
-		grabbers.remove(grabbers.indexOf(gg), true);
-		resized();
+		if (shifters.size() == 1 && !silent && parentContainer != nullptr)
+		{
+			containerListeners.call(&ShapeShifterContainerListener::oneShifterRemaining, this, shifters[0]);
+		}
+		else
+		{
+			GapGrabber * gg = grabbers[(jmin<int>(shifterIndex, grabbers.size() - 1))];
+			removeChildComponent(gg);
+			grabbers.remove(grabbers.indexOf(gg), true);
+			resized();
+		}
 	}
 
 
 }
 
-void ShapeShifterContainer::insertPanelAt(ShapeShifterPanel * panel, int index)
+ShapeShifterPanel * ShapeShifterContainer::insertPanelAt(ShapeShifterPanel * panel, int index)
 {
 	insertShifterAt(panel, index);
 	panel->addShapeShifterPanelListener(this);
+	return panel;
 }
 
-void ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone)
+ShapeShifterPanel * ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel * panel, ShapeShifterPanel * relativeTo, ShapeShifterPanel::AttachZone zone)
 {
-	//TODO check direction and create sub container if needed
 	switch (zone)
 	{
 	case  ShapeShifterPanel::AttachZone::LEFT:
@@ -120,8 +123,16 @@ void ShapeShifterContainer::insertPanelRelative(ShapeShifterPanel * panel, Shape
 		if (direction == VERTICAL) insertPanelAt(panel, shifters.indexOf(relativeTo)+1);
 		else movePanelsInContainer(panel, relativeTo, VERTICAL,true);
 	break;
+        case ShapeShifterPanel::AttachZone::NONE:
+        case ShapeShifterPanel::AttachZone::CENTER:
+            //@ben do we need to handle these?
+            jassertfalse;
+            break;
+
 
 	}
+
+	return panel;
 }
 
 
@@ -133,6 +144,7 @@ ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(Direction _dire
 
 ShapeShifterContainer * ShapeShifterContainer::insertContainerAt(ShapeShifterContainer * container, int index)
 {
+
 	insertShifterAt(container, index);
 	container->addShapeShifterContainerListener(this);
 	resized();
@@ -155,6 +167,12 @@ void ShapeShifterContainer::movePanelsInContainer(ShapeShifterPanel * newPanel, 
 void ShapeShifterContainer::resized()
 {
 
+	if (parentContainer == nullptr && shifters.size() == 1) //Main container, only one item
+	{
+		shifters[0]->setBounds(getLocalBounds());
+		return;
+	}
+
 	Rectangle<int> r = getLocalBounds();
 	int gap = 6;
 	int totalSpace = (direction == HORIZONTAL) ? r.getWidth() : r.getHeight();
@@ -164,16 +182,19 @@ void ShapeShifterContainer::resized()
 	int numDefaultSpace = numShifters;
 	int reservedPreferredSpace = 0;
 
-
-
 	for (auto &p : shifters)
 	{
-		int tp = (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
-		if (tp >= 0)
+		if (!p->isFlexible())
 		{
 			numDefaultSpace--;
-			reservedPreferredSpace += tp;
+			reservedPreferredSpace += (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
 		}
+	}
+
+	int backOffsetAmount = 0; //amount to subtract from each fixed-size panel so every panel is visible
+	if (reservedPreferredSpace > totalSpace)
+	{
+		backOffsetAmount = (reservedPreferredSpace - totalSpace) / (numShifters - numDefaultSpace);
 	}
 
 	int defaultSpace =  numDefaultSpace == 0?0:(totalSpace-reservedPreferredSpace) / numDefaultSpace - gap*(numShifters - 1);
@@ -181,13 +202,20 @@ void ShapeShifterContainer::resized()
 	int panelIndex = 0;
 	for (auto &p : shifters)
 	{
+		bool lastShifter = panelIndex >= grabbers.size();
 		int tp = (direction == HORIZONTAL) ? p->preferredWidth : p->preferredHeight;
-		int targetSpace = tp >= 0 ? tp : defaultSpace;
+		int targetSpace = (!p->isFlexible()) ? (tp-backOffsetAmount) : defaultSpace;
 
-		Rectangle<int> tr = (direction == HORIZONTAL) ? r.removeFromLeft(targetSpace) : r.removeFromTop(targetSpace);
-		p->setBounds(tr);
+		if(!lastShifter)
+		{
+			Rectangle<int> tr = (direction == HORIZONTAL) ? r.removeFromLeft(targetSpace) : r.removeFromTop(targetSpace);
+			p->setBounds(tr);
+		}else
+		{
+			p->setBounds(r);
+		}
 
-		if (panelIndex < grabbers.size())
+		if (!lastShifter)
 		{
 			Rectangle<int> gr = (direction == HORIZONTAL)?r.removeFromLeft(gap):r.removeFromTop(gap);
 			grabbers[panelIndex]->setBounds(gr);
@@ -199,15 +227,49 @@ void ShapeShifterContainer::resized()
 
 void ShapeShifterContainer::clear()
 {
-	int numShiftersToClear = shifters.size() > 0;
-
-	DBG("Container clear, num shifters to clear " << numShiftersToClear);
-
-	while (numShiftersToClear > 0)
+	while (shifters.size() > 0)
 	{
-		DBG(">> Remove shifter in clear");
 		removeShifter(shifters[0], true, true);
-		numShiftersToClear--;
+	}
+}
+
+var ShapeShifterContainer::getCurrentLayout()
+{
+	var layout = ShapeShifter::getCurrentLayout();
+	layout.getDynamicObject()->setProperty("direction", (int)direction);
+
+	var sData;
+	for (auto &s : shifters)
+	{
+		sData.append(s->getCurrentLayout());
+	}
+	layout.getDynamicObject()->setProperty("shifters", sData);
+	return layout;
+}
+
+void ShapeShifterContainer::loadLayoutInternal(var layout)
+{
+
+	Array<var> * sArray = layout.getDynamicObject()->getProperty("shifters").getArray();
+
+	if (sArray != nullptr)
+	{
+		for (auto &sData : *sArray)
+		{
+			Type t = (Type)(int)(sData.getDynamicObject()->getProperty("type"));
+			if (t == PANEL)
+			{
+				ShapeShifterPanel * c = ShapeShifterManager::getInstance()->createPanel(nullptr);
+				c->loadLayout(sData);
+				insertPanelAt(c);
+			}
+			else if (t == CONTAINER)
+			{
+				Direction dir = (Direction)(int)sData.getDynamicObject()->getProperty("direction");
+				ShapeShifterContainer * sc = insertContainerAt(dir);
+				sc->loadLayout(sData);
+			}
+		}
 	}
 }
 
@@ -219,13 +281,13 @@ void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, int dist)
 	switch (direction)
 	{
 	case HORIZONTAL:
-		if (firstShifter->preferredWidth >= 0) firstShifter->setPreferredWidth(firstShifter->preferredWidth + dist);
-			else secondShifter->setPreferredWidth(secondShifter->preferredWidth - dist);
+			if (!firstShifter->isFlexible()) firstShifter->setPreferredWidth(firstShifter->preferredWidth + dist);
+			if (!secondShifter->isFlexible()) secondShifter->setPreferredWidth(secondShifter->preferredWidth - dist);
 			break;
 
 	case VERTICAL:
-		if (firstShifter->preferredHeight >= 0) firstShifter->setPreferredHeight(firstShifter->preferredHeight + dist);
-		else secondShifter->setPreferredHeight(secondShifter->preferredHeight - dist);
+		if (!firstShifter->isFlexible()) firstShifter->setPreferredHeight(firstShifter->preferredHeight + dist);
+		if (!secondShifter->isFlexible()) secondShifter->setPreferredHeight(secondShifter->preferredHeight - dist);
 		break;
 
         case NONE:
@@ -241,7 +303,6 @@ void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, int dist)
 
 void ShapeShifterContainer::panelDetach(ShapeShifterPanel * panel)
 {
-	DBG("Panel Detach");
 	Rectangle<int> panelBounds = panel->getScreenBounds();
 	removeShifter(panel,false);
 	ShapeShifterManager::getInstance()->showPanelWindow(panel, panelBounds);
@@ -249,35 +310,36 @@ void ShapeShifterContainer::panelDetach(ShapeShifterPanel * panel)
 
 void ShapeShifterContainer::panelEmptied(ShapeShifterPanel * panel)
 {
-	DBG("Panel emptied");
 	removeShifter(panel, true, false);
 }
 
 void ShapeShifterContainer::panelDestroyed(ShapeShifterPanel * panel)
 {
-	DBG("Panel destroyed");
 	removeShifter(panel, false, true);
 }
 
 void ShapeShifterContainer::containerEmptied(ShapeShifterContainer * container)
 {
-	DBG("CONTAINER EMPTIED");
 	removeShifter(container,true);
 }
 
 void ShapeShifterContainer::oneShifterRemaining(ShapeShifterContainer * container, ShapeShifter * lastShifter)
 {
-	DBG("ONE SHIFTER REMAINING");
 	int containerIndex = shifters.indexOf(container);
 
-	DBG("Remove shifter from child container");
+	//DBG("Remove shifter from child container");
 	container->removeShifter((ShapeShifterContainer *)lastShifter, false, true);
 
-	DBG("Insert last shifter in parent container");
-	if (lastShifter->shifterType == PANEL) insertPanelAt((ShapeShifterPanel *)lastShifter, containerIndex);
-	else insertContainerAt((ShapeShifterContainer *)lastShifter, containerIndex);
+	ShapeShifter * ss = nullptr;
 
-	DBG("Remove useless container");
+	//DBG("Insert last shifter in parent container");
+	if (lastShifter->shifterType == PANEL)  ss = insertPanelAt((ShapeShifterPanel *)lastShifter, containerIndex);
+	else ss = insertContainerAt((ShapeShifterContainer *)lastShifter, containerIndex);
+
+	ss->setPreferredWidth(container->preferredWidth);
+	ss->setPreferredHeight(container->preferredHeight);
+
+	//DBG("Remove useless container");
 	removeShifter(container,true,true);
 
 }

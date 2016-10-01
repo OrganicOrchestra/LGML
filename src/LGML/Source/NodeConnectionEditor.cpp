@@ -10,41 +10,52 @@
 
 
 #include "NodeConnectionEditor.h"
-#include "NodeBase.h"
 
 #include "Style.h"
 
-juce_ImplementSingleton(NodeConnectionEditor);
-
+#include "DebugHelpers.h"
+#include "NodeConnectionUI.h"
 
 //==============================================================================
-NodeConnectionEditor::NodeConnectionEditor() : DocumentWindow("Connection Editor",BG_COLOR,DocumentWindow::closeButton,false)
+NodeConnectionEditor::NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI) :
+	CustomEditor(nodeConnectionUI),
+	currentConnection(nullptr),
+	editingLink(nullptr),
+	selectedLink(nullptr)
 {
-    currentConnection = nullptr;
-    editingLink = nullptr;
+    addAndMakeVisible(&outputsContainer);
+    addAndMakeVisible(&inputsContainer);
+    addAndMakeVisible(&linksContainer);
 
-    setSize(500,500);
-    setResizable(true, false);
-    setUsingNativeTitleBar(true);
-    mainContainer.setBounds(0, 0, 500, 500);
-    setContentOwned(&mainContainer,true);
-
-    mainContainer.addAndMakeVisible(&outputsContainer);
-    mainContainer.addAndMakeVisible(&inputsContainer);
-    mainContainer.addAndMakeVisible(&linksContainer);
-
+	setCurrentConnection(nodeConnectionUI->connection);
 }
 
 NodeConnectionEditor::~NodeConnectionEditor()
 {
+	
     setCurrentConnection(nullptr);
-    setVisible(false);
-    removeFromDesktop();
+}
+
+void NodeConnectionEditor::setSelectedLink(NodeConnectionEditorLink * link)
+{
+	if (selectedLink != nullptr)
+	{
+		selectedLink->setSelected(false);
+	}
+
+	selectedLink = link;
+
+	if(selectedLink != nullptr)
+	{
+		selectedLink->setSelected(true);
+	}
 }
 
 void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
 {
     if (currentConnection == _connection) return;
+
+	setSelectedLink(nullptr);
 
     if (currentConnection != nullptr)
     {
@@ -58,32 +69,18 @@ void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
     {
         currentConnection->addConnectionListener(this);
 
-        DBG("Set current connection, type = " << currentConnection->connectionType);
         if (currentConnection->isAudio()) generateContentForAudio();
         else generateContentForData();
     }
-}
 
-void NodeConnectionEditor::editConnection(NodeConnection * _connection)
-{
-    addToDesktop();
-    setTopLeftPosition(200, 200);
-    setVisible(true);
-    toFront(true);
-    //setAlwaysOnTop(true);
-
-    DBG("Edit connection " << String(_connection != nullptr));
-    setCurrentConnection(_connection);
+	
 }
 
 void NodeConnectionEditor::resized()
 {
-    DBG("editor resized " << mainContainer.getBounds().toString());
-    mainContainer.setBounds(0,0,getWidth(),getHeight());
+	int panelWidth = (int)(getWidth() / 3.f);
 
-    int panelWidth = jlimit<int>(150, 400, (int)(getWidth() / 3.f));
-
-    Rectangle<int> r = mainContainer.getLocalBounds();
+    Rectangle<int> r = getLocalBounds();
     outputsContainer.setBounds(r.removeFromLeft(panelWidth));
     inputsContainer.setBounds(r.removeFromRight(panelWidth));
     linksContainer.setBounds(r);
@@ -93,16 +90,16 @@ void NodeConnectionEditor::resized()
     for (int i = 0; i < outputsContainer.getNumChildComponents();i++)
     {
         Component * c = outputsContainer.getChildComponent(i);
-        c->setBounds(r.removeFromTop(50));
-        r.removeFromTop(10);
+        c->setBounds(r.removeFromTop(30));
+        r.removeFromTop(5);
     }
 
     r = inputsContainer.getLocalBounds().withTrimmedTop(5).withTrimmedRight(5).withTrimmedBottom(5);
     for (int i = 0; i < inputsContainer.getNumChildComponents(); i++)
     {
         Component * c = inputsContainer.getChildComponent(i);
-        c->setBounds(r.removeFromTop(50));
-        r.removeFromTop(10);
+        c->setBounds(r.removeFromTop(30));
+        r.removeFromTop(5);
     }
 
     r = linksContainer.getLocalBounds();
@@ -113,24 +110,14 @@ void NodeConnectionEditor::resized()
     }
 }
 
-
-
-void NodeConnectionEditor::closeButtonPressed()
+int NodeConnectionEditor::getContentHeight()
 {
-    closeWindow();
-}
-
-void NodeConnectionEditor::closeWindow()
-{
-    setCurrentConnection(nullptr);
-    removeFromDesktop();
+	return 20+jmax(outputSlots.size() * 35, inputSlots.size()*35);
 }
 
 void NodeConnectionEditor::mouseEnter(const MouseEvent &)
 {
     //DBG("Editor mouse enter " << e.eventComponent->getName());
-
-
 }
 
 void NodeConnectionEditor::mouseExit(const MouseEvent &)
@@ -162,15 +149,17 @@ void NodeConnectionEditor::clearContent()
 void NodeConnectionEditor::generateContentForAudio()
 {
     clearContent();
+	if (currentConnection == nullptr) return;
+	if (currentConnection->sourceNode == nullptr || currentConnection->destNode == nullptr) return;
+	//if (currentConnection->sourceNode->getAudioNode(true) == nullptr || currentConnection->destNode->getAudioNode(false)) return;
 
-    int numOutputChannels = currentConnection->sourceNode->audioProcessor->getTotalNumOutputChannels();
+    int numOutputChannels = currentConnection->sourceNode->getAudioNode(true)->getProcessor()->getTotalNumOutputChannels();
+    int numInputChannels = currentConnection->destNode->getAudioNode(false)->getProcessor()->getTotalNumInputChannels();
 
-    int numInputChannels = currentConnection->destNode->audioProcessor->getTotalNumInputChannels();
-
-    DBG("generate content for audio : " << currentConnection->sourceNode->niceName << " : " << numOutputChannels << " / " << currentConnection->destNode->niceName << " : " << numInputChannels);
     for (int i = 0; i < numOutputChannels; i++)
     {
-        NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot("Output "+String(i+1),i,currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
+		String oName = currentConnection->sourceNode->ConnectableNode::getOutputChannelName(i);
+        NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(oName,i,currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
         outputSlots.add(s);
         s->addSlotListener(this);
         s->setName("output" + String(i+1));
@@ -180,7 +169,8 @@ void NodeConnectionEditor::generateContentForAudio()
 
     for (int i = 0; i < numInputChannels; i++)
     {
-        NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot("Input " +String(i + 1), i, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::INPUT);
+		String iName = currentConnection->destNode->ConnectableNode::getInputChannelName(i);
+		NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(iName, i, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::INPUT);
         inputSlots.add(s);
         s->addSlotListener(this);
         s->setName("input" + String(i + 1));
@@ -205,12 +195,12 @@ void NodeConnectionEditor::generateContentForData()
     clearContent();
     //DBG("generate content for data");
 
-    int numOutputData = currentConnection->sourceNode->dataProcessor->getTotalNumOutputData();
-    int numInputData = currentConnection->destNode->dataProcessor->getTotalNumInputData();
+    int numOutputData = currentConnection->sourceNode->getTotalNumOutputData();
+    int numInputData = currentConnection->destNode->getTotalNumInputData();
 
     for (int i = 0; i < numOutputData; i++)
     {
-        Data * data = currentConnection->sourceNode->dataProcessor->outputDatas[i];
+		Data * data = currentConnection->sourceNode->getOutputData(i);
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(data->name + " (" + data->getTypeString() + ")",data, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
         s->setName("output"+data->name);
         s->addSlotListener(this);
@@ -221,7 +211,7 @@ void NodeConnectionEditor::generateContentForData()
 
     for (int i = 0; i < numInputData; i++)
     {
-        Data * data = currentConnection->destNode->dataProcessor->inputDatas[i];
+		Data * data = currentConnection->destNode->getInputData(i);
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(data->name + " (" + data->getTypeString() + ")",data, currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::INPUT);
         s->setName("input" + data->name);
         s->addSlotListener(this);
@@ -239,6 +229,16 @@ void NodeConnectionEditor::generateContentForData()
 
 void NodeConnectionEditor::addAudioLink(int sourceChannel, int destChannel)
 {
+    if(sourceChannel>outputSlots.size()){
+        LOG("Channel not found in output Slots");
+        return;
+    }
+    if(destChannel>inputSlots.size()){
+        LOG("Channel not found  in input Slots");
+        return;
+    }
+
+
     NodeConnectionEditorDataSlot * os = outputSlots[sourceChannel];
     NodeConnectionEditorDataSlot * is = inputSlots[destChannel];
     NodeConnectionEditorLink * l = new NodeConnectionEditorLink(os, is);
@@ -253,6 +253,8 @@ void NodeConnectionEditor::removeAudioLinkForChannels(int sourceChannel, int des
 {
     //DBG("Remove audio Link for channels");
     NodeConnectionEditorLink * l = getLinkForChannels(sourceChannel, destChannel);
+	if (l == nullptr) return;
+
     l->outSlot->removeConnectedSlot(l->inSlot);
     l->inSlot->removeConnectedSlot(l->outSlot);
 
@@ -352,7 +354,7 @@ void NodeConnectionEditor::createEditingLink(NodeConnectionEditorDataSlot * base
         editingLink = new NodeConnectionEditorLink(nullptr, baseSlot);
     }
 
-    mainContainer.addAndMakeVisible(editingLink);
+    addAndMakeVisible(editingLink);
 }
 
 void NodeConnectionEditor::updateEditingLink()
@@ -391,7 +393,7 @@ bool NodeConnectionEditor::checkDropCandidates()
             }
             else
             {
-                float dist = (float)(slot->getMouseXYRelative().getDistanceFrom(slot->getLocalBounds().getRelativePoint(targetIsInput?0:1,.5f)));
+                float dist = (float)(slot->getMouseXYRelative().getDistanceFrom(slot->getLocalBounds().getRelativePoint(targetIsInput?0:1.f,.5f)));
                 if (dist < 20)
                 {
                     return setCandidateDropSlot(slot);
@@ -447,11 +449,8 @@ void NodeConnectionEditor::finishEditingLink()
         }
     }
 
-    mainContainer.removeChildComponent(editingLink);
-    delete editingLink;
+    removeChildComponent(editingLink);
     editingLink = nullptr;
-
-
 }
 
 bool NodeConnectionEditor::setCandidateDropSlot(NodeConnectionEditorDataSlot * slot)
@@ -502,6 +501,11 @@ void NodeConnectionEditor::askForRemoveLink(NodeConnectionEditorLink * target)
     {
         currentConnection->removeDataGraphConnection(target->outSlot->data, target->inSlot->data);
     }
+}
+
+void NodeConnectionEditor::selectLink(NodeConnectionEditorLink * target)
+{
+	setSelectedLink(target);
 }
 
 

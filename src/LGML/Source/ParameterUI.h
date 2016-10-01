@@ -14,7 +14,7 @@
 #include "Parameter.h"
 #include "ControllableUI.h"
 
-class ParameterUI : public Parameter::AsyncListener, public ControllableUI
+class ParameterUI : public Parameter::AsyncListener, public Parameter::Listener,public ControllableUI
 {
 public:
     ParameterUI(Parameter * parameter);
@@ -22,8 +22,8 @@ public:
 
     WeakReference<Parameter> parameter;
 
-    //Label label;
     bool showLabel;
+	bool showValue;
 
 protected:
 
@@ -34,11 +34,22 @@ protected:
     // here we are bound to only one parameter so no need to pass parameter*
     // for general behaviour see AsyncListener
     virtual void valueChanged(const var & ){};
+  virtual void rangeChanged(Parameter * ){};
 private:
     // see Parameter::AsyncListener
-    virtual void asyncParameterValueChanged(Parameter * ,var & v) override{
-        valueChanged(v);
+    virtual void newMessage(const Parameter::ParamWithValue & p) override{
+      if(p.isRange()){
+        rangeChanged(p.parameter);
+      }
+      else{
+        valueChanged(p.value);
+      }
     };
+
+    // never change this as value can be changed from other threads
+    void parameterValueChanged(Parameter * ) override{};
+     void parameterRangeChanged(Parameter * )override{};
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
 };
 

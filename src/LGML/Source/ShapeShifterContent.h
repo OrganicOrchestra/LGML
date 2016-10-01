@@ -11,7 +11,7 @@
 #ifndef SHAPESHIFTERCONTENT_H_INCLUDED
 #define SHAPESHIFTERCONTENT_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "JuceHeader.h"//keep
 
 class ShapeShifterContent : public Component
 {
@@ -20,10 +20,10 @@ public:
 	virtual ~ShapeShifterContent();
 
 	String contentName;
-	String getName() const;
 
-	int minWidth = 20;
-	int minHeight = 20;
+	bool contentIsFlexible;
+
+	bool contentIsShown;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterContent)
 };

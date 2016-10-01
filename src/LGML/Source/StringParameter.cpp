@@ -20,11 +20,32 @@ StringParameter::StringParameter(const String & niceName, const String &descript
 
 
 
-StringParameterUI * StringParameter::createStringParameterUI()
+StringParameterUI * StringParameter::createStringParameterUI(StringParameter * target)
 {
-    return new StringParameterUI(this);
+	if (target == nullptr) target = this;
+    return new StringParameterUI(target);
 }
 
-ControllableUI* StringParameter::createControllableContainerEditor(){
-    return createStringParameterUI();
+ControllableUI* StringParameter::createDefaultUI(Controllable * targetControllable){
+
+    return createStringParameterUI(dynamic_cast<StringParameter *>(targetControllable));
 };
+
+
+void StringParameter::setValue(var _value,bool silentSet,bool force ){
+    
+   
+    if (!force && value.toString() == _value.toString()) return;
+    
+    setValueInternal(_value);
+    
+    
+    if(_value != defaultValue) isOverriden = true;
+    
+    if (!silentSet) notifyValueChanged();
+};
+
+void  StringParameter::setValueInternal(var & newVal){
+    value = newVal.toString();
+};
+

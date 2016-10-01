@@ -13,59 +13,36 @@
 
 #include "NodeBase.h"
 
-class DataInNode : public NodeBase
+class DataInNode :
+	public NodeBase
 {
 public:
-    class DataInNodeDataProcessor : public NodeBase::NodeDataProcessor
-    {
-    public:
-        DataInNodeDataProcessor() :NodeBase::NodeDataProcessor() {
-
-        }
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataInNodeDataProcessor)
-    };
-
-
-    DataInNode(NodeManager * nodeManager, uint32 nodeId);
+    DataInNode();
     ~DataInNode();
 
     Array<Parameter *> dynamicParameters;
 
-    FloatParameter * addFloatParamAndData(const String &name, float initialValue, float minVal, float maxVal)
-    {
-        FloatParameter * p = addFloatParameter(name, "OSC Control for " + name, initialValue, minVal, maxVal);
-        dataProcessor->addOutputData(name, Data::DataType::Number);
-        dynamicParameters.add(p);
-        osc2DataListeners.call(&DataInNode::Listener::parameterAdded, p);
-        return p;
-    }
-
-    void removeFloatParamAndData(FloatParameter * p)
-    {
-        removeControllable(p);
-        dataProcessor->removeOutputData(p->niceName);
-        osc2DataListeners.call(&DataInNode::Listener::parameterRemoved, p);
-    }
+	FloatParameter * addFloatParamAndData(const String &name, float initialValue, float minVal, float maxVal);
+	void removeFloatParamAndData(FloatParameter * p);
 
 
     void onContainerParameterChanged(Parameter * p) override;
 
-    virtual NodeBaseUI * createUI() override;
+    virtual ConnectableNodeUI * createUI() override;
 
     //Listener
-    class Listener
+    class DataInListener
     {
     public:
-        virtual ~Listener() {}
+        virtual ~DataInListener() {}
         virtual void parameterAdded(Parameter *) = 0;
         virtual void parameterRemoved(Parameter *) = 0;
 
     };
 
-    ListenerList<Listener> osc2DataListeners;
-    void addO2DListener(Listener* newListener) { osc2DataListeners.add(newListener); }
-    void removeO2DListener(Listener* listener) { osc2DataListeners.remove(listener); }
+    ListenerList<DataInListener> dataInListeners;
+    void addDataInListener(DataInListener* newListener) { dataInListeners.add(newListener); }
+    void removeDataInListener(DataInListener* listener) { dataInListeners.remove(listener); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataInNode)
 };

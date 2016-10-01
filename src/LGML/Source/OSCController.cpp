@@ -1,29 +1,42 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    OSCController.cpp
-    Created: 2 Mar 2016 8:50:08pm
-    Author:  bkupe
+ OSCController.cpp
+ Created: 2 Mar 2016 8:50:08pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "OSCController.h"
+#include "OSCControllerUI.h"
+#include "DebugHelpers.h"
 
-OSCController::OSCController(const String &name) :
-    Controller(name)
+#include "NodeManager.h"
+
+OSCController::OSCController(const String &_name) :
+Controller(_name),
+
+isProcessingOSC(false)
+
 {
 
-    DBG("OSC COntroller init");
-    localPortParam = addStringParameter("Local Port", "The port to bind for the controller to receive OSC from it","11000");
+  localPortParam = addStringParameter("Local Port", "The port to bind for the controller to receive OSC from it","11000");
 
-    remoteHostParam = addStringParameter("Remote Host", "The host's IP of the remote controller","127.0.0.1");
-    remotePortParam = addStringParameter("Remote Port", "The port bound by the controller to send OSC to it","8000");
+  remoteHostParam = addStringParameter("Remote Host", "The host's IP of the remote controller","127.0.0.1");
+  remotePortParam = addStringParameter("Remote Port", "The port bound by the controller to send OSC to it","8000");
 
-    setupReceiver();
-    setupSender();
+  logIncomingOSC = addBoolParameter("logIncomingOSC", "log the incoming OSC Messages", false);
+  logOutGoingOSC = addBoolParameter("logOutGoingOSC", "log the outGoing OSC Messages", false);
 
-    receiver.addListener(this);
+  blockFeedback = addBoolParameter("blockFeedback", "block osc feedback (resending updated message to controller)", true);
+  sendAllParameters = addTrigger("sendAll", "send all parameter states to initialize ", true);
+  setupReceiver();
+  setupSender();
+
+  receiver.addListener(this);
+
+
 }
 
 OSCController::~OSCController()
@@ -33,31 +46,121 @@ OSCController::~OSCController()
 
 void OSCController::setupReceiver()
 {
-    DBG("setupReceiver");
-    receiver.disconnect();
-    receiver.connect(localPortParam->stringValue().getIntValue());
-    //DBG("Receiver connected" + String(result));
+  // DBG("setupReceiver");
+  receiver.disconnect();
+
+  if(!receiver.connect(localPortParam->stringValue().getIntValue())){
+    LOG("can't connect to local port : " +localPortParam->stringValue());
+  };
+  //DBG("Receiver connected" + String(result));
 }
 void OSCController::setupSender()
 {
-    DBG("Resetup sender with " << remoteHostParam->stringValue() << ":" << remotePortParam->stringValue().getIntValue());
-    sender.disconnect();
-    sender.connect(remoteHostParam->stringValue(), remotePortParam->stringValue().getIntValue());
+  //DBG("Resetup sender with " << remoteHostParam->stringValue() << ":" << remotePortParam->stringValue().getIntValue());
+  sender.disconnect();
+  if(!sender.connect(remoteHostParam->stringValue(), remotePortParam->stringValue().getIntValue())){
+    LOG("can't connect to send port : " +remoteHostParam->stringValue()+":"+ remotePortParam->stringValue());
+  };
 }
 
-void OSCController::processMessage(const OSCMessage &)
+void OSCController::processMessage(const OSCMessage & msg)
 {
-    //to override
+  if (logIncomingOSC->boolValue())
+  {
+    logMessage(msg,"In:");
+
+  }
+  if (!enabledParam->boolValue()) return;
+
+  if(blockFeedback->boolValue()){lastAddressReceived = msg.getAddressPattern().toString();}
+  isProcessingOSC = true;
+  bool result = processMessageInternal(msg);
+  isProcessingOSC = false;
+  oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
+
+  activityTrigger->trigger();
+}
+
+
+void OSCController::logMessage(const OSCMessage & msg,const String & prefix){
+  String log = prefix;
+  log += msg.getAddressPattern().toString()+":";
+  for(int i = 0 ; i < msg.size() ; i++){
+    OSCArgument a = msg[i];
+    if(a.isInt32())log+=String(msg[i].getInt32())+" ";
+    else if(a.isFloat32())log+=String(msg[i].getFloat32())+" ";
+    else if(a.isString())log+=String(msg[i].getString())+" ";
+
+  }
+  NLOG(niceName,log);
+}
+
+Result OSCController::processMessageInternal(const OSCMessage &)
+{
+  return Result::fail("Not handled"); //if not overriden, msg is not handled so result is false
 }
 
 void OSCController::onContainerParameterChanged(Parameter * p)
 {
-    if (p == localPortParam) setupReceiver();
-    else if (p == remotePortParam || p == remoteHostParam) setupSender();
+  Controller::onContainerParameterChanged(p);
+
+  if (p == localPortParam) setupReceiver();
+  else if (p == remotePortParam || p == remoteHostParam) setupSender();
+
+}
+
+void OSCController::onContainerTriggerTriggered(Trigger *t){
+  Controller::onContainerTriggerTriggered(t);
+   if(t==sendAllParameters){
+    int sentCount = 0;
+    sendAllControllableStates(NodeManager::getInstance(), sentCount);
+  }
 }
 
 void OSCController::oscMessageReceived(const OSCMessage & message)
 {
-    //DBG("Message received !");
-    processMessage(message);
+  //DBG("Message received !");
+  processMessage(message);
+}
+
+void OSCController::oscBundleReceived(const OSCBundle & bundle)
+{
+  for (auto &m : bundle)
+  {
+    processMessage(m.getMessage());
+  }
+}
+
+bool OSCController::sendOSC (OSCMessage & m)
+{
+  if(enabledParam->boolValue() &&  (!blockFeedback->boolValue() || !isProcessingOSC || lastAddressReceived!=m.getAddressPattern().toString())){
+    if(logOutGoingOSC->boolValue()){
+        logMessage(m,"Out:");
+    }
+    return sender.send (m);
+  }
+
+  return false;
+}
+
+ControllerUI * OSCController::createUI()
+{
+  return new OSCControllerUI(this);
+}
+
+void OSCController::sendAllControllableStates(ControllableContainer *c,int & sentControllable){
+  if(c){
+    for(auto & controllable:c->getAllControllables()){
+      controllableFeedbackUpdate(c,controllable);
+      sentControllable++;
+      if((sentControllable%60)==0){
+        Thread::sleep(10);
+      }
+    }
+    for(auto & container:c->controllableContainers){
+      sendAllControllableStates(container,sentControllable);
+
+    }
+  }
+  
 }

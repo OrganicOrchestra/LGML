@@ -19,6 +19,7 @@
 #include "ControllableContainer.h"
 
 
+
 /**
 \brief a ControllableContainerSync can bi-directionnaly syncronyze a list of ControllableContainer
 
@@ -26,7 +27,9 @@
  correspondences of Controllables is based on ControlAddress relative to ControllableContainers depth (i.e starting from the name of it)
  */
 
-class ControllableContainerSync :public ControllableContainer, public ControllableContainer::Listener{
+
+class ControllableContainerSync :public ControllableContainer
+{
 
 public:
     ControllableContainerSync(ControllableContainer * source,String overrideName);
@@ -50,7 +53,6 @@ public:
 
         virtual void sourceUpdated(ControllableContainer * )=0;
         virtual void sourceDeleted(){};
-        virtual void structureChanged(){};
 
     };
 
@@ -62,7 +64,6 @@ public:
 
 private:
     Controllable * notifyingControllable;
-    void notifyStructureChanged();
     bool setControllableValue(Controllable * cOrigin,Controllable * c);
 
 
@@ -81,7 +82,7 @@ private:
     void controllableRemoved(Controllable *c)override;
     void controllableContainerAdded(ControllableContainer *  c) override;
     void controllableContainerRemoved(ControllableContainer * c)override;
-    void controllableFeedbackUpdate(Controllable *c) override;
+    void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *c) override;
 
 
     void onContainerParameterChanged(Parameter*)override;
@@ -98,7 +99,4 @@ private:
 
 
 };
-
-
-
 #endif  // ControllableContainerSync_H_INCLUDED

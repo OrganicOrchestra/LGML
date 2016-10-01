@@ -13,55 +13,45 @@
 
 
 #include "NodeBase.h"
-class NodeBaseUI;
+
 
 class AudioMixerNode : public NodeBase
 {
 
 public:
+	class OutputBus : public ControllableContainer {
+	public:
+		OutputBus(int _outputIndex, int numInput);
+		void setNumInput(int numInput);
+
+        void onContainerParameterChanged(Parameter *p)override;
+		Array<FloatParameter*> volumes;
+        Array<float> logVolumes;
+		Array<float> lastVolumes;
+		int outputIndex;
+	};
 
 
+    AudioMixerNode() ;
+  void setParentNodeContainer(NodeContainer * c)override;
+
+	OwnedArray<OutputBus> outBuses;
+	AudioBuffer<float> cachedBuffer;
 
 
-    class AudioMixerAudioProcessor : public NodeAudioProcessor
-    {
-    public:
+	IntParameter * numberOfInput;
+	IntParameter * numberOfOutput;
+    BoolParameter * oneToOne;
+
+	void updateInput();
+	void updateOutput();
 
 
-        class OutputBus : public ControllableContainer{
-        public:
-            OutputBus(int _outputIndex,int numInput);
-            void setNumInput(int numInput);
+	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override;
+	void onContainerParameterChanged(Parameter * p) override;
 
-            Array<FloatParameter*> volumes;
-            Array<float> lastVolumes;
-            int outputIndex;
-        };
+	ConnectableNodeUI * createUI() override;
 
-
-        OwnedArray<OutputBus> outBuses;
-        AudioBuffer<float> cachedBuffer;
-
-
-        IntParameter * numberOfInput;
-        IntParameter * numberOfOutput;
-
-        void updateInput();
-        void updateOutput();
-
-
-        void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override ;
-        void onContainerParameterChanged(Parameter * p) override;
-
-        AudioMixerAudioProcessor();
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerAudioProcessor)
-    };
-
-    AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) ;
-
-
-
-    NodeBaseUI * createUI() override;
 
 
 private:

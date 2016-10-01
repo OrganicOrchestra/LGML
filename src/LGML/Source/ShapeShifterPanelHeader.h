@@ -14,7 +14,9 @@
 #include "ShapeShifterPanelTab.h"
 
 
-class ShapeShifterPanelHeader : public Component
+class ShapeShifterPanelHeader :
+	public Component,
+	public ShapeShifterPanelTab::TabListener
 {
 public:
 	ShapeShifterPanelHeader();
@@ -35,13 +37,19 @@ public:
 	void paint(Graphics &g) override;
 	void resized()override;
 
+	void askForRemoveTab(ShapeShifterPanelTab *) override;
+
 	class Listener
 	{
 	public:
         virtual ~Listener(){}
 		virtual void tabDrag(ShapeShifterPanelTab *) = 0;
 		virtual void tabSelect(ShapeShifterPanelTab *) = 0;
+
+		virtual void askForRemoveTab(ShapeShifterPanelTab *) = 0;
 		virtual void headerDrag() = 0;
+
+
 	};
 
 	ListenerList<Listener> listeners;

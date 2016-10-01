@@ -13,26 +13,25 @@
 
 
 
-#include "NodeConnection.h"
 #include "NodeConnectionEditorDataSlot.h"
 #include "NodeConnectionEditorLink.h"
-
+#include "CustomEditor.h"
+class NodeConnectionUI;
 //==============================================================================
 /*
 */
-class NodeConnectionEditor : public DocumentWindow,
+class NodeConnectionEditor : public CustomEditor,
     NodeConnectionEditorDataSlot::SlotListener, NodeConnectionEditorLink::LinkListener, NodeConnection::Listener
 {
 
 public:
-    NodeConnectionEditor();
+    NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI);
     ~NodeConnectionEditor();
-
-    juce_DeclareSingleton(NodeConnectionEditor, true);
 
     OwnedArray<NodeConnectionEditorDataSlot> outputSlots;
     OwnedArray<NodeConnectionEditorDataSlot> inputSlots;
     OwnedArray<NodeConnectionEditorLink> links;
+
 
     Component mainContainer;
 
@@ -40,17 +39,19 @@ public:
     Component outputsContainer;
     Component linksContainer;
 
+	NodeConnectionEditorLink * selectedLink;
+	void setSelectedLink(NodeConnectionEditorLink *);
+
     NodeConnection * currentConnection;
     NodeConnection::ConnectionType editingType;
 
     void setCurrentConnection(NodeConnection * _connection);
-    void editConnection(NodeConnection * _connection);
 
     void resized()override;
-    void closeButtonPressed() override;
-    void closeWindow();
 
-    NodeConnectionEditorLink * editingLink;
+	int getContentHeight() override;
+
+    ScopedPointer<NodeConnectionEditorLink> editingLink;
 
 
     void mouseEnter(const MouseEvent &) override;
@@ -95,6 +96,7 @@ private:
 
     // Inherited via LinkListener
     virtual void askForRemoveLink(NodeConnectionEditorLink * target) override;
+	virtual void selectLink(NodeConnectionEditorLink * target) override;
 
     // Inherited via Listener
     virtual void askForRemoveConnection(NodeConnection *) override {};

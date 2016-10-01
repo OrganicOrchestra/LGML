@@ -11,7 +11,6 @@
 #ifndef SELECTABLECOMPONENTHANDLER_H_INCLUDED
 #define SELECTABLECOMPONENTHANDLER_H_INCLUDED
 
-#include "JuceHeader.h"
 class SelectableComponent;
 
 
@@ -35,12 +34,7 @@ public:
     void removeSelectableHandlerListener(SelectableHandlerListener* listener) { selectableHandlerListeners.remove(listener); }
     ListenerList<SelectableHandlerListener> selectableHandlerListeners;
 
-
-
     Array<SelectableComponent*> selected;
-
-
-
 };
 
 

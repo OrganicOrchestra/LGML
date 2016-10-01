@@ -10,7 +10,8 @@
 
 #include "Data.h"
 
-Data::Data(DataProcessor * processor, String _name, DataType _type) : processor(processor), name(_name), type(_type), numConnections(0)
+Data::Data(NodeBase * _node, String _name, DataType _type, IOType _ioType) :
+	node(_node), name(_name), type(_type), numConnections(0), ioType(_ioType)
 {
     switch (type)
     {
@@ -70,7 +71,6 @@ void Data::updateFromSourceData(Data * sourceData)
     int numElements = elements.size();
     for (int i = 0; i < numElements; i++)
     {
-        DBG(sourceData->elements[i]->value << "< >" << elements[i]->value);
 
         if (sourceData->elements[i]->value != elements[i]->value)
         {
@@ -95,11 +95,10 @@ void Data::update(const float & value1, const float & value2, const float & valu
     // const Array<float> values = { value1, value2, value3 };
     // above not compiling with c++ 98 / libstdc / Xcode
     Array<float> values;
-    values.resize(3); values.set(0, value1); values.set(2, value2); values.set(3, value3);
+    values.resize(3); values.set(0, value1); values.set(1, value2); values.set(2, value3);
 
     for (int i = 0; i < numElements; i++)
     {
-        DBG(String(elements[i]->value) << " < > " << values[i]);
         if (elements[i]->value != values[i])
         {
             elements[i]->value = values[i];
@@ -124,18 +123,18 @@ int Data::getNumElementsForType(const DataType & _type)
     case Number:
     case Boolean:
         return 1;
-        break;
+        
 
     case Position:
     case Orientation:
     case Color:
         return 3;
-        break;
+
 
     default:
         DBG("Type not exist for data");
         return 0;
-        break;
+
     }
 }
 

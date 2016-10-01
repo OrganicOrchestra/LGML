@@ -2,7 +2,7 @@
   ==============================================================================
 
     NodeBaseHeaderUI.h
-    Created: 8 Mar 2016 5:53:52pm
+    Created: 20 May 2016 12:52:22am
     Author:  bkupe
 
   ==============================================================================
@@ -11,65 +11,14 @@
 #ifndef NODEBASEHEADERUI_H_INCLUDED
 #define NODEBASEHEADERUI_H_INCLUDED
 
+#include "ConnectableNodeHeaderUI.h"
 
-
-
-#include "StringParameterUI.h"
-#include "BoolToggleUI.h"
-#include "VuMeter.h"
-#include "Style.h"
-
-
-class NodeBaseUI;
-class FloatSliderUI;
-
-class NodeBaseHeaderUI : public Component, public ComboBox::Listener, public Button::Listener, public ControllableContainer::Listener
+class NodeBaseHeaderUI : public ConnectableNodeHeaderUI
 {
-public:
-
-    class Grabber : public Component
-    {
-        void paint(Graphics &g) override;
-    };
-
-    NodeBaseHeaderUI();
-    virtual ~NodeBaseHeaderUI();
-
-    NodeBase * node;
-    NodeBaseUI * nodeUI;
-
-    ScopedPointer<StringParameterUI> titleUI;
-    ScopedPointer<BoolToggleUI> enabledUI;
-	VuMeter vuMeterIn;
-    VuMeter vuMeterOut;
-
-    Grabber grabber;
-    ImageButton removeBT;
-    ScopedPointer<ComboBox> presetCB;
-
-    void mouseDoubleClick(const MouseEvent & e)override;
-
-
-    virtual void setNodeAndNodeUI(NodeBase * node, NodeBaseUI * nodeUI);
-    virtual void updatePresetComboBox();
-    virtual void init();
-
-
-    virtual void resized() override;
-
-    // Inherited via Listener
-    virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBaseHeaderUI)
-
-    // Inherited via Listener
-    virtual void buttonClicked(Button *) override;
-
-	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
-
+public :
+	NodeBaseHeaderUI();
+	virtual ~NodeBaseHeaderUI();
 };
-
-
 
 
 #endif  // NODEBASEHEADERUI_H_INCLUDED

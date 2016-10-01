@@ -11,13 +11,17 @@
 #ifndef DATA_H_INCLUDED
 #define DATA_H_INCLUDED
 
-#include "JuceHeader.h"
-
-class DataProcessor;
+#include "JuceHeader.h"//keep
+class NodeBase;
 
 class Data
 {
 public:
+	enum IOType
+	{
+		Input, Output
+	};
+
     enum DataType
     {
         Unknown, Float, Number, Boolean, Position, Orientation, Color
@@ -30,6 +34,7 @@ public:
 
         String name;
         DataType type;
+		
         float value;
 
         bool isTypeCompatible(const DataType &targetType);
@@ -41,14 +46,15 @@ public:
 
     String name;
     DataType type;
+	IOType ioType;
 
-    DataProcessor * processor;
+    NodeBase * node;
 
     int numConnections;
 
     OwnedArray<DataElement> elements;
 
-    Data(DataProcessor * processor, String _name, DataType _type);
+    Data(NodeBase * node, String _name, DataType _type, IOType _ioType);
     ~Data();
 
     void addElement(const String &_name);
@@ -61,7 +67,7 @@ public:
 
     bool isComplex() { return elements.size() > 1; }
 
-    bool isTypeCompatible(const DataType &targetType);;
+    bool isTypeCompatible(const DataType &targetType);
 
     int getNumElementsForType(const DataType &_type);
 

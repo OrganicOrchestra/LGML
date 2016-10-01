@@ -15,21 +15,24 @@
 // base class for component that can be selected and notify listeners
 // Juce handle focus but its exclusive
 // ( so abstract that any component can use that as long as there is a manager to handle it)
-#include "JuceHeader.h"
+class ControllableContainer;
+
 class SelectableComponentHandler;
 
 class SelectableComponent : public Component
 {
 
 public:
-    SelectableComponent(SelectableComponentHandler * handler);
+    SelectableComponent(SelectableComponentHandler * handler, ControllableContainer * relatedContainer);
     virtual ~SelectableComponent();
 
+	ControllableContainer * selectableRelatedContainer;
 
     // called to change state manually
     void askForSelection(bool _isSelected, bool unique = false);
 
     bool isSelected;
+	bool drawDefaultContourOnSelection;
 
     // can be overriden for self update
     virtual void internalSetSelected(bool) {}

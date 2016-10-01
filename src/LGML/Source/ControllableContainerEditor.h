@@ -12,7 +12,6 @@
 #define CONTROLLABLEEDITOR_H_INCLUDED
 
 
-#include "JuceHeader.h"
 
 #include "ControllableContainer.h"
 class ControllableUI;
@@ -21,7 +20,8 @@ class ControllableUI;
 
 //  base class for displaying an UI presenting all control available in ControllableContainer
 
-class ControllableContainerEditor:public Component,public ControllableContainer::Listener{
+class ControllableContainerEditor: public Component, public ControllableContainerListener
+{
 public:
     ControllableContainerEditor(ControllableContainer * ,Component*);
 
@@ -33,27 +33,25 @@ public:
 
 protected:
 
-    void buildFromContainer(ControllableContainer * );
+    void buildFromContainer(ControllableContainer * , bool recursive = true);
     void addControlUI(ControllableUI * c);
     void removeControlUI(ControllableUI * c);
 
-    void childrenChanged()override;
-    void childBoundsChanged(Component *)override;
+    void childrenChanged() override;
+    void childBoundsChanged(Component *) override;
 
     virtual void controllableAdded(Controllable * ) override ;
     virtual void controllableRemoved(Controllable * ) override ;
     virtual void controllableContainerAdded(ControllableContainer *) override ;
     virtual void controllableContainerRemoved(ControllableContainer * ) override ;
 
-    void resized()override;
+    void resized() override;
 
     OwnedArray<ControllableUI> controllableUIs;
     OwnedArray<ControllableContainerEditor> editors;
 
     Component* embeddedComp;
     void layoutChildrens();
-
-
 
 };
 

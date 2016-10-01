@@ -19,6 +19,23 @@
 
 // (You can add your own code in this section, and the Projucer will not overwrite it)
 
+
+
+// set following to zero or not to avoid recompiling everything (it jumps some but still long)
+#define JUCE_IS_REPAINT_DEBUGGING_ACTIVE 0
+// dont touch this, change following JUCE_IS_REPAINT_DEBUGGING_ACTIVE to avoid recompiling
+#define JUCE_ENABLE_REPAINT_DEBUGGING 1
+
+
+// this will execute only unit tests
+#ifndef LGML_UNIT_TESTS
+#define LGML_UNIT_TESTS 0
+#endif
+
+
+
+// on osx this prevent to repaint useless part of ui (every thing inside the union of all rect repainted...)
+#define JUCE_COREGRAPHICS_RENDER_WITH_MULTIPLE_PAINT_CALLS 1
 // [END_USER_CODE_SECTION]
 
 //==============================================================================
@@ -133,7 +150,7 @@
 #endif
 
 #ifndef    JUCE_LOG_ASSERTIONS
- //#define JUCE_LOG_ASSERTIONS
+ #define   JUCE_LOG_ASSERTIONS 1
 #endif
 
 #ifndef    JUCE_CHECK_MEMORY_LEAKS
@@ -150,6 +167,14 @@
 
 #ifndef    JUCE_USE_CURL
  //#define JUCE_USE_CURL
+#endif
+
+#ifndef    JUCE_CATCH_UNHANDLED_EXCEPTIONS
+ //#define JUCE_CATCH_UNHANDLED_EXCEPTIONS
+#endif
+
+#ifndef    JUCE_ALLOW_STATIC_NULL_VARIABLES
+ //#define JUCE_ALLOW_STATIC_NULL_VARIABLES
 #endif
 
 //==============================================================================

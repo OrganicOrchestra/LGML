@@ -12,7 +12,6 @@
 #define INTSLIDERUI_H_INCLUDED
 
 #include "FloatSliderUI.h"
-#include "IntParameter.h"
 
 class IntSliderUI : public FloatSliderUI
 {

@@ -12,149 +12,84 @@
 #define AUDIOHELPERS_H_INCLUDED
 
 
-#include "JuceHeader.h"
-
-/*
- helper class for bipartite buffer
- allowing having constant access to contiguous memory in a circular buffer
- */
-class BipBuffer{
-
-public:
-    BipBuffer(int size){
-        phantomSize = size;
-        buf.setSize(1,3*size);
-        writeNeedle = 0;
-    }
-
-    void writeBlock(AudioSampleBuffer & newBuf){
-
-        buf.setSize(newBuf.getNumChannels(),buf.getNumSamples());
-
-
-        int toCopy = newBuf.getNumSamples();
-
-        if( phantomSize+writeNeedle + toCopy > 3*phantomSize){
-            int firstSeg = 3*phantomSize-(phantomSize+writeNeedle) ;
-            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-                safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
-            }
-            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-                safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
-            }
-        }
-        else{
-            for(int i = newBuf.getNumChannels()-1;i>=0 ;--i){
-                safeCopy(newBuf.getReadPointer(i),toCopy,i);
-            }
-        }
-    }
-
-
-    const float* getLastBlock(int num,int channel=0){
-        jassert(num<phantomSize);
-        return buf.getReadPointer(channel, phantomSize + writeNeedle - num);
-    }
-
-    AudioSampleBuffer buf;
-private:
-    void safeCopy(const float * b,int s,int channel){
-        buf.copyFrom(channel, phantomSize+writeNeedle, b, s);
-
-        if(writeNeedle>2*phantomSize){
-            buf.copyFrom(channel, writeNeedle-2*phantomSize,b,s);
-        }
-        writeNeedle+=s;
-        writeNeedle%=2*phantomSize;
-
-    }
-    int writeNeedle;
-    int phantomSize;
-
-
-
-
+#define DB0_FOR_01 0.8f
+// create a gain value for a float  between 0 and 1
+// DB0_FOR_01   -> 0dB
+// 1            -> +6dB
+inline float float01ToGain(float f){
+    if(f==0)return 0;
+    float minus6Pos = (1-2*(1-DB0_FOR_01));
+    if(f>minus6Pos) return Decibels::decibelsToGain(jmap<float>(f,DB0_FOR_01,1.0f,0.0f,6.0f));
+    return Decibels::decibelsToGain(jmap<float>(f,0,minus6Pos,-70.0f,-6.0f));
 };
 
+inline float rmsToGain01(float rms){
+        return jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,DB0_FOR_01,1.0f);
+}
 
-class RingBuffer{
+
+// helper for handling sample level fading in and out, autoCrossFade relaunches a fadeIn whenFadeOutEnds
+class FadeInOut{
 public:
+  FadeInOut(int _fadeInSamples,int _fadeOutSamples,bool autoCrossFade = false,double _skew = 1): fadeInNumSamples(_fadeInSamples), fadeOutNumSamples(_fadeOutSamples),crossFade(autoCrossFade),skew(_skew){
+    fadeOutCount = 0;
+    fadeInCount = -1;
+  }
 
-    RingBuffer(int size):ringSize(size),writeNeedle(0),contiguousWriteNeedle(0){
-        buf.setSize(1, size);
-
+  double getCurrentFade(){
+    if(fadeInCount>=0){
+      if(skew==1)return (1.0 - fadeInCount*1.0/fadeInNumSamples);
+      return pow(1.0-fadeInCount*1.0/fadeInNumSamples,skew);
     }
-    AudioSampleBuffer buf;
-
-    uint32 ringSize;
-    uint32 writeNeedle;
-
-    void writeBlock(AudioSampleBuffer & newBuf){
-        int numChans =newBuf.getNumChannels();
-        buf.setSize(numChans,buf.getNumSamples());
-        int toCopy = newBuf.getNumSamples();
-
-        if( writeNeedle + toCopy > ringSize){
-            int firstSeg = ringSize-writeNeedle ;
-            for(int i = numChans-1;i>=0 ;--i){
-                buf.copyFrom(i, writeNeedle, newBuf, i, 0, firstSeg);
-            }
-            for(int i = numChans-1;i>=0 ;--i){
-                buf.copyFrom(i,0,newBuf,i,firstSeg,toCopy-firstSeg);
-            }
-        }
-        else{
-            for(int i = numChans-1;i>=0 ;--i){
-                buf.copyFrom(i, writeNeedle, newBuf,i, 0, toCopy);            }
-        }
-        writeNeedle+=toCopy;
-        writeNeedle%=ringSize;
-
-        // avoid wrapping errors when checking if contiguous need update
-        contiguousWriteNeedle+=1;
+    if(fadeOutCount>=0){
+      if(skew==1)return fadeOutCount*1.0/fadeOutNumSamples;
+      return pow(fadeOutCount*1.0/fadeOutNumSamples,skew);
     }
 
+    jassertfalse;
+    return 0.0;
+  }
 
-    const float* getLastBlock(int num,int channel = 0){
+  void startFadeOut(){
+    if(fadeOutCount>=0)return;
+    fadeOutCount = (int)(fadeInCount>0?fadeInCount*fadeOutNumSamples*1.0/fadeInNumSamples :fadeOutNumSamples);
+    fadeInCount = -1;
+  }
+  void setFadedOut(){
+    fadeOutCount = 0;
+    fadeInCount = -1;
+  }
 
-        if(num!=contiguousBuffer.getNumSamples() || writeNeedle!=contiguousWriteNeedle){
-            updateContiguousBuffer(num);
-        }
-        else{
-            DBG("alreadyComputed");
-        }
-        return contiguousBuffer.getReadPointer(channel);
+  void setFadedIn(){
+    fadeInCount = 0;
+    fadeOutCount = -1;
+  }
+
+
+  void startFadeIn(){
+    if(fadeInCount>=0)return;
+	fadeInCount = (int)(fadeOutCount > 0 ? fadeOutCount*fadeInNumSamples*1.0 / fadeOutNumSamples : fadeInNumSamples);
+    fadeOutCount = -1;
+  }
+  // should be called at each sample to compute resulting fade
+  void incrementFade(int i = 1){
+    if(fadeOutCount>0){
+      fadeOutCount-=i;
+      fadeOutCount = jmax(0,fadeOutCount);
+      if(crossFade && fadeOutCount<=0){
+        fadeInCount = fadeInNumSamples;
+      }
     }
+    else if(fadeInCount>0){fadeInCount-=i;fadeInCount = jmax(0,fadeInCount);}
+  }
 
+  int fadeInNumSamples;
+  int fadeOutNumSamples;
+  int fadeInCount,fadeOutCount;
+  double skew;
+  bool crossFade;
 
-private:
-
-    void updateContiguousBuffer(int num){
-
-        jassert(num < (int)ringSize);
-        contiguousBuffer.setSize(buf.getNumChannels(),num);
-        int startIdx = writeNeedle-num;
-        if(startIdx>=0){
-            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
-                contiguousBuffer.copyFrom(i, 0, buf, i, startIdx, num);
-            }
-        }
-        else{
-
-            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
-                contiguousBuffer.copyFrom(i, 0, buf, i, ringSize+startIdx, -startIdx);
-            }
-            for(int i = buf.getNumChannels()-1;i>=0 ;--i){
-                contiguousBuffer.copyFrom(i,-startIdx,buf,i,0,num+startIdx);
-            }
-        }
-        contiguousWriteNeedle = writeNeedle;
-    }
-    AudioSampleBuffer contiguousBuffer;
-    uint32 contiguousWriteNeedle = 0 ;
 };
-
-
 
 
 

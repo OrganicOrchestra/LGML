@@ -16,13 +16,13 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 */
 
 #include "DataProcessorGraph.h"
-#include "NodeConnection.h"
-#include "NodeFactory.h"
+#include "ControllableContainer.h"
+#include "NodeContainer.h"//keep
 
-class NodeManager: public NodeBase::NodeListener , public NodeConnection::Listener, public ControllableContainer
+
+class NodeManager:
+	public ControllableContainer
 {
-
-
 
 public:
     NodeManager();
@@ -30,76 +30,34 @@ public:
 
     juce_DeclareSingleton(NodeManager, true);
 
-    NodeFactory nodeFactory;
-
-
-    AudioProcessorGraph audioGraph;
+    
     DataProcessorGraph dataGraph;
 
+	ScopedPointer<NodeContainer> mainContainer;
+
+	void rebuildAudioGraph();
 
     void clear();
-    int getNumNodes() const noexcept { return nodes.size(); }
 
-    NodeBase* getNode(const int index) const noexcept { return nodes[index]; }
-    NodeBase* getNodeForId(const uint32 nodeId) const;
-    NodeBase* addNode(NodeType nodeType, uint32 nodeId = 0);
-    bool removeNode(uint32 nodeId);
+	var getJSONData() override;
+	void loadJSONDataInternal(var data) override;
 
-    NodeConnection * getConnection(const int index) const noexcept { return connections[index]; }
-    NodeConnection * getConnectionForId(const uint32 connectionId) const;
-    NodeConnection * getConnectionBetweenNodes(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType);
-    Array<NodeConnection *> getAllConnectionsForNode(NodeBase * node);
-
-    NodeConnection * addConnection(NodeBase * sourceNode, NodeBase * destNode, NodeConnection::ConnectionType connectionType, uint32 connectionId = 0);
-    bool removeConnection(uint32 connectionId);
-    bool removeConnection(NodeConnection * c);
-    void removeIllegalConnections();
-    int getNumConnections();
-
-    //save / load
-    var getJSONData() const;
-    void loadJSONData(var data, bool clearBeforeLoad = true);
 
     //Listener
-    class  Listener
+    class  NodeManagerListener
     {
     public:
-        /** Destructor. */
-        virtual ~Listener() {}
+        virtual ~NodeManagerListener() {}
 
-        virtual void nodeAdded(NodeBase *) = 0;
-        virtual void nodeRemoved(NodeBase *) = 0;
-
-        virtual void connectionAdded(NodeConnection *) = 0;
-        virtual void connectionRemoved(NodeConnection *) = 0;
+		virtual void managerCleared() {};
     };
 
-    ListenerList<Listener> listeners;
-    void addNodeManagerListener(Listener* newListener) { listeners.add(newListener); }
-    void removeNodeManagerListener(Listener* listener) { listeners.remove(listener); }
+    ListenerList<NodeManagerListener> nodeManagerListeners;
+    void addNodeManagerListener(NodeManagerListener* newListener) { nodeManagerListeners.add(newListener); }
+    void removeNodeManagerListener(NodeManagerListener* listener) { nodeManagerListeners.remove(listener); }
 
-    void updateAudioGraph();
-
-private:
-    OwnedArray<NodeBase> nodes;
-    uint32 lastNodeId;
-
-    OwnedArray<NodeConnection> connections;
-    uint32 lastConnectionId;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeManager)
-
-    // Inherited via NodeBase::Listener
-    virtual void askForRemoveNode(NodeBase *) override;
-
-    // Inherited via NodeConnection::Listener
-    virtual void askForRemoveConnection(NodeConnection *) override;
-
-    // Inherited via Listener
-    virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * ) override {}
-    virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * ) override {}
-    virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & ) override {}
-    virtual void connectionAudioLinkRemoved(const NodeConnection::AudioConnection & ) override {}
 
 
 };

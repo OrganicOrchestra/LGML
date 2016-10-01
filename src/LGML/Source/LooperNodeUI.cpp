@@ -10,28 +10,40 @@
 
 #include "LooperNodeUI.h"
 
+#include "NodeBaseUI.h"
+
+
+ConnectableNodeUI * LooperNode::createUI(){
+  NodeBaseUI * ui = new NodeBaseUI(this, new LooperNodeContentUI);
+  ui->recursiveInspectionLevel = 2;
+  ui->canInspectChildContainersBeyondRecursion = false;
+  return ui;
+}
+
+
+
 LooperNodeContentUI::LooperNodeContentUI(){
 
 }
 
 LooperNodeContentUI::~LooperNodeContentUI(){
-    looperNode->looper->removeLooperListener(this);
+    looperNode->removeLooperListener(this);
 }
 
 void LooperNodeContentUI::init(){
 
-    looperNode = dynamic_cast<LooperNode*> (node);
-    looperNode->looper->addLooperListener(this);
+    looperNode = (LooperNode*)node.get();
+    looperNode->addLooperListener(this);
 
-    recPlaySelectedButton = looperNode->looper->recPlaySelectedTrig->createBlinkUI();
-    clearSelectedButton = looperNode->looper->clearSelectedTrig->createBlinkUI();
-    stopSelectedButton = looperNode->looper->stopSelectedTrig->createBlinkUI();
+    recPlaySelectedButton = looperNode->recPlaySelectedTrig->createBlinkUI();
+    clearSelectedButton = looperNode->clearSelectedTrig->createBlinkUI();
+    stopSelectedButton = looperNode->stopSelectedTrig->createBlinkUI();
 
-    clearAllButton = looperNode->looper->clearAllTrig->createBlinkUI();
-    stopAllButton = looperNode->looper->stopAllTrig->createBlinkUI();
+    clearAllButton = looperNode->clearAllTrig->createBlinkUI();
+    stopAllButton = looperNode->stopAllTrig->createBlinkUI();
 
-    volumeSelectedSlider = looperNode->looper->volumeSelected->createSlider();
-    monitoringButton = looperNode->looper->isMonitoring->createToggle();
+    volumeSelectedSlider = looperNode->volumeSelected->createSlider();
+    monitoringButton = looperNode->isMonitoring->createToggle();
 
     headerContainer.addAndMakeVisible(recPlaySelectedButton);
     headerContainer.addAndMakeVisible(clearSelectedButton);
@@ -47,12 +59,13 @@ void LooperNodeContentUI::init(){
     setSize(650,180);
 
 
-    trackNumChanged(looperNode->looper->tracks.size());
+    trackNumChanged(looperNode->trackGroup.tracks.size());
+    if(looperNode->selectTrack->intValue()>=0)looperNode->trackGroup.tracks.getUnchecked(looperNode->selectTrack->intValue())->setSelected(true);
 }
 
 void LooperNodeContentUI::resized(){
     Rectangle<int> area = getLocalBounds();
-    headerContainer.setBounds(area.removeFromTop(50));
+    headerContainer.setBounds(area.removeFromTop(30));
     trackContainer.setBounds(area);
     reLayoutHeader();
     reLayoutTracks();
@@ -63,16 +76,16 @@ void LooperNodeContentUI::resized(){
 void LooperNodeContentUI::reLayoutHeader(){
 
     float selectedW = .4f;
-    Rectangle<int> area = headerContainer.getBounds();
-    int pad = 3;
+    Rectangle<int> area = headerContainer.getBounds().reduced(4, 0);
+    int pad = 2;
     Rectangle<int> selTrackArea = area.removeFromLeft((int)(selectedW*area.getWidth()));
-    recPlaySelectedButton->setBounds(selTrackArea.removeFromTop((int)(.6f*selTrackArea.getHeight())).reduced(pad));
-    stopSelectedButton->setBounds(selTrackArea.removeFromLeft((int)(.5f*selTrackArea.getWidth())).reduced(pad));
+    recPlaySelectedButton->setBounds(selTrackArea.removeFromLeft((int)(.5f*selTrackArea.getWidth())).reduced(pad));
+    stopSelectedButton->setBounds(selTrackArea.removeFromTop((int)(.5f*selTrackArea.getHeight())).reduced(pad));
     clearSelectedButton->setBounds(selTrackArea.reduced(pad));
 
     stopAllButton->setBounds(area.removeFromLeft(area.getWidth()/3).reduced(pad));
     clearAllButton->setBounds(area.removeFromLeft(area.getWidth()/2).reduced(pad));
-    monitoringButton->setBounds(area.removeFromTop(area.getHeight()/3).reduced(pad));
+    monitoringButton->setBounds(area.removeFromTop(area.getHeight()).reduced(pad));
 
 }
 void LooperNodeContentUI::reLayoutTracks(){
@@ -81,8 +94,8 @@ void LooperNodeContentUI::reLayoutTracks(){
     int numCol = 8;
     int numRow = (int)ceil((tracksUI.size())*1.f / numCol);
 
-    float trackWidth =  80;// trackContainer.getWidth() / numCol;
-    float trackHeight = 150;// 1.0f / numRow;
+    float trackWidth =  40;// trackContainer.getWidth() / numCol;
+    float trackHeight = 130;// 1.0f / numRow;
     float gap = 5;
     float margin = 5;
 
@@ -124,7 +137,7 @@ void LooperNodeContentUI::trackNumChanged(int num) {
     }
     else{
         for(int i = tracksUI.size() ; i < num ; i++){
-            TrackUI * t = new TrackUI(looperNode->looper->tracks.getUnchecked(i));
+            TrackUI * t = new TrackUI(looperNode->trackGroup.tracks.getUnchecked(i));
             tracksUI.add(t);
             trackContainer.addAndMakeVisible(t);
         }
@@ -155,7 +168,6 @@ isSelected(false)
     addAndMakeVisible(clearButton);
     volumeSlider = track->volume->createSlider();
     volumeSlider->orientation = FloatSliderUI::VERTICAL;
-    //            volumeSlider->displayText=false;
     addAndMakeVisible(volumeSlider);
     addAndMakeVisible(stopButton);
     addAndMakeVisible(muteButton);
@@ -187,20 +199,21 @@ void LooperNodeContentUI::TrackUI::paint(Graphics & g) {
 
 void LooperNodeContentUI::TrackUI::resized() {
     Rectangle<int> r = getLocalBounds().reduced(2);
-    r.removeFromTop(30);//header
-
-    volumeSlider->setBounds(r.removeFromRight(15));
+    r.removeFromTop(25);//header
+    int gap = 5;
+    int step = r.getHeight()/6 - gap;
+    volumeSlider->setBounds(r.removeFromRight(step));
     r.reduce(5,0);
-    muteButton->setBounds(r.removeFromTop(15));
-    r.removeFromTop(5);
-    soloButton->setBounds(r.removeFromTop(15));
-    r.removeFromTop(5);
-    clearButton->setBounds(r.removeFromTop(15));
-    r.removeFromTop(5);
-    stopButton->setBounds(r.removeFromTop(15));
-    r.removeFromTop(5);
+    muteButton->setBounds(r.removeFromTop(step));
+    r.removeFromTop(gap);
+    soloButton->setBounds(r.removeFromTop(step));
+    r.removeFromTop(gap);
+    clearButton->setBounds(r.removeFromTop(step));
+    r.removeFromTop(gap);
+    stopButton->setBounds(r.removeFromTop(step));
+    r.removeFromTop(gap);
     recPlayButton->setBounds(r);
-    r.removeFromTop(5);
+    r.removeFromTop(gap);
 
 }
 
@@ -214,20 +227,20 @@ void LooperNodeContentUI::TrackUI::trackStateChangedAsync(const LooperTrack::Tra
             mainColour = Colours::green.brighter(.3f);
             break;
 
-        case LooperTrack::TrackState::SHOULD_RECORD:
+        case LooperTrack::TrackState::WILL_RECORD:
             mainColour = Colours::orange;
             break;
 
-        case LooperTrack::TrackState::SHOULD_PLAY:
+        case LooperTrack::TrackState::WILL_PLAY:
             mainColour = Colours::cadetblue;
             break;
 
-        case LooperTrack::TrackState::SHOULD_CLEAR:
         case LooperTrack::TrackState::CLEARED:
             mainColour = Colours::grey;
             break;
 
         case LooperTrack::TrackState::STOPPED:
+        case LooperTrack::TrackState::WILL_STOP:
             mainColour = Colours::grey.darker();
             break;
 

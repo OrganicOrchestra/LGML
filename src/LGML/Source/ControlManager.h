@@ -14,11 +14,9 @@
 
 #include "ControllerFactory.h"
 
-class ControllerManager : public Controller::Listener, public ControllableContainer
+class ControllerManager : public Controller::ControllerListener, public ControllableContainer
 {
 public:
-
-
 
     ControllerManager();
     ~ControllerManager();
@@ -33,7 +31,7 @@ public:
     void clear();
 
     var getJSONData() override;
-    void loadJSONData(var data, bool clearBeforeLoad = true);
+    void loadJSONDataInternal(var data) override;
 
     class  Listener
     {

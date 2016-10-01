@@ -77,7 +77,7 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
             && activePluginWindows.getUnchecked(i)->type == type)
             return activePluginWindows.getUnchecked(i);
 
-    AudioProcessor* processor = dynamic_cast<VSTNode::VSTProcessor*>(node->audioProcessor)->innerPlugin;
+    AudioProcessor* processor = dynamic_cast<VSTNode*>(node)->innerPlugin;
     if(!processor)return nullptr;
 
 

@@ -11,20 +11,20 @@
 #ifndef DATAINNODEUI_H_INCLUDED
 #define DATAINNODEUI_H_INCLUDED
 
-#include "NodeBaseUI.h"
 #include "ParameterUI.h"
 #include "DataInNode.h"
+#include "NodeBaseContentUI.h"
 
 //==============================================================================
 /*
 */
-class DataInNodeContentUI    : public NodeBaseContentUI, DataInNode::Listener
+class DataInNodeContentUI    : public NodeBaseContentUI, DataInNode::DataInListener
 {
 public:
     DataInNodeContentUI();
     ~DataInNodeContentUI();
 
-    DataInNode * o2dNode;
+    DataInNode * dataInNode;
 
     OwnedArray<ParameterUI> parameterUIs;
 

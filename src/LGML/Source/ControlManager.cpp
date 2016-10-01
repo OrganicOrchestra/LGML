@@ -16,6 +16,7 @@ juce_ImplementSingleton(ControllerManager);
 ControllerManager::ControllerManager() :
     ControllableContainer("Controller Manager")
 {
+	saveAndLoadRecursiveData = false;
     setCustomShortName("control");
 }
 
@@ -28,29 +29,35 @@ ControllerManager::~ControllerManager()
 Controller * ControllerManager::addController(ControllerFactory::ControllerType controllerType)
 {
     Controller * c = factory.createController(controllerType);
-    controllers.add(c);
-    listeners.call(&Listener::controllerAdded, c);
-    c->addControllableListener(this);
-    c->setParentContainer(this);
+	c->nameParam->setValue(getUniqueNameInContainer(c->nameParam->stringValue()));
+
+	controllers.add(c);
+	c->addControllerListener(this);
+
+	addChildControllableContainer(c);
+	listeners.call(&ControllerManager::Listener::controllerAdded, c);
     return c;
 }
 
 void ControllerManager::removeController(Controller * c)
 {
-    c->removeListener(this);
-    listeners.call(&Listener::controllerRemoved, c);
+    c->removeControllerListener(this);
+	removeChildControllableContainer(c);
+    listeners.call(&ControllerManager::Listener::controllerRemoved, c);
     controllers.removeObject(c);
 }
 
 void ControllerManager::clear()
 {
-    while (controllers.size())
-        controllers[0]->remove();
+	while (controllers.size())
+	{
+		controllers[0]->remove();
+	}
 }
 
 var ControllerManager::getJSONData()
 {
-    var data(new DynamicObject());
+	var data = ControllableContainer::getJSONData();
     var controllersData;
 
     for (auto &c: controllers)
@@ -62,9 +69,9 @@ var ControllerManager::getJSONData()
     return data;
 }
 
-void ControllerManager::loadJSONData(var data, bool clearBeforeLoad)
+void ControllerManager::loadJSONDataInternal(var data)
 {
-    if (clearBeforeLoad) clear();
+    clear();
 
     Array<var> * controllersData = data.getProperty("controllers", var()).getArray();
     if (controllersData)

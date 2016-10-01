@@ -42,8 +42,8 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "LGML";
-    const char* const  versionString  = "0.1.4";
-    const int          versionNumber  = 0x104;
+    const char* const  versionString  = "0.2.60a";
+    const int          versionNumber  = 0x23c;
 }
 #endif
 

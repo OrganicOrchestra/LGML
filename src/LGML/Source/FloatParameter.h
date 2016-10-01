@@ -24,11 +24,11 @@ public:
     FloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0.f, const float &maxValue = 1.f, bool enabled = true);
     ~FloatParameter() {}
 
-    void setValueInternal(var _value) override;
+    void setValueInternal(var & _value) override;
 
-    FloatSliderUI * createSlider();
-    FloatStepperUI * createStepper();
-    ControllableUI * createControllableContainerEditor() override;
+    FloatSliderUI * createSlider(FloatParameter * target = nullptr);
+    FloatStepperUI * createStepper(FloatParameter * target = nullptr);
+    ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 
    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatParameter)
 };

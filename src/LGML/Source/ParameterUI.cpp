@@ -14,22 +14,27 @@
 ParameterUI::ParameterUI(Parameter * parameter) :
 parameter(parameter),
 ControllableUI(parameter),
-showLabel(true)
+showLabel(true),
+showValue(true)
 {
+    parameter->addAsyncCoalescedListener(this);
     parameter->addParameterListener(this);
 
 }
 
 ParameterUI::~ParameterUI()
 {
-    if(parameter.get())parameter->removeParameterListener(this);
+    if(parameter.get()){
+        parameter->removeParameterListener(this);
+        parameter->removeAsyncParameterListener(this);
+    }
 }
+
 
 
 bool ParameterUI::shouldBailOut(){
     bool bailOut= parameter.get()==nullptr;
     // we want a clean deletion no?
-    // comment this to continue safely to see what happen next
     jassert(!bailOut);
     return bailOut;
 

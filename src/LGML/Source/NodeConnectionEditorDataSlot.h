@@ -14,7 +14,8 @@
 
 
 //#include "NodeBase.h"
-#include "NodeBaseUI.h"
+#include "NodeConnection.h"
+class Data;
 
 //==============================================================================
 /*

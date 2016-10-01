@@ -27,19 +27,19 @@ public:
     virtual ~TriggerBlinkUI();
 
     void paint(Graphics&)override;
-    void resized()override;
     void mouseDown(const MouseEvent& event)override;
-    void triggerTriggered(Trigger * p) override;
+    void triggerTriggered(const Trigger * p) override;
     void startBlink();
     void timerCallback()override;
     void setTriggerReference(Trigger * t);
     float intensity;
 
-    Label nameLabel;
-
+	bool animateIntensity;
+	int blinkTime;
+	Colour offColor;
+	Colour onColor;
 private:
 
-    int blinkTime;
     int refreshPeriod;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriggerBlinkUI)
 };

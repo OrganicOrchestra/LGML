@@ -13,24 +13,26 @@
 
 #pragma warning( disable : 4505 )
 
-#include "JuceHeader.h"
+#include "JuceHeader.h"//keep
+#include "Style.h"//keep
+
 
 namespace LookAndFeelHelpers {
 
 
     // initialise the standard set of colours..
-    static const uint32 textButtonColour = 0xffbbbbff;
-    static const uint32 textHighlightColour = 0x401111ee;
+    static const uint32 textButtonColour = NORMAL_COLOR.getARGB();
+    static const uint32 textHighlightColour = TEXT_COLOR.getARGB();
     static const uint32 standardOutlineColour = 0xb2808080;
 
     static const uint32 standardColours[] =
     {
         TextButton::buttonColourId,                 textButtonColour,
-        TextButton::buttonOnColourId,               0xff4444ff,
-        TextButton::textColourOnId,                 0xff000000,
-        TextButton::textColourOffId,                0xff000000,
+        TextButton::buttonOnColourId,               HIGHLIGHT_COLOR.getARGB(),
+        TextButton::textColourOnId,                 textHighlightColour,
+        TextButton::textColourOffId,                TEXT_COLOR.getARGB(),
 
-        ToggleButton::textColourId,                 0xff000000,
+        ToggleButton::textColourId,                 TEXT_COLOR.getARGB(),
 
         TextEditor::backgroundColourId,             0xffffffff,
         TextEditor::textColourId,                   0xff000000,
@@ -46,8 +48,9 @@ namespace LookAndFeelHelpers {
         Label::textColourId,                        0xff000000,
         Label::outlineColourId,                     0x00000000,
 
-        ScrollBar::backgroundColourId,              Colours::whitesmoke.getARGB(),
-        ScrollBar::thumbColourId,                   0xffffffff,
+        ScrollBar::backgroundColourId,              BG_COLOR.brighter(.2f).getARGB(),
+        ScrollBar::thumbColourId,                   BG_COLOR.brighter(.6f).getARGB(),
+		ScrollBar::trackColourId,                   Colours::red.getARGB(),
 
         TreeView::linesColourId,                    0x4c000000,
         TreeView::backgroundColourId,               0x00000000,
@@ -309,6 +312,8 @@ public:
     void drawLasso (Graphics&, Component&) override;
 
     //==============================================================================
+
+	void preparePopupMenuWindow (Component& newWindow) override ;
     void drawPopupMenuBackground (Graphics&, int width, int height) override;
 
     void drawPopupMenuItem (Graphics&, const Rectangle<int>& area,
@@ -337,6 +342,7 @@ public:
                           bool isMouseOverItem, bool isMenuOpen, bool isMouseOverBar,
                           MenuBarComponent&) override;
 
+	Component* getParentComponentForMenuOptions (const PopupMenu::Options& options) override;
     //==============================================================================
     void drawComboBox (Graphics&, int width, int height, bool isButtonDown,
                        int buttonX, int buttonY, int buttonW, int buttonH,

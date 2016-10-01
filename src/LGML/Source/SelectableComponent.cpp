@@ -9,11 +9,15 @@
 */
 
 #include "SelectableComponent.h"
-
 #include "SelectableComponentHandler.h"
 
-
-SelectableComponent::SelectableComponent(SelectableComponentHandler * _handler):isSelected (false),repaintOnSelection(true),handler(_handler){
+SelectableComponent::SelectableComponent(SelectableComponentHandler * _handler, ControllableContainer * _relatedContainer):
+	drawDefaultContourOnSelection(false),
+	isSelected (false),
+	repaintOnSelection(true),
+	handler(_handler),
+	selectableRelatedContainer(_relatedContainer)
+{
 
 }
 
@@ -27,7 +31,9 @@ void SelectableComponent::setHandler(SelectableComponentHandler * h){
 void SelectableComponent::askForSelection(bool _isSelected,bool unique ) {
     bool changed = _isSelected!=isSelected;
     isSelected = _isSelected;
+
     internalSetSelected(isSelected);
+
     if(handler!=nullptr && changed) handler->internalSelected(this,isSelected,unique);
     isSelected = _isSelected;
 
@@ -37,13 +43,14 @@ void SelectableComponent::askForSelection(bool _isSelected,bool unique ) {
 	}
 
     if(repaintOnSelection && changed) repaint();
-
-
 };
 
 void SelectableComponent::paintOverChildren(juce::Graphics &g){
 
-    if(isSelected){
+	if (!drawDefaultContourOnSelection) return;
+
+    if(isSelected)
+	{
         g.setColour(Colours::yellow);
         g.drawRect(getLocalBounds());
     }

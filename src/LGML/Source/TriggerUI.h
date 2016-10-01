@@ -14,16 +14,20 @@
 #include "ControllableUI.h"
 #include "Trigger.h"
 
-class TriggerUI : public ControllableUI, public Trigger::Listener
+class TriggerUI : public ControllableUI, public Trigger::AsyncListener
 {
 public :
     TriggerUI(Trigger * trigger);
     virtual ~TriggerUI();
 
     Trigger*  trigger;
+	bool showLabel;
 
-    // Inherited via Listener
-    virtual void triggerTriggered(Trigger * p) override;
+    // Inherited via AsyncListener
+	void newMessage(const WeakReference<Trigger> &) override;
+	
+	// should be inherited
+    virtual void triggerTriggered(const Trigger * p) =0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriggerUI)
 

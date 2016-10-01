@@ -12,40 +12,32 @@
 #include "NodeBaseUI.h"
 
 #include "AudioMixerNodeUI.h"
+#include "AudioHelpers.h"
+#include "NodeContainer.h"
 
-NodeBaseUI * AudioMixerNode::createUI()
+AudioMixerNode::AudioMixerNode() :
+NodeBase("AudioMixerNode",NodeType::AudioMixerType)
 {
-
-    NodeBaseUI * ui = new NodeBaseUI(this,new AudioMixerNodeUI);
-    return ui;
-
-}
-
-
-AudioMixerNode::AudioMixerNode(NodeManager * nodeManager,uint32 nodeId) :NodeBase(nodeManager,nodeId, "AudioMixerNode", new AudioMixerAudioProcessor, nullptr) {
+    numberOfInput = addIntParameter("numInput", "number of input", 2, 1, 32);
+    numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
+    oneToOne = addBoolParameter("OneToOne", "is this mixer only concerned about one to one volumes (diagonal)", false);
 
 
 }
 
+void AudioMixerNode::setParentNodeContainer(NodeContainer * c){
+  NodeBase::setParentNodeContainer(c);
+  updateInput();
+  updateOutput();
 
+  outBuses[0]->volumes[0]->setValue(DB0_FOR_01);
+  outBuses[0]->volumes[1]->setValue(0);
+  outBuses[1]->volumes[0]->setValue(0);
+  outBuses[1]->volumes[1]->setValue(DB0_FOR_01);
+}
 
-
-//==============================================================================
-//    AudioMixerAudioProcessor
-
-
-AudioMixerNode::AudioMixerAudioProcessor::AudioMixerAudioProcessor():NodeAudioProcessor("AudioMixer"){
-
-    numberOfInput = addIntParameter("numInput", "number of input", 8,1, 32);
-    numberOfOutput = addIntParameter("numOutput", "number of output", 2,1, 16);
-
-    updateInput();
-    updateOutput();
-
-    skipControllableNameInAddress = true;
-};
-
-void AudioMixerNode::AudioMixerAudioProcessor::onContainerParameterChanged(Parameter *p){
+void AudioMixerNode::onContainerParameterChanged(Parameter *p){
+    NodeBase::onContainerParameterChanged(p);
     if(p == numberOfInput){
         updateInput();
     }
@@ -55,47 +47,49 @@ void AudioMixerNode::AudioMixerAudioProcessor::onContainerParameterChanged(Param
 
 }
 
-void AudioMixerNode::AudioMixerAudioProcessor::updateInput(){
+void AudioMixerNode::updateInput(){
     {
-        const ScopedLock sl (getCallbackLock());
+        const ScopedLock lk (parentNodeContainer->getCallbackLock());
         suspendProcessing(true);
         for(auto & bus:outBuses){
             bus->setNumInput(numberOfInput->intValue());
         }
 
     }
-    setPreferedNumAudioInput(numberOfInput->value);
+    setPreferedNumAudioInput(numberOfInput->intValue());
     suspendProcessing(false);
 
 }
 
-void AudioMixerNode::AudioMixerAudioProcessor::updateOutput(){
+void AudioMixerNode::updateOutput(){
     {
-        const ScopedLock sl (getCallbackLock());
+        const ScopedLock lk (parentNodeContainer->getCallbackLock());
         suspendProcessing(true);
+
         if(numberOfOutput->intValue() > outBuses.size())
         {
             for(int i = outBuses.size() ; i < numberOfOutput->intValue() ; i++){
-                OutputBus * outB = new OutputBus(i,numberOfInput->value);
+                OutputBus * outB = new OutputBus(i,numberOfInput->intValue());
                 outBuses.add(outB);
                 addChildControllableContainer(outB);
             }
         }else if(numberOfOutput->intValue() < outBuses.size())
         {
-            for(int i = numberOfOutput->value;i<outBuses.size() ; i++){
+            for(int i = numberOfOutput->intValue();i<outBuses.size() ; i++){
                 OutputBus * outB = outBuses.getUnchecked(i);
                 removeChildControllableContainer(outB);
             }
-            outBuses.removeRange(numberOfOutput->value, outBuses.size()-numberOfOutput->intValue());
+            outBuses.removeRange(numberOfOutput->intValue(), outBuses.size()-numberOfOutput->intValue());
         }
     }
 
-    setPreferedNumAudioOutput(numberOfOutput->value);
+    setPreferedNumAudioOutput(numberOfOutput->intValue());
     suspendProcessing(false);
 
 }
 
-void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
+
+void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
     int numInput = getTotalNumInputChannels();
     int numOutput = getTotalNumOutputChannels();
@@ -113,17 +107,37 @@ void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<
 
     if(numInput>0 && numOutput > 0){
 
+        if(oneToOne->boolValue()){
+            for(int i = outBuses.size() -1 ; i >=0 ; --i){
+                if(i<outBuses[i]->volumes.size()){
+                    cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
+                                                  outBuses[i]->lastVolumes[i],outBuses[i]->logVolumes[i]);
+                }
+                else{
+                    cachedBuffer.clear(i, 0, numSamples);
+                }
+            }
+        }
+        else{
+
+
+            for(int i = outBuses.size() -1 ; i >=0 ; --i){
+                cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
+                                              outBuses[i]->lastVolumes[0],outBuses[i]->logVolumes[0]);
+
+                for(int j = numInput-1 ; j >0  ; --j){
+                    cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples,
+                                                 outBuses[i]->lastVolumes[j],outBuses[i]->logVolumes[j]);
+                }
+            }
+        }
+
+
         for(int i = outBuses.size() -1 ; i >=0 ; --i){
-            cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,outBuses[i]->lastVolumes[0],outBuses[i]->volumes[0]->value);
-
-            for(int j = numInput-1 ; j >0  ; --j){
-                cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples, outBuses[i]->lastVolumes[j],outBuses[i]->volumes[j]->value);
-            }
-
-
             for(int j = numInput-1 ; j>=0 ;--j){
-                outBuses[i]->lastVolumes.set(j, outBuses[i]->volumes[j]->value);
+                outBuses[i]->lastVolumes.set(j, outBuses[i]->logVolumes[j]);
             }
+
         }
     }
 
@@ -139,19 +153,24 @@ void AudioMixerNode::AudioMixerAudioProcessor::processBlockInternal(AudioBuffer<
 //==============================================================================
 // output bus
 
-AudioMixerNode::AudioMixerAudioProcessor::OutputBus::OutputBus(int _outputIndex,int numInput):
+AudioMixerNode::OutputBus::OutputBus(int _outputIndex,int numInput):
 outputIndex(_outputIndex),
 ControllableContainer("outputBus : "+String(_outputIndex)){
     setNumInput(numInput);
+    setCustomShortName("Out_"+String(_outputIndex+1));
 
 }
 
 
-void AudioMixerNode::AudioMixerAudioProcessor::OutputBus::setNumInput(int numInput){
+void AudioMixerNode::OutputBus::setNumInput(int numInput){
 
     if(numInput>volumes.size()){
         for(int i = volumes.size();i<numInput ; i++){
-            volumes.add(addFloatParameter("In "+String(i)+ " > Out "+String(outputIndex), "mixer volume from input"+String(i), 1.0f));
+            FloatParameter * p = addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?DB0_FOR_01:0);
+            p->setCustomShortName("In_"+String(i+1));
+            p->defaultValue = DB0_FOR_01;
+            volumes.add(p);
+            logVolumes.add(float01ToGain(p->floatValue()));
         }
     }
     else if(numInput<volumes.size()){
@@ -160,10 +179,33 @@ void AudioMixerNode::AudioMixerAudioProcessor::OutputBus::setNumInput(int numInp
         for(int i = volumes.size()-1;i>=numInput;i--){
             removeControllable(volumes[i]);
             volumes.removeLast();
+            logVolumes.removeLast();
         }
     }
 
 
     lastVolumes.resize(numInput);
-    for(auto &v:volumes){v->setValue( 1.0f);}
+}
+
+void AudioMixerNode::OutputBus::onContainerParameterChanged(Parameter *p){
+    if(volumes.contains((FloatParameter*)p)){
+        logVolumes.resize(volumes.size());
+        int i = 0;
+        for(auto & v:logVolumes){
+            v = float01ToGain(volumes.getUnchecked(i)->floatValue());
+            i++;
+        }
+    }
+}
+
+
+
+ConnectableNodeUI * AudioMixerNode::createUI()
+{
+
+    NodeBaseUI * ui = new NodeBaseUI(this, new AudioMixerNodeUI);
+    ui->recursiveInspectionLevel = 2;
+    return ui;
+
+
 }

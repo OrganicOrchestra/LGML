@@ -9,8 +9,14 @@
  */
 
 #include "Engine.h"
+#include "SerialManager.h"
+#include "LGMLLogger.h"
+#include "MainComponent.h"
+#include "DebugHelpers.h"
+#include "StringUtil.h"
+#include "NodeContainer.h"
 
-#include "NodeConnectionEditor.h"
+
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
@@ -19,97 +25,203 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
                                     filenameWildcard,
                                     "Load a filter graph",
                                     "Save a filter graph"){
-    initAudio();
+  initAudio();
+  Logger::setCurrentLogger (LGMLLogger::getInstance());
+
+  MIDIManager::getInstance()->init();
+  SerialManager::getInstance()->init();
 }
 
 
 Engine::~Engine(){
-    stopAudio();
-    TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
-    ControllerManager::deleteInstance();
-    NodeManager::deleteInstance();
-    VSTManager::deleteInstance();
-    PresetManager::deleteInstance();
+  closeAudio();
+
+  FastMapper::deleteInstance();
+  TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
+  ControllerManager::deleteInstance();
+  NodeManager::deleteInstance();
+  VSTManager::deleteInstance();
+  PresetManager::deleteInstance();
+  ControllerManager::deleteInstance();
+  JsGlobalEnvironment::deleteInstance();
+  Logger::setCurrentLogger(nullptr);
+  LGMLLogger::deleteInstance();
+  RuleManager::deleteInstance();
+
+  MIDIManager::deleteInstance();
+
+  SerialManager::deleteInstance();
+
 }
 
 void Engine::parseCommandline(const String & commandLine){
 
-    StringArray args;
+  for (auto & c:StringUtil::parseCommandLine(commandLine)){
 
-    args.addTokens (commandLine, false);
-    args.trim();
-
-
-    int parsingIdx=0;
-    while(parsingIdx<args.size()){
-        String command = "";
-        bool isParameter = args[parsingIdx].startsWith("-");
-        if(isParameter){
-            command = args[parsingIdx].substring(1, args[parsingIdx].length());
-            parsingIdx++;
-            if(parsingIdx>=args.size()){break;}
-        }
-        String argument = File::createLegalPathName(args[parsingIdx]);
-
-        DBG("parsing commandline :" << command << " " << argument);
-
-
-        if(command== "f"|| parsingIdx==0){
-            if (File::isAbsolutePath(argument)) {
-                File f(argument);
-                if (f.existsAsFile()) loadDocument(f);
-            }
-            else{DBG("not found file : " << argument << " please provide a valid absolute path");}
-        }
-
-
-        parsingIdx++;
+    if(c.command== "f"|| c.command==""){
+      if(c.args.size()==0){
+        LOG("no file provided for command : "+c.command);
+        jassertfalse;
+        continue;
+      }
+      String fileArg = c.args[0];
+      if (File::isAbsolutePath(fileArg)) {
+        File f(fileArg);
+        if (f.existsAsFile()) loadDocument(f);
+      }
+      else {
+        NLOG("Engine","File : " << fileArg << " not found.");
+      }
     }
+
+  }
 
 }
 
 
 void Engine::initAudio(){
 
-    graphPlayer.setProcessor(&NodeManager::getInstance()->audioGraph);
-    ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
-    getAudioDeviceManager().initialise (256, 256, savedAudioState, true);
+  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+  ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
+  getAudioDeviceManager().initialise (64, 64, savedAudioState, true);
+  getAudioDeviceManager().addChangeListener(&audioSettingsHandler);
+  // timeManager should be the first audio Callback added to ensure that time is updated each new block
+  getAudioDeviceManager().addAudioCallback(TimeManager::getInstance());
+  getAudioDeviceManager().addAudioCallback (&graphPlayer);
 
-    getAudioDeviceManager().addAudioCallback (&graphPlayer);
-    getAudioDeviceManager().addAudioCallback(TimeManager::getInstance());
-    DBG("init audio");
+  DBG("init audio");
 
 }
 
 
-void Engine::stopAudio(){
-    getAudioDeviceManager().removeAudioCallback (&graphPlayer);
-    getAudioDeviceManager().removeAudioCallback(TimeManager::getInstance());
-    getAudioDeviceManager().closeAudioDevice();
+void Engine::suspendAudio(bool shouldBeSuspended){
+  if(AudioProcessor * ap =graphPlayer.getCurrentProcessor())
+    ap->suspendProcessing (shouldBeSuspended);
+
+  TimeManager::getInstance()->lockTime(shouldBeSuspended);
+
+}
+
+void Engine::closeAudio(){
+  getAudioDeviceManager().removeAudioCallback (&graphPlayer);
+  getAudioDeviceManager().removeAudioCallback(TimeManager::getInstance());
+  getAudioDeviceManager().closeAudioDevice();
 }
 
 
 void Engine::clear(){
-    //    do we need to stop audio?
-    //stopAudio();
+  //    do we need to stop audio?
+  //stopAudio();
 
 
-    TimeManager::getInstance()->playState->setValue(false);
-    ControllerManager::getInstance()->clear();
-    NodeManager::getInstance()->clear();
-    PresetManager::getInstance()->clear();
+  TimeManager::getInstance()->playState->setValue(false);
 
-    changed();    //fileDocument
+  FastMapper::getInstance()->clear();
+  RuleManager::getInstance()->clear();
+  ControllerManager::getInstance()->clear();
+  graphPlayer.setProcessor(nullptr);
+//  getAudioDeviceManager().removeAudioCallback (&graphPlayer);
+  NodeManager::getInstance()->clear();
+graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+//getAudioDeviceManager().addAudioCallback (&graphPlayer);
+  PresetManager::getInstance()->clear();
+
+
+
+  changed();    //fileDocument
+}
+
+void Engine::stimulateAudio( bool s){
+  if(s){
+    stimulator= new AudioFucker(&getAudioDeviceManager());
+    getAudioDeviceManager().addAudioCallback(stimulator);
+
+  }
+  else{
+    getAudioDeviceManager().removeAudioCallback(stimulator);
+    stimulator=nullptr;
+  }
+
 }
 
 void Engine::createNewGraph(){
-    clear();
+  clear();
+  suspendAudio(true);
+  isLoadingFile = true;
+  ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
+  node->xPosition->setValue(150);
+  node->yPosition->setValue(100);
+  node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
+  node->xPosition->setValue(450);
+  node->yPosition->setValue(100);
+  isLoadingFile = false;
+  suspendAudio(false);
+  setFile(File());
+}
 
-    NodeBase * node = NodeManager::getInstance()->addNode(NodeType::AudioInType);
-    node->xPosition->setValue(150);
-    node->yPosition->setValue(50);
-    node = NodeManager::getInstance()->addNode(NodeType::AudioOutType);
-    node->xPosition->setValue(450);
-    node->yPosition->setValue(50);
-    changed();
+
+void Engine::MultipleAudioSettingsHandler::changeListenerCallback(ChangeBroadcaster *){
+  //    Trick allowing to defer all changes have the last word
+  startTimer(1);
+}
+void Engine::MultipleAudioSettingsHandler::timerCallback(){
+
+  String configName = getConfigName();
+  if(lastConfigName == configName){return;}
+  ScopedPointer<XmlElement> oldSetupXml = getAppProperties().getUserSettings()->getXmlValue(oldSettingsId);
+  if(!oldSetupXml)return;
+
+  XmlElement * xml = oldSetupXml->getChildByName(configName);
+  lastConfigName = configName;
+
+
+  if(xml!=nullptr){
+    XmlElement * xmlSetup = xml->getChildElement(0);
+    if(xmlSetup){
+      AudioDeviceManager::AudioDeviceSetup setup ;
+      getAudioDeviceManager().getAudioDeviceSetup(setup);
+      setup.bufferSize = xmlSetup->getIntAttribute("audioDeviceBufferSize",setup.bufferSize);
+      setup.sampleRate = xmlSetup->getDoubleAttribute("audioDeviceRate",setup.sampleRate);
+
+      setup.inputChannels .parseString (xmlSetup->getStringAttribute ("audioDeviceInChans",  "11"), 2);
+      setup.outputChannels.parseString (xmlSetup->getStringAttribute ("audioDeviceOutChans", "11"), 2);
+      setup.useDefaultInputChannels=false;
+      setup.useDefaultOutputChannels = false;
+
+      getAudioDeviceManager().setAudioDeviceSetup(setup, true);
+    }
+  }
+
+  stopTimer();
+
+}
+
+String Engine::MultipleAudioSettingsHandler::getConfigName(){
+  AudioDeviceManager::AudioDeviceSetup setup ;
+  getAudioDeviceManager().getAudioDeviceSetup(setup);
+  String idealName = setup.inputDeviceName+"_"+setup.outputDeviceName;
+  String escaped = StringUtil::toShortName(idealName);
+  return escaped;
+
+
+}
+
+
+void Engine::MultipleAudioSettingsHandler::saveCurrent(){
+  ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
+  getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
+  ScopedPointer<XmlElement> oldXml = getAppProperties().getUserSettings()->getXmlValue(oldSettingsId);
+  if(!oldXml){oldXml = new XmlElement(oldSettingsId);}
+
+  String configName = getConfigName();
+  XmlElement * oldConfig = oldXml->getChildByName(configName);
+
+  if(oldConfig){oldXml->removeChildElement(oldConfig, true);}
+  oldConfig = oldXml->createNewChildElement(configName) ;
+  oldConfig->addChildElement(getAudioDeviceManager().createStateXml());
+
+
+  getAppProperties().getUserSettings()->setValue(oldSettingsId.toString(), oldXml);
+  getAppProperties().getUserSettings()->saveIfNeeded();
+
 }
