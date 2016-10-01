@@ -149,19 +149,22 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
   return nullptr;
 }
 
-void NodeContainer::updateAudioGraph() {
+void NodeContainer::updateAudioGraph(bool lock) {
+
 
   if(parentNodeContainer){
     const ScopedLock lkp (parentNodeContainer->getCallbackLock());
-    const ScopedLock lk( getAudioGraph()->getCallbackLock());
+//    const ScopedLock lk( getAudioGraph()->getCallbackLock());
     getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
   }
-  else{
-    
+  else {
+// if no parent we are an audiograph inside gobal graphplayer
   const ScopedLock lk( getAudioGraph()->getCallbackLock());
     getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
 
   }
+
+
 }
 
 

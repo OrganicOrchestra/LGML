@@ -129,7 +129,7 @@ public:
 
   //AUDIO
 
-  void updateAudioGraph() ;
+  void updateAudioGraph(bool lock = true) ;
   void numChannelsChanged() override;
   
   //DATA

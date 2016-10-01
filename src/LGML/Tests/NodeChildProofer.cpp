@@ -55,7 +55,10 @@ public:
       case Controllable::RANGE:
         return false;
         break;
+      case Controllable::ENUM:
       case Controllable::PROXY:
+      case Controllable::POINT2D:
+      case Controllable::POINT3D:
         break;
 
 
@@ -98,7 +101,8 @@ static bool hasBeenBuilt = false;
 bool buildTests(){
   if(!hasBeenBuilt){
     for(auto nName:nodeTypeNames){
-      new NodeChildProofer(nName,10);
+      if(nName!="ContainerIn" && nName!= "ContainerOut")
+        new NodeChildProofer(nName,10);
     }
     hasBeenBuilt = true;
   }

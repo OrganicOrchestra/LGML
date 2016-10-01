@@ -37,6 +37,10 @@ ContainerOutNode::~ContainerOutNode()
 
 void ContainerOutNode::setNumAudioChannels(int channels)
 {
+  ScopedLock lk(parentNodeContainer->getCallbackLock());
+  // only handle one container in per container for now
+  parentNodeContainer->setPreferedNumAudioOutput(channels);
+
 	setPreferedNumAudioInput(channels);
 	setPreferedNumAudioOutput(channels);
 }
