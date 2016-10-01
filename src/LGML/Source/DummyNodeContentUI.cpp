@@ -24,10 +24,14 @@ void DummyNodeContentUI::resized()
     if (node == nullptr) return;
     Rectangle<int> r = getLocalBounds().reduced(10);
 	modeUI->setBounds(r.removeFromTop(20));
-	r.removeFromTop(10);
+	r.removeFromTop(5);
 	freq1Slider->setBounds(r.removeFromTop(25));
-    r.removeFromTop(10);
+    r.removeFromTop(5);
     freq2Slider->setBounds(r.removeFromTop(25));
+	r.removeFromTop(10);
+	pxSlider->setBounds(r.removeFromTop(15));
+	r.removeFromTop(5);
+	pySlider->setBounds(r.removeFromTop(15));
 
 	
 
@@ -46,11 +50,17 @@ void DummyNodeContentUI::init()
     freq2Slider = dummyNode->freq2Param->createSlider();
     addAndMakeVisible(freq2Slider);
 
+	pxSlider = dummyNode->pxParam->createSlider();
+	addAndMakeVisible(pxSlider);
+
+	pySlider = dummyNode->pyParam->createSlider();
+	addAndMakeVisible(pySlider);
+
     testTriggerButton = dummyNode->testTrigger->createButtonUI();
     addAndMakeVisible(testTriggerButton);
 
 	modeUI = dummyNode->enumParam->createUI();
 	addAndMakeVisible(modeUI);
 
-	nodeUI->setSize(250, 150);
+	nodeUI->setSize(250, 200);
 }

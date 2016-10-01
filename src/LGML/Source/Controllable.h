@@ -26,6 +26,8 @@ public:
     BOOL,
     STRING,
 	ENUM,
+	POINT2D,
+	POINT3D,
     RANGE,
     PROXY,
 

@@ -74,7 +74,6 @@ public:
 		virtual void askForRemoveNode(ConnectableNode *) {}
 		virtual void nodeParameterChanged(ConnectableNode *,Parameter *) {}
 
-
     virtual void numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {};
     virtual void numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {};
     virtual void numDataInputChanged(ConnectableNode *, int /*newNumInput*/) {};
@@ -90,6 +89,9 @@ public:
     virtual void dataInputRemoved(ConnectableNode *, Data *) {}
     virtual void dataOutputAdded(ConnectableNode *, Data *) {}
     virtual void dataOutputRemoved(ConnectableNode *, Data *) {}
+    virtual void nodeInputDataChanged(ConnectableNode *, Data *) {}
+    virtual void nodeOutputDataUpdated(ConnectableNode *, Data *) {}
+
   };
   
   ListenerList<ConnectableNodeListener> nodeListeners;

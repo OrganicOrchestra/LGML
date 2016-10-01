@@ -15,7 +15,18 @@
 
 class ConnectableNode;
 
-const static String nodeTypeNames[] = {"ContainerIn","ContainerOut", "Container", "Dummy","AudioMixer","DataIn","Spat","Looper","VST","AudioDeviceIn","AudioDeviceOut","JsNode" };
+const static String nodeTypeNames[] = {	"ContainerIn",
+										"ContainerOut", 
+										"Container", 
+										"Dummy",
+										"AudioMixer",
+										"DataIn",
+										"Spat2D",
+										"Looper",
+										"VST",
+										"AudioDeviceIn",
+										"AudioDeviceOut",
+										"JsNode" };
 
 //Added type to not mess with class names
 enum NodeType
@@ -28,7 +39,7 @@ enum NodeType
     DummyType ,
     AudioMixerType,
     DataInType,
-    SpatType,
+    Spat2DType,
     LooperType,
     VSTType,
     AudioDeviceInType,

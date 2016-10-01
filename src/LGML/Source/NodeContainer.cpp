@@ -485,76 +485,13 @@ void NodeContainer::onContainerParameterChanged(Parameter * p)
   NodeBase::onContainerParameterChanged(p);
 
 }
-void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var & v) {
 
-    NodeBase::onContainerParameterChangedAsync(p ,v);
+void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var & v) {
+  NodeBase::onContainerParameterChangedAsync(p ,v);
+
 };
 
-void NodeContainer::bypassNode(bool ){
-
-  //    if(bypass){
-  //        jassert(containerInNode!=nullptr &&containerOutNode!=nullptr);
-  ////        save old ones
-  //        Array<NodeConnection*> connectionPointers;
-  //        connectionPointers = getAllConnectionsForNode(containerInNode);
-  //        for(auto &c: connectionPointers){
-  //
-  //			NodeConnection * nc = new NodeConnection(c->sourceNode, c->destNode, c->connectionType);
-  //			nc->loadJSONData(c->getJSONData());
-  //			containerInGhostConnections.add(nc);
-  //
-  //		}
-  //        for(auto & c:connectionPointers){
-  //			removeConnection(c);
-  //		}
-  //
-  //
-  //        containerOutGhostConnections.clear();
-  //        connectionPointers = getAllConnectionsForNode(containerOutNode);
-  //        for(auto &c: connectionPointers){
-  //
-  //			NodeConnection * nc = new NodeConnection(c->sourceNode, c->destNode, c->connectionType);
-  //			nc->loadJSONData(c->getJSONData());
-  //			containerOutGhostConnections.add(nc);
-  //		}
-  //
-  //        for(auto & c:connectionPointers){
-  //			removeConnection(c);
-  //		}
-  //
-  //		// add a pass-thru
-  //		addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::AUDIO);
-  //		addConnection(containerInNode, containerOutNode,NodeConnection::ConnectionType::DATA);
-  //
-  //    }else
-  //	{
-  //        // remove pass thru
-  //        Array<NodeConnection * > bypassConnection = getAllConnectionsForNode(containerInNode);
-  //        jassert(bypassConnection.size()==2);
-  //        for(auto & c:bypassConnection) {removeConnection(c);}
-  //        bypassConnection = getAllConnectionsForNode(containerOutNode);
-  //        jassert(bypassConnection.size()==0);
-  //
-  //        for(auto & c:containerInGhostConnections){
-  //            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
-  //			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
-  //                if(nc){
-  //                    nc->loadJSONData(c->getJSONData());
-  //
-  //                }
-  //            }
-  //		}
-  //        for(auto & c:containerOutGhostConnections){
-  //            if(c->sourceNode!=nullptr&& c->destNode!=nullptr){
-  //			NodeConnection *nc = addConnection(c->sourceNode, c->destNode, c->connectionType);
-  //			if(nc)nc->loadJSONData(c->getJSONData());
-  //            }
-  //		}
-  //
-  //
-  //
-  //    }
-}
+void NodeContainer::bypassNode(bool bypass){}
 
 ConnectableNodeUI * NodeContainer::createUI()
 {

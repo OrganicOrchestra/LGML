@@ -187,6 +187,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
   if (!isSuspended())
   {
+
     double curVolume = logVolume*crossfadeValue*muteFadeValue;
     double curDryVolume = logVolume*(1.0-crossfadeValue)*muteFadeValue;
 
@@ -416,7 +417,7 @@ Data * NodeBase::getOutputData(int dataIndex)
 
 Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 {
-  Data *d = new Data(this, name, dataType);
+  Data *d = new Data(this, name, dataType, Data::Input);
   inputDatas.add(d);
 
   d->addDataListener(this);
@@ -428,11 +429,14 @@ Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 
 Data * NodeBase::addOutputData(const String & name, DataType dataType)
 {
-  Data * d = new Data(this, name, dataType);
+  Data * d = new Data(this, name, dataType,Data::Output);
   outputDatas.add(d);
+
+  d->addDataListener(this);
 
   nodeListeners.call(&ConnectableNodeListener::dataOutputAdded, this, d);
   nodeListeners.call(&ConnectableNodeListener::numDataOutputChanged, this, inputDatas.size());
+
   return d;
 }
 
@@ -440,7 +444,7 @@ void NodeBase::removeInputData(const String & name)
 {
   Data * d = getInputDataByName(name);
   if (d == nullptr) return;
-
+  d->removeDataListener(this);
   inputDatas.removeObject(d, false);
   nodeListeners.call(&ConnectableNodeListener::dataInputRemoved, this, d);
   nodeListeners.call(&ConnectableNodeListener::numDataInputChanged, this, inputDatas.size());
@@ -451,7 +455,7 @@ void NodeBase::removeOutputData(const String & name)
 {
   Data * d = getOutputDataByName(name);
   if (d == nullptr) return;
-
+  d->removeDataListener(this);
   outputDatas.removeObject(d, false);
   nodeListeners.call(&ConnectableNodeListener::dataOutputRemoved, this, d);
   nodeListeners.call(&ConnectableNodeListener::numDataOutputChanged, this, inputDatas.size());
@@ -573,11 +577,18 @@ Data * NodeBase::getInputDataByName(const String & dataName)
 
 void NodeBase::dataChanged(Data * d)
 {
-  if (enabledParam->boolValue()) {
-    processInputDataChanged(d);
-  }
-}
-
-void NodeBase::processInputDataChanged(Data *)
-{
+	DBG("Data changed, ioType " << (d->ioType == Data::Input ? "input" : "output"));
+	if (d->ioType == Data::Input)
+	{
+		if (enabledParam->boolValue()) {
+			processInputDataChanged(d);
+		}
+		nodeListeners.call(&ConnectableNodeListener::nodeInputDataChanged, this, d);
+	} else
+	{
+		if (enabledParam->boolValue()) {
+			processOutputDataUpdated(d);
+		}
+		nodeListeners.call(&ConnectableNodeListener::nodeOutputDataUpdated, this, d);
+	}
 }

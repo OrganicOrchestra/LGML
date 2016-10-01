@@ -313,7 +313,7 @@ void CCInnerContainer::clear()
 void CCInnerContainer::controllableAdded(Controllable * c)
 {
 	if (c->parentContainer != container) return;
-
+	if (c->hideInEditor) return;
 	addControllableUI(c);
 }
 

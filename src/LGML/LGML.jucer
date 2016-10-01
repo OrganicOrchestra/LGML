@@ -83,6 +83,14 @@
                   file="Source/ParameterProxy.cpp"/>
             <FILE id="rxmDp4" name="ParameterProxy.h" compile="0" resource="0"
                   file="Source/ParameterProxy.h"/>
+            <FILE id="NJbcHt" name="Point2DParameter.cpp" compile="1" resource="0"
+                  file="Source/Point2DParameter.cpp"/>
+            <FILE id="H1nyj4" name="Point2DParameter.h" compile="0" resource="0"
+                  file="Source/Point2DParameter.h"/>
+            <FILE id="lWvnh0" name="Point3DParameter.cpp" compile="1" resource="0"
+                  file="Source/Point3DParameter.cpp"/>
+            <FILE id="tbcUUS" name="Point3DParameter.h" compile="0" resource="0"
+                  file="Source/Point3DParameter.h"/>
             <FILE id="ChdLZ1" name="PresetManager.cpp" compile="1" resource="0"
                   file="Source/PresetManager.cpp"/>
             <FILE id="Crvsjm" name="PresetManager.h" compile="0" resource="0" file="Source/PresetManager.h"/>
@@ -564,16 +572,21 @@
             <FILE id="eXj0vo" name="LooperTrack.h" compile="0" resource="0" file="Source/LooperTrack.h"/>
           </GROUP>
           <GROUP id="{CB5E1C7D-6C04-4382-6371-7CE987E3A0BF}" name="Spat">
-            <FILE id="OQEdfJ" name="Spat2DViewer.cpp" compile="1" resource="0"
-                  file="Source/Spat2DViewer.cpp"/>
-            <FILE id="wQeFU6" name="Spat2DViewer.h" compile="0" resource="0" file="Source/Spat2DViewer.h"/>
-            <FILE id="qeufCb" name="Spat3DViewer.cpp" compile="1" resource="0"
-                  file="Source/Spat3DViewer.cpp"/>
-            <FILE id="HTFI8t" name="Spat3DViewer.h" compile="0" resource="0" file="Source/Spat3DViewer.h"/>
-            <FILE id="Yv1aON" name="SpatNode.cpp" compile="1" resource="0" file="Source/SpatNode.cpp"/>
-            <FILE id="xdFuwd" name="SpatNode.h" compile="0" resource="0" file="Source/SpatNode.h"/>
-            <FILE id="OpHoAq" name="SpatNodeUI.cpp" compile="1" resource="0" file="Source/SpatNodeUI.cpp"/>
-            <FILE id="hNlN1P" name="SpatNodeUI.h" compile="0" resource="0" file="Source/SpatNodeUI.h"/>
+            <GROUP id="{58CA5EDD-064E-257F-A620-1EB5E1B61EBB}" name="3D">
+              <FILE id="qeufCb" name="Spat3DViewer.cpp" compile="1" resource="0"
+                    file="Source/Spat3DViewer.cpp"/>
+              <FILE id="HTFI8t" name="Spat3DViewer.h" compile="0" resource="0" file="Source/Spat3DViewer.h"/>
+            </GROUP>
+            <GROUP id="{26B7E568-92DA-3B34-2B33-51CC6099F197}" name="2D">
+              <FILE id="OQEdfJ" name="Spat2DViewer.cpp" compile="1" resource="0"
+                    file="Source/Spat2DViewer.cpp"/>
+              <FILE id="wQeFU6" name="Spat2DViewer.h" compile="0" resource="0" file="Source/Spat2DViewer.h"/>
+              <FILE id="Yv1aON" name="Spat2DNode.cpp" compile="1" resource="0" file="Source/Spat2DNode.cpp"/>
+              <FILE id="xdFuwd" name="Spat2DNode.h" compile="0" resource="0" file="Source/Spat2DNode.h"/>
+              <FILE id="OpHoAq" name="Spat2DNodeUI.cpp" compile="1" resource="0"
+                    file="Source/Spat2DNodeUI.cpp"/>
+              <FILE id="hNlN1P" name="Spat2DNodeUI.h" compile="0" resource="0" file="Source/Spat2DNodeUI.h"/>
+            </GROUP>
           </GROUP>
           <GROUP id="{43D6AD7F-A710-EDE9-A28C-2FFC47798A32}" name="VST">
             <FILE id="YnJwtS" name="PluginWindow.cpp" compile="1" resource="0"

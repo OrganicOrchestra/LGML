@@ -158,7 +158,7 @@ void NodeConnectionEditor::generateContentForAudio()
 
     for (int i = 0; i < numOutputChannels; i++)
     {
-		String oName = currentConnection->destNode->ConnectableNode::getOutputChannelName(i);
+		String oName = currentConnection->sourceNode->ConnectableNode::getOutputChannelName(i);
         NodeConnectionEditorDataSlot * s = new NodeConnectionEditorDataSlot(oName,i,currentConnection->connectionType, NodeConnectionEditorDataSlot::IOType::OUTPUT);
         outputSlots.add(s);
         s->addSlotListener(this);

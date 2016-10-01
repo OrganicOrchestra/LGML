@@ -98,6 +98,22 @@ EnumParameter * ControllableContainer::addEnumParameter(const String & _niceName
 	return p;
 }
 
+Point2DParameter * ControllableContainer::addPoint2DParameter(const String & _niceName, const String & _description, const bool & enabled)
+{
+	String targetName = getUniqueNameInContainer(_niceName);
+	Point2DParameter * p = new Point2DParameter(targetName, _description, enabled);
+	addParameterInternal(p);
+	return p;
+}
+
+Point3DParameter * ControllableContainer::addPoint3DParameter(const String & _niceName, const String & _description, const bool & enabled)
+{
+	String targetName = getUniqueNameInContainer(_niceName);
+	Point3DParameter * p = new Point3DParameter(targetName, _description, enabled);
+	addParameterInternal(p);
+	return p;
+}
+
 Trigger * ControllableContainer::addTrigger(const String & _niceName, const String & _description, const bool & enabled)
 {
   String targetName = getUniqueNameInContainer(_niceName);

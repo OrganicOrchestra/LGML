@@ -17,6 +17,11 @@ class NodeBase;
 class Data
 {
 public:
+	enum IOType
+	{
+		Input, Output
+	};
+
     enum DataType
     {
         Unknown, Float, Number, Boolean, Position, Orientation, Color
@@ -29,6 +34,7 @@ public:
 
         String name;
         DataType type;
+		
         float value;
 
         bool isTypeCompatible(const DataType &targetType);
@@ -40,6 +46,7 @@ public:
 
     String name;
     DataType type;
+	IOType ioType;
 
     NodeBase * node;
 
@@ -47,7 +54,7 @@ public:
 
     OwnedArray<DataElement> elements;
 
-    Data(NodeBase * node, String _name, DataType _type);
+    Data(NodeBase * node, String _name, DataType _type, IOType _ioType);
     ~Data();
 
     void addElement(const String &_name);

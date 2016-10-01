@@ -37,6 +37,8 @@ public:
     virtual void setValue(var _value, bool silentSet = false, bool force = false);
     virtual void setValueInternal(var & _value);
 
+	virtual bool checkValueIsTheSame(var newValue, var oldValue); //can be overriden to modify check behavior
+
     //For Number type parameters
     void setNormalizedValue(const float &normalizedValue, bool silentSet = false, bool force = false);
     float getNormalizedValue();
@@ -59,7 +61,7 @@ public:
 		/** Destructor. */
 		virtual ~Listener() {}
 		virtual void parameterValueChanged(Parameter * p) = 0;
-    virtual void parameterRangeChanged(Parameter * ){};
+		virtual void parameterRangeChanged(Parameter * ){};
     };
 
     ListenerList<Listener> listeners;

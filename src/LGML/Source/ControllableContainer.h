@@ -17,6 +17,9 @@
 #include "BoolParameter.h" //keep
 #include "StringParameter.h" //keep
 #include "EnumParameter.h"
+#include "Point2DParameter.h"
+#include "Point3DParameter.h"
+
 #include "Trigger.h"
 #include "PresetManager.h"
 #include "DebugHelpers.h" //keep
@@ -75,6 +78,8 @@ public:
     BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);
     StringParameter * addStringParameter(const String &niceName, const String &description, const String &value, const bool &enabled = true);
 	EnumParameter * addEnumParameter(const String &niceName, const String &description, const bool &enabled = true);
+	Point2DParameter * addPoint2DParameter(const String &niceName, const String &description, const bool &enabled = true);
+	Point3DParameter * addPoint3DParameter(const String &niceName, const String &description, const bool &enabled = true);
 	Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
 
     void removeControllable(Controllable * c);

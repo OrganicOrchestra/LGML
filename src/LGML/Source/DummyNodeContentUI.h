@@ -28,6 +28,8 @@ public:
 
     ScopedPointer<FloatSliderUI> freq1Slider;
     ScopedPointer<FloatSliderUI> freq2Slider;
+	ScopedPointer<FloatSliderUI> pxSlider;
+	ScopedPointer<FloatSliderUI> pySlider;
 	ScopedPointer<EnumParameterUI> modeUI;
     ScopedPointer<TriggerButtonUI> testTriggerButton;
 

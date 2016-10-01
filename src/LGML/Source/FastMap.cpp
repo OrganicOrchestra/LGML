@@ -46,13 +46,13 @@ void FastMap::process()
 	float sourceVal = (float)reference->getValue();
 	if (target == nullptr) return;
 
-	bool newIsInRange = (sourceVal >= minInputVal->floatValue() && sourceVal <= maxInputVal->floatValue());
+	bool newIsInRange = (sourceVal > minInputVal->floatValue() && sourceVal <= maxInputVal->floatValue());
 
 	if (invertParam->boolValue()) newIsInRange = !newIsInRange;
 
 	if (target->type == Controllable::TRIGGER)
 	{
-		if (newIsInRange != isInRange && isInRange) ((Trigger*)target)->trigger();
+		if (newIsInRange != isInRange && newIsInRange) ((Trigger*)target)->trigger();
 	}
 	else
 	{
@@ -85,6 +85,15 @@ void FastMap::setReference(ControlVariableReference * r)
 	if (reference != nullptr)
 	{
 		reference->addReferenceListener(this);
+		
+		float normMin = minInputVal->getNormalizedValue();
+		float normMax = maxInputVal->getNormalizedValue();
+		minInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
+		maxInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
+		
+		minInputVal->setNormalizedValue(normMin);
+		maxInputVal->setNormalizedValue(normMax);
+		
 	}
 
 	fastMapListeners.call(&FastMapListener::fastMapReferenceChanged, this);
@@ -148,6 +157,17 @@ void FastMap::remove()
 void FastMap::referenceValueChanged(ControlVariableReference *)
 {
 	process();
+}
+
+void FastMap::referenceVariableChanged(ControlVariableReference *)
+{
+	float normMin = minInputVal->getNormalizedValue();
+	float normMax = maxInputVal->getNormalizedValue();
+	minInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
+	maxInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
+
+	minInputVal->setNormalizedValue(normMin);
+	maxInputVal->setNormalizedValue(normMax);
 }
 
 void FastMap::controllableRemoved(Controllable * c)

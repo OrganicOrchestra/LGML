@@ -24,10 +24,10 @@ MIDIManager.cpp
 
 
 ControllableContainer.cpp
-	line : 522
+	line : 538
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 615
+	line : 631
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -35,7 +35,7 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 431
+	line : 447
 		// TODO weird feedback when loading preset on parameter presetName
 
 
@@ -104,7 +104,7 @@ NodeContainer.cpp
 	line : 296
 		// TODO nicely handle file format errors?
 
-	line : 592
+	line : 529
 		// TODO :  handle change of in out numChannels
 		// wiill need to call on change
 
@@ -122,7 +122,7 @@ NodeContainer.cpp
 
 
 DataInNode.cpp
-	line : 29
+	line : 46
 		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
 
 
@@ -137,7 +137,7 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 341
+	line : 342
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 111
@@ -145,7 +145,7 @@ NodeBase.cpp
 
 
 ControllableContainer.h
-	line : 142
+	line : 147
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
