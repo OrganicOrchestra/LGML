@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="0.2.60a"
-              bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
-              jucerVersion="4.2.4" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="1.0b" bundleIdentifier="org.anic.orchestra.LGML"
+              includeBinaryInAppConfig="1" jucerVersion="4.2.4" companyName="Organic Orchestra"
+              companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
       <FILE id="lDg0ln" name="LooperTest.cpp" compile="1" resource="0" file="Tests/LooperTest.cpp"/>
