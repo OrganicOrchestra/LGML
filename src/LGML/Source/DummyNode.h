@@ -28,6 +28,7 @@ public:
 	FloatParameter * pyParam;
 
     Trigger * testTrigger;
+	Data * outPosData;
 
     void onContainerParameterChanged(Parameter * p) override;
 

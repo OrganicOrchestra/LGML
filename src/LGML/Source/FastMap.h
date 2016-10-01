@@ -64,6 +64,7 @@ public:
 	void removeFastMapListener(FastMapListener* listener) { fastMapListeners.remove(listener); }
 
 	virtual void referenceValueChanged(ControlVariableReference *) override;
+	virtual void referenceVariableChanged(ControlVariableReference *) override;
 	virtual void controllableRemoved(Controllable  *c) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMap);
