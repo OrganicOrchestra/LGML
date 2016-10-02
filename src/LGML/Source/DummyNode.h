@@ -24,8 +24,10 @@ public:
     FloatParameter * freq1Param;
     FloatParameter * freq2Param;
 	EnumParameter * enumParam;
+
 	FloatParameter * pxParam;
 	FloatParameter * pyParam;
+
 
     Trigger * testTrigger;
 	Data * outPosData;
@@ -48,7 +50,7 @@ public:
 
 
     virtual ConnectableNodeUI * createUI() override;
-
+  FadeInOut clickFade;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNode)
 };

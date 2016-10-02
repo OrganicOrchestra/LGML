@@ -54,7 +54,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 
   containerInNode = nullptr;
   containerOutNode = nullptr;
-  
+
 
   if (recreateContainerNodes && parentNodeContainer != nullptr)
   {
@@ -79,7 +79,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
   // init with global sample rate and blockSize
   AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
   if(ad){
-  prepareToPlay(ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples());
+    setRateAndBufferSizeDetails(ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples());
   }
 
 }
@@ -94,7 +94,7 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeNa
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName)
 {
   nodes.add(n);
- n->setParentNodeContainer(this);
+  n->setParentNodeContainer(this);
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n))
   {
@@ -110,7 +110,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
 
   addChildControllableContainer(n); //ControllableContainer
 
-    nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
+  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
   return n;
 }
 
@@ -149,19 +149,23 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
   return nullptr;
 }
 
-void NodeContainer::updateAudioGraph() {
+void NodeContainer::updateAudioGraph(bool lock) {
+
 
   if(parentNodeContainer){
     const ScopedLock lkp (parentNodeContainer->getCallbackLock());
-    const ScopedLock lk( getAudioGraph()->getCallbackLock());
+    //    const ScopedLock lk( getAudioGraph()->getCallbackLock());
+    getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
     getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
   }
-  else{
-    
-  const ScopedLock lk( getAudioGraph()->getCallbackLock());
+  else {
+    // if no parent we are an audiograph inside gobal graphplayer
+    const ScopedLock lk( getAudioGraph()->getCallbackLock());
     getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
 
   }
+
+
 }
 
 
@@ -511,40 +515,40 @@ bool NodeContainer::hasDataOutputs()
 
 
 void NodeContainer::numChannelsChanged(){
-  //  getAudioGraph()->numChannelsChanged(); useless
-const ScopedLock lk(getCallbackLock());
 
+  const ScopedLock lk(getCallbackLock());
   removeIllegalConnections();
-      getAudioGraph()->setPlayConfigDetails(getTotalNumInputChannels(), getTotalNumOutputChannels(), getSampleRate(), getBlockSize());
+  getAudioGraph()->setPlayConfigDetails(getTotalNumInputChannels(), getTotalNumOutputChannels(), getSampleRate(), getBlockSize());
 }
- void NodeContainer::prepareToPlay(double d, int i) {
-
+void NodeContainer::prepareToPlay(double d, int i) {
+  NodeBase::prepareToPlay(d, i);
   if(parentNodeContainer){
-//    const ScopedLock lk(parentNodeContainer->NodeBase::getCallbackLock());
-    parentNodeContainer->suspendProcessing(true);
-    const ScopedLock lk(getAudioGraph()->getCallbackLock());
+
     jassert(getSampleRate());
     jassert(getBlockSize());
-    numChannelsChanged();
-    getAudioGraph()->prepareToPlay(d, i);
+//    numChannelsChanged();
+    {
+      const ScopedLock lk(getAudioGraph()->getCallbackLock());
+      getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+      getAudioGraph()->prepareToPlay(d, i);
+    }
     // TODO :  handle change of in out numChannels
     // wiill need to call on change
-    parentNodeContainer->prepareToPlay(d,i);
-    parentNodeContainer->suspendProcessing(false);
+    //    parentNodeContainer->prepareToPlay(d,i);
+    //    parentNodeContainer->suspendProcessing(false);
 
 
   }
   else{
     // mainContainer
-    const ScopedLock lk(getAudioDeviceManager().getAudioCallbackLock());
+    const ScopedLock lk(getAudioGraph()->getCallbackLock());
     jassert(d);//ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples()
     jassert(i);//ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples()
-//    AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
     getAudioGraph()->prepareToPlay(d,i);
   }
   
-
-
+  
+  
 };
 
 
@@ -557,5 +561,5 @@ void NodeContainer::removeIllegalConnections() {
   for(auto & c:nodeContainers){
     c->removeIllegalConnections();
   }
-
+  
 }

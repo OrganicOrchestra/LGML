@@ -185,15 +185,7 @@ void VSTNode::audioProcessorChanged(juce::AudioProcessor * p ){
   }
 
 }
-void VSTNode::numChannelsChanged(){
-  NodeBase::numChannelsChanged();
-  if (NodeManager::getInstanceWithoutCreating() != nullptr)
-  {
-    parentNodeContainer->removeIllegalConnections();
-    // hack to force update renderingops in audioGraph
-    parentNodeContainer->getAudioGraph()->removeConnection(-1);
-  }
-}
+void VSTNode::numChannelsChanged(){}
 
 inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & ) {
   if (innerPlugin) {

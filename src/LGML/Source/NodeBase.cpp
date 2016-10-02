@@ -21,7 +21,7 @@ muteFader(1000,1000,false,1),
 lastDryVolume(0)
 
 {
-  
+
   logVolume = float01ToGain(DB0_FOR_01);
 
   lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
@@ -172,16 +172,16 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   const double muteFadeValue =muteFader.getCurrentFade();
   muteFader.incrementFade(numSample);
   dryWetFader.incrementFade(numSample);
-  
+
   // on disable
   if(wasEnabled && crossfadeValue==0 ){
 
-//    suspendProcessing(true);
+    //    suspendProcessing(true);
     wasEnabled = false;
   }
   // on Enable
   if(!wasEnabled && crossfadeValue>0 ){
-//    suspendProcessing(false);
+    //    suspendProcessing(false);
     wasEnabled = true;
   }
 
@@ -191,28 +191,28 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
     double curVolume = logVolume*crossfadeValue*muteFadeValue;
     double curDryVolume = logVolume*(1.0-crossfadeValue)*muteFadeValue;
 
-      if(crossfadeValue!=1){
-        // copy only what we are expecting
-        crossFadeBuffer.setSize(getTotalNumInputChannels(), numSample);
-        for(int i = 0 ; i < getTotalNumInputChannels() ; i++){
+    if(crossfadeValue!=1){
+      // copy only what we are expecting
+      crossFadeBuffer.setSize(getTotalNumInputChannels(), numSample);
+      for(int i = 0 ; i < getTotalNumInputChannels() ; i++){
         crossFadeBuffer.copyFrom(i, 0, buffer, i, 0, numSample);
-        }
       }
-      processBlockInternal(buffer, midiMessages);
+    }
+    processBlockInternal(buffer, midiMessages);
 
-      if(crossfadeValue!=1 || hasMainAudioControl){
-        buffer.applyGainRamp(0, numSample, lastVolume, (float)curVolume);
+    if(crossfadeValue!=1 || hasMainAudioControl){
+      buffer.applyGainRamp(0, numSample, lastVolume, (float)curVolume);
+
+    }
+    // crossfade if we have a dry mix i.e at least one input channel
+    if(crossfadeValue!=1 && crossFadeBuffer.getNumChannels()>0){
+      for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
+        int maxCommonChannels = jmin(getTotalNumInputChannels(),getTotalNumOutputChannels())-1;
+        buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, (float)lastDryVolume,(float)curDryVolume);
 
       }
-    // crossfade if we have a dry mix i.e at least one input channel 
-      if(crossfadeValue!=1 && crossFadeBuffer.getNumChannels()>0){
-        for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
-          int maxCommonChannels = jmin(getTotalNumInputChannels(),getTotalNumOutputChannels())-1;
-          buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, (float)lastDryVolume,(float)curDryVolume);
+    }
 
-        }
-      }
-    
     if(muteFadeValue == 0){
       buffer.clear();
     }
@@ -247,16 +247,23 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   int oldNumChannels = getTotalNumInputChannels();
 
   {
-  const ScopedLock lk( getCallbackLock());
-  setPlayConfigDetails(num, getTotalNumOutputChannels(),
-                                 getSampleRate(),
-                                 getBlockSize());
 
+    if (parentNodeContainer != nullptr){
+//      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
+      const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
+      setPlayConfigDetails(num, getTotalNumOutputChannels(),
+                           getSampleRate(),
+                           getBlockSize());
+      parentNodeContainer->updateAudioGraph(false);
+//      parentNodeContainer->getAudioGraph()->suspendProcessing(false);
+    }
+    else{
+      setPlayConfigDetails(num, getTotalNumOutputChannels(),
+                           getSampleRate(),
+                           getBlockSize());
+    }
   }
 
-  if (parentNodeContainer != nullptr){
-    parentNodeContainer->updateAudioGraph();
-  }
   rmsValuesIn.clear();
   for (int i = 0; i < getTotalNumInputChannels(); i++) rmsValuesIn.add(0);
 
@@ -289,16 +296,24 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 
   int oldNumChannels = getTotalNumOutputChannels();
   {
-  const ScopedLock lk (getCallbackLock());
-  setPlayConfigDetails(getTotalNumInputChannels(), num,
-                       getSampleRate(),
-                       getBlockSize());
 
+    if (parentNodeContainer != nullptr){
+//      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
+      const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
+      setPlayConfigDetails(getTotalNumInputChannels(), num,
+                           getSampleRate(),
+                           getBlockSize());
+
+      parentNodeContainer->updateAudioGraph(false);
+//      parentNodeContainer->getAudioGraph()->suspendProcessing(false);
+    }
+    else{
+      setPlayConfigDetails(getTotalNumInputChannels(), num,
+                           getSampleRate(),
+                           getBlockSize());
+
+    }
   }
-
-if(parentNodeContainer)
-   parentNodeContainer->updateAudioGraph();
-
 
   rmsValuesOut.clear();
   for (int i = 0; i < getTotalNumOutputChannels(); i++) rmsValuesOut.add(0);
@@ -403,15 +418,15 @@ void NodeBase::timerCallback()
 
 Data * NodeBase::getInputData(int dataIndex)
 {
-	if (inputDatas.size() <= dataIndex) return nullptr;
-	return inputDatas[dataIndex];
+  if (inputDatas.size() <= dataIndex) return nullptr;
+  return inputDatas[dataIndex];
 }
 
 
 Data * NodeBase::getOutputData(int dataIndex)
 {
-	if (outputDatas.size() <= dataIndex) return nullptr;
-	return outputDatas[dataIndex];
+  if (outputDatas.size() <= dataIndex) return nullptr;
+  return outputDatas[dataIndex];
 }
 
 
@@ -464,18 +479,18 @@ void NodeBase::removeOutputData(const String & name)
 
 void NodeBase::removeAllInputDatas()
 {
-	while (inputDatas.size() > 0)
-	{
-		removeInputData(inputDatas[0]->name);
-	}
+  while (inputDatas.size() > 0)
+  {
+    removeInputData(inputDatas[0]->name);
+  }
 }
 
 void NodeBase::removeAllOutputDatas()
 {
-	while (outputDatas.size() > 0)
-	{
-		removeOutputData(outputDatas[0]->name);
-	}
+  while (outputDatas.size() > 0)
+  {
+    removeOutputData(outputDatas[0]->name);
+  }
 }
 
 void NodeBase::updateOutputData(String & dataName, const float & value1, const float & value2, const float & value3)
@@ -577,18 +592,18 @@ Data * NodeBase::getInputDataByName(const String & dataName)
 
 void NodeBase::dataChanged(Data * d)
 {
-	DBG("Data changed, ioType " << (d->ioType == Data::Input ? "input" : "output"));
-	if (d->ioType == Data::Input)
-	{
-		if (enabledParam->boolValue()) {
-			processInputDataChanged(d);
-		}
-		nodeListeners.call(&ConnectableNodeListener::nodeInputDataChanged, this, d);
-	} else
-	{
-		if (enabledParam->boolValue()) {
-			processOutputDataUpdated(d);
-		}
-		nodeListeners.call(&ConnectableNodeListener::nodeOutputDataUpdated, this, d);
-	}
+  DBG("Data changed, ioType " << (d->ioType == Data::Input ? "input" : "output"));
+  if (d->ioType == Data::Input)
+  {
+    if (enabledParam->boolValue()) {
+      processInputDataChanged(d);
+    }
+    nodeListeners.call(&ConnectableNodeListener::nodeInputDataChanged, this, d);
+  } else
+  {
+    if (enabledParam->boolValue()) {
+      processOutputDataUpdated(d);
+    }
+    nodeListeners.call(&ConnectableNodeListener::nodeOutputDataUpdated, this, d);
+  }
 }

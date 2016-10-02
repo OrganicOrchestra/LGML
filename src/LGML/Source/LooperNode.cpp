@@ -278,7 +278,15 @@ void LooperNode::selectMe(LooperTrack * t) {
 void LooperNode::onContainerParameterChanged(Parameter * p) {
   NodeBase::onContainerParameterChanged(p);
   if (p == numberOfTracks) {
+    int oldIdx = selectedTrack->trackIdx;
     trackGroup.setNumTracks(numberOfTracks->value);
+    if(oldIdx>numberOfTracks->intValue()){
+      if(trackGroup.tracks.size()){
+      selectedTrack = trackGroup.tracks[trackGroup.tracks.size()-1];
+      }
+      else
+        selectedTrack = nullptr;
+    }
   }
   else if (p == volumeSelected)
   {
