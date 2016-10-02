@@ -115,4 +115,65 @@ public:
 
 
 
+inline void updateRMS(const AudioBuffer<float>& buffer,
+               float &targetRmsValue,
+               Array<float> &targetRMSChannelValues,
+               int numChannels,
+               bool skipChannelComputation = true)
+{
+  int numSamples = buffer.getNumSamples();
+  
+  if(targetRMSChannelValues.size()!=numChannels){
+    int oldSize = targetRMSChannelValues.size();
+    targetRMSChannelValues.resize(numChannels);
+    for (int i = oldSize ; i < numChannels ; i++){
+      targetRMSChannelValues.set(i, 0);
+    }
+
+  }
+
+  // faster implementation taken from juce Device Settings input meter
+
+  float globalS = 0;
+
+  // @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
+  const double decayFactor = 0.95;
+  const float lowThresh = 0.0001f;
+
+  if(skipChannelComputation){
+    for (int i = numChannels - 1; i >= 0; --i)
+    {
+      // this is very intensive so aproximate RMS by max value
+      globalS = jmax(globalS,FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples))*.7f;
+    }
+  }
+  else{
+    for (int i = numChannels - 1; i >= 0; --i)
+    {
+
+      float s = FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples)*.7f;
+      targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
+                                 s>lowThresh?targetRMSChannelValues.getUnchecked(i)*(float)decayFactor:
+                                 0);
+
+      globalS = jmax(s, globalS);
+    }
+  }
+
+
+  if (globalS > targetRmsValue)
+    targetRmsValue = globalS;
+  else if (targetRmsValue > lowThresh)
+    targetRmsValue *= (float)decayFactor;
+  else
+    targetRmsValue = 0;
+
+
+  
+  
+}
+
+
+
+
 #endif  // AUDIOHELPERS_H_INCLUDED

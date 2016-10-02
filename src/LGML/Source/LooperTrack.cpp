@@ -76,7 +76,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     setTrackState(STOPPED);
   }
   if(loopSample.isPlaying()){
-    trackStateListeners.call(&Listener::internalTrackTimeChanged,loopSample.getPlayPos()*1.0/loopSample.getRecordedLength());
+    trackStateListeners.call(&Listener::internalTrackTimeChanged,loopSample.getPlayPos()*1.0/(1+loopSample.getRecordedLength()));
   }
 
   handleEndOfRecording();
@@ -101,9 +101,19 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
   jassert (curTime>=0);
 
-
-
   bool stateChanged = (trackState != desiredState);
+
+  if(shouldWaitFirstOnset() && desiredState == WILL_RECORD){
+    if(!hasOnset()){
+      quantizedRecordStart=curTime+blockSize;
+    }
+    else{
+      quantizedRecordStart=curTime;
+      int dbg;dbg=0;
+    }
+  }
+
+
 
 
   if(stateChanged){
@@ -164,7 +174,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
   else if (quantizedRecordEnd.get()!=NO_QUANTIZE) {
     if (triggeringTime > quantizedRecordEnd.get()) {
       int firstPart = jmax(0, (int)(quantizedRecordEnd.get()-curTime));
-//      int secondPart = triggeringTime-firstPart;
+      //      int secondPart = triggeringTime-firstPart;
 
       if(parentLooper->isOneShot->boolValue()){
         loopSample.setState( PlayableBuffer::BUFFER_STOPPED,firstPart);
@@ -191,7 +201,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
   if (quantizedPlayStart.get()!=NO_QUANTIZE) {
     if (triggeringTime > quantizedPlayStart.get()) {
       int firstPart = jmax(0, (int)(quantizedPlayStart.get()-curTime));
-//      int secondPart = triggeringTime-firstPart;
+      //      int secondPart = triggeringTime-firstPart;
 
       desiredState =  PLAYING;
       loopSample.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
@@ -203,7 +213,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
   else if (quantizedPlayEnd.get()!=NO_QUANTIZE) {
     if (triggeringTime > quantizedPlayEnd.get()) {
       int firstPart = jmax(0, (int)(quantizedPlayEnd.get()-curTime));
-//      int secondPart = triggeringTime-firstPart;
+      //      int secondPart = triggeringTime-firstPart;
       desiredState = STOPPED;
       loopSample.setState( PlayableBuffer::BUFFER_STOPPED,firstPart);
       quantizedPlayEnd = NO_QUANTIZE;
@@ -281,7 +291,7 @@ void LooperTrack::handleEndOfRecording(){
         double actualLength = TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength());
         uint64 desiredSize = (uint64)(actualLength*TimeManager::getInstance()->beatTimeInSample);
 
-//        DBG("resizing loop : " << (int)(desiredSize-loopSample.getRecordedLength()));
+        //        DBG("resizing loop : " << (int)(desiredSize-loopSample.getRecordedLength()));
 
         loopSample.setSizePaddingIfNeeded(desiredSize);
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
@@ -339,6 +349,7 @@ String LooperTrack::trackStateToString(const TrackState & ts) {
 
 void LooperTrack::onContainerParameterChanged(Parameter * p)
 {
+
   if (p == volume)
   {
     if (parentLooper->selectedTrack == this) parentLooper->volumeSelected->setValue(volume->floatValue());
@@ -425,11 +436,12 @@ void LooperTrack::setTrackState(TrackState newState) {
 
   int quantizeTime = getQuantization();
   TimeManager * timeManager = TimeManager::getInstance();
-  
+
   if(newState==desiredState)return;
 
-  if (newState == WILL_RECORD) {
+  if (newState == WILL_RECORD && (!shouldWaitFirstOnset() || hasOnset())) {
     // are we able to set the tempo
+
     if (askForBeingMasterTempoTrack()) {
       timeManager->isSettingTempo->setValue(true);
       // start As soon as possible
@@ -573,6 +585,16 @@ void LooperTrack::cleanAllQuantizeNeedles() {
   quantizedRecordEnd = NO_QUANTIZE;
   quantizedRecordStart = NO_QUANTIZE;
 }
+
+
+bool LooperTrack::shouldWaitFirstOnset(){
+  return (trackState == WILL_RECORD || desiredState==WILL_RECORD) && parentLooper->waitForOnset->boolValue();
+}
+
+bool LooperTrack::hasOnset(){
+  return parentLooper->hasOnset();
+}
+
 
 
 //Component * LooperTrack::createDefaultUI(Component * ) {

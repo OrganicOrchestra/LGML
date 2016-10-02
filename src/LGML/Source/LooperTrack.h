@@ -74,6 +74,10 @@ public:
   void askForSelection(bool isSelected);
   bool askForBeingMasterTempoTrack();
   bool isMasterTempoTrack();
+  bool shouldWaitFirstOnset();
+  bool hasOnset();
+  float RMSIn;
+
 
   //Listener
   class  Listener : public AsyncUpdater

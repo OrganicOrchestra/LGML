@@ -36,6 +36,7 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   quantization = addIntParameter("quantization",       "quantization for this looper - 1 is global", -1, -1, 32);
   isOneShot =  addBoolParameter("isOneShot", "do we play once or loop track", false);
   firstTrackSetTempo = addBoolParameter("firstTrackSetTempo", "do the first track sets the global tempo or use quantization", true);
+  waitForOnset = addBoolParameter("wait for onset", "wait for onset before actually recording", false);
   addChildControllableContainer(&trackGroup);
 
   trackGroup.setNumTracks(numberOfTracks->intValue());
@@ -346,4 +347,10 @@ void LooperNode::clearInternal(){
     tm->releaseMasterCandidate(this);
   }
   
+}
+
+// worst onset detection function ever ...
+bool LooperNode::hasOnset(){
+  bool hasOnset=  globalRMSValueIn>0.2;
+  return hasOnset;
 }
