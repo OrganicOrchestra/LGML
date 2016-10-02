@@ -21,7 +21,7 @@ with open(sourcePath,'w') as f:
 	f.write('#define GIT_SHA_SHORT  "'+sha[0:7]+'"\n')
 	f.write('#define COMMIT_DATE  "'+date+'"\n')
 
-sh("git add "+TODOFilePath)
+sh("git add "+sourcePath)
 
 exit(1)
 
