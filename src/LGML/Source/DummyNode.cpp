@@ -14,10 +14,11 @@
 #include "TimeManager.h"
 
 DummyNode::DummyNode() :
-NodeBase("DummyNode",NodeType::DummyType)
+NodeBase("DummyNode",NodeType::DummyType),
+clickFade(300,300)
 {
 
-
+  clickFade.setFadedOut();
   freq1Param = addFloatParameter("Freq 1", "This is a test int slider",.23f);
   freq2Param = addFloatParameter("Freq 2", "This is a test int slider", .55f);
 
@@ -79,7 +80,11 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
 
   if(enumParam->getValueData()=="click"){
     TimeManager * tm = TimeManager::getInstance();
+    if(tm->isJumping()){
+
+    }
     if(tm->isPlaying()){
+      clickFade.startFadeIn();
       int numSamples = buffer.getNumSamples();
       int numOutputChannels = buffer.getNumChannels();
       static uint64 sinCount = 0;
@@ -87,7 +92,7 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
       bool isFirstBeat = (tm->getClosestBeat()%tm->beatPerBar->intValue()) == 0;
       const int sinFreq = isFirstBeat?period1:period2;
       //    const int sinPeriod = sampleRate / sinFreq;
-//      const double k = 40.0;
+      const double k = 40.0;
 
 
       for(int i = 0 ; i < numSamples;i++){
@@ -95,16 +100,22 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
         double carg = sinCount*1.0/sinFreq;
 
         double x = (tm->getBeatInNextSamples(i)-tm->getBeatInt() ) ;
-//        double h = k*fmod((double)x+1.0/k,1.0);
-        double env = jmax(0.0,1.0 - x*4.0);// jmax(0.0,h*exp(1.0-h));
-
-        float res = (env* cos(2.0*M_PI*carg ));
+        double h = k*fmod((double)x+1.0/k,1.0);
+//        double env = jmax(0.0,1.0 - x*4.0);
+        double env = jmax(0.0,h*exp(1.0-h));
+        double fade = clickFade.getCurrentFade();
+        float res = fade*(env* cos(2.0*M_PI*carg ));
 
         for(int c = 0 ;c < numOutputChannels ; c++ ){buffer.setSample(c, i, res);}
 
         sinCount = (sinCount+1)%(sinFreq);
+        clickFade.incrementFade();
 
       }
+    }
+    else{
+      clickFade.startFadeOut();
+      clickFade.incrementFade(buffer.getNumSamples());
     }
   }
   else{

@@ -41,6 +41,7 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 void AudioDeviceOutNode::setParentNodeContainer(NodeContainer * parent){
   NodeBase::setParentNodeContainer(parent);
   jassert(parent == NodeManager::getInstance()->mainContainer);
+  AudioGraphIOProcessor::setRateAndBufferSizeDetails(NodeBase::getSampleRate(), NodeBase::getBlockSize());
   updateVolMutes();
 }
 

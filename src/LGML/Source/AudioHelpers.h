@@ -35,20 +35,32 @@ public:
     fadeOutCount = 0;
     fadeInCount = -1;
   }
+  FadeInOut(int numSample): fadeInNumSamples(numSample), fadeOutNumSamples(numSample),crossFade(false),skew(1.0){
+
+  }
 
   double getCurrentFade(){
     if(fadeInCount>=0){
-      if(skew==1)return (1.0 - fadeInCount*1.0/fadeInNumSamples);
-      return pow(1.0-fadeInCount*1.0/fadeInNumSamples,skew);
+      lastFade =  getFade(fadeOutNumSamples-fadeInCount,fadeInNumSamples);
+      return lastFade;
     }
     if(fadeOutCount>=0){
-      if(skew==1)return fadeOutCount*1.0/fadeOutNumSamples;
-      return pow(fadeOutCount*1.0/fadeOutNumSamples,skew);
+      lastFade =  getFade(fadeOutCount,fadeOutNumSamples);
+      return lastFade;
     }
-
     jassertfalse;
     return 0.0;
+
   }
+  double getLastFade(){
+    return lastFade;
+  }
+
+  inline double getFade(int cur,int max){
+      if(skew==1)return cur*1.0/max;
+      return pow(cur*1.0/max,skew);
+  }
+
 
   void startFadeOut(){
     if(fadeOutCount>=0)return;
@@ -58,11 +70,13 @@ public:
   void setFadedOut(){
     fadeOutCount = 0;
     fadeInCount = -1;
+    lastFade = 0.0;
   }
 
   void setFadedIn(){
     fadeInCount = 0;
     fadeOutCount = -1;
+    lastFade = 1.0;
   }
 
 
@@ -80,12 +94,16 @@ public:
         fadeInCount = fadeInNumSamples;
       }
     }
-    else if(fadeInCount>0){fadeInCount-=i;fadeInCount = jmax(0,fadeInCount);}
+    else if(fadeInCount>0){
+      fadeInCount-=i;
+      fadeInCount = jmax(0,fadeInCount);
+    }
   }
 
   int fadeInNumSamples;
   int fadeOutNumSamples;
   int fadeInCount,fadeOutCount;
+  double lastFade;
   double skew;
   bool crossFade;
 

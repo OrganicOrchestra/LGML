@@ -137,6 +137,7 @@ public:
   bool hasDataOutputs() override;
 
   void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override{
+    const ScopedLock lk(getAudioGraph()->getCallbackLock());
     getAudioGraph()->processBlock(buffer,midiMessage);
   };
 

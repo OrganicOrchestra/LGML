@@ -70,11 +70,13 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 void AudioDeviceInNode::setParentNodeContainer(NodeContainer * parent){
   NodeBase::setParentNodeContainer(parent);
   jassert(parent == NodeManager::getInstance()->mainContainer);
+  AudioGraphIOProcessor::setRateAndBufferSizeDetails(NodeBase::getSampleRate(), NodeBase::getBlockSize());
   updateVolMutes();
 }
 
 
 void AudioDeviceInNode::changeListenerCallback(ChangeBroadcaster*) {
+  NodeBase::setRateAndBufferSizeDetails(AudioGraphIOProcessor::getSampleRate(), AudioGraphIOProcessor::getBlockSize());
     updateVolMutes();
 }
 void AudioDeviceInNode::onContainerParameterChanged(Parameter * p){

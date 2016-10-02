@@ -249,11 +249,13 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   {
 
     if (parentNodeContainer != nullptr){
+//      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
       const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());
       parentNodeContainer->updateAudioGraph(false);
+//      parentNodeContainer->getAudioGraph()->suspendProcessing(false);
     }
     else{
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
@@ -296,12 +298,14 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
   {
 
     if (parentNodeContainer != nullptr){
+//      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
       const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
       setPlayConfigDetails(getTotalNumInputChannels(), num,
                            getSampleRate(),
                            getBlockSize());
 
       parentNodeContainer->updateAudioGraph(false);
+//      parentNodeContainer->getAudioGraph()->suspendProcessing(false);
     }
     else{
       setPlayConfigDetails(getTotalNumInputChannels(), num,

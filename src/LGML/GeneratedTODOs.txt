@@ -101,21 +101,23 @@ NodeConnectionEditor.cpp
 
 
 NodeContainer.cpp
-	line : 458
+	line : 459
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
 
-	line : 299
+	line : 300
 		// TODO nicely handle file format errors?
 
-	line : 532
+	line : 534
 		// TODO :  handle change of in out numChannels
 		// wiill need to call on change
+		//    parentNodeContainer->prepareToPlay(d,i);
+		//    parentNodeContainer->suspendProcessing(false);
 
-	line : 213
+	line : 214
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
@@ -137,7 +139,7 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 353
+	line : 357
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 111

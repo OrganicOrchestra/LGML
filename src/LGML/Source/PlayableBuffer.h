@@ -13,7 +13,7 @@
 
 
 
-
+#include "AudioHelpers.h"
 
 class PlayableBuffer {
 
@@ -28,9 +28,12 @@ class PlayableBuffer {
   stateChanged(false),
   numTimePlayed(0),
   sampleOffsetBeforeNewState(0),
-  hasBeenFaded (false),fadeSamples(80)
+  hasBeenFaded (false),fadeSamples(380),
+  fadeOutDry(1000),
+  fadeRecorded(1000)
   {
-
+    fadeOutDry.setFadedOut();
+    fadeRecorded.setFadedOut();
     jassert(numSamples < std::numeric_limits<int>::max());
     //        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
     //            for(int i = 0 ; i < numChannels ; i++){loopSample.addSample(i, j, v);}
@@ -42,6 +45,7 @@ class PlayableBuffer {
     bool succeeded = true;
     if (isFirstRecordingFrame()){
       succeeded = writeAudioBlock(buffer, sampleOffsetBeforeNewState);
+
     }
     else if(isRecording() ){
       succeeded = writeAudioBlock(buffer);
@@ -49,24 +53,53 @@ class PlayableBuffer {
     else if( wasLastRecordingFrame()){
       succeeded = writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState);
       fadeInOut(fadeSamples, 0);
+      fadeOutDry.setFadedIn();
+      fadeOutDry.startFadeOut();
 
     }
+    if(isStopping()){
+      fadeRecorded.startFadeOut();
+    }
+    if(isFirstPlayingFrame()){
 
+      fadeRecorded.setFadedOut();
+      fadeRecorded.startFadeIn();
+    }
 
+    if(fadeOutDry.getLastFade()>0){
+      const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
+      const int startSample = 0;//sampleOffsetBeforeNewState;
+      float startGain = fadeOutDry.getLastFade();
+      float endGain = fadeOutDry.getCurrentFade();
+      for (int c =0 ; c < maxChannel ; c++){
+        buffer.applyGainRamp(c, startSample, buffer.getNumSamples()-startSample, startGain,endGain);
+      }
+      fadeOutDry.incrementFade(buffer.getNumSamples());
 
-
-
-
-    if(isOrWasPlaying()){
-      readNextBlock(buffer,sampleOffsetBeforeNewState);
     }
     else{
       buffer.clear();
     }
-    
-    if(isStopping()){
-      buffer.clear(sampleOffsetBeforeNewState, buffer.getNumSamples() - sampleOffsetBeforeNewState);
+
+
+
+
+    if ( isOrWasPlaying()||fadeRecorded.getLastFade()>0){
+//    if(isOrWasPlaying()){
+      readNextBlock(buffer,sampleOffsetBeforeNewState);
+//    }
+
+      double startGain = fadeRecorded.getLastFade();
+      double endGain = fadeRecorded.getCurrentFade();
+      const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
+      for(int c = 0 ; c <maxChannel ; c++ ){
+        buffer.applyGainRamp(c, 0, buffer.getNumSamples(), startGain, endGain);
+      }
+      fadeRecorded.incrementFade(buffer.getNumSamples());
     }
+
+
+
 
 
     return succeeded;
@@ -98,7 +131,7 @@ class PlayableBuffer {
       jassertfalse;
       return;
     }
-    jassert(isOrWasPlaying());
+//    jassert(isOrWasPlaying());
 
 
     int numSamples = buffer.getNumSamples()-fromSample;
@@ -110,7 +143,9 @@ class PlayableBuffer {
     }
 
     // assert false for now to check alignement
-    if(isFirstPlayingFrame())jassert(playNeedle==0);
+    if(isFirstPlayingFrame()){
+      jassert(playNeedle==0);
+    }
 
 
     // stitch audio jumps by quick fadeIn/Out
@@ -120,9 +155,9 @@ class PlayableBuffer {
       const int halfBlock =  numSamples/2;
       for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
         const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-        buffer.copyFrom(i, fromSample, loopSample, maxChannelFromRecorded, (int)startJumpNeedle, halfBlock);
+        buffer.addFrom(i, fromSample, loopSample, maxChannelFromRecorded, (int)startJumpNeedle, halfBlock);
         buffer.applyGainRamp(i, fromSample, halfBlock, 1.0f, 0.0f);
-        buffer.copyFrom(i, fromSample+halfBlock, loopSample, maxChannelFromRecorded, (int)playNeedle+halfBlock, halfBlock);
+        buffer.addFrom(i, fromSample+halfBlock, loopSample, maxChannelFromRecorded, (int)playNeedle+halfBlock, halfBlock);
         buffer.applyGainRamp(i, fromSample+halfBlock-1, halfBlock, 0.0f, 1.0f);
 
       }
@@ -140,8 +175,8 @@ class PlayableBuffer {
 
           const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
           for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-            buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, firstSegmentLength);
-            buffer.copyFrom(i, fromSample, loopSample, i, 0, secondSegmentLength);
+            buffer.addFrom(i, fromSample, loopSample, i, (int)playNeedle, firstSegmentLength);
+            buffer.addFrom(i, fromSample, loopSample, i, 0, secondSegmentLength);
           }
           playNeedle = secondSegmentLength;
         }
@@ -152,7 +187,7 @@ class PlayableBuffer {
       else{
         const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
         for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-          buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, numSamples);
+          buffer.addFrom(i, fromSample, loopSample, i, (int)playNeedle, numSamples);
         }
       }
     }
@@ -273,10 +308,12 @@ class PlayableBuffer {
         setPlayNeedle(0);
         break;
       case BUFFER_PLAYING:
+        fadeRecorded.startFadeIn();
         setPlayNeedle( 0);
         break;
       case BUFFER_STOPPED:
         numTimePlayed = 0;
+        fadeRecorded.startFadeOut();
         setPlayNeedle(0);
         break;
     }
@@ -288,7 +325,7 @@ class PlayableBuffer {
     lastState = state;
     stateChanged =false;
     isJumping = false;
-    startJumpNeedle=0;
+    startJumpNeedle=playNeedle;
     sampleOffsetBeforeNewState = 0;
   }
 
@@ -323,18 +360,19 @@ class PlayableBuffer {
 #if !LGML_UNIT_TESTS
 private:
 #endif
-
+  
   int sampleOffsetBeforeNewState;
   BufferState state;
   BufferState lastState;
   bool isJumping;
   bool hasBeenFaded;
   int fadeSamples;
-
-
+  FadeInOut fadeOutDry,fadeRecorded;
+  
+  
   
   uint64 recordNeedle,playNeedle,startJumpNeedle;
-
+  
 };
 
 
