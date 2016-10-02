@@ -126,7 +126,7 @@ void ConnectableNodeHeaderUI::updatePresetComboBox(bool forceUpdate)
 
   if (!emptyFilter)
   {
-    PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter());
+    PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter(), node->currentPreset != nullptr);
     if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId,forceUpdate?NotificationType::sendNotification: NotificationType::dontSendNotification);
   }
 }
