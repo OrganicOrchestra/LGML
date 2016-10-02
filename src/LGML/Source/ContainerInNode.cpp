@@ -40,6 +40,8 @@ void ContainerInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffe
 void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
 {
 	NodeBase::setParentNodeContainer(nc);
+  setPreferedNumAudioInput(0);
+  setPreferedNumAudioOutput(nc->getTotalNumInputChannels());
 }
 
 
@@ -50,7 +52,7 @@ void ContainerInNode::setNumAudioChannels(int channels)
   parentNodeContainer->setPreferedNumAudioInput(channels);
   {
   parentNodeContainer->suspendProcessing(true);
-	setPreferedNumAudioInput(channels);
+	setPreferedNumAudioInput(0);
 	setPreferedNumAudioOutput(channels);
     parentNodeContainer->suspendProcessing(false);
   }

@@ -57,7 +57,7 @@ public:
 	ListenerList<NodeManagerUIListener> nodeManagerUIListeners;
 	void addNodeManagerUIListener(NodeManagerUIListener* newListener) { nodeManagerUIListeners.add(newListener); }
 	void removeNodeManagerUIListener(NodeManagerUIListener* listener) { nodeManagerUIListeners.remove(listener); }
-
+  bool keyPressed(const KeyPress & key)override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 

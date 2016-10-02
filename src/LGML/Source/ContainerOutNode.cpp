@@ -42,13 +42,15 @@ void ContainerOutNode::setNumAudioChannels(int channels)
   parentNodeContainer->setPreferedNumAudioOutput(channels);
 
 	setPreferedNumAudioInput(channels);
-	setPreferedNumAudioOutput(channels);
+	setPreferedNumAudioOutput(0);
 }
 
 void ContainerOutNode::setParentNodeContainer(NodeContainer * nc)
 {
 
 	NodeBase::setParentNodeContainer(nc);
+  setPreferedNumAudioOutput(0);
+  setPreferedNumAudioInput(nc->getTotalNumOutputChannels());
 }
 void ContainerOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
   AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);

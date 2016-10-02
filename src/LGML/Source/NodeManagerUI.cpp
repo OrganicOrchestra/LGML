@@ -79,6 +79,7 @@ void NodeManagerUI::setCurrentViewedContainer(NodeContainer * c)
 	setSize(0, 0);
 	resized();
 	nodeManagerUIListeners.call(&NodeManagerUIListener::currentViewedContainerChanged);
+  grabKeyboardFocus();
 }
 void NodeManagerUI::childBoundsChanged(Component * )
 {
@@ -86,4 +87,15 @@ void NodeManagerUI::childBoundsChanged(Component * )
 	{
 		setSize(currentViewer->getWidth(), currentViewer->getHeight());
 	}
+}
+
+bool NodeManagerUI::keyPressed(const KeyPress & key){
+  if(key.getModifiers().isCommandDown() && key.getKeyCode()==KeyPress::upKey){
+    if(NodeContainer * c = (currentViewer->nodeContainer->parentNodeContainer)){
+        setCurrentViewedContainer(c);
+        return true;
+
+    }
+  }
+    return false;
 }

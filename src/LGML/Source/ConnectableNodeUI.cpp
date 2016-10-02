@@ -18,6 +18,8 @@
 #include "FloatSliderUI.h"
 
 
+#include "NodeManagerUI.h"
+
 ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeContentUI * contentUI, ConnectableNodeHeaderUI * headerUI) :
 	InspectableComponent(cn,"node"),
 	connectableNode(cn),
@@ -194,6 +196,14 @@ bool ConnectableNodeUI::keyPressed(const KeyPress & key)
 
 		return true;
 	}
+  else if(key.getModifiers().isCommandDown() && key.getKeyCode()==KeyPress::downKey){
+    if(NodeContainer * c = dynamic_cast<NodeContainer * >(connectableNode)){
+      if(NodeManagerUI * manager = findParentComponentOfClass<NodeManagerUI>()){
+        manager->setCurrentViewedContainer(c);
+        return true;
+      }
+    }
+  }
 
 	return false;
 }
