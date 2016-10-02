@@ -47,16 +47,8 @@ void ContainerOutNode::setNumAudioChannels(int channels)
 
 void ContainerOutNode::setParentNodeContainer(NodeContainer * nc)
 {
-	if (parentNodeContainer != nullptr)
-	{
-		removeRMSListener(parentNodeContainer);
-	}
-	NodeBase::setParentNodeContainer(nc);
 
-	if (parentNodeContainer != nullptr)
-	{
-		addRMSListener(parentNodeContainer);
-	}
+	NodeBase::setParentNodeContainer(nc);
 }
 void ContainerOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
   AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);

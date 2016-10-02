@@ -18,7 +18,9 @@ NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl)
 ConnectableNode(name,_type,_hasMainAudioControl),
 dryWetFader(5000,5000,false,1),
 muteFader(1000,1000,false,1),
-lastDryVolume(0)
+lastDryVolume(0),
+globalRMSValueIn(0),
+globalRMSValueOut(0)
 
 {
 
@@ -154,13 +156,16 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   // be sure to delete input if we are not enabled and a random buffer enters
   // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
   int numSample = buffer.getNumSamples();
-  for(int i = getTotalNumInputChannels();i < buffer.getNumChannels() ; i++){
-    buffer.clear(i,0,numSample);
-  }
+  int totalNumInputChannels = getTotalNumInputChannels();
+  int totalNumOutputChannels =getTotalNumOutputChannels();
+
+//  for(int i = totalNumInputChannels;i < buffer.getNumChannels() ; i++){
+//    buffer.clear(i,0,numSample);
+//  }
   if (rmsListeners.size() || rmsChannelListeners.size()) {
     curSamplesForRMSInUpdate += numSample;
     if (curSamplesForRMSInUpdate >= samplesBeforeRMSUpdate) {
-      updateRMS(true,buffer, globalRMSValueIn,rmsValuesIn,rmsChannelListeners.size()==0);
+      updateRMS(true,buffer, globalRMSValueIn,rmsValuesIn,totalNumInputChannels,rmsChannelListeners.size()==0);
       curSamplesForRMSInUpdate = 0;
     }
   }
@@ -193,8 +198,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
     if(crossfadeValue!=1){
       // copy only what we are expecting
-      crossFadeBuffer.setSize(getTotalNumInputChannels(), numSample);
-      for(int i = 0 ; i < getTotalNumInputChannels() ; i++){
+      crossFadeBuffer.setSize(totalNumInputChannels, numSample);
+      for(int i = 0 ; i < totalNumInputChannels ; i++){
         crossFadeBuffer.copyFrom(i, 0, buffer, i, 0, numSample);
       }
     }
@@ -206,8 +211,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
     }
     // crossfade if we have a dry mix i.e at least one input channel
     if(crossfadeValue!=1 && crossFadeBuffer.getNumChannels()>0){
-      for(int i = 0 ; i < getTotalNumOutputChannels() ; i++){
-        int maxCommonChannels = jmin(getTotalNumInputChannels(),getTotalNumOutputChannels())-1;
+      for(int i = 0 ; i < totalNumInputChannels ; i++){
+        int maxCommonChannels = jmin(totalNumInputChannels,totalNumOutputChannels)-1;
         buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, (float)lastDryVolume,(float)curDryVolume);
 
       }
@@ -227,17 +232,20 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
   // be sure to delete out if we are not enabled and a random buffer enters
   // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
-  for(int i = getTotalNumOutputChannels();i < buffer.getNumChannels() ; i++){
-    buffer.clear(i,0,numSample);
-  }
+//  for(int i = totalNumOutputChannels;i < buffer.getNumChannels() ; i++){
+//    buffer.clear(i,0,numSample);
+//  }
 
   if (rmsListeners.size() || rmsChannelListeners.size()) {
     curSamplesForRMSOutUpdate += numSample;
     if (curSamplesForRMSOutUpdate >= samplesBeforeRMSUpdate) {
-      updateRMS(false,buffer, globalRMSValueOut,rmsValuesOut,rmsChannelListeners.size()==0);
+      updateRMS(false,buffer, globalRMSValueOut,rmsValuesOut,totalNumOutputChannels,rmsChannelListeners.size()==0);
       curSamplesForRMSOutUpdate = 0;
     }
   }
+
+
+
 
 
 };
@@ -344,11 +352,17 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
   return true;
 }
 
-void NodeBase::updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues,bool skipChannelComputation) {
+void NodeBase::updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &targetRmsValue, Array<float> &targetRMSChannelValues,int numChannels,bool skipChannelComputation) {
   int numSamples = buffer.getNumSamples();
-  int numChannels = jmin((isInput?getTotalNumInputChannels():getTotalNumOutputChannels()),buffer.getNumChannels());
-  if(targetRMSChannelValues.size()!=numChannels)
+//  int numChannels = jmin((isInput?getTotalNumInputChannels():getTotalNumOutputChannels()),buffer.getNumChannels());
+  if(targetRMSChannelValues.size()!=numChannels){
+    int oldSize = targetRMSChannelValues.size();
     targetRMSChannelValues.resize(numChannels);
+    for (int i = oldSize ; i < numChannels ; i++){
+      targetRMSChannelValues.set(i, 0);
+    }
+
+  }
 
 #ifdef HIGH_ACCURACY_RMS
   for (int i = numSamples - 64; i >= 0; i -= 64) {
@@ -360,7 +374,7 @@ void NodeBase::updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &t
   float globalS = 0;
 
   // @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-  const double decayFactor = 0.9;
+  const double decayFactor = 0.95;
   const float lowThresh = 0.0001f;
 
   if(skipChannelComputation){
@@ -385,13 +399,16 @@ void NodeBase::updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &t
 //      s = jmax(s,-minMax.getStart());
 //      s = jmax(s,minMax.getEnd());
 
-      float s = jmax(globalS,FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples))*.7f;
+      float s = FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples)*.7f;
       targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
                                  s>lowThresh?targetRMSChannelValues.getUnchecked(i)*(float)decayFactor:
                                  0);
 
       globalS = jmax(s, globalS);
     }
+  }
+  if(globalS>1.0){
+    int dbg;dbg=0;
   }
 
   if (globalS > targetRmsValue)
@@ -401,6 +418,10 @@ void NodeBase::updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &t
   else
     targetRmsValue = 0;
 
+
+  if(targetRmsValue>0){
+    int dbg;dbg=0;
+  }
 
 #endif
 

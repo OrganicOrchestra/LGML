@@ -139,11 +139,11 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 361
-		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
-
-	line : 111
+	line : 113
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
+
+	line : 375
+		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 
 ControllableContainer.h

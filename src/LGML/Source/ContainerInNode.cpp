@@ -39,16 +39,7 @@ void ContainerInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffe
 
 void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
 {
-	if (parentNodeContainer != nullptr)
-	{
-		removeRMSListener(parentNodeContainer);
-	}
 	NodeBase::setParentNodeContainer(nc);
-
-	if (parentNodeContainer != nullptr)
-	{
-		addRMSListener(parentNodeContainer);
-	}
 }
 
 

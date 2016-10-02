@@ -13,9 +13,9 @@
 
 #include "StringParameterUI.h"
 #include "BoolToggleUI.h"
-#include "VuMeter.h"
 
-
+#include "ConnectableNode.h"
+class VuMeter;
 class ConnectableNodeUI;
 
 class ConnectableNodeHeaderUI : public Component,
@@ -40,8 +40,8 @@ public:
     ScopedPointer<StringParameterUI> titleUI;
 	ScopedPointer<StringParameterUI> descriptionUI; 
 	ScopedPointer<BoolToggleUI> enabledUI;
-	VuMeter vuMeterIn;
-    VuMeter vuMeterOut;
+	ScopedPointer<VuMeter> vuMeterIn;
+    ScopedPointer<VuMeter> vuMeterOut;
 
     Grabber grabber;
     ImageButton removeBT;

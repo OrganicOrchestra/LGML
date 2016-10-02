@@ -111,14 +111,14 @@ public:
   virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/ , MidiBuffer& /*midiMessage*/ ) {};
 
   //RMS
-  void updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &targetRMSValue, Array<float> &targetRMSValues,bool skipChannelComputation = true);
+  void updateRMS(bool isInput,const AudioBuffer<float>& buffer, float &targetRMSValue, Array<float> &targetRMSValues,int numChannels,bool skipChannelComputation = true);
 
   const float alphaRMS = 0.05f;
   const int samplesBeforeRMSUpdate = 512;
   int curSamplesForRMSInUpdate = 0;
   int curSamplesForRMSOutUpdate = 0;
-  float globalRMSValueIn = 0.f;
-  float globalRMSValueOut = 0.f;
+  float globalRMSValueIn ;
+  float globalRMSValueOut ;
 
   Array<float> rmsValuesIn;
   Array<float> rmsValuesOut;

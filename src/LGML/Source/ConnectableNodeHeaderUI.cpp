@@ -13,16 +13,17 @@
 #include "PresetManager.h"
 #include "FloatSliderUI.h"
 
+#include "VuMeter.h"
+
 ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
-vuMeterIn(VuMeter::Type::IN),
-vuMeterOut(VuMeter::Type::OUT),
 removeBT("X"),
 miniModeBT("-"),
 bMiniMode(false)
 {
   node = nullptr;
   nodeUI = nullptr;
-
+  vuMeterIn = new VuMeter(VuMeter::Type::IN);
+  vuMeterOut = new VuMeter(VuMeter::Type::OUT);
   Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
   removeBT.setImages(false, true, true, removeImage,
@@ -42,8 +43,8 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
 {
   if (node != nullptr)
   {
-    node->removeRMSListener(&vuMeterOut);
-    node->removeRMSListener(&vuMeterIn);
+    node->removeRMSListener(vuMeterOut);
+    node->removeRMSListener(vuMeterIn);
 
     node->removeControllableContainerListener(this);
     node->removeConnectableNodeListener(this);
@@ -97,24 +98,24 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 }
 
 void ConnectableNodeHeaderUI::updateVuMeters(){
-  if (!vuMeterOut.isVisible() && node->hasAudioOutputs()) {
-    node->addRMSListener(&vuMeterOut);
+  if (!vuMeterOut->isVisible() && node->hasAudioOutputs()) {
+    node->addRMSListener(vuMeterOut);
     addAndMakeVisible(vuMeterOut);
 
   }
-  else if(vuMeterOut.isVisible() && !node->hasAudioOutputs()){
-    node->removeRMSListener(&vuMeterOut);
-    vuMeterOut.setVisible(false);
+  else if(vuMeterOut->isVisible() && !node->hasAudioOutputs()){
+    node->removeRMSListener(vuMeterOut);
+    vuMeterOut->setVisible(false);
   }
 
-  if (!vuMeterIn.isVisible() &&node->hasAudioInputs())
+  if (!vuMeterIn->isVisible() &&node->hasAudioInputs())
   {
-    node->addRMSListener(&vuMeterIn);
+    node->addRMSListener(vuMeterIn);
     addAndMakeVisible(vuMeterIn);
   }
-  else if(vuMeterIn.isVisible() && !node->hasAudioInputs()){
-    node->removeRMSListener(&vuMeterIn);
-    vuMeterIn.setVisible(false);
+  else if(vuMeterIn->isVisible() && !node->hasAudioInputs()){
+    node->removeRMSListener(vuMeterIn);
+    vuMeterIn->setVisible(false);
   }
 }
 
@@ -155,12 +156,12 @@ void ConnectableNodeHeaderUI::resized()
 
   if (node->hasAudioOutputs())
   {
-    vuMeterOut.setBounds(r.removeFromRight(vuMeterWidth));
+    vuMeterOut->setBounds(r.removeFromRight(vuMeterWidth));
   }
 
   if (node->hasAudioInputs())
   {
-    vuMeterIn.setBounds(r.removeFromLeft(vuMeterWidth));
+    vuMeterIn->setBounds(r.removeFromLeft(vuMeterWidth));
 
   }
 
@@ -211,17 +212,17 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
   {
     if (!node->enabledParam->boolValue())
     {
-      vuMeterOut.setVoldB(0);
+      vuMeterOut->setVoldB(0);
 
     }
 
 
     Colour c = !node->enabledParam->boolValue() ? Colour(0xff3cacd5) : Colours::lightgreen;
     Colour c2 = !node->enabledParam->boolValue() ? Colours::blue.brighter(.6f) : Colours::red;
-    vuMeterIn.colorLow = c;
-    vuMeterOut.colorLow = c;
-    vuMeterIn.colorHigh = c2;
-    vuMeterOut.colorHigh = c2;
+    vuMeterIn->colorLow = c;
+    vuMeterOut->colorLow = c;
+    vuMeterIn->colorHigh = c2;
+    vuMeterOut->colorHigh = c2;
 
     postCommandMessage(repaintId);
   }

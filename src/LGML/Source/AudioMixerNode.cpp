@@ -30,6 +30,8 @@ void AudioMixerNode::setParentNodeContainer(NodeContainer * c){
   updateInput();
   updateOutput();
 
+
+  numChannelsChanged();
   outBuses[0]->volumes[0]->setValue(DB0_FOR_01);
   outBuses[0]->volumes[1]->setValue(0);
   outBuses[1]->volumes[0]->setValue(0);
@@ -48,43 +50,66 @@ void AudioMixerNode::onContainerParameterChanged(Parameter *p){
 }
 
 void AudioMixerNode::updateInput(){
-    {
-        const ScopedLock lk (parentNodeContainer->getCallbackLock());
-        suspendProcessing(true);
-        for(auto & bus:outBuses){
-            bus->setNumInput(numberOfInput->intValue());
-        }
-
-    }
+//    {
+//        const ScopedLock lk (parentNodeContainer->getCallbackLock());
+//        suspendProcessing(true);
+//        for(auto & bus:outBuses){
+//            bus->setNumInput(numberOfInput->intValue());
+//        }
+//
+//    }
     setPreferedNumAudioInput(numberOfInput->intValue());
-    suspendProcessing(false);
+//    suspendProcessing(false);
 
 }
 
-void AudioMixerNode::updateOutput(){
-    {
-        const ScopedLock lk (parentNodeContainer->getCallbackLock());
-        suspendProcessing(true);
+void AudioMixerNode::numChannelsChanged(){
 
-        if(numberOfOutput->intValue() > outBuses.size())
-        {
-            for(int i = outBuses.size() ; i < numberOfOutput->intValue() ; i++){
-                OutputBus * outB = new OutputBus(i,numberOfInput->intValue());
-                outBuses.add(outB);
-                addChildControllableContainer(outB);
-            }
-        }else if(numberOfOutput->intValue() < outBuses.size())
-        {
-            for(int i = numberOfOutput->intValue();i<outBuses.size() ; i++){
-                OutputBus * outB = outBuses.getUnchecked(i);
-                removeChildControllableContainer(outB);
-            }
-            outBuses.removeRange(numberOfOutput->intValue(), outBuses.size()-numberOfOutput->intValue());
-        }
+
+  if(numberOfOutput->intValue() > outBuses.size())
+  {
+    for(int i = outBuses.size() ; i < numberOfOutput->intValue() ; i++){
+      OutputBus * outB = new OutputBus(i,numberOfInput->intValue());
+      outBuses.add(outB);
+      addChildControllableContainer(outB);
     }
+  }else if(numberOfOutput->intValue() < outBuses.size())
+  {
+    for(int i = numberOfOutput->intValue();i<outBuses.size() ; i++){
+      OutputBus * outB = outBuses.getUnchecked(i);
+      removeChildControllableContainer(outB);
+    }
+    outBuses.removeRange(numberOfOutput->intValue(), outBuses.size()-numberOfOutput->intValue());
+  }
+
+  for(auto & bus:outBuses){
+    bus->setNumInput(numberOfInput->intValue());
+  }
+}
+void AudioMixerNode::updateOutput(){
+//    {
+//        const ScopedLock lk (parentNodeContainer->getCallbackLock());
+//        suspendProcessing(true);
+//
+//        if(numberOfOutput->intValue() > outBuses.size())
+//        {
+//            for(int i = outBuses.size() ; i < numberOfOutput->intValue() ; i++){
+//                OutputBus * outB = new OutputBus(i,numberOfInput->intValue());
+//                outBuses.add(outB);
+//                addChildControllableContainer(outB);
+//            }
+//        }else if(numberOfOutput->intValue() < outBuses.size())
+//        {
+//            for(int i = numberOfOutput->intValue();i<outBuses.size() ; i++){
+//                OutputBus * outB = outBuses.getUnchecked(i);
+//                removeChildControllableContainer(outB);
+//            }
+//            outBuses.removeRange(numberOfOutput->intValue(), outBuses.size()-numberOfOutput->intValue());
+//        }
+//    }
 
     setPreferedNumAudioOutput(numberOfOutput->intValue());
-    suspendProcessing(false);
+//    suspendProcessing(false);
 
 }
 
@@ -93,8 +118,9 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
     int numInput = getTotalNumInputChannels();
     int numOutput = getTotalNumOutputChannels();
+  int numBufferChannels = buffer.getNumChannels();
 
-    if(!(outBuses.size()<=buffer.getNumChannels()))
+    if(!(outBuses.size()<=numBufferChannels))
     {
         DBG("mixer : dropping frame");return;
     }
@@ -145,8 +171,6 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
         buffer.copyFrom(i, 0, cachedBuffer.getReadPointer(i), buffer.getNumSamples());
     }
 
-    // if buffer is bigger than cached (input>output) excedent it should never be used after this call so reference it
-    //    buffer.setDataToReferTo(cachedBuffer.getArrayOfWritePointers(), cachedBuffer.getNumChannels(), cachedBuffer.getNumSamples());
 }
 
 

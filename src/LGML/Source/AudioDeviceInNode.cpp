@@ -48,20 +48,30 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 
     AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
 
-    jassert(NodeBase::getTotalNumOutputChannels() == desiredNumAudioInput->intValue());
-    int numChannels = jmin(NodeBase::getTotalNumOutputChannels() , AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumOutputChannels());
-    int numSamples = buffer.getNumSamples();
+  int totalNumOutputChannels = NodeBase::getTotalNumOutputChannels();
+  int channelsAvailable = AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumOutputChannels();
+  int numSamples = buffer.getNumSamples();
+
+    jassert(totalNumOutputChannels == desiredNumAudioInput->intValue());
+  jassert(totalNumOutputChannels== inMutes.size());
+
+
     float enabledFactor = enabledParam->boolValue()?1.f:0.f;
 
-    int maxNumChannels = jmin(numChannels, inMutes.size());
-    for (int i = 0; i < maxNumChannels; i++)
+
+    for (int i = 0; i < channelsAvailable; i++)
     {
         float newVolume = inMutes[i]->boolValue() ? 0.f : logVolumes[i]*enabledFactor;
         buffer.applyGainRamp(i,0, numSamples, lastVolumes[i], newVolume);
         lastVolumes.set(i, newVolume);
 
     }
-
+  for(int i = channelsAvailable;i<totalNumOutputChannels ; i++){
+    buffer.clear(i,0,numSamples);
+  }
+  if(buffer.getMagnitude(0, numSamples)>30.){
+    int dbg;dbg=0;
+  }
 
 }
 
