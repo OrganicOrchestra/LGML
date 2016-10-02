@@ -58,15 +58,15 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 
     float enabledFactor = enabledParam->boolValue()?1.f:0.f;
 
-
-    for (int i = 0; i < channelsAvailable; i++)
+  int numChannelsToProcess = jmin(totalNumOutputChannels,channelsAvailable);
+    for (int i = 0; i < numChannelsToProcess; i++)
     {
         float newVolume = inMutes[i]->boolValue() ? 0.f : logVolumes[i]*enabledFactor;
         buffer.applyGainRamp(i,0, numSamples, lastVolumes[i], newVolume);
         lastVolumes.set(i, newVolume);
 
     }
-  for(int i = channelsAvailable;i<totalNumOutputChannels ; i++){
+  for(int i = numChannelsToProcess;i<totalNumOutputChannels ; i++){
     buffer.clear(i,0,numSamples);
   }
   if(buffer.getMagnitude(0, numSamples)>30.){
@@ -118,11 +118,14 @@ void AudioDeviceInNode::updateVolMutes(){
     NodeBase::suspendProcessing(false);
 }
 
-
+void AudioDeviceInNode::numChannelsChanged(){
+  NodeBase::numChannelsChanged();
+  updateVolMutes();
+}
 
 void AudioDeviceInNode::addVolMute()
 {
-  const ScopedLock lk (parentNodeContainer->getCallbackLock());
+  const ScopedLock lk (NodeBase::getCallbackLock());
     BoolParameter * p = addBoolParameter(String(inMutes.size() + 1), "Mute if disabled", false);
     p->setCustomShortName(String("mute") + String(inMutes.size() + 1));
     inMutes.add(p);
