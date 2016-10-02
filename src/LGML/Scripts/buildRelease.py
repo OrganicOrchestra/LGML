@@ -4,6 +4,8 @@ import json;
 import urllib;
 import multiprocessing
 
+from PyUtils import *
+
 njobs = multiprocessing.cpu_count()
 
 # configuration  = "Release"
@@ -33,12 +35,10 @@ appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
 
 
-def sh(cmd):
-	print ("exec : "+cmd);
-	res =  os.popen(cmd).read()
-	print res
-	return res
+
 	
+
+
 def getVersion():
 	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
 	

@@ -10,6 +10,7 @@
             file="Tests/NodeChildProofer.cpp"/>
     </GROUP>
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
+      <FILE id="K7EYqf" name="GitSha.h" compile="0" resource="0" file="Source/GitSha.h"/>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
           <GROUP id="{B3184894-4077-D17A-2E3F-67A560988CD7}" name="ui">
@@ -817,7 +818,7 @@
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" smallIcon="SL4b92"
-                bigIcon="SL4b92" cppLanguageStandard="-std=c++11" extraLinkerFlags="-static -libstdc++">
+                bigIcon="SL4b92" cppLanguageStandard="-std=c++11" extraLinkerFlags="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="LGML" linuxArchitecture="-march=armv6" headerPath="../../External/serial/include"/>

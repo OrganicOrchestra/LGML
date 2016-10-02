@@ -11,6 +11,8 @@
 #include "LGMLLoggerUI.h"
 #include "Style.h"
 
+#include "GitSha.h"
+
 
 void LGMLLoggerUI::newMessage(const String & s)
 {
@@ -80,7 +82,8 @@ totalLogRow(0)
     logListComponent->setHeader(thc);
     addAndMakeVisible(logListComponent);
 
-    LOG("LGML v" + String(ProjectInfo::versionString) + "\nby OrganicOrchestra");
+    LOG("LGML v" + String(ProjectInfo::versionString) +" : "+String(GIT_SHA_SHORT) +" ("+ String(COMMIT_DATE)+")"+ "\nby OrganicOrchestra");
+
     LOG("please provide logFile for any bug report :\nlogFile in " + l->fileWriter.getFilePath());
 
     clearB.setButtonText("Clear");

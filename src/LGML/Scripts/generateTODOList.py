@@ -53,6 +53,7 @@ for file in matches:
 
 TODOFilePath = os.path.dirname(os.path.abspath(__file__));
 TODOFilePath = os.path.join(sourcePath,"../GeneratedTODOs.txt");
+TODOFilePath = os.path.abspath(TODOFilePath)
 
 with open(TODOFilePath,'w') as f:
 	f.write("//////////////////////////////////////\n \
@@ -73,6 +74,8 @@ Of course this list can also be used to remove unnecessary TODOs...\n \
 		f.write("\n")
 
 
+
+sh("git add "+TODOFilePath)
 exit(1)
 
 
