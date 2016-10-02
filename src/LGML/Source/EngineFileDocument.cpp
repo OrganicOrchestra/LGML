@@ -39,10 +39,13 @@ Result Engine::loadDocument (const File& file){
     suspendAudio(true);
 
   isLoadingFile = true;
+  int64 loadingStart =  Time::currentTimeMillis();
     {
         var data = JSON::parse(*is);
         loadJSONData(data);
     }// deletes data before launching audio, (data not needed after loaded)
+  int64 timeForLoading  =  Time::currentTimeMillis()-loadingStart;
+  NLOG("Engine","Session loaded in " << timeForLoading/1000.0 << "s");
   isLoadingFile = false;
     setLastDocumentOpened(file);
     graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());

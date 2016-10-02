@@ -13,6 +13,7 @@
 
 #include "NodeBase.h"
 #include "Style.h"//keep
+#include "AudioHelpers.h"
 
 //TODO, move to more common place for use in other components
 class VuMeter : public Component, public NodeBase::RMSListener ,public NodeBase::RMSChannelListener,Timer{
@@ -71,7 +72,9 @@ public:
   void updateValue(float value)
   {
     if(!isActive){setVoldB(0);return;}
-    float newVoldB = jmap<float>(20.0f*log10(value / 0.74f), 0.0f, 6.0f, 0.85f, 1.0f);
+    // allow a +6dB headRoom
+    float newVoldB = rmsToDB_6dBHR(value);//jmap<float>(20.0f*log10(value / 0.74f), 0.0f, 6.0f, 0.85f, 1.0f);
+    newVoldB = jmap<float> (newVoldB,-20.0f,6.0f,0.0f,1.0f);
 
     if ((newVoldB >= 0 || voldB!=0) && std::abs(newVoldB - voldB)>0.02f) {
       setVoldB(jmax(0.0f,newVoldB));

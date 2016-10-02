@@ -160,7 +160,7 @@ ControllableInspector.h
 
 
 VuMeter.h
-	line : 16
+	line : 17
 		//TODO, move to more common place for use in other components
 
 

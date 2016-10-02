@@ -99,7 +99,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n))
   {
     nodeContainers.add(nc);
-    nc->NodeContainer::clear(true);
+    nc->NodeContainer::clear(!isEngineLoadingFile());
     //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
   }
 
@@ -431,7 +431,7 @@ NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, Conn
   NodeConnection * c = new NodeConnection(tSourceNode, tDestNode, connectionType);
   connections.add(c);
   c->addConnectionListener(this);
-  updateAudioGraph();
+//  updateAudioGraph();
   // DBG("Dispatch connection Added from NodeManager");
   nodeContainerListeners.call(&NodeContainerListener::connectionAdded, c);
 

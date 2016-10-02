@@ -13,18 +13,20 @@
 
 
 #define DB0_FOR_01 0.8f
+#define MIN_DB -70.0f
 // create a gain value for a float  between 0 and 1
 // DB0_FOR_01   -> 0dB
 // 1            -> +6dB
 inline float float01ToGain(float f){
-    if(f==0)return 0;
-    float minus6Pos = (1-2*(1-DB0_FOR_01));
-    if(f>minus6Pos) return Decibels::decibelsToGain(jmap<float>(f,DB0_FOR_01,1.0f,0.0f,6.0f));
-    return Decibels::decibelsToGain(jmap<float>(f,0,minus6Pos,-70.0f,-6.0f));
+  if(f==0)return 0;
+  float minus6Pos = (1-2*(1-DB0_FOR_01));
+  if(f>minus6Pos) return Decibels::decibelsToGain(jmap<float>(f,DB0_FOR_01,1.0f,0.0f,6.0f));
+  return Decibels::decibelsToGain(jmap<float>(f,0,minus6Pos,MIN_DB,-6.0f));
 };
 
-inline float rmsToGain01(float rms){
-        return jmap<float>(20.0f*log10(rms/0.74f),0.0f,6.0f,DB0_FOR_01,1.0f);
+inline float rmsToDB_6dBHR(float rms){
+  // alows a +6db headroom for rms=1
+  return Decibels::gainToDecibels(rms/0.5f);
 }
 
 
@@ -57,8 +59,8 @@ public:
   }
 
   inline double getFade(int cur,int max){
-      if(skew==1)return cur*1.0/max;
-      return pow(cur*1.0/max,skew);
+    if(skew==1)return cur*1.0/max;
+    return pow(cur*1.0/max,skew);
   }
 
 
@@ -82,7 +84,7 @@ public:
 
   void startFadeIn(){
     if(fadeInCount>=0)return;
-	fadeInCount = (int)(fadeOutCount > 0 ? fadeOutCount*fadeInNumSamples*1.0 / fadeOutNumSamples : fadeInNumSamples);
+    fadeInCount = (int)(fadeOutCount > 0 ? fadeOutCount*fadeInNumSamples*1.0 / fadeOutNumSamples : fadeInNumSamples);
     fadeOutCount = -1;
   }
   // should be called at each sample to compute resulting fade
