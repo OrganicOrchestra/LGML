@@ -4,6 +4,7 @@ import json;
 import urllib;
 import multiprocessing
 
+
 from PyUtils import *
 
 njobs = multiprocessing.cpu_count()
@@ -61,10 +62,9 @@ def updateVersion():
 	elif specificVersion:
 		sh(proJucerPath+ " --set-version " +specificVersion+" "+ JuceProjectPath)
 
-def gitCommit():
-		if(bumpVersion or specificVersion!=""):
-			sh("cd "+gitPath+"&& git checkout master && git merge develop ")#&& git commit -m"+getVersion())
-			# sh(proJucerPath+" --git-tag-version "+JuceProjectPath)
+	sh(proJucerPath+ " --git-tag-version "+ JuceProjectPath)
+	writeSha();
+
 
 
 def buildJUCE(JuceProjectPath):
