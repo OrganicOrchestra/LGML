@@ -318,7 +318,9 @@ uint64 TimeManager::getNextTimeInSample(){
   if(desiredTimeState.isJumping)return desiredTimeState.nextTime;
   else return  timeState.nextTime;
 }
-
+bool  TimeManager::willRestart(){
+  return (timeState.nextTime!=0) && (desiredTimeState.nextTime==0);
+}
 
 void TimeManager::jump(int amount){
   goToTime(timeState.time+amount);
@@ -364,9 +366,11 @@ double TimeManager::setBPMForLoopLength(uint64 time,int granularity){
 }
 
 uint64 TimeManager::getNextGlobalQuantifiedTime(){
+  if(willRestart())return 0;
   return getNextQuantifiedTime(quantizedBarFraction->intValue());
 }
 uint64 TimeManager::getNextQuantifiedTime(int barFraction){
+  if(willRestart())return 0;
   if (barFraction==-1){barFraction=quantizedBarFraction->intValue();}
   if(barFraction==0){return timeState.time;}
 

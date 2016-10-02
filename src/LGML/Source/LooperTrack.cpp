@@ -48,7 +48,7 @@ lastVolume(0)
 
 
   stateParameterString = addStringParameter("state", "track state", "");
-  stateParameterStringSynchronizer = new AsyncTrackStateStringSynchroizer(stateParameterString);
+  stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer(stateParameterString);
   addTrackListener(stateParameterStringSynchronizer);
   stateParameterString->isControllableFeedbackOnly = true;
   stateParameterString->isSavable = false;
@@ -74,6 +74,9 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   if(!loopSample.processNextBlock(buffer)){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);
+  }
+  if(loopSample.isPlaying()){
+    trackStateListeners.call(&Listener::internalTrackTimeChanged,loopSample.getPlayPos()*1.0/loopSample.getRecordedLength());
   }
 
   handleEndOfRecording();
@@ -278,7 +281,7 @@ void LooperTrack::handleEndOfRecording(){
         double actualLength = TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength());
         uint64 desiredSize = (uint64)(actualLength*TimeManager::getInstance()->beatTimeInSample);
 
-        DBG("resizing loop : " << (int)(desiredSize-loopSample.getRecordedLength()));
+//        DBG("resizing loop : " << (int)(desiredSize-loopSample.getRecordedLength()));
 
         loopSample.setSizePaddingIfNeeded(desiredSize);
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
@@ -419,8 +422,10 @@ void LooperTrack::askForSelection(bool) {
 
 
 void LooperTrack::setTrackState(TrackState newState) {
+
   int quantizeTime = getQuantization();
   TimeManager * timeManager = TimeManager::getInstance();
+  
   if(newState==desiredState)return;
 
   if (newState == WILL_RECORD) {
@@ -493,14 +498,15 @@ void LooperTrack::setTrackState(TrackState newState) {
     }
     // if every one else is stopped
     else if(parentLooper->askForBeingAbleToPlayNow(this) && !loopSample.isOrWasPlaying()) {
-      quantizedRecordEnd = (uint64)-1;
+      quantizedRecordEnd = NO_QUANTIZE;
 
       if(timeManager->isMasterCandidate(parentLooper)){
         newState=WILL_PLAY;
-        timeManager->lockTime(true);
+        bool wasLocked = timeManager->isLocked();
+        if(!wasLocked)timeManager->lockTime(true);
         timeManager->playTrigger->trigger();
         quantizedPlayStart = 0;
-        timeManager->lockTime(false);
+        if(!wasLocked)timeManager->lockTime(false);
       }
       else{
         quantizedPlayStart = 0;

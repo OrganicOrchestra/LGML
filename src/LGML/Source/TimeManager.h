@@ -74,6 +74,7 @@ public TimeMasterCandidate
   uint64 getTimeForNextBeats(int beats);
   uint64 getTimeInSample();
   uint64 getNextTimeInSample();
+  bool willRestart();
   int getClosestBeat();
   double getBeatInNextSamples(int numSampleToAdd);
 

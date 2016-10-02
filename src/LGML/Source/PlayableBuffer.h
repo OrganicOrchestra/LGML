@@ -29,10 +29,9 @@ class PlayableBuffer {
   numTimePlayed(0),
   sampleOffsetBeforeNewState(0),
   hasBeenFaded (false),fadeSamples(380),
-  fadeOutDry(1000),
   fadeRecorded(1000)
   {
-    fadeOutDry.setFadedOut();
+  
     fadeRecorded.setFadedOut();
     jassert(numSamples < std::numeric_limits<int>::max());
     //        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
@@ -53,8 +52,8 @@ class PlayableBuffer {
     else if( wasLastRecordingFrame()){
       succeeded = writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState);
       fadeInOut(fadeSamples, 0);
-      fadeOutDry.setFadedIn();
-      fadeOutDry.startFadeOut();
+
+
 
     }
     if(isStopping()){
@@ -66,30 +65,17 @@ class PlayableBuffer {
       fadeRecorded.startFadeIn();
     }
 
-    if(fadeOutDry.getLastFade()>0){
-      fadeOutDry.incrementFade(buffer.getNumSamples());
-      const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
-      const int startSample = 0;//sampleOffsetBeforeNewState;
-      float startGain = (float)fadeOutDry.getLastFade();
-      float endGain = (float)fadeOutDry.getCurrentFade();
-      for (int c =0 ; c < maxChannel ; c++){
-        buffer.applyGainRamp(c, startSample, buffer.getNumSamples()-startSample, startGain,endGain);
-      }
 
-
-    }
-    else{
       buffer.clear();
-    }
 
 
 
-
+fadeRecorded.incrementFade(buffer.getNumSamples());
     if ( isOrWasPlaying()||fadeRecorded.getLastFade()>0){
 //    if(isOrWasPlaying()){
       readNextBlock(buffer,sampleOffsetBeforeNewState);
 //    }
-      fadeRecorded.incrementFade(buffer.getNumSamples());
+
       double startGain = fadeRecorded.getLastFade();
       double endGain = fadeRecorded.getCurrentFade();
       const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
@@ -367,7 +353,7 @@ private:
   bool isJumping;
   bool hasBeenFaded;
   int fadeSamples;
-  FadeInOut fadeOutDry,fadeRecorded;
+  FadeInOut fadeRecorded;
   
   
   

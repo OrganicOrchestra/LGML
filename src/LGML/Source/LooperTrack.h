@@ -84,17 +84,29 @@ public:
     virtual ~Listener() {cancelPendingUpdate();}
     //                called from here
     void internalTrackStateChanged(const TrackState &state) {
-      notifyStateChange = true;
+
       stateToBeNotified = state;
       trackStateChanged(state);
+      notifyStateChange = true;
       triggerAsyncUpdate();
 
     }
 
+    void internalTrackTimeChanged(double position){
+      int64 time = Time::getMillisecondCounter();
+      trackPosition = position;
+      if(time - lastTrackTime>trackUpdatePeriodMs){
+      notifyTrackTime = true;
+      triggerAsyncUpdate();
+        lastTrackTime = time;
+      }
+
+    }
+
     void internalTrackSetSelected(bool t){
-      notifySelectChange = true;
       isSelected = t;
       trackSelected(isSelected);
+      notifySelectChange = true;
       triggerAsyncUpdate();
     }
     TrackState stateToBeNotified;
@@ -103,9 +115,18 @@ public:
     bool isSelected;
     bool notifySelectChange = false;
 
+    bool notifyTrackTime = false;
+    double trackPosition=0;
+    double trackUpdatePeriodMs = 100;
+    int64 lastTrackTime=0;
+
     // dispatched to listeners
     virtual void trackStateChanged(const TrackState &) {};
     virtual void trackStateChangedAsync(const TrackState & state) = 0;
+    virtual void trackTimeChangedAsync(double position){};
+    void setTrackTimeUpdateRateHz(float hz){
+      trackUpdatePeriodMs = 1000.0/hz;
+    }
     void handleAsyncUpdate() override {
       if(notifyStateChange){
         trackStateChangedAsync(stateToBeNotified);
@@ -114,6 +135,9 @@ public:
       if(notifySelectChange){
         trackSelectedAsync(isSelected);
         notifySelectChange = false;
+      }
+      if(notifyTrackTime){
+        trackTimeChangedAsync(trackPosition);
       }
 
     }
@@ -126,15 +150,15 @@ public:
   void removeTrackListener(Listener* listener) { trackStateListeners.remove(listener); }
 
 
-  class AsyncTrackStateStringSynchroizer : public LooperTrack::Listener {
+  class AsyncTrackStateStringSynchronizer : public LooperTrack::Listener {
   public:
     StringParameter * stringParameter;
-    AsyncTrackStateStringSynchroizer(StringParameter  *origin) :stringParameter(origin) {}
+    AsyncTrackStateStringSynchronizer(StringParameter  *origin) :stringParameter(origin) {}
     void trackStateChangedAsync(const TrackState &_trackState) override {
       stringParameter->setValue(trackStateToString(_trackState), false, true);
     }
   };
-  ScopedPointer<AsyncTrackStateStringSynchroizer> stateParameterStringSynchronizer;
+  ScopedPointer<AsyncTrackStateStringSynchronizer> stateParameterStringSynchronizer;
 
 
   TrackState trackState,desiredState;
