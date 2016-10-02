@@ -483,6 +483,7 @@ PresetManager::Preset* ControllableContainer::saveNewPreset(const String & _name
 {
   PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, true);
   savePresetInternal(pre);
+  NLOG(niceName, "New preset saved : " + pre->name);
   loadPreset(pre);
   return pre;
 }
@@ -501,6 +502,7 @@ bool ControllableContainer::saveCurrentPreset()
     }
   }
   savePresetInternal(currentPreset);
+  NLOG(niceName, "Current preset saved : " + currentPreset->name);
 
   return true;
 }

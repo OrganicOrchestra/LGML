@@ -104,7 +104,7 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
 //        double env = jmax(0.0,1.0 - x*4.0);
         double env = jmax(0.0,h*exp(1.0-h));
         double fade = clickFade.getCurrentFade();
-        float res = fade*(env* cos(2.0*M_PI*carg ));
+		float res = (float)(fade*(env* cos(2.0*float_Pi*carg)));
 
         for(int c = 0 ;c < numOutputChannels ; c++ ){buffer.setSample(c, i, res);}
 

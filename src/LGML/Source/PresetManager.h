@@ -68,7 +68,7 @@ public:
 
     Preset * addPresetFromControllableContainer(const String &name, const String & filter, ControllableContainer * container, bool recursive = false, bool includeNotExposed = false);
     Preset * getPreset (String filter, const String &name) const;
-    void fillWithPresets (ComboBox * cb, const String & filter) const;
+    void fillWithPresets (ComboBox * cb, const String & filter, bool showSaveCurrent = true) const;
     void removePresetForIdx(int idx);
     int getNumPresetForFilter (const String &) const;
     static int getNumOption();

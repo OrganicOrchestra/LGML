@@ -130,7 +130,7 @@ void NodeConnectionEditorLink::mouseDown(const MouseEvent &)
 	listeners.call(&LinkListener::selectLink, this);
 }
 
-void NodeConnectionEditorLink::mouseDoubleClick(const MouseEvent &) { /*remove();*/ }
+void NodeConnectionEditorLink::mouseDoubleClick(const MouseEvent &) { remove(); }
 
 bool NodeConnectionEditorLink::keyPressed(const KeyPress & key)
 {

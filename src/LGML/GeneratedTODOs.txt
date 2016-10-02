@@ -24,16 +24,16 @@ MIDIManager.cpp
 
 
 ControllableContainer.cpp
-	line : 538
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-	line : 631
+	line : 633
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
 		//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
+
+	line : 540
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 	line : 447
 		// TODO weird feedback when loading preset on parameter presetName

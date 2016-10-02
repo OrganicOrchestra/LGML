@@ -69,8 +69,8 @@ class PlayableBuffer {
     if(fadeOutDry.getLastFade()>0){
       const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
       const int startSample = 0;//sampleOffsetBeforeNewState;
-      float startGain = fadeOutDry.getLastFade();
-      float endGain = fadeOutDry.getCurrentFade();
+      float startGain = (float)fadeOutDry.getLastFade();
+      float endGain = (float)fadeOutDry.getCurrentFade();
       for (int c =0 ; c < maxChannel ; c++){
         buffer.applyGainRamp(c, startSample, buffer.getNumSamples()-startSample, startGain,endGain);
       }
