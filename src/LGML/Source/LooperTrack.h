@@ -158,8 +158,6 @@ private:
 
   PlayableBuffer loopSample;
   float lastVolume;
-  bool isFadingIn;
-  bool isCrossFading;
 
 
   int getQuantization();

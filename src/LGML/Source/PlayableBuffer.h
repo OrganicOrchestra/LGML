@@ -67,6 +67,7 @@ class PlayableBuffer {
     }
 
     if(fadeOutDry.getLastFade()>0){
+      fadeOutDry.incrementFade(buffer.getNumSamples());
       const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
       const int startSample = 0;//sampleOffsetBeforeNewState;
       float startGain = (float)fadeOutDry.getLastFade();
@@ -74,7 +75,7 @@ class PlayableBuffer {
       for (int c =0 ; c < maxChannel ; c++){
         buffer.applyGainRamp(c, startSample, buffer.getNumSamples()-startSample, startGain,endGain);
       }
-      fadeOutDry.incrementFade(buffer.getNumSamples());
+
 
     }
     else{
@@ -88,14 +89,14 @@ class PlayableBuffer {
 //    if(isOrWasPlaying()){
       readNextBlock(buffer,sampleOffsetBeforeNewState);
 //    }
-
+      fadeRecorded.incrementFade(buffer.getNumSamples());
       double startGain = fadeRecorded.getLastFade();
       double endGain = fadeRecorded.getCurrentFade();
       const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
       for(int c = 0 ; c <maxChannel ; c++ ){
         buffer.applyGainRamp(c, 0, buffer.getNumSamples(), startGain, endGain);
       }
-      fadeRecorded.incrementFade(buffer.getNumSamples());
+
     }
 
 
@@ -133,14 +134,13 @@ class PlayableBuffer {
     }
 //    jassert(isOrWasPlaying());
 
-
     int numSamples = buffer.getNumSamples()-fromSample;
 
 
     // we want to read Last Block for fade out if stopped
-    if(state==BUFFER_STOPPED){
-      playNeedle = startJumpNeedle;
-    }
+//    if(state==BUFFER_STOPPED){
+//      playNeedle = startJumpNeedle;
+//    }
 
     // assert false for now to check alignement
     if(isFirstPlayingFrame()){
@@ -193,8 +193,8 @@ class PlayableBuffer {
     }
 
     // revert to beginning after reading last block of stopped
-    if(state==BUFFER_STOPPED){playNeedle = 0;startJumpNeedle = 0;}
-    else{
+//    if(state==BUFFER_STOPPED){playNeedle = 0;startJumpNeedle = 0;}
+//    else{
 
       playNeedle += numSamples;
       if(playNeedle>=recordNeedle){
@@ -202,7 +202,7 @@ class PlayableBuffer {
       }
       playNeedle %= recordNeedle;
 
-    }
+//    }
 
   }
 
@@ -314,7 +314,7 @@ class PlayableBuffer {
       case BUFFER_STOPPED:
         numTimePlayed = 0;
         fadeRecorded.startFadeOut();
-        setPlayNeedle(0);
+//        setPlayNeedle(0);
         break;
     }
     state = newState;

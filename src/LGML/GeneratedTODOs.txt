@@ -86,7 +86,7 @@ MIDIController.cpp
 
 
 TimeManager.cpp
-	line : 397
+	line : 398
 		//TODO: check
 
 
@@ -139,7 +139,7 @@ JavascriptControllerUI.cpp
 
 
 NodeBase.cpp
-	line : 357
+	line : 361
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 	line : 111

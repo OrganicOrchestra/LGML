@@ -167,11 +167,11 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
 
 
-
-  const double crossfadeValue = dryWetFader.getCurrentFade();
-  const double muteFadeValue =muteFader.getCurrentFade();
   muteFader.incrementFade(numSample);
   dryWetFader.incrementFade(numSample);
+  const double crossfadeValue = dryWetFader.getCurrentFade();
+  const double muteFadeValue =muteFader.getCurrentFade();
+
 
   // on disable
   if(wasEnabled && crossfadeValue==0 ){
@@ -255,12 +255,18 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
                            getSampleRate(),
                            getBlockSize());
       parentNodeContainer->updateAudioGraph(false);
+      if(oldNumChannels!=getTotalNumInputChannels()){
+        numChannelsChanged();
+      }
 //      parentNodeContainer->getAudioGraph()->suspendProcessing(false);
     }
     else{
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());
+      if(oldNumChannels!=getTotalNumInputChannels()){
+        numChannelsChanged();
+      }
     }
   }
 
@@ -284,9 +290,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   }
 
   nodeListeners.call(&ConnectableNodeListener::numAudioInputChanged, this,num);
-  if(oldNumChannels!=newNum){
-    numChannelsChanged();
-  }
+
 
   return true;
 }

@@ -56,6 +56,7 @@ public:
 
 	//AUDIO
 	void updateChannelNames();
+  void numChannelsChanged()override;
 	virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/) override;
 	
 

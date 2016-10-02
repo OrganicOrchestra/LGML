@@ -29,6 +29,7 @@ clickFade(300,300)
   enumParam->addOption("Right / Left", "rl");
   enumParam->addOption("Mixed", "mixed");
   enumParam->addOption("click", "click");
+  enumParam->addOption("sine", "sine");
 
 
 
@@ -78,7 +79,7 @@ void DummyNode::onContainerParameterChanged(Parameter * p)
 
 void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
 
-  if(enumParam->getValueData()=="click"){
+  if(enumParam->getValueData()=="click" ||  enumParam->getValueData()=="sine"){
     TimeManager * tm = TimeManager::getInstance();
     if(tm->isJumping()){
 
@@ -94,28 +95,30 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
       //    const int sinPeriod = sampleRate / sinFreq;
       const double k = 40.0;
 
-
+      bool ADSREnv =  !( enumParam->getValueData()=="sine");
       for(int i = 0 ; i < numSamples;i++){
 
         double carg = sinCount*1.0/sinFreq;
-
+        double env = 1.0;
+        if(ADSREnv){
         double x = (tm->getBeatInNextSamples(i)-tm->getBeatInt() ) ;
         double h = k*fmod((double)x+1.0/k,1.0);
 //        double env = jmax(0.0,1.0 - x*4.0);
-        double env = jmax(0.0,h*exp(1.0-h));
+         env = jmax(0.0,h*exp(1.0-h));
+        }
+        clickFade.incrementFade();
         double fade = clickFade.getCurrentFade();
 		float res = (float)(fade*(env* cos(2.0*float_Pi*carg)));
 
         for(int c = 0 ;c < numOutputChannels ; c++ ){buffer.setSample(c, i, res);}
 
         sinCount = (sinCount+1)%(sinFreq);
-        clickFade.incrementFade();
+
 
       }
     }
     else{
       clickFade.startFadeOut();
-      clickFade.incrementFade(buffer.getNumSamples());
     }
   }
   else{

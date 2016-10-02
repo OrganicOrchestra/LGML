@@ -88,6 +88,7 @@ public:
     fadeOutCount = -1;
   }
   // should be called at each sample to compute resulting fade
+  // usually called before getLastFade to ensure that first getCurrentFade calls after setFadedX contains the new value 
   void incrementFade(int i = 1){
     if(fadeOutCount>0){
       fadeOutCount-=i;

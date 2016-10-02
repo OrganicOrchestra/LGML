@@ -31,8 +31,6 @@ desiredState(CLEARED),
 trackIdx(_trackIdx),
 someOneIsSolo(false),
 isSelected (false),
-isFadingIn(false),
-isCrossFading(false),
 originBPM(0),
 lastVolume(0)
 {
@@ -80,18 +78,9 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
   handleEndOfRecording();
 
-  if(isFadingIn){ lastVolume = 0;isFadingIn = false;}
 
   float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume;
-  // fadeOut
-  if(isCrossFading){
-    if(!isFadingIn){ newVolume = 0; isFadingIn = true;}
-    else isCrossFading = false;
-  }
-  // fade out on buffer_stop (clear or stop)
-  if(loopSample.isStopping() ){
-    newVolume = 0;
-  }
+
   for (int i = parentLooper->getTotalNumOutputChannels() - 1; i >= 0; --i) {
     buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume, newVolume);
   }
@@ -146,7 +135,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
   TimeManager * tm = TimeManager::getInstance();
 
   if (quantizedRecordStart.get()!=NO_QUANTIZE) {
-    if (triggeringTime >= quantizedRecordStart.get() ) {
+    if (triggeringTime > quantizedRecordStart.get() ) {
       int firstPart = jmax(0, (int)(quantizedRecordStart.get()-curTime));
       int secondPart = (int)(triggeringTime-firstPart);
 
@@ -170,7 +159,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
   }
   else if (quantizedRecordEnd.get()!=NO_QUANTIZE) {
-    if (triggeringTime >= quantizedRecordEnd.get()) {
+    if (triggeringTime > quantizedRecordEnd.get()) {
       int firstPart = jmax(0, (int)(quantizedRecordEnd.get()-curTime));
 //      int secondPart = triggeringTime-firstPart;
 
@@ -197,7 +186,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
 
   if (quantizedPlayStart.get()!=NO_QUANTIZE) {
-    if (triggeringTime >= quantizedPlayStart.get()) {
+    if (triggeringTime > quantizedPlayStart.get()) {
       int firstPart = jmax(0, (int)(quantizedPlayStart.get()-curTime));
 //      int secondPart = triggeringTime-firstPart;
 
@@ -209,7 +198,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
     }
   }
   else if (quantizedPlayEnd.get()!=NO_QUANTIZE) {
-    if (triggeringTime >= quantizedPlayEnd.get()) {
+    if (triggeringTime > quantizedPlayEnd.get()) {
       int firstPart = jmax(0, (int)(quantizedPlayEnd.get()-curTime));
 //      int secondPart = triggeringTime-firstPart;
       desiredState = STOPPED;

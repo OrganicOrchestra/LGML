@@ -61,6 +61,10 @@ void Spat2DNode::setTargetPosition(int index, const Point<float>& position)
 
 void Spat2DNode::updateInputOutputDataSlots()
 {
+
+  // need to lock to prevent access from audioThread
+  // obviously, this method should not be called while performing (or we ll need to adapt it)
+  const ScopedLock lk(getCallbackLock());
 	if (numSpatInputs == nullptr || numSpatOutputs == nullptr) return;
 
 
@@ -156,7 +160,9 @@ void Spat2DNode::computeInfluence(int targetIndex)
 	}
 }
 
-
+void Spat2DNode::numChannelsChanged(){
+updateInputOutputDataSlots();
+}
 bool Spat2DNode::modeIsBeam()
 {
 	return (int)spatMode->getValueData() == BEAM;
@@ -173,14 +179,12 @@ void Spat2DNode::onContainerParameterChanged(Parameter * p)
 	} else if (p == numSpatInputs)
 	{
 		setPreferedNumAudioInput(numSpatInputs->intValue());		
-		updateInputOutputDataSlots();
 		updateTargetsFromShape();
 
 	} else if (p == numSpatOutputs)
 	{
 		setPreferedNumAudioOutput(numSpatOutputs->intValue()+2);
 		updateChannelNames();
-		updateInputOutputDataSlots();
 		updateTargetsFromShape();
 	} else if (p == shapeMode || p == circleRadius || p == circleRotation)
 	{

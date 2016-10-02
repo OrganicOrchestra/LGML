@@ -77,6 +77,7 @@ public:
 
   virtual bool setPreferedNumAudioInput(int num);
    virtual bool setPreferedNumAudioOutput(int num);
+  // this will be called with audio locked so that one can safely update internal variables used by processBlockInternal
   virtual void numChannelsChanged() override{};
 
 

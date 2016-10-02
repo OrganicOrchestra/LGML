@@ -115,6 +115,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 
       double x = (getBeatInNextSamples(i)-getBeatInt() ) ;
       double h = k*fmod((double)x+1.0/k,1.0);
+      clickFader.incrementFade();
       double env = clickFader.getCurrentFade()*jmax(0.0,h*exp(1.0-h));
 
       float res = (env* cos(2.0*M_PI*carg ));
@@ -123,7 +124,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 
       sinCount = (sinCount+1)%(sinFreq);
 //      DBG(clickFader.getCurrentFade());
-      clickFader.incrementFade();
+
     }
   }
   else{
