@@ -159,6 +159,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   int totalNumInputChannels = getTotalNumInputChannels();
   int totalNumOutputChannels =getTotalNumOutputChannels();
 
+  
 //  for(int i = totalNumInputChannels;i < buffer.getNumChannels() ; i++){
 //    buffer.clear(i,0,numSample);
 //  }
@@ -209,14 +210,20 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
       buffer.applyGainRamp(0, numSample, lastVolume, (float)curVolume);
 
     }
-    // crossfade if we have a dry mix i.e at least one input channel
-    if(crossfadeValue!=1 && crossFadeBuffer.getNumChannels()>0){
-      for(int i = 0 ; i < totalNumInputChannels ; i++){
-        int maxCommonChannels = jmin(totalNumInputChannels,totalNumOutputChannels)-1;
-        buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, (float)lastDryVolume,(float)curDryVolume);
 
-      }
-    }
+	
+    // crossfade if we have a dry mix i.e at least one input channel
+	if (totalNumInputChannels > 0 && totalNumOutputChannels > 0)
+	{
+		if (crossfadeValue != 1 && crossFadeBuffer.getNumChannels()>0) {
+			for (int i = 0; i < totalNumInputChannels; i++) {
+				int maxCommonChannels = jmin(totalNumInputChannels, totalNumOutputChannels) - 1;
+				buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, (float)lastDryVolume, (float)curDryVolume);
+
+			}
+		}
+	}
+	
 
     if(muteFadeValue == 0){
       buffer.clear();
