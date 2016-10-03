@@ -12,7 +12,6 @@ def getVersion():
 
 
 def formatCode(sourceFolder):
-	# sourceFolder = os.path.abspath(sourceFolder)
 	# sh(proJucerPath+ " --remove-tabs "+sourceFolder);
 	sh(proJucerPath+ " --tidy-divider-comments "+sourceFolder);
 	sh(proJucerPath+ " --trim-whitespace "+sourceFolder);
