@@ -50,8 +50,9 @@ hasJumped(false)
   playTrigger = addTrigger("play", "trigger play");
   stopTrigger = addTrigger("stop", "trigger stop");
   quantizedBarFraction = addIntParameter("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
-  tapTempo = addTrigger("tapTempo", "tap the tempo");
-  click = addBoolParameter("metronome", "metronome", false);
+  tapTempo = addTrigger("tapTempo", "tap at least 2 times to set the tempo");
+  click = addBoolParameter("Metronome", "Play the metronome click", false);
+  clickVolume = addFloatParameter("Metronome Volume", "Click's volume if metronome is active", .5f, 0, 1);
   setBPMInternal(BPM->doubleValue());
 
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);
@@ -120,7 +121,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
       clickFader->incrementFade();
       double env = clickFader->getCurrentFade()*jmax(0.0,h*exp(1.0-h));
 
-      float res = (env* cos(2.0*M_PI*carg ));
+      float res = (clickVolume->floatValue()* env* cos(2.0*M_PI*carg ));
 
       for(int c = 0 ;c < numOutputChannels ; c++ ){outputChannelData[c][i] = res;}
 

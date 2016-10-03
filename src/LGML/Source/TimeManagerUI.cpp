@@ -41,6 +41,8 @@ timeBar(_timeManager){
   addAndMakeVisible(tapTempo);
   click = timeManager->click->createToggle();
   addAndMakeVisible(click);
+  clickVolumeUI = timeManager->clickVolume->createSlider();
+  addAndMakeVisible(clickVolumeUI);
 
 }
 
@@ -95,7 +97,10 @@ void TimeManagerUI::resized(){
   r.removeFromRight(10);
   tapTempo->setBounds(r.removeFromRight(80));
   r.removeFromRight(10);
-  click->setBounds(r.removeFromRight(80));
+  Rectangle<int> clickR = r.removeFromRight(80);
+  click->setBounds(clickR.removeFromTop(10));
+  clickR.removeFromTop(4);
+  clickVolumeUI->setBounds(clickR);
 }
 
 TimeManagerUI::TimeBar::TimeBar(TimeManager * t):timeManager(t){

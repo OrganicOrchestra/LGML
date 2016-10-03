@@ -49,6 +49,7 @@ public TimeMasterCandidate
   IntParameter * beatPerBar;
   BoolParameter * BPMLocked;
   BoolParameter * click;
+  FloatParameter * clickVolume;
 
   IntParameter * quantizedBarFraction;
 
