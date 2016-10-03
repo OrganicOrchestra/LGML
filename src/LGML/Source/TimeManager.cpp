@@ -21,6 +21,7 @@ juce_ImplementSingleton(TimeManager);
 
 #include "NodeBase.h"
 #include "DebugHelpers.h"
+#include "AudioHelpers.h"
 
 
 TimeManager::TimeManager():
@@ -34,7 +35,6 @@ settingTempoFromCandidate(false),
 currentBeatPeriod(.5),
 lastTaped(0),
 tapInRow(0),
-clickFader(10000,10000,true,1.0/3.0),
 firstPlayingFrame(false),
 hasJumped(false)
 {
@@ -53,6 +53,8 @@ hasJumped(false)
   tapTempo = addTrigger("tapTempo", "tap the tempo");
   click = addBoolParameter("metronome", "metronome", false);
   setBPMInternal(BPM->doubleValue());
+
+  clickFader = new FadeInOut(10000,10000,true,1.0/3.0);
 }
 TimeManager::~TimeManager()
 {
@@ -106,7 +108,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 
 
     if(desiredTimeState.isJumping){
-      clickFader.startFadeOut();
+      clickFader->startFadeOut();
     }
 
     for(int i = 0 ; i < numSamples;i++){
@@ -115,15 +117,15 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 
       double x = (getBeatInNextSamples(i)-getBeatInt() ) ;
       double h = k*fmod((double)x+1.0/k,1.0);
-      clickFader.incrementFade();
-      double env = clickFader.getCurrentFade()*jmax(0.0,h*exp(1.0-h));
+      clickFader->incrementFade();
+      double env = clickFader->getCurrentFade()*jmax(0.0,h*exp(1.0-h));
 
       float res = (env* cos(2.0*M_PI*carg ));
 
       for(int c = 0 ;c < numOutputChannels ; c++ ){outputChannelData[c][i] = res;}
 
       sinCount = (sinCount+1)%(sinFreq);
-//      DBG(clickFader.getCurrentFade());
+//      DBG(clickFader->getCurrentFade());
 
     }
   }
@@ -174,18 +176,18 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
     if(!playState->boolValue()){
       if(isMasterCandidate(this)){potentialTimeMasterCandidate.clear();}
       shouldStop();
-      clickFader.startFadeOut();
+      clickFader->startFadeOut();
     }
     else{
       if (!hasMasterCandidate()) {askForBeingMasterCandidate(this);}
       shouldGoToZero();
       shouldPlay();
-      clickFader.startFadeIn();
+      clickFader->startFadeIn();
     }
   }
   else if(p==BPM){
     setBPMInternal(BPM->doubleValue());
-    clickFader.startFadeOut();
+    clickFader->startFadeOut();
 
   }
   else if (p==BPMLocked){

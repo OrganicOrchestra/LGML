@@ -147,9 +147,9 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
   const uint64 triggeringTime = curTime+blockSize;
   TimeManager * tm = TimeManager::getInstance();
 
-  if (quantizedRecordStart.get()!=NO_QUANTIZE) {
-    if (triggeringTime > quantizedRecordStart.get() ) {
-      int firstPart = jmax(0, (int)(quantizedRecordStart.get()-curTime));
+  if (quantizedRecordStart!=NO_QUANTIZE) {
+    if (triggeringTime > quantizedRecordStart ) {
+      int firstPart = jmax(0, (int)(quantizedRecordStart-curTime));
       int secondPart = (int)(triggeringTime-firstPart);
 
 
@@ -171,9 +171,9 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
     }
 
   }
-  else if (quantizedRecordEnd.get()!=NO_QUANTIZE) {
-    if (triggeringTime > quantizedRecordEnd.get()) {
-      int firstPart = jmax(0, (int)(quantizedRecordEnd.get()-curTime));
+  else if (quantizedRecordEnd!=NO_QUANTIZE) {
+    if (triggeringTime > quantizedRecordEnd) {
+      int firstPart = jmax(0, (int)(quantizedRecordEnd-curTime));
       //      int secondPart = triggeringTime-firstPart;
 
       if(parentLooper->isOneShot->boolValue()){
@@ -198,9 +198,9 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
 
 
-  if (quantizedPlayStart.get()!=NO_QUANTIZE) {
-    if (triggeringTime > quantizedPlayStart.get()) {
-      int firstPart = jmax(0, (int)(quantizedPlayStart.get()-curTime));
+  if (quantizedPlayStart!=NO_QUANTIZE) {
+    if (triggeringTime > quantizedPlayStart) {
+      int firstPart = jmax(0, (int)(quantizedPlayStart-curTime));
       //      int secondPart = triggeringTime-firstPart;
 
       desiredState =  PLAYING;
@@ -210,9 +210,9 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
       stateChanged = true;
     }
   }
-  else if (quantizedPlayEnd.get()!=NO_QUANTIZE) {
-    if (triggeringTime > quantizedPlayEnd.get()) {
-      int firstPart = jmax(0, (int)(quantizedPlayEnd.get()-curTime));
+  else if (quantizedPlayEnd!=NO_QUANTIZE) {
+    if (triggeringTime > quantizedPlayEnd) {
+      int firstPart = jmax(0, (int)(quantizedPlayEnd-curTime));
       //      int secondPart = triggeringTime-firstPart;
       desiredState = STOPPED;
       loopSample.setState( PlayableBuffer::BUFFER_STOPPED,firstPart);

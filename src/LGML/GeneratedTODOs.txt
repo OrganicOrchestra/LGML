@@ -73,7 +73,7 @@ NodeContainer.cpp
 
 
 TimeManager.h
-	line : 32
+	line : 33
 		// TODO check if we can use SingleThread Singleton for fast access in processAdio
 
 
@@ -110,7 +110,7 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 402
+	line : 404
 		//TODO: check
 
 

@@ -52,10 +52,12 @@ class PlayableBuffer {
     else if( wasLastRecordingFrame()){
       succeeded = writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState);
       fadeInOut(fadeSamples, 0);
-
-
-
     }
+
+
+
+      buffer.clear();
+
     if(isStopping()){
       fadeRecorded.startFadeOut();
     }
@@ -66,7 +68,7 @@ class PlayableBuffer {
     }
 
 
-      buffer.clear();
+
 
 
 
@@ -141,9 +143,9 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
       const int halfBlock =  numSamples/2;
       for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
         const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-        buffer.addFrom(i, fromSample, loopSample, maxChannelFromRecorded, (int)startJumpNeedle, halfBlock);
+        buffer.copyFrom(i, fromSample, loopSample, maxChannelFromRecorded, (int)startJumpNeedle, halfBlock);
         buffer.applyGainRamp(i, fromSample, halfBlock, 1.0f, 0.0f);
-        buffer.addFrom(i, fromSample+halfBlock, loopSample, maxChannelFromRecorded, (int)playNeedle+halfBlock, halfBlock);
+        buffer.copyFrom(i, fromSample+halfBlock, loopSample, maxChannelFromRecorded, (int)playNeedle+halfBlock, halfBlock);
         buffer.applyGainRamp(i, fromSample+halfBlock-1, halfBlock, 0.0f, 1.0f);
 
       }
@@ -161,8 +163,8 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
 
           const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
           for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-            buffer.addFrom(i, fromSample, loopSample, i, (int)playNeedle, firstSegmentLength);
-            buffer.addFrom(i, fromSample, loopSample, i, 0, secondSegmentLength);
+            buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, firstSegmentLength);
+            buffer.copyFrom(i, fromSample, loopSample, i, 0, secondSegmentLength);
           }
           playNeedle = secondSegmentLength;
         }
@@ -173,7 +175,7 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
       else{
         const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
         for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-          buffer.addFrom(i, fromSample, loopSample, i, (int)playNeedle, numSamples);
+          buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, numSamples);
         }
       }
     }

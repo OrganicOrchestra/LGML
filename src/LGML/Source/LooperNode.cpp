@@ -93,14 +93,25 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
       bufferOut.clear();
     }
   }
+
+
+  // avoid each track clearing the buffer if not needed
+  bool needAudioIn = false;
+  for(auto & t : trackGroup.tracks){needAudioIn |= t->loopSample.isOrWasRecording();}
+  if(!needAudioIn){buffer.clear();bufferIn.clear();}
+  else{
   for (int i = bufferIn.getNumChannels() - 1; i >= 0; --i) {
     bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
   }
+  }
+
+
   for (auto & t : trackGroup.tracks) {
     t->processBlock(buffer, midiMessages);
     for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
       bufferOut.addFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
-      buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
+      if(needAudioIn)buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
+      else{buffer.clear();}
     }
   }
   for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
