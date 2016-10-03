@@ -1,7 +1,7 @@
 import fnmatch
 import os
 import re
-from shUtils import *
+from PyUtils import *
 
 
 sourcePath = os.path.dirname(os.path.abspath(__file__));
