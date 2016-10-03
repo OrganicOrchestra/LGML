@@ -62,7 +62,7 @@ public:
 
 
 	void onContainerParameterChanged(Parameter * p) override;
-
+  void onContainerParameterChangedAsync(Parameter * p ,const var & value)override{};
 	//ui
 	virtual ConnectableNodeUI *  createUI();
 

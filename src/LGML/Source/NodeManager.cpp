@@ -22,6 +22,7 @@ NodeManager::NodeManager() :
 	saveAndLoadRecursiveData = false;
     setCustomShortName("node");
 
+  mainAudioGraph = new AudioProcessorGraph();
 	mainContainer = new NodeContainer("mainContainer");
 	addChildControllableContainer(mainContainer);
 	mainContainer->skipControllableNameInAddress = true;

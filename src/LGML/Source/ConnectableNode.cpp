@@ -63,16 +63,25 @@
 
 void ConnectableNode::setParentNodeContainer(NodeContainer * _parentNodeContainer)
 {
+  if(type!=ContainerType)
     addToAudioGraph(_parentNodeContainer->getAudioGraph());
 	parentNodeContainer = _parentNodeContainer;
 
 
 }
 
-AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool)
+AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool isInput)
 {
+  if(type == ContainerType){
+    NodeContainer* nc = (NodeContainer *) this;
+    NodeBase * nb = (isInput?(NodeBase*)nc->containerInNode:(NodeBase*)nc->containerOutNode);
+    if(!nb)return nullptr;
+    return nb->getAudioNode();
+  }
+  else{
   jassert(audioNode->getProcessor() == getAudioProcessor());
   return audioNode;
+  }
 }
 
 
@@ -171,7 +180,8 @@ void ConnectableNode::addToAudioGraph(AudioProcessorGraph* g)
 
 void ConnectableNode::removeFromAudioGraph()
 {
-  parentNodeContainer->getAudioGraph()->removeNode(getAudioNode());
+  if(AudioProcessorGraph * g = parentNodeContainer->getAudioGraph())
+  g->removeNode(getAudioNode());
 
 
 }

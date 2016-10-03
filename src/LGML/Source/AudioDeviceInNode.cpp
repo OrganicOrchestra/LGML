@@ -142,7 +142,7 @@ void AudioDeviceInNode::removeVolMute()
 {
 
     if(inMutes.size()==0)return;
-  const ScopedLock lk (parentNodeContainer->getCallbackLock());
+  const ScopedLock lk (parentNodeContainer->getAudioGraph()->getCallbackLock());
     BoolParameter * b = inMutes[inMutes.size() - 1];
     removeControllable(b);
     inMutes.removeAllInstancesOf(b);

@@ -28,6 +28,11 @@ ControllableContainer.cpp
 		// TODO weird feedback when loading preset on parameter presetName
 
 
+ContainerOutNode.cpp
+	line : 57
+		//TODO
+
+
 ControllableInspector.cpp
 	line : 85
 		// TODO : -try to merge common properties based on first by deleting non common params within candidateContainers
@@ -43,6 +48,11 @@ VuMeter.h
 		//TODO, move to more common place for use in other components
 
 
+ContainerInNode.cpp
+	line : 34
+		//TODO
+
+
 MainComponentCommands.cpp
 	line : 247
 		// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
@@ -50,26 +60,20 @@ MainComponentCommands.cpp
 
 
 NodeContainer.cpp
-	line : 459
+	line : 304
+		// TODO nicely handle file format errors?
+
+	line : 218
+		//@ben remove recursive for now (not useful and duplicating values...)
+		//
+		//    for (auto &n : nodes) n->saveCurrentPreset();
+
+	line : 463
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
-
-	line : 300
-		// TODO nicely handle file format errors?
-
-	line : 534
-		// TODO :  handle change of in out numChannels
-		// wiill need to call on change
-		//    parentNodeContainer->prepareToPlay(d,i);
-		//    parentNodeContainer->suspendProcessing(false);
-
-	line : 214
-		//@ben remove recursive for now (not useful and duplicating values...)
-		//
-		//    for (auto &n : nodes) n->saveCurrentPreset();
 
 
 TimeManager.h

@@ -15,8 +15,9 @@
 #include "NodeBase.h"
 
 class NodeContainer;
+class ContainerInNode;
 
-class ContainerOutNode : public NodeBase,public AudioProcessorGraph::AudioGraphIOProcessor
+class ContainerOutNode : public NodeBase
 {
 public:
 	ContainerOutNode();
@@ -41,7 +42,7 @@ public:
 
 	void onContainerParameterChanged(Parameter *) override;
 
-
+  ContainerInNode * linkedInNode;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContainerOutNode)
 };

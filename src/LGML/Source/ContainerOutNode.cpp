@@ -13,9 +13,11 @@
 #include "NodeContainer.h"
 
 
+#include "ContainerInNode.h"
+
 ContainerOutNode::ContainerOutNode() :
-	NodeBase("Container Out", NodeType::ContainerOutType, false),
-AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
+	NodeBase("Container Out", NodeType::ContainerOutType, false)
+//AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;
@@ -39,23 +41,21 @@ void ContainerOutNode::setNumAudioChannels(int channels)
 {
 
   // only handle one container in per container for now
-  parentNodeContainer->setPreferedNumAudioOutput(channels);
+//  parentNodeContainer->setPreferedNumAudioOutput(channels);
 
 	setPreferedNumAudioInput(channels);
-	setPreferedNumAudioOutput(0);
+	setPreferedNumAudioOutput(channels);
 }
 
 void ContainerOutNode::setParentNodeContainer(NodeContainer * nc)
 {
-
+  linkedInNode = nc->containerInNode;
 	NodeBase::setParentNodeContainer(nc);
-  setPreferedNumAudioOutput(0);
-  setPreferedNumAudioInput(nc->getTotalNumOutputChannels());
+  setPreferedNumAudioOutput(2);
+  setPreferedNumAudioInput(2);
 }
 void ContainerOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
-  AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
-  int a ;
-  a = 0;
+  //TODO
 };
 
 void ContainerOutNode::processInputDataChanged(Data * d)

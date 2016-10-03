@@ -13,8 +13,7 @@
 #include "NodeContainer.h"
 
 ContainerInNode::ContainerInNode() :
-	NodeBase("Container IN", NodeType::ContainerInType, false),
-AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
+	NodeBase("Container IN", NodeType::ContainerInType, false)
 {
 	canBeRemovedByUser = false;
 	canHavePresets = false;
@@ -33,15 +32,15 @@ ContainerInNode::~ContainerInNode()
 }
 
 void ContainerInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
-  AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+  //TODO
 
 };
 
 void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
 {
 	NodeBase::setParentNodeContainer(nc);
-  setPreferedNumAudioInput(0);
-  setPreferedNumAudioOutput(nc->getTotalNumInputChannels());
+  setPreferedNumAudioInput(2);
+  setPreferedNumAudioOutput(2);
 }
 
 
@@ -49,12 +48,12 @@ void ContainerInNode::setNumAudioChannels(int channels)
 {
 
   // only handle one container in per container for now
-  parentNodeContainer->setPreferedNumAudioInput(channels);
+
   {
-  parentNodeContainer->suspendProcessing(true);
-	setPreferedNumAudioInput(0);
+  parentNodeContainer->getAudioGraph()->suspendProcessing(true);
+	setPreferedNumAudioInput(channels);
 	setPreferedNumAudioOutput(channels);
-    parentNodeContainer->suspendProcessing(false);
+    parentNodeContainer->getAudioGraph()->suspendProcessing(false);
   }
   jassert(parentNodeContainer);
 

@@ -42,7 +42,7 @@ public:
 
 
 class NodeContainer :
-public NodeBase,
+public ConnectableNode,
 public ConnectableNode::ConnectableNodeListener,
 public NodeConnection::Listener,
 public ConnectableNode::RMSListener,
@@ -60,8 +60,7 @@ public:
   //Container nodes, not removable by user, handled separately
   ContainerInNode * containerInNode;
   ContainerOutNode * containerOutNode;
-  ScopedPointer<AudioProcessorGraph> innerGraph;
-  AudioProcessorGraph * getAudioGraph(){return innerGraph;};
+  AudioProcessorGraph * getAudioGraph();
 
   Array<ParameterProxy *> proxyParams;
 
@@ -130,22 +129,11 @@ public:
   //AUDIO
 
   void updateAudioGraph(bool lock = true) ;
-  void numChannelsChanged() override;
-  
+
+
   //DATA
-  bool hasDataInputs() override;
-  bool hasDataOutputs() override;
-
-  void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override{
-    const ScopedLock lk(getAudioGraph()->getCallbackLock());
-    getAudioGraph()->processBlock(buffer,midiMessage);
-  };
-
-
-  virtual void prepareToPlay(double d, int i) override ;
-  virtual void releaseResources() override {
-    NodeBase::releaseResources();
-    getAudioGraph()->releaseResources();};
+  bool hasDataInputs()override;
+  bool hasDataOutputs()override;
 
 
 
