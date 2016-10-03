@@ -56,7 +56,7 @@ void AudioDeviceOutNode::changeListenerCallback(ChangeBroadcaster*) {
 void AudioDeviceOutNode::onContainerParameterChanged(Parameter * p){
 
     if(p==desiredNumAudioOutput){
-        updateVolMutes();
+      setPreferedNumAudioInput(desiredNumAudioOutput->intValue());
     }
     else{
         int foundIdx = volumes.indexOf((FloatParameter*)p);
@@ -70,21 +70,21 @@ void AudioDeviceOutNode::onContainerParameterChanged(Parameter * p){
 
 
 void AudioDeviceOutNode::updateVolMutes(){
-    NodeBase::suspendProcessing(true);
+
     while(lastNumberOfOutputs < desiredNumAudioOutput->intValue()){
         addVolMute();
     }
     while (lastNumberOfOutputs>desiredNumAudioOutput->intValue()) {
         removeVolMute();
     }
-    setPreferedNumAudioInput(desiredNumAudioOutput->intValue());
-    NodeBase::suspendProcessing(false);
+
+
 }
 
 void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
 	if (!enabledParam->boolValue()) return;
 
-    jassert(NodeBase::getTotalNumInputChannels()==desiredNumAudioOutput->intValue());
+
     int numChannels = jmin(NodeBase::getTotalNumInputChannels() , AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumInputChannels());
 	int numSamples = buffer.getNumSamples();
 
@@ -101,7 +101,7 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 
 void AudioDeviceOutNode::addVolMute()
 {
-    const ScopedLock lk (parentNodeContainer->getCallbackLock());
+    
 	BoolParameter * p = addBoolParameter(String(outMutes.size() + 1), "Mute if disabled", false);
 	p->setCustomShortName(String("mute") + String(outMutes.size() + 1));
 	outMutes.add(p);
@@ -116,7 +116,7 @@ void AudioDeviceOutNode::addVolMute()
 void AudioDeviceOutNode::removeVolMute()
 {
     if(outMutes.size()==0)return;
-    const ScopedLock lk (parentNodeContainer->getCallbackLock());
+
 	BoolParameter * b = outMutes[outMutes.size() - 1];
 	removeControllable(b);
     outMutes.removeAllInstancesOf(b);

@@ -52,10 +52,6 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
   int channelsAvailable = AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumOutputChannels();
   int numSamples = buffer.getNumSamples();
 
-    jassert(totalNumOutputChannels == desiredNumAudioInput->intValue());
-  jassert(totalNumOutputChannels== inMutes.size());
-
-
     float enabledFactor = enabledParam->boolValue()?1.f:0.f;
 
   int numChannelsToProcess = jmin(totalNumOutputChannels,channelsAvailable);
@@ -69,9 +65,7 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
   for(int i = numChannelsToProcess;i<totalNumOutputChannels ; i++){
     buffer.clear(i,0,numSamples);
   }
-  if(buffer.getMagnitude(0, numSamples)>30.){
-    int dbg;dbg=0;
-  }
+
 
 }
 
@@ -81,7 +75,7 @@ void AudioDeviceInNode::setParentNodeContainer(NodeContainer * parent){
   NodeBase::setParentNodeContainer(parent);
   jassert(parent == NodeManager::getInstance()->mainContainer);
   AudioGraphIOProcessor::setRateAndBufferSizeDetails(NodeBase::getSampleRate(), NodeBase::getBlockSize());
-  updateVolMutes();
+//  updateVolMutes();
 }
 
 
@@ -92,7 +86,7 @@ void AudioDeviceInNode::changeListenerCallback(ChangeBroadcaster*) {
 void AudioDeviceInNode::onContainerParameterChanged(Parameter * p){
 
     if(p==desiredNumAudioInput){
-        updateVolMutes();
+      setPreferedNumAudioOutput(desiredNumAudioInput->intValue());
     }
     else{
         int foundIdx = volumes.indexOf((FloatParameter*)p);
@@ -107,15 +101,15 @@ void AudioDeviceInNode::onContainerParameterChanged(Parameter * p){
 
 
 void AudioDeviceInNode::updateVolMutes(){
-    NodeBase::suspendProcessing(true);
+
     while(lastNumberOfInputs < desiredNumAudioInput->intValue()){
         addVolMute();
     }
     while (lastNumberOfInputs>desiredNumAudioInput->intValue()) {
         removeVolMute();
     }
-    setPreferedNumAudioOutput(desiredNumAudioInput->intValue());
-    NodeBase::suspendProcessing(false);
+
+
 }
 
 void AudioDeviceInNode::numChannelsChanged(){
@@ -125,7 +119,7 @@ void AudioDeviceInNode::numChannelsChanged(){
 
 void AudioDeviceInNode::addVolMute()
 {
-  const ScopedLock lk (NodeBase::getCallbackLock());
+//  const ScopedLock lk (NodeBase::getCallbackLock());
     BoolParameter * p = addBoolParameter(String(inMutes.size() + 1), "Mute if disabled", false);
     p->setCustomShortName(String("mute") + String(inMutes.size() + 1));
     inMutes.add(p);
@@ -142,7 +136,7 @@ void AudioDeviceInNode::removeVolMute()
 {
 
     if(inMutes.size()==0)return;
-  const ScopedLock lk (parentNodeContainer->getCallbackLock());
+//  const ScopedLock lk (parentNodeContainer->getCallbackLock());
     BoolParameter * b = inMutes[inMutes.size() - 1];
     removeControllable(b);
     inMutes.removeAllInstancesOf(b);

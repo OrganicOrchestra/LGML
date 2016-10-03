@@ -110,7 +110,7 @@ LooperNode.cpp
 
 
 TimeManager.cpp
-	line : 404
+	line : 405
 		//TODO: check
 
 
@@ -145,7 +145,7 @@ ConnectableNodeUI.h
 
 
 Main.cpp
-	line : 164
+	line : 166
 		//@martin added but commented for testing (relou behavior)
 
 

@@ -109,7 +109,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
     }
     else{
       quantizedRecordStart=curTime;
-      int dbg;dbg=0;
+//      int dbg;dbg=0;
     }
   }
 

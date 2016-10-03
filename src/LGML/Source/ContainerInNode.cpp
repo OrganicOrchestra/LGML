@@ -51,10 +51,9 @@ void ContainerInNode::setNumAudioChannels(int channels)
   // only handle one container in per container for now
   parentNodeContainer->setPreferedNumAudioInput(channels);
   {
-  parentNodeContainer->suspendProcessing(true);
-	setPreferedNumAudioInput(0);
+//  parentNodeContainer->suspendProcessing(true);
 	setPreferedNumAudioOutput(channels);
-    parentNodeContainer->suspendProcessing(false);
+//    parentNodeContainer->suspendProcessing(false);
   }
   jassert(parentNodeContainer);
 
