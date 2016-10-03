@@ -149,7 +149,7 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
   return nullptr;
 }
 
-void NodeContainer::updateAudioGraph(bool lock) {
+void NodeContainer::updateAudioGraph(bool /*lock*/) {
 
 
   if(parentNodeContainer){
@@ -495,7 +495,7 @@ void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var &
 
 };
 
-void NodeContainer::bypassNode(bool bypass){}
+void NodeContainer::bypassNode(bool /*bypass*/){}
 
 ConnectableNodeUI * NodeContainer::createUI()
 {

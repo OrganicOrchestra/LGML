@@ -127,7 +127,7 @@ public:
     // dispatched to listeners
     virtual void trackStateChanged(const TrackState &) {};
     virtual void trackStateChangedAsync(const TrackState & state) = 0;
-    virtual void trackTimeChangedAsync(double position){};
+    virtual void trackTimeChangedAsync(double /*position*/){};
     void setTrackTimeUpdateRateHz(float hz){
       trackUpdatePeriodMs = 1000.0/hz;
     }

@@ -80,7 +80,7 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
       double endGain = fadeRecorded.getCurrentFade();
       const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
       for(int c = 0 ; c <maxChannel ; c++ ){
-        buffer.applyGainRamp(c, 0, buffer.getNumSamples(), startGain, endGain);
+        buffer.applyGainRamp(c, 0, buffer.getNumSamples(), (float)startGain, (float)endGain);
       }
 
     }
