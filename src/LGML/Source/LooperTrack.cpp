@@ -76,7 +76,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     setTrackState(STOPPED);
   }
   if(loopSample.isPlaying()){
-    trackStateListeners.call(&Listener::internalTrackTimeChanged,loopSample.getPlayPos()*1.0/(1+loopSample.getRecordedLength()));
+    trackStateListeners.call(&LooperTrack::Listener::internalTrackTimeChanged,loopSample.getPlayPos()*1.0/(1+loopSample.getRecordedLength()));
   }
 
   handleEndOfRecording();

@@ -9,6 +9,8 @@
  */
 
 
+#pragma warning( disable : 4244 )
+
 #include "MainComponent.h"
 #include "Engine.h"
 #include "StringUtil.h"

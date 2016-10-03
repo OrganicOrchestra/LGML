@@ -184,10 +184,8 @@ void LooperNodeContentUI::TrackUI::paint(Graphics & g){
   g.setColour(PANEL_COLOR.brighter());
   g.fillRoundedRectangle(getLocalBounds().toFloat(),2.f);
 }
+
 void LooperNodeContentUI::TrackUI::paintOverChildren(Graphics & g) {
-
-
-
 
   g.setColour(Colours::white);
   g.setFont(12);
@@ -202,8 +200,8 @@ void LooperNodeContentUI::TrackUI::paintOverChildren(Graphics & g) {
 void LooperNodeContentUI::TrackUI::resized() {
   Rectangle<int> r = getLocalBounds().reduced(2);
   int gap = 5;
-  const int timeUISize = 20;
-  timeStateUI.setBounds(r.removeFromTop(timeUISize+gap).withSizeKeepingCentre(timeUISize, timeUISize));//header
+  const int timeUISize = 16;
+  timeStateUI.setBounds(r.removeFromTop(timeUISize+gap).withSize(timeUISize, timeUISize).reduced(2));//header
 
   int step = r.getHeight()/6 - gap;
   volumeSlider->setBounds(r.removeFromRight(step));
@@ -240,18 +238,29 @@ LooperNodeContentUI::TrackUI::TimeStateUI::~TimeStateUI(){
 }
 void LooperNodeContentUI::TrackUI::TimeStateUI::paint(Graphics &g){
   Path p;
-  Rectangle<int> area = getLocalBounds();
+  Rectangle<int> r = getLocalBounds();
 
   // For a circle, we can avoid having to generate a stroke
   
-  g.setColour(mainColour);
-  g.fillEllipse(area.toFloat());
-  g.setColour(mainColour.brighter());
-  p.startNewSubPath(area.getCentreX(), area.getCentreY());
-  p.addArc(area.getX(), area.getY(), area.getWidth(), area.getHeight(), 0, 2.0f*float_Pi*trackPosition);
-  p.setUsingNonZeroWinding (false);
-  g.fillPath (p);
+  float angle = 2.0f*float_Pi*trackPosition;
 
+  g.setColour(mainColour);
+  g.fillEllipse(r.toFloat());
+
+  if (track->trackState != LooperTrack::TrackState::PLAYING) return;
+
+  //Draw play indic
+  g.setColour(Colours::yellow.withAlpha(.6f));
+  p.startNewSubPath(r.getCentreX(), r.getCentreY());
+
+  p.addArc(r.getX(), r.getY(), r.getWidth(), r.getHeight(), 0, angle);
+  //p.setUsingNonZeroWinding (false);
+  p.closeSubPath();
+  g.fillPath(p);
+
+  angle -= float_Pi / 2;
+  g.setColour(Colours::orange.withAlpha(.8f));
+  g.drawLine(r.getCentreX(),r.getCentreY(),r.getCentreX()+cosf(angle)*r.getWidth()/2,r.getCentreX()+sinf(angle)*r.getHeight()/2,2);
 
 
 }
