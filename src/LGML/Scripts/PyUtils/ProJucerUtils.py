@@ -2,7 +2,12 @@
 from writeSha import *
 
 proJucerPath = "/Applications/ProJucer.app/Contents/MacOS/ProJucer"
-JuceProjectPath = "../LGML.jucer"
+
+JuceProjectPath = os.path.dirname(os.path.abspath(__file__));
+JuceProjectPath = os.path.join(JuceProjectPath,"../../LGML.jucer");
+JuceProjectPath = os.path.abspath(JuceProjectPath);
+
+
 
 def getVersion():
 	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
