@@ -1,3 +1,3 @@
-#define GIT_SHA  "702418b61268780ce2187721c66f137450a61eee"
-#define GIT_SHA_SHORT  "702418b"
-#define COMMIT_DATE  "03/10/16 (02:12)"
+#define GIT_SHA  "f9c75c32306b5e9e5db763f62ab47dbdf31f069d"
+#define GIT_SHA_SHORT  "f9c75c3"
+#define COMMIT_DATE  "03/10/16 (02:16)"
