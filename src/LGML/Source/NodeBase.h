@@ -16,7 +16,7 @@
  */
 #ifndef NODEBASE_H_INCLUDED
 #define NODEBASE_H_INCLUDED
-
+#pragma once
 
 
 #include "ConnectableNode.h"

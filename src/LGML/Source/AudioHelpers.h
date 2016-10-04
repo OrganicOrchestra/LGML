@@ -10,7 +10,7 @@
 
 #ifndef AUDIOHELPERS_H_INCLUDED
 #define AUDIOHELPERS_H_INCLUDED
-
+#pragma once
 
 #define DB0_FOR_01 0.8f
 #define MIN_DB -70.0f

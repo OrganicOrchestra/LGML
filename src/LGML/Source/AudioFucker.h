@@ -10,7 +10,7 @@
 
 #ifndef AUDIOFUCKER_H_INCLUDED
 #define AUDIOFUCKER_H_INCLUDED
-
+#pragma once
 #include "JuceHeader.h"//keep
 
 class AudioFucker : public AudioIODeviceCallback{

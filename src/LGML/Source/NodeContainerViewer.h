@@ -68,6 +68,10 @@ public :
 	void mouseUp(const MouseEvent& event) override;
 	void childBoundsChanged(Component *)override;
 
+
+  // key events
+  bool keyPressed(const KeyPress & key)override;
+
 	void resizeToFitNodes();
 };
 

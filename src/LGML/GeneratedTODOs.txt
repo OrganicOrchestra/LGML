@@ -39,7 +39,7 @@ NodeBase.cpp
 
 
 VuMeter.h
-	line : 17
+	line : 18
 		//TODO, move to more common place for use in other components
 
 
@@ -59,12 +59,6 @@ NodeContainer.cpp
 
 	line : 300
 		// TODO nicely handle file format errors?
-
-	line : 534
-		// TODO :  handle change of in out numChannels
-		// wiill need to call on change
-		//    parentNodeContainer->prepareToPlay(d,i);
-		//    parentNodeContainer->suspendProcessing(false);
 
 	line : 214
 		//@ben remove recursive for now (not useful and duplicating values...)
@@ -140,12 +134,12 @@ ShapeShifterContainer.cpp
 
 
 ConnectableNodeUI.h
-	line : 94
+	line : 95
 		// @ben conflit avec le parametre ;)
 
 
 Main.cpp
-	line : 166
+	line : 173
 		//@martin added but commented for testing (relou behavior)
 
 

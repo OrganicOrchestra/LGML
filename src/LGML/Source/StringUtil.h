@@ -10,7 +10,7 @@
 
 #ifndef STRINGUTIL_H_INCLUDED
 #define STRINGUTIL_H_INCLUDED
-
+#pragma once
 
 class CommandLineElement{
 public:

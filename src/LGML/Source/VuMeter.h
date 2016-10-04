@@ -10,6 +10,7 @@
 
 #ifndef VUMETER_H_INCLUDED
 #define VUMETER_H_INCLUDED
+#pragma once
 
 #include "NodeBase.h"
 #include "Style.h"//keep

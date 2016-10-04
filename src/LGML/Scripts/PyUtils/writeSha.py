@@ -13,6 +13,7 @@ def writeSha():
 	date =  time.strftime("%d/%m/%y (%H:%M)")
 
 	with open(gitShaPath,'w') as f:
+		f.write('#pragma once\n')
 		f.write('#define GIT_SHA  "'+sha+'"\n')
 		f.write('#define GIT_SHA_SHORT  "'+sha[0:7]+'"\n')
 		f.write('#define COMMIT_DATE  "'+date+'"\n')

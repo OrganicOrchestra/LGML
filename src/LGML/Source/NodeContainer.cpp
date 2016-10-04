@@ -532,11 +532,6 @@ void NodeContainer::prepareToPlay(double d, int i) {
       getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
       getAudioGraph()->prepareToPlay(d, i);
     }
-    // TODO :  handle change of in out numChannels
-    // wiill need to call on change
-    //    parentNodeContainer->prepareToPlay(d,i);
-    //    parentNodeContainer->suspendProcessing(false);
-
 
   }
   else{
@@ -552,6 +547,11 @@ void NodeContainer::prepareToPlay(double d, int i) {
 };
 
 
+
+void NodeContainer::processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) {
+  const ScopedLock lk(getAudioGraph()->getCallbackLock());
+  getAudioGraph()->processBlock(buffer,midiMessage);
+};
 
 
 

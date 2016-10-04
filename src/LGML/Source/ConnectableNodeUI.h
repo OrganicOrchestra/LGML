@@ -10,6 +10,7 @@
 
 #ifndef CONNECTABLENODEUI_H_INCLUDED
 #define CONNECTABLENODEUI_H_INCLUDED
+#pragma once
 
 #include "InspectableComponent.h"
 #include "ConnectableNode.h"

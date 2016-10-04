@@ -101,6 +101,7 @@ public:
 
 
     void updateStimulateAudioItem (ApplicationCommandInfo& info);
+  void focusGained(FocusChangeType cause)override;
 
 private:
     //==============================================================================

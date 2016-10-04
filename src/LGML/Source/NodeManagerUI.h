@@ -10,7 +10,7 @@
 
 #ifndef NODEMANAGERUI_H_INCLUDED
 #define NODEMANAGERUI_H_INCLUDED
-
+#pragma once
 
 #include "NodeManager.h"
 #include "ShapeShifterContent.h"
@@ -81,6 +81,8 @@ public :
 		nmui->addNodeManagerUIListener(this);
 
 		reconstructViewerPath();
+    setWantsKeyboardFocus(true);
+    nmui->setWantsKeyboardFocus(true);
 
     }
 
@@ -152,6 +154,8 @@ public :
 		reconstructViewerPath();
 		//nmui->setBounds(getLocalBounds().withTop(30));
 		resized();
+
+
 	}
 
 	void buttonClicked(Button * b)override

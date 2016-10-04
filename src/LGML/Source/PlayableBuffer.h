@@ -10,7 +10,7 @@
 
 #ifndef PLAYABLEBUFFER_H_INCLUDED
 #define PLAYABLEBUFFER_H_INCLUDED
-
+#pragma once
 
 
 #include "AudioHelpers.h"
@@ -164,9 +164,9 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
           const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
           for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
             buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, firstSegmentLength);
-            buffer.copyFrom(i, fromSample, loopSample, i, 0, secondSegmentLength);
+            buffer.copyFrom(i, fromSample+firstSegmentLength, loopSample, i, 0, secondSegmentLength);
           }
-          playNeedle = secondSegmentLength;
+
         }
         else{jassertfalse;}
 

@@ -10,7 +10,7 @@
 
 #ifndef NODECONTAINER_H_INCLUDED
 #define NODECONTAINER_H_INCLUDED
-
+#pragma once
 
 #include "NodeFactory.h"
 #include "ConnectableNode.h"
@@ -136,11 +136,8 @@ public:
   bool hasDataInputs() override;
   bool hasDataOutputs() override;
 
-  void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override{
-    const ScopedLock lk(getAudioGraph()->getCallbackLock());
-    getAudioGraph()->processBlock(buffer,midiMessage);
-  };
-
+  void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override;;
+  
 
   virtual void prepareToPlay(double d, int i) override ;
   virtual void releaseResources() override {

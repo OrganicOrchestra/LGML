@@ -10,6 +10,7 @@
 
 #ifndef CONNECTABLENODEHEADERUI_H_INCLUDED
 #define CONNECTABLENODEHEADERUI_H_INCLUDED
+#pragma once
 
 #include "StringParameterUI.h"
 #include "BoolToggleUI.h"

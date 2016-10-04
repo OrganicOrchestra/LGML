@@ -10,7 +10,7 @@
 
 #ifndef NODECONNECTION_H_INCLUDED
 #define NODECONNECTION_H_INCLUDED
-
+#pragma once
 
 #include "DataProcessorGraph.h"
 #include "NodeBase.h"

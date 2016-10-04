@@ -64,10 +64,12 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
 
   // TODO check if we can optimize copies
   // handle multiples channels outs
+  int totalNumInputChannels = getTotalNumInputChannels();
+  int totalNumOutputChannels =getTotalNumOutputChannels();
 
-  jassert(buffer.getNumChannels()>= jmax(getTotalNumInputChannels(),getTotalNumOutputChannels()));
-  bufferIn.setSize(getTotalNumInputChannels(), buffer.getNumSamples());
-  bufferOut.setSize(getTotalNumOutputChannels(), buffer.getNumSamples());
+  jassert(buffer.getNumChannels()>= jmax(totalNumInputChannels,totalNumOutputChannels));
+  bufferIn.setSize(totalNumInputChannels, buffer.getNumSamples());
+  bufferOut.setSize(totalNumOutputChannels, buffer.getNumSamples());
 
   if (isMonitoring->boolValue()) {
     if (!wasMonitoring) {
@@ -90,34 +92,44 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
       wasMonitoring = false;
     }
     else {
+      // todo use reference to buffer if not monitoring (will save last bufferout copy
       bufferOut.clear();
     }
   }
 
-
-  // avoid each track clearing the buffer if not needed
+  int64 curTime = TimeManager::getInstance()->getTimeInSample();
+  int numSample = buffer.getNumSamples();
   bool needAudioIn = false;
-  for(auto & t : trackGroup.tracks){needAudioIn |= t->loopSample.isOrWasRecording();}
-  if(!needAudioIn){buffer.clear();bufferIn.clear();}
+  for (auto & t : trackGroup.tracks) {
+    t->updatePendingLooperTrackState(curTime, numSample);
+    // avoid each track clearing the buffer if not needed
+    needAudioIn |= t->loopSample.isOrWasRecording();
+  }
+//
+  if(!needAudioIn){
+    buffer.clear();
+    bufferIn.clear();
+  }
   else{
-  for (int i = bufferIn.getNumChannels() - 1; i >= 0; --i) {
-    bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+    for (int i = bufferIn.getNumChannels() - 1; i >= 0; --i) {
+      bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+    }
   }
-  }
-
+//
 
   for (auto & t : trackGroup.tracks) {
     t->processBlock(buffer, midiMessages);
     for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
       bufferOut.addFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
       if(needAudioIn)buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
-      else{buffer.clear();}
     }
+    if(!needAudioIn){buffer.clear();}
   }
-  for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
-    buffer.copyFrom(i, 0, bufferOut, i, 0, buffer.getNumSamples());
 
+for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
+    buffer.copyFrom(i, 0, bufferOut, i, 0, buffer.getNumSamples());
   }
+  
 }
 
 
@@ -159,9 +171,9 @@ void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
     if (needToReleaseMasterTempo) {
       TimeManager::getInstance()->releaseMasterCandidate(this);
     }
-//    if (!isOneShot->boolValue() && needToStop){
-//      TimeManager::getInstance()->stopTrigger->trigger();
-//    }
+    //    if (!isOneShot->boolValue() && needToStop){
+    //      TimeManager::getInstance()->stopTrigger->trigger();
+    //    }
   }
 }
 
@@ -246,21 +258,21 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
 
       for(auto & tr:trackGroup.tracks){
         if(tr->loopSample.getRecordedLength()){
-        File f(myChooser.getResult().getChildFile(nameParam->stringValue()+"_"+String(tr->trackIdx)+".wav"));
-        ScopedPointer<FileOutputStream> fp;
-        if((fp = f.createOutputStream())){
-          ScopedPointer<AudioFormatWriter> afw= format.createWriterFor(fp,
-                                                         getSampleRate(),
-                                                         tr->loopSample.loopSample.getNumChannels(),
-                                                         24,
-                                                         StringPairArray(),0);
-          if(afw){
-          fp.release();
-          afw->writeFromAudioSampleBuffer(tr->loopSample.loopSample,0,(int)tr->loopSample.getRecordedLength());
-          afw->flush();
+          File f(myChooser.getResult().getChildFile(nameParam->stringValue()+"_"+String(tr->trackIdx)+".wav"));
+          ScopedPointer<FileOutputStream> fp;
+          if((fp = f.createOutputStream())){
+            ScopedPointer<AudioFormatWriter> afw= format.createWriterFor(fp,
+                                                                         getSampleRate(),
+                                                                         tr->loopSample.loopSample.getNumChannels(),
+                                                                         24,
+                                                                         StringPairArray(),0);
+            if(afw){
+              fp.release();
+              afw->writeFromAudioSampleBuffer(tr->loopSample.loopSample,0,(int)tr->loopSample.getRecordedLength());
+              afw->flush();
 
+            }
           }
-        }
         }
       }
 
@@ -294,7 +306,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
     trackGroup.setNumTracks(numberOfTracks->value);
     if(oldIdx>numberOfTracks->intValue()){
       if(trackGroup.tracks.size()){
-      selectedTrack = trackGroup.tracks[trackGroup.tracks.size()-1];
+        selectedTrack = trackGroup.tracks[trackGroup.tracks.size()-1];
       }
       else
         selectedTrack = nullptr;

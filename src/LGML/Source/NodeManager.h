@@ -10,6 +10,7 @@
 
 #ifndef NODEMANAGER_H_INCLUDED
 #define NODEMANAGER_H_INCLUDED
+#pragma once
 /*
 Node Manager Contain all Node and synchronize building of audioGraph (AudioProcessorGraph) and DataGraph (DataProcessorGraph)
 

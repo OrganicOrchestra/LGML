@@ -24,6 +24,7 @@ public:
 	ContainerInNode();
 	~ContainerInNode();
 
+
 	void setParentNodeContainer(NodeContainer * nc)override;
   void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) override;
 
