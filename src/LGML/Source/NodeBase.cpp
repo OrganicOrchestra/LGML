@@ -184,12 +184,12 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   // on disable
   if(wasEnabled && crossfadeValue==0 ){
 
-    //    suspendProcessing(true);
+    
     wasEnabled = false;
   }
   // on Enable
   if(!wasEnabled && crossfadeValue>0 ){
-    //    suspendProcessing(false);
+
     wasEnabled = true;
   }
 
@@ -203,7 +203,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
       // copy only what we are expecting
       int maxCommonChannels = jmin(totalNumOutputChannels,totalNumInputChannels);
       crossFadeBuffer.setSize(maxCommonChannels, numSample);
-      for(int i = 0 ; i < totalNumOutputChannels ; i++){
+      for(int i = 0 ; i < maxCommonChannels ; i++){
         crossFadeBuffer.copyFrom(i, 0, buffer, i, 0, numSample);
       }
     }

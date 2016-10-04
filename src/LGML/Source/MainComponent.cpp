@@ -12,6 +12,7 @@
 
 
 #include "NodeManagerUI.h"
+#include "ControllerManagerUI.h"
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)
@@ -138,11 +139,15 @@ void MainContentComponent::paintOverChildren(Graphics & g) {
   }
 };
 void MainContentComponent::startLoadFile(){
-  
+
+  // clear graphics to gain time when deleting objects (and to ease thread safety)) 
   if(NodeManagerUIViewport * vp = (NodeManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel)){
     if(NodeContainerViewer *v = vp->nmui->currentViewer){
       v->clear();
     }
+  }
+  if(ControllerManagerUI * cui = (ControllerManagerUI*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
+      cui->clear();
   }
   startTimerHz(30);
   repaint();
