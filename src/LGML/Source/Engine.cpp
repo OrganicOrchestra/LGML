@@ -15,7 +15,7 @@
 #include "DebugHelpers.h"
 #include "StringUtil.h"
 #include "NodeContainer.h"
-
+#include "VSTLoaderPool.h"
 
 
 const char* const filenameSuffix = ".lgml";
@@ -47,7 +47,7 @@ Engine::~Engine(){
   Logger::setCurrentLogger(nullptr);
   LGMLLogger::deleteInstance();
   RuleManager::deleteInstance();
-
+  VSTLoaderPool::deleteInstance();
   MIDIManager::deleteInstance();
 
   SerialManager::deleteInstance();
@@ -123,6 +123,7 @@ void Engine::clear(){
 //  getAudioDeviceManager().removeAudioCallback (&graphPlayer);
   NodeManager::getInstance()->clear();
 graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+
 //getAudioDeviceManager().addAudioCallback (&graphPlayer);
   PresetManager::getInstance()->clear();
 

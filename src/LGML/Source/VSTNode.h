@@ -19,7 +19,8 @@
 class VSTNode :
 public NodeBase,
 public AudioProcessorListener,
-public MIDIListener
+public MIDIListener,
+public AsyncUpdater // end of vst loading
 {
 
 public:
@@ -129,6 +130,8 @@ public:
   int innerPluginTotalNumInputChannels = 0;
   int innerPluginTotalNumOutputChannels = 0;
   int innerPluginMaxCommonChannels = 0;
+
+  void handleAsyncUpdate() override;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VSTNode)
 };
 

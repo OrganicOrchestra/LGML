@@ -593,6 +593,9 @@
             <FILE id="YnJwtS" name="PluginWindow.cpp" compile="1" resource="0"
                   file="Source/PluginWindow.cpp"/>
             <FILE id="kS8MT9" name="PluginWindow.h" compile="0" resource="0" file="Source/PluginWindow.h"/>
+            <FILE id="rQvuoK" name="VSTLoaderPool.cpp" compile="1" resource="0"
+                  file="Source/VSTLoaderPool.cpp"/>
+            <FILE id="QkX1jZ" name="VSTLoaderPool.h" compile="0" resource="0" file="Source/VSTLoaderPool.h"/>
             <FILE id="YVoVmw" name="VSTManager.cpp" compile="1" resource="0" file="Source/VSTManager.cpp"/>
             <FILE id="WbfJ1L" name="VSTManager.h" compile="0" resource="0" file="Source/VSTManager.h"/>
             <FILE id="eBfKxJ" name="VSTNode.cpp" compile="1" resource="0" file="Source/VSTNode.cpp"/>

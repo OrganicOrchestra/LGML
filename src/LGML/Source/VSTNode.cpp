@@ -15,8 +15,10 @@
 #include "VSTManager.h"
 #include "TimeManager.h"
 #include "PluginWindow.h"//keep
+#include "VSTLoaderPool.h"
 
 AudioDeviceManager& getAudioDeviceManager();
+
 
 
 VSTNode::VSTNode() :
@@ -69,7 +71,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
     if(identifierString->value!=""){
       PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
       if(pd){
-        generatePluginFromDescription(pd);
+        VSTLoaderPool::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
       }
       else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
     }
@@ -186,7 +188,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
     innerPlugin = instance;
     messageCollector.reset (result.sampleRate);
     initParametersFromProcessor(instance);
-    parentNodeContainer->updateAudioGraph();
+
   }
 
   else {
@@ -285,3 +287,7 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
   preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
   
 };
+
+void VSTNode::handleAsyncUpdate(){
+parentNodeContainer->updateAudioGraph();
+}

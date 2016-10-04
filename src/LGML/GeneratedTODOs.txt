@@ -13,10 +13,7 @@ DataInNode.cpp
 
 
 ControllableContainer.cpp
-	line : 466
-		// TODO weird feedback when loading preset on parameter presetName
-
-	line : 652
+	line : 633
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -24,8 +21,11 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 559
+	line : 540
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 447
+		// TODO weird feedback when loading preset on parameter presetName
 
 
 ControllableInspector.cpp
@@ -117,7 +117,7 @@ MIDIController.cpp
 
 
 ControllableContainer.h
-	line : 150
+	line : 147
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
