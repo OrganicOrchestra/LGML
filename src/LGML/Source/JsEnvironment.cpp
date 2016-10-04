@@ -26,6 +26,8 @@ JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFi
 }
 
 JsEnvironment::~JsEnvironment(){
+  stopTimer(0);
+  stopTimer(1);
   for(auto & c:listenedParameters){
     if(c.get()) c->removeParameterListener(this);
   }

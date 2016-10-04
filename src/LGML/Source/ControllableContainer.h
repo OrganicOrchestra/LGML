@@ -69,7 +69,7 @@ public:
 	Uuid uid;
 
     OwnedArray<Controllable> controllables;
-    Array<ControllableContainer * > controllableContainers;
+    Array<WeakReference<ControllableContainer>  > controllableContainers;
     ControllableContainer * parentContainer;
 
 	void addParameter(Parameter * p);

@@ -38,14 +38,14 @@ NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sour
 
 NodeConnectionUI::~NodeConnectionUI()
 {
-    if (sourceConnector != nullptr)
+    if (sourceConnector != nullptr && sourceConnector->getNodeUI())
     {
         sourceConnector->getNodeUI()->removeComponentListener(this);
     }
 
     sourceConnector = nullptr;
 
-    if (destConnector != nullptr)
+    if (destConnector != nullptr && destConnector->getNodeUI())
     {
         destConnector->getNodeUI()->removeComponentListener(this);
     }
@@ -54,7 +54,7 @@ NodeConnectionUI::~NodeConnectionUI()
 
     candidateDropConnector = nullptr;
 
-	if (connection != nullptr)
+	if (connection.get())
 	{
 		connection->removeConnectionListener(this);
 	}
@@ -379,23 +379,26 @@ InspectorEditor * NodeConnectionUI::getEditor()
 	return new NodeConnectionEditor(this);
 }
 
+void NodeConnectionUI::handleCommandMessage(int commandId){
+  repaint();
+}
 
 void NodeConnectionUI::connectionDataLinkAdded(DataProcessorGraph::Connection *)
 {
-	repaint();
+	postCommandMessage(0);
 }
 
 void NodeConnectionUI::connectionDataLinkRemoved(DataProcessorGraph::Connection *)
 {
-	repaint();
+	postCommandMessage(0);
 }
 
 void NodeConnectionUI::connectionAudioLinkAdded(const std::pair<int, int> &)
 {
-	repaint();
+	postCommandMessage(0);
 }
 
 void NodeConnectionUI::connectionAudioLinkRemoved(const std::pair<int, int> &)
 {
-	repaint();
+  postCommandMessage(0);
 }

@@ -248,7 +248,7 @@ ControllableContainer * ControllableContainer::getControllableContainerByName(co
 {
   for (auto &cc : controllableContainers)
   {
-    if (cc->shortName == name || (searchNiceNameToo && cc->niceName == name)) return cc;
+    if (cc.get() && (cc->shortName == name || (searchNiceNameToo && cc->niceName == name))) return cc;
   }
 
   return nullptr;

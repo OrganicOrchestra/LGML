@@ -26,8 +26,10 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
     hasMainAudioControl = false;
 
     NodeBase::busArrangement.inputBuses.clear();
+  {
+    MessageManagerLock ml;
     getAudioDeviceManager().addChangeListener(this);
-
+  }
     AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
     desiredNumAudioInput = addIntParameter("numAudioInput", "desired numAudioInputs (independent of audio settings)",
                                            ad?ad->getActiveInputChannels().countNumberOfSetBits():2, 0, 32);
@@ -40,6 +42,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 }
 
 AudioDeviceInNode::~AudioDeviceInNode() {
+  MessageManagerLock ml;
     getAudioDeviceManager().removeChangeListener(this);
 }
 

@@ -326,7 +326,6 @@ void ConnectableNodeHeaderUI::controllableContainerPresetLoaded(ControllableCont
 void ConnectableNodeHeaderUI::handleCommandMessage(int id){
   switch(id){
     case updatePresetCBID:
-
       if (!node->canHavePresets) return;
 
       //  int numOptions = PresetManager::getNumOption();
@@ -335,6 +334,11 @@ void ConnectableNodeHeaderUI::handleCommandMessage(int id){
 
     case repaintId:
       repaint();
+      break;
+    case audioInputChangedId:
+    case audioOutputChangedId:
+      updateVuMeters();
+      resized();
       break;
     default:
       break;
@@ -353,5 +357,11 @@ void ConnectableNodeHeaderUI::Grabber::paint(Graphics & g)
   g.drawHorizontalLine(r.getBottom(), left, right);
 }
 
-void ConnectableNodeHeaderUI::numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {updateVuMeters();resized();}
-void ConnectableNodeHeaderUI::numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {updateVuMeters();resized();}
+void ConnectableNodeHeaderUI::numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {
+  postCommandMessage(audioInputChangedId);
+
+}
+void ConnectableNodeHeaderUI::numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {
+  postCommandMessage(audioOutputChangedId);
+
+}

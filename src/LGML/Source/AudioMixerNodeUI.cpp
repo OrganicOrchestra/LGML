@@ -49,8 +49,8 @@ AudioMixerNodeUI::~AudioMixerNodeUI() {
 
 void AudioMixerNodeUI::init() {
     mixerNode = (AudioMixerNode*)node.get();
-    numAudioOutputChanged(mixerNode, mixerNode->numberOfOutput->intValue());
-    numAudioInputChanged(mixerNode, mixerNode->numberOfInput->intValue());
+//    numAudioOutputChanged(mixerNode, mixerNode->numberOfOutput->intValue());
+//    numAudioInputChanged(mixerNode, mixerNode->numberOfInput->intValue());
 
     mixerNode->addConnectableNodeListener(this);
     mixerNode->oneToOne->addParameterListener(this);

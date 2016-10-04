@@ -39,11 +39,11 @@ ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
-class Engine;
+#include "Engine.h"
 #include "ShapeShifterManager.h"//keep
 #include "DebugHelpers.h"//keep
 
-class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel
+class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,public Timer
 
 {
 public:
@@ -66,8 +66,13 @@ public:
 	*/
 
     Engine * engine;
+  // from engineListener
+  void startLoadFile() override;
+  void fileProgress(float percent, int state)override;
+  void endLoadFile() override;
 
 
+  void timerCallback() override;
     ScopedPointer<LookAndFeelOO> lookAndFeelOO;
 
     //==============================================================================
@@ -81,6 +86,7 @@ public:
     void paint (Graphics& g) override{
 		g.fillAll (BG_COLOR.darker());
 	}
+  void paintOverChildren(Graphics & g) override;
     void resized() override;
 
 
@@ -110,6 +116,7 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
 };
+
 
 
 

@@ -31,7 +31,7 @@ public:
     NodeConnectionUI(NodeConnection * connection = nullptr, Connector* sourceConnector = nullptr, Connector * destConnector = nullptr);
     ~NodeConnectionUI();
 
-    NodeConnection * connection;
+    WeakReference<NodeConnection> connection;
 
 
     Connector * sourceConnector;
@@ -98,7 +98,7 @@ public:
     Component * getNodeManagerUI() { return (Component *)findParentComponentOfClass<NodeManagerUI>(); }
 
 	InspectorEditor * getEditor() override;
-
+  void handleCommandMessage(int cId)override;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnectionUI);
 
 

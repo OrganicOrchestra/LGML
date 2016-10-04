@@ -9,9 +9,9 @@
  */
 
 #include "MainComponent.h"
-#include "Engine.h"
 
 
+#include "NodeManagerUI.h"
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)
@@ -23,7 +23,8 @@ MainContentComponent* createMainContentComponent(Engine * e)
 MainContentComponent::MainContentComponent(Engine * e):
 engine(e)
 {
-
+engine->addEngineListener(this);
+  
   setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
 
   addAndMakeVisible(&ShapeShifterManager::getInstance()->mainContainer);
@@ -66,7 +67,7 @@ MainContentComponent::~MainContentComponent(){
   //    LookAndFeelOO::deleteInstance();
 
   //DBG("Clear inspector");
-
+  engine->removeEngineListener(this);
   ShapeShifterManager::deleteInstance();
 }
 
@@ -113,4 +114,51 @@ void MainContentComponent::showAudioSettings()
   engine->audioSettingsHandler.saveCurrent();
 
 
+}
+
+void MainContentComponent::paintOverChildren(Graphics & g) {
+  if(engine->isLoadingFile){
+    g.setColour(Colours::black.withAlpha(0.4f));
+    g.fillAll();
+
+    int period = 4000.0;
+    float time = (Time::currentTimeMillis()%period)*1.0/period;
+    Point<int> center = getLocalBounds().getCentre();
+    int numPoints = 10;
+    float radius = 300;
+    float pSize =40;
+    float aStep = 2*float_Pi/numPoints ;
+    for(int i = 0 ; i < numPoints ; i++){
+      g.setColour(Colours::white.withAlpha(float(1.0+cos((time+i*0.25/numPoints)*2*float_Pi))/2.0f));
+      g.fillEllipse(center.x + radius*cos(i*aStep),center.y+radius*sin(i*aStep),pSize,pSize);
+
+    }
+
+    
+  }
+};
+void MainContentComponent::startLoadFile(){
+  
+  if(NodeManagerUIViewport * vp = (NodeManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel)){
+    if(NodeContainerViewer *v = vp->nmui->currentViewer){
+      v->clear();
+    }
+  }
+  startTimerHz(30);
+  repaint();
+}
+
+void MainContentComponent::fileProgress(float percent, int state){
+  // not implemented
+};
+void MainContentComponent::endLoadFile(){
+  stopTimer();
+  repaint();
+};
+void MainContentComponent::timerCallback(){
+//  if(!engine->isLoadingFile){
+//    stopTimer();
+//  }
+
+  repaint();
 }

@@ -15,6 +15,7 @@
 #include "NodeManager.h"
 #include "ShapeShifterContent.h"
 #include "NodeContainerViewer.h"
+#include "Style.h"
 
 
 //==============================================================================

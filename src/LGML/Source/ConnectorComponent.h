@@ -71,6 +71,8 @@ public:
 	void numDataInputChanged(ConnectableNode *, int newNum) override;
 	void numDataOutputChanged(ConnectableNode *, int newNum) override;
 
+  void handleCommandMessage(int id)override;
+
 
 	//Listener
 	class  ConnectorListener

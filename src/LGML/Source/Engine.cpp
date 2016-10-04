@@ -95,10 +95,19 @@ void Engine::initAudio(){
 
 
 void Engine::suspendAudio(bool shouldBeSuspended){
+
+
   if(AudioProcessor * ap =graphPlayer.getCurrentProcessor())
     ap->suspendProcessing (shouldBeSuspended);
 
   TimeManager::getInstance()->lockTime(shouldBeSuspended);
+
+  if(shouldBeSuspended){
+    getAudioDeviceManager().removeAudioCallback (&graphPlayer);
+  }
+  else{
+    getAudioDeviceManager().addAudioCallback (&graphPlayer);
+  }
 
 }
 
@@ -118,13 +127,14 @@ void Engine::clear(){
 
   FastMapper::getInstance()->clear();
   RuleManager::getInstance()->clear();
+  
   ControllerManager::getInstance()->clear();
-  graphPlayer.setProcessor(nullptr);
-//  getAudioDeviceManager().removeAudioCallback (&graphPlayer);
+//  graphPlayer.setProcessor(nullptr);
+  
   NodeManager::getInstance()->clear();
-graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+//graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
 
-//getAudioDeviceManager().addAudioCallback (&graphPlayer);
+
   PresetManager::getInstance()->clear();
 
 
@@ -146,6 +156,7 @@ void Engine::stimulateAudio( bool s){
 }
 
 void Engine::createNewGraph(){
+
   clear();
   suspendAudio(true);
   isLoadingFile = true;
@@ -157,6 +168,7 @@ void Engine::createNewGraph(){
   node->yPosition->setValue(100);
   isLoadingFile = false;
   suspendAudio(false);
+
   setFile(File());
 }
 
@@ -206,14 +218,6 @@ String Engine::MultipleAudioSettingsHandler::getConfigName(){
 
 
 }
-void Engine::managerEndedLoading(){
-  isLoadingFile = false;
-  setLastDocumentOpened(fileBeingLoaded);
-  //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
-  //  suspendAudio(false);
-  int64 timeForLoading  =  Time::currentTimeMillis()-loadingStartTime;
-  NLOG("Engine","Session loaded in " << timeForLoading/1000.0 << "s");
-}
 
 
 void Engine::MultipleAudioSettingsHandler::saveCurrent(){
@@ -234,3 +238,5 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent(){
   getAppProperties().getUserSettings()->saveIfNeeded();
 
 }
+
+

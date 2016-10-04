@@ -35,7 +35,7 @@ ParameterUI::~ParameterUI()
 bool ParameterUI::shouldBailOut(){
     bool bailOut= parameter.get()==nullptr;
     // we want a clean deletion no?
-    jassert(!bailOut);
+//    jassert(!bailOut);
     return bailOut;
 
 }

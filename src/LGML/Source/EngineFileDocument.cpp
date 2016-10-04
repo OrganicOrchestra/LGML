@@ -20,6 +20,8 @@
 
 ApplicationProperties & getAppProperties();
 
+AudioDeviceManager & getAudioDeviceManager();
+
 String Engine::getDocumentTitle() {
   if (! getFile().exists())
     return "Unnamed";
@@ -29,27 +31,70 @@ String Engine::getDocumentTitle() {
 
 
 Result Engine::loadDocument (const File& file){
-
-
-
-  clear();
-
-  ScopedPointer<InputStream> is( file.createInputStream());
-//  graphPlayer.setProcessor(nullptr);
-//  suspendAudio(true);
-
   isLoadingFile = true;
-  loadingStartTime =  Time::currentTimeMillis();
-  fileBeingLoaded = file;
-  {
-    var data = JSON::parse(*is);
-    loadJSONData(data);
-  }// deletes data before launching audio, (data not needed after loaded)
+  engineListeners.call(&EngineListener::startLoadFile);
 
-
+  if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
+  fileLoader = new FileLoader(this,file);
+  fileLoader->startThread(10);
   return Result::ok();
 }
 
+void Engine::loadDocumentAsync(const File & file){
+
+suspendAudio(true);
+
+  clear();
+
+  {
+    MessageManagerLock ml;
+  }
+  ScopedPointer<InputStream> is( file.createInputStream());
+
+
+
+  loadingStartTime =  Time::currentTimeMillis();
+  fileBeingLoaded = file;
+  {
+    jsonData = JSON::parse(*is);
+    loadJSONData(jsonData);
+  }// deletes data before launching audio, (data not needed after loaded)
+  jsonData = var();
+
+  getAudioDeviceManager().addAudioCallback (&graphPlayer);
+
+}
+
+void Engine::managerEndedLoading(){
+  if(allLoadingThreadsAreEnded()){
+    triggerAsyncUpdate();
+  }
+}
+bool Engine::allLoadingThreadsAreEnded(){
+  return
+  NodeManager::getInstance()->getNumJobs()==0 &&
+    (fileLoader && fileLoader->isEnded);
+}
+
+void Engine::fileLoaderEnded(){
+  if(allLoadingThreadsAreEnded()){
+    triggerAsyncUpdate();
+  }
+}
+
+
+void Engine::handleAsyncUpdate(){
+
+
+  isLoadingFile = false;
+  setLastDocumentOpened(fileBeingLoaded);
+  //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+  //  suspendAudio(false);
+  int64 timeForLoading  =  Time::currentTimeMillis()-loadingStartTime;
+  suspendAudio(false);
+  engineListeners.call(&EngineListener::endLoadFile);
+  NLOG("Engine","Session loaded in " << timeForLoading/1000.0 << "s");
+}
 
 Result Engine::saveDocument (const File& file){
 
@@ -129,7 +174,6 @@ void Engine::loadJSONData (var data)
 
   clear();
 
-  if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
   DynamicObject * d = data.getDynamicObject();
 

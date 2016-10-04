@@ -84,6 +84,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
   NodeBase::onContainerParameterChanged(p);
   if(p==identifierString){
     if(identifierString->value!=""){
+      MessageManagerLock ml;
       PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
       if(pd){
         NodeManager::getInstance()->addJob(new VSTLoaderJob(pd,this), true);

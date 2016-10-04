@@ -32,7 +32,7 @@ NodeConnectionEditor::NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI) 
 
 NodeConnectionEditor::~NodeConnectionEditor()
 {
-	
+  if(currentConnection)currentConnection->removeConnectionListener(this);
     setCurrentConnection(nullptr);
 }
 

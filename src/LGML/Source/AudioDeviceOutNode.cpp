@@ -27,8 +27,10 @@ AudioDeviceOutNode::AudioDeviceOutNode() :
 
 	NodeBase::busArrangement.outputBuses.clear();
 
-	getAudioDeviceManager().addChangeListener(this);
-
+  {
+    MessageManagerLock ml;
+    getAudioDeviceManager().addChangeListener(this);
+  }
     AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
 
     desiredNumAudioOutput = addIntParameter("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
@@ -46,6 +48,7 @@ void AudioDeviceOutNode::setParentNodeContainer(NodeContainer * parent){
 }
 
 AudioDeviceOutNode::~AudioDeviceOutNode() {
+  MessageManagerLock ml;
 	getAudioDeviceManager().removeChangeListener(this);
 }
 
