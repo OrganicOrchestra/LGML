@@ -22,7 +22,8 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 
 
 class NodeManager:
-	public ControllableContainer
+	public ControllableContainer,
+public ThreadPool
 {
 
 public:
@@ -42,6 +43,8 @@ public:
 
 	var getJSONData() override;
 	void loadJSONDataInternal(var data) override;
+  bool isLoading;
+
 
 
     //Listener
@@ -49,14 +52,41 @@ public:
     {
     public:
         virtual ~NodeManagerListener() {}
-
 		virtual void managerCleared() {};
+      virtual void managerEndedLoading(){};
     };
 
     ListenerList<NodeManagerListener> nodeManagerListeners;
     void addNodeManagerListener(NodeManagerListener* newListener) { nodeManagerListeners.add(newListener); }
     void removeNodeManagerListener(NodeManagerListener* listener) { nodeManagerListeners.remove(listener); }
 
+
+
+private:
+  // @ben no listener here for now, only because it's overkilling (and Im lazy..)
+  void notifiedJobsEnded();
+  friend class JobsWatcher;
+  class JobsWatcher:public Timer{
+  public:
+    JobsWatcher(NodeManager * _nm):owner(_nm){
+      startTimer(100);
+    }
+    void timerCallback() override{
+        if(owner->getNumJobs()==0){
+          owner->notifiedJobsEnded();
+          stopTimer();
+
+      }
+    }
+    NodeManager * owner;
+    
+
+  };
+
+
+
+
+  ScopedPointer<JobsWatcher> jobsWatcher;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeManager)
 

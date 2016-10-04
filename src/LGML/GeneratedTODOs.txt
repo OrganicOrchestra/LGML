@@ -155,6 +155,11 @@ DataProcessorGraph.cpp
 		//  thread.startThread();
 
 
+NodeManager.h
+	line : 65
+		// @ben no listener here for now, only because it's overkilling (and Im lazy..)
+
+
 ControllableInspector.h
 	line : 23
 		// TODO handle merging of multiple component of sameClass : almost there ....

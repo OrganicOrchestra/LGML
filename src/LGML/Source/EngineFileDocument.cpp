@@ -39,18 +39,14 @@ Result Engine::loadDocument (const File& file){
 //  suspendAudio(true);
 
   isLoadingFile = true;
-  int64 loadingStart =  Time::currentTimeMillis();
+  loadingStartTime =  Time::currentTimeMillis();
+  fileBeingLoaded = file;
   {
     var data = JSON::parse(*is);
     loadJSONData(data);
   }// deletes data before launching audio, (data not needed after loaded)
 
-  isLoadingFile = false;
-  setLastDocumentOpened(file);
-//  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
-//  suspendAudio(false);
-  int64 timeForLoading  =  Time::currentTimeMillis()-loadingStart;
-  NLOG("Engine","Session loaded in " << timeForLoading/1000.0 << "s");
+
   return Result::ok();
 }
 

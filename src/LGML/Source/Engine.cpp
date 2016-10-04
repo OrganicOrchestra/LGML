@@ -15,7 +15,7 @@
 #include "DebugHelpers.h"
 #include "StringUtil.h"
 #include "NodeContainer.h"
-#include "VSTLoaderPool.h"
+
 
 
 const char* const filenameSuffix = ".lgml";
@@ -30,6 +30,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 
   MIDIManager::getInstance()->init();
   SerialManager::getInstance()->init();
+  NodeManager::getInstance()->addNodeManagerListener(this);
 }
 
 
@@ -47,7 +48,6 @@ Engine::~Engine(){
   Logger::setCurrentLogger(nullptr);
   LGMLLogger::deleteInstance();
   RuleManager::deleteInstance();
-  VSTLoaderPool::deleteInstance();
   MIDIManager::deleteInstance();
 
   SerialManager::deleteInstance();
@@ -205,6 +205,14 @@ String Engine::MultipleAudioSettingsHandler::getConfigName(){
   return escaped;
 
 
+}
+void Engine::managerEndedLoading(){
+  isLoadingFile = false;
+  setLastDocumentOpened(fileBeingLoaded);
+  //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+  //  suspendAudio(false);
+  int64 timeForLoading  =  Time::currentTimeMillis()-loadingStartTime;
+  NLOG("Engine","Session loaded in " << timeForLoading/1000.0 << "s");
 }
 
 

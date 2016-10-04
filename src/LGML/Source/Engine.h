@@ -23,7 +23,7 @@
 #include "VSTManager.h"//keep
 class AudioFucker;
 
-class Engine:public FileBasedDocument{
+class Engine:public FileBasedDocument,NodeManager::NodeManagerListener{
 public:
     Engine();
     ~Engine();
@@ -79,6 +79,10 @@ public:
 
     };
     MultipleAudioSettingsHandler audioSettingsHandler;
+
+  int64 loadingStartTime;
+  File fileBeingLoaded;
+  void managerEndedLoading()override;
 
   bool isLoadingFile;
     

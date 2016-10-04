@@ -15,10 +15,25 @@
 #include "VSTManager.h"
 #include "TimeManager.h"
 #include "PluginWindow.h"//keep
-#include "VSTLoaderPool.h"
+
 
 AudioDeviceManager& getAudioDeviceManager();
 
+
+class VSTLoaderJob : public ThreadPoolJob{
+
+  public :
+  VSTLoaderJob(PluginDescription *_pd,VSTNode * node):ThreadPoolJob("VSTLoader : "+node->shortName),pd(_pd),originNode(node){}
+  PluginDescription * pd;
+  VSTNode * originNode;
+
+  JobStatus runJob() override{
+    originNode->generatePluginFromDescription(pd);
+    originNode->triggerAsyncUpdate();
+    return JobStatus::jobHasFinished;
+  }
+  
+};
 
 
 VSTNode::VSTNode() :
@@ -71,7 +86,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
     if(identifierString->value!=""){
       PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
       if(pd){
-        VSTLoaderPool::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
+        NodeManager::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
       }
       else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
     }
@@ -289,5 +304,5 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
 };
 
 void VSTNode::handleAsyncUpdate(){
-parentNodeContainer->updateAudioGraph();
+  parentNodeContainer->updateAudioGraph();
 }
