@@ -148,7 +148,9 @@ ConnectableNodeUI * NodeBase::createUI() {
 
 /////////////////////////////////////// AUDIO
 
-
+void NodeBase::processBlockBypassed(AudioBuffer<float>& /*buffer*/, juce::MidiBuffer& /*midiMessages*/){
+  // no op
+}
 
 void NodeBase::processBlock(AudioBuffer<float>& buffer,
                             MidiBuffer& midiMessages) {
@@ -199,12 +201,18 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
     if(crossfadeValue!=1){
       // copy only what we are expecting
-      crossFadeBuffer.setSize(totalNumInputChannels, numSample);
-      for(int i = 0 ; i < totalNumInputChannels ; i++){
+      int maxCommonChannels = jmin(totalNumOutputChannels,totalNumInputChannels);
+      crossFadeBuffer.setSize(maxCommonChannels, numSample);
+      for(int i = 0 ; i < totalNumOutputChannels ; i++){
         crossFadeBuffer.copyFrom(i, 0, buffer, i, 0, numSample);
       }
     }
-    processBlockInternal(buffer, midiMessages);
+    if(lastVolume==0 && curVolume==0){
+      processBlockBypassed(buffer, midiMessages);
+    }
+    else{
+      processBlockInternal(buffer, midiMessages);
+    }
 
     if(crossfadeValue!=1 || hasMainAudioControl){
       buffer.applyGainRamp(0, numSample, lastVolume, (float)curVolume);
@@ -216,9 +224,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 	if (totalNumInputChannels > 0 && totalNumOutputChannels > 0)
 	{
 		if (crossfadeValue != 1 && crossFadeBuffer.getNumChannels()>0) {
-			for (int i = 0; i < totalNumInputChannels; i++) {
-				int maxCommonChannels = jmin(totalNumInputChannels, totalNumOutputChannels) - 1;
-				buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(maxCommonChannels), numSample, (float)lastDryVolume, (float)curDryVolume);
+			for (int i = 0; i < totalNumOutputChannels; i++) {
+				buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(i), numSample, (float)lastDryVolume, (float)curDryVolume);
 
 			}
 		}
@@ -286,26 +293,27 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   }
 
   rmsValuesIn.clear();
-  for (int i = 0; i < getTotalNumInputChannels(); i++) rmsValuesIn.add(0);
+  totalNumInputChannels = getTotalNumInputChannels();
+  for (int i = 0; i < totalNumInputChannels; i++) rmsValuesIn.add(0);
 
-  int newNum = getTotalNumInputChannels();
-  if (newNum > oldNumChannels)
+
+  if (totalNumInputChannels > oldNumChannels)
   {
-    for (int i = oldNumChannels; i < newNum; i++)
+    for (int i = oldNumChannels; i < totalNumInputChannels; i++)
     {
       nodeListeners.call(&ConnectableNodeListener::audioInputAdded, this, i);
     }
   }
   else
   {
-    for (int i = oldNumChannels - 1; i >= newNum; i--)
+    for (int i = oldNumChannels - 1; i >= totalNumInputChannels; i--)
     {
       nodeListeners.call(&ConnectableNodeListener::audioInputRemoved, this, i);
     }
   }
 
-  nodeListeners.call(&ConnectableNodeListener::numAudioInputChanged, this,num);
 
+  nodeListeners.call(&ConnectableNodeListener::numAudioInputChanged, this,num);
 
   return true;
 }
@@ -335,25 +343,26 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
   }
 
   rmsValuesOut.clear();
-  for (int i = 0; i < getTotalNumOutputChannels(); i++) rmsValuesOut.add(0);
+  totalNumOutputChannels = getTotalNumOutputChannels();
+  for (int i = 0; i < totalNumOutputChannels; i++) rmsValuesOut.add(0);
 
-  int newNum = getTotalNumOutputChannels();
-  if (newNum > oldNumChannels)
+
+  if (totalNumOutputChannels > oldNumChannels)
   {
-    for (int i = oldNumChannels; i < newNum; i++)
+    for (int i = oldNumChannels; i < totalNumOutputChannels; i++)
     {
       nodeListeners.call(&ConnectableNodeListener::audioOutputAdded, this, i);
     }
   }else
   {
-    for (int i = oldNumChannels-1; i >= newNum; i--)
+    for (int i = oldNumChannels-1; i >= totalNumOutputChannels; i--)
     {
       nodeListeners.call(&ConnectableNodeListener::audioOutputRemoved, this, i);
     }
   }
 
   nodeListeners.call(&ConnectableNodeListener::numAudioOutputChanged,this,num);
-  if(oldNumChannels!=newNum){
+  if(oldNumChannels!=totalNumOutputChannels){
     numChannelsChanged();
   }
   return true;

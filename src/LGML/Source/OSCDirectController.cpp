@@ -172,8 +172,10 @@ void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*o
             break;
 
         case Controllable::Type::STRING:
+        case Controllable::Type::ENUM:
             sendOSC(cAddress, ((Parameter *)c)->stringValue());
             break;
+
 
         default:
             DBG("Type not supported " << targetType);

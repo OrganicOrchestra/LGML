@@ -37,7 +37,7 @@ class PlayableBuffer {
     //        for (int j = 0 ; j < numSamples ; j++){int p = 44;float t = (j%p)*1.0/p;float v = t;
     //            for(int i = 0 ; i < numChannels ; i++){loopSample.addSample(i, j, v);}
     //        }
-    loopSample.clear();
+//    loopSample.clear();
   }
 
   bool processNextBlock(AudioBuffer<float> & buffer){

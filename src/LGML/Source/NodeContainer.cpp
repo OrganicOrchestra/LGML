@@ -552,7 +552,10 @@ void NodeContainer::processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer
   const ScopedLock lk(getAudioGraph()->getCallbackLock());
   getAudioGraph()->processBlock(buffer,midiMessage);
 };
+void NodeContainer::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages){
+//    getAudioGraph()->processBlockBypassed(buffer,midiMessages);
 
+}
 
 
 

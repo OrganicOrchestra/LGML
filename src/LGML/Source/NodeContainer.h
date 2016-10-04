@@ -136,8 +136,8 @@ public:
   bool hasDataInputs() override;
   bool hasDataOutputs() override;
 
-  void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override;;
-  
+  void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override;
+  void processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
   virtual void prepareToPlay(double d, int i) override ;
   virtual void releaseResources() override {

@@ -30,6 +30,9 @@ blockFeedback(false)
   midiActivityTrigger->isControllableExposed = false;
   midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
   midiPortNameParam->hideInEditor = true;
+
+  processWhenBypassed = addBoolParameter("processWhenBypassed", "some effects (Reverbs ...) need to process constantly even when bypassed", false);
+  bProcessWhenBypassed = processWhenBypassed->boolValue();
 }
 
 
@@ -45,6 +48,19 @@ void  VSTNode::createPluginWindow(){
 
 void VSTNode::closePluginWindow(){
   PluginWindow::closeCurrentlyOpenWindowsFor (this);
+}
+
+void VSTNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages){
+
+  if (innerPlugin) {
+    incomingMidi.clear();
+    messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
+    innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
+    if(bProcessWhenBypassed){
+      innerPlugin->processBlock(buffer, incomingMidi);
+    }
+  }
+
 }
 
 void VSTNode::onContainerParameterChanged(Parameter * p) {
@@ -82,6 +98,10 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
     }
 
 
+  }
+  else if (p == processWhenBypassed){
+    // pass to bool for fast access in callback;
+    bProcessWhenBypassed = processWhenBypassed->boolValue();
   }
 
   // a VSTParameter is changed
@@ -125,6 +145,7 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
 void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 {
 
+  closePluginWindow();
   innerPlugin = nullptr;
   String errorMessage;
   AudioDeviceManager::AudioDeviceSetup result;
@@ -155,16 +176,23 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
     //        NodeBase::setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
     setPreferedNumAudioInput(numIn);
     setPreferedNumAudioOutput(numOut);
+
+    innerPluginTotalNumInputChannels =instance->getTotalNumInputChannels();
+    innerPluginTotalNumOutputChannels=instance->getTotalNumOutputChannels();
+    innerPluginMaxCommonChannels = jmin(innerPluginTotalNumInputChannels, innerPluginTotalNumOutputChannels);
     DBG("buffer sizes" + String(instance->getTotalNumInputChannels())+','+ String(instance->getTotalNumOutputChannels()));
 
     instance->setPlayHead(getPlayHead());
     innerPlugin = instance;
     messageCollector.reset (result.sampleRate);
     initParametersFromProcessor(instance);
+    parentNodeContainer->updateAudioGraph();
   }
 
   else {
-
+    innerPluginTotalNumInputChannels = 0;
+    innerPluginTotalNumOutputChannels = 0;
+    innerPlugin = nullptr;
     LOG(errorMessage);
     jassertfalse;
   }
@@ -189,19 +217,12 @@ void VSTNode::numChannelsChanged(){}
 
 inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & ) {
   if (innerPlugin) {
-    if (buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(), innerPlugin->getTotalNumOutputChannels()))
-    {
+
       incomingMidi.clear();
       messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
       innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
       innerPlugin->processBlock(buffer, incomingMidi);
 
-    }
-    else {
-      static int numFrameDropped = 0;
-      DBG("dropAudio " + String(numFrameDropped++));
-
-    }
   }
 }
 

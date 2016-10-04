@@ -48,7 +48,7 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 
     AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
 
-  int totalNumOutputChannels = NodeBase::getTotalNumOutputChannels();
+//  totalNumOutputChannels = NodeBase::tot();
   int channelsAvailable = AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumOutputChannels();
   int numSamples = buffer.getNumSamples();
 

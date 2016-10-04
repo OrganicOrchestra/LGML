@@ -64,8 +64,7 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
 
   // TODO check if we can optimize copies
   // handle multiples channels outs
-  int totalNumInputChannels = getTotalNumInputChannels();
-  int totalNumOutputChannels =getTotalNumOutputChannels();
+
 
   jassert(buffer.getNumChannels()>= jmax(totalNumInputChannels,totalNumOutputChannels));
   bufferIn.setSize(totalNumInputChannels, buffer.getNumSamples());
