@@ -64,8 +64,17 @@ public:
   static String toShortName(const String &niceName, bool replaceSlashes = false) {
     if (niceName.isEmpty()) return "";
 
+
+    String res = niceName;
+    if(replaceSlashes) res = res.replaceCharacter('/','_');
+    res=res.replaceCharacter('#','_');
+    res=res.replaceCharacter('(','_');
+    res=res.replaceCharacter(')','_');
+    res=res.replaceCharacter('>','_');
+    res=res.replaceCharacter('<','_');
+
     StringArray sa;
-    sa.addTokens(niceName, false);
+    sa.addTokens(res, false);
     int index = 0;
     for (auto &s : sa.strings)
     {
@@ -73,12 +82,7 @@ public:
       String initial = s.substring(0, 1);
       String upperCaseWord = s.replaceSection(0, 1, index == 0 ? initial.toLowerCase() : initial.toUpperCase());
       s.swapWith(upperCaseWord);
-      if(replaceSlashes) s = s.replace("/","_");
-      s = s.replace("#","_");
-      s = s.replace("(","_");
-      s = s.replace(")","_");
-      s = s.replace("<","_lt_");
-      s = s.replace(">","_gt_");
+
 
 
       index++;
