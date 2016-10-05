@@ -31,7 +31,7 @@ public:
     NodeConnectionUI(NodeConnection * connection = nullptr, Connector* sourceConnector = nullptr, Connector * destConnector = nullptr);
     ~NodeConnectionUI();
 
-    WeakReference<NodeConnection> connection;
+    NodeConnection* connection;
 
 
     Connector * sourceConnector;

@@ -127,6 +127,7 @@ void NodeConnectionEditor::mouseExit(const MouseEvent &)
 
 void NodeConnectionEditor::clearContent()
 {
+  
     for (auto &s : inputSlots)
     {
         s->removeSlotListener(this);

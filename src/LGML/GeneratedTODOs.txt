@@ -88,13 +88,13 @@ NodeBase.h
 
 
 NodeConnectionEditor.cpp
-	line : 180
+	line : 392
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+	line : 181
 		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
-
-	line : 391
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
 LooperNode.cpp

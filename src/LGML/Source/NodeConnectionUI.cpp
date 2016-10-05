@@ -54,10 +54,9 @@ NodeConnectionUI::~NodeConnectionUI()
 
     candidateDropConnector = nullptr;
 
-	if (connection.get())
-	{
+if(connection)
 		connection->removeConnectionListener(this);
-	}
+
 }
 
 void NodeConnectionUI::paint (Graphics& g)
