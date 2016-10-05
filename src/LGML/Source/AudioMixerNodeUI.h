@@ -32,6 +32,7 @@ public:
     void numAudioInputChanged(ConnectableNode *,int )override;
     void numAudioOutputChanged(ConnectableNode*, int )override;
 
+  
     class OutputBusUI : public Component {
     public:
 
@@ -54,6 +55,7 @@ public:
         int getNumOfVisibleChannels();
         void updateVisibleChannels();
         void setAllVisible();
+      void handleCommandMessage(int id)override;
 
     };
 

@@ -106,6 +106,8 @@ void Engine::suspendAudio(bool shouldBeSuspended){
     getAudioDeviceManager().removeAudioCallback (&graphPlayer);
   }
   else{
+    AudioIODevice * dev = getAudioDeviceManager().getCurrentAudioDevice();
+    NodeManager::getInstance()->mainContainer->getAudioGraph()->prepareToPlay(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
     getAudioDeviceManager().addAudioCallback (&graphPlayer);
   }
 

@@ -49,15 +49,18 @@ AudioMixerNodeUI::~AudioMixerNodeUI() {
 
 void AudioMixerNodeUI::init() {
     mixerNode = (AudioMixerNode*)node.get();
-//    numAudioOutputChanged(mixerNode, mixerNode->numberOfOutput->intValue());
-//    numAudioInputChanged(mixerNode, mixerNode->numberOfInput->intValue());
+    numAudioOutputChanged(mixerNode, mixerNode->numberOfOutput->intValue());
+    numAudioInputChanged(mixerNode, mixerNode->numberOfInput->intValue());
 
     mixerNode->addConnectableNodeListener(this);
     mixerNode->oneToOne->addParameterListener(this);
     nodeUI->setSize(250, 150);
 }
 
-void AudioMixerNodeUI::numAudioInputChanged(ConnectableNode *, int numInput){
+void AudioMixerNodeUI::numAudioInputChanged(ConnectableNode * c , int numInput){
+  if(c->getAudioProcessor()->getTotalNumOutputChannels()!=outputBusUIs.size()){
+    numAudioOutputChanged(c, c->getAudioProcessor()->getTotalNumOutputChannels());
+  }
     for(auto & b:outputBusUIs){
         b->setNumInput(numInput);
     }
@@ -108,7 +111,7 @@ void AudioMixerNodeUI::OutputBusUI::updateVisibleChannels(){
     for(int i = 0 ; i < inputVolumes.size() ; i++){
         inputVolumes.getUnchecked(i)->setVisible(visibleChanels[i]);
     }
-    resized();
+    postCommandMessage(0);
 
 }
 
@@ -128,9 +131,13 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
     else if(numInput<lastSize){
         inputVolumes.removeLast(lastSize-numInput,true);
     }
-    resized();
+  postCommandMessage(0);
+
 }
 
+void AudioMixerNodeUI::OutputBusUI::handleCommandMessage(int id){
+  resized();
+}
 
 
 void AudioMixerNodeUI::OutputBusUI::resized() {
