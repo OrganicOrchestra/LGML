@@ -52,8 +52,15 @@ Result Engine::loadDocument (const File& file){
   engineListeners.call(&EngineListener::startLoadFile);
 
   if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
-  fileLoader = new FileLoader(this,file);
+
+#ifdef THREADED_FILE_LOADER
+	fileLoader = new FileLoader(this,file);
   fileLoader->startThread(10);
+#else
+	loadDocumentAsync(file);
+	 triggerAsyncUpdate();
+#endif
+	
   return Result::ok();
 }
 
