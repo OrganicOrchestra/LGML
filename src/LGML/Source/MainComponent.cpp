@@ -118,6 +118,7 @@ void MainContentComponent::showAudioSettings()
 }
 
 void MainContentComponent::paintOverChildren(Graphics & g) {
+	/*
   if(engine->isLoadingFile){
     g.setColour(Colours::black.withAlpha(0.4f));
     g.fillAll();
@@ -132,11 +133,9 @@ void MainContentComponent::paintOverChildren(Graphics & g) {
     for(int i = 0 ; i < numPoints ; i++){
       g.setColour(Colours::white.withAlpha(float(1.0+cos((time+i*0.25/numPoints)*2*float_Pi))/2.0f));
       g.fillEllipse(center.x + radius*cos(i*aStep),center.y+radius*sin(i*aStep),pSize,pSize);
-
     }
-
-    
   }
+  */
 };
 void MainContentComponent::startLoadFile(){
 
@@ -149,21 +148,47 @@ void MainContentComponent::startLoadFile(){
   if(ControllerManagerUI * cui = (ControllerManagerUI*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
       cui->clear();
   }
-  startTimerHz(30);
-  repaint();
+
+  if (fileProgressWindow != nullptr)
+  {
+	  removeChildComponent(fileProgressWindow);
+	  fileProgressWindow = nullptr;
+  }
+
+  fileProgressWindow = new ProgressWindow("Loading File...");
+  addAndMakeVisible(fileProgressWindow);
+  fileProgressWindow->setSize(getWidth(), getHeight());
+  //startTimerHz(30);
+  //repaint();
 }
 
 void MainContentComponent::fileProgress(float percent, int state){
   // not implemented
+	DBG("File progress, " << percent);
+	if (fileProgressWindow != nullptr)
+	{
+		fileProgressWindow->setProgress(percent);
+	} else
+	{
+		DBG("Window is null but still got progress");
+	}
 };
+
 void MainContentComponent::endLoadFile(){
-  stopTimer();
-  repaint();
+
+	if (fileProgressWindow != nullptr)
+	{
+		removeChildComponent(fileProgressWindow);
+		fileProgressWindow = nullptr;
+	}
+  //stopTimer();
+  //repaint();
 };
+
 void MainContentComponent::timerCallback(){
 //  if(!engine->isLoadingFile){
 //    stopTimer();
 //  }
 
-  repaint();
+  //repaint();
 }

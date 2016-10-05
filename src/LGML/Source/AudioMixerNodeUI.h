@@ -40,6 +40,7 @@ public:
 
 
         OutputBusUI(AudioMixerNode::OutputBus * o):owner(o){
+
             setNumInput(o->volumes.size());
         };
 

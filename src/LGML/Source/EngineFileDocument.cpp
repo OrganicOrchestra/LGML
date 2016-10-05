@@ -57,6 +57,7 @@ Result Engine::loadDocument (const File& file){
   return Result::ok();
 }
 
+//Called from fileLoader
 void Engine::loadDocumentAsync(const File & file){
 
 suspendAudio(true);
@@ -69,17 +70,16 @@ suspendAudio(true);
   ScopedPointer<InputStream> is( file.createInputStream());
 
 
-
+   
   loadingStartTime =  Time::currentTimeMillis();
   fileBeingLoaded = file;
+
   {
     jsonData = JSON::parse(*is);
     loadJSONData(jsonData);
   }// deletes data before launching audio, (data not needed after loaded)
-  jsonData = var();
-
   
-
+  jsonData = var();
 }
 
 void Engine::managerEndedLoading(){
@@ -87,10 +87,12 @@ void Engine::managerEndedLoading(){
     triggerAsyncUpdate();
   }
 }
+void Engine::managerProgressedLoading(float progress)
+{
+	engineListeners.call(&EngineListener::fileProgress, progress,0);
+}
 bool Engine::allLoadingThreadsAreEnded(){
-  return
-  NodeManager::getInstance()->getNumJobs()==0 &&
-    (fileLoader && fileLoader->isEnded);
+  return NodeManager::getInstance()->getNumJobs()== 0 && (fileLoader && fileLoader->isEnded);
 }
 
 void Engine::fileLoaderEnded(){

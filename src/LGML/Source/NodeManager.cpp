@@ -81,3 +81,8 @@ void NodeManager::notifiedJobsEnded(){
   nodeManagerListeners.call(&NodeManagerListener::managerEndedLoading);
 
 }
+
+void NodeManager::notifiedJobsProgressed(float progress)
+{
+	nodeManagerListeners.call(&NodeManagerListener::managerProgressedLoading, progress);
+}

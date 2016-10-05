@@ -705,6 +705,10 @@
         <FILE id="Fa2WJ4" name="LookAndFeelOO.cpp" compile="1" resource="0"
               file="Source/LookAndFeelOO.cpp"/>
         <FILE id="ToSNQ0" name="LookAndFeelOO.h" compile="0" resource="0" file="Source/LookAndFeelOO.h"/>
+        <FILE id="R3Ntvl" name="ProgressWindow.cpp" compile="1" resource="0"
+              file="Source/ProgressWindow.cpp"/>
+        <FILE id="oORjel" name="ProgressWindow.h" compile="0" resource="0"
+              file="Source/ProgressWindow.h"/>
         <FILE id="AoaOQ9" name="Style.h" compile="0" resource="0" file="Source/Style.h"/>
       </GROUP>
       <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">

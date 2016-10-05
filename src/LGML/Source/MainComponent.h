@@ -9,6 +9,7 @@
 #ifndef MAINCOMPONENT_H_INCLUDED
 #define MAINCOMPONENT_H_INCLUDED
 
+#pragma warning( disable : 4244 4100)
 
 
 /*
@@ -42,6 +43,7 @@ AudioDeviceManager& getAudioDeviceManager();
 #include "Engine.h"
 #include "ShapeShifterManager.h"//keep
 #include "DebugHelpers.h"//keep
+#include "ProgressWindow.h"
 
 class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,public Timer
 
@@ -51,28 +53,17 @@ public:
     TooltipWindow tooltipWindow; // to add tooltips to an application, you
     // just need to create one of these and leave it
     // there to do its work..
-
-
-	/*
-	ScopedPointer<TimeManagerUI> timeManagerUI;
-	ScopedPointer<InspectorViewport> inspectorViewport;
-
-	ScopedPointer<NodeManagerUIViewport> nodeManagerViewport;
-	ScopedPointer<ControllerManagerUI> controllerManagerUI;
-	ScopedPointer<RuleManagerUI> ruleManagerUI;
-	ScopedPointer<FastMapperViewport> fastMapperViewport;
-
-    ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;
-	*/
-
     Engine * engine;
-  // from engineListener
-  void startLoadFile() override;
-  void fileProgress(float percent, int state)override;
-  void endLoadFile() override;
+
+	ScopedPointer<ProgressWindow> fileProgressWindow;
+
+	// from engineListener
+	void startLoadFile() override;
+	void fileProgress(float percent, int state)override;
+	void endLoadFile() override;
 
 
-  void timerCallback() override;
+	void timerCallback() override;
     ScopedPointer<LookAndFeelOO> lookAndFeelOO;
 
     //==============================================================================
@@ -86,7 +77,8 @@ public:
     void paint (Graphics& g) override{
 		g.fillAll (BG_COLOR.darker());
 	}
-  void paintOverChildren(Graphics & g) override;
+
+	void paintOverChildren(Graphics & g) override;
     void resized() override;
 
 
@@ -107,7 +99,7 @@ public:
 
 
     void updateStimulateAudioItem (ApplicationCommandInfo& info);
-  void focusGained(FocusChangeType cause)override;
+	void focusGained(FocusChangeType cause)override;
 
 private:
     //==============================================================================
