@@ -86,7 +86,11 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
     if(identifierString->value!=""){
       PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
       if(pd){
+#if VSTLOADING_THREADED
         NodeManager::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
+#else
+				generatePluginFromDescription(pd);
+#endif
       }
       else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
     }
