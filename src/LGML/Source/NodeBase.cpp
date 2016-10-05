@@ -271,11 +271,13 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 
     if (parentNodeContainer != nullptr){
 //      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
-      const ScopedLock lk( parentNodeContainer->getCallbackLock());
+//      const ScopedLock lk( parentNodeContainer->getCallbackLock());
+			const ScopedLock lk( parentNodeContainer->innerGraph->getCallbackLock());
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());
       parentNodeContainer->updateAudioGraph(true);
+			totalNumInputChannels = getTotalNumInputChannels();
       if(oldNumChannels!=getTotalNumInputChannels()){
         numChannelsChanged();
       }
@@ -285,14 +287,16 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());
+			totalNumInputChannels = getTotalNumInputChannels();
       if(oldNumChannels!=getTotalNumInputChannels()){
+				
         numChannelsChanged();
       }
     }
   }
 
   rmsValuesIn.clear();
-  totalNumInputChannels = getTotalNumInputChannels();
+  
   for (int i = 0; i < totalNumInputChannels; i++) rmsValuesIn.add(0);
 
 
@@ -325,7 +329,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 
     if (parentNodeContainer != nullptr){
 //      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
-//      const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
+      const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
       setPlayConfigDetails(getTotalNumInputChannels(), num,
                            getSampleRate(),
                            getBlockSize());

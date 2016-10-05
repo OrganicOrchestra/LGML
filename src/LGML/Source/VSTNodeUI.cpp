@@ -81,13 +81,7 @@ void VSTNodeContentUI::updateVSTParameters(){
 void VSTNodeContentUI::controllableAdded(Controllable *) {};
 void VSTNodeContentUI::controllableRemoved(Controllable * c){
 
-    for(auto &slider:paramSliders){
-        if(slider->parameter == c){
-            removeChildComponent (slider);
-            paramSliders.removeObject(slider);
-            break;
-        }
-    };
+	postCommandMessage(0);
 
 }
 void VSTNodeContentUI::controllableContainerAdded(ControllableContainer *){};
@@ -98,7 +92,11 @@ void VSTNodeContentUI::controllableFeedbackUpdate(ControllableContainer * /*orig
 
 //Listener From VSTNode
 void VSTNodeContentUI::newVSTSelected() {
-    updateVSTParameters();
+	postCommandMessage(0);
+}
+
+void VSTNodeContentUI::handleCommandMessage(int cId){
+	updateVSTParameters();
 }
 
 void VSTNodeContentUI::midiDeviceChanged()

@@ -11,6 +11,8 @@
 #ifndef ENGINE_H_INCLUDED
 #define ENGINE_H_INCLUDED
 
+#define MULTITHREAEDED_LOADING
+
 #pragma warning (disable : 4100)
 
 #include "MIDIManager.h"//keep

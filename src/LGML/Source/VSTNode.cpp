@@ -203,7 +203,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
     instance->setPlayHead(getPlayHead());
     innerPlugin = instance;
     messageCollector.reset (result.sampleRate);
-    initParametersFromProcessor(instance);
+    
 
   }
 
@@ -306,4 +306,5 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
 
 void VSTNode::handleAsyncUpdate(){
   parentNodeContainer->updateAudioGraph();
+if(innerPlugin)	initParametersFromProcessor(innerPlugin);
 }

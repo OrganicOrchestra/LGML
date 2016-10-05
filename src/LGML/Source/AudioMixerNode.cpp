@@ -22,6 +22,11 @@ NodeBase("AudioMixerNode",NodeType::AudioMixerType)
     numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
     oneToOne = addBoolParameter("OneToOne", "is this mixer only concerned about one to one volumes (diagonal)", false);
 
+	
+	setPreferedNumAudioInput(numberOfInput->intValue());
+	setPreferedNumAudioOutput(numberOfOutput->intValue());
+	numChannelsChanged();
+
 
 }
 
@@ -29,13 +34,8 @@ void AudioMixerNode::setParentNodeContainer(NodeContainer * c){
   NodeBase::setParentNodeContainer(c);
   updateInput();
   updateOutput();
-
-
   numChannelsChanged();
-  outBuses[0]->volumes[0]->setValue(DB0_FOR_01);
-  outBuses[0]->volumes[1]->setValue(0);
-  outBuses[1]->volumes[0]->setValue(0);
-  outBuses[1]->volumes[1]->setValue(DB0_FOR_01);
+
 }
 
 void AudioMixerNode::onContainerParameterChanged(Parameter *p){
@@ -50,14 +50,7 @@ void AudioMixerNode::onContainerParameterChanged(Parameter *p){
 }
 
 void AudioMixerNode::updateInput(){
-//    {
-//        const ScopedLock lk (parentNodeContainer->getCallbackLock());
-//        suspendProcessing(true);
-//        for(auto & bus:outBuses){
-//            bus->setNumInput(numberOfInput->intValue());
-//        }
-//
-//    }
+    
     setPreferedNumAudioInput(numberOfInput->intValue());
 //    suspendProcessing(false);
 

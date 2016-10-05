@@ -44,6 +44,8 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   selectTrack->setValue(0,false,true);
   setPlayConfigDetails(2, 2, 44100, 256);
   TimeManager::getInstance()->playState->addParameterListener(this);
+	setPreferedNumAudioInput(2);
+	setPreferedNumAudioOutput(2);
 }
 
 LooperNode::~LooperNode()
