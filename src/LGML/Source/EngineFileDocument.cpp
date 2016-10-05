@@ -29,6 +29,23 @@ String Engine::getDocumentTitle() {
   return getFile().getFileNameWithoutExtension();
 }
 
+void Engine::createNewGraph(){
+engineListeners.call(&EngineListener::startLoadFile);
+
+  suspendAudio(true);
+  clear();
+  isLoadingFile = true;
+  ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
+  node->xPosition->setValue(150);
+  node->yPosition->setValue(100);
+  node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
+  node->xPosition->setValue(450);
+  node->yPosition->setValue(100);
+  isLoadingFile = false;
+  suspendAudio(false);
+  triggerAsyncUpdate();
+  setFile(File());
+}
 
 Result Engine::loadDocument (const File& file){
   isLoadingFile = true;
@@ -61,7 +78,7 @@ suspendAudio(true);
   }// deletes data before launching audio, (data not needed after loaded)
   jsonData = var();
 
-  getAudioDeviceManager().addAudioCallback (&graphPlayer);
+  
 
 }
 
@@ -87,7 +104,8 @@ void Engine::handleAsyncUpdate(){
 
 
   isLoadingFile = false;
-  setLastDocumentOpened(fileBeingLoaded);
+  if(fileBeingLoaded.exists())
+    setLastDocumentOpened(fileBeingLoaded);
   //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
   //  suspendAudio(false);
   int64 timeForLoading  =  Time::currentTimeMillis()-loadingStartTime;
