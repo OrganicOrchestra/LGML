@@ -23,7 +23,10 @@
 #include "VSTManager.h"//keep
 class AudioFucker;
 
-class Engine:public FileBasedDocument,NodeManager::NodeManagerListener{
+class Engine: public FileBasedDocument,
+	public ControllableContainer,
+	NodeManager::NodeManagerListener
+{
 public:
     Engine();
     ~Engine();

@@ -9,24 +9,7 @@
 #ifndef MAINCOMPONENT_H_INCLUDED
 #define MAINCOMPONENT_H_INCLUDED
 
-
-
-/*
-#include "NodeManager.h"
-#include "NodeManagerUI.h"
-
-#include "ControlManager.h"
-#include "ControllerManagerUI.h"
-#include "TimeManagerUI.h"
-
-#include "RuleManager.h"
-#include "RuleManagerUI.h"
-
-#include "FastMapper.h"
-#include "FastMapperUI.h"
-
-#include "LGMLLoggerUI.h"
-*/
+#pragma warning(disable:4244 4100)
 
 #include "LookAndFeelOO.h"
 //==============================================================================
@@ -51,19 +34,6 @@ public:
     TooltipWindow tooltipWindow; // to add tooltips to an application, you
     // just need to create one of these and leave it
     // there to do its work..
-
-
-	/*
-	ScopedPointer<TimeManagerUI> timeManagerUI;
-	ScopedPointer<InspectorViewport> inspectorViewport;
-
-	ScopedPointer<NodeManagerUIViewport> nodeManagerViewport;
-	ScopedPointer<ControllerManagerUI> controllerManagerUI;
-	ScopedPointer<RuleManagerUI> ruleManagerUI;
-	ScopedPointer<FastMapperViewport> fastMapperViewport;
-
-    ScopedPointer<LGMLLoggerUI> lgmlLoggerUI;
-	*/
 
     Engine * engine;
 
