@@ -133,6 +133,8 @@
                 file="Source/SerialUIHelper.h"/>
         </GROUP>
         <GROUP id="{BFD87B3B-6E7A-6719-1089-92D656C17348}" name="Thread">
+          <FILE id="dg9RMh" name="ProgressNotifier.h" compile="0" resource="0"
+                file="Source/ProgressNotifier.h"/>
           <FILE id="fzCybH" name="QueuedNotifier.h" compile="0" resource="0"
                 file="Source/QueuedNotifier.h"/>
         </GROUP>

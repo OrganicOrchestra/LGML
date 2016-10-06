@@ -50,20 +50,20 @@ MainComponentCommands.cpp
 
 
 NodeContainer.cpp
-	line : 362
-		// TODO nicely handle file format errors?
-
-	line : 276
-		//@ben remove recursive for now (not useful and duplicating values...)
-		//
-		//    for (auto &n : nodes) n->saveCurrentPreset();
-
-	line : 522
+	line : 525
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
+
+	line : 365
+		// TODO nicely handle file format errors?
+
+	line : 279
+		//@ben remove recursive for now (not useful and duplicating values...)
+		//
+		//    for (auto &n : nodes) n->saveCurrentPreset();
 
 
 TimeManager.h
@@ -161,7 +161,7 @@ NodeManager.h
 
 
 Engine.h
-	line : 135
+	line : 136
 		// TODO implement progression
 
 

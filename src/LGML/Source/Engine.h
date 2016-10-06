@@ -24,9 +24,10 @@
 #include "RuleManager.h"//keep
 #include "FastMapper.h"//keep
 #include "VSTManager.h"//keep
+#include "ProgressNotifier.h"
 class AudioFucker;
 
-class Engine:public FileBasedDocument,NodeManager::NodeManagerListener,AsyncUpdater{
+class Engine:public FileBasedDocument,NodeManager::NodeManagerListener,AsyncUpdater,public ProgressNotifier{
 public:
     Engine();
     ~Engine();
@@ -146,8 +147,10 @@ public:
   var jsonData;
 
   void handleAsyncUpdate()override;
-  
-    
+
+
+  int getTotalNumberOfTasks()override;
+  const String & getTaskNameForIdx(int task)override;
 };
 
 

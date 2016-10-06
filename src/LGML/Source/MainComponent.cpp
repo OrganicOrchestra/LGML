@@ -155,7 +155,7 @@ void MainContentComponent::startLoadFile(){
 	  fileProgressWindow = nullptr;
   }
 
-  fileProgressWindow = new ProgressWindow("Loading File...");
+  fileProgressWindow = new ProgressWindow("Loading File...",engine);
   addAndMakeVisible(fileProgressWindow);
   fileProgressWindow->setSize(getWidth(), getHeight());
   //startTimerHz(30);

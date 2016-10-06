@@ -84,11 +84,15 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
   NodeBase::onContainerParameterChanged(p);
   if(p==identifierString){
     if(identifierString->value!=""){
-      MessageManagerLock ml;
       PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
       if(pd){
+#ifdef VSTLOADING_THREADED
         NodeManager::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
+#else
+        generatePluginFromDescription(pd);
+#endif
       }
+
       else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
     }
     else{DBG("VST : no identifierString provided");}

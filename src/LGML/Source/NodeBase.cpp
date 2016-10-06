@@ -29,7 +29,7 @@ globalRMSValueOut(0)
   lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
   dryWetFader.setFadedIn();
   muteFader.startFadeIn();
-
+  
 
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
@@ -270,8 +270,6 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   {
 
     if (parentNodeContainer != nullptr){
-//      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
-//      const ScopedLock lk( parentNodeContainer->getCallbackLock());
 			const ScopedLock lk( parentNodeContainer->innerGraph->getCallbackLock());
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
@@ -279,11 +277,12 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
       parentNodeContainer->updateAudioGraph(false);
 			totalNumInputChannels = getTotalNumInputChannels();
       if(oldNumChannels!=getTotalNumInputChannels()){
+        // numChannelsChanged is called within the lock so that Nodes can update freely their memory used in processblock 
         numChannelsChanged();
       }
-//      parentNodeContainer->getAudioGraph()->suspendProcessing(false);
     }
     else{
+      // here is only if the Node sets a default prefered audio Input (in its constructor)
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());

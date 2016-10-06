@@ -11,9 +11,10 @@
 #include "ProgressWindow.h"
 #include "Style.h"
 
-ProgressWindow::ProgressWindow(const String &_title) :
+ProgressWindow::ProgressWindow(const String &_title,ProgressNotifier * notifier) :
 	progressParam("Progress", "Progression", 0, 0, 1),
-	titleLabel("title","")
+	titleLabel("title",""),
+ProgressListener(notifier)
 {
 	DBG("progressParam " << progressParam.floatValue());
 
@@ -46,7 +47,17 @@ void ProgressWindow::resized()
 	r.removeFromTop(20);
 	progressUI->setBounds(r.removeFromTop(20));
 }
+void ProgressWindow::startedProgress(int task){
+  titleLabel.setText(baseNotifier->getTaskNameForIdx(task), NotificationType::dontSendNotification);
+}
+void ProgressWindow::endedProgress(int task) {
 
+}
+
+void ProgressWindow::newProgress(int task,float advance){
+  float taskSlot = 1.0f/baseNotifier->getTotalNumberOfTasks();
+  setProgress(taskSlot*(task + advance));
+};
 void ProgressWindow::setProgress(float progress)
 {
 	progressParam.setValue(progress);

@@ -49,6 +49,9 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
     node->removeControllableContainerListener(this);
     node->removeConnectableNodeListener(this);
   }
+  else{
+    jassertfalse;
+  }
 
 }
 

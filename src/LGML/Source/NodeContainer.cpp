@@ -29,6 +29,7 @@ nodeChangeNotifier(10000)
 {
   saveAndLoadRecursiveData = false;
   innerGraph = new AudioProcessorGraph();
+  innerGraph->releaseResources();
 
 #ifdef MULTITHREADED_AUDIO
   graphJob = new GraphJob(innerGraph,name);
@@ -66,6 +67,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
     nodes[0]->remove();
     }
     else{
+      jassertfalse;
       nodes.remove(0);
     }
     
@@ -115,6 +117,7 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeNa
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName)
 {
   nodes.add(n);
+  
   n->setParentNodeContainer(this);
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n))

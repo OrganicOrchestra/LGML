@@ -14,12 +14,12 @@
 #include "JuceHeader.h"
 #include "FloatParameter.h"
 #include "FloatSliderUI.h"
-
-class ProgressWindow : public Component
+#include "Engine.h"
+class ProgressWindow : public Component,public ProgressNotifier::ProgressListener
 {
 public:
 
-	ProgressWindow(const String &title);
+	ProgressWindow(const String &title,ProgressNotifier * notifier=nullptr);
 	~ProgressWindow();
 	
 
@@ -32,6 +32,10 @@ public:
 	
 	void paint(Graphics & g) override;
 	void resized() override;
+
+  void startedProgress(int task)override;
+  void endedProgress(int task) override;
+  void newProgress(int task ,float advance)override;
 
 	void setProgress(float progress);
 };

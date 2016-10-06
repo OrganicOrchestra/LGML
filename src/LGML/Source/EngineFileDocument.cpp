@@ -41,10 +41,9 @@ engineListeners.call(&EngineListener::startLoadFile);
   node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
   node->xPosition->setValue(450);
   node->yPosition->setValue(100);
-  isLoadingFile = false;
-  suspendAudio(false);
-  triggerAsyncUpdate();
   setFile(File());
+  triggerAsyncUpdate();
+
 }
 
 Result Engine::loadDocument (const File& file){
@@ -53,7 +52,7 @@ Result Engine::loadDocument (const File& file){
 
   if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
-#ifdef THREADED_FILE_LOADER
+#ifdef MULTITHREAEDED_LOADING
 	fileLoader = new FileLoader(this,file);
   fileLoader->startThread(10);
 #else
@@ -68,12 +67,13 @@ Result Engine::loadDocument (const File& file){
 void Engine::loadDocumentAsync(const File & file){
 
 suspendAudio(true);
-
+startProgress(0);
   clear();
+  endProgress(0);
 
-  {
-    MessageManagerLock ml;
-  }
+//  {
+//    MessageManagerLock ml;
+//  }
   ScopedPointer<InputStream> is( file.createInputStream());
 
 
@@ -82,8 +82,10 @@ suspendAudio(true);
   fileBeingLoaded = file;
 
   {
+    startProgress(1);
     jsonData = JSON::parse(*is);
     loadJSONData(jsonData);
+    setProgress(100, 1);
   }// deletes data before launching audio, (data not needed after loaded)
   
   jsonData = var();

@@ -40,6 +40,7 @@ public:
 
 	void onContainerParameterChanged(Parameter *) override;
 
+  bool setPreferredBusArrangement (bool isInputBus, int busIndex, const AudioChannelSet& preferredSet) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContainerInNode)
 };

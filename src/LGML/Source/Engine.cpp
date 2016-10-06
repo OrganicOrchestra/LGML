@@ -31,6 +31,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
   MIDIManager::getInstance()->init();
   SerialManager::getInstance()->init();
   NodeManager::getInstance()->addNodeManagerListener(this);
+  VSTManager::getInstance();
 }
 
 
@@ -97,19 +98,19 @@ void Engine::initAudio(){
 void Engine::suspendAudio(bool shouldBeSuspended){
 
 
-  if(AudioProcessor * ap =graphPlayer.getCurrentProcessor())
+  if(AudioProcessor * ap =graphPlayer.getCurrentProcessor()){
+    ap->getCallbackLock();
     ap->suspendProcessing (shouldBeSuspended);
+    if(shouldBeSuspended)ap->releaseResources();
+    else {
+      AudioIODevice * dev = getAudioDeviceManager().getCurrentAudioDevice();
+      ap->prepareToPlay(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
+    }
+  }
 
   TimeManager::getInstance()->lockTime(shouldBeSuspended);
 
-  if(shouldBeSuspended){
-    getAudioDeviceManager().removeAudioCallback (&graphPlayer);
-  }
-  else{
-    AudioIODevice * dev = getAudioDeviceManager().getCurrentAudioDevice();
-    NodeManager::getInstance()->mainContainer->getAudioGraph()->prepareToPlay(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
-    getAudioDeviceManager().addAudioCallback (&graphPlayer);
-  }
+
 
 }
 
@@ -227,3 +228,10 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent(){
 }
 
 
+int Engine::getTotalNumberOfTasks(){
+  return 2;
+};
+const String & Engine::getTaskNameForIdx(int task){
+  static const String taskNames[2]{"clearing","loading"};
+  return taskNames[task];
+}

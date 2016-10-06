@@ -15,7 +15,7 @@
 #include "NodeBase.h"
 
 #include "MIDIListener.h"
-
+//#define VSTLOADING_THREADED
 class VSTNode :
 public NodeBase,
 public AudioProcessorListener,

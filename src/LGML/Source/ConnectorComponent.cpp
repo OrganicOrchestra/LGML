@@ -22,7 +22,11 @@ isHovered(false)
 }
 
 ConnectorComponent::~ConnectorComponent(){
-     if(node.get())node->removeConnectableNodeListener(this);
+     if(node.get())
+       node->removeConnectableNodeListener(this);
+     else{
+       jassertfalse;
+     }
 }
 
 NodeBase * ConnectorComponent::getNodeBase(){
