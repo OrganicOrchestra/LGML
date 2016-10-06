@@ -153,12 +153,13 @@ bool NodeContainer::removeNode(ConnectableNode * n)
   nodes.removeAllInstancesOf(n);
 
   n->clear();
-  n->removeFromAudioGraph();
+
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n)) nodeContainers.removeFirstMatchingValue(nc);
 
+  n->removeFromAudioGraph();
   //if(NodeManager::getInstanceWithoutCreating() != nullptr)
-  getAudioGraph()->removeNode(n->audioNode);
+//  getAudioGraph()->removeNode(n->audioNode);
 
   return true;
 }
@@ -188,16 +189,35 @@ void NodeContainer::updateAudioGraph(bool lock) {
   //    getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
   //  }
   //  else {
+
+
+  // if no parent we are an audiograph inside gobal graphplayer
+
   if(!MessageManager::getInstance()->isThisTheMessageThread()){
+    if(lock){
+      const ScopedLock lk (getAudioGraph()->getCallbackLock());
+    getAudioGraph()->suspendProcessing(true);
     triggerAsyncUpdate();
+    }
+    else{
+      getAudioGraph()->suspendProcessing(true);
+      triggerAsyncUpdate();
+
+    }
     return;
   }
 
-  // if no parent we are an audiograph inside gobal graphplayer
-  ScopedLock lk (getAudioGraph()->getCallbackLock());
+  if(lock){
+  const ScopedLock lk (getAudioGraph()->getCallbackLock());
   getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
   getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
-  
+  getAudioGraph()->suspendProcessing(false);
+  }
+  else{
+    getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+    getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+    getAudioGraph()->suspendProcessing(false);
+  }
 
   //  }
 

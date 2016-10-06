@@ -176,8 +176,9 @@ void ConnectableNode::addToAudioGraph(AudioProcessorGraph* g)
 
 void ConnectableNode::removeFromAudioGraph()
 {
+  const ScopedLock lk(parentNodeContainer->getAudioGraph()->getCallbackLock());
   parentNodeContainer->getAudioGraph()->removeNode(getAudioNode());
-
+  parentNodeContainer->updateAudioGraph(false);
 
 }
 

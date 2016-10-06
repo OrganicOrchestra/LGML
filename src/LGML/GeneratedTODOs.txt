@@ -50,20 +50,20 @@ MainComponentCommands.cpp
 
 
 NodeContainer.cpp
-	line : 256
+	line : 362
+		// TODO nicely handle file format errors?
+
+	line : 276
 		//@ben remove recursive for now (not useful and duplicating values...)
 		//
 		//    for (auto &n : nodes) n->saveCurrentPreset();
 
-	line : 502
+	line : 522
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
-
-	line : 342
-		// TODO nicely handle file format errors?
 
 
 TimeManager.h
@@ -77,7 +77,7 @@ JavascriptControllerUI.cpp
 
 
 AudioHelpers.h
-	line : 138
+	line : 141
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 
@@ -98,7 +98,7 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 64
+	line : 66
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
@@ -156,12 +156,12 @@ DataProcessorGraph.cpp
 
 
 NodeManager.h
-	line : 65
+	line : 66
 		// @ben no listener here for now, only because it's overkilling (and Im lazy..)
 
 
 Engine.h
-	line : 129
+	line : 135
 		// TODO implement progression
 
 

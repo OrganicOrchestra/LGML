@@ -276,7 +276,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());
-      parentNodeContainer->updateAudioGraph(true);
+      parentNodeContainer->updateAudioGraph(false);
 			totalNumInputChannels = getTotalNumInputChannels();
       if(oldNumChannels!=getTotalNumInputChannels()){
         numChannelsChanged();

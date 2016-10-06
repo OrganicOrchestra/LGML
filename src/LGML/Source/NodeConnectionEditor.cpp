@@ -55,7 +55,7 @@ void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
 {
     if (currentConnection == _connection) return;
 
-	setSelectedLink(nullptr);
+	selectedLink = nullptr;
 
     if (currentConnection != nullptr)
     {
