@@ -61,7 +61,7 @@ public:
 
     // our Saving methods
     var getJSONData();
-    void loadJSONData(var data);
+    void loadJSONData(var data,ProgressTask * loadingTask);
 
     bool checkFileVersion(DynamicObject * metaData);
     int versionStringToInt(const String &version);
@@ -148,9 +148,7 @@ public:
 
   void handleAsyncUpdate()override;
 
-
-  int getTotalNumberOfTasks()override;
-  const String & getTaskNameForIdx(int task)override;
+  
 };
 
 

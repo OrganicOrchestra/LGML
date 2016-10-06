@@ -33,9 +33,9 @@ public:
 	void paint(Graphics & g) override;
 	void resized() override;
 
-  void startedProgress(int task)override;
-  void endedProgress(int task) override;
-  void newProgress(int task ,float advance)override;
+  void startedProgress(ProgressTask *  task)override;
+  void endedProgress(ProgressTask * task) override;
+  void newProgress(ProgressTask *  task ,float advance)override;
 
 	void setProgress(float progress);
 };

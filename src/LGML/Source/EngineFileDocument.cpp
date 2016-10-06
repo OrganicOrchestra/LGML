@@ -67,9 +67,14 @@ Result Engine::loadDocument (const File& file){
 void Engine::loadDocumentAsync(const File & file){
 
 suspendAudio(true);
-startProgress(0);
+  clearTasks();
+  taskName = "Loading File";
+  ProgressTask * clearTask = addTask("clearing");
+  ProgressTask * parseTask = addTask("parsing");
+  ProgressTask * loadTask = addTask("loading");
+  clearTask->start();
   clear();
-  endProgress(0);
+  clearTask->end();
 
 //  {
 //    MessageManagerLock ml;
@@ -82,10 +87,14 @@ startProgress(0);
   fileBeingLoaded = file;
 
   {
-    startProgress(1);
+    parseTask->start();
     jsonData = JSON::parse(*is);
-    loadJSONData(jsonData);
-    setProgress(100, 1);
+    parseTask->end();
+    loadTask->start();
+    loadJSONData(jsonData,loadTask);
+    loadTask->end();
+
+
   }// deletes data before launching audio, (data not needed after loaded)
   
   jsonData = var();
@@ -186,7 +195,7 @@ var Engine::getJSONData()
 /// ===================
 // loading
 
-void Engine::loadJSONData (var data)
+void Engine::loadJSONData (var data,ProgressTask * loadingTask)
 {
 
   DynamicObject * md = data.getDynamicObject()->getProperty("metaData").getDynamicObject();
@@ -205,12 +214,26 @@ void Engine::loadJSONData (var data)
 
 
   DynamicObject * d = data.getDynamicObject();
-
+  ProgressTask * presetTask = loadingTask->addTask("presetManager");
+  ProgressTask * nodeManagerTask = loadingTask->addTask("nodeManager");
+  ProgressTask * controllerManagerTask = loadingTask->addTask("controllerManager");
+  ProgressTask * fastMapperTask = loadingTask->addTask("fastMapper");
+   ProgressTask * ruleManagerTask = loadingTask->addTask("ruleManager");
+  presetTask->start();
   if (d->hasProperty("presetManager")) PresetManager::getInstance()->loadJSONData(d->getProperty("presetManager"));
+  presetTask->end();
+  nodeManagerTask->start();
   if (d->hasProperty("nodeManager")) NodeManager::getInstance()->loadJSONData(d->getProperty("nodeManager"));
+  nodeManagerTask->end();
+  controllerManagerTask->start();
   if (d->hasProperty("controllerManager")) ControllerManager::getInstance()->loadJSONData(d->getProperty("controllerManager"));
+  controllerManagerTask->end();
+  ruleManagerTask->start();
   if (d->hasProperty("ruleManager"))RuleManager::getInstance()->loadJSONData(d->getProperty("ruleManager"));
+  ruleManagerTask->end();
+  fastMapperTask->start();
   if(d->hasProperty("fastMapper")) FastMapper::getInstance()->loadJSONData(d->getProperty("fastMapper"));
+  fastMapperTask->end();
 
   if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(true); //Re enable editor
 

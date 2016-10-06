@@ -25,6 +25,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
                                     filenameWildcard,
                                     "Load a filter graph",
                                     "Save a filter graph"){
+  
   initAudio();
   Logger::setCurrentLogger (LGMLLogger::getInstance());
 
@@ -228,10 +229,3 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent(){
 }
 
 
-int Engine::getTotalNumberOfTasks(){
-  return 2;
-};
-const String & Engine::getTaskNameForIdx(int task){
-  static const String taskNames[2]{"clearing","loading"};
-  return taskNames[task];
-}

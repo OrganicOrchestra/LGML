@@ -47,16 +47,15 @@ void ProgressWindow::resized()
 	r.removeFromTop(20);
 	progressUI->setBounds(r.removeFromTop(20));
 }
-void ProgressWindow::startedProgress(int task){
-  titleLabel.setText(baseNotifier->getTaskNameForIdx(task), NotificationType::dontSendNotification);
+void ProgressWindow::startedProgress(ProgressTask * task){
+  titleLabel.setText(task->getAddress().joinIntoString(" / "), NotificationType::dontSendNotification);
 }
-void ProgressWindow::endedProgress(int task) {
+void ProgressWindow::endedProgress(ProgressTask * task) {
 
 }
 
-void ProgressWindow::newProgress(int task,float advance){
-  float taskSlot = 1.0f/baseNotifier->getTotalNumberOfTasks();
-  setProgress(taskSlot*(task + advance));
+void ProgressWindow::newProgress(ProgressTask * task,float advance){
+  setProgress(task->getNormalizedProgress());
 };
 void ProgressWindow::setProgress(float progress)
 {
