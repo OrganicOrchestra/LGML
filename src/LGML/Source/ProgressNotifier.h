@@ -55,7 +55,7 @@ class ProgressTask {
   public:
     virtual ~TaskListener(){};
     virtual void taskAdded(ProgressTask *){};
-    virtual void taskProgress(ProgressTask *,float p){};
+    virtual void taskProgress(ProgressTask *,float){};
     virtual void taskStarted(ProgressTask *){};
     virtual void taskEnded(ProgressTask *){};
   };
@@ -92,9 +92,9 @@ public:
     }
     virtual ~ProgressListener(){if(baseNotifier)baseNotifier->removeListener(this);}
 
-    virtual void startedProgress(ProgressTask * task) {};
-    virtual void endedProgress(ProgressTask * task) {};
-    virtual void newProgress(ProgressTask * task,float p) {};
+    virtual void startedProgress(ProgressTask *) {};
+    virtual void endedProgress(ProgressTask *) {};
+    virtual void newProgress(ProgressTask *,float) {};
     virtual void totalNumberOfTaskChanged() {};
 
 

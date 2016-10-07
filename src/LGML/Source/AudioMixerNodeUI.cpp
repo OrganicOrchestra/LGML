@@ -54,16 +54,16 @@ void AudioMixerNodeUI::init() {
 	mixerNode->oneToOne->addParameterListener(this);
 	nodeUI->setSize(250, 150);
 }
-void AudioMixerNodeUI::handleCommandMessage(int commandId){
+void AudioMixerNodeUI::handleCommandMessage(int /*commandId*/){
 	numAudioOutputChangedUI(mixerNode, mixerNode->numberOfOutput->intValue());
 	numAudioInputChangedUI(mixerNode, mixerNode->numberOfInput->intValue());
 	
 }
-void AudioMixerNodeUI::numAudioInputChanged(ConnectableNode * c , int numInput){
+void AudioMixerNodeUI::numAudioInputChanged(ConnectableNode * c , int /*numInput*/){
 	mixerNode = (AudioMixerNode*)c;
 	postCommandMessage(0);
 }
-void AudioMixerNodeUI::numAudioOutputChanged(ConnectableNode * c , int numInput){
+void AudioMixerNodeUI::numAudioOutputChanged(ConnectableNode * c , int /*numInput*/){
 		mixerNode = (AudioMixerNode*)c;
 	postCommandMessage(0);
 }
@@ -79,7 +79,7 @@ void AudioMixerNodeUI::numAudioInputChangedUI(ConnectableNode * c , int numInput
 	}
 	resized();
 };
-void AudioMixerNodeUI::numAudioOutputChangedUI(ConnectableNode *c, int newNum){
+void AudioMixerNodeUI::numAudioOutputChangedUI(ConnectableNode *, int newNum){
 	int lastNum = outputBusUIs.size();
 newNum=	mixerNode->outBuses.size();
 	if(newNum>lastNum){
@@ -153,7 +153,7 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
 	
 }
 
-void AudioMixerNodeUI::OutputBusUI::handleCommandMessage(int id){
+void AudioMixerNodeUI::OutputBusUI::handleCommandMessage(int /*id*/){
   resized();
 	repaint();
 }

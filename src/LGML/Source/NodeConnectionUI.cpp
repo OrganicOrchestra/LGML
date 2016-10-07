@@ -378,7 +378,7 @@ InspectorEditor * NodeConnectionUI::getEditor()
 	return new NodeConnectionEditor(this);
 }
 
-void NodeConnectionUI::handleCommandMessage(int commandId){
+void NodeConnectionUI::handleCommandMessage(int /*commandId*/){
   repaint();
 }
 

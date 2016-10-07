@@ -110,7 +110,7 @@ void ConnectorComponent::numAudioOutputChanged(ConnectableNode *, int)
   if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
   postCommandMessage(0);
 }
-void ConnectorComponent::handleCommandMessage(int id){
+void ConnectorComponent::handleCommandMessage(int /*id*/){
   updateVisibility();
   
 }

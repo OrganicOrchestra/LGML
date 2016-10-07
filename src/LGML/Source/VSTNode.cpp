@@ -67,7 +67,7 @@ void VSTNode::closePluginWindow(){
   PluginWindow::closeCurrentlyOpenWindowsFor (this);
 }
 
-void VSTNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages){
+void VSTNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer&){
 
   if (innerPlugin) {
     incomingMidi.clear();

@@ -50,13 +50,13 @@ float ProgressTask::getNormalizedProgress(){
   int totalNum = getRootTask()->getTotalNumberOfTasks();
   if(totalNum == 0 )return 1;
   int localPos = getTaskPosition();
-  return (localPos+progress)*1.0/totalNum;
+  return (localPos+progress)*1.0f/totalNum;
 }
 void ProgressTask::clearTasks(){
   subTasks.clear();
 }
-ProgressTask * ProgressTask::addTask(String taskName){
-  ProgressTask * newT = new ProgressTask(taskName,this);
+ProgressTask * ProgressTask::addTask(String _taskName){
+  ProgressTask * newT = new ProgressTask(_taskName,this);
   subTasks.add(newT);
   getRootTask()->taskListeners.call(&TaskListener::taskAdded,this);
   return newT;
@@ -164,7 +164,7 @@ class FakeProgress : Timer{
   public :
   FakeProgress(ProgressTask * _task,float timeToComplete):task(_task){
     const int period = 100;
-    step = period*1.0/timeToComplete;
+    step = period*1.0f/timeToComplete;
     curProgress = 0;
     startTimer(period);
   }
@@ -186,7 +186,7 @@ ProgressNotifier::ProgressNotifier():currentTask(nullptr),ProgressTask("mainTask
 }
 
 
-void ProgressNotifier::taskAdded(ProgressTask * t){};
+void ProgressNotifier::taskAdded(ProgressTask * ){};
 void ProgressNotifier::taskStarted(ProgressTask * t){
   if(currentTask!=t && currentTask!=nullptr){(new EndCallbackMessage(&progressListeners,currentTask))->post();}
   currentTask = t;
@@ -198,7 +198,7 @@ void ProgressNotifier::taskEnded(ProgressTask * ){
   fakeProgress = nullptr;
   currentTask = nullptr;
 }
-void ProgressNotifier::taskProgress(ProgressTask * t,float p) {
+void ProgressNotifier::taskProgress(ProgressTask *,float p) {
   (new ProgressCallbackMessage(&progressListeners,currentTask,p))->post();
 }
 

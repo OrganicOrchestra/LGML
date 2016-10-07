@@ -561,7 +561,7 @@ void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var &
 
 };
 
-void NodeContainer::bypassNode(bool bypass){}
+void NodeContainer::bypassNode(bool /*bypass*/){}
 
 ConnectableNodeUI * NodeContainer::createUI()
 {
@@ -627,7 +627,7 @@ void NodeContainer::processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer
   getAudioGraph()->processBlock(buffer,midiMessage);
 #endif
 };
-void NodeContainer::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages){
+void NodeContainer::processBlockBypassed(AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessages*/){
   //    getAudioGraph()->processBlockBypassed(buffer,midiMessages);
   
 }

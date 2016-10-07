@@ -158,8 +158,10 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   // be sure to delete input if we are not enabled and a random buffer enters
   // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
   int numSample = buffer.getNumSamples();
-  int totalNumInputChannels = getTotalNumInputChannels();
-  int totalNumOutputChannels =getTotalNumOutputChannels();
+  
+  //Already set and class parameters
+  //int totalNumInputChannels = getTotalNumInputChannels();
+  //int totalNumOutputChannels =getTotalNumOutputChannels();
 
   
 //  for(int i = totalNumInputChannels;i < buffer.getNumChannels() ; i++){

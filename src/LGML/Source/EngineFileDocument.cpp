@@ -105,9 +105,9 @@ void Engine::managerEndedLoading(){
     triggerAsyncUpdate();
   }
 }
-void Engine::managerProgressedLoading(float progress)
+void Engine::managerProgressedLoading(float _progress)
 {
-	engineListeners.call(&EngineListener::fileProgress, progress,0);
+	engineListeners.call(&EngineListener::fileProgress, _progress,0);
 }
 bool Engine::allLoadingThreadsAreEnded(){
   return NodeManager::getInstance()->getNumJobs()== 0 && (fileLoader && fileLoader->isEnded);

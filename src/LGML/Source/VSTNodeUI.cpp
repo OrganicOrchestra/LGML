@@ -79,7 +79,7 @@ void VSTNodeContentUI::updateVSTParameters(){
 }
 
 void VSTNodeContentUI::controllableAdded(Controllable *) {};
-void VSTNodeContentUI::controllableRemoved(Controllable * c){
+void VSTNodeContentUI::controllableRemoved(Controllable *){
 
 	postCommandMessage(0);
 
@@ -95,7 +95,7 @@ void VSTNodeContentUI::newVSTSelected() {
 	postCommandMessage(0);
 }
 
-void VSTNodeContentUI::handleCommandMessage(int cId){
+void VSTNodeContentUI::handleCommandMessage(int /*cId*/){
 	updateVSTParameters();
 }
 
