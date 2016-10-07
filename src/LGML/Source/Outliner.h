@@ -1,0 +1,74 @@
+/*
+  ==============================================================================
+
+    Outliner.h
+    Created: 7 Oct 2016 10:31:23am
+    Author:  bkupe
+
+  ==============================================================================
+*/
+
+#ifndef OUTLINER_H_INCLUDED
+#define OUTLINER_H_INCLUDED
+
+
+#include "ShapeShifterContent.h"
+#include "ControllableContainer.h"
+#include "InspectableComponent.h"
+
+class OutlinerItem;
+class OutlinerItemComponent : public InspectableComponent
+{
+public:
+	OutlinerItemComponent(OutlinerItem * item);
+	OutlinerItem * item;
+	
+	void paint(Graphics &g) override;
+	void mouseDown(const MouseEvent &e) override;
+};
+
+class OutlinerItem : public TreeViewItem
+{
+public:
+	OutlinerItem(ControllableContainer * container);
+	OutlinerItem(Controllable * controllable);
+
+	bool isContainer;
+
+	ControllableContainer * container;
+	Controllable * controllable;
+	InspectableComponent * inspectable;
+
+	~OutlinerItem();
+
+	// Inherited via TreeViewItem
+	void paintItem(Graphics &g, int width, int height) override;
+	virtual bool mightContainSubItems() override;
+	void itemClicked(const MouseEvent &e) override;
+
+	Component * createItemComponent() override;
+};
+
+class Outliner : public ShapeShifterContent,
+				 public ControllableContainerListener
+{
+public:
+
+	Outliner(const String &contentName);
+	~Outliner();
+
+	TreeView treeView;
+	ScopedPointer<OutlinerItem> rootItem;
+
+	void resized() override;
+	void paint(Graphics &g) override;
+
+	void rebuildTree();
+	void buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer);
+
+	void childStructureChanged(ControllableContainer *) override;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Outliner)
+};
+
+#endif  // OUTLINER_H_INCLUDED

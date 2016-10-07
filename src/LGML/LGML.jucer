@@ -10,6 +10,10 @@
             file="Tests/NodeChildProofer.cpp"/>
     </GROUP>
     <GROUP id="{BC9CFC6D-9A21-3F3D-C856-7D9477CB4717}" name="Source">
+      <GROUP id="{36D3D388-D52C-50AD-56CC-3C6211829984}" name="Outliner">
+        <FILE id="YzVq2u" name="Outliner.cpp" compile="1" resource="0" file="Source/Outliner.cpp"/>
+        <FILE id="YG07PC" name="Outliner.h" compile="0" resource="0" file="Source/Outliner.h"/>
+      </GROUP>
       <FILE id="K7EYqf" name="GitSha.h" compile="0" resource="0" file="Source/GitSha.h"/>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
