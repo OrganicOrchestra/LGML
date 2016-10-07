@@ -149,5 +149,12 @@ void OutlinerItemComponent::paint(Graphics & g)
 void OutlinerItemComponent::mouseDown(const MouseEvent & e)
 {
 	item->setSelected(true, true);
-	if (item->isContainer) selectThis();
+	selectThis();
+}
+
+InspectorEditor * OutlinerItemComponent::getEditor()
+{
+	DBG("Get editor here");
+	if (item->isContainer) return InspectableComponent::getEditor();
+	return new ControllableEditor(this,item->controllable);
 }

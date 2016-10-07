@@ -45,7 +45,7 @@ namespace LookAndFeelHelpers {
         CaretComponent::caretColourId,              0xff000000,
 
         Label::backgroundColourId,                  0x00000000,
-        Label::textColourId,                        0xff000000,
+        Label::textColourId,                        TEXT_COLOR.getARGB(),
         Label::outlineColourId,                     0x00000000,
 
         ScrollBar::backgroundColourId,              BG_COLOR.brighter(.2f).getARGB(),

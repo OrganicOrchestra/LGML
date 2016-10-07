@@ -622,6 +622,10 @@
         <FILE id="awDkrd" name="LGMLLoggerUI.h" compile="0" resource="0" file="Source/LGMLLoggerUI.h"/>
       </GROUP>
       <GROUP id="{61D87EF1-3422-1DC8-D38C-6AFB74778DB0}" name="Inspector">
+        <FILE id="WTHkUb" name="ControllableEditor.cpp" compile="1" resource="0"
+              file="Source/ControllableEditor.cpp"/>
+        <FILE id="k8bflH" name="ControllableEditor.h" compile="0" resource="0"
+              file="Source/ControllableEditor.h"/>
         <FILE id="NPG3vZ" name="CustomEditor.cpp" compile="1" resource="0"
               file="Source/CustomEditor.cpp"/>
         <FILE id="omqUJT" name="CustomEditor.h" compile="0" resource="0" file="Source/CustomEditor.h"/>

@@ -66,6 +66,8 @@ public:
 
   String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
+  virtual bool isNumeric(); //default implementation, can be overriden for special parameters
+
   // used for generating editor
   virtual ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) = 0;
 

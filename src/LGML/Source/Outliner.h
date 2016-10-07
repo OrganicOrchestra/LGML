@@ -15,6 +15,7 @@
 #include "ShapeShifterContent.h"
 #include "ControllableContainer.h"
 #include "InspectableComponent.h"
+#include "ControllableEditor.h"
 
 class OutlinerItem;
 class OutlinerItemComponent : public InspectableComponent, public SettableTooltipClient
@@ -27,6 +28,8 @@ public:
 	
 	void paint(Graphics &g) override;
 	void mouseDown(const MouseEvent &e) override;
+
+	InspectorEditor * getEditor() override;
 };
 
 class OutlinerItem : public TreeViewItem
