@@ -27,7 +27,7 @@ juce_ImplementSingleton(TimeManager);
 TimeManager::TimeManager():
 beatTimeInSample(1000),
 sampleRate(44100),
-ControllableContainer("time"),
+ControllableContainer("Time"),
 beatTimeGuessRange(.4,.85),
 BPMRange(10,600),
 _isLocked(false),

@@ -18,6 +18,7 @@ Outliner::Outliner(const String &contentName) : ShapeShifterContent(contentName)
 {
 	getEngine().addControllableContainerListener(this);
 
+	showHiddenContainers = false;
 	
 	rootItem = new OutlinerItem(&getEngine());
 	treeView.setRootItem(rootItem);
@@ -50,6 +51,7 @@ void Outliner::rebuildTree()
 	rootItem->clearSubItems();
 	buildTree(rootItem, &getEngine());
 	rootItem->setOpen(true);
+	
 }
 
 void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer)
@@ -57,10 +59,16 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 	Array<ControllableContainer *> childContainers = parentContainer->controllableContainers;
 	for (auto &cc : childContainers)
 	{
-		OutlinerItem * ccItem = new OutlinerItem(cc);
-		parentItem->addSubItem(ccItem);
-		
-		buildTree(ccItem, cc);
+		if (cc->skipControllableNameInAddress && !showHiddenContainers)
+		{
+			buildTree(parentItem, cc);
+		} else
+		{
+			OutlinerItem * ccItem = new OutlinerItem(cc);
+			parentItem->addSubItem(ccItem);
+
+			buildTree(ccItem, cc);
+		}
 		
 	}
 	
@@ -68,10 +76,8 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 
 	for (auto &c : childControllables)
 	{
-
 		OutlinerItem * cItem = new OutlinerItem(c);
 		parentItem->addSubItem(cItem);
-
 	}
 }
 
@@ -86,6 +92,7 @@ void Outliner::childStructureChanged(ControllableContainer *)
 OutlinerItem::OutlinerItem(ControllableContainer * _container) :
 	container(_container), controllable(nullptr), isContainer(true), inspectable(dynamic_cast<InspectableComponent *>(_container))
 {
+
 }
 
 OutlinerItem::OutlinerItem(Controllable * _controllable) :
@@ -93,23 +100,10 @@ OutlinerItem::OutlinerItem(Controllable * _controllable) :
 {
 }
 
-OutlinerItem::~OutlinerItem()
-{
-}
-
-void OutlinerItem::paintItem(Graphics & g, int width, int height)
-{
-	
-	
-}
 
 bool OutlinerItem::mightContainSubItems()
 {
-	return false;
-}
-
-void OutlinerItem::itemClicked(const MouseEvent & e)
-{
+	return isContainer;
 }
 
 Component * OutlinerItem::createItemComponent()
@@ -119,22 +113,37 @@ Component * OutlinerItem::createItemComponent()
 
 OutlinerItemComponent::OutlinerItemComponent(OutlinerItem * _item) : 
 	InspectableComponent(_item->container),
-	item(_item)
+	item(_item),
+	label("label",_item->isContainer? item->container->niceName : item->controllable->niceName)
+	
 {
 
+	setTooltip(item->isContainer ? item->container->getControlAddress() : item->controllable->description + "\nControl Address : " + item->controllable->controlAddress);
+	addAndMakeVisible(&label);
+	label.setInterceptsMouseClicks(false, false);
 }
 
 void OutlinerItemComponent::paint(Graphics & g)
 {
 	Rectangle<int> r = getLocalBounds();
-	r.removeFromLeft(3);
+	
+	Colour c = item->isContainer ? HIGHLIGHT_COLOR : TEXT_COLOR;
+	
+	
+	int labelWidth = label.getFont().getStringWidthFloat(label.getText());
+	
 	if (item->isSelected())
 	{
-		g.fillAll(item->isContainer? HIGHLIGHT_COLOR :TEXT_COLOR);
+		g.setColour(c);
+		g.fillRoundedRectangle(r.withSize(labelWidth + 20, r.getHeight()).toFloat(), 2);
 	}
 
-	g.setColour(item->isSelected()?Colours::grey.darker():(item->isContainer ? HIGHLIGHT_COLOR : TEXT_COLOR));
-	g.drawFittedText(item->isContainer ? item->container->niceName : item->controllable->niceName, r, Justification::left, 1);
+	r.removeFromLeft(3);
+	label.setBounds(r);
+	label.setColour(Label::textColourId, item->isSelected() ? Colours::grey.darker() : c);
+
+	
+	
 }
 
 void OutlinerItemComponent::mouseDown(const MouseEvent & e)

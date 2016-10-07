@@ -52,7 +52,7 @@ namespace LookAndFeelHelpers {
         ScrollBar::thumbColourId,                   BG_COLOR.brighter(.6f).getARGB(),
 		ScrollBar::trackColourId,                   Colours::red.getARGB(),
 
-        TreeView::linesColourId,                    0x4c000000,
+        TreeView::linesColourId,                    BG_COLOR.brighter(.6f).getARGB(),
         TreeView::backgroundColourId,               0x00000000,
         TreeView::dragAndDropIndicatorColourId,     0x80ff0000,
         TreeView::selectedItemBackgroundColourId,   0x00000000,

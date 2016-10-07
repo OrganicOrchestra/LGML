@@ -666,18 +666,17 @@ Path LookAndFeelOO::getCrossShape (const float height)
 void LookAndFeelOO::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<float>& area,
                                                Colour /*backgroundColour*/, bool isOpen, bool /*isMouseOver*/)
 {
-    const int boxSize = roundToInt (jmin (16.0f, area.getWidth(), area.getHeight()) * 0.7f) | 1;
-
+    const int boxSize = roundToInt (jmin (16.0f, area.getWidth(), area.getHeight()) * 0.5f) | 1;
     const int x = ((int) area.getWidth()  - boxSize) / 2 + (int) area.getX();
     const int y = ((int) area.getHeight() - boxSize) / 2 + (int) area.getY();
     const int w = boxSize;
     const int h = boxSize;
 
-    g.setColour (Colour (0xe5ffffff));
-    g.fillRect (x, y, w, h);
+    g.setColour (isOpen?HIGHLIGHT_COLOR:HIGHLIGHT_COLOR.brighter());
+    g.fillRoundedRectangle (x, y, w, h,2.f);
 
-    g.setColour (Colour (0x80000000));
-    g.drawRect (x, y, w, h);
+    g.setColour (HIGHLIGHT_COLOR.darker(.3f));
+    g.drawRoundedRectangle (x, y, w, h,2.f,1.f);
 
     const float size = boxSize / 2 + 1.0f;
     const float centre = (float) (boxSize / 2);

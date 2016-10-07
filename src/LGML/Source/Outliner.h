@@ -17,11 +17,13 @@
 #include "InspectableComponent.h"
 
 class OutlinerItem;
-class OutlinerItemComponent : public InspectableComponent
+class OutlinerItemComponent : public InspectableComponent, public SettableTooltipClient
 {
 public:
 	OutlinerItemComponent(OutlinerItem * item);
 	OutlinerItem * item;
+	
+	Label label;
 	
 	void paint(Graphics &g) override;
 	void mouseDown(const MouseEvent &e) override;
@@ -39,12 +41,8 @@ public:
 	Controllable * controllable;
 	InspectableComponent * inspectable;
 
-	~OutlinerItem();
 
-	// Inherited via TreeViewItem
-	void paintItem(Graphics &g, int width, int height) override;
 	virtual bool mightContainSubItems() override;
-	void itemClicked(const MouseEvent &e) override;
 
 	Component * createItemComponent() override;
 };
@@ -60,8 +58,12 @@ public:
 	TreeView treeView;
 	ScopedPointer<OutlinerItem> rootItem;
 
+	bool showHiddenContainers; //include or exclude in treeview the "skipInAddress" containers (may be later exposed to user as an option)
+
 	void resized() override;
 	void paint(Graphics &g) override;
+
+	
 
 	void rebuildTree();
 	void buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer);
