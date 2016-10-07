@@ -616,7 +616,7 @@ int LookAndFeelOO::getMinimumScrollbarThumbSize (ScrollBar& scrollbar)
 
 int LookAndFeelOO::getDefaultScrollbarWidth()
 {
-    return 18;
+    return 10;
 }
 
 int LookAndFeelOO::getScrollbarButtonSize (ScrollBar& scrollbar)

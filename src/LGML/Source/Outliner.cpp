@@ -22,7 +22,7 @@ Outliner::Outliner(const String &contentName) : ShapeShifterContent(contentName)
 	rootItem = new OutlinerItem(&getEngine());
 	treeView.setRootItem(rootItem);
 	addAndMakeVisible(treeView);
-
+	treeView.getViewport()->setScrollBarThickness(10);
 	rebuildTree();
 }
 
@@ -34,7 +34,9 @@ Outliner::~Outliner()
 
 void Outliner::resized()
 {
-	treeView.setBounds(getLocalBounds());
+	Rectangle<int> r = getLocalBounds();
+	r.removeFromTop(20);
+	treeView.setBounds(r);
 }
 
 void Outliner::paint(Graphics & g)
