@@ -136,9 +136,7 @@ void AudioDeviceOutNodeContentUI::removeLastVuMeter()
 }
 void AudioDeviceOutNodeContentUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
-    if(p==audioOutNode->desiredNumAudioOutput){
-        updateVuMeters();
-    }
+
 	int index = 0;
 	for (auto &m : muteToggles)
 	{
@@ -154,3 +152,5 @@ void AudioDeviceOutNodeContentUI::numAudioOutputChanged(ConnectableNode *, int)
 {
 	updateVuMeters();
 }
+
+

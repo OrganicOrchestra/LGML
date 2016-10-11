@@ -90,6 +90,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
         NodeManager::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
 #else
         generatePluginFromDescription(pd);
+        triggerAsyncUpdate();
 #endif
       }
 

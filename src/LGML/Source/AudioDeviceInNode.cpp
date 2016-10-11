@@ -36,6 +36,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 
 
     lastNumberOfInputs = 0;
+  setPreferedNumAudioOutput(desiredNumAudioInput->intValue());
     
 
 
@@ -78,7 +79,7 @@ void AudioDeviceInNode::setParentNodeContainer(NodeContainer * parent){
   NodeBase::setParentNodeContainer(parent);
   jassert(parent == NodeManager::getInstance()->mainContainer);
   AudioGraphIOProcessor::setRateAndBufferSizeDetails(NodeBase::getSampleRate(), NodeBase::getBlockSize());
-//  updateVolMutes();
+  updateVolMutes();
 }
 
 
