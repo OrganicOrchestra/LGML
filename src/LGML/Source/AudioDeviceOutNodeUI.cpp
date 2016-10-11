@@ -107,8 +107,9 @@ void AudioDeviceOutNodeContentUI::addVuMeter()
     vuMeters.add(v);
 
     int curVuMeterNum = muteToggles.size();
-    if(curVuMeterNum<audioOutNode->volumes.size()){
+
     BoolToggleUI * b = audioOutNode->outMutes[curVuMeterNum]->createToggle();
+
     b->invertVisuals = true;
     muteToggles.add(b);
     addAndMakeVisible(b);
@@ -118,10 +119,7 @@ void AudioDeviceOutNodeContentUI::addVuMeter()
     vol->orientation = FloatSliderUI::Direction::VERTICAL;
     volumes.add(vol);
     addAndMakeVisible(vol);
-    }
-    else{
-        jassertfalse;
-    }
+
 }
 
 void AudioDeviceOutNodeContentUI::removeLastVuMeter()

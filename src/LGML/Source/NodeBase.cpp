@@ -272,16 +272,27 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   {
 
     if (parentNodeContainer != nullptr){
+      {
 			const ScopedLock lk( parentNodeContainer->innerGraph->getCallbackLock());
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());
-      parentNodeContainer->updateAudioGraph(false);
+
+
+
 			totalNumInputChannels = getTotalNumInputChannels();
+      parentNodeContainer->updateAudioGraph(false);
       if(oldNumChannels!=getTotalNumInputChannels()){
         // numChannelsChanged is called within the lock so that Nodes can update freely their memory used in processblock 
         numChannelsChanged();
       }
+    }
+//    if(ContainerInNode* n = dynamic_cast<ContainerInNode*>(this)){
+//      n->parentNodeContainer->setPreferedNumAudioInput(totalNumInputChannels);
+//    }
+    if(ContainerOutNode* n = dynamic_cast<ContainerOutNode*>(this)){
+      n->parentNodeContainer->setPreferedNumAudioOutput(totalNumInputChannels);
+    }
     }
     else{
       // here is only if the Node sets a default prefered audio Input (in its constructor)
@@ -330,24 +341,43 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 
     if (parentNodeContainer != nullptr){
 //      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
+      {
       const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
       setPlayConfigDetails(getTotalNumInputChannels(), num,
                            getSampleRate(),
                            getBlockSize());
 
-      parentNodeContainer->updateAudioGraph(false);
+
+
+      totalNumOutputChannels = getTotalNumOutputChannels();
+        parentNodeContainer->updateAudioGraph(false);
+        if(oldNumChannels!=totalNumOutputChannels){
+          numChannelsChanged();
+        }
+      }
+//      if(ContainerOutNode* n = dynamic_cast<ContainerOutNode*>(this)){
+//        n->parentNodeContainer->setPreferedNumAudioOutput(totalNumOutputChannels);
+//      }
+      if(ContainerInNode* n = dynamic_cast<ContainerInNode*>(this)){
+        n->parentNodeContainer->setPreferedNumAudioInput(totalNumOutputChannels);
+      }
+
 //      parentNodeContainer->getAudioGraph()->suspendProcessing(false);
     }
     else{
       setPlayConfigDetails(getTotalNumInputChannels(), num,
                            getSampleRate(),
                            getBlockSize());
+totalNumOutputChannels = getTotalNumOutputChannels();
+      if(oldNumChannels!=totalNumOutputChannels){
+        numChannelsChanged();
+      }
 
     }
   }
 
   rmsValuesOut.clear();
-  totalNumOutputChannels = getTotalNumOutputChannels();
+
   for (int i = 0; i < totalNumOutputChannels; i++) rmsValuesOut.add(0);
 
 
@@ -366,9 +396,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
   }
 
   nodeListeners.call(&ConnectableNodeListener::numAudioOutputChanged,this,num);
-  if(oldNumChannels!=totalNumOutputChannels){
-    numChannelsChanged();
-  }
+
   return true;
 }
 

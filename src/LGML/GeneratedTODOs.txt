@@ -7,9 +7,9 @@
  ///////////////////////////////////////
 
 
-DataInNode.cpp
-	line : 46
-		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
+TimeManager.cpp
+	line : 405
+		//TODO: check
 
 
 ControllableContainer.cpp
@@ -38,6 +38,11 @@ NodeBase.cpp
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
+EngineFileDocument.cpp
+	line : 50
+		// TODO handle quick reloading of file
+
+
 VuMeter.h
 	line : 18
 		//TODO, move to more common place for use in other components
@@ -50,20 +55,20 @@ MainComponentCommands.cpp
 
 
 NodeContainer.cpp
-	line : 525
+	line : 281
+		//@ben remove recursive for now (not useful and duplicating values...)
+		//
+		//    for (auto &n : nodes) n->saveCurrentPreset();
+
+	line : 527
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
 
-	line : 365
+	line : 367
 		// TODO nicely handle file format errors?
-
-	line : 279
-		//@ben remove recursive for now (not useful and duplicating values...)
-		//
-		//    for (auto &n : nodes) n->saveCurrentPreset();
 
 
 TimeManager.h
@@ -103,9 +108,9 @@ LooperNode.cpp
 		// handle multiples channels outs
 
 
-TimeManager.cpp
-	line : 405
-		//TODO: check
+DataInNode.cpp
+	line : 46
+		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
 
 
 MIDIController.cpp

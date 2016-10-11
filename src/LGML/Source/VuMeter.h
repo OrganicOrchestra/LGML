@@ -75,7 +75,7 @@ public:
     if(!isActive){setVoldB(0);return;}
     // allow a +6dB headRoom
     float newVoldB = rmsToDB_6dBHR(value);//jmap<float>(20.0f*log10(value / 0.74f), 0.0f, 6.0f, 0.85f, 1.0f);
-    newVoldB = jmap<float> (newVoldB,-20.0f,6.0f,0.0f,1.0f);
+    newVoldB = jmap<float> (newVoldB,-40.0f,6.0f,0.0f,1.0f);
 
     if ((newVoldB >= 0 || voldB!=0) && std::abs(newVoldB - voldB)>0.02f) {
       setVoldB(jmax(0.0f,newVoldB));

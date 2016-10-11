@@ -30,7 +30,8 @@ nodeChangeNotifier(10000)
   saveAndLoadRecursiveData = false;
   innerGraph = new AudioProcessorGraph();
   innerGraph->releaseResources();
-
+  setPreferedNumAudioOutput(2);
+  setPreferedNumAudioInput(2);
 #ifdef MULTITHREADED_AUDIO
   graphJob = new GraphJob(innerGraph,name);
   nodeManager = nullptr;
@@ -77,7 +78,8 @@ void NodeContainer::clear(bool recreateContainerNodes)
 
   containerInNode = nullptr;
   containerOutNode = nullptr;
-
+  setPreferedNumAudioOutput(2);
+  setPreferedNumAudioInput(2);
 
   if (recreateContainerNodes && parentNodeContainer != nullptr)
   {
@@ -553,7 +555,7 @@ void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float 
 void NodeContainer::onContainerParameterChanged(Parameter * p)
 {
 
-    ConnectableNode::onContainerParameterChanged(p);
+    NodeBase::onContainerParameterChanged(p);
 
 }
 
