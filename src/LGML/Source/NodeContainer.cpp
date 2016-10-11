@@ -552,12 +552,21 @@ void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float 
 
 void NodeContainer::onContainerParameterChanged(Parameter * p)
 {
-  NodeBase::onContainerParameterChanged(p);
+
+    ConnectableNode::onContainerParameterChanged(p);
 
 }
 
+
+
+
 void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var & v) {
   NodeBase::onContainerParameterChangedAsync(p ,v);
+    if (p == enabledParam)
+    {
+        
+        triggerAsyncUpdate();
+    }
 
 };
 

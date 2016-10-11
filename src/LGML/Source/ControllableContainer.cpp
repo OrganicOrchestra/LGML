@@ -491,7 +491,10 @@ PresetManager::Preset* ControllableContainer::saveNewPreset(const String & _name
 
 bool ControllableContainer::saveCurrentPreset()
 {
-  if (currentPreset == nullptr) return false;
+    if (currentPreset == nullptr){
+        jassertfalse;
+        return false;
+    }
 
   for (auto &pv : currentPreset->presetValues)
   {
@@ -548,6 +551,7 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
+
   onContainerParameterChanged(p);
 
   if (p->isControllableExposed) dispatchFeedback(p);
@@ -556,6 +560,7 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 
 void ControllableContainer::triggerTriggered(Trigger * t)
 {
+
 	if (t == savePresetTrigger)
 	{
 		saveCurrentPreset();
@@ -566,8 +571,11 @@ void ControllableContainer::triggerTriggered(Trigger * t)
 	}
 
     if (t->isControllableExposed) dispatchFeedback(t);
-}
+
 	
+
+}
+
 
 void ControllableContainer::addParameterInternal(Parameter * p)
 {

@@ -45,7 +45,9 @@ public:
     virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
 
+
 class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public Trigger::Listener, public ControllableContainerListener
+
 {
 public:
     ControllableContainer(const String &niceName);
@@ -184,6 +186,7 @@ protected :
 
 private:
 
+  
 
     void notifyStructureChanged();
   void newMessage(const Parameter::ParamWithValue&)override;

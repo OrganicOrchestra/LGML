@@ -79,6 +79,7 @@ public NodeConnection::Listener,
 public ConnectableNode::RMSListener,
 public ParameterProxy::ParameterProxyListener,
 public AsyncUpdater
+
 {
 public:
   NodeContainer(const String &name = "Container");
