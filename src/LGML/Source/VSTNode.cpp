@@ -91,6 +91,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
 #else
         generatePluginFromDescription(pd);
         triggerAsyncUpdate();
+
 #endif
       }
 
@@ -291,12 +292,14 @@ void VSTNode::setStateInformation(const void* data, int sizeInBytes) {
 };
 
 void VSTNode::loadPresetInternal(PresetManager::Preset * preset){
-  presetToLoad = preset;
-  var v = presetToLoad->getPresetValue("/rawData");
-  jassert(v.isUndefined() || v.isString());
-  MemoryBlock m;
-  m.fromBase64Encoding(v.toString());
-  setStateInformation(m.getData(),(int)m.getSize());
+
+    presetToLoad = preset;
+   
+    var v = presetToLoad->getPresetValue("/rawData");
+    jassert(v.isUndefined() || v.isString());
+    MemoryBlock m;
+    m.fromBase64Encoding(v.toString());
+    setStateInformation(m.getData(),(int)m.getSize());
 
 };
 

@@ -21,6 +21,7 @@ public NodeBase,
 public AudioProcessorListener,
 public MIDIListener,
 public AsyncUpdater // end of vst loading
+
 {
 
 public:
@@ -68,7 +69,6 @@ public:
 
   PresetManager::Preset * presetToLoad;
 
-  //    String getPresetFilter() override;
 
 
   bool blockFeedback;

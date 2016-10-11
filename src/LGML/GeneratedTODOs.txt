@@ -13,7 +13,7 @@ DataInNode.cpp
 
 
 ControllableContainer.cpp
-	line : 633
+	line : 641
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -21,7 +21,7 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 540
+	line : 543
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 	line : 447
@@ -117,7 +117,7 @@ MIDIController.cpp
 
 
 ControllableContainer.h
-	line : 147
+	line : 149
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -161,7 +161,7 @@ NodeManager.h
 
 
 Engine.h
-	line : 136
+	line : 137
 		// TODO implement progression
 
 
