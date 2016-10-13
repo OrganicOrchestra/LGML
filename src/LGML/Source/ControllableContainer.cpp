@@ -501,7 +501,7 @@ bool ControllableContainer::saveCurrentPreset()
     Parameter * p = dynamic_cast<Parameter*> (getControllableForAddress(pv->paramControlAddress));
     if (p != nullptr && p!=currentPresetName)
     {
-      pv->presetValue = p->value.clone();
+      pv->presetValue = var(p->value);
     }
   }
   savePresetInternal(currentPreset);

@@ -37,7 +37,7 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
 
         //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
         //vPresets.add(preVal);
-        pre->addPresetValue(p->getControlAddress(container), p->value.clone());
+        pre->addPresetValue(p->getControlAddress(container), var(p->value));
 
     }
 
