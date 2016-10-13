@@ -58,10 +58,13 @@ PresetManager::Preset * PresetManager::getPreset(String filter, const String & n
     return nullptr;
 }
 
-void PresetManager::fillWithPresets(ComboBox * cb,const  String & filter, bool showSaveCurrent) const
+void PresetManager::fillWithPresets(ComboBox * cb,const  String & filter, bool _showSaveCurrent) const
 {
     cb->clear();
-    if(showSaveCurrent) cb->addItem("Save current preset", SaveCurrent);
+    // need to adapt getNumOptions() if we change ids of cb
+//    showSaveCurrent = _showSaveCurrent;
+//    if(showSaveCurrent)
+        cb->addItem("Save current preset", SaveCurrent);
     cb->addItem("Save to new preset", SaveToNew);
     cb->addItem("Reset to default", ResetToDefault);
 

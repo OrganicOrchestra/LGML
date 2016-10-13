@@ -446,7 +446,7 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
 bool ControllableContainer::loadPresetWithName(const String & name)
 {
     // TODO weird feedback when loading preset on parameter presetName
-    if(isLoadingPreset){jassertfalse;return false;}
+    if(isLoadingPreset){return false;}
     if(name=="") return false;
     isLoadingPreset = true;
 

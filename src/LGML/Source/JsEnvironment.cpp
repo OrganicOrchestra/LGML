@@ -378,7 +378,8 @@ void JsEnvironment::updateUserDefinedFunctions(){
 }
 
 void JsEnvironment::parameterValueChanged(Parameter * p) {
-  callFunction("on_"+getJsFunctionNameFromAddress(p->getControlAddress()), p->value,false);
+  if(p)callFunction("on_"+getJsFunctionNameFromAddress(p->getControlAddress()), p->value,false);
+  else{jassertfalse;}
 
 };
 void JsEnvironment::triggerTriggered(Trigger *p){
@@ -403,10 +404,12 @@ void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originCont
 
 
 void JsEnvironment::sendAllParametersToJS(){
-  for(auto & t:listenedTriggers){triggerTriggered(t);}
-  for(auto & t:listenedParameters){parameterValueChanged(t);}
+  for(auto & t:listenedTriggers){if(t.get())triggerTriggered(t);}
+  for(auto & t:listenedParameters){if(t.get())parameterValueChanged(t);}
   for(auto & t:listenedContainers){
+      if(t.get()){
     Array<Controllable*> conts = t->getAllControllables();
     for(auto & c:conts){controllableFeedbackUpdate(t,c);}
+      }
   }
 }

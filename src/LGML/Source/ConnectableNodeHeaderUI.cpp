@@ -287,6 +287,7 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
       PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), originText);
       pm->presets.removeObject(pre);
       updatePresetComboBox(true);
+        node->currentPreset = nullptr;
     } else
     {
       //reselect last Id
