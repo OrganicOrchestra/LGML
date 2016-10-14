@@ -16,6 +16,7 @@
 
 
 const Identifier Controller::controllerTypeIdentifier("controllerType");
+const Identifier Controller::variableNameIdentifier("name");
 
 Controller::Controller(const String &_name) :
 	ControllableContainer(_name)
@@ -63,7 +64,7 @@ void Controller::loadJSONDataInternal(var data)
 		{
 			Parameter * p = new FloatParameter("newVar", "variable", 0);
 			p->replaceSlashesInShortName = false;
-			p->setNiceName(v.getDynamicObject()->getProperty("name"));
+			p->setNiceName(v.getDynamicObject()->getProperty(variableNameIdentifier));
 			addVariable(p);
 		}
 	}

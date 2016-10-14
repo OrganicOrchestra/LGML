@@ -16,7 +16,7 @@
  */
 #ifndef NODEBASE_H_INCLUDED
 #define NODEBASE_H_INCLUDED
-
+#pragma once
 
 
 #include "ConnectableNode.h"
@@ -109,10 +109,12 @@ public:
 
   virtual void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
   virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/ , MidiBuffer& /*midiMessage*/ ) {};
+  virtual void processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
+  int totalNumInputChannels = 0;
+  int totalNumOutputChannels = 0;
+  int maxCommonIOChannels = 0;
   //RMS
-
-
   const float alphaRMS = 0.05f;
   const int samplesBeforeRMSUpdate = 512;
   int curSamplesForRMSInUpdate = 0;

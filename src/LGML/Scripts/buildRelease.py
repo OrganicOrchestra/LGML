@@ -6,6 +6,7 @@ import multiprocessing
 
 
 from PyUtils import *
+from PyUtils import ProJucerUtils
 
 njobs = multiprocessing.cpu_count()
 
@@ -26,8 +27,6 @@ architecture = "i386"
 localExportPath = "../Builds/MacOSX/build/"
 localExportPath = os.path.abspath(localExportPath)+"/"
 
-proJucerPath = "/Applications/ProJucer.app/Contents/MacOS/ProJucer"
-JuceProjectPath = "../LGML.jucer"
 xcodeProjPath = "../Builds/MacOSX/" 
 executable_name = "LGML"+("" if configuration=="Release" else "_"+configuration)
 gitPath = "../../../"
@@ -35,41 +34,9 @@ appPath = xcodeProjPath+"build/"+configuration+"/"+executable_name+".app"
 
 
 
-
-
-	
-
-
-def getVersion():
-	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
-	
 def generateProductBaseName():
-	return executable_name+ "_v"+str(getVersion())
+	return executable_name+ "_v"+str(ProJucerUtils.getVersion())
 
-
-getVersion()
-
-
-def formatCode(sourceFolder):
-	# sourceFolder = os.path.abspath(sourceFolder)
-	# sh(proJucerPath+ " --remove-tabs "+sourceFolder);
-	sh(proJucerPath+ " --tidy-divider-comments "+sourceFolder);
-	sh(proJucerPath+ " --trim-whitespace "+sourceFolder);
-
-def updateVersion():
-	if(bumpVersion):
-		sh(proJucerPath+ " --bump-version " + JuceProjectPath)
-	elif specificVersion:
-		sh(proJucerPath+ " --set-version " +specificVersion+" "+ JuceProjectPath)
-
-	sh(proJucerPath+ " --git-tag-version "+ JuceProjectPath)
-	writeSha();
-
-
-
-def buildJUCE(JuceProjectPath):
-	sh(proJucerPath+" -h")
-	sh(proJucerPath+ " --resave "+JuceProjectPath)
 
 
 def buildApp(xcodeProjPath,configuration,appPathm,njobs,clean = False):
@@ -86,26 +53,29 @@ def buildApp(xcodeProjPath,configuration,appPathm,njobs,clean = False):
 		+" xcodebuild -project LGML.xcodeproj" \
 		+" -configuration "+configuration
 		+" -arch "+architecture
-		+" -verbose -jobs "+str(njobs))
-
-def createAppdmgJSON(appPath ,destPath):
-	jdata =  {
-  	"title": "Le Grand Mechant Loop",
-  	"icon": "",
-  	"background": "../Resources/grandlouloup.png",
-  	"icon-size": 80,
-	"contents": [
-	{ "x": 448, "y": 304, "type": "link", "path": "/Applications" },
-	{ "x": 192, "y": 304, "type": "file", "path": appPath}]
-	}
+		+" -jobs "+str(njobs))
 
 
-	with open(destPath,'w') as f:
-		json.dump(jdata,f)
 
 def createDmg(exportFileBaseName,appPath):
 	if sh("which appdmg")!="":
 		jsonPath = "dmgExport.json"
+
+		def createAppdmgJSON(appPath ,destPath):
+			jdata =  {
+		  	"title": "Le Grand Mechant Loop",
+		  	"icon": "",
+		  	"background": "../Resources/grandlouloup.png",
+		  	"icon-size": 80,
+			"contents": [
+			{ "x": 448, "y": 304, "type": "link", "path": "/Applications" },
+			{ "x": 192, "y": 304, "type": "file", "path": appPath}]
+			}
+
+
+			with open(destPath,'w') as f:
+				json.dump(jdata,f)
+
 		createAppdmgJSON(appPath,jsonPath)
 		dmgPath = exportFileBaseName+".dmg"
 		sh("rm -f \""+dmgPath+"\"")
@@ -130,16 +100,17 @@ def sendToOwnCloud(originPath,destPath):
 # print executeCmd(proJucerPath+ " --status "+ projectPath)
 
 # formatCode("../Source");
-updateVersion();
-buildJUCE(JuceProjectPath);
-buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
+if __name__ == "__main__":
+	ProJucerUtils.updateVersion(bumpVersion,specificVersion);
+	ProJucerUtils.buildJUCE();
+	buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
 
-localPath = localExportPath+generateProductBaseName();
-dmgPath = createDmg(localPath,appPath);
-for p in localExportPath2:
-	sh("cp "+dmgPath+" "+p+generateProductBaseName()+".dmg")
-if sendToOwncloud:
-	ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
-	sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
-# gitCommit()
+	localPath = localExportPath+generateProductBaseName();
+	dmgPath = createDmg(localPath,appPath);
+	for p in localExportPath2:
+		sh("cp "+dmgPath+" "+p+generateProductBaseName()+".dmg")
+	if sendToOwncloud:
+		ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
+		sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
+	# gitCommit()
 

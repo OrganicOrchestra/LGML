@@ -13,12 +13,14 @@
 #include "NodeContainer.h"
 
 AudioDeviceManager& getAudioDeviceManager();
-
+bool isEngineLoadingFile();
 juce_ImplementSingleton(NodeManager);
 
 NodeManager::NodeManager() :
+  ThreadPool(4),
     ControllableContainer("Node Manager")
 {
+  isLoading = false;
 	saveAndLoadRecursiveData = false;
     setCustomShortName("node");
 
@@ -57,11 +59,30 @@ var NodeManager::getJSONData()
 
 void NodeManager::loadJSONDataInternal(var data)
 {
+  jassert(isLoading ==false);
+  jobsWatcher = new JobsWatcher(this);
+  isLoading = true;
 	clear();
 	mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
+
 }
 
 void NodeManager::rebuildAudioGraph() {
+  if(!isLoading && !isEngineLoadingFile()){
   mainContainer->updateAudioGraph();
+  }
 	
+}
+
+
+void NodeManager::notifiedJobsEnded(){
+  isLoading = false;
+  rebuildAudioGraph();
+  nodeManagerListeners.call(&NodeManagerListener::managerEndedLoading);
+
+}
+
+void NodeManager::notifiedJobsProgressed(float progress)
+{
+	nodeManagerListeners.call(&NodeManagerListener::managerProgressedLoading, progress);
 }

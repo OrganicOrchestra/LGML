@@ -20,7 +20,7 @@ public :
     TriggerUI(Trigger * trigger);
     virtual ~TriggerUI();
 
-    Trigger*  trigger;
+    WeakReference<Trigger>  trigger;
 	bool showLabel;
 
     // Inherited via AsyncListener

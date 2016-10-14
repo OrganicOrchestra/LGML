@@ -65,11 +65,16 @@ ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
 
 	ControllerUI * cui = controller->createUI();
     controllersUI.add(cui);
-    addAndMakeVisible(cui);
 
+  {
+    MessageManagerLock ml;
+    addAndMakeVisible(cui);
+  resized();
+
+  }
 	cui->selectThis();
 
-	resized();
+
     return cui;
 }
 
@@ -82,9 +87,13 @@ void ControllerManagerUI::removeControllerUI(Controller * controller)
         return;
     }
 
+  {
+    MessageManagerLock ml;
     controllersUI.removeObject(cui);
     removeChildComponent(getIndexOfChildComponent(cui));
     resized();
+  }
+
 }
 
 ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)

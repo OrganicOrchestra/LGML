@@ -40,9 +40,7 @@ void ContainerOutNode::setNumAudioChannels(int channels)
 
   // only handle one container in per container for now
   parentNodeContainer->setPreferedNumAudioOutput(channels);
-
 	setPreferedNumAudioInput(channels);
-	setPreferedNumAudioOutput(0);
 }
 
 void ContainerOutNode::setParentNodeContainer(NodeContainer * nc)

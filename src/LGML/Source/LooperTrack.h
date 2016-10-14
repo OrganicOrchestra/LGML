@@ -90,7 +90,7 @@ public:
     void internalTrackStateChanged(const TrackState &state) {
 
       stateToBeNotified = state;
-      trackStateChanged(state);
+//      trackStateChanged(state);
       notifyStateChange = true;
       triggerAsyncUpdate();
 
@@ -125,7 +125,7 @@ public:
     int64 lastTrackTime=0;
 
     // dispatched to listeners
-    virtual void trackStateChanged(const TrackState &) {};
+//    virtual void trackStateChanged(const TrackState &) {};
     virtual void trackStateChangedAsync(const TrackState & state) = 0;
     virtual void trackTimeChangedAsync(double /*position*/){};
     void setTrackTimeUpdateRateHz(float hz){
@@ -176,8 +176,8 @@ private:
   friend class LooperNode;
   bool someOneIsSolo;
 
-  Atomic<uint64> quantizedRecordEnd, quantizedRecordStart;
-  Atomic<uint64> quantizedPlayStart, quantizedPlayEnd;
+  uint64 quantizedRecordEnd, quantizedRecordStart;
+  uint64 quantizedPlayStart, quantizedPlayEnd;
 
   bool updatePendingLooperTrackState(const uint64 curTime, int blockSize);
   void handleStartOfRecording();

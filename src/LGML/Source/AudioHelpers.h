@@ -11,6 +11,9 @@
 #ifndef AUDIOHELPERS_H_INCLUDED
 #define AUDIOHELPERS_H_INCLUDED
 
+#pragma once
+#pragma warning( disable : 4244 )
+
 
 #define DB0_FOR_01 0.8f
 #define MIN_DB -70.0f
@@ -88,7 +91,7 @@ public:
     fadeOutCount = -1;
   }
   // should be called at each sample to compute resulting fade
-  // usually called before getLastFade to ensure that first getCurrentFade calls after setFadedX contains the new value 
+  // usually called before getLastFade to ensure that first getCurrentFade calls after setFadedX contains the new value
   void incrementFade(int i = 1){
     if(fadeOutCount>0){
       fadeOutCount-=i;
@@ -116,13 +119,13 @@ public:
 
 
 inline void updateRMS(const AudioBuffer<float>& buffer,
-               float &targetRmsValue,
-               Array<float> &targetRMSChannelValues,
-               int numChannels,
-               bool skipChannelComputation = true)
+                      float &targetRmsValue,
+                      Array<float> &targetRMSChannelValues,
+                      int numChannels,
+                      bool skipChannelComputation = true)
 {
   int numSamples = buffer.getNumSamples();
-  
+
   if(targetRMSChannelValues.size()!=numChannels){
     int oldSize = targetRMSChannelValues.size();
     targetRMSChannelValues.resize(numChannels);
@@ -139,36 +142,57 @@ inline void updateRMS(const AudioBuffer<float>& buffer,
   // @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
   const double decayFactor = 0.95;
   const float lowThresh = 0.0001f;
-
-  if(skipChannelComputation){
-    for (int i = numChannels - 1; i >= 0; --i)
-    {
-      // this is very intensive so aproximate RMS by max value
-      globalS = jmax(globalS,FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples))*.7f;
-    }
+  const int downSample = 4;
+  const float factor = .9*downSample*1.0/numSamples;
+  if(buffer.hasBeenCleared()){
+    globalS = 0;
   }
   else{
-    for (int i = numChannels - 1; i >= 0; --i)
-    {
+    if(skipChannelComputation){
+      for (int i = numChannels - 1; i >= 0; --i)
+      {
+        // this is very intensive so aproximate RMS by max value
 
-      float s = FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples)*.7f;
-      targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
-                                 s>lowThresh?targetRMSChannelValues.getUnchecked(i)*(float)decayFactor:
-                                 0);
+        int n = numSamples;
+        float s = 0;
+        while(n-=downSample)
+          s+=fabsf(buffer.getSample(i, n));
+        globalS = jmax(globalS,s*factor);
 
-      globalS = jmax(s, globalS);
+        //      globalS = jmax(globalS,buffer.getMagnitude(i, 0,numSamples)*.7f);
+
+        //      globalS = jmax(globalS,FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples))*.7f;
+      }
     }
+    else{
+
+      for (int i = numChannels - 1; i >= 0; --i)
+      {
+        int n = numSamples;
+        float s = 0;
+        while(n-=downSample)
+          s+=fabsf(buffer.getSample(i, n));
+        s*=factor;
+        //      s/=numSamples
+        //      float s =  buffer.getMagnitude(i, 0,numSamples)*.7f;
+        //      float s = FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples)*.7f;
+        targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
+                                   s>lowThresh?targetRMSChannelValues.getUnchecked(i)*(float)decayFactor:
+                                   0);
+
+        globalS = jmax(s, globalS);
+      }
+    }
+
   }
-
-
   if (globalS > targetRmsValue)
     targetRmsValue = globalS;
   else if (targetRmsValue > lowThresh)
     targetRmsValue *= (float)decayFactor;
   else
     targetRmsValue = 0;
-
-
+  
+  
   
   
 }

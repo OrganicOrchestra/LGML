@@ -215,13 +215,12 @@ void Spat2DNode::updateChannelNames()
 
 void Spat2DNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &)
 {
-	int numInput = getTotalNumInputChannels();
-	int numOutput = getTotalNumOutputChannels();
+
 
 	int numSamples = buffer.getNumSamples();
-	if (numInput == 0) return;
+	if (totalNumInputChannels == 0) return;
 
-	for (int i = 2; i < numOutput; i++)
+	for (int i = 2; i < totalNumOutputChannels; i++)
 	{
 		float influence = outputDatas[i - 2]->elements[0]->value;
 		buffer.copyFrom(i, 0, buffer.getReadPointer(0), numSamples, influence);

@@ -18,6 +18,7 @@ currentViewer(nullptr)
 {
 	nodeManager->addNodeManagerListener(this);
 	setCurrentViewedContainer(nodeManager->mainContainer);
+
 }
 
 NodeManagerUI::~NodeManagerUI()
@@ -74,12 +75,13 @@ void NodeManagerUI::setCurrentViewedContainer(NodeContainer * c)
 		currentViewer = new NodeContainerViewer(c);
 		addAndMakeVisible(currentViewer);
 		currentViewer->setTopLeftPosition(0, 0);
+    currentViewer->setSelected(true);
 
 	}
 	setSize(0, 0);
 	resized();
 	nodeManagerUIListeners.call(&NodeManagerUIListener::currentViewedContainerChanged);
-  grabKeyboardFocus();
+
 }
 void NodeManagerUI::childBoundsChanged(Component * )
 {
@@ -97,5 +99,6 @@ bool NodeManagerUI::keyPressed(const KeyPress & key){
 
     }
   }
+
     return false;
 }

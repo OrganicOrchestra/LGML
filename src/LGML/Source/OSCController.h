@@ -80,7 +80,8 @@ private:
   // should use sendOSC for centralizing every call
   OSCReceiver receiver;
   OSCSender sender;
-  String lastAddressReceived;
+//  String lastAddressReceived;
+  OSCMessage lastMessageReceived;
   bool isProcessingOSC;
 };
 

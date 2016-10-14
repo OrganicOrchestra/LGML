@@ -10,7 +10,7 @@
 
 #ifndef MIDILISTENER_H_INCLUDED
 #define MIDILISTENER_H_INCLUDED
-
+#pragma once
 #include "MIDIManager.h"
 
 // abstract base class that provide midi callback handle and keeps MIDIManager in sync

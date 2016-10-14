@@ -9,6 +9,8 @@
  */
 
 
+#pragma warning( disable : 4244 )
+
 #include "MainComponent.h"
 #include "Engine.h"
 #include "StringUtil.h"
@@ -134,9 +136,10 @@ public:
       startTimer(1000);
 
       setUsingNativeTitleBar (true);
-      MainContentComponent * mainComponent = createMainContentComponent(e);
+      mainComponent = createMainContentComponent(e);
       setContentOwned (mainComponent, true);
       setResizable (true, true);
+    
 
 
 	  int tx = getAppProperties().getCommonSettings(true)->getIntValue("windowX");
@@ -154,7 +157,13 @@ public:
 #if ! JUCE_MAC
       setMenuBar(mainComponent);
 #endif
+
+
     }
+    void focusGained(FocusChangeType cause)override{
+      mainComponent->grabKeyboardFocus();
+    }
+
 
     void closeButtonPressed() override
     {
@@ -181,6 +190,7 @@ public:
 		   }
 	   }
 
+
 	   var boundsVar = var(new DynamicObject());
 	   Rectangle<int> r = getScreenBounds();
 
@@ -204,6 +214,7 @@ public:
      you really have to override any DocumentWindow methods, make sure your
      subclass also calls the superclass's method.
      */
+    MainContentComponent * mainComponent;
 
   private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
@@ -211,6 +222,7 @@ public:
 
 private:
 		ScopedPointer<MainWindow> mainWindow;
+
 
 };
 

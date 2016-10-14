@@ -24,10 +24,18 @@ bool isEngineLoadingFile();
 NodeContainer::NodeContainer(const String &name) :
 containerInNode(nullptr),
 containerOutNode(nullptr),
-NodeBase(name, NodeType::ContainerType,false)
+NodeBase(name, NodeType::ContainerType,false),
+nodeChangeNotifier(10000)
 {
   saveAndLoadRecursiveData = false;
   innerGraph = new AudioProcessorGraph();
+  innerGraph->releaseResources();
+  setPreferedNumAudioOutput(2);
+  setPreferedNumAudioInput(2);
+#ifdef MULTITHREADED_AUDIO
+  graphJob = new GraphJob(innerGraph,name);
+  nodeManager = nullptr;
+#endif
 }
 
 
@@ -35,8 +43,17 @@ NodeContainer::~NodeContainer()
 {
   //connections.clear();
   clear(false);
+    innerGraph->releaseResources();
 }
+void NodeContainer::clear(){
 
+//    innerGraph->clear();
+    clear(false);
+
+  
+  innerGraph->releaseResources();
+
+}
 void NodeContainer::clear(bool recreateContainerNodes)
 {
 
@@ -47,14 +64,22 @@ void NodeContainer::clear(bool recreateContainerNodes)
 
   while (nodes.size() > 0)
   {
+    if(nodes[0].get()){
     nodes[0]->remove();
+    }
+    else{
+      jassertfalse;
+      nodes.remove(0);
+    }
+    
 
   }
 
 
   containerInNode = nullptr;
   containerOutNode = nullptr;
-
+  setPreferedNumAudioOutput(2);
+  setPreferedNumAudioInput(2);
 
   if (recreateContainerNodes && parentNodeContainer != nullptr)
   {
@@ -94,6 +119,7 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeNa
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName)
 {
   nodes.add(n);
+  
   n->setParentNodeContainer(this);
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n))
@@ -110,7 +136,8 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
 
   addChildControllableContainer(n); //ControllableContainer
 
-  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
+  nodeChangeNotifier.addMessage(new NodeChangeMessage(n,true));
+//  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
   return n;
 }
 
@@ -126,16 +153,18 @@ bool NodeContainer::removeNode(ConnectableNode * n)
   n->removeConnectableNodeListener(this);
   removeChildControllableContainer(n);
 
-  nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
+  nodeChangeNotifier.addMessage(new NodeChangeMessage(n,false));
+//  nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
   nodes.removeAllInstancesOf(n);
 
   n->clear();
-  n->removeFromAudioGraph();
+
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n)) nodeContainers.removeFirstMatchingValue(nc);
 
+  n->removeFromAudioGraph();
   //if(NodeManager::getInstanceWithoutCreating() != nullptr)
-  getAudioGraph()->removeNode(n->audioNode);
+//  getAudioGraph()->removeNode(n->audioNode);
 
   return true;
 }
@@ -152,22 +181,59 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
 void NodeContainer::updateAudioGraph(bool /*lock*/) {
 
 
-  if(parentNodeContainer){
-    const ScopedLock lkp (parentNodeContainer->getCallbackLock());
-    //    const ScopedLock lk( getAudioGraph()->getCallbackLock());
+
+  //  if(parentNodeContainer){
+  //    if(!lock && !parentNodeContainer->getCallbackLock().tryEnter()){
+  //      parentNodeContainer->getCallbackLock().exit();
+  //      triggerAsyncUpdate();
+  //      return;
+  //    }
+  //    const ScopedLock lkp (parentNodeContainer->getCallbackLock());
+  //
+  //    getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+  //    getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+  //  }
+  //  else {
+
+
+  // if no parent we are an audiograph inside gobal graphplayer
+
+  if(!MessageManager::getInstance()->isThisTheMessageThread()){
+    if(lock){
+      const ScopedLock lk (getAudioGraph()->getCallbackLock());
+    getAudioGraph()->suspendProcessing(true);
+    triggerAsyncUpdate();
+    }
+    else{
+      getAudioGraph()->suspendProcessing(true);
+      triggerAsyncUpdate();
+
+    }
+    return;
+  }
+
+  if(lock){
+  const ScopedLock lk (getAudioGraph()->getCallbackLock());
+  getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+  getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+  getAudioGraph()->suspendProcessing(false);
+  }
+  else{
     getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
     getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+    getAudioGraph()->suspendProcessing(false);
   }
-  else {
-    // if no parent we are an audiograph inside gobal graphplayer
-    const ScopedLock lk( getAudioGraph()->getCallbackLock());
-    getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
 
-  }
+  //  }
 
 
 }
-
+void NodeContainer::handleAsyncUpdate(){
+ if(!isEngineLoadingFile())
+   updateAudioGraph();
+  else
+    triggerAsyncUpdate();
+}
 
 int NodeContainer::getNumConnections() {
   return connections.size();
@@ -179,6 +245,7 @@ ParameterProxy * NodeContainer::addParamProxy()
   ControllableContainer::addParameter(p);
   proxyParams.add(p);
   p->addParameterProxyListener(this);
+
   nodeContainerListeners.call(&NodeContainerListener::paramProxyAdded, p);
 
   return p;
@@ -370,8 +437,8 @@ ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
 
   node->loadJSONData(nodeData);
   node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
-
-  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, node);
+  nodeChangeNotifier.addMessage(new NodeChangeMessage(node,true));
+//  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, nsode);
 
   return node;
 
@@ -431,9 +498,10 @@ NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, Conn
   NodeConnection * c = new NodeConnection(tSourceNode, tDestNode, connectionType);
   connections.add(c);
   c->addConnectionListener(this);
-//  updateAudioGraph();
+  //  updateAudioGraph();
   // DBG("Dispatch connection Added from NodeManager");
-  nodeContainerListeners.call(&NodeContainerListener::connectionAdded, c);
+  nodeChangeNotifier.addMessage(new NodeChangeMessage(c,true));
+//  nodeContainerListeners.call(&NodeContainerListener::connectiosnAdded, c);
 
   return c;
 }
@@ -445,8 +513,8 @@ bool NodeContainer::removeConnection(NodeConnection * c)
   c->removeConnectionListener(this);
 
   connections.removeObject(c);
-
-  nodeContainerListeners.call(&NodeContainerListener::connectionRemoved, c);
+nodeChangeNotifier.addMessage(new NodeChangeMessage(c,false));
+//  nodeContainerListeners.call(&NodeContainerListener::connectionRemoved, c);
 
   return true;
 }
@@ -486,12 +554,21 @@ void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float 
 
 void NodeContainer::onContainerParameterChanged(Parameter * p)
 {
-  NodeBase::onContainerParameterChanged(p);
+
+    NodeBase::onContainerParameterChanged(p);
 
 }
 
+
+
+
 void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var & v) {
   NodeBase::onContainerParameterChangedAsync(p ,v);
+    if (p == enabledParam)
+    {
+        
+        triggerAsyncUpdate();
+    }
 
 };
 
@@ -522,37 +599,49 @@ void NodeContainer::numChannelsChanged(){
 }
 void NodeContainer::prepareToPlay(double d, int i) {
   NodeBase::prepareToPlay(d, i);
-  if(parentNodeContainer){
-
-    jassert(getSampleRate());
-    jassert(getBlockSize());
-//    numChannelsChanged();
-    {
-      const ScopedLock lk(getAudioGraph()->getCallbackLock());
-      getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
-      getAudioGraph()->prepareToPlay(d, i);
-    }
-    // TODO :  handle change of in out numChannels
-    // wiill need to call on change
-    //    parentNodeContainer->prepareToPlay(d,i);
-    //    parentNodeContainer->suspendProcessing(false);
 
 
+  jassert(getSampleRate());
+  jassert(getBlockSize());
+  //    numChannelsChanged();
+  {
+    const ScopedLock lk(innerGraph->getCallbackLock());
+    getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+    getAudioGraph()->prepareToPlay(d, i);
   }
-  else{
-    // mainContainer
-    const ScopedLock lk(getAudioGraph()->getCallbackLock());
-    jassert(d);//ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples()
-    jassert(i);//ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples()
-    getAudioGraph()->prepareToPlay(d,i);
-  }
-  
-  
-  
+
+
+
+
 };
 
 
 
+
+void NodeContainer::processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) {
+#ifdef MULTITHREADED_AUDIO
+  if(!nodeManager){
+    nodeManager = NodeManager::getInstance();
+  }
+  if(parentNodeContainer &&(nodeManager->getNumJobs()<4)){
+    const ScopedLock lk(innerGraph->getCallbackLock());
+    graphJob->setBuffersToReferTo(buffer, midiMessage);
+    nodeManager->addJob(graphJob,false);
+    while(nodeManager->contains(graphJob)){}
+  }
+  else{
+    const ScopedLock lk(innerGraph->getCallbackLock());
+    getAudioGraph()->processBlock(buffer,midiMessage);
+  }
+#else
+  const ScopedLock lk(innerGraph->getCallbackLock());
+  getAudioGraph()->processBlock(buffer,midiMessage);
+#endif
+};
+void NodeContainer::processBlockBypassed(AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessages*/){
+  //    getAudioGraph()->processBlockBypassed(buffer,midiMessages);
+  
+}
 
 
 

@@ -10,6 +10,7 @@
 
 #ifndef CONNECTABLENODE_H_INCLUDED
 #define CONNECTABLENODE_H_INCLUDED
+#pragma once
 
 #include "ControllableContainer.h"
 #include "NodeFactory.h"

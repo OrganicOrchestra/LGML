@@ -78,6 +78,7 @@ class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener
   ScopedPointer<IntStepperUI> quantizStepper;
   ScopedPointer<TriggerBlinkUI> playTrig,stopTrig,tapTempo;
   ScopedPointer<BoolToggleUI> click;
+  ScopedPointer<FloatSliderUI> clickVolumeUI;
 
 
 

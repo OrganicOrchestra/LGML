@@ -22,6 +22,11 @@ NodeBase("AudioMixerNode",NodeType::AudioMixerType)
     numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
     oneToOne = addBoolParameter("OneToOne", "is this mixer only concerned about one to one volumes (diagonal)", false);
 
+	
+	setPreferedNumAudioInput(numberOfInput->intValue());
+	setPreferedNumAudioOutput(numberOfOutput->intValue());
+	numChannelsChanged();
+
 
 }
 
@@ -29,13 +34,8 @@ void AudioMixerNode::setParentNodeContainer(NodeContainer * c){
   NodeBase::setParentNodeContainer(c);
   updateInput();
   updateOutput();
-
-
   numChannelsChanged();
-  outBuses[0]->volumes[0]->setValue(DB0_FOR_01);
-  outBuses[0]->volumes[1]->setValue(0);
-  outBuses[1]->volumes[0]->setValue(0);
-  outBuses[1]->volumes[1]->setValue(DB0_FOR_01);
+
 }
 
 void AudioMixerNode::onContainerParameterChanged(Parameter *p){
@@ -50,14 +50,7 @@ void AudioMixerNode::onContainerParameterChanged(Parameter *p){
 }
 
 void AudioMixerNode::updateInput(){
-//    {
-//        const ScopedLock lk (parentNodeContainer->getCallbackLock());
-//        suspendProcessing(true);
-//        for(auto & bus:outBuses){
-//            bus->setNumInput(numberOfInput->intValue());
-//        }
-//
-//    }
+    
     setPreferedNumAudioInput(numberOfInput->intValue());
 //    suspendProcessing(false);
 
@@ -116,8 +109,7 @@ void AudioMixerNode::updateOutput(){
 
 void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&) {
 
-    int numInput = getTotalNumInputChannels();
-    int numOutput = getTotalNumOutputChannels();
+
   int numBufferChannels = buffer.getNumChannels();
 
     if(!(outBuses.size()<=numBufferChannels))
@@ -131,7 +123,7 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
     cachedBuffer.setSize(outBuses.size(), numSamples);
 
 
-    if(numInput>0 && numOutput > 0){
+    if(totalNumOutputChannels>0 && totalNumInputChannels > 0){
 
         if(oneToOne->boolValue()){
             for(int i = outBuses.size() -1 ; i >=0 ; --i){
@@ -151,7 +143,7 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
                 cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
                                               outBuses[i]->lastVolumes[0],outBuses[i]->logVolumes[0]);
 
-                for(int j = numInput-1 ; j >0  ; --j){
+                for(int j = totalNumInputChannels-1 ; j >0  ; --j){
                     cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples,
                                                  outBuses[i]->lastVolumes[j],outBuses[i]->logVolumes[j]);
                 }
@@ -160,7 +152,7 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
 
         for(int i = outBuses.size() -1 ; i >=0 ; --i){
-            for(int j = numInput-1 ; j>=0 ;--j){
+            for(int j = totalNumInputChannels-1 ; j>=0 ;--j){
                 outBuses[i]->lastVolumes.set(j, outBuses[i]->logVolumes[j]);
             }
 

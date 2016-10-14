@@ -16,7 +16,24 @@
 #include "TimeManager.h"
 #include "PluginWindow.h"//keep
 
+
 AudioDeviceManager& getAudioDeviceManager();
+
+
+class VSTLoaderJob : public ThreadPoolJob{
+
+  public :
+  VSTLoaderJob(PluginDescription *_pd,VSTNode * node):ThreadPoolJob("VSTLoader : "+node->shortName),pd(_pd),originNode(node){}
+  PluginDescription * pd;
+  VSTNode * originNode;
+
+  JobStatus runJob() override{
+    originNode->generatePluginFromDescription(pd);
+    originNode->triggerAsyncUpdate();
+    return JobStatus::jobHasFinished;
+  }
+  
+};
 
 
 VSTNode::VSTNode() :
@@ -30,6 +47,9 @@ blockFeedback(false)
   midiActivityTrigger->isControllableExposed = false;
   midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
   midiPortNameParam->hideInEditor = true;
+
+  processWhenBypassed = addBoolParameter("processWhenBypassed", "some effects (Reverbs ...) need to process constantly even when bypassed", false);
+  bProcessWhenBypassed = processWhenBypassed->boolValue();
 }
 
 
@@ -47,14 +67,34 @@ void VSTNode::closePluginWindow(){
   PluginWindow::closeCurrentlyOpenWindowsFor (this);
 }
 
+void VSTNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer&){
+
+  if (innerPlugin) {
+    incomingMidi.clear();
+    messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
+    innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
+    if(bProcessWhenBypassed){
+      innerPlugin->processBlock(buffer, incomingMidi);
+    }
+  }
+
+}
+
 void VSTNode::onContainerParameterChanged(Parameter * p) {
   NodeBase::onContainerParameterChanged(p);
   if(p==identifierString){
     if(identifierString->value!=""){
       PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
       if(pd){
+#ifdef VSTLOADING_THREADED
+        NodeManager::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
+#else
         generatePluginFromDescription(pd);
+        triggerAsyncUpdate();
+
+#endif
       }
+
       else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
     }
     else{DBG("VST : no identifierString provided");}
@@ -82,6 +122,10 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
     }
 
 
+  }
+  else if (p == processWhenBypassed){
+    // pass to bool for fast access in callback;
+    bProcessWhenBypassed = processWhenBypassed->boolValue();
   }
 
   // a VSTParameter is changed
@@ -125,6 +169,7 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
 void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 {
 
+  closePluginWindow();
   innerPlugin = nullptr;
   String errorMessage;
   AudioDeviceManager::AudioDeviceSetup result;
@@ -155,16 +200,23 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
     //        NodeBase::setPlayConfigDetails(numIn, numOut, result.sampleRate, result.bufferSize);
     setPreferedNumAudioInput(numIn);
     setPreferedNumAudioOutput(numOut);
+
+    innerPluginTotalNumInputChannels =instance->getTotalNumInputChannels();
+    innerPluginTotalNumOutputChannels=instance->getTotalNumOutputChannels();
+    innerPluginMaxCommonChannels = jmin(innerPluginTotalNumInputChannels, innerPluginTotalNumOutputChannels);
     DBG("buffer sizes" + String(instance->getTotalNumInputChannels())+','+ String(instance->getTotalNumOutputChannels()));
 
     instance->setPlayHead(getPlayHead());
     innerPlugin = instance;
     messageCollector.reset (result.sampleRate);
-    initParametersFromProcessor(instance);
+    
+
   }
 
   else {
-
+    innerPluginTotalNumInputChannels = 0;
+    innerPluginTotalNumOutputChannels = 0;
+    innerPlugin = nullptr;
     LOG(errorMessage);
     jassertfalse;
   }
@@ -189,19 +241,12 @@ void VSTNode::numChannelsChanged(){}
 
 inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & ) {
   if (innerPlugin) {
-    if (buffer.getNumChannels() >= jmax(innerPlugin->getTotalNumInputChannels(), innerPlugin->getTotalNumOutputChannels()))
-    {
+
       incomingMidi.clear();
       messageCollector.removeNextBlockOfMessages (incomingMidi, buffer.getNumSamples());
       innerPlugin->setPlayHead((AudioPlayHead*)TimeManager::getInstance());
       innerPlugin->processBlock(buffer, incomingMidi);
 
-    }
-    else {
-      static int numFrameDropped = 0;
-      DBG("dropAudio " + String(numFrameDropped++));
-
-    }
   }
 }
 
@@ -247,12 +292,14 @@ void VSTNode::setStateInformation(const void* data, int sizeInBytes) {
 };
 
 void VSTNode::loadPresetInternal(PresetManager::Preset * preset){
-  presetToLoad = preset;
-  var v = presetToLoad->getPresetValue("/rawData");
-  jassert(v.isUndefined() || v.isString());
-  MemoryBlock m;
-  m.fromBase64Encoding(v.toString());
-  setStateInformation(m.getData(),(int)m.getSize());
+
+    presetToLoad = preset;
+   
+    var v = presetToLoad->getPresetValue("/rawData");
+    jassert(v.isUndefined() || v.isString());
+    MemoryBlock m;
+    m.fromBase64Encoding(v.toString());
+    setStateInformation(m.getData(),(int)m.getSize());
 
 };
 
@@ -264,3 +311,8 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
   preset->addPresetValue("/rawData",var(m.toBase64Encoding()));
   
 };
+
+void VSTNode::handleAsyncUpdate(){
+  parentNodeContainer->updateAudioGraph();
+if(innerPlugin)	initParametersFromProcessor(innerPlugin);
+}

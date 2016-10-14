@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="1.0.0b"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="1.1.0b"
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.2.4" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -133,6 +133,10 @@
                 file="Source/SerialUIHelper.h"/>
         </GROUP>
         <GROUP id="{BFD87B3B-6E7A-6719-1089-92D656C17348}" name="Thread">
+          <FILE id="EvmVfB" name="ProgressNotifier.cpp" compile="1" resource="0"
+                file="Source/ProgressNotifier.cpp"/>
+          <FILE id="dg9RMh" name="ProgressNotifier.h" compile="0" resource="0"
+                file="Source/ProgressNotifier.h"/>
           <FILE id="fzCybH" name="QueuedNotifier.h" compile="0" resource="0"
                 file="Source/QueuedNotifier.h"/>
         </GROUP>
@@ -705,6 +709,10 @@
         <FILE id="Fa2WJ4" name="LookAndFeelOO.cpp" compile="1" resource="0"
               file="Source/LookAndFeelOO.cpp"/>
         <FILE id="ToSNQ0" name="LookAndFeelOO.h" compile="0" resource="0" file="Source/LookAndFeelOO.h"/>
+        <FILE id="R3Ntvl" name="ProgressWindow.cpp" compile="1" resource="0"
+              file="Source/ProgressWindow.cpp"/>
+        <FILE id="oORjel" name="ProgressWindow.h" compile="0" resource="0"
+              file="Source/ProgressWindow.h"/>
         <FILE id="AoaOQ9" name="Style.h" compile="0" resource="0" file="Source/Style.h"/>
       </GROUP>
       <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">

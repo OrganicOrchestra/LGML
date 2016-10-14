@@ -10,7 +10,7 @@
 
 #ifndef TIMEMANAGER_H_INCLUDED
 #define TIMEMANAGER_H_INCLUDED
-
+#pragma once
 
 
 /*
@@ -21,7 +21,8 @@
 
 #include "TimeMasterCandidate.h"
 #include "ControllableContainer.h"
-#include "AudioHelpers.h"
+
+class FadeInOut;
 
 class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead,
 public TimeMasterCandidate
@@ -48,6 +49,7 @@ public TimeMasterCandidate
   IntParameter * beatPerBar;
   BoolParameter * BPMLocked;
   BoolParameter * click;
+  FloatParameter * clickVolume;
 
   IntParameter * quantizedBarFraction;
 
@@ -165,7 +167,7 @@ private:
 
   bool firstPlayingFrame,hasJumped;
 
-  FadeInOut clickFader;
+  ScopedPointer<FadeInOut> clickFader;
 //  double lastEnv;
 //  int clickFadeOut,clickFadeIn,clickFadeTime;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)

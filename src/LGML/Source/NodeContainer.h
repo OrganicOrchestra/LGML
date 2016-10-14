@@ -10,7 +10,7 @@
 
 #ifndef NODECONTAINER_H_INCLUDED
 #define NODECONTAINER_H_INCLUDED
-
+#pragma once
 
 #include "NodeFactory.h"
 #include "ConnectableNode.h"
@@ -21,9 +21,29 @@
 #include "ParameterProxy.h"
 
 
+// WIP, will need to go deep if we want to take avantage of a multi Threaded environnement
+//#define MULTITHREADED_AUDIO
+
+class NodeManager;
+
 
 //Listener
-class  NodeContainerListener
+
+class NodeChangeMessage{
+public:
+  NodeChangeMessage(ConnectableNode *n,bool isAd):node(n),connection(nullptr),isAdded(isAd){}
+  NodeChangeMessage(NodeConnection *con,bool isAd):node(nullptr),connection(con),isAdded(isAd){}
+
+  ConnectableNode * node = nullptr;
+  NodeConnection * connection = nullptr;
+  bool isAdded;
+
+};
+
+typedef  QueuedNotifier<NodeChangeMessage> NodeChangeQueue;
+
+
+class  NodeContainerListener : public NodeChangeQueue::Listener
 {
 public:
   /** Destructor. */
@@ -38,6 +58,17 @@ public:
   virtual void paramProxyAdded(ParameterProxy *) {};
   virtual void paramProxyRemoved(ParameterProxy *) {};
 
+   void newMessage(const NodeChangeMessage & msg )override{
+     if(msg.node){
+       if(msg.isAdded)nodeAdded(msg.node);
+       else nodeRemoved(msg.node);
+     }
+     if(msg.connection){
+       if(msg.isAdded)connectionAdded(msg.connection);
+       else connectionRemoved(msg.connection);
+     }
+  }
+
 };
 
 
@@ -46,7 +77,9 @@ public NodeBase,
 public ConnectableNode::ConnectableNodeListener,
 public NodeConnection::Listener,
 public ConnectableNode::RMSListener,
-public ParameterProxy::ParameterProxyListener
+public ParameterProxy::ParameterProxyListener,
+public AsyncUpdater
+
 {
 public:
   NodeContainer(const String &name = "Container");
@@ -67,7 +100,7 @@ public:
 
   //NODE AND CONNECTION MANAGEMENT
 
-  Array<ConnectableNode *> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
+  Array<WeakReference<ConnectableNode> > nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
   OwnedArray<NodeConnection> connections;
   Array<NodeContainer*> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
 
@@ -107,7 +140,7 @@ public:
   void loadJSONDataInternal(var data) override;
   ConnectableNode * addNodeFromJSON(var nodeData);
 
-  void clear() override { clear(false); }
+  void clear()override;
   void clear(bool keepContainerNodes);
 
   // Inherited via NodeBase::Listener
@@ -136,11 +169,8 @@ public:
   bool hasDataInputs() override;
   bool hasDataOutputs() override;
 
-  void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override{
-    const ScopedLock lk(getAudioGraph()->getCallbackLock());
-    getAudioGraph()->processBlock(buffer,midiMessage);
-  };
-
+  void processBlockInternal(AudioBuffer<float>& buffer , MidiBuffer& midiMessage ) override;
+  void processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
   virtual void prepareToPlay(double d, int i) override ;
   virtual void releaseResources() override {
@@ -150,9 +180,43 @@ public:
 
 
   ListenerList<NodeContainerListener> nodeContainerListeners;
-  void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener); }
-  void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener); }
+  void addNodeContainerListener(NodeContainerListener* newListener) { nodeContainerListeners.add(newListener);nodeChangeNotifier.addListener(newListener); }
+  void removeNodeContainerListener(NodeContainerListener* listener) { nodeContainerListeners.remove(listener);nodeChangeNotifier.removeListener(listener); }
 
+
+#ifdef MULTITHREADED_AUDIO
+  class GraphJob :public ThreadPoolJob{
+  public:
+    GraphJob(AudioProcessorGraph* _graph,String name):
+    ThreadPoolJob("GraphJob : "+name),graph(_graph)
+    {
+
+    }
+
+    void setBuffersToReferTo(AudioBuffer<float> &buffer,MidiBuffer & midiMessage){
+      buf = &buffer;
+      midiMess = &midiMessage;
+    }
+
+    JobStatus runJob()override{
+      graph->processBlock(*buf,*midiMess);
+      return JobStatus::jobHasFinished;
+    };
+
+
+    AudioBuffer<float> * buf;
+    MidiBuffer * midiMess;
+    AudioProcessorGraph * graph;
+  };
+  ScopedPointer<GraphJob> graphJob;
+  NodeManager * nodeManager;
+#endif
+
+  void handleAsyncUpdate()override;
+
+
+
+  NodeChangeQueue nodeChangeNotifier;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainer)
   

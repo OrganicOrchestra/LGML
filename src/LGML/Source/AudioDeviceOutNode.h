@@ -37,6 +37,7 @@ public:
 	void addVolMute();
 	void removeVolMute();
 
+  void numChannelsChanged()override;
 	virtual ConnectableNodeUI * createUI() override;
 
     void onContainerParameterChanged(Parameter * p) override;

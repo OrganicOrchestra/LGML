@@ -54,6 +54,8 @@ NodeConnection::~NodeConnection()
             (destNode.get())->removeConnectableNodeListener(this);
         
     }
+
+  masterReference.clear();
 }
 AudioProcessorGraph * NodeConnection::getParentGraph(){
   jassert(sourceNode->parentNodeContainer == destNode->parentNodeContainer );
@@ -106,7 +108,7 @@ void NodeConnection::removeAllAudioGraphConnections()
     }
     }
 //    for(auto c:audioConnections){
-//        removeAudioGraphConnection(c.first,c.second,false);
+//        listeners.call(&Listener::connectionAudioLinkRemoved, c);
 //    }
 
     audioConnections.clear();

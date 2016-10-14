@@ -37,6 +37,7 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   isOneShot =  addBoolParameter("isOneShot", "do we play once or loop track", false);
   firstTrackSetTempo = addBoolParameter("firstTrackSetTempo", "do the first track sets the global tempo or use quantization", true);
   waitForOnset = addBoolParameter("wait for onset", "wait for onset before actually recording", false);
+    onsetThreshold = addFloatParameter("onsetThreshold", "threshold before onset", 0.01,0.0001,0.1);
   addChildControllableContainer(&trackGroup);
 
   trackGroup.setNumTracks(numberOfTracks->intValue());
@@ -44,6 +45,8 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   selectTrack->setValue(0,false,true);
   setPlayConfigDetails(2, 2, 44100, 256);
   TimeManager::getInstance()->playState->addParameterListener(this);
+	setPreferedNumAudioInput(2);
+	setPreferedNumAudioOutput(2);
 }
 
 LooperNode::~LooperNode()
@@ -65,9 +68,10 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
   // TODO check if we can optimize copies
   // handle multiples channels outs
 
-  jassert(buffer.getNumChannels()>= jmax(getTotalNumInputChannels(),getTotalNumOutputChannels()));
-  bufferIn.setSize(getTotalNumInputChannels(), buffer.getNumSamples());
-  bufferOut.setSize(getTotalNumOutputChannels(), buffer.getNumSamples());
+
+  jassert(buffer.getNumChannels()>= jmax(totalNumInputChannels,totalNumOutputChannels));
+  bufferIn.setSize(totalNumInputChannels, buffer.getNumSamples());
+  bufferOut.setSize(totalNumOutputChannels, buffer.getNumSamples());
 
   if (isMonitoring->boolValue()) {
     if (!wasMonitoring) {
@@ -90,23 +94,44 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
       wasMonitoring = false;
     }
     else {
+      // todo use reference to buffer if not monitoring (will save last bufferout copy
       bufferOut.clear();
     }
   }
-  for (int i = bufferIn.getNumChannels() - 1; i >= 0; --i) {
-    bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+
+  int64 curTime = TimeManager::getInstance()->getTimeInSample();
+  int numSample = buffer.getNumSamples();
+  bool needAudioIn = false;
+  for (auto & t : trackGroup.tracks) {
+    t->updatePendingLooperTrackState(curTime, numSample);
+    // avoid each track clearing the buffer if not needed
+    needAudioIn |= t->loopSample.isOrWasRecording();
   }
+//
+  if(!needAudioIn){
+    buffer.clear();
+    bufferIn.clear();
+  }
+  else{
+    for (int i = bufferIn.getNumChannels() - 1; i >= 0; --i) {
+      bufferIn.copyFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
+    }
+  }
+//
+
   for (auto & t : trackGroup.tracks) {
     t->processBlock(buffer, midiMessages);
     for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
       bufferOut.addFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
-      buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
+      if(needAudioIn)buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
     }
+    if(!needAudioIn){buffer.clear();}
   }
-  for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
-    buffer.copyFrom(i, 0, bufferOut, i, 0, buffer.getNumSamples());
 
+for (int i = bufferOut.getNumChannels() - 1; i >= 0; --i) {
+    buffer.copyFrom(i, 0, bufferOut, i, 0, buffer.getNumSamples());
   }
+  
 }
 
 
@@ -148,9 +173,9 @@ void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
     if (needToReleaseMasterTempo) {
       TimeManager::getInstance()->releaseMasterCandidate(this);
     }
-//    if (!isOneShot->boolValue() && needToStop){
-//      TimeManager::getInstance()->stopTrigger->trigger();
-//    }
+    //    if (!isOneShot->boolValue() && needToStop){
+    //      TimeManager::getInstance()->stopTrigger->trigger();
+    //    }
   }
 }
 
@@ -235,21 +260,21 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
 
       for(auto & tr:trackGroup.tracks){
         if(tr->loopSample.getRecordedLength()){
-        File f(myChooser.getResult().getChildFile(nameParam->stringValue()+"_"+String(tr->trackIdx)+".wav"));
-        ScopedPointer<FileOutputStream> fp;
-        if((fp = f.createOutputStream())){
-          ScopedPointer<AudioFormatWriter> afw= format.createWriterFor(fp,
-                                                         getSampleRate(),
-                                                         tr->loopSample.loopSample.getNumChannels(),
-                                                         24,
-                                                         StringPairArray(),0);
-          if(afw){
-          fp.release();
-          afw->writeFromAudioSampleBuffer(tr->loopSample.loopSample,0,(int)tr->loopSample.getRecordedLength());
-          afw->flush();
+          File f(myChooser.getResult().getChildFile(nameParam->stringValue()+"_"+String(tr->trackIdx)+".wav"));
+          ScopedPointer<FileOutputStream> fp;
+          if((fp = f.createOutputStream())){
+            ScopedPointer<AudioFormatWriter> afw= format.createWriterFor(fp,
+                                                                         getSampleRate(),
+                                                                         tr->loopSample.loopSample.getNumChannels(),
+                                                                         24,
+                                                                         StringPairArray(),0);
+            if(afw){
+              fp.release();
+              afw->writeFromAudioSampleBuffer(tr->loopSample.loopSample,0,(int)tr->loopSample.getRecordedLength());
+              afw->flush();
 
+            }
           }
-        }
         }
       }
 
@@ -283,7 +308,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
     trackGroup.setNumTracks(numberOfTracks->value);
     if(oldIdx>numberOfTracks->intValue()){
       if(trackGroup.tracks.size()){
-      selectedTrack = trackGroup.tracks[trackGroup.tracks.size()-1];
+        selectedTrack = trackGroup.tracks[trackGroup.tracks.size()-1];
       }
       else
         selectedTrack = nullptr;
@@ -351,6 +376,6 @@ void LooperNode::clearInternal(){
 
 // worst onset detection function ever ...
 bool LooperNode::hasOnset(){
-  bool hasOnset=  globalRMSValueIn>0.2;
+  bool hasOnset=  globalRMSValueIn>onsetThreshold->floatValue();
   return hasOnset;
 }

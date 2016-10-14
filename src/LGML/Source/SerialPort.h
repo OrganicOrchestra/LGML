@@ -12,7 +12,7 @@
 #define SERIALPORT_H_INCLUDED
 
 
-
+#define SYNCHRONOUS_SERIAL_LISTENERS
 
 #include "QueuedNotifier.h"
 
@@ -46,8 +46,17 @@ public:
 	QueuedNotifier<var> queuedNotifier;
 	typedef QueuedNotifier<var>::Listener AsyncListener;
 
+  class SerialThreadListener{
+  public:
+    virtual ~SerialThreadListener(){};
+    virtual void newMessage(const var & m){};
+  };
+
+  ListenerList<SerialThreadListener> serialThreadListeners;
+
+  void addSerialListener(SerialThreadListener* newListener) { serialThreadListeners.add(newListener); }
+  void removeSerialListener(SerialThreadListener* listener) { serialThreadListeners.remove(listener); }
 	void addAsyncSerialListener(AsyncListener* newListener) { queuedNotifier.addListener(newListener); }
-	//void addAsyncCoalescedListener(AsyncListener* newListener) { queuedNotifier.addAsyncCoalescedListener(newListener); }
 	void removeAsyncSerialListener(AsyncListener* listener) { queuedNotifier.removeListener(listener); }
 
 };
@@ -68,7 +77,12 @@ public:
 
 };
 
-class SerialPort : public SerialReadThread::AsyncListener
+class SerialPort :
+#ifdef SYNCHRONOUS_SERIAL_LISTENERS
+public SerialReadThread::SerialThreadListener
+#else
+public SerialReadThread::AsyncListener
+#endif
 {
 public:
 	SerialReadThread thread;

@@ -36,6 +36,7 @@ public:
   void setParentNodeContainer(NodeContainer * c)override;
 
 	OwnedArray<OutputBus> outBuses;
+//  OwnedArray<Vumeter>
 	AudioBuffer<float> cachedBuffer;
 
 

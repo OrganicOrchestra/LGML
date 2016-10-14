@@ -10,7 +10,7 @@
 
 #ifndef NODECONNECTION_H_INCLUDED
 #define NODECONNECTION_H_INCLUDED
-
+#pragma once
 
 #include "DataProcessorGraph.h"
 #include "NodeBase.h"
@@ -93,10 +93,15 @@ public:
     };
 
     ListenerList<Listener> listeners;
-    void addConnectionListener(Listener* newListener) { listeners.add(newListener); }
+  void addConnectionListener(Listener* newListener) { jassert(newListener);listeners.add(newListener); }
     void removeConnectionListener(Listener* listener) { listeners.remove(listener); }
 
   AudioProcessorGraph * getParentGraph();
+
+protected:
+  WeakReference<NodeConnection >::Master masterReference;
+    friend class WeakReference<NodeConnection>;
+
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnection)

@@ -43,6 +43,10 @@ void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
   setPreferedNumAudioInput(0);
   setPreferedNumAudioOutput(nc->getTotalNumInputChannels());
 }
+bool ContainerInNode::setPreferredBusArrangement (bool isInputBus, int busIndex, const AudioChannelSet& preferredSet){
+  return NodeBase::setPreferredBusArrangement(isInputBus, busIndex,preferredSet)&&
+  AudioProcessorGraph::AudioGraphIOProcessor::setPreferredBusArrangement(isInputBus, busIndex,preferredSet);
+}
 
 
 void ContainerInNode::setNumAudioChannels(int channels)
@@ -51,10 +55,9 @@ void ContainerInNode::setNumAudioChannels(int channels)
   // only handle one container in per container for now
   parentNodeContainer->setPreferedNumAudioInput(channels);
   {
-  parentNodeContainer->suspendProcessing(true);
-	setPreferedNumAudioInput(0);
+//  parentNodeContainer->suspendProcessing(true);
 	setPreferedNumAudioOutput(channels);
-    parentNodeContainer->suspendProcessing(false);
+//    parentNodeContainer->suspendProcessing(false);
   }
   jassert(parentNodeContainer);
 

@@ -10,11 +10,12 @@
 
 #ifndef NODEMANAGERUI_H_INCLUDED
 #define NODEMANAGERUI_H_INCLUDED
-
+#pragma once
 
 #include "NodeManager.h"
 #include "ShapeShifterContent.h"
 #include "NodeContainerViewer.h"
+#include "Style.h"
 
 
 //==============================================================================
@@ -57,7 +58,7 @@ public:
 	ListenerList<NodeManagerUIListener> nodeManagerUIListeners;
 	void addNodeManagerUIListener(NodeManagerUIListener* newListener) { nodeManagerUIListeners.add(newListener); }
 	void removeNodeManagerUIListener(NodeManagerUIListener* listener) { nodeManagerUIListeners.remove(listener); }
-  bool keyPressed(const KeyPress & key)override;
+	bool keyPressed(const KeyPress & key)override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 
@@ -81,6 +82,8 @@ public :
 		nmui->addNodeManagerUIListener(this);
 
 		reconstructViewerPath();
+		setWantsKeyboardFocus(true);
+		nmui->setWantsKeyboardFocus(true);
 
     }
 
@@ -152,6 +155,8 @@ public :
 		reconstructViewerPath();
 		//nmui->setBounds(getLocalBounds().withTop(30));
 		resized();
+
+
 	}
 
 	void buttonClicked(Button * b)override

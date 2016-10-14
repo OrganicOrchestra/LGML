@@ -18,13 +18,15 @@ isHovered(false)
   setSize(10,10);
 
 
-  generateToolTip();
-
-  updateVisibility();
+  postCommandMessage(0);
 }
 
 ConnectorComponent::~ConnectorComponent(){
-     node->removeConnectableNodeListener(this);
+     if(node.get())
+       node->removeConnectableNodeListener(this);
+     else{
+       jassertfalse;
+     }
 }
 
 NodeBase * ConnectorComponent::getNodeBase(){
@@ -100,29 +102,28 @@ void ConnectorComponent::updateVisibility()
 void ConnectorComponent::numAudioInputChanged(ConnectableNode *, int)
 {
   if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::INPUT) return;
-  generateToolTip();
-  updateVisibility();
+  postCommandMessage(0);
 }
 
 void ConnectorComponent::numAudioOutputChanged(ConnectableNode *, int)
 {
   if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
-  generateToolTip();
-  updateVisibility();
+  postCommandMessage(0);
 }
-
+void ConnectorComponent::handleCommandMessage(int /*id*/){
+  updateVisibility();
+  
+}
 void ConnectorComponent::numDataInputChanged(ConnectableNode *, int)
 {
   if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::INPUT) return;
-  generateToolTip();
-  updateVisibility();
+postCommandMessage(0);
 }
 
 void ConnectorComponent::numDataOutputChanged(ConnectableNode *, int)
 {
   if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::OUTPUT) return;
-  generateToolTip();
-  updateVisibility();
+postCommandMessage(0);
 }
 
 NodeContainerViewer * ConnectorComponent::getNodeContainerViewer() const noexcept

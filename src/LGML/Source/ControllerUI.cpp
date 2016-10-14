@@ -17,8 +17,10 @@ ControllerUI::ControllerUI(Controller * controller) :
 	InspectableComponent(controller, "controller"),
     controller(controller)
 {
+  {
+    MessageManagerLock ml;
 	addMouseListener(this, true);
-
+  }
 	nameTF = controller->nameParam->createStringParameterUI();
 	addAndMakeVisible(nameTF);
 

@@ -99,6 +99,11 @@ public :
 
 	void childStructureChanged(ControllableContainer *) override;
 
+  void handleCommandMessage(int cID)override;
+
+  enum{
+    CHILD_STRUCTURE_CHANGED = 0
+  }commandMessageIDs;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericControllableContainerEditor)
 };
