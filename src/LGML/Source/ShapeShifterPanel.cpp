@@ -207,6 +207,7 @@ ShapeShifterContent * ShapeShifterPanel::getContentForName(const String & name)
 {
 	for (auto &c : contents)
 	{
+		if (c == nullptr) continue;
 		if (c->contentName == name) return c;
 	}
 
