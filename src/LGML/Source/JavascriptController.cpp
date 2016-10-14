@@ -170,6 +170,7 @@ void JavascriptController::onContainerTriggerTriggered(Trigger * t) {
 
 
 void JavascriptController::newJsFileLoaded(){
+
     jsPath->setValue(getCurrentFilePath(),true);
 }
 

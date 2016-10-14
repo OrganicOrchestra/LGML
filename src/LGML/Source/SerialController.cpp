@@ -72,7 +72,7 @@ void SerialController::setCurrentPort(SerialPort * _port)
 
 void SerialController::newJsFileLoaded()
 {
-	scriptPath->setValue(currentFile.getFullPathName());
+  scriptPath->setValue(currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory()));
 }
 
 void SerialController::onContainerParameterChanged(Parameter * p) {

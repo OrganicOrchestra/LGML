@@ -73,7 +73,8 @@ String JsEnvironment::getParentName(){
 
 
 void JsEnvironment::loadFile(const String &path) {
-  File f(File::createFileWithoutCheckingPath(path));
+  File f =//(File::createFileWithoutCheckingPath(path));
+    File::getCurrentWorkingDirectory().getChildFile(path);
   loadFile(f);
 }
 

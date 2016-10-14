@@ -89,6 +89,7 @@ suspendAudio(true);
    
   loadingStartTime =  Time::currentTimeMillis();
   fileBeingLoaded = file;
+    fileBeingLoaded.getParentDirectory().setAsCurrentWorkingDirectory();
 
   {
     parseTask->start();
@@ -130,6 +131,7 @@ void Engine::handleAsyncUpdate(){
   isLoadingFile = false;
   if(fileBeingLoaded.exists())
     setLastDocumentOpened(fileBeingLoaded);
+
   //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
   //  suspendAudio(false);
   int64 timeForLoading  =  Time::currentTimeMillis()-loadingStartTime;

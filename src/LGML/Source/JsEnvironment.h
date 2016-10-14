@@ -83,7 +83,7 @@ public:
   // module name is the last element of dot separated localNamespace
   String getModuleName();
   String getParentName();
-  String getCurrentFilePath(){return currentFile.getFullPathName();};
+    String getCurrentFilePath(){return       currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory());}//currentFile.getFullPathName();};
 
 
   const NamedValueSet & getRootObjectProperties();
