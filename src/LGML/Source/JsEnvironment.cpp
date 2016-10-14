@@ -325,33 +325,34 @@ void JsEnvironment::checkUserControllableEventFunction(){
           for(int i  = 2 ; i < f->splitedName.size() ; i++){
             localName.add(f->splitedName.getUnchecked(i));
           }
-
-
           Controllable * c = candidate->getControllableForAddress(localName);
           if(Parameter * p = dynamic_cast<Parameter*>(c)){
             listenedParameters.addIfNotAlreadyThere(p);
             found = true;
+            break;
           }
           else if(Trigger *t = dynamic_cast<Trigger*>(c)){
             listenedTriggers.addIfNotAlreadyThere(t);
             found = true;
+            break;
           }
           else if(ControllableContainer * cont = candidate->getControllableContainerForAddress(localName)){
             listenedContainers.addIfNotAlreadyThere(cont);
             found = true;
+            break;
           }
-
-
         }
-        if(!found){
-          String fName;
-          for(auto & n:f->splitedName){
-            fName+=n+"_";
-          }
-          fName = fName.substring(0, fName.length()-1);
-          NLOG(localNamespace,"not found controllable/Container for function : "+fName);
-        }
+
       }
+
+    }
+    if(!found){
+      String fName;
+      for(auto & n:f->splitedName){
+        fName+=n+"_";
+      }
+      fName = fName.substring(0, fName.length()-1);
+      NLOG(localNamespace,"not found controllable/Container for function : "+fName);
     }
 
   }

@@ -51,7 +51,11 @@ void SerialPort::open()
 	if (!thread.isThreadRunning())
 	{
 		thread.startThread();
+#ifdef SYNCHRONOUS_SERIAL_LISTENERS
+    thread.addSerialListener(this);
+#else
 		thread.addAsyncSerialListener(this);
+#endif
 		listeners.call(&SerialPortListener::portOpened, this);
 	}
 #endif
@@ -62,7 +66,12 @@ void SerialPort::close()
 #if SERIALSUPPORT
 	if (port->isOpen())
 	{
-		thread.removeAsyncSerialListener(this);
+#ifdef SYNCHRONOUS_SERIAL_LISTENERS
+    thread.removeSerialListener(this);
+#else
+    thread.removeAsyncSerialListener(this);
+#endif
+
 		thread.stopThread(10000);
 		port->close();
 		listeners.call(&SerialPortListener::portClosed, this);
@@ -150,6 +159,7 @@ void SerialReadThread::run()
 				std::string line = port->port->readline();
 				if (line.size() > 0)
 				{
+          serialThreadListeners.call(&SerialThreadListener::newMessage,var(line));
 					queuedNotifier.addMessage(new var(line));
 				}
 
@@ -183,6 +193,7 @@ void SerialReadThread::run()
 					{
 						var * dataVar = new var();
 						for (auto &by : byteBuffer) dataVar->append(by);
+            serialThreadListeners.call(&SerialThreadListener::newMessage,*dataVar);
 						queuedNotifier.addMessage(dataVar);
 						byteBuffer.clear();
 					} else
