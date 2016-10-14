@@ -510,6 +510,11 @@ bool ControllableContainer::saveCurrentPreset()
   return true;
 }
 
+int ControllableContainer::getNumPresets()
+{
+	return PresetManager::getInstance()->getNumPresetForFilter(getPresetFilter());
+}
+
 bool ControllableContainer::resetFromPreset()
 {
   if (currentPreset == nullptr) return false;

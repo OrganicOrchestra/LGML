@@ -119,6 +119,7 @@ public:
     virtual bool loadPreset(PresetManager::Preset * preset);
 	virtual PresetManager::Preset* saveNewPreset(const String &name);
     virtual bool saveCurrentPreset();
+	virtual int getNumPresets();
 
     virtual bool resetFromPreset();
 

@@ -71,7 +71,6 @@ public:
     void fillWithPresets (ComboBox * cb, const String & filter, bool showSaveCurrent = true) const;
     void removePresetForIdx(int idx);
     int getNumPresetForFilter (const String &) const;
-    static int getNumOption();
 
     void clear();
 
