@@ -37,7 +37,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
                                           ad?ad->getActiveInputChannels().countNumberOfSetBits():2, 0, 32);
   lastNumberOfOutputs = 0;
 
-  setPreferedNumAudioOutput(desiredNumAudioOutput->intValue());
+  setPreferedNumAudioInput(desiredNumAudioOutput->intValue());
 }
 
 void AudioDeviceOutNode::setParentNodeContainer(NodeContainer * parent){

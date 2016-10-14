@@ -178,7 +178,7 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
   return nullptr;
 }
 
-void NodeContainer::updateAudioGraph(bool /*lock*/) {
+void NodeContainer::updateAudioGraph(bool lock) {
 
 
 
