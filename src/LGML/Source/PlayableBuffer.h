@@ -99,7 +99,7 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
 
     samplesToWrite= samplesToWrite==-1?buffer.getNumSamples()-fromSample:samplesToWrite;
     if (recordNeedle + buffer.getNumSamples()> loopSample.getNumSamples()) {
-      jassertfalse;
+//      jassertfalse;
       return false;
     }
     else{

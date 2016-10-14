@@ -13,16 +13,16 @@ TimeManager.cpp
 
 
 ControllableContainer.cpp
-	line : 641
+	line : 548
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 646
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
 		//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
-
-	line : 543
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 	line : 447
 		// TODO weird feedback when loading preset on parameter presetName
@@ -103,7 +103,7 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 66
+	line : 67
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
@@ -122,7 +122,7 @@ MIDIController.cpp
 
 
 ControllableContainer.h
-	line : 149
+	line : 150
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
