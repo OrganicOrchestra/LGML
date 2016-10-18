@@ -18,8 +18,8 @@ Author:  Martin Hermant
 class AudioDeviceOutNode :
 	public NodeBase,
 	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
-	public ChangeListener,
-	public ConnectableNode::ConnectableNodeListener
+	public ChangeListener
+
 {
 public:
 	AudioDeviceOutNode();

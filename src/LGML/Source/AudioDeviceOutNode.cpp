@@ -23,7 +23,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 {
   //CanHavePresets = false;
 
-  addConnectableNodeListener(this);
+
 
   NodeBase::busArrangement.outputBuses.clear();
 
