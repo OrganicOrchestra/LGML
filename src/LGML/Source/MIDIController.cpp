@@ -193,7 +193,7 @@ var MIDIController::sendNoteOnFromJS(const var::NativeFunctionArgs & a ) {
     return var(false);
   }
 
-  c->sendNoteOn((int)(a.arguments[0]) + 1, a.arguments[1], a.arguments[2]);
+  c->sendNoteOn((int)(a.arguments[0]) , a.arguments[1], a.arguments[2]);
   return var(true);
 }
 
@@ -208,7 +208,7 @@ var MIDIController::sendNoteOffFromJS(const var::NativeFunctionArgs & a) {
     return var(false);
   }
 
-  c->sendNoteOff((int)(a.arguments[0])+1, a.arguments[1], a.arguments[2]);
+  c->sendNoteOff((int)(a.arguments[0]), a.arguments[1], a.arguments[2]);
   return var(true);
 }
 
@@ -221,7 +221,7 @@ var MIDIController::sendCCFromJS(const var::NativeFunctionArgs & a){
     return var(false);
   }
 
-  c->sendCC((int)(a.arguments[0]) + 1, a.arguments[1], a.arguments[2]);
+  c->sendCC((int)(a.arguments[0]) , a.arguments[1], a.arguments[2]);
   return var(true);
 }
 
