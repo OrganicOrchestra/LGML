@@ -178,7 +178,8 @@ void MIDIController::buildLocalEnv(){
 
 
 void MIDIController::newJsFileLoaded(){
-  scriptPath->setValue(currentFile.getFullPathName());
+
+  scriptPath->setValue(currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory()));
 };
 
 // @ben do we do the same as OSC MIDI IN/OUt controllers

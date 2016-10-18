@@ -114,11 +114,11 @@ DataInNode.cpp
 
 
 MIDIController.cpp
+	line : 184
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
+
 	line : 41
 		// TODO : we may need to listen to sR changes
-
-	line : 183
-		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 
 ControllableContainer.h

@@ -468,7 +468,7 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
   {
 
     Parameter * p = dynamic_cast<Parameter *>(getControllableForAddress(pv->paramControlAddress));
-    if (p != nullptr) p->setValue(pv->presetValue);
+    if (p != nullptr && p!=currentPresetName) p->setValue(pv->presetValue);
   }
 
 
@@ -522,7 +522,7 @@ bool ControllableContainer::resetFromPreset()
   for (auto &pv : currentPreset->presetValues)
   {
     Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
-    if (p != nullptr) p->resetValue();
+    if (p != nullptr && p!=currentPresetName) p->resetValue();
   }
 
 

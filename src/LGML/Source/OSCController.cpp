@@ -16,7 +16,7 @@
 
 OSCController::OSCController(const String &_name) :
 Controller(_name),
-lastMessageReceived(OSCAddressPattern("")),
+lastMessageReceived(OSCAddressPattern("/fake")),
 isProcessingOSC(false)
 
 {
