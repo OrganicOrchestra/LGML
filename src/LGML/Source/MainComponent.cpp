@@ -45,8 +45,7 @@ engine->addEngineListener(this);
 #endif
 
 
-  e->createNewGraph();
-  e->setChangedFlag(false);
+  
 
   //e->initAudio();
 
