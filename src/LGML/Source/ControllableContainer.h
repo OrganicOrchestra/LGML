@@ -70,7 +70,7 @@ public:
 
 	Uuid uid;
 
-    OwnedArray<Controllable> controllables;
+    OwnedArray<Controllable,CriticalSection> controllables;
     Array<WeakReference<ControllableContainer>  > controllableContainers;
     ControllableContainer * parentContainer;
 
