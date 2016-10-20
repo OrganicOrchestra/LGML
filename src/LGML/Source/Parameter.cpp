@@ -24,13 +24,13 @@ Parameter::Parameter(const Type &type, const String &niceName, const String &des
     maximumValue = maxValue;
     defaultValue = initialValue;
 
-    resetValue();
+    resetValue(true);
 }
 
-  void Parameter::resetValue()
+  void Parameter::resetValue(bool silentSet)
 {
     isOverriden = false;
-	setValue(defaultValue, true,true);
+	setValue(defaultValue, silentSet,true);
 }
 
 void Parameter::setValue(var _value, bool silentSet, bool force)

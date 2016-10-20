@@ -475,7 +475,7 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
   {
 
     Parameter * p = dynamic_cast<Parameter *>(getControllableForAddress(pv->paramControlAddress));
-	DBG("Load preset, param set container : " << niceName << ", niceName : " << p->niceName << ",pv controlAddress : " << p->controlAddress << ", pv value : " << pv->presetValue.toString());
+	//DBG("Load preset, param set container : " << niceName << ", niceName : " << p->niceName << ",pv controlAddress : " << p->controlAddress << "" << pv->presetValue.toString());
     if (p != nullptr && p != currentPresetName) p->setValue(pv->presetValue);
   }
 
@@ -498,11 +498,18 @@ PresetManager::Preset* ControllableContainer::saveNewPreset(const String & _name
 
 bool ControllableContainer::saveCurrentPreset()
 {
-    if (currentPreset == nullptr){
-        jassertfalse;
-        return false;
-    }
+	//Same as saveNewPreset because PresetManager now replaces if name is the same
+	if (currentPreset == nullptr) {
+		jassertfalse;
+		return false;
+	}
 
+	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
+	savePresetInternal(pre);
+	NLOG(niceName, "Current preset saved : " + pre->name);
+	loadPreset(pre);
+	
+	/*
   for (auto &pv : currentPreset->presetValues)
   {
     Parameter * p = dynamic_cast<Parameter*> (getControllableForAddress(pv->paramControlAddress));
@@ -515,6 +522,7 @@ bool ControllableContainer::saveCurrentPreset()
   NLOG(niceName, "Current preset saved : " + currentPreset->name);
 
   return true;
+  */
 }
 
 int ControllableContainer::getNumPresets()
@@ -526,15 +534,17 @@ bool ControllableContainer::resetFromPreset()
 {
   if (currentPreset == nullptr) return false;
 
+  
   for (auto &pv : currentPreset->presetValues)
   {
-    Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
-    if (p != nullptr && p!=currentPresetName) p->resetValue();
+	Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
+    if (p != nullptr && p !=currentPresetName) p->resetValue();
   }
 
 
   currentPreset = nullptr;
   currentPresetName->setValue("", true);
+
   return true;
 }
 

@@ -26,7 +26,18 @@ PresetManager::~PresetManager()
 PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const String &name, const String & filter, ControllableContainer * container, bool recursive, bool includeNotExposed)
 {
     //Array<PresetValue *> vPresets;
-    Preset * pre = new Preset(name,filter);
+
+	
+	Preset * pre = getPreset(filter, name);
+	bool presetExists = pre != nullptr;
+
+	if (!presetExists)
+	{
+		pre = new Preset(name, filter);
+	} else
+	{
+		pre->clear();
+	}
 
     for (auto &p : container->getAllParameters(recursive,includeNotExposed))
     {
@@ -57,9 +68,7 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
 	}
 	
 
-    presets.add(pre);
-
-
+    if(!presetExists) presets.add(pre);
 
     return pre;
 }
@@ -189,6 +198,11 @@ var PresetManager::Preset::getPresetValue(const String &targetControlAddress)
   }
 
   return var();
+}
+
+void PresetManager::Preset::clear()
+{
+	presetValues.clear();
 }
 
 
