@@ -46,7 +46,7 @@ public:
 	virtual void nodeParameterChanged(ConnectableNode*, Parameter *) override;
 
 	virtual void numAudioOutputChanged(ConnectableNode *, int newNum) override;
-
+	virtual void numAudioInputChanged(ConnectableNode *, int newNum) override;
 
     void changeListenerCallback (ChangeBroadcaster* source)override;
 	//virtual void numAudioOutputChanged() { DBG("Output changed !"); }

@@ -45,7 +45,9 @@ public:
     virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
 
+
 class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public Trigger::Listener, public ControllableContainerListener
+
 {
 public:
     ControllableContainer(const String &niceName);
@@ -69,7 +71,7 @@ public:
 	Uuid uid;
 
     OwnedArray<Controllable> controllables;
-    Array<ControllableContainer * > controllableContainers;
+    Array<WeakReference<ControllableContainer>  > controllableContainers;
     ControllableContainer * parentContainer;
 
 	void addParameter(Parameter * p);
@@ -117,6 +119,7 @@ public:
     virtual bool loadPreset(PresetManager::Preset * preset);
 	virtual PresetManager::Preset* saveNewPreset(const String &name);
     virtual bool saveCurrentPreset();
+	virtual int getNumPresets();
 
     virtual bool resetFromPreset();
 
@@ -184,6 +187,7 @@ protected :
 
 private:
 
+  
 
     void notifyStructureChanged();
   void newMessage(const Parameter::ParamWithValue&)override;

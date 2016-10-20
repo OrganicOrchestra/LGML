@@ -9,6 +9,7 @@
 */
 
 #include "ConnectableNodeUI.h"
+#include "ConnectableNodeHeaderUI.h"
 #include "NodeContainer.h"
 #include "ContainerInNode.h"
 #include "ContainerOutNode.h"
@@ -121,7 +122,7 @@ void ConnectableNodeUI::resized()
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
 	if (p == connectableNode->xPosition || p == connectableNode->yPosition) {
-		setTopLeftPosition(connectableNode->xPosition->intValue(), connectableNode->yPosition->intValue());
+    postCommandMessage(posChangedId);
 	}
 	else if (p == connectableNode->enabledParam)
 	{
@@ -139,6 +140,9 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
             break;
       case setMiniModeId:
         setMiniMode(connectableNode->miniMode->boolValue());
+      case posChangedId:
+        setTopLeftPosition(connectableNode->xPosition->intValue(), connectableNode->yPosition->intValue());
+
         default:
             break;
     }
@@ -197,7 +201,7 @@ bool ConnectableNodeUI::keyPressed(const KeyPress & key)
 		return true;
 	}
   else if(key.getModifiers().isCommandDown() && key.getKeyCode()==KeyPress::downKey){
-    if(NodeContainer * c = dynamic_cast<NodeContainer * >(connectableNode)){
+    if(NodeContainer * c = dynamic_cast<NodeContainer * >(connectableNode.get())){
       if(NodeManagerUI * manager = findParentComponentOfClass<NodeManagerUI>()){
         manager->setCurrentViewedContainer(c);
         return true;
@@ -245,6 +249,7 @@ void ConnectableNodeUI::MainComponentContainer::setNodeAndNodeUI(ConnectableNode
 
 void ConnectableNodeUI::MainComponentContainer::paint(Graphics & g)
 {
+  if(!connectableNodeUI->connectableNode.get())return;
 	g.setColour(connectableNodeUI->connectableNode->enabledParam->boolValue() ? PANEL_COLOR : PANEL_COLOR.darker(.7f));
 	g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
 

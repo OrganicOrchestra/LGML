@@ -37,7 +37,7 @@ void Parameter::setValue(var _value, bool silentSet, bool force)
 {
 
     if (!force && checkValueIsTheSame(_value, value)) return;
-    lastValue = value.clone();
+    lastValue = var(value);
     setValueInternal(_value);
 
 

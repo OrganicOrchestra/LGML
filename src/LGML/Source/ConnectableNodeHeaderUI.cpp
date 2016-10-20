@@ -49,6 +49,9 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
     node->removeControllableContainerListener(this);
     node->removeConnectableNodeListener(this);
   }
+  else{
+    jassertfalse;
+  }
 
 }
 
@@ -128,13 +131,13 @@ void ConnectableNodeHeaderUI::updatePresetComboBox(bool forceUpdate)
   if (!emptyFilter)
   {
     PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter(), node->currentPreset != nullptr);
-    if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId,forceUpdate?NotificationType::sendNotification: NotificationType::dontSendNotification);
+    if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId,forceUpdate?sendNotification: dontSendNotification);
   }
 }
 
 void ConnectableNodeHeaderUI::init()
 {
-  //to override
+  //to overri
 }
 
 void ConnectableNodeHeaderUI::resized()
@@ -231,7 +234,9 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
 
 void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
 {
+  
   int presetID = cb->getSelectedId();
+  if (node->currentPreset != nullptr && presetID == node->currentPreset->presetId) return;
 
   if (presetID == PresetChoice::SaveCurrent)
   {
@@ -254,23 +259,25 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
       PresetManager::Preset * p = node->saveNewPreset(presetName);
       cb->clear(NotificationType::dontSendNotification);
       updatePresetComboBox();
-      cb->setSelectedId(p->presetId, NotificationType::dontSendNotification);
+      cb->setSelectedId(p->presetId, dontSendNotification);
     }
     else
     {
-      cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
+      cb->setSelectedItemIndex(-1, dontSendNotification);
     }
 
 
   }else if (presetID == PresetChoice::ResetToDefault) //Reset to default
   {
     node->resetFromPreset();
+	updatePresetComboBox(true);
     cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
   }
   else if(presetID >=0 && presetID < PresetChoice::deleteStartId)
   {
     String nameOfPreset = cb->getItemText(cb->getSelectedItemIndex());
     node->currentPresetName->setValue(nameOfPreset);
+	updatePresetComboBox(false);
 
   }
   else if (presetID >= PresetChoice::deleteStartId)
@@ -279,11 +286,15 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
     if (ok)
     {
       PresetManager * pm = PresetManager::getInstance();
-      int originId = cb->getSelectedId() - PresetChoice::deleteStartId - 1;
-      String originText = cb->getItemText(pm->getNumOption() + originId);
+	  int originId = cb->getSelectedId() - PresetChoice::deleteStartId - 1;
+	  LOG(cb->getNumItems() << " / " << node->getNumPresets() << " / " << originId);
+      String originText = cb->getItemText(cb->getNumItems()-node->getNumPresets()*2+ originId);
+	  LOG(originText);
       PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), originText);
       pm->presets.removeObject(pre);
-      updatePresetComboBox(true);
+      
+      node->currentPreset = nullptr;
+	  updatePresetComboBox(true);
     } else
     {
       //reselect last Id
@@ -294,6 +305,7 @@ void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
       {
         cb->setSelectedId(0, juce::dontSendNotification);
       }
+
     }
 
   }
@@ -326,7 +338,6 @@ void ConnectableNodeHeaderUI::controllableContainerPresetLoaded(ControllableCont
 void ConnectableNodeHeaderUI::handleCommandMessage(int id){
   switch(id){
     case updatePresetCBID:
-
       if (!node->canHavePresets) return;
 
       //  int numOptions = PresetManager::getNumOption();
@@ -335,6 +346,11 @@ void ConnectableNodeHeaderUI::handleCommandMessage(int id){
 
     case repaintId:
       repaint();
+      break;
+    case audioInputChangedId:
+    case audioOutputChangedId:
+      updateVuMeters();
+      resized();
       break;
     default:
       break;
@@ -353,5 +369,11 @@ void ConnectableNodeHeaderUI::Grabber::paint(Graphics & g)
   g.drawHorizontalLine(r.getBottom(), left, right);
 }
 
-void ConnectableNodeHeaderUI::numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {updateVuMeters();resized();}
-void ConnectableNodeHeaderUI::numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {updateVuMeters();resized();}
+void ConnectableNodeHeaderUI::numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {
+  postCommandMessage(audioInputChangedId);
+
+}
+void ConnectableNodeHeaderUI::numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {
+  postCommandMessage(audioOutputChangedId);
+
+}

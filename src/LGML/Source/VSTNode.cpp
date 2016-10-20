@@ -67,7 +67,7 @@ void VSTNode::closePluginWindow(){
   PluginWindow::closeCurrentlyOpenWindowsFor (this);
 }
 
-void VSTNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages){
+void VSTNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer&){
 
   if (innerPlugin) {
     incomingMidi.clear();
@@ -86,12 +86,15 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
     if(identifierString->value!=""){
       PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
       if(pd){
-#if VSTLOADING_THREADED
+#ifdef VSTLOADING_THREADED
         NodeManager::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
 #else
-				generatePluginFromDescription(pd);
+        generatePluginFromDescription(pd);
+        triggerAsyncUpdate();
+
 #endif
       }
+
       else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
     }
     else{DBG("VST : no identifierString provided");}
@@ -206,7 +209,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
     instance->setPlayHead(getPlayHead());
     innerPlugin = instance;
     messageCollector.reset (result.sampleRate);
-    initParametersFromProcessor(instance);
+    
 
   }
 
@@ -289,12 +292,14 @@ void VSTNode::setStateInformation(const void* data, int sizeInBytes) {
 };
 
 void VSTNode::loadPresetInternal(PresetManager::Preset * preset){
-  presetToLoad = preset;
-  var v = presetToLoad->getPresetValue("/rawData");
-  jassert(v.isUndefined() || v.isString());
-  MemoryBlock m;
-  m.fromBase64Encoding(v.toString());
-  setStateInformation(m.getData(),(int)m.getSize());
+
+    presetToLoad = preset;
+   
+    var v = presetToLoad->getPresetValue("/rawData");
+    jassert(v.isUndefined() || v.isString());
+    MemoryBlock m;
+    m.fromBase64Encoding(v.toString());
+    setStateInformation(m.getData(),(int)m.getSize());
 
 };
 
@@ -309,4 +314,5 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
 
 void VSTNode::handleAsyncUpdate(){
   parentNodeContainer->updateAudioGraph();
+if(innerPlugin)	initParametersFromProcessor(innerPlugin);
 }

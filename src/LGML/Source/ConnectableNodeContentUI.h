@@ -13,7 +13,7 @@
 #pragma once
 
 #include "JuceHeader.h"//keep
-
+#include "Style.h"
 class ConnectableNodeUI;
 class ConnectableNode;
 

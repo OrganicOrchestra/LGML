@@ -11,6 +11,9 @@
 #ifndef ENGINE_H_INCLUDED
 #define ENGINE_H_INCLUDED
 
+//#define MULTITHREADED_LOADING
+
+#pragma warning (disable : 4100)
 
 #include "MIDIManager.h"//keep
 #include "ControlManager.h"//keep
@@ -21,12 +24,11 @@
 #include "RuleManager.h"//keep
 #include "FastMapper.h"//keep
 #include "VSTManager.h"//keep
+#include "ProgressNotifier.h"
 class AudioFucker;
 
-class Engine: public FileBasedDocument,
-	public ControllableContainer,
-	NodeManager::NodeManagerListener
-{
+
+class Engine:public FileBasedDocument,NodeManager::NodeManagerListener,AsyncUpdater,public ProgressNotifier{
 public:
     Engine();
     ~Engine();
@@ -40,7 +42,7 @@ public:
     void closeAudio();
 
 
-    void suspendAudio(bool);
+    void suspendAudio(bool shouldSuspend);
 
     void parseCommandline(const String & );
 
@@ -60,7 +62,7 @@ public:
 
     // our Saving methods
     var getJSONData();
-    void loadJSONData(var data);
+    void loadJSONData(var data,ProgressTask * loadingTask);
 
     bool checkFileVersion(DynamicObject * metaData);
     int versionStringToInt(const String &version);
@@ -85,10 +87,69 @@ public:
 
   int64 loadingStartTime;
   File fileBeingLoaded;
-  void managerEndedLoading()override;
+  void managerEndedLoading() override;
+  void managerProgressedLoading(float progress) override;
+
+
+  void fileLoaderEnded();
+  bool allLoadingThreadsAreEnded();
+  void loadDocumentAsync(const File & file);
+
+  class FileLoader : public Thread,public Timer{
+  public:
+    FileLoader(Engine * e,File f):Thread("EngineLoader"),owner(e),fileToLoad(f){
+      //startTimerHz(4);
+      //fakeProgress = 0;
+      isEnded = false;
+    }
+    ~FileLoader(){
+      
+    }
+
+    void timerCallback()override{
+      //fakeProgress+=getTimerInterval()/5000.0;
+      //fakeProgress = jmin(1.0f,fakeProgress);
+      //owner->engineListeners.call(&EngineListener::fileProgress,fakeProgress, 0);
+    }
+
+    void run() override{
+      owner->loadDocumentAsync(fileToLoad);
+      isEnded = true;
+      owner->fileLoaderEnded();
+    }
+
+	//float fakeProgress ;
+    Engine * owner;
+    File fileToLoad;
+    bool isEnded;
+    
+
+  };
+
+  ScopedPointer<FileLoader> fileLoader;
+
+
+
+  class EngineListener{
+  public:
+    virtual ~EngineListener(){};
+
+    virtual void startLoadFile(){};
+    // TODO implement progression
+    virtual void fileProgress(float percent,int state){};
+    virtual void endLoadFile(){};
+  };
+
+  ListenerList<EngineListener> engineListeners;
+  void addEngineListener(EngineListener* e){engineListeners.add(e);}
+  void removeEngineListener(EngineListener* e){engineListeners.remove(e);}
 
   bool isLoadingFile;
-    
+  var jsonData;
+
+  void handleAsyncUpdate()override;
+
+  
 };
 
 

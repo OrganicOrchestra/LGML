@@ -29,7 +29,7 @@ public:
     NodeBaseUI(NodeBase * node, NodeBaseContentUI * contentContainer = nullptr, NodeBaseHeaderUI * headerContainer = nullptr);
     virtual ~NodeBaseUI();
 
-	NodeBase * node;
+	WeakReference<NodeBase> node;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeBaseUI)
 };

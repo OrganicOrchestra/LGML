@@ -26,6 +26,8 @@ JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFi
 }
 
 JsEnvironment::~JsEnvironment(){
+  stopTimer(0);
+  stopTimer(1);
   for(auto & c:listenedParameters){
     if(c.get()) c->removeParameterListener(this);
   }
@@ -71,7 +73,8 @@ String JsEnvironment::getParentName(){
 
 
 void JsEnvironment::loadFile(const String &path) {
-  File f(File::createFileWithoutCheckingPath(path));
+  File f =//(File::createFileWithoutCheckingPath(path));
+    File::getCurrentWorkingDirectory().getChildFile(path);
   loadFile(f);
 }
 
@@ -323,33 +326,34 @@ void JsEnvironment::checkUserControllableEventFunction(){
           for(int i  = 2 ; i < f->splitedName.size() ; i++){
             localName.add(f->splitedName.getUnchecked(i));
           }
-
-
           Controllable * c = candidate->getControllableForAddress(localName);
           if(Parameter * p = dynamic_cast<Parameter*>(c)){
             listenedParameters.addIfNotAlreadyThere(p);
             found = true;
+            break;
           }
           else if(Trigger *t = dynamic_cast<Trigger*>(c)){
             listenedTriggers.addIfNotAlreadyThere(t);
             found = true;
+            break;
           }
           else if(ControllableContainer * cont = candidate->getControllableContainerForAddress(localName)){
             listenedContainers.addIfNotAlreadyThere(cont);
             found = true;
+            break;
           }
-
-
         }
-        if(!found){
-          String fName;
-          for(auto & n:f->splitedName){
-            fName+=n+"_";
-          }
-          fName = fName.substring(0, fName.length()-1);
-          NLOG(localNamespace,"not found controllable/Container for function : "+fName);
-        }
+
       }
+
+    }
+    if(!found){
+      String fName;
+      for(auto & n:f->splitedName){
+        fName+=n+"_";
+      }
+      fName = fName.substring(0, fName.length()-1);
+      NLOG(localNamespace,"not found controllable/Container for function : "+fName);
     }
 
   }
@@ -376,7 +380,8 @@ void JsEnvironment::updateUserDefinedFunctions(){
 }
 
 void JsEnvironment::parameterValueChanged(Parameter * p) {
-  callFunction("on_"+getJsFunctionNameFromAddress(p->getControlAddress()), p->value,false);
+  if(p)callFunction("on_"+getJsFunctionNameFromAddress(p->getControlAddress()), p->value,false);
+  else{jassertfalse;}
 
 };
 void JsEnvironment::triggerTriggered(Trigger *p){
@@ -401,10 +406,12 @@ void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originCont
 
 
 void JsEnvironment::sendAllParametersToJS(){
-  for(auto & t:listenedTriggers){triggerTriggered(t);}
-  for(auto & t:listenedParameters){parameterValueChanged(t);}
+  for(auto & t:listenedTriggers){if(t.get())triggerTriggered(t);}
+  for(auto & t:listenedParameters){if(t.get())parameterValueChanged(t);}
   for(auto & t:listenedContainers){
+      if(t.get()){
     Array<Controllable*> conts = t->getAllControllables();
     for(auto & c:conts){controllableFeedbackUpdate(t,c);}
+      }
   }
 }

@@ -7,22 +7,22 @@
  ///////////////////////////////////////
 
 
-DataInNode.cpp
-	line : 46
-		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
+TimeManager.cpp
+	line : 405
+		//TODO: check
 
 
 ControllableContainer.cpp
-	line : 633
+	line : 548
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 646
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
 		//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
-
-	line : 540
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 	line : 447
 		// TODO weird feedback when loading preset on parameter presetName
@@ -38,6 +38,11 @@ NodeBase.cpp
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
+EngineFileDocument.cpp
+	line : 50
+		// TODO handle quick reloading of file
+
+
 VuMeter.h
 	line : 18
 		//TODO, move to more common place for use in other components
@@ -50,20 +55,20 @@ MainComponentCommands.cpp
 
 
 NodeContainer.cpp
-	line : 459
+	line : 281
+		//@ben remove recursive for now (not useful and duplicating values...)
+		//
+		//    for (auto &n : nodes) n->saveCurrentPreset();
+
+	line : 527
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
 
-	line : 300
+	line : 367
 		// TODO nicely handle file format errors?
-
-	line : 214
-		//@ben remove recursive for now (not useful and duplicating values...)
-		//
-		//    for (auto &n : nodes) n->saveCurrentPreset();
 
 
 TimeManager.h
@@ -77,7 +82,7 @@ JavascriptControllerUI.cpp
 
 
 AudioHelpers.h
-	line : 138
+	line : 141
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 
@@ -88,36 +93,36 @@ NodeBase.h
 
 
 NodeConnectionEditor.cpp
-	line : 180
+	line : 392
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+	line : 181
 		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
 
-	line : 391
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
 
 LooperNode.cpp
-	line : 64
+	line : 67
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
 
-TimeManager.cpp
-	line : 405
-		//TODO: check
+DataInNode.cpp
+	line : 46
+		// @ben string obviously can't send float in updateOutputData, so updating everything but string for now
 
 
 MIDIController.cpp
+	line : 184
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
+
 	line : 41
 		// TODO : we may need to listen to sR changes
 
-	line : 183
-		// @ben do we do the same as OSC MIDI IN/OUt controllers
-
 
 ControllableContainer.h
-	line : 147
+	line : 150
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -156,8 +161,13 @@ DataProcessorGraph.cpp
 
 
 NodeManager.h
-	line : 65
+	line : 66
 		// @ben no listener here for now, only because it's overkilling (and Im lazy..)
+
+
+Engine.h
+	line : 137
+		// TODO implement progression
 
 
 ControllableInspector.h

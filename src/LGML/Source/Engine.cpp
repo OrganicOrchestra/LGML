@@ -24,27 +24,15 @@ const char* const filenameWildcard = "*.lgml";
 Engine::Engine():FileBasedDocument (filenameSuffix,
                                     filenameWildcard,
                                     "Load a filter graph",
-                                    "Save a filter graph"),
-				 ControllableContainer("Root")
+                                    "Save a filter graph"){
+  
+  initAudio();
+  Logger::setCurrentLogger (LGMLLogger::getInstance());
 
-{
-	  
-	skipControllableNameInAddress = true;
-
-	initAudio();
-	Logger::setCurrentLogger (LGMLLogger::getInstance());
-
-	MIDIManager::getInstance()->init();
-	SerialManager::getInstance()->init();
-
-	NodeManager::getInstance()->addNodeManagerListener(this);
-
-	addChildControllableContainer(NodeManager::getInstance());
-	addChildControllableContainer(TimeManager::getInstance());
-	addChildControllableContainer(ControllerManager::getInstance());
-	addChildControllableContainer(FastMapper::getInstance());
-	addChildControllableContainer(RuleManager::getInstance());
-
+  MIDIManager::getInstance()->init();
+  SerialManager::getInstance()->init();
+  NodeManager::getInstance()->addNodeManagerListener(this);
+  VSTManager::getInstance();
 }
 
 
@@ -109,10 +97,21 @@ void Engine::initAudio(){
 
 
 void Engine::suspendAudio(bool shouldBeSuspended){
-  if(AudioProcessor * ap =graphPlayer.getCurrentProcessor())
+
+
+  if(AudioProcessor * ap =graphPlayer.getCurrentProcessor()){
+    ap->getCallbackLock();
     ap->suspendProcessing (shouldBeSuspended);
+    if(shouldBeSuspended)ap->releaseResources();
+    else {
+      AudioIODevice * dev = getAudioDeviceManager().getCurrentAudioDevice();
+      ap->prepareToPlay(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
+    }
+  }
 
   TimeManager::getInstance()->lockTime(shouldBeSuspended);
+
+
 
 }
 
@@ -132,13 +131,14 @@ void Engine::clear(){
 
   FastMapper::getInstance()->clear();
   RuleManager::getInstance()->clear();
+  
   ControllerManager::getInstance()->clear();
-  graphPlayer.setProcessor(nullptr);
-//  getAudioDeviceManager().removeAudioCallback (&graphPlayer);
+//  graphPlayer.setProcessor(nullptr);
+  
   NodeManager::getInstance()->clear();
-graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+//graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
 
-//getAudioDeviceManager().addAudioCallback (&graphPlayer);
+
   PresetManager::getInstance()->clear();
 
 
@@ -159,20 +159,7 @@ void Engine::stimulateAudio( bool s){
 
 }
 
-void Engine::createNewGraph(){
-  clear();
-  suspendAudio(true);
-  isLoadingFile = true;
-  ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
-  node->xPosition->setValue(150);
-  node->yPosition->setValue(100);
-  node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
-  node->xPosition->setValue(450);
-  node->yPosition->setValue(100);
-  isLoadingFile = false;
-  suspendAudio(false);
-  setFile(File());
-}
+
 
 
 void Engine::MultipleAudioSettingsHandler::changeListenerCallback(ChangeBroadcaster *){
@@ -220,14 +207,6 @@ String Engine::MultipleAudioSettingsHandler::getConfigName(){
 
 
 }
-void Engine::managerEndedLoading(){
-  isLoadingFile = false;
-  setLastDocumentOpened(fileBeingLoaded);
-  //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
-  //  suspendAudio(false);
-  int64 timeForLoading  =  Time::currentTimeMillis()-loadingStartTime;
-  NLOG("Engine","Session loaded in " << timeForLoading/1000.0 << "s");
-}
 
 
 void Engine::MultipleAudioSettingsHandler::saveCurrent(){
@@ -248,3 +227,5 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent(){
   getAppProperties().getUserSettings()->saveIfNeeded();
 
 }
+
+

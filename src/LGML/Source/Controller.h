@@ -77,6 +77,7 @@ public:
 
     // identifiers
     static const Identifier controllerTypeIdentifier;
+  static const Identifier variableNameIdentifier;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)
 };

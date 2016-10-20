@@ -10,8 +10,10 @@
 
 #ifndef AUDIOHELPERS_H_INCLUDED
 #define AUDIOHELPERS_H_INCLUDED
+
 #pragma once
-#pragma warning(disable:4244 4100)
+#pragma warning( disable : 4244 )
+
 
 #define DB0_FOR_01 0.8f
 #define MIN_DB -70.0f

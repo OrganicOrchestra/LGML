@@ -37,7 +37,7 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
 
         //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
         //vPresets.add(preVal);
-        pre->addPresetValue(p->getControlAddress(container), p->value.clone());
+        pre->addPresetValue(p->getControlAddress(container), var(p->value));
 
     }
 
@@ -58,10 +58,11 @@ PresetManager::Preset * PresetManager::getPreset(String filter, const String & n
     return nullptr;
 }
 
-void PresetManager::fillWithPresets(ComboBox * cb,const  String & filter, bool showSaveCurrent) const
+void PresetManager::fillWithPresets(ComboBox * cb,const  String & filter, bool _showSaveCurrent) const
 {
     cb->clear();
-    if(showSaveCurrent) cb->addItem("Save current preset", SaveCurrent);
+    if(_showSaveCurrent) cb->addItem("Save current preset", SaveCurrent);
+
     cb->addItem("Save to new preset", SaveToNew);
     cb->addItem("Reset to default", ResetToDefault);
 
@@ -107,9 +108,7 @@ int PresetManager::getNumPresetForFilter (const String & filter) const{
   }
   return num;
 }
-int PresetManager::getNumOption(){
-  return 3;
-}
+ 
 void PresetManager::clear()
 {
     presets.clear();

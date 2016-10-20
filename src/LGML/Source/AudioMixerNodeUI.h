@@ -1,10 +1,10 @@
 /*
  ==============================================================================
-
+ 
  AudioMixerNodeUI.h
  Created: 24 Apr 2016 8:37:34pm
  Author:  Martin Hermant
-
+ 
  ==============================================================================
  */
 
@@ -19,52 +19,60 @@
 #include "FloatSliderUI.h"
 
 class AudioMixerNodeUI : public NodeBaseContentUI,
-	public ConnectableNode::ConnectableNodeListener,
+public ConnectableNode::ConnectableNodeListener,
 public Parameter::Listener
 {
 public:
-    AudioMixerNodeUI(){
-    }
-
+	AudioMixerNodeUI(){
+	}
+	
 	~AudioMixerNodeUI();
 	void init() override;
-
-    void numAudioInputChanged(ConnectableNode *,int )override;
-    void numAudioOutputChanged(ConnectableNode*, int )override;
-
-    class OutputBusUI : public Component {
-    public:
-
-        OwnedArray<FloatSliderUI> inputVolumes;
-
-
-        OutputBusUI(AudioMixerNode::OutputBus * o):owner(o){
-            setNumInput(o->volumes.size());
-        };
-
-        ~OutputBusUI(){
-
-        }
-        void setNumInput(int numInput);
-        void resized() override;
-        int outputIdx;
-        AudioMixerNode::OutputBus* owner;
-        BigInteger visibleChanels;
-        void setOneVisible(int num);
-        int getNumOfVisibleChannels();
-        void updateVisibleChannels();
-        void setAllVisible();
-
-    };
-
-
-    void parameterValueChanged(Parameter * p) override;
-    void resized() override;
-    OwnedArray<OutputBusUI> outputBusUIs;
-    AudioMixerNode * mixerNode;
-
-    void setOneToOne(bool);
-
+	
+	void numAudioInputChanged(ConnectableNode *,int )override;
+	void numAudioOutputChanged(ConnectableNode*, int )override;
+	
+	void numAudioInputChangedUI(ConnectableNode * c , int numInput);
+	
+	void		numAudioOutputChangedUI(ConnectableNode * c , int numInput);
+	
+	
+  
+	class OutputBusUI : public Component {
+	public:
+		
+		OwnedArray<FloatSliderUI> inputVolumes;
+		
+		
+		OutputBusUI(AudioMixerNode::OutputBus * o):owner(o){
+			
+			setNumInput(o->volumes.size());
+		};
+		
+		~OutputBusUI(){
+			
+		}
+		void setNumInput(int numInput);
+		void resized() override;
+		int outputIdx;
+		AudioMixerNode::OutputBus* owner;
+		BigInteger visibleChanels;
+		void setOneVisible(int num);
+		int getNumOfVisibleChannels();
+		void updateVisibleChannels();
+		void setAllVisible();
+		void handleCommandMessage(int id)override;
+		
+	};
+	
+	void handleCommandMessage(int id)override;
+	void parameterValueChanged(Parameter * p) override;
+	void resized() override;
+	OwnedArray<OutputBusUI> outputBusUIs;
+	AudioMixerNode * mixerNode;
+	
+	void setOneToOne(bool);
+	
 };
 
 

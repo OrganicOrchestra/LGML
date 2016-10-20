@@ -84,7 +84,8 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
     }
 
     for(auto &c:container->controllableContainers){
-        container->addControllableContainerListener(this);
+      if(c.get()){
+        c->addControllableContainerListener(this);
         if(c->isIndexedContainer()){
 
             if(!myParent->hasProperty(jsArrayIdentifier)){
@@ -110,6 +111,7 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
             if(!c->skipControllableNameInAddress && childObject!=nullptr)
                 myParent->setProperty(c->shortName, var(childObject));
         }
+    }
     }
 
     return myParent;

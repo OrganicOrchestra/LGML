@@ -178,7 +178,8 @@ void MIDIController::buildLocalEnv(){
 
 
 void MIDIController::newJsFileLoaded(){
-  scriptPath->setValue(currentFile.getFullPathName());
+
+  scriptPath->setValue(currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory()));
 };
 
 // @ben do we do the same as OSC MIDI IN/OUt controllers
@@ -193,7 +194,7 @@ var MIDIController::sendNoteOnFromJS(const var::NativeFunctionArgs & a ) {
     return var(false);
   }
 
-  c->sendNoteOn((int)(a.arguments[0]) + 1, a.arguments[1], a.arguments[2]);
+  c->sendNoteOn((int)(a.arguments[0]) , a.arguments[1], a.arguments[2]);
   return var(true);
 }
 
@@ -208,7 +209,7 @@ var MIDIController::sendNoteOffFromJS(const var::NativeFunctionArgs & a) {
     return var(false);
   }
 
-  c->sendNoteOff((int)(a.arguments[0])+1, a.arguments[1], a.arguments[2]);
+  c->sendNoteOff((int)(a.arguments[0]), a.arguments[1], a.arguments[2]);
   return var(true);
 }
 
@@ -221,7 +222,7 @@ var MIDIController::sendCCFromJS(const var::NativeFunctionArgs & a){
     return var(false);
   }
 
-  c->sendCC((int)(a.arguments[0]) + 1, a.arguments[1], a.arguments[2]);
+  c->sendCC((int)(a.arguments[0]) , a.arguments[1], a.arguments[2]);
   return var(true);
 }
 

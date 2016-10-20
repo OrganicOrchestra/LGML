@@ -298,6 +298,6 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::trackStateChangedAsync(const Loo
   }
   repaint();
 }
-void LooperNodeContentUI::TrackUI::TimeStateUI::trackTimeChangedAsync(double beat){
+void LooperNodeContentUI::TrackUI::TimeStateUI::trackTimeChangedAsync(double /*beat*/){
   repaint();
 }

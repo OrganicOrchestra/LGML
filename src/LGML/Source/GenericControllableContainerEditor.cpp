@@ -106,9 +106,19 @@ void GenericControllableContainerEditor::buttonClicked(Button * b)
 
 void GenericControllableContainerEditor::childStructureChanged(ControllableContainer *)
 {
-	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
+  postCommandMessage(CHILD_STRUCTURE_CHANGED);
+	
 }
-
+void GenericControllableContainerEditor::handleCommandMessage(int cID){
+  switch(cID){
+    case CHILD_STRUCTURE_CHANGED:
+      inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
+      break;
+    default:
+      jassertfalse;
+      break;
+  }
+}
 
 //Inner Container
 

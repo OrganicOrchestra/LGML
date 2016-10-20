@@ -43,6 +43,10 @@ void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
   setPreferedNumAudioInput(0);
   setPreferedNumAudioOutput(nc->getTotalNumInputChannels());
 }
+bool ContainerInNode::setPreferredBusArrangement (bool isInputBus, int busIndex, const AudioChannelSet& preferredSet){
+  return NodeBase::setPreferredBusArrangement(isInputBus, busIndex,preferredSet)&&
+  AudioProcessorGraph::AudioGraphIOProcessor::setPreferredBusArrangement(isInputBus, busIndex,preferredSet);
+}
 
 
 void ContainerInNode::setNumAudioChannels(int channels)

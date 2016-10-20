@@ -52,7 +52,9 @@ public:
 
     void resized()override;
     void trackSelectedAsync(bool _isSelected)override{ isSelected = _isSelected;repaint();}
-    void trackStateChangedAsync(const LooperTrack::TrackState & state)override{};
+
+    void trackStateChangedAsync(const LooperTrack::TrackState & /*state*/)override{};
+
     LooperTrack * track;
     
     ScopedPointer<TriggerBlinkUI> recPlayButton;

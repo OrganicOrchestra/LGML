@@ -16,7 +16,7 @@
 
 OSCController::OSCController(const String &_name) :
 Controller(_name),
-
+lastMessageReceived(OSCAddressPattern("/fake")),
 isProcessingOSC(false)
 
 {
@@ -72,7 +72,8 @@ void OSCController::processMessage(const OSCMessage & msg)
   }
   if (!enabledParam->boolValue()) return;
 
-  if(blockFeedback->boolValue()){lastAddressReceived = msg.getAddressPattern().toString();}
+  if(blockFeedback->boolValue()){
+    lastMessageReceived = msg;}
   isProcessingOSC = true;
   bool result = processMessageInternal(msg);
   isProcessingOSC = false;
@@ -131,9 +132,46 @@ void OSCController::oscBundleReceived(const OSCBundle & bundle)
   }
 }
 
+
+inline bool compareOSCArg(const OSCArgument & a, const OSCArgument & b){
+  if(a.getType()!=b.getType()){
+    return false;
+  }
+
+  if(a.getType()== OSCTypes::float32){
+    return a.getFloat32()==b.getFloat32();
+  }
+  if(a.getType()== OSCTypes::string){
+    return a.getString()==b.getString();
+  }
+  if(a.getType()== OSCTypes::int32){
+    return a.getInt32()==b.getInt32();
+  }
+  if(a.getType()== OSCTypes::blob){
+    return a.getBlob()==b.getBlob();
+  }
+  return false;
+}
+
+inline bool compareOSCMessages(const  OSCMessage & a,const OSCMessage & b){
+  if(a.getAddressPattern()!=b.getAddressPattern()){
+    return false;
+  }
+  if(a.size()!=b.size()){
+    return false;
+  }
+  for(int i=0 ; i <a.size();i++){
+    if(!compareOSCArg(a[i],b[i])){
+      return false;
+    }
+  }
+  return true;
+
+}
 bool OSCController::sendOSC (OSCMessage & m)
 {
-  if(enabledParam->boolValue() &&  (!blockFeedback->boolValue() || !isProcessingOSC || lastAddressReceived!=m.getAddressPattern().toString())){
+  if(enabledParam->boolValue() &&
+     (!blockFeedback->boolValue() || !isProcessingOSC ||  !compareOSCMessages(lastMessageReceived,m))){
     if(logOutGoingOSC->boolValue()){
         logMessage(m,"Out:");
     }

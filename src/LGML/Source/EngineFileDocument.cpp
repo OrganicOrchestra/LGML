@@ -20,6 +20,8 @@
 
 ApplicationProperties & getAppProperties();
 
+AudioDeviceManager & getAudioDeviceManager();
+
 String Engine::getDocumentTitle() {
   if (! getFile().exists())
     return "Unnamed";
@@ -27,29 +29,116 @@ String Engine::getDocumentTitle() {
   return getFile().getFileNameWithoutExtension();
 }
 
+void Engine::createNewGraph(){
+engineListeners.call(&EngineListener::startLoadFile);
+
+  suspendAudio(true);
+  clear();
+  isLoadingFile = true;
+  ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
+  node->xPosition->setValue(150);
+  node->yPosition->setValue(100);
+  node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
+  node->xPosition->setValue(450);
+  node->yPosition->setValue(100);
+  setFile(File());
+  triggerAsyncUpdate();
+
+}
 
 Result Engine::loadDocument (const File& file){
-
-
-
-  clear();
-
-  ScopedPointer<InputStream> is( file.createInputStream());
-//  graphPlayer.setProcessor(nullptr);
-//  suspendAudio(true);
-
+  if(isLoadingFile){
+    // TODO handle quick reloading of file
+    return Result::fail("engine already loading");
+  }
   isLoadingFile = true;
-  loadingStartTime =  Time::currentTimeMillis();
-  fileBeingLoaded = file;
-  {
-    var data = JSON::parse(*is);
-    loadJSONData(data);
-  }// deletes data before launching audio, (data not needed after loaded)
+  engineListeners.call(&EngineListener::startLoadFile);
 
+  if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
+#ifdef MULTITHREADED_LOADING
+	fileLoader = new FileLoader(this,file);
+  fileLoader->startThread(10);
+#else
+	loadDocumentAsync(file);
+	 triggerAsyncUpdate();
+#endif
+	
   return Result::ok();
 }
 
+//Called from fileLoader
+void Engine::loadDocumentAsync(const File & file){
+
+suspendAudio(true);
+  clearTasks();
+  taskName = "Loading File";
+  ProgressTask * clearTask = addTask("clearing");
+  ProgressTask * parseTask = addTask("parsing");
+  ProgressTask * loadTask = addTask("loading");
+  clearTask->start();
+  clear();
+  clearTask->end();
+
+//  {
+//    MessageManagerLock ml;
+//  }
+  ScopedPointer<InputStream> is( file.createInputStream());
+
+
+   
+  loadingStartTime =  Time::currentTimeMillis();
+  fileBeingLoaded = file;
+    fileBeingLoaded.getParentDirectory().setAsCurrentWorkingDirectory();
+
+  {
+    parseTask->start();
+    jsonData = JSON::parse(*is);
+    parseTask->end();
+    loadTask->start();
+    loadJSONData(jsonData,loadTask);
+    loadTask->end();
+
+
+  }// deletes data before launching audio, (data not needed after loaded)
+  
+  jsonData = var();
+}
+
+void Engine::managerEndedLoading(){
+  if(allLoadingThreadsAreEnded()){
+    triggerAsyncUpdate();
+  }
+}
+void Engine::managerProgressedLoading(float _progress)
+{
+	engineListeners.call(&EngineListener::fileProgress, _progress,0);
+}
+bool Engine::allLoadingThreadsAreEnded(){
+  return NodeManager::getInstance()->getNumJobs()== 0 && (fileLoader && fileLoader->isEnded);
+}
+
+void Engine::fileLoaderEnded(){
+  if(allLoadingThreadsAreEnded()){
+    triggerAsyncUpdate();
+  }
+}
+
+
+void Engine::handleAsyncUpdate(){
+
+
+  isLoadingFile = false;
+  if(fileBeingLoaded.exists())
+    setLastDocumentOpened(fileBeingLoaded);
+
+  //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+  //  suspendAudio(false);
+  int64 timeForLoading  =  Time::currentTimeMillis()-loadingStartTime;
+  suspendAudio(false);
+  engineListeners.call(&EngineListener::endLoadFile);
+  NLOG("Engine","Session loaded in " << timeForLoading/1000.0 << "s");
+}
 
 Result Engine::saveDocument (const File& file){
 
@@ -112,7 +201,7 @@ var Engine::getJSONData()
 /// ===================
 // loading
 
-void Engine::loadJSONData (var data)
+void Engine::loadJSONData (var data,ProgressTask * loadingTask)
 {
 
   DynamicObject * md = data.getDynamicObject()->getProperty("metaData").getDynamicObject();
@@ -129,15 +218,28 @@ void Engine::loadJSONData (var data)
 
   clear();
 
-  if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
   DynamicObject * d = data.getDynamicObject();
-
+  ProgressTask * presetTask = loadingTask->addTask("presetManager");
+  ProgressTask * nodeManagerTask = loadingTask->addTask("nodeManager");
+  ProgressTask * controllerManagerTask = loadingTask->addTask("controllerManager");
+  ProgressTask * fastMapperTask = loadingTask->addTask("fastMapper");
+   ProgressTask * ruleManagerTask = loadingTask->addTask("ruleManager");
+  presetTask->start();
   if (d->hasProperty("presetManager")) PresetManager::getInstance()->loadJSONData(d->getProperty("presetManager"));
+  presetTask->end();
+  nodeManagerTask->start();
   if (d->hasProperty("nodeManager")) NodeManager::getInstance()->loadJSONData(d->getProperty("nodeManager"));
+  nodeManagerTask->end();
+  controllerManagerTask->start();
   if (d->hasProperty("controllerManager")) ControllerManager::getInstance()->loadJSONData(d->getProperty("controllerManager"));
+  controllerManagerTask->end();
+  ruleManagerTask->start();
   if (d->hasProperty("ruleManager"))RuleManager::getInstance()->loadJSONData(d->getProperty("ruleManager"));
+  ruleManagerTask->end();
+  fastMapperTask->start();
   if(d->hasProperty("fastMapper")) FastMapper::getInstance()->loadJSONData(d->getProperty("fastMapper"));
+  fastMapperTask->end();
 
   if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(true); //Re enable editor
 
