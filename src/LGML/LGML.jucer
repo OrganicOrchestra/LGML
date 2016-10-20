@@ -13,6 +13,16 @@
       <FILE id="K7EYqf" name="GitSha.h" compile="0" resource="0" file="Source/GitSha.h"/>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
+          <GROUP id="{FF851D53-C827-E769-E716-78C1AF603615}" name="presets">
+            <FILE id="ChdLZ1" name="PresetManager.cpp" compile="1" resource="0"
+                  file="Source/PresetManager.cpp"/>
+            <FILE id="Crvsjm" name="PresetManager.h" compile="0" resource="0" file="Source/PresetManager.h"/>
+            <GROUP id="{509ED695-0FD1-F527-E17F-894B4910AA84}" name="ui">
+              <FILE id="dtyohX" name="PresetChooser.cpp" compile="1" resource="0"
+                    file="Source/PresetChooser.cpp"/>
+              <FILE id="GWzGJC" name="PresetChooser.h" compile="0" resource="0" file="Source/PresetChooser.h"/>
+            </GROUP>
+          </GROUP>
           <GROUP id="{B3184894-4077-D17A-2E3F-67A560988CD7}" name="ui">
             <FILE id="YpRfx9" name="ControllableUI.cpp" compile="1" resource="0"
                   file="Source/ControllableUI.cpp"/>
@@ -92,9 +102,6 @@
                   file="Source/Point3DParameter.cpp"/>
             <FILE id="tbcUUS" name="Point3DParameter.h" compile="0" resource="0"
                   file="Source/Point3DParameter.h"/>
-            <FILE id="ChdLZ1" name="PresetManager.cpp" compile="1" resource="0"
-                  file="Source/PresetManager.cpp"/>
-            <FILE id="Crvsjm" name="PresetManager.h" compile="0" resource="0" file="Source/PresetManager.h"/>
             <FILE id="wz5PBh" name="StringParameter.cpp" compile="1" resource="0"
                   file="Source/StringParameter.cpp"/>
             <FILE id="IhX92R" name="StringParameter.h" compile="0" resource="0"

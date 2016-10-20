@@ -20,24 +20,25 @@ trackGroup(this),
 streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
 {
 
-  numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-  exportAudio = addTrigger("exportAudio", "export audio of all recorded Tracks");
-  selectAllTrig = addTrigger("Select All",        "Select All tracks, for all clear or main volume for instance");
-  selectTrack = addIntParameter("Select track",   "set track selected", 0, -1, 0);
-  recPlaySelectedTrig = addTrigger("Rec Or Play","Tells the selected track to wait for the next bar and then start record or play");
-  playSelectedTrig = addTrigger("Play",           "Tells the selected track to wait for the next bar and then stop recording and start playing");
-  stopSelectedTrig = addTrigger("Stop",           "Tells the selected track to stop ");
-  clearSelectedTrig = addTrigger("Clear",         "Tells the selected track to clear it's content if got any");
-  volumeSelected = addFloatParameter("Volume",    "Set the volume of the selected track",1, 0, 1);
-  clearAllTrig = addTrigger("ClearAll",           "Tells all tracks to clear it's content if got any");
-  stopAllTrig = addTrigger("StopAll",             "Tells all tracks to stop it's content if got any");
-  isMonitoring = addBoolParameter("monitor",      "do we monitor audio input ? ", false);
-  preDelayMs = addIntParameter("Pre Delay MS",    "Pre process delay (in milliseconds)", 0, 0, 250);
-  quantization = addIntParameter("quantization",       "quantization for this looper - 1 is global", -1, -1, 32);
-  isOneShot =  addBoolParameter("isOneShot", "do we play once or loop track", false);
-  firstTrackSetTempo = addBoolParameter("firstTrackSetTempo", "do the first track sets the global tempo or use quantization", true);
-  waitForOnset = addBoolParameter("wait for onset", "wait for onset before actually recording", false);
-    onsetThreshold = addFloatParameter("onsetThreshold", "threshold before onset", 0.01,0.0001,0.1);
+  numberOfTracks =		addIntParameter("numberOfTracks",		"number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
+  exportAudio =			addTrigger("exportAudio",				"export audio of all recorded Tracks");
+  selectAllTrig =		addTrigger("Select All",				"Select All tracks, for all clear or main volume for instance");
+  selectTrack =			addIntParameter("Select track",			"set track selected", 0, -1, 0);
+  recPlaySelectedTrig = addTrigger("Rec Or Play",				"Tells the selected track to wait for the next bar and then start record or play");
+  playSelectedTrig =	addTrigger("Play",						"Tells the selected track to wait for the next bar and then stop recording and start playing");
+  stopSelectedTrig =	addTrigger("Stop",						"Tells the selected track to stop ");
+  clearSelectedTrig =	addTrigger("Clear",						"Tells the selected track to clear it's content if got any");
+  volumeSelected =		addFloatParameter("Volume",				"Set the volume of the selected track",1, 0, 1);
+  clearAllTrig =		addTrigger("ClearAll",					"Tells all tracks to clear it's content if got any");
+  stopAllTrig =			addTrigger("StopAll",					"Tells all tracks to stop it's content if got any");
+  isMonitoring =		addBoolParameter("monitor",				"do we monitor audio input ? ", false);
+  preDelayMs =			addIntParameter("Pre Delay MS",			"Pre process delay (in milliseconds)", 0, 0, 250);
+  quantization =		addIntParameter("quantization",			"quantization for this looper - 1 is global", -1, -1, 32);
+  isOneShot =			addBoolParameter("isOneShot",			"do we play once or loop track", false);
+  firstTrackSetTempo =	addBoolParameter("firstTrackSetTempo",	"do the first track sets the global tempo or use quantization", true);
+  waitForOnset =		addBoolParameter("wait for onset",		"wait for onset before actually recording", false);
+  onsetThreshold =		addFloatParameter("onsetThreshold",		"threshold before onset", 0.01f,0.0001f,0.1f);
+
   addChildControllableContainer(&trackGroup);
 
   trackGroup.setNumTracks(numberOfTracks->intValue());

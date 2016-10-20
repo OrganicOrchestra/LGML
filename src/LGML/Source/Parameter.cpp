@@ -30,7 +30,7 @@ Parameter::Parameter(const Type &type, const String &niceName, const String &des
   void Parameter::resetValue()
 {
     isOverriden = false;
-    setValue(defaultValue);
+	setValue(defaultValue, true,true);
 }
 
 void Parameter::setValue(var _value, bool silentSet, bool force)

@@ -24,9 +24,6 @@
 #include "PresetManager.h"
 #include "DebugHelpers.h" //keep
 
-
-
-
 class ControllableContainer;
 
 //Listener
@@ -58,6 +55,7 @@ public:
     bool hasCustomShortName;
 
 	bool canHavePresets;
+	bool presetSavingIsRecursive;
 	StringParameter * currentPresetName;
 	Trigger * savePresetTrigger;
 	PresetManager::Preset * currentPreset;

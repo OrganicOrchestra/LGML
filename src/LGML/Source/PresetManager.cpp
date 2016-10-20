@@ -27,6 +27,7 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
 {
     //Array<PresetValue *> vPresets;
     Preset * pre = new Preset(name,filter);
+
     for (auto &p : container->getAllParameters(recursive,includeNotExposed))
     {
         if (!p->isPresettable) continue;
@@ -38,8 +39,23 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
         //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
         //vPresets.add(preVal);
         pre->addPresetValue(p->getControlAddress(container), var(p->value));
-
     }
+
+	DBG("Saving preset, recursive ? " << String(recursive));
+
+	if (!recursive)
+	{
+		for (auto &cc : container->controllableContainers)
+		{
+			DBG("Child container : " << cc->niceName << "preset name : "<< cc->currentPresetName->stringValue());
+			if (cc->currentPresetName->stringValue().isNotEmpty())
+			{
+				DBG(" >> Saving child container preset : " << cc->currentPresetName->stringValue());
+				pre->addPresetValue(cc->currentPresetName->getControlAddress(container), cc->currentPresetName->value);
+			}
+		}
+	}
+	
 
     presets.add(pre);
 
