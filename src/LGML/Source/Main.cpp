@@ -87,7 +87,10 @@ public:
     mainWindow = new MainWindow (getApplicationName(),engine);
 
     engine->parseCommandline(commandLine);
-
+    if(!engine->getFile().existsAsFile()){
+      engine->createNewGraph();
+      engine->setChangedFlag(false);
+    }
 #endif
 
   }

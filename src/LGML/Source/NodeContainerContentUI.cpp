@@ -11,6 +11,7 @@
 #include "NodeContainerContentUI.h"
 #include "NodeManagerUI.h"
 #include "ShapeShifterManager.h"
+#include "ControllableUI.h"
 
 NodeContainerContentUI::NodeContainerContentUI() :
 	ConnectableNodeContentUI(),

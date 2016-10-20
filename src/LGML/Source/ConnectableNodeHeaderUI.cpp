@@ -49,6 +49,9 @@ ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
     node->removeControllableContainerListener(this);
     node->removeConnectableNodeListener(this);
   }
+  else{
+    jassertfalse;
+  }
 
 }
 
@@ -60,8 +63,6 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 
   node->addConnectableNodeListener(this);
   updateVuMeters();
-
-
 
   titleUI = node->nameParam->createStringParameterUI();
   addAndMakeVisible(titleUI);
@@ -79,14 +80,11 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
 
   addAndMakeVisible(miniModeBT);
 
-  presetCB = new ComboBox("preset");
+ 
   if (node->canHavePresets)
   {
-    updatePresetComboBox();
-    addAndMakeVisible(presetCB);
-    presetCB->addListener(this);
-    presetCB->setTextWhenNothingSelected("Preset");
-    presetCB->setTooltip("Set the current preset at :\n" + node->currentPresetName->getControlAddress() + " <presetName>");
+	presetChooser = new PresetChooser(node);
+    addAndMakeVisible(presetChooser);
   }
 
   node->addControllableContainerListener(this);
@@ -119,22 +117,11 @@ void ConnectableNodeHeaderUI::updateVuMeters(){
   }
 }
 
-void ConnectableNodeHeaderUI::updatePresetComboBox(bool forceUpdate)
-{
 
-  bool emptyFilter = node->getPresetFilter().isEmpty();
-  presetCB->setEnabled(!emptyFilter);
-
-  if (!emptyFilter)
-  {
-    PresetManager::getInstance()->fillWithPresets(presetCB, node->getPresetFilter(), node->currentPreset != nullptr);
-    if (node->currentPreset != nullptr) presetCB->setSelectedId(node->currentPreset->presetId,forceUpdate?NotificationType::sendNotification: NotificationType::dontSendNotification);
-  }
-}
 
 void ConnectableNodeHeaderUI::init()
 {
-  //to override
+  //to overri
 }
 
 void ConnectableNodeHeaderUI::resized()
@@ -181,7 +168,7 @@ void ConnectableNodeHeaderUI::resized()
 
   if (node->canHavePresets && !bMiniMode)
   {
-    presetCB->setBounds(r.removeFromRight(presetCBWidth));
+    presetChooser->setBounds(r.removeFromRight(presetCBWidth));
     r.removeFromRight(5);
   }
 
@@ -197,11 +184,11 @@ void ConnectableNodeHeaderUI::setMiniMode(bool value)
 
   if (bMiniMode)
   {
-    if(node->canHavePresets) removeChildComponent(presetCB);
+    if(node->canHavePresets) removeChildComponent(presetChooser);
     miniModeBT.setButtonText("+");
   } else
   {
-    if (node->canHavePresets) addChildComponent(presetCB);
+    if (node->canHavePresets) addChildComponent(presetChooser);
     miniModeBT.setButtonText("-");
   }
 }
@@ -229,79 +216,6 @@ void ConnectableNodeHeaderUI::nodeParameterChanged(ConnectableNode *, Parameter 
 
 }
 
-void ConnectableNodeHeaderUI::comboBoxChanged(ComboBox * cb)
-{
-  int presetID = cb->getSelectedId();
-
-  if (presetID == PresetChoice::SaveCurrent)
-  {
-    bool result = node->saveCurrentPreset();
-    if(result) cb->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
-    else cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
-
-  }else if (presetID == PresetChoice::SaveToNew)
-  {
-    AlertWindow nameWindow("Save a new Preset","Choose a name for the new preset",AlertWindow::AlertIconType::QuestionIcon,this);
-    nameWindow.addTextEditor("newPresetName", "New Preset");
-    nameWindow.addButton("OK", 1, KeyPress(KeyPress::returnKey));
-    nameWindow.addButton("Cancel", 0, KeyPress(KeyPress::escapeKey));
-
-    int nameResult = nameWindow.runModalLoop();
-
-    if (nameResult)
-    {
-      String presetName = nameWindow.getTextEditorContents("newPresetName");
-      PresetManager::Preset * p = node->saveNewPreset(presetName);
-      cb->clear(NotificationType::dontSendNotification);
-      updatePresetComboBox();
-      cb->setSelectedId(p->presetId, NotificationType::dontSendNotification);
-    }
-    else
-    {
-      cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
-    }
-
-
-  }else if (presetID == PresetChoice::ResetToDefault) //Reset to default
-  {
-    node->resetFromPreset();
-    cb->setSelectedItemIndex(-1, NotificationType::dontSendNotification);
-  }
-  else if(presetID >=0 && presetID < PresetChoice::deleteStartId)
-  {
-    String nameOfPreset = cb->getItemText(cb->getSelectedItemIndex());
-    node->currentPresetName->setValue(nameOfPreset);
-
-  }
-  else if (presetID >= PresetChoice::deleteStartId)
-  {
-    bool ok = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Oh man, d'ya know watcha doin' ?", "Do you REALLY want to delete this preset ?\nLike, really really ?\nJust think about it man.", "Oh yeah", "F* No");
-    if (ok)
-    {
-      PresetManager * pm = PresetManager::getInstance();
-      int originId = cb->getSelectedId() - PresetChoice::deleteStartId - 1;
-      String originText = cb->getItemText(pm->getNumOption() + originId);
-      PresetManager::Preset * pre = pm->getPreset(node->getPresetFilter(), originText);
-      pm->presets.removeObject(pre);
-      updatePresetComboBox(true);
-    } else
-    {
-      //reselect last Id
-      if (node->currentPreset != nullptr)
-      {
-        cb->setSelectedId(node->currentPreset->presetId, juce::dontSendNotification);
-      } else
-      {
-        cb->setSelectedId(0, juce::dontSendNotification);
-      }
-    }
-
-  }
-  else{
-    jassertfalse;
-  }
-
-}
 
 void ConnectableNodeHeaderUI::buttonClicked(Button * b)
 {
@@ -326,15 +240,19 @@ void ConnectableNodeHeaderUI::controllableContainerPresetLoaded(ControllableCont
 void ConnectableNodeHeaderUI::handleCommandMessage(int id){
   switch(id){
     case updatePresetCBID:
-
       if (!node->canHavePresets) return;
 
       //  int numOptions = PresetManager::getNumOption();
-      if (node->currentPreset != nullptr)presetCB->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
+      if (node->canHavePresets && node->currentPreset != nullptr) presetChooser->setSelectedId(node->currentPreset->presetId, NotificationType::dontSendNotification);
       break;
 
     case repaintId:
       repaint();
+      break;
+    case audioInputChangedId:
+    case audioOutputChangedId:
+      updateVuMeters();
+      resized();
       break;
     default:
       break;
@@ -353,5 +271,11 @@ void ConnectableNodeHeaderUI::Grabber::paint(Graphics & g)
   g.drawHorizontalLine(r.getBottom(), left, right);
 }
 
-void ConnectableNodeHeaderUI::numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {updateVuMeters();resized();}
-void ConnectableNodeHeaderUI::numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {updateVuMeters();resized();}
+void ConnectableNodeHeaderUI::numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {
+  postCommandMessage(audioInputChangedId);
+
+}
+void ConnectableNodeHeaderUI::numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {
+  postCommandMessage(audioOutputChangedId);
+
+}

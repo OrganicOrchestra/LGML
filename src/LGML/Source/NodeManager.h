@@ -53,6 +53,7 @@ public:
     public:
         virtual ~NodeManagerListener() {}
 		virtual void managerCleared() {};
+		virtual void managerProgressedLoading(float /*progress*/) {}
       virtual void managerEndedLoading(){};
     };
 
@@ -65,18 +66,33 @@ public:
 private:
   // @ben no listener here for now, only because it's overkilling (and Im lazy..)
   void notifiedJobsEnded();
+  void notifiedJobsProgressed(float progress);
+
   friend class JobsWatcher;
+
   class JobsWatcher:public Timer{
   public:
+	  int startTotalJobNum;
+	  int numJobsDone;
     JobsWatcher(NodeManager * _nm):owner(_nm){
       startTimer(100);
+	  startTotalJobNum = owner->getNumJobs();
+	  numJobsDone = 0;
+	  DBG("Start timer with total job num " << startTotalJobNum);
     }
-    void timerCallback() override{
-        if(owner->getNumJobs()==0){
-          owner->notifiedJobsEnded();
-          stopTimer();
 
-      }
+    void timerCallback() override{
+		int newNumJobsDone = startTotalJobNum - owner->getNumJobs();
+		if (newNumJobsDone != numJobsDone)
+		{
+			owner->notifiedJobsProgressed(numJobsDone*1.f/startTotalJobNum);
+		}
+
+		if (owner->getNumJobs() == 0) {
+			owner->notifiedJobsEnded();
+			stopTimer();
+		}
+		
     }
     NodeManager * owner;
     

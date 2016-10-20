@@ -58,9 +58,7 @@ class JsNode : public NodeBase,public JsEnvironment{
 
     }
 
-    void newJsFileLoaded()override{
-        scriptPath->setValue(currentFile.getFullPathName());
-    }
+void newJsFileLoaded()override;
 
 
     void onContainerParameterChanged(Parameter * p) override{

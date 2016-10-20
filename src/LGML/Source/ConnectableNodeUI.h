@@ -16,7 +16,7 @@
 #include "ConnectableNode.h"
 #include "ConnectorComponent.h"
 
-#include "ConnectableNodeHeaderUI.h"
+class ConnectableNodeHeaderUI;
 #include "ConnectableNodeContentUI.h"
 #include "ConnectableNodeAudioCtlUI.h"
 
@@ -29,7 +29,7 @@ public:
 	ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeContentUI * contentUI = nullptr, ConnectableNodeHeaderUI * headerUI = nullptr);
 	virtual ~ConnectableNodeUI();
 
-	ConnectableNode * connectableNode;
+	WeakReference<ConnectableNode> connectableNode;
 
 
 	class ConnectorContainer :
@@ -142,7 +142,8 @@ public:
 void handleCommandMessage(int id) override;
 enum{
   repaintId  ,
-  setMiniModeId
+  setMiniModeId,
+  posChangedId
 }CommandMessages;
 
 };

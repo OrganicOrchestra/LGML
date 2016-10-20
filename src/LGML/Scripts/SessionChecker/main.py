@@ -5,9 +5,9 @@ fileOut = '/Users/Tintamar/Downloads/UJS ft N3O2_mod.lgml'
 fileSession = Session(file)
 actualUIDS = fileSession.getPresetNames();
 setUID = list(set(actualUIDS))
-print len(actualUIDS) , len(setUID);
+# print len(actualUIDS) , len(setUID);
 
 doublons = fileSession.getPresetDoublons()
 
 oldPresets = fileSession.getOldPresets()
-print oldPresets
+print "doublons" ,doublons

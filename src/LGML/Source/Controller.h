@@ -58,25 +58,50 @@ public:
 
 	virtual ControllerUI * createUI();
 
-    class  ControllerListener
+
+
+  struct VariableChangeMessage{
+    VariableChangeMessage(Controller * c,ControlVariable * v,bool a):controller(c),variable(v),isAdded(a){};
+    Controller * controller;
+    ControlVariable* variable;
+    bool isAdded;
+  };
+
+  class  ControllerListener:public QueuedNotifier<VariableChangeMessage>::Listener
     {
     public:
         /** Destructor. */
         virtual ~ControllerListener() {}
 
+      void newMessage(const VariableChangeMessage & message) override{
+        if(message.isAdded){
+          variableAddedAsync(message.controller, message.variable);
+        }
+        else{
+          variableRemovedAsync(message.controller, message.variable);
+        }
+      };
+
 		virtual void askForRemoveController(Controller *) {}
 
 		virtual void variableAdded(Controller *, ControlVariable * ) {}
 		virtual void variableRemoved(Controller *, ControlVariable * ) {}
+      virtual void variableAddedAsync(Controller *, ControlVariable * ) {}
+      virtual void variableRemovedAsync(Controller *, ControlVariable * ) {}
+
     };
 
     ListenerList<ControllerListener> controllerListeners;
-    void addControllerListener(ControllerListener* newListener) { controllerListeners.add(newListener); }
-    void removeControllerListener(ControllerListener* listener) { controllerListeners.remove(listener); }
+    QueuedNotifier<VariableChangeMessage> variableChangeNotifier;
+  void addControllerListener(ControllerListener* newListener) { controllerListeners.add(newListener);variableChangeNotifier.addListener(newListener); }
+  void removeControllerListener(ControllerListener* listener) { controllerListeners.remove(listener);variableChangeNotifier.removeListener(listener); }
 
-
+  
     // identifiers
     static const Identifier controllerTypeIdentifier;
+  static const Identifier variableNameIdentifier;
+    static const Identifier variableMinIdentifier;
+    static const Identifier variableMaxIdentifier;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)
 };

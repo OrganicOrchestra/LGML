@@ -24,9 +24,6 @@
 #include "PresetManager.h"
 #include "DebugHelpers.h" //keep
 
-
-
-
 class ControllableContainer;
 
 //Listener
@@ -45,7 +42,9 @@ public:
     virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
 
+
 class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public Trigger::Listener, public ControllableContainerListener
+
 {
 public:
     ControllableContainer(const String &niceName);
@@ -56,6 +55,7 @@ public:
     bool hasCustomShortName;
 
 	bool canHavePresets;
+	bool presetSavingIsRecursive;
 	StringParameter * currentPresetName;
 	Trigger * savePresetTrigger;
 	PresetManager::Preset * currentPreset;
@@ -68,8 +68,8 @@ public:
 
 	Uuid uid;
 
-    OwnedArray<Controllable> controllables;
-    Array<ControllableContainer * > controllableContainers;
+    OwnedArray<Controllable,CriticalSection> controllables;
+    Array<WeakReference<ControllableContainer>  > controllableContainers;
     ControllableContainer * parentContainer;
 
 	void addParameter(Parameter * p);
@@ -117,6 +117,7 @@ public:
     virtual bool loadPreset(PresetManager::Preset * preset);
 	virtual PresetManager::Preset* saveNewPreset(const String &name);
     virtual bool saveCurrentPreset();
+	virtual int getNumPresets();
 
     virtual bool resetFromPreset();
 
@@ -184,6 +185,7 @@ protected :
 
 private:
 
+  
 
     void notifyStructureChanged();
   void newMessage(const Parameter::ParamWithValue&)override;

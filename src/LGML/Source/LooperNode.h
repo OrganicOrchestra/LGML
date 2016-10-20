@@ -69,6 +69,7 @@ public:
   BoolParameter * isOneShot;
   BoolParameter*  firstTrackSetTempo;
   BoolParameter * waitForOnset;
+    FloatParameter * onsetThreshold;
   Trigger * exportAudio;
 
   AudioBuffer<float> bufferIn;

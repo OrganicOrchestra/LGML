@@ -9,7 +9,25 @@
 #ifndef MAINCOMPONENT_H_INCLUDED
 #define MAINCOMPONENT_H_INCLUDED
 
-#pragma warning(disable:4244 4100)
+#pragma warning( disable : 4244 4100)
+
+
+/*
+#include "NodeManager.h"
+#include "NodeManagerUI.h"
+
+#include "ControlManager.h"
+#include "ControllerManagerUI.h"
+#include "TimeManagerUI.h"
+
+#include "RuleManager.h"
+#include "RuleManagerUI.h"
+
+#include "FastMapper.h"
+#include "FastMapperUI.h"
+
+#include "LGMLLoggerUI.h"
+*/
 
 #include "LookAndFeelOO.h"
 //==============================================================================
@@ -22,11 +40,12 @@ ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
-class Engine;
+#include "Engine.h"
 #include "ShapeShifterManager.h"//keep
 #include "DebugHelpers.h"//keep
+#include "ProgressWindow.h"
 
-class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel
+class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,public Timer
 
 {
 public:
@@ -34,10 +53,17 @@ public:
     TooltipWindow tooltipWindow; // to add tooltips to an application, you
     // just need to create one of these and leave it
     // there to do its work..
-
     Engine * engine;
 
+	ScopedPointer<ProgressWindow> fileProgressWindow;
 
+	// from engineListener
+	void startLoadFile() override;
+	void fileProgress(float percent, int state)override;
+	void endLoadFile() override;
+
+
+	void timerCallback() override;
     ScopedPointer<LookAndFeelOO> lookAndFeelOO;
 
     //==============================================================================
@@ -51,6 +77,8 @@ public:
     void paint (Graphics& g) override{
 		g.fillAll (BG_COLOR.darker());
 	}
+
+	void paintOverChildren(Graphics & g) override;
     void resized() override;
 
 
@@ -71,7 +99,7 @@ public:
 
 
     void updateStimulateAudioItem (ApplicationCommandInfo& info);
-  void focusGained(FocusChangeType cause)override;
+	void focusGained(FocusChangeType cause)override;
 
 private:
     //==============================================================================
@@ -80,6 +108,7 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
 };
+
 
 
 

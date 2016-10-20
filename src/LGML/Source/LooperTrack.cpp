@@ -58,6 +58,7 @@ lastVolume(0)
   // post init
   volume->setValue(defaultVolumeValue);
   logVolume = float01ToGain(volume->value);
+
 }
 
 void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {

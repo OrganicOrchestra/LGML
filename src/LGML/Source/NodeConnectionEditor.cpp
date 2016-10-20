@@ -32,7 +32,7 @@ NodeConnectionEditor::NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI) 
 
 NodeConnectionEditor::~NodeConnectionEditor()
 {
-	
+  if(currentConnection)currentConnection->removeConnectionListener(this);
     setCurrentConnection(nullptr);
 }
 
@@ -55,7 +55,7 @@ void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
 {
     if (currentConnection == _connection) return;
 
-	setSelectedLink(nullptr);
+	selectedLink = nullptr;
 
     if (currentConnection != nullptr)
     {
@@ -127,6 +127,7 @@ void NodeConnectionEditor::mouseExit(const MouseEvent &)
 
 void NodeConnectionEditor::clearContent()
 {
+  
     for (auto &s : inputSlots)
     {
         s->removeSlotListener(this);

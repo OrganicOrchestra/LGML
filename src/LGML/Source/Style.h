@@ -10,7 +10,7 @@
 
 #ifndef STYLE_H_INCLUDED
 #define STYLE_H_INCLUDED
-
+#pragma once
 
 #define NORMAL_COLOR    Colour(0xff666666)
 #define BG_COLOR        Colour(0xff222222)

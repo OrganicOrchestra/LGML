@@ -26,7 +26,19 @@ PresetManager::~PresetManager()
 PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const String &name, const String & filter, ControllableContainer * container, bool recursive, bool includeNotExposed)
 {
     //Array<PresetValue *> vPresets;
-    Preset * pre = new Preset(name,filter);
+
+	
+	Preset * pre = getPreset(filter, name);
+	bool presetExists = pre != nullptr;
+
+	if (!presetExists)
+	{
+		pre = new Preset(name, filter);
+	} else
+	{
+		pre->clear();
+	}
+
     for (auto &p : container->getAllParameters(recursive,includeNotExposed))
     {
         if (!p->isPresettable) continue;
@@ -37,13 +49,26 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
 
         //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
         //vPresets.add(preVal);
-        pre->addPresetValue(p->getControlAddress(container), p->value.clone());
-
+        pre->addPresetValue(p->getControlAddress(container), var(p->value));
     }
 
-    presets.add(pre);
+	DBG("Saving preset, recursive ? " << String(recursive));
 
+	if (!recursive)
+	{
+		for (auto &cc : container->controllableContainers)
+		{
+			DBG("Child container : " << cc->niceName << "preset name : "<< cc->currentPresetName->stringValue());
+			if (cc->currentPresetName->stringValue().isNotEmpty())
+			{
+				DBG(" >> Saving child container preset : " << cc->currentPresetName->stringValue());
+				pre->addPresetValue(cc->currentPresetName->getControlAddress(container), cc->currentPresetName->value);
+			}
+		}
+	}
+	
 
+    if(!presetExists) presets.add(pre);
 
     return pre;
 }
@@ -58,10 +83,11 @@ PresetManager::Preset * PresetManager::getPreset(String filter, const String & n
     return nullptr;
 }
 
-void PresetManager::fillWithPresets(ComboBox * cb,const  String & filter, bool showSaveCurrent) const
+void PresetManager::fillWithPresets(ComboBox * cb,const  String & filter, bool _showSaveCurrent) const
 {
     cb->clear();
-    if(showSaveCurrent) cb->addItem("Save current preset", SaveCurrent);
+    if(_showSaveCurrent) cb->addItem("Save current preset", SaveCurrent);
+
     cb->addItem("Save to new preset", SaveToNew);
     cb->addItem("Reset to default", ResetToDefault);
 
@@ -107,9 +133,7 @@ int PresetManager::getNumPresetForFilter (const String & filter) const{
   }
   return num;
 }
-int PresetManager::getNumOption(){
-  return 3;
-}
+ 
 void PresetManager::clear()
 {
     presets.clear();
@@ -174,6 +198,11 @@ var PresetManager::Preset::getPresetValue(const String &targetControlAddress)
   }
 
   return var();
+}
+
+void PresetManager::Preset::clear()
+{
+	presetValues.clear();
 }
 
 

@@ -13,7 +13,7 @@
 #include "NodeContainer.h"
 
 AudioDeviceManager& getAudioDeviceManager();
-
+bool isEngineLoadingFile();
 juce_ImplementSingleton(NodeManager);
 
 NodeManager::NodeManager() :
@@ -68,7 +68,7 @@ void NodeManager::loadJSONDataInternal(var data)
 }
 
 void NodeManager::rebuildAudioGraph() {
-  if(!isLoading){
+  if(!isLoading && !isEngineLoadingFile()){
   mainContainer->updateAudioGraph();
   }
 	
@@ -80,4 +80,9 @@ void NodeManager::notifiedJobsEnded(){
   rebuildAudioGraph();
   nodeManagerListeners.call(&NodeManagerListener::managerEndedLoading);
 
+}
+
+void NodeManager::notifiedJobsProgressed(float progress)
+{
+	nodeManagerListeners.call(&NodeManagerListener::managerProgressedLoading, progress);
 }

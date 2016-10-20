@@ -40,8 +40,8 @@ public:
 	ControlVariableUI * getUIForVariable(ControlVariable *);
 
 	void buttonClicked(Button * b) override;
-	void variableAdded(Controller *, ControlVariable *) override;
-	void variableRemoved(Controller *, ControlVariable *) override;
+	void variableAddedAsync(Controller *, ControlVariable *) override;
+	void variableRemovedAsync(Controller *, ControlVariable *) override;
 };
 
 

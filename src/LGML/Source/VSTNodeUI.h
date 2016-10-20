@@ -74,6 +74,7 @@ public:
 
 
 	static void vstSelected(int modalResult, Component *  originComp);
+	void handleCommandMessage(int )override;
 
 };
 

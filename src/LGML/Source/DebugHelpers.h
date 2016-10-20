@@ -33,7 +33,10 @@ inline String getLogSource(const String & logString) {
 }
 
 inline String getLogContent(const String & logString) {
-    return logString.substring( logString.indexOf("::")+2,logString.length()).trim();
+  int startString = logString.indexOf("::");
+  if (startString>=0)startString+=2;
+  else startString=0;
+    return logString.substring( startString,logString.length()).trim();
 }
 
 class LogElement{

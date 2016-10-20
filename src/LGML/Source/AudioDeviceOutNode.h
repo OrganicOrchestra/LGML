@@ -18,8 +18,8 @@ Author:  Martin Hermant
 class AudioDeviceOutNode :
 	public NodeBase,
 	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
-	public ChangeListener,
-	public ConnectableNode::ConnectableNodeListener
+	public ChangeListener
+
 {
 public:
 	AudioDeviceOutNode();
@@ -37,6 +37,7 @@ public:
 	void addVolMute();
 	void removeVolMute();
 
+  void numChannelsChanged()override;
 	virtual ConnectableNodeUI * createUI() override;
 
     void onContainerParameterChanged(Parameter * p) override;

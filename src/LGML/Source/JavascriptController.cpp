@@ -45,7 +45,7 @@ void JavascriptController::buildLocalEnv(){
 Result JavascriptController::callForMessage(const OSCMessage & msg){
 
     String functionName = "onCtl_"+getJsFunctionNameFromAddress(msg.getAddressPattern().toString());
-    // here we choose to pass each argument as an element of a var Array value in function call i.e onMessage(ArrayList)
+    // here we choose to pass each argument as an element of a var Array value in function call i.e onCtl_XXX(ArrayList)
     var argArray;
     for(auto & m:msg){
         if(m.isFloat32()){ argArray.append(m.getFloat32());}
@@ -170,6 +170,7 @@ void JavascriptController::onContainerTriggerTriggered(Trigger * t) {
 
 
 void JavascriptController::newJsFileLoaded(){
+
     jsPath->setValue(getCurrentFilePath(),true);
 }
 
