@@ -133,6 +133,7 @@ void Engine::clear(){
   RuleManager::getInstance()->clear();
   
   ControllerManager::getInstance()->clear();
+//  JsGlobalEnvironment::getInstance()->getEnv()->clear();
 //  graphPlayer.setProcessor(nullptr);
   
   NodeManager::getInstance()->clear();

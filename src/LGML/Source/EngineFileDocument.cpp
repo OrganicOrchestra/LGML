@@ -42,7 +42,8 @@ engineListeners.call(&EngineListener::startLoadFile);
   node->xPosition->setValue(450);
   node->yPosition->setValue(100);
   setFile(File());
-  triggerAsyncUpdate();
+  isLoadingFile = false;
+  handleAsyncUpdate();
 
 }
 
@@ -63,6 +64,7 @@ Result Engine::loadDocument (const File& file){
 	loadDocumentAsync(file);
 	 triggerAsyncUpdate();
 #endif
+
 	
   return Result::ok();
 }
