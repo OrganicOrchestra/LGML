@@ -17,8 +17,10 @@ FastMapUI(FastMap * f) :
 	fastMap(f)
 {
 	fastMap->addFastMapListener(this);
+	
 	chooseTargetBT.addControllableChooserListener(this);
-
+	if (f->target != nullptr) chooseTargetBT.setButtonText(f->target->niceName);
+	
 	refUI = new ControlVariableReferenceUI(f->reference);
 	refUI->setAliasVisible(false);
 	refUI->setRemoveBTVisible(false);

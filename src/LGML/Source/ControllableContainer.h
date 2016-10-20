@@ -104,13 +104,14 @@ public:
 
     void setParentContainer(ControllableContainer * container);
     void updateChildrenControlAddress();
+
+
     virtual Array<Controllable *> getAllControllables(bool recursive = false, bool getNotExposed = false);
     virtual Array<Parameter *> getAllParameters(bool recursive = false, bool getNotExposed = false);
-
     virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
-
     virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
-    String getControlAddress(ControllableContainer * relativeTo=nullptr);
+	bool containsControllable(Controllable * c, int maxSearchLevels = -1);
+	String getControlAddress(ControllableContainer * relativeTo=nullptr);
 
     
 	virtual bool loadPresetWithName(const String &name);

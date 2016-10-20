@@ -66,6 +66,8 @@ ControlVariableUI * ControllerEditor::getUIForVariable(ControlVariable * v)
 
 void ControllerEditor::resized()
 {
+	InspectorEditor::resized();
+
 	int variableUIHeight = 20;
 	int listGap = 2;
 
@@ -82,10 +84,14 @@ void ControllerEditor::resized()
 
 int ControllerEditor::getContentHeight()
 {
+	return InspectorEditor::getContentHeight() + 5 + getVariablesHeight();
+}
+
+int ControllerEditor::getVariablesHeight()
+{
 	int variableUIHeight = 20;
 	int listGap = 2;
-
-	return 30 + variablesUI.size()*(variableUIHeight + listGap);
+	return variablesUI.size()*(variableUIHeight + listGap);
 }
 
 void ControllerEditor::buttonClicked(Button * b)

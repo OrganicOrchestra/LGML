@@ -13,6 +13,13 @@
 InspectorEditor::InspectorEditor(InspectableComponent * _sourceComponent) :
 	sourceComponent(_sourceComponent)
 {
+	if (sourceComponent->relatedControllableContainer != nullptr)
+	{
+		DBG("Add FastMapperUI in inspectorEditor");
+		fastMapperUI = new FastMapperUI(FastMapper::getInstance());
+		fastMapperUI->setViewFilter(sourceComponent->relatedControllableContainer);
+		addAndMakeVisible(fastMapperUI);
+	}
 }
 
 InspectorEditor::~InspectorEditor()
@@ -20,14 +27,17 @@ InspectorEditor::~InspectorEditor()
 }
 
 
-
 void InspectorEditor::resized()
 {
+	Rectangle<int> r = getLocalBounds().removeFromBottom(fastMapperUI->getContentHeight());
+	DBG("Set fast mapper ui size " << r.toString());
+	fastMapperUI->setBounds(r);
+	fastMapperUI->toFront(false);
 }
 
 int InspectorEditor::getContentHeight()
 {
-	return 0; //will default to parent's bounds
+	return fastMapperUI->getContentHeight()+10; //will default to parent's bounds
 }
 
 void InspectorEditor::clear()

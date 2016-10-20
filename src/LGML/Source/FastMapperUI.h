@@ -29,17 +29,22 @@ class FastMapperUI :
 	public FastMapperListener
 {
 public:
-	FastMapperUI(FastMapper * fastMapper);
+	FastMapperUI(FastMapper * fastMapper, ControllableContainer * viewFilterContainer = nullptr);
 	virtual ~FastMapperUI();
 
 	FastMapper * fastMapper;
-
 	OwnedArray<FastMapUI> mapsUI;
+
+	ControllableContainer * viewFilterContainer;
 
 	void clear();
 
 	void addFastMapUI(FastMap *);
 	void removeFastMapUI(FastMap *);
+
+	void resetAndUpdateView();
+	void setViewFilter(ControllableContainer * filterContainer);
+	bool mapPassViewFilter(FastMap *);
 
 	FastMapUI * getUIForFastMap(FastMap *);
 
@@ -48,7 +53,6 @@ public:
 	int getContentHeight();
 
 	void resized() override;
-
 	void mouseDown(const MouseEvent &e) override;
 
 	virtual void fastMapAdded(FastMap *) override;

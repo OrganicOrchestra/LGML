@@ -446,6 +446,22 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
   return nullptr;
 }
 
+bool ControllableContainer::containsControllable(Controllable * c, int maxSearchLevels)
+{
+	if (c == nullptr) return false;
+
+	ControllableContainer * pc = c->parentContainer;
+	if (pc == nullptr) return false;
+	int curLevel = 0;
+	while (pc != nullptr)
+	{
+		if (pc == this) return true;
+		curLevel++;
+		if (maxSearchLevels >= 0 && curLevel > maxSearchLevels) return false;
+		pc = pc->parentContainer;
+	}
+}
+
 
 bool ControllableContainer::loadPresetWithName(const String & name)
 {
