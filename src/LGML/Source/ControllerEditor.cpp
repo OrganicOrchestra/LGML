@@ -97,14 +97,16 @@ void ControllerEditor::buttonClicked(Button * b)
 	}
 }
 
-void ControllerEditor::variableAdded(Controller *, ControlVariable * v)
+void ControllerEditor::variableAddedAsync(Controller *, ControlVariable * v)
 {
 	addVariableUI(v);
 	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
-void ControllerEditor::variableRemoved(Controller *, ControlVariable * v)
+void ControllerEditor::variableRemovedAsync(Controller *, ControlVariable * v)
 {
 	removeVariableUI(v);
 	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
+
+
