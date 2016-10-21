@@ -46,11 +46,14 @@ var Controller::getJSONData()
   var vDataArray;
   for (auto &v : variables)
   {
-    var vData(new DynamicObject());
-    vData.getDynamicObject()->setProperty(variableNameIdentifier, v->parameter->niceName);
-    vData.getDynamicObject()->setProperty(variableMinIdentifier, v->parameter->minimumValue);
-    vData.getDynamicObject()->setProperty(variableMaxIdentifier, v->parameter->maximumValue);
-    vDataArray.append(vData);
+	  if (v->includeInSave)
+	  {
+		  var vData(new DynamicObject());
+		  vData.getDynamicObject()->setProperty(variableNameIdentifier, v->parameter->niceName);
+		  vData.getDynamicObject()->setProperty(variableMinIdentifier, v->parameter->minimumValue);
+		  vData.getDynamicObject()->setProperty(variableMaxIdentifier, v->parameter->maximumValue);
+		  vDataArray.append(vData);
+	  }
   }
 
   data.getDynamicObject()->setProperty("variables", vDataArray);
@@ -70,9 +73,11 @@ void Controller::loadJSONDataInternal(var data)
       Parameter * p = new FloatParameter("newVar", "variable", 0);
       p->replaceSlashesInShortName = false;
       p->setNiceName(v.getDynamicObject()->getProperty(variableNameIdentifier));
+
       if(v.getDynamicObject()->hasProperty(variableMinIdentifier)){
         p->minimumValue = v.getDynamicObject()->getProperty(variableMinIdentifier);
       }
+
       if(v.getDynamicObject()->hasProperty(variableMaxIdentifier)){
         p->maximumValue = v.getDynamicObject()->getProperty(variableMaxIdentifier);
       }
