@@ -30,13 +30,15 @@ Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
 	{
 		String noteName = MidiMessage::getMidiNoteName(i, true, true, 0);
 		FloatParameter * fp = new FloatParameter(noteName, "Value for " + noteName, 0, 0, 1);
-		addVariable(fp);
+		ControlVariable * cv = addVariable(fp);
+		cv->includeInSave = false;
 	}
 
 	for (int i = 0; i < 127; i++)
 	{
 		FloatParameter *fp = new FloatParameter(String("CC ") + String(i), String("ControlChange ") + String(i), 0, 0, 1);
-		addVariable(fp);
+		ControlVariable * cv = addVariable(fp);
+		cv->includeInSave = false;
 	}
 
 	// TODO : we may need to listen to sR changes
