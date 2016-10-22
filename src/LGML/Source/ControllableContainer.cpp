@@ -507,7 +507,7 @@ bool ControllableContainer::saveCurrentPreset()
 	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
 	savePresetInternal(pre);
 	NLOG(niceName, "Current preset saved : " + pre->name);
-	loadPreset(pre);
+	return loadPreset(pre);
 	
 	/*
   for (auto &pv : currentPreset->presetValues)

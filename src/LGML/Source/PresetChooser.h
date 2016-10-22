@@ -26,7 +26,7 @@ public:
 	virtual void updatePresetComboBox(bool forceUpdate = false);
 	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
 
-	virtual void controllableContainerPresetLoaded(ControllableContainer *);
+	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
 
 };
 
