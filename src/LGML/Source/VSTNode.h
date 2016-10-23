@@ -99,7 +99,7 @@ public:
   void generatePluginFromDescription(PluginDescription * desc);
 
 
-  void numChannelsChanged()override;
+  void numChannelsChanged(bool isInput)override;
   void prepareToPlay(double _sampleRate, int _blockSize)override {
     if (innerPlugin) {
       innerPlugin->setProcessingPrecision(singlePrecision);

@@ -156,7 +156,7 @@ public:
   //AUDIO
 
   void updateAudioGraph(bool lock = true) ;
-  void numChannelsChanged() override;
+  void numChannelsChanged(bool isInput) override;
   
   //DATA
   bool hasDataInputs() override;

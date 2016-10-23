@@ -25,7 +25,8 @@ NodeBase("AudioMixerNode",NodeType::AudioMixerType)
 	
 	setPreferedNumAudioInput(numberOfInput->intValue());
 	setPreferedNumAudioOutput(numberOfOutput->intValue());
-	numChannelsChanged();
+	numChannelsChanged(true);
+  numChannelsChanged(false);
 
 
 }
@@ -34,7 +35,8 @@ void AudioMixerNode::setParentNodeContainer(NodeContainer * c){
   NodeBase::setParentNodeContainer(c);
   updateInput();
   updateOutput();
-  numChannelsChanged();
+  numChannelsChanged(true);
+  numChannelsChanged(false);
 
 }
 
@@ -56,7 +58,7 @@ void AudioMixerNode::updateInput(){
 
 }
 
-void AudioMixerNode::numChannelsChanged(){
+void AudioMixerNode::numChannelsChanged(bool isInput){
 
 
   if(numberOfOutput->intValue() > outBuses.size())

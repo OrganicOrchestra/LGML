@@ -560,7 +560,7 @@ bool NodeContainer::hasDataOutputs()
 }
 
 
-void NodeContainer::numChannelsChanged(){
+void NodeContainer::numChannelsChanged(bool isInput){
 
   const ScopedLock lk(getCallbackLock());
   removeIllegalConnections();
