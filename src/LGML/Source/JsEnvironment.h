@@ -65,6 +65,8 @@ public:
   void removeListener(Listener * l){jsListeners.remove(l);}
   void setAutoWatch(bool );
 
+  int onUpdateTimerInterval;
+
   protected :
 
 

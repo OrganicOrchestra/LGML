@@ -13,13 +13,13 @@ TimeManager.cpp
 
 
 ControllableContainer.cpp
-	line : 467
+	line : 451
 		// TODO weird feedback when loading preset on parameter presetName
 
-	line : 581
+	line : 565
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 679
+	line : 663
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -88,13 +88,13 @@ NodeBase.h
 
 
 NodeConnectionEditor.cpp
-	line : 184
+	line : 392
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
+	line : 181
 		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
-
-	line : 395
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
 LooperNode.cpp
@@ -109,15 +109,15 @@ DataInNode.cpp
 
 
 MIDIController.cpp
-	line : 186
+	line : 184
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
-	line : 43
+	line : 41
 		// TODO : we may need to listen to sR changes
 
 
 ControllableContainer.h
-	line : 149
+	line : 148
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)

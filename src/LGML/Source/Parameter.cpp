@@ -69,10 +69,10 @@ bool Parameter::checkValueIsTheSame(var newValue, var oldValue)
 }
 
 void Parameter::checkVarIsConsistentWithType(){
-    if      (type == Type::STRING)  jassert(value.isString());
-    else if (type == Type::INT)     jassert(value.isInt());
-    else if (type == Type::BOOL)    jassert(value.isBool());
-    else if (type == Type::FLOAT)   jassert(value.isDouble());
+  if      (type == Type::STRING && !value.isString()) {  jassertfalse;value = value.toString();}
+  else if (type == Type::INT && !value.isInt())       {  jassertfalse;value = int(value);}
+  else if (type == Type::BOOL && !value.isBool())     {  jassertfalse;value = bool(value);}
+  else if (type == Type::FLOAT && !value.isDouble())  {  jassertfalse;value = double(value);}
 }
 
 void Parameter::setNormalizedValue(const float & normalizedValue, bool silentSet, bool force)

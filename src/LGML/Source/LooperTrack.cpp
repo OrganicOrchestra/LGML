@@ -155,7 +155,10 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
 
       if(isMasterTempoTrack() ){
-        if(!tm->playState->boolValue())tm->playState->setValue(true);
+        if(!tm->playState->boolValue()){
+          tm->playState->setValue(true);
+
+        }
         // we will handle the block in this call so we notify time to be in sync with what we play
         tm->goToTime(secondPart);
 
