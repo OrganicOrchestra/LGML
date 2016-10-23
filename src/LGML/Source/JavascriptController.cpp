@@ -156,6 +156,10 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
     else if (p==jsPath){
         loadFile(jsPath->stringValue());
     }
+    else if(p==enabledParam){
+     if(enabledParam->boolValue()) startTimer(1, onUpdateTimerInterval); // 50fps on update Timer
+     else stopTimer(1);
+    }
 };
 
 void JavascriptController::onContainerTriggerTriggered(Trigger * t) {

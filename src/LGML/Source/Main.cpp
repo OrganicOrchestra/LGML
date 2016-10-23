@@ -243,10 +243,8 @@ START_JUCE_APPLICATION (LGMLApplication)
 
 void LGMLApplication::MainWindow::timerCallback()
 {
-  File loadedFile = getApp().engine->getFile();
-  String loadedName = "";
-  if(loadedFile.existsAsFile()){
-    loadedName =  loadedFile.getFileNameWithoutExtension() + " : ";
-  }
-  setName(loadedName+"LGML "+ String(ProjectInfo::versionString)+String(" (CPU : ")+String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
+
+  setName(getApp().engine->getDocumentTitle() +" : LGML "
+          + String(ProjectInfo::versionString)+String(" (CPU : ")+
+          String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
 }

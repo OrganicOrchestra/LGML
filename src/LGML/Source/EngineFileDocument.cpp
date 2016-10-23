@@ -30,7 +30,7 @@ String Engine::getDocumentTitle() {
 }
 
 void Engine::createNewGraph(){
-engineListeners.call(&EngineListener::startLoadFile);
+  engineListeners.call(&EngineListener::startLoadFile);
 
   suspendAudio(true);
   clear();
@@ -58,21 +58,21 @@ Result Engine::loadDocument (const File& file){
   if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
 #ifdef MULTITHREADED_LOADING
-	fileLoader = new FileLoader(this,file);
+  fileLoader = new FileLoader(this,file);
   fileLoader->startThread(10);
 #else
-	loadDocumentAsync(file);
+  loadDocumentAsync(file);
 	 triggerAsyncUpdate();
 #endif
 
-	
+
   return Result::ok();
 }
 
 //Called from fileLoader
 void Engine::loadDocumentAsync(const File & file){
 
-suspendAudio(true);
+  suspendAudio(true);
   clearTasks();
   taskName = "Loading File";
   ProgressTask * clearTask = addTask("clearing");
@@ -82,16 +82,16 @@ suspendAudio(true);
   clear();
   clearTask->end();
 
-//  {
-//    MessageManagerLock ml;
-//  }
+  //  {
+  //    MessageManagerLock ml;
+  //  }
   ScopedPointer<InputStream> is( file.createInputStream());
 
 
-   
+
   loadingStartTime =  Time::currentTimeMillis();
-  fileBeingLoaded = file;
-    fileBeingLoaded.getParentDirectory().setAsCurrentWorkingDirectory();
+  setFile(file);
+  file.getParentDirectory().setAsCurrentWorkingDirectory();
 
   {
     parseTask->start();
@@ -103,7 +103,7 @@ suspendAudio(true);
 
 
   }// deletes data before launching audio, (data not needed after loaded)
-  
+
   jsonData = var();
 }
 
@@ -114,7 +114,7 @@ void Engine::managerEndedLoading(){
 }
 void Engine::managerProgressedLoading(float _progress)
 {
-	engineListeners.call(&EngineListener::fileProgress, _progress,0);
+  engineListeners.call(&EngineListener::fileProgress, _progress,0);
 }
 bool Engine::allLoadingThreadsAreEnded(){
   return NodeManager::getInstance()->getNumJobs()== 0 && (fileLoader && fileLoader->isEnded);
@@ -131,8 +131,9 @@ void Engine::handleAsyncUpdate(){
 
 
   isLoadingFile = false;
-  if(fileBeingLoaded.exists())
-    setLastDocumentOpened(fileBeingLoaded);
+  if(getFile().exists()){
+    setLastDocumentOpened(getFile());
+  }
 
   //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
   //  suspendAudio(false);
@@ -226,7 +227,7 @@ void Engine::loadJSONData (var data,ProgressTask * loadingTask)
   ProgressTask * nodeManagerTask = loadingTask->addTask("nodeManager");
   ProgressTask * controllerManagerTask = loadingTask->addTask("controllerManager");
   ProgressTask * fastMapperTask = loadingTask->addTask("fastMapper");
-   ProgressTask * ruleManagerTask = loadingTask->addTask("ruleManager");
+  ProgressTask * ruleManagerTask = loadingTask->addTask("ruleManager");
   presetTask->start();
   if (d->hasProperty("presetManager")) PresetManager::getInstance()->loadJSONData(d->getProperty("presetManager"));
   presetTask->end();
