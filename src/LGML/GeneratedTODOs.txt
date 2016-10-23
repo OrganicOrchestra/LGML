@@ -13,19 +13,19 @@ TimeManager.cpp
 
 
 ControllableContainer.cpp
-	line : 548
+	line : 467
+		// TODO weird feedback when loading preset on parameter presetName
+
+	line : 581
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 646
+	line : 679
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
 		//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
-
-	line : 447
-		// TODO weird feedback when loading preset on parameter presetName
 
 
 ControllableInspector.cpp
@@ -34,7 +34,7 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 113
+	line : 114
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
@@ -55,20 +55,15 @@ MainComponentCommands.cpp
 
 
 NodeContainer.cpp
-	line : 281
-		//@ben remove recursive for now (not useful and duplicating values...)
-		//
-		//    for (auto &n : nodes) n->saveCurrentPreset();
+	line : 336
+		// TODO nicely handle file format errors?
 
-	line : 527
+	line : 496
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
-
-	line : 367
-		// TODO nicely handle file format errors?
 
 
 TimeManager.h
@@ -93,17 +88,17 @@ NodeBase.h
 
 
 NodeConnectionEditor.cpp
-	line : 392
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
-	line : 181
+	line : 184
 		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
 
+	line : 395
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
+
 
 LooperNode.cpp
-	line : 67
+	line : 68
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
@@ -114,15 +109,15 @@ DataInNode.cpp
 
 
 MIDIController.cpp
-	line : 184
+	line : 186
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
-	line : 41
+	line : 43
 		// TODO : we may need to listen to sR changes
 
 
 ControllableContainer.h
-	line : 150
+	line : 149
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
