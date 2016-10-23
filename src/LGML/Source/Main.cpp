@@ -161,6 +161,9 @@ public:
       setMenuBar(mainComponent);
 #endif
 
+#if JUCE_OPENGL
+	  openGLContext.attachTo(*getTopLevelComponent());
+#endif
 
     }
     void focusGained(FocusChangeType cause)override{
@@ -205,6 +208,9 @@ public:
 	   getAppProperties().getCommonSettings(true)->saveIfNeeded();
 
 
+#if JUCE_OPENGL
+	   openGLContext.detach();
+#endif
        JUCEApplication::getInstance()->systemRequestedQuit();
 
     }
@@ -218,6 +224,10 @@ public:
      subclass also calls the superclass's method.
      */
     MainContentComponent * mainComponent;
+
+#if JUCE_OPENGL
+	OpenGLContext openGLContext;
+#endif
 
   private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)

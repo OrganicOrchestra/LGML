@@ -26,13 +26,13 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 	connectableNode(cn),
 	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
-	MainComponentContainer(this, contentUI, headerUI),
+	mainComponentContainer(this, contentUI, headerUI),
 	dragIsLocked(false),
 	bMiniMode(false)
 {
 	 connectorWidth = 10;
 
-	 addAndMakeVisible(MainComponentContainer);
+	 addAndMakeVisible(mainComponentContainer);
 
 	 if (connectableNode->userCanAccessInputs)
 	 {
@@ -48,7 +48,7 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 
 	 getHeaderContainer()->addMouseListener(this, true);// (true, true);
 
-	 MainComponentContainer.setNodeAndNodeUI(connectableNode, this);
+	 mainComponentContainer.setNodeAndNodeUI(connectableNode, this);
 	 if (getWidth() == 0 || getHeight() == 0) setSize(180, 100);
 
 	 connectableNode->addConnectableNodeListener(this);
@@ -80,13 +80,13 @@ void ConnectableNodeUI::setMiniMode(bool value)
 
 	bMiniMode = value;
 
-	MainComponentContainer.setMiniMode(bMiniMode);
+	mainComponentContainer.setMiniMode(bMiniMode);
 	setSize(getMiniModeWidth(bMiniMode),getMiniModeHeight(bMiniMode));
 }
 
 int ConnectableNodeUI::getMiniModeWidth(bool forMiniMode)
 {
-	return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (MainComponentContainer.audioCtlUIContainer?MainComponentContainer.audioCtlUIContainer->getWidth()+MainComponentContainer.audioCtlContainerPadRight:0));
+	return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (mainComponentContainer.audioCtlUIContainer?mainComponentContainer.audioCtlUIContainer->getWidth()+mainComponentContainer.audioCtlContainerPadRight:0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight(bool forMiniMode)
@@ -116,7 +116,7 @@ void ConnectableNodeUI::resized()
 		outputContainer.setBounds(outputBounds);
 	}
 
-	MainComponentContainer.setBounds(r);
+	mainComponentContainer.setBounds(r);
 }
 
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
@@ -151,9 +151,9 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
 // allow to react to custom MainComponentContainer.contentContainer
 void ConnectableNodeUI::childBoundsChanged(Component* c) {
 	// if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
-	if (c == &MainComponentContainer) {
-		int destWidth = MainComponentContainer.getWidth() + 2 * connectorWidth;
-		int destHeight = MainComponentContainer.getHeight();
+	if (c == &mainComponentContainer) {
+		int destWidth = mainComponentContainer.getWidth() + 2 * connectorWidth;
+		int destHeight = mainComponentContainer.getHeight();
 		if (getWidth() != destWidth ||
 			destHeight != getHeight()) {
 			setSize(destWidth, destHeight);
@@ -164,7 +164,7 @@ void ConnectableNodeUI::childBoundsChanged(Component* c) {
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
 void ConnectableNodeUI::mouseDown(const juce::MouseEvent &e)
 {
-	if (e.eventComponent != &MainComponentContainer.headerContainer->grabber) return;
+	if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
 
 	nodeInitPos = getBounds().getPosition();
 }
@@ -177,7 +177,7 @@ void ConnectableNodeUI::mouseUp(const juce::MouseEvent &) {
 
 void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
 {
-	if (e.eventComponent != &MainComponentContainer.headerContainer->grabber) return;
+	if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
 	//if(dragIsLocked) return;
 
 	Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
