@@ -14,6 +14,7 @@
 #include "InspectorEditor.h"
 #include "ControllableContainer.h"
 #include "ControllableUI.h"
+#include "PresetChooser.h"
 
 class GenericControllableContainerEditor;
 
@@ -37,6 +38,8 @@ public:
 	Label containerLabel;
 
 	ControllableContainer * container;
+	ScopedPointer<PresetChooser> presetChooser;
+
 	OwnedArray<NamedControllableUI> controllablesUI;
 	OwnedArray<CCInnerContainer> innerContainers;
 	OwnedArray<CCLinkBT> lowerContainerLinks;

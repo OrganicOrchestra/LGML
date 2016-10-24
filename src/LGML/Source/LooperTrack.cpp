@@ -85,7 +85,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
   float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume;
 
-  for (int i = parentLooper->totalNumOutputChannels - 1; i >= 0; --i) {
+  for (int i = buffer.getNumChannels()- 1; i >= 0; --i) {
     buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume, newVolume);
   }
 
@@ -155,7 +155,10 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
 
       if(isMasterTempoTrack() ){
-        if(!tm->playState->boolValue())tm->playState->setValue(true);
+        if(!tm->playState->boolValue()){
+          tm->playState->setValue(true);
+
+        }
         // we will handle the block in this call so we notify time to be in sync with what we play
         tm->goToTime(secondPart);
 
@@ -596,6 +599,9 @@ bool LooperTrack::hasOnset(){
   return parentLooper->hasOnset();
 }
 
+void LooperTrack::setNumChannels(int numChannels){
+  loopSample.setNumChannels(numChannels);
+}
 
 
 //Component * LooperTrack::createDefaultUI(Component * ) {

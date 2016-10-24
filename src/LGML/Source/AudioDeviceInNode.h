@@ -41,7 +41,7 @@ public:
 
 	void addVolMute();
 	void removeVolMute();
-  void numChannelsChanged()override;
+  void numChannelsChanged(bool isInput)override;
 	virtual ConnectableNodeUI * createUI() override;
 
 

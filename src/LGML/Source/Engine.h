@@ -86,7 +86,7 @@ public:
     MultipleAudioSettingsHandler audioSettingsHandler;
 
   int64 loadingStartTime;
-  File fileBeingLoaded;
+  
   void managerEndedLoading() override;
   void managerProgressedLoading(float progress) override;
 

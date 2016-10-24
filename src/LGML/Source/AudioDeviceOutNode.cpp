@@ -71,8 +71,8 @@ void AudioDeviceOutNode::onContainerParameterChanged(Parameter * p){
 
 };
 
-void AudioDeviceOutNode::numChannelsChanged(){
-  NodeBase::numChannelsChanged();
+void AudioDeviceOutNode::numChannelsChanged(bool isInput){
+  NodeBase::numChannelsChanged(isInput);
   updateVolMutes();
 }
 

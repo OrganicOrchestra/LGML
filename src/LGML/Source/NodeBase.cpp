@@ -34,6 +34,7 @@ globalRMSValueOut(0)
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
   startTimerHz(30);
+
 }
 
 
@@ -284,7 +285,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
       parentNodeContainer->updateAudioGraph(false);
       if(oldNumChannels!=getTotalNumInputChannels()){
         // numChannelsChanged is called within the lock so that Nodes can update freely their memory used in processblock 
-        numChannelsChanged();
+        numChannelsChanged(true);
       }
     }
 //    if(ContainerInNode* n = dynamic_cast<ContainerInNode*>(this)){
@@ -302,7 +303,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
 			totalNumInputChannels = getTotalNumInputChannels();
       if(oldNumChannels!=getTotalNumInputChannels()){
 				
-        numChannelsChanged();
+        numChannelsChanged(true);
       }
     }
   }
@@ -352,7 +353,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
       totalNumOutputChannels = getTotalNumOutputChannels();
         parentNodeContainer->updateAudioGraph(false);
         if(oldNumChannels!=totalNumOutputChannels){
-          numChannelsChanged();
+          numChannelsChanged(false);
         }
       }
 //      if(ContainerOutNode* n = dynamic_cast<ContainerOutNode*>(this)){
@@ -368,9 +369,9 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
       setPlayConfigDetails(getTotalNumInputChannels(), num,
                            getSampleRate(),
                            getBlockSize());
-totalNumOutputChannels = getTotalNumOutputChannels();
+      totalNumOutputChannels = getTotalNumOutputChannels();
       if(oldNumChannels!=totalNumOutputChannels){
-        numChannelsChanged();
+        numChannelsChanged(false);
       }
 
     }

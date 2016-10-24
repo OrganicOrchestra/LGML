@@ -21,8 +21,8 @@ JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFi
   jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
   jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
   addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
-
-  startTimer(1, 20); // 50fps on update Timer
+  onUpdateTimerInterval = 20;
+  startTimer(1, onUpdateTimerInterval); // 50fps on update Timer
 }
 
 JsEnvironment::~JsEnvironment(){

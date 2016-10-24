@@ -63,13 +63,15 @@ public:
   FloatParameter * volumeSelected;
   BoolParameter * isMonitoring;
   IntParameter * numberOfTracks;
+  IntParameter * numberOfAudioChannelsIn;
   IntParameter * selectTrack;
   IntParameter * quantization;
   IntParameter * preDelayMs;
   BoolParameter * isOneShot;
   BoolParameter*  firstTrackSetTempo;
   BoolParameter * waitForOnset;
-    FloatParameter * onsetThreshold;
+  FloatParameter * onsetThreshold;
+  BoolParameter * outputAllTracksSeparately;
   Trigger * exportAudio;
 
   AudioBuffer<float> bufferIn;
@@ -115,6 +117,7 @@ public:
 private:
   // keeps track of few bits of audio
   // to readjust the loop when controllers are delayed
+  void numChannelsChanged(bool isInput)override;
   BipBuffer streamAudioBuffer;
   friend class LooperTrack;
 

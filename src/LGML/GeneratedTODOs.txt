@@ -13,19 +13,19 @@ TimeManager.cpp
 
 
 ControllableContainer.cpp
-	line : 548
+	line : 451
+		// TODO weird feedback when loading preset on parameter presetName
+
+	line : 565
 		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
-	line : 646
+	line : 663
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
 		//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
-
-	line : 447
-		// TODO weird feedback when loading preset on parameter presetName
 
 
 ControllableInspector.cpp
@@ -34,7 +34,7 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 113
+	line : 114
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
@@ -55,20 +55,15 @@ MainComponentCommands.cpp
 
 
 NodeContainer.cpp
-	line : 281
-		//@ben remove recursive for now (not useful and duplicating values...)
-		//
-		//    for (auto &n : nodes) n->saveCurrentPreset();
+	line : 336
+		// TODO nicely handle file format errors?
 
-	line : 527
+	line : 496
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
 		//         nb->stopTimer();
 		//        }
-
-	line : 367
-		// TODO nicely handle file format errors?
 
 
 TimeManager.h
@@ -103,7 +98,7 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 67
+	line : 69
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
@@ -122,7 +117,7 @@ MIDIController.cpp
 
 
 ControllableContainer.h
-	line : 150
+	line : 148
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
