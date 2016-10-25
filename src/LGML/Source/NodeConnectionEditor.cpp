@@ -255,6 +255,7 @@ void NodeConnectionEditor::removeAudioLinkForChannels(int sourceChannel, int des
     //DBG("Remove audio Link for channels");
     NodeConnectionEditorLink * l = getLinkForChannels(sourceChannel, destChannel);
 	if (l == nullptr) return;
+    if(l==selectedLink) selectedLink=nullptr;
 
     l->outSlot->removeConnectedSlot(l->inSlot);
     l->inSlot->removeConnectedSlot(l->outSlot);
@@ -502,6 +503,8 @@ void NodeConnectionEditor::askForRemoveLink(NodeConnectionEditorLink * target)
     {
         currentConnection->removeDataGraphConnection(target->outSlot->data, target->inSlot->data);
     }
+    
+        if(target==selectedLink) selectedLink=nullptr;
 }
 
 void NodeConnectionEditor::selectLink(NodeConnectionEditorLink * target)

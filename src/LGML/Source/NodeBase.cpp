@@ -228,7 +228,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 	{
 		if (crossfadeValue != 1 && crossFadeBuffer.getNumChannels()>0) {
 			for (int i = 0; i < totalNumOutputChannels; i++) {
-				buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(i), numSample, (float)lastDryVolume, (float)curDryVolume);
+				buffer.addFromWithRamp(i, 0, crossFadeBuffer.getReadPointer(jmin(i,crossFadeBuffer.getNumChannels()-1)), numSample, (float)lastDryVolume, (float)curDryVolume);
 			}
 		}
 	}
