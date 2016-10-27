@@ -116,8 +116,8 @@ void AudioDeviceInNode::updateVolMutes(){
 
 }
 
-void AudioDeviceInNode::numChannelsChanged(){
-  NodeBase::numChannelsChanged();
+void AudioDeviceInNode::numChannelsChanged(bool isInput){
+  NodeBase::numChannelsChanged(isInput);
   updateVolMutes();
 }
 

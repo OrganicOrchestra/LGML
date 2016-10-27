@@ -40,6 +40,10 @@ class PlayableBuffer {
 //    loopSample.clear();
   }
 
+
+  void setNumChannels(int n){
+    loopSample.setSize(n, loopSample.getNumSamples());
+  }
   bool processNextBlock(AudioBuffer<float> & buffer){
     bool succeeded = true;
     if (isFirstRecordingFrame()){

@@ -98,7 +98,7 @@ NodeConnectionEditor.cpp
 
 
 LooperNode.cpp
-	line : 68
+	line : 69
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
