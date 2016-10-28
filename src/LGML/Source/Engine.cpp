@@ -24,7 +24,9 @@ const char* const filenameWildcard = "*.lgml";
 Engine::Engine():FileBasedDocument (filenameSuffix,
                                     filenameWildcard,
                                     "Load a filter graph",
-                                    "Save a filter graph"){
+                                    "Save a filter graph"),
+	ControllableContainer("root")
+{
   
   initAudio();
   Logger::setCurrentLogger (LGMLLogger::getInstance());
@@ -33,6 +35,12 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
   SerialManager::getInstance()->init();
   NodeManager::getInstance()->addNodeManagerListener(this);
   VSTManager::getInstance();
+
+  addChildControllableContainer(NodeManager::getInstance());
+  addChildControllableContainer(TimeManager::getInstance());
+  addChildControllableContainer(ControllerManager::getInstance());
+  addChildControllableContainer(FastMapper::getInstance());
+  addChildControllableContainer(RuleManager::getInstance());
 }
 
 

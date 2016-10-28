@@ -18,7 +18,7 @@ juce_ImplementSingleton(NodeManager);
 
 NodeManager::NodeManager() :
   ThreadPool(4),
-    ControllableContainer("Node Manager")
+    ControllableContainer("Nodes")
 {
   isLoading = false;
 	saveAndLoadRecursiveData = false;

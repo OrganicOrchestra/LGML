@@ -154,6 +154,7 @@ void OutlinerItemComponent::mouseDown(const MouseEvent & e)
 
 InspectorEditor * OutlinerItemComponent::getEditor()
 {
+	DBG("Get editor here");
 	if (item->isContainer) return InspectableComponent::getEditor();
 	return new ControllableEditor(this,item->controllable);
 }

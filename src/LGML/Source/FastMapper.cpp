@@ -13,7 +13,7 @@
 juce_ImplementSingleton(FastMapper)
 
 FastMapper::FastMapper() :
-	ControllableContainer("FastMapper")
+	ControllableContainer("Fast Maps")
 {
 	saveAndLoadRecursiveData = false;
 }

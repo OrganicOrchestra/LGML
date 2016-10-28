@@ -64,7 +64,7 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 	addAndMakeVisible(innerContainer);
 
 	parentBT.setVisible(ccLevel > 0);
-	parentBT.setButtonText("Up : " + cc->parentContainer->niceName);
+	if(parentBT.isVisible() && cc->parentContainer != nullptr) parentBT.setButtonText("Up : " + cc->parentContainer->niceName);
 
 	resized();
 
