@@ -9,6 +9,7 @@
 */
 
 #include "ParameterUI.h"
+#include "DebugHelpers.h"
 
 //==============================================================================
 ParameterUI::ParameterUI(Parameter * parameter) :
@@ -35,7 +36,11 @@ ParameterUI::~ParameterUI()
 bool ParameterUI::shouldBailOut(){
     bool bailOut= parameter.get()==nullptr;
     // we want a clean deletion no?
-    jassert(!bailOut);
+    if(bailOut){
+    // TODO : changing vst preset sometimes hit that
+    NLOG("ParameterUI", "old component still displayed");
+    //jassertfalse;
+    }
     return bailOut;
 
 }
