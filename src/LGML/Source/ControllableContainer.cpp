@@ -460,6 +460,8 @@ bool ControllableContainer::containsControllable(Controllable * c, int maxSearch
 		if (maxSearchLevels >= 0 && curLevel > maxSearchLevels) return false;
 		pc = pc->parentContainer;
 	}
+
+	return false;
 }
 
 
