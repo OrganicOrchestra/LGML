@@ -12,6 +12,8 @@
 #define INSPECTOREDITOR_H_INCLUDED
 
 #include "JuceHeader.h"//keep
+#include "FastMapperUI.h"
+
 class InspectableComponent;
 
 class InspectorEditor : public Component, public ComponentListener
@@ -20,8 +22,10 @@ public:
 	InspectorEditor(InspectableComponent * sourceComponent);
 	virtual ~InspectorEditor();
 
-
 	InspectableComponent * sourceComponent;
+	
+	//RelatedFastMap
+	ScopedPointer<FastMapperUI> fastMapperUI;
 
 	void resized() override;
 

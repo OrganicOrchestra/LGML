@@ -78,6 +78,9 @@ void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
 
 void NodeConnectionEditor::resized()
 {
+	InspectorEditor::resized();
+
+
 	int panelWidth = (int)(getWidth() / 3.f);
 
     Rectangle<int> r = getLocalBounds();
@@ -112,7 +115,7 @@ void NodeConnectionEditor::resized()
 
 int NodeConnectionEditor::getContentHeight()
 {
-	return 20+jmax(outputSlots.size() * 35, inputSlots.size()*35);
+	return InspectorEditor::getContentHeight() + 20+jmax(outputSlots.size() * 35, inputSlots.size()*35);
 }
 
 void NodeConnectionEditor::mouseEnter(const MouseEvent &)
@@ -255,6 +258,7 @@ void NodeConnectionEditor::removeAudioLinkForChannels(int sourceChannel, int des
     //DBG("Remove audio Link for channels");
     NodeConnectionEditorLink * l = getLinkForChannels(sourceChannel, destChannel);
 	if (l == nullptr) return;
+    if(l==selectedLink) selectedLink=nullptr;
 
     l->outSlot->removeConnectedSlot(l->inSlot);
     l->inSlot->removeConnectedSlot(l->outSlot);
@@ -502,6 +506,8 @@ void NodeConnectionEditor::askForRemoveLink(NodeConnectionEditorLink * target)
     {
         currentConnection->removeDataGraphConnection(target->outSlot->data, target->inSlot->data);
     }
+    
+        if(target==selectedLink) selectedLink=nullptr;
 }
 
 void NodeConnectionEditor::selectLink(NodeConnectionEditorLink * target)

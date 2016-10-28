@@ -36,6 +36,9 @@ nodeChangeNotifier(10000)
   graphJob = new GraphJob(innerGraph,name);
   nodeManager = nullptr;
 #endif
+
+  //Force non recursive saving of preset as container has only is level to take care, nested containers are other nodes
+  presetSavingIsRecursive = false;
 }
 
 
@@ -258,40 +261,6 @@ void NodeContainer::removeParamProxy(ParameterProxy * pp)
   nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
   proxyParams.removeAllInstancesOf(pp);
   removeControllable(pp);
-}
-
-
-bool NodeContainer::loadPreset(PresetManager::Preset * preset)
-{
-  if(!ControllableContainer::loadPreset(preset)) return false;
-
-  //    for (auto &n : nodes) n->loadPresetWithName(preset->name);
-
-  return true;
-}
-
-PresetManager::Preset* NodeContainer::saveNewPreset(const String & name)
-{
-  return ControllableContainer::saveNewPreset(name);
-  //    for (auto &n : nodes) n->saveNewPreset(name);
-}
-
-bool NodeContainer::saveCurrentPreset()
-{
-  if (!ControllableContainer::saveCurrentPreset()) return false;
-  //@ben remove recursive for now (not useful and duplicating values...)
-  //
-  //    for (auto &n : nodes) n->saveCurrentPreset();
-  return true;
-}
-
-bool NodeContainer::resetFromPreset()
-{
-  if (!ControllableContainer::resetFromPreset()) return false;
-
-  //    for (auto &n : nodes) n->resetFromPreset();
-
-  return true;
 }
 
 
@@ -591,7 +560,7 @@ bool NodeContainer::hasDataOutputs()
 }
 
 
-void NodeContainer::numChannelsChanged(){
+void NodeContainer::numChannelsChanged(bool /*isInput*/){
 
   const ScopedLock lk(getCallbackLock());
   removeIllegalConnections();

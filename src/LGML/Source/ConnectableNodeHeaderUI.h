@@ -14,13 +14,14 @@
 
 #include "StringParameterUI.h"
 #include "BoolToggleUI.h"
-
 #include "ConnectableNode.h"
+#include "PresetChooser.h"
+
+
 class VuMeter;
 class ConnectableNodeUI;
 
 class ConnectableNodeHeaderUI : public Component,
-public ComboBox::Listener,
 public Button::Listener,
 public ControllableContainerListener,
 public ConnectableNode::ConnectableNodeListener
@@ -47,11 +48,10 @@ public:
   Grabber grabber;
   ImageButton removeBT;
   TextButton miniModeBT;
-  ScopedPointer<ComboBox> presetCB;
+  ScopedPointer<PresetChooser> presetChooser;
 
 
   virtual void setNodeAndNodeUI(ConnectableNode * node, ConnectableNodeUI * nodeUI);
-  virtual void updatePresetComboBox(bool forceUpdate = false);
   virtual void init();
 
 
@@ -65,7 +65,6 @@ public:
   // Inherited via Listeners
   virtual void nodeParameterChanged(ConnectableNode *,Parameter *) override;
 
-  virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
   virtual void buttonClicked(Button *) override;
   virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
 

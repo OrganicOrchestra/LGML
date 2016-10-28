@@ -128,13 +128,6 @@ public:
   ParameterProxy * addParamProxy();
   void removeParamProxy(ParameterProxy * pp);
 
-
-  //Preset
-  virtual bool loadPreset(PresetManager::Preset * preset) override;
-  virtual PresetManager::Preset* saveNewPreset(const String &name) override;
-  virtual bool saveCurrentPreset() override;
-  virtual bool resetFromPreset() override;
-
   //save / load
   var getJSONData() override;
   void loadJSONDataInternal(var data) override;
@@ -163,7 +156,7 @@ public:
   //AUDIO
 
   void updateAudioGraph(bool lock = true) ;
-  void numChannelsChanged() override;
+  void numChannelsChanged(bool isInput) override;
   
   //DATA
   bool hasDataInputs() override;

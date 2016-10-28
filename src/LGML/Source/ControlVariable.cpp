@@ -14,7 +14,8 @@
 
 ControlVariable::ControlVariable(Controller * c, Parameter * p) :
 	controller(c),
-	parameter(p)
+	parameter(p),
+	includeInSave(true)
 {
 	p->isEditable = true;
 	p->addControllableListener(this);

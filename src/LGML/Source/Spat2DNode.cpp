@@ -160,7 +160,7 @@ void Spat2DNode::computeInfluence(int targetIndex)
 	}
 }
 
-void Spat2DNode::numChannelsChanged(){
+void Spat2DNode::numChannelsChanged(bool /*isInput*/){
 updateInputOutputDataSlots();
 }
 bool Spat2DNode::modeIsBeam()

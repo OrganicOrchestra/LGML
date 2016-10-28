@@ -66,6 +66,8 @@ ControlVariableUI * ControllerEditor::getUIForVariable(ControlVariable * v)
 
 void ControllerEditor::resized()
 {
+	InspectorEditor::resized();
+
 	int variableUIHeight = 20;
 	int listGap = 2;
 
@@ -82,10 +84,14 @@ void ControllerEditor::resized()
 
 int ControllerEditor::getContentHeight()
 {
+	return InspectorEditor::getContentHeight() + 5 + getVariablesHeight();
+}
+
+int ControllerEditor::getVariablesHeight()
+{
 	int variableUIHeight = 20;
 	int listGap = 2;
-
-	return 30 + variablesUI.size()*(variableUIHeight + listGap);
+	return variablesUI.size()*(variableUIHeight + listGap);
 }
 
 void ControllerEditor::buttonClicked(Button * b)
@@ -97,14 +103,16 @@ void ControllerEditor::buttonClicked(Button * b)
 	}
 }
 
-void ControllerEditor::variableAdded(Controller *, ControlVariable * v)
+void ControllerEditor::variableAddedAsync(Controller *, ControlVariable * v)
 {
 	addVariableUI(v);
 	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
 
-void ControllerEditor::variableRemoved(Controller *, ControlVariable * v)
+void ControllerEditor::variableRemovedAsync(Controller *, ControlVariable * v)
 {
 	removeVariableUI(v);
 	inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
 }
+
+

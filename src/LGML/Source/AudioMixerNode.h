@@ -46,7 +46,7 @@ public:
 
 	void updateInput();
 	void updateOutput();
-  void numChannelsChanged() override;
+  void numChannelsChanged(bool isInput) override;
 
 
 	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override;

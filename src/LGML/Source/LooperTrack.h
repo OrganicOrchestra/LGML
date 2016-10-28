@@ -169,6 +169,8 @@ public:
 
   bool isSelected;
 
+
+  void setNumChannels(int numChannels);
 #if !LGML_UNIT_TESTS
 private:
 #endif

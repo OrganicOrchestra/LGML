@@ -59,8 +59,8 @@ on_node_audioInNode = function(relativeAddressList,v) {
 /// special functions
 //// lgml.post : post a message in LGML Logger
 
-onCtl_Foo_Bar  = function ( a , b ){
-	lgml.post(this + "osc arguments :" + a + "," + b );
+onCtl_foo_bar  = function ( args ){
+	lgml.post(this + "osc arguments :" + JSON.stringify(args) );
 	// any send call will send a message on OSC controller out port
 	local.send("/lolo","l");
 };

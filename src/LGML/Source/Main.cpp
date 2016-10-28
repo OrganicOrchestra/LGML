@@ -87,7 +87,10 @@ public:
     mainWindow = new MainWindow (getApplicationName(),engine);
 
     engine->parseCommandline(commandLine);
-
+    if(!engine->getFile().existsAsFile()){
+      engine->createNewGraph();
+      engine->setChangedFlag(false);
+    }
 #endif
 
   }
@@ -158,6 +161,9 @@ public:
       setMenuBar(mainComponent);
 #endif
 
+#if JUCE_OPENGL
+	  openGLContext.attachTo(*getTopLevelComponent());
+#endif
 
     }
     void focusGained(FocusChangeType cause)override{
@@ -202,6 +208,9 @@ public:
 	   getAppProperties().getCommonSettings(true)->saveIfNeeded();
 
 
+#if JUCE_OPENGL
+	   openGLContext.detach();
+#endif
        JUCEApplication::getInstance()->systemRequestedQuit();
 
     }
@@ -215,6 +224,10 @@ public:
      subclass also calls the superclass's method.
      */
     MainContentComponent * mainComponent;
+
+#if JUCE_OPENGL
+	OpenGLContext openGLContext;
+#endif
 
   private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
@@ -240,10 +253,8 @@ START_JUCE_APPLICATION (LGMLApplication)
 
 void LGMLApplication::MainWindow::timerCallback()
 {
-  File loadedFile = getApp().engine->getFile();
-  String loadedName = "";
-  if(loadedFile.existsAsFile()){
-    loadedName =  loadedFile.getFileNameWithoutExtension() + " : ";
-  }
-  setName(loadedName+"LGML "+ String(ProjectInfo::versionString)+String(" (CPU : ")+String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
+
+  setName(getApp().engine->getDocumentTitle() +" : LGML "
+          + String(ProjectInfo::versionString)+String(" (CPU : ")+
+          String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
 }

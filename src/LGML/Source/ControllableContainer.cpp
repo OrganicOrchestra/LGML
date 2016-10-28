@@ -26,18 +26,22 @@ const Identifier ControllableContainer::valueIdentifier("value");
 
 
 ControllableContainer::ControllableContainer(const String & niceName) :
-parentContainer(nullptr),
-hasCustomShortName(false),
-skipControllableNameInAddress(false),
-currentPreset(nullptr),
-canHavePresets(true),
-saveAndLoadRecursiveData(true),
-numContainerIndexed(0),
-localIndexedPosition(-1)
+	parentContainer(nullptr),
+	hasCustomShortName(false),
+	skipControllableNameInAddress(false),
+	currentPreset(nullptr),
+	canHavePresets(true),
+	saveAndLoadRecursiveData(true),
+	numContainerIndexed(0),
+	localIndexedPosition(-1),
+	presetSavingIsRecursive(false)
 {
   setNiceName(niceName);
   currentPresetName = addStringParameter("Preset", "Current Preset", "");
+  currentPresetName->hideInEditor = true;
   savePresetTrigger = addTrigger("Save Preset", "Save current preset");
+  savePresetTrigger->hideInEditor = true;
+
 }
 
 ControllableContainer::~ControllableContainer()
@@ -146,7 +150,7 @@ void ControllableContainer::notifyStructureChanged(){
 }
 
 void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
-  if(pv.parameter==currentPresetName){
+  if(pv.parameter == currentPresetName){
     loadPresetWithName(pv.parameter->stringValue());
   }
   if(!pv.isRange()){
@@ -442,6 +446,24 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
   return nullptr;
 }
 
+bool ControllableContainer::containsControllable(Controllable * c, int maxSearchLevels)
+{
+	if (c == nullptr) return false;
+
+	ControllableContainer * pc = c->parentContainer;
+	if (pc == nullptr) return false;
+	int curLevel = 0;
+	while (pc != nullptr)
+	{
+		if (pc == this) return true;
+		curLevel++;
+		if (maxSearchLevels >= 0 && curLevel > maxSearchLevels) return false;
+		pc = pc->parentContainer;
+	}
+
+	return false;
+}
+
 
 bool ControllableContainer::loadPresetWithName(const String & name)
 {
@@ -450,9 +472,9 @@ bool ControllableContainer::loadPresetWithName(const String & name)
     if(name=="") return false;
     isLoadingPreset = true;
 
-  PresetManager::Preset * preset = PresetManager::getInstance()->getPreset(getPresetFilter(), name);
+	PresetManager::Preset * preset = PresetManager::getInstance()->getPreset(getPresetFilter(), name);
     if (preset == nullptr){isLoadingPreset = false;currentPresetName->setValue("", true); return false;}
-  bool hasLoaded = loadPreset(preset);
+	bool hasLoaded = loadPreset(preset);
     isLoadingPreset = false;
     return hasLoaded;
 
@@ -460,7 +482,10 @@ bool ControllableContainer::loadPresetWithName(const String & name)
 
 bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 {
-    if (preset == nullptr){currentPresetName->setValue("", true); return false;}
+	if (preset == nullptr){
+		currentPresetName->setValue("", true); 
+		return false;
+	}
 
   loadPresetInternal(preset);
 
@@ -468,12 +493,12 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
   {
 
     Parameter * p = dynamic_cast<Parameter *>(getControllableForAddress(pv->paramControlAddress));
-    if (p != nullptr && p!=currentPresetName) p->setValue(pv->presetValue);
+	//DBG("Load preset, param set container : " << niceName << ", niceName : " << p->niceName << ",pv controlAddress : " << p->controlAddress << "" << pv->presetValue.toString());
+    if (p != nullptr && p != currentPresetName) p->setValue(pv->presetValue);
   }
 
-
   currentPreset = preset;
-//  currentPresetName->setValue(currentPreset->name, true);
+  currentPresetName->setValue(currentPreset->name, false);
 
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
   return true;
@@ -481,7 +506,7 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 
 PresetManager::Preset* ControllableContainer::saveNewPreset(const String & _name)
 {
-  PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, true);
+  PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, presetSavingIsRecursive);
   savePresetInternal(pre);
   NLOG(niceName, "New preset saved : " + pre->name);
   loadPreset(pre);
@@ -491,11 +516,18 @@ PresetManager::Preset* ControllableContainer::saveNewPreset(const String & _name
 
 bool ControllableContainer::saveCurrentPreset()
 {
-    if (currentPreset == nullptr){
-        jassertfalse;
-        return false;
-    }
+	//Same as saveNewPreset because PresetManager now replaces if name is the same
+	if (currentPreset == nullptr) {
+		jassertfalse;
+		return false;
+	}
 
+	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
+	savePresetInternal(pre);
+	NLOG(niceName, "Current preset saved : " + pre->name);
+	return loadPreset(pre);
+	
+	/*
   for (auto &pv : currentPreset->presetValues)
   {
     Parameter * p = dynamic_cast<Parameter*> (getControllableForAddress(pv->paramControlAddress));
@@ -508,6 +540,7 @@ bool ControllableContainer::saveCurrentPreset()
   NLOG(niceName, "Current preset saved : " + currentPreset->name);
 
   return true;
+  */
 }
 
 int ControllableContainer::getNumPresets()
@@ -519,15 +552,17 @@ bool ControllableContainer::resetFromPreset()
 {
   if (currentPreset == nullptr) return false;
 
+  
   for (auto &pv : currentPreset->presetValues)
   {
-    Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
-    if (p != nullptr && p!=currentPresetName) p->resetValue();
+	Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
+    if (p != nullptr && p !=currentPresetName) p->resetValue();
   }
 
 
   currentPreset = nullptr;
   currentPresetName->setValue("", true);
+
   return true;
 }
 
@@ -656,24 +691,21 @@ void ControllableContainer::loadJSONData(var data)
 
   if (paramsData != nullptr)
   {
-    for (var &pData : *paramsData)
-    {
-      String pControlAddress = pData.getDynamicObject()->getProperty(controlAddressIdentifier);
+	  for (var &pData : *paramsData)
+	  {
+		  String pControlAddress = pData.getDynamicObject()->getProperty(controlAddressIdentifier);
 
-      Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
+		  Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
 
-      if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-        //                we don't load preset when already loading a state
-        if(p->shortName!=presetIdentifier.toString() && p->isSavable)p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
+		  if (Parameter * p = dynamic_cast<Parameter*>(c)) {
+			  //                we don't load preset when already loading a state
+			  if (p->shortName != presetIdentifier.toString() && p->isSavable) p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
 
-      }
-      else {
-        //NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
-      }
-    }
+		  } else {
+			  //NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
+		  }
+	  }
   }
-
-
 
 
   loadJSONDataInternal(data);

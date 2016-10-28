@@ -26,7 +26,19 @@ PresetManager::~PresetManager()
 PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const String &name, const String & filter, ControllableContainer * container, bool recursive, bool includeNotExposed)
 {
     //Array<PresetValue *> vPresets;
-    Preset * pre = new Preset(name,filter);
+
+	
+	Preset * pre = getPreset(filter, name);
+	bool presetExists = pre != nullptr;
+
+	if (!presetExists)
+	{
+		pre = new Preset(name, filter);
+	} else
+	{
+		pre->clear();
+	}
+
     for (auto &p : container->getAllParameters(recursive,includeNotExposed))
     {
         if (!p->isPresettable) continue;
@@ -38,12 +50,25 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
         //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
         //vPresets.add(preVal);
         pre->addPresetValue(p->getControlAddress(container), var(p->value));
-
     }
 
-    presets.add(pre);
+	DBG("Saving preset, recursive ? " << String(recursive));
 
+	if (!recursive)
+	{
+		for (auto &cc : container->controllableContainers)
+		{
+			DBG("Child container : " << cc->niceName << "preset name : "<< cc->currentPresetName->stringValue());
+			if (cc->currentPresetName->stringValue().isNotEmpty())
+			{
+				DBG(" >> Saving child container preset : " << cc->currentPresetName->stringValue());
+				pre->addPresetValue(cc->currentPresetName->getControlAddress(container), cc->currentPresetName->value);
+			}
+		}
+	}
+	
 
+    if(!presetExists) presets.add(pre);
 
     return pre;
 }
@@ -173,6 +198,11 @@ var PresetManager::Preset::getPresetValue(const String &targetControlAddress)
   }
 
   return var();
+}
+
+void PresetManager::Preset::clear()
+{
+	presetValues.clear();
 }
 
 

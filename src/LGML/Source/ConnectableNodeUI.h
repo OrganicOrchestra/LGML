@@ -103,9 +103,9 @@ public:
 
 
 
-	MainComponentContainer MainComponentContainer;
-	ConnectableNodeContentUI * getContentContainer() { return MainComponentContainer.contentContainer; }
-	ConnectableNodeHeaderUI * getHeaderContainer() { return MainComponentContainer.headerContainer; }
+	MainComponentContainer mainComponentContainer;
+	ConnectableNodeContentUI * getContentContainer() { return mainComponentContainer.contentContainer; }
+	ConnectableNodeHeaderUI * getHeaderContainer() { return mainComponentContainer.headerContainer; }
 
 	ConnectorContainer inputContainer;
 	ConnectorContainer outputContainer;
