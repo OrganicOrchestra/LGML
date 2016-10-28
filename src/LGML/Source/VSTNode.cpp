@@ -89,6 +89,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
 #ifdef VSTLOADING_THREADED
         NodeManager::getInstance()->addJob(new VSTLoaderJob(pd,this), true);
 #else
+          suspendProcessing(true);
         generatePluginFromDescription(pd);
         triggerAsyncUpdate();
 
@@ -313,6 +314,8 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
 };
 
 void VSTNode::handleAsyncUpdate(){
+
   parentNodeContainer->updateAudioGraph();
+              suspendProcessing(false);
 if(innerPlugin)	initParametersFromProcessor(innerPlugin);
 }
