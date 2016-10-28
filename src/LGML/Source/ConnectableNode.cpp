@@ -114,6 +114,7 @@ bool ConnectableNode::hasDataOutputs()
 
 String ConnectableNode::getPresetFilter()
 {
+	LOG("here get preset filter");
   return NodeFactory::nodeToString(this) + String("_") + uid.toString();
 }
 

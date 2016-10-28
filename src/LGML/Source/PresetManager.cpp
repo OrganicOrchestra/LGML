@@ -43,23 +43,15 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
         if(p==(Parameter*)container->currentPresetName){ continue; }
         if (!p->isControllableExposed && !includeNotExposed) continue;
 
-        //DBG("Add preset value " << p->niceName << " > " <<  p->value.toString() << p->stringValue());
-
-        //PresetValue * preVal = new PresetValue(p->controlAddress,p->value.clone());
-        //vPresets.add(preVal);
         pre->addPresetValue(p->getControlAddress(container), var(p->value));
     }
-
-	DBG("Saving preset, recursive ? " << String(recursive));
 
 	if (!recursive)
 	{
 		for (auto &cc : container->controllableContainers)
 		{
-			DBG("Child container : " << cc->niceName << "preset name : "<< cc->currentPresetName->stringValue());
 			if (cc->currentPresetName->stringValue().isNotEmpty())
 			{
-				DBG(" >> Saving child container preset : " << cc->currentPresetName->stringValue());
 				pre->addPresetValue(cc->currentPresetName->getControlAddress(container), cc->currentPresetName->value);
 			}
 		}
@@ -151,31 +143,32 @@ void PresetManager::deleteAllUnusedPresets(ControllableContainer * rootContainer
 		if (!isUsed) presetsToRemove.add(p);
 	}
 
-	NLOG("Preset Manager","Removing > " << presets.size() << "Presets");
 	for (auto &p : presetsToRemove) presets.removeObject(p);
 
 }
 
-void PresetManager::deletePresetsForContainer(ControllableContainer * container, bool recursive)
+int PresetManager::deletePresetsForContainer(ControllableContainer * container, bool recursive, int level)
 {
-	if (container == nullptr) return;
+	if (container == nullptr) return 0;
 	const String filter = container->getPresetFilter();
-
-	NLOG("Preset Manager","Delete preset for container " << filter); 
 	
 	Array<Preset *> presetsToRemove;
 	for (auto &p : presets)
 	{
+		DBG(p->filter << " <> " << filter);
 		if (p->filter == filter) presetsToRemove.add(p);
 	}
 
-	NLOG("Preset Manager", "Removing > " << presets.size() << "Presets");
+	int numPresetsDeleted = presetsToRemove.size();
 	for (auto &p : presetsToRemove) presets.removeObject(p);
-
+	
 	if (recursive)
 	{
-		for (auto &cc : container->controllableContainers) deletePresetsForContainer(cc, true);
+		for (auto &cc : container->controllableContainers) numPresetsDeleted += deletePresetsForContainer(cc, true, level+1);
 	}
+
+	if(level == 0) NLOG("Preset Manager", "Removed " << numPresetsDeleted << "Presets\nTotal now of " << presets.size() << "presets");
+	return numPresetsDeleted;
 }
  
 void PresetManager::clear()

@@ -146,7 +146,7 @@ public:
     void addRMSChannelListener(RMSChannelListener* newListener) { rmsChannelListeners.add(newListener); }
     void removeRMSChannelListener(RMSChannelListener* listener) { rmsChannelListeners.remove(listener); }
 
-    String getPresetFilter()override;
+    String getPresetFilter() override;
 
 	//DATA
 	virtual Data* getInputData(int dataIndex);
