@@ -259,7 +259,7 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p ,
   jassert(parameterIndex<VSTParameters.size());
   blockFeedback = true;
     if(parameterIndex<VSTParameters.size() &&
-       VSTParameters.getUnchecked(parameterIndex)->shortName==innerPlugin->getParameterLabel(parameterIndex)){
+       VSTParameters.getUnchecked(parameterIndex)->niceName==innerPlugin->getParameterName(parameterIndex)){
   VSTParameters.getUnchecked(parameterIndex)->setValue(newValue);
   blockFeedback = false;
   }
