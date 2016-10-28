@@ -27,7 +27,8 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
                                     "Save a filter graph"),
 	ControllableContainer("root")
 {
-  
+	skipControllableNameInAddress = true;
+
   initAudio();
   Logger::setCurrentLogger (LGMLLogger::getInstance());
 
