@@ -72,7 +72,7 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 		
 	}
 	
-	Array<Controllable * > childControllables = parentContainer->getAllControllables(false);
+	Array<WeakReference<Controllable>> childControllables = parentContainer->getAllControllables(false);
 
 	for (auto &c : childControllables)
 	{

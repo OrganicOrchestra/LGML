@@ -245,7 +245,7 @@ void Engine::loadJSONData (var data,ProgressTask * loadingTask)
   fastMapperTask->end();
 
   //Clean unused presets
-  //PresetManager::getInstance()->deleteAllUnusedPresets(this);
+  PresetManager::getInstance()->deleteAllUnusedPresets(this);
 
   if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(true); //Re enable editor
 

@@ -673,10 +673,10 @@ void LookAndFeelOO::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<float
     const int h = boxSize;
 
     g.setColour (isOpen?HIGHLIGHT_COLOR:HIGHLIGHT_COLOR.brighter());
-    g.fillRoundedRectangle (x, y, w, h,2.f);
+    g.fillRoundedRectangle ((float)x, (float)y, (float)w, (float)h,2.f);
 
     g.setColour (HIGHLIGHT_COLOR.darker(.3f));
-    g.drawRoundedRectangle (x, y, w, h,2.f,1.f);
+    g.drawRoundedRectangle ((float)x, (float)y, (float)w, (float)h,2.f,1.f);
 
     const float size = boxSize / 2 + 1.0f;
     const float centre = (float) (boxSize / 2);

@@ -53,9 +53,11 @@ ControllableContainer::~ControllableContainer()
 }
 void ControllableContainer::clear(){
 
-  PresetManager::getInstance()->deletePresetsForContainer(this, true);
-  controllables.clear();
-  controllableContainers.clear();
+	PresetManager * pm = PresetManager::getInstanceWithoutCreating();
+	if(pm != nullptr) pm->deletePresetsForContainer(this, true);
+
+	controllables.clear();
+	controllableContainers.clear();
 }
 
 void ControllableContainer::addParameter(Parameter * p)
@@ -659,7 +661,7 @@ var ControllableContainer::getJSONData()
 
     if (c->type != Controllable::Type::TRIGGER)
     {
-	   Parameter * base = (Parameter *)base;
+	  Parameter * base = (Parameter*)c.get();
       if(base->isSavable){
         var pData(new DynamicObject());
         pData.getDynamicObject()->setProperty(controlAddressIdentifier, base->getControlAddress(this));

@@ -158,7 +158,7 @@ void PresetManager::deleteAllUnusedPresets(ControllableContainer * rootContainer
 
 void PresetManager::deletePresetsForContainer(ControllableContainer * container, bool recursive)
 {
-	
+	if (container == nullptr) return;
 	const String filter = container->getPresetFilter();
 
 	NLOG("Preset Manager","Delete preset for container " << filter); 

@@ -47,13 +47,13 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 Engine::~Engine(){
   closeAudio();
 
+  PresetManager::deleteInstance();
   FastMapper::deleteInstance();
   TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
   ControllerManager::deleteInstance();
   NodeManager::deleteInstance();
   VSTManager::deleteInstance();
-  PresetManager::deleteInstance();
-  ControllerManager::deleteInstance();
+   ControllerManager::deleteInstance();
   JsGlobalEnvironment::deleteInstance();
   Logger::setCurrentLogger(nullptr);
   LGMLLogger::deleteInstance();
@@ -61,7 +61,7 @@ Engine::~Engine(){
   MIDIManager::deleteInstance();
 
   SerialManager::deleteInstance();
-
+  
 }
 
 void Engine::parseCommandline(const String & commandLine){
