@@ -106,8 +106,9 @@ public:
     void updateChildrenControlAddress();
 
 
-    virtual Array<Controllable *> getAllControllables(bool recursive = false, bool getNotExposed = false);
-    virtual Array<Parameter *> getAllParameters(bool recursive = false, bool getNotExposed = false);
+    virtual Array<WeakReference<Controllable>> getAllControllables(bool recursive = false, bool getNotExposed = false);
+	virtual Array<WeakReference<ControllableContainer>> getAllControllableContainers(bool recursive = false);
+    virtual Array<WeakReference<Parameter>> getAllParameters(bool recursive = false, bool getNotExposed = false);
     virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
     virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
 	bool containsControllable(Controllable * c, int maxSearchLevels = -1);
