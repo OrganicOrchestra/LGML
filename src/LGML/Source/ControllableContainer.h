@@ -127,6 +127,8 @@ public:
     virtual void loadPresetInternal(PresetManager::Preset *){};
     virtual void savePresetInternal(PresetManager::Preset *){};
 
+	void cleanUpPresets();
+
 	virtual String getPresetFilter();
 	virtual var getPresetValueFor(Parameter * p);//Any parameter that is part of a this preset can use this function
 

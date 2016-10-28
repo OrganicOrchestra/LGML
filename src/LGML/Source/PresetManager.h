@@ -74,7 +74,7 @@ public:
 	int getNumPresetForFilter(const String &) const;
 
 	void deleteAllUnusedPresets(ControllableContainer * rootContainer);
-	int deletePresetsForContainer(ControllableContainer * container, bool recursive = true, int level = 0); //delete all presets that no controllable uses
+	int deletePresetsForContainer(ControllableContainer * container, bool recursive = true); //delete all presets that no controllable uses
 
 	void clear();
 

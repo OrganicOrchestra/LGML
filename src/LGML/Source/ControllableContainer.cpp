@@ -51,22 +51,22 @@ ControllableContainer::~ControllableContainer()
   clear();
   masterReference.clear();
 }
-void ControllableContainer::clear(){
-
-	PresetManager * pm = PresetManager::getInstanceWithoutCreating();
-	if(pm != nullptr) pm->deletePresetsForContainer(this, true);
-
+void ControllableContainer::clear()
+{
+	cleanUpPresets();
 	controllables.clear();
 	controllableContainers.clear();
 }
 
 void ControllableContainer::addParameter(Parameter * p)
 {
+	
   addParameterInternal(p);
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
+	
   String targetName = getUniqueNameInContainer(_niceName);
   FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
   addParameterInternal(p);
@@ -588,6 +588,13 @@ var ControllableContainer::getPresetValueFor(Parameter * p)
   return currentPreset->getPresetValue(p->getControlAddress(this));
 }
 
+
+void ControllableContainer::cleanUpPresets()
+{
+	PresetManager * pm = PresetManager::getInstanceWithoutCreating();
+	if (pm != nullptr) pm->deletePresetsForContainer(this, true);
+
+}
 
 String ControllableContainer::getPresetFilter()
 {
