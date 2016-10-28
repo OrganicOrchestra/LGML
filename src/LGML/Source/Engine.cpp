@@ -108,8 +108,8 @@ void Engine::suspendAudio(bool shouldBeSuspended){
       ap->prepareToPlay(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
       }
       else{
-
-        NLOG("Engine","!!! no audio device available !!!");// if no audio device are present initialize it (if not, inner graph is void)
+        // if no audio device are present initialize it (if not, inner graph is void)
+        NLOG("Engine","!!! no audio device available !!!");
         ap->prepareToPlay(44100,1024);
       }
     }

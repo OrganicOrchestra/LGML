@@ -80,7 +80,7 @@ public:
 };
 
 
-class GenericControllableContainerEditor : public InspectorEditor, public ButtonListener, public ControllableContainerListener
+class GenericControllableContainerEditor : public InspectorEditor, public ButtonListener, public ControllableContainerListener,Timer
 {
 public :
 	GenericControllableContainerEditor(InspectableComponent * sourceComponent);
@@ -91,7 +91,7 @@ public :
 	WeakReference<ControllableContainer> sourceContainer;
 	ScopedPointer<CCInnerContainer> innerContainer;
 
-	void setCurrentInspectedContainer(ControllableContainer *);
+	void setCurrentInspectedContainer(ControllableContainer *,bool forceUpdate = false);
 
 	virtual int getContentHeight() override;
 
@@ -103,6 +103,8 @@ public :
 	void childStructureChanged(ControllableContainer *) override;
 
   void handleCommandMessage(int cID)override;
+
+  void timerCallback()override;
 
   enum{
     CHILD_STRUCTURE_CHANGED = 0

@@ -37,13 +37,13 @@ GenericControllableContainerEditor::~GenericControllableContainerEditor()
 	innerContainer->clear();
 }
 
-void GenericControllableContainerEditor::setCurrentInspectedContainer(ControllableContainer * cc)
+void GenericControllableContainerEditor::setCurrentInspectedContainer(ControllableContainer * cc,bool forceUpdate)
 {
 	if (cc == nullptr) return;
 
 	if (innerContainer != nullptr)
 	{
-		if (cc == innerContainer->container) return;
+		if (!forceUpdate && cc == innerContainer->container) return;
 
 		removeChildComponent(innerContainer);
 		innerContainer = nullptr;
@@ -107,20 +107,35 @@ void GenericControllableContainerEditor::buttonClicked(Button * b)
 
 void GenericControllableContainerEditor::childStructureChanged(ControllableContainer *)
 {
-  postCommandMessage(CHILD_STRUCTURE_CHANGED);
+  if(!MessageManager::getInstance()->isThisTheMessageThread()){
+//    removeChildComponent(innerContainer);
+    if(innerContainer){innerContainer->clear();removeChildComponent(innerContainer);innerContainer = nullptr;}
+  postCommandMessage(CHILD_STRUCTURE_CHANGED);}
+  else{
+    handleCommandMessage(CHILD_STRUCTURE_CHANGED);
+  }
 	
 }
 void GenericControllableContainerEditor::handleCommandMessage(int cID){
   switch(cID){
     case CHILD_STRUCTURE_CHANGED:
-      inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
+      // force clear for now
+      // TODO: check differences
+
+
+      startTimer(100);
+
       break;
     default:
       jassertfalse;
       break;
   }
 }
-
+void GenericControllableContainerEditor::timerCallback(){
+  if(sourceContainer.get())setCurrentInspectedContainer(sourceContainer,true);
+  inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
+  stopTimer();
+};
 //Inner Container
 
 CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor, ControllableContainer * _container, int _level, int _maxLevel, bool _canAccessLowerContainers) :

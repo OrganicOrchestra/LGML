@@ -60,6 +60,9 @@ void VSTNodeContentUI::init() {
 }
 
 void VSTNodeContentUI::updateVSTParameters(){
+  for(auto &p : paramSliders){
+    removeChildComponent(p);
+  }
     paramSliders.clear();
 
     int maxParameter = 20;
@@ -79,7 +82,10 @@ void VSTNodeContentUI::updateVSTParameters(){
 }
 
 void VSTNodeContentUI::controllableAdded(Controllable *) {};
-void VSTNodeContentUI::controllableRemoved(Controllable *){
+void VSTNodeContentUI::controllableRemoved(Controllable * c){
+  for(auto &p : paramSliders){
+    if(p->parameter==c)removeChildComponent(p);
+  }
 
 	postCommandMessage(0);
 

@@ -151,7 +151,7 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
   }
 
   VSTParameters.clear();
-
+  VSTParameters.ensureStorageAllocated(p->getNumParameters());
   for(int i = 0 ; i < p->getNumParameters() ; i++){
     VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
   }
@@ -226,16 +226,16 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 void VSTNode::audioProcessorChanged(juce::AudioProcessor * p ){
   if (!innerPlugin || p!=innerPlugin) return;
 
-  if(innerPlugin->getNumParameters() != VSTParameters.size()){
+//  if(innerPlugin->getNumParameters() != VSTParameters.size()){
     DBG("rebuildingParameters");
     initParametersFromProcessor(innerPlugin);
-  }
-  else{
-    for(int i = 0 ; i < VSTParameters.size() ; i++){
-      float val  = innerPlugin->getParameter(i);
-      VSTParameters.getUnchecked(i)->setValue(val);
-    }
-  }
+//  }
+//  else{
+//    for(int i = 0 ; i < VSTParameters.size() ; i++){
+//      float val  = innerPlugin->getParameter(i);
+//      VSTParameters.getUnchecked(i)->setValue(val);
+//    }
+//  }
 
 }
 void VSTNode::numChannelsChanged(bool isInput){}
@@ -252,14 +252,24 @@ inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 }
 
 
-void VSTNode::audioProcessorParameterChanged (AudioProcessor* ,
+void VSTNode::audioProcessorParameterChanged (AudioProcessor* p ,
                                               int parameterIndex,
                                               float newValue) {
-
+  if(p==innerPlugin){
   jassert(parameterIndex<VSTParameters.size());
   blockFeedback = true;
+    if(parameterIndex<VSTParameters.size() &&
+       VSTParameters.getUnchecked(parameterIndex)->shortName==innerPlugin->getParameterLabel(parameterIndex)){
   VSTParameters.getUnchecked(parameterIndex)->setValue(newValue);
   blockFeedback = false;
+  }
+    else{
+      NLOG("VSTNode","oldParam update");
+    }
+  }
+    else{
+      NLOG("VSTNode","oldplugin update");
+    }
 }
 
 

@@ -17,6 +17,7 @@ class ControllableContainer;
 class Inspector;
 class InspectorEditor;
 
+
 class InspectableComponent : public Component
 {
 public:

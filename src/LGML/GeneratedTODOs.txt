@@ -7,6 +7,11 @@
  ///////////////////////////////////////
 
 
+GenericControllableContainerEditor.cpp
+	line : 122
+		// TODO: check differences
+
+
 TimeManager.cpp
 	line : 405
 		//TODO: check
@@ -52,6 +57,15 @@ MainComponentCommands.cpp
 	line : 247
 		// TODO implement the JUCE version calling change every time something is made (maybe todo with undomanager)
 		//			int result = engine->saveIfNeededAndUserAgrees();
+
+
+ShapeShifterContainer.cpp
+	line : 293
+		//@ben what to we do for that?
+		//@martin never gonna happen :)
+
+	line : 127
+		//@ben do we need to handle these?
 
 
 NodeContainer.cpp
@@ -124,13 +138,9 @@ ControllableContainer.h
 		//      or using dispatch feedback that triggers only exposedParams
 
 
-ShapeShifterContainer.cpp
-	line : 293
-		//@ben what to we do for that?
-		//@martin never gonna happen :)
-
-	line : 127
-		//@ben do we need to handle these?
+ParameterUI.cpp
+	line : 39
+		// TODO : changing vst preset sometimes hit that
 
 
 ConnectableNodeUI.h
