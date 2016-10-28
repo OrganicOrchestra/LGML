@@ -56,7 +56,7 @@ void Outliner::rebuildTree()
 
 void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer)
 {
-	Array<ControllableContainer *> childContainers = parentContainer->controllableContainers;
+	Array<WeakReference<ControllableContainer>> childContainers = parentContainer->controllableContainers;
 	for (auto &cc : childContainers)
 	{
 		if (cc->skipControllableNameInAddress && !showHiddenContainers)
