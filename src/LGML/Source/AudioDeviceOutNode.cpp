@@ -23,7 +23,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 {
   //CanHavePresets = false;
 
-  addConnectableNodeListener(this);
+
 
   NodeBase::busArrangement.outputBuses.clear();
 
@@ -71,8 +71,8 @@ void AudioDeviceOutNode::onContainerParameterChanged(Parameter * p){
 
 };
 
-void AudioDeviceOutNode::numChannelsChanged(){
-  NodeBase::numChannelsChanged();
+void AudioDeviceOutNode::numChannelsChanged(bool isInput){
+  NodeBase::numChannelsChanged(isInput);
   updateVolMutes();
 }
 

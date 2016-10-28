@@ -100,12 +100,18 @@ void Engine::suspendAudio(bool shouldBeSuspended){
 
 
   if(AudioProcessor * ap =graphPlayer.getCurrentProcessor()){
-    ap->getCallbackLock();
+    const ScopedLock lk(ap->getCallbackLock());
     ap->suspendProcessing (shouldBeSuspended);
     if(shouldBeSuspended)ap->releaseResources();
     else {
-      AudioIODevice * dev = getAudioDeviceManager().getCurrentAudioDevice();
+      if(AudioIODevice * dev = getAudioDeviceManager().getCurrentAudioDevice()){
       ap->prepareToPlay(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
+      }
+      else{
+
+        NLOG("Engine","!!! no audio device available !!!");// if no audio device are present initialize it (if not, inner graph is void)
+        ap->prepareToPlay(44100,1024);
+      }
     }
   }
 
@@ -133,6 +139,7 @@ void Engine::clear(){
   RuleManager::getInstance()->clear();
   
   ControllerManager::getInstance()->clear();
+//  JsGlobalEnvironment::getInstance()->getEnv()->clear();
 //  graphPlayer.setProcessor(nullptr);
   
   NodeManager::getInstance()->clear();

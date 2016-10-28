@@ -237,7 +237,7 @@ void VSTNode::audioProcessorChanged(juce::AudioProcessor * p ){
   }
 
 }
-void VSTNode::numChannelsChanged(){}
+void VSTNode::numChannelsChanged(bool isInput){}
 
 inline void VSTNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & ) {
   if (innerPlugin) {

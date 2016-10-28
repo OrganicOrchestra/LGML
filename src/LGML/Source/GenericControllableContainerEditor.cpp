@@ -22,6 +22,7 @@ GenericControllableContainerEditor::GenericControllableContainerEditor(Inspectab
 	sourceContainer = sourceComponent->relatedControllableContainer;
 	addChildComponent(parentBT);
 
+	
 	setCurrentInspectedContainer(sourceContainer);
 
 	sourceContainer->addControllableContainerListener(this);
@@ -72,11 +73,13 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 int GenericControllableContainerEditor::getContentHeight()
 {
 	if (innerContainer == nullptr) return InspectorEditor::getContentHeight();
-	else return innerContainer->getContentHeight() + parentBT.getHeight() + 5;
+	else return InspectorEditor::getContentHeight()+innerContainer->getContentHeight() + parentBT.getHeight() + 5;
 }
 
 void GenericControllableContainerEditor::resized()
 {
+	InspectorEditor::resized();
+
 	if (innerContainer == nullptr) return;
 	Rectangle<int> r = getLocalBounds();
 
@@ -140,7 +143,7 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 
 	for (auto &c : container->controllables)
 	{
-		if(!c->hideInEditor)addControllableUI(c);
+		if(!c->hideInEditor) addControllableUI(c);
 	}
 
 	if (level < maxLevel)
@@ -156,6 +159,13 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 			addCCLink(cc);
 		}
 	}
+
+	if (container->canHavePresets)
+	{
+		presetChooser = new PresetChooser(container);
+		addAndMakeVisible(presetChooser);
+	}
+
 }
 
 CCInnerContainer::~CCInnerContainer()
@@ -255,6 +265,7 @@ int CCInnerContainer::getContentHeight()
 	int controllableHeight = 15;
 	int ccLinkHeight = 20;
 	int margin = 5;
+	int presetChooserHeight = 15;
 
 	int h = ccGap;
 	h += controllablesUI.size()* (controllableHeight + gap) + ccGap;
@@ -262,6 +273,7 @@ int CCInnerContainer::getContentHeight()
 
 	for (auto &ccui : innerContainers) h += ccui->getContentHeight() + ccGap;
 
+	if(container->canHavePresets) h += presetChooserHeight + gap;
 	h += containerLabel.getHeight();
 	h += margin * 2;
 
@@ -282,11 +294,18 @@ void CCInnerContainer::resized()
 	int controllableHeight = 15;
 	int ccLinkHeight = 20;
 	int margin = 5;
+	int presetChooserHeight = 15;
 
 	Rectangle<int> r = getLocalBounds();
 	containerLabel.setBounds(r.removeFromTop(containerLabel.getHeight()).withSizeKeepingCentre(containerLabel.getWidth(), containerLabel.getHeight()));
 
 	r.reduce(margin, margin);
+
+	if (container->canHavePresets)
+	{
+		presetChooser->setBounds(r.removeFromTop(presetChooserHeight));
+		r.removeFromTop(gap);
+	}
 
 	for (auto &cui : controllablesUI)
 	{

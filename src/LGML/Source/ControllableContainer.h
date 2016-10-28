@@ -24,9 +24,6 @@
 #include "PresetManager.h"
 #include "DebugHelpers.h" //keep
 
-
-
-
 class ControllableContainer;
 
 //Listener
@@ -58,6 +55,7 @@ public:
     bool hasCustomShortName;
 
 	bool canHavePresets;
+	bool presetSavingIsRecursive;
 	StringParameter * currentPresetName;
 	Trigger * savePresetTrigger;
 	PresetManager::Preset * currentPreset;
@@ -70,7 +68,7 @@ public:
 
 	Uuid uid;
 
-    OwnedArray<Controllable> controllables;
+    OwnedArray<Controllable,CriticalSection> controllables;
     Array<WeakReference<ControllableContainer>  > controllableContainers;
     ControllableContainer * parentContainer;
 
@@ -106,13 +104,14 @@ public:
 
     void setParentContainer(ControllableContainer * container);
     void updateChildrenControlAddress();
+
+
     virtual Array<Controllable *> getAllControllables(bool recursive = false, bool getNotExposed = false);
     virtual Array<Parameter *> getAllParameters(bool recursive = false, bool getNotExposed = false);
-
     virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
-
     virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
-    String getControlAddress(ControllableContainer * relativeTo=nullptr);
+	bool containsControllable(Controllable * c, int maxSearchLevels = -1);
+	String getControlAddress(ControllableContainer * relativeTo=nullptr);
 
     
 	virtual bool loadPresetWithName(const String &name);
@@ -171,7 +170,7 @@ public:
     ListenerList<ControllableContainerListener> controllableContainerListeners;
     void addControllableContainerListener(ControllableContainerListener* newListener) { controllableContainerListeners.add(newListener);}
     void removeControllableContainerListener(ControllableContainerListener* listener) { controllableContainerListeners.remove(listener);}
-  void clear();
+	void clear();
 
 
 protected :
