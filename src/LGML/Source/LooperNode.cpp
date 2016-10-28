@@ -21,7 +21,7 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
 {
 
   numberOfTracks =		addIntParameter("numberOfTracks",		"number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-  numberOfAudioChannelsIn = addIntParameter("numberOfChannelsPerTrack", "number of channels on each audioTrack", 1,1,2);
+  numberOfAudioChannelsIn = addIntParameter("numberOfChannelsPerTrack", "number of channels on each audioTrack", 2,1,2);
   exportAudio =			addTrigger("exportAudio",				"export audio of all recorded Tracks");
   selectAllTrig =		addTrigger("Select All",				"Select All tracks, for all clear or main volume for instance");
   selectTrack =			addIntParameter("Select track",			"set track selected", 0, -1, 0);
@@ -325,6 +325,7 @@ void LooperNode::numChannelsChanged(bool isInput){
   for (auto & t:trackGroup.tracks){
     t->setNumChannels(totalNumInputChannels);
   }
+    streamAudioBuffer.setNumChannels(totalNumInputChannels);
   }
 }
 void LooperNode::onContainerParameterChanged(Parameter * p) {
@@ -364,6 +365,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
   }
   else if(p == numberOfAudioChannelsIn){
     setPreferedNumAudioInput(numberOfAudioChannelsIn->intValue());
+    setPreferedNumAudioOutput(numberOfAudioChannelsIn->intValue()*(outputAllTracksSeparately->boolValue()?trackGroup.tracks.size():1));
   }
   else if (p == TimeManager::getInstance()->playState) {
     if (!TimeManager::getInstance()->playState->boolValue()) {

@@ -88,7 +88,7 @@ NodeBase.h
 
 
 NodeConnectionEditor.cpp
-	line : 392
+	line : 393
 		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 	line : 181
