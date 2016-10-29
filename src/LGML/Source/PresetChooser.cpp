@@ -16,7 +16,7 @@ PresetChooser::PresetChooser(ControllableContainer * _container) :
 	ComboBox("Preset")
 {
 	updatePresetComboBox();
-	addListener(this);
+    ComboBox::addListener(this);
 	container->addControllableContainerListener(this);
 	setTextWhenNothingSelected("Preset");
 	setTooltip("Set the current preset at :\n" + container->currentPresetName->getControlAddress() + " <presetName>");
@@ -24,7 +24,7 @@ PresetChooser::PresetChooser(ControllableContainer * _container) :
 
 PresetChooser::~PresetChooser()
 {
-	removeListener(this);
+    ComboBox::removeListener(this);
 	container->removeControllableContainerListener(this);
 }
 
@@ -84,8 +84,8 @@ void PresetChooser::comboBoxChanged(ComboBox * cb)
 	} else if (presetID >= 0 && presetID < PresetChoice::deleteStartId)
 	{
 		String nameOfPreset = cb->getItemText(cb->getSelectedItemIndex());
-		container->currentPresetName->setValue(nameOfPreset);
-		updatePresetComboBox(false);
+
+            container->currentPresetName->setValue(nameOfPreset);
 
 	} else if (presetID >= PresetChoice::deleteStartId)
 	{
