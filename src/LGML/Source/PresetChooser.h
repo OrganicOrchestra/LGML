@@ -21,7 +21,7 @@ public:
 	PresetChooser(ControllableContainer * _container);
 	~PresetChooser();
 
-	ControllableContainer * container;
+	WeakReference<ControllableContainer> container;
 
 	virtual void updatePresetComboBox(bool forceUpdate = false);
 	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
