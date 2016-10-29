@@ -164,6 +164,7 @@ void ConnectableNodeUI::childBoundsChanged(Component* c) {
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
 void ConnectableNodeUI::mouseDown(const juce::MouseEvent &e)
 {
+	selectThis();
 	if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
 
 	nodeInitPos = getBounds().getPosition();
@@ -172,7 +173,7 @@ void ConnectableNodeUI::mouseDown(const juce::MouseEvent &e)
 
 
 void ConnectableNodeUI::mouseUp(const juce::MouseEvent &) {
-	selectThis();
+	
 }
 
 void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
