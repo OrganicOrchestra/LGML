@@ -72,7 +72,7 @@ void OSCControllerEditor::resized()
 
 int OSCControllerEditor::getContentHeight()
 {
-	const int lineHeight = 20;
+//	const int lineHeight = 20;
 	return ControllerEditor::getContentHeight() + 200;
 }
 
