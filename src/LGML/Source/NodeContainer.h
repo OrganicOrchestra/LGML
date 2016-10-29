@@ -108,7 +108,7 @@ public:
   ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty);
   //ConnectableNode * addNodeFromJSON(var nodeData);
   ConnectableNode* addNodeFromJSONData(var data);
-  ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty);
+  ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty, var data = var());
   
   bool removeNode(ConnectableNode * n);
 
