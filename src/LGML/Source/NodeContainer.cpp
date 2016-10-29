@@ -119,56 +119,14 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeNa
   return addNode(n,nodeName);
 }
 
-
-/*
-ConnectableNode * NodeContainer::addNodeFromJSON(var nodeData)
-{
-	
-	Array<var> * params = nodeData.getDynamicObject()->getProperty("parameters").getArray();
-	String sourceName = "";
-	for (auto &v : *params)
-	{
-
-		if (v.getDynamicObject()->getProperty(controlAddressIdentifier) == "/name")
-		{
-			sourceName = v.getDynamicObject()->getProperty("value").toString();
-			break;
-		}
-	}
-
-
-	NodeType nodeType = NodeFactory::getTypeFromString(nodeData.getProperty("nodeType", var()));
-	ConnectableNode * node = addNode(nodeType, sourceName);
-	String safeNodeName = node->niceName;
-
-	if (node->type == NodeType::ContainerInType)
-	{
-		containerInNode = (ContainerInNode *)node;
-
-	} else if (node->type == NodeType::ContainerOutType)
-	{
-		containerOutNode = (ContainerOutNode *)node;
-	}
-
-
-	node->loadJSONData(nodeData);
-	node->nameParam->setValue(safeNodeName); //@martin new naming now takes into account the original node name
-	nodeChangeNotifier.addMessage(new NodeChangeMessage(node, true));
-	//  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, nsode);
-
-	return node;
-
-}
-*/
 ConnectableNode * NodeContainer::addNodeFromJSONData(var data)
 {
 	NodeType nodeType = NodeFactory::getTypeFromString(data.getProperty("nodeType", var())); 
 	ConnectableNode * n = NodeFactory::createNode(nodeType);
-	n->loadJSONData(data);
-	return addNode(n,n->niceName);
+	return addNode(n,n->niceName,data);
 }
 
-ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName)
+ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName, var nodeData)
 {
   nodes.add(n);
   
@@ -187,6 +145,9 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
   n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
   addChildControllableContainer(n); //ControllableContainer
+
+  if (!nodeData.isVoid()) n->loadJSONData(nodeData);
+
   nodeChangeNotifier.addMessage(new NodeChangeMessage(n,true));
 //  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
   return n;
