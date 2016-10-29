@@ -28,6 +28,7 @@ midiDeviceChooser(true)
 
 }
 VSTNodeContentUI::~VSTNodeContentUI(){
+    vstNode->closePluginWindow();
     vstNode->removeVSTNodeListener(this);
     vstNode->removeControllableContainerListener(this);
 }

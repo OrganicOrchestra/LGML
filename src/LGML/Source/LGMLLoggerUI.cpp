@@ -63,7 +63,7 @@ LGMLLoggerUI::LGMLLoggerUI(const String &contentName, LGMLLogger * l) :
 logger(l),
 ShapeShifterContent(contentName),
 logList(this),
-maxNumElement(500),
+maxNumElement(1000),
 totalLogRow(0)
 {
     logger->addLogListener(this);

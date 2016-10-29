@@ -107,9 +107,13 @@ DynamicObject * Parameter::createDynamicObject()
 
 var Parameter::getValue(const juce::var::NativeFunctionArgs & a)
 {
+  // TODO handle with weak references
 	Parameter * c = getObjectPtrFromJS<Parameter>(a);
-	if(c == nullptr) return var();
+  if(c == nullptr  ) return var();
+//  WeakReference<Parameter> wc = c;
+//  if(!wc.get()) return var();
 	return c->value;
+
 }
 
 //JS Helper

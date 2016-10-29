@@ -111,6 +111,11 @@ NodeConnectionEditor.cpp
 		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
+Parameter.cpp
+	line : 109
+		// TODO handle with weak references
+
+
 LooperNode.cpp
 	line : 69
 		// TODO check if we can optimize copies
@@ -162,6 +167,11 @@ MIDIManager.cpp
 	line : 138
 		// @Ben seems weird mixing duc
 		// btw do we really need that for output??
+
+
+JsHelpers.h
+	line : 35
+		// TODO use weakReferences
 
 
 DataProcessorGraph.cpp

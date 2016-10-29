@@ -33,7 +33,7 @@ static const Array<Identifier> jsCoreClasses = {
 };
 
 
-
+// TODO use weakReferences
 template<class T>
 inline T* getObjectPtrFromJS(const var::NativeFunctionArgs & a){
   DynamicObject * d = a.thisObject.getDynamicObject();
