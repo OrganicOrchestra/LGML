@@ -69,10 +69,10 @@ ShapeShifterContainer.cpp
 
 
 NodeContainer.cpp
-	line : 336
+	line : 386
 		// TODO nicely handle file format errors?
 
-	line : 496
+	line : 508
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
 		// for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
 		//        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){

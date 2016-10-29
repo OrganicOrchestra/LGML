@@ -106,7 +106,10 @@ public:
 
 
   ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty);
+  //ConnectableNode * addNodeFromJSON(var nodeData);
+  ConnectableNode* addNodeFromJSONData(var data);
   ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty);
+  
   bool removeNode(ConnectableNode * n);
 
   ConnectableNode * getNodeForName(const String &name);
@@ -131,8 +134,7 @@ public:
   //save / load
   var getJSONData() override;
   void loadJSONDataInternal(var data) override;
-  ConnectableNode * addNodeFromJSON(var nodeData);
-
+  
   void clear()override;
   void clear(bool keepContainerNodes);
 
