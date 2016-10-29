@@ -39,7 +39,10 @@ public :
 	Controller * controller;
 	ScopedPointer<Parameter> parameter;
 
+	bool includeInSave;
+
 	void remove();
+
 
 	virtual void controllableNameChanged(Controllable *) override;
 

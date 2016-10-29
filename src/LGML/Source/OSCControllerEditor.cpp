@@ -50,11 +50,11 @@ void OSCControllerEditor::resized()
 
   Rectangle<int> r = getLocalBounds();
 
-  r.removeFromTop(ControllerEditor::getContentHeight() + 10);
+  r.removeFromTop(getVariablesHeight() + 30); //TODO : be removed when removing variable mechanism
+
   localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));
-  r.removeFromTop(10);
-  remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));
   r.removeFromTop(2);
+  remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));
   remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()));
   r.removeFromTop(2);
   logIncomingOSC->setBounds(r.removeFromTop(15));
@@ -72,7 +72,8 @@ void OSCControllerEditor::resized()
 
 int OSCControllerEditor::getContentHeight()
 {
-  return ControllerEditor::getContentHeight()+10+localPortUI->getHeight() + remoteHostUI->getHeight() + remotePortUI->getHeight() +sendAllTrigger->getHeight()+blockFeedback->getHeight()+ 60;
+	const int lineHeight = 20;
+	return ControllerEditor::getContentHeight() + 200;
 }
 
 void OSCControllerEditor::messageProcessed(const OSCMessage & , bool)

@@ -28,6 +28,8 @@ public:
 	virtual void resized() override;
 	virtual int getContentHeight() override;
 
+	int getVariablesHeight();
+
 	//VARIABLES
 	Component variablesContainer;
 

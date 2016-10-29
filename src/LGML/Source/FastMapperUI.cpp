@@ -10,15 +10,12 @@
 
 #include "FastMapperUI.h"
 
-FastMapperUI::FastMapperUI(FastMapper * _fastMapper) :
-	fastMapper(_fastMapper)
+FastMapperUI::FastMapperUI(FastMapper * _fastMapper, ControllableContainer * _viewFilterContainer) :
+	fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
 {
 	fastMapper->addFastMapperListener(this);
 
-	for (auto &f : fastMapper->maps)
-	{
-		addFastMapUI(f);
-	}
+	resetAndUpdateView();
 }
 
 FastMapperUI::~FastMapperUI()
@@ -46,6 +43,34 @@ void FastMapperUI::removeFastMapUI(FastMap * f)
 
 	fastMapperUIListeners.call(&FastMapperUIListener::fastMapperContentChanged, this);
 }
+
+
+void FastMapperUI::resetAndUpdateView()
+{
+	removeAllChildren();
+	mapsUI.clear();
+	for (auto &f : fastMapper->maps)
+	{
+		if (mapPassViewFilter(f)) addFastMapUI(f);
+	}
+}
+
+void FastMapperUI::setViewFilter(ControllableContainer * filterContainer)
+{
+	viewFilterContainer = filterContainer;
+	resetAndUpdateView();
+}
+
+bool FastMapperUI::mapPassViewFilter(FastMap * f)
+{
+	if (viewFilterContainer == nullptr) return true;
+	if (f->reference->currentVariable != nullptr && (ControllableContainer *)f->reference->currentVariable->controller == viewFilterContainer) return true;
+	if (f->target != nullptr && viewFilterContainer->containsControllable(f->target)) return true;
+
+	return false;
+}
+
+
 
 FastMapUI * FastMapperUI::getUIForFastMap(FastMap *f)
 {

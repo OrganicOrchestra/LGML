@@ -8,7 +8,7 @@
 
 
 GenericControllableContainerEditor.cpp
-	line : 122
+	line : 124
 		// TODO: check differences
 
 
@@ -18,19 +18,19 @@ TimeManager.cpp
 
 
 ControllableContainer.cpp
-	line : 451
-		// TODO weird feedback when loading preset on parameter presetName
-
-	line : 565
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-	line : 663
+	line : 699
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
 		//        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
+
+	line : 485
+		// TODO weird feedback when loading preset on parameter presetName
+
+	line : 606
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
 ControllableInspector.cpp
@@ -102,13 +102,13 @@ NodeBase.h
 
 
 NodeConnectionEditor.cpp
-	line : 393
-		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
-
-	line : 181
+	line : 184
 		//@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
 		//but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
 		// should be fixed !!
+
+	line : 396
+		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
 LooperNode.cpp
@@ -123,15 +123,15 @@ DataInNode.cpp
 
 
 MIDIController.cpp
-	line : 184
+	line : 186
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
-	line : 41
+	line : 43
 		// TODO : we may need to listen to sR changes
 
 
 ControllableContainer.h
-	line : 148
+	line : 152
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)
@@ -143,13 +143,18 @@ ParameterUI.cpp
 		// TODO : changing vst preset sometimes hit that
 
 
+ConnectableNode.cpp
+	line : 66
+		//@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
+
+
 ConnectableNodeUI.h
 	line : 95
 		// @ben conflit avec le parametre ;)
 
 
 Main.cpp
-	line : 176
+	line : 179
 		//@martin added but commented for testing (relou behavior)
 
 
@@ -171,7 +176,7 @@ NodeManager.h
 
 
 Engine.h
-	line : 137
+	line : 139
 		// TODO implement progression
 
 

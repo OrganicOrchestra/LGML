@@ -63,7 +63,11 @@ audioNode(nullptr)
 }
 
 ConnectableNode::~ConnectableNode()
-{masterReference.clear();
+{
+  //@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
+	cleanUpPresets();
+
+  masterReference.clear();
   parentNodeContainer = nullptr;
 }
 

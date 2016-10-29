@@ -58,7 +58,7 @@ void AudioMixerNode::updateInput(){
 
 }
 
-void AudioMixerNode::numChannelsChanged(bool isInput){
+void AudioMixerNode::numChannelsChanged(bool /*isInput*/){
 
 
   if(numberOfOutput->intValue() > outBuses.size())

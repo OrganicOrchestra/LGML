@@ -104,13 +104,15 @@ public:
 
     void setParentContainer(ControllableContainer * container);
     void updateChildrenControlAddress();
-    virtual Array<Controllable *> getAllControllables(bool recursive = false, bool getNotExposed = false);
-    virtual Array<Parameter *> getAllParameters(bool recursive = false, bool getNotExposed = false);
 
+
+    virtual Array<WeakReference<Controllable>> getAllControllables(bool recursive = false, bool getNotExposed = false);
+	virtual Array<WeakReference<ControllableContainer>> getAllControllableContainers(bool recursive = false);
+    virtual Array<WeakReference<Parameter>> getAllParameters(bool recursive = false, bool getNotExposed = false);
     virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
-
     virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
-    String getControlAddress(ControllableContainer * relativeTo=nullptr);
+	bool containsControllable(Controllable * c, int maxSearchLevels = -1);
+	String getControlAddress(ControllableContainer * relativeTo=nullptr);
 
     
 	virtual bool loadPresetWithName(const String &name);
@@ -124,6 +126,8 @@ public:
     //    to be overriden
     virtual void loadPresetInternal(PresetManager::Preset *){};
     virtual void savePresetInternal(PresetManager::Preset *){};
+
+	void cleanUpPresets();
 
 	virtual String getPresetFilter();
 	virtual var getPresetValueFor(Parameter * p);//Any parameter that is part of a this preset can use this function
@@ -169,7 +173,7 @@ public:
     ListenerList<ControllableContainerListener> controllableContainerListeners;
     void addControllableContainerListener(ControllableContainerListener* newListener) { controllableContainerListeners.add(newListener);}
     void removeControllableContainerListener(ControllableContainerListener* listener) { controllableContainerListeners.remove(listener);}
-  void clear();
+	void clear();
 
 
 protected :

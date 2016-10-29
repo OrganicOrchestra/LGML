@@ -163,11 +163,15 @@ void FastMap::referenceVariableChanged(ControlVariableReference *)
 {
 	float normMin = minInputVal->getNormalizedValue();
 	float normMax = maxInputVal->getNormalizedValue();
-	minInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
-	maxInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
 
-	minInputVal->setNormalizedValue(normMin);
-	maxInputVal->setNormalizedValue(normMax);
+	if (reference->currentVariable != nullptr)
+	{
+		minInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
+		maxInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
+		minInputVal->setNormalizedValue(normMin);
+		maxInputVal->setNormalizedValue(normMax);
+	}
+
 }
 
 void FastMap::controllableRemoved(Controllable * c)

@@ -73,6 +73,9 @@ public:
 	void removePresetForIdx(int idx);
 	int getNumPresetForFilter(const String &) const;
 
+	void deleteAllUnusedPresets(ControllableContainer * rootContainer);
+	int deletePresetsForContainer(ControllableContainer * container, bool recursive = true); //delete all presets that no controllable uses
+
 	void clear();
 
 

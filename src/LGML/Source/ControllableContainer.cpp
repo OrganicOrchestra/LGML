@@ -16,7 +16,6 @@
 #include "DebugHelpers.h"
 #include "StringUtil.h"
 
-
 const Identifier ControllableContainer::presetIdentifier("preset");
 const Identifier ControllableContainer::paramIdentifier("parameters");
 
@@ -52,18 +51,22 @@ ControllableContainer::~ControllableContainer()
   clear();
   masterReference.clear();
 }
-void ControllableContainer::clear(){
-  controllables.clear();
-  controllableContainers.clear();
+void ControllableContainer::clear()
+{
+	cleanUpPresets();
+	controllables.clear();
+	controllableContainers.clear();
 }
 
 void ControllableContainer::addParameter(Parameter * p)
 {
+	
   addParameterInternal(p);
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
+	
   String targetName = getUniqueNameInContainer(_niceName);
   FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
   addParameterInternal(p);
@@ -339,9 +342,9 @@ void ControllableContainer::updateChildrenControlAddress()
 
 }
 
-Array<Controllable*> ControllableContainer::getAllControllables(bool recursive,bool getNotExposed)
+Array<WeakReference<Controllable>> ControllableContainer::getAllControllables(bool recursive,bool getNotExposed)
 {
-  Array<Controllable*> result;
+  Array<WeakReference<Controllable>> result;
   for (auto &c : controllables)
   {
     if (getNotExposed || c->isControllableExposed) result.add(c);
@@ -355,9 +358,22 @@ Array<Controllable*> ControllableContainer::getAllControllables(bool recursive,b
   return result;
 }
 
-Array<Parameter*> ControllableContainer::getAllParameters(bool recursive, bool getNotExposed)
+Array<WeakReference<ControllableContainer>> ControllableContainer::getAllControllableContainers(bool recursive)
 {
-  Array<Parameter*> result;
+	if (!recursive) return controllableContainers;
+	
+	Array<WeakReference<ControllableContainer>> containers;
+
+	containers.addArray(controllableContainers);
+	for (auto &cc : controllableContainers) containers.addArray(cc->getAllControllableContainers(true));
+
+	return containers;
+	
+}
+
+Array<WeakReference<Parameter>> ControllableContainer::getAllParameters(bool recursive, bool getNotExposed)
+{
+  Array<WeakReference<Parameter>> result;
   for (auto &c : controllables)
   {
     if (c->type == Controllable::Type::TRIGGER) continue;
@@ -444,6 +460,24 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
   }
 
   return nullptr;
+}
+
+bool ControllableContainer::containsControllable(Controllable * c, int maxSearchLevels)
+{
+	if (c == nullptr) return false;
+
+	ControllableContainer * pc = c->parentContainer;
+	if (pc == nullptr) return false;
+	int curLevel = 0;
+	while (pc != nullptr)
+	{
+		if (pc == this) return true;
+		curLevel++;
+		if (maxSearchLevels >= 0 && curLevel > maxSearchLevels) return false;
+		pc = pc->parentContainer;
+	}
+
+	return false;
 }
 
 
@@ -555,6 +589,13 @@ var ControllableContainer::getPresetValueFor(Parameter * p)
 }
 
 
+void ControllableContainer::cleanUpPresets()
+{
+	PresetManager * pm = PresetManager::getInstanceWithoutCreating();
+	if (pm != nullptr) pm->deletePresetsForContainer(this, true);
+
+}
+
 String ControllableContainer::getPresetFilter()
 {
   return shortName;
@@ -620,25 +661,20 @@ var ControllableContainer::getJSONData()
   var paramsData;
 
 
-  Array<Controllable *> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
+  Array<WeakReference<Controllable>> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
 
   for (auto &c : cont) {
-    Parameter * base = dynamic_cast<Parameter*>(c);
-    if (base )
+	if (c.wasObjectDeleted()) continue;
+
+    if (c->type != Controllable::Type::TRIGGER)
     {
+	  Parameter * base = (Parameter*)c.get();
       if(base->isSavable){
         var pData(new DynamicObject());
         pData.getDynamicObject()->setProperty(controlAddressIdentifier, base->getControlAddress(this));
         pData.getDynamicObject()->setProperty(valueIdentifier, base->value);
         paramsData.append(pData);
       }
-    }
-    else if (dynamic_cast<Trigger*>(c) != nullptr) {
-
-    }
-    else {
-      // should never happen un less another Controllable type than parameter or trigger has been introduced
-      jassertfalse;
     }
   }
 

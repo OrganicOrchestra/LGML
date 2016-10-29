@@ -24,8 +24,11 @@ const char* const filenameWildcard = "*.lgml";
 Engine::Engine():FileBasedDocument (filenameSuffix,
                                     filenameWildcard,
                                     "Load a filter graph",
-                                    "Save a filter graph"){
-  
+                                    "Save a filter graph"),
+	ControllableContainer("root")
+{
+	skipControllableNameInAddress = true;
+
   initAudio();
   Logger::setCurrentLogger (LGMLLogger::getInstance());
 
@@ -33,19 +36,25 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
   SerialManager::getInstance()->init();
   NodeManager::getInstance()->addNodeManagerListener(this);
   VSTManager::getInstance();
+
+  addChildControllableContainer(NodeManager::getInstance());
+  addChildControllableContainer(TimeManager::getInstance());
+  addChildControllableContainer(ControllerManager::getInstance());
+  addChildControllableContainer(FastMapper::getInstance());
+  addChildControllableContainer(RuleManager::getInstance());
 }
 
 
 Engine::~Engine(){
   closeAudio();
 
+  PresetManager::deleteInstance();
   FastMapper::deleteInstance();
   TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
   ControllerManager::deleteInstance();
   NodeManager::deleteInstance();
   VSTManager::deleteInstance();
-  PresetManager::deleteInstance();
-  ControllerManager::deleteInstance();
+   ControllerManager::deleteInstance();
   JsGlobalEnvironment::deleteInstance();
   Logger::setCurrentLogger(nullptr);
   LGMLLogger::deleteInstance();
@@ -53,7 +62,7 @@ Engine::~Engine(){
   MIDIManager::deleteInstance();
 
   SerialManager::deleteInstance();
-
+  
 }
 
 void Engine::parseCommandline(const String & commandLine){

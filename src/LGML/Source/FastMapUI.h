@@ -41,7 +41,6 @@ public:
 	ControllableChooser chooseTargetBT;
 
 	FastMap * fastMap;
-
 	ImageButton removeBT;
 
 

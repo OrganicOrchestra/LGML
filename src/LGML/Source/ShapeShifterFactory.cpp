@@ -17,6 +17,8 @@
 #include "ControllerManagerUI.h"
 #include "RuleManagerUI.h"
 #include "FastMapperUI.h"
+#include "Outliner.h"
+
 #include "MainComponent.h"
 
 
@@ -52,6 +54,9 @@ ShapeShifterContent * ShapeShifterFactory::createContentForIndex(PanelName pn)
 
 	case FastMapperPanel:
 		return new FastMapperViewport(contentName, new FastMapperUI(FastMapper::getInstance()));
+
+	case OutlinerPanel:
+		return new Outliner(contentName);
 
 
 	default:

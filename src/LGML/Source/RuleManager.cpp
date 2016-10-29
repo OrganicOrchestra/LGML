@@ -14,7 +14,7 @@
 juce_ImplementSingleton(RuleManager)
 
 RuleManager::RuleManager() :
-	ControllableContainer("Rule")
+	ControllableContainer("Rules")
 {
 	saveAndLoadRecursiveData = false;
 }

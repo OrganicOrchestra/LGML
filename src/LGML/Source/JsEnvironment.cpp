@@ -410,7 +410,7 @@ void JsEnvironment::sendAllParametersToJS(){
   for(auto & t:listenedParameters){if(t.get())parameterValueChanged(t);}
   for(auto & t:listenedContainers){
       if(t.get()){
-    Array<Controllable*> conts = t->getAllControllables();
+    Array<WeakReference<Controllable>> conts = t->getAllControllables();
     for(auto & c:conts){controllableFeedbackUpdate(t,c);}
       }
   }

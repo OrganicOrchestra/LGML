@@ -64,7 +64,7 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 	addAndMakeVisible(innerContainer);
 
 	parentBT.setVisible(ccLevel > 0);
-	parentBT.setButtonText("Up : " + cc->parentContainer->niceName);
+	if(parentBT.isVisible() && cc->parentContainer != nullptr) parentBT.setButtonText("Up : " + cc->parentContainer->niceName);
 
 	resized();
 
@@ -73,11 +73,13 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 int GenericControllableContainerEditor::getContentHeight()
 {
 	if (innerContainer == nullptr) return InspectorEditor::getContentHeight();
-	else return innerContainer->getContentHeight() + parentBT.getHeight() + 5;
+	else return InspectorEditor::getContentHeight()+innerContainer->getContentHeight() + parentBT.getHeight() + 5;
 }
 
 void GenericControllableContainerEditor::resized()
 {
+	InspectorEditor::resized();
+
 	if (innerContainer == nullptr) return;
 	Rectangle<int> r = getLocalBounds();
 

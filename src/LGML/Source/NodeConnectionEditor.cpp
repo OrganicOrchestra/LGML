@@ -78,6 +78,9 @@ void NodeConnectionEditor::setCurrentConnection(NodeConnection * _connection)
 
 void NodeConnectionEditor::resized()
 {
+	InspectorEditor::resized();
+
+
 	int panelWidth = (int)(getWidth() / 3.f);
 
     Rectangle<int> r = getLocalBounds();
@@ -112,7 +115,7 @@ void NodeConnectionEditor::resized()
 
 int NodeConnectionEditor::getContentHeight()
 {
-	return 20+jmax(outputSlots.size() * 35, inputSlots.size()*35);
+	return InspectorEditor::getContentHeight() + 20+jmax(outputSlots.size() * 35, inputSlots.size()*35);
 }
 
 void NodeConnectionEditor::mouseEnter(const MouseEvent &)

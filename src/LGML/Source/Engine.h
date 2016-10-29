@@ -28,7 +28,9 @@
 class AudioFucker;
 
 
-class Engine:public FileBasedDocument,NodeManager::NodeManagerListener,AsyncUpdater,public ProgressNotifier{
+class Engine:public FileBasedDocument,NodeManager::NodeManagerListener,AsyncUpdater,public ProgressNotifier,
+	public ControllableContainer
+{
 public:
     Engine();
     ~Engine();
