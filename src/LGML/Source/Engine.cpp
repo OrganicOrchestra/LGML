@@ -48,13 +48,15 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 Engine::~Engine(){
   closeAudio();
 
+
+  NodeManager::deleteInstance();
   PresetManager::deleteInstance();
   FastMapper::deleteInstance();
 
   ControllerManager::deleteInstance();
-  NodeManager::deleteInstance();
+
   VSTManager::deleteInstance();
-      TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
+  TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
    ControllerManager::deleteInstance();
   JsGlobalEnvironment::deleteInstance();
   Logger::setCurrentLogger(nullptr);

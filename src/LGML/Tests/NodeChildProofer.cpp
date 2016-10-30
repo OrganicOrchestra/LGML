@@ -21,7 +21,7 @@
 
 
 
-Engine & getEngine();
+extrern Engine * getEngine();
 
 class NodeChildProofer  : public UnitTest
 {
@@ -70,7 +70,7 @@ public:
   }
   void runTest() override
   {
-    getEngine().createNewGraph();
+    getEngine()->createNewGraph();
     beginTest("childProofing");
     ConnectableNode * testingNode = NodeManager::getInstance()->mainContainer->addNode(NodeFactory::getTypeFromString(testingNodeName));
 

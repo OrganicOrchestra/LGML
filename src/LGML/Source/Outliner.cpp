@@ -12,15 +12,15 @@
 #include "Engine.h"
 #include "Style.h"
 
-Engine& getEngine();
+extern Engine* getEngine();
 
 Outliner::Outliner(const String &contentName) : ShapeShifterContent(contentName)
 {
-	getEngine().addControllableContainerListener(this);
+	getEngine()->addControllableContainerListener(this);
 
 	showHiddenContainers = false;
 	
-	rootItem = new OutlinerItem(&getEngine());
+	rootItem = new OutlinerItem(getEngine());
 	treeView.setRootItem(rootItem);
 	addAndMakeVisible(treeView);
 	treeView.getViewport()->setScrollBarThickness(10);
@@ -29,7 +29,7 @@ Outliner::Outliner(const String &contentName) : ShapeShifterContent(contentName)
 
 Outliner::~Outliner()
 {
-	getEngine().removeControllableContainerListener(this);
+	if(getEngine())getEngine()->removeControllableContainerListener(this);
 	
 }
 
@@ -49,7 +49,7 @@ void Outliner::paint(Graphics & g)
 void Outliner::rebuildTree()
 {
 	rootItem->clearSubItems();
-	buildTree(rootItem, &getEngine());
+	buildTree(rootItem, getEngine());
 	rootItem->setOpen(true);
 	
 }

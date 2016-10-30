@@ -240,13 +240,13 @@ private:
 };
 
 
-static LGMLApplication& getApp()                 { return *dynamic_cast<LGMLApplication*>(JUCEApplication::getInstance()); }
-ApplicationCommandManager& getCommandManager()      { return getApp().commandManager; }
-ApplicationProperties& getAppProperties()           { return *getApp().appProperties; }
-AudioDeviceManager & getAudioDeviceManager()        { return getApp().deviceManager;}
-UndoManager & getAppUndoManager()                      { return getApp().undoManager;}
-Engine & getEngine()                              { return *getApp().engine;}
-bool  isEngineLoadingFile()                            {return getEngine().isLoadingFile;}
+static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*>(JUCEApplication::getInstance()); }
+ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
+ApplicationProperties& getAppProperties()           { return *getApp()->appProperties; }
+AudioDeviceManager & getAudioDeviceManager()        { return getApp()->deviceManager;}
+UndoManager & getAppUndoManager()                      { return getApp()->undoManager;}
+Engine * getEngine()                              { return getApp()->engine;}
+bool  isEngineLoadingFile()                            {if(getEngine()) {return getEngine()->isLoadingFile;}else{return false;}}
 //==============================================================================
 // This macro generates the main() routine that launches the app.
 START_JUCE_APPLICATION (LGMLApplication)
@@ -254,7 +254,7 @@ START_JUCE_APPLICATION (LGMLApplication)
 void LGMLApplication::MainWindow::timerCallback()
 {
 
-  setName(getApp().engine->getDocumentTitle() +" : LGML "
+  setName(getApp()->engine->getDocumentTitle() +" : LGML "
           + String(ProjectInfo::versionString)+String(" (CPU : ")+
           String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
 }

@@ -18,7 +18,7 @@
 #include "Engine.h"
 
 extern bool isEngineLoadingFile();
-extern Engine & getEngine();
+extern Engine * getEngine();
 
 Identifier JsEnvironment::noFunctionLogIdentifier( "no function Found");
 Identifier JsEnvironment::onUpdateIdentifier("onUpdate");
@@ -29,7 +29,7 @@ JsEnvironment::JsEnvironment(const String & ns,ControllableContainer * _linkedCo
   jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
   jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
 
-  getEngine().addControllableContainerListener(this);
+  getEngine()->addControllableContainerListener(this);
   addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
   onUpdateTimerInterval = 20;
 
@@ -37,7 +37,9 @@ JsEnvironment::JsEnvironment(const String & ns,ControllableContainer * _linkedCo
 }
 
 JsEnvironment::~JsEnvironment(){
-  getEngine().removeControllableContainerListener(this);
+  if(getEngine()){
+  getEngine()->removeControllableContainerListener(this);
+  }
   stopTimer(0);
   stopTimer(1);
   for(auto & c:listenedParameters){
@@ -155,7 +157,8 @@ Result JsEnvironment::loadScriptContent(const String & content)
 
   if (r.failed()) {
     _hasValidJsFile = false;
-    NLOG(localNamespace,printAllNamespace());
+    jsEngine = nullptr;
+    // NLOG(localNamespace,printAllNamespace());
     NLOG(localNamespace,r.getErrorMessage());
   }
   else {
@@ -289,6 +292,7 @@ void JsEnvironment::setNamespaceName(const String & s){
 }
 
 void JsEnvironment::setAutoWatch(bool s){
+  triesToLoad = 5;
   if(s){
     startTimer(0,500);
   }
@@ -434,7 +438,7 @@ void JsEnvironment::triggerTriggered(Trigger *p){
 
 void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *c){
   // avoid root callback (only used to reload if
-  if(originContainer == &getEngine())return;
+  if(originContainer == getEngine())return;
   var v = var::undefined();
   if(Parameter * p = dynamic_cast<Parameter*>(c))
     v=p->value;
@@ -452,7 +456,7 @@ void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originCont
 
 void JsEnvironment::childStructureChanged(ControllableContainer * originContainer,ControllableContainer * notifier) {
   // rebuild files that are not loaded properly if LGML JsEnvironment is not fully built at the time of their firstExecution
-  if(!_hasValidJsFile && !isLoadingFile && originContainer == &getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(notifier))){
+  if(!_hasValidJsFile && !isLoadingFile && originContainer == getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(notifier))){
     isInSyncWithLGML = false;
     startTimer(0, 500);
   };

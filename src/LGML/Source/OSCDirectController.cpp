@@ -29,7 +29,7 @@ OSCController(name)
 
 OSCDirectController::~OSCDirectController()
 {
-    NodeManager::getInstance()->removeControllableContainerListener(this);
+    if(NodeManager * nm = NodeManager::getInstanceWithoutCreating())nm->removeControllableContainerListener(this);
     if(TimeManager * tm = TimeManager::getInstanceWithoutCreating()){tm->removeControllableContainerListener(this);}
 
 }
