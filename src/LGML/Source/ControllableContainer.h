@@ -37,7 +37,7 @@ public:
 	virtual void controllableContainerAdded(ControllableContainer *) {}
 	virtual void controllableContainerRemoved(ControllableContainer *) {}
 	virtual void controllableFeedbackUpdate(ControllableContainer *,Controllable *) {}
-	virtual void childStructureChanged(ControllableContainer *) {}
+	virtual void childStructureChanged(ControllableContainer *notifier,ControllableContainer*origin) {}
     virtual void childAddressChanged(ControllableContainer * ){};
     virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
@@ -98,8 +98,12 @@ public:
     // can be overriden if indexed container are removed from the middle of the list,
     // allowing Indexed containers to react to index change
     virtual void localIndexChanged();
+    template<class T>
+    Array<T*> getObjectsOfType(bool recursive = false);
 
-    ControllableContainer * getControllableContainerByName(const String &name, bool searchNiceNameToo = false);
+  bool containsContainer(ControllableContainer * );
+
+  ControllableContainer * getControllableContainerByName(const String &name, bool searchNiceNameToo = false);
     ControllableContainer * getControllableContainerForAddress( StringArray  address);
 
     void setParentContainer(ControllableContainer * container);
@@ -145,7 +149,7 @@ public:
 	virtual void loadJSONData(var data);
 	virtual void loadJSONDataInternal(var /*data*/) { /* to be overriden by child classes */ }
 
-	virtual void childStructureChanged(ControllableContainer *)override;
+	virtual void childStructureChanged(ControllableContainer *notifier,ControllableContainer * origin)override;
 
 	String getUniqueNameInContainer(const String &sourceName, int suffix = 0);
 private:
@@ -191,7 +195,7 @@ private:
 
   
 
-    void notifyStructureChanged();
+    void notifyStructureChanged(ControllableContainer * origin);
   void newMessage(const Parameter::ParamWithValue&)override;
 
     WeakReference<ControllableContainer>::Master masterReference;

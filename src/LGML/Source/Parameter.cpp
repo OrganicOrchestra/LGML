@@ -93,6 +93,10 @@ void Parameter::notifyValueChanged() {
     queuedNotifier.addMessage(new ParamWithValue(this,value));
 }
 
+
+//JS Helper
+
+
 DynamicObject * Parameter::createDynamicObject()
 {
 	DynamicObject * dObject = Controllable::createDynamicObject();
@@ -101,6 +105,7 @@ DynamicObject * Parameter::createDynamicObject()
 
     static const Identifier _jsSetIdentifier("set");
     dObject->setMethod(_jsSetIdentifier, setControllableValue);
+
 
 	return dObject;
 }
@@ -116,4 +121,6 @@ var Parameter::getValue(const juce::var::NativeFunctionArgs & a)
 
 }
 
-//JS Helper
+
+
+

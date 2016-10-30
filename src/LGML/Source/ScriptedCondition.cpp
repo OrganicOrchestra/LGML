@@ -14,7 +14,7 @@
 
 ScriptedCondition::ScriptedCondition(Rule *r) :
 	RuleCondition(r,nullptr),
-	JsEnvironment("Rule.Condition")
+	JsEnvironment("Rule.Condition",nullptr)
 {
 	codeDocument.insertText(0, "function evaluate(){\n\treturn false;\n}");
 	reloadScript();

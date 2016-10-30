@@ -81,7 +81,7 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 	}
 }
 
-void Outliner::childStructureChanged(ControllableContainer *)
+void Outliner::childStructureChanged(ControllableContainer *,ControllableContainer*)
 {
 	rebuildTree();
 }

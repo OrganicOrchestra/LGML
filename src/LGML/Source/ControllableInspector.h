@@ -60,7 +60,7 @@ private:
     void controllableContainerAdded(ControllableContainer * c)override ;
     void controllableContainerRemoved(ControllableContainer * c)override ;
     void controllableFeedbackUpdate(ControllableContainer *,Controllable *) override;
-    void childStructureChanged(ControllableContainer * )override;
+    void childStructureChanged(ControllableContainer *,ControllableContainer * )override;
 
     void sourceUpdated(ControllableContainer*) override;
 

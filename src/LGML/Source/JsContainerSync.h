@@ -46,7 +46,7 @@ public:
     JsContainerNamespace* getContainerNamespace(ControllableContainer *);
     JsContainerNamespace* getContainerNamespace(const String & );
 
-    void childStructureChanged(ControllableContainer * )override;
+    void childStructureChanged(ControllableContainer *,ControllableContainer * )override;
     void childAddressChanged(ControllableContainer * c) override;
 
     class AggregChanges : public Timer{
@@ -78,6 +78,7 @@ public:
     };
 
     AggregChanges aggregChanges;
+  bool isDirty();
 private:
 
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;

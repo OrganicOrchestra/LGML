@@ -15,17 +15,29 @@
 #include "DebugHelpers.h"
 #include "JsHelpers.h"
 
-JsEnvironment::JsEnvironment(const String & ns):localNamespace(ns),_hasValidJsFile(false){
+#include "Engine.h"
+
+extern bool isEngineLoadingFile();
+extern Engine & getEngine();
+
+Identifier JsEnvironment::noFunctionLogIdentifier( "no function Found");
+Identifier JsEnvironment::onUpdateIdentifier("onUpdate");
+
+JsEnvironment::JsEnvironment(const String & ns,ControllableContainer * _linkedContainer):linkedContainer(_linkedContainer),localNamespace(ns),_hasValidJsFile(false),autoWatch(false),isInSyncWithLGML(false){
   localEnvironment = var(new DynamicObject());
   jsEngine = new JavascriptEngine();
   jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
   jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
+
+  getEngine().addControllableContainerListener(this);
   addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
   onUpdateTimerInterval = 20;
-  startTimer(1, onUpdateTimerInterval); // 50fps on update Timer
+
+  triesToLoad = 5;
 }
 
 JsEnvironment::~JsEnvironment(){
+  getEngine().removeControllableContainerListener(this);
   stopTimer(0);
   stopTimer(1);
   for(auto & c:listenedParameters){
@@ -45,9 +57,12 @@ void JsEnvironment::clearNamespace(){
  jsEngine = new JavascriptEngine();
   jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
   jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
-  addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
 
+ addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
+  
   while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
+
+
   // prune to get only core Methods and classes
   //    NamedValueSet root = jsEngine->getRootObjectProperties();
   for(int i = 0 ; i < jsEngine->getRootObjectProperties().size() ; i++){
@@ -73,19 +88,28 @@ String JsEnvironment::getParentName(){
 
 
 void JsEnvironment::loadFile(const String &path) {
+
   File f =//(File::createFileWithoutCheckingPath(path));
     File::getCurrentWorkingDirectory().getChildFile(path);
   loadFile(f);
+
 }
 
 void JsEnvironment::loadFile(const File &f){
   if(f.existsAsFile() && f.getFileExtension() == ".js"){
+    currentFile = f;
+    if(isEngineLoadingFile()){
+      startTimer(0,500);
+      return;
+    }
     internalLoadFile(f);
+    if(!autoWatch) stopTimer(0);
   }
 }
 
 void JsEnvironment::reloadFile(){
   if(!currentFile.existsAsFile())return;
+  triesToLoad = 5;
   internalLoadFile(currentFile);
 }
 
@@ -96,13 +120,21 @@ void JsEnvironment::showFile(){
 
 
 void JsEnvironment::internalLoadFile(const File &f ){
+  if(triesToLoad<=0){return;}
   StringArray destLines;
   f.readLines(destLines);
   String jsString = destLines.joinIntoString("\n");
-  currentFile = f;
+
 
   Result r = loadScriptContent(jsString);
 
+  static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
+  if(userDefinedFunctions.contains(onUpdateFId))
+    {startTimer(1, onUpdateTimerInterval);}
+  else{stopTimer(1);}
+
+  if(r.failed() && !isInSyncWithLGML){triesToLoad--;}
+  else{isInSyncWithLGML =true;}
   jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,(bool)r);
 
 }
@@ -123,6 +155,7 @@ Result JsEnvironment::loadScriptContent(const String & content)
 
   if (r.failed()) {
     _hasValidJsFile = false;
+    NLOG(localNamespace,printAllNamespace());
     NLOG(localNamespace,r.getErrorMessage());
   }
   else {
@@ -156,9 +189,9 @@ bool JsEnvironment::functionIsDefined(const juce::String & s){
 var JsEnvironment::callFunction (const String& function, const Array<var>& args, bool logResult,Result * result){
 
   if(!functionIsDefined(function)){
-    static String noFunctionLog= "no function Found";
-    if(result!=nullptr)result->fail(noFunctionLog);
-    if(logResult)NLOG(localNamespace,noFunctionLog);
+    
+    if(result!=nullptr)result->fail(noFunctionLogIdentifier.toString());
+    if(logResult)NLOG(localNamespace,noFunctionLogIdentifier.toString());
     return var::undefined();
   }
   return callFunctionFromIdentifier(function, args,logResult,result);
@@ -167,9 +200,8 @@ var JsEnvironment::callFunction (const String& function, const Array<var>& args,
 var JsEnvironment::callFunction (const String& function, const var& args,  bool logResult ,Result * result){
 
   if(!functionIsDefined(function)){
-    static String noFunctionLog= "no function Found";
-    if(result!=nullptr)result->fail(noFunctionLog);
-    if(logResult)NLOG(localNamespace,noFunctionLog);
+    if(result!=nullptr)result->fail(noFunctionLogIdentifier.toString());
+    if(logResult)NLOG(localNamespace,noFunctionLogIdentifier.toString());
     return var::undefined();
   }
   return callFunctionFromIdentifier(function, args,logResult,result);
@@ -216,7 +248,12 @@ var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const
   var res ;
   {
   const ScopedLock lk(engineLock);
+    if(!JsGlobalEnvironment::getInstance()->isDirty()){
    res = jsEngine->callFunction(function,Nargs,result);
+    }
+    else{
+      DBG("JS avoiding to call function while global environment is dirty");
+    }
   }
   if(logResult && result->failed()){
     NLOG(localNamespace,result->getErrorMessage());
@@ -258,20 +295,26 @@ void JsEnvironment::setAutoWatch(bool s){
   else{
     stopTimer(0);
   }
+
+  autoWatch = s;
 }
 
 void JsEnvironment::timerCallback(int timerID){
   if (timerID == 0)
   {
+    if(isEngineLoadingFile())return;
     Time newTime = currentFile.getLastModificationTime();
-    if (newTime != lastFileModTime) {
+    if (newTime != lastFileModTime || !isInSyncWithLGML) {
+
+      isLoadingFile = true;
       loadFile(currentFile);
+      isLoadingFile = false;
       lastFileModTime = newTime;
     }
   } else if (timerID == 1)
   {
-    static const Identifier onUpdateIdentifier("update");
-    callFunction("onUpdate",var(),false);
+    
+    callFunction("onUpdate",var(),true);
   }
 }
 String JsEnvironment::printAllNamespace()   {
@@ -324,7 +367,7 @@ void JsEnvironment::checkUserControllableEventFunction(){
           StringArray localName;
           // remove on and candidate Name
           for(int i  = 2 ; i < f->splitedName.size() ; i++){
-            localName.add(f->splitedName.getUnchecked(i));
+            localName.add(f->splitedName.strings.getUnchecked(i));
           }
           Controllable * c = candidate->getControllableForAddress(localName);
           if(Parameter * p = dynamic_cast<Parameter*>(c)){
@@ -390,6 +433,8 @@ void JsEnvironment::triggerTriggered(Trigger *p){
 }
 
 void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *c){
+  // avoid root callback (only used to reload if
+  if(originContainer == &getEngine())return;
   var v = var::undefined();
   if(Parameter * p = dynamic_cast<Parameter*>(c))
     v=p->value;
@@ -404,6 +449,15 @@ void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originCont
   callFunction("on_"+getJsFunctionNameFromAddress(originContainer->getControlAddress()), argList,false);
 }
 
+
+void JsEnvironment::childStructureChanged(ControllableContainer * originContainer,ControllableContainer * notifier) {
+  // rebuild files that are not loaded properly if LGML JsEnvironment is not fully built at the time of their firstExecution
+  if(!_hasValidJsFile && !isLoadingFile && originContainer == &getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(notifier))){
+    isInSyncWithLGML = false;
+    startTimer(0, 500);
+  };
+ 
+};
 
 void JsEnvironment::sendAllParametersToJS(){
   for(auto & t:listenedTriggers){if(t.get())triggerTriggered(t);}

@@ -91,6 +91,7 @@ public:
 	//JS Helper
 	static var getValue(const juce::var::NativeFunctionArgs &a);
 
+
 private:
 
 

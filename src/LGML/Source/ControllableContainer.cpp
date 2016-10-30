@@ -130,7 +130,7 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
   t->addTriggerListener(this);
 
   controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, t);
-  notifyStructureChanged();
+  notifyStructureChanged(this);
   return t;
 }
 
@@ -143,13 +143,13 @@ void ControllableContainer::removeControllable(Controllable * c)
     p->removeAsyncParameterListener(this);
   }
   controllables.removeObject(c);
-  notifyStructureChanged();
+  notifyStructureChanged(this);
 }
 
 
-void ControllableContainer::notifyStructureChanged(){
+void ControllableContainer::notifyStructureChanged(ControllableContainer * origin){
 
-  controllableContainerListeners.call(&ControllableContainerListener::childStructureChanged, this);
+  controllableContainerListeners.call(&ControllableContainerListener::childStructureChanged, this,origin);
 }
 
 void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
@@ -199,7 +199,7 @@ void ControllableContainer::addChildControllableContainer(ControllableContainer 
   container->addControllableContainerListener(this);
   container->setParentContainer(this);
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded, container);
-  notifyStructureChanged();
+  notifyStructureChanged(this);
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
@@ -212,7 +212,7 @@ void ControllableContainer::removeChildControllableContainer(ControllableContain
   this->controllableContainers.removeAllInstancesOf(container);
   container->removeControllableContainerListener(this);
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerRemoved, container);
-  notifyStructureChanged();
+  notifyStructureChanged(this);
   container->setParentContainer(nullptr);
 }
 
@@ -227,7 +227,7 @@ void ControllableContainer::addChildIndexedControllableContainer(ControllableCon
   container->addControllableContainerListener(this);
   container->setParentContainer(this);
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded, container);
-  notifyStructureChanged();
+  notifyStructureChanged(this);
 }
 
 void ControllableContainer::removeChildIndexedControllableContainer(int idx){
@@ -647,7 +647,7 @@ void ControllableContainer::addParameterInternal(Parameter * p)
   p->addParameterListener(this);
   p->addAsyncParameterListener(this);
   controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, p);
-  notifyStructureChanged();
+  notifyStructureChanged(this);
 }
 
 
@@ -731,9 +731,9 @@ void ControllableContainer::loadJSONData(var data)
 
 }
 
-void ControllableContainer::childStructureChanged(ControllableContainer *)
+void ControllableContainer::childStructureChanged(ControllableContainer *notifier,ControllableContainer*origin)
 {
-  notifyStructureChanged();
+  notifyStructureChanged(origin);
 }
 
 String ControllableContainer::getUniqueNameInContainer(const String & sourceName, int suffix)
@@ -766,4 +766,32 @@ String ControllableContainer::getUniqueNameInContainer(const String & sourceName
   }
 
   return resultName;
+}
+
+template<class T>
+Array<T*> ControllableContainer::getObjectsOfType(bool recursive){
+  Array<T*> res;
+
+  for(auto & c:controllables){
+    if(T* o = dynamic_cast<T*>(c)){
+      res.add(o);
+    }
+  }
+  for(auto & c:controllableContainers){
+    if(T* o = dynamic_cast<T*>(c)){
+      res.add(o);
+    }
+    if(recursive){res.addArray(c->getObjectsOfType<T>(recursive));}
+  }
+
+  return res;
+}
+
+bool ControllableContainer::containsContainer(ControllableContainer * c){
+  if(c==this)return true;
+  for(auto & cc:controllableContainers){
+    if(c==cc){return true;}
+    if(cc->containsContainer(c))return true;
+  }
+  return false;
 }

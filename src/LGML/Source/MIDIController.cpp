@@ -17,7 +17,7 @@
 extern AudioDeviceManager &  getAudioDeviceManager();
 
 MIDIController::MIDIController() :
-Controller("MIDI"),JsEnvironment("MIDI.MIDIController")
+Controller("MIDI"),JsEnvironment("MIDI.MIDIController",this)
 {
 	setNamespaceName("MIDI."+nameParam->stringValue());
 	deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
@@ -105,6 +105,9 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
       {
         NLOG("MIDI", "pitch wheel " + String(message.getPitchWheelValue()));
       }
+    }
+    else{
+      NLOG("MIDI","message : "+message.getDescription());
     }
 
   if(message.isNoteOff()){

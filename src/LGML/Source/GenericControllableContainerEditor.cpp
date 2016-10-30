@@ -107,7 +107,7 @@ void GenericControllableContainerEditor::buttonClicked(Button * b)
 	}
 }
 
-void GenericControllableContainerEditor::childStructureChanged(ControllableContainer *)
+void GenericControllableContainerEditor::childStructureChanged(ControllableContainer *,ControllableContainer *)
 {
   if(!MessageManager::getInstance()->isThisTheMessageThread()){
 //    removeChildComponent(innerContainer);
@@ -381,7 +381,7 @@ void CCInnerContainer::controllableContainerRemoved(ControllableContainer * cc)
 }
 
 
-void CCInnerContainer::childStructureChanged(ControllableContainer *)
+void CCInnerContainer::childStructureChanged(ControllableContainer *,ControllableContainer *)
 {
 	//resized();
 

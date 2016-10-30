@@ -23,7 +23,7 @@ public Trigger::Listener ,
 public ControllableContainerListener
 {
 public:
-  JsEnvironment(const String & ns);
+  JsEnvironment(const String & ns,ControllableContainer * linkedContainer);
   virtual ~JsEnvironment();
 
   // should be implemented to build localenv
@@ -51,6 +51,7 @@ public:
   void    showFile();
 
 
+
   String printAllNamespace();
 
   class Listener{
@@ -76,7 +77,7 @@ public:
 
   var callFunctionFromIdentifier  (const Identifier& function, const Array<var> & args,bool logResult = true, Result* result=nullptr);
   var callFunctionFromIdentifier (const Identifier& function, const var & arg,bool logResult = true, Result* result = nullptr);
-
+  static Identifier noFunctionLogIdentifier;
 
   static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
   DynamicObject * getLocalEnv(){return localEnvironment.getDynamicObject();}
@@ -139,30 +140,35 @@ private:
   public:
     FunctionIdentifier(const String & s)
     {
-      StringArray arr;
-      arr.addTokens(s,"_","");
-      for(auto & ts : arr.strings){
-        splitedName.add(ts);
-      }
+//      StringArray arr;
+      splitedName.addTokens(s,"_","");
+//      for(auto & ts : arr.strings){
+//        splitedName.add(ts);
+//      }
     };
-    bool compare(const String & s){
+    bool compare(const String & s) const{
       StringArray arr;
       arr.addTokens(s,"_","");
       return compare(arr);
     }
-    bool compare(const StringArray & arr){
+    bool compare(const StringArray & arr) const{
+      return compare(arr.strings);
+    }
+
+    bool compare(const Array<String> & arr) const{
       if(arr.size() != splitedName.size()){
         return false;
       }
       for(int i = 0 ; i < arr.size() ; i++){
-        if(splitedName[i] != arr[i]){
-          return false;
-        }
+        if(splitedName[i] != arr[i]){return false;}
       }
       return true;
 
     }
-    Array<String> splitedName;
+    bool operator==(const FunctionIdentifier & other) const{
+      return compare(other.splitedName);
+    }
+    StringArray splitedName;
   };
   Array<FunctionIdentifier> userDefinedFunctions;
 
@@ -171,17 +177,72 @@ private:
 
   void timerCallback(int timerID)override;
   Time lastFileModTime;
+  bool autoWatch;
 
   void checkUserControllableEventFunction();
   void parameterValueChanged(Parameter * c) override;
   void triggerTriggered(Trigger * p) override;
 
   void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *)     override;
+  void childStructureChanged(ControllableContainer *,ControllableContainer *) override;
+
+  WeakReference<ControllableContainer> linkedContainer;
+  bool isLoadingFile;
+  int triesToLoad;
+  bool isInSyncWithLGML;
+
+  static Identifier onUpdateIdentifier;
 };
 
 
+//
+//class CallBackFunction:public Parameter::Listener{
+//  public :
+//  CallBackFunction(JsEnvironment * js,var cB):callBack(cB),jsEnv(js){
+//
+//  }
+//
+//  void parameterValueChanged(Parameter *p)override{
+//    static Identifier cBName("valueChanged");
+////    jsEnv->callFunctionFromIdentifier(<#const juce::Identifier &function#>, <#const Array<juce::var> &args#>)
+//    if(callBack[cBName].isMethod()){
+//      callBack.call(cBName, p->value);
+//    }
+//    else{
+//      DBG("callback must be an object containing function named valueChanged(value)");
+//    }
+//
+//  };
+//  JsEnvironment* jsEnv;
+//  var callBack;
+//};
 
-
+//var Parameter::addObjectListener(const juce::var::NativeFunctionArgs &a){
+//  if(a.numArguments==0)return var();
+//  Parameter * c = getObjectPtrFromJS<Parameter>(a);
+//  if(c == nullptr  ) return var();
+//  CallBackFunction* res = new CallBackFunction(a.arguments[0]);
+//  c->addParameterListener(res);
+//
+//  return res;
+//}
+//var Parameter::removeObjectListener(const juce::var::NativeFunctionArgs &a){
+//  if(a.numArguments==0)return var();
+//  Parameter * c = getObjectPtrFromJS<Parameter>(a);
+//  if(c == nullptr  ) return var();
+//  Array<CallBackFunction*> toRemove;
+//
+//  for(auto & listener:c->listeners.getListeners()){
+//    if(CallBackFunction * cb = dynamic_cast<CallBackFunction*>(listener)){
+//      if(cb->callBack == a.arguments[0]){toRemove.add(cb);}
+//    }
+//  }
+//
+//  for(auto & cb:toRemove){
+//    c->removeParameterListener(cb);
+//  }
+//  return var();
+//}
 
 
 #endif  // JAVASCRIPTENVIRONNEMENT_H_INCLUDED

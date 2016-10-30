@@ -18,7 +18,7 @@
 
 class JsNode : public NodeBase,public JsEnvironment{
     public :
-    JsNode():NodeBase("JsNode",NodeType::JsNodeType,false),JsEnvironment("JsNode"){
+    JsNode():NodeBase("JsNode",NodeType::JsNodeType,false),JsEnvironment("JsNode",this){
         canHavePresets = false;
         scriptPath = NodeBase::addStringParameter("ScriptPath","path for js script","");
     };
@@ -48,11 +48,8 @@ class JsNode : public NodeBase,public JsEnvironment{
         d.setMethod(addFloatParameterIdentifier, JsNode::addFloatParameter);
         d.setMethod(addStringParameterIdentifier, JsNode::addStringParameter);
         d.setMethod(addBoolParameterIdentifier, JsNode::addBoolParameter);
-
-
-
         d.setMethod(addTriggerIdentifier, JsNode::addTrigger);
-
+        
 
         setLocalNamespace(d);
 

@@ -14,7 +14,7 @@
 #include "JsEnvironment.h"
 #include "JsHelpers.h"
 
-JavascriptController::JavascriptController():JsEnvironment("OSC.JSController"){
+JavascriptController::JavascriptController():JsEnvironment("OSC.JSController",this){
     nameParam->setValue("JSController");
 
     buildLocalEnv();

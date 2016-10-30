@@ -167,8 +167,11 @@ void JsContainerSync::updateControllableNamespace(ControllableContainer * c){
     }
 
 }
+bool JsContainerSync::isDirty(){
+  return aggregChanges.nsToUpdate.size()>0;
+}
+void JsContainerSync::childStructureChanged(ControllableContainer * c,ControllableContainer *){
 
-void JsContainerSync::childStructureChanged(ControllableContainer * c){
     aggregChanges.addNs(getContainerNamespace(c));
     //    updateControllableNamespace(c);
     

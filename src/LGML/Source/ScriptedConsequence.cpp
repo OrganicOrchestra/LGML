@@ -15,7 +15,7 @@
 
 ScriptedConsequence::ScriptedConsequence(Rule * r) :
 	RuleConsequence(r),
-	JsEnvironment("Rule.Consequence")
+	JsEnvironment("Rule.Consequence",nullptr)
 {
 	codeDocument.insertText(0, "function onActive(){\n\n}\n\nfunction onInactive(){\n\n}\n\nfunction whileActive(){\n\n}\n\nfunction whileInactive(){\n\n}\n\n");
 	reloadScript();

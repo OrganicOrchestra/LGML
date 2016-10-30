@@ -112,7 +112,7 @@ NodeConnectionEditor.cpp
 
 
 Parameter.cpp
-	line : 109
+	line : 114
 		// TODO handle with weak references
 
 
@@ -128,15 +128,15 @@ DataInNode.cpp
 
 
 MIDIController.cpp
-	line : 186
-		// @ben do we do the same as OSC MIDI IN/OUt controllers
-
 	line : 43
 		// TODO : we may need to listen to sR changes
 
+	line : 189
+		// @ben do we do the same as OSC MIDI IN/OUt controllers
+
 
 ControllableContainer.h
-	line : 152
+	line : 156
 		//@ ben this is to avoid either:
 		//      adding controllableContainerListener for each implementation
 		//      or overriding parameterValueChanged and needing to call ControllableContainer::parameterValueChanged in implementation (it should stay independent as a different mechanism)

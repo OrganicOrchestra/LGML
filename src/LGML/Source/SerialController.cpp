@@ -13,7 +13,7 @@
 #include "JsHelpers.h"
 
 SerialController::SerialController() :
-JsEnvironment("Serial.serial"),
+JsEnvironment("Serial.serial",this),
 Controller("Serial"),
 port(nullptr)
 {
