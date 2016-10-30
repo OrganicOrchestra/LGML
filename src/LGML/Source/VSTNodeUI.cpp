@@ -22,7 +22,8 @@ ConnectableNodeUI * VSTNode::createUI() {
 VSTNodeContentUI::VSTNodeContentUI():
 VSTListShowButton("VSTs"),
 showPluginWindowButton("showWindow"),
-midiDeviceChooser(true)
+midiDeviceChooser(true),
+isDirty(false)
 {
     midiDeviceChooser.addListener(this);
 
@@ -88,8 +89,9 @@ void VSTNodeContentUI::controllableRemoved(Controllable * c){
     if(p->parameter==c)removeChildComponent(p);
   }
 
-	postCommandMessage(0);
-
+  if(isDirty) return;
+  postCommandMessage(0);
+  isDirty=true;
 }
 void VSTNodeContentUI::controllableContainerAdded(ControllableContainer *){};
 void VSTNodeContentUI::controllableContainerRemoved(ControllableContainer *) {};
@@ -99,11 +101,14 @@ void VSTNodeContentUI::controllableFeedbackUpdate(ControllableContainer * /*orig
 
 //Listener From VSTNode
 void VSTNodeContentUI::newVSTSelected() {
+  if(isDirty) return;
 	postCommandMessage(0);
+  isDirty=true;
 }
 
 void VSTNodeContentUI::handleCommandMessage(int /*cId*/){
 	updateVSTParameters();
+  isDirty=false;
 }
 
 void VSTNodeContentUI::midiDeviceChanged()
