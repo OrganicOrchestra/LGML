@@ -107,7 +107,10 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
       }
     }
     else{
+      if (logIncoming->boolValue())
+      {
       NLOG("MIDI","message : "+message.getDescription());
+      }
     }
 
   if(message.isNoteOff()){
