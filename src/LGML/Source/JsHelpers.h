@@ -159,12 +159,15 @@ inline String namespaceToString(const NamedValueSet & v,int indentlevel = 0 ,boo
       if(showptr){
         res+="("+String::toHexString((int64)d)+")";
       }
+
       if(d!=nullptr){
         res+= name+":";
         res+=namespaceToString(d->getProperties(),indentlevel+1,showValue,showptr);
 
       }
-      else{
+      // potential empty array
+      else if(!vv->isArray()) {
+        res+="unknown : "+vv->toString();
         jassertfalse;
       }
 

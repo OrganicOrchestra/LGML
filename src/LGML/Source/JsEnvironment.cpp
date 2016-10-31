@@ -57,25 +57,26 @@ JsEnvironment::~JsEnvironment(){
 void JsEnvironment::clearNamespace(){
  const  ScopedLock lk(engineLock);
  jsEngine = new JavascriptEngine();
+  getLocalEnv()->clear();
   jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
   jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
 
  addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
   
-  while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
+//  while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
 
 
   // prune to get only core Methods and classes
   //    NamedValueSet root = jsEngine->getRootObjectProperties();
-  for(int i = 0 ; i < jsEngine->getRootObjectProperties().size() ; i++){
-    if(!jsEngine->getRootObjectProperties().getVarPointerAt(i)->isMethod()){
-      Identifier id = jsEngine->getRootObjectProperties().getName(i);
-      if(!jsCoreClasses.contains(id)){
-        jsEngine->registerNativeObject(id, nullptr);
-      }
-
-    }
-  }
+//  for(int i = 0 ; i < jsEngine->getRootObjectProperties().size() ; i++){
+//    if(!jsEngine->getRootObjectProperties().getVarPointerAt(i)->isMethod()){
+//      Identifier id = jsEngine->getRootObjectProperties().getName(i);
+//      if(!jsCoreClasses.contains(id)){
+//        jsEngine->registerNativeObject(id, nullptr);
+//      }
+//
+//    }
+//  }
 }
 
 void    JsEnvironment::removeNamespace(const String & jsNamespace){

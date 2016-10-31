@@ -412,6 +412,7 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
   if (isTargetAControllable)
   {
     //DBG("Check controllable Address : " + shortName);
+    const ScopedLock lk(controllables.getLock());
     for (auto &c : controllables)
     {
       if (c->shortName == addressSplit[0])
