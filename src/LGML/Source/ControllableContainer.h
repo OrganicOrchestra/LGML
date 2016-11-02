@@ -37,7 +37,7 @@ public:
 	virtual void controllableContainerAdded(ControllableContainer *) {}
 	virtual void controllableContainerRemoved(ControllableContainer *) {}
 	virtual void controllableFeedbackUpdate(ControllableContainer *,Controllable *) {}
-	virtual void childStructureChanged(ControllableContainer *notifier,ControllableContainer*origin) {}
+	virtual void childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer* /*origin*/) {}
     virtual void childAddressChanged(ControllableContainer * ){};
     virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };

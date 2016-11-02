@@ -100,8 +100,16 @@ static Identifier midiValueId;
   }
 
   // overriden in Js
-  static var dummyCallback(const var::NativeFunctionArgs & a){return var::undefined;};
-  void processMessage(const MidiMessage & m){
+#pragma warning(push)
+#pragma warning(disable:4305 4800)
+  static var dummyCallback(const var::NativeFunctionArgs & /*a*/)
+  {
+	  return var::undefined;
+  };
+#pragma warning(pop)
+
+  void processMessage(const MidiMessage & m)
+  {
     if(channel == 0 || channel == m.getChannel()){
       if((isNoteListener && m.isNoteOnOrOff()) || (m.isController())){
       int numToTest = isNoteListener? m.getNoteNumber():m.getControllerNumber();

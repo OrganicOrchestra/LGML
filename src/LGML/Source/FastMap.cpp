@@ -10,6 +10,9 @@
 
 #include "FastMap.h"
 #include "NodeManager.h"
+#include "Engine.h"
+
+extern Engine * getEngine();
 
 FastMap::FastMap() :
 	reference(nullptr),
@@ -35,6 +38,7 @@ FastMap::~FastMap()
 
 	setReference(nullptr);
 	setTarget(nullptr);
+//	setGhostAddress(String::empty);
 
 	fastMapListeners.call(&FastMapListener::fastMapRemoved, this);
 }
@@ -101,6 +105,7 @@ void FastMap::setReference(ControlVariableReference * r)
 
 void FastMap::setTarget(Controllable * c)
 {
+
 	if (target == c) return;
 
 	if (target != nullptr)
@@ -117,6 +122,14 @@ void FastMap::setTarget(Controllable * c)
 	fastMapListeners.call(&FastMapListener::fastMapTargetChanged, this);
 }
 
+void FastMap::setGhostAddress(const String & address)
+{
+	if (ghostAddress == address) return;
+	ghostAddress = address;
+	if (ghostAddress.isNotEmpty()) getEngine()->addControllableContainerListener(this);
+	else getEngine()->removeControllableContainerListener(this);
+}
+
 var FastMap::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
@@ -128,6 +141,7 @@ var FastMap::getJSONData()
 	if (target != nullptr)
 	{
 		data.getDynamicObject()->setProperty("target", target->getControlAddress()); //Need to be global
+		setGhostAddress(String::empty);
 	}
 
 	return data;
@@ -145,13 +159,26 @@ void FastMap::loadJSONDataInternal(var data)
 		String cAddress = data.getDynamicObject()->getProperty("target").toString();
 		//Need to be global
 		cAddress = cAddress.substring(1);
-		setTarget(NodeManager::getInstance()->getControllableForAddress(cAddress));
+		Controllable * c = NodeManager::getInstance()->getControllableForAddress(cAddress);
+		if (c == nullptr) setGhostAddress(cAddress);
+		else setTarget(c);
 	}
 }
 
 void FastMap::remove()
 {
 	fastMapListeners.call(&FastMapListener::askForRemoveFastMap, this);
+}
+
+void FastMap::childStructureChanged(ControllableContainer *, ControllableContainer *)
+{
+	
+	if (ghostAddress.isNotEmpty() && target == nullptr)
+	{
+		if (NodeManager::getInstanceWithoutCreating() == nullptr) return;
+		Controllable * c = NodeManager::getInstance()->getControllableForAddress(ghostAddress);
+		if (c != nullptr) setTarget(c);
+	}
 }
 
 void FastMap::referenceValueChanged(ControlVariableReference *)

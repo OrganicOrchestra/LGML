@@ -45,6 +45,8 @@ public:
 	FloatParameter * maxOutputVal;
 	BoolParameter * invertParam;
 
+	String ghostAddress; //for ghosting if parameter not found
+
 	ScopedPointer<ControlVariableReference> reference;
 	Controllable * target;
 
@@ -53,11 +55,14 @@ public:
 
 	void setReference(ControlVariableReference * r);
 	void setTarget(Controllable * c);
+	void setGhostAddress(const String &address);
 
 	virtual var getJSONData() override;
 	virtual void loadJSONDataInternal(var data) override;
 
 	void remove();
+
+	void childStructureChanged(ControllableContainer *, ControllableContainer *) override;
 
 	ListenerList<FastMapListener> fastMapListeners;
 	void addFastMapListener(FastMapListener* newListener) { fastMapListeners.add(newListener); }
