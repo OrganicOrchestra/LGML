@@ -18,11 +18,12 @@
 
 class JsNode : public NodeBase,public JsEnvironment{
     public :
-    JsNode():NodeBase("JsNode",NodeType::JsNodeType,false),JsEnvironment("JsNode",this){
+    JsNode():NodeBase("JsNode",NodeType::JsNodeType,false),JsEnvironment("node.JsNode",this){
         canHavePresets = false;
         scriptPath = NodeBase::addStringParameter("ScriptPath","path for js script","");
+      setPreferedNumAudioInput(0);
+      setPreferedNumAudioOutput(0);
     };
-
     StringParameter* scriptPath;
 
     void clearNamespace() override{
@@ -62,6 +63,9 @@ void newJsFileLoaded()override;
         NodeBase::onContainerParameterChanged(p);
         if(p==scriptPath){
             loadFile(scriptPath->stringValue());
+        }
+        else if (p==nameParam){
+          setNamespaceName("node."+nameParam->stringValue());
         }
     }
 

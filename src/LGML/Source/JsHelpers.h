@@ -40,6 +40,11 @@ inline T* getObjectPtrFromJS(const var::NativeFunctionArgs & a){
   if(d==nullptr)return nullptr;
   return dynamic_cast<T*>((T*)(int64)d->getProperty(jsPtrIdentifier));
 }
+template<class T>
+inline T* getObjectPtrFromObject( DynamicObject * d){
+  if(!d)return nullptr;
+  return dynamic_cast<T*>((T*)(int64)d->getProperty(jsPtrIdentifier));
+}
 
 inline String getJsFunctionNameFromAddress(const String & n){
   StringArray arr;
@@ -112,7 +117,11 @@ inline DynamicObject *  getNamespaceFromObject(const String & ns,DynamicObject *
     return getNamespaceFromObject(ns.substring(idx+1, ns.length()),d->getProperty(elem).getDynamicObject());
   }
   else{
-    return d->getProperty(ns).getDynamicObject();
+    if(ns!=""){
+      return d->getProperty(ns).getDynamicObject();
+    }else{
+      return d;
+    }
   }
 }
 

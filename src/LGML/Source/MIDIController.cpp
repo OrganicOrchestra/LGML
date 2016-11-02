@@ -17,9 +17,9 @@
 extern AudioDeviceManager &  getAudioDeviceManager();
 
 MIDIController::MIDIController() :
-Controller("MIDI"),JsEnvironment("MIDI.MIDIController",this)
+Controller("MIDI"),JsEnvironment("controller.MIDIController",this)
 {
-	setNamespaceName("MIDI."+nameParam->stringValue());
+	setNamespaceName("controller."+nameParam->stringValue());
 	deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
 	scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
 	logIncoming = addBoolParameter("logIncoming","log Incoming midi message",false);
@@ -132,6 +132,9 @@ void MIDIController::callJs(const MidiMessage& message){
     args.add(message.getControllerNumber());
     args.add(message.getControllerValue());
     callFunctionFromIdentifier(onCCFunctionName, args);
+    for(auto & p:jsCCListeners){
+      p->processMessage(message);
+    }
   }
   else if(message.isNoteOnOrOff()){
     static const Identifier onCCFunctionName("onNote");
@@ -139,6 +142,9 @@ void MIDIController::callJs(const MidiMessage& message){
     args.add(message.getNoteNumber());
     args.add(message.isNoteOn()?message.getVelocity():0);
     callFunctionFromIdentifier(onCCFunctionName, args);
+    for(auto & p:jsNoteListeners){
+      p->processMessage(message);
+    }
   }
   else if(message.isPitchWheel()){
     static const Identifier onPitchWheelFunctionName("onPitchWheel");
@@ -149,8 +155,9 @@ void MIDIController::callJs(const MidiMessage& message){
 }
 
 void MIDIController::onContainerParameterChanged(Parameter * p){
+  Controller::onContainerParameterChanged(p);
   if(p==nameParam){
-    setNamespaceName("MIDI."+nameParam->stringValue());
+    setNamespaceName("controller."+nameParam->stringValue());
   }
   else if (p==deviceInName){
     setCurrentDevice(deviceInName->stringValue());
@@ -175,7 +182,11 @@ void MIDIController::buildLocalEnv(){
   static const Identifier jsSendSysExIdentifier("sendSysEx");
   obj.setMethod(jsSendSysExIdentifier, sendSysExFromJS);
 
+  static const Identifier jsGetCCListenerObject("createCCListener");
+  obj.setMethod(jsGetCCListenerObject, &MIDIController::createJsCCListener);
 
+  static const Identifier jsGetNoteListenerObject("createNoteListener");
+  obj.setMethod(jsGetNoteListenerObject, &MIDIController::createJsNoteListener);
 
   obj.setProperty(jsPtrIdentifier, (int64)this);
   setLocalNamespace(obj);
@@ -253,3 +264,51 @@ var MIDIController::sendSysExFromJS(const var::NativeFunctionArgs & a)
   c->sendSysEx(bytes,a.numArguments);
   return var(true);
 }
+
+
+var MIDIController::createJsNoteListener(const var::NativeFunctionArgs & a){
+  if(a.numArguments<2){ return var::undefined();}
+
+  int channel = a.arguments[0];
+  int numberToListen = a.arguments[1];
+  MIDIController * originEnv = dynamic_cast<MIDIController*>(a.thisObject.getDynamicObject());
+    if(originEnv){
+      JsMIDIMessageListener * ob = new JsMIDIMessageListener(originEnv,channel,numberToListen,true);
+      originEnv->jsNoteListeners.add(ob);
+      return ob->object;
+    }
+  
+  return var::undefined();
+}
+var MIDIController::createJsCCListener(const var::NativeFunctionArgs & a){
+  if(a.numArguments<2){ return var::undefined();}
+
+  int channel = a.arguments[0];
+  int numberToListen = a.arguments[1];
+  MIDIController * originEnv = dynamic_cast<MIDIController*>(a.thisObject.getDynamicObject());
+  if(originEnv){
+    JsMIDIMessageListener * ob = new JsMIDIMessageListener(originEnv,channel,numberToListen,false);
+    originEnv->jsCCListeners.add(ob);
+    return ob->object;
+  }
+
+  return var::undefined();
+}
+
+void MIDIController::clearNamespace(){
+  JsEnvironment::clearNamespace();
+  {
+    const ScopedLock lk (jsNoteListeners.getLock());
+    jsNoteListeners.clear();
+  }
+  {
+    const ScopedLock lk (jsCCListeners.getLock());
+    jsCCListeners.clear();
+  }
+}
+////////
+// MidiListener
+
+
+Identifier JsMIDIMessageListener::midiReceivedId("onMidi");
+Identifier JsMIDIMessageListener::midiValueId("value");

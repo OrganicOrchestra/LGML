@@ -24,11 +24,13 @@ Identifier JsEnvironment::noFunctionLogIdentifier( "no function Found");
 Identifier JsEnvironment::onUpdateIdentifier("onUpdate");
 
 JsEnvironment::JsEnvironment(const String & ns,ControllableContainer * _linkedContainer):linkedContainer(_linkedContainer),localNamespace(ns),_hasValidJsFile(false),autoWatch(false),isInSyncWithLGML(false){
-    localEnvironment = var(new DynamicObject());
-    jsEngine = new JavascriptEngine();
-    jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
-    jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
+
     
+//    jsEngine = new JavascriptEngine();
+//    jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
+//    jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
+//
+  clearNamespace();
     getEngine()->addControllableContainerListener(this);
     addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
     onUpdateTimerInterval = 20;
@@ -42,41 +44,22 @@ JsEnvironment::~JsEnvironment(){
     }
     stopTimer(0);
     stopTimer(1);
-    for(auto & c:listenedParameters){
-        if(c.get()) c->removeParameterListener(this);
-    }
-    for(auto & c:listenedTriggers){
-        if(c.get()) c->removeTriggerListener(this);
-    }
-    for(auto & c:listenedContainers){
-        if(c.get())c->removeControllableContainerListener(this);
-    }
-    localEnvironment = var::undefined();
+  clearListeners();
+
+    
 }
 
 void JsEnvironment::clearNamespace(){
     const  ScopedLock lk(engineLock);
     jsEngine = new JavascriptEngine();
     getLocalEnv()->clear();
+    getLocalEnv()->setMethod("createParameterListener", &JsEnvironment::createParameterListenerObject);
     jsEngine->registerNativeObject(jsLocalIdentifier, getLocalEnv());
     jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
     
     addToNamespace(localNamespace,getLocalEnv(),getGlobalEnv());
-    
-    //  while(getLocalEnv()->getProperties().size()>0){getLocalEnv()->removeProperty(getLocalEnv()->getProperties().getName(0));}
-    
-    
-    // prune to get only core Methods and classes
-    //    NamedValueSet root = jsEngine->getRootObjectProperties();
-    //  for(int i = 0 ; i < jsEngine->getRootObjectProperties().size() ; i++){
-    //    if(!jsEngine->getRootObjectProperties().getVarPointerAt(i)->isMethod()){
-    //      Identifier id = jsEngine->getRootObjectProperties().getName(i);
-    //      if(!jsCoreClasses.contains(id)){
-    //        jsEngine->registerNativeObject(id, nullptr);
-    //      }
-    //
-    //    }
-    //  }
+
+
 }
 
 void    JsEnvironment::removeNamespace(const String & jsNamespace){
@@ -147,7 +130,7 @@ Result JsEnvironment::loadScriptContent(const String & content)
     // rebuild to clean namespace
     clearNamespace();
     buildLocalEnv();
-    
+    clearListeners();
     // thread safe if the  environment class is not multithreaded
     Result r = Result::fail("can't lock environment");
     {
@@ -158,7 +141,7 @@ Result JsEnvironment::loadScriptContent(const String & content)
     
     if (r.failed()) {
         _hasValidJsFile = false;
-        jsEngine = nullptr;
+//        jsEngine = nullptr;
         // NLOG(localNamespace,printAllNamespace());
         NLOG(localNamespace,r.getErrorMessage());
     }
@@ -176,6 +159,26 @@ Result JsEnvironment::loadScriptContent(const String & content)
     return r;
 }
 
+void JsEnvironment::clearListeners(){
+  for(auto & c:listenedParameters){
+    if(c.get()) c->removeParameterListener(this);
+  }
+  listenedParameters.clear();
+  for(auto & c:listenedTriggers){
+    if(c.get()) c->removeTriggerListener(this);
+  }
+  listenedTriggers.clear();
+
+  for(auto & c:listenedContainers){
+    if(c.get())c->removeControllableContainerListener(this);
+  }
+  listenedContainers.clear();
+
+  {
+    const ScopedLock lk(engineLock);
+    parameterListenerObjects.clear();
+  }
+}
 
 bool JsEnvironment::functionIsDefined(const juce::String & s){
     bool found = false;
@@ -215,65 +218,50 @@ var JsEnvironment::callFunction (const String& function, const var& args,  bool 
 
 var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const Array<var>& args,bool logResult , Result* result){
     // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
-    bool resOwned = false;
-    if (logResult && result == nullptr) {
-        result = new Result(Result::ok());
-        resOwned = true;
-    }
-    
-    var  v ;
+  var v;
     juce::var::NativeFunctionArgs Nargs(var::undefined(), (args.size()>0)?&args.getReference(0):&v, args.size());
-    var res;
-    {
-        const ScopedLock lk(engineLock);
-        if(!JsGlobalEnvironment::getInstance()->isDirty()){
-            res =  jsEngine->callFunction(function,Nargs,result);
-        }
-        else{
-            DBG("JS avoiding to call function while global environment is dirty");
-            
-        }
-    }
-    if(logResult && result->failed()){
-        NLOG(localNamespace,result->getErrorMessage());
-    }
-    
-    if(resOwned){
-        delete result;
-        result=nullptr;
-    }
-    
-    return res;
+
+     return callFunctionFromIdentifier(function,Nargs,logResult,result);
 }
 
 var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const var & arg,bool logResult , Result* result){
-    bool resOwned = false;
-    if(logResult && result==nullptr){
-        result = new Result(Result::ok());
-        resOwned = true;
-    }
+
     
     // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
     juce::var::NativeFunctionArgs Nargs(var::undefined(),&arg,1);
-    var res ;
-    {
-        const ScopedLock lk(engineLock);
-        if(!JsGlobalEnvironment::getInstance()->isDirty()){
-            res = jsEngine->callFunction(function,Nargs,result);
-        }
-        else{
-            DBG("JS avoiding to call function while global environment is dirty");
-        }
-    }
-    if(logResult && result->failed()){
-        NLOG(localNamespace,result->getErrorMessage());
-    }
-    if(resOwned){
-        delete result;
-        result=nullptr;
-    }
-    return res;
+    return callFunctionFromIdentifier(function,Nargs,logResult,result);
 }
+
+
+var JsEnvironment::callFunctionFromIdentifier (const Identifier& function, const var::NativeFunctionArgs &Nargs,bool logResult , Result* result)
+{
+  if(!hasValidJsFile())return var::undefined;
+  bool resOwned = false;
+  if(logResult && result==nullptr){
+    result = new Result(Result::ok());
+    resOwned = true;
+  }
+  var res ;
+  {
+    const ScopedLock lk(engineLock);
+    if(!JsGlobalEnvironment::getInstance()->isDirty()){
+      res = jsEngine->callFunction(function,Nargs,result);
+    }
+    else{
+      DBG("JS avoiding to call function while global environment is dirty");
+    }
+  }
+  if(logResult && result->failed()){
+    NLOG(localNamespace,result->getErrorMessage());
+  }
+  if(resOwned){
+    delete result;
+    result=nullptr;
+  }
+  return res;
+}
+
+
 
 const NamedValueSet & JsEnvironment::getRootObjectProperties()  {const ScopedLock lk(engineLock);return jsEngine->getRootObjectProperties();}
 void JsEnvironment::addToLocalNamespace(const String & elem,DynamicObject *target)  {addToNamespace(elem, target,getLocalEnv());}
@@ -292,6 +280,7 @@ void JsEnvironment::setNamespaceName(const String & s){
     
     DynamicObject * d = getNamespaceFromObject(getParentName(),getGlobalEnv());
     jassert(d!=nullptr);
+//    d->removeProperty(getModuleName());
     d->setProperty(getModuleName(), var::undefined());
     localNamespace = s;
     d->setProperty(getModuleName(), getLocalEnv());
@@ -340,20 +329,10 @@ String JsEnvironment::getModuleName(){
     else{return localNamespace.substring(idx+1);}
 }
 
+
+
 void JsEnvironment::checkUserControllableEventFunction(){
-    for(auto & c:listenedParameters){
-        if(c.get()) c->removeParameterListener(this);
-    }
-    listenedParameters.clear();
-    for(auto & c:listenedTriggers){
-        if(c.get()) c->removeTriggerListener(this);
-    }
-    listenedTriggers.clear();
-    
-    for(auto & c:listenedContainers){
-        if(c.get())c->removeControllableContainerListener(this);
-    }
-    listenedContainers.clear();
+
     
     NamedValueSet root = getRootObjectProperties();
     Array<FunctionIdentifier*> functionNamespaces;
@@ -480,3 +459,26 @@ void JsEnvironment::sendAllParametersToJS(){
         }
     }
 }
+
+
+var JsEnvironment::createParameterListenerObject(const var::NativeFunctionArgs & a){
+  if(a.numArguments==0){ return var::undefined();}
+
+  if(Controllable * p = getObjectPtrFromObject<Controllable>(a.arguments[0].getDynamicObject())){
+    JsEnvironment * originEnv = dynamic_cast<JsEnvironment*>(a.thisObject.getDynamicObject());
+    if(originEnv){
+      JsControllableListenerObject * ob = new JsControllableListenerObject(originEnv,p);
+      originEnv->parameterListenerObjects.add(ob);
+      return ob->object;
+    }
+  }
+  return var::undefined();
+};
+
+
+//////////////////////
+// JsControllableListenerObject
+
+
+Identifier JsControllableListenerObject::parameterChangedFId("parameterChanged");
+Identifier JsControllableListenerObject::parameterObjectId("parameter");

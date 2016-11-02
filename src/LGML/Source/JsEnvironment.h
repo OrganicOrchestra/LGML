@@ -13,14 +13,15 @@
 
 #include "JsGlobalEnvironment.h"
 
-
+class JsControllableListenerObject;
 
 /// TODO need to be able to clean root name space user functions are never cleaned
 // may be by recreating a new JsEngine
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
 public Parameter::Listener,
 public Trigger::Listener ,
-public ControllableContainerListener
+public ControllableContainerListener,
+public DynamicObject
 {
 public:
   JsEnvironment(const String & ns,ControllableContainer * linkedContainer);
@@ -68,19 +69,23 @@ public:
 
   int onUpdateTimerInterval;
 
-  protected :
 
-
-  // this firstCheck if function exists to avoid poluting Identifier global pool
   var callFunction (const String& function, const Array<var>& args, bool logResult = true,Result * =nullptr);
   var callFunction (const String& function, const var& args,  bool logResult = true,Result * =nullptr);
 
   var callFunctionFromIdentifier  (const Identifier& function, const Array<var> & args,bool logResult = true, Result* result=nullptr);
   var callFunctionFromIdentifier (const Identifier& function, const var & arg,bool logResult = true, Result* result = nullptr);
+  var callFunctionFromIdentifier (const Identifier& function, const var::NativeFunctionArgs &Nargs,bool logResult = true , Result* result=nullptr);
+
+  protected :
+
+
+  // this firstCheck if function exists to avoid poluting Identifier global pool
+
   static Identifier noFunctionLogIdentifier;
 
   static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
-  DynamicObject * getLocalEnv(){return localEnvironment.getDynamicObject();}
+  DynamicObject * getLocalEnv(){return this;}
 
 
   // module name is the last element of dot separated localNamespace
@@ -94,6 +99,8 @@ public:
 
   bool functionIsDefined(const String &);
   File currentFile;
+
+ static var createParameterListenerObject(const var::NativeFunctionArgs & a);
 
   protected :
   Array<WeakReference<Parameter> > listenedParameters;
@@ -114,7 +121,7 @@ private:
 
   ListenerList<Listener> jsListeners;
 
-  var localEnvironment;
+  
   void internalLoadFile(const File &);
 
 
@@ -179,6 +186,7 @@ private:
   Time lastFileModTime;
   bool autoWatch;
 
+  void clearListeners();
   void checkUserControllableEventFunction();
   void parameterValueChanged(Parameter * c) override;
   void triggerTriggered(Trigger * p) override;
@@ -192,30 +200,63 @@ private:
   bool isInSyncWithLGML;
 
   static Identifier onUpdateIdentifier;
+
+  OwnedArray<JsControllableListenerObject> parameterListenerObjects;
+  friend class JsControllableListenerObject;
+
 };
 
 
 //
-//class CallBackFunction:public Parameter::Listener{
-//  public :
-//  CallBackFunction(JsEnvironment * js,var cB):callBack(cB),jsEnv(js){
-//
-//  }
-//
-//  void parameterValueChanged(Parameter *p)override{
-//    static Identifier cBName("valueChanged");
-////    jsEnv->callFunctionFromIdentifier(<#const juce::Identifier &function#>, <#const Array<juce::var> &args#>)
-//    if(callBack[cBName].isMethod()){
-//      callBack.call(cBName, p->value);
-//    }
-//    else{
-//      DBG("callback must be an object containing function named valueChanged(value)");
-//    }
-//
-//  };
-//  JsEnvironment* jsEnv;
-//  var callBack;
-//};
+class JsControllableListenerObject:public Parameter::Listener,public Trigger::Listener{
+  public :
+  JsControllableListenerObject(JsEnvironment * js,Controllable * p):jsEnv(js),controllable(p){
+    buildVarObject();
+    if(Parameter * pp = getParameter()){
+      isTrigger = false;
+      pp->addParameterListener(this);
+    }
+    else if(Trigger * pp = getTrigger()){
+      isTrigger = true;
+      pp->addTriggerListener(this);
+    }
+    else{
+      NLOG(js->localNamespace,"wrong Parameter Listener type for : "+controllable->shortName);
+    }
+  }
+  static Identifier parameterChangedFId;
+  static Identifier parameterObjectId;
+  virtual ~JsControllableListenerObject(){
+    if(Parameter * pp = getParameter())pp->removeParameterListener(this);
+  if(Trigger * pp = getTrigger())pp->removeTriggerListener(this);
+  };
+  Parameter * getParameter(){ return dynamic_cast<Parameter*>(controllable.get());}
+  Trigger * getTrigger(){ return dynamic_cast<Trigger*>(controllable.get());}
+  void buildVarObject(){
+    object= new DynamicObject();
+    if(controllable.get()){
+      DynamicObject * dob = object.getDynamicObject();
+      dob->setProperty(parameterObjectId, controllable->createDynamicObject());
+      dob->setMethod(parameterChangedFId,&JsControllableListenerObject::dummyCallback);
+
+    }
+  }
+
+  // overriden in Js
+  static var dummyCallback(const var::NativeFunctionArgs & a){return var::undefined;};
+  void parameterValueChanged(Parameter *p)override{
+      jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,&p->value,1), true);
+
+  };
+
+  void triggerTriggered(Trigger *t)override{
+    jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,nullptr,0), true);
+  }
+  JsEnvironment* jsEnv;
+  WeakReference<Controllable> controllable;
+  bool isTrigger;
+  var object;
+};
 
 //var Parameter::addObjectListener(const juce::var::NativeFunctionArgs &a){
 //  if(a.numArguments==0)return var();

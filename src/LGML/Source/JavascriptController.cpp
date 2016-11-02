@@ -14,7 +14,7 @@
 #include "JsEnvironment.h"
 #include "JsHelpers.h"
 
-JavascriptController::JavascriptController():JsEnvironment("OSC.JSController",this){
+JavascriptController::JavascriptController():JsEnvironment("controller.JSController",this){
     nameParam->setValue("JSController");
 
     buildLocalEnv();
@@ -58,14 +58,21 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
     return r;
 }
 
+
+var JavascriptController::OSCArgumentToVar(OSCArgument & a){
+  if(a.isFloat32()){ return(a.getFloat32());}
+  if(a.isInt32()){ return  (a.getInt32());}
+  if(a.isString()){ return (a.getString());}
+  return var::undefined();
+}
+
 void JavascriptController::callonAnyMsg(const OSCMessage & msg){
     var address = msg.getAddressPattern().toString();
 
     var args;
     for(auto & m:msg){
-        if(m.isFloat32()){args.append(m.getFloat32());}
-        if(m.isInt32()){args.append(m.getInt32());}
-        if(m.isString()){args.append(m.getString());}
+        args.append(OSCArgumentToVar(m));
+
     }
     Array<var> argList = {address,args};
     static const Identifier onCtlAnyMsgIdentifier("onCtl_AnyMsg");
@@ -76,10 +83,11 @@ void JavascriptController::callonAnyMsg(const OSCMessage & msg){
 Result JavascriptController::processMessageInternal(const OSCMessage &m){
 
 	Result r1  = OSCDirectController::processMessageInternal(m);
-
+  for(auto & l:jsOSCListeners){l->processMessage(m);}
     Result r2(Result::fail("no valid js file"));
     if(hasValidJsFile())
         r2 = callForMessage(m);
+
     if(!r1 && !r2){
 //        NLOG("OSCController",r1.getErrorMessage());
 //        NLOG("Javascript",r2.getErrorMessage());
@@ -144,6 +152,8 @@ DynamicObject * JavascriptController::createOSCJsObject(){
     d->setProperty(jsPtrIdentifier, (int64)this);
     static const Identifier jsSendIdentifier("send");
     d->setMethod(jsSendIdentifier, sendOSCFromJS);
+    static Identifier createOSCJsListenerId("createOSCListener");
+    d->setMethod(createOSCJsListenerId, createJsOSCListener);
     return d;
 
 };
@@ -151,7 +161,7 @@ DynamicObject * JavascriptController::createOSCJsObject(){
 void JavascriptController::onContainerParameterChanged(Parameter * p) {
     OSCDirectController::onContainerParameterChanged(p);
     if(p==nameParam){
-        setNamespaceName("OSC."+nameParam->stringValue());
+        setNamespaceName("controller."+nameParam->stringValue());
     }
     else if (p==jsPath){
         loadFile(jsPath->stringValue());
@@ -179,3 +189,40 @@ void JavascriptController::newJsFileLoaded(){
 }
 
 
+void JavascriptController::clearNamespace(){
+  JsEnvironment::clearNamespace();
+  {
+    const ScopedLock lk(jsOSCListeners.getLock());
+    jsOSCListeners.clear();
+  }
+
+
+};
+
+
+
+//////////////////////
+// JSOSCListener
+
+
+Identifier JsOSCListener::oscReceivedCallbackId("onOSC");
+
+
+
+
+
+var JavascriptController::createJsOSCListener(const var::NativeFunctionArgs & a){
+
+  if(a.numArguments<1){ return var::undefined();}
+
+  OSCAddressPattern oscPattern( a.arguments[0].toString());
+
+  JavascriptController * originEnv = dynamic_cast<JavascriptController*>(a.thisObject.getDynamicObject());
+  if(originEnv){
+    JsOSCListener * ob = new JsOSCListener(originEnv,oscPattern);
+    originEnv->jsOSCListeners.add(ob);
+    return ob->object;
+  }
+
+  return var::undefined();
+}

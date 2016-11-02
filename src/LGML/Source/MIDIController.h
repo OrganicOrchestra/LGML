@@ -14,6 +14,8 @@
 #include "Controller.h"
 #include "MIDIListener.h"
 #include "JsEnvironment.h"
+class JsMIDIMessageListener;
+
 
 class MIDIController : public Controller,public MIDIListener, public MIDIListener::Listener,public JsEnvironment
 {
@@ -59,10 +61,66 @@ public :
 	void addMIDIControllerListener(MIDIControllerListener* newListener) { midiControllerListeners.add(newListener); }
 	void removeMIDIControllerListener(MIDIControllerListener* listener) { midiControllerListeners.remove(listener); }
 
+
+  static var createJsNoteListener(const var::NativeFunctionArgs &);
+  static var createJsCCListener(const var::NativeFunctionArgs &);
+
+  OwnedArray<JsMIDIMessageListener,CriticalSection> jsNoteListeners;
+  OwnedArray<JsMIDIMessageListener,CriticalSection> jsCCListeners;
+
+
+  // from jsenvironment
+  void clearNamespace()override;
+
 private:
   
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
+};
+
+class JsMIDIMessageListener{
+  public :
+  JsMIDIMessageListener(JsEnvironment * js,int _channel ,int _numberToListen,bool _isNoteListener):jsEnv(js),
+  numberToListen(_numberToListen),
+  channel(_channel),
+  isNoteListener(_isNoteListener){
+    buildVarObject();
+
+  }
+  static Identifier midiReceivedId;
+static Identifier midiValueId;
+
+  virtual ~JsMIDIMessageListener(){};
+  void buildVarObject(){
+      object= new DynamicObject();
+      DynamicObject * dob = object.getDynamicObject();
+      dob->setProperty(midiValueId,0);
+      dob->setMethod(midiReceivedId,&JsMIDIMessageListener::dummyCallback);
+
+  }
+
+  // overriden in Js
+  static var dummyCallback(const var::NativeFunctionArgs & a){return var::undefined;};
+  void processMessage(const MidiMessage & m){
+    if(channel == 0 || channel == m.getChannel()){
+      if((isNoteListener && m.isNoteOnOrOff()) || (m.isController())){
+      int numToTest = isNoteListener? m.getNoteNumber():m.getControllerNumber();
+        if(numToTest == numberToListen){
+          var value = isNoteListener?m.getVelocity():m.getControllerNumber();
+          object.getDynamicObject()->setProperty(midiValueId,0);
+          jsEnv->callFunctionFromIdentifier(midiReceivedId, var::NativeFunctionArgs(object,&value,1), true);
+        }
+
+      }
+    }
+  };
+  JsEnvironment* jsEnv;
+  int channel;
+  // can be CC or note number
+  int numberToListen;
+
+  bool isNoteListener;
+  var object;
 };
 
 
