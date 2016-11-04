@@ -25,12 +25,14 @@ public AsyncUpdater // end of vst loading
 {
 
 public:
+  VSTNode();
+  ~VSTNode();
+
   StringParameter *  identifierString;
   Array<FloatParameter *> VSTParameters;
 
 
-  VSTNode();
-  ~VSTNode();
+
 
   class PluginWindowParameters : public ControllableContainer{
   public:
@@ -46,6 +48,7 @@ public:
     FloatParameter * y;
     BoolParameter * isDisplayed;
   };
+
   PluginWindowParameters pluginWindowParameter;
   void createPluginWindow();
   void closePluginWindow();

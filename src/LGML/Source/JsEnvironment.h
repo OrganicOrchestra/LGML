@@ -208,28 +208,33 @@ private:
 
 
 //
-class JsControllableListenerObject:public Parameter::Listener,public Trigger::Listener{
+class JsControllableListenerObject:public Parameter::Listener,public Trigger::Listener
+{
   public :
   JsControllableListenerObject(JsEnvironment * js,Controllable * p):jsEnv(js),controllable(p){
     buildVarObject();
+
     if(Parameter * pp = getParameter()){
       isTrigger = false;
       pp->addParameterListener(this);
     }
-    else if(Trigger * pp = getTrigger()){
+    else if(Trigger * tt = getTrigger()){
       isTrigger = true;
-      pp->addTriggerListener(this);
+      tt->addTriggerListener(this);
     }
+
     else{
       NLOG(js->localNamespace,"wrong Parameter Listener type for : "+controllable->shortName);
     }
   }
   static Identifier parameterChangedFId;
   static Identifier parameterObjectId;
+  
   virtual ~JsControllableListenerObject(){
-    if(Parameter * pp = getParameter())pp->removeParameterListener(this);
-  if(Trigger * pp = getTrigger())pp->removeTriggerListener(this);
+    if(Parameter * pp = getParameter()) pp->removeParameterListener(this);
+    if(Trigger * tt = getTrigger()) tt->removeTriggerListener(this);
   };
+
   Parameter * getParameter(){ return dynamic_cast<Parameter*>(controllable.get());}
   Trigger * getTrigger(){ return dynamic_cast<Trigger*>(controllable.get());}
   void buildVarObject(){
@@ -243,15 +248,23 @@ class JsControllableListenerObject:public Parameter::Listener,public Trigger::Li
   }
 
   // overriden in Js
-  static var dummyCallback(const var::NativeFunctionArgs & a){return var::undefined;};
-  void parameterValueChanged(Parameter *p)override{
+#pragma warning(push)
+#pragma warning(disable:4305 4800) 
+  static var dummyCallback(const var::NativeFunctionArgs & /*a*/){
+	  return var::undefined;
+  };
+#pragma warning(pop)
+  void parameterValueChanged(Parameter *p)override
+  {
       jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,&p->value,1), true);
 
   };
 
-  void triggerTriggered(Trigger *t)override{
+  void triggerTriggered(Trigger *)override
+  {
     jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,nullptr,0), true);
   }
+
   JsEnvironment* jsEnv;
   WeakReference<Controllable> controllable;
   bool isTrigger;

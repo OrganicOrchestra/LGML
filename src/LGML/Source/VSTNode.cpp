@@ -92,6 +92,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
 #else
                     suspendProcessing(true);
                     generatePluginFromDescription(pd);
+					DBG("VST generated");
                     triggerAsyncUpdate();
                     
 #endif
@@ -158,7 +159,8 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
     for(int i = 0 ; i < p->getNumParameters() ; i++){
         VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
     }
-    
+
+
     vstNodeListeners.call(&VSTNodeListener::newVSTSelected);
 }
 

@@ -74,7 +74,12 @@ class JsOSCListener{
   }
 
   // overriden in Js
-  static var dummyCallback(const var::NativeFunctionArgs & a){return var::undefined;};
+#pragma warning(push)
+#pragma warning(disable:4305 4800)
+  static var dummyCallback(const var::NativeFunctionArgs &){
+	  return var::undefined;
+  };
+#pragma warning(pop)
   void processMessage(const OSCMessage & msg){
     if(addressPattern == msg.getAddressPattern()){
       StringArray adList;
