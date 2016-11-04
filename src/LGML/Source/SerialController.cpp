@@ -13,12 +13,12 @@
 #include "JsHelpers.h"
 
 SerialController::SerialController() :
-JsEnvironment("Serial.serial",this),
+JsEnvironment("controller.serial",this),
 Controller("Serial"),
 port(nullptr)
 {
 
-  setNamespaceName("Serial." + nameParam->stringValue());
+  setNamespaceName("controller." + nameParam->stringValue());
   scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
   logIncoming = addBoolParameter("logIncoming", "log Incoming midi message", false);
 
@@ -78,7 +78,7 @@ void SerialController::newJsFileLoaded()
 void SerialController::onContainerParameterChanged(Parameter * p) {
   Controller::onContainerParameterChanged(p);
   if(p==nameParam){
-    setNamespaceName("Serial."+nameParam->stringValue());
+    setNamespaceName("controller."+nameParam->stringValue());
   }
   else if (p==scriptPath){
     loadFile(scriptPath->stringValue());
