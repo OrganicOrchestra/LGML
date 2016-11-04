@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="1.1.0"
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
-              jucerVersion="4.2.4" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
+              jucerVersion="4.3.0" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
       <FILE id="lDg0ln" name="LooperTest.cpp" compile="1" resource="0" file="Tests/LooperTest.cpp"/>
@@ -824,20 +824,20 @@
                        libraryPath=""/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_events" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_graphics" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_data_structures" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_gui_basics" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_gui_extra" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_cryptography" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_opengl" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_basics" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_devices" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_formats" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_processors" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_utils" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
-        <MODULEPATH id="juce_osc" path="D:\Softwares\Juce 4.2.4\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_events" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_graphics" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_data_structures" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_basics" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_gui_extra" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_cryptography" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_opengl" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_basics" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_devices" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_formats" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_processors" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_audio_utils" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_osc" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE targetFolder="Builds/LinuxMakefile" vstFolder="" smallIcon="SL4b92"
