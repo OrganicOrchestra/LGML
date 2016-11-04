@@ -25,8 +25,6 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 
 
 
-  NodeBase::busArrangement.outputBuses.clear();
-
   {
     MessageManagerLock ml;
     getAudioDeviceManager().addChangeListener(this);
@@ -38,6 +36,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
   lastNumberOfOutputs = 0;
 
   setPreferedNumAudioInput(desiredNumAudioOutput->intValue());
+  setPreferedNumAudioOutput(0);
 }
 
 void AudioDeviceOutNode::setParentNodeContainer(NodeContainer * parent){

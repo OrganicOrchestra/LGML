@@ -18,7 +18,7 @@ class NodeContainer;
 
 class ContainerInNode :
 	public NodeBase,
-public AudioProcessorGraph::AudioGraphIOProcessor
+virtual public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
 	ContainerInNode();
@@ -26,11 +26,12 @@ public:
 
 
 	void setParentNodeContainer(NodeContainer * nc)override;
-  void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) override;
+
 
 	//AUDIO
-	IntParameter * numInputChannels;
-	void setNumAudioChannels(int channels);
+	IntParameter * numChannels;
+  void setNumChannels(int num);
+  void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) override;
 
 	//DATA
 	IntParameter * numInputData;
@@ -40,7 +41,7 @@ public:
 
 	void onContainerParameterChanged(Parameter *) override;
 
-  bool setPreferredBusArrangement (bool isInputBus, int busIndex, const AudioChannelSet& preferredSet) override;
+
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContainerInNode)
 };
