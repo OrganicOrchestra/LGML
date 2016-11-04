@@ -179,8 +179,8 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
     AudioDeviceManager::AudioDeviceSetup result;
     
     // set max channels to this
-    desc->numInputChannels = jmin(desc->numInputChannels, getMainBusNumInputChannels());
-    desc->numOutputChannels = jmin(desc->numOutputChannels, getMainBusNumOutputChannels());
+    desc->numInputChannels = jmin(desc->numInputChannels, totalNumInputChannels);
+    desc->numOutputChannels = jmin(desc->numOutputChannels, totalNumOutputChannels);
     
     
     getAudioDeviceManager().getAudioDeviceSetup(result);
@@ -188,10 +188,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
     if (AudioPluginInstance* instance = VSTManager::getInstance()->formatManager.createPluginInstance
         (*desc, result.sampleRate, result.bufferSize, errorMessage)) {
         // try to align the precision of the processor and the graph
-        
-        instance->setPreferredBusArrangement(true, 0, AudioChannelSet::canonicalChannelSet(2));
-        instance->setPreferredBusArrangement(false, 0, AudioChannelSet::canonicalChannelSet(2));
-        
+                
         
         // if it triggers an assert it's that vst is wrongly implemened (and there are a lot...)
         // ignoring the assert seems fair enough for now (juce_VSTPluginFormat.cpp l:794 while checking doubleprecision)
@@ -329,6 +326,7 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
 void VSTNode::handleAsyncUpdate(){
     
     parentNodeContainer->updateAudioGraph();
-    suspendProcessing(false);
+
     if(innerPlugin)	initParametersFromProcessor(innerPlugin);
+    suspendProcessing(false);
 }

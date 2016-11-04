@@ -27,10 +27,10 @@ public:
   
 
 	//AUDIO
-	IntParameter * numInputChannels;
-	void setNumAudioChannels(int channels);
+	IntParameter * numChannels;
+  void setNumChannels(int num);
   void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages)override;
-
+  
 
 	//DATA
 	IntParameter * numInputData;

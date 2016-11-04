@@ -65,6 +65,8 @@ void NodeContainer::clear(bool recreateContainerNodes)
     connections[0]->remove();
   }
 
+
+  
   while (nodes.size() > 0)
   {
     if(nodes[0].get()){
@@ -195,34 +197,16 @@ ConnectableNode * NodeContainer::getNodeForName(const String & name)
 void NodeContainer::updateAudioGraph(bool lock) {
 
 
-
-  //  if(parentNodeContainer){
-  //    if(!lock && !parentNodeContainer->getCallbackLock().tryEnter()){
-  //      parentNodeContainer->getCallbackLock().exit();
-  //      triggerAsyncUpdate();
-  //      return;
-  //    }
-  //    const ScopedLock lkp (parentNodeContainer->getCallbackLock());
-  //
-  //    getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
-  //    getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
-  //  }
-  //  else {
-
-
-  // if no parent we are an audiograph inside gobal graphplayer
-
   if(!MessageManager::getInstance()->isThisTheMessageThread()){
     if(lock){
       const ScopedLock lk (getAudioGraph()->getCallbackLock());
-    getAudioGraph()->suspendProcessing(true);
-    triggerAsyncUpdate();
+      getAudioGraph()->suspendProcessing(true);
     }
     else{
       getAudioGraph()->suspendProcessing(true);
-      triggerAsyncUpdate();
-
     }
+    triggerAsyncUpdate();
+
     return;
   }
 
@@ -243,10 +227,13 @@ void NodeContainer::updateAudioGraph(bool lock) {
 
 }
 void NodeContainer::handleAsyncUpdate(){
- if(!isEngineLoadingFile())
+  if(!isEngineLoadingFile()){
    updateAudioGraph();
-  else
+  }
+  else{
     triggerAsyncUpdate();
+    
+  }
 }
 
 int NodeContainer::getNumConnections() {
@@ -310,6 +297,7 @@ var NodeContainer::getJSONData()
 
 void NodeContainer::loadJSONDataInternal(var data)
 {
+  // do we really need that ???
   clear(false);
 
   Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
@@ -533,11 +521,13 @@ bool NodeContainer::hasDataOutputs()
 }
 
 
-void NodeContainer::numChannelsChanged(bool /*isInput*/){
+void NodeContainer::numChannelsChanged(bool isInput){
 
   const ScopedLock lk(getCallbackLock());
   removeIllegalConnections();
   getAudioGraph()->setPlayConfigDetails(getTotalNumInputChannels(), getTotalNumOutputChannels(), getSampleRate(), getBlockSize());
+  if(isInput && containerInNode)containerInNode->numChannels->setValue(getTotalNumInputChannels());//containerInNode->setPreferedNumAudioOutput(getTotalNumInputChannels());
+  else if(!isInput && containerOutNode)containerOutNode->numChannels->setValue(getTotalNumOutputChannels());
 }
 void NodeContainer::prepareToPlay(double d, int i) {
   NodeBase::prepareToPlay(d, i);

@@ -20,8 +20,9 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 	canHavePresets = false;
 	userCanAccessInputs = false;
 
-	numInputChannels = addIntParameter("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);
+	numChannels = addIntParameter("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);
 	numInputData = addIntParameter("Num Data Inputs", "Number of data inputs for this container", 0, 0, 100);
+  
 }
 
 ContainerInNode::~ContainerInNode()
@@ -33,7 +34,14 @@ ContainerInNode::~ContainerInNode()
 }
 
 void ContainerInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
+
+
   AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
+  // graphs can be fed with bigger amount of channel (if numoutputChannel>numInputChannel)
+  // we need to clear them
+  for(int i = totalNumOutputChannels;i < buffer.getNumChannels() ; i++){
+    buffer.clear(i,0,buffer.getNumSamples());
+  }
 
 };
 
@@ -43,24 +51,8 @@ void ContainerInNode::setParentNodeContainer(NodeContainer * nc)
   setPreferedNumAudioInput(0);
   setPreferedNumAudioOutput(nc->getTotalNumInputChannels());
 }
-bool ContainerInNode::setPreferredBusArrangement (bool isInputBus, int busIndex, const AudioChannelSet& preferredSet){
-  return NodeBase::setPreferredBusArrangement(isInputBus, busIndex,preferredSet)&&
-  AudioProcessorGraph::AudioGraphIOProcessor::setPreferredBusArrangement(isInputBus, busIndex,preferredSet);
-}
 
 
-void ContainerInNode::setNumAudioChannels(int channels)
-{
-
-  // only handle one container in per container for now
-  if(parentContainer) parentNodeContainer->setPreferedNumAudioInput(channels);
-  
-  {
-//  parentNodeContainer->suspendProcessing(true);
-	setPreferedNumAudioOutput(channels);
-//    parentNodeContainer->suspendProcessing(false);
-  }
-}
 
 void ContainerInNode::processInputDataChanged(Data * d)
 {
@@ -73,13 +65,18 @@ ConnectableNodeUI * ContainerInNode::createUI()
 	return new NodeBaseUI(this);
 }
 
+void ContainerInNode::setNumChannels(int num){
+  setPreferedNumAudioOutput(num);
+  if(parentNodeContainer){parentNodeContainer->setPreferedNumAudioInput(totalNumOutputChannels);}
+}
+
 void ContainerInNode::onContainerParameterChanged(Parameter * p)
 {
 	NodeBase::onContainerParameterChanged(p);
 
-	if (p == numInputChannels)
+	if (p == numChannels)
 	{
-		setNumAudioChannels(p->intValue());
+    setNumChannels(p->intValue());
 	}
 	else if (p == numInputData)
 	{

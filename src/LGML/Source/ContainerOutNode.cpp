@@ -21,7 +21,7 @@ AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProc
 	canHavePresets = false;
 	userCanAccessOutputs = false;
 
-	numInputChannels = addIntParameter("Num Audio Outputs", "Number of output channels for this container", 2, 0, 100);
+	numChannels = addIntParameter("Num Audio Outputs", "Number of output channels for this container", 2, 0, 100);
 	numInputData = addIntParameter("Num Data Outputs", "Number of data outputs for this container", 0, 0, 100);
 }
 
@@ -34,26 +34,18 @@ ContainerOutNode::~ContainerOutNode()
 }
 
 
-
-void ContainerOutNode::setNumAudioChannels(int channels)
-{
-
-  // only handle one container in per container for now
-  if(parentNodeContainer) parentNodeContainer->setPreferedNumAudioOutput(channels);
-	setPreferedNumAudioInput(channels);
-}
-
 void ContainerOutNode::setParentNodeContainer(NodeContainer * nc)
 {
 
 	NodeBase::setParentNodeContainer(nc);
   setPreferedNumAudioOutput(0);
   setPreferedNumAudioInput(nc->getTotalNumOutputChannels());
+
 }
+
+
 void ContainerOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
   AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
-  int a ;
-  a = 0;
 };
 
 void ContainerOutNode::processInputDataChanged(Data * d)
@@ -67,13 +59,18 @@ ConnectableNodeUI * ContainerOutNode::createUI()
 	return new NodeBaseUI(this);
 }
 
+void ContainerOutNode::setNumChannels(int num){
+  setPreferedNumAudioInput(num);
+  if(parentNodeContainer){parentNodeContainer->setPreferedNumAudioOutput(totalNumInputChannels);}
+}
+
 void ContainerOutNode::onContainerParameterChanged(Parameter * p)
 {
 	NodeBase::onContainerParameterChanged(p);
 
-	if (p == numInputChannels)
+	if (p == numChannels)
 	{
-		setNumAudioChannels(p->intValue());
+    setNumChannels(p->value);
 	}
 	else if (p == numInputData)
 	{

@@ -24,8 +24,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 
   //canHavePresets = false;
   hasMainAudioControl = false;
-
-  NodeBase::busArrangement.inputBuses.clear();
+  
   {
     MessageManagerLock ml;
     getAudioDeviceManager().addChangeListener(this);
@@ -37,7 +36,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 
   lastNumberOfInputs = 0;
   setPreferedNumAudioOutput(desiredNumAudioInput->intValue());
-
+  setPreferedNumAudioInput(0);
 
 
 }
@@ -49,12 +48,16 @@ AudioDeviceInNode::~AudioDeviceInNode() {
 
 void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
 
+  int channelsAvailable = AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumOutputChannels();
+  int numSamples = buffer.getNumSamples();
+
+
 
   AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
 
+
   //  totalNumOutputChannels = NodeBase::tot();
-  int channelsAvailable = AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumOutputChannels();
-  int numSamples = buffer.getNumSamples();
+
 
   float enabledFactor = enabledParam->boolValue()?1.f:0.f;
 
@@ -66,7 +69,7 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
     lastVolumes.set(i, newVolume);
 
   }
-  for(int i = numChannelsToProcess;i<totalNumOutputChannels ; i++){
+  for(int i = numChannelsToProcess;i<buffer.getNumChannels() ; i++){
     buffer.clear(i,0,numSamples);
   }
 
