@@ -26,11 +26,11 @@ public:
     void updateControllableNamespace(ControllableContainer * c);
 
     // should return current env
-    virtual DynamicObject * getEnv() = 0;
+  virtual DynamicObject::Ptr getEnv() = 0;
 
     void    linkToControllableContainer(const String & jsNamespace,ControllableContainer * c);
 
-    DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
+  DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
 
     bool existInContainerNamespace(const String &);
 
@@ -81,6 +81,7 @@ public:
   bool isDirty();
 private:
 
+  
     OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
     
 };

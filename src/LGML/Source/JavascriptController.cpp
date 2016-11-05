@@ -14,8 +14,8 @@
 #include "JsEnvironment.h"
 #include "JsHelpers.h"
 
-JavascriptController::JavascriptController():JsEnvironment("controller.JSController",this){
-    nameParam->setValue("JSController");
+JavascriptController::JavascriptController():JsEnvironment("controller.jSController",this){
+    setNamespaceName("controller."+shortName);
 
     buildLocalEnv();
 
@@ -147,7 +147,7 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
 
 }
 
-DynamicObject * JavascriptController::createOSCJsObject(){
+DynamicObject *  JavascriptController::createOSCJsObject(){
     DynamicObject * d = new DynamicObject();
     d->setProperty(jsPtrIdentifier, (int64)this);
     static const Identifier jsSendIdentifier("send");
@@ -161,7 +161,7 @@ DynamicObject * JavascriptController::createOSCJsObject(){
 void JavascriptController::onContainerParameterChanged(Parameter * p) {
     OSCDirectController::onContainerParameterChanged(p);
     if(p==nameParam){
-        setNamespaceName("controller."+nameParam->stringValue());
+        setNamespaceName("controller."+shortName);
     }
     else if (p==jsPath){
         loadFile(jsPath->stringValue());

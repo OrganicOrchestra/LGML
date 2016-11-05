@@ -47,7 +47,7 @@ private:
     void buildLocalEnv() override;
   void clearNamespace()override;
 
-    DynamicObject * createOSCJsObject();
+  DynamicObject *  createOSCJsObject();
 
 
     StringParameter * jsPath;

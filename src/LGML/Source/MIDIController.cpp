@@ -17,9 +17,9 @@
 extern AudioDeviceManager &  getAudioDeviceManager();
 
 MIDIController::MIDIController() :
-Controller("MIDI"),JsEnvironment("controller.MIDIController",this)
+Controller("MIDI"),JsEnvironment("controller.mIDI",this)
 {
-	setNamespaceName("controller."+nameParam->stringValue());
+	setNamespaceName("controller."+shortName);
 	deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
 	scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
 	logIncoming = addBoolParameter("logIncoming","log Incoming midi message",false);
@@ -157,7 +157,7 @@ void MIDIController::callJs(const MidiMessage& message){
 void MIDIController::onContainerParameterChanged(Parameter * p){
   Controller::onContainerParameterChanged(p);
   if(p==nameParam){
-    setNamespaceName("controller."+nameParam->stringValue());
+    setNamespaceName("controller."+shortName);
   }
   else if (p==deviceInName){
     setCurrentDevice(deviceInName->stringValue());

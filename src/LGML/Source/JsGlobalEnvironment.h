@@ -26,8 +26,8 @@ public:
     JsGlobalEnvironment();
 
     void removeNamespace(const String & ns);
-    DynamicObject * getNamespaceObject(const String & ns);
-    DynamicObject * getEnv() override;
+  DynamicObject::Ptr getNamespaceObject(const String & ns);
+  DynamicObject::Ptr getEnv() override;
 
 
 private:

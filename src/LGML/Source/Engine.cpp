@@ -49,19 +49,26 @@ Engine::~Engine(){
   closeAudio();
 
 
+
   NodeManager::deleteInstance();
   PresetManager::deleteInstance();
   FastMapper::deleteInstance();
 
-  ControllerManager::deleteInstance();
+
 
   VSTManager::deleteInstance();
   TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
-   ControllerManager::deleteInstance();
-  JsGlobalEnvironment::deleteInstance();
+
+
+
+  ControllerManager::deleteInstance();
+
+
   Logger::setCurrentLogger(nullptr);
   LGMLLogger::deleteInstance();
   RuleManager::deleteInstance();
+
+  JsGlobalEnvironment::deleteInstance();
   MIDIManager::deleteInstance();
 
   SerialManager::deleteInstance();
