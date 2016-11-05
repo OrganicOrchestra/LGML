@@ -331,8 +331,7 @@ void TimeManager::jump(int amount){
 
 }
 void TimeManager::goToTime(uint64 time){
-  desiredTimeState.nextTime = time;
-  desiredTimeState.isJumping = true;
+  desiredTimeState.jumpTo(time);
 }
 
 

@@ -178,6 +178,7 @@ void Engine::setLastDocumentOpened (const File& file) {
   recentFiles.addFile (file);
 
   getAppProperties().getUserSettings()->setValue (lastFileListKey, recentFiles.toString());
+  RecentlyOpenedFilesList::registerRecentFileNatively(file);
 
 }
 

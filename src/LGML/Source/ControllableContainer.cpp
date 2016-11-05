@@ -159,7 +159,11 @@ void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
   }
   if(!pv.isRange()){
   onContainerParameterChangedAsync(pv.parameter, pv.value);
+    if (pv.parameter->isControllableExposed) dispatchFeedback(pv.parameter);
   }
+}
+void ControllableContainer::newMessage(const WeakReference<Trigger, juce::ReferenceCountedObject> & t){
+  if (t->isControllableExposed) dispatchFeedback(t);
 }
 void ControllableContainer::setNiceName(const String &_niceName) {
   if (niceName == _niceName) return;
@@ -619,7 +623,7 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 
   onContainerParameterChanged(p);
 
-  if (p->isControllableExposed) dispatchFeedback(p);
+
 }
 
 
@@ -635,7 +639,7 @@ void ControllableContainer::triggerTriggered(Trigger * t)
 		onContainerTriggerTriggered(t);
 	}
 
-    if (t->isControllableExposed) dispatchFeedback(t);
+
 
 	
 

@@ -97,10 +97,13 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
 }
-bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockSize) {
+bool LooperTrack::updatePendingLooperTrackState( uint64 curTime, int blockSize) {
 
-
+  // the sample act as free running clock when no quantization
+  if(getQuantization()==0) curTime = loopSample.getGlobalPlayPos();
   jassert (curTime>=0);
+
+
 
   bool stateChanged = (trackState != desiredState);
 
@@ -133,19 +136,13 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
       stateChanged = loopSample.stateChanged;
     }
   }
-  // stop oneShot if needed
-  if(parentLooper->isOneShot->boolValue()){
-    if((trackState == PLAYING || trackState==WILL_PLAY) && loopSample.numTimePlayed>=1){
-      desiredState = WILL_STOP;
-      quantizedPlayEnd = 0;
-      stateChanged=true;
-    }
-  }
+
 
 
   ////
   // apply quantization on play / rec
   const uint64 triggeringTime = curTime+blockSize;
+
   TimeManager * tm = TimeManager::getInstance();
 
   if (quantizedRecordStart!=NO_QUANTIZE) {
@@ -185,7 +182,7 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
         desiredState = STOPPED;
       }
       else{
-        if(isMasterTempoTrack()){
+        if(isMasterTempoTrack() ){
           TimeManager::getInstance()->playState->setValue(true,false,true);
 
         }
@@ -210,8 +207,16 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
       desiredState =  PLAYING;
       loopSample.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
       startPlayBeat = TimeManager::getInstance()->getBeatInNextSamples(firstPart);
+
+      // stop oneShot if needed
+      if(parentLooper->isOneShot->boolValue() ){
+        quantizedPlayEnd = quantizedPlayStart + loopSample.getRecordedLength() - 2*loopSample.getNumSampleFadeOut();
+      }
+
       quantizedPlayStart = NO_QUANTIZE;
       stateChanged = true;
+
+
     }
   }
   else if (quantizedPlayEnd!=NO_QUANTIZE) {
@@ -237,15 +242,15 @@ bool LooperTrack::updatePendingLooperTrackState(const uint64 curTime, int blockS
 
   //    DBG(playNeedle);
   if(stateChanged){
-    //    if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
-    //      TimeManager * tm = TimeManager::getInstance();
-    //      loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
-    //    }
+
     trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
     // DBG("a:"+trackStateToString(trackState));
 
   }
-
+//  if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
+//    TimeManager * tm = TimeManager::getInstance();
+//    loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample/getQuantization());
+//  }
 
   return stateChanged;
 

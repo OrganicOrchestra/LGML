@@ -141,7 +141,8 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
       t->processBlock(buffer, midiMessages);
       for (int i = totalNumInputChannels - 1; i >= 0; --i) {
         bufferOut.addFrom(i, 0, buffer, i, 0, buffer.getNumSamples());
-        if(needAudioIn)buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
+        if(needAudioIn)
+          buffer.copyFrom(i, 0, bufferIn, i, 0, buffer.getNumSamples());
       }
       if(!needAudioIn){buffer.clear();}
     }

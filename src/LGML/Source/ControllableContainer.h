@@ -43,7 +43,7 @@ public:
 };
 
 
-class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public Trigger::Listener, public ControllableContainerListener
+class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public Trigger::Listener,Trigger::AsyncListener, public ControllableContainerListener
 
 {
 public:
@@ -197,6 +197,7 @@ private:
 
   void notifyStructureChanged(ControllableContainer * origin);
   void newMessage(const Parameter::ParamWithValue&)override;
+  void newMessage(const WeakReference<Trigger, juce::ReferenceCountedObject> & t)override;
 
   WeakReference<ControllableContainer>::Master masterReference;
   friend class WeakReference<ControllableContainer>;

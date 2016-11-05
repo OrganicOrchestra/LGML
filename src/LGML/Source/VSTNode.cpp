@@ -50,6 +50,8 @@ blockFeedback(false)
     
     processWhenBypassed = addBoolParameter("processWhenBypassed", "some effects (Reverbs ...) need to process constantly even when bypassed", false);
     bProcessWhenBypassed = processWhenBypassed->boolValue();
+  setPreferedNumAudioInput(2);
+  setPreferedNumAudioOutput(2);
 }
 
 
@@ -98,7 +100,9 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
 #endif
                 }
                 
-                else{DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());}
+                else{
+                  DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());
+                }
             }
             else{DBG("avoid reloading VST : " << identifierString->stringValue());}
         }
