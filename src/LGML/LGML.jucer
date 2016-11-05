@@ -886,7 +886,8 @@
   </MODULES>
   <JUCEOPTIONS JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
                JUCE_PLUGINHOST_AU="enabled" JUCE_WEB_BROWSER="disabled" JUCE_ASIO="enabled"
-               JUCE_WASAPI="enabled" JUCE_DIRECTSOUND="enabled" JUCE_LOG_ASSERTIONS="enabled"/>
+               JUCE_WASAPI="enabled" JUCE_DIRECTSOUND="enabled" JUCE_LOG_ASSERTIONS="enabled"
+               JUCE_USE_CDREADER="disabled" JUCE_USE_CDBURNER="disabled"/>
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>

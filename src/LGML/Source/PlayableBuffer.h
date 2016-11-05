@@ -189,6 +189,7 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
 //    else{
 
       playNeedle += numSamples;
+    globalPlayNeedle+=numSamples;
       if(playNeedle>=recordNeedle){
         numTimePlayed ++;
       }
@@ -298,6 +299,7 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
         numTimePlayed = 0;
         startJumpNeedle = 0;
         setPlayNeedle(0);
+        globalPlayNeedle = 0;
         break;
       case BUFFER_PLAYING:
         fadeRecorded.startFadeIn();
@@ -306,6 +308,7 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
       case BUFFER_STOPPED:
         numTimePlayed = 0;
         fadeRecorded.startFadeOut();
+        globalPlayNeedle = 0;
 //        setPlayNeedle(0);
         break;
     }
@@ -333,6 +336,7 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
   uint64 getRecordedLength() const{return recordNeedle;}
 
   uint64 getPlayPos() const{return playNeedle;}
+  uint64 getGlobalPlayPos() const{return globalPlayNeedle;}
 
 
   bool stateChanged;
@@ -347,7 +351,7 @@ fadeRecorded.incrementFade(buffer.getNumSamples());
 
   int getSampleOffsetBeforeNewState(){return sampleOffsetBeforeNewState;};
 
-
+  int getNumSampleFadeOut(){return fadeRecorded.fadeOutNumSamples;};
 
 #if !LGML_UNIT_TESTS
 private:
@@ -363,7 +367,7 @@ private:
   
   
   
-  uint64 recordNeedle,playNeedle,startJumpNeedle;
+  uint64 recordNeedle,playNeedle,startJumpNeedle,globalPlayNeedle;
   
 };
 

@@ -39,19 +39,15 @@ engine->addEngineListener(this);
   //    (&getCommandManager())->getKeyMappings()->restoreFromXml (lastSavedKeyMappingsXML);
   addKeyListener ((&getCommandManager())->getKeyMappings());
 #if JUCE_MAC
-  setMacMainMenu (this,nullptr,"");
+  setMacMainMenu (this,nullptr,"Open recent file");
 #else
   //setMenu (this); //done in Main.cpp as it's a method of DocumentWindow
 #endif
 
 
-  
-
-  //e->initAudio();
-
   setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.6f));
   setWantsKeyboardFocus(true);
-//  grabKeyboardFocus();
+
 }
 
 
@@ -60,13 +56,9 @@ MainContentComponent::~MainContentComponent(){
 
 #if JUCE_MAC
   setMacMainMenu (nullptr);
-#else
-  //setMenuBar (nullptr);
 
 #endif
-  //    LookAndFeelOO::deleteInstance();
-
-  //DBG("Clear inspector");
+  
   engine->removeEngineListener(this);
   ShapeShifterManager::deleteInstance();
 }
