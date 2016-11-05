@@ -18,7 +18,7 @@ Controller("Serial"),
 port(nullptr)
 {
 
-  setNamespaceName("controller." + nameParam->stringValue());
+  setNamespaceName("controller." + shortName);
   scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
   logIncoming = addBoolParameter("logIncoming", "log Incoming midi message", false);
 
@@ -78,7 +78,7 @@ void SerialController::newJsFileLoaded()
 void SerialController::onContainerParameterChanged(Parameter * p) {
   Controller::onContainerParameterChanged(p);
   if(p==nameParam){
-    setNamespaceName("controller."+nameParam->stringValue());
+    setNamespaceName("controller."+shortName);
   }
   else if (p==scriptPath){
     loadFile(scriptPath->stringValue());
@@ -103,7 +103,9 @@ void SerialController::buildLocalEnv() {
 
   for (auto &v : variables)
   {
-    obj.setProperty(v->parameter->shortName, v->parameter->createDynamicObject());
+    if(Parameter * p = v->parameter){
+      obj.setProperty(v->parameter->shortName, p->createDynamicObject());
+    }
   }
 
   setLocalNamespace(obj);

@@ -15,13 +15,12 @@
 
 class JsControllableListenerObject;
 
-/// TODO need to be able to clean root name space user functions are never cleaned
-// may be by recreating a new JsEngine
+
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
 public Parameter::Listener,
 public Trigger::Listener ,
-public ControllableContainerListener,
-public DynamicObject
+public ControllableContainerListener
+
 {
 public:
   JsEnvironment(const String & ns,ControllableContainer * linkedContainer);
@@ -84,8 +83,9 @@ public:
 
   static Identifier noFunctionLogIdentifier;
 
-  static DynamicObject * getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
-  DynamicObject * getLocalEnv(){return this;}
+  static DynamicObject::Ptr getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
+//  DynamicObject * getLocalEnv(){return localEnv;}
+  DynamicObject::Ptr localEnv;
 
 
   // module name is the last element of dot separated localNamespace

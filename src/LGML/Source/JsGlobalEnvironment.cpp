@@ -23,7 +23,7 @@ JsGlobalEnvironment::JsGlobalEnvironment(){
     static const Identifier jsPostIdentifier("post");
 	static const Identifier jsGetMillisIdentifier("getMillis");
     getEnv()->setMethod(jsPostIdentifier, JsGlobalEnvironment::post);
-	getEnv()->setMethod(jsGetMillisIdentifier, JsGlobalEnvironment::getMillis);
+    getEnv()->setMethod(jsGetMillisIdentifier, JsGlobalEnvironment::getMillis);
     // default in global namespace
     linkToControllableContainer("time",TimeManager::getInstance());
     linkToControllableContainer("node",NodeManager::getInstance());
@@ -34,9 +34,9 @@ JsGlobalEnvironment::JsGlobalEnvironment(){
 
 void JsGlobalEnvironment::removeNamespace(const String & ns){removeNamespaceFromObject(ns,getEnv());}
 
-DynamicObject * JsGlobalEnvironment::getNamespaceObject(const String & ns){return getNamespaceFromObject(ns,getEnv());}
+DynamicObject::Ptr JsGlobalEnvironment::getNamespaceObject(const String & ns){return getNamespaceFromObject(ns,getEnv());}
 
-DynamicObject * JsGlobalEnvironment::getEnv(){return env.getDynamicObject();}
+DynamicObject::Ptr JsGlobalEnvironment::getEnv(){return env.getDynamicObject();}
 
 var JsGlobalEnvironment::post(const juce::var::NativeFunctionArgs& a){
     for(int i = 0 ; i < a.numArguments ;i++){

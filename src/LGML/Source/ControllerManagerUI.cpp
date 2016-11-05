@@ -83,7 +83,7 @@ void ControllerManagerUI::removeControllerUI(Controller * controller)
     ControllerUI * cui = getUIForController(controller);
     if (cui == nullptr)
     {
-        DBG("Controller not exist");
+        DBG("Controller dont exist");
         return;
     }
 

@@ -18,7 +18,7 @@
 
 class JsNode : public NodeBase,public JsEnvironment{
     public :
-    JsNode():NodeBase("JsNode",NodeType::JsNodeType,false),JsEnvironment("node.JsNode",this){
+    JsNode():NodeBase("JsNode",NodeType::JsNodeType,false),JsEnvironment("node.jsNode",this){
         canHavePresets = false;
         scriptPath = NodeBase::addStringParameter("ScriptPath","path for js script","");
       setPreferedNumAudioInput(0);
@@ -65,7 +65,7 @@ void newJsFileLoaded()override;
             loadFile(scriptPath->stringValue());
         }
         else if (p==nameParam){
-          setNamespaceName("node."+nameParam->stringValue());
+          setNamespaceName("node."+shortName);
         }
     }
 

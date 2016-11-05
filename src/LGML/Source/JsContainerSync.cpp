@@ -69,14 +69,42 @@ bool JsContainerSync::existInContainerNamespace(const String & ns){
     return getContainerNamespace(ns)!=nullptr;
 }
 
-DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent)
+//WIP : jsMethod for getting children controllable by name
+
+// support OSC style string / arrays and lists
+var getControllableForAddress(const var::NativeFunctionArgs & a){
+  ControllableContainer* callerCont = getObjectPtrFromJS<ControllableContainer>(a);
+  if(!callerCont)return var::undefined();
+  StringArray arr;
+  if(a.numArguments == 1){
+    if(a.arguments[0].isArray()){for(auto e:*a.arguments[0].getArray()){arr.add(e);};};
+    if(a.arguments[0].isString()){
+      arr.addTokens(a.arguments[0].toString(), "/","");
+      if(arr.size())arr.remove(0);
+    };
+  }
+  else if(a.numArguments>1){
+    for(int i = 0 ; i< a.numArguments;i ++ ){arr.add(a.arguments[i].toString());}
+  }
+  if(arr.size()){
+    Controllable * res = callerCont->getControllableForAddress(arr);
+    if(res){return res->createDynamicObject();}
+  }
+  return var::undefined();
+
+};
+
+DynamicObject *
+JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent)
 {
     DynamicObject*  myParent = parent;
     // create an object only if not skipping , if not add to parent
     if(!container->skipControllableNameInAddress)
         myParent = new DynamicObject();
     else{jassert(parent!=nullptr);}
-
+  static Identifier getControllableForAddressId("getControllableForAddress");
+  myParent->setMethod(getControllableForAddressId,getControllableForAddress);
+  myParent->setProperty(jsPtrIdentifier, (int64)container);
     for(auto &c:container->controllables){
         myParent->setProperty(c->shortName, c->createDynamicObject());
 
@@ -109,7 +137,7 @@ DynamicObject* JsContainerSync::createDynamicObjectFromContainer(ControllableCon
         else{
             DynamicObject * childObject = createDynamicObjectFromContainer(c,myParent);
             if(!c->skipControllableNameInAddress && childObject!=nullptr)
-                myParent->setProperty(c->shortName, var(childObject));
+                myParent->setProperty(c->shortName, childObject);
         }
     }
     }

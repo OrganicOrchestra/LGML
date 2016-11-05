@@ -15,6 +15,7 @@
 
 #include "DebugHelpers.h"
 #include "StringUtil.h"
+#include "JsHelpers.h"
 
 const Identifier ControllableContainer::presetIdentifier("preset");
 const Identifier ControllableContainer::paramIdentifier("parameters");
@@ -726,7 +727,6 @@ void ControllableContainer::loadJSONData(var data)
 	  }
   }
 
-
   loadJSONDataInternal(data);
 
 
@@ -796,3 +796,4 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
   }
   return false;
 }
+
