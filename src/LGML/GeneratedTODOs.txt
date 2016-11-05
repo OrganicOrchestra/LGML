@@ -13,15 +13,12 @@ GenericControllableContainerEditor.cpp
 
 
 TimeManager.cpp
-	line : 405
+	line : 404
 		//TODO: check
 
 
 ControllableContainer.cpp
-	line : 608
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
-
-	line : 701
+	line : 705
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -29,8 +26,11 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 487
+	line : 491
 		// TODO weird feedback when loading preset on parameter presetName
+
+	line : 612
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
 ControllableInspector.cpp

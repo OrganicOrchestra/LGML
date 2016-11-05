@@ -242,15 +242,15 @@ bool LooperTrack::updatePendingLooperTrackState( uint64 curTime, int blockSize) 
 
   //    DBG(playNeedle);
   if(stateChanged){
-    //    if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
-    //      TimeManager * tm = TimeManager::getInstance();
-    //      loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample * tm->beatPerBar->intValue()/getQuantization());
-    //    }
+
     trackStateListeners.call(&LooperTrack::Listener::internalTrackStateChanged, trackState);
     // DBG("a:"+trackStateToString(trackState));
 
   }
-
+//  if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
+//    TimeManager * tm = TimeManager::getInstance();
+//    loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample/getQuantization());
+//  }
 
   return stateChanged;
 
