@@ -208,7 +208,7 @@ private:
 
 
 //
-class JsControllableListenerObject:public Parameter::Listener,public Trigger::Listener
+class JsControllableListenerObject:public Parameter::AsyncListener,public Trigger::AsyncListener
 {
   public :
   JsControllableListenerObject(JsEnvironment * js,Controllable * p):jsEnv(js),controllable(p){
@@ -216,11 +216,11 @@ class JsControllableListenerObject:public Parameter::Listener,public Trigger::Li
 
     if(Parameter * pp = getParameter()){
       isTrigger = false;
-      pp->addParameterListener(this);
+      pp->addAsyncParameterListener(this);
     }
     else if(Trigger * tt = getTrigger()){
       isTrigger = true;
-      tt->addTriggerListener(this);
+      tt->addAsyncTriggerListener(this);
     }
 
     else{
@@ -231,8 +231,8 @@ class JsControllableListenerObject:public Parameter::Listener,public Trigger::Li
   static Identifier parameterObjectId;
   
   virtual ~JsControllableListenerObject(){
-    if(Parameter * pp = getParameter()) pp->removeParameterListener(this);
-    if(Trigger * tt = getTrigger()) tt->removeTriggerListener(this);
+    if(Parameter * pp = getParameter()) pp->removeAsyncParameterListener(this);
+    if(Trigger * tt = getTrigger()) tt->removeAsyncTriggerListener(this);
   };
 
   Parameter * getParameter(){ return dynamic_cast<Parameter*>(controllable.get());}
@@ -247,20 +247,18 @@ class JsControllableListenerObject:public Parameter::Listener,public Trigger::Li
     }
   }
 
-  // overriden in Js
+  // overriden in Js 
 #pragma warning(push)
 #pragma warning(disable:4305 4800) 
-  static var dummyCallback(const var::NativeFunctionArgs & /*a*/){
-	  return var::undefined;
-  };
+  static var dummyCallback(const var::NativeFunctionArgs & /*a*/){return var::undefined;};
 #pragma warning(pop)
-  void parameterValueChanged(Parameter *p)override
+  void newMessage(const Parameter::ParamWithValue & pv)override
   {
-      jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,&p->value,1), true);
+      jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,&pv.value,1), true);
 
   };
 
-  void triggerTriggered(Trigger *)override
+  void newMessage(const WeakReference<Trigger> & )override
   {
     jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,nullptr,0), true);
   }
@@ -271,32 +269,7 @@ class JsControllableListenerObject:public Parameter::Listener,public Trigger::Li
   var object;
 };
 
-//var Parameter::addObjectListener(const juce::var::NativeFunctionArgs &a){
-//  if(a.numArguments==0)return var();
-//  Parameter * c = getObjectPtrFromJS<Parameter>(a);
-//  if(c == nullptr  ) return var();
-//  CallBackFunction* res = new CallBackFunction(a.arguments[0]);
-//  c->addParameterListener(res);
-//
-//  return res;
-//}
-//var Parameter::removeObjectListener(const juce::var::NativeFunctionArgs &a){
-//  if(a.numArguments==0)return var();
-//  Parameter * c = getObjectPtrFromJS<Parameter>(a);
-//  if(c == nullptr  ) return var();
-//  Array<CallBackFunction*> toRemove;
-//
-//  for(auto & listener:c->listeners.getListeners()){
-//    if(CallBackFunction * cb = dynamic_cast<CallBackFunction*>(listener)){
-//      if(cb->callBack == a.arguments[0]){toRemove.add(cb);}
-//    }
-//  }
-//
-//  for(auto & cb:toRemove){
-//    c->removeParameterListener(cb);
-//  }
-//  return var();
-//}
+
 
 
 #endif  // JAVASCRIPTENVIRONNEMENT_H_INCLUDED
