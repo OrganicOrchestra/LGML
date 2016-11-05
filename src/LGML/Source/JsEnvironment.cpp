@@ -257,7 +257,7 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
     if (!JsGlobalEnvironment::getInstance()->isDirty()) {
       res = jsEngine->callFunction(function, Nargs, result);
     } else {
-      DBG("JS avoiding to call function while global environment is dirty");
+//      DBG("JS avoiding to call function while global environment is dirty");
     }
   }
   if (logResult && result->failed()) {
