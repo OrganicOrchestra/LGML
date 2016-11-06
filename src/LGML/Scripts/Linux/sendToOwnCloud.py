@@ -38,11 +38,12 @@ def sendToOwnCloud(originPath,destPath):
 		print (l,end="")
 
 
+
 for l in sh('cd '+localMakePath+' && make CONFIG='+config+' -j2'):
 	print(l,end="");
 for l in sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName):
 	print (l,end="")
-ownCloudPath = "Tools/LGML/App-Dev/Linux/Ubuntu/x86-64/LGML.tar.gz"
+ownCloudPath = "Tools/LGML/App-Dev/Linux/Ubuntu16.04/LGMLx86-64.tar.gz"
 sendToOwnCloud(localExportFile,urllib.pathname2url(ownCloudPath))
 
 

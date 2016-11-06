@@ -14,7 +14,7 @@
 
 #include "DMXController.h"
 #include "MIDIController.h"
-#include "JavaScriptController.h"
+#include "JavascriptController.h"
 #include "OSCCustomController.h"
 #include "SerialController.h"
 

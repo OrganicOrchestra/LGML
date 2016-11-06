@@ -9,7 +9,7 @@
 */
 
 #include "OSCCustomControllerUI.h"
-#include "OScCustomControllerEditor.h"
+#include "OSCCustomControllerEditor.h"
 
 OSCCustomControllerUI::OSCCustomControllerUI(OSCCustomController * controller) :
 	OSCControllerUI(controller),

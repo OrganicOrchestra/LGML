@@ -1,14 +1,14 @@
 /*
  ==============================================================================
 
- JavaScriptController.cpp
+ JavascriptController.cpp
  Created: 5 May 2016 10:15:48am
  Author:  Martin Hermant
 
  ==============================================================================
  */
 
-#include "JavaScriptController.h"
+#include "JavascriptController.h"
 #include "NodeManager.h"
 #include "DebugHelpers.h"
 #include "JsEnvironment.h"
