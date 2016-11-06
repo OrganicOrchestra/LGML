@@ -28,6 +28,7 @@ public:
 	HashMap<String, var> enumValues;
 
 	var getValueData() { return enumValues[value]; };
+  bool containsValue(){return enumValues.contains(value);};
 	
 	EnumParameterUI * createUI(EnumParameter * target = nullptr);
 	ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;

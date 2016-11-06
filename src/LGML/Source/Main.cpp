@@ -40,7 +40,12 @@ public:
   void initialise (const String& commandLine) override
   {
     // This method is where you should put your application's initialisation code..
-
+    auto commandLinesElements = StringUtil::parseCommandLine(commandLine);
+    if(commandLinesElements.containsCommand("v")){
+      std::cout << ProjectInfo::versionString << std::endl;
+      quit();
+      return;
+    }
     PropertiesFile::Options options;
     options.applicationName     = "LGML";
     options.filenameSuffix      = "settings";
@@ -86,7 +91,7 @@ public:
 
     mainWindow = new MainWindow (getApplicationName(),engine);
 
-    engine->parseCommandline(commandLine);
+    engine->parseCommandline(commandLinesElements);
     if(!engine->getFile().existsAsFile()){
       engine->createNewGraph();
       engine->setChangedFlag(false);
@@ -119,7 +124,7 @@ public:
     // the other instance's command-line arguments were.
 
     DBG("Another instance started !");
-    engine->parseCommandline(commandLine);
+    engine->parseCommandline(StringUtil::parseCommandLine(commandLine));
 
 
   }
@@ -162,7 +167,8 @@ public:
 #endif
 
 #if JUCE_OPENGL
-	  openGLContext.attachTo(*getTopLevelComponent());
+      openGLContext.setContinuousRepainting(false);
+      openGLContext.attachTo(*getTopLevelComponent());
 #endif
 
     }

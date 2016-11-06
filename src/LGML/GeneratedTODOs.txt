@@ -159,7 +159,7 @@ ConnectableNodeUI.h
 
 
 Main.cpp
-	line : 180
+	line : 185
 		//@martin added but commented for testing (relou behavior)
 
 
@@ -186,7 +186,7 @@ NodeManager.h
 
 
 Engine.h
-	line : 139
+	line : 140
 		// TODO implement progression
 
 

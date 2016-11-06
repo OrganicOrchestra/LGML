@@ -10,7 +10,8 @@ execName = "LGML"
 localMakePath = os.path.abspath("../../Builds/LinuxMakefile/")+'/'
 localExportPath = localMakePath+'build/'
 localAppFile = localExportPath+execName
-localExportFile = localAppFile+".tar.gz"
+
+
 
 
 config = 'Ubuntu'
@@ -26,7 +27,12 @@ def sh(cmd):
 	return_code = res.wait()
 	if return_code != 0:
 		raise subprocess.CalledProcessError(return_code, cmd)
-	
+
+def getVersion():
+	for l in sh("exec "+localAppFile+" -v"):
+		return l[:-1]
+
+
 def sendToOwnCloud(originPath,destPath):
 	credPath = os.path.dirname(os.path.abspath(__file__));
 	credPath = os.path.join(credPath,os.pardir,"owncloud.password")
@@ -41,9 +47,14 @@ def sendToOwnCloud(originPath,destPath):
 
 for l in sh('cd '+localMakePath+' && make CONFIG='+config+' -j2'):
 	print(l,end="");
+
+version = getVersion();
+localExportFile = localAppFile+".tar.gz"
+print (localExportFile)
+
 for l in sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName):
 	print (l,end="")
-ownCloudPath = "Tools/LGML/App-Dev/Linux/Ubuntu16.04/LGMLx86-64.tar.gz"
+ownCloudPath = "Tools/LGML/App-Dev/Linux/Ubuntu16.04/LGML"+"_"+version+".tar.gz"
 sendToOwnCloud(localExportFile,urllib.pathname2url(ownCloudPath))
 
 

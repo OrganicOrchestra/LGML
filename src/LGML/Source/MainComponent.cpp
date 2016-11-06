@@ -88,7 +88,7 @@ void MainContentComponent::showAudioSettings()
   AudioDeviceSelectorComponent audioSettingsComp(getAudioDeviceManager(),
                                                  0, 256,
                                                  0, 256,
-                                                 true,true, false,false);
+                                                 false,false, false,false);
   audioSettingsComp.setSize (500, 450);
 
   DialogWindow::LaunchOptions o;
