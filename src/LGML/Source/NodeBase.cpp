@@ -20,7 +20,8 @@ dryWetFader(5000,5000,false,1),
 muteFader(1000,1000,false,1),
 lastDryVolume(0),
 globalRMSValueIn(0),
-globalRMSValueOut(0)
+globalRMSValueOut(0),
+wasEnabled(false)
 
 {
 
@@ -73,6 +74,7 @@ bool NodeBase::hasDataOutputs()
 
 void NodeBase::onContainerParameterChanged(Parameter * p)
 {
+  if(!p)return;
   ConnectableNode::onContainerParameterChanged(p);
 
   if(p==outputVolume){

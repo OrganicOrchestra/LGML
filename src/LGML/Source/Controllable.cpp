@@ -21,7 +21,8 @@ Controllable::Controllable(const Type &type, const String & niceName, const Stri
     isControllableExposed(true),
     isControllableFeedbackOnly(false),
     hideInEditor(false),
-	replaceSlashesInShortName(true)
+	replaceSlashesInShortName(true),
+	enabled(enabled)
 {
     setEnabled(enabled);
     setNiceName(niceName);
@@ -104,12 +105,12 @@ DynamicObject * Controllable::createDynamicObject()
 var Controllable::setControllableValue(const juce::var::NativeFunctionArgs& a) {
 
 	Controllable * c = getObjectPtrFromJS<Controllable>(a);
-	bool success = false;
+//	bool success = false;
 
 	if (c != nullptr)
 	{
 
-		success = true;
+//		success = true;
 
 		if (a.numArguments == 0 && c->type == Controllable::Type::TRIGGER) {
 			((Trigger *)c)->trigger();
@@ -153,7 +154,7 @@ var Controllable::setControllableValue(const juce::var::NativeFunctionArgs& a) {
 				break;
 
 			default:
-				success = false;
+//				success = false;
 				break;
 
 			}

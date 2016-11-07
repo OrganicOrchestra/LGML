@@ -28,7 +28,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 	ControllableContainer("root")
 {
 	skipControllableNameInAddress = true;
-
+  loadingStartTime = 0;
   initAudio();
   Logger::setCurrentLogger (LGMLLogger::getInstance());
 

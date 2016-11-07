@@ -134,7 +134,7 @@ void NodeConnectionUI::buildPath()
 		Path p;
 		float nodeMargin = 20;
 		float destMidY = sourcePos.y + (endPos.y - sourcePos.y) / 2;
-		float limitY1 = getBaseConnector() == sourceConnector ? sourcePos.y : endPos.y;
+    float limitY1;// = getBaseConnector() == sourceConnector ? sourcePos.y : endPos.y;
 		float limitY2 = getBaseConnector() == sourceConnector ? endPos.y : sourcePos.y;
 
 		bool pathGoUp = getBaseConnector() == sourceConnector ? endPos.x < sourcePos.y : endPos.x > sourcePos.y;

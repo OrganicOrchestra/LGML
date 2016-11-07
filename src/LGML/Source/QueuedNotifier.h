@@ -13,12 +13,15 @@
 #pragma once
 
 #include "JuceHeader.h"//keep
+
+// MessageClass should provide a default constructor
 template<typename MessageClass,class CriticalSectionToUse = CriticalSection>
 class QueuedNotifier:public  AsyncUpdater{
 public:
 
     QueuedNotifier(int _maxSize):fifo(_maxSize){
         maxSize = _maxSize;
+      messageQueue.ensureStorageAllocated(maxSize);
 
     }
 
@@ -34,38 +37,38 @@ public:
 
 
 
-    void addMessage( MessageClass * msg,bool forceSendNow = false){
-        if(listeners.size()==0 && lastListeners.size()==0){
-            delete msg;
-            return;
-        }
-        forceSendNow |= MessageManager::getInstance()->isThisTheMessageThread();
-        if(forceSendNow){
-            listeners.call(&Listener::newMessage,*msg);
-            lastListeners.call(&Listener::newMessage,*msg);
-            delete msg;
-            return;
-        }
-        else{
+  void addMessage(MessageClass * msg,bool forceSendNow = false){
+    if(listeners.size()==0 && lastListeners.size()==0){
+      delete msg;
+      return;
+    }
+    forceSendNow |= MessageManager::getInstance()->isThisTheMessageThread();
+    if(forceSendNow){
+      listeners.call(&Listener::newMessage,*msg);
+      lastListeners.call(&Listener::newMessage,*msg);
+      delete msg;
+      return;
+    }
+    else{
 
-            // add if we are in a decent array size
-            {
-            int start1,size1,start2,size2;
-            fifo.prepareToWrite(1, start1, size1, start2, size2);
-                if(size1>0){
-                    if(messageQueue.size()<maxSize){messageQueue.add(msg);}
+      // add if we are in a decent array size
+      {
+        int start1,size1,start2,size2;
+        fifo.prepareToWrite(1, start1, size1, start2, size2);
+        if(size1>0){
+          if(messageQueue.size()<maxSize){messageQueue.add(msg);}
                     else{messageQueue.set(start1,msg);}
-                }
-                if(size2>0){
-                    if(messageQueue.size()<maxSize){messageQueue.add(msg);}
-                    else{messageQueue.set(start2,msg);}
-                }
-
-            fifo.finishedWrite (size1 + size2);
-
-            }
-            triggerAsyncUpdate();
         }
+        if(size2>0){
+          if(messageQueue.size()<maxSize){messageQueue.add(msg);}
+                    else{messageQueue.set(start2,msg);}
+        }
+
+        fifo.finishedWrite (size1 + size2);
+
+      }
+      triggerAsyncUpdate();
+    }
 
     }
 
