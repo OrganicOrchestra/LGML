@@ -9,7 +9,6 @@
 */
 
 #include "RuleManagerUI.h"
-#include "MainComponent.h"
 #include "Inspector.h"
 
 RuleManagerUI::RuleManagerUI(const String &contentName, RuleManager * _ruleManager) :

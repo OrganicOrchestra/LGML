@@ -12,7 +12,7 @@
 #include "Inspector.h"
 #include "CustomEditor.h"
 #include "GenericControllableContainerEditor.h"
-#include "MainComponent.h"
+//#include "MainComponent.h"
 #include "ShapeShifterFactory.h"
 #include "ShapeShifterManager.h"
 

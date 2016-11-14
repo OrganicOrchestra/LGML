@@ -15,7 +15,7 @@
 #include "NodeManagerUI.h"
 #include "ConnectorComponent.h"
 #include "FloatSliderUI.h"
-#include "MainComponent.h"
+
 
 
 

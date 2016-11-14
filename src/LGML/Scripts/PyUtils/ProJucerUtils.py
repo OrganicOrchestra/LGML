@@ -1,3 +1,4 @@
+# THIS FILE IS BINDED TO RELATIVE LOCATIONS CHANGE THEM IF DISPLACING FILE
 
 from writeSha import *
 
@@ -13,7 +14,11 @@ def getVersion():
 	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
 	
 
-
+def getXmlVersion():
+	import xml.etree.ElementTree as ET
+	tree = ET.parse(JuceProjectPath)
+	root = tree.getroot()
+	return root.attrib["version"]
 
 
 def formatCode(sourceFolder):
@@ -38,6 +43,8 @@ def buildJUCE():
 	sh(proJucerPath+" -h")
 	sh(proJucerPath+ " --resave "+JuceProjectPath)
 
+#  allow to use this file as a simple version getter
+# DO NOT CHANGE
 if __name__=="__main__":
-	tagVersion()
+	print getXmlVersion();
 

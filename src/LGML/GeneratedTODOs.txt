@@ -148,6 +148,11 @@ ParameterUI.cpp
 		// TODO : changing vst preset sometimes hit that
 
 
+Style.h
+	line : 13
+		// TODO : implement nicer colour handling (maybe skinnable)
+
+
 ConnectableNode.cpp
 	line : 67
 		//@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)

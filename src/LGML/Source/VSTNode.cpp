@@ -17,7 +17,7 @@
 #include "PluginWindow.h"//keep
 
 
-AudioDeviceManager& getAudioDeviceManager();
+extern AudioDeviceManager& getAudioDeviceManager();
 
 
 class VSTLoaderJob : public ThreadPoolJob{

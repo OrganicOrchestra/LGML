@@ -12,7 +12,7 @@
 #include "DummyNode.h"
 #include "NodeContainer.h"
 
-AudioDeviceManager& getAudioDeviceManager();
+extern AudioDeviceManager& getAudioDeviceManager();
 bool isEngineLoadingFile();
 juce_ImplementSingleton(NodeManager);
 

@@ -10,7 +10,6 @@
 
 #include "RuleUI.h"
 #include "Style.h"
-#include "MainComponent.h"
 #include "RuleEditor.h"
 
 RuleUI::RuleUI(Rule * _rule) :
