@@ -13,7 +13,7 @@
 #include "LGMLLogger.h"
 #include "MainComponent.h"
 #include "DebugHelpers.h"
-#include "StringUtil.h"
+
 #include "NodeContainer.h"
 
 
@@ -28,7 +28,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 	ControllableContainer("root")
 {
 	skipControllableNameInAddress = true;
-
+  loadingStartTime = 0;
   initAudio();
   Logger::setCurrentLogger (LGMLLogger::getInstance());
 
@@ -75,10 +75,9 @@ Engine::~Engine(){
   
 }
 
-void Engine::parseCommandline(const String & commandLine){
+void Engine::parseCommandline(const CommandLineElements & commandLine){
 
-  for (auto & c:StringUtil::parseCommandLine(commandLine)){
-
+  for (auto & c:commandLine){
     if(c.command== "f"|| c.command==""){
       if(c.args.size()==0){
         LOG("no file provided for command : "+c.command);
@@ -96,6 +95,7 @@ void Engine::parseCommandline(const String & commandLine){
     }
 
   }
+
 
 }
 

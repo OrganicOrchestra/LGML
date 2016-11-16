@@ -24,7 +24,7 @@ Identifier JsEnvironment::noFunctionLogIdentifier("no function Found");
 Identifier JsEnvironment::onUpdateIdentifier("onUpdate");
 
 
-JsEnvironment::JsEnvironment(const String & ns, ControllableContainer * _linkedContainer) :linkedContainer(_linkedContainer), localNamespace(ns), _hasValidJsFile(false), autoWatch(false), isInSyncWithLGML(false) {
+JsEnvironment::JsEnvironment(const String & ns, ControllableContainer * _linkedContainer) :linkedContainer(_linkedContainer), localNamespace(ns), _hasValidJsFile(false), autoWatch(false), isInSyncWithLGML(false),isLoadingFile(false) {
 
 
   localEnv = new DynamicObject();

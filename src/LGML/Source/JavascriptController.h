@@ -1,7 +1,7 @@
 /*
  ==============================================================================
 
- JavaScriptController.h
+ JavascriptController.h
  Created: 5 May 2016 10:15:48am
  Author:  Martin Hermant
 

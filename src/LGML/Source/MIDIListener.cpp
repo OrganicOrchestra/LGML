@@ -10,10 +10,11 @@
 
 #include "MIDIListener.h"
 #include "DebugHelpers.h"
-#include "MainComponent.h"
+
 
 MIDIListener::MIDIListener()
-{midiPortName = String::empty;
+{
+  midiPortName = String::empty;
   MIDIManager::getInstance()->addMIDIListener(this);
 }
 

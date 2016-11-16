@@ -39,12 +39,12 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 114
+	line : 116
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
 
 
 EngineFileDocument.cpp
-	line : 51
+	line : 53
 		// TODO handle quick reloading of file
 
 
@@ -148,8 +148,13 @@ ParameterUI.cpp
 		// TODO : changing vst preset sometimes hit that
 
 
+Style.h
+	line : 13
+		// TODO : implement nicer colour handling (maybe skinnable)
+
+
 ConnectableNode.cpp
-	line : 66
+	line : 67
 		//@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
 
 
@@ -159,7 +164,7 @@ ConnectableNodeUI.h
 
 
 Main.cpp
-	line : 179
+	line : 185
 		//@martin added but commented for testing (relou behavior)
 
 
@@ -186,7 +191,7 @@ NodeManager.h
 
 
 Engine.h
-	line : 139
+	line : 140
 		// TODO implement progression
 
 

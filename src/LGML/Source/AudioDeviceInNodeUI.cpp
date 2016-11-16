@@ -136,7 +136,7 @@ void AudioDeviceInNodeContentUI::nodeParameterChanged(ConnectableNode *, Paramet
 	int index = 0;
 	for (auto &m : muteToggles)
 	{
-		if (p == m->parameter.get())
+		if (p && (p == m->parameter.get()))
 		{
 			if(p->boolValue()) vuMeters[index]->setVoldB(0);
 		}

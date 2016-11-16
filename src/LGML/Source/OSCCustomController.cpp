@@ -47,7 +47,7 @@ Result OSCCustomController::processMessageInternal(const OSCMessage & msg)
 
 	Result r(Result::ok());
 
-	if (v == nullptr) r = Result::fail("Variable not found");
+  if (v == nullptr){ r = Result::fail("Variable not found"); return r;}
 
 	if (msg.size() == 0) r = Result::fail("No argument");
 	else if (!msg[0].isFloat32()) r = Result::fail("Argument is not a float");

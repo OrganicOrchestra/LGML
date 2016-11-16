@@ -25,6 +25,7 @@
 #include "FastMapper.h"//keep
 #include "VSTManager.h"//keep
 #include "ProgressNotifier.h"
+#include "StringUtil.h"
 class AudioFucker;
 
 
@@ -46,7 +47,7 @@ public:
 
     void suspendAudio(bool shouldSuspend);
 
-    void parseCommandline(const String & );
+    void parseCommandline(const CommandLineElements & );
 
     //==============================================================================
     // see EngineFileDocument.cpp

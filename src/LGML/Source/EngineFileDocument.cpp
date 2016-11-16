@@ -30,11 +30,13 @@ String Engine::getDocumentTitle() {
 }
 
 void Engine::createNewGraph(){
+  loadingStartTime =  Time::currentTimeMillis();
   engineListeners.call(&EngineListener::startLoadFile);
 
   suspendAudio(true);
   clear();
   isLoadingFile = true;
+
   ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
   node->xPosition->setValue(150);
   node->yPosition->setValue(100);

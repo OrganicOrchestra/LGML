@@ -11,23 +11,22 @@
 #ifndef STYLE_H_INCLUDED
 #define STYLE_H_INCLUDED
 #pragma once
-
-#define NORMAL_COLOR    Colour(0xff666666)
-#define BG_COLOR        Colour(0xff222222)
-#define PANEL_COLOR     Colour(0xff444444)
-#define FRONT_COLOR     Colour(0xffCCCCCC)
-#define LIGHTCONTOUR_COLOR Colour(0xffAAAAAA)
-#define HIGHLIGHT_COLOR Colour(0xffFF922F)
-#define CONTOUR_COLOR   Colour(0xcc303030)
-
-#define TEXT_COLOR      Colour(0xffCCCCCC)
-#define TEXTNAME_COLOR  Colour(0xff999999)
-
-#define AUDIO_COLOR     Colours::cadetblue
-#define DATA_COLOR      Colours::pink
-
-#define FEEDBACK_COLOR		Colour(0xff18b5ef)
-#define PARAMETER_FRONT_COLOR Colour(0xff99ff66)
+// TODO : implement nicer colour handling (maybe skinnable)
+// Warning don't use JUCE's internal color definitions as it will be empty at this stage of compilation
+#include <JuceHeader.h>
+const Colour NORMAL_COLOR    (0xff666666);
+const Colour BG_COLOR        (0xff222222);
+const Colour PANEL_COLOR     (0xff444444);
+const Colour FRONT_COLOR     (0xffCCCCCC);
+const Colour LIGHTCONTOUR_COLOR (0xffAAAAAA);
+const Colour HIGHLIGHT_COLOR (0xffFF922F);
+const Colour CONTOUR_COLOR   (0xcc303030);
+const Colour TEXT_COLOR      (0xffCCCCCC);
+const Colour TEXTNAME_COLOR  (0xff999999);
+const Colour AUDIO_COLOR     (0xff5f9ea0);//(Colours::cadetblue);//
+const Colour DATA_COLOR      (0xffffc0cb);//(Colours::pink);//
+const Colour FEEDBACK_COLOR		(0xff18b5ef);
+const Colour PARAMETER_FRONT_COLOR (0xff99ff66);
 
 
 #endif  // STYLE_H_INCLUDED

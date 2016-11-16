@@ -40,7 +40,7 @@ void ParameterProxy::setValueInternal(var & _value)
 
 void ParameterProxy::parameterValueChanged(Parameter * p)
 {
-	if (p == linkedParam)
+	if (p && (p == linkedParam))
 	{
 		setValue(p->value); //should be silent ?
 	} else if (p == &proxyAlias)

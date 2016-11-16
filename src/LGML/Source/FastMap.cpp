@@ -10,8 +10,8 @@
 
 #include "FastMap.h"
 #include "NodeManager.h"
-#include "Engine.h"
 
+#include "Engine.h"
 extern Engine * getEngine();
 
 FastMap::FastMap() :

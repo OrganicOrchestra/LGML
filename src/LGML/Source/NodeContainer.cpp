@@ -18,7 +18,7 @@
 
 
 
-AudioDeviceManager& getAudioDeviceManager();
+extern AudioDeviceManager& getAudioDeviceManager();
 bool isEngineLoadingFile();
 
 NodeContainer::NodeContainer(const String &name) :

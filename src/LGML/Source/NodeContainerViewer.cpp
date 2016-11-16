@@ -261,7 +261,7 @@ void NodeContainerViewer::updateEditingConnection()
 
 bool NodeContainerViewer::checkDropCandidates()
 {
-  Connector * candidate = nullptr;
+//  Connector * candidate = nullptr;
   for (int i = 0; i < nodesUI.size(); i++)
   {
     Array<Connector *> compConnectors = nodesUI.getUnchecked(i)->getComplementaryConnectors(editingConnection->getBaseConnector());
@@ -272,7 +272,7 @@ bool NodeContainerViewer::checkDropCandidates()
       float dist = (float)(c->getMouseXYRelative().getDistanceFromOrigin());
       if (dist < 20)
       {
-        candidate = c;
+//        candidate = c;
         setCandidateDropConnector(c);
         return true;
       }

@@ -14,6 +14,8 @@
 
 #include "JuceHeader.h"//keep
 
+
+extern AudioDeviceManager & getAudioDeviceManager();
 class MIDIManager : public Timer
 {
 public:

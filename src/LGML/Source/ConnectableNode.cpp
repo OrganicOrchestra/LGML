@@ -26,7 +26,8 @@ canBeRemovedByUser(true),
 ControllableContainer(name),
 userCanAccessInputs(true),
 userCanAccessOutputs(true),
-audioNode(nullptr)
+audioNode(nullptr),
+outputVolume(nullptr)
 {
   //set Params
   nameParam = addStringParameter("Name", "Set the visible name of the node.", name);

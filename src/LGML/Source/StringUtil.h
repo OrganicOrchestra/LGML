@@ -55,6 +55,13 @@ public:
     return CommandLineElement();
   }
 
+  bool containsCommand(const String & c){
+    for(auto & a:*this){
+      if(a.command==c)return true;
+    }
+    return false;
+  }
+
 };
 
 

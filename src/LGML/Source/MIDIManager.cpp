@@ -10,7 +10,7 @@
 
 #include "MIDIManager.h"
 #include "LGMLLogger.h"
-#include "MainComponent.h"
+
 #include "DebugHelpers.h"
 
 juce_ImplementSingleton(MIDIManager)
