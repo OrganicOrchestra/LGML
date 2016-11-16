@@ -65,7 +65,7 @@ public:
 class Spat2DTarget : public Spat2DHandle
 {
 public:
-	Spat2DTarget(int index);
+	Spat2DTarget(int index, Colour color = Colours::orange);
 	float radius;
 	float influence;
 
@@ -84,12 +84,13 @@ public:
 
 	OwnedArray<Spat2DSource> sources;
 	OwnedArray<Spat2DTarget> targets;
+	ScopedPointer<Spat2DTarget> globalTarget;
 
 	Spat2DNode * node;
 	
 	void updateNumSources();
 	void updateNumTargets();
-	void updateGlobalTargetRadius();
+	void updateTargetRadius();
 
 	void updateSourcePosition(int sourceIndex);
 	void updateTargetPosition(int targetIndex);

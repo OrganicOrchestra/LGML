@@ -590,7 +590,7 @@ Data * NodeBase::getInputDataByName(const String & dataName)
 
 void NodeBase::dataChanged(Data * d)
 {
-  DBG("Data changed, ioType " << (d->ioType == Data::Input ? "input" : "output"));
+  //DBG("Data changed, ioType " << (d->ioType == Data::Input ? "input" : "output"));
   if (d->ioType == Data::Input)
   {
     if (enabledParam->boolValue()) {
