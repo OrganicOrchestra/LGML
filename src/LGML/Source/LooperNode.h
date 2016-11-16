@@ -60,6 +60,9 @@ public:
   Trigger * clearAllTrig;
   Trigger * stopAllTrig;
 
+  Trigger * selectNextTrig;
+  Trigger * selectPrevTrig;
+
   FloatParameter * volumeSelected;
   BoolParameter * isMonitoring;
   IntParameter * numberOfTracks;

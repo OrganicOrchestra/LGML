@@ -43,6 +43,9 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   autoNextTrackAfterRecord = addBoolParameter("Auto Next", "If enabled, it will select automatically the next track after a track record.", false);
   autoClearPreviousIfEmpty = addBoolParameter("Auto Clear Previous", "/!\\ Will only work if 'Auto Next' is enabled !\nIf enabled, it will automatically clear the previous track if 'clear' is triggered and the actual selected track is empty.", false);
 
+  selectNextTrig = addTrigger("Select Next", "Select Next Track");
+  selectPrevTrig = addTrigger("Select Prev", "Select Previous Track");
+
   addChildControllableContainer(&trackGroup);
 
   trackGroup.setNumTracks(numberOfTracks->intValue());
@@ -273,16 +276,26 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
     selectTrack->setValue(0);
     outputVolume->setValue(DB0_FOR_01);
   }
+
   if (t == stopAllTrig) {
     for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
       trackGroup.tracks[i]->stopTrig->trigger();
     }
   }
+
   if (t == selectAllTrig)
   {
     selectTrack->setValue(-1);
 
+  } else if (t == selectNextTrig)
+  {
+	  selectTrack->setValue(selectTrack->intValue() + 1);
+  } else if (t == selectPrevTrig)
+  {
+	  selectTrack->setValue(selectTrack->intValue() - 1);
   }
+
+
 #if !LGML_UNIT_TESTS
   if(t==exportAudio){
     FileChooser myChooser("Please select the directory for exporting audio ...");
