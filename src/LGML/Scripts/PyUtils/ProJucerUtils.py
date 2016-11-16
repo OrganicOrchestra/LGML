@@ -2,7 +2,7 @@
 
 from writeSha import *
 
-proJucerPath = "/Applications/ProJucer.app/Contents/MacOS/ProJucer"
+proJucerPath = "/Applications/Projucer.app/Contents/MacOS/Projucer"
 
 JuceProjectPath = os.path.dirname(os.path.abspath(__file__));
 JuceProjectPath = os.path.join(JuceProjectPath,"../../LGML.jucer");
@@ -11,7 +11,7 @@ JuceProjectPath = os.path.abspath(JuceProjectPath);
 
 
 def getVersion():
-	return sh(proJucerPath+ " --get-version " + JuceProjectPath)[:-1]
+	return sh(proJucerPath+ " --get-version '" + JuceProjectPath+"'")[:-1]
 	
 
 def getXmlVersion():
@@ -27,13 +27,13 @@ def formatCode(sourceFolder):
 	sh(proJucerPath+ " --trim-whitespace "+sourceFolder);
 
 def tagVersion():
-	sh(proJucerPath+ " --git-tag-version "+ JuceProjectPath)
+	sh(proJucerPath+ " --git-tag-version '"+ JuceProjectPath+"'")
 
 def updateVersion(bumpVersion,specificVersion):
 	if(bumpVersion):
-		sh(proJucerPath+ " --bump-version " + JuceProjectPath)
+		sh(proJucerPath+ " --bump-version '" + JuceProjectPath+"'")
 	elif specificVersion:
-		sh(proJucerPath+ " --set-version " +specificVersion+" "+ JuceProjectPath)
+		sh(proJucerPath+ " --set-version " +specificVersion+" '"+ JuceProjectPath+"'")
 
 	tagVersion()
 	writeSha();
@@ -41,7 +41,7 @@ def updateVersion(bumpVersion,specificVersion):
 
 def buildJUCE():
 	sh(proJucerPath+" -h")
-	sh(proJucerPath+ " --resave "+JuceProjectPath)
+	sh(proJucerPath+ " --resave '"+JuceProjectPath+"'")
 
 #  allow to use this file as a simple version getter
 # DO NOT CHANGE

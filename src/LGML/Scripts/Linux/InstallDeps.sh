@@ -12,5 +12,7 @@ sudo apt-get -y --force-yes install mesa-common-dev
 sudo apt-get -y --force-yes install libasound2-dev
 sudo apt-get -y --force-yes install freeglut3-dev
 sudo apt-get -y --force-yes install libxcomposite-dev
+sudo apt-get -y --force-yes install libjack-dev
+
 #https
 #sudo apt-get -y install libcurl4-gnutls-dev
