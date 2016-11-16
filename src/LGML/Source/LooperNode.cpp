@@ -20,8 +20,8 @@ trackGroup(this),
 streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
 {
 
-  numberOfTracks =		addIntParameter("numberOfTracks",		"number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-  numberOfAudioChannelsIn = addIntParameter("numberOfChannelsPerTrack", "number of channels on each audioTrack", 2,1,2);
+  numberOfTracks =		addIntParameter("Number Of Tracks",		"number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
+  numberOfAudioChannelsIn = addIntParameter("Channels Per Track", "number of channels on each audioTrack", 2,1,2);
   exportAudio =			addTrigger("exportAudio",				"export audio of all recorded Tracks");
   selectAllTrig =		addTrigger("Select All",				"Select All tracks, for all clear or main volume for instance");
   selectTrack =			addIntParameter("Select track",			"set track selected", 0, -1, 0);
@@ -32,14 +32,17 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   volumeSelected =		addFloatParameter("Volume",				"Set the volume of the selected track",1, 0, 1);
   clearAllTrig =		addTrigger("ClearAll",					"Tells all tracks to clear it's content if got any");
   stopAllTrig =			addTrigger("StopAll",					"Tells all tracks to stop it's content if got any");
-  isMonitoring =		addBoolParameter("monitor",				"do we monitor audio input ? ", false);
+  isMonitoring =		addBoolParameter("Monitor",				"do we monitor audio input ? ", false);
   preDelayMs =			addIntParameter("Pre Delay MS",			"Pre process delay (in milliseconds)", 0, 0, 250);
-  quantization =		addIntParameter("quantization",			"quantization for this looper - 1 is global", -1, -1, 32);
-  isOneShot =			addBoolParameter("isOneShot",			"do we play once or loop track", false);
-  firstTrackSetTempo =	addBoolParameter("firstTrackSetTempo",	"do the first track sets the global tempo or use quantization", true);
-  waitForOnset =		addBoolParameter("wait for onset",		"wait for onset before actually recording", false);
-  onsetThreshold =		addFloatParameter("onsetThreshold",		"threshold before onset", 0.01f,0.0001f,0.1f);
-  outputAllTracksSeparately = addBoolParameter("tracksOutputSeparated", "split all tracks in separate audio channel out", false);
+  quantization =		addIntParameter("Quantization",			"quantization for this looper - 1 is global", -1, -1, 32);
+  isOneShot =			addBoolParameter("Is One Shot",			"do we play once or loop track", false);
+  firstTrackSetTempo =	addBoolParameter("First Track Set Tempo",	"do the first track sets the global tempo or use quantization", true);
+  waitForOnset =		addBoolParameter("Wait For Onset",		"wait for onset before actually recording", false);
+  onsetThreshold =		addFloatParameter("Onset Threshold",		"threshold before onset", 0.01f,0.0001f,0.1f);
+  outputAllTracksSeparately = addBoolParameter("Tracks Output Separated", "split all tracks in separate audio channel out", false);
+  autoNextTrackAfterRecord = addBoolParameter("Auto Next", "If enabled, it will select automatically the next track after a track record.", false);
+  autoClearPreviousIfEmpty = addBoolParameter("Auto Clear Previous", "/!\\ Will only work if 'Auto Next' is enabled !\nIf enabled, it will automatically clear the previous track if 'clear' is triggered and the actual selected track is empty.", false);
+
   addChildControllableContainer(&trackGroup);
 
   trackGroup.setNumTracks(numberOfTracks->intValue());
@@ -231,8 +234,11 @@ int LooperNode::getQuantization(){
 void LooperNode::onContainerTriggerTriggered(Trigger * t) {
   if (t == recPlaySelectedTrig) {
 
-    if (selectedTrack != nullptr) selectedTrack->recPlayTrig->trigger();
-
+	  if (selectedTrack != nullptr)
+	  {
+		  selectedTrack->recPlayTrig->trigger();
+		  if (autoNextTrackAfterRecord->boolValue() && selectedTrack->trackState == LooperTrack::TrackState::RECORDING) selectTrack->setValue(selectTrack->intValue() + 1);
+	  }
   }
   else if (t == playSelectedTrig) {
 
@@ -241,8 +247,17 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
   }
   else if (t == clearSelectedTrig) {
 
-    if (selectedTrack != nullptr) selectedTrack->clearTrig->trigger();
-    else clearAllTrig->trigger();
+	  if (selectedTrack != nullptr)
+	  {
+		  if (autoNextTrackAfterRecord->boolValue() && autoClearPreviousIfEmpty->boolValue())
+		  {
+			  if (selectedTrack->isEmpty()) selectTrack->setValue(selectTrack->intValue() - 1);
+		  }
+		  selectedTrack->clearTrig->trigger();
+	  } else
+	  {
+		  clearAllTrig->trigger();
+	  }
 
   }
   else if (t == stopSelectedTrig) {

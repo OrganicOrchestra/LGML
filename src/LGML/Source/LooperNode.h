@@ -72,6 +72,9 @@ public:
   BoolParameter * waitForOnset;
   FloatParameter * onsetThreshold;
   BoolParameter * outputAllTracksSeparately;
+  BoolParameter * autoNextTrackAfterRecord;
+  BoolParameter * autoClearPreviousIfEmpty;
+
   Trigger * exportAudio;
 
   AudioBuffer<float> bufferIn;

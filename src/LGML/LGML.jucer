@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="1.1.0"
+<JUCERPROJECT id="a1hJPO" name="LGML" projectType="guiapp" version="1.1.1"
               bundleIdentifier="org.anic.orchestra.LGML" includeBinaryInAppConfig="1"
               jucerVersion="4.3.0" companyName="Organic Orchestra" companyWebsite="http://www.organic-orchestra.com">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -799,7 +799,7 @@
         <MODULEPATH id="juce_gui_extra" path="../../../../../../Dev/JUCE/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../../../../../Dev/JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../../../../../Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../../../../../Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="~/Dev/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../../../Dev/JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../../../../../Dev/JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../../../../../Dev/JUCE/modules"/>
@@ -887,7 +887,8 @@
   <JUCEOPTIONS JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
                JUCE_PLUGINHOST_AU="enabled" JUCE_WEB_BROWSER="disabled" JUCE_ASIO="enabled"
                JUCE_WASAPI="enabled" JUCE_DIRECTSOUND="enabled" JUCE_LOG_ASSERTIONS="enabled"
-               JUCE_USE_CDREADER="disabled" JUCE_USE_CDBURNER="disabled"/>
+               JUCE_USE_CDREADER="disabled" JUCE_USE_CDBURNER="disabled" JUCE_ALSA="enabled"
+               JUCE_JACK="enabled"/>
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>

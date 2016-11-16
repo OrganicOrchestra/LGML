@@ -435,6 +435,11 @@ void LooperTrack::setSelected(bool _isSelected) {
   trackStateListeners.call(&LooperTrack::Listener::internalTrackSetSelected, isSelected);
 }
 
+bool LooperTrack::isEmpty()
+{
+	return trackState == TrackState::CLEARED;
+}
+
 
 void LooperTrack::askForSelection(bool) {
   selectTrig->trigger();
