@@ -10,10 +10,11 @@
 
 #include "BoolToggleUI.h"
 #include "Style.h"
+#include "BoolParameter.h"
 
 //==============================================================================
 BoolToggleUI::BoolToggleUI(Parameter * parameter) :
-    ParameterUI(parameter), invertVisuals(false)
+    ParameterUI(parameter)
 {
     setSize(10,10);
 }
@@ -31,7 +32,7 @@ void BoolToggleUI::paint(Graphics & g)
 
 	Colour onColour = parameter->isEditable?HIGHLIGHT_COLOR:FEEDBACK_COLOR;
 
-    bool valCheck = invertVisuals ? !parameter->boolValue():parameter->boolValue();
+    bool valCheck = ((BoolParameter *)parameter.get())->invertVisuals ? !parameter->boolValue():parameter->boolValue();
     Colour c =  valCheck? onColour  : NORMAL_COLOR;
 
     g.setGradientFill(ColourGradient(c.brighter(),(float)getLocalBounds().getCentreX(),(float)getLocalBounds().getCentreY(), c.darker(), 2.f,2.f,true));

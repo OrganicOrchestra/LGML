@@ -164,6 +164,12 @@ void MIDIController::onContainerParameterChanged(Parameter * p){
   }
   else if(p==scriptPath){
     loadFile(scriptPath->stringValue());
+  } else if (p == enabledParam)
+  {
+	  if (enabledParam->boolValue())
+	  {
+		  startUpdateTimerIfNeeded();
+	  } else stopTimer(1);
   }
 }
 

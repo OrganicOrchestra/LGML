@@ -32,6 +32,8 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   volumeSelected =		addFloatParameter("Volume",				"Set the volume of the selected track",1, 0, 1);
   clearAllTrig =		addTrigger("ClearAll",					"Tells all tracks to clear it's content if got any");
   stopAllTrig =			addTrigger("StopAll",					"Tells all tracks to stop it's content if got any");
+  playAllTrig =			addTrigger("PlayAll",					"Tells all tracks to play it's content if got any");
+  togglePlayStopAllTrig = addTrigger("Toggle PlayStop", "Toggle Play/Stop all, will stop if at least one track is playing");
   isMonitoring =		addBoolParameter("Monitor",				"do we monitor audio input ? ", false);
   preDelayMs =			addIntParameter("Pre Delay MS",			"Pre process delay (in milliseconds)", 0, 0, 250);
   quantization =		addIntParameter("Quantization",			"quantization for this looper - 1 is global", -1, -1, 32);
@@ -227,9 +229,22 @@ bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
 bool LooperNode::areAllTrackClearedButThis(LooperTrack * _t) {
   bool result = true;
   for (auto & t : trackGroup.tracks) {
-    if (t != _t)result &= t->trackState == LooperTrack::TrackState::CLEARED;
+    if (t != _t) result &= t->trackState == LooperTrack::TrackState::CLEARED;
   }
   return result;
+}
+bool LooperNode::hasAtLeastOneTrackPlaying()
+{
+	for (auto & t : trackGroup.tracks) {
+		if (t->trackState == LooperTrack::TrackState::RECORDING ||
+			t->trackState == LooperTrack::TrackState::WILL_PLAY ||
+			t->trackState == LooperTrack::TrackState::PLAYING)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 int LooperNode::getQuantization(){
   return quantization->intValue()>=0?quantization->intValue():TimeManager::getInstance()->quantizedBarFraction->intValue();
@@ -281,6 +296,20 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t) {
     for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
       trackGroup.tracks[i]->stopTrig->trigger();
     }
+  } else if (t == playAllTrig)
+  {
+	  for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
+		  trackGroup.tracks[i]->playTrig->trigger();
+	  }
+  } else if (t == togglePlayStopAllTrig) {
+	  
+	  if (hasAtLeastOneTrackPlaying())
+	  {
+		  stopAllTrig->trigger();
+	  } else
+	  {
+		  playAllTrig->trigger();
+	  }
   }
 
   if (t == selectAllTrig)

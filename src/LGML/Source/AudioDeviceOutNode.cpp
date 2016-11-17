@@ -110,6 +110,7 @@ void AudioDeviceOutNode::addVolMute()
 
   BoolParameter * p = addBoolParameter(String(outMutes.size() + 1), "Mute if disabled", false);
   p->setCustomShortName(String("mute") + String(outMutes.size() + 1));
+  p->invertVisuals = true;
   outMutes.add(p);
 
   FloatParameter * v = addFloatParameter("volume"+String(volumes.size()), "volume", DB0_FOR_01);
