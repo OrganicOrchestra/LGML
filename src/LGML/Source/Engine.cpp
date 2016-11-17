@@ -48,6 +48,8 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 Engine::~Engine(){
 
   engineListeners.clear();
+  controllableContainerListeners.clear();
+
 
   closeAudio();
 
