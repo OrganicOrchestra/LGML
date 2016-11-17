@@ -29,7 +29,7 @@ Outliner::Outliner(const String &contentName) : ShapeShifterContent(contentName)
 
 Outliner::~Outliner()
 {
-	if(getEngine())getEngine()->removeControllableContainerListener(this);
+	if(getEngine()) getEngine()->removeControllableContainerListener(this);
 	
 }
 

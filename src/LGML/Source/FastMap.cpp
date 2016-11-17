@@ -41,6 +41,7 @@ FastMap::~FastMap()
 //	setGhostAddress(String::empty);
 
 	fastMapListeners.call(&FastMapListener::fastMapRemoved, this);
+	if(getEngine())  getEngine()->removeControllableContainerListener(this);
 }
 
 void FastMap::process()

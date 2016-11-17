@@ -46,9 +46,10 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 
 
 Engine::~Engine(){
+
+  engineListeners.clear();
+
   closeAudio();
-
-
 
   NodeManager::deleteInstance();
   PresetManager::deleteInstance();

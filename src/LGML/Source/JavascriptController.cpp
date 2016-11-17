@@ -167,8 +167,11 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
         loadFile(jsPath->stringValue());
     }
     else if(p==enabledParam){
-     if(enabledParam->boolValue()) startTimer(1, onUpdateTimerInterval); // 50fps on update Timer
-     else stopTimer(1);
+
+		if (enabledParam->boolValue())
+		{
+			startUpdateTimerIfNeeded();
+		}else stopTimer(1);
     }
 };
 
@@ -225,4 +228,21 @@ var JavascriptController::createJsOSCListener(const var::NativeFunctionArgs & a)
   }
 
   return var::undefined();
+}
+inline void JsOSCListener::processMessage(const OSCMessage & msg) {
+	if (addressPattern == msg.getAddressPattern()) {
+		StringArray adList;
+		adList.addTokens(msg.getAddressPattern().toString(), "/", "");
+		if (adList.size())adList.remove(0);
+
+		var jsArgs[2];
+		var * addressList = &jsArgs[0];
+		for (auto &a : adList) { addressList->append(a); };
+		var * argsList = &jsArgs[1];
+		if (msg.size() == 1) { *argsList = JavascriptController::OSCArgumentToVar(msg[0]); } else if (msg.size()>1) {
+			for (auto & m : msg) { argsList->append(JavascriptController::OSCArgumentToVar(m)); }
+		}
+
+		jsEnv->callFunctionFromIdentifier(oscReceivedCallbackId, var::NativeFunctionArgs(object, jsArgs, 2), true);
+	}
 }

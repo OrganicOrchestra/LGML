@@ -123,10 +123,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
 
   Result r = loadScriptContent(jsString);
 
-  static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
-  if(userDefinedFunctions.contains(onUpdateFId))
-  {startTimer(1, onUpdateTimerInterval);}
-  else{stopTimer(1);}
+  startUpdateTimerIfNeeded();
 
   if(r.failed() && !isInSyncWithLGML){triesToLoad--;}
   else{isInSyncWithLGML =true;}
@@ -216,8 +213,8 @@ var JsEnvironment::callFunction(const String& function, const Array<var>& args, 
 var JsEnvironment::callFunction(const String& function, const var& args, bool logResult, Result * result) {
 
   if (!functionIsDefined(function)) {
-    if (result != nullptr)result->fail(noFunctionLogIdentifier.toString());
-    if (logResult)NLOG(localNamespace, noFunctionLogIdentifier.toString());
+    if (result != nullptr) result->fail(noFunctionLogIdentifier.toString()+" : "+function);
+    if (logResult)NLOG(localNamespace, noFunctionLogIdentifier.toString() + " : "+function);
     return var::undefined();
   }
   return callFunctionFromIdentifier(function, args, logResult, result);
@@ -334,8 +331,19 @@ void JsEnvironment::timerCallback(int timerID)
   } else if (timerID == 1)
   {
 
-    callFunction("onUpdate", var(), true);
+    callFunction(onUpdateIdentifier.toString(), var(), true);
   }
+}
+
+void JsEnvironment::startUpdateTimerIfNeeded()
+{
+	static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
+	if (userDefinedFunctions.contains(onUpdateFId))
+	{
+		startTimer(1, onUpdateTimerInterval);
+	} else {
+		stopTimer(1);
+	}
 }
 
 String JsEnvironment::printAllNamespace()

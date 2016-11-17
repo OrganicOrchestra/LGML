@@ -72,10 +72,12 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
 
-  if(!loopSample.processNextBlock(buffer)){
+  if(!loopSample.processNextBlock(buffer) && trackState != STOPPED){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);
   }
+
+
   if(loopSample.isPlaying()){
     trackStateListeners.call(&LooperTrack::Listener::internalTrackTimeChanged,loopSample.getPlayPos()*1.0/(1+loopSample.getRecordedLength()));
   }

@@ -51,6 +51,7 @@ public:
   void    showFile();
 
 
+  void startUpdateTimerIfNeeded();
 
   String printAllNamespace();
 
