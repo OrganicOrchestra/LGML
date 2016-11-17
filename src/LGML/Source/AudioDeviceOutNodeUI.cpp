@@ -109,8 +109,6 @@ void AudioDeviceOutNodeContentUI::addVuMeter()
     int curVuMeterNum = muteToggles.size();
 
     BoolToggleUI * b = audioOutNode->outMutes[curVuMeterNum]->createToggle();
-
-    b->invertVisuals = true;
     muteToggles.add(b);
     addAndMakeVisible(b);
 

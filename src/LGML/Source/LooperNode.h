@@ -59,6 +59,8 @@ public:
   Trigger * selectAllTrig;
   Trigger * clearAllTrig;
   Trigger * stopAllTrig;
+  Trigger * playAllTrig;
+  Trigger * togglePlayStopAllTrig;
 
   Trigger * selectNextTrig;
   Trigger * selectPrevTrig;
@@ -92,6 +94,7 @@ public:
   bool askForBeingMasterTrack(LooperTrack * t);
   bool askForBeingAbleToPlayNow(LooperTrack *_t);
   bool areAllTrackClearedButThis(LooperTrack * _t);
+  bool hasAtLeastOneTrackPlaying();
 
 
   void onContainerTriggerTriggered(Trigger * t) override;

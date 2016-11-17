@@ -45,6 +45,8 @@ public:
   Trigger * playTrig;
   Trigger * clearTrig;
   Trigger * stopTrig;
+  Trigger * togglePlayStopTrig;
+
   StringParameter  * stateParameterString;
   FloatParameter * volume;
   FloatParameter * beatLength;

@@ -40,12 +40,15 @@ lastVolume(0)
   recPlayTrig = addTrigger("Rec Or Play", "Tells the track to wait for the next bar and then start record or play");
   playTrig = addTrigger("Play", "Tells the track to wait for the next bar and then stop recording and start playing");
   stopTrig = addTrigger("Stop", "Tells the track to stop ");
+  togglePlayStopTrig = addTrigger("Toggle Play Stop", "Toggle Play / Stop");
+
   clearTrig = addTrigger("Clear", "Tells the track to clear it's content if got any");
   volume = addFloatParameter("Volume", "Set the volume of the track", defaultVolumeValue, 0, 1);
   mute = addBoolParameter("Mute", "Sets the track muted (or not.)", false);
   solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
   beatLength = addFloatParameter("Length", "length in bar", 0, 0, 200);
 
+  mute->invertVisuals = true;
 
   stateParameterString = addStringParameter("state", "track state", "");
   stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer(stateParameterString);
@@ -398,7 +401,8 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
 
   }
   else if (t == playTrig) {
-    setTrackState(WILL_PLAY);
+    if(!isEmpty()) setTrackState(WILL_PLAY); //avoid playing if empty;
+	
   }
   else if (t == clearTrig) {
     setTrackState(CLEARED);
@@ -407,6 +411,9 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
   }
   else if (t == stopTrig) {
     setTrackState(WILL_STOP);
+  } else if (t == togglePlayStopTrig)
+  {
+	  setTrackState(trackState != PLAYING ? WILL_PLAY : WILL_STOP);
   }
 }
 
@@ -429,9 +436,6 @@ bool LooperTrack::isMasterTempoTrack(){
   && parentLooper->lastMasterTempoTrack  == this;
 }
 
-
-
-
 void LooperTrack::setSelected(bool _isSelected) {
   isSelected=_isSelected;
   trackStateListeners.call(&LooperTrack::Listener::internalTrackSetSelected, isSelected);
@@ -449,6 +453,8 @@ void LooperTrack::askForSelection(bool) {
 
 
 void LooperTrack::setTrackState(TrackState newState) {
+
+  if (newState == trackState) return;
 
   int quantizeTime = getQuantization();
   TimeManager * timeManager = TimeManager::getInstance();
