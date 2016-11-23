@@ -133,6 +133,7 @@ if __name__ == "__main__":
 	if args.build:
 		buildAll();
 	if args.export:
+		sendToOwncloud = True
 		exportAll();
 
 
