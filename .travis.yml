@@ -51,8 +51,6 @@ install:
         src/LGML/Scripts/linux/installDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
         src/LGML/Scripts/osx/installDeps.sh;
-    else
-        echo "$TARGET" , target not supported  && exit(1);
     fi
 
 
@@ -62,8 +60,6 @@ script:
         python src/LGML/Scripts/linux/buildScript.py;
       elif [ "$TARGET" == "osx" ] ; then
         python src/LGML/Scripts/osx/buildScript.py;
-      else
-        echo "$TARGET" , target not supported  && exit(1);
       fi
 
 
