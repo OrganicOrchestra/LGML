@@ -69,6 +69,7 @@ def buildApp(xcodeProjPath,configuration,appPath,njobs,clean = False):
 
 
 def createDmg(exportFileBaseName,appPath):
+	import dmgbuild
 	print 'creating dmg'
 	os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
 	dmgbuild.build_dmg(exportFileBaseName,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':appPath})
@@ -109,7 +110,7 @@ def buildAll():
 
 def exportAll():
 	global appPath
-	import dmgbuild
+	
 
 	localPath = localExportPath+generateProductBaseName();
 	dmgPath = createDmg(localPath,appPath);
