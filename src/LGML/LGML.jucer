@@ -897,7 +897,7 @@
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" extraCompilerFlags="-Wno-reorder&#10;-Weffc++"
                postbuildCommand="" smallIcon="jsU7Hw" targetFolder="Builds/MacOSX"
-               vst3Folder="dfscq" vstFolder="">
+               vst3Folder="/Users/Tintamar/SDKs/VST3 SDK" vstFolder="">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="../../External/serial/include" isDebug="0" linkTimeOptimisation="1"

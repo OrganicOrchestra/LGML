@@ -40,12 +40,10 @@ xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
 executable_name = "LGML"+("" if configuration=="Release" else "_"+configuration)
 appPath = os.path.join(xcodeProjPath,"build",configuration,executable_name+".app")
 
-isBleedingEdge = False
+isBeta = False
 
 def generateProductBaseName():
-	global isBleedingEdge
 	name =  executable_name+ "_v"+str(ProJucerUtils.getVersion())
-	if isBleedingEdge : name+='_bleedingEdge'
 	return name
 
 
@@ -122,7 +120,7 @@ def exportAll():
 	# gitCommit()
 
 if __name__ == "__main__":
-	global isBleedingEdge
+	global isBeta
 	print sys.argv
 	
 	import argparse
@@ -131,17 +129,23 @@ if __name__ == "__main__":
 	                    help='build it')
 	parser.add_argument('--export', action='store_true',
 	                    help='export it')
-	parser.add_argument('--bleedingEdge', action='store_true',
-	                    help='export it')
+	parser.add_argument('--beta', action='store_true',
+	                    help='switch to beta version (only name affected for now)')
 
 	args = parser.parse_args()
 	needBuild = args.build
 	needExport= args.export
-	isBleedingEdge = args.bleedingEdge
+	isBeta = args.beta
 	if len(sys.argv)==1:
 		needBuild = True;
 		needExport=True;
 
+	if isBeta:
+		currentV  = ProJucerUtils.getVersionAsList()
+		currentV[-1] = "beta"
+		ProJucerUtils.setVersionAsList(currentV)
+
+		
 	if needBuild:
 		buildAll();
 	if needExport:
