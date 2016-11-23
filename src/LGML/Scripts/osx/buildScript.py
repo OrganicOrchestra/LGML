@@ -92,7 +92,7 @@ def sendToOwnCloud(originPath,destPath):
 
 
 def buildAll():
-	ProJucerUtils.updateModulesPathIfNeeded()
+	ProJucerUtils.updatePathsIfNeeded()
 	ProJucerUtils.proJucerPath = 'dummy'
 	ProJucerUtils.getIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=getCredential(),osType="osx")
 
