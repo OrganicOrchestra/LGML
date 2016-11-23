@@ -14,7 +14,7 @@ def hasValidProjucerPath():
 	global proJucerPath
 	return os.path.exists(proJucerPath)
 
-def getIfNeeded(tmpFolder,credentials,osType):
+def getProjucerIfNeeded(tmpFolder,credentials,osType):
 	global proJucerPath
 
 	if  not hasValidProjucerPath() :
@@ -76,8 +76,9 @@ def updatePathsIfNeeded():
 
 
 def getVersion():
-	global proJucerPath,JuceProjectPath
-	return sh(proJucerPath+ " --get-version '" + JuceProjectPath+"'")[:-1]
+	return getXmlVersion();
+	# global proJucerPath,JuceProjectPath
+	# return sh(proJucerPath+ " --get-version '" + JuceProjectPath+"'")[:-1]
 	
 
 def getXmlVersion():

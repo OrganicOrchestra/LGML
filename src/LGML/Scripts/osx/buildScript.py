@@ -40,10 +40,13 @@ xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
 executable_name = "LGML"+("" if configuration=="Release" else "_"+configuration)
 appPath = os.path.join(xcodeProjPath,"build",configuration,executable_name+".app")
 
-
+isBleedingEdge = False
 
 def generateProductBaseName():
-	return executable_name+ "_v"+str(ProJucerUtils.getVersion())
+	global isBleedingEdge
+	name =  executable_name+ "_v"+str(ProJucerUtils.getVersion())
+	if isBleedingEdge : name+='_bleedingEdge'
+	return name
 
 
 
@@ -94,7 +97,7 @@ def sendToOwnCloud(originPath,destPath):
 def buildAll():
 	ProJucerUtils.updatePathsIfNeeded()
 	ProJucerUtils.proJucerPath = 'dummy'
-	ProJucerUtils.getIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=getCredential(),osType="osx")
+	ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=getCredential(),osType="osx")
 
 	if ProJucerUtils.hasValidProjucerPath():
 		ProJucerUtils.updateVersion(bumpVersion,specificVersion);
@@ -105,7 +108,9 @@ def buildAll():
 	buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
 
 def exportAll():
+	global appPath
 	import dmgbuild
+
 	localPath = localExportPath+generateProductBaseName();
 	dmgPath = createDmg(localPath,appPath);
 	for p in localExportPath2:
@@ -116,6 +121,7 @@ def exportAll():
 	# gitCommit()
 
 if __name__ == "__main__":
+	global isBleedingEdge
 	print sys.argv
 	
 	import argparse
@@ -124,16 +130,22 @@ if __name__ == "__main__":
 	                    help='build it')
 	parser.add_argument('--export', action='store_true',
 	                    help='export it')
+	parser.add_argument('--bleedingEdge', action='store_true',
+	                    help='export it')
 
 	args = parser.parse_args()
+	needBuild = args.build
+	needExport= args.export
+	isBleedingEdge = args.bleedingEdge
 	if len(sys.argv)==1:
-		args.build = True;
-		args.export=True;
+		needBuild = True;
+		needExport=True;
 
-	if args.build:
+	if needBuild:
 		buildAll();
-	if args.export:
-		sendToOwncloud = True
+	if needExport:
+		# send per default if used explicitly with export arg
+		sendToOwncloud = args.export
 		exportAll();
 
 
