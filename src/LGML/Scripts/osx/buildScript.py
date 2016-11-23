@@ -124,10 +124,9 @@ if __name__ == "__main__":
 		needExport=True;
 
 	if isBeta:
-		ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=OwncloudUtils.getCredential(),osType="osx")
 		currentV  = ProJucerUtils.getVersionAsList()
-		currentV[-1] = "beta"
-		ProJucerUtils.setVersionAsList(currentV)
+		specificVersion = '.'.join(map(str,currentV[:-1]))+"beta"
+
 
 		
 	if needBuild:

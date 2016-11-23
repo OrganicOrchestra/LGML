@@ -94,6 +94,8 @@ def getVersion():
 	# return sh(proJucerPath+ " --get-version '" + JuceProjectPath+"'")[:-1]
 	
 def getVersionAsList():
+	""" last element will be suffix or empty if not applicable
+	"""
 	v= getXmlVersion()
 	s = v.split('.')
 
@@ -109,9 +111,8 @@ def getVersionAsList():
 	s+=[suffix]
 	return s
 
-def setVersionAsList(t):
-	version = '.'.join(map(str,t[:-1]))+t[-1]
-	updateVersion(False,version)
+
+	
 
 
 def getXmlVersion():
