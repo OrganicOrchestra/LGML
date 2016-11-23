@@ -7,4 +7,5 @@ which python;
 pip install -U pip; 
 pip install dmgbuild;
 pwd;
-git clone https://github.com/julianstorer/JUCE.git;
+cd && cd ..;
+git clone "https://github.com/julianstorer/JUCE.git";
