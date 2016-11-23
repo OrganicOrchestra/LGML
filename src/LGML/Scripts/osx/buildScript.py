@@ -91,9 +91,9 @@ def sendToOwnCloud(originPath,destPath):
 	sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+getCredential()+" -k",printIt=False)
 
 
-if __name__ == "__main__":
+def buildAll():
 	ProJucerUtils.proJucerPath = 'dummy'
-	ProJucerUtils.getIfNeeded(tmpFolder=os.path.abspath('tmp'),credentials=getCredential(),osType="osx")
+	ProJucerUtils.getIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=getCredential(),osType="osx")
 
 	if ProJucerUtils.hasValidProjucerPath():
 		ProJucerUtils.updateModulesPathIfNeeded()
@@ -104,6 +104,7 @@ if __name__ == "__main__":
 	
 	buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
 
+def exportAll():
 	localPath = localExportPath+generateProductBaseName();
 	dmgPath = createDmg(localPath,appPath);
 	for p in localExportPath2:
@@ -112,4 +113,25 @@ if __name__ == "__main__":
 		ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
 		sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
 	# gitCommit()
+
+if __name__ == "__main__":
+	print sys.argv
+	
+	import argparse
+	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
+	parser.add_argument('--build', action='store_true',
+	                    help='build it')
+	parser.add_argument('--export', action='store_true',
+	                    help='export it')
+
+	args = parser.parse_args()
+	if len(sys.argv)==1:
+		args.build = True;
+		args.export=True;
+
+	if args.build:
+		buildAll();
+	if args.export:
+		exportAll();
+
 

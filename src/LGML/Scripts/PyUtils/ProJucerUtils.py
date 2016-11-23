@@ -35,7 +35,8 @@ def getIfNeeded(tmpFolder,credentials,osType):
 def updateModulesPathIfNeeded():
 	global proJucerPath,JuceProjectPath
 
-	possibleJucesPaths = map(os.path.abspath,map(lambda x:x+'/JUCE/modules',[os.environ['HOME']+'/Dev','../../','../../../','../../../../','../../../../../']))
+	relativesPaths = ['','..','../..','../../..','../../../..','../../../../..',os.environ['HOME']+'/Dev']
+	possibleJucesPaths = map(os.path.abspath,map(lambda x:x+'/JUCE/modules',relativesPaths))
 
 	import xml.etree.ElementTree as ET
 	tree = ET.parse(JuceProjectPath)

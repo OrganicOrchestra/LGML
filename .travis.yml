@@ -57,11 +57,17 @@ install:
 script:
 
     - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        python src/LGML/Scripts/linux/buildScript.py;
+        python src/LGML/Scripts/linux/buildScript.py --build;
       elif [ "$TARGET" == "osx" ] ; then
-        python src/LGML/Scripts/osx/buildScript.py;
+        python src/LGML/Scripts/osx/buildScript.py --build;
       fi
 
+after_success:
+  - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
+        sh src/LGML/Scripts/linux/installExportDeps.sh && python src/LGML/Scripts/linux/buildScript.py --export;
+    elif [ "$TARGET" == "osx" ] ; then
+        sh src/LGML/Scripts/osx/installExportDeps.sh && python src/LGML/Scripts/osx/buildScript.py --export;
+    fi
 
 git:
   depth: 1
