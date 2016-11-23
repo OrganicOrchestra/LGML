@@ -63,7 +63,7 @@ def updatePathsIfNeeded():
 	
 	if not os.path.exists(oldModulePath):
 		print 'current module path doesnt exists',oldModulePath,'searching a valid one'
-		newPath = getValidPath('/JUCE/modules')
+		newPath = getValidPath('JUCE/modules')
 		if newPath:
 			print 'found new module path updating projucer for : '+newPath
 			for x in root.findall('EXPORTFORMATS')[0].findall('XCODE_MAC')[0].findall('MODULEPATHS')[0].findall('MODULEPATH'):
