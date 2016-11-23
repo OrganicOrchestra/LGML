@@ -88,7 +88,7 @@ def getCredential():
 	return credentials
 
 def sendToOwnCloud(originPath,destPath):
-	sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+getCredential()+" -k")
+	sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+getCredential()+" -k",printIt=False)
 
 
 if __name__ == "__main__":

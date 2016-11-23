@@ -24,7 +24,7 @@ def getIfNeeded(tmpFolder,credentials,osType):
 		print proJucerPath , hasValidProjucerPath()
 		zipPath = os.path.join(tmpFolder,'Projucer.zip')
 		if not hasValidProjucerPath():
-			sh("curl -k \"https://163.172.42.66/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+osType+"/Projucer.zip\" -u "+credentials+" > "+zipPath)
+			sh("curl -k \"https://163.172.42.66/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+osType+"/Projucer.zip\" -u "+credentials+" > "+zipPath,printIt=False)
 			sh('tar -xzf '+zipPath+' -C '+tmpFolder)
 			if not hasValidProjucerPath():
 				print 'projucer download failed'

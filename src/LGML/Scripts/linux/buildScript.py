@@ -40,7 +40,7 @@ def sendToOwnCloud(originPath,destPath):
 	with open(credPath) as json_data:
 		credentials = json.loads(json_data.read())
 
-	for l in sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"]+" -k"):
+	for l in sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"]+" -k",printIt=False):
 		print (l,end="")
 
 
