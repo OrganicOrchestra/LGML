@@ -96,6 +96,7 @@ if __name__ == "__main__":
 	ProJucerUtils.getIfNeeded(tmpFolder=os.path.abspath('tmp'),credentials=getCredential(),osType="osx")
 
 	if ProJucerUtils.hasValidProjucerPath():
+		ProJucerUtils.updateModulesPathIfNeeded()
 		ProJucerUtils.updateVersion(bumpVersion,specificVersion);
 		ProJucerUtils.buildJUCE();
 	else:

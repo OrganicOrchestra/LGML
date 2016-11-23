@@ -31,6 +31,37 @@ def getIfNeeded(tmpFolder,credentials,osType):
 		else:
 			print 'using cached projucer : '+proJucerPath
 
+
+def updateModulesPathIfNeeded():
+	global proJucerPath,JuceProjectPath
+
+	possibleJucesPaths = map(os.path.abspath,map(lambda x:x+'/JUCE/modules',[os.environ['HOME']+'/Dev','../../','../../../','../../../../','../../../../../']))
+
+	import xml.etree.ElementTree as ET
+	tree = ET.parse(JuceProjectPath)
+	root = tree.getroot()
+	oldPath = root.findall('EXPORTFORMATS')[0].findall('XCODE_MAC')[0].findall('MODULEPATHS')[0].findall('MODULEPATH')[0].attrib['path']
+	oldPath = os.path.abspath(os.path.join(JuceProjectPath,oldPath))
+	
+	if not os.path.exists(oldPath):
+		print 'current module path doesnt exists',oldPath,'searching a valid one'
+		newPath = ''
+		for p in possibleJucesPaths:
+			if os.path.exists(p):
+				newPath = p
+				break;
+		if newPath:
+			print 'found new module path updating projucer for : '+newPath
+			for x in root.findall('EXPORTFORMATS')[0].findall('XCODE_MAC')[0].findall('MODULEPATHS')[0].findall('MODULEPATH'):
+					x.attrib['path'] = newPath
+			tree.write(JuceProjectPath)
+		else:
+			print 'not found modulepaths in : ', possibleJucesPaths;
+			exit(1)
+	
+
+
+
 def getVersion():
 	global proJucerPath,JuceProjectPath
 	return sh(proJucerPath+ " --get-version '" + JuceProjectPath+"'")[:-1]

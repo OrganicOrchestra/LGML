@@ -64,4 +64,4 @@ script:
 
 
 git:
-  depth: 10
+  depth: 1

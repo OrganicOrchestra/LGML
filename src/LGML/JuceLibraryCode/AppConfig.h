@@ -19,9 +19,6 @@
 
 // (You can add your own code in this section, and the Projucer will not overwrite it)
 
-
-#define JUCE_DISABLE_JUCE_VERSION_PRINTING 1
-
 // [END_USER_CODE_SECTION]
 
 //==============================================================================
