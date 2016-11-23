@@ -48,9 +48,9 @@ matrix:
 
 install:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        src/LGML/Scripts/linux/installDeps.sh;
+        sh src/LGML/Scripts/linux/installDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
-        src/LGML/Scripts/osx/installDeps.sh;
+        sh src/LGML/Scripts/osx/installDeps.sh;
     fi
 
 
