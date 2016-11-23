@@ -11,7 +11,8 @@ pathToAdd = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir)
 sys.path.insert(1,pathToAdd)
 
 from PyUtils import *
-from PyUtils import ProJucerUtils
+
+
 
 njobs = multiprocessing.cpu_count()
 
@@ -75,28 +76,11 @@ def createDmg(exportFileBaseName,appPath):
 	return exportFileBaseName+'.dmg'
 
 
-def getCredential():
-	if ('OWNCLOUDPASS' in os.environ) and ('OWNCLOUDUSER' in os.environ):
-		credentials = os.environ['OWNCLOUDUSER']+':'+os.environ['OWNCLOUDPASS']
-	
-	else:
-		credPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir));
-		credPath = os.path.join(credPath,"owncloud.password")
-
-		with open(credPath) as json_data:
-			credentials = json.loads(json_data.read())["pass"]
-		
-
-	return credentials
-
-def sendToOwnCloud(originPath,destPath):
-	sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+getCredential()+" -k",printIt=False)
-
 
 def buildAll():
 	ProJucerUtils.updatePathsIfNeeded()
 	ProJucerUtils.proJucerPath = 'dummy'
-	ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=getCredential(),osType="osx")
+	ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=OwncloudUtils.getCredential(),osType="osx")
 
 	if ProJucerUtils.hasValidProjucerPath():
 		ProJucerUtils.updateVersion(bumpVersion,specificVersion);
@@ -116,7 +100,7 @@ def exportAll():
 		sh("cp "+dmgPath+" "+p+generateProductBaseName()+".dmg")
 	if sendToOwncloud:
 		ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
-		sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
+		OwncloudUtils.sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
 	# gitCommit()
 
 if __name__ == "__main__":

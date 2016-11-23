@@ -64,9 +64,9 @@ script:
 
 after_success:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        sh src/LGML/Scripts/linux/installExportDeps.sh && python src/LGML/Scripts/linux/buildScript.py --export --bleedingEdge;
+        sh src/LGML/Scripts/linux/installExportDeps.sh && python src/LGML/Scripts/linux/buildScript.py --export --beta;
     elif [ "$TARGET" == "osx" ] ; then
-        sh src/LGML/Scripts/osx/installExportDeps.sh && python src/LGML/Scripts/osx/buildScript.py --export --bleedingEdge;
+        sh src/LGML/Scripts/osx/installExportDeps.sh && python src/LGML/Scripts/osx/buildScript.py --export --beta;
     fi
 
 git:

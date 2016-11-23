@@ -6,6 +6,10 @@ import json
 import subprocess
 
 
+import sys
+pathToAdd = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir))
+sys.path.insert(1,pathToAdd)
+
 execName = "LGML"
 localMakePath = os.path.abspath("../../Builds/LinuxMakefile/")+'/'
 localExportPath = localMakePath+'build/'
@@ -16,32 +20,13 @@ localAppFile = localExportPath+execName
 
 config = 'Ubuntu'
 
-def sh(cmd):
-	print ("exec : "+cmd);
-	res =  subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE, universal_newlines=True)
-	stdout_lines = iter(res.stdout.readline, "")
-	for stdout_line in stdout_lines:
-		yield stdout_line
 
-	res.stdout.close()
-	return_code = res.wait()
-	if return_code != 0:
-		raise subprocess.CalledProcessError(return_code, cmd)
 
 def getVersion():
 	for l in sh("exec "+localAppFile+" -v"):
 		return l[:-1]
 
 
-def sendToOwnCloud(originPath,destPath):
-	credPath = os.path.dirname(os.path.abspath(__file__));
-	credPath = os.path.join(credPath,os.pardir,"owncloud.password")
-
-	with open(credPath) as json_data:
-		credentials = json.loads(json_data.read())
-
-	for l in sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+credentials["pass"]+" -k",printIt=False):
-		print (l,end="")
 
 
 
