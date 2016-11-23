@@ -10,7 +10,29 @@ JuceProjectPath = os.path.abspath(JuceProjectPath);
 
 
 
+def hasValidProjucerPath():
+	global proJucerPath
+	return os.path.exists(proJucerPath)
+
+def getIfNeeded(tmpFolder,credentials,osType):
+	global proJucerPath
+
+	if  not hasValidProjucerPath() :
+		if not os.path.exists(tmpFolder):
+			os.makedirs(tmpFolder)
+		proJucerPath = os.path.join(tmpFolder,'Projucer')
+		print proJucerPath , hasValidProjucerPath()
+		zipPath = os.path.join(tmpFolder,'Projucer.zip')
+		if not hasValidProjucerPath():
+			sh("curl -k \"https://163.172.42.66/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+osType+"/Projucer.zip\" -u "+credentials+" > "+zipPath)
+			sh('tar -xzf '+zipPath+' -C '+tmpFolder)
+			if not hasValidProjucerPath():
+				print 'projucer download failed'
+		else:
+			print 'using cached projucer : '+proJucerPath
+
 def getVersion():
+	global proJucerPath,JuceProjectPath
 	return sh(proJucerPath+ " --get-version '" + JuceProjectPath+"'")[:-1]
 	
 
@@ -22,14 +44,17 @@ def getXmlVersion():
 
 
 def formatCode(sourceFolder):
+	global proJucerPath
 	# sh(proJucerPath+ " --remove-tabs "+sourceFolder);
 	sh(proJucerPath+ " --tidy-divider-comments "+sourceFolder);
 	sh(proJucerPath+ " --trim-whitespace "+sourceFolder);
 
 def tagVersion():
+	global proJucerPath
 	sh(proJucerPath+ " --git-tag-version '"+ JuceProjectPath+"'")
 
 def updateVersion(bumpVersion,specificVersion):
+	global proJucerPath,JuceProjectPath
 	if(bumpVersion):
 		sh(proJucerPath+ " --bump-version '" + JuceProjectPath+"'")
 	elif specificVersion:
@@ -40,6 +65,7 @@ def updateVersion(bumpVersion,specificVersion):
 
 
 def buildJUCE():
+	global proJucerPath
 	sh(proJucerPath+" -h")
 	sh(proJucerPath+ " --resave '"+JuceProjectPath+"'")
 

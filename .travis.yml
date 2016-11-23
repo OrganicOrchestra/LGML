@@ -1,0 +1,71 @@
+language: c++
+compiler: gcc
+sudo: true
+matrix:
+  include:
+  # fully specify builds, include can't dynamically expand matrix entries
+  # relative order of sudo and env is important so that addons: is recognized
+
+  # - os: linux
+  #   dist: trusty
+  #   sudo: required
+  #   env: TARGET="linux"
+  #   addons:
+  #     apt:
+  #       sources:
+  #         - ubuntu-toolchain-r-test
+  #       packages:
+  #         - gcc-4.9
+  #         - g++-4.9
+  #         - gdb
+
+
+  # - os: linux
+  #   sudo: required
+  #   dist: trusty
+  #   env: TARGET="linuxarmv6"
+
+
+  # - os: linux
+  #   sudo: false
+  #   env: TARGET="linuxarmv7"
+  #   cache:
+  #     directories:
+  #       - ~/rpi2_toolchain
+
+
+  - os: osx
+    osx_image: xcode8
+    compiler: clang
+    env: TARGET="osx"
+
+
+
+  # Exclude the default build that would otherwise be generated
+  # see https://github.com/travis-ci/travis-ci/issues/1228
+  exclude:
+    - compiler: gcc
+
+install:
+  - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
+        src/LGML/Scripts/linux/installDeps.sh;
+    elif [ "$TARGET" == "osx" ] ; then
+        src/LGML/Scripts/osx/installDeps.sh;
+    else
+        echo "$TARGET" , target not supported  && exit(1);
+    fi
+
+
+script:
+
+    - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
+        python src/LGML/Scripts/linux/buildScript.py;
+    elif [ "$TARGET" == "osx" ] ; then
+        python src/LGML/Scripts/osx/buildScript.py;
+    else
+        echo "$TARGET" , target not supported  && exit(1);
+    fi
+
+
+git:
+  depth: 10
