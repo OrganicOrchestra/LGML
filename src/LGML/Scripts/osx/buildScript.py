@@ -92,7 +92,6 @@ def buildAll():
 
 def exportAll():
 	global appPath
-	
 
 	localPath = localExportPath+generateProductBaseName();
 	dmgPath = createDmg(localPath,appPath);
@@ -104,7 +103,7 @@ def exportAll():
 	# gitCommit()
 
 if __name__ == "__main__":
-	global isBeta
+	
 	print sys.argv
 	
 	import argparse
@@ -125,6 +124,7 @@ if __name__ == "__main__":
 		needExport=True;
 
 	if isBeta:
+		ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=OwncloudUtils.getCredential(),osType="osx")
 		currentV  = ProJucerUtils.getVersionAsList()
 		currentV[-1] = "beta"
 		ProJucerUtils.setVersionAsList(currentV)

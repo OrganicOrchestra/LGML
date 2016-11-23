@@ -41,15 +41,21 @@ def getValidPath(pathToSearch):
 	print 'not found paths in : ', possiblePaths;
 	exit(1)
 
-def updatePathsIfNeeded():
+def updatePathsIfNeeded(osType):
 	global JuceProjectPath
 
 	import xml.etree.ElementTree as ET
 	tree = ET.parse(JuceProjectPath)
 	root = tree.getroot()
 	hasChanged = False
+
+	XMLOSTag = ''
+	if(osType=='osx') :
+		XMLOSTag = 'XCODE_MAC'
+	elif osType=='linux':
+		XMLOSTag = 'LINUX_MAKE'
 	# vst sdk
-	oldVSTPath = root.findall('EXPORTFORMATS')[0].findall('XCODE_MAC')[0].attrib['vst3Folder']
+	oldVSTPath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib['vst3Folder']
 	if not os.path.exists(oldVSTPath):
 
 		print 'current VST path not valid'
@@ -57,11 +63,11 @@ def updatePathsIfNeeded():
 		if newVSTPath:
 			print 'found VST SDK at :' + newVSTPath
 			hasChanged = True;
-			root.findall('EXPORTFORMATS')[0].findall('XCODE_MAC')[0].attrib['vst3Folder'] = newVSTPath
+			root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib['vst3Folder'] = newVSTPath
 	else:
 		print 'valid vst path : '+oldVSTPath
 	# updateModule
-	oldModulePath = root.findall('EXPORTFORMATS')[0].findall('XCODE_MAC')[0].findall('MODULEPATHS')[0].findall('MODULEPATH')[0].attrib['path']
+	oldModulePath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].findall('MODULEPATHS')[0].findall('MODULEPATH')[0].attrib['path']
 	oldModulePath = os.path.abspath(os.path.join(JuceProjectPath,oldModulePath))
 	
 	if not os.path.exists(oldModulePath):
@@ -70,7 +76,7 @@ def updatePathsIfNeeded():
 		if newPath:
 			hasChanged = True;
 			print 'found new module path updating projucer for : '+newPath
-			for x in root.findall('EXPORTFORMATS')[0].findall('XCODE_MAC')[0].findall('MODULEPATHS')[0].findall('MODULEPATH'):
+			for x in root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].findall('MODULEPATHS')[0].findall('MODULEPATH'):
 					x.attrib['path'] = newPath
 		
 

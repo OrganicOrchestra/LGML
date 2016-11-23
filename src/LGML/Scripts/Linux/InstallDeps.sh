@@ -13,6 +13,16 @@ sudo apt-get -y --force-yes install libasound2-dev
 sudo apt-get -y --force-yes install freeglut3-dev
 sudo apt-get -y --force-yes install libxcomposite-dev
 sudo apt-get -y --force-yes install libjack-dev
-
 #https
 #sudo apt-get -y install libcurl4-gnutls-dev
+
+# install source needed for LGML build
+mkdir "SDKs";
+curl -L http://www.steinberg.net/sdk_downloads/vstsdk366_27_06_2016_build_61.zip > VST3.zip
+tar -xzf VST3.zip;
+mv "VST3 SDK/" "SDKs/VST3 SDK/";
+
+curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip;
+tar -xzf JUCE.zip;
+mv JUCE-master/ JUCE;
+
