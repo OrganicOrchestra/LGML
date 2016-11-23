@@ -60,11 +60,11 @@ script:
 
     - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
         python src/LGML/Scripts/linux/buildScript.py;
-    elif [ "$TARGET" == "osx" ] ; then
+      elif [ "$TARGET" == "osx" ] ; then
         python src/LGML/Scripts/osx/buildScript.py;
-    else
+      else
         echo "$TARGET" , target not supported  && exit(1);
-    fi
+      fi
 
 
 git:
