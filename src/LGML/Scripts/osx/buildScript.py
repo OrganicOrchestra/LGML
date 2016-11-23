@@ -4,7 +4,7 @@ import json;
 import urllib;
 import multiprocessing
 
-import dmgbuild
+
 
 import sys
 pathToAdd = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir))
@@ -105,6 +105,7 @@ def buildAll():
 	buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
 
 def exportAll():
+	import dmgbuild
 	localPath = localExportPath+generateProductBaseName();
 	dmgPath = createDmg(localPath,appPath);
 	for p in localExportPath2:
