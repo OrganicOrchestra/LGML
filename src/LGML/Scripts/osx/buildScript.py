@@ -78,6 +78,7 @@ def createDmg(exportFileBaseName,appPath):
 
 
 def buildAll(osType):
+	global specificVersion
 	ProJucerUtils.updatePathsIfNeeded(osType)
 	ProJucerUtils.proJucerPath = 'dummy'
 	ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=OwncloudUtils.getCredential(),osType="osx")
@@ -103,7 +104,7 @@ def exportAll():
 	# gitCommit()
 
 if __name__ == "__main__":
-	
+	global specificVersion
 	print sys.argv
 	
 	import argparse
@@ -114,6 +115,7 @@ if __name__ == "__main__":
 	                    help='export it')
 	parser.add_argument('--beta', action='store_true',
 	                    help='switch to beta version (only name affected for now)')
+	parser.add_argument('--os',help='os to use : osx, linux', default='osx')
 
 	args = parser.parse_args()
 	needBuild = args.build
@@ -123,6 +125,7 @@ if __name__ == "__main__":
 		needBuild = True;
 		needExport=True;
 
+
 	if isBeta:
 		currentV  = ProJucerUtils.getVersionAsList()
 		specificVersion = '.'.join(map(str,currentV[:-1]))+"beta"
@@ -130,7 +133,7 @@ if __name__ == "__main__":
 
 		
 	if needBuild:
-		buildAll('osx');
+		buildAll(args.os);
 	if needExport:
 		# send per default if used explicitly with export arg
 		sendToOwncloud = args.export

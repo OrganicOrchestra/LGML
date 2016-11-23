@@ -21,11 +21,14 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 		if not os.path.exists(tmpFolder):
 			os.makedirs(tmpFolder)
 		proJucerPath = os.path.join(tmpFolder,'Projucer')
-		print proJucerPath , hasValidProjucerPath()
-		zipPath = os.path.join(tmpFolder,'Projucer.zip')
+		print 'copying projucer in :' + proJucerPath 
+		
+		ownCloudOSFolder = {'osx':'osx/','linux':'linux/'}[osType]
+		ownCloudProjucerName = {'osx':'Projucer.zip','linux':'Projucer.tar.gz'}[osType]
+		compressedPath = os.path.join(tmpFolder,ownCloudProjucerName)
 		if not hasValidProjucerPath():
-			sh("curl -k \"https://163.172.42.66/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+osType+"/Projucer.zip\" -u "+credentials+" > "+zipPath,printIt=False)
-			sh('tar -xzf '+zipPath+' -C '+tmpFolder)
+			sh("curl -k \"https://163.172.42.66/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+ownCloudOSFolder+ownCloudProjucerName"\" -u "+credentials+" > "+compressedPath,printIt=False)
+			sh('tar -xzf '+compressedPath+' -C '+tmpFolder)
 			if not hasValidProjucerPath():
 				print 'projucer download failed'
 		else:
@@ -49,11 +52,7 @@ def updatePathsIfNeeded(osType):
 	root = tree.getroot()
 	hasChanged = False
 
-	XMLOSTag = ''
-	if(osType=='osx') :
-		XMLOSTag = 'XCODE_MAC'
-	elif osType=='linux':
-		XMLOSTag = 'LINUX_MAKE'
+	XMLOSTag = {'osx':'XCODE_MAC','linux':'LINUX_MAKE'}[osType]
 	# vst sdk
 	oldVSTPath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib['vst3Folder']
 	if not os.path.exists(oldVSTPath):
