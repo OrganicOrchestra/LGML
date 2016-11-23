@@ -77,8 +77,8 @@ def createDmg(exportFileBaseName,appPath):
 
 
 
-def buildAll():
-	ProJucerUtils.updatePathsIfNeeded()
+def buildAll(osType):
+	ProJucerUtils.updatePathsIfNeeded(osType)
 	ProJucerUtils.proJucerPath = 'dummy'
 	ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=OwncloudUtils.getCredential(),osType="osx")
 
@@ -131,7 +131,7 @@ if __name__ == "__main__":
 
 		
 	if needBuild:
-		buildAll();
+		buildAll('osx');
 	if needExport:
 		# send per default if used explicitly with export arg
 		sendToOwncloud = args.export
