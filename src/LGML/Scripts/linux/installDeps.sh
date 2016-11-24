@@ -46,5 +46,5 @@ fi
 	pwd
 	mkdir Dev/Projucer
 	mkdir Dev/Projucer/linux
-	mv Dev/JUCE/extras/Projucer/Builds/LinuxMakeFile/build/Projucer Dev/Projucer/linux/
+	mv Dev/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer Dev/Projucer/linux/
 # fi
