@@ -21,17 +21,18 @@ sudo apt-get -y --force-yes install libjack-dev
 #sudo apt-get -y install libcurl4-gnutls-dev
 
 # install source needed for LGML build
-if [ ! -d "~/SDKs/VST3 SDK" ]; then
-	mkdir "~/SDKs"
+cd ;
+if [ ! -d "SDKs/VST3 SDK" ]; then
+	mkdir "SDKs"
 	curl -L http://www.steinberg.net/sdk_downloads/vstsdk366_27_06_2016_build_61.zip > VST3.zip
 	unzip -q VST3.zip
-	mv "VST3 SDK/" "~/SDKs/VST3 SDK/"
+	mv "VST3 SDK/" "SDKs/VST3 SDK/"
 fi
 
-if [ ! -d "~/Dev/JUCE" ]; then
-	mkdir ~/Dev
+if [ ! -d "Dev/JUCE" ]; then
+	mkdir "Dev"
 	curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip
 	unzip -q JUCE.zip
-	mv JUCE-master/ ~/Dev/JUCE
+	mv JUCE-master/ Dev/JUCE
 fi
 

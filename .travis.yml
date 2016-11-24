@@ -10,6 +10,11 @@ matrix:
     dist: trusty
     sudo: required
     env: TARGET="linux"
+    cache:
+      directories:
+        - ~/Dev
+        - ~/SDKs
+        
   #   addons:
   #     apt:
   #       sources:
