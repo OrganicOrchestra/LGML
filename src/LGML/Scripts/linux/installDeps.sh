@@ -36,3 +36,13 @@ if [ ! -d "Dev/JUCE" ]; then
 	mv JUCE-master/ Dev/JUCE
 fi
 
+if [ ! -d "Dev/Projucer/linux" ]; then
+
+	cd Dev/JUCE/extras/Projucer/Builds/LinuxMakeFile/
+	make -j2
+	cd 
+	pwd
+	mkdir Dev/Projucer
+	mkdir Dev/Projucer/linux
+	mv Dev/JUCE/extras/Projucer/Builds/LinuxMakeFile/build/Projucer Dev/Projucer/linux/
+fi
