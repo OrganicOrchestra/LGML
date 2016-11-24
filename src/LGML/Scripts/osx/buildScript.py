@@ -13,43 +13,34 @@ sys.path.insert(1,pathToAdd)
 from PyUtils import *
 
 
-
-njobs = multiprocessing.cpu_count()
+# default configuration
 
 # configuration  = "Release"
 configuration  = "Debug"
-bumpVersion = False
-sendToOwncloud = False
-specificVersion = ""
 cleanFirst = False;
-localExportPath2 = [
-# "/Volumes/Thor/OO\ Projets/OwnCloud/Tools/LGML/App-Dev/OSX/"
-# ,"/Volumes/Pguillerme/Documents/LGML/"
-];
+
 architecture = "i386"
 
 
 
 
-
+# paths relative to this file
 rootPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir,os.pardir))
 
 localExportPath = os.path.join(rootPath,'Builds/MacOSX/build/')
 localExportPath = os.path.abspath(localExportPath)+"/"
 
 xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
-executable_name = "LGML"+("" if configuration=="Release" else "_"+configuration)
+executable_name = "LGML"
 appPath = os.path.join(xcodeProjPath,"build",configuration,executable_name+".app")
 
 isBeta = False
 
-def generateProductBaseName():
-	name =  executable_name+ "_v"+str(ProJucerUtils.getVersion())
-	return name
+njobs = multiprocessing.cpu_count()
 
 
 
-def buildApp(xcodeProjPath,configuration,appPath,njobs,clean = False):
+def buildApp(xcodeProjPath=xcodeProjPath,configuration=configuration,appPath=appPath,njobs=njobs,clean = cleanFirst):
 	if len(appPath)>10:
 		sh("rm -rf "+appPath)
 
@@ -77,66 +68,48 @@ def createDmg(exportFileBaseName,appPath):
 
 
 
-def buildAll(osType):
-	global specificVersion
-	ProJucerUtils.updatePathsIfNeeded(osType)
-	ProJucerUtils.proJucerPath = 'dummy'
-	ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(__file__,os.pardir,'tmp')),credentials=OwncloudUtils.getCredential(),osType="osx")
 
-	if ProJucerUtils.hasValidProjucerPath():
-		ProJucerUtils.updateVersion(bumpVersion,specificVersion);
-		ProJucerUtils.buildJUCE();
-	else:
-		print 'not updating projucer'
-	
-	buildApp(xcodeProjPath,configuration,appPath,njobs,cleanFirst);
-
-def exportAll():
+def exportApp(baseName):
 	global appPath
-
-	localPath = localExportPath+generateProductBaseName();
+	localPath = localExportPath+baseName;
 	dmgPath = createDmg(localPath,appPath);
-	for p in localExportPath2:
-		sh("cp "+dmgPath+" "+p+generateProductBaseName()+".dmg")
-	if sendToOwncloud:
-		ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
-		OwncloudUtils.sendToOwnCloud(localPath+".dmg",urllib.pathname2url(ownCloudPath))
+	return dmgPath
 	# gitCommit()
 
-if __name__ == "__main__":
-	global specificVersion
-	print sys.argv
+# if __name__ == "__main__":
+# 	global specificVersion
+# 	print sys.argv
 	
-	import argparse
-	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
-	parser.add_argument('--build', action='store_true',
-	                    help='build it')
-	parser.add_argument('--export', action='store_true',
-	                    help='export it')
-	parser.add_argument('--beta', action='store_true',
-	                    help='switch to beta version (only name affected for now)')
-	parser.add_argument('--os',help='os to use : osx, linux', default='osx')
+# 	import argparse
+# 	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
+# 	parser.add_argument('--build', action='store_true',
+# 	                    help='build it')
+# 	parser.add_argument('--export', action='store_true',
+# 	                    help='export it')
+# 	parser.add_argument('--beta', action='store_true',
+# 	                    help='switch to beta version (only name affected for now)')
+# 	parser.add_argument('--os',help='os to use : osx, linux', default='osx')
 
-	args = parser.parse_args()
-	needBuild = args.build
-	needExport= args.export
-	isBeta = args.beta
-	if len(sys.argv)==1:
-		needBuild = True;
-		needExport=True;
+# 	args = parser.parse_args()
+# 	needBuild = args.build
+# 	needExport= args.export
+# 	isBeta = args.beta
+# 	if len(sys.argv)==1:
+# 		needBuild = True;
+# 		needExport=True;
 
 
-	if isBeta:
-		currentV  = ProJucerUtils.getVersionAsList()
-		specificVersion = '.'.join(map(str,currentV[:-1]))+"beta"
+# 	if isBeta:
+# 		currentV  = ProJucerUtils.getVersionAsList()
+# 		specificVersion = '.'.join(map(str,currentV[:-1]))+"beta"
 
 
 		
-	if needBuild:
-		buildAll(args.os);
-	if needExport:
-		# send per default if used explicitly with export arg
-		sendToOwncloud = args.export
-		exportAll();
+# 	if needBuild:
+# 		buildAll(args.os);
+# 	if needExport:
+# 		# send per default if used explicitly with export arg
+# 		sendToOwncloud = args.export
+# 		exportAll();
 
 

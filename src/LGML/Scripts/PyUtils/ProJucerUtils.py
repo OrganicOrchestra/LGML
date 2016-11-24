@@ -16,7 +16,7 @@ def hasValidProjucerPath():
 
 def getProjucerIfNeeded(tmpFolder,credentials,osType):
 	global proJucerPath
-
+	tmpFolder = os.path.join(tmpFolder,osType)
 	if  not hasValidProjucerPath() :
 		if not os.path.exists(tmpFolder):
 			os.makedirs(tmpFolder)
@@ -53,8 +53,11 @@ def updatePathsIfNeeded(osType):
 	hasChanged = False
 
 	XMLOSTag = {'osx':'XCODE_MAC','linux':'LINUX_MAKE'}[osType]
+	vstFolderTag = 'vst3Folder'
+	if osType=='linux':
+		vstFolderTag = 'vstFolder'
 	# vst sdk
-	oldVSTPath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib['vst3Folder']
+	oldVSTPath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib[vstFolderTag]
 	if not os.path.exists(oldVSTPath):
 
 		print 'current VST path not valid'
@@ -62,7 +65,7 @@ def updatePathsIfNeeded(osType):
 		if newVSTPath:
 			print 'found VST SDK at :' + newVSTPath
 			hasChanged = True;
-			root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib['vst3Folder'] = newVSTPath
+			root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib[vstFolderTag] = newVSTPath
 	else:
 		print 'valid vst path : '+oldVSTPath
 	# updateModule
@@ -135,7 +138,7 @@ def updateVersion(bumpVersion,specificVersion):
 	global proJucerPath,JuceProjectPath
 	if(bumpVersion):
 		sh(proJucerPath+ " --bump-version '" + JuceProjectPath+"'")
-	elif specificVersion:
+	elif specificVersion and (specificVersion!=getXmlVersion()):
 		sh(proJucerPath+ " --set-version " +specificVersion+" '"+ JuceProjectPath+"'")
 
 	tagVersion()

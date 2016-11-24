@@ -38,6 +38,10 @@ matrix:
     osx_image: xcode8
     compiler: clang
     env: TARGET="osx"
+    cache:
+      directories:
+        - ~/Dev
+        - ~/SDKs
 
 
 
@@ -55,12 +59,7 @@ install:
 
 
 script:
-
-    - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        python src/LGML/Scripts/linux/buildScript.py --build --beta;
-      elif [ "$TARGET" == "osx" ] ; then
-        python src/LGML/Scripts/osx/buildScript.py --build --beta;
-      fi
+    - python src/LGML/Scripts/buildScript.py --build --beta --os=$TARGET;
 
 after_success:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then

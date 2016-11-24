@@ -964,10 +964,10 @@
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" extraLinkerFlags=""
-                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vstFolder="">
+                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vstFolder="/media/sf_Tintamar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="../../External/serial/include" isDebug="1" libraryPath="/usr/X11R6/lib/"
-                       linuxArchitecture="-march=armv6" name="Debug" optimisation="1"
+                       linuxArchitecture="-march=armv6" name="Debug" optimisation="5"
                        targetName="LGML"/>
         <CONFIGURATION isDebug="0" libraryPath="/usr/X11R6/lib/" linuxArchitecture="-march=armv6"
                        name="Release" optimisation="3" targetName="LGML"/>
@@ -976,20 +976,20 @@
                        targetName="LGML"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_osc" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="~/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="~/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="/media/sf_Tintamar/Dev/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
