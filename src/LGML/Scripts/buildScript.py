@@ -1,11 +1,5 @@
 
 import os;
-import json;
-import urllib;
-
-
-
-
 from PyUtils import *
 
 
@@ -53,7 +47,7 @@ def buildAll(osType,configuration):
 		linux.buildApp(configuration = configuration)
 
 
-def exportAll(osType,configuration):
+def exportAll(osType,configuration,sendToOwncloud):
 	global appPath
 	baseName = generateProductBaseName()
 	if osType=='osx':
@@ -71,8 +65,10 @@ def exportAll(osType,configuration):
 		if osType=='osx':
 			ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
 		elif osType=='linux':
-			ownCloudPath = "Tools/LGML/App-Dev/Linux/Ubuntu16.04/"+generateProductBaseName()+".tar.gz"
-		OwncloudUtils.sendToOwnCloud(lexportedPath,urllib.pathname2url(ownCloudPath))
+			import platform
+			distName = ''.join(platform.linux_distribution())[:-1]
+			ownCloudPath = "Tools/LGML/App-Dev/Linux/"+distName+"/"+generateProductBaseName()+".tar.gz"
+		OwncloudUtils.sendToOwnCloud(lexportedPath,ownCloudPath)
 
 	# gitCommit()
 
@@ -90,7 +86,7 @@ if __name__ == "__main__":
 	                    help='switch to beta version (only name affected for now)')
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
 
-	parser.add_argument('--configuration',help='configuration to use ', default='Debug')
+	parser.add_argument('--configuration',help='configuration to use ', default=None)
 
 	args = parser.parse_args()
 
@@ -124,6 +120,7 @@ if __name__ == "__main__":
 
 
 	isBeta = args.beta
+	# default if no command (triggers build and export)
 	if len(sys.argv)==1:
 		needBuild = True;
 		needExport=True;
@@ -139,6 +136,6 @@ if __name__ == "__main__":
 	if needExport:
 		# send per default if used explicitly with export arg
 		sendToOwncloud = args.export
-		exportAll(args.os,args.configuration);
+		exportAll(args.os,args.configuration,sendToOwncloud=sendToOwncloud);
 
 
