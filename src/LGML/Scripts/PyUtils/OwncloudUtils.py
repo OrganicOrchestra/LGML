@@ -16,7 +16,7 @@ def getCredential():
 
 	return credentials
 
-def makeDirIfNotExistent(destPath,forceCreation):
+def makeDirIfNotExistent(destPath,forceCreation=False):
 	destPath = os.path.dirname(destPath)
 	destPath = urllib.pathname2url(destPath)
 	
