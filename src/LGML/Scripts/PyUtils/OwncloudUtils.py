@@ -17,7 +17,6 @@ def getCredential():
 	return credentials
 
 def makeDirIfNotExistent(destPath,forceCreation=False):
-	destPath = os.path.dirname(destPath)
 	destPath = urllib.pathname2url(destPath)
 	
 	res = sh("curl -X MKCOL \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\"  -u "+getCredential()+" -k",printIt=False)
@@ -36,7 +35,7 @@ def makeDirIfNotExistent(destPath,forceCreation=False):
 
 def sendToOwnCloud(originPath,destPath):
 	destPath = urllib.pathname2url(destPath)
-	makeDirIfNotExistent(destPath)
+	makeDirIfNotExistent(os.path.dirname(destPath))
 	print 'sending to owncloud:'
 	print originPath,' >> ', destPath
 	sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+getCredential()+" -k",printIt=False)
