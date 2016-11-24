@@ -37,8 +37,10 @@ if [ ! -d "Dev/JUCE" ]; then
 fi
 
 # if [ ! -d "Dev/Projucer/linux" ]; then
+	cd 
+	ls
 
-	cd Dev/JUCE/extras/Projucer/Builds/LinuxMakeFile/
+	cd Dev/JUCE/extras/Projucer/Builds/LinuxMakefile/
 	make -j2
 	cd 
 	pwd
