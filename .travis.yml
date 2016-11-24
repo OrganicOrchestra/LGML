@@ -34,14 +34,14 @@ matrix:
   #       - ~/rpi2_toolchain
 
 
-  - os: osx
-    osx_image: xcode8
-    compiler: clang
-    env: TARGET="osx"
-    cache:
-      directories:
-        - ~/Dev
-        - ~/SDKs
+  # - os: osx
+  #   osx_image: xcode8
+  #   compiler: clang
+  #   env: TARGET="osx"
+  #   cache:
+  #     directories:
+  #       - ~/Dev
+  #       - ~/SDKs
 
 
 
