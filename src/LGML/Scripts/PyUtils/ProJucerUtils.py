@@ -4,6 +4,7 @@ from writeSha import *
 import os
 
 proJucerPath = "/Applications/Projucer.app/Contents/MacOS/Projucer"
+proJucerCommand = proJucerPath
 
 JuceProjectPath = os.path.dirname(os.path.abspath(__file__));
 JuceProjectPath = os.path.join(JuceProjectPath,"../../LGML.jucer");
@@ -16,7 +17,7 @@ def hasValidProjucerPath():
 	return os.path.exists(proJucerPath)
 
 def getProjucerIfNeeded(tmpFolder,credentials,osType):
-	global proJucerPath
+	global proJucerPath,proJucerCommand
 	tmpFolder = os.path.join(tmpFolder,osType)
 	if  not hasValidProjucerPath() :
 		if not os.path.exists(tmpFolder):
@@ -35,10 +36,14 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 		else:
 			print 'using cached projucer : '+proJucerPath
 
-	# headless server support
-	if hasValidProjucerPath() and osType=='linux' and not 'DISPLAY' in os.environ:
-		sh('alias ProjucerNoWindow=\"xvfb-run \"'+proJucerPath+"\"\"")
-		proJucerPath = 'ProjucerNoWindow'
+	
+	# update command
+	if hasValidProjucerPath():
+		proJucerCommand = proJucerPath
+		# headless server support
+		if osType=='linux' and not 'DISPLAY' in os.environ:
+			sh('alias ProjucerNoWindow=\"xvfb-run \"'+proJucerPath+"\"\"")
+			proJucerCommand = 'ProjucerNoWindow'
 
 
 
@@ -133,30 +138,30 @@ def getXmlVersion():
 
 
 def formatCode(sourceFolder):
-	global proJucerPath
+	global proJucerCommand
 	# sh(proJucerPath+ " --remove-tabs "+sourceFolder);
-	sh(proJucerPath+ " --tidy-divider-comments "+sourceFolder);
-	sh(proJucerPath+ " --trim-whitespace "+sourceFolder);
+	sh(proJucerCommand+ " --tidy-divider-comments "+sourceFolder);
+	sh(proJucerCommand+ " --trim-whitespace "+sourceFolder);
 
 def tagVersion():
-	global proJucerPath
-	sh(proJucerPath+ " --git-tag-version '"+ JuceProjectPath+"'")
+	global proJucerCommand
+	sh(proJucerCommand+ " --git-tag-version '"+ JuceProjectPath+"'")
 
 def updateVersion(bumpVersion,specificVersion):
-	global proJucerPath,JuceProjectPath
+	global proJucerCommand,JuceProjectPath
 	if(bumpVersion):
-		sh(proJucerPath+ " --bump-version '" + JuceProjectPath+"'")
+		sh(proJucerCommand+ " --bump-version '" + JuceProjectPath+"'")
 	elif specificVersion and (specificVersion!=getXmlVersion()):
-		sh(proJucerPath+ " --set-version " +specificVersion+" '"+ JuceProjectPath+"'")
+		sh(proJucerCommand+ " --set-version " +specificVersion+" '"+ JuceProjectPath+"'")
 
 	tagVersion()
 	writeSha();
 
 
 def buildJUCE():
-	global proJucerPath
-	sh(proJucerPath+" -h")
-	sh(proJucerPath+ " --resave '"+JuceProjectPath+"'")
+	global proJucerCommand
+	sh(proJucerCommand+" -h")
+	sh(proJucerCommand+ " --resave '"+JuceProjectPath+"'")
 
 #  allow to use this file as a simple version getter
 # DO NOT CHANGE
