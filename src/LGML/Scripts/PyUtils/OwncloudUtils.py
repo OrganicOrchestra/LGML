@@ -13,7 +13,8 @@ def getCredential():
 		with open(credPath) as json_data:
 			credentials = json.loads(json_data.read())["pass"]
 		
-
+	if not credentials:
+		print 'no credentials found'
 	return credentials
 
 def makeDirIfNotExistent(destPath,forceCreation=False):
