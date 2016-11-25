@@ -67,7 +67,7 @@ def exportAll(osType,configuration,sendToOwncloud):
 			ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
 		elif osType=='linux':
 			import platform
-			distName = ''.join(platform.linux_distribution())[:-1]
+			distName = ''.join(platform.linux_distribution()[:-1])
 			ownCloudPath = "Tools/LGML/App-Dev/Linux/"+distName+"/"+generateProductBaseName()+".tar.gz"
 			
 		OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
