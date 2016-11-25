@@ -42,8 +42,7 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 		proJucerCommand = proJucerPath
 		# headless server support
 		if osType=='linux' and not 'DISPLAY' in os.environ:
-			sh('alias ProjucerNoWindow=\"xvfb-run \"'+proJucerPath+"\"\"")
-			proJucerCommand = 'ProjucerNoWindow'
+			proJucerCommand = 'xvfb-run '+proJucerPath
 
 
 
