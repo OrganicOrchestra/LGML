@@ -25,7 +25,6 @@ def buildApp(configuration):
 
 def exportApp(baseName):
 	sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName)
-	ownCloudPath = "Tools/LGML/App-Dev/Linux/Ubuntu16.04/"+baseName+".tar.gz"
-	OwncloudUtils.sendToOwnCloud(localExportFile,urllib.pathname2url(ownCloudPath))
+
 
 
