@@ -25,6 +25,7 @@ def buildApp(configuration):
 
 def exportApp(baseName):
 	sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName)
+	return localExportFile
 
 
 
