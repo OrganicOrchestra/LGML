@@ -42,7 +42,7 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 		proJucerCommand = proJucerPath
 		# headless server support
 		if osType=='linux' and not 'DISPLAY' in os.environ:
-			proJucerCommand = 'xvfb-run '+proJucerPath
+			proJucerCommand = 'xvfb-run -a -e /dev/stdout '+proJucerPath
 
 
 
@@ -159,7 +159,7 @@ def updateVersion(bumpVersion,specificVersion):
 
 def buildJUCE():
 	global proJucerCommand
-	sh(proJucerCommand+" -h")
+	# sh(proJucerCommand+" -h")
 	sh(proJucerCommand+ " --resave '"+JuceProjectPath+"'")
 
 #  allow to use this file as a simple version getter
