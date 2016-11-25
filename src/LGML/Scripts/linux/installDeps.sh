@@ -36,7 +36,7 @@ if [ ! -d "Dev/JUCE" ]; then
 	mv JUCE-master/ Dev/JUCE
 fi
 
-# if [ ! -d "Dev/Projucer/linux" ]; then
+if [ ! -d "Dev/Projucer/linux" ]; then
 	cd 
 	ls
 
@@ -47,4 +47,4 @@ fi
 	mkdir Dev/Projucer
 	mkdir Dev/Projucer/linux
 	mv Dev/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer Dev/Projucer/linux/
-# fi
+fi

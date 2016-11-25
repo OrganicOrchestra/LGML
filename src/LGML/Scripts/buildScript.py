@@ -16,6 +16,7 @@ localExportPath2 = [
 # ,"/Volumes/Pguillerme/Documents/LGML/"
 ];
 
+executable_name = "LGML"
 
 rootPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir))
 isBeta = False
