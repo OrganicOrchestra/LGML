@@ -1,6 +1,7 @@
 # THIS FILE IS BINDED TO RELATIVE LOCATIONS CHANGE THEM IF DISPLACING FILE
 
 from writeSha import *
+import os
 
 proJucerPath = "/Applications/Projucer.app/Contents/MacOS/Projucer"
 
@@ -33,6 +34,12 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 				print 'projucer download failed'
 		else:
 			print 'using cached projucer : '+proJucerPath
+
+	if hasValidProjucerPath() and osType=='linux' and not 'DISPLAY' in os.environ:
+		sh('alias ProjucerNoWindow=xvfb-run \"'+proJucerPath+"\"")
+		proJucerPath = 'ProjucerNoWindow'
+
+
 
 def getValidPath(pathToSearch):
 	relativesPaths = ['.','..','../..','../../..','../../../..','../../../../..',os.environ['HOME'],os.environ['HOME']+'/Dev']
