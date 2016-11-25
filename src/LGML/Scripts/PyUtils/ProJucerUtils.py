@@ -35,8 +35,9 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 		else:
 			print 'using cached projucer : '+proJucerPath
 
+	# headless server support
 	if hasValidProjucerPath() and osType=='linux' and not 'DISPLAY' in os.environ:
-		sh('alias ProjucerNoWindow=xvfb-run \"'+proJucerPath+"\"")
+		sh('alias ProjucerNoWindow=\"xvfb-run \"'+proJucerPath+"\"\"")
 		proJucerPath = 'ProjucerNoWindow'
 
 
