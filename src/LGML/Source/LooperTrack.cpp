@@ -458,7 +458,7 @@ void LooperTrack::setTrackState(TrackState newState) {
     }
 
     else if (!timeManager->isSettingTempo->boolValue()) {
-      if(parentLooper->askForBeingAbleToPlayNow(this) && !timeManager->playState->boolValue()) {
+        if(parentLooper->askForBeingAbleToPlayNow(this) ){//&& !timeManager->playState->boolValue()) {
         if(getQuantization()>0)
           timeManager->playTrigger->trigger();
         quantizedRecordStart = 0;

@@ -208,7 +208,7 @@ bool LooperNode::askForBeingMasterTrack(LooperTrack * t) {
 }
 
 bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
-  if(isOneShot->boolValue())return true;
+  if(isOneShot->boolValue()|| _t->getQuantization()==0)return true;
   bool result = true;
   for (auto & t : trackGroup.tracks) {
     if (t != _t)result &=
