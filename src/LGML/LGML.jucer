@@ -906,7 +906,7 @@
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1, GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE"
                        defines="" headerPath="../../External/serial/include" isDebug="1"
                        name="Debug" osxArchitecture="64BitUniversal" osxCompatibility="10.7 SDK"
-                       osxSDK="default" targetName="LGML_Debug"/>
+                       osxSDK="default" targetName="LGML"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1"
                        defines="LGML_UNIT_TESTS=1" headerPath="../../External/serial/include"
                        isDebug="1" name="Test" osxArchitecture="64BitUniversal" osxCompatibility="10.7 SDK"

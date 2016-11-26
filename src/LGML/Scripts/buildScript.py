@@ -8,7 +8,7 @@ from PyUtils import *
 
 
 bumpVersion = False
-sendToOwncloud = False
+sendToOwncloud = True
 specificVersion = ""
 cleanFirst = False;
 localExportPath2 = [
@@ -137,7 +137,7 @@ if __name__ == "__main__":
 		buildAll(args.os,args.configuration);
 	if needExport:
 		# send per default if used explicitly with export arg
-		sendToOwncloud = args.export
+		sendToOwncloud |= args.export
 		exportAll(args.os,args.configuration,sendToOwncloud=sendToOwncloud);
 
 
