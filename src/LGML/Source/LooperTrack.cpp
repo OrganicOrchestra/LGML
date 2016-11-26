@@ -72,7 +72,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
 
-  if(!loopSample.processNextBlock(buffer)){
+  if(!loopSample.processNextBlock(buffer) && trackState!=STOPPED){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);
   }
@@ -458,7 +458,7 @@ void LooperTrack::setTrackState(TrackState newState) {
     }
 
     else if (!timeManager->isSettingTempo->boolValue()) {
-      if(parentLooper->askForBeingAbleToPlayNow(this) && !timeManager->playState->boolValue()) {
+        if(parentLooper->askForBeingAbleToPlayNow(this) ){//&& !timeManager->playState->boolValue()) {
         if(getQuantization()>0)
           timeManager->playTrigger->trigger();
         quantizedRecordStart = 0;
