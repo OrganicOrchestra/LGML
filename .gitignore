@@ -57,4 +57,8 @@ src/LGML/Builds/VisualStudio2015/Debug 32bit/
 *.stackdump
 sandbox/
 *.pyc
+<<<<<<< HEAD
+=======
+
+>>>>>>> feature/travis
 tmp/
