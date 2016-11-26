@@ -232,16 +232,17 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 void VSTNode::audioProcessorChanged(juce::AudioProcessor * p ){
     if (!innerPlugin || p!=innerPlugin) return;
     
-    //  if(innerPlugin->getNumParameters() != VSTParameters.size()){
+  if(innerPlugin->getNumParameters() != VSTParameters.size()){
     DBG("rebuildingParameters");
     initParametersFromProcessor(innerPlugin);
-    //  }
-    //  else{
-    //    for(int i = 0 ; i < VSTParameters.size() ; i++){
-    //      float val  = innerPlugin->getParameter(i);
-    //      VSTParameters.getUnchecked(i)->setValue(val);
-    //    }
-    //  }
+      }
+    else{
+     for(int i = 0 ; i < VSTParameters.size() ; i++){
+       float val  = innerPlugin->getParameter(i);
+         VSTParameters.getUnchecked(i)->setValue(val);
+         VSTParameters.getUnchecked(i)->setNiceName(innerPlugin->getParameterName(i));
+     }
+     }
     
 }
 void VSTNode::numChannelsChanged(bool isInput){}
