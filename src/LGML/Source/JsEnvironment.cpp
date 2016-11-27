@@ -333,8 +333,9 @@ void JsEnvironment::timerCallback(int timerID)
     }
   } else if (timerID == 1)
   {
-
+      if(_hasValidJsFile){
     callFunction("onUpdate", var(), true);
+      }
   }
 }
 
