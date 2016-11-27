@@ -209,7 +209,20 @@ bool LooperNode::askForBeingMasterTrack(LooperTrack * t) {
 
 bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
   if(isOneShot->boolValue()|| _t->getQuantization()==0)return true;
+  if(TimeManager::getInstance()->playTrigger->isTriggering) return true;
     if(!_t->isMasterTempoTrack()) return false;
+  bool result = true;
+  for (auto & t : trackGroup.tracks) {
+    if (t != _t)result &=
+      (t->trackState == LooperTrack::TrackState::STOPPED) ||
+      (t->trackState == LooperTrack::TrackState::CLEARED) ;
+  }
+  return result;
+}
+
+bool LooperNode::askForBeingAbleToRecNow(LooperTrack * _t) {
+  if(isOneShot->boolValue()|| _t->getQuantization()==0)return true;
+  if(!_t->isMasterTempoTrack()) return false;
   bool result = true;
   for (auto & t : trackGroup.tracks) {
     if (t != _t)result &=

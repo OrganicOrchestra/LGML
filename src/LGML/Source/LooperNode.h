@@ -85,6 +85,7 @@ public:
 
   bool askForBeingMasterTrack(LooperTrack * t);
   bool askForBeingAbleToPlayNow(LooperTrack *_t);
+  bool askForBeingAbleToRecNow(LooperTrack * _t);
   bool areAllTrackClearedButThis(LooperTrack * _t);
 
 

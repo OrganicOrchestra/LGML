@@ -210,7 +210,7 @@ bool LooperTrack::updatePendingLooperTrackState( uint64 curTime, int blockSize) 
 
       // stop oneShot if needed
       if(parentLooper->isOneShot->boolValue() ){
-        quantizedPlayEnd = quantizedPlayStart + loopSample.getRecordedLength() - 2*loopSample.getNumSampleFadeOut();
+        quantizedPlayEnd = quantizedPlayStart + loopSample.getRecordedLength() - loopSample.getNumSampleFadeOut();
       }
 
       quantizedPlayStart = NO_QUANTIZE;
@@ -458,7 +458,7 @@ void LooperTrack::setTrackState(TrackState newState) {
     }
 
     else if (!timeManager->isSettingTempo->boolValue()) {
-        if(parentLooper->askForBeingAbleToPlayNow(this) ){//&& !timeManager->playState->boolValue()) {
+        if(parentLooper->askForBeingAbleToRecNow(this) ){//&& !timeManager->playState->boolValue()) {
         if(getQuantization()>0)
           timeManager->playTrigger->trigger();
         quantizedRecordStart = 0;
