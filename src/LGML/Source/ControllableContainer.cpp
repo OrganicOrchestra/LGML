@@ -619,7 +619,7 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 
   onContainerParameterChanged(p);
 
-  if (p->isControllableExposed) dispatchFeedback(p);
+  if (p->isControllableExposed && (p!=nullptr && p->parentContainer==this) ) dispatchFeedback(p);
 }
 
 
@@ -635,7 +635,7 @@ void ControllableContainer::triggerTriggered(Trigger * t)
 		onContainerTriggerTriggered(t);
 	}
 
-    if (t->isControllableExposed) dispatchFeedback(t);
+    if (t->isControllableExposed &&  (t!=nullptr && t->parentContainer==this)) dispatchFeedback(t);
 
 	
 
