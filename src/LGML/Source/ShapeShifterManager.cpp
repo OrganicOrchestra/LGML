@@ -383,7 +383,7 @@ void ShapeShifterManager::handleMenuPanelCommand(int commandID)
 		}
 		else
 		{
-			Rectangle<int> r(300, 500);
+			Rectangle<int> r(100,100,300, 500);
 			showPanelWindow(newP, r);
 		}
 	}
