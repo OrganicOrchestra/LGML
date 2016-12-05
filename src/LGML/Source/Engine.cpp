@@ -190,7 +190,7 @@ void Engine::stimulateAudio( bool s){
 
 void Engine::MultipleAudioSettingsHandler::changeListenerCallback(ChangeBroadcaster *){
   //    Trick allowing to defer all changes have the last word
-  startTimer(1);
+  startTimer(100);
 }
 void Engine::MultipleAudioSettingsHandler::timerCallback(){
 

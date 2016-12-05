@@ -54,7 +54,16 @@ private:
 };
 
 
-
+// jsObject to bind functions to OSC address from within js
+//
+//example.js
+//
+// var myListener = createOSCListener("/osc/pattern/to/watch")
+//
+// myListener.onOSC= function(value){
+// gets activated when /osc/pattern/to/watch has been recieved
+// do stuff with value...
+// }
 class JsOSCListener{
   public :
   JsOSCListener(JsEnvironment * js, OSCAddressPattern & pattern):jsEnv(js),

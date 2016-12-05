@@ -209,8 +209,6 @@ Identifier JsOSCListener::oscReceivedCallbackId("onOSC");
 
 
 
-
-
 var JavascriptController::createJsOSCListener(const var::NativeFunctionArgs & a){
 
   if(a.numArguments<1){ return var::undefined();}
