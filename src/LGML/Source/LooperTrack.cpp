@@ -47,7 +47,7 @@ lastVolume(0)
   beatLength = addFloatParameter("Length", "length in bar", 0, 0, 200);
 
 
-  stateParameterString = addStringParameter("state", "track state", "");
+  stateParameterString = addStringParameter("state", "track state", "cleared");
   stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer(stateParameterString);
   addTrackListener(stateParameterStringSynchronizer);
   stateParameterString->isControllableFeedbackOnly = true;
@@ -65,7 +65,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
   //bool stateChanged  =
-//  updatePendingLooperTrackState(TimeManager::getInstance()->getTimeInSample(), buffer.getNumSamples());
+  //  updatePendingLooperTrackState(TimeManager::getInstance()->getTimeInSample(), buffer.getNumSamples());
 
 
   handleStartOfRecording();
@@ -113,7 +113,7 @@ bool LooperTrack::updatePendingLooperTrackState( uint64 curTime, int blockSize) 
     }
     else{
       quantizedRecordStart=curTime;
-//      int dbg;dbg=0;
+      //      int dbg;dbg=0;
     }
   }
 
@@ -247,10 +247,10 @@ bool LooperTrack::updatePendingLooperTrackState( uint64 curTime, int blockSize) 
     // DBG("a:"+trackStateToString(trackState));
 
   }
-//  if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
-//    TimeManager * tm = TimeManager::getInstance();
-//    loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample/getQuantization());
-//  }
+  //  if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
+  //    TimeManager * tm = TimeManager::getInstance();
+  //    loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample/getQuantization());
+  //  }
 
   return stateChanged;
 
@@ -458,7 +458,7 @@ void LooperTrack::setTrackState(TrackState newState) {
     }
 
     else if (!timeManager->isSettingTempo->boolValue()) {
-        if(parentLooper->askForBeingAbleToRecNow(this) ){//&& !timeManager->playState->boolValue()) {
+      if(parentLooper->askForBeingAbleToRecNow(this) ){//&& !timeManager->playState->boolValue()) {
         if(getQuantization()>0)
           timeManager->playTrigger->trigger();
         quantizedRecordStart = 0;

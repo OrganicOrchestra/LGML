@@ -14,6 +14,10 @@
 #include "Controller.h"
 class StringParameter;
 
+#define NUM_OSC_MSG_IN_A_ROW 1
+#define OSC_QUEUE_LENGTH 5000
+
+
 class OSCController : public Controller, public OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
 {
 public:
@@ -23,13 +27,15 @@ public:
   StringParameter * localPortParam;
   StringParameter * remoteHostParam;
   StringParameter * remotePortParam;
+  FloatParameter *speedLimit;
   BoolParameter * logIncomingOSC;
   BoolParameter * logOutGoingOSC;
   BoolParameter * blockFeedback;// if a parameter is updated from processOSC , stops any osc out with same address
   Trigger * sendAllParameters;
 
 
-
+  float lastOSCMessageSentTime;
+  int numSentInARow;
 
   void setupReceiver();
   void setupSender();
@@ -72,11 +78,26 @@ public:
   }
 #endif
 
+  class OSCMessageQueue:public Timer{
+  public:
+    OSCMessageQueue(OSCController* o);
+    void add(OSCMessage * m);
+    void timerCallback() override;
+    Array<OSCMessage*> messages;
+    AbstractFifo aFifo;
+    OSCController* owner;
+    int interval;
+
+  };
+
+  OSCMessageQueue oscMessageQueue;
   bool sendOSC (OSCMessage & m);
 
   void logMessage(const OSCMessage & m,const String & prefix = "");
 
 private:
+  bool sendOSCInternal(OSCMessage & m);
+  friend class OSCMessageQueue;
   // should use sendOSC for centralizing every call
   OSCReceiver receiver;
   OSCSender sender;

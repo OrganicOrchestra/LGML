@@ -221,7 +221,7 @@ bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
 }
 
 bool LooperNode::askForBeingAbleToRecNow(LooperTrack * _t) {
-  if(isOneShot->boolValue()|| _t->getQuantization()==0)return true;
+  if(!firstTrackSetTempo->boolValue()|| _t->getQuantization()==0)return true;
   if(!_t->isMasterTempoTrack()) return false;
   bool result = true;
   for (auto & t : trackGroup.tracks) {
