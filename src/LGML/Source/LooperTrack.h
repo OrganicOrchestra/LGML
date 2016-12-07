@@ -55,6 +55,12 @@ public:
 
 
 
+    void clear();
+    void stop();
+    void play();
+    void recPlay();
+    
+    
   const float defaultVolumeValue = DB0_FOR_01;
   int trackIdx;
 

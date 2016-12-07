@@ -221,7 +221,7 @@ bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
 }
 
 bool LooperNode::askForBeingAbleToRecNow(LooperTrack * _t) {
-  if(!firstTrackSetTempo->boolValue()|| _t->getQuantization()==0)return true;
+    if((!firstTrackSetTempo->boolValue() && !TimeManager::getInstance()->isPlaying())|| _t->getQuantization()==0)return true;
   if(!_t->isMasterTempoTrack()) return false;
   bool result = true;
   for (auto & t : trackGroup.tracks) {
@@ -245,36 +245,36 @@ int LooperNode::getQuantization(){
 void LooperNode::onContainerTriggerTriggered(Trigger * t) {
   if (t == recPlaySelectedTrig) {
 
-    if (selectedTrack != nullptr) selectedTrack->recPlayTrig->trigger();
+    if (selectedTrack != nullptr) selectedTrack->recPlay();
 
   }
   else if (t == playSelectedTrig) {
 
-    if (selectedTrack != nullptr) selectedTrack->playTrig->trigger();
+    if (selectedTrack != nullptr) selectedTrack->play();
 
   }
   else if (t == clearSelectedTrig) {
 
-    if (selectedTrack != nullptr) selectedTrack->clearTrig->trigger();
+    if (selectedTrack != nullptr) selectedTrack->clear();
     else clearAllTrig->trigger();
 
   }
   else if (t == stopSelectedTrig) {
 
-    if (selectedTrack != nullptr) selectedTrack->stopTrig->trigger();
+    if (selectedTrack != nullptr) selectedTrack->stop();
     else stopAllTrig->trigger();
   }
 
   if (t == clearAllTrig) {
     for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
-      trackGroup.tracks[i]->clearTrig->trigger();
+      trackGroup.tracks[i]->clear();
     }
     selectTrack->setValue(0);
     outputVolume->setValue(DB0_FOR_01);
   }
   if (t == stopAllTrig) {
     for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
-      trackGroup.tracks[i]->stopTrig->trigger();
+      trackGroup.tracks[i]->stop();
     }
   }
   if (t == selectAllTrig)

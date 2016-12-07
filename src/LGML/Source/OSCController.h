@@ -14,7 +14,7 @@
 #include "Controller.h"
 class StringParameter;
 
-#define NUM_OSC_MSG_IN_A_ROW 1
+#define NUM_OSC_MSG_IN_A_ROW 10
 #define OSC_QUEUE_LENGTH 5000
 
 

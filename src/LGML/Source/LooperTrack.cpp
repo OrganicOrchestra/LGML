@@ -383,31 +383,43 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
 
   }
   else if (t == recPlayTrig) {
-
-    if (desiredState == CLEARED) {
-      setTrackState(WILL_RECORD);
-    }
-    else  if(desiredState!=WILL_RECORD){
-      if(parentLooper->isOneShot->boolValue() && desiredState==RECORDING){
-        setTrackState(WILL_STOP);
-      }
-      else{setTrackState(WILL_PLAY);}
-    }
-
+      recPlay();
   }
   else if (t == playTrig) {
-    setTrackState(WILL_PLAY);
+      play();
   }
   else if (t == clearTrig) {
+      clear();
+  }
+  else if (t == stopTrig) {
+      stop();
+  }
+}
+void LooperTrack::clear(){
     setTrackState(CLEARED);
     volume->setValue(DB0_FOR_01);
     mute->setValue(false);
-  }
-  else if (t == stopTrig) {
-    setTrackState(WILL_STOP);
-  }
 }
 
+void LooperTrack::stop(){
+    setTrackState(WILL_STOP);
+}
+
+void LooperTrack::play(){
+        setTrackState(WILL_PLAY);
+}
+
+void LooperTrack::recPlay(){
+    if (desiredState == CLEARED) {
+        setTrackState(WILL_RECORD);
+    }
+    else  if(desiredState!=WILL_RECORD){
+        if(parentLooper->isOneShot->boolValue() && desiredState==RECORDING){
+            setTrackState(WILL_STOP);
+        }
+        else{setTrackState(WILL_PLAY);}
+    }
+}
 bool LooperTrack::askForBeingMasterTempoTrack() {
   if(getQuantization()>0){
 
