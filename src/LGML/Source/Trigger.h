@@ -35,9 +35,9 @@ public:
 	{
 		if (enabled && !isTriggering){
 			isTriggering = true;
-			listeners.call(&Listener::triggerTriggered, this);
-			queuedNotifier.addMessage(new WeakReference<Trigger>(this));
-			isTriggering = false;
+            listeners.call(&Listener::triggerTriggered, this);
+            queuedNotifier.addMessage(new WeakReference<Trigger>(this));
+            isTriggering = false;
 		}
 	}
 	
@@ -57,7 +57,7 @@ public:
 	void addTriggerListener(Trigger::Listener* newListener) { listeners.add(newListener); }
 	void removeTriggerListener(Trigger::Listener* listener) { listeners.remove(listener); }
 	
-
+    
 	
 	QueuedNotifier<WeakReference<Trigger>> queuedNotifier;
 	typedef QueuedNotifier<WeakReference<Trigger>>::Listener AsyncListener;

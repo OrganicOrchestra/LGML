@@ -14,10 +14,12 @@
 
 #include "NodeManager.h"
 
+
 OSCController::OSCController(const String &_name) :
 Controller(_name),
 lastMessageReceived(OSCAddressPattern("/fake")),
-isProcessingOSC(false)
+isProcessingOSC(false),
+oscMessageQueue(this)
 
 {
 
@@ -28,6 +30,7 @@ isProcessingOSC(false)
 
   logIncomingOSC = addBoolParameter("logIncomingOSC", "log the incoming OSC Messages", false);
   logOutGoingOSC = addBoolParameter("logOutGoingOSC", "log the outGoing OSC Messages", false);
+  speedLimit = addFloatParameter("speedLimit", "min interval (ms) between 2 series of "+String(NUM_OSC_MSG_IN_A_ROW)+" OSCMessages", 0,0,100);
 
   blockFeedback = addBoolParameter("blockFeedback", "block osc feedback (resending updated message to controller)", true);
   sendAllParameters = addTrigger("sendAll", "send all parameter states to initialize ", true);
@@ -35,6 +38,8 @@ isProcessingOSC(false)
   setupSender();
 
   receiver.addListener(this);
+  lastOSCMessageSentTime = 0;
+  numSentInARow=NUM_OSC_MSG_IN_A_ROW;
 
 
 }
@@ -107,6 +112,7 @@ void OSCController::onContainerParameterChanged(Parameter * p)
 
   if (p == localPortParam) setupReceiver();
   else if (p == remotePortParam || p == remoteHostParam) setupSender();
+  else if(p==speedLimit){oscMessageQueue.interval=speedLimit->floatValue();}
 
 }
 
@@ -172,13 +178,20 @@ bool OSCController::sendOSC (OSCMessage & m)
 {
   if(enabledParam->boolValue() &&
      (!blockFeedback->boolValue() || !isProcessingOSC ||  !compareOSCMessages(lastMessageReceived,m))){
-    if(logOutGoingOSC->boolValue()){
-        logMessage(m,"Out:");
+
+    if(speedLimit->floatValue()>0.0f){
+      oscMessageQueue.add(new OSCMessage(m));
     }
-    return sender.send (m);
+    else{
+      return sendOSCInternal(m);
+    }
   }
 
   return false;
+}
+bool OSCController::sendOSCInternal(OSCMessage & m){
+  if(logOutGoingOSC->boolValue()){ logMessage(m,"Out:");}
+  return sender.send (m);
 }
 
 ControllerUI * OSCController::createUI()
@@ -191,14 +204,71 @@ void OSCController::sendAllControllableStates(ControllableContainer *c,int & sen
     for(auto & controllable:c->getAllControllables()){
       controllableFeedbackUpdate(c,controllable);
       sentControllable++;
-      if((sentControllable%60)==0){
-        Thread::sleep(10);
+      if((sentControllable%10)==0){
+        Thread::sleep(2);
       }
     }
     for(auto & container:c->controllableContainers){
       sendAllControllableStates(container,sentControllable);
-
     }
   }
   
+}
+
+
+////////////////////////
+// OSCMessageQueue
+///////////////////////
+OSCController::OSCMessageQueue::OSCMessageQueue(OSCController* o):
+owner(o),
+aFifo(OSC_QUEUE_LENGTH),
+interval(1)
+{messages.resize(OSC_QUEUE_LENGTH);}
+
+void OSCController::OSCMessageQueue::add(OSCMessage * m){
+  int startIndex1,blockSize1,startIndex2,blockSize2;
+  aFifo.prepareToWrite(1,startIndex1,blockSize1,startIndex2,blockSize2);
+  int numWritten = 0;
+  if(blockSize1>0){
+    messages.set(startIndex1,m);
+    numWritten ++;
+  }
+  else if(blockSize2>0){
+    messages.set(startIndex2,m);
+    numWritten ++;
+  }
+  else{
+    aFifo.finishedWrite(numWritten);
+    numWritten=0;
+    timerCallback();
+    NLOG(owner->niceName,"still flooding OSC");
+  }
+  aFifo.finishedWrite(numWritten);
+  if(!isTimerRunning())startTimer(interval);
+}
+
+void OSCController::OSCMessageQueue::timerCallback() {
+  if(aFifo.getNumReady()){
+    int numRead=0;
+    int startIndex1,blockSize1,startIndex2,blockSize2;
+    aFifo.prepareToRead(NUM_OSC_MSG_IN_A_ROW, startIndex1,blockSize1,startIndex2,blockSize2);
+    if(blockSize1>0){
+      for( ; numRead < blockSize1 ; numRead++ ){
+        owner->sendOSCInternal(*messages[startIndex1+numRead]);
+        delete messages[startIndex1+numRead];
+      }
+    }
+    if(blockSize2>0){
+      for(int i = 0 ; i < blockSize2 ; i++ ){
+        owner->sendOSCInternal(*messages[startIndex2+i]);
+        delete messages[startIndex2+i];
+        numRead++;
+      }
+    }
+    aFifo.finishedRead(numRead);
+
+  }
+  else{
+    stopTimer();
+  }
 }

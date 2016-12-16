@@ -24,6 +24,7 @@ oscController(controllerUI->oscController)
   remotePortUI->setNameLabelVisible(true);
 
   logIncomingOSC = oscController->logIncomingOSC->createToggle();
+  speedLimit = oscController->speedLimit->createSlider();
   logOutOSC = oscController->logOutGoingOSC->createToggle();
   blockFeedback = oscController->blockFeedback->createToggle();
 
@@ -36,6 +37,7 @@ oscController(controllerUI->oscController)
   addAndMakeVisible(logOutOSC);
   addAndMakeVisible(sendAllTrigger);
   addAndMakeVisible(blockFeedback);
+  addAndMakeVisible(speedLimit);
 
   addAndMakeVisible(innerContainer);
 }
@@ -64,7 +66,8 @@ void OSCControllerEditor::resized()
   sendAllTrigger->setBounds(r.removeFromTop(15));
   r.removeFromTop(2);
   blockFeedback->setBounds(r.removeFromTop(15));
-
+  r.removeFromTop(2);
+  speedLimit->setBounds(r.removeFromTop(15));
 
   innerContainer.setBounds(r);
 

@@ -20,8 +20,8 @@ trackGroup(this),
 streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
 {
 
-  numberOfTracks =		addIntParameter("Number Of Tracks",		"number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-  numberOfAudioChannelsIn = addIntParameter("Channels Per Track", "number of channels on each audioTrack", 2,1,2);
+  numberOfTracks =		addIntParameter("numberOfTracks",		"number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
+  numberOfAudioChannelsIn = addIntParameter("numberOfChannelsPerTrack", "number of channels on each audioTrack", 2,1,2);
   exportAudio =			addTrigger("exportAudio",				"export audio of all recorded Tracks");
   selectAllTrig =		addTrigger("Select All",				"Select All tracks, for all clear or main volume for instance");
   selectTrack =			addIntParameter("Select track",			"set track selected", 0, -1, 0);
@@ -32,22 +32,14 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
   volumeSelected =		addFloatParameter("Volume",				"Set the volume of the selected track",1, 0, 1);
   clearAllTrig =		addTrigger("ClearAll",					"Tells all tracks to clear it's content if got any");
   stopAllTrig =			addTrigger("StopAll",					"Tells all tracks to stop it's content if got any");
-  playAllTrig =			addTrigger("PlayAll",					"Tells all tracks to play it's content if got any");
-  togglePlayStopAllTrig = addTrigger("Toggle PlayStop", "Toggle Play/Stop all, will stop if at least one track is playing");
-  isMonitoring =		addBoolParameter("Monitor",				"do we monitor audio input ? ", false);
+  isMonitoring =		addBoolParameter("monitor",				"do we monitor audio input ? ", false);
   preDelayMs =			addIntParameter("Pre Delay MS",			"Pre process delay (in milliseconds)", 0, 0, 250);
-  quantization =		addIntParameter("Quantization",			"quantization for this looper - 1 is global", -1, -1, 32);
-  isOneShot =			addBoolParameter("Is One Shot",			"do we play once or loop track", false);
-  firstTrackSetTempo =	addBoolParameter("First Track Set Tempo",	"do the first track sets the global tempo or use quantization", true);
-  waitForOnset =		addBoolParameter("Wait For Onset",		"wait for onset before actually recording", false);
-  onsetThreshold =		addFloatParameter("Onset Threshold",		"threshold before onset", 0.01f,0.0001f,0.1f);
-  outputAllTracksSeparately = addBoolParameter("Tracks Output Separated", "split all tracks in separate audio channel out", false);
-  autoNextTrackAfterRecord = addBoolParameter("Auto Next", "If enabled, it will select automatically the next track after a track record.", false);
-  autoClearPreviousIfEmpty = addBoolParameter("Auto Clear Previous", "/!\\ Will only work if 'Auto Next' is enabled !\nIf enabled, it will automatically clear the previous track if 'clear' is triggered and the actual selected track is empty.", false);
-
-  selectNextTrig = addTrigger("Select Next", "Select Next Track");
-  selectPrevTrig = addTrigger("Select Prev", "Select Previous Track");
-
+  quantization =		addIntParameter("quantization",			"quantization for this looper - 1 is global", -1, -1, 32);
+  isOneShot =			addBoolParameter("isOneShot",			"do we play once or loop track", false);
+  firstTrackSetTempo =	addBoolParameter("firstTrackSetTempo",	"do the first track sets the global tempo or use quantization", true);
+  waitForOnset =		addBoolParameter("wait for onset",		"wait for onset before actually recording", false);
+  onsetThreshold =		addFloatParameter("onsetThreshold",		"threshold before onset", 0.01f,0.0001f,0.1f);
+  outputAllTracksSeparately = addBoolParameter("tracksOutputSeparated", "split all tracks in separate audio channel out", false);
   addChildControllableContainer(&trackGroup);
 
   trackGroup.setNumTracks(numberOfTracks->intValue());
@@ -216,7 +208,21 @@ bool LooperNode::askForBeingMasterTrack(LooperTrack * t) {
 }
 
 bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
-  if(isOneShot->boolValue())return true;
+  if(isOneShot->boolValue()|| _t->getQuantization()==0)return true;
+  if(TimeManager::getInstance()->playTrigger->isTriggering) return true;
+    if(!_t->isMasterTempoTrack()) return false;
+  bool result = true;
+  for (auto & t : trackGroup.tracks) {
+    if (t != _t)result &=
+      (t->trackState == LooperTrack::TrackState::STOPPED) ||
+      (t->trackState == LooperTrack::TrackState::CLEARED) ;
+  }
+  return result;
+}
+
+bool LooperNode::askForBeingAbleToRecNow(LooperTrack * _t) {
+    if((!firstTrackSetTempo->boolValue() && !TimeManager::getInstance()->isPlaying())|| _t->getQuantization()==0)return true;
+  if(!_t->isMasterTempoTrack()) return false;
   bool result = true;
   for (auto & t : trackGroup.tracks) {
     if (t != _t)result &=
@@ -229,22 +235,9 @@ bool LooperNode::askForBeingAbleToPlayNow(LooperTrack * _t) {
 bool LooperNode::areAllTrackClearedButThis(LooperTrack * _t) {
   bool result = true;
   for (auto & t : trackGroup.tracks) {
-    if (t != _t) result &= t->trackState == LooperTrack::TrackState::CLEARED;
+    if (t != _t)result &= t->trackState == LooperTrack::TrackState::CLEARED;
   }
   return result;
-}
-bool LooperNode::hasAtLeastOneTrackPlaying()
-{
-	for (auto & t : trackGroup.tracks) {
-		if (t->trackState == LooperTrack::TrackState::RECORDING ||
-			t->trackState == LooperTrack::TrackState::WILL_PLAY ||
-			t->trackState == LooperTrack::TrackState::PLAYING)
-		{
-			return true;
-		}
-	}
-
-	return false;
 }
 int LooperNode::getQuantization(){
   return quantization->intValue()>=0?quantization->intValue():TimeManager::getInstance()->quantizedBarFraction->intValue();
@@ -252,79 +245,43 @@ int LooperNode::getQuantization(){
 void LooperNode::onContainerTriggerTriggered(Trigger * t) {
   if (t == recPlaySelectedTrig) {
 
-	  if (selectedTrack != nullptr)
-	  {
-		  selectedTrack->recPlayTrig->trigger();
-		  if (autoNextTrackAfterRecord->boolValue() && selectedTrack->trackState == LooperTrack::TrackState::RECORDING) selectTrack->setValue(selectTrack->intValue() + 1);
-	  }
+    if (selectedTrack != nullptr) selectedTrack->recPlay();
+
   }
   else if (t == playSelectedTrig) {
 
-    if (selectedTrack != nullptr) selectedTrack->playTrig->trigger();
+    if (selectedTrack != nullptr) selectedTrack->play();
 
   }
   else if (t == clearSelectedTrig) {
 
-	  if (selectedTrack != nullptr)
-	  {
-		  if (autoNextTrackAfterRecord->boolValue() && autoClearPreviousIfEmpty->boolValue())
-		  {
-			  if (selectedTrack->isEmpty()) selectTrack->setValue(selectTrack->intValue() - 1);
-		  }
-		  selectedTrack->clearTrig->trigger();
-	  } else
-	  {
-		  clearAllTrig->trigger();
-	  }
+    if (selectedTrack != nullptr) selectedTrack->clear();
+    else clearAllTrig->trigger();
 
   }
   else if (t == stopSelectedTrig) {
 
-    if (selectedTrack != nullptr) selectedTrack->stopTrig->trigger();
+    if (selectedTrack != nullptr) selectedTrack->stop();
     else stopAllTrig->trigger();
   }
 
   if (t == clearAllTrig) {
     for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
-      trackGroup.tracks[i]->clearTrig->trigger();
+      trackGroup.tracks[i]->clear();
     }
     selectTrack->setValue(0);
     outputVolume->setValue(DB0_FOR_01);
   }
-
   if (t == stopAllTrig) {
     for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
-      trackGroup.tracks[i]->stopTrig->trigger();
+      trackGroup.tracks[i]->stop();
     }
-  } else if (t == playAllTrig)
-  {
-	  for (int i = trackGroup.tracks.size() - 1; i >= 0; --i) {
-		  trackGroup.tracks[i]->playTrig->trigger();
-	  }
-  } else if (t == togglePlayStopAllTrig) {
-	  
-	  if (hasAtLeastOneTrackPlaying())
-	  {
-		  stopAllTrig->trigger();
-	  } else
-	  {
-		  playAllTrig->trigger();
-	  }
   }
-
   if (t == selectAllTrig)
   {
     selectTrack->setValue(-1);
 
-  } else if (t == selectNextTrig)
-  {
-	  selectTrack->setValue(selectTrack->intValue() + 1);
-  } else if (t == selectPrevTrig)
-  {
-	  selectTrack->setValue(selectTrack->intValue() - 1);
   }
-
-
 #if !LGML_UNIT_TESTS
   if(t==exportAudio){
     FileChooser myChooser("Please select the directory for exporting audio ...");

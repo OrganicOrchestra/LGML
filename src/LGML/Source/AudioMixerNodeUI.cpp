@@ -147,6 +147,8 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput(int numInput){
 	}
 	else if(numInput<lastSize){
 		inputVolumes.removeLast(lastSize-numInput,true);
+    visibleChanels.setRange(numInput, lastSize - numInput, false);
+
 	}
 	updateVisibleChannels();
 
@@ -167,8 +169,9 @@ void AudioMixerNodeUI::OutputBusUI::resized() {
 	const int pad = 2;
 	int idx = 0;
 	for(auto & o:inputVolumes){
-		if(visibleChanels[idx])
+    if(visibleChanels[idx]){
 			o->setBounds(area.removeFromLeft((int)step).reduced(pad));
+    }
 		idx++;
 	}
 }

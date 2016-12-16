@@ -30,7 +30,7 @@ JsEnvironment::JsEnvironment(const String & ns, ControllableContainer * _linkedC
   localEnv = new DynamicObject();
   clearNamespace();
   getEngine()->addControllableContainerListener(this);
-//  addToNamespace(localNamespace, localEnv, getGlobalEnv());
+  //  addToNamespace(localNamespace, localEnv, getGlobalEnv());
   onUpdateTimerInterval = 20;
 
   triesToLoad = 5;
@@ -123,7 +123,10 @@ void JsEnvironment::internalLoadFile(const File &f ){
 
   Result r = loadScriptContent(jsString);
 
-  startUpdateTimerIfNeeded();
+  static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
+  if(userDefinedFunctions.contains(onUpdateFId))
+  {startTimer(1, onUpdateTimerInterval);}
+  else{stopTimer(1);}
 
   if(r.failed() && !isInSyncWithLGML){triesToLoad--;}
   else{isInSyncWithLGML =true;}
@@ -213,8 +216,8 @@ var JsEnvironment::callFunction(const String& function, const Array<var>& args, 
 var JsEnvironment::callFunction(const String& function, const var& args, bool logResult, Result * result) {
 
   if (!functionIsDefined(function)) {
-    if (result != nullptr) result->fail(noFunctionLogIdentifier.toString()+" : "+function);
-    if (logResult)NLOG(localNamespace, noFunctionLogIdentifier.toString() + " : "+function);
+    if (result != nullptr)result->fail(noFunctionLogIdentifier.toString());
+    if (logResult)NLOG(localNamespace, noFunctionLogIdentifier.toString());
     return var::undefined();
   }
   return callFunctionFromIdentifier(function, args, logResult, result);
@@ -254,7 +257,7 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
     if (!JsGlobalEnvironment::getInstance()->isDirty()) {
       res = jsEngine->callFunction(function, Nargs, result);
     } else {
-//      DBG("JS avoiding to call function while global environment is dirty");
+      //      DBG("JS avoiding to call function while global environment is dirty");
     }
   }
   if (logResult && result->failed()) {
@@ -293,14 +296,14 @@ void JsEnvironment::setLocalNamespace(DynamicObject & target)
 void JsEnvironment::setNamespaceName(const String & s)
 {
   if(s!=localNamespace){
-  DynamicObject * d = getNamespaceFromObject(getParentName(), getGlobalEnv());
-  jassert(d != nullptr);
-  if(localEnv.get()){
-    
-    d->removeProperty(getModuleName());
-    localNamespace = s;
-    d->setProperty(getModuleName(), localEnv.get());
-  }
+    DynamicObject * d = getNamespaceFromObject(getParentName(), getGlobalEnv());
+    jassert(d != nullptr);
+    if(localEnv.get()){
+
+      d->removeProperty(getModuleName());
+      localNamespace = s;
+      d->setProperty(getModuleName(), localEnv.get());
+    }
   }
 }
 
@@ -330,20 +333,13 @@ void JsEnvironment::timerCallback(int timerID)
     }
   } else if (timerID == 1)
   {
-
-    callFunction(onUpdateIdentifier.toString(), var(), true);
+    if(_hasValidJsFile && functionIsDefined("onUpdate")){
+      callFunction("onUpdate", var(), true);
+    }
+    else{
+      stopTimer(1);
+    }
   }
-}
-
-void JsEnvironment::startUpdateTimerIfNeeded()
-{
-	static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
-	if (userDefinedFunctions.contains(onUpdateFId))
-	{
-		startTimer(1, onUpdateTimerInterval);
-	} else {
-		stopTimer(1);
-	}
 }
 
 String JsEnvironment::printAllNamespace()

@@ -30,6 +30,7 @@ public:
 	ScopedPointer<StringParameterUI> remoteHostUI;
 	ScopedPointer<StringParameterUI> remotePortUI;
     ScopedPointer<BoolToggleUI> logIncomingOSC,logOutOSC;
+  ScopedPointer<FloatSliderUI> speedLimit;
   ScopedPointer<BoolToggleUI> blockFeedback;
   ScopedPointer<TriggerBlinkUI> sendAllTrigger;
 
