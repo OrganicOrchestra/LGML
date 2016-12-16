@@ -123,10 +123,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
 
   Result r = loadScriptContent(jsString);
 
-  static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
-  if(userDefinedFunctions.contains(onUpdateFId))
-  {startTimer(1, onUpdateTimerInterval);}
-  else{stopTimer(1);}
+  startUpdateTimerIfNeeded();
 
   if(r.failed() && !isInSyncWithLGML){triesToLoad--;}
   else{isInSyncWithLGML =true;}
@@ -340,6 +337,16 @@ void JsEnvironment::timerCallback(int timerID)
       stopTimer(1);
     }
   }
+}
+
+void JsEnvironment::startUpdateTimerIfNeeded()
+{
+	static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
+	if (userDefinedFunctions.contains(onUpdateFId))
+	{
+		startTimer(1, onUpdateTimerInterval);
+	}
+	else { stopTimer(1); }
 }
 
 String JsEnvironment::printAllNamespace()

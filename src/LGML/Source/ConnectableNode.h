@@ -53,6 +53,8 @@ public:
 	//ui params
 	FloatParameter * xPosition;
 	FloatParameter * yPosition;
+	FloatParameter * nodeWidth;
+	FloatParameter * nodeHeight;
 	BoolParameter * miniMode;
 
 	void remove(bool askBeforeRemove = false);

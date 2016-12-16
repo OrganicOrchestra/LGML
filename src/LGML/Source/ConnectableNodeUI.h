@@ -31,6 +31,8 @@ public:
 
 	WeakReference<ConnectableNode> connectableNode;
 
+	
+	ResizableCornerComponent resizer;
 
 	class ConnectorContainer :
 		public Component,
