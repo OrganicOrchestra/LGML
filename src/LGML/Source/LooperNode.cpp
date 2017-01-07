@@ -392,7 +392,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
       // prevent time manager to update track internal state before all tracks are updated
       TimeManager::getInstance()->lockTime(true);
       for (auto &t : trackGroup.tracks) {
-        if(t->trackState!=LooperTrack::CLEARED && t->trackState!=LooperTrack::WILL_RECORD) t->setTrackState(LooperTrack::TrackState::WILL_PLAY);
+        if(t->trackState!=LooperTrack::CLEARED && t->trackState!=LooperTrack::WILL_RECORD && t->trackState!=LooperTrack::PLAYING) t->setTrackState(LooperTrack::TrackState::WILL_PLAY);
       }
       TimeManager::getInstance()->lockTime(false);
     }

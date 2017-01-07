@@ -353,7 +353,7 @@ double TimeManager::setBPMForLoopLength(uint64 time,int granularity){
     beatTime = beatInSample*1.0/sampleRate;
   }
   settingTempoFromCandidate = true;
-  BPM->setValue(60.0/beatTime);
+  BPM->setValue(60.0/beatTime,false,false,true);
   settingTempoFromCandidate = false;
   // force exact beatTimeInSample
   beatTimeInSample = beatInSample;

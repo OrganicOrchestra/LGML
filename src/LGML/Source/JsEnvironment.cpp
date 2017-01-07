@@ -23,15 +23,26 @@ extern Engine * getEngine();
 Identifier JsEnvironment::noFunctionLogIdentifier("no function Found");
 Identifier JsEnvironment::onUpdateIdentifier("onUpdate");
 
+const JsEnvironment::JsTimerType JsEnvironment::autoWatchTimer(0,500);
+const JsEnvironment::JsTimerType JsEnvironment::onUpdateTimer(1,20);
 
-JsEnvironment::JsEnvironment(const String & ns, ControllableContainer * _linkedContainer) :linkedContainer(_linkedContainer), localNamespace(ns), _hasValidJsFile(false), autoWatch(false), isInSyncWithLGML(false),isLoadingFile(false) {
+
+JsEnvironment::JsEnvironment(const String & ns, ControllableContainer * _linkedContainer) :
+linkedContainer(_linkedContainer),
+localNamespace(ns),
+_hasValidJsFile(false),
+autoWatch(false),
+_isInSyncWithLGML(false),
+isLoadingFile(false)
+
+{
 
 
   localEnv = new DynamicObject();
   clearNamespace();
   getEngine()->addControllableContainerListener(this);
   //  addToNamespace(localNamespace, localEnv, getGlobalEnv());
-  onUpdateTimerInterval = 20;
+
 
   triesToLoad = 5;
 
@@ -41,8 +52,8 @@ JsEnvironment::~JsEnvironment() {
   if (getEngine()) {
     getEngine()->removeControllableContainerListener(this);
   }
-  stopTimer(0);
-  stopTimer(1);
+  stopTimer(autoWatchTimer.id);
+  stopTimer(onUpdateTimer.id);
   clearListeners();
 
 
@@ -93,11 +104,11 @@ void JsEnvironment::loadFile(const File &f) {
   if (f.existsAsFile() && f.getFileExtension() == ".js") {
     currentFile = f;
     if (isEngineLoadingFile()) {
-      startTimer(0, 500);
+      startTimer(autoWatchTimer.id, autoWatchTimer.interval);
       return;
     }
     internalLoadFile(f);
-    if (!autoWatch) stopTimer(0);
+    if (!autoWatch) stopTimer(autoWatchTimer.id);
   }
 }
 
@@ -115,7 +126,7 @@ void JsEnvironment::showFile() {
 
 
 void JsEnvironment::internalLoadFile(const File &f ){
-  if(triesToLoad<=0){stopTimer(0);return;}
+  if(triesToLoad<=0){stopTimer(autoWatchTimer.id);return;}
   StringArray destLines;
   f.readLines(destLines);
   String jsString = destLines.joinIntoString("\n");
@@ -124,15 +135,19 @@ void JsEnvironment::internalLoadFile(const File &f ){
   Result r = loadScriptContent(jsString);
 
   static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
-  if(userDefinedFunctions.contains(onUpdateFId))
-  {startTimer(1, onUpdateTimerInterval);}
-  else{stopTimer(1);}
 
-  if(r.failed() && !isInSyncWithLGML){triesToLoad--;}
-  else{isInSyncWithLGML =true;}
+
+
+  if(r.failed() && !_isInSyncWithLGML){triesToLoad--;}
+  else{_isInSyncWithLGML =true;}
   jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,(bool)r);
 
-
+  // TODO get rid of this once unifying JsEnvironment
+  bool isEnabled = (bool)r && _hasValidJsFile && _isInSyncWithLGML;
+  if(Controller * cc = dynamic_cast<Controller*>(this)){
+    isEnabled = cc->enabledParam->boolValue();
+  }
+  setTimerState(onUpdateTimer, isEnabled &&userDefinedFunctions.contains(onUpdateFId) );
 }
 
 Result JsEnvironment::loadScriptContent(const String & content)
@@ -158,9 +173,15 @@ Result JsEnvironment::loadScriptContent(const String & content)
     _hasValidJsFile = true;
     lastFileModTime = currentFile.getLastModificationTime();
     updateUserDefinedFunctions();
-    checkUserControllableEventFunction();
+    r = checkUserControllableEventFunction();
+    _isInSyncWithLGML = (bool)r;
     newJsFileLoaded();
-    NLOG(localNamespace, "Content loaded sucessfully");
+    if(_isInSyncWithLGML){
+      NLOG(localNamespace, "Content loaded sucessfully");
+    }
+    else{
+      NLOG(localNamespace, r.getErrorMessage());
+    }
   }
 
   jsListeners.call(&JsEnvironment::Listener::jsScriptLoaded, (bool)r);
@@ -190,14 +211,19 @@ void JsEnvironment::clearListeners() {
 }
 
 bool JsEnvironment::functionIsDefined(const juce::String & s) {
-  bool found = false;
+  StringArray arr;
+  arr.addTokens(s,"_","");
   for (auto & f : userDefinedFunctions) {
-    if (f.compare(s)) {
-      found = true;
-      break;
-    }
+    if (f.compare(arr)) {return true;}
   }
-  return found;
+  return false;
+}
+
+bool JsEnvironment::functionIdentifierIsDefined(const Identifier & i) {
+  for (auto & f : userDefinedFunctions) {
+    if (f.compareIdentifier(i)) {return true;}
+  }
+  return false;
 }
 
 
@@ -234,8 +260,6 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
 }
 
 var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const var & arg, bool logResult, Result* result) {
-
-
   // force Native function to explore first level global scope by setting Nargs::thisObject to undefined
   juce::var::NativeFunctionArgs Nargs(var::undefined(), &arg, 1);
   return callFunctionFromIdentifier(function, Nargs, logResult, result);
@@ -299,22 +323,19 @@ void JsEnvironment::setNamespaceName(const String & s)
     DynamicObject * d = getNamespaceFromObject(getParentName(), getGlobalEnv());
     jassert(d != nullptr);
     if(localEnv.get()){
-
       d->removeProperty(getModuleName());
       localNamespace = s;
       d->setProperty(getModuleName(), localEnv.get());
     }
   }
 }
-
+void JsEnvironment::setTimerState(const JsTimerType & t,bool s){
+  if(s){startTimer(t.id,t.interval);}
+  else{stopTimer(t.id);}
+}
 void JsEnvironment::setAutoWatch(bool s) {
   triesToLoad = 5;
-  if (s) {
-    startTimer(0, 500);
-  } else {
-    stopTimer(0);
-  }
-
+  setTimerState(autoWatchTimer, s);
   autoWatch = s;
 }
 
@@ -324,7 +345,7 @@ void JsEnvironment::timerCallback(int timerID)
   {
     if (isEngineLoadingFile())return;
     Time newTime = currentFile.getLastModificationTime();
-    if (newTime != lastFileModTime || !isInSyncWithLGML) {
+    if (newTime != lastFileModTime || !_isInSyncWithLGML ) {
 
       isLoadingFile = true;
       loadFile(currentFile);
@@ -333,11 +354,11 @@ void JsEnvironment::timerCallback(int timerID)
     }
   } else if (timerID == 1)
   {
-    if(_hasValidJsFile && functionIsDefined("onUpdate")){
-      callFunction("onUpdate", var(), true);
+    if(_hasValidJsFile && functionIdentifierIsDefined(onUpdateIdentifier)){
+      callFunctionFromIdentifier(onUpdateIdentifier, var(), true);
     }
     else{
-      stopTimer(1);
+      stopTimer(onUpdateTimer.id);
     }
   }
 }
@@ -357,9 +378,9 @@ String JsEnvironment::getModuleName()
 
 
 
-void JsEnvironment::checkUserControllableEventFunction()
+Result JsEnvironment::checkUserControllableEventFunction()
 {
-
+  Result res = Result::ok();
 
   NamedValueSet root = getRootObjectProperties();
   Array<FunctionIdentifier*> functionNamespaces;
@@ -416,7 +437,13 @@ void JsEnvironment::checkUserControllableEventFunction()
         fName += n + "_";
       }
       fName = fName.substring(0, fName.length() - 1);
-      NLOG(localNamespace, "not found controllable/Container for function : " + fName);
+      if( (bool)res){
+        res = Result::fail("not found controllable/Container for function : " + fName);
+      }
+      else{
+        res= Result::fail(res.getErrorMessage()+","+fName);
+      }
+
     }
 
   }
@@ -430,7 +457,7 @@ void JsEnvironment::checkUserControllableEventFunction()
     cont->addControllableContainerListener(this);
   }
 
-
+  return res;
 }
 
 void JsEnvironment::updateUserDefinedFunctions() {
@@ -472,9 +499,15 @@ void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originCont
 
 void JsEnvironment::childStructureChanged(ControllableContainer * originContainer, ControllableContainer * notifier) {
   // rebuild files that are not loaded properly if LGML JsEnvironment is not fully built at the time of their firstExecution
-  if (!_hasValidJsFile && !isLoadingFile && originContainer == getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(notifier))) {
-    isInSyncWithLGML = false;
-    startTimer(0, 500);
+  if ((!_hasValidJsFile || !_isInSyncWithLGML)&& !isLoadingFile && originContainer == getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(notifier))) {
+    bool isFromOtherJsEnv = false;
+    if(JsEnvironment *jsNotifier = dynamic_cast<JsEnvironment*>(notifier)){
+//      isFromOtherJsEnv = jsNotifier->isLoadingFile;
+    }
+    if(!isFromOtherJsEnv){
+    _isInSyncWithLGML = false;
+    startTimer(autoWatchTimer.id, autoWatchTimer.interval);
+    }
   };
 
 };

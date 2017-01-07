@@ -14,7 +14,7 @@
 #include "Controllable.h"
 #include "QueuedNotifier.h"
 
-class Parameter : public Controllable
+class Parameter : public Controllable,public AsyncUpdater
 {
 public:
     Parameter(const Type &type, const String & niceName, const String &description, var initialValue, var minValue, var maxValue, bool enabled = true);
@@ -34,7 +34,7 @@ public:
     bool isOverriden;
 
     void resetValue(bool silentSet = false);
-    virtual void setValue(var _value, bool silentSet = false, bool force = false);
+    virtual void setValue(var _value, bool silentSet = false, bool force = false,bool defferIt=false);
     virtual void setValueInternal(var & _value);
 
 	virtual bool checkValueIsTheSame(var newValue, var oldValue); //can be overriden to modify check behavior
@@ -50,7 +50,7 @@ public:
 	virtual bool boolValue() { return (bool)value; }
 	virtual String stringValue() { return value.toString(); }
 
-    void notifyValueChanged();
+  void notifyValueChanged(bool defferIt=false);
 
 	virtual DynamicObject * createDynamicObject() override;
 
@@ -79,8 +79,9 @@ public:
         bool isRange() const{return value.isArray();}
 
     };
-    QueuedNotifier<ParamWithValue> queuedNotifier;
-    typedef QueuedNotifier<ParamWithValue>::Listener AsyncListener;
+  QueuedNotifier<ParamWithValue> queuedNotifier;
+  typedef QueuedNotifier<ParamWithValue>::Listener AsyncListener;
+  void handleAsyncUpdate()override;
 
 
     void addAsyncParameterListener(AsyncListener* newListener) { queuedNotifier.addListener(newListener); }

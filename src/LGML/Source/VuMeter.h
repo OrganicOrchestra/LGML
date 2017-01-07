@@ -38,7 +38,7 @@ public:
     setSize(8, 20);
     voldB = 0.f;
     volChanged = true;
-    startTimer(1000/40);
+    startTimer(1000/30);
     colorHigh = Colours::red;
     colorLow = Colours::lightgreen;
     isActive = true;

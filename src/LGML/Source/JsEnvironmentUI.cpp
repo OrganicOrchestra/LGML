@@ -52,7 +52,9 @@ void JsEnvironmentUI::buildLed(int size) {
 }
 
 void JsEnvironmentUI::newJsFileLoaded(bool s) {
-	validJsLed.setFill(FillType(s ? Colours::green : Colours::red));
+  validJsLed.setFill(FillType((env->hasValidJsFile() && env->isInSyncWithLGML()) ? Colours::green :
+                              (env->hasValidJsFile() ? Colours::orange :
+                               Colours::red)));
 }
 
 void JsEnvironmentUI::buttonClicked(Button * b) {

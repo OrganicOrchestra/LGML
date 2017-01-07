@@ -13,7 +13,10 @@
 
 #include "JsGlobalEnvironment.h"
 
+
+
 class JsControllableListenerObject;
+
 
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
@@ -34,6 +37,7 @@ public:
 
   // can check that if want to avoid unnecessary (and potentially unsecure) method calls on non-valid jsFile
   bool hasValidJsFile(){return _hasValidJsFile;}
+  bool isInSyncWithLGML(){return _isInSyncWithLGML;}
 
   // dynamically update namespace name
   void    setNamespaceName(const String &);
@@ -66,9 +70,6 @@ public:
   void removeListener(Listener * l){jsListeners.remove(l);}
   void setAutoWatch(bool );
 
-  int onUpdateTimerInterval;
-
-
   var callFunction (const String& function, const Array<var>& args, bool logResult = true,Result * =nullptr);
   var callFunction (const String& function, const var& args,  bool logResult = true,Result * =nullptr);
 
@@ -98,6 +99,7 @@ public:
 
 
   bool functionIsDefined(const String &);
+  bool functionIdentifierIsDefined(const Identifier & i);
   File currentFile;
 
  static var createParameterListenerObject(const var::NativeFunctionArgs & a);
@@ -107,7 +109,24 @@ public:
   Array<WeakReference<Trigger> > listenedTriggers;
   Array<WeakReference<ControllableContainer> > listenedContainers;
   void sendAllParametersToJS();
+
+
+  struct JsTimerType{
+    JsTimerType(const int _id,const int _interval):id(_id),interval(_interval){}
+    const int id;
+    const int interval;
+  };
+
+  static const JsTimerType autoWatchTimer ;
+  static const JsTimerType onUpdateTimer;
+  void setTimerState(const JsTimerType & t,bool state);
+  friend class Controller;
+
+
+
 private:
+
+
 
 
 
@@ -152,7 +171,12 @@ private:
 //      for(auto & ts : arr.strings){
 //        splitedName.add(ts);
 //      }
+      identifier=s;
     };
+
+    bool compareIdentifier(const Identifier & i){
+      return i==identifier;
+    }
     bool compare(const String & s) const{
       StringArray arr;
       arr.addTokens(s,"_","");
@@ -176,6 +200,7 @@ private:
       return compare(other.splitedName);
     }
     StringArray splitedName;
+    Identifier identifier;
   };
   Array<FunctionIdentifier> userDefinedFunctions;
 
@@ -187,7 +212,7 @@ private:
   bool autoWatch;
 
   void clearListeners();
-  void checkUserControllableEventFunction();
+  Result checkUserControllableEventFunction();
   void parameterValueChanged(Parameter * c) override;
   void triggerTriggered(Trigger * p) override;
 
@@ -197,7 +222,8 @@ private:
   WeakReference<ControllableContainer> linkedContainer;
   bool isLoadingFile;
   int triesToLoad;
-  bool isInSyncWithLGML;
+  bool _isInSyncWithLGML;
+  
 
   static Identifier onUpdateIdentifier;
 
@@ -247,7 +273,7 @@ class JsControllableListenerObject:public Parameter::AsyncListener,public Trigge
     }
   }
 
-  // overriden in Js 
+  // overriden in Js
 #pragma warning(push)
 #pragma warning(disable:4305 4800) 
   static var dummyCallback(const var::NativeFunctionArgs & /*a*/){return var::undefined;};

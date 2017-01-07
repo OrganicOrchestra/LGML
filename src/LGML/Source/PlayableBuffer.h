@@ -369,6 +369,7 @@ private:
   
   
   uint64 recordNeedle,playNeedle,startJumpNeedle,globalPlayNeedle;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayableBuffer);
   
 };
 

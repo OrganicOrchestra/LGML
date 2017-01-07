@@ -33,7 +33,7 @@ void Parameter::resetValue(bool silentSet)
   setValue(defaultValue, silentSet,true);
 }
 
-void Parameter::setValue(var _value, bool silentSet, bool force)
+void Parameter::setValue(var _value, bool silentSet, bool force,bool defferIt)
 {
 
   if (!force && checkValueIsTheSame(_value, value)) return;
@@ -43,7 +43,7 @@ void Parameter::setValue(var _value, bool silentSet, bool force)
 
   if(_value != defaultValue) isOverriden = true;
 
-  if (!silentSet) notifyValueChanged();
+  if (!silentSet) notifyValueChanged(defferIt);
 }
 
 void Parameter::setRange(var min, var max){
@@ -88,8 +88,12 @@ float Parameter::getNormalizedValue() {
     return jmap<float>((float)value, (float)minimumValue, (float)maximumValue, 0.f, 1.f);
 }
 
-void Parameter::notifyValueChanged() {
-  listeners.call(&Listener::parameterValueChanged, this);
+void Parameter::notifyValueChanged(bool defferIt) {
+  if(defferIt)
+    triggerAsyncUpdate();
+  else
+    listeners.call(&Listener::parameterValueChanged, this);
+  
   queuedNotifier.addMessage(new ParamWithValue(this,value));
 }
 
@@ -120,6 +124,10 @@ var Parameter::getValue(const juce::var::NativeFunctionArgs & a)
   return c->value;
 
 }
+
+void Parameter::handleAsyncUpdate(){
+  listeners.call(&Listener::parameterValueChanged, this);
+};
 
 
 

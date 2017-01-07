@@ -32,7 +32,7 @@ ControllableUI* StringParameter::createDefaultUI(Controllable * targetControllab
 };
 
 
-void StringParameter::setValue(var _value,bool silentSet,bool force ){
+void StringParameter::setValue(var _value,bool silentSet,bool force,bool defferIt ){
     
    
     if (!force && value.toString() == _value.toString()) return;
@@ -42,7 +42,7 @@ void StringParameter::setValue(var _value,bool silentSet,bool force ){
     
     if(_value != defaultValue) isOverriden = true;
     
-    if (!silentSet) notifyValueChanged();
+    if (!silentSet) notifyValueChanged(defferIt);
 };
 
 void  StringParameter::setValueInternal(var & newVal){

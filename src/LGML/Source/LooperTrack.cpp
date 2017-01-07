@@ -153,7 +153,7 @@ bool LooperTrack::updatePendingLooperTrackState( uint64 curTime, int blockSize) 
 
       if(isMasterTempoTrack() ){
         if(!tm->playState->boolValue()){
-          tm->playState->setValue(true);
+          tm->playState->setValue(true,false,false,false);
 
         }
         // we will handle the block in this call so we notify time to be in sync with what we play
@@ -183,7 +183,7 @@ bool LooperTrack::updatePendingLooperTrackState( uint64 curTime, int blockSize) 
       }
       else{
         if(isMasterTempoTrack() ){
-          TimeManager::getInstance()->playState->setValue(true,false,true);
+          TimeManager::getInstance()->playState->setValue(true,false,true,true);
 
         }
 
@@ -303,7 +303,7 @@ void LooperTrack::handleEndOfRecording(){
         //        DBG("resizing loop : " << (int)(desiredSize-loopSample.getRecordedLength()));
 
         loopSample.setSizePaddingIfNeeded(desiredSize);
-        beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
+        beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample,false,false,true);
         TimeManager::getInstance()->goToTime(offsetForPlay);
 
 
