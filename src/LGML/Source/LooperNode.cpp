@@ -11,6 +11,8 @@
 #include "LooperNode.h"
 #include "LooperNodeUI.h"
 #include "TimeManager.h"
+#include "NodeContainer.h"
+
 
 LooperNode::LooperNode() :
 NodeBase("Looper",NodeType::LooperType),
@@ -128,6 +130,7 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
     }
     int i = 0;
     AudioBuffer<float> tmp;
+    
     for (auto & track:trackGroup.tracks) {
       tmp.setDataToReferTo(buffer.getArrayOfWritePointers()+i, totalNumInputChannels, numSample);
       track->processBlock(tmp, midiMessages);
@@ -347,7 +350,8 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
   NodeBase::onContainerParameterChanged(p);
   if (p == numberOfTracks) {
     int oldIdx = selectedTrack->trackIdx;
-    trackGroup.setNumTracks(numberOfTracks->value);
+    const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
+    trackGroup.setNumTracks(numberOfTracks->intValue());
     if(outputAllTracksSeparately->boolValue()){
       setPreferedNumAudioOutput(totalNumInputChannels*numberOfTracks->intValue());
     }
@@ -379,6 +383,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
     }
   }
   else if(p == numberOfAudioChannelsIn){
+    const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
     setPreferedNumAudioInput(numberOfAudioChannelsIn->intValue());
     setPreferedNumAudioOutput(numberOfAudioChannelsIn->intValue()*(outputAllTracksSeparately->boolValue()?trackGroup.tracks.size():1));
   }

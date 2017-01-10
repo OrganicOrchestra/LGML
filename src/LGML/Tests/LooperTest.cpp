@@ -17,6 +17,7 @@ inline String BufToString(AudioBuffer<float> & b,int start = 0 ,int numSamples =
   String res;if(numSamples==-1)numSamples = b.getNumSamples();
   for(int i = start ; i < numSamples;i++){res+=String(b.getSample(0,i))+",";}
   return res;}
+
 class LooperTest:public UnitTest{
 public:
   LooperTest():UnitTest("LooperTest"){
@@ -33,7 +34,7 @@ public:
   int fadeSample = 80;
 
   void processBlock(){
-    // Time is the firs call back in DSP cycle
+    // TimeManager is the first call back in DSP cycle
     TimeManager::getInstance()->incrementClock(getBlockSize());
     fillBufferWithTime(testBuffer);
     expect(getBlockSize() == testBuffer.getNumSamples(),"wrong buffer size ");

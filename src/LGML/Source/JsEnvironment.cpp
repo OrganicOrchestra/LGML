@@ -501,9 +501,9 @@ void JsEnvironment::childStructureChanged(ControllableContainer * originContaine
   // rebuild files that are not loaded properly if LGML JsEnvironment is not fully built at the time of their firstExecution
   if ((!_hasValidJsFile || !_isInSyncWithLGML)&& !isLoadingFile && originContainer == getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(notifier))) {
     bool isFromOtherJsEnv = false;
-    if(JsEnvironment *jsNotifier = dynamic_cast<JsEnvironment*>(notifier)){
+//    if(JsEnvironment *jsNotifier = dynamic_cast<JsEnvironment*>(notifier)){
 //      isFromOtherJsEnv = jsNotifier->isLoadingFile;
-    }
+//    }
     if(!isFromOtherJsEnv){
     _isInSyncWithLGML = false;
     startTimer(autoWatchTimer.id, autoWatchTimer.interval);

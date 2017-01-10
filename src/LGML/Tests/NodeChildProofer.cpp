@@ -21,7 +21,7 @@
 
 
 
-extrern Engine * getEngine();
+extern Engine * getEngine();
 
 class NodeChildProofer  : public UnitTest
 {
@@ -76,16 +76,20 @@ public:
 
     expect(testingNode!=nullptr,"node not found for name : " +testingNodeName);
 
-    Array<Controllable * > allControllables = testingNode->getAllControllables(true,true);
+    Array<WeakReference<Controllable > > allControllables = testingNode->getAllControllables(true,true);
 
     
     int totalNumAction = numActionsPerControllables * allControllables.size();
-    for(int i = 0 ; i < totalNumAction ; i ++){
+    int i = 0 ;
+    while( i < totalNumAction ){
 
       Controllable * tested = allControllables [i%allControllables.size()];
+      if (tested->shortName !="savePreset"){
       String err ="Action failed for Controllable : "+tested->getControlAddress();
       expect(doActionForControllable(tested),err );
       allControllables = testingNode->getAllControllables(true,true);
+      }
+      i++;
     }
 
     // just to be sure that async message are handled too
