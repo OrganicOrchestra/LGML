@@ -134,7 +134,9 @@ void JsEnvironment::internalLoadFile(const File &f ){
 
   Result r = loadScriptContent(jsString);
 
+
   static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
+
 
 
 
@@ -362,6 +364,8 @@ void JsEnvironment::timerCallback(int timerID)
     }
   }
 }
+
+
 
 String JsEnvironment::printAllNamespace()
 {

@@ -29,24 +29,28 @@ public:
 	IntParameter * numSpatInputs;
 	IntParameter * numSpatOutputs;
 	
-	FloatParameter * globalTargetRadius;
+	FloatParameter * targetRadius;
 
 	//Circle shape
 	FloatParameter * circleRadius;
 	FloatParameter * circleRotation;
 
 	Array<Point2DParameter *> targetPositions;
-
+	
+	BoolParameter * useGlobalTarget;
+	Point2DParameter * globalTargetPosition;
+	FloatParameter * globalTargetRadius;
 
 	void setSourcePosition(int index, const Point<float> &position);
 	void setTargetPosition(int index, const Point<float> &position);
 	void updateInputOutputDataSlots();
 
 	void updateTargetsFromShape();
-	void computeInfluences();
-	void computeInfluence(int targetIndex);
+	void computeAllInfluences();
+	void computeInfluencesForTarget(int targetIndex);
+	void computeInfluence(int sourceIndex, int targetIndex);
+	float getValueForSourceAndTargetPos(const Point<float> &sourcePosition, const Point<float> &targetPosition,float radius);
 
-	bool modeIs2D();
 	bool modeIsBeam();
 
 	void onContainerParameterChanged(Parameter *) override;

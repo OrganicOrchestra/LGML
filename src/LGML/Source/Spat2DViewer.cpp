@@ -16,6 +16,16 @@ Spat2DViewer::Spat2DViewer(Spat2DNode * _node) : node(_node)
 	updateNumTargets();
 	updateNumSources();
 	node->addConnectableNodeListener(this);
+
+
+	if (node->useGlobalTarget->boolValue())
+	{
+		globalTarget = new Spat2DTarget(-1, Colours::green);
+		addAndMakeVisible(globalTarget);
+		globalTarget->radius = node->globalTargetRadius->floatValue();
+		globalTarget->addHandleListener(this);
+		globalTarget->setPosition(node->globalTargetPosition->getPoint());
+	}
 }
 
 Spat2DViewer::~Spat2DViewer()
@@ -68,7 +78,7 @@ void Spat2DViewer::updateNumTargets()
 	for (int i = 0; i < numTargets; i++)
 	{
 		Spat2DTarget * t = new Spat2DTarget(i);
-		t->radius = node->globalTargetRadius->floatValue();
+		t->radius = node->targetRadius->floatValue();
 		t->addHandleListener(this);
 		addAndMakeVisible(t);
 		targets.add(t);
@@ -83,11 +93,11 @@ void Spat2DViewer::updateNumTargets()
 	resized();
 }
 
-void Spat2DViewer::updateGlobalTargetRadius()
+void Spat2DViewer::updateTargetRadius()
 {
 	for (auto &t : targets)
 	{
-		t->radius = node->globalTargetRadius->floatValue();
+		t->radius = node->targetRadius->floatValue();
 	}
 
 	resized();
@@ -122,6 +132,13 @@ void Spat2DViewer::resized()
 		s->toFront(false); //keep sources on top
 	}
 
+
+	if (globalTarget != nullptr)
+	{
+		float gts = globalTarget->radius * 2 * getWidth();
+		globalTarget->setBounds(globalTarget->position.getX()*r.getWidth() - gts / 2 - 5, globalTarget->position.getY()*r.getHeight() - gts / 2 - 5, gts + 10, gts + 10);
+	}
+
 	for (auto & t : targets)
 	{
 		float ts = t->radius * 2 * getWidth();
@@ -138,18 +155,55 @@ void Spat2DViewer::paint(Graphics & g)
 
 void Spat2DViewer::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
+	DBG("node parameter changed " << p->niceName);
 	if (p == node->numSpatInputs) updateNumSources();
 	else if (p == node->numSpatOutputs) updateNumTargets();
-	else if (p == node->globalTargetRadius) updateGlobalTargetRadius();
+	else if (p == node->targetRadius) updateTargetRadius();
 	else if (p->type == Parameter::POINT2D)
 	{
-		Point2DParameter * p2d = (Point2DParameter *)p;
-		int index = node->targetPositions.indexOf(p2d);
-		updateTargetPosition(index);
+		if(p == node->globalTargetPosition)
+		{
+			if (globalTarget != nullptr)
+			{
+				globalTarget->setPosition(node->globalTargetPosition->getPoint());
+				resized();
+			}
+		} else
+		{
+			Point2DParameter * p2d = (Point2DParameter *)p;
+			int index = node->targetPositions.indexOf(p2d);
+			updateTargetPosition(index);
+		}
+		
 	} else if (p == node->shapeMode)
 	{
 		bool circleMode = (int)node->shapeMode->getValueData() == Spat2DNode::ShapeMode::CIRCLE;
 		for (int i = 0; i < targets.size(); i++) targets[i]->setEnabled(!circleMode);
+
+	} else if (p == node->useGlobalTarget)
+	{
+		if (node->useGlobalTarget->boolValue())
+		{
+			globalTarget = new Spat2DTarget(-1, Colours::green);
+			addAndMakeVisible(globalTarget);
+			globalTarget->radius = node->globalTargetRadius->floatValue();
+			globalTarget->setPosition(node->globalTargetPosition->getPoint());
+			globalTarget->addHandleListener(this);
+		} else
+		{
+			globalTarget->removeHandleListener(this);
+			removeChildComponent(globalTarget);
+			globalTarget = nullptr;
+		}
+		resized();
+
+	}  else if (p == node->globalTargetRadius)
+	{
+		if (globalTarget != nullptr)
+		{
+			globalTarget->radius = node->globalTargetRadius->floatValue();
+			resized();
+		}
 	}
 }
 
@@ -205,7 +259,7 @@ Spat2DSource::Spat2DSource(int _index): Spat2DHandle(HandleType::SOURCE,_index,2
 	angle = 0;
 }
 
-Spat2DTarget::Spat2DTarget(int _index) : Spat2DHandle(HandleType::TARGET,_index,20,Colours::orange)
+Spat2DTarget::Spat2DTarget(int _index, Colour c) : Spat2DHandle(HandleType::TARGET,_index,20,c)
 {
 	radius = .25f;
 }

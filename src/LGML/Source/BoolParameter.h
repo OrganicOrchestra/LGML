@@ -25,6 +25,8 @@ public:
     BoolToggleUI * createToggle(BoolParameter * target = nullptr);
     ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 
+	bool invertVisuals; //moved here for coherence when ui is generated automatically
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
 };
 

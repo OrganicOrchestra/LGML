@@ -45,6 +45,8 @@ public:
   Trigger * playTrig;
   Trigger * clearTrig;
   Trigger * stopTrig;
+  Trigger * togglePlayStopTrig;
+
   StringParameter  * stateParameterString;
   FloatParameter * volume;
   FloatParameter * beatLength;
@@ -73,6 +75,7 @@ public:
   void processBlock(AudioBuffer<float>& buffer, MidiBuffer & midi);
   void setSelected(bool isSelected);
 
+  bool isEmpty();
 
   void setTrackState(TrackState state);
 
@@ -119,6 +122,7 @@ public:
       notifySelectChange = true;
       triggerAsyncUpdate();
     }
+
     TrackState stateToBeNotified;
     bool notifyStateChange = false;
 

@@ -31,18 +31,21 @@ Spat2DNode::Spat2DNode() :
 	circleRadius = addFloatParameter("Circle Radius", "Radius of the circle to place the targets, if shape is set to circle", .8f, 0, 1);
 	circleRotation = addFloatParameter("Circle Rotation", "Rotation of the circle to place the targets, if shape is set to circle", 0, 0, 360);
 
-	globalTargetRadius = addFloatParameter("Global Radius", "Radius for all targets", .5f, 0, 1);
+	targetRadius = addFloatParameter("Target Radius", "Radius for all targets", .5f, 0, 1);
 
 	numSpatInputs = addIntParameter("Num Inputs", "Number of inputs to spacialize", 1, 0, 16);
 	numSpatOutputs = addIntParameter("Num Outputs", "Number of spatialized outputs", 3, 0, 16);
 
-	
+	useGlobalTarget = addBoolParameter("Use Global Target", "Use a global target that will act as a max influence and affect all targets.", false);
+	globalTargetPosition = addPoint2DParameter("Global Target Position", "Position of the Global Target");
+	globalTargetRadius = addFloatParameter("Global Target Radius", "Radius for the global target",.5f,0,1);
+
 	setPreferedNumAudioInput(numSpatInputs->intValue());
 	setPreferedNumAudioOutput(numSpatOutputs->intValue()+2);
 	
 	
 	updateInputOutputDataSlots();
-	computeInfluences();
+	computeAllInfluences();
 }
 
 void Spat2DNode::setSourcePosition(int index, const Point<float>& position)
@@ -50,13 +53,19 @@ void Spat2DNode::setSourcePosition(int index, const Point<float>& position)
 	Data * d = getInputData(index);
 	if (d == nullptr) return;
 	d->update(position.x, position.y, 0);
-	computeInfluences();
+	computeAllInfluences();
 }
 
 void Spat2DNode::setTargetPosition(int index, const Point<float>& position)
 {
-	targetPositions[index]->setPoint(position);
-	computeInfluence(index);
+	if (index == -1)
+	{
+		globalTargetPosition->setPoint(position);		
+	}else
+	{
+		targetPositions[index]->setPoint(position);
+		computeInfluencesForTarget(index);
+	}
 }
 
 void Spat2DNode::updateInputOutputDataSlots()
@@ -99,7 +108,8 @@ void Spat2DNode::updateInputOutputDataSlots()
 		Random rnd;
 		p->setPoint(rnd.nextFloat(), rnd.nextFloat());
 		targetPositions.add(p);
-		computeInfluence(getTotalNumOutputData()-1);
+
+		computeInfluencesForTarget(getTotalNumOutputData()-1);
 	}
 }
 
@@ -119,14 +129,18 @@ void Spat2DNode::updateTargetsFromShape()
 			float angle = (i*1.f / (numSpatOutputs->intValue()) + circleRotation->floatValue() / 360.f)*float_Pi*2;
 			p->setPoint(.5f+cosf(angle)*circleRadius->floatValue()*.5f,.5f+sinf(angle)*circleRadius->floatValue()*.5f);
 		}
-		computeInfluences();
+		if (useGlobalTarget->boolValue())
+		{
+			globalTargetPosition->setPoint(.5f, .5f);
+		}
+		computeAllInfluences();
 		break;
 	}
-
+	 
 	
 }
 
-void Spat2DNode::computeInfluences()
+void Spat2DNode::computeAllInfluences()
 {
 	//Only one source for now
 	switch((int)spatMode->getValueData())
@@ -135,34 +149,63 @@ void Spat2DNode::computeInfluences()
 		break;
 
 	case PROXY:
+		
 		for (int i = 0; i < numSpatOutputs->intValue(); i++)
 		{
-			computeInfluence(i);
+			computeInfluencesForTarget(i);
 		}
 		break;
 	}
 }
 
-void Spat2DNode::computeInfluence(int targetIndex)
+void Spat2DNode::computeInfluencesForTarget(int targetIndex)
 {
+	for (int i = 0; i < numSpatInputs->intValue(); i++)
+	{
+		computeInfluence(i, targetIndex);
+	}
+}
+
+void Spat2DNode::computeInfluence(int sourceIndex, int targetIndex)
+{
+	if (sourceIndex >= inputDatas.size()) return;
 	if (targetIndex >= outputDatas.size()) return;
 
-	Data * d = outputDatas[targetIndex];
+	Data * inputData = inputDatas[sourceIndex];
+	Data * outputData = outputDatas[targetIndex];
+
+	float minValue = 0;
+	if (useGlobalTarget->boolValue())
+	{
+		Point<float> sPos = Point<float>(inputDatas[sourceIndex]->elements[0]->value, inputDatas[sourceIndex]->elements[1]->value);
+		minValue = getValueForSourceAndTargetPos(sPos, globalTargetPosition->getPoint(),globalTargetRadius->floatValue());
+	}
+
 	if (numSpatInputs->intValue() > 0)
 	{
-		Point<float> sPos = Point<float>(inputDatas[0]->elements[0]->value, inputDatas[0]->elements[1]->value);
+		Point<float> sPos = Point<float>(inputData->elements[0]->value, inputData->elements[1]->value);
 		Point<float> tPos = targetPositions[targetIndex]->getPoint();
-		float dist = jlimit<float>(0, globalTargetRadius->floatValue(),sPos.getDistanceFrom(tPos));
-		d->update(1 - (dist / globalTargetRadius->floatValue()));
+		
+		float val = jmax<float>(minValue, getValueForSourceAndTargetPos(sPos, tPos,targetRadius->floatValue()));
+		outputData->update(val);
 	} else
 	{
-		d->update(0);
+		outputData->update(0);
 	}
+}
+
+float Spat2DNode::getValueForSourceAndTargetPos(const Point<float>& sourcePosition, const Point<float>& targetPosition, float radius)
+{
+	if (radius == 0) return 0;
+
+	float dist = jlimit<float>(0, radius, sourcePosition.getDistanceFrom(targetPosition));
+	return 1 - (dist / radius);
 }
 
 void Spat2DNode::numChannelsChanged(bool /*isInput*/){
 updateInputOutputDataSlots();
 }
+
 bool Spat2DNode::modeIsBeam()
 {
 	return (int)spatMode->getValueData() == BEAM;
@@ -189,9 +232,9 @@ void Spat2DNode::onContainerParameterChanged(Parameter * p)
 	} else if (p == shapeMode || p == circleRadius || p == circleRotation)
 	{
 		updateTargetsFromShape();
-	} else if (p == globalTargetRadius)
+	} else if (p == globalTargetRadius || p == targetRadius || p == globalTargetPosition)
 	{
-		computeInfluences();
+		computeAllInfluences();
 	}
 
 	NodeBase::onContainerParameterChanged(p);
@@ -200,7 +243,7 @@ void Spat2DNode::onContainerParameterChanged(Parameter * p)
 
 void Spat2DNode::processInputDataChanged(Data *)
 {
-	computeInfluences();
+	computeAllInfluences();
 }
 
 void Spat2DNode::updateChannelNames()

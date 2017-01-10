@@ -159,7 +159,6 @@ isSelected(false),timeStateUI(track)
   clearButton = track->clearTrig->createBlinkUI();
   stopButton = track->stopTrig->createBlinkUI();
   muteButton = track->mute->createToggle();
-  muteButton->invertVisuals = true;
   soloButton = track->solo->createToggle();
 
   track->addTrackListener(this);

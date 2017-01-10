@@ -59,6 +59,11 @@ public:
   Trigger * selectAllTrig;
   Trigger * clearAllTrig;
   Trigger * stopAllTrig;
+  Trigger * playAllTrig;
+  Trigger * togglePlayStopAllTrig;
+
+  Trigger * selectNextTrig;
+  Trigger * selectPrevTrig;
 
   FloatParameter * volumeSelected;
   BoolParameter * isMonitoring;
@@ -72,6 +77,9 @@ public:
   BoolParameter * waitForOnset;
   FloatParameter * onsetThreshold;
   BoolParameter * outputAllTracksSeparately;
+  BoolParameter * autoNextTrackAfterRecord;
+  BoolParameter * autoClearPreviousIfEmpty;
+
   Trigger * exportAudio;
 
   AudioBuffer<float> bufferIn;
@@ -87,6 +95,7 @@ public:
   bool askForBeingAbleToPlayNow(LooperTrack *_t);
   bool askForBeingAbleToRecNow(LooperTrack * _t);
   bool areAllTrackClearedButThis(LooperTrack * _t);
+  bool hasAtLeastOneTrackPlaying();
 
 
   void onContainerTriggerTriggered(Trigger * t) override;

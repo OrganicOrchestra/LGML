@@ -32,7 +32,10 @@ public:
 	ScopedPointer<EnumParameterUI> spatModeUI;
 	ScopedPointer<NamedControllableUI> inputStepper;
 	ScopedPointer<NamedControllableUI> outputStepper;
+	ScopedPointer<FloatSliderUI> radiusUI;
+	ScopedPointer<BoolToggleUI> useGlobalUI;
 	ScopedPointer<FloatSliderUI> globalRadiusUI;
+
 	ScopedPointer<EnumParameterUI> shapeModeUI;
 	ScopedPointer<FloatSliderUI> circleRadiusUI;
 	ScopedPointer<FloatSliderUI> circleRotationUI;

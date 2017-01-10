@@ -3,7 +3,7 @@
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" id="a1hJPO"
               includeBinaryInAppConfig="1" jucerVersion="4.3.0" name="LGML"
-              projectType="guiapp" version="1.0.5">
+              projectType="guiapp" version="1.1.4">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
       <FILE compile="1" file="Tests/LooperTest.cpp" id="lDg0ln" name="LooperTest.cpp"
@@ -930,37 +930,37 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib" smallIcon="SL4b92"
-            targetFolder="Builds/VisualStudio2015" vst3Folder="D:\Documents\Ressources\SDKs\VST3 SDK"
+            targetFolder="Builds/VisualStudio2015" vst3Folder="$(VST3SDK)"
             vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK">
       <CONFIGURATIONS>
-        <CONFIGURATION defines="" generateManifest="1" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include&#10;"
+        <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\External\serial\include&#10;"
                        isDebug="1" libraryPath="" name="Debug" optimisation="1" targetName="LGML_x64_Debug"
                        winArchitecture="x64" winWarningLevel="4"/>
-        <CONFIGURATION generateManifest="1" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\External\serial\include"
                        isDebug="0" name="Release" optimisation="3" targetName="LGML_x64"
                        winArchitecture="x64" winWarningLevel="4"/>
-        <CONFIGURATION generateManifest="1" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\External\serial\include"
                        isDebug="1" name="Debug 32bit" optimisation="1" targetName="LGML_86_Debug"
                        winArchitecture="32-bit" winWarningLevel="4"/>
-        <CONFIGURATION generateManifest="1" headerPath="D:\Documents\Ressources\SDKs\ASIOSDK2.3\common&#10;..\..\External\serial\include"
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\External\serial\include"
                        isDebug="0" libraryPath="" name="Release 32bit" optimisation="3"
                        targetName="LGML_x86" winArchitecture="32-bit" winWarningLevel="4"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_events" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_graphics" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_data_structures" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_gui_basics" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_gui_extra" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_cryptography" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_opengl" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_basics" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_devices" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_formats" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_processors" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_audio_utils" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
-        <MODULEPATH id="juce_osc" path="D:\Softwares\Juce 4.3.0\JUCE\modules"/>
+        <MODULEPATH id="juce_core" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="D:/Softwares/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" extraLinkerFlags=""

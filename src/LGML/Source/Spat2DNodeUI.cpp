@@ -34,8 +34,17 @@ void Spat2DNodeContentUI::resized()
 	r.removeFromTop(2);
 	outputStepper->setBounds(r.removeFromTop(10));
 	r.removeFromTop(5);
-	globalRadiusUI->setBounds(r.removeFromTop(15));
+	radiusUI->setBounds(r.removeFromTop(15));
 	r.removeFromTop(5);
+	useGlobalUI->setBounds(r.removeFromTop(15));
+	r.removeFromTop(5);
+	if (spatNode->useGlobalTarget->boolValue())
+	{
+		globalRadiusUI->setBounds(r.removeFromTop(15));
+		r.removeFromTop(5);
+	}
+	
+	
 	shapeModeUI->setBounds(r.removeFromTop(15));
 
 	bool circleMode = (int)spatNode->shapeMode->getValueData() == Spat2DNode::ShapeMode::CIRCLE ;
@@ -75,14 +84,22 @@ void Spat2DNodeContentUI::init()
 	outputStepper = new NamedControllableUI(spatNode->numSpatOutputs->createStepper(), 80);
 	addAndMakeVisible(outputStepper);
 
-	globalRadiusUI = spatNode->globalTargetRadius->createSlider();
-	addAndMakeVisible(globalRadiusUI);
+	radiusUI = spatNode->targetRadius->createSlider();
+	addAndMakeVisible(radiusUI);
 
+	useGlobalUI = spatNode->useGlobalTarget->createToggle();
+	addAndMakeVisible(useGlobalUI);
+	if (spatNode->useGlobalTarget->boolValue() && globalRadiusUI != nullptr)
+	{
+		globalRadiusUI = spatNode->globalTargetRadius->createSlider();
+		addAndMakeVisible(globalRadiusUI);
+	}
 	shapeModeUI = spatNode->shapeMode->createUI();
 	addAndMakeVisible(shapeModeUI);
 
 	circleRadiusUI = spatNode->circleRadius->createSlider();
 	addChildComponent(circleRadiusUI);
+
 	circleRotationUI = spatNode->circleRotation->createSlider();
 	addChildComponent(circleRotationUI);
 
@@ -96,11 +113,24 @@ void Spat2DNodeContentUI::updateShapeModeView()
 	bool circleMode = (int)spatNode->shapeMode->getValueData() == Spat2DNode::ShapeMode::CIRCLE;
 	circleRadiusUI->setVisible(circleMode);
 	circleRotationUI->setVisible(circleMode);
-  resized();
+	resized();
 }
 
 void Spat2DNodeContentUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
 	if (p == spatNode->shapeMode) updateShapeModeView();
-
+	else if (p == spatNode->useGlobalTarget)
+	{
+		if (spatNode->useGlobalTarget->boolValue())
+		{
+			globalRadiusUI = spatNode->globalTargetRadius->createSlider();
+			addAndMakeVisible(globalRadiusUI);
+			
+		} else
+		{
+			removeChildComponent(globalRadiusUI);
+			globalRadiusUI = nullptr;
+		}
+		resized();
+	}
 }

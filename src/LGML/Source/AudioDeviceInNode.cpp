@@ -129,6 +129,7 @@ void AudioDeviceInNode::addVolMute()
   //  const ScopedLock lk (NodeBase::getCallbackLock());
   BoolParameter * p = addBoolParameter(String(inMutes.size() + 1), "Mute if disabled", false);
   p->setCustomShortName(String("mute") + String(inMutes.size() + 1));
+  p->invertVisuals = true;
   inMutes.add(p);
 
   FloatParameter * v = addFloatParameter("volume"+String(volumes.size()), "volume", DB0_FOR_01);

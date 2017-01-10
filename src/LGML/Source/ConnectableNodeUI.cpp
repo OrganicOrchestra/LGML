@@ -22,13 +22,14 @@
 #include "NodeManagerUI.h"
 
 ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeContentUI * contentUI, ConnectableNodeHeaderUI * headerUI) :
-	InspectableComponent(cn,"node"),
+	InspectableComponent(cn, "node"),
 	connectableNode(cn),
 	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
 	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
 	mainComponentContainer(this, contentUI, headerUI),
 	dragIsLocked(false),
-	bMiniMode(false)
+	bMiniMode(false),
+	resizer(this,nullptr)
 {
 	 connectorWidth = 10;
 
@@ -49,14 +50,24 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 	 getHeaderContainer()->addMouseListener(this, true);// (true, true);
 
 	 mainComponentContainer.setNodeAndNodeUI(connectableNode, this);
-	 if (getWidth() == 0 || getHeight() == 0) setSize(180, 100);
 
 	 connectableNode->addConnectableNodeListener(this);
 	 connectableNode->xPosition->hideInEditor = true;
 	 connectableNode->yPosition->hideInEditor = true;
+	 connectableNode->nodeWidth->hideInEditor = true;
+	 connectableNode->nodeHeight->hideInEditor = true;
+
+
+	 addAndMakeVisible(&resizer);
+	 if (getWidth() == 0 || getHeight() == 0)
+	 {
+		 setSize(connectableNode->nodeWidth->floatValue(),connectableNode->nodeHeight->floatValue());
+	 }
 	 //connectableNode->miniMode->hideInEditor = true;
 
 	 setMiniMode(connectableNode->miniMode->boolValue());
+
+	
 }
 
 ConnectableNodeUI::~ConnectableNodeUI()
@@ -101,6 +112,11 @@ void ConnectableNodeUI::paint(Graphics&)
 
 void ConnectableNodeUI::resized()
 {
+	if (!connectableNode->miniMode->boolValue())
+	{
+		connectableNode->nodeWidth->setValue(getWidth(),true);
+		connectableNode->nodeHeight->setValue(getHeight(), true);
+	}
 
 	Rectangle<int> r = getLocalBounds();
 	Rectangle<int> inputBounds = r.removeFromLeft(connectorWidth);
@@ -117,6 +133,7 @@ void ConnectableNodeUI::resized()
 	}
 
 	mainComponentContainer.setBounds(r);
+	resizer.setBounds(r.removeFromRight(10).removeFromBottom(10));
 }
 
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
