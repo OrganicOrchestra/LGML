@@ -51,7 +51,7 @@ void JsEnvironmentUI::buildLed(int size) {
 	validJsLed.setPath(circle);
 }
 
-void JsEnvironmentUI::newJsFileLoaded(bool s) {
+void JsEnvironmentUI::newJsFileLoaded(bool) {
   validJsLed.setFill(FillType((env->hasValidJsFile() && env->isInSyncWithLGML()) ? Colours::green :
                               (env->hasValidJsFile() ? Colours::orange :
                                Colours::red)));
