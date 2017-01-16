@@ -26,7 +26,7 @@ class LooperTrack : public ControllableContainer
 
 public:
   LooperTrack(LooperNode * looper, int _trackIdx);
-  ~LooperTrack() {}
+  ~LooperTrack() ;
 
   // only SHOULD value can be accessed from other thread than audio
   // then state is updated from audioThread

@@ -13,6 +13,7 @@
 #include "TimeManager.h"
 #include "NodeContainer.h"
 
+#include "AudioDebugPipe.h"
 
 LooperNode::LooperNode() :
 NodeBase("Looper",NodeType::LooperType),
@@ -48,15 +49,21 @@ streamAudioBuffer(2,16384)// 16000 ~ 300ms and 256*64
 
   selectTrack->setValue(0,false,true);
   setPlayConfigDetails(2, 2, 44100, 256);
-  TimeManager::getInstance()->playState->addParameterListener(this);
+//  TimeManager::getInstance()->playState->addParameterListener(this);
   setPreferedNumAudioInput(2);
   setPreferedNumAudioOutput(2);
+
+  TimeManager::getInstance()->BPM->addParameterListener(this);
+
 }
 
 LooperNode::~LooperNode()
 {
-  if (TimeManager::getInstanceWithoutCreating()) {
-    TimeManager::getInstance()->playState->removeParameterListener(this);
+  if (TimeManager *tm = TimeManager::getInstanceWithoutCreating()) {
+    tm->playState->removeParameterListener(this);
+
+      tm->BPM->removeParameterListener(this);
+
   }
 }
 
@@ -439,4 +446,35 @@ void LooperNode::clearInternal(){
 bool LooperNode::hasOnset(){
   bool hasOnset=  globalRMSValueIn>onsetThreshold->floatValue();
   return hasOnset;
+}
+
+void LooperNode::parameterValueChanged(Parameter *p){
+  NodeBase::parameterValueChanged(p);
+  if(p==TimeManager::getInstance()->BPM){
+    for(auto & t : trackGroup.tracks){
+      if(!t->isEmpty()) {
+
+        double ratio =t->originBPM;
+        jassert(ratio>0);
+        ratio /= TimeManager::getInstance()->BPM->doubleValue();
+        
+        if(isnormal(ratio)){
+          t->loopSample.setTimeRatio(ratio);
+          if(ratio!=1){
+
+            AudioBuffer<float> b;
+            b.setDataToReferTo(t->loopSample.loopSample.getArrayOfWritePointers(), 1, t->loopSample.getRecordedLength());
+            DBGAUDIO("trackStretch"+String(t->trackIdx),b);
+            DBGAUDIOSETBPM("trackStretch"+String(t->trackIdx),TimeManager::getInstance()->BPM->doubleValue());
+          }
+        }
+
+        else{
+          DBG("wrong bpms for stretch : " << TimeManager::getInstance()->BPM->doubleValue() << "," << t->originBPM);
+          jassertfalse;
+        }
+
+      }}
+  }
+
 }

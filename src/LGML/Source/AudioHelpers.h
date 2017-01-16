@@ -12,6 +12,7 @@
 #define AUDIOHELPERS_H_INCLUDED
 
 #pragma once
+#include "JuceHeader.h"
 #pragma warning( disable : 4244 )
 
 
@@ -20,6 +21,7 @@
 // create a gain value for a float  between 0 and 1
 // DB0_FOR_01   -> 0dB
 // 1            -> +6dB
+
 inline float float01ToGain(float f){
   if(f==0)return 0;
   float minus6Pos = (1-2*(1-DB0_FOR_01));

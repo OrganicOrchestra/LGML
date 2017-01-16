@@ -25,6 +25,8 @@ timeBar(_timeManager){
 
   addAndMakeVisible(timeBar);
   bpmStepper = timeManager->BPM->createSlider();
+  bpmStepper->assignOnMousePosDirect = true;
+  bpmStepper->changeParamOnMouseUpOnly = true;
 
   addAndMakeVisible(bpmStepper);
 

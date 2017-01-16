@@ -98,7 +98,7 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 		parameter->resetValue();
 	}
 
-    if (e.mods.isLeftButtonDown() && assignOnMousePosDirect)
+    if (e.mods.isLeftButtonDown() && assignOnMousePosDirect && !changeParamOnMouseUpOnly)
     {
         setParamNormalizedValue(getValueFromMouse());
     }

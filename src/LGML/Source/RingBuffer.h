@@ -15,21 +15,22 @@
 
 
 /*
- helper class for bipartite buffer
- allowing having constant access to contiguous memory in a circular buffer
+ helper class for phantom buffer
+ allowing having constant access to contiguous memory in a circular buffer without dealing with overlaps
+ it allocate twice the size though ...
  */
-class BipBuffer{
+class PhantomBuffer{
 
 public:
-  BipBuffer(int _channels,int size):numChannels(_channels){
-    phantomSize = (int)ceil(size*2.0/3.0);
-    buf.setSize(numChannels,3*phantomSize,false,true);
+  PhantomBuffer(int _channels,int size):numChannels(_channels){
+    phantomSize = (int)ceil(size);
+    buf.setSize(numChannels,2*phantomSize,false,true);
     writeNeedle = 0;
   }
 
   void setNumChannels(int channels){
     numChannels= channels;
-    buf.setSize(numChannels,3*phantomSize,false,true);
+    buf.setSize(numChannels,2*phantomSize,false,true);
   }
   void writeBlock(AudioSampleBuffer & newBuf){
 
@@ -37,32 +38,32 @@ public:
     jassert(newBuf.getNumChannels()>=numChannels);
     int toCopy = newBuf.getNumSamples();
 
-    if( writeNeedle + toCopy > 2*phantomSize){
-      int firstSeg = 2*phantomSize-(writeNeedle) ;
+    // overlap
+    if( writeNeedle + toCopy > phantomSize){
+      int firstSeg = phantomSize-(writeNeedle) ;
       jassert(firstSeg<newBuf.getNumSamples());
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
       }
-      writeNeedle+=firstSeg;
-      writeNeedle%=2*phantomSize;
+      jassert(writeNeedle == 0);
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
       }
       writeNeedle+=toCopy-firstSeg;
-      writeNeedle%=2*phantomSize;
+      writeNeedle%=phantomSize;
     }
     else{
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i),toCopy,i);
       }
       writeNeedle+=toCopy;
-      writeNeedle%=2*phantomSize;
+      writeNeedle%=phantomSize;
     }
   }
 
 
   const AudioBuffer<float> & getLastBlock(int num){
-    jassert(num<=buf.getNumSamples()/2);
+    jassert(num<=phantomSize);
     pointers.ensureStorageAllocated(numChannels);
     for(int i = 0 ; i < numChannels ; i++){
       pointers.set(i,buf.getArrayOfWritePointers()[i] + phantomSize+ writeNeedle-num);
@@ -88,24 +89,9 @@ public:
 private:
   void safeCopy(const float * b,int numSample,int channel){
 
-    // overLapping
-    if(writeNeedle < phantomSize && writeNeedle+numSample>phantomSize){
-      int overflow = writeNeedle+numSample - phantomSize;
-      int left = numSample-overflow;
-      buf.copyFrom(channel, phantomSize+writeNeedle,b,left);
-      buf.copyFrom(channel, phantomSize+writeNeedle+left,b+left,overflow);
-      buf.copyFrom(channel, writeNeedle+left-phantomSize,b+left,overflow);
-    }
-    // second phantomZone
-    else if (writeNeedle+numSample>phantomSize){
-      buf.copyFrom(channel, phantomSize+writeNeedle,b,numSample);
-      buf.copyFrom(channel, writeNeedle-phantomSize,b,numSample);
-    }
-    // first phantomZone
-    else{
-      buf.copyFrom(channel, phantomSize+writeNeedle, b, numSample);
-    }
-
+    jassert(writeNeedle+numSample <= phantomSize);
+    buf.copyFrom(channel, phantomSize+writeNeedle,b,numSample);
+    buf.copyFrom(channel, writeNeedle,b,numSample);
 
   }
   int writeNeedle;
@@ -114,7 +100,7 @@ private:
   AudioBuffer<float> contiguousBuffer;
   Array<float*> pointers ;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BipBuffer);
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PhantomBuffer);
 
 
 };
@@ -126,10 +112,10 @@ private:
 //==============================================================================
 #if LGML_UNIT_TESTS
 
-class BipBufferTest  : public UnitTest
+class PhantomBufferTest  : public UnitTest
 {
 public:
-  BipBufferTest() : UnitTest ("RingBufferTest") {}
+  PhantomBufferTest() : UnitTest ("RingBufferTest") {}
 
 
 
@@ -146,7 +132,7 @@ public:
     int copiedSize = (numBlocks+2)*(blockSize);
 
 
-    BipBuffer ring(numChannels,ringSize);
+    PhantomBuffer ring(numChannels,ringSize);
 
     AudioBuffer<float> tstBuf;
     tstBuf.setSize(numChannels,blockSize);
@@ -193,7 +179,7 @@ public:
   }
 };
 
-static BipBufferTest ringBufferTest;
+static PhantomBufferTest ringBufferTest;
 
 #endif
 

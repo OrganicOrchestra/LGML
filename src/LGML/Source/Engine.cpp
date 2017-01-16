@@ -15,6 +15,7 @@
 #include "DebugHelpers.h"
 
 #include "NodeContainer.h"
+#include "AudioDebugPipe.h"
 
 
 
@@ -75,6 +76,10 @@ Engine::~Engine(){
   MIDIManager::deleteInstance();
 
   SerialManager::deleteInstance();
+
+
+
+  AudioDebugPipe::deleteAllPipes();
   
 }
 

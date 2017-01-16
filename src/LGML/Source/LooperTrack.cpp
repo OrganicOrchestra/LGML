@@ -15,6 +15,7 @@
 #include "LooperNode.h"
 
 #include "DebugHelpers.h"
+#include "AudiodebugPipe.h"
 
 #define NO_QUANTIZE (uint64)-1 //std::numeric_limits<uint64>::max()
 
@@ -25,7 +26,7 @@ quantizedRecordStart(NO_QUANTIZE),
 quantizedRecordEnd(NO_QUANTIZE),
 quantizedPlayStart(NO_QUANTIZE),
 quantizedPlayEnd(NO_QUANTIZE),
-loopSample(2, 44100 * MAX_LOOP_LENGTH_S),
+loopSample(2, 44100 * MAX_LOOP_LENGTH_S,looperNode->getSampleRate(),looperNode->getBlockSize()),
 trackState(CLEARED),
 desiredState(CLEARED),
 trackIdx(_trackIdx),
@@ -58,6 +59,13 @@ lastVolume(0)
   // post init
   volume->setValue(defaultVolumeValue);
   logVolume = float01ToGain(volume->value);
+
+
+  
+
+}
+
+LooperTrack::~LooperTrack() {
 
 }
 
@@ -294,28 +302,39 @@ void LooperTrack::handleEndOfRecording(){
       // get howMuch we have allready played in loopSample
       int offsetForPlay = (int)loopSample.getPlayPos();
       if (isMasterTempoTrack()) {
+        TimeManager * tm = TimeManager::getInstance();
         //                DBG("release predelay : "+String (trackIdx));
         const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
         if(sampleToRemove>0){loopSample.cropEndOfRecording(sampleToRemove);}
-        double actualLength = TimeManager::getInstance()->setBPMForLoopLength(loopSample.getRecordedLength());
-        uint64 desiredSize = (uint64)(actualLength*TimeManager::getInstance()->beatTimeInSample);
+        SampleTimeInfo info = tm->findSampleTimeInfoForLength(loopSample.getRecordedLength());
+        // need to tell it right away to avoid bpm changes call back while originBPM not updated
+        if(getQuantization()>0)originBPM = info.bpm ;
+
+        tm->setBPMFromTimeInfo(info);
+        
+        uint64 desiredSize = (uint64)(info.barLength*tm->beatPerBar->intValue()*info.beatInSample);
 
         //        DBG("resizing loop : " << (int)(desiredSize-loopSample.getRecordedLength()));
 
         loopSample.setSizePaddingIfNeeded(desiredSize);
-        beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample,false,false,true);
+        beatLength->setValue(loopSample.getRecordedLength()*1.0/info.beatInSample,false,false,true);
         TimeManager::getInstance()->goToTime(offsetForPlay);
+
 
 
 
       }
       else{
         beatLength->setValue(loopSample.getRecordedLength()*1.0/TimeManager::getInstance()->beatTimeInSample);
+        if(getQuantization()>0)originBPM = TimeManager::getInstance()->BPM->doubleValue();
       }
-      if(getQuantization()>0)originBPM = TimeManager::getInstance()->BPM->doubleValue();
-      //      loopSample.setPlayNeedle(offsetForPlay);
+
+      
 
       parentLooper->lastMasterTempoTrack =nullptr;
+
+      DBGAUDIO("track"+String(trackIdx), loopSample.originLoopSample);
+      DBGAUDIOSETBPM("track"+String(trackIdx), originBPM);
     }
   }
 
@@ -616,8 +635,13 @@ bool LooperTrack::hasOnset(){
   return parentLooper->hasOnset();
 }
 
+bool LooperTrack::isEmpty(){
+  return trackState==CLEARED;
+}
+
 void LooperTrack::setNumChannels(int numChannels){
   loopSample.setNumChannels(numChannels);
+  loopSample.initStretcher( parentLooper->getSampleRate(), numChannels,parentLooper->getBlockSize());
 }
 
 

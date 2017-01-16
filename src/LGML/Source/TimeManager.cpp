@@ -31,7 +31,6 @@ ControllableContainer("Time"),
 beatTimeGuessRange(.4,.85),
 BPMRange(10,600),
 _isLocked(false),
-settingTempoFromCandidate(false),
 currentBeatPeriod(.5),
 lastTaped(0),
 tapInRow(0),
@@ -192,8 +191,7 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
 
   }
   else if (p==BPMLocked){
-    if(BPMLocked->boolValue()){BPM->setRange(BPM->doubleValue(),BPM->doubleValue());}
-    else                      {BPM->setRange(BPMRange.getStart(),BPMRange.getEnd());}
+    BPM->isEditable = !BPMLocked->boolValue();
   }
   else if(p==beatPerBar){currentBeat->maximumValue = beatPerBar->intValue();}
 
@@ -336,35 +334,46 @@ void TimeManager::goToTime(uint64 time){
 
 
 
-double TimeManager::setBPMForLoopLength(uint64 time,int granularity){
-  double barLength = 1;
+SampleTimeInfo TimeManager::findSampleTimeInfoForLength(uint64 time,int granularity){
+  SampleTimeInfo res;
+  res.barLength = 1;
   double time_seconds = time* 1.0/ sampleRate;
-  double beatTime = time_seconds* 1.0/beatPerBar->intValue();
+  res.beatTime = time_seconds* 1.0/beatPerBar->intValue();
 
   // over 150 bpm (0.4s)
-  while(beatTime < beatTimeGuessRange.getStart()){beatTime*=2.0;barLength/=2.0;}
+  while(res.beatTime < beatTimeGuessRange.getStart()){res.beatTime*=2.0;res.barLength/=2.0;}
   // under 70 bpm (0.85s)
-  while(beatTime > beatTimeGuessRange.getEnd() ){beatTime/=2.0;barLength*=2.0;}
-  int beatInSample = (int)(beatTime*sampleRate);
+  while(res.beatTime > beatTimeGuessRange.getEnd() ){res.beatTime/=2.0;res.barLength*=2.0;}
+  res.beatInSample = (int)(res.beatTime*sampleRate);
+
   if(granularity>0){
-    int offset =beatInSample%granularity;
+    int offset =res.beatInSample%granularity;
     if(offset>granularity/2){offset = -(granularity-offset);}
-    beatInSample = beatInSample - offset;
-    beatTime = beatInSample*1.0/sampleRate;
+    res.beatInSample = res.beatInSample - offset;
+    res.beatTime = res.beatInSample*1.0/sampleRate;
   }
-  settingTempoFromCandidate = true;
-  BPM->setValue(60.0/beatTime,false,false,true);
-  settingTempoFromCandidate = false;
+
+  res.bpm = 60.0/res.beatTime;
+  DBG("found beat Sample : " << String(res.beatInSample) << " : " << time);
+  
+  return res;
+}
+void TimeManager::setBPMFromTimeInfo(const SampleTimeInfo & info){
+
+  BPM->setValue(info.bpm,false,false,true);
+  goToTime(timeState.time*info.beatInSample/beatTimeInSample);
   // force exact beatTimeInSample
-  beatTimeInSample = beatInSample;
-  DBG("beat Sample : " << String(beatTimeInSample) << " : " << time);
-  shouldGoToZero();
+  beatTimeInSample = info.beatInSample;
+
+
   //jassert((int)(barLength*beatPerBar->intValue())>0);
 
   // lockBPM for now
-  BPMLocked->setValue(true);
 
-  return (barLength*beatPerBar->intValue());
+
+//  BPMLocked->setValue(true);
+
+
 }
 
 uint64 TimeManager::getNextGlobalQuantifiedTime(){

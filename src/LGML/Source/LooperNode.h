@@ -24,6 +24,7 @@
 class LooperNode :
 public NodeBase,
 public TimeMasterCandidate
+
 {
 
 public:
@@ -100,6 +101,7 @@ public:
 
   void onContainerTriggerTriggered(Trigger * t) override;
   void onContainerParameterChanged(Parameter * p) override;
+  void parameterValueChanged(Parameter *p)override;
   // internal
   void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
   void checkIfNeedGlobalLooperStateUpdate();
@@ -128,7 +130,7 @@ private:
   // keeps track of few bits of audio
   // to readjust the loop when controllers are delayed
   void numChannelsChanged(bool isInput)override;
-  BipBuffer streamAudioBuffer;
+  PhantomBuffer streamAudioBuffer;
   friend class LooperTrack;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)

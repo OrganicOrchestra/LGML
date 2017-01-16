@@ -24,6 +24,16 @@
 
 class FadeInOut;
 
+
+struct SampleTimeInfo{
+  double barLength;
+  double beatTime;
+  int beatInSample;
+  double bpm;
+  
+
+};
+
 class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead,
 public TimeMasterCandidate
 {
@@ -54,8 +64,12 @@ public TimeMasterCandidate
   IntParameter * quantizedBarFraction;
 
   void setSampleRate(int sr);
+
+
+
   // granularity ensure that beat sample is divisible by 16 (8,4,2 ... 1) for further sub quantifs
-  double setBPMForLoopLength(uint64 time,int granularity=16);
+  SampleTimeInfo findSampleTimeInfoForLength(uint64 time,int granularity=0);
+  void setBPMFromTimeInfo(const SampleTimeInfo & info);
 
 
   void jump(int amount);
@@ -159,7 +173,7 @@ private:
   // used for manual setting of tempo
   Range<double> BPMRange;
 
-  bool settingTempoFromCandidate;
+  
 
   uint64 lastTaped;
   uint64 currentBeatPeriod;

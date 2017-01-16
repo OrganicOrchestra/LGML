@@ -150,10 +150,16 @@
                 resource="0"/>
         </GROUP>
         <GROUP id="{47C49D7C-57C1-2802-9458-4AB50A9508DE}" name="Audio">
+          <FILE id="XvG4hZ" name="AudioDebugPipe.cpp" compile="1" resource="0"
+                file="Source/AudioDebugPipe.cpp"/>
+          <FILE id="NWFdHH" name="AudioDebugPipe.h" compile="0" resource="0"
+                file="Source/AudioDebugPipe.h"/>
           <FILE compile="0" file="Source/AudioFucker.h" id="evse9I" name="AudioFucker.h"
                 resource="0"/>
           <FILE compile="0" file="Source/AudioHelpers.h" id="J7iGNZ" name="AudioHelpers.h"
                 resource="0"/>
+          <FILE id="E0B5ps" name="PlayableBuffer.cpp" compile="1" resource="0"
+                file="Source/PlayableBuffer.cpp"/>
           <FILE compile="0" file="Source/PlayableBuffer.h" id="mfsKGO" name="PlayableBuffer.h"
                 resource="0"/>
           <FILE compile="0" file="Source/RingBuffer.h" id="jPxc7W" name="RingBuffer.h"
@@ -895,9 +901,10 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" extraCompilerFlags="-Wno-reorder&#10;-Weffc++"
+    <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I/Users/Tintamar/Dev/rubberband/rubberband"
                postbuildCommand="" smallIcon="jsU7Hw" targetFolder="Builds/MacOSX"
-               vst3Folder="/Users/Tintamar/SDKs/VST3 SDK" vstFolder="">
+               vst3Folder="/Users/Tintamar/SDKs/VST3 SDK" vstFolder="" externalLibraries=""
+               extraLinkerFlags="/Users/Tintamar/Dev/rubberband/lib/librubberband.a">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="../../External/serial/include" isDebug="0" linkTimeOptimisation="1"
