@@ -43,16 +43,23 @@ void BoolToggleUI::paint(Graphics & g)
     g.drawText(parameter->niceName, getLocalBounds().reduced(2).toFloat(), Justification::centred);
 }
 
-void BoolToggleUI::mouseDown(const MouseEvent &)
+void BoolToggleUI::mouseDown(const MouseEvent &e)
 {
+	ParameterUI::mouseDown(e);
+
 	if (!parameter->isEditable) return;
-    parameter->setValue(!parameter->boolValue());
+	if (e.mods.isLeftButtonDown())
+	{
+		parameter->setValue(!parameter->boolValue());
+	}
 }
 
 void BoolToggleUI::mouseUp(const MouseEvent & e)
 {
+	ParameterUI::mouseUp(e);
 	if (!parameter->isEditable) return;
-    if (e.mods.isRightButtonDown()) parameter->setValue(!parameter->boolValue());
+    
+	if (e.mods.isLeftButtonDown() && e.mods.isShiftDown()) parameter->setValue(!parameter->boolValue());
 }
 
 void BoolToggleUI::valueChanged(const var & )

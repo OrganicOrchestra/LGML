@@ -29,6 +29,7 @@ public:
 	TriggerBlinkUI * createBlinkUI(Trigger * target = nullptr);
 	ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 	
+	
 	virtual DynamicObject * createDynamicObject() override;
 	
 	void trigger()

@@ -35,6 +35,22 @@ void ControllableUI::controllableControlAddressChanged(Controllable *)
     updateTooltip();
 }
 
+void ControllableUI::mouseDown(const MouseEvent & e)
+{
+	if (e.mods.isRightButtonDown())
+	{
+		PopupMenu p;
+		p.addItem(1, "Copy control address");
+		int result = p.show();
+		switch (result)
+		{
+		case 1:
+			SystemClipboard::copyTextToClipboard(controllable->controlAddress);
+			break;
+		}
+	}
+}
+
 void ControllableUI::updateTooltip()
 {
     tooltip = controllable->description + "\nControl Address : " + controllable->controlAddress;

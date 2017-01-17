@@ -25,6 +25,7 @@ public:
     bool showLabel;
 	bool showValue;
 
+	
 protected:
 
 

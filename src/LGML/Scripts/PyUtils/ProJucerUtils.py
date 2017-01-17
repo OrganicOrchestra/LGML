@@ -3,7 +3,7 @@
 from writeSha import *
 import os
 
-proJucerPath = "/Applications/Projucer.app/Contents/MacOS/Projucer"
+proJucerPath = "/Applications/JUCE/Projucer.app/Contents/MacOS/Projucer"
 proJucerCommand = proJucerPath
 
 JuceProjectPath = os.path.dirname(os.path.abspath(__file__));

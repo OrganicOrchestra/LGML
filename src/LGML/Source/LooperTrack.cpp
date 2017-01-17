@@ -46,7 +46,9 @@ lastVolume(0)
   mute = addBoolParameter("Mute", "Sets the track muted (or not.)", false);
   solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
   beatLength = addFloatParameter("Length", "length in bar", 0, 0, 200);
+  togglePlayStopTrig = addTrigger("Toggle Play Stop", "Toggle Play / Stop");
 
+  mute->invertVisuals = true;
 
   stateParameterString = addStringParameter("state", "track state", "cleared");
   stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer(stateParameterString);
@@ -412,6 +414,9 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
   }
   else if (t == stopTrig) {
       stop();
+  } else if (t == togglePlayStopTrig)
+  {
+	  setTrackState(trackState != PLAYING ? WILL_PLAY : WILL_STOP);
   }
 }
 void LooperTrack::clear(){
@@ -464,6 +469,11 @@ bool LooperTrack::isMasterTempoTrack(){
 void LooperTrack::setSelected(bool _isSelected) {
   isSelected=_isSelected;
   trackStateListeners.call(&LooperTrack::Listener::internalTrackSetSelected, isSelected);
+}
+
+bool LooperTrack::isEmpty()
+{
+	return trackState == TrackState::CLEARED;
 }
 
 

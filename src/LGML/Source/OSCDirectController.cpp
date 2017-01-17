@@ -158,7 +158,7 @@ void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*o
     switch (targetType)
     {
         case Controllable::Type::TRIGGER:
-            sendOSC(cAddress,1);
+            sendOSC(cAddress);
             break;
 
         case Controllable::Type::BOOL:

@@ -87,7 +87,12 @@ void TriggerBlinkUI::timerCallback(){
 
 
 
-void TriggerBlinkUI::mouseDown(const MouseEvent&) {
-    trigger->trigger();
+void TriggerBlinkUI::mouseDown(const MouseEvent &e) {
+	ControllableUI::mouseDown(e);
+	if (e.mods.isLeftButtonDown())
+	{
+		trigger->trigger();
 
+	}
+    
 }

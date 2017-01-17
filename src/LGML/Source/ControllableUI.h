@@ -33,6 +33,8 @@ public:
 
 protected :
     void updateTooltip();
+
+	void mouseDown(const MouseEvent &e) override;
 };
 
 

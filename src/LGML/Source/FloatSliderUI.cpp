@@ -89,23 +89,28 @@ void FloatSliderUI::paint(Graphics & g)
 
 void FloatSliderUI::mouseDown(const MouseEvent & e)
 {
+	ParameterUI::mouseDown(e);
+
 	if (!parameter->isEditable) return;
 
-    initValue = getParamNormalizedValue();
-    setMouseCursor(MouseCursor::NoCursor);
-
-	if (e.mods.isRightButtonDown()) {
+    
+	if (!e.mods.isLeftButtonDown()) return;
+	
+	initValue = getParamNormalizedValue();
+	setMouseCursor(MouseCursor::NoCursor);
+		
+	if (e.mods.isShiftDown()) {
 		parameter->resetValue();
 	}
 
-    if (e.mods.isLeftButtonDown() && assignOnMousePosDirect && !changeParamOnMouseUpOnly)
-    {
-        setParamNormalizedValue(getValueFromMouse());
-    }
-    else
-    {
-        repaint();
-    }
+	if (assignOnMousePosDirect)
+	{
+		setParamNormalizedValue(getValueFromMouse());
+	} else
+	{
+		repaint();
+	}
+   
 }
 
 
@@ -113,6 +118,8 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 void FloatSliderUI::mouseDrag(const MouseEvent & e)
 {
 	if (!parameter->isEditable) return;
+
+	if (!e.mods.isLeftButtonDown()) return;
 
 	if(changeParamOnMouseUpOnly) repaint();
     else
@@ -136,6 +143,8 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
 void FloatSliderUI::mouseUp(const MouseEvent &me)
 {
 	if (!parameter->isEditable) return;
+
+	if (!me.mods.isLeftButtonDown()) return;
 
 	BailOutChecker checker (this);
 
