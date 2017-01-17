@@ -645,9 +645,7 @@ bool LooperTrack::hasOnset(){
   return parentLooper->hasOnset();
 }
 
-bool LooperTrack::isEmpty(){
-  return trackState==CLEARED;
-}
+
 
 void LooperTrack::setNumChannels(int numChannels){
   loopSample.setNumChannels(numChannels);
