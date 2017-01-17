@@ -49,8 +49,13 @@ void TriggerButtonUI::resized()
 
 }
 
-void TriggerButtonUI::mouseDown (const MouseEvent&){
-    trigger->trigger();
+void TriggerButtonUI::mouseDown (const MouseEvent& e){
+	ControllableUI::mouseDown(e);
+	if(e.mods.isLeftButtonDown())
+	{
+		trigger->trigger();
+	}
+  
 
 }
 

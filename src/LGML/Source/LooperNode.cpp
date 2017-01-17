@@ -269,12 +269,12 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t)
 
 		if (selectedTrack != nullptr)
 		{
-			selectedTrack->recPlayTrig->trigger();
+			selectedTrack->recPlay();
 			if (autoNextTrackAfterRecord->boolValue() && selectedTrack->trackState == LooperTrack::TrackState::RECORDING) selectTrack->setValue(selectTrack->intValue() + 1);
 		}
 
 	} else if (t == playSelectedTrig) {
-		if (selectedTrack != nullptr) selectedTrack->playTrig->trigger();
+		if (selectedTrack != nullptr) selectedTrack->play();
 
 	} else if (t == clearSelectedTrig) {
 
@@ -433,7 +433,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
 	} else if (p == TimeManager::getInstance()->playState) {
 		if (!TimeManager::getInstance()->playState->boolValue()) {
 			for (auto &t : trackGroup.tracks) {
-				t->stopTrig->trigger();
+				t->stop();
 			}
 		} else if (!isOneShot->boolValue()) {
 			// prevent time manager to update track internal state before all tracks are updated
