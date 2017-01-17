@@ -21,8 +21,7 @@
 
 
 static const String controllerTypeNames[] = {
-	"ScriptedOSC",
-	"OSC Custom",
+	"OSC",
 	"DMX",
 	"MIDI"
 #if SERIALSUPPORT
@@ -35,8 +34,7 @@ class ControllerFactory
 public:
     enum ControllerType
     {
-		ScriptedOSC,
-		OSCCustom,
+		OSC,
         DMX,
         MIDI,
 #if SERIALSUPPORT
@@ -62,12 +60,9 @@ public:
         switch (controllerType)
         {
 
-            case ScriptedOSC:
+            case OSC:
                 c = new JavascriptController();
                 break;
-			case OSCCustom:
-				c = new OSCCustomController();
-				break;
             case DMX:
                 c = new DMXController();
                 break;
