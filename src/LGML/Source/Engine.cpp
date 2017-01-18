@@ -26,7 +26,8 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
                                     filenameWildcard,
                                     "Load a filter graph",
                                     "Save a filter graph"),
-	ControllableContainer("root")
+	ControllableContainer("root"),
+threadPool(4)
 {
 	skipControllableNameInAddress = true;
   loadingStartTime = 0;
@@ -43,6 +44,8 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
   addChildControllableContainer(ControllerManager::getInstance());
   addChildControllableContainer(FastMapper::getInstance());
   addChildControllableContainer(RuleManager::getInstance());
+
+
 }
 
 
@@ -80,6 +83,8 @@ Engine::~Engine(){
 
 
   AudioDebugPipe::deleteAllPipes();
+
+  
   
 }
 

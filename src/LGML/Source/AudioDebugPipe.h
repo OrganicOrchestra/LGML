@@ -13,7 +13,9 @@
 
 #include "JuceHeader.h"
 
-
+#ifndef DEBUGPIPE_ENABLED
+  #define DEBUGPIPE_ENABLED 0
+#endif
 
 class AudioDebugPipe : public Thread{
 public:
@@ -39,10 +41,13 @@ public:
 };
 
 
-
+#if DEBUGPIPE_ENABLED
 #define DBGAUDIO(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->push(b);}
 #define DBGAUDIOSETBPM(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->sendMessage("BPM "+String(b));}
-
+#else
+#define DBGAUDIO(name,b) 
+#define DBGAUDIOSETBPM(name,b)
+#endif
 
 
 #endif  // AUDIODEBUGPIPE_H_INCLUDED

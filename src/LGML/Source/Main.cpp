@@ -252,6 +252,7 @@ ApplicationProperties& getAppProperties()           { return *getApp()->appPrope
 AudioDeviceManager & getAudioDeviceManager()        { return getApp()->deviceManager;}
 UndoManager & getAppUndoManager()                      { return getApp()->undoManager;}
 Engine * getEngine()                              { return getApp()->engine;}
+ThreadPool * getEngineThreadPool()                              { return &getApp()->engine->threadPool;}
 bool  isEngineLoadingFile()                            {if(getEngine()) {return getEngine()->isLoadingFile;}else{return false;}}
 //==============================================================================
 // This macro generates the main() routine that launches the app.

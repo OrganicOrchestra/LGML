@@ -22,11 +22,11 @@ class PlayableBuffer {
   PlayableBuffer(int numChannels,int numSamples,int sampleRate,int blockSize);
   ~PlayableBuffer();
   void setNumChannels(int n);
-  bool processNextBlock(AudioBuffer<float> & buffer);
+  bool processNextBlock(AudioBuffer<float> & buffer,uint64 time);
 
 
   inline bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1);
-  inline void readNextBlock(AudioBuffer<float> & buffer,int fromSample = 0  );
+  inline void readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample = 0  );
 
 
   void setPlayNeedle(int n);
@@ -111,6 +111,9 @@ private:
   bool hasBeenFaded;
   int fadeSamples;
   FadeInOut fadeRecorded;
+
+  void doStretch(double ratio);
+  friend class StretchJob;
   
   
 

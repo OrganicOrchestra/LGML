@@ -81,8 +81,8 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   handleStartOfRecording();
 
 
-
-  if(!loopSample.processNextBlock(buffer) && trackState!=STOPPED){
+  TimeManager * tm = TimeManager::getInstance();
+  if(!loopSample.processNextBlock(buffer,tm->getTimeInSample()-startPlayBeat*tm->beatTimeInSample) && trackState!=STOPPED){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);
   }
