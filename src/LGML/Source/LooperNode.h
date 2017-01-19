@@ -19,11 +19,11 @@
 #include "TimeMasterCandidate.h"
 
 #include "RingBuffer.h"
-
+#include "TimeManager.h"
 
 class LooperNode :
 public NodeBase,
-public TimeMasterCandidate
+public TimeMasterCandidate,TimeManager::Listener
 
 {
 
@@ -104,7 +104,7 @@ public:
 //  void parameterValueChanged(Parameter *p)override;
   // internal
   void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
-  void checkIfNeedGlobalLooperStateUpdate();
+  
 
   bool wasMonitoring;
 
@@ -125,6 +125,9 @@ public:
 
   void clearInternal()override;
   bool hasOnset();
+  
+  void timeJumped(uint64 time)override;
+  void BPMChanged(double BPM) override;
 
 private:
   // keeps track of few bits of audio

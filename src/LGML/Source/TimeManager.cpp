@@ -35,7 +35,9 @@ currentBeatPeriod(.5),
 lastTaped(0),
 tapInRow(0),
 firstPlayingFrame(false),
-hasJumped(false)
+hasJumped(false),
+hadMasterCandidate(false),
+timeMasterCandidate(nullptr)
 {
 
   BPM = addFloatParameter("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
@@ -52,7 +54,7 @@ hasJumped(false)
   tapTempo = addTrigger("tapTempo", "tap at least 2 times to set the tempo");
   click = addBoolParameter("Metronome", "Play the metronome click", false);
   clickVolume = addFloatParameter("Metronome Volume", "Click's volume if metronome is active", .5f, 0, 1);
-  setBPMInternal(BPM->doubleValue());
+  setBPMInternal(BPM->doubleValue(),false);
 
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);
 }
@@ -65,13 +67,10 @@ void TimeManager::incrementClock(int time){
   updateState();
   if(_isLocked)return;
 
-  hasJumped = timeState.isJumping;
-  if(timeState.isJumping){
-    timeState.time=timeState.nextTime;
-    timeState.isJumping=false;
-  }
+  hasJumped = notifyTimeJumpedIfNeeded();
 
-  else if(timeState.isPlaying){
+
+   if(!hasJumped && timeState.isPlaying){
     timeState.time+=time;
   }
   timeState.nextTime = timeState.time+time;
@@ -86,10 +85,26 @@ void TimeManager::incrementClock(int time){
   }
   desiredTimeState =timeState;
 
+
+  if(hadMasterCandidate && !isSettingTempo->boolValue()){
+    timeMasterCandidate=nullptr;
+  }
+  hadMasterCandidate = timeMasterCandidate!=nullptr;
+
 }
 
 
+bool TimeManager::notifyTimeJumpedIfNeeded(){
 
+if(timeState.isJumping){
+  timeState.time=timeState.nextTime;
+  timeState.isJumping=false;
+  listeners.call(&Listener::timeJumped,timeState.time);
+  desiredTimeState =timeState;
+  return true;
+}
+  return false;
+}
 
 void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
                                          int /*numInputChannels*/,
@@ -151,42 +166,51 @@ bool TimeManager::isJumping(){
 }
 
 bool TimeManager::askForBeingMasterCandidate(TimeMasterCandidate * n){
-  potentialTimeMasterCandidate.addIfNotAlreadyThere(n);
-  return potentialTimeMasterCandidate.getUnchecked(0) == n;
+
+  if(timeMasterCandidate==nullptr){
+    timeMasterCandidate = n;
+    isSettingTempo->setValue(true,false,false,true);
+    return true;
+  }
+
+  return false;
 }
 
 bool TimeManager::isMasterCandidate(TimeMasterCandidate * n){
-  return potentialTimeMasterCandidate.size()>0 && n==potentialTimeMasterCandidate.getUnchecked(0);
+  return  n==timeMasterCandidate;
 }
 bool TimeManager::hasMasterCandidate(){
-  return potentialTimeMasterCandidate.size()>0;
+  return timeMasterCandidate!=nullptr;
 }
-void TimeManager::releaseMasterCandidate(TimeMasterCandidate * n){
-  potentialTimeMasterCandidate.removeFirstMatchingValue(n);
-  if(potentialTimeMasterCandidate.size()==0||
-     (potentialTimeMasterCandidate.size()==1 && potentialTimeMasterCandidate.getUnchecked(0)==this)  ){
-    stopTrigger->trigger();
-    BPMLocked->setValue(false);
-
+void TimeManager::releaseMasterCandidate(TimeMasterCandidate *n){
+  jassert(timeMasterCandidate == n);
+  isSettingTempo->setValue(false);
+}
+void TimeManager::releaseIfMasterCandidate(TimeMasterCandidate *n){
+  if(n==timeMasterCandidate){
+  isSettingTempo->setValue(false);
+    n=nullptr;
   }
+}
+
+void TimeManager::play(bool shouldPlay){
+  
 }
 
 void TimeManager::onContainerParameterChanged(Parameter * p){
   if(p==playState){
     if(!playState->boolValue()){
-      if(isMasterCandidate(this)){potentialTimeMasterCandidate.clear();}
       shouldStop();
       clickFader->startFadeOut();
     }
     else{
-      if (!hasMasterCandidate()) {askForBeingMasterCandidate(this);}
       shouldGoToZero();
       shouldPlay();
       clickFader->startFadeIn();
     }
   }
   else if(p==BPM){
-    setBPMInternal(BPM->doubleValue());
+    setBPMInternal(BPM->doubleValue(),true);
     clickFader->startFadeOut();
 
   }
@@ -210,12 +234,31 @@ void TimeManager::shouldRestart(bool playing){
 void TimeManager::shouldGoToZero(){
   desiredTimeState.jumpTo(0);
 }
-void TimeManager::advanceTime(uint64 a){
-
+void TimeManager::advanceTime(uint64 a,bool now){
+  if(now){
+    goToTime(desiredTimeState.nextTime+a,true);
+  }
+  else{
   if(desiredTimeState.isJumping){desiredTimeState.nextTime+=a;}
   else                          {desiredTimeState.jumpTo(timeState.nextTime+a);}
+  }
 
 }
+
+void TimeManager::jump(int amount){
+  goToTime(timeState.time+amount);
+
+
+}
+void TimeManager::goToTime(uint64 time,bool now){
+  desiredTimeState.jumpTo(time);
+  if(now){
+    updateState();
+    notifyTimeJumpedIfNeeded();
+  }
+}
+
+
 void TimeManager::shouldPlay(){
   desiredTimeState.isPlaying = true;
 }
@@ -247,7 +290,7 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
   }
   else if(t==stopTrigger){
     playState->setValue(false);
-    isSettingTempo->setValue(false);
+    isSettingTempo->setValue(false,false,false,true);
   }
 
   else if (t == tapTempo)
@@ -308,9 +351,16 @@ void TimeManager::setSampleRate(int sr){
   beatTimeInSample = (uint64)(sampleRate*1.0 / BPM->doubleValue() *60.0);
 }
 
-void TimeManager::setBPMInternal(double ){
-  isSettingTempo->setValue(false);
-  beatTimeInSample =(uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
+void TimeManager::setBPMInternal(double _BPM,bool adaptTimeInSample){
+  isSettingTempo->setValue(false,false,false,true);
+  int newBeatTime = (uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
+
+  if(adaptTimeInSample){
+    uint64 targetTime = timeState.time*newBeatTime/beatTimeInSample;
+    goToTime(targetTime);
+  }
+  beatTimeInSample =newBeatTime;
+
 }
 uint64 TimeManager::getTimeInSample(){
   return timeState.time;
@@ -323,14 +373,7 @@ bool  TimeManager::willRestart(){
   return (timeState.nextTime!=0) && (desiredTimeState.nextTime==0);
 }
 
-void TimeManager::jump(int amount){
-  goToTime(timeState.time+amount);
 
-
-}
-void TimeManager::goToTime(uint64 time){
-  desiredTimeState.jumpTo(time);
-}
 
 
 
@@ -358,13 +401,16 @@ SampleTimeInfo TimeManager::findSampleTimeInfoForLength(uint64 time,int granular
   
   return res;
 }
-void TimeManager::setBPMFromTimeInfo(const SampleTimeInfo & info){
+void TimeManager::setBPMFromTimeInfo(const SampleTimeInfo & info,bool adaptTimeInSample){
 
-  BPM->setValue(info.bpm,false,false,true);
-  goToTime(timeState.time*info.beatInSample/beatTimeInSample);
+  BPM->setValue(info.bpm,false,false,false);
+  if(adaptTimeInSample){
+  uint64 targetTime = timeState.time*info.beatInSample/beatTimeInSample;
+  goToTime(targetTime);
+  }
   // force exact beatTimeInSample
   beatTimeInSample = info.beatInSample;
-
+  listeners.call(&Listener::BPMChanged,BPM->doubleValue());
 
   //jassert((int)(barLength*beatPerBar->intValue())>0);
 

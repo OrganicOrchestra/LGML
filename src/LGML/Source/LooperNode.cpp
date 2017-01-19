@@ -10,7 +10,7 @@
 
 #include "LooperNode.h"
 #include "LooperNodeUI.h"
-#include "TimeManager.h"
+
 #include "NodeContainer.h"
 #include "AudioDebugPipe.h"
 
@@ -112,11 +112,11 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
 		}
 	}
 
-	int64 curTime = TimeManager::getInstance()->getTimeInSample();
+
 	int numSample = buffer.getNumSamples();
 	bool needAudioIn = false;
 	for (auto & t : trackGroup.tracks) {
-		t->updatePendingLooperTrackState(curTime, numSample);
+		t->updatePendingLooperTrackState( numSample);
 		// avoid each track clearing the buffer if not needed
 		needAudioIn |= t->loopSample.isOrWasRecording();
 	}
@@ -193,22 +193,6 @@ void LooperNode::TrackGroup::setNumTracks(int numTracks) {
 }
 
 
-void LooperNode::checkIfNeedGlobalLooperStateUpdate() {
-	if (TimeManager::getInstance()->hasMasterCandidate()) {
-		bool needToReleaseMasterTempo = true;
-		for (auto & t : trackGroup.tracks) {
-			needToReleaseMasterTempo &= (t->desiredState == LooperTrack::TrackState::CLEARED);
-
-		}
-
-		if (needToReleaseMasterTempo) {
-			TimeManager::getInstance()->releaseMasterCandidate(this);
-		}
-		//    if (!isOneShot->boolValue() && needToStop){
-		//      TimeManager::getInstance()->stopTrigger->trigger();
-		//    }
-	}
-}
 
 
 bool LooperNode::askForBeingMasterTrack(LooperTrack * t) {
@@ -473,31 +457,8 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
 
 
  else  if(p==TimeManager::getInstance()->BPM){
-    for(auto & t : trackGroup.tracks){
-      if(!t->isEmpty()) {
-
-        double ratio =t->originBPM;
-        jassert(ratio>0);
-        ratio /= TimeManager::getInstance()->BPM->doubleValue();
-
-        if(isnormal(ratio)){
-          t->loopSample.setTimeRatio(ratio);
-          if(ratio!=1){
-
-            AudioBuffer<float> b;
-            b.setDataToReferTo(t->loopSample.loopSample.getArrayOfWritePointers(), 1, t->loopSample.getRecordedLength());
-            DBGAUDIO("trackStretch"+String(t->trackIdx),b);
-            DBGAUDIOSETBPM("trackStretch"+String(t->trackIdx),TimeManager::getInstance()->BPM->doubleValue());
-          }
-        }
-
-        else{
-          DBG("wrong bpms for stretch : " << TimeManager::getInstance()->BPM->doubleValue() << "," << t->originBPM);
-          jassertfalse;
-        }
-
-      }}
-  }
+   BPMChanged(p->doubleValue());
+      }
   
 
 }
@@ -507,7 +468,7 @@ void LooperNode::clearInternal() {
 	TimeManager * tm = TimeManager::getInstanceWithoutCreating();
 	if (tm != nullptr)
 	{
-		tm->releaseMasterCandidate(this);
+		tm->releaseIfMasterCandidate(this);
 	}
 
 }
@@ -518,3 +479,38 @@ bool LooperNode::hasOnset() {
 	return hasOnset;
 }
 
+void LooperNode::BPMChanged(double BPM){
+  if(!TimeManager::getInstance()->isMasterCandidate(this)){
+  for(auto & t : trackGroup.tracks){
+    if(!t->isEmpty()) {
+
+      double ratio =t->originBPM;
+      ratio /= TimeManager::getInstance()->BPM->doubleValue();
+
+      if(isnormal(ratio)){
+        t->loopSample.setTimeRatio(ratio);
+if( DEBUGPIPE_ENABLED){
+        if(ratio!=1){
+
+          AudioBuffer<float> b;
+          b.setDataToReferTo(t->loopSample.loopSample.getArrayOfWritePointers(), 1, t->loopSample.getRecordedLength());
+//          DBGAUDIO("trackStretch"+String(t->trackIdx),b);
+//          DBGAUDIOSETBPM("trackStretch"+String(t->trackIdx),TimeManager::getInstance()->BPM->doubleValue());
+        }
+}
+      }
+
+      else{
+        DBG("wrong bpms for stretch : " << TimeManager::getInstance()->BPM->doubleValue() << "," << t->originBPM);
+        jassertfalse;
+      }
+
+    }
+  }
+  }
+
+};
+
+void LooperNode::timeJumped(uint64 time){
+
+};

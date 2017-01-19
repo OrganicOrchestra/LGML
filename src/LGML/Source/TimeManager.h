@@ -69,18 +69,18 @@ public TimeMasterCandidate
 
   // granularity ensure that beat sample is divisible by 16 (8,4,2 ... 1) for further sub quantifs
   SampleTimeInfo findSampleTimeInfoForLength(uint64 time,int granularity=0);
-  void setBPMFromTimeInfo(const SampleTimeInfo & info);
+  void setBPMFromTimeInfo(const SampleTimeInfo & info,bool adaptTime);
 
 
   void jump(int amount);
-  void goToTime(uint64 time);
-  void advanceTime(uint64 );
+  void goToTime(uint64 time,bool now = false);
+  void advanceTime(uint64 ,bool now = false);
 
   // used when triggering multiple change
   void lockTime(bool );
   bool isLocked();
 
-
+  void play(bool shouldPlay);
   void togglePlay();
 
   int getBeatInt();
@@ -112,15 +112,30 @@ public TimeMasterCandidate
   uint64 beatTimeInSample;
   int sampleRate;
 
-  Array<TimeMasterCandidate *>  potentialTimeMasterCandidate;
+  TimeMasterCandidate *  timeMasterCandidate;
   bool isMasterCandidate(TimeMasterCandidate * n);
   bool hasMasterCandidate();
   void releaseMasterCandidate(TimeMasterCandidate * n);
+  void releaseIfMasterCandidate(TimeMasterCandidate * n);
   bool askForBeingMasterCandidate(TimeMasterCandidate * n);
   void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) override;
 
+  bool hadMasterCandidate;
+
 
   bool getCurrentPosition (CurrentPositionInfo& result)override;
+
+  class Listener{
+  public:
+    virtual ~Listener(){};
+    virtual void BPMChanged(double BPM){};
+    virtual void timeJumped(uint64 time) {};
+    virtual void playStop(bool playStop){};
+
+
+  };
+
+  ListenerList<Listener> listeners;
 
 #if !LGML_UNIT_TESTS
 private:
@@ -152,7 +167,7 @@ private:
   void onContainerTriggerTriggered(Trigger * ) override;
 
 
-  void setBPMInternal(double BPM);
+  void setBPMInternal(double BPM,bool adaptTime);
 
   virtual void audioDeviceAboutToStart (AudioIODevice* device)override {
     setSampleRate((int)device->getCurrentSampleRate());
@@ -182,6 +197,7 @@ private:
   bool firstPlayingFrame,hasJumped;
 
   ScopedPointer<FadeInOut> clickFader;
+  bool notifyTimeJumpedIfNeeded();
 //  double lastEnv;
 //  int clickFadeOut,clickFadeIn,clickFadeTime;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)

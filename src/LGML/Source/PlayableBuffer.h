@@ -112,7 +112,8 @@ private:
   int fadeSamples;
   FadeInOut fadeRecorded;
 
-  void doStretch(double ratio);
+  int studyStretch(double ratio,int start,int blockSize);
+  void processStretch(int start,int block,int *read,int * produced);
   friend class StretchJob;
   
   
@@ -121,8 +122,28 @@ private:
 
 
   uint64 recordNeedle,playNeedle,startJumpNeedle,globalPlayNeedle;
+//  FadeInOut fadeJump;
 
 
+  class StretchJob : public ThreadPoolJob{
+  public:
+
+    StretchJob(PlayableBuffer * pb,double _ratio):
+    ThreadPoolJob("stretch"),
+    owner(pb),
+    ratio(_ratio)
+    {
+    };
+
+
+    JobStatus runJob()override;
+    
+
+    PlayableBuffer * owner;
+    double ratio;
+    
+  };
+  StretchJob *stretchJob;
 
 
 

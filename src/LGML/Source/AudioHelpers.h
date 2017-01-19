@@ -107,6 +107,8 @@ public:
       fadeInCount = jmax(0,fadeInCount);
     }
   }
+  bool isFadingIn(){return fadeInCount>=0;}
+  bool isFadingOut(){return fadeOutCount>=0;}
 
   int fadeInNumSamples;
   int fadeOutNumSamples;

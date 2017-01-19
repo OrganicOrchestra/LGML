@@ -13,9 +13,10 @@
 
 #include "JuceHeader.h"
 
-#ifndef DEBUGPIPE_ENABLED
-  #define DEBUGPIPE_ENABLED 0
-#endif
+
+#define FORCE_DISABLE_DEBUGPIPE 1
+
+
 
 class AudioDebugPipe : public Thread{
 public:
@@ -25,6 +26,7 @@ public:
   static void deleteAllPipes();
 
   void push(const AudioBuffer<float> & b);
+  void push(const float f);
   void sendMessage(const String & c);
 
   static int idxOfPipe(const String & n);
@@ -34,19 +36,22 @@ public:
 
   NamedPipe audioPipe;
   NamedPipe msgPipe;
-  
+
   static Array<AudioDebugPipe*> openedPipes;
 
   Array<float,CriticalSection> buffer;
+  
 };
 
 
-#if DEBUGPIPE_ENABLED
-#define DBGAUDIO(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->push(b);}
-#define DBGAUDIOSETBPM(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->sendMessage("BPM "+String(b));}
+#if !FORCE_DISABLE_DEBUGPIPE
+  #define DBGAUDIO(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->push(b);}
+  #define DBGAUDIOSETBPM(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->sendMessage("BPM "+String(b));}
+  #define DEBUGPIPE_ENABLED juce_isRunningUnderDebugger()
 #else
-#define DBGAUDIO(name,b) 
-#define DBGAUDIOSETBPM(name,b)
+  #define DBGAUDIO(name,b)
+  #define DBGAUDIOSETBPM(name,b)
+  #define DEBUGPIPE_ENABLED 0
 #endif
 
 

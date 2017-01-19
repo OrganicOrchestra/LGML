@@ -46,10 +46,14 @@ void AudioDebugPipe::deleteAllPipes(){
 
 
 void AudioDebugPipe::push(const AudioBuffer<float> & b){
-  
-  DBG("pushing : "+String(b.getMagnitude(0, b.getNumSamples())));
-  ScopedLock lk(buffer.getLock());
+
   buffer.addArray(b.getReadPointer(0), b.getNumSamples());
+
+}
+
+void AudioDebugPipe::push(float f){
+
+  buffer.add(f);
 
 }
 
@@ -69,15 +73,16 @@ void AudioDebugPipe::sendMessage(const String & c){
 void AudioDebugPipe::run(){
   while(!threadShouldExit()){
     {
+      sleep(100);
     ScopedLock lk(buffer.getLock());
     if(buffer.size()){
-      DBG("writing to " + audioPipe.getName() + ":"+String(buffer.size()) );
+//      DBG("writing to " + audioPipe.getName() + ":"+String(buffer.size()) );
 
       static int maxChunk = 1000;
       int i = 0;
       while (i < buffer.size()-1){
         int toWrite = jmin(maxChunk,buffer.size()-1-i);
-        int _written = audioPipe.write(buffer.getRawDataPointer()+i,toWrite*sizeof(float),-1);
+        int _written = audioPipe.write(buffer.getRawDataPointer()+i,toWrite*sizeof(float),30);
         if(_written<0){
           DBG("can't open pipe : " +String(errno));
           jassertfalse;
@@ -87,7 +92,7 @@ void AudioDebugPipe::run(){
 
       int written = i+1;
 
-      DBG("end writting for " + audioPipe.getName());
+//      DBG("end writting for " + audioPipe.getName());
 
       if(int leftOver =buffer.size()-written){
         DBG("left" << leftOver);
@@ -97,7 +102,7 @@ void AudioDebugPipe::run(){
       buffer.clearQuick();
     }
   }
-    sleep(100);
+
   }
 
   

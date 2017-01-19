@@ -191,7 +191,7 @@ private:
   uint64 quantizedRecordEnd, quantizedRecordStart;
   uint64 quantizedPlayStart, quantizedPlayEnd;
 
-  bool updatePendingLooperTrackState( uint64 curTime, int blockSize);
+  bool updatePendingLooperTrackState(  int blockSize);
   void handleStartOfRecording();
   void handleEndOfRecording( );
 
@@ -209,7 +209,7 @@ private:
 
   LooperNode * parentLooper;
 
-
+  void releaseMasterTrack();
   void cleanAllQuantizeNeedles();
 
   //friend class Looper;
