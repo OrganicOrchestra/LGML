@@ -23,7 +23,7 @@ public:
 
   AudioDebugPipe(const String & name);
   ~AudioDebugPipe();
-  static void deleteAllPipes();
+  static void deleteInstanciated();
 
   void push(const AudioBuffer<float> & b);
   void push(const float f);

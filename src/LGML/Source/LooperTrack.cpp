@@ -15,7 +15,8 @@
 #include "LooperNode.h"
 
 #include "DebugHelpers.h"
-#include "AudiodebugPipe.h"
+#include "AudioDebugPipe.h"
+#include "AudioDebugCrack.h"
 
 #define NO_QUANTIZE (uint64)-1 //std::numeric_limits<uint64>::max()
 
@@ -107,6 +108,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
   loopSample.endProcessBlock();
 
+  DBGAUDIOCRACK("track"+String(trackIdx),buffer);
 
 
 }

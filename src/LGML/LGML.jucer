@@ -158,6 +158,10 @@
                 resource="0"/>
           <FILE compile="0" file="Source/AudioHelpers.h" id="J7iGNZ" name="AudioHelpers.h"
                 resource="0"/>
+          <FILE id="BdXdeD" name="AudioDebugCrack.cpp" compile="1" resource="0"
+                file="Source/AudioDebugCrack.cpp"/>
+          <FILE id="l4YzNe" name="AudioDebugCrack.h" compile="0" resource="0"
+                file="Source/AudioDebugCrack.h"/>
           <FILE id="E0B5ps" name="PlayableBuffer.cpp" compile="1" resource="0"
                 file="Source/PlayableBuffer.cpp"/>
           <FILE compile="0" file="Source/PlayableBuffer.h" id="mfsKGO" name="PlayableBuffer.h"

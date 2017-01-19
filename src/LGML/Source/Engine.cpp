@@ -16,6 +16,7 @@
 
 #include "NodeContainer.h"
 #include "AudioDebugPipe.h"
+#include "AudioDebugCrack.h"
 
 
 
@@ -82,7 +83,8 @@ Engine::~Engine(){
 
 
 
-  AudioDebugPipe::deleteAllPipes();
+  AudioDebugPipe::deleteInstanciated();
+  AudioDebugCrack::deleteInstanciated();
 
   
   

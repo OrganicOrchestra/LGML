@@ -37,7 +37,7 @@ AudioDebugPipe::~AudioDebugPipe(){
 
 }
 
-void AudioDebugPipe::deleteAllPipes(){
+void AudioDebugPipe::deleteInstanciated(){
   for(auto p : openedPipes){
     delete p;
   }
