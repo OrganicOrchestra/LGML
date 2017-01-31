@@ -427,7 +427,7 @@ ThreadPoolJob::JobStatus StretchJob::runJob(){
     if(diffSample>128){
       jassertfalse;
     }
-    //  jassert(diffSample< 1024);
+
     owner->recordNeedle = produced;
     owner->playNeedle = owner->playNeedle*1.0/owner->recordNeedle*targetNumSamples;
     owner->setSizePaddingIfNeeded(targetNumSamples);
@@ -456,15 +456,15 @@ void StretchJob::initStretcher(int sampleRate,int numChannels){
                                        | RubberBandStretcher::OptionThreadingNever
                                        | RubberBandStretcher::OptionWindowStandard
 
-                                       | RubberBandStretcher::OptionStretchElastic
-                                       //| RubberBandStretcher::OptionStretchPrecise
+//                                       | RubberBandStretcher::OptionStretchElastic
+                                       | RubberBandStretcher::OptionStretchPrecise
 
                                        //Options options = DefaultOptions,
                                        //double initialTimeRatio = 1.0,
                                        //double initialPitchScale = 1.0
                                        );
 
-
+  stretcher->setDebugLevel(0);
   stretcher->setPitchScale(1.0);
 
 
