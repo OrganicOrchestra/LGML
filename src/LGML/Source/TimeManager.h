@@ -103,11 +103,7 @@ public TimeMasterCandidate
   double getBeatPercent();
   int getBar();
 
-  /*
-   ListenerList<Listener> listeners;
-   void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
-   void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
-   */
+
 
   uint64 beatTimeInSample;
   int sampleRate;
@@ -125,6 +121,8 @@ public TimeMasterCandidate
 
   bool getCurrentPosition (CurrentPositionInfo& result)override;
 
+  void notifyListenerCleared();
+
   class Listener{
   public:
     virtual ~Listener(){};
@@ -133,9 +131,18 @@ public TimeMasterCandidate
     virtual void playStop(bool playStop){};
 
 
+    // info for stopping manager if needed;
+    virtual bool isCleared()=0;
+
+
   };
 
   ListenerList<Listener> listeners;
+
+
+   void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
+   void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
+
 
 #if !LGML_UNIT_TESTS
 private:

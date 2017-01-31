@@ -248,6 +248,18 @@ AlertWindow* LookAndFeelOO::createAlertWindow (const String& title, const String
     return aw;
 }
 
+Array<int> LookAndFeelOO::getWidthsForTextButtons (AlertWindow&, const Array<TextButton*>& buttons)
+{
+  const int n = buttons.size();
+  Array<int> buttonWidths;
+
+  const int buttonHeight = getAlertWindowButtonHeight();
+
+  for (int i = 0; i < n; ++i)
+    buttonWidths.add (getTextButtonWidthToFitText (*buttons.getReference (i), buttonHeight));
+
+  return buttonWidths;
+}
 void LookAndFeelOO::drawAlertBox (Graphics& g, AlertWindow& alert,
                                    const Rectangle<int>& textArea, TextLayout& textLayout)
 {

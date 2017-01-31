@@ -211,6 +211,7 @@ public:
     void drawButtonBackground (Graphics&, Button&, const Colour& backgroundColour,
                                bool isMouseOverButton, bool isButtonDown) override;
     Font getTextButtonFont (TextButton&, int buttonHeight) override;
+    Array<int> getWidthsForTextButtons (AlertWindow&, const Array<TextButton*>& buttons)override;
 
     void drawButtonText (Graphics&, TextButton&, bool isMouseOverButton, bool isButtonDown) override;
     int getTextButtonWidthToFitText (TextButton&, int buttonHeight) override;

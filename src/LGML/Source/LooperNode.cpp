@@ -62,13 +62,15 @@ LooperNode::LooperNode() :
   TimeManager::getInstance()->BPM->addParameterListener(this);
 	setPreferedNumAudioInput(2);
 	setPreferedNumAudioOutput(2);
+  TimeManager::getInstance()->addTimeManagerListener(this);
 }
 
 LooperNode::~LooperNode()
 {
-	if (TimeManager::getInstanceWithoutCreating()) {
-		TimeManager::getInstance()->playState->removeParameterListener(this);
-    TimeManager::getInstance()->BPM->removeParameterListener(this);
+	if (TimeManager * tm = TimeManager::getInstanceWithoutCreating()) {
+		tm->playState->removeParameterListener(this);
+    tm->BPM->removeParameterListener(this);
+    tm->removeTimeManagerListener(this);
 	}
 }
 
@@ -512,5 +514,14 @@ if( DEBUGPIPE_ENABLED){
 };
 
 void LooperNode::timeJumped(uint64 time){
+
+};
+
+bool LooperNode::isCleared(){
+
+  for(auto & t:trackGroup.tracks){
+    if(!t->isEmpty()){return false;}
+  }
+  return true;
 
 };

@@ -58,7 +58,7 @@ void AudioDebugCrack::notifyCrack(const AudioBuffer<float> & b,int i){
     if(!hasCrack)lastCrack=sampleCount;
     hasCrack = true;
 
-    DBG("crack for " <<name<<" at " << i);
+//    DBG("crack for " <<name<<" at " << i);
     int dbg = 0;
     dbg++;
   }

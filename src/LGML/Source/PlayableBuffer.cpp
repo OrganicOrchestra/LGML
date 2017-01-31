@@ -27,11 +27,12 @@ numTimePlayed(0),
 sampleOffsetBeforeNewState(0),
 hasBeenFaded (false),fadeSamples(380),
 fadeRecorded(1000),
-stretchJob(nullptr)
+stretchJob(nullptr),
+sampleRate(44100)
 {
   fadeRecorded.setFadedOut();
   jassert(numSamples < std::numeric_limits<int>::max());
-  initStretcher(sampleRate,numChannels,blockSize);
+
 
 
 }
@@ -47,124 +48,8 @@ void PlayableBuffer::setNumChannels(int n){
 }
 
 
-void PlayableBuffer::initStretcher(int sampleRate,int numChannels,int blockSize){
-  if(sampleRate==0){
-    sampleRate=44100;
-  }
-  stretcher=new    RubberBandStretcher(sampleRate,//size_t sampleRate,
-                                       numChannels,//size_t channels,
-                                       RubberBandStretcher::OptionProcessOffline
-                                       | RubberBandStretcher::OptionTransientsCrisp
-                                       //~ | RubberBandStretcher::OptionTransientsSmooth
-                                       //| RubberBandStretcher::OptionPhaseAdaptive
-                                       | RubberBandStretcher::OptionThreadingNever
-                                       | RubberBandStretcher::OptionWindowStandard
-
-                                       //| RubberBandStretcher::OptionStretchElastic
-                                       | RubberBandStretcher::OptionStretchPrecise
-
-                                       //Options options = DefaultOptions,
-                                       //double initialTimeRatio = 1.0,
-                                       //double initialPitchScale = 1.0
-                                       );
-  // max block size
-  stretcher->setPitchScale(1.0);
-  //    stretcher->setMaxProcessSize(blockSize);
-
-}
-
-int PlayableBuffer::studyStretch(double ratio,int start,int block){
-  ScopedLock lk (stretcherLock);
-  if(start==0){
-    if(block==-1)block=originLoopSample.getNumSamples();
-    stretcher->reset();
-      initStretcher(44100, 2, 0);
-    jassert(isfinite(ratio));
-    stretcher->setTimeRatio(ratio);
-    stretcher->setExpectedInputDuration(originLoopSample.getNumSamples());
-    stretcher->setMaxProcessSize(block);
-    //  jassert(stretcher->getInputIncrement() == originLoopSample.getNumSamples());
-  }
 
 
-  bool isFinal =  start+block>=originLoopSample.getNumSamples();
-  if(isFinal){
-    block -= jmax(0,(start+block)-originLoopSample.getNumSamples());
-
-  }
-  const float* tmp[originLoopSample.getNumChannels()];
-  for(int i = 0 ; i  < originLoopSample.getNumChannels() ; i++){
-    tmp[i] = originLoopSample.getReadPointer(i) + start;
-  }
-  stretcher->study(tmp, block, isFinal);
-  return block;
-
-}
-void PlayableBuffer::processStretch(int start,int block,int * read, int * produced){
-
-  ScopedLock lk (stretcherLock);
-  if(block==-1)block=originLoopSample.getNumSamples();
-
-  //  int latency = stretcher->getLatency();
-  //  jassert (latency == 0);
-
-
-  bool isFinal = start+block>originLoopSample.getNumSamples();
-  if(isFinal){
-    block -= jmax(0,(start+block)-originLoopSample.getNumSamples());
-
-  }
-
-  const float * tmpIn[originLoopSample.getNumChannels()];
-  for(int i = 0 ; i  < originLoopSample.getNumChannels() ; i++){
-    tmpIn[i] = originLoopSample.getReadPointer(i) + start;
-  }
-  stretcher->process(tmpIn, block, isFinal);
-  int available = stretcher->available();
-  jassert( *produced + available< loopSample.getNumSamples());
-
-  float * tmpOut[loopSample.getNumChannels()];
-  for(int i = 0 ; i  < loopSample.getNumChannels() ; i++){
-    tmpOut[i] = loopSample.getWritePointer(i) + *produced;
-  }
-
-  int retrievedSamples = stretcher->retrieve(tmpOut, available);
-  jassert(retrievedSamples==available);
-
-  *read = block;
-  *produced+=retrievedSamples;
-
-  if(isFinal){
-    int dbg=stretcher->available();
-    jassert(dbg<=0);
-  }
-
-}
-
-
-
-void PlayableBuffer::setTimeRatio(const double ratio){
-  jassert(isOrWasPlaying());
-  if(ratio!=1.0){
-
-    ThreadPool * tp = getEngineThreadPool();
-    if(tp->contains(stretchJob))stretchJob->signalJobShouldExit();
-    else stretchJob = nullptr;
-    stretchJob =new StretchJob(this,ratio);
-    tp->addJob(stretchJob, true);
-
-  }
-  else{
-    for(int i = 0 ; i < originLoopSample.getNumChannels() ; i++){
-      loopSample.copyFrom(i, 0, originLoopSample, i, 0, originLoopSample.getNumSamples());
-    }
-    recordNeedle = originLoopSample.getNumSamples();
-    fadeInOut(fadeSamples, 0);
-  }
-
-
-
-}
 bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
   bool succeeded = true;
   if (isFirstRecordingFrame()){
@@ -455,33 +340,95 @@ uint64 PlayableBuffer::getStartJumpPos() const{return startJumpNeedle;}
 int PlayableBuffer::getSampleOffsetBeforeNewState(){return sampleOffsetBeforeNewState;};
 int PlayableBuffer::getNumSampleFadeOut(){return fadeRecorded.fadeOutNumSamples;};
 
-
+void PlayableBuffer::setSampleRate(float sR){sampleRate = sR;};
 
 
 
 ////////////////
 // stretcher
 
+class StretchJob : public ThreadPoolJob{
+public:
+
+  StretchJob(PlayableBuffer * pb,double _ratio):
+  ThreadPoolJob("stretch"),
+  owner(pb),
+  ratio(_ratio)
+  {
+  };
 
 
-ThreadPoolJob::JobStatus PlayableBuffer::StretchJob::runJob(){
+  JobStatus runJob()override;
+
+  int studyStretch(double ratio,int start,int blockSize);
+  void processStretch(int start,int block,int *read,int * produced);
+  // stretching function
+  void initStretcher(int sR,int c);
+  PlayableBuffer * owner;
+  double ratio;
+  ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
+};
+
+void PlayableBuffer::setTimeRatio(const double ratio){
+  jassert(isOrWasPlaying());
+  if(ratio!=1.0){
+
+    ThreadPool * tp = getEngineThreadPool();
+    if(tp->contains(stretchJob)){
+      stretchJob->signalJobShouldExit();
+//      tp->waitForJobToFinish(stretchJob,-1);
+    }
+    else stretchJob = nullptr;
+    stretchJob =new StretchJob(this,ratio);
+    tp->addJob(stretchJob, true);
+
+  }
+  else{
+    for(int i = 0 ; i < originLoopSample.getNumChannels() ; i++){
+      loopSample.copyFrom(i, 0, originLoopSample, i, 0, originLoopSample.getNumSamples());
+    }
+    recordNeedle = originLoopSample.getNumSamples();
+    fadeInOut(fadeSamples, 0);
+  }
+
+
+
+}
+
+
+
+ThreadPoolJob::JobStatus StretchJob::runJob(){
   int processed = 0;
   int block = 4096;
+
+
   while(!shouldExit() && processed<owner->originLoopSample.getNumSamples()){
-    processed+=owner->studyStretch(ratio,processed,block);
+    processed+=studyStretch(ratio,processed,block);
   }
 
   processed = 0;
   int read = 0;
   int produced = 0;
-  while(!shouldExit() && processed<owner->originLoopSample.getNumSamples()){
-    owner->processStretch(processed,block,&read,&produced);
+  while(!shouldExit()&& processed<owner->originLoopSample.getNumSamples()){
+    processStretch(processed,block,&read,&produced);
     processed+=read;
+    if(read==0){
+      int dbg;
+      dbg++;
+      break;
+    }
+
   }
   if(!shouldExit()){
+
     int targetNumSamples = owner->originLoopSample.getNumSamples()*ratio;
-    //  int diffSample =abs(produced-targetNumSamples);
+
+      int diffSample =abs(produced-targetNumSamples);
+    if(diffSample>128){
+      jassertfalse;
+    }
     //  jassert(diffSample< 1024);
+    owner->recordNeedle = produced;
     owner->playNeedle = owner->playNeedle*1.0/owner->recordNeedle*targetNumSamples;
     owner->setSizePaddingIfNeeded(targetNumSamples);
     //    int dbg =stretcher->getSamplesRequired();
@@ -489,8 +436,109 @@ ThreadPoolJob::JobStatus PlayableBuffer::StretchJob::runJob(){
 
     owner->fadeInOut(owner->fadeSamples, 0);
 
-    int dbg=owner->stretcher->available();
+    int dbg=stretcher->available();
     jassert(dbg<=0);
   }
   return jobHasFinished;
 }
+
+
+void StretchJob::initStretcher(int sampleRate,int numChannels){
+  if(sampleRate==0){
+    sampleRate=44100;
+  }
+  stretcher=new    RubberBandStretcher(sampleRate,//size_t sampleRate,
+                                       numChannels,//size_t channels,
+                                       RubberBandStretcher::OptionProcessOffline
+                                       | RubberBandStretcher::OptionTransientsMixed
+                                       //~ | RubberBandStretcher::OptionTransientsSmooth
+                                       //| RubberBandStretcher::OptionPhaseAdaptive
+                                       | RubberBandStretcher::OptionThreadingNever
+                                       | RubberBandStretcher::OptionWindowStandard
+
+                                       | RubberBandStretcher::OptionStretchElastic
+                                       //| RubberBandStretcher::OptionStretchPrecise
+
+                                       //Options options = DefaultOptions,
+                                       //double initialTimeRatio = 1.0,
+                                       //double initialPitchScale = 1.0
+                                       );
+
+
+  stretcher->setPitchScale(1.0);
+
+
+}
+
+int StretchJob::studyStretch(double ratio,int start,int block){
+
+  if(start==0){
+    if(block==-1)block=owner->originLoopSample.getNumSamples();
+
+    initStretcher(owner->sampleRate , owner->loopSample.getNumChannels());
+    jassert(isfinite(ratio));
+    stretcher->setTimeRatio(ratio);
+    stretcher->setExpectedInputDuration(owner->originLoopSample.getNumSamples());
+    stretcher->setMaxProcessSize(block);
+    //  jassert(stretcher->getInputIncrement() == originLoopSample.getNumSamples());
+  }
+
+
+  bool isFinal =  start+block>=owner->originLoopSample.getNumSamples();
+  if(isFinal){
+    block -= jmax(0,(start+block)-owner->originLoopSample.getNumSamples());
+
+  }
+  const float* tmp[owner->originLoopSample.getNumChannels()];
+  for(int i = 0 ; i  < owner->originLoopSample.getNumChannels() ; i++){
+    tmp[i] = owner->originLoopSample.getReadPointer(i) + start;
+  }
+  stretcher->study(tmp, block, isFinal);
+  return block;
+
+}
+void StretchJob::processStretch(int start,int block,int * read, int * produced){
+
+
+  if(block==-1)block=owner->originLoopSample.getNumSamples();
+
+  //  int latency = stretcher->getLatency();
+  //  jassert (latency == 0);
+
+
+  bool isFinal = start+block>=owner->originLoopSample.getNumSamples();
+  if(isFinal){
+    block -= jmax(0,(start+block)-owner->originLoopSample.getNumSamples());
+
+  }
+
+  const float * tmpIn[owner->originLoopSample.getNumChannels()];
+  for(int i = 0 ; i  < owner->originLoopSample.getNumChannels() ; i++){
+    tmpIn[i] = owner->originLoopSample.getReadPointer(i) + start;
+  }
+
+
+
+
+  stretcher->process(tmpIn, block, isFinal);
+  int available = stretcher->available();
+  jassert( *produced + available< owner->loopSample.getNumSamples());
+
+  float * tmpOut[owner->loopSample.getNumChannels()];
+  for(int i = 0 ; i  < owner->loopSample.getNumChannels() ; i++){
+    tmpOut[i] = owner->loopSample.getWritePointer(i) + *produced;
+  }
+
+  int retrievedSamples = stretcher->retrieve(tmpOut, available);
+  jassert(retrievedSamples==available);
+
+  *read = block;
+  *produced+=retrievedSamples;
+  
+  if(isFinal){
+    int dbg=stretcher->available();
+     jassert(dbg<=0);
+  }
+  
+}
+

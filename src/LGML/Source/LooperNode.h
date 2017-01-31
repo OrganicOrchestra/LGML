@@ -128,6 +128,7 @@ public:
   
   void timeJumped(uint64 time)override;
   void BPMChanged(double BPM) override;
+  bool isCleared()override;
 
 private:
   // keeps track of few bits of audio

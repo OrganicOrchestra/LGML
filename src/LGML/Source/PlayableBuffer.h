@@ -14,7 +14,7 @@
 
 
 #include "AudioHelpers.h"
-namespace RubberBand{class RubberBandStretcher;}
+class StretchJob;
 
 class PlayableBuffer {
 
@@ -25,8 +25,8 @@ class PlayableBuffer {
   bool processNextBlock(AudioBuffer<float> & buffer,uint64 time);
 
 
-  inline bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1);
-  inline void readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample = 0  );
+   bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1);
+   void readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample = 0  );
 
 
   void setPlayNeedle(int n);
@@ -94,10 +94,10 @@ class PlayableBuffer {
   int getNumSampleFadeOut();
 
 
-  // stretching function
-  void initStretcher(int sR,int c,int blockSize);
+
   void setTimeRatio(const double ratio);
-  CriticalSection stretcherLock;
+  void setSampleRate(float sR);
+  float sampleRate;
 
 
 #if !LGML_UNIT_TESTS
@@ -112,38 +112,19 @@ private:
   int fadeSamples;
   FadeInOut fadeRecorded;
 
-  int studyStretch(double ratio,int start,int blockSize);
-  void processStretch(int start,int block,int *read,int * produced);
+
   friend class StretchJob;
   
   
 
-  ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
+
 
 
   uint64 recordNeedle,playNeedle,startJumpNeedle,globalPlayNeedle;
 //  FadeInOut fadeJump;
 
 
-  class StretchJob : public ThreadPoolJob{
-  public:
-
-    StretchJob(PlayableBuffer * pb,double _ratio):
-    ThreadPoolJob("stretch"),
-    owner(pb),
-    ratio(_ratio)
-    {
-    };
-
-
-    JobStatus runJob()override;
-    
-
-    PlayableBuffer * owner;
-    double ratio;
-    
-  };
-  StretchJob *stretchJob;
+StretchJob *stretchJob;
 
 
 

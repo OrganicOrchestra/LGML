@@ -34,7 +34,9 @@ trackIdx(_trackIdx),
 someOneIsSolo(false),
 isSelected (false),
 originBPM(0),
-lastVolume(0)
+lastVolume(0),
+startPlayBeat(0),
+startRecBeat(0)
 {
 
 
@@ -80,6 +82,10 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
   TimeManager * tm = TimeManager::getInstance();
+  if(tm->getTimeInSample()== 0 && tm->getTimeInSample()<startPlayBeat*tm->beatTimeInSample){
+    startPlayBeat = 0;
+  }
+  jassert(tm->getTimeInSample()>=startPlayBeat*tm->beatTimeInSample);
   if(!loopSample.processNextBlock(buffer,tm->getTimeInSample()-startPlayBeat*tm->beatTimeInSample) && trackState!=STOPPED){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);
@@ -297,7 +303,8 @@ void LooperTrack::handleStartOfRecording(){
       if (isMasterTempoTrack()) {
         int samplesToGet = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
         //        we need to advance because pat of the block may have be processed
-//        tm->advanceTime(samplesToGet);
+        tm->goToTime(samplesToGet);
+        tm->play(true);
         if(samplesToGet>0){ loopSample.writeAudioBlock(parentLooper->streamAudioBuffer.getLastBlock(samplesToGet));}
         startRecBeat = 0;
       }
@@ -336,7 +343,7 @@ void LooperTrack::handleEndOfRecording(){
 
         loopSample.setSizePaddingIfNeeded(desiredSize);
         beatLength->setValue(loopSample.getRecordedLength()*1.0/info.beatInSample,false,false,true);
-        tm->goToTime(desiredSize+offsetForPlay,true);
+        tm->goToTime(offsetForPlay,true);//desiredSize+offsetForPlay,true);
 
         jassert(tm->playState->boolValue());
         releaseMasterTrack();
@@ -440,6 +447,7 @@ void LooperTrack::clear(){
     setTrackState(CLEARED);
     volume->setValue(DB0_FOR_01);
     mute->setValue(false);
+  TimeManager::getInstance()->notifyListenerCleared();
 }
 
 void LooperTrack::stop(){
@@ -489,7 +497,7 @@ void LooperTrack::setSelected(bool _isSelected) {
 
 bool LooperTrack::isEmpty()
 {
-	return trackState == TrackState::CLEARED;
+	return trackState == TrackState::CLEARED || desiredState==TrackState::CLEARED;
 }
 
 
@@ -660,7 +668,7 @@ bool LooperTrack::hasOnset(){
 
 void LooperTrack::setNumChannels(int numChannels){
   loopSample.setNumChannels(numChannels);
-  loopSample.initStretcher( parentLooper->getSampleRate(), numChannels,parentLooper->getBlockSize());
+  loopSample.setSampleRate( parentLooper->getSampleRate());
 }
 
 

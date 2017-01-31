@@ -74,7 +74,7 @@ void TimeManager::incrementClock(int time){
     timeState.time+=time;
   }
   timeState.nextTime = timeState.time+time;
-  int lastBeat = getBeatInt();
+  int lastBeat =  int(currentBeat->doubleValue());
   int newBeat = getBeatInt();
   if(lastBeat!=newBeat){
     currentBeat->setValue(newBeat);
@@ -193,21 +193,22 @@ void TimeManager::releaseIfMasterCandidate(TimeMasterCandidate *n){
   }
 }
 
-void TimeManager::play(bool shouldPlay){
-  
+void TimeManager::play(bool _shouldPlay){
+  if(!_shouldPlay){
+    shouldStop();
+    clickFader->startFadeOut();
+  }
+  else{
+    shouldGoToZero();
+    shouldPlay();
+    clickFader->startFadeIn();
+  }
 }
 
 void TimeManager::onContainerParameterChanged(Parameter * p){
   if(p==playState){
-    if(!playState->boolValue()){
-      shouldStop();
-      clickFader->startFadeOut();
-    }
-    else{
-      shouldGoToZero();
-      shouldPlay();
-      clickFader->startFadeIn();
-    }
+    play(playState->boolValue());
+
   }
   else if(p==BPM){
     setBPMInternal(BPM->doubleValue(),true);
@@ -285,8 +286,11 @@ void TimeManager::updateState(){
 
 void TimeManager::onContainerTriggerTriggered(Trigger * t) {
   if(t == playTrigger){
-    playState->setValue(false);
-    playState->setValue(true);
+    if(!playState->boolValue())playState->setValue(true);
+    shouldRestart(true);
+//    desiredTimeState.jumpTo(0);
+//    playState->setValue(false);
+
   }
   else if(t==stopTrigger){
     playState->setValue(false);
@@ -470,4 +474,16 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
   
   result.isLooping=false;
   return true;
+}
+
+void TimeManager::notifyListenerCleared(){
+  auto allListeners = listeners.getListeners();
+  for(auto &l:allListeners){
+    if(!l->isCleared()){
+      return;
+    }
+  }
+
+
+  shouldRestart(false);
 }
