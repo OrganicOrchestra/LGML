@@ -11,7 +11,7 @@
 #ifndef LOOPERTRACK_H_INCLUDED
 #define LOOPERTRACK_H_INCLUDED
 
-//#define BLOCKSIZEGRANULARITY
+
 #include "ControllableContainer.h"
 
 #include "PlayableBuffer.h"

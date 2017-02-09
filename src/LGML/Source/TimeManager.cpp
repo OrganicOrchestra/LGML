@@ -27,9 +27,10 @@ juce_ImplementSingleton(TimeManager);
 TimeManager::TimeManager():
 beatTimeInSample(1000),
 sampleRate(44100),
+blockSize(0),
 ControllableContainer("Time"),
 beatTimeGuessRange(.4,.85),
-BPMRange(10,600),
+BPMRange(40,250),
 _isLocked(false),
 currentBeatPeriod(.5),
 lastTaped(0),
@@ -37,7 +38,8 @@ tapInRow(0),
 firstPlayingFrame(false),
 hasJumped(false),
 hadMasterCandidate(false),
-timeMasterCandidate(nullptr)
+timeMasterCandidate(nullptr),
+samplePerBeatGranularity(8)
 {
 
   BPM = addFloatParameter("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
@@ -64,16 +66,26 @@ TimeManager::~TimeManager()
 
 
 void TimeManager::incrementClock(int time){
+  jassert(blockSize!=0);
+  if(time!=blockSize){
+#if !LGML_UNIT_TESTS
+    jassertfalse;
+#endif
+    setBlockSize(time);
+  }
   updateState();
-  if(_isLocked)return;
+  if(_isLocked){
+    
+    return;
+  }
 
   hasJumped = notifyTimeJumpedIfNeeded();
 
 
    if(!hasJumped && timeState.isPlaying){
-    timeState.time+=time;
+    timeState.time+=blockSize;
   }
-  timeState.nextTime = timeState.time+time;
+  timeState.nextTime = timeState.time+blockSize;
   int lastBeat =  int(currentBeat->doubleValue());
   int newBeat = getBeatInt();
   if(lastBeat!=newBeat){
@@ -97,7 +109,9 @@ void TimeManager::incrementClock(int time){
 bool TimeManager::notifyTimeJumpedIfNeeded(){
 
 if(timeState.isJumping){
+  jassert(blockSize!=0);
   timeState.time=timeState.nextTime;
+  timeState.nextTime = timeState.time+blockSize;
   timeState.isJumping=false;
   listeners.call(&Listener::timeJumped,timeState.time);
   desiredTimeState =timeState;
@@ -355,6 +369,12 @@ void TimeManager::setSampleRate(int sr){
   beatTimeInSample = (uint64)(sampleRate*1.0 / BPM->doubleValue() *60.0);
 }
 
+
+void TimeManager::setBlockSize(int bS){
+  jassert(bS!=0);
+  blockSize = bS;
+
+}
 void TimeManager::setBPMInternal(double _BPM,bool adaptTimeInSample){
   isSettingTempo->setValue(false,false,false,true);
   int newBeatTime = (uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
@@ -381,8 +401,9 @@ bool  TimeManager::willRestart(){
 
 
 
-SampleTimeInfo TimeManager::findSampleTimeInfoForLength(uint64 time,int granularity){
-  SampleTimeInfo res;
+TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time){
+  TransportTimeInfo res;
+  res.sampleRate = sampleRate;
   res.barLength = 1;
   double time_seconds = time* 1.0/ sampleRate;
   res.beatTime = time_seconds* 1.0/beatPerBar->intValue();
@@ -391,21 +412,16 @@ SampleTimeInfo TimeManager::findSampleTimeInfoForLength(uint64 time,int granular
   while(res.beatTime < beatTimeGuessRange.getStart()){res.beatTime*=2.0;res.barLength/=2.0;}
   // under 70 bpm (0.85s)
   while(res.beatTime > beatTimeGuessRange.getEnd() ){res.beatTime/=2.0;res.barLength*=2.0;}
-  res.beatInSample = (int)(res.beatTime*sampleRate);
+  res.beatInSample = (res.beatTime*sampleRate);
 
-  if(granularity>0){
-    int offset =res.beatInSample%granularity;
-    if(offset>granularity/2){offset = -(granularity-offset);}
-    res.beatInSample = res.beatInSample - offset;
-    res.beatTime = res.beatInSample*1.0/sampleRate;
-  }
+  res.makeValidForGranularity(samplePerBeatGranularity);
 
   res.bpm = 60.0/res.beatTime;
   DBG("found beat Sample : " << String(res.beatInSample) << " : " << time);
   
   return res;
 }
-void TimeManager::setBPMFromTimeInfo(const SampleTimeInfo & info,bool adaptTimeInSample){
+void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample){
 
   BPM->setValue(info.bpm,false,false,false);
   if(adaptTimeInSample){
@@ -461,7 +477,7 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
   result.bpm = BPM->doubleValue();
   result.isPlaying = playState->boolValue();
   result.isRecording = isSettingTempo->boolValue();
-  //TODO: check
+
   result.ppqPosition = (double)(getBeat()/beatPerBar->intValue());
   result.ppqPositionOfLastBarStart = (double)(getBar()*beatPerBar->intValue());
   result.ppqLoopStart = 0;

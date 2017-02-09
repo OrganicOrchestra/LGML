@@ -14,7 +14,11 @@
 
 
 #include "AudioHelpers.h"
+
+#define RT_STRETCH 0
 class StretchJob;
+
+namespace RubberBand{class RubberBandStretcher;};
 
 class PlayableBuffer {
 
@@ -103,6 +107,18 @@ class PlayableBuffer {
 #if !LGML_UNIT_TESTS
 private:
 #endif
+
+
+  ////
+  //stretch
+
+#if RT_STRETCH
+  void initRTStretch(int blockSize);
+  void applyStretch();
+  void processPendingRTStretch(AudioBuffer<float> & b);
+  ScopedPointer<RubberBand::RubberBandStretcher> RTStretcher;
+#endif
+
   
   int sampleOffsetBeforeNewState;
   BufferState state;
@@ -118,7 +134,7 @@ private:
   
 
 
-
+  float pendingTimeStretchRatio;
 
   uint64 recordNeedle,playNeedle,startJumpNeedle,globalPlayNeedle;
 //  FadeInOut fadeJump;

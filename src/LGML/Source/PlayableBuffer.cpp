@@ -28,13 +28,14 @@ sampleOffsetBeforeNewState(0),
 hasBeenFaded (false),fadeSamples(380),
 fadeRecorded(1000),
 stretchJob(nullptr),
-sampleRate(44100)
+sampleRate(44100),
+pendingTimeStretchRatio(1)
 {
   fadeRecorded.setFadedOut();
   jassert(numSamples < std::numeric_limits<int>::max());
-
-
-
+#if RT_STRETCH
+  initRTStretch(blockSize);
+#endif
 }
 
 PlayableBuffer::~PlayableBuffer(){
@@ -98,6 +99,9 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
     for(int c = 0 ; c <maxChannel ; c++ ){
       buffer.applyGainRamp(c, 0, buffer.getNumSamples(), (float)startGain, (float)endGain);
     }
+#if RT_STRETCH
+    processPendingRTStretch(buffer);
+#endif
 
   }
 
@@ -371,12 +375,13 @@ public:
 
 void PlayableBuffer::setTimeRatio(const double ratio){
   jassert(isOrWasPlaying());
+  pendingTimeStretchRatio = ratio;
   if(ratio!=1.0){
 
     ThreadPool * tp = getEngineThreadPool();
     if(tp->contains(stretchJob)){
       stretchJob->signalJobShouldExit();
-//      tp->waitForJobToFinish(stretchJob,-1);
+      //      tp->waitForJobToFinish(stretchJob,-1);
     }
     else stretchJob = nullptr;
     stretchJob =new StretchJob(this,ratio);
@@ -395,7 +400,41 @@ void PlayableBuffer::setTimeRatio(const double ratio){
 
 }
 
+#if RT_STRETCH
+void PlayableBuffer::initRTStretch(int blockSize){
+  pendingTimeStretchRatio = 1.0;
+  RTStretcher = new RubberBandStretcher  (sampleRate,//size_t sampleRate,
+                                          loopSample.getNumChannels(),//size_t channels,
+                                          RubberBandStretcher::OptionProcessRealTime
+                                          | RubberBandStretcher::OptionTransientsMixed
+                                          // | RubberBandStretcher::OptionTransientsSmooth
+                                          //| RubberBandStretcher::OptionPhaseAdaptive
+                                          | RubberBandStretcher::OptionThreadingNever
+                                          | RubberBandStretcher::OptionWindowStandard
 
+                                          //| RubberBandStretcher::OptionStretchElastic
+//                                          | RubberBandStretcher::OptionStretchPrecise
+
+                                          //Options options = DefaultOptions,
+                                          //double initialTimeRatio = 1.0,
+                                          //double initialPitchScale = 1.0
+                                          );
+
+  RTStretcher->setMaxProcessSize(blockSize);
+}
+
+void PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b){
+  if(pendingTimeStretchRatio!=1.0){
+
+  }
+
+}
+void PlayableBuffer::applyStretch(){
+
+
+  pendingTimeStretchRatio = 1.0;
+};
+#endif
 
 ThreadPoolJob::JobStatus StretchJob::runJob(){
   int processed = 0;
@@ -423,7 +462,7 @@ ThreadPoolJob::JobStatus StretchJob::runJob(){
 
     int targetNumSamples = owner->originLoopSample.getNumSamples()*ratio;
 
-      int diffSample =abs(produced-targetNumSamples);
+    int diffSample =abs(produced-targetNumSamples);
     if(diffSample>128){
       jassertfalse;
     }
@@ -456,7 +495,7 @@ void StretchJob::initStretcher(int sampleRate,int numChannels){
                                        | RubberBandStretcher::OptionThreadingNever
                                        | RubberBandStretcher::OptionWindowStandard
 
-//                                       | RubberBandStretcher::OptionStretchElastic
+                                       //                                       | RubberBandStretcher::OptionStretchElastic
                                        | RubberBandStretcher::OptionStretchPrecise
 
                                        //Options options = DefaultOptions,
@@ -534,11 +573,11 @@ void StretchJob::processStretch(int start,int block,int * read, int * produced){
 
   *read = block;
   *produced+=retrievedSamples;
-  
+
   if(isFinal){
     int dbg=stretcher->available();
-     jassert(dbg<=0);
+    jassert(dbg<=0);
   }
-  
+
 }
 

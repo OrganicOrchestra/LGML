@@ -25,11 +25,25 @@
 class FadeInOut;
 
 
-struct SampleTimeInfo{
+struct TransportTimeInfo{
   double barLength;
   double beatTime;
   int beatInSample;
+  double sampleRate;
   double bpm;
+
+
+
+  void makeValidForGranularity(int samplePerBeatGranularity){
+    if(samplePerBeatGranularity>0){
+      int offset =((int)beatInSample)%samplePerBeatGranularity;
+      if(offset>samplePerBeatGranularity/2){offset = -(samplePerBeatGranularity-offset);}
+      beatInSample = beatInSample - offset;
+      beatTime = beatInSample*1.0/sampleRate;
+
+    };
+  }
+  
   
 
 };
@@ -64,12 +78,13 @@ public TimeMasterCandidate
   IntParameter * quantizedBarFraction;
 
   void setSampleRate(int sr);
+  void setBlockSize(int bS);
 
 
 
-  // granularity ensure that beat sample is divisible by 16 (8,4,2 ... 1) for further sub quantifs
-  SampleTimeInfo findSampleTimeInfoForLength(uint64 time,int granularity=0);
-  void setBPMFromTimeInfo(const SampleTimeInfo & info,bool adaptTime);
+
+  TransportTimeInfo findTransportTimeInfoForLength(uint64 time);
+  void setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTime);
 
 
   void jump(int amount);
@@ -107,6 +122,7 @@ public TimeMasterCandidate
 
   uint64 beatTimeInSample;
   int sampleRate;
+  int blockSize;
 
   TimeMasterCandidate *  timeMasterCandidate;
   bool isMasterCandidate(TimeMasterCandidate * n);
@@ -178,6 +194,7 @@ private:
 
   virtual void audioDeviceAboutToStart (AudioIODevice* device)override {
     setSampleRate((int)device->getCurrentSampleRate());
+    setBlockSize((int)device->getCurrentBufferSizeSamples());
     // should we notify blockSize?
   };
 
@@ -195,6 +212,9 @@ private:
   // used for manual setting of tempo
   Range<double> BPMRange;
 
+
+  // granularity ensure that beat sample is divisible by 8 (8,4,2 ... 1) for further sub quantifs
+  const int samplePerBeatGranularity;
   
 
   uint64 lastTaped;

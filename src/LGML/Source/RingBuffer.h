@@ -22,15 +22,17 @@
 class PhantomBuffer{
 
 public:
-  PhantomBuffer(int _channels,int size):numChannels(_channels){
-    phantomSize = (int)ceil(size);
-    buf.setSize(numChannels,2*phantomSize,false,true);
+  PhantomBuffer(int _channels,int size,int _phantomSize = -1):numChannels(_channels){
+    bufSize = size;
+    if(_phantomSize>0)phantomSize = _phantomSize;
+    else phantomSize = size;
+    buf.setSize(numChannels,bufSize+phantomSize,false,true);
     writeNeedle = 0;
   }
 
   void setNumChannels(int channels){
     numChannels= channels;
-    buf.setSize(numChannels,2*phantomSize,false,true);
+    buf.setSize(numChannels,bufSize+phantomSize,false,true);
   }
   void writeBlock(AudioSampleBuffer & newBuf){
 
@@ -39,8 +41,8 @@ public:
     int toCopy = newBuf.getNumSamples();
 
     // overlap
-    if( writeNeedle + toCopy > phantomSize){
-      int firstSeg = phantomSize-(writeNeedle) ;
+    if( writeNeedle + toCopy > bufSize){
+      int firstSeg = bufSize-(writeNeedle) ;
       jassert(firstSeg<newBuf.getNumSamples());
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i,0),firstSeg,i);
@@ -49,15 +51,13 @@ public:
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i,firstSeg),toCopy-firstSeg,i);
       }
-      writeNeedle+=toCopy-firstSeg;
-      writeNeedle%=phantomSize;
+
     }
     else{
       for(int i = numChannels-1;i>=0 ;--i){
         safeCopy(newBuf.getReadPointer(i),toCopy,i);
       }
-      writeNeedle+=toCopy;
-      writeNeedle%=phantomSize;
+      
     }
   }
 
@@ -89,13 +89,18 @@ public:
 private:
   void safeCopy(const float * b,int numSample,int channel){
 
-    jassert(writeNeedle+numSample <= phantomSize);
+    jassert(writeNeedle+numSample <= bufSize);
     buf.copyFrom(channel, phantomSize+writeNeedle,b,numSample);
-    buf.copyFrom(channel, writeNeedle,b,numSample);
+    if(writeNeedle+numSample>bufSize-phantomSize)buf.copyFrom(channel, writeNeedle,b,numSample);
+    if(channel==0 )
+    { writeNeedle+=numSample;
+    writeNeedle%=bufSize;
+    }
 
   }
   int writeNeedle;
   int phantomSize;
+  int bufSize;
   int numChannels ;
   AudioBuffer<float> contiguousBuffer;
   Array<float*> pointers ;

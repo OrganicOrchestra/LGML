@@ -38,7 +38,7 @@ public:
     TimeManager::getInstance()->incrementClock(getBlockSize());
     fillBufferWithTime(testBuffer);
     expect(getBlockSize() == testBuffer.getNumSamples(),"wrong buffer size ");
-    MidiBuffer dumyMidi;
+    static MidiBuffer dumyMidi;
     currentLooper->processBlock(testBuffer,dumyMidi );
   }
 
@@ -82,7 +82,11 @@ public:
 
 
   int getBlockSize(){return currentLooper->getBlockSize();}
-  int getRecordedLength(){return getBlockSize()*recordSizeInBlock;}
+
+  int getRecordedLength(){uint64 expected  =  getBlockSize()*recordSizeInBlock;
+    expected-= expected%TimeManager::getInstance()->samplePerBeatGranularity;
+    return expected;
+  }
 
 
   void runTest()override{
@@ -126,6 +130,7 @@ public:
 
       int startWallTime =tm->getTimeInSample()%(recordSizeInBlock*blockSize);
       int endWallTime = (tm->getNextTimeInSample())%(recordSizeInBlock*blockSize);
+      expect(endWallTime!=startWallTime,"block unused");
       int offset = 0;
       // need to be first playedSample
       if(i==0){
