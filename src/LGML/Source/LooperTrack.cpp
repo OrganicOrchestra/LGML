@@ -108,7 +108,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 //
 //  DBGAUDIO("trackPos"+String(trackIdx),  loopSample.getPlayPos()/div);
 //  }
-//  handleEndOfRecording();
+
   logVolume.update();
 
   float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume.get();
@@ -362,6 +362,11 @@ void LooperTrack::handleEndOfRecording(){
       else{
         beatLength->setValue(loopSample.getRecordedLength()*1.0/tm->beatTimeInSample);
         if(getQuantization()>0)originBPM = tm->BPM->doubleValue();
+        else{
+          // non quantified
+          // we assign one but obviously not related to master (avoid null bpms)
+          originBPM = tm->findTransportTimeInfoForLength(loopSample.getRecordedLength()).bpm;
+        }
       }
 
       
