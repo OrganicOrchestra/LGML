@@ -12,7 +12,7 @@
 #define AudioDebugCrack_H_INCLUDED
 
 #include "JuceHeader.h"
-#define FORCE_DISABLE_CRACK 0
+#define FORCE_DISABLE_CRACK 1
 
 class AudioDebugCrack{
 public:
