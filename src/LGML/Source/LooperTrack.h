@@ -51,7 +51,7 @@ public:
   FloatParameter * volume;
   FloatParameter * beatLength;
   double startRecBeat,startPlayBeat;
-  float logVolume;
+  SmoothedValue<float> logVolume;
   BoolParameter * mute;
   BoolParameter * solo;
 
@@ -63,7 +63,7 @@ public:
     void recPlay();
     
     
-  const float defaultVolumeValue = DB0_FOR_01;
+  
   int trackIdx;
 
   static String trackStateToString(const TrackState & ts);

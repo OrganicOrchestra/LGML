@@ -130,7 +130,8 @@ public:
   void timerCallback() override;
 
   bool wasSuspended;
-  float logVolume;
+  SmoothedValue<double> logVolume;
+
   float lastVolume;
 
   //DATA

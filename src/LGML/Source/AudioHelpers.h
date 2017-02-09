@@ -59,11 +59,11 @@ public:
     return 0.0;
 
   }
-  double getLastFade(){
+  double const getLastFade(){
     return lastFade;
   }
 
-  inline double getFade(int cur,int max){
+  inline double const getFade(int cur,int max){
     if(skew==1)return cur*1.0/max;
     return pow(cur*1.0/max,skew);
   }
@@ -107,16 +107,36 @@ public:
       fadeInCount = jmax(0,fadeInCount);
     }
   }
-  bool isFadingIn(){return fadeInCount>=0;}
-  bool isFadingOut(){return fadeOutCount>=0;}
+  bool isFadingIn()const {return fadeInCount>=0;}
+  bool isFadingOut()const {return fadeOutCount>=0;}
 
-  int fadeInNumSamples;
-  int fadeOutNumSamples;
+  const int fadeInNumSamples;
+  const int fadeOutNumSamples;
   int fadeInCount,fadeOutCount;
   double lastFade;
   double skew;
-  bool crossFade;
+  const bool crossFade;
 
+};
+
+// dumb implementation of smoothing
+// unconsistent with samplerate / blockSize but simple and safe
+template<typename floatType>
+class SmoothedValue{
+public:
+  SmoothedValue(floatType init,floatType _alpha):current(init),target(init),alpha(_alpha){
+    jassert(alpha<=1);jassert(alpha>=0);
+  };
+  void update(){
+    if(target!=current){
+    current+= (target - current)*alpha;
+    }
+  }
+  floatType get() const {return current;}
+  void set(float t){target = t;}
+  floatType current;
+  floatType target;
+  floatType alpha;
 };
 
 

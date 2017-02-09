@@ -36,7 +36,8 @@ isSelected (false),
 originBPM(0),
 lastVolume(0),
 startPlayBeat(0),
-startRecBeat(0)
+startRecBeat(0),
+logVolume(float01ToGain(DB0_FOR_01),0.5)
 {
 
 
@@ -45,7 +46,7 @@ startRecBeat(0)
   playTrig = addTrigger("Play", "Tells the track to wait for the next bar and then stop recording and start playing");
   stopTrig = addTrigger("Stop", "Tells the track to stop ");
   clearTrig = addTrigger("Clear", "Tells the track to clear it's content if got any");
-  volume = addFloatParameter("Volume", "Set the volume of the track", defaultVolumeValue, 0, 1);
+  volume = addFloatParameter("Volume", "Set the volume of the track", DB0_FOR_01, 0, 1);
   mute = addBoolParameter("Mute", "Sets the track muted (or not.)", false);
   solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
   beatLength = addFloatParameter("Length", "length in bar", 0, 0, 200);
@@ -62,8 +63,8 @@ startRecBeat(0)
 
 
   // post init
-  volume->setValue(defaultVolumeValue);
-  logVolume = float01ToGain(volume->value);
+  volume->setValue(DB0_FOR_01);
+
 
 
   
@@ -108,9 +109,9 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 //  DBGAUDIO("trackPos"+String(trackIdx),  loopSample.getPlayPos()/div);
 //  }
 //  handleEndOfRecording();
+  logVolume.update();
 
-
-  float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume;
+  float newVolume = ((someOneIsSolo && !solo->boolValue()) || mute->boolValue()) ? 0 : logVolume.get();
 
   for (int i = buffer.getNumChannels()- 1; i >= 0; --i) {
     buffer.applyGainRamp(i, 0, buffer.getNumSamples(), lastVolume, newVolume);
@@ -415,7 +416,7 @@ void LooperTrack::onContainerParameterChanged(Parameter * p)
   if (p == volume)
   {
     if (parentLooper->selectedTrack == this) parentLooper->volumeSelected->setValue(volume->floatValue());
-    logVolume = float01ToGain(volume->value);
+    logVolume.set( float01ToGain(volume->value));
 
   }
   if(p==solo){

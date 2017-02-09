@@ -279,12 +279,21 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
   }
   var res;
   {
-    const ScopedLock lk(engineLock);
-    if (!JsGlobalEnvironment::getInstance()->isDirty()) {
-      res = jsEngine->callFunction(function, Nargs, result);
-    } else {
-      //      DBG("JS avoiding to call function while global environment is dirty");
-    }
+
+    // TODO : assure thread safety here but removed for avoid cracks when timer and audiothread
+//    const ScopedTryLock lk(engineLock);
+//    if (lk.isLocked()){
+
+      if(!JsGlobalEnvironment::getInstance()->isDirty()) {
+        res = jsEngine->callFunction(function, Nargs, result);
+      } else {
+        //      DBG("JS avoiding to call function while global environment is dirty");
+      }
+//    }
+//    else{
+//      jassertfalse;
+//      NLOG(localNamespace,"jsEngine is Locked");
+//    }
   }
   if (logResult && result->failed()) {
     NLOG(localNamespace, result->getErrorMessage());

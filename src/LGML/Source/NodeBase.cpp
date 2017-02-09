@@ -21,11 +21,12 @@ muteFader(1000,1000,false,1),
 lastDryVolume(0),
 globalRMSValueIn(0),
 globalRMSValueOut(0),
-wasEnabled(false)
+wasEnabled(false),
+logVolume(float01ToGain(DB0_FOR_01),0.5)
 
 {
 
-  logVolume = float01ToGain(DB0_FOR_01);
+
 
   lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
   dryWetFader.setFadedIn();
@@ -78,7 +79,7 @@ void NodeBase::onContainerParameterChanged(Parameter * p)
   ConnectableNode::onContainerParameterChanged(p);
 
   if(p==outputVolume){
-    logVolume = float01ToGain(outputVolume->floatValue());
+    logVolume.set( float01ToGain(outputVolume->floatValue()));
   }
 
   //ENABLE PARAM ACT AS A BYPASS
@@ -181,9 +182,10 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
 
   muteFader.incrementFade(numSample);
   dryWetFader.incrementFade(numSample);
+  logVolume.update();
   const double crossfadeValue = dryWetFader.getCurrentFade();
   const double muteFadeValue =muteFader.getCurrentFade();
-
+  const double curLogVol = logVolume.get();
 
   // on disable
   if(wasEnabled && crossfadeValue==0 ){
@@ -200,8 +202,8 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   if (!isSuspended())
   {
 
-    double curVolume = logVolume*crossfadeValue*muteFadeValue;
-    double curDryVolume = logVolume*(1.0-crossfadeValue)*muteFadeValue;
+    double curVolume = curLogVol*crossfadeValue*muteFadeValue;
+    double curDryVolume = curLogVol*(1.0-crossfadeValue)*muteFadeValue;
 
     if(crossfadeValue!=1){
       // copy only what we are expecting
