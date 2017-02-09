@@ -23,7 +23,10 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 	panel->setPreferredWidth(getWidth());
 	panel->setPreferredHeight(getHeight());
 
-	panel->addShapeShifterPanelListener(this); //is it necessary ?
+  // @ben : next line create bug when dragging panels
+  // could we clean this up and remove inheritance of shapeShifterPanelListener?
+//	panel->addShapeShifterPanelListener(this); //is it necessary ?
+
 
 	setContentNonOwned(_panel,true);
 

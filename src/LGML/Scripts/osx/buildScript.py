@@ -43,7 +43,7 @@ njobs = multiprocessing.cpu_count()
 def buildApp(xcodeProjPath=xcodeProjPath,configuration=configuration,appPath=appPath,njobs=njobs,clean = cleanFirst):
 	if len(appPath)>10:
 		sh("rm -rf "+appPath)
-
+	configuration="Debug" if not configuration else configuration
 	if clean:
 		sh("cd "+xcodeProjPath+ " && "\
 		+" xcodebuild -project LGML.xcodeproj" \

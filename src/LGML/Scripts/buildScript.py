@@ -81,11 +81,11 @@ if __name__ == "__main__":
 	import argparse
 	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
 	parser.add_argument('--build', action='store_true',
-	                    help='build it')
+	                    help='build it',default = True)
 	parser.add_argument('--export', action='store_true',
-	                    help='export it')
+	                    help='export it',default = True)
 	parser.add_argument('--beta', action='store_true',
-	                    help='switch to beta version (only name affected for now)')
+	                    help='switch to beta version (only name affected for now)',default=True)
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
 
 	parser.add_argument('--configuration',help='configuration to use ', default=None)
