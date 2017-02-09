@@ -495,7 +495,7 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
 void TimeManager::notifyListenerCleared(){
   auto allListeners = listeners.getListeners();
   for(auto &l:allListeners){
-    if(!l->isCleared()){
+    if(l->isBoundToTime()){
       return;
     }
   }

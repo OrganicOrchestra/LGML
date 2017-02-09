@@ -148,7 +148,7 @@ public TimeMasterCandidate
 
 
     // info for stopping manager if needed;
-    virtual bool isCleared()=0;
+    virtual bool isBoundToTime()=0;
 
 
   };

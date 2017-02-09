@@ -517,11 +517,15 @@ void LooperNode::timeJumped(uint64 time){
   
 };
 
-bool LooperNode::isCleared(){
-  
+bool LooperNode::isBoundToTime(){
+  if(getQuantization()>0){
   for(auto & t:trackGroup.tracks){
-    if(!t->isEmpty()){return false;}
+    if(!t->isEmpty()){return true;}
   }
-  return true;
+  return false;
+  }
+  else{
+    return false;
+  }
   
 };
