@@ -104,6 +104,10 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
 #endif
 
   }
+  else if(isStopped()&& playNeedle>0){
+    playNeedle = 0;
+    isJumping = false;
+  }
 
   return succeeded;
 }
@@ -318,6 +322,7 @@ void PlayableBuffer::setState(BufferState newState,int _sampleOffsetBeforeNewSta
     case BUFFER_PLAYING:
       fadeRecorded.startFadeIn();
       setPlayNeedle( 0);
+      globalPlayNeedle = 0;
       break;
     case BUFFER_STOPPED:
       numTimePlayed = 0;
