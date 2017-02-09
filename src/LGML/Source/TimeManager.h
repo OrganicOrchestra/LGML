@@ -151,6 +151,7 @@ public TimeMasterCandidate
     virtual bool isBoundToTime()=0;
 
 
+
   };
 
   ListenerList<Listener> listeners;
@@ -225,6 +226,8 @@ private:
 
   ScopedPointer<FadeInOut> clickFader;
   bool notifyTimeJumpedIfNeeded();
+
+  bool isAnyoneBoundToTime();
 //  double lastEnv;
 //  int clickFadeOut,clickFadeIn,clickFadeTime;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)

@@ -485,15 +485,15 @@ void LooperNode::BPMChanged(double BPM){
   if(!TimeManager::getInstance()->isMasterCandidate(this) && getQuantization()>0){
     for(auto & t : trackGroup.tracks){
       if(!t->isEmpty()) {
-        
+
         double ratio =t->originBPM;
         ratio /= TimeManager::getInstance()->BPM->doubleValue();
-        
+
         if(isnormal(ratio)){
           t->loopSample.setTimeRatio(ratio);
           if( DEBUGPIPE_ENABLED){
             if(ratio!=1){
-              
+
               AudioBuffer<float> b;
               b.setDataToReferTo(t->loopSample.loopSample.getArrayOfWritePointers(), 1, t->loopSample.getRecordedLength());
               //          DBGAUDIO("trackStretch"+String(t->trackIdx),b);
@@ -501,28 +501,28 @@ void LooperNode::BPMChanged(double BPM){
             }
           }
         }
-        
+
         else{
           DBG("wrong bpms for stretch : " << TimeManager::getInstance()->BPM->doubleValue() << "," << t->originBPM);
           jassertfalse;
         }
-        
+
       }
     }
   }
-  
+
 };
 
 void LooperNode::timeJumped(uint64 time){
-  
+
 };
 
 bool LooperNode::isBoundToTime(){
   if(getQuantization()>0){
-  for(auto & t:trackGroup.tracks){
-    if(!t->isEmpty()){return true;}
-  }
-  return false;
+    for(auto & t:trackGroup.tracks){
+      if(!t->isEmpty()){return true;}
+    }
+    return false;
   }
   else{
     return false;

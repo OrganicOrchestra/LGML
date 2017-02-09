@@ -181,7 +181,7 @@ bool TimeManager::isJumping(){
 
 bool TimeManager::askForBeingMasterCandidate(TimeMasterCandidate * n){
 
-  if(timeMasterCandidate==nullptr){
+  if(timeMasterCandidate==nullptr && !isAnyoneBoundToTime()){
     timeMasterCandidate = n;
     isSettingTempo->setValue(true,false,false,true);
     return true;
@@ -491,15 +491,21 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
   result.isLooping=false;
   return true;
 }
-
-void TimeManager::notifyListenerCleared(){
+bool TimeManager::isAnyoneBoundToTime(){
   auto allListeners = listeners.getListeners();
   for(auto &l:allListeners){
     if(l->isBoundToTime()){
-      return;
+      return true;
     }
   }
+  return false;
+}
 
+void TimeManager::notifyListenerCleared(){
+
+  if(isAnyoneBoundToTime()){
+    return;
+  }
 
   shouldRestart(false);
 }
