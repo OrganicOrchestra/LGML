@@ -170,7 +170,7 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
         loadFile(jsPath->stringValue());
     }
     else if(p==enabledParam){
-     setTimerState(onUpdateTimer, enabledParam->boolValue());
+     setEnabled(enabledParam->boolValue());
     }
 };
 

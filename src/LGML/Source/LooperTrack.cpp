@@ -93,7 +93,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     offset =  negativeStartPlayBeat*tm->beatTimeInSample;
 
   }
-  jassert(tm->getTimeInSample() -offset>=0 );
+  jassert(curTime -offset>=0 );
   if(!loopSample.processNextBlock(buffer,curTime-offset ) && trackState!=STOPPED){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);

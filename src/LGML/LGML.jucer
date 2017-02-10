@@ -874,6 +874,8 @@
             resource="0"/>
       <FILE compile="1" file="Source/EngineFileDocument.cpp" id="rpB1Vz"
             name="EngineFileDocument.cpp" resource="0"/>
+      <FILE id="zi8GMM" name="LGMLConfig.cpp" compile="1" resource="0" file="Source/LGMLConfig.cpp"/>
+      <FILE id="eWiEBb" name="LGMLConfig.h" compile="0" resource="0" file="Source/LGMLConfig.h"/>
       <FILE compile="0" file="Source/MainComponent.h" id="ddEu7L" name="MainComponent.h"
             resource="0"/>
       <FILE compile="1" file="Source/MainComponent.cpp" id="OvsUVU" name="MainComponent.cpp"

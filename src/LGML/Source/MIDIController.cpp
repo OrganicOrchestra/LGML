@@ -164,7 +164,8 @@ void MIDIController::onContainerParameterChanged(Parameter * p){
   }
   else if(p==scriptPath){
     loadFile(scriptPath->stringValue());
-  } 
+  }
+
 }
 
 void MIDIController::buildLocalEnv(){

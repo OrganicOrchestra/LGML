@@ -15,11 +15,22 @@
 
 #include "AudioHelpers.h"
 
-#define RT_STRETCH 0
+
+// TODO change when windows / linux support
+#ifdef JUCE_MAC
+#define BUFFER_CAN_STRETCH 1
+#else
+#define BUFFER_CAN_STRETCH 0
+#endif
+
+
+#if BUFFER_CAN_STRETCH
 class StretchJob;
-
 namespace RubberBand{class RubberBandStretcher;};
-
+#define RT_STRETCH 0 // TODO : still WIP
+#else
+#define RT_STRETCH 0
+#endif
 class PlayableBuffer {
 
   public :
@@ -98,8 +109,9 @@ class PlayableBuffer {
   int getNumSampleFadeOut();
 
 
-
+#if BUFFER_CAN_STRETCH
   void setTimeRatio(const double ratio);
+#endif
   void setSampleRate(float sR);
   float sampleRate;
 
@@ -117,9 +129,15 @@ private:
   void applyStretch();
   void processPendingRTStretch(AudioBuffer<float> & b);
   ScopedPointer<RubberBand::RubberBandStretcher> RTStretcher;
+  float pendingTimeStretchRatio;
+
 #endif
 
-  
+#if BUFFER_CAN_STRETCH
+  friend class StretchJob;
+  StretchJob *stretchJob;
+#endif
+
   int sampleOffsetBeforeNewState;
   BufferState state;
   BufferState lastState;
@@ -129,22 +147,14 @@ private:
   FadeInOut fadeRecorded;
 
 
-  friend class StretchJob;
+
   
   
 
 
-  float pendingTimeStretchRatio;
 
   uint64 recordNeedle,playNeedle,startJumpNeedle,globalPlayNeedle;
 //  FadeInOut fadeJump;
-
-
-StretchJob *stretchJob;
-
-
-
-
 
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayableBuffer);

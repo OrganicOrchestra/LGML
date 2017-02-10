@@ -46,6 +46,8 @@ public:
 
   void    setLocalNamespace(DynamicObject & target);
   virtual void    clearNamespace();
+  void setEnabled(bool t);
+
 
   void    loadFile(const String & path);
   void    loadFile(const File & f);
@@ -128,7 +130,7 @@ public:
 private:
 
 
-
+  bool isEnabled;
 
 
 

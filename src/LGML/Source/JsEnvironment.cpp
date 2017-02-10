@@ -33,7 +33,8 @@ localNamespace(ns),
 _hasValidJsFile(false),
 autoWatch(false),
 _isInSyncWithLGML(false),
-isLoadingFile(false)
+isLoadingFile(false),
+isEnabled(true)
 
 {
 
@@ -62,7 +63,23 @@ JsEnvironment::~JsEnvironment() {
 
 }
 
+void JsEnvironment::setEnabled(bool t){
+  if(t==isEnabled){return;}
+  if(t){
+    loadFile(currentFile);
+    if (getEngine()) {getEngine()->addControllableContainerListener(this);}
+    
+  }
+  else{
+    if (getEngine()) {getEngine()->removeControllableContainerListener(this);}
+    clearNamespace();
+    clearListeners();
+  }
 
+  setTimerState(onUpdateTimer, t);
+
+  isEnabled = t;
+}
 void JsEnvironment::clearNamespace(){
   const  ScopedLock lk(engineLock);
 

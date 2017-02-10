@@ -161,7 +161,8 @@ void Controller::onContainerParameterChanged(Parameter * p)
   else if (p == enabledParam)
   {
     if(JsEnvironment * jsEnv = dynamic_cast<JsEnvironment*>(this)){
-      jsEnv->setTimerState(jsEnv->onUpdateTimer, enabledParam->boolValue());
+
+      jsEnv->setEnabled(enabledParam->boolValue());
     }
 
     // DBG("set Controller Enabled " + String(enabledParam->boolValue()));

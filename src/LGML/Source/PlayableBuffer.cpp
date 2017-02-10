@@ -9,11 +9,19 @@
  */
 
 #include "PlayableBuffer.h"
-#include "RubberBandStretcher.h"
+
+
+
 #include "AudioDebugPipe.h"
 
+
 extern ThreadPool * getEngineThreadPool();
+
+
+#if BUFFER_CAN_STRETCH
+#include "RubberBandStretcher.h"
 using namespace RubberBand;
+#endif
 
 PlayableBuffer::PlayableBuffer(int numChannels,int numSamples,int sampleRate,int blockSize):
 loopSample(numChannels,numSamples),
@@ -25,11 +33,16 @@ lastState(BUFFER_STOPPED),
 stateChanged(false),
 numTimePlayed(0),
 sampleOffsetBeforeNewState(0),
-hasBeenFaded (false),fadeSamples(256),
-fadeRecorded(64),
-stretchJob(nullptr),
-sampleRate(44100),
-pendingTimeStretchRatio(1)
+hasBeenFaded (false),fadeSamples(32),
+fadeRecorded(32),
+
+sampleRate(44100)
+#if BUFFER_CAN_STRETCH
+,stretchJob(nullptr)
+#if RT_STRETCH
+,pendingTimeStretchRatio(1)
+#endif
+#endif
 {
   fadeRecorded.setFadedOut();
   jassert(numSamples < std::numeric_limits<int>::max());
@@ -90,6 +103,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
   fadeRecorded.incrementFade(buffer.getNumSamples());
   if ( isOrWasPlaying()||fadeRecorded.getLastFade()>0){
     //    if(isOrWasPlaying()){
+
     readNextBlock(buffer,time,sampleOffsetBeforeNewState);
     //    }
 
@@ -106,6 +120,8 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
   }
   else if(isStopped()&& playNeedle>0){
     playNeedle = 0;
+    startJumpNeedle = 0;
+    globalPlayNeedle = 0;
     isJumping = false;
   }
 
@@ -139,7 +155,10 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
     return;
   }
 
-
+  if(fromSample>0){
+    int dbg;
+    dbg++;
+  }
   int numSamples = buffer.getNumSamples()-fromSample;
 
 
@@ -183,7 +202,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
       int firstSegmentLength =(int)(recordNeedle - playNeedle);
       int secondSegmentLength = numSamples - firstSegmentLength;
 
-      if(firstSegmentLength>0 && secondSegmentLength>0){
+      if(firstSegmentLength>=0 && secondSegmentLength>0){
 
         const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
         for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
@@ -211,7 +230,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
   if(playNeedle>=recordNeedle){
     numTimePlayed ++;
   }
-  playNeedle %= recordNeedle;
+  playNeedle %= getRecordedLength();
 
 
 }
@@ -249,15 +268,44 @@ void PlayableBuffer::setSizePaddingIfNeeded(uint64 targetSamples){
 
 }
 
+int findFirstZeroCrossing(const AudioBuffer<float> & b, int start,int end,int c){
+  float fS = b.getSample(c, start);
+  if(fS ==0) return start;
+  bool sgn = fS>0;
+  if( start>end){
+  for(int i = start-1 ; i > end ; i--){
+    if((b.getSample(c,i)>0)!=sgn){ return i;}
+    }
+  }
+  else{
+    for(int i = start+1 ; i < end ; i++){
+      if((b.getSample( c,i)>0)!=sgn){return i;}
+    }
+
+  }
+  return -1;
+}
 void PlayableBuffer::fadeInOut(int fadeNumSamples,double mingain){
+  const int zeroSearch = 64;
+  int c = 0;
+  int fZ = findFirstZeroCrossing(loopSample, 0, zeroSearch, c);
+  if(fZ>0){
+    loopSample.clear(c, 0, fZ);
+  }
+  int lZ = findFirstZeroCrossing(loopSample, recordNeedle, recordNeedle-zeroSearch, c);
+  if(lZ>0){
+    loopSample.clear(c, lZ+1, recordNeedle- lZ + 1 );
+  }
   if (fadeNumSamples>0 ){
-    if(recordNeedle<2 * fadeNumSamples -1) {fadeNumSamples = (int)recordNeedle/2 - 1;}
+    if(getRecordedLength()<2 * fadeNumSamples -1) {fadeNumSamples = (int)getRecordedLength()/2 - 1;}
     for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
       loopSample.applyGainRamp(i, 0, fadeNumSamples, (float)mingain, 1);
       loopSample.applyGainRamp(i, (int)recordNeedle - fadeNumSamples, fadeNumSamples, 1, (float)mingain);
     }
   }
 }
+
+
 bool PlayableBuffer::isFirstPlayingFrameAfterRecord()const{return lastState == BUFFER_RECORDING && state == BUFFER_PLAYING;}
 bool PlayableBuffer::isFirstStopAfterRec()const{return lastState == BUFFER_RECORDING && state == BUFFER_STOPPED;}
 bool PlayableBuffer::isFirstPlayingFrame()const{return lastState!=BUFFER_PLAYING && state == BUFFER_PLAYING;}
@@ -327,12 +375,14 @@ void PlayableBuffer::setState(BufferState newState,int _sampleOffsetBeforeNewSta
     case BUFFER_STOPPED:
       numTimePlayed = 0;
       fadeRecorded.startFadeOut();
-      globalPlayNeedle = 0;
+
       //        setPlayNeedle(0);
       break;
   }
   state = newState;
-  sampleOffsetBeforeNewState = _sampleOffsetBeforeNewState;
+  // don't use sample offset when stopping as it's already triggering stop fade out
+  // messes up the running time
+  if(newState!=BUFFER_STOPPED)sampleOffsetBeforeNewState = _sampleOffsetBeforeNewState;
 }
 
 PlayableBuffer::BufferState PlayableBuffer::getState() const{return state;}
@@ -356,6 +406,8 @@ void PlayableBuffer::setSampleRate(float sR){sampleRate = sR;};
 ////////////////
 // stretcher
 
+#if BUFFER_CAN_STRETCH
+
 class StretchJob : public ThreadPoolJob{
 public:
 
@@ -375,12 +427,19 @@ public:
   void initStretcher(int sR,int c);
   PlayableBuffer * owner;
   double ratio;
+
   ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
+
 };
+
 
 void PlayableBuffer::setTimeRatio(const double ratio){
   jassert(isOrWasPlaying());
+
+#if RT_STRETCH
   pendingTimeStretchRatio = ratio;
+#endif
+  
   if(ratio!=1.0){
 
     ThreadPool * tp = getEngineThreadPool();
@@ -397,13 +456,14 @@ void PlayableBuffer::setTimeRatio(const double ratio){
     for(int i = 0 ; i < originLoopSample.getNumChannels() ; i++){
       loopSample.copyFrom(i, 0, originLoopSample, i, 0, originLoopSample.getNumSamples());
     }
-    recordNeedle = originLoopSample.getNumSamples();
+    recordNeedle = originLoopSample.getNumSamples()-1;
     fadeInOut(fadeSamples, 0);
   }
 
 
 
 }
+
 
 #if RT_STRETCH
 void PlayableBuffer::initRTStretch(int blockSize){
@@ -585,4 +645,6 @@ void StretchJob::processStretch(int start,int block,int * read, int * produced){
   }
 
 }
+
+#endif /* BUFFER_CAN_STRETCH */
 

@@ -59,6 +59,8 @@ samplePerBeatGranularity(8)
   setBPMInternal(BPM->doubleValue(),false);
 
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);
+
+  
 }
 TimeManager::~TimeManager()
 {
@@ -424,6 +426,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time){
 void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample){
 
   BPM->setValue(info.bpm,false,false,false);
+
   if(adaptTimeInSample){
   uint64 targetTime = timeState.time*info.beatInSample/beatTimeInSample;
   goToTime(targetTime);

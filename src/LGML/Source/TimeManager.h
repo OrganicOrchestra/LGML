@@ -124,6 +124,7 @@ public TimeMasterCandidate
   int sampleRate;
   int blockSize;
 
+  // instance currently handling tempo (loop track while recording)
   TimeMasterCandidate *  timeMasterCandidate;
   bool isMasterCandidate(TimeMasterCandidate * n);
   bool hasMasterCandidate();

@@ -63,6 +63,9 @@ streamAudioBuffer(2, 16384)// 16000 ~ 300ms and 256*64
   setPreferedNumAudioInput(2);
   setPreferedNumAudioOutput(2);
   TimeManager::getInstance()->addTimeManagerListener(this);
+#if !BUFFER_CAN_STRETCH
+  TimeManager::getInstance()->BPM->isEditable = false;
+#endif
 }
 
 LooperNode::~LooperNode()
@@ -482,6 +485,7 @@ bool LooperNode::hasOnset() {
 }
 
 void LooperNode::BPMChanged(double BPM){
+#if BUFFER_CAN_STRETCH
   if(!TimeManager::getInstance()->isMasterCandidate(this) && getQuantization()>0){
     for(auto & t : trackGroup.tracks){
       if(!t->isEmpty()) {
@@ -510,6 +514,7 @@ void LooperNode::BPMChanged(double BPM){
       }
     }
   }
+#endif
 
 };
 
