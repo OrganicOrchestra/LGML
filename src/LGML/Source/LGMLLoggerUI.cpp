@@ -93,7 +93,7 @@ totalLogRow(0)
 }
 
 LGMLLoggerUI::~LGMLLoggerUI() {
-
+  handleAsyncUpdate();
     //        logListComponent.setModel(nullptr);
     logger->removeLogListener(this);
 }
