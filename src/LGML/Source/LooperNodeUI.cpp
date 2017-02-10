@@ -56,7 +56,7 @@ void LooperNodeContentUI::init(){
   addAndMakeVisible(headerContainer);
   addAndMakeVisible(trackContainer);
 
-  setSize(650,180);
+  setSize(350,180);
 
 
   trackNumChanged(looperNode->trackGroup.tracks.size());
@@ -65,6 +65,7 @@ void LooperNodeContentUI::init(){
 
 void LooperNodeContentUI::resized(){
   Rectangle<int> area = getLocalBounds();
+
   headerContainer.setBounds(area.removeFromTop(30));
   trackContainer.setBounds(area);
   reLayoutHeader();
@@ -91,41 +92,37 @@ void LooperNodeContentUI::reLayoutHeader(){
 void LooperNodeContentUI::reLayoutTracks(){
   if (tracksUI.size() == 0) return;
 
+
+
   int numCol = 8;
   int numRow = (int)ceil((tracksUI.size())*1.f / numCol);
 
-  float trackWidth =  40;// trackContainer.getWidth() / numCol;
-  float trackHeight = 130;// 1.0f / numRow;
-  float gap = 5;
+
+
+  float gap = 2;
   float margin = 5;
 
-  float targetWidth = (trackWidth + gap)*numCol - gap + margin*2;
-  float targetHeight = (trackHeight + gap) * numRow - gap+margin*2;
 
-  if (trackContainer.getWidth() != targetWidth || trackContainer.getHeight() != targetHeight)
-  {
-    trackContainer.setSize((int)targetWidth, (int)targetHeight);
-    setSize(trackContainer.getBounds().getBottomRight().x, trackContainer.getBounds().getBottomRight().y);
-    return;
-  }
 
-  Rectangle<int> r = trackContainer.getLocalBounds().reduced((int)margin);
+  Rectangle<int> innerTrackR = trackContainer.getLocalBounds().reduced(margin);
+  float trackWidth =   innerTrackR.getWidth() *1.0f/ numCol;
+  float trackHeight = innerTrackR.getHeight() *1.0f/ numRow;
 
   int trackIndex = 0;
   for(int j = 0 ; j < numRow ; j++){
 
-    Rectangle<int> rowRect = r.removeFromTop((int)trackHeight);
+    Rectangle<int> rowRect = innerTrackR.removeFromTop((int)trackHeight);
 
     for(int i = 0 ; i < numCol ;i++){
 
       if (trackIndex >= tracksUI.size()) break;
-      tracksUI.getUnchecked(trackIndex)->setBounds(rowRect.removeFromLeft((int)trackWidth));
-      rowRect.removeFromLeft((int)gap);
+      tracksUI.getUnchecked(trackIndex)->setBounds(rowRect.removeFromLeft((int)trackWidth).reduced(gap));
+
       trackIndex++;
 
     }
 
-    if (j < numRow - 1) r.removeFromTop((int)gap);
+    if (j < numRow - 1) innerTrackR.removeFromTop((int)gap);
 
   }
 }
@@ -203,8 +200,8 @@ void LooperNodeContentUI::TrackUI::resized() {
   timeStateUI.setBounds(r.removeFromTop(timeUISize+gap).withSize(timeUISize, timeUISize).reduced(2));//header
 
   int step = r.getHeight()/6 - gap;
-  volumeSlider->setBounds(r.removeFromRight(step));
-  r.reduce(5,0);
+  volumeSlider->setBounds(r.removeFromRight(r.getWidth()/3).reduced(1));
+  r.reduce(4,0);
   muteButton->setBounds(r.removeFromTop(step));
   r.removeFromTop(gap);
   soloButton->setBounds(r.removeFromTop(step));

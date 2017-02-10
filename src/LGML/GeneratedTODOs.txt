@@ -12,13 +12,11 @@ GenericControllableContainerEditor.cpp
 		// TODO: check differences
 
 
-TimeManager.cpp
-	line : 404
-		//TODO: check
-
-
 ControllableContainer.cpp
-	line : 705
+	line : 608
+		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+
+	line : 701
 		// @ ben we don't want to load preset when loading from file, do we?
 		//    if (data.getDynamicObject()->hasProperty(presetIdentifier))
 		//    {
@@ -26,11 +24,8 @@ ControllableContainer.cpp
 		//    }
 		// TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
 
-	line : 491
+	line : 487
 		// TODO weird feedback when loading preset on parameter presetName
-
-	line : 612
-		//    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
 
 
 ControllableInspector.cpp
@@ -39,8 +34,13 @@ ControllableInspector.cpp
 
 
 NodeBase.cpp
-	line : 116
+	line : 117
 		// TODO we could implement that for all node objects to be able to save any kind of custom data
+
+
+PlayableBuffer.h
+	line : 18
+		// TODO change when windows / linux support
 
 
 EngineFileDocument.cpp
@@ -68,6 +68,16 @@ ShapeShifterContainer.cpp
 		//@ben do we need to handle these?
 
 
+JsEnvironment.cpp
+	line : 299
+		// TODO : assure thread safety here but removed for avoid cracks when timer and audiothread
+		//    const ScopedTryLock lk(engineLock);
+		//    if (lk.isLocked()){
+
+	line : 163
+		// TODO get rid of this once unifying JsEnvironment
+
+
 NodeContainer.cpp
 	line : 457
 		// TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
@@ -80,9 +90,11 @@ NodeContainer.cpp
 		// TODO nicely handle file format errors?
 
 
-TimeManager.h
-	line : 33
-		// TODO check if we can use SingleThread Singleton for fast access in processAdio
+ShapeShifterWindow.cpp
+	line : 25
+		// @ben : next line create bug when dragging panels
+		// could we clean this up and remove inheritance of shapeShifterPanelListener?
+		//	panel->addShapeShifterPanelListener(this); //is it necessary ?
 
 
 JavascriptControllerUI.cpp
@@ -91,7 +103,7 @@ JavascriptControllerUI.cpp
 
 
 AudioHelpers.h
-	line : 141
+	line : 165
 		// @ben we need that (window of 64 sample cannot describe any accurate RMS level alone thus decay factor)
 
 
@@ -111,13 +123,18 @@ NodeConnectionEditor.cpp
 		//TODO : implement way to replace a "taken" slot with the one we are editing (with a confirmation prompt)
 
 
+TimeManager.h
+	line : 57
+		// TODO check if we can use SingleThread Singleton for fast access in processAdio
+
+
 Parameter.cpp
-	line : 114
+	line : 118
 		// TODO handle with weak references
 
 
 LooperNode.cpp
-	line : 69
+	line : 88
 		// TODO check if we can optimize copies
 		// handle multiples channels outs
 
@@ -131,7 +148,7 @@ MIDIController.cpp
 	line : 43
 		// TODO : we may need to listen to sR changes
 
-	line : 203
+	line : 204
 		// @ben do we do the same as OSC MIDI IN/OUt controllers
 
 
@@ -144,22 +161,23 @@ ControllableContainer.h
 
 
 ParameterUI.cpp
-	line : 39
+	line : 40
 		// TODO : changing vst preset sometimes hit that
 
 
 Style.h
 	line : 13
 		// TODO : implement nicer colour handling (maybe skinnable)
+		// Warning don't use JUCE's internal color definitions as it will be empty at this stage of compilation
 
 
 ConnectableNode.cpp
-	line : 67
+	line : 72
 		//@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
 
 
 ConnectableNodeUI.h
-	line : 95
+	line : 97
 		// @ben conflit avec le parametre ;)
 
 
@@ -193,6 +211,11 @@ NodeManager.h
 Engine.h
 	line : 140
 		// TODO implement progression
+
+
+LGMLConfig.cpp
+	line : 11
+		// TODO : handle application wide parameters
 
 
 ControllableInspector.h
