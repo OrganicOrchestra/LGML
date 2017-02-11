@@ -305,10 +305,6 @@
                   name="MIDIControllerEditor.cpp" resource="0"/>
             <FILE compile="0" file="Source/MIDIControllerEditor.h" id="OpAxB3"
                   name="MIDIControllerEditor.h" resource="0"/>
-            <FILE compile="1" file="Source/MIDIControllerUI.cpp" id="rF0jhs" name="MIDIControllerUI.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/MIDIControllerUI.h" id="CSf6Vz" name="MIDIControllerUI.h"
-                  resource="0"/>
           </GROUP>
           <GROUP id="{3554E0A1-9ED7-3CD1-782B-5AD2E7D8B75B}" name="osc">
             <GROUP id="{B17C15AD-D7C0-3F67-09D0-6E8BD50F5801}" name="scripted">
@@ -316,14 +312,6 @@
                     name="JavascriptController.cpp" resource="0"/>
               <FILE compile="0" file="Source/JavascriptController.h" id="d9PZZy"
                     name="JavascriptController.h" resource="0"/>
-              <FILE compile="1" file="Source/JavascriptControllerEditor.cpp" id="AX2k9z"
-                    name="JavascriptControllerEditor.cpp" resource="0"/>
-              <FILE compile="0" file="Source/JavascriptControllerEditor.h" id="caUq1j"
-                    name="JavascriptControllerEditor.h" resource="0"/>
-              <FILE compile="1" file="Source/JavascriptControllerUI.cpp" id="HPZ2LN"
-                    name="JavascriptControllerUI.cpp" resource="0"/>
-              <FILE compile="0" file="Source/JavascriptControllerUI.h" id="pYoIs9"
-                    name="JavascriptControllerUI.h" resource="0"/>
             </GROUP>
             <GROUP id="{D82D4191-3638-62ED-6D1B-3F21F55A088A}" name="direct">
               <FILE compile="1" file="Source/OSCDirectController.cpp" id="n6bZSA"
@@ -331,10 +319,6 @@
               <FILE compile="0" file="Source/OSCDirectController.h" id="CFXtw0" name="OSCDirectController.h"
                     resource="0"/>
             </GROUP>
-            <FILE compile="1" file="Source/OSCControllerUI.cpp" id="TG6FwA" name="OSCControllerUI.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/OSCControllerUI.h" id="f7nJvq" name="OSCControllerUI.h"
-                  resource="0"/>
             <FILE compile="1" file="Source/OSCControllerEditor.cpp" id="mmssET"
                   name="OSCControllerEditor.cpp" resource="0"/>
             <FILE compile="0" file="Source/OSCControllerEditor.h" id="Oh9kF0" name="OSCControllerEditor.h"

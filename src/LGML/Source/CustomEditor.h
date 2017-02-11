@@ -18,7 +18,7 @@
 class CustomEditor : public InspectorEditor
 {
 public:
-	CustomEditor(InspectableComponent * sourceComponent);
+	CustomEditor();
 	virtual ~CustomEditor();
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CustomEditor)

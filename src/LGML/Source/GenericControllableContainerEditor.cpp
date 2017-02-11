@@ -12,14 +12,14 @@
 #include "InspectableComponent.h"
 #include "ControllableUI.h"
 
-GenericControllableContainerEditor::GenericControllableContainerEditor(InspectableComponent * sourceComponent) :
-	InspectorEditor(sourceComponent),
+GenericControllableContainerEditor::GenericControllableContainerEditor(ControllableContainer * _sourceContainer) :
+	InspectorEditor(),
 	parentBT("Up","Go back to parent container")
 {
 
 	parentBT.addListener(this);
 
-	sourceContainer = sourceComponent->relatedControllableContainer;
+  sourceContainer = _sourceContainer;
 	addChildComponent(parentBT);
 
 	
@@ -37,7 +37,7 @@ GenericControllableContainerEditor::~GenericControllableContainerEditor()
 	innerContainer->clear();
 }
 
-void GenericControllableContainerEditor::setCurrentInspectedContainer(ControllableContainer * cc,bool forceUpdate)
+void GenericControllableContainerEditor::setCurrentInspectedContainer(ControllableContainer * cc,bool forceUpdate,	int recursiveInspectionLevel,bool canInspectChildContainersBeyondRecursion)
 {
 	if (cc == nullptr) return;
 
@@ -60,7 +60,7 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 		jassert(tc != nullptr); //If here, trying to inspect a container that is not a child of the source inspectable container
 	}
 
-	innerContainer = new CCInnerContainer(this,cc, 0, ccLevel == 0?sourceComponent->recursiveInspectionLevel:0, sourceComponent->canInspectChildContainersBeyondRecursion);
+  innerContainer = new CCInnerContainer(this,cc, 0, ccLevel == 0?recursiveInspectionLevel:0, canInspectChildContainersBeyondRecursion);
 	addAndMakeVisible(innerContainer);
 
 	parentBT.setVisible(ccLevel > 0);
@@ -302,7 +302,10 @@ int CCInnerContainer::getContentHeight()
 
 	int h = ccGap;
 	h += controllablesUI.size()* (controllableHeight + gap) + ccGap;
-	h += lowerContainerLinks.size() * (ccLinkHeight + gap) + ccGap;
+  for(auto & c:lowerContainerLinks){
+    bool isCustom = dynamic_cast<CCInnerContainer::CCLinkBT*>(c)==nullptr;
+    h +=  (ccLinkHeight*(isCustom?3:1) + gap) + ccGap;
+  }
 
   for (auto &ccui : innerContainers){
     if(auto icUI = dynamic_cast<CCInnerContainer*>(ccui)){h += icUI->getContentHeight();}
@@ -360,7 +363,7 @@ void CCInnerContainer::resized()
 		{
       bool isCustom = dynamic_cast<CCInnerContainer::CCLinkBT*> (cclink) ==nullptr;
 
-      cclink->setBounds(r.removeFromTop(ccLinkHeight*(isCustom?2:1)));
+      cclink->setBounds(r.removeFromTop(ccLinkHeight*(isCustom?3:1)));
 			r.removeFromTop(gap);
 		}
 

@@ -14,13 +14,14 @@
 #include "CustomEditor.h"
 #include "ControllerUI.h" //keep
 #include "ControlVariableUI.h"
+#include "GenericControllableContainerEditor.h"
 
 class ControllerEditor : public CustomEditor,
 						 public ButtonListener,
 						 public Controller::ControllerListener
 {
 public:
-	ControllerEditor(ControllerUI * controllerUI);
+  ControllerEditor(Controller * controller,bool generateAuto = true);
 	virtual ~ControllerEditor();
 
 	Controller * controller;
@@ -36,6 +37,8 @@ public:
 	TextButton addVariableBT;
 	OwnedArray<ControlVariableUI> variablesUI;
 
+  ScopedPointer<GenericControllableContainerEditor> editor;
+
 	void addVariableUI(ControlVariable *, bool doResize = true);
 	void removeVariableUI(ControlVariable *, bool doResize = true);
 
@@ -44,6 +47,8 @@ public:
 	void buttonClicked(Button * b) override;
 	void variableAddedAsync(Controller *, ControlVariable *) override;
 	void variableRemovedAsync(Controller *, ControlVariable *) override;
+  Rectangle<int> area;
+  bool hideVariableUIs;
 };
 
 

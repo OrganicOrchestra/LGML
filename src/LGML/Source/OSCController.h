@@ -53,7 +53,7 @@ public:
   virtual void oscBundleReceived(const OSCBundle& bundle) override;
   void sendAllControllableStates(ControllableContainer *c,int & sentControllable );
 
-  virtual ControllerUI * createUI() override;
+  
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCController)
 

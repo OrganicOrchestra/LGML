@@ -18,7 +18,7 @@
 
 //==============================================================================
 NodeConnectionEditor::NodeConnectionEditor(NodeConnectionUI * nodeConnectionUI) :
-	CustomEditor(nodeConnectionUI),
+	CustomEditor(),
 	currentConnection(nullptr),
 	editingLink(nullptr),
 	selectedLink(nullptr)

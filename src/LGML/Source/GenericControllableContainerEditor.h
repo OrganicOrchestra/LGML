@@ -84,7 +84,7 @@ public:
 class GenericControllableContainerEditor : public InspectorEditor, public ButtonListener, public ControllableContainerListener,Timer
 {
 public :
-	GenericControllableContainerEditor(InspectableComponent * sourceComponent);
+	GenericControllableContainerEditor(ControllableContainer * sourceComponent);
 	virtual ~GenericControllableContainerEditor();
 
 	TextButton parentBT;
@@ -92,7 +92,7 @@ public :
 	WeakReference<ControllableContainer> sourceContainer;
 	ScopedPointer<CCInnerContainer> innerContainer;
 
-	void setCurrentInspectedContainer(ControllableContainer *,bool forceUpdate = false);
+	void setCurrentInspectedContainer(ControllableContainer *,bool forceUpdate = false,int recursiveInspectionLevel=0,bool canInspectChildContainersBeyondRecursion=true);
 
 	virtual int getContentHeight() override;
 

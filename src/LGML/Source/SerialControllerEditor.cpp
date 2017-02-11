@@ -13,7 +13,7 @@
 #include "SerialControllerUI.h"//keep
 
 SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI) :
-ControllerEditor(controllerUI),
+ControllerEditor(controllerUI->controller),
 serialController(controllerUI->serialController),
 jsUI(controllerUI->serialController->jsParameters)
 {

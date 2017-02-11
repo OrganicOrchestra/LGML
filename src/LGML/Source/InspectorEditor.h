@@ -19,10 +19,10 @@ class InspectableComponent;
 class InspectorEditor : public Component, public ComponentListener
 {
 public:
-	InspectorEditor(InspectableComponent * sourceComponent);
+	InspectorEditor();
 	virtual ~InspectorEditor();
 
-	InspectableComponent * sourceComponent;
+	
 	
 	//RelatedFastMap
 	ScopedPointer<FastMapperUI> fastMapperUI;

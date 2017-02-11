@@ -9,13 +9,13 @@
  */
 
 #include "OSCControllerEditor.h"
-#include "OSCControllerUI.h"
 
-OSCControllerEditor::OSCControllerEditor(OSCControllerUI * controllerUI) :
-ControllerEditor(controllerUI),
-oscController(controllerUI->oscController)
+OSCControllerEditor::OSCControllerEditor(Controller * _controller) :
+ControllerEditor(_controller)
+
 {
-
+  oscController = dynamic_cast<OSCController*> (_controller);
+  jassert(oscController);
   localPortUI = oscController->localPortParam->createStringParameterUI();
   localPortUI->setNameLabelVisible(true);
   remoteHostUI = oscController->remoteHostParam->createStringParameterUI();

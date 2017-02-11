@@ -11,6 +11,7 @@
 #include "Controller.h"
 #include "ControllerFactory.h"
 #include "ControllerUI.h"
+#include "ControllerEditor.h"
 #include "ControlVariable.h"
 #include "DebugHelpers.h"
 
@@ -101,11 +102,9 @@ String Controller::getUniqueVariableNameFor(const String & baseName, int index)
   return tName;
 }
 
-ControllerUI * Controller::createUI()
-{
-  return new ControllerUI(this);
-}
+ControllerUI * Controller::createUI(){return new ControllerUI(this);}
 
+ControllerEditor * Controller::getEditor(){return new ControllerEditor(this);}
 ControlVariable * Controller::addVariable(Parameter * p)
 {
   ControlVariable * v = new ControlVariable(this, p);

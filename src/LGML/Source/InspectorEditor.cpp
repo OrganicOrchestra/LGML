@@ -10,16 +10,18 @@
 
 #include "InspectorEditor.h"
 
-InspectorEditor::InspectorEditor(InspectableComponent * _sourceComponent) :
-	sourceComponent(_sourceComponent),fastMapperUI(nullptr)
+InspectorEditor::InspectorEditor():
+fastMapperUI(nullptr)
 {
-	if (sourceComponent->relatedControllableContainer != nullptr)
-	{
-		DBG("Add FastMapperUI in inspectorEditor");
-		fastMapperUI = new FastMapperUI(FastMapper::getInstance());
-		fastMapperUI->setViewFilter(sourceComponent->relatedControllableContainer);
-		addAndMakeVisible(fastMapperUI);
-	}
+
+  // TODO subclass this
+//	if (sourceComponent->relatedControllableContainer != nullptr)
+//	{
+//		DBG("Add FastMapperUI in inspectorEditor");
+//		fastMapperUI = new FastMapperUI(FastMapper::getInstance());
+//		fastMapperUI->setViewFilter(sourceComponent->relatedControllableContainer);
+//		addAndMakeVisible(fastMapperUI);
+//	}
 }
 
 InspectorEditor::~InspectorEditor()

@@ -23,11 +23,11 @@ class MIDIController;
 class MIDIControllerEditor : public ControllerEditor, ComboBoxListener, MIDIListener::Listener
 {
 public:
-	MIDIControllerEditor(MIDIControllerUI * controllerUI);
+	MIDIControllerEditor(Controller * controllerUI);
 	virtual ~MIDIControllerEditor();
 
 	MIDIController * midiController;
-	JsEnvironmentUI jsUI;
+	ScopedPointer<JsEnvironmentUI> jsUI;
 
 	MIDIDeviceChooser deviceChooser;
 	ScopedPointer<NamedControllableUI> channelStepper;

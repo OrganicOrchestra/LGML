@@ -11,7 +11,7 @@
 #include "RuleEditor.h"
 
 RuleEditor::RuleEditor(RuleUI * _ruleUI) :
-	CustomEditor(_ruleUI),
+	CustomEditor(),
 	rule(_ruleUI->rule),
 	addReferenceBT("Add Reference"),
 	addConsequenceBT("Add Consequence"),

@@ -21,7 +21,7 @@ class OSCControllerUI;
 class OSCControllerEditor : public ControllerEditor, public OSCController::OSCControllerListener
 {
 public:
-	OSCControllerEditor(OSCControllerUI * controllerUI);
+	OSCControllerEditor(Controller * controller);
 	virtual ~OSCControllerEditor();
 
 	OSCController * oscController;

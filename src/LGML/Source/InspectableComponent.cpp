@@ -34,7 +34,7 @@ InspectableComponent::~InspectableComponent()
 
 InspectorEditor * InspectableComponent::getEditor()
 {
-	return new GenericControllableContainerEditor(this);
+	return new GenericControllableContainerEditor(relatedControllableContainer);
 }
 
 void InspectableComponent::selectThis()

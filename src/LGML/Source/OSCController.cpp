@@ -9,10 +9,12 @@
  */
 
 #include "OSCController.h"
-#include "OSCControllerUI.h"
+
 #include "DebugHelpers.h"
 
 #include "NodeManager.h"
+
+
 
 
 OSCController::OSCController(const String &_name) :
@@ -196,10 +198,7 @@ bool OSCController::sendOSCInternal(OSCMessage & m){
   return sender.send (m);
 }
 
-ControllerUI * OSCController::createUI()
-{
-  return new OSCControllerUI(this);
-}
+
 
 void OSCController::sendAllControllableStates(ControllableContainer *c,int & sentControllable){
   if(c){

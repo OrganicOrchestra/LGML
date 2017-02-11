@@ -11,10 +11,11 @@
 #include "ControllerEditor.h"
 #include "Style.h"
 
-ControllerEditor::ControllerEditor(ControllerUI * _controllerUI) :
-	CustomEditor(_controllerUI),
-	controller(_controllerUI->controller),
-	addVariableBT("Add Variable")
+ControllerEditor::ControllerEditor(Controller * _controller,bool generateAuto) :
+	CustomEditor(),
+	controller(_controller),
+	addVariableBT("Add Variable"),
+hideVariableUIs(false)
 {
 	variablesContainer.addAndMakeVisible(&addVariableBT);
 	addVariableBT.addListener(this);
@@ -25,6 +26,10 @@ ControllerEditor::ControllerEditor(ControllerUI * _controllerUI) :
 	{
 		addVariableUI(v, false);
 	}
+  if(generateAuto){
+  editor = new GenericControllableContainerEditor(controller);
+  addAndMakeVisible(editor);
+  }
 }
 
 ControllerEditor::~ControllerEditor()
@@ -71,20 +76,29 @@ void ControllerEditor::resized()
 	int variableUIHeight = 20;
 	int listGap = 2;
 
-	variablesContainer.setBounds(getLocalBounds().withHeight(getContentHeight()));
-	Rectangle<int> r = variablesContainer.getLocalBounds();
-	addVariableBT.setBounds(r.removeFromTop(20));
-	r.removeFromTop(10);
+  area =getLocalBounds();
+  if(!hideVariableUIs){
+	variablesContainer.setBounds(area.withHeight(getVariablesHeight()+variableUIHeight));
+  Rectangle<int> r = variablesContainer.getBounds();
+  area = area.withY(r.getBottom()+5);
+	addVariableBT.setBounds(r.removeFromTop(variableUIHeight));
+
 	for (auto &vui : variablesUI)
 	{
 		vui->setBounds(r.removeFromTop(variableUIHeight));
 		r.removeFromTop(listGap);
 	}
+
+  }
+
+  if(editor){
+    editor->setBounds(area);
+  }
 }
 
 int ControllerEditor::getContentHeight()
 {
-	return InspectorEditor::getContentHeight() + 5 + getVariablesHeight();
+  return InspectorEditor::getContentHeight() + 5 + getVariablesHeight() + (editor?editor->getContentHeight():0);
 }
 
 int ControllerEditor::getVariablesHeight()

@@ -16,7 +16,7 @@
 #include "ControlVariable.h"
 
 class ControllerUI;
-
+class ControllerEditor;
 class Controller :
 	public ControllableContainer,
 	public ControlVariableListener
@@ -56,6 +56,7 @@ public:
 
 
 	virtual ControllerUI * createUI();
+  virtual ControllerEditor *  getEditor() ;
 
 
 

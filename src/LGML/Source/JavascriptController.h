@@ -34,7 +34,7 @@ public:
 
 
     void newJsFileLoaded()override;
-    ControllerUI * createUI() override;
+    
 
 
   static var createJsOSCListener(const var::NativeFunctionArgs & a);

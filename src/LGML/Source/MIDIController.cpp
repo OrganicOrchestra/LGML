@@ -9,7 +9,8 @@
  */
 
 #include "MIDIController.h"
-#include "MIDIControllerUI.h"
+#include "MIDIControllerEditor.h"
+
 #include "MIDIManager.h"
 #include "DebugHelpers.h"
 #include "JsHelpers.h"
@@ -64,9 +65,8 @@ void MIDIController::currentDeviceChanged(MIDIListener *)
 	}
 }
 
-ControllerUI * MIDIController::createUI()
-{
-  return new MIDIControllerUI(this);
+ControllerEditor *  MIDIController::getEditor(){
+  return new MIDIControllerEditor(this );
 }
 
 void MIDIController::handleIncomingMidiMessage (MidiInput* ,

@@ -98,5 +98,5 @@ bool ControllerUI::keyPressed(const KeyPress & key)
 
 InspectorEditor * ControllerUI::getEditor()
 {
-	return new ControllerEditor(this);
+  return controller->getEditor();
 }

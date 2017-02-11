@@ -23,6 +23,8 @@ public :
     MIDIController();
 	virtual ~MIDIController();
 
+  ControllerEditor *  getEditor()override;
+
     // should be implemented to build localenv
     void buildLocalEnv() override;
 	void handleIncomingMidiMessage(MidiInput* source,
@@ -39,7 +41,7 @@ public :
 
 	void currentDeviceChanged(MIDIListener * m) override;
 
-	ControllerUI * createUI() override;
+	
     void    onContainerParameterChanged(Parameter * )override;
 
     static var sendCCFromJS(const var::NativeFunctionArgs & v);

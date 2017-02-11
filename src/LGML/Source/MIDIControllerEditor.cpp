@@ -10,16 +10,18 @@
 
 #include "MIDIControllerEditor.h"
 #include "MIDIController.h"
-#include "MIDIControllerUI.h"
+
 #include "MIDIListener.h"
 #include "IntStepperUI.h"
 
-MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
-	ControllerEditor(controllerUI),
-	midiController(controllerUI->midiController),
-	deviceChooser(true),
-    jsUI(controllerUI->midiController->jsParameters)
+MIDIControllerEditor::MIDIControllerEditor(Controller * _controller) :
+	ControllerEditor(_controller,false),
+	deviceChooser(true)
 {
+  ControllerEditor::hideVariableUIs = true;
+  midiController = dynamic_cast<MIDIController*>( controller);
+  jassert(midiController);
+  jsUI = new JsEnvironmentUI(midiController->jsParameters);
 	addAndMakeVisible(deviceChooser);
 	deviceChooser.addListener(this);
 	deviceChooser.setSelectedDevice(midiController->midiPortName,true);
@@ -42,19 +44,19 @@ MIDIControllerEditor::~MIDIControllerEditor()
 
 void MIDIControllerEditor::resized()
 {
-	//ControllerEditor::resized();
-	Rectangle<int> r = getLocalBounds();
+	ControllerEditor::resized();
+  Rectangle<int> r = ControllerEditor::area;
 	//r.removeFromTop(ControllerEditor::getContentHeight() + 10);
 	deviceChooser.setBounds(r.removeFromTop(30));
 	channelStepper->setBounds(r.removeFromTop(20));
 	r.removeFromTop(5);
 	incomingToogle->setBounds(r.removeFromTop(20));
-    jsUI.setBounds(r.removeFromTop(30));
+  jsUI->setBounds(r.removeFromTop(40));
 }
 
 int MIDIControllerEditor::getContentHeight()
 {
-	return 120;
+  return ControllerEditor::getContentHeight() + 140;
 }
 
 void MIDIControllerEditor::currentDeviceChanged(MIDIListener *)
