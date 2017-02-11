@@ -11,12 +11,12 @@
 #ifndef CONTROLLABLEEDITOR_H_INCLUDED
 #define CONTROLLABLEEDITOR_H_INCLUDED
 
-#include "CustomEditor.h"
+#include "InspectorEditor.h"
 #include "Controllable.h"
 
 
 class ControllableEditor : 
-	public CustomEditor
+	public InspectorEditor
 {
 public:
 	ControllableEditor(InspectableComponent * sourceComponent, Controllable * controllable);

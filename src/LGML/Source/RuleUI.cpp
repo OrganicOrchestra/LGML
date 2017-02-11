@@ -101,7 +101,7 @@ void RuleUI::ruleActivationChanged(Rule *)
 	repaint();
 }
 
-InspectorEditor * RuleUI::getEditor()
+InspectorEditor * RuleUI::createEditor()
 {
 	return new RuleEditor(this);
 }

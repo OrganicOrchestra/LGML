@@ -29,7 +29,7 @@ public:
 	void paint(Graphics &g) override;
 	void mouseDown(const MouseEvent &e) override;
 
-	InspectorEditor * getEditor() override;
+	InspectorEditor * createEditor() override;
 };
 
 class OutlinerItem : public TreeViewItem

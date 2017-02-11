@@ -15,12 +15,12 @@
 
 #include "NodeConnectionEditorDataSlot.h"
 #include "NodeConnectionEditorLink.h"
-#include "CustomEditor.h"
+#include "InspectorEditor.h"
 class NodeConnectionUI;
 //==============================================================================
 /*
 */
-class NodeConnectionEditor : public CustomEditor,
+class NodeConnectionEditor : public InspectorEditor,
     NodeConnectionEditorDataSlot::SlotListener, NodeConnectionEditorLink::LinkListener, NodeConnection::Listener
 {
 

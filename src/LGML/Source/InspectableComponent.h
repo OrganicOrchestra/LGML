@@ -28,7 +28,7 @@ public:
 	Inspector * inspector;
 	const String inspectableType;
 
-	virtual InspectorEditor * getEditor();
+	virtual InspectorEditor * createEditor();
 
 	ControllableContainer * relatedControllableContainer;
 	int recursiveInspectionLevel;

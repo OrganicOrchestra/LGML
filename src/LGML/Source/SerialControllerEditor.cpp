@@ -10,13 +10,15 @@
 
 #include "SerialControllerEditor.h"
 #include "FloatSliderUI.h"
-#include "SerialControllerUI.h"//keep
+//#include "SerialControllerUI.h"//keep
 
-SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI) :
-ControllerEditor(controllerUI->controller),
-serialController(controllerUI->serialController),
-jsUI(controllerUI->serialController->jsParameters)
+SerialControllerEditor::SerialControllerEditor(Controller * cont) :
+ControllerEditor(cont,false)
 {
+
+  serialController = dynamic_cast<SerialController*>(cont);
+  jassert(serialController);
+  jsUI = new JsEnvironmentUI(serialController->jsParameters);
   serialController->addControllerListener(this);
 
   addAndMakeVisible(deviceChooser);
@@ -93,11 +95,11 @@ void SerialControllerEditor::resized()
 {
   ControllerEditor::resized();
 
-  Rectangle<int> r = getLocalBounds();
+  Rectangle<int> r = area;
   r.removeFromTop(ControllerEditor::getContentHeight()+10);
 
   incomingToogle->setBounds(r.removeFromTop(20));
-  jsUI.setBounds(r.removeFromTop(20));
+  jsUI->setBounds(r.removeFromTop(40));
   deviceChooser.setBounds(r.removeFromTop(20));
   r.removeFromTop(2);
 
@@ -119,7 +121,7 @@ void SerialControllerEditor::resized()
 
 int SerialControllerEditor::getContentHeight()
 {
-  return ControllerEditor::getContentHeight() + 10 + 130;
+  return ControllerEditor::getContentHeight() + 10 + 150;
 }
 
 void SerialControllerEditor::updateConnectBTAndIndic()
@@ -132,6 +134,9 @@ void SerialControllerEditor::updateConnectBTAndIndic()
   {
     connectPortBT.setButtonText(serialController->port->isOpen() ? "Disconnect" : "Connect");
     deviceChooser.setSelectedItemIndex(SerialManager::getInstance()->portInfos.indexOf(serialController->port->info) + 1,NotificationType::dontSendNotification);
+  }
+  else{
+    connectPortBT.setButtonText( "No Serial");
   }
 }
 

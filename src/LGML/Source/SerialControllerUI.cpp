@@ -12,18 +12,6 @@
 #include "SerialControllerEditor.h"
 #include "TriggerBlinkUI.h"
 
-SerialControllerUI::SerialControllerUI(SerialController * controller) :
-	ControllerUI(controller),
-	serialController(controller)
-{
-	activityBlink->animateIntensity = false;
-}
 
-SerialControllerUI::~SerialControllerUI()
-{
-}
 
-InspectorEditor * SerialControllerUI::getEditor()
-  {
-	  return new SerialControllerEditor(this);
-  }
+

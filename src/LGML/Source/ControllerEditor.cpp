@@ -12,7 +12,7 @@
 #include "Style.h"
 
 ControllerEditor::ControllerEditor(Controller * _controller,bool generateAuto) :
-	CustomEditor(),
+	InspectorEditor(),
 	controller(_controller),
 	addVariableBT("Add Variable"),
 hideVariableUIs(false)

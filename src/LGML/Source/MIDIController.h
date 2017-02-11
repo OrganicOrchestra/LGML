@@ -23,7 +23,7 @@ public :
     MIDIController();
 	virtual ~MIDIController();
 
-  ControllerEditor *  getEditor()override;
+  ControllerEditor *  createEditor()override;
 
     // should be implemented to build localenv
     void buildLocalEnv() override;

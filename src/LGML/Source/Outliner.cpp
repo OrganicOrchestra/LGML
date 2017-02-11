@@ -152,8 +152,8 @@ void OutlinerItemComponent::mouseDown(const MouseEvent & e)
 	selectThis();
 }
 
-InspectorEditor * OutlinerItemComponent::getEditor()
+InspectorEditor * OutlinerItemComponent::createEditor()
 {
-	if (item->isContainer) return InspectableComponent::getEditor();
+	if (item->isContainer) return InspectableComponent::createEditor();
 	return new ControllableEditor(this,item->controllable);
 }

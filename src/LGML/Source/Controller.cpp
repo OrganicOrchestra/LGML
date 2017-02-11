@@ -104,7 +104,7 @@ String Controller::getUniqueVariableNameFor(const String & baseName, int index)
 
 ControllerUI * Controller::createUI(){return new ControllerUI(this);}
 
-ControllerEditor * Controller::getEditor(){return new ControllerEditor(this);}
+ControllerEditor * Controller::createEditor(){return new ControllerEditor(this);}
 ControlVariable * Controller::addVariable(Parameter * p)
 {
   ControlVariable * v = new ControlVariable(this, p);

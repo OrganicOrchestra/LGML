@@ -10,7 +10,7 @@
 
 #include "InspectableComponent.h"
 #include "Inspector.h"
-#include "CustomEditor.h"
+
 #include "GenericControllableContainerEditor.h"
 //#include "MainComponent.h"
 #include "ShapeShifterFactory.h"
@@ -32,7 +32,7 @@ InspectableComponent::~InspectableComponent()
 	listeners.call(&InspectableListener::inspectableRemoved,this);
 }
 
-InspectorEditor * InspectableComponent::getEditor()
+InspectorEditor * InspectableComponent::createEditor()
 {
 	return new GenericControllableContainerEditor(relatedControllableContainer);
 }

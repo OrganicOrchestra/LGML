@@ -17,7 +17,7 @@ fastMapperUI(nullptr)
   // TODO subclass this
 //	if (sourceComponent->relatedControllableContainer != nullptr)
 //	{
-//		DBG("Add FastMapperUI in inspectorEditor");
+//		DBG("Add FastMapperUI in InspectorEditor");
 //		fastMapperUI = new FastMapperUI(FastMapper::getInstance());
 //		fastMapperUI->setViewFilter(sourceComponent->relatedControllableContainer);
 //		addAndMakeVisible(fastMapperUI);

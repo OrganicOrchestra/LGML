@@ -15,6 +15,7 @@
 #include "Controller.h"//keep
 #include "InspectableComponent.h"
 #include "BoolToggleUI.h"
+#include "TriggerBlinkUI.h"
 #include "StringParameterUI.h"
 
 
@@ -39,7 +40,7 @@ public:
 	virtual void buttonClicked(Button *) override;
 	bool keyPressed(const KeyPress &e) override;
 
-	virtual InspectorEditor * getEditor() override;
+	virtual InspectorEditor * createEditor() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerUI)
 };

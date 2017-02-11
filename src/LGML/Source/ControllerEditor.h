@@ -11,17 +11,16 @@
 #ifndef CONTROLLEREDITOR_H_INCLUDED
 #define CONTROLLEREDITOR_H_INCLUDED
 
-#include "CustomEditor.h"
 #include "ControllerUI.h" //keep
 #include "ControlVariableUI.h"
 #include "GenericControllableContainerEditor.h"
 
-class ControllerEditor : public CustomEditor,
+class ControllerEditor : public InspectorEditor,
 						 public ButtonListener,
 						 public Controller::ControllerListener
 {
 public:
-  ControllerEditor(Controller * controller,bool generateAuto = true);
+  ControllerEditor(Controller * controller,bool generateEditorFromParameters = true);
 	virtual ~ControllerEditor();
 
 	Controller * controller;

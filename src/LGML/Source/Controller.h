@@ -56,7 +56,7 @@ public:
 
 
 	virtual ControllerUI * createUI();
-  virtual ControllerEditor *  getEditor() ;
+  virtual ControllerEditor *  createEditor() ;
 
 
 

@@ -79,7 +79,7 @@ void Inspector::inspectCurrentComponent()
 {
 	if (currentComponent == nullptr) return;
 	if (currentEditor != nullptr) currentEditor->removeInspectorEditorListener(this);
-	currentEditor = currentComponent->getEditor();
+	currentEditor = currentComponent->createEditor();
 	if (currentEditor != nullptr) currentEditor->addInspectorEditorListener(this);
 	addAndMakeVisible(currentEditor);
 

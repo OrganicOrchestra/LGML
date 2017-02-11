@@ -18,6 +18,7 @@
 class ControllerUI;
 
 
+
 class SerialController : public Controller, public JsEnvironment,
 	public SerialPort::SerialPortListener,
 	public SerialManager::SerialManagerListener
@@ -67,6 +68,7 @@ public:
 
 
 	ControllerUI * createUI() override;
+  ControllerEditor * createEditor() override;
 
 
 	class SerialControllerListener

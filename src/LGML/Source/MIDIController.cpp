@@ -65,7 +65,7 @@ void MIDIController::currentDeviceChanged(MIDIListener *)
 	}
 }
 
-ControllerEditor *  MIDIController::getEditor(){
+ControllerEditor *  MIDIController::createEditor(){
   return new MIDIControllerEditor(this );
 }
 

@@ -693,10 +693,6 @@
               name="ControllableEditor.cpp" resource="0"/>
         <FILE compile="0" file="Source/ControllableEditor.h" id="k8bflH" name="ControllableEditor.h"
               resource="0"/>
-        <FILE compile="1" file="Source/CustomEditor.cpp" id="NPG3vZ" name="CustomEditor.cpp"
-              resource="0"/>
-        <FILE compile="0" file="Source/CustomEditor.h" id="omqUJT" name="CustomEditor.h"
-              resource="0"/>
         <FILE compile="1" file="Source/GenericControllableContainerEditor.cpp"
               id="E3lBba" name="GenericControllableContainerEditor.cpp" resource="0"/>
         <FILE compile="0" file="Source/GenericControllableContainerEditor.h"

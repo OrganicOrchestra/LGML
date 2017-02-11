@@ -12,7 +12,7 @@
 #include "ControllableUI.h"
 
 ControllableEditor::ControllableEditor(InspectableComponent * sourceComponent, Controllable * _controllable) :
-	CustomEditor(), controllable(_controllable),
+	InspectorEditor(), controllable(_controllable),
 	label("Label")
 {
 	ui = controllable->createDefaultUI();

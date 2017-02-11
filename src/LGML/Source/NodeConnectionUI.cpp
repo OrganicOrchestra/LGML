@@ -373,7 +373,7 @@ bool NodeConnectionUI::finishEditing()
     return success;
 }
 
-InspectorEditor * NodeConnectionUI::getEditor()
+InspectorEditor * NodeConnectionUI::createEditor()
 {
 	return new NodeConnectionEditor(this);
 }

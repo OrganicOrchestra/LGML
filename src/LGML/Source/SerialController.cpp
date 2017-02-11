@@ -9,8 +9,10 @@
  */
 
 #include "SerialController.h"
-#include "SerialControllerUI.h"
+
 #include "JsHelpers.h"
+#include "ControllerUI.h"
+#include "SerialControllerEditor.h"
 
 SerialController::SerialController() :
 JsEnvironment("controller.serial",this),
@@ -195,8 +197,13 @@ void SerialController::processMessage(const String & message)
 
 ControllerUI * SerialController::createUI()
 {
-  return new SerialControllerUI(this);
+  auto c = new ControllerUI(this);
+  c->activityBlink->animateIntensity = false;
+  return c;
 }
+ControllerEditor * SerialController::createEditor() {
+  return new SerialControllerEditor(this);
+};
 
 void SerialController::portAdded(SerialPortInfo * info)
 {

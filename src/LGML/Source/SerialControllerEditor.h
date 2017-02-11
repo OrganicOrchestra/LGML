@@ -13,7 +13,7 @@
 
 
 #include "ControllerEditor.h"
-class SerialControllerUI;
+
 #include "SerialUIHelper.h"
 #include "JsEnvironmentUI.h"
 #include "SerialController.h"//keep
@@ -23,7 +23,7 @@ class SerialControllerEditor :
 	public SerialController::SerialControllerListener
 {
 public:
-	SerialControllerEditor(SerialControllerUI * controllerUI);
+	SerialControllerEditor(Controller * controllerUI);
 	virtual ~SerialControllerEditor();
 
 	SerialDeviceChooser deviceChooser;
@@ -31,7 +31,7 @@ public:
 	SerialController * serialController;
 	TextButton connectPortBT;
 
-	JsEnvironmentUI jsUI;
+	ScopedPointer<JsEnvironmentUI> jsUI;
 	ScopedPointer<BoolToggleUI> incomingToogle;
 
 	OwnedArray<ParameterUI> variablesUI;

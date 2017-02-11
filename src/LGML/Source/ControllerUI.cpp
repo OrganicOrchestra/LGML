@@ -96,7 +96,7 @@ bool ControllerUI::keyPressed(const KeyPress & key)
 	return false;
 }
 
-InspectorEditor * ControllerUI::getEditor()
+InspectorEditor * ControllerUI::createEditor()
 {
-  return controller->getEditor();
+  return controller->createEditor();
 }

@@ -11,7 +11,7 @@
 #ifndef RULEEDITOR_H_INCLUDED
 #define RULEEDITOR_H_INCLUDED
 
-#include "CustomEditor.h"
+#include "InspectorEditor.h"
 
 #include "RuleUI.h"//keep
 #include "RuleConditionGroupUI.h"
@@ -20,7 +20,7 @@
 #include "ControlVariableReferenceUI.h"
 
 class RuleEditor :
-	public CustomEditor,
+	public InspectorEditor,
 	public ButtonListener,
 	public RuleListener
 {
