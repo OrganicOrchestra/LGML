@@ -114,7 +114,7 @@ Component * OutlinerItem::createItemComponent()
 OutlinerItemComponent::OutlinerItemComponent(OutlinerItem * _item) : 
 	InspectableComponent(_item->container),
 	item(_item),
-	label("label",_item->isContainer? item->container->niceName : item->controllable->niceName)
+	label("label",_item->isContainer? item->container->getNiceName() : item->controllable->niceName)
 	
 {
 

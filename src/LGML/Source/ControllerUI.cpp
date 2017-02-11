@@ -17,11 +17,13 @@ ControllerUI::ControllerUI(Controller * controller) :
 	InspectableComponent(controller, "controller"),
     controller(controller)
 {
+  canInspectChildContainersBeyondRecursion = true;
   {
     MessageManagerLock ml;
 	addMouseListener(this, true);
   }
 	nameTF = controller->nameParam->createStringParameterUI();
+  nameTF->setBackGroundIsTransparent(true);
 	addAndMakeVisible(nameTF);
 
 	enabledBT = controller->enabledParam->createToggle();

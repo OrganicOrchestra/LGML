@@ -94,15 +94,13 @@ void LooperNodeContentUI::reLayoutTracks(){
 
 
 
-  int numCol = 8;
+  int numCol = jmin(8,tracksUI.size());
   int numRow = (int)ceil((tracksUI.size())*1.f / numCol);
 
 
 
   float gap = 2;
   float margin = 5;
-
-
 
   Rectangle<int> innerTrackR = trackContainer.getLocalBounds().reduced(margin);
   float trackWidth =   innerTrackR.getWidth() *1.0f/ numCol;

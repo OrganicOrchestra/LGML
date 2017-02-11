@@ -23,7 +23,7 @@ JsNodeUI::~JsNodeUI(){
 
 void JsNodeUI::init(){
     JsNode * jsNode = (JsNode*) node.get();
-    jsUI = new JsEnvironmentUI((JsEnvironment*)jsNode);
+    jsUI = new JsEnvironmentUI(((JsEnvironment*)jsNode)->jsParameters);
     jsNode->addControllableContainerListener(this);
 
     addAndMakeVisible(jsUI);

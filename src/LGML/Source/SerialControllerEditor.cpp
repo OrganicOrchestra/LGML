@@ -15,7 +15,7 @@
 SerialControllerEditor::SerialControllerEditor(SerialControllerUI * controllerUI) :
 ControllerEditor(controllerUI),
 serialController(controllerUI->serialController),
-jsUI(controllerUI->serialController)
+jsUI(controllerUI->serialController->jsParameters)
 {
   serialController->addControllerListener(this);
 

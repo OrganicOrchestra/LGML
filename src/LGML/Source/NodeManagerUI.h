@@ -109,7 +109,7 @@ public :
 
 		while (c != nullptr)
 		{
-			TextButton * b = new TextButton(c->niceName);
+			TextButton * b = new TextButton(c->getNiceName());
 			if (c == nmui->currentViewer->nodeContainer) b->setEnabled(false);
 
 			pathButtons.insert(0, b);

@@ -17,7 +17,7 @@
 
 class JsControllableListenerObject;
 
-
+class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
 public Parameter::Listener,
@@ -28,6 +28,11 @@ public ControllableContainerListener
 public:
   JsEnvironment(const String & ns,ControllableContainer * linkedContainer);
   virtual ~JsEnvironment();
+
+
+
+  ScopedPointer<JSEnvContainer> jsParameters;
+  
 
   // should be implemented to build localenv
   virtual void buildLocalEnv() = 0;
@@ -169,11 +174,7 @@ private:
   public:
     FunctionIdentifier(const String & s)
     {
-//      StringArray arr;
       splitedName.addTokens(s,"_","");
-//      for(auto & ts : arr.strings){
-//        splitedName.add(ts);
-//      }
       identifier=s;
     };
 
@@ -299,6 +300,23 @@ class JsControllableListenerObject:public Parameter::AsyncListener,public Trigge
 };
 
 
+//////////////////
+/// JSEnvContainer
+class JSEnvContainer : public ControllableContainer{
+public:
+  JSEnvContainer(JsEnvironment * pEnv);
+  Component * getCustomEditor() override;
+
+  void onContainerParameterChanged(Parameter *p) override;
+  void onContainerTriggerTriggered(Trigger *p)override;
+  StringParameter * scriptPath;
+  Trigger * loadT;
+  Trigger * reloadT;
+  Trigger * showT;
+  Trigger * logT;
+  BoolParameter * autoWatch;
+  JsEnvironment * jsEnv;
+};
 
 
 #endif  // JAVASCRIPTENVIRONNEMENT_H_INCLUDED

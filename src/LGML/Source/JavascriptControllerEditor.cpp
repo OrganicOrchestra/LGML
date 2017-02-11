@@ -17,7 +17,7 @@ JavascriptControllerEditor::JavascriptControllerEditor(JavascriptControllerUI * 
 	OSCControllerEditor(jsControllerUI),
 	jsController(jsControllerUI->jsController)
 {
-	scriptUI = new JsEnvironmentUI(jsController);
+	scriptUI = new JsEnvironmentUI(jsController->jsParameters);
 	innerContainer.addAndMakeVisible(scriptUI);
 }
 

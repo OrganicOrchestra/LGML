@@ -32,6 +32,7 @@ StringParameterUI::StringParameterUI(Parameter * p) :
 
     //valueLabel.setColour(valueLabel.textWhenEditingColourId, TEXTNAME_COLOR);
     valueLabel.setColour(valueLabel.backgroundWhenEditingColourId, Colours::white);
+  setBackGroundIsTransparent(false);
     nameLabel.setTooltip(p->description);
 
 
@@ -65,7 +66,9 @@ void StringParameterUI::setNameLabelVisible(bool visible)
     nameLabelIsVisible = visible;
     nameLabel.setVisible(visible);
 }
-
+void StringParameterUI::setBackGroundIsTransparent(bool t){
+  valueLabel.setColour(valueLabel.backgroundColourId, Colours::transparentWhite.withAlpha(t?0:0.1f));
+}
 /*
 void StringParameterUI::paint(Graphics & g)
 {

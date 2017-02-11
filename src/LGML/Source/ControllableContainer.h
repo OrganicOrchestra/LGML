@@ -42,7 +42,7 @@ public:
   virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
 
-
+class CCInnerContainer;
 class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public Trigger::Listener, public ControllableContainerListener
 
 {
@@ -50,13 +50,14 @@ public:
   ControllableContainer(const String &niceName);
   virtual ~ControllableContainer();
 
-  String niceName;
+  
+  const String  getNiceName();
   String shortName;
   bool hasCustomShortName;
 
   bool canHavePresets;
   bool presetSavingIsRecursive;
-  StringParameter * currentPresetName;
+  StringParameter * currentPresetName,*nameParam;
   Trigger * savePresetTrigger;
   PresetManager::Preset * currentPreset;
 
@@ -152,6 +153,9 @@ public:
   virtual void childStructureChanged(ControllableContainer *notifier,ControllableContainer * origin)override;
 
   String getUniqueNameInContainer(const String &sourceName, int suffix = 0);
+
+
+  virtual Component * getCustomEditor(){return nullptr;}
 private:
   // internal callback that a controllableContainer can override to react to any of it's parameter change
   //@ ben this is to avoid either:

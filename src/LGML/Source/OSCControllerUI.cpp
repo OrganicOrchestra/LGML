@@ -10,6 +10,7 @@
 
 #include "OSCControllerUI.h"
 #include "OSCControllerEditor.h"
+#include "GenericControllableContainerEditor.h"
 
 OSCControllerUI::OSCControllerUI(OSCController * controller) :
 	ControllerUI(controller),
@@ -23,5 +24,6 @@ OSCControllerUI::~OSCControllerUI()
 
 InspectorEditor * OSCControllerUI::getEditor()
   {
-	  return new OSCControllerEditor(this);
+	  auto ui =  new GenericControllableContainerEditor(this);
+    return ui;
   }

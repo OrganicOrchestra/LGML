@@ -36,6 +36,7 @@ public:
 
     bool nameLabelIsVisible;
     void setNameLabelVisible(bool visible);
+  void setBackGroundIsTransparent(bool t);
 
 	//void paint(Graphics &g) override;
     void resized() override;

@@ -302,7 +302,7 @@ void VSTNode::getStateInformation(MemoryBlock & destData) {
 
 void VSTNode::setStateInformation(const void* data, int sizeInBytes) {
   if (innerPlugin) {
-    DBG("loading state for vst "+ niceName +(parentContainer?"in : "+parentContainer->niceName:""));
+    DBG("loading state for vst "+ getNiceName() +(parentContainer?"in : "+parentContainer->getNiceName():""));
     innerPlugin->setStateInformation(data, sizeInBytes);
   };
 };

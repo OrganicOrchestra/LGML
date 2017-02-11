@@ -24,7 +24,7 @@ Controller::Controller(const String &_name) :
 ControllableContainer(_name),
 variableChangeNotifier(1000)
 {
-  nameParam = addStringParameter("Name", "Set the name of the controller.", _name);
+
   enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
 
   activityTrigger = addTrigger("activity", "Activity indicator");

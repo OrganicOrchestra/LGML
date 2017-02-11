@@ -1,47 +1,51 @@
 #include "JsEnvironmentUI.h"
 
-JsEnvironmentUI::JsEnvironmentUI(JsEnvironment * _env) :env(_env) {
+JsEnvironmentUI::JsEnvironmentUI(JSEnvContainer * _cont) :cont(_cont) {
+  env = cont->jsEnv;
+  jassert(env);
 	env->addListener(this);
-	loadFileB.setButtonText("Load");
+  loadFileB = cont->loadT->createBlinkUI();
 	addAndMakeVisible(loadFileB);
-	loadFileB.addListener(this);
 
-	reloadB.setButtonText("Reload");
+
+	reloadB = cont->reloadT->createBlinkUI();
 	addAndMakeVisible(reloadB);
-	reloadB.addListener(this);
 
-	openB.setButtonText("Show");
+
+  openB = cont->showT->createBlinkUI();
 	addAndMakeVisible(openB);
-	openB.addListener(this);
 
-	watchT.setButtonText("autoWatch");
-	watchT.setClickingTogglesState(true);
+  watchT = cont->autoWatch->createToggle();
 	addAndMakeVisible(watchT);
-	watchT.addListener(this);
-
-	logEnvB.setButtonText("Log");
+  logEnvB = cont->logT->createBlinkUI();
 	addAndMakeVisible(logEnvB);
-	logEnvB.addListener(this);
 
 
+  path = cont->scriptPath->createStringParameterUI();
+  path->setNameLabelVisible(true);
+  addAndMakeVisible(path);
 
     newJsFileLoaded(env->hasValidJsFile());
 	addAndMakeVisible(validJsLed);
+  
 
 }
 
 void JsEnvironmentUI::resized() {
-	Rectangle<int> area = getLocalBounds().reduced(2);
+	Rectangle<int> area = getLocalBounds().reduced(1);
 	const int logEnvSize = 40;
-	const int ledSize = 10;
+  path->setBounds(area.removeFromTop(area.getHeight()/2).reduced(2));
+	const int ledSize = area.getHeight()/2;
 	const int step = (area.getWidth() - logEnvSize - ledSize) / 4;
 	buildLed(ledSize);
+
+  area.reduce(0, 2);
 	validJsLed.setBounds(area.removeFromLeft(ledSize).reduced(0, (area.getHeight() - ledSize) / 2));
-	loadFileB.setBounds(area.removeFromLeft(step).reduced(2));
-	reloadB.setBounds(area.removeFromLeft(step).reduced(2));
-	openB.setBounds(area.removeFromLeft(step).reduced(2));
-	watchT.setBounds(area.removeFromLeft(step).reduced(2));
-	logEnvB.setBounds(area.removeFromLeft(logEnvSize).reduced(2));
+	loadFileB->setBounds(area.removeFromLeft(step).reduced(2,0));
+	reloadB->setBounds(area.removeFromLeft(step).reduced(2,0));
+	openB->setBounds(area.removeFromLeft(step).reduced(2,0));
+	watchT->setBounds(area.removeFromLeft(step).reduced(2,0));
+	logEnvB->setBounds(area.removeFromLeft(logEnvSize).reduced(2,0));
 
 }
 
@@ -57,28 +61,4 @@ void JsEnvironmentUI::newJsFileLoaded(bool) {
                                Colours::red)));
 }
 
-void JsEnvironmentUI::buttonClicked(Button * b) {
-	if (b == &loadFileB) {
-		FileChooser myChooser("Please select the script you want to load...",
-			File::getSpecialLocation(File::userHomeDirectory),
-			"*.js");
 
-		if (myChooser.browseForFileToOpen())
-		{
-			File script(myChooser.getResult());
-			env->loadFile(script);
-		}
-	}
-	else if (b == &openB) {
-		env->showFile();
-	}
-	else if (b == &reloadB) {
-		env->reloadFile();
-	}
-	else if (b == &logEnvB) {
-		LOG(env->printAllNamespace());
-	}
-	else if (b == &watchT) {
-		env->setAutoWatch(watchT.getToggleState());
-	}
-}

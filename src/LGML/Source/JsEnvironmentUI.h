@@ -13,28 +13,31 @@
 
 
 #include "JsEnvironment.h"
+#include "TriggerBlinkUI.h"
+#include "BoolToggleUI.h"
+#include "StringParameterUI.h"
 
-
-class JsEnvironmentUI : public Component,public Button::Listener,public JsEnvironment::Listener{
+class JsEnvironmentUI : public Component,public JsEnvironment::Listener{
 public:
-	JsEnvironmentUI(JsEnvironment * _env);
+	JsEnvironmentUI(JSEnvContainer * _env);
     ~JsEnvironmentUI(){
         env->removeListener(this);
     }
 
-    TextButton loadFileB;
-    TextButton reloadB;
-    TextButton openB;
-    TextButton logEnvB;
-    TextButton watchT;
+    ScopedPointer<TriggerBlinkUI> loadFileB;
+    ScopedPointer<TriggerBlinkUI>  reloadB;
+    ScopedPointer<TriggerBlinkUI> openB;
+    ScopedPointer<TriggerBlinkUI> logEnvB;
+    ScopedPointer<BoolToggleUI> watchT;
+  ScopedPointer<StringParameterUI> path;
     DrawablePath validJsLed;
 	void resized()override;
 
 	void buildLed(int size);
 
 	void newJsFileLoaded(bool s) override;
-	void buttonClicked(Button* b) override;
 
+  JSEnvContainer * cont;
     JsEnvironment * env;
 };
 

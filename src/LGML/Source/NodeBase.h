@@ -66,7 +66,7 @@ public:
 
   virtual const String getName() const override
   {
-    return niceName;
+    return nameParam->stringValue();
   }
 
 

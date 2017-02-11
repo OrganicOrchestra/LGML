@@ -64,7 +64,7 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 	addAndMakeVisible(innerContainer);
 
 	parentBT.setVisible(ccLevel > 0);
-	if(parentBT.isVisible() && cc->parentContainer != nullptr) parentBT.setButtonText("Up : " + cc->parentContainer->niceName);
+	if(parentBT.isVisible() && cc->parentContainer != nullptr) parentBT.setButtonText("Up : " + cc->parentContainer->getNiceName());
 
 	resized();
 
@@ -146,7 +146,7 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 	level(_level),
 	maxLevel(_maxLevel),
 	canAccessLowerContainers(_canAccessLowerContainers),
-	containerLabel("containerLabel",_container->niceName)
+	containerLabel("containerLabel",_container->getNiceName())
 {
 	container->addControllableContainerListener(this);
 
@@ -156,6 +156,8 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 	containerLabel.setSize(containerLabel.getFont().getStringWidth(containerLabel.getText()) + 10,14);
 	containerLabel.setColour(containerLabel.textColourId, TEXTNAME_COLOR);
 
+
+  
 	for (auto &c : container->controllables)
 	{
 		if(!c->hideInEditor) addControllableUI(c);
@@ -172,14 +174,17 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 		for (auto &cc : container->controllableContainers)
 		{
 			addCCLink(cc);
-		}
-	}
 
+		}
+
+
+  }
 	if (container->canHavePresets)
 	{
 		presetChooser = new PresetChooser(container);
 		addAndMakeVisible(presetChooser);
 	}
+
 
 }
 
@@ -191,9 +196,11 @@ CCInnerContainer::~CCInnerContainer()
 
 void CCInnerContainer::addCCInnerUI(ControllableContainer * cc)
 {
+
 	CCInnerContainer * ccui = new CCInnerContainer(editor, cc, level + 1, maxLevel, canAccessLowerContainers);
 	innerContainers.add(ccui);
 	addAndMakeVisible(ccui);
+  
 }
 
 void CCInnerContainer::removeCCInnerUI(ControllableContainer * cc)
@@ -207,10 +214,16 @@ void CCInnerContainer::removeCCInnerUI(ControllableContainer * cc)
 
 void CCInnerContainer::addCCLink(ControllableContainer * cc)
 {
+  if( auto subEditor = cc->getCustomEditor()){
+    addAndMakeVisible(subEditor);
+    lowerContainerLinks.add(subEditor);
+  }
+  else{
 	CCLinkBT * bt = new CCLinkBT(cc);
 	bt->addListener(this);
 	addAndMakeVisible(bt);
 	lowerContainerLinks.add(bt);
+  }
 }
 
 void CCInnerContainer::removeCCLink(ControllableContainer * cc)
@@ -247,7 +260,9 @@ NamedControllableUI * CCInnerContainer::getUIForControllable(Controllable * c)
 {
 	for (auto &cui : controllablesUI)
 	{
-		if (cui->controllable == c) return cui;
+
+      if(cui->controllable == c) return cui;
+
 	}
 
 	return nullptr;
@@ -256,8 +271,9 @@ NamedControllableUI * CCInnerContainer::getUIForControllable(Controllable * c)
 CCInnerContainer * CCInnerContainer::getInnerContainerForCC(ControllableContainer * cc)
 {
 	for (auto &ccui : innerContainers)
-	{
-		if (ccui->container == cc) return ccui;
+	{if (auto ncui = dynamic_cast<CCInnerContainer*>(ccui)){
+		if (ncui->container == cc) return ncui;
+  }
 	}
 
 	return nullptr;
@@ -265,9 +281,11 @@ CCInnerContainer * CCInnerContainer::getInnerContainerForCC(ControllableContaine
 
 CCInnerContainer::CCLinkBT * CCInnerContainer::getCCLinkForCC(ControllableContainer * cc)
 {
-	for (auto &cclink : lowerContainerLinks)
+	for (auto &_cclink : lowerContainerLinks)
 	{
+    if(auto cclink = dynamic_cast<CCInnerContainer::CCLinkBT *>(_cclink)){
 		if (cclink->targetContainer == cc) return cclink;
+    }
 	}
 
 	return nullptr;
@@ -286,7 +304,12 @@ int CCInnerContainer::getContentHeight()
 	h += controllablesUI.size()* (controllableHeight + gap) + ccGap;
 	h += lowerContainerLinks.size() * (ccLinkHeight + gap) + ccGap;
 
-	for (auto &ccui : innerContainers) h += ccui->getContentHeight() + ccGap;
+  for (auto &ccui : innerContainers){
+    if(auto icUI = dynamic_cast<CCInnerContainer*>(ccui)){h += icUI->getContentHeight();}
+    else{h+=controllableHeight*2;}
+
+    h+=ccGap;
+  }
 
 	if(container->canHavePresets) h += presetChooserHeight + gap;
 	h += containerLabel.getHeight();
@@ -315,16 +338,18 @@ void CCInnerContainer::resized()
 	containerLabel.setBounds(r.removeFromTop(containerLabel.getHeight()).withSizeKeepingCentre(containerLabel.getWidth(), containerLabel.getHeight()));
 
 	r.reduce(margin, margin);
-
+  if(customEditor){
+    customEditor->setBounds(r);
+  }
+  else{
 	if (container->canHavePresets)
 	{
 		presetChooser->setBounds(r.removeFromTop(presetChooserHeight));
 		r.removeFromTop(gap);
 	}
-
 	for (auto &cui : controllablesUI)
 	{
-		cui->setBounds(r.removeFromTop(controllableHeight));
+    cui->setBounds(r.removeFromTop(controllableHeight));
 		r.removeFromTop(gap);
 	}
 	r.removeFromTop(ccGap);
@@ -333,7 +358,9 @@ void CCInnerContainer::resized()
 	{
 		for (auto &cclink : lowerContainerLinks)
 		{
-			cclink->setBounds(r.removeFromTop(ccLinkHeight));
+      bool isCustom = dynamic_cast<CCInnerContainer::CCLinkBT*> (cclink) ==nullptr;
+
+      cclink->setBounds(r.removeFromTop(ccLinkHeight*(isCustom?2:1)));
 			r.removeFromTop(gap);
 		}
 
@@ -342,9 +369,14 @@ void CCInnerContainer::resized()
 
 	for (auto &ccui : innerContainers)
 	{
-		ccui->setBounds(r.removeFromTop(ccui->getContentHeight()));
+    int h=controllableHeight*2;
+    if(auto icUI = dynamic_cast<CCInnerContainer*>(ccui)){h = icUI->getContentHeight();}
+
+		ccui->setBounds(r.removeFromTop(h));
 		r.removeFromTop(ccGap);
 	}
+  }
+
 }
 
 void CCInnerContainer::clear()
@@ -397,6 +429,6 @@ void CCInnerContainer::buttonClicked(Button * b)
 
 CCInnerContainer::CCLinkBT::CCLinkBT(ControllableContainer * _targetContainer) :
 	targetContainer(_targetContainer),
-	TextButton("[ Inspect "+_targetContainer->niceName+" >> ]")
+	TextButton("[ Inspect "+_targetContainer->getNiceName()+" >> ]")
 {
 }

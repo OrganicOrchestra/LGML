@@ -25,7 +25,7 @@ ControlVariableChooser::ControlVariableChooser()
 			cIndex++;
 		}
 
-		addSubMenu(c->niceName, cp);
+    addSubMenu(c->getNiceName(), cp);
 		controllerIndex++;
 	}
 }

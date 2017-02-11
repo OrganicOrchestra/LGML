@@ -30,7 +30,7 @@ audioNode(nullptr),
 outputVolume(nullptr)
 {
   //set Params
-  nameParam = addStringParameter("Name", "Set the visible name of the node.", name);
+  
   descriptionParam = addStringParameter("Description", "Set a custom description for this node.", "Description");
   enabledParam = addBoolParameter("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
   
@@ -45,7 +45,7 @@ outputVolume(nullptr)
 
   xPosition->isPresettable = false;
   yPosition->isPresettable = false;
-  nameParam->isPresettable = false;
+
 
   descriptionParam->isPresettable = false;
   enabledParam->isPresettable = false;
@@ -130,11 +130,6 @@ String ConnectableNode::getPresetFilter()
 
 void ConnectableNode::onContainerParameterChanged(Parameter * p)
 {
-  if (p == nameParam)
-  {
-    setNiceName(nameParam->stringValue());
-  }
-
   nodeListeners.call(&ConnectableNodeListener::nodeParameterChanged, this, p);
 }
 

@@ -42,7 +42,7 @@ void ControllableContainerPopupMenu::populateMenu(PopupMenu * subMenu, Controlla
 	{
 		PopupMenu p;
 		populateMenu(&p, cc,currentId);
-		subMenu->addSubMenu(cc->niceName, p);
+		subMenu->addSubMenu(cc->nameParam->stringValue(), p);
 	}
 }
 

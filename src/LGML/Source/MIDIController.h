@@ -30,7 +30,7 @@ public :
 
     StringParameter * deviceInName;
 
-    StringParameter * scriptPath;
+    
     BoolParameter * logIncoming;
 	IntParameter * channelFilter;
 

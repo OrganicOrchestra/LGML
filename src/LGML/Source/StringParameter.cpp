@@ -23,12 +23,14 @@ StringParameter::StringParameter(const String & niceName, const String &descript
 StringParameterUI * StringParameter::createStringParameterUI(StringParameter * target)
 {
 	if (target == nullptr) target = this;
-    return new StringParameterUI(target);
+  return  new StringParameterUI(target);
 }
 
 ControllableUI* StringParameter::createDefaultUI(Controllable * targetControllable){
 
-    return createStringParameterUI(dynamic_cast<StringParameter *>(targetControllable));
+    auto spUI =  createStringParameterUI(dynamic_cast<StringParameter *>(targetControllable));
+  
+  return spUI;
 };
 
 

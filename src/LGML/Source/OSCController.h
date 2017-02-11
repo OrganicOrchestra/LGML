@@ -32,7 +32,8 @@ public:
   BoolParameter * logOutGoingOSC;
   BoolParameter * blockFeedback;// if a parameter is updated from processOSC , stops any osc out with same address
   Trigger * sendAllParameters;
-
+  
+  
 
   float lastOSCMessageSentTime;
   int numSentInARow;

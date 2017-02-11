@@ -11,7 +11,7 @@
 #include "JavascriptControllerUI.h"
 #include "JavascriptControllerEditor.h"
 #include "JavascriptController.h"
-
+#include "GenericControllableContainerEditor.h"
 // @ben I really like this i.e deporting create instanciation in UI class (it avoid poluting engine with UI include) what about you?
 ControllerUI * JavascriptController::createUI()
 {
@@ -23,6 +23,7 @@ JavascriptControllerUI::JavascriptControllerUI(JavascriptController * _controlle
 	OSCControllerUI(_controller),
 	jsController(_controller)
 {
+  
 }
 
 JavascriptControllerUI::~JavascriptControllerUI()
@@ -31,5 +32,5 @@ JavascriptControllerUI::~JavascriptControllerUI()
 
 InspectorEditor * JavascriptControllerUI::getEditor()
 {
-	return new JavascriptControllerEditor(this);
+	return new GenericControllableContainerEditor(this);
 }

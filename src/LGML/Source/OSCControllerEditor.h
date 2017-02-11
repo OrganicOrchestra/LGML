@@ -34,6 +34,7 @@ public:
   ScopedPointer<BoolToggleUI> blockFeedback;
   ScopedPointer<TriggerBlinkUI> sendAllTrigger;
 
+
 	Component innerContainer;
   
 	virtual void resized() override;

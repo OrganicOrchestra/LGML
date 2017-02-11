@@ -20,6 +20,8 @@ public:
 	OSCDirectController(const String &name);
 	virtual ~OSCDirectController();
 
+  BoolParameter * sendTimeInfo;
+
 
     virtual Result processMessageInternal(const OSCMessage &msg) override;
 
@@ -33,6 +35,8 @@ public:
     virtual void controllableContainerRemoved(ControllableContainer * cc) override;
 
     virtual void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable * c) override;
+
+    virtual void onContainerParameterChanged(Parameter * p) override;
 
 
 

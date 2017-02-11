@@ -14,6 +14,7 @@
 #include "CustomEditor.h"
 #include "Controllable.h"
 
+
 class ControllableEditor : 
 	public CustomEditor
 {

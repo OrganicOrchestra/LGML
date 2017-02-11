@@ -2,7 +2,7 @@
 
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" id="a1hJPO"
-              includeBinaryInAppConfig="1" jucerVersion="4.3.0" name="LGML"
+              includeBinaryInAppConfig="1" jucerVersion="4.3.1" name="LGML"
               projectType="guiapp" version="1.1.6beta">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
@@ -239,32 +239,6 @@
           <FILE compile="0" file="Source/VuMeter.h" id="CyjIBR" name="VuMeter.h"
                 resource="0"/>
         </GROUP>
-        <GROUP id="{8440F8E7-BEB3-0DE2-3DB3-984C73FFB0F6}" name="legacy">
-          <GROUP id="{74CA504B-E9B7-06E7-6AD1-9590552D0001}" name="ui">
-            <FILE compile="0" file="Source/SelectableComponentHandler.cpp" id="bX8tjA"
-                  name="SelectableComponentHandler.cpp" resource="0"/>
-            <FILE compile="0" file="Source/SelectableComponentHandler.h" id="cO1ryN"
-                  name="SelectableComponentHandler.h" resource="0"/>
-            <FILE compile="0" file="Source/SelectableComponent.h" id="WugEBC" name="SelectableComponent.h"
-                  resource="0"/>
-            <FILE compile="0" file="Source/SelectableComponent.cpp" id="z9jnyI"
-                  name="SelectableComponent.cpp" resource="0"/>
-          </GROUP>
-          <GROUP id="{E01BC9DA-DC5C-2627-022E-9913E19041B7}" name="ControllableInspector">
-            <FILE compile="0" file="Source/ControllableContainerEditor.cpp" id="vzwv3F"
-                  name="ControllableContainerEditor.cpp" resource="0"/>
-            <FILE compile="0" file="Source/ControllableContainerEditor.h" id="QNpqO3"
-                  name="ControllableContainerEditor.h" resource="0"/>
-            <FILE compile="0" file="Source/ControllableContainerSync.cpp" id="FIR3Kt"
-                  name="ControllableContainerSync.cpp" resource="0"/>
-            <FILE compile="0" file="Source/ControllableContainerSync.h" id="ptJrDO"
-                  name="ControllableContainerSync.h" resource="0"/>
-            <FILE compile="0" file="Source/ControllableInspector.cpp" id="WUMfZI"
-                  name="ControllableInspector.cpp" resource="0"/>
-            <FILE compile="0" file="Source/ControllableInspector.h" id="oRwwuf"
-                  name="ControllableInspector.h" resource="0"/>
-          </GROUP>
-        </GROUP>
       </GROUP>
       <GROUP id="{5A36EAD9-4F5A-8767-FBD5-E016BB92AEDC}" name="Control">
         <GROUP id="{4428FDD1-4E1A-F199-46F2-F7D32DF545CA}" name="controllers">
@@ -356,20 +330,6 @@
                     name="OSCDirectController.cpp" resource="0"/>
               <FILE compile="0" file="Source/OSCDirectController.h" id="CFXtw0" name="OSCDirectController.h"
                     resource="0"/>
-            </GROUP>
-            <GROUP id="{7DBD17EB-8FCA-E66F-5D95-E8DD5389A639}" name="custom">
-              <FILE compile="1" file="Source/OSCCustomController.cpp" id="KFx8wx"
-                    name="OSCCustomController.cpp" resource="0"/>
-              <FILE compile="0" file="Source/OSCCustomController.h" id="LSh9JF" name="OSCCustomController.h"
-                    resource="0"/>
-              <FILE compile="1" file="Source/OSCCustomControllerEditor.cpp" id="HqxUyX"
-                    name="OSCCustomControllerEditor.cpp" resource="0"/>
-              <FILE compile="0" file="Source/OSCCustomControllerEditor.h" id="wUvps0"
-                    name="OSCCustomControllerEditor.h" resource="0"/>
-              <FILE compile="1" file="Source/OSCCustomControllerUI.cpp" id="vOgve3"
-                    name="OSCCustomControllerUI.cpp" resource="0"/>
-              <FILE compile="0" file="Source/OSCCustomControllerUI.h" id="A9vEbB"
-                    name="OSCCustomControllerUI.h" resource="0"/>
             </GROUP>
             <FILE compile="1" file="Source/OSCControllerUI.cpp" id="TG6FwA" name="OSCControllerUI.cpp"
                   resource="0"/>

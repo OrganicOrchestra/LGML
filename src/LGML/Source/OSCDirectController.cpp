@@ -25,7 +25,11 @@ OSCDirectController::OSCDirectController(const String & name) :
 OSCController(name)
 {
     NodeManager::getInstance()->addControllableContainerListener(this);
-    TimeManager::getInstance()->addControllableContainerListener(this);
+
+    sendTimeInfo = addBoolParameter("sendTimeInfo", "send time information", false);
+  if(sendTimeInfo->boolValue()){
+  TimeManager::getInstance()->addControllableContainerListener(this);
+  }
 }
 
 OSCDirectController::~OSCDirectController()
@@ -144,7 +148,18 @@ void OSCDirectController::controllableRemoved(Controllable *)
 {
 
 }
+ void OSCDirectController::onContainerParameterChanged(Parameter * p) {
+   OSCController::onContainerParameterChanged(p);
+   if(p==sendTimeInfo){
+     if(sendTimeInfo->boolValue()){
+       TimeManager::getInstance()->addControllableContainerListener(this);
+     }
+     else{
+       TimeManager::getInstance()->removeControllableContainerListener(this);
+     }
 
+   }
+};
 
 
 void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)

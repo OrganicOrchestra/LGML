@@ -18,7 +18,7 @@ MIDIControllerEditor::MIDIControllerEditor(MIDIControllerUI * controllerUI) :
 	ControllerEditor(controllerUI),
 	midiController(controllerUI->midiController),
 	deviceChooser(true),
-    jsUI(controllerUI->midiController)
+    jsUI(controllerUI->midiController->jsParameters)
 {
 	addAndMakeVisible(deviceChooser);
 	deviceChooser.addListener(this);

@@ -27,7 +27,6 @@ public:
 
     int controllerTypeEnum;
 
-    StringParameter * nameParam;
     BoolParameter * enabledParam;
 
 	Trigger * activityTrigger;

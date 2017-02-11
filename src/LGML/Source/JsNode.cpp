@@ -26,7 +26,7 @@ ConnectableNodeUI * JsNode::createUI()
 
 JsNode::JsNode() :NodeBase("JsNode", NodeType::JsNodeType, false), JsEnvironment("node.jsNode", this) {
 	canHavePresets = false;
-	scriptPath = NodeBase::addStringParameter("ScriptPath", "path for js script", "");
+	
 	setPreferedNumAudioInput(0);
 	setPreferedNumAudioOutput(0);
 }
@@ -63,17 +63,12 @@ void JsNode::buildLocalEnv() {
 
 void JsNode::newJsFileLoaded(){
     
-    String relativePath = currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory());//currentFile.getFullPathName()
-    scriptPath->setValue(relativePath);
+    
 }
 
 void JsNode::onContainerParameterChanged(Parameter * p) {
 	NodeBase::onContainerParameterChanged(p);
-	if (p == scriptPath) {
-		loadFile(scriptPath->stringValue());
-	} else if (p == nameParam) {
-		setNamespaceName("node." + shortName);
-	}
+
 }
 
 var JsNode::addIntParameter(const var::NativeFunctionArgs & a) {

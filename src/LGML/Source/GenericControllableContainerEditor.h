@@ -42,7 +42,8 @@ public:
 
 	OwnedArray<NamedControllableUI> controllablesUI;
 	OwnedArray<CCInnerContainer> innerContainers;
-	OwnedArray<CCLinkBT> lowerContainerLinks;
+  ScopedPointer<Component> customEditor;
+	OwnedArray<Component> lowerContainerLinks;
 
 	GenericControllableContainerEditor * editor;
 

@@ -125,7 +125,7 @@ ConnectableNode * NodeContainer::addNodeFromJSONData(var data)
 {
 	NodeType nodeType = NodeFactory::getTypeFromString(data.getProperty("nodeType", var())); 
 	ConnectableNode * n = NodeFactory::createNode(nodeType);
-	return addNode(n,n->niceName,data);
+	return addNode(n,n->getNiceName(),data);
 }
 
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName, var nodeData)
@@ -346,7 +346,7 @@ void NodeContainer::loadJSONDataInternal(var data)
 #if defined DEBUG
         for (auto &node : nodes)
         {
-          DBG(" > " + node->niceName+"//"+ node->shortName);
+          DBG(" > " + node->getNiceName()+"//"+ node->shortName);
         }
 #endif
 

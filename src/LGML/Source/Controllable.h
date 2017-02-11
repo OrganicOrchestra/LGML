@@ -20,6 +20,8 @@ class Controllable
 {
 public:
   enum Type { //Add type here if creating new type of Controllable
+//    CUSTOM, // allow opaque controllables with custom editors
+//    //(mainly to avoid polluting this enum when using custom editors)
     TRIGGER,
     FLOAT,
     INT,

@@ -17,6 +17,7 @@
 #include "StringUtil.h"
 #include "JsHelpers.h"
 
+
 const Identifier ControllableContainer::presetIdentifier("preset");
 const Identifier ControllableContainer::paramIdentifier("parameters");
 
@@ -36,7 +37,10 @@ ControllableContainer::ControllableContainer(const String & niceName) :
 	localIndexedPosition(-1),
 	presetSavingIsRecursive(false)
 {
-  setNiceName(niceName);
+
+  nameParam = addStringParameter("Name", "Set the visible name of the node.", "");
+  nameParam->isPresettable = false;
+  nameParam->setValue(niceName);
   currentPresetName = addStringParameter("Preset", "Current Preset", "");
   currentPresetName->hideInEditor = true;
   savePresetTrigger = addTrigger("Save Preset", "Save current preset");
@@ -162,9 +166,12 @@ void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
   }
 }
 void ControllableContainer::setNiceName(const String &_niceName) {
-  if (niceName == _niceName) return;
-  niceName = _niceName;
-  if (!hasCustomShortName) setAutoShortName();
+
+  nameParam->setValue(_niceName);
+
+}
+const String  ControllableContainer::getNiceName(){
+  return nameParam->stringValue();
 }
 
 void ControllableContainer::setCustomShortName(const String &_shortName){
@@ -176,7 +183,7 @@ void ControllableContainer::setCustomShortName(const String &_shortName){
 
 void ControllableContainer::setAutoShortName() {
   hasCustomShortName = false;
-  shortName = StringUtil::toShortName(niceName);
+  shortName = StringUtil::toShortName(getNiceName());
   updateChildrenControlAddress();
   controllableContainerListeners.call(&ControllableContainerListener::childAddressChanged,this);
 }
@@ -256,7 +263,7 @@ ControllableContainer * ControllableContainer::getControllableContainerByName(co
 {
   for (auto &cc : controllableContainers)
   {
-    if (cc.get() && (cc->shortName == name || (searchNiceNameToo && cc->niceName == name))) return cc;
+    if (cc.get() && (cc->shortName == name || (searchNiceNameToo && cc->getNiceName() == name))) return cc;
   }
 
   return nullptr;
@@ -526,7 +533,7 @@ PresetManager::Preset* ControllableContainer::saveNewPreset(const String & _name
 {
   PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, presetSavingIsRecursive);
   savePresetInternal(pre);
-  NLOG(niceName, "New preset saved : " + pre->name);
+  NLOG(getNiceName(), "New preset saved : " + pre->name);
   loadPreset(pre);
   return pre;
 }
@@ -542,7 +549,7 @@ bool ControllableContainer::saveCurrentPreset()
 
 	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
 	savePresetInternal(pre);
-	NLOG(niceName, "Current preset saved : " + pre->name);
+	NLOG(getNiceName(), "Current preset saved : " + pre->name);
 	return loadPreset(pre);
 	
 	/*
@@ -616,6 +623,10 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
 
 void ControllableContainer::parameterValueChanged(Parameter * p)
 {
+  if (p == nameParam)
+  {
+    if (!hasCustomShortName) setAutoShortName();
+  }
 
   onContainerParameterChanged(p);
 
@@ -796,4 +807,5 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
   }
   return false;
 }
+
 

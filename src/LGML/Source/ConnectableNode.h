@@ -46,7 +46,7 @@ public:
 	virtual bool hasDataOutputs();
 
 	//Controllables (from ControllableContainer)
-	StringParameter * nameParam;
+	
     StringParameter * descriptionParam;
 	BoolParameter * enabledParam;
 

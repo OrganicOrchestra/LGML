@@ -19,7 +19,6 @@ port(nullptr)
 {
 
   setNamespaceName("controller." + shortName);
-  scriptPath = addStringParameter("jsScriptPath", "path for js script", "");
   logIncoming = addBoolParameter("logIncoming", "log Incoming midi message", false);
 
   selectedHardwareID = addStringParameter("selectedHardwareID","Id of the selected hardware", "");
@@ -72,7 +71,7 @@ void SerialController::setCurrentPort(SerialPort * _port)
 
 void SerialController::newJsFileLoaded()
 {
-  scriptPath->setValue(currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory()));
+
 }
 
 void SerialController::onContainerParameterChanged(Parameter * p) {
@@ -80,9 +79,7 @@ void SerialController::onContainerParameterChanged(Parameter * p) {
   if(p==nameParam){
     setNamespaceName("controller."+shortName);
   }
-  else if (p==scriptPath){
-    loadFile(scriptPath->stringValue());
-  }else if(p == selectedHardwareID || p == selectedPort)
+  else if(p == selectedHardwareID || p == selectedPort)
   {
     SerialPort * _port  = SerialManager::getInstance()->getPort(selectedHardwareID->stringValue(), selectedPort->stringValue(),true);
     if(_port != nullptr)
@@ -135,10 +132,10 @@ void SerialController::serialDataReceived(const var & data)
 }
 
 void SerialController::internalVariableAdded(ControlVariable*){
-  loadFile(scriptPath->stringValue());
+  reloadFile();
 }
 void SerialController::internalVariableRemoved(ControlVariable*){
-  loadFile(scriptPath->stringValue());
+  reloadFile();
 
 }
 var SerialController::sendMessageFromScript(const var::NativeFunctionArgs &) {

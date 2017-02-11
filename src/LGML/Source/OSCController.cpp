@@ -34,6 +34,7 @@ oscMessageQueue(this)
 
   blockFeedback = addBoolParameter("blockFeedback", "block osc feedback (resending updated message to controller)", true);
   sendAllParameters = addTrigger("sendAll", "send all parameter states to initialize ", true);
+  
   setupReceiver();
   setupSender();
 
@@ -98,7 +99,7 @@ void OSCController::logMessage(const OSCMessage & msg,const String & prefix){
     else if(a.isString())log+=String(msg[i].getString())+" ";
 
   }
-  NLOG(niceName,log);
+  NLOG(getNiceName(),log);
 }
 
 Result OSCController::processMessageInternal(const OSCMessage &)
@@ -113,6 +114,7 @@ void OSCController::onContainerParameterChanged(Parameter * p)
   if (p == localPortParam) setupReceiver();
   else if (p == remotePortParam || p == remoteHostParam) setupSender();
   else if(p==speedLimit){oscMessageQueue.interval=speedLimit->floatValue();}
+
 
 }
 
@@ -241,7 +243,7 @@ void OSCController::OSCMessageQueue::add(OSCMessage * m){
     aFifo.finishedWrite(numWritten);
     numWritten=0;
     timerCallback();
-    NLOG(owner->niceName,"still flooding OSC");
+    NLOG(owner->getNiceName(),"still flooding OSC");
   }
   aFifo.finishedWrite(numWritten);
   if(!isTimerRunning())startTimer(interval);

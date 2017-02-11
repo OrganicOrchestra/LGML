@@ -38,7 +38,7 @@ public:
     void internalVariableAdded(ControlVariable*) override;
     void internalVariableRemoved(ControlVariable*) override;
 	//Script
-	StringParameter * scriptPath;
+	
 	BoolParameter * logIncoming;
 
 	void onContainerParameterChanged(Parameter * p) override;
