@@ -85,15 +85,22 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   TimeManager * tm = TimeManager::getInstance();
   uint64 curTime = tm->getTimeInSample();
   int offset = startPlayBeat*tm->beatTimeInSample;
-  if(getQuantization()==0) curTime = loopSample.getGlobalPlayPos();
-  else if( !loopSample.isOrWasRecording() &&  curTime<offset){
+  if(getQuantization()==0) {
+    curTime = loopSample.getGlobalPlayPos();
+    offset = 0;
+  }
+  else if( !loopSample.isOrWasRecording() ){
+    if(curTime<offset){
     float negativeStartPlayBeat = startPlayBeat/beatLength->doubleValue();
     negativeStartPlayBeat = startPlayBeat - beatLength->doubleValue()*ceil(negativeStartPlayBeat);
-
     offset =  negativeStartPlayBeat*tm->beatTimeInSample;
 
   }
-  jassert(curTime -offset>=0 );
+  }
+  else{
+    offset = 0;
+  }
+  jassert((int)curTime -(int)offset>=0 );
   if(!loopSample.processNextBlock(buffer,curTime-offset ) && trackState!=STOPPED){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);
@@ -571,9 +578,8 @@ void LooperTrack::setTrackState(TrackState newState) {
   // on should play
   else if (newState == WILL_PLAY) {
 
-
     // end of first track
-    if ( trackState == RECORDING ){
+     if ( trackState == RECORDING ){
       if(isMasterTempoTrack() ) {
         quantizedRecordEnd = 0;
         
@@ -602,7 +608,7 @@ void LooperTrack::setTrackState(TrackState newState) {
 
     }
     // if every one else is stopped
-    else if(parentLooper->askForBeingAbleToPlayNow(this) && !loopSample.isOrWasPlaying()) {
+    else if(trackState!=CLEARED && parentLooper->askForBeingAbleToPlayNow(this) && !loopSample.isOrWasPlaying()) {
       quantizedRecordEnd = NO_QUANTIZE;
 
       if(timeManager->isMasterCandidate(parentLooper)){
