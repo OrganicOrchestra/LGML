@@ -33,8 +33,8 @@ lastState(BUFFER_STOPPED),
 stateChanged(false),
 numTimePlayed(0),
 sampleOffsetBeforeNewState(0),
-hasBeenFaded (false),fadeSamples(32),
-fadeRecorded(32),
+hasBeenFaded (false),fadeSamples(256),
+fadeRecorded(256),
 
 sampleRate(44100)
 #if BUFFER_CAN_STRETCH
