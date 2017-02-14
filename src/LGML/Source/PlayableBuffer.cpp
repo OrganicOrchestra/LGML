@@ -27,14 +27,14 @@ PlayableBuffer::PlayableBuffer(int numChannels,int numSamples,int sampleRate,int
 loopSample(numChannels,numSamples),
 recordNeedle(0),
 startJumpNeedle(0),
-playNeedle(0),isJumping(false),
+playNeedle(0),globalPlayNeedle(0),isJumping(false),
 state(BUFFER_STOPPED),
 lastState(BUFFER_STOPPED),
 stateChanged(false),
 numTimePlayed(0),
 sampleOffsetBeforeNewState(0),
-hasBeenFaded (false),fadeSamples(32),
-fadeRecorded(32),
+hasBeenFaded (false),fadeSamples(256),
+fadeRecorded(256),
 
 sampleRate(44100)
 #if BUFFER_CAN_STRETCH

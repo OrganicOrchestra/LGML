@@ -521,7 +521,7 @@ uint64 TimeManager::getNextQuantifiedTime(int barFraction){
   if (barFraction==-1){barFraction=quantizedBarFraction->intValue();}
   if(barFraction==0){return timeState.time;}
 
-  const uint64 samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()/barFraction);
+  const double samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()*1.0/barFraction);
   const uint64 res = (uint64) ((floor(timeState.time*1.0/samplesPerUnit) + 1)*samplesPerUnit);
   return res;
 }
