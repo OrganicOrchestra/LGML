@@ -25,3 +25,25 @@ void BetterStepper::setTooltip(const String & tooltip)
 {
 	Slider::setTooltip(tooltip);
 }
+void BetterStepper::resized(){
+  Slider::resized();
+  isMini = getWidth() < 30;
+  if(isMini){
+    setSliderStyle(juce::Slider::SliderStyle::LinearBarVertical);
+    setColour(juce::Slider::textBoxTextColourId, juce::Colours::white);
+  }
+  else{
+    setSliderStyle(SliderStyle::IncDecButtons);
+    setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
+  }
+
+}
+
+//void BetterStepper::paint(juce::Graphics & g){
+////  if(isMini){
+////  g.drawText(String((int)Slider::getValue()), getLocalBounds(), juce::Justification::centred);
+////  }
+////  else{
+//    Slider::paint(g);
+////  }
+//}

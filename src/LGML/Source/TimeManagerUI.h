@@ -11,12 +11,15 @@
 #ifndef TIMEMANAGERUI_H_INCLUDED
 #define TIMEMANAGERUI_H_INCLUDED
 
+
+
 #include "TimeManager.h"//keep
 #include "FloatSliderUI.h"
 #include "TriggerBlinkUI.h"
 #include "BoolToggleUI.h"
 #include "IntStepperUI.h"
 #include "ShapeShifterContent.h"
+
 
 class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener{
 
@@ -79,6 +82,10 @@ class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener
   ScopedPointer<TriggerBlinkUI> playTrig,stopTrig,tapTempo;
   ScopedPointer<BoolToggleUI> click;
   ScopedPointer<FloatSliderUI> clickVolumeUI;
+
+
+  ScopedPointer<BoolToggleUI> linkEnabled;
+  ScopedPointer<IntStepperUI> linkNumPeers;
 
 
 

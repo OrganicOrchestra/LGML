@@ -21,6 +21,7 @@ FloatStepperUI::FloatStepperUI(Parameter * _parameter) :
     slider->setValue(parameter->floatValue());
     slider->addListener(this);
 	slider->setTextBoxIsEditable(_parameter->isEditable);
+  slider->setEnabled( ! parameter->isControllableFeedbackOnly);
 }
 
 FloatStepperUI::~FloatStepperUI()
@@ -42,7 +43,9 @@ void FloatStepperUI::valueChanged(const var & value)
 
 void FloatStepperUI::sliderValueChanged(Slider * _slider)
 {
+
 	parameter->setValue(_slider->getValue());
+
 }
 void FloatStepperUI::rangeChanged(Parameter * p){
     slider->setRange((float)p->minimumValue, (float)p->maximumValue,1);

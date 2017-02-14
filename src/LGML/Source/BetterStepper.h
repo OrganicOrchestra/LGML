@@ -18,8 +18,10 @@ class BetterStepper : public Slider
 public:
 	BetterStepper(const String &tooltip);
 	virtual ~BetterStepper();
-
+  void resized()override;
+  bool isMini;
 	virtual void setTooltip(const String &tooltip) override;
+//  void paint(Graphics &g) ;
 };
 
 

@@ -46,6 +46,14 @@ timeBar(_timeManager){
   clickVolumeUI = timeManager->clickVolume->createSlider();
   addAndMakeVisible(clickVolumeUI);
 
+  linkEnabled = timeManager->linkEnabled->createToggle();
+  addAndMakeVisible(linkEnabled);
+
+
+  linkNumPeers = timeManager->linkNumPeers->createStepper();
+  addAndMakeVisible(linkNumPeers);
+
+
 }
 
 
@@ -86,23 +94,31 @@ void TimeManagerUI::paint(Graphics & g)
 
 void TimeManagerUI::resized(){
 
-  Rectangle<int> r = getLocalBounds().withWidth(700).withCentre(getLocalBounds().getCentre()).reduced(4);
-  timeBar.setBounds(r.removeFromRight(200).reduced(0, 2));
+  int width = 800;
+  int gap = 2;
+
+  Rectangle<int> r = getLocalBounds().withWidth(width).withCentre(getLocalBounds().getCentre()).reduced(4);
+  timeBar.setBounds(r.removeFromRight(width*0.3).reduced(0, 2));
   r.removeFromRight(5);
-  playTrig->setBounds(r.removeFromRight(50));
+  playTrig->setBounds(r.removeFromRight(width*0.05).reduced(gap, 0));
   r.removeFromRight(2);
-  stopTrig->setBounds(r.removeFromRight(50));
+  stopTrig->setBounds(r.removeFromRight(width*0.05).reduced(gap, 0));
   r.removeFromRight(10);
-  bpmStepper->setBounds(r.removeFromRight(80));
+  bpmStepper->setBounds(r.removeFromRight(width*0.1).reduced(gap, 0));
   r.removeFromRight(10);
-  quantizStepper->setBounds(r.removeFromRight(80));
+  quantizStepper->setBounds(r.removeFromRight(width*0.1).reduced(gap, 0));
   r.removeFromRight(10);
-  tapTempo->setBounds(r.removeFromRight(80));
+  tapTempo->setBounds(r.removeFromRight(width*0.1).reduced(gap, 0));
   r.removeFromRight(10);
-  Rectangle<int> clickR = r.removeFromRight(80);
+  Rectangle<int> clickR = r.removeFromRight(width*0.1).reduced(gap, 0);
   click->setBounds(clickR.removeFromTop(10));
   clickR.removeFromTop(4);
   clickVolumeUI->setBounds(clickR);
+
+  linkEnabled->setBounds(r.removeFromRight(width*0.1).reduced(gap, 0));
+  linkNumPeers->setBounds(r.removeFromRight(width*0.1).reduced(gap, 0));
+
+
 }
 
 TimeManagerUI::TimeBar::TimeBar(TimeManager * t):timeManager(t){

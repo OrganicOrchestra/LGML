@@ -34,7 +34,7 @@ ControllableUI* StringParameter::createDefaultUI(Controllable * targetControllab
 };
 
 
-void StringParameter::setValue(var _value,bool silentSet,bool force,bool defferIt ){
+void StringParameter::tryToSetValue(var _value,bool silentSet,bool force,bool defferIt ){
     
    
     if (!force && value.toString() == _value.toString()) return;

@@ -28,13 +28,25 @@ public:
     var maximumValue;
     void setRange(var,var);
 
-	bool isEditable;
+    bool isEditable;
     bool isSavable;
     bool isPresettable;
     bool isOverriden;
+  // if true each set value doesn't do nothing until som reader call pushValue
+  // useful for thread syncronization
+  bool isCommitableParameter;
 
     void resetValue(bool silentSet = false);
-    virtual void setValue(var _value, bool silentSet = false, bool force = false,bool defferIt=false);
+     void setValue(var _value, bool silentSet = false, bool force = false,bool defferIt=false);
+
+  // helpers to coalesce value until a reader pushes it
+  // useful for threadSyncronization
+  virtual void commitValue(var _value);
+  virtual void pushValue(bool defered=true,bool force = false);
+
+  var commitedValue;
+  bool hasCommitedValue;
+
     virtual void setValueInternal(var & _value);
 
 	virtual bool checkValueIsTheSame(var newValue, var oldValue); //can be overriden to modify check behavior
@@ -92,6 +104,9 @@ public:
 	//JS Helper
 	static var getValue(const juce::var::NativeFunctionArgs &a);
 
+
+
+  virtual void tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt);
 
 private:
 

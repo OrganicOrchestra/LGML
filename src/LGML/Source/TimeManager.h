@@ -22,6 +22,21 @@
 #include "TimeMasterCandidate.h"
 #include "ControllableContainer.h"
 
+// TODO change when window support
+// @ ben header only so should be easy
+#if JUCE_MAC
+#define LINK_SUPPORT 1
+#else
+#define LINK_SUPPORT 0
+#endif
+
+
+#if LINK_SUPPORT
+#include "ableton/link.hpp"
+#else
+
+#endif
+
 class FadeInOut;
 
 
@@ -47,6 +62,7 @@ struct TransportTimeInfo{
   
 
 };
+
 
 class TimeManager : public AudioIODeviceCallback ,public ControllableContainer,public AudioPlayHead,
 public TimeMasterCandidate
@@ -76,6 +92,18 @@ public TimeMasterCandidate
   FloatParameter * clickVolume;
 
   IntParameter * quantizedBarFraction;
+
+  #if LINK_SUPPORT
+  ableton::Link linkSession;
+  
+  static void linkNumPeersCallBack(const std::size_t numPeers);
+  static void linkTempoCallBack(const double tempo);
+  bool getLinkTimeLine();
+  #endif
+  BoolParameter * linkEnabled;
+  IntParameter * linkNumPeers;
+
+
 
   void setSampleRate(int sr);
   void setBlockSize(int bS);
@@ -229,6 +257,13 @@ private:
   bool notifyTimeJumpedIfNeeded();
 
   bool isAnyoneBoundToTime();
+
+  void checkCommitableParams(
+#if LINK_SUPPORT
+                             ableton::Link::Timeline & linkTimeLine,const std::chrono::duration<long long> & time
+#endif
+  );
+  void pushCommitableParams();
 //  double lastEnv;
 //  int clickFadeOut,clickFadeIn,clickFadeTime;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)

@@ -18,7 +18,9 @@ isEditable(true),
 isSavable(true),
 isPresettable(true),
 isOverriden(false),
-queuedNotifier(100)
+queuedNotifier(100),
+hasCommitedValue(false),
+isCommitableParameter(false)
 {
   minimumValue = minValue;
   maximumValue = maxValue;
@@ -35,17 +37,21 @@ void Parameter::resetValue(bool silentSet)
 
 void Parameter::setValue(var _value, bool silentSet, bool force,bool defferIt)
 {
-
+  if(isCommitableParameter && !force){
+    commitValue(_value);
+  }
+  else{
+    tryToSetValue(_value,silentSet,force,defferIt);
+  }
+}
+void Parameter::tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt){
   if (!force && checkValueIsTheSame(_value, value)) return;
   lastValue = var(value);
   setValueInternal(_value);
-
-
   if(_value != defaultValue) isOverriden = true;
-
   if (!silentSet) notifyValueChanged(defferIt);
-}
 
+}
 void Parameter::setRange(var min, var max){
   minimumValue = min;
   maximumValue = max;
@@ -53,6 +59,18 @@ void Parameter::setRange(var min, var max){
   var arr;arr.append(minimumValue);arr.append(maximumValue);
   queuedNotifier.addMessage(new ParamWithValue(this,arr));
 }
+
+void Parameter::commitValue(var _value){
+  commitedValue  =_value;
+  hasCommitedValue = true;
+}
+
+void Parameter::pushValue(bool defered,bool force){
+  if(!hasCommitedValue && !force)return;
+  tryToSetValue(commitedValue,false,true,defered);
+  hasCommitedValue = false;
+}
+
 
 void Parameter::setValueInternal(var & _value) //to override by child classes
 {
@@ -93,7 +111,7 @@ void Parameter::notifyValueChanged(bool defferIt) {
     triggerAsyncUpdate();
   else
     listeners.call(&Listener::parameterValueChanged, this);
-  
+
   queuedNotifier.addMessage(new ParamWithValue(this,value));
 }
 

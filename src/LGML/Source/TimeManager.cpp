@@ -40,9 +40,14 @@ hasJumped(false),
 hadMasterCandidate(false),
 timeMasterCandidate(nullptr),
 samplePerBeatGranularity(8)
+#if LINK_SUPPORT
+,linkSession(120.0)
+#endif
+
 {
 
   BPM = addFloatParameter("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
+  BPM->isCommitableParameter = true;
   playState = addBoolParameter("PlayStop", "play or stop global transport", false);
   BPMLocked = addBoolParameter("bpmLocked", "bpm is locked by somebody", false);
   BPMLocked->isControllableFeedbackOnly = true;
@@ -58,12 +63,27 @@ samplePerBeatGranularity(8)
   clickVolume = addFloatParameter("Metronome Volume", "Click's volume if metronome is active", .5f, 0, 1);
   setBPMInternal(BPM->doubleValue(),false);
 
+  linkEnabled = addBoolParameter("link enabled","activate link",false);
+  linkEnabled->enabled = LINK_SUPPORT;
+
+  linkNumPeers = addIntParameter("linkNumPeers","number of connected link devices",0,0,32);
+  linkNumPeers->enabled = LINK_SUPPORT;
+  linkNumPeers->isControllableFeedbackOnly = true;
+  linkNumPeers->isEditable = false;
+#if LINK_SUPPORT
+  linkEnabled->setValue(true);
+  linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
+
+  linkSession.setTempoCallback(&TimeManager::linkTempoCallBack);
+#endif
+
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);
 
-  
+
 }
 TimeManager::~TimeManager()
 {
+
 }
 
 
@@ -75,16 +95,34 @@ void TimeManager::incrementClock(int time){
 #endif
     setBlockSize(time);
   }
+
+#if LINK_SUPPORT
+  ableton::Link::Timeline linkTimeLine = linkSession.captureAudioTimeline();
+  auto  _time =  std::chrono::duration<long long>((long long)((timeState.time + blockSize)*1.0 /sampleRate )); //Time::getHighResolutionTicks())
+//  linkTimeLine.timeAtBeat(<#const double beat#>, <#const double quantum#>)
+#endif
   updateState();
   if(_isLocked){
-    
+
     return;
   }
 
+  checkCommitableParams(
+#if LINK_SUPPORT
+                        linkTimeLine ,_time
+#endif
+                        );
   hasJumped = notifyTimeJumpedIfNeeded();
+#if LINK_SUPPORT
+  if(hasJumped){
+    linkTimeLine.requestBeatAtTime(getBeat(),
+                                   //                      std::chrono::system_clock::now().time_since_epoch(),
+                                  _time,
+                                   beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
+  }
+#endif
 
-
-   if(!hasJumped && timeState.isPlaying){
+  if(!hasJumped && timeState.isPlaying){
     timeState.time+=blockSize;
   }
   timeState.nextTime = timeState.time+blockSize;
@@ -105,20 +143,45 @@ void TimeManager::incrementClock(int time){
   }
   hadMasterCandidate = timeMasterCandidate!=nullptr;
 
+  pushCommitableParams();
+
+#if LINK_SUPPORT
+  linkSession.commitAudioTimeline(linkTimeLine);
+#endif
+
+}
+void TimeManager::checkCommitableParams(
+#if LINK_SUPPORT
+                                        ableton::Link::Timeline & linkTimeLine,const std::chrono::duration<long long> & _time
+#endif
+){
+  if(BPM->hasCommitedValue){
+    BPM->pushValue(true);
+    setBPMInternal(BPM->doubleValue(),true);
+    clickFader->startFadeOut();
+#if LINK_SUPPORT
+    linkTimeLine.setTempo(BPM->doubleValue(),_time);
+
+#endif
+  }
 }
 
+void TimeManager::pushCommitableParams(){
+//  BPM->pushValue(true);
+}
 
 bool TimeManager::notifyTimeJumpedIfNeeded(){
 
-if(timeState.isJumping){
-  jassert(blockSize!=0);
-  timeState.time=timeState.nextTime;
-  timeState.nextTime = timeState.time+blockSize;
-  timeState.isJumping=false;
-  listeners.call(&Listener::timeJumped,timeState.time);
-  desiredTimeState =timeState;
-  return true;
-}
+  if(timeState.isJumping){
+    jassert(blockSize!=0);
+    timeState.time=timeState.nextTime;
+    timeState.nextTime = timeState.time+blockSize;
+    timeState.isJumping=false;
+    listeners.call(&Listener::timeJumped,timeState.time);
+    desiredTimeState =timeState;
+
+    return true;
+  }
   return false;
 }
 
@@ -156,7 +219,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
       for(int c = 0 ;c < numOutputChannels ; c++ ){outputChannelData[c][i] = res;}
 
       sinCount = (sinCount+1)%(sinFreq);
-//      DBG(clickFader->getCurrentFade());
+      //      DBG(clickFader->getCurrentFade());
 
     }
   }
@@ -169,6 +232,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
 #if !LGML_UNIT_TESTS
   incrementClock(numSamples);
 #endif
+
 }
 
 bool TimeManager::isPlaying(){
@@ -204,7 +268,7 @@ void TimeManager::releaseMasterCandidate(TimeMasterCandidate *n){
 }
 void TimeManager::releaseIfMasterCandidate(TimeMasterCandidate *n){
   if(n==timeMasterCandidate){
-  isSettingTempo->setValue(false);
+    isSettingTempo->setValue(false);
     n=nullptr;
   }
 }
@@ -226,16 +290,18 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
     play(playState->boolValue());
 
   }
-  else if(p==BPM){
-    setBPMInternal(BPM->doubleValue(),true);
-    clickFader->startFadeOut();
 
-  }
   else if (p==BPMLocked){
     BPM->isEditable = !BPMLocked->boolValue();
   }
   else if(p==beatPerBar){currentBeat->maximumValue = beatPerBar->intValue();}
 
+
+  else if (p==linkEnabled){
+#if LINK_SUPPORT
+    linkSession.enable(linkEnabled->boolValue());
+#endif
+  }
 
 };
 
@@ -256,8 +322,8 @@ void TimeManager::advanceTime(uint64 a,bool now){
     goToTime(desiredTimeState.nextTime+a,true);
   }
   else{
-  if(desiredTimeState.isJumping){desiredTimeState.nextTime+=a;}
-  else                          {desiredTimeState.jumpTo(timeState.nextTime+a);}
+    if(desiredTimeState.isJumping){desiredTimeState.nextTime+=a;}
+    else                          {desiredTimeState.jumpTo(timeState.nextTime+a);}
   }
 
 }
@@ -304,8 +370,8 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
   if(t == playTrigger){
     if(!playState->boolValue())playState->setValue(true);
     shouldRestart(true);
-//    desiredTimeState.jumpTo(0);
-//    playState->setValue(false);
+    //    desiredTimeState.jumpTo(0);
+    //    playState->setValue(false);
 
   }
   else if(t==stopTrigger){
@@ -387,6 +453,7 @@ void TimeManager::setBPMInternal(double _BPM,bool adaptTimeInSample){
   }
   beatTimeInSample =newBeatTime;
 
+
 }
 uint64 TimeManager::getTimeInSample(){
   return timeState.time;
@@ -420,7 +487,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time){
 
   res.bpm = 60.0/res.beatTime;
   DBG("found beat Sample : " << String(res.beatInSample) << " : " << time);
-  
+
   return res;
 }
 void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample){
@@ -428,8 +495,8 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
   BPM->setValue(info.bpm,false,false,false);
 
   if(adaptTimeInSample){
-  uint64 targetTime = timeState.time*info.beatInSample/beatTimeInSample;
-  goToTime(targetTime);
+    uint64 targetTime = timeState.time*info.beatInSample/beatTimeInSample;
+    goToTime(targetTime);
   }
   // force exact beatTimeInSample
   beatTimeInSample = info.beatInSample;
@@ -440,7 +507,7 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
   // lockBPM for now
 
 
-//  BPMLocked->setValue(true);
+  //  BPMLocked->setValue(true);
 
 
 }
@@ -490,7 +557,7 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
   result.timeInSamples = timeState.time;
   result.timeInSeconds = (double)(timeState.time)*sampleRate;
   result.editOriginTime = 0;
-  
+
   result.isLooping=false;
   return true;
 }
@@ -512,3 +579,21 @@ void TimeManager::notifyListenerCleared(){
 
   shouldRestart(false);
 }
+
+
+#if LINK_SUPPORT
+void TimeManager::linkTempoCallBack(const double tempo){
+  if(TimeManager * tm = getInstanceWithoutCreating()){
+    tm->BPM->setValue(tempo);
+  }
+  
+}
+void TimeManager::linkNumPeersCallBack(const size_t numPeers){
+  if(TimeManager * tm = getInstanceWithoutCreating()){
+    tm->linkNumPeers->setValue((int)numPeers);
+  }
+  
+}
+
+
+#endif
