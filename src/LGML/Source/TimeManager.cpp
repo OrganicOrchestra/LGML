@@ -35,13 +35,15 @@ _isLocked(false),
 currentBeatPeriod(.5),
 lastTaped(0),
 tapInRow(0),
-firstPlayingFrame(false),
 hasJumped(false),
 hadMasterCandidate(false),
 timeMasterCandidate(nullptr),
-samplePerBeatGranularity(8)
+samplePerBeatGranularity(8),
+audioClock(0)
 #if LINK_SUPPORT
-,linkSession(120.0)
+,linkSession(120.0),
+linkTimeLine(ableton::link::Timeline(),true),
+linkLatency(7*1000)
 #endif
 
 {
@@ -70,6 +72,8 @@ samplePerBeatGranularity(8)
   linkNumPeers->enabled = LINK_SUPPORT;
   linkNumPeers->isControllableFeedbackOnly = true;
   linkNumPeers->isEditable = false;
+  isWaitingForStart = addBoolParameter("isWaitingForStart","is currently waiting for quantized start",false);
+  isWaitingForStart->isEditable = false;
 #if LINK_SUPPORT
   linkEnabled->setValue(true);
   linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
@@ -87,19 +91,45 @@ TimeManager::~TimeManager()
 }
 
 
-void TimeManager::incrementClock(int time){
+void TimeManager::incrementClock(int block){
+  audioClock+=block;
   jassert(blockSize!=0);
-  if(time!=blockSize){
+  if(block!=blockSize){
 #if !LGML_UNIT_TESTS
     jassertfalse;
 #endif
-    setBlockSize(time);
+    setBlockSize(block);
   }
 
 #if LINK_SUPPORT
-  ableton::Link::Timeline linkTimeLine = linkSession.captureAudioTimeline();
-  auto  _time =  std::chrono::duration<long long>((long long)((timeState.time + blockSize)*1.0 /sampleRate )); //Time::getHighResolutionTicks())
-//  linkTimeLine.timeAtBeat(<#const double beat#>, <#const double quantum#>)
+
+
+   linkTimeLine = linkSession.captureAudioTimeline();
+
+  linkTime =
+   linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
+//  std::chrono::microseconds( (long long)(Time::getMillisecondCounterHiRes()*1000.0));//(timeState.time*(long long)1000.0/sampleRate)
+
+//
+ const int tstQ = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
+  auto beatAtTime = linkTimeLine.beatAtTime(linkTime, tstQ);
+  auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
+  auto localBeat = getBeat();
+  auto localPhase = fmod(localBeat,tstQ);
+  if(beatAtTime>0 ){
+    if(isWaitingForStart->boolValue()){
+      isWaitingForStart->setValue(false);
+      timeState.isPlaying = true;
+    }
+  if(isPlaying() &&  !isFirstPlayingFrame()&& fabs(phaseAtTime - localPhase)>0.5){
+    int closestQOffset = (localPhase> tstQ/2)?tstQ:0;
+    goToTime((getBeatForQuantum(tstQ)+closestQOffset + phaseAtTime) * beatTimeInSample);
+  }
+  }
+  else if(beatAtTime<0 && timeState.isPlaying  && !isWaitingForStart->boolValue() ){
+    goToTime(0,true);
+    isWaitingForStart->setValue(true);
+  }
 #endif
   updateState();
   if(_isLocked){
@@ -107,25 +137,22 @@ void TimeManager::incrementClock(int time){
     return;
   }
 
-  checkCommitableParams(
-#if LINK_SUPPORT
-                        linkTimeLine ,_time
-#endif
-                        );
+  checkCommitableParams();
   hasJumped = notifyTimeJumpedIfNeeded();
 #if LINK_SUPPORT
-  if(hasJumped){
+  if(isPlaying()){
     linkTimeLine.requestBeatAtTime(getBeat(),
                                    //                      std::chrono::system_clock::now().time_since_epoch(),
-                                  _time,
+                                  linkTime,
                                    beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
+    linkSession.commitAudioTimeline(linkTimeLine);
   }
 #endif
 
   if(!hasJumped && timeState.isPlaying){
     timeState.time+=blockSize;
   }
-  timeState.nextTime = timeState.time+blockSize;
+  timeState.nextTime = timeState.time+(isWaitingForStart->boolValue()?blockSize:0);
   int lastBeat =  int(currentBeat->doubleValue());
   int newBeat = getBeatInt();
   if(lastBeat!=newBeat){
@@ -146,21 +173,17 @@ void TimeManager::incrementClock(int time){
   pushCommitableParams();
 
 #if LINK_SUPPORT
-  linkSession.commitAudioTimeline(linkTimeLine);
+
 #endif
 
 }
-void TimeManager::checkCommitableParams(
-#if LINK_SUPPORT
-                                        ableton::Link::Timeline & linkTimeLine,const std::chrono::duration<long long> & _time
-#endif
-){
+void TimeManager::checkCommitableParams(){
   if(BPM->hasCommitedValue){
     BPM->pushValue(true);
     setBPMInternal(BPM->doubleValue(),true);
     clickFader->startFadeOut();
 #if LINK_SUPPORT
-    linkTimeLine.setTempo(BPM->doubleValue(),_time);
+    linkTimeLine.setTempo(BPM->doubleValue(),linkTime);
 
 #endif
   }
@@ -212,7 +235,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
       double x = (getBeatInNextSamples(i)-getBeatInt() ) ;
       double h = k*fmod((double)x+1.0/k,1.0);
       clickFader->incrementFade();
-      double env = clickFader->getCurrentFade()*jmax(0.0,h*exp(1.0-h));
+      double env = 0.77*clickFader->getCurrentFade()*jmax(0.0,h*exp(1.0-h));
 
       float res = (clickVolume->floatValue()* env* cos(2.0*M_PI*carg ));
 
@@ -361,7 +384,9 @@ void TimeManager::updateState(){
     LOG(dbg);
   }
 
-  firstPlayingFrame = desiredTimeState.isPlaying && timeState.isPlaying;
+  if(!desiredTimeState.isPlaying && isWaitingForStart->boolValue()){
+    isWaitingForStart->setValue(false);
+  }
 
   timeState = desiredTimeState;
 }
@@ -533,7 +558,7 @@ double  TimeManager::getBeat()      {return (double)(timeState.time*1.0/beatTime
 int     TimeManager::getClosestBeat(){return (int)floor(getBeat()+0.5);}
 double  TimeManager::getBeatPercent() {return (double)(timeState.time*1.0/beatTimeInSample-getBeatInt());}
 double  TimeManager::getBeatInNextSamples(int numSamplesToAdd){return(double) ((timeState.time+numSamplesToAdd)*1.0/beatTimeInSample);}
-
+double TimeManager::getBeatForQuantum(const double q){return floor(getBeat()/q)*q;}
 
 int TimeManager::getBar(){return (int)(floor(getBeatInt()*1.0/beatPerBar->intValue() ));}
 

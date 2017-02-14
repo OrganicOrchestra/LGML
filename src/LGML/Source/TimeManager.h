@@ -33,6 +33,7 @@
 
 #if LINK_SUPPORT
 #include "ableton/link.hpp"
+#include "ableton/link/HostTimeFilter.hpp"
 #else
 
 #endif
@@ -90,6 +91,7 @@ public TimeMasterCandidate
   BoolParameter * BPMLocked;
   BoolParameter * click;
   FloatParameter * clickVolume;
+  BoolParameter * isWaitingForStart;
 
   IntParameter * quantizedBarFraction;
 
@@ -136,6 +138,7 @@ public TimeMasterCandidate
   bool willRestart();
   int getClosestBeat();
   double getBeatInNextSamples(int numSampleToAdd);
+  double getBeatForQuantum(const double q);
 
 
   bool isPlaying();
@@ -207,6 +210,7 @@ private:
   };
 
   TimeState timeState,desiredTimeState;
+  long long audioClock;
 
   void shouldStop();
   void shouldPlay();
@@ -214,7 +218,7 @@ private:
   void shouldGoToZero();
 
   void updateState();
-  void incrementClock(int time);
+  void incrementClock(int block);
 
   void onContainerParameterChanged(Parameter * )override;
   void onContainerTriggerTriggered(Trigger * ) override;
@@ -251,18 +255,22 @@ private:
   uint64 currentBeatPeriod;
   int tapInRow;
 
-  bool firstPlayingFrame,hasJumped;
+  bool hasJumped;
 
   ScopedPointer<FadeInOut> clickFader;
   bool notifyTimeJumpedIfNeeded();
 
   bool isAnyoneBoundToTime();
 
-  void checkCommitableParams(
-#if LINK_SUPPORT
-                             ableton::Link::Timeline & linkTimeLine,const std::chrono::duration<long long> & time
-#endif
-  );
+  void checkCommitableParams();
+  #if LINK_SUPPORT
+  ableton::Link::Timeline  linkTimeLine;
+  std::chrono::microseconds  linkTime;
+  ableton::link::HostTimeFilter<ableton::link::platform::Clock> linkFilter;
+  std::chrono::microseconds linkLatency;
+  #endif
+
+
   void pushCommitableParams();
 //  double lastEnv;
 //  int clickFadeOut,clickFadeIn,clickFadeTime;

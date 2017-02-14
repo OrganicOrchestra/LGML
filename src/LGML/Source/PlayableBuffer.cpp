@@ -175,6 +175,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
 
   // assert false for now to check alignement
   if(isFirstPlayingFrame()){
+
     jassert(playNeedle==0);
   }
 
