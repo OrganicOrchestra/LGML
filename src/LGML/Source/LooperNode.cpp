@@ -123,7 +123,7 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
   for (auto & t : trackGroup.tracks) {
     t->updatePendingLooperTrackState( numSample);
     // avoid each track clearing the buffer if not needed
-    needAudioIn |= t->loopSample.isOrWasRecording();
+    needAudioIn |= t->playableBuffer.isOrWasRecording();
   }
   //
   if (!needAudioIn) {
@@ -340,18 +340,18 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t)
 
 
       for (auto & tr : trackGroup.tracks) {
-        if (tr->loopSample.getRecordedLength()) {
+        if (tr->playableBuffer.getRecordedLength()) {
           File f(myChooser.getResult().getChildFile(nameParam->stringValue() + "_" + String(tr->trackIdx) + ".wav"));
           ScopedPointer<FileOutputStream> fp;
           if ((fp = f.createOutputStream())) {
             ScopedPointer<AudioFormatWriter> afw = format.createWriterFor(fp,
                                                                           getSampleRate(),
-                                                                          tr->loopSample.loopSample.getNumChannels(),
+                                                                          tr->playableBuffer.audioBuffer.getNumChannels(),
                                                                           24,
                                                                           StringPairArray(), 0);
             if (afw) {
               fp.release();
-              afw->writeFromAudioSampleBuffer(tr->loopSample.loopSample, 0, (int)tr->loopSample.getRecordedLength());
+              afw->writeFromAudioSampleBuffer(tr->playableBuffer.audioBuffer, 0, (int)tr->playableBuffer.getRecordedLength());
               afw->flush();
 
             }
@@ -495,12 +495,12 @@ void LooperNode::BPMChanged(double BPM){
         ratio /= TimeManager::getInstance()->BPM->doubleValue();
 
         if(isnormal(ratio)){
-          t->loopSample.setTimeRatio(ratio);
+          t->playableBuffer.setTimeRatio(ratio);
           if( DEBUGPIPE_ENABLED){
             if(ratio!=1){
 
               AudioBuffer<float> b;
-              b.setDataToReferTo(t->loopSample.loopSample.getArrayOfWritePointers(), 1, t->loopSample.getRecordedLength());
+              b.setDataToReferTo(t->playableBuffer.audioBuffer.getArrayOfWritePointers(), 1, t->playableBuffer.getRecordedLength());
               //          DBGAUDIO("trackStretch"+String(t->trackIdx),b);
               //          DBGAUDIOSETBPM("trackStretch"+String(t->trackIdx),TimeManager::getInstance()->BPM->doubleValue());
             }

@@ -196,7 +196,7 @@ private:
   void handleEndOfRecording( );
 
 
-  PlayableBuffer loopSample;
+  PlayableBuffer playableBuffer;
   float lastVolume;
 
 

@@ -24,7 +24,7 @@ using namespace RubberBand;
 #endif
 
 PlayableBuffer::PlayableBuffer(int numChannels,int numSamples,int sampleRate,int blockSize):
-loopSample(numChannels,numSamples),
+audioBuffer(numChannels,numSamples),
 recordNeedle(0),
 startJumpNeedle(0),
 playNeedle(0),globalPlayNeedle(0),isJumping(false),
@@ -57,7 +57,7 @@ PlayableBuffer::~PlayableBuffer(){
 
 
 void PlayableBuffer::setNumChannels(int n){
-  loopSample.setSize(n, loopSample.getNumSamples());
+  audioBuffer.setSize(n, audioBuffer.getNumSamples());
 
 }
 
@@ -76,9 +76,9 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
   else if( wasLastRecordingFrame()){
     succeeded = writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState);
     fadeInOut(fadeSamples, 0);
-    originLoopSample.setSize(loopSample.getNumChannels(), getRecordedLength());
-    for(int i = 0 ; i < loopSample.getNumChannels() ; i++){
-      originLoopSample.copyFrom(i, 0, loopSample, i, 0, getRecordedLength());
+    originaudioBuffer.setSize(audioBuffer.getNumChannels(), getRecordedLength());
+    for(int i = 0 ; i < audioBuffer.getNumChannels() ; i++){
+      originaudioBuffer.copyFrom(i, 0, audioBuffer, i, 0, getRecordedLength());
     }
 
 
@@ -109,7 +109,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
 
     double startGain = fadeRecorded.getLastFade();
     double endGain = fadeRecorded.getCurrentFade();
-    const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
+    const int maxChannel = jmin(audioBuffer.getNumChannels(),buffer.getNumChannels());
     for(int c = 0 ; c <maxChannel ; c++ ){
       buffer.applyGainRamp(c, 0, buffer.getNumSamples(), (float)startGain, (float)endGain);
     }
@@ -132,14 +132,14 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
 inline bool PlayableBuffer::writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample,int samplesToWrite){
 
   samplesToWrite= samplesToWrite==-1?buffer.getNumSamples()-fromSample:samplesToWrite;
-  if (recordNeedle + buffer.getNumSamples()> loopSample.getNumSamples()) {
+  if (recordNeedle + buffer.getNumSamples()> audioBuffer.getNumSamples()) {
     //      jassertfalse;
     return false;
   }
   else{
-    const int maxChannel = jmin(loopSample.getNumChannels(),buffer.getNumChannels());
+    const int maxChannel = jmin(audioBuffer.getNumChannels(),buffer.getNumChannels());
     for (int i =  maxChannel- 1; i >= 0; --i) {
-      loopSample.copyFrom(i, (int)recordNeedle, buffer, i, fromSample, samplesToWrite );
+      audioBuffer.copyFrom(i, (int)recordNeedle, buffer, i, fromSample, samplesToWrite );
     }
     recordNeedle += samplesToWrite;
   }
@@ -186,10 +186,10 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
 
     const int halfBlock =  numSamples/2;
     for (int i = buffer.getNumChannels() - 1; i >= 0; --i) {
-      const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() - 1, i);
-      buffer.copyFrom(i, fromSample, loopSample, maxChannelFromRecorded, (int)startJumpNeedle, halfBlock);
+      const int maxChannelFromRecorded = jmin(audioBuffer.getNumChannels() - 1, i);
+      buffer.copyFrom(i, fromSample, audioBuffer, maxChannelFromRecorded, (int)startJumpNeedle, halfBlock);
       buffer.applyGainRamp(i, fromSample, halfBlock, 1.0f, 0.0f);
-      buffer.copyFrom(i, fromSample+halfBlock, loopSample, maxChannelFromRecorded, (int)playNeedle+halfBlock, halfBlock);
+      buffer.copyFrom(i, fromSample+halfBlock, audioBuffer, maxChannelFromRecorded, (int)playNeedle+halfBlock, halfBlock);
       buffer.applyGainRamp(i, fromSample+halfBlock-1, halfBlock, 0.0f, 1.0f);
 
     }
@@ -205,10 +205,10 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
 
       if(firstSegmentLength>=0 && secondSegmentLength>0){
 
-        const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
+        const int maxChannelFromRecorded = jmin(audioBuffer.getNumChannels() , buffer.getNumChannels());
         for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-          buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, firstSegmentLength);
-          buffer.copyFrom(i, fromSample+firstSegmentLength, loopSample, i, 0, secondSegmentLength);
+          buffer.copyFrom(i, fromSample, audioBuffer, i, (int)playNeedle, firstSegmentLength);
+          buffer.copyFrom(i, fromSample+firstSegmentLength, audioBuffer, i, 0, secondSegmentLength);
         }
 
       }
@@ -217,9 +217,9 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
 
     }
     else{
-      const int maxChannelFromRecorded = jmin(loopSample.getNumChannels() , buffer.getNumChannels());
+      const int maxChannelFromRecorded = jmin(audioBuffer.getNumChannels() , buffer.getNumChannels());
       for (int i = maxChannelFromRecorded - 1; i >= 0; --i) {
-        buffer.copyFrom(i, fromSample, loopSample, i, (int)playNeedle, numSamples);
+        buffer.copyFrom(i, fromSample, audioBuffer, i, (int)playNeedle, numSamples);
       }
     }
   }
@@ -255,11 +255,11 @@ void PlayableBuffer::cropEndOfRecording(int sampletoRemove){
   recordNeedle-=sampletoRemove;
 }
 void PlayableBuffer::padEndOfRecording(int sampleToAdd){
-  loopSample.clear((int)recordNeedle, sampleToAdd);
+  audioBuffer.clear((int)recordNeedle, sampleToAdd);
   recordNeedle+=sampleToAdd;
 }
 void PlayableBuffer::setSizePaddingIfNeeded(uint64 targetSamples){
-  jassert(targetSamples<loopSample.getNumSamples());
+  jassert(targetSamples<audioBuffer.getNumSamples());
   if(targetSamples>recordNeedle){
     padEndOfRecording((int)(targetSamples - recordNeedle));
   }
@@ -289,19 +289,19 @@ int findFirstZeroCrossing(const AudioBuffer<float> & b, int start,int end,int c)
 void PlayableBuffer::fadeInOut(int fadeNumSamples,double mingain){
   const int zeroSearch = 64;
   int c = 0;
-  int fZ = findFirstZeroCrossing(loopSample, 0, zeroSearch, c);
+  int fZ = findFirstZeroCrossing(audioBuffer, 0, zeroSearch, c);
   if(fZ>0){
-    loopSample.clear(c, 0, fZ);
+    audioBuffer.clear(c, 0, fZ);
   }
-  int lZ = findFirstZeroCrossing(loopSample, recordNeedle, recordNeedle-zeroSearch, c);
+  int lZ = findFirstZeroCrossing(audioBuffer, recordNeedle, recordNeedle-zeroSearch, c);
   if(lZ>0){
-    loopSample.clear(c, lZ+1, recordNeedle- lZ + 1 );
+    audioBuffer.clear(c, lZ+1, recordNeedle- lZ + 1 );
   }
   if (fadeNumSamples>0 ){
     if(getRecordedLength()<2 * fadeNumSamples -1) {fadeNumSamples = (int)getRecordedLength()/2 - 1;}
-    for (int i = loopSample.getNumChannels() - 1; i >= 0; --i) {
-      loopSample.applyGainRamp(i, 0, fadeNumSamples, (float)mingain, 1);
-      loopSample.applyGainRamp(i, (int)recordNeedle - fadeNumSamples, fadeNumSamples, 1, (float)mingain);
+    for (int i = audioBuffer.getNumChannels() - 1; i >= 0; --i) {
+      audioBuffer.applyGainRamp(i, 0, fadeNumSamples, (float)mingain, 1);
+      audioBuffer.applyGainRamp(i, (int)recordNeedle - fadeNumSamples, fadeNumSamples, 1, (float)mingain);
     }
   }
 }
@@ -317,8 +317,8 @@ bool PlayableBuffer::isStopped() const{return (state==BUFFER_STOPPED);}
 bool PlayableBuffer::isRecording() const{return state == BUFFER_RECORDING;}
 bool PlayableBuffer::isPlaying() const{return state == BUFFER_PLAYING;}
 bool PlayableBuffer::isFirstRecordedFrame() const{return state == BUFFER_RECORDING && (lastState!=BUFFER_RECORDING);}
-bool PlayableBuffer::isOrWasPlaying() const{return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && loopSample.getNumSamples();}
-bool PlayableBuffer::isOrWasRecording() const{return (state==BUFFER_RECORDING || lastState==BUFFER_RECORDING) && loopSample.getNumSamples();}
+bool PlayableBuffer::isOrWasPlaying() const{return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && audioBuffer.getNumSamples();}
+bool PlayableBuffer::isOrWasRecording() const{return (state==BUFFER_RECORDING || lastState==BUFFER_RECORDING) && audioBuffer.getNumSamples();}
 
 
 void PlayableBuffer::startRecord(){recordNeedle = 0;playNeedle=0;}
@@ -454,10 +454,10 @@ void PlayableBuffer::setTimeRatio(const double ratio){
 
   }
   else{
-    for(int i = 0 ; i < originLoopSample.getNumChannels() ; i++){
-      loopSample.copyFrom(i, 0, originLoopSample, i, 0, originLoopSample.getNumSamples());
+    for(int i = 0 ; i < originaudioBuffer.getNumChannels() ; i++){
+      audioBuffer.copyFrom(i, 0, originaudioBuffer, i, 0, originaudioBuffer.getNumSamples());
     }
-    recordNeedle = originLoopSample.getNumSamples()-1;
+    recordNeedle = originaudioBuffer.getNumSamples()-1;
     fadeInOut(fadeSamples, 0);
   }
 
@@ -470,7 +470,7 @@ void PlayableBuffer::setTimeRatio(const double ratio){
 void PlayableBuffer::initRTStretch(int blockSize){
   pendingTimeStretchRatio = 1.0;
   RTStretcher = new RubberBandStretcher  (sampleRate,//size_t sampleRate,
-                                          loopSample.getNumChannels(),//size_t channels,
+                                          audioBuffer.getNumChannels(),//size_t channels,
                                           RubberBandStretcher::OptionProcessRealTime
                                           | RubberBandStretcher::OptionTransientsMixed
                                           // | RubberBandStretcher::OptionTransientsSmooth
@@ -507,14 +507,14 @@ ThreadPoolJob::JobStatus StretchJob::runJob(){
   int block = 4096;
 
 
-  while(!shouldExit() && processed<owner->originLoopSample.getNumSamples()){
+  while(!shouldExit() && processed<owner->originaudioBuffer.getNumSamples()){
     processed+=studyStretch(ratio,processed,block);
   }
 
   processed = 0;
   int read = 0;
   int produced = 0;
-  while(!shouldExit()&& processed<owner->originLoopSample.getNumSamples()){
+  while(!shouldExit()&& processed<owner->originaudioBuffer.getNumSamples()){
     processStretch(processed,block,&read,&produced);
     processed+=read;
     if(read==0){
@@ -526,7 +526,7 @@ ThreadPoolJob::JobStatus StretchJob::runJob(){
   }
   if(!shouldExit()){
 
-    int targetNumSamples = owner->originLoopSample.getNumSamples()*ratio;
+    int targetNumSamples = owner->originaudioBuffer.getNumSamples()*ratio;
 
     int diffSample =abs(produced-targetNumSamples);
     if(diffSample>128){
@@ -578,25 +578,25 @@ void StretchJob::initStretcher(int sampleRate,int numChannels){
 int StretchJob::studyStretch(double ratio,int start,int block){
 
   if(start==0){
-    if(block==-1)block=owner->originLoopSample.getNumSamples();
+    if(block==-1)block=owner->originaudioBuffer.getNumSamples();
 
-    initStretcher(owner->sampleRate , owner->loopSample.getNumChannels());
+    initStretcher(owner->sampleRate , owner->audioBuffer.getNumChannels());
     jassert(isfinite(ratio));
     stretcher->setTimeRatio(ratio);
-    stretcher->setExpectedInputDuration(owner->originLoopSample.getNumSamples());
+    stretcher->setExpectedInputDuration(owner->originaudioBuffer.getNumSamples());
     stretcher->setMaxProcessSize(block);
-    //  jassert(stretcher->getInputIncrement() == originLoopSample.getNumSamples());
+    //  jassert(stretcher->getInputIncrement() == originaudioBuffer.getNumSamples());
   }
 
 
-  bool isFinal =  start+block>=owner->originLoopSample.getNumSamples();
+  bool isFinal =  start+block>=owner->originaudioBuffer.getNumSamples();
   if(isFinal){
-    block -= jmax(0,(start+block)-owner->originLoopSample.getNumSamples());
+    block -= jmax(0,(start+block)-owner->originaudioBuffer.getNumSamples());
 
   }
-  const float* tmp[owner->originLoopSample.getNumChannels()];
-  for(int i = 0 ; i  < owner->originLoopSample.getNumChannels() ; i++){
-    tmp[i] = owner->originLoopSample.getReadPointer(i) + start;
+  const float* tmp[owner->originaudioBuffer.getNumChannels()];
+  for(int i = 0 ; i  < owner->originaudioBuffer.getNumChannels() ; i++){
+    tmp[i] = owner->originaudioBuffer.getReadPointer(i) + start;
   }
   stretcher->study(tmp, block, isFinal);
   return block;
@@ -605,21 +605,21 @@ int StretchJob::studyStretch(double ratio,int start,int block){
 void StretchJob::processStretch(int start,int block,int * read, int * produced){
 
 
-  if(block==-1)block=owner->originLoopSample.getNumSamples();
+  if(block==-1)block=owner->originaudioBuffer.getNumSamples();
 
   //  int latency = stretcher->getLatency();
   //  jassert (latency == 0);
 
 
-  bool isFinal = start+block>=owner->originLoopSample.getNumSamples();
+  bool isFinal = start+block>=owner->originaudioBuffer.getNumSamples();
   if(isFinal){
-    block -= jmax(0,(start+block)-owner->originLoopSample.getNumSamples());
+    block -= jmax(0,(start+block)-owner->originaudioBuffer.getNumSamples());
 
   }
 
-  const float * tmpIn[owner->originLoopSample.getNumChannels()];
-  for(int i = 0 ; i  < owner->originLoopSample.getNumChannels() ; i++){
-    tmpIn[i] = owner->originLoopSample.getReadPointer(i) + start;
+  const float * tmpIn[owner->originaudioBuffer.getNumChannels()];
+  for(int i = 0 ; i  < owner->originaudioBuffer.getNumChannels() ; i++){
+    tmpIn[i] = owner->originaudioBuffer.getReadPointer(i) + start;
   }
 
 
@@ -627,11 +627,11 @@ void StretchJob::processStretch(int start,int block,int * read, int * produced){
 
   stretcher->process(tmpIn, block, isFinal);
   int available = stretcher->available();
-  jassert( *produced + available< owner->loopSample.getNumSamples());
+  jassert( *produced + available< owner->audioBuffer.getNumSamples());
 
-  float * tmpOut[owner->loopSample.getNumChannels()];
-  for(int i = 0 ; i  < owner->loopSample.getNumChannels() ; i++){
-    tmpOut[i] = owner->loopSample.getWritePointer(i) + *produced;
+  float * tmpOut[owner->audioBuffer.getNumChannels()];
+  for(int i = 0 ; i  < owner->audioBuffer.getNumChannels() ; i++){
+    tmpOut[i] = owner->audioBuffer.getWritePointer(i) + *produced;
   }
 
   int retrievedSamples = stretcher->retrieve(tmpOut, available);

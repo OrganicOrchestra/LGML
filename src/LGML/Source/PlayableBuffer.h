@@ -103,7 +103,7 @@ class PlayableBuffer {
 
 
   int numTimePlayed;
-  AudioSampleBuffer loopSample,originLoopSample;
+  AudioSampleBuffer audioBuffer,originaudioBuffer;
 
   int getSampleOffsetBeforeNewState();
   int getNumSampleFadeOut();

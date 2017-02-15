@@ -27,7 +27,7 @@ quantizedRecordStart(NO_QUANTIZE),
 quantizedRecordEnd(NO_QUANTIZE),
 quantizedPlayStart(NO_QUANTIZE),
 quantizedPlayEnd(NO_QUANTIZE),
-loopSample(2, 44100 * MAX_LOOP_LENGTH_S,looperNode->getSampleRate(),looperNode->getBlockSize()),
+playableBuffer(2, 44100 * MAX_LOOP_LENGTH_S,looperNode->getSampleRate(),looperNode->getBlockSize()),
 trackState(CLEARED),
 desiredState(CLEARED),
 trackIdx(_trackIdx),
@@ -86,10 +86,10 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   uint64 curTime = tm->getTimeInSample();
   int offset = startPlayBeat*tm->beatTimeInSample;
   if(getQuantization()==0) {
-    curTime = loopSample.getGlobalPlayPos();
+    curTime = playableBuffer.getGlobalPlayPos();
     offset = 0;
   }
-  else if( !loopSample.isOrWasRecording() ){
+  else if( !playableBuffer.isOrWasRecording() ){
     if(curTime<offset){
     float negativeStartPlayBeat = startPlayBeat/beatLength->doubleValue();
     negativeStartPlayBeat = startPlayBeat - beatLength->doubleValue()*ceil(negativeStartPlayBeat);
@@ -101,19 +101,19 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     offset = 0;
   }
   jassert((int)curTime -(int)offset>=0 );
-  if(!loopSample.processNextBlock(buffer,curTime-offset ) && trackState!=STOPPED){
+  if(!playableBuffer.processNextBlock(buffer,curTime-offset ) && trackState!=STOPPED){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);
   }
-  if(loopSample.isPlaying()){
-    trackStateListeners.call(&LooperTrack::Listener::internalTrackTimeChanged,loopSample.getPlayPos()*1.0/(1+loopSample.getRecordedLength()));
+  if(playableBuffer.isPlaying()){
+    trackStateListeners.call(&LooperTrack::Listener::internalTrackTimeChanged,playableBuffer.getPlayPos()*1.0/(1+playableBuffer.getRecordedLength()));
   }
 
 //  if( DEBUGPIPE_ENABLED){
 //
-//  const float div = jmax((uint64)1,loopSample.getRecordedLength());
+//  const float div = jmax((uint64)1,playableBuffer.getRecordedLength());
 //
-//  DBGAUDIO("trackPos"+String(trackIdx),  loopSample.getPlayPos()/div);
+//  DBGAUDIO("trackPos"+String(trackIdx),  playableBuffer.getPlayPos()/div);
 //  }
 
   logVolume.update();
@@ -127,7 +127,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   lastVolume = newVolume;
 
 
-  loopSample.endProcessBlock();
+  playableBuffer.endProcessBlock();
 
   DBGAUDIOCRACK("track"+String(trackIdx),buffer);
 
@@ -137,7 +137,7 @@ bool LooperTrack::updatePendingLooperTrackState(  int blockSize) {
 TimeManager * tm = TimeManager::getInstance();
   // the sample act as free running clock when no quantization
   uint64 curTime = tm->getTimeInSample();
-  if(getQuantization()==0) curTime = loopSample.getGlobalPlayPos();
+  if(getQuantization()==0) curTime = playableBuffer.getGlobalPlayPos();
 
   jassert (curTime>=0);
 
@@ -162,7 +162,7 @@ TimeManager * tm = TimeManager::getInstance();
     //        LOG(trackStateToString(trackState) << ":" << trackStateToString(desiredState));
     if(desiredState == WILL_STOP  ){
 
-      loopSample.setState( PlayableBuffer::BUFFER_STOPPED);
+      playableBuffer.setState( PlayableBuffer::BUFFER_STOPPED);
       desiredState = STOPPED;
       cleanAllQuantizeNeedles();
       stateChanged = true;
@@ -170,9 +170,9 @@ TimeManager * tm = TimeManager::getInstance();
     }
 
     else if(desiredState==CLEARED  ){
-      loopSample.setState( PlayableBuffer::BUFFER_STOPPED);
+      playableBuffer.setState( PlayableBuffer::BUFFER_STOPPED);
       cleanAllQuantizeNeedles();
-      stateChanged = loopSample.stateChanged;
+      stateChanged = playableBuffer.stateChanged;
       if(isMasterTempoTrack())releaseMasterTrack();
     }
   }
@@ -204,7 +204,7 @@ TimeManager * tm = TimeManager::getInstance();
       }
 
       desiredState = RECORDING;
-      loopSample.setState( PlayableBuffer::BUFFER_RECORDING,firstPart);
+      playableBuffer.setState( PlayableBuffer::BUFFER_RECORDING,firstPart);
       startRecBeat = TimeManager::getInstance()->getBeatInNextSamples(firstPart);
       quantizedRecordStart = NO_QUANTIZE;
       stateChanged = true;
@@ -220,13 +220,13 @@ TimeManager * tm = TimeManager::getInstance();
       //      int secondPart = triggeringTime-firstPart;
 
       if(parentLooper->isOneShot->boolValue()){
-        loopSample.setState( PlayableBuffer::BUFFER_STOPPED,firstPart);
+        playableBuffer.setState( PlayableBuffer::BUFFER_STOPPED,firstPart);
         desiredState = STOPPED;
       }
       else{
 
 
-        loopSample.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
+        playableBuffer.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
         handleEndOfRecording();
 
 
@@ -250,12 +250,12 @@ TimeManager * tm = TimeManager::getInstance();
       //      int secondPart = triggeringTime-firstPart;
 
       desiredState =  PLAYING;
-      loopSample.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
+      playableBuffer.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
       startPlayBeat = TimeManager::getInstance()->getBeatInNextSamples(firstPart);
 
       // stop oneShot if needed
       if(parentLooper->isOneShot->boolValue() ){
-        quantizedPlayEnd = quantizedPlayStart + loopSample.getRecordedLength() - loopSample.getNumSampleFadeOut();
+        quantizedPlayEnd = quantizedPlayStart + playableBuffer.getRecordedLength() - playableBuffer.getNumSampleFadeOut();
       }
 
       quantizedPlayStart = NO_QUANTIZE;
@@ -269,7 +269,7 @@ TimeManager * tm = TimeManager::getInstance();
       int firstPart = jmax(0, (int)(quantizedPlayEnd-curTime));
       //      int secondPart = triggeringTime-firstPart;
       desiredState = STOPPED;
-      loopSample.setState( PlayableBuffer::BUFFER_STOPPED,firstPart);
+      playableBuffer.setState( PlayableBuffer::BUFFER_STOPPED,firstPart);
       quantizedPlayEnd = NO_QUANTIZE;
       stateChanged = true;
     }
@@ -278,7 +278,7 @@ TimeManager * tm = TimeManager::getInstance();
 
 
 
-  stateChanged|=loopSample.stateChanged;
+  stateChanged|=playableBuffer.stateChanged;
 
   trackState = desiredState ;
 
@@ -294,7 +294,7 @@ TimeManager * tm = TimeManager::getInstance();
   }
   //  if(getQuantization()>0 && !isMasterTempoTrack() && trackState == PLAYING) {
   //    TimeManager * tm = TimeManager::getInstance();
-  //    loopSample.checkTimeAlignment(curTime,tm->beatTimeInSample/getQuantization());
+  //    playableBuffer.checkTimeAlignment(curTime,tm->beatTimeInSample/getQuantization());
   //  }
 
   return stateChanged;
@@ -311,21 +311,21 @@ int LooperTrack::getQuantization(){
 
 void LooperTrack::handleStartOfRecording(){
   TimeManager * tm = TimeManager::getInstance();
-  if (loopSample.stateChanged) {
+  if (playableBuffer.stateChanged) {
     //    process changed internalState
 
-    if (loopSample.isFirstRecordedFrame()) {
+    if (playableBuffer.isFirstRecordedFrame()) {
       if (isMasterTempoTrack()) {
         int samplesToGet = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
         //        we need to advance because pat of the block may have be processed
 
         tm->play(true);
         tm->goToTime(samplesToGet,true);
-        if(samplesToGet>0){ loopSample.writeAudioBlock(parentLooper->streamAudioBuffer.getLastBlock(samplesToGet));}
+        if(samplesToGet>0){ playableBuffer.writeAudioBlock(parentLooper->streamAudioBuffer.getLastBlock(samplesToGet));}
         startRecBeat = 0;
       }
       else{
-        startRecBeat = TimeManager::getInstance()->getBeatInNextSamples(loopSample.getSampleOffsetBeforeNewState());
+        startRecBeat = TimeManager::getInstance()->getBeatInNextSamples(playableBuffer.getSampleOffsetBeforeNewState());
 
       }
 
@@ -336,18 +336,18 @@ void LooperTrack::handleStartOfRecording(){
 void LooperTrack::handleEndOfRecording(){
 
 
-    jassert (loopSample.wasLastRecordingFrame() );
+    jassert (playableBuffer.wasLastRecordingFrame() );
       //            DBG("a:firstPlay");
-      // get howMuch we have allready played in loopSample
-      int offsetForPlay = (int)loopSample.getPlayPos();
+      // get howMuch we have allready played in playableBuffer
+      int offsetForPlay = (int)playableBuffer.getPlayPos();
 
       TimeManager * tm = TimeManager::getInstance();
       if (isMasterTempoTrack()) {
 
         //                DBG("release predelay : "+String (trackIdx));
         const int sampleToRemove = (int)(parentLooper->preDelayMs->intValue()*0.001f*parentLooper->getSampleRate());
-        if(sampleToRemove>0){loopSample.cropEndOfRecording(sampleToRemove);}
-        TransportTimeInfo info = tm->findTransportTimeInfoForLength(loopSample.getRecordedLength());
+        if(sampleToRemove>0){playableBuffer.cropEndOfRecording(sampleToRemove);}
+        TransportTimeInfo info = tm->findTransportTimeInfoForLength(playableBuffer.getRecordedLength());
         // need to tell it right away to avoid bpm changes call back while originBPM not updated
         if(getQuantization()>0)originBPM = info.bpm ;
 
@@ -355,10 +355,10 @@ void LooperTrack::handleEndOfRecording(){
         
         uint64 desiredSize = (uint64)(info.barLength*tm->beatPerBar->intValue()*info.beatInSample +0.5);
 
-        //        DBG("resizing loop : " << (int)(desiredSize-loopSample.getRecordedLength()));
+        //        DBG("resizing loop : " << (int)(desiredSize-playableBuffer.getRecordedLength()));
 
-        loopSample.setSizePaddingIfNeeded(desiredSize);
-        beatLength->setValue(loopSample.getRecordedLength()*1.0/info.beatInSample,false,false,true);
+        playableBuffer.setSizePaddingIfNeeded(desiredSize);
+        beatLength->setValue(playableBuffer.getRecordedLength()*1.0/info.beatInSample,false,false,true);
         tm->goToTime(offsetForPlay,true);//desiredSize+offsetForPlay,true);
 
         jassert(tm->playState->boolValue());
@@ -367,12 +367,12 @@ void LooperTrack::handleEndOfRecording(){
 
       }
       else{
-        beatLength->setValue(loopSample.getRecordedLength()*1.0/tm->beatTimeInSample);
+        beatLength->setValue(playableBuffer.getRecordedLength()*1.0/tm->beatTimeInSample);
         if(getQuantization()>0)originBPM = tm->BPM->doubleValue();
         else{
           // non quantified
           // we assign one but obviously not related to master (avoid null bpms)
-          originBPM = tm->findTransportTimeInfoForLength(loopSample.getRecordedLength()).bpm;
+          originBPM = tm->findTransportTimeInfoForLength(playableBuffer.getRecordedLength()).bpm;
         }
       }
 
@@ -380,14 +380,14 @@ void LooperTrack::handleEndOfRecording(){
 
       
 
-//      DBGAUDIO("track"+String(trackIdx), loopSample.originLoopSample);
+//      DBGAUDIO("track"+String(trackIdx), playableBuffer.originplayableBuffer);
 //      DBGAUDIOSETBPM("track"+String(trackIdx), originBPM);
 //    }
 //  }
 //
 //
-//  if( loopSample.isFirstPlayingFrame()){
-////    startPlayBeat = TimeManager::getInstance()->getBeatInNextSamples(loopSample.getSampleOffsetBeforeNewState());
+//  if( playableBuffer.isFirstPlayingFrame()){
+////    startPlayBeat = TimeManager::getInstance()->getBeatInNextSamples(playableBuffer.getSampleOffsetBeforeNewState());
 //  }
 
 
@@ -587,7 +587,7 @@ void LooperTrack::setTrackState(TrackState newState) {
 
         //        int minRecordTime = (int)(parentLooper->getSampleRate()*0.1f);
         //        minRecordTime-= minRecordTime%parentLooper->getBlockSize();
-        //        if(loopSample.getRecordedLength()< minRecordTime){
+        //        if(playableBuffer.getRecordedLength()< minRecordTime){
         //          // avoid feedBack when trigger play;
         //          newState = WILL_RECORD;
         //          desiredState = WILL_RECORD;
@@ -608,7 +608,7 @@ void LooperTrack::setTrackState(TrackState newState) {
 
     }
     // if every one else is stopped
-    else if(trackState!=CLEARED && parentLooper->askForBeingAbleToPlayNow(this) && !loopSample.isOrWasPlaying()) {
+    else if(trackState!=CLEARED && parentLooper->askForBeingAbleToPlayNow(this) && !playableBuffer.isOrWasPlaying()) {
       quantizedRecordEnd = NO_QUANTIZE;
 
       if(timeManager->isMasterCandidate(parentLooper)){
@@ -693,8 +693,8 @@ bool LooperTrack::hasOnset(){
 
 
 void LooperTrack::setNumChannels(int numChannels){
-  loopSample.setNumChannels(numChannels);
-  loopSample.setSampleRate( parentLooper->getSampleRate());
+  playableBuffer.setNumChannels(numChannels);
+  playableBuffer.setSampleRate( parentLooper->getSampleRate());
 }
 
 
