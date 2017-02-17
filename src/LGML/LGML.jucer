@@ -150,6 +150,12 @@
                 resource="0"/>
         </GROUP>
         <GROUP id="{47C49D7C-57C1-2802-9458-4AB50A9508DE}" name="Audio">
+          <FILE id="BxNfkP" name="AudioConfig.h" compile="0" resource="0" file="Source/AudioConfig.h"/>
+          <FILE id="dL7FOY" name="StretcherJob.cpp" compile="1" resource="0"
+                file="Source/StretcherJob.cpp"/>
+          <FILE id="PBEW3x" name="StretcherJob.h" compile="0" resource="0" file="Source/StretcherJob.h"/>
+          <FILE id="VOSVFD" name="MultiNeedle.cpp" compile="1" resource="0" file="Source/MultiNeedle.cpp"/>
+          <FILE id="KqHJoN" name="MultiNeedle.h" compile="0" resource="0" file="Source/MultiNeedle.h"/>
           <FILE id="XvG4hZ" name="AudioDebugPipe.cpp" compile="1" resource="0"
                 file="Source/AudioDebugPipe.cpp"/>
           <FILE id="NWFdHH" name="AudioDebugPipe.h" compile="0" resource="0"

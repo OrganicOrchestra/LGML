@@ -102,13 +102,23 @@ void TimeManager::incrementClock(int block){
   }
 
 #if LINK_SUPPORT
+  if(linkEnabled->boolValue()){
 
 
-   linkTimeLine = linkSession.captureAudioTimeline();
+    linkTime =
+    linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
+    //  std::chrono::microseconds( (long long)(Time::getMillisecondCounterHiRes()*1000.0));//(timeState.time*(long long)1000.0/sampleRate)
+    if(isPlaying()){
+      linkTimeLine = linkSession.captureAudioTimeline();
+      linkTimeLine.requestBeatAtTime(getBeat(),
+                                     //                      std::chrono::system_clock::now().time_since_epoch(),
+                                     linkTime,
+                                     beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
+      linkSession.commitAudioTimeline(linkTimeLine);
+    }
+    linkTimeLine = linkSession.captureAudioTimeline();
+    
 
-  linkTime =
-   linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
-//  std::chrono::microseconds( (long long)(Time::getMillisecondCounterHiRes()*1000.0));//(timeState.time*(long long)1000.0/sampleRate)
 
 //
  const int tstQ = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
@@ -130,6 +140,7 @@ void TimeManager::incrementClock(int block){
     goToTime(0,true);
     isWaitingForStart->setValue(true);
   }
+  }
 #endif
   updateState();
   if(_isLocked){
@@ -139,20 +150,12 @@ void TimeManager::incrementClock(int block){
 
   checkCommitableParams();
   hasJumped = notifyTimeJumpedIfNeeded();
-#if LINK_SUPPORT
-  if(isPlaying()){
-    linkTimeLine.requestBeatAtTime(getBeat(),
-                                   //                      std::chrono::system_clock::now().time_since_epoch(),
-                                  linkTime,
-                                   beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
-    linkSession.commitAudioTimeline(linkTimeLine);
-  }
-#endif
+
 
   if(!hasJumped && timeState.isPlaying){
     timeState.time+=blockSize;
   }
-  timeState.nextTime = timeState.time+(isWaitingForStart->boolValue()?blockSize:0);
+  timeState.nextTime = timeState.time+blockSize;//(isWaitingForStart->boolValue()?blockSize:0);
   int lastBeat =  int(currentBeat->doubleValue());
   int newBeat = getBeatInt();
   if(lastBeat!=newBeat){

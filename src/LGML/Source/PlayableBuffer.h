@@ -12,25 +12,22 @@
 #define PLAYABLEBUFFER_H_INCLUDED
 #pragma once
 
-
+#include "AudioConfig.h"
 #include "AudioHelpers.h"
 
 
-// TODO change when windows / linux support
-#ifdef JUCE_MAC
-#define BUFFER_CAN_STRETCH 1
-#else
-#define BUFFER_CAN_STRETCH 0
-#endif
 
+
+#include "MultiNeedle.h"
 
 #if BUFFER_CAN_STRETCH
-class StretchJob;
+class StretcherJob;
 namespace RubberBand{class RubberBandStretcher;};
 #define RT_STRETCH 0 // TODO : still WIP
 #else
 #define RT_STRETCH 0
 #endif
+
 class PlayableBuffer {
 
   public :
@@ -40,8 +37,8 @@ class PlayableBuffer {
   bool processNextBlock(AudioBuffer<float> & buffer,uint64 time);
 
 
-   bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1);
-   void readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample = 0  );
+  bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1);
+  void readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample = 0  );
 
 
   void setPlayNeedle(int n);
@@ -63,6 +60,7 @@ class PlayableBuffer {
   bool isFirstRecordedFrame() const;
   bool isOrWasPlaying() const;
   bool isOrWasRecording() const;
+  bool isRecordingTail() const;
 
 
   void startRecord();
@@ -104,6 +102,7 @@ class PlayableBuffer {
 
   int numTimePlayed;
   AudioSampleBuffer audioBuffer,originaudioBuffer;
+  MultiNeedle multiNeedle;
 
   int getSampleOffsetBeforeNewState();
   int getNumSampleFadeOut();
@@ -134,8 +133,8 @@ private:
 #endif
 
 #if BUFFER_CAN_STRETCH
-  friend class StretchJob;
-  StretchJob *stretchJob;
+  friend class StretcherJob;
+  StretcherJob *stretchJob;
 #endif
 
   int sampleOffsetBeforeNewState;
@@ -148,17 +147,18 @@ private:
 
 
 
-  
-  
+
+
 
 
 
   uint64 recordNeedle,playNeedle,startJumpNeedle,globalPlayNeedle;
-//  FadeInOut fadeJump;
+  int tailRecordNeedle;
+  //  FadeInOut fadeJump;
 
-  
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayableBuffer);
-  
+
 };
 
 

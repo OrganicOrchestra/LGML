@@ -148,7 +148,9 @@ void Engine::suspendAudio(bool shouldBeSuspended){
       }
     }
   }
-
+  else{
+    jassertfalse;
+  }
   TimeManager::getInstance()->lockTime(shouldBeSuspended);
 
 
