@@ -113,7 +113,7 @@ public:
     expect(30*recordSizeInBlock*blockSize < std::numeric_limits<int>::max(),"integer not enough on this platform");
     expect(blockSize ==getBlockSize(),"looper has the wrong blockSize");
     LooperTrack * track1 = currentLooper->trackGroup.tracks[0];
-    fadeSample = track1->playableBuffer.fadeSamples;
+    fadeSample = track1->playableBuffer.getNumSampleFadeOut();
     track1->recPlayTrig->trigger();
     for(int i = 0 ;i < recordSizeInBlock ; i++){
       processBlock();

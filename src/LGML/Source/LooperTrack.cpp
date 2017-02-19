@@ -89,7 +89,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     curTime = playableBuffer.getGlobalPlayPos();
     offset = 0;
   }
-  else if( !playableBuffer.isOrWasRecording() ){
+  else if( !playableBuffer.isOrWasRecording()  ){
     if(curTime<offset){
     float negativeStartPlayBeat = startPlayBeat/beatLength->doubleValue();
     negativeStartPlayBeat = startPlayBeat - beatLength->doubleValue()*ceil(negativeStartPlayBeat);
@@ -107,6 +107,9 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   }
   if(playableBuffer.isPlaying()){
     trackStateListeners.call(&LooperTrack::Listener::internalTrackTimeChanged,playableBuffer.getPlayPos()*1.0/(1+playableBuffer.getRecordedLength()));
+  }
+  if(playableBuffer.wasLastRecordingFrame()){
+    handleEndOfRecording();
   }
 
 //  if( DEBUGPIPE_ENABLED){
@@ -227,7 +230,7 @@ TimeManager * tm = TimeManager::getInstance();
 
 
         playableBuffer.setState( PlayableBuffer::BUFFER_PLAYING,firstPart);
-        handleEndOfRecording();
+
 
 
         curTime = TimeManager::getInstance()->getTimeInSample();
@@ -321,7 +324,9 @@ void LooperTrack::handleStartOfRecording(){
 
         tm->play(true);
         tm->goToTime(samplesToGet,true);
-        if(samplesToGet>0){ playableBuffer.writeAudioBlock(parentLooper->streamAudioBuffer.getLastBlock(samplesToGet));}
+        if(samplesToGet>0){
+          playableBuffer.writeAudioBlock(parentLooper->streamAudioBuffer.getLastBlock(samplesToGet));
+        }
         startRecBeat = 0;
       }
       else{
@@ -357,7 +362,7 @@ void LooperTrack::handleEndOfRecording(){
 
         //        DBG("resizing loop : " << (int)(desiredSize-playableBuffer.getRecordedLength()));
 
-        playableBuffer.setSizePaddingIfNeeded(desiredSize);
+        playableBuffer.setRecordedLength(desiredSize);
         beatLength->setValue(playableBuffer.getRecordedLength()*1.0/info.beatInSample,false,false,true);
         tm->goToTime(offsetForPlay,true);//desiredSize+offsetForPlay,true);
 

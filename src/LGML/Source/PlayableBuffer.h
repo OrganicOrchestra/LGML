@@ -37,7 +37,7 @@ class PlayableBuffer {
   bool processNextBlock(AudioBuffer<float> & buffer,uint64 time);
 
 
-  bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1);
+  bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1,bool isTail=false);
   void readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample = 0  );
 
 
@@ -45,9 +45,9 @@ class PlayableBuffer {
 
   void cropEndOfRecording(int sampletoRemove);
   void padEndOfRecording(int sampleToAdd);
-  void setSizePaddingIfNeeded(uint64 targetSamples);
+  void setRecordedLength(uint64 targetSamples);
 
-  void fadeInOut(int fadeNumSamples,double mingain);
+  
   bool isFirstPlayingFrameAfterRecord()const;
   bool isFirstStopAfterRec()const;
   bool isFirstPlayingFrame()const;
@@ -65,9 +65,6 @@ class PlayableBuffer {
 
   void startRecord();
   inline void startPlay();
-
-  bool checkTimeAlignment(uint64 curTime,const int minQuantifiedFraction);
-
 
 
 
@@ -95,17 +92,17 @@ class PlayableBuffer {
 
   bool stateChanged;
 
-  uint64 getStartJumpPos() const;
+  
 
 
 
 
   int numTimePlayed;
-  AudioSampleBuffer audioBuffer,originaudioBuffer;
+  AudioSampleBuffer audioBuffer,originAudioBuffer;
   MultiNeedle multiNeedle;
 
   int getSampleOffsetBeforeNewState();
-  int getNumSampleFadeOut();
+  int getNumSampleFadeOut() const;
 
 
 #if BUFFER_CAN_STRETCH
@@ -140,10 +137,8 @@ private:
   int sampleOffsetBeforeNewState;
   BufferState state;
   BufferState lastState;
-  bool isJumping;
-  bool hasBeenFaded;
-  int fadeSamples;
-  FadeInOut fadeRecorded;
+  
+  
 
 
 
@@ -152,9 +147,9 @@ private:
 
 
 
-  uint64 recordNeedle,playNeedle,startJumpNeedle,globalPlayNeedle;
+  uint64 recordNeedle,playNeedle,globalPlayNeedle;
   int tailRecordNeedle;
-  //  FadeInOut fadeJump;
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayableBuffer);

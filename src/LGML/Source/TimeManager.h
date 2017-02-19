@@ -22,14 +22,7 @@
 #include "TimeMasterCandidate.h"
 #include "ControllableContainer.h"
 
-// TODO change when window support
-// @ ben header only so should be easy
-#if JUCE_MAC
-#define LINK_SUPPORT 1
-#else
-#define LINK_SUPPORT 0
-#endif
-
+#include "AudioConfig.h"
 
 #if LINK_SUPPORT
 #include "ableton/link.hpp"
@@ -179,6 +172,8 @@ public TimeMasterCandidate
     virtual void playStop(bool playStop){};
 
 
+    // prevent link and other timejumps (while recording track for example)
+//    virtual bool lockTimeJump()=0;
     // info for stopping manager if needed;
     virtual bool isBoundToTime()=0;
 

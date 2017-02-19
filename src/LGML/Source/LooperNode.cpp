@@ -123,7 +123,7 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
   for (auto & t : trackGroup.tracks) {
     t->updatePendingLooperTrackState( numSample);
     // avoid each track clearing the buffer if not needed
-    needAudioIn |= t->playableBuffer.isOrWasRecording();
+    needAudioIn |= t->playableBuffer.isOrWasRecording() || t->playableBuffer.isRecordingTail();
   }
   //
   if (!needAudioIn) {
@@ -351,7 +351,7 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t)
                                                                           StringPairArray(), 0);
             if (afw) {
               fp.release();
-              afw->writeFromAudioSampleBuffer(tr->playableBuffer.audioBuffer, 0, (int)tr->playableBuffer.getRecordedLength());
+              afw->writeFromAudioSampleBuffer(tr->playableBuffer.audioBuffer, 0, (int)tr->playableBuffer.getRecordedLength()+tr->playableBuffer.getNumSampleFadeOut());
               afw->flush();
 
             }

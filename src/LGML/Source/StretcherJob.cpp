@@ -54,15 +54,15 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
   int processed = 0;
   int block = 4096;
 
-
-  while(!shouldExit() && processed<owner->originaudioBuffer.getNumSamples()){
+  originNumSamples = owner->originAudioBuffer.getNumSamples()-owner->getNumSampleFadeOut();
+  while(!shouldExit() && processed<originNumSamples){
     processed+=studyStretch(ratio,processed,block);
   }
 
   processed = 0;
   int read = 0;
   int produced = 0;
-  while(!shouldExit()&& processed<owner->originaudioBuffer.getNumSamples()){
+  while(!shouldExit()&& processed<originNumSamples){
     processStretch(processed,block,&read,&produced);
     processed+=read;
     if(read==0){
@@ -72,7 +72,7 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
   }
   if(!shouldExit()){
 
-    int targetNumSamples = owner->originaudioBuffer.getNumSamples()*ratio;
+    int targetNumSamples = originNumSamples*ratio;
 
     int diffSample =abs(produced-targetNumSamples);
     if(diffSample>128){
@@ -81,11 +81,11 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
 
     owner->recordNeedle = produced;
     owner->playNeedle = owner->playNeedle*1.0/owner->recordNeedle*targetNumSamples;
-    owner->setSizePaddingIfNeeded(targetNumSamples);
+    owner->setRecordedLength(targetNumSamples);
     //    int dbg =stretcher->getSamplesRequired();
     //    jassert(dbg<=0);
 
-    owner->fadeInOut(owner->fadeSamples, 0);
+//    owner->fadeInOut(owner->fadeSamples, 0);
 
     int dbg=stretcher->available();
     jassert(dbg<=0);
@@ -99,25 +99,25 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
 int StretcherJob::studyStretch(double ratio,int start,int block){
 
   if(start==0){
-    if(block==-1)block=owner->originaudioBuffer.getNumSamples();
+    if(block==-1)block=owner->originAudioBuffer.getNumSamples();
 
     initStretcher(owner->sampleRate , owner->audioBuffer.getNumChannels());
     jassert(isfinite(ratio));
     stretcher->setTimeRatio(ratio);
-    stretcher->setExpectedInputDuration(owner->originaudioBuffer.getNumSamples());
+    stretcher->setExpectedInputDuration(originNumSamples);
     stretcher->setMaxProcessSize(block);
-    //  jassert(stretcher->getInputIncrement() == originaudioBuffer.getNumSamples());
+    //  jassert(stretcher->getInputIncrement() == originAudioBuffer.getNumSamples());
   }
 
 
-  bool isFinal =  start+block>=owner->originaudioBuffer.getNumSamples();
+  bool isFinal =  start+block>=originNumSamples;
   if(isFinal){
-    block -= jmax(0,(start+block)-owner->originaudioBuffer.getNumSamples());
+    block -= jmax(0,(start+block)-originNumSamples);
 
   }
-  const float* tmp[owner->originaudioBuffer.getNumChannels()];
-  for(int i = 0 ; i  < owner->originaudioBuffer.getNumChannels() ; i++){
-    tmp[i] = owner->originaudioBuffer.getReadPointer(i) + start;
+  const float* tmp[owner->originAudioBuffer.getNumChannels()];
+  for(int i = 0 ; i  < owner->originAudioBuffer.getNumChannels() ; i++){
+    tmp[i] = owner->originAudioBuffer.getReadPointer(i) + start;
   }
   stretcher->study(tmp, block, isFinal);
   return block;
@@ -126,21 +126,21 @@ int StretcherJob::studyStretch(double ratio,int start,int block){
 void StretcherJob::processStretch(int start,int block,int * read, int * produced){
 
 
-  if(block==-1)block=owner->originaudioBuffer.getNumSamples();
+  if(block==-1)block=originNumSamples;
 
   //  int latency = stretcher->getLatency();
   //  jassert (latency == 0);
 
 
-  bool isFinal = start+block>=owner->originaudioBuffer.getNumSamples();
+  bool isFinal = start+block>=originNumSamples;
   if(isFinal){
-    block -= jmax(0,(start+block)-owner->originaudioBuffer.getNumSamples());
+    block -= jmax(0,(start+block)-originNumSamples);
 
   }
 
-  const float * tmpIn[owner->originaudioBuffer.getNumChannels()];
-  for(int i = 0 ; i  < owner->originaudioBuffer.getNumChannels() ; i++){
-    tmpIn[i] = owner->originaudioBuffer.getReadPointer(i) + start;
+  const float * tmpIn[owner->originAudioBuffer.getNumChannels()];
+  for(int i = 0 ; i  < owner->originAudioBuffer.getNumChannels() ; i++){
+    tmpIn[i] = owner->originAudioBuffer.getReadPointer(i) + start;
   }
 
 
@@ -148,7 +148,7 @@ void StretcherJob::processStretch(int start,int block,int * read, int * produced
 
   stretcher->process(tmpIn, block, isFinal);
   int available = stretcher->available();
-  jassert( *produced + available< owner->audioBuffer.getNumSamples());
+  jassert( *produced + available< originNumSamples);
 
   float * tmpOut[owner->audioBuffer.getNumChannels()];
   for(int i = 0 ; i  < owner->audioBuffer.getNumChannels() ; i++){

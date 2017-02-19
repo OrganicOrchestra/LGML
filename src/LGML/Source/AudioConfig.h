@@ -13,14 +13,22 @@
 
 #include "JuceHeader.h"
 
-#ifndef JUCE_MAC
-#error whatwhat?
-#endif
+
 // TODO change when windows / linux support
 #ifdef JUCE_MAC
 #define BUFFER_CAN_STRETCH 1
 #else
 #define BUFFER_CAN_STRETCH 0
+#endif
+
+
+
+// TODO change when window support
+// @ ben header only so should be easy
+#if JUCE_MAC
+#define LINK_SUPPORT 1
+#else
+#define LINK_SUPPORT 0
 #endif
 
 

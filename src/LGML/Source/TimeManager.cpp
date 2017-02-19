@@ -75,7 +75,7 @@ linkLatency(7*1000)
   isWaitingForStart = addBoolParameter("isWaitingForStart","is currently waiting for quantized start",false);
   isWaitingForStart->isEditable = false;
 #if LINK_SUPPORT
-  linkEnabled->setValue(true);
+  linkEnabled->setValue(false);
   linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
 
   linkSession.setTempoCallback(&TimeManager::linkTempoCallBack);
@@ -102,44 +102,38 @@ void TimeManager::incrementClock(int block){
   }
 
 #if LINK_SUPPORT
-  if(linkEnabled->boolValue()){
+  if(linkEnabled->boolValue() && !isSettingTempo->boolValue()){
 
 
     linkTime =
     linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
     //  std::chrono::microseconds( (long long)(Time::getMillisecondCounterHiRes()*1000.0));//(timeState.time*(long long)1000.0/sampleRate)
-    if(isPlaying()){
-      linkTimeLine = linkSession.captureAudioTimeline();
-      linkTimeLine.requestBeatAtTime(getBeat(),
-                                     //                      std::chrono::system_clock::now().time_since_epoch(),
-                                     linkTime,
-                                     beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
-      linkSession.commitAudioTimeline(linkTimeLine);
-    }
+
+
     linkTimeLine = linkSession.captureAudioTimeline();
-    
 
 
-//
- const int tstQ = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
-  auto beatAtTime = linkTimeLine.beatAtTime(linkTime, tstQ);
-  auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
-  auto localBeat = getBeat();
-  auto localPhase = fmod(localBeat,tstQ);
-  if(beatAtTime>0 ){
-    if(isWaitingForStart->boolValue()){
-      isWaitingForStart->setValue(false);
-      timeState.isPlaying = true;
+
+    //
+    const int tstQ = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
+    auto beatAtTime = linkTimeLine.beatAtTime(linkTime, tstQ);
+    auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
+    auto localBeat = getBeat();
+    auto localPhase = fmod(localBeat,tstQ);
+    if(beatAtTime>0 ){
+      if(isWaitingForStart->boolValue()){
+        isWaitingForStart->setValue(false);
+        timeState.isPlaying = true;
+      }
+      if(isPlaying() &&  !isFirstPlayingFrame()&& fabs(phaseAtTime - localPhase)>0.5){
+        int closestQOffset = (localPhase> tstQ/2)?tstQ:0;
+        goToTime((getBeatForQuantum(tstQ)+closestQOffset + phaseAtTime) * beatTimeInSample);
+      }
     }
-  if(isPlaying() &&  !isFirstPlayingFrame()&& fabs(phaseAtTime - localPhase)>0.5){
-    int closestQOffset = (localPhase> tstQ/2)?tstQ:0;
-    goToTime((getBeatForQuantum(tstQ)+closestQOffset + phaseAtTime) * beatTimeInSample);
-  }
-  }
-  else if(beatAtTime<0 && timeState.isPlaying  && !isWaitingForStart->boolValue() ){
-    goToTime(0,true);
-    isWaitingForStart->setValue(true);
-  }
+    else if(beatAtTime<0 && timeState.isPlaying  && !isWaitingForStart->boolValue() ){
+      goToTime(0,true);
+      isWaitingForStart->setValue(true);
+    }
   }
 #endif
   updateState();
@@ -150,7 +144,14 @@ void TimeManager::incrementClock(int block){
 
   checkCommitableParams();
   hasJumped = notifyTimeJumpedIfNeeded();
-
+  if(hasJumped){
+    linkTimeLine = linkSession.captureAudioTimeline();
+    linkTimeLine.requestBeatAtTime(getBeat(),
+                                   //                      std::chrono::system_clock::now().time_since_epoch(),
+                                   linkTime,
+                                   beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
+    linkSession.commitAudioTimeline(linkTimeLine);
+  }
 
   if(!hasJumped && timeState.isPlaying){
     timeState.time+=blockSize;
@@ -186,14 +187,16 @@ void TimeManager::checkCommitableParams(){
     setBPMInternal(BPM->doubleValue(),true);
     clickFader->startFadeOut();
 #if LINK_SUPPORT
+    linkTimeLine = linkSession.captureAudioTimeline();
     linkTimeLine.setTempo(BPM->doubleValue(),linkTime);
+    linkSession.commitAudioTimeline(linkTimeLine);
 
 #endif
   }
 }
 
 void TimeManager::pushCommitableParams(){
-//  BPM->pushValue(true);
+  //  BPM->pushValue(true);
 }
 
 bool TimeManager::notifyTimeJumpedIfNeeded(){
@@ -381,7 +384,7 @@ void TimeManager::updateState(){
     dbg+=" ::: time:"+String(timeState.time)+"/"+String(desiredTimeState.time);
   }
   if(desiredTimeState.isJumping){
-    dbg+="time jumping to : " + String(desiredTimeState.nextTime);
+    dbg+="time jumping to : " + String(desiredTimeState.nextTime) + " delta="+String((int)desiredTimeState.nextTime - (int)timeState.nextTime);
   }
   if(dbg!=""){
     LOG(dbg);

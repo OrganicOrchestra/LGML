@@ -29,6 +29,7 @@ public:
   ThreadPoolJob("stretch"),
   owner(pb),
   ratio(_ratio)
+
   {
   };
 
@@ -40,6 +41,7 @@ public:
   // stretching function
   void initStretcher(int sR,int c);
   PlayableBuffer * owner;
+  int originNumSamples;
   double ratio;
 
   ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
