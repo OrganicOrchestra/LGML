@@ -119,12 +119,14 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
 
 
   int numSample = buffer.getNumSamples();
+
   bool needAudioIn = false;
   for (auto & t : trackGroup.tracks) {
     t->updatePendingLooperTrackState( numSample);
     // avoid each track clearing the buffer if not needed
     needAudioIn |= t->playableBuffer.isOrWasRecording() || t->playableBuffer.isRecordingTail();
   }
+
   //
   if (!needAudioIn) {
     buffer.clear();
@@ -166,6 +168,7 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
       buffer.copyFrom(i, 0, bufferOut, i, 0, buffer.getNumSamples());
     }
   }
+
 
 }
 
@@ -535,3 +538,13 @@ bool LooperNode::isBoundToTime(){
   }
   
 };
+void LooperNode::playStop(bool isPlaying){
+  if(isPlaying){
+  for(auto & t:trackGroup.tracks){
+    if(t->trackState == LooperTrack::TrackState::WILL_RECORD){
+//      t->quantizedRecordStart=0;
+    }
+  }
+  }
+
+}

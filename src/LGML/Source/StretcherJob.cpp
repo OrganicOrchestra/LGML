@@ -54,7 +54,7 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
   int processed = 0;
   int block = 4096;
 
-  originNumSamples = owner->originAudioBuffer.getNumSamples()-owner->getNumSampleFadeOut();
+  originNumSamples = owner->originAudioBuffer.getNumSamples();
   while(!shouldExit() && processed<originNumSamples){
     processed+=studyStretch(ratio,processed,block);
   }
@@ -110,7 +110,7 @@ int StretcherJob::studyStretch(double ratio,int start,int block){
   }
 
 
-  bool isFinal =  start+block>=originNumSamples;
+  bool isFinal =  (start+block)>=originNumSamples;
   if(isFinal){
     block -= jmax(0,(start+block)-originNumSamples);
 
@@ -148,7 +148,7 @@ void StretcherJob::processStretch(int start,int block,int * read, int * produced
 
   stretcher->process(tmpIn, block, isFinal);
   int available = stretcher->available();
-  jassert( *produced + available< originNumSamples);
+  jassert( *produced + available< owner->audioBuffer.getNumSamples());
 
   float * tmpOut[owner->audioBuffer.getNumChannels()];
   for(int i = 0 ; i  < owner->audioBuffer.getNumChannels() ; i++){

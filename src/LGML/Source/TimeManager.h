@@ -84,7 +84,7 @@ public TimeMasterCandidate
   BoolParameter * BPMLocked;
   BoolParameter * click;
   FloatParameter * clickVolume;
-  BoolParameter * isWaitingForStart;
+  
 
   IntParameter * quantizedBarFraction;
 
@@ -207,8 +207,8 @@ private:
   TimeState timeState,desiredTimeState;
   long long audioClock;
 
-  void shouldStop();
-  void shouldPlay();
+  void shouldStop(bool now=false);
+  void shouldPlay(bool now = false);
   void shouldRestart(bool );
   void shouldGoToZero();
 

@@ -18,6 +18,7 @@ timeManager(_timeManager),
 timeBar(_timeManager){
 
   timeManager->isSettingTempo->addAsyncParameterListener(this);
+
   timeManager->playState->addAsyncParameterListener(this);
   timeManager->beatPerBar->addAsyncParameterListener(this);
   timeManager->currentBeat->addAsyncParameterListener(this);
@@ -59,6 +60,7 @@ timeBar(_timeManager){
 
 TimeManagerUI::~TimeManagerUI(){
   timeManager->isSettingTempo->removeAsyncParameterListener(this);
+
   timeManager->playState->removeAsyncParameterListener(this);
   timeManager->beatPerBar->removeAsyncParameterListener(this);
   timeManager->currentBeat->removeAsyncParameterListener(this);
@@ -77,6 +79,7 @@ void TimeManagerUI::newMessage(const Parameter::ParamWithValue & pv) {
     timeBar.showBeatComponents(!(bool)pv.value);
     timeBar.repaint();
   }
+
   else if(pv.parameter==timeManager->beatPerBar){
     timeBar.initComponentsForNumBeats(pv.value);
   }
@@ -180,7 +183,7 @@ void TimeManagerUI::TimeBar::showBeatComponents(bool show){
 }
 
 void TimeManagerUI::TimeBar::timerCallback(){
-  if(isSettingTempo){repaint();}
+  if(isSettingTempo ){repaint();}
   else{
     int lastBeat =timeManager->getBeatInt()%beatComponents.size();
     for(int i = 0 ; i< beatComponents.size() ; i++){
@@ -203,7 +206,7 @@ void TimeManagerUI::TimeBar::timerCallback(){
 
 void TimeManagerUI::TimeBar::paint(Graphics & g) {
 
-  if(isSettingTempo){
+  if(isSettingTempo ){
     // called only if setting tempo
     Rectangle<int> r = getLocalBounds();
 

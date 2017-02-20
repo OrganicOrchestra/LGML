@@ -233,8 +233,8 @@ TimeManager * tm = TimeManager::getInstance();
 
 
 
-        curTime = TimeManager::getInstance()->getTimeInSample();
-        triggeringTime = curTime+blockSize;
+
+
         
         desiredState = PLAYING;
         quantizedPlayStart = curTime+firstPart;
@@ -249,7 +249,8 @@ TimeManager * tm = TimeManager::getInstance();
 
   if (quantizedPlayStart!=NO_QUANTIZE) {
     if (triggeringTime > quantizedPlayStart) {
-      int firstPart = jmax(0, (int)(quantizedPlayStart-curTime));
+      int firstPart = jmax(0, (int)(quantizedPlayStart-(int)curTime));
+      jassert(firstPart>=0);
       //      int secondPart = triggeringTime-firstPart;
 
       desiredState =  PLAYING;
@@ -365,7 +366,7 @@ void LooperTrack::handleEndOfRecording(){
         playableBuffer.setRecordedLength(desiredSize);
         beatLength->setValue(playableBuffer.getRecordedLength()*1.0/info.beatInSample,false,false,true);
         tm->goToTime(offsetForPlay,true);//desiredSize+offsetForPlay,true);
-
+        startPlayBeat = 0;
         jassert(tm->playState->boolValue());
         releaseMasterTrack();
 
@@ -547,16 +548,19 @@ void LooperTrack::setTrackState(TrackState newState) {
       quantizedRecordStart = 0;
     }
 
-    else if (!timeManager->isSettingTempo->boolValue()) {
-      if(parentLooper->askForBeingAbleToRecNow(this) ){//&& !timeManager->playState->boolValue()) {
-        if(getQuantization()>0)
+    else if (!timeManager->isSettingTempo->boolValue()  ) {
+      if(parentLooper->askForBeingAbleToRecNow(this)){//&& !timeManager->playState->boolValue()) {
+        if(getQuantization()>0&&  !timeManager->isPlaying())
           timeManager->playTrigger->trigger();
+        
         quantizedRecordStart = 0;
 
       }
       else{
         quantizedRecordStart = timeManager->getNextQuantifiedTime(quantizeTime);
-
+        if(getQuantization()>0 &&  !timeManager->isPlaying()){
+            timeManager->playTrigger->trigger();
+        }
       }
     }
     //            Record per default if triggering other rec while we are current master and we are recording
@@ -630,6 +634,8 @@ void LooperTrack::setTrackState(TrackState newState) {
     }
     // a cleared track can't be played
     else  if(trackState==CLEARED){
+      startPlayBeat=0;
+      startRecBeat=0;
       newState=CLEARED;
     }
 

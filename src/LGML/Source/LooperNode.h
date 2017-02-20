@@ -125,7 +125,10 @@ public:
 
   void clearInternal()override;
   bool hasOnset();
-  
+
+
+  // TimeListener functions
+  void playStop(bool isPlaying) override;
   void timeJumped(uint64 time)override;
   void BPMChanged(double BPM) override;
   bool isBoundToTime()override;

@@ -70,15 +70,21 @@ void PlayableBuffer::setNumChannels(int n){
 
 bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
   bool succeeded = true;
+
+
+  if(sampleOffsetBeforeNewState){
+    jassert(isFirstRecordingFrame() || wasLastRecordingFrame());
+  }
+
   if (isFirstRecordingFrame()){
-    succeeded = writeAudioBlock(buffer, sampleOffsetBeforeNewState);
+    succeeded &= writeAudioBlock(buffer, sampleOffsetBeforeNewState);
 
   }
   else if(isRecording() ){
-    succeeded = writeAudioBlock(buffer);
+    succeeded &= writeAudioBlock(buffer);
   }
   else if( wasLastRecordingFrame()){
-    succeeded = writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState,false);
+    succeeded &= writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState,false);
     //    fadeInOut(fadeSamples, 0);
     originAudioBuffer.setSize(audioBuffer.getNumChannels(), getRecordedLength()+getNumSampleFadeOut());
     for(int i = 0 ; i < audioBuffer.getNumChannels() ; i++){
@@ -88,8 +94,9 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
   }
 
   if( isRecordingTail() ){
-    succeeded = writeAudioBlock(buffer,sampleOffsetBeforeNewState,-1,true);
+    succeeded &= writeAudioBlock(buffer,sampleOffsetBeforeNewState,-1,true);
   }
+
 
   buffer.clear();
 
@@ -116,6 +123,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
 
 
 inline bool PlayableBuffer::writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample,int samplesToWrite,bool isTail){
+  
 
   samplesToWrite= samplesToWrite==-1?buffer.getNumSamples()-fromSample:samplesToWrite;
   if (recordNeedle + buffer.getNumSamples()> audioBuffer.getNumSamples()) {
@@ -181,18 +189,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
   buffer.clear();
   if(recordNeedle>0 && !isRecording()){
     if(isPlaying())jassert(multiNeedle.currentPos==playNeedle);
-//    if (fromSample>0){
-//
-//      AudioBuffer<float > tmpB ;
-//      int numCh =audioBuffer.getNumChannels();
-//      float * tmpP[numCh];
-//      for(int i =  0 ; i < numCh ; i++){
-//        tmpP[i] = buffer.getWritePointer(i)+fromSample;
-//      }
-//      tmpB.setDataToReferTo(tmpP, numCh, buffer.getNumSamples()-fromSample);
-//      multiNeedle.addToBuffer(audioBuffer, tmpB, tmpB.getNumSamples(), isPlaying());
-//    }
-//    else{
+
       multiNeedle.addToBuffer(audioBuffer, buffer, buffer.getNumSamples(), isPlaying());
 //    }
 

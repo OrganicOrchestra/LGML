@@ -38,6 +38,7 @@ class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener
     TimeBar(TimeManager *);
 
     bool isSettingTempo = false;
+    
     int refreshHz = 60;
     float blinkHz = 1;
     double blinkCount = 0;

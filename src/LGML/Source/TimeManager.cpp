@@ -72,8 +72,8 @@ linkLatency(7*1000)
   linkNumPeers->enabled = LINK_SUPPORT;
   linkNumPeers->isControllableFeedbackOnly = true;
   linkNumPeers->isEditable = false;
-  isWaitingForStart = addBoolParameter("isWaitingForStart","is currently waiting for quantized start",false);
-  isWaitingForStart->isEditable = false;
+
+
 #if LINK_SUPPORT
   linkEnabled->setValue(false);
   linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
@@ -102,10 +102,11 @@ void TimeManager::incrementClock(int block){
   }
 
 #if LINK_SUPPORT
-  if(linkEnabled->boolValue() && !isSettingTempo->boolValue()){
+  if(linkEnabled->boolValue() && !timeMasterCandidate){
 
-
+    if(linkSession.numPeers()>0 && !isPlaying())playTrigger->trigger();
     linkTime =
+//    linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
     linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
     //  std::chrono::microseconds( (long long)(Time::getMillisecondCounterHiRes()*1000.0));//(timeState.time*(long long)1000.0/sampleRate)
 
@@ -121,19 +122,22 @@ void TimeManager::incrementClock(int block){
     auto localBeat = getBeat();
     auto localPhase = fmod(localBeat,tstQ);
     if(beatAtTime>0 ){
-      if(isWaitingForStart->boolValue()){
-        isWaitingForStart->setValue(false);
-        timeState.isPlaying = true;
-      }
+      
       if(isPlaying() &&  !isFirstPlayingFrame()&& fabs(phaseAtTime - localPhase)>0.5){
         int closestQOffset = (localPhase> tstQ/2)?tstQ:0;
         goToTime((getBeatForQuantum(tstQ)+closestQOffset + phaseAtTime) * beatTimeInSample);
       }
     }
-    else if(beatAtTime<0 && timeState.isPlaying  && !isWaitingForStart->boolValue() ){
-      goToTime(0,true);
-      isWaitingForStart->setValue(true);
+    else if(beatAtTime<0 && timeState.isPlaying  ){
+      DBG("should wait : " <<beatAtTime);
+//      goToTime(0,true);
+//      shouldStop(true);
+
+//      jassert(timeMasterCandidate);
     }
+  }
+  else{
+    int dbg;dbg++;
   }
 #endif
   updateState();
@@ -153,10 +157,10 @@ void TimeManager::incrementClock(int block){
     linkSession.commitAudioTimeline(linkTimeLine);
   }
 
-  if(!hasJumped && timeState.isPlaying){
+  if(!hasJumped && timeState.isPlaying ){
     timeState.time+=blockSize;
   }
-  timeState.nextTime = timeState.time+blockSize;//(isWaitingForStart->boolValue()?blockSize:0);
+  timeState.nextTime = timeState.time+blockSize;
   int lastBeat =  int(currentBeat->doubleValue());
   int newBeat = getBeatInt();
   if(lastBeat!=newBeat){
@@ -176,9 +180,6 @@ void TimeManager::incrementClock(int block){
 
   pushCommitableParams();
 
-#if LINK_SUPPORT
-
-#endif
 
 }
 void TimeManager::checkCommitableParams(){
@@ -276,7 +277,7 @@ bool TimeManager::isJumping(){
 
 bool TimeManager::askForBeingMasterCandidate(TimeMasterCandidate * n){
 
-  if(timeMasterCandidate==nullptr && !isAnyoneBoundToTime()){
+  if(timeMasterCandidate==nullptr && !isAnyoneBoundToTime() ){
     timeMasterCandidate = n;
     isSettingTempo->setValue(true,false,false,true);
     return true;
@@ -334,17 +335,17 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
 
 };
 
-void TimeManager::shouldStop(){
+void TimeManager::shouldStop(bool now){
   desiredTimeState.isPlaying = false;
-  desiredTimeState.jumpTo(0);
+  goToTime(0,now);
 }
 
 void TimeManager::shouldRestart(bool playing){
   desiredTimeState.isPlaying=playing;
-  desiredTimeState.jumpTo( 0);
+  goToTime( 0);
 }
 void TimeManager::shouldGoToZero(){
-  desiredTimeState.jumpTo(0);
+  goToTime(0);
 }
 void TimeManager::advanceTime(uint64 a,bool now){
   if(now){
@@ -363,36 +364,46 @@ void TimeManager::jump(int amount){
 
 }
 void TimeManager::goToTime(uint64 time,bool now){
+
   desiredTimeState.jumpTo(time);
-  if(now){
+  if(now ){
+
     updateState();
     notifyTimeJumpedIfNeeded();
   }
+
 }
 
 
-void TimeManager::shouldPlay(){
+void TimeManager::shouldPlay(bool now){
   desiredTimeState.isPlaying = true;
+  if(now){
+    timeState.isPlaying= true;
+    updateState();
+  }
 }
 
 void TimeManager::updateState(){
   String dbg;
   if(timeState.isPlaying != desiredTimeState.isPlaying){
     dbg+="play:"+String(timeState.isPlaying)+"/"+String(desiredTimeState.isPlaying);
+    listeners.call(&Listener::playStop,desiredTimeState.isPlaying);
   }
   if(timeState.time != desiredTimeState.time){
     dbg+=" ::: time:"+String(timeState.time)+"/"+String(desiredTimeState.time);
+    listeners.call(&Listener::timeJumped,desiredTimeState.time);
   }
   if(desiredTimeState.isJumping){
     dbg+="time jumping to : " + String(desiredTimeState.nextTime) + " delta="+String((int)desiredTimeState.nextTime - (int)timeState.nextTime);
+    listeners.call(&Listener::timeJumped,desiredTimeState.time);
   }
   if(dbg!=""){
     LOG(dbg);
   }
 
-  if(!desiredTimeState.isPlaying && isWaitingForStart->boolValue()){
-    isWaitingForStart->setValue(false);
-  }
+
+
+
 
   timeState = desiredTimeState;
 }
@@ -401,6 +412,7 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
   if(t == playTrigger){
     if(!playState->boolValue())playState->setValue(true);
     shouldRestart(true);
+
     //    desiredTimeState.jumpTo(0);
     //    playState->setValue(false);
 
@@ -524,6 +536,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time){
 void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample){
 
   BPM->setValue(info.bpm,false,false,false);
+  uint64 targetTime = getTimeInSample();
 
   if(adaptTimeInSample){
     uint64 targetTime = timeState.time*info.beatInSample/beatTimeInSample;
@@ -533,6 +546,12 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
   beatTimeInSample = info.beatInSample;
   listeners.call(&Listener::BPMChanged,BPM->doubleValue());
 
+#if LINK_SUPPORT
+  linkTimeLine.setTempo(BPM->doubleValue(), linkTime);
+
+  linkTimeLine.forceBeatAtTime(0,linkTime,beatPerBar->intValue()*1.0/quantizedBarFraction->doubleValue());
+  linkSession.commitAudioTimeline(linkTimeLine);
+#endif
   //jassert((int)(barLength*beatPerBar->intValue())>0);
 
   // lockBPM for now
