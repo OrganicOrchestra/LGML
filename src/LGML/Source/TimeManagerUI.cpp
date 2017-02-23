@@ -130,6 +130,9 @@ TimeManagerUI::TimeBar::TimeBar(TimeManager * t):timeManager(t){
 
 
 void TimeManagerUI::TimeBar::initComponentsForNumBeats(int beatPerBar){
+  for(auto & bc:beatComponents){
+    removeChildComponent(bc);
+  }
   beatComponents.clear();
   for(int i = 0 ;i <beatPerBar ; i++){
     BeatComponent * bc=new BeatComponent();
@@ -186,6 +189,7 @@ void TimeManagerUI::TimeBar::timerCallback(){
   if(isSettingTempo ){repaint();}
   else{
     int lastBeat =timeManager->getBeatInt()%beatComponents.size();
+//    DBG(timeManager->getBeatPercent());
     for(int i = 0 ; i< beatComponents.size() ; i++){
       BeatComponent * bc = beatComponents.getUnchecked(i);
       if(i==lastBeat){

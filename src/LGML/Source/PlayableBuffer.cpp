@@ -35,7 +35,7 @@ lastState(BUFFER_STOPPED),
 stateChanged(false),
 numTimePlayed(0),
 sampleOffsetBeforeNewState(0),
-multiNeedle(4*512,4*512),
+multiNeedle(512,512),
 
 
 tailRecordNeedle(0),
@@ -73,7 +73,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
 
 
   if(sampleOffsetBeforeNewState){
-    jassert(isFirstRecordingFrame() || wasLastRecordingFrame());
+    jassert(isFirstRecordingFrame() || wasLastRecordingFrame() || globalPlayNeedle==0);
   }
 
   if (isFirstRecordingFrame()){
@@ -86,10 +86,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
   else if( wasLastRecordingFrame()){
     succeeded &= writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState,false);
     //    fadeInOut(fadeSamples, 0);
-    originAudioBuffer.setSize(audioBuffer.getNumChannels(), getRecordedLength()+getNumSampleFadeOut());
-    for(int i = 0 ; i < audioBuffer.getNumChannels() ; i++){
-      originAudioBuffer.copyFrom(i, 0, audioBuffer, i, 0, getRecordedLength()+getNumSampleFadeOut());
-    }
+
 
   }
 
@@ -97,6 +94,14 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
     succeeded &= writeAudioBlock(buffer,sampleOffsetBeforeNewState,-1,true);
   }
 
+  // save to buffer when end recording
+  if( !isRecordingTail() && !isRecording() && recordNeedle>0 && originAudioBuffer.getNumSamples()==0){
+    originAudioBuffer.setSize(audioBuffer.getNumChannels(), getRecordedLength()+getNumSampleFadeOut());
+    for(int i = 0 ; i < audioBuffer.getNumChannels() ; i++){
+      originAudioBuffer.copyFrom(i, 0, audioBuffer, i, 0, getRecordedLength()+getNumSampleFadeOut());
+    }
+
+  }
 
   buffer.clear();
 
@@ -126,6 +131,15 @@ inline bool PlayableBuffer::writeAudioBlock(const AudioBuffer<float> & buffer, i
   
 
   samplesToWrite= samplesToWrite==-1?buffer.getNumSamples()-fromSample:samplesToWrite;
+
+  if(samplesToWrite==0){return true;}
+  float rms = buffer.getRMSLevel(0, fromSample,samplesToWrite);
+  if(rms==0){
+    int dbg;
+    dbg++;
+  }
+
+
   if (recordNeedle + buffer.getNumSamples()> audioBuffer.getNumSamples()) {
     return false;
   }
@@ -253,7 +267,7 @@ bool PlayableBuffer::isOrWasPlaying() const{return (state==BUFFER_PLAYING || las
 bool PlayableBuffer::isOrWasRecording() const{return (state==BUFFER_RECORDING || lastState==BUFFER_RECORDING) && audioBuffer.getNumSamples();}
 bool PlayableBuffer::isRecordingTail() const{return recordNeedle>0 && !isRecording() && tailRecordNeedle<2*getNumSampleFadeOut();}
 
-void PlayableBuffer::startRecord(){recordNeedle = 0;tailRecordNeedle = 0;multiNeedle.setLoopSize(0);playNeedle=0;globalPlayNeedle=0;}
+void PlayableBuffer::startRecord(){recordNeedle = 0;tailRecordNeedle = 0;multiNeedle.setLoopSize(0);playNeedle=0;globalPlayNeedle=0;originAudioBuffer.setSize(0, 0,false,false,true);}
 inline void PlayableBuffer::startPlay(){multiNeedle.setLoopSize(recordNeedle);setPlayNeedle(0);}
 
 
@@ -311,7 +325,8 @@ void PlayableBuffer::setSampleRate(float sR){sampleRate = sR;};
 
 
 void PlayableBuffer::setTimeRatio(const double ratio){
-  jassert(isOrWasPlaying());
+//  jassert(isOrWasPlaying());
+  if(originAudioBuffer.getNumSamples()==0){return;}
 
 #if RT_STRETCH
   pendingTimeStretchRatio = ratio;
@@ -330,11 +345,12 @@ void PlayableBuffer::setTimeRatio(const double ratio){
 
   }
   else{
+
     for(int i = 0 ; i < originAudioBuffer.getNumChannels() ; i++){
       audioBuffer.copyFrom(i, 0, originAudioBuffer, i, 0, originAudioBuffer.getNumSamples());
     }
-    recordNeedle = originAudioBuffer.getNumSamples() - getNumSampleFadeOut();
-    multiNeedle.setLoopSize(recordNeedle);
+    setRecordedLength(originAudioBuffer.getNumSamples() - getNumSampleFadeOut());
+
   }
 
 

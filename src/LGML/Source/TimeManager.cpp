@@ -104,7 +104,7 @@ void TimeManager::incrementClock(int block){
 #if LINK_SUPPORT
   if(linkEnabled->boolValue() && !timeMasterCandidate){
 
-    if(linkSession.numPeers()>0 && !isPlaying())playTrigger->trigger();
+//    if(linkSession.numPeers()>0 && !isPlaying())playTrigger->trigger();
     linkTime =
 //    linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
     linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
@@ -324,7 +324,7 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
   else if (p==BPMLocked){
     BPM->isEditable = !BPMLocked->boolValue();
   }
-  else if(p==beatPerBar){currentBeat->maximumValue = beatPerBar->intValue();}
+  
 
 
   else if (p==linkEnabled){
@@ -430,7 +430,7 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
       if(!playState->boolValue())
       {
         playState->setValue(true);
-        currentBeatPeriod = (uint64)0.7; //@Martin 0.7 for a uint64 ??
+        currentBeatPeriod = (uint64)0; 
       }
 
       uint64 currentTime = Time().getMillisecondCounter();//timeState.time;
@@ -450,7 +450,7 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
 
         //        int targetBeatInt = ceil(targetBeat);
 
-        goToTime(targetBeatInt*currentBeatPeriod*44.1);//(deltaBeat*beatTimeInSample);
+        goToTime(targetBeatInt*currentBeatPeriod*sampleRate/1000.0);//(deltaBeat*beatTimeInSample);
 
         BPM->setValue(60000.0/currentBeatPeriod);
         DBG(targetBeatInt << "," << BPM->doubleValue());

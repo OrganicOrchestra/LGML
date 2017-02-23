@@ -61,6 +61,7 @@ class PlayableBuffer {
   bool isOrWasPlaying() const;
   bool isOrWasRecording() const;
   bool isRecordingTail() const;
+  
 
 
   void startRecord();
@@ -148,6 +149,8 @@ private:
 
 
   uint64 recordNeedle,playNeedle,globalPlayNeedle;
+
+  
   int tailRecordNeedle;
 
 
