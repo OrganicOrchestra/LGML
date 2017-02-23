@@ -96,6 +96,8 @@ public:
 //  DynamicObject * getLocalEnv(){return localEnv;}
   DynamicObject::Ptr localEnv;
 
+  friend class JsContainerSync;
+
 
   // module name is the last element of dot separated localNamespace
   String getModuleName();

@@ -10,6 +10,7 @@
 
 #include "JsContainerSync.h"
 #include "JsHelpers.h"
+#include "JsEnvironment.h"
 
 
 JsContainerSync::~JsContainerSync(){
@@ -98,9 +99,16 @@ DynamicObject *
 JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * container,DynamicObject *parent)
 {
     DynamicObject*  myParent = parent;
-    // create an object only if not skipping , if not add to parent
-    if(!container->skipControllableNameInAddress)
+    // create or get object only if not skipping , if not add to parent
+  if(!container->skipControllableNameInAddress){
+    if(auto js = dynamic_cast<JsEnvironment*> (container)){
+      myParent = js->localEnv;
+    }
+    else{
         myParent = new DynamicObject();
+    }
+
+  }
     else{jassert(parent!=nullptr);}
   static Identifier getControllableForAddressId("getControllableForAddress");
   myParent->setMethod(getControllableForAddressId,getControllableForAddress);
