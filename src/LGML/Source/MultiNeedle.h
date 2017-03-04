@@ -110,13 +110,13 @@ private:
   inline float computeCurrentFade(){
     if(consumedSamples<fadeInNumSamples){
       float lin = jmax(0.0f,consumedSamples*1.0f  /fadeInNumSamples    );
-      return (lin);
+      return sin(lin*float_Pi/2.0f);
 
     }
 
     if(isFadingOut){
       float lin =  jmax(0.0f,maxFadeOutValue * (fadeOutNumSamples - (consumedSamples - startFadeOutCount))*1.0f /fadeOutNumSamples );
-      return (lin);
+      return sin(lin*float_Pi/2.0f);
     }
     return 1;
 
@@ -228,7 +228,8 @@ public:
   }
 
   void addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffer<float> & destBuffer,int numSamples,bool isLooping){
-    jassert(destBuffer.getNumChannels()>=originBuffer.getNumChannels());
+//    jassert(destBuffer.getNumChannels()>=originBuffer.getNumChannels());
+    int minComonChannels = jmin(destBuffer.getNumChannels(),originBuffer.getNumChannels());
     // ensure buffer is larger than last possible read sample
     jassert(originBuffer.getNumSamples()>loopSize+fadeOutNumSamples);
     jassert(loopSize>0);
@@ -240,7 +241,7 @@ public:
 //      DBG(fN->num << " : "<<fN->lastFade << "\t" << fN->currentFade << "\t" << fN->getCurrentPosition()-loopSize);
       int curPos =fN->getCurrentPosition();
 
-      for(int  i = originBuffer.getNumChannels()-1; i >=0  ; i--){
+      for(int  i = minComonChannels-1; i >=0  ; i--){
         destBuffer.addFromWithRamp(i, 0, originBuffer.getReadPointer(i, curPos), numSamples, fN->getFadeValueStart(), fN->getFadeValueEnd());
       }
     }

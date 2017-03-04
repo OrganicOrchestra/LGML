@@ -61,10 +61,6 @@ void JsNode::buildLocalEnv() {
 
 }
 
-void JsNode::newJsFileLoaded(){
-    
-    
-}
 
 void JsNode::onContainerParameterChanged(Parameter * p) {
 	NodeBase::onContainerParameterChanged(p);

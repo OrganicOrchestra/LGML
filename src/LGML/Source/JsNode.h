@@ -25,8 +25,9 @@ class JsNode : public NodeBase,public JsEnvironment{
 
 	void buildLocalEnv() override;
 
-	void newJsFileLoaded()override;
+	
 	void onContainerParameterChanged(Parameter * p) override;
+
 
 	static var addIntParameter(const var::NativeFunctionArgs & a);
 	static var addFloatParameter(const var::NativeFunctionArgs & a);

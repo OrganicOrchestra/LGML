@@ -352,6 +352,7 @@ void ControllableContainer::updateChildrenControlAddress()
 
 Array<WeakReference<Controllable>> ControllableContainer::getAllControllables(bool recursive,bool getNotExposed)
 {
+  
   Array<WeakReference<Controllable>> result;
   for (auto &c : controllables)
   {
@@ -673,6 +674,14 @@ var ControllableContainer::getJSONData()
 
   var paramsData;
 
+//  for(auto & p :controllables){
+//
+//  }
+//  for(auto controllableCont: controllableContainers){
+//    getJSONData();
+//  }
+
+//  jassert(saveAndLoadRecursiveData==false);
 
   Array<WeakReference<Controllable>> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
 

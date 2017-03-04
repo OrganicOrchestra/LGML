@@ -106,7 +106,9 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     setTrackState(STOPPED);
   }
   if(playableBuffer.isPlaying()){
-    trackStateListeners.call(&LooperTrack::Listener::internalTrackTimeChanged,playableBuffer.getPlayPos()*1.0/(1+playableBuffer.getRecordedLength()));
+    if(playableBuffer.getRecordedLength()>0){
+    trackStateListeners.call(&LooperTrack::Listener::internalTrackTimeChanged,playableBuffer.getPlayPos()*1.0/playableBuffer.getRecordedLength());
+    }
   }
   if(playableBuffer.wasLastRecordingFrame()){
     handleEndOfRecording();
@@ -365,7 +367,7 @@ void LooperTrack::handleEndOfRecording(){
 
         playableBuffer.setRecordedLength(desiredSize);
         beatLength->setValue(playableBuffer.getRecordedLength()*1.0/info.beatInSample,false,false,true);
-        tm->goToTime(offsetForPlay,true);//desiredSize+offsetForPlay,true);
+        tm->goToTime(offsetForPlay,false);//desiredSize+offsetForPlay,true);
         startPlayBeat = 0;
         jassert(tm->playState->boolValue());
         releaseMasterTrack();

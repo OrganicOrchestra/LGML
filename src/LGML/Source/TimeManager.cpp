@@ -147,15 +147,8 @@ void TimeManager::incrementClock(int block){
   }
 
   checkCommitableParams();
-  hasJumped = notifyTimeJumpedIfNeeded();
-  if(hasJumped){
-    linkTimeLine = linkSession.captureAudioTimeline();
-    linkTimeLine.requestBeatAtTime(getBeat(),
-                                   //                      std::chrono::system_clock::now().time_since_epoch(),
-                                   linkTime,
-                                   beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
-    linkSession.commitAudioTimeline(linkTimeLine);
-  }
+  hasJumped = updateAndNotifyTimeJumpedIfNeeded();
+
 
   if(!hasJumped && timeState.isPlaying ){
     timeState.time+=blockSize;
@@ -170,6 +163,18 @@ void TimeManager::incrementClock(int block){
 
     }
   }
+
+
+  if(hasJumped || lastBeat!=newBeat){
+    linkTimeLine = linkSession.captureAudioTimeline();
+    linkTimeLine.requestBeatAtTime(getBeat(),
+                                   //                      std::chrono::system_clock::now().time_since_epoch(),
+                                   linkTime,
+                                   beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
+    linkSession.commitAudioTimeline(linkTimeLine);
+  }
+
+
   desiredTimeState =timeState;
 
 
@@ -200,7 +205,7 @@ void TimeManager::pushCommitableParams(){
   //  BPM->pushValue(true);
 }
 
-bool TimeManager::notifyTimeJumpedIfNeeded(){
+bool TimeManager::updateAndNotifyTimeJumpedIfNeeded(){
 
   if(timeState.isJumping){
     jassert(blockSize!=0);
@@ -369,7 +374,7 @@ void TimeManager::goToTime(uint64 time,bool now){
   if(now ){
 
     updateState();
-    notifyTimeJumpedIfNeeded();
+    updateAndNotifyTimeJumpedIfNeeded();
   }
 
 }
@@ -536,7 +541,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time){
 void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample){
 
   BPM->setValue(info.bpm,false,false,false);
-  uint64 targetTime = getTimeInSample();
+//  uint64 targetTime = getTimeInSample();
 
   if(adaptTimeInSample){
     uint64 targetTime = timeState.time*info.beatInSample/beatTimeInSample;
@@ -547,9 +552,10 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
   listeners.call(&Listener::BPMChanged,BPM->doubleValue());
 
 #if LINK_SUPPORT
+
   linkTimeLine.setTempo(BPM->doubleValue(), linkTime);
 
-  linkTimeLine.forceBeatAtTime(0,linkTime,beatPerBar->intValue()*1.0/quantizedBarFraction->doubleValue());
+  linkTimeLine.forceBeatAtTime(0,linkTime,0);
   linkSession.commitAudioTimeline(linkTimeLine);
 #endif
   //jassert((int)(barLength*beatPerBar->intValue())>0);

@@ -35,7 +35,7 @@ lastState(BUFFER_STOPPED),
 stateChanged(false),
 numTimePlayed(0),
 sampleOffsetBeforeNewState(0),
-multiNeedle(512,512),
+multiNeedle(2*512,2*512),
 
 
 tailRecordNeedle(0),
@@ -133,11 +133,11 @@ inline bool PlayableBuffer::writeAudioBlock(const AudioBuffer<float> & buffer, i
   samplesToWrite= samplesToWrite==-1?buffer.getNumSamples()-fromSample:samplesToWrite;
 
   if(samplesToWrite==0){return true;}
-  float rms = buffer.getRMSLevel(0, fromSample,samplesToWrite);
-  if(rms==0){
-    int dbg;
-    dbg++;
-  }
+//  float rms = buffer.getRMSLevel(0, fromSample,samplesToWrite);
+//  if(rms==0){
+//    int dbg;
+//    dbg++;
+//  }
 
 
   if (recordNeedle + buffer.getNumSamples()> audioBuffer.getNumSamples()) {

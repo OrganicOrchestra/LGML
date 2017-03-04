@@ -253,7 +253,7 @@ private:
   bool hasJumped;
 
   ScopedPointer<FadeInOut> clickFader;
-  bool notifyTimeJumpedIfNeeded();
+  bool updateAndNotifyTimeJumpedIfNeeded();
 
   bool isAnyoneBoundToTime();
 

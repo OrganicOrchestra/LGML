@@ -128,12 +128,20 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
       for (int i = 0; i < buffer.getNumSamples(); i++) {
         buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step1*1.0 / period1)));
         buffer.addSample(1, i, (float)(amp*cos(2.0*double_Pi*step2*1.0 / period2)));
+        step1++;
+        step2++;
+        if (step1>period1) { step1 = 0; }
+        if (step2>period2) { step2 = 0; }
       }
     } else if (outType == "rl")
     {
       for (int i = 0; i < buffer.getNumSamples(); i++) {
         buffer.addSample(1, i, (float)(amp*cos(2.0*double_Pi*step1*1.0 / period1)));
         buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step2*1.0 / period2)));
+        step1++;
+        step2++;
+        if (step1>period1) { step1 = 0; }
+        if (step2>period2) { step2 = 0; }
       }
     } else if (outType == "mixed")
     {
@@ -142,12 +150,13 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
         buffer.addSample(0, i, (float)(amp/2*cos(2.0*double_Pi*step2*1.0 / period2)));
         buffer.addSample(1, i, (float)(amp/2*cos(2.0*double_Pi*step1*1.0 / period1)));
         buffer.addSample(1, i, (float)(amp/2*cos(2.0*double_Pi*step2*1.0 / period2)));
+        step1++;
+        step2++;
+        if (step1>period1) { step1 = 0; }
+        if (step2>period2) { step2 = 0; }
       }
     }
-    step1++;
-    step2++;
-    if (step1>period1) { step1 = 0; }
-    if (step2>period2) { step2 = 0; }
+
   }
 
 }
