@@ -19,7 +19,8 @@
 #ifndef NODECHILDPROOFER_H_INCLUDED
 #define NODECHILDPROOFER_H_INCLUDED
 
-
+String outTestPath("/tmp/LGMLTest/");
+File outTestDir;
 
 extern Engine * getEngine();
 
@@ -39,7 +40,9 @@ public:
 
   class ChildProoferThread : public Thread{
   public:
-    ChildProoferThread(NodeChildProofer *o,ConnectableNode * _testingNode):Thread("childProoferThread"),owner(o),testingNode(_testingNode){}
+    ChildProoferThread(String name,NodeChildProofer *o,ConnectableNode * _testingNode):Thread(name),owner(o),testingNode(_testingNode){
+
+    }
     void run() override{
       Array<WeakReference<Controllable > > allControllables = testingNode->getAllControllables(true,true);
       int totalNumAction = owner->numActionsPerControllables * allControllables.size();
@@ -48,7 +51,13 @@ public:
 
         WeakReference<Controllable> tested = allControllables.getReference(i%allControllables.size());
         if(tested.get()){
-          if (tested->shortName !="savePreset" && tested->shortName !="loadFile"){
+          if (((NodeBase*)tested->parentContainer)->type!=NodeType::ContainerInType &&
+              ((NodeBase*)tested->parentContainer)->type!=NodeType::ContainerOutType &&
+              tested != tested->parentContainer->nameParam
+
+              
+
+              && tested->shortName !="savePreset" && tested->shortName !="loadFile" && tested!=testingNode->nameParam){
             String err ="Action failed for Controllable : "+tested->getControlAddress();
             if(tested.get()){
               owner->expect(doActionForControllable(tested),err );
@@ -56,7 +65,7 @@ public:
             }
             else{
               // controllable deleted before
-              jassertfalse;
+//              jassertfalse;
             }
 
           }
@@ -64,8 +73,28 @@ public:
         i++;
       }
 
+      File outFile = outTestDir.getChildFile(Thread::getThreadName());
+
+
+      for(int i = 0 ; i < allTimeTaken.size() ;i++){
+        Identifier cName = allTimeTaken.getName(i);
+        outFile.appendText(cName.toString());
+        double mean = 0;
+        for(auto & v:*allTimeTaken[cName].getArray()){
+          mean+=(double)v;
+
+
+        }
+        int num =allTimeTaken[cName].getArray()->size();
+
+        mean/=jmax(num,1);
+        outFile.appendText(" , ");
+        outFile.appendText(String(mean));
+        outFile.appendText("\n");
+      }
     };
     bool doActionForControllable(Controllable * c){
+      double startTime = juce::Time::getMillisecondCounterHiRes();
       switch(c->type ){
         case Controllable::TRIGGER:
           if(Trigger * t = dynamic_cast<Trigger*>(c)){t->trigger();}
@@ -96,14 +125,28 @@ public:
           return false;
 
       }
+      double now =  juce::Time::getMillisecondCounterHiRes();
+      double timeTaken = now - startTime;
+      Identifier mapKey =c->getControlAddress();
+      if(!allTimeTaken.contains(mapKey)){
+        allTimeTaken.set(mapKey,Array<var>());
+      }
+      allTimeTaken[mapKey].getArray()->add(timeTaken);
+
+
       return true;
     }
 
     NodeChildProofer * owner;
     ConnectableNode * testingNode;
+    NamedValueSet allTimeTaken;
   };
 
   void runTest() override  {
+    outTestDir = File(outTestPath);
+    if(!outTestDir.exists()){
+      outTestDir.createDirectory();
+    }
     getEngine()->createNewGraph();
 
     ConnectableNode * testingNode = NodeManager::getInstance()->mainContainer->addNode(NodeFactory::getTypeFromString(testingNodeName));
@@ -111,7 +154,7 @@ public:
     expect(testingNode!=nullptr,"node not found for name : " +testingNodeName);
     {
       beginTest("childProofing single thread");
-      ChildProoferThread child(this,testingNode);
+      ChildProoferThread child("monoThread",this,testingNode);
       child.run();
 
       // just to be sure that async message are handled too
@@ -123,7 +166,7 @@ public:
       beginTest(" childProofing multi thread");
       OwnedArray<ChildProoferThread> childs;
       int numThreads = 2;
-      for(int i = 0 ; i  < numThreads ; i++){ childs.add(new ChildProoferThread(this,testingNode));}
+      for(int i = 0 ; i  < numThreads ; i++){ childs.add(new ChildProoferThread("thread"+String(i),this,testingNode));}
       for(auto & c:childs){c->startThread();Thread::sleep(10);}
 
 
@@ -150,6 +193,7 @@ public:
 
 
   }
+
 };
 
 
@@ -157,6 +201,7 @@ static bool hasBeenBuilt = false;
 
 bool buildTests(){
   if(!hasBeenBuilt){
+
     for(auto nName:nodeTypeNames){
       if(nName!="ContainerIn" && nName!= "ContainerOut" && !nName.contains("AudioDevice"))
         new NodeChildProofer(nName,10);
