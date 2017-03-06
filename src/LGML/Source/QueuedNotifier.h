@@ -58,7 +58,7 @@ public:
 
       // fifo is full : we can drop message
       if(size1==0){
-        jassert(isUpdatePending());
+//        jassert(isUpdatePending());
         if(canDropMessage){
           delete msg;
         }
@@ -80,7 +80,7 @@ public:
       //          if(messageQueue.size()<maxSize){messageQueue.add(msg);}
       //                    else{messageQueue.set(start2,msg);}
       //        }
-//      jassert(size2==0);
+      //      jassert(size2==0);
 
       fifo.finishedWrite (size1 + size2);
       triggerAsyncUpdate();
@@ -116,17 +116,17 @@ private:
     }
 
 
-    if(size2>0)
-      lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start2+size2-1));
-      else if(size1>0)
-        lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start1+size1-1));
+    if(size2>0){
+      lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start2+size2-1));}
+    else if(size1>0){
+      lastListeners.call(&Listener::newMessage,*messageQueue.getUnchecked(start1+size1-1));}
 
-        fifo.finishedRead(size1 + size2);
-
-
+    fifo.finishedRead(size1 + size2);
 
 
-        }
+
+
+  }
 
 
 

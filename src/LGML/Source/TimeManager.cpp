@@ -104,9 +104,9 @@ void TimeManager::incrementClock(int block){
 #if LINK_SUPPORT
   if(linkEnabled->boolValue() && !timeMasterCandidate){
 
-//    if(linkSession.numPeers()>0 && !isPlaying())playTrigger->trigger();
+    //    if(linkSession.numPeers()>0 && !isPlaying())playTrigger->trigger();
     linkTime =
-//    linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
+    //    linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
     linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
     //  std::chrono::microseconds( (long long)(Time::getMillisecondCounterHiRes()*1000.0));//(timeState.time*(long long)1000.0/sampleRate)
 
@@ -121,20 +121,31 @@ void TimeManager::incrementClock(int block){
     auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
     auto localBeat = getBeat();
     auto localPhase = fmod(localBeat,tstQ);
-    if(beatAtTime>0 ){
-      
-      if(isPlaying() &&  !isFirstPlayingFrame()&& fabs(phaseAtTime - localPhase)>0.5){
-        int closestQOffset = (localPhase> tstQ/2)?tstQ:0;
-        goToTime((getBeatForQuantum(tstQ)+closestQOffset + phaseAtTime) * beatTimeInSample);
-      }
-    }
-    else if(beatAtTime<0 && timeState.isPlaying  ){
-      DBG("should wait : " <<beatAtTime);
-//      goToTime(0,true);
-//      shouldStop(true);
 
-//      jassert(timeMasterCandidate);
+    // we are not using quantified launch atm (beatTime<0), we assume that a link session is always playing and set it only if a timeMasterCandidate sets it
+    //
+    //    if(beatAtTime>0 ){
+    //
+    if(!isPlaying()){
+      playState->setValue(true);
+      shouldPlay(true);
     }
+    if(isPlaying() &&  fabs(phaseAtTime - localPhase)>0.5
+       && !isFirstPlayingFrame()
+       ){
+      int closestQOffset = (localPhase> tstQ/2)?tstQ:0;
+      goToTime((getBeatForQuantum(tstQ)+closestQOffset + phaseAtTime) * beatTimeInSample);
+    }
+
+    //    }
+    //    else  if(isPlaying()){
+    //      DBG("should wait : " <<beatAtTime);
+    //      playState->setValue(false);
+    //      goToTime(0,true);
+    //      shouldStop(true);
+    //
+    ////      jassert(timeMasterCandidate);
+    //    }
   }
   else{
     int dbg;dbg++;
@@ -165,7 +176,7 @@ void TimeManager::incrementClock(int block){
   }
 
 
-  if(hasJumped || lastBeat!=newBeat){
+  if(hasJumped ){//|| lastBeat!=newBeat){
     linkTimeLine = linkSession.captureAudioTimeline();
     linkTimeLine.requestBeatAtTime(getBeat(),
                                    //                      std::chrono::system_clock::now().time_since_epoch(),
@@ -329,7 +340,7 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
   else if (p==BPMLocked){
     BPM->isEditable = !BPMLocked->boolValue();
   }
-  
+
 
 
   else if (p==linkEnabled){
@@ -435,7 +446,7 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
       if(!playState->boolValue())
       {
         playState->setValue(true);
-        currentBeatPeriod = (uint64)0; 
+        currentBeatPeriod = (uint64)0;
       }
 
       uint64 currentTime = Time().getMillisecondCounter();//timeState.time;
@@ -541,7 +552,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time){
 void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample){
 
   BPM->setValue(info.bpm,false,false,false);
-//  uint64 targetTime = getTimeInSample();
+  //  uint64 targetTime = getTimeInSample();
 
   if(adaptTimeInSample){
     uint64 targetTime = timeState.time*info.beatInSample/beatTimeInSample;
@@ -553,9 +564,11 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
 
 #if LINK_SUPPORT
 
-  linkTimeLine.setTempo(BPM->doubleValue(), linkTime);
+  linkTimeLine =ableton::Link::Timeline(ableton::link::Timeline(),true);
 
+  linkTimeLine.setTempo(info.bpm, linkTime);
   linkTimeLine.forceBeatAtTime(0,linkTime,0);
+
   linkSession.commitAudioTimeline(linkTimeLine);
 #endif
   //jassert((int)(barLength*beatPerBar->intValue())>0);
@@ -647,6 +660,11 @@ void TimeManager::linkTempoCallBack(const double tempo){
 void TimeManager::linkNumPeersCallBack(const size_t numPeers){
   if(TimeManager * tm = getInstanceWithoutCreating()){
     tm->linkNumPeers->setValue((int)numPeers);
+    if(numPeers>0 && tm->linkEnabled->boolValue()){
+      if(!tm->isPlaying()){
+        tm->playState->setValue(true);
+      }
+    }
   }
   
 }

@@ -32,7 +32,7 @@ public:
 
 
   ScopedPointer<JSEnvContainer> jsParameters;
-  
+
 
   // should be implemented to build localenv
   virtual void buildLocalEnv() = 0;
@@ -62,7 +62,7 @@ public:
   void    showFile();
 
 
-  
+
 
   String printAllNamespace();
 
@@ -93,7 +93,7 @@ public:
   static Identifier noFunctionLogIdentifier;
 
   static DynamicObject::Ptr getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
-//  DynamicObject * getLocalEnv(){return localEnv;}
+  //  DynamicObject * getLocalEnv(){return localEnv;}
   DynamicObject::Ptr localEnv;
 
   friend class JsContainerSync;
@@ -102,7 +102,7 @@ public:
   // module name is the last element of dot separated localNamespace
   String getModuleName();
   String getParentName();
-    String getCurrentFilePath(){return       currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory());}//currentFile.getFullPathName();};
+  String getCurrentFilePath(){return       currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory());}//currentFile.getFullPathName();};
 
 
   const NamedValueSet & getRootObjectProperties();
@@ -112,7 +112,7 @@ public:
   bool functionIdentifierIsDefined(const Identifier & i);
   File currentFile;
 
- static var createParameterListenerObject(const var::NativeFunctionArgs & a);
+  static var createParameterListenerObject(const var::NativeFunctionArgs & a);
 
   protected :
   Array<WeakReference<Parameter> > listenedParameters;
@@ -150,7 +150,7 @@ private:
 
   ListenerList<Listener> jsListeners;
 
-  
+
   void internalLoadFile(const File &);
 
 
@@ -229,7 +229,7 @@ private:
   bool isLoadingFile;
   int triesToLoad;
   bool _isInSyncWithLGML;
-  
+
 
   static Identifier onUpdateIdentifier;
 
@@ -261,7 +261,7 @@ class JsControllableListenerObject:public Parameter::AsyncListener,public Trigge
   }
   static Identifier parameterChangedFId;
   static Identifier parameterObjectId;
-  
+
   virtual ~JsControllableListenerObject(){
     if(Parameter * pp = getParameter()) pp->removeAsyncParameterListener(this);
     if(Trigger * tt = getTrigger()) tt->removeAsyncTriggerListener(this);
@@ -281,12 +281,12 @@ class JsControllableListenerObject:public Parameter::AsyncListener,public Trigge
 
   // overriden in Js
 #pragma warning(push)
-#pragma warning(disable:4305 4800) 
+#pragma warning(disable:4305 4800)
   static var dummyCallback(const var::NativeFunctionArgs & /*a*/){return var::undefined;};
 #pragma warning(pop)
   void newMessage(const Parameter::ParamWithValue & pv)override
   {
-      jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,&pv.value,1), true);
+    jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,&pv.value,1), true);
 
   };
 

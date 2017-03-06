@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    JsGlobalEnvironment.h
-    Created: 9 May 2016 5:13:16pm
-    Author:  Martin Hermant
+ JsGlobalEnvironment.h
+ Created: 9 May 2016 5:13:16pm
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef JAVASCRIPTGLOBALENVIRONMENT_H_INCLUDED
 #define JAVASCRIPTGLOBALENVIRONMENT_H_INCLUDED
@@ -21,28 +21,28 @@
 class JsGlobalEnvironment: public JsContainerSync
 {
 public:
-    juce_DeclareSingleton(JsGlobalEnvironment, true);
+  juce_DeclareSingleton(JsGlobalEnvironment, true);
 
-    JsGlobalEnvironment();
+  JsGlobalEnvironment();
 
-    void removeNamespace(const String & ns);
+  void removeNamespace(const String & ns);
   DynamicObject::Ptr getNamespaceObject(const String & ns);
   DynamicObject::Ptr getEnv() override;
 
 
 private:
 
-	
-
-    static var post(const juce::var::NativeFunctionArgs& a);
-	static var getMillis(const juce::var::NativeFunctionArgs& a);
 
 
-    friend class JsEnvironment;
+  static var post(const juce::var::NativeFunctionArgs& a);
+  static var getMillis(const juce::var::NativeFunctionArgs& a);
 
-    var env;
 
-	
+  friend class JsEnvironment;
+
+  var env;
+
+
 };
 
 

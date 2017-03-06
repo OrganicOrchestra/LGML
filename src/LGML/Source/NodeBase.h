@@ -28,7 +28,7 @@ class ConnectableNodeUI;
 class NodeBase :
 public ConnectableNode,
 public ReferenceCountedObject,
-public juce::AudioProcessor, public Timer, //Audio
+public juce::AudioProcessor, private Timer, //Audio
 public Data::DataListener //Data
 {
 
@@ -42,20 +42,18 @@ public:
   virtual bool hasDataInputs() override;
   virtual bool hasDataOutputs() override;
 
-  
+
 
 
 
   //  TODO:  this should not be implemented in Node to avoid overriding this method
-  //    create onNodeParameterChanged();
   void onContainerParameterChanged(Parameter * p) override;
   void onContainerParameterChangedAsync(Parameter *,const var & /*value*/)override{};
-  // can be oerriden to react to clear
-  virtual void clearInternal() {};
-public:
 
 
   virtual void clear() override;
+  // can be oerriden to react to clear
+  virtual void clearInternal() {};
 
   var getJSONData() override;
   void loadJSONDataInternal(var data) override;
@@ -76,7 +74,7 @@ public:
 
 
   virtual bool setPreferedNumAudioInput(int num);
-   virtual bool setPreferedNumAudioOutput(int num);
+  virtual bool setPreferedNumAudioOutput(int num);
   // this will be called with audio locked so that one can safely update internal variables used by processBlockInternal
   void numChannelsChanged() override{numChannelsChanged(true);numChannelsChanged(false);};
   virtual void numChannelsChanged(bool /*isInput*/) {};
@@ -101,7 +99,7 @@ public:
   double getTailLengthSeconds() const override { return 0; }
   bool acceptsMidi() const override { return false; }
   bool producesMidi() const override { return false; }
-  
+
 
 
   // save procedures from host
@@ -141,10 +139,9 @@ public:
 
   typedef Data::DataType DataType;
   typedef Data::DataElement DataElement;
-
   OwnedArray<Data> inputDatas;
   OwnedArray<Data> outputDatas;
-
+  CriticalSection numDataIOLock;
 
   Data * addInputData(const String &name, DataType type);
   Data * addOutputData(const String &name, DataType type);
@@ -153,11 +150,8 @@ public:
   bool removeInputData(const String &name);
   bool removeOutputData(const String &name);
 
-	void removeAllInputDatas();
-	void removeAllOutputDatas();
-  CriticalSection numDataIOLock;
-
-
+  void removeAllInputDatas();
+  void removeAllOutputDatas();
 
   virtual void updateOutputData(String &dataName, const float &value1, const float &value2 = 0, const float &value3 = 0);
 
@@ -175,14 +169,14 @@ public:
   Data * getOutputDataByName(const String &dataName) override;
   Data * getInputDataByName(const String &dataName) override;
 
-	virtual void dataChanged(Data *) override;
+  virtual void dataChanged(Data *) override;
 
-	virtual void processInputDataChanged(Data *) {} // to be overriden by child classes
-	virtual void processOutputDataUpdated(Data *) {} // to be overriden by child classes
-
+  virtual void processInputDataChanged(Data *) {} // to be overriden by child classes
+  virtual void processOutputDataUpdated(Data *) {} // to be overriden by child classes
+private:
   WeakReference<NodeBase>::Master masterReference;
   friend class WeakReference<NodeBase>;
-  
+
   FadeInOut dryWetFader,muteFader;
 
   double lastDryVolume;

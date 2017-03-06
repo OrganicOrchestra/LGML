@@ -61,8 +61,9 @@ void Parameter::setRange(var min, var max){
 }
 
 void Parameter::commitValue(var _value){
+  hasCommitedValue = value!=_value;
   commitedValue  =_value;
-  hasCommitedValue = true;
+
 }
 
 void Parameter::pushValue(bool defered,bool force){
