@@ -72,7 +72,8 @@ logVolume(float01ToGain(DB0_FOR_01),0.5)
 }
 
 LooperTrack::~LooperTrack() {
-
+  
+  removeTrackListener(stateParameterStringSynchronizer);
 }
 
 void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
