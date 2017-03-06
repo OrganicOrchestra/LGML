@@ -43,7 +43,7 @@ class PlayableBuffer {
 
   void setPlayNeedle(int n);
 
-  void cropEndOfRecording(int sampletoRemove);
+  void cropEndOfRecording(int * sampletoRemove);
   void padEndOfRecording(int sampleToAdd);
   void setRecordedLength(uint64 targetSamples);
 

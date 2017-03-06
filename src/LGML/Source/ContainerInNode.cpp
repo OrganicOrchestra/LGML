@@ -80,11 +80,13 @@ void ContainerInNode::onContainerParameterChanged(Parameter * p)
 	}
 	else if (p == numInputData)
 	{
-		if (p->intValue() < getTotalNumInputData())
+		while (inputDatas.size() && (p->intValue() < getTotalNumInputData()))
 		{
-			removeInputData(inputDatas[inputDatas.size() - 1]->name);
+//      bool res  =
+      removeInputData(inputDatas[inputDatas.size() - 1]->name);
+//      jassert(res);
 		}
-		else
+		while ( p->intValue() > getTotalNumInputData())
 		{
 			addInputData("Input Data " + String(inputDatas.size()),DataType::Number);
 		}

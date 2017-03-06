@@ -70,7 +70,7 @@ public:
   Uuid uid;
 
   OwnedArray<Controllable,CriticalSection> controllables;
-  Array<WeakReference<ControllableContainer>  > controllableContainers;
+  Array<WeakReference<ControllableContainer>,CriticalSection  > controllableContainers;
   ControllableContainer * parentContainer;
 
   void addParameter(Parameter * p);
@@ -184,6 +184,9 @@ public:
   void clear();
 
 
+
+
+
   protected :
 
   /// identifiers
@@ -198,12 +201,11 @@ public:
 private:
 
 
-
+  WeakReference<ControllableContainer>::Master masterReference;
+    friend class WeakReference<ControllableContainer>;
   void notifyStructureChanged(ControllableContainer * origin);
   void newMessage(const Parameter::ParamWithValue&)override;
 
-  WeakReference<ControllableContainer>::Master masterReference;
-  friend class WeakReference<ControllableContainer>;
 
 
 

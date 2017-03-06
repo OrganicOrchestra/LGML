@@ -27,15 +27,15 @@ const Identifier ControllableContainer::valueIdentifier("value");
 
 
 ControllableContainer::ControllableContainer(const String & niceName) :
-	parentContainer(nullptr),
-	hasCustomShortName(false),
-	skipControllableNameInAddress(false),
-	currentPreset(nullptr),
-	canHavePresets(true),
-	saveAndLoadRecursiveData(true),
-	numContainerIndexed(0),
-	localIndexedPosition(-1),
-	presetSavingIsRecursive(false)
+parentContainer(nullptr),
+hasCustomShortName(false),
+skipControllableNameInAddress(false),
+currentPreset(nullptr),
+canHavePresets(true),
+saveAndLoadRecursiveData(true),
+numContainerIndexed(0),
+localIndexedPosition(-1),
+presetSavingIsRecursive(false)
 {
 
   nameParam = addStringParameter("Name", "Set the visible name of the node.", "");
@@ -58,20 +58,20 @@ ControllableContainer::~ControllableContainer()
 }
 void ControllableContainer::clear()
 {
-	cleanUpPresets();
-	controllables.clear();
-	controllableContainers.clear();
+  cleanUpPresets();
+  controllables.clear();
+  controllableContainers.clear();
 }
 
 void ControllableContainer::addParameter(Parameter * p)
 {
-	
+
   addParameterInternal(p);
 }
 
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
-	
+
   String targetName = getUniqueNameInContainer(_niceName);
   FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
   addParameterInternal(p);
@@ -104,26 +104,26 @@ StringParameter * ControllableContainer::addStringParameter(const String & _nice
 
 EnumParameter * ControllableContainer::addEnumParameter(const String & _niceName, const String & _description, const bool & enabled)
 {
-	String targetName = getUniqueNameInContainer(_niceName);
-	EnumParameter * p = new EnumParameter(targetName, _description, enabled);
-	addParameterInternal(p);
-	return p;
+  String targetName = getUniqueNameInContainer(_niceName);
+  EnumParameter * p = new EnumParameter(targetName, _description, enabled);
+  addParameterInternal(p);
+  return p;
 }
 
 Point2DParameter * ControllableContainer::addPoint2DParameter(const String & _niceName, const String & _description, const bool & enabled)
 {
-	String targetName = getUniqueNameInContainer(_niceName);
-	Point2DParameter * p = new Point2DParameter(targetName, _description, enabled);
-	addParameterInternal(p);
-	return p;
+  String targetName = getUniqueNameInContainer(_niceName);
+  Point2DParameter * p = new Point2DParameter(targetName, _description, enabled);
+  addParameterInternal(p);
+  return p;
 }
 
 Point3DParameter * ControllableContainer::addPoint3DParameter(const String & _niceName, const String & _description, const bool & enabled)
 {
-	String targetName = getUniqueNameInContainer(_niceName);
-	Point3DParameter * p = new Point3DParameter(targetName, _description, enabled);
-	addParameterInternal(p);
-	return p;
+  String targetName = getUniqueNameInContainer(_niceName);
+  Point3DParameter * p = new Point3DParameter(targetName, _description, enabled);
+  addParameterInternal(p);
+  return p;
 }
 
 Trigger * ControllableContainer::addTrigger(const String & _niceName, const String & _description, const bool & enabled)
@@ -162,7 +162,7 @@ void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
     loadPresetWithName(pv.parameter->stringValue());
   }
   if(!pv.isRange()){
-  onContainerParameterChangedAsync(pv.parameter, pv.value);
+    onContainerParameterChangedAsync(pv.parameter, pv.value);
   }
 }
 void ControllableContainer::setNiceName(const String &_niceName) {
@@ -261,6 +261,7 @@ void ControllableContainer::localIndexChanged(){};
 
 ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name, bool searchNiceNameToo)
 {
+  ScopedLock lk(controllableContainers.getLock());
   for (auto &cc : controllableContainers)
   {
     if (cc.get() && (cc->shortName == name || (searchNiceNameToo && cc->getNiceName() == name))) return cc;
@@ -284,6 +285,7 @@ ControllableContainer * ControllableContainer::getControllableContainerForAddres
       return res;
 
     //no found in direct children Container, maybe in a skip container ?
+    ScopedLock lk(controllableContainers.getLock());
     for (auto &cc : controllableContainers)
     {
       if (cc->skipControllableNameInAddress)
@@ -294,6 +296,7 @@ ControllableContainer * ControllableContainer::getControllableContainerForAddres
   }
   else
   {
+    ScopedLock lk(controllableContainers.getLock());
     for (auto &cc : controllableContainers)
     {
 
@@ -337,31 +340,40 @@ String ControllableContainer::getControlAddress(ControllableContainer * relative
 void ControllableContainer::setParentContainer(ControllableContainer * container)
 {
   this->parentContainer = container;
-  for (auto &c : controllables) c->updateControlAddress();
-  for (auto &cc : controllableContainers) cc->updateChildrenControlAddress();
+  updateChildrenControlAddress();
 
 }
 
 void ControllableContainer::updateChildrenControlAddress()
 {
-  for (auto &c : controllables) c->updateControlAddress();
-  for (auto &cc : controllableContainers) cc->updateChildrenControlAddress();
+  {
+    ScopedLock lk(controllables.getLock());
+    for (auto &c : controllables) c->updateControlAddress();
+  }
+  {
+    ScopedLock lk(controllableContainers.getLock());
+    for (auto &cc : controllableContainers) if(cc.get())cc->updateChildrenControlAddress();
+  }
 
 
 }
 
 Array<WeakReference<Controllable>> ControllableContainer::getAllControllables(bool recursive,bool getNotExposed)
 {
-  
+
   Array<WeakReference<Controllable>> result;
-  for (auto &c : controllables)
   {
-    if (getNotExposed || c->isControllableExposed) result.add(c);
+    ScopedLock lk(controllables.getLock());
+    for (auto &c : controllables)
+    {
+      if (getNotExposed || c->isControllableExposed) result.add(c);
+    }
   }
 
   if (recursive)
   {
-    for (auto &cc : controllableContainers) result.addArray(cc->getAllControllables(true,getNotExposed));
+    ScopedLock lk(controllableContainers.getLock());
+    for (auto &cc : controllableContainers) if(cc.get())result.addArray(cc->getAllControllables(true,getNotExposed));
   }
 
   return result;
@@ -369,15 +381,19 @@ Array<WeakReference<Controllable>> ControllableContainer::getAllControllables(bo
 
 Array<WeakReference<ControllableContainer>> ControllableContainer::getAllControllableContainers(bool recursive)
 {
-	if (!recursive) return controllableContainers;
-	
-	Array<WeakReference<ControllableContainer>> containers;
+  Array<WeakReference<ControllableContainer>> containers;
+  containers.addArray(controllableContainers);
+  if (!recursive){
+    return containers;
+  }
 
-	containers.addArray(controllableContainers);
-	for (auto &cc : controllableContainers) containers.addArray(cc->getAllControllableContainers(true));
+  {
+  ScopedLock lk(controllableContainers.getLock());
+  for (auto &cc : controllableContainers) if(cc.get())containers.addArray(cc->getAllControllableContainers(true));
 
-	return containers;
-	
+  }
+  return containers;
+
 }
 
 Array<WeakReference<Parameter>> ControllableContainer::getAllParameters(bool recursive, bool getNotExposed)
@@ -386,16 +402,17 @@ Array<WeakReference<Parameter>> ControllableContainer::getAllParameters(bool rec
   for (auto &c : controllables)
   {
     if (c->type == Controllable::Type::TRIGGER) continue;
-      if (getNotExposed || c->isControllableExposed){
-          if(Parameter * cc = dynamic_cast<Parameter*>(c)){
-          result.add(cc);
-          }
+    if (getNotExposed || c->isControllableExposed){
+      if(Parameter * cc = dynamic_cast<Parameter*>(c)){
+        result.add(cc);
       }
+    }
   }
 
   if (recursive)
   {
-    for (auto &cc : controllableContainers) result.addArray(cc->getAllParameters(true, getNotExposed));
+    ScopedLock lk(controllableContainers.getLock());
+    for (auto &cc : controllableContainers) if(cc.get())result.addArray(cc->getAllParameters(true, getNotExposed));
   }
 
   return result;
@@ -420,6 +437,7 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
 
   if (isTargetAControllable)
   {
+    {
     //DBG("Check controllable Address : " + shortName);
     const ScopedLock lk(controllables.getLock());
     for (auto &c : controllables)
@@ -431,10 +449,12 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
         else return nullptr;
       }
     }
-
-    //no found in direct children controllables, maybe in a skip container ?
-    for (auto &cc : controllableContainers)
+    }
     {
+    //no found in direct children controllables, maybe in a skip container ?
+    ScopedLock lk(controllableContainers.getLock());
+    for (auto &cc : controllableContainers)
+    {if(cc.get()){
       if (cc->skipControllableNameInAddress)
       {
         Controllable * tc = cc->getControllableByName(addressSplit[0]);
@@ -442,29 +462,33 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
         if (tc != nullptr) return tc;
       }
     }
+    }
+    }
   }
   else
   {
+    ScopedLock lk(controllableContainers.getLock());
     for (auto &cc : controllableContainers)
     {
-
-      if (!cc->skipControllableNameInAddress)
-      {
-        if (cc->shortName == addressSplit[0])
+      if(cc.get()){
+        if (!cc->skipControllableNameInAddress)
         {
-          addressSplit.remove(0);
-          return cc->getControllableForAddress(addressSplit,recursive,getNotExposed);
+          if (cc->shortName == addressSplit[0])
+          {
+            addressSplit.remove(0);
+            return cc->getControllableForAddress(addressSplit,recursive,getNotExposed);
+          }
         }
-      }
-      else
-      {
-        ControllableContainer * tc = cc->getControllableContainerByName(addressSplit[0]);
-        if (tc != nullptr)
+        else
         {
-          addressSplit.remove(0);
-          return tc->getControllableForAddress(addressSplit,recursive,getNotExposed);
-        }
+          ControllableContainer * tc = cc->getControllableContainerByName(addressSplit[0]);
+          if (tc != nullptr)
+          {
+            addressSplit.remove(0);
+            return tc->getControllableForAddress(addressSplit,recursive,getNotExposed);
+          }
 
+        }
       }
     }
   }
@@ -474,44 +498,44 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
 
 bool ControllableContainer::containsControllable(Controllable * c, int maxSearchLevels)
 {
-	if (c == nullptr) return false;
+  if (c == nullptr) return false;
 
-	ControllableContainer * pc = c->parentContainer;
-	if (pc == nullptr) return false;
-	int curLevel = 0;
-	while (pc != nullptr)
-	{
-		if (pc == this) return true;
-		curLevel++;
-		if (maxSearchLevels >= 0 && curLevel > maxSearchLevels) return false;
-		pc = pc->parentContainer;
-	}
+  ControllableContainer * pc = c->parentContainer;
+  if (pc == nullptr) return false;
+  int curLevel = 0;
+  while (pc != nullptr)
+  {
+    if (pc == this) return true;
+    curLevel++;
+    if (maxSearchLevels >= 0 && curLevel > maxSearchLevels) return false;
+    pc = pc->parentContainer;
+  }
 
-	return false;
+  return false;
 }
 
 
 bool ControllableContainer::loadPresetWithName(const String & name)
 {
-    // TODO weird feedback when loading preset on parameter presetName
-    if(isLoadingPreset){return false;}
-    if(name=="") return false;
-    isLoadingPreset = true;
+  // TODO weird feedback when loading preset on parameter presetName
+  if(isLoadingPreset){return false;}
+  if(name=="") return false;
+  isLoadingPreset = true;
 
-	PresetManager::Preset * preset = PresetManager::getInstance()->getPreset(getPresetFilter(), name);
-    if (preset == nullptr){isLoadingPreset = false;currentPresetName->setValue("", true); return false;}
-	bool hasLoaded = loadPreset(preset);
-    isLoadingPreset = false;
-    return hasLoaded;
+  PresetManager::Preset * preset = PresetManager::getInstance()->getPreset(getPresetFilter(), name);
+  if (preset == nullptr){isLoadingPreset = false;currentPresetName->setValue("", true); return false;}
+  bool hasLoaded = loadPreset(preset);
+  isLoadingPreset = false;
+  return hasLoaded;
 
 }
 
 bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
 {
-	if (preset == nullptr){
-		currentPresetName->setValue("", true); 
-		return false;
-	}
+  if (preset == nullptr){
+    currentPresetName->setValue("", true);
+    return false;
+  }
 
   loadPresetInternal(preset);
 
@@ -519,7 +543,7 @@ bool ControllableContainer::loadPreset(PresetManager::Preset * preset)
   {
 
     Parameter * p = dynamic_cast<Parameter *>(getControllableForAddress(pv->paramControlAddress));
-	//DBG("Load preset, param set container : " << niceName << ", niceName : " << p->niceName << ",pv controlAddress : " << p->controlAddress << "" << pv->presetValue.toString());
+    //DBG("Load preset, param set container : " << niceName << ", niceName : " << p->niceName << ",pv controlAddress : " << p->controlAddress << "" << pv->presetValue.toString());
     if (p != nullptr && p != currentPresetName) p->setValue(pv->presetValue);
   }
 
@@ -542,46 +566,46 @@ PresetManager::Preset* ControllableContainer::saveNewPreset(const String & _name
 
 bool ControllableContainer::saveCurrentPreset()
 {
-	//Same as saveNewPreset because PresetManager now replaces if name is the same
-	if (currentPreset == nullptr) {
-		jassertfalse;
-		return false;
-	}
-
-	PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
-	savePresetInternal(pre);
-	NLOG(getNiceName(), "Current preset saved : " + pre->name);
-	return loadPreset(pre);
-	
-	/*
-  for (auto &pv : currentPreset->presetValues)
-  {
-    Parameter * p = dynamic_cast<Parameter*> (getControllableForAddress(pv->paramControlAddress));
-    if (p != nullptr && p!=currentPresetName)
-    {
-      pv->presetValue = var(p->value);
-    }
+  //Same as saveNewPreset because PresetManager now replaces if name is the same
+  if (currentPreset == nullptr) {
+    jassertfalse;
+    return false;
   }
-  savePresetInternal(currentPreset);
-  NLOG(niceName, "Current preset saved : " + currentPreset->name);
 
-  return true;
-  */
+  PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
+  savePresetInternal(pre);
+  NLOG(getNiceName(), "Current preset saved : " + pre->name);
+  return loadPreset(pre);
+
+  /*
+   for (auto &pv : currentPreset->presetValues)
+   {
+   Parameter * p = dynamic_cast<Parameter*> (getControllableForAddress(pv->paramControlAddress));
+   if (p != nullptr && p!=currentPresetName)
+   {
+   pv->presetValue = var(p->value);
+   }
+   }
+   savePresetInternal(currentPreset);
+   NLOG(niceName, "Current preset saved : " + currentPreset->name);
+
+   return true;
+   */
 }
 
 int ControllableContainer::getNumPresets()
 {
-	return PresetManager::getInstance()->getNumPresetForFilter(getPresetFilter());
+  return PresetManager::getInstance()->getNumPresetForFilter(getPresetFilter());
 }
 
 bool ControllableContainer::resetFromPreset()
 {
   if (currentPreset == nullptr) return false;
 
-  
+
   for (auto &pv : currentPreset->presetValues)
   {
-	Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
+    Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
     if (p != nullptr && p !=currentPresetName) p->resetValue();
   }
 
@@ -601,8 +625,8 @@ var ControllableContainer::getPresetValueFor(Parameter * p)
 
 void ControllableContainer::cleanUpPresets()
 {
-	PresetManager * pm = PresetManager::getInstanceWithoutCreating();
-	if (pm != nullptr) pm->deletePresetsForContainer(this, true);
+  PresetManager * pm = PresetManager::getInstanceWithoutCreating();
+  if (pm != nullptr) pm->deletePresetsForContainer(this, true);
 
 }
 
@@ -638,18 +662,18 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 void ControllableContainer::triggerTriggered(Trigger * t)
 {
 
-	if (t == savePresetTrigger)
-	{
-		saveCurrentPreset();
-		
-	} else
-	{
-		onContainerTriggerTriggered(t);
-	}
+  if (t == savePresetTrigger)
+  {
+    saveCurrentPreset();
 
-    if (t->isControllableExposed &&  (t!=nullptr && t->parentContainer==this)) dispatchFeedback(t);
+  } else
+  {
+    onContainerTriggerTriggered(t);
+  }
 
-	
+  if (t->isControllableExposed &&  (t!=nullptr && t->parentContainer==this)) dispatchFeedback(t);
+
+
 
 }
 
@@ -674,23 +698,23 @@ var ControllableContainer::getJSONData()
 
   var paramsData;
 
-//  for(auto & p :controllables){
-//
-//  }
-//  for(auto controllableCont: controllableContainers){
-//    getJSONData();
-//  }
+  //  for(auto & p :controllables){
+  //
+  //  }
+  //  for(auto controllableCont: controllableContainers){
+  //    getJSONData();
+  //  }
 
-//  jassert(saveAndLoadRecursiveData==false);
+  //  jassert(saveAndLoadRecursiveData==false);
 
   Array<WeakReference<Controllable>> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
 
   for (auto &c : cont) {
-	if (c.wasObjectDeleted()) continue;
+    if (c.wasObjectDeleted()) continue;
 
     if (c->type != Controllable::Type::TRIGGER)
     {
-	  Parameter * base = (Parameter*)c.get();
+      Parameter * base = (Parameter*)c.get();
       if(base->isSavable){
         var pData(new DynamicObject());
         pData.getDynamicObject()->setProperty(controlAddressIdentifier, base->getControlAddress(this));
@@ -731,20 +755,20 @@ void ControllableContainer::loadJSONData(var data)
 
   if (paramsData != nullptr)
   {
-	  for (var &pData : *paramsData)
-	  {
-		  String pControlAddress = pData.getDynamicObject()->getProperty(controlAddressIdentifier);
+    for (var &pData : *paramsData)
+    {
+      String pControlAddress = pData.getDynamicObject()->getProperty(controlAddressIdentifier);
 
-		  Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
+      Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
 
-		  if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-			  //                we don't load preset when already loading a state
-			  if (p->shortName != presetIdentifier.toString() && p->isSavable) p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
+      if (Parameter * p = dynamic_cast<Parameter*>(c)) {
+        //                we don't load preset when already loading a state
+        if (p->shortName != presetIdentifier.toString() && p->isSavable) p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
 
-		  } else {
-			  //NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
-		  }
-	  }
+      } else {
+        //NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
+      }
+    }
   }
 
   loadJSONDataInternal(data);
@@ -804,12 +828,13 @@ Array<T*> ControllableContainer::getObjectsOfType(bool recursive){
     }
     if(recursive){res.addArray(c->getObjectsOfType<T>(recursive));}
   }
-
+  
   return res;
 }
 
 bool ControllableContainer::containsContainer(ControllableContainer * c){
   if(c==this)return true;
+ScopedLock lk(controllableContainers.getLock());
   for(auto & cc:controllableContainers){
     if(c==cc){return true;}
     if(cc->containsContainer(c))return true;

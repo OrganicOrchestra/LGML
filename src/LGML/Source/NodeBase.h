@@ -150,11 +150,12 @@ public:
   Data * addOutputData(const String &name, DataType type);
 
 
-  void removeInputData(const String &name);
-  void removeOutputData(const String &name);
+  bool removeInputData(const String &name);
+  bool removeOutputData(const String &name);
 
 	void removeAllInputDatas();
 	void removeAllOutputDatas();
+  CriticalSection numDataIOLock;
 
 
 

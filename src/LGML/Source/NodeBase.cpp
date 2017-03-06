@@ -418,6 +418,7 @@ void NodeBase::timerCallback()
 
 Data * NodeBase::getInputData(int dataIndex)
 {
+  ScopedLock lk(numDataIOLock);
   if (inputDatas.size() <= dataIndex) return nullptr;
   return inputDatas[dataIndex];
 }
@@ -425,6 +426,7 @@ Data * NodeBase::getInputData(int dataIndex)
 
 Data * NodeBase::getOutputData(int dataIndex)
 {
+  ScopedLock lk(numDataIOLock);
   if (outputDatas.size() <= dataIndex) return nullptr;
   return outputDatas[dataIndex];
 }
@@ -432,6 +434,7 @@ Data * NodeBase::getOutputData(int dataIndex)
 
 Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 {
+  ScopedLock lk(numDataIOLock);
   Data *d = new Data(this, name, dataType, Data::Input);
   inputDatas.add(d);
 
@@ -444,6 +447,7 @@ Data * NodeBase::addInputData(const String & name, Data::DataType dataType)
 
 Data * NodeBase::addOutputData(const String & name, DataType dataType)
 {
+  ScopedLock lk(numDataIOLock);
   Data * d = new Data(this, name, dataType,Data::Output);
   outputDatas.add(d);
 
@@ -455,26 +459,30 @@ Data * NodeBase::addOutputData(const String & name, DataType dataType)
   return d;
 }
 
-void NodeBase::removeInputData(const String & name)
+bool NodeBase::removeInputData(const String & name)
 {
+  ScopedLock lk(numDataIOLock);
   Data * d = getInputDataByName(name);
-  if (d == nullptr) return;
+  if (d == nullptr) return false;
   d->removeDataListener(this);
   inputDatas.removeObject(d, false);
   nodeListeners.call(&ConnectableNodeListener::dataInputRemoved, this, d);
   nodeListeners.call(&ConnectableNodeListener::numDataInputChanged, this, inputDatas.size());
   delete d;
+  return true;
 }
 
-void NodeBase::removeOutputData(const String & name)
+bool NodeBase::removeOutputData(const String & name)
 {
+  ScopedLock lk(numDataIOLock);
   Data * d = getOutputDataByName(name);
-  if (d == nullptr) return;
+  if (d == nullptr) return false;
   d->removeDataListener(this);
   outputDatas.removeObject(d, false);
   nodeListeners.call(&ConnectableNodeListener::dataOutputRemoved, this, d);
   nodeListeners.call(&ConnectableNodeListener::numDataOutputChanged, this, inputDatas.size());
   delete d;
+  return true;
 }
 
 void NodeBase::removeAllInputDatas()

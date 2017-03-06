@@ -56,13 +56,14 @@ public:
       int start1,size1,start2,size2;
       fifo.prepareToWrite(1, start1, size1, start2, size2);
 
+      // fifo is full : we can drop message
       if(size1==0){
+        jassert(isUpdatePending());
         if(canDropMessage){
           delete msg;
         }
         else{
           while(size1==0){
-
             fifo.prepareToWrite(1, start1, size1, start2, size2);
             Thread::sleep(10);
           }
@@ -91,7 +92,7 @@ public:
 
 
 
-  // allow to stack all values or get oly last updated value
+  // allow to stack all values or get only last updated value
   void addListener(Listener* newListener) { listeners.add(newListener); }
   void addAsyncCoalescedListener(Listener* newListener) { lastListeners.add(newListener); }
   void removeListener(Listener* listener) { listeners.remove(listener);lastListeners.remove(listener); }

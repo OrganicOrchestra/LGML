@@ -25,7 +25,7 @@ public:
 		void setNumInput(int numInput);
 
         void onContainerParameterChanged(Parameter *p)override;
-		Array<FloatParameter*> volumes;
+		Array<FloatParameter*,CriticalSection> volumes;
         Array<float> logVolumes;
 		Array<float> lastVolumes;
 		int outputIndex;

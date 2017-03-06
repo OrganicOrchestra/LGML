@@ -46,7 +46,7 @@ Data::Data(NodeBase * _node, String _name, DataType _type, IOType _ioType) :
 }
 
 Data::~Data() {
-    elements.clear();
+//    elements.clear();
 }
 
 void Data::addElement(const String & _name) {

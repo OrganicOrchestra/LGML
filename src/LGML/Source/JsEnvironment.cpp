@@ -68,7 +68,7 @@ void JsEnvironment::setEnabled(bool t){
   if(t){
     loadFile(currentFile);
     if (getEngine()) {getEngine()->addControllableContainerListener(this);}
-    
+
   }
   else{
     if (getEngine()) {getEngine()->removeControllableContainerListener(this);}
@@ -299,20 +299,20 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
   var res;
   {
 
-    // TODO : assure thread safety here but removed for avoid cracks when timer and audiothread
-//    const ScopedTryLock lk(engineLock);
-//    if (lk.isLocked()){
+    // TODO : assure thread safety (this one liner is non-atomic, but we may need check if engine is not locked)
+    bool engineIsAlreadyLocked =  !ScopedTryLock(engineLock).isLocked();
+    if(engineIsAlreadyLocked){
 
       if(!JsGlobalEnvironment::getInstance()->isDirty()) {
         res = jsEngine->callFunction(function, Nargs, result);
       } else {
         //      DBG("JS avoiding to call function while global environment is dirty");
       }
-//    }
-//    else{
-//      jassertfalse;
-//      NLOG(localNamespace,"jsEngine is Locked");
-//    }
+    }
+    else{
+      jassertfalse;
+       NLOG(localNamespace,"jsEngine is Locked");
+    }
   }
   if (logResult && result->failed()) {
     NLOG(localNamespace, result->getErrorMessage());
@@ -502,7 +502,7 @@ void JsEnvironment::updateUserDefinedFunctions() {
 }
 
 void JsEnvironment::parameterValueChanged(Parameter * p) {
-   if (p == linkedContainer->nameParam) {
+  if (p == linkedContainer->nameParam) {
     // ensure short name is updated...
     // not sure it's needed though
     linkedContainer->setNiceName(linkedContainer->nameParam->stringValue());
@@ -541,12 +541,12 @@ void JsEnvironment::childStructureChanged(ControllableContainer * originContaine
   // rebuild files that are not loaded properly if LGML JsEnvironment is not fully built at the time of their firstExecution
   if ((!_hasValidJsFile || !_isInSyncWithLGML)&& !isLoadingFile && originContainer == getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(notifier))) {
     bool isFromOtherJsEnv = false;
-//    if(JsEnvironment *jsNotifier = dynamic_cast<JsEnvironment*>(notifier)){
-//      isFromOtherJsEnv = jsNotifier->isLoadingFile;
-//    }
+    //    if(JsEnvironment *jsNotifier = dynamic_cast<JsEnvironment*>(notifier)){
+    //      isFromOtherJsEnv = jsNotifier->isLoadingFile;
+    //    }
     if(!isFromOtherJsEnv){
-    _isInSyncWithLGML = false;
-    startTimer(autoWatchTimer.id, autoWatchTimer.interval);
+      _isInSyncWithLGML = false;
+      startTimer(autoWatchTimer.id, autoWatchTimer.interval);
     }
   };
 
@@ -584,50 +584,50 @@ var JsEnvironment::createParameterListenerObject(const var::NativeFunctionArgs &
 JSEnvContainer::JSEnvContainer(JsEnvironment * pEnv):
 ControllableContainer("jsParams"),jsEnv(pEnv){
 
-    scriptPath = addStringParameter("ScriptPath", "path for js script", "");
-    loadT = addTrigger("loadFile","open dialog to choose file to load");
-    reloadT= addTrigger("reloadFile","reload current file");
-    showT= addTrigger("showFile","open file in text editor");
-    autoWatch = addBoolParameter("autoWatch","auto reload if file has been changed",false);
-    autoWatch->isSavable = false;
-    logT = addTrigger("LogEnvironment","print hierarchy of JS objects");
+  scriptPath = addStringParameter("ScriptPath", "path for js script", "");
+  loadT = addTrigger("loadFile","open dialog to choose file to load");
+  reloadT= addTrigger("reloadFile","reload current file");
+  showT= addTrigger("showFile","open file in text editor");
+  autoWatch = addBoolParameter("autoWatch","auto reload if file has been changed",false);
+  autoWatch->isSavable = false;
+  logT = addTrigger("LogEnvironment","print hierarchy of JS objects");
 
-  }
+}
 Component * JSEnvContainer::getCustomEditor(){
-    return new JsEnvironmentUI(jsEnv->jsParameters);
-  }
+  return new JsEnvironmentUI(jsEnv->jsParameters);
+}
 
 void JSEnvContainer::onContainerParameterChanged(Parameter *p) {
-    if(p==scriptPath){
-      jsEnv->loadFile(scriptPath->stringValue());
-    }
+  if(p==scriptPath){
+    jsEnv->loadFile(scriptPath->stringValue());
+  }
 
-    else if (p == autoWatch) {
-      jsEnv->setAutoWatch(autoWatch->boolValue());
+  else if (p == autoWatch) {
+    jsEnv->setAutoWatch(autoWatch->boolValue());
+  }
+}
+void JSEnvContainer::onContainerTriggerTriggered(Trigger *p){
+  if (p == showT) {
+    jsEnv->showFile();
+  }
+  else if (p == reloadT) {
+    jsEnv->reloadFile();
+  }
+  else if (p == logT) {
+    LOG(jsEnv->printAllNamespace());
+  }
+  else if (p == loadT) {
+    FileChooser myChooser("Please select the script you want to load...",
+                          File::getSpecialLocation(File::userHomeDirectory),
+                          "*.js");
+
+    if (myChooser.browseForFileToOpen())
+    {
+      File script(myChooser.getResult());
+      jsEnv->loadFile(script);
     }
   }
-  void JSEnvContainer::onContainerTriggerTriggered(Trigger *p){
-    if (p == showT) {
-      jsEnv->showFile();
-    }
-    else if (p == reloadT) {
-      jsEnv->reloadFile();
-    }
-    else if (p == logT) {
-      LOG(jsEnv->printAllNamespace());
-    }
-    else if (p == loadT) {
-      FileChooser myChooser("Please select the script you want to load...",
-                            File::getSpecialLocation(File::userHomeDirectory),
-                            "*.js");
-
-      if (myChooser.browseForFileToOpen())
-      {
-        File script(myChooser.getResult());
-        jsEnv->loadFile(script);
-      }
-    }
-  }
+}
 
 
 //////////////////////

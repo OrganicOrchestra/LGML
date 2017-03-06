@@ -35,66 +35,119 @@ public:
   int numActionsPerControllables;
   String testingNodeName;
 
-  bool doActionForControllable(Controllable * c){
-    switch(c->type ){
-      case Controllable::TRIGGER:
-        if(Trigger * t = dynamic_cast<Trigger*>(c)){t->trigger();}
-        break;
-      case Controllable::FLOAT:
-        if(FloatParameter * t = dynamic_cast<FloatParameter*>(c)){t->setValue(Random().nextFloat());}
-        break;
-      case Controllable::INT:
-        if(IntParameter * t = dynamic_cast<IntParameter*>(c)){t->setValue(Random().nextInt());}
-        break;
-      case  Controllable::BOOL:
-        if(BoolParameter * t = dynamic_cast<BoolParameter*>(c)){t->setValue(Random().nextBool());}
-        break;
-      case Controllable::STRING:
-        if(StringParameter * t = dynamic_cast<StringParameter*>(c)){t->setValue(String(Random().nextInt()));}
-        break;
-      case Controllable::RANGE:
-        return false;
-        break;
-      case Controllable::ENUM:
-      case Controllable::PROXY:
-      case Controllable::POINT2D:
-      case Controllable::POINT3D:
-        break;
 
 
-      default:
-        return false;
+  class ChildProoferThread : public Thread{
+  public:
+    ChildProoferThread(NodeChildProofer *o,ConnectableNode * _testingNode):Thread("childProoferThread"),owner(o),testingNode(_testingNode){}
+    void run() override{
+      Array<WeakReference<Controllable > > allControllables = testingNode->getAllControllables(true,true);
+      int totalNumAction = owner->numActionsPerControllables * allControllables.size();
+      int i = 0 ;
+      while( i < totalNumAction ){
 
+        WeakReference<Controllable> tested = allControllables.getReference(i%allControllables.size());
+        if(tested.get()){
+          if (tested->shortName !="savePreset" && tested->shortName !="loadFile"){
+            String err ="Action failed for Controllable : "+tested->getControlAddress();
+            if(tested.get()){
+              owner->expect(doActionForControllable(tested),err );
+              allControllables = testingNode->getAllControllables(true,true);
+            }
+            else{
+              // controllable deleted before
+              jassertfalse;
+            }
+
+          }
+        }
+        i++;
+      }
+
+    };
+    bool doActionForControllable(Controllable * c){
+      switch(c->type ){
+        case Controllable::TRIGGER:
+          if(Trigger * t = dynamic_cast<Trigger*>(c)){t->trigger();}
+          break;
+        case Controllable::FLOAT:
+          if(FloatParameter * t = dynamic_cast<FloatParameter*>(c)){t->setValue(Random().nextFloat());}
+          break;
+        case Controllable::INT:
+          if(IntParameter * t = dynamic_cast<IntParameter*>(c)){t->setValue(Random().nextInt());}
+          break;
+        case  Controllable::BOOL:
+          if(BoolParameter * t = dynamic_cast<BoolParameter*>(c)){t->setValue(Random().nextBool());}
+          break;
+        case Controllable::STRING:
+          if(StringParameter * t = dynamic_cast<StringParameter*>(c)){t->setValue(String(Random().nextInt()));}
+          break;
+        case Controllable::RANGE:
+          return false;
+          break;
+        case Controllable::ENUM:
+        case Controllable::PROXY:
+        case Controllable::POINT2D:
+        case Controllable::POINT3D:
+          break;
+
+
+        default:
+          return false;
+
+      }
+      return true;
     }
-    return true;
-  }
-  void runTest() override
-  {
+
+    NodeChildProofer * owner;
+    ConnectableNode * testingNode;
+  };
+
+  void runTest() override  {
     getEngine()->createNewGraph();
-    beginTest("childProofing");
+
     ConnectableNode * testingNode = NodeManager::getInstance()->mainContainer->addNode(NodeFactory::getTypeFromString(testingNodeName));
 
     expect(testingNode!=nullptr,"node not found for name : " +testingNodeName);
+    {
+      beginTest("childProofing single thread");
+      ChildProoferThread child(this,testingNode);
+      child.run();
 
-    Array<WeakReference<Controllable > > allControllables = testingNode->getAllControllables(true,true);
+      // just to be sure that async message are handled too
+      Thread::sleep(500);
 
-    
-    int totalNumAction = numActionsPerControllables * allControllables.size();
-    int i = 0 ;
-    while( i < totalNumAction ){
-
-      Controllable * tested = allControllables [i%allControllables.size()];
-      if (tested->shortName !="savePreset"){
-      String err ="Action failed for Controllable : "+tested->getControlAddress();
-      expect(doActionForControllable(tested),err );
-      allControllables = testingNode->getAllControllables(true,true);
-      }
-      i++;
     }
 
-    // just to be sure that async message are handled too
-    Thread::sleep(500);
-    
+    {
+      beginTest(" childProofing multi thread");
+      OwnedArray<ChildProoferThread> childs;
+      int numThreads = 2;
+      for(int i = 0 ; i  < numThreads ; i++){ childs.add(new ChildProoferThread(this,testingNode));}
+      for(auto & c:childs){c->startThread();Thread::sleep(10);}
+
+
+
+      bool oneChildIsRunning = true;
+      while(oneChildIsRunning){
+        oneChildIsRunning = false;
+        for(auto & c:childs){
+          oneChildIsRunning |= c->isThreadRunning();
+          Thread::sleep(100);
+        }
+      }
+
+      // just to be sure that async message are handled too
+      Thread::sleep(500);
+
+
+    }
+
+
+
+
+
+
 
   }
 };
@@ -105,7 +158,7 @@ static bool hasBeenBuilt = false;
 bool buildTests(){
   if(!hasBeenBuilt){
     for(auto nName:nodeTypeNames){
-      if(nName!="ContainerIn" && nName!= "ContainerOut")
+      if(nName!="ContainerIn" && nName!= "ContainerOut" && !nName.contains("AudioDevice"))
         new NodeChildProofer(nName,10);
     }
     hasBeenBuilt = true;

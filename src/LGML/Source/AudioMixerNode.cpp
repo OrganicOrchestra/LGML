@@ -181,7 +181,7 @@ ControllableContainer("outputBus : "+String(_outputIndex)){
 
 
 void AudioMixerNode::OutputBus::setNumInput(int numInput){
-
+  ScopedLock lk(volumes.getLock());
     if(numInput>volumes.size()){
         for(int i = volumes.size();i<numInput ; i++){
             FloatParameter * p = addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?DB0_FOR_01:0);
@@ -206,6 +206,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
 }
 
 void AudioMixerNode::OutputBus::onContainerParameterChanged(Parameter *p){
+  ScopedLock lk(volumes.getLock());
     if(volumes.contains((FloatParameter*)p)){
         logVolumes.resize(volumes.size());
         int i = 0;

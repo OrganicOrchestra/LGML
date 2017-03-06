@@ -18,7 +18,7 @@ class Parameter : public Controllable,public AsyncUpdater
 {
 public:
     Parameter(const Type &type, const String & niceName, const String &description, var initialValue, var minValue, var maxValue, bool enabled = true);
-    virtual ~Parameter() {Parameter::masterReference.clear();}
+  virtual ~Parameter() {Parameter::masterReference.clear();cancelPendingUpdate();}
 
 
     var defaultValue;

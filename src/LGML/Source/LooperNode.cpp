@@ -17,7 +17,7 @@
 
 LooperNode::LooperNode() :
 NodeBase("Looper", NodeType::LooperType),
-selectedTrack(nullptr),
+//selectedTrack(nullptr),
 wasMonitoring(false),
 trackGroup(this),
 streamAudioBuffer(2, 16384)// 16000 ~ 300ms and 256*64
@@ -181,6 +181,11 @@ void LooperNode::TrackGroup::addTrack() {
 }
 
 void LooperNode::TrackGroup::removeTrack(int i) {
+  jassert(i<tracks.size());
+  if(selectedTrack==tracks[i]){
+    selectedTrack = nullptr;
+    owner->selectTrack->setValue(i-1);
+  }
   removeChildControllableContainer(tracks[i]);
   tracks.remove(i);
   owner->selectTrack->setRange(-1, tracks.size() - 1);
@@ -205,7 +210,7 @@ void LooperNode::TrackGroup::setNumTracks(int numTracks) {
 
 bool LooperNode::askForBeingMasterTrack(LooperTrack * t) {
   bool res = firstTrackSetTempo->boolValue() && areAllTrackClearedButThis(t);
-  if (res)lastMasterTempoTrack = t;
+  if (res)trackGroup.lastMasterTempoTrack = t;
   return res;
 }
 
@@ -263,31 +268,31 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t)
 {
   if (t == recPlaySelectedTrig) {
 
-    if (selectedTrack != nullptr)
+    if (trackGroup.selectedTrack)
     {
-      selectedTrack->recPlay();
-      if (autoNextTrackAfterRecord->boolValue() && selectedTrack->trackState == LooperTrack::TrackState::RECORDING) selectTrack->setValue(selectTrack->intValue() + 1);
+      trackGroup.selectedTrack->recPlay();
+      if (autoNextTrackAfterRecord->boolValue() && trackGroup.selectedTrack->trackState == LooperTrack::TrackState::RECORDING) selectTrack->setValue(selectTrack->intValue() + 1);
     }
 
   } else if (t == playSelectedTrig) {
-    if (selectedTrack != nullptr) selectedTrack->play();
+    if (trackGroup.selectedTrack) trackGroup.selectedTrack->play();
 
   } else if (t == clearSelectedTrig) {
 
-    if (selectedTrack != nullptr)
+    if (trackGroup.selectedTrack)
     {
       if (autoNextTrackAfterRecord->boolValue() && autoClearPreviousIfEmpty->boolValue())
       {
-        if (selectedTrack->isEmpty()) selectTrack->setValue(selectTrack->intValue() - 1);
+        if (trackGroup.selectedTrack->isEmpty()) selectTrack->setValue(selectTrack->intValue() - 1);
       }
-      selectedTrack->clear();
+      if (trackGroup.selectedTrack)trackGroup.selectedTrack->clear();
     } else
     {
       clearAllTrig->trigger();
     }
 
   } else if (t == stopSelectedTrig) {
-    if (selectedTrack != nullptr) selectedTrack->stop();
+    if(trackGroup.selectedTrack) trackGroup.selectedTrack->stop();
     else stopAllTrig->trigger();
   }
 
@@ -376,12 +381,12 @@ void LooperNode::selectMe(LooperTrack * t) {
     };
   }
 
-  selectedTrack = t;
+  trackGroup.selectedTrack = t;
 
-  if (selectedTrack != nullptr) {
-    selectedTrack->setSelected(true);
-    volumeSelected->setValue(selectedTrack->volume->floatValue());
-    selectTrack->setValue(selectedTrack->trackIdx);
+  if (trackGroup.selectedTrack != nullptr) {
+    trackGroup.selectedTrack->setSelected(true);
+    volumeSelected->setValue(trackGroup.selectedTrack->volume->floatValue());
+    selectTrack->setValue(trackGroup.selectedTrack->trackIdx);
   }
 }
 void LooperNode::numChannelsChanged(bool isInput) {
@@ -395,23 +400,23 @@ void LooperNode::numChannelsChanged(bool isInput) {
 void LooperNode::onContainerParameterChanged(Parameter * p) {
   NodeBase::onContainerParameterChanged(p);
   if (p == numberOfTracks) {
-    int oldIdx = selectedTrack->trackIdx;
+    int oldIdx = trackGroup.selectedTrack?trackGroup.selectedTrack->trackIdx:0;
     const ScopedLock lk(parentNodeContainer->getAudioGraph()->getCallbackLock());
     trackGroup.setNumTracks(numberOfTracks->intValue());
     if (outputAllTracksSeparately->boolValue()) {
       setPreferedNumAudioOutput(totalNumInputChannels*numberOfTracks->intValue());
     }
-    if (oldIdx > numberOfTracks->intValue()) {
+    if (oldIdx >= numberOfTracks->intValue()) {
       if (trackGroup.tracks.size()) {
-        selectedTrack = trackGroup.tracks[trackGroup.tracks.size() - 1];
+        trackGroup.selectedTrack = trackGroup.tracks[trackGroup.tracks.size() - 1];
       } else
-        selectedTrack = nullptr;
+        trackGroup.selectedTrack = nullptr;
     }
   } else if (p == volumeSelected)
   {
-    if (selectedTrack != nullptr)
+    if (trackGroup.selectedTrack != nullptr)
     {
-      selectedTrack->volume->setValue(volumeSelected->floatValue());
+      trackGroup.selectedTrack->volume->setValue(volumeSelected->floatValue());
     } else
     {
       //define master volume, or all volume ?
@@ -429,7 +434,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
   }
   else if (p == selectTrack) {
     bool changed = true;
-    if (selectedTrack != nullptr)changed = selectedTrack->trackIdx != p->intValue();
+    if (trackGroup.selectedTrack)changed = trackGroup.selectedTrack->trackIdx != p->intValue();
 
     if (changed) {
       if (selectTrack->intValue() >= 0) {

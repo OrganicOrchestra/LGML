@@ -35,7 +35,10 @@ public:
 
   class TrackGroup : public ControllableContainer{
   public:
-    TrackGroup(LooperNode* l):ControllableContainer("tracks"),owner(l){};
+    TrackGroup(LooperNode* l):ControllableContainer("tracks"),
+    owner(l),
+    selectedTrack(nullptr),
+    lastMasterTempoTrack(nullptr){};
 
     void setNumTracks(int numTracks);
     void addTrack();
@@ -43,13 +46,15 @@ public:
 
     OwnedArray<LooperTrack> tracks;
     LooperNode * owner;
+    LooperTrack *  selectedTrack;
+
+    LooperTrack * lastMasterTempoTrack;
 
   };
 
   TrackGroup trackGroup;
-  LooperTrack * selectedTrack;
+  
 
-  LooperTrack * lastMasterTempoTrack;
 
   //Parameters
   Trigger * recPlaySelectedTrig;

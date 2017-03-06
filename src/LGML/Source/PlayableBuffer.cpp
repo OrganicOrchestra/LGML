@@ -234,9 +234,12 @@ void PlayableBuffer::setPlayNeedle(int n){
 
 }
 
-void PlayableBuffer::cropEndOfRecording(int sampletoRemove){
-  jassert(sampletoRemove<recordNeedle);
-  recordNeedle-=sampletoRemove;
+void PlayableBuffer::cropEndOfRecording(int * sampletoRemove){
+  if(*sampletoRemove>recordNeedle){
+    *sampletoRemove = 0;
+  }
+
+  recordNeedle-=*sampletoRemove;
   multiNeedle.setLoopSize(recordNeedle);
 }
 void PlayableBuffer::padEndOfRecording(int sampleToAdd){
