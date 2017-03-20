@@ -15,7 +15,6 @@
 #include "Inspector.h"
 #include "LGMLLoggerUI.h"
 #include "ControllerManagerUI.h"
-#include "RuleManagerUI.h"
 #include "FastMapperUI.h"
 #include "Outliner.h"
 
@@ -47,9 +46,6 @@ ShapeShifterContent * ShapeShifterFactory::createContentForIndex(PanelName pn)
 	case ControllerPanel:
 		return new ControllerManagerUI(contentName, ControllerManager::getInstance());
 
-
-	case RulesPanel:
-		return new RuleManagerUI(contentName, RuleManager::getInstance());
 
 
 	case FastMapperPanel:

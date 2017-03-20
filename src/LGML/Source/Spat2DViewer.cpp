@@ -177,7 +177,7 @@ void Spat2DViewer::nodeParameterChanged(ConnectableNode *, Parameter * p)
 		
 	} else if (p == node->shapeMode)
 	{
-		bool circleMode = (int)node->shapeMode->getValueData() == Spat2DNode::ShapeMode::CIRCLE;
+		bool circleMode = (int)node->shapeMode->getFirstSelected() == Spat2DNode::ShapeMode::CIRCLE;
 		for (int i = 0; i < targets.size(); i++) targets[i]->setEnabled(!circleMode);
 
 	} else if (p == node->useGlobalTarget)

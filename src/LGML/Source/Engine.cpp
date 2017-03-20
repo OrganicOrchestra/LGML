@@ -44,7 +44,7 @@ threadPool(4)
   addChildControllableContainer(TimeManager::getInstance());
   addChildControllableContainer(ControllerManager::getInstance());
   addChildControllableContainer(FastMapper::getInstance());
-  addChildControllableContainer(RuleManager::getInstance());
+
 
 
 }
@@ -74,7 +74,7 @@ Engine::~Engine(){
 
   Logger::setCurrentLogger(nullptr);
   LGMLLogger::deleteInstance();
-  RuleManager::deleteInstance();
+
 
   JsGlobalEnvironment::deleteInstance();
   MIDIManager::deleteInstance();
@@ -172,7 +172,7 @@ void Engine::clear(){
   TimeManager::getInstance()->playState->setValue(false);
 
   FastMapper::getInstance()->clear();
-  RuleManager::getInstance()->clear();
+
   
   ControllerManager::getInstance()->clear();
 //  JsGlobalEnvironment::getInstance()->getEnv()->clear();

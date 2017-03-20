@@ -66,7 +66,7 @@ void DummyNode::onContainerParameterChanged(Parameter * p)
     period2 = (int)(44100.0f / (1.0f + 440.0f*p->getNormalizedValue()));
 	 } else if (p == enumParam)
    {
-     //DBG("Enum param changed : " << enumParam->stringValue() << " / " << enumParam->getValueData().toString());
+     //DBG("Enum param changed : " << enumParam->stringValue() << " / " << enumParam->getFirstSelected().toString());
    } else if (p == pxParam || p == pyParam)
    {
      outPosData->update(pxParam->floatValue(), pyParam->floatValue());
@@ -78,7 +78,7 @@ void DummyNode::onContainerParameterChanged(Parameter * p)
 
 
 void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
-  String outType = enumParam->getValueData();
+  String outType = enumParam->getFirstSelected().toString();
   if(outType=="click" ||  outType=="sine"){
     TimeManager * tm = TimeManager::getInstance();
     if(tm->isJumping()){

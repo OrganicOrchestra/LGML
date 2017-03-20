@@ -10,7 +10,6 @@
 
 
 #include "MainComponent.h"
-#include "Rule.h"
 #include "FastMap.h"
 #include "Engine.h"
 #include "Inspector.h"
@@ -321,7 +320,6 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
           {
             if (ic->inspectableType == "node") ((ConnectableNode *)cc)->remove();
             else if (ic->inspectableType == "controller") ((Controller *)cc)->remove();
-            else if (ic->inspectableType == "rule") ((Rule *)cc)->remove();
             else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
           }
 

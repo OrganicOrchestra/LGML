@@ -765,9 +765,6 @@ static const unsigned char temp_binary_data_1[] =
 "                \"currentContent\": \"Fast Mapper\",\n"
 "                \"tabs\": [\n"
 "                  {\n"
-"                    \"name\": \"Rules\"\n"
-"                  },\n"
-"                  {\n"
 "                    \"name\": \"Fast Mapper\"\n"
 "                  }\n"
 "                ]\n"
@@ -820,7 +817,7 @@ static const unsigned char temp_binary_data_1[] =
 "    ]\n"
 "  },\n"
 "  \"windows\": null\n"
-"}";
+"}\n";
 
 const char* default_lgmllayout = (const char*) temp_binary_data_1;
 
@@ -3906,7 +3903,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
     switch (hash)
     {
         case 0x9bae78ed:  numBytes = 51582; return littleredridinghoodmd_png;
-        case 0x1fa434c2:  numBytes = 2319; return default_lgmllayout;
+        case 0x1fa434c2:  numBytes = 2243; return default_lgmllayout;
         case 0xae53f640:  numBytes = 58335; return removeBT_png;
         case 0xe88b5a8e:  numBytes = 71763; return grandlouloup_png;
         case 0x5550a5bc:  numBytes = 45430; return wolf_footprint_png;

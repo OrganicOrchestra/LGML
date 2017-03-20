@@ -273,8 +273,16 @@
                   resource="0"/>
           </GROUP>
           <GROUP id="{342F6F3B-20C5-E920-E6FA-39C9A8531208}" name="variables">
+            <FILE id="LTnSNY" name="ControlVariableReference.cpp" compile="1" resource="0"
+                  file="Source/ControlVariableReference.cpp"/>
+            <FILE id="BwrlyO" name="ControlVariableReferenceUI.cpp" compile="1"
+                  resource="0" file="Source/ControlVariableReferenceUI.cpp"/>
             <FILE compile="1" file="Source/ControlVariable.cpp" id="S3eYKu" name="ControlVariable.cpp"
                   resource="0"/>
+            <FILE id="QyrH3W" name="ControlVariableReference.h" compile="0" resource="0"
+                  file="Source/ControlVariableReference.h"/>
+            <FILE id="stqN9O" name="ControlVariableReferenceUI.h" compile="0" resource="0"
+                  file="Source/ControlVariableReferenceUI.h"/>
             <FILE compile="0" file="Source/ControlVariable.h" id="sa2ONX" name="ControlVariable.h"
                   resource="0"/>
             <FILE compile="1" file="Source/ControlVariableUI.cpp" id="NSHW03" name="ControlVariableUI.cpp"
@@ -359,81 +367,6 @@
           <FILE compile="1" file="Source/FastMapper.cpp" id="hnnPv6" name="FastMapper.cpp"
                 resource="0"/>
           <FILE compile="0" file="Source/FastMapper.h" id="vwhJZQ" name="FastMapper.h"
-                resource="0"/>
-        </GROUP>
-        <GROUP id="{36D57403-1E0C-65BD-9157-C17EE1560F96}" name="rules">
-          <GROUP id="{F686A4E4-762D-D1B5-DCD5-C8B54C43DAFD}" name="scripted">
-            <FILE compile="1" file="Source/ScriptedCondition.cpp" id="OuvMa2" name="ScriptedCondition.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/ScriptedCondition.h" id="TK9rHv" name="ScriptedCondition.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/ScriptedConditionUI.cpp" id="BibnJ1"
-                  name="ScriptedConditionUI.cpp" resource="0"/>
-            <FILE compile="0" file="Source/ScriptedConditionUI.h" id="xu9ZWf" name="ScriptedConditionUI.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/ScriptedConsequence.cpp" id="I9IEMK"
-                  name="ScriptedConsequence.cpp" resource="0"/>
-            <FILE compile="0" file="Source/ScriptedConsequence.h" id="NORYJ1" name="ScriptedConsequence.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/ScriptedConsequenceUI.cpp" id="ck6YlC"
-                  name="ScriptedConsequenceUI.cpp" resource="0"/>
-            <FILE compile="0" file="Source/ScriptedConsequenceUI.h" id="AfnQkI"
-                  name="ScriptedConsequenceUI.h" resource="0"/>
-          </GROUP>
-          <GROUP id="{655CE5BA-C8E0-B650-7BA2-403CFAC89DA0}" name="ui">
-            <FILE compile="1" file="Source/ControlVariableReferenceUI.cpp" id="cHwpa4"
-                  name="ControlVariableReferenceUI.cpp" resource="0"/>
-            <FILE compile="0" file="Source/ControlVariableReferenceUI.h" id="pLqWDd"
-                  name="ControlVariableReferenceUI.h" resource="0"/>
-            <FILE compile="1" file="Source/RuleEditor.cpp" id="bJHxBt" name="RuleEditor.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/RuleEditor.h" id="Zl2liz" name="RuleEditor.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/RuleConditionGroupUI.cpp" id="AA8LJg"
-                  name="RuleConditionGroupUI.cpp" resource="0"/>
-            <FILE compile="0" file="Source/RuleConditionGroupUI.h" id="HFx1Jv"
-                  name="RuleConditionGroupUI.h" resource="0"/>
-            <FILE compile="0" file="Source/RuleConditionUI.h" id="IuGtIV" name="RuleConditionUI.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/RuleConditionUI.cpp" id="j85rFO" name="RuleConditionUI.cpp"
-                  resource="0"/>
-            <FILE compile="1" file="Source/RuleConsequenceUI.cpp" id="V6g0AN" name="RuleConsequenceUI.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/RuleConsequenceUI.h" id="WWaie0" name="RuleConsequenceUI.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/RuleManagerUI.cpp" id="E5gTmD" name="RuleManagerUI.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/RuleManagerUI.h" id="ymAWfP" name="RuleManagerUI.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/RuleUI.cpp" id="OuEzpC" name="RuleUI.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/RuleUI.h" id="GoicT1" name="RuleUI.h"
-                  resource="0"/>
-          </GROUP>
-          <FILE compile="1" file="Source/ControlVariableReference.cpp" id="vmYAru"
-                name="ControlVariableReference.cpp" resource="0"/>
-          <FILE compile="0" file="Source/ControlVariableReference.h" id="xZGAPs"
-                name="ControlVariableReference.h" resource="0"/>
-          <FILE compile="1" file="Source/Rule.cpp" id="OzYofE" name="Rule.cpp"
-                resource="0"/>
-          <FILE compile="0" file="Source/Rule.h" id="MrvGpI" name="Rule.h" resource="0"/>
-          <FILE compile="1" file="Source/RuleCondition.cpp" id="LmzWTF" name="RuleCondition.cpp"
-                resource="0"/>
-          <FILE compile="0" file="Source/RuleCondition.h" id="NHF780" name="RuleCondition.h"
-                resource="0"/>
-          <FILE compile="1" file="Source/RuleConditionGroup.cpp" id="WsTckC"
-                name="RuleConditionGroup.cpp" resource="0"/>
-          <FILE compile="0" file="Source/RuleConditionGroup.h" id="nf5ZZb" name="RuleConditionGroup.h"
-                resource="0"/>
-          <FILE compile="1" file="Source/RuleConsequence.cpp" id="H4Rs1E" name="RuleConsequence.cpp"
-                resource="0"/>
-          <FILE compile="0" file="Source/RuleConsequence.h" id="k3aAY2" name="RuleConsequence.h"
-                resource="0"/>
-          <FILE compile="0" file="Source/RuleListeners.h" id="YavARy" name="RuleListeners.h"
-                resource="0"/>
-          <FILE compile="1" file="Source/RuleManager.cpp" id="JPVX2y" name="RuleManager.cpp"
-                resource="0"/>
-          <FILE compile="0" file="Source/RuleManager.h" id="CThc0S" name="RuleManager.h"
                 resource="0"/>
         </GROUP>
       </GROUP>

@@ -46,9 +46,6 @@
                 "currentContent": "Fast Mapper",
                 "tabs": [
                   {
-                    "name": "Rules"
-                  },
-                  {
                     "name": "Fast Mapper"
                   }
                 ]

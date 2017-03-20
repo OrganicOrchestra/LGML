@@ -374,6 +374,7 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t)
 }
 
 void LooperNode::selectMe(LooperTrack * t) {
+  ScopedLock lk (controllableContainers.getLock());
   if (t != nullptr) {
     for (auto &tt : trackGroup.tracks) {
       if (tt->isSelected)

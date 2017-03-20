@@ -31,17 +31,21 @@ EnumParameterUI::~EnumParameterUI()
 void EnumParameterUI::updateComboBox()
 {	
 	cb.clear(dontSendNotification);
-	HashMap<String, var>::Iterator i(ep->enumValues);
+
+
 	idKeyMap.clear();
+  if(DynamicObject * dob = ep->getCurrentValuesMap()){
 	int id = 1;
-	while (i.next())
+    NamedValueSet map = dob->getProperties();
+    for(auto & kv:map)
 	{
-		cb.addItem(i.getKey(), id);
-		idKeyMap.set(id, i.getKey());
-		keyIdMap.set(i.getKey(), id);
+    String displayed = kv.value.toString();
+		cb.addItem(displayed, id);
+		idKeyMap.set(id, displayed);
+		keyIdMap.set(displayed, id);
 		id++;
 	}
-
+  }
 	cb.setSelectedId(keyIdMap[ep->stringValue()], dontSendNotification);
 }
 

@@ -21,7 +21,6 @@
 #include "PresetManager.h"//keep
 #include "AudioFucker.h"//keep
 #include "TimeManager.h"//keep
-#include "RuleManager.h"//keep
 #include "FastMapper.h"//keep
 #include "VSTManager.h"//keep
 #include "ProgressNotifier.h"

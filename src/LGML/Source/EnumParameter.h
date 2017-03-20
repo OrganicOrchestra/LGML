@@ -19,17 +19,21 @@ class EnumParameter : public Parameter
 {
 public:
 	EnumParameter(const String &niceName, const String &description, bool enabled = true);
-	~EnumParameter() {}
+  ~EnumParameter() ;
 
-	void addOption(String key, var data);
-	void removeOption(String key);
+	void addOption(Identifier key, var data);
+	void removeOption(Identifier key);
+  void selectKey(Identifier key,bool shouldSelect,bool appendSelection = true);
 
 
-	HashMap<String, var> enumValues;
 
-	var getValueData() { return enumValues[value]; };
-  bool containsValue(){return enumValues.contains(value);};
-	
+  
+  void setValueInternal(var & _value) override;
+
+  Array<Identifier> getSelectedIds() ;
+  Array<var> getSelectedValues();
+  var getFirstSelected(var defaultValue=var::null) ;
+  
 	EnumParameterUI * createUI(EnumParameter * target = nullptr);
 	ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 
@@ -42,12 +46,24 @@ public:
 		virtual ~Listener() {}
 		virtual void enumOptionAdded(EnumParameter *, const String &) = 0;
 		virtual void enumOptionRemoved(EnumParameter *, const String &) = 0;
+    virtual void enumOptionSelectionChanged(EnumParameter *,bool isSelected, const String &){};
 	};
 
 	ListenerList<Listener> enumListeners;
 	void addEnumParameterListener(Listener* newListener) { enumListeners.add(newListener); }
 	void removeEnumParameterListener(Listener* listener) { enumListeners.remove(listener); }
 
+  DynamicObject * getCurrentValuesMap();
+  
+
+private:
+DynamicObject * getValuesMap(const var & v);
+  Array<Identifier> getSelectedSetIds(const var & v);
+  Array<var> *getSelectedSet(const var & v);
+
+  DynamicObject * enumData;
+  static Identifier valueMapIdentifier;
+  static Identifier selectedSetIdentifier;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnumParameter)
 };
 

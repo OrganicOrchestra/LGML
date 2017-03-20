@@ -198,7 +198,7 @@ var Engine::getJSONData()
   data.getDynamicObject()->setProperty("presetManager", PresetManager::getInstance()->getJSONData());
   data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
   data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
-  data.getDynamicObject()->setProperty("ruleManager", RuleManager::getInstance()->getJSONData());
+
   data.getDynamicObject()->setProperty("fastMapper", FastMapper::getInstance()->getJSONData());
 
   return data;
@@ -230,7 +230,7 @@ void Engine::loadJSONData (var data,ProgressTask * loadingTask)
   ProgressTask * nodeManagerTask = loadingTask->addTask("nodeManager");
   ProgressTask * controllerManagerTask = loadingTask->addTask("controllerManager");
   ProgressTask * fastMapperTask = loadingTask->addTask("fastMapper");
-  ProgressTask * ruleManagerTask = loadingTask->addTask("ruleManager");
+
   presetTask->start();
   if (d->hasProperty("presetManager")) PresetManager::getInstance()->loadJSONData(d->getProperty("presetManager"));
   presetTask->end();
@@ -240,9 +240,6 @@ void Engine::loadJSONData (var data,ProgressTask * loadingTask)
   controllerManagerTask->start();
   if (d->hasProperty("controllerManager")) ControllerManager::getInstance()->loadJSONData(d->getProperty("controllerManager"));
   controllerManagerTask->end();
-  ruleManagerTask->start();
-  if (d->hasProperty("ruleManager"))RuleManager::getInstance()->loadJSONData(d->getProperty("ruleManager"));
-  ruleManagerTask->end();
   fastMapperTask->start();
   if(d->hasProperty("fastMapper")) FastMapper::getInstance()->loadJSONData(d->getProperty("fastMapper"));
   fastMapperTask->end();

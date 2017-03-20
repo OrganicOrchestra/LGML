@@ -47,7 +47,7 @@ void Spat2DNodeContentUI::resized()
 	
 	shapeModeUI->setBounds(r.removeFromTop(15));
 
-	bool circleMode = (int)spatNode->shapeMode->getValueData() == Spat2DNode::ShapeMode::CIRCLE ;
+	bool circleMode = (int)spatNode->shapeMode->getFirstSelected() == Spat2DNode::ShapeMode::CIRCLE ;
 	if (circleMode)
 	{
 		r.removeFromTop(5);
@@ -110,7 +110,7 @@ void Spat2DNodeContentUI::init()
 
 void Spat2DNodeContentUI::updateShapeModeView()
 {
-	bool circleMode = (int)spatNode->shapeMode->getValueData() == Spat2DNode::ShapeMode::CIRCLE;
+	bool circleMode = (int)spatNode->shapeMode->getFirstSelected() == Spat2DNode::ShapeMode::CIRCLE;
 	circleRadiusUI->setVisible(circleMode);
 	circleRotationUI->setVisible(circleMode);
 	resized();
