@@ -237,6 +237,19 @@ public:
     int getAlertBoxWindowFlags() override;
     int getAlertWindowButtonHeight() override;
 
+
+	Array<int> getWidthsForTextButtons(AlertWindow &, const Array<TextButton *> & buttons) override
+	{
+		Array<int> w;
+
+		for (int i = 0; i<buttons.size(); i++)
+		{
+			w.add(jmax<int>(buttons.getUnchecked(i)->getWidth(), 60));
+		}
+
+		return w;
+	}
+
     /** Override this function to supply a custom font for the alert window title.
      This default implementation will use a boldened and slightly larger version
      of the alert window message font.
