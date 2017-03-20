@@ -23,7 +23,7 @@ public:
 
 	void addOption(Identifier key, var data);
 	void removeOption(Identifier key);
-  void selectKey(Identifier key,bool shouldSelect,bool appendSelection = true);
+  void selectId(Identifier key,bool shouldSelect,bool appendSelection = true);
 
 
 
@@ -31,9 +31,16 @@ public:
   void setValueInternal(var & _value) override;
 
   Array<Identifier> getSelectedIds() ;
+  Identifier getFirstSelectedId() ;
+
+
+
+
+
   Array<var> getSelectedValues();
-  var getFirstSelected(var defaultValue=var::null) ;
+  var getFirstSelectedValue(var defaultValue=var::null) ;
   
+  var getValueForId(const Identifier &i);
 	EnumParameterUI * createUI(EnumParameter * target = nullptr);
 	ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 
@@ -46,7 +53,7 @@ public:
 		virtual ~Listener() {}
 		virtual void enumOptionAdded(EnumParameter *, const String &) = 0;
 		virtual void enumOptionRemoved(EnumParameter *, const String &) = 0;
-    virtual void enumOptionSelectionChanged(EnumParameter *,bool isSelected, const String &){};
+    virtual void enumOptionSelectionChanged(EnumParameter *,bool isSelected, const Identifier &){};
 	};
 
 	ListenerList<Listener> enumListeners;
@@ -57,7 +64,7 @@ public:
   
 
 private:
-DynamicObject * getValuesMap(const var & v);
+  DynamicObject * getValuesMap(const var & v);
   Array<Identifier> getSelectedSetIds(const var & v);
   Array<var> *getSelectedSet(const var & v);
 

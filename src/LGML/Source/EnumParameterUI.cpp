@@ -39,17 +39,17 @@ void EnumParameterUI::updateComboBox()
     NamedValueSet map = dob->getProperties();
     for(auto & kv:map)
 	{
-    String displayed = kv.value.toString();
+    String displayed = kv.name.toString();
 		cb.addItem(displayed, id);
 		idKeyMap.set(id, displayed);
 		keyIdMap.set(displayed, id);
 		id++;
 	}
   }
-	cb.setSelectedId(keyIdMap[ep->stringValue()], dontSendNotification);
+	cb.setSelectedId(keyIdMap[ep->getFirstSelectedId().toString()], dontSendNotification);
 }
 
-String EnumParameterUI::getSelectedKey()
+String EnumParameterUI::getCBSelectedKey()
 {
 	return idKeyMap[cb.getSelectedId()];
 }
@@ -68,13 +68,24 @@ void EnumParameterUI::enumOptionRemoved(EnumParameter *, const String &)
 {
 	updateComboBox();
 }
+void EnumParameterUI::enumOptionSelectionChanged(EnumParameter *,bool isSelected, const Identifier &name){
+  if(keyIdMap.contains(name.toString())){
+  cb.setSelectedId(keyIdMap[name.toString()],dontSendNotification);
+  }
+}
 
 void EnumParameterUI::valueChanged(const var & value) 
 {
+  if(value.isString()){
+
 	cb.setSelectedId(keyIdMap[value], dontSendNotification);
+  }
+  else if (value.isObject()){
+    updateComboBox();
+  }
 }
 
 void EnumParameterUI::comboBoxChanged(ComboBox *)
 {
-	ep->setValue(getSelectedKey());
+	ep->setValue(getCBSelectedKey());
 };

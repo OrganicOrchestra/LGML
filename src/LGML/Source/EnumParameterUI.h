@@ -26,14 +26,14 @@ public:
 	ComboBox cb;
 
 	void updateComboBox();
-	String getSelectedKey();
+	String getCBSelectedKey();
 
 	void resized() override;
 
 	
 	void enumOptionAdded(EnumParameter *, const String &key) override;
 	void enumOptionRemoved(EnumParameter *, const String &key) override;
-
+  void enumOptionSelectionChanged(EnumParameter *,bool isSelected, const Identifier &name) override;
 	// Inherited via Listener
 	virtual void comboBoxChanged(ComboBox *) override;
 	

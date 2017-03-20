@@ -44,34 +44,35 @@ Array<Identifier> EnumParameter::getSelectedIds() {
   return getSelectedSetIds(value);
 }
 
-Array<var> EnumParameter::getSelectedValues(){
-  Array<var> res;
-  DynamicObject * vm = getValuesMap(value);
-  for(auto & i: getSelectedSetIds(value)){
-    res.add( vm->getProperty(i));
-  }
-  return res;
-};
-
-var EnumParameter::getFirstSelected(var defaultValue) {
-  Array<var> arr = getSelectedValues();
+Identifier EnumParameter::getFirstSelectedId() {
+  Array<Identifier> arr = getSelectedIds();
   if(arr.size())return arr[0];
-  return var::null;
+  return Identifier::null;
 
 }
+var EnumParameter::getFirstSelectedValue(var defaultValue) {
+  Array<var> arr = getSelectedValues();
+  if(arr.size())return arr[0];
+  return defaultValue;
+
+}
+
 
 DynamicObject * EnumParameter::getCurrentValuesMap(){
   return getValuesMap(value);
 }
 
-void EnumParameter::selectKey(Identifier key,bool shouldSelect,bool appendSelection){
+
+
+void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelection){
   if(!appendSelection){
     for (auto & s:getSelectedSetIds(value)){
-      selectKey(s, false,true);
+      selectId(s, false,true);
     }
   }
   Array<var> * selection = getSelectedSet(value);
   jassert(selection);
+  if(!appendSelection)selection->clear();
   if(shouldSelect){
     selection->add(key.toString());
   }
@@ -84,14 +85,36 @@ void EnumParameter::selectKey(Identifier key,bool shouldSelect,bool appendSelect
 
 }
 
+
+
+
+Array<var> EnumParameter::getSelectedValues(){
+  Array<var> res;
+  DynamicObject * vm = getValuesMap(value);
+  for(auto & i: getSelectedSetIds(value)){
+    res.add( vm->getProperty(i));
+  }
+  return res;
+};
+var EnumParameter::getValueForId(const Identifier &i){
+  if(DynamicObject * dob = getCurrentValuesMap()){
+    return dob->getProperty(i);
+
+  }
+  return var::null;
+}
+
+
+
+
 void EnumParameter::setValueInternal(var & _value){
   if (_value.isInt()){
     Identifier key = getCurrentValuesMap()->getProperties().getName((int)_value);
-    selectKey(key,true,false);
+    selectId(key,true,false);
 
   }
   else if(_value.isString()){
-    selectKey(value.toString(),true,false);
+    selectId(_value.toString(),true,false);
   }
   
   else if(DynamicObject * values = getValuesMap(_value)){
@@ -107,13 +130,13 @@ void EnumParameter::setValueInternal(var & _value){
 
 
     for(auto sel:getSelectedSetIds(value)){
-      selectKey(sel.toString(),false,true);
+      selectId(sel.toString(),false,true);
     }
 
 
 
     for (auto & sel:getSelectedSetIds(_value)){
-      selectKey(sel.toString(),true,true);
+      selectId(sel.toString(),true,true);
     }
 
 

@@ -117,7 +117,7 @@ void TimeManager::incrementClock(int block){
 
     //
     const int tstQ = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
-    auto beatAtTime = linkTimeLine.beatAtTime(linkTime, tstQ);
+//    auto beatAtTime = linkTimeLine.beatAtTime(linkTime, tstQ);
     auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
     auto localBeat = getBeat();
     auto localPhase = fmod(localBeat,tstQ);

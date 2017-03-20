@@ -117,7 +117,7 @@ void Spat2DNode::updateTargetsFromShape()
 {
 	if (shapeMode == nullptr) return;
 
-	switch ((int)shapeMode->getFirstSelected())
+	switch ((int)shapeMode->getFirstSelectedValue())
 	{
 	case FREE:
 		//do nothing
@@ -143,7 +143,7 @@ void Spat2DNode::updateTargetsFromShape()
 void Spat2DNode::computeAllInfluences()
 {
 	//Only one source for now
-	switch((int)spatMode->getFirstSelected())
+	switch((int)spatMode->getFirstSelectedValue())
 	{
 	case BEAM:
 		break;
@@ -208,7 +208,7 @@ updateInputOutputDataSlots();
 
 bool Spat2DNode::modeIsBeam()
 {
-	return (int)spatMode->getFirstSelected() == BEAM;
+	return (int)spatMode->getFirstSelectedValue() == BEAM;
 }
 
 void Spat2DNode::onContainerParameterChanged(Parameter * p)

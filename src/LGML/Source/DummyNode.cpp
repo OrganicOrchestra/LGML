@@ -78,7 +78,7 @@ void DummyNode::onContainerParameterChanged(Parameter * p)
 
 
 void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
-  String outType = enumParam->getFirstSelected().toString();
+  String outType = enumParam->getFirstSelectedId().toString();
   if(outType=="click" ||  outType=="sine"){
     TimeManager * tm = TimeManager::getInstance();
     if(tm->isJumping()){
