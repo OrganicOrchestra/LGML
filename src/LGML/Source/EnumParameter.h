@@ -21,7 +21,7 @@ public:
 	EnumParameter(const String &niceName, const String &description, bool enabled = true);
   ~EnumParameter() ;
 
-	void addOption(Identifier key, var data);
+	void addOption(Identifier key, var data=var::null);
 	void removeOption(Identifier key);
   void selectId(Identifier key,bool shouldSelect,bool appendSelection = true);
 

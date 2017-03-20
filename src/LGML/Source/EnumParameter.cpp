@@ -30,7 +30,9 @@ EnumParameter::~EnumParameter(){
 
 void EnumParameter::addOption(Identifier key, var data)
 {
-  getValuesMap(value)->setProperty(key, data);
+  auto vm = getValuesMap(value);
+  jassert(!vm->hasProperty(key));
+  vm->setProperty(key, data);
   enumListeners.call(&Listener::enumOptionAdded, this, key.toString());
 }
 

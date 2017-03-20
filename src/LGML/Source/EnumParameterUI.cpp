@@ -77,8 +77,13 @@ void EnumParameterUI::enumOptionSelectionChanged(EnumParameter *,bool isSelected
 void EnumParameterUI::valueChanged(const var & value) 
 {
   if(value.isString()){
-
-	cb.setSelectedId(keyIdMap[value], dontSendNotification);
+    if(keyIdMap.contains(value)){
+      cb.setSelectedId(keyIdMap[value], dontSendNotification);
+      cb.setTextWhenNothingSelected(ep->niceName);
+    }
+    else if(value.toString()!=""){
+      cb.setTextWhenNothingSelected("["+value.toString()+"]");
+    }
   }
   else if (value.isObject()){
     updateComboBox();

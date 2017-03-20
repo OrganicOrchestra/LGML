@@ -13,6 +13,13 @@
 #include "DummyNodeContentUI.h"
 #include "TimeManager.h"
 
+Identifier lrId("Left / Right");
+Identifier rlId("Right / Left");
+Identifier mixedId("Mixed");
+Identifier clickId("Click");
+Identifier sineId("Sine");
+
+
 DummyNode::DummyNode() :
 NodeBase("DummyNode",NodeType::DummyType),
 clickFade(300,300)
@@ -25,11 +32,11 @@ clickFade(300,300)
   testTrigger = addTrigger("Test Trigger", "Youpi");
 
   enumParam = addEnumParameter("Mode", "Enum Mode test");
-  enumParam->addOption("Left / Right","lr");
-  enumParam->addOption("Right / Left", "rl");
-  enumParam->addOption("Mixed", "mixed");
-  enumParam->addOption("click", "click");
-  enumParam->addOption("sine", "sine");
+  enumParam->addOption(lrId);
+  enumParam->addOption(rlId);
+  enumParam->addOption(mixedId);
+  enumParam->addOption(clickId);
+  enumParam->addOption(sineId);
 
 
 
@@ -78,8 +85,8 @@ void DummyNode::onContainerParameterChanged(Parameter * p)
 
 
 void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
-  String outType = enumParam->getFirstSelectedId().toString();
-  if(outType=="click" ||  outType=="sine"){
+  Identifier outType = enumParam->getFirstSelectedId();
+  if(outType==clickId ||  outType==sineId){
     TimeManager * tm = TimeManager::getInstance();
     if(tm->isJumping()){
 
@@ -95,7 +102,7 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
       //    const int sinPeriod = sampleRate / sinFreq;
       const double k = 40.0;
 
-      bool ADSREnv =  !( outType=="sine");
+      bool ADSREnv =  !( outType==sineId);
       for(int i = 0 ; i < numSamples;i++){
 
         double carg = sinCount*1.0/sinFreq;
@@ -123,7 +130,7 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
   }
   else{
 
-    if (outType == "lr")
+    if (outType == lrId)
     {
       for (int i = 0; i < buffer.getNumSamples(); i++) {
         buffer.addSample(0, i, (float)(amp*cos(2.0*double_Pi*step1*1.0 / period1)));
@@ -133,7 +140,7 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
         if (step1>period1) { step1 = 0; }
         if (step2>period2) { step2 = 0; }
       }
-    } else if (outType == "rl")
+    } else if (outType == rlId)
     {
       for (int i = 0; i < buffer.getNumSamples(); i++) {
         buffer.addSample(1, i, (float)(amp*cos(2.0*double_Pi*step1*1.0 / period1)));
@@ -143,7 +150,7 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
         if (step1>period1) { step1 = 0; }
         if (step2>period2) { step2 = 0; }
       }
-    } else if (outType == "mixed")
+    } else if (outType == mixedId)
     {
       for (int i = 0; i < buffer.getNumSamples(); i++) {
         buffer.addSample(0, i, (float)(amp/2*cos(2.0*double_Pi*step1*1.0 / period1)));
