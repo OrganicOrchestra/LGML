@@ -301,7 +301,7 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
 
     // TODO : assure thread safety (this one liner is non-atomic, but we may need check if engine is not locked)
     bool engineIsAlreadyLocked =  !ScopedTryLock(engineLock).isLocked();
-    if(engineIsAlreadyLocked){
+    if(!engineIsAlreadyLocked){
 
       if(!JsGlobalEnvironment::getInstance()->isDirty()) {
         res = jsEngine->callFunction(function, Nargs, result);
@@ -310,7 +310,7 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
       }
     }
     else{
-      jassertfalse;
+//      jassertfalse;
        NLOG(localNamespace,"jsEngine is Locked");
     }
   }
