@@ -31,6 +31,7 @@ EnumParameter::~EnumParameter(){
 void EnumParameter::addOption(Identifier key, var data)
 {
   auto vm = getValuesMap(value);
+  // we don't want to override existing
   jassert(!vm->hasProperty(key));
   vm->setProperty(key, data);
   enumListeners.call(&Listener::enumOptionAdded, this, key.toString());
@@ -68,13 +69,11 @@ DynamicObject * EnumParameter::getCurrentValuesMap(){
 
 void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelection){
   if(!appendSelection){
-    for (auto & s:getSelectedSetIds(value)){
-      selectId(s, false,true);
-    }
+    unselectAll();
   }
   Array<var> * selection = getSelectedSet(value);
   jassert(selection);
-  if(!appendSelection)selection->clear();
+//  if(!appendSelection)selection->clear();
   if(shouldSelect){
     selection->add(key.toString());
   }
@@ -85,6 +84,13 @@ void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelecti
   enumListeners.call(&Listener::enumOptionSelectionChanged, this,shouldSelect, key.toString());
 
 
+}
+
+void EnumParameter::unselectAll(){
+  for (auto & s:getSelectedSetIds(value)){
+    selectId(s, false,true);
+  }
+  jassert(getSelectedSet(value)->size()==0) ;
 }
 
 
@@ -111,8 +117,13 @@ var EnumParameter::getValueForId(const Identifier &i){
 
 void EnumParameter::setValueInternal(var & _value){
   if (_value.isInt()){
-    Identifier key = getCurrentValuesMap()->getProperties().getName((int)_value);
-    selectId(key,true,false);
+    const int idx = (int)value;
+    auto props = getCurrentValuesMap()->getProperties();
+    if(idx==-1) unselectAll();
+    else if(idx<props.size()){
+      Identifier key = props.getName(idx);
+      selectId(key,true,false);
+    }
 
   }
   else if(_value.isString()){

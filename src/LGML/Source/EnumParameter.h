@@ -24,7 +24,7 @@ public:
 	void addOption(Identifier key, var data=var::null);
 	void removeOption(Identifier key);
   void selectId(Identifier key,bool shouldSelect,bool appendSelection = true);
-
+  void unselectAll();
 
 
   
@@ -32,10 +32,6 @@ public:
 
   Array<Identifier> getSelectedIds() ;
   Identifier getFirstSelectedId() ;
-
-
-
-
 
   Array<var> getSelectedValues();
   var getFirstSelectedValue(var defaultValue=var::null) ;
