@@ -18,7 +18,7 @@
 Trigger::Trigger(const String & niceName, const String &description, bool enabled) :
 Controllable(TRIGGER, niceName, description, enabled),
 isTriggering(false),
-queuedNotifier(1)
+queuedNotifier(2)
 {
 }
 

@@ -60,7 +60,9 @@ public:
       if(size1==0){
 //        jassert(isUpdatePending());
         if(canDropMessage){
-          delete msg;
+          fifo.finishedRead(1);
+          fifo.prepareToWrite(1, start1, size1, start2, size2);
+
         }
         else{
           while(size1==0){
@@ -72,17 +74,11 @@ public:
 
 
 
-      else{
+          jassert(size1==1 && size2==0);
         if(messageQueue.size()<maxSize){messageQueue.add(msg);}
         else{messageQueue.set(start1,msg);}
-      }
-      //        if(size2>0){
-      //          if(messageQueue.size()<maxSize){messageQueue.add(msg);}
-      //                    else{messageQueue.set(start2,msg);}
-      //        }
-      //      jassert(size2==0);
 
-      fifo.finishedWrite (size1 + size2);
+      fifo.finishedWrite (size1 );
       triggerAsyncUpdate();
     }
 
