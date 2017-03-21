@@ -36,7 +36,7 @@ oscMessageQueue(this)
 
   blockFeedback = addBoolParameter("blockFeedback", "block osc feedback (resending updated message to controller)", true);
   sendAllParameters = addTrigger("sendAll", "send all parameter states to initialize ", true);
-  
+
   setupReceiver();
   setupSender();
 
@@ -122,7 +122,7 @@ void OSCController::onContainerParameterChanged(Parameter * p)
 
 void OSCController::onContainerTriggerTriggered(Trigger *t){
   Controller::onContainerTriggerTriggered(t);
-   if(t==sendAllParameters){
+  if(t==sendAllParameters){
     int sentCount = 0;
     sendAllControllableStates(NodeManager::getInstance(), sentCount);
   }
@@ -180,14 +180,15 @@ inline bool compareOSCMessages(const  OSCMessage & a,const OSCMessage & b){
 }
 bool OSCController::sendOSC (OSCMessage & m)
 {
-  if(enabledParam->boolValue() &&
-     (!blockFeedback->boolValue() || !isProcessingOSC ||  !compareOSCMessages(lastMessageReceived,m))){
+  if(enabledParam->boolValue() ){
+    if(!blockFeedback->boolValue() ||   !compareOSCMessages(lastMessageReceived,m)){//!isProcessingOSC ||
 
-    if(speedLimit->floatValue()>0.0f){
-      oscMessageQueue.add(new OSCMessage(m));
-    }
-    else{
-      return sendOSCInternal(m);
+      if(speedLimit->floatValue()>0.0f){
+        oscMessageQueue.add(new OSCMessage(m));
+      }
+      else{
+        return sendOSCInternal(m);
+      }
     }
   }
 
@@ -213,7 +214,7 @@ void OSCController::sendAllControllableStates(ControllableContainer *c,int & sen
       sendAllControllableStates(container,sentControllable);
     }
   }
-  
+
 }
 
 
@@ -267,7 +268,7 @@ void OSCController::OSCMessageQueue::timerCallback() {
       }
     }
     aFifo.finishedRead(numRead);
-
+    
   }
   else{
     stopTimer();

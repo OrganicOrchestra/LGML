@@ -92,14 +92,18 @@ public:
   class  Listener : public AsyncUpdater
   {
   public:
-
+    Listener(){
+      notifyStateChange = false;
+       notifySelectChange = false ;
+       notifyTrackTime = false;
+      
+    }
     /** Destructor. */
     virtual ~Listener() {cancelPendingUpdate();}
-    //                called from here
-    void internalTrackStateChanged(const TrackState &state) {
 
+
+    void internalTrackStateChanged(const TrackState &state) {
       stateToBeNotified = state;
-//      trackStateChanged(state);
       notifyStateChange = true;
       triggerAsyncUpdate();
 
@@ -109,8 +113,8 @@ public:
       int64 time = Time::getMillisecondCounter();
       trackPosition = position;
       if(time - lastTrackTime>trackUpdatePeriodMs){
-      notifyTrackTime = true;
-      triggerAsyncUpdate();
+        notifyTrackTime = true;
+        triggerAsyncUpdate();
         lastTrackTime = time;
       }
 
@@ -124,12 +128,12 @@ public:
     }
 
     TrackState stateToBeNotified;
-    bool notifyStateChange = false;
+    Atomic<int> notifyStateChange ;
 
     bool isSelected;
-    bool notifySelectChange = false;
+    Atomic<int> notifySelectChange ;
 
-    bool notifyTrackTime = false;
+    Atomic<int> notifyTrackTime;
     double trackPosition=0;
     double trackUpdatePeriodMs = 100;
     int64 lastTrackTime=0;
@@ -142,15 +146,14 @@ public:
       trackUpdatePeriodMs = 1000.0/hz;
     }
     void handleAsyncUpdate() override {
-      if(notifyStateChange){
+      if(notifyStateChange.compareAndSetBool(0, 1)){
         trackStateChangedAsync(stateToBeNotified);
-        notifyStateChange = false;
+
       }
-      if(notifySelectChange){
+      if(notifySelectChange.compareAndSetBool(0, 1)){
         trackSelectedAsync(isSelected);
-        notifySelectChange = false;
       }
-      if(notifyTrackTime){
+      if(notifyTrackTime.compareAndSetBool(0, 1)){
         trackTimeChangedAsync(trackPosition);
       }
 

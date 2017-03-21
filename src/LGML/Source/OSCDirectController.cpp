@@ -116,9 +116,23 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
                         }
                         break;
 
+                  case Controllable::Type::ENUM:
+                    if (msg.size() > 0){
+                      // cast float to int
+                      if  (msg[0].isInt32() || msg[0].isFloat32()){
+                        int value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+                        ((Parameter *)c)->setValue(value);
+                      }
+                      // select by name
+                      else if (msg[0].isString()){
+                        ((Parameter *)c)->setValue(msg[0].getString());
+                      }
+                    }
+                    break;
 
 
-                    default:
+
+                  default:
                         result = Result::fail("Controllable type not handled");
                         break;
 
@@ -165,7 +179,7 @@ void OSCDirectController::controllableRemoved(Controllable *)
 void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
 {
 #if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
-
+  if(enabledParam->boolValue()){
     String cAddress = c->controlAddress;
     Controllable::Type targetType = c->type;
     if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
@@ -239,7 +253,8 @@ void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*o
   sendOSC(msg);
     
 #endif
-    
+  }
+
     
 }
 
