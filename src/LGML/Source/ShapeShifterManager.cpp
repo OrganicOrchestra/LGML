@@ -269,6 +269,7 @@ void ShapeShifterManager::saveCurrentLayoutToFile(const File &toFile)
 	}
 
 	ScopedPointer<OutputStream> os(toFile.createOutputStream());
+	if (os == nullptr) return;
 	JSON::writeToStream(*os, getCurrentLayout());
 	os->flush();
 }
