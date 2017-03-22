@@ -41,6 +41,7 @@ NodeConnectionUI::~NodeConnectionUI()
     if (sourceConnector != nullptr && sourceConnector->getNodeUI())
     {
         sourceConnector->getNodeUI()->removeComponentListener(this);
+      sourceConnector->removeComponentListener(this);
     }
 
     sourceConnector = nullptr;
@@ -48,6 +49,7 @@ NodeConnectionUI::~NodeConnectionUI()
     if (destConnector != nullptr && destConnector->getNodeUI())
     {
         destConnector->getNodeUI()->removeComponentListener(this);
+      destConnector->removeComponentListener(this);
     }
 
     destConnector = nullptr;
