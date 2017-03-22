@@ -55,7 +55,7 @@ public:
 
 
 		ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType dataType);
-
+    
 
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorContainer)

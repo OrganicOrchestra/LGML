@@ -25,10 +25,11 @@ NodeBaseUI::NodeBaseUI(NodeBase * _node, NodeBaseContentUI * _contentContainer, 
 ConnectableNodeUI(_node,_contentContainer, _headerContainer),
 node(_node)
 {
-
+  setInterceptsMouseClicks(false, true);
 
 }
 
 NodeBaseUI::~NodeBaseUI()
 {
 }
+
