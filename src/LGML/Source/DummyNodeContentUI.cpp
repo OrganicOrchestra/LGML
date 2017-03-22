@@ -61,6 +61,7 @@ void DummyNodeContentUI::init()
 
 	modeUI = dummyNode->enumParam->createUI();
 	addAndMakeVisible(modeUI);
+  setDefaultSize(250,200);
 
-	nodeUI->setSize(250, 200);
+
 }

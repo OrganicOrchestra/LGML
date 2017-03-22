@@ -191,6 +191,8 @@ Array<var> * EnumParameter::getSelectedSet(const juce::var &v){
   if(DynamicObject *dob = v.getDynamicObject()){
     return dob->getProperty(selectedSetIdentifier).getArray();
   }
+  // wrong var passed in
+  jassertfalse;
   return nullptr;
 }
 

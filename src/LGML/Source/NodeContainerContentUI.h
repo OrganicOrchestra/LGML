@@ -35,6 +35,7 @@ public :
 
 	void addParamProxyUI(ParameterProxy *);
 	void removeParamProxyUI(ParameterProxy *);
+  
 
 	ControllableUI * getUIForProxy(ParameterProxy *);
 

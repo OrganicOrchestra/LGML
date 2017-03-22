@@ -43,8 +43,8 @@ void AudioDeviceInNodeContentUI::init()
 	audioInNode->addConnectableNodeListener(this);
 	
 	updateVuMeters();
-
-	setSize(240, 80);
+  setDefaultSize(240, 80);
+  
 }
 
 void AudioDeviceInNodeContentUI::resized()

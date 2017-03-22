@@ -104,8 +104,9 @@ void Spat2DNodeContentUI::init()
 	addChildComponent(circleRotationUI);
 
 	updateShapeModeView();
-
-	nodeUI->setSize(300, 400);
+    setDefaultSize(300,400);
+  
+	
 }
 
 void Spat2DNodeContentUI::updateShapeModeView()

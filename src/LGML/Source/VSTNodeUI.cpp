@@ -51,7 +51,8 @@ void VSTNodeContentUI::init() {
 
 
 	updateVSTParameters();
-	setSize(250, 100);
+  setDefaultSize(250,100);
+	
 
 	vstNode->addVSTNodeListener(this);
 	vstNode->addControllableContainerListener(this);

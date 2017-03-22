@@ -28,12 +28,12 @@ void JsNodeUI::init(){
 
     addAndMakeVisible(jsUI);
 
-    nodeUI->setSize(350, 150);
+
     jsNode->JsEnvironment::addListener(this);
     if(jsNode->hasValidJsFile()){
         newJsFileLoaded(true);
     }
-
+  setDefaultSize(350, 150);
 
 };
 

@@ -42,10 +42,14 @@ outputVolume(nullptr)
   
   xPosition->isControllableExposed = false;
   yPosition->isControllableExposed = false;
+  nodeWidth->isControllableExposed = false;
+  nodeHeight->isControllableExposed = false;
+
 
   xPosition->isPresettable = false;
   yPosition->isPresettable = false;
-
+  nodeWidth->isPresettable = false;
+  nodeHeight->isPresettable = false;
 
   descriptionParam->isPresettable = false;
   enabledParam->isPresettable = false;

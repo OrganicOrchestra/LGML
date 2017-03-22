@@ -134,7 +134,7 @@ void ConnectableNodeHeaderUI::resized()
   int miniModeBTWidth = 15;
   int removeBTWidth = 15;
   int grabberHeight = 12;
-  int presetCBWidth = 80;
+
 
 
   Rectangle<int> r = getLocalBounds();
@@ -161,17 +161,39 @@ void ConnectableNodeHeaderUI::resized()
   r.removeFromLeft(3);
   if (node->canBeRemovedByUser)
   {
-    removeBT.setBounds(r.removeFromRight(removeBTWidth));
+    if(r.getWidth()<80){
+      removeBT.setVisible(false);
+    }
+    else{
+      removeBT.setVisible(true);
+      removeBT.setBounds(r.removeFromRight(removeBTWidth));
+      r.removeFromRight(2);
+    }
+
+  }
+
+  if(r.getWidth()<100){
+    miniModeBT.setVisible(false);
+  }
+  else{
+    miniModeBT.setVisible(true);
+    miniModeBT.setBounds(r.removeFromRight(miniModeBTWidth).reduced(0,2));
     r.removeFromRight(2);
   }
 
-  miniModeBT.setBounds(r.removeFromRight(miniModeBTWidth).reduced(0,2));
-  r.removeFromRight(2);
 
-  if (node->canHavePresets && !bMiniMode)
+  if (node->canHavePresets && !bMiniMode )
   {
-    presetChooser->setBounds(r.removeFromRight(presetCBWidth));
-    r.removeFromRight(5);
+    int presetCBWidth = jmin(r.getWidth()/4,80);
+    if(presetCBWidth<20){
+      presetChooser->setVisible(false);
+    }
+    else{
+      presetChooser->setVisible(true);
+      presetChooser->setBounds(r.removeFromRight(presetCBWidth));
+      r.removeFromRight(5);
+    }
+
   }
 
 

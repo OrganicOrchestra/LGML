@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ConnectableNodeUI.cpp
-    Created: 18 May 2016 11:34:23pm
-    Author:  bkupe
+ ConnectableNodeUI.cpp
+ Created: 18 May 2016 11:34:23pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "ConnectableNodeUI.h"
 #include "ConnectableNodeHeaderUI.h"
@@ -22,32 +22,36 @@
 #include "NodeManagerUI.h"
 
 ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeContentUI * contentUI, ConnectableNodeHeaderUI * headerUI) :
-	InspectableComponent(cn, "node"),
-	connectableNode(cn),
-	inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
-	outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
-	mainComponentContainer(this, contentUI, headerUI),
-	dragIsLocked(false),
-	bMiniMode(false),
-	resizer(this,nullptr)
+InspectableComponent(cn, "node"),
+connectableNode(cn),
+inputContainer(ConnectorComponent::ConnectorIOType::INPUT),
+outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
+mainComponentContainer(this, contentUI, headerUI),
+dragIsLocked(false),
+bMiniMode(false),
+resizer(this,&constrainer)
 {
-	 connectorWidth = 10;
+  connectorWidth = 10;
 
-	 addAndMakeVisible(mainComponentContainer);
+  constrainer.setMinimumWidth(50);
+  constrainer.setMinimumHeight(50);
+
+  addAndMakeVisible(mainComponentContainer);
 
 	 if (connectableNode->userCanAccessInputs)
-	 {
-		 inputContainer.setConnectorsFromNode(connectableNode);
-		 addAndMakeVisible(inputContainer);
-	 }
+   {
+     inputContainer.setConnectorsFromNode(connectableNode);
+     addAndMakeVisible(inputContainer);
+   }
 
 	 if (connectableNode->userCanAccessOutputs)
-	 {
-		 outputContainer.setConnectorsFromNode(connectableNode);
-		 addAndMakeVisible(outputContainer);
-	 }
+   {
+     outputContainer.setConnectorsFromNode(connectableNode);
+     addAndMakeVisible(outputContainer);
+   }
 
 	 getHeaderContainer()->addMouseListener(this, true);// (true, true);
+  getContentContainer()->addMouseListener(this, false);
 
 	 mainComponentContainer.setNodeAndNodeUI(connectableNode, this);
 
@@ -59,50 +63,48 @@ ConnectableNodeUI::ConnectableNodeUI(ConnectableNode * cn, ConnectableNodeConten
 
 
 	 addAndMakeVisible(&resizer);
-	 if (getWidth() == 0 || getHeight() == 0)
-	 {
-		 setSize(connectableNode->nodeWidth->floatValue(),connectableNode->nodeHeight->floatValue());
-	 }
+
 	 //connectableNode->miniMode->hideInEditor = true;
 
 	 setMiniMode(connectableNode->miniMode->boolValue());
 
-	
+
+
 }
 
 ConnectableNodeUI::~ConnectableNodeUI()
 {
 
-	connectableNode->removeConnectableNodeListener(this);
+  connectableNode->removeConnectableNodeListener(this);
 }
 
 
 
 void ConnectableNodeUI::moved()
 {
-	connectableNode->xPosition->setValue(getPosition().x,true);
-	connectableNode->yPosition->setValue(getPosition().y,true);
+  connectableNode->xPosition->setValue(getPosition().x,true);
+  connectableNode->yPosition->setValue(getPosition().y,true);
 }
 
 
 void ConnectableNodeUI::setMiniMode(bool value)
 {
-	if (bMiniMode == value) return;
+  if (bMiniMode == value) return;
 
-	bMiniMode = value;
+  bMiniMode = value;
 
-	mainComponentContainer.setMiniMode(bMiniMode);
-	setSize(getMiniModeWidth(bMiniMode),getMiniModeHeight(bMiniMode));
+  mainComponentContainer.setMiniMode(bMiniMode);
+  setSize(getMiniModeWidth(bMiniMode),getMiniModeHeight(bMiniMode));
 }
 
 int ConnectableNodeUI::getMiniModeWidth(bool forMiniMode)
 {
-	return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (mainComponentContainer.audioCtlUIContainer?mainComponentContainer.audioCtlUIContainer->getWidth()+mainComponentContainer.audioCtlContainerPadRight:0));
+  return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth()+outputContainer.getWidth() + (mainComponentContainer.audioCtlUIContainer?mainComponentContainer.audioCtlUIContainer->getWidth()+mainComponentContainer.audioCtlContainerPadRight:0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight(bool forMiniMode)
 {
-	return getHeaderContainer()->getBottom() + (forMiniMode?10:getContentContainer()->getHeight());
+  return getHeaderContainer()->getBottom() + (forMiniMode?10:getContentContainer()->getHeight());
 }
 
 void ConnectableNodeUI::paint(Graphics&)
@@ -112,112 +114,124 @@ void ConnectableNodeUI::paint(Graphics&)
 
 void ConnectableNodeUI::resized()
 {
-	if (!connectableNode->miniMode->boolValue())
-	{
-		connectableNode->nodeWidth->setValue(getWidth(),true);
-		connectableNode->nodeHeight->setValue(getHeight(), true);
-	}
+  //	if (!connectableNode->miniMode->boolValue())
+  //	{
 
-	Rectangle<int> r = getLocalBounds();
-	Rectangle<int> inputBounds = r.removeFromLeft(connectorWidth);
-	Rectangle<int> outputBounds = r.removeFromRight(connectorWidth);
 
-	if (connectableNode->userCanAccessInputs)
-	{
-		inputContainer.setBounds(inputBounds);
-	}
 
-	if (connectableNode->userCanAccessOutputs)
-	{
-		outputContainer.setBounds(outputBounds);
-	}
 
-	mainComponentContainer.setBounds(r);
-	resizer.setBounds(r.removeFromRight(10).removeFromBottom(10));
+
+  Rectangle<int> r = getLocalBounds();
+  Rectangle<int> inputBounds = r.removeFromLeft(connectorWidth);
+  Rectangle<int> outputBounds = r.removeFromRight(connectorWidth);
+
+  if (connectableNode->userCanAccessInputs)
+  {
+    inputContainer.setBounds(inputBounds);
+  }
+
+  if (connectableNode->userCanAccessOutputs)
+  {
+    outputContainer.setBounds(outputBounds);
+  }
+
+  mainComponentContainer.setBounds(r);
+  resizer.setBounds(r.removeFromRight(10).removeFromBottom(10));
 }
 
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
-	if (p == connectableNode->xPosition || p == connectableNode->yPosition) {
+  if (p == connectableNode->xPosition || p == connectableNode->yPosition )
+  {
     postCommandMessage(posChangedId);
-	}
-	else if (p == connectableNode->enabledParam)
-	{
-		postCommandMessage(repaintId);
-	} else if (p == connectableNode->miniMode)
-	{
+  }
+  else if( p == connectableNode->nodeHeight || p == connectableNode->nodeWidth) {
+    postCommandMessage(sizeChangedId);
+  }
+
+  else if (p == connectableNode->enabledParam)
+  {
+    postCommandMessage(repaintId);
+  } else if (p == connectableNode->miniMode)
+  {
     postCommandMessage(setMiniModeId);
-	}
+  }
 }
 
 void ConnectableNodeUI::handleCommandMessage(int commandId){
-    switch(commandId){
-        case repaintId:
-            repaint();
-            break;
-      case setMiniModeId:
-        setMiniMode(connectableNode->miniMode->boolValue());
-      case posChangedId:
-        setTopLeftPosition(connectableNode->xPosition->intValue(), connectableNode->yPosition->intValue());
+  switch(commandId){
+    case repaintId:
+      repaint();
+      break;
+    case setMiniModeId:
+      setMiniMode(connectableNode->miniMode->boolValue());
+      break;
+    case posChangedId:
+      setTopLeftPosition(connectableNode->xPosition->intValue(), connectableNode->yPosition->intValue());
+      break;
+    case sizeChangedId:
+      setSize(connectableNode->nodeWidth->intValue(), connectableNode->nodeHeight->intValue());
+      break;
 
-        default:
-            break;
-    }
+    default:
+      break;
+  }
 }
 
 // allow to react to custom MainComponentContainer.contentContainer
 void ConnectableNodeUI::childBoundsChanged(Component* c) {
-	// if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
-	if (c == &mainComponentContainer) {
-		int destWidth = mainComponentContainer.getWidth() + 2 * connectorWidth;
-		int destHeight = mainComponentContainer.getHeight();
-		if (getWidth() != destWidth ||
-			destHeight != getHeight()) {
-			setSize(destWidth, destHeight);
-		}
-	}
+  // if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
+  if (c == &mainComponentContainer) {
+    int destWidth = mainComponentContainer.getWidth() + 2 * connectorWidth;
+    int destHeight = mainComponentContainer.getHeight();
+    if (getWidth() != destWidth ||
+        destHeight != getHeight()) {
+      setSize(destWidth, destHeight);
+    }
+  }
 }
 
 #pragma warning( disable : 4100 ) //still don't understand why this is generating a warning if not disabled by pragma.
 void ConnectableNodeUI::mouseDown(const juce::MouseEvent &e)
 {
-	selectThis();
-	if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
+  selectThis();
+  //	if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
+  //  if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
 
-	nodeInitPos = getBounds().getPosition();
+  nodeInitPos = getBounds().getPosition();
 }
 #pragma warning( default : 4100 )
 
 
 void ConnectableNodeUI::mouseUp(const juce::MouseEvent &) {
-	
+
 }
 
 void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
 {
-	if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
-	//if(dragIsLocked) return;
+  //	if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
+  //if(dragIsLocked) return;
 
-	Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
-	Point <int> newPos = nodeInitPos + diff;
+  Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
+  Point <int> newPos = nodeInitPos + diff;
 
-	connectableNode->xPosition->setValue((float)newPos.x,true);
-	connectableNode->yPosition->setValue((float)newPos.y);
+  connectableNode->xPosition->setValue((float)newPos.x,true);
+  connectableNode->yPosition->setValue((float)newPos.y);
 
 }
 
 bool ConnectableNodeUI::keyPressed(const KeyPress & key)
 {
-	if (!isSelected) return false;
-	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
-	{
-		if (connectableNode->canBeRemovedByUser)
-		{
-			connectableNode->remove();
-		}
+  if (!isSelected) return false;
+  if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
+  {
+    if (connectableNode->canBeRemovedByUser)
+    {
+      connectableNode->remove();
+    }
 
-		return true;
-	}
+    return true;
+  }
   else if(key.getModifiers().isCommandDown() && key.getKeyCode()==KeyPress::downKey){
     if(NodeContainer * c = dynamic_cast<NodeContainer * >(connectableNode.get())){
       if(NodeManagerUI * manager = findParentComponentOfClass<NodeManagerUI>()){
@@ -227,103 +241,105 @@ bool ConnectableNodeUI::keyPressed(const KeyPress & key)
     }
   }
 
-	return false;
+  return false;
 }
 
 ////////////    MAIN CONTAINER
 
 
 ConnectableNodeUI::MainComponentContainer::MainComponentContainer(ConnectableNodeUI * _nodeUI, ConnectableNodeContentUI * content, ConnectableNodeHeaderUI * header) :
-	connectableNodeUI(_nodeUI),
-	headerContainer(header),
-	contentContainer(content),
-	audioCtlUIContainer(nullptr),
-	miniMode(false)
+connectableNodeUI(_nodeUI),
+headerContainer(header),
+contentContainer(content),
+audioCtlUIContainer(nullptr),
+miniMode(false)
 {
 
-	if (headerContainer == nullptr) headerContainer = new ConnectableNodeHeaderUI();
-	if (contentContainer == nullptr) contentContainer = new ConnectableNodeContentUI();
+  if (headerContainer == nullptr) headerContainer = new ConnectableNodeHeaderUI();
+  if (contentContainer == nullptr) contentContainer = new ConnectableNodeContentUI();
 
 
-	addAndMakeVisible(headerContainer);
-	addAndMakeVisible(contentContainer);
+  addAndMakeVisible(headerContainer);
+  addAndMakeVisible(contentContainer);
 
 }
 
 void ConnectableNodeUI::MainComponentContainer::setNodeAndNodeUI(ConnectableNode * _node, ConnectableNodeUI * _nodeUI)
 {
-	if (_node->hasAudioOutputs() && _node->hasMainAudioControl) {
-		jassert(audioCtlUIContainer == nullptr);
-		audioCtlUIContainer = new ConnectableNodeAudioCtlUI();
-		addAndMakeVisible(audioCtlUIContainer);
-		audioCtlUIContainer->setNodeAndNodeUI(_node, _nodeUI);
-	}
+  if (_node->hasAudioOutputs() && _node->hasMainAudioControl) {
+    jassert(audioCtlUIContainer == nullptr);
+    audioCtlUIContainer = new ConnectableNodeAudioCtlUI();
+    addAndMakeVisible(audioCtlUIContainer);
+    audioCtlUIContainer->setNodeAndNodeUI(_node, _nodeUI);
+  }
 
-	headerContainer->setNodeAndNodeUI(_node, _nodeUI);
-	contentContainer->setNodeAndNodeUI(_node, _nodeUI);
+  headerContainer->setNodeAndNodeUI(_node, _nodeUI);
+  contentContainer->setNodeAndNodeUI(_node, _nodeUI);
 
-	resized();
+  resized();
 }
 
 void ConnectableNodeUI::MainComponentContainer::paint(Graphics & g)
 {
   if(!connectableNodeUI->connectableNode.get())return;
-	g.setColour(connectableNodeUI->connectableNode->enabledParam->boolValue() ? PANEL_COLOR : PANEL_COLOR.darker(.7f));
-	g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
+  g.setColour(connectableNodeUI->connectableNode->enabledParam->boolValue() ? PANEL_COLOR : PANEL_COLOR.darker(.7f));
+  g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
 
-	g.setColour(connectableNodeUI->isSelected ? HIGHLIGHT_COLOR : LIGHTCONTOUR_COLOR);
-	g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1), 4.f, connectableNodeUI->isSelected ? 2.f : .5f);
+  g.setColour(connectableNodeUI->isSelected ? HIGHLIGHT_COLOR : LIGHTCONTOUR_COLOR);
+  g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1), 4.f, connectableNodeUI->isSelected ? 2.f : .5f);
 }
 
 
 void ConnectableNodeUI::MainComponentContainer::resized()
 {
 
-	// if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
-	Rectangle<int> r = getLocalBounds();
-	if (r.getWidth() == 0 || r.getHeight() == 0)return;
+  // if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
+  Rectangle<int> r = getLocalBounds();
+  if (r.getWidth() == 0 || r.getHeight() == 0)return;
 
-	Rectangle<int> headerBounds = r.removeFromTop(headerContainer->getHeight());
-	headerContainer->setBounds(headerBounds);
+  Rectangle<int> headerBounds = r.removeFromTop(headerContainer->getHeight());
+  headerContainer->setBounds(headerBounds);
 
-	if (!miniMode)
-	{
-		if (audioCtlUIContainer) {
-			r.removeFromRight(audioCtlContainerPadRight);
-			audioCtlUIContainer->setBounds(r.removeFromRight(10).reduced(0, 4));
-		}
-		contentContainer->setBounds(r);
-	}
+  if (!miniMode)
+  {
+    if (audioCtlUIContainer) {
+      r.removeFromRight(audioCtlContainerPadRight);
+      audioCtlUIContainer->setBounds(r.removeFromRight(10).reduced(0, 4));
+    }
+    connectableNodeUI->connectableNode->nodeWidth->setValue(r.getWidth(),true);
+    connectableNodeUI->connectableNode->nodeHeight->setValue(r.getHeight(), true);
+    contentContainer->setBounds(r);
+  }
 }
 
 void ConnectableNodeUI::MainComponentContainer::setMiniMode(bool value)
 {
-	if (miniMode == value) return;
-	miniMode = value;
+  if (miniMode == value) return;
+  miniMode = value;
 
-	if (miniMode)
-	{
-		removeChildComponent(contentContainer);
-		if(audioCtlUIContainer) removeChildComponent(audioCtlUIContainer);
-	}else
-	{
-		addChildComponent(contentContainer);
-		if (audioCtlUIContainer) addChildComponent(audioCtlUIContainer);
-	}
+  if (miniMode)
+  {
+    removeChildComponent(contentContainer);
+    if(audioCtlUIContainer) removeChildComponent(audioCtlUIContainer);
+  }else
+  {
+    addChildComponent(contentContainer);
+    if (audioCtlUIContainer) addChildComponent(audioCtlUIContainer);
+  }
 
-	headerContainer->setMiniMode(miniMode);
+  headerContainer->setMiniMode(miniMode);
 
 }
 
 void ConnectableNodeUI::MainComponentContainer::childBoundsChanged(Component* c) {
-	if (c == contentContainer || c == audioCtlUIContainer) {
-		int destWidth = contentContainer->getWidth() + (audioCtlUIContainer ? audioCtlUIContainer->getWidth() + audioCtlContainerPadRight : 0);
-		int destHeight = contentContainer->getHeight() + headerContainer->getHeight();
-		if (getWidth() != destWidth ||
-			getHeight() != destHeight) {
-			setSize(destWidth, destHeight);
-		}
-	}
+  if (c == contentContainer || c == audioCtlUIContainer) {
+    int destWidth = contentContainer->getWidth() + (audioCtlUIContainer ? audioCtlUIContainer->getWidth() + audioCtlContainerPadRight : 0);
+    int destHeight = contentContainer->getHeight() + headerContainer->getHeight();
+    if (getWidth() != destWidth ||
+        getHeight() != destHeight) {
+      setSize(destWidth, destHeight);
+    }
+  }
 }
 
 
@@ -335,103 +351,103 @@ void ConnectableNodeUI::MainComponentContainer::childBoundsChanged(Component* c)
 // ======= CONNECTOR CONTAINER AND CONNECTOR COMPONENT ===================
 ConnectableNodeUI::ConnectorContainer::ConnectorContainer(ConnectorComponent::ConnectorIOType type) : type(type), displayLevel(ConnectorComponent::MINIMAL)
 {
-	setInterceptsMouseClicks(false, true);
+  setInterceptsMouseClicks(false, true);
 
 }
 
 void ConnectableNodeUI::ConnectorContainer::setConnectorsFromNode(ConnectableNode * _node)
 {
-	connectors.clear();
+  connectors.clear();
 
-	ConnectableNode * targetNode = _node;
+  ConnectableNode * targetNode = _node;
 
-	if (targetNode == nullptr)
-	{
-		DBG("Target Node nullptr !");
-		return;
-	}
+  if (targetNode == nullptr)
+  {
+    DBG("Target Node nullptr !");
+    return;
+  }
 
 
-	addConnector(type, NodeConnection::ConnectionType::AUDIO, targetNode);
-	addConnector(type, NodeConnection::ConnectionType::DATA, targetNode);
+  addConnector(type, NodeConnection::ConnectionType::AUDIO, targetNode);
+  addConnector(type, NodeConnection::ConnectionType::DATA, targetNode);
 
-	resized();
+  resized();
 
 }
 
 void ConnectableNodeUI::ConnectorContainer::addConnector(ConnectorComponent::ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * _node)
 {
-	ConnectorComponent * c = new ConnectorComponent(ioType, dataType, _node);
-	connectors.add(c);
-	addChildComponent(c);
+  ConnectorComponent * c = new ConnectorComponent(ioType, dataType, _node);
+  connectors.add(c);
+  addChildComponent(c);
 
-	c->addConnectorListener(this);
+  c->addConnectorListener(this);
 }
 
 void ConnectableNodeUI::ConnectorContainer::connectorVisibilityChanged(ConnectorComponent *)
 {
-	resized();
+  resized();
 }
 
 
 void ConnectableNodeUI::ConnectorContainer::resized()
 {
-	Rectangle<int> r = getLocalBounds();
+  Rectangle<int> r = getLocalBounds();
 
-	r.removeFromTop(10);
-	for (auto &c : connectors)
-	{
-		if (!c->isVisible()) continue;
+  r.removeFromTop(10);
+  for (auto &c : connectors)
+  {
+    if (!c->isVisible()) continue;
 
-		c->setBounds(r.removeFromTop(r.getWidth()));
-		r.removeFromTop(15);
+    c->setBounds(r.removeFromTop(r.getWidth()));
+    r.removeFromTop(15);
 
-	}
+  }
 }
 
 ConnectorComponent * ConnectableNodeUI::ConnectorContainer::getFirstConnector(NodeConnection::ConnectionType dataType)
 {
-	for (int i = 0; i < connectors.size(); i++)
-	{
-		if (connectors.getUnchecked(i)->dataType == dataType) return connectors.getUnchecked(i);
-	}
+  for (int i = 0; i < connectors.size(); i++)
+  {
+    if (connectors.getUnchecked(i)->dataType == dataType) return connectors.getUnchecked(i);
+  }
 
-	return nullptr;
+  return nullptr;
 }
 
 
 
 Array<ConnectorComponent*> ConnectableNodeUI::getComplementaryConnectors(ConnectorComponent * baseConnector)
 {
-	Array<ConnectorComponent *> result;
+  Array<ConnectorComponent *> result;
 
 
-	ConnectorContainer * checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? &inputContainer : &outputContainer;
-	if (checkSameCont->getIndexOfChildComponent(baseConnector) != -1) return result;
+  ConnectorContainer * checkSameCont = baseConnector->ioType == ConnectorComponent::ConnectorIOType::INPUT ? &inputContainer : &outputContainer;
+  if (checkSameCont->getIndexOfChildComponent(baseConnector) != -1) return result;
 
-	ConnectorContainer * complCont = checkSameCont == &inputContainer ? &outputContainer : &inputContainer;
-	for (int i = 0; i < complCont->connectors.size(); i++)
-	{
-		ConnectorComponent *c = (ConnectorComponent *)complCont->getChildComponent(i);
-		if (c->dataType == baseConnector->dataType)
-		{
-			result.add(c);
-		}
-	}
+  ConnectorContainer * complCont = checkSameCont == &inputContainer ? &outputContainer : &inputContainer;
+  for (int i = 0; i < complCont->connectors.size(); i++)
+  {
+    ConnectorComponent *c = (ConnectorComponent *)complCont->getChildComponent(i);
+    if (c->dataType == baseConnector->dataType)
+    {
+      result.add(c);
+    }
+  }
 
-	return result;
+  return result;
 }
 
 //Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
 
 ConnectorComponent * ConnectableNodeUI::getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType)
 {
-	if (ioType == ConnectorComponent::INPUT)
-	{
-		return inputContainer.getFirstConnector(connectionType);
-	}
-	else
-	{
-		return outputContainer.getFirstConnector(connectionType);
-	}
+  if (ioType == ConnectorComponent::INPUT)
+  {
+    return inputContainer.getFirstConnector(connectionType);
+  }
+  else
+  {
+    return outputContainer.getFirstConnector(connectionType);
+  }
 }

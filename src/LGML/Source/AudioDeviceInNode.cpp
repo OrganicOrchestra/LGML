@@ -37,6 +37,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
   lastNumberOfInputs = 0;
   setPreferedNumAudioOutput(desiredNumAudioInput->intValue());
   setPreferedNumAudioInput(0);
+  
 
 
 }

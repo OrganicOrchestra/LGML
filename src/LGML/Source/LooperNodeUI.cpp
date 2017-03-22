@@ -56,7 +56,8 @@ void LooperNodeContentUI::init(){
   addAndMakeVisible(headerContainer);
   addAndMakeVisible(trackContainer);
 
-  setSize(350,180);
+  setDefaultSize(350,180);
+
 
 
   trackNumChanged(looperNode->trackGroup.tracks.size());

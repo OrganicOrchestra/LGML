@@ -44,12 +44,17 @@ void AudioDeviceOutNodeContentUI::init()
 {
 	audioOutNode = (AudioDeviceOutNode *)node.get();
 	audioOutNode->addConnectableNodeListener(this);
-	
+
     getAudioDeviceManager().addChangeListener(this);
 
 	updateVuMeters();
+    setDefaultSize(240,80);
+  
 
-	setSize(240, 80);
+
+
+
+	
 }
 
 void AudioDeviceOutNodeContentUI::resized()

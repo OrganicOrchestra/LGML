@@ -25,9 +25,12 @@ public:
 
     ConnectableNodeUI * nodeUI;
     WeakReference<ConnectableNode> node;
+    void setDefaultSize(int w,int h);
 
     virtual void setNodeAndNodeUI(ConnectableNode * node,ConnectableNodeUI * nodeUI);
     virtual void init();
+
+  
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectableNodeContentUI)
 };

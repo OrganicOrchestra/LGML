@@ -52,7 +52,9 @@ void AudioMixerNodeUI::init() {
 	postCommandMessage(0);
 	mixerNode->addConnectableNodeListener(this);
 	mixerNode->oneToOne->addParameterListener(this);
-	nodeUI->setSize(250, 150);
+  setDefaultSize(250,150);
+
+	
 }
 void AudioMixerNodeUI::handleCommandMessage(int /*commandId*/){
 	numAudioOutputChangedUI(mixerNode, mixerNode->numberOfOutput->intValue());

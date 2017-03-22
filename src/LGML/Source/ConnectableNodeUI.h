@@ -33,6 +33,7 @@ public:
 
 	
 	ResizableCornerComponent resizer;
+  ComponentBoundsConstrainer constrainer;
 
 	class ConnectorContainer :
 		public Component,
@@ -145,7 +146,8 @@ void handleCommandMessage(int id) override;
 enum{
   repaintId  ,
   setMiniModeId,
-  posChangedId
+  posChangedId,
+  sizeChangedId
 }CommandMessages;
 
 };

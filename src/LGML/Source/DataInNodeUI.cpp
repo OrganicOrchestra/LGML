@@ -40,7 +40,7 @@ void DataInNodeContentUI::resized()
 
 void DataInNodeContentUI::init()
 {
-    setSize(150, 200);
+    
 
     dataInNode = (DataInNode *)node.get();
     dataInNode->addDataInListener(this);
@@ -49,6 +49,7 @@ void DataInNodeContentUI::init()
     {
         addUIForParameter(p);
     }
+    setDefaultSize(150,200);
 }
 
 void DataInNodeContentUI::addUIForParameter(Parameter * p)

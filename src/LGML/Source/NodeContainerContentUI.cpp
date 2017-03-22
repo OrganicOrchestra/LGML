@@ -73,6 +73,8 @@ void NodeContainerContentUI::init()
 	updateSize();
 }
 
+
+
 void NodeContainerContentUI::buttonClicked(Button * b)
 {
 	if (b == &editContainerBT)
