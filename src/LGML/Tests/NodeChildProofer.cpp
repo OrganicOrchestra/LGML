@@ -54,10 +54,9 @@ public:
           if (((NodeBase*)tested->parentContainer)->type!=NodeType::ContainerInType &&
               ((NodeBase*)tested->parentContainer)->type!=NodeType::ContainerOutType &&
               tested != tested->parentContainer->nameParam
-
-              
-
-              && tested->shortName !="savePreset" && tested->shortName !="loadFile" && tested!=testingNode->nameParam){
+              && tested->shortName !="savePreset" &&
+              tested->shortName !="loadFile" &&
+              tested!=testingNode->nameParam){
             String err ="Action failed for Controllable : "+tested->getControlAddress();
             if(tested.get()){
               owner->expect(doActionForControllable(tested),err );

@@ -69,8 +69,9 @@ void NodeContainerContentUI::init()
 	{
 		addParamProxyUI(p);
 	}
-
-	updateSize();
+  int targetHeight = 60 + proxiesUI.size()*(listGap + proxyUIHeight);
+  setDefaultSize(100, targetHeight);
+	
 }
 
 
