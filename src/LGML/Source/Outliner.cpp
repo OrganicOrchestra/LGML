@@ -94,7 +94,13 @@ void Outliner::childStructureChanged(ControllableContainer *,ControllableContain
 
 
 void Outliner::handleAsyncUpdate(){
-  rebuildTree();
+  if(getEngine()){
+    if(getEngine()->isLoadingFile)
+      triggerAsyncUpdate();
+    else
+      rebuildTree();
+
+  }
 }
 
 // OUTLINER ITEM
