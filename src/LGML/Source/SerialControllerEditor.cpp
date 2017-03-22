@@ -96,7 +96,7 @@ void SerialControllerEditor::resized()
   ControllerEditor::resized();
 
   Rectangle<int> r = area;
-  r.removeFromTop(ControllerEditor::getContentHeight()+10);
+//  r.removeFromTop(ControllerEditor::getContentHeight()+10);
 
   incomingToogle->setBounds(r.removeFromTop(20));
   jsUI->setBounds(r.removeFromTop(40));

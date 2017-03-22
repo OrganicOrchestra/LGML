@@ -62,7 +62,7 @@ void Inspector::setCurrentComponent(InspectableComponent * c)
 
 void Inspector::resized()
 {
-	if (currentEditor != nullptr) currentEditor->setBounds(getLocalBounds().reduced(5));
+  if (currentEditor != nullptr) currentEditor->setSize(getWidth()-5, jmax(getHeight(),currentEditor->getHeight()));
 }
 
 void Inspector::clearEditor()

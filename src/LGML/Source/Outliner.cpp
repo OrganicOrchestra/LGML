@@ -83,9 +83,19 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 
 void Outliner::childStructureChanged(ControllableContainer *,ControllableContainer*)
 {
-	rebuildTree();
+  if(getEngine()){
+    if(getEngine()->isLoadingFile)
+      triggerAsyncUpdate();
+    else
+      rebuildTree();
+
+  }
 }
 
+
+void Outliner::handleAsyncUpdate(){
+  rebuildTree();
+}
 
 // OUTLINER ITEM
 

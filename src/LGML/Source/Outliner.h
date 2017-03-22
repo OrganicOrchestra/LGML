@@ -51,7 +51,7 @@ public:
 };
 
 class Outliner : public ShapeShifterContent,
-				 public ControllableContainerListener
+				 public ControllableContainerListener,AsyncUpdater
 {
 public:
 
@@ -72,7 +72,7 @@ public:
 	void buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer);
 
 	void childStructureChanged(ControllableContainer *,ControllableContainer*) override;
-
+  void handleAsyncUpdate();
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Outliner)
 };
 

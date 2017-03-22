@@ -1,4 +1,4 @@
 #pragma once
-#define GIT_SHA  "33a7e779548434cc8ed46c61d94b501e795e31c4"
-#define GIT_SHA_SHORT  "33a7e77"
-#define COMMIT_DATE  "14/02/17 (08:04)"
+#define GIT_SHA  "9cded93cceb95b5982d3acb84cf4133635f005f9"
+#define GIT_SHA_SHORT  "9cded93"
+#define COMMIT_DATE  "21/03/17 (16:09)"
