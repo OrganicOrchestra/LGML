@@ -299,12 +299,14 @@ void NodeConnectionUI::setSourceConnector(Connector * c)
 {
     if (sourceConnector != nullptr)
     {
+        sourceConnector->removeComponentListener(this);
         sourceConnector->getNodeUI()->removeComponentListener(this);
     }
     sourceConnector = c;
 
     if (sourceConnector != nullptr)
     {
+        sourceConnector->addComponentListener(this);
         sourceConnector->getNodeUI()->addComponentListener(this);
     }
 
@@ -315,15 +317,18 @@ void NodeConnectionUI::setDestConnector(Connector * c)
 {
     if (destConnector != nullptr)
     {
-        destConnector->getNodeUI()->removeComponentListener(this);
+      destConnector->removeComponentListener(this);
+      destConnector->getNodeUI()->removeComponentListener(this);
     }
 
     destConnector = c;
 
     if (destConnector != nullptr)
     {
-        destConnector->getNodeUI()->addComponentListener(this);
+      destConnector->addComponentListener(this);
+      destConnector->getNodeUI()->addComponentListener(this);
     }
+
 
     repaint();
 }
