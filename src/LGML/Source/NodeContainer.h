@@ -118,7 +118,7 @@ public:
   NodeConnection * getConnectionBetweenNodes(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType);
   Array<NodeConnection *> getAllConnectionsForNode(ConnectableNode * node);
 
-  NodeConnection * addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType);
+  NodeConnection * addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType,NodeConnection::Model * root=nullptr);
   bool removeConnection(NodeConnection * c);
   void removeIllegalConnections();
   int getNumConnections();

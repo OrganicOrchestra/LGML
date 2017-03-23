@@ -72,7 +72,7 @@ public:
 	void buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer);
 
 	void childStructureChanged(ControllableContainer *,ControllableContainer*) override;
-  void handleAsyncUpdate();
+  void handleAsyncUpdate()override;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Outliner)
 };
 

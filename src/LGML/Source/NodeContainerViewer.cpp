@@ -217,7 +217,7 @@ void NodeContainerViewer::createDataConnectionFromConnector(Connector * baseConn
   baseConnector->addMouseListener(this, false);
 }
 
-void NodeContainerViewer::createAudioConnectionFromConnector(Connector * baseConnector)
+void NodeContainerViewer::createAudioConnectionFromConnector(Connector * baseConnector,NodeConnection * root)
 {
   if (editingConnection != nullptr)
   {
@@ -226,7 +226,7 @@ void NodeContainerViewer::createAudioConnectionFromConnector(Connector * baseCon
   }
 
   bool isOutputConnector = baseConnector->ioType == Connector::ConnectorIOType::OUTPUT;
-
+  editingModel = root?new NodeConnection::Model(root->model):nullptr;
   if (isOutputConnector)
   {
     editingConnection = new NodeConnectionUI(nullptr, baseConnector, nullptr);
@@ -318,7 +318,7 @@ void NodeContainerViewer::finishEditingConnection()
     bool success = editingConnection->finishEditing();
     if (success)
     {
-      nodeContainer->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
+      nodeContainer->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType,editingModel);
     }
   }
   else //AUDIO
@@ -327,7 +327,7 @@ void NodeContainerViewer::finishEditingConnection()
 
     if (success)
     {
-      nodeContainer->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType);
+      nodeContainer->addConnection(editingConnection->sourceConnector->node, editingConnection->destConnector->node, editingConnection->getBaseConnector()->dataType,editingModel);
     }
   }
 

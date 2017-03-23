@@ -34,14 +34,17 @@ public:
 
 	WeakReference<ConnectableNode> sourceNode;
 	WeakReference<ConnectableNode> destNode;
-
-    typedef std::pair<int,int> AudioConnection;
+  typedef std::pair<int,int> AudioConnection;
+  class Model{
+    // keeps all connection info (used to keep info after deletion)
+  public:
     Array<AudioConnection> audioConnections;
-
     Array<DataProcessorGraph::Connection *> dataConnections;
+  };
+  Model model;
 
-
-    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType);
+    NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType,Model * root = nullptr);
+    NodeConnection getCopy();
     virtual ~NodeConnection();
 
 	

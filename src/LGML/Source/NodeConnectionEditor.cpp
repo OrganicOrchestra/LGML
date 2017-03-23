@@ -185,7 +185,7 @@ void NodeConnectionEditor::generateContentForAudio()
     //@Martin : How to define how many channels a node has (input and output), it seems that it's defaulted to 2,
     //but i can't find how to set it up anywhere. is it dynamically computed when sending or receiving the AudioBuffer in processBlock ?
     // should be fixed !!
-    for (auto &pair : currentConnection->audioConnections)
+    for (auto &pair : currentConnection->model.audioConnections)
     {
         addAudioLink(pair.first, pair.second);
     }
@@ -223,7 +223,7 @@ void NodeConnectionEditor::generateContentForData()
         inputsContainer.addAndMakeVisible(s);
     }
 
-    for (auto &connection : currentConnection->dataConnections)
+    for (auto &connection : currentConnection->model.dataConnections)
     {
         addDataLink(connection->sourceData, connection->destData);
     }

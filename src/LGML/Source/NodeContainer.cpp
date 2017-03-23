@@ -412,7 +412,7 @@ Array<NodeConnection*> NodeContainer::getAllConnectionsForNode(ConnectableNode *
   return result;
 }
 
-NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType)
+NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType,NodeConnection::Model * root)
 {
 
   ConnectableNode * tSourceNode = sourceNode;
@@ -425,7 +425,7 @@ NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, Conn
     return nullptr;
   }
 
-  NodeConnection * c = new NodeConnection(tSourceNode, tDestNode, connectionType);
+  NodeConnection * c = new NodeConnection(tSourceNode, tDestNode, connectionType,root);
   connections.add(c);
   c->addConnectionListener(this);
   //  updateAudioGraph();

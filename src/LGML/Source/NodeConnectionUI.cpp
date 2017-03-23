@@ -79,8 +79,8 @@ void NodeConnectionUI::paint (Graphics& g)
 
   if (connection != nullptr)
   {
-    if (isAudio && connection->audioConnections.size() == 0) baseColor = NORMAL_COLOR;
-    if (!isAudio && connection->dataConnections.size() == 0) baseColor = NORMAL_COLOR;
+    if (isAudio && connection->model.audioConnections.size() == 0) baseColor = NORMAL_COLOR;
+    if (!isAudio && connection->model.dataConnections.size() == 0) baseColor = NORMAL_COLOR;
   }
 
   //g.setColour(Colours::yellow.withAlpha(.8f));
@@ -123,8 +123,7 @@ void NodeConnectionUI::buildPath()
     endPos = getLocalPoint(destConnector, destConnector->getLocalBounds().getCentre()).toFloat();
   }
 
-  anchorSource.setCentrePosition(sourcePos.x,sourcePos.y);
-  anchorDest.setCentrePosition(endPos.x,endPos.y);
+
   Array<Point<float>> hitPoints;
 
   //NORMAL CURVE
@@ -188,6 +187,13 @@ void NodeConnectionUI::buildPath()
 
 void NodeConnectionUI::buildHitPath(Array<Point<float>> points)
 {
+  auto l = path.getLength();
+  const double space = 15;
+  auto p1 = path.getPointAlongPath(jmin(space,l*0.1));
+
+  anchorSource.setCentrePosition(p1.x,p1.y);
+  p1 = path.getPointAlongPath(jmax(l-space,l*0.9));
+  anchorDest.setCentrePosition(p1.x,p1.y);
   float margin = 10;
 
   hitPath.clear();
@@ -295,7 +301,7 @@ void NodeConnectionUI::mouseDown(const MouseEvent & e)
         jassert( nodeViewer);
 
         if(connection->connectionType==NodeConnection::ConnectionType::AUDIO){
-          nodeViewer->createAudioConnectionFromConnector(anchorSource.isVisible()?destConnector:sourceConnector);
+          nodeViewer->createAudioConnectionFromConnector(anchorSource.isVisible()?destConnector:sourceConnector,connection);
           connection->remove();
         }
       }

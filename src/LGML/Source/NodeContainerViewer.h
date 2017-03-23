@@ -29,7 +29,7 @@ public :
 	OwnedArray<ConnectableNodeUI> nodesUI;
 	OwnedArray<NodeConnectionUI>  connectionsUI;
 	NodeConnectionUI * editingConnection;
-
+  ScopedPointer<NodeConnection::Model> editingModel;
 	void clear();
 
 	void resized() override;
@@ -51,7 +51,7 @@ public :
 	//connection creation / editing
 	typedef ConnectorComponent Connector;
 	void createDataConnectionFromConnector(Connector * baseConnector);
-	void createAudioConnectionFromConnector(Connector * baseConnector);
+	void createAudioConnectionFromConnector(Connector * baseConnector,NodeConnection * root=nullptr);
 
 	void updateEditingConnection();
 	bool isEditingConnection() { return editingConnection != nullptr; }
