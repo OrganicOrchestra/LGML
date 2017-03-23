@@ -33,6 +33,20 @@ public:
 
     NodeConnection* connection;
 
+  class Anchor : public DrawableRectangle{
+  public:
+    Anchor(){
+      const int anchorSize = 30;
+      setRectangle(Rectangle<float>(0,0,anchorSize,anchorSize));
+      setFill(Colours::white.withAlpha(0.1f));
+      setStrokeFill(Colours::white);
+      setStrokeThickness(1);
+
+    }
+  };
+  Anchor anchorSource;
+  Anchor anchorDest;
+
 
     Connector * sourceConnector;
     Connector * destConnector;
@@ -58,6 +72,7 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
+    void mouseMove(const MouseEvent &)override;
 	bool keyPressed(const KeyPress &key) override;
 
 	void componentParentHierarchyChanged(Component&) override { removeComponentListener(this); updateBoundsFromNodes(); }

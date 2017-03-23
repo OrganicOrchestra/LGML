@@ -161,6 +161,7 @@ void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
   connectionsUI.add(cui);
 
   addAndMakeVisible(cui, 0);
+  cui->resized();
 }
 
 void NodeContainerViewer::removeConnectionUI(NodeConnection * connection)
@@ -381,7 +382,7 @@ void NodeContainerViewer::mouseDrag(const MouseEvent & event)
 {
   if (editingConnection != nullptr)
   {
-    if (event.eventComponent == editingConnection->getBaseConnector())
+//    if (event.eventComponent == editingConnection->getBaseConnector())
     {
       updateEditingConnection();
     }
