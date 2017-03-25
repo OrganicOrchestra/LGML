@@ -325,7 +325,7 @@ int PlayableBuffer::getNumSampleFadeOut() const{return multiNeedle.fadeOutNumSam
 
 void PlayableBuffer::setSampleRate(float sR){sampleRate = sR;};
 
-
+#if BUFFER_CAN_STRETCH
 
 void PlayableBuffer::setTimeRatio(const double ratio){
 //  jassert(isOrWasPlaying());
@@ -359,7 +359,7 @@ void PlayableBuffer::setTimeRatio(const double ratio){
 
 
 }
-
+#endif
 
 #if RT_STRETCH
 void PlayableBuffer::initRTStretch(int blockSize){

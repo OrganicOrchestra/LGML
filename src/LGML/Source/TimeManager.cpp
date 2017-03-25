@@ -177,12 +177,14 @@ void TimeManager::incrementClock(int block){
 
 
   if(hasJumped ){//|| lastBeat!=newBeat){
+    #if LINK_SUPPORT
     linkTimeLine = linkSession.captureAudioTimeline();
     linkTimeLine.requestBeatAtTime(getBeat(),
                                    //                      std::chrono::system_clock::now().time_since_epoch(),
                                    linkTime,
                                    beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
     linkSession.commitAudioTimeline(linkTimeLine);
+#endif
   }
 
 
