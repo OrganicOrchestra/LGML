@@ -39,8 +39,10 @@ void EnumParameter::addOption(Identifier key, var data)
 
 void EnumParameter::removeOption(Identifier key)
 {
+  selectId(key, false,true);
   enumListeners.call(&Listener::enumOptionRemoved, this, key.toString());
   getValuesMap(value)->removeProperty(key);
+  
 
 }
 Array<Identifier> EnumParameter::getSelectedIds() {
@@ -74,14 +76,18 @@ void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelecti
   Array<var> * selection = getSelectedSet(value);
   jassert(selection);
 //  if(!appendSelection)selection->clear();
+  int numSelectionChange = 0;
   if(shouldSelect){
     selection->add(key.toString());
+    numSelectionChange = 1;
   }
   else{
-    selection->removeAllInstancesOf(key.toString());
+    numSelectionChange = selection->removeAllInstancesOf(key.toString());
 
   }
-  enumListeners.call(&Listener::enumOptionSelectionChanged, this,shouldSelect, key.toString());
+  if(numSelectionChange){
+    enumListeners.call(&Listener::enumOptionSelectionChanged, this,shouldSelect, key.toString());
+  }
 
 
 }
@@ -130,14 +136,16 @@ void EnumParameter::setValueInternal(var & _value){
     selectId(_value.toString(),true,false);
   }
   
-  else if(DynamicObject * values = getValuesMap(_value)){
+  else if(DynamicObject * dvalues = getValuesMap(_value)){
 
     if(DynamicObject * oldValues = getValuesMap(value)){
-      for(auto v:oldValues->getProperties()){
+      auto oldP = oldValues->getProperties();
+      for(auto v:oldP){
         removeOption(v.name);
       }
+
     }
-    for(auto v:values->getProperties()){
+    for(auto v:dvalues->getProperties()){
       addOption(v.name.toString(), v.value);
     }
 
