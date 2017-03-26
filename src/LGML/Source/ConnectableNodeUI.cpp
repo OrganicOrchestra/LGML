@@ -170,7 +170,7 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
       setTopLeftPosition(connectableNode->xPosition->intValue(), connectableNode->yPosition->intValue());
       break;
     case sizeChangedId:
-      setSize(connectableNode->nodeWidth->intValue(), connectableNode->nodeHeight->intValue());
+      getContentContainer()->setSize(connectableNode->nodeWidth->intValue(), connectableNode->nodeHeight->intValue());
       break;
 
     default:
@@ -302,9 +302,10 @@ void ConnectableNodeUI::MainComponentContainer::resized()
 
   if (!miniMode)
   {
+
     if (audioCtlUIContainer) {
       r.removeFromRight(audioCtlContainerPadRight);
-      audioCtlUIContainer->setBounds(r.removeFromRight(10).reduced(0, 4));
+      audioCtlUIContainer->setBounds(r.removeFromRight(audioCtlContainerWidth).reduced(0, 4));
     }
     connectableNodeUI->connectableNode->nodeWidth->setValue(r.getWidth(),true);
     connectableNodeUI->connectableNode->nodeHeight->setValue(r.getHeight(), true);
@@ -333,7 +334,8 @@ void ConnectableNodeUI::MainComponentContainer::setMiniMode(bool value)
 
 void ConnectableNodeUI::MainComponentContainer::childBoundsChanged(Component* c) {
   if (c == contentContainer || c == audioCtlUIContainer) {
-    int destWidth = contentContainer->getWidth() + (audioCtlUIContainer ? audioCtlUIContainer->getWidth() + audioCtlContainerPadRight : 0);
+    int destWidth = contentContainer->getWidth() +
+      (audioCtlUIContainer ? (audioCtlContainerWidth+ audioCtlContainerPadRight ): 0);
     int destHeight = contentContainer->getHeight() + headerContainer->getHeight();
     if (getWidth() != destWidth ||
         getHeight() != destHeight) {

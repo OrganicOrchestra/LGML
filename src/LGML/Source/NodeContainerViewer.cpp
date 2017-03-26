@@ -440,9 +440,7 @@ void NodeContainerViewer::resizeToFitNodes() {
   Rectangle<int> _bounds(getLocalBounds());
   
   for (auto &n : nodesUI) {
-    
-    Rectangle<int> r = n->getBoundsInParent();
-    _bounds = _bounds.getUnion(r);
+    _bounds = _bounds.getUnion(n->getBoundsInParent());
     
   }
   

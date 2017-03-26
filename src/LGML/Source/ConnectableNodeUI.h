@@ -78,6 +78,7 @@ public:
 		ScopedPointer<ConnectableNodeAudioCtlUI> audioCtlUIContainer;
 
 		const int audioCtlContainerPadRight = 3;
+    const int audioCtlContainerWidth=10;
 
 		void setNodeAndNodeUI(ConnectableNode * node, ConnectableNodeUI * nodeUI);
 		void paint(Graphics &g) override;
