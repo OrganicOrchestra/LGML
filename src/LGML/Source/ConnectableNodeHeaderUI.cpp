@@ -184,7 +184,7 @@ void ConnectableNodeHeaderUI::resized()
 
   if (node->canHavePresets && !bMiniMode )
   {
-    int presetCBWidth = jmin(r.getWidth()/4,80);
+    int presetCBWidth = jmin(r.getWidth()/3,80);
     if(presetCBWidth<20){
       presetChooser->setVisible(false);
     }

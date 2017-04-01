@@ -90,7 +90,7 @@ void NodeConnectionUI::paint (Graphics& g)
   if (candidateDropConnector != nullptr) baseColor = Colours::yellow;
   if (isSelected) baseColor = HIGHLIGHT_COLOR;
   g.setColour(baseColor);
-  g.strokePath(path, PathStrokeType(2.0f));
+  g.strokePath(path, PathStrokeType(1.5f));
 }
 
 void NodeConnectionUI::resized()
