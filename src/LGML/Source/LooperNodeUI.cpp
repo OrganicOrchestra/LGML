@@ -156,6 +156,8 @@ isSelected(false),timeStateUI(track)
   stopButton = track->stopTrig->createBlinkUI();
   muteButton = track->mute->createToggle();
   soloButton = track->solo->createToggle();
+  sampleChoiceDDL = track->sampleChoice->createUI();
+  sampleChoiceDDL->setCanModifyModel(true,true);
 
   track->addTrackListener(this);
 
@@ -168,7 +170,7 @@ isSelected(false),timeStateUI(track)
   addAndMakeVisible(muteButton);
   addAndMakeVisible(soloButton);
   addAndMakeVisible(timeStateUI);
-
+  addAndMakeVisible(sampleChoiceDDL);
 }
 
 LooperNodeContentUI::TrackUI::~TrackUI() {
@@ -198,9 +200,13 @@ void LooperNodeContentUI::TrackUI::resized() {
   const int timeUISize = 16;
   timeStateUI.setBounds(r.removeFromTop(timeUISize+gap).withSize(timeUISize, timeUISize).reduced(2));//header
 
-  int step = r.getHeight()/6 - gap;
+
   volumeSlider->setBounds(r.removeFromRight(r.getWidth()/3).reduced(1));
   r.reduce(4,0);
+
+  int step = r.getHeight()/6 - gap;
+  sampleChoiceDDL->setBounds(r.removeFromTop(step));
+  r.removeFromTop(gap);
   muteButton->setBounds(r.removeFromTop(step));
   r.removeFromTop(gap);
   soloButton->setBounds(r.removeFromTop(step));
@@ -210,7 +216,8 @@ void LooperNodeContentUI::TrackUI::resized() {
   stopButton->setBounds(r.removeFromTop(step));
   r.removeFromTop(gap);
   recPlayButton->setBounds(r);
-  r.removeFromTop(gap);
+
+
 
 }
 

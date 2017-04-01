@@ -13,6 +13,7 @@
 
 #include "TriggerBlinkUI.h"
 #include "FloatSliderUI.h"
+#include "EnumParameterUI.h"
 #include "LooperNode.h"
 #include "NodeBaseContentUI.h"
 
@@ -63,6 +64,8 @@ public:
 
     ScopedPointer<BoolToggleUI> muteButton;
     ScopedPointer<BoolToggleUI> soloButton;
+    ScopedPointer<EnumParameterUI> sampleChoiceDDL;
+    
 
     class TimeStateUI : public Component,public LooperTrack::Listener{
     public:

@@ -20,6 +20,9 @@
 
 #define NO_QUANTIZE (uint64)-1 //std::numeric_limits<uint64>::max()
 
+
+
+
 LooperTrack::LooperTrack(LooperNode * looperNode, int _trackIdx) :
 ControllableContainer(String(_trackIdx)),
 parentLooper(looperNode),
@@ -33,7 +36,7 @@ desiredState(CLEARED),
 trackIdx(_trackIdx),
 someOneIsSolo(false),
 isSelected (false),
-originBPM(0),
+
 lastVolume(0),
 startPlayBeat(0),
 startRecBeat(0),
@@ -51,7 +54,11 @@ logVolume(float01ToGain(DB0_FOR_01),0.5)
   solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
   beatLength = addFloatParameter("Length", "length in bar", 0, 0, 200);
   togglePlayStopTrig = addTrigger("Toggle Play Stop", "Toggle Play / Stop");
+  originBPM = addFloatParameter("originBPM","bpm of origin audio loop",0,0,999);
 
+  sampleChoice = addEnumParameter("sample", "loaded sample");
+  sampleChoice->addEnumParameterListener(this);
+  
   mute->invertVisuals = true;
 
   stateParameterString = addStringParameter("state", "track state", "cleared");
@@ -366,7 +373,7 @@ void LooperTrack::handleEndOfRecording(){
     if(sampleToRemove>0){playableBuffer.cropEndOfRecording(&sampleToRemove);}
     TransportTimeInfo info = tm->findTransportTimeInfoForLength(playableBuffer.getRecordedLength());
     // need to tell it right away to avoid bpm changes call back while originBPM not updated
-    if(getQuantization()>0)originBPM = info.bpm ;
+    if(getQuantization()>0)originBPM->setValue( info.bpm) ;
 
     tm->setBPMFromTransportTimeInfo(info,false);
 
@@ -385,11 +392,11 @@ void LooperTrack::handleEndOfRecording(){
   }
   else{
     beatLength->setValue(playableBuffer.getRecordedLength()*1.0/tm->beatTimeInSample);
-    if(getQuantization()>0)originBPM = tm->BPM->doubleValue();
+    if(getQuantization()>0)originBPM->setValue( tm->BPM->doubleValue());
     else{
       // non quantified
       // we assign one but obviously not related to master (avoid null bpms)
-      originBPM = tm->findTransportTimeInfoForLength(playableBuffer.getRecordedLength()).bpm;
+      originBPM ->setValue(tm->findTransportTimeInfoForLength(playableBuffer.getRecordedLength()).bpm);
     }
   }
 
@@ -723,4 +730,72 @@ void LooperTrack::setNumChannels(int numChannels){
 void LooperTrack::releaseMasterTrack(){
   TimeManager::getInstance()->releaseMasterCandidate(parentLooper);
   parentLooper->trackGroup.lastMasterTempoTrack = nullptr;
+}
+
+
+void LooperTrack::enumOptionAdded(EnumParameter *, const Identifier &) {};
+void LooperTrack::enumOptionRemoved(EnumParameter *, const Identifier &) {};
+void LooperTrack::enumOptionSelectionChanged(EnumParameter *ep,bool isSelected, bool isValid, const Identifier & k){
+  if(ep==sampleChoice && isSelected){
+    String path = ep->getValueForId(k);
+    if(!path.isEmpty()){
+      loadAudioSample(path);
+    }
+  }
+};
+void LooperTrack::loadAudioSample(const String & path){
+  jassert(MessageManager::getInstance()->isThisTheMessageThread());
+  File audioFile(path);
+  if(audioFile.exists()){
+
+      AudioFormatManager formatManager ;
+      formatManager.registerBasicFormats();
+      auto codec = formatManager.createReaderFor (audioFile);
+
+    if(codec){
+      int64 maxSample= 44100 * MAX_LOOP_LENGTH_S;
+      if(codec->lengthInSamples>maxSample){
+        LOG("sample loading : truncating input bigger than 1mn");
+
+      }
+      int destSize = jmin(maxSample,codec->lengthInSamples);
+      int destNumChannels = codec->numChannels;
+      AudioSampleBuffer tempBuf ;
+      tempBuf.setSize(destNumChannels,destSize);
+      codec->read(&tempBuf,0,destSize,0,true,playableBuffer.audioBuffer.getNumChannels()>1?true:false);
+      if(codec->sampleRate != parentLooper->getSampleRate()){
+        LOG("sample loading : resampling is still experimental : " \
+            <<audioFile.getFileName() << " : " << codec->sampleRate);
+
+        LagrangeInterpolator interpolator;
+        AudioSampleBuffer full ;
+        full.makeCopyOf(tempBuf);
+        double ratio = codec->sampleRate/ parentLooper->getSampleRate();
+        int newSize  = ratio*destSize;
+        interpolator.process(ratio, full.getReadPointer(0), tempBuf.getWritePointer(0), newSize);
+        destSize = newSize;
+
+      }
+      playableBuffer.originAudioBuffer.makeCopyOf(tempBuf);
+
+      auto tm = TimeManager::getInstance();
+      auto ti = tm->findTransportTimeInfoForLength(playableBuffer.originAudioBuffer.getNumSamples());
+      double timeRatio = ti.bpm / tm->BPM->doubleValue();
+      playableBuffer.setRecordedLength(destSize);
+      originBPM->setValue( ti.bpm);
+      beatLength->setValue(playableBuffer.getRecordedLength()*1.0/ti.beatInSample,false,false,true);
+      playableBuffer.setNumChannels(destNumChannels);
+      playableBuffer.setTimeRatio(timeRatio);
+      setTrackState(STOPPED);
+
+      
+
+    }
+    else{
+      LOG("sample loading : format not supported : " << audioFile.getFileExtension());
+    }
+  }
+  else{
+    LOG("sample loading : file not found : " << audioFile.getFullPathName());
+  }
 }

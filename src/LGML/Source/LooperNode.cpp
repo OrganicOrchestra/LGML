@@ -500,7 +500,7 @@ void LooperNode::BPMChanged(double BPM){
     for(auto & t : trackGroup.tracks){
       if(!t->isEmpty()) {
 
-        double ratio =t->originBPM;
+        double ratio =t->originBPM->doubleValue();
         ratio /= TimeManager::getInstance()->BPM->doubleValue();
 
         if(isnormal(ratio)){
@@ -517,7 +517,7 @@ void LooperNode::BPMChanged(double BPM){
         }
 
         else{
-          DBG("wrong bpms for stretch : " << TimeManager::getInstance()->BPM->doubleValue() << "," << t->originBPM);
+          DBG("wrong bpms for stretch : " << TimeManager::getInstance()->BPM->doubleValue() << "," << t->originBPM->doubleValue());
           jassertfalse;
         }
 

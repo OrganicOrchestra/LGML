@@ -105,7 +105,7 @@ StringParameter * ControllableContainer::addStringParameter(const String & _nice
 EnumParameter * ControllableContainer::addEnumParameter(const String & _niceName, const String & _description, const bool & enabled)
 {
   String targetName = getUniqueNameInContainer(_niceName);
-  EnumParameter * p = new EnumParameter(targetName, _description, enabled);
+  EnumParameter * p = new EnumParameter(targetName, _description, nullptr, enabled);
   addParameterInternal(p);
   return p;
 }

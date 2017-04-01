@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    MIDIController.h
-    Created: 2 Mar 2016 8:51:20pm
-    Author:  bkupe
+ MIDIController.h
+ Created: 2 Mar 2016 8:51:20pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef MIDICONTROLLER_H_INCLUDED
 #define MIDICONTROLLER_H_INCLUDED
@@ -19,49 +19,49 @@ class JsMIDIMessageListener;
 
 class MIDIController : public Controller,public MIDIListener, public MIDIListener::Listener,public JsEnvironment
 {
-public :
-    MIDIController();
-	virtual ~MIDIController();
+  public :
+  MIDIController();
+  virtual ~MIDIController();
 
   ControllerEditor *  createEditor()override;
 
-    // should be implemented to build localenv
-    void buildLocalEnv() override;
-	void handleIncomingMidiMessage(MidiInput* source,
-		const MidiMessage& message) override;
+  // should be implemented to build localenv
+  void buildLocalEnv() override;
+  void handleIncomingMidiMessage(MidiInput* source,
+                                 const MidiMessage& message) override;
 
-    StringParameter * deviceInName;
-
-    
-    BoolParameter * logIncoming;
-	IntParameter * channelFilter;
+  StringParameter * deviceInName;
 
 
-	MidiMessageCollector midiCollector;
+  BoolParameter * logIncoming;
+  IntParameter * channelFilter;
 
-	void currentDeviceChanged(MIDIListener * m) override;
 
-	
-    void    onContainerParameterChanged(Parameter * )override;
+  MidiMessageCollector midiCollector;
 
-    static var sendCCFromJS(const var::NativeFunctionArgs & v);
-    static var sendNoteOnFromJS(const var::NativeFunctionArgs & v);
-	static var sendNoteOffFromJS(const var::NativeFunctionArgs & v);
-	static var sendSysExFromJS(const var::NativeFunctionArgs &v);
+  void currentDeviceChanged(MIDIListener * m) override;
 
-    void callJs(const MidiMessage& message);
-    void newJsFileLoaded()override;
 
-	class MIDIControllerListener
-	{
-	public:
-		virtual ~MIDIControllerListener() {}
-		virtual void midiMessageReceived(const MidiMessage&) {}
-	};
+  void    onContainerParameterChanged(Parameter * )override;
 
-	ListenerList<MIDIControllerListener> midiControllerListeners;
-	void addMIDIControllerListener(MIDIControllerListener* newListener) { midiControllerListeners.add(newListener); }
-	void removeMIDIControllerListener(MIDIControllerListener* listener) { midiControllerListeners.remove(listener); }
+  static var sendCCFromJS(const var::NativeFunctionArgs & v);
+  static var sendNoteOnFromJS(const var::NativeFunctionArgs & v);
+  static var sendNoteOffFromJS(const var::NativeFunctionArgs & v);
+  static var sendSysExFromJS(const var::NativeFunctionArgs &v);
+
+  void callJs(const MidiMessage& message);
+  void newJsFileLoaded()override;
+
+  class MIDIControllerListener
+  {
+  public:
+    virtual ~MIDIControllerListener() {}
+    virtual void midiMessageReceived(const MidiMessage&) {}
+  };
+
+  ListenerList<MIDIControllerListener> midiControllerListeners;
+  void addMIDIControllerListener(MIDIControllerListener* newListener) { midiControllerListeners.add(newListener); }
+  void removeMIDIControllerListener(MIDIControllerListener* listener) { midiControllerListeners.remove(listener); }
 
 
   static var createJsNoteListener(const var::NativeFunctionArgs &);
@@ -75,9 +75,9 @@ public :
   void clearNamespace()override;
 
 private:
-  
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIController)
 };
 
 class JsMIDIMessageListener{
@@ -90,14 +90,14 @@ class JsMIDIMessageListener{
 
   }
   static Identifier midiReceivedId;
-static Identifier midiValueId;
+  static Identifier midiValueId;
 
   virtual ~JsMIDIMessageListener(){};
   void buildVarObject(){
-      object= new DynamicObject();
-      DynamicObject * dob = object.getDynamicObject();
-      dob->setProperty(midiValueId,0);
-      dob->setMethod(midiReceivedId,&JsMIDIMessageListener::dummyCallback);
+    object= new DynamicObject();
+    DynamicObject * dob = object.getDynamicObject();
+    dob->setProperty(midiValueId,0);
+    dob->setMethod(midiReceivedId,&JsMIDIMessageListener::dummyCallback);
 
   }
 
@@ -106,7 +106,7 @@ static Identifier midiValueId;
 #pragma warning(disable:4305 4800)
   static var dummyCallback(const var::NativeFunctionArgs & /*a*/)
   {
-	  return var::undefined;
+    return var::undefined;
   };
 #pragma warning(pop)
 
@@ -114,7 +114,7 @@ static Identifier midiValueId;
   {
     if(channel == 0 || channel == m.getChannel()){
       if((isNoteListener && m.isNoteOnOrOff()) || (m.isController())){
-      int numToTest = isNoteListener? m.getNoteNumber():m.getControllerNumber();
+        int numToTest = isNoteListener? m.getNoteNumber():m.getControllerNumber();
         if(numToTest == numberToListen){
           var value = isNoteListener?m.getVelocity():m.getControllerNumber();
           object.getDynamicObject()->setProperty(midiValueId,0);

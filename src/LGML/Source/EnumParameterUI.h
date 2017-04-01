@@ -22,6 +22,7 @@ public:
     virtual ~EnumParameterUI();
 
 	EnumParameter * ep;
+  
 
 	ComboBox cb;
 
@@ -30,16 +31,25 @@ public:
 
 	void resized() override;
 
+  void setCanModifyModel(bool isModifiable,bool isFile);
+  bool canModifyModel,isFileBased;
+  enum Actions{
+    addElementId = -1,
+    removeElementId = -2
+  };
+
 	
-	void enumOptionAdded(EnumParameter *, const String &key) override;
-	void enumOptionRemoved(EnumParameter *, const String &key) override;
-  void enumOptionSelectionChanged(EnumParameter *,bool isSelected, const Identifier &name) override;
+	void enumOptionAdded(EnumParameter *, const Identifier &key) override;
+	void enumOptionRemoved(EnumParameter *, const Identifier &key) override;
+  void enumOptionSelectionChanged(EnumParameter *,bool isSelected,bool isValid, const Identifier &name) override;
 	// Inherited via Listener
 	virtual void comboBoxChanged(ComboBox *) override;
 	
 private:
 	HashMap<int, String> idKeyMap;
 	HashMap<String,int> keyIdMap;
+
+  void selectString(const String & );
 
 protected:
     void valueChanged(const var &) override ;

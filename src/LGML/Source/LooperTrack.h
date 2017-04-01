@@ -21,7 +21,7 @@ class LooperNode;
 
 #define MAX_LOOP_LENGTH_S 60
 
-class LooperTrack : public ControllableContainer
+class LooperTrack : public ControllableContainer , public EnumParameter::Listener
 {
 
 public:
@@ -46,6 +46,7 @@ public:
   Trigger * clearTrig;
   Trigger * stopTrig;
   Trigger * togglePlayStopTrig;
+  EnumParameter * sampleChoice;
 
   StringParameter  * stateParameterString;
   FloatParameter * volume;
@@ -54,6 +55,7 @@ public:
   SmoothedValue<float> logVolume;
   BoolParameter * mute;
   BoolParameter * solo;
+  FloatParameter *  originBPM ;
 
 
 
@@ -207,7 +209,7 @@ private:
 
 
 
-  double originBPM ;
+
 
 
   LooperNode * parentLooper;
@@ -215,6 +217,15 @@ private:
   void releaseMasterTrack();
   void cleanAllQuantizeNeedles();
 
+
+
+
+  void enumOptionAdded(EnumParameter *, const Identifier &) override;
+  void enumOptionRemoved(EnumParameter *, const Identifier &) override;
+  void enumOptionSelectionChanged(EnumParameter *,bool isSelected, bool isValid, const Identifier &)override;
+
+
+  void loadAudioSample(const String & file);
   //friend class Looper;
 };
 

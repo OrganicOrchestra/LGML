@@ -35,7 +35,7 @@ public:
     
     DataProcessorGraph dataGraph;
 
-	ScopedPointer<NodeContainer> mainContainer;
+    ScopedPointer<NodeContainer> mainContainer;
 
 	void rebuildAudioGraph();
 
