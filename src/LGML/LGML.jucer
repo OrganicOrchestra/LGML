@@ -3,7 +3,7 @@
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" id="a1hJPO"
               includeBinaryInAppConfig="1" jucerVersion="4.3.1" name="LGML"
-              projectType="guiapp" version="1.1.8beta">
+              projectType="guiapp" version="1.1.9beta">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
       <FILE compile="1" file="Tests/LooperTest.cpp" id="lDg0ln" name="LooperTest.cpp"
@@ -906,7 +906,9 @@
                JUCE_JACK="enabled" JUCE_LOG_ASSERTIONS="enabled" JUCE_PLUGINHOST_AU="enabled"
                JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
                JUCE_USE_CDBURNER="disabled" JUCE_USE_CDREADER="disabled" JUCE_WASAPI="enabled"
-               JUCE_WEB_BROWSER="disabled"/>
+               JUCE_WEB_BROWSER="disabled" JUCE_USE_FLAC="enabled" JUCE_USE_OGGVORBIS="enabled"
+               JUCE_USE_MP3AUDIOFORMAT="enabled" JUCE_USE_LAME_AUDIO_FORMAT="enabled"
+               JUCE_USE_WINDOWS_MEDIA_FORMAT="enabled"/>
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>
