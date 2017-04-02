@@ -21,7 +21,7 @@ public:
     ControllableUI(Controllable * controllable);
     virtual ~ControllableUI();
 
-    String tooltip;
+    
 
     WeakReference<Controllable>  controllable;
 

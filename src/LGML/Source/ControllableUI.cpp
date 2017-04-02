@@ -15,8 +15,8 @@ ControllableUI::ControllableUI(Controllable * controllable) :
 Component(controllable->niceName)
 {
     jassert(controllable!=nullptr);
-    updateTooltip();
     controllable->addControllableListener(this);
+    updateTooltip();
 
 }
 
@@ -32,7 +32,7 @@ void ControllableUI::controllableStateChanged(Controllable * c)
 
 void ControllableUI::controllableControlAddressChanged(Controllable *)
 {
-    updateTooltip();
+  updateTooltip();
 }
 
 void ControllableUI::mouseDown(const MouseEvent & e)
@@ -53,8 +53,7 @@ void ControllableUI::mouseDown(const MouseEvent & e)
 
 void ControllableUI::updateTooltip()
 {
-    tooltip = controllable->description + "\nControl Address : " + controllable->controlAddress;
-    setTooltip(tooltip);
+    setTooltip(controllable->description + "\nControl Address : " + controllable->controlAddress);
 }
 
 
@@ -71,7 +70,8 @@ labelWidth(_labelWidth){
   controllableLabel.setJustificationType(Justification::centredLeft);
   controllableLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
   controllableLabel.setText(ui->controllable->niceName, dontSendNotification);
-  controllableLabel.setTooltip(ui->tooltip);
+
+  controllableLabel.setTooltip(ControllableUI::getTooltip());
 
   addAndMakeVisible(ui);
   setBounds(ownedControllableUI->getBounds()

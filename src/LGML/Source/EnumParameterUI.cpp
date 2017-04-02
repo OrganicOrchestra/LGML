@@ -19,16 +19,17 @@ EnumParameterUI::EnumParameterUI(Parameter * parameter) :
 	cb.addListener(this);
 	cb.setTextWhenNoChoicesAvailable(ep->niceName);
 	cb.setTextWhenNothingSelected(ep->niceName);
-	cb.setTooltip(ep->description);
+  cb.setTooltip(ParameterUI::getTooltip());
 	addAndMakeVisible(cb);
-  ep->addEnumParameterListener(this);
+  ep->addAsyncEnumParameterListener(this);
   setCanModifyModel(false, false);
-  
+
 	updateComboBox();
 }
 
 EnumParameterUI::~EnumParameterUI()
 {
+  ep->removeAsyncEnumParameterListener(this);
 	cb.removeListener(this);
 }
 

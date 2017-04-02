@@ -19,6 +19,7 @@ ParameterProxy::ParameterProxy() :
 	proxyAlias("alias","Proxy Alias\nThis will be used to set the OSC control address","proxy")
 {
 	proxyAlias.addParameterListener(this);
+  
 }
 
 ParameterProxy::~ParameterProxy()

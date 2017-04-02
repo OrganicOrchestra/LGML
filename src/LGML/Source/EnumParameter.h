@@ -140,10 +140,12 @@ public:
   QueuedNotifier<EnumChangeMessage> asyncNotifier;
   void newMessage(const EnumChangeMessage &msg) override;
 
-  ListenerList<Listener> enumListeners;
+  ListenerList<Listener> enumListeners,asyncEnumListeners;
   void addEnumParameterListener(Listener* newListener) { enumListeners.add(newListener); }
   void removeEnumParameterListener(Listener* listener) { enumListeners.remove(listener); }
 
+  void addAsyncEnumParameterListener(Listener* newListener) { asyncEnumListeners.add(newListener); }
+  void removeAsyncEnumParameterListener(Listener* listener) { asyncEnumListeners.remove(listener); }
   EnumParameterModel * getModel();
 
 private:
@@ -158,6 +160,8 @@ private:
   // model Listener
   void modelOptionAdded(EnumParameterModel *,Identifier &) override;
   void modelOptionRemoved(EnumParameterModel *,Identifier &) override;
+
+  void processForMessage(const EnumChangeMessage &,ListenerList<Listener> & _listeners);
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnumParameter)
 };

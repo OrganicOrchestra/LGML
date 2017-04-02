@@ -20,7 +20,7 @@ Identifier EnumParameter::selectedSetIdentifier("selected");
 
 EnumParameter::EnumParameter(const String & niceName, const String &description, EnumParameterModel * modelInstance, bool enabled) :
 Parameter(Type::ENUM, niceName, description,var(),var(),var(), enabled),
-asyncNotifier(100)
+asyncNotifier(1000)
 {
   enumData = new DynamicObject();
   enumData->setProperty(selectedSetIdentifier, Array<var>());
@@ -102,7 +102,9 @@ void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelecti
 
   }
   if(numSelectionChange>0){
-    asyncNotifier.addMessage(EnumChangeMessage::newSelectionMessage(key, shouldSelect, getModel()->isValidId(key)));
+    auto msg = EnumChangeMessage::newSelectionMessage(key, shouldSelect, getModel()->isValidId(key));
+    processForMessage(*msg, enumListeners);
+    asyncNotifier.addMessage(msg);
 
   }
 
@@ -236,28 +238,32 @@ Array<var> * EnumParameter::getSelectedSet(const juce::var &v){
 
 
 void EnumParameter::modelOptionAdded(EnumParameterModel *,Identifier & key ) {
-  asyncNotifier.addMessage(EnumChangeMessage::newStructureChangeMessage(key, true));
+  auto msg = EnumChangeMessage::newStructureChangeMessage(key, true);
+  processForMessage(*msg, enumListeners);
+  asyncNotifier.addMessage(msg);
+
 };
 void EnumParameter::modelOptionRemoved(EnumParameterModel *,Identifier & key) {
-  asyncNotifier.addMessage(EnumChangeMessage::newStructureChangeMessage(key, false));
+  auto msg = EnumChangeMessage::newStructureChangeMessage(key, false);
+  processForMessage(*msg, enumListeners);
+  asyncNotifier.addMessage(msg);
 };
 
-
-void EnumParameter::newMessage(const EnumChangeMessage &msg) {
+void EnumParameter::processForMessage(const EnumChangeMessage &msg,ListenerList<Listener> & _listeners){
   if(msg.isStructureChange){
     if(msg.isAdded){
-      enumListeners.call(&Listener::enumOptionAdded, this, msg.key);
+      _listeners.call(&Listener::enumOptionAdded, this, msg.key);
       // call selection change if a selection become valid
       if(getSelectedIds().contains(msg.key)){
-        enumListeners.call(&Listener::enumOptionSelectionChanged,this, true, true, msg.key);
+        _listeners.call(&Listener::enumOptionSelectionChanged,this, true, true, msg.key);
       }
     }
     else{
       // call selection change if a selection become valid
       if(getSelectedIds().contains(msg.key)){
-        enumListeners.call(&Listener::enumOptionSelectionChanged,this, true, true, msg.key);
+        _listeners.call(&Listener::enumOptionSelectionChanged,this, true, true, msg.key);
       }
-      enumListeners.call(&Listener::enumOptionRemoved, this, msg.key);
+      _listeners.call(&Listener::enumOptionRemoved, this, msg.key);
 
     }
 
@@ -266,8 +272,12 @@ void EnumParameter::newMessage(const EnumChangeMessage &msg) {
   else{
     // check validity state has not changed
     jassert(msg.isValid==getModel()->isValidId(msg.key));
-    enumListeners.call(&Listener::enumOptionSelectionChanged, this,msg.isSelected,msg.isValid, msg.key);
+    _listeners.call(&Listener::enumOptionSelectionChanged, this,msg.isSelected,msg.isValid, msg.key);
   }
+}
+
+void EnumParameter::newMessage(const EnumChangeMessage &msg) {
+  processForMessage(msg, asyncEnumListeners);
 
 };
 
