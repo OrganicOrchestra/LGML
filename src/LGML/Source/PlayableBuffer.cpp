@@ -248,7 +248,7 @@ void PlayableBuffer::padEndOfRecording(int sampleToAdd){
   multiNeedle.setLoopSize(recordNeedle);
 }
 void PlayableBuffer::setRecordedLength(uint64 targetSamples){
-  jassert(targetSamples<audioBuffer.getNumSamples());
+  jassert(targetSamples<=audioBuffer.getNumSamples());
   recordNeedle = targetSamples;
   multiNeedle.setLoopSize(targetSamples);
 
@@ -269,6 +269,7 @@ bool PlayableBuffer::isFirstRecordedFrame() const{return state == BUFFER_RECORDI
 bool PlayableBuffer::isOrWasPlaying() const{return (state==BUFFER_PLAYING || lastState==BUFFER_PLAYING) &&  recordNeedle>0 && audioBuffer.getNumSamples();}
 bool PlayableBuffer::isOrWasRecording() const{return (state==BUFFER_RECORDING || lastState==BUFFER_RECORDING) && audioBuffer.getNumSamples();}
 bool PlayableBuffer::isRecordingTail() const{return recordNeedle>0 && !isRecording() && tailRecordNeedle<2*getNumSampleFadeOut();}
+void PlayableBuffer::stopRecordingTail() {tailRecordNeedle = 2*getNumSampleFadeOut();}
 
 void PlayableBuffer::startRecord(){recordNeedle = 0;tailRecordNeedle = 0;multiNeedle.setLoopSize(0);playNeedle=0;globalPlayNeedle=0;originAudioBuffer.setSize(0, 0,false,false,true);}
 inline void PlayableBuffer::startPlay(){multiNeedle.setLoopSize(recordNeedle);setPlayNeedle(0);}

@@ -106,7 +106,7 @@ public TimeMasterCandidate
 
 
 
-  TransportTimeInfo findTransportTimeInfoForLength(uint64 time);
+  TransportTimeInfo findTransportTimeInfoForLength(uint64 time,double sampleRate = -1);
   void setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTime);
 
 

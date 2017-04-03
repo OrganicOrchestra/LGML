@@ -184,9 +184,9 @@ void LooperNodeContentUI::TrackUI::paint(Graphics & g){
 
 void LooperNodeContentUI::TrackUI::paintOverChildren(Graphics & g) {
 
-  g.setColour(Colours::white);
+  g.setColour((track->isEmpty() || track->trackState==LooperTrack::TrackState::STOPPED)?TEXT_COLOR:Colours::black);
   g.setFont(12);
-  g.drawText("#" + String(track->trackIdx), getLocalBounds().withHeight(20).reduced(2) , Justification::right);
+  g.drawText( String(track->trackIdx), timeStateUI.getBounds(), Justification::centred);
 
   if (isSelected) {
     g.setColour(Colours::yellow);
@@ -198,15 +198,17 @@ void LooperNodeContentUI::TrackUI::resized() {
   Rectangle<int> r = getLocalBounds().reduced(2);
   int gap = 5;
   const int timeUISize = 16;
-  timeStateUI.setBounds(r.removeFromTop(timeUISize+gap).withSize(timeUISize, timeUISize).reduced(2));//header
+//  Rectangle<int>  hr = r.removeFromTop(timeUISize+gap);
 
+
+  timeStateUI.setBounds(r.removeFromTop(timeUISize).withSize(timeUISize, timeUISize).reduced(2));//header
+  sampleChoiceDDL->setBounds(r.removeFromTop(15).reduced(1));
 
   volumeSlider->setBounds(r.removeFromRight(r.getWidth()/3).reduced(1));
   r.reduce(4,0);
 
   int step = r.getHeight()/6 - gap;
-  sampleChoiceDDL->setBounds(r.removeFromTop(step));
-  r.removeFromTop(gap);
+
   muteButton->setBounds(r.removeFromTop(step));
   r.removeFromTop(gap);
   soloButton->setBounds(r.removeFromTop(step));

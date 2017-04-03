@@ -61,6 +61,8 @@ class PlayableBuffer {
   bool isOrWasPlaying() const;
   bool isOrWasRecording() const;
   bool isRecordingTail() const;
+
+  void stopRecordingTail();
   
 
 

@@ -93,6 +93,10 @@ void Engine::loadDocumentAsync(const File & file){
 
   loadingStartTime =  Time::currentTimeMillis();
   setFile(file);
+
+  // relative path can be resolved this way
+  // but better to use getNormalizedFilePath(file) and getFileAtNormalizedPath(path) to handle both absolute and relative
+
   file.getParentDirectory().setAsCurrentWorkingDirectory();
 
   {
@@ -280,6 +284,34 @@ bool Engine::checkFileVersion(DynamicObject * metaData)
 String Engine::getMinimumRequiredFileVersion()
 {
   return "0.2.0";
+}
+
+File Engine::getCurrentProjectFolder(){
+  if(!getFile().exists()){
+    jassertfalse;
+    return File();
+  }
+  return getFile().getParentDirectory();
+
+}
+
+String Engine::getNormalizedFilePath(const File & f){
+  File pf(getCurrentProjectFolder());
+  if(f.isAChildOf(pf)){
+    return f.getRelativePathFrom(pf);
+
+  }
+  return f.getFullPathName();
+}
+
+File Engine::getFileAtNormalizedPath(const String & path){
+  bool isRelative = !path.containsChar(File::separator) || path[0]=='.';
+  if(isRelative){
+    return getCurrentProjectFolder().getChildFile(path);
+  }
+  else{
+    return File(path);
+  }
 }
 
 //#if JUCE_MODAL_LOOPS_PERMITTED

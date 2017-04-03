@@ -80,6 +80,7 @@ void JsEnvironment::setEnabled(bool t){
 
   isEnabled = t;
 }
+
 void JsEnvironment::clearNamespace(){
   const  ScopedLock lk(engineLock);
 
@@ -102,31 +103,41 @@ void    JsEnvironment::removeNamespace(const String & jsNamespace) {
   removeNamespaceFromObject(jsNamespace, localEnv);
 }
 
-
 String JsEnvironment::getParentName() {
   int idx = localNamespace.indexOfChar('.');
   return localNamespace.substring(0, idx);
 }
 
 
-void JsEnvironment::loadFile(const String &path) {
+bool JsEnvironment::loadFile(const String &path) {
 
-  File f =//(File::createFileWithoutCheckingPath(path));
-		File::getCurrentWorkingDirectory().getChildFile(path);
-  loadFile(f);
+  File f = getEngine()->getFileAtNormalizedPath(path);
+  return loadFile(f);
 
 }
 
-void JsEnvironment::loadFile(const File &f) {
-  if (f.existsAsFile() && f.getFileExtension() == ".js") {
-    currentFile = f;
-    if (isEngineLoadingFile()) {
-      startTimer(autoWatchTimer.id, autoWatchTimer.interval);
-      return;
-    }
-    internalLoadFile(f);
-    if (!autoWatch) stopTimer(autoWatchTimer.id);
+bool JsEnvironment::loadFile(const File &f) {
+  if(!f.existsAsFile() || f.getFileExtension() != ".js") {
+//    jsParameters->scriptPath->setValue("");
+    clearNamespace();
+    _hasValidJsFile = false;
+    _isInSyncWithLGML = false;
+    buildLocalEnv();
+    clearListeners();
+     jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,false);
+    return false;
   }
+
+  currentFile = f;
+  if (isEngineLoadingFile()) {
+    startTimer(autoWatchTimer.id, autoWatchTimer.interval);
+    return true;
+  }
+  internalLoadFile(f);
+  if (!autoWatch) stopTimer(autoWatchTimer.id);
+  return true;
+
+
 }
 
 void JsEnvironment::reloadFile() {
@@ -140,7 +151,9 @@ void JsEnvironment::showFile() {
   currentFile.startAsProcess();
 }
 
+const File & JsEnvironment::getCurrentFile() { return currentFile;}
 
+String JsEnvironment::getCurrentFilePath() { return getEngine()->getNormalizedFilePath(currentFile);}
 
 void JsEnvironment::internalLoadFile(const File &f ){
   if(triesToLoad<=0){stopTimer(autoWatchTimer.id);return;}
@@ -154,13 +167,11 @@ void JsEnvironment::internalLoadFile(const File &f ){
 
   static FunctionIdentifier onUpdateFId(onUpdateIdentifier.toString());
 
-
-
-
   if(r.failed() && !_isInSyncWithLGML){triesToLoad--;}
   else{_isInSyncWithLGML =true;}
-  String relativePath = currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory());//currentFile.getFullPathName()
-  jsParameters->scriptPath->setValue(relativePath);
+
+  String normalizedPath =  getCurrentFilePath();
+  jsParameters->scriptPath->setValue(normalizedPath);
   jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,(bool)r);
 
   // TODO get rid of this once unifying JsEnvironment
@@ -310,8 +321,8 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
       }
     }
     else{
-//      jassertfalse;
-       NLOG(localNamespace,"jsEngine is Locked");
+      //      jassertfalse;
+      NLOG(localNamespace,"jsEngine is Locked");
     }
   }
   if (logResult && result->failed()) {
@@ -599,7 +610,9 @@ Component * JSEnvContainer::getCustomEditor(){
 
 void JSEnvContainer::onContainerParameterChanged(Parameter *p) {
   if(p==scriptPath){
-    jsEnv->loadFile(scriptPath->stringValue());
+    if(!jsEnv->loadFile(scriptPath->stringValue()) ){
+
+    }
   }
 
   else if (p == autoWatch) {
@@ -617,8 +630,11 @@ void JSEnvContainer::onContainerTriggerTriggered(Trigger *p){
     LOG(jsEnv->printAllNamespace());
   }
   else if (p == loadT) {
+    File  startFolder(jsEnv->getCurrentFile());
+    if(startFolder.exists()){startFolder = startFolder.getParentDirectory();}
+    else{startFolder = getEngine()->getCurrentProjectFolder();}
     FileChooser myChooser("Please select the script you want to load...",
-                          File::getSpecialLocation(File::userHomeDirectory),
+                          startFolder,
                           "*.js");
 
     if (myChooser.browseForFileToOpen())

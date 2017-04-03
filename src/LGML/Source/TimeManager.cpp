@@ -531,18 +531,23 @@ bool  TimeManager::willRestart(){
 
 
 
-TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time){
+TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time,double _sampleRate){
   TransportTimeInfo res;
+  if(_sampleRate>0){
+    res.sampleRate = _sampleRate;
+  }
+  else{
   res.sampleRate = sampleRate;
+  }
   res.barLength = 1;
-  double time_seconds = time* 1.0/ sampleRate;
+  double time_seconds = time* 1.0/ res.sampleRate;
   res.beatTime = time_seconds* 1.0/beatPerBar->intValue();
 
   // over 150 bpm (0.4s)
   while(res.beatTime < beatTimeGuessRange.getStart()){res.beatTime*=2.0;res.barLength/=2.0;}
   // under 70 bpm (0.85s)
   while(res.beatTime > beatTimeGuessRange.getEnd() ){res.beatTime/=2.0;res.barLength*=2.0;}
-  res.beatInSample = (res.beatTime*sampleRate);
+  res.beatInSample = (res.beatTime*res.sampleRate);
 
   res.makeValidForGranularity(samplePerBeatGranularity);
 

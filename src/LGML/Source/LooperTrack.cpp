@@ -750,43 +750,72 @@ void LooperTrack::loadAudioSample(const String & path){
 
       AudioFormatManager formatManager ;
       formatManager.registerBasicFormats();
-      auto codec = formatManager.createReaderFor (audioFile);
+      ScopedPointer<AudioFormatReader> audioReader = formatManager.createReaderFor (audioFile);
 
-    if(codec){
-      int64 maxSample= 44100 * MAX_LOOP_LENGTH_S;
-      if(codec->lengthInSamples>maxSample){
-        LOG("sample loading : truncating input bigger than 1mn");
+    if(audioReader){
 
+
+      int padSize = playableBuffer.getNumSampleFadeOut() ;
+      int64 maxAllowedSample= 44100 * MAX_LOOP_LENGTH_S - padSize - 5000;
+
+
+      auto tm = TimeManager::getInstance();
+      auto ti = tm->findTransportTimeInfoForLength(audioReader->lengthInSamples,audioReader->sampleRate);
+      double fileBPM = ti.bpm;
+      double sampleRateRatio = parentLooper->getSampleRate()*1.0/ audioReader->sampleRate;
+      int64 importSize = audioReader->lengthInSamples * sampleRateRatio;
+
+
+      // TODO : get rid of that by having dynamic allocated sizes of playableBuffer
+      double maxSampleGrowthRatio =   fileBPM/(double)tm->BPM->minimumValue;
+      int64 maxSampleSize = importSize* maxSampleGrowthRatio;
+      int64 overFlow = jmax((int64)0,maxSampleSize-maxAllowedSample);
+      if(overFlow>0){
+        while(importSize* maxSampleGrowthRatio>maxAllowedSample){
+          importSize/=2;
+        }
+//        int barLength= 4.0*ti.beatInSample;
+//        overFlow = ceil(overFlow*1.0/barLength)*barLength;
+//        importSize-= overFlow;
+        LOG("sample loading : truncating input bigger than 1mn when stretched " << importSize*1.0/audioReader->lengthInSamples);
       }
-      int destSize = jmin(maxSample,codec->lengthInSamples);
-      int destNumChannels = codec->numChannels;
+
+
+      int destNumChannels = audioReader->numChannels;
       AudioSampleBuffer tempBuf ;
-      tempBuf.setSize(destNumChannels,destSize);
-      codec->read(&tempBuf,0,destSize,0,true,playableBuffer.audioBuffer.getNumChannels()>1?true:false);
-      if(codec->sampleRate != parentLooper->getSampleRate()){
+      tempBuf.setSize(destNumChannels,importSize);
+      audioReader->read(&tempBuf,0,importSize,0,true,playableBuffer.audioBuffer.getNumChannels()>1?true:false);
+      int64 destSize = importSize;
+      if(sampleRateRatio!=1){
         LOG("sample loading : resampling is still experimental : " \
-            <<audioFile.getFileName() << " : " << codec->sampleRate);
+            <<audioFile.getFileName() << " : " << audioReader->sampleRate);
 
         LagrangeInterpolator interpolator;
         AudioSampleBuffer full ;
         full.makeCopyOf(tempBuf);
-        double ratio = codec->sampleRate/ parentLooper->getSampleRate();
-        int newSize  = ratio*destSize;
-        interpolator.process(ratio, full.getReadPointer(0), tempBuf.getWritePointer(0), newSize);
+
+        int64 newSize  = importSize*sampleRateRatio;
+        tempBuf.setSize(tempBuf.getNumChannels(), newSize);
+        interpolator.process(1.0/sampleRateRatio, full.getReadPointer(0), tempBuf.getWritePointer(0), newSize);
         destSize = newSize;
 
       }
+
+      playableBuffer.stopRecordingTail();
+      setTrackState(STOPPED);
+
       playableBuffer.originAudioBuffer.makeCopyOf(tempBuf);
 
-      auto tm = TimeManager::getInstance();
-      auto ti = tm->findTransportTimeInfoForLength(playableBuffer.originAudioBuffer.getNumSamples());
-      double timeRatio = ti.bpm / tm->BPM->doubleValue();
+      // clear fadeout zone
+      playableBuffer.originAudioBuffer.setSize(playableBuffer.originAudioBuffer.getNumChannels(), destSize + padSize,true,true,true);
+
+      ti = tm->findTransportTimeInfoForLength(destSize);
+      double timeRatio = tm->BPM->doubleValue()/ti.bpm ;
       playableBuffer.setRecordedLength(destSize);
       originBPM->setValue( ti.bpm);
       beatLength->setValue(playableBuffer.getRecordedLength()*1.0/ti.beatInSample,false,false,true);
       playableBuffer.setNumChannels(destNumChannels);
       playableBuffer.setTimeRatio(timeRatio);
-      setTrackState(STOPPED);
 
       
 

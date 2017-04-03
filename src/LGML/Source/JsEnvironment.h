@@ -54,10 +54,10 @@ public:
   void setEnabled(bool t);
 
 
-  void    loadFile(const String & path);
-  void    loadFile(const File & f);
+  bool    loadFile(const String & path);
+  bool    loadFile(const File & f);
   Result 	loadScriptContent(const String &content);
-
+  const File & getCurrentFile();
   void    reloadFile();
   void    showFile();
 
@@ -102,7 +102,7 @@ public:
   // module name is the last element of dot separated localNamespace
   String getModuleName();
   String getParentName();
-  String getCurrentFilePath(){return       currentFile.getRelativePathFrom(File::getCurrentWorkingDirectory());}//currentFile.getFullPathName();};
+  String getCurrentFilePath();
 
 
   const NamedValueSet & getRootObjectProperties();

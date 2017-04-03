@@ -29,66 +29,71 @@ class AudioFucker;
 
 
 class Engine:public FileBasedDocument,NodeManager::NodeManagerListener,AsyncUpdater,public ProgressNotifier,
-	public ControllableContainer
+public ControllableContainer
 {
 public:
-    Engine();
-    ~Engine();
+  Engine();
+  ~Engine();
 
-    // Audio
-    AudioProcessorPlayer graphPlayer;
+  // Audio
+  AudioProcessorPlayer graphPlayer;
 
-    void createNewGraph();
-    void clear();
-    void initAudio();
-    void closeAudio();
+  void createNewGraph();
+  void clear();
+  void initAudio();
+  void closeAudio();
 
 
-    void suspendAudio(bool shouldSuspend);
+  void suspendAudio(bool shouldSuspend);
 
-    void parseCommandline(const CommandLineElements & );
+  void parseCommandline(const CommandLineElements & );
 
-    //==============================================================================
-    // see EngineFileDocument.cpp
+  //==============================================================================
+  // see EngineFileDocument.cpp
 
-    //  inherited from FileBasedDocument
-    String getDocumentTitle()override ;
-    Result loadDocument (const File& file)override;
-    Result saveDocument (const File& file)override;
-    File getLastDocumentOpened() override;
-    void setLastDocumentOpened (const File& file) override;
+  //  inherited from FileBasedDocument
+  String getDocumentTitle()override ;
+  Result loadDocument (const File& file)override;
+  Result saveDocument (const File& file)override;
+  File getLastDocumentOpened() override;
+  void setLastDocumentOpened (const File& file) override;
+  // helpers for file document
+  File getCurrentProjectFolder();
+  // return absolute Path if out of project directory
+  String getNormalizedFilePath(const File & f);
+  File getFileAtNormalizedPath(const String & path);
 
-    //    #if JUCE_MODAL_LOOPS_PERMITTED
-    //     File getSuggestedSaveAsFile (const File& defaultFile)override;
-    //    #endif
+  //    #if JUCE_MODAL_LOOPS_PERMITTED
+  //     File getSuggestedSaveAsFile (const File& defaultFile)override;
+  //    #endif
 
-    // our Saving methods
-    var getJSONData() override;
-    void loadJSONData(var data,ProgressTask * loadingTask);
+  // our Saving methods
+  var getJSONData() override;
+  void loadJSONData(var data,ProgressTask * loadingTask);
 
-    bool checkFileVersion(DynamicObject * metaData);
-    int versionStringToInt(const String &version);
-    String getMinimumRequiredFileVersion();
+  bool checkFileVersion(DynamicObject * metaData);
+  int versionStringToInt(const String &version);
+  String getMinimumRequiredFileVersion();
 
-    void  stimulateAudio(bool);
-    ScopedPointer<AudioFucker> stimulator;
+  void  stimulateAudio(bool);
+  ScopedPointer<AudioFucker> stimulator;
 
-    class MultipleAudioSettingsHandler : public ChangeListener,public Timer{
-    public:
-        MultipleAudioSettingsHandler():oldSettingsId("oldAudioSettings"){}
-        Identifier oldSettingsId;
-        void changeListenerCallback(ChangeBroadcaster * )override;
-        void saveCurrent();
-        String getConfigName();
-        void load();
-        String lastConfigName;
-        void timerCallback()override;
+  class MultipleAudioSettingsHandler : public ChangeListener,public Timer{
+  public:
+    MultipleAudioSettingsHandler():oldSettingsId("oldAudioSettings"){}
+    Identifier oldSettingsId;
+    void changeListenerCallback(ChangeBroadcaster * )override;
+    void saveCurrent();
+    String getConfigName();
+    void load();
+    String lastConfigName;
+    void timerCallback()override;
 
-    };
-    MultipleAudioSettingsHandler audioSettingsHandler;
+  };
+  MultipleAudioSettingsHandler audioSettingsHandler;
 
   int64 loadingStartTime;
-  
+
   void managerEndedLoading() override;
   void managerProgressedLoading(float progress) override;
 
@@ -105,7 +110,7 @@ public:
       isEnded = false;
     }
     ~FileLoader(){
-      
+
     }
 
     void timerCallback()override{
@@ -120,11 +125,11 @@ public:
       owner->fileLoaderEnded();
     }
 
-	//float fakeProgress ;
+    //float fakeProgress ;
     Engine * owner;
     File fileToLoad;
     bool isEnded;
-    
+
 
   };
 
@@ -153,7 +158,7 @@ public:
 
   ThreadPool threadPool;
 
-  
+
 };
 
 
