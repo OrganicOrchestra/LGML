@@ -382,18 +382,20 @@ void JsEnvironment::setAutoWatch(bool s) {
 
 void JsEnvironment::timerCallback(int timerID)
 {
-  if (timerID == 0)
+  if (timerID == autoWatchTimer.id)
   {
     if (isEngineLoadingFile())return;
     Time newTime = currentFile.getLastModificationTime();
     if (newTime != lastFileModTime || !_isInSyncWithLGML ) {
 
       isLoadingFile = true;
-      loadFile(currentFile);
+      if(! loadFile(currentFile)){
+        stopTimer(autoWatchTimer.id);
+      }
       isLoadingFile = false;
       lastFileModTime = newTime;
     }
-  } else if (timerID == 1)
+  } else if (timerID == onUpdateTimer.id)
   {
     if(_hasValidJsFile && functionIdentifierIsDefined(onUpdateIdentifier)){
       callFunctionFromIdentifier(onUpdateIdentifier, var(), true);
