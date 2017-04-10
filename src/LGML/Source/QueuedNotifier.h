@@ -57,7 +57,7 @@ public:
       fifo.prepareToWrite(1, start1, size1, start2, size2);
 
       // fifo is full : we can drop message
-      if(size1==0){
+      while(size1==0){
 //        jassert(isUpdatePending());
         if(canDropMessage){
           fifo.finishedRead(1);
@@ -65,12 +65,11 @@ public:
 
         }
         else{
-          while(size1==0){
             fifo.prepareToWrite(1, start1, size1, start2, size2);
             Thread::sleep(10);
           }
         }
-      }
+      
 
 
 
