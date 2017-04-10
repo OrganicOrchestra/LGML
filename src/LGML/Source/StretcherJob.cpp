@@ -70,7 +70,9 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
     }
 
   }
-  if(!shouldExit()){
+  if(!shouldExit() ){
+    ScopedTryLock lk(jobLock);
+    if(lk.isLocked()){
 
     int targetNumSamples = originNumSamples*ratio;
 
@@ -79,8 +81,14 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
       jassertfalse;
     }
 
-    owner->recordNeedle = produced;
-    owner->playNeedle = owner->playNeedle*1.0/owner->recordNeedle*targetNumSamples;
+      
+      double actualRatio = produced*1.0/originNumSamples;
+      jassert(fabs(ratio - actualRatio) < 0.01 );
+//    owner->recordNeedle = produced;
+      
+      double playNeedleRatio =  owner->playNeedle*1.0/owner->recordNeedle;
+    owner->playNeedle = playNeedleRatio *targetNumSamples;
+      owner->multiNeedle.fadeAllOut();
     owner->setRecordedLength(targetNumSamples);
     //    int dbg =stretcher->getSamplesRequired();
     //    jassert(dbg<=0);
@@ -89,6 +97,7 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
 
     int dbg=stretcher->available();
     jassert(dbg<=0);
+    }
   }
   return jobHasFinished;
 }
