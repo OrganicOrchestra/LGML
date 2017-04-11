@@ -15,6 +15,8 @@
 #include "ParameterUI.h"
 #include "EnumParameter.h"
 
+
+
 class EnumParameterUI : public ParameterUI, public EnumParameter::Listener, public ComboBox::Listener
 {
 public:
@@ -35,7 +37,8 @@ public:
   bool canModifyModel,isFileBased;
   enum Actions{
     addElementId = -1,
-    removeElementId = -2
+    removeElementId = -2,
+    NoneId = -3
   };
 
 	

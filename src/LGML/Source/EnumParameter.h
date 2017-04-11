@@ -37,8 +37,9 @@ public:
 
   void removeOption(Identifier key)
   {
-    listeners.call(&Listener::modelOptionRemoved,this,key);
     removeProperty(key);
+    listeners.call(&Listener::modelOptionRemoved,this,key);
+
 
   }
   var getValueForId(const Identifier &i){
@@ -117,7 +118,7 @@ public:
 
   Array<var> getSelectedValues();
   var getFirstSelectedValue(var defaultValue=var::null) ;
-
+  bool selectionIsNotEmpty();
   var getValueForId(const Identifier &i);
   EnumParameterUI * createUI(EnumParameter * target = nullptr);
   ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;

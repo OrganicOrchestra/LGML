@@ -60,7 +60,9 @@ void EnumParameter::removeOption(Identifier key)
 {
   //  removing option thru parameter is not supported when using a shared model
   jassert(ownModel);
+  selectId(key, false,true);
   getModel()->removeOption(key);
+
 
 
 }
@@ -82,7 +84,10 @@ var EnumParameter::getFirstSelectedValue(var defaultValue) {
 }
 
 
-
+bool EnumParameter::selectionIsNotEmpty(){
+  Array<var> arr = getSelectedValues();
+  return arr.size()>0;
+}
 
 
 void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelection){
@@ -116,10 +121,13 @@ bool EnumParameter::selectFromVar(var & _value,bool shouldSelect,bool appendSele
   if (_value.isInt()){
     const int idx = (int)_value;
     auto props = getModel()->getProperties();
-    if(idx==-1) unselectAll();
-    else if(idx>=0 && idx<props.size()){
+
+     if(idx>=0 && idx<props.size()){
       Identifier key = props.getName(idx);
       selectId(key,shouldSelect,appendSelection);
+    }
+    else{
+      unselectAll();
     }
     return true;
 
@@ -127,7 +135,13 @@ bool EnumParameter::selectFromVar(var & _value,bool shouldSelect,bool appendSele
 
   // select based on string
   else if(_value.isString()){
-    selectId(_value.toString(),shouldSelect,appendSelection);
+    String sV = _value.toString();
+    if(sV.isEmpty()){
+      unselectAll();
+    }
+    else{
+      selectId(sV,shouldSelect,appendSelection);
+    }
     return true;
   }
   else {

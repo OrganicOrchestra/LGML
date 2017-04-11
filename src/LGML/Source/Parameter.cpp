@@ -84,7 +84,7 @@ void Parameter::setValueInternal(var & _value) //to override by child classes
 
 bool Parameter::checkValueIsTheSame(var newValue, var oldValue)
 {
-  return newValue == oldValue;
+  return newValue.hasSameTypeAs(oldValue) && (newValue == oldValue);
 }
 
 void Parameter::checkVarIsConsistentWithType(){

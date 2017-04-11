@@ -37,7 +37,7 @@ class PlayableBuffer {
   bool processNextBlock(AudioBuffer<float> & buffer,uint64 time);
 
 
-  bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1,bool isTail=false);
+  bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1);
   void readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample = 0  );
 
 
@@ -60,10 +60,10 @@ class PlayableBuffer {
   bool isFirstRecordedFrame() const;
   bool isOrWasPlaying() const;
   bool isOrWasRecording() const;
-  bool isRecordingTail() const;
+//  bool isRecordingTail() const;
+//
+//  void stopRecordingTail();
 
-  void stopRecordingTail();
-  
 
 
   void startRecord();
@@ -113,6 +113,10 @@ class PlayableBuffer {
 #endif
   void setSampleRate(float sR);
   float sampleRate;
+
+//  void findFadeLoopPoints();
+//  uint64 fadeLoopOutPoint;
+//  bool reverseFadeOut;
 
 
 #if !LGML_UNIT_TESTS

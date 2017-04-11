@@ -39,7 +39,6 @@ void EnumParameterUI::setCanModifyModel(bool isModifiable,bool _isFileBased){
   isFileBased = _isFileBased;
   updateComboBox();
 
-
   
 }
 void EnumParameterUI::updateComboBox()
@@ -50,6 +49,7 @@ void EnumParameterUI::updateComboBox()
 	idKeyMap.clear();
   if(DynamicObject * dob = ep->getModel()){
 	int id = 1;
+    cb.addItem("None", NoneId);
     NamedValueSet map = dob->getProperties();
     for(auto & kv:map)
 	{
@@ -95,7 +95,7 @@ void EnumParameterUI::enumOptionRemoved(EnumParameter *, const Identifier &)
 void EnumParameterUI::enumOptionSelectionChanged(EnumParameter *,bool isSelected,bool isValid, const Identifier &name){
   if(isValid){
     jassert(keyIdMap.contains(name.toString()));
-    cb.setSelectedId(keyIdMap[name.toString()],dontSendNotification);
+    cb.setSelectedId(isSelected?keyIdMap[name.toString()]:0,dontSendNotification);
   }
 }
 
@@ -157,6 +157,9 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
         String elemToRemove = nameWindow.getTextEditorContents("paramToRemove");
         ep->getModel()->removeOption(elemToRemove);
       }
+    }
+    else if( id==NoneId){
+      cb.setSelectedId(0);
     }
     
   }

@@ -53,12 +53,14 @@ logVolume(float01ToGain(DB0_FOR_01),0.5)
   mute = addBoolParameter("Mute", "Sets the track muted (or not.)", false);
   solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
   beatLength = addFloatParameter("Length", "length in bar", 0, 0, 200);
+  beatLength->isEditable = false;
   togglePlayStopTrig = addTrigger("Toggle Play Stop", "Toggle Play / Stop");
   originBPM = addFloatParameter("originBPM","bpm of origin audio loop",0,0,999);
+  originBPM->isEditable = false;
 
   sampleChoice = addEnumParameter("sample", "loaded sample");
   sampleChoice->addAsyncEnumParameterListener(this);
-  
+
   mute->invertVisuals = true;
 
   stateParameterString = addStringParameter("state", "track state", "cleared");
@@ -277,7 +279,7 @@ bool LooperTrack::updatePendingLooperTrackState(  int blockSize) {
 
         // stop oneShot if needed
         if(parentLooper->isOneShot->boolValue() ){
-          quantizedPlayEnd = quantizedPlayStart + playableBuffer.getRecordedLength() - playableBuffer.getNumSampleFadeOut();
+          quantizedPlayEnd = quantizedPlayStart +  playableBuffer.getRecordedLength() - playableBuffer.getNumSampleFadeOut();
         }
 
         quantizedPlayStart = NO_QUANTIZE;
@@ -489,7 +491,9 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
   }
 }
 void LooperTrack::clear(){
+
   setTrackState(CLEARED);
+
   volume->setValue(DB0_FOR_01);
   mute->setValue(false);
   TimeManager::getInstance()->notifyListenerCleared();
@@ -556,7 +560,7 @@ void LooperTrack::setTrackState(TrackState newState) {
   int quantizeTime = getQuantization();
   TimeManager * timeManager = TimeManager::getInstance();
 
-  if(newState==desiredState)return;
+  //  if(newState==desiredState)return;
 
   if (newState == WILL_RECORD && (!shouldWaitFirstOnset() || hasOnset())) {
     // are we able to set the tempo
@@ -655,6 +659,7 @@ void LooperTrack::setTrackState(TrackState newState) {
       startPlayBeat=0;
       startRecBeat=0;
       newState=CLEARED;
+
     }
 
 
@@ -680,18 +685,26 @@ void LooperTrack::setTrackState(TrackState newState) {
       volume->setValue(parentLooper->getPresetValueFor(volume));
       mute->setValue(parentLooper->getPresetValueFor(mute));
       solo->setValue(parentLooper->getPresetValueFor(solo));
+      sampleChoice->setValue(parentLooper->getPresetValueFor(sampleChoice));
     }else
     {
       volume->resetValue();
       mute->resetValue();
       solo->resetValue();
+      sampleChoice->unselectAll();
+    }
+
+    // can't be cleared if a sample Is Loaded
+    // TODO : clarify such behavior
+    if(sampleChoice->selectionIsNotEmpty()){
+      newState = STOPPED;
     }
   }
 
 
   if (newState == WILL_STOP) {
     // force a track to stay in cleared state if stop triggered
-    if (trackState == CLEARED || desiredState==CLEARED) { newState = CLEARED; }
+    if  (trackState == CLEARED || desiredState==CLEARED) { newState = CLEARED; }
   }
   //DBG(newState <<","<<trackState );
   //    DBG(trackStateToString(trackState));
@@ -740,22 +753,27 @@ void LooperTrack::enumOptionSelectionChanged(EnumParameter *ep,bool isSelected, 
     String path = ep->getValueForId(k);
     if(!path.isEmpty()){
       loadAudioSample(path);
+      return;
     }
+
   }
+  // should clear if no audio sample
+  clear();
 };
 void LooperTrack::loadAudioSample(const String & path){
+  // check that for now, but will remove when proper job will be set
   jassert(MessageManager::getInstance()->isThisTheMessageThread());
   File audioFile(path);
   if(audioFile.exists()){
 
-      AudioFormatManager formatManager ;
-      formatManager.registerBasicFormats();
-      ScopedPointer<AudioFormatReader> audioReader = formatManager.createReaderFor (audioFile);
+    AudioFormatManager formatManager ;
+    formatManager.registerBasicFormats();
+    ScopedPointer<AudioFormatReader> audioReader = formatManager.createReaderFor (audioFile);
 
     if(audioReader){
 
 
-      int padSize = playableBuffer.getNumSampleFadeOut() ;
+      int padSize = 0;//playableBuffer.getNumSampleFadeOut() ;
       int64 maxAllowedSample= 44100 * MAX_LOOP_LENGTH_S - padSize - 5000;
 
 
@@ -774,34 +792,34 @@ void LooperTrack::loadAudioSample(const String & path){
         while(importSize* maxSampleGrowthRatio>maxAllowedSample){
           importSize/=2;
         }
-//        int barLength= 4.0*ti.beatInSample;
-//        overFlow = ceil(overFlow*1.0/barLength)*barLength;
-//        importSize-= overFlow;
+        //        int barLength= 4.0*ti.beatInSample;
+        //        overFlow = ceil(overFlow*1.0/barLength)*barLength;
+        //        importSize-= overFlow;
         LOG("sample loading : truncating input bigger than 1mn when stretched " << importSize*1.0/audioReader->lengthInSamples);
       }
 
 
       int destNumChannels = audioReader->numChannels;
       AudioSampleBuffer tempBuf ;
-      tempBuf.setSize(destNumChannels,importSize);
-      audioReader->read(&tempBuf,0,importSize,0,true,playableBuffer.audioBuffer.getNumChannels()>1?true:false);
+      tempBuf.setSize(destNumChannels,audioReader->lengthInSamples);
+      audioReader->read(&tempBuf,0,audioReader->lengthInSamples,0,true,playableBuffer.audioBuffer.getNumChannels()>1?true:false);
       int64 destSize = importSize;
       if(sampleRateRatio!=1){
         LOG("sample loading : resampling is still experimental : " \
             <<audioFile.getFileName() << " : " << audioReader->sampleRate);
 
-        LagrangeInterpolator interpolator;
-        AudioSampleBuffer full ;
-        full.makeCopyOf(tempBuf);
-
-        int64 newSize  = importSize*sampleRateRatio;
-        tempBuf.setSize(tempBuf.getNumChannels(), newSize);
-        interpolator.process(1.0/sampleRateRatio, full.getReadPointer(0), tempBuf.getWritePointer(0), newSize);
-        destSize = newSize;
+        CatmullRomInterpolator interpolator;
+        AudioSampleBuffer origin ;
+        origin.makeCopyOf(tempBuf);
+        tempBuf.setSize(tempBuf.getNumChannels(), destSize);
+        for(int i = 0 ; i  < tempBuf.getNumChannels() ;i++){
+          interpolator.process(1.0/sampleRateRatio, origin.getReadPointer(i), tempBuf.getWritePointer(i), destSize);
+        }
 
       }
 
-      playableBuffer.stopRecordingTail();
+      // playableBuffer.stopRecordingTail();
+      playableBuffer.setState( PlayableBuffer::BUFFER_STOPPED);
       setTrackState(STOPPED);
 
       playableBuffer.originAudioBuffer.makeCopyOf(tempBuf);
@@ -816,9 +834,9 @@ void LooperTrack::loadAudioSample(const String & path){
       beatLength->setValue(playableBuffer.getRecordedLength()*1.0/ti.beatInSample,false,false,true);
       playableBuffer.setNumChannels(destNumChannels);
       playableBuffer.setTimeRatio(timeRatio);
-
       
-
+      
+      
     }
     else{
       LOG("sample loading : format not supported : " << audioFile.getFileExtension());
