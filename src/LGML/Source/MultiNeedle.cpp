@@ -339,7 +339,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
     int curStartPos = curEndPos-numSamples;
     jassert(curStartPos>=0);
     jassert(curStartPos<=loopSize );
-    DBG(currentPos << "\t" << fN->num <<   " " <<nextPos-curEndPos <<  " : "<<fN->lastFade << "\t" << fN->currentFade << "\t" << fN->getCurrentPosition()-loopSize);
+//    DBG(currentPos << "\t" << fN->num <<   " " <<nextPos-curEndPos <<  " : "<<fN->lastFade << "\t" << fN->currentFade << "\t" << fN->getCurrentPosition()-loopSize);
     //          << "\t" << (fN->reverse?1:0));
 
     if(fN->currentFade!=1){
