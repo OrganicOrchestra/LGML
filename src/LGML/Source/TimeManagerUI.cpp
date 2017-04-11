@@ -95,6 +95,8 @@ void TimeManagerUI::paint(Graphics & g)
   g.fillAll(BG_COLOR);
 }
 
+#pragma warning(push)
+#pragma warning(disable:4244)
 void TimeManagerUI::resized(){
 
   int width = 800;
@@ -120,9 +122,8 @@ void TimeManagerUI::resized(){
 
   linkEnabled->setBounds(r.removeFromRight(width*0.1).reduced(gap, 0));
   linkNumPeers->setBounds(r.removeFromRight(width*0.1).reduced(gap, 0));
-
-
 }
+#pragma warning(pop)
 
 TimeManagerUI::TimeBar::TimeBar(TimeManager * t):timeManager(t){
   initComponentsForNumBeats(timeManager->beatPerBar->intValue());

@@ -57,7 +57,7 @@ public:
   bool hasBeenSet;
   int num;
 
-  int fadeOutValue(){return  (consumedSamples>getStartFadeOut())?currentFade:1;}
+  int fadeOutValue(){return  (consumedSamples>getStartFadeOut())?(int)currentFade:1;}
   int getCurrentPosition(){jassert(consumedSamples>=0);return startNeedle+consumedSamples;}
 
   bool isFree(bool allowNotStarted =false){return !hasBeenSet || (allowNotStarted&&consumedSamples==0) ||consumedSamples>getEndFadeOut() || (isFadingOut && currentFade<=0);}
@@ -235,6 +235,7 @@ public:
     jassert(loopSize>0);
     FadeNeedle * fN ;
     bool hasNeedle =false;
+
     while((fN = consumeNextNeedle(numSamples))){
       hasNeedle = true;
 
@@ -280,11 +281,11 @@ private:
   FadeNeedle * getMostConsumedNeedle(const int time){
     FadeNeedle * res = &needles.getReference(0);
     if(res->isFree(true) || (res->getCurrentPosition()==time && res->consumedSamples==0))return res;
-    float minFade = res->fadeOutValue();
+    float minFade = (float)res->fadeOutValue();
     for(int i = 1 ; i < maxNeedles ; i++){
       FadeNeedle * cN =&needles.getReference(i);
       if(cN->isFree(true) || (res->getCurrentPosition()==time && res->consumedSamples==0))return cN;
-      float cR = cN->fadeOutValue();
+      float cR = (float)cN->fadeOutValue();
       if(cR< minFade){
         res = cN;
         minFade = cR;

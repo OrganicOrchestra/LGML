@@ -11,7 +11,7 @@
 #include "ControllableEditor.h"
 #include "ControllableUI.h"
 
-ControllableEditor::ControllableEditor(InspectableComponent * sourceComponent, Controllable * _controllable) :
+ControllableEditor::ControllableEditor(InspectableComponent * /*sourceComponent*/, Controllable * _controllable) :
 	InspectorEditor(), controllable(_controllable),
 	label("Label")
 {

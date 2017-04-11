@@ -25,7 +25,7 @@ extern ThreadPool * getEngineThreadPool();
 using namespace RubberBand;
 #endif
 
-PlayableBuffer::PlayableBuffer(int numChannels,int numSamples,int sampleRate,int blockSize):
+PlayableBuffer::PlayableBuffer(int numChannels,int numSamples,int /*sampleRate*/,int /*blockSize*/):
 audioBuffer(numChannels,numSamples),
 recordNeedle(0),
 

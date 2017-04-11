@@ -46,12 +46,12 @@ void AudioDebugCrack::processBuffer(const AudioBuffer<float> & b){
 
 
     lastValue = curValue;
-    const float alpha = 0.3;
+    const float alpha = 0.3f;
     lastDerivative += alpha * (derivative-lastDerivative);
     sampleCount++;
   }
 }
-void AudioDebugCrack::notifyCrack(const AudioBuffer<float> & b,int i){
+void AudioDebugCrack::notifyCrack(const AudioBuffer<float> & /*b*/,int /*i*/){
   //    jassertfalse;
 
   if(sampleCount-lastCrack>debounceSample){

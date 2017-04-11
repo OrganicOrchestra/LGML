@@ -175,7 +175,7 @@ void JsEnvironment::internalLoadFile(const File &f ){
   jsListeners.call(&JsEnvironment::Listener::newJsFileLoaded,(bool)r);
 
   // TODO get rid of this once unifying JsEnvironment
-  bool isEnabled = (bool)r && _hasValidJsFile && _isInSyncWithLGML;
+  //bool isEnabled = (bool)r && _hasValidJsFile && _isInSyncWithLGML;
   if(Controller * cc = dynamic_cast<Controller*>(this)){
     isEnabled = cc->enabledParam->boolValue();
   }

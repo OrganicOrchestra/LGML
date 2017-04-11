@@ -125,27 +125,27 @@ public:
 
   //Listener
   // per parameter Instance
-  class  Listener
+  class  EnumListener
   {
   public:
     /** Destructor. */
-    virtual ~Listener() {}
+    virtual ~EnumListener() {}
 
     virtual void enumOptionAdded(EnumParameter *, const Identifier &) = 0;
     virtual void enumOptionRemoved(EnumParameter *, const Identifier &) = 0;
-    virtual void enumOptionSelectionChanged(EnumParameter *,bool isSelected, bool isValid, const Identifier &){};
+    virtual void enumOptionSelectionChanged(EnumParameter *,bool /*isSelected*/, bool /*isValid*/, const Identifier &){};
   };
 
 
   QueuedNotifier<EnumChangeMessage> asyncNotifier;
   void newMessage(const EnumChangeMessage &msg) override;
 
-  ListenerList<Listener> enumListeners,asyncEnumListeners;
-  void addEnumParameterListener(Listener* newListener) { enumListeners.add(newListener); }
-  void removeEnumParameterListener(Listener* listener) { enumListeners.remove(listener); }
+  ListenerList<EnumListener> enumListeners,asyncEnumListeners;
+  void addEnumParameterListener(EnumListener* newListener) { enumListeners.add(newListener); }
+  void removeEnumParameterListener(EnumListener* listener) { enumListeners.remove(listener); }
 
-  void addAsyncEnumParameterListener(Listener* newListener) { asyncEnumListeners.add(newListener); }
-  void removeAsyncEnumParameterListener(Listener* listener) { asyncEnumListeners.remove(listener); }
+  void addAsyncEnumParameterListener(EnumListener* newListener) { asyncEnumListeners.add(newListener); }
+  void removeAsyncEnumParameterListener(EnumListener* listener) { asyncEnumListeners.remove(listener); }
   EnumParameterModel * getModel();
 
 private:
@@ -161,7 +161,7 @@ private:
   void modelOptionAdded(EnumParameterModel *,Identifier &) override;
   void modelOptionRemoved(EnumParameterModel *,Identifier &) override;
 
-  void processForMessage(const EnumChangeMessage &,ListenerList<Listener> & _listeners);
+  void processForMessage(const EnumChangeMessage &,ListenerList<EnumListener> & _listeners);
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnumParameter)
 };

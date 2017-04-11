@@ -378,7 +378,7 @@ void NodeContainerViewer::mouseMove(const MouseEvent &)
   }
 }
 
-void NodeContainerViewer::mouseDrag(const MouseEvent & event)
+void NodeContainerViewer::mouseDrag(const MouseEvent &/* event*/)
 {
   if (editingConnection != nullptr)
   {

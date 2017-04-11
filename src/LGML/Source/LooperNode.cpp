@@ -494,7 +494,7 @@ bool LooperNode::hasOnset() {
   return hasOnset;
 }
 
-void LooperNode::BPMChanged(double BPM){
+void LooperNode::BPMChanged(double /*BPM*/){
 #if BUFFER_CAN_STRETCH
   if(!TimeManager::getInstance()->isMasterCandidate(this) && getQuantization()>0){
     for(auto & t : trackGroup.tracks){
@@ -528,7 +528,7 @@ void LooperNode::BPMChanged(double BPM){
 
 };
 
-void LooperNode::timeJumped(uint64 time){
+void LooperNode::timeJumped(uint64 /*time*/){
 
 };
 

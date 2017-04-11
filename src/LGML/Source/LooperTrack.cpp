@@ -735,8 +735,8 @@ void LooperTrack::releaseMasterTrack(){
 
 void LooperTrack::enumOptionAdded(EnumParameter *, const Identifier &) {};
 void LooperTrack::enumOptionRemoved(EnumParameter *, const Identifier &) {};
-void LooperTrack::enumOptionSelectionChanged(EnumParameter *ep,bool isSelected, bool isValid, const Identifier & k){
-  if(ep==sampleChoice && isSelected){
+void LooperTrack::enumOptionSelectionChanged(EnumParameter *ep,bool  _isSelected, bool /*isValid*/, const Identifier & k){
+  if(ep==sampleChoice && _isSelected){
     String path = ep->getValueForId(k);
     if(!path.isEmpty()){
       loadAudioSample(path);
@@ -810,13 +810,15 @@ void LooperTrack::loadAudioSample(const String & path){
       playableBuffer.originAudioBuffer.setSize(playableBuffer.originAudioBuffer.getNumChannels(), destSize + padSize,true,true,true);
 
       ti = tm->findTransportTimeInfoForLength(destSize);
-      double timeRatio = tm->BPM->doubleValue()/ti.bpm ;
       playableBuffer.setRecordedLength(destSize);
       originBPM->setValue( ti.bpm);
       beatLength->setValue(playableBuffer.getRecordedLength()*1.0/ti.beatInSample,false,false,true);
       playableBuffer.setNumChannels(destNumChannels);
-      playableBuffer.setTimeRatio(timeRatio);
 
+#if BUFFER_CAN_STRETCH
+	  double timeRatio = tm->BPM->doubleValue() / ti.bpm;
+	  playableBuffer.setTimeRatio(timeRatio);
+#endif
       
 
     }

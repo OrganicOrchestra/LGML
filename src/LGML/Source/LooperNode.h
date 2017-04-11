@@ -23,7 +23,7 @@
 
 class LooperNode :
 public NodeBase,
-public TimeMasterCandidate,TimeManager::Listener
+public TimeMasterCandidate,TimeManager::TimeManagerListener
 
 {
 
