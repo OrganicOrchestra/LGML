@@ -15,7 +15,7 @@
 
 /*
  This singleton handle time at sample Level
- then can dispatch synchronous or asynchronous event via TimeManager::Listener
+ then can dispatch synchronous or asynchronous event via TimeManager::TimeManagerListener
  Also provide basic click ability, and tap tempo via its parameters click and tapTempo
  */
 
@@ -164,12 +164,12 @@ public TimeMasterCandidate
 
   void notifyListenerCleared();
 
-  class Listener{
+  class TimeManagerListener{
   public:
-    virtual ~Listener(){};
-    virtual void BPMChanged(double BPM){};
-    virtual void timeJumped(uint64 time) {};
-    virtual void playStop(bool playStop){};
+    virtual ~TimeManagerListener(){};
+    virtual void BPMChanged(double /*BPM*/){};
+    virtual void timeJumped(uint64 /*time*/) {};
+    virtual void playStop(bool /*playStop*/){};
 
 
     // prevent link and other timejumps (while recording track for example)
@@ -181,11 +181,10 @@ public TimeMasterCandidate
 
   };
 
-  ListenerList<Listener> listeners;
+  ListenerList<TimeManagerListener> timeManagerListeners;
 
-
-   void addTimeManagerListener(Listener* newListener) { listeners.add(newListener); }
-   void removeTimeManagerListener(Listener* listener) { listeners.remove(listener); }
+   void addTimeManagerListener(TimeManagerListener* newListener) { timeManagerListeners.add(newListener); }
+   void removeTimeManagerListener(TimeManagerListener* listener) { timeManagerListeners.remove(listener); }
 
 
 #if !LGML_UNIT_TESTS

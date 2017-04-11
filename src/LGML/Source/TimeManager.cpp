@@ -225,7 +225,7 @@ bool TimeManager::updateAndNotifyTimeJumpedIfNeeded(){
     timeState.time=timeState.nextTime;
     timeState.nextTime = timeState.time+blockSize;
     timeState.isJumping=false;
-    listeners.call(&Listener::timeJumped,timeState.time);
+    timeManagerListeners.call(&TimeManagerListener::timeJumped,timeState.time);
     desiredTimeState =timeState;
 
     return true;
@@ -405,15 +405,15 @@ void TimeManager::updateState(){
   String dbg;
   if(timeState.isPlaying != desiredTimeState.isPlaying){
     dbg+="play:"+String(timeState.isPlaying)+"/"+String(desiredTimeState.isPlaying);
-    listeners.call(&Listener::playStop,desiredTimeState.isPlaying);
+    timeManagerListeners.call(&TimeManagerListener::playStop,desiredTimeState.isPlaying);
   }
   if(timeState.time != desiredTimeState.time){
     dbg+=" ::: time:"+String(timeState.time)+"/"+String(desiredTimeState.time);
-    listeners.call(&Listener::timeJumped,desiredTimeState.time);
+    timeManagerListeners.call(&TimeManagerListener::timeJumped,desiredTimeState.time);
   }
   if(desiredTimeState.isJumping){
     dbg+="time jumping to : " + String(desiredTimeState.nextTime) + " delta="+String((int)desiredTimeState.nextTime - (int)timeState.nextTime);
-    listeners.call(&Listener::timeJumped,desiredTimeState.time);
+    timeManagerListeners.call(&TimeManagerListener::timeJumped,desiredTimeState.time);
   }
   if(dbg!=""){
     LOG(dbg);
@@ -504,7 +504,7 @@ void TimeManager::setBlockSize(int bS){
   blockSize = bS;
 
 }
-void TimeManager::setBPMInternal(double _BPM,bool adaptTimeInSample){
+void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){
   isSettingTempo->setValue(false,false,false,true);
   int newBeatTime = (uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
 
@@ -567,7 +567,7 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
   }
   // force exact beatTimeInSample
   beatTimeInSample = info.beatInSample;
-  listeners.call(&Listener::BPMChanged,BPM->doubleValue());
+  timeManagerListeners.call(&TimeManagerListener::BPMChanged,BPM->doubleValue());
 
 #if LINK_SUPPORT
 
@@ -638,7 +638,7 @@ bool TimeManager::getCurrentPosition (CurrentPositionInfo& result){
   return true;
 }
 bool TimeManager::isAnyoneBoundToTime(){
-  auto allListeners = listeners.getListeners();
+  auto allListeners = timeManagerListeners.getListeners();
   for(auto &l:allListeners){
     if(l->isBoundToTime()){
       return true;

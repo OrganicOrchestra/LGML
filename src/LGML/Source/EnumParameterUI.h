@@ -15,9 +15,7 @@
 #include "ParameterUI.h"
 #include "EnumParameter.h"
 
-
-
-class EnumParameterUI : public ParameterUI, public EnumParameter::Listener, public ComboBox::Listener
+class EnumParameterUI : public ParameterUI, public EnumParameter::EnumListener, public ComboBox::Listener
 {
 public:
     EnumParameterUI(Parameter * parameter = nullptr);

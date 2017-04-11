@@ -76,10 +76,10 @@ Identifier EnumParameter::getFirstSelectedId() {
   return Identifier::null;
 
 }
-var EnumParameter::getFirstSelectedValue(var defaultValue) {
+var EnumParameter::getFirstSelectedValue(var _defaultValue) {
   Array<var> arr = getSelectedValues();
   if(arr.size())return arr[0];
-  return defaultValue;
+  return _defaultValue;
 
 }
 
@@ -263,21 +263,21 @@ void EnumParameter::modelOptionRemoved(EnumParameterModel *,Identifier & key) {
   asyncNotifier.addMessage(msg);
 };
 
-void EnumParameter::processForMessage(const EnumChangeMessage &msg,ListenerList<Listener> & _listeners){
+void EnumParameter::processForMessage(const EnumChangeMessage &msg,ListenerList<EnumListener> & _listeners){
   if(msg.isStructureChange){
     if(msg.isAdded){
-      _listeners.call(&Listener::enumOptionAdded, this, msg.key);
+      _listeners.call(&EnumListener::enumOptionAdded, this, msg.key);
       // call selection change if a selection become valid
       if(getSelectedIds().contains(msg.key)){
-        _listeners.call(&Listener::enumOptionSelectionChanged,this, true, true, msg.key);
+        _listeners.call(&EnumListener::enumOptionSelectionChanged,this, true, true, msg.key);
       }
     }
     else{
       // call selection change if a selection become valid
       if(getSelectedIds().contains(msg.key)){
-        _listeners.call(&Listener::enumOptionSelectionChanged,this, true, true, msg.key);
+        _listeners.call(&EnumListener::enumOptionSelectionChanged,this, true, true, msg.key);
       }
-      _listeners.call(&Listener::enumOptionRemoved, this, msg.key);
+      _listeners.call(&EnumListener::enumOptionRemoved, this, msg.key);
 
     }
 
@@ -286,7 +286,7 @@ void EnumParameter::processForMessage(const EnumChangeMessage &msg,ListenerList<
   else{
     // check validity state has not changed
     jassert(msg.isValid==getModel()->isValidId(msg.key));
-    _listeners.call(&Listener::enumOptionSelectionChanged, this,msg.isSelected,msg.isValid, msg.key);
+    _listeners.call(&EnumListener::enumOptionSelectionChanged, this,msg.isSelected,msg.isValid, msg.key);
   }
 }
 
