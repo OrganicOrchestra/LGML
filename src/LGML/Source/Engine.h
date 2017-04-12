@@ -165,4 +165,10 @@ public:
 static String lastFileListKey = "recentNodeGraphFiles";
 
 
+
+extern Engine * getEngine();
+extern bool isEngineLoadingFile();
+extern AudioDeviceManager& getAudioDeviceManager();
+extern ThreadPool * getEngineThreadPool();
+
 #endif  // ENGINE_H_INCLUDED

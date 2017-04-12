@@ -326,12 +326,12 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
 
 
   FadeNeedle * fN ;
-  int numNeedle =0;
+  numActiveNeedle =0;
   float accumNeedle = 0;
   float accumNeedleSq = 0;
   ScopedLock lk(readMutex);
   while((fN = consumeNextNeedle(numSamples))){
-    numNeedle++;
+    numActiveNeedle++;
     accumNeedle += fN->getFadeValueStart();
     accumNeedleSq+=fN->getFadeValueStart() * fN->getFadeValueStart();
 
@@ -388,7 +388,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
   if(isLooping){
     DBG(accumNeedle << " // " <<accumNeedleSq );
   }
-  if(numNeedle>1){
+  if(numActiveNeedle>1){
     int dbg;dbg++;
 
     //      jassertfalse.
@@ -412,7 +412,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
     currentPos = nextPos;
 
   }
-
+  
 
 }
 

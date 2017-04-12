@@ -327,8 +327,6 @@ void PlayableBuffer::setState(BufferState newState,int _sampleOffsetBeforeNewSta
     case BUFFER_STOPPED:
       numTimePlayed = 0;
       multiNeedle.fadeAllOut();
-
-
       //        setPlayNeedle(0);
       break;
   }

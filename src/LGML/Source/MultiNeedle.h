@@ -66,6 +66,7 @@ public:
   int fadeOutNumSamples;
   int needleIdx = 0;
   int loopSize;
+  int numActiveNeedle;
   bool isStitching;
   CriticalSection readMutex;
 

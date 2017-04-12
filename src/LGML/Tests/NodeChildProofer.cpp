@@ -22,7 +22,7 @@
 String outTestPath("/tmp/LGMLTest/");
 File outTestDir;
 
-extern Engine * getEngine();
+
 
 class NodeChildProofer  : public UnitTest
 {

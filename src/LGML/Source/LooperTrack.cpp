@@ -17,6 +17,7 @@
 #include "DebugHelpers.h"
 #include "AudioDebugPipe.h"
 #include "AudioDebugCrack.h"
+#include "Engine.h"
 
 #define NO_QUANTIZE (uint64)-1 //std::numeric_limits<uint64>::max()
 
@@ -114,6 +115,10 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
   if(!playableBuffer.processNextBlock(buffer,curTime-offset ) && trackState!=STOPPED){
     LOG("Stopping, too many audio (more than 1mn)");
     setTrackState(STOPPED);
+  }
+
+  if(trackState==CLEARED && playableBuffer.multiNeedle.numActiveNeedle == 0 && playableBuffer.getRecordedLength()>0){
+    playableBuffer.setRecordedLength(0);
   }
   if(playableBuffer.isPlaying()){
     if(playableBuffer.getRecordedLength()>0){
@@ -493,9 +498,6 @@ void LooperTrack::onContainerTriggerTriggered(Trigger * t) {
 void LooperTrack::clear(){
 
   setTrackState(CLEARED);
-
-  volume->setValue(DB0_FOR_01);
-  mute->setValue(false);
   TimeManager::getInstance()->notifyListenerCleared();
 }
 
@@ -680,6 +682,7 @@ void LooperTrack::setTrackState(TrackState newState) {
   if (newState == CLEARED) {
 
 
+    // TODO : clarify behaviour , maybe insert a reset function instead
     if (parentLooper->currentPreset != nullptr)
     {
       volume->setValue(parentLooper->getPresetValueFor(volume));
@@ -691,12 +694,18 @@ void LooperTrack::setTrackState(TrackState newState) {
       volume->resetValue();
       mute->resetValue();
       solo->resetValue();
-      sampleChoice->unselectAll();
+      if(sampleChoice->selectionIsNotEmpty()){
+        // unselect only if extern sample
+        if(!sampleChoice->getFirstSelectedId().toString().startsWith("LGML")){
+          sampleChoice->unselectAll();
+        }
+
+      }
     }
 
-    // can't be cleared if a sample Is Loaded
+    // can't be cleared if an external sample Is Loaded
     // TODO : clarify such behavior
-    if(sampleChoice->selectionIsNotEmpty()){
+    if(sampleChoice->selectionIsNotEmpty() && !sampleChoice->getFirstSelectedId().toString().startsWith("LGML")){
       newState = STOPPED;
     }
   }
@@ -763,7 +772,7 @@ void LooperTrack::enumOptionSelectionChanged(EnumParameter *ep,bool isSelected, 
 void LooperTrack::loadAudioSample(const String & path){
   // check that for now, but will remove when proper job will be set
   jassert(MessageManager::getInstance()->isThisTheMessageThread());
-  File audioFile(path);
+  File audioFile (getEngine()->getFileAtNormalizedPath(path));
   if(audioFile.exists()){
 
     AudioFormatManager formatManager ;

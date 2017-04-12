@@ -12,7 +12,7 @@
 #include "Engine.h"
 #include "Style.h"
 
-extern Engine* getEngine();
+
 
 Outliner::Outliner(const String &contentName) : ShapeShifterContent(contentName)
 {

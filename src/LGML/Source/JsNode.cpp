@@ -12,7 +12,7 @@
 
 #include "JsNodeUI.h"
 #include "Engine.h"
-extern Engine * getEngine();
+
 
 ConnectableNodeUI * JsNode::createUI()
 {

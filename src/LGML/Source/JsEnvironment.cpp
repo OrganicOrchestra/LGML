@@ -17,8 +17,8 @@
 
 #include "Engine.h"
 
-extern bool isEngineLoadingFile();
-extern Engine * getEngine();
+
+
 
 Identifier JsEnvironment::noFunctionLogIdentifier("no function Found");
 Identifier JsEnvironment::onUpdateIdentifier("onUpdate");

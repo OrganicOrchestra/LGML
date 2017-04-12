@@ -12,7 +12,7 @@
 #include "NodeManager.h"
 
 #include "Engine.h"
-extern Engine * getEngine();
+
 
 FastMap::FastMap() :
 	reference(nullptr),

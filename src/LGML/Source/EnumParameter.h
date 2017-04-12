@@ -31,6 +31,11 @@ public:
   void addOption(Identifier key, var data){
     // we don't want to override existing
     jassert(!hasProperty(key));
+    addOrSetOption(key, data);
+
+  }
+
+  void addOrSetOption(Identifier key, var data){
     setProperty(key, data);
     listeners.call(&Listener::modelOptionAdded,this,key);
   }
@@ -103,6 +108,7 @@ public:
   static Identifier selectedSetIdentifier;
   static Identifier modelIdentifier;
   void addOption(Identifier key, var data=var::null);
+  void addOrSetOption(Identifier key, var data=var::null);
   void removeOption(Identifier key);
   void selectId(Identifier key,bool shouldSelect,bool appendSelection = true);
   bool selectFromVar(var & _value,bool shouldSelect,bool appendSelection=true);

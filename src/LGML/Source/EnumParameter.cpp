@@ -56,6 +56,12 @@ void EnumParameter::addOption(Identifier key, var data)
   getModel()->addOption(key,data);
 }
 
+void EnumParameter::addOrSetOption(Identifier key, var data)
+{
+  //  adding option thru parameter is not supported when using a shared model
+  jassert(ownModel);
+  getModel()->addOrSetOption(key,data);
+}
 void EnumParameter::removeOption(Identifier key)
 {
   //  removing option thru parameter is not supported when using a shared model
@@ -92,13 +98,16 @@ bool EnumParameter::selectionIsNotEmpty(){
 
 void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelection){
   if(!appendSelection){
-    unselectAll();
+    auto oldS = getSelectedIds();
+    if(! (oldS.size()==1 && oldS.getReference(0) == key) ) {
+     unselectAll();
+    }
   }
   Array<var> * selection = getSelectedSet(value);
   jassert(selection);
   //  if(!appendSelection)selection->clear();
   int numSelectionChange = 0;
-  if(shouldSelect){
+  if(shouldSelect  && !selection->contains(key.toString())){
     selection->add(key.toString());
     numSelectionChange = 1;
   }
