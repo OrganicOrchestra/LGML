@@ -10,7 +10,7 @@
 
 #include "MultiNeedle.h"
 
-#define DEBUG_NEEDLE 1
+#define DEBUG_NEEDLE 0
 #if DEBUG_NEEDLE
 #define DBGNEEDLE(txt) DBG(txt)
 #else
@@ -339,7 +339,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
     int curStartPos = curEndPos-numSamples;
     jassert(curStartPos>=0);
     jassert(curStartPos<=loopSize );
-//    DBG(currentPos << "\t" << fN->num <<   " " <<nextPos-curEndPos <<  " : "<<fN->lastFade << "\t" << fN->currentFade << "\t" << fN->getCurrentPosition()-loopSize);
+    DBGNEEDLE(currentPos << "\t" << fN->num <<   " " <<nextPos-curEndPos <<  " : "<<fN->lastFade << "\t" << fN->currentFade << "\t" << fN->getCurrentPosition()-loopSize);
     //          << "\t" << (fN->reverse?1:0));
 
     if(fN->currentFade!=1){
@@ -386,7 +386,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
     }
   }
   if(isLooping){
-    DBG(accumNeedle << " // " <<accumNeedleSq );
+    DBGNEEDLE(accumNeedle << " // " <<accumNeedleSq );
   }
   if(numActiveNeedle>1){
     int dbg;dbg++;

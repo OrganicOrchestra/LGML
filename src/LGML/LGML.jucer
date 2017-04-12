@@ -788,7 +788,7 @@
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I/Users/Tintamar/Dev/rubberband/rubberband&#10;-I/Users/Tintamar/Dev/link/include/&#10;-I/Users/Tintamar/Dev/link/modules/asio-standalone/asio/include"
                postbuildCommand="" smallIcon="jsU7Hw" targetFolder="Builds/MacOSX"
-               vst3Folder="/Users/Tintamar/SDKs/VST3 SDK" vstFolder="" externalLibraries=""
+               vst3Folder="/Users/Tintamar/SDKs/VST3_SDK" vstFolder="" externalLibraries=""
                extraLinkerFlags="/Users/Tintamar/Dev/rubberband/lib/librubberband.a"
                extraDefs="LINK_PLATFORM_MACOSX=1">
       <CONFIGURATIONS>

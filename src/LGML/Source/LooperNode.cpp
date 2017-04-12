@@ -25,7 +25,7 @@ streamAudioBuffer(2, 16384)// 16000 ~ 300ms and 256*64
 {
 
   numberOfTracks = addIntParameter("numberOfTracks", "number of tracks in this looper", 8, 1, MAX_NUM_TRACKS);
-  numberOfAudioChannelsIn = addIntParameter("numberOfChannelsPerTrack", "number of channels on each audioTrack", 2, 1, 2);
+  numberOfAudioChannelsIn = addIntParameter("numberOfChannelsPerTrack", "number of channels on each audioTrack in local folder LGML_audio/LooperName/LGML_Loop_trackNum_index.wav", 2, 1, 2);
   exportAudio = addTrigger("exportAudio", "export audio of all recorded Tracks");
   selectAllTrig = addTrigger("Select All", "Select All tracks, for all clear or main volume for instance");
   selectTrack = addIntParameter("Select track", "set track selected", 0, -1, 0);
@@ -339,7 +339,7 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t)
 
 
   if (t == exportAudio) {
-    File folder = getEngine()->getCurrentProjectFolder().getChildFile("audio").getChildFile(shortName);
+    File folder = getEngine()->getCurrentProjectFolder().getChildFile("LGML_audio").getChildFile(shortName);
     folder.createDirectory();
     jassert(folder.exists());
 
