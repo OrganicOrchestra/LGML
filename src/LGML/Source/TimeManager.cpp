@@ -43,7 +43,7 @@ audioClock(0)
 #if LINK_SUPPORT
 ,linkSession(120.0),
 linkTimeLine(ableton::link::Timeline(),true),
-linkLatency(7*1000)
+linkLatency(00)
 #endif
 
 {
@@ -99,6 +99,7 @@ void TimeManager::incrementClock(int block){
     jassertfalse;
 #endif
     setBlockSize(block);
+
   }
 
 #if LINK_SUPPORT
@@ -412,7 +413,10 @@ void TimeManager::updateState(){
     timeManagerListeners.call(&TimeManagerListener::timeJumped,desiredTimeState.time);
   }
   if(desiredTimeState.isJumping){
-    dbg+="time jumping to : " + String(desiredTimeState.nextTime) + " delta="+String((int)desiredTimeState.nextTime - (int)timeState.nextTime);
+    int delta = (int)desiredTimeState.nextTime - (int)timeState.nextTime;
+    if(abs(delta)>32){
+      dbg+="time jumping to : " + String(desiredTimeState.nextTime) + " delta="+String(delta);
+    }
     timeManagerListeners.call(&TimeManagerListener::timeJumped,desiredTimeState.time);
   }
   if(dbg!=""){
@@ -502,6 +506,8 @@ void TimeManager::setSampleRate(int sr){
 void TimeManager::setBlockSize(int bS){
   jassert(bS!=0);
   blockSize = bS;
+  linkLatency = std::chrono::microseconds((long long)(blockSize*1000000/sampleRate));
+
 
 }
 void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){
