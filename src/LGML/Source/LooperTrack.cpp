@@ -831,7 +831,7 @@ void LooperTrack::loadAudioSample(const String & path){
       playableBuffer.originAudioBuffer.setSize(playableBuffer.originAudioBuffer.getNumChannels(), destSize + padSize,true,true,true);
       
       ti = tm->findTransportTimeInfoForLength(destSize);
-      double timeRatio = tm->BPM->doubleValue()/ti.bpm ;
+      double timeRatio = ti.bpm / tm->BPM->doubleValue();
       playableBuffer.setRecordedLength(destSize);
       originBPM->setValue( ti.bpm);
       beatLength->setValue(playableBuffer.getRecordedLength()*1.0/ti.beatInSample,false,false,true);
