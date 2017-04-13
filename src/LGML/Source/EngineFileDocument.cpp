@@ -288,7 +288,9 @@ String Engine::getMinimumRequiredFileVersion()
 
 File Engine::getCurrentProjectFolder(){
   if(!getFile().exists()){
+#if !LGML_UNIT_TESTS
     jassertfalse;
+#endif
     return File();
   }
   return getFile().getParentDirectory();

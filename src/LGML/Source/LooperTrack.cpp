@@ -615,21 +615,8 @@ void LooperTrack::setTrackState(TrackState newState) {
     if ( trackState == RECORDING ){
       if(isMasterTempoTrack() ) {
         quantizedRecordEnd = 0;
-
-        //            timeManager->lockTime(true);
-
-        //        int minRecordTime = (int)(parentLooper->getSampleRate()*0.1f);
-        //        minRecordTime-= minRecordTime%parentLooper->getBlockSize();
-        //        if(playableBuffer.getRecordedLength()< minRecordTime){
-        //          // avoid feedBack when trigger play;
-        //          newState = WILL_RECORD;
-        //          desiredState = WILL_RECORD;
-        //          quantizedRecordEnd =minRecordTime;
-        //        }
-        //        else{
-        newState=WILL_PLAY;
         quantizedPlayStart = 0;
-        //        }
+
       }
       else{
         if(getQuantization()>0)
@@ -638,8 +625,15 @@ void LooperTrack::setTrackState(TrackState newState) {
           quantizedRecordEnd = 0;
 
       }
+      int minRecordTime = (int)(1024 + playableBuffer.multiNeedle.fadeInNumSamples + playableBuffer.multiNeedle.fadeOutNumSamples);
 
+      if(quantizedRecordEnd == 0 && playableBuffer.getRecordedLength()<= minRecordTime){
+        //          jassertfalse;
+        LOG("Looper: can't record that little of audio keep recording a bit");
+        quantizedRecordEnd =timeManager->getTimeInSample() + minRecordTime;
+      }
     }
+
     // if every one else is stopped
     else if(trackState!=CLEARED && parentLooper->askForBeingAbleToPlayNow(this) && !playableBuffer.isOrWasPlaying()) {
       quantizedRecordEnd = NO_QUANTIZE;
@@ -835,7 +829,7 @@ void LooperTrack::loadAudioSample(const String & path){
 
       // clear fadeout zone
       playableBuffer.originAudioBuffer.setSize(playableBuffer.originAudioBuffer.getNumChannels(), destSize + padSize,true,true,true);
-
+      
       ti = tm->findTransportTimeInfoForLength(destSize);
       double timeRatio = tm->BPM->doubleValue()/ti.bpm ;
       playableBuffer.setRecordedLength(destSize);

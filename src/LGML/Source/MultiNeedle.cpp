@@ -214,9 +214,12 @@ isStitching(false)
 
 void MultiNeedle::setLoopSize(int _loopSize){
   if(_loopSize==loopSize)return;
+
   loopSize = _loopSize;
   ScopedLock lk(readMutex);
   if(_loopSize>0){
+    jassert(loopSize>fadeInNumSamples+fadeOutNumSamples);
+    loopSize = jmax(loopSize,fadeInNumSamples+fadeOutNumSamples);
     for(auto & fN : needles){
       fN.setMaxLength(_loopSize);
     }
@@ -244,8 +247,10 @@ void MultiNeedle::jumpTo(const int to){
     }
     else{
       //TODO implement setting needle to its fade part
-      jassertfalse;
-      DBG("multineedle : wrong sustain");
+      int crop = ( loopSize -to)/2 - 1;
+      jassert(crop<fadeInNumSamples && crop<fadeOutNumSamples);
+      fN->set( loopSize -to,fadeInNumSamples-crop,fadeOutNumSamples-crop,0);
+      DBG("multineedle : cropping sustain");
 
     }
 
@@ -352,6 +357,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
       curStartPos = (curStartPos%loopSize);
       curEndPos = curStartPos+numSamples;
       firstPart = jmin(numSamples,loopSize-curStartPos);
+      fN->startNeedle= jmax(0,fN->startNeedle-loopSize);
     }
     int secondPart = numSamples - firstPart;
     jassert(secondPart>=0);
