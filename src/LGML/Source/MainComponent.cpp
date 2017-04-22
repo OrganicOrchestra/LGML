@@ -64,9 +64,10 @@ MainContentComponent::~MainContentComponent(){
 }
 
 void MainContentComponent::focusGained(FocusChangeType cause){
+
   ShapeShifterManager * sm = ShapeShifterManager::getInstanceWithoutCreating();
   if(sm){
-    ShapeShifterContent * nm = ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel);
+	  ShapeShifterPanel * nm = ShapeShifterManager::getInstance()->getPanelForContent(ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel));
     if(nm){
       nm->grabKeyboardFocus();
     }

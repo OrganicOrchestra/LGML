@@ -20,7 +20,7 @@
 /*
 */
 
-class ControllerManagerUI : public ShapeShifterContent, ControllerManager::Listener
+class ControllerManagerUI : public ShapeShifterContentComponent, ControllerManager::Listener
 {
 public:
     ControllerManagerUI(const String &contentName, ControllerManager * manager);

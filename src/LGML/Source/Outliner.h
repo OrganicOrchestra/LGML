@@ -50,7 +50,7 @@ public:
 	Component * createItemComponent() override;
 };
 
-class Outliner : public ShapeShifterContent,
+class Outliner : public ShapeShifterContentComponent,
 				 public ControllableContainerListener,AsyncUpdater
 {
 public:

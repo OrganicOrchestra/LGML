@@ -68,13 +68,13 @@ public:
 };
 
 class FastMapperViewport :
-	public ShapeShifterContent,
+	public ShapeShifterContentComponent,
 	public FastMapperUIListener
 {
 public:
 	FastMapperViewport(const String &contentName, FastMapperUI * _fastMapperUI) :
 		fastMapperUI(_fastMapperUI),
-		ShapeShifterContent(contentName)
+		ShapeShifterContentComponent(contentName)
 	{
 		vp.setViewedComponent(fastMapperUI, true);
 		vp.setScrollBarsShown(true, false);

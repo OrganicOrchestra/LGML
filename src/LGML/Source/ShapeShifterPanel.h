@@ -1,11 +1,11 @@
 /*
-  ==============================================================================
+==============================================================================
 
-    MovablePanel.h
-    Created: 2 May 2016 3:08:37pm
-    Author:  bkupe
+MovablePanel.h
+Created: 2 May 2016 3:08:37pm
+Author:  bkupe
 
-  ==============================================================================
+==============================================================================
 */
 
 #ifndef MOVABLEPANEL_H_INCLUDED
@@ -20,7 +20,7 @@ class ShapeShifterPanelTab;
 class ShapeShifterPanel : public ShapeShifter, public ShapeShifterPanelHeader::Listener
 {
 public:
-	enum AttachZone {NONE, TOP, BOTTOM, LEFT, RIGHT, CENTER };
+	enum AttachZone { NONE, TOP, BOTTOM, LEFT, RIGHT, CENTER };
 
 	ShapeShifterPanel(ShapeShifterContent *innerComponent = nullptr, ShapeShifterPanelTab * sourceTab = nullptr);
 	virtual ~ShapeShifterPanel();
@@ -93,15 +93,19 @@ public:
 	};
 
 	ListenerList<Listener> listeners;
-	void addShapeShifterPanelListener(Listener* newListener) { listeners.add(newListener); }
+	void addShapeShifterPanelListener(Listener* newListener) {
+		if (header.tabs.size() > 0) DBG("Panel, addListener (" << header.tabs[0]->content->contentName << ")");
+		listeners.add(newListener);
+	}
 	void removeShapeShifterPanelListener(Listener* listener) { listeners.remove(listener); }
 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterPanel)
 
 
-
-
+private:
+	WeakReference<ShapeShifterPanel>::Master masterReference;
+	friend class WeakReference<ShapeShifterPanel>;
 
 };
 

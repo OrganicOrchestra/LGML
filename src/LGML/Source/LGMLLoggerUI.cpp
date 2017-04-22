@@ -61,7 +61,7 @@ void LGMLLoggerUI::handleAsyncUpdate(){
 
 LGMLLoggerUI::LGMLLoggerUI(const String &contentName, LGMLLogger * l) :
 logger(l),
-ShapeShifterContent(contentName),
+ShapeShifterContentComponent(contentName),
 logList(this),
 maxNumElement(1000),
 totalLogRow(0)

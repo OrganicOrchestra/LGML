@@ -65,12 +65,12 @@ public:
 };
 
 class NodeManagerUIViewport :
-	public ShapeShifterContent,
+	public ShapeShifterContentComponent,
 	public NodeManagerUI::NodeManagerUIListener,
 	public ButtonListener
 {
 public :
-    NodeManagerUIViewport(const String &contentName, NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContent(contentName)
+    NodeManagerUIViewport(const String &contentName, NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContentComponent(contentName)
 	{
         vp.setViewedComponent(nmui,true);
         vp.setScrollBarsShown(true, true);

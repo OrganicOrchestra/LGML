@@ -506,8 +506,10 @@ void TimeManager::setSampleRate(int sr){
 void TimeManager::setBlockSize(int bS){
   jassert(bS!=0);
   blockSize = bS;
-  linkLatency = std::chrono::microseconds((long long)(blockSize*1000000/sampleRate));
 
+#if LINK_SUPPORT
+  linkLatency = std::chrono::microseconds((long long)(blockSize*1000000/sampleRate));
+#endif
 
 }
 void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){

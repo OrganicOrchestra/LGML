@@ -1,11 +1,11 @@
 /*
-  ==============================================================================
+==============================================================================
 
-    ShapeShifterWindow.h
-    Created: 2 May 2016 4:10:48pm
-    Author:  bkupe
+ShapeShifterWindow.h
+Created: 2 May 2016 4:10:48pm
+Author:  bkupe
 
-  ==============================================================================
+==============================================================================
 */
 
 #ifndef SHAPESHIFTERWINDOW_H_INCLUDED
@@ -21,9 +21,11 @@ public:
 	ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds);
 	~ShapeShifterWindow();
 
-	enum DragMode {NONE, TAB, PANEL};
+	enum DragMode { NONE, TAB, PANEL };
 
 	ShapeShifterPanel * panel;
+
+	bool checking;
 
 	void paintOverChildren(Graphics &g)override;
 	void resized() override;
@@ -34,6 +36,8 @@ public:
 	void mouseUp(const MouseEvent &e) override;
 
 	DragMode dragMode;
+
+	void clear();
 
 	void userTriedToCloseWindow() override;
 

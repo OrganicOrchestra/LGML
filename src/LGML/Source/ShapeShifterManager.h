@@ -1,11 +1,11 @@
 /*
-  ==============================================================================
+==============================================================================
 
-    ShapeShifterManager.h
-    Created: 2 May 2016 3:11:35pm
-    Author:  bkupe
+ShapeShifterManager.h
+Created: 2 May 2016 3:11:35pm
+Author:  bkupe
 
-  ==============================================================================
+==============================================================================
 */
 
 #ifndef SHAPESHIFTERMANAGER_H_INCLUDED
@@ -15,15 +15,21 @@
 #include "ShapeShifterWindow.h"
 #include "ShapeShifterFactory.h"
 
+
+
 class ShapeShifterManager :
 	public ShapeShifterPanel::Listener
 {
 public:
-	juce_DeclareSingleton(ShapeShifterManager,true);
+	juce_DeclareSingleton(ShapeShifterManager, true);
 	ShapeShifterManager();
 	virtual ~ShapeShifterManager();
 
 	ShapeShifterContainer mainContainer;
+
+	File lastFile;
+	const String appLayoutExtension = "lgmllayout";
+	const String appSubFolder = "LGML/layouts";
 
 	OwnedArray<ShapeShifterPanel> openedPanels;
 	OwnedArray<ShapeShifterWindow> openedWindows;
@@ -31,25 +37,32 @@ public:
 	ShapeShifterPanel * currentCandidatePanel;
 	void setCurrentCandidatePanel(ShapeShifterPanel *);
 
+	PanelName getPanelNameForContentName(const String &name);
+	String getContentNameForPanelName(PanelName panelName);
+
 	ShapeShifterPanel * getPanelForContent(ShapeShifterContent * content);
 	ShapeShifterPanel * getPanelForContentName(const String & name);
+
 	ShapeShifterPanel * createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab = nullptr);
 	void removePanel(ShapeShifterPanel * panel);
 
 	ShapeShifterWindow * showPanelWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds);
 	ShapeShifterWindow * showPanelWindowForContent(PanelName panelName);
+	void showContent(String contentName);
+
+
 	void closePanelWindow(ShapeShifterWindow * window, bool doRemovePanel);
 
 	ShapeShifterContent * getContentForName(PanelName contentName);
 
 	ShapeShifterPanel * checkCandidateTargetForPanel(ShapeShifterPanel * panel);
-	bool checkDropOnCandidateTarget(ShapeShifterPanel * panel);
+	bool checkDropOnCandidateTarget(WeakReference<ShapeShifterPanel> panel);
 
 	ShapeShifterWindow * getWindowForPanel(ShapeShifterPanel * panel);
 
 	void loadLayout(var layoutObject);
 	var getCurrentLayout();
-	void loadLayoutFromFile(int fileIndexInLayoutFolder =-1);
+	void loadLayoutFromFile(int fileIndexInLayoutFolder = -1);
 	void loadLayoutFromFile(const File &fromFile);
 	void loadLastSessionLayoutFile();
 	void loadDefaultLayoutFile();

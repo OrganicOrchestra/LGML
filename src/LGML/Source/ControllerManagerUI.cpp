@@ -17,7 +17,7 @@
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(const String &contentName, ControllerManager * manager) :
-	ShapeShifterContent(contentName),
+	ShapeShifterContentComponent(contentName),
     manager(manager)
 {
 

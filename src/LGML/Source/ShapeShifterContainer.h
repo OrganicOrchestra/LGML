@@ -1,11 +1,11 @@
 /*
-  ==============================================================================
+==============================================================================
 
-    ShapeShifterContainer.h
-    Created: 2 May 2016 3:11:25pm
-    Author:  bkupe
+ShapeShifterContainer.h
+Created: 2 May 2016 3:11:25pm
+Author:  bkupe
 
-  ==============================================================================
+==============================================================================
 */
 
 #ifndef SHAPESHIFTERCONTAINER_H_INCLUDED
@@ -39,8 +39,8 @@ class ShapeShifterContainer : public ShapeShifter,
 	public ShapeShifterContainerListener
 {
 public:
-	enum Direction { NONE, HORIZONTAL, VERTICAL};
-	enum Position { TOP, BOTTOM, LEFT ,RIGHT };
+	enum Direction { NONE, HORIZONTAL, VERTICAL };
+	enum Position { TOP, BOTTOM, LEFT, RIGHT };
 
 	ShapeShifterContainer(Direction _direction);
 	virtual ~ShapeShifterContainer();
@@ -48,8 +48,8 @@ public:
 	/*
 	void paintOverChildren(Graphics & g) override
 	{
-		g.setColour(Colours::purple.withAlpha(.3f));
-		g.drawRect(getLocalBounds(),3);
+	g.setColour(Colours::purple.withAlpha(.3f));
+	g.drawRect(getLocalBounds(),3);
 	}
 	*/
 
@@ -73,6 +73,7 @@ public:
 
 	void movePanelsInContainer(ShapeShifterPanel * containedPanel, ShapeShifterPanel * newPanel, Direction _newDir, bool secondBeforeFirst);
 
+	bool isFlexible() override;
 
 	void clear();
 

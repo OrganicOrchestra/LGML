@@ -1,11 +1,11 @@
 /*
-  ==============================================================================
+==============================================================================
 
-    ShapeShifterWindow.cpp
-    Created: 2 May 2016 4:10:48pm
-    Author:  bkupe
+ShapeShifterWindow.cpp
+Created: 2 May 2016 4:10:48pm
+Author:  bkupe
 
-  ==============================================================================
+==============================================================================
 */
 
 #include "ShapeShifterWindow.h"
@@ -13,9 +13,10 @@
 #include "Style.h"
 
 ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds) :
-	panel(_panel),
 	ResizableWindow(_panel->currentContent->contentName, true),
-	dragMode(PANEL)
+	dragMode(PANEL),
+	panel(_panel),
+	checking(false)
 {
 	setTopLeftPosition(bounds.getTopLeft());
 	_panel->setBounds(bounds);
@@ -23,12 +24,10 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 	panel->setPreferredWidth(getWidth());
 	panel->setPreferredHeight(getHeight());
 
-  // @ben : next line create bug when dragging panels
-  // could we clean this up and remove inheritance of shapeShifterPanelListener?
-//	panel->addShapeShifterPanelListener(this); //is it necessary ?
+	//DBG("window -> addShapeShifterListener " << panel->header.tabs[0]->content->contentName);
+	panel->addShapeShifterPanelListener(this); //is it necessary ?
 
-
-	setContentNonOwned(_panel,true);
+	setContentNonOwned(_panel, true);
 
 	setBackgroundColour(BG_COLOR.darker(.1f).withAlpha(.3f));
 
@@ -39,15 +38,14 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 	toFront(true);
 
 
-	addMouseListener(this,true);
+	addMouseListener(this, true);
 
 }
 
 ShapeShifterWindow::~ShapeShifterWindow()
 {
 	removeMouseListener(this);
-
-	panel->removeShapeShifterPanelListener(this);
+	clear();
 
 }
 
@@ -73,7 +71,7 @@ void ShapeShifterWindow::mouseDown(const MouseEvent & e)
 	{
 		dragMode = e.eventComponent == &panel->header ? PANEL : TAB;
 		dragger.startDraggingComponent(this, e);
-	}else
+	} else
 	{
 		dragMode = NONE;
 	}
@@ -91,13 +89,31 @@ void ShapeShifterWindow::mouseDrag(const MouseEvent & e)
 void ShapeShifterWindow::mouseUp(const MouseEvent &)
 {
 	panel->setTransparentBackground(false);
-	ShapeShifterManager::getInstance()->checkDropOnCandidateTarget(panel);
+
+	checking = true;
+	bool found = ShapeShifterManager::getInstance()->checkDropOnCandidateTarget(panel);
+	checking = false;
+
+	if (found)
+	{
+		clear();
+		ShapeShifterManager::getInstance()->closePanelWindow(this, false);
+	}
 }
 
 
+void ShapeShifterWindow::clear()
+{
+	if (panel != nullptr)
+	{
+		panel->removeShapeShifterPanelListener(this);
+		panel = nullptr;
+	}
+}
+
 void ShapeShifterWindow::userTriedToCloseWindow()
 {
-	ShapeShifterManager::getInstance()->closePanelWindow(this,true);
+	ShapeShifterManager::getInstance()->closePanelWindow(this, true);
 }
 
 var ShapeShifterWindow::getCurrentLayout()
@@ -113,5 +129,5 @@ var ShapeShifterWindow::getCurrentLayout()
 
 void ShapeShifterWindow::panelEmptied(ShapeShifterPanel *)
 {
-	ShapeShifterManager::getInstance()->closePanelWindow(this, true);
+	if (!checking) ShapeShifterManager::getInstance()->closePanelWindow(this, true);
 }

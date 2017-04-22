@@ -14,7 +14,7 @@
 
 
 
-Outliner::Outliner(const String &contentName) : ShapeShifterContent(contentName)
+Outliner::Outliner(const String &contentName) : ShapeShifterContentComponent(contentName)
 {
 	getEngine()->addControllableContainerListener(this);
 

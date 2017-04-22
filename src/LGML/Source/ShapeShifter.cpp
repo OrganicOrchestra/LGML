@@ -1,11 +1,11 @@
 /*
-  ==============================================================================
+==============================================================================
 
-    ShapeShifter.cpp
-    Created: 2 May 2016 6:33:16pm
-    Author:  bkupe
+ShapeShifter.cpp
+Created: 2 May 2016 6:33:16pm
+Author:  bkupe
 
-  ==============================================================================
+==============================================================================
 */
 
 #include "ShapeShifter.h"
@@ -14,6 +14,7 @@
 ShapeShifter::ShapeShifter(Type _type) :
 	shifterType(_type),
 	preferredWidth(300), preferredHeight(300),
+	minWidth(100), minHeight(20),
 	parentContainer(nullptr)
 {
 }

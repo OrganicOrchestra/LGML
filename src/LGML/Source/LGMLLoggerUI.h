@@ -15,7 +15,7 @@
 #include "ShapeShifterContent.h"
 #include "DebugHelpers.h"
 
-class LGMLLoggerUI : public ShapeShifterContent,
+class LGMLLoggerUI : public ShapeShifterContentComponent,
 	public LGMLLogger::Listener,
 	public TextButton::Listener,
 public AsyncUpdater

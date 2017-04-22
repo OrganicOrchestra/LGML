@@ -1,11 +1,11 @@
 /*
-  ==============================================================================
+==============================================================================
 
-    ShapeShifterManager.cpp
-    Created: 2 May 2016 3:11:35pm
-    Author:  bkupe
+ShapeShifterManager.cpp
+Created: 2 May 2016 3:11:35pm
+Author:  bkupe
 
-  ==============================================================================
+==============================================================================
 */
 
 #include "ShapeShifterManager.h"
@@ -18,13 +18,13 @@ ShapeShifterManager::ShapeShifterManager() :
 	mainContainer(ShapeShifterContainer::Direction::VERTICAL),
 	currentCandidatePanel(nullptr)
 {
-
+	lastFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder + "/_lastSession." + appLayoutExtension);
 }
 
 ShapeShifterManager::~ShapeShifterManager()
 {
 	openedWindows.clear();
-	File lastFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile("LGML/layouts/_lastSession.lgmllayout");
+
 	saveCurrentLayoutToFile(lastFile);
 
 }
@@ -37,6 +37,16 @@ void ShapeShifterManager::setCurrentCandidatePanel(ShapeShifterPanel * panel)
 	currentCandidatePanel = panel;
 	if (currentCandidatePanel != nullptr) currentCandidatePanel->setTargetMode(true);
 
+}
+
+PanelName ShapeShifterManager::getPanelNameForContentName(const String & name)
+{
+	return (PanelName)globalPanelNames.indexOf(name);
+}
+
+String ShapeShifterManager::getContentNameForPanelName(PanelName panelName)
+{
+	return globalPanelNames[(int)panelName];
 }
 
 
@@ -62,10 +72,11 @@ ShapeShifterPanel * ShapeShifterManager::getPanelForContentName(const String & n
 
 ShapeShifterPanel * ShapeShifterManager::createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab)
 {
-	ShapeShifterPanel * panel = new ShapeShifterPanel(content,sourceTab);
+	ShapeShifterPanel * panel = new ShapeShifterPanel(content, sourceTab);
 
 	//if(content != nullptr) panel->setSize(content->getWidth(), content->getHeight());
 
+	DBG("Add shape shifter panel listener from manager");
 	panel->addShapeShifterPanelListener(this);
 	openedPanels.add(panel);
 	return panel;
@@ -79,7 +90,7 @@ void ShapeShifterManager::removePanel(ShapeShifterPanel * panel)
 
 ShapeShifterWindow * ShapeShifterManager::showPanelWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds)
 {
-	ShapeShifterWindow * w = new ShapeShifterWindow(_panel,bounds);
+	ShapeShifterWindow * w = new ShapeShifterWindow(_panel, bounds);
 	openedWindows.add(w);
 	w->toFront(true);
 	return w;
@@ -97,10 +108,39 @@ ShapeShifterWindow * ShapeShifterManager::showPanelWindowForContent(PanelName pa
 	return w;
 }
 
+void ShapeShifterManager::showContent(String contentName)
+{
+	ShapeShifterPanel * p = getPanelForContentName(contentName);
+
+	if (p != nullptr)
+	{
+		p->setCurrentContent(contentName);
+		ShapeShifterWindow * w = getWindowForPanel(p);
+		if (w != nullptr) w->toFront(true);
+	} else
+	{
+		ShapeShifterContent * c = ShapeShifterFactory::createContentForIndex(getPanelNameForContentName(contentName));
+
+		if (c == nullptr) return;
+
+		ShapeShifterPanel * newP = createPanel(c);
+
+		if (mainContainer.shifters.size() == 0)
+		{
+			mainContainer.insertPanelAt(newP, 0);
+		} else
+		{
+			Rectangle<int> r(100, 100, 300, 500);
+			showPanelWindow(newP, r);
+		}
+	}
+}
+
 void ShapeShifterManager::closePanelWindow(ShapeShifterWindow * window, bool doRemovePanel)
 {
 	if (window == nullptr) return;
 	ShapeShifterPanel * p = window->panel;
+	window->clear();
 	window->removeFromDesktop();
 	if (doRemovePanel) removePanel(p);
 	openedWindows.removeObject(window, true);
@@ -131,23 +171,25 @@ ShapeShifterPanel * ShapeShifterManager::checkCandidateTargetForPanel(ShapeShift
 			candidate = p;
 		}
 	}
+
 	setCurrentCandidatePanel(candidate);
 
-	if(currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone(panel);
+	if (currentCandidatePanel != nullptr) currentCandidatePanel->checkAttachZone(panel);
 
 
 	return candidate;
 }
 
-bool ShapeShifterManager::checkDropOnCandidateTarget(ShapeShifterPanel * panel)
+bool ShapeShifterManager::checkDropOnCandidateTarget(WeakReference<ShapeShifterPanel> panel)
 {
+	if (panel.wasObjectDeleted()) return false;
+
 	if (currentCandidatePanel == nullptr) return false;
 
 	bool result = currentCandidatePanel->attachPanel(panel);
-	if (result) closePanelWindow(getWindowForPanel(panel),false);
-
+	//if (result) closePanelWindow(getWindowForPanel(panel),false);
 	setCurrentCandidatePanel(nullptr);
-	return true;
+	return result;
 }
 
 ShapeShifterWindow * ShapeShifterManager::getWindowForPanel(ShapeShifterPanel * panel)
@@ -163,11 +205,7 @@ ShapeShifterWindow * ShapeShifterManager::getWindowForPanel(ShapeShifterPanel * 
 void ShapeShifterManager::loadLayout(var layout)
 {
 	clearAllPanelsAndWindows();
-	if (layout.getDynamicObject() == nullptr)
-	{
-		DBG("Layout is null");
-		return;
-	}
+	if (layout.getDynamicObject() == nullptr) return;
 	mainContainer.loadLayout(layout.getDynamicObject()->getProperty("mainLayout"));
 
 	Array<var>* wData = layout.getDynamicObject()->getProperty("windows").getArray();
@@ -176,20 +214,19 @@ void ShapeShifterManager::loadLayout(var layout)
 	{
 		for (auto &wd : *wData)
 		{
-			DynamicObject * d = wd.getDynamicObject();
+			ScopedPointer<DynamicObject> d = wd.getDynamicObject();
 			ShapeShifterPanel * p = createPanel(nullptr);
 			p->loadLayout(d->getProperty("panel"));
-			Rectangle<int> bounds(d->getProperty("x"),d->getProperty("y"),d->getProperty("width"),d->getProperty("height"));
-			showPanelWindow(p,bounds);
+			Rectangle<int> bounds(d->getProperty("x"), d->getProperty("y"), d->getProperty("width"), d->getProperty("height"));
+			showPanelWindow(p, bounds);
 		}
 	}
 }
 
 var ShapeShifterManager::getCurrentLayout()
 {
-	DynamicObject * d = new DynamicObject();
-	var layout(d);
-	d->setProperty("mainLayout", mainContainer.getCurrentLayout());
+	var layout(new DynamicObject());
+	layout.getDynamicObject()->setProperty("mainLayout", mainContainer.getCurrentLayout());
 
 	var wData;
 	for (auto &w : openedWindows)
@@ -204,7 +241,7 @@ var ShapeShifterManager::getCurrentLayout()
 void ShapeShifterManager::loadLayoutFromFile(int fileIndexInLayoutFolder)
 {
 
-	File destDir = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile("LGML/layouts");
+	File destDir = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
 	if (!destDir.exists())
 	{
 		destDir.createDirectory();
@@ -213,7 +250,7 @@ void ShapeShifterManager::loadLayoutFromFile(int fileIndexInLayoutFolder)
 	File layoutFile;
 	if (fileIndexInLayoutFolder == -1)
 	{
-		FileChooser fc("Load layout", destDir, "*.lgmllayout");
+		FileChooser fc("Load layout", destDir, "*." + appLayoutExtension);
 		if (!fc.browseForFileToOpen()) return;
 		layoutFile = fc.getResult();
 	} else
@@ -234,7 +271,6 @@ void ShapeShifterManager::loadLayoutFromFile(const File & fromFile)
 
 void ShapeShifterManager::loadLastSessionLayoutFile()
 {
-	File lastFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile("LGML/layouts/_lastSession.lgmllayout");
 	if (lastFile.exists())
 	{
 		loadLayoutFromFile(lastFile);
@@ -247,16 +283,25 @@ void ShapeShifterManager::loadLastSessionLayoutFile()
 
 void ShapeShifterManager::loadDefaultLayoutFile()
 {
-	String defaultLayoutFileData = String::fromUTF8(BinaryData::default_lgmllayout);
-	loadLayout(JSON::parse(defaultLayoutFileData));
+	File defaultFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder + "/default." + appLayoutExtension);
+	if (defaultFile.exists())
+	{
+		loadLayoutFromFile(defaultFile);
+	} else
+	{
+		String defaultLayoutFileData = String::fromUTF8(BinaryData::default_lgmllayout);
+		loadLayout(JSON::parse(defaultLayoutFileData));
+		//File layoutFolder = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
+		//saveCurrentLayoutToFile(layoutFolder.getChildFile("default.lgmllayout"));
+	}
 }
 
 void ShapeShifterManager::saveCurrentLayout()
 {
-	File destDir = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile("LGML/layouts");
+	File destDir = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
 	if (!destDir.exists()) destDir.createDirectory();
 
-	FileChooser fc("Save layout", destDir, "*.lgmllayout");
+	FileChooser fc("Save layout", destDir, "*." + appLayoutExtension);
 	if (fc.browseForFileToSave(true))
 	{
 		saveCurrentLayoutToFile(fc.getResult());
@@ -273,21 +318,20 @@ void ShapeShifterManager::saveCurrentLayoutToFile(const File &toFile)
 	}
 
 	ScopedPointer<OutputStream> os(toFile.createOutputStream());
-	if (os == nullptr) return;
 	JSON::writeToStream(*os, getCurrentLayout());
 	os->flush();
 }
 
 Array<File> ShapeShifterManager::getLayoutFiles()
 {
-	File layoutFolder = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile("LGML/layouts");
+	File layoutFolder = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
 	if (!layoutFolder.exists())
 	{
 		layoutFolder.createDirectory();
 	}
 
 	Array<File> layoutFiles;
-	layoutFolder.findChildFiles(layoutFiles, File::findFiles, false, "*.lgmllayout");
+	layoutFolder.findChildFiles(layoutFiles, File::findFiles, false, "*." + appLayoutExtension);
 
 	return layoutFiles;
 }
@@ -316,10 +360,10 @@ PopupMenu ShapeShifterManager::getPanelsMenu()
 
 	Array<File> layoutFiles = getLayoutFiles();
 
-	int specialIndex = layoutP.getNumItems()+1;
+	int specialIndex = layoutP.getNumItems() + 1;
 	for (auto &f : layoutFiles)
 	{
-		layoutP.addItem(baseSpecialMenuCommandID+specialIndex,f.getFileNameWithoutExtension());
+		layoutP.addItem(baseSpecialMenuCommandID + specialIndex, f.getFileNameWithoutExtension());
 		specialIndex++;
 	}
 
@@ -350,7 +394,7 @@ void ShapeShifterManager::handleMenuPanelCommand(int commandID)
 			saveCurrentLayout();
 			break;
 
-		case 2 : //Load
+		case 2: //Load
 			loadDefaultLayoutFile();
 			break;
 
@@ -368,28 +412,5 @@ void ShapeShifterManager::handleMenuPanelCommand(int commandID)
 	int relCommandID = commandID - baseMenuCommandID - 1;
 
 	String contentName = globalPanelNames[relCommandID];
-	ShapeShifterPanel * p = getPanelForContentName(contentName);
-	if (p != nullptr)
-	{
-		p->setCurrentContent(contentName);
-		ShapeShifterWindow * w = getWindowForPanel(p);
-		if (w != nullptr) w->toFront(true);
-	}else
-	{
-		ShapeShifterContent * c = ShapeShifterFactory::createContentForIndex((PanelName)relCommandID);
-
-		if (c == nullptr) return;
-
-		ShapeShifterPanel * newP = createPanel(c);
-
-		if (mainContainer.shifters.size() == 0)
-		{
-			mainContainer.insertPanelAt(newP, 0);
-		}
-		else
-		{
-			Rectangle<int> r(100,100,300, 500);
-			showPanelWindow(newP, r);
-		}
-	}
+	showContent(contentName);
 }

@@ -21,7 +21,7 @@
 #include "ShapeShifterContent.h"
 
 
-class TimeManagerUI : public ShapeShifterContent,public Parameter::AsyncListener{
+class TimeManagerUI : public ShapeShifterContentComponent,public Parameter::AsyncListener{
 
   public :
   TimeManagerUI(const String &contentName, TimeManager * _timeManager);
