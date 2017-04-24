@@ -1,11 +1,11 @@
 /*
-==============================================================================
+  ==============================================================================
 
-ShapeShifter.h
-Created: 2 May 2016 6:33:16pm
-Author:  bkupe
+    ShapeShifter.h
+    Created: 2 May 2016 6:33:16pm
+    Author:  bkupe
 
-==============================================================================
+  ==============================================================================
 */
 
 #ifndef SHAPESHIFTER_H_INCLUDED
@@ -17,8 +17,8 @@ class ShapeShifterContainer;
 
 class ShapeShifter : public Component
 {
-public:
-	enum Type { PANEL, CONTAINER };
+public :
+	enum Type {PANEL, CONTAINER};
 
 	ShapeShifter(Type _type);
 	virtual ~ShapeShifter();
@@ -26,9 +26,6 @@ public:
 	ShapeShifterContainer * parentContainer;
 
 	Type shifterType;
-
-	int minWidth;
-	int minHeight;
 
 	int preferredWidth;
 	int preferredHeight;

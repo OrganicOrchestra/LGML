@@ -1,11 +1,11 @@
 /*
-==============================================================================
+  ==============================================================================
 
-ShapeShifter.cpp
-Created: 2 May 2016 6:33:16pm
-Author:  bkupe
+    ShapeShifter.cpp
+    Created: 2 May 2016 6:33:16pm
+    Author:  bkupe
 
-==============================================================================
+  ==============================================================================
 */
 
 #include "ShapeShifter.h"
@@ -14,7 +14,6 @@ Author:  bkupe
 ShapeShifter::ShapeShifter(Type _type) :
 	shifterType(_type),
 	preferredWidth(300), preferredHeight(300),
-	minWidth(100), minHeight(20),
 	parentContainer(nullptr)
 {
 }
@@ -25,12 +24,12 @@ ShapeShifter::~ShapeShifter()
 
 void ShapeShifter::setPreferredWidth(int newWidth)
 {
-	preferredWidth = jmax<int>(5, newWidth);
+	preferredWidth = jmax<int>(150, newWidth);
 }
 
 void ShapeShifter::setPreferredHeight(int newHeight)
 {
-	preferredHeight = jmax<int>(0, newHeight);
+	preferredHeight = jmax<int>(50, newHeight);
 }
 
 int ShapeShifter::getPreferredWidth()

@@ -143,11 +143,11 @@ public:
     {
       startTimer(1000);
 
-      setUsingNativeTitleBar (true);
-      mainComponent = createMainContentComponent(e);
-      setContentOwned (mainComponent, true);
-      setResizable (true, true);
-    
+      
+	  setUsingNativeTitleBar(true);
+	  mainComponent = createMainContentComponent(e);
+	  setContentOwned(mainComponent, true);
+	  setResizable(true, true);
 
 
 	  int tx = getAppProperties().getCommonSettings(true)->getIntValue("windowX");
@@ -160,6 +160,8 @@ public:
       setBounds (jmax<int>(tx,20), jmax<int>(ty,20), jmax<int>(tw,100), jmax<int>(th,100));
 	  setFullScreen(fs);
 
+	  
+
       setVisible (true);
 
 #if ! JUCE_MAC
@@ -171,9 +173,13 @@ public:
       openGLContext.attachTo(*getTopLevelComponent());
 #endif
 
+
+
+	  ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
+
     }
     void focusGained(FocusChangeType cause)override{
-      mainComponent->grabKeyboardFocus();
+		//mainComponent->grabKeyboardFocus();
     }
 
 

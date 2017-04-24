@@ -30,8 +30,7 @@ engine->addEngineListener(this);
 
   addAndMakeVisible(&ShapeShifterManager::getInstance()->mainContainer);
 
-  ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
-
+  
   (&getCommandManager())->registerAllCommandsForTarget (this);
   (&getCommandManager())-> setFirstCommandTarget(this);
 
@@ -47,6 +46,7 @@ engine->addEngineListener(this);
 
   setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.6f));
   setWantsKeyboardFocus(true);
+
 
 }
 
