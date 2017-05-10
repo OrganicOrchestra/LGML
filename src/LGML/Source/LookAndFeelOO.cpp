@@ -416,6 +416,11 @@ void LookAndFeelOO::drawProgressBar (Graphics& g, ProgressBar& progressBar,
     }
 }
 
+bool LookAndFeelOO::isProgressBarOpaque (ProgressBar& progressBar)
+{
+  return progressBar.findColour (ProgressBar::backgroundColourId).isOpaque();
+}
+
 void LookAndFeelOO::drawSpinningWaitAnimation (Graphics& g, const Colour& colour, int x, int y, int w, int h)
 {
     const float radius = jmin (w, h) * 0.4f;

@@ -43,4 +43,8 @@ def sendToOwnCloud(originPath,destPath):
 
 
 if __name__=='__main__':
-	makeDirIfNotExistent('Tools/LGML/App-Dev/Linux/lala/lolo/lili/lal.txt',True )
+	lastLGMLPath = urllib.pathname2url("/Tools/LGML/App-Dev/OSX/lastLGML.dmg")
+	currentLGML = urllib.pathname2url("/Tools/LGML/App-Dev/OSX/LGML_v1.1.6beta.dmg")
+
+	sh("curl -X COPY \"https://163.172.42.66/owncloud/remote.php/webdav/"+currentLGML+"\" \"https://163.172.42.66/owncloud/remote.php/webdav/"+lastLGMLPath+"\" -u "+getCredential()+" -k",printIt=False)
+

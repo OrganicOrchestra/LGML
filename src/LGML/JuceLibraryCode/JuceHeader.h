@@ -10,8 +10,7 @@
 
 */
 
-#ifndef __APPHEADERFILE_A1HJPO__
-#define __APPHEADERFILE_A1HJPO__
+#pragma once
 
 #include "AppConfig.h"
 
@@ -42,9 +41,7 @@
 namespace ProjectInfo
 {
     const char* const  projectName    = "LGML";
-    const char* const  versionString  = "1.1.9beta";
-    const int          versionNumber  = 0x10109;
+    const char* const  versionString  = "1.1.95beta";
+    const int          versionNumber  = 0x1015f;
 }
 #endif
-
-#endif   // __APPHEADERFILE_A1HJPO__

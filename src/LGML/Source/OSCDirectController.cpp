@@ -178,8 +178,8 @@ void OSCDirectController::controllableRemoved(Controllable *)
 
 void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
 {
-#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
   if(enabledParam->boolValue()){
+#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES
     String cAddress = c->controlAddress;
     Controllable::Type targetType = c->type;
     if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
@@ -213,10 +213,6 @@ void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*o
             jassertfalse;
             break;
     }
-
-
-
-
 
 
 #else

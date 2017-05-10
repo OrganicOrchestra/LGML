@@ -4,8 +4,7 @@
 
 */
 
-#ifndef BINARYDATA_H_6879825_INCLUDED
-#define BINARYDATA_H_6879825_INCLUDED
+#pragma once
 
 namespace BinaryData
 {
@@ -13,7 +12,7 @@ namespace BinaryData
     const int            littleredridinghoodmd_pngSize = 51582;
 
     extern const char*   default_lgmllayout;
-    const int            default_lgmllayoutSize = 2344;
+    const int            default_lgmllayoutSize = 2243;
 
     extern const char*   removeBT_png;
     const int            removeBT_pngSize = 58335;
@@ -37,5 +36,3 @@ namespace BinaryData
     // return the corresponding data and its size (or a null pointer if the name isn't found).
     const char* getNamedResource (const char* resourceNameUTF8, int& dataSizeInBytes) throw();
 }
-
-#endif

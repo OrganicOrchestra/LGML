@@ -259,8 +259,9 @@ public:
     //==============================================================================
     void drawProgressBar (Graphics&, ProgressBar&, int width, int height, double progress, const String& textToShow) override;
     void drawSpinningWaitAnimation (Graphics&, const Colour& colour, int x, int y, int w, int h) override;
-
-    //==============================================================================
+  bool isProgressBarOpaque (ProgressBar& progressBar) override;
+  
+  //==============================================================================
     bool areScrollbarButtonsVisible() override;
     void drawScrollbarButton (Graphics&, ScrollBar&, int width, int height, int buttonDirection,
                               bool isScrollbarVertical, bool isMouseOverButton, bool isButtonDown) override;

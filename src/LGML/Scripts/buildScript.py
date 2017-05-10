@@ -8,7 +8,7 @@ from PyUtils import *
 
 
 bumpVersion = False
-sendToOwncloud = True
+sendToOwncloud = False
 specificVersion = ""
 cleanFirst = False;
 localExportPath2 = [

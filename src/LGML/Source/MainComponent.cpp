@@ -96,7 +96,7 @@ void MainContentComponent::showAudioSettings()
   o.content.setNonOwned (&audioSettingsComp);
   o.dialogTitle                   = "Audio Settings";
   o.componentToCentreAround       = this;
-  o.dialogBackgroundColour        = Colours::azure;
+//  o.dialogBackgroundColour        = Colours::azure;
   o.escapeKeyTriggersCloseButton  = true;
   o.useNativeTitleBar             = false;
   o.resizable                     = false;
