@@ -266,9 +266,10 @@ void PresetManager::Preset::loadJSONData(var data)
 {
 
   Array<var> * pvDatas = data.getDynamicObject()->getProperty("values").getArray();
-
-  for (auto &pvData : *pvDatas)
-  {
-				addPresetValue(pvData.getProperty(ControllableContainer::controlAddressIdentifier, var()),pvData.getProperty("value",var()));
+  if(pvDatas!=nullptr){
+    for (auto &pvData : *pvDatas)
+    {
+      addPresetValue(pvData.getProperty(ControllableContainer::controlAddressIdentifier, var()),pvData.getProperty("value",var()));
+    }
   }
 }
