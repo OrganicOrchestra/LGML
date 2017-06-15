@@ -155,7 +155,9 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
       if (result)
       {
         String elemToRemove = nameWindow.getTextEditorContents("paramToRemove");
+        if(elemToRemove.isNotEmpty()){
         ep->getModel()->removeOption(elemToRemove);
+        }
       }
     }
     else if( id==NoneId){
