@@ -157,6 +157,7 @@ int MIDIListener::commonNamePartWithInName(String & s){
   }
   return res;
 }
+
 String MIDIListener::getClosestOutName(){
 
   int best = 0;
