@@ -91,6 +91,7 @@ void JsEnvironment::clearNamespace(){
 
   static Identifier createParamListenerId("createParameterListener");
   localEnv->setMethod(createParamListenerId, &JsEnvironment::createParameterListenerObject);
+  localEnv->setProperty(jsPtrIdentifier, (int64)this);
   jsEngine->registerNativeObject(jsLocalIdentifier, localEnv);
   jsEngine->registerNativeObject(jsGlobalIdentifier, getGlobalEnv());
 

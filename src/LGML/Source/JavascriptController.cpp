@@ -217,17 +217,18 @@ var JavascriptController::createJsOSCListener(const var::NativeFunctionArgs & a)
 
   OSCAddressPattern oscPattern( a.arguments[0].toString());
 
-  JavascriptController * originEnv = dynamic_cast<JavascriptController*>(a.thisObject.getDynamicObject());
+  JavascriptController * originEnv = getObjectPtrFromJS<JavascriptController>(a);
   if(originEnv){
     JsOSCListener * ob = new JsOSCListener(originEnv,oscPattern);
     originEnv->jsOSCListeners.add(ob);
     return ob->object;
   }
+  
 
   return var::undefined();
 }
 inline void JsOSCListener::processMessage(const OSCMessage & msg) {
-	if (addressPattern == msg.getAddressPattern()) {
+	if (addressPattern.matches( msg.getAddressPattern().toString())) {
 		StringArray adList;
 		adList.addTokens(msg.getAddressPattern().toString(), "/", "");
 		if (adList.size())adList.remove(0);
