@@ -221,7 +221,7 @@ void MultiNeedle::setLoopSize(int _loopSize){
     jassert(loopSize>fadeInNumSamples+fadeOutNumSamples);
     loopSize = jmax(loopSize,fadeInNumSamples+fadeOutNumSamples);
     for(auto & fN : needles){
-      fN.setMaxLength(_loopSize);
+      fN.setMaxLength(loopSize);
     }
   }
   else{
