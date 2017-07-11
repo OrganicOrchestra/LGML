@@ -38,7 +38,7 @@ def buildAll(osType,configuration):
 		ProJucerUtils.updateVersion(bumpVersion,specificVersion);
 		ProJucerUtils.buildJUCE();
 	else:
-		print 'not updating projucer'
+		print ('not updating projucer')
 	
 	if osType=='osx':
 		import osx
