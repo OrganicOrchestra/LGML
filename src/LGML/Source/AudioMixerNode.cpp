@@ -129,9 +129,10 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
         if(oneToOne->boolValue()){
             for(int i = outBuses.size() -1 ; i >=0 ; --i){
-                if(i<outBuses[i]->volumes.size()){
+              auto outI = outBuses.getUnchecked(i);
+                if(i<outI->volumes.size()){
                     cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
-                                                  outBuses[i]->lastVolumes[i],outBuses[i]->logVolumes[i]);
+                                                  outI->lastVolumes[i],outI->logVolumes[i]);
                 }
                 else{
                     cachedBuffer.clear(i, 0, numSamples);
@@ -142,20 +143,22 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
 
             for(int i = outBuses.size() -1 ; i >=0 ; --i){
+              auto outI = outBuses.getUnchecked(i);
                 cachedBuffer.copyFromWithRamp(i, 0, buffer.getReadPointer(0),numSamples,
-                                              outBuses[i]->lastVolumes[0],outBuses[i]->logVolumes[0]);
+                                              outI->lastVolumes[0],outI->logVolumes[0]);
 
                 for(int j = totalNumInputChannels-1 ; j >0  ; --j){
                     cachedBuffer.addFromWithRamp(i, 0, buffer.getReadPointer(j),numSamples,
-                                                 outBuses[i]->lastVolumes[j],outBuses[i]->logVolumes[j]);
+                                                 outI->lastVolumes[j],outI->logVolumes[j]);
                 }
             }
         }
 
 
         for(int i = outBuses.size() -1 ; i >=0 ; --i){
+          auto outI = outBuses.getUnchecked(i);
             for(int j = totalNumInputChannels-1 ; j>=0 ;--j){
-                outBuses[i]->lastVolumes.set(j, outBuses[i]->logVolumes[j]);
+                outI->lastVolumes.set(j, outI->logVolumes[j]);
             }
 
         }
