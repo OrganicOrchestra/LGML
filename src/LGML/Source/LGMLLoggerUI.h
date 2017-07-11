@@ -41,6 +41,7 @@ public:
                                 int columnId,
                                 int width, int height,
                                 bool rowIsSelected) override;
+    String getCellTooltip (int /*rowNumber*/, int /*columnId*/)    override;
 
     private:
 

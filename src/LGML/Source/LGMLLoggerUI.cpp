@@ -83,9 +83,9 @@ totalLogRow(0)
     addAndMakeVisible(logListComponent);
 
     LOG("LGML v" + String(ProjectInfo::versionString) +" : "+String(GIT_SHA_SHORT) +" ("+ String(COMMIT_DATE)+")"+ "\nby OrganicOrchestra");
-
+#if USE_FILE_LOGGER
     LOG("please provide logFile for any bug report :\nlogFile in " + l->fileWriter.getFilePath());
-
+#endif
     clearB.setButtonText("Clear");
     clearB.addListener(this);
     addAndMakeVisible(clearB);
@@ -221,8 +221,12 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
     
 };
 
+String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int columnId)    {
+      return owner->getContentForRow(rowNumber);
+};
+
 void LGMLLoggerUI::buttonClicked (Button* b) {
-    
+
     if(b==&clearB)
     {
         logElements.clear();
