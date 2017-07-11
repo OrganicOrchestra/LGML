@@ -99,18 +99,21 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 	if (getQuantization() == 0) {
 		curTime = playableBuffer.getGlobalPlayPos();
 		offset = 0;
-	} else if (!playableBuffer.isOrWasRecording()) {
-		if (curTime < offset) {
+	} else if (!playableBuffer.isOrWasRecording() && beatLength->doubleValue()>0) {
+		if (curTime < offset   && curTime>0) {
 			float negativeStartPlayBeat = startPlayBeat / beatLength->doubleValue();
 			negativeStartPlayBeat = startPlayBeat - beatLength->doubleValue()*ceil(negativeStartPlayBeat);
 			offset = negativeStartPlayBeat*tm->beatTimeInSample;
+
 
 		}
 	} else {
 		offset = 0;
 	}
-	jassert((int)curTime - (int)offset >= 0);
-	if (!playableBuffer.processNextBlock(buffer, curTime - offset) && trackState != STOPPED) {
+
+	jassert(curTime==0 || ((int)curTime - (int)offset >= 0));
+  uint64 localTime = jmin(curTime,curTime - offset);
+	if (!playableBuffer.processNextBlock(buffer, localTime) && trackState != STOPPED) {
 		LOG("Stopping, too many audio (more than 1mn)");
 		setTrackState(STOPPED);
 	}
