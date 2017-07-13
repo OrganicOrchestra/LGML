@@ -35,7 +35,7 @@ lastState(BUFFER_STOPPED),
 stateChanged(false),
 numTimePlayed(0),
 sampleOffsetBeforeNewState(0),
-multiNeedle(3000,3000),
+multiNeedle(128,128),
 //tailRecordNeedle(0),
 
 sampleRate(44100)
