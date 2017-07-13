@@ -17,6 +17,7 @@
 #define DBGNEEDLE(txt)
 #endif
 
+#define NEEDLE_STITCHING 0
 
 FadeNeedle::FadeNeedle():startNeedle(0),fadeInNumSamples(0),isFadingOut(false),
 fadeOutNumSamples(0),sustainNumSamples(0),consumedSamples(0){
@@ -310,7 +311,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
   jassert(loopSize>0);
 
   const int nextPos = currentPos+numSamples;
-
+#if NEEDLE_STITCHING
   const bool isAfterStitchingPoint = nextPos>loopSize - fadeOutNumSamples  ;
   if(isLooping ){
 
@@ -328,7 +329,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
   if( isStitching && !isAfterStitchingPoint){
     isStitching = false;
   }
-
+#endif
 
   FadeNeedle * fN ;
   numActiveNeedle =0;
@@ -379,6 +380,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
 
 
     if(fN->reverse){
+      // not supported atm
       jassertfalse;
       const double fadeStep =  (fN->getFadeValueEnd() - fN->getFadeValueStart())*1.0/fadeOutSize;
       for(int  i = minComonChannels-1; i >=0  ; i--){
