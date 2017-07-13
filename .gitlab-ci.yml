@@ -1,0 +1,7 @@
+job:
+  stage: echoik
+  tags:
+    - osx
+    - lgml
+  script:
+    - echo lalalala
