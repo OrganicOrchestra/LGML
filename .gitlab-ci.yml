@@ -8,8 +8,7 @@ build_job:
   stage: build
   script:
     - "echo installDeps"
-    - "sh src/LGML/Scripts/export_platform_vars.sh"
-    - "sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installDeps.sh;"
+    - "sh src/LGML/Scripts/export_platform_vars.sh && sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installDeps.sh;"
     - "python src/LGML/Scripts/buildScript.py --build --beta"
 
 test_job:
