@@ -72,13 +72,14 @@ linkLatency(00)
   linkNumPeers->enabled = LINK_SUPPORT;
   linkNumPeers->isControllableFeedbackOnly = true;
   linkNumPeers->isEditable = false;
-
+  
 
 #if LINK_SUPPORT
   linkEnabled->setValue(false);
   linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
 
   linkSession.setTempoCallback(&TimeManager::linkTempoCallBack);
+  linkLatencyParam = addFloatParameter("linkLatency", "link latency to add for lgml", 10, -30, 80);
 #endif
 
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);
@@ -101,57 +102,10 @@ void TimeManager::incrementClock(int block){
     setBlockSize(block);
 
   }
-
 #if LINK_SUPPORT
-  if(linkEnabled->boolValue() && !timeMasterCandidate){
-
-    //    if(linkSession.numPeers()>0 && !isPlaying())playTrigger->trigger();
-    linkTime =
-    //    linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
-    linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
-    //  std::chrono::microseconds( (long long)(Time::getMillisecondCounterHiRes()*1000.0));//(timeState.time*(long long)1000.0/sampleRate)
-
-
-    linkTimeLine = linkSession.captureAudioTimeline();
-
-
-
-    //
-    const int tstQ = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
-//    auto beatAtTime = linkTimeLine.beatAtTime(linkTime, tstQ);
-    auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
-    auto localBeat = getBeat();
-    auto localPhase = fmod(localBeat,tstQ);
-
-    // we are not using quantified launch atm (beatTime<0), we assume that a link session is always playing and set it only if a timeMasterCandidate sets it
-    //
-    //    if(beatAtTime>0 ){
-    //
-    if(!isPlaying()){
-      playState->setValue(true);
-      shouldPlay(true);
-    }
-    if(isPlaying() &&  fabs(phaseAtTime - localPhase)>0.5
-       && !isFirstPlayingFrame()
-       ){
-      int closestQOffset = (localPhase> tstQ/2)?tstQ:0;
-      goToTime((getBeatForQuantum(tstQ)+closestQOffset + phaseAtTime) * beatTimeInSample);
-    }
-
-    //    }
-    //    else  if(isPlaying()){
-    //      DBG("should wait : " <<beatAtTime);
-    //      playState->setValue(false);
-    //      goToTime(0,true);
-    //      shouldStop(true);
-    //
-    ////      jassert(timeMasterCandidate);
-    //    }
-  }
-  else{
-    int dbg;dbg++;
-  }
+  linkTimeLine = linkSession.captureAudioTimeline();
 #endif
+
   updateState();
   if(_isLocked){
 
@@ -176,22 +130,40 @@ void TimeManager::incrementClock(int block){
     }
   }
 
-
-  if(hasJumped ){//|| lastBeat!=newBeat){
-    #if LINK_SUPPORT
-    linkTimeLine = linkSession.captureAudioTimeline();
+#if LINK_SUPPORT
+  if(hasJumped && isPlaying() ){
     linkTimeLine.requestBeatAtTime(getBeat(),
                                    //                      std::chrono::system_clock::now().time_since_epoch(),
                                    linkTime,
                                    beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
     linkSession.commitAudioTimeline(linkTimeLine);
-#endif
+
   }
+
+  if(linkEnabled->boolValue() && !timeMasterCandidate){
+    linkTime =linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
+    linkTimeLine = linkSession.captureAudioTimeline();
+    const int quantum = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
+    const double linkBeat = linkTimeLine.beatAtTime(linkTime, quantum);
+    //    auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
+    //    auto localPhase = fmod(localBeat,tstQ);
+    const double localBeat = getBeat();
+    const float driftMs =(linkBeat -localBeat)*beatTimeInSample*1000.0f/sampleRate;
+
+    // we are not using quantified launch atm (beatTime<0), we assume that a link session is always playing and set it only if a timeMasterCandidate sets it
+    if((isPlaying() )
+       //       && !isFirstPlayingFrame()
+       && fabs(driftMs)>1
+       ){
+      SLOG("link drift : " + String(driftMs)+"ms");
+      goToTime(linkBeat  * beatTimeInSample,true);
+    }
+  }
+  
+#endif
 
 
   desiredTimeState =timeState;
-
-
   if(hadMasterCandidate && !isSettingTempo->boolValue()){
     timeMasterCandidate=nullptr;
   }
@@ -240,30 +212,39 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
                                          int numOutputChannels,
                                          int numSamples) {
 
-  if(click->boolValue()&&timeState.isPlaying){
+  if(click->boolValue()&&timeState.isPlaying && timeState.time>=0){
     static uint64 sinCount = 0;
 
     bool isFirstBeat = (getClosestBeat()%beatPerBar->intValue()) == 0;
-    const int sinFreq = sampleRate /(isFirstBeat?660:440);
+    const int sinFreq = sampleRate /(isFirstBeat?1320:880);
     //    const int sinPeriod = sampleRate / sinFreq;
-    const double k = 40.0;
+    //    const double k = 40.0;
 
 
 
     if(desiredTimeState.isJumping){
       clickFader->startFadeOut();
     }
+    double cVol = clickVolume->floatValue();
 
     for(int i = 0 ; i < numSamples;i++){
 
+      double x = (fmod(getBeatInNextSamples(i),1.0) )*beatTimeInSample*1.0/sampleRate ;
+      double h = jmax(0.0,jmin(1.0,(0.02 - x)/0.02));
+
+      if((timeState.time+i)%beatTimeInSample==0){
+        sinCount = 0;
+      }
       double carg = sinCount*1.0/sinFreq;
 
-      double x = (getBeatInNextSamples(i)-getBeatInt() ) ;
-      double h = k*fmod((double)x+1.0/k,1.0);
-      clickFader->incrementFade();
-      double env = 0.77*clickFader->getCurrentFade()*jmax(0.0,h*exp(1.0-h));
 
-      float res = (clickVolume->floatValue()* env* cos(2.0*M_PI*carg ));
+
+      clickFader->incrementFade();
+      double cFade = clickFader->getCurrentFade();
+
+      double env = cVol*cFade*jmax(0.0,h);//*exp(1.0-h));
+
+      float res = ( env* (sin(2.0*M_PI*carg )+0.1*sin(2.0*M_PI*4.0*carg )));
 
       for(int c = 0 ;c < numOutputChannels ; c++ ){outputChannelData[c][i] = res;}
 
@@ -351,12 +332,16 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
     linkSession.enable(linkEnabled->boolValue());
 #endif
   }
+  else if (p==linkLatencyParam){
+    linkLatency = std::chrono::microseconds((long long)(linkLatencyParam->doubleValue()*1000));
+  }
 
 };
 
 void TimeManager::shouldStop(bool now){
   desiredTimeState.isPlaying = false;
   goToTime(0,now);
+
 }
 
 void TimeManager::shouldRestart(bool playing){
@@ -382,7 +367,7 @@ void TimeManager::jump(int amount){
 
 
 }
-void TimeManager::goToTime(uint64 time,bool now){
+void TimeManager::goToTime(long long time,bool now){
 
   desiredTimeState.jumpTo(time);
   if(now ){
@@ -507,9 +492,7 @@ void TimeManager::setBlockSize(int bS){
   jassert(bS!=0);
   blockSize = bS;
 
-#if LINK_SUPPORT
-  linkLatency = std::chrono::microseconds((long long)(blockSize*1000000/sampleRate));
-#endif
+
 
 }
 void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){
@@ -524,10 +507,10 @@ void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){
 
 
 }
-uint64 TimeManager::getTimeInSample(){
+long long TimeManager::getTimeInSample(){
   return timeState.time;
 }
-uint64 TimeManager::getNextTimeInSample(){
+long long TimeManager::getNextTimeInSample(){
   if(desiredTimeState.isJumping)return desiredTimeState.nextTime;
   else return  timeState.nextTime;
 }
@@ -545,7 +528,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time,double
     res.sampleRate = _sampleRate;
   }
   else{
-  res.sampleRate = sampleRate;
+    res.sampleRate = sampleRate;
   }
   res.barLength = 1;
   double time_seconds = time* 1.0/ res.sampleRate;
@@ -616,7 +599,7 @@ int     TimeManager::getBeatInt()   {return (int)floor(getBeat());}
 double  TimeManager::getBeat()      {return (double)(timeState.time*1.0/beatTimeInSample);}
 int     TimeManager::getClosestBeat(){return (int)floor(getBeat()+0.5);}
 double  TimeManager::getBeatPercent() {return (double)(timeState.time*1.0/beatTimeInSample-getBeatInt());}
-double  TimeManager::getBeatInNextSamples(int numSamplesToAdd){return(double) ((timeState.time+numSamplesToAdd)*1.0/beatTimeInSample);}
+double  TimeManager::getBeatInNextSamples(int numSamplesToAdd){return ((double)(timeState.time+numSamplesToAdd)*1.0/beatTimeInSample);}
 double TimeManager::getBeatForQuantum(const double q){return floor(getBeat()/q)*q;}
 
 int TimeManager::getBar(){return (int)(floor(getBeatInt()*1.0/beatPerBar->intValue() ));}
@@ -675,13 +658,8 @@ void TimeManager::linkTempoCallBack(const double tempo){
 void TimeManager::linkNumPeersCallBack(const size_t numPeers){
   if(TimeManager * tm = getInstanceWithoutCreating()){
     tm->linkNumPeers->setValue((int)numPeers);
-    if(numPeers>0 && tm->linkEnabled->boolValue()){
-      if(!tm->isPlaying()){
-        tm->playState->setValue(true);
-      }
-    }
   }
-  
+
 }
 
 

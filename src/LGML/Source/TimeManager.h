@@ -86,6 +86,8 @@ public TimeMasterCandidate
   FloatParameter * clickVolume;
   
 
+  
+
   IntParameter * quantizedBarFraction;
 
   #if LINK_SUPPORT
@@ -97,6 +99,7 @@ public TimeMasterCandidate
   #endif
   BoolParameter * linkEnabled;
   IntParameter * linkNumPeers;
+  FloatParameter * linkLatencyParam;
 
 
 
@@ -111,7 +114,7 @@ public TimeMasterCandidate
 
 
   void jump(int amount);
-  void goToTime(uint64 time,bool now = false);
+  void goToTime(long long time,bool now = false);
   void advanceTime(uint64 ,bool now = false);
 
   // used when triggering multiple change
@@ -126,8 +129,8 @@ public TimeMasterCandidate
   uint64 getNextGlobalQuantifiedTime();
   uint64 getNextQuantifiedTime(int barFraction);
   uint64 getTimeForNextBeats(int beats);
-  uint64 getTimeInSample();
-  uint64 getNextTimeInSample();
+  long long getTimeInSample();
+  long long getNextTimeInSample();
   bool willRestart();
   int getClosestBeat();
   double getBeatInNextSamples(int numSampleToAdd);
@@ -192,15 +195,15 @@ private:
 #endif
 
   struct TimeState{
-    TimeState():isJumping(false),nextTime((uint64)-1),isPlaying(false),time((uint64)0){}
+    TimeState():isJumping(false),nextTime(0),isPlaying(false),time(0){}
     bool isPlaying;
-    void jumpTo(uint64 t){
+    void jumpTo(long long t){
       isJumping = true;
       nextTime = t;
     }
     bool isJumping;
-    uint64 nextTime;
-    uint64 time;
+    long long nextTime;
+    long long time;
   };
 
   TimeState timeState,desiredTimeState;

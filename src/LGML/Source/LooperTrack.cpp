@@ -94,7 +94,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
 	TimeManager * tm = TimeManager::getInstance();
-	uint64 curTime = tm->getTimeInSample();
+	long long curTime = tm->getTimeInSample();
 	int offset = startPlayBeat*tm->beatTimeInSample;
 	if (getQuantization() == 0) {
 		curTime = playableBuffer.getGlobalPlayPos();
@@ -110,13 +110,14 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 	} else {
 		offset = 0;
 	}
-
+  if(curTime>=0){
 	jassert(curTime==0 || ((int)curTime - (int)offset >= 0));
   uint64 localTime = jmin(curTime,curTime - offset);
 	if (!playableBuffer.processNextBlock(buffer, localTime) && trackState != STOPPED) {
-		LOG("Stopping, too many audio (more than 1mn)");
+		SLOG("Stopping, too many audio (more than 1mn)");
 		setTrackState(STOPPED);
 	}
+  }
 
 	if (trackState == CLEARED && playableBuffer.multiNeedle.numActiveNeedle == 0 && playableBuffer.getRecordedLength() > 0) {
 		playableBuffer.setRecordedLength(0);
@@ -157,10 +158,11 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 bool LooperTrack::updatePendingLooperTrackState(int blockSize) {
 	TimeManager * tm = TimeManager::getInstance();
 	// the sample act as free running clock when no quantization
-	uint64 curTime = tm->getTimeInSample();
+	long long curTime = tm->getTimeInSample();
+
 	if (getQuantization() == 0) curTime = playableBuffer.getGlobalPlayPos();
 
-	jassert(curTime >= 0);
+//	jassert(curTime >= 0);
 
 
 
@@ -614,7 +616,7 @@ void LooperTrack::setTrackState(TrackState newState) {
 
 			if (quantizedRecordEnd == 0 && playableBuffer.getRecordedLength() <= minRecordTime) {
 				//          jassertfalse;
-				LOG("Looper: can't record that little of audio keep recording a bit");
+				SLOG("Looper: can't record that little of audio keep recording a bit");
 				quantizedRecordEnd = timeManager->getTimeInSample() + minRecordTime;
 			}
 		}
@@ -782,7 +784,7 @@ void LooperTrack::loadAudioSample(const String & path) {
 				//        int barLength= 4.0*ti.beatInSample;
 				//        overFlow = ceil(overFlow*1.0/barLength)*barLength;
 				//        importSize-= overFlow;
-				LOG("sample loading : truncating input bigger than 1mn when stretched " << importSize*1.0 / audioReader->lengthInSamples);
+				SLOG("sample loading : truncating input bigger than 1mn when stretched " << importSize*1.0 / audioReader->lengthInSamples);
 			}
 
 

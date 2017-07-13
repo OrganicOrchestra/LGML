@@ -28,7 +28,7 @@ public:
   LooperTrack(LooperNode * looper, int _trackIdx);
   ~LooperTrack() ;
 
-  // only SHOULD value can be accessed from other thread than audio
+  //   value SHOULD only be accessed from other thread than audio
   // then state is updated from audioThread
   enum TrackState {
     RECORDING,
