@@ -1,7 +1,13 @@
+cache:
+    paths:
+    - ~/Dev
+    - ~/SDK
 job:
-  stage: test
+  stage: build
   tags:
     - osx
     - lgml
   script:
-    - "echo lalalala"
+    - "echo installDeps"
+    - "sh src/LGML/Scripts/osx/installDeps.sh;"
+    - "python src/LGML/Scripts/buildScript.py --build --beta"
