@@ -1,13 +1,24 @@
 cache:
     paths:
-    - ~/Dev
-    - ~/SDK
-job:
+    - Dev # todo use these 2 (for now in home)
+    - SDK
+    - src/LGML/Builds
+
+build_job:
   stage: build
-  tags:
-    - osx
-    - lgml
   script:
     - "echo installDeps"
-    - "sh src/LGML/Scripts/osx/installDeps.sh;"
+    - "sh src/LGML/Scripts/export_platform_vars.sh"
+    - "sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installDeps.sh;"
     - "python src/LGML/Scripts/buildScript.py --build --beta"
+
+test_job:
+  stage: test
+  script:
+    - "echo no tests for now"
+
+deploy_job:
+  stage: deploy
+  script:
+    - "sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installExportDeps.sh;"
+    - "python src/LGML/Scripts/buildScript.py --export"

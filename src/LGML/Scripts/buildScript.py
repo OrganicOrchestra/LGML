@@ -82,7 +82,7 @@ if __name__ == "__main__":
 	parser.add_argument('--build', action='store_true',
 	                    help='build it',default = True)
 	parser.add_argument('--export', action='store_true',
-	                    help='export it',default = True)
+	                    help='export it',default = False)
 	parser.add_argument('--beta', action='store_true',
 	                    help='switch to beta version (only name affected for now)',default=True)
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)

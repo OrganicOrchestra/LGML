@@ -76,7 +76,7 @@ def updatePathsIfNeeded(osType):
 	if not os.path.exists(oldVSTPath):
 
 		print 'current VST path not valid'
-		newVSTPath = getValidPath("SDKs/VST3 SDK")
+		newVSTPath = getValidPath("SDKs/VST3_SDK")
 		if newVSTPath:
 			print 'found VST SDK at :' + newVSTPath
 			hasChanged = True;
