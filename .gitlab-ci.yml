@@ -1,7 +1,7 @@
 job:
-  stage: echoik
+  stage: test
   tags:
     - osx
     - lgml
   script:
-    - echo lalalala
+    - "echo lalalala"
