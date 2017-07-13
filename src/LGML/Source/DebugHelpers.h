@@ -12,6 +12,16 @@
 #define DEBUGHELPERS_H_INCLUDED
 //  header (build and link-time cheap) to include everywhere we need LGML specific debug macros
 
+// slower but safe log (avoid flooding
+#define SLOG(textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
+static uint32 lastTime =  Time::getMillisecondCounter(); \
+static bool runningUnderDebugger = juce_isRunningUnderDebugger();\
+uint32 now = Time::getMillisecondCounter();\
+if( (now - lastTime>300 )|| runningUnderDebugger){ \
+String fullPath = String(__FILE__);\
+tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::separator) + 1 ,fullPath.lastIndexOfChar('.') ) << "::" <<  textToWrite;\
+juce::Logger::writeToLog(tempDbgBuf);\
+lastTime = now;})
 
 
 // log informing file from where it was outputed
