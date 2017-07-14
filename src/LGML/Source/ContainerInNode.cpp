@@ -39,7 +39,7 @@ void ContainerInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffe
   AudioProcessorGraph::AudioGraphIOProcessor::processBlock(buffer, midiMessages);
   // graphs can be fed with bigger amount of channel (if numoutputChannel>numInputChannel)
   // we need to clear them
-  for(int i = totalNumOutputChannels;i < buffer.getNumChannels() ; i++){
+  for(int i = NodeBase::getTotalNumOutputChannels();i < buffer.getNumChannels() ; i++){
     buffer.clear(i,0,buffer.getNumSamples());
   }
 
@@ -67,7 +67,9 @@ ConnectableNodeUI * ContainerInNode::createUI()
 
 void ContainerInNode::setNumChannels(int num){
   setPreferedNumAudioOutput(num);
-  if(parentNodeContainer){parentNodeContainer->setPreferedNumAudioInput(totalNumOutputChannels);}
+  AudioGraphIOProcessor::setPlayConfigDetails(0, num, NodeBase::getSampleRate() , NodeBase::getBlockSize());
+  jassert(NodeBase::getTotalNumOutputChannels()==AudioGraphIOProcessor::getTotalNumOutputChannels());
+  if(parentNodeContainer){parentNodeContainer->setPreferedNumAudioInput(NodeBase::getTotalNumOutputChannels());}
 }
 
 void ContainerInNode::onContainerParameterChanged(Parameter * p)

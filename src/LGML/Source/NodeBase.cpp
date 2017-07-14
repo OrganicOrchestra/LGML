@@ -163,9 +163,9 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
   int numSample = buffer.getNumSamples();
 
-  //Already set and class parameters
-  //int totalNumInputChannels = getTotalNumInputChannels();
-  //int totalNumOutputChannels =getTotalNumOutputChannels();
+  
+  int totalNumInputChannels = getTotalNumInputChannels();
+  int totalNumOutputChannels =getTotalNumOutputChannels();
 
 
 
@@ -283,8 +283,6 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
                              getBlockSize());
 
 
-
-        totalNumInputChannels = getTotalNumInputChannels();
         parentNodeContainer->updateAudioGraph(false);
         if(oldNumChannels!=getTotalNumInputChannels()){
           // numChannelsChanged is called within the lock so that Nodes can update freely their memory used in processblock
@@ -298,7 +296,6 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());
-      totalNumInputChannels = getTotalNumInputChannels();
       if(oldNumChannels!=getTotalNumInputChannels()){
 
         numChannelsChanged(true);
@@ -307,7 +304,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   }
 
   rmsValuesIn.clear();
-
+  int totalNumInputChannels =getTotalNumInputChannels();
   for (int i = 0; i < totalNumInputChannels; i++) rmsValuesIn.add(0);
 
 
@@ -347,10 +344,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
                              getBlockSize());
 
 
-
-        totalNumOutputChannels = getTotalNumOutputChannels();
         parentNodeContainer->updateAudioGraph(false);
-        if(oldNumChannels!=totalNumOutputChannels){
+        if(oldNumChannels!=getTotalNumOutputChannels()){
           numChannelsChanged(false);
         }
       }
@@ -365,8 +360,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
       setPlayConfigDetails(getTotalNumInputChannels(), num,
                            getSampleRate(),
                            getBlockSize());
-      totalNumOutputChannels = getTotalNumOutputChannels();
-      if(oldNumChannels!=totalNumOutputChannels){
+
+      if(oldNumChannels!=getTotalNumOutputChannels()){
         numChannelsChanged(false);
       }
 
@@ -374,6 +369,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
   }
 
   rmsValuesOut.clear();
+
+    int totalNumOutputChannels =getTotalNumOutputChannels();
 
   for (int i = 0; i < totalNumOutputChannels; i++) rmsValuesOut.add(0);
 

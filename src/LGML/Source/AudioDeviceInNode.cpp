@@ -62,7 +62,7 @@ void AudioDeviceInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuf
 
   float enabledFactor = enabledParam->boolValue()?1.f:0.f;
 
-  int numChannelsToProcess = jmin(totalNumOutputChannels,channelsAvailable);
+  int numChannelsToProcess = jmin(NodeBase::getTotalNumOutputChannels(),channelsAvailable);
   for (int i = 0; i < numChannelsToProcess; i++)
   {
     float newVolume = inMutes[i]->boolValue() ? 0.f : logVolumes[i]*enabledFactor;

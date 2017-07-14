@@ -89,7 +89,8 @@ void LooperNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &mi
 
   // TODO check if we can optimize copies
   // handle multiples channels outs
-
+int totalNumInputChannels = getTotalNumInputChannels();
+  int totalNumOutputChannels = getTotalNumInputChannels();
 
   jassert(buffer.getNumChannels() >= jmax(totalNumInputChannels, totalNumOutputChannels));
   bufferIn.setSize(totalNumInputChannels, buffer.getNumSamples());
@@ -421,9 +422,9 @@ void LooperNode::selectMe(LooperTrack * t) {
 void LooperNode::numChannelsChanged(bool isInput) {
   if (isInput) {
     for (auto & t : trackGroup.tracks) {
-      t->setNumChannels(totalNumInputChannels);
+      t->setNumChannels(getTotalNumInputChannels());
     }
-    streamAudioBuffer.setNumChannels(totalNumInputChannels);
+    streamAudioBuffer.setNumChannels(getTotalNumInputChannels());
   }
 }
 void LooperNode::onContainerParameterChanged(Parameter * p) {
@@ -433,7 +434,7 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
     const ScopedLock lk(parentNodeContainer->getAudioGraph()->getCallbackLock());
     trackGroup.setNumTracks(numberOfTracks->intValue());
     if (outputAllTracksSeparately->boolValue()) {
-      setPreferedNumAudioOutput(totalNumInputChannels*numberOfTracks->intValue());
+      setPreferedNumAudioOutput(getTotalNumInputChannels()*numberOfTracks->intValue());
     }
     if (oldIdx >= numberOfTracks->intValue()) {
       if (trackGroup.tracks.size()) {
@@ -452,9 +453,9 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
     }
   } else if (p == outputAllTracksSeparately) {
     if (outputAllTracksSeparately->boolValue()) {
-      setPreferedNumAudioOutput(totalNumInputChannels*numberOfTracks->intValue());
+      setPreferedNumAudioOutput(getTotalNumInputChannels()*numberOfTracks->intValue());
     } else {
-      setPreferedNumAudioOutput(totalNumInputChannels);
+      setPreferedNumAudioOutput(getTotalNumInputChannels());
     }
   } else if (p == numberOfAudioChannelsIn) {
     const ScopedLock lk(parentNodeContainer->getAudioGraph()->getCallbackLock());

@@ -123,9 +123,9 @@ void AudioMixerNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer
 
     // doesnt do anything if it's already the right size
     cachedBuffer.setSize(outBuses.size(), numSamples);
+  int totalNumInputChannels= getTotalNumInputChannels();
 
-
-    if(totalNumOutputChannels>0 && totalNumInputChannels > 0){
+    if(getTotalNumOutputChannels()>0 && totalNumInputChannels > 0){
 
         if(oneToOne->boolValue()){
             for(int i = outBuses.size() -1 ; i >=0 ; --i){

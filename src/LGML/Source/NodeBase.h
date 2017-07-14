@@ -110,8 +110,7 @@ public:
   virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/ , MidiBuffer& /*midiMessage*/ ) {};
   virtual void processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
-  int totalNumInputChannels = 0;
-  int totalNumOutputChannels = 0;
+
   int maxCommonIOChannels = 0;
   //RMS
   const float alphaRMS = 0.05f;
