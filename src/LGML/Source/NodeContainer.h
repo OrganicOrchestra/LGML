@@ -209,8 +209,16 @@ public:
 
   void handleAsyncUpdate()override;
   
-
-
+  class RebuildTimer : public Timer{
+  public:
+    RebuildTimer(NodeContainer* o):owner(o){};
+    void timerCallback()override {
+      owner->triggerAsyncUpdate();
+    };
+    NodeContainer * owner;
+    
+  };
+  RebuildTimer rebuildTimer;
   NodeChangeQueue nodeChangeNotifier;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainer)

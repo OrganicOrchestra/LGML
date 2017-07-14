@@ -22,7 +22,8 @@ lastDryVolume(0),
 globalRMSValueIn(0),
 globalRMSValueOut(0),
 wasEnabled(false),
-logVolume(float01ToGain(DB0_FOR_01),0.5)
+logVolume(float01ToGain(DB0_FOR_01),0.5),
+rmsTimer(this)
 
 {
 
@@ -35,14 +36,14 @@ logVolume(float01ToGain(DB0_FOR_01),0.5)
 
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
-  startTimerHz(30);
+  
 
 }
 
 
 NodeBase::~NodeBase()
 {
-  stopTimer();
+  rmsTimer.stopTimer();
   NodeBase::masterReference.clear();
   clear();
 }
@@ -99,7 +100,7 @@ void NodeBase::clear()
   //Data
   inputDatas.clear();
   outputDatas.clear();
-  stopTimer();
+  rmsTimer.stopTimer();
 
   //removeFromAudioGraph();
 }
@@ -397,19 +398,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 
 
 
-void NodeBase::timerCallback()
-{
-  ConnectableNode::rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut);
-  for (int i = 0; i < getTotalNumInputChannels(); i++)
-  {
-    ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSInChanged, this, rmsValuesIn[i], i);
-  }
 
-  for (int i = 0; i < getTotalNumOutputChannels(); i++)
-  {
-    ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSOutChanged, this, rmsValuesOut[i], i);
-  }
-}
 
 //////////////////////////////////   DATA
 

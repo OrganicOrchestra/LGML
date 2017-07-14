@@ -25,7 +25,8 @@ NodeContainer::NodeContainer(const String &name) :
 containerInNode(nullptr),
 containerOutNode(nullptr),
 NodeBase(name, NodeType::ContainerType,false),
-nodeChangeNotifier(10000)
+nodeChangeNotifier(10000),
+rebuildTimer(this)
 {
   saveAndLoadRecursiveData = false;
   innerGraph = new AudioProcessorGraph();
@@ -45,15 +46,16 @@ nodeChangeNotifier(10000)
 NodeContainer::~NodeContainer()
 {
   //connections.clear();
+  rebuildTimer.stopTimer();
   clear(false);
-    innerGraph->releaseResources();
+  innerGraph->releaseResources();
 }
 void NodeContainer::clear(){
 
-//    innerGraph->clear();
-    clear(false);
+  //    innerGraph->clear();
+  clear(false);
 
-  
+
   innerGraph->releaseResources();
 
 }
@@ -66,17 +68,17 @@ void NodeContainer::clear(bool recreateContainerNodes)
   }
 
 
-  
+
   while (nodes.size() > 0)
   {
     if(nodes[0].get()){
-    nodes[0]->remove();
+      nodes[0]->remove();
     }
     else{
       jassertfalse;
       nodes.remove(0);
     }
-    
+
 
   }
 
@@ -123,15 +125,15 @@ ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeNa
 
 ConnectableNode * NodeContainer::addNodeFromJSONData(var data)
 {
-	NodeType nodeType = NodeFactory::getTypeFromString(data.getProperty("nodeType", var())); 
-	ConnectableNode * n = NodeFactory::createNode(nodeType);
-	return addNode(n,n->getNiceName(),data);
+  NodeType nodeType = NodeFactory::getTypeFromString(data.getProperty("nodeType", var()));
+  ConnectableNode * n = NodeFactory::createNode(nodeType);
+  return addNode(n,n->getNiceName(),data);
 }
 
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName, var nodeData)
 {
   nodes.add(n);
-  
+
   n->setParentNodeContainer(this);
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n))
@@ -151,7 +153,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
   if (!nodeData.isVoid()) n->loadJSONData(nodeData);
 
   nodeChangeNotifier.addMessage(new NodeChangeMessage(n,true));
-//  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
+  //  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
   return n;
 }
 
@@ -170,7 +172,7 @@ bool NodeContainer::removeNode(ConnectableNode * n)
   removeChildControllableContainer(n);
 
   nodeChangeNotifier.addMessage(new NodeChangeMessage(n,false));
-//  nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
+  //  nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
   nodes.removeAllInstancesOf(n);
 
   n->clear();
@@ -180,7 +182,7 @@ bool NodeContainer::removeNode(ConnectableNode * n)
 
   n->removeFromAudioGraph();
   //if(NodeManager::getInstanceWithoutCreating() != nullptr)
-//  getAudioGraph()->removeNode(n->audioNode);
+  //  getAudioGraph()->removeNode(n->audioNode);
 
   return true;
 }
@@ -211,10 +213,10 @@ void NodeContainer::updateAudioGraph(bool lock) {
   }
 
   if(lock){
-  const ScopedLock lk (getAudioGraph()->getCallbackLock());
-  getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
-  getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
-  getAudioGraph()->suspendProcessing(false);
+    const ScopedLock lk (getAudioGraph()->getCallbackLock());
+    getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+    getAudioGraph()->prepareToPlay(NodeBase::getSampleRate(),NodeBase::getBlockSize());
+    getAudioGraph()->suspendProcessing(false);
   }
   else{
     getAudioGraph()->setRateAndBufferSizeDetails(NodeBase::getSampleRate(),NodeBase::getBlockSize());
@@ -226,13 +228,18 @@ void NodeContainer::updateAudioGraph(bool lock) {
 
 
 }
+
+
 void NodeContainer::handleAsyncUpdate(){
   if(!isEngineLoadingFile()){
-   updateAudioGraph();
+    rebuildTimer.stopTimer();
+    updateAudioGraph();
+
   }
   else{
-    triggerAsyncUpdate();
-    
+    rebuildTimer.startTimer(10);
+
+
   }
 }
 
@@ -306,8 +313,8 @@ void NodeContainer::loadJSONDataInternal(var data)
     {
       ConnectableNode * node = addNodeFromJSONData(nData);
 
-	  if (node->type == NodeType::ContainerInType) containerInNode = (ContainerInNode *)node;
-	  else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
+      if (node->type == NodeType::ContainerInType) containerInNode = (ContainerInNode *)node;
+      else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
     }
   }
 
@@ -431,7 +438,7 @@ NodeConnection * NodeContainer::addConnection(ConnectableNode * sourceNode, Conn
   //  updateAudioGraph();
   // DBG("Dispatch connection Added from NodeManager");
   nodeChangeNotifier.addMessage(new NodeChangeMessage(c,true));
-//  nodeContainerListeners.call(&NodeContainerListener::connectiosnAdded, c);
+  //  nodeContainerListeners.call(&NodeContainerListener::connectiosnAdded, c);
 
   return c;
 }
@@ -443,8 +450,8 @@ bool NodeContainer::removeConnection(NodeConnection * c)
   c->removeConnectionListener(this);
 
   connections.removeObject(c);
-nodeChangeNotifier.addMessage(new NodeChangeMessage(c,false));
-//  nodeContainerListeners.call(&NodeContainerListener::connectionRemoved, c);
+  nodeChangeNotifier.addMessage(new NodeChangeMessage(c,false));
+  //  nodeContainerListeners.call(&NodeContainerListener::connectionRemoved, c);
 
   return true;
 }
@@ -485,7 +492,7 @@ void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float 
 void NodeContainer::onContainerParameterChanged(Parameter * p)
 {
 
-    NodeBase::onContainerParameterChanged(p);
+  NodeBase::onContainerParameterChanged(p);
 
 }
 
@@ -494,11 +501,11 @@ void NodeContainer::onContainerParameterChanged(Parameter * p)
 
 void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var & v) {
   NodeBase::onContainerParameterChangedAsync(p ,v);
-    if (p == enabledParam)
-    {
-        
-        triggerAsyncUpdate();
-    }
+  if (p == enabledParam)
+  {
+
+    triggerAsyncUpdate();
+  }
 
 };
 
