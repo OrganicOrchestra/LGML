@@ -185,8 +185,8 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
   AudioDeviceManager::AudioDeviceSetup result;
 
   // set max channels to this
-  desc->numInputChannels = jmin(desc->numInputChannels, totalNumInputChannels);
-  desc->numOutputChannels = jmin(desc->numOutputChannels, totalNumOutputChannels);
+  desc->numInputChannels = jmin(desc->numInputChannels, getTotalNumInputChannels());
+  desc->numOutputChannels = jmin(desc->numOutputChannels, getTotalNumOutputChannels());
 
 
   getAudioDeviceManager().getAudioDeviceSetup(result);

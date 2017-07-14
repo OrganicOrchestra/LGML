@@ -22,7 +22,8 @@ lastDryVolume(0),
 globalRMSValueIn(0),
 globalRMSValueOut(0),
 wasEnabled(false),
-logVolume(float01ToGain(DB0_FOR_01),0.5)
+logVolume(float01ToGain(DB0_FOR_01),0.5),
+rmsTimer(this)
 
 {
 
@@ -35,14 +36,14 @@ logVolume(float01ToGain(DB0_FOR_01),0.5)
 
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
-  startTimerHz(30);
+  
 
 }
 
 
 NodeBase::~NodeBase()
 {
-  stopTimer();
+  rmsTimer.stopTimer();
   NodeBase::masterReference.clear();
   clear();
 }
@@ -99,7 +100,7 @@ void NodeBase::clear()
   //Data
   inputDatas.clear();
   outputDatas.clear();
-  stopTimer();
+  rmsTimer.stopTimer();
 
   //removeFromAudioGraph();
 }
@@ -163,9 +164,9 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
   int numSample = buffer.getNumSamples();
 
-  //Already set and class parameters
-  //int totalNumInputChannels = getTotalNumInputChannels();
-  //int totalNumOutputChannels =getTotalNumOutputChannels();
+  
+  int totalNumInputChannels = getTotalNumInputChannels();
+  int totalNumOutputChannels =getTotalNumOutputChannels();
 
 
 
@@ -283,8 +284,6 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
                              getBlockSize());
 
 
-
-        totalNumInputChannels = getTotalNumInputChannels();
         parentNodeContainer->updateAudioGraph(false);
         if(oldNumChannels!=getTotalNumInputChannels()){
           // numChannelsChanged is called within the lock so that Nodes can update freely their memory used in processblock
@@ -298,7 +297,6 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
       setPlayConfigDetails(num, getTotalNumOutputChannels(),
                            getSampleRate(),
                            getBlockSize());
-      totalNumInputChannels = getTotalNumInputChannels();
       if(oldNumChannels!=getTotalNumInputChannels()){
 
         numChannelsChanged(true);
@@ -307,7 +305,7 @@ bool NodeBase::setPreferedNumAudioInput(int num) {
   }
 
   rmsValuesIn.clear();
-
+  int totalNumInputChannels =getTotalNumInputChannels();
   for (int i = 0; i < totalNumInputChannels; i++) rmsValuesIn.add(0);
 
 
@@ -347,10 +345,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
                              getBlockSize());
 
 
-
-        totalNumOutputChannels = getTotalNumOutputChannels();
         parentNodeContainer->updateAudioGraph(false);
-        if(oldNumChannels!=totalNumOutputChannels){
+        if(oldNumChannels!=getTotalNumOutputChannels()){
           numChannelsChanged(false);
         }
       }
@@ -365,8 +361,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
       setPlayConfigDetails(getTotalNumInputChannels(), num,
                            getSampleRate(),
                            getBlockSize());
-      totalNumOutputChannels = getTotalNumOutputChannels();
-      if(oldNumChannels!=totalNumOutputChannels){
+
+      if(oldNumChannels!=getTotalNumOutputChannels()){
         numChannelsChanged(false);
       }
 
@@ -374,6 +370,8 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
   }
 
   rmsValuesOut.clear();
+
+    int totalNumOutputChannels =getTotalNumOutputChannels();
 
   for (int i = 0; i < totalNumOutputChannels; i++) rmsValuesOut.add(0);
 
@@ -400,19 +398,7 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
 
 
 
-void NodeBase::timerCallback()
-{
-  ConnectableNode::rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, this, globalRMSValueIn, globalRMSValueOut);
-  for (int i = 0; i < getTotalNumInputChannels(); i++)
-  {
-    ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSInChanged, this, rmsValuesIn[i], i);
-  }
 
-  for (int i = 0; i < getTotalNumOutputChannels(); i++)
-  {
-    ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSOutChanged, this, rmsValuesOut[i], i);
-  }
-}
 
 //////////////////////////////////   DATA
 

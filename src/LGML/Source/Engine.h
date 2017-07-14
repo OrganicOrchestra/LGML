@@ -11,7 +11,7 @@
 #ifndef ENGINE_H_INCLUDED
 #define ENGINE_H_INCLUDED
 
-//#define MULTITHREADED_LOADING
+#define MULTITHREADED_LOADING
 
 #pragma warning (disable : 4100)
 

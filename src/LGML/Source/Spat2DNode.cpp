@@ -261,9 +261,10 @@ void Spat2DNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &)
 
 
 	int numSamples = buffer.getNumSamples();
-	if (totalNumInputChannels == 0) return;
+  
+	if (getTotalNumInputChannels() == 0) return;
 
-	for (int i = 2; i < totalNumOutputChannels; i++)
+	for (int i = 2; i < getTotalNumOutputChannels(); i++)
 	{
 		float influence = outputDatas[i - 2]->elements[0]->value;
 		buffer.copyFrom(i, 0, buffer.getReadPointer(0), numSamples, influence);

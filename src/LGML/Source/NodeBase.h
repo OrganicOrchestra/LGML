@@ -28,7 +28,7 @@ class ConnectableNodeUI;
 class NodeBase :
 public ConnectableNode,
 public ReferenceCountedObject,
-public juce::AudioProcessor, private Timer, //Audio
+public juce::AudioProcessor,
 public Data::DataListener //Data
 {
 
@@ -110,8 +110,7 @@ public:
   virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/ , MidiBuffer& /*midiMessage*/ ) {};
   virtual void processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
-  int totalNumInputChannels = 0;
-  int totalNumOutputChannels = 0;
+
   int maxCommonIOChannels = 0;
   //RMS
   const float alphaRMS = 0.05f;
@@ -124,8 +123,7 @@ public:
   Array<float> rmsValuesIn;
   Array<float> rmsValuesOut;
 
-  //Listener are called from non audio thread
-  void timerCallback() override;
+
 
   bool wasSuspended;
   SmoothedValue<double> logVolume;
@@ -182,6 +180,28 @@ private:
   double lastDryVolume;
   bool wasEnabled;
   AudioBuffer<float> crossFadeBuffer;
+
+  class RMSTimer : public Timer{
+  public:
+    RMSTimer(NodeBase * n):owner(n){
+      startTimerHz(30);
+    }
+    void timerCallback()override{
+      owner->ConnectableNode::rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, owner, owner->globalRMSValueIn, owner->globalRMSValueOut);
+      for (int i = 0; i < owner->getTotalNumInputChannels(); i++)
+      {
+        owner->ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSInChanged, owner, owner->rmsValuesIn[i], i);
+      }
+
+      for (int i = 0; i < owner->getTotalNumOutputChannels(); i++)
+      {
+        owner->ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSOutChanged, owner, owner->rmsValuesOut[i], i);
+      }
+      
+    }
+    NodeBase* owner;
+  };
+  RMSTimer rmsTimer;
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
   

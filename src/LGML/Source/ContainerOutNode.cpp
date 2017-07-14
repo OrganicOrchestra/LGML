@@ -61,7 +61,9 @@ ConnectableNodeUI * ContainerOutNode::createUI()
 
 void ContainerOutNode::setNumChannels(int num){
   setPreferedNumAudioInput(num);
-  if(parentNodeContainer){parentNodeContainer->setPreferedNumAudioOutput(totalNumInputChannels);}
+  AudioGraphIOProcessor::setPlayConfigDetails(num, 0, NodeBase::getSampleRate() , NodeBase::getBlockSize());
+  jassert(NodeBase::getTotalNumInputChannels()==AudioGraphIOProcessor::getTotalNumInputChannels());
+  if(parentNodeContainer){parentNodeContainer->setPreferedNumAudioOutput(AudioGraphIOProcessor::getTotalNumInputChannels());}
 }
 
 void ContainerOutNode::onContainerParameterChanged(Parameter * p)
