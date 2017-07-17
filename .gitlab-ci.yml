@@ -5,9 +5,9 @@ cache:
     - src/LGML/Builds
 
 stages:
-  -build
-  -test
-  -package
+  - "build"
+  - "test"
+  - "package"
 
 build_job:
   stage: build
@@ -25,8 +25,8 @@ test_job:
 
 deploy:osx:
   stage: package
-  scripts:
-    "python src/LGML/Scripts/buildScript.py --package --beta"
+  script:
+    - "python src/LGML/Scripts/buildScript.py --package --beta"
   tags:
     - osx
   artifacts:
