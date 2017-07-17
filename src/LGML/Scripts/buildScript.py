@@ -84,7 +84,7 @@ if __name__ == "__main__":
 	import argparse
 	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
 	parser.add_argument('--build', action='store_true',
-	                    help='build it',default = True)
+	                    help='build it',default = False)
 	parser.add_argument('--package', action='store_true',
 	                    help='package it',default = False)
 	parser.add_argument('--export', action='store_true',
