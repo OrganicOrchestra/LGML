@@ -29,6 +29,8 @@ deploy:osx:
     - "python src/LGML/Scripts/buildScript.py --package --beta"
   tags:
     - osx
+  environment:
+    name: osx
   artifacts:
     paths:
     - /src/LGML/Builds/OSX/

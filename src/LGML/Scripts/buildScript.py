@@ -46,9 +46,7 @@ def buildAll(osType,configuration):
 		import linux
 		linux.buildApp(configuration = configuration)
 
-
-def exportAll(osType,configuration,sendToOwncloud):
-	global appPath
+def packageAll(osType,configuration,sendToOwncloud):
 	baseName = generateProductBaseName()
 	if osType=='osx':
 		import osx
@@ -56,7 +54,13 @@ def exportAll(osType,configuration,sendToOwncloud):
 	elif osType=='linux':
 		import linux
 		exportedPath = linux.exportApp(baseName);
+	else:
+		raise NameError("os type not supported")
 
+
+	return exportedPath
+
+def exportAll(exportedPath,sendToOwncloud):
 	# for p in localExportPath2:
 	# 	sh("cp "+exportedPath+" "+p+generateProductBaseName()+".dmg")
 
@@ -81,6 +85,8 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
 	parser.add_argument('--build', action='store_true',
 	                    help='build it',default = True)
+	parser.add_argument('--package', action='store_true',
+	                    help='package it',default = False)
 	parser.add_argument('--export', action='store_true',
 	                    help='export it',default = False)
 	parser.add_argument('--beta', action='store_true',
@@ -115,28 +121,17 @@ if __name__ == "__main__":
 		args.configuration = 'Ubuntu'
 
 
-#  check actions
-	needBuild = args.build
-	needExport= args.export
-
-
-	isBeta = args.beta
-	# default if no command (triggers build and export)
-	if len(sys.argv)==1:
-		needBuild = True;
-		needExport=True;
-
-	if isBeta:
+	if args.beta:
 		currentV  = ProJucerUtils.getVersionAsList()
 		specificVersion = '.'.join(map(str,currentV[:-1]))+"beta"
 
 
 		
-	if needBuild:
+	if args.build:
 		buildAll(args.os,args.configuration);
-	if needExport:
-		# send per default if used explicitly with export arg
-		sendToOwncloud |= args.export
-		exportAll(args.os,args.configuration,sendToOwncloud=sendToOwncloud);
+	if args.package:
+		packageAll(args.os,args.configuration)
+	if args.export:
+		exportAll(args.os,args.configuration,sendToOwncloud=True);
 
 
