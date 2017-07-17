@@ -23,7 +23,7 @@ test_job:
     - "echo no tests for now"
 
 
-deploy:osx:
+package:osx:
   stage: package
   script:
     - "python src/LGML/Scripts/buildScript.py --package --beta"
@@ -33,7 +33,7 @@ deploy:osx:
     name: osx
   artifacts:
     paths:
-    - /src/LGML/Builds/OSX/
+    - src/LGML/Builds/MacOSX/build/
   # only:
   #   - tags
   # script:
