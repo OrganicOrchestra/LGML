@@ -4,6 +4,11 @@ cache:
     - SDK
     - src/LGML/Builds
 
+stages:
+  -build
+  -test
+  -package
+
 build_job:
   stage: build
   script:
@@ -17,8 +22,18 @@ test_job:
   script:
     - "echo no tests for now"
 
-deploy_job:
-  stage: deploy
-  script:
-    - "sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installExportDeps.sh;"
-    - "python src/LGML/Scripts/buildScript.py --export"
+
+deploy:osx:
+  stage: package
+  scripts:
+    "python src/LGML/Scripts/buildScript.py --package --beta"
+  tags:
+    - osx
+  artifacts:
+    paths:
+    - /src/LGML/Builds/OSX/
+  # only:
+  #   - tags
+  # script:
+  #   - "sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installExportDeps.sh;"
+  #   - "python src/LGML/Scripts/buildScript.py --export"
