@@ -46,7 +46,7 @@ def buildAll(osType,configuration):
 		import linux
 		linux.buildApp(configuration = configuration)
 
-def packageAll(osType,configuration,sendToOwncloud):
+def packageAll(osType,configuration):
 	baseName = generateProductBaseName()
 	if osType=='osx':
 		import osx
@@ -120,6 +120,8 @@ if __name__ == "__main__":
 	elif args.os=='linux' and not args.configuration:
 		args.configuration = 'Ubuntu'
 
+	if args.export:
+		args.package = True
 
 	if args.beta:
 		currentV  = ProJucerUtils.getVersionAsList()
