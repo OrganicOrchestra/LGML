@@ -44,6 +44,9 @@ public:
   int originNumSamples;
   double ratio;
 
+  BufferBlockList tmpStretchBuf;
+   
+
   ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
 
   CriticalSection jobLock;

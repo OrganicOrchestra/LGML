@@ -791,7 +791,7 @@ void LooperTrack::loadAudioSample(const String & path) {
 			int destNumChannels = audioReader->numChannels;
 			AudioSampleBuffer tempBuf;
 			tempBuf.setSize(destNumChannels, audioReader->lengthInSamples);
-			audioReader->read(&tempBuf, 0, audioReader->lengthInSamples, 0, true, playableBuffer.audioBuffer.getNumChannels() > 1 ? true : false);
+			audioReader->read(&tempBuf, 0, audioReader->lengthInSamples, 0, true, playableBuffer.getNumChannels() > 1 ? true : false);
 			int64 destSize = importSize;
 			if (sampleRateRatio != 1) {
 				LOG("sample loading : resampling is still experimental : " \

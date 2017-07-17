@@ -14,11 +14,12 @@
 
 #include "AudioConfig.h"
 #include "AudioHelpers.h"
-
+#include "BufferBlockList.h"
 
 
 
 #include "MultiNeedle.h"
+ 
 
 #if BUFFER_CAN_STRETCH
 class StretcherJob;
@@ -28,12 +29,17 @@ namespace RubberBand{class RubberBandStretcher;};
 #define RT_STRETCH 0
 #endif
 
+
+
+
 class PlayableBuffer {
 
   public :
   PlayableBuffer(int numChannels,int numSamples,int sampleRate,int blockSize);
   ~PlayableBuffer();
   void setNumChannels(int n);
+  int getNumChannels()const;
+  int getAllocatedNumSample() const;
   bool processNextBlock(AudioBuffer<float> & buffer,uint64 time);
 
 
@@ -44,7 +50,7 @@ class PlayableBuffer {
   void setPlayNeedle(int n);
 
   void cropEndOfRecording(int * sampletoRemove);
-  void padEndOfRecording(int sampleToAdd);
+//  void padEndOfRecording(int sampleToAdd);
   void setRecordedLength(uint64 targetSamples);
 
   
@@ -101,7 +107,8 @@ class PlayableBuffer {
 
 
   int numTimePlayed;
-  AudioSampleBuffer audioBuffer,originAudioBuffer;
+  AudioSampleBuffer originAudioBuffer;
+  BufferBlockList bufferBlockList;
   MultiNeedle multiNeedle;
 
   int getSampleOffsetBeforeNewState();
@@ -158,6 +165,7 @@ private:
 
   
   int tailRecordNeedle;
+
 
 
 

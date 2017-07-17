@@ -370,12 +370,12 @@ void LooperNode::onContainerTriggerTriggered(Trigger * t)
           if ((fp = destFile.createOutputStream())) {
             ScopedPointer<AudioFormatWriter> afw = format.createWriterFor(fp,
                                                                           getSampleRate(),
-                                                                          tr->playableBuffer.audioBuffer.getNumChannels(),
+                                                                          tr->playableBuffer.getNumChannels(),
                                                                           24,
                                                                           StringPairArray(), 0);
             if (afw) {
               fp.release();
-              afw->writeFromAudioSampleBuffer(tr->playableBuffer.audioBuffer, 0, (int)tr->playableBuffer.getRecordedLength());
+              afw->writeFromAudioSampleBuffer(tr->playableBuffer.bufferBlockList.getContiguousBuffer(0, -1), 0, (int)tr->playableBuffer.getRecordedLength());
               afw->flush();
 
             }
@@ -534,15 +534,15 @@ void LooperNode::BPMChanged(double /*BPM*/){
 
         if(isnormal(ratio)){
           t->playableBuffer.setTimeRatio(ratio);
-          if( DEBUGPIPE_ENABLED){
-            if(ratio!=1){
-
-              AudioBuffer<float> b;
-              b.setDataToReferTo(t->playableBuffer.audioBuffer.getArrayOfWritePointers(), 1, t->playableBuffer.getRecordedLength());
-              //          DBGAUDIO("trackStretch"+String(t->trackIdx),b);
-              //          DBGAUDIOSETBPM("trackStretch"+String(t->trackIdx),TimeManager::getInstance()->BPM->doubleValue());
-            }
-          }
+//          if( DEBUGPIPE_ENABLED){
+//            if(ratio!=1){
+//
+//              AudioBuffer<float> b;
+//              b.setDataToReferTo(t->playableBuffer.audioBuffer.getArrayOfWritePointers(), 1, t->playableBuffer.getRecordedLength());
+//              //          DBGAUDIO("trackStretch"+String(t->trackIdx),b);
+//              //          DBGAUDIOSETBPM("trackStretch"+String(t->trackIdx),TimeManager::getInstance()->BPM->doubleValue());
+//            }
+//          }
         }
 
         else{

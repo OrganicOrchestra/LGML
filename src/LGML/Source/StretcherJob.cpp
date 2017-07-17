@@ -44,6 +44,7 @@ void StretcherJob::initStretcher(int sampleRate,int numChannels){
   stretcher->setPitchScale(1.0);
 
 
+
 }
 
 
@@ -52,7 +53,7 @@ void StretcherJob::initStretcher(int sampleRate,int numChannels){
 
 ThreadPoolJob::JobStatus StretcherJob::runJob(){
   int processed = 0;
-  int block = 4096;
+  int block = BUFFER_BLOCK_SIZE;
 
   originNumSamples = owner->originAudioBuffer.getNumSamples();
   while(!shouldExit() && processed<originNumSamples){
@@ -110,7 +111,7 @@ int StretcherJob::studyStretch(double ratio,int start,int block){
   if(start==0){
     if(block==-1)block=owner->originAudioBuffer.getNumSamples();
 
-    initStretcher(owner->sampleRate , owner->audioBuffer.getNumChannels());
+    initStretcher(owner->sampleRate , owner->getNumChannels());
     jassert(isfinite(ratio));
     stretcher->setTimeRatio(ratio);
     stretcher->setExpectedInputDuration(originNumSamples);
@@ -157,14 +158,18 @@ void StretcherJob::processStretch(int start,int block,int * read, int * produced
 
   stretcher->process(tmpIn, block, isFinal);
   int available = stretcher->available();
-  jassert( *produced + available< owner->audioBuffer.getNumSamples());
+//  jassert( *produced + available< owner->getAllocatedNumSample());
 
-  float * tmpOut[owner->audioBuffer.getNumChannels()];
-  for(int i = 0 ; i  < owner->audioBuffer.getNumChannels() ; i++){
-    tmpOut[i] = owner->audioBuffer.getWritePointer(i) + *produced;
+  AudioSampleBuffer tmpOutBuf(owner->getNumChannels(),available);
+  float * tmpOut[owner->getNumChannels()];
+  for(int i = 0 ; i  < owner->getNumChannels() ; i++){
+//    tmpOut[i] = owner->audioBuffer.getWritePointer(i) + *produced;
+    tmpOut[i] = tmpOutBuf.getWritePointer(i);
   }
 
   int retrievedSamples = stretcher->retrieve(tmpOut, available);
+  tmpStretchBuf.setNumSample(*produced+retrievedSamples);
+  tmpStretchBuf.copyFrom(tmpOutBuf,*produced);
   jassert(retrievedSamples==available);
   
   *read = block;

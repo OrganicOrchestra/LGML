@@ -2,7 +2,7 @@
 
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" id="a1hJPO"
-              includeBinaryInAppConfig="1" jucerVersion="5.0.0" name="LGML"
+              includeBinaryInAppConfig="1" jucerVersion="5.0.2" name="LGML"
               projectType="guiapp" version="1.1.95beta" displaySplashScreen="1"
               reportAppUsage="1" splashScreenColour="Dark">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -151,6 +151,10 @@
                 resource="0"/>
         </GROUP>
         <GROUP id="{47C49D7C-57C1-2802-9458-4AB50A9508DE}" name="Audio">
+          <FILE id="CIMyKb" name="BufferBlockList.cpp" compile="1" resource="0"
+                file="Source/BufferBlockList.cpp"/>
+          <FILE id="cXWh9T" name="BufferBlockList.h" compile="0" resource="0"
+                file="Source/BufferBlockList.h"/>
           <FILE id="BxNfkP" name="AudioConfig.h" compile="0" resource="0" file="Source/AudioConfig.h"/>
           <FILE id="dL7FOY" name="StretcherJob.cpp" compile="1" resource="0"
                 file="Source/StretcherJob.cpp"/>
