@@ -1,0 +1,47 @@
+cache:
+    paths:
+    - Dev # todo use these 2 (for now in home)
+    - SDK
+    - src/LGML/Builds
+
+stages:
+  - "build"
+  - "test"
+  - "package"
+
+build_job:
+  stage: build
+  only:
+    - master@lgml/lgml
+  script:
+    - "echo installDeps"
+    - "source src/LGML/Scripts/export_platform_vars.sh"
+    - "sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installDeps.sh;"
+    - "python src/LGML/Scripts/buildScript.py --build --beta"
+
+
+test_job:
+  only:
+    - master@lgml/lgml
+  stage: test
+  script:
+    - "echo no tests for now"
+
+
+
+package:
+  only:
+    - master@lgml/lgml
+  stage: package
+  script:
+    - "python src/LGML/Scripts/buildScript.py --package --export --beta"
+
+
+  # artifacts:
+  #   paths:
+  #   - src/LGML/Builds/MacOSX/build/
+  # only:
+  #   - tags
+  # script:
+  #   - "sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installExportDeps.sh;"
+  #   - "python src/LGML/Scripts/buildScript.py --export"

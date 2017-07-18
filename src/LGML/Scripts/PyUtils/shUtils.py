@@ -17,5 +17,5 @@ def sh(cmd,printIt=True):
 	for l in inSH(cmd):
 		if l != '\n':
 			res+=l
-			print l
+			if(printIt): print l
 	return res

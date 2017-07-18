@@ -14,12 +14,15 @@ JuceProjectPath = os.path.abspath(JuceProjectPath);
 
 def hasValidProjucerPath():
 	global proJucerPath
+	print proJucerPath
 	return os.path.exists(proJucerPath)
 
 def getProjucerIfNeeded(tmpFolder,credentials,osType):
 	global proJucerPath,proJucerCommand
 	tmpFolder = os.path.join(tmpFolder,osType)
 	if  not hasValidProjucerPath() :
+		if callable(credentials):
+			credentials = credentials()
 		if not os.path.exists(tmpFolder):
 			os.makedirs(tmpFolder)
 		proJucerPath = os.path.join(tmpFolder,'Projucer')
@@ -73,7 +76,7 @@ def updatePathsIfNeeded(osType):
 	if not os.path.exists(oldVSTPath):
 
 		print 'current VST path not valid'
-		newVSTPath = getValidPath("SDKs/VST3 SDK")
+		newVSTPath = getValidPath("SDKs/VST3_SDK")
 		if newVSTPath:
 			print 'found VST SDK at :' + newVSTPath
 			hasChanged = True;

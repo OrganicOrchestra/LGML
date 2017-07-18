@@ -8,11 +8,11 @@ cd ~;
 pwd;
 
 # install VST if needed
-if [ ! -d "SDKs/VST3 SDK" ]; then
+if [ ! -d "SDKs/VST3_SDK" ]; then
 	mkdir "SDKs";
 	curl -L http://www.steinberg.net/sdk_downloads/vstsdk366_27_06_2016_build_61.zip > VST3.zip
 	tar -xzf VST3.zip;
-	mv "VST3 SDK/" "SDKs/VST3 SDK/";
+	mv "VST3 SDK/" "SDKs/VST3_SDK/";
 fi
 
 
