@@ -26,14 +26,15 @@ test_job:
 package:osx:
   stage: package
   script:
-    - "python src/LGML/Scripts/buildScript.py --package --beta"
+    - "python src/LGML/Scripts/buildScript.py --package --export --beta"
   tags:
     - osx
   environment:
     name: osx
-  artifacts:
-    paths:
-    - src/LGML/Builds/MacOSX/build/
+
+  # artifacts:
+  #   paths:
+  #   - src/LGML/Builds/MacOSX/build/
   # only:
   #   - tags
   # script:
