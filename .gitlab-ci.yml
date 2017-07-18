@@ -23,14 +23,12 @@ test_job:
     - "echo no tests for now"
 
 
-package:osx:
+package:
   stage: package
   script:
     - "python src/LGML/Scripts/buildScript.py --package --export --beta"
-  tags:
-    - osx
-  environment:
-    name: osx
+  only:
+    - master@lgml/lgml
 
   # artifacts:
   #   paths:
