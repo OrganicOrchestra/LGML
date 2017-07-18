@@ -11,24 +11,31 @@ stages:
 
 build_job:
   stage: build
+  only:
+    - master@lgml/lgml
   script:
     - "echo installDeps"
     - "source src/LGML/Scripts/export_platform_vars.sh"
     - "sh src/LGML/Scripts/$LGML_PLATFORM_TYPE/installDeps.sh;"
     - "python src/LGML/Scripts/buildScript.py --build --beta"
 
+
 test_job:
+  only:
+    - master@lgml/lgml
   stage: test
   script:
     - "echo no tests for now"
 
 
+
 package:
+  only:
+    - master@lgml/lgml
   stage: package
   script:
     - "python src/LGML/Scripts/buildScript.py --package --export --beta"
-  only:
-    - master@lgml/lgml
+
 
   # artifacts:
   #   paths:
