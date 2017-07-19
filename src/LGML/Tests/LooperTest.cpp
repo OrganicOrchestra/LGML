@@ -206,17 +206,45 @@ public:
         for(int c  = 0 ; c < numChannels ; c++){
           float normal1 = getBufferSampleForTime(j1);
           float normal2 = getBufferSampleForTime(j2+sB2*tm->beatTimeInSample);
-          float track1Val =(int)(track1->playableBuffer.audioBuffer.getSample(c, j1));
-          float track2Val =(int)(track2->playableBuffer.audioBuffer.getSample(c, j2));
+          float track1Val =(int)(track1->playableBuffer.bufferBlockList.getSample(c, j1));
+          float track2Val =(int)(track2->playableBuffer.bufferBlockList.getSample(c, j2));
           expect(normal1==track1Val,"wrong alignement test on track 1");
           expect(normal2==track2Val,"wrong alignement test on track 2");
           if(i < minCommonSamples - fadeSample)expect(track1Val==track2Val,"loops not aligned at: "+String (i)+" :: " + String(j1) + ","+String(j2));
         }
       }
     }
-    
+
+    beginTest("double touch sample rec");
+    clearAll();
+    track1->recPlayTrig->trigger();
+    track1->recPlayTrig->trigger();
+    for(int i = 0 ; i < 50 ; i++){
+      processBlock();
+    }
+
+    beginTest("short sample rec");
+    clearAll();
+    track1->recPlayTrig->trigger();
+    processBlock();
+    track1->recPlayTrig->trigger();
+    for(int i = 0 ; i < 50 ; i++){
+      processBlock();
+    }
+
+
     currentLooper = nullptr;
     
+  }
+
+  void clearAll(){
+    currentLooper->clearAllTrig->trigger();
+    for( int i = 0 ; i <= blockSize+currentLooper->trackGroup.tracks[0]->playableBuffer.getNumSampleFadeOut() ; i+=blockSize){
+      processBlock();
+    }
+
+    float magnitude = testBuffer.getMagnitude(0,testBuffer.getNumSamples());
+    expect(magnitude==0,"still Playing after clear");
   }
   
 };

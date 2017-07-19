@@ -7,6 +7,8 @@
               reportAppUsage="1" splashScreenColour="Dark">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
+      <FILE id="NidgME" name="BufferListTest.cpp" compile="1" resource="0"
+            file="Tests/BufferListTest.cpp"/>
       <FILE compile="1" file="Tests/LooperTest.cpp" id="lDg0ln" name="LooperTest.cpp"
             resource="0"/>
       <FILE compile="1" file="Tests/NodeChildProofer.cpp" id="m35Qyt" name="NodeChildProofer.cpp"
@@ -795,7 +797,7 @@
                postbuildCommand="" smallIcon="jsU7Hw" targetFolder="Builds/MacOSX"
                vst3Folder="/Users/Tintamar/SDKs/VST3_SDK" vstFolder="" externalLibraries=""
                extraLinkerFlags="/Users/Tintamar/Dev/rubberband/lib/librubberband.a"
-               extraDefs="LINK_PLATFORM_MACOSX=1">
+               extraDefs="LINK_PLATFORM_MACOSX=1" prebuildCommand="python ../../Scripts/PyUtils/writeSha.py">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="../../External/serial/include" isDebug="0" linkTimeOptimisation="1"
@@ -806,7 +808,7 @@
                        name="Debug" osxArchitecture="64BitUniversal" osxCompatibility="10.7 SDK"
                        osxSDK="default" targetName="LGML"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1"
-                       defines="LGML_UNIT_TESTS=1" headerPath="../../External/serial/include"
+                       defines="LGML_UNIT_TESTS=1&#10;" headerPath="../../External/serial/include&#10;../../Source"
                        isDebug="1" name="Test" osxArchitecture="64BitUniversal" osxCompatibility="10.7 SDK"
                        osxSDK="default" targetName="LGML_Debug"/>
       </CONFIGURATIONS>
