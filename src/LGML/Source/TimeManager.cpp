@@ -329,7 +329,16 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
 
   else if (p==linkEnabled){
 #if LINK_SUPPORT
+
     linkSession.enable(linkEnabled->boolValue());
+    if(linkEnabled->boolValue()){
+      auto lTl = linkSession.captureAppTimeline();
+      lTl.requestBeatAtTime(getBeat(),
+                            //                      std::chrono::system_clock::now().time_since_epoch(),
+                            linkTime,
+                            beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
+      linkSession.commitAppTimeline(lTl);
+    }
 #endif
   }
   else if (p==linkLatencyParam){
@@ -404,9 +413,9 @@ void TimeManager::updateState(){
     }
     timeManagerListeners.call(&TimeManagerListener::timeJumped,desiredTimeState.time);
   }
-  if(dbg!=""){
-    LOG(dbg);
-  }
+//  if(dbg!=""){
+//    LOG(dbg);
+//  }
 
 
 
@@ -498,13 +507,11 @@ void TimeManager::setBlockSize(int bS){
 void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){
   isSettingTempo->setValue(false,false,false,true);
   int newBeatTime = (uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
-
   if(adaptTimeInSample){
     uint64 targetTime = timeState.time*newBeatTime/beatTimeInSample;
-    goToTime(targetTime);
+    goToTime(targetTime,true);
   }
   beatTimeInSample =newBeatTime;
-
 
 }
 long long TimeManager::getTimeInSample(){
