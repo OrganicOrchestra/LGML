@@ -54,6 +54,7 @@ streamAudioBuffer(2, 16384)// 16000 ~ 300ms and 256*64
 
 
   addChildControllableContainer(&trackGroup);
+  setRateAndBufferSizeDetails(44100,256);
 
   trackGroup.setNumTracks(numberOfTracks->intValue());
 
