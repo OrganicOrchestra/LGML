@@ -219,8 +219,8 @@ void MultiNeedle::setLoopSize(int _loopSize){
   loopSize = _loopSize;
   ScopedLock lk(readMutex);
   if(_loopSize>0){
-    jassert(loopSize>fadeInNumSamples+fadeOutNumSamples);
-    loopSize = jmax(loopSize,fadeInNumSamples+fadeOutNumSamples);
+//    jassert(loopSize>fadeInNumSamples+fadeOutNumSamples);
+//    loopSize = jmax(loopSize,fadeInNumSamples+fadeOutNumSamples);
     for(auto & fN : needles){
       fN.setMaxLength(loopSize);
     }
@@ -307,7 +307,7 @@ void MultiNeedle::addToBuffer( BufferBlockList & originBufferList,AudioBuffer<fl
   //    jassert(destBuffer.getNumChannels()>=originBuffer.getNumChannels());
   const int minComonChannels = jmin(destBuffer.getNumChannels(),originBufferList.getAllocatedNumChannels());
   // ensure buffer is larger than last possible read sample
-  jassert(originBufferList.getAllocatedNumSample()>loopSize+fadeOutNumSamples);
+//  jassert(originBufferList.getAllocatedNumSample()>loopSize+fadeOutNumSamples);
   jassert(loopSize>0);
   jassert(loopSize==originBufferList.getNumSamples());
 
@@ -383,7 +383,7 @@ void MultiNeedle::addToBuffer( BufferBlockList & originBufferList,AudioBuffer<fl
 
     AudioSampleBuffer tmpContiguous = originBufferList.getContiguousBuffer(curStartPos,numSamples);
     for(int  i = minComonChannels-1; i >=0  ; i--){
-      destBuffer.addFromWithRamp(i, 0, tmpContiguous.getReadPointer(i),0,  fN->getFadeValueStart(), fN->getFadeValueEnd());
+      destBuffer.addFromWithRamp(i, 0, tmpContiguous.getReadPointer(i),numSamples,  fN->getFadeValueStart(), fN->getFadeValueEnd());
     }
 //    if(fN->reverse){
 //      // not supported atm

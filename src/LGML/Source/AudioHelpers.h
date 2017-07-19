@@ -200,8 +200,8 @@ inline void updateRMS(const AudioBuffer<float>& buffer,
         //      s/=numSamples
         //      float s =  buffer.getMagnitude(i, 0,numSamples)*.7f;
         //      float s = FloatVectorOperations::findMaximum(buffer.getReadPointer(i), numSamples)*.7f;
-        targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getUnchecked(i))?s:
-                                   s>lowThresh?targetRMSChannelValues.getUnchecked(i)*(float)decayFactor:
+        targetRMSChannelValues.set(i, (s>targetRMSChannelValues.getReference(i))?s:
+                                   s>lowThresh?targetRMSChannelValues.getReference(i)*(float)decayFactor:
                                    0);
 
         globalS = jmax(s, globalS);

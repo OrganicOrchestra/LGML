@@ -19,7 +19,7 @@
 
 class LooperNode;
 
-#define MAX_LOOP_LENGTH_S 60
+
 
 class LooperTrack : public ControllableContainer , public EnumParameter::EnumListener
 {

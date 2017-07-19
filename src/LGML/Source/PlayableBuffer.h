@@ -24,7 +24,7 @@
 #if BUFFER_CAN_STRETCH
 class StretcherJob;
 namespace RubberBand{class RubberBandStretcher;};
-#define RT_STRETCH 0 // TODO : still WIP
+#define RT_STRETCH 1 // TODO : validate
 #else
 #define RT_STRETCH 0
 #endif
@@ -35,7 +35,7 @@ namespace RubberBand{class RubberBandStretcher;};
 class PlayableBuffer {
 
   public :
-  PlayableBuffer(int numChannels,int numSamples,int sampleRate,int blockSize);
+  PlayableBuffer(int numChannels,int numSamples,float sampleRate,int blockSize);
   ~PlayableBuffer();
   void setNumChannels(int n);
   int getNumChannels()const;
@@ -120,6 +120,8 @@ class PlayableBuffer {
 #endif
   void setSampleRate(float sR);
   float sampleRate;
+  int blockSize;
+  void setBlockSize(int bs);
 
 //  void findFadeLoopPoints();
 //  uint64 fadeLoopOutPoint;
@@ -135,17 +137,22 @@ private:
   //stretch
 
 #if RT_STRETCH
-  void initRTStretch(int blockSize);
+  void initRTStretch();
   void applyStretch();
-  void processPendingRTStretch(AudioBuffer<float> & b);
+  bool processPendingRTStretch(AudioBuffer<float> & b);
   ScopedPointer<RubberBand::RubberBandStretcher> RTStretcher;
   float pendingTimeStretchRatio;
+  int processedStretch;
+  int stretchNeedle;
+  bool isStretchPending;
 
 #endif
 
 #if BUFFER_CAN_STRETCH
   friend class StretcherJob;
   StretcherJob *stretchJob;
+  AudioSampleBuffer tmpBufferStretch;
+  bool isStretchReady;
 #endif
 
   int sampleOffsetBeforeNewState;
@@ -153,7 +160,7 @@ private:
   BufferState lastState;
   
   
-
+  void fadeInOut();
 
 
 
