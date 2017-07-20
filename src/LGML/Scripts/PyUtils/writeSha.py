@@ -40,7 +40,7 @@ def checkNewSha():
 if __name__=='__main__':
 	print("writen sha : "+getFileSha())
 	print("git sha : "+getGitSha())
-	print("checking git sha's :"+checkNewSha())
+	print("checking git sha's :"+str(checkNewSha()))
 	if (checkNewSha()):
 		writeSha()
 	# sh("git add "+gitShaPath)

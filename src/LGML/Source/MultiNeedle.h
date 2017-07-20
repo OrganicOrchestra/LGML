@@ -13,6 +13,8 @@
 
 #include "AudioConfig.h"
 #include "JuceHeader.h"
+#include "BufferBlockList.h"
+
 
 
 class FadeNeedle{
@@ -77,7 +79,7 @@ public:
   FadeNeedle *  consumeNextNeedle(int numSamples);
   void fadeAllOut();
   void resetAll();
-  void addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffer<float> & destBuffer,int numSamples,bool isLooping);
+  void addToBuffer( BufferBlockList & originBuffer,AudioBuffer<float> & destBuffer,int numSamples,bool isLooping);
 
 
 

@@ -31,7 +31,7 @@ LooperTrack::LooperTrack(LooperNode * looperNode, int _trackIdx) :
 	quantizedRecordEnd(NO_QUANTIZE),
 	quantizedPlayStart(NO_QUANTIZE),
 	quantizedPlayEnd(NO_QUANTIZE),
-	playableBuffer(2, 44100 * MAX_LOOP_LENGTH_S, looperNode->getSampleRate(), looperNode->getBlockSize()),
+	playableBuffer(2, 44100 * 10, looperNode->getSampleRate(), looperNode->getBlockSize()),
 	trackState(CLEARED),
 	desiredState(CLEARED),
 	trackIdx(_trackIdx),
@@ -111,7 +111,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 		offset = 0;
 	}
   if(curTime>=0){
-	jassert(curTime==0 || ((int)curTime - (int)offset >= 0));
+	jassert(curTime==0 || ((long long)curTime - (long long)offset >= 0));
   uint64 localTime = jmin(curTime,curTime - offset);
 	if (!playableBuffer.processNextBlock(buffer, localTime) && trackState != STOPPED) {
 		SLOG("Stopping, too many audio (more than 1mn)");
@@ -200,7 +200,9 @@ bool LooperTrack::updatePendingLooperTrackState(int blockSize) {
 	}
 
 
-
+  if(curTime<0){
+    return false;
+  }
 	////
 	// apply quantization on play / rec
 	uint64 triggeringTime = curTime + blockSize;
@@ -725,7 +727,9 @@ bool LooperTrack::hasOnset() {
 
 void LooperTrack::setNumChannels(int numChannels) {
 	playableBuffer.setNumChannels(numChannels);
-	playableBuffer.setSampleRate(parentLooper->getSampleRate());
+  int sR = parentLooper->getSampleRate();
+  if(sR!=0)playableBuffer.setSampleRate(sR);
+  else jassertfalse;
 }
 
 
@@ -763,38 +767,22 @@ void LooperTrack::loadAudioSample(const String & path) {
 
 
 			int padSize = 0;//playableBuffer.getNumSampleFadeOut() ;
-			int64 maxAllowedSample = 44100 * MAX_LOOP_LENGTH_S - padSize - 5000;
+			
 
 
 			auto tm = TimeManager::getInstance();
 			auto ti = tm->findTransportTimeInfoForLength(audioReader->lengthInSamples, audioReader->sampleRate);
-			double fileBPM = ti.bpm;
 			double sampleRateRatio = parentLooper->getSampleRate()*1.0 / audioReader->sampleRate;
 			int64 importSize = audioReader->lengthInSamples * sampleRateRatio;
-
-
-			// TODO : get rid of that by having dynamic allocated sizes of playableBuffer
-			double maxSampleGrowthRatio = fileBPM / (double)tm->BPM->minimumValue;
-			int64 maxSampleSize = importSize* maxSampleGrowthRatio;
-			int64 overFlow = jmax((int64)0, maxSampleSize - maxAllowedSample);
-			if (overFlow > 0) {
-				while (importSize* maxSampleGrowthRatio > maxAllowedSample) {
-					importSize /= 2;
-				}
-				//        int barLength= 4.0*ti.beatInSample;
-				//        overFlow = ceil(overFlow*1.0/barLength)*barLength;
-				//        importSize-= overFlow;
-				SLOG("sample loading : truncating input bigger than 1mn when stretched " << importSize*1.0 / audioReader->lengthInSamples);
-			}
 
 
 			int destNumChannels = audioReader->numChannels;
 			AudioSampleBuffer tempBuf;
 			tempBuf.setSize(destNumChannels, audioReader->lengthInSamples);
-			audioReader->read(&tempBuf, 0, audioReader->lengthInSamples, 0, true, playableBuffer.audioBuffer.getNumChannels() > 1 ? true : false);
+			audioReader->read(&tempBuf, 0, audioReader->lengthInSamples, 0, true, playableBuffer.getNumChannels() > 1 ? true : false);
 			int64 destSize = importSize;
 			if (sampleRateRatio != 1) {
-				LOG("sample loading : resampling is still experimental : " \
+				LOG("sample loading : resampling should work but still experimental : " \
 					<< audioFile.getFileName() << " : " << audioReader->sampleRate);
 
 				CatmullRomInterpolator interpolator;
@@ -821,11 +809,11 @@ void LooperTrack::loadAudioSample(const String & path) {
 			playableBuffer.setRecordedLength(destSize);
 			originBPM->setValue(ti.bpm);
 			beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / ti.beatInSample, false, false, true);
-			playableBuffer.setNumChannels(destNumChannels);
+			
 
-
+#if BUFFER_CAN_STRETCH
 			playableBuffer.setTimeRatio(timeRatio);
-
+#endif
 
 
 		} else {

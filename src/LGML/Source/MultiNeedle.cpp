@@ -34,6 +34,7 @@ void FadeNeedle::set(const int & c,const int fIn,const int fOut,const int sus,bo
   hasBeenSet = true;
   reverse = _reverse;
   jassert(sustainNumSamples>=0 || sustainNumSamples==-1 );
+//  jassert(startNeedle>=0);
 
 };
 
@@ -219,8 +220,8 @@ void MultiNeedle::setLoopSize(int _loopSize){
   loopSize = _loopSize;
   ScopedLock lk(readMutex);
   if(_loopSize>0){
-    jassert(loopSize>fadeInNumSamples+fadeOutNumSamples);
-    loopSize = jmax(loopSize,fadeInNumSamples+fadeOutNumSamples);
+//    jassert(loopSize>fadeInNumSamples+fadeOutNumSamples);
+//    loopSize = jmax(loopSize,fadeInNumSamples+fadeOutNumSamples);
     for(auto & fN : needles){
       fN.setMaxLength(loopSize);
     }
@@ -303,12 +304,13 @@ void MultiNeedle::resetAll(){
   }
 }
 
-void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffer<float> & destBuffer,int numSamples,bool isLooping){
+void MultiNeedle::addToBuffer( BufferBlockList & originBufferList,AudioBuffer<float> & destBuffer,int numSamples,bool isLooping){
   //    jassert(destBuffer.getNumChannels()>=originBuffer.getNumChannels());
-  const int minComonChannels = jmin(destBuffer.getNumChannels(),originBuffer.getNumChannels());
+  const int minComonChannels = jmin(destBuffer.getNumChannels(),originBufferList.getAllocatedNumChannels());
   // ensure buffer is larger than last possible read sample
-  jassert(originBuffer.getNumSamples()>loopSize+fadeOutNumSamples);
+//  jassert(originBufferList.getAllocatedNumSample()>loopSize+fadeOutNumSamples);
   jassert(loopSize>0);
+  jassert(loopSize==originBufferList.getNumSamples());
 
   const int nextPos = currentPos+numSamples;
 #if NEEDLE_STITCHING
@@ -336,6 +338,7 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
   float accumNeedle = 0;
   float accumNeedleSq = 0;
   ScopedLock lk(readMutex);
+  
   while((fN = consumeNextNeedle(numSamples))){
     numActiveNeedle++;
     accumNeedle += fN->getFadeValueStart();
@@ -347,51 +350,55 @@ void MultiNeedle::addToBuffer(const AudioBuffer<float> & originBuffer,AudioBuffe
     jassert(curStartPos<=loopSize );
     DBGNEEDLE(currentPos << "\t" << fN->num <<   " " <<nextPos-curEndPos <<  " : "<<fN->lastFade << "\t" << fN->currentFade << "\t" << fN->getCurrentPosition()-loopSize);
     //          << "\t" << (fN->reverse?1:0));
+//
+//    if(fN->currentFade!=1){
+//      int dbg;dbg++;
+//    }
+//    int firstPart = jmin(numSamples,loopSize-curStartPos);
+//    // overshoot
+//    if(firstPart<0){
+//      jassertfalse;
+//      curStartPos = (curStartPos%loopSize);
+//      curEndPos = curStartPos+numSamples;
+//      firstPart = jmin(numSamples,loopSize-curStartPos);
+//      fN->startNeedle= jmax(0,fN->startNeedle-loopSize);
+//    }
+//    int secondPart = numSamples - firstPart;
+//    jassert(secondPart>=0);
+//    jassert(firstPart+secondPart==numSamples);
+//    const double firstRatio = firstPart/(numSamples);
+//
+//
+//    int fadeOutSize = numSamples;
 
-    if(fN->currentFade!=1){
-      int dbg;dbg++;
-    }
-    int firstPart = jmin(numSamples,loopSize-curStartPos);
-    // overshoot
-    if(firstPart<0){
-      jassertfalse;
-      curStartPos = (curStartPos%loopSize);
-      curEndPos = curStartPos+numSamples;
-      firstPart = jmin(numSamples,loopSize-curStartPos);
-      fN->startNeedle= jmax(0,fN->startNeedle-loopSize);
-    }
-    int secondPart = numSamples - firstPart;
-    jassert(secondPart>=0);
-    jassert(firstPart+secondPart==numSamples);
-    const double firstRatio = firstPart/(numSamples);
+//    if(!fN->reverse && firstPart>0){
+//      for(int  i = minComonChannels-1; i >=0  ; i--){
+//        destBuffer.addFromWithRamp(i, 0, tmpContiguous.getReadPointer(i), firstPart, fN->getFadeValueStart(), firstRatio*fN->getFadeValueEnd());
+//      }
+//    }
+//    if(!fN->reverse && secondPart>0){
+//      for(int  i = minComonChannels-1; i >=0  ; i--){
+//        destBuffer.addFromWithRamp(i, 0, tmpContiguous.firstPart) % loopSize), secondPart, firstRatio*fN->getFadeValueEnd(), fN->getFadeValueEnd());
+//      }
+//    }
 
-
-    int fadeOutSize = numSamples;
-    if(!fN->reverse && firstPart>0){
-      for(int  i = minComonChannels-1; i >=0  ; i--){
-        destBuffer.addFromWithRamp(i, 0, originBuffer.getReadPointer(i, curStartPos), firstPart, fN->getFadeValueStart(), firstRatio*fN->getFadeValueEnd());
-      }
+    AudioSampleBuffer tmpContiguous = originBufferList.getContiguousBuffer(curStartPos,numSamples);
+    for(int  i = minComonChannels-1; i >=0  ; i--){
+      destBuffer.addFromWithRamp(i, 0, tmpContiguous.getReadPointer(i),numSamples,  fN->getFadeValueStart(), fN->getFadeValueEnd());
     }
-    if(!fN->reverse && secondPart>0){
-      for(int  i = minComonChannels-1; i >=0  ; i--){
-        destBuffer.addFromWithRamp(i, 0, originBuffer.getReadPointer(i, (curStartPos+firstPart) % loopSize), secondPart, firstRatio*fN->getFadeValueEnd(), fN->getFadeValueEnd());
-      }
-    }
-
-
-    if(fN->reverse){
-      // not supported atm
-      jassertfalse;
-      const double fadeStep =  (fN->getFadeValueEnd() - fN->getFadeValueStart())*1.0/fadeOutSize;
-      for(int  i = minComonChannels-1; i >=0  ; i--){
-        double fade = fN->getFadeValueStart();
-        for(int s = 0 ; s<fadeOutSize;s++ ){
-          destBuffer.addSample(i, s, originBuffer.getSample(i, curStartPos - s)*fade);
-          fade+=fadeStep;
-        }
-        jassert(fade == fN->getFadeValueEnd());
-      }
-    }
+//    if(fN->reverse){
+//      // not supported atm
+//      jassertfalse;
+//      const double fadeStep =  (fN->getFadeValueEnd() - fN->getFadeValueStart())*1.0/fadeOutSize;
+//      for(int  i = minComonChannels-1; i >=0  ; i--){
+//        double fade = fN->getFadeValueStart();
+//        for(int s = 0 ; s<fadeOutSize;s++ ){
+//          destBuffer.addSample(i, s, originBuffer.getSample(i, curStartPos - s)*fade);
+//          fade+=fadeStep;
+//        }
+//        jassert(fade == fN->getFadeValueEnd());
+//      }
+//    }
   }
   if(isLooping){
     DBGNEEDLE(accumNeedle << " // " <<accumNeedleSq );

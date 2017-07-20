@@ -56,6 +56,7 @@ public:
               tested != tested->parentContainer->nameParam
               && tested->shortName !="savePreset" &&
               tested->shortName !="loadFile" &&
+              tested->shortName !="scriptPath" &&
               !tested->shortName.startsWith("exportAudio") &&
               tested!=testingNode->nameParam){
             String err ="Action failed for Controllable : "+tested->getControlAddress();

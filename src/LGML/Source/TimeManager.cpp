@@ -329,7 +329,16 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
 
   else if (p==linkEnabled){
 #if LINK_SUPPORT
+
     linkSession.enable(linkEnabled->boolValue());
+    if(linkEnabled->boolValue()){
+      auto lTl = linkSession.captureAppTimeline();
+      lTl.requestBeatAtTime(getBeat(),
+                            //                      std::chrono::system_clock::now().time_since_epoch(),
+                            linkTime,
+                            beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
+      linkSession.commitAppTimeline(lTl);
+    }
 #endif
   }
   else if (p==linkLatencyParam){
@@ -404,9 +413,9 @@ void TimeManager::updateState(){
     }
     timeManagerListeners.call(&TimeManagerListener::timeJumped,desiredTimeState.time);
   }
-  if(dbg!=""){
-    LOG(dbg);
-  }
+//  if(dbg!=""){
+//    LOG(dbg);
+//  }
 
 
 
@@ -498,13 +507,11 @@ void TimeManager::setBlockSize(int bS){
 void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){
   isSettingTempo->setValue(false,false,false,true);
   int newBeatTime = (uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
-
   if(adaptTimeInSample){
     uint64 targetTime = timeState.time*newBeatTime/beatTimeInSample;
-    goToTime(targetTime);
+    goToTime(targetTime,true);
   }
   beatTimeInSample =newBeatTime;
-
 
 }
 long long TimeManager::getTimeInSample(){
@@ -586,10 +593,11 @@ uint64 TimeManager::getNextGlobalQuantifiedTime(){
 uint64 TimeManager::getNextQuantifiedTime(int barFraction){
   if(willRestart())return 0;
   if (barFraction==-1){barFraction=quantizedBarFraction->intValue();}
-  if(barFraction==0){return timeState.time;}
+  uint64 nextPosTime = jmax((long long)0,timeState.time);
+  if(barFraction==0){return nextPosTime;}
 
   const double samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()*1.0/barFraction);
-  const uint64 res = (uint64) ((floor(timeState.time*1.0/samplesPerUnit) + 1)*samplesPerUnit);
+  const uint64 res = (uint64) ((floor(nextPosTime*1.0/samplesPerUnit) + 1)*samplesPerUnit);
   return res;
 }
 

@@ -14,26 +14,32 @@
 
 #include "AudioConfig.h"
 #include "AudioHelpers.h"
-
+#include "BufferBlockList.h"
 
 
 
 #include "MultiNeedle.h"
+ 
 
 #if BUFFER_CAN_STRETCH
 class StretcherJob;
 namespace RubberBand{class RubberBandStretcher;};
-#define RT_STRETCH 0 // TODO : still WIP
+#define RT_STRETCH 1 // TODO : validate
 #else
 #define RT_STRETCH 0
 #endif
 
+
+
+
 class PlayableBuffer {
 
   public :
-  PlayableBuffer(int numChannels,int numSamples,int sampleRate,int blockSize);
+  PlayableBuffer(int numChannels,int numSamples,float sampleRate,int blockSize);
   ~PlayableBuffer();
   void setNumChannels(int n);
+  int getNumChannels()const;
+  int getAllocatedNumSample() const;
   bool processNextBlock(AudioBuffer<float> & buffer,uint64 time);
 
 
@@ -44,7 +50,7 @@ class PlayableBuffer {
   void setPlayNeedle(int n);
 
   void cropEndOfRecording(int * sampletoRemove);
-  void padEndOfRecording(int sampleToAdd);
+//  void padEndOfRecording(int sampleToAdd);
   void setRecordedLength(uint64 targetSamples);
 
   
@@ -101,7 +107,8 @@ class PlayableBuffer {
 
 
   int numTimePlayed;
-  AudioSampleBuffer audioBuffer,originAudioBuffer;
+  AudioSampleBuffer originAudioBuffer;
+  BufferBlockList bufferBlockList;
   MultiNeedle multiNeedle;
 
   int getSampleOffsetBeforeNewState();
@@ -113,11 +120,13 @@ class PlayableBuffer {
 #endif
   void setSampleRate(float sR);
   float sampleRate;
+  int blockSize;
+  void setBlockSize(int bs);
 
 //  void findFadeLoopPoints();
 //  uint64 fadeLoopOutPoint;
 //  bool reverseFadeOut;
-
+  Array<int> onsetSamples;
 
 #if !LGML_UNIT_TESTS
 private:
@@ -128,17 +137,24 @@ private:
   //stretch
 
 #if RT_STRETCH
-  void initRTStretch(int blockSize);
+  void initRTStretch();
   void applyStretch();
-  void processPendingRTStretch(AudioBuffer<float> & b);
+  bool processPendingRTStretch(AudioBuffer<float> & b,uint64 time);
   ScopedPointer<RubberBand::RubberBandStretcher> RTStretcher;
   float pendingTimeStretchRatio;
+  int processedStretch;
+  int stretchNeedle;
+  bool isStretchPending;
+  FadeInOut fadePendingStretch;
 
 #endif
 
 #if BUFFER_CAN_STRETCH
   friend class StretcherJob;
   StretcherJob *stretchJob;
+  AudioSampleBuffer tmpBufferStretch;
+  bool isStretchReady;
+
 #endif
 
   int sampleOffsetBeforeNewState;
@@ -146,7 +162,7 @@ private:
   BufferState lastState;
   
   
-
+  void fadeInOut();
 
 
 
@@ -158,6 +174,7 @@ private:
 
   
   int tailRecordNeedle;
+
 
 
 

@@ -26,8 +26,8 @@ void StretcherJob::initStretcher(int sampleRate,int numChannels){
   stretcher=new    RubberBandStretcher(sampleRate,//size_t sampleRate,
                                        numChannels,//size_t channels,
                                        RubberBandStretcher::OptionProcessOffline
-                                       | RubberBandStretcher::OptionTransientsMixed
-                                       //~ | RubberBandStretcher::OptionTransientsSmooth
+//                                       | RubberBandStretcher::OptionTransientsMixed
+                                        | RubberBandStretcher::OptionTransientsSmooth
                                        //| RubberBandStretcher::OptionPhaseAdaptive
                                        | RubberBandStretcher::OptionThreadingNever
                                        | RubberBandStretcher::OptionWindowStandard
@@ -44,6 +44,7 @@ void StretcherJob::initStretcher(int sampleRate,int numChannels){
   stretcher->setPitchScale(1.0);
 
 
+
 }
 
 
@@ -51,8 +52,9 @@ void StretcherJob::initStretcher(int sampleRate,int numChannels){
 
 
 ThreadPoolJob::JobStatus StretcherJob::runJob(){
+  owner->isStretchReady = false;
   int processed = 0;
-  int block = 4096;
+  int block = tmpStretchBuf.bufferBlockSize;
 
   originNumSamples = owner->originAudioBuffer.getNumSamples();
   while(!shouldExit() && processed<originNumSamples){
@@ -62,6 +64,8 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
   processed = 0;
   int read = 0;
   int produced = 0;
+  tmpStretchBuf.setNumChannels(owner->getNumChannels());
+  owner->multiNeedle.fadeAllOut();
   while(!shouldExit()&& processed<originNumSamples){
     processStretch(processed,block,&read,&produced);
     processed+=read;
@@ -84,12 +88,22 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
       
       double actualRatio = produced*1.0/originNumSamples;
       jassert(fabs(ratio - actualRatio) < 0.01 );
-//    owner->recordNeedle = produced;
-      
-      double playNeedleRatio =  owner->playNeedle*1.0/owner->recordNeedle;
-    owner->playNeedle = playNeedleRatio *targetNumSamples;
-      owner->multiNeedle.fadeAllOut();
-    owner->setRecordedLength(targetNumSamples);
+      tmpStretchBuf.setNumSample(targetNumSamples);
+      jassert(owner->isStretchReady==false);
+      std::vector<int> tp = stretcher->getExactTimePoints();
+      owner->onsetSamples.clear() ;
+      int inc = stretcher->getInputIncrement();
+
+      for(int i = 0 ; i < tp.size();i++){
+        owner->onsetSamples.add(tp[i]*inc);
+      }
+
+//      std::swap(owner->tmpBufferBlockList, tmpStretchBuf);
+      owner->tmpBufferStretch.setSize(tmpStretchBuf.getAllocatedNumChannels(), tmpStretchBuf.getNumSamples());
+      tmpStretchBuf.copyTo(owner->tmpBufferStretch,0);
+      owner->isStretchReady = true;
+
+
     //    int dbg =stretcher->getSamplesRequired();
     //    jassert(dbg<=0);
 
@@ -110,7 +124,7 @@ int StretcherJob::studyStretch(double ratio,int start,int block){
   if(start==0){
     if(block==-1)block=owner->originAudioBuffer.getNumSamples();
 
-    initStretcher(owner->sampleRate , owner->audioBuffer.getNumChannels());
+    initStretcher(owner->sampleRate , owner->getNumChannels());
     jassert(isfinite(ratio));
     stretcher->setTimeRatio(ratio);
     stretcher->setExpectedInputDuration(originNumSamples);
@@ -129,6 +143,7 @@ int StretcherJob::studyStretch(double ratio,int start,int block){
     tmp[i] = owner->originAudioBuffer.getReadPointer(i) + start;
   }
   stretcher->study(tmp, block, isFinal);
+
   return block;
 
 }
@@ -157,14 +172,18 @@ void StretcherJob::processStretch(int start,int block,int * read, int * produced
 
   stretcher->process(tmpIn, block, isFinal);
   int available = stretcher->available();
-  jassert( *produced + available< owner->audioBuffer.getNumSamples());
+//  jassert( *produced + available< owner->getAllocatedNumSample());
 
-  float * tmpOut[owner->audioBuffer.getNumChannels()];
-  for(int i = 0 ; i  < owner->audioBuffer.getNumChannels() ; i++){
-    tmpOut[i] = owner->audioBuffer.getWritePointer(i) + *produced;
+  AudioSampleBuffer tmpOutBuf(owner->getNumChannels(),available);
+  float * tmpOut[owner->getNumChannels()];
+  for(int i = 0 ; i  < owner->getNumChannels() ; i++){
+//    tmpOut[i] = owner->audioBuffer.getWritePointer(i) + *produced;
+    tmpOut[i] = tmpOutBuf.getWritePointer(i);
   }
 
   int retrievedSamples = stretcher->retrieve(tmpOut, available);
+  tmpStretchBuf.setNumSample(*produced+retrievedSamples);
+  tmpStretchBuf.copyFrom(tmpOutBuf,*produced,0,retrievedSamples);
   jassert(retrievedSamples==available);
   
   *read = block;
