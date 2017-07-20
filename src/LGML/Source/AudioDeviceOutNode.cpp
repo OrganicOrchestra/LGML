@@ -90,7 +90,25 @@ void AudioDeviceOutNode::updateVolMutes(){
 void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {
   if (!enabledParam->boolValue()) return;
 
-
+  //  JUCE do not duplicate buffers when comming from the same source
+  //  force duplication to isolate behaviour when manipulating buffer channel independently
+  //     ---In1
+  //    /
+  // Out-----In2
+  int numSample = buffer.getNumSamples();
+  int numChan = buffer.getNumChannels();
+  audioInCache.resize(numChan);
+  int idx = 0;
+  for(int i = 0; i < numChan ; i++){
+    for(int j = numChan-1 ; j > i ; j--){
+    if(buffer.getReadPointer(i) == buffer.getReadPointer(j)){
+      audioInCache.getReference(idx).resize(numSample);
+      buffer.getArrayOfWritePointers()[j] = &audioInCache.getReference(idx).getReference(0);
+      buffer.copyFrom(i, 0, buffer.getReadPointer(i), numSample);
+      idx++;
+    }
+    }
+  }
   int numChannels = jmin(NodeBase::getTotalNumInputChannels() , AudioProcessorGraph::AudioGraphIOProcessor::getTotalNumInputChannels());
   int numSamples = buffer.getNumSamples();
 

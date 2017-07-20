@@ -46,6 +46,8 @@ public:
     int lastNumberOfOutputs;
 
   void  setParentNodeContainer(NodeContainer * parent)override;
+
+  Array<Array<float>> audioInCache;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioDeviceOutNode)
 };
 
