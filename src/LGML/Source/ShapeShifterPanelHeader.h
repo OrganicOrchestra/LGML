@@ -16,13 +16,16 @@
 
 class ShapeShifterPanelHeader :
 	public Component,
-	public ShapeShifterPanelTab::TabListener
+	public ShapeShifterPanelTab::TabListener,
+  public ButtonListener
 {
 public:
 	ShapeShifterPanelHeader();
 	virtual ~ShapeShifterPanelHeader();
 
 	OwnedArray<ShapeShifterPanelTab> tabs;
+  TextButton addPannelMenu;
+  void buttonClicked (Button*)override;
 
 	void addTab(ShapeShifterContent * content);
 	void removeTab(ShapeShifterPanelTab * tab, bool doRemove = true);

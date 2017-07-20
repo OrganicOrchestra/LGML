@@ -10,10 +10,17 @@
 
 #include "ShapeShifterPanelHeader.h"
 #include "Style.h"
+#include "ShapeShifterFactory.h"
+#include "ShapeShifterPanel.h"
 
 ShapeShifterPanelHeader::ShapeShifterPanelHeader()
 {
 	addMouseListener(this, true);
+  addPannelMenu.setButtonText("+");
+  addAndMakeVisible(addPannelMenu);
+  addPannelMenu.setConnectedEdges(0);
+  addPannelMenu.setTooltip("add tab to this panel");
+  addPannelMenu.addListener(this);
 }
 
 ShapeShifterPanelHeader::~ShapeShifterPanelHeader()
@@ -87,6 +94,8 @@ void ShapeShifterPanelHeader::resized()
 	//re arrange tabs
 	Rectangle<int> r = getLocalBounds();
 	if (r.getWidth() == 0 || r.getHeight() == 0) return;
+  const int buttonSize = r.getHeight()-2;
+  addPannelMenu.setBounds(r.removeFromRight(buttonSize).withSizeKeepingCentre(buttonSize,buttonSize));
 
 	for (auto &t : tabs)
 	{
@@ -97,4 +106,24 @@ void ShapeShifterPanelHeader::resized()
 void ShapeShifterPanelHeader::askForRemoveTab(ShapeShifterPanelTab * tab)
 {
 	listeners.call(&Listener::askForRemoveTab, tab);
+}
+
+void ShapeShifterPanelHeader::buttonClicked (Button* b){
+  if(b==&addPannelMenu){
+    PopupMenu menu;
+    int currentID = 1;
+    for (auto &n : globalPanelNames)
+    {
+      menu.addItem(currentID, n, true);
+      currentID++;
+    }
+    int resID = menu.showMenu(PopupMenu::Options().withTargetComponent(&addPannelMenu));
+    if(resID>0){
+      String nameToAdd(globalPanelNames[resID-1]);
+      auto content = ShapeShifterFactory::createContentForName(nameToAdd);
+      if(ShapeShifterPanel * parent = dynamic_cast<ShapeShifterPanel*>(getParentComponent())){
+        parent->addContent(content);
+      }
+    }
+  }
 }
