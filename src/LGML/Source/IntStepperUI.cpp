@@ -10,11 +10,12 @@
 
 #include "IntStepperUI.h"
 
-IntStepperUI::IntStepperUI(Parameter * parameter) :
-    FloatStepperUI(parameter)
+IntStepperUI::IntStepperUI(Parameter * parameter) :FloatStepperUI(parameter)
 {
 }
 
 IntStepperUI::~IntStepperUI()
 {
 }
+
+

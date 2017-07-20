@@ -10,10 +10,8 @@
 
 #include "FloatStepperUI.h"
 
-FloatStepperUI::FloatStepperUI(Parameter * _parameter) :
-    ParameterUI(_parameter)
-
-{
+FloatStepperUI::FloatStepperUI(Parameter * _parameter) :ParameterUI(_parameter){
+  
   slider = new BetterStepper(ParameterUI::getTooltip());
 	
     addAndMakeVisible(slider);
@@ -22,6 +20,7 @@ FloatStepperUI::FloatStepperUI(Parameter * _parameter) :
     slider->addListener(this);
 	slider->setTextBoxIsEditable(_parameter->isEditable);
   slider->setEnabled( ! parameter->isControllableFeedbackOnly);
+  
 }
 
 FloatStepperUI::~FloatStepperUI()
