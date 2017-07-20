@@ -593,10 +593,11 @@ uint64 TimeManager::getNextGlobalQuantifiedTime(){
 uint64 TimeManager::getNextQuantifiedTime(int barFraction){
   if(willRestart())return 0;
   if (barFraction==-1){barFraction=quantizedBarFraction->intValue();}
-  if(barFraction==0){return timeState.time;}
+  uint64 nextPosTime = jmax((long long)0,timeState.time);
+  if(barFraction==0){return nextPosTime;}
 
   const double samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()*1.0/barFraction);
-  const uint64 res = (uint64) ((floor(timeState.time*1.0/samplesPerUnit) + 1)*samplesPerUnit);
+  const uint64 res = (uint64) ((floor(nextPosTime*1.0/samplesPerUnit) + 1)*samplesPerUnit);
   return res;
 }
 

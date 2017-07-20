@@ -217,8 +217,12 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
   int numSamples = buffer.getNumSamples()-fromSample;
 
 
+  if(wasLastRecordingFrame()){
+    multiNeedle.setLoopSize(getRecordedLength());
+  }
 
   if(state==BUFFER_PLAYING){
+    jassert(multiNeedle.loopSize == getRecordedLength() );
     int targetTime = (time  + getRecordedLength())%getRecordedLength();
     if(targetTime != playNeedle){
       //      jassertfalse;
@@ -228,11 +232,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
   }
 
 
-  if(wasLastRecordingFrame()){
-    multiNeedle.setLoopSize(getRecordedLength());
 
-
-  }
   // assert false for now to check alignement
   if(isFirstPlayingFrame()){
 
@@ -415,6 +415,7 @@ void PlayableBuffer::fadeInOut(){
   if(endPoint<fadeOut){
     float ratio = endPoint*1.0/fadeOut;
     int firstPart =(fadeOut-endPoint);
+    jassertfalse;
     if(lIdx>0){
       auto eendBlock = &bufferBlockList.getReference(lIdx-1);
       eendBlock->applyGainRamp(bufferBlockList.bufferBlockSize-firstPart, firstPart, 1.0f, ratio);
@@ -428,7 +429,7 @@ void PlayableBuffer::fadeInOut(){
 
   }
   else{
-    endBlock->applyGainRamp(endPoint-fadeOut, fadeOut, 1.0f, 0.0f);
+    endBlock->applyGainRamp(endPoint-fadeOut, fadeOut+1, 1.0f, 0.0f);
   }
 
 

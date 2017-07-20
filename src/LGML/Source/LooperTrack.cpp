@@ -200,7 +200,9 @@ bool LooperTrack::updatePendingLooperTrackState(int blockSize) {
 	}
 
 
-
+  if(curTime<0){
+    return false;
+  }
 	////
 	// apply quantization on play / rec
 	uint64 triggeringTime = curTime + blockSize;
@@ -807,7 +809,7 @@ void LooperTrack::loadAudioSample(const String & path) {
 			playableBuffer.setRecordedLength(destSize);
 			originBPM->setValue(ti.bpm);
 			beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / ti.beatInSample, false, false, true);
-			playableBuffer.setNumChannels(destNumChannels);
+			
 
 #if BUFFER_CAN_STRETCH
 			playableBuffer.setTimeRatio(timeRatio);

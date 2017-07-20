@@ -34,6 +34,7 @@ void FadeNeedle::set(const int & c,const int fIn,const int fOut,const int sus,bo
   hasBeenSet = true;
   reverse = _reverse;
   jassert(sustainNumSamples>=0 || sustainNumSamples==-1 );
+  jassert(startNeedle>=0);
 
 };
 
