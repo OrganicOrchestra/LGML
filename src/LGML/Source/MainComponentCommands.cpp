@@ -14,6 +14,7 @@
 #include "Engine.h"
 #include "Inspector.h"
 #include "NodeContainer.h"
+#include "LGMLDragger.h"
 
 namespace CommandIDs
 {
@@ -32,6 +33,7 @@ namespace CommandIDs
   static const int allWindowsForward      = 0x30400;
   static const int toggleDoublePrecision  = 0x30500;
   static const int stimulateCPU           = 0x30600;
+  static const int toggleMappingMode      = 0x30700;
 
   // range ids
   static const int lastFileStartID        =100; // 100 to 200 max
@@ -100,6 +102,10 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
       result.setInfo ("Play/pause", "Play or pause LGML", category, 0);
       result.addDefaultKeypress (' ',ModifierKeys::noModifiers);
       break;
+    case CommandIDs::toggleMappingMode:
+      result.setInfo ("toggle mappingMode", "toggle param mapping mode", category, 0);
+      result.addDefaultKeypress ('m',ModifierKeys::noModifiers);
+      break;
 
     case CommandIDs::copySelection:
       result.setInfo("Copy selection", "Copy current selection", category, 0);
@@ -144,7 +150,8 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands) {
     CommandIDs::copySelection,
     CommandIDs::cutSelection,
     CommandIDs::pasteSelection,
-    CommandIDs::stimulateCPU
+    CommandIDs::stimulateCPU,
+    CommandIDs::toggleMappingMode
   };
 
   commands.addArray (ids, numElementsInArray (ids));
@@ -198,7 +205,7 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
     menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
     menu.addCommandItem(&getCommandManager(), CommandIDs::stimulateCPU);
     menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
-
+    menu.addCommandItem(&getCommandManager(), CommandIDs::toggleMappingMode);
     menu.addSeparator();
     menu.addCommandItem (&getCommandManager(), CommandIDs::aboutBox);
   } else if (menuName == "Windows")
@@ -297,6 +304,9 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
         }
       break;
     }
+    case CommandIDs::toggleMappingMode:
+      LGMLDragger::getInstance()->toggleMappingMode();
+      break;
     case CommandIDs::playPause:
       TimeManager::getInstance()->togglePlay();
       break;

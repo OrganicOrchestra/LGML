@@ -14,6 +14,7 @@ ControllableUI::ControllableUI(Controllable * controllable) :
     controllable(controllable),
 Component(controllable->niceName)
 {
+  LGMLComponent::setLGMLElement(controllable);
     jassert(controllable!=nullptr);
     controllable->addControllableListener(this);
     updateTooltip();

@@ -14,7 +14,7 @@
 #include "MainComponent.h"
 #include "Engine.h"
 #include "StringUtil.h"
-
+#include "LGMLDragger.h"
 MainContentComponent* createMainContentComponent(Engine* e);
 
 //==============================================================================
@@ -176,6 +176,7 @@ public:
 
 
 	  ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
+      LGMLDragger::getInstance()->setMainComponent(mainComponent,&mainComponent->tooltipWindow);
 
     }
     void focusGained(FocusChangeType cause)override{

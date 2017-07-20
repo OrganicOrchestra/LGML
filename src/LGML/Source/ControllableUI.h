@@ -14,8 +14,9 @@
 
 #include "Controllable.h"
 #include "Style.h"//keep
+#include "LGMLComponent.h"
 
-class ControllableUI : public Component, public SettableTooltipClient, public Controllable::Listener
+class ControllableUI : public LGMLComponent, public SettableTooltipClient, public Controllable::Listener
 {
 public:
     ControllableUI(Controllable * controllable);

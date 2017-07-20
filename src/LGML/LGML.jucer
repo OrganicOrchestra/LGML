@@ -729,6 +729,11 @@
               resource="0"/>
         <FILE compile="0" file="Source/BetterStepper.h" id="LIiKTa" name="BetterStepper.h"
               resource="0"/>
+        <FILE id="vRc6XF" name="LGMLComponent.cpp" compile="1" resource="0"
+              file="Source/LGMLComponent.cpp"/>
+        <FILE id="TAvz1W" name="LGMLComponent.h" compile="0" resource="0" file="Source/LGMLComponent.h"/>
+        <FILE id="Y93xNO" name="LGMLDragger.cpp" compile="1" resource="0" file="Source/LGMLDragger.cpp"/>
+        <FILE id="dSMfwg" name="LGMLDragger.h" compile="0" resource="0" file="Source/LGMLDragger.h"/>
         <FILE compile="1" file="Source/LookAndFeelOO.cpp" id="Fa2WJ4" name="LookAndFeelOO.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/LookAndFeelOO.h" id="ToSNQ0" name="LookAndFeelOO.h"

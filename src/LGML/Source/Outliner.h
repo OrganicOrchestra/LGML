@@ -16,9 +16,10 @@
 #include "ControllableContainer.h"
 #include "InspectableComponent.h"
 #include "ControllableEditor.h"
+#include "LGMLComponent.h"
 
 class OutlinerItem;
-class OutlinerItemComponent : public InspectableComponent, public SettableTooltipClient
+class OutlinerItemComponent : public  InspectableComponent, public SettableTooltipClient,public LGMLComponent
 {
 public:
 	OutlinerItemComponent(OutlinerItem * item);
@@ -28,7 +29,7 @@ public:
 	
 	void paint(Graphics &g) override;
 	void mouseDown(const MouseEvent &e) override;
-
+  
 	InspectorEditor * createEditor() override;
 };
 
@@ -45,13 +46,15 @@ public:
 	InspectableComponent * inspectable;
 
 
-	virtual bool mightContainSubItems() override;
+
+
+  virtual bool mightContainSubItems() override;
 
 	Component * createItemComponent() override;
 };
 
 class Outliner : public ShapeShifterContentComponent,
-				 public ControllableContainerListener,AsyncUpdater
+				 public ControllableContainerListener,AsyncUpdater,TextEditorListener
 {
 public:
 
@@ -60,13 +63,15 @@ public:
 
 	TreeView treeView;
 	ScopedPointer<OutlinerItem> rootItem;
+  TextEditor filterTextEditor;
+  String nameFilter;
 
 	bool showHiddenContainers; //include or exclude in treeview the "skipInAddress" containers (may be later exposed to user as an option)
 
 	void resized() override;
 	void paint(Graphics &g) override;
 
-	
+  void textEditorTextChanged (TextEditor&)override;
 
 	void rebuildTree();
 	void buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer);

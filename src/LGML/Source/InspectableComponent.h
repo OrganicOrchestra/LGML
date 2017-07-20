@@ -18,7 +18,7 @@ class Inspector;
 class InspectorEditor;
 
 
-class InspectableComponent : public Component
+class InspectableComponent : public virtual Component
 {
 public:
 	InspectableComponent(ControllableContainer * relatedContainer = nullptr, const String &inspectableType = "none");
