@@ -126,7 +126,7 @@ class PlayableBuffer {
 //  void findFadeLoopPoints();
 //  uint64 fadeLoopOutPoint;
 //  bool reverseFadeOut;
-
+  Array<int> onsetSamples;
 
 #if !LGML_UNIT_TESTS
 private:
@@ -139,12 +139,13 @@ private:
 #if RT_STRETCH
   void initRTStretch();
   void applyStretch();
-  bool processPendingRTStretch(AudioBuffer<float> & b);
+  bool processPendingRTStretch(AudioBuffer<float> & b,uint64 time);
   ScopedPointer<RubberBand::RubberBandStretcher> RTStretcher;
   float pendingTimeStretchRatio;
   int processedStretch;
   int stretchNeedle;
   bool isStretchPending;
+  FadeInOut fadePendingStretch;
 
 #endif
 
@@ -153,6 +154,7 @@ private:
   StretcherJob *stretchJob;
   AudioSampleBuffer tmpBufferStretch;
   bool isStretchReady;
+
 #endif
 
   int sampleOffsetBeforeNewState;

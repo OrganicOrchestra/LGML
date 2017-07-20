@@ -26,8 +26,8 @@ void StretcherJob::initStretcher(int sampleRate,int numChannels){
   stretcher=new    RubberBandStretcher(sampleRate,//size_t sampleRate,
                                        numChannels,//size_t channels,
                                        RubberBandStretcher::OptionProcessOffline
-                                       | RubberBandStretcher::OptionTransientsMixed
-                                       //~ | RubberBandStretcher::OptionTransientsSmooth
+//                                       | RubberBandStretcher::OptionTransientsMixed
+                                        | RubberBandStretcher::OptionTransientsSmooth
                                        //| RubberBandStretcher::OptionPhaseAdaptive
                                        | RubberBandStretcher::OptionThreadingNever
                                        | RubberBandStretcher::OptionWindowStandard
@@ -90,6 +90,14 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
       jassert(fabs(ratio - actualRatio) < 0.01 );
       tmpStretchBuf.setNumSample(targetNumSamples);
       jassert(owner->isStretchReady==false);
+      std::vector<int> tp = stretcher->getExactTimePoints();
+      owner->onsetSamples.clear() ;
+      int inc = stretcher->getInputIncrement();
+
+      for(int i = 0 ; i < tp.size();i++){
+        owner->onsetSamples.add(tp[i]*inc);
+      }
+
 //      std::swap(owner->tmpBufferBlockList, tmpStretchBuf);
       owner->tmpBufferStretch.setSize(tmpStretchBuf.getAllocatedNumChannels(), tmpStretchBuf.getNumSamples());
       tmpStretchBuf.copyTo(owner->tmpBufferStretch,0);
