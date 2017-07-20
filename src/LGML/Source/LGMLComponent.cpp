@@ -13,7 +13,7 @@
 #include "ControllableContainer.h"
 #include "LGMLDragger.h"
 LGMLComponent::LGMLComponent(bool _isDraggable):isDraggable(_isDraggable){
-  type = NONE;
+  clearElement();
   addMouseListener(this,true);
   isMapping = LGMLDragger::getInstance()->isMappingActive;
 }
@@ -41,6 +41,7 @@ void LGMLComponent::setIsMapping(bool b){
   repaint();
 }
 void LGMLComponent::paintOverChildren(Graphics &g) {
+  jassert(controllable!=nullptr || container!=nullptr);
   Component::paintOverChildren(g);
   if(isMapping ){
   g.setColour(Colours::red.withAlpha(0.5f));
