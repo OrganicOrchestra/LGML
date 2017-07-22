@@ -10,6 +10,7 @@
 
 #include "FloatStepperUI.h"
 
+
 FloatStepperUI::FloatStepperUI(Parameter * _parameter) :ParameterUI(_parameter){
   
   slider = new BetterStepper(ParameterUI::getTooltip());

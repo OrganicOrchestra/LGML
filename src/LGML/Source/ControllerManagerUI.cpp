@@ -89,8 +89,9 @@ void ControllerManagerUI::removeControllerUI(Controller * controller)
 
   {
     MessageManagerLock ml;
-    controllersUI.removeObject(cui);
     removeChildComponent(getIndexOfChildComponent(cui));
+    controllersUI.removeObject(cui);
+
     resized();
   }
 

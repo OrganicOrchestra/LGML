@@ -19,10 +19,11 @@ class ParameterProxy :
 	public Parameter::Listener
 {
 public:
-	ParameterProxy();
+  ParameterProxy(const String &niceName="proxy", const String &description="proxy description");
 	virtual ~ParameterProxy();
 
 	WeakReference<Parameter> linkedParam;
+  
 
 	StringParameter proxyAlias;
 

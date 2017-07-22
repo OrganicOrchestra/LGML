@@ -15,7 +15,6 @@
 Parameter::Parameter(const Type &type, const String &niceName, const String &description, var initialValue, var minValue = var(), var maxValue = var(), bool enabled) :
 Controllable(type, niceName, description, enabled),
 isEditable(true),
-isSavable(true),
 isPresettable(true),
 isOverriden(false),
 queuedNotifier(100),
@@ -28,7 +27,12 @@ isCommitableParameter(false)
 
   resetValue(true);
 }
-
+void Parameter::setFromVarObject(DynamicObject & ob){
+if(ob.hasProperty("maximumValue")){minimumValue = ob.getProperty("maximumValue");}
+if(ob.hasProperty("minimumValue")){minimumValue = ob.getProperty("minimumValue");}
+if(ob.hasProperty("initialValue")){defaultValue = ob.getProperty("initialValue");}
+if(ob.hasProperty("value")){setValue(ob.getProperty("value"));}
+}
 void Parameter::resetValue(bool silentSet)
 {
   isOverriden = false;
@@ -123,26 +127,24 @@ void Parameter::notifyValueChanged(bool defferIt) {
 DynamicObject * Parameter::createDynamicObject()
 {
   DynamicObject * dObject = Controllable::createDynamicObject();
-  static const Identifier _jsGetIdentifier("get");
-  dObject->setMethod(_jsGetIdentifier, Parameter::getValue);
+
 
   static const Identifier _jsSetIdentifier("set");
-  dObject->setMethod(_jsSetIdentifier, setControllableValue);
+  dObject->setMethod(_jsSetIdentifier, setControllableValueFromJS);
 
 
   return dObject;
 }
-
-var Parameter::getValue(const juce::var::NativeFunctionArgs & a)
-{
-  // TODO handle with weak references
-  Parameter * c = getObjectPtrFromJS<Parameter>(a);
-  if(c == nullptr  ) return var();
-  //  WeakReference<Parameter> wc = c;
-  //  if(!wc.get()) return var();
-  return c->value;
-
+var Parameter::getVarObject(){
+    var res = new DynamicObject();
+    res.getDynamicObject()->setProperty(varTypeIdentifier, getTypeIdentifier().toString());
+    return res;
 }
+var Parameter::getVarState(){
+  return value;
+}
+
+
 
 void Parameter::handleAsyncUpdate(){
   listeners.call(&Listener::parameterValueChanged, this);

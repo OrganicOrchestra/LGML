@@ -60,6 +60,8 @@ Result Engine::loadDocument (const File& file){
   if(Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled(false); //avoid creation of inspector editor while recreating all nodes, controllers, rules,etc. from file
 
 #ifdef MULTITHREADED_LOADING
+  // force clear on main thread, safer for ui related stuffs
+  clear();
   fileLoader = new FileLoader(this,file);
   fileLoader->startThread(10);
 #else

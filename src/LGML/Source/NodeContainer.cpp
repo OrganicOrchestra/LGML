@@ -28,7 +28,7 @@ NodeBase(name, NodeType::ContainerType,false),
 nodeChangeNotifier(10000),
 rebuildTimer(this)
 {
-  saveAndLoadRecursiveData = false;
+
   innerGraph = new AudioProcessorGraph();
   innerGraph->releaseResources();
   setPreferedNumAudioOutput(2);
@@ -250,7 +250,7 @@ int NodeContainer::getNumConnections() {
 ParameterProxy * NodeContainer::addParamProxy()
 {
   ParameterProxy * p = new ParameterProxy();
-  ControllableContainer::addParameter(p);
+  ControllableContainer::addUserControllable(p,true);
   proxyParams.add(p);
   p->addParameterProxyListener(this);
 

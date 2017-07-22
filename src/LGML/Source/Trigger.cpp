@@ -20,6 +20,7 @@ Controllable(TRIGGER, niceName, description, enabled),
 isTriggering(false),
 queuedNotifier(2)
 {
+  Controllable::isSavable = false;
 }
 
 TriggerButtonUI * Trigger::createButtonUI(Trigger * target)
@@ -41,8 +42,19 @@ ControllableUI * Trigger::createDefaultUI(Controllable * targetControllable){
 DynamicObject * Trigger::createDynamicObject()
 {
 	DynamicObject* dObject = Controllable::createDynamicObject();
-	dObject->setMethod(jsTriggerIdentifier, setControllableValue);
+	dObject->setMethod(jsTriggerIdentifier, setControllableValueFromJS);
 	dObject->setProperty(jsPtrIdentifier, (int64)this);
 
 	return dObject;
+}
+void Trigger::setFromVarObject(DynamicObject & ob){
+
+}
+
+var Trigger::getVarObject(){
+  var res = new DynamicObject();
+  return res;
+}
+var Trigger::getVarState(){
+  return var::undefined();
 }

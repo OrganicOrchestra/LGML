@@ -19,6 +19,8 @@ public:
 	Point2DParameter(const String &niceName, const String &description, bool enabled = true);
 	~Point2DParameter() {}
 
+  
+
 	float x, y;
 	void setPoint(Point<float> value);
 	void setPoint(float x, float y);

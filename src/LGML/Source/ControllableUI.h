@@ -16,14 +16,14 @@
 #include "Style.h"//keep
 #include "LGMLComponent.h"
 
-class ControllableUI : public LGMLComponent, public SettableTooltipClient, public Controllable::Listener
+class ControllableUI : public LGMLComponent, public SettableTooltipClient , public Controllable::Listener
 {
 public:
     ControllableUI(Controllable * controllable);
     virtual ~ControllableUI();
 
     
-
+    
     WeakReference<Controllable>  controllable;
 
     // Inherited via Listener
@@ -35,17 +35,18 @@ public:
 protected :
     void updateTooltip();
 
-	void mouseDown(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
 };
 
 
 //    this class allow to automaticly generate label / ui element for parameter listing in editor
 //    it owns the created component
-class NamedControllableUI : public ControllableUI
+class NamedControllableUI : public ControllableUI,public Label::Listener
 {
 public:
   NamedControllableUI(ControllableUI * ui,int _labelWidth);
   void resized()override;
+  void labelTextChanged (Label* labelThatHasChanged) override;
     Label controllableLabel;
     int labelWidth;
     ScopedPointer <ControllableUI > ownedControllableUI;

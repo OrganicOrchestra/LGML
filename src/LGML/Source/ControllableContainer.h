@@ -47,10 +47,10 @@ class ControllableContainer : public Parameter::Listener,public Parameter::Async
 
 {
 public:
-  ControllableContainer(const String &niceName);
+  ControllableContainer(const String &niceName,bool isUserDefined=false);
   virtual ~ControllableContainer();
 
-  
+  bool isUserDefined;
   const String  getNiceName();
   String shortName;
   bool hasCustomShortName;
@@ -70,10 +70,12 @@ public:
   Uuid uid;
 
   OwnedArray<Controllable,CriticalSection> controllables;
+  ControllableContainer* userContainer;
   Array<WeakReference<ControllableContainer>,CriticalSection  > controllableContainers;
   ControllableContainer * parentContainer;
 
-  void addParameter(Parameter * p);
+  void addControllable(Controllable * c,bool checkIfParameter = false);
+  void addParameter(Parameter* p);
   FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
   IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
   BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);
@@ -83,6 +85,8 @@ public:
   Point3DParameter * addPoint3DParameter(const String &niceName, const String &description, const bool &enabled = true);
   Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
 
+  void addUserControllable(Controllable * c,bool checkParam);
+  
   void removeControllable(Controllable * c);
   Controllable * getControllableByName(const String &name, bool searchNiceNameToo = false);
 
@@ -145,10 +149,14 @@ public:
   virtual void triggerTriggered(Trigger * p) override;
 
 
-  bool saveAndLoadRecursiveData;
+  
   virtual var getJSONData();
   virtual void loadJSONData(var data);
   virtual void loadJSONDataInternal(var /*data*/) { /* to be overriden by child classes */ }
+  // get non user-created custom parameter from JSON
+  virtual void loadCustomJSONElement(const Identifier & name,const var v){jassertfalse;};
+
+
 
   virtual void childStructureChanged(ControllableContainer *notifier,ControllableContainer * origin)override;
 
@@ -166,7 +174,7 @@ private:
   virtual void onContainerParameterChanged(Parameter *) {};
   virtual void onContainerTriggerTriggered(Trigger *) {};
   virtual void onContainerParameterChangedAsync(Parameter *,const var & /*value*/){};
-  void addParameterInternal(Parameter * p);
+  
 
   int numContainerIndexed;
   int localIndexedPosition;
@@ -189,13 +197,19 @@ public:
 
   protected :
 
+  //  container with custom controllable can override this 
+  virtual void addControllableInternal(Controllable *c){};
+
   /// identifiers
 
   static const Identifier presetIdentifier;
-  static const Identifier paramIdentifier;
 
   static const Identifier controlAddressIdentifier;
   static const Identifier valueIdentifier;
+  static const Identifier paramsIdentifier;
+  static const Identifier userParamIdentifier;
+  static const Identifier containerNameIdentifier;
+  static const Identifier childContainerId;
 
 
 private:
@@ -204,7 +218,7 @@ private:
   WeakReference<ControllableContainer>::Master masterReference;
     friend class WeakReference<ControllableContainer>;
   void notifyStructureChanged(ControllableContainer * origin);
-  void newMessage(const Parameter::ParamWithValue&)override;
+  void newMessage(const  Parameter::ParamWithValue&)override;
 
 
 
@@ -216,6 +230,8 @@ private:
 
 
 };
+
+
 
 
 #endif  // CONTROLLABLECONTAINER_H_INCLUDED

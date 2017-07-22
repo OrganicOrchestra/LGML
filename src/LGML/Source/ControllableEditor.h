@@ -12,7 +12,7 @@
 #define CONTROLLABLEEDITOR_H_INCLUDED
 
 #include "InspectorEditor.h"
-#include "Controllable.h"
+class Controllable;
 
 
 class ControllableEditor : 

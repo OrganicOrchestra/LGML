@@ -12,9 +12,9 @@
 #include "ParameterProxyUI.h"
 #include "ControllableContainer.h"
 
-ParameterProxy::ParameterProxy() :
+ParameterProxy::ParameterProxy(const String &niceName, const String &description) :
 	linkedParam(nullptr),
-	Parameter(PROXY, "proxy", "proxy description", 0, 0, 1),
+	Parameter(PROXY, niceName, description, 0, 0, 1),
 	isUpdatingLinkedParam(false),
 	proxyAlias("alias","Proxy Alias\nThis will be used to set the OSC control address","proxy")
 {

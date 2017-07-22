@@ -25,6 +25,10 @@
             resource="0"/>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
+          <FILE id="hR5AS9" name="ControllableFactory.cpp" compile="1" resource="0"
+                file="Source/ControllableFactory.cpp"/>
+          <FILE id="hCdg2z" name="ControllableFactory.h" compile="0" resource="0"
+                file="Source/ControllableFactory.h"/>
           <GROUP id="{FF851D53-C827-E769-E716-78C1AF603615}" name="presets">
             <FILE compile="1" file="Source/PresetManager.cpp" id="ChdLZ1" name="PresetManager.cpp"
                   resource="0"/>

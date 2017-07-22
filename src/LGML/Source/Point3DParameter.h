@@ -20,7 +20,7 @@ class Point3DParameter : public Parameter
 public:
 	Point3DParameter(const String &niceName, const String &description, bool enabled = true);
 	~Point3DParameter() {}
-
+  
 	float x, y, z;
 	void setPoint(Vector3D<float> value);
 	void setValueInternal(var & _value) override;

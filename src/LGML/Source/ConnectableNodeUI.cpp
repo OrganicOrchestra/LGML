@@ -137,6 +137,7 @@ void ConnectableNodeUI::resized()
 
   mainComponentContainer.setBounds(r);
   resizer.setBounds(r.removeFromRight(10).removeFromBottom(10));
+
 }
 
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
@@ -171,6 +172,7 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
       break;
     case sizeChangedId:
       getContentContainer()->setSize(connectableNode->nodeWidth->intValue(), connectableNode->nodeHeight->intValue());
+      resized();
       break;
 
     default:

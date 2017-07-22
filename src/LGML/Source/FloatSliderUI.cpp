@@ -11,6 +11,7 @@
 #include "FloatSliderUI.h"
 #include "Style.h"
 
+
 //==============================================================================
 FloatSliderUI::FloatSliderUI(Parameter * parameter) :
 ParameterUI(parameter), fixedDecimals(2),

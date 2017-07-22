@@ -14,12 +14,15 @@
 #include "Controllable.h"
 #include "QueuedNotifier.h"
 
+
 class Parameter : public Controllable,public AsyncUpdater
 {
 public:
   Parameter(const Type &type, const String & niceName, const String &description, var initialValue, var minValue, var maxValue, bool enabled = true);
+
   virtual ~Parameter() {Parameter::masterReference.clear();cancelPendingUpdate();}
 
+  void setFromVarObject(DynamicObject & ob) override;
 
   var defaultValue;
   var value;
@@ -29,7 +32,7 @@ public:
   void setRange(var,var);
 
   bool isEditable;
-  bool isSavable;
+  
   bool isPresettable;
   bool isOverriden;
   // if true each set value doesn't do nothing until som reader call pushValue
@@ -66,6 +69,9 @@ public:
 
   virtual DynamicObject * createDynamicObject() override;
 
+
+
+
   //Listener
   class  Listener
   {
@@ -76,12 +82,14 @@ public:
     virtual void parameterRangeChanged(Parameter * ){};
   };
 
+
+
   ListenerList<Listener> listeners;
   void addParameterListener(Listener* newListener) { listeners.add(newListener); }
   void removeParameterListener(Listener* listener) { listeners.remove(listener); }
 
 
-
+  
   // ASYNC
   class  ParamWithValue{
   public:
@@ -91,8 +99,9 @@ public:
     bool isRange() const{return value.isArray();}
 
   };
-  QueuedNotifier<ParamWithValue> queuedNotifier;
+
   typedef QueuedNotifier<ParamWithValue>::Listener AsyncListener;
+  QueuedNotifier<ParamWithValue> queuedNotifier;
   void handleAsyncUpdate()override;
 
 
@@ -102,8 +111,8 @@ public:
 
 
   //JS Helper
-  static var getValue(const juce::var::NativeFunctionArgs &a);
-
+  virtual var getVarObject() override;
+  virtual var getVarState() override;
 
 
   virtual void tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt);

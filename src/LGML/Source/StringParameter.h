@@ -19,9 +19,9 @@ class StringParameterUI;
 class StringParameter : public Parameter
 {
 public:
-    StringParameter(const String &niceName, const String &description, const String &initialValue, bool enabled=true);
+  StringParameter(const String &niceName, const String &description, const String &initialValue=String::empty, bool enabled=true);
 
-
+    
     // need to override this function because var Strings comparison  is based on pointer (we need full string comp)
     void tryToSetValue(var v,bool silentSet=false,bool force=false,bool defferIt=false)override;
     void setValueInternal(var&)override;

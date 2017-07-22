@@ -9,6 +9,7 @@
 */
 
 #include "ControllableUI.h"
+#include "Controllable.h"
 
 ControllableUI::ControllableUI(Controllable * controllable) :
     controllable(controllable),
@@ -71,6 +72,9 @@ labelWidth(_labelWidth){
   controllableLabel.setJustificationType(Justification::centredLeft);
   controllableLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
   controllableLabel.setText(ui->controllable->niceName, dontSendNotification);
+  if(ui->controllable->isUserDefined){
+    controllableLabel.setEditable(true);
+  }
 
   controllableLabel.setTooltip(ControllableUI::getTooltip());
 
@@ -86,3 +90,9 @@ void NamedControllableUI::resized(){
 		area.removeFromLeft(10);
   ownedControllableUI->setBounds(area);
 }
+
+void NamedControllableUI::labelTextChanged (Label* labelThatHasChanged) {
+  if(ownedControllableUI.get()){
+    ownedControllableUI->controllable->setNiceName(labelThatHasChanged->getText());
+  }
+};

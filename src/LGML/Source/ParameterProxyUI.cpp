@@ -10,12 +10,13 @@
 
 #include "ParameterProxyUI.h"
 #include "StringParameterUI.h"
+#include "ControllableContainer.h"
 
 ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
 	linkedParamUI(nullptr),
 	ParameterUI(proxy),
 	paramProxy(proxy),
-	chooser(proxy->parentContainer)
+	chooser(proxy->parentContainer->parentContainer)
 {
 	chooser.addControllableChooserListener(this);
 	addAndMakeVisible(&chooser);
@@ -103,5 +104,5 @@ void ParameterProxyUI::controllableNameChanged(Controllable * c)
 {
 	ParameterUI::controllableNameChanged(c);
 	updateTooltip();
-	linkedParamUI->setTooltip(getTooltip());
+	if(linkedParamUI)linkedParamUI->setTooltip(getTooltip());
 }

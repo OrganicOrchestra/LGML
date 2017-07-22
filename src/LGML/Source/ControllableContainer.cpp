@@ -16,26 +16,31 @@
 #include "DebugHelpers.h"
 #include "StringUtil.h"
 #include "JsHelpers.h"
+#include "ControllableFactory.h"
 
 
 const Identifier ControllableContainer::presetIdentifier("preset");
-const Identifier ControllableContainer::paramIdentifier("parameters");
-
+const Identifier ControllableContainer::paramsIdentifier("parameters");
+const Identifier ControllableContainer::userParamIdentifier("userParameters");
+const Identifier ControllableContainer::containerNameIdentifier("containerName");
 
 const Identifier ControllableContainer::controlAddressIdentifier("controlAddress");
 const Identifier ControllableContainer::valueIdentifier("value");
 
+const Identifier ControllableContainer::childContainerId("/");
 
-ControllableContainer::ControllableContainer(const String & niceName) :
+
+ControllableContainer::ControllableContainer(const String & niceName,bool _isUserDefined) :
 parentContainer(nullptr),
 hasCustomShortName(false),
 skipControllableNameInAddress(false),
 currentPreset(nullptr),
 canHavePresets(true),
-saveAndLoadRecursiveData(true),
 numContainerIndexed(0),
 localIndexedPosition(-1),
-presetSavingIsRecursive(false)
+presetSavingIsRecursive(false),
+isUserDefined(_isUserDefined),
+userContainer(nullptr)
 {
 
   nameParam = addStringParameter("Name", "Set the visible name of the node.", "");
@@ -63,18 +68,46 @@ void ControllableContainer::clear()
   controllableContainers.clear();
 }
 
-void ControllableContainer::addParameter(Parameter * p)
+void ControllableContainer::addControllable(Controllable *c,bool checkIfParameter)
 {
+  if(checkIfParameter ){
+    if(auto p = dynamic_cast<Parameter*>(c)){
+      addParameter(p);
+      return;
+    }
+  }
+  c->setParentContainer(this);
+  controllables.add(c);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, c);
+  notifyStructureChanged(this);
+  addControllableInternal(c);
 
-  addParameterInternal(p);
+
+
+}
+void ControllableContainer::addParameter(Parameter *p)
+{
+  addControllable(p);
+  p->addParameterListener(this);
+  p->addAsyncParameterListener(this);
+
 }
 
+void ControllableContainer::addUserControllable(Controllable *c,bool checkParam){
+  c->shouldSaveObject = true;
+  c->isUserDefined = true;
+  if(!userContainer){
+    userContainer = new ControllableContainer("usr",true);
+    addChildControllableContainer(userContainer);
+  }
+  userContainer->addControllable(c,checkParam);
+}
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
 
   String targetName = getUniqueNameInContainer(_niceName);
   FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
-  addParameterInternal(p);
+  addParameter(p);
   return p;
 }
 
@@ -82,7 +115,7 @@ IntParameter * ControllableContainer::addIntParameter(const String & _niceName, 
 {
   String targetName = getUniqueNameInContainer(_niceName);
   IntParameter * p = new IntParameter(targetName, _description, initialValue, minValue, maxValue, enabled);
-  addParameterInternal(p);
+  addParameter(p);
   return p;
 }
 
@@ -90,7 +123,7 @@ BoolParameter * ControllableContainer::addBoolParameter(const String & _niceName
 {
   String targetName = getUniqueNameInContainer(_niceName);
   BoolParameter * p = new BoolParameter(targetName, _description, value, enabled);
-  addParameterInternal(p);
+  addParameter(p);
   return p;
 }
 
@@ -98,7 +131,7 @@ StringParameter * ControllableContainer::addStringParameter(const String & _nice
 {
   String targetName = getUniqueNameInContainer(_niceName);
   StringParameter * p = new StringParameter(targetName, _description, value, enabled);
-  addParameterInternal(p);
+  addParameter(p);
   return p;
 }
 
@@ -106,7 +139,7 @@ EnumParameter * ControllableContainer::addEnumParameter(const String & _niceName
 {
   String targetName = getUniqueNameInContainer(_niceName);
   EnumParameter * p = new EnumParameter(targetName, _description, nullptr, enabled);
-  addParameterInternal(p);
+  addParameter(p);
   return p;
 }
 
@@ -114,7 +147,7 @@ Point2DParameter * ControllableContainer::addPoint2DParameter(const String & _ni
 {
   String targetName = getUniqueNameInContainer(_niceName);
   Point2DParameter * p = new Point2DParameter(targetName, _description, enabled);
-  addParameterInternal(p);
+  addParameter(p);
   return p;
 }
 
@@ -122,7 +155,7 @@ Point3DParameter * ControllableContainer::addPoint3DParameter(const String & _ni
 {
   String targetName = getUniqueNameInContainer(_niceName);
   Point3DParameter * p = new Point3DParameter(targetName, _description, enabled);
-  addParameterInternal(p);
+  addParameter(p);
   return p;
 }
 
@@ -130,12 +163,9 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
 {
   String targetName = getUniqueNameInContainer(_niceName);
   Trigger * t = new Trigger(targetName, _description, enabled);
-  controllables.add(t);
-  t->setParentContainer(this);
+  addControllable(t);
   t->addTriggerListener(this);
 
-  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, t);
-  notifyStructureChanged(this);
   return t;
 }
 
@@ -388,8 +418,8 @@ Array<WeakReference<ControllableContainer>> ControllableContainer::getAllControl
   }
 
   {
-  ScopedLock lk(controllableContainers.getLock());
-  for (auto &cc : controllableContainers) if(cc.get())containers.addArray(cc->getAllControllableContainers(true));
+    ScopedLock lk(controllableContainers.getLock());
+    for (auto &cc : controllableContainers) if(cc.get())containers.addArray(cc->getAllControllableContainers(true));
 
   }
   return containers;
@@ -438,31 +468,31 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
   if (isTargetAControllable)
   {
     {
-    //DBG("Check controllable Address : " + shortName);
-    const ScopedLock lk(controllables.getLock());
-    for (auto &c : controllables)
-    {
-      if (c->shortName == addressSplit[0])
+      //DBG("Check controllable Address : " + shortName);
+      const ScopedLock lk(controllables.getLock());
+      for (auto &c : controllables)
       {
-        //DBG(c->shortName);
-        if (c->isControllableExposed || getNotExposed) return c;
-        else return nullptr;
+        if (c->shortName == addressSplit[0])
+        {
+          //DBG(c->shortName);
+          if (c->isControllableExposed || getNotExposed) return c;
+          else return nullptr;
+        }
       }
     }
-    }
     {
-    //no found in direct children controllables, maybe in a skip container ?
-    ScopedLock lk(controllableContainers.getLock());
-    for (auto &cc : controllableContainers)
-    {if(cc.get()){
-      if (cc->skipControllableNameInAddress)
-      {
-        Controllable * tc = cc->getControllableByName(addressSplit[0]);
+      //no found in direct children controllables, maybe in a skip container ?
+      ScopedLock lk(controllableContainers.getLock());
+      for (auto &cc : controllableContainers)
+      {if(cc.get()){
+        if (cc->skipControllableNameInAddress)
+        {
+          Controllable * tc = cc->getControllableByName(addressSplit[0]);
 
-        if (tc != nullptr) return tc;
+          if (tc != nullptr) return tc;
+        }
       }
-    }
-    }
+      }
     }
   }
   else
@@ -678,98 +708,88 @@ void ControllableContainer::triggerTriggered(Trigger * t)
 }
 
 
-void ControllableContainer::addParameterInternal(Parameter * p)
-{
-  p->setParentContainer(this);
-  controllables.add(p);
-  p->addParameterListener(this);
-  p->addAsyncParameterListener(this);
-  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, p);
-  notifyStructureChanged(this);
-}
-
-
 
 
 
 var ControllableContainer::getJSONData()
 {
-  var data(new DynamicObject());
+  DynamicObject * data = new DynamicObject();
+  {
+    var paramsData(new DynamicObject);
 
-  var paramsData;
-
-  //  for(auto & p :controllables){
-  //
-  //  }
-  //  for(auto controllableCont: controllableContainers){
-  //    getJSONData();
-  //  }
-
-  //  jassert(saveAndLoadRecursiveData==false);
-
-  Array<WeakReference<Controllable>> cont = ControllableContainer::getAllControllables(saveAndLoadRecursiveData, true);
-
-  for (auto &c : cont) {
-    if (c.wasObjectDeleted()) continue;
-
-    if (c->type != Controllable::Type::TRIGGER)
-    {
-      Parameter * base = (Parameter*)c.get();
-      if(base->isSavable){
-        var pData(new DynamicObject());
-        pData.getDynamicObject()->setProperty(controlAddressIdentifier, base->getControlAddress(this));
-        pData.getDynamicObject()->setProperty(valueIdentifier, base->value);
-        paramsData.append(pData);
+    for(auto & c :controllables){
+      if(c->shouldSaveObject){
+        paramsData.getDynamicObject()->setProperty(c->shortName,ControllableFactory::getVarObjectFromControllable(c));
+      }
+      else if (c->isSavable){
+        paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
       }
     }
+
+    data->setProperty(paramsIdentifier, paramsData);
+
   }
 
-  /*
-   if (currentPreset != nullptr)
-   {
-   data.getDynamicObject()->setProperty(presetIdentifier, currentPreset->name);
-   }
-   */
 
+  if(controllableContainers.size()){
+    Array<var> childData;
 
-  data.getDynamicObject()->setProperty("uid",uid.toString());
-  data.getDynamicObject()->setProperty(paramIdentifier, paramsData);
+    for(auto controllableCont: controllableContainers){
+      childData.add(controllableCont.get()->getJSONData());
+    }
+    data->setProperty(childContainerId, childData);
+  }
+  data->setProperty("uid",uid.toString());
+
 
   return data;
 }
 
 void ControllableContainer::loadJSONData(var data)
 {
-
-  if (data.getDynamicObject()->hasProperty("uid")) uid = data.getDynamicObject()->getProperty("uid");
-
-  // @ ben we don't want to load preset when loading from file, do we?
-
-  //    if (data.getDynamicObject()->hasProperty(presetIdentifier))
-  //    {
-  //        loadPresetWithName(data.getDynamicObject()->getProperty("preset"));
-  //    }
-
-  // TODO switch Array to dynamic object (to avoid to store control address and store parameters in a namedValueSet )
-  Array<var> * paramsData = data.getDynamicObject()->getProperty(paramIdentifier).getArray();
-
-  if (paramsData != nullptr)
+  auto dyn =data.getDynamicObject();
+  if (dyn->hasProperty("uid")) uid = dyn->getProperty("uid");
+  if (dyn->hasProperty(containerNameIdentifier))
   {
-    for (var &pData : *paramsData)
+    String  name =dyn->getProperty(containerNameIdentifier);
+    setNiceName(name);
+  }
+  {
+    DynamicObject * paramsData = data.getDynamicObject()->getProperty(paramsIdentifier).getDynamicObject();
+    jassert(paramsData);
+    if (paramsData != nullptr)
     {
-      String pControlAddress = pData.getDynamicObject()->getProperty(controlAddressIdentifier);
+      auto props = paramsData->getProperties();
+      for (auto & p:props)
+      {
+        if(Controllable * c = getControllableByName(p.name.toString(),true)){
+          if(c->isSavable){
+            if (Parameter * par = dynamic_cast<Parameter*>(c)) {
+              // we don't load preset when already loading a state
+              if (par->shortName != presetIdentifier.toString() ){
+                par->setValue(p.value);
+              }
+            }
+            else {
+              loadCustomJSONElement(p.name,p.value);
+            }
+          }
+        }
+        else if( auto c = ControllableFactory::createFromVarObject(p.value, p.name.toString())){
+          // TODO handle custom type
+          // for now  overriding addControllableInternal and check for custoType
+          addControllable(c,true);
 
-      Controllable * c = getControllableForAddress(pControlAddress, saveAndLoadRecursiveData, true);
-
-      if (Parameter * p = dynamic_cast<Parameter*>(c)) {
-        //                we don't load preset when already loading a state
-        if (p->shortName != presetIdentifier.toString() && p->isSavable) p->setValue(pData.getDynamicObject()->getProperty(valueIdentifier));
-
-      } else {
-        //NLOG("LoadJSON : "+niceName,"Parameter not found "+ pControlAddress);
+        }
+          else{
+            // malformed file
+            LOG("malformed file");
+            jassertfalse;
+          }
+        }
       }
     }
-  }
+
 
   loadJSONDataInternal(data);
 
@@ -828,13 +848,13 @@ Array<T*> ControllableContainer::getObjectsOfType(bool recursive){
     }
     if(recursive){res.addArray(c->getObjectsOfType<T>(recursive));}
   }
-  
+
   return res;
 }
 
 bool ControllableContainer::containsContainer(ControllableContainer * c){
   if(c==this)return true;
-ScopedLock lk(controllableContainers.getLock());
+  ScopedLock lk(controllableContainers.getLock());
   for(auto & cc:controllableContainers){
     if(c==cc){return true;}
     if(cc->containsContainer(c))return true;

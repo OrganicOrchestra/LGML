@@ -16,7 +16,6 @@ juce_ImplementSingleton(ControllerManager);
 ControllerManager::ControllerManager() :
     ControllableContainer("Controllers")
 {
-	saveAndLoadRecursiveData = false;
     setCustomShortName("control");
 }
 

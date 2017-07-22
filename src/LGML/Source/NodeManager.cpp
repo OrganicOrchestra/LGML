@@ -21,7 +21,6 @@ NodeManager::NodeManager() :
     ControllableContainer("Nodes")
 {
   isLoading = false;
-	saveAndLoadRecursiveData = false;
     setCustomShortName("node");
 
 	mainContainer = new NodeContainer("mainContainer");

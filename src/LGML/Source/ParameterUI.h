@@ -38,7 +38,7 @@ protected:
   virtual void rangeChanged(Parameter * ){};
 private:
     // see Parameter::AsyncListener
-    virtual void newMessage(const Parameter::ParamWithValue & p) override{
+  virtual void newMessage(const Parameter::ParamWithValue & p) override{
       if(p.isRange()){
         rangeChanged(p.parameter);
       }

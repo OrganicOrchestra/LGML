@@ -112,8 +112,10 @@ void ControllerEditor::buttonClicked(Button * b)
 {
 	if (b == &addVariableBT)
 	{
+
 		Parameter * p = new FloatParameter(controller->getUniqueVariableNameFor("var"), "Custom Variable", 0, 0, 10);
-		controller->addVariable(p);
+    controller->addUserControllable(p,true);
+//		controller->addVariable(p);
 	}
 }
 

@@ -103,8 +103,9 @@ class EnumChangeMessage{
 class EnumParameter : public Parameter,public EnumParameterModel::Listener,public QueuedNotifier<EnumChangeMessage>::Listener
 {
 public:
-  EnumParameter(const String &niceName, const String &description, EnumParameterModel * modelInstance, bool enabled = true);
+  EnumParameter(const String &niceName, const String &description, EnumParameterModel * modelInstance=nullptr, bool enabled = true);
   ~EnumParameter() ;
+  
   static Identifier selectedSetIdentifier;
   static Identifier modelIdentifier;
   void addOption(Identifier key, var data=var::null);

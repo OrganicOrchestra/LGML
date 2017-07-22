@@ -22,7 +22,7 @@ class Trigger : public Controllable
 public:
 	Trigger(const String &niceName, const String &description, bool enabled = true);
 	~Trigger() {masterReference.clear();}
-	
+  
 	
 	
 	TriggerButtonUI * createButtonUI(Trigger * target = nullptr);
@@ -30,7 +30,10 @@ public:
 	ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 	
 	
-	virtual DynamicObject * createDynamicObject() override;
+  DynamicObject * createDynamicObject() override;
+  var getVarObject() override;
+  var getVarState() override;
+  void setFromVarObject(DynamicObject & ob) override;
 	
 	void trigger()
 	{

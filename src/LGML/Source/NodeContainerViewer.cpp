@@ -115,8 +115,9 @@ void NodeContainerViewer::removeNodeUI(ConnectableNode * node)
   ConnectableNodeUI * nui = getUIForNode(node);
   if (nui != nullptr)
   {
-    nodesUI.removeObject(nui);
     removeChildComponent(nui);
+    nodesUI.removeObject(nui);
+
   }
   else
   {
