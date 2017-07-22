@@ -70,7 +70,7 @@ public:
   void addOSCControllerListener(OSCControllerListener* newListener) { oscListeners.add(newListener); }
   void removeOSCControllerListener(OSCControllerListener* listener) { oscListeners.remove(listener); }
 
-#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
+#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES
   template <typename... Args>
   bool sendOSC (const OSCAddressPattern& address, Args&&... args)
   {

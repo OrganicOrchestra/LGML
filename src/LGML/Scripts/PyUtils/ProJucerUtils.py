@@ -12,14 +12,24 @@ JuceProjectPath = os.path.abspath(JuceProjectPath);
 
 
 
-def hasValidProjucerPath():
+def hasValidProjucerPath(osType):
 	global proJucerPath
+	print proJucerPath
+	if(osType=='osx'):
+		proJucerPath = "/Applications/JUCE/Projucer.app/Contents/MacOS/Projucer"
+	elif(osType=='linux'):
+		proJucerPath = os.environ['HOME']+'/Dev/Projucer/linux/Projucer'
+	else:
+		raise NameError("osType notsupported : %s"%osType)
+
 	return os.path.exists(proJucerPath)
 
 def getProjucerIfNeeded(tmpFolder,credentials,osType):
 	global proJucerPath,proJucerCommand
 	tmpFolder = os.path.join(tmpFolder,osType)
-	if  not hasValidProjucerPath() :
+	if  not hasValidProjucerPath(osType) :
+		if callable(credentials):
+			credentials = credentials()
 		if not os.path.exists(tmpFolder):
 			os.makedirs(tmpFolder)
 		proJucerPath = os.path.join(tmpFolder,'Projucer')
@@ -28,17 +38,17 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 		ownCloudOSFolder = {'osx':'osx/','linux':'linux/'}[osType]
 		ownCloudProjucerName = {'osx':'Projucer.zip','linux':'Projucer.tar.gz'}[osType]
 		compressedPath = os.path.join(tmpFolder,ownCloudProjucerName)
-		if not hasValidProjucerPath():
-			sh("curl -k \"https://163.172.42.66/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+ownCloudOSFolder+ownCloudProjucerName+"\" -u "+credentials+" > "+compressedPath,printIt=False)
+		if not hasValidProjucerPath(osType):
+			sh("curl -k \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+ownCloudOSFolder+ownCloudProjucerName+"\" -u "+credentials+" > "+compressedPath,printIt=False)
 			sh('tar -xzf '+compressedPath+' -C '+tmpFolder)
-			if not hasValidProjucerPath():
+			if not hasValidProjucerPath(osType):
 				print 'projucer download failed'
 		else:
 			print 'using cached projucer : '+proJucerPath
 
 	
 	# update command
-	if hasValidProjucerPath():
+	if hasValidProjucerPath(osType):
 		proJucerCommand = proJucerPath
 		# headless server support
 		if osType=='linux' and not 'DISPLAY' in os.environ:
@@ -73,7 +83,7 @@ def updatePathsIfNeeded(osType):
 	if not os.path.exists(oldVSTPath):
 
 		print 'current VST path not valid'
-		newVSTPath = getValidPath("SDKs/VST3 SDK")
+		newVSTPath = getValidPath("SDKs/VST3_SDK")
 		if newVSTPath:
 			print 'found VST SDK at :' + newVSTPath
 			hasChanged = True;

@@ -20,7 +20,7 @@ def getCredential():
 def makeDirIfNotExistent(destPath,forceCreation=False):
 	destPath = urllib.pathname2url(destPath)
 	
-	res = sh("curl -X MKCOL \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\"  -u "+getCredential()+" -k",printIt=False)
+	res = sh("curl -X MKCOL \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/"+destPath+"\"  -u "+getCredential()+" -k",printIt=False)
 	if res=="": print 'made directory :' ,destPath
 	if res!="" and forceCreation:
 		splittedPath = destPath.split('/')
@@ -39,8 +39,12 @@ def sendToOwnCloud(originPath,destPath):
 	makeDirIfNotExistent(os.path.dirname(destPath))
 	print 'sending to owncloud:'
 	print originPath,' >> ', destPath
-	sh("curl -X PUT \"https://163.172.42.66/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+getCredential()+" -k",printIt=False)
+	sh("curl -X PUT \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/"+destPath+"\" --data-binary @\""+originPath+"\" -u "+getCredential()+" -k",printIt=False)
 
 
 if __name__=='__main__':
-	makeDirIfNotExistent('Tools/LGML/App-Dev/Linux/lala/lolo/lili/lal.txt',True )
+	lastLGMLPath = urllib.pathname2url("/Tools/LGML/App-Dev/OSX/lastLGML.dmg")
+	currentLGML = urllib.pathname2url("/Tools/LGML/App-Dev/OSX/LGML_v1.1.6beta.dmg")
+
+	sh("curl -X COPY \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/"+currentLGML+"\" \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/"+lastLGMLPath+"\" -u "+getCredential()+" -k",printIt=False)
+

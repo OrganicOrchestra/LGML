@@ -178,7 +178,7 @@ void OSCDirectController::controllableRemoved(Controllable *)
 
 void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
 {
-#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES && JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
+#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES 
   if(enabledParam->boolValue()){
     String cAddress = c->controlAddress;
     Controllable::Type targetType = c->type;

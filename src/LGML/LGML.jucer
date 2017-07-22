@@ -2,8 +2,9 @@
 
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" id="a1hJPO"
-              includeBinaryInAppConfig="1" jucerVersion="4.3.1" name="LGML"
-              projectType="guiapp" version="1.1.9beta">
+              includeBinaryInAppConfig="1" jucerVersion="5.0.2" name="LGML"
+              projectType="guiapp" version="1.1.9beta" displaySplashScreen="1"
+              reportAppUsage="1" splashScreenColour="Dark">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
       <FILE compile="1" file="Tests/LooperTest.cpp" id="lDg0ln" name="LooperTest.cpp"
@@ -150,26 +151,30 @@
                 resource="0"/>
         </GROUP>
         <GROUP id="{47C49D7C-57C1-2802-9458-4AB50A9508DE}" name="Audio">
-          <FILE id="BxNfkP" name="AudioConfig.h" compile="0" resource="0" file="Source/AudioConfig.h"/>
-          <FILE id="dL7FOY" name="StretcherJob.cpp" compile="1" resource="0"
-                file="Source/StretcherJob.cpp"/>
-          <FILE id="PBEW3x" name="StretcherJob.h" compile="0" resource="0" file="Source/StretcherJob.h"/>
-          <FILE id="VOSVFD" name="MultiNeedle.cpp" compile="1" resource="0" file="Source/MultiNeedle.cpp"/>
-          <FILE id="KqHJoN" name="MultiNeedle.h" compile="0" resource="0" file="Source/MultiNeedle.h"/>
-          <FILE id="XvG4hZ" name="AudioDebugPipe.cpp" compile="1" resource="0"
-                file="Source/AudioDebugPipe.cpp"/>
-          <FILE id="NWFdHH" name="AudioDebugPipe.h" compile="0" resource="0"
-                file="Source/AudioDebugPipe.h"/>
+          <FILE compile="0" file="Source/AudioConfig.h" id="BxNfkP" name="AudioConfig.h"
+                resource="0"/>
+          <FILE compile="1" file="Source/StretcherJob.cpp" id="dL7FOY" name="StretcherJob.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/StretcherJob.h" id="PBEW3x" name="StretcherJob.h"
+                resource="0"/>
+          <FILE compile="1" file="Source/MultiNeedle.cpp" id="VOSVFD" name="MultiNeedle.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/MultiNeedle.h" id="KqHJoN" name="MultiNeedle.h"
+                resource="0"/>
+          <FILE compile="1" file="Source/AudioDebugPipe.cpp" id="XvG4hZ" name="AudioDebugPipe.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/AudioDebugPipe.h" id="NWFdHH" name="AudioDebugPipe.h"
+                resource="0"/>
           <FILE compile="0" file="Source/AudioFucker.h" id="evse9I" name="AudioFucker.h"
                 resource="0"/>
           <FILE compile="0" file="Source/AudioHelpers.h" id="J7iGNZ" name="AudioHelpers.h"
                 resource="0"/>
-          <FILE id="BdXdeD" name="AudioDebugCrack.cpp" compile="1" resource="0"
-                file="Source/AudioDebugCrack.cpp"/>
-          <FILE id="l4YzNe" name="AudioDebugCrack.h" compile="0" resource="0"
-                file="Source/AudioDebugCrack.h"/>
-          <FILE id="E0B5ps" name="PlayableBuffer.cpp" compile="1" resource="0"
-                file="Source/PlayableBuffer.cpp"/>
+          <FILE compile="1" file="Source/AudioDebugCrack.cpp" id="BdXdeD" name="AudioDebugCrack.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/AudioDebugCrack.h" id="l4YzNe" name="AudioDebugCrack.h"
+                resource="0"/>
+          <FILE compile="1" file="Source/PlayableBuffer.cpp" id="E0B5ps" name="PlayableBuffer.cpp"
+                resource="0"/>
           <FILE compile="0" file="Source/PlayableBuffer.h" id="mfsKGO" name="PlayableBuffer.h"
                 resource="0"/>
           <FILE compile="0" file="Source/RingBuffer.h" id="jPxc7W" name="RingBuffer.h"
@@ -273,16 +278,16 @@
                   resource="0"/>
           </GROUP>
           <GROUP id="{342F6F3B-20C5-E920-E6FA-39C9A8531208}" name="variables">
-            <FILE id="LTnSNY" name="ControlVariableReference.cpp" compile="1" resource="0"
-                  file="Source/ControlVariableReference.cpp"/>
-            <FILE id="BwrlyO" name="ControlVariableReferenceUI.cpp" compile="1"
-                  resource="0" file="Source/ControlVariableReferenceUI.cpp"/>
+            <FILE compile="1" file="Source/ControlVariableReference.cpp" id="LTnSNY"
+                  name="ControlVariableReference.cpp" resource="0"/>
+            <FILE compile="1" file="Source/ControlVariableReferenceUI.cpp" id="BwrlyO"
+                  name="ControlVariableReferenceUI.cpp" resource="0"/>
             <FILE compile="1" file="Source/ControlVariable.cpp" id="S3eYKu" name="ControlVariable.cpp"
                   resource="0"/>
-            <FILE id="QyrH3W" name="ControlVariableReference.h" compile="0" resource="0"
-                  file="Source/ControlVariableReference.h"/>
-            <FILE id="stqN9O" name="ControlVariableReferenceUI.h" compile="0" resource="0"
-                  file="Source/ControlVariableReferenceUI.h"/>
+            <FILE compile="0" file="Source/ControlVariableReference.h" id="QyrH3W"
+                  name="ControlVariableReference.h" resource="0"/>
+            <FILE compile="0" file="Source/ControlVariableReferenceUI.h" id="stqN9O"
+                  name="ControlVariableReferenceUI.h" resource="0"/>
             <FILE compile="0" file="Source/ControlVariable.h" id="sa2ONX" name="ControlVariable.h"
                   resource="0"/>
             <FILE compile="1" file="Source/ControlVariableUI.cpp" id="NSHW03" name="ControlVariableUI.cpp"
@@ -753,8 +758,10 @@
             resource="0"/>
       <FILE compile="1" file="Source/EngineFileDocument.cpp" id="rpB1Vz"
             name="EngineFileDocument.cpp" resource="0"/>
-      <FILE id="zi8GMM" name="LGMLConfig.cpp" compile="1" resource="0" file="Source/LGMLConfig.cpp"/>
-      <FILE id="eWiEBb" name="LGMLConfig.h" compile="0" resource="0" file="Source/LGMLConfig.h"/>
+      <FILE compile="1" file="Source/LGMLConfig.cpp" id="zi8GMM" name="LGMLConfig.cpp"
+            resource="0"/>
+      <FILE compile="0" file="Source/LGMLConfig.h" id="eWiEBb" name="LGMLConfig.h"
+            resource="0"/>
       <FILE compile="0" file="Source/MainComponent.h" id="ddEu7L" name="MainComponent.h"
             resource="0"/>
       <FILE compile="1" file="Source/MainComponent.cpp" id="OvsUVU" name="MainComponent.cpp"
@@ -786,11 +793,11 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I/Users/Tintamar/Dev/rubberband/rubberband&#10;-I/Users/Tintamar/Dev/link/include/&#10;-I/Users/Tintamar/Dev/link/modules/asio-standalone/asio/include"
+    <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
+               extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I/Users/Tintamar/Dev/rubberband/&#10;-I/Users/Tintamar/Dev/link/include/&#10;-I/Users/Tintamar/Dev/link/modules/asio-standalone/asio/include"
+               extraDefs="LINK_PLATFORM_MACOSX=1" extraLinkerFlags="/Users/Tintamar/Dev/rubberband/lib/librubberband.a"
                postbuildCommand="" smallIcon="jsU7Hw" targetFolder="Builds/MacOSX"
-               vst3Folder="/Users/Tintamar/SDKs/VST3 SDK" vstFolder="" externalLibraries=""
-               extraLinkerFlags="/Users/Tintamar/Dev/rubberband/lib/librubberband.a"
-               extraDefs="LINK_PLATFORM_MACOSX=1">
+               vst3Folder="/Users/Tintamar/SDKs/VST3 SDK" vstFolder="">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="../../External/serial/include" isDebug="0" linkTimeOptimisation="1"
@@ -857,7 +864,9 @@
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" extraLinkerFlags=""
-                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vstFolder="/media/sf_Tintamar/SDKs/VST3 SDK">
+                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vstFolder="/home/tinmar/SDKs/VST3 SDK"
+                vst3Folder="" extraDefs="LINK_PLATFORM_LINUX=1" extraCompilerFlags="-I../../../../../link/include/&#10;-I../../../../../link/modules/asio-standalone/asio/include"
+                externalLibraries="rubberband">
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="../../External/serial/include" isDebug="1" libraryPath="/usr/X11R6/lib/"
                        linuxArchitecture="-march=armv6" name="Debug" optimisation="5"
@@ -905,10 +914,10 @@
   <JUCEOPTIONS JUCE_ALSA="enabled" JUCE_ASIO="enabled" JUCE_DIRECTSOUND="enabled"
                JUCE_JACK="enabled" JUCE_LOG_ASSERTIONS="enabled" JUCE_PLUGINHOST_AU="enabled"
                JUCE_PLUGINHOST_VST="enabled" JUCE_PLUGINHOST_VST3="enabled"
-               JUCE_USE_CDBURNER="disabled" JUCE_USE_CDREADER="disabled" JUCE_WASAPI="enabled"
-               JUCE_WEB_BROWSER="disabled" JUCE_USE_FLAC="enabled" JUCE_USE_OGGVORBIS="enabled"
-               JUCE_USE_MP3AUDIOFORMAT="enabled" JUCE_USE_LAME_AUDIO_FORMAT="enabled"
-               JUCE_USE_WINDOWS_MEDIA_FORMAT="enabled"/>
+               JUCE_USE_CDBURNER="disabled" JUCE_USE_CDREADER="disabled" JUCE_USE_FLAC="enabled"
+               JUCE_USE_LAME_AUDIO_FORMAT="enabled" JUCE_USE_MP3AUDIOFORMAT="enabled"
+               JUCE_USE_OGGVORBIS="enabled" JUCE_USE_WINDOWS_MEDIA_FORMAT="enabled"
+               JUCE_WASAPI="enabled" JUCE_WEB_BROWSER="disabled"/>
   <LIVE_SETTINGS>
     <WINDOWS headerPath="..\..\External\serial\include"/>
     <OSX/>

@@ -257,6 +257,7 @@ public:
     Font getAlertWindowFont() override;
 
     //==============================================================================
+    bool isProgressBarOpaque (ProgressBar& progressBar) override;
     void drawProgressBar (Graphics&, ProgressBar&, int width, int height, double progress, const String& textToShow) override;
     void drawSpinningWaitAnimation (Graphics&, const Colour& colour, int x, int y, int w, int h) override;
 

@@ -21,7 +21,7 @@ extern ThreadPool * getEngineThreadPool();
 
 #if BUFFER_CAN_STRETCH
 #include "StretcherJob.h"
-#include "RubberBandStretcher.h"
+#include "rubberband/RubberBandStretcher.h"
 using namespace RubberBand;
 #endif
 
@@ -127,7 +127,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
 }
 
 
-inline bool PlayableBuffer::writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample,int samplesToWrite,bool isTail){
+bool PlayableBuffer::writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample,int samplesToWrite,bool isTail){
   
 
   samplesToWrite= samplesToWrite==-1?buffer.getNumSamples()-fromSample:samplesToWrite;

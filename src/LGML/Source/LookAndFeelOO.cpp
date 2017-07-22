@@ -357,6 +357,11 @@ Font LookAndFeelOO::getAlertWindowFont()
 }
 
 //==============================================================================
+
+bool LookAndFeelOO::isProgressBarOpaque (ProgressBar& progressBar)
+{
+  return progressBar.findColour (ProgressBar::backgroundColourId).isOpaque();
+}
 void LookAndFeelOO::drawProgressBar (Graphics& g, ProgressBar& progressBar,
                                       int width, int height,
                                       double progress, const String& textToShow)

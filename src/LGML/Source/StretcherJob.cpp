@@ -10,7 +10,7 @@
 #include "AudioConfig.h"
 #if BUFFER_CAN_STRETCH
 
-#include "RubberBandStretcher.h"
+#include "rubberband/RubberBandStretcher.h"
 using namespace RubberBand;
 
 #include "PlayableBuffer.h"
@@ -102,7 +102,7 @@ int StretcherJob::studyStretch(double ratio,int start,int block){
     if(block==-1)block=owner->originAudioBuffer.getNumSamples();
 
     initStretcher(owner->sampleRate , owner->audioBuffer.getNumChannels());
-    jassert(isfinite(ratio));
+    jassert(std::isfinite(ratio));
     stretcher->setTimeRatio(ratio);
     stretcher->setExpectedInputDuration(originNumSamples);
     stretcher->setMaxProcessSize(block);

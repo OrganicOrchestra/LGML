@@ -15,12 +15,15 @@ localMakePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.par
 localExportPath = localMakePath+'build/'
 localAppFile = localExportPath+execName
 localExportFile = localAppFile+".tar.gz"
-
+verbose = False
 print localMakePath
 
 
 def buildApp(configuration):
-	sh('cd '+localMakePath+' && make CONFIG='+configuration+' -j'+str(njobs))
+  makeCmd = 'make CONFIG='+configuration+' -j'+str(njobs)
+  if (verbose):
+    makeCmd+=" SHELL='sh +x' "
+  sh('cd '+localMakePath+' && '+makeCmd)
 
 
 def exportApp(baseName):
