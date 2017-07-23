@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 ## these are devloper libs,   not sure wich are needed in released version...
 
@@ -35,7 +35,7 @@ if [ ! -d "Dev/JUCE" ]; then
 	unzip -q JUCE.zip
 	mv JUCE-master/ Dev/JUCE
 fi
-
+cd
 if [ ! -d "Dev/Projucer/linux" ]; then
 	cd 
 	ls
@@ -47,4 +47,18 @@ if [ ! -d "Dev/Projucer/linux" ]; then
 	mkdir Dev/Projucer
 	mkdir Dev/Projucer/linux
 	mv Dev/JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer Dev/Projucer/linux/
+fi
+
+
+# rubberband
+sudo apt-get -y --force-yes install librubberband-dev
+
+
+# Link
+cd
+if [ ! -d "Dev/Link" ]; then
+	cd 
+	ls
+	cd Dev
+	git clone --depth=1 https://github.com/Ableton/link.git
 fi

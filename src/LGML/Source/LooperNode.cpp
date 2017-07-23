@@ -533,7 +533,7 @@ void LooperNode::BPMChanged(double /*BPM*/){
         double ratio =t->originBPM->doubleValue();
         ratio /= TimeManager::getInstance()->BPM->doubleValue();
 
-        if(isnormal(ratio)){
+        if(std::isnormal(ratio)){
           t->playableBuffer.setTimeRatio(ratio);
 //          if( DEBUGPIPE_ENABLED){
 //            if(ratio!=1){

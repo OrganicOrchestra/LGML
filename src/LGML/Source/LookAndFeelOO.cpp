@@ -357,6 +357,11 @@ Font LookAndFeelOO::getAlertWindowFont()
 }
 
 //==============================================================================
+
+bool LookAndFeelOO::isProgressBarOpaque (ProgressBar& progressBar)
+{
+  return progressBar.findColour (ProgressBar::backgroundColourId).isOpaque();
+}
 void LookAndFeelOO::drawProgressBar (Graphics& g, ProgressBar& progressBar,
                                       int width, int height,
                                       double progress, const String& textToShow)
@@ -414,11 +419,6 @@ void LookAndFeelOO::drawProgressBar (Graphics& g, ProgressBar& progressBar,
 
         g.drawText (textToShow, 0, 0, width, height, Justification::centred, false);
     }
-}
-
-bool LookAndFeelOO::isProgressBarOpaque (ProgressBar& progressBar)
-{
-  return progressBar.findColour (ProgressBar::backgroundColourId).isOpaque();
 }
 
 void LookAndFeelOO::drawSpinningWaitAnimation (Graphics& g, const Colour& colour, int x, int y, int w, int h)

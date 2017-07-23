@@ -33,7 +33,7 @@ def buildAll(osType,configuration):
 	ProJucerUtils.updatePathsIfNeeded(osType)
 	ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(os.environ['HOME'],'Dev','Projucer')),credentials=OwncloudUtils.getCredential,osType=osType)
 
-	if ProJucerUtils.hasValidProjucerPath():
+	if ProJucerUtils.hasValidProjucerPath(osType):
 		ProJucerUtils.updateVersion(bumpVersion,specificVersion);
 		ProJucerUtils.buildJUCE();
 	else:
