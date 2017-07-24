@@ -35,7 +35,13 @@ public:
       setOpaque(false);
       setInterceptsMouseClicks(true, false);
 
+
     }
+    ~DraggedComponent(){
+      removeMouseListener(this);
+    }
+
+
     LGMLComponent * originComp;
     Image draggedImage;
 
@@ -46,12 +52,17 @@ public:
       LGMLDragger::getInstance()->startDraggingComponent(this, e);
     }
     void mouseExit(const MouseEvent &e)override{
-      originComp->mouseExit(e);
+
       if(!contains(e.getEventRelativeTo(this).getPosition())){
         originComp->repaint();
         LGMLDragger::getInstance()->endDraggingComponent(this,e);
       }
+//      else{originComp->mouseExit(e);}
 
+    }
+    void mouseUp(const MouseEvent &e)override{
+        originComp->repaint();
+        LGMLDragger::getInstance()->endDraggingComponent(this,e);
     }
     void paint(Graphics &g) override{
       g.drawImage( draggedImage, getLocalBounds().toFloat());

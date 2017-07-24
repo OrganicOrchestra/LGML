@@ -38,7 +38,7 @@ controllable = nullptr;
 }
 void LGMLComponent::setIsMapping(bool b){
   if(b!=isMapping){
-    if(isMapping){addMouseListener(this,true);}
+    if(b){addMouseListener(this,true);}
     else{removeMouseListener(this);}
   }
   isMapping = b;

@@ -59,11 +59,11 @@ public:
   float getNormalizedValue();
 
   //helpers for fast typing
-  virtual float floatValue() { return (float)value; }
-  virtual double doubleValue(){return (double)value;}
-  virtual int intValue() { return (int)value; }
-  virtual bool boolValue() { return (bool)value; }
-  virtual String stringValue() { return value.toString(); }
+  float floatValue() const{ return (float)value; }
+  double doubleValue() const{return (double)value;}
+  int intValue() const { return (int)value; }
+  bool boolValue() const{ return (bool)value; }
+  virtual String stringValue() const { return value.toString(); }
 
   void notifyValueChanged(bool defferIt=false);
 

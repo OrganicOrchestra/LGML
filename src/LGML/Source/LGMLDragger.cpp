@@ -31,7 +31,15 @@ void LGMLDragger::registerForDrag(LGMLComponent * c){
 //    tip->setMillisecondsBeforeTipAppears(99999999);
   mainComp->addAndMakeVisible(dragged);
   dragged->toFront(false);
-//  dragged->setAlwaysOnTop(true);
+
+}
+
+void LGMLDragger::unRegisterForDrag(LGMLComponent * c){
+
+  jassert(dragged==nullptr || c==nullptr || c==dragged->originComp);
+  dragged = nullptr;
+  tip->setMillisecondsBeforeTipAppears();
+
 
 }
 
@@ -58,15 +66,6 @@ void LGMLDragger::toggleMappingMode(){
 }
 
 
-void LGMLDragger::unRegisterForDrag(LGMLComponent * c){
-  mainComp->removeChildComponent(dragged.release());
-  jassert(dragged==nullptr || c==nullptr || c==dragged->originComp);
-
-
-    tip->setMillisecondsBeforeTipAppears();
-
-
-}
 
 
 void LGMLDragger::startDraggingComponent (Component* const componentToDrag, const MouseEvent& e)
@@ -103,8 +102,5 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
   }
 }
 void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseEvent & e){
-  if(LGMLComponent* lgmlC = dynamic_cast<LGMLComponent*>(componentToDrag))
-    unRegisterForDrag(lgmlC);
-  delete componentToDrag;
-  
+  unRegisterForDrag(nullptr);
 }
