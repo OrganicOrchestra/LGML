@@ -15,7 +15,7 @@
 #include "DummyNode.h"//keep
 #include "NodeBaseContentUI.h"
 #include "FloatSliderUI.h"
-#include "TriggerButtonUI.h"
+
 #include "EnumParameterUI.h"
 
 class DummyNodeContentUI : public NodeBaseContentUI
@@ -31,7 +31,7 @@ public:
 	ScopedPointer<FloatSliderUI> pxSlider;
 	ScopedPointer<FloatSliderUI> pySlider;
 	ScopedPointer<EnumParameterUI> modeUI;
-    ScopedPointer<TriggerButtonUI> testTriggerButton;
+    ScopedPointer<ControllableUI> testTriggerButton;
 
     void resized() override;
 

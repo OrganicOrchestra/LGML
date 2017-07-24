@@ -13,6 +13,8 @@
 #include "JuceHeader.h"
 #include "LGMLComponent.h"
 
+class ControllableReferenceUI;
+
 class LGMLDragger : MouseListener{
 public:
 
@@ -34,6 +36,7 @@ public:
       setBounds(bounds);
       setOpaque(false);
       setInterceptsMouseClicks(true, false);
+      isDragging = false;
 
 
     }
@@ -44,15 +47,18 @@ public:
 
     LGMLComponent * originComp;
     Image draggedImage;
-
+    bool isDragging;
     void mouseDrag(const MouseEvent & e)override{
       LGMLDragger::getInstance()->dragComponent(this, e, nullptr);
+
     }
     void mouseDown(const MouseEvent &e)override{
+      isDragging = true;
       LGMLDragger::getInstance()->startDraggingComponent(this, e);
     }
-    void mouseExit(const MouseEvent &e)override{
 
+    void mouseExit(const MouseEvent &e)override{
+      isDragging = false;
       if(!contains(e.getEventRelativeTo(this).getPosition())){
         originComp->repaint();
         LGMLDragger::getInstance()->endDraggingComponent(this,e);
@@ -61,6 +67,7 @@ public:
 
     }
     void mouseUp(const MouseEvent &e)override{
+      isDragging = false;
         originComp->repaint();
         LGMLDragger::getInstance()->endDraggingComponent(this,e);
     }
@@ -75,6 +82,10 @@ public:
       g.fillAll();
     }
 
+    bool hitTest(int x,int y)override{
+      return !isDragging;
+    }
+
   };
 
   void startDraggingComponent (Component* const componentToDrag, const MouseEvent& e);
@@ -87,6 +98,8 @@ public:
   void setMappingActive(bool isActive);
   void toggleMappingMode();
   bool isMappingActive;
+
+  ControllableReferenceUI*  target;
 private:
   Point<int> mouseDownWithinTarget;
 

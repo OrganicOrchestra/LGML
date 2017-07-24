@@ -18,7 +18,7 @@ ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
 	paramProxy(proxy),
 	chooser(proxy->parentContainer->parentContainer)
 {
-	chooser.addControllableChooserListener(this);
+	chooser.addControllableReferenceUIListener(this);
 	addAndMakeVisible(&chooser);
 	paramProxy->addParameterProxyListener(this);
 
@@ -95,7 +95,7 @@ void ParameterProxyUI::linkedParamChanged(Parameter * p)
 	setLinkedParamUI(p);
 }
 
-void ParameterProxyUI::choosedControllableChanged(Controllable * c)
+void ParameterProxyUI::choosedControllableChanged(ControllableReferenceUI*,Controllable * c)
 {
 	paramProxy->setLinkedParam(dynamic_cast<Parameter *>(c));
 }

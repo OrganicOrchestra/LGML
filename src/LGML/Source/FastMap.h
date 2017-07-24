@@ -12,7 +12,7 @@
 #define FASTMAP_H_INCLUDED
 
 #include "ControllableContainer.h"
-#include "ControlVariableReference.h"
+
 
 class FastMap;
 
@@ -30,8 +30,8 @@ public:
 
 class FastMap :
 	public ControllableContainer,
-	public ControlVariableReferenceListener,
-	public Controllable::Listener
+  public Controllable::Listener
+
 {
 public:
 	FastMap();
@@ -47,13 +47,15 @@ public:
 
 	String ghostAddress; //for ghosting if parameter not found
 
-	ScopedPointer<ControlVariableReference> reference;
-	Controllable * target;
+	WeakReference<Controllable> referenceIn;
+	WeakReference<Controllable> referenceOut;
+
+  
 
 	bool isInRange; //memory for triggering
 	void process();
 
-	void setReference(ControlVariableReference * r);
+	void setReference(Controllable * r);
 	void setTarget(Controllable * c);
 	void setGhostAddress(const String &address);
 
@@ -68,9 +70,9 @@ public:
 	void addFastMapListener(FastMapListener* newListener) { fastMapListeners.add(newListener); }
 	void removeFastMapListener(FastMapListener* listener) { fastMapListeners.remove(listener); }
 
-	virtual void referenceValueChanged(ControlVariableReference *) override;
-	virtual void referenceVariableChanged(ControlVariableReference *) override;
-	virtual void controllableRemoved(Controllable  *c) override;
+
+  void parameterValueChanged(Parameter * p) override;
+  void controllableRemoved(Controllable  *c) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMap);
 };

@@ -21,14 +21,15 @@
 class FastMapUI :
 	public InspectableComponent,
 	public FastMapListener,
-	public  ControllableChooser::Listener,
+	public  ControllableReferenceUI::Listener,
 	public ButtonListener
 {
 public:
 	FastMapUI(FastMap * f);
 	virtual ~FastMapUI();
 
-	ScopedPointer<ControlVariableReferenceUI> refUI;
+	ControllableReferenceUI refUI;
+  ControllableReferenceUI targetUI;
 
 	ScopedPointer<BoolToggleUI> enabledUI;
 
@@ -38,7 +39,7 @@ public:
 	ScopedPointer<FloatSliderUI> maxOutputUI;
 	ScopedPointer<BoolToggleUI> invertUI;
 
-	ControllableChooser chooseTargetBT;
+
 
 	FastMap * fastMap;
 	ImageButton removeBT;
@@ -47,7 +48,7 @@ public:
 	void paint(Graphics &g) override;
 	void resized() override;
 
-	virtual void choosedControllableChanged(Controllable *) override;
+	virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) override;
 
 	virtual void fastMapTargetChanged(FastMap *) override;
 	void buttonClicked(Button * b) override;

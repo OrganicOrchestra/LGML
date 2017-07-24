@@ -227,10 +227,6 @@ void JsEnvironment::clearListeners() {
     if (c.get()) c->removeParameterListener(this);
   }
   listenedParameters.clear();
-  for (auto & c : listenedTriggers) {
-    if (c.get()) c->removeTriggerListener(this);
-  }
-  listenedTriggers.clear();
 
   for (auto & c : listenedContainers) {
     if (c.get())c->removeControllableContainerListener(this);
@@ -463,10 +459,6 @@ Result JsEnvironment::checkUserControllableEventFunction()
             listenedParameters.addIfNotAlreadyThere(p);
             found = true;
             break;
-          } else if (Trigger *t = dynamic_cast<Trigger*>(c)) {
-            listenedTriggers.addIfNotAlreadyThere(t);
-            found = true;
-            break;
           } else if (ControllableContainer * cont = candidate->getControllableContainerForAddress(localName)) {
             listenedContainers.addIfNotAlreadyThere(cont);
             found = true;
@@ -495,9 +487,6 @@ Result JsEnvironment::checkUserControllableEventFunction()
   }
   for (auto & c : listenedParameters) {
     c->addParameterListener(this);
-  }
-  for (auto & t : listenedTriggers) {
-    t->addTriggerListener(this);
   }
   for (auto & cont : listenedContainers) {
     cont->addControllableContainerListener(this);
@@ -528,10 +517,7 @@ void JsEnvironment::parameterValueChanged(Parameter * p) {
   else { jassertfalse; }
 
 };
-void JsEnvironment::triggerTriggered(Trigger *p) {
-  callFunction("on_" + getJsFunctionNameFromAddress(p->getControlAddress()), var::undefined(), false);
 
-}
 
 void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originContainer, Controllable *c) {
   // avoid root callback (only used to reload if
@@ -567,7 +553,7 @@ void JsEnvironment::childStructureChanged(ControllableContainer * originContaine
 };
 
 void JsEnvironment::sendAllParametersToJS() {
-  for (auto & t : listenedTriggers) { if (t.get())triggerTriggered(t); }
+
   for (auto & t : listenedParameters) { if (t.get())parameterValueChanged(t); }
   for (auto & t : listenedContainers) {
     if (t.get()) {
@@ -581,7 +567,7 @@ void JsEnvironment::sendAllParametersToJS() {
 var JsEnvironment::createParameterListenerObject(const var::NativeFunctionArgs & a) {
   if (a.numArguments == 0) { return var::undefined(); }
 
-  if (Controllable * p = getObjectPtrFromObject<Controllable>(a.arguments[0].getDynamicObject())) {
+  if (auto  p = getObjectPtrFromObject<Parameter>(a.arguments[0].getDynamicObject())) {
     JsEnvironment * originEnv = dynamic_cast<JsEnvironment*>(a.thisObject.getDynamicObject());
     if (originEnv) {
       JsControllableListenerObject * ob = new JsControllableListenerObject(originEnv, p);

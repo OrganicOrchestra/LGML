@@ -11,9 +11,10 @@ Author:  bkupe
 
 #include "TriggerBlinkUI.h"
 #include "Style.h"
+#include "Trigger.h"
 //==============================================================================
 TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
-	TriggerUI(t),
+	ParameterUI(t),
 	blinkTime(100),
 	refreshPeriod(50),
 	intensity(0),
@@ -30,31 +31,22 @@ TriggerBlinkUI::~TriggerBlinkUI()
 
 }
 
-void TriggerBlinkUI::setTriggerReference(Trigger * t) {
-    if (trigger != nullptr) {
-        trigger->removeAsyncTriggerListener(this);
-    }
 
-    trigger = t;
-
-    trigger->addAsyncTriggerListener(this);
-}
-
-void TriggerBlinkUI::triggerTriggered(const Trigger *) {
+void TriggerBlinkUI::valueChanged(const var & ){
     startBlink();
 
 }
 
 void TriggerBlinkUI::paint(Graphics& g)
 {
-  if(!trigger.get())return;
+  if(!parameter.get())return;
 	g.setColour(offColor.interpolatedWith(onColor,intensity));
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
     g.setFont(10);
     g.setColour(Colours::white.darker(.1f));
 	if (showLabel)
 	{
-		g.drawFittedText(trigger->niceName, getLocalBounds().reduced(2), Justification::centred, 1);
+		g.drawFittedText(parameter->niceName, getLocalBounds().reduced(2), Justification::centred, 1);
 	}
 }
 
@@ -85,13 +77,15 @@ void TriggerBlinkUI::timerCallback(){
     repaint();
 }
 
-
+Trigger* TriggerBlinkUI::getTrigger(){
+  return dynamic_cast<Trigger*>(parameter.get());
+}
 
 void TriggerBlinkUI::mouseDown(const MouseEvent &e) {
 	ControllableUI::mouseDown(e);
 	if (e.mods.isLeftButtonDown())
 	{
-		trigger->trigger();
+		getTrigger()->trigger();
 
 	}
     

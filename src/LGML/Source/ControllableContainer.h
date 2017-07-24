@@ -43,7 +43,7 @@ public:
 };
 
 class CCInnerContainer;
-class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public Trigger::Listener, public ControllableContainerListener
+class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public ControllableContainerListener
 
 {
 public:
@@ -145,8 +145,7 @@ public:
 
   // Inherited via Parameter::Listener
   virtual void parameterValueChanged(Parameter * p) override;
-  // Inherited via Trigger::Listener
-  virtual void triggerTriggered(Trigger * p) override;
+
 
 
   

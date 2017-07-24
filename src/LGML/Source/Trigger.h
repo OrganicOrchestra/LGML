@@ -11,13 +11,13 @@
 #ifndef TRIGGER_H_INCLUDED
 #define TRIGGER_H_INCLUDED
 
-#include "Controllable.h"
+#include "Parameter.h"
 #include "QueuedNotifier.h"
 
 class TriggerButtonUI;
 class TriggerBlinkUI;
 
-class Trigger : public Controllable
+class Trigger : public Parameter
 {
 public:
 	Trigger(const String &niceName, const String &description, bool enabled = true);
@@ -25,7 +25,7 @@ public:
   
 	
 	
-	TriggerButtonUI * createButtonUI(Trigger * target = nullptr);
+	
 	TriggerBlinkUI * createBlinkUI(Trigger * target = nullptr);
 	ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 	
@@ -34,39 +34,24 @@ public:
   var getVarObject() override;
   var getVarState() override;
   void setFromVarObject(DynamicObject & ob) override;
-	
+
+  static const var triggerVar;
 	void trigger()
 	{
-		if (enabled && !isTriggering){
-			isTriggering = true;
-            listeners.call(&Listener::triggerTriggered, this);
-            queuedNotifier.addMessage(new WeakReference<Trigger>(this));
-            isTriggering = false;
-		}
+    setValue(triggerVar);
 	}
-	
-	// avoid feedback loop in listeners
+  void tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt) override{
+    isTriggering = true;
+    if (!silentSet) notifyValueChanged(defferIt);
+    isTriggering = false;
+    
+  }
+  
+  // avoid feedback loop in listeners
 	bool isTriggering;
 public:
-	//Listener
-	class  Listener
-	{
-	public:
-		/** Destructor. */
-		virtual ~Listener() {}
-		virtual void triggerTriggered(Trigger * p) = 0;
-	};
-	
-	ListenerList<Listener> listeners;
-	void addTriggerListener(Trigger::Listener* newListener) { listeners.add(newListener); }
-	void removeTriggerListener(Trigger::Listener* listener) { listeners.remove(listener); }
-	
-    
-	
-	QueuedNotifier<WeakReference<Trigger>> queuedNotifier;
-	typedef QueuedNotifier<WeakReference<Trigger>>::Listener AsyncListener;
-	void addAsyncTriggerListener(AsyncListener * l){queuedNotifier.addListener(l);}
-	void removeAsyncTriggerListener(AsyncListener * l){queuedNotifier.removeListener(l);}
+
+
 	
 private:
 	WeakReference<Trigger>::Master masterReference;

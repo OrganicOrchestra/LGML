@@ -13,9 +13,10 @@
 
 juce_ImplementSingleton(LGMLDragger);
 
-
+#include "ControllableHelpers.h"
 
 void LGMLDragger::setMainComponent(Component * c,TooltipWindow * _tip){
+  target = nullptr;
   mainComp = c;
   tip = _tip;
   mainComp->addMouseListener(this, true);
@@ -38,6 +39,7 @@ void LGMLDragger::unRegisterForDrag(LGMLComponent * c){
 
   jassert(dragged==nullptr || c==nullptr || c==dragged->originComp);
   dragged = nullptr;
+  target=nullptr;
   tip->setMillisecondsBeforeTipAppears();
 
 
@@ -60,6 +62,7 @@ void LGMLDragger::setMappingActive(bool b){
   isMappingActive = b;
   setAllComponentMappingState(mainComp, b);
 
+
 }
 void LGMLDragger::toggleMappingMode(){
   setMappingActive(!isMappingActive);
@@ -75,6 +78,8 @@ void LGMLDragger::startDraggingComponent (Component* const componentToDrag, cons
 
   if (componentToDrag != nullptr)
     mouseDownWithinTarget = e.getEventRelativeTo (componentToDrag).getMouseDownPosition();
+
+  
 }
 
 void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEvent& e,
@@ -99,8 +104,21 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
       constrainer->setBoundsForComponent (componentToDrag, bounds, false, false, false, false);
     else
       componentToDrag->setBounds (bounds);
+
+    auto curTarget = dynamic_cast<ControllableReferenceUI*> (mainComp->getComponentAt(e.getEventRelativeTo(mainComp).getPosition()));
+    if(curTarget!=target){
+      if(target){target->setHovered(false);}
+      target = curTarget;
+      if(target){
+        DBG(curTarget->getName());
+      target->setHovered(true);
+      }
+    }
   }
 }
 void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseEvent & e){
+  if(target){
+    target->setCurrentControllale(dragged->originComp->controllable);
+  }
   unRegisterForDrag(nullptr);
 }

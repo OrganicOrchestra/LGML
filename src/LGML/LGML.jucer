@@ -46,25 +46,21 @@
                   resource="0"/>
             <FILE compile="0" file="Source/ControllableUI.h" id="wsPUhO" name="ControllableUI.h"
                   resource="0"/>
-            <FILE compile="1" file="Source/TriggerBlinkUI.cpp" id="F1WYW6" name="TriggerBlinkUI.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/TriggerBlinkUI.h" id="YU6UcA" name="TriggerBlinkUI.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/TriggerButtonUI.cpp" id="ANg4jk" name="TriggerButtonUI.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/TriggerButtonUI.h" id="c0uIkt" name="TriggerButtonUI.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/TriggerUI.cpp" id="OUrAS4" name="TriggerUI.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/TriggerUI.h" id="E4MhHL" name="TriggerUI.h"
-                  resource="0"/>
             <FILE compile="1" file="Source/ControllableHelpers.cpp" id="u5Rdja"
                   name="ControllableHelpers.cpp" resource="0"/>
             <FILE compile="0" file="Source/ControllableHelpers.h" id="SYJSuB" name="ControllableHelpers.h"
                   resource="0"/>
           </GROUP>
           <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
+            <FILE compile="1" file="Source/Trigger.cpp" id="DqT70c" name="Trigger.cpp"
+                  resource="0"/>
+            <FILE compile="0" file="Source/Trigger.h" id="aqPYZL" name="Trigger.h"
+                  resource="0"/>
             <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
+              <FILE compile="1" file="Source/TriggerBlinkUI.cpp" id="F1WYW6" name="TriggerBlinkUI.cpp"
+                    resource="0"/>
+              <FILE compile="0" file="Source/TriggerBlinkUI.h" id="YU6UcA" name="TriggerBlinkUI.h"
+                    resource="0"/>
               <FILE compile="1" file="Source/EnumParameterUI.cpp" id="dYvxwa" name="EnumParameterUI.cpp"
                     resource="0"/>
               <FILE compile="0" file="Source/EnumParameterUI.h" id="eKc7hQ" name="EnumParameterUI.h"
@@ -151,10 +147,6 @@
                 name="ControllableIndexedContainer.cpp" resource="0"/>
           <FILE compile="0" file="Source/ControllableIndexedContainer.h" id="Y9EZlj"
                 name="ControllableIndexedContainer.h" resource="0"/>
-          <FILE compile="1" file="Source/Trigger.cpp" id="DqT70c" name="Trigger.cpp"
-                resource="0"/>
-          <FILE compile="0" file="Source/Trigger.h" id="aqPYZL" name="Trigger.h"
-                resource="0"/>
         </GROUP>
         <GROUP id="{47C49D7C-57C1-2802-9458-4AB50A9508DE}" name="Audio">
           <FILE id="CIMyKb" name="BufferBlockList.cpp" compile="1" resource="0"

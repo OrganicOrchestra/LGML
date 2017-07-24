@@ -164,7 +164,7 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
   String targetName = getUniqueNameInContainer(_niceName);
   Trigger * t = new Trigger(targetName, _description, enabled);
   addControllable(t);
-  t->addTriggerListener(this);
+  t->addParameterListener(this);
 
   return t;
 }
@@ -682,30 +682,22 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
   {
     if (!hasCustomShortName) setAutoShortName();
   }
+  else   if (p == savePresetTrigger)
+  {
+    saveCurrentPreset();
 
+  }
+
+  if(p && p->type==Controllable::TRIGGER){
+    onContainerTriggerTriggered((Trigger*)p);
+  }
+  else{
   onContainerParameterChanged(p);
+  }
 
   if (p->isControllableExposed && (p!=nullptr && p->parentContainer==this) ) dispatchFeedback(p);
 }
 
-
-void ControllableContainer::triggerTriggered(Trigger * t)
-{
-
-  if (t == savePresetTrigger)
-  {
-    saveCurrentPreset();
-
-  } else
-  {
-    onContainerTriggerTriggered(t);
-  }
-
-  if (t->isControllableExposed &&  (t!=nullptr && t->parentContainer==this)) dispatchFeedback(t);
-
-
-
-}
 
 
 

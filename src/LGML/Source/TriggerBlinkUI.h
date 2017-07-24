@@ -18,20 +18,25 @@ Author:  bkupe
 */
 
 
-#include "TriggerUI.h"
+#include "ParameterUI.h"
 
-class TriggerBlinkUI : public TriggerUI, public Timer
+class Trigger;
+
+class TriggerBlinkUI : public ParameterUI, public Timer
 {
 public:
     TriggerBlinkUI(Trigger * t);
     virtual ~TriggerBlinkUI();
 
+  
     void paint(Graphics&)override;
     void mouseDown(const MouseEvent& event)override;
-    void triggerTriggered(const Trigger * p) override;
     void startBlink();
     void timerCallback()override;
-    void setTriggerReference(Trigger * t);
+    Trigger * getTrigger();
+
+    void valueChanged(const var & )override;
+
     float intensity;
 
 	bool animateIntensity;

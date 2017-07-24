@@ -56,7 +56,7 @@ void DummyNodeContentUI::init()
 	pySlider = dummyNode->pyParam->createSlider();
 	addAndMakeVisible(pySlider);
 
-    testTriggerButton = dummyNode->testTrigger->createButtonUI();
+    testTriggerButton = dummyNode->testTrigger->createDefaultUI();
     addAndMakeVisible(testTriggerButton);
 
 	modeUI = dummyNode->enumParam->createUI();

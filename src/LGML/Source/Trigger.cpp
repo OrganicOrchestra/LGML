@@ -10,24 +10,20 @@
 
 #include "Trigger.h"
 
-#include "TriggerButtonUI.h"
 #include "TriggerBlinkUI.h"
 
 #include "JsHelpers.h"
 
+
+const var Trigger::triggerVar;
+
 Trigger::Trigger(const String & niceName, const String &description, bool enabled) :
-Controllable(TRIGGER, niceName, description, enabled),
-isTriggering(false),
-queuedNotifier(2)
+Parameter(TRIGGER, niceName, description, enabled,false,false,true),
+isTriggering(false)
 {
   Controllable::isSavable = false;
 }
 
-TriggerButtonUI * Trigger::createButtonUI(Trigger * target)
-{
-	if (target == nullptr) target = this;
-    return new TriggerButtonUI(target);
-}
 
 TriggerBlinkUI * Trigger::createBlinkUI(Trigger * target)
 {
@@ -48,7 +44,7 @@ DynamicObject * Trigger::createDynamicObject()
 	return dObject;
 }
 void Trigger::setFromVarObject(DynamicObject & ob){
-
+  jassertfalse;
 }
 
 var Trigger::getVarObject(){
@@ -56,5 +52,7 @@ var Trigger::getVarObject(){
   return res;
 }
 var Trigger::getVarState(){
+  // isSavable should be false
+  jassertfalse;
   return var::undefined();
 }

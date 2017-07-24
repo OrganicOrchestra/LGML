@@ -31,28 +31,34 @@ public:
 };
 
 
-class ControllableChooser : public TextButton, public ButtonListener
+class ControllableReferenceUI : public TextButton, public ButtonListener
 {
 public :
-	ControllableChooser(ControllableContainer * rootContainer = nullptr);
-	virtual ~ControllableChooser();
+	ControllableReferenceUI(ControllableContainer * rootContainer = nullptr);
+	virtual ~ControllableReferenceUI();
 
-	ControllableContainer * rootContainer;
+	WeakReference<ControllableContainer> rootContainer;
 
-	Controllable * currentControllable;
+	WeakReference<Controllable> currentControllable;
 	void setCurrentControllale(Controllable * c);
+
+  void paintOverChildren(Graphics &g)override;
+
+  void setHovered(bool b);
+
+  bool isDragCandidate;
 
 	class  Listener
 	{
 	public:
 		/** Destructor. */
 		virtual ~Listener() {}
-		virtual void choosedControllableChanged(Controllable *) {};
+		virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) {};
 	};
 
 	ListenerList<Listener> listeners;
-	void addControllableChooserListener(Listener* newListener) { listeners.add(newListener); }
-	void removeControllableChooserListener(Listener* listener) { listeners.remove(listener); }
+	void addControllableReferenceUIListener(Listener* newListener) { listeners.add(newListener); }
+	void removeControllableReferenceUIListener(Listener* listener) { listeners.remove(listener); }
 
 	virtual void buttonClicked(Button * b) override;
 };

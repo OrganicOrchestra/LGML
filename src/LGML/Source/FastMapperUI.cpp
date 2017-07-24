@@ -64,8 +64,8 @@ void FastMapperUI::setViewFilter(ControllableContainer * filterContainer)
 bool FastMapperUI::mapPassViewFilter(FastMap * f)
 {
 	if (viewFilterContainer == nullptr) return true;
-	if (f->reference->currentVariable != nullptr && (ControllableContainer *)f->reference->currentVariable->controller == viewFilterContainer) return true;
-	if (f->target != nullptr && viewFilterContainer->containsControllable(f->target)) return true;
+//	if (f->reference.get() != nullptr && (ControllableContainer *)f->reference.->controller == viewFilterContainer) return true;
+	if (f->referenceOut.get() != nullptr && viewFilterContainer->containsControllable(f->referenceOut.get())) return true;
 
 	return false;
 }
@@ -120,15 +120,21 @@ void FastMapperUI::mouseDown(const MouseEvent & e)
 		}
 	}
 }
+class tst : CallbackMessage{
+  
+};
 
 void FastMapperUI::fastMapAdded(FastMap *f )
 {
-	addFastMapUI(f);
-	resized();
+  MessageManager::callAsync([this,f] (){ addFastMapUI(f);resized();});
+//	addFastMapUI(f);
+//	resized();
 }
 
 void FastMapperUI::fastMapRemoved(FastMap *f)
 {
+  MessageManager::callAsync([this,f] (){
 	removeFastMapUI(f);
 	resized();
+});
 }

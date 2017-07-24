@@ -21,7 +21,6 @@ class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
 public Parameter::Listener,
-public Trigger::Listener ,
 public ControllableContainerListener
 
 {
@@ -116,7 +115,6 @@ public:
 
   protected :
   Array<WeakReference<Parameter> > listenedParameters;
-  Array<WeakReference<Trigger> > listenedTriggers;
   Array<WeakReference<ControllableContainer> > listenedContainers;
   void sendAllParametersToJS();
 
@@ -220,7 +218,7 @@ private:
   void clearListeners();
   Result checkUserControllableEventFunction();
   void parameterValueChanged(Parameter * c) override;
-  void triggerTriggered(Trigger * p) override;
+
 
   void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *)     override;
   void childStructureChanged(ControllableContainer *,ControllableContainer *) override;
@@ -240,23 +238,18 @@ private:
 
 
 //
-class JsControllableListenerObject:public Parameter::AsyncListener,public Trigger::AsyncListener
+class JsControllableListenerObject:public Parameter::AsyncListener
 {
   public :
-  JsControllableListenerObject(JsEnvironment * js,Controllable * p):jsEnv(js),controllable(p){
+  JsControllableListenerObject(JsEnvironment * js,Parameter * p):jsEnv(js),parameter(p){
     buildVarObject();
 
     if(Parameter * pp = getParameter()){
-      isTrigger = false;
       pp->addAsyncParameterListener(this);
-    }
-    else if(Trigger * tt = getTrigger()){
-      isTrigger = true;
-      tt->addAsyncTriggerListener(this);
     }
 
     else{
-      NLOG(js->localNamespace,"wrong Parameter Listener type for : "+controllable->shortName);
+      NLOG(js->localNamespace,"wrong Parameter Listener type for : "+parameter->shortName);
     }
   }
   static Identifier parameterChangedFId;
@@ -264,16 +257,15 @@ class JsControllableListenerObject:public Parameter::AsyncListener,public Trigge
 
   virtual ~JsControllableListenerObject(){
     if(Parameter * pp = getParameter()) pp->removeAsyncParameterListener(this);
-    if(Trigger * tt = getTrigger()) tt->removeAsyncTriggerListener(this);
   };
 
-  Parameter * getParameter(){ return dynamic_cast<Parameter*>(controllable.get());}
-  Trigger * getTrigger(){ return dynamic_cast<Trigger*>(controllable.get());}
+  Parameter * getParameter(){ return dynamic_cast<Parameter*>(parameter.get());}
+  Trigger * getTrigger(){ return dynamic_cast<Trigger*>(parameter.get());}
   void buildVarObject(){
     object= new DynamicObject();
-    if(controllable.get()){
+    if(parameter.get()){
       DynamicObject * dob = object.getDynamicObject();
-      dob->setProperty(parameterObjectId, controllable->createDynamicObject());
+      dob->setProperty(parameterObjectId, parameter->createDynamicObject());
       dob->setMethod(parameterChangedFId,&JsControllableListenerObject::dummyCallback);
 
     }
@@ -290,13 +282,9 @@ class JsControllableListenerObject:public Parameter::AsyncListener,public Trigge
 
   };
 
-  void newMessage(const WeakReference<Trigger> & )override
-  {
-    jsEnv->callFunctionFromIdentifier(parameterChangedFId, var::NativeFunctionArgs(object,nullptr,0), true);
-  }
 
   JsEnvironment* jsEnv;
-  WeakReference<Controllable> controllable;
+  WeakReference<Parameter> parameter;
   bool isTrigger;
   var object;
 };

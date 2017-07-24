@@ -17,14 +17,14 @@
 class ParameterProxyUI :
 	public ParameterUI,
 	public ParameterProxy::ParameterProxyListener,
-	public ControllableChooser::Listener,
+	public ControllableReferenceUI::Listener,
 	public ButtonListener
 {
 public:
 	ParameterProxyUI(ParameterProxy * proxy);
 	virtual ~ParameterProxyUI();
 
-	ControllableChooser chooser;
+	ControllableReferenceUI chooser;
 
 	ParameterProxy * paramProxy;
 	ScopedPointer<StringParameterUI> aliasParam;
@@ -38,7 +38,7 @@ public:
 	void buttonClicked(Button * b)override;
 
 	virtual void linkedParamChanged(Parameter * c) override;
-	virtual void choosedControllableChanged(Controllable * c) override;
+	virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable * c) override;
 
 	virtual void controllableNameChanged(Controllable * c) override;
 

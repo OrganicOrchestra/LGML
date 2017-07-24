@@ -15,12 +15,12 @@
 
 
 FastMap::FastMap() :
-	reference(nullptr),
-	target(nullptr),
+	referenceIn(nullptr),
+	referenceOut(nullptr),
 	ControllableContainer("FastMap")
 {
-	reference = new ControlVariableReference();
-	reference->addReferenceListener(this);
+//	reference = new ControlVariableReference();
+//	referenceIn.get()->addReferenceListener(this);
 
 	enabledParam = addBoolParameter("Enabled", "Enabled / Disable Fast Map", true);
 
@@ -47,23 +47,25 @@ FastMap::~FastMap()
 void FastMap::process()
 {
 	if (!enabledParam->boolValue()) return;
+  if(!referenceIn.get() || !referenceOut.get()) return;
 
-	float sourceVal = (float)reference->getValue();
-	if (target == nullptr) return;
+  auto inRef = dynamic_cast<Parameter*>(referenceIn.get());
+  if(inRef){
+	float sourceVal = (float)inRef->value;
 
 	bool newIsInRange = (sourceVal > minInputVal->floatValue() && sourceVal <= maxInputVal->floatValue());
 
 	if (invertParam->boolValue()) newIsInRange = !newIsInRange;
 
-	if (target->type == Controllable::TRIGGER)
+	if (referenceOut.get()->type == Controllable::TRIGGER)
 	{
-		if (newIsInRange != isInRange && newIsInRange) ((Trigger*)target)->trigger();
+		if (newIsInRange != isInRange && newIsInRange) ((Trigger*)referenceOut.get())->trigger();
 	}
 	else
 	{
-		if (target->type == Controllable::BOOL)
+		if (referenceOut.get()->type == Controllable::BOOL)
 		{
-			((BoolParameter *)target)->setValue(newIsInRange);
+			((BoolParameter *)referenceOut.get())->setValue(newIsInRange);
 		}else
 		{
 			if (minOutputVal->floatValue() < maxOutputVal->floatValue())
@@ -71,31 +73,32 @@ void FastMap::process()
 				float targetVal = juce::jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
 				targetVal = juce::jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(), targetVal);
 				if (invertParam->boolValue()) targetVal = maxOutputVal->floatValue() - (targetVal - minOutputVal->floatValue());
-				((Parameter *)target)->setNormalizedValue(targetVal);
+				((Parameter *)referenceOut.get())->setNormalizedValue(targetVal);
 			}
 		}
 	}
 
 	isInRange = newIsInRange;
+  }
 }
 
-void FastMap::setReference(ControlVariableReference * r)
+void FastMap::setReference(Controllable * r)
 {
-	if (reference == r) return;
-	if (reference != nullptr)
+	if (referenceIn == r) return;
+	if (referenceIn != nullptr)
 	{
-		reference->removeReferenceListener(this);
+		referenceIn.get()->removeControllableListener(this);
 	}
-	reference = r;
-	if (reference != nullptr)
+	referenceIn = r;
+	if (referenceIn != nullptr)
 	{
-		reference->addReferenceListener(this);
+		referenceIn.get()->addControllableListener(this);
 		
 		float normMin = minInputVal->getNormalizedValue();
 		float normMax = maxInputVal->getNormalizedValue();
-		minInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
-		maxInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
-		
+//		minInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
+//		maxInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
+//		
 		minInputVal->setNormalizedValue(normMin);
 		maxInputVal->setNormalizedValue(normMax);
 		
@@ -107,17 +110,17 @@ void FastMap::setReference(ControlVariableReference * r)
 void FastMap::setTarget(Controllable * c)
 {
 
-	if (target == c) return;
+	if (referenceOut == c) return;
 
-	if (target != nullptr)
+	if (referenceOut != nullptr)
 	{
-		target->removeControllableListener(this);
+		referenceOut.get()->removeControllableListener(this);
 	}
-	target = c;
+	referenceOut = c;
 
-	if (target != nullptr)
+	if (referenceOut != nullptr)
 	{
-		target->addControllableListener(this);
+		referenceOut.get()->addControllableListener(this);
 	}
 
 	fastMapListeners.call(&FastMapListener::fastMapTargetChanged, this);
@@ -134,14 +137,14 @@ void FastMap::setGhostAddress(const String & address)
 var FastMap::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
-	if (reference != nullptr)
+	if (referenceIn != nullptr)
 	{
-		data.getDynamicObject()->setProperty("reference", reference->getJSONData());
+//		data.getDynamicObject()->setProperty("reference", referenceIn.get()->getJSONData());
 	}
 
-	if (target != nullptr)
+	if (referenceOut != nullptr)
 	{
-		data.getDynamicObject()->setProperty("target", target->getControlAddress()); //Need to be global
+		data.getDynamicObject()->setProperty("target", referenceOut.get()->getControlAddress()); //Need to be global
 		setGhostAddress(String::empty);
 	}
 
@@ -152,7 +155,7 @@ void FastMap::loadJSONDataInternal(var data)
 {
 	if (data.getDynamicObject()->hasProperty("reference"))
 	{
-		reference->loadJSONData(data.getDynamicObject()->getProperty("reference"));
+//		referenceIn.get()->loadJSONData(data.getDynamicObject()->getProperty("reference"));
 	}
 
 	if (data.getDynamicObject()->hasProperty("target"))
@@ -174,37 +177,33 @@ void FastMap::remove()
 void FastMap::childStructureChanged(ControllableContainer *, ControllableContainer *)
 {
 	
-	if (ghostAddress.isNotEmpty() && target == nullptr)
+	if (ghostAddress.isNotEmpty() && referenceOut.get() == nullptr)
 	{
+    // shouldn't use that
+    jassertfalse;
 		if (NodeManager::getInstanceWithoutCreating() == nullptr) return;
 		Controllable * c = NodeManager::getInstance()->getControllableForAddress(ghostAddress);
 		if (c != nullptr) setTarget(c);
 	}
 }
 
-void FastMap::referenceValueChanged(ControlVariableReference *)
-{
-	process();
-}
 
-void FastMap::referenceVariableChanged(ControlVariableReference *)
-{
-	float normMin = minInputVal->getNormalizedValue();
-	float normMax = maxInputVal->getNormalizedValue();
+void FastMap::parameterValueChanged(Parameter * p){
+  if(referenceIn && referenceOut){
+  if(p==referenceIn){
+    process();
+    return;
+  }
+  }
+  ControllableContainer::parameterValueChanged(p);
 
-	if (reference->currentVariable != nullptr)
-	{
-		minInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
-		maxInputVal->setRange(reference->currentVariable->parameter->minimumValue, reference->currentVariable->parameter->maximumValue);
-		minInputVal->setNormalizedValue(normMin);
-		maxInputVal->setNormalizedValue(normMax);
-	}
+
 
 }
 
 void FastMap::controllableRemoved(Controllable * c)
 {
-	if (c == target)
+	if (c == referenceOut)
 	{
 		setTarget(nullptr);
 	}
