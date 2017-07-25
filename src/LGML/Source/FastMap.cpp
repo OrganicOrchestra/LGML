@@ -94,8 +94,10 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
 
   if (p==referenceIn )
   {
-    if(p==referenceOut){
+    if(p->linkedParam==referenceOut->linkedParam){
       LOG("Can't map a parameter to itself");
+      // ignore assert for loopBacks
+      referenceIn->isSettingValue=false;
       referenceIn->setParamToReferTo(nullptr);
     }
     else{
@@ -111,8 +113,10 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
 
   }
   else if(p==referenceOut){
-    if(p==referenceIn){
+    if(p->linkedParam==referenceIn->linkedParam){
       LOG("Can't map a parameter to itself");
+      // ignore assert for loopBacks
+      referenceOut->isSettingValue=false;
       referenceOut->setParamToReferTo(nullptr);
     }
     

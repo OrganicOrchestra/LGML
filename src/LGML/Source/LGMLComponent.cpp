@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    LGMLComponent.cpp
-    Created: 20 Jul 2017 8:58:32am
-    Author:  Martin Hermant
+ LGMLComponent.cpp
+ Created: 20 Jul 2017 8:58:32am
+ Author:  Martin Hermant
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "LGMLComponent.h"
 
@@ -15,7 +15,7 @@
 
 
 
-LGMLComponent::LGMLComponent(bool _isDraggable):isDraggable(_isDraggable),isMappingDest(false){
+LGMLComponent::LGMLComponent(bool _isDraggable,bool _isMappingDest):isDraggable(_isDraggable),isMappingDest(_isMappingDest){
   clearElement();
 
   if(LGMLDragger::getInstance()->isMappingActive){
@@ -24,6 +24,18 @@ LGMLComponent::LGMLComponent(bool _isDraggable):isDraggable(_isDraggable),isMapp
   else{
     mappingState=NOMAP;
   }
+}
+
+LGMLComponent::~LGMLComponent(){
+  LGMLDragger::getInstance()->unRegisterDragCandidate(this);
+}
+
+void LGMLComponent::setMappingDest(bool _isMappingDest){
+  isMappingDest = _isMappingDest;
+  if(mappingState!=NOMAP){
+    mappingState = isMappingDest?MAPDEST:MAPSOURCE;
+  }
+
 }
 
 void LGMLComponent::setLGMLElement(Controllable * c){
@@ -40,12 +52,13 @@ void LGMLComponent::setLGMLElement(ControllableContainer * c){
 }
 
 void LGMLComponent::clearElement(){
-controllable = nullptr;
+  controllable = nullptr;
   container = nullptr;
   type = NONE;
 }
 
-void  LGMLComponent::setMappingState(const MappingState  s){
+void  LGMLComponent::setMappingState(const bool  b){
+  MappingState s = b?(isMappingDest?MAPDEST:MAPSOURCE):NOMAP;
   if(s!=mappingState){
     if(s==NOMAP){setInterceptsMouseClicks(true, true);}
     else{setInterceptsMouseClicks(true, false);}
@@ -71,20 +84,22 @@ void LGMLComponent::paintOverChildren(Graphics &g) {
       jassert(isMappingDest);
       g.setColour(Colours::red.withAlpha(0.5f));
     }
-  g.fillAll();
+    g.fillAll();
   }
 }
+
 void LGMLComponent::mouseEnter(const MouseEvent &e){
   Component::mouseEnter(e);
   if(!isMappingDest && mappingState==MAPSOURCE && isDraggable){
-    LGMLDragger::getInstance()->registerForDrag(this);
+    LGMLDragger::getInstance()->registerDragCandidate(this);
   }
-};
+}
+
 void LGMLComponent::mouseExit(const MouseEvent &e){
   Component::mouseExit(e);
-if(!isMappingDest && mappingState==MAPSOURCE && isDraggable && !contains(e.getEventRelativeTo(this).getPosition())){
-  LGMLDragger::getInstance()->unRegisterForDrag(this);
-  repaint();
-}
+  if(!isMappingDest && mappingState==MAPSOURCE && isDraggable && !contains(e.getEventRelativeTo(this).getPosition())){
+    LGMLDragger::getInstance()->unRegisterDragCandidate(this);
+    repaint();
+  }
 };
 

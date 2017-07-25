@@ -54,7 +54,7 @@ void Parameter::setValue(var _value, bool silentSet, bool force,bool defferIt)
 void Parameter::tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt){
 
   if (!force && checkValueIsTheSame(_value, value)) return;
-  jassert(isSettingValue==false);
+  jassert(force ||isSettingValue==false);
   isSettingValue = true;
   lastValue = var(value);
   setValueInternal(_value);

@@ -29,8 +29,8 @@ public:
   Component * mainComp;
   TooltipWindow * tip;
 
-  void registerForDrag(LGMLComponent * c);
-  void unRegisterForDrag(LGMLComponent * c);
+  void registerDragCandidate(LGMLComponent * c);
+  void unRegisterDragCandidate(LGMLComponent * c);
 
 
 
@@ -40,12 +40,12 @@ public:
 
 
 
-  ScopedPointer<DraggedComponent> dragged;
+  ScopedPointer<DraggedComponent> dragCandidate;
   void setMappingActive(bool isActive);
   void toggleMappingMode();
   bool isMappingActive;
 
-  Component*  target;
+  Component*  dropCandidate;
 private:
   Point<int> mouseDownWithinTarget;
 

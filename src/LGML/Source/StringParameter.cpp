@@ -23,7 +23,7 @@ void StringParameter::tryToSetValue(var _value,bool silentSet,bool force,bool de
 
 
   if (!force && value.toString() == _value.toString()) return;
-  jassert(isSettingValue==false);
+  jassert(force ||isSettingValue==false);
   isSettingValue = true;
   setValueInternal(_value);
 

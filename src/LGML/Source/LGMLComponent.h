@@ -14,12 +14,12 @@
 class ControllableContainer;
 class Controllable;
 
-// this class is virtual to allow double inheritance of Component e.g use with inspectable component
+// this class is virtual to allow double inheritance of Component e.g use with InspectableComponent in OutlinerComponent
 // TODO check if we can/want merge
 class LGMLComponent : public virtual Component{
 public:
-  LGMLComponent(bool isDraggable = true);
-  
+  LGMLComponent(bool isDraggable = true,bool _isMappingDest=false);
+  virtual ~LGMLComponent();
   void setLGMLElement(Controllable * c);
   void setLGMLElement(ControllableContainer * c);
   void clearElement();
@@ -28,10 +28,9 @@ public:
     MAPSOURCE,
     MAPDEST
   };
-  MappingState mappingState;
-  bool isMappingDest;
-  void setMappingState(const MappingState  s);
-  
+
+  void setMappingState(const bool  s);
+  void setMappingDest(bool _isMappingDest);
   enum LGMLType {
     NONE,
     CONTROLLABLE,
@@ -45,6 +44,9 @@ public:
   virtual void mouseEnter(const MouseEvent &e)override;
   virtual void mouseExit(const MouseEvent &e)override;
   virtual void paintOverChildren(Graphics &g) override;
+  bool isMappingDest;
   
+private:
+  MappingState mappingState;
 
 };

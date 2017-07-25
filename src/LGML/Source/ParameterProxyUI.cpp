@@ -14,12 +14,13 @@
 #include "ParameterUIFactory.h"
 
 ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
-	linkedParamUI(nullptr),
+  linkedParamUI(nullptr),
 	ParameterUI(proxy),
 	paramProxy(proxy),
 	chooser(proxy->parentContainer->parentContainer)
+
 {
-  LGMLComponent::isMappingDest = true;
+  setMappingDest(true);
 	chooser.addControllableReferenceUIListener(this);
 	addAndMakeVisible(&chooser);
 	paramProxy->addParameterProxyListener(this);

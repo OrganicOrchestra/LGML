@@ -143,11 +143,13 @@ void FastMapperUI::controllableContainerRemoved(ControllableContainer*ori,Contro
 {
   if(ori==fastMapper){
 
-    FastMapUI * fui = getUIForFastMap((FastMap*)cc);
-    if(fui){
+    WeakReference<Component> fui (getUIForFastMap((FastMap*)cc));
+    if(fui.get()){
       MessageManager::callAsync([this,fui] (){
-        removeFastMapUI(fui);
-        resized();
+        if(fui.get()){
+          removeFastMapUI(dynamic_cast<FastMapUI*>(fui.get()));
+          resized();
+        }
       });
     }
   }

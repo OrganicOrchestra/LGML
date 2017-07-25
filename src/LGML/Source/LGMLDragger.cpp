@@ -100,7 +100,8 @@ LGMLDragger::~LGMLDragger(){
 
 }
 void LGMLDragger::setMainComponent(Component * c,TooltipWindow * _tip){
-  target = nullptr;
+  dragCandidate = nullptr;
+  dropCandidate=nullptr;
   mainComp = c;
   tip = _tip;
   mainComp->addMouseListener(this, true);
@@ -109,26 +110,23 @@ void LGMLDragger::setMainComponent(Component * c,TooltipWindow * _tip){
 
 
 
-void LGMLDragger::registerForDrag(LGMLComponent * c){
-    unRegisterForDrag(nullptr);
+void LGMLDragger::registerDragCandidate(LGMLComponent * c){
+//    unRegisterForDrag(nullptr);
 
-  dragged = new DraggedComponent(c);
+  dragCandidate = new DraggedComponent(c);
 //    tip->setMillisecondsBeforeTipAppears(99999999);
-  mainComp->addAndMakeVisible(dragged);
-  dragged->toFront(false);
+  mainComp->addAndMakeVisible(dragCandidate);
+  dragCandidate->toFront(false);
 
 }
 
-void LGMLDragger::unRegisterForDrag(LGMLComponent * c){
-
-  jassert(dragged==nullptr || c==nullptr || c==dragged->originComp);
-  if(target){
-    target->setAlpha(1);
+void LGMLDragger::unRegisterDragCandidate(LGMLComponent * c){
+  dragCandidate = nullptr;
+  if(dropCandidate){
+    dropCandidate->setAlpha(1);
   }
-  dragged = nullptr;
-  target=nullptr;
-
-  tip->setMillisecondsBeforeTipAppears();
+  dropCandidate=nullptr;
+//  tip->setMillisecondsBeforeTipAppears();
 
 
 }
@@ -138,7 +136,7 @@ void setAllComponentMappingState(Component * c,bool b){
     Component *  ch = c->getChildComponent(i);
     if(ch->isVisible()){
       if(auto lch = dynamic_cast<LGMLComponent*>(ch)){
-        lch->setMappingState(b?(lch->isMappingDest?LGMLComponent::MAPDEST:LGMLComponent::MAPSOURCE):LGMLComponent::NOMAP);
+        lch->setMappingState(b);
 
       }
 
@@ -151,7 +149,7 @@ void LGMLDragger::setMappingActive(bool b){
   isMappingActive = b;
   setAllComponentMappingState(mainComp, b);
   if(!b){
-    unRegisterForDrag(nullptr);
+    unRegisterDragCandidate(nullptr);
   }
 
 
@@ -200,24 +198,24 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
     // juce still return child of component that doesn't allow click on child
     if(curComp)curComp=curComp->getParentComponent();
     auto curTarget = dynamic_cast<LGMLComponent*> (curComp);
-    if(curTarget!=target && (!curTarget ||curTarget->isMappingDest)){
-      if(target){target->setAlpha(1);}
-      target = curTarget;
-      if(target){
+    if(curTarget!=dropCandidate && (!curTarget ||curTarget->isMappingDest)){
+      if(dropCandidate){dropCandidate->setAlpha(1);}
+      dropCandidate = curTarget;
+      if(dropCandidate){
         DBG(curTarget->getName());
-        target->setAlpha(0.5);
+        dropCandidate->setAlpha(0.5);
       }
     }
   }
 }
 void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseEvent & e){
 //  jassert(!target || componentToDrag==target);
-  auto target_C = dynamic_cast<ParameterProxyUI*>(target);
-  jassert(!target || target_C);
-  if(target){
-    target_C->paramProxy->setParamToReferTo(dragged->originComp->controllable->getParameter());
+  auto target_C = dynamic_cast<ParameterProxyUI*>(dropCandidate);
+  jassert(!dropCandidate || target_C);
+  if(dropCandidate){
+    target_C->paramProxy->setParamToReferTo(dragCandidate->originComp->controllable->getParameter());
   }
-  unRegisterForDrag(nullptr);
+  unRegisterDragCandidate(nullptr);
 }
 
 
