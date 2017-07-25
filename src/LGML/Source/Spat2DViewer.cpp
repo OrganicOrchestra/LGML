@@ -231,12 +231,12 @@ void Spat2DViewer::dataInputRemoved(ConnectableNode *, Data *)
 	updateNumSources();
 }
 
-void Spat2DViewer::controllableAdded(Controllable * c)
+void Spat2DViewer::controllableAdded(ControllableContainer *,Controllable * c)
 {
 	if (c->type == Controllable::POINT2D) updateNumTargets();
 }
 
-void Spat2DViewer::controllableRemoved(Controllable * c)
+void Spat2DViewer::controllableRemoved(ControllableContainer *,Controllable * c)
 {
 	if (c->type == Controllable::POINT2D) updateNumTargets();
 }

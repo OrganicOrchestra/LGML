@@ -1,141 +1,154 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    FastMapperUI.cpp
-    Created: 17 May 2016 6:05:39pm
-    Author:  bkupe
+ FastMapperUI.cpp
+ Created: 17 May 2016 6:05:39pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "FastMapperUI.h"
+#include "FastMapper.h"
 
 FastMapperUI::FastMapperUI(FastMapper * _fastMapper, ControllableContainer * _viewFilterContainer) :
-	fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
+fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
 {
-	fastMapper->addFastMapperListener(this);
-
-	resetAndUpdateView();
+  fastMapper->addControllableContainerListener(this);
+  resetAndUpdateView();
 }
 
 FastMapperUI::~FastMapperUI()
 {
-	fastMapper->removeFastMapperListener(this);
-	clear();
+  clear();
 
 }
 
 void FastMapperUI::addFastMapUI(FastMap * f)
 {
-	FastMapUI * fui = new FastMapUI(f);
-	mapsUI.add(fui);
-	addAndMakeVisible(fui);
-	fastMapperUIListeners.call(&FastMapperUIListener::fastMapperContentChanged,this);
+  FastMapUI * fui = new FastMapUI(f);
+  mapsUI.add(fui);
+  addAndMakeVisible(fui);
+  fastMapperUIListeners.call(&FastMapperUIListener::fastMapperContentChanged,this);
 }
 
-void FastMapperUI::removeFastMapUI(FastMap * f)
+void FastMapperUI::removeFastMapUI(FastMapUI * fui)
 {
-	FastMapUI * fui = getUIForFastMap(f);
-	if (fui == nullptr) return;
 
-	removeChildComponent(fui);
-	mapsUI.removeObject(fui);
+  if (fui == nullptr) return;
 
-	fastMapperUIListeners.call(&FastMapperUIListener::fastMapperContentChanged, this);
+  removeChildComponent(fui);
+  mapsUI.removeObject(fui);
+
+  fastMapperUIListeners.call(&FastMapperUIListener::fastMapperContentChanged, this);
 }
 
 
 void FastMapperUI::resetAndUpdateView()
 {
-	removeAllChildren();
-	mapsUI.clear();
-	for (auto &f : fastMapper->maps)
-	{
-		if (mapPassViewFilter(f)) addFastMapUI(f);
-	}
+  removeAllChildren();
+  mapsUI.clear();
+  for (auto &f : fastMapper->maps)
+  {
+    if (mapPassViewFilter(f)) addFastMapUI(f);
+  }
 }
 
 void FastMapperUI::setViewFilter(ControllableContainer * filterContainer)
 {
-	viewFilterContainer = filterContainer;
-	resetAndUpdateView();
+  viewFilterContainer = filterContainer;
+  resetAndUpdateView();
 }
 
 bool FastMapperUI::mapPassViewFilter(FastMap * f)
 {
-	if (viewFilterContainer == nullptr) return true;
-//	if (f->reference.get() != nullptr && (ControllableContainer *)f->reference.->controller == viewFilterContainer) return true;
-	if (f->referenceOut->get() != nullptr && viewFilterContainer->containsControllable(f->referenceOut->get())) return true;
 
-	return false;
+  if (viewFilterContainer == nullptr) return true;
+  //	if (f->reference.get() != nullptr && (ControllableContainer *)f->reference.->controller == viewFilterContainer) return true;
+  if (f->referenceOut->get() != nullptr && viewFilterContainer->containsControllable(f->referenceOut->get())) return true;
+
+  return false;
 }
 
 
 
 FastMapUI * FastMapperUI::getUIForFastMap(FastMap *f)
 {
-	for (auto &fui : mapsUI)
-	{
-		if (fui->fastMap == f) return fui;
-	}
+  for (auto &fui : mapsUI)
+  {
+    if (fui->fastMap == f) return fui;
+  }
 
-	return nullptr;
+  return nullptr;
 }
 
 int FastMapperUI::getContentHeight()
 {
-	return mapsUI.size() * (mapHeight + gap) + 4;
+  return mapsUI.size() * (mapHeight + gap) + 4;
 }
 
 void FastMapperUI::resized()
 {
-	Rectangle<int> r = getLocalBounds().reduced(2);
-	for (auto & fui : mapsUI)
-	{
-		fui->setBounds(r.removeFromTop(mapHeight));
-		r.removeFromTop(gap);
-	}
+  Rectangle<int> r = getLocalBounds().reduced(2);
+  for (auto & fui : mapsUI)
+  {
+    fui->setBounds(r.removeFromTop(mapHeight));
+    r.removeFromTop(gap);
+  }
 }
 
 void FastMapperUI::clear()
 {
-	while (mapsUI.size() > 0)
-	{
-		removeFastMapUI(mapsUI[0]->fastMap);
-	}
+  while (mapsUI.size() > 0)
+  {
+    removeFastMapUI(mapsUI[0]);
+  }
 }
 
 void FastMapperUI::mouseDown(const MouseEvent & e)
 {
-	if (e.mods.isRightButtonDown())
-	{
-		PopupMenu m;
-		m.addItem(1, "Add Fast Map");
-		int result = m.show();
-		switch (result)
-		{
-		case 1:
-			fastMapper->addFastMap();
-			break;
-		}
-	}
+  if (e.mods.isRightButtonDown())
+  {
+    PopupMenu m;
+    m.addItem(1, "Add Fast Map");
+    int result = m.show();
+    switch (result)
+    {
+      case 1:
+        fastMapper->addFastMap();
+        break;
+    }
+  }
 }
 class tst : CallbackMessage{
-  
+
 };
 
-void FastMapperUI::fastMapAdded(FastMap *f )
+void FastMapperUI::controllableContainerAdded(ControllableContainer* ori,ControllableContainer * cc)
 {
-  WeakReference<ControllableContainer> wf(f);
-  MessageManager::callAsync([this,wf] (){if(wf.get()){ addFastMapUI((FastMap*)wf.get());resized();}});
-//	addFastMapUI(f);
-//	resized();
+  if(ori==fastMapper){
+
+    WeakReference<ControllableContainer> wf(cc);
+    MessageManager::callAsync([this,wf] (){
+      if(wf.get()){
+        addFastMapUI((FastMap*)wf.get());
+        resized();}
+    });
+  }
+  //	addFastMapUI(f);
+  //	resized();
 }
 
-void FastMapperUI::fastMapRemoved(FastMap *f)
+void FastMapperUI::controllableContainerRemoved(ControllableContainer*ori,ControllableContainer *cc)
 {
-  MessageManager::callAsync([this,f] (){
-	removeFastMapUI(f);
-	resized();
-});
+  if(ori==fastMapper){
+
+    FastMapUI * fui = getUIForFastMap((FastMap*)cc);
+    if(fui){
+      MessageManager::callAsync([this,fui] (){
+        removeFastMapUI(fui);
+        resized();
+      });
+    }
+  }
 }

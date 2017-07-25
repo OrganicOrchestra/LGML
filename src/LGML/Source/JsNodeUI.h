@@ -32,8 +32,8 @@ public:
     OwnedArray<ControllableUI> varUI;
     void layoutUI();
 
-    void controllableAdded(Controllable *) override;
-    void controllableRemoved(Controllable *) override;
+    void controllableAdded(ControllableContainer *,Controllable *) override;
+    void controllableRemoved(ControllableContainer*,Controllable *) override;
 
 
 };

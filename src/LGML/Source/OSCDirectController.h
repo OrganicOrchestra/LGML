@@ -29,10 +29,10 @@ public:
 
 
     // Inherited via Listener
-    virtual void controllableAdded(Controllable * c) override;
-    virtual void controllableRemoved(Controllable * c) override;
-    virtual void controllableContainerAdded(ControllableContainer * cc) override;
-    virtual void controllableContainerRemoved(ControllableContainer * cc) override;
+    virtual void controllableAdded(ControllableContainer *,Controllable * c) override;
+    virtual void controllableRemoved(ControllableContainer *,Controllable * c) override;
+    virtual void controllableContainerAdded(ControllableContainer *,ControllableContainer * cc) override;
+    virtual void controllableContainerRemoved(ControllableContainer *,ControllableContainer * cc) override;
 
     virtual void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable * c) override;
 

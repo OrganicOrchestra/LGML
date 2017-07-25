@@ -15,6 +15,90 @@ juce_ImplementSingleton(LGMLDragger);
 
 #include "ParameterProxyUI.h"
 
+
+
+/////////////////////
+// DraggedComponent
+///////////////////
+
+class DraggedComponent : public Component{
+public:
+  DraggedComponent(LGMLComponent * c):originComp(c){
+    Rectangle<int > bounds = c->getScreenBounds();
+    bounds-=LGMLDragger::getInstance()->mainComp->getScreenBounds().getTopLeft();
+    draggedImage = c->createComponentSnapshot(c->getLocalBounds());
+    setBounds(bounds);
+    setOpaque(false);
+    setInterceptsMouseClicks(true, false);
+    isDragging = false;
+
+
+  }
+  ~DraggedComponent(){
+    removeMouseListener(this);
+  }
+
+
+  LGMLComponent * originComp;
+  Image draggedImage;
+  bool isDragging;
+  void mouseDrag(const MouseEvent & e)override{
+    LGMLDragger::getInstance()->dragComponent(this, e, nullptr);
+
+  }
+  void mouseDown(const MouseEvent &e)override{
+    isDragging = true;
+    LGMLDragger::getInstance()->startDraggingComponent(this, e);
+  }
+
+  void mouseExit(const MouseEvent &e)override{
+    if(isDragging){
+      isDragging = false;
+      if(!contains(e.getEventRelativeTo(this).getPosition())){
+        originComp->repaint();
+        LGMLDragger::getInstance()->endDraggingComponent(this,e);
+      }
+    }
+    //      else{originComp->mouseExit(e);}
+
+  }
+  void mouseUp(const MouseEvent &e)override{
+    if(isDragging){
+      LGMLDragger::getInstance()->endDraggingComponent(this,e);
+    }
+    isDragging = false;
+    originComp->repaint();
+
+  }
+  void paint(Graphics &g) override{
+    g.drawImage( draggedImage, getLocalBounds().toFloat());
+    g.setColour(Colours::white);
+    g.drawFittedText(originComp->getName(), getLocalBounds(), Justification::centred, 2);
+  }
+  void paintOverChildren(Graphics &g) override{
+
+    g.setColour(Colours::green.withAlpha(0.5f));
+    g.fillAll();
+  }
+
+  bool hitTest(int x,int y)override{
+    return !isDragging;
+  }
+  
+};
+
+
+
+
+////////////////////
+// LGMLDragger
+///////////////
+LGMLDragger::LGMLDragger(){
+
+}
+LGMLDragger::~LGMLDragger(){
+
+}
 void LGMLDragger::setMainComponent(Component * c,TooltipWindow * _tip){
   target = nullptr;
   mainComp = c;
@@ -38,8 +122,12 @@ void LGMLDragger::registerForDrag(LGMLComponent * c){
 void LGMLDragger::unRegisterForDrag(LGMLComponent * c){
 
   jassert(dragged==nullptr || c==nullptr || c==dragged->originComp);
+  if(target){
+    target->setAlpha(1);
+  }
   dragged = nullptr;
   target=nullptr;
+
   tip->setMillisecondsBeforeTipAppears();
 
 
@@ -50,17 +138,21 @@ void setAllComponentMappingState(Component * c,bool b){
     Component *  ch = c->getChildComponent(i);
     if(ch->isVisible()){
       if(auto lch = dynamic_cast<LGMLComponent*>(ch)){
-        lch->setIsMapping(b);
+        lch->setMappingState(b?(lch->isMappingDest?LGMLComponent::MAPDEST:LGMLComponent::MAPSOURCE):LGMLComponent::NOMAP);
+
       }
-      else{
+
         setAllComponentMappingState(ch, b);
-      }
+      
     }
   }
 }
 void LGMLDragger::setMappingActive(bool b){
   isMappingActive = b;
   setAllComponentMappingState(mainComp, b);
+  if(!b){
+    unRegisterForDrag(nullptr);
+  }
 
 
 }
@@ -104,9 +196,11 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
       constrainer->setBoundsForComponent (componentToDrag, bounds, false, false, false, false);
     else
       componentToDrag->setBounds (bounds);
-
-    auto curTarget = dynamic_cast<ParameterProxyUI*> (mainComp->getComponentAt(e.getEventRelativeTo(mainComp).getPosition()));
-    if(curTarget!=target){
+    auto curComp = mainComp->getComponentAt(e.getEventRelativeTo(mainComp).getPosition());
+    // juce still return child of component that doesn't allow click on child
+    if(curComp)curComp=curComp->getParentComponent();
+    auto curTarget = dynamic_cast<LGMLComponent*> (curComp);
+    if(curTarget!=target && (!curTarget ||curTarget->isMappingDest)){
       if(target){target->setAlpha(1);}
       target = curTarget;
       if(target){
@@ -117,7 +211,7 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
   }
 }
 void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseEvent & e){
-  jassert(componentToDrag==target);
+//  jassert(!target || componentToDrag==target);
   auto target_C = dynamic_cast<ParameterProxyUI*>(target);
   jassert(!target || target_C);
   if(target){
@@ -125,3 +219,5 @@ void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseE
   }
   unRegisterForDrag(nullptr);
 }
+
+

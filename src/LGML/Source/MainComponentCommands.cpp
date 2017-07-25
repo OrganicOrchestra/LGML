@@ -330,7 +330,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
           {
             if (ic->inspectableType == "node") ((ConnectableNode *)cc)->remove();
             else if (ic->inspectableType == "controller") ((Controller *)cc)->remove();
-            else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
+//            else if (ic->inspectableType == "fastMap") ((FastMap *)cc)->remove();
           }
 
           SystemClipboard::copyTextToClipboard(JSON::toString(data));

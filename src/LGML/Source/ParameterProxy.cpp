@@ -23,7 +23,8 @@ isUpdatingLinkedParam(false)
 
 ParameterProxy::~ParameterProxy()
 {
-  setParamToReferTo(nullptr);
+  if(auto r =getRoot())r->removeControllableContainerListener(this);
+
 }
 
 
@@ -36,7 +37,10 @@ void ParameterProxy::setValueInternal(var & _value)
 {
   StringParameter::setValueInternal(_value);
 
-  resolveAddress();
+  if(!resolveAddress() && stringValue().isNotEmpty())
+    getRoot()->addControllableContainerListener(this);
+  else
+    getRoot()->removeControllableContainerListener(this);
 }
 
 
@@ -53,7 +57,7 @@ void ParameterProxy::setParamToReferTo(Parameter * p)
 {
 
   String targetAddress = p?p->getControlAddress(getRoot()):String::empty;
-  if(targetAddress!=stringValue()){
+  if( targetAddress!=stringValue()){
     setValue(targetAddress);
   }
   else{
@@ -88,10 +92,19 @@ ControllableContainer * ParameterProxy::getRoot(){
 bool ParameterProxy::resolveAddress(){
   if(stringValue().isNotEmpty()){
     auto p = dynamic_cast<Parameter*>(getRoot()->getControllableForAddress(stringValue()));
+
     setParamToReferTo(p);
   }
   else{
     setParamToReferTo(nullptr);
   }
   return linkedParam!=nullptr;
+}
+
+void ParameterProxy::controllableAdded(ControllableContainer *,Controllable * c) {
+  jassert(linkedParam==nullptr);
+  if(c->getControlAddress()==stringValue()){
+    setParamToReferTo(c->getParameter());
+  }
+  
 }

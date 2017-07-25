@@ -16,17 +16,6 @@
 
 class FastMap;
 
-class FastMapListener
-{
-public:
-    virtual ~FastMapListener(){}
-	virtual void fastMapReferenceChanged(FastMap *) {};
-	virtual void fastMapTargetChanged(FastMap *) {};
-
-	virtual void askForRemoveFastMap(FastMap *) {};
-
-	virtual void fastMapRemoved(FastMap *) {};
-};
 
 class FastMap :
 	public ControllableContainer,
@@ -44,8 +33,6 @@ public:
 	FloatParameter * maxOutputVal;
 	BoolParameter * invertParam;
 
-	String ghostAddress; //for ghosting if parameter not found
-
 	ParameterProxy * referenceIn;
 	ParameterProxy *  referenceOut;
 
@@ -54,20 +41,10 @@ public:
 	bool isInRange; //memory for triggering
 	void process();
 
-	void setGhostAddress(const String &address);
-
-	void remove();
-
-
 
   // inherited from proxy listener
    void linkedParamValueChanged(ParameterProxy *) override;
-		 void linkedParamChanged(ParameterProxy *) override;
-	ListenerList<FastMapListener> fastMapListeners;
-	void addFastMapListener(FastMapListener* newListener) { fastMapListeners.add(newListener); }
-	void removeFastMapListener(FastMapListener* listener) { fastMapListeners.remove(listener); }
-
-
+  void linkedParamChanged(ParameterProxy *) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMap);
 };

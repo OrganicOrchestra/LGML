@@ -390,19 +390,19 @@ void CCInnerContainer::clear()
 	lowerContainerLinks.clear();
 }
 
-void CCInnerContainer::controllableAdded(Controllable * c)
+void CCInnerContainer::controllableAdded(ControllableContainer *,Controllable * c)
 {
 	if (c->parentContainer != container) return;
 	if (c->hideInEditor) return;
 	addControllableUI(c);
 }
 
-void CCInnerContainer::controllableRemoved(Controllable * c)
+void CCInnerContainer::controllableRemoved(ControllableContainer *,Controllable * c)
 {
 	removeControllableUI(c);
 }
 
-void CCInnerContainer::controllableContainerAdded(ControllableContainer * cc)
+void CCInnerContainer::controllableContainerAdded(ControllableContainer*,ControllableContainer * cc)
 {
 	if (cc->parentContainer != container) return;
 
@@ -410,7 +410,7 @@ void CCInnerContainer::controllableContainerAdded(ControllableContainer * cc)
 	else if (canAccessLowerContainers) addCCLink(cc);
 }
 
-void CCInnerContainer::controllableContainerRemoved(ControllableContainer * cc)
+void CCInnerContainer::controllableContainerRemoved(ControllableContainer *,ControllableContainer * cc)
 {
 	removeCCInnerUI(cc);
 	removeCCLink(cc);

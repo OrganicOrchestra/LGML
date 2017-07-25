@@ -154,11 +154,11 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
     return result;
 }
 
-void OSCDirectController::controllableAdded(Controllable *)
+void OSCDirectController::controllableAdded(ControllableContainer *,Controllable *)
 {
 }
 
-void OSCDirectController::controllableRemoved(Controllable *)
+void OSCDirectController::controllableRemoved(ControllableContainer *,Controllable *)
 {
 
 }
@@ -255,10 +255,10 @@ void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*o
     
 }
 
-void OSCDirectController::controllableContainerAdded(ControllableContainer *)
+void OSCDirectController::controllableContainerAdded(ControllableContainer *,ControllableContainer *)
 {
 }
 
-void OSCDirectController::controllableContainerRemoved(ControllableContainer *)
+void OSCDirectController::controllableContainerRemoved(ControllableContainer *,ControllableContainer *)
 {
 }

@@ -168,7 +168,7 @@ void Engine::closeAudio(){
 
 void Engine::clear(){
   //    do we need to stop audio?
-  //stopAudio();
+//  suspendAudio(true);
 
 
   TimeManager::getInstance()->playState->setValue(false);
@@ -186,7 +186,7 @@ void Engine::clear(){
 
   PresetManager::getInstance()->clear();
 
-
+//  suspendAudio(false);
 
   changed();    //fileDocument
 }

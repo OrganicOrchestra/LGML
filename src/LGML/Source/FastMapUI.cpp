@@ -10,6 +10,7 @@
 
 #include "FastMapUI.h"
 #include "ParameterUIFactory.h"
+#include "FastMapper.h"
 
 FastMapUI::
 FastMapUI(FastMap * f) :
@@ -19,15 +20,6 @@ refUI(f->referenceIn),
 targetUI(f->referenceOut)
 
 {
-  fastMap->addFastMapListener(this);
-
-//  refUI.add(this);
-//  targetUI.addControllableReferenceUIListener(this);
-
-
-
-  //	refUI->setAliasVisible(false);
-  //	refUI->setRemoveBTVisible(false);
 
   enabledUI = ParameterUIFactory::createDefaultUI(fastMap->enabledParam);
   addAndMakeVisible(enabledUI);
@@ -62,7 +54,6 @@ targetUI(f->referenceOut)
 
 FastMapUI::~FastMapUI()
 {
-  fastMap->removeFastMapListener(this);
 }
 
 void FastMapUI::paint(Graphics & g)
@@ -96,39 +87,7 @@ void FastMapUI::resized()
 
 }
 
-//void FastMapUI::choosedControllableChanged(ControllableReferenceUI* ui,Controllable * c)
-//{
-//  if(ui==&refUI){
-//    fastMap->referenceIn->setParamToReferTo(c->getParameter());
-//  }
-//  else if(ui==&targetUI){
-//    fastMap->referenceOut->setParamToReferTo(c->getParameter());
-//  }
-//  else{
-//
-//    jassertfalse;
-//  }
-//}
-//
-//void FastMapUI::fastMapTargetChanged(FastMap *f)
-//{
-//  if (auto refOut = f->referenceOut->get() )
-//  {
-//    targetUI.setButtonText(refOut->niceName);
-//    targetUI.setTooltip("Current Controllable :" + refOut->niceName + String("\n") + refOut->controlAddress);
-//
-//    minOutputUI->setVisible(refOut->type != Controllable::TRIGGER && refOut->type != Controllable::BOOL);
-//    maxOutputUI->setVisible(refOut->type != Controllable::TRIGGER && refOut->type != Controllable::BOOL);
-//  }
-//  else
-//  {
-//    targetUI.setButtonText("[Target]");
-//    targetUI.setTooltip("Choose a target");
-//    
-//  }
-//}
-
 void FastMapUI::buttonClicked(Button * b)
 {
-  if(b == &removeBT) fastMap->remove();
+  if(b == &removeBT) FastMapper::getInstance()->removeFastmap(fastMap);
 }

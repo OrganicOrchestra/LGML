@@ -13,9 +13,9 @@
 
 #include "ShapeShifterContent.h"
 #include "FastMapUI.h"
-#include "FastMapper.h"
 
 
+class FastMapper;
 class FastMapperUI;
 class FastMapperUIListener
 {
@@ -26,7 +26,7 @@ public:
 
 class FastMapperUI :
 	public Component,
-	public FastMapperListener
+	public ControllableContainerListener
 {
 public:
 	FastMapperUI(FastMapper * fastMapper, ControllableContainer * viewFilterContainer = nullptr);
@@ -40,7 +40,7 @@ public:
 	void clear();
 
 	void addFastMapUI(FastMap *);
-	void removeFastMapUI(FastMap *);
+	void removeFastMapUI(FastMapUI *);
 
 	void resetAndUpdateView();
 	void setViewFilter(ControllableContainer * filterContainer);
@@ -55,8 +55,8 @@ public:
 	void resized() override;
 	void mouseDown(const MouseEvent &e) override;
 
-	virtual void fastMapAdded(FastMap *) override;
-	virtual void fastMapRemoved(FastMap *) override;
+	virtual void controllableContainerAdded(ControllableContainer*,ControllableContainer *) override;
+	virtual void controllableContainerRemoved(ControllableContainer*,ControllableContainer *) override;
 
 	ListenerList<FastMapperUIListener> fastMapperUIListeners;
 	void addFastMapperUIListener(FastMapperUIListener* newListener) { fastMapperUIListeners.add(newListener); }

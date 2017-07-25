@@ -19,6 +19,7 @@ ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
 	paramProxy(proxy),
 	chooser(proxy->parentContainer->parentContainer)
 {
+  LGMLComponent::isMappingDest = true;
 	chooser.addControllableReferenceUIListener(this);
 	addAndMakeVisible(&chooser);
 	paramProxy->addParameterProxyListener(this);
@@ -73,13 +74,15 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 
 void ParameterProxyUI::linkedParamChanged(ParameterProxy * p)
 {
+  jassert(p==paramProxy);
 	setLinkedParamUI(p->linkedParam);
 }
 
 void ParameterProxyUI::choosedControllableChanged(ControllableReferenceUI*,Controllable * c)
 {
-  auto t = dynamic_cast<Parameter *>(c);
-  setLinkedParamUI(t);
+  auto t = c->getParameter();
+  paramProxy->setParamToReferTo(t);
+
 
 }
 

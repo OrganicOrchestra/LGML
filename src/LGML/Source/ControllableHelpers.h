@@ -42,11 +42,9 @@ public :
 	WeakReference<Controllable> currentControllable;
 	void setCurrentControllale(Controllable * c);
 
-  void paintOverChildren(Graphics &g)override;
+  
 
-  void setHovered(bool b);
 
-  bool isDragCandidate;
 
 	class  Listener
 	{

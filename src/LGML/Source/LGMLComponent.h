@@ -23,8 +23,15 @@ public:
   void setLGMLElement(Controllable * c);
   void setLGMLElement(ControllableContainer * c);
   void clearElement();
-  void setIsMapping(bool b);
-  bool isMapping;
+  enum MappingState{
+    NOMAP,
+    MAPSOURCE,
+    MAPDEST
+  };
+  MappingState mappingState;
+  bool isMappingDest;
+  void setMappingState(const MappingState  s);
+  
   enum LGMLType {
     NONE,
     CONTROLLABLE,

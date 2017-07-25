@@ -84,8 +84,8 @@ void VSTNodeContentUI::updateVSTParameters(){
     resized();
 }
 
-void VSTNodeContentUI::controllableAdded(Controllable *) {};
-void VSTNodeContentUI::controllableRemoved(Controllable * c){
+void VSTNodeContentUI::controllableAdded(ControllableContainer *,Controllable *) {};
+void VSTNodeContentUI::controllableRemoved(ControllableContainer *,Controllable * c){
   for(auto &p : paramSliders){
     if(p->parameter==c)removeChildComponent(p);
   }
@@ -94,8 +94,8 @@ void VSTNodeContentUI::controllableRemoved(Controllable * c){
   postCommandMessage(0);
   isDirty=true;
 }
-void VSTNodeContentUI::controllableContainerAdded(ControllableContainer *){};
-void VSTNodeContentUI::controllableContainerRemoved(ControllableContainer *) {};
+void VSTNodeContentUI::controllableContainerAdded(ControllableContainer *,ControllableContainer *){};
+void VSTNodeContentUI::controllableContainerRemoved(ControllableContainer *,ControllableContainer *) {};
 void VSTNodeContentUI::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable *) {};
 
 

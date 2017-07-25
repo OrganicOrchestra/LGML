@@ -19,11 +19,11 @@ FastMap::FastMap() :
 	referenceOut(nullptr),
 	ControllableContainer("FastMap")
 {
-//	reference = new ControlVariableReference();
-//	referenceIn.get()->addReferenceListener(this);
 
   referenceIn = addNewParameter<ParameterProxy>("in param","parameter for input");
+  referenceIn->addParameterProxyListener(this);
   referenceOut = addNewParameter<ParameterProxy>("out param","parameter for input");
+  referenceOut->addParameterProxyListener(this);
 	enabledParam = addBoolParameter("Enabled", "Enabled / Disable Fast Map", true);
 
 	minInputVal = addFloatParameter("In Min", "Minimum Input Value", 0, 0, 1);
@@ -38,9 +38,6 @@ FastMap::FastMap() :
 FastMap::~FastMap()
 {
 
-
-	fastMapListeners.call(&FastMapListener::fastMapRemoved, this);
-	if(getEngine())  getEngine()->removeControllableContainerListener(this);
 }
 
 void FastMap::process()
@@ -85,20 +82,6 @@ void FastMap::process()
 
 
 
-void FastMap::setGhostAddress(const String & address)
-{
-	if (ghostAddress == address) return;
-	ghostAddress = address;
-	if (ghostAddress.isNotEmpty()) getEngine()->addControllableContainerListener(this);
-	else getEngine()->removeControllableContainerListener(this);
-}
-
-
-void FastMap::remove()
-{
-	fastMapListeners.call(&FastMapListener::askForRemoveFastMap, this);
-}
-
 
 
 void FastMap::linkedParamValueChanged(ParameterProxy *p) {
@@ -109,9 +92,13 @@ void FastMap::linkedParamValueChanged(ParameterProxy *p) {
 };
 void FastMap::linkedParamChanged(ParameterProxy *p) {
 
-  if (p==referenceIn)
+  if (p==referenceIn )
   {
-
+    if(p==referenceOut){
+      LOG("Can't map a parameter to itself");
+      referenceIn->setParamToReferTo(nullptr);
+    }
+    else{
     float normMin = minInputVal->getNormalizedValue();
     float normMax = maxInputVal->getNormalizedValue();
     //		minInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
@@ -119,10 +106,16 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
     //
     minInputVal->setNormalizedValue(normMin);
     maxInputVal->setNormalizedValue(normMax);
-    fastMapListeners.call(&FastMapListener::fastMapReferenceChanged, this);
+
+    }
+
   }
   else if(p==referenceOut){
-    fastMapListeners.call(&FastMapListener::fastMapTargetChanged, this);
+    if(p==referenceIn){
+      LOG("Can't map a parameter to itself");
+      referenceOut->setParamToReferTo(nullptr);
+    }
+    
   }
 
   

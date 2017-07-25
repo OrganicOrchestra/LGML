@@ -43,7 +43,7 @@ void JsNodeUI::newJsFileLoaded(bool v){
     varUI.clear();
     if(v){
         for(auto &c:jsNode->jsParameters){
-            controllableAdded(c);
+            controllableAdded(jsNode,c);
         }
     }
 };
@@ -61,7 +61,7 @@ void JsNodeUI::layoutUI(){
 
 }
 
-void JsNodeUI::controllableAdded(Controllable * c) {
+void JsNodeUI::controllableAdded(ControllableContainer *,Controllable * c) {
     JsNode * jsNode = (JsNode*) node.get();
     if(!jsNode->jsParameters.contains((Controllable*)c))return;
   ControllableUI * comp = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c->getParameter()), 100);
@@ -75,7 +75,7 @@ void JsNodeUI::controllableAdded(Controllable * c) {
     }
 
 }
-void JsNodeUI::controllableRemoved(Controllable * c) {
+void JsNodeUI::controllableRemoved(ControllableContainer *,Controllable * c) {
 
     for(auto & comp:varUI){
         if(comp->controllable == c){

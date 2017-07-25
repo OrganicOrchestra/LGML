@@ -60,8 +60,7 @@ Controllable * ControllableContainerPopupMenu::showAndGetControllable()
 
 ControllableReferenceUI::ControllableReferenceUI(ControllableContainer * container) :
 	rootContainer(container),
-	TextButton("Target"),
-  isDragCandidate(false)
+	TextButton("Target")
 {
   addListener(this);
 	setTooltip("Choose a target");
@@ -72,20 +71,10 @@ ControllableReferenceUI::~ControllableReferenceUI()
 	removeListener(this);
 }
 
-void ControllableReferenceUI::paintOverChildren(Graphics &g){
-  if(isDragCandidate){
-    g.setColour(Colours::red.withAlpha(0.5f));
-    g.fillAll();
-  }
-};
 
-void ControllableReferenceUI::setHovered(bool b){
-  isDragCandidate = b;
-  repaint();
-}
 void ControllableReferenceUI::setCurrentControllale(Controllable * c)
 {
-  setHovered(false);
+  
 	if (currentControllable.get() == c) return;
 	currentControllable = c;
 

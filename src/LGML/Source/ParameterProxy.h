@@ -19,7 +19,8 @@
 class ParameterProxy :
   public StringParameter,
 	public Parameter::Listener,
-  public Controllable::Listener
+  public Controllable::Listener,
+  private ControllableContainerListener
 {
 public:
   ParameterProxy(const String & niceName,const String & desc,Parameter * ref=nullptr,ControllableContainer * root=nullptr);
@@ -42,7 +43,7 @@ public:
   
 	void remove();
 
-
+  void controllableAdded(ControllableContainer *,Controllable * /*notifier*/) override;
 	class ParameterProxyListener
 	{
 	public:

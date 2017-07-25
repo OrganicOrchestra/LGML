@@ -14,6 +14,7 @@
 #include "ParameterProxy.h"
 #include "ParameterUI.h"
 #include "ControllableHelpers.h"
+
 class ParameterProxyUI :
 	public ParameterUI,
 	public ParameterProxy::ParameterProxyListener,

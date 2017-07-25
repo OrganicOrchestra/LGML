@@ -71,10 +71,10 @@ public:
 	CCInnerContainer * getInnerContainerForCC(ControllableContainer * cc);
 	CCLinkBT * getCCLinkForCC(ControllableContainer * cc);
 
-	void controllableAdded(Controllable *)override;
-	void controllableRemoved(Controllable *)override;
-	void controllableContainerAdded(ControllableContainer *)override;
-	void controllableContainerRemoved(ControllableContainer *)override;
+	void controllableAdded(ControllableContainer *,Controllable *)override;
+	void controllableRemoved(ControllableContainer *,Controllable *)override;
+	void controllableContainerAdded(ControllableContainer *,ControllableContainer *)override;
+	void controllableContainerRemoved(ControllableContainer *,ControllableContainer *)override;
 	void childStructureChanged(ControllableContainer *,ControllableContainer *)override;
 
 	void buttonClicked(Button * b)override;

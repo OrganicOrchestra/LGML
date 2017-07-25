@@ -105,8 +105,8 @@ public:
 
 	void dataInputAdded(ConnectableNode *, Data *) override;
 	void dataInputRemoved(ConnectableNode *, Data *) override;
-	void controllableAdded(Controllable *) override;
-	void controllableRemoved(Controllable *) override;
+	void controllableAdded(ControllableContainer *,Controllable *) override;
+	void controllableRemoved(ControllableContainer *,Controllable *) override;
 
 	// Inherited via Listener (Spat2DHandle)
 	virtual void handleUserMoved(Spat2DHandle * handle, const Point<float> &newPosition) override;

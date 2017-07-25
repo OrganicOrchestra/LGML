@@ -66,10 +66,10 @@ public:
     void buttonClicked(Button* button) override;
 
 
-	void controllableAdded(Controllable * c)override;
-	void controllableRemoved(Controllable * c)override;
-	void controllableContainerAdded(ControllableContainer * cc)override;
-	void controllableContainerRemoved(ControllableContainer * cc) override;
+	void controllableAdded(ControllableContainer *,Controllable * c)override;
+	void controllableRemoved(ControllableContainer *,Controllable * c)override;
+	void controllableContainerAdded(ControllableContainer *,ControllableContainer * cc)override;
+	void controllableContainerRemoved(ControllableContainer *,ControllableContainer * cc) override;
 	void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *c) override;
 
 

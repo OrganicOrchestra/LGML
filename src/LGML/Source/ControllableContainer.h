@@ -32,10 +32,10 @@ class  ControllableContainerListener
 public:
   /** Destructor. */
   virtual ~ControllableContainerListener() {}
-  virtual void controllableAdded(Controllable *) {}
-  virtual void controllableRemoved(Controllable *) {}
-  virtual void controllableContainerAdded(ControllableContainer *) {}
-  virtual void controllableContainerRemoved(ControllableContainer *) {}
+  virtual void controllableAdded(ControllableContainer *,Controllable *) {}
+  virtual void controllableRemoved(ControllableContainer *,Controllable *) {}
+  virtual void controllableContainerAdded(ControllableContainer *,ControllableContainer *) {}
+  virtual void controllableContainerRemoved(ControllableContainer *,ControllableContainer *) {}
   virtual void controllableFeedbackUpdate(ControllableContainer *,Controllable *) {}
   virtual void childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer* /*origin*/) {}
   virtual void childAddressChanged(ControllableContainer * ){};
@@ -247,7 +247,7 @@ T* ControllableContainer::addNewParameter(const String & _niceName,const String 
   auto p = new T(targetName,desc,args...);
   p->setParentContainer(this);
   controllables.add(p);
-  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, p);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded,this, p);
   notifyStructureChanged(this);
   addControllableInternal(p);
   p->addParameterListener(this);

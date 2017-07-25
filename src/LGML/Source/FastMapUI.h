@@ -20,7 +20,6 @@
 
 class FastMapUI :
 	public InspectableComponent,
-	public FastMapListener,
 	public  ControllableReferenceUI::Listener,
 	public ButtonListener
 {

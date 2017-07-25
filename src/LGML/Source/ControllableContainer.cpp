@@ -74,7 +74,7 @@ Parameter *  ControllableContainer::addParameter(Parameter * p)
 
   p->setParentContainer(this);
   controllables.add(p);
-  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, p);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded,this, p);
   notifyStructureChanged(this);
   addControllableInternal(p);
   p->addParameterListener(this);
@@ -154,7 +154,7 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
 
 void ControllableContainer::removeControllable(Controllable * c)
 {
-  controllableContainerListeners.call(&ControllableContainerListener::controllableRemoved, c);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableRemoved,this, c);
 
   if(Parameter * p = dynamic_cast<Parameter*>(c)){
     p->removeParameterListener(this);
@@ -219,7 +219,7 @@ void ControllableContainer::addChildControllableContainer(ControllableContainer 
   controllableContainers.add(container);
   container->addControllableContainerListener(this);
   container->setParentContainer(this);
-  controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded, container);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded,this, container);
   notifyStructureChanged(this);
 }
 
@@ -232,7 +232,7 @@ void ControllableContainer::removeChildControllableContainer(ControllableContain
   }
   this->controllableContainers.removeAllInstancesOf(container);
   container->removeControllableContainerListener(this);
-  controllableContainerListeners.call(&ControllableContainerListener::controllableContainerRemoved, container);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableContainerRemoved,this, container);
   notifyStructureChanged(this);
   container->setParentContainer(nullptr);
 }
@@ -247,7 +247,7 @@ void ControllableContainer::addChildIndexedControllableContainer(ControllableCon
 
   container->addControllableContainerListener(this);
   container->setParentContainer(this);
-  controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded, container);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded,this, container);
   notifyStructureChanged(this);
 }
 

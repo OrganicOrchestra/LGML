@@ -25,27 +25,23 @@ FastMapper::~FastMapper()
 
 void FastMapper::clear()
 {
-	while (maps.size() > 0)
-	{
-		maps[0]->remove();
-	}
+  while(maps.size()){
+    removeFastmap(maps[0]);
+  }
 }
 
 FastMap * FastMapper::addFastMap()
 {
 	FastMap * f = new FastMap();
 	addChildControllableContainer(f);
-	f->addFastMapListener(this);
 	maps.add(f);
-	fastMapperListeners.call(&FastMapperListener::fastMapAdded, f);
 	return f;
 }
 
 void FastMapper::removeFastmap(FastMap * f)
 {
+  jassert(f);
 	removeChildControllableContainer(f);
-	f->removeFastMapListener(this);
-	fastMapperListeners.call(&FastMapperListener::fastMapRemoved, f);
 	maps.removeObject(f);
 }
 
@@ -77,7 +73,4 @@ void FastMapper::loadJSONDataInternal(var data)
 	}
 }
 
-void FastMapper::askForRemoveFastMap(FastMap * f)
-{
-	removeFastmap(f);
-}
+
