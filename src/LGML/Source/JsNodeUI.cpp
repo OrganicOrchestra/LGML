@@ -11,6 +11,7 @@
 #include "JsNodeUI.h"
 
 #include "JsNode.h"
+#include "ParameterUIFactory.h"
 
 JsNodeUI::JsNodeUI(){};
 JsNodeUI::~JsNodeUI(){
@@ -63,7 +64,7 @@ void JsNodeUI::layoutUI(){
 void JsNodeUI::controllableAdded(Controllable * c) {
     JsNode * jsNode = (JsNode*) node.get();
     if(!jsNode->jsParameters.contains((Controllable*)c))return;
-    ControllableUI * comp = new NamedControllableUI(c->createDefaultUI(), 100);
+  ControllableUI * comp = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c->getParameter()), 100);
     varUI.add(comp);
     addAndMakeVisible(comp);
     if(varUI.size() * 20>getHeight()-jsUI->getHeight()){

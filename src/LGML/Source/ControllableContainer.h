@@ -74,8 +74,13 @@ public:
   Array<WeakReference<ControllableContainer>,CriticalSection  > controllableContainers;
   ControllableContainer * parentContainer;
 
-  void addControllable(Controllable * c,bool checkIfParameter = false);
-  void addParameter(Parameter* p);
+  template<class T,class... Args>
+  T* addNewParameter(const String & _niceName,const String & desc,Args&...args);
+
+  template<class T,class... Args>
+  T* addNewUserParameter(const String & _niceName,const String & desc,Args&...args);
+  
+  Parameter* addParameter(Parameter * );
   FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
   IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
   BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);
@@ -85,7 +90,7 @@ public:
   Point3DParameter * addPoint3DParameter(const String &niceName, const String &description, const bool &enabled = true);
   Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
 
-  void addUserControllable(Controllable * c,bool checkParam);
+
   
   void removeControllable(Controllable * c);
   Controllable * getControllableByName(const String &name, bool searchNiceNameToo = false);
@@ -230,7 +235,43 @@ private:
 
 };
 
+/// templates
 
+
+
+template<class T,class... Args>
+T* ControllableContainer::addNewParameter(const String & _niceName,const String & desc,Args&...args)
+{
+
+  String targetName = getUniqueNameInContainer(_niceName);
+  auto p = new T(targetName,desc,args...);
+  p->setParentContainer(this);
+  controllables.add(p);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, p);
+  notifyStructureChanged(this);
+  addControllableInternal(p);
+  p->addParameterListener(this);
+  p->addAsyncParameterListener(this);
+  return p;
+
+
+}
+template<class T,class... Args>
+T* ControllableContainer::addNewUserParameter(const String & _niceName,const String & desc,Args&...args){
+
+  String targetName = getUniqueNameInContainer(_niceName);
+  auto p = new T(targetName,desc,&args...);
+  p->shouldSaveObject = true;
+  p->isUserDefined = true;
+  if(!userContainer){
+    userContainer = new ControllableContainer("usr",true);
+    addChildControllableContainer(userContainer);
+  }
+  userContainer->addParameter(p);
+  return p;
+
+
+}
 
 
 #endif  // CONTROLLABLECONTAINER_H_INCLUDED

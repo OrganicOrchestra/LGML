@@ -14,11 +14,11 @@
 ControllerEditor::ControllerEditor(Controller * _controller,bool generateAuto) :
 	InspectorEditor(),
 	controller(_controller),
-	addVariableBT("Add Variable"),
+	addParameterBT("Add Variable"),
 hideVariableUIs(false)
 {
-	variablesContainer.addAndMakeVisible(&addVariableBT);
-	addVariableBT.addListener(this);
+	variablesContainer.addAndMakeVisible(&addParameterBT);
+	addParameterBT.addListener(this);
 	controller->addControllerListener(this);
 	addAndMakeVisible(variablesContainer);
 
@@ -81,7 +81,7 @@ void ControllerEditor::resized()
 	variablesContainer.setBounds(area.withHeight(getVariablesHeight()+variableUIHeight));
   Rectangle<int> r = variablesContainer.getBounds();
   area = area.withY(r.getBottom()+5);
-	addVariableBT.setBounds(r.removeFromTop(variableUIHeight));
+	addParameterBT.setBounds(r.removeFromTop(variableUIHeight));
 
 	for (auto &vui : variablesUI)
 	{
@@ -110,12 +110,12 @@ int ControllerEditor::getVariablesHeight()
 
 void ControllerEditor::buttonClicked(Button * b)
 {
-	if (b == &addVariableBT)
+	if (b == &addParameterBT)
 	{
 
-		Parameter * p = new FloatParameter(controller->getUniqueVariableNameFor("var"), "Custom Variable", 0, 0, 10);
-    controller->addUserControllable(p,true);
-//		controller->addVariable(p);
+
+    controller->addNewUserParameter<FloatParameter>("var","Custom Variable");
+
 	}
 }
 

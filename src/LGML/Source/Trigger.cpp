@@ -10,7 +10,7 @@
 
 #include "Trigger.h"
 
-#include "TriggerBlinkUI.h"
+
 
 #include "JsHelpers.h"
 
@@ -18,22 +18,15 @@
 const var Trigger::triggerVar;
 
 Trigger::Trigger(const String & niceName, const String &description, bool enabled) :
-Parameter(TRIGGER, niceName, description, enabled,false,false,true),
-isTriggering(false)
+Parameter(TRIGGER, niceName, description, enabled,false,false,true)
 {
   Controllable::isSavable = false;
 }
 
 
-TriggerBlinkUI * Trigger::createBlinkUI(Trigger * target)
-{
-	if (target == nullptr) target = this;
-	return new TriggerBlinkUI(target);
-}
 
-ControllableUI * Trigger::createDefaultUI(Controllable * targetControllable){
-    return createBlinkUI(dynamic_cast<Trigger *>(targetControllable));
-}
+
+
 
 DynamicObject * Trigger::createDynamicObject()
 {

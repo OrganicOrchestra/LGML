@@ -12,7 +12,7 @@
 #define SPATNODEUI_H_INCLUDED
 
 #include "NodeBaseContentUI.h"
-#include "EnumParameterUI.h"
+#include "ParameterUI.h"
 #include "Spat2DNode.h"
 #include "Spat2DViewer.h"
 #include "Spat3DViewer.h"
@@ -29,16 +29,16 @@ public:
 
 	ScopedPointer<Spat2DViewer> viewer2D;
 
-	ScopedPointer<EnumParameterUI> spatModeUI;
+	ScopedPointer<ParameterUI> spatModeUI;
 	ScopedPointer<NamedControllableUI> inputStepper;
 	ScopedPointer<NamedControllableUI> outputStepper;
-	ScopedPointer<FloatSliderUI> radiusUI;
-	ScopedPointer<BoolToggleUI> useGlobalUI;
-	ScopedPointer<FloatSliderUI> globalRadiusUI;
+	ScopedPointer<ParameterUI> radiusUI;
+	ScopedPointer<ParameterUI> useGlobalUI;
+	ScopedPointer<ParameterUI> globalRadiusUI;
 
-	ScopedPointer<EnumParameterUI> shapeModeUI;
-	ScopedPointer<FloatSliderUI> circleRadiusUI;
-	ScopedPointer<FloatSliderUI> circleRotationUI;
+	ScopedPointer<ParameterUI> shapeModeUI;
+	ScopedPointer<ParameterUI> circleRadiusUI;
+	ScopedPointer<ParameterUI> circleRotationUI;
 
 	void resized() override;
 	void init() override;

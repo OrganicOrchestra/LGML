@@ -13,7 +13,7 @@
 
 juce_ImplementSingleton(LGMLDragger);
 
-#include "ControllableHelpers.h"
+#include "ParameterProxyUI.h"
 
 void LGMLDragger::setMainComponent(Component * c,TooltipWindow * _tip){
   target = nullptr;
@@ -105,20 +105,23 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
     else
       componentToDrag->setBounds (bounds);
 
-    auto curTarget = dynamic_cast<ControllableReferenceUI*> (mainComp->getComponentAt(e.getEventRelativeTo(mainComp).getPosition()));
+    auto curTarget = dynamic_cast<ParameterProxyUI*> (mainComp->getComponentAt(e.getEventRelativeTo(mainComp).getPosition()));
     if(curTarget!=target){
-      if(target){target->setHovered(false);}
+      if(target){target->setAlpha(1);}
       target = curTarget;
       if(target){
         DBG(curTarget->getName());
-      target->setHovered(true);
+        target->setAlpha(0.5);
       }
     }
   }
 }
 void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseEvent & e){
+  jassert(componentToDrag==target);
+  auto target_C = dynamic_cast<ParameterProxyUI*>(target);
+  jassert(!target || target_C);
   if(target){
-    target->setCurrentControllale(dragged->originComp->controllable);
+    target_C->paramProxy->setParamToReferTo(dragged->originComp->controllable->getParameter());
   }
   unRegisterForDrag(nullptr);
 }

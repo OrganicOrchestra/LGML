@@ -1,27 +1,29 @@
 #include "JsEnvironmentUI.h"
+#include "ParameterUIFactory.h"
+#include "StringParameterUI.h"
 
 JsEnvironmentUI::JsEnvironmentUI(JSEnvContainer * _cont) :cont(_cont) {
   env = cont->jsEnv;
   jassert(env);
 	env->addListener(this);
-  loadFileB = cont->loadT->createBlinkUI();
+  loadFileB = ParameterUIFactory::createDefaultUI(cont->loadT);
 	addAndMakeVisible(loadFileB);
 
 
-	reloadB = cont->reloadT->createBlinkUI();
+	reloadB = ParameterUIFactory::createDefaultUI(cont->reloadT);
 	addAndMakeVisible(reloadB);
 
 
-  openB = cont->showT->createBlinkUI();
+  openB = ParameterUIFactory::createDefaultUI(cont->showT);
 	addAndMakeVisible(openB);
 
-  watchT = cont->autoWatch->createToggle();
+  watchT = ParameterUIFactory::createDefaultUI(cont->autoWatch);
 	addAndMakeVisible(watchT);
-  logEnvB = cont->logT->createBlinkUI();
+  logEnvB = ParameterUIFactory::createDefaultUI(cont->logT);
 	addAndMakeVisible(logEnvB);
 
 
-  path = cont->scriptPath->createStringParameterUI();
+  path = new StringParameterUI(cont->scriptPath);
   path->setNameLabelVisible(true);
   addAndMakeVisible(path);
 
@@ -29,6 +31,9 @@ JsEnvironmentUI::JsEnvironmentUI(JSEnvContainer * _cont) :cont(_cont) {
 	addAndMakeVisible(validJsLed);
   
 
+}
+JsEnvironmentUI::~JsEnvironmentUI(){
+  env->removeListener(this);
 }
 
 void JsEnvironmentUI::resized() {

@@ -11,13 +11,15 @@
 #include "ControlVariableReferenceUI.h"
 #include "ControllerManagerUI.h"
 #include "ControllerUIHelpers.h"
+#include "ParameterUIFactory.h"
+#include "StringParameterUI.h"
 
 ControlVariableReferenceUI::ControlVariableReferenceUI(ControlVariableReference * _cvr) :
 	cvr(_cvr),
 	chooseBT("Choose"),
 	currentVariableParamUI(nullptr)
 {
-	aliasUI = cvr->alias->createStringParameterUI();
+	aliasUI = new StringParameterUI(cvr->alias);
 
 	aliasUI->parameter->addParameterListener(this);
 
@@ -71,7 +73,7 @@ void ControlVariableReferenceUI::updateCurrentReference()
 	if (cvr->currentVariable != nullptr)
 	{
 		chooseBT.setButtonText(cvr->currentVariable->parameter->niceName);
-		currentVariableParamUI = (ParameterUI *)cvr->currentVariable->parameter->createDefaultUI();
+		currentVariableParamUI = (ParameterUI *)ParameterUIFactory::createDefaultUI(cvr->currentVariable->parameter);
 		addAndMakeVisible(currentVariableParamUI);
 	}
 	else

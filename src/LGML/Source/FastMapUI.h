@@ -16,7 +16,7 @@
 #include "ControllableHelpers.h"
 #include "FloatSliderUI.h"
 #include "InspectableComponent.h"
-
+#include "ParameterProxyUI.h"
 
 class FastMapUI :
 	public InspectableComponent,
@@ -28,16 +28,16 @@ public:
 	FastMapUI(FastMap * f);
 	virtual ~FastMapUI();
 
-	ControllableReferenceUI refUI;
-  ControllableReferenceUI targetUI;
+	ParameterProxyUI refUI;
+  ParameterProxyUI targetUI;
 
-	ScopedPointer<BoolToggleUI> enabledUI;
+	ScopedPointer<ParameterUI> enabledUI;
 
-	ScopedPointer<FloatSliderUI> minInputUI;
-	ScopedPointer<FloatSliderUI> maxInputUI;
-	ScopedPointer<FloatSliderUI> minOutputUI;
-	ScopedPointer<FloatSliderUI> maxOutputUI;
-	ScopedPointer<BoolToggleUI> invertUI;
+	ScopedPointer<ParameterUI> minInputUI;
+	ScopedPointer<ParameterUI> maxInputUI;
+	ScopedPointer<ParameterUI> minOutputUI;
+	ScopedPointer<ParameterUI> maxOutputUI;
+	ScopedPointer<ParameterUI> invertUI;
 
 
 
@@ -48,9 +48,9 @@ public:
 	void paint(Graphics &g) override;
 	void resized() override;
 
-	virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) override;
+//	virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) override;
+//	virtual void fastMapTargetChanged(FastMap *) override;
 
-	virtual void fastMapTargetChanged(FastMap *) override;
 	void buttonClicked(Button * b) override;
 
 

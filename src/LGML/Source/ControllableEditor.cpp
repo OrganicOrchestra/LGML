@@ -10,12 +10,13 @@
 
 #include "ControllableEditor.h"
 #include "ControllableUI.h"
+#include "ParameterUIFactory.h"
 
 ControllableEditor::ControllableEditor(InspectableComponent * /*sourceComponent*/, Controllable * _controllable) :
 	InspectorEditor(), controllable(_controllable),
 	label("Label")
 {
-	ui = controllable->createDefaultUI();
+  ui = ParameterUIFactory::createDefaultUI(controllable->getParameter());
 	addAndMakeVisible(ui);
 
 	addAndMakeVisible(&label);

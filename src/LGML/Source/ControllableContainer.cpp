@@ -16,7 +16,7 @@
 #include "DebugHelpers.h"
 #include "StringUtil.h"
 #include "JsHelpers.h"
-#include "ControllableFactory.h"
+#include "ParameterFactory.h"
 
 
 const Identifier ControllableContainer::presetIdentifier("preset");
@@ -68,46 +68,30 @@ void ControllableContainer::clear()
   controllableContainers.clear();
 }
 
-void ControllableContainer::addControllable(Controllable *c,bool checkIfParameter)
+
+Parameter *  ControllableContainer::addParameter(Parameter * p)
 {
-  if(checkIfParameter ){
-    if(auto p = dynamic_cast<Parameter*>(c)){
-      addParameter(p);
-      return;
-    }
-  }
-  c->setParentContainer(this);
-  controllables.add(c);
-  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, c);
+
+  p->setParentContainer(this);
+  controllables.add(p);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded, p);
   notifyStructureChanged(this);
-  addControllableInternal(c);
-
-
-
-}
-void ControllableContainer::addParameter(Parameter *p)
-{
-  addControllable(p);
+  addControllableInternal(p);
   p->addParameterListener(this);
   p->addAsyncParameterListener(this);
+  return p;
+
 
 }
 
-void ControllableContainer::addUserControllable(Controllable *c,bool checkParam){
-  c->shouldSaveObject = true;
-  c->isUserDefined = true;
-  if(!userContainer){
-    userContainer = new ControllableContainer("usr",true);
-    addChildControllableContainer(userContainer);
-  }
-  userContainer->addControllable(c,checkParam);
-}
+
 FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
 {
 
-  String targetName = getUniqueNameInContainer(_niceName);
-  FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
-  addParameter(p);
+  //  String targetName = getUniqueNameInContainer(_niceName);
+  //  FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
+    FloatParameter * p = addNewParameter<FloatParameter>(_niceName, description, initialValue, minValue, maxValue, enabled);
+  
   return p;
 }
 
@@ -163,8 +147,7 @@ Trigger * ControllableContainer::addTrigger(const String & _niceName, const Stri
 {
   String targetName = getUniqueNameInContainer(_niceName);
   Trigger * t = new Trigger(targetName, _description, enabled);
-  addControllable(t);
-  t->addParameterListener(this);
+  addParameter(t);
 
   return t;
 }
@@ -692,7 +675,7 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
     onContainerTriggerTriggered((Trigger*)p);
   }
   else{
-  onContainerParameterChanged(p);
+    onContainerParameterChanged(p);
   }
 
   if (p->isControllableExposed && (p!=nullptr && p->parentContainer==this) ) dispatchFeedback(p);
@@ -711,7 +694,7 @@ var ControllableContainer::getJSONData()
 
     for(auto & c :controllables){
       if(c->shouldSaveObject){
-        paramsData.getDynamicObject()->setProperty(c->shortName,ControllableFactory::getVarObjectFromControllable(c));
+        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::getVarObjectFromControllable(c));
       }
       else if (c->isSavable){
         paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
@@ -767,20 +750,20 @@ void ControllableContainer::loadJSONData(var data)
             }
           }
         }
-        else if( auto c = ControllableFactory::createFromVarObject(p.value, p.name.toString())){
+        else if( auto c = ParameterFactory::createFromVarObject(p.value, p.name.toString())){
           // TODO handle custom type
           // for now  overriding addControllableInternal and check for custoType
-          addControllable(c,true);
+          addParameter(c);
 
         }
-          else{
-            // malformed file
-            LOG("malformed file");
-            jassertfalse;
-          }
+        else{
+          // malformed file
+          LOG("malformed file");
+          jassertfalse;
         }
       }
     }
+  }
 
 
   loadJSONDataInternal(data);

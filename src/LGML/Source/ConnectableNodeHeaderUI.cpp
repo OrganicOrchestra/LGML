@@ -14,6 +14,7 @@
 #include "FloatSliderUI.h"
 
 #include "VuMeter.h"
+#include "ParameterUIFactory.h"
 
 ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
 removeBT("X"),
@@ -64,16 +65,16 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
   node->addConnectableNodeListener(this);
   updateVuMeters();
 
-  titleUI = node->nameParam->createStringParameterUI();
+  titleUI = new StringParameterUI(node->nameParam);
   titleUI->setBackGroundIsTransparent(true);
   addAndMakeVisible(titleUI);
 
-  descriptionUI = node->descriptionParam->createStringParameterUI();
+  descriptionUI = new StringParameterUI(node->descriptionParam);
   descriptionUI->setBackGroundIsTransparent(true);
   addAndMakeVisible(descriptionUI);
   descriptionUI->valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR.darker(.3f));
 
-  enabledUI = node->enabledParam->createToggle();
+  enabledUI = ParameterUIFactory::createDefaultUI(node->enabledParam);
   addAndMakeVisible(enabledUI);
 
   addAndMakeVisible(grabber);

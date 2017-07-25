@@ -41,7 +41,7 @@ public:
 
   ScopedPointer<StringParameterUI> titleUI;
   ScopedPointer<StringParameterUI> descriptionUI;
-  ScopedPointer<BoolToggleUI> enabledUI;
+  ScopedPointer<ParameterUI> enabledUI;
   ScopedPointer<VuMeter> vuMeterIn;
   ScopedPointer<VuMeter> vuMeterOut;
 

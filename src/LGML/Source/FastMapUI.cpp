@@ -9,31 +9,34 @@
  */
 
 #include "FastMapUI.h"
-#include "BoolToggleUI.h"
+#include "ParameterUIFactory.h"
 
 FastMapUI::
 FastMapUI(FastMap * f) :
 InspectableComponent(f,"fastMap"),
-fastMap(f)
+fastMap(f),
+refUI(f->referenceIn),
+targetUI(f->referenceOut)
+
 {
   fastMap->addFastMapListener(this);
 
-  refUI.addControllableReferenceUIListener(this);
-  targetUI.addControllableReferenceUIListener(this);
+//  refUI.add(this);
+//  targetUI.addControllableReferenceUIListener(this);
 
 
 
   //	refUI->setAliasVisible(false);
   //	refUI->setRemoveBTVisible(false);
 
-  enabledUI = fastMap->enabledParam->createToggle();
+  enabledUI = ParameterUIFactory::createDefaultUI(fastMap->enabledParam);
   addAndMakeVisible(enabledUI);
 
-  minInputUI = fastMap->minInputVal->createSlider();
-  maxInputUI = fastMap->maxInputVal->createSlider();
-  minOutputUI = fastMap->minOutputVal->createSlider();
-  maxOutputUI = fastMap->maxOutputVal->createSlider();
-  invertUI = fastMap->invertParam->createToggle();
+  minInputUI = ParameterUIFactory::createDefaultUI(fastMap->minInputVal);
+  maxInputUI = ParameterUIFactory::createDefaultUI(fastMap->maxInputVal);
+  minOutputUI = ParameterUIFactory::createDefaultUI(fastMap->minOutputVal);
+  maxOutputUI = ParameterUIFactory::createDefaultUI(fastMap->maxOutputVal);
+  invertUI = ParameterUIFactory::createDefaultUI(fastMap->invertParam);
 
   addAndMakeVisible(refUI);
   addAndMakeVisible(targetUI);
@@ -93,37 +96,37 @@ void FastMapUI::resized()
 
 }
 
-void FastMapUI::choosedControllableChanged(ControllableReferenceUI* ui,Controllable * c)
-{
-  if(ui==&refUI){
-    fastMap->setReference(c);
-  }
-  else if(ui==&targetUI){
-    fastMap->setTarget(c);
-  }
-  else{
-
-    jassertfalse;
-  }
-}
-
-void FastMapUI::fastMapTargetChanged(FastMap *f)
-{
-  if (f->referenceOut.get() != nullptr)
-  {
-    targetUI.setButtonText(f->referenceOut.get()->niceName);
-    targetUI.setTooltip("Current Controllable :" + f->referenceOut.get()->niceName + String("\n") + f->referenceOut.get()->controlAddress);
-
-    minOutputUI->setVisible(f->referenceOut.get()->type != Controllable::TRIGGER && f->referenceOut.get()->type != Controllable::BOOL);
-    maxOutputUI->setVisible(f->referenceOut.get()->type != Controllable::TRIGGER && f->referenceOut.get()->type != Controllable::BOOL);
-  }
-  else
-  {
-    targetUI.setButtonText("[Target]");
-    targetUI.setTooltip("Choose a target");
-    
-  }
-}
+//void FastMapUI::choosedControllableChanged(ControllableReferenceUI* ui,Controllable * c)
+//{
+//  if(ui==&refUI){
+//    fastMap->referenceIn->setParamToReferTo(c->getParameter());
+//  }
+//  else if(ui==&targetUI){
+//    fastMap->referenceOut->setParamToReferTo(c->getParameter());
+//  }
+//  else{
+//
+//    jassertfalse;
+//  }
+//}
+//
+//void FastMapUI::fastMapTargetChanged(FastMap *f)
+//{
+//  if (auto refOut = f->referenceOut->get() )
+//  {
+//    targetUI.setButtonText(refOut->niceName);
+//    targetUI.setTooltip("Current Controllable :" + refOut->niceName + String("\n") + refOut->controlAddress);
+//
+//    minOutputUI->setVisible(refOut->type != Controllable::TRIGGER && refOut->type != Controllable::BOOL);
+//    maxOutputUI->setVisible(refOut->type != Controllable::TRIGGER && refOut->type != Controllable::BOOL);
+//  }
+//  else
+//  {
+//    targetUI.setButtonText("[Target]");
+//    targetUI.setTooltip("Choose a target");
+//    
+//  }
+//}
 
 void FastMapUI::buttonClicked(Button * b)
 {

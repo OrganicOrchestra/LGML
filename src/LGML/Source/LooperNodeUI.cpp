@@ -11,6 +11,8 @@
 #include "LooperNodeUI.h"
 
 #include "NodeBaseUI.h"
+#include "ParameterUIFactory.h"
+
 
 
 ConnectableNodeUI * LooperNode::createUI(){
@@ -35,15 +37,15 @@ void LooperNodeContentUI::init(){
   looperNode = (LooperNode*)node.get();
   looperNode->addLooperListener(this);
 
-  recPlaySelectedButton = looperNode->recPlaySelectedTrig->createBlinkUI();
-  clearSelectedButton = looperNode->clearSelectedTrig->createBlinkUI();
-  stopSelectedButton = looperNode->stopSelectedTrig->createBlinkUI();
+  recPlaySelectedButton = ParameterUIFactory::createDefaultUI(looperNode->recPlaySelectedTrig);
+  clearSelectedButton = ParameterUIFactory::createDefaultUI(looperNode->clearSelectedTrig);
+  stopSelectedButton = ParameterUIFactory::createDefaultUI(looperNode->stopSelectedTrig);
 
-  clearAllButton = looperNode->clearAllTrig->createBlinkUI();
-  stopAllButton = looperNode->stopAllTrig->createBlinkUI();
+  clearAllButton = ParameterUIFactory::createDefaultUI(looperNode->clearAllTrig);
+  stopAllButton = ParameterUIFactory::createDefaultUI(looperNode->stopAllTrig);
 
-  volumeSelectedSlider = looperNode->volumeSelected->createSlider();
-  monitoringButton = looperNode->isMonitoring->createToggle();
+  volumeSelectedSlider = ParameterUIFactory::createDefaultUI(looperNode->volumeSelected);
+  monitoringButton = ParameterUIFactory::createDefaultUI(looperNode->isMonitoring);
 
   headerContainer.addAndMakeVisible(recPlaySelectedButton);
   headerContainer.addAndMakeVisible(clearSelectedButton);
@@ -151,19 +153,19 @@ void LooperNodeContentUI::trackNumChanged(int num) {
 LooperNodeContentUI::TrackUI::TrackUI(LooperTrack * track) :track(track),
 isSelected(false),timeStateUI(track)
 {
-  recPlayButton = track->recPlayTrig->createBlinkUI();
-  clearButton = track->clearTrig->createBlinkUI();
-  stopButton = track->stopTrig->createBlinkUI();
-  muteButton = track->mute->createToggle();
-  soloButton = track->solo->createToggle();
-  sampleChoiceDDL = track->sampleChoice->createUI();
+  recPlayButton = ParameterUIFactory::createDefaultUI(track->recPlayTrig);
+  clearButton = ParameterUIFactory::createDefaultUI(track->clearTrig);
+  stopButton = ParameterUIFactory::createDefaultUI(track->stopTrig);
+  muteButton = ParameterUIFactory::createDefaultUI(track->mute);
+  soloButton = ParameterUIFactory::createDefaultUI(track->solo);
+  sampleChoiceDDL = (EnumParameterUI*)ParameterUIFactory::createDefaultUI(track->sampleChoice);
   sampleChoiceDDL->setCanModifyModel(true,true);
 
   track->addTrackListener(this);
 
   addAndMakeVisible(recPlayButton);
   addAndMakeVisible(clearButton);
-  volumeSlider = track->volume->createSlider();
+  volumeSlider = new FloatSliderUI(track->volume);
   volumeSlider->orientation = FloatSliderUI::VERTICAL;
   addAndMakeVisible(volumeSlider);
   addAndMakeVisible(stopButton);

@@ -31,7 +31,7 @@ public:
 
 	MIDIDeviceChooser deviceChooser;
 	ScopedPointer<NamedControllableUI> channelStepper;
-	ScopedPointer<BoolToggleUI> incomingToogle;
+	ScopedPointer<ParameterUI> incomingToogle;
 
 	 
 

@@ -96,7 +96,6 @@ public:
   ScopedPointer<AudioProcessorGraph> innerGraph;
   AudioProcessorGraph * getAudioGraph(){return innerGraph;};
 
-  Array<ParameterProxy *> proxyParams;
 
   //NODE AND CONNECTION MANAGEMENT
 
@@ -141,7 +140,6 @@ public:
   // Inherited via NodeBase::Listener
   virtual void askForRemoveNode(ConnectableNode *) override;
 
-  virtual void askForRemoveProxy(ParameterProxy * p) override;
 
   // Inherited via NodeConnection::Listener
   virtual void askForRemoveConnection(NodeConnection *) override;

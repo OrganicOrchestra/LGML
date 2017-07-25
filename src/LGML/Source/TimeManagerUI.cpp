@@ -9,7 +9,7 @@
  */
 
 #include "TimeManagerUI.h"
-
+#include "ParameterUIFactory.h"
 
 
 TimeManagerUI::TimeManagerUI(const String &contentName, TimeManager * _timeManager) :
@@ -27,33 +27,33 @@ TimeManagerUI::TimeManagerUI(const String &contentName, TimeManager * _timeManag
 	timeManager->currentBar->addAsyncParameterListener(this);
 
 	addAndMakeVisible(timeBar);
-	bpmStepper = timeManager->BPM->createSlider();
+	bpmStepper = new IntStepperUI(timeManager->BPM);
 	//  bpmStepper->assignOnMousePosDirect = true;
 	//  bpmStepper->changeParamOnMouseUpOnly = true;
 
 	addAndMakeVisible(bpmStepper);
 
 
-	quantizStepper = timeManager->quantizedBarFraction->createStepper();
+	quantizStepper = ParameterUIFactory::createDefaultUI(timeManager->quantizedBarFraction);
 
 	addAndMakeVisible(quantizStepper);
 
-	playTrig = timeManager->playTrigger->createBlinkUI();
+	playTrig = ParameterUIFactory::createDefaultUI(timeManager->playTrigger);
 	addAndMakeVisible(playTrig);
-	stopTrig = timeManager->stopTrigger->createBlinkUI();
+	stopTrig = ParameterUIFactory::createDefaultUI(timeManager->stopTrigger);
 	addAndMakeVisible(stopTrig);
-	tapTempo = timeManager->tapTempo->createBlinkUI();
+	tapTempo = ParameterUIFactory::createDefaultUI(timeManager->tapTempo);
 	addAndMakeVisible(tapTempo);
-	click = timeManager->click->createToggle();
+	click = ParameterUIFactory::createDefaultUI(timeManager->click);
 	addAndMakeVisible(click);
-	clickVolumeUI = timeManager->clickVolume->createSlider();
+	clickVolumeUI = ParameterUIFactory::createDefaultUI(timeManager->clickVolume);
 	addAndMakeVisible(clickVolumeUI);
 
-	linkEnabled = timeManager->linkEnabled->createToggle();
+	linkEnabled = ParameterUIFactory::createDefaultUI(timeManager->linkEnabled);
 	addAndMakeVisible(linkEnabled);
 
 
-	linkNumPeers = timeManager->linkNumPeers->createStepper();
+	linkNumPeers = ParameterUIFactory::createDefaultUI(timeManager->linkNumPeers);
 	addAndMakeVisible(linkNumPeers);
 
 

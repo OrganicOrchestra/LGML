@@ -13,6 +13,7 @@
 
 #include "ControlVariableReference.h"
 #include "ParameterUI.h"
+class StringParameterUI;
 
 class ControlVariableReferenceUI :
 	public Component,

@@ -14,9 +14,6 @@
 #include "Parameter.h"
 #include "QueuedNotifier.h"
 
-class TriggerButtonUI;
-class TriggerBlinkUI;
-
 class Trigger : public Parameter
 {
 public:
@@ -26,8 +23,7 @@ public:
 	
 	
 	
-	TriggerBlinkUI * createBlinkUI(Trigger * target = nullptr);
-	ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
+	
 	
 	
   DynamicObject * createDynamicObject() override;
@@ -41,14 +37,13 @@ public:
     setValue(triggerVar);
 	}
   void tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt) override{
-    isTriggering = true;
+    jassert(isSettingValue==false);
+    isSettingValue = true;
     if (!silentSet) notifyValueChanged(defferIt);
-    isTriggering = false;
+    isSettingValue = false;
     
   }
-  
-  // avoid feedback loop in listeners
-	bool isTriggering;
+
 public:
 
 

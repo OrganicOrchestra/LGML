@@ -13,6 +13,7 @@
 
 #include "MIDIListener.h"
 #include "IntStepperUI.h"
+#include "ParameterUIFactory.h"
 
 MIDIControllerEditor::MIDIControllerEditor(Controller * _controller) :
 	ControllerEditor(_controller,false),
@@ -28,10 +29,10 @@ MIDIControllerEditor::MIDIControllerEditor(Controller * _controller) :
 
     addAndMakeVisible(jsUI);
 
-    incomingToogle = midiController->logIncoming->createToggle();
+  incomingToogle = ParameterUIFactory::createDefaultUI(midiController->logIncoming);
     addAndMakeVisible(incomingToogle);
 
-	channelStepper = new NamedControllableUI(midiController->channelFilter->createStepper(),50);
+	channelStepper = new NamedControllableUI(new IntStepperUI(midiController->channelFilter),50);
 	addAndMakeVisible(channelStepper);
 
 	midiController->addMIDIListenerListener(this);

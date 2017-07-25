@@ -12,6 +12,7 @@
 #include "DebugHelpers.h"
 
 #include "NodeManager.h"
+
 ControllableContainerPopupMenu::ControllableContainerPopupMenu(ControllableContainer * rootContainer)
 {
 	int id = 1;

@@ -45,7 +45,7 @@ void VSTNodeContentUI::init() {
     addAndMakeVisible(showPluginWindowButton);
     addAndMakeVisible(VSTListShowButton);
 
-	activityBlink = vstNode->midiActivityTrigger->createBlinkUI();
+	activityBlink = ParameterUIFactory::createDefaultUI(vstNode->midiActivityTrigger);
 	activityBlink->showLabel = false;
 	addAndMakeVisible(activityBlink);
 
@@ -72,7 +72,7 @@ void VSTNodeContentUI::updateVSTParameters(){
     int pCount = 0;
 
     for(auto &p: vstNode->VSTParameters){
-        FloatSliderUI * slider = p->createSlider();
+        FloatSliderUI * slider = new FloatSliderUI(p);
         paramSliders.add(slider);
         addAndMakeVisible(slider);
         pCount++;

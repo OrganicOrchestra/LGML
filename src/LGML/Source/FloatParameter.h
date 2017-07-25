@@ -15,9 +15,6 @@
 
 #include "Parameter.h"
 
-class FloatSliderUI;
-class FloatStepperUI;
-
 class FloatParameter : public Parameter
 {
 public:
@@ -27,9 +24,6 @@ public:
     void setValueInternal(var & _value) override;
     
 
-    FloatSliderUI * createSlider(FloatParameter * target = nullptr);
-    FloatStepperUI * createStepper(FloatParameter * target = nullptr);
-    ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
 
    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FloatParameter)
 };

@@ -33,7 +33,7 @@ void ConnectableNodeAudioCtlUI::resized() {
 
 void ConnectableNodeAudioCtlUI::setNodeAndNodeUI(ConnectableNode * node, ConnectableNodeUI *){
     jassert(node->hasAudioOutputs());
-    outputVolume = node->outputVolume->createSlider();
+    outputVolume = new FloatSliderUI(node->outputVolume);
     outputVolume->orientation = FloatSliderUI::Direction::VERTICAL;
     addAndMakeVisible(outputVolume);
     //bypassUI = node->bypass->createToggle();

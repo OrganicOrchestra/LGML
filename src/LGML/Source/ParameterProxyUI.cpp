@@ -11,6 +11,7 @@
 #include "ParameterProxyUI.h"
 #include "StringParameterUI.h"
 #include "ControllableContainer.h"
+#include "ParameterUIFactory.h"
 
 ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
 	linkedParamUI(nullptr),
@@ -23,20 +24,6 @@ ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
 	paramProxy->addParameterProxyListener(this);
 
 	setLinkedParamUI(paramProxy->linkedParam);
-
-	aliasParam = paramProxy->proxyAlias.createStringParameterUI();
-	addAndMakeVisible(aliasParam);
-
-	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
-
-	removeBT.setImages(false, true, true, removeImage,
-		0.7f, Colours::transparentBlack,
-		removeImage, 1.0f, Colours::transparentBlack,
-		removeImage, 1.0f, Colours::white.withAlpha(.7f),
-		0.5f);
-	removeBT.addListener(this);
-
-	addAndMakeVisible(&removeBT);
 }
 
 ParameterProxyUI::~ParameterProxyUI()
@@ -50,12 +37,11 @@ void ParameterProxyUI::resized()
 	Rectangle<int> r = getLocalBounds();
 	if (r.getWidth() == 0 || r.getHeight() == 0) return;
 
-	removeBT.setBounds(r.removeFromRight(r.getHeight()));
+
 	Rectangle<int> paramR = r.removeFromRight(50);
-	if (linkedParamUI != nullptr) linkedParamUI->setBounds(paramR);
-	r.removeFromRight(5);
-	chooser.setBounds(r.removeFromLeft(50));
-	aliasParam->setBounds(r);
+  if (linkedParamUI != nullptr){ linkedParamUI->setBounds(paramR);}
+  else{chooser.setBounds(paramR);}
+
 }
 
 void ParameterProxyUI::setLinkedParamUI(Parameter * p)
@@ -70,7 +56,8 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 		linkedParamUI = nullptr;
 	}
 
-	linkedParamUI = dynamic_cast<ParameterUI *>(p->createDefaultUI(paramProxy));
+  linkedParamUI = p?ParameterUIFactory::createDefaultUI(p):nullptr;
+
 
 	if (linkedParamUI != nullptr)
 	{
@@ -78,26 +65,22 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 		updateTooltip();
 		linkedParamUI->setTooltip(getTooltip());
 	}
-
+  chooser.setVisible(linkedParamUI!=nullptr);
 	resized();
 }
 
-void ParameterProxyUI::buttonClicked(Button * b)
-{
-	if (b == &removeBT)
-	{
-		paramProxy->remove();
-	}
-}
 
-void ParameterProxyUI::linkedParamChanged(Parameter * p)
+
+void ParameterProxyUI::linkedParamChanged(ParameterProxy * p)
 {
-	setLinkedParamUI(p);
+	setLinkedParamUI(p->linkedParam);
 }
 
 void ParameterProxyUI::choosedControllableChanged(ControllableReferenceUI*,Controllable * c)
 {
-	paramProxy->setLinkedParam(dynamic_cast<Parameter *>(c));
+  auto t = dynamic_cast<Parameter *>(c);
+  setLinkedParamUI(t);
+
 }
 
 void ParameterProxyUI::controllableNameChanged(Controllable * c)

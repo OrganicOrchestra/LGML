@@ -13,7 +13,7 @@
 
 #include "Parameter.h"
 
-class EnumParameterUI;
+
 
 // base class for model behind an enum parameter
 // a model is a dictionary of var notifying its structural changes
@@ -127,8 +127,8 @@ public:
   var getFirstSelectedValue(var defaultValue=var::null) ;
   bool selectionIsNotEmpty();
   var getValueForId(const Identifier &i);
-  EnumParameterUI * createUI(EnumParameter * target = nullptr);
-  ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
+  
+  
 
 
   //Listener

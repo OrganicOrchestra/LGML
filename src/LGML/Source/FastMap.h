@@ -12,7 +12,7 @@
 #define FASTMAP_H_INCLUDED
 
 #include "ControllableContainer.h"
-
+#include "ParameterProxy.h"
 
 class FastMap;
 
@@ -30,8 +30,7 @@ public:
 
 class FastMap :
 	public ControllableContainer,
-  public Controllable::Listener
-
+public ParameterProxy::ParameterProxyListener
 {
 public:
 	FastMap();
@@ -47,32 +46,28 @@ public:
 
 	String ghostAddress; //for ghosting if parameter not found
 
-	WeakReference<Controllable> referenceIn;
-	WeakReference<Controllable> referenceOut;
+	ParameterProxy * referenceIn;
+	ParameterProxy *  referenceOut;
 
   
 
 	bool isInRange; //memory for triggering
 	void process();
 
-	void setReference(Controllable * r);
-	void setTarget(Controllable * c);
 	void setGhostAddress(const String &address);
-
-	virtual var getJSONData() override;
-	virtual void loadJSONDataInternal(var data) override;
 
 	void remove();
 
-	void childStructureChanged(ControllableContainer *, ControllableContainer *) override;
 
+
+  // inherited from proxy listener
+   void linkedParamValueChanged(ParameterProxy *) override;
+		 void linkedParamChanged(ParameterProxy *) override;
 	ListenerList<FastMapListener> fastMapListeners;
 	void addFastMapListener(FastMapListener* newListener) { fastMapListeners.add(newListener); }
 	void removeFastMapListener(FastMapListener* listener) { fastMapListeners.remove(listener); }
 
 
-  void parameterValueChanged(Parameter * p) override;
-  void controllableRemoved(Controllable  *c) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMap);
 };

@@ -30,7 +30,7 @@ public:
 	
 	bool checkValueIsTheSame(var newValue, var oldValue) override;
 
-	ControllableUI * createDefaultUI(Controllable * /*targetControllable*/ = nullptr) override { return nullptr; }
+	
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Point2DParameter)
 };
 

@@ -12,6 +12,8 @@
 #include "ControllerEditor.h"
 #include "Style.h"
 #include "TriggerBlinkUI.h"
+#include "StringParameterUI.h"
+#include "ParameterUIFactory.h"
 
 ControllerUI::ControllerUI(Controller * controller) :
 	InspectableComponent(controller, "controller"),
@@ -22,11 +24,11 @@ ControllerUI::ControllerUI(Controller * controller) :
     MessageManagerLock ml;
 	addMouseListener(this, true);
   }
-	nameTF = controller->nameParam->createStringParameterUI();
+	nameTF = new StringParameterUI(controller->nameParam);
   nameTF->setBackGroundIsTransparent(true);
 	addAndMakeVisible(nameTF);
 
-	enabledBT = controller->enabledParam->createToggle();
+  enabledBT = ParameterUIFactory::createDefaultUI(controller->enabledParam);
 	addAndMakeVisible(enabledBT);
 
 	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
@@ -40,7 +42,7 @@ ControllerUI::ControllerUI(Controller * controller) :
 	addAndMakeVisible(removeBT);
 
 
-	activityBlink = controller->activityTrigger->createBlinkUI();
+  activityBlink = new TriggerBlinkUI(controller->activityTrigger);
 	activityBlink->showLabel = false;
 	addAndMakeVisible(activityBlink);
 }

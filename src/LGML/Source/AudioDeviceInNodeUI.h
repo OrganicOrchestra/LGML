@@ -1,53 +1,55 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    AudioDeviceInNodeUI.h
-    Created: 25 May 2016 9:31:12am
-    Author:  bkupe
+ AudioDeviceInNodeUI.h
+ Created: 25 May 2016 9:31:12am
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef AUDIODEVICEINNODEUI_H_INCLUDED
 #define AUDIODEVICEINNODEUI_H_INCLUDED
 
 #include "NodeBaseContentUI.h"
 #include "NodeBase.h"
+#include "ParameterUI.h"
+class FloatSliderUI;
 
 class VuMeter;
 class AudioDeviceInNode;
 
 class AudioDeviceInNodeContentUI :
-	public NodeBaseContentUI,
-	public ConnectableNode::ConnectableNodeListener,
-	public ChangeListener
+public NodeBaseContentUI,
+public ConnectableNode::ConnectableNodeListener,
+public ChangeListener
 {
 public:
-	AudioDeviceInNodeContentUI();
-	virtual ~AudioDeviceInNodeContentUI();
+  AudioDeviceInNodeContentUI();
+  virtual ~AudioDeviceInNodeContentUI();
 
-	OwnedArray<BoolToggleUI> muteToggles;
-    OwnedArray<FloatSliderUI> volumes;
-	OwnedArray<VuMeter> vuMeters;
+  OwnedArray<ParameterUI> muteToggles;
+  OwnedArray<FloatSliderUI> volumes;
+  OwnedArray<VuMeter> vuMeters;
 
-	AudioDeviceInNode * audioInNode;
+  AudioDeviceInNode * audioInNode;
 
-	void init() override;
+  void init() override;
 
-	void resized() override;
+  void resized() override;
 
-	void updateVuMeters();
+  void updateVuMeters();
 
-	void addVuMeter();
-	void removeLastVuMeter();
+  void addVuMeter();
+  void removeLastVuMeter();
 
-	virtual void nodeParameterChanged(ConnectableNode*, Parameter *) override;
+  virtual void nodeParameterChanged(ConnectableNode*, Parameter *) override;
 
-	virtual void numAudioOutputChanged(ConnectableNode *, int newNum) override;
+  virtual void numAudioOutputChanged(ConnectableNode *, int newNum) override;
 
 
-	// Inherited via ChangeListener
-	virtual void changeListenerCallback(ChangeBroadcaster * source) override;
+  // Inherited via ChangeListener
+  virtual void changeListenerCallback(ChangeBroadcaster * source) override;
 
 };
 

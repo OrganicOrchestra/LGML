@@ -10,6 +10,7 @@
 
 #include "SerialControllerEditor.h"
 #include "FloatSliderUI.h"
+#include "ParameterUIFactory.h"
 //#include "SerialControllerUI.h"//keep
 
 SerialControllerEditor::SerialControllerEditor(Controller * cont) :
@@ -29,7 +30,7 @@ ControllerEditor(cont,false)
 
   addAndMakeVisible(jsUI);
 
-  incomingToogle = serialController->logIncoming->createToggle();
+  incomingToogle = ParameterUIFactory::createDefaultUI(serialController->logIncoming);
   addAndMakeVisible(incomingToogle);
 
   serialController->addSerialControllerListener(this);

@@ -14,7 +14,6 @@
 
 #include "Parameter.h"
 
-class StringParameterUI;
 
 class StringParameter : public Parameter
 {
@@ -25,8 +24,7 @@ public:
     // need to override this function because var Strings comparison  is based on pointer (we need full string comp)
     void tryToSetValue(var v,bool silentSet=false,bool force=false,bool defferIt=false)override;
     void setValueInternal(var&)override;
-    StringParameterUI * createStringParameterUI(StringParameter * target = nullptr);
-    ControllableUI* createDefaultUI(Controllable * targetControllable = nullptr) override;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameter)
 };
 

@@ -17,7 +17,7 @@
 #include "NodeContainer.h"
 #include "AudioDebugPipe.h"
 #include "AudioDebugCrack.h"
-#include "ControllableFactory.h"
+#include "ParameterFactory.h"
 
 
 
@@ -31,7 +31,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 	ControllableContainer("root"),
 threadPool(4)
 {
-  ControllableFactory::registerAllTypes();
+  ParameterFactory::registerAllTypes();
 	skipControllableNameInAddress = true;
   loadingStartTime = 0;
   initAudio();

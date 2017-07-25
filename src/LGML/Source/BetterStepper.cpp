@@ -34,7 +34,9 @@ void BetterStepper::resized(){
   }
   else{
     setSliderStyle(SliderStyle::IncDecButtons);
-    setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
+    setColour(juce::Slider::textBoxBackgroundColourId, juce::Colours::white.withAlpha(0.1f));
+    setColour(juce::Slider::textBoxTextColourId, juce::Colours::white.withAlpha(0.7f));
+//    setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
   }
 
 }

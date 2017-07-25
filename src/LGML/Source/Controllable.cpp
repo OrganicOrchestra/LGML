@@ -14,7 +14,7 @@
 #include "StringUtil.h"
 
 
-#include "ControllableFactory.h"
+#include "ParameterFactory.h"
 
 
 
@@ -189,6 +189,10 @@ var Controllable::setControllableValueFromJS(const juce::var::NativeFunctionArgs
 
 
 const Identifier  Controllable::getTypeIdentifier(){
-  return ControllableFactory::getIdentifierForInstance(this);
+  return ParameterFactory::getIdentifierForInstance(this);
 }
 
+
+Parameter* Controllable::getParameter(){
+  return dynamic_cast<Parameter*>(this);
+}

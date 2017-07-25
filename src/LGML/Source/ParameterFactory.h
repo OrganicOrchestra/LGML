@@ -1,7 +1,7 @@
 /*
  ==============================================================================
 
- ControllableFactory.h
+ ParameterFactory.h
  Created: 20 Jul 2017 7:31:07pm
  Author:  Martin Hermant
 
@@ -14,13 +14,13 @@
 #include "Controllable.h"
 
 
-class ControllableFactory{
+class ParameterFactory{
 public:
   
   typedef String IdentifierType;
 
 
-  static Controllable* createFromVarObject(var v ,const String & name);
+  static Parameter* createFromVarObject(var v ,const String & name);
   static var getVarObjectFromControllable(Controllable *c);
   static const IdentifierType getIdentifierForInstance(Controllable * );
 
@@ -36,8 +36,8 @@ public:
   
 
 
-  typedef Controllable* (*CreatorFunc)(const String &niceName, const String &description , DynamicObject* params);
-  typedef Controllable* (*CheckFunction)(Controllable* c);
+  typedef Parameter* (*CreatorFunc)(const String &niceName, const String &description , DynamicObject* params);
+  typedef Parameter* (*CheckFunction)(Controllable* c);
   typedef std::tuple<CreatorFunc,CheckFunction> Entry;
 
 
@@ -46,7 +46,7 @@ public:
 
 
   template <typename T>
-  static Controllable* createFromVar( const String &niceName, const String &description , DynamicObject* params) {
+  static Parameter* createFromVar( const String &niceName, const String &description , DynamicObject* params) {
     T * res =  new T(niceName,description);
     if(params){
     res->setFromVarObject(*params);
@@ -54,7 +54,7 @@ public:
     return res;
   }
   template <typename T>
-  static Controllable* checkNget(Controllable *c) {
+  static Parameter* checkNget(Controllable *c) {
     return dynamic_cast<T*>(c);
   }
   

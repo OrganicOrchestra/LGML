@@ -1,53 +1,40 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    StringParameter.cpp
-    Created: 9 Mar 2016 12:29:30am
-    Author:  bkupe
+ StringParameter.cpp
+ Created: 9 Mar 2016 12:29:30am
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "StringParameter.h"
-#include "StringParameterUI.h"
+
 
 
 StringParameter::StringParameter(const String & niceName, const String &description, const String & initialValue, bool enabled) :
-    Parameter(Type::STRING, niceName, description, initialValue, var(), var(), enabled)
+Parameter(Type::STRING, niceName, description, initialValue, var(), var(), enabled)
 {
 
 }
-
-
-
-StringParameterUI * StringParameter::createStringParameterUI(StringParameter * target)
-{
-	if (target == nullptr) target = this;
-  return  new StringParameterUI(target);
-}
-
-ControllableUI* StringParameter::createDefaultUI(Controllable * targetControllable){
-
-    auto spUI =  createStringParameterUI(dynamic_cast<StringParameter *>(targetControllable));
-  
-  return spUI;
-};
 
 
 void StringParameter::tryToSetValue(var _value,bool silentSet,bool force,bool defferIt ){
-    
-   
-    if (!force && value.toString() == _value.toString()) return;
-    
-    setValueInternal(_value);
-    
-    
-    if(_value != defaultValue) isOverriden = true;
-    
-    if (!silentSet) notifyValueChanged(defferIt);
+
+
+  if (!force && value.toString() == _value.toString()) return;
+  jassert(isSettingValue==false);
+  isSettingValue = true;
+  setValueInternal(_value);
+
+
+  if(_value != defaultValue) isOverriden = true;
+
+  if (!silentSet) notifyValueChanged(defferIt);
+  isSettingValue = false;
 };
 
 void  StringParameter::setValueInternal(var & newVal){
-    value = newVal.toString();
+  value = newVal.toString();
 };
 

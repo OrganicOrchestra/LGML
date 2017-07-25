@@ -57,7 +57,7 @@ void DataInNodeContentUI::addUIForParameter(Parameter * p)
     switch (p->type)
     {
         case Parameter::Type::FLOAT:
-            addParameterUI(((FloatParameter *)p)->createSlider());
+            addParameterUI(new FloatSliderUI((FloatParameter *)p));
             break;
         default:
             DBG("no UI for type : " << p->type);

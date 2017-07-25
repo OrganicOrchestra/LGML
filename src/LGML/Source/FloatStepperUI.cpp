@@ -22,6 +22,7 @@ FloatStepperUI::FloatStepperUI(Parameter * _parameter) :ParameterUI(_parameter){
 	slider->setTextBoxIsEditable(_parameter->isEditable);
   slider->setEnabled( ! parameter->isControllableFeedbackOnly);
   
+  
 }
 
 FloatStepperUI::~FloatStepperUI()

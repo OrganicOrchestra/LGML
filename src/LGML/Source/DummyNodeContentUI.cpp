@@ -10,6 +10,7 @@
 
 #include "DummyNodeContentUI.h"
 #include "NodeBaseUI.h"
+#include "ParameterUIFactory.h"
 
 DummyNodeContentUI::DummyNodeContentUI() : NodeBaseContentUI()
 {
@@ -44,22 +45,22 @@ void DummyNodeContentUI::init()
 
     dummyNode = (DummyNode *)node.get();
 
-    freq1Slider = dummyNode->freq1Param->createSlider();
+    freq1Slider = new FloatSliderUI(dummyNode->freq1Param);
     addAndMakeVisible(freq1Slider);
 
-    freq2Slider = dummyNode->freq2Param->createSlider();
+    freq2Slider = new FloatSliderUI(dummyNode->freq2Param);
     addAndMakeVisible(freq2Slider);
 
-	pxSlider = dummyNode->pxParam->createSlider();
+	pxSlider = new FloatSliderUI(dummyNode->pxParam);
 	addAndMakeVisible(pxSlider);
 
-	pySlider = dummyNode->pyParam->createSlider();
+	pySlider = new FloatSliderUI(dummyNode->pyParam);
 	addAndMakeVisible(pySlider);
 
-    testTriggerButton = dummyNode->testTrigger->createDefaultUI();
+    testTriggerButton = ParameterUIFactory::createDefaultUI(dummyNode->testTrigger);
     addAndMakeVisible(testTriggerButton);
 
-	modeUI = dummyNode->enumParam->createUI();
+	modeUI = ParameterUIFactory::createDefaultUI(dummyNode->enumParam);
 	addAndMakeVisible(modeUI);
   setDefaultSize(250,200);
 

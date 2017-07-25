@@ -14,8 +14,7 @@
 class OSCControllerUI;
 #include "ControllerEditor.h"
 
-#include "TriggerBlinkUI.h"
-#include "StringParameterUI.h"
+#include "ParameterUI.h"
 #include "OSCController.h"
 
 class OSCControllerEditor : public ControllerEditor, public OSCController::OSCControllerListener
@@ -26,13 +25,13 @@ public:
 
 	OSCController * oscController;
 
-	ScopedPointer<StringParameterUI> localPortUI;
-	ScopedPointer<StringParameterUI> remoteHostUI;
-	ScopedPointer<StringParameterUI> remotePortUI;
-    ScopedPointer<BoolToggleUI> logIncomingOSC,logOutOSC;
-  ScopedPointer<FloatSliderUI> speedLimit;
-  ScopedPointer<BoolToggleUI> blockFeedback;
-  ScopedPointer<TriggerBlinkUI> sendAllTrigger;
+	ScopedPointer<ParameterUI> localPortUI;
+	ScopedPointer<ParameterUI> remoteHostUI;
+	ScopedPointer<ParameterUI> remotePortUI;
+  ScopedPointer<ParameterUI> logIncomingOSC,logOutOSC;
+  ScopedPointer<ParameterUI> speedLimit;
+  ScopedPointer<ParameterUI> blockFeedback;
+  ScopedPointer<ParameterUI> sendAllTrigger;
 
 
 	Component innerContainer;

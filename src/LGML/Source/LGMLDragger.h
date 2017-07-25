@@ -13,7 +13,7 @@
 #include "JuceHeader.h"
 #include "LGMLComponent.h"
 
-class ControllableReferenceUI;
+
 
 class LGMLDragger : MouseListener{
 public:
@@ -99,7 +99,7 @@ public:
   void toggleMappingMode();
   bool isMappingActive;
 
-  ControllableReferenceUI*  target;
+  Component*  target;
 private:
   Point<int> mouseDownWithinTarget;
 

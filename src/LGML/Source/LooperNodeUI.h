@@ -21,13 +21,13 @@ class LooperNodeContentUI: public NodeBaseContentUI , public LooperNode::LooperL
 {
 public:
 
-  ScopedPointer<TriggerBlinkUI>   recPlaySelectedButton;
-  ScopedPointer<TriggerBlinkUI>   clearSelectedButton;
-  ScopedPointer<TriggerBlinkUI>   stopSelectedButton;
-  ScopedPointer<FloatSliderUI>    volumeSelectedSlider;
-  ScopedPointer<TriggerBlinkUI>   clearAllButton;
-  ScopedPointer<TriggerBlinkUI>   stopAllButton;
-  ScopedPointer<BoolToggleUI>     monitoringButton;
+  ScopedPointer<ParameterUI>   recPlaySelectedButton;
+  ScopedPointer<ParameterUI>   clearSelectedButton;
+  ScopedPointer<ParameterUI>   stopSelectedButton;
+  ScopedPointer<ParameterUI>    volumeSelectedSlider;
+  ScopedPointer<ParameterUI>   clearAllButton;
+  ScopedPointer<ParameterUI>   stopAllButton;
+  ScopedPointer<ParameterUI>     monitoringButton;
 
 
   LooperNodeContentUI();
@@ -58,12 +58,12 @@ public:
 
     LooperTrack * track;
     
-    ScopedPointer<TriggerBlinkUI> recPlayButton;
-    ScopedPointer<TriggerBlinkUI> clearButton;
-    ScopedPointer<TriggerBlinkUI> stopButton;
+    ScopedPointer<ParameterUI> recPlayButton;
+    ScopedPointer<ParameterUI> clearButton;
+    ScopedPointer<ParameterUI> stopButton;
 
-    ScopedPointer<BoolToggleUI> muteButton;
-    ScopedPointer<BoolToggleUI> soloButton;
+    ScopedPointer<ParameterUI> muteButton;
+    ScopedPointer<ParameterUI> soloButton;
     ScopedPointer<EnumParameterUI> sampleChoiceDDL;
     
 

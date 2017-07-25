@@ -9,6 +9,7 @@
 */
 
 #include "ControlVariableUI.h"
+#include "ParameterUIFactory.h"
 
 ControlVariableUI::ControlVariableUI(ControlVariable * _variable) :
 	variable(_variable),
@@ -20,7 +21,7 @@ ControlVariableUI::ControlVariableUI(ControlVariable * _variable) :
 	pNameLabel.setColour(pNameLabel.backgroundWhenEditingColourId, Colours::white);
 	pNameLabel.addListener(this);
 
-	pui = (ParameterUI *)variable->parameter->createDefaultUI();
+  pui = ParameterUIFactory::createDefaultUI(variable->parameter);
 	pui->showLabel = false;
 	addAndMakeVisible(pui);
 

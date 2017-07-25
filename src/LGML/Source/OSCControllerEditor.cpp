@@ -9,6 +9,8 @@
  */
 
 #include "OSCControllerEditor.h"
+#include "ParameterUIFactory.h"
+#include "StringParameterUI.h"
 
 OSCControllerEditor::OSCControllerEditor(Controller * _controller) :
 ControllerEditor(_controller)
@@ -16,19 +18,19 @@ ControllerEditor(_controller)
 {
   oscController = dynamic_cast<OSCController*> (_controller);
   jassert(oscController);
-  localPortUI = oscController->localPortParam->createStringParameterUI();
-  localPortUI->setNameLabelVisible(true);
-  remoteHostUI = oscController->remoteHostParam->createStringParameterUI();
-  remoteHostUI->setNameLabelVisible(true);
-  remotePortUI = oscController->remotePortParam->createStringParameterUI();
-  remotePortUI->setNameLabelVisible(true);
+  localPortUI = ParameterUIFactory::createDefaultUI(oscController->localPortParam);
+  ((StringParameterUI*)localPortUI.get())->setNameLabelVisible(true);
+  remoteHostUI = ParameterUIFactory::createDefaultUI(oscController->remoteHostParam);
+  ((StringParameterUI*)remoteHostUI.get())->setNameLabelVisible(true);
+  remotePortUI = ParameterUIFactory::createDefaultUI(oscController->remotePortParam);
+  ((StringParameterUI*)remotePortUI.get())->setNameLabelVisible(true);
 
-  logIncomingOSC = oscController->logIncomingOSC->createToggle();
-  speedLimit = oscController->speedLimit->createSlider();
-  logOutOSC = oscController->logOutGoingOSC->createToggle();
-  blockFeedback = oscController->blockFeedback->createToggle();
+  logIncomingOSC = ParameterUIFactory::createDefaultUI(oscController->logIncomingOSC);
+  speedLimit = ParameterUIFactory::createDefaultUI(oscController->speedLimit);
+  logOutOSC = ParameterUIFactory::createDefaultUI(oscController->logOutGoingOSC);
+  blockFeedback = ParameterUIFactory::createDefaultUI(oscController->blockFeedback);
 
-  sendAllTrigger = oscController->sendAllParameters->createBlinkUI();
+  sendAllTrigger = ParameterUIFactory::createDefaultUI(oscController->sendAllParameters);
 
   addAndMakeVisible(localPortUI);
   addAndMakeVisible(remoteHostUI);

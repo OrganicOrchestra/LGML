@@ -22,6 +22,8 @@ FastMap::FastMap() :
 //	reference = new ControlVariableReference();
 //	referenceIn.get()->addReferenceListener(this);
 
+  referenceIn = addNewParameter<ParameterProxy>("in param","parameter for input");
+  referenceOut = addNewParameter<ParameterProxy>("out param","parameter for input");
 	enabledParam = addBoolParameter("Enabled", "Enabled / Disable Fast Map", true);
 
 	minInputVal = addFloatParameter("In Min", "Minimum Input Value", 0, 0, 1);
@@ -36,9 +38,6 @@ FastMap::FastMap() :
 FastMap::~FastMap()
 {
 
-	setReference(nullptr);
-	setTarget(nullptr);
-//	setGhostAddress(String::empty);
 
 	fastMapListeners.call(&FastMapListener::fastMapRemoved, this);
 	if(getEngine())  getEngine()->removeControllableContainerListener(this);
@@ -47,9 +46,9 @@ FastMap::~FastMap()
 void FastMap::process()
 {
 	if (!enabledParam->boolValue()) return;
-  if(!referenceIn.get() || !referenceOut.get()) return;
+  if(!referenceIn->get() || !referenceOut->get()) return;
 
-  auto inRef = dynamic_cast<Parameter*>(referenceIn.get());
+  auto inRef = referenceIn->get();
   if(inRef){
 	float sourceVal = (float)inRef->value;
 
@@ -57,15 +56,16 @@ void FastMap::process()
 
 	if (invertParam->boolValue()) newIsInRange = !newIsInRange;
 
-	if (referenceOut.get()->type == Controllable::TRIGGER)
+    auto outRef = referenceOut->get();
+	if (outRef->type == Controllable::TRIGGER)
 	{
-		if (newIsInRange != isInRange && newIsInRange) ((Trigger*)referenceOut.get())->trigger();
+		if (newIsInRange != isInRange && newIsInRange) ((Trigger*)outRef)->trigger();
 	}
 	else
 	{
-		if (referenceOut.get()->type == Controllable::BOOL)
+		if (outRef->type == Controllable::BOOL)
 		{
-			((BoolParameter *)referenceOut.get())->setValue(newIsInRange);
+			((BoolParameter *)outRef)->setValue(newIsInRange);
 		}else
 		{
 			if (minOutputVal->floatValue() < maxOutputVal->floatValue())
@@ -73,7 +73,7 @@ void FastMap::process()
 				float targetVal = juce::jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
 				targetVal = juce::jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(), targetVal);
 				if (invertParam->boolValue()) targetVal = maxOutputVal->floatValue() - (targetVal - minOutputVal->floatValue());
-				((Parameter *)referenceOut.get())->setNormalizedValue(targetVal);
+				((Parameter *)outRef)->setNormalizedValue(targetVal);
 			}
 		}
 	}
@@ -82,49 +82,8 @@ void FastMap::process()
   }
 }
 
-void FastMap::setReference(Controllable * r)
-{
-	if (referenceIn == r) return;
-	if (referenceIn != nullptr)
-	{
-		referenceIn.get()->removeControllableListener(this);
-	}
-	referenceIn = r;
-	if (referenceIn != nullptr)
-	{
-		referenceIn.get()->addControllableListener(this);
-		
-		float normMin = minInputVal->getNormalizedValue();
-		float normMax = maxInputVal->getNormalizedValue();
-//		minInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
-//		maxInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
-//		
-		minInputVal->setNormalizedValue(normMin);
-		maxInputVal->setNormalizedValue(normMax);
-		
-	}
 
-	fastMapListeners.call(&FastMapListener::fastMapReferenceChanged, this);
-}
 
-void FastMap::setTarget(Controllable * c)
-{
-
-	if (referenceOut == c) return;
-
-	if (referenceOut != nullptr)
-	{
-		referenceOut.get()->removeControllableListener(this);
-	}
-	referenceOut = c;
-
-	if (referenceOut != nullptr)
-	{
-		referenceOut.get()->addControllableListener(this);
-	}
-
-	fastMapListeners.call(&FastMapListener::fastMapTargetChanged, this);
-}
 
 void FastMap::setGhostAddress(const String & address)
 {
@@ -134,77 +93,37 @@ void FastMap::setGhostAddress(const String & address)
 	else getEngine()->removeControllableContainerListener(this);
 }
 
-var FastMap::getJSONData()
-{
-	var data = ControllableContainer::getJSONData();
-	if (referenceIn != nullptr)
-	{
-//		data.getDynamicObject()->setProperty("reference", referenceIn.get()->getJSONData());
-	}
-
-	if (referenceOut != nullptr)
-	{
-		data.getDynamicObject()->setProperty("target", referenceOut.get()->getControlAddress()); //Need to be global
-		setGhostAddress(String::empty);
-	}
-
-	return data;
-}
-
-void FastMap::loadJSONDataInternal(var data)
-{
-	if (data.getDynamicObject()->hasProperty("reference"))
-	{
-//		referenceIn.get()->loadJSONData(data.getDynamicObject()->getProperty("reference"));
-	}
-
-	if (data.getDynamicObject()->hasProperty("target"))
-	{
-		String cAddress = data.getDynamicObject()->getProperty("target").toString();
-		//Need to be global
-		cAddress = cAddress.substring(1);
-		Controllable * c = NodeManager::getInstance()->getControllableForAddress(cAddress);
-		if (c == nullptr) setGhostAddress(cAddress);
-		else setTarget(c);
-	}
-}
 
 void FastMap::remove()
 {
 	fastMapListeners.call(&FastMapListener::askForRemoveFastMap, this);
 }
 
-void FastMap::childStructureChanged(ControllableContainer *, ControllableContainer *)
-{
-	
-	if (ghostAddress.isNotEmpty() && referenceOut.get() == nullptr)
-	{
-    // shouldn't use that
-    jassertfalse;
-		if (NodeManager::getInstanceWithoutCreating() == nullptr) return;
-		Controllable * c = NodeManager::getInstance()->getControllableForAddress(ghostAddress);
-		if (c != nullptr) setTarget(c);
-	}
-}
 
 
-void FastMap::parameterValueChanged(Parameter * p){
-  if(referenceIn && referenceOut){
+void FastMap::linkedParamValueChanged(ParameterProxy *p) {
   if(p==referenceIn){
     process();
     return;
   }
+};
+void FastMap::linkedParamChanged(ParameterProxy *p) {
+
+  if (p==referenceIn)
+  {
+
+    float normMin = minInputVal->getNormalizedValue();
+    float normMax = maxInputVal->getNormalizedValue();
+    //		minInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
+    //		maxInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
+    //
+    minInputVal->setNormalizedValue(normMin);
+    maxInputVal->setNormalizedValue(normMax);
+    fastMapListeners.call(&FastMapListener::fastMapReferenceChanged, this);
   }
-  ControllableContainer::parameterValueChanged(p);
+  else if(p==referenceOut){
+    fastMapListeners.call(&FastMapListener::fastMapTargetChanged, this);
+  }
 
-
-
-}
-
-void FastMap::controllableRemoved(Controllable * c)
-{
-	if (c == referenceOut)
-	{
-		setTarget(nullptr);
-	}
-}
+  
+};

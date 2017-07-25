@@ -25,10 +25,10 @@
             resource="0"/>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{251032AC-FAA1-501D-6EB1-08B12B054272}" name="Controllable">
-          <FILE id="hR5AS9" name="ControllableFactory.cpp" compile="1" resource="0"
-                file="Source/ControllableFactory.cpp"/>
-          <FILE id="hCdg2z" name="ControllableFactory.h" compile="0" resource="0"
-                file="Source/ControllableFactory.h"/>
+          <FILE id="hR5AS9" name="ParameterFactory.cpp" compile="1" resource="0"
+                file="Source/ParameterFactory.cpp"/>
+          <FILE id="hCdg2z" name="ParameterFactory.h" compile="0" resource="0"
+                file="Source/ParameterFactory.h"/>
           <GROUP id="{FF851D53-C827-E769-E716-78C1AF603615}" name="presets">
             <FILE compile="1" file="Source/PresetManager.cpp" id="ChdLZ1" name="PresetManager.cpp"
                   resource="0"/>
@@ -57,6 +57,10 @@
             <FILE compile="0" file="Source/Trigger.h" id="aqPYZL" name="Trigger.h"
                   resource="0"/>
             <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
+              <FILE id="dJbu80" name="ParameterUIFactory.cpp" compile="1" resource="0"
+                    file="Source/ParameterUIFactory.cpp"/>
+              <FILE id="sojpTW" name="ParameterUIFactory.h" compile="0" resource="0"
+                    file="Source/ParameterUIFactory.h"/>
               <FILE compile="1" file="Source/TriggerBlinkUI.cpp" id="F1WYW6" name="TriggerBlinkUI.cpp"
                     resource="0"/>
               <FILE compile="0" file="Source/TriggerBlinkUI.h" id="YU6UcA" name="TriggerBlinkUI.h"
@@ -64,10 +68,6 @@
               <FILE compile="1" file="Source/EnumParameterUI.cpp" id="dYvxwa" name="EnumParameterUI.cpp"
                     resource="0"/>
               <FILE compile="0" file="Source/EnumParameterUI.h" id="eKc7hQ" name="EnumParameterUI.h"
-                    resource="0"/>
-              <FILE compile="1" file="Source/ParameterProxyUI.cpp" id="lriir5" name="ParameterProxyUI.cpp"
-                    resource="0"/>
-              <FILE compile="0" file="Source/ParameterProxyUI.h" id="EhMeoR" name="ParameterProxyUI.h"
                     resource="0"/>
               <FILE compile="1" file="Source/FloatStepperUI.cpp" id="amJhhJ" name="FloatStepperUI.cpp"
                     resource="0"/>
@@ -87,6 +87,10 @@
                     resource="0"/>
               <FILE compile="1" file="Source/IntStepperUI.cpp" id="aoAqVv" name="IntStepperUI.cpp"
                     resource="0"/>
+              <FILE id="iOabOz" name="ParameterProxyUI.cpp" compile="1" resource="0"
+                    file="Source/ParameterProxyUI.cpp"/>
+              <FILE id="nSpDWc" name="ParameterProxyUI.h" compile="0" resource="0"
+                    file="Source/ParameterProxyUI.h"/>
               <FILE compile="0" file="Source/IntStepperUI.h" id="IhFgI5" name="IntStepperUI.h"
                     resource="0"/>
               <FILE compile="1" file="Source/ParameterUI.cpp" id="NF7928" name="ParameterUI.cpp"
@@ -102,6 +106,10 @@
                   resource="0"/>
             <FILE compile="0" file="Source/BoolParameter.h" id="YWoigC" name="BoolParameter.h"
                   resource="0"/>
+            <FILE id="HeoqRK" name="ParameterProxy.cpp" compile="1" resource="0"
+                  file="Source/ParameterProxy.cpp"/>
+            <FILE id="WxD2RW" name="ParameterProxy.h" compile="0" resource="0"
+                  file="Source/ParameterProxy.h"/>
             <FILE compile="1" file="Source/EnumParameter.cpp" id="WJtJpE" name="EnumParameter.cpp"
                   resource="0"/>
             <FILE compile="0" file="Source/EnumParameter.h" id="PxJq8L" name="EnumParameter.h"
@@ -117,10 +125,6 @@
             <FILE compile="1" file="Source/Parameter.cpp" id="mi3a1Z" name="Parameter.cpp"
                   resource="0"/>
             <FILE compile="0" file="Source/Parameter.h" id="CVykgt" name="Parameter.h"
-                  resource="0"/>
-            <FILE compile="1" file="Source/ParameterProxy.cpp" id="rpfYZ4" name="ParameterProxy.cpp"
-                  resource="0"/>
-            <FILE compile="0" file="Source/ParameterProxy.h" id="rxmDp4" name="ParameterProxy.h"
                   resource="0"/>
             <FILE compile="1" file="Source/Point2DParameter.cpp" id="NJbcHt" name="Point2DParameter.cpp"
                   resource="0"/>
@@ -808,11 +812,11 @@
                        osxCompatibility="10.8 SDK" osxSDK="default" targetName="LGML"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1, GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE"
                        defines="" headerPath="../../External/serial/include" isDebug="1"
-                       name="Debug" osxArchitecture="64BitUniversal" osxCompatibility="10.7 SDK"
+                       name="Debug" osxArchitecture="32BitUniversal" osxCompatibility="10.7 SDK"
                        osxSDK="default" targetName="LGML"/>
         <CONFIGURATION cppLanguageStandard="c++11" cppLibType="libc++" customXcodeFlags="ONLY_ACTIVE_ARCH=1"
                        defines="LGML_UNIT_TESTS=1&#10;" headerPath="../../External/serial/include&#10;../../Source"
-                       isDebug="1" name="Test" osxArchitecture="64BitUniversal" osxCompatibility="10.7 SDK"
+                       isDebug="1" name="Test" osxArchitecture="32BitUniversal" osxCompatibility="10.7 SDK"
                        osxSDK="default" targetName="LGML_Debug"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

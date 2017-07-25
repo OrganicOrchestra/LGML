@@ -11,6 +11,7 @@
 #include "GenericControllableContainerEditor.h"
 #include "InspectableComponent.h"
 #include "ControllableUI.h"
+#include "ParameterUIFactory.h"
 
 GenericControllableContainerEditor::GenericControllableContainerEditor(ControllableContainer * _sourceContainer) :
 	InspectorEditor(),
@@ -241,7 +242,7 @@ void CCInnerContainer::addControllableUI(Controllable * c)
 {
 	if (c->isControllableFeedbackOnly || !c->isControllableExposed) return;
 
-	NamedControllableUI * cui = new NamedControllableUI(c->createDefaultUI(), 100);
+  NamedControllableUI * cui = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c->getParameter()), 100);
 	controllablesUI.add(cui);
 	addAndMakeVisible(cui);
 }

@@ -32,7 +32,7 @@ public:
 	TextButton connectPortBT;
 
 	ScopedPointer<JsEnvironmentUI> jsUI;
-	ScopedPointer<BoolToggleUI> incomingToogle;
+	ScopedPointer<ParameterUI> incomingToogle;
 
 	OwnedArray<ParameterUI> variablesUI;
 

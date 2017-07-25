@@ -70,8 +70,6 @@ public:
   virtual DynamicObject * createDynamicObject() override;
 
 
-
-
   //Listener
   class  Listener
   {
@@ -88,7 +86,7 @@ public:
   void addParameterListener(Listener* newListener) { listeners.add(newListener); }
   void removeParameterListener(Listener* listener) { listeners.remove(listener); }
 
-
+  bool isSettingValue;
   
   // ASYNC
   class  ParamWithValue{

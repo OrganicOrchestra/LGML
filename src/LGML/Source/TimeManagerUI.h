@@ -78,15 +78,15 @@ class TimeManagerUI : public ShapeShifterContentComponent,public Parameter::Asyn
 
   };
 
-  ScopedPointer<FloatSliderUI>  bpmStepper;
-  ScopedPointer<IntStepperUI> quantizStepper;
-  ScopedPointer<TriggerBlinkUI> playTrig,stopTrig,tapTempo;
-  ScopedPointer<BoolToggleUI> click;
-  ScopedPointer<FloatSliderUI> clickVolumeUI;
+  ScopedPointer<ParameterUI>  bpmStepper;
+  ScopedPointer<ParameterUI> quantizStepper;
+  ScopedPointer<ParameterUI> playTrig,stopTrig,tapTempo;
+  ScopedPointer<ParameterUI> click;
+  ScopedPointer<ParameterUI> clickVolumeUI;
 
 
-  ScopedPointer<BoolToggleUI> linkEnabled;
-  ScopedPointer<IntStepperUI> linkNumPeers;
+  ScopedPointer<ParameterUI> linkEnabled;
+  ScopedPointer<ParameterUI> linkNumPeers;
 
 
 

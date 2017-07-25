@@ -30,7 +30,7 @@ public:
     ScopedPointer<FloatSliderUI> freq2Slider;
 	ScopedPointer<FloatSliderUI> pxSlider;
 	ScopedPointer<FloatSliderUI> pySlider;
-	ScopedPointer<EnumParameterUI> modeUI;
+	ScopedPointer<ParameterUI> modeUI;
     ScopedPointer<ControllableUI> testTriggerButton;
 
     void resized() override;

@@ -18,7 +18,7 @@ ProgressListener(notifier)
 {
 	DBG("progressParam " << progressParam.floatValue());
 
-	progressUI = progressParam.createSlider();
+	progressUI = new FloatSliderUI(&progressParam);
 	addAndMakeVisible(progressUI);
 	addAndMakeVisible(titleLabel);
 	titleLabel.setColour(Label::ColourIds::textColourId, TEXTNAME_COLOR);

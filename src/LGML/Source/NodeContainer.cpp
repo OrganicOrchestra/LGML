@@ -102,10 +102,6 @@ void NodeContainer::clear(bool recreateContainerNodes)
     addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
   }
 
-  while (proxyParams.size() > 0)
-  {
-    removeParamProxy(proxyParams[0]);
-  }
   if(!recreateContainerNodes)ConnectableNode::clear();
 
   // init with global sample rate and blockSize
@@ -247,27 +243,6 @@ int NodeContainer::getNumConnections() {
   return connections.size();
 }
 
-ParameterProxy * NodeContainer::addParamProxy()
-{
-  ParameterProxy * p = new ParameterProxy();
-  ControllableContainer::addUserControllable(p,true);
-  proxyParams.add(p);
-  p->addParameterProxyListener(this);
-
-  nodeContainerListeners.call(&NodeContainerListener::paramProxyAdded, p);
-
-  return p;
-}
-
-void NodeContainer::removeParamProxy(ParameterProxy * pp)
-{
-  pp->removeParameterProxyListener(this);
-
-  nodeContainerListeners.call(&NodeContainerListener::paramProxyRemoved, pp);
-  proxyParams.removeAllInstancesOf(pp);
-  removeControllable(pp);
-}
-
 
 
 var NodeContainer::getJSONData()
@@ -289,14 +264,6 @@ var NodeContainer::getJSONData()
 
   data.getDynamicObject()->setProperty("nodes", nodesData);
   data.getDynamicObject()->setProperty("connections", connectionsData);
-
-  var proxiesData;
-  for (auto &pp : proxyParams)
-  {
-    proxiesData.append(pp->getJSONData());
-  }
-
-  data.getDynamicObject()->setProperty("proxies", proxiesData);
 
   return data;
 }
@@ -362,20 +329,6 @@ void NodeContainer::loadJSONDataInternal(var data)
     }
   }
 
-
-
-
-
-  Array<var> * proxiesData = data.getProperty("proxies", var()).getArray();
-
-  if (proxiesData)
-  {
-    for (var &pData : *proxiesData)
-    {
-      ParameterProxy * p = addParamProxy();
-      p->loadJSONData(pData);
-    }
-  }
 
 
   removeIllegalConnections();
@@ -470,10 +423,6 @@ void NodeContainer::askForRemoveNode(ConnectableNode * node)
   }
 }
 
-void NodeContainer::askForRemoveProxy(ParameterProxy * p)
-{
-  removeParamProxy(p);
-}
 
 
 void NodeContainer::askForRemoveConnection(NodeConnection *connection)

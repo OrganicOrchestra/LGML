@@ -13,7 +13,7 @@
 
 #include "Parameter.h"
 
-class BoolToggleUI;
+
 
 class BoolParameter : public Parameter
 {
@@ -21,9 +21,7 @@ public:
     BoolParameter(const String &niceName, const String &description, bool initialValue=false, bool enabled = true);
     ~BoolParameter() {}
 
-    //ui creation
-    BoolToggleUI * createToggle(BoolParameter * target = nullptr);
-    ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) override;
+    
 
 	bool invertVisuals; //moved here for coherence when ui is generated automatically
 

@@ -65,7 +65,7 @@ bool FastMapperUI::mapPassViewFilter(FastMap * f)
 {
 	if (viewFilterContainer == nullptr) return true;
 //	if (f->reference.get() != nullptr && (ControllableContainer *)f->reference.->controller == viewFilterContainer) return true;
-	if (f->referenceOut.get() != nullptr && viewFilterContainer->containsControllable(f->referenceOut.get())) return true;
+	if (f->referenceOut->get() != nullptr && viewFilterContainer->containsControllable(f->referenceOut->get())) return true;
 
 	return false;
 }
@@ -126,7 +126,8 @@ class tst : CallbackMessage{
 
 void FastMapperUI::fastMapAdded(FastMap *f )
 {
-  MessageManager::callAsync([this,f] (){ addFastMapUI(f);resized();});
+  WeakReference<ControllableContainer> wf(f);
+  MessageManager::callAsync([this,wf] (){if(wf.get()){ addFastMapUI((FastMap*)wf.get());resized();}});
 //	addFastMapUI(f);
 //	resized();
 }

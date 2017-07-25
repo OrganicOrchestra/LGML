@@ -17,6 +17,8 @@
 
 class ControllerUI;
 class ControllerEditor;
+
+
 class Controller :
 	public ControllableContainer,
 	public ControlVariableListener

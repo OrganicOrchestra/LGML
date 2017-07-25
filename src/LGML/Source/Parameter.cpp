@@ -19,7 +19,8 @@ isPresettable(true),
 isOverriden(false),
 queuedNotifier(100),
 hasCommitedValue(false),
-isCommitableParameter(false)
+isCommitableParameter(false),
+isSettingValue(false)
 {
   minimumValue = minValue;
   maximumValue = maxValue;
@@ -41,19 +42,25 @@ void Parameter::resetValue(bool silentSet)
 
 void Parameter::setValue(var _value, bool silentSet, bool force,bool defferIt)
 {
+
   if(isCommitableParameter && !force){
     commitValue(_value);
   }
   else{
     tryToSetValue(_value,silentSet,force,defferIt);
   }
+
 }
 void Parameter::tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt){
+
   if (!force && checkValueIsTheSame(_value, value)) return;
+  jassert(isSettingValue==false);
+  isSettingValue = true;
   lastValue = var(value);
   setValueInternal(_value);
   if(_value != defaultValue) isOverriden = true;
   if (!silentSet) notifyValueChanged(defferIt);
+   isSettingValue = false;
 
 }
 void Parameter::setRange(var min, var max){

@@ -33,7 +33,7 @@ public:
 	//VARIABLES
 	Component variablesContainer;
 
-	TextButton addVariableBT;
+	TextButton addParameterBT;
 	OwnedArray<ControlVariableUI> variablesUI;
 
   ScopedPointer<GenericControllableContainerEditor> editor;

@@ -12,6 +12,7 @@
 #include "NodeBaseUI.h"
 #include "IntStepperUI.h"
 #include "FloatSliderUI.h"
+#include "ParameterUIFactory.h"
 
 Spat2DNodeContentUI::Spat2DNodeContentUI() : NodeBaseContentUI()
 {
@@ -76,31 +77,31 @@ void Spat2DNodeContentUI::init()
 	viewer2D = new Spat2DViewer(spatNode);
 	addAndMakeVisible(viewer2D);
 
-	spatModeUI = spatNode->spatMode->createUI();
+  spatModeUI = ParameterUIFactory::createDefaultUI(spatNode->spatMode);
 	addAndMakeVisible(spatModeUI);
 
-	inputStepper = new NamedControllableUI(spatNode->numSpatInputs->createStepper(), 80);
+  inputStepper = new NamedControllableUI(ParameterUIFactory::createDefaultUI(spatNode->numSpatInputs), 80);
 	addAndMakeVisible(inputStepper);
-	outputStepper = new NamedControllableUI(spatNode->numSpatOutputs->createStepper(), 80);
+	outputStepper = new NamedControllableUI(ParameterUIFactory::createDefaultUI(spatNode->numSpatOutputs), 80);
 	addAndMakeVisible(outputStepper);
 
-	radiusUI = spatNode->targetRadius->createSlider();
+	radiusUI = new FloatSliderUI(spatNode->targetRadius);
 	addAndMakeVisible(radiusUI);
 
-	useGlobalUI = spatNode->useGlobalTarget->createToggle();
+	useGlobalUI = ParameterUIFactory::createDefaultUI(spatNode->useGlobalTarget);
 	addAndMakeVisible(useGlobalUI);
 	if (spatNode->useGlobalTarget->boolValue() && globalRadiusUI != nullptr)
 	{
-		globalRadiusUI = spatNode->globalTargetRadius->createSlider();
+		globalRadiusUI = new FloatSliderUI(spatNode->globalTargetRadius);
 		addAndMakeVisible(globalRadiusUI);
 	}
-	shapeModeUI = spatNode->shapeMode->createUI();
+  shapeModeUI = ParameterUIFactory::createDefaultUI(spatNode->shapeMode);
 	addAndMakeVisible(shapeModeUI);
 
-	circleRadiusUI = spatNode->circleRadius->createSlider();
+	circleRadiusUI = new FloatSliderUI(spatNode->circleRadius);
 	addChildComponent(circleRadiusUI);
 
-	circleRotationUI = spatNode->circleRotation->createSlider();
+	circleRotationUI = new FloatSliderUI(spatNode->circleRotation);
 	addChildComponent(circleRotationUI);
 
 	updateShapeModeView();
@@ -124,7 +125,7 @@ void Spat2DNodeContentUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 	{
 		if (spatNode->useGlobalTarget->boolValue())
 		{
-			globalRadiusUI = spatNode->globalTargetRadius->createSlider();
+			globalRadiusUI = new FloatSliderUI(spatNode->globalTargetRadius);
 			addAndMakeVisible(globalRadiusUI);
 			
 		} else

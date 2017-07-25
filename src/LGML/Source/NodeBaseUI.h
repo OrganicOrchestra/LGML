@@ -15,6 +15,7 @@
 
 #include "NodeBaseContentUI.h"//keep
 #include "NodeBaseHeaderUI.h"//keep
+#include "ParameterUIFactory.h"
 class NodeBase;
 
 //==============================================================================

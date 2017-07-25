@@ -9,7 +9,7 @@
  */
 
 #include "EnumParameter.h"
-#include "EnumParameterUI.h"
+
 
 
 Identifier EnumParameter::modelIdentifier("model");
@@ -305,14 +305,4 @@ void EnumParameter::newMessage(const EnumChangeMessage &msg) {
 };
 
 
-////////////
-//ui
-EnumParameterUI * EnumParameter::createUI(EnumParameter * target)
-{
-  if (target == nullptr) target = this;
-  return new EnumParameterUI(target);
-}
 
-ControllableUI * EnumParameter::createDefaultUI(Controllable * targetControllable) {
-  return createUI(dynamic_cast<EnumParameter *>(targetControllable));
-}

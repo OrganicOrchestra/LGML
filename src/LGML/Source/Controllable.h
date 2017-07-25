@@ -16,6 +16,7 @@
 
 class ControllableContainer;
 class ControllableUI;
+class Parameter;
 
 class Controllable
 {
@@ -75,8 +76,7 @@ public:
 
   virtual bool isNumeric(); //default implementation, can be overriden for special parameters
 
-  // used for generating editor
-  virtual ControllableUI * createDefaultUI(Controllable * targetControllable = nullptr) = 0;
+
 
   //used for script variables
   virtual DynamicObject * createDynamicObject();
@@ -89,6 +89,10 @@ public:
   virtual  const Identifier  getTypeIdentifier();
   // helper identifier to use when overiding
   static const Identifier varTypeIdentifier;
+
+
+
+  Parameter* getParameter();
 
 
 

@@ -14,9 +14,9 @@
 
 #include "Controller.h"//keep
 #include "InspectableComponent.h"
-#include "BoolToggleUI.h"
+
 #include "TriggerBlinkUI.h"
-#include "StringParameterUI.h"
+class StringParameterUI;
 
 
 class ControllerUI : public InspectableComponent, public ButtonListener
@@ -26,7 +26,7 @@ public:
     virtual ~ControllerUI();
 
 	ScopedPointer<StringParameterUI> nameTF;
-	ScopedPointer<BoolToggleUI> enabledBT;
+	ScopedPointer<ParameterUI> enabledBT;
 	ImageButton removeBT;
 
 	ScopedPointer<TriggerBlinkUI> activityBlink;

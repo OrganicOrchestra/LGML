@@ -12,8 +12,8 @@
 #define NODECONTAINERCONTENTUI_H_INCLUDED
 
 #include "ConnectableNodeContentUI.h"
-class ParameterProxy;
 #include "NodeContainer.h"
+#include "ParameterUI.h"
 
 class NodeContainerContentUI :
 	public ConnectableNodeContentUI,
@@ -26,18 +26,10 @@ public :
 
 	NodeContainer * nodeContainer;
 	TextButton editContainerBT;
-	TextButton addParamProxyBT;
+	TextButton addUserParamBT;
 
-	OwnedArray<ControllableUI> proxiesUI;
+	OwnedArray<ParameterUI> userParamUI;
 
-	const int proxyUIHeight = 20;
-	const int listGap = 2;
-
-	void addParamProxyUI(ParameterProxy *);
-	void removeParamProxyUI(ParameterProxy *);
-  
-
-	ControllableUI * getUIForProxy(ParameterProxy *);
 
 
 	void updateSize();
@@ -47,10 +39,7 @@ public :
 
 	void buttonClicked(Button * b) override;
 
-	virtual void paramProxyAdded(ParameterProxy *) override;
-	virtual void paramProxyRemoved(ParameterProxy *) override;
-
-
+  
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainerContentUI)
 };
 

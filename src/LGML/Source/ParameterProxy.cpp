@@ -1,102 +1,97 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ParameterProxy.cpp
-    Created: 31 May 2016 12:28:42pm
-    Author:  bkupe
+ ParameterProxy.cpp
+ Created: 31 May 2016 12:28:42pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "ParameterProxy.h"
-#include "ParameterProxyUI.h"
 #include "ControllableContainer.h"
+#include "Engine.h"
 
-ParameterProxy::ParameterProxy(const String &niceName, const String &description) :
-	linkedParam(nullptr),
-	Parameter(PROXY, niceName, description, 0, 0, 1),
-	isUpdatingLinkedParam(false),
-	proxyAlias("alias","Proxy Alias\nThis will be used to set the OSC control address","proxy")
+ParameterProxy::ParameterProxy(const String & niceName,const String & desc,Parameter * ref,ControllableContainer * root) :
+StringParameter(niceName,desc),
+linkedParam(ref),
+isUpdatingLinkedParam(false)
 {
-	proxyAlias.addParameterListener(this);
-  
+  setRoot(root);
+
 }
 
 ParameterProxy::~ParameterProxy()
 {
-	setLinkedParam(nullptr);
+  setParamToReferTo(nullptr);
 }
 
+
+void ParameterProxy::setRoot(ControllableContainer * r){
+  rootOfProxy = r;
+  resolveAddress();
+
+}
 void ParameterProxy::setValueInternal(var & _value)
 {
-	Parameter::setValueInternal(_value);
+  StringParameter::setValueInternal(_value);
 
-	if (linkedParam != nullptr && !isUpdatingLinkedParam)
-	{
-		isUpdatingLinkedParam = true; //avoid infinite cycling setValue between proxy and linkedParam
-		linkedParam->setValue(_value);
-		isUpdatingLinkedParam = false;
-	}
+  resolveAddress();
 }
+
 
 void ParameterProxy::parameterValueChanged(Parameter * p)
 {
-	if (p && (p == linkedParam))
-	{
-		setValue(p->value); //should be silent ?
-	} else if (p == &proxyAlias)
-	{
-		setNiceName(p->stringValue());
-	}
+  jassert(p==linkedParam);
+  proxyListeners.call(&ParameterProxyListener::linkedParamValueChanged, this);
 }
 
-void ParameterProxy::setLinkedParam(Parameter * p)
+Parameter* ParameterProxy::get(){
+  return linkedParam.get();
+}
+void ParameterProxy::setParamToReferTo(Parameter * p)
 {
-	if (linkedParam == p) return;
-	if (linkedParam != nullptr)
-	{
-		linkedParam->removeParameterListener(this);
-	}
-	linkedParam = p;
 
-	if (linkedParam != nullptr)
-	{
-		linkedParam->addParameterListener(this);
-		description = String("Proxy Param for "+linkedParam->getControlAddress(parentContainer));
-		setRange(linkedParam->minimumValue, linkedParam->maximumValue);
-		setValue(linkedParam->value, true, true);
+  String targetAddress = p?p->getControlAddress(getRoot()):String::empty;
+  if(targetAddress!=stringValue()){
+    setValue(targetAddress);
+  }
+  else{
+    if (linkedParam == p) return;
+    if (linkedParam != nullptr)
+    {
+      linkedParam->removeParameterListener(this);
+    }
+    linkedParam = p;
 
-	}
+    if (linkedParam != nullptr)
+    {
+      linkedParam->addParameterListener(this);
 
-	proxyListeners.call(&ParameterProxyListener::linkedParamChanged, linkedParam);
+    }
+
+    proxyListeners.call(&ParameterProxyListener::linkedParamChanged,this);
+  }
 }
 
 void ParameterProxy::remove()
 {
-	DBG("dispatch askForRemove");
-	proxyListeners.call(&ParameterProxyListener::askForRemoveProxy, this);
+  DBG("dispatch askForRemove");
 }
 
-ControllableUI * ParameterProxy::createDefaultUI(Controllable * targetControllable)
-{
-	if (targetControllable == nullptr) targetControllable = this;
-	return new ParameterProxyUI(dynamic_cast<ParameterProxy *>(targetControllable));
+
+ControllableContainer * ParameterProxy::getRoot(){
+  return (rootOfProxy?rootOfProxy:getEngine());
 }
 
-var ParameterProxy::getJSONData()
-{
-	var data(new DynamicObject());
-	data.getDynamicObject()->setProperty("alias", proxyAlias.stringValue());
-	if (linkedParam != nullptr) data.getDynamicObject()->setProperty("linkedParam", linkedParam->getControlAddress(parentContainer));
-	return data;
-}
 
-void ParameterProxy::loadJSONData(var data)
-{
-	proxyAlias.setValue(data.getDynamicObject()->getProperty("alias").toString());
-	if (parentContainer != nullptr)
-	{
-		String relAddress = data.getDynamicObject()->getProperty("linkedParam").toString();
-		if(relAddress.isNotEmpty()) setLinkedParam((Parameter *)parentContainer->getControllableForAddress(relAddress));
-	}
+bool ParameterProxy::resolveAddress(){
+  if(stringValue().isNotEmpty()){
+    auto p = dynamic_cast<Parameter*>(getRoot()->getControllableForAddress(stringValue()));
+    setParamToReferTo(p);
+  }
+  else{
+    setParamToReferTo(nullptr);
+  }
+  return linkedParam!=nullptr;
 }
