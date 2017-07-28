@@ -23,10 +23,10 @@ MIDIController::MIDIController() :
 Controller("MIDI"),JsEnvironment("controller.mIDI",this)
 {
 	setNamespaceName("controller."+shortName);
-	deviceInName = addStringParameter("midiPortName", "name of Midi device input", "");
-	logIncoming = addBoolParameter("logIncoming","log Incoming midi message",false);
+	deviceInName = addNewParameter<StringParameter>("midiPortName", "name of Midi device input", "");
+	logIncoming = addNewParameter<BoolParameter>("logIncoming","log Incoming midi message",false);
 
-	channelFilter = addIntParameter("Channel", "Channel to filter message (0 = accept all channels)",0,0,16);
+	channelFilter = addNewParameter<IntParameter>("Channel", "Channel to filter message (0 = accept all channels)",0,0,16);
 
 
 	// TODO : we may need to listen to sR changes

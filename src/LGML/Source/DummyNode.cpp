@@ -26,12 +26,12 @@ clickFade(300,300)
 {
 
   clickFade.setFadedOut();
-  freq1Param = addFloatParameter("Freq 1", "This is a test int slider",.23f);
-  freq2Param = addFloatParameter("Freq 2", "This is a test int slider", .55f);
+  freq1Param = addNewParameter<FloatParameter>("Freq 1", "This is a test int slider",.23f);
+  freq2Param = addNewParameter<FloatParameter>("Freq 2", "This is a test int slider", .55f);
 
-  testTrigger = addTrigger("Test Trigger", "Youpi");
+  testTrigger =  addNewParameter<Trigger>("Test Trigger", "Youpi");
 
-  enumParam = addEnumParameter("Mode", "Enum Mode test");
+  enumParam = addNewParameter<EnumParameter>("Mode", "Enum Mode test");
   enumParam->addOption(lrId);
   enumParam->addOption(rlId);
   enumParam->addOption(mixedId);
@@ -47,8 +47,8 @@ clickFade(300,300)
   addOutputData("OUT Number", DataType::Number);
   outPosData = addOutputData("OUT Position", DataType::Position);
 
-  pxParam = addFloatParameter("PointX", "X", 0, 0, 1);
-  pyParam = addFloatParameter("PointY", "Y", 0, 0, 1);
+  pxParam = addNewParameter<FloatParameter>("PointX", "X", 0, 0, 1);
+  pyParam = addNewParameter<FloatParameter>("PointY", "Y", 0, 0, 1);
 
   //AUDIO
   setPlayConfigDetails(2, 3, getSampleRate(), getBlockSize());

@@ -584,13 +584,13 @@ var JsEnvironment::createParameterListenerObject(const var::NativeFunctionArgs &
 JSEnvContainer::JSEnvContainer(JsEnvironment * pEnv):
 ControllableContainer("jsParams"),jsEnv(pEnv){
 
-  scriptPath = addStringParameter("ScriptPath", "path for js script", "");
-  loadT = addTrigger("loadFile","open dialog to choose file to load");
-  reloadT= addTrigger("reloadFile","reload current file");
-  showT= addTrigger("showFile","open file in text editor");
-  autoWatch = addBoolParameter("autoWatch","auto reload if file has been changed",false);
+  scriptPath = addNewParameter<StringParameter>("ScriptPath", "path for js script", "");
+  loadT =  addNewParameter<Trigger>("loadFile","open dialog to choose file to load");
+  reloadT=  addNewParameter<Trigger>("reloadFile","reload current file");
+  showT=  addNewParameter<Trigger>("showFile","open file in text editor");
+  autoWatch = addNewParameter<BoolParameter>("autoWatch","auto reload if file has been changed",false);
   autoWatch->isSavable = false;
-  logT = addTrigger("LogEnvironment","print hierarchy of JS objects");
+  logT =  addNewParameter<Trigger>("LogEnvironment","print hierarchy of JS objects");
 
 }
 Component * JSEnvContainer::getCustomEditor(){

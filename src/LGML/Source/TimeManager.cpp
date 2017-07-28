@@ -48,27 +48,27 @@ linkLatency(00)
 
 {
 
-  BPM = addFloatParameter("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
+  BPM = addNewParameter<FloatParameter>("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
   BPM->isCommitableParameter = true;
-  playState = addBoolParameter("PlayStop", "play or stop global transport", false);
-  BPMLocked = addBoolParameter("bpmLocked", "bpm is locked by somebody", false);
+  playState = addNewParameter<BoolParameter>("PlayStop", "play or stop global transport", false);
+  BPMLocked = addNewParameter<BoolParameter>("bpmLocked", "bpm is locked by somebody", false);
   BPMLocked->isControllableFeedbackOnly = true;
-  isSettingTempo = addBoolParameter("isSettingTempo", "is someone setting tempo (recording first loop)", false);
-  currentBar  = addIntParameter("currentBar", "currentBar in transport", 0, 0, 9999999);
-  currentBeat  = addIntParameter("currentBeat", "currentBeat in transport", 0, 0, 999999);
-  beatPerBar = addIntParameter("beatPerBar", "beat Per Bar", 4, 1, 8);
-  playTrigger = addTrigger("play", "trigger play");
-  stopTrigger = addTrigger("stop", "trigger stop");
-  quantizedBarFraction = addIntParameter("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
-  tapTempo = addTrigger("tapTempo", "tap at least 2 times to set the tempo");
-  click = addBoolParameter("Metronome", "Play the metronome click", false);
-  clickVolume = addFloatParameter("Metronome Volume", "Click's volume if metronome is active", .5f, 0, 1);
+  isSettingTempo = addNewParameter<BoolParameter>("isSettingTempo", "is someone setting tempo (recording first loop)", false);
+  currentBar  = addNewParameter<IntParameter>("currentBar", "currentBar in transport", 0, 0, 9999999);
+  currentBeat  = addNewParameter<IntParameter>("currentBeat", "currentBeat in transport", 0, 0, 999999);
+  beatPerBar = addNewParameter<IntParameter>("beatPerBar", "beat Per Bar", 4, 1, 8);
+  playTrigger =  addNewParameter<Trigger>("play", "trigger play");
+  stopTrigger =  addNewParameter<Trigger>("stop", "trigger stop");
+  quantizedBarFraction = addNewParameter<IntParameter>("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
+  tapTempo =  addNewParameter<Trigger>("tapTempo", "tap at least 2 times to set the tempo");
+  click = addNewParameter<BoolParameter>("Metronome", "Play the metronome click", false);
+  clickVolume = addNewParameter<FloatParameter>("Metronome Volume", "Click's volume if metronome is active", .5f, 0, 1);
   setBPMInternal(BPM->doubleValue(),false);
 
-  linkEnabled = addBoolParameter("link enabled","activate link",false);
+  linkEnabled = addNewParameter<BoolParameter>("link enabled","activate link",false);
   linkEnabled->enabled = LINK_SUPPORT;
 
-  linkNumPeers = addIntParameter("linkNumPeers","number of connected link devices",0,0,32);
+  linkNumPeers = addNewParameter<IntParameter>("linkNumPeers","number of connected link devices",0,0,32);
   linkNumPeers->enabled = LINK_SUPPORT;
   linkNumPeers->isControllableFeedbackOnly = true;
   linkNumPeers->isEditable = false;
@@ -79,7 +79,7 @@ linkLatency(00)
   linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
 
   linkSession.setTempoCallback(&TimeManager::linkTempoCallBack);
-  linkLatencyParam = addFloatParameter("linkLatency", "link latency to add for lgml", 10, -30, 80);
+  linkLatencyParam = addNewParameter<FloatParameter>("linkLatency", "link latency to add for lgml", 10, -30, 80);
 #endif
 
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);

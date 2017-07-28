@@ -24,14 +24,14 @@ FastMap::FastMap() :
   referenceIn->addParameterProxyListener(this);
   referenceOut = addNewParameter<ParameterProxy>("out param","parameter for input");
   referenceOut->addParameterProxyListener(this);
-	enabledParam = addBoolParameter("Enabled", "Enabled / Disable Fast Map", true);
+	enabledParam = addNewParameter<BoolParameter>("Enabled", "Enabled / Disable Fast Map", true);
 
-	minInputVal = addFloatParameter("In Min", "Minimum Input Value", 0, 0, 1);
-	maxInputVal = addFloatParameter("In Max", "Maximum Input Value", 1, 0, 1);
-	minOutputVal = addFloatParameter("Out Min", "Minimum Output Value", 0, 0, 1);
-	maxOutputVal = addFloatParameter("Out Max", "Maximum Output Value", 1, 0, 1);
+	minInputVal = addNewParameter<FloatParameter>("In Min", "Minimum Input Value", 0, 0, 1);
+	maxInputVal = addNewParameter<FloatParameter>("In Max", "Maximum Input Value", 1, 0, 1);
+	minOutputVal = addNewParameter<FloatParameter>("Out Min", "Minimum Output Value", 0, 0, 1);
+	maxOutputVal = addNewParameter<FloatParameter>("Out Max", "Maximum Output Value", 1, 0, 1);
 
-	invertParam = addBoolParameter("Invert", "Invert the output signal", false);
+	invertParam = addNewParameter<BoolParameter>("Invert", "Invert the output signal", false);
 
 }
 

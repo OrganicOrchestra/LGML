@@ -75,7 +75,7 @@ public:
   ControllableContainer * parentContainer;
 
   template<class T,class... Args>
-  T* addNewParameter(const String & _niceName,const String & desc,Args&...args);
+  T* addNewParameter(const String & _niceName,const String & desc,Args...args);
 
   template<class T,class... Args>
   T* addNewUserParameter(const Identifier & id,const String & _niceName,const String & desc,Args...args);
@@ -89,15 +89,6 @@ public:
   UsrParameterList getAllUserParameters();
   
   Parameter* addParameter(Parameter * );
-  FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
-  IntParameter * addIntParameter(const String &niceName, const String &description, const int &initialValue, const int &minValue, const int &maxValue, const bool &enabled = true);
-  BoolParameter * addBoolParameter(const String &niceName, const String &description, const bool &value, const bool &enabled = true);
-  StringParameter * addStringParameter(const String &niceName, const String &description, const String &value, const bool &enabled = true);
-  EnumParameter * addEnumParameter(const String &niceName, const String &description, const bool &enabled = true);
-  Point2DParameter * addPoint2DParameter(const String &niceName, const String &description, const bool &enabled = true);
-  Point3DParameter * addPoint3DParameter(const String &niceName, const String &description, const bool &enabled = true);
-  Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
-
 
 
   
@@ -249,7 +240,7 @@ private:
 
 
 template<class T,class... Args>
-T* ControllableContainer::addNewParameter(const String & _niceName,const String & desc,Args&...args)
+T* ControllableContainer::addNewParameter(const String & _niceName,const String & desc,Args...args)
 {
 
   String targetName = getUniqueNameInContainer(_niceName);

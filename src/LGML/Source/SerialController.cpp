@@ -23,10 +23,10 @@ port(nullptr)
 {
 
   setNamespaceName("controller." + shortName);
-  logIncoming = addBoolParameter("logIncoming", "log Incoming midi message", false);
+  logIncoming = addNewParameter<BoolParameter>("logIncoming", "log Incoming midi message", false);
 
-  selectedHardwareID = addStringParameter("selectedHardwareID","Id of the selected hardware", "");
-  selectedPort = addStringParameter("selectedPort","Name of the selected hardware", "");
+  selectedHardwareID = addNewParameter<StringParameter>("selectedHardwareID","Id of the selected hardware", "");
+  selectedPort = addNewParameter<StringParameter>("selectedPort","Name of the selected hardware", "");
 
   SerialManager::getInstance()->addSerialManagerListener(this);
 }

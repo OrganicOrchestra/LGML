@@ -26,7 +26,7 @@ OSCController(name)
 {
   NodeManager::getInstance()->addControllableContainerListener(this);
 
-  sendTimeInfo = addBoolParameter("sendTimeInfo", "send time information", false);
+  sendTimeInfo = addNewParameter<BoolParameter>("sendTimeInfo", "send time information", false);
   if(sendTimeInfo->boolValue()){
     TimeManager::getInstance()->addControllableContainerListener(this);
   }

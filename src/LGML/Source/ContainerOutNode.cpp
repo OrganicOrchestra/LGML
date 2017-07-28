@@ -21,8 +21,8 @@ AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProc
 	canHavePresets = false;
 	userCanAccessOutputs = false;
 
-	numChannels = addIntParameter("Num Audio Outputs", "Number of output channels for this container", 2, 0, 100);
-	numInputData = addIntParameter("Num Data Outputs", "Number of data outputs for this container", 0, 0, 100);
+	numChannels = addNewParameter<IntParameter>("Num Audio Outputs", "Number of output channels for this container", 2, 0, 100);
+	numInputData = addNewParameter<IntParameter>("Num Data Outputs", "Number of data outputs for this container", 0, 0, 100);
 }
 
 ContainerOutNode::~ContainerOutNode()

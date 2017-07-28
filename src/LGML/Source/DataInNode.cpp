@@ -27,7 +27,7 @@ DataInNode::~DataInNode()
 
 inline FloatParameter * DataInNode::addFloatParamAndData(const String & name, float initialValue, float minVal, float maxVal)
 {
-	FloatParameter * p = addFloatParameter(name, "OSC Control for " + name, initialValue, minVal, maxVal);
+	FloatParameter * p = addNewParameter<FloatParameter>(name, "OSC Control for " + name, initialValue, minVal, maxVal);
 	addOutputData(name, Data::DataType::Number);
 	dynamicParameters.add(p);
 	dataInListeners.call(&DataInListener::parameterAdded, p);

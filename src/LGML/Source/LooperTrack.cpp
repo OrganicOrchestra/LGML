@@ -45,26 +45,26 @@ LooperTrack::LooperTrack(LooperNode * looperNode, int _trackIdx) :
 {
 
 
-	selectTrig = addTrigger("Select", "Select this track");
-	recPlayTrig = addTrigger("Rec Or Play", "Tells the track to wait for the next bar and then start record or play");
-	playTrig = addTrigger("Play", "Tells the track to wait for the next bar and then stop recording and start playing");
-	stopTrig = addTrigger("Stop", "Tells the track to stop ");
-	clearTrig = addTrigger("Clear", "Tells the track to clear it's content if got any");
-	volume = addFloatParameter("Volume", "Set the volume of the track", DB0_FOR_01, 0, 1);
-	mute = addBoolParameter("Mute", "Sets the track muted (or not.)", false);
-	solo = addBoolParameter("Solo", "Sets the track solo (or not.)", false);
-	beatLength = addFloatParameter("Length", "length in bar", 0, 0, 200);
+	selectTrig =  addNewParameter<Trigger>("Select", "Select this track");
+	recPlayTrig =  addNewParameter<Trigger>("Rec Or Play", "Tells the track to wait for the next bar and then start record or play");
+	playTrig =  addNewParameter<Trigger>("Play", "Tells the track to wait for the next bar and then stop recording and start playing");
+	stopTrig =  addNewParameter<Trigger>("Stop", "Tells the track to stop ");
+	clearTrig =  addNewParameter<Trigger>("Clear", "Tells the track to clear it's content if got any");
+	volume = addNewParameter<FloatParameter>("Volume", "Set the volume of the track", DB0_FOR_01, 0, 1);
+	mute = addNewParameter<BoolParameter>("Mute", "Sets the track muted (or not.)", false);
+	solo = addNewParameter<BoolParameter>("Solo", "Sets the track solo (or not.)", false);
+	beatLength = addNewParameter<FloatParameter>("Length", "length in bar", 0, 0, 200);
 	beatLength->isEditable = false;
-	togglePlayStopTrig = addTrigger("Toggle Play Stop", "Toggle Play / Stop");
-	originBPM = addFloatParameter("originBPM", "bpm of origin audio loop", 0, 0, 999);
+	togglePlayStopTrig =  addNewParameter<Trigger>("Toggle Play Stop", "Toggle Play / Stop");
+	originBPM = addNewParameter<FloatParameter>("originBPM", "bpm of origin audio loop", 0, 0, 999);
 	originBPM->isEditable = false;
 
-	sampleChoice = addEnumParameter("sample", "loaded sample");
+	sampleChoice = addNewParameter<EnumParameter>("sample", "loaded sample");
 	sampleChoice->addAsyncEnumParameterListener(this);
 
 	mute->invertVisuals = true;
 
-	stateParameterString = addStringParameter("state", "track state", "cleared");
+	stateParameterString = addNewParameter<StringParameter>("state", "track state", "cleared");
 	stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer(stateParameterString);
 	addTrackListener(stateParameterStringSynchronizer);
 	stateParameterString->isControllableFeedbackOnly = true;

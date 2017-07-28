@@ -25,9 +25,9 @@ Controller::Controller(const String &_name) :
 ControllableContainer(_name)
 {
 
-  enabledParam = addBoolParameter("Enabled","Set whether the controller is enabled or disabled", true);
+  enabledParam = addNewParameter<BoolParameter>("Enabled","Set whether the controller is enabled or disabled", true);
 
-  activityTrigger = addTrigger("activity", "Activity indicator");
+  activityTrigger =  addNewParameter<Trigger>("activity", "Activity indicator");
 
   controllerTypeEnum = 0; //init
 }

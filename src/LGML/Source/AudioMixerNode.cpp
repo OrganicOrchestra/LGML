@@ -18,9 +18,9 @@
 AudioMixerNode::AudioMixerNode() :
 NodeBase("AudioMixerNode",NodeType::AudioMixerType)
 {
-    numberOfInput = addIntParameter("numInput", "number of input", 2, 1, 32);
-    numberOfOutput = addIntParameter("numOutput", "number of output", 2, 1, 16);
-    oneToOne = addBoolParameter("OneToOne", "is this mixer only concerned about one to one volumes (diagonal)", false);
+    numberOfInput = addNewParameter<IntParameter>("numInput", "number of input", 2, 1, 32);
+    numberOfOutput = addNewParameter<IntParameter>("numOutput", "number of output", 2, 1, 16);
+    oneToOne = addNewParameter<BoolParameter>("OneToOne", "is this mixer only concerned about one to one volumes (diagonal)", false);
 
 	
 	setPreferedNumAudioInput(numberOfInput->intValue());
@@ -187,7 +187,7 @@ void AudioMixerNode::OutputBus::setNumInput(int numInput){
   ScopedLock lk(volumes.getLock());
     if(numInput>volumes.size()){
         for(int i = volumes.size();i<numInput ; i++){
-            FloatParameter * p = addFloatParameter("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?DB0_FOR_01:0);
+            FloatParameter * p = addNewParameter<FloatParameter>("In "+String(i+1)+ " > Out "+String(outputIndex+1), "mixer volume from input"+String(i+1), i == outputIndex?DB0_FOR_01:0);
             p->setCustomShortName("In_"+String(i+1));
             p->defaultValue = DB0_FOR_01;
             volumes.add(p);

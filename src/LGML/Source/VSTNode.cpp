@@ -40,15 +40,15 @@ VSTNode::VSTNode() :
 NodeBase("VST",NodeType::VSTType),
 blockFeedback(false)
 {
-  identifierString = addStringParameter("VST Identifier","string that identify a VST","");
+  identifierString = addNewParameter<StringParameter>("VST Identifier","string that identify a VST","");
   addChildControllableContainer(&pluginWindowParameter);
 
-  midiActivityTrigger = addTrigger("Midi Activity", "Midi Activity indicator");
+  midiActivityTrigger =  addNewParameter<Trigger>("Midi Activity", "Midi Activity indicator");
   midiActivityTrigger->isControllableExposed = false;
-  midiPortNameParam = addStringParameter("midiPortName", "MIDI Port Name", "");
+  midiPortNameParam = addNewParameter<StringParameter>("midiPortName", "MIDI Port Name", "");
   midiPortNameParam->hideInEditor = true;
 
-  processWhenBypassed = addBoolParameter("processWhenBypassed", "some effects (Reverbs ...) need to process constantly even when bypassed", false);
+  processWhenBypassed = addNewParameter<BoolParameter>("processWhenBypassed", "some effects (Reverbs ...) need to process constantly even when bypassed", false);
   bProcessWhenBypassed = processWhenBypassed->boolValue();
   setPreferedNumAudioInput(2);
   setPreferedNumAudioOutput(2);
@@ -161,7 +161,7 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
   VSTParameters.clear();
   VSTParameters.ensureStorageAllocated(p->getNumParameters());
   for(int i = 0 ; i < p->getNumParameters() ; i++){
-    VSTParameters.add(addFloatParameter(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
+    VSTParameters.add(addNewParameter<FloatParameter>(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
   }
 
 

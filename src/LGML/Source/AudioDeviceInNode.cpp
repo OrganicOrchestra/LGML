@@ -30,7 +30,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
     getAudioDeviceManager().addChangeListener(this);
   }
   AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
-  desiredNumAudioInput = addIntParameter("numAudioInput", "desired numAudioInputs (independent of audio settings)",
+  desiredNumAudioInput = addNewParameter<IntParameter>("numAudioInput", "desired numAudioInputs (independent of audio settings)",
                                          ad?ad->getActiveInputChannels().countNumberOfSetBits():2, 0, 32);
 
 
@@ -128,12 +128,12 @@ void AudioDeviceInNode::numChannelsChanged(bool isInput){
 void AudioDeviceInNode::addVolMute()
 {
   //  const ScopedLock lk (NodeBase::getCallbackLock());
-  BoolParameter * p = addBoolParameter(String(inMutes.size() + 1), "Mute if disabled", false);
+  BoolParameter * p = addNewParameter<BoolParameter>(String(inMutes.size() + 1), "Mute if disabled", false);
   p->setCustomShortName(String("mute") + String(inMutes.size() + 1));
   p->invertVisuals = true;
   inMutes.add(p);
 
-  FloatParameter * v = addFloatParameter("volume"+String(volumes.size()), "volume", DB0_FOR_01);
+  FloatParameter * v = addNewParameter<FloatParameter>("volume"+String(volumes.size()), "volume", DB0_FOR_01);
   volumes.add(v);
   lastVolumes.add(0);
   logVolumes.add(float01ToGain(DB0_FOR_01));

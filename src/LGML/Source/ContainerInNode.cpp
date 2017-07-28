@@ -20,8 +20,8 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 	canHavePresets = false;
 	userCanAccessInputs = false;
 
-	numChannels = addIntParameter("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);
-	numInputData = addIntParameter("Num Data Inputs", "Number of data inputs for this container", 0, 0, 100);
+	numChannels = addNewParameter<IntParameter>("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);
+	numInputData = addNewParameter<IntParameter>("Num Data Inputs", "Number of data inputs for this container", 0, 0, 100);
   
 }
 

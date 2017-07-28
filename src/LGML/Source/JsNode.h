@@ -33,7 +33,7 @@ class JsNode : public NodeBase,public JsEnvironment{
 	static var addFloatParameter(const var::NativeFunctionArgs & a);
 	static var addStringParameter(const var::NativeFunctionArgs & a);
 	static var addBoolParameter(const var::NativeFunctionArgs & a);
-	static var addTrigger(const var::NativeFunctionArgs & a);
+	static var addTriggerParameter(const var::NativeFunctionArgs & a);
 
     virtual ConnectableNodeUI * createUI() override;
 

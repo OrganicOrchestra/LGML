@@ -25,17 +25,17 @@ oscMessageQueue(this)
 
 {
 
-  localPortParam = addStringParameter("Local Port", "The port to bind for the controller to receive OSC from it","11000");
+  localPortParam = addNewParameter<StringParameter>("Local Port", "The port to bind for the controller to receive OSC from it","11000");
 
-  remoteHostParam = addStringParameter("Remote Host", "The host's IP of the remote controller","127.0.0.1");
-  remotePortParam = addStringParameter("Remote Port", "The port bound by the controller to send OSC to it","8000");
+  remoteHostParam = addNewParameter<StringParameter>("Remote Host", "The host's IP of the remote controller","127.0.0.1");
+  remotePortParam = addNewParameter<StringParameter>("Remote Port", "The port bound by the controller to send OSC to it","8000");
 
-  logIncomingOSC = addBoolParameter("logIncomingOSC", "log the incoming OSC Messages", false);
-  logOutGoingOSC = addBoolParameter("logOutGoingOSC", "log the outGoing OSC Messages", false);
-  speedLimit = addFloatParameter("speedLimit", "min interval (ms) between 2 series of "+String(NUM_OSC_MSG_IN_A_ROW)+" OSCMessages", 0,0,100);
+  logIncomingOSC = addNewParameter<BoolParameter>("logIncomingOSC", "log the incoming OSC Messages", false);
+  logOutGoingOSC = addNewParameter<BoolParameter>("logOutGoingOSC", "log the outGoing OSC Messages", false);
+  speedLimit = addNewParameter<FloatParameter>("speedLimit", "min interval (ms) between 2 series of "+String(NUM_OSC_MSG_IN_A_ROW)+" OSCMessages", 0,0,100);
 
-  blockFeedback = addBoolParameter("blockFeedback", "block osc feedback (resending updated message to controller)", true);
-  sendAllParameters = addTrigger("sendAll", "send all parameter states to initialize ", true);
+  blockFeedback = addNewParameter<BoolParameter>("blockFeedback", "block osc feedback (resending updated message to controller)", true);
+  sendAllParameters =  addNewParameter<Trigger>("sendAll", "send all parameter states to initialize ", true);
 
   setupReceiver();
   setupSender();

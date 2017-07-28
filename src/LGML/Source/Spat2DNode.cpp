@@ -16,29 +16,29 @@ Spat2DNode::Spat2DNode() :
 	NodeBase("Spat2D", NodeType::Spat2DType),
 	numSpatInputs(nullptr), numSpatOutputs(nullptr), spatMode(nullptr), shapeMode(nullptr)
 {
-	spatMode = addEnumParameter("Mode", "Spatialization Mode (2D/3D, Beam/Proxy)");
+	spatMode = addNewParameter<EnumParameter>("Mode", "Spatialization Mode (2D/3D, Beam/Proxy)");
 	spatMode->addOption("Beam", BEAM);
 	spatMode->addOption("Proxy", PROXY);
 	
 	spatMode->setValue("Proxy");
 
-	shapeMode = addEnumParameter("Shape", "Predefined shape or free positioning");
+	shapeMode = addNewParameter<EnumParameter>("Shape", "Predefined shape or free positioning");
 	shapeMode->addOption("Circle", ShapeMode::CIRCLE);
 	shapeMode->addOption("Free", ShapeMode::FREE);
 	shapeMode->setValue("Free");
 
 	//circle
-	circleRadius = addFloatParameter("Circle Radius", "Radius of the circle to place the targets, if shape is set to circle", .8f, 0, 1);
-	circleRotation = addFloatParameter("Circle Rotation", "Rotation of the circle to place the targets, if shape is set to circle", 0, 0, 360);
+	circleRadius = addNewParameter<FloatParameter>("Circle Radius", "Radius of the circle to place the targets, if shape is set to circle", .8f, 0, 1);
+	circleRotation = addNewParameter<FloatParameter>("Circle Rotation", "Rotation of the circle to place the targets, if shape is set to circle", 0, 0, 360);
 
-	targetRadius = addFloatParameter("Target Radius", "Radius for all targets", .5f, 0, 1);
+	targetRadius = addNewParameter<FloatParameter>("Target Radius", "Radius for all targets", .5f, 0, 1);
 
-	numSpatInputs = addIntParameter("Num Inputs", "Number of inputs to spacialize", 1, 0, 16);
-	numSpatOutputs = addIntParameter("Num Outputs", "Number of spatialized outputs", 3, 0, 16);
+	numSpatInputs = addNewParameter<IntParameter>("Num Inputs", "Number of inputs to spacialize", 1, 0, 16);
+	numSpatOutputs = addNewParameter<IntParameter>("Num Outputs", "Number of spatialized outputs", 3, 0, 16);
 
-	useGlobalTarget = addBoolParameter("Use Global Target", "Use a global target that will act as a max influence and affect all targets.", false);
-	globalTargetPosition = addPoint2DParameter("Global Target Position", "Position of the Global Target");
-	globalTargetRadius = addFloatParameter("Global Target Radius", "Radius for the global target",.5f,0,1);
+	useGlobalTarget = addNewParameter<BoolParameter>("Use Global Target", "Use a global target that will act as a max influence and affect all targets.", false);
+	globalTargetPosition = addNewParameter<Point2DParameter>("Global Target Position", "Position of the Global Target");
+	globalTargetRadius = addNewParameter<FloatParameter>("Global Target Radius", "Radius for the global target",.5f,0,1);
 
 	setPreferedNumAudioInput(numSpatInputs->intValue());
 	setPreferedNumAudioOutput(numSpatOutputs->intValue()+2);
@@ -104,7 +104,7 @@ void Spat2DNode::updateInputOutputDataSlots()
 	while (getTotalNumOutputData() < numSpatOutputs->intValue())
 	{
 		addOutputData("Influence " + String(getTotalNumOutputData() + 1), DataType::Number);
-		Point2DParameter * p = addPoint2DParameter("TargetPos" + String(getTotalNumOutputData() + 1), "");
+		Point2DParameter * p = addNewParameter<Point2DParameter>("TargetPos" + String(getTotalNumOutputData() + 1), "");
 		Random rnd;
 		p->setPoint(rnd.nextFloat(), rnd.nextFloat());
 		targetPositions.add(p);

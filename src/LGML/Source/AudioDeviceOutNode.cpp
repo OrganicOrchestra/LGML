@@ -31,7 +31,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
   }
   AudioIODevice * ad = getAudioDeviceManager().getCurrentAudioDevice();
 
-  desiredNumAudioOutput = addIntParameter("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
+  desiredNumAudioOutput = addNewParameter<IntParameter>("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
                                           ad?ad->getActiveInputChannels().countNumberOfSetBits():2, 0, 32);
   lastNumberOfOutputs = 0;
 
@@ -126,12 +126,12 @@ void AudioDeviceOutNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBu
 void AudioDeviceOutNode::addVolMute()
 {
 
-  BoolParameter * p = addBoolParameter(String(outMutes.size() + 1), "Mute if disabled", false);
+  BoolParameter * p = addNewParameter<BoolParameter>(String(outMutes.size() + 1), "Mute if disabled", false);
   p->setCustomShortName(String("mute") + String(outMutes.size() + 1));
   p->invertVisuals = true;
   outMutes.add(p);
 
-  FloatParameter * v = addFloatParameter("volume"+String(volumes.size()), "volume", DB0_FOR_01);
+  FloatParameter * v = addNewParameter<FloatParameter>("volume"+String(volumes.size()), "volume", DB0_FOR_01);
   volumes.add(v);
   lastVolumes.add(0);
   logVolumes.add(float01ToGain(DB0_FOR_01));

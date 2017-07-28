@@ -31,14 +31,14 @@ outputVolume(nullptr)
 {
   //set Params
   
-  descriptionParam = addStringParameter("Description", "Set a custom description for this node.", "Description");
-  enabledParam = addBoolParameter("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
+  descriptionParam = addNewParameter<StringParameter>("Description", "Set a custom description for this node.", "Description");
+  enabledParam = addNewParameter<BoolParameter>("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
   
-  xPosition = addFloatParameter("xPosition", "x position on canvas", 0, 0, 99999);
-  yPosition = addFloatParameter("yPosition", "y position on canvas", 0, 0, 99999);
-  nodeWidth = addFloatParameter("nodeWidth", "Node Width", 180, 50, 500);
-  nodeHeight = addFloatParameter("nodeHeight", "Node Height", 100, 50, 500);
-  miniMode = addBoolParameter("miniMode", "Mini Mode", false);
+  xPosition = addNewParameter<FloatParameter>("xPosition", "x position on canvas", 0, 0, 99999);
+  yPosition = addNewParameter<FloatParameter>("yPosition", "y position on canvas", 0, 0, 99999);
+  nodeWidth = addNewParameter<FloatParameter>("nodeWidth", "Node Width", 180, 50, 500);
+  nodeHeight = addNewParameter<FloatParameter>("nodeHeight", "Node Height", 100, 50, 500);
+  miniMode = addNewParameter<BoolParameter>("miniMode", "Mini Mode", false);
   
   xPosition->isControllableExposed = false;
   yPosition->isControllableExposed = false;
@@ -57,8 +57,8 @@ outputVolume(nullptr)
 
   //Audio
   if(hasMainAudioControl){
-		  outputVolume = addFloatParameter("masterVolume", "master volume for this node", DB0_FOR_01);
-    //  bypass = addBoolParameter("Bypass", "by-pass current node, letting audio pass thru", false);
+		  outputVolume = addNewParameter<FloatParameter>("masterVolume", "master volume for this node", DB0_FOR_01);
+    //  bypass = addNewParameter<BoolParameter>("Bypass", "by-pass current node, letting audio pass thru", false);
   }
 
   /*

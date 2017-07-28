@@ -22,7 +22,7 @@ JavascriptController::JavascriptController() :
 
     buildLocalEnv();
 
-    jsPath = addStringParameter("js File Path", "path from where to load JS", "");
+    jsPath = addNewParameter<StringParameter>("js File Path", "path from where to load JS", "");
     jsPath->isControllableExposed = false;
 
 

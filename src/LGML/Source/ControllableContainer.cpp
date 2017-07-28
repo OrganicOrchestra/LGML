@@ -42,12 +42,12 @@ presetSavingIsRecursive(false),
 isUserDefined(_isUserDefined)
 {
 
-  nameParam = addStringParameter("Name", "Set the visible name of the node.", "");
+  nameParam = addNewParameter<StringParameter>("Name", "Set the visible name of the node.", "");
   nameParam->isPresettable = false;
   nameParam->setValue(niceName);
-  currentPresetName = addStringParameter("Preset", "Current Preset", "");
+  currentPresetName = addNewParameter<StringParameter>("Preset", "Current Preset", "");
   currentPresetName->hideInEditor = true;
-  savePresetTrigger = addTrigger("Save Preset", "Save current preset");
+  savePresetTrigger = addNewParameter<Trigger>("Save Preset", "Save current preset");
   savePresetTrigger->hideInEditor = true;
 
 }
@@ -89,72 +89,8 @@ Parameter *  ControllableContainer::addParameter(Parameter * p)
 }
 
 
-FloatParameter * ControllableContainer::addFloatParameter(const String & _niceName, const String & description, const float & initialValue, const float & minValue, const float & maxValue, const bool & enabled)
-{
 
-  //  String targetName = getUniqueNameInContainer(_niceName);
-  //  FloatParameter * p = new FloatParameter(targetName, description, initialValue, minValue, maxValue, enabled);
-    FloatParameter * p = addNewParameter<FloatParameter>(_niceName, description, initialValue, minValue, maxValue, enabled);
-  
-  return p;
-}
 
-IntParameter * ControllableContainer::addIntParameter(const String & _niceName, const String & _description, const int & initialValue, const int & minValue, const int & maxValue, const bool & enabled)
-{
-  String targetName = getUniqueNameInContainer(_niceName);
-  IntParameter * p = new IntParameter(targetName, _description, initialValue, minValue, maxValue, enabled);
-  addParameter(p);
-  return p;
-}
-
-BoolParameter * ControllableContainer::addBoolParameter(const String & _niceName, const String & _description, const bool & value, const bool & enabled)
-{
-  String targetName = getUniqueNameInContainer(_niceName);
-  BoolParameter * p = new BoolParameter(targetName, _description, value, enabled);
-  addParameter(p);
-  return p;
-}
-
-StringParameter * ControllableContainer::addStringParameter(const String & _niceName, const String & _description, const String &value, const bool & enabled)
-{
-  String targetName = getUniqueNameInContainer(_niceName);
-  StringParameter * p = new StringParameter(targetName, _description, value, enabled);
-  addParameter(p);
-  return p;
-}
-
-EnumParameter * ControllableContainer::addEnumParameter(const String & _niceName, const String & _description, const bool & enabled)
-{
-  String targetName = getUniqueNameInContainer(_niceName);
-  EnumParameter * p = new EnumParameter(targetName, _description, nullptr, enabled);
-  addParameter(p);
-  return p;
-}
-
-Point2DParameter * ControllableContainer::addPoint2DParameter(const String & _niceName, const String & _description, const bool & enabled)
-{
-  String targetName = getUniqueNameInContainer(_niceName);
-  Point2DParameter * p = new Point2DParameter(targetName, _description, enabled);
-  addParameter(p);
-  return p;
-}
-
-Point3DParameter * ControllableContainer::addPoint3DParameter(const String & _niceName, const String & _description, const bool & enabled)
-{
-  String targetName = getUniqueNameInContainer(_niceName);
-  Point3DParameter * p = new Point3DParameter(targetName, _description, enabled);
-  addParameter(p);
-  return p;
-}
-
-Trigger * ControllableContainer::addTrigger(const String & _niceName, const String & _description, const bool & enabled)
-{
-  String targetName = getUniqueNameInContainer(_niceName);
-  Trigger * t = new Trigger(targetName, _description, enabled);
-  addParameter(t);
-
-  return t;
-}
 
 void ControllableContainer::removeControllable(Controllable * c)
 {

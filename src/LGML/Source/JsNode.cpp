@@ -54,7 +54,7 @@ void JsNode::buildLocalEnv() {
 	d.setMethod(addFloatParameterIdentifier, JsNode::addFloatParameter);
 	d.setMethod(addStringParameterIdentifier, JsNode::addStringParameter);
 	d.setMethod(addBoolParameterIdentifier, JsNode::addBoolParameter);
-	d.setMethod(addTriggerIdentifier, JsNode::addTrigger);
+	d.setMethod(addTriggerIdentifier, JsNode::addTriggerParameter);
 
 
 	setLocalNamespace(d);
@@ -74,7 +74,7 @@ var JsNode::addIntParameter(const var::NativeFunctionArgs & a) {
 		LOG("wrong number of arg for addIntParameter");
 		return var::undefined();
 	};
-	jsNode->jsParameters.add(jsNode->ControllableContainer::addIntParameter(a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
+	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<IntParameter>(a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
 
 	return var::undefined();
 }
@@ -87,7 +87,7 @@ var JsNode::addFloatParameter(const var::NativeFunctionArgs & a) {
 		return var::undefined();
 	};
 
-	jsNode->jsParameters.add(jsNode->ControllableContainer::addFloatParameter(a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
+	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<FloatParameter>(a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
 
 	return var::undefined();
 }
@@ -99,7 +99,7 @@ var JsNode::addStringParameter(const var::NativeFunctionArgs & a) {
 		LOG("wrong number of arg for addStringParameter");
 		return var::undefined();
 	};
-	jsNode->jsParameters.add(jsNode->ControllableContainer::addStringParameter(a.arguments[0], a.arguments[1], a.arguments[2]));
+	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<StringParameter>(a.arguments[0], a.arguments[1], a.arguments[2]));
 
 	return var::undefined();
 }
@@ -111,19 +111,19 @@ var JsNode::addBoolParameter(const var::NativeFunctionArgs & a) {
 		LOG("wrong number of arg for addStringParameter");
 		return var::undefined();
 	};
-	jsNode->jsParameters.add(jsNode->ControllableContainer::addBoolParameter(a.arguments[0], a.arguments[1], a.arguments[2]));
+	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<BoolParameter>(a.arguments[0], a.arguments[1], a.arguments[2]));
 
 	return var::undefined();
 }
 
-var JsNode::addTrigger(const var::NativeFunctionArgs & a) {
+var JsNode::addTriggerParameter(const var::NativeFunctionArgs & a) {
 
 	JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
 	if (a.numArguments<2) {
 		LOG("wrong number of arg for addTrigger");
 		return var::undefined();
 	};
-	jsNode->jsParameters.add(jsNode->ControllableContainer::addTrigger(a.arguments[0], a.arguments[1]));
+	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<Trigger>(a.arguments[0], a.arguments[1]));
 
 	return var::undefined();
 }
