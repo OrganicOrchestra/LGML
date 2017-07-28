@@ -26,7 +26,7 @@ public:
 
 class FastMapperUI :
 	public Component,
-	public ControllableContainerListener
+	private ControllableContainerListener
 {
 public:
 	FastMapperUI(FastMapper * fastMapper, ControllableContainer * viewFilterContainer = nullptr);

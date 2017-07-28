@@ -14,7 +14,7 @@
 #include "JsEnvironmentUI.h"
 #include "NodeBaseUI.h"//keep
 
-class JsNodeUI : public NodeBaseContentUI,public ControllableContainerListener,JsEnvironment::Listener{
+class JsNodeUI : public NodeBaseContentUI,private ControllableContainerListener,JsEnvironment::Listener{
 
 
 public:

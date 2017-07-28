@@ -49,7 +49,7 @@ class ControllableContainer : public Parameter::Listener,public Parameter::Async
 public:
   ControllableContainer(const String &niceName,bool isUserDefined=false);
   virtual ~ControllableContainer();
-
+  void remove();
   bool isUserDefined;
   const String  getNiceName();
   String shortName;
@@ -70,7 +70,7 @@ public:
   Uuid uid;
 
   OwnedArray<Controllable,CriticalSection> controllables;
-  ControllableContainer* userContainer;
+  
   Array<WeakReference<ControllableContainer>,CriticalSection  > controllableContainers;
   ControllableContainer * parentContainer;
 
@@ -78,7 +78,15 @@ public:
   T* addNewParameter(const String & _niceName,const String & desc,Args&...args);
 
   template<class T,class... Args>
-  T* addNewUserParameter(const String & _niceName,const String & desc,Args&...args);
+  T* addNewUserParameter(const Identifier & id,const String & _niceName,const String & desc,Args...args);
+  void removeUserParameter(const Identifier & id,Parameter *const *el);
+
+  typedef Array<Parameter*> UsrParameterList;
+  HashMap<int64,Array<Parameter*>*> userParameterMap;
+
+  UsrParameterList * getUserParameters(const Identifier & i);
+  Parameter *  getUserParameter(const Identifier & id,const String & niceName);
+  UsrParameterList getAllUserParameters();
   
   Parameter* addParameter(Parameter * );
   FloatParameter * addFloatParameter(const String &niceName, const String &description, const float &initialValue, const float &minValue = 0, const float &maxValue = 1, const bool &enabled = true);
@@ -89,6 +97,7 @@ public:
   Point2DParameter * addPoint2DParameter(const String &niceName, const String &description, const bool &enabled = true);
   Point3DParameter * addPoint3DParameter(const String &niceName, const String &description, const bool &enabled = true);
   Trigger * addTrigger(const String &niceName, const String &description, const bool &enabled = true);
+
 
 
   
@@ -244,34 +253,33 @@ T* ControllableContainer::addNewParameter(const String & _niceName,const String 
 {
 
   String targetName = getUniqueNameInContainer(_niceName);
-  auto p = new T(targetName,desc,args...);
-  p->setParentContainer(this);
-  controllables.add(p);
-  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded,this, p);
-  notifyStructureChanged(this);
-  addControllableInternal(p);
-  p->addParameterListener(this);
-  p->addAsyncParameterListener(this);
-  return p;
+  T* p = new T(targetName,desc,args...);
+  return dynamic_cast<T*>(addParameter(p));
 
 
 }
 template<class T,class... Args>
-T* ControllableContainer::addNewUserParameter(const String & _niceName,const String & desc,Args&...args){
+T* ControllableContainer::addNewUserParameter(const Identifier & id,const String & _niceName,const String & desc,Args...args){
 
   String targetName = getUniqueNameInContainer(_niceName);
-  auto p = new T(targetName,desc,&args...);
+  auto p = new T(targetName,desc,args...);
   p->shouldSaveObject = true;
   p->isUserDefined = true;
-  if(!userContainer){
-    userContainer = new ControllableContainer("usr",true);
-    addChildControllableContainer(userContainer);
+  int64 key = (int64)(id.getCharPointer().getAddress());
+  if(!userParameterMap.contains(key)){
+    userParameterMap.set(key,new UsrParameterList());
   }
-  userContainer->addParameter(p);
+  userParameterMap[key]->add(p);
+
+  addParameter(p);
   return p;
 
 
 }
+
+
+
+
 
 
 #endif  // CONTROLLABLECONTAINER_H_INCLUDED

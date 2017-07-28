@@ -903,6 +903,7 @@ void LookAndFeelOO::drawPopupMenuSectionHeader (Graphics& g, const Rectangle<int
                       area.getX() + 12, area.getY(), area.getWidth() - 16, (int) (area.getHeight() * 0.8f),
                       Justification::bottomLeft, 1);
 }
+bool LookAndFeelOO::shouldPopupMenuScaleWithTargetComponent (const PopupMenu::Options&)    { return true; }
 
 //==============================================================================
 int LookAndFeelOO::getMenuWindowFlags()
@@ -2362,74 +2363,74 @@ AttributedString LookAndFeelOO::createFileChooserHeaderText (const String& title
 }
 
 void LookAndFeelOO::drawFileBrowserRow (Graphics& g, int width, int height,
-                                         const String& filename, Image* icon,
+                                         const File&, const String& filename, Image* icon,
                                          const String& fileSizeDescription,
                                          const String& fileTimeDescription,
-                                         const bool isDirectory, const bool isItemSelected,
-                                         const int /*itemIndex*/, DirectoryContentsDisplayComponent& dcc)
+                                         bool isDirectory, bool isItemSelected,
+                                         int /*itemIndex*/, DirectoryContentsDisplayComponent& dcc)
 {
-    Component* const fileListComp = dynamic_cast<Component*> (&dcc);
+  auto fileListComp = dynamic_cast<Component*> (&dcc);
 
-    if (isItemSelected)
-        g.fillAll (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::highlightColourId)
-                   : findColour (DirectoryContentsDisplayComponent::highlightColourId));
+  if (isItemSelected)
+    g.fillAll (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::highlightColourId)
+               : findColour (DirectoryContentsDisplayComponent::highlightColourId));
 
-    const int x = 32;
-    g.setColour (Colours::black);
+  const int x = 32;
+  g.setColour (Colours::black);
 
-    if (icon != nullptr && icon->isValid())
+  if (icon != nullptr && icon->isValid())
+  {
+    g.drawImageWithin (*icon, 2, 2, x - 4, height - 4,
+                       RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize,
+                       false);
+  }
+  else
+  {
+    if (auto* d = isDirectory ? getDefaultFolderImage()
+        : getDefaultDocumentFileImage())
+      d->drawWithin (g, Rectangle<float> (2.0f, 2.0f, x - 4.0f, height - 4.0f),
+                     RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
+  }
+
+  g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::textColourId)
+               : findColour (DirectoryContentsDisplayComponent::textColourId));
+  g.setFont (height * 0.7f);
+
+  if (width > 450 && ! isDirectory)
+  {
+    const int sizeX = roundToInt (width * 0.7f);
+    const int dateX = roundToInt (width * 0.8f);
+
+    g.drawFittedText (filename,
+                      x, 0, sizeX - x, height,
+                      Justification::centredLeft, 1);
+
+    g.setFont (height * 0.5f);
+    g.setColour (Colours::darkgrey);
+
+    if (! isDirectory)
     {
-        g.drawImageWithin (*icon, 2, 2, x - 4, height - 4,
-                           RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize,
-                           false);
+      g.drawFittedText (fileSizeDescription,
+                        sizeX, 0, dateX - sizeX - 8, height,
+                        Justification::centredRight, 1);
+
+      g.drawFittedText (fileTimeDescription,
+                        dateX, 0, width - 8 - dateX, height,
+                        Justification::centredRight, 1);
     }
-    else
-    {
-        if (const Drawable* d = isDirectory ? getDefaultFolderImage()
-            : getDefaultDocumentFileImage())
-            d->drawWithin (g, Rectangle<float> (2.0f, 2.0f, x - 4.0f, height - 4.0f),
-                           RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
-    }
+  }
+  else
+  {
+    g.drawFittedText (filename,
+                      x, 0, width - x, height,
+                      Justification::centredLeft, 1);
 
-    g.setColour (fileListComp != nullptr ? fileListComp->findColour (DirectoryContentsDisplayComponent::textColourId)
-                 : findColour (DirectoryContentsDisplayComponent::textColourId));
-    g.setFont (height * 0.7f);
-
-    if (width > 450 && ! isDirectory)
-    {
-        const int sizeX = roundToInt (width * 0.7f);
-        const int dateX = roundToInt (width * 0.8f);
-
-        g.drawFittedText (filename,
-                          x, 0, sizeX - x, height,
-                          Justification::centredLeft, 1);
-
-        g.setFont (height * 0.5f);
-        g.setColour (Colours::darkgrey);
-
-        if (! isDirectory)
-        {
-            g.drawFittedText (fileSizeDescription,
-                              sizeX, 0, dateX - sizeX - 8, height,
-                              Justification::centredRight, 1);
-
-            g.drawFittedText (fileTimeDescription,
-                              dateX, 0, width - 8 - dateX, height,
-                              Justification::centredRight, 1);
-        }
-    }
-    else
-    {
-        g.drawFittedText (filename,
-                          x, 0, width - x, height,
-                          Justification::centredLeft, 1);
-
-    }
+  }
 }
 
 Button* LookAndFeelOO::createFileBrowserGoUpButton()
 {
-    DrawableButton* goUpButton = new DrawableButton ("up", DrawableButton::ImageOnButtonBackground);
+  DrawableButton* goUpButton = new DrawableButton ("up", DrawableButton::ImageOnButtonBackground);
 
     Path arrowPath;
     arrowPath.addArrow (Line<float> (50.0f, 100.0f, 50.0f, 0.0f), 40.0f, 100.0f, 50.0f);

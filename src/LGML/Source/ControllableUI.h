@@ -14,9 +14,9 @@
 
 #include "Controllable.h"
 #include "Style.h"//keep
-#include "LGMLComponent.h"
 
-class ControllableUI : public LGMLComponent, public SettableTooltipClient , public Controllable::Listener
+
+class ControllableUI : public Component,public SettableTooltipClient , public Controllable::Listener
 {
 public:
     ControllableUI(Controllable * controllable);
@@ -30,11 +30,29 @@ public:
     virtual void controllableStateChanged(Controllable * c) override;
     virtual void controllableControlAddressChanged(Controllable * c) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableUI)
+  enum MappingState{
+    NOMAP,
+    MAPSOURCE,
+    MAPDEST
+  };
+
+  void setMappingState(const bool  s);
+  void setMappingDest(bool _isMappingDest);
+
+  bool isDraggable;
+  
+
+  virtual void paintOverChildren(Graphics &g) override;
+  bool isMappingDest;
+
+private:
+
+  friend class LGMLDragger;
+  MappingState mappingState;
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableUI)
 
 protected :
     void updateTooltip();
-
     void mouseDown(const MouseEvent &e) override;
 };
 

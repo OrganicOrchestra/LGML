@@ -27,15 +27,10 @@ typedef ParameterFactory::IdentifierType IdentifierType;
 HashMap< IdentifierType, ParameterFactory::Entry > ParameterFactory::factory;
 
 
-
-
 template<typename T>
 void ParameterFactory::registerType (const IdentifierType & ID){
   jassert(!factory.contains(ID));
   factory.set(ID, Entry(createFromVar<T>,checkNget<T>));
-  
-  DBG(  (int64)&typeid(T) << "," << ID);
-
 }
 
 #define REG(T) registerType<T>("t_" #T)
@@ -51,10 +46,6 @@ bool ParameterFactory::registerAllTypes (){
   REG(EnumParameter);
   REG(StringParameter);
   REG(ParameterProxy);
-
-
-
-
 
   hasBeenRegistered = true;
   return true;
@@ -74,8 +65,6 @@ Parameter* ParameterFactory::createFromVarObject(var v ,const String & name){
   DynamicObject * ob = v.getDynamicObject();
   IdentifierType ID =ob->getProperty(Controllable::varTypeIdentifier);
   String desc =ob->getProperty(descIdentifier);
-
-
   return std::get<0>(factory[ID])(name,desc,v.getDynamicObject());
 }
 

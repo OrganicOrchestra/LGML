@@ -33,7 +33,7 @@ class TimeManagerUI : public ShapeShifterContentComponent,public Parameter::Asyn
   void newMessage(const Parameter::ParamWithValue & pv) override;
 
 
-  class TimeBar : public Component,public Timer{
+  class TimeBar : public Component,private Timer{
     public :
     TimeBar(TimeManager *);
 

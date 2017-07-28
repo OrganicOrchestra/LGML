@@ -145,12 +145,18 @@ void FastMapperUI::controllableContainerRemoved(ControllableContainer*ori,Contro
 
     WeakReference<Component> fui (getUIForFastMap((FastMap*)cc));
     if(fui.get()){
-      MessageManager::callAsync([this,fui] (){
-        if(fui.get()){
-          removeFastMapUI(dynamic_cast<FastMapUI*>(fui.get()));
-          resized();
-        }
-      });
+      if(MessageManager::getInstance()->isThisTheMessageThread()){
+        removeFastMapUI(dynamic_cast<FastMapUI*>(fui.get()));
+        resized();
+      }
+      else{
+        MessageManager::callAsync([this,fui] (){
+          if(fui.get()){
+            removeFastMapUI(dynamic_cast<FastMapUI*>(fui.get()));
+            resized();
+          }
+        });
+      }
     }
   }
 }

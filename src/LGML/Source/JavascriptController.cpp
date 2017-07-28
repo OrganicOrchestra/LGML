@@ -36,10 +36,6 @@ JavascriptController::~JavascriptController(){
 void JavascriptController::buildLocalEnv(){
     ScopedPointer<DynamicObject>  oscObj = createOSCJsObject();
 
-	for (auto &v: variables)
-	{
-		oscObj->setProperty(v->parameter->shortName, v->parameter->createDynamicObject());
-	}
     setLocalNamespace(*oscObj);
 
 

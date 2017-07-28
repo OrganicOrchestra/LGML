@@ -18,7 +18,7 @@ class Inspector;
 class InspectorEditor;
 
 
-class InspectableComponent : public virtual Component
+class InspectableComponent : public Component
 {
 public:
 	InspectableComponent(ControllableContainer * relatedContainer = nullptr, const String &inspectableType = "none");
@@ -43,7 +43,9 @@ public:
 
 	virtual void setSelectedInternal(bool value); //to be overriden
 
-public:
+
+  //
+   void paintOverChildren(juce::Graphics &g) override;
 	//Listener
 	class  InspectableListener
 	{

@@ -15,7 +15,7 @@
 
 class PresetChooser : public ComboBox,
 					  public ComboBox::Listener,
-				      public ControllableContainerListener
+				      private ControllableContainerListener
 {
 public:
 	PresetChooser(ControllableContainer * _container);

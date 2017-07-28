@@ -39,8 +39,7 @@ canHavePresets(true),
 numContainerIndexed(0),
 localIndexedPosition(-1),
 presetSavingIsRecursive(false),
-isUserDefined(_isUserDefined),
-userContainer(nullptr)
+isUserDefined(_isUserDefined)
 {
 
   nameParam = addStringParameter("Name", "Set the visible name of the node.", "");
@@ -68,7 +67,12 @@ void ControllableContainer::clear()
   controllableContainers.clear();
 }
 
-
+void ControllableContainer::remove(){
+  jassert(parentContainer);
+  if(parentContainer){
+    parentContainer->removeChildControllableContainer(this);
+  }
+}
 Parameter *  ControllableContainer::addParameter(Parameter * p)
 {
 
@@ -678,7 +682,7 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
     onContainerParameterChanged(p);
   }
 
-  if (p->isControllableExposed && (p!=nullptr && p->parentContainer==this) ) dispatchFeedback(p);
+  if ( (p!=nullptr && p->parentContainer==this && p->isControllableExposed ) ) dispatchFeedback(p);
 }
 
 
@@ -837,4 +841,43 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
   return false;
 }
 
+ControllableContainer::UsrParameterList dummy_empty;
+ControllableContainer::UsrParameterList * ControllableContainer::getUserParameters(const Identifier & id){
+  int64 key = (int64)(id.getCharPointer().getAddress());
+  if(userParameterMap.contains(key)){
+    return userParameterMap[key];
+  }
+  else{
+    return &dummy_empty;
+  }
+}
+Array<Parameter*> ControllableContainer::getAllUserParameters(){
+  Array<Parameter*> res ;
+  HashMap<int64, Array<Parameter*>*>::Iterator i (userParameterMap);
+
+  while (i.next())
+  {
+    res.addArray(*i.getValue());
+  }
+  return res;
+}
+Parameter *  ControllableContainer::getUserParameter(const Identifier & id,const String & niceName){
+  ControllableContainer::UsrParameterList* vs = getUserParameters(id);
+Parameter **  found = std::find_if(vs->begin(), vs->end(),
+                                  [niceName](Controllable* c){return c->niceName.compare(niceName);}
+                                  );
+  return found==vs->end()?nullptr:*found;
+}
+void ControllableContainer::removeUserParameter(const Identifier & id,Parameter *const *el){
+  int64 key = (int64)(id.getCharPointer().getAddress());
+  if(userParameterMap.contains(key)){
+    auto list = userParameterMap[key];
+    list->remove(el);
+    if(list->size()==0){
+      delete list;
+      userParameterMap.remove(key);
+    }
+  }
+
+}
 

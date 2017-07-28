@@ -244,6 +244,7 @@ void OSCController::OSCMessageQueue::add(OSCMessage * m){
     numWritten=0;
     timerCallback();
     NLOG(owner->getNiceName(),"still flooding OSC");
+    delete m;
   }
   aFifo.finishedWrite(numWritten);
   if(!isTimerRunning())startTimer(interval);

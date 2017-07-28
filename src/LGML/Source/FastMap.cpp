@@ -39,7 +39,13 @@ FastMap::~FastMap()
 {
 
 }
-
+void FastMap::onContainerParameterChanged(Parameter *p){
+  if(p==invertParam || p==minInputVal || p==maxInputVal || p==minOutputVal || p== maxOutputVal){
+    if(referenceIn->get() && referenceOut->get()){
+      process();
+    }
+  }
+}
 void FastMap::process()
 {
 	if (!enabledParam->boolValue()) return;

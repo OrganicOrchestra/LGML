@@ -134,7 +134,7 @@ public:
    This class implements the desktop window that contains an instance of
    our MainContentComponent class.
    */
-  class MainWindow    : public DocumentWindow, public Timer
+  class MainWindow    : public DocumentWindow, private Timer
   {
   public:
     MainWindow (String name,Engine * e)  : DocumentWindow (name,

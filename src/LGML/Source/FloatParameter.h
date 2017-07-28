@@ -18,7 +18,7 @@
 class FloatParameter : public Parameter
 {
 public:
-    FloatParameter(const String &niceName, const String &description, const float &initialValue=0.f, const float &minValue = 0.f, const float &maxValue = 1.f, bool enabled = true);
+    FloatParameter(const String &niceName, const String &description, float initialValue=0.f,  float minValue = 0.f, float maxValue = 1.f, bool enabled = true);
     ~FloatParameter() {}
 
     void setValueInternal(var & _value) override;

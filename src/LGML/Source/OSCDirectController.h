@@ -25,7 +25,7 @@ public:
 
     virtual Result processMessageInternal(const OSCMessage &msg) override;
 
-  
+  bool setParameterFromMessage(Parameter *p,const OSCMessage & msg);
 
 
     // Inherited via Listener

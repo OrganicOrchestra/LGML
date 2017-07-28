@@ -12,9 +12,7 @@
 #define FASTMAPUI_H_INCLUDED
 
 #include "FastMap.h"
-#include "ControlVariableReferenceUI.h"
-#include "ControllableHelpers.h"
-#include "FloatSliderUI.h"
+
 #include "InspectableComponent.h"
 #include "ParameterProxyUI.h"
 
@@ -50,6 +48,8 @@ public:
 //	virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) override;
 //	virtual void fastMapTargetChanged(FastMap *) override;
 
+
+  void mouseDown(const MouseEvent &e) override;
 	void buttonClicked(Button * b) override;
 
 

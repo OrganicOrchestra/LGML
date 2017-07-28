@@ -14,7 +14,7 @@
 #include "Parameter.h"
 #include "ControllableUI.h"
 
-class ParameterUI : public Parameter::AsyncListener, public Parameter::Listener,public ControllableUI
+class ParameterUI : protected Parameter::AsyncListener, private Parameter::Listener,public ControllableUI
 {
 public:
     ParameterUI(Parameter * parameter);

@@ -17,7 +17,7 @@ ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
   linkedParamUI(nullptr),
 	ParameterUI(proxy),
 	paramProxy(proxy),
-	chooser(proxy->parentContainer->parentContainer)
+	chooser(proxy->getRoot())
 
 {
   setMappingDest(true);
@@ -40,7 +40,7 @@ void ParameterProxyUI::resized()
 	if (r.getWidth() == 0 || r.getHeight() == 0) return;
 
 
-	Rectangle<int> paramR = r.removeFromRight(50);
+	Rectangle<int> paramR = r.reduced(2);
   if (linkedParamUI != nullptr){ linkedParamUI->setBounds(paramR);}
   else{chooser.setBounds(paramR);}
 
@@ -48,7 +48,7 @@ void ParameterProxyUI::resized()
 
 void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 {
-	if (p == nullptr) return;
+//	if (p == nullptr) return;
 
 	if (linkedParamUI != nullptr)
 	{
@@ -67,7 +67,7 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 		updateTooltip();
 		linkedParamUI->setTooltip(getTooltip());
 	}
-  chooser.setVisible(linkedParamUI!=nullptr);
+  chooser.setVisible(linkedParamUI==nullptr);
 	resized();
 }
 

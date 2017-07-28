@@ -28,6 +28,7 @@ static const String controllerTypeNames[] = {
 #endif
 	};
 
+
 class ControllerFactory
 {
 public:
@@ -83,8 +84,10 @@ public:
 
 
         c->controllerTypeEnum = (int)controllerType;
+
         return c;
     }
+
 
     static PopupMenu * getControllerTypesMenu(int menuIdOffset = 0)
     {

@@ -58,7 +58,7 @@ private:
 
   DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
 
-  class AggregChanges : public Timer{
+  class AggregChanges : private Timer{
   public:
     AggregChanges(JsContainerSync * _owner):owner(_owner){
       startTimer(1000);

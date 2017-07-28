@@ -12,12 +12,10 @@
 #define CONTROLLEREDITOR_H_INCLUDED
 
 #include "ControllerUI.h" //keep
-#include "ControlVariableUI.h"
 #include "GenericControllableContainerEditor.h"
 
 class ControllerEditor : public InspectorEditor,
-						 public ButtonListener,
-						 public Controller::ControllerListener
+						 public ButtonListener
 {
 public:
   ControllerEditor(Controller * controller,bool generateEditorFromParameters = true);
@@ -28,26 +26,11 @@ public:
 	virtual void resized() override;
 	virtual int getContentHeight() override;
 
-	int getVariablesHeight();
-
 	//VARIABLES
-	Component variablesContainer;
-
 	TextButton addParameterBT;
-	OwnedArray<ControlVariableUI> variablesUI;
-
   ScopedPointer<GenericControllableContainerEditor> editor;
-
-	void addVariableUI(ControlVariable *, bool doResize = true);
-	void removeVariableUI(ControlVariable *, bool doResize = true);
-
-	ControlVariableUI * getUIForVariable(ControlVariable *);
-
 	void buttonClicked(Button * b) override;
-	void variableAddedAsync(Controller *, ControlVariable *) override;
-	void variableRemovedAsync(Controller *, ControlVariable *) override;
-  Rectangle<int> area;
-  bool hideVariableUIs;
+  
 };
 
 

@@ -16,10 +16,10 @@
 #include "ControllableContainer.h"
 #include "InspectableComponent.h"
 #include "ControllableEditor.h"
-#include "LGMLComponent.h"
+
 
 class OutlinerItem;
-class OutlinerItemComponent : public  InspectableComponent, public SettableTooltipClient,public LGMLComponent
+class OutlinerItemComponent : public  InspectableComponent, public SettableTooltipClient
 {
 public:
 	OutlinerItemComponent(OutlinerItem * item);
@@ -54,7 +54,7 @@ public:
 };
 
 class Outliner : public ShapeShifterContentComponent,
-				 public ControllableContainerListener,AsyncUpdater,TextEditorListener
+				 private ControllableContainerListener,AsyncUpdater,TextEditorListener
 {
 public:
 

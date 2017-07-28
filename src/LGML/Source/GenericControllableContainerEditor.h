@@ -20,7 +20,7 @@ class GenericControllableContainerEditor;
 
 class CCInnerContainer :
 	public Component,
-	public ControllableContainerListener,
+	private ControllableContainerListener,
 	public ButtonListener
 {
 public:
@@ -32,14 +32,14 @@ public:
 	};
 
 
-	CCInnerContainer(GenericControllableContainerEditor * editor,ControllableContainer * container, int level, int maxLevel, bool canAccessLowerContainers);
+	CCInnerContainer(GenericControllableContainerEditor * editor,ControllableContainer * container, int level, int maxLevel, bool canAccessLowerContainers,bool showUser=false);
 	virtual ~CCInnerContainer();
 
 	Label containerLabel;
 
 	ControllableContainer * container;
 	ScopedPointer<PresetChooser> presetChooser;
-
+  TextButton showUser;
 	OwnedArray<NamedControllableUI> controllablesUI;
 	OwnedArray<CCInnerContainer> innerContainers;
   ScopedPointer<Component> customEditor;
@@ -54,7 +54,7 @@ public:
 	void paint(Graphics &g) override;
 	void resized() override;
 	void clear();
-
+  void rebuild();
 
 	void addControllableUI(Controllable * c);
 	void removeControllableUI(Controllable *c);
@@ -81,7 +81,7 @@ public:
 };
 
 
-class GenericControllableContainerEditor : public InspectorEditor, public ButtonListener, public ControllableContainerListener,Timer
+class GenericControllableContainerEditor : public InspectorEditor, public ButtonListener, private ControllableContainerListener,Timer
 {
 public :
 	GenericControllableContainerEditor(ControllableContainer * sourceComponent);

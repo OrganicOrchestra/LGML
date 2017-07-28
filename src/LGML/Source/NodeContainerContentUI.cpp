@@ -73,7 +73,7 @@ void NodeContainerContentUI::buttonClicked(Button * b)
 		}
 	} else if (b == &addUserParamBT)
 	{
-		nodeContainer->addNewUserParameter<FloatParameter>("usrParam","userParameter desc" );
+		nodeContainer->addNewUserParameter<FloatParameter>(Identifier("usrParamID"),"param","userParameter desc" );
 	}
 }
 

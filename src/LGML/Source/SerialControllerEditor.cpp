@@ -20,7 +20,7 @@ ControllerEditor(cont,false)
   serialController = dynamic_cast<SerialController*>(cont);
   jassert(serialController);
   jsUI = new JsEnvironmentUI(serialController->jsParameters);
-  serialController->addControllerListener(this);
+
 
   addAndMakeVisible(deviceChooser);
   deviceChooser.addListener(this);
@@ -37,49 +37,13 @@ ControllerEditor(cont,false)
 
   updateConnectBTAndIndic();
 
-  /*
-   for (auto &v : serialController->variables)
-   {
-   addVariableUI(v);
-   }
-   */
 }
 
 SerialControllerEditor::~SerialControllerEditor()
 {
-  serialController->removeControllerListener(this);
   serialController->removeSerialControllerListener(this);
 }
 
-/*
- void SerialControllerEditor::addVariableUI(ControlVariable * v)
- {
-	ParameterUI * vui = (ParameterUI *)v->parameter->createDefaultUI();
-	variablesUI.add(vui);
-	addAndMakeVisible(vui);
-	resized();
- }
-
- void SerialControllerEditor::removeVariableUI(ControlVariable * v)
- {
-	ParameterUI * vui = getUIForVariable(v);
-	if (vui != nullptr)
-	{
- removeChildComponent(vui);
- variablesUI.removeObject(vui);
-	}
-	resized();
- }
-
- ParameterUI * SerialControllerEditor::getUIForVariable(ControlVariable * v)
- {
-	for (auto & vui : variablesUI)
-	{
- if (vui->parameter == v->parameter) return vui;
-	}
-	return nullptr;
- }
- */
 
 void SerialControllerEditor::paint(Graphics & g)
 {
@@ -96,7 +60,7 @@ void SerialControllerEditor::resized()
 {
   ControllerEditor::resized();
 
-  Rectangle<int> r = area;
+  Rectangle<int> r = getLocalBounds();
 //  r.removeFromTop(ControllerEditor::getContentHeight()+10);
 
   incomingToogle->setBounds(r.removeFromTop(20));
@@ -189,15 +153,4 @@ void SerialControllerEditor::currentPortChanged()
   updateConnectBTAndIndic();
 }
 
-/*
- void SerialControllerEditor::variableAdded(Controller *, ControlVariable *v)
- {
- 
-	addVariableUI(v);
- }
- 
- void SerialControllerEditor::variableRemoved(Controller *, ControlVariable *v)
- {
-	removeVariableUI(v);
- }
- */
+

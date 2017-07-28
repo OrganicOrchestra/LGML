@@ -276,12 +276,17 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
 
   }
   if(isPlaying()){
-    playNeedle += numSamples;
-    globalPlayNeedle+=numSamples;
-    if(playNeedle>=getRecordedLength()){
-      numTimePlayed ++;
+    if(getRecordedLength()){
+      playNeedle += numSamples;
+      globalPlayNeedle+=numSamples;
+      if(playNeedle>=getRecordedLength()){
+        numTimePlayed ++;
+      }
+      playNeedle %= getRecordedLength();
     }
-    playNeedle %= getRecordedLength();
+    else{
+      jassertfalse;
+    }
   }
   else{
     int dbg;dbg++;
@@ -565,14 +570,14 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,uint64 time)
     //    if(stretchNeedle!=originNumSamples)   {
     while(available<outNumSample  ){
 
-      int targetLen = (originNumSamples*pendingTimeStretchRatio);
-      double curBeat = (time%(targetLen))*1.0/targetLen + 0.0000001;
-      double localBeat = stretchNeedle*1.0/originNumSamples;
+//      int targetLen = (originNumSamples*pendingTimeStretchRatio);
+//      double curBeat = (time%(targetLen))*1.0/targetLen + 0.0000001;
+//      double localBeat = stretchNeedle*1.0/originNumSamples;
       if(!fadePendingStretch.isFadingOut()){
-        double diff =(localBeat*1.0/curBeat);
-        diff=pow(diff,3);
-        double adaptStretch=jmin(jmax(0.5,diff),2.0);
-        adaptStretch = 1;
+//        double diff =(localBeat*1.0/curBeat);
+//        diff=pow(diff,3);
+//        double adaptStretch=jmin(jmax(0.5,diff),2.0);
+       const double adaptStretch = 1;
         //                DBG(curBeat << " : " << localBeat << " : " <<diff << " : " << adaptStretch);
         RTStretcher->setTimeRatio(pendingTimeStretchRatio*adaptStretch);
       }

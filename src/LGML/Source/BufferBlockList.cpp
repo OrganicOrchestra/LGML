@@ -92,7 +92,6 @@ void BufferBlockList::copyTo(AudioSampleBuffer & outBuf,int listStartSample,int 
     if(readPosInList>=targetNumSamples){
       jassert(readPosInList<targetNumSamples+bufferBlockSize);
       readPosInList%=targetNumSamples;
-      readBlockIdx = 0;
     }
 
 

@@ -17,6 +17,8 @@
 
 extern AudioDeviceManager &  getAudioDeviceManager();
 
+
+const static Identifier usrMIDICCId("usrMIDICC");
 MIDIController::MIDIController() :
 Controller("MIDI"),JsEnvironment("controller.mIDI",this)
 {
@@ -26,20 +28,6 @@ Controller("MIDI"),JsEnvironment("controller.mIDI",this)
 
 	channelFilter = addIntParameter("Channel", "Channel to filter message (0 = accept all channels)",0,0,16);
 
-	for (int i = 0; i < 127; i++)
-	{
-		String noteName = MidiMessage::getMidiNoteName(i, true, true, 0);
-		FloatParameter * fp = new FloatParameter(noteName, "Value for " + noteName, 0, 0, 1);
-		ControlVariable * cv = addVariable(fp);
-		cv->includeInSave = false;
-	}
-
-	for (int i = 0; i < 127; i++)
-	{
-		FloatParameter *fp = new FloatParameter(String("CC ") + String(i), String("ControlChange ") + String(i), 0, 0, 1);
-		ControlVariable * cv = addVariable(fp);
-		cv->includeInSave = false;
-	}
 
 	// TODO : we may need to listen to sR changes
 	juce::AudioDeviceManager::AudioDeviceSetup setup;
@@ -86,17 +74,25 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
         NLOG("MIDI","CC "+String(message.getControllerNumber()) + " > " + String(message.getControllerValue())+" (Channel "+String(message.getChannel())+")");
       }
 
-      int variableIndex = 128 + message.getControllerNumber() -1;
+      ControllableContainer::UsrParameterList * usrMIDICC = getUserParameters(usrMIDICCId);
+        for(Controllable* c:*usrMIDICC){
+          if(((Parameter*)c)->intValue()==1){
+
+          }
+//        message.
+//      int variableIndex = 128 + message.getControllerNumber() -1;
       //DBG("Variable name " << variables[variableIndex]->parameter->niceName);
-      variables[variableIndex]->parameter->setValue(message.getControllerValue()*1.f / 127.f);
+//      variables[variableIndex]->setValue(message.getControllerValue()*1.f / 127.f);
+      }
+
     }
     else if(message.isNoteOnOrOff()){
       if (logIncoming->boolValue())
       {
         NLOG("MIDI", "Note " + String(message.isNoteOn() ? "on" : "off") + " : " + MidiMessage::getMidiNoteName(message.getNoteNumber(), true, true, 0) + " > " + String(message.getVelocity()) + " (Channel " + String(message.getChannel()) + ")");
       }
-      int variableIndex = message.getNoteNumber();
-      variables[variableIndex]->parameter->setValue(message.isNoteOn()?(message.getVelocity()*1.f / 127.f):0);
+//      int variableIndex = message.getNoteNumber();
+//      variables[variableIndex]->setValue(message.isNoteOn()?(message.getVelocity()*1.f / 127.f):0);
     }
 
     else if (message.isPitchWheel()){

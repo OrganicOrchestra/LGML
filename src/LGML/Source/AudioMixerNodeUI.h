@@ -20,7 +20,7 @@
 
 class AudioMixerNodeUI : public NodeBaseContentUI,
 public ConnectableNode::ConnectableNodeListener,
-public Parameter::Listener
+private Parameter::Listener
 {
 public:
 	AudioMixerNodeUI(){

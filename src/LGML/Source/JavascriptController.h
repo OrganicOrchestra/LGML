@@ -86,7 +86,7 @@ class JsOSCListener{
 #pragma warning(push)
 #pragma warning(disable:4305 4800)
   static var dummyCallback(const var::NativeFunctionArgs &){
-	  return var::undefined;
+	  return &var::undefined;
   };
 
 #pragma warning(pop)

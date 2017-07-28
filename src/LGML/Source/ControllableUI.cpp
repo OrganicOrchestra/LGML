@@ -10,13 +10,23 @@
 
 #include "ControllableUI.h"
 #include "Controllable.h"
+#include "LGMLDragger.h"
 
 ControllableUI::ControllableUI(Controllable * controllable) :
     controllable(controllable),
-Component(controllable->niceName)
+    isMappingDest(false),
+    isDraggable(true)
 {
-  LGMLComponent::setLGMLElement(controllable);
+  if(LGMLDragger::getInstance()->isMappingActive){
+    mappingState = isMappingDest?MAPDEST:MAPSOURCE;
+  }
+  else{
+    mappingState=NOMAP;
+  }
+
+
     jassert(controllable!=nullptr);
+    setName(controllable->niceName);
     controllable->addControllableListener(this);
     updateTooltip();
 
@@ -24,6 +34,7 @@ Component(controllable->niceName)
 
 ControllableUI::~ControllableUI()
 {
+  LGMLDragger::getInstance()->unRegisterDragCandidate(this);
     if(controllable.get())controllable->removeControllableListener(this);
 }
 
@@ -35,6 +46,7 @@ void ControllableUI::controllableStateChanged(Controllable * c)
 void ControllableUI::controllableControlAddressChanged(Controllable *)
 {
   updateTooltip();
+  repaint();
 }
 
 void ControllableUI::mouseDown(const MouseEvent & e)
@@ -59,6 +71,46 @@ void ControllableUI::updateTooltip()
 }
 
 
+void  ControllableUI::setMappingState(const bool  b){
+  MappingState s = b?(isMappingDest?MAPDEST:MAPSOURCE):NOMAP;
+  if(s!=mappingState){
+    if(s==NOMAP){setInterceptsMouseClicks(true, true);}
+    else{
+      setInterceptsMouseClicks(true, false);
+    }
+  }
+  mappingState = s;
+  repaint();
+}
+void ControllableUI::paintOverChildren(Graphics &g) {
+  jassert(controllable!=nullptr );
+  Component::paintOverChildren(g);
+  if(mappingState!=NOMAP ){
+    if(mappingState==MAPSOURCE){
+      jassert(!isMappingDest);
+      g.setColour(Colours::white.withAlpha(0.5f));
+    }
+    else{
+      jassert(isMappingDest);
+      g.setColour(Colours::red.withAlpha(0.5f));
+    }
+    g.fillAll();
+  }
+}
+
+
+
+
+void ControllableUI::setMappingDest(bool _isMappingDest){
+  isMappingDest = _isMappingDest;
+  if(mappingState!=NOMAP){
+    mappingState = isMappingDest?MAPDEST:MAPSOURCE;
+  }
+
+}
+
+
+
 //////////////////
 // NamedControllableUI
 
@@ -74,6 +126,7 @@ labelWidth(_labelWidth){
   controllableLabel.setText(ui->controllable->niceName, dontSendNotification);
   if(ui->controllable->isUserDefined){
     controllableLabel.setEditable(true);
+    controllableLabel.addListener(this);
   }
 
   controllableLabel.setTooltip(ControllableUI::getTooltip());

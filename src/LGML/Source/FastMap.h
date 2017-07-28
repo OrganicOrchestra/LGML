@@ -36,7 +36,7 @@ public:
 	ParameterProxy * referenceIn;
 	ParameterProxy *  referenceOut;
 
-  
+  void onContainerParameterChanged(Parameter *)override;
 
 	bool isInRange; //memory for triggering
 	void process();

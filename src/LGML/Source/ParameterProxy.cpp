@@ -78,10 +78,6 @@ void ParameterProxy::setParamToReferTo(Parameter * p)
   }
 }
 
-void ParameterProxy::remove()
-{
-  DBG("dispatch askForRemove");
-}
 
 
 ControllableContainer * ParameterProxy::getRoot(){

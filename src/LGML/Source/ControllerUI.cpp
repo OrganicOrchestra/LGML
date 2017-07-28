@@ -56,8 +56,7 @@ void ControllerUI::paint(Graphics & g)
 {
     g.setColour(PANEL_COLOR);
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
-	g.setColour(isSelected ? HIGHLIGHT_COLOR: PANEL_COLOR.darker());
-    g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
+
 }
 
 void ControllerUI::resized()
@@ -81,7 +80,7 @@ void ControllerUI::buttonClicked(Button * b)
 {
 	if (b == &removeBT)
 	{
-		controller->remove();
+    controller->parentContainer->removeChildControllableContainer(controller);
 	}
 }
 
@@ -91,7 +90,7 @@ bool ControllerUI::keyPressed(const KeyPress & key)
 
 	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
 	{
-		controller->remove();
+		controller->parentContainer->removeChildControllableContainer(controller);
 		return true;
 	}
 

@@ -19,7 +19,7 @@ MIDIControllerEditor::MIDIControllerEditor(Controller * _controller) :
 	ControllerEditor(_controller,false),
 	deviceChooser(true)
 {
-  ControllerEditor::hideVariableUIs = true;
+
   midiController = dynamic_cast<MIDIController*>( controller);
   jassert(midiController);
   jsUI = new JsEnvironmentUI(midiController->jsParameters);
@@ -46,7 +46,7 @@ MIDIControllerEditor::~MIDIControllerEditor()
 void MIDIControllerEditor::resized()
 {
 	ControllerEditor::resized();
-  Rectangle<int> r = ControllerEditor::area;
+  Rectangle<int> r = getLocalBounds();
 	//r.removeFromTop(ControllerEditor::getContentHeight() + 10);
 	deviceChooser.setBounds(r.removeFromTop(30));
 	channelStepper->setBounds(r.removeFromTop(20));

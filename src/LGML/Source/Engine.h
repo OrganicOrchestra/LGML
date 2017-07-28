@@ -102,7 +102,7 @@ public:
   bool allLoadingThreadsAreEnded();
   void loadDocumentAsync(const File & file);
 
-  class FileLoader : public Thread,public Timer{
+  class FileLoader : public Thread,private Timer{
   public:
     FileLoader(Engine * e,File f):Thread("EngineLoader"),owner(e),fileToLoad(f){
       //startTimerHz(4);

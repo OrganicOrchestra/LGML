@@ -23,7 +23,7 @@ class ConnectableNodeUI;
 
 class ConnectableNodeHeaderUI : public Component,
 public Button::Listener,
-public ControllableContainerListener,
+private ControllableContainerListener,
 public ConnectableNode::ConnectableNodeListener
 {
 public:

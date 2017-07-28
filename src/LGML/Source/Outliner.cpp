@@ -88,8 +88,9 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 
   for (auto &c : childControllables)
   {
-    OutlinerItem * cItem = new OutlinerItem(c);
+
     if(!shouldFilterByName || c->niceName.contains(nameFilter)){
+      OutlinerItem * cItem = new OutlinerItem(c);
       parentItem->addSubItem(cItem);
     }
   }
@@ -148,9 +149,6 @@ item(_item),
 label("label",_item->isContainer? item->container->getNiceName() : item->controllable->niceName)
 
 {
-  if(item->isContainer) LGMLComponent::setLGMLElement(item->container);
-  else                  LGMLComponent::setLGMLElement(item->controllable);
-
 
   setTooltip(item->isContainer ? item->container->getControlAddress() : item->controllable->description + "\nControl Address : " + item->controllable->controlAddress);
   addAndMakeVisible(&label);

@@ -31,7 +31,6 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 	c->nameParam->setValue(getUniqueNameInContainer(c->nameParam->stringValue()));
 
 	controllers.add(c);
-	c->addControllerListener(this);
 
 	addChildControllableContainer(c);
 	listeners.call(&ControllerManager::Listener::controllerAdded, c);
@@ -40,7 +39,7 @@ Controller * ControllerManager::addController(ControllerFactory::ControllerType 
 
 void ControllerManager::removeController(Controller * c)
 {
-    c->removeControllerListener(this);
+
 	removeChildControllableContainer(c);
     listeners.call(&ControllerManager::Listener::controllerRemoved, c);
     controllers.removeObject(c);
@@ -48,10 +47,11 @@ void ControllerManager::removeController(Controller * c)
 
 void ControllerManager::clear()
 {
-	while (controllers.size())
-	{
-		controllers[0]->remove();
-	}
+  controllers.clear();
+//	while (controllers.size())
+//	{
+//		controllers[0]->remove();
+//	}
 }
 
 var ControllerManager::getJSONData()
@@ -91,7 +91,4 @@ void ControllerManager::loadJSONDataInternal(var data)
 
 }
 
-void ControllerManager::askForRemoveController(Controller * c)
-{
-    removeController(c);
-}
+

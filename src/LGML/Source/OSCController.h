@@ -79,7 +79,7 @@ public:
   }
 #endif
 
-  class OSCMessageQueue:public Timer{
+  class OSCMessageQueue:private Timer{
   public:
     OSCMessageQueue(OSCController* o);
     void add(OSCMessage * m);

@@ -12,7 +12,6 @@
 #define INSPECTOREDITOR_H_INCLUDED
 
 #include "JuceHeader.h"//keep
-#include "FastMapperUI.h"
 
 class InspectableComponent;
 
@@ -24,9 +23,6 @@ public:
 
 	
 	
-	//RelatedFastMap
-	ScopedPointer<FastMapperUI> fastMapperUI;
-
 	void resized() override;
 
 	virtual int getContentHeight();

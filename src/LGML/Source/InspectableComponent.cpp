@@ -64,3 +64,8 @@ void InspectableComponent::setSelectedInternal(bool)
 {
 	//to be overriden
 }
+
+void InspectableComponent::paintOverChildren(juce::Graphics &g){
+  g.setColour(isSelected ? HIGHLIGHT_COLOR: PANEL_COLOR.darker());
+  g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
+}

@@ -144,6 +144,7 @@ void TimeManager::incrementClock(int block){
     linkTime =linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
     linkTimeLine = linkSession.captureAudioTimeline();
     const int quantum = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
+    jassert(quantum>0);
     const double linkBeat = linkTimeLine.beatAtTime(linkTime, quantum);
     //    auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
     //    auto localPhase = fmod(localBeat,tstQ);

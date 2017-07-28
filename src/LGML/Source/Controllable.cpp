@@ -41,6 +41,7 @@ isUserDefined(false)
 Controllable::~Controllable() {
   Controllable::masterReference.clear();
   listeners.call(&Controllable::Listener::controllableRemoved, this);
+
 }
 
 void Controllable::setNiceName(const String & _niceName) {
@@ -105,7 +106,7 @@ DynamicObject * Controllable::createDynamicObject()
 {
   DynamicObject* dObject = new DynamicObject();
   dObject->setProperty(jsPtrIdentifier, (int64)this);
-  dObject->setProperty(jsVarObjectIdentifier, getVarObject());
+//  dObject->setProperty(jsVarObjectIdentifier, getVarObject());
   dObject->setMethod(jsGetIdentifier, Controllable::getVarStateFromScript);
   return dObject;
 }

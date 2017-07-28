@@ -16,7 +16,7 @@
 
 
 extern AudioDeviceManager & getAudioDeviceManager();
-class MIDIManager : public Timer
+class MIDIManager : private Timer
 {
 public:
 	struct DeviceUsageCount

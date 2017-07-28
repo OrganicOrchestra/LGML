@@ -22,7 +22,7 @@ Author:  bkupe
 
 class Trigger;
 
-class TriggerBlinkUI : public ParameterUI, public Timer
+class TriggerBlinkUI : public ParameterUI, private Timer
 {
 public:
     TriggerBlinkUI(Trigger * t);

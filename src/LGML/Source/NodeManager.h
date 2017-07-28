@@ -70,7 +70,7 @@ private:
 
   friend class JobsWatcher;
 
-  class JobsWatcher:public Timer{
+  class JobsWatcher:private Timer{
   public:
 	  int startTotalJobNum;
 	  int numJobsDone;

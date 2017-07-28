@@ -14,6 +14,8 @@
 #include "ControllerUI.h"
 #include "SerialControllerEditor.h"
 
+static Identifier serialVarId("serialVars");
+
 SerialController::SerialController() :
 JsEnvironment("controller.serial",this),
 Controller("Serial"),
@@ -100,12 +102,7 @@ void SerialController::buildLocalEnv() {
   obj.setMethod(jsSendMessageIdentifier, sendMessageFromScript);
   obj.setProperty(jsPtrIdentifier, (int64)this);
 
-  for (auto &v : variables)
-  {
-    if(Parameter * p = v->parameter){
-      obj.setProperty(v->parameter->shortName, p->createDynamicObject());
-    }
-  }
+
 
   setLocalNamespace(obj);
 }
@@ -133,11 +130,15 @@ void SerialController::serialDataReceived(const var & data)
   processMessage(data.toString());
 }
 
-void SerialController::internalVariableAdded(ControlVariable*){
+void SerialController::controllableAdded(ControllableContainer *,Controllable * c){
+  if(c->isUserDefined){
   reloadFile();
+  }
 }
-void SerialController::internalVariableRemoved(ControlVariable*){
+void SerialController::controllableRemoved(ControllableContainer *,Controllable *c){
+  if(c->isUserDefined){
   reloadFile();
+  }
 
 }
 var SerialController::sendMessageFromScript(const var::NativeFunctionArgs &) {
@@ -161,36 +162,41 @@ void SerialController::processMessage(const String & message)
     deviceID = split[1];
     while (serialVariables.size() > 0)
     {
-      removeVariable(serialVariables[0]);
       serialVariables.removeAllInstancesOf(serialVariables[0]);
     }
 
   } else if (command == "a")
   {
-    if (getVariableForName(split[1]) == nullptr)
+    auto found = getUserParameter(serialVarId,split[1]);
+    if (!found )
     {
-      ControlVariable * v ;
+      FloatParameter * v ;
+
       if(split.size()>=4){
-        v= addVariable(new FloatParameter(split[1],split[1],split[2].getFloatValue(),split[2].getFloatValue(),split[3].getFloatValue()));
+        v= addNewUserParameter<FloatParameter>(serialVarId,split[1],split[1],
+                                               split[2].getFloatValue(),
+                                               split[2].getFloatValue(),
+                                               split[3].getFloatValue());
       }
       else{
-        v = addVariable(new FloatParameter(split[1], split[1], 0));
+        v= addNewUserParameter<FloatParameter>(serialVarId,split[1],split[1],0);
       }
       serialVariables.add(v);
     }
   } else if (command == "d")
   {
-    if (getVariableForName(split[1]) == nullptr)
+    auto found = getUserParameter(serialVarId,split[1]);
+    if (!found )
     {
-      ControlVariable * v = addVariable(new BoolParameter(split[1], split[1], false));
+      BoolParameter * v = addNewUserParameter<BoolParameter>(serialVarId,split[1], split[1], false);
       serialVariables.add(v);
     }
   } else if (command == "u")
   {
-    ControlVariable *  v = getVariableForName(split[1]);
+    auto *  v = getUserParameter(serialVarId,split[1]);
     if (v != nullptr)
     {
-      v->parameter->setValue(split[2].getFloatValue());
+      ((Parameter*)v)->setValue(split[2].getFloatValue());
     }
   }
 }

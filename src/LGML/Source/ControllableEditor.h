@@ -13,7 +13,7 @@
 
 #include "InspectorEditor.h"
 class Controllable;
-
+class ControllableUI;
 
 class ControllableEditor : 
 	public InspectorEditor

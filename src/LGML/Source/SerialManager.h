@@ -16,7 +16,7 @@
 
 
 class SerialManager :
-	public Timer
+	private Timer
 {
 public:
 	juce_DeclareSingleton(SerialManager, true);

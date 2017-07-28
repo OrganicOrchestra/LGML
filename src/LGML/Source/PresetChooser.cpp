@@ -25,7 +25,7 @@ PresetChooser::PresetChooser(ControllableContainer * _container) :
 PresetChooser::~PresetChooser()
 {
     ComboBox::removeListener(this);
-	container->removeControllableContainerListener(this);
+	if(auto c = container.get())c->removeControllableContainerListener(this);
 }
 
 

@@ -13,7 +13,6 @@
 
 
 #include "ControllerEditor.h"
-
 #include "SerialUIHelper.h"
 #include "JsEnvironmentUI.h"
 #include "SerialController.h"//keep
@@ -38,11 +37,6 @@ public:
 
 	int getContentHeight() override;
 
-	/*
-	void addVariableUI(ControlVariable *);
-	void removeVariableUI(ControlVariable *);
-	ParameterUI * getUIForVariable(ControlVariable *);
-	*/
 
 	void paint(Graphics &g) override;
 	void resized() override;
@@ -56,10 +50,6 @@ public:
 	void portClosed() override;
 	void currentPortChanged() override;
 
-	/*
-	void variableAdded(Controller *, ControlVariable * ) override;
-	void variableRemoved(Controller *, ControlVariable *) override;
-	*/
 };
 
 

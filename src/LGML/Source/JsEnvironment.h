@@ -20,8 +20,8 @@ class JsControllableListenerObject;
 class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
-public Parameter::Listener,
-public ControllableContainerListener
+private Parameter::Listener,
+private ControllableContainerListener
 
 {
 public:
@@ -274,7 +274,7 @@ class JsControllableListenerObject:public Parameter::AsyncListener
   // overriden in Js
 #pragma warning(push)
 #pragma warning(disable:4305 4800)
-  static var dummyCallback(const var::NativeFunctionArgs & /*a*/){return var::undefined;};
+  static var dummyCallback(const var::NativeFunctionArgs & /*a*/){return &var::undefined;};
 #pragma warning(pop)
   void newMessage(const Parameter::ParamWithValue & pv)override
   {

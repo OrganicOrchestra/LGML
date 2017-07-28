@@ -18,7 +18,7 @@
 
 class ParameterProxy :
   public StringParameter,
-	public Parameter::Listener,
+	private Parameter::Listener,
   public Controllable::Listener,
   private ControllableContainerListener
 {
@@ -40,9 +40,6 @@ public:
    
 	 void setParamToReferTo(Parameter * p);
 
-  
-	void remove();
-
   void controllableAdded(ControllableContainer *,Controllable * /*notifier*/) override;
 	class ParameterProxyListener
 	{
@@ -56,9 +53,12 @@ public:
 	void addParameterProxyListener(ParameterProxyListener* newListener) { proxyListeners.add(newListener); }
 	void removeParameterProxyListener(ParameterProxyListener* listener) { proxyListeners.remove(listener); }
 
+  ControllableContainer * getRoot();
+
+  
 private:
   bool resolveAddress();
-  ControllableContainer * getRoot();
+
 };
 
 

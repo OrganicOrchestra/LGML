@@ -11,10 +11,10 @@
 #pragma once
 
 #include "JuceHeader.h"
-#include "LGMLComponent.h"
 
 //DBGinclude
 #include "Controllable.h"
+
 
 class DraggedComponent;
 class LGMLDragger : MouseListener{
@@ -29,11 +29,14 @@ public:
   Component * mainComp;
   TooltipWindow * tip;
 
-  void registerDragCandidate(LGMLComponent * c);
-  void unRegisterDragCandidate(LGMLComponent * c);
+  void registerDragCandidate(ControllableUI * c);
+  void unRegisterDragCandidate(ControllableUI * c);
 
 
-
+  void mouseEnter(const MouseEvent &e)override;
+  void mouseExit(const MouseEvent &e) override;
+  
+  
   void startDraggingComponent (Component* const componentToDrag, const MouseEvent& e);
   void dragComponent (Component* const componentToDrag, const MouseEvent& e,ComponentBoundsConstrainer* const constrainer);
   void endDraggingComponent(Component *  componentToDrag,const MouseEvent & e);

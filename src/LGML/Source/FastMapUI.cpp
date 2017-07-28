@@ -20,6 +20,7 @@ refUI(f->referenceIn),
 targetUI(f->referenceOut)
 
 {
+  addMouseListener(this,true);
 
   enabledUI = ParameterUIFactory::createDefaultUI(fastMap->enabledParam);
   addAndMakeVisible(enabledUI);
@@ -70,18 +71,18 @@ void FastMapUI::resized()
 
   int w = r.getWidth();
   int h = r.getHeight();
-  refUI.setBounds(r.removeFromLeft((int)(w*.3f)));
-  targetUI.setBounds(r.removeFromRight((int)(w*.2f)).reduced(2,3));
+  refUI.setBounds(r.removeFromLeft((int)(w*.25f)).reduced(1));
+  targetUI.setBounds(r.removeFromRight((int)(w*.25f)).reduced(1));
 
   Rectangle<int> inR = r.removeFromLeft((int)(w*.2f));
-  minInputUI->setBounds(inR.removeFromTop((int)(h*.4f)));
-  maxInputUI->setBounds(inR.removeFromBottom((int)(h*.4f)));
+  minInputUI->setBounds(inR.removeFromTop((int)(h*.45f)));
+  maxInputUI->setBounds(inR.removeFromBottom((int)(h*.45f)));
 
 
   Rectangle<int> outR = r.removeFromRight((int)(w*.3f));
   invertUI->setBounds(outR.removeFromRight(30));
-  minOutputUI->setBounds(outR.removeFromTop((int)(h*.4f)));
-  maxOutputUI->setBounds(outR.removeFromBottom((int)(h*.4f)));
+  minOutputUI->setBounds(outR.removeFromTop((int)(h*.45f)));
+  maxOutputUI->setBounds(outR.removeFromBottom((int)(h*.45f)));
 
 
 
@@ -91,3 +92,7 @@ void FastMapUI::buttonClicked(Button * b)
 {
   if(b == &removeBT) FastMapper::getInstance()->removeFastmap(fastMap);
 }
+
+void FastMapUI::mouseDown(const MouseEvent &e) {
+  selectThis();
+};

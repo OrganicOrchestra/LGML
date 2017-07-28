@@ -298,7 +298,7 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
 #pragma warning(disable:4305 4800)
 var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const var::NativeFunctionArgs &Nargs, bool logResult, Result* result)
 {
-  if (!hasValidJsFile()) return var::undefined;
+  if (!hasValidJsFile()) return &var::undefined;
   bool resOwned = false;
   if (logResult && result == nullptr) {
     result = new Result(Result::ok());

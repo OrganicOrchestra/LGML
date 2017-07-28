@@ -10,18 +10,9 @@
 
 #include "InspectorEditor.h"
 
-InspectorEditor::InspectorEditor():
-fastMapperUI(nullptr)
+InspectorEditor::InspectorEditor()
 {
 
-  // TODO subclass this
-//	if (sourceComponent->relatedControllableContainer != nullptr)
-//	{
-//		DBG("Add FastMapperUI in InspectorEditor");
-//		fastMapperUI = new FastMapperUI(FastMapper::getInstance());
-//		fastMapperUI->setViewFilter(sourceComponent->relatedControllableContainer);
-//		addAndMakeVisible(fastMapperUI);
-//	}
 }
 
 InspectorEditor::~InspectorEditor()
@@ -31,19 +22,13 @@ InspectorEditor::~InspectorEditor()
 
 void InspectorEditor::resized()
 {
-	if (fastMapperUI != nullptr)
-	{
-		Rectangle<int> r = getLocalBounds().removeFromBottom(fastMapperUI->getContentHeight());
-		DBG("Set fast mapper ui size " << r.toString());
-		fastMapperUI->setBounds(r);
-		fastMapperUI->toFront(false);
-	}
+
 }
 
 int InspectorEditor::getContentHeight()
 {
-	if (fastMapperUI == nullptr) return 0;//will default to parent's bounds
-	return fastMapperUI->getContentHeight()+10; 
+	return 0;//will default to parent's bounds
+	 
 }
 
 void InspectorEditor::clear()

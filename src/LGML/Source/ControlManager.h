@@ -14,7 +14,7 @@
 
 #include "ControllerFactory.h"
 
-class ControllerManager : public Controller::ControllerListener, public ControllableContainer
+class ControllerManager :  public ControllableContainer
 {
 public:
 
@@ -47,8 +47,6 @@ public:
     void addControllerListener(Listener* newListener) { listeners.add(newListener); }
     void removeControllerListener(Listener* listener) { listeners.remove(listener); }
 
-    // Inherited via Listener
-    virtual void askForRemoveController(Controller *) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManager)
 };

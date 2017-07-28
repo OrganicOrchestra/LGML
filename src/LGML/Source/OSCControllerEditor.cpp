@@ -54,7 +54,7 @@ void OSCControllerEditor::resized()
 
   Rectangle<int> r = getLocalBounds();
 
-  r.removeFromTop(getVariablesHeight() + 30); //TODO : be removed when removing variable mechanism
+  r.removeFromTop( 30);
 
   localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));
   r.removeFromTop(2);

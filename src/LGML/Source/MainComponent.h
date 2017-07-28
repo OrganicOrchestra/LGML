@@ -45,7 +45,7 @@ AudioDeviceManager& getAudioDeviceManager();
 #include "DebugHelpers.h"//keep
 #include "ProgressWindow.h"
 
-class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,public Timer
+class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,private Timer
 
 {
 public:
