@@ -74,7 +74,7 @@ public:
   void textEditorTextChanged (TextEditor&)override;
 
 	void rebuildTree();
-	void buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer);
+	void buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer,bool shouldFilter=true);
 
 	void childStructureChanged(ControllableContainer *,ControllableContainer*) override;
   void handleAsyncUpdate()override;

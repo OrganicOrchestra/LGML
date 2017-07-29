@@ -58,21 +58,21 @@ void Outliner::rebuildTree()
 
 }
 
-void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer)
+void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer,bool shouldFilter)
 {
-  bool shouldFilterByName = nameFilter.isNotEmpty();
+  bool shouldFilterByName = nameFilter.isNotEmpty() && shouldFilter;
   Array<WeakReference<ControllableContainer>> childContainers = parentContainer->getAllControllableContainers(false);
   for (auto &cc : childContainers)
   {
     if (cc->skipControllableNameInAddress && !showHiddenContainers)
     {
-      buildTree(parentItem, cc);
+      buildTree(parentItem, cc,shouldFilter);
     } else
     {
       OutlinerItem * ccItem = new OutlinerItem(cc);
       parentItem->addSubItem(ccItem);
 
-      buildTree(ccItem, cc);
+      buildTree(ccItem, cc,!cc->getNiceName().contains(nameFilter));
       if(shouldFilterByName && ccItem->getNumSubItems()==0 && !cc->getNiceName().contains(nameFilter)){
         parentItem->removeSubItem(ccItem->getIndexInParent());
       }
