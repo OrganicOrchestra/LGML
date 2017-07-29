@@ -22,7 +22,7 @@ InspectableComponent::InspectableComponent(ControllableContainer * relatedContai
 	recursiveInspectionLevel(0),
 	canInspectChildContainersBeyondRecursion(true),
 	isSelected(false),
-	repaintOnSelectionChanged(true),
+	paintBordersWhenSelected(true),
 	bringToFrontOnSelect(true)
 {
 }
@@ -52,7 +52,7 @@ void InspectableComponent::setSelected(bool value)
 	isSelected = value;
 
 	if (bringToFrontOnSelect) toFront(true);
-	if (repaintOnSelectionChanged) repaint();
+	 repaint();
 
 
 	setSelectedInternal(value);
@@ -66,6 +66,9 @@ void InspectableComponent::setSelectedInternal(bool)
 }
 
 void InspectableComponent::paintOverChildren(juce::Graphics &g){
-  g.setColour(isSelected ? HIGHLIGHT_COLOR: PANEL_COLOR.darker());
-  g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
+  if(isSelected && paintBordersWhenSelected){
+    g.setColour( HIGHLIGHT_COLOR);
+    g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
+  }
+
 }

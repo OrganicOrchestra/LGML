@@ -11,7 +11,7 @@
 #include "Outliner.h"
 #include "Engine.h"
 #include "Style.h"
-#include "LGMLDragger.h"
+#include "ParameterUIFactory.h"
 
 
 
@@ -72,13 +72,12 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
       OutlinerItem * ccItem = new OutlinerItem(cc);
       parentItem->addSubItem(ccItem);
 
-      buildTree(ccItem, cc,!cc->getNiceName().contains(nameFilter));
-      if(shouldFilterByName && ccItem->getNumSubItems()==0 && !cc->getNiceName().contains(nameFilter)){
-        parentItem->removeSubItem(ccItem->getIndexInParent());
+      buildTree(ccItem, cc,!cc->getNiceName().toLowerCase().contains(nameFilter));
+      if(shouldFilterByName && ccItem->getNumSubItems()==0 &&
+         !cc->getNiceName().toLowerCase().contains(nameFilter)){
+            parentItem->removeSubItem(ccItem->getIndexInParent());
       }
-      else if (shouldFilterByName){
-        parentItem->setOpen(true);
-      }
+
 
     }
 
@@ -89,10 +88,16 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
   for (auto &c : childControllables)
   {
 
-    if(!shouldFilterByName || c->niceName.contains(nameFilter)){
+    if(!shouldFilterByName || c->niceName.toLowerCase().contains(nameFilter)){
       OutlinerItem * cItem = new OutlinerItem(c);
       parentItem->addSubItem(cItem);
+
     }
+  }
+  // show every thing on text search
+  if(nameFilter.isNotEmpty()){
+    parentItem->setOpen(true);
+
   }
 }
 
@@ -114,7 +119,7 @@ void Outliner::handleAsyncUpdate(){
 }
 
 void Outliner::textEditorTextChanged (TextEditor& t){
-  nameFilter = t.getText();
+  nameFilter = t.getText().toLowerCase();
   rebuildTree();
 
 }
@@ -122,13 +127,13 @@ void Outliner::textEditorTextChanged (TextEditor& t){
 // OUTLINER ITEM
 
 OutlinerItem::OutlinerItem(ControllableContainer * _container) :
-container(_container), controllable(nullptr), isContainer(true), inspectable(dynamic_cast<InspectableComponent *>(_container))
+container(_container), controllable(nullptr), isContainer(true)
 {
 
 }
 
 OutlinerItem::OutlinerItem(Controllable * _controllable) :
-container(nullptr), controllable(_controllable), isContainer(false), inspectable(dynamic_cast<InspectableComponent *>(_controllable))
+container(nullptr), controllable(_controllable), isContainer(false)
 {
 }
 
@@ -146,15 +151,28 @@ Component * OutlinerItem::createItemComponent()
 OutlinerItemComponent::OutlinerItemComponent(OutlinerItem * _item) :
 InspectableComponent(_item->container),
 item(_item),
-label("label",_item->isContainer? item->container->getNiceName() : item->controllable->niceName)
+label("label",_item->isContainer? item->container->getNiceName() : item->controllable->niceName),
+paramUI(nullptr)
 
 {
 
   setTooltip(item->isContainer ? item->container->getControlAddress() : item->controllable->description + "\nControl Address : " + item->controllable->controlAddress);
   addAndMakeVisible(&label);
   label.setInterceptsMouseClicks(false, false);
+  if(!_item->isContainer){
+    paramUI = ParameterUIFactory::createDefaultUI(item->controllable->getParameter());
+    addAndMakeVisible(paramUI);
+  }
 }
+void OutlinerItemComponent::resized()
+{
+  auto r = getLocalBounds();
+  if(paramUI){
+    paramUI->setBounds(r.removeFromRight(r.getWidth()/2).reduced(2));
+  }
+  label.setBounds(r);
 
+}
 void OutlinerItemComponent::paint(Graphics & g)
 {
   Rectangle<int> r = getLocalBounds();

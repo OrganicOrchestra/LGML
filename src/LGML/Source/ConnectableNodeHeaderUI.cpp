@@ -246,7 +246,10 @@ void ConnectableNodeHeaderUI::buttonClicked(Button * b)
 {
   if (b == &removeBT)
   {
-    node->remove(true);
+      int result = AlertWindow::showOkCancelBox(AlertWindow::AlertIconType::QuestionIcon, "Remove node", "Do you want to remove the node ?");
+      if (result == 0) return;
+
+    node->remove();
   } else if(b == &miniModeBT)
   {
     node->miniMode->setValue(!node->miniMode->boolValue());

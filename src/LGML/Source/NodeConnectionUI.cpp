@@ -16,9 +16,10 @@
 NodeConnectionUI::NodeConnectionUI(NodeConnection * connection, Connector * sourceConnector, Connector * destConnector) :
 candidateDropConnector(nullptr),
 connection(connection),
-sourceConnector(nullptr), destConnector(nullptr)
+sourceConnector(nullptr),
+destConnector(nullptr)
 {
-
+  InspectableComponent::paintBordersWhenSelected = false;
   setSourceConnector(sourceConnector);
   setDestConnector(destConnector);
 

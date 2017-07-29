@@ -480,7 +480,7 @@ bool ControllableContainer::loadPresetWithName(const String & name)
   isLoadingPreset = true;
 
   PresetManager::Preset * preset = PresetManager::getInstance()->getPreset(getPresetFilter(), name);
-  if (preset == nullptr){isLoadingPreset = false;currentPresetName->setValue("", true); return false;}
+  if (preset == nullptr){isLoadingPreset = false;currentPresetName->setValue("", true,true); return false;}
   bool hasLoaded = loadPreset(preset);
   isLoadingPreset = false;
   return hasLoaded;

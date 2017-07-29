@@ -34,7 +34,7 @@ public:
 	int recursiveInspectionLevel;
 	bool canInspectChildContainersBeyondRecursion;
 
-	bool repaintOnSelectionChanged;
+	bool paintBordersWhenSelected;
 	bool bringToFrontOnSelect;
 
 	bool isSelected;

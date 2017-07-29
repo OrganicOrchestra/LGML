@@ -19,6 +19,7 @@
 
 
 class OutlinerItem;
+class ParameterUI;
 class OutlinerItemComponent : public  InspectableComponent, public SettableTooltipClient
 {
 public:
@@ -26,10 +27,10 @@ public:
 	OutlinerItem * item;
 	
 	Label label;
-	
+  ScopedPointer<ParameterUI> paramUI;
 	void paint(Graphics &g) override;
 	void mouseDown(const MouseEvent &e) override;
-  
+  void resized()override;
 	InspectorEditor * createEditor() override;
 };
 
@@ -43,7 +44,6 @@ public:
 
 	ControllableContainer * container;
 	Controllable * controllable;
-	InspectableComponent * inspectable;
 
 
 

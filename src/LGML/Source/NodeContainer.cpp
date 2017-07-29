@@ -414,13 +414,8 @@ bool NodeContainer::removeConnection(NodeConnection * c)
 //From NodeBase Listener
 void NodeContainer::askForRemoveNode(ConnectableNode * node)
 {
-  if(    removeNode(node)){
-    // TODO we should give a pre_delete() function to nodes for unregistering all listener and stuffs,
-    // for now re opening a complex session gives crash on the second open as they are not being deleted by us but the AudioGraph
-    //        if(NodeBase *nb=dynamic_cast<NodeBase *>(node)){
-    //         nb->stopTimer();
-    //        }
-  }
+  removeNode(node);
+
 }
 
 
