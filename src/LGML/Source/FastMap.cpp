@@ -53,7 +53,7 @@ void FastMap::process()
 
   auto inRef = referenceIn->get();
   if(inRef){
-	float sourceVal = (float)inRef->value;
+	auto sourceVal = (float)inRef->doubleValue();
 
 	bool newIsInRange = (sourceVal > minInputVal->floatValue() && sourceVal <= maxInputVal->floatValue());
 
@@ -71,7 +71,7 @@ void FastMap::process()
 			((BoolParameter *)outRef)->setValue(newIsInRange);
 		}else
 		{
-			if (minOutputVal->floatValue() < maxOutputVal->floatValue())
+			if ( minInputVal->floatValue() != maxInputVal->floatValue())
 			{
 				float targetVal = juce::jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
 				targetVal = juce::jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(), targetVal);
@@ -109,9 +109,9 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
     else{
     float normMin = minInputVal->getNormalizedValue();
     float normMax = maxInputVal->getNormalizedValue();
-    //		minInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
-    //		maxInputVal->setRange(referenceIn.get()->currentVariable->parameter->minimumValue, referenceIn.get()->currentVariable->parameter->maximumValue);
-    //
+    		minInputVal->setRange(referenceIn->linkedParam->minimumValue, referenceIn->linkedParam->maximumValue);
+    		maxInputVal->setRange(referenceIn->linkedParam->minimumValue, referenceIn->linkedParam->maximumValue);
+
     minInputVal->setNormalizedValue(normMin);
     maxInputVal->setNormalizedValue(normMax);
 
@@ -124,6 +124,16 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
       // ignore assert for loopBacks
       referenceOut->isSettingValue=false;
       referenceOut->setParamToReferTo(nullptr);
+    }
+    else{
+      float normMin = minOutputVal->getNormalizedValue();
+      float normMax = maxOutputVal->getNormalizedValue();
+    		minOutputVal->setRange(referenceOut->linkedParam->minimumValue, referenceOut->linkedParam->maximumValue);
+    		maxOutputVal->setRange(referenceOut->linkedParam->minimumValue, referenceOut->linkedParam->maximumValue);
+      
+      minOutputVal->setNormalizedValue(normMin);
+      maxOutputVal->setNormalizedValue(normMax);
+
     }
     
   }
