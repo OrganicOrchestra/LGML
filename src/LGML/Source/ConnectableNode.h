@@ -57,7 +57,7 @@ public:
 	FloatParameter * nodeHeight;
 	BoolParameter * miniMode;
 
-	void remove(bool askBeforeRemove = false);
+	void remove();
 	virtual void clear();
 
 	var getJSONData() override;
