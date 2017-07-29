@@ -34,7 +34,7 @@ editingConnection(nullptr)
 
   resizeToFitNodes();
 
-  
+
 
 }
 
@@ -96,10 +96,10 @@ void NodeContainerViewer::addNodeUI(ConnectableNode * node)
 {
   if (getUIForNode(node) == nullptr)
   {
-    ConnectableNodeUI * nui = node->createUI();    
+    ConnectableNodeUI * nui = node->createUI();
     nui->setTopLeftPosition(node->xPosition->intValue(), node->yPosition->intValue());
-	nodesUI.add(nui);
-	addAndMakeVisible(nui);
+    nodesUI.add(nui);
+    addAndMakeVisible(nui);
   }
   else
   {
@@ -263,7 +263,7 @@ void NodeContainerViewer::updateEditingConnection()
 
 bool NodeContainerViewer::checkDropCandidates()
 {
-//  Connector * candidate = nullptr;
+  //  Connector * candidate = nullptr;
   for (int i = 0; i < nodesUI.size(); i++)
   {
     Array<Connector *> compConnectors = nodesUI.getUnchecked(i)->getComplementaryConnectors(editingConnection->getBaseConnector());
@@ -274,7 +274,7 @@ bool NodeContainerViewer::checkDropCandidates()
       float dist = (float)(c->getMouseXYRelative().getDistanceFromOrigin());
       if (dist < 20)
       {
-//        candidate = c;
+        //        candidate = c;
         setCandidateDropConnector(c);
         return true;
       }
@@ -383,7 +383,7 @@ void NodeContainerViewer::mouseDrag(const MouseEvent &/* event*/)
 {
   if (editingConnection != nullptr)
   {
-//    if (event.eventComponent == editingConnection->getBaseConnector())
+    //    if (event.eventComponent == editingConnection->getBaseConnector())
     {
       updateEditingConnection();
     }
@@ -423,7 +423,7 @@ bool NodeContainerViewer::keyPressed(const KeyPress & key){
       n->xPosition->setValue((float)mousePos.x);
       n->yPosition->setValue((float)mousePos.y);
     }
-    
+
     return true;
   }
   return false;
@@ -437,14 +437,14 @@ void NodeContainerViewer::childBoundsChanged(Component *) {
 
 
 void NodeContainerViewer::resizeToFitNodes() {
-  
+
   Rectangle<int> _bounds(getLocalBounds());
-  
+
   for (auto &n : nodesUI) {
     _bounds = _bounds.getUnion(n->getBoundsInParent());
-    
+
   }
-  
+
   setSize(_bounds.getWidth(), _bounds.getHeight());
-  
+
 }

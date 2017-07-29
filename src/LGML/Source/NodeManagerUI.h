@@ -128,6 +128,18 @@ public :
 	{
 		g.setColour(BG_COLOR.darker(.2f));
 		g.fillRect(getLocalBounds().removeFromTop(30));
+    const int grid = 100;
+    auto area = vp.getViewArea();
+    g.setColour(Colours::white.withAlpha(0.03f));
+    auto dest = vp.getBoundsInParent();
+    for(int x = -area.getX()%grid ; x < area.getWidth(); x+=grid){
+
+      g.drawVerticalLine(x+dest.getX(), dest.getY(), dest.getBottom());
+    }
+    for(int y = -area.getY()%grid ; y < area.getHeight(); y+=grid){
+      g.drawHorizontalLine( y+dest.getY(), dest.getX()  , dest.getRight());
+    }
+
 	}
 
     void resized() override{

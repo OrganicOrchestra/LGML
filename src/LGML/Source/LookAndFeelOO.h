@@ -34,7 +34,7 @@ namespace LookAndFeelHelpers {
 
         ToggleButton::textColourId,                 TEXT_COLOR.getARGB(),
 
-        TextEditor::backgroundColourId,             0xffffffff,
+        TextEditor::backgroundColourId,             0xffCCCCCC,
         TextEditor::textColourId,                   0xff000000,
         TextEditor::highlightColourId,              textHighlightColour,
         TextEditor::highlightedTextColourId,        0xff000000,
