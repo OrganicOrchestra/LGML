@@ -18,6 +18,7 @@ linkedParam(ref),
 isUpdatingLinkedParam(false)
 {
   setRoot(root);
+  Parameter::isEditable = false;
 
 }
 
