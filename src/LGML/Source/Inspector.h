@@ -29,6 +29,7 @@ public:
 	bool isEnabled;
 	void setEnabled(bool value);
 
+  ControllableContainer * getCurrentSelected();
 	void clear();
 
 	void setCurrentComponent(InspectableComponent * component);

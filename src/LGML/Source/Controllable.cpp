@@ -197,3 +197,16 @@ const Identifier  Controllable::getTypeIdentifier(){
 Parameter* Controllable::getParameter(){
   return dynamic_cast<Parameter*>(this);
 }
+
+
+bool Controllable::isChildOf(ControllableContainer * p){
+  auto i = parentContainer;
+  while(i){
+    if(i==p){
+      return true;
+    }
+    i = i->parentContainer;
+  }
+  return false;
+
+}

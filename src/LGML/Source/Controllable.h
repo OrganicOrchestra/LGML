@@ -70,6 +70,7 @@ public:
   void setEnabled(bool value, bool silentSet = false, bool force = false);
 
   void setParentContainer(ControllableContainer * container);
+  bool isChildOf(ControllableContainer * p);
   void updateControlAddress();
 
   String getControlAddress(ControllableContainer * relativeTo = nullptr);

@@ -60,6 +60,13 @@ void Inspector::setCurrentComponent(InspectableComponent * c)
 	listeners.call(&InspectorListener::currentComponentChanged, this);
 }
 
+ControllableContainer * Inspector::getCurrentSelected(){
+  if(currentComponent){
+    return currentComponent->relatedControllableContainer;
+  }
+  else return nullptr;
+}
+
 void Inspector::resized()
 {
 	if (currentEditor != nullptr) currentEditor->setBounds(getLocalBounds().reduced(5));

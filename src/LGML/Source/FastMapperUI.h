@@ -13,6 +13,7 @@
 
 #include "ShapeShifterContent.h"
 #include "FastMapUI.h"
+#include "Inspector.h"
 
 
 class FastMapper;
@@ -26,13 +27,16 @@ public:
 
 class FastMapperUI :
 	public Component,
-	private ControllableContainerListener
+	private ControllableContainerListener,
+private ButtonListener,
+private Inspector::InspectorListener
 {
 public:
 	FastMapperUI(FastMapper * fastMapper, ControllableContainer * viewFilterContainer = nullptr);
 	virtual ~FastMapperUI();
 
 	FastMapper * fastMapper;
+  TextButton linkToSelection,addFastMapBt;
 	OwnedArray<FastMapUI> mapsUI;
 
 	ControllableContainer * viewFilterContainer;
@@ -61,7 +65,10 @@ public:
 	ListenerList<FastMapperUIListener> fastMapperUIListeners;
 	void addFastMapperUIListener(FastMapperUIListener* newListener) { fastMapperUIListeners.add(newListener); }
 	void removeFastMapperUIListener(FastMapperUIListener* listener) { fastMapperUIListeners.remove(listener); }
+private:
 
+  void buttonClicked (Button*) override;
+  void currentComponentChanged(Inspector * ) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapperUI)
 

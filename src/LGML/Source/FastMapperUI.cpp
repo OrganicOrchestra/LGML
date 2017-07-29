@@ -16,6 +16,17 @@ fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
 {
   fastMapper->addControllableContainerListener(this);
   resetAndUpdateView();
+  linkToSelection.setButtonText("Show from selected");
+  linkToSelection.setClickingTogglesState(true);
+  linkToSelection.addListener(this);
+  addAndMakeVisible(linkToSelection);
+
+  addFastMapBt.setButtonText("Add FastMap");
+  addFastMapBt.addListener(this);
+  addAndMakeVisible(addFastMapBt);
+
+
+
 }
 
 FastMapperUI::~FastMapperUI()
@@ -46,12 +57,13 @@ void FastMapperUI::removeFastMapUI(FastMapUI * fui)
 
 void FastMapperUI::resetAndUpdateView()
 {
-  removeAllChildren();
-  mapsUI.clear();
+
+  clear();
   for (auto &f : fastMapper->maps)
   {
     if (mapPassViewFilter(f)) addFastMapUI(f);
   }
+  resized();
 }
 
 void FastMapperUI::setViewFilter(ControllableContainer * filterContainer)
@@ -63,11 +75,11 @@ void FastMapperUI::setViewFilter(ControllableContainer * filterContainer)
 bool FastMapperUI::mapPassViewFilter(FastMap * f)
 {
 
-  if (viewFilterContainer == nullptr) return true;
-  //	if (f->reference.get() != nullptr && (ControllableContainer *)f->reference.->controller == viewFilterContainer) return true;
-  if (f->referenceOut->get() != nullptr && viewFilterContainer->containsControllable(f->referenceOut->get())) return true;
+  if (viewFilterContainer == nullptr ) return true;
+  if (f->referenceIn->linkedParam != nullptr && (ControllableContainer *)f->referenceIn->linkedParam->isChildOf(viewFilterContainer)) return true;
+  if (f->referenceOut->linkedParam != nullptr && (ControllableContainer *)f->referenceOut->linkedParam->isChildOf(viewFilterContainer)) return true;
 
-  return false;
+  return (!f->referenceOut->linkedParam && !f->referenceIn->linkedParam);
 }
 
 
@@ -90,6 +102,8 @@ int FastMapperUI::getContentHeight()
 void FastMapperUI::resized()
 {
   Rectangle<int> r = getLocalBounds().reduced(2);
+  addFastMapBt.setBounds(r.removeFromTop(25).reduced(2));
+  linkToSelection.setBounds(r.removeFromTop(25).reduced(2));
   for (auto & fui : mapsUI)
   {
     fui->setBounds(r.removeFromTop(mapHeight));
@@ -120,9 +134,7 @@ void FastMapperUI::mouseDown(const MouseEvent & e)
     }
   }
 }
-class tst : CallbackMessage{
 
-};
 
 void FastMapperUI::controllableContainerAdded(ControllableContainer* ori,ControllableContainer * cc)
 {
@@ -160,3 +172,29 @@ void FastMapperUI::controllableContainerRemoved(ControllableContainer*ori,Contro
     }
   }
 }
+
+void FastMapperUI::buttonClicked (Button* b){
+  if(b==&linkToSelection){
+    if(linkToSelection.getToggleState()){
+      Inspector::getInstance()->addInspectorListener(this);
+      setViewFilter(Inspector::getInstance()->getCurrentSelected());
+    }
+    else{
+      Inspector::getInstance()->removeInspectorListener(this);
+      setViewFilter(nullptr);
+    }
+  }
+
+  else if(b==&addFastMapBt ){
+    fastMapper->addFastMap();
+  }
+
+
+}
+
+void FastMapperUI::currentComponentChanged(Inspector * i) {
+  jassert(linkToSelection.getToggleState());
+  setViewFilter(i->getCurrentSelected());
+
+  
+};
