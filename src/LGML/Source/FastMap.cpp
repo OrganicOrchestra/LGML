@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    FastMap.cpp
-    Created: 17 May 2016 6:05:27pm
-    Author:  bkupe
+ FastMap.cpp
+ Created: 17 May 2016 6:05:27pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "FastMap.h"
 #include "NodeManager.h"
@@ -15,23 +15,23 @@
 
 
 FastMap::FastMap() :
-	referenceIn(nullptr),
-	referenceOut(nullptr),
-	ControllableContainer("FastMap")
+referenceIn(nullptr),
+referenceOut(nullptr),
+ControllableContainer("FastMap")
 {
 
   referenceIn = addNewParameter<ParameterProxy>("in param","parameter for input");
   referenceIn->addParameterProxyListener(this);
   referenceOut = addNewParameter<ParameterProxy>("out param","parameter for input");
   referenceOut->addParameterProxyListener(this);
-	enabledParam = addNewParameter<BoolParameter>("Enabled", "Enabled / Disable Fast Map", true);
+  enabledParam = addNewParameter<BoolParameter>("Enabled", "Enabled / Disable Fast Map", true);
 
-	minInputVal = addNewParameter<FloatParameter>("In Min", "Minimum Input Value", 0, 0, 1);
-	maxInputVal = addNewParameter<FloatParameter>("In Max", "Maximum Input Value", 1, 0, 1);
-	minOutputVal = addNewParameter<FloatParameter>("Out Min", "Minimum Output Value", 0, 0, 1);
-	maxOutputVal = addNewParameter<FloatParameter>("Out Max", "Maximum Output Value", 1, 0, 1);
+  minInputVal = addNewParameter<FloatParameter>("In Min", "Minimum Input Value", 0, 0, 1);
+  maxInputVal = addNewParameter<FloatParameter>("In Max", "Maximum Input Value", 1, 0, 1);
+  minOutputVal = addNewParameter<FloatParameter>("Out Min", "Minimum Output Value", 0, 0, 1);
+  maxOutputVal = addNewParameter<FloatParameter>("Out Max", "Maximum Output Value", 1, 0, 1);
 
-	invertParam = addNewParameter<BoolParameter>("Invert", "Invert the output signal", false);
+  invertParam = addNewParameter<BoolParameter>("Invert", "Invert the output signal", false);
 
 }
 
@@ -48,40 +48,40 @@ void FastMap::onContainerParameterChanged(Parameter *p){
 }
 void FastMap::process()
 {
-	if (!enabledParam->boolValue()) return;
+  if (!enabledParam->boolValue()) return;
   if(!referenceIn->get() || !referenceOut->get()) return;
 
   auto inRef = referenceIn->get();
   if(inRef){
-	auto sourceVal = (float)inRef->doubleValue();
+    auto sourceVal = (float)inRef->doubleValue();
 
-	bool newIsInRange = (sourceVal > minInputVal->floatValue() && sourceVal <= maxInputVal->floatValue());
+    bool newIsInRange = (sourceVal > minInputVal->floatValue() && sourceVal <= maxInputVal->floatValue());
 
-	if (invertParam->boolValue()) newIsInRange = !newIsInRange;
+    if (invertParam->boolValue()) newIsInRange = !newIsInRange;
 
     auto outRef = referenceOut->get();
-	if (outRef->type == Controllable::TRIGGER)
-	{
-		if (newIsInRange != isInRange && newIsInRange) ((Trigger*)outRef)->trigger();
-	}
-	else
-	{
-		if (outRef->type == Controllable::BOOL)
-		{
-			((BoolParameter *)outRef)->setValue(newIsInRange);
-		}else
-		{
-			if ( minInputVal->floatValue() != maxInputVal->floatValue())
-			{
-				float targetVal = juce::jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
-				targetVal = juce::jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(), targetVal);
-				if (invertParam->boolValue()) targetVal = maxOutputVal->floatValue() - (targetVal - minOutputVal->floatValue());
-				((Parameter *)outRef)->setNormalizedValue(targetVal);
-			}
-		}
-	}
+    if (outRef->type == Controllable::TRIGGER)
+    {
+      if (newIsInRange != isInRange && newIsInRange) ((Trigger*)outRef)->trigger();
+    }
+    else
+    {
+      if (outRef->type == Controllable::BOOL)
+      {
+        ((BoolParameter *)outRef)->setValue(newIsInRange);
+      }else
+      {
+        if ( minInputVal->floatValue() != maxInputVal->floatValue())
+        {
+          float targetVal = juce::jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
+          targetVal = juce::jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(), targetVal);
+          if (invertParam->boolValue()) targetVal = maxOutputVal->floatValue() - (targetVal - minOutputVal->floatValue());
+          ((Parameter *)outRef)->setNormalizedValue(targetVal);
+        }
+      }
+    }
 
-	isInRange = newIsInRange;
+    isInRange = newIsInRange;
   }
 }
 
@@ -107,13 +107,15 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
       referenceIn->setParamToReferTo(nullptr);
     }
     else{
-    float normMin = minInputVal->getNormalizedValue();
-    float normMax = maxInputVal->getNormalizedValue();
-    		minInputVal->setRange(referenceIn->linkedParam->minimumValue, referenceIn->linkedParam->maximumValue);
-    		maxInputVal->setRange(referenceIn->linkedParam->minimumValue, referenceIn->linkedParam->maximumValue);
+      float normMin = minInputVal->getNormalizedValue();
+      float normMax = maxInputVal->getNormalizedValue();
+      float newMin = referenceIn->linkedParam?(float)referenceIn->linkedParam->minimumValue:0;
+      float newMax = referenceIn->linkedParam?(float)referenceIn->linkedParam->maximumValue:1;
+      minInputVal->setRange(newMin,newMax);
+      maxInputVal->setRange(newMin,newMax);
 
-    minInputVal->setNormalizedValue(normMin);
-    maxInputVal->setNormalizedValue(normMax);
+      minInputVal->setNormalizedValue(normMin);
+      maxInputVal->setNormalizedValue(normMax);
 
     }
 
@@ -128,15 +130,17 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
     else{
       float normMin = minOutputVal->getNormalizedValue();
       float normMax = maxOutputVal->getNormalizedValue();
-    		minOutputVal->setRange(referenceOut->linkedParam->minimumValue, referenceOut->linkedParam->maximumValue);
-    		maxOutputVal->setRange(referenceOut->linkedParam->minimumValue, referenceOut->linkedParam->maximumValue);
+      float newMin = referenceOut->linkedParam?(float)referenceOut->linkedParam->minimumValue:0;
+      float newMax = referenceOut->linkedParam?(float)referenceOut->linkedParam->maximumValue:1;
+      minOutputVal->setRange(newMin,newMax);
+      maxOutputVal->setRange(newMin,newMax);
       
       minOutputVal->setNormalizedValue(normMin);
       maxOutputVal->setNormalizedValue(normMax);
-
+      
     }
     
   }
-
+  
   
 };
