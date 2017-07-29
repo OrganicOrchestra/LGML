@@ -155,7 +155,11 @@ Controllable * ControllableContainer::getControllableByName(const String & name,
 
 void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
 {
-
+  String oriName = container->getNiceName();
+  String targetName = getUniqueNameInContainer(oriName);
+  if(targetName!=oriName){
+    container->setNiceName(targetName);
+  }
   controllableContainers.add(container);
   container->addControllableContainerListener(this);
   container->setParentContainer(this);
@@ -799,9 +803,9 @@ Array<Parameter*> ControllableContainer::getAllUserParameters(){
 }
 Parameter *  ControllableContainer::getUserParameter(const Identifier & id,const String & niceName){
   ControllableContainer::UsrParameterList* vs = getUserParameters(id);
-Parameter **  found = std::find_if(vs->begin(), vs->end(),
-                                  [niceName](Controllable* c){return c->niceName.compare(niceName);}
-                                  );
+  Parameter **  found = std::find_if(vs->begin(), vs->end(),
+                                     [niceName](Controllable* c){return c->niceName.compare(niceName);}
+                                     );
   return found==vs->end()?nullptr:*found;
 }
 void ControllableContainer::removeUserParameter(const Identifier & id,Parameter *const *el){
@@ -814,6 +818,6 @@ void ControllableContainer::removeUserParameter(const Identifier & id,Parameter 
       userParameterMap.remove(key);
     }
   }
-
+  
 }
 
