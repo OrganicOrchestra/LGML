@@ -32,6 +32,7 @@ public:
   BoolParameter * logOutGoingOSC;
   BoolParameter * blockFeedback;// if a parameter is updated from processOSC , stops any osc out with same address
   Trigger * sendAllParameters;
+  BoolParameter * autoAddParameter;
   
   
 
@@ -105,6 +106,8 @@ private:
 //  String lastAddressReceived;
   OSCMessage lastMessageReceived;
   bool isProcessingOSC;
+
+  void checkAndAddParameterIfNeeded(const OSCMessage & msg);
 };
 
 

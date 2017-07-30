@@ -781,14 +781,14 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
   return false;
 }
 
-ControllableContainer::UsrParameterList dummy_empty;
+
 ControllableContainer::UsrParameterList * ControllableContainer::getUserParameters(const Identifier & id){
   int64 key = (int64)(id.getCharPointer().getAddress());
   if(userParameterMap.contains(key)){
     return userParameterMap[key];
   }
   else{
-    return &dummy_empty;
+    return nullptr;
   }
 }
 Array<Parameter*> ControllableContainer::getAllUserParameters(){

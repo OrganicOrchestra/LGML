@@ -37,6 +37,7 @@ oscMessageQueue(this)
   blockFeedback = addNewParameter<BoolParameter>("blockFeedback", "block osc feedback (resending updated message to controller)", true);
   sendAllParameters =  addNewParameter<Trigger>("sendAll", "send all parameter states to initialize ", true);
 
+  autoAddParameter = addNewParameter<BoolParameter>("autoAddParam", "add new parameter for each recieved OSC message", false);
   setupReceiver();
   setupSender();
 
@@ -83,6 +84,9 @@ void OSCController::processMessage(const OSCMessage & msg)
   if(blockFeedback->boolValue()){
     lastMessageReceived = msg;}
   isProcessingOSC = true;
+  if(autoAddParameter->boolValue()){
+    checkAndAddParameterIfNeeded(msg);
+  }
   bool result = processMessageInternal(msg);
   isProcessingOSC = false;
   oscListeners.call(&OSCControllerListener::messageProcessed, msg, result);
@@ -90,6 +94,38 @@ void OSCController::processMessage(const OSCMessage & msg)
   activityTrigger->trigger();
 }
 
+bool paramMatchesMsg(const Parameter *p,const OSCMessage &msg){
+  return msg.getAddressPattern().matches(p->niceName);
+}
+
+void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
+  auto oscParams = getUserParameters(controllerVariableId);
+  bool found = false;
+  if(oscParams){
+  for (auto &p :*oscParams){
+    if(paramMatchesMsg(p,msg)){
+      found = true;
+      break;
+    }
+  }
+  }
+  if(!found){
+    if(msg.size()==0){
+    addNewUserParameter<Trigger>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+    }
+    else{
+      if(msg[0].isString()){
+        addNewUserParameter<StringParameter>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+      }
+      else if(msg[0].isInt32()){
+        addNewUserParameter<IntParameter>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+      }
+      else if(msg[0].isFloat32()){
+        addNewUserParameter<FloatParameter>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+      }
+    }
+  }
+}
 
 void OSCController::logMessage(const OSCMessage & msg,const String & prefix){
   String log = prefix;

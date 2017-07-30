@@ -21,6 +21,8 @@ const Identifier Controller::variableNameIdentifier("name");
 const Identifier Controller::variableMinIdentifier("min");
 const Identifier Controller::variableMaxIdentifier("max");
 
+const Identifier Controller::controllerVariableId("UserVars");
+
 Controller::Controller(const String &_name) :
 ControllableContainer(_name)
 {

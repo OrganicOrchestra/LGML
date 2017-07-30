@@ -17,6 +17,7 @@
 FastMap::FastMap() :
 referenceIn(nullptr),
 referenceOut(nullptr),
+fastMapIsProcessing(false),
 ControllableContainer("FastMap")
 {
 
@@ -32,7 +33,7 @@ ControllableContainer("FastMap")
   maxOutputVal = addNewParameter<FloatParameter>("Out Max", "Maximum Output Value", 1, 0, 1);
 
   invertParam = addNewParameter<BoolParameter>("Invert", "Invert the output signal", false);
-
+  fullSync = addNewParameter<BoolParameter>("FullSync", "synchronize source parameter too", false);
 }
 
 FastMap::~FastMap()
@@ -40,49 +41,55 @@ FastMap::~FastMap()
 
 }
 void FastMap::onContainerParameterChanged(Parameter *p){
-  if(p==invertParam || p==minInputVal || p==maxInputVal || p==minOutputVal || p== maxOutputVal){
+  if(p==invertParam || p==minInputVal || p==maxInputVal || p==minOutputVal || p== maxOutputVal || p==fullSync){
     if(referenceIn->get() && referenceOut->get()){
       process();
     }
   }
 }
-void FastMap::process()
+void FastMap::process(bool toReferenceOut)
 {
   if (!enabledParam->boolValue()) return;
   if(!referenceIn->get() || !referenceOut->get()) return;
+  if(fastMapIsProcessing) return;
 
-  auto inRef = referenceIn->get();
-  if(inRef){
-    auto sourceVal = (float)inRef->doubleValue();
 
-    bool newIsInRange = (sourceVal > minInputVal->floatValue() && sourceVal <= maxInputVal->floatValue());
+  auto inRef = toReferenceOut?referenceIn->get():referenceOut->get();
+  auto sourceVal = (float)inRef->floatValue();
+  float minIn = (toReferenceOut?minInputVal:minOutputVal)->floatValue();
+  float maxIn = (toReferenceOut?maxInputVal:maxOutputVal)->floatValue();
+  bool newIsInRange = (sourceVal > minIn && sourceVal <= maxIn);
 
-    if (invertParam->boolValue()) newIsInRange = !newIsInRange;
+  if (invertParam->boolValue()) newIsInRange = !newIsInRange;
 
-    auto outRef = referenceOut->get();
-    if (outRef->type == Controllable::TRIGGER)
+  auto outRef = (toReferenceOut?referenceOut:referenceIn)->get();
+  fastMapIsProcessing = true;
+  if (outRef->type == Controllable::TRIGGER)
+  {
+    if (newIsInRange != isInRange && newIsInRange) ((Trigger*)outRef)->trigger();
+  }
+  else
+  {
+    if (outRef->type == Controllable::BOOL)
     {
-      if (newIsInRange != isInRange && newIsInRange) ((Trigger*)outRef)->trigger();
-    }
-    else
+      ((BoolParameter *)outRef)->setValue(newIsInRange);
+    }else
     {
-      if (outRef->type == Controllable::BOOL)
+      if ( minIn != maxIn)
       {
-        ((BoolParameter *)outRef)->setValue(newIsInRange);
-      }else
-      {
-        if ( minInputVal->floatValue() != maxInputVal->floatValue())
-        {
-          float targetVal = juce::jmap<float>(sourceVal, minInputVal->floatValue(), maxInputVal->floatValue(), minOutputVal->floatValue(), maxOutputVal->floatValue());
-          targetVal = juce::jlimit<float>(minOutputVal->floatValue(), maxOutputVal->floatValue(), targetVal);
-          if (invertParam->boolValue()) targetVal = maxOutputVal->floatValue() - (targetVal - minOutputVal->floatValue());
-          ((Parameter *)outRef)->setNormalizedValue(targetVal);
-        }
+        float minOut = (toReferenceOut?minOutputVal:minInputVal)->floatValue();
+        float maxOut = (toReferenceOut?maxOutputVal:maxInputVal)->floatValue();
+        float targetVal = juce::jmap<float>(sourceVal, minIn, maxIn, minOut,maxOut);
+        targetVal = juce::jlimit<float>(minOut,maxOut, targetVal);
+        if (invertParam->boolValue()) targetVal = maxOut - (targetVal - minOut);
+        ((Parameter *)outRef)->setValue(targetVal);
       }
     }
-
-    isInRange = newIsInRange;
   }
+
+  isInRange = newIsInRange;
+  fastMapIsProcessing=false;
+
 }
 
 
@@ -93,6 +100,10 @@ void FastMap::process()
 void FastMap::linkedParamValueChanged(ParameterProxy *p) {
   if(p==referenceIn){
     process();
+    return;
+  }
+  else if(p==referenceOut && fullSync->boolValue()){
+    process(false);
     return;
   }
 };
@@ -127,6 +138,12 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
       referenceOut->isSettingValue=false;
       referenceOut->setParamToReferTo(nullptr);
     }
+    else if(p->linkedParam && !p->linkedParam->isEditable){
+      LOG("Parameter non editable");
+      // ignore assert for loopBacks
+      referenceOut->isSettingValue=false;
+      referenceOut->setParamToReferTo(nullptr);
+    }
     else{
       float normMin = minOutputVal->getNormalizedValue();
       float normMax = maxOutputVal->getNormalizedValue();
@@ -134,13 +151,13 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
       float newMax = referenceOut->linkedParam?(float)referenceOut->linkedParam->maximumValue:1;
       minOutputVal->setRange(newMin,newMax);
       maxOutputVal->setRange(newMin,newMax);
-      
+
       minOutputVal->setNormalizedValue(normMin);
       maxOutputVal->setNormalizedValue(normMax);
-      
+
     }
-    
+
   }
-  
-  
+
+
 };

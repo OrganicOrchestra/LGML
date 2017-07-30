@@ -1,21 +1,22 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ControllableUI.cpp
-    Created: 9 Mar 2016 12:02:16pm
-    Author:  bkupe
+ ControllableUI.cpp
+ Created: 9 Mar 2016 12:02:16pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "ControllableUI.h"
 #include "Controllable.h"
 #include "LGMLDragger.h"
+#include "FastMapper.h"
 
 ControllableUI::ControllableUI(Controllable * controllable) :
-    controllable(controllable),
-    isMappingDest(false),
-    isDraggable(true)
+controllable(controllable),
+isMappingDest(false),
+isDraggable(true)
 {
   if(LGMLDragger::getInstance()->isMappingActive){
     mappingState = isMappingDest?MAPDEST:MAPSOURCE;
@@ -25,22 +26,22 @@ ControllableUI::ControllableUI(Controllable * controllable) :
   }
 
 
-    jassert(controllable!=nullptr);
-    setName(controllable->niceName);
-    controllable->addControllableListener(this);
-    updateTooltip();
+  jassert(controllable!=nullptr);
+  setName(controllable->niceName);
+  controllable->addControllableListener(this);
+  updateTooltip();
 
 }
 
 ControllableUI::~ControllableUI()
 {
   LGMLDragger::getInstance()->unRegisterDragCandidate(this);
-    if(controllable.get())controllable->removeControllableListener(this);
+  if(controllable.get())controllable->removeControllableListener(this);
 }
 
 void ControllableUI::controllableStateChanged(Controllable * c)
 {
-    setAlpha(c->enabled ? 1 : .5f);
+  setAlpha(c->enabled ? 1 : .5f);
 }
 
 void ControllableUI::controllableControlAddressChanged(Controllable *)
@@ -51,23 +52,31 @@ void ControllableUI::controllableControlAddressChanged(Controllable *)
 
 void ControllableUI::mouseDown(const MouseEvent & e)
 {
-	if (e.mods.isRightButtonDown())
-	{
-		PopupMenu p;
-		p.addItem(1, "Copy control address");
-		int result = p.show();
-		switch (result)
-		{
-		case 1:
-			SystemClipboard::copyTextToClipboard(controllable->controlAddress);
-			break;
-		}
-	}
+  if (e.mods.isRightButtonDown())
+  {
+    PopupMenu p;
+    p.addItem(1, "Copy control address");
+    p.addItem(2, "Add FastMap To");
+    p.addItem(3, "Add FastMap From");
+    int result = p.show();
+    switch (result)
+    {
+      case 1:
+        SystemClipboard::copyTextToClipboard(controllable->controlAddress);
+        break;
+      case 2:
+        FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo(controllable->getParameter());
+        break;
+      case 3:
+        FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo(controllable->getParameter());
+        break;
+    }
+  }
 }
 
 void ControllableUI::updateTooltip()
 {
-    setTooltip(controllable->description + "\nControl Address : " + controllable->controlAddress);
+  setTooltip(controllable->description + "\nControl Address : " + controllable->controlAddress);
 }
 
 

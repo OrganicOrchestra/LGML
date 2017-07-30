@@ -50,8 +50,8 @@ void ControllerEditor::buttonClicked(Button * b)
 {
 	if (b == &addParameterBT)
 	{
-    static Identifier i("var");
-    controller->addNewUserParameter<FloatParameter>(i,"var","Custom Variable");
+    
+    controller->addNewUserParameter<FloatParameter>(Controller::controllerVariableId,"var","Custom Variable");
 
 	}
 }

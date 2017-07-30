@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    Controller.h
-    Created: 2 Mar 2016 8:49:50pm
-    Author:  bkupe
+ Controller.h
+ Created: 2 Mar 2016 8:49:50pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef CONTROLLER_H_INCLUDED
 #define CONTROLLER_H_INCLUDED
@@ -20,19 +20,19 @@ class ControllerEditor;
 
 
 class Controller :
-	public ControllableContainer
+public ControllableContainer
 {
 public:
-    Controller(const String &name = "[Controller]");
-    virtual ~Controller();
+  Controller(const String &name = "[Controller]");
+  virtual ~Controller();
 
-    int controllerTypeEnum;
+  int controllerTypeEnum;
 
-    BoolParameter * enabledParam;
+  BoolParameter * enabledParam;
 
-	Trigger * activityTrigger;
+  Trigger * activityTrigger;
 
-  
+
 
   virtual void internalVariableAdded(Parameter * ){};
   virtual void internalVariableRemoved(Parameter * ){};
@@ -41,19 +41,20 @@ public:
 
 
 
-	virtual ControllerUI * createUI();
+  virtual ControllerUI * createUI();
   virtual ControllerEditor *  createEditor() ;
 
 
 
-  
-    // identifiers
-    static const Identifier controllerTypeIdentifier;
-  static const Identifier variableNameIdentifier;
-    static const Identifier variableMinIdentifier;
-    static const Identifier variableMaxIdentifier;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)
+  // identifiers
+  static const Identifier controllerTypeIdentifier;
+  static const Identifier variableNameIdentifier;
+  static const Identifier variableMinIdentifier;
+  static const Identifier variableMaxIdentifier;
+  static const Identifier controllerVariableId;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)
 };
 
 

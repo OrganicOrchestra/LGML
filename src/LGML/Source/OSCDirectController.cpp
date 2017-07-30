@@ -44,16 +44,16 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
   Result result = Result::ok();
 
   String addr = msg.getAddressPattern().toString();
-  
-  for(auto &p:getAllUserParameters()){
-    if(msg.getAddressPattern().matches("/"+p->shortName)){
-      if(!setParameterFromMessage(p,msg)){
-        return  Result::fail("Controllable type not handled in user Parameter");
+  if(auto up = getUserParameters(Controller::controllerVariableId)){
+    for(auto p:*up){
+      if(msg.getAddressPattern().matches(p->niceName)){
+        if(!setParameterFromMessage(p,msg)){
+          return  Result::fail("Controllable type not handled in user Parameter");
 
+        }
       }
     }
   }
-
   StringArray addrArray;
   addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
 
