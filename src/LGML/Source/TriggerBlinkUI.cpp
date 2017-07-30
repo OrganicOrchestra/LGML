@@ -46,7 +46,8 @@ void TriggerBlinkUI::paint(Graphics& g)
     g.setColour(Colours::white.darker(.1f));
 	if (showLabel)
 	{
-		g.drawFittedText(parameter->niceName, getLocalBounds().reduced(2), Justification::centred, 1);
+
+      g.drawFittedText(customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter->niceName, getLocalBounds().reduced(2), Justification::centred, 1);
 	}
 }
 

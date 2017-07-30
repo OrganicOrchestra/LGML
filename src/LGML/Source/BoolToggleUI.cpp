@@ -40,7 +40,12 @@ void BoolToggleUI::paint(Graphics & g)
 
     g.setFont(10);
     g.setColour(Colours::white.darker(.1f));
+  if(customTextDisplayed.isNotEmpty()){
+    g.drawText(customTextDisplayed, getLocalBounds().reduced(2).toFloat(), Justification::centred);
+  }
+  else{
     g.drawText(parameter->niceName, getLocalBounds().reduced(2).toFloat(), Justification::centred);
+  }
 }
 
 void BoolToggleUI::mouseDown(const MouseEvent &e)

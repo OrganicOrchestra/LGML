@@ -16,7 +16,8 @@ ParameterUI::ParameterUI(Parameter * parameter) :
 parameter(parameter),
 ControllableUI(parameter),
 showLabel(true),
-showValue(true)
+showValue(true),
+customTextDisplayed(String::empty)
 {
   parameter->addAsyncCoalescedListener(this);
   parameter->addParameterListener(this);
@@ -32,6 +33,11 @@ ParameterUI::~ParameterUI()
   }
 }
 
+
+void ParameterUI::setCustomText(const String text){
+  customTextDisplayed = text;
+  repaint();
+}
 
 
 

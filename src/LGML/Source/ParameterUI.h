@@ -25,10 +25,10 @@ public:
     bool showLabel;
 	bool showValue;
 
-	
+  void setCustomText(const String text);
 protected:
 
-
+    String customTextDisplayed;
     // helper to spot wrong deletion order
     bool shouldBailOut();
 
