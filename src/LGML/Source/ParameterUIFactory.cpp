@@ -32,7 +32,8 @@
 #include "ParameterProxy.h"
 #include "ParameterProxyUI.h"
 
-
+#include "RangeParameter.h"
+#include "RangeParameterUI.h"
 
 
 
@@ -56,6 +57,8 @@ ParameterUI * ParameterUIFactory::createDefaultUI(Parameter * targetControllable
        return new EnumParameterUI(dynamic_cast<EnumParameter *>(targetControllable));
      case Controllable::PROXY:
        return new ParameterProxyUI(dynamic_cast<ParameterProxy *>(targetControllable));
+     case Controllable::RANGE:
+       return new RangeParameterUI(dynamic_cast<RangeParameter *>(targetControllable));
      default:
        jassertfalse;
        return nullptr;

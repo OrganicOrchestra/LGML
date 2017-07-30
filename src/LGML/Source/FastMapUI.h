@@ -15,25 +15,30 @@
 
 #include "InspectableComponent.h"
 #include "ParameterProxyUI.h"
+#include "RangeParameterUI.h"
 
 class FastMapUI :
 	public InspectableComponent,
-	public  ControllableReferenceUI::Listener,
-	public ButtonListener
+	private  ControllableReferenceUI::Listener,
+	private ButtonListener,
+private ParameterProxy::ParameterProxyListener
+
 {
 public:
 	FastMapUI(FastMap * f);
 	virtual ~FastMapUI();
 
-	ParameterProxyUI refUI;
-  ParameterProxyUI targetUI;
+
+
 
 	ScopedPointer<ParameterUI> enabledUI;
 
-	ScopedPointer<ParameterUI> minInputUI;
-	ScopedPointer<ParameterUI> maxInputUI;
-	ScopedPointer<ParameterUI> minOutputUI;
-	ScopedPointer<ParameterUI> maxOutputUI;
+  ParameterProxyUI refUI;
+	RangeParameterUI inRangeUI;
+
+
+  ParameterProxyUI targetUI;
+	RangeParameterUI outRangeUI;
 	ScopedPointer<ParameterUI> invertUI;
 
 
@@ -52,6 +57,7 @@ public:
   void mouseDown(const MouseEvent &e) override;
 	void buttonClicked(Button * b) override;
 
+  void linkedParamChanged(ParameterProxy *) override;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapUI)
 

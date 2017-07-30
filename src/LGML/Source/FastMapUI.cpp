@@ -11,13 +11,17 @@
 #include "FastMapUI.h"
 #include "ParameterUIFactory.h"
 #include "FastMapper.h"
+#include "RangeParameterUI.h"
 
 FastMapUI::
 FastMapUI(FastMap * f) :
 InspectableComponent(f,"fastMap"),
 fastMap(f),
 refUI(f->referenceIn),
-targetUI(f->referenceOut)
+inRangeUI(f->inputRange),
+targetUI(f->referenceOut),
+outRangeUI(f->outputRange)
+
 
 {
   addMouseListener(this,true);
@@ -25,18 +29,16 @@ targetUI(f->referenceOut)
   enabledUI = ParameterUIFactory::createDefaultUI(fastMap->enabledParam);
   addAndMakeVisible(enabledUI);
 
-  minInputUI = ParameterUIFactory::createDefaultUI(fastMap->minInputVal);
-  maxInputUI = ParameterUIFactory::createDefaultUI(fastMap->maxInputVal);
-  minOutputUI = ParameterUIFactory::createDefaultUI(fastMap->minOutputVal);
-  maxOutputUI = ParameterUIFactory::createDefaultUI(fastMap->maxOutputVal);
+
   invertUI = ParameterUIFactory::createDefaultUI(fastMap->invertParam);
 
   addAndMakeVisible(refUI);
+  f->referenceIn->addParameterProxyListener(this);
+  addChildComponent(inRangeUI);
   addAndMakeVisible(targetUI);
-  addAndMakeVisible(minInputUI);
-  addAndMakeVisible(maxInputUI);
-  addAndMakeVisible(minOutputUI);
-  addAndMakeVisible(maxOutputUI);
+  f->referenceOut->addParameterProxyListener(this);
+
+  addChildComponent(outRangeUI);
   addAndMakeVisible(invertUI);
 
   Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
@@ -49,6 +51,8 @@ targetUI(f->referenceOut)
   removeBT.addListener(this);
 
   addAndMakeVisible(&removeBT);
+  linkedParamChanged(f->referenceIn);
+  linkedParamChanged(f->referenceOut);
 
   setSize(100, 40);
 }
@@ -71,18 +75,21 @@ void FastMapUI::resized()
 
   int w = r.getWidth();
   int h = r.getHeight();
-  refUI.setBounds(r.removeFromLeft((int)(w*.25f)).reduced(1));
-  targetUI.setBounds(r.removeFromRight((int)(w*.25f)).reduced(1));
+  auto refRect = r.removeFromLeft((int)(w*.45f));
+  if(inRangeUI.isVisible()){
+    inRangeUI.setBounds(refRect.removeFromBottom(h/2));
+  }
+  refUI.setBounds(refRect.reduced(6,0));
 
-  Rectangle<int> inR = r.removeFromLeft((int)(w*.2f));
-  minInputUI->setBounds(inR.removeFromTop((int)(h*.45f)));
-  maxInputUI->setBounds(inR.removeFromBottom((int)(h*.45f)));
+  auto targetRect = r.removeFromRight((int)(w*.45f));
+  if(outRangeUI.isVisible()){
+    outRangeUI.setBounds(targetRect.removeFromBottom(h/2));
+  }
+  targetUI.setBounds(targetRect.reduced(6,0));
 
 
-  Rectangle<int> outR = r.removeFromRight((int)(w*.3f));
-  invertUI->setBounds(outR.removeFromRight(30));
-  minOutputUI->setBounds(outR.removeFromTop((int)(h*.45f)));
-  maxOutputUI->setBounds(outR.removeFromBottom((int)(h*.45f)));
+  invertUI->setBounds(r.reduced(1));
+
 
 
 
@@ -95,4 +102,14 @@ void FastMapUI::buttonClicked(Button * b)
 
 void FastMapUI::mouseDown(const MouseEvent &e) {
   selectThis();
+};
+
+void FastMapUI::linkedParamChanged(ParameterProxy * p ) {
+  if(p==refUI.controllable){
+    inRangeUI.setVisible(p->linkedParam && p->linkedParam->isNumeric());
+  }
+  else if(p==targetUI.controllable){
+    outRangeUI.setVisible(p->linkedParam && p->linkedParam->isNumeric());
+  }
+  resized();
 };

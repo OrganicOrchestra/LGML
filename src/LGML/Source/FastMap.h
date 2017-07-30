@@ -28,10 +28,9 @@ public:
   BoolParameter * enabledParam;
   BoolParameter * fullSync;
 
-  FloatParameter * minInputVal;
-  FloatParameter * maxInputVal;
-  FloatParameter * minOutputVal;
-  FloatParameter * maxOutputVal;
+  RangeParameter * inputRange;
+  RangeParameter * outputRange;
+
   BoolParameter * invertParam;
 
   ParameterProxy * referenceIn;

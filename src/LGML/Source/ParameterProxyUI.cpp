@@ -40,7 +40,7 @@ void ParameterProxyUI::resized()
 	if (r.getWidth() == 0 || r.getHeight() == 0) return;
 
 
-	Rectangle<int> paramR = r.reduced(2);
+	Rectangle<int> paramR = r;
   if (linkedParamUI != nullptr){ linkedParamUI->setBounds(paramR);}
   else{chooser.setBounds(paramR);}
 

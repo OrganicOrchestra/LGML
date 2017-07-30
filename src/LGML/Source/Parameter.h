@@ -91,10 +91,11 @@ public:
   // ASYNC
   class  ParamWithValue{
   public:
-    ParamWithValue(Parameter * p,var v):parameter(p),value(v){}
+    ParamWithValue(Parameter * p,var v,bool _isRange):parameter(p),value(v),m_isRange(_isRange){}
     Parameter * parameter;
     var value;
-    bool isRange() const{return value.isArray();}
+    bool m_isRange;
+    bool isRange() const{return m_isRange;}
 
   };
 

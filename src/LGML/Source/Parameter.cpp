@@ -68,7 +68,7 @@ void Parameter::setRange(var min, var max){
   maximumValue = max;
   listeners.call(&Listener::parameterRangeChanged,this);
   var arr;arr.append(minimumValue);arr.append(maximumValue);
-  queuedNotifier.addMessage(new ParamWithValue(this,arr));
+  queuedNotifier.addMessage(new ParamWithValue(this,arr,true));
 }
 
 void Parameter::commitValue(var _value){
@@ -124,7 +124,7 @@ void Parameter::notifyValueChanged(bool defferIt) {
   else
     listeners.call(&Listener::parameterValueChanged, this);
 
-  queuedNotifier.addMessage(new ParamWithValue(this,value));
+  queuedNotifier.addMessage(new ParamWithValue(this,value,false));
 }
 
 

@@ -17,6 +17,7 @@
 #include "BoolParameter.h" //keep
 #include "StringParameter.h" //keep
 #include "EnumParameter.h"
+#include "RangeParameter.h"
 #include "Point2DParameter.h"
 #include "Point3DParameter.h"
 

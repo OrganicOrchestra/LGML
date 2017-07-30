@@ -19,6 +19,8 @@
 #include "EnumParameter.h"
 #include "StringParameter.h"
 #include "ParameterProxy.h"
+#include "RangeParameter.h"
+
 static Identifier descIdentifier("_description");
 
 
@@ -46,6 +48,7 @@ bool ParameterFactory::registerAllTypes (){
   REG(EnumParameter);
   REG(StringParameter);
   REG(ParameterProxy);
+  REG(RangeParameter);
 
   hasBeenRegistered = true;
   return true;

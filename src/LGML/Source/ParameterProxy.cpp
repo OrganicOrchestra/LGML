@@ -17,6 +17,7 @@ StringParameter(niceName,desc),
 linkedParam(ref),
 isUpdatingLinkedParam(false)
 {
+  type = Controllable::PROXY;
   setRoot(root);
   Parameter::isEditable = false;
 

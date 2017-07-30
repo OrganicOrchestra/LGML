@@ -99,7 +99,7 @@ String Controllable::getControlAddress(ControllableContainer * relativeTo)
 
 bool Controllable::isNumeric()
 {
-  return type == Type::FLOAT || type == Type::INT || type == Type::BOOL;
+  return type == Type::FLOAT || type == Type::INT ;
 }
 
 DynamicObject * Controllable::createDynamicObject()

@@ -14,7 +14,7 @@
 
 #include "JuceHeader.h"//keep
 
-// MessageClass should provide a default constructor
+
 template<typename MessageClass,class CriticalSectionToUse = CriticalSection>
 class QueuedNotifier:public  AsyncUpdater{
 public:

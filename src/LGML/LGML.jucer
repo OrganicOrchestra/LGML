@@ -51,11 +51,19 @@
                 resource="0"/>
         </GROUP>
         <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
+          <FILE id="gtXkMU" name="RangeParameter.cpp" compile="1" resource="0"
+                file="Source/RangeParameter.cpp"/>
+          <FILE id="a6JwmT" name="RangeParameter.h" compile="0" resource="0"
+                file="Source/RangeParameter.h"/>
           <FILE compile="1" file="Source/Trigger.cpp" id="DqT70c" name="Trigger.cpp"
                 resource="0"/>
           <FILE compile="0" file="Source/Trigger.h" id="aqPYZL" name="Trigger.h"
                 resource="0"/>
           <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
+            <FILE id="xl9CVB" name="RangeParameterUI.cpp" compile="1" resource="0"
+                  file="Source/RangeParameterUI.cpp"/>
+            <FILE id="RIEpmd" name="RangeParameterUI.h" compile="0" resource="0"
+                  file="Source/RangeParameterUI.h"/>
             <FILE id="dJbu80" name="ParameterUIFactory.cpp" compile="1" resource="0"
                   file="Source/ParameterUIFactory.cpp"/>
             <FILE id="sojpTW" name="ParameterUIFactory.h" compile="0" resource="0"
@@ -779,7 +787,8 @@
                extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I/Users/Tintamar/Dev/rubberband/&#10;-I/Users/Tintamar/Dev/link/include/&#10;-I/Users/Tintamar/Dev/link/modules/asio-standalone/asio/include"
                extraDefs="LINK_PLATFORM_MACOSX=1" extraLinkerFlags="/Users/Tintamar/Dev/rubberband/lib/librubberband.a"
                postbuildCommand="" smallIcon="jsU7Hw" targetFolder="Builds/MacOSX"
-               vst3Folder="/Users/Tintamar/SDKs/VST3_SDK" vstFolder="" prebuildCommand="python ../../Scripts/PyUtils/writeSha.py">
+               vst3Folder="/Users/Tintamar/SDKs/VST3_SDK" vstFolder="" prebuildCommand="python ../../Scripts/PyUtils/writeSha.py"
+               keepCustomXcodeSchemes="1">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="../../External/serial/include" isDebug="0" linkTimeOptimisation="1"
