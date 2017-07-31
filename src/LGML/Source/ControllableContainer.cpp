@@ -25,7 +25,7 @@ const Identifier ControllableContainer::userParamIdentifier("userParameters");
 const Identifier ControllableContainer::containerNameIdentifier("containerName");
 
 const Identifier ControllableContainer::controlAddressIdentifier("controlAddress");
-const Identifier ControllableContainer::valueIdentifier("value");
+
 
 const Identifier ControllableContainer::childContainerId("/");
 
@@ -86,6 +86,18 @@ Parameter *  ControllableContainer::addParameter(Parameter * p)
   return p;
 
 
+}
+
+Parameter * ControllableContainer::addUserParameter(Parameter*p,const Identifier & id){
+  p->shouldSaveObject = true;
+  p->isUserDefined = true;
+  //  int64 key = (int64)(id.getCharPointer().getAddress());
+  auto key = id.toString();
+  if(!userParameterMap.contains(key)){
+    userParameterMap.set(key,new UsrParameterList());
+  }
+  userParameterMap[key]->add(p);
+  return addParameter(p);
 }
 
 
@@ -174,9 +186,10 @@ void ControllableContainer::removeChildControllableContainer(ControllableContain
      controllableContainers.getUnchecked(container->localIndexedPosition) == container){
     numContainerIndexed--;
   }
-  this->controllableContainers.removeAllInstancesOf(container);
-  container->removeControllableContainerListener(this);
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerRemoved,this, container);
+  this->controllableContainers.removeAllInstancesOf(container);
+
+  container->removeControllableContainerListener(this);
   notifyStructureChanged(this);
   container->setParentContainer(nullptr);
 }
@@ -595,7 +608,7 @@ String ControllableContainer::getPresetFilter()
 
 void ControllableContainer::dispatchFeedback(Controllable * c)
 {
-  //    @ben removed else here to enable containerlistener call back of non root (proxies) is it overkill?
+  
   if (parentContainer != nullptr){ parentContainer->dispatchFeedback(c); }
   controllableContainerListeners.call(&ControllableContainerListener::controllableFeedbackUpdate,this, c);
 
@@ -633,38 +646,56 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 var ControllableContainer::getJSONData()
 {
   DynamicObject * data = new DynamicObject();
+  data->setProperty(containerNameIdentifier, getNiceName());
+  data->setProperty("uid",uid.toString());
   {
     var paramsData(new DynamicObject);
 
     for(auto & c :controllables){
-      if(c->shouldSaveObject){
-        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::getVarObjectFromControllable(c));
-      }
-      else if (c->isSavable){
-        paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
+      if(!c->isUserDefined){
+        if(c->shouldSaveObject  ){
+          paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::getVarObjectFromControllable(c));
+        }
+        else if (c->isSavable){
+          paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
+        }
       }
     }
+    if(userParameterMap.size()){
+      var usrdict = new DynamicObject();
+      HashMap<String, Array<Parameter*>*>::Iterator upIt (userParameterMap);
+      while(upIt.next()){
+        auto name = upIt.getKey();
+        var l = new DynamicObject();
+        for(auto* e:*upIt.getValue()){
+          l.getDynamicObject()->setProperty(e->niceName,ParameterFactory::getVarObjectFromControllable(e));
+        }
+        usrdict.getDynamicObject()->setProperty(name, l);
 
+      }
+      paramsData.getDynamicObject()->setProperty(userParamIdentifier, usrdict);
+    }
+    
     data->setProperty(paramsIdentifier, paramsData);
 
   }
 
 
   if(controllableContainers.size()){
-    Array<var> childData;
+    DynamicObject *  childData = new DynamicObject();
 
     for(auto controllableCont: controllableContainers){
-      childData.add(controllableCont.get()->getJSONData());
+      childData->setProperty(controllableCont->shortName,controllableCont.get()->getJSONData());
     }
     data->setProperty(childContainerId, childData);
   }
-  data->setProperty("uid",uid.toString());
+
 
 
   return data;
 }
 
-void ControllableContainer::loadJSONData(var data)
+void ControllableContainer::loadJSONData(const var & data)
 {
   auto dyn =data.getDynamicObject();
   if (dyn->hasProperty("uid")) uid = dyn->getProperty("uid");
@@ -674,7 +705,7 @@ void ControllableContainer::loadJSONData(var data)
     setNiceName(name);
   }
   {
-    DynamicObject * paramsData = data.getDynamicObject()->getProperty(paramsIdentifier).getDynamicObject();
+    DynamicObject * paramsData = dyn->getProperty(paramsIdentifier).getDynamicObject();
     jassert(paramsData);
     if (paramsData != nullptr)
     {
@@ -694,11 +725,27 @@ void ControllableContainer::loadJSONData(var data)
             }
           }
         }
-        else if( auto c = ParameterFactory::createFromVarObject(p.value, p.name.toString())){
-          // TODO handle custom type
-          // for now  overriding addControllableInternal and check for custoType
-          addParameter(c);
 
+        else if( p.name==userParamIdentifier){
+          auto usrprops = p.value.getDynamicObject()->getProperties();
+          for(auto up:usrprops){
+            if(auto arr  = up.value.getDynamicObject()){
+              auto id = up.name;
+              auto usrd = arr->getProperties();
+              for(auto a:usrd){
+                auto c = ParameterFactory::createFromVarObject(a.value, a.name.toString());
+                // TODO handle custom type
+                // for now  overriding addControllableInternal and check for custoType
+
+                addUserParameter(c,id);
+              }
+            }
+          }
+
+        }
+        else if(auto c = ParameterFactory::createFromVarObject(p.value, p.name.toString())){
+          // savable
+          addParameter(c);
         }
         else{
           // malformed file
@@ -709,13 +756,33 @@ void ControllableContainer::loadJSONData(var data)
     }
   }
 
+  {
 
-  loadJSONDataInternal(data);
+
+    auto cD = dyn->getProperty(childContainerId).getDynamicObject();
+    if(cD){
+      auto ob = cD->getProperties();
+
+      for(auto & o: ob){
+        auto cont = getControllableContainerByName(o.name.toString());
+        if(cont){
+          cont->loadJSONData(o.value);
+        }
+        else{
+          addFromVar(o.value);
+        }
+      }
+
+    }
+  }
+  
+
+  
 
 
 }
 
-void ControllableContainer::childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer*origin)
+void ControllableContainer::childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer *origin)
 {
   notifyStructureChanged(origin);
 }
@@ -783,7 +850,8 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
 
 
 ControllableContainer::UsrParameterList * ControllableContainer::getUserParameters(const Identifier & id){
-  int64 key = (int64)(id.getCharPointer().getAddress());
+  //  int64 key = (int64)(id.getCharPointer().getAddress());
+  auto key = id.toString();
   if(userParameterMap.contains(key)){
     return userParameterMap[key];
   }
@@ -794,7 +862,7 @@ ControllableContainer::UsrParameterList * ControllableContainer::getUserParamete
 
 Array<Parameter*> ControllableContainer::getAllUserParameters(){
   Array<Parameter*> res ;
-  HashMap<int64, Array<Parameter*>*>::Iterator i (userParameterMap);
+  HashMap<String, Array<Parameter*>*>::Iterator i (userParameterMap);
 
   while (i.next())
   {
@@ -810,7 +878,8 @@ Parameter *  ControllableContainer::getUserParameter(const Identifier & id,const
   return found==vs->end()?nullptr:*found;
 }
 void ControllableContainer::removeUserParameter(const Identifier & id,Parameter *const *el){
-  int64 key = (int64)(id.getCharPointer().getAddress());
+  //  int64 key = (int64)(id.getCharPointer().getAddress());
+  auto key = id.toString();
   if(userParameterMap.contains(key)){
     auto list = userParameterMap[key];
     list->remove(el);

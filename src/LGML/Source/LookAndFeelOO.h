@@ -47,17 +47,20 @@ namespace LookAndFeelHelpers {
         Label::backgroundColourId,                  0x00000000,
         Label::textColourId,                        TEXT_COLOR.getARGB(),
         Label::outlineColourId,                     0x00000000,
+        Label::backgroundWhenEditingColourId,       0xCCCCCCCC,
+        Label::textWhenEditingColourId,             0xff000000,
+
 
         ScrollBar::backgroundColourId,              BG_COLOR.brighter(.2f).getARGB(),
         ScrollBar::thumbColourId,                   BG_COLOR.brighter(.6f).getARGB(),
-		ScrollBar::trackColourId,                   Colours::red.getARGB(),
+        ScrollBar::trackColourId,                   Colours::red.getARGB(),
 
         TreeView::linesColourId,                    BG_COLOR.brighter(.6f).getARGB(),
         TreeView::backgroundColourId,               0x00000000,
         TreeView::dragAndDropIndicatorColourId,     0x80ff0000,
         TreeView::selectedItemBackgroundColourId,   0x00000000,
-		TreeView::oddItemsColourId,					0,
-		TreeView::evenItemsColourId,				0,
+        TreeView::oddItemsColourId,					0,
+        TreeView::evenItemsColourId,				0,
 
         PopupMenu::backgroundColourId,              0xffffffff,
         PopupMenu::textColourId,                    0xff000000,

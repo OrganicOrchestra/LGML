@@ -77,7 +77,7 @@ public:
 	// save / load
 
     var getJSONData();
-    void loadJSONData(var data);
+    void loadJSONData(const var & data);
 
     //Listener
     class  Listener

@@ -300,7 +300,7 @@ var NodeConnection::getJSONData()
   return data;
 }
 
-void NodeConnection::loadJSONData(var data)
+void NodeConnection::loadJSONData(const var & data)
 {
   //srcNodeId, destNodeId & connectionType set at creation, not in this load
 

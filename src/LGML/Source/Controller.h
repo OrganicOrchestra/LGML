@@ -44,8 +44,10 @@ public:
   virtual ControllerUI * createUI();
   virtual ControllerEditor *  createEditor() ;
 
+  void remove();
 
 
+  var getJSONData() override;
 
   // identifiers
   static const Identifier controllerTypeIdentifier;

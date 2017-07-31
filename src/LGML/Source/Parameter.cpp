@@ -12,6 +12,11 @@
 #include "JsHelpers.h"
 
 
+const Identifier Parameter::valueIdentifier("value");
+const Identifier Parameter::minValueIdentifier("min");
+const Identifier Parameter::maxValueIdentifier("max");
+
+
 Parameter::Parameter(const Type &type, const String &niceName, const String &description, var initialValue, var minValue = var(), var maxValue = var(), bool enabled) :
 Controllable(type, niceName, description, enabled),
 isEditable(true),
@@ -29,10 +34,10 @@ isSettingValue(false)
   resetValue(true);
 }
 void Parameter::setFromVarObject(DynamicObject & ob){
-if(ob.hasProperty("maximumValue")){minimumValue = ob.getProperty("maximumValue");}
-if(ob.hasProperty("minimumValue")){minimumValue = ob.getProperty("minimumValue");}
-if(ob.hasProperty("initialValue")){defaultValue = ob.getProperty("initialValue");}
-if(ob.hasProperty("value")){setValue(ob.getProperty("value"));}
+  if(ob.hasProperty("maximumValue")){minimumValue = ob.getProperty("maximumValue");}
+  if(ob.hasProperty("minimumValue")){minimumValue = ob.getProperty("minimumValue");}
+  if(ob.hasProperty("initialValue")){defaultValue = ob.getProperty("initialValue");}
+  if(ob.hasProperty("value")){setValue(ob.getProperty("value"));}
 }
 void Parameter::resetValue(bool silentSet)
 {
@@ -60,7 +65,7 @@ void Parameter::tryToSetValue(var _value, bool silentSet , bool force ,bool deff
   setValueInternal(_value);
   if(_value != defaultValue) isOverriden = true;
   if (!silentSet) notifyValueChanged(defferIt);
-   isSettingValue = false;
+  isSettingValue = false;
 
 }
 void Parameter::setRange(var min, var max){
@@ -143,9 +148,14 @@ DynamicObject * Parameter::createDynamicObject()
   return dObject;
 }
 var Parameter::getVarObject(){
-    var res = new DynamicObject();
-    res.getDynamicObject()->setProperty(varTypeIdentifier, getTypeIdentifier().toString());
-    return res;
+  var res = new DynamicObject();
+  res.getDynamicObject()->setProperty(varTypeIdentifier, getTypeIdentifier().toString());
+  res.getDynamicObject()->setProperty(valueIdentifier, value);
+  if(isNumeric()){
+    res.getDynamicObject()->setProperty(minValueIdentifier, minimumValue);
+    res.getDynamicObject()->setProperty(maxValueIdentifier, maximumValue);
+  }
+  return res;
 }
 var Parameter::getVarState(){
   return value;

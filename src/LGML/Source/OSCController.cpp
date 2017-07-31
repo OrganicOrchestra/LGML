@@ -14,14 +14,18 @@
 
 #include "NodeManager.h"
 
+#include "NetworkUtils.h"
 
+extern ThreadPool * getEngineThreadPool();
 
 
 OSCController::OSCController(const String &_name) :
 Controller(_name),
 lastMessageReceived(OSCAddressPattern("/fake")),
 isProcessingOSC(false),
-oscMessageQueue(this)
+oscMessageQueue(this),
+hostNameResolved(false),
+isResolving(false)
 
 {
 
@@ -67,11 +71,67 @@ void OSCController::setupSender()
 {
   //DBG("Resetup sender with " << remoteHostParam->stringValue() << ":" << remotePortParam->stringValue().getIntValue());
   sender.disconnect();
-  if(!sender.connect(remoteHostParam->stringValue(), remotePortParam->stringValue().getIntValue())){
-    LOG("can't connect to send port : " +remoteHostParam->stringValue()+":"+ remotePortParam->stringValue());
-  };
+  hostNameResolved = false;
+  resolveHostnameIfNeeded(true);
+  if(isResolving) return;
+  if(!hostNameResolved){
+    LOG("no valid ip found for " << remoteHostParam->stringValue());
+  }
+
 }
 
+class ResolveIPJob : public ThreadPoolJob{
+  public :
+  ResolveIPJob(OSCController* cont):owner(cont),ThreadPoolJob("resolveIP"){
+
+  }
+  WeakReference<ControllableContainer> owner;
+
+  JobStatus runJob()override{
+    
+    if(OSCController* c = (OSCController*) owner.get()){
+
+      IPAddress resolved = NetworkUtils::hostnameToIP(c->remoteHostParam->stringValue());
+
+      if(OSCController* c = (OSCController*) owner.get()){
+        if(resolved!=IPAddress()){
+          c->hostNameResolved = true;
+          c->remoteIP = resolved.toString();
+          LOG("resolved IP : "<<c->remoteHostParam->stringValue() << " > "<<c->remoteIP);
+          c->sender.connect(c->remoteIP, c->remotePortParam->stringValue().getIntValue());
+        }
+        else{
+          LOG("can't resolve IP : "<<c->remoteHostParam->stringValue() );
+        }
+        c->isResolving=false;
+      }
+
+    }
+    return JobStatus::jobHasFinished;
+
+  };
+
+};
+
+void OSCController::resolveHostnameIfNeeded(bool force){
+  if(hostNameResolved) return;
+  if(isResolving && !force) return;
+
+  getEngineThreadPool()->removeJob(resolveJob,true,-1);
+  resolveJob = nullptr;
+  if(!NetworkUtils::isValidIP(remoteHostParam->stringValue())){
+    isResolving = true;
+    resolveJob = new ResolveIPJob(this);
+    getEngineThreadPool()->addJob(resolveJob, true);
+
+  }
+  else{
+    remoteIP = remoteHostParam->stringValue();
+    sender.connect(remoteIP, remotePortParam->stringValue().getIntValue());
+    hostNameResolved = true;
+  }
+
+}
 void OSCController::processMessage(const OSCMessage & msg)
 {
   if (logIncomingOSC->boolValue())
@@ -85,7 +145,7 @@ void OSCController::processMessage(const OSCMessage & msg)
     lastMessageReceived = msg;}
   isProcessingOSC = true;
   if(autoAddParameter->boolValue()){
-    checkAndAddParameterIfNeeded(msg);
+    MessageManager::getInstance()->callAsync([this,msg](){checkAndAddParameterIfNeeded(msg);});
   }
   bool result = processMessageInternal(msg);
   isProcessingOSC = false;
@@ -102,16 +162,16 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
   auto oscParams = getUserParameters(controllerVariableId);
   bool found = false;
   if(oscParams){
-  for (auto &p :*oscParams){
-    if(paramMatchesMsg(p,msg)){
-      found = true;
-      break;
+    for (auto &p :*oscParams){
+      if(paramMatchesMsg(p,msg)){
+        found = true;
+        break;
+      }
     }
-  }
   }
   if(!found){
     if(msg.size()==0){
-    addNewUserParameter<Trigger>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+      addNewUserParameter<Trigger>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
     }
     else{
       if(msg[0].isString()){
@@ -152,6 +212,7 @@ void OSCController::onContainerParameterChanged(Parameter * p)
   if (p == localPortParam) setupReceiver();
   else if (p == remotePortParam || p == remoteHostParam) setupSender();
   else if(p==speedLimit){oscMessageQueue.interval=speedLimit->floatValue();}
+
 
 
 }
@@ -217,13 +278,17 @@ inline bool compareOSCMessages(const  OSCMessage & a,const OSCMessage & b){
 bool OSCController::sendOSC (OSCMessage & m)
 {
   if(enabledParam->boolValue() ){
-    if(!blockFeedback->boolValue() ||   !compareOSCMessages(lastMessageReceived,m)){//!isProcessingOSC ||
+    resolveHostnameIfNeeded();
+    if(hostNameResolved){
+      if(!blockFeedback->boolValue() ||   !compareOSCMessages(lastMessageReceived,m)){//!isProcessingOSC ||
 
-      if(speedLimit->floatValue()>0.0f){
-        oscMessageQueue.add(new OSCMessage(m));
-      }
-      else{
-        return sendOSCInternal(m);
+        if(speedLimit->floatValue()>0.0f){
+          oscMessageQueue.add(new OSCMessage(m));
+        }
+        else{
+          return sendOSCInternal(m);
+        }
+
       }
     }
   }

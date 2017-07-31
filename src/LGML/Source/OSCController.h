@@ -108,6 +108,13 @@ private:
   bool isProcessingOSC;
 
   void checkAndAddParameterIfNeeded(const OSCMessage & msg);
+
+  friend class ResolveIPJob;
+  void resolveHostnameIfNeeded(bool force = false);
+  bool hostNameResolved ;
+  bool isResolving ;
+  String remoteIP;
+  ThreadPoolJob* resolveJob;
 };
 
 

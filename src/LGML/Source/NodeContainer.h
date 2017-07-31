@@ -132,7 +132,8 @@ public:
 
   //save / load
   var getJSONData() override;
-  void loadJSONDataInternal(var data) override;
+  void loadJSONData(const var & data) override;
+  void addFromVar(var & v)override;
   
   void clear()override;
   void clear(bool keepContainerNodes);

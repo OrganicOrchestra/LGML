@@ -537,9 +537,9 @@ void JsEnvironment::controllableFeedbackUpdate(ControllableContainer *originCont
 }
 
 
-void JsEnvironment::childStructureChanged(ControllableContainer * originContainer, ControllableContainer * notifier) {
+void JsEnvironment::childStructureChanged(ControllableContainer * notifierC, ControllableContainer * changed) {
   // rebuild files that are not loaded properly if LGML JsEnvironment is not fully built at the time of their firstExecution
-  if ((!_hasValidJsFile || !_isInSyncWithLGML)&& !isLoadingFile && originContainer == getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(notifier))) {
+  if ((!_hasValidJsFile || !_isInSyncWithLGML)&& !isLoadingFile && notifierC == getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer(changed))) {
     bool isFromOtherJsEnv = false;
     //    if(JsEnvironment *jsNotifier = dynamic_cast<JsEnvironment*>(notifier)){
     //      isFromOtherJsEnv = jsNotifier->isLoadingFile;

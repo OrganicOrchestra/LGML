@@ -206,9 +206,9 @@ void JsContainerSync::updateControllableNamespace(ControllableContainer * c){
 bool JsContainerSync::isDirty(){
   return aggregChanges.nsToUpdate.size()>0;
 }
-void JsContainerSync::childStructureChanged(ControllableContainer * c,ControllableContainer *){
+void JsContainerSync::childStructureChanged(ControllableContainer * notifier,ControllableContainer * ){
 
-    aggregChanges.addNs(getContainerNamespace(c));
+    aggregChanges.addNs(getContainerNamespace(notifier));
     //    updateControllableNamespace(c);
     
 }

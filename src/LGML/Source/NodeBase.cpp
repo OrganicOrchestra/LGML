@@ -128,9 +128,9 @@ var NodeBase::getJSONData()
   return data;
 }
 
-void NodeBase::loadJSONDataInternal(var data)
+void NodeBase::loadJSONData(const var & data)
 {
-  ConnectableNode::loadJSONDataInternal(data);
+  ConnectableNode::loadJSONData(data);
 
   var audioProcessorData = data.getProperty("audioProcessor", var());
   String audioProcessorStateData = audioProcessorData.getProperty("state",var());

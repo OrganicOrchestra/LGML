@@ -40,7 +40,7 @@ public:
 
 
 
-    public:
+
         //Listener
         class  OSCDirectListener
         {
@@ -56,7 +56,9 @@ public:
 
 
 
-
+private:
+    void sendOSCForAddress(Controllable*,const String & address);
+    void addControllableInternal(Controllable *c);
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
 
 

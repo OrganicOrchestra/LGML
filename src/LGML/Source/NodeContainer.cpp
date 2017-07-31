@@ -248,12 +248,6 @@ int NodeContainer::getNumConnections() {
 var NodeContainer::getJSONData()
 {
   var data = ConnectableNode::getJSONData();
-  var nodesData;
-
-  for (auto &n : nodes)
-  {
-    nodesData.append(n->getJSONData());
-  }
 
   var connectionsData;
 
@@ -262,28 +256,26 @@ var NodeContainer::getJSONData()
     connectionsData.append(c->getJSONData());
   }
 
-  data.getDynamicObject()->setProperty("nodes", nodesData);
+//  data.getDynamicObject()->setProperty("nodes", nodesData);
   data.getDynamicObject()->setProperty("connections", connectionsData);
 
   return data;
 }
 
 
-void NodeContainer::loadJSONDataInternal(var data)
+void NodeContainer::addFromVar(juce::var & data){
+  ConnectableNode * node = addNodeFromJSONData(data);
+  
+  if (node->type == NodeType::ContainerInType) containerInNode = (ContainerInNode *)node;
+  else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
+}
+
+void NodeContainer::loadJSONData(const var & data)
 {
   // do we really need that ???
-  clear(false);
+//  clear(false);
+  NodeBase::loadJSONData(data);
 
-  Array<var> * nodesData = data.getProperty("nodes", var()).getArray();
-  if(nodesData!=nullptr){
-    for (var &nData : *nodesData)
-    {
-      ConnectableNode * node = addNodeFromJSONData(nData);
-
-      if (node->type == NodeType::ContainerInType) containerInNode = (ContainerInNode *)node;
-      else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
-    }
-  }
 
   Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
 

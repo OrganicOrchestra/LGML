@@ -69,7 +69,7 @@ public:
 
   // our Saving methods
   var getJSONData() override;
-  void loadJSONData(var data,ProgressTask * loadingTask);
+  void loadJSONData(const var & data,ProgressTask * loadingTask);
 
   bool checkFileVersion(DynamicObject * metaData);
   int versionStringToInt(const String &version);

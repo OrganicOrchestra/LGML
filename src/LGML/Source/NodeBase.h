@@ -56,7 +56,7 @@ public:
   virtual void clearInternal() {};
 
   var getJSONData() override;
-  void loadJSONDataInternal(var data) override;
+  void loadJSONData(const var & data) override;
 
 
   //ui

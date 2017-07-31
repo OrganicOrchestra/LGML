@@ -160,6 +160,11 @@
               name="ControllableIndexedContainer.h" resource="0"/>
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
+        <GROUP id="{9DD298F4-8B93-1551-D5CE-05EFBECC01A5}" name="Network">
+          <FILE id="hSl8Jk" name="NetworkUtils.cpp" compile="1" resource="0"
+                file="Source/NetworkUtils.cpp"/>
+          <FILE id="Ew55cA" name="NetworkUtils.h" compile="0" resource="0" file="Source/NetworkUtils.h"/>
+        </GROUP>
         <GROUP id="{47C49D7C-57C1-2802-9458-4AB50A9508DE}" name="Audio">
           <FILE id="CIMyKb" name="BufferBlockList.cpp" compile="1" resource="0"
                 file="Source/BufferBlockList.cpp"/>

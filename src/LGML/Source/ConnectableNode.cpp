@@ -163,10 +163,7 @@ var ConnectableNode::getJSONData()
   return data;
 }
 
-void ConnectableNode::loadJSONDataInternal(var data)
-{
-  ControllableContainer::loadJSONDataInternal(data);
-}
+
 
 
 

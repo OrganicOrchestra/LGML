@@ -116,6 +116,10 @@ public:
 
   virtual void tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt);
 
+  static const Identifier valueIdentifier;
+  static const Identifier minValueIdentifier;
+  static const Identifier maxValueIdentifier;
+
 private:
 
 

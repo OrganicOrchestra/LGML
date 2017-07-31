@@ -83,13 +83,14 @@ public:
   void removeUserParameter(const Identifier & id,Parameter *const *el);
 
   typedef Array<Parameter*> UsrParameterList;
-  HashMap<int64,Array<Parameter*>*> userParameterMap;
+  HashMap<String,Array<Parameter*>*> userParameterMap;
 
   UsrParameterList * getUserParameters(const Identifier & i);
   Parameter *  getUserParameter(const Identifier & id,const String & niceName);
   UsrParameterList getAllUserParameters();
   
   Parameter* addParameter(Parameter * );
+  Parameter * addUserParameter(Parameter*p,const Identifier &);
 
 
   
@@ -156,8 +157,9 @@ public:
 
   
   virtual var getJSONData();
-  virtual void loadJSONData(var data);
-  virtual void loadJSONDataInternal(var /*data*/) { /* to be overriden by child classes */ }
+  virtual void loadJSONData(const var & data);
+  virtual void addFromVar(var & data) {jassertfalse;/* to be overriden by child classes */ };
+
   // get non user-created custom parameter from JSON
   virtual void loadCustomJSONElement(const Identifier & name,const var v){jassertfalse;};
 
@@ -210,7 +212,7 @@ public:
   static const Identifier presetIdentifier;
 
   static const Identifier controlAddressIdentifier;
-  static const Identifier valueIdentifier;
+  
   static const Identifier paramsIdentifier;
   static const Identifier userParamIdentifier;
   static const Identifier containerNameIdentifier;
@@ -221,7 +223,8 @@ private:
 
 
   WeakReference<ControllableContainer>::Master masterReference;
-    friend class WeakReference<ControllableContainer>;
+  friend class WeakReference<ControllableContainer>;
+
   void notifyStructureChanged(ControllableContainer * origin);
   void newMessage(const  Parameter::ParamWithValue&)override;
 
@@ -246,7 +249,7 @@ T* ControllableContainer::addNewParameter(const String & _niceName,const String 
 
   String targetName = getUniqueNameInContainer(_niceName);
   T* p = new T(targetName,desc,args...);
-  return dynamic_cast<T*>(addParameter(p));
+  return static_cast<T*>(addParameter(p));
 
 
 }
@@ -255,16 +258,8 @@ T* ControllableContainer::addNewUserParameter(const Identifier & id,const String
 
   String targetName = getUniqueNameInContainer(_niceName);
   auto p = new T(targetName,desc,args...);
-  p->shouldSaveObject = true;
-  p->isUserDefined = true;
-  int64 key = (int64)(id.getCharPointer().getAddress());
-  if(!userParameterMap.contains(key)){
-    userParameterMap.set(key,new UsrParameterList());
-  }
-  userParameterMap[key]->add(p);
 
-  addParameter(p);
-  return p;
+  return static_cast<T*>(addUserParameter(p,id));
 
 
 }

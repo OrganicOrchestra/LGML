@@ -15,6 +15,7 @@
 #include "StringParameterUI.h"
 #include "ParameterUIFactory.h"
 
+
 ControllerUI::ControllerUI(Controller * controller) :
 	InspectableComponent(controller, "controller"),
     controller(controller)
@@ -80,7 +81,7 @@ void ControllerUI::buttonClicked(Button * b)
 {
 	if (b == &removeBT)
 	{
-    controller->parentContainer->removeChildControllableContainer(controller);
+    controller->remove();
 	}
 }
 

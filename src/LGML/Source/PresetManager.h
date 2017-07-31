@@ -55,7 +55,7 @@ public:
 
 		var getJSONData();
 
-		void loadJSONData(var data);
+		void loadJSONData(const var & data);
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Preset)
 	};
@@ -80,7 +80,7 @@ public:
 
 
 	var getJSONData();
-	void loadJSONData(var data);
+	void loadJSONData(const var & data);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetManager)
 };

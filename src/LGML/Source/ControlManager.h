@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ControlManager.h
-    Created: 2 Mar 2016 8:34:39pm
-    Author:  bkupe
+ ControlManager.h
+ Created: 2 Mar 2016 8:34:39pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef CONTROLMANAGER_H_INCLUDED
 #define CONTROLMANAGER_H_INCLUDED
@@ -18,37 +18,40 @@ class ControllerManager :  public ControllableContainer
 {
 public:
 
-    ControllerManager();
-    ~ControllerManager();
+  ControllerManager();
+  ~ControllerManager();
 
-    juce_DeclareSingleton(ControllerManager, true);
+  juce_DeclareSingleton(ControllerManager, true);
 
-    ControllerFactory factory;
-    OwnedArray<Controller> controllers;
+  ControllerFactory factory;
+  OwnedArray<Controller> controllers;
 
-    Controller * addController(ControllerFactory::ControllerType controllerType);
-    void removeController(Controller * c);
-    void clear();
-
-    var getJSONData() override;
-    void loadJSONDataInternal(var data) override;
-
-    class  Listener
-    {
-    public:
-        /** Destructor. */
-        virtual ~Listener() {}
-
-        virtual void controllerAdded(Controller *) = 0;
-        virtual void controllerRemoved(Controller *) = 0;
-    };
-
-    ListenerList<Listener> listeners;
-    void addControllerListener(Listener* newListener) { listeners.add(newListener); }
-    void removeControllerListener(Listener* listener) { listeners.remove(listener); }
+  Controller * addController(ControllerFactory::ControllerType controllerType);
+  void removeController(Controller * c);
+  void clear();
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManager)
+  void addFromVar(var & cData)override;
+
+  class  Listener
+  {
+  public:
+    /** Destructor. */
+    virtual ~Listener() {}
+
+    virtual void controllerAdded(Controller *) = 0;
+    virtual void controllerRemoved(Controller *) = 0;
+  };
+
+  ListenerList<Listener> listeners;
+  void addControllerListener(Listener* newListener) { listeners.add(newListener); }
+  void removeControllerListener(Listener* listener) { listeners.remove(listener); }
+
+
+
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManager)
 };
 
 

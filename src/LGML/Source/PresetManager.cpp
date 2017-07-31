@@ -191,7 +191,7 @@ var PresetManager::getJSONData()
 	return data;
 }
 
-void PresetManager::loadJSONData(var data)
+void PresetManager::loadJSONData(const var & data)
 {
 	clear();
 
@@ -262,7 +262,7 @@ var PresetManager::Preset::getJSONData()
   return data;
 }
 
-void PresetManager::Preset::loadJSONData(var data)
+void PresetManager::Preset::loadJSONData(const var & data)
 {
 
   Array<var> * pvDatas = data.getDynamicObject()->getProperty("values").getArray();

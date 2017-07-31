@@ -61,7 +61,7 @@ public:
 	virtual void clear();
 
 	var getJSONData() override;
-	void loadJSONDataInternal(var data) override;
+	
 
 
 	void onContainerParameterChanged(Parameter * p) override;

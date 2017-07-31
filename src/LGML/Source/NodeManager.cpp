@@ -52,17 +52,18 @@ void NodeManager::clear()
 var NodeManager::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
-	data.getDynamicObject()->setProperty("mainContainer", mainContainer->getJSONData());
+//	data.getDynamicObject()->setProperty("mainContainer", mainContainer->getJSONData());
 	return data;
 }
 
-void NodeManager::loadJSONDataInternal(var data)
+void NodeManager::loadJSONData(const var & data)
 {
   jassert(isLoading ==false);
   jobsWatcher = new JobsWatcher(this);
   isLoading = true;
-	clear();
-	mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
+  ControllableContainer::loadJSONData(data);
+//	clear();
+//	mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
 
 }
 

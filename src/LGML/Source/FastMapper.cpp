@@ -59,18 +59,12 @@ var FastMapper::getJSONData()
 	return data;
 }
 
-void FastMapper::loadJSONDataInternal(var data)
+void FastMapper::addFromVar(var & fData)
 {
-	Array<var> * mData = data.getDynamicObject()->getProperty("fastMaps").getArray();
-
-	if (mData != nullptr)
-	{
-		for (auto &fData : *mData)
-		{
 			FastMap * f = addFastMap();
 			f->loadJSONData(fData);
-		}
-	}
+
+
 }
 
 

@@ -30,6 +30,7 @@ OSCController(name)
   if(sendTimeInfo->boolValue()){
     TimeManager::getInstance()->addControllableContainerListener(this);
   }
+
 }
 
 OSCDirectController::~OSCDirectController()
@@ -171,10 +172,28 @@ bool OSCDirectController::setParameterFromMessage(Parameter *c,const OSCMessage 
   return true;
 }
 
-void OSCDirectController::controllableAdded(ControllableContainer *,Controllable *)
-{
-}
+String getValidOSCAddress(const String &s){
+  String targetName = s;
+  if(!s.startsWithChar('/')){
+    targetName = '/'+s;
+  }
+  targetName.replace(" ", "");
 
+  return targetName;
+}
+void OSCDirectController::addControllableInternal(Controllable *c)
+{
+  Controller::addControllableInternal(c);
+  if(auto p = dynamic_cast<Parameter*>(c)){
+  if(p->isUserDefined){
+    String targetName = getValidOSCAddress(p->niceName);
+
+    p->setNiceName(targetName);
+
+  }
+}
+}
+void OSCDirectController::controllableAdded(ControllableContainer *,Controllable * c){}
 void OSCDirectController::controllableRemoved(ControllableContainer *,Controllable *)
 {
 
@@ -190,83 +209,88 @@ void OSCDirectController::onContainerParameterChanged(Parameter * p) {
     }
 
   }
+  else if(p && p->isUserDefined){
+    sendOSCForAddress(p,p->niceName);
+  }
 };
 
-
-void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
-{
-
-  if(enabledParam->boolValue()){
+void OSCDirectController::sendOSCForAddress(Controllable* c,const String & cAddress){
 #if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES
-    String cAddress = c->controlAddress;
-    Controllable::Type targetType = c->type;
-    if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
 
-    switch (targetType)
-    {
-      case Controllable::Type::TRIGGER:
-        sendOSC(cAddress);
-        break;
+  Controllable::Type targetType = c->type;
+  if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
 
-      case Controllable::Type::BOOL:
-        sendOSC(cAddress,((Parameter *)c)->intValue());
-        break;
+  switch (targetType)
+  {
+    case Controllable::Type::TRIGGER:
+      sendOSC(cAddress);
+      break;
 
-      case Controllable::Type::FLOAT:
-        sendOSC(cAddress, ((Parameter *)c)->floatValue());
-        break;
+    case Controllable::Type::BOOL:
+      sendOSC(cAddress,((Parameter *)c)->intValue());
+      break;
 
-      case Controllable::Type::INT:
-        sendOSC(cAddress, ((Parameter *)c)->intValue());
-        break;
+    case Controllable::Type::FLOAT:
+      sendOSC(cAddress, ((Parameter *)c)->floatValue());
+      break;
 
-      case Controllable::Type::STRING:
-      case Controllable::Type::ENUM:
-        sendOSC(cAddress, ((Parameter *)c)->stringValue());
-        break;
+    case Controllable::Type::INT:
+      sendOSC(cAddress, ((Parameter *)c)->intValue());
+      break;
+
+    case Controllable::Type::STRING:
+    case Controllable::Type::ENUM:
+      sendOSC(cAddress, ((Parameter *)c)->stringValue());
+      break;
 
 
-      default:
-        DBG("Type not supported " << targetType);
-        jassertfalse;
-        break;
-    }
+    default:
+      DBG("Type not supported " << targetType);
+      jassertfalse;
+      break;
+  }
 
 
 #else
 
-    OSCMessage msg(c->controlAddress);
-    switch (c->type)
-    {
-      case Controllable::Type::TRIGGER:
-        msg.addInt32(1);
-        break;
+  OSCMessage msg(cAddress);
+  switch (c->type)
+  {
+    case Controllable::Type::TRIGGER:
+      msg.addInt32(1);
+      break;
 
-      case Controllable::Type::BOOL:
-        msg.addInt32(((Parameter *)c)->intValue());
-        break;
+    case Controllable::Type::BOOL:
+      msg.addInt32(((Parameter *)c)->intValue());
+      break;
 
-      case Controllable::Type::FLOAT:
-        msg.addFloat32(((Parameter *)c)->floatValue());
-        break;
+    case Controllable::Type::FLOAT:
+      msg.addFloat32(((Parameter *)c)->floatValue());
+      break;
 
-      case Controllable::Type::INT:
-        msg.addInt32(((Parameter *)c)->intValue());
-        break;
+    case Controllable::Type::INT:
+      msg.addInt32(((Parameter *)c)->intValue());
+      break;
 
-      case Controllable::Type::STRING:
-        msg.addString(((Parameter *)c)->stringValue());
-        break;
+    case Controllable::Type::STRING:
+      msg.addString(((Parameter *)c)->stringValue());
+      break;
 
-      default:
-        DBG("OSC : unknown Controllable");
-        jassertfalse;
-        break;
-    }
+    default:
+      DBG("OSC : unknown Controllable");
+      jassertfalse;
+      break;
+  }
 
-    sendOSC(msg);
+  sendOSC(msg);
 
 #endif
+}
+void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
+{
+
+  if(enabledParam->boolValue()){
+    sendOSCForAddress(c,c->controlAddress);
   }
 
 

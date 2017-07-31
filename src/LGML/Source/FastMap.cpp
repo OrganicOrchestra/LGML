@@ -31,7 +31,7 @@ ControllableContainer("FastMap")
   outputRange = addNewParameter<RangeParameter>("Out Range", "Out Range", 0.0f,1.0f, 0.0f, 1.0f);
 
   invertParam = addNewParameter<BoolParameter>("Invert", "Invert the output signal", false);
-  fullSync = addNewParameter<BoolParameter>("FullSync", "synchronize source parameter too", false);
+  fullSync = addNewParameter<BoolParameter>("FullSync", "synchronize source parameter too", true);
 }
 
 FastMap::~FastMap()

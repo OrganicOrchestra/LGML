@@ -12,7 +12,7 @@
 #include "ControllerFactory.h"
 #include "ControllerUI.h"
 #include "ControllerEditor.h"
-
+#include "ControlManager.h"
 #include "DebugHelpers.h"
 
 
@@ -37,18 +37,29 @@ ControllableContainer(_name)
 
 Controller::~Controller()
 {
+  if(parentContainer){
+    parentContainer->removeChildControllableContainer(this);
+  }
   //DBG("Remove Controller");
 }
 
 
+var Controller::getJSONData(){
+
+  var res = ControllableContainer::getJSONData();
+  res.getDynamicObject()->setProperty(controllerTypeIdentifier,
+                                      ControllerFactory::controllerTypeToString((ControllerFactory::ControllerType)controllerTypeEnum));
+  return res;
 
 
-
-
+}
 ControllerUI * Controller::createUI(){return new ControllerUI(this);}
 
 ControllerEditor * Controller::createEditor(){return new ControllerEditor(this);}
 
+void Controller::remove(){
+  ((ControllerManager*)parentContainer)->removeController(this);
+}
 
 void Controller::onContainerParameterChanged(Parameter * p)
 {

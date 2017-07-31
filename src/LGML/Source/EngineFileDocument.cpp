@@ -213,7 +213,7 @@ var Engine::getJSONData()
 /// ===================
 // loading
 
-void Engine::loadJSONData (var data,ProgressTask * loadingTask)
+void Engine::loadJSONData (const var & data,ProgressTask * loadingTask)
 {
 
   DynamicObject * md = data.getDynamicObject()->getProperty("metaData").getDynamicObject();
