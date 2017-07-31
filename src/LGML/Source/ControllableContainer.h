@@ -167,7 +167,7 @@ public:
 
   virtual void childStructureChanged(ControllableContainer *notifier,ControllableContainer * origin)override;
 
-  String getUniqueNameInContainer(const String &sourceName, int suffix = 0);
+  String getUniqueNameInContainer(const String &sourceName, int suffix = 0,void * me=nullptr);
 
 
   virtual Component * getCustomEditor(){return nullptr;}

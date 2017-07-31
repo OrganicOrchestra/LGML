@@ -154,8 +154,11 @@ LooperNodeContentUI::TrackUI::TrackUI(LooperTrack * track) :track(track),
 isSelected(false),timeStateUI(track)
 {
   recPlayButton = ParameterUIFactory::createDefaultUI(track->recPlayTrig);
+  recPlayButton->setCustomText(">");
   clearButton = ParameterUIFactory::createDefaultUI(track->clearTrig);
+  clearButton->setCustomText("x");
   stopButton = ParameterUIFactory::createDefaultUI(track->stopTrig);
+  stopButton->setCustomText("||");
   muteButton = ParameterUIFactory::createDefaultUI(track->mute);
   soloButton = ParameterUIFactory::createDefaultUI(track->solo);
   sampleChoiceDDL = (EnumParameterUI*)ParameterUIFactory::createDefaultUI(track->sampleChoice);
@@ -198,7 +201,7 @@ void LooperNodeContentUI::TrackUI::paintOverChildren(Graphics & g) {
 
 void LooperNodeContentUI::TrackUI::resized() {
   Rectangle<int> r = getLocalBounds().reduced(2);
-  int gap = 5;
+
   const int timeUISize = 16;
 //  Rectangle<int>  hr = r.removeFromTop(timeUISize+gap);
 
@@ -209,16 +212,14 @@ void LooperNodeContentUI::TrackUI::resized() {
   volumeSlider->setBounds(r.removeFromRight(r.getWidth()/3).reduced(1));
   r.reduce(4,0);
 
-  int step = r.getHeight()/6 - gap;
+  int step = r.getHeight()/6 ;
 
-  muteButton->setBounds(r.removeFromTop(step));
-  r.removeFromTop(gap);
-  soloButton->setBounds(r.removeFromTop(step));
-  r.removeFromTop(gap);
-  clearButton->setBounds(r.removeFromTop(step));
-  r.removeFromTop(gap);
-  stopButton->setBounds(r.removeFromTop(step));
-  r.removeFromTop(gap);
+  muteButton->setBounds(r.removeFromTop(step).reduced(0,1));
+  soloButton->setBounds(r.removeFromTop(step).reduced(0,1));
+  r.removeFromTop(2);
+  clearButton->setBounds(r.removeFromTop(step).reduced(0,1));
+  stopButton->setBounds(r.removeFromTop(step).reduced(0,1));
+
   recPlayButton->setBounds(r);
 
 

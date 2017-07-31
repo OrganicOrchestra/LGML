@@ -30,7 +30,7 @@ audioNode(nullptr),
 outputVolume(nullptr)
 {
   //set Params
-  
+  ControllableContainer::nameParam->isEditable=true;
   descriptionParam = addNewParameter<StringParameter>("Description", "Set a custom description for this node.", "Description");
   enabledParam = addNewParameter<BoolParameter>("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
   

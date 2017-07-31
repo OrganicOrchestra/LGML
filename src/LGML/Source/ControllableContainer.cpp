@@ -44,6 +44,7 @@ isUserDefined(_isUserDefined)
 
   nameParam = addNewParameter<StringParameter>("Name", "Set the visible name of the node.", "");
   nameParam->isPresettable = false;
+  nameParam->isEditable = false;
   nameParam->setValue(niceName);
   currentPresetName = addNewParameter<StringParameter>("Preset", "Current Preset", "");
   currentPresetName->hideInEditor = true;
@@ -131,8 +132,12 @@ void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
   }
 }
 void ControllableContainer::setNiceName(const String &_niceName) {
-
-  nameParam->setValue(_niceName);
+  String targetName (_niceName);
+  if(parentContainer){
+    targetName = parentContainer->getUniqueNameInContainer(_niceName,0,this);
+  }
+  
+  nameParam->setValue(targetName,false,true);
 
 }
 const String  ControllableContainer::getNiceName(){
@@ -620,6 +625,13 @@ void ControllableContainer::parameterValueChanged(Parameter * p)
 {
   if (p == nameParam)
   {
+    if(parentContainer){
+      String oN = nameParam->stringValue();
+      String tN = parentContainer->getUniqueNameInContainer(oN,0,this);
+      if(tN!=oN){
+        nameParam->setValue(tN,false,true);
+      }
+    }
     if (!hasCustomShortName) setAutoShortName();
   }
   else   if (p == savePresetTrigger)
@@ -787,7 +799,7 @@ void ControllableContainer::childStructureChanged(ControllableContainer * /*noti
   notifyStructureChanged(origin);
 }
 
-String ControllableContainer::getUniqueNameInContainer(const String & sourceName, int suffix)
+String ControllableContainer::getUniqueNameInContainer(const String & sourceName, int suffix,void * me)
 {
   String resultName = sourceName;
   if (suffix > 0)
@@ -805,15 +817,15 @@ String ControllableContainer::getUniqueNameInContainer(const String & sourceName
       resultName += " " + String(suffix);
     }
   }
-
-  if (getControllableByName(resultName,true) != nullptr)
+  void * elem = getControllableByName(resultName,true);
+  if ( elem!=nullptr && elem != me)
   {
-    return getUniqueNameInContainer(sourceName, suffix + 1);
+    return getUniqueNameInContainer(sourceName, suffix + 1,me);
   }
-
-  if (getControllableContainerByName(resultName,true) != nullptr)
+  elem = getControllableContainerByName(resultName,true) ;
+  if (elem!=nullptr && elem != me)
   {
-    return getUniqueNameInContainer(sourceName, suffix + 1);
+    return getUniqueNameInContainer(sourceName, suffix + 1,me);
   }
 
   return resultName;
