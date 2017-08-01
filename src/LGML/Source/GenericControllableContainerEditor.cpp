@@ -41,11 +41,10 @@ GenericControllableContainerEditor::~GenericControllableContainerEditor()
 void GenericControllableContainerEditor::setCurrentInspectedContainer(ControllableContainer * cc,bool forceUpdate,	int recursiveInspectionLevel,bool canInspectChildContainersBeyondRecursion)
 {
 	if (cc == nullptr) return;
-  bool wasShowingUser =false;
 	if (innerContainer != nullptr)
 	{
 		if (!forceUpdate && cc == innerContainer->container) return;
-    wasShowingUser = innerContainer->showUser.getToggleState();
+
 		removeChildComponent(innerContainer);
 		innerContainer = nullptr;
 	}
@@ -61,7 +60,7 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 		jassert(tc != nullptr); //If here, trying to inspect a container that is not a child of the source inspectable container
 	}
 
-  innerContainer = new CCInnerContainer(this,cc, 0, ccLevel == 0?recursiveInspectionLevel:0, canInspectChildContainersBeyondRecursion,wasShowingUser);
+  innerContainer = new CCInnerContainer(this,cc, 0, ccLevel == 0?recursiveInspectionLevel:0, canInspectChildContainersBeyondRecursion);
 
 	addAndMakeVisible(innerContainer);
 
@@ -146,7 +145,7 @@ void GenericControllableContainerEditor::timerCallback(){
 //Inner Container
 //////////////////////////////
 
-CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor, ControllableContainer * _container, int _level, int _maxLevel, bool _canAccessLowerContainers,bool shouldShowUser) :
+CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor, ControllableContainer * _container, int _level, int _maxLevel, bool _canAccessLowerContainers) :
 	editor(_editor),
 	container(_container),
 	level(_level),
@@ -162,11 +161,6 @@ CCInnerContainer::CCInnerContainer(GenericControllableContainerEditor * _editor,
 	containerLabel.setSize(containerLabel.getFont().getStringWidth(containerLabel.getText()) + 10,14);
 	containerLabel.setColour(containerLabel.textColourId, TEXTNAME_COLOR);
 
-  showUser.setClickingTogglesState(true);
-  showUser.setToggleState(shouldShowUser, dontSendNotification);
-  showUser.setButtonText("show User Params");
-  addAndMakeVisible(showUser);
-  showUser.addListener(this);
   
   rebuild();
 
@@ -260,7 +254,7 @@ void CCInnerContainer::removeCCLink(ControllableContainer * cc)
 void CCInnerContainer::addControllableUI(Controllable * c)
 {
 	if (c->isControllableFeedbackOnly || !c->isControllableExposed) return;
-  if(c->isUserDefined != showUser.getToggleState()) return;
+
 
   NamedControllableUI * cui = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c->getParameter()), 100);
 	controllablesUI.add(cui);
@@ -336,7 +330,7 @@ int CCInnerContainer::getContentHeight()
   }
 
 	if(container->canHavePresets) h += presetChooserHeight + gap;
-  if(showUser.getToggleState()) h += presetChooserHeight + gap;
+  
 	h += containerLabel.getHeight();
 	h += margin * 2;
 
@@ -372,11 +366,7 @@ void CCInnerContainer::resized()
 		presetChooser->setBounds(r.removeFromTop(presetChooserHeight));
 		r.removeFromTop(gap);
 	}
-    if (container->userParameterMap.size()>0)
-    {
-      showUser.setBounds(r.removeFromTop(presetChooserHeight));
-      r.removeFromTop(gap);
-    }
+
     
     for (auto &cui : controllablesUI)
 	{
@@ -452,16 +442,12 @@ void CCInnerContainer::childStructureChanged(ControllableContainer *,Controllabl
 
 void CCInnerContainer::buttonClicked(Button * b)
 {
-  if(b==&showUser){
-      rebuild();
 
-  }
-  else{
     CCLinkBT * bt = dynamic_cast<CCLinkBT *>(b);
     if (bt == nullptr) return;
 
     editor->setCurrentInspectedContainer(bt->targetContainer);
-  }
+  
 }
 
 CCInnerContainer::CCLinkBT::CCLinkBT(ControllableContainer * _targetContainer) :

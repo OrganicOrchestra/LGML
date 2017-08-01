@@ -32,6 +32,8 @@ public:
 
   Trigger * activityTrigger;
 
+  ControllableContainer  userContainer;
+
 
 
   virtual void internalVariableAdded(Parameter * ){};
@@ -54,7 +56,7 @@ public:
   static const Identifier variableNameIdentifier;
   static const Identifier variableMinIdentifier;
   static const Identifier variableMaxIdentifier;
-  static const Identifier controllerVariableId;
+  
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)
 };

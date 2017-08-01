@@ -64,6 +64,7 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
   Array<WeakReference<ControllableContainer>> childContainers = parentContainer->getAllControllableContainers(false);
   for (auto &cc : childContainers)
   {
+
     if (cc->skipControllableNameInAddress && !showHiddenContainers)
     {
       buildTree(parentItem, cc,shouldFilter);
@@ -87,7 +88,7 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 
   for (auto &c : childControllables)
   {
-
+    if(c==parentContainer->nameParam || c->hideInEditor) continue;
     if(!shouldFilterByName || c->niceName.toLowerCase().contains(nameFilter)){
       OutlinerItem * cItem = new OutlinerItem(c);
       parentItem->addSubItem(cItem);
@@ -159,10 +160,14 @@ paramUI(nullptr)
   setTooltip(item->isContainer ? item->container->getControlAddress() : item->controllable->description + "\nControl Address : " + item->controllable->controlAddress);
   addAndMakeVisible(&label);
   label.setInterceptsMouseClicks(false, false);
-  if(!_item->isContainer){
+  if(!_item->isContainer ){
     paramUI = ParameterUIFactory::createDefaultUI(item->controllable->getParameter());
-    addAndMakeVisible(paramUI);
+
   }
+  else{
+    paramUI = ParameterUIFactory::createDefaultUI(item->container->nameParam->getParameter());
+  }
+  addAndMakeVisible(paramUI);
 }
 void OutlinerItemComponent::resized()
 {

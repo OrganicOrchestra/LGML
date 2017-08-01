@@ -133,7 +133,7 @@ public:
   //save / load
   var getJSONData() override;
   void loadJSONData(const var & data) override;
-  void addFromVar(var & v)override;
+  ControllableContainer *  addContainerFromVar(const String & name,const var & v)override;
   
   void clear()override;
   void clear(bool keepContainerNodes);

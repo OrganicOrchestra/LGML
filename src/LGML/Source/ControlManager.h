@@ -31,7 +31,7 @@ public:
   void clear();
 
 
-  void addFromVar(var & cData)override;
+  ControllableContainer *  addContainerFromVar(const String & name,const var & cData)override;
 
   class  Listener
   {

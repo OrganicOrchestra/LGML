@@ -14,7 +14,7 @@
 #include "ControllerUI.h"
 #include "SerialControllerEditor.h"
 
-static Identifier serialVarId("serialVars");
+
 
 SerialController::SerialController() :
 JsEnvironment("controller.serial",this),
@@ -167,33 +167,33 @@ void SerialController::processMessage(const String & message)
 
   } else if (command == "a")
   {
-    auto found = getUserParameter(serialVarId,split[1]);
+    auto found = userContainer.getControllableForAddress(split[1]);
     if (!found )
     {
       FloatParameter * v ;
 
       if(split.size()>=4){
-        v= addNewUserParameter<FloatParameter>(serialVarId,split[1],split[1],
+        v= userContainer.addNewParameter<FloatParameter>(split[1],split[1],
                                                split[2].getFloatValue(),
                                                split[2].getFloatValue(),
                                                split[3].getFloatValue());
       }
       else{
-        v= addNewUserParameter<FloatParameter>(serialVarId,split[1],split[1],0);
+        v= userContainer.addNewParameter<FloatParameter>(split[1],split[1],0);
       }
       serialVariables.add(v);
     }
   } else if (command == "d")
   {
-    auto found = getUserParameter(serialVarId,split[1]);
+     auto found = userContainer.getControllableForAddress(split[1]);
     if (!found )
     {
-      BoolParameter * v = addNewUserParameter<BoolParameter>(serialVarId,split[1], split[1], false);
+      BoolParameter * v = userContainer.addNewParameter<BoolParameter>(split[1], split[1], false);
       serialVariables.add(v);
     }
   } else if (command == "u")
   {
-    auto *  v = getUserParameter(serialVarId,split[1]);
+     auto v = userContainer.getControllableForAddress(split[1]);
     if (v != nullptr)
     {
       ((Parameter*)v)->setValue(split[2].getFloatValue());

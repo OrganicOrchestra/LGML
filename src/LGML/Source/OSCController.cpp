@@ -154,37 +154,50 @@ void OSCController::processMessage(const OSCMessage & msg)
   activityTrigger->trigger();
 }
 
-bool paramMatchesMsg(const Parameter *p,const OSCMessage &msg){
-  return msg.getAddressPattern().matches(p->niceName);
-}
+
+
 
 void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
-  auto oscParams = getUserParameters(controllerVariableId);
-  bool found = false;
-  if(oscParams){
-    for (auto &p :*oscParams){
-      if(paramMatchesMsg(p,msg)){
-        found = true;
-        break;
-      }
+
+  // TODO handle wildcards
+  String addr = msg.getAddressPattern().toString();
+  if(!userContainer.getControllableForAddress(addr)){
+
+    StringArray sa =OSCAddressToArray(addr);
+    ControllableContainer * tC = &userContainer;
+    for( int i = 0 ; i < sa.size()-1 ; i++){
+    auto *c = tC->getControllableContainerByName(sa[i],true);
+    if(!c){
+      c = new ControllableContainer(sa[i],true);
+      tC->addChildControllableContainer(c );
     }
-  }
-  if(!found){
+      tC = c;
+    }
+
+    String pName = sa[sa.size()-1];
+    if(tC){
     if(msg.size()==0){
-      addNewUserParameter<Trigger>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+      tC->addNewParameter<Trigger>(pName, "entry for "+msg.getAddressPattern().toString());
     }
     else{
       if(msg[0].isString()){
-        addNewUserParameter<StringParameter>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+        tC->addNewParameter<StringParameter>(pName, "entry for "+msg.getAddressPattern().toString());
       }
       else if(msg[0].isInt32()){
-        addNewUserParameter<IntParameter>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+        tC->addNewParameter<IntParameter>(pName, "entry for "+msg.getAddressPattern().toString());
       }
       else if(msg[0].isFloat32()){
-        addNewUserParameter<FloatParameter>(controllerVariableId,msg.getAddressPattern().toString(), "entry for "+msg.getAddressPattern().toString());
+        tC->addNewParameter<FloatParameter>(pName, "entry for "+msg.getAddressPattern().toString());
       }
     }
+
+    }
+    else{
+      jassertfalse;
+    }
+
   }
+
 }
 
 void OSCController::logMessage(const OSCMessage & msg,const String & prefix){
@@ -375,4 +388,11 @@ void OSCController::OSCMessageQueue::timerCallback() {
   else{
     stopTimer();
   }
+}
+
+StringArray OSCController::OSCAddressToArray(const String & addr){
+  StringArray addrArray;
+  addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
+  addrArray.remove(0);
+  return addrArray;
 }

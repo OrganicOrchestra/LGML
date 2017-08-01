@@ -32,14 +32,14 @@ public:
 	};
 
 
-	CCInnerContainer(GenericControllableContainerEditor * editor,ControllableContainer * container, int level, int maxLevel, bool canAccessLowerContainers,bool showUser=false);
+	CCInnerContainer(GenericControllableContainerEditor * editor,ControllableContainer * container, int level, int maxLevel, bool canAccessLowerContainers);
 	virtual ~CCInnerContainer();
 
 	Label containerLabel;
 
 	ControllableContainer * container;
 	ScopedPointer<PresetChooser> presetChooser;
-  TextButton showUser;
+  
 	OwnedArray<NamedControllableUI> controllablesUI;
 	OwnedArray<CCInnerContainer> innerContainers;
   ScopedPointer<Component> customEditor;

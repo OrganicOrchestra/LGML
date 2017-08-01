@@ -21,11 +21,13 @@ const Identifier Controller::variableNameIdentifier("name");
 const Identifier Controller::variableMinIdentifier("min");
 const Identifier Controller::variableMaxIdentifier("max");
 
-const Identifier Controller::controllerVariableId("UserVars");
+
 
 Controller::Controller(const String &_name) :
-ControllableContainer(_name)
+ControllableContainer(_name),
+userContainer("usr",true)
 {
+  addChildControllableContainer(&userContainer);
 
   enabledParam = addNewParameter<BoolParameter>("Enabled","Set whether the controller is enabled or disabled", true);
 

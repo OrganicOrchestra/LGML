@@ -71,9 +71,6 @@ void NodeContainerContentUI::buttonClicked(Button * b)
 		{
 			nmui->setCurrentViewedContainer(nodeContainer);
 		}
-	} else if (b == &addUserParamBT)
-	{
-		nodeContainer->addNewUserParameter<FloatParameter>(Identifier("usrParamID"),"param","userParameter desc" );
 	}
 }
 

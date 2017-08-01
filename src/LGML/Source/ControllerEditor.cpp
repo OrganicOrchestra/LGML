@@ -51,7 +51,7 @@ void ControllerEditor::buttonClicked(Button * b)
 	if (b == &addParameterBT)
 	{
     
-    controller->addNewUserParameter<FloatParameter>(Controller::controllerVariableId,"var","Custom Variable");
+    controller->userContainer.addNewParameter<FloatParameter>("var","Custom Variable");
 
 	}
 }

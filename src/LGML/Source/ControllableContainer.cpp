@@ -21,7 +21,7 @@
 
 const Identifier ControllableContainer::presetIdentifier("preset");
 const Identifier ControllableContainer::paramsIdentifier("parameters");
-const Identifier ControllableContainer::userParamIdentifier("userParameters");
+
 const Identifier ControllableContainer::containerNameIdentifier("containerName");
 
 const Identifier ControllableContainer::controlAddressIdentifier("controlAddress");
@@ -39,17 +39,18 @@ canHavePresets(true),
 numContainerIndexed(0),
 localIndexedPosition(-1),
 presetSavingIsRecursive(false),
-isUserDefined(_isUserDefined)
+isUserDefined(false)
 {
 
   nameParam = addNewParameter<StringParameter>("Name", "Set the visible name of the node.", "");
   nameParam->isPresettable = false;
-  nameParam->isEditable = false;
+  nameParam->isEditable = isUserDefined;
   nameParam->setValue(niceName);
   currentPresetName = addNewParameter<StringParameter>("Preset", "Current Preset", "");
   currentPresetName->hideInEditor = true;
   savePresetTrigger = addNewParameter<Trigger>("Save Preset", "Save current preset");
   savePresetTrigger->hideInEditor = true;
+  isUserDefined = _isUserDefined;
 
 }
 
@@ -84,24 +85,11 @@ Parameter *  ControllableContainer::addParameter(Parameter * p)
   addControllableInternal(p);
   p->addParameterListener(this);
   p->addAsyncParameterListener(this);
+  p->isUserDefined = isUserDefined;
   return p;
 
 
 }
-
-Parameter * ControllableContainer::addUserParameter(Parameter*p,const Identifier & id){
-  p->shouldSaveObject = true;
-  p->isUserDefined = true;
-  //  int64 key = (int64)(id.getCharPointer().getAddress());
-  auto key = id.toString();
-  if(!userParameterMap.contains(key)){
-    userParameterMap.set(key,new UsrParameterList());
-  }
-  userParameterMap[key]->add(p);
-  return addParameter(p);
-}
-
-
 
 
 
@@ -137,7 +125,7 @@ void ControllableContainer::setNiceName(const String &_niceName) {
     targetName = parentContainer->getUniqueNameInContainer(_niceName,0,this);
   }
   
-  nameParam->setValue(targetName,false,true);
+  nameParam->setValue(targetName,targetName==_niceName,true);
 
 }
 const String  ControllableContainer::getNiceName(){
@@ -170,7 +158,7 @@ Controllable * ControllableContainer::getControllableByName(const String & name,
   return nullptr;
 }
 
-void ControllableContainer::addChildControllableContainer(ControllableContainer * container)
+ControllableContainer* ControllableContainer::addChildControllableContainer(ControllableContainer * container)
 {
   String oriName = container->getNiceName();
   String targetName = getUniqueNameInContainer(oriName);
@@ -182,6 +170,7 @@ void ControllableContainer::addChildControllableContainer(ControllableContainer 
   container->setParentContainer(this);
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded,this, container);
   notifyStructureChanged(this);
+  return container;
 }
 
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
@@ -664,30 +653,15 @@ var ControllableContainer::getJSONData()
     var paramsData(new DynamicObject);
 
     for(auto & c :controllables){
-      if(!c->isUserDefined){
-        if(c->shouldSaveObject  ){
+        if(c->isUserDefined || c->shouldSaveObject  ){
           paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::getVarObjectFromControllable(c));
         }
         else if (c->isSavable){
           paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
         }
       }
-    }
-    if(userParameterMap.size()){
-      var usrdict = new DynamicObject();
-      HashMap<String, Array<Parameter*>*>::Iterator upIt (userParameterMap);
-      while(upIt.next()){
-        auto name = upIt.getKey();
-        var l = new DynamicObject();
-        for(auto* e:*upIt.getValue()){
-          l.getDynamicObject()->setProperty(e->niceName,ParameterFactory::getVarObjectFromControllable(e));
-        }
-        usrdict.getDynamicObject()->setProperty(name, l);
-
-      }
-      paramsData.getDynamicObject()->setProperty(userParamIdentifier, usrdict);
-    }
     
+
     data->setProperty(paramsIdentifier, paramsData);
 
   }
@@ -733,37 +707,16 @@ void ControllableContainer::loadJSONData(const var & data)
               }
             }
             else {
+              // we don't use custom types for now
+              jassertfalse;
               loadCustomJSONElement(p.name,p.value);
             }
           }
         }
-
-        else if( p.name==userParamIdentifier){
-          auto usrprops = p.value.getDynamicObject()->getProperties();
-          for(auto up:usrprops){
-            if(auto arr  = up.value.getDynamicObject()){
-              auto id = up.name;
-              auto usrd = arr->getProperties();
-              for(auto a:usrd){
-                auto c = ParameterFactory::createFromVarObject(a.value, a.name.toString());
-                // TODO handle custom type
-                // for now  overriding addControllableInternal and check for custoType
-
-                addUserParameter(c,id);
-              }
-            }
-          }
-
+        else {
+          addParameterFromVar(p.name.toString(),p.value);
         }
-        else if(auto c = ParameterFactory::createFromVarObject(p.value, p.name.toString())){
-          // savable
-          addParameter(c);
-        }
-        else{
-          // malformed file
-          LOG("malformed file");
-          jassertfalse;
-        }
+
       }
     }
   }
@@ -781,7 +734,13 @@ void ControllableContainer::loadJSONData(const var & data)
           cont->loadJSONData(o.value);
         }
         else{
-          addFromVar(o.value);
+          auto c = addContainerFromVar(o.name.toString(),o.value);
+          if(c){
+            c->loadJSONData(o.value);
+          }
+          else{
+            jassertfalse;
+          }
         }
       }
 
@@ -861,45 +820,12 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
 }
 
 
-ControllableContainer::UsrParameterList * ControllableContainer::getUserParameters(const Identifier & id){
-  //  int64 key = (int64)(id.getCharPointer().getAddress());
-  auto key = id.toString();
-  if(userParameterMap.contains(key)){
-    return userParameterMap[key];
-  }
-  else{
-    return nullptr;
-  }
-}
+ ControllableContainer *  ControllableContainer::addContainerFromVar(const String & name,const var & data) {
+   return addChildControllableContainer(new ControllableContainer(name,true));
+ };
+ Parameter* ControllableContainer::addParameterFromVar(const String & name,const var & data) {
 
-Array<Parameter*> ControllableContainer::getAllUserParameters(){
-  Array<Parameter*> res ;
-  HashMap<String, Array<Parameter*>*>::Iterator i (userParameterMap);
+   jassert(isUserDefined);
 
-  while (i.next())
-  {
-    res.addArray(*i.getValue());
-  }
-  return res;
-}
-Parameter *  ControllableContainer::getUserParameter(const Identifier & id,const String & niceName){
-  ControllableContainer::UsrParameterList* vs = getUserParameters(id);
-  Parameter **  found = std::find_if(vs->begin(), vs->end(),
-                                     [niceName](Controllable* c){return c->niceName.compare(niceName);}
-                                     );
-  return found==vs->end()?nullptr:*found;
-}
-void ControllableContainer::removeUserParameter(const Identifier & id,Parameter *const *el){
-  //  int64 key = (int64)(id.getCharPointer().getAddress());
-  auto key = id.toString();
-  if(userParameterMap.contains(key)){
-    auto list = userParameterMap[key];
-    list->remove(el);
-    if(list->size()==0){
-      delete list;
-      userParameterMap.remove(key);
-    }
-  }
-  
-}
-
+   return addParameter(ParameterFactory::createFromVarObject(data, name));
+ };

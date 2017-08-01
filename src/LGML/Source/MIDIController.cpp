@@ -74,8 +74,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput* ,
         NLOG("MIDI","CC "+String(message.getControllerNumber()) + " > " + String(message.getControllerValue())+" (Channel "+String(message.getChannel())+")");
       }
 
-      ControllableContainer::UsrParameterList * usrMIDICC = getUserParameters(usrMIDICCId);
-        for(Controllable* c:*usrMIDICC){
+        for(Controllable* c:userContainer.getAllControllables()){
           if(((Parameter*)c)->intValue()==1){
 
           }

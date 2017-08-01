@@ -51,10 +51,11 @@ public:
   ControllableContainer(const String &niceName,bool isUserDefined=false);
   virtual ~ControllableContainer();
   void remove();
-  bool isUserDefined;
+  
   const String  getNiceName();
   String shortName;
   bool hasCustomShortName;
+  bool isUserDefined;
 
   bool canHavePresets;
   bool presetSavingIsRecursive;
@@ -78,26 +79,18 @@ public:
   template<class T,class... Args>
   T* addNewParameter(const String & _niceName,const String & desc,Args...args);
 
-  template<class T,class... Args>
-  T* addNewUserParameter(const Identifier & id,const String & _niceName,const String & desc,Args...args);
-  void removeUserParameter(const Identifier & id,Parameter *const *el);
 
-  typedef Array<Parameter*> UsrParameterList;
-  HashMap<String,Array<Parameter*>*> userParameterMap;
 
-  UsrParameterList * getUserParameters(const Identifier & i);
-  Parameter *  getUserParameter(const Identifier & id,const String & niceName);
-  UsrParameterList getAllUserParameters();
   
   Parameter* addParameter(Parameter * );
-  Parameter * addUserParameter(Parameter*p,const Identifier &);
+
 
 
   
   void removeControllable(Controllable * c);
   Controllable * getControllableByName(const String &name, bool searchNiceNameToo = false);
 
-  void addChildControllableContainer(ControllableContainer * container);
+  ControllableContainer* addChildControllableContainer(ControllableContainer * container);
   void removeChildControllableContainer(ControllableContainer *container);
   // add indexed container (ensure localIndex and position in the child container array are the same)
   // idx of -1 add after the ast indexed (may be not the last, array can contain other non indexed elements)
@@ -158,7 +151,8 @@ public:
   
   virtual var getJSONData();
   virtual void loadJSONData(const var & data);
-  virtual void addFromVar(var & data) {jassertfalse;/* to be overriden by child classes */ };
+  virtual ControllableContainer * addContainerFromVar(const String & name,const var & data) ;
+  virtual Parameter * addParameterFromVar(const String & name,const var & data) ;
 
   // get non user-created custom parameter from JSON
   virtual void loadCustomJSONElement(const Identifier & name,const var v){jassertfalse;};
@@ -214,7 +208,7 @@ public:
   static const Identifier controlAddressIdentifier;
   
   static const Identifier paramsIdentifier;
-  static const Identifier userParamIdentifier;
+  
   static const Identifier containerNameIdentifier;
   static const Identifier childContainerId;
 
@@ -253,17 +247,6 @@ T* ControllableContainer::addNewParameter(const String & _niceName,const String 
 
 
 }
-template<class T,class... Args>
-T* ControllableContainer::addNewUserParameter(const Identifier & id,const String & _niceName,const String & desc,Args...args){
-
-  String targetName = getUniqueNameInContainer(_niceName);
-  auto p = new T(targetName,desc,args...);
-
-  return static_cast<T*>(addUserParameter(p,id));
-
-
-}
-
 
 
 

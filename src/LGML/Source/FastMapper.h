@@ -34,7 +34,7 @@ public:
 	void removeFastmap(FastMap * f);
 
 	virtual var getJSONData() override;
-  void addFromVar(var & fData) override;
+  ControllableContainer *  addContainerFromVar(const String & name,const var & fData) override;
 
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapper)

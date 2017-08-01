@@ -49,20 +49,21 @@ var FastMapper::getJSONData()
 {
 	var data = ControllableContainer::getJSONData();
 
-	var mData;
-	for (auto &f : maps)
-	{
-		mData.append(f->getJSONData());
-	}
-	data.getDynamicObject()->setProperty("fastMaps",mData);
-
+//	var mData;
+//	for (auto &f : maps)
+//	{
+//		mData.append(f->getJSONData());
+//	}
+//	data.getDynamicObject()->setProperty("fastMaps",mData);
+//
 	return data;
 }
 
-void FastMapper::addFromVar(var & fData)
+ControllableContainer *  FastMapper::addContainerFromVar(const String & name,const var & fData)
 {
 			FastMap * f = addFastMap();
-			f->loadJSONData(fData);
+			
+      return f;
 
 
 }

@@ -263,17 +263,20 @@ var NodeContainer::getJSONData()
 }
 
 
-void NodeContainer::addFromVar(juce::var & data){
-  ConnectableNode * node = addNodeFromJSONData(data);
-  
+ControllableContainer *  NodeContainer::addContainerFromVar(const String & name,const var & data){
+//  ConnectableNode * node = addNodeFromJSONData(data);
+  NodeType nodeType = NodeFactory::getTypeFromString(data.getProperty("nodeType", var()));
+  ConnectableNode * node = NodeFactory::createNode(nodeType);
   if (node->type == NodeType::ContainerInType) containerInNode = (ContainerInNode *)node;
   else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
+  addNode(node);
+  return node;
 }
 
 void NodeContainer::loadJSONData(const var & data)
 {
   // do we really need that ???
-//  clear(false);
+  clear(false);
   NodeBase::loadJSONData(data);
 
 

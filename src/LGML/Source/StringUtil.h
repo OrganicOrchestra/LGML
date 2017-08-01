@@ -65,10 +65,10 @@ public:
 };
 
 
-class StringUtil
+namespace StringUtil
 {
-public:
-  static String toShortName(const String &niceName, bool replaceSlashes = false) {
+
+   static String toShortName(const String &niceName, bool replaceSlashes = false) {
     if (niceName.isEmpty()) return "";
 
 
@@ -80,22 +80,8 @@ public:
     res=res.replaceCharacter('>','_');
     res=res.replaceCharacter('<','_');
 
-    StringArray sa;
-    sa.addTokens(res, false);
-    int index = 0;
-    for (auto &s : sa.strings)
-    {
-      if (s.isEmpty()) continue;
-      String initial = s.substring(0, 1);
-      String upperCaseWord = s.replaceSection(0, 1, index == 0 ? initial.toLowerCase() : initial.toUpperCase());
-      s.swapWith(upperCaseWord);
 
-
-
-      index++;
-    }
-
-    return sa.joinIntoString("");
+    return res;
   }
 
 

@@ -43,23 +43,16 @@ OSCDirectController::~OSCDirectController()
 Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
 {
   Result result = Result::ok();
-
   String addr = msg.getAddressPattern().toString();
-  if(auto up = getUserParameters(Controller::controllerVariableId)){
-    for(auto p:*up){
-      if(msg.getAddressPattern().matches(p->niceName)){
-        if(!setParameterFromMessage(p,msg)){
-          return  Result::fail("Controllable type not handled in user Parameter");
+  auto addrArray = OSCAddressToArray(addr);
 
+
+  if(auto *up = (Parameter*)userContainer.getControllableForAddress(addrArray)){
+        if(!setParameterFromMessage(up,msg)){
+          result=  Result::fail("Controllable type not handled in user Parameter");
         }
-      }
-    }
   }
-  StringArray addrArray;
-  addrArray.addTokens(addr,juce::StringRef("/"), juce::StringRef("\""));
 
-
-  addrArray.remove(0);
   String controller = addrArray[0];
 
 
@@ -181,18 +174,7 @@ String getValidOSCAddress(const String &s){
 
   return targetName;
 }
-void OSCDirectController::addControllableInternal(Controllable *c)
-{
-  Controller::addControllableInternal(c);
-  if(auto p = dynamic_cast<Parameter*>(c)){
-  if(p->isUserDefined){
-    String targetName = getValidOSCAddress(p->niceName);
 
-    p->setNiceName(targetName);
-
-  }
-}
-}
 void OSCDirectController::controllableAdded(ControllableContainer *,Controllable * c){}
 void OSCDirectController::controllableRemoved(ControllableContainer *,Controllable *)
 {

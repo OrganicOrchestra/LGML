@@ -54,6 +54,7 @@ public:
   virtual void oscBundleReceived(const OSCBundle& bundle) override;
   void sendAllControllableStates(ControllableContainer *c,int & sentControllable );
 
+  StringArray OSCAddressToArray(const String &);
   
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCController)

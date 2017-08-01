@@ -61,8 +61,9 @@ void NodeManager::loadJSONData(const var & data)
   jassert(isLoading ==false);
   jobsWatcher = new JobsWatcher(this);
   isLoading = true;
+	clear();
   ControllableContainer::loadJSONData(data);
-//	clear();
+
 //	mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
 
 }

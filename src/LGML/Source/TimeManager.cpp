@@ -65,7 +65,7 @@ linkLatency(00)
   clickVolume = addNewParameter<FloatParameter>("Metronome Volume", "Click's volume if metronome is active", .5f, 0, 1);
   setBPMInternal(BPM->doubleValue(),false);
 
-  linkEnabled = addNewParameter<BoolParameter>("link enabled","activate link",false);
+  linkEnabled = addNewParameter<BoolParameter>("enable link","activate link",false);
   linkEnabled->enabled = LINK_SUPPORT;
 
   linkNumPeers = addNewParameter<IntParameter>("linkNumPeers","number of connected link devices",0,0,32);

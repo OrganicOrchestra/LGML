@@ -56,15 +56,13 @@ void ControllerManager::clear()
 
 
 
-void ControllerManager::addFromVar(var & cData)
+ControllableContainer *  ControllerManager::addContainerFromVar(const String & name,const var & cData)
 {
 
 
   ControllerFactory::ControllerType controllerType = ControllerFactory::getTypeFromString(cData.getProperty(Controller::controllerTypeIdentifier, var()));
   //int controllerId = cData.getProperty("controllerId", var());
-  Controller* controller = addController(controllerType);
-  controller->loadJSONData(cData);
-
+  return addController(controllerType);
 
 }
 
