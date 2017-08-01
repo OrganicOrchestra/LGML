@@ -63,8 +63,9 @@ private:
 class NamedControllableUI : public ControllableUI,public Label::Listener
 {
 public:
-  NamedControllableUI(ControllableUI * ui,int _labelWidth);
+  NamedControllableUI(ControllableUI * ui,int _labelWidth,bool labelAbove=false);
   void resized()override;
+  bool labelAbove;
   void labelTextChanged (Label* labelThatHasChanged) override;
   Label controllableLabel;
   int labelWidth;

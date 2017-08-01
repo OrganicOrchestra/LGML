@@ -55,21 +55,24 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 
 	if (linkedParamUI != nullptr)
 	{
-    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI->ownedControllableUI.get());
+//    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI->ownedControllableUI.get());
+    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get());
 		if (cUI && cUI->parameter == p) return;
 
 		removeChildComponent(linkedParamUI);
 		linkedParamUI = nullptr;
 	}
 
-  linkedParamUI = p?new NamedControllableUI(ParameterUIFactory::createDefaultUI(p),100):nullptr;
+//  linkedParamUI = p?new NamedControllableUI(ParameterUIFactory::createDefaultUI(p),100,true):nullptr;
+  linkedParamUI = p?ParameterUIFactory::createDefaultUI(p):nullptr;
 
 
 	if (linkedParamUI != nullptr)
 	{
 		addAndMakeVisible(linkedParamUI);
 		updateTooltip();
-		linkedParamUI->setTooltip(getTooltip());
+    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get());
+		cUI->setTooltip(getTooltip());
 	}
   chooser.setVisible(linkedParamUI==nullptr);
 	resized();
@@ -95,5 +98,7 @@ void ParameterProxyUI::controllableNameChanged(Controllable * c)
 {
 	ParameterUI::controllableNameChanged(c);
 	updateTooltip();
-	if(linkedParamUI)linkedParamUI->setTooltip(getTooltip());
+  if(auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get()))
+		cUI->setTooltip(getTooltip());
+	
 }

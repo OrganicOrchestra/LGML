@@ -129,6 +129,7 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
       float newMin = referenceIn->linkedParam?(float)referenceIn->linkedParam->minimumValue:0;
       float newMax = referenceIn->linkedParam?(float)referenceIn->linkedParam->maximumValue:1;
       inputRange->setRange(newMin,newMax);
+      inputRange->setValue(newMin,newMax);
 
 
 
@@ -154,6 +155,7 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
       float newMin = referenceOut->linkedParam?(float)referenceOut->linkedParam->minimumValue:0;
       float newMax = referenceOut->linkedParam?(float)referenceOut->linkedParam->maximumValue:1;
       outputRange->setRange(newMin,newMax);
+      outputRange->setValue(newMin,newMax);
       
       
     }

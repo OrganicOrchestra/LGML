@@ -130,10 +130,11 @@ void ControllableUI::setMappingDest(bool _isMappingDest){
 //////////////////
 // NamedControllableUI
 
-NamedControllableUI::NamedControllableUI(ControllableUI * ui,int _labelWidth):
+NamedControllableUI::NamedControllableUI(ControllableUI * ui,int _labelWidth,bool labelA):
 ControllableUI(ui->controllable),
 ownedControllableUI(ui),
-labelWidth(_labelWidth){
+labelWidth(_labelWidth),
+labelAbove(labelA){
 
   addAndMakeVisible(controllableLabel);
 
@@ -155,8 +156,15 @@ labelWidth(_labelWidth){
 
 void NamedControllableUI::resized(){
   Rectangle<int> area  = getLocalBounds();
-  controllableLabel.setBounds(area.removeFromLeft(labelWidth));
-		area.removeFromLeft(10);
+  if(controllableLabel.getText().isNotEmpty()){
+  if(labelAbove){
+    controllableLabel.setBounds(area.removeFromTop(jmin(18,area.getHeight()/2)));
+  }
+  else{
+    controllableLabel.setBounds(area.removeFromLeft(labelWidth));
+    area.removeFromLeft(10);
+  }
+  }
   ownedControllableUI->setBounds(area);
 }
 
