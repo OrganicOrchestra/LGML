@@ -155,27 +155,9 @@ void LGMLDragger::mouseEnter(const MouseEvent &e){
   }
 }
 
-void LGMLDragger::mouseDown(const MouseEvent &e){
+void LGMLDragger::mouseUp(const MouseEvent &e){
+  setSelected(nullptr);
 
-  if(dragCandidate == e.originalComponent){
-    auto *c = dragCandidate->originComp;
-
-    if(c!=selected.get()){
-      if(selected.get()){
-        ((ControllableUI*)selected.get())->isSelected = false;
-        selected->repaint();
-      }
-
-      selected = c;
-      if(selected.get()){
-        auto *cUI = ((ControllableUI*)selected.get());
-        cUI->isSelected = true;
-        selected->repaint();
-        FastMapper::getInstance()->setPotentialInput(cUI->controllable->getParameter());
-      }
-
-    }
-  }
 }
 void LGMLDragger::mouseExit(const MouseEvent &e){
   if(auto c = getUIForComp(e.originalComponent)){
@@ -236,6 +218,8 @@ void LGMLDragger::startDraggingComponent (Component* const componentToDrag, cons
 
 }
 
+
+
 void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEvent& e,
                                  ComponentBoundsConstrainer* const constrainer)
 {
@@ -279,7 +263,35 @@ void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseE
   if(dropCandidate){
     target_C->paramProxy->setParamToReferTo(dragCandidate->originComp->controllable->getParameter());
   }
+  else{
+
+    auto *c = dragCandidate?dragCandidate->originComp:nullptr;
+    setSelected(c);
+  }
   unRegisterDragCandidate(nullptr);
+}
+
+void LGMLDragger::setSelected(ControllableUI * c){
+
+
+  if(c!=selected.get()){
+    if(selected.get()){
+      ((ControllableUI*)selected.get())->isSelected = false;
+      selected->repaint();
+    }
+
+    selected = c;
+    if(selected.get()){
+      auto *cUI = ((ControllableUI*)selected.get());
+      cUI->isSelected = true;
+      selected->repaint();
+      FastMapper::getInstance()->setPotentialInput(cUI->controllable->getParameter());
+    }
+    else{
+      FastMapper::getInstance()->setPotentialInput(nullptr);
+    }
+
+  }
 }
 
 

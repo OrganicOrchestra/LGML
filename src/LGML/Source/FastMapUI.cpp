@@ -59,6 +59,8 @@ outRangeUI(f->outputRange)
 
 FastMapUI::~FastMapUI()
 {
+  fastMap->referenceOut->removeParameterProxyListener(this);
+  fastMap->referenceIn->removeParameterProxyListener(this);
 }
 
 void FastMapUI::paint(Graphics & g)

@@ -28,7 +28,8 @@ public:
 
 	ParameterProxy * paramProxy;
 
-	ScopedPointer<ParameterUI> linkedParamUI;
+	ScopedPointer<NamedControllableUI> linkedParamUI;
+  
 
 	void resized()override ;
 

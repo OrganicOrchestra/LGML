@@ -41,7 +41,10 @@ void ParameterProxyUI::resized()
 
 
 	Rectangle<int> paramR = r;
-  if (linkedParamUI != nullptr){ linkedParamUI->setBounds(paramR);}
+  if (linkedParamUI != nullptr){
+    linkedParamUI->setBounds(paramR);
+
+  }
   else{chooser.setBounds(paramR);}
 
 }
@@ -52,13 +55,14 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 
 	if (linkedParamUI != nullptr)
 	{
-		if (linkedParamUI->parameter == p) return;
+    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI->ownedControllableUI.get());
+		if (cUI && cUI->parameter == p) return;
 
 		removeChildComponent(linkedParamUI);
 		linkedParamUI = nullptr;
 	}
 
-  linkedParamUI = p?ParameterUIFactory::createDefaultUI(p):nullptr;
+  linkedParamUI = p?new NamedControllableUI(ParameterUIFactory::createDefaultUI(p),100):nullptr;
 
 
 	if (linkedParamUI != nullptr)

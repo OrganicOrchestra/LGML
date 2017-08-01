@@ -36,6 +36,8 @@ ControllableContainer("FastMap")
 
 FastMap::~FastMap()
 {
+  referenceOut->removeParameterProxyListener(this);
+  referenceIn->removeParameterProxyListener(this);
 
 }
 void FastMap::onContainerParameterChanged(Parameter *p){
