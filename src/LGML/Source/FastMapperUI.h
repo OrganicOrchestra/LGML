@@ -106,7 +106,7 @@ public:
 		fastMapperUI->setBounds(targetBounds);
 	}
 
-	void fastMapperContentChanged()
+	void fastMapperContentChanged(FastMapperUI *)override
 	{
 		resized();
 	}

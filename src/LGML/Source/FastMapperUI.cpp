@@ -69,6 +69,7 @@ void FastMapperUI::resetAndUpdateView()
   {
     if (mapPassViewFilter(f)) addFastMapUI(f);
   }
+  
   resized();
 }
 
@@ -102,7 +103,8 @@ FastMapUI * FastMapperUI::getUIForFastMap(FastMap *f)
 
 int FastMapperUI::getContentHeight()
 {
-  return mapsUI.size() * (mapHeight + gap) + 4;
+
+  return mapsUI.size() * (mapHeight + gap) + 4*25+10;
 }
 
 void FastMapperUI::resized()
