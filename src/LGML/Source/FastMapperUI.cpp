@@ -204,6 +204,7 @@ void FastMapperUI::buttonClicked (Button* b){
 
 void FastMapperUI::currentComponentChanged(Inspector * i) {
   jassert(linkToSelection.getToggleState());
+  if(dynamic_cast<FastMap*>(i->getCurrentSelected())){return;}
   setViewFilter(i->getCurrentSelected());
 
   
