@@ -10,12 +10,13 @@
 
 #include "FastMapperUI.h"
 #include "FastMapper.h"
+#include "ParameterUIFactory.h"
 
 FastMapperUI::FastMapperUI(FastMapper * _fastMapper, ControllableContainer * _viewFilterContainer) :
 fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
 {
   fastMapper->addControllableContainerListener(this);
-  resetAndUpdateView();
+
   linkToSelection.setButtonText("Show from selected");
   linkToSelection.setClickingTogglesState(true);
   linkToSelection.addListener(this);
@@ -25,6 +26,11 @@ fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
   addFastMapBt.addListener(this);
   addAndMakeVisible(addFastMapBt);
 
+  potentialIn = new NamedControllableUI(ParameterUIFactory::createDefaultUI(fastMapper->potentialIn),150);
+  potentialOut= new NamedControllableUI(ParameterUIFactory::createDefaultUI(fastMapper->potentialOut),150);
+  addAndMakeVisible(potentialIn);
+  addAndMakeVisible(potentialOut);
+  resetAndUpdateView();
 
 
 }
@@ -102,8 +108,12 @@ int FastMapperUI::getContentHeight()
 void FastMapperUI::resized()
 {
   Rectangle<int> r = getLocalBounds().reduced(2);
+  potentialIn->setBounds(r.removeFromTop(25).reduced(2));
+  potentialOut->setBounds(r.removeFromTop(25).reduced(2));
   addFastMapBt.setBounds(r.removeFromTop(25).reduced(2));
   linkToSelection.setBounds(r.removeFromTop(25).reduced(2));
+  r.removeFromTop(10);
+  r.reduce(2, 0);
   for (auto & fui : mapsUI)
   {
     fui->setBounds(r.removeFromTop(mapHeight));

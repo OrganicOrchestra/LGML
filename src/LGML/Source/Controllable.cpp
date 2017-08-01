@@ -195,7 +195,8 @@ const Identifier  Controllable::getTypeIdentifier(){
 
 
 Parameter* Controllable::getParameter(){
-  return dynamic_cast<Parameter*>(this);
+  // static cast as no pure controllable
+  return static_cast<Parameter*>(this);
 }
 
 

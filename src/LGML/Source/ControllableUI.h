@@ -1,12 +1,12 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    ControllableUI.h
-    Created: 9 Mar 2016 12:02:16pm
-    Author:  bkupe
+ ControllableUI.h
+ Created: 9 Mar 2016 12:02:16pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #ifndef CONTROLLABLEUI_H_INCLUDED
 #define CONTROLLABLEUI_H_INCLUDED
@@ -19,16 +19,16 @@
 class ControllableUI : public Component,public SettableTooltipClient , public Controllable::Listener
 {
 public:
-    ControllableUI(Controllable * controllable);
-    virtual ~ControllableUI();
+  ControllableUI(Controllable * controllable);
+  virtual ~ControllableUI();
 
-    
-    
-    WeakReference<Controllable>  controllable;
 
-    // Inherited via Listener
-    virtual void controllableStateChanged(Controllable * c) override;
-    virtual void controllableControlAddressChanged(Controllable * c) override;
+
+  WeakReference<Controllable>  controllable;
+
+  // Inherited via Listener
+  virtual void controllableStateChanged(Controllable * c) override;
+  virtual void controllableControlAddressChanged(Controllable * c) override;
 
   enum MappingState{
     NOMAP,
@@ -40,7 +40,8 @@ public:
   void setMappingDest(bool _isMappingDest);
 
   bool isDraggable;
-  
+  bool isSelected;
+
 
   virtual void paintOverChildren(Graphics &g) override;
   bool isMappingDest;
@@ -51,9 +52,9 @@ private:
   MappingState mappingState;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableUI)
 
-protected :
-    void updateTooltip();
-    void mouseDown(const MouseEvent &e) override;
+  protected :
+  void updateTooltip();
+  void mouseDown(const MouseEvent &e) override;
 };
 
 
@@ -65,9 +66,9 @@ public:
   NamedControllableUI(ControllableUI * ui,int _labelWidth);
   void resized()override;
   void labelTextChanged (Label* labelThatHasChanged) override;
-    Label controllableLabel;
-    int labelWidth;
-    ScopedPointer <ControllableUI > ownedControllableUI;
+  Label controllableLabel;
+  int labelWidth;
+  ScopedPointer <ControllableUI > ownedControllableUI;
 };
 
 

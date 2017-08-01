@@ -27,8 +27,13 @@ public:
 	virtual ~FastMapper();
 
 	OwnedArray<FastMap> maps;
+  ParameterProxy * potentialIn;
+  ParameterProxy * potentialOut;
 
 	void clear();
+
+  void setPotentialInput(Parameter*);
+  void setPotentialOutput(Parameter*);
 
 	FastMap * addFastMap();
 	void removeFastmap(FastMap * f);
@@ -36,7 +41,9 @@ public:
 	virtual var getJSONData() override;
   ControllableContainer *  addContainerFromVar(const String & name,const var & fData) override;
 
-
+private:
+  void createNewFromPotentials();
+  bool checkDuplicates(FastMap *f);
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapper)
 
 };

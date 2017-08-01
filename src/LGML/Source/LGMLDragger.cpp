@@ -86,7 +86,7 @@ public:
   bool hitTest(int x,int y)override{
     return !isDragging;
   }
-  
+
 };
 
 
@@ -104,6 +104,7 @@ LGMLDragger::~LGMLDragger(){
 void LGMLDragger::setMainComponent(Component * c,TooltipWindow * _tip){
   dragCandidate = nullptr;
   dropCandidate=nullptr;
+  selected = nullptr;
   mainComp = c;
   tip = _tip;
   mainComp->addMouseListener(this, true);
@@ -113,10 +114,10 @@ void LGMLDragger::setMainComponent(Component * c,TooltipWindow * _tip){
 
 
 void LGMLDragger::registerDragCandidate(ControllableUI * c){
-//    unRegisterForDrag(nullptr);
+  //    unRegisterForDrag(nullptr);
 
   dragCandidate = new DraggedComponent(c);
-//    tip->setMillisecondsBeforeTipAppears(99999999);
+  //    tip->setMillisecondsBeforeTipAppears(99999999);
   mainComp->addAndMakeVisible(dragCandidate);
   dragCandidate->toFront(false);
 
@@ -128,7 +129,7 @@ void LGMLDragger::unRegisterDragCandidate(ControllableUI * c){
     dropCandidate->setAlpha(1);
   }
   dropCandidate=nullptr;
-//  tip->setMillisecondsBeforeTipAppears();
+  //  tip->setMillisecondsBeforeTipAppears();
 
 
 }
@@ -154,8 +155,30 @@ void LGMLDragger::mouseEnter(const MouseEvent &e){
   }
 }
 
+void LGMLDragger::mouseDown(const MouseEvent &e){
+
+  if(dragCandidate == e.originalComponent){
+    auto *c = dragCandidate->originComp;
+
+    if(c!=selected.get()){
+      if(selected.get()){
+        ((ControllableUI*)selected.get())->isSelected = false;
+        selected->repaint();
+      }
+
+      selected = c;
+      if(selected.get()){
+        auto *cUI = ((ControllableUI*)selected.get());
+        cUI->isSelected = true;
+        selected->repaint();
+        FastMapper::getInstance()->setPotentialInput(cUI->controllable->getParameter());
+      }
+
+    }
+  }
+}
 void LGMLDragger::mouseExit(const MouseEvent &e){
- if(auto c = getUIForComp(e.originalComponent)){
+  if(auto c = getUIForComp(e.originalComponent)){
     if(!c->isMappingDest &&
        c->mappingState==ControllableUI::MAPSOURCE &&
        c->isDraggable &&
@@ -175,8 +198,8 @@ void setAllComponentMappingState(Component * c,bool b){
 
       }
 
-        setAllComponentMappingState(ch, b);
-      
+      setAllComponentMappingState(ch, b);
+
     }
   }
 }
@@ -210,7 +233,7 @@ void LGMLDragger::startDraggingComponent (Component* const componentToDrag, cons
   if (componentToDrag != nullptr)
     mouseDownWithinTarget = e.getEventRelativeTo (componentToDrag).getMouseDownPosition();
 
-  
+
 }
 
 void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEvent& e,
@@ -250,7 +273,7 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
   }
 }
 void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseEvent & e){
-//  jassert(!target || componentToDrag==target);
+  //  jassert(!target || componentToDrag==target);
   auto target_C = dynamic_cast<ParameterProxyUI*>(dropCandidate);
   jassert(!dropCandidate || target_C);
   if(dropCandidate){

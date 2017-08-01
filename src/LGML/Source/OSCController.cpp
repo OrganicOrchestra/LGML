@@ -16,6 +16,8 @@
 
 #include "NetworkUtils.h"
 
+#include "FastMapper.h"
+
 extern ThreadPool * getEngineThreadPool();
 
 
@@ -161,7 +163,8 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
 
   // TODO handle wildcards
   String addr = msg.getAddressPattern().toString();
-  if(!userContainer.getControllableForAddress(addr)){
+  auto * linked = userContainer.getControllableForAddress(addr);
+  if(!linked){
 
     StringArray sa =OSCAddressToArray(addr);
     ControllableContainer * tC = &userContainer;
@@ -177,17 +180,17 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
     String pName = sa[sa.size()-1];
     if(tC){
     if(msg.size()==0){
-      tC->addNewParameter<Trigger>(pName, "entry for "+msg.getAddressPattern().toString());
+      linked = tC->addNewParameter<Trigger>(pName, "entry for "+msg.getAddressPattern().toString());
     }
     else{
       if(msg[0].isString()){
-        tC->addNewParameter<StringParameter>(pName, "entry for "+msg.getAddressPattern().toString());
+        linked = tC->addNewParameter<StringParameter>(pName, "entry for "+msg.getAddressPattern().toString());
       }
       else if(msg[0].isInt32()){
-        tC->addNewParameter<IntParameter>(pName, "entry for "+msg.getAddressPattern().toString());
+        linked = tC->addNewParameter<IntParameter>(pName, "entry for "+msg.getAddressPattern().toString());
       }
       else if(msg[0].isFloat32()){
-        tC->addNewParameter<FloatParameter>(pName, "entry for "+msg.getAddressPattern().toString());
+        linked = tC->addNewParameter<FloatParameter>(pName, "entry for "+msg.getAddressPattern().toString());
       }
     }
 
@@ -197,6 +200,11 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
     }
 
   }
+
+  if(linked){
+    FastMapper::getInstance()->setPotentialOutput(linked->getParameter());
+  }
+
 
 }
 

@@ -89,7 +89,7 @@ ControllableContainer * ParameterProxy::getRoot(){
 
 bool ParameterProxy::resolveAddress(){
   if(stringValue().isNotEmpty()){
-    auto p = dynamic_cast<Parameter*>(getRoot()->getControllableForAddress(stringValue()));
+    auto p = getRoot()->getControllableForAddress(stringValue())->getParameter();
 
     setParamToReferTo(p);
   }

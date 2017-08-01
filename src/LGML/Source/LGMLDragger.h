@@ -34,6 +34,7 @@ public:
 
 
   void mouseEnter(const MouseEvent &e)override;
+  void mouseDown(const MouseEvent &e)override;
   void mouseExit(const MouseEvent &e) override;
   
   
@@ -49,6 +50,8 @@ public:
   bool isMappingActive;
 
   Component*  dropCandidate;
+
+  WeakReference<Component> selected;
 private:
   Point<int> mouseDownWithinTarget;
 

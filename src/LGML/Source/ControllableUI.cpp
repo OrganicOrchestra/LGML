@@ -16,7 +16,8 @@
 ControllableUI::ControllableUI(Controllable * controllable) :
 controllable(controllable),
 isMappingDest(false),
-isDraggable(true)
+isDraggable(true),
+isSelected(false)
 {
   if(LGMLDragger::getInstance()->isMappingActive){
     mappingState = isMappingDest?MAPDEST:MAPSOURCE;
@@ -101,10 +102,16 @@ void ControllableUI::paintOverChildren(Graphics &g) {
     }
     else{
       jassert(isMappingDest);
-      g.setColour(Colours::red.withAlpha(0.5f));
+      g.setColour(Colours::blue.withAlpha(0.5f));
     }
+
     g.fillAll();
+    if(isSelected){
+      g.setColour(Colours::red);
+      g.drawRect(getLocalBounds(),2);
+    }
   }
+
 }
 
 
