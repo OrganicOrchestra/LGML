@@ -102,8 +102,9 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
   }
 }
 
-void Outliner::childStructureChanged(ControllableContainer *,ControllableContainer*)
+void Outliner::childStructureChanged(ControllableContainer * ,ControllableContainer*)
 {
+  rootItem->clearSubItems();
   triggerAsyncUpdate();
 
 }
@@ -111,8 +112,9 @@ void Outliner::childStructureChanged(ControllableContainer *,ControllableContain
 
 void Outliner::handleAsyncUpdate(){
   if(getEngine()){
-    if(getEngine()->isLoadingFile)
-      triggerAsyncUpdate();
+    if(getEngine()->isLoadingFile ){
+        triggerAsyncUpdate();
+    }
     else
       rebuildTree();
 

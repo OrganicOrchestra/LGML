@@ -47,12 +47,13 @@ void ControllerManagerUI::clear()
 
 void ControllerManagerUI::controllerAdded(Controller * c)
 {
-	addControllerUI(c);
+  MessageManager::getInstance()->callAsync([this,c](){addControllerUI(c);});
 }
 
 void ControllerManagerUI::controllerRemoved(Controller * c)
 {
-    removeControllerUI(c);
+
+  MessageManager::getInstance()->callAsync([this,c](){ removeControllerUI(c);});
 }
 
 ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
