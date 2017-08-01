@@ -17,17 +17,16 @@
 
 
 const Identifier Controller::controllerTypeIdentifier("controllerType");
-const Identifier Controller::variableNameIdentifier("name");
-const Identifier Controller::variableMinIdentifier("min");
-const Identifier Controller::variableMaxIdentifier("max");
+
 
 
 
 Controller::Controller(const String &_name) :
 ControllableContainer(_name),
-userContainer("usr",true)
+userContainer("messages",true)
 {
   addChildControllableContainer(&userContainer);
+  userContainer.nameParam->isEditable = false;
 
   enabledParam = addNewParameter<BoolParameter>("Enabled","Set whether the controller is enabled or disabled", true);
 

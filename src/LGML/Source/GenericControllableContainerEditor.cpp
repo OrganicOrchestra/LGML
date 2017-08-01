@@ -182,6 +182,7 @@ void CCInnerContainer::rebuild(){
     presetChooser = new PresetChooser(container);
     addAndMakeVisible(presetChooser);
   }
+
   for (auto &c : container->controllables)
   {
     if(!c->hideInEditor) addControllableUI(c);
@@ -197,7 +198,7 @@ void CCInnerContainer::rebuild(){
   {
     for (auto &cc : container->controllableContainers)
     {
-      addCCLink(cc);
+     addCCLink(cc);
 
     }
     
@@ -367,6 +368,22 @@ void CCInnerContainer::resized()
 		r.removeFromTop(gap);
 	}
 
+
+    if (canAccessLowerContainers)
+    {
+      for (auto &cclink : lowerContainerLinks)
+      {
+        if(auto ccL =  dynamic_cast<CCInnerContainer::CCLinkBT*> (cclink) ){
+          if(ccL->targetContainer->isUserDefined){
+            cclink->setBounds(r.removeFromTop(ccLinkHeight));
+            r.removeFromTop(gap);
+          }
+        }
+      }
+
+      r.removeFromTop(ccGap);
+    }
+    
     
     for (auto &cui : controllablesUI)
 	{
@@ -379,8 +396,9 @@ void CCInnerContainer::resized()
 	{
 		for (auto &cclink : lowerContainerLinks)
 		{
-      bool isCustom = dynamic_cast<CCInnerContainer::CCLinkBT*> (cclink) ==nullptr;
-
+      auto ccL = dynamic_cast<CCInnerContainer::CCLinkBT*> (cclink) ;
+      bool isCustom = ccL==nullptr;
+      if(!isCustom && ccL->targetContainer->isUserDefined) continue;
       cclink->setBounds(r.removeFromTop(ccLinkHeight*(isCustom?3:1)));
 			r.removeFromTop(gap);
 		}

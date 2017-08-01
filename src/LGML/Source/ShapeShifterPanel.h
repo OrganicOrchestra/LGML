@@ -37,7 +37,7 @@ public:
 	AttachZone candidateZone;
 
 
-	ShapeShifterContent * currentContent;
+	ShapeShifterContent* currentContent;
 	void setCurrentContent(ShapeShifterContent * content);
 	void setCurrentContent(const String &name);
 

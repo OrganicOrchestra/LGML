@@ -25,7 +25,7 @@ OSCDirectController::OSCDirectController(const String & name) :
 OSCController(name)
 {
   NodeManager::getInstance()->addControllableContainerListener(this);
-
+  userContainer.addControllableContainerListener(this);
   sendTimeInfo = addNewParameter<BoolParameter>("sendTimeInfo", "send time information", false);
   if(sendTimeInfo->boolValue()){
     TimeManager::getInstance()->addControllableContainerListener(this);
@@ -191,9 +191,7 @@ void OSCDirectController::onContainerParameterChanged(Parameter * p) {
     }
 
   }
-  else if(p && p->isUserDefined){
-    sendOSCForAddress(p,p->niceName);
-  }
+
 };
 
 void OSCDirectController::sendOSCForAddress(Controllable* c,const String & cAddress){
@@ -268,11 +266,16 @@ void OSCDirectController::sendOSCForAddress(Controllable* c,const String & cAddr
 
 #endif
 }
-void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
+void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * originContainer,Controllable * c)
 {
 
   if(enabledParam->boolValue()){
+    if(c->isChildOf(&userContainer)){
+      sendOSCForAddress(c,c->getControlAddress(&userContainer));
+    }
+    else{
     sendOSCForAddress(c,c->controlAddress);
+    }
   }
 
 

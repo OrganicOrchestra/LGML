@@ -53,9 +53,7 @@ public:
 
   // identifiers
   static const Identifier controllerTypeIdentifier;
-  static const Identifier variableNameIdentifier;
-  static const Identifier variableMinIdentifier;
-  static const Identifier variableMaxIdentifier;
+
   
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)

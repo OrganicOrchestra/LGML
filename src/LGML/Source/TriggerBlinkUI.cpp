@@ -15,8 +15,8 @@ Author:  bkupe
 //==============================================================================
 TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
 	ParameterUI(t),
-	blinkTime(100),
-	refreshPeriod(50),
+	blinkTime(200),
+	refreshPeriod(40),
 	intensity(0),
 	animateIntensity(true),
 	offColor(NORMAL_COLOR),
@@ -53,9 +53,11 @@ void TriggerBlinkUI::paint(Graphics& g)
 
 
 void TriggerBlinkUI::startBlink(){
-    intensity = 1;
+if(intensity<=0) startTimer(animateIntensity ? refreshPeriod : blinkTime);
+  intensity = 1;
 	if (!animateIntensity) repaint();
-	startTimer(animateIntensity ? refreshPeriod : blinkTime);
+
+
 
 }
 

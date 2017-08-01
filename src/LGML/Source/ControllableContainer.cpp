@@ -44,7 +44,7 @@ isUserDefined(false)
 
   nameParam = addNewParameter<StringParameter>("Name", "Set the visible name of the node.", "");
   nameParam->isPresettable = false;
-  nameParam->isEditable = isUserDefined;
+  nameParam->isEditable = _isUserDefined;
   nameParam->setValue(niceName);
   currentPresetName = addNewParameter<StringParameter>("Preset", "Current Preset", "");
   currentPresetName->hideInEditor = true;
@@ -824,7 +824,7 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
    return addChildControllableContainer(new ControllableContainer(name,true));
  };
  Parameter* ControllableContainer::addParameterFromVar(const String & name,const var & data) {
-
+   // handle automagically for userdefined
    jassert(isUserDefined);
 
    return addParameter(ParameterFactory::createFromVarObject(data, name));

@@ -45,6 +45,7 @@ public:
 	Colour onColor;
 private:
 
+
     int refreshPeriod;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriggerBlinkUI)
 };

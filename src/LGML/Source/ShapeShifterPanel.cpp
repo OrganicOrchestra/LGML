@@ -57,6 +57,7 @@ void ShapeShifterPanel::setCurrentContent(ShapeShifterContent * _content)
 		ShapeShifterPanelTab * tab = header.getTabForContent(currentContent);
 		if (tab != nullptr) tab->setSelected(false);
 		removeChildComponent(currentContent->contentComponent);
+    currentContent->contentComponent->setVisible(false);
 		currentContent->contentIsShown = false;
 	}
 
