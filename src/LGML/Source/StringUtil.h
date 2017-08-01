@@ -79,6 +79,7 @@ namespace StringUtil
     res=res.replaceCharacter(')','_');
     res=res.replaceCharacter('>','_');
     res=res.replaceCharacter('<','_');
+    res=res.replaceCharacter(' ','_');
 
 
     return res;

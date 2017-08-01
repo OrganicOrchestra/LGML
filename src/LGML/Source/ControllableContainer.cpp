@@ -125,7 +125,7 @@ void ControllableContainer::setNiceName(const String &_niceName) {
     targetName = parentContainer->getUniqueNameInContainer(_niceName,0,this);
   }
   
-  nameParam->setValue(targetName,targetName==_niceName,true);
+  nameParam->setValue(targetName,targetName==getNiceName(),true);
 
 }
 const String  ControllableContainer::getNiceName(){
