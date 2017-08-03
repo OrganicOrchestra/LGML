@@ -107,6 +107,10 @@ void FastMapUI::mouseDown(const MouseEvent &e) {
 };
 
 void FastMapUI::linkedParamChanged(ParameterProxy * p ) {
+  if(!MessageManager::getInstance()->isThisTheMessageThread()){
+    MessageManager::getInstance()->callAsync([this,p](){linkedParamChanged(p);});
+  }
+  else{
   if(p==refUI.controllable){
     inRangeUI.setVisible(p->linkedParam && p->linkedParam->isNumeric());
   }
@@ -114,4 +118,5 @@ void FastMapUI::linkedParamChanged(ParameterProxy * p ) {
     outRangeUI.setVisible(p->linkedParam && p->linkedParam->isNumeric());
   }
   resized();
+  }
 };

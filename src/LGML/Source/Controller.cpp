@@ -31,7 +31,7 @@ userContainer("messages",true)
   enabledParam = addNewParameter<BoolParameter>("Enabled","Set whether the controller is enabled or disabled", true);
 
   activityTrigger =  addNewParameter<Trigger>("activity", "Activity indicator");
-
+  activityTrigger->isEditable = false;
   controllerTypeEnum = 0; //init
 }
 

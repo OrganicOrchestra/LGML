@@ -50,6 +50,7 @@ isResolving(false)
   receiver.addListener(this);
   lastOSCMessageSentTime = 0;
   numSentInARow=NUM_OSC_MSG_IN_A_ROW;
+  
 
 
 }
@@ -201,9 +202,7 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
 
   }
 
-  if(linked){
-    FastMapper::getInstance()->setPotentialOutput(linked->getParameter());
-  }
+
 
 
 }

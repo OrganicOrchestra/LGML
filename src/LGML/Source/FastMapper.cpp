@@ -13,18 +13,28 @@
 juce_ImplementSingleton(FastMapper)
 
 FastMapper::FastMapper() :
-	ControllableContainer("Fast Maps")
+	ControllableContainer("Fast Maps"),
+selectedContainerToListenTo(nullptr)
 {
 
   potentialIn = addNewParameter<ParameterProxy>("potential Input","potential input for new fastMap");
   potentialOut = addNewParameter<ParameterProxy>("potential Output","potential output for new fastMap");
-
+  LGMLDragger::getInstance()->addSelectionListener(this);
+  Inspector::getInstance()->addInspectorListener(this);
 }
 
 FastMapper::~FastMapper()
 {
+  if(auto * dr = LGMLDragger::getInstanceWithoutCreating()){
+    dr->removeSelectionListener(this);
+  }
+  if(auto * i = Inspector::getInstanceWithoutCreating()){
+    i->removeInspectorListener(this);
+  }
 	clear();
 }
+
+
 
 void FastMapper::setPotentialInput(Parameter* p){
   potentialIn->setParamToReferTo(p);
@@ -113,3 +123,34 @@ ControllableContainer *  FastMapper::addContainerFromVar(const String & name,con
 }
 
 
+
+
+void FastMapper::selectionChanged(Controllable *c ) {
+  // getParameter is safe to call on null pointer as it's only a cast
+  setPotentialInput(c->getParameter());
+
+};
+
+void FastMapper::currentComponentChanged(Inspector * i) {
+  auto * newC = i->getCurrentSelected();
+  if(newC==selectedContainerToListenTo)return;
+
+  if(selectedContainerToListenTo){
+    selectedContainerToListenTo->removeControllableContainerListener(this);
+  }
+  selectedContainerToListenTo = newC;
+  if(selectedContainerToListenTo){
+    selectedContainerToListenTo->addControllableContainerListener(this);
+  }
+
+};
+
+
+void FastMapper::controllableFeedbackUpdate(ControllableContainer *notif,Controllable *ori) {
+  ControllableContainer::controllableFeedbackUpdate(notif,ori);
+  if(notif==selectedContainerToListenTo && ori->getParameter()->isEditable){
+//    MessageManager::getInstance()->callAsync([this,ori]()
+                                             {setPotentialOutput(ori->getParameter());}
+//                                             );
+  }
+};

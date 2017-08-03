@@ -14,11 +14,18 @@
 #include "ControllableContainer.h"
 #include "FastMap.h"
 
+#include "LGMLDragger.h"
+#include "Inspector.h"
+
 
 class FastMapper;
 
 
-class FastMapper : public ControllableContainer
+class FastMapper :
+public ControllableContainer,
+private LGMLDragger::Listener,
+private Inspector::InspectorListener
+
 {
 public:
 	juce_DeclareSingleton(FastMapper,true)
@@ -42,6 +49,17 @@ public:
   ControllableContainer *  addContainerFromVar(const String & name,const var & fData) override;
 
 private:
+
+  // LGMLDragger Listener
+  void selectionChanged(Controllable *) override;
+
+  // Inspector Component
+  void currentComponentChanged(Inspector * ) override;
+  ControllableContainer * selectedContainerToListenTo;
+
+
+  // ControllableContainer::Listener
+  void controllableFeedbackUpdate(ControllableContainer *,Controllable *) override;
   void createNewFromPotentials();
   bool checkDuplicates(FastMap *f);
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapper)

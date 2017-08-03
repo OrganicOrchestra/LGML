@@ -54,7 +54,19 @@ public:
   Component*  dropCandidate;
 
   WeakReference<Component> selected;
+
+
+  class Listener{
+  public:
+    virtual ~Listener(){};
+    virtual void selectionChanged(Controllable *) = 0;
+  };
+  void addSelectionListener(Listener* l ){listeners.add(l);}
+  void removeSelectionListener(Listener* l ){listeners.remove(l);}
 private:
+
+  Component * selectedSSContent;
+  ListenerList<Listener> listeners;
   Point<int> mouseDownWithinTarget;
 
 

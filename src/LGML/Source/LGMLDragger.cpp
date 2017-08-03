@@ -156,7 +156,15 @@ void LGMLDragger::mouseEnter(const MouseEvent &e){
 }
 
 void LGMLDragger::mouseUp(const MouseEvent &e){
-  setSelected(nullptr);
+//  unselect only if in the same parent component
+  auto * i = e.originalComponent;
+  while (i) {
+    if(i==selectedSSContent){
+      setSelected(nullptr);
+    }
+    i = i->getParentComponent();
+  }
+
 
 }
 void LGMLDragger::mouseExit(const MouseEvent &e){
@@ -273,6 +281,18 @@ void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseE
 
 void LGMLDragger::setSelected(ControllableUI * c){
 
+  if(c){
+    Component *i  = c;
+    while(i){
+      if(dynamic_cast<ShapeShifterContent*>(i)){
+        selectedSSContent = i;
+      }
+      i= i->getParentComponent();
+    }
+  }
+  else{
+    selectedSSContent = nullptr;
+  }
 
   if(c!=selected.get()){
     if(selected.get()){
@@ -285,11 +305,9 @@ void LGMLDragger::setSelected(ControllableUI * c){
       auto *cUI = ((ControllableUI*)selected.get());
       cUI->isSelected = true;
       selected->repaint();
-      FastMapper::getInstance()->setPotentialInput(cUI->controllable->getParameter());
+     
     }
-    else{
-      FastMapper::getInstance()->setPotentialInput(nullptr);
-    }
+    listeners.call(&Listener::selectionChanged,c? c->controllable:nullptr);
 
   }
 }

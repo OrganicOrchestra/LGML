@@ -83,7 +83,12 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 void ParameterProxyUI::linkedParamChanged(ParameterProxy * p)
 {
   jassert(p==paramProxy);
+  if(!MessageManager::getInstance()->isThisTheMessageThread()){
+    MessageManager::getInstance()->callAsync([this,p](){linkedParamChanged(p);});
+  }
+  else{
 	setLinkedParamUI(p->linkedParam);
+  }
 }
 
 void ParameterProxyUI::choosedControllableChanged(ControllableReferenceUI*,Controllable * c)
