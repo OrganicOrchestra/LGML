@@ -1068,14 +1068,14 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
 //    return new Label (String::empty, String::empty);
 //}
 //
-//void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
-//{
-//    label.setBounds (1, 1,
-//                     box.getWidth() + 3 - box.getHeight(),
-//                     box.getHeight() - 2);
-//
-//    label.setFont (getComboBoxFont (box));
-//}
+void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
+{
+    label.setBounds (1, 1,
+                     box.getWidth() + 3 - box.getHeight(),
+                     box.getHeight() - 2);
+
+    label.setFont (getComboBoxFont (box));
+}
 //
 ////==============================================================================
 //Font LookAndFeelOO::getLabelFont (Label& label)
