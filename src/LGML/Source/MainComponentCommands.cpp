@@ -104,7 +104,7 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
       break;
     case CommandIDs::toggleMappingMode:
       result.setInfo ("toggle mappingMode", "toggle param mapping mode", category, 0);
-      result.addDefaultKeypress ('m',ModifierKeys::noModifiers);
+      result.addDefaultKeypress ('m',ModifierKeys::shiftModifier);
       break;
 
     case CommandIDs::copySelection:
