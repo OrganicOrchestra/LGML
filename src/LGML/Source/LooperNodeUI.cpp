@@ -158,7 +158,7 @@ isSelected(false),timeStateUI(track)
   clearButton = ParameterUIFactory::createDefaultUI(track->clearTrig);
   clearButton->setCustomText("x");
   stopButton = ParameterUIFactory::createDefaultUI(track->stopTrig);
-  stopButton->setCustomText("||");
+  stopButton->setCustomText(CharPointer_UTF8("■"));
   muteButton = ParameterUIFactory::createDefaultUI(track->mute);
   soloButton = ParameterUIFactory::createDefaultUI(track->solo);
   sampleChoiceDDL = (EnumParameterUI*)ParameterUIFactory::createDefaultUI(track->sampleChoice);
