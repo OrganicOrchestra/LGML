@@ -51,10 +51,9 @@ public:
 	BoolParameter * enabledParam;
 
 	//ui params
-	Point2DParameter<int> * position;
+	Point2DParameter<int> * position,*nodeSize;
 
-	FloatParameter * nodeWidth;
-	FloatParameter * nodeHeight;
+	
 	BoolParameter * miniMode;
 
 	void remove();

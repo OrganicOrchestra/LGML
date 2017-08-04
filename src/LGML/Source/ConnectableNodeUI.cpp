@@ -57,10 +57,8 @@ isDraggingFromUI(false)
 	 mainComponentContainer.setNodeAndNodeUI(connectableNode, this);
 
 	 connectableNode->addConnectableNodeListener(this);
-	 connectableNode->position->hideInEditor = true;
 
-	 connectableNode->nodeWidth->hideInEditor = true;
-	 connectableNode->nodeHeight->hideInEditor = true;
+
 
 
 	 addAndMakeVisible(&resizer);
@@ -148,7 +146,7 @@ void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
   {
     if(!isDraggingFromUI)postCommandMessage(posChangedId);
   }
-  else if( p == connectableNode->nodeHeight || p == connectableNode->nodeWidth) {
+  else if( p == connectableNode->nodeSize){
     if(!isDraggingFromUI)postCommandMessage(sizeChangedId);
   }
 
@@ -173,7 +171,7 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
       setTopLeftPosition(connectableNode->position->getPoint());
       break;
     case sizeChangedId:
-      getContentContainer()->setSize(connectableNode->nodeWidth->intValue(), connectableNode->nodeHeight->intValue());
+      getContentContainer()->setSize(connectableNode->nodeSize->getX(), connectableNode->nodeSize->getY());
       resized();
       break;
 
@@ -313,8 +311,7 @@ void ConnectableNodeUI::MainComponentContainer::resized()
       r.removeFromRight(audioCtlContainerPadRight);
       audioCtlUIContainer->setBounds(r.removeFromRight(audioCtlContainerWidth).reduced(0, 4));
     }
-    connectableNodeUI->connectableNode->nodeWidth->setValue(r.getWidth(),true);
-    connectableNodeUI->connectableNode->nodeHeight->setValue(r.getHeight(), true);
+    connectableNodeUI->connectableNode->nodeSize->setValue(Array<var>{r.getWidth(),r.getHeight()}, true);
     contentContainer->setBounds(r);
   }
 }

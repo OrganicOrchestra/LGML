@@ -36,20 +36,18 @@ outputVolume(nullptr)
   
   position = addNewParameter<Point2DParameter<int>>("position", "position on canvas");
 //  yPosition = addNewParameter<FloatParameter>("yPosition", "y position on canvas", 0, 0, 99999);
-  nodeWidth = addNewParameter<FloatParameter>("nodeWidth", "Node Width", 180, 50, 500);
-  nodeHeight = addNewParameter<FloatParameter>("nodeHeight", "Node Height", 100, 50, 500);
+  nodeSize = addNewParameter<Point2DParameter<int>>("nodeSize", "Node Size", 180,100);
+
   miniMode = addNewParameter<BoolParameter>("miniMode", "Mini Mode", false);
   
   position->isControllableExposed = false;
-
-  nodeWidth->isControllableExposed = false;
-  nodeHeight->isControllableExposed = false;
-
+  nodeSize->isControllableExposed = false;
 
   position->isPresettable = false;
+  nodeSize->isPresettable = false;
 
-  nodeWidth->isPresettable = false;
-  nodeHeight->isPresettable = false;
+  position->hideInEditor = true;
+	 nodeSize->hideInEditor = true;
 
   descriptionParam->isPresettable = false;
   enabledParam->isPresettable = false;
