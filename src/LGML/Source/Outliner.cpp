@@ -131,20 +131,12 @@ void Outliner::textEditorTextChanged (TextEditor& t){
 
 
 void Outliner::saveCurrentOpenChilds(){
-  if(auto * stableItem = treeView.getItemAt(0)){lastTopItemName = stableItem->getItemIdentifierString();}
-  DBG("top : " << lastTopItemName);
   xmlState = treeView.getOpennessState(true);
-  DBG(xmlState->createDocument(""));
 }
 
 
 void Outliner::restoreCurrentOpenChilds(){
   if(xmlState.get()){treeView.restoreOpennessState(*xmlState.get(),true);}
-//  if(auto * stableItem = treeView.findItemFromIdentifierString(lastTopItemName)){
-//    treeView.scrollToKeepItemVisible(stableItem);
-//    int delta = treeView.getY();
-//    treeView.getViewport()->setViewPosition(0, delta);
-//  }
 }
 
 //////////////////////////

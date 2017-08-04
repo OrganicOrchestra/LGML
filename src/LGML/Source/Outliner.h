@@ -85,7 +85,7 @@ private:
   void restoreCurrentOpenChilds();
 //  Array<String> uniqueOpenNames;
   ScopedPointer<XmlElement> xmlState;
-  String lastTopItemName;
+  
 };
 
 #endif  // OUTLINER_H_INCLUDED
