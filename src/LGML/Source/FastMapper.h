@@ -57,6 +57,8 @@ private:
   void currentComponentChanged(Inspector * ) override;
   ControllableContainer * selectedContainerToListenTo;
 
+  void setContainerToListen(ControllableContainer *);
+
 
   // ControllableContainer::Listener
   void controllableFeedbackUpdate(ControllableContainer *,Controllable *) override;

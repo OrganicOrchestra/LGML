@@ -137,8 +137,8 @@ void MainContentComponent::startLoadFile(){
       v->clear();
     }
   }
-  if(ControllerManagerUI * cui = (ControllerManagerUI*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
-      cui->clear();
+  if(ControllerManagerUIViewport * cui = (ControllerManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
+      cui->controllerManagerUI->clear();
   }
 
   if (fileProgressWindow != nullptr)

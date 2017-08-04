@@ -119,10 +119,13 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
   if (p==referenceIn )
   {
     if(p->linkedParam==referenceOut->linkedParam){
+      if(p->linkedParam){
+
       LOG("Can't map a parameter to itself");
       // ignore assert for loopBacks
       referenceIn->isSettingValue=false;
       referenceIn->setParamToReferTo(nullptr);
+      }
     }
     else{
 
@@ -139,10 +142,12 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
   }
   else if(p==referenceOut){
     if(p->linkedParam==referenceIn->linkedParam){
+      if(p->linkedParam){
       LOG("Can't map a parameter to itself");
       // ignore assert for loopBacks
       referenceOut->isSettingValue=false;
       referenceOut->setParamToReferTo(nullptr);
+      }
     }
     else if(p->linkedParam && !p->linkedParam->isEditable){
       LOG("Parameter non editable");

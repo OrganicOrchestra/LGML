@@ -15,7 +15,6 @@
 ParameterProxy::ParameterProxy(const String & niceName,const String & desc,Parameter * ref,ControllableContainer * root) :
 StringParameter(niceName,desc),
 linkedParam(ref),
-isUpdatingLinkedParam(false),
 rootOfProxy(nullptr)
 {
   type = Controllable::PROXY;

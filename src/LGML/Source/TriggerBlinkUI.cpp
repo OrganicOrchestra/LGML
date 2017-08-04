@@ -39,7 +39,7 @@ void TriggerBlinkUI::valueChanged(const var & ){
 
 void TriggerBlinkUI::paint(Graphics& g)
 {
-  if(!parameter.get())return;
+  if(parameter.get()){
 	g.setColour(offColor.interpolatedWith(onColor,intensity));
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);
     g.setFont(10);
@@ -49,6 +49,7 @@ void TriggerBlinkUI::paint(Graphics& g)
 
       g.drawFittedText(customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter->niceName, getLocalBounds().reduced(2), Justification::centred, 1);
 	}
+  }
 }
 
 

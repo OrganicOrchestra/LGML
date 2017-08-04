@@ -1,19 +1,19 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    FastMapper.cpp
-    Created: 17 May 2016 6:05:19pm
-    Author:  bkupe
+ FastMapper.cpp
+ Created: 17 May 2016 6:05:19pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "FastMapper.h"
 
 juce_ImplementSingleton(FastMapper)
 
 FastMapper::FastMapper() :
-	ControllableContainer("Fast Maps"),
+ControllableContainer("Fast Maps"),
 selectedContainerToListenTo(nullptr)
 {
 
@@ -25,7 +25,7 @@ selectedContainerToListenTo(nullptr)
   potentialOut->isSavable = false;
   potentialIn->isPresettable = false;
   potentialOut->isPresettable = false;
-  
+
 }
 
 FastMapper::~FastMapper()
@@ -36,7 +36,7 @@ FastMapper::~FastMapper()
   if(auto * i = Inspector::getInstanceWithoutCreating()){
     i->removeInspectorListener(this);
   }
-	clear();
+  clear();
 }
 
 
@@ -67,17 +67,19 @@ void FastMapper::clear()
 
 FastMap * FastMapper::addFastMap()
 {
-  
-	FastMap * f = new FastMap();
-	addChildControllableContainer(f);
+
+  FastMap * f = new FastMap();
+  addChildControllableContainer(f);
   f->nameParam->isEditable = true;
-	maps.add(f);
+  maps.add(f);
+  setContainerToListen(nullptr);
   f->referenceIn->setParamToReferTo(potentialIn->get());
   f->referenceOut->setParamToReferTo(potentialOut->get());
+
   potentialIn->setParamToReferTo(nullptr);
   potentialOut->setParamToReferTo(nullptr);
   checkDuplicates(f);
-	return f;
+  return f;
 }
 
 bool FastMapper::checkDuplicates(FastMap *f){
@@ -104,29 +106,29 @@ bool FastMapper::checkDuplicates(FastMap *f){
 void FastMapper::removeFastmap(FastMap * f)
 {
   jassert(f);
-	removeChildControllableContainer(f);
-	maps.removeObject(f);
+  removeChildControllableContainer(f);
+  maps.removeObject(f);
 }
 
 var FastMapper::getJSONData()
 {
-	var data = ControllableContainer::getJSONData();
+  var data = ControllableContainer::getJSONData();
 
-//	var mData;
-//	for (auto &f : maps)
-//	{
-//		mData.append(f->getJSONData());
-//	}
-//	data.getDynamicObject()->setProperty("fastMaps",mData);
-//
-	return data;
+  //	var mData;
+  //	for (auto &f : maps)
+  //	{
+  //		mData.append(f->getJSONData());
+  //	}
+  //	data.getDynamicObject()->setProperty("fastMaps",mData);
+  //
+  return data;
 }
 
 ControllableContainer *  FastMapper::addContainerFromVar(const String & name,const var & fData)
 {
-			FastMap * f = addFastMap();
-			
-      return f;
+  FastMap * f = addFastMap();
+
+  return f;
 
 
 }
@@ -143,7 +145,11 @@ void FastMapper::selectionChanged(Controllable *c ) {
 void FastMapper::currentComponentChanged(Inspector * i) {
   auto * newC = i->getCurrentSelected();
   if(newC==selectedContainerToListenTo)return;
+  setContainerToListen(newC);
 
+};
+
+void FastMapper::setContainerToListen(ControllableContainer *newC){
   if(selectedContainerToListenTo){
     selectedContainerToListenTo->removeControllableContainerListener(this);
   }
@@ -151,15 +157,10 @@ void FastMapper::currentComponentChanged(Inspector * i) {
   if(selectedContainerToListenTo){
     selectedContainerToListenTo->addControllableContainerListener(this);
   }
-
-};
-
-
+}
 void FastMapper::controllableFeedbackUpdate(ControllableContainer *notif,Controllable *ori) {
   ControllableContainer::controllableFeedbackUpdate(notif,ori);
-  if(notif==selectedContainerToListenTo && ori->getParameter()->isEditable){
-//    MessageManager::getInstance()->callAsync([this,ori]()
-                                             {setPotentialOutput(ori->getParameter());}
-//                                             );
+  if(notif==selectedContainerToListenTo && ori->getParameter()->isEditable && LGMLDragger::getInstance()->isMappingActive){
+    setPotentialOutput(ori->getParameter());
   }
 };

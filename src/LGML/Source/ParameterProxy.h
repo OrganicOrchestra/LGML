@@ -32,7 +32,7 @@ public:
 
   void setRoot(ControllableContainer * );
   Parameter * get();
-	bool isUpdatingLinkedParam;
+	
 	virtual void setValueInternal(var & _value) override;
 
 	// Inherited via Listener

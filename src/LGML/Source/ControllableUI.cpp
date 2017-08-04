@@ -98,11 +98,11 @@ void ControllableUI::paintOverChildren(Graphics &g) {
   if(mappingState!=NOMAP ){
     if(mappingState==MAPSOURCE){
       jassert(!isMappingDest);
-      g.setColour(Colours::white.withAlpha(0.5f));
+      g.setColour(Colours::red.withAlpha(0.2f));
     }
     else{
       jassert(isMappingDest);
-      g.setColour(Colours::blue.withAlpha(0.5f));
+      g.setColour(Colours::blue.withAlpha(0.2f));
     }
 
     g.fillAll();

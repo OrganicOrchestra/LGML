@@ -17,7 +17,7 @@ FloatStepperUI::FloatStepperUI(Parameter * _parameter) :ParameterUI(_parameter){
 	
     addAndMakeVisible(slider);
     slider->setRange(parameter->minimumValue, parameter->maximumValue,1);
-    slider->setValue(parameter->floatValue());
+    slider->setValue(parameter->floatValue(),dontSendNotification);
     slider->addListener(this);
 	slider->setTextBoxIsEditable(_parameter->isEditable);
   slider->setEnabled( ! parameter->isControllableFeedbackOnly);

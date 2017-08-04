@@ -118,9 +118,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
 
   }
 
-  //  if( isRecordingTail() ){
-  //    succeeded &= writeAudioBlock(buffer,sampleOffsetBeforeNewState,-1,true);
-  //  }
+
 
   // save to buffer when end recording
   if( wasLastRecordingFrame() && recordNeedle>0 && originAudioBuffer.getNumSamples()==0){
@@ -132,11 +130,6 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
   }
 
   buffer.clear();
-
-
-  //  if ( isOrWasPlaying()){
-
-
 
 
 #if RT_STRETCH
@@ -169,9 +162,6 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
       fadePendingStretch.startFadeOut();
       }
     }
-
-
-
 
 
   }

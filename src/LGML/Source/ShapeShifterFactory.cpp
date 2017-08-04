@@ -44,7 +44,7 @@ ShapeShifterContent * ShapeShifterFactory::createContentForIndex(PanelName pn)
 
 
 	case ControllerPanel:
-		return new ControllerManagerUI(contentName, ControllerManager::getInstance());
+		return new ControllerManagerUIViewport(contentName,new ControllerManagerUI( ControllerManager::getInstance()));
 
 
 

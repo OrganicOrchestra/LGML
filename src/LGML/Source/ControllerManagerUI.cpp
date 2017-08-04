@@ -16,8 +16,7 @@
 #include "ShapeShifterManager.h"
 
 //==============================================================================
-ControllerManagerUI::ControllerManagerUI(const String &contentName, ControllerManager * manager) :
-	ShapeShifterContentComponent(contentName),
+ControllerManagerUI::ControllerManagerUI(ControllerManager * manager):
     manager(manager)
 {
 
@@ -54,6 +53,7 @@ void ControllerManagerUI::controllerRemoved(Controller * c)
 {
 
   MessageManager::getInstance()->callAsync([this,c](){ removeControllerUI(c);});
+
 }
 
 ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
@@ -70,12 +70,12 @@ ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
   {
     MessageManagerLock ml;
     addAndMakeVisible(cui);
-  resized();
+    resized();
 
   }
 	cui->selectThis();
 
-
+  notifyParentViewPort();
     return cui;
 }
 
@@ -95,6 +95,7 @@ void ControllerManagerUI::removeControllerUI(Controller * controller)
 
     resized();
   }
+  notifyParentViewPort();
 
 }
 
@@ -108,14 +109,15 @@ ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)
     return nullptr;
 }
 
+const int elemGap = 5;
+const int elemHeight = 20;
 void ControllerManagerUI::resized()
 {
-	Rectangle<int> r = getLocalBounds().reduced(5);
-	int gap = 5;
+	Rectangle<int> r = getLocalBounds().reduced(1);
     for (auto &cui : controllersUI)
     {
-		cui->setBounds(r.removeFromTop(20));
-		r.removeFromTop(gap);
+		cui->setBounds(r.removeFromTop(elemHeight));
+		r.removeFromTop(elemGap);
     }
 }
 
@@ -124,6 +126,10 @@ void ControllerManagerUI::paint (Graphics&)
     //ContourComponent::paint(g);
 }
 
+int ControllerManagerUI::getContentHeight(){
+  return controllersUI.size() * (elemHeight+elemGap) + 2;
+
+}
 
 void ControllerManagerUI::mouseDown(const MouseEvent & event)
 {
