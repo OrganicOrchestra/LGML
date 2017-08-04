@@ -1,4 +1,4 @@
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import os,sys
 import json
 
@@ -16,7 +16,7 @@ localExportPath = localMakePath+'build/'
 localAppFile = localExportPath+execName
 localExportFile = localAppFile+".tar.gz"
 verbose = False
-print localMakePath
+print(localMakePath)
 
 
 def buildApp(configuration):

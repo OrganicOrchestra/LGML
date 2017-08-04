@@ -10,7 +10,7 @@ sourcePath = os.path.abspath(sourcePath);
 
 
 
-print sourcePath
+print(sourcePath)
 
 # get sources files to scan
 exts = ['*.h','*.cpp'] 

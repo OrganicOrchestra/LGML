@@ -3,7 +3,7 @@ fileOut = '/Users/Tintamar/Downloads/UJS ft N3O2_mod.lgml'
 
 
 import json
-from ParseUtils import *
+from .ParseUtils import *
 class Session : 
 
 	def __init__(self,filePath):
@@ -32,7 +32,7 @@ class Session :
 				if len(node) == 0:
 					old+=[p]
 				else:
-					print node
+					print(node)
 
 			else:
 				old+=[p]
@@ -54,5 +54,5 @@ if __name__ == "__main__":
 	file = '/Users/Tintamar/Downloads/UJS ft N3O2.lgml'
 	fileOut = '/Users/Tintamar/Downloads/UJS ft N3O2_mod.lgml'
 	fileSession = Session(file)
-	print fileSession.getOldPresets()
+	print(fileSession.getOldPresets())
 

@@ -10,4 +10,4 @@ setUID = list(set(actualUIDS))
 doublons = fileSession.getPresetDoublons()
 
 oldPresets = fileSession.getOldPresets()
-print "doublons" ,doublons
+print("doublons" ,doublons)

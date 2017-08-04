@@ -3,7 +3,7 @@ import subprocess
 
 def sh(cmd,printIt=True):
 	def inSH(cmd):
-		if printIt : print ("exec : "+cmd);
+		if printIt : print(("exec : "+cmd));
 		res =  subprocess.Popen(cmd, shell=True,stdout=subprocess.PIPE, universal_newlines=True)
 		stdout_lines = iter(res.stdout.readline, "")
 		for stdout_line in stdout_lines:
@@ -17,5 +17,5 @@ def sh(cmd,printIt=True):
 	for l in inSH(cmd):
 		if l != '\n':
 			res+=l
-			if(printIt): print l
+			if(printIt): print(l)
 	return res

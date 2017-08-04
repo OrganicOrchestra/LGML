@@ -1,4 +1,4 @@
-from shUtils import *
-from writeSha import *
-import ProJucerUtils
-import OwncloudUtils
+from .shUtils import *
+from .writeSha import *
+from . import ProJucerUtils
+from . import OwncloudUtils

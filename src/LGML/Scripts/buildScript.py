@@ -78,15 +78,14 @@ def exportAll(exportedPath,sendToOwncloud):
 	# gitCommit()
 
 if __name__ == "__main__":
-	global specificVersion
-	print sys.argv
+	print(sys.argv)
 	
 	import argparse
 	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
 	parser.add_argument('--build', action='store_true',
-	                    help='build it',default = False)
+	                    help='build it',default = True)
 	parser.add_argument('--package', action='store_true',
-	                    help='package it',default = False)
+	                    help='package it',default = True)
 	parser.add_argument('--export', action='store_true',
 	                    help='export it',default = False)
 	parser.add_argument('--beta', action='store_true',
@@ -111,7 +110,7 @@ if __name__ == "__main__":
 			args.os = 'osx'
 
 		else:
-			print 'platform not supported : ',curOs,curPlatform
+			print('platform not supported : ',curOs,curPlatform)
 			exit(1)
 
 # default configurations for oses

@@ -1,7 +1,8 @@
 # THIS FILE IS BINDED TO RELATIVE LOCATIONS CHANGE THEM IF DISPLACING FILE
 
-from writeSha import *
+from .writeSha import *
 import os
+import collections
 
 proJucerPath = "/Applications/Projucer.app/Contents/MacOS/Projucer"
 proJucerCommand = proJucerPath
@@ -14,10 +15,10 @@ JuceProjectPath = os.path.abspath(JuceProjectPath);
 
 def hasValidProjucerPath(osType):
 	global proJucerPath
-	print proJucerPath
+	print(proJucerPath)
 
 	if(osType=='osx'):
-		proJucerPath = "/Applications/JUCE/Projucer.app/Contents/MacOS/Projucer"
+		proJucerPath = "/Applications/Projucer.app/Contents/MacOS/Projucer"
 	elif(osType=='linux'):
 		proJucerPath = os.environ['HOME']+'/Dev/Projucer/linux/Projucer'
 	else:
@@ -32,12 +33,12 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 
 	if  not hasValidProjucerPath(osType) :
 
-		if callable(credentials):
+		if isinstance(credentials, collections.Callable):
 			credentials = credentials()
 		if not os.path.exists(tmpFolder):
 			os.makedirs(tmpFolder)
 		proJucerPath = os.path.join(tmpFolder,'Projucer')
-		print 'copying projucer in :' + proJucerPath 
+		print('copying projucer in :' + proJucerPath) 
 		
 		ownCloudOSFolder = {'osx':'osx/','linux':'linux/'}[osType]
 		ownCloudProjucerName = {'osx':'Projucer.zip','linux':'Projucer.tar.gz'}[osType]
@@ -48,9 +49,9 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 			sh("curl -k \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+ownCloudOSFolder+ownCloudProjucerName+"\" -u "+credentials+" > "+compressedPath,printIt=False)
 			sh('tar -xzf '+compressedPath+' -C '+tmpFolder)
 			if not hasValidProjucerPath(osType):
-				print 'projucer download failed'
+				print('projucer download failed')
 		else:
-			print 'using cached projucer : '+proJucerPath
+			print('using cached projucer : '+proJucerPath)
 
 	
 	# update command
@@ -64,12 +65,12 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 
 def getValidPath(pathToSearch):
 	relativesPaths = ['.','..','../..','../../..','../../../..','../../../../..',os.environ['HOME'],os.environ['HOME']+'/Dev']
-	relativesPaths = map(lambda x:os.path.join(x,pathToSearch),relativesPaths)
-	possiblePaths = map(os.path.abspath,relativesPaths)
+	relativesPaths = [os.path.join(x,pathToSearch) for x in relativesPaths]
+	possiblePaths = list(map(os.path.abspath,relativesPaths))
 	for p in possiblePaths:
 		if os.path.exists(p):
 			return p
-	print 'not found paths in : ', possiblePaths;
+	print('not found paths in : ', possiblePaths);
 	exit(1)
 
 def updatePathsIfNeeded(osType):
@@ -88,24 +89,24 @@ def updatePathsIfNeeded(osType):
 	oldVSTPath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib[vstFolderTag]
 	if not os.path.exists(oldVSTPath):
 
-		print 'current VST path not valid'
+		print('current VST path not valid')
 		newVSTPath = getValidPath("SDKs/VST3_SDK")
 		if newVSTPath:
-			print 'found VST SDK at :' + newVSTPath
+			print('found VST SDK at :' + newVSTPath)
 			hasChanged = True;
 			root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib[vstFolderTag] = newVSTPath
 	else:
-		print 'valid vst path : '+oldVSTPath
+		print('valid vst path : '+oldVSTPath)
 	# updateModule
 	oldModulePath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].findall('MODULEPATHS')[0].findall('MODULEPATH')[0].attrib['path']
 	oldModulePath = os.path.abspath(os.path.join(JuceProjectPath,oldModulePath))
 	
 	if not os.path.exists(oldModulePath):
-		print 'current module path doesnt exists',oldModulePath,'searching a valid one'
+		print('current module path doesnt exists',oldModulePath,'searching a valid one')
 		newPath = getValidPath('JUCE/modules')
 		if newPath:
 			hasChanged = True;
-			print 'found new module path updating projucer for : '+newPath
+			print('found new module path updating projucer for : '+newPath)
 			for x in root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].findall('MODULEPATHS')[0].findall('MODULEPATH'):
 					x.attrib['path'] = newPath
 		
@@ -137,7 +138,7 @@ def getVersionAsList():
 		else :  										lastNum+=s[-1][i]
 		i+=1
 	s[-1] = int(lastNum)
-	s = map(int,s);
+	s = list(map(int,s));
 	s+=[suffix]
 	return s
 
@@ -181,5 +182,5 @@ def buildJUCE():
 #  allow to use this file as a simple version getter
 # DO NOT CHANGE
 if __name__=="__main__":
-	print getXmlVersion();
+	print(getXmlVersion());
 

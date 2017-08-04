@@ -1,1 +1,1 @@
-from buildScript import *
+from .buildScript import *

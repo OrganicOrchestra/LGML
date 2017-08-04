@@ -1,7 +1,7 @@
 
 import os;
 import json;
-import urllib;
+from urllib import *
 import multiprocessing
 
 
@@ -60,10 +60,10 @@ def buildApp(xcodeProjPath=xcodeProjPath,configuration=configuration,appPath=app
 
 def createDmg(exportFileBaseName,appPath):
 	import dmgbuild
-	print 'creating dmg'
+	print('creating dmg')
 	os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
 	dmgbuild.build_dmg(exportFileBaseName,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':appPath})
-	print 'dmg done at :'+exportFileBaseName+'.dmg'
+	print('dmg done at :'+exportFileBaseName+'.dmg')
 	return exportFileBaseName+'.dmg'
 
 
