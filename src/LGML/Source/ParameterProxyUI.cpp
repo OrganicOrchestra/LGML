@@ -51,7 +51,7 @@ void ParameterProxyUI::resized()
 
 void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 {
-//	if (p == nullptr) return;
+
 
 	if (linkedParamUI != nullptr)
 	{
