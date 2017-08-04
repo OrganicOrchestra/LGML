@@ -15,7 +15,8 @@
 ParameterProxy::ParameterProxy(const String & niceName,const String & desc,Parameter * ref,ControllableContainer * root) :
 StringParameter(niceName,desc),
 linkedParam(ref),
-isUpdatingLinkedParam(false)
+isUpdatingLinkedParam(false),
+rootOfProxy(nullptr)
 {
   type = Controllable::PROXY;
   setRoot(root);
@@ -27,12 +28,14 @@ ParameterProxy::~ParameterProxy()
 {
   if(auto r =getRoot())r->removeControllableContainerListener(this);
   if (linkedParam != nullptr){
+    linkedParam->removeControllableListener(this);
     linkedParam->removeParameterListener(this);
   }
 }
 
 
 void ParameterProxy::setRoot(ControllableContainer * r){
+  if(rootOfProxy!=nullptr)rootOfProxy->removeControllableContainerListener(this);
   rootOfProxy = r;
   resolveAddress();
 
@@ -41,10 +44,12 @@ void ParameterProxy::setValueInternal(var & _value)
 {
   StringParameter::setValueInternal(_value);
   if(auto * root = getRoot()){
-    if(!resolveAddress() && stringValue().isNotEmpty())
+    if(!resolveAddress() && stringValue().isNotEmpty()){
       root->addControllableContainerListener(this);
-    else
+    }
+    else{
       root->removeControllableContainerListener(this);
+    }
   }
 }
 
@@ -66,14 +71,15 @@ void ParameterProxy::setParamToReferTo(Parameter * p)
     setValue(targetAddress);
   }
   else{
-    if (linkedParam == p) return;
     if (linkedParam != nullptr){
       linkedParam->removeParameterListener(this);
+      linkedParam->removeControllableListener(this);
     }
     linkedParam = p;
 
     if (linkedParam != nullptr){
       linkedParam->addParameterListener(this);
+      linkedParam->addControllableListener(this);
     }
 
     proxyListeners.call(&ParameterProxyListener::linkedParamChanged,this);
@@ -106,3 +112,10 @@ void ParameterProxy::controllableAdded(ControllableContainer *,Controllable * c)
   }
   
 }
+
+void ParameterProxy::controllableRemoved(Controllable * c) {
+  if(c==(Controllable*)linkedParam || !linkedParam.get()){
+    setParamToReferTo(nullptr);
+  }
+
+};

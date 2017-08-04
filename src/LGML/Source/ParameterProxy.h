@@ -40,7 +40,7 @@ public:
    
 	 void setParamToReferTo(Parameter * p);
 
-  void controllableAdded(ControllableContainer *,Controllable * /*notifier*/) override;
+
 	class ParameterProxyListener
 	{
 	public:
@@ -57,6 +57,8 @@ public:
 
   
 private:
+  void controllableAdded(ControllableContainer *,Controllable * /*notifier*/) override;
+  void controllableRemoved(Controllable * ) override;
   bool resolveAddress();
 
 };

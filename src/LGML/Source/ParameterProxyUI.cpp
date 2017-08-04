@@ -57,7 +57,7 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 	{
 //    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI->ownedControllableUI.get());
     auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get());
-		if (cUI && cUI->parameter == p) return;
+		if (cUI && p && cUI->parameter == p) return;
 
 		removeChildComponent(linkedParamUI);
 		linkedParamUI = nullptr;
