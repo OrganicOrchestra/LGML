@@ -27,13 +27,14 @@ ParameterUI(p), autoSize(false), maxFontHeight(12)
   valueLabel.setJustificationType(Justification::topLeft);
   valueLabel.setText(parameter->value,NotificationType::dontSendNotification);
   valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
-  valueLabel.setEditable(false,parameter->isEditable);
+  bool stringEditable = parameter->isEditable && !parameter->isControllableFeedbackOnly;
+  valueLabel.setEditable(false,stringEditable);
 
   valueLabel.addListener(this);
 
   //valueLabel.setColour(valueLabel.textWhenEditingColourId, TEXTNAME_COLOR);
   valueLabel.setColour(valueLabel.backgroundWhenEditingColourId, Colours::white);
-  setBackGroundIsTransparent(!parameter->isEditable);
+  setBackGroundIsTransparent(!stringEditable);
   nameLabel.setTooltip(p->description);
 
 

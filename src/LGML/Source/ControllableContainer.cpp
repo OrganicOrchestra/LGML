@@ -58,14 +58,25 @@ ControllableContainer::~ControllableContainer()
 {
   //controllables.clear();
   //DBG("CLEAR CONTROLLABLE CONTAINER");
+  
+  // manage memory if not cleared
+  auto all = getAllControllableContainers(true);
+  for(auto &a : all){
+    if (a.get())delete a.get();
+  }
 
+  
   clear();
   masterReference.clear();
+
+
 }
 void ControllableContainer::clear()
 {
   cleanUpPresets();
-  controllables.clear();
+  while(controllables.size()){
+  removeControllable(controllables[0]);
+  }
   controllableContainers.clear();
 }
 
@@ -297,7 +308,7 @@ String ControllableContainer::getControlAddress(ControllableContainer * relative
     if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
     pc = pc->parentContainer;
   }
-  if(addressArray.size()==0)return "";
+  if(addressArray.size()==0)return "/";
   else return "/" + addressArray.joinIntoString("/");
 }
 

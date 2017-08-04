@@ -26,7 +26,9 @@ isUpdatingLinkedParam(false)
 ParameterProxy::~ParameterProxy()
 {
   if(auto r =getRoot())r->removeControllableContainerListener(this);
-
+  if (linkedParam != nullptr){
+    linkedParam->removeParameterListener(this);
+  }
 }
 
 
@@ -38,11 +40,12 @@ void ParameterProxy::setRoot(ControllableContainer * r){
 void ParameterProxy::setValueInternal(var & _value)
 {
   StringParameter::setValueInternal(_value);
-
-  if(!resolveAddress() && stringValue().isNotEmpty())
-    getRoot()->addControllableContainerListener(this);
-  else
-    getRoot()->removeControllableContainerListener(this);
+  if(auto * root = getRoot()){
+    if(!resolveAddress() && stringValue().isNotEmpty())
+      root->addControllableContainerListener(this);
+    else
+      root->removeControllableContainerListener(this);
+  }
 }
 
 
@@ -64,16 +67,13 @@ void ParameterProxy::setParamToReferTo(Parameter * p)
   }
   else{
     if (linkedParam == p) return;
-    if (linkedParam != nullptr)
-    {
+    if (linkedParam != nullptr){
       linkedParam->removeParameterListener(this);
     }
     linkedParam = p;
 
-    if (linkedParam != nullptr)
-    {
+    if (linkedParam != nullptr){
       linkedParam->addParameterListener(this);
-
     }
 
     proxyListeners.call(&ParameterProxyListener::linkedParamChanged,this);

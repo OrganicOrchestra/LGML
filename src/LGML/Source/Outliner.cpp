@@ -104,6 +104,7 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 
 void Outliner::childStructureChanged(ControllableContainer * ,ControllableContainer*)
 {
+  saveCurrentOpenChilds();
   rootItem->clearSubItems();
   triggerAsyncUpdate();
 
@@ -117,6 +118,7 @@ void Outliner::handleAsyncUpdate(){
     }
     else
       rebuildTree();
+      restoreCurrentOpenChilds();
 
   }
 }
@@ -127,7 +129,27 @@ void Outliner::textEditorTextChanged (TextEditor& t){
 
 }
 
+
+void Outliner::saveCurrentOpenChilds(){
+  if(auto * stableItem = treeView.getItemAt(0)){lastTopItemName = stableItem->getItemIdentifierString();}
+  DBG("top : " << lastTopItemName);
+  xmlState = treeView.getOpennessState(true);
+  DBG(xmlState->createDocument(""));
+}
+
+
+void Outliner::restoreCurrentOpenChilds(){
+  if(xmlState.get()){treeView.restoreOpennessState(*xmlState.get(),true);}
+//  if(auto * stableItem = treeView.findItemFromIdentifierString(lastTopItemName)){
+//    treeView.scrollToKeepItemVisible(stableItem);
+//    int delta = treeView.getY();
+//    treeView.getViewport()->setViewPosition(0, delta);
+//  }
+}
+
+//////////////////////////
 // OUTLINER ITEM
+///////////////////////////
 
 OutlinerItem::OutlinerItem(ControllableContainer * _container) :
 container(_container), controllable(nullptr), isContainer(true)
@@ -150,6 +172,12 @@ Component * OutlinerItem::createItemComponent()
 {
   return new OutlinerItemComponent(this);
 }
+
+String OutlinerItem::getUniqueName() const{
+  if(isContainer) {return container->getControlAddress();}
+  else            {return controllable->getControlAddress();}
+
+};
 
 OutlinerItemComponent::OutlinerItemComponent(OutlinerItem * _item) :
 InspectableComponent(_item->container),

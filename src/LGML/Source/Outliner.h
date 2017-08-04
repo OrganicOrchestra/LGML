@@ -46,9 +46,9 @@ public:
 	Controllable * controllable;
 
 
+  String getUniqueName() const override;
 
-
-  virtual bool mightContainSubItems() override;
+  bool mightContainSubItems() override;
 
 	Component * createItemComponent() override;
 };
@@ -79,6 +79,13 @@ public:
 	void childStructureChanged(ControllableContainer *,ControllableContainer*) override;
   void handleAsyncUpdate()override;
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Outliner)
+
+private:
+  void saveCurrentOpenChilds();
+  void restoreCurrentOpenChilds();
+//  Array<String> uniqueOpenNames;
+  ScopedPointer<XmlElement> xmlState;
+  String lastTopItemName;
 };
 
 #endif  // OUTLINER_H_INCLUDED

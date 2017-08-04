@@ -20,7 +20,7 @@ public:
 	virtual ~BetterStepper();
   void resized()override;
   bool isMini;
-	virtual void setTooltip(const String &tooltip) override;
+	
 //  void paint(Graphics &g) ;
 };
 

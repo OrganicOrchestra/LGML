@@ -41,6 +41,8 @@ Controller::~Controller()
   if(parentContainer){
     parentContainer->removeChildControllableContainer(this);
   }
+
+
   //DBG("Remove Controller");
 }
 

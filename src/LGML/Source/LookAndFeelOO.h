@@ -383,7 +383,7 @@ public:
 //
 //    int getSliderThumbRadius (Slider&) override;
 //    Button* createSliderButton (Slider&, bool isIncrement) override;
-//    Label* createSliderTextBox (Slider&) override;
+    Label* createSliderTextBox (Slider&) override;
 //    ImageEffectFilter* getSliderEffect (Slider&) override;
 //    Font getSliderPopupFont (Slider&) override;
 //    int getSliderPopupPlacement (Slider&) override;
@@ -526,7 +526,7 @@ public:
 //                                  const Colour&, float outlineThickness, float cornerSize,
 //                                  bool flatOnLeft, bool flatOnRight, bool flatOnTop, bool flatOnBottom) noexcept;
 //
-//private:
+private:
 //    //==============================================================================
 //    ScopedPointer<Drawable> folderImage, documentImage;
 //
@@ -536,7 +536,7 @@ public:
 //                               bool flatOnLeft, bool flatOnRight, bool flatOnTop, bool flatOnBottom) noexcept;
 //
 //    class GlassWindowButton;
-//    class SliderLabelComp;
+    class SliderLabelComp;
 //
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LookAndFeelOO)
 };

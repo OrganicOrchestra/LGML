@@ -21,6 +21,11 @@ selectedContainerToListenTo(nullptr)
   potentialOut = addNewParameter<ParameterProxy>("potential Output","potential output for new fastMap");
   LGMLDragger::getInstance()->addSelectionListener(this);
   Inspector::getInstance()->addInspectorListener(this);
+  potentialIn->isSavable = false;
+  potentialOut->isSavable = false;
+  potentialIn->isPresettable = false;
+  potentialOut->isPresettable = false;
+  
 }
 
 FastMapper::~FastMapper()
@@ -55,6 +60,9 @@ void FastMapper::clear()
   while(maps.size()){
     removeFastmap(maps[0]);
   }
+  potentialOut->setParamToReferTo(nullptr);
+  potentialIn->setParamToReferTo(nullptr);
+
 }
 
 FastMap * FastMapper::addFastMap()
@@ -62,6 +70,7 @@ FastMap * FastMapper::addFastMap()
   
 	FastMap * f = new FastMap();
 	addChildControllableContainer(f);
+  f->nameParam->isEditable = true;
 	maps.add(f);
   f->referenceIn->setParamToReferTo(potentialIn->get());
   f->referenceOut->setParamToReferTo(potentialOut->get());

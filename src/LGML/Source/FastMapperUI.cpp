@@ -38,6 +38,7 @@ fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
 FastMapperUI::~FastMapperUI()
 {
   clear();
+  
 
 }
 
