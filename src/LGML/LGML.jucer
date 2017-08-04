@@ -3,7 +3,7 @@
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" id="a1hJPO"
               includeBinaryInAppConfig="1" jucerVersion="5.1.0" name="LGML"
-              projectType="guiapp" version="1.1.95beta" displaySplashScreen="1"
+              projectType="guiapp" version="1.2.0beta" displaySplashScreen="1"
               reportAppUsage="1" splashScreenColour="Dark" cppLanguageStandard="11">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
