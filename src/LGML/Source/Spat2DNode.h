@@ -35,10 +35,10 @@ public:
 	FloatParameter * circleRadius;
 	FloatParameter * circleRotation;
 
-	Array<Point2DParameter *> targetPositions;
+	Array<Point2DParameter<float> *> targetPositions;
 	
 	BoolParameter * useGlobalTarget;
-	Point2DParameter * globalTargetPosition;
+	Point2DParameter<float> * globalTargetPosition;
 	FloatParameter * globalTargetRadius;
 
 	void setSourcePosition(int index, const Point<float> &position);

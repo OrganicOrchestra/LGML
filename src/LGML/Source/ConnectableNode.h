@@ -51,8 +51,8 @@ public:
 	BoolParameter * enabledParam;
 
 	//ui params
-	FloatParameter * xPosition;
-	FloatParameter * yPosition;
+	Point2DParameter<int> * position;
+
 	FloatParameter * nodeWidth;
 	FloatParameter * nodeHeight;
 	BoolParameter * miniMode;

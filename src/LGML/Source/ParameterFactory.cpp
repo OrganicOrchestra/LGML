@@ -20,6 +20,7 @@
 #include "StringParameter.h"
 #include "ParameterProxy.h"
 #include "RangeParameter.h"
+#include "Point2DParameter.h"
 
 static Identifier descIdentifier("_description");
 
@@ -49,6 +50,8 @@ bool ParameterFactory::registerAllTypes (){
   REG(StringParameter);
   REG(ParameterProxy);
   REG(RangeParameter);
+  REG(Point2DParameter<int>);
+  REG(Point2DParameter<float>);
 
   hasBeenRegistered = true;
   return true;

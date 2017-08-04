@@ -356,7 +356,7 @@ public:
     void drawComboBox (Graphics&, int width, int height, bool isButtonDown,
                        int buttonX, int buttonY, int buttonW, int buttonH,
                        ComboBox&) override;
-//    Font getComboBoxFont (ComboBox&) override;
+    Font getComboBoxFont (ComboBox&) override;
 //    Label* createComboBoxTextBox (ComboBox&) override;
     void positionComboBoxText (ComboBox&, Label&) override;
 //

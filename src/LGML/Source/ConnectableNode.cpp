@@ -34,20 +34,20 @@ outputVolume(nullptr)
   descriptionParam = addNewParameter<StringParameter>("Description", "Set a custom description for this node.", "Description");
   enabledParam = addNewParameter<BoolParameter>("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
   
-  xPosition = addNewParameter<FloatParameter>("xPosition", "x position on canvas", 0, 0, 99999);
-  yPosition = addNewParameter<FloatParameter>("yPosition", "y position on canvas", 0, 0, 99999);
+  position = addNewParameter<Point2DParameter<int>>("position", "position on canvas");
+//  yPosition = addNewParameter<FloatParameter>("yPosition", "y position on canvas", 0, 0, 99999);
   nodeWidth = addNewParameter<FloatParameter>("nodeWidth", "Node Width", 180, 50, 500);
   nodeHeight = addNewParameter<FloatParameter>("nodeHeight", "Node Height", 100, 50, 500);
   miniMode = addNewParameter<BoolParameter>("miniMode", "Mini Mode", false);
   
-  xPosition->isControllableExposed = false;
-  yPosition->isControllableExposed = false;
+  position->isControllableExposed = false;
+
   nodeWidth->isControllableExposed = false;
   nodeHeight->isControllableExposed = false;
 
 
-  xPosition->isPresettable = false;
-  yPosition->isPresettable = false;
+  position->isPresettable = false;
+
   nodeWidth->isPresettable = false;
   nodeHeight->isPresettable = false;
 

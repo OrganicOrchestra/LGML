@@ -29,7 +29,8 @@ outputContainer(ConnectorComponent::ConnectorIOType::OUTPUT),
 mainComponentContainer(this, contentUI, headerUI),
 dragIsLocked(false),
 bMiniMode(false),
-resizer(this,&constrainer)
+resizer(this,&constrainer),
+isDraggingFromUI(false)
 {
   connectorWidth = 10;
 
@@ -56,8 +57,8 @@ resizer(this,&constrainer)
 	 mainComponentContainer.setNodeAndNodeUI(connectableNode, this);
 
 	 connectableNode->addConnectableNodeListener(this);
-	 connectableNode->xPosition->hideInEditor = true;
-	 connectableNode->yPosition->hideInEditor = true;
+	 connectableNode->position->hideInEditor = true;
+
 	 connectableNode->nodeWidth->hideInEditor = true;
 	 connectableNode->nodeHeight->hideInEditor = true;
 
@@ -82,8 +83,9 @@ ConnectableNodeUI::~ConnectableNodeUI()
 
 void ConnectableNodeUI::moved()
 {
-  connectableNode->xPosition->setValue(getPosition().x,true);
-  connectableNode->yPosition->setValue(getPosition().y,true);
+  isDraggingFromUI = true;
+  connectableNode->position->setPoint(getPosition());
+  isDraggingFromUI = false;
 }
 
 
@@ -142,12 +144,12 @@ void ConnectableNodeUI::resized()
 
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
-  if (p == connectableNode->xPosition || p == connectableNode->yPosition )
+  if (p == connectableNode->position )
   {
-    postCommandMessage(posChangedId);
+    if(!isDraggingFromUI)postCommandMessage(posChangedId);
   }
   else if( p == connectableNode->nodeHeight || p == connectableNode->nodeWidth) {
-    postCommandMessage(sizeChangedId);
+    if(!isDraggingFromUI)postCommandMessage(sizeChangedId);
   }
 
   else if (p == connectableNode->enabledParam)
@@ -168,7 +170,7 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
       setMiniMode(connectableNode->miniMode->boolValue());
       break;
     case posChangedId:
-      setTopLeftPosition(connectableNode->xPosition->intValue(), connectableNode->yPosition->intValue());
+      setTopLeftPosition(connectableNode->position->getPoint());
       break;
     case sizeChangedId:
       getContentContainer()->setSize(connectableNode->nodeWidth->intValue(), connectableNode->nodeHeight->intValue());
@@ -199,14 +201,15 @@ void ConnectableNodeUI::mouseDown(const juce::MouseEvent &/*e*/)
   selectThis();
   //	if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
   //  if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
-
+  isDraggingFromUI = true;
   nodeInitPos = getBounds().getPosition();
 }
 
 
 
 void ConnectableNodeUI::mouseUp(const juce::MouseEvent &) {
-
+  
+  isDraggingFromUI = false;
 }
 
 void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
@@ -214,11 +217,12 @@ void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
   //	if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
   //if(dragIsLocked) return;
 
+  isDraggingFromUI = true;
   Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
   Point <int> newPos = nodeInitPos + diff;
 
-  connectableNode->xPosition->setValue((float)newPos.x,true);
-  connectableNode->yPosition->setValue((float)newPos.y);
+  connectableNode->position->setPoint(newPos);
+  setTopLeftPosition(newPos);
 
 }
 

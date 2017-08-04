@@ -131,7 +131,7 @@ public:
 	//Need to clean out and decide whether there can be more than 1 data connector / audio connector on nodes
 	ConnectorComponent * getFirstConnector(NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
 
-
+private:
 	void childBoundsChanged(Component*)override;
 	void nodeParameterChanged(ConnectableNode*, Parameter * p) override;
 
@@ -151,6 +151,8 @@ enum{
   sizeChangedId
 }CommandMessages;
 
+  // avoid laggy self param updates
+  bool isDraggingFromUI;
 };
 
 

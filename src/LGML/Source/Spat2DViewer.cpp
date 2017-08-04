@@ -170,7 +170,7 @@ void Spat2DViewer::nodeParameterChanged(ConnectableNode *, Parameter * p)
 			}
 		} else
 		{
-			Point2DParameter * p2d = (Point2DParameter *)p;
+			Point2DParameter<float> * p2d = (Point2DParameter<float> *)p;
 			int index = node->targetPositions.indexOf(p2d);
 			updateTargetPosition(index);
 		}

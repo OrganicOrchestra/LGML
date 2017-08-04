@@ -37,7 +37,7 @@ Spat2DNode::Spat2DNode() :
 	numSpatOutputs = addNewParameter<IntParameter>("Num Outputs", "Number of spatialized outputs", 3, 0, 16);
 
 	useGlobalTarget = addNewParameter<BoolParameter>("Use Global Target", "Use a global target that will act as a max influence and affect all targets.", false);
-	globalTargetPosition = addNewParameter<Point2DParameter>("Global Target Position", "Position of the Global Target");
+	globalTargetPosition = addNewParameter<Point2DParameter<float>>("Global Target Position", "Position of the Global Target");
 	globalTargetRadius = addNewParameter<FloatParameter>("Global Target Radius", "Radius for the global target",.5f,0,1);
 
 	setPreferedNumAudioInput(numSpatInputs->intValue());
@@ -95,7 +95,7 @@ void Spat2DNode::updateInputOutputDataSlots()
 	while (getTotalNumOutputData() > numSpatOutputs->intValue())
 	{
 		removeOutputData("Influence " + String(getTotalNumOutputData()));
-		Point2DParameter * p= targetPositions[getTotalNumOutputData() - 1];
+		Point2DParameter<float> * p= targetPositions[getTotalNumOutputData() - 1];
 		targetPositions.removeAllInstancesOf(p);
 		removeControllable(p);
 	}
@@ -104,7 +104,7 @@ void Spat2DNode::updateInputOutputDataSlots()
 	while (getTotalNumOutputData() < numSpatOutputs->intValue())
 	{
 		addOutputData("Influence " + String(getTotalNumOutputData() + 1), DataType::Number);
-		Point2DParameter * p = addNewParameter<Point2DParameter>("TargetPos" + String(getTotalNumOutputData() + 1), "");
+		Point2DParameter<float> * p = addNewParameter<Point2DParameter<float>>("TargetPos" + String(getTotalNumOutputData() + 1), "");
 		Random rnd;
 		p->setPoint(rnd.nextFloat(), rnd.nextFloat());
 		targetPositions.add(p);
@@ -125,7 +125,7 @@ void Spat2DNode::updateTargetsFromShape()
 	case CIRCLE:
 		for (int i = 0; i < numSpatOutputs->intValue(); i++)
 		{
-			Point2DParameter *p = targetPositions[i];
+			Point2DParameter<float> *p = targetPositions[i];
 			float angle = (i*1.f / (numSpatOutputs->intValue()) + circleRotation->floatValue() / 360.f)*float_Pi*2;
 			p->setPoint(.5f+cosf(angle)*circleRadius->floatValue()*.5f,.5f+sinf(angle)*circleRadius->floatValue()*.5f);
 		}

@@ -108,6 +108,8 @@ void Parameter::checkVarIsConsistentWithType(){
   else if (type == Type::INT && !value.isInt())       { value = int(value);}
   else if (type == Type::BOOL && !value.isBool())     { value = bool(value);}
   else if (type == Type::FLOAT && !value.isDouble())  { value = double(value);}
+  else if (type == Type::POINT2D && !value.isArray()) { value = Array<var>{0,0};}
+  else if (type == Type::POINT3D && !value.isArray()) { value = Array<var>{0,0,0};}
 }
 
 void Parameter::setNormalizedValue(const float & normalizedValue, bool silentSet, bool force)

@@ -1029,18 +1029,10 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
                              .withMultipliedAlpha (box.isEnabled() ? 1.0f : 0.5f));
 
 
-    /*
-    //drawGlassLozenge (g,
-                      buttonX + outlineThickness, buttonY + outlineThickness,
-                      buttonW - outlineThickness * 2.0f, buttonH - outlineThickness * 2.0f,
-                      baseColour, outlineThickness, -1.0f,
-                      true, true, true, true);
-                      */
-
     if (box.isEnabled())
     {
-        const float arrowX = 0.3f;
-        const float arrowH = 0.2f;
+        const float arrowX = 1.f;
+        const float arrowH = 0.3f;
 
         Path p;
         /*
@@ -1058,10 +1050,10 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
     }
 }
 //
-//Font LookAndFeelOO::getComboBoxFont (ComboBox& box)
-//{
-//    return Font (jmin (15.0f, box.getHeight() * 0.85f));
-//}
+Font LookAndFeelOO::getComboBoxFont (ComboBox& box)
+{
+    return Font (jmin (15.0f, box.getHeight() * 0.75f));
+}
 //
 //Label* LookAndFeelOO::createComboBoxTextBox (ComboBox&)
 //{
@@ -1070,8 +1062,9 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
 //
 void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
 {
+
     label.setBounds (1, 1,
-                     box.getWidth() + 3 - box.getHeight(),
+                     box.getWidth() -10,
                      box.getHeight() - 2);
 
     label.setFont (getComboBoxFont (box));
@@ -1080,9 +1073,9 @@ void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
 ////==============================================================================
 //Font LookAndFeelOO::getLabelFont (Label& label)
 //{
-//    return label.getFont();
+//  return Font(label.getHeight()*0.7);//label.getFont();
 //}
-//
+
 //void LookAndFeelOO::drawLabel (Graphics& g, Label& label)
 //{
 //    g.fillAll (label.findColour (Label::backgroundColourId));

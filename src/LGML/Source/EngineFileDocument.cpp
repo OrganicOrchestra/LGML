@@ -38,11 +38,9 @@ void Engine::createNewGraph(){
   isLoadingFile = true;
 
   ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
-  node->xPosition->setValue(150);
-  node->yPosition->setValue(100);
+  node->position->setPoint(150,100);
   node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
-  node->xPosition->setValue(450);
-  node->yPosition->setValue(100);
+  node->position->setPoint(450,100);
   setFile(File());
   isLoadingFile = false;
   handleAsyncUpdate();
