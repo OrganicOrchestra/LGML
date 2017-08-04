@@ -60,3 +60,4 @@ sandbox/
 
 tmp/
 GeneratedTODOs.txt
+*.bak
