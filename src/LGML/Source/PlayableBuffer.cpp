@@ -463,7 +463,7 @@ void PlayableBuffer::setTimeRatio(const double ratio){
 #if RT_STRETCH
   //  initRTStretch();
   if(isPlaying()){
-    if(!isStretchPending ){
+    if(!isStretchPending && ratio!=1.0 ){
       stretchNeedle = playNeedle * originAudioBuffer.getNumSamples()/getRecordedLength();
       multiNeedle.fadeAllOut();
       fadePendingStretch.startFadeIn();
