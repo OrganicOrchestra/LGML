@@ -25,7 +25,8 @@ isOverriden(false),
 queuedNotifier(100),
 hasCommitedValue(false),
 isCommitableParameter(false),
-isSettingValue(false)
+isSettingValue(false),
+isLocking(true)
 {
   minimumValue = minValue;
   maximumValue = maxValue;
@@ -56,16 +57,46 @@ void Parameter::setValue(var _value, bool silentSet, bool force,bool defferIt)
   }
 
 }
+
+bool Parameter::waitOrDeffer(const var & _value, bool silentSet , bool force ,bool defferIt){
+  if(!force&&isSettingValue){
+    if(isLocking){
+      int overflow = 1000000;
+      auto startWait = Time::currentTimeMillis();
+      while(isSettingValue && overflow>0){
+        //        Thread::sleep(1);
+        Thread::yield();
+        overflow--;
+      }
+
+      if(isSettingValue && overflow<=0){
+        DBG("locked for : " << Time::currentTimeMillis()-startWait);
+      }
+    }
+    // force defering if locking too long or not locking
+    if (isSettingValue){
+      if(auto *mm = MessageManager::getInstanceWithoutCreating()){
+        mm->callAsync([this,_value, silentSet, force, defferIt](){tryToSetValue(_value, silentSet, force, defferIt);});
+        return true;
+      }
+    }
+
+    //    jassertfalse;
+  }
+  return false;
+}
 void Parameter::tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt){
 
   if (!force && checkValueIsTheSame(_value, value)) return;
-  jassert(force ||isSettingValue==false);
-  isSettingValue = true;
-  lastValue = var(value);
-  setValueInternal(_value);
-  if(_value != defaultValue) isOverriden = true;
-  if (!silentSet) notifyValueChanged(defferIt);
-  isSettingValue = false;
+
+  if(!waitOrDeffer(_value, silentSet, force, defferIt)){
+    isSettingValue = true;
+    lastValue = var(value);
+    setValueInternal(_value);
+    if(_value != defaultValue) isOverriden = true;
+    if (!silentSet) notifyValueChanged(defferIt);
+    isSettingValue = false;
+  }
 
 }
 void Parameter::setRange(var min, var max){

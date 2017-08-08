@@ -134,7 +134,7 @@ public:
 
   // TimeListener functions
   void playStop(bool isPlaying) override;
-  void timeJumped(uint64 time)override;
+  void timeJumped(sample_clk_t time)override;
   void BPMChanged(double BPM) override;
   bool isBoundToTime()override;
 

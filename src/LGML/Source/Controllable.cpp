@@ -196,6 +196,7 @@ const Identifier  Controllable::getTypeIdentifier(){
 
 Parameter* Controllable::getParameter(){
   // static cast as no pure controllable
+  // can be called on nullptr
   return static_cast<Parameter*>(this);
 }
 

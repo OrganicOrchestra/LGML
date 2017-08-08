@@ -19,6 +19,7 @@ selectedContainerToListenTo(nullptr)
 
   potentialIn = addNewParameter<ParameterProxy>("potential Input","potential input for new fastMap");
   potentialOut = addNewParameter<ParameterProxy>("potential Output","potential output for new fastMap");
+  autoAdd = addNewParameter<BoolParameter>("auto_add", "auto add param when In/Out potentials are set",true);
   LGMLDragger::getInstance()->addSelectionListener(this);
   Inspector::getInstance()->addInspectorListener(this);
   potentialIn->isSavable = false;
@@ -50,7 +51,7 @@ void FastMapper::setPotentialOutput(Parameter* p ){
   createNewFromPotentials();
 }
 void FastMapper::createNewFromPotentials(){
-  if(potentialIn->get() && potentialOut->get()){
+  if(potentialIn->get() && potentialOut->get() && autoAdd->boolValue()){
     addFastMap();
 
   }

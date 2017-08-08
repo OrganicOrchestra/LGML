@@ -15,9 +15,12 @@
 #include "JuceHeader.h"
 #pragma warning( disable : 4244 )
 
+// type to use for clock
+typedef int sample_clk_t;
 
 #define DB0_FOR_01 0.8f
 #define MIN_DB -70.0f
+
 // create a gain value for a float  between 0 and 1
 // DB0_FOR_01   -> 0dB
 // 1            -> +6dB

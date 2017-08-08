@@ -72,7 +72,7 @@ public:
   bool isStitching;
   CriticalSection readMutex;
 
-  MultiNeedle(int fIn=512,int fOut=512,int max = 10);
+  MultiNeedle(int fIn=512,int fOut=512,int max = 1);
 
   void setLoopSize(int _loopSize);
   void jumpTo(const int to);

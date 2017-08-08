@@ -19,7 +19,7 @@
 #include "AudioDebugCrack.h"
 #include "Engine.h"
 
-#define NO_QUANTIZE (uint64)-1 //std::numeric_limits<uint64>::max()
+#define NO_QUANTIZE (sample_clk_t)-1 //std::numeric_limits<sample_clk_t>::max()
 
 
 
@@ -94,7 +94,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 
 
 	TimeManager * tm = TimeManager::getInstance();
-	long long curTime = tm->getTimeInSample();
+	sample_clk_t curTime = tm->getTimeInSample();
 	int offset = startPlayBeat*tm->beatTimeInSample;
 	if (getQuantization() == 0) {
 		curTime = playableBuffer.getGlobalPlayPos();
@@ -111,10 +111,10 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 		offset = 0;
 	}
   if(curTime>=0){
-	jassert(curTime==0 || ((long long)curTime - (long long)offset >= 0));
-  uint64 localTime = jmin(curTime,curTime - offset);
+	jassert(curTime==0 || ((sample_clk_t)curTime - (sample_clk_t)offset >= 0));
+  sample_clk_t localTime = jmin(curTime,curTime - offset);
 	if (!playableBuffer.processNextBlock(buffer, localTime) && trackState != STOPPED) {
-		SLOG("Stopping, too many audio (more than 1mn)");
+		SLOG("Stopping, too many audio ");
 		setTrackState(STOPPED);
 	}
   }
@@ -158,14 +158,19 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
 bool LooperTrack::updatePendingLooperTrackState(int blockSize) {
 	TimeManager * tm = TimeManager::getInstance();
 	// the sample act as free running clock when no quantization
-	long long curTime = tm->getTimeInSample();
+	sample_clk_t curTime = tm->getTimeInSample();
 
 	if (getQuantization() == 0) curTime = playableBuffer.getGlobalPlayPos();
 
 //	jassert(curTime >= 0);
 
-
-
+  // prevent ridiculously short recording
+bool isRecordingTooShort = playableBuffer.getRecordedLength()!=0 &&
+  playableBuffer.getRecordedLength()<playableBuffer.getMinRecordSampleLength();
+  if(isRecordingTooShort &&  playableBuffer.isRecording()  ){
+  return false;
+  }
+  
 	bool stateChanged = (trackState != desiredState);
 
 	if (shouldWaitFirstOnset() && desiredState == WILL_RECORD) {
@@ -205,7 +210,7 @@ bool LooperTrack::updatePendingLooperTrackState(int blockSize) {
   }
 	////
 	// apply quantization on play / rec
-	uint64 triggeringTime = curTime + blockSize;
+	sample_clk_t triggeringTime = curTime + blockSize;
 
 
 
@@ -237,30 +242,24 @@ bool LooperTrack::updatePendingLooperTrackState(int blockSize) {
 		}
 
 	} else if (quantizedRecordEnd != NO_QUANTIZE) {
-		if (triggeringTime > quantizedRecordEnd) {
+		if (triggeringTime > quantizedRecordEnd ) {
 			int firstPart = jmax(0, (int)(quantizedRecordEnd - curTime));
 			//      int secondPart = triggeringTime-firstPart;
 
 			if (parentLooper->isOneShot->boolValue()) {
 				playableBuffer.setState(PlayableBuffer::BUFFER_STOPPED, firstPart);
 				desiredState = STOPPED;
-			} else {
-
-
+			}
+      else {
 				playableBuffer.setState(PlayableBuffer::BUFFER_PLAYING, firstPart);
-
-
-
-
-
-
 				desiredState = PLAYING;
 				quantizedPlayStart = curTime + firstPart;
 			}
 			quantizedRecordEnd = NO_QUANTIZE;
 			stateChanged = true;
 
-		}
+
+    }
 	}
 
 
@@ -381,15 +380,15 @@ void LooperTrack::handleEndOfRecording() {
 		// need to tell it right away to avoid bpm changes call back while originBPM not updated
 		if (getQuantization() > 0)originBPM->setValue(info.bpm);
 
-		tm->setBPMFromTransportTimeInfo(info, false);
+		tm->setBPMFromTransportTimeInfo(info, false,offsetForPlay);
 
-		uint64 desiredSize = (uint64)(info.barLength*tm->beatPerBar->intValue()*info.beatInSample + 0.5);
+		sample_clk_t desiredSize = (sample_clk_t)(info.barLength*tm->beatPerBar->intValue()*info.beatInSample + 0.5);
 
 		//        DBG("resizing loop : " << (int)(desiredSize-playableBuffer.getRecordedLength()));
 
 		playableBuffer.setRecordedLength(desiredSize);
 		beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / info.beatInSample, false, false, true);
-		tm->goToTime(offsetForPlay, false);//desiredSize+offsetForPlay,true);
+//		tm->goToTime(offsetForPlay, false);//desiredSize+offsetForPlay,true);
 		startPlayBeat = 0;
 		jassert(tm->playState->boolValue());
 		releaseMasterTrack();
@@ -614,12 +613,15 @@ void LooperTrack::setTrackState(TrackState newState) {
 					quantizedRecordEnd = 0;
 
 			}
-			int minRecordTime = (int)(1024 + playableBuffer.multiNeedle.fadeInNumSamples + playableBuffer.multiNeedle.fadeOutNumSamples);
+      int minRecordTime =  playableBuffer.getMinRecordSampleLength();
 
 			if (quantizedRecordEnd == 0 && playableBuffer.getRecordedLength() <= minRecordTime) {
 				//          jassertfalse;
+        newState = RECORDING;
 				SLOG("Looper: can't record that little of audio keep recording a bit");
-				quantizedRecordEnd = timeManager->getTimeInSample() + minRecordTime;
+				quantizedRecordEnd = timeManager->getTimeInSample() + minRecordTime-playableBuffer.getRecordedLength() + 2048;
+        if (isMasterTempoTrack()) {quantizedPlayStart = quantizedRecordEnd;}
+
 			}
 		}
 

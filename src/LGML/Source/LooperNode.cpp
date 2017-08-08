@@ -558,7 +558,7 @@ void LooperNode::BPMChanged(double /*BPM*/){
 
 };
 
-void LooperNode::timeJumped(uint64 /*time*/){
+void LooperNode::timeJumped(sample_clk_t /*time*/){
 
 };
 

@@ -131,6 +131,8 @@ void TimeManager::incrementClock(int block){
   }
 
 #if LINK_SUPPORT
+
+  // notify link if jump
   if(hasJumped && isPlaying() ){
     linkTimeLine.requestBeatAtTime(getBeat(),
                                    //                      std::chrono::system_clock::now().time_since_epoch(),
@@ -140,6 +142,7 @@ void TimeManager::incrementClock(int block){
 
   }
 
+  // adapt to link clock if drift > 1ms
   if(linkEnabled->boolValue() && !timeMasterCandidate){
     linkTime =linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
     linkTimeLine = linkSession.captureAudioTimeline();
@@ -151,7 +154,6 @@ void TimeManager::incrementClock(int block){
     const double localBeat = getBeat();
     const float driftMs =(linkBeat -localBeat)*beatTimeInSample*1000.0f/sampleRate;
 
-    // we are not using quantified launch atm (beatTime<0), we assume that a link session is always playing and set it only if a timeMasterCandidate sets it
     if((isPlaying() )
        //       && !isFirstPlayingFrame()
        && fabs(driftMs)>1
@@ -214,7 +216,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
                                          int numSamples) {
 
   if(click->boolValue()&&timeState.isPlaying && timeState.time>=0){
-    static uint64 sinCount = 0;
+    static sample_clk_t sinCount = 0;
 
     bool isFirstBeat = (getClosestBeat()%beatPerBar->intValue()) == 0;
     const int sinFreq = sampleRate /(isFirstBeat?1320:880);
@@ -361,7 +363,7 @@ void TimeManager::shouldRestart(bool playing){
 void TimeManager::shouldGoToZero(){
   goToTime(0);
 }
-void TimeManager::advanceTime(uint64 a,bool now){
+void TimeManager::advanceTime(sample_clk_t a,bool now){
   if(now){
     goToTime(desiredTimeState.nextTime+a,true);
   }
@@ -377,7 +379,7 @@ void TimeManager::jump(int amount){
 
 
 }
-void TimeManager::goToTime(long long time,bool now){
+void TimeManager::goToTime(sample_clk_t time,bool now){
 
   desiredTimeState.jumpTo(time);
   if(now ){
@@ -447,11 +449,11 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
       if(!playState->boolValue())
       {
         playState->setValue(true);
-        currentBeatPeriod = (uint64)0;
+        currentBeatPeriod = (sample_clk_t)0;
       }
 
-      uint64 currentTime = Time().getMillisecondCounter();//timeState.time;
-      uint64 delta = currentTime-lastTaped;
+      sample_clk_t currentTime = Time().getMillisecondCounter();//timeState.time;
+      sample_clk_t delta = currentTime-lastTaped;
       lastTaped = currentTime;
       if((delta>100) && (delta<1000)){
         //        const int maxTapInRow = 4;
@@ -494,7 +496,7 @@ void TimeManager::togglePlay(){
 void TimeManager::setSampleRate(int sr){
   sampleRate = sr;
   // actualize beatTime in sample
-  beatTimeInSample = (uint64)(sampleRate*1.0 / BPM->doubleValue() *60.0);
+  beatTimeInSample = (sample_clk_t)(sampleRate*1.0 / BPM->doubleValue() *60.0);
 }
 
 
@@ -507,18 +509,19 @@ void TimeManager::setBlockSize(int bS){
 }
 void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){
   isSettingTempo->setValue(false,false,false,true);
-  int newBeatTime = (uint64)(sampleRate *1.0/ BPM->doubleValue()*60.0);
+  int newBeatTime = (sample_clk_t)(sampleRate *1.0/ BPM->doubleValue()*60.0);
   if(adaptTimeInSample){
-    uint64 targetTime = timeState.time*newBeatTime/beatTimeInSample;
+    sample_clk_t targetTime = (sample_clk_t)(timeState.time*(newBeatTime*1.0/beatTimeInSample));
+    jassert(targetTime>0);
     goToTime(targetTime,true);
   }
   beatTimeInSample =newBeatTime;
 
 }
-long long TimeManager::getTimeInSample(){
+sample_clk_t TimeManager::getTimeInSample(){
   return timeState.time;
 }
-long long TimeManager::getNextTimeInSample(){
+sample_clk_t TimeManager::getNextTimeInSample(){
   if(desiredTimeState.isJumping)return desiredTimeState.nextTime;
   else return  timeState.nextTime;
 }
@@ -530,7 +533,7 @@ bool  TimeManager::willRestart(){
 
 
 
-TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time,double _sampleRate){
+TransportTimeInfo TimeManager::findTransportTimeInfoForLength(sample_clk_t time,double _sampleRate){
   TransportTimeInfo res;
   if(_sampleRate>0){
     res.sampleRate = _sampleRate;
@@ -555,14 +558,17 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength(uint64 time,double
 
   return res;
 }
-void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample){
+void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample,sample_clk_t atSample){
 
   BPM->setValue(info.bpm,false,false,false);
-  //  uint64 targetTime = getTimeInSample();
+  //  sample_clk_t targetTime = getTimeInSample();
 
   if(adaptTimeInSample){
-    uint64 targetTime = timeState.time*info.beatInSample/beatTimeInSample;
+    sample_clk_t targetTime = timeState.time*(info.beatInSample*1.0/beatTimeInSample);
     goToTime(targetTime);
+  }
+  else{
+    goToTime(atSample);
   }
   // force exact beatTimeInSample
   beatTimeInSample = info.beatInSample;
@@ -573,7 +579,7 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
   linkTimeLine =ableton::Link::Timeline(ableton::link::Timeline(),true);
 
   linkTimeLine.setTempo(info.bpm, linkTime);
-  linkTimeLine.forceBeatAtTime(0,linkTime,0);
+  linkTimeLine.forceBeatAtTime(0,linkTime+std::chrono::microseconds((long long)(atSample*1000000.0/sampleRate)),0);
 
   linkSession.commitAudioTimeline(linkTimeLine);
 #endif
@@ -587,22 +593,22 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
 
 }
 
-uint64 TimeManager::getNextGlobalQuantifiedTime(){
+sample_clk_t TimeManager::getNextGlobalQuantifiedTime(){
   if(willRestart())return 0;
   return getNextQuantifiedTime(quantizedBarFraction->intValue());
 }
-uint64 TimeManager::getNextQuantifiedTime(int barFraction){
+sample_clk_t TimeManager::getNextQuantifiedTime(int barFraction){
   if(willRestart())return 0;
   if (barFraction==-1){barFraction=quantizedBarFraction->intValue();}
-  uint64 nextPosTime = jmax((long long)0,timeState.time);
+  sample_clk_t nextPosTime = jmax((sample_clk_t)0,timeState.time);
   if(barFraction==0){return nextPosTime;}
 
   const double samplesPerUnit = (beatTimeInSample*beatPerBar->intValue()*1.0/barFraction);
-  const uint64 res = (uint64) ((floor(nextPosTime*1.0/samplesPerUnit) + 1)*samplesPerUnit);
+  const sample_clk_t res = (sample_clk_t) ((floor(nextPosTime*1.0/samplesPerUnit) + 1)*samplesPerUnit);
   return res;
 }
 
-uint64 TimeManager::getTimeForNextBeats(int beats){return (getBeatInt()+ beats)*beatTimeInSample;}
+sample_clk_t TimeManager::getTimeForNextBeats(int beats){return (getBeatInt()+ beats)*beatTimeInSample;}
 
 int     TimeManager::getBeatInt()   {return (int)floor(getBeat());}
 double  TimeManager::getBeat()      {return (double)(timeState.time*1.0/beatTimeInSample);}

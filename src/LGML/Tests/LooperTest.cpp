@@ -49,8 +49,8 @@ public:
       }
     }
   }
-  float getBufferSampleForTime(uint64 t){
-    static uint64 loopLength = getRecordedLength();
+  float getBufferSampleForTime(sample_clk_t t){
+    static sample_clk_t loopLength = getRecordedLength();
     return (t%loopLength);
   }
   void fillBufferWithTime(AudioBuffer<float> & b){
@@ -65,7 +65,7 @@ public:
     }
   }
 
-  bool checkBufferAlignedForTime(AudioBuffer<float> & b,uint64 startTime){
+  bool checkBufferAlignedForTime(AudioBuffer<float> & b,sample_clk_t startTime){
     // byPass fade
     bool res = true;
     for(int i = fadeSample ; i < b.getNumSamples()-fadeSample ; i++){
@@ -83,7 +83,7 @@ public:
 
   int getBlockSize(){return currentLooper->getBlockSize();}
 
-  int getRecordedLength(){uint64 expected  =  getBlockSize()*recordSizeInBlock;
+  int getRecordedLength(){sample_clk_t expected  =  getBlockSize()*recordSizeInBlock;
     expected-= expected%TimeManager::getInstance()->samplePerBeatGranularity;
     return expected;
   }
@@ -167,7 +167,7 @@ public:
     LooperTrack * track2 = currentLooper->trackGroup.tracks[1];
 
     track2->recPlayTrig->trigger();
-    uint64 startRec = tm->getNextGlobalQuantifiedTime();
+    sample_clk_t startRec = tm->getNextGlobalQuantifiedTime();
     float secondRecordedLengthFloat = 3.3*recordSizeInBlock;
 
 
@@ -179,13 +179,13 @@ public:
 
     }
     track2->recPlayTrig->trigger();
-    uint64 endRec = tm->getNextGlobalQuantifiedTime();
+    sample_clk_t endRec = tm->getNextGlobalQuantifiedTime();
     while(tm->timeState.time<= endRec){
       processBlock();
     }
     expect(track2->playableBuffer.isPlaying(),"not ended recording");
 
-    uint64 recLen =track2->playableBuffer.getRecordedLength() ;
+    sample_clk_t recLen =track2->playableBuffer.getRecordedLength() ;
     int recDiff = recLen - (endRec - startRec);
     uint offset = recLen%(tm->beatTimeInSample);
     expect(recDiff == 0,"wrong recorded Length");

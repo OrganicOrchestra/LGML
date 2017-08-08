@@ -39,6 +39,10 @@ public:
   // useful for thread syncronization
   bool isCommitableParameter;
 
+  // when race condition are met, do we lock?
+  bool isLocking;
+  volatile bool isSettingValue;
+
   void resetValue(bool silentSet = false);
   void setValue(var _value, bool silentSet = false, bool force = false,bool defferIt=false);
 
@@ -48,7 +52,7 @@ public:
   virtual void pushValue(bool defered=true,bool force = false);
 
   var commitedValue;
-  bool hasCommitedValue;
+  volatile bool hasCommitedValue;
 
   virtual void setValueInternal(var & _value);
 
@@ -86,7 +90,7 @@ public:
   void addParameterListener(Listener* newListener) { listeners.add(newListener); }
   void removeParameterListener(Listener* listener) { listeners.remove(listener); }
 
-  bool isSettingValue;
+
   
   // ASYNC
   class  ParamWithValue{
@@ -120,7 +124,11 @@ public:
   static const Identifier minValueIdentifier;
   static const Identifier maxValueIdentifier;
 
+protected:
+  bool waitOrDeffer(const var & _value, bool silentSet , bool force ,bool defferIt);
+  
 private:
+
 
 
 

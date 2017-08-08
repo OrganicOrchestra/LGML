@@ -23,15 +23,13 @@ void StringParameter::tryToSetValue(var _value,bool silentSet,bool force,bool de
 
 
   if (!force && value.toString() == _value.toString()) return;
-  jassert(force ||isSettingValue==false);
-  isSettingValue = true;
-  setValueInternal(_value);
-
-
-  if(_value != defaultValue) isOverriden = true;
-
-  if (!silentSet) notifyValueChanged(defferIt);
-  isSettingValue = false;
+  if(!waitOrDeffer(_value, silentSet, force, defferIt)){
+    isSettingValue = true;
+    setValueInternal(_value);
+    if(_value != defaultValue) isOverriden = true;
+    if (!silentSet) notifyValueChanged(defferIt);
+    isSettingValue = false;
+  }
 };
 
 void  StringParameter::setValueInternal(var & newVal){

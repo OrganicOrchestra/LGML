@@ -40,18 +40,18 @@ class PlayableBuffer {
   void setNumChannels(int n);
   int getNumChannels()const;
   int getAllocatedNumSample() const;
-  bool processNextBlock(AudioBuffer<float> & buffer,uint64 time);
+  bool processNextBlock(AudioBuffer<float> & buffer,sample_clk_t time);
 
 
   bool writeAudioBlock(const AudioBuffer<float> & buffer, int fromSample = 0,int samplesToWrite = -1);
-  void readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample = 0  );
+  void readNextBlock(AudioBuffer<float> & buffer,sample_clk_t time,int fromSample = 0  );
 
 
   void setPlayNeedle(int n);
 
   void cropEndOfRecording(int * sampletoRemove);
 //  void padEndOfRecording(int sampleToAdd);
-  void setRecordedLength(uint64 targetSamples);
+  void setRecordedLength(sample_clk_t targetSamples);
 
   
   bool isFirstPlayingFrameAfterRecord()const;
@@ -92,11 +92,12 @@ class PlayableBuffer {
   BufferState getLastState() const;
 
 
-  uint64 getRecordedLength() const;
-  uint64 getStretchedLength() const;
+  sample_clk_t getRecordedLength() const;
+  int getMinRecordSampleLength() const;
+  sample_clk_t getStretchedLength() const;
 
-  uint64 getPlayPos() const;
-  uint64 getGlobalPlayPos() const;
+  sample_clk_t getPlayPos() const;
+  sample_clk_t getGlobalPlayPos() const;
 
 
   bool stateChanged;
@@ -139,7 +140,7 @@ private:
 #if RT_STRETCH
   void initRTStretch();
   void applyStretch();
-  bool processPendingRTStretch(AudioBuffer<float> & b,uint64 time);
+  bool processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t time);
   ScopedPointer<RubberBand::RubberBandStretcher> RTStretcher;
   float pendingTimeStretchRatio;
   int processedStretch;
@@ -170,7 +171,7 @@ private:
 
 
 
-  uint64 recordNeedle,playNeedle,globalPlayNeedle;
+  sample_clk_t recordNeedle,playNeedle,globalPlayNeedle;
 
   
   int tailRecordNeedle;

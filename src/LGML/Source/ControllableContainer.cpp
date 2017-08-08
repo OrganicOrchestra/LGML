@@ -192,7 +192,7 @@ void ControllableContainer::removeChildControllableContainer(ControllableContain
     numContainerIndexed--;
   }
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerRemoved,this, container);
-  this->controllableContainers.removeAllInstancesOf(container);
+  controllableContainers.removeAllInstancesOf(container);
 
   container->removeControllableContainerListener(this);
   notifyStructureChanged(this);

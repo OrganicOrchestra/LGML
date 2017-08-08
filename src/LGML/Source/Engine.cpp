@@ -47,6 +47,7 @@ threadPool(4)
   addChildControllableContainer(ControllerManager::getInstance());
   addChildControllableContainer(FastMapper::getInstance());
 
+  DBG("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0*60.0*60.0) << "hours @ 44.1kHz");
 
 
 }
@@ -86,8 +87,9 @@ Engine::~Engine(){
 
 
   AudioDebugPipe::deleteInstanciated();
+#if !FORCE_DISABLE_CRACK
   AudioDebugCrack::deleteInstanciated();
-
+#endif
   
   
 }

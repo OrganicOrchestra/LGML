@@ -36,6 +36,7 @@ public:
 	OwnedArray<FastMap> maps;
   ParameterProxy * potentialIn;
   ParameterProxy * potentialOut;
+  BoolParameter * autoAdd;
 
 	void clear();
 

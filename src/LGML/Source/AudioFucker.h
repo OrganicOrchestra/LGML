@@ -40,7 +40,7 @@ public:
         iterationCount += (int)(adaptationSpeed* (targetCPU -currentCPU));
         iterationCount = jmax(0,iterationCount);
         //        DBG(iterationCount);
-        uint64  i = 0 ;
+        sample_clk_t  i = 0 ;
         while(i < iterationCount){
             doStupidThings();
             i++;

@@ -92,7 +92,7 @@ void PlayableBuffer::setBlockSize(int bs){
 #endif
 }
 
-bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
+bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,sample_clk_t time){
   bool succeeded = true;
   if(buffer.getNumSamples()!=blockSize){
     setBlockSize(buffer.getNumSamples());
@@ -111,6 +111,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
     succeeded &= writeAudioBlock(buffer);
   }
   else if( wasLastRecordingFrame()){
+    jassert(getRecordedLength()>=getMinRecordSampleLength());
     succeeded &= writeAudioBlock(buffer, 0,sampleOffsetBeforeNewState);
     //    findFadeLoopPoints();
 
@@ -151,7 +152,7 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,uint64 time){
     else if (!fadePendingStretch.isFadingOut()){
       if(onsetSamples.size()>0){
         for(auto o:onsetSamples){
-          int delta =(int)((long long)o-(long long)(stretchNeedle %originAudioBuffer.getNumSamples()) );
+          int delta =(int)((sample_clk_t)o-(sample_clk_t)(stretchNeedle %originAudioBuffer.getNumSamples()) );
           if(abs(delta) <= fadePendingStretch.fadeOutNumSamples ){
             fadePendingStretch.startFadeOut();
             break;
@@ -214,15 +215,15 @@ bool PlayableBuffer::writeAudioBlock(const AudioBuffer<float> & buffer, int from
 }
 
 
-inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 time,int fromSample   ){
+inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,sample_clk_t time,int fromSample   ){
   if(isRecording()){
-    //    buffer.clear();
     //    jassertfalse;
     return;
   }
 
   if(fromSample>0){
-    jassert(isFirstPlayingFrame() || (playNeedle-fromSample+getRecordedLength()) % getRecordedLength()==0);
+    jassert(isFirstPlayingFrame() ||
+            (playNeedle-fromSample+getRecordedLength()) % getRecordedLength()==0);
     int dbg;
     dbg++;
   }
@@ -230,6 +231,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
 
 
   if(wasLastRecordingFrame()){
+    jassert((getRecordedLength()==0) || (getRecordedLength() >= getMinRecordSampleLength()));
     multiNeedle.setLoopSize(getRecordedLength());
   }
 
@@ -260,6 +262,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,uint64 tim
       multiNeedle.jumpTo(playNeedle);
       jassertfalse;
     }
+    
 
     multiNeedle.addToBuffer(bufferBlockList, buffer, buffer.getNumSamples(), isPlaying());
     //    }
@@ -308,7 +311,7 @@ void PlayableBuffer::cropEndOfRecording(int * sampletoRemove){
 //  recordNeedle+=sampleToAdd;
 //  multiNeedle.setLoopSize(recordNeedle);
 //}
-void PlayableBuffer::setRecordedLength(uint64 targetSamples){
+void PlayableBuffer::setRecordedLength(sample_clk_t targetSamples){
   //  jassert(targetSamples<=getAllocatedNumSample());
   recordNeedle = targetSamples;
   multiNeedle.setLoopSize(targetSamples);
@@ -389,11 +392,13 @@ void PlayableBuffer::setState(BufferState newState,int _sampleOffsetBeforeNewSta
       startRecord();
       break;
     case BUFFER_PLAYING:
+      jassert(getRecordedLength()>=getMinRecordSampleLength());
       multiNeedle.setLoopSize(getRecordedLength());
       setPlayNeedle( -_sampleOffsetBeforeNewState );
       globalPlayNeedle = 0;
       break;
     case BUFFER_STOPPED:
+      jassert(getRecordedLength()==0 || getRecordedLength() >=getMinRecordSampleLength());
       numTimePlayed = 0;
       multiNeedle.fadeAllOut();
       //        setPlayNeedle(0);
@@ -410,10 +415,12 @@ PlayableBuffer::BufferState PlayableBuffer::getState() const{return state;}
 PlayableBuffer::BufferState PlayableBuffer::getLastState() const{return lastState;}
 
 
-uint64 PlayableBuffer::getRecordedLength() const{return recordNeedle;}
-
-uint64 PlayableBuffer::getPlayPos() const{return playNeedle;}
-uint64 PlayableBuffer::getGlobalPlayPos() const{return globalPlayNeedle;}
+sample_clk_t PlayableBuffer::getRecordedLength() const{return recordNeedle;}
+int PlayableBuffer::getMinRecordSampleLength() const{
+  return multiNeedle.fadeInNumSamples + multiNeedle.fadeOutNumSamples + 1024;
+}
+sample_clk_t PlayableBuffer::getPlayPos() const{return playNeedle;}
+sample_clk_t PlayableBuffer::getGlobalPlayPos() const{return globalPlayNeedle;}
 
 
 
@@ -536,7 +543,7 @@ void PlayableBuffer::initRTStretch(){
   stretchNeedle = 0;
 }
 
-bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,uint64 time){
+bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t time){
 
   if(isStretchPending ){
     int outNumSample = b.getNumSamples();
@@ -642,4 +649,5 @@ void PlayableBuffer::applyStretch(){
   
 };
 #endif
+
 

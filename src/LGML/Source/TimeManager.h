@@ -21,7 +21,7 @@
 
 #include "TimeMasterCandidate.h"
 #include "ControllableContainer.h"
-
+#include "AudioHelpers.h"
 #include "AudioConfig.h"
 
 #if LINK_SUPPORT
@@ -109,13 +109,13 @@ public TimeMasterCandidate
 
 
 
-  TransportTimeInfo findTransportTimeInfoForLength(uint64 time,double sampleRate = -1);
-  void setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTime);
+  TransportTimeInfo findTransportTimeInfoForLength(sample_clk_t time,double sampleRate = -1);
+  void setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTime,sample_clk_t atSample);
 
 
   void jump(int amount);
-  void goToTime(long long time,bool now = false);
-  void advanceTime(uint64 ,bool now = false);
+  void goToTime(sample_clk_t time,bool now = false);
+  void advanceTime(sample_clk_t ,bool now = false);
 
   // used when triggering multiple change
   void lockTime(bool );
@@ -126,11 +126,11 @@ public TimeMasterCandidate
 
   int getBeatInt();
   double getBeat();
-  uint64 getNextGlobalQuantifiedTime();
-  uint64 getNextQuantifiedTime(int barFraction);
-  uint64 getTimeForNextBeats(int beats);
-  long long getTimeInSample();
-  long long getNextTimeInSample();
+  sample_clk_t getNextGlobalQuantifiedTime();
+  sample_clk_t getNextQuantifiedTime(int barFraction);
+  sample_clk_t getTimeForNextBeats(int beats);
+  sample_clk_t getTimeInSample();
+  sample_clk_t getNextTimeInSample();
   bool willRestart();
   int getClosestBeat();
   double getBeatInNextSamples(int numSampleToAdd);
@@ -147,7 +147,7 @@ public TimeMasterCandidate
 
 
 
-  uint64 beatTimeInSample;
+  sample_clk_t beatTimeInSample;
   int sampleRate;
   int blockSize;
 
@@ -171,7 +171,7 @@ public TimeMasterCandidate
   public:
     virtual ~TimeManagerListener(){};
     virtual void BPMChanged(double /*BPM*/){};
-    virtual void timeJumped(uint64 /*time*/) {};
+    virtual void timeJumped(sample_clk_t /*time*/) {};
     virtual void playStop(bool /*playStop*/){};
 
 
@@ -197,17 +197,17 @@ private:
   struct TimeState{
     TimeState():isJumping(false),nextTime(0),isPlaying(false),time(0){}
     bool isPlaying;
-    void jumpTo(long long t){
+    void jumpTo(sample_clk_t t){
       isJumping = true;
       nextTime = t;
     }
     bool isJumping;
-    long long nextTime;
-    long long time;
+    sample_clk_t nextTime;
+    sample_clk_t time;
   };
 
   TimeState timeState,desiredTimeState;
-  long long audioClock;
+  sample_clk_t audioClock;
 
   void shouldStop(bool now=false);
   void shouldPlay(bool now = false);
@@ -248,8 +248,8 @@ private:
   const int samplePerBeatGranularity;
   
 
-  uint64 lastTaped;
-  uint64 currentBeatPeriod;
+  sample_clk_t lastTaped;
+  sample_clk_t currentBeatPeriod;
   int tapInRow;
 
   bool hasJumped;

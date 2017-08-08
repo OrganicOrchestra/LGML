@@ -95,7 +95,7 @@ void DummyNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &) {
       clickFade.startFadeIn();
       int numSamples = buffer.getNumSamples();
       int numOutputChannels = buffer.getNumChannels();
-      static uint64 sinCount = 0;
+      static sample_clk_t sinCount = 0;
 
       bool isFirstBeat = (tm->getClosestBeat()%tm->beatPerBar->intValue()) == 0;
       const int sinFreq = isFirstBeat?period1:period2;

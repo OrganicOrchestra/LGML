@@ -68,7 +68,7 @@ public:
 namespace StringUtil
 {
 
-   static String toShortName(const String &niceName, bool replaceSlashes = false) {
+  static String toShortName(const String &niceName, bool replaceSlashes = false) {
     if (niceName.isEmpty()) return "";
 
 
@@ -79,8 +79,14 @@ namespace StringUtil
     res=res.replaceCharacter(')','_');
     res=res.replaceCharacter('>','_');
     res=res.replaceCharacter('<','_');
-    res=res.replaceCharacter(' ','_');
 
+    {
+      auto statChar = res.getCharPointer();
+      if(res.length()>2 && statChar.isUpperCase() && (statChar+1).isLowerCase()){
+        statChar.write(statChar.toLowerCase());
+      }
+    }
+    res=res.removeCharacters(" ");
 
     return res;
   }
@@ -119,7 +125,7 @@ namespace StringUtil
       parsingIdx++;
     }
     return res;
-
+    
   };
 };
 

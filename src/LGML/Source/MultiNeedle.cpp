@@ -10,7 +10,7 @@
 
 #include "MultiNeedle.h"
 
-#define DEBUG_NEEDLE 0
+#define DEBUG_NEEDLE 1
 #if DEBUG_NEEDLE
 #define DBGNEEDLE(txt) DBG(txt)
 #else

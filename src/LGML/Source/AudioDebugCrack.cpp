@@ -9,6 +9,7 @@
  */
 
 #include "AudioDebugCrack.h"
+#if !FORCE_DISABLE_CRACK
 Array<AudioDebugCrack*> AudioDebugCrack::allAudioDebugCracks;
 
 
@@ -71,3 +72,4 @@ void AudioDebugCrack::deleteInstanciated(){
   }
   allAudioDebugCracks.clear();
 }
+#endif

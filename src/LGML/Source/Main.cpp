@@ -90,7 +90,7 @@ public:
 
 
     mainWindow = new MainWindow (getApplicationName(),engine);
-
+      
     engine->parseCommandline(commandLinesElements);
     if(!engine->getFile().existsAsFile()){
       engine->createNewGraph();

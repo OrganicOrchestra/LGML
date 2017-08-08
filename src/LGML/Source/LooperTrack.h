@@ -193,8 +193,8 @@ private:
   friend class LooperNode;
   bool someOneIsSolo;
 
-  uint64 quantizedRecordEnd, quantizedRecordStart;
-  uint64 quantizedPlayStart, quantizedPlayEnd;
+  sample_clk_t quantizedRecordEnd, quantizedRecordStart;
+  sample_clk_t quantizedPlayStart, quantizedPlayEnd;
 
   bool updatePendingLooperTrackState(  int blockSize);
   void handleStartOfRecording();

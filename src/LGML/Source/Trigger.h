@@ -37,10 +37,11 @@ public:
     setValue(triggerVar);
 	}
   void tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt) override{
-    jassert(force ||isSettingValue==false);
-    isSettingValue = true;
-    if (!silentSet) notifyValueChanged(defferIt);
-    isSettingValue = false;
+    if(!waitOrDeffer(_value, silentSet, force, defferIt)){
+      isSettingValue = true;
+      if (!silentSet) notifyValueChanged(defferIt);
+      isSettingValue = false;
+    }
     
   }
 
