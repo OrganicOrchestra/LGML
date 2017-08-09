@@ -36,10 +36,10 @@ public:
 	{
     setValue(triggerVar);
 	}
-  void tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt) override{
-    if(!waitOrDeffer(_value, silentSet, force, defferIt)){
+  void tryToSetValue(var _value, bool silentSet , bool force) override{
+    if(!waitOrDeffer(_value, silentSet, force)){
       isSettingValue = true;
-      if (!silentSet) notifyValueChanged(defferIt);
+      if (!silentSet) notifyValueChanged();
       isSettingValue = false;
     }
     

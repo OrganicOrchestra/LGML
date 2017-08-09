@@ -25,13 +25,13 @@ MainContentComponent* createMainContentComponent(Engine * e)
 MainContentComponent::MainContentComponent(Engine * e):
 engine(e)
 {
-engine->addEngineListener(this);
-  
+  engine->addEngineListener(this);
+
   setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
 
   addAndMakeVisible(&ShapeShifterManager::getInstance()->mainContainer);
 
-  
+
   (&getCommandManager())->registerAllCommandsForTarget (this);
   (&getCommandManager())-> setFirstCommandTarget(this);
 
@@ -59,7 +59,7 @@ MainContentComponent::~MainContentComponent(){
   setMacMainMenu (nullptr);
 
 #endif
-  
+
   engine->removeEngineListener(this);
   ShapeShifterManager::deleteInstance();
 }
@@ -68,7 +68,7 @@ void MainContentComponent::focusGained(FocusChangeType cause){
 
   ShapeShifterManager * sm = ShapeShifterManager::getInstanceWithoutCreating();
   if(sm){
-	  ShapeShifterPanel * nm = ShapeShifterManager::getInstance()->getPanelForContent(ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel));
+    ShapeShifterPanel * nm = ShapeShifterManager::getInstance()->getPanelForContent(ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel));
     if(nm){
       nm->grabKeyboardFocus();
     }
@@ -97,7 +97,7 @@ void MainContentComponent::showAudioSettings()
   o.content.setNonOwned (&audioSettingsComp);
   o.dialogTitle                   = "Audio Settings";
   o.componentToCentreAround       = this;
-//  o.dialogBackgroundColour        = Colours::azure;
+  //  o.dialogBackgroundColour        = Colours::azure;
   o.escapeKeyTriggersCloseButton  = true;
   o.useNativeTitleBar             = false;
   o.resizable                     = false;
@@ -111,41 +111,41 @@ void MainContentComponent::showAudioSettings()
 }
 
 void MainContentComponent::paintOverChildren(Graphics & g) {
-	/*
-  if(engine->isLoadingFile){
-    g.setColour(Colours::black.withAlpha(0.4f));
-    g.fillAll();
+  /*
+   if(engine->isLoadingFile){
+   g.setColour(Colours::black.withAlpha(0.4f));
+   g.fillAll();
 
-    int period = 4000.0;
-    float time = (Time::currentTimeMillis()%period)*1.0/period;
-    Point<int> center = getLocalBounds().getCentre();
-    int numPoints = 10;
-    float radius = 300;
-    float pSize =40;
-    float aStep = 2*float_Pi/numPoints ;
-    for(int i = 0 ; i < numPoints ; i++){
-      g.setColour(Colours::white.withAlpha(float(1.0+cos((time+i*0.25/numPoints)*2*float_Pi))/2.0f));
-      g.fillEllipse(center.x + radius*cos(i*aStep),center.y+radius*sin(i*aStep),pSize,pSize);
-    }
-  }
-  */
+   int period = 4000.0;
+   float time = (Time::currentTimeMillis()%period)*1.0/period;
+   Point<int> center = getLocalBounds().getCentre();
+   int numPoints = 10;
+   float radius = 300;
+   float pSize =40;
+   float aStep = 2*float_Pi/numPoints ;
+   for(int i = 0 ; i < numPoints ; i++){
+   g.setColour(Colours::white.withAlpha(float(1.0+cos((time+i*0.25/numPoints)*2*float_Pi))/2.0f));
+   g.fillEllipse(center.x + radius*cos(i*aStep),center.y+radius*sin(i*aStep),pSize,pSize);
+   }
+   }
+   */
 };
 void MainContentComponent::startLoadFile(){
 
-  // clear graphics to gain time when deleting objects (and to ease thread safety)) 
+  // clear graphics to gain time when deleting objects (and to ease thread safety))
   if(NodeManagerUIViewport * vp = (NodeManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel)){
     if(NodeContainerViewer *v = vp->nmui->currentViewer){
       v->clear();
     }
   }
   if(ControllerManagerUIViewport * cui = (ControllerManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
-      cui->controllerManagerUI->clear();
+    cui->controllerManagerUI->clear();
   }
 
   if (fileProgressWindow != nullptr)
   {
-	  removeChildComponent(fileProgressWindow);
-	  fileProgressWindow = nullptr;
+    removeChildComponent(fileProgressWindow);
+    fileProgressWindow = nullptr;
   }
 
   fileProgressWindow = new ProgressWindow("Loading File...",engine);
@@ -157,31 +157,31 @@ void MainContentComponent::startLoadFile(){
 
 void MainContentComponent::fileProgress(float percent, int state){
   // not implemented
-	DBG("File progress, " << percent);
-	if (fileProgressWindow != nullptr)
-	{
-		fileProgressWindow->setProgress(percent);
-	} else
-	{
-		DBG("Window is null but still got progress");
-	}
+  DBG("File progress, " << percent);
+  if (fileProgressWindow != nullptr)
+  {
+    fileProgressWindow->setProgress(percent);
+  } else
+  {
+    DBG("Window is null but still got progress");
+  }
 };
 
 void MainContentComponent::endLoadFile(){
 
-	if (fileProgressWindow != nullptr)
-	{
-		removeChildComponent(fileProgressWindow);
-		fileProgressWindow = nullptr;
-	}
+  if (fileProgressWindow != nullptr)
+  {
+    removeChildComponent(fileProgressWindow);
+    fileProgressWindow = nullptr;
+  }
   //stopTimer();
   //repaint();
 };
 
 void MainContentComponent::timerCallback(){
-//  if(!engine->isLoadingFile){
-//    stopTimer();
-//  }
-
+  //  if(!engine->isLoadingFile){
+  //    stopTimer();
+  //  }
+  
   //repaint();
 }

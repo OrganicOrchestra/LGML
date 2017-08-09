@@ -46,20 +46,18 @@ void Parameter::resetValue(bool silentSet)
   setValue(defaultValue, silentSet,true);
 }
 
-void Parameter::setValue(var _value, bool silentSet, bool force,bool defferIt)
+void Parameter::setValue(var _value, bool silentSet, bool force)
 {
-
-  defferIt=false;
   if(isCommitableParameter && !force){
     commitValue(_value);
   }
   else{
-    tryToSetValue(_value,silentSet,force,defferIt);
+    tryToSetValue(_value,silentSet,force);
   }
 
 }
 
-bool Parameter::waitOrDeffer(const var & _value, bool silentSet , bool force ,bool defferIt){
+bool Parameter::waitOrDeffer(const var & _value, bool silentSet , bool force ){
   if(!force&&isSettingValue){
     if(isLocking){
       int overflow = 1000000;
@@ -77,7 +75,7 @@ bool Parameter::waitOrDeffer(const var & _value, bool silentSet , bool force ,bo
     // force defering if locking too long or not locking
     if (isSettingValue){
       if(auto *mm = MessageManager::getInstanceWithoutCreating()){
-        mm->callAsync([this,_value, silentSet, force, defferIt](){tryToSetValue(_value, silentSet, force, defferIt);});
+        mm->callAsync([this,_value, silentSet, force](){tryToSetValue(_value, silentSet, force);});
         return true;
       }
     }
@@ -86,16 +84,16 @@ bool Parameter::waitOrDeffer(const var & _value, bool silentSet , bool force ,bo
   }
   return false;
 }
-void Parameter::tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt){
+void Parameter::tryToSetValue(var _value, bool silentSet , bool force ){
 
   if (!force && checkValueIsTheSame(_value, value)) return;
 
-  if(!waitOrDeffer(_value, silentSet, force, defferIt)){
+  if(!waitOrDeffer(_value, silentSet, force)){
     isSettingValue = true;
     lastValue = var(value);
     setValueInternal(_value);
     if(_value != defaultValue) isOverriden = true;
-    if (!silentSet) notifyValueChanged(defferIt);
+    if (!silentSet) notifyValueChanged(false);
     isSettingValue = false;
   }
 
@@ -114,9 +112,9 @@ void Parameter::commitValue(var _value){
 
 }
 
-void Parameter::pushValue(bool defered,bool force){
+void Parameter::pushValue(bool force){
   if(!hasCommitedValue && !force)return;
-  tryToSetValue(commitedValue,false,true,defered);
+  tryToSetValue(commitedValue,false,true);
   hasCommitedValue = false;
 }
 

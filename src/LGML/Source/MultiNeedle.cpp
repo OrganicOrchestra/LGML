@@ -237,7 +237,7 @@ void MultiNeedle::jumpTo(const int to){
   jassert(loopSize>0);
   jassert(to>=0);
 
-  if(to!=0){
+  if(to>256){
     int dbg;dbg++;
   }
   fadeAllOut();
@@ -401,7 +401,7 @@ void MultiNeedle::addToBuffer( BufferBlockList & originBufferList,AudioBuffer<fl
 //    }
   }
   if(isLooping){
-    DBGNEEDLE(accumNeedle << " // " <<accumNeedleSq );
+    DBGNEEDLE(numActiveNeedle << " // " << accumNeedle << " // " <<accumNeedleSq );
   }
   if(numActiveNeedle>1){
     int dbg;dbg++;

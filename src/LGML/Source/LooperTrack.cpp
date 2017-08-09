@@ -19,7 +19,7 @@
 #include "AudioDebugCrack.h"
 #include "Engine.h"
 
-#define NO_QUANTIZE (sample_clk_t)-1 //std::numeric_limits<sample_clk_t>::max()
+#define NO_QUANTIZE (MAX_NUMSAMPLES ) //std::numeric_limits<sample_clk_t>::max()
 
 
 
@@ -222,7 +222,7 @@ bool LooperTrack::updatePendingLooperTrackState(int blockSize) {
 
       if (isMasterTempoTrack()) {
         if (!tm->playState->boolValue()) {
-          tm->playState->setValue(true, false, false, false);
+          tm->playState->setValue(true, false, false);
 
         }
         // we will handle the block in this call so we notify time to be in sync with what we play
@@ -387,7 +387,7 @@ void LooperTrack::handleEndOfRecording() {
     //        DBG("resizing loop : " << (int)(desiredSize-playableBuffer.getRecordedLength()));
 
     playableBuffer.setRecordedLength(desiredSize);
-    beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / info.beatInSample, false, false, true);
+    beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / info.beatInSample, false, false);
     //		tm->goToTime(offsetForPlay, false);//desiredSize+offsetForPlay,true);
     startPlayBeat = 0;
     jassert(tm->playState->boolValue());
@@ -503,12 +503,14 @@ void LooperTrack::play() {
 }
 
 void LooperTrack::recPlay() {
-  if (desiredState == CLEARED) {
+  if (desiredState == CLEARED && (!sampleChoice->selectionIsNotEmpty() || sampleChoice->getFirstSelectedId().toString().startsWith("LGML"))) {
     setTrackState(WILL_RECORD);
   } else  if (desiredState != WILL_RECORD) {
     if (parentLooper->isOneShot->boolValue() && desiredState == RECORDING) {
       setTrackState(WILL_STOP);
-    } else { setTrackState(WILL_PLAY); }
+    } else {
+      setTrackState(WILL_PLAY);
+    }
   }
 }
 bool LooperTrack::askForBeingMasterTempoTrack() {
@@ -777,13 +779,13 @@ void LooperTrack::loadAudioSample(const String & path) {
       auto ti = tm->findTransportTimeInfoForLength((int)audioReader->lengthInSamples, audioReader->sampleRate);
       double sampleRateRatio = parentLooper->getSampleRate()*1.0 / audioReader->sampleRate;
       sample_clk_t importSize = audioReader->lengthInSamples * sampleRateRatio;
-
-      if(importSize> (sample_clk_t)-1){
-        LOG("trying to import too much audio : " << importSize/parentLooper->getSampleRate() << "s ,max :" << ((sample_clk_t)-1 )/ parentLooper->getSampleRate()<<"s");
+      
+      if(importSize>= MAX_NUMSAMPLES){
+        LOG("trying to import too much audio : " << importSize/parentLooper->getSampleRate() << "s ,max :" << (MAX_NUMSAMPLES)/ parentLooper->getSampleRate()<<"s");
       }
       else{
         sample_clk_t inSampleLength = (sample_clk_t)audioReader->lengthInSamples;
-        int destNumChannels = audioReader->numChannels;
+        int destNumChannels = playableBuffer.getNumChannels();//audioReader->numChannels;
         AudioSampleBuffer tempBuf;
         tempBuf.setSize(destNumChannels, inSampleLength);
         audioReader->read(&tempBuf, 0, inSampleLength, 0, true, playableBuffer.getNumChannels() > 1 ? true : false);
@@ -805,7 +807,7 @@ void LooperTrack::loadAudioSample(const String & path) {
         // playableBuffer.stopRecordingTail();
         playableBuffer.setState(PlayableBuffer::BUFFER_STOPPED);
         setTrackState(STOPPED);
-        
+
         playableBuffer.originAudioBuffer.makeCopyOf(tempBuf);
         
         // clear fadeout zone
@@ -815,7 +817,7 @@ void LooperTrack::loadAudioSample(const String & path) {
         double timeRatio = ti.bpm / tm->BPM->doubleValue();
         playableBuffer.setRecordedLength(destSize);
         originBPM->setValue(ti.bpm);
-        beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / ti.beatInSample, false, false, true);
+        beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / ti.beatInSample, false, false);
         
         
 #if BUFFER_CAN_STRETCH

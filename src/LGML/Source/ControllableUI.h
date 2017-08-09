@@ -26,6 +26,7 @@ public:
 
   WeakReference<Controllable>  controllable;
 
+
   // Inherited via Listener
   virtual void controllableStateChanged(Controllable * c) override;
   virtual void controllableControlAddressChanged(Controllable * c) override;
@@ -50,9 +51,11 @@ private:
 
   friend class LGMLDragger;
   MappingState mappingState;
+  bool hasValidControllable;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableUI)
 
-  protected :
+protected :
   void updateTooltip();
   void mouseDown(const MouseEvent &e) override;
 };

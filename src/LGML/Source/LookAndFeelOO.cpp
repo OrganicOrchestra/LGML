@@ -24,15 +24,20 @@ LookAndFeelOO::~LookAndFeelOO()  {}
 
 //==============================================================================
 
-static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour, float height)
+static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour, float height,bool isToggle)
 {
   const float mainBrightness = baseColour.getBrightness();
   const float mainAlpha = baseColour.getFloatAlpha();
 
-
-      g.setGradientFill (ColourGradient (baseColour.brighter (0.2f), 0.0f, 0.0f,
-                                         baseColour.darker (0.25f), 0.0f, height, false));
   auto bounds = outline.getBounds();
+
+  if(isToggle){
+    g.setGradientFill(ColourGradient(baseColour.brighter(),(float)bounds.getCentreX(),(float)bounds.getCentreY(), baseColour.darker(), 2.f,2.f,true));
+  }
+  else{
+    g.setGradientFill (ColourGradient (baseColour.brighter (0.2f), 0.0f, 0.0f,
+                                       baseColour.darker (0.25f), 0.0f, height, false));
+  }
 //  g.setGradientFill(ColourGradient(baseColour.brighter(),(float)bounds.getCentreX(),(float)bounds.getCentreY(), baseColour.darker(), 2.f,2.f,true));
   //    g.setColour(baseColour);
   g.fillPath (outline);
@@ -77,7 +82,8 @@ void LookAndFeelOO::drawButtonBackground (Graphics& g,
                                  ! (flatOnLeft  || flatOnBottom),
                                  ! (flatOnRight || flatOnBottom));
 
-    drawButtonShape (g, outline, baseColour, height);
+    drawButtonShape (g, outline, baseColour, height,button.getClickingTogglesState());
+
   }
 }
 ////

@@ -19,15 +19,15 @@ Parameter(Type::STRING, niceName, description, initialValue, var(), var(), enabl
 }
 
 
-void StringParameter::tryToSetValue(var _value,bool silentSet,bool force,bool defferIt ){
+void StringParameter::tryToSetValue(var _value,bool silentSet,bool force ){
 
 
   if (!force && value.toString() == _value.toString()) return;
-  if(!waitOrDeffer(_value, silentSet, force, defferIt)){
+  if(!waitOrDeffer(_value, silentSet, force)){
     isSettingValue = true;
     setValueInternal(_value);
     if(_value != defaultValue) isOverriden = true;
-    if (!silentSet) notifyValueChanged(defferIt);
+    if (!silentSet) notifyValueChanged();
     isSettingValue = false;
   }
 };

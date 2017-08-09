@@ -13,7 +13,6 @@
 
 #include "MainComponent.h"
 #include "Engine.h"
-#include "StringUtil.hpp"
 #include "LGMLDragger.h"
 #include "CommandLineElements.hpp"
 

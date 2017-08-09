@@ -146,8 +146,9 @@ bool PlayableBuffer::processNextBlock(AudioBuffer<float> & buffer,sample_clk_t t
   }
   if(isStretchReady){
     if(fadePendingStretch.getLastFade()==0){
-      if(isPlaying())setPlayNeedle ( time%tmpBufferStretch.getNumSamples());
+
       applyStretch();
+      if(isPlaying())setPlayNeedle ( time%tmpBufferStretch.getNumSamples());
     }
     else if (!fadePendingStretch.isFadingOut()){
       if(onsetSamples.size()>0){
@@ -237,7 +238,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,sample_clk
 
   if(state==BUFFER_PLAYING && !isStretchPending){
     jassert(multiNeedle.loopSize == getRecordedLength() );
-    int targetTime = (time  + getRecordedLength())%getRecordedLength();
+    sample_clk_t targetTime = (time  + getRecordedLength())%getRecordedLength();
     if(targetTime != playNeedle){
       //      jassertfalse;
       setPlayNeedle(targetTime);
@@ -442,13 +443,14 @@ void PlayableBuffer::fadeInOut(){
   if(endPoint<fadeOut){
     float ratio = endPoint*1.0/fadeOut;
     int firstPart =(fadeOut-endPoint);
-    jassertfalse;
+
     if(lIdx>0){
       auto eendBlock = &bufferBlockList.getReference(lIdx-1);
       eendBlock->applyGainRamp(bufferBlockList.bufferBlockSize-firstPart, firstPart, 1.0f, ratio);
       endBlock->applyGainRamp(0 , endPoint, ratio, 0.0f);
     }
     else{
+      jassertfalse;
       endBlock->applyGainRamp(0,endPoint+1,1.0f,0.0f);
       DBG("truncate fadeOut for small buffer");
 
@@ -471,7 +473,7 @@ void PlayableBuffer::setTimeRatio(const double ratio){
   //  initRTStretch();
   if(isPlaying()){
     if(!isStretchPending && ratio!=1.0 ){
-      stretchNeedle = playNeedle * originAudioBuffer.getNumSamples()/getRecordedLength();
+      stretchNeedle = playNeedle * (originAudioBuffer.getNumSamples()*1.0/getRecordedLength());
       multiNeedle.fadeAllOut();
       fadePendingStretch.startFadeIn();
 
@@ -604,7 +606,7 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
         break;
       }
       available = RTStretcher->available();
-      jassert(available>0);
+      jassert(available>=0);
 
 
     }

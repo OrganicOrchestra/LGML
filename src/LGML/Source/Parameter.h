@@ -44,12 +44,12 @@ public:
   volatile bool isSettingValue;
 
   void resetValue(bool silentSet = false);
-  void setValue(var _value, bool silentSet = false, bool force = false,bool defferIt=false);
+  void setValue(var _value, bool silentSet = false, bool force = false);
 
   // helpers to coalesce value until a reader pushes it
   // useful for threadSyncronization
   virtual void commitValue(var _value);
-  virtual void pushValue(bool defered=true,bool force = false);
+  virtual void pushValue(bool force = false);
 
   var commitedValue;
   volatile bool hasCommitedValue;
@@ -118,14 +118,14 @@ public:
   virtual var getVarState() override;
 
 
-  virtual void tryToSetValue(var _value, bool silentSet , bool force ,bool defferIt);
+  virtual void tryToSetValue(var _value, bool silentSet , bool force );
 
   static const Identifier valueIdentifier;
   static const Identifier minValueIdentifier;
   static const Identifier maxValueIdentifier;
 
 protected:
-  bool waitOrDeffer(const var & _value, bool silentSet , bool force ,bool defferIt);
+  bool waitOrDeffer(const var & _value, bool silentSet , bool force);
   
 private:
 

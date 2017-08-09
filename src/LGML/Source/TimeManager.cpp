@@ -178,7 +178,7 @@ void TimeManager::incrementClock(int block){
 }
 void TimeManager::checkCommitableParams(){
   if(BPM->hasCommitedValue){
-    BPM->pushValue(true);
+    BPM->pushValue();
     setBPMInternal(BPM->doubleValue(),true);
     clickFader->startFadeOut();
 #if LINK_SUPPORT
@@ -191,7 +191,7 @@ void TimeManager::checkCommitableParams(){
 }
 
 void TimeManager::pushCommitableParams(){
-  //  BPM->pushValue(true);
+  //  BPM->pushValue();
 }
 
 bool TimeManager::updateAndNotifyTimeJumpedIfNeeded(){
@@ -282,7 +282,7 @@ bool TimeManager::askForBeingMasterCandidate(TimeMasterCandidate * n){
 
   if(timeMasterCandidate==nullptr && !isAnyoneBoundToTime() ){
     timeMasterCandidate = n;
-    isSettingTempo->setValue(true,false,false,true);
+    isSettingTempo->setValue(true,false,false);
     return true;
   }
 
@@ -438,7 +438,7 @@ void TimeManager::onContainerTriggerTriggered(Trigger * t) {
   }
   else if(t==stopTrigger){
     playState->setValue(false);
-    isSettingTempo->setValue(false,false,false,true);
+    isSettingTempo->setValue(false,false,false);
   }
 
   else if (t == tapTempo)
@@ -508,11 +508,11 @@ void TimeManager::setBlockSize(int bS){
 
 }
 void TimeManager::setBPMInternal(double /*_BPM*/,bool adaptTimeInSample){
-  isSettingTempo->setValue(false,false,false,true);
-  int newBeatTime = (sample_clk_t)(sampleRate *1.0/ BPM->doubleValue()*60.0);
+  isSettingTempo->setValue(false,false,false);
+  sample_clk_t newBeatTime = (sample_clk_t)(sampleRate *60.0/ BPM->doubleValue());
   if(adaptTimeInSample){
     sample_clk_t targetTime = (sample_clk_t)(timeState.time*(newBeatTime*1.0/beatTimeInSample));
-    jassert(targetTime>0);
+    jassert(targetTime>=0);
     goToTime(targetTime,true);
   }
   beatTimeInSample =newBeatTime;
@@ -560,7 +560,7 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength(sample_clk_t time,
 }
 void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTimeInSample,sample_clk_t atSample){
 
-  BPM->setValue(info.bpm,false,false,false);
+  BPM->setValue(info.bpm,false,false);
   //  sample_clk_t targetTime = getTimeInSample();
 
   if(adaptTimeInSample){

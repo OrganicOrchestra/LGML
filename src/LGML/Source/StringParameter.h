@@ -22,7 +22,7 @@ public:
 
     
     // need to override this function because var Strings comparison  is based on pointer (we need full string comp)
-    void tryToSetValue(var v,bool silentSet=false,bool force=false,bool defferIt=false)override;
+    void tryToSetValue(var v,bool silentSet=false,bool force=false)override;
     void setValueInternal(var&)override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameter)

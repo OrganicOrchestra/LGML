@@ -62,7 +62,7 @@ void LooperNodeContentUI::init(){
 
 
 
-  trackNumChanged(looperNode->trackGroup.tracks.size());
+  trackNumChanged(looperNode->numberOfTracks->intValue());
   if(looperNode->selectTrack->intValue()>=0)looperNode->trackGroup.tracks.getUnchecked(looperNode->selectTrack->intValue())->setSelected(true);
 }
 
@@ -130,17 +130,24 @@ void LooperNodeContentUI::reLayoutTracks(){
 
 void LooperNodeContentUI::trackNumChanged(int num) {
 
+  std::function<void()> func = [this,num](){
   if(num < tracksUI.size()){
     tracksUI.removeRange(num, tracksUI.size() - num);
   }
   else{
-    for(int i = tracksUI.size() ; i < num ; i++){
+
+    int safe_num =jmin(looperNode->trackGroup.tracks.size(),num);
+    for(int i = tracksUI.size() ; i < safe_num ; i++){
       TrackUI * t = new TrackUI(looperNode->trackGroup.tracks.getUnchecked(i));
       tracksUI.add(t);
       trackContainer.addAndMakeVisible(t);
+      }
     }
-  }
-  resized();
+    resized();
+  };
+  auto * mm =MessageManager::getInstance();
+  if(mm->isThisTheMessageThread()){func();}
+  else{ mm->callAsync(func);}
 };
 
 

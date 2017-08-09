@@ -27,7 +27,8 @@ isSelected(false)
   }
 
 
-  jassert(controllable!=nullptr);
+  hasValidControllable = (controllable!=nullptr);
+  jassert(hasValidControllable);
   setName(controllable->niceName);
   controllable->addControllableListener(this);
   updateTooltip();
@@ -93,22 +94,28 @@ void  ControllableUI::setMappingState(const bool  b){
   repaint();
 }
 void ControllableUI::paintOverChildren(Graphics &g) {
-  jassert(controllable!=nullptr );
-  Component::paintOverChildren(g);
-  if(mappingState!=NOMAP ){
-    if(mappingState==MAPSOURCE){
-      jassert(!isMappingDest);
-      g.setColour(Colours::red.withAlpha(0.2f));
-    }
-    else{
-      jassert(isMappingDest);
-      g.setColour(Colours::blue.withAlpha(0.2f));
-    }
+  if(hasValidControllable && controllable==nullptr){
+//    jassertfalse;
+    int dbg;dbg++;
+  }
+  hasValidControllable = (controllable!=nullptr );
+  if(hasValidControllable){
+    Component::paintOverChildren(g);
+    if(mappingState!=NOMAP ){
+      if(mappingState==MAPSOURCE){
+        jassert(!isMappingDest);
+        g.setColour(Colours::red.withAlpha(0.2f));
+      }
+      else{
+        jassert(isMappingDest);
+        g.setColour(Colours::blue.withAlpha(0.2f));
+      }
 
-    g.fillAll();
-    if(isSelected){
-      g.setColour(Colours::red);
-      g.drawRect(getLocalBounds(),2);
+      g.fillAll();
+      if(isSelected){
+        g.setColour(Colours::red);
+        g.drawRect(getLocalBounds(),2);
+      }
     }
   }
 
@@ -157,13 +164,13 @@ labelAbove(labelA){
 void NamedControllableUI::resized(){
   Rectangle<int> area  = getLocalBounds();
   if(controllableLabel.getText().isNotEmpty()){
-  if(labelAbove){
-    controllableLabel.setBounds(area.removeFromTop(jmin(18,area.getHeight()/2)));
-  }
-  else{
-    controllableLabel.setBounds(area.removeFromLeft(labelWidth));
-    area.removeFromLeft(10);
-  }
+    if(labelAbove){
+      controllableLabel.setBounds(area.removeFromTop(jmin(18,area.getHeight()/2)));
+    }
+    else{
+      controllableLabel.setBounds(area.removeFromLeft(labelWidth));
+      area.removeFromLeft(10);
+    }
   }
   ownedControllableUI->setBounds(area);
 }

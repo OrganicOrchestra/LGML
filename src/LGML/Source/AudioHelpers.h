@@ -16,7 +16,9 @@
 #pragma warning( disable : 4244 )
 
 // type to use for clock
+// can't be unsigned to allow negative countdowns
 typedef int sample_clk_t;
+constexpr sample_clk_t MAX_NUMSAMPLES= std::numeric_limits<sample_clk_t>::max();
 
 #define DB0_FOR_01 0.8f
 #define MIN_DB -70.0f

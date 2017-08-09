@@ -108,7 +108,7 @@ FastMapUI * FastMapperUI::getUIForFastMap(FastMap *f)
   return nullptr;
 }
 
-constexpr int buttonHeight = 25;
+constexpr int buttonHeight = 21;
 int FastMapperUI::getContentHeight()
 {
 
@@ -121,8 +121,9 @@ void FastMapperUI::resized()
   potentialIn->setBounds(r.removeFromTop(buttonHeight).reduced(2));
   potentialOut->setBounds(r.removeFromTop(buttonHeight).reduced(2));
   autoAddBt->setBounds(r.removeFromTop(buttonHeight).reduced(2));
-  addFastMapBt.setBounds(r.removeFromTop(buttonHeight).reduced(2));
   linkToSelection.setBounds(r.removeFromTop(buttonHeight).reduced(2));
+  addFastMapBt.setBounds(r.removeFromTop(buttonHeight).reduced(2));
+
   r.removeFromTop(10);
   r.reduce(2, 0);
   for (auto & fui : mapsUI)

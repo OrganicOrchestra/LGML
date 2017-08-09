@@ -25,6 +25,7 @@ Outliner::Outliner(const String &contentName) : ShapeShifterContentComponent(con
   treeView.setRootItem(rootItem);
   addAndMakeVisible(treeView);
   treeView.getViewport()->setScrollBarThickness(10);
+  filterTextEditor.setTextToShowWhenEmpty("search", Colours::grey);
   addAndMakeVisible(filterTextEditor);
   filterTextEditor.addListener(this);
   rebuildTree();
