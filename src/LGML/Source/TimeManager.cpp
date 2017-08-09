@@ -565,10 +565,10 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
 
   if(adaptTimeInSample){
     sample_clk_t targetTime = timeState.time*(info.beatInSample*1.0/beatTimeInSample);
-    goToTime(targetTime);
+    goToTime(targetTime,true);
   }
   else{
-    goToTime(atSample);
+    goToTime(atSample,true);
   }
   // force exact beatTimeInSample
   beatTimeInSample = info.beatInSample;
