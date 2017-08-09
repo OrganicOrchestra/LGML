@@ -12,6 +12,7 @@
 #include "NodeConnectionUI.h"
 #include "NodeConnectionEditor.h"
 #include "Inspector.h"
+#include "LGMLComponentHelpers.h"
 
 NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 InspectableComponent(container,"node"),
@@ -433,17 +434,7 @@ void NodeContainerViewer::childBoundsChanged(Component *) {
   resizeToFitNodes();
 }
 
-template<typename T>
-Component * getParentOfType(Component * c){
-  auto * i = c;
-  while(i){
-    if(dynamic_cast<T*>(i)){
-      return  i;
-    }
-    i = i->getParentComponent();
-  }
-  return nullptr;
-}
+
 void NodeContainerViewer::resizeToFitNodes() {
 
 

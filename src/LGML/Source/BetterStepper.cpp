@@ -14,8 +14,9 @@ BetterStepper::BetterStepper(const String &tooltip) : Slider(SliderStyle::IncDec
 {
 	setTooltip(tooltip);
 	setIncDecButtonsMode(IncDecButtonMode::incDecButtonsDraggable_AutoDirection);
-  // TODO hack to disable it in sliding viewport only 
+   
   setScrollWheelEnabled (false);
+
 	
 }
 

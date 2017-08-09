@@ -14,7 +14,7 @@
 #include "ParameterUI.h"
 #include "BetterStepper.h"
 
-class FloatStepperUI : public ParameterUI, public Slider::Listener
+class FloatStepperUI : public ParameterUI, private Slider::Listener,private ComponentListener
 {
 
 public:
@@ -23,6 +23,8 @@ public:
 
     ScopedPointer<BetterStepper> slider;
 
+  void setScrollAllowed(bool );
+
     void resized() override;
 protected:
     void valueChanged(const var &) override;
@@ -30,6 +32,8 @@ protected:
 
     // Inherited via Listener
     virtual void sliderValueChanged(Slider * slider) override;
+
+  void componentParentHierarchyChanged (Component&)override;
 
 };
 
