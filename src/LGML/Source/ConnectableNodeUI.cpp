@@ -220,7 +220,7 @@ void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
   Point <int> newPos = nodeInitPos + diff;
 
   connectableNode->position->setPoint(newPos);
-  setTopLeftPosition(newPos);
+  setTopLeftPosition(connectableNode->position->getPoint());
 
 }
 

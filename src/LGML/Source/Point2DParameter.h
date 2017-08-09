@@ -17,7 +17,7 @@ template<typename T>
 class Point2DParameter : public Parameter
 {
 public:
-	Point2DParameter(const String &niceName, const String &description, T x= T(0), T y = T(0), bool enabled = true);
+  Point2DParameter(const String &niceName, const String &description, T x= T(0), T y = T(0),var minPoint=var::undefined(),var maxPoint=var::undefined(), bool enabled = true);
 	~Point2DParameter() {}
 
   
@@ -40,9 +40,17 @@ private:
 
 
 template<typename T>
-Point2DParameter<T>::Point2DParameter(const String & niceName, const String & description, T x, T y , bool enabled) :
-Parameter(POINT2D, niceName, description,Array<var>{x,y},0,1,enabled)
+Point2DParameter<T>::Point2DParameter(const String & niceName, const String & description, T x, T y ,var minPoint,var maxPoint, bool enabled) :
+Parameter(POINT2D, niceName, description,Array<var>{x,y},minPoint,maxPoint,enabled)
 {
+  if(!minimumValue.isUndefined() && ! minimumValue.isArray()){
+    minimumValue = var::undefined();
+    jassertfalse;
+  }
+  if(!maximumValue.isUndefined() && ! maximumValue.isArray()){
+    maximumValue = var::undefined();
+    jassertfalse;
+  }
   hideInEditor = true;
   setPoint(x, y);
 }
@@ -66,9 +74,17 @@ template<typename T>
 void Point2DParameter<T>::setValueInternal(var & _value)
 {
 
-  if (!_value.isArray()){
+  if (!_value.isArray() || _value.size()!=2){
     jassertfalse;
     return;
+  }
+  if(!minimumValue.isUndefined()){
+    _value.getArray()->set(0, jmax(static_cast<T>(minimumValue[0]),static_cast<T>(_value[0])));
+    _value.getArray()->set(1, jmax(static_cast<T>(minimumValue[1]),static_cast<T>(_value[1])));
+  }
+  if(!maximumValue.isUndefined()){
+    _value.getArray()->set(0, jmin(static_cast<T>(maximumValue[0]),static_cast<T>(_value[0])));
+    _value.getArray()->set(1, jmin(static_cast<T>(maximumValue[1]),static_cast<T>(_value[1])));
   }
   Parameter::setValueInternal(_value);
 

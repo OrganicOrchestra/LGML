@@ -433,16 +433,30 @@ void NodeContainerViewer::childBoundsChanged(Component *) {
   resizeToFitNodes();
 }
 
-
+template<typename T>
+Component * getParentOfType(Component * c){
+  auto * i = c;
+  while(i){
+    if(dynamic_cast<T*>(i)){
+      return  i;
+    }
+    i = i->getParentComponent();
+  }
+  return nullptr;
+}
 void NodeContainerViewer::resizeToFitNodes() {
 
-  Rectangle<int> _bounds(getLocalBounds());
 
+  Rectangle<int> _bounds(0,0,1,1);
+
+  if(auto* p = getParentOfType<Viewport>(this)){
+    _bounds = p->getBounds();
+  }
   for (auto &n : nodesUI) {
-    _bounds = _bounds.getUnion(n->getBoundsInParent());
+    _bounds = _bounds.getUnion(n->getBoundsInParent().withLeft(0).withTop(0));
 
   }
-
+  
   setSize(_bounds.getWidth(), _bounds.getHeight());
 
 }

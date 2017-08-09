@@ -106,7 +106,7 @@ class JsMIDIMessageListener{
 #pragma warning(disable:4305 4800)
   static var dummyCallback(const var::NativeFunctionArgs & /*a*/)
   {
-    return &var::undefined;
+    return var::undefined();
   };
 #pragma warning(pop)
 
