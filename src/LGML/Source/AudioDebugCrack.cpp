@@ -50,13 +50,18 @@ void AudioDebugCrack::processBuffer(const AudioBuffer<float> & b){
     const float alpha = 0.3f;
     lastDerivative += alpha * (derivative-lastDerivative);
     sampleCount++;
+    if(sampleCount-lastCrack>debounceSample){
+      hasCrack = false;
+    }
   }
 }
 void AudioDebugCrack::notifyCrack(const AudioBuffer<float> & /*b*/,int /*i*/){
   //    jassertfalse;
 
   if(sampleCount-lastCrack>debounceSample){
-    if(!hasCrack)lastCrack=sampleCount;
+    if(!hasCrack){
+      lastCrack=sampleCount;
+    }
     hasCrack = true;
 
 //    DBG("crack for " <<name<<" at " << i);
