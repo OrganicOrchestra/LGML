@@ -11,7 +11,7 @@
 #include "Controllable.h"
 #include "ControllableContainer.h"
 #include "JsHelpers.h"
-#include "StringUtil.h"
+#include "StringUtil.hpp"
 
 
 #include "ParameterFactory.h"

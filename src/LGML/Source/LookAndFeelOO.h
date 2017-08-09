@@ -187,19 +187,19 @@ namespace LookAndFeelHelpers {
         return baseColour;
     }
 
-    static TextLayout layoutTooltipText(const String& text, Colour colour) noexcept
-    {
-        const float tooltipFontSize = 13.0f;
-        const int maxToolTipWidth = 400;
-
-        AttributedString s;
-        s.setJustification(Justification::centred);
-        s.append(text, Font(tooltipFontSize, Font::bold), colour);
-
-        TextLayout tl;
-        tl.createLayoutWithBalancedLineLengths(s, (float)maxToolTipWidth);
-        return tl;
-    }
+//    static TextLayout layoutTooltipText(const String& text, Colour colour) noexcept
+//    {
+//        const float tooltipFontSize = 13.0f;
+//        const int maxToolTipWidth = 400;
+//
+//        AttributedString s;
+//        s.setJustification(Justification::centred);
+//        s.append(text, Font(tooltipFontSize, Font::bold), colour);
+//
+//        TextLayout tl;
+//        tl.createLayoutWithBalancedLineLengths(s, (float)maxToolTipWidth);
+//        return tl;
+//    }
 
 
 };

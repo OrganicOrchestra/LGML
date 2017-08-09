@@ -13,8 +13,10 @@
 
 #include "MainComponent.h"
 #include "Engine.h"
-#include "StringUtil.h"
+#include "StringUtil.hpp"
 #include "LGMLDragger.h"
+#include "CommandLineElements.hpp"
+
 MainContentComponent* createMainContentComponent(Engine* e);
 
 //==============================================================================
@@ -40,7 +42,7 @@ public:
   void initialise (const String& commandLine) override
   {
     // This method is where you should put your application's initialisation code..
-    auto commandLinesElements = StringUtil::parseCommandLine(commandLine);
+    auto commandLinesElements = CommandLineElements::parseCommandLine(commandLine);
     if(commandLinesElements.containsCommand("v")){
       std::cout << ProjectInfo::versionString << std::endl;
       quit();
@@ -63,7 +65,7 @@ public:
 #if LGML_UNIT_TESTS
 
     UnitTestRunner tstRunner;
-    CommandLineElements commandLineElements = StringUtil::parseCommandLine(commandLine);
+    CommandLineElements commandLineElements = CommandLineElements::parseCommandLine(commandLine);
     if(CommandLineElement elem = commandLineElements.getCommandLineElement("t","")){
       Array<UnitTest*> allTests = UnitTest::getAllTests();
       Array<UnitTest*> testsToRun ;
@@ -124,7 +126,7 @@ public:
     // the other instance's command-line arguments were.
 
     DBG("Another instance started !");
-    engine->parseCommandline(StringUtil::parseCommandLine(commandLine));
+    engine->parseCommandline(CommandLineElements::parseCommandLine(commandLine));
 
 
   }

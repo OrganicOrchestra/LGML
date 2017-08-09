@@ -2,7 +2,7 @@
 
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
               companyWebsite="http://www.organic-orchestra.com" id="a1hJPO"
-              includeBinaryInAppConfig="1" jucerVersion="5.1.0" name="LGML"
+              includeBinaryInAppConfig="1" jucerVersion="5.1.1" name="LGML"
               projectType="guiapp" version="1.2.0beta" displaySplashScreen="1"
               reportAppUsage="1" splashScreenColour="Dark" cppLanguageStandard="11">
   <MAINGROUP id="RYpQgZ" name="LGML">
@@ -217,7 +217,9 @@
           <FILE compile="0" file="Source/QueuedNotifier.h" id="fzCybH" name="QueuedNotifier.h"
                 resource="0"/>
         </GROUP>
-        <FILE compile="0" file="Source/StringUtil.h" id="DtSaF2" name="StringUtil.h"
+        <FILE id="XKvEWq" name="CommandLineElements.hpp" compile="0" resource="0"
+              file="Source/CommandLineElements.hpp"/>
+        <FILE compile="0" file="Source/StringUtil.hpp" id="DtSaF2" name="StringUtil.hpp"
               resource="0"/>
         <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
           <FILE compile="1" file="Source/MIDIListener.cpp" id="wLcUwY" name="MIDIListener.cpp"

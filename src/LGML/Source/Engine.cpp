@@ -19,7 +19,7 @@
 #include "AudioDebugCrack.h"
 #include "ParameterFactory.h"
 
-
+#include "StringUtil.hpp"
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";

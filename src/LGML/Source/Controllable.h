@@ -83,14 +83,13 @@ public:
   virtual DynamicObject * createDynamicObject();
   static var getVarStateFromScript(const juce::var::NativeFunctionArgs & a);
 
-
   virtual var getVarObject()=0;
   virtual var getVarState() = 0;
   virtual void setFromVarObject(DynamicObject & ob) = 0;
-  virtual  const Identifier  getTypeIdentifier();
-  // helper identifier to use when overiding
-  static const Identifier varTypeIdentifier;
 
+  //  identifier used when saving full object
+  static const Identifier varTypeIdentifier;
+  virtual  const Identifier  getTypeIdentifier();
 
 
   Parameter* getParameter();
@@ -120,6 +119,7 @@ public:
   //Script set method handling
   static var setControllableValueFromJS(const juce::var::NativeFunctionArgs& a);
 
+  
 private:
 
   WeakReference<Controllable>::Master masterReference;

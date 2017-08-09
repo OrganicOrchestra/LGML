@@ -14,7 +14,7 @@
 #include "ControllableUI.h"
 
 #include "DebugHelpers.h"
-#include "StringUtil.h"
+#include "StringUtil.hpp"
 #include "JsHelpers.h"
 #include "ParameterFactory.h"
 

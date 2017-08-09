@@ -49,6 +49,7 @@ void Parameter::resetValue(bool silentSet)
 void Parameter::setValue(var _value, bool silentSet, bool force,bool defferIt)
 {
 
+  defferIt=false;
   if(isCommitableParameter && !force){
     commitValue(_value);
   }
@@ -172,14 +173,11 @@ void Parameter::notifyValueChanged(bool defferIt) {
 DynamicObject * Parameter::createDynamicObject()
 {
   DynamicObject * dObject = Controllable::createDynamicObject();
-
-
   static const Identifier _jsSetIdentifier("set");
   dObject->setMethod(_jsSetIdentifier, setControllableValueFromJS);
-
-
   return dObject;
 }
+
 var Parameter::getVarObject(){
   var res = new DynamicObject();
   res.getDynamicObject()->setProperty(varTypeIdentifier, getTypeIdentifier().toString());

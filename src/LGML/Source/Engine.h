@@ -24,7 +24,7 @@
 #include "FastMapper.h"//keep
 #include "VSTManager.h"//keep
 #include "ProgressNotifier.h"
-#include "StringUtil.h"
+#include "CommandLineElements.hpp"
 class AudioFucker;
 
 

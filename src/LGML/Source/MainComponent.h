@@ -29,21 +29,23 @@
 #include "LGMLLoggerUI.h"
 */
 
-#include "LookAndFeelOO.h"
+
 //==============================================================================
 /*
  This component lives inside our window, and this is where you should put all
  your controls and content.
  */
 
-ApplicationCommandManager& getCommandManager();
-ApplicationProperties& getAppProperties();
-AudioDeviceManager& getAudioDeviceManager();
+
 
 #include "Engine.h"
 #include "ShapeShifterManager.h"//keep
 #include "DebugHelpers.h"//keep
 #include "ProgressWindow.h"
+
+ApplicationCommandManager& getCommandManager();
+ApplicationProperties& getAppProperties();
+AudioDeviceManager& getAudioDeviceManager();
 
 class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,private Timer
 
