@@ -52,6 +52,10 @@ public:
 private:
    class Pimpl;
   ScopedPointer<Pimpl> pimpl;
+
+  friend class Pimpl;
+  void addOSCRecord(OSCClientRecord & o);
+  void removeOSCRecord(OSCClientRecord & o);
   
   HashMap<String,OSCClientRecord> dnsMap;
 

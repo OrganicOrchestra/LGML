@@ -10,8 +10,8 @@
 
 #include "NetworkUtils.h"
 
-
-
+// TODO implement dns support on linux / windows
+#define SUPPORT_DNS JUCE_MAC
 
 juce_ImplementSingleton(NetworkUtils);
 
@@ -28,7 +28,20 @@ bool NetworkUtils::isValidIP(const String & ip){
   return arr.size()==4;
 }
 
-#if JUCE_MAC
+NetworkUtils::~NetworkUtils(){
+  
+}
+
+void NetworkUtils::addOSCRecord(OSCClientRecord & oscRec){
+
+  dnsMap.set(oscRec.getShortName() , oscRec);
+}
+void NetworkUtils::removeOSCRecord(OSCClientRecord & o){
+
+}
+
+
+#if SUPPORT_DNS
 
 #include <dns_sd.h>
 #include <net/if.h>     // For if_nametoindex()
@@ -141,7 +154,7 @@ public:
     uint16 host_port = ntohs(port);
     OSCClientRecord oscRec{name,ip,description,host_port};
     DBG("found OSC : " << oscRec.getShortName() << " ("<<oscRec.name << ")");
-    nu->dnsMap.set(oscRec.getShortName() , oscRec);
+    nu->addOSCRecord(oscRec);
 
   }
   static void cb_dns(
@@ -178,17 +191,23 @@ OSCClientRecord  NetworkUtils::hostnameToOSCRecord(const String & hn)
   auto * nu = NetworkUtils::getInstanceWithoutCreating();
   if(nu){
     // will return emty if not in there
-      return nu->dnsMap[hn];
+    return nu->dnsMap[hn];
 
   }
   return OSCClientRecord();
 }
 #else
+
+#include "DebugHelpers.h"
+// dummy implementation
+class NetworkUtils::Pimpl{
+
+};
 OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)
 //int hostname_to_ip(char * hostname , char* ip)
 {
   LOG("ip hostname discovery not supported on windows/Unix");
-  return IPAddress();
+  return OSCClientRecord();
 }
 
 #endif
@@ -196,15 +215,13 @@ OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)
 
 
 NetworkUtils::NetworkUtils(){
-  
+
   Array<juce::IPAddress> results;
   IPAddress::findAllAddresses(results);
   for (auto &p:results){
     DBG(" addr :: " << p.toString());
   }
-  pimpl = new Pimpl;
-}
 
-NetworkUtils::~NetworkUtils(){
-  
+  pimpl = new Pimpl;
+
 }
