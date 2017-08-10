@@ -16,7 +16,7 @@
 
 #include "NetworkUtils.h"
 
-#include "FastMapper.h"
+
 
 extern ThreadPool * getEngineThreadPool();
 
@@ -30,7 +30,7 @@ hostNameResolved(false),
 isResolving(false)
 
 {
-
+  NetworkUtils::getInstance();
   localPortParam = addNewParameter<StringParameter>("Local Port", "The port to bind for the controller to receive OSC from it","11000");
 
   remoteHostParam = addNewParameter<StringParameter>("Remote Host", "The host's IP of the remote controller","127.0.0.1");
@@ -73,10 +73,11 @@ void OSCController::setupReceiver()
 void OSCController::setupSender()
 {
   //DBG("Resetup sender with " << remoteHostParam->stringValue() << ":" << remotePortParam->stringValue().getIntValue());
+  if(isResolving) return;
   sender.disconnect();
   hostNameResolved = false;
   resolveHostnameIfNeeded(true);
-  if(isResolving) return;
+
   if(!hostNameResolved){
     LOG("no valid ip found for " << remoteHostParam->stringValue());
   }
@@ -94,12 +95,13 @@ class ResolveIPJob : public ThreadPoolJob{
     
     if(OSCController* c = (OSCController*) owner.get()){
 
-      IPAddress resolved = NetworkUtils::hostnameToIP(c->remoteHostParam->stringValue());
+      OSCClientRecord resolved = NetworkUtils::hostnameToOSCRecord(c->remoteHostParam->stringValue());
 
       if(OSCController* c = (OSCController*) owner.get()){
-        if(resolved!=IPAddress()){
+        if(resolved.isValid()){
           c->hostNameResolved = true;
-          c->remoteIP = resolved.toString();
+          c->remoteIP = resolved.ipAddress.toString();
+          c->remotePortParam->setValue(String((int)resolved.port));
           LOG("resolved IP : "<<c->remoteHostParam->stringValue() << " > "<<c->remoteIP);
           c->sender.connect(c->remoteIP, c->remotePortParam->stringValue().getIntValue());
         }

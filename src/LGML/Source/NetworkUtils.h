@@ -12,9 +12,32 @@
 
 #include "JuceHeader.h"
 
-class Monitor;
-class ZeroConfManager;
-class ZeroConfListener;
+class OSCClientRecord{
+public:
+  OSCClientRecord():port(0){
+
+  }
+  OSCClientRecord(  const String& _name,IPAddress _ipAddress,String _description,uint16 _port):
+  name(_name),
+  ipAddress(_ipAddress),
+  description(_description),
+  port(_port){
+    
+  }
+  
+  String name;
+  IPAddress ipAddress;
+  String description;
+  uint16 port;
+
+  String getShortName(){
+      StringArray arr;
+      arr.addTokens(name, ".","");
+      return arr[0];
+  }
+  bool isValid(){return port!=0;}
+};
+
 class NetworkUtils{
 public:
   juce_DeclareSingleton(NetworkUtils, true);
@@ -22,8 +45,15 @@ public:
   NetworkUtils();
   ~NetworkUtils();
   static bool isValidIP(const String & ip);
-  static IPAddress hostnameToIP(const String & hn);
+  static OSCClientRecord hostnameToOSCRecord(const String & hn);
 
+  
+
+private:
+   class Pimpl;
+  ScopedPointer<Pimpl> pimpl;
+  
+  HashMap<String,OSCClientRecord> dnsMap;
 
 };
 

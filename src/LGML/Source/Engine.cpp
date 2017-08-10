@@ -18,8 +18,10 @@
 #include "AudioDebugPipe.h"
 #include "AudioDebugCrack.h"
 #include "ParameterFactory.h"
+#include "NetworkUtils.h"
 
 #include "StringUtil.hpp"
+
 
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
@@ -41,6 +43,7 @@ threadPool(4)
   SerialManager::getInstance()->init();
   NodeManager::getInstance()->addNodeManagerListener(this);
   VSTManager::getInstance();
+  
 
   addChildControllableContainer(NodeManager::getInstance());
   addChildControllableContainer(TimeManager::getInstance());
@@ -68,7 +71,8 @@ Engine::~Engine(){
 
 
   VSTManager::deleteInstance();
-  TimeManager::deleteInstance(); //TO PREVENT LEAK OF SINGLETON
+  TimeManager::deleteInstance();
+
 
 
 
@@ -84,7 +88,7 @@ Engine::~Engine(){
 
   SerialManager::deleteInstance();
 
-
+  NetworkUtils::deleteInstance();
 
   AudioDebugPipe::deleteInstanciated();
 #if !FORCE_DISABLE_CRACK

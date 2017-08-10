@@ -60,7 +60,7 @@ void FloatStepperUI::rangeChanged(Parameter * p){
 
 void FloatStepperUI::componentParentHierarchyChanged (Component& c){
   if(&c==this){
-    
+
     bool isInViewport = getParentOfType<Viewport>(this)!=nullptr;
     setScrollAllowed(!isInViewport);
   }
