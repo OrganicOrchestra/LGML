@@ -32,6 +32,7 @@ void NetworkUtils::addOSCRecord(OSCClientRecord & oscRec){
   auto key = oscRec.getShortName();
   dnsMap.set(key , oscRec);
   DBG("found OSC : " << oscRec.getShortName() << " ("<<oscRec.name << ")");
+
   MessageManager::getInstance()->callAsync([this,&oscRec](){listeners.call(&Listener::oscClientAdded,oscRec);});
 }
 void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
@@ -91,7 +92,7 @@ public:
 
   void run() override{
     bool shouldStop = false;
-    while(isThreadRunning() && !shouldStop){
+    while(!threadShouldExit()  && !shouldStop){
       int count = 0;
       for ( ; ; ) {
         if ( m_ClientToFdMap.size() == 0 ) {
@@ -130,7 +131,7 @@ public:
         if ( count > 10 )
           break;
       }
-      wait(200);
+      sleep(200);
     }
     DBG("dns thread ended");
   }
