@@ -43,6 +43,7 @@ fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
 
 FastMapperUI::~FastMapperUI()
 {
+  fastMapper->removeControllableContainerListener(this);
   clear();
   
 
