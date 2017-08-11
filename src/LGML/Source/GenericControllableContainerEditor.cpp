@@ -254,7 +254,7 @@ void CCInnerContainer::removeCCLink(ControllableContainer * cc)
 
 void CCInnerContainer::addControllableUI(Controllable * c)
 {
-	if (c->isControllableFeedbackOnly || !c->isControllableExposed) return;
+	if ( !c->isControllableExposed) return;
 
 
   NamedControllableUI * cui = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c->getParameter()), 100);

@@ -26,7 +26,7 @@ class OSCClientModel:public EnumParameterModel,NetworkUtils::Listener{
 public:
 
   OSCClientModel(){
-    addOption("localHost","127.0.0.1");
+    addOption("localhost","127.0.0.1");
     NetworkUtils::getInstance()->addListener(this);
   };
   ~OSCClientModel(){
@@ -55,6 +55,7 @@ isResolving(false)
 
   static OSCClientModel model;
   remoteHostParam = addNewParameter<EnumParameter>("Remote Host", "The host's IP of the remote controller",&model,true);
+  remoteHostParam->selectId("localhost", true);
   remotePortParam = addNewParameter<StringParameter>("Remote Port", "The port bound by the controller to send OSC to it","8000");
 
   logIncomingOSC = addNewParameter<BoolParameter>("logIncomingOSC", "log the incoming OSC Messages", false);

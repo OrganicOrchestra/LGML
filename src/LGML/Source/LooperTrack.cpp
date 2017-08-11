@@ -67,7 +67,7 @@ logVolume(float01ToGain(DB0_FOR_01), 0.5)
   stateParameterString = addNewParameter<StringParameter>("state", "track state", "cleared");
   stateParameterStringSynchronizer = new AsyncTrackStateStringSynchronizer(stateParameterString);
   addTrackListener(stateParameterStringSynchronizer);
-  stateParameterString->isControllableFeedbackOnly = true;
+  stateParameterString->isEditable = false;
   stateParameterString->isSavable = false;
 
 

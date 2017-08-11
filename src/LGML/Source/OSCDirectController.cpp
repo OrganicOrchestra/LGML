@@ -66,7 +66,7 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
 
     if (c != nullptr)
     {
-      if (!c->isControllableFeedbackOnly)
+      if (c->isControllableExposed && c->getParameter()->isEditable)
       {
         if(!setParameterFromMessage(c->getParameter(),msg)){
           result = Result::fail("Controllable type not handled");

@@ -52,7 +52,6 @@ public:
   bool enabled;
   bool hasCustomShortName;
   bool isControllableExposed;
-  bool isControllableFeedbackOnly;
   bool hideInEditor;
   bool shouldSaveObject;
   bool isUserDefined;

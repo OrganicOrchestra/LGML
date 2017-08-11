@@ -27,7 +27,7 @@ ParameterUI(p), autoSize(false), maxFontHeight(12)
   valueLabel.setJustificationType(Justification::topLeft);
   valueLabel.setText(parameter->value,NotificationType::dontSendNotification);
   valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
-  bool stringEditable = parameter->isEditable && !parameter->isControllableFeedbackOnly;
+  bool stringEditable = parameter->isEditable ;
   valueLabel.setEditable(false,stringEditable);
 
   valueLabel.addListener(this);

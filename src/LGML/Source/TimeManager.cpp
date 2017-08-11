@@ -52,8 +52,9 @@ linkLatency(00)
   BPM->isCommitableParameter = true;
   playState = addNewParameter<BoolParameter>("PlayStop", "play or stop global transport", false);
   BPMLocked = addNewParameter<BoolParameter>("bpmLocked", "bpm is locked by somebody", false);
-  BPMLocked->isControllableFeedbackOnly = true;
+  BPMLocked->isEditable = false;
   isSettingTempo = addNewParameter<BoolParameter>("isSettingTempo", "is someone setting tempo (recording first loop)", false);
+  isSettingTempo->isEditable = false;
   currentBar  = addNewParameter<IntParameter>("currentBar", "currentBar in transport", 0, 0, 9999999);
   currentBeat  = addNewParameter<IntParameter>("currentBeat", "currentBeat in transport", 0, 0, 999999);
   beatPerBar = addNewParameter<IntParameter>("beatPerBar", "beat Per Bar", 4, 1, 8);
@@ -70,7 +71,6 @@ linkLatency(00)
 
   linkNumPeers = addNewParameter<IntParameter>("linkNumPeers","number of connected link devices",0,0,32);
   linkNumPeers->enabled = LINK_SUPPORT;
-  linkNumPeers->isControllableFeedbackOnly = true;
   linkNumPeers->isEditable = false;
   
 

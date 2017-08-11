@@ -85,7 +85,9 @@ void ControllableUI::updateTooltip()
 void  ControllableUI::setMappingState(const bool  b){
   MappingState s = b?(isMappingDest?MAPDEST:MAPSOURCE):NOMAP;
   if(s!=mappingState){
-    if(s==NOMAP){setInterceptsMouseClicks(true, true);}
+    if(s==NOMAP){
+      setInterceptsMouseClicks(true, true);
+    }
     else{
       setInterceptsMouseClicks(true, false);
     }

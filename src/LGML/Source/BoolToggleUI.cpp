@@ -52,7 +52,7 @@ void BoolToggleUI::mouseDown(const MouseEvent &e)
 {
 	ParameterUI::mouseDown(e);
 
-	if (!parameter->isEditable ||  parameter->isControllableFeedbackOnly) return;
+	if (!parameter->isEditable) return;
 	if (e.mods.isLeftButtonDown())
 	{
 		parameter->setValue(!parameter->boolValue());
@@ -62,7 +62,7 @@ void BoolToggleUI::mouseDown(const MouseEvent &e)
 void BoolToggleUI::mouseUp(const MouseEvent & e)
 {
 	ParameterUI::mouseUp(e);
-	if (!parameter->isEditable ||  parameter->isControllableFeedbackOnly) return;
+	if (!parameter->isEditable) return;
     
 	if (e.mods.isLeftButtonDown() && e.mods.isShiftDown()) parameter->setValue(!parameter->boolValue());
 }
