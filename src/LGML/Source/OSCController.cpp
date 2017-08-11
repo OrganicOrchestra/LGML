@@ -32,10 +32,10 @@ public:
   ~OSCClientModel(){
   }
 
-  void oscClientAdded(OSCClientRecord &o) {
+  void oscClientAdded(OSCClientRecord o) {
     addOrSetOption(o.getShortName(), o.ipAddress.toString());
   };
-  void oscClientRemoved(OSCClientRecord &o) {
+  void oscClientRemoved(OSCClientRecord o) {
     removeOption(o.getShortName());
   };
 

@@ -29,15 +29,17 @@ bool NetworkUtils::isValidIP(const String & ip){
   return arr.size()==4;
 }
 void NetworkUtils::addOSCRecord(OSCClientRecord & oscRec){
-  auto key = oscRec.getShortName();
-  dnsMap.set(key , oscRec);
-  DBG("found OSC : " << oscRec.getShortName() << " ("<<oscRec.name << ")");
+//  if(!localIps.contains(oscRec.ipAddress)){
+    auto key = oscRec.getShortName();
+    dnsMap.set(key , oscRec);
+    DBG("found OSC : " << oscRec.getShortName() << " ("<<oscRec.name << ")");
 
-  MessageManager::getInstance()->callAsync([this,&oscRec](){listeners.call(&Listener::oscClientAdded,oscRec);});
+  MessageManager::getInstance()->callAsync([this,oscRec](){listeners.call(&Listener::oscClientAdded,oscRec);});
+//  }
 }
 void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
   dnsMap.remove(oscRec.getShortName());
-  MessageManager::getInstance()->callAsync([this,&oscRec](){listeners.call(&Listener::oscClientRemoved,oscRec);});
+  MessageManager::getInstance()->callAsync([this,oscRec](){listeners.call(&Listener::oscClientRemoved,oscRec);});
 }
 
 
@@ -49,6 +51,9 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
 #include <arpa/inet.h>
 #include <ifaddrs.h>
 
+
+#include <pwd.h> /// gethostname
+
 #include <unordered_map>
 #include <unordered_set>
 
@@ -59,6 +64,19 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
 class NetworkUtils::Pimpl: private Thread{
 public:
   Pimpl():Thread("bonjourOSC"){
+    name = getName();
+    // scan all interfaces starting with en
+    struct ifaddrs *ifap = NULL;
+    if(getifaddrs(&ifap) < 0) {LOG("Cannot not get a list of interfaces\n");return;}
+    for(struct ifaddrs *p = ifap; p!=NULL; p=p->ifa_next) {
+      if( String(p->ifa_name).startsWith("en")){
+        if_idxs.insert( if_nametoindex(p->ifa_name));
+      }
+    }
+    freeifaddrs(ifap);
+    
+
+    register_OSC();
     startBrowse();
 
 
@@ -66,29 +84,62 @@ public:
   }
   ~Pimpl(){
     stopThread(-1);
+    for ( auto ii = m_ClientToFdMap.cbegin() ; ii != m_ClientToFdMap.cend() ; ) {
+      auto jj = ii++;
+      DNSServiceRefDeallocate(jj->first);
+    }
+    for ( auto ii = m_ServerToFdMap.cbegin() ; ii != m_ServerToFdMap.cend() ; ) {
+      auto jj = ii++;
+      DNSServiceRefDeallocate(jj->first);
+    }
   }
 
-  void startBrowse(){
-    // scan all interfaces
-    std::unordered_set<uint32_t> idxs;
-    {
-      struct ifaddrs *ifap = NULL;
-      if(getifaddrs(&ifap) < 0) {LOG("Cannot not get a list of interfaces\n");return;}
-      for(struct ifaddrs *p = ifap; p!=NULL; p=p->ifa_next) {
-
-        idxs.insert( if_nametoindex(p->ifa_name));
-      }
-      freeifaddrs(ifap);
-    }
-
-    for(auto i:idxs){
-      browse("_osc._udp","local",i);
-//      browse("_aftovertcp._udp","",i);
-//      browse("_aftovertcp._tcp","",i);
-    }
-    
-  }
+  std::unordered_set<uint32_t> if_idxs;
   std::unordered_map<DNSServiceRef,int> m_ClientToFdMap;
+  std::unordered_map<DNSServiceRef,int> m_ServerToFdMap;
+  String name;
+  
+
+  String getName(){
+    uid_t uid = geteuid ();
+    if (struct passwd *pw = getpwuid (uid)){return pw->pw_name;}
+    return "";
+  }
+  void register_OSC(){
+    for(auto i : if_idxs){
+      DNSServiceRef client(0);
+      if(DNSServiceRegister(
+                            &client,
+                            0,   //DNSServiceFlags flags,
+                            i,//uint32_t interfaceIndex,
+                            ("LGML_"+name).toRawUTF8(),//const char                          *name,         /* may be NULL */
+                            "_osc._udp",//const char                          *regtype,
+                            "local",//const char                          *domain,       /* may be NULL */
+                            NULL,//const char                          *host,         /* may be NULL */
+                            htons(8000),//uint16_t port,                                     /* In network byte order */
+                            0,//uint16_t txtLen,
+                            NULL,//const void                          *txtRecord,    /* may be NULL */
+                            NULL,//DNSServiceRegisterReply callBack,                  /* may be NULL */
+                            NULL//void                                *context       /* may be NULL */
+                            )==0){
+        m_ServerToFdMap[client] = DNSServiceRefSockFD(client);
+      }
+    }
+  }
+  void startBrowse(){
+    if(auto * nu = NetworkUtils::getInstanceWithoutCreating()){
+      nu->dnsMap.clear();
+    }
+
+    for(auto i:if_idxs){
+      browse("_osc._udp","local",i);
+      //      browse("_afptovertcp._udp","",i);
+      //      browse("_aftovertcp._tcp","",i);
+    }
+
+  }
+
+
 
   void run() override{
     bool shouldStop = false;
@@ -136,9 +187,7 @@ public:
     DBG("dns thread ended");
   }
   void browse(const std::string& regType, const std::string& domain,uint32_t itf_idx){
-    if(auto * nu = NetworkUtils::getInstanceWithoutCreating()){
-      nu->dnsMap.clear();
-    }
+
     DNSServiceRef client(0);
 
     DNSServiceErrorType err = DNSServiceBrowse(&client, 0, itf_idx, regType.c_str(), domain.empty() ? 0 : domain.c_str(), cb_dns, this);
@@ -166,26 +215,47 @@ public:
 
     auto * nu = (NetworkUtils*) context;
     String name(fullname);
-    String host (hosttarget);
+    String hostIP (hosttarget);
     {
       // format hostname to ip part
-      if(host.endsWith(".local.")){host=host.substring(0,host.length()-7);}
+      if(hostIP.endsWith(".local.")){hostIP=hostIP.substring(0,hostIP.length()-7);}
       StringArray arr;
-      arr.addTokens(host,"-","");
+      arr.addTokens(hostIP,"-","");
       while(arr.size()>4){
         arr.remove(arr.size()-1);
       }
       if(arr.size()==4){
-        host = arr.joinIntoString(".");
+        hostIP = arr.joinIntoString(".");
+      }
+      else{
+        auto * he = gethostbyname(hosttarget);
+        if( he->h_length){
+          struct in_addr **addr_list = (struct in_addr **)he->h_addr_list;
+          hostIP = inet_ntoa(*addr_list[0]);
+        }
+
+        else{
+          DBG("DNS : can't resolve non ip name");
+          jassertfalse;
+        }
+        freehostent(he);
       }
     }
-    IPAddress ip(host);
+    if(isValidIP(hostIP)){
+
+    IPAddress ip(hostIP);
     DBG(ip.toString());
     String description = String::fromUTF8((char*)txtRecord);
     uint16 host_port = ntohs(port);
     OSCClientRecord oscRec{name,ip,description,host_port};
 
     nu->addOSCRecord(oscRec);
+
+    }
+    else{
+      jassertfalse;
+      DBG("DNS : can't resolve ip :"<< hostIP);
+    }
 
   }
   static void cb_dns(
@@ -223,7 +293,7 @@ OSCClientRecord  NetworkUtils::hostnameToOSCRecord(const String & hn)
   if(nu){
     // will return emty if not in there
     return nu->dnsMap[hn];
-
+    
   }
   return OSCClientRecord();
 }
@@ -232,7 +302,7 @@ OSCClientRecord  NetworkUtils::hostnameToOSCRecord(const String & hn)
 
 // dummy implementation
 class NetworkUtils::Pimpl{
-
+  
 };
 OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)
 //int hostname_to_ip(char * hostname , char* ip)
@@ -246,6 +316,7 @@ OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)
 
 
 NetworkUtils::NetworkUtils(){
+  IPAddress::findAllAddresses(localIps,false);
   pimpl = new Pimpl;
   
 }

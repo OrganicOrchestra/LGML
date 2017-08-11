@@ -22,7 +22,7 @@ namespace LookAndFeelHelpers {
 
     // initialise the standard set of colours..
     static const uint32 textButtonColour = NORMAL_COLOR.getARGB();
-    static const uint32 textHighlightColour = TEXT_COLOR.getARGB();
+    static const uint32 textHighlightColour = TEXT_COLOR.darker().getARGB();
     static const uint32 standardOutlineColour = 0xb2808080;
 
     static const uint32 standardColours[] =

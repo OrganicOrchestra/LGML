@@ -50,8 +50,8 @@ public:
   class Listener{
   public:
     virtual ~Listener(){}
-    virtual void oscClientAdded(OSCClientRecord &) = 0;
-    virtual void oscClientRemoved(OSCClientRecord &) = 0;
+    virtual void oscClientAdded(OSCClientRecord ) = 0;
+    virtual void oscClientRemoved(OSCClientRecord ) = 0;
   };
   ListenerList<Listener> listeners;
   void addListener(Listener* l){listeners.add(l);}
@@ -67,6 +67,7 @@ private:
   void removeOSCRecord(OSCClientRecord & o);
   
   HashMap<String,OSCClientRecord> dnsMap;
+  Array<IPAddress> localIps;
 
 };
 

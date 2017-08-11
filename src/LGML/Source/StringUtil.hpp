@@ -20,12 +20,18 @@ namespace StringUtil
 
 
     String res = niceName;
+
+    // osc based escaping
+    // http://opensoundcontrol.org/spec-1_0
     if(replaceSlashes) res = res.replaceCharacter('/','_');
     res=res.replaceCharacter('#','_');
-    res=res.replaceCharacter('(','_');
-    res=res.replaceCharacter(')','_');
-    res=res.replaceCharacter('>','_');
-    res=res.replaceCharacter('<','_');
+    res=res.replaceCharacter('*','_');
+    res=res.replaceCharacter(',','_');
+    res=res.replaceCharacter('?','_');
+    res=res.replaceCharacter('[','_');
+    res=res.replaceCharacter(']','_');
+    res=res.replaceCharacter('{','_');
+    res=res.replaceCharacter('}','_');
 
 //    {
 //      auto statChar = res.getCharPointer();
