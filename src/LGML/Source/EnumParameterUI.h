@@ -31,8 +31,9 @@ public:
 
 	void resized() override;
 
-  void setCanModifyModel(bool isModifiable,bool isFile);
-  bool canModifyModel,isFileBased;
+  void setIsFileBased(bool isFile);
+  
+  std::function<std::tuple<bool,Identifier,var>(EnumParameter*)> addFunction;
   enum Actions{
     addElementId = -1,
     removeElementId = -2,

@@ -25,7 +25,7 @@ public:
   virtual ~OSCController();
 
   StringParameter * localPortParam;
-  StringParameter * remoteHostParam;
+  EnumParameter * remoteHostParam;
   StringParameter * remotePortParam;
   FloatParameter *speedLimit;
   BoolParameter * logIncomingOSC;

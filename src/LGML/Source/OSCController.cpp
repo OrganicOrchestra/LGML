@@ -21,6 +21,26 @@
 extern ThreadPool * getEngineThreadPool();
 
 
+class OSCClientModel:public EnumParameterModel,NetworkUtils::Listener{
+
+public:
+
+  OSCClientModel(){
+    addOption("localHost","127.0.0.1");
+    NetworkUtils::getInstance()->addListener(this);
+  };
+  ~OSCClientModel(){
+  }
+
+  void oscClientAdded(OSCClientRecord &o) {
+    addOption(o.getShortName(), o.ipAddress.toString());
+  };
+  void oscClientRemoved(OSCClientRecord &o) {
+    removeOption(o.getShortName());
+  };
+
+};
+
 OSCController::OSCController(const String &_name) :
 Controller(_name),
 lastMessageReceived(OSCAddressPattern("/fake")),
@@ -33,7 +53,8 @@ isResolving(false)
   NetworkUtils::getInstance();
   localPortParam = addNewParameter<StringParameter>("Local Port", "The port to bind for the controller to receive OSC from it","11000");
 
-  remoteHostParam = addNewParameter<StringParameter>("Remote Host", "The host's IP of the remote controller","127.0.0.1");
+  static OSCClientModel model;
+  remoteHostParam = addNewParameter<EnumParameter>("Remote Host", "The host's IP of the remote controller",&model,true);
   remotePortParam = addNewParameter<StringParameter>("Remote Port", "The port bound by the controller to send OSC to it","8000");
 
   logIncomingOSC = addNewParameter<BoolParameter>("logIncomingOSC", "log the incoming OSC Messages", false);
@@ -78,7 +99,7 @@ void OSCController::setupSender()
   hostNameResolved = false;
   resolveHostnameIfNeeded(true);
 
-  if(!hostNameResolved){
+  if(!isResolving && !hostNameResolved){
     LOG("no valid ip found for " << remoteHostParam->stringValue());
   }
 
@@ -121,19 +142,21 @@ class ResolveIPJob : public ThreadPoolJob{
 void OSCController::resolveHostnameIfNeeded(bool force){
   if(hostNameResolved) return;
   if(isResolving && !force) return;
-
-  getEngineThreadPool()->removeJob(resolveJob,true,-1);
-  resolveJob = nullptr;
-  if(!NetworkUtils::isValidIP(remoteHostParam->stringValue())){
+  String hostName = remoteHostParam->stringValue();
+  if(hostName.isNotEmpty()){
+    getEngineThreadPool()->removeJob(resolveJob,true,-1);
+    resolveJob = nullptr;
+  if(!NetworkUtils::isValidIP(hostName)){
     isResolving = true;
     resolveJob = new ResolveIPJob(this);
     getEngineThreadPool()->addJob(resolveJob, true);
 
   }
   else{
-    remoteIP = remoteHostParam->stringValue();
+    remoteIP = hostName;
     sender.connect(remoteIP, remotePortParam->stringValue().getIntValue());
     hostNameResolved = true;
+  }
   }
 
 }

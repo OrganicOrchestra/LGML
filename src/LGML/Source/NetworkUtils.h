@@ -47,6 +47,15 @@ public:
   static bool isValidIP(const String & ip);
   static OSCClientRecord hostnameToOSCRecord(const String & hn);
 
+  class Listener{
+  public:
+    virtual ~Listener(){}
+    virtual void oscClientAdded(OSCClientRecord &) = 0;
+    virtual void oscClientRemoved(OSCClientRecord &) = 0;
+  };
+  ListenerList<Listener> listeners;
+  void addListener(Listener* l){listeners.add(l);}
+  void removeListener(Listener* l){listeners.remove(l);}
   
 
 private:

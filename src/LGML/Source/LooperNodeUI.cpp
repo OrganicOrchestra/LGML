@@ -169,7 +169,7 @@ isSelected(false),timeStateUI(track)
   muteButton = ParameterUIFactory::createDefaultUI(track->mute);
   soloButton = ParameterUIFactory::createDefaultUI(track->solo);
   sampleChoiceDDL = (EnumParameterUI*)ParameterUIFactory::createDefaultUI(track->sampleChoice);
-  sampleChoiceDDL->setCanModifyModel(true,true);
+  sampleChoiceDDL->setIsFileBased(true);
 
   track->addTrackListener(this);
 

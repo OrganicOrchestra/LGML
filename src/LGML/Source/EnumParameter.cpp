@@ -18,9 +18,10 @@ Identifier EnumParameter::selectedSetIdentifier("selected");
 ///////////////////
 // EnumParameter
 
-EnumParameter::EnumParameter(const String & niceName, const String &description, EnumParameterModel * modelInstance, bool enabled) :
+EnumParameter::EnumParameter(const String & niceName, const String &description, EnumParameterModel * modelInstance,bool _userCanEnterText, bool enabled) :
 Parameter(Type::ENUM, niceName, description,var(),var(),var(), enabled),
-asyncNotifier(1000)
+asyncNotifier(1000),
+userCanEnterText(_userCanEnterText)
 {
   enumData = new DynamicObject();
   enumData->setProperty(selectedSetIdentifier, Array<var>());
@@ -43,7 +44,7 @@ EnumParameter::~EnumParameter(){
   enumData=nullptr;
 }
 
-EnumParameterModel * EnumParameter::getModel(){
+EnumParameterModel * EnumParameter::getModel() const{
   jassert(model.get());
   return model.get();
 
@@ -52,14 +53,14 @@ EnumParameterModel * EnumParameter::getModel(){
 void EnumParameter::addOption(Identifier key, var data)
 {
   //  adding option thru parameter is not supported when using a shared model
-  jassert(ownModel);
+  jassert(ownModel || userCanEnterText);
   getModel()->addOption(key,data);
 }
 
 void EnumParameter::addOrSetOption(Identifier key, var data)
 {
   //  adding option thru parameter is not supported when using a shared model
-  jassert(ownModel);
+  jassert(ownModel|| userCanEnterText);
   getModel()->addOrSetOption(key,data);
 }
 void EnumParameter::removeOption(Identifier key)
@@ -72,17 +73,17 @@ void EnumParameter::removeOption(Identifier key)
 
 
 }
-Array<Identifier> EnumParameter::getSelectedIds() {
+Array<Identifier> EnumParameter::getSelectedIds() const{
   return getSelectedSetIds(value);
 }
 
-Identifier EnumParameter::getFirstSelectedId() {
+Identifier EnumParameter::getFirstSelectedId() const{
   Array<Identifier> arr = getSelectedIds();
   if(arr.size())return arr[0];
   return Identifier::null;
 
 }
-var EnumParameter::getFirstSelectedValue(var _defaultValue) {
+var EnumParameter::getFirstSelectedValue(var _defaultValue) const{
   Array<var> arr = getSelectedValues();
   if(arr.size())return arr[0];
   return _defaultValue;
@@ -169,7 +170,7 @@ void EnumParameter::unselectAll(){
 
 
 
-Array<var> EnumParameter::getSelectedValues(){
+Array<var> EnumParameter::getSelectedValues() const {
   Array<var> res;
   DynamicObject * vm = getModel();
   for(auto & i: getSelectedSetIds(value)){
@@ -222,10 +223,9 @@ void EnumParameter::setValueInternal(var & _value){
     for (auto & sel:getSelectedSetIds(_value)){
       selectId(sel.toString(),true,true);
     }
-
-
-
-
+  }
+  else if(Array<var>* vl = getSelectedSet(_value)){
+    for (auto s:*vl){selectId(s.toString(),true,true);}
   }
   else{
     // var not suported
@@ -239,7 +239,7 @@ void EnumParameter::setValueInternal(var & _value){
 
 
 
-Array<Identifier> EnumParameter::getSelectedSetIds(const juce::var &v){
+Array<Identifier> EnumParameter::getSelectedSetIds(const juce::var &v) const{
   Array<Identifier>res;
   if(Array<var> *  arr =  getSelectedSet(v)){
     for(auto &e:*arr){
@@ -250,12 +250,12 @@ Array<Identifier> EnumParameter::getSelectedSetIds(const juce::var &v){
   return res;
 }
 
-Array<var> * EnumParameter::getSelectedSet(const juce::var &v){
+Array<var> * EnumParameter::getSelectedSet(const juce::var &v) const{
   if(DynamicObject *dob = v.getDynamicObject()){
     return dob->getProperty(selectedSetIdentifier).getArray();
   }
   // wrong var passed in
-  jassertfalse;
+//  jassertfalse;
   return nullptr;
 }
 
@@ -303,6 +303,23 @@ void EnumParameter::newMessage(const EnumChangeMessage &msg) {
   processForMessage(msg, asyncEnumListeners);
 
 };
+
+String EnumParameter::stringValue() const{
+  auto  selected =  getSelectedValues();
+  if(selected.size()==0){
+    return "";
+  }
+  else if(selected.size()==1){
+    return selected[0].toString();
+  }
+  else{
+    String res = selected[0].toString();
+    for(int i = 1 ; i < selected.size() ; i++){
+      res+=","+selected[i].toString();
+    }
+    return res;
+  }
+}
 
 
 

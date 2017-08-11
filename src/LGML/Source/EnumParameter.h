@@ -103,7 +103,7 @@ class EnumChangeMessage{
 class EnumParameter : public Parameter,public EnumParameterModel::Listener,public QueuedNotifier<EnumChangeMessage>::Listener
 {
 public:
-  EnumParameter(const String &niceName, const String &description, EnumParameterModel * modelInstance=nullptr, bool enabled = true);
+  EnumParameter(const String &niceName, const String &description, EnumParameterModel * modelInstance=nullptr, bool userCanEnterText=false,bool enabled = true);
   ~EnumParameter() ;
   
   static Identifier selectedSetIdentifier;
@@ -114,17 +114,19 @@ public:
   void selectId(Identifier key,bool shouldSelect,bool appendSelection = true);
   bool selectFromVar(var & _value,bool shouldSelect,bool appendSelection=true);
   void unselectAll();
+  String stringValue() const override;
 
+  bool userCanEnterText;
 
 
   void setValueInternal(var & _value) override;
 
 
-  Array<Identifier> getSelectedIds() ;
-  Identifier getFirstSelectedId() ;
+  Array<Identifier> getSelectedIds() const ;
+  Identifier getFirstSelectedId()const ;
 
-  Array<var> getSelectedValues();
-  var getFirstSelectedValue(var defaultValue=var::null) ;
+  Array<var> getSelectedValues() const;
+  var getFirstSelectedValue(var defaultValue=var::null) const;
   bool selectionIsNotEmpty();
   var getValueForId(const Identifier &i);
   
@@ -154,12 +156,12 @@ public:
 
   void addAsyncEnumParameterListener(EnumListener* newListener) { asyncEnumListeners.add(newListener); }
   void removeAsyncEnumParameterListener(EnumListener* listener) { asyncEnumListeners.remove(listener); }
-  EnumParameterModel * getModel();
+  EnumParameterModel * getModel() const;
 
 private:
-  DynamicObject * getValuesMap(const var & v);
-  Array<Identifier> getSelectedSetIds(const var & v);
-  Array<var> *getSelectedSet(const var & v);
+  DynamicObject * getValuesMap(const var & v) ;
+  Array<Identifier> getSelectedSetIds(const var & v) const;
+  Array<var> *getSelectedSet(const var & v) const;
 
   WeakReference<EnumParameterModel> model;
   DynamicObject * enumData;

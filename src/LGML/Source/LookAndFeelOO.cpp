@@ -1011,9 +1011,12 @@ void LookAndFeelOO::drawButtonBackground (Graphics& g,
 //}
 //
 ////==============================================================================
+constexpr int comboButtonW = 10;
 void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool isButtonDown,
                                    int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& box)
 {
+  buttonX = 2;
+  buttonW = comboButtonW;
     g.fillAll (box.findColour (ComboBox::backgroundColourId));
 
     if (box.isEnabled() && box.hasKeyboardFocus (false))
@@ -1046,6 +1049,8 @@ void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool
                        buttonX + buttonW * (1.0f - arrowX), buttonY + buttonH * 0.45f,
                        buttonX + buttonW * arrowX,          buttonY + buttonH * 0.45f);
                        */
+
+
         p.addTriangle (buttonX + buttonW * 0.5f,            buttonY + buttonH * (0.4f + arrowH),
                        buttonX + buttonW * (1.0f - arrowX), buttonY + buttonH * 0.4f,
                        buttonX + buttonW * arrowX,          buttonY + buttonH * 0.4f);
@@ -1068,9 +1073,9 @@ Font LookAndFeelOO::getComboBoxFont (ComboBox& box)
 //
 void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
 {
-
-    label.setBounds (1, 1,
-                     box.getWidth() -10,
+  int buttonW = comboButtonW;
+    label.setBounds (1+buttonW, 1,
+                     box.getWidth() -buttonW,
                      box.getHeight() - 2);
 
     label.setFont (getComboBoxFont (box));

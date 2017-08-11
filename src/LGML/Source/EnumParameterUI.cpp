@@ -1,69 +1,88 @@
 /*
-  ==============================================================================
+ ==============================================================================
 
-    EnumParameterUI.cpp
-    Created: 29 Sep 2016 5:35:12pm
-    Author:  bkupe
+ EnumParameterUI.cpp
+ Created: 29 Sep 2016 5:35:12pm
+ Author:  bkupe
 
-  ==============================================================================
-*/
+ ==============================================================================
+ */
 
 #include "EnumParameterUI.h"
 
 
 
 EnumParameterUI::EnumParameterUI(Parameter * parameter) :
-	ParameterUI(parameter),
-	ep((EnumParameter *)parameter)
+ParameterUI(parameter),
+ep((EnumParameter *)parameter)
 {
-	cb.addListener(this);
-	cb.setTextWhenNoChoicesAvailable(ep->niceName);
-	cb.setTextWhenNothingSelected(ep->niceName);
+  cb.addListener(this);
+  cb.setTextWhenNoChoicesAvailable(ep->niceName);
+  cb.setTextWhenNothingSelected(ep->niceName);
   cb.setTooltip(ParameterUI::getTooltip());
-	addAndMakeVisible(cb);
+  cb.setEditableText(ep->userCanEnterText);
+  addAndMakeVisible(cb);
   ep->addAsyncEnumParameterListener(this);
-  setCanModifyModel(false, false);
+  setIsFileBased( false);
+  addFunction = nullptr;
 
-	updateComboBox();
+  updateComboBox();
 }
 
 EnumParameterUI::~EnumParameterUI()
 {
   ep->removeAsyncEnumParameterListener(this);
-	cb.removeListener(this);
+  cb.removeListener(this);
 }
 
 
-void EnumParameterUI::setCanModifyModel(bool isModifiable,bool _isFileBased){
-  canModifyModel = isModifiable;
-  isFileBased = _isFileBased;
-  updateComboBox();
-
-  
+void EnumParameterUI::setIsFileBased(bool _isFileBased){
+  if(_isFileBased){
+    addFunction = [](EnumParameter * ep){
+      FileChooser fc("choose file : "+ep->niceName);
+      bool res = false;
+      Identifier key;
+      String value;
+      if(fc.browseForFileToOpen()){
+        File f( fc.getResult());
+        if(f.exists()){
+          res = true;
+          key = f.getFileNameWithoutExtension();
+          value =f.getFullPathName();
+        }
+      }
+      return std::tuple<bool,Identifier,var>(res,key,value);
+    };
+  }
+  else{
+    addFunction = nullptr;
+  }
 }
+
 void EnumParameterUI::updateComboBox()
-{	
-	cb.clear(dontSendNotification);
+{
+  cb.clear(dontSendNotification);
 
 
-	idKeyMap.clear();
+  idKeyMap.clear();
   if(DynamicObject * dob = ep->getModel()){
-	int id = 1;
+    int id = 1;
     cb.addItem("None", NoneId);
     NamedValueSet map = dob->getProperties();
     for(auto & kv:map)
-	{
-    String displayed = kv.name.toString();
-		cb.addItem(displayed, id);
-		idKeyMap.set(id, displayed);
-		keyIdMap.set(displayed, id);
-		id++;
-	}
+    {
+      String key =kv.name.toString();
+      String displayed = key;//+" ["+kv.value.toString()+"]";
+      cb.addItem(displayed, id);
+      idKeyMap.set(id, key);
+      keyIdMap.set(key, id);
+      id++;
+    }
   }
   String sel = ep->getFirstSelectedId().toString();
   selectString(sel);
 
-  if(canModifyModel){
+  if(ep->isEditable){
     cb.addItem("add " + ep->niceName,addElementId);
     cb.addItem("remove " + ep->niceName, removeElementId);
   }
@@ -75,22 +94,22 @@ String EnumParameterUI::getCBSelectedKey()
     jassertfalse;
     return String::empty;
   }
-	return idKeyMap[cb.getSelectedId()];
+  return idKeyMap[cb.getSelectedId()];
 }
 
 void EnumParameterUI::resized()
 {
-	cb.setBounds(getLocalBounds());
+  cb.setBounds(getLocalBounds());
 }
 
 void EnumParameterUI::enumOptionAdded(EnumParameter *, const Identifier &)
 {
-	updateComboBox();
+  updateComboBox();
 }
 
 void EnumParameterUI::enumOptionRemoved(EnumParameter *, const Identifier &)
 {
-	updateComboBox();
+  updateComboBox();
 }
 void EnumParameterUI::enumOptionSelectionChanged(EnumParameter *,bool isSelected,bool isValid, const Identifier &name){
   if(isValid){
@@ -99,7 +118,7 @@ void EnumParameterUI::enumOptionSelectionChanged(EnumParameter *,bool isSelected
   }
 }
 
-void EnumParameterUI::valueChanged(const var & value) 
+void EnumParameterUI::valueChanged(const var & value)
 {
   if(value.isString()){
     selectString(value.toString());
@@ -112,20 +131,24 @@ void EnumParameterUI::valueChanged(const var & value)
 void EnumParameterUI::comboBoxChanged(ComboBox *)
 {
   int id = cb.getSelectedId();
-  if (id < 0){
-    if(id==addElementId){
-      if(isFileBased){
-        FileChooser fc("choose file : "+ep->niceName);
-        if(fc.browseForFileToOpen()){
-          File f( fc.getResult());
-        if(f.exists()){
-          Identifier sId = f.getFileNameWithoutExtension();
-          ep->getModel()->addOption(sId, f.getFullPathName());
-          ep->selectId(sId, true,false);
-        }
+  if (id <=0){
+    if(id==0 ){
+      String v = cb.getText();
+      if(v.isNotEmpty()&& (v != cb.ComboBox::getTextWhenNothingSelected())){
+        jassert(ep->userCanEnterText);
+        ep->addOption(v,v);
+        ep->selectId(v, true,false);
+      }
+    }
+    else if(id==addElementId ){
+      if(addFunction!=nullptr){
+        auto res = addFunction(ep);
+        if(std::get<0>(res)){
+          ep->addOption(std::get<1>(res),std::get<2>(res));
+          ep->selectId(std::get<1>(res), true,false);
         }
       }
-      else{
+      else if (id==removeElementId){
         AlertWindow nameWindow("which element should be added ?", "type the elementName", AlertWindow::AlertIconType::NoIcon, this);
         nameWindow.addTextEditor("paramToAdd", parameter->stringValue());
         nameWindow.addButton("OK", 1, KeyPress(KeyPress::returnKey));
@@ -136,7 +159,7 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
         if (result)
         {
           Identifier elemToAdd = nameWindow.getTextEditorContents("paramToAdd");
-          ep->getModel()->addOption(elemToAdd, var::null);
+          ep->getModel()->addOption(elemToAdd, elemToAdd.toString());
           ep->selectId(elemToAdd, true,false);
         }
 
@@ -156,17 +179,18 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
       {
         String elemToRemove = nameWindow.getTextEditorContents("paramToRemove");
         if(elemToRemove.isNotEmpty()){
-        ep->getModel()->removeOption(elemToRemove);
+          ep->getModel()->removeOption(elemToRemove);
         }
       }
     }
     else if( id==NoneId){
       cb.setSelectedId(0);
     }
-    
+
   }
   else{
-	ep->setValue(getCBSelectedKey());
+
+    ep->setValue(getCBSelectedKey());
   }
 };
 

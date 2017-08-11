@@ -9,6 +9,7 @@
  */
 
 #include "NetworkUtils.h"
+#include "DebugHelpers.h"
 
 // TODO implement dns support on linux / windows
 #define SUPPORT_DNS JUCE_MAC
@@ -18,26 +19,24 @@ juce_ImplementSingleton(NetworkUtils);
 
 
 
+NetworkUtils::~NetworkUtils(){
 
-
-
+}
 
 bool NetworkUtils::isValidIP(const String & ip){
   StringArray arr;
   arr.addTokens(ip,".","\"");
   return arr.size()==4;
 }
-
-NetworkUtils::~NetworkUtils(){
-  
-}
-
 void NetworkUtils::addOSCRecord(OSCClientRecord & oscRec){
-
-  dnsMap.set(oscRec.getShortName() , oscRec);
+  auto key = oscRec.getShortName();
+  dnsMap.set(key , oscRec);
+  DBG("found OSC : " << oscRec.getShortName() << " ("<<oscRec.name << ")");
+  MessageManager::getInstance()->callAsync([this,&oscRec](){listeners.call(&Listener::oscClientAdded,oscRec);});
 }
-void NetworkUtils::removeOSCRecord(OSCClientRecord & o){
-
+void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
+  dnsMap.remove(oscRec.getShortName());
+  MessageManager::getInstance()->callAsync([this,&oscRec](){listeners.call(&Listener::oscClientRemoved,oscRec);});
 }
 
 
@@ -47,8 +46,10 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & o){
 #include <net/if.h>     // For if_nametoindex()
 #include <netdb.h> //hostent
 #include <arpa/inet.h>
+#include <ifaddrs.h>
 
 #include <unordered_map>
+#include <unordered_set>
 
 
 
@@ -57,14 +58,35 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & o){
 class NetworkUtils::Pimpl: private Thread{
 public:
   Pimpl():Thread("bonjourOSC"){
-    uint32_t idx = if_nametoindex("en1");
-
-    browse("_osc._udp","",idx);
+    startBrowse();
 
 
 
   }
+  ~Pimpl(){
+    stopThread(-1);
+  }
 
+  void startBrowse(){
+    // scan all interfaces
+    std::unordered_set<uint32_t> idxs;
+    {
+      struct ifaddrs *ifap = NULL;
+      if(getifaddrs(&ifap) < 0) {LOG("Cannot not get a list of interfaces\n");return;}
+      for(struct ifaddrs *p = ifap; p!=NULL; p=p->ifa_next) {
+
+        idxs.insert( if_nametoindex(p->ifa_name));
+      }
+      freeifaddrs(ifap);
+    }
+
+    for(auto i:idxs){
+      browse("_osc._udp","local",i);
+//      browse("_aftovertcp._udp","",i);
+//      browse("_aftovertcp._tcp","",i);
+    }
+    
+  }
   std::unordered_map<DNSServiceRef,int> m_ClientToFdMap;
 
   void run() override{
@@ -79,31 +101,38 @@ public:
         }
         fd_set readfds;
         FD_ZERO(&readfds);
+        int ndfs=0;
+        if(m_ClientToFdMap.size()){
+          ndfs = m_ClientToFdMap.begin()->second + (m_ClientToFdMap.size()-1);
+        }
         for ( auto ii = m_ClientToFdMap.cbegin() ; ii != m_ClientToFdMap.cend() ; ii++ ) {
           FD_SET(ii->second, &readfds);
         }
-        //      struct timeval tv = { 0, 1000 };
-        //      int result = select(0, &readfds, (fd_set*)NULL, (fd_set*)NULL, &tv);
-        //      if ( result > 0 ) {
-        //
-        // While iterating through the loop, the callback functions might delete
-        // the client pointed to by the current iterator, so I have to increment
-        // it BEFORE calling DNSServiceProcessResult
-        //
-        for ( auto ii = m_ClientToFdMap.cbegin() ; ii != m_ClientToFdMap.cend() ; ) {
-          auto jj = ii++;
-          if (FD_ISSET(jj->second, &readfds) ) {
-            if((DNSServiceProcessResult(jj->first)!=0)) jassertfalse;
-            if ( ++count > 10 )
-              break;
+
+        struct timeval tv = { 0, 1000 };
+        int result = select(ndfs, &readfds, (fd_set*)NULL, (fd_set*)NULL, &tv);
+        if ( result > 0 ) {
+          //
+          // While iterating through the loop, the callback functions might delete
+          // the client pointed to by the current iterator, so I have to increment
+          // it BEFORE calling DNSServiceProcessResult
+          //
+          for ( auto ii = m_ClientToFdMap.cbegin() ; ii != m_ClientToFdMap.cend() ; ) {
+            auto jj = ii++;
+            if (FD_ISSET(jj->second, &readfds) ) {
+              if((DNSServiceProcessResult(jj->first)!=0)) jassertfalse;
+              if ( ++count > 10 )
+                break;
+            }
           }
-        }
-        //      } else
-        //        break;
+        } else
+          break;
         if ( count > 10 )
           break;
       }
+      wait(200);
     }
+    DBG("dns thread ended");
   }
   void browse(const std::string& regType, const std::string& domain,uint32_t itf_idx){
     if(auto * nu = NetworkUtils::getInstanceWithoutCreating()){
@@ -138,6 +167,7 @@ public:
     String name(fullname);
     String host (hosttarget);
     {
+      // format hostname to ip part
       if(host.endsWith(".local.")){host=host.substring(0,host.length()-7);}
       StringArray arr;
       arr.addTokens(host,"-","");
@@ -153,7 +183,7 @@ public:
     String description = String::fromUTF8((char*)txtRecord);
     uint16 host_port = ntohs(port);
     OSCClientRecord oscRec{name,ip,description,host_port};
-    DBG("found OSC : " << oscRec.getShortName() << " ("<<oscRec.name << ")");
+
     nu->addOSCRecord(oscRec);
 
   }
@@ -198,7 +228,7 @@ OSCClientRecord  NetworkUtils::hostnameToOSCRecord(const String & hn)
 }
 #else
 
-#include "DebugHelpers.h"
+
 // dummy implementation
 class NetworkUtils::Pimpl{
 
@@ -215,13 +245,6 @@ OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)
 
 
 NetworkUtils::NetworkUtils(){
-
-  Array<juce::IPAddress> results;
-  IPAddress::findAllAddresses(results);
-  for (auto &p:results){
-    DBG(" addr :: " << p.toString());
-  }
-
   pimpl = new Pimpl;
-
+  
 }
