@@ -184,7 +184,11 @@ void setAllComponentMappingState(Component * c,bool b){
     Component *  ch = c->getChildComponent(i);
     if(ch->isVisible()){
       if(auto lch = dynamic_cast<ControllableUI*>(ch)){
-        lch->setMappingState(b);
+        auto *p = lch->controllable->getParameter();
+        if(p->isEditable ){
+          lch->setMappingState(b);
+        }
+
 
       }
 

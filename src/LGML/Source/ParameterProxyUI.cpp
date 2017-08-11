@@ -17,7 +17,7 @@ ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
   linkedParamUI(nullptr),
 	ParameterUI(proxy),
 	paramProxy(proxy),
-	chooser(proxy->getRoot())
+chooser(proxy->getRoot())
 
 {
   setMappingDest(true);
@@ -63,8 +63,18 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 		linkedParamUI = nullptr;
 	}
 
+
+
 //  linkedParamUI = p?new NamedControllableUI(ParameterUIFactory::createDefaultUI(p),100,true):nullptr;
-  linkedParamUI = p?ParameterUIFactory::createDefaultUI(p):nullptr;
+  if(dynamic_cast<ParameterProxy*>(p)){
+    //encapsulate ui if proxy of proxy to show it explicitly
+    auto * eUI =  new NamedControllableUI(ParameterUIFactory::createDefaultUI(p),20);
+    eUI->controllableLabel.setText("proxy : " + p->niceName, dontSendNotification);
+    linkedParamUI = eUI;
+  }
+  else{
+    linkedParamUI = p?ParameterUIFactory::createDefaultUI(p):nullptr;
+  }
 
 
 	if (linkedParamUI != nullptr)
@@ -72,9 +82,11 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 		addAndMakeVisible(linkedParamUI);
 		updateTooltip();
     auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get());
+    if(cUI)
 		cUI->setTooltip(getTooltip());
 	}
   chooser.setVisible(linkedParamUI==nullptr);
+  chooser.filterOutControllable = {paramProxy};
 	resized();
 }
 

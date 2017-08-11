@@ -19,7 +19,7 @@ rootOfProxy(nullptr)
 {
   type = Controllable::PROXY;
   setRoot(root);
-  Parameter::isEditable = false;
+
 
 }
 
@@ -39,8 +39,20 @@ void ParameterProxy::setRoot(ControllableContainer * r){
   resolveAddress();
 
 }
+void ParameterProxy::tryToSetValue(var _value,bool silentSet,bool force ){
+
+  if(_value.isString()){
+    StringParameter::tryToSetValue(_value, silentSet, force);
+  }
+  else if (linkedParam){
+    //WIP : polymorphic set value not supported
+    jassertfalse;
+    linkedParam->tryToSetValue(_value, silentSet, force);
+  }
+};
 void ParameterProxy::setValueInternal(var & _value)
 {
+  if(_value.isString()){
   StringParameter::setValueInternal(_value);
   if(auto * root = getRoot()){
     if(!resolveAddress() && stringValue().isNotEmpty()){
@@ -49,6 +61,12 @@ void ParameterProxy::setValueInternal(var & _value)
     else{
       root->removeControllableContainerListener(this);
     }
+  }
+  }
+  else if(linkedParam){
+    //WIP : polymorphic set value not supported
+    jassertfalse;
+    linkedParam->setValueInternal(_value);
   }
 }
 
@@ -74,8 +92,14 @@ void ParameterProxy::setParamToReferTo(Parameter * p)
       linkedParam->removeParameterListener(this);
       linkedParam->removeControllableListener(this);
     }
-    linkedParam = p;
-
+    if(p==this){
+      jassertfalse;
+      DBG("try to auto reference proxy");
+      linkedParam = nullptr;
+    }
+    else{
+      linkedParam = p;
+    }
     if (linkedParam != nullptr){
       linkedParam->addParameterListener(this);
       linkedParam->addControllableListener(this);

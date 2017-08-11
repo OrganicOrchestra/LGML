@@ -32,11 +32,11 @@ public:
 
   void setRoot(ControllableContainer * );
   Parameter * get();
-	
-	virtual void setValueInternal(var & _value) override;
+  void tryToSetValue(var _value,bool silentSet,bool force )override;
+  void setValueInternal(var & _value) override;
 
 	// Inherited via Listener
-	virtual void parameterValueChanged(Parameter * p) override;
+  void parameterValueChanged(Parameter * p) override;
    
 	 void setParamToReferTo(Parameter * p);
 

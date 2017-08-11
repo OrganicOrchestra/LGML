@@ -19,10 +19,11 @@ class Controllable;
 class ControllableContainerPopupMenu : public PopupMenu
 {
 public:
-	ControllableContainerPopupMenu(ControllableContainer * rootContainer);
+  ControllableContainerPopupMenu(ControllableContainer * rootContainer,Array<Controllable*> * filterOut =nullptr);
 	virtual ~ControllableContainerPopupMenu();
 
 	Array<Controllable *> controllableList;
+  Array<Controllable*> * filterOutControllable;
 	void populateMenu(PopupMenu *subMenu, ControllableContainer * container, int &currentId);
 
 
@@ -34,7 +35,7 @@ public:
 class ControllableReferenceUI : public TextButton, public ButtonListener
 {
 public :
-	ControllableReferenceUI(ControllableContainer * rootContainer = nullptr);
+	ControllableReferenceUI(ControllableContainer * rootContainer = nullptr,Array<Controllable*> filterOut ={});
 	virtual ~ControllableReferenceUI();
 
 	WeakReference<ControllableContainer> rootContainer;
@@ -42,7 +43,7 @@ public :
 	WeakReference<Controllable> currentControllable;
 	void setCurrentControllale(Controllable * c);
 
-  
+  Array<Controllable*> filterOutControllable;
 
 
 

@@ -65,6 +65,10 @@ void FastMap::process(bool toReferenceOut)
   if (invertParam->boolValue()) newIsInRange = !newIsInRange;
 
   auto outRef = (toReferenceOut?referenceOut:referenceIn)->get();
+  while(auto *prox = dynamic_cast<ParameterProxy*>(outRef)){
+      outRef = prox->linkedParam;
+  }
+  if(!outRef) return;
   fastMapIsProcessing = true;
   if (outRef->type == Controllable::TRIGGER)
   {
@@ -129,8 +133,12 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
     }
     else{
 
-      float newMin = referenceIn->linkedParam?(float)referenceIn->linkedParam->minimumValue:0;
-      float newMax = referenceIn->linkedParam?(float)referenceIn->linkedParam->maximumValue:1;
+      auto * lpar = referenceIn->linkedParam.get();
+      while(auto * prox = dynamic_cast<ParameterProxy*>(lpar)){
+        lpar = prox->linkedParam;
+      }
+      float newMin = lpar?(float)lpar->minimumValue:0;
+      float newMax = lpar?(float)lpar->maximumValue:1;
       inputRange->setRange(newMin,newMax);
       inputRange->setValue(newMin,newMax);
 
@@ -157,8 +165,12 @@ void FastMap::linkedParamChanged(ParameterProxy *p) {
     }
     else{
 
-      float newMin = referenceOut->linkedParam?(float)referenceOut->linkedParam->minimumValue:0;
-      float newMax = referenceOut->linkedParam?(float)referenceOut->linkedParam->maximumValue:1;
+      auto * lpar = referenceOut->linkedParam.get();
+      while(auto * prox = dynamic_cast<ParameterProxy*>(lpar)){
+        lpar = prox->linkedParam;
+      }
+      float newMin = lpar?(float)lpar->minimumValue:0;
+      float newMax = lpar?(float)lpar->maximumValue:1;
       outputRange->setRange(newMin,newMax);
       outputRange->setValue(newMin,newMax);
       

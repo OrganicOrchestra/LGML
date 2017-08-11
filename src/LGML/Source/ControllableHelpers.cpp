@@ -13,7 +13,8 @@
 
 #include "NodeManager.h"
 
-ControllableContainerPopupMenu::ControllableContainerPopupMenu(ControllableContainer * rootContainer)
+ControllableContainerPopupMenu::ControllableContainerPopupMenu(ControllableContainer * rootContainer,Array<Controllable*> *_filterOut ):
+filterOutControllable(_filterOut)
 {
 	int id = 1;
 	if (rootContainer == nullptr) rootContainer = NodeManager::getInstance(); //to replace with global app container containing nodes, controllers, rules, etc...
@@ -30,7 +31,7 @@ void ControllableContainerPopupMenu::populateMenu(PopupMenu * subMenu, Controlla
 	{
 		for (auto &c : container->controllables)
 		{
-			if (c->isControllableExposed)
+			if (c->isControllableExposed && (!filterOutControllable || !filterOutControllable->contains(c)))
 			{
 				subMenu->addItem(currentId, c->niceName);
 				controllableList.add(c);
@@ -58,9 +59,10 @@ Controllable * ControllableContainerPopupMenu::showAndGetControllable()
 
 
 
-ControllableReferenceUI::ControllableReferenceUI(ControllableContainer * container) :
+ControllableReferenceUI::ControllableReferenceUI(ControllableContainer * container,Array<Controllable*> filterOut) :
 	rootContainer(container),
-	TextButton("Target")
+	TextButton("Target"),
+  filterOutControllable(filterOut)
 {
   addListener(this);
 	setTooltip("Choose a target");
@@ -94,7 +96,8 @@ void ControllableReferenceUI::setCurrentControllale(Controllable * c)
 
 void ControllableReferenceUI::buttonClicked(Button *)
 {
-	ControllableContainerPopupMenu p(rootContainer);
+  ControllableContainerPopupMenu p(rootContainer,&filterOutControllable);
 	Controllable * c = p.showAndGetControllable();
+
 	if(c != nullptr) setCurrentControllale(c);
 }
