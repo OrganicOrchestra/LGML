@@ -262,12 +262,18 @@ Array<var> * EnumParameter::getSelectedSet(const juce::var &v) const{
 
 void EnumParameter::modelOptionAdded(EnumParameterModel *,Identifier & key ) {
   auto msg = EnumChangeMessage::newStructureChangeMessage(key, true);
+  if(getSelectedIds().contains(key)){
+    msg->isSelectionChange = true;
+  }
   processForMessage(*msg, enumListeners);
   asyncNotifier.addMessage(msg);
 
 };
 void EnumParameter::modelOptionRemoved(EnumParameterModel *,Identifier & key) {
   auto msg = EnumChangeMessage::newStructureChangeMessage(key, false);
+  if(getSelectedIds().contains(key)){
+    msg->isSelectionChange = true;
+  }
   processForMessage(*msg, enumListeners);
   asyncNotifier.addMessage(msg);
 };
@@ -276,23 +282,13 @@ void EnumParameter::processForMessage(const EnumChangeMessage &msg,ListenerList<
   if(msg.isStructureChange){
     if(msg.isAdded){
       _listeners.call(&EnumListener::enumOptionAdded, this, msg.key);
-      // call selection change if a selection become valid
-      if(getSelectedIds().contains(msg.key)){
-        _listeners.call(&EnumListener::enumOptionSelectionChanged,this, true, true, msg.key);
-      }
     }
     else{
-      // call selection change if a selection become valid
-      if(getSelectedIds().contains(msg.key)){
-        _listeners.call(&EnumListener::enumOptionSelectionChanged,this, true, true, msg.key);
-      }
       _listeners.call(&EnumListener::enumOptionRemoved, this, msg.key);
-
     }
 
-
   }
-  else{
+  if (msg.isSelectionChange){
     // check validity state has not changed
     jassert(msg.isValid==getModel()->isValidId(msg.key));
     _listeners.call(&EnumListener::enumOptionSelectionChanged, this,msg.isSelected,msg.isValid, msg.key);

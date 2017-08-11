@@ -77,6 +77,7 @@ class EnumChangeMessage{
     auto msg = new EnumChangeMessage();
     msg->key = k;
     msg->isStructureChange = true;
+    msg->isSelectionChange = false;
     msg->isAdded = isAdded;
     return msg;
   }
@@ -85,6 +86,7 @@ class EnumChangeMessage{
     auto msg = new EnumChangeMessage();
     msg->key = k;
     msg->isStructureChange = false;
+    msg->isSelectionChange = true;
     msg->isValid = isValid;
     msg->isSelected = isSelected;
     return msg;
@@ -92,6 +94,7 @@ class EnumChangeMessage{
 
   Identifier key;
   bool isStructureChange;
+  bool isSelectionChange;
   bool isAdded;
   bool isSelected;
   bool isValid;
