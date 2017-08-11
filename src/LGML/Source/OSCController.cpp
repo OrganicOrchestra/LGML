@@ -33,7 +33,7 @@ public:
   }
 
   void oscClientAdded(OSCClientRecord &o) {
-    addOption(o.getShortName(), o.ipAddress.toString());
+    addOrSetOption(o.getShortName(), o.ipAddress.toString());
   };
   void oscClientRemoved(OSCClientRecord &o) {
     removeOption(o.getShortName());
@@ -238,7 +238,7 @@ void OSCController::logMessage(const OSCMessage & msg,const String & prefix){
   for(int i = 0 ; i < msg.size() ; i++){
     OSCArgument a = msg[i];
     if(a.isInt32())log+=String(msg[i].getInt32())+" ";
-    else if(a.isFloat32())log+=String(msg[i].getFloat32())+" ";
+    else if(a.isFloat32())log+=String(msg[i].getFloat32(),2)+" ";
     else if(a.isString())log+=String(msg[i].getString())+" ";
 
   }
