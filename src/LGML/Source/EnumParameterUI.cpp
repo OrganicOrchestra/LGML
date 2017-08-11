@@ -148,7 +148,7 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
           ep->selectId(std::get<1>(res), true,false);
         }
       }
-      else if (id==removeElementId){
+      else{
         AlertWindow nameWindow("which element should be added ?", "type the elementName", AlertWindow::AlertIconType::NoIcon, this);
         nameWindow.addTextEditor("paramToAdd", parameter->stringValue());
         nameWindow.addButton("OK", 1, KeyPress(KeyPress::returnKey));
@@ -158,9 +158,12 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
 
         if (result)
         {
-          Identifier elemToAdd = nameWindow.getTextEditorContents("paramToAdd");
-          ep->getModel()->addOption(elemToAdd, elemToAdd.toString());
-          ep->selectId(elemToAdd, true,false);
+          String res = nameWindow.getTextEditorContents("paramToAdd");
+          if(res.isNotEmpty()){
+            Identifier elemToAdd = res;
+            ep->getModel()->addOption(elemToAdd, elemToAdd.toString());
+            ep->selectId(elemToAdd, true,false);
+          }
         }
 
 
