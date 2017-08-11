@@ -29,7 +29,6 @@ isControllableExposed(true),
 hideInEditor(false),
 shouldSaveObject(false),
 isSavable(true),
-replaceSlashesInShortName(true),
 enabled(enabled),
 isUserDefined(false)
 {
@@ -61,7 +60,7 @@ void Controllable::setCustomShortName(const String & _shortName)
 
 void Controllable::setAutoShortName() {
   hasCustomShortName = false;
-  shortName = StringUtil::toShortName(niceName, replaceSlashesInShortName);
+  shortName = StringUtil::toShortName(niceName);
   updateControlAddress();
   listeners.call(&Listener::controllableNameChanged, this);
 }

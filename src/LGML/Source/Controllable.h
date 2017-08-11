@@ -58,7 +58,6 @@ public:
   bool isSavable;
   String controlAddress;
 
-  bool replaceSlashesInShortName;
 
   ControllableContainer * parentContainer;
 

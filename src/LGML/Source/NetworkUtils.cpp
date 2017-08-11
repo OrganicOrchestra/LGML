@@ -63,7 +63,7 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
 
 class NetworkUtils::Pimpl: private Thread{
 public:
-  Pimpl():Thread("bonjourOSC"){
+  Pimpl(NetworkUtils *_nu):Thread("bonjourOSC") ,nu(_nu){
     name = getName();
     // scan all interfaces starting with en
     struct ifaddrs *ifap = NULL;
@@ -98,6 +98,8 @@ public:
   std::unordered_map<DNSServiceRef,int> m_ClientToFdMap;
   std::unordered_map<DNSServiceRef,int> m_ServerToFdMap;
   String name;
+  NetworkUtils * nu;
+  static constexpr int defaultOSCPort = 8000;
   
 
   String getName(){
@@ -116,7 +118,7 @@ public:
                             "_osc._udp",//const char                          *regtype,
                             "local",//const char                          *domain,       /* may be NULL */
                             NULL,//const char                          *host,         /* may be NULL */
-                            htons(8000),//uint16_t port,                                     /* In network byte order */
+                            htons(defaultOSCPort),//uint16_t port,                                     /* In network byte order */
                             0,//uint16_t txtLen,
                             NULL,//const void                          *txtRecord,    /* may be NULL */
                             NULL,//DNSServiceRegisterReply callBack,                  /* may be NULL */
@@ -127,9 +129,11 @@ public:
     }
   }
   void startBrowse(){
-    if(auto * nu = NetworkUtils::getInstanceWithoutCreating()){
+
       nu->dnsMap.clear();
-    }
+      OSCClientRecord rec = {"localhost",IPAddress(String("127.0.0.1")),"local computer" ,defaultOSCPort};
+      nu->addOSCRecord(rec);
+
 
     for(auto i:if_idxs){
       browse("_osc._udp","local",i);
@@ -317,6 +321,6 @@ OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)
 
 NetworkUtils::NetworkUtils(){
   IPAddress::findAllAddresses(localIps,false);
-  pimpl = new Pimpl;
+  pimpl = new Pimpl(this);
   
 }

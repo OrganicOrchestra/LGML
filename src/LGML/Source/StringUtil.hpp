@@ -15,33 +15,11 @@
 namespace StringUtil
 {
 
-  static String toShortName(const String &niceName, bool replaceSlashes = false) {
+  static String toShortName(const String &niceName) {
     if (niceName.isEmpty()) return "";
-
-
-    String res = niceName;
-
-    // osc based escaping
+    //  based on OSC escaping
     // http://opensoundcontrol.org/spec-1_0
-    if(replaceSlashes) res = res.replaceCharacter('/','_');
-    res=res.replaceCharacter('#','_');
-    res=res.replaceCharacter('*','_');
-    res=res.replaceCharacter(',','_');
-    res=res.replaceCharacter('?','_');
-    res=res.replaceCharacter('[','_');
-    res=res.replaceCharacter(']','_');
-    res=res.replaceCharacter('{','_');
-    res=res.replaceCharacter('}','_');
-
-//    {
-//      auto statChar = res.getCharPointer();
-//      if(res.length()>2 && statChar.isUpperCase() && (statChar+1).isLowerCase()){
-//        statChar.write(statChar.toLowerCase());
-//      }
-//    }
-    res=res.removeCharacters(" ");
-
-    return res;
+    return niceName.removeCharacters(" #*,?[]{}");
   }
 
 

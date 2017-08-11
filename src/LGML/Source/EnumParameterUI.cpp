@@ -137,7 +137,7 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
       if(v.isNotEmpty()&& (v != cb.ComboBox::getTextWhenNothingSelected())){
         jassert(ep->userCanEnterText);
         ep->addOption(v,v);
-        ep->selectId(v, true,false);
+        ep->setValue(v);
       }
     }
     else if(id==addElementId ){

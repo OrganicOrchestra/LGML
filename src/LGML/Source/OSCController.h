@@ -110,12 +110,12 @@ private:
 
   void checkAndAddParameterIfNeeded(const OSCMessage & msg);
 
-  friend class ResolveIPJob;
-  void resolveHostnameIfNeeded(bool force = false);
+  
+  void resolveHostnameIfNeeded();
   bool hostNameResolved ;
-  bool isResolving ;
+  
   String remoteIP;
-  ThreadPoolJob* resolveJob;
+  
 };
 
 

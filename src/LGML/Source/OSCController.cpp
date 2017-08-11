@@ -17,16 +17,11 @@
 #include "NetworkUtils.h"
 
 
-
-extern ThreadPool * getEngineThreadPool();
-
-
 class OSCClientModel:public EnumParameterModel,NetworkUtils::Listener{
 
 public:
 
   OSCClientModel(){
-    addOption("localhost","127.0.0.1");
     NetworkUtils::getInstance()->addListener(this);
   };
   ~OSCClientModel(){
@@ -46,18 +41,17 @@ Controller(_name),
 lastMessageReceived(OSCAddressPattern("/fake")),
 isProcessingOSC(false),
 oscMessageQueue(this),
-hostNameResolved(false),
-isResolving(false)
+hostNameResolved(false)
 
 {
   NetworkUtils::getInstance();
   localPortParam = addNewParameter<StringParameter>("Local Port", "The port to bind for the controller to receive OSC from it","11000");
 
+
+  remotePortParam = addNewParameter<StringParameter>("Remote Port", "The port bound by the controller to send OSC to it","8000");
   static OSCClientModel model;
   remoteHostParam = addNewParameter<EnumParameter>("Remote Host", "The host's IP of the remote controller",&model,true);
   remoteHostParam->selectId("localhost", true);
-  remotePortParam = addNewParameter<StringParameter>("Remote Port", "The port bound by the controller to send OSC to it","8000");
-
   logIncomingOSC = addNewParameter<BoolParameter>("logIncomingOSC", "log the incoming OSC Messages", false);
   logOutGoingOSC = addNewParameter<BoolParameter>("logOutGoingOSC", "log the outGoing OSC Messages", false);
   speedLimit = addNewParameter<FloatParameter>("speedLimit", "min interval (ms) between 2 series of "+String(NUM_OSC_MSG_IN_A_ROW)+" OSCMessages", 0,0,100);
@@ -94,64 +88,36 @@ void OSCController::setupReceiver()
 }
 void OSCController::setupSender()
 {
-  //DBG("Resetup sender with " << remoteHostParam->stringValue() << ":" << remotePortParam->stringValue().getIntValue());
-  if(isResolving) return;
+
   sender.disconnect();
   hostNameResolved = false;
-  resolveHostnameIfNeeded(true);
+  resolveHostnameIfNeeded();
 
-  if(!isResolving && !hostNameResolved){
+  if(!hostNameResolved){
     LOG("no valid ip found for " << remoteHostParam->stringValue());
   }
 
 }
 
-class ResolveIPJob : public ThreadPoolJob{
-  public :
-  ResolveIPJob(OSCController* cont):owner(cont),ThreadPoolJob("resolveIP"){
 
-  }
-  WeakReference<ControllableContainer> owner;
 
-  JobStatus runJob()override{
-    
-    if(OSCController* c = (OSCController*) owner.get()){
-
-      OSCClientRecord resolved = NetworkUtils::hostnameToOSCRecord(c->remoteHostParam->stringValue());
-
-      if(OSCController* c = (OSCController*) owner.get()){
-        if(resolved.isValid()){
-          c->hostNameResolved = true;
-          c->remoteIP = resolved.ipAddress.toString();
-          c->remotePortParam->setValue(String((int)resolved.port));
-          LOG("resolved IP : "<<c->remoteHostParam->stringValue() << " > "<<c->remoteIP);
-          c->sender.connect(c->remoteIP, c->remotePortParam->stringValue().getIntValue());
-        }
-        else{
-          LOG("can't resolve IP : "<<c->remoteHostParam->stringValue() );
-        }
-        c->isResolving=false;
-      }
-
-    }
-    return JobStatus::jobHasFinished;
-
-  };
-
-};
-
-void OSCController::resolveHostnameIfNeeded(bool force){
+void OSCController::resolveHostnameIfNeeded(){
   if(hostNameResolved) return;
-  if(isResolving && !force) return;
+  
   String hostName = remoteHostParam->stringValue();
   if(hostName.isNotEmpty()){
-    getEngineThreadPool()->removeJob(resolveJob,true,-1);
-    resolveJob = nullptr;
   if(!NetworkUtils::isValidIP(hostName)){
-    isResolving = true;
-    resolveJob = new ResolveIPJob(this);
-    getEngineThreadPool()->addJob(resolveJob, true);
-
+    OSCClientRecord resolved = NetworkUtils::hostnameToOSCRecord(hostName);
+    if(resolved.isValid()){
+      hostNameResolved = true;
+      remoteIP = resolved.ipAddress.toString();
+      remotePortParam->setValue(String((int)resolved.port));
+      LOG("resolved IP : "<<hostName << " > "<<remoteIP);
+      sender.connect(remoteIP, remotePortParam->stringValue().getIntValue());
+    }
+    else{
+      LOG("can't resolve IP : "<<hostName);
+    }
   }
   else{
     remoteIP = hostName;
@@ -256,7 +222,7 @@ void OSCController::onContainerParameterChanged(Parameter * p)
   Controller::onContainerParameterChanged(p);
 
   if (p == localPortParam) setupReceiver();
-  else if (p == remotePortParam || p == remoteHostParam) setupSender();
+  else if ((p == remotePortParam&& !remoteHostParam->isSettingValue)||p == remoteHostParam ) setupSender();
   else if(p==speedLimit){oscMessageQueue.interval=speedLimit->floatValue();}
 
 

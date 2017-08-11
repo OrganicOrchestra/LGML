@@ -79,6 +79,7 @@ class EnumChangeMessage{
     msg->isStructureChange = true;
     msg->isSelectionChange = false;
     msg->isAdded = isAdded;
+    msg->isValid=true;
     return msg;
   }
 

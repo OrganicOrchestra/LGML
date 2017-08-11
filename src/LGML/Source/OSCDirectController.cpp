@@ -192,6 +192,8 @@ void OSCDirectController::onContainerParameterChanged(Parameter * p) {
 
   }
 
+  
+
 };
 
 void OSCDirectController::sendOSCForAddress(Controllable* c,const String & cAddress){

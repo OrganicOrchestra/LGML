@@ -100,9 +100,12 @@ bool EnumParameter::selectionIsNotEmpty(){
 void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelection){
   if(!appendSelection){
     auto oldS = getSelectedIds();
-    if(! (oldS.size()==1 && oldS.getReference(0) == key) ) {
-     unselectAll();
-    }
+      for (auto & s:oldS){
+        if(s!=key){
+          selectId(s, false,true);
+        }
+      }
+
   }
   Array<var> * selection = getSelectedSet(value);
   jassert(selection);
@@ -120,6 +123,7 @@ void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelecti
     auto msg = EnumChangeMessage::newSelectionMessage(key, shouldSelect, getModel()->isValidId(key));
     processForMessage(*msg, enumListeners);
     asyncNotifier.addMessage(msg);
+
 
   }
 
@@ -264,6 +268,8 @@ void EnumParameter::modelOptionAdded(EnumParameterModel *,Identifier & key ) {
   auto msg = EnumChangeMessage::newStructureChangeMessage(key, true);
   if(getSelectedIds().contains(key)){
     msg->isSelectionChange = true;
+    msg->isSelected = true;
+    Parameter::notifyValueChanged();
   }
   processForMessage(*msg, enumListeners);
   asyncNotifier.addMessage(msg);
@@ -273,6 +279,8 @@ void EnumParameter::modelOptionRemoved(EnumParameterModel *,Identifier & key) {
   auto msg = EnumChangeMessage::newStructureChangeMessage(key, false);
   if(getSelectedIds().contains(key)){
     msg->isSelectionChange = true;
+    msg->isSelected = false;
+    Parameter::notifyValueChanged();
   }
   processForMessage(*msg, enumListeners);
   asyncNotifier.addMessage(msg);
@@ -292,6 +300,7 @@ void EnumParameter::processForMessage(const EnumChangeMessage &msg,ListenerList<
     // check validity state has not changed
     jassert(msg.isValid==getModel()->isValidId(msg.key));
     _listeners.call(&EnumListener::enumOptionSelectionChanged, this,msg.isSelected,msg.isValid, msg.key);
+
   }
 }
 
@@ -301,7 +310,7 @@ void EnumParameter::newMessage(const EnumChangeMessage &msg) {
 };
 
 String EnumParameter::stringValue() const{
-  auto  selected =  getSelectedValues();
+  auto  selected =  getSelectedIds();
   if(selected.size()==0){
     return "";
   }
