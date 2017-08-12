@@ -30,7 +30,7 @@
 #include "AudioConfig.h"
 
 #if LINK_SUPPORT
-#include "ableton/link.hpp"
+#include "ableton/Link.hpp"
 #include "ableton/link/HostTimeFilter.hpp"
 #else
 

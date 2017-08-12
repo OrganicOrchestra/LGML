@@ -1,4 +1,4 @@
-# install juce 
+# this script install JUCE in sibling directory of LGML
 BASEDIR=$(dirname "$0") 
 cd $BASEDIR
 cd ../../..

@@ -1,15 +1,15 @@
 #!/usr/bin/bash
 pwd;
 
-# go to home
-cd ~;
 
+BASEDIR=$(dirname "$0") 
+cd $BASEDIR
+cd ../../..
 
 # install JUCE if needed
-if [ ! -d "Dev/JUCE" ]; then
-	mkdir -p "Dev";
+if [ ! -d "JUCE" ]; then
 	curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip;
 	tar -xzf JUCE.zip;
-	mv JUCE-master Dev/JUCE;
+	mv JUCE-master JUCE;
 fi
 

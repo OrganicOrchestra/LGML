@@ -816,7 +816,7 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
-               extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
+               extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
                extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand="python ../../Scripts/PyUtils/writeSha.py"
                smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"
@@ -835,20 +835,20 @@
                        osxSDK="default" targetName="LGML_Debug"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="/Users/Tintamar/Dev/JUCE/modules"/>
-        <MODULEPATH id="juce_osc" path="/Users/Tintamar/Dev/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib" smallIcon="SL4b92"
@@ -886,7 +886,7 @@
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="-lrubberband"
-                extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
+                extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
                 extraDefs="LINK_PLATFORM_LINUX=1" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                 smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
                 vstFolder="/home/tinmar/SDKs/VST3 SDK">
