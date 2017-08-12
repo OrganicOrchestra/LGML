@@ -2,6 +2,8 @@ version: 2
 jobs:
   build:
     working_directory: ~/LGML
+    docker:
+      - image: ubuntu
     steps:
       - checkout
       - run:
