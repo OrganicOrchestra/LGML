@@ -85,18 +85,7 @@ def updatePathsIfNeeded(osType):
 	vstFolderTag = 'vst3Folder'
 	if osType=='linux':
 		vstFolderTag = 'vstFolder'
-	# vst sdk
-	oldVSTPath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib[vstFolderTag]
-	if not os.path.exists(oldVSTPath):
-
-		print('current VST path not valid')
-		newVSTPath = getValidPath("SDKs/VST3_SDK")
-		if newVSTPath:
-			print('found VST SDK at :' + newVSTPath)
-			hasChanged = True;
-			root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].attrib[vstFolderTag] = newVSTPath
-	else:
-		print('valid vst path : '+oldVSTPath)
+	
 	# updateModule
 	oldModulePath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].findall('MODULEPATHS')[0].findall('MODULEPATH')[0].attrib['path']
 	oldModulePath = os.path.abspath(os.path.join(JuceProjectPath,oldModulePath))

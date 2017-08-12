@@ -5,17 +5,6 @@ pwd;
 cd ~;
 
 
-pwd;
-
-# install VST if needed
-if [ ! -d "SDKs/VST3_SDK" ]; then
-	mkdir -p "SDKs";
-	curl -L http://www.steinberg.net/sdk_downloads/vstsdk366_27_06_2016_build_61.zip > VST3.zip
-	tar -xzf VST3.zip;
-	mv "VST3 SDK/" "SDKs/VST3_SDK/";
-fi
-
-
 # install JUCE if needed
 if [ ! -d "Dev/JUCE" ]; then
 	mkdir -p "Dev";
@@ -24,6 +13,3 @@ if [ ! -d "Dev/JUCE" ]; then
 	mv JUCE-master Dev/JUCE;
 fi
 
-
-# git clone "https://github.com/julianstorer/JUCE.git" --depth 1;
-# pwd && ls;

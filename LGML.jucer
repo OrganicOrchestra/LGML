@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT bundleIdentifier="org.anic.orchestra.LGML" companyName="Organic Orchestra"
-              companyWebsite="http://www.organic-orchestra.com" id="a1hJPO"
-              includeBinaryInAppConfig="1" jucerVersion="5.1.1" name="LGML"
-              projectType="guiapp" version="1.2.0beta" displaySplashScreen="1"
-              reportAppUsage="1" splashScreenColour="Dark" cppLanguageStandard="11">
+              companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="11"
+              displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
+              jucerVersion="5.1.1" name="LGML" projectType="guiapp" reportAppUsage="1"
+              splashScreenColour="Dark" version="1.2.0beta">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
-      <FILE id="NidgME" name="BufferListTest.cpp" compile="1" resource="0"
-            file="Tests/BufferListTest.cpp"/>
+      <FILE compile="1" file="Tests/BufferListTest.cpp" id="NidgME" name="BufferListTest.cpp"
+            resource="0"/>
       <FILE compile="1" file="Tests/LooperTest.cpp" id="lDg0ln" name="LooperTest.cpp"
             resource="0"/>
       <FILE compile="1" file="Tests/NodeChildProofer.cpp" id="m35Qyt" name="NodeChildProofer.cpp"
@@ -48,14 +48,14 @@
         </GROUP>
         <GROUP id="{CE4E1E5A-79CA-E6B8-25CB-34213918772A}" name="parameters">
           <GROUP id="{3D96EBE4-14B3-4C9A-27BF-CB9461A1BFDB}" name="ui">
-            <FILE id="xl9CVB" name="RangeParameterUI.cpp" compile="1" resource="0"
-                  file="Source/RangeParameterUI.cpp"/>
-            <FILE id="RIEpmd" name="RangeParameterUI.h" compile="0" resource="0"
-                  file="Source/RangeParameterUI.h"/>
-            <FILE id="dJbu80" name="ParameterUIFactory.cpp" compile="1" resource="0"
-                  file="Source/ParameterUIFactory.cpp"/>
-            <FILE id="sojpTW" name="ParameterUIFactory.h" compile="0" resource="0"
-                  file="Source/ParameterUIFactory.h"/>
+            <FILE compile="1" file="Source/RangeParameterUI.cpp" id="xl9CVB" name="RangeParameterUI.cpp"
+                  resource="0"/>
+            <FILE compile="0" file="Source/RangeParameterUI.h" id="RIEpmd" name="RangeParameterUI.h"
+                  resource="0"/>
+            <FILE compile="1" file="Source/ParameterUIFactory.cpp" id="dJbu80"
+                  name="ParameterUIFactory.cpp" resource="0"/>
+            <FILE compile="0" file="Source/ParameterUIFactory.h" id="sojpTW" name="ParameterUIFactory.h"
+                  resource="0"/>
             <FILE compile="1" file="Source/TriggerBlinkUI.cpp" id="F1WYW6" name="TriggerBlinkUI.cpp"
                   resource="0"/>
             <FILE compile="0" file="Source/TriggerBlinkUI.h" id="YU6UcA" name="TriggerBlinkUI.h"
@@ -82,10 +82,10 @@
                   resource="0"/>
             <FILE compile="1" file="Source/IntStepperUI.cpp" id="aoAqVv" name="IntStepperUI.cpp"
                   resource="0"/>
-            <FILE id="iOabOz" name="ParameterProxyUI.cpp" compile="1" resource="0"
-                  file="Source/ParameterProxyUI.cpp"/>
-            <FILE id="nSpDWc" name="ParameterProxyUI.h" compile="0" resource="0"
-                  file="Source/ParameterProxyUI.h"/>
+            <FILE compile="1" file="Source/ParameterProxyUI.cpp" id="iOabOz" name="ParameterProxyUI.cpp"
+                  resource="0"/>
+            <FILE compile="0" file="Source/ParameterProxyUI.h" id="nSpDWc" name="ParameterProxyUI.h"
+                  resource="0"/>
             <FILE compile="0" file="Source/IntStepperUI.h" id="IhFgI5" name="IntStepperUI.h"
                   resource="0"/>
             <FILE compile="1" file="Source/ParameterUI.cpp" id="NF7928" name="ParameterUI.cpp"
@@ -97,10 +97,10 @@
             <FILE compile="0" file="Source/StringParameterUI.h" id="MCT8It" name="StringParameterUI.h"
                   resource="0"/>
           </GROUP>
-          <FILE id="gtXkMU" name="RangeParameter.cpp" compile="1" resource="0"
-                file="Source/RangeParameter.cpp"/>
-          <FILE id="a6JwmT" name="RangeParameter.h" compile="0" resource="0"
-                file="Source/RangeParameter.h"/>
+          <FILE compile="1" file="Source/RangeParameter.cpp" id="gtXkMU" name="RangeParameter.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/RangeParameter.h" id="a6JwmT" name="RangeParameter.h"
+                resource="0"/>
           <FILE compile="1" file="Source/Trigger.cpp" id="DqT70c" name="Trigger.cpp"
                 resource="0"/>
           <FILE compile="0" file="Source/Trigger.h" id="aqPYZL" name="Trigger.h"
@@ -109,10 +109,10 @@
                 resource="0"/>
           <FILE compile="0" file="Source/BoolParameter.h" id="YWoigC" name="BoolParameter.h"
                 resource="0"/>
-          <FILE id="HeoqRK" name="ParameterProxy.cpp" compile="1" resource="0"
-                file="Source/ParameterProxy.cpp"/>
-          <FILE id="WxD2RW" name="ParameterProxy.h" compile="0" resource="0"
-                file="Source/ParameterProxy.h"/>
+          <FILE compile="1" file="Source/ParameterProxy.cpp" id="HeoqRK" name="ParameterProxy.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/ParameterProxy.h" id="WxD2RW" name="ParameterProxy.h"
+                resource="0"/>
           <FILE compile="1" file="Source/EnumParameter.cpp" id="WJtJpE" name="EnumParameter.cpp"
                 resource="0"/>
           <FILE compile="0" file="Source/EnumParameter.h" id="PxJq8L" name="EnumParameter.h"
@@ -142,10 +142,10 @@
           <FILE compile="0" file="Source/StringParameter.h" id="IhX92R" name="StringParameter.h"
                 resource="0"/>
         </GROUP>
-        <FILE id="hR5AS9" name="ParameterFactory.cpp" compile="1" resource="0"
-              file="Source/ParameterFactory.cpp"/>
-        <FILE id="hCdg2z" name="ParameterFactory.h" compile="0" resource="0"
-              file="Source/ParameterFactory.h"/>
+        <FILE compile="1" file="Source/ParameterFactory.cpp" id="hR5AS9" name="ParameterFactory.cpp"
+              resource="0"/>
+        <FILE compile="0" file="Source/ParameterFactory.h" id="hCdg2z" name="ParameterFactory.h"
+              resource="0"/>
         <FILE compile="1" file="Source/Controllable.cpp" id="K9s4xv" name="Controllable.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/Controllable.h" id="H2nHBA" name="Controllable.h"
@@ -161,25 +161,30 @@
       </GROUP>
       <GROUP id="{205E3A81-193E-5E9B-B24E-61C3CBDD3187}" name="Common">
         <GROUP id="{9DD298F4-8B93-1551-D5CE-05EFBECC01A5}" name="Network">
-          <FILE id="hSl8Jk" name="NetworkUtils.cpp" compile="1" resource="0"
-                file="Source/NetworkUtils.cpp"/>
-          <FILE id="Ew55cA" name="NetworkUtils.h" compile="0" resource="0" file="Source/NetworkUtils.h"/>
+          <FILE compile="1" file="Source/NetworkUtils.cpp" id="hSl8Jk" name="NetworkUtils.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/NetworkUtils.h" id="Ew55cA" name="NetworkUtils.h"
+                resource="0"/>
         </GROUP>
         <GROUP id="{47C49D7C-57C1-2802-9458-4AB50A9508DE}" name="Audio">
-          <FILE id="CIMyKb" name="BufferBlockList.cpp" compile="1" resource="0"
-                file="Source/BufferBlockList.cpp"/>
-          <FILE id="cXWh9T" name="BufferBlockList.h" compile="0" resource="0"
-                file="Source/BufferBlockList.h"/>
-          <FILE id="BxNfkP" name="AudioConfig.h" compile="0" resource="0" file="Source/AudioConfig.h"/>
-          <FILE id="dL7FOY" name="StretcherJob.cpp" compile="1" resource="0"
-                file="Source/StretcherJob.cpp"/>
-          <FILE id="PBEW3x" name="StretcherJob.h" compile="0" resource="0" file="Source/StretcherJob.h"/>
-          <FILE id="VOSVFD" name="MultiNeedle.cpp" compile="1" resource="0" file="Source/MultiNeedle.cpp"/>
-          <FILE id="KqHJoN" name="MultiNeedle.h" compile="0" resource="0" file="Source/MultiNeedle.h"/>
-          <FILE id="XvG4hZ" name="AudioDebugPipe.cpp" compile="1" resource="0"
-                file="Source/AudioDebugPipe.cpp"/>
-          <FILE id="NWFdHH" name="AudioDebugPipe.h" compile="0" resource="0"
-                file="Source/AudioDebugPipe.h"/>
+          <FILE compile="1" file="Source/BufferBlockList.cpp" id="CIMyKb" name="BufferBlockList.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/BufferBlockList.h" id="cXWh9T" name="BufferBlockList.h"
+                resource="0"/>
+          <FILE compile="0" file="Source/AudioConfig.h" id="BxNfkP" name="AudioConfig.h"
+                resource="0"/>
+          <FILE compile="1" file="Source/StretcherJob.cpp" id="dL7FOY" name="StretcherJob.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/StretcherJob.h" id="PBEW3x" name="StretcherJob.h"
+                resource="0"/>
+          <FILE compile="1" file="Source/MultiNeedle.cpp" id="VOSVFD" name="MultiNeedle.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/MultiNeedle.h" id="KqHJoN" name="MultiNeedle.h"
+                resource="0"/>
+          <FILE compile="1" file="Source/AudioDebugPipe.cpp" id="XvG4hZ" name="AudioDebugPipe.cpp"
+                resource="0"/>
+          <FILE compile="0" file="Source/AudioDebugPipe.h" id="NWFdHH" name="AudioDebugPipe.h"
+                resource="0"/>
           <FILE compile="0" file="Source/AudioFucker.h" id="evse9I" name="AudioFucker.h"
                 resource="0"/>
           <FILE compile="0" file="Source/AudioHelpers.h" id="J7iGNZ" name="AudioHelpers.h"
@@ -217,8 +222,8 @@
           <FILE compile="0" file="Source/QueuedNotifier.h" id="fzCybH" name="QueuedNotifier.h"
                 resource="0"/>
         </GROUP>
-        <FILE id="XKvEWq" name="CommandLineElements.hpp" compile="0" resource="0"
-              file="Source/CommandLineElements.hpp"/>
+        <FILE compile="0" file="Source/CommandLineElements.hpp" id="XKvEWq"
+              name="CommandLineElements.hpp" resource="0"/>
         <FILE compile="0" file="Source/StringUtil.hpp" id="DtSaF2" name="StringUtil.hpp"
               resource="0"/>
         <GROUP id="{FDF6D6A5-7829-2E0D-4DBC-8C28B1126BD3}" name="MIDI">
@@ -722,10 +727,12 @@
               resource="0"/>
         <FILE compile="0" file="Source/BetterStepper.h" id="LIiKTa" name="BetterStepper.h"
               resource="0"/>
-        <FILE id="ddljoZ" name="LGMLComponentHelpers.h" compile="0" resource="0"
-              file="Source/LGMLComponentHelpers.h"/>
-        <FILE id="Y93xNO" name="LGMLDragger.cpp" compile="1" resource="0" file="Source/LGMLDragger.cpp"/>
-        <FILE id="dSMfwg" name="LGMLDragger.h" compile="0" resource="0" file="Source/LGMLDragger.h"/>
+        <FILE compile="0" file="Source/LGMLComponentHelpers.h" id="ddljoZ"
+              name="LGMLComponentHelpers.h" resource="0"/>
+        <FILE compile="1" file="Source/LGMLDragger.cpp" id="Y93xNO" name="LGMLDragger.cpp"
+              resource="0"/>
+        <FILE compile="0" file="Source/LGMLDragger.h" id="dSMfwg" name="LGMLDragger.h"
+              resource="0"/>
         <FILE compile="1" file="Source/LookAndFeelOO.cpp" id="Fa2WJ4" name="LookAndFeelOO.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/LookAndFeelOO.h" id="ToSNQ0" name="LookAndFeelOO.h"
@@ -775,27 +782,34 @@
         <GROUP id="{2A7B1055-6635-7455-8072-E88A3CA109EB}" name="include">
           <GROUP id="{B63F6952-81C0-773B-0A4B-4E430DC4D936}" name="serial">
             <GROUP id="{F7D5E88D-319D-DF80-4EDD-E0F775089501}" name="impl">
-              <FILE id="eDIHHT" name="unix.h" compile="0" resource="0" file="third_party/serial/include/serial/impl/unix.h"/>
-              <FILE id="KSzKx3" name="win.h" compile="0" resource="0" file="third_party/serial/include/serial/impl/win.h"/>
+              <FILE compile="0" file="third_party/serial/include/serial/impl/unix.h"
+                    id="eDIHHT" name="unix.h" resource="0"/>
+              <FILE compile="0" file="third_party/serial/include/serial/impl/win.h"
+                    id="KSzKx3" name="win.h" resource="0"/>
             </GROUP>
-            <FILE id="XYxDnF" name="serial.h" compile="0" resource="0" file="third_party/serial/include/serial/serial.h"/>
-            <FILE id="v9J3Ho" name="v8stdint.h" compile="0" resource="0" file="third_party/serial/include/serial/v8stdint.h"/>
+            <FILE compile="0" file="third_party/serial/include/serial/serial.h"
+                  id="XYxDnF" name="serial.h" resource="0"/>
+            <FILE compile="0" file="third_party/serial/include/serial/v8stdint.h"
+                  id="v9J3Ho" name="v8stdint.h" resource="0"/>
           </GROUP>
         </GROUP>
         <GROUP id="{AA03F949-EB22-3BBD-97BD-977F4D2D8A05}" name="src">
           <GROUP id="{484D5D26-BBE1-8502-7D1B-BB36BDD61C85}" name="impl">
             <GROUP id="{D536FB4C-3F4D-6365-776E-7A80C5D3094F}" name="list_ports">
-              <FILE id="LM3WD0" name="list_ports_linux.cc" compile="1" resource="0"
-                    file="third_party/serial/src/impl/list_ports/list_ports_linux.cc"/>
-              <FILE id="vVHn3v" name="list_ports_osx.cc" compile="1" resource="0"
-                    file="third_party/serial/src/impl/list_ports/list_ports_osx.cc"/>
-              <FILE id="Huyilc" name="list_ports_win.cc" compile="1" resource="0"
-                    file="third_party/serial/src/impl/list_ports/list_ports_win.cc"/>
+              <FILE compile="1" file="third_party/serial/src/impl/list_ports/list_ports_linux.cc"
+                    id="LM3WD0" name="list_ports_linux.cc" resource="0"/>
+              <FILE compile="1" file="third_party/serial/src/impl/list_ports/list_ports_osx.cc"
+                    id="vVHn3v" name="list_ports_osx.cc" resource="0"/>
+              <FILE compile="1" file="third_party/serial/src/impl/list_ports/list_ports_win.cc"
+                    id="Huyilc" name="list_ports_win.cc" resource="0"/>
             </GROUP>
-            <FILE id="Dp1qyZ" name="unix.cc" compile="1" resource="0" file="third_party/serial/src/impl/unix.cc"/>
-            <FILE id="I9L0Q3" name="win.cc" compile="1" resource="0" file="third_party/serial/src/impl/win.cc"/>
+            <FILE compile="1" file="third_party/serial/src/impl/unix.cc" id="Dp1qyZ"
+                  name="unix.cc" resource="0"/>
+            <FILE compile="1" file="third_party/serial/src/impl/win.cc" id="I9L0Q3"
+                  name="win.cc" resource="0"/>
           </GROUP>
-          <FILE id="Rm4MO9" name="serial.cc" compile="1" resource="0" file="third_party/serial/src/serial.cc"/>
+          <FILE compile="1" file="third_party/serial/src/serial.cc" id="Rm4MO9"
+                name="serial.cc" resource="0"/>
         </GROUP>
       </GROUP>
     </GROUP>
@@ -804,9 +818,9 @@
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
                extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
                extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
-               postbuildCommand="" smallIcon="jsU7Hw" targetFolder="Builds/MacOSX"
-               vst3Folder="third_party/VST3_SDK" vstFolder="" prebuildCommand="python ../../Scripts/PyUtils/writeSha.py"
-               keepCustomXcodeSchemes="1">
+               keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand="python ../../Scripts/PyUtils/writeSha.py"
+               smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="/Users/Tintamar/SDKs/VST3_SDK"
+               vstFolder="">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
                        headerPath="" isDebug="0" linkTimeOptimisation="1" name="Release"
@@ -871,11 +885,11 @@
         <MODULEPATH id="juce_osc" path="D:/Softwares/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
-                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vstFolder="/home/tinmar/SDKs/VST3 SDK"
-                vst3Folder="third_party/VST3_SDK" extraDefs="LINK_PLATFORM_LINUX=1"
+    <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries=""
                 extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
-                externalLibraries="">
+                extraDefs="LINK_PLATFORM_LINUX=1" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
+                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
+                vstFolder="/home/tinmar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="" isDebug="1" libraryPath="/usr/X11R6/lib/" linuxArchitecture="-march=armv6"
                        name="Debug" optimisation="5" targetName="LGML"/>
@@ -903,7 +917,7 @@
     </LINUX_MAKE>
   </EXPORTFORMATS>
   <MODULES>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useGlobalPath="0" useLocalCopy="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
