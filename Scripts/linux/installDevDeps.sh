@@ -26,11 +26,15 @@ ls
 
 apt-get -y --force-yes install curl
 apt-get -y --force-yes install unzip
+
 if [ ! -d "JUCE" ]; then
   curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip
   unzip -q JUCE.zip
   mv JUCE-master/ JUCE
 fi
+
+
+apt-get -y --force-yes install python
 
 # cd ;
 # if [ ! -d "Dev/Projucer/linux" ]; then
