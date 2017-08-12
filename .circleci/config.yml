@@ -9,11 +9,11 @@ jobs:
       - run:
           name: install LGML dependencies
           command: |
-          sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh;
+            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
       - run:
           name: build LGML
           command: |
-          python Scripts/buildScript.py --build --beta --os=linux;
+            python Scripts/buildScript.py --build --beta --os=linux;
 
 
 
@@ -23,6 +23,3 @@ general:
       - master
       - develop
       - feature/ci
-
-
-
