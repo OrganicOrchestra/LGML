@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/LGML
     docker:
-      - image: python:3.6.0
+      - image: buildpack-deps:trusty
     steps:
       - checkout
       - run:
