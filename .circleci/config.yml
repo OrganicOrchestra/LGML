@@ -1,3 +1,22 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/LGML
+    docker:
+      - image: python:3.6.0
+    steps:
+      - checkout
+      - run:
+          name: install LGML dependencies
+          command: |
+          sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh;
+      - run:
+          name: build LGML
+          command: |
+          python Scripts/buildScript.py --build --beta --os=linux;
+
+
+
 general:
   branches:
     only:
@@ -5,13 +24,5 @@ general:
       - develop
       - feature/ci
 
-dependencies:
-    pre:
-        - sudo apt install -y python
-        - sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh;
-test:
-    pre:
-        - python Scripts/buildScript.py --build --beta --os=linux
-    override:
-        - make check
+
 
