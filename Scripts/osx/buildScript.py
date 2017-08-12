@@ -36,7 +36,7 @@ appPath = os.path.join(xcodeProjPath,"build",configuration,executable_name+".app
 
 isBeta = False
 
-njobs = min(4,multiprocessing.cpu_count())
+njobs = min(8,multiprocessing.cpu_count())
 
 
 

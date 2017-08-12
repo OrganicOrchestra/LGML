@@ -7,7 +7,7 @@ sys.path.insert(1,pathToAdd)
 from PyUtils import *
 
 import multiprocessing
-njobs = min(8,multiprocessing.cpu_count())
+njobs = min(4,multiprocessing.cpu_count())
 
 execName = "LGML"
 localMakePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,"Builds/LinuxMakefile/"))+'/'
