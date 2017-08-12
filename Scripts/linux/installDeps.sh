@@ -6,6 +6,6 @@
 
 
 # rubberband
-sudo apt-get -y --force-yes install librubberband-dev
+apt-get -y --force-yes install librubberband-dev
 
 
