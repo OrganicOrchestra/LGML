@@ -4,8 +4,9 @@ pwd;
 #       JUCE in sibling directory of LGML
 #       compile rubberband locally (third_party/rubberband)
 
-BASEDIR=$(dirname "$0") 
-cd $BASEDIR
+SCRIPTPATH=`pwd`/$(dirname "$0") 
+echo $SCRIPTPATH
+cd $SCRIPTPATH
 cd ../../..
 
 # install JUCE if needed
@@ -17,7 +18,7 @@ fi
 
 
 
-cd $BASEDIR
+cd $SCRIPTPATH
 cd ../../third_party/rubberband
 # ./configure
 mkdir -p lib

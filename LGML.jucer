@@ -887,8 +887,8 @@
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="-lrubberband"
                 extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
-                extraDefs="LINK_PLATFORM_LINUX=1" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
-                smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
+                extraDefs="LINK_PLATFORM_LINUX=1" extraLinkerFlags="" smallIcon="SL4b92"
+                targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
                 vstFolder="/home/tinmar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="" isDebug="1" libraryPath="/usr/X11R6/lib/" linuxArchitecture="-march=armv6"
