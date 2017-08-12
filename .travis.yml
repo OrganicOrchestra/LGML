@@ -57,22 +57,22 @@ matrix:
 
 install:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        sh src/LGML/Scripts/linux/installDeps.sh;
+        sh Scripts/linux/installDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
-        sh src/LGML/Scripts/osx/installDeps.sh;
+        sh Scripts/osx/installDeps.sh;
     fi
 
 
 script:
-    - python src/LGML/Scripts/buildScript.py --build --beta --os=$TARGET;
+    - python Scripts/buildScript.py --build --beta --os=$TARGET;
 
 after_success:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        sh src/LGML/Scripts/linux/installExportDeps.sh 
+        sh Scripts/linux/installExportDeps.sh 
     elif [ "$TARGET" == "osx" ] ; then
-        sh src/LGML/Scripts/osx/installExportDeps.sh 
+        sh Scripts/osx/installExportDeps.sh 
     fi
-  - python src/LGML/Scripts/buildScript.py --export --os=$TARGET;
+  - python Scripts/buildScript.py --export --os=$TARGET;
 
 git:
   depth: 1

@@ -1,0 +1,47 @@
+/* Copyright © Organic Orchestra, 2017
+*
+* This file is part of LGML.  LGML is a software to manipulate sound in realtime
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation (version 3 of the License).
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*
+*/
+
+
+#include "Point3DParameter.h"
+
+Point3DParameter::Point3DParameter(const String & niceName, const String & description, bool enabled) :
+	Parameter(POINT3D, niceName, description, 0, 0, 1, enabled)
+{
+}
+
+void Point3DParameter::setPoint(Vector3D<float> _value)
+{
+	var d;
+	d.append(_value.x);
+	d.append(_value.y);
+	d.append(_value.z);
+	setValue(d);
+}
+
+void Point3DParameter::setValueInternal(var & _value)
+{
+	if (!_value.isArray()) return;
+	x = _value[0];
+	y = _value[1];
+}
+
+Vector3D<float> * Point3DParameter::getPoint() {
+	return new Vector3D<float>(x, y,z);
+}
+
+bool Point3DParameter::checkValueIsTheSame(var newValue, var oldValue)
+{
+	if (!(newValue.isArray() && oldValue.isArray())) return false;
+	return newValue[0] == oldValue[0] && newValue[1] == oldValue[1] && newValue[2] == oldValue[2];
+}
