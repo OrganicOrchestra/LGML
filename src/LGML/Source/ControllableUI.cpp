@@ -19,8 +19,10 @@ isMappingDest(false),
 isDraggable(true),
 isSelected(false)
 {
-  if(LGMLDragger::getInstance()->isMappingActive){
+  if(LGMLDragger::getInstance()->isMappingActive &&
+     controllable->isMappable()){
     mappingState = isMappingDest?MAPDEST:MAPSOURCE;
+
   }
   else{
     mappingState=NOMAP;
@@ -83,6 +85,7 @@ void ControllableUI::updateTooltip()
 
 
 void  ControllableUI::setMappingState(const bool  b){
+  if(!controllable->isMappable())return;
   MappingState s = b?(isMappingDest?MAPDEST:MAPSOURCE):NOMAP;
   if(s!=mappingState){
     if(s==NOMAP){
@@ -97,7 +100,7 @@ void  ControllableUI::setMappingState(const bool  b){
 }
 void ControllableUI::paintOverChildren(Graphics &g) {
   if(hasValidControllable && controllable==nullptr){
-//    jassertfalse;
+    //    jassertfalse;
     int dbg;dbg++;
   }
   hasValidControllable = (controllable!=nullptr );

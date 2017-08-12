@@ -198,6 +198,12 @@ Parameter* Controllable::getParameter(){
   return static_cast<Parameter*>(this);
 }
 
+bool Controllable::isMappable(){
+  if(auto p = getParameter()){
+  return p->isEditable && type!=Controllable::Type::STRING;
+  }
+  return false;
+}
 
 bool Controllable::isChildOf(ControllableContainer * p){
   auto i = parentContainer;

@@ -74,7 +74,7 @@ public:
   String getControlAddress(ControllableContainer * relativeTo = nullptr);
 
   virtual bool isNumeric(); //default implementation, can be overriden for special parameters
-
+  bool isMappable();
 
 
   //used for script variables
