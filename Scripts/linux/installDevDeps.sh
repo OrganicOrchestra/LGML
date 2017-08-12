@@ -36,6 +36,7 @@ fi
 
 apt-get -y --force-yes install python
 
+apt-get -y --force-yes install libcurl-dev
 # cd ;
 # if [ ! -d "Dev/Projucer/linux" ]; then
 #   cd 
