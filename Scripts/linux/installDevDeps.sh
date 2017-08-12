@@ -36,7 +36,7 @@ fi
 
 apt-get -y --force-yes install python
 
-apt-get -y --force-yes install libcurl-dev
+apt-get -y --force-yes install libcurl4-openssl-dev
 # cd ;
 # if [ ! -d "Dev/Projucer/linux" ]; then
 #   cd 
