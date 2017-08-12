@@ -15,14 +15,19 @@ JuceProjectPath = os.path.abspath(JuceProjectPath);
 
 def hasValidProjucerPath(osType):
 	global proJucerPath
-	print(proJucerPath)
-
-	if(osType=='osx'):
-		proJucerPath = "/Applications/Projucer.app/Contents/MacOS/Projucer"
-	elif(osType=='linux'):
-		proJucerPath = os.environ['HOME']+'/Dev/Projucer/linux/Projucer'
-	else:
-		raise NameError("osType notsupported : %s"%osType)
+	
+	from distutils.spawn import find_executable
+	ex = find_executable('Projucer')
+	if ex:
+		proJucerPath = os.path.abspath(ex)
+	else : 
+		print(proJucerPath)
+		if(osType=='osx'):
+			proJucerPath = "/Applications/Projucer.app/Contents/MacOS/Projucer"
+		elif(osType=='linux'):
+			proJucerPath = os.environ['HOME']+'/Dev/Projucer/linux/Projucer'
+		else:
+			raise NameError("osType notsupported : %s"%osType)
 
 
 	return os.path.exists(proJucerPath)
@@ -63,8 +68,8 @@ def getProjucerIfNeeded(tmpFolder,credentials,osType):
 
 
 
-def getValidPath(pathToSearch):
-	relativesPaths = ['.','..','../..','../../..','../../../..','../../../../..',os.environ['HOME'],os.environ['HOME']+'/Dev']
+def getValidPath(pathToSearch,relativesPaths=None):
+	relativesPaths = relativesPaths or ['.','..','../..','../../..','../../../..','../../../../..',os.environ['HOME'],os.environ['HOME']+'/Dev','../Dev']
 	relativesPaths = [os.path.join(x,pathToSearch) for x in relativesPaths]
 	possiblePaths = list(map(os.path.abspath,relativesPaths))
 	for p in possiblePaths:
@@ -85,7 +90,7 @@ def updatePathsIfNeeded(osType):
 	vstFolderTag = 'vst3Folder'
 	if osType=='linux':
 		vstFolderTag = 'vstFolder'
-	
+
 	# updateModule
 	oldModulePath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].findall('MODULEPATHS')[0].findall('MODULEPATH')[0].attrib['path']
 	oldModulePath = os.path.abspath(os.path.join(JuceProjectPath,oldModulePath))

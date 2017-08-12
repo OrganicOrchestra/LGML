@@ -1,12 +1,19 @@
 # install juce 
+# BASEDIR=$(dirname "$0") 
+# cd $BASEDIR
+# cd ../../..
 
+pwd
+ls
+cd ;
 if [ ! -d "Dev/JUCE" ]; then
   mkdir -p "Dev"
   curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip
   unzip -q JUCE.zip
   mv JUCE-master/ Dev/JUCE
 fi
-cd
+
+cd ;
 if [ ! -d "Dev/Projucer/linux" ]; then
   cd 
   ls

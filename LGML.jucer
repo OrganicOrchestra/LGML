@@ -819,7 +819,7 @@
                extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
                extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand="python ../../Scripts/PyUtils/writeSha.py"
-               smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="/Users/Tintamar/SDKs/VST3_SDK"
+               smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"
                vstFolder="">
       <CONFIGURATIONS>
         <CONFIGURATION binaryPath="" cppLanguageStandard="c++11" cppLibType="libc++"
@@ -885,7 +885,7 @@
         <MODULEPATH id="juce_osc" path="D:/Softwares/JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries=""
+    <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="-lrubberband"
                 extraCompilerFlags="-Wno-reorder&#10;-Weffc++&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
                 extraDefs="LINK_PLATFORM_LINUX=1" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
                 smallIcon="SL4b92" targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"

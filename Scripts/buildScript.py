@@ -30,10 +30,10 @@ def generateProductBaseName():
 
 def buildAll(osType,configuration):
 	global specificVersion
-	ProJucerUtils.updatePathsIfNeeded(osType)
-	ProJucerUtils.getProjucerIfNeeded(tmpFolder=os.path.abspath(os.path.join(os.environ['HOME'],'Dev','Projucer')),credentials=OwncloudUtils.getCredential,osType=osType)
+	
 
 	if ProJucerUtils.hasValidProjucerPath(osType):
+		ProJucerUtils.updatePathsIfNeeded(osType)
 		ProJucerUtils.updateVersion(bumpVersion,specificVersion);
 		ProJucerUtils.buildJUCE();
 	else:
