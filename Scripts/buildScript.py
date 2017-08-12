@@ -53,7 +53,8 @@ def packageAll(osType,configuration):
 		raise NameError("os type not supported")
 
 	for p in localExportPath2:
-		sh("cp "+exportedPath+" "+p+generateProductBaseName()+".dmg")
+		if os.path.exists(p) :
+			sh("cp "+exportedPath+" "+p+generateProductBaseName()+".dmg")
 
 
 	return exportedPath

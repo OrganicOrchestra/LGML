@@ -68,9 +68,9 @@ script:
 
 after_success:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        sh Scripts/linux/installExportDeps.sh 
+        sh Scripts/linux/installExportDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
-        sh Scripts/osx/installExportDeps.sh 
+        sh Scripts/osx/installExportDeps.sh;
     fi
   - python Scripts/buildScript.py --package --export --os=$TARGET;
 
