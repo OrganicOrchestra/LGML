@@ -81,7 +81,7 @@ if __name__ == "__main__":
 	parser.add_argument('--build', action='store_true',
 	                    help='build it',default = True)
 	parser.add_argument('--package', action='store_true',
-	                    help='package it',default = True)
+	                    help='package it',default = False)
 	parser.add_argument('--export', action='store_true',
 	                    help='export it',default = False)
 	parser.add_argument('--beta', action='store_true',

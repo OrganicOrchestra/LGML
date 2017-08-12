@@ -1,0 +1,10 @@
+dependencies:
+    pre:
+        - sudo apt install -y python
+        - sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh;
+test:
+    pre:
+        - python Scripts/buildScript.py --build --beta --os=linux
+    override:
+        - make check
+

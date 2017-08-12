@@ -72,7 +72,7 @@ after_success:
     elif [ "$TARGET" == "osx" ] ; then
         sh Scripts/osx/installExportDeps.sh 
     fi
-  - python Scripts/buildScript.py --export --os=$TARGET;
+  - python Scripts/buildScript.py --package --export --os=$TARGET;
 
 git:
   depth: 1
