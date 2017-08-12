@@ -311,6 +311,8 @@ OSCClientRecord  NetworkUtils::hostnameToOSCRecord(const String & hn)
 
 // dummy implementation
 class NetworkUtils::Pimpl{
+public:
+  Pimpl(NetworkUtils*){}
   
 };
 OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)

@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 pwd;
-
+# this script install :
+#       JUCE in sibling directory of LGML
+#       compile rubberband locally (third_party/rubberband)
 
 BASEDIR=$(dirname "$0") 
 cd $BASEDIR
@@ -13,3 +15,10 @@ if [ ! -d "JUCE" ]; then
 	mv JUCE-master JUCE;
 fi
 
+
+
+cd $BASEDIR
+cd ../../third_party/rubberband
+# ./configure
+mkdir -p lib
+make -f Makefile.osx CPPFLAGS=-DNO_THREADING static
