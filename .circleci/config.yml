@@ -9,6 +9,7 @@ jobs:
       - run:
           name: install LGML dependencies
           command: |
+            git submodule update --init --recursive --remote
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
       - run:
           name: build LGML
