@@ -13,7 +13,7 @@ matrix:
     cache:
       directories:
         - ~/Dev
-        - ~/SDKs
+        - third_party
         
   #   addons:
   #     apt:
@@ -46,7 +46,7 @@ matrix:
     cache:
       directories:
         - ~/Dev
-        - ~/SDKs
+        - third_party
 
 
 
@@ -57,9 +57,9 @@ matrix:
 
 install:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        sh Scripts/linux/installDeps.sh;
+        sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
-        sh Scripts/osx/installDeps.sh;
+        sh Scripts/osx/installDevDeps.sh;
     fi
 
 
