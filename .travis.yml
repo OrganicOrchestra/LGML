@@ -57,9 +57,9 @@ matrix:
 
 install:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh;
+        sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
-        sh Scripts/osx/installDevDeps.sh;
+        sudo sh Scripts/osx/installDevDeps.sh;
     fi
 
 
@@ -68,9 +68,9 @@ script:
 
 after_success:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        sh Scripts/linux/installExportDeps.sh;
+        sudo sh Scripts/linux/installExportDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
-        sh Scripts/osx/installExportDeps.sh;
+        sudo sh Scripts/osx/installExportDeps.sh;
     fi
   - python Scripts/buildScript.py --package --export --os=$TARGET;
 
