@@ -9,6 +9,7 @@ jobs:
       - run:
           name: install LGML dependencies
           command: |
+            apt-get install -y sudo
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
       - run:
           name: build LGML
