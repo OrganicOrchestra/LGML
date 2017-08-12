@@ -1,7 +1,7 @@
 
 import os;
 import json;
-from urllib import *
+
 import multiprocessing
 
 

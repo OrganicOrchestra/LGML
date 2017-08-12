@@ -30,13 +30,8 @@ def generateProductBaseName():
 
 def buildAll(osType,configuration):
 	global specificVersion
-	
 
-	if ProJucerUtils.hasValidProjucerPath(osType):
-		ProJucerUtils.updatePathsIfNeeded(osType)
-		ProJucerUtils.updateVersion(bumpVersion,specificVersion);
-		ProJucerUtils.buildJUCE();
-	else:
+	if not ProJucerUtils.updateProjucer(osType,bumpVersion,specificVersion):
 		print ('not updating projucer')
 	
 	if osType=='osx':

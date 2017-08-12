@@ -17,6 +17,7 @@
 *.sdf
 *.opensdf
 xcuserdata
+xcshareddata
 *.xccheckout
 contents.xcworkspacedata
 .DS_Store

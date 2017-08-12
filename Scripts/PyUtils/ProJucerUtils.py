@@ -32,33 +32,8 @@ def hasValidProjucerPath(osType):
 
 	return os.path.exists(proJucerPath)
 
-def getProjucerIfNeeded(tmpFolder,credentials,osType):
+def getProjucerCommand(tmpFolder,osType):
 	global proJucerPath,proJucerCommand
-	tmpFolder = os.path.join(tmpFolder,osType)
-
-	if  not hasValidProjucerPath(osType) :
-
-		if isinstance(credentials, collections.Callable):
-			credentials = credentials()
-		if not os.path.exists(tmpFolder):
-			os.makedirs(tmpFolder)
-		proJucerPath = os.path.join(tmpFolder,'Projucer')
-		print('copying projucer in :' + proJucerPath) 
-		
-		ownCloudOSFolder = {'osx':'osx/','linux':'linux/'}[osType]
-		ownCloudProjucerName = {'osx':'Projucer.zip','linux':'Projucer.tar.gz'}[osType]
-		compressedPath = os.path.join(tmpFolder,ownCloudProjucerName)
-
-		if not hasValidProjucerPath(osType):
-
-			sh("curl -k \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/Tools/LGML/Projucer/"+ownCloudOSFolder+ownCloudProjucerName+"\" -u "+credentials+" > "+compressedPath,printIt=False)
-			sh('tar -xzf '+compressedPath+' -C '+tmpFolder)
-			if not hasValidProjucerPath(osType):
-				print('projucer download failed')
-		else:
-			print('using cached projucer : '+proJucerPath)
-
-	
 	# update command
 	if hasValidProjucerPath(osType):
 		proJucerCommand = proJucerPath
@@ -93,7 +68,8 @@ def updatePathsIfNeeded(osType):
 
 	# updateModule
 	oldModulePath = root.findall('EXPORTFORMATS')[0].findall(XMLOSTag)[0].findall('MODULEPATHS')[0].findall('MODULEPATH')[0].attrib['path']
-	oldModulePath = os.path.abspath(os.path.join(JuceProjectPath,oldModulePath))
+	if( not os.path.isabs(oldModulePath)):
+		oldModulePath = os.path.abspath(os.path.join(JuceProjectPath,oldModulePath))
 	
 	if not os.path.exists(oldModulePath):
 		print('current module path doesnt exists',oldModulePath,'searching a valid one')
@@ -175,6 +151,17 @@ def buildJUCE():
 
 #  allow to use this file as a simple version getter
 # DO NOT CHANGE
+
+
+def updateProjucer(osType,bumpVersion,specificVersion):
+	if hasValidProjucerPath(osType):
+		updatePathsIfNeeded(osType)
+		updateVersion(bumpVersion,specificVersion);
+		buildJUCE();
+		return True
+	return False
+
+
 if __name__=="__main__":
 	print(getXmlVersion());
 

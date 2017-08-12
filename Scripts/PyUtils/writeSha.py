@@ -1,7 +1,11 @@
 import sys
 import os
 import time
-from shUtils import *
+
+try:
+	from .shUtils import *
+except ValueError:
+	from shUtils import *
 
 
 gitShaPath = os.path.dirname(os.path.abspath(__file__));
