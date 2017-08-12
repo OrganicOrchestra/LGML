@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/LGML
     docker:
-      - image: ubuntu
+      - image: docker:17.05.0-ce-git
     steps:
       - checkout
       - run:
