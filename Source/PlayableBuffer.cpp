@@ -576,11 +576,11 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
 
 
 
-    const int numChannels=getNumChannels();
+    const int numChannels(getNumChannels());
 
 
     int available =RTStretcher->available();
-
+    const float ** inBuf = new const float*[numChannels];
     //    if(stretchNeedle!=originNumSamples)   {
     while(available<outNumSample  ){
 
@@ -596,9 +596,9 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
         RTStretcher->setTimeRatio(pendingTimeStretchRatio*adaptStretch);
       }
 
-      int toProcess =  RTStretcher->getSamplesRequired();
+      int toProcess =  (int)RTStretcher->getSamplesRequired();
       //      jassert(toProcess>0);
-      const float * inBuf[numChannels];
+
       AudioBuffer<float> tmpCache(numChannels,toProcess);
 
       if(stretchNeedle+toProcess>=originNumSamples){
@@ -625,7 +625,7 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
 
 
     }
-
+    delete [] inBuf;
 
 
     //    jassert(available>=outNumSample);

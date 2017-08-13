@@ -273,7 +273,7 @@ void OSCDirectController::sendOSCForAddress(Controllable* c,const String & cAddr
 
 #endif
 }
-void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * originContainer,Controllable * c)
+void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
 {
 
   if(enabledParam->boolValue()){
