@@ -116,10 +116,10 @@ void EnumParameterUI::enumOptionRemoved(EnumParameter *, const Identifier &)
 {
   updateComboBox();
 }
-void EnumParameterUI::enumOptionSelectionChanged(EnumParameter *,bool isSelected,bool isValid, const Identifier &name){
+void EnumParameterUI::enumOptionSelectionChanged(EnumParameter *,bool _isSelected,bool isValid, const Identifier &name){
   if(isValid){
     jassert(keyIdMap.contains(name.toString()));
-    cb.setSelectedId(isSelected?keyIdMap[name.toString()]:0,dontSendNotification);
+    cb.setSelectedId(_isSelected?keyIdMap[name.toString()]:0,dontSendNotification);
   }
 }
 

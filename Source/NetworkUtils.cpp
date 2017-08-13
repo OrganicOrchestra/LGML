@@ -315,7 +315,7 @@ public:
   Pimpl(NetworkUtils*){}
   
 };
-OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)
+OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & )
 //int hostname_to_ip(char * hostname , char* ip)
 {
   LOG("ip hostname discovery not supported on windows/Unix");

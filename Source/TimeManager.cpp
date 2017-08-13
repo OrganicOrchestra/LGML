@@ -53,7 +53,7 @@ linkLatency(00)
 
 {
 
-  BPM = addNewParameter<FloatParameter>("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
+  BPM = addNewParameter<FloatParameter>("bpm","current BPM",120.f,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
   BPM->isCommitableParameter = true;
   playState = addNewParameter<BoolParameter>("PlayStop", "play or stop global transport", false);
   BPMLocked = addNewParameter<BoolParameter>("bpmLocked", "bpm is locked by somebody", false);
@@ -85,7 +85,7 @@ linkLatency(00)
 
   linkSession.setTempoCallback(&TimeManager::linkTempoCallBack);
 #endif
-  linkLatencyParam = addNewParameter<FloatParameter>("linkLatency", "link latency to add for lgml", 10, -30, 80);
+  linkLatencyParam = addNewParameter<FloatParameter>("linkLatency", "link latency to add for lgml", 10.f, -30.f, 80.f);
 
 
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);

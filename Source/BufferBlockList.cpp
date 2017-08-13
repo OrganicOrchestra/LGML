@@ -77,7 +77,7 @@ void BufferBlockList::copyTo(AudioSampleBuffer & outBuf,int listStartSample,int 
   int writePos = bufStartSample;
 
   while(sampleProcessed < numSampleToCopy){
-    readBlockIdx=floor(readPosInList*1.0/bufferBlockSize);
+    readBlockIdx=(int)floor(readPosInList*1.0/bufferBlockSize);
     int readPosInBlock = (readPosInList%targetNumSamples)%bufferBlockSize ;
 
     int blockSize =  bufferBlockSize-readPosInBlock;
@@ -117,7 +117,7 @@ void BufferBlockList::copyFrom(const AudioSampleBuffer & inBuf,int listStartSamp
   int writePosInList = listStartSample;
 
   while(sampleProcessed < numSampleToCopy){
-    writeBlockIdx=floor(writePosInList*1.0/bufferBlockSize);
+    writeBlockIdx=(int)floor(writePosInList*1.0/bufferBlockSize);
     int startWrite = writePosInList%bufferBlockSize ;
     int blockSize =  bufferBlockSize-startWrite;
     if(sampleProcessed+ blockSize>numSampleToCopy)
@@ -140,7 +140,7 @@ void BufferBlockList::copyFrom(const AudioSampleBuffer & inBuf,int listStartSamp
 
 float BufferBlockList::getSample(int c, int n){
   int readI = n%bufferBlockSize ;
-  int readBI=floor(n*1.0/bufferBlockSize);
+  int readBI=(int)floor(n*1.0/bufferBlockSize);
   jassert(readBI<size());
   return getReference(readBI).getSample(c,readI);
 }

@@ -41,7 +41,7 @@ DynamicObject * Trigger::createDynamicObject()
 
 	return dObject;
 }
-void Trigger::setFromVarObject(DynamicObject & ob){
+void Trigger::setFromVarObject(DynamicObject & ){
   jassertfalse;
 }
 

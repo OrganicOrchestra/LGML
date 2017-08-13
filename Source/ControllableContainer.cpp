@@ -836,7 +836,7 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
 }
 
 
- ControllableContainer *  ControllableContainer::addContainerFromVar(const String & name,const var & data) {
+ ControllableContainer *  ControllableContainer::addContainerFromVar(const String & name,const var & /*data*/) {
    return addChildControllableContainer(new ControllableContainer(name,true));
  };
  Parameter* ControllableContainer::addParameterFromVar(const String & name,const var & data) {

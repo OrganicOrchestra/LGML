@@ -124,14 +124,14 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
 
 
 
-int StretcherJob::studyStretch(double ratio,int start,int block){
+int StretcherJob::studyStretch(double _ratio,int start,int block){
 
   if(start==0){
     if(block==-1)block=owner->originAudioBuffer.getNumSamples();
 
     initStretcher(owner->sampleRate , owner->getNumChannels());
-    jassert(std::isfinite(ratio));
-    stretcher->setTimeRatio(ratio);
+    jassert(std::isfinite(_ratio));
+    stretcher->setTimeRatio(_ratio);
     stretcher->setExpectedInputDuration(originNumSamples);
     stretcher->setMaxProcessSize(block);
     //  jassert(stretcher->getInputIncrement() == originAudioBuffer.getNumSamples());
@@ -143,9 +143,10 @@ int StretcherJob::studyStretch(double ratio,int start,int block){
     block -= jmax(0,(start+block)-originNumSamples);
 
   }
-  float* tmp[owner->originAudioBuffer.getNumChannels()];
-  for(int i = 0 ; i  < owner->originAudioBuffer.getNumChannels() ; i++){
-    tmp[i] = owner->originAudioBuffer.getWritePointer(i) + start;
+  const int numCh = owner->originAudioBuffer.getNumChannels();
+  const float* tmp[numCh];
+  for(int i = 0 ; i  < numCh ; i++){
+    tmp[i] = owner->originAudioBuffer.getReadPointer(i) + start;
   }
   stretcher->study(tmp, block, isFinal);
 
@@ -166,10 +167,10 @@ void StretcherJob::processStretch(int start,int block,int * read, int * produced
     block -= jmax(0,(start+block)-originNumSamples);
 
   }
-
-  float * tmpIn[owner->originAudioBuffer.getNumChannels()];
-  for(int i = 0 ; i  < owner->originAudioBuffer.getNumChannels() ; i++){
-    tmpIn[i] = owner->originAudioBuffer.getWritePointer(i) + start;
+  const int numCh = owner->originAudioBuffer.getNumChannels();
+  const float * tmpIn[numCh];
+  for(int i = 0 ; i  < numCh ; i++){
+    tmpIn[i] = owner->originAudioBuffer.getReadPointer(i) + start;
   }
 
 
@@ -178,6 +179,7 @@ void StretcherJob::processStretch(int start,int block,int * read, int * produced
   stretcher->process(tmpIn, block, isFinal);
   int available = stretcher->available();
 //  jassert( *produced + available< owner->getAllocatedNumSample());
+
 
   AudioSampleBuffer tmpOutBuf(owner->getNumChannels(),available);
   float * tmpOut[owner->getNumChannels()];

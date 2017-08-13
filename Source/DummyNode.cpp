@@ -52,8 +52,8 @@ clickFade(300,300)
   addOutputData("OUT Number", DataType::Number);
   outPosData = addOutputData("OUT Position", DataType::Position);
 
-  pxParam = addNewParameter<FloatParameter>("PointX", "X", 0, 0, 1);
-  pyParam = addNewParameter<FloatParameter>("PointY", "Y", 0, 0, 1);
+  pxParam = addNewParameter<FloatParameter>("PointX", "X", 0.f, 0.f, 1.f);
+  pyParam = addNewParameter<FloatParameter>("PointY", "Y", 0.f, 0.f, 1.f);
 
   //AUDIO
   setPlayConfigDetails(2, 3, getSampleRate(), getBlockSize());

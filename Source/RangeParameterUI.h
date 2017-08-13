@@ -45,8 +45,8 @@ public:
     slider.setBounds(getLocalBounds());
   }
 
-  void sliderValueChanged (Slider* slider) override{
-    rangeP->setValue(slider->getMinValue(),slider->getMaxValue());
+  void sliderValueChanged (Slider* ) override{
+    rangeP->setValue(slider.getMinValue(),slider.getMaxValue());
   }
 
   RangeParameter * rangeP;

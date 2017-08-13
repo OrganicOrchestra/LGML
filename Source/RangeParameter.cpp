@@ -28,12 +28,12 @@ Parameter(RANGE, niceName, description,0,0,1,enabled)
 
 }
 
-void RangeParameter::setValue(Point<float> _value)
+void RangeParameter::setValue(Point<double> _value)
 {
   setValue(_value.x, _value.y);
 }
 
-void RangeParameter::setValue(float _x, float _y)
+void RangeParameter::setValue(double _x, double _y)
 {
   var d;
   d.append(_x);
@@ -50,8 +50,8 @@ void RangeParameter::setValueInternal(var & _value)
 
 }
 
-Point<float> RangeParameter::getRangeMinMax() {
-  return Point<float>(getRangeMin(), getRangeMax());
+Point<double> RangeParameter::getRangeMinMax() {
+  return Point<double>(getRangeMin(), getRangeMax());
 }
 float RangeParameter::getRangeMin(){
   return value[0];

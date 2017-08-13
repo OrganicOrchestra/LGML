@@ -59,7 +59,7 @@ hostNameResolved(false)
   remoteHostParam->selectId("localhost", true);
   logIncomingOSC = addNewParameter<BoolParameter>("logIncomingOSC", "log the incoming OSC Messages", false);
   logOutGoingOSC = addNewParameter<BoolParameter>("logOutGoingOSC", "log the outGoing OSC Messages", false);
-  speedLimit = addNewParameter<FloatParameter>("speedLimit", "min interval (ms) between 2 series of "+String(NUM_OSC_MSG_IN_A_ROW)+" OSCMessages", 0,0,100);
+  speedLimit = addNewParameter<FloatParameter>("speedLimit", "min interval (ms) between 2 series of "+String(NUM_OSC_MSG_IN_A_ROW)+" OSCMessages", 0.f,0.f,100.f);
 
   blockFeedback = addNewParameter<BoolParameter>("blockFeedback", "block osc feedback (resending updated message to controller)", true);
   sendAllParameters =  addNewParameter<Trigger>("sendAll", "send all parameter states to initialize ", true);

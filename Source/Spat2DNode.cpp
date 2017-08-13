@@ -43,7 +43,7 @@ Spat2DNode::Spat2DNode() :
 
 	useGlobalTarget = addNewParameter<BoolParameter>("Use Global Target", "Use a global target that will act as a max influence and affect all targets.", false);
 	globalTargetPosition = addNewParameter<Point2DParameter<float>>("Global Target Position", "Position of the Global Target");
-	globalTargetRadius = addNewParameter<FloatParameter>("Global Target Radius", "Radius for the global target",.5f,0,1);
+	globalTargetRadius = addNewParameter<FloatParameter>("Global Target Radius", "Radius for the global target",.5f,0.f,1.f);
 
 	setPreferedNumAudioInput(numSpatInputs->intValue());
 	setPreferedNumAudioOutput(numSpatOutputs->intValue()+2);
