@@ -180,7 +180,7 @@ String getValidOSCAddress(const String &s){
   return targetName;
 }
 
-void OSCDirectController::controllableAdded(ControllableContainer *,Controllable * c){}
+void OSCDirectController::controllableAdded(ControllableContainer *,Controllable * ){}
 void OSCDirectController::controllableRemoved(ControllableContainer *,Controllable *)
 {
 

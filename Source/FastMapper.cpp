@@ -130,7 +130,7 @@ var FastMapper::getJSONData()
   return data;
 }
 
-ControllableContainer *  FastMapper::addContainerFromVar(const String & name,const var & fData)
+ControllableContainer *  FastMapper::addContainerFromVar(const String & /*name*/,const var & /*fData*/)
 {
   FastMap * f = addFastMap();
 

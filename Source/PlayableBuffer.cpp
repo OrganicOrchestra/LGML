@@ -598,7 +598,7 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
 
       int toProcess =  RTStretcher->getSamplesRequired();
       //      jassert(toProcess>0);
-      float*  inBuf[numChannels];
+      const float * inBuf[numChannels];
       AudioBuffer<float> tmpCache(numChannels,toProcess);
 
       if(stretchNeedle+toProcess>=originNumSamples){
@@ -606,9 +606,9 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
       }
       if(toProcess>0){
         for(int i = 0 ; i  < numChannels ; i++){
-          inBuf[i] = originAudioBuffer.getWritePointer(i)+stretchNeedle;
+          inBuf [i] = originAudioBuffer.getReadPointer(i)+stretchNeedle;
         }
-        RTStretcher->process(inBuf, toProcess, false);
+        RTStretcher->process(const_cast<const float*const *>(inBuf), toProcess, false);
         stretchNeedle+=toProcess;
         if(stretchNeedle>=originNumSamples){
           stretchNeedle-=originNumSamples;
@@ -629,10 +629,7 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
 
 
     //    jassert(available>=outNumSample);
-    float*  outBuf[numChannels];
-    for(int i = 0 ; i  < numChannels; i++){
-      outBuf[i] = b.getWritePointer(i);
-    }
+    float *const *  outBuf = b.getArrayOfWritePointers();
     RTStretcher->retrieve(outBuf, jmin(outNumSample,available));
     double ratio = jmin(stretchNeedle *1.0/originNumSamples,1.0);
 

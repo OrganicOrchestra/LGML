@@ -230,7 +230,7 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
 
 };
 
-String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int columnId)    {
+String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int /*columnId*/)    {
   return owner->getContentForRow(rowNumber);
 };
 

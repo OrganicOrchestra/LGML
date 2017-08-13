@@ -68,7 +68,7 @@ linkLatency(00)
   quantizedBarFraction = addNewParameter<IntParameter>("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
   tapTempo =  addNewParameter<Trigger>("tapTempo", "tap at least 2 times to set the tempo");
   click = addNewParameter<BoolParameter>("Metronome", "Play the metronome click", false);
-  clickVolume = addNewParameter<FloatParameter>("Metronome Volume", "Click's volume if metronome is active", .5f, 0, 1);
+  clickVolume = addNewParameter<FloatParameter>("Metronome Volume", "Click's volume if metronome is active", .5f, 0.f, 1.f);
   setBPMInternal(BPM->doubleValue(),false);
 
   linkEnabled = addNewParameter<BoolParameter>("enable link","activate link",false);

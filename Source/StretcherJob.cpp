@@ -144,11 +144,11 @@ int StretcherJob::studyStretch(double _ratio,int start,int block){
 
   }
   const int numCh = owner->originAudioBuffer.getNumChannels();
-  const float* tmp[numCh];
+  const float * tmp[numCh];
   for(int i = 0 ; i  < numCh ; i++){
     tmp[i] = owner->originAudioBuffer.getReadPointer(i) + start;
   }
-  stretcher->study(tmp, block, isFinal);
+  stretcher->study(const_cast<const float*const *>(tmp), block, isFinal);
 
   return block;
 
@@ -176,19 +176,14 @@ void StretcherJob::processStretch(int start,int block,int * read, int * produced
 
 
 
-  stretcher->process(tmpIn, block, isFinal);
+  stretcher->process(const_cast<const float*const *>(tmpIn), block, isFinal);
   int available = stretcher->available();
 //  jassert( *produced + available< owner->getAllocatedNumSample());
 
 
   AudioSampleBuffer tmpOutBuf(owner->getNumChannels(),available);
-  float * tmpOut[owner->getNumChannels()];
-  for(int i = 0 ; i  < owner->getNumChannels() ; i++){
-//    tmpOut[i] = owner->audioBuffer.getWritePointer(i) + *produced;
-    tmpOut[i] = tmpOutBuf.getWritePointer(i);
-  }
-
-  int retrievedSamples = stretcher->retrieve(tmpOut, available);
+  float *const *tmpOut = tmpOutBuf.getArrayOfWritePointers();
+  size_t retrievedSamples = stretcher->retrieve(tmpOut, available);
   tmpStretchBuf.setNumSample(*produced+retrievedSamples);
   tmpStretchBuf.copyFrom(tmpOutBuf,*produced,0,retrievedSamples);
   jassert(retrievedSamples==available);

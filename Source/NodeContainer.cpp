@@ -266,7 +266,7 @@ var NodeContainer::getJSONData()
 }
 
 
-ControllableContainer *  NodeContainer::addContainerFromVar(const String & name,const var & data){
+ControllableContainer *  NodeContainer::addContainerFromVar(const String & /*name*/,const var & data){
 //  ConnectableNode * node = addNodeFromJSONData(data);
   NodeType nodeType = NodeFactory::getTypeFromString(data.getProperty("nodeType", var()));
   ConnectableNode * node = NodeFactory::createNode(nodeType);

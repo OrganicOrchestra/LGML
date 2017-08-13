@@ -40,7 +40,7 @@ public:
   int num;
   bool reverse;
 
-  int fadeOutValue();
+  float fadeOutValue();
   int getCurrentPosition();
 
   bool isFree(bool allowNotStarted =false);
