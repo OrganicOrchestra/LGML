@@ -1,41 +1,10 @@
-
-# appveyor configuration. See http://www.appveyor.com/docs/appveyor-yml
-# and http://www.appveyor.com/docs/installed-software#python
-
-environment:
-
-  matrix:
-
-    # pre-installed python version, see:
-    # http://www.appveyor.com/docs/installed-software#python
-    - PYTHON: "C:\\Python27"
-      PYTHON_VERSION: "2.7.x"
-      PYTHON_ARCH: "32"
-
-
-      # add path required to run preprocessor step
-      PATH_EXTRAS: "c:\\Program Files (x86)\\Microsoft Visual Studio 15.0\\VC\\bin"
-
+version: 1.0.{build}
+branches:
+  only:
+  - feature/ci
 platform:
-  - x86
-  - Any CPU
-
-matrix:
-  fast_finish: true
-install:
-
-  - ECHO "Installed SDKs:"
-  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
-
-  # Check that we have the expected version and architecture for Python
-  - "%PYTHON%\\python.exe --version"
-  - "%PYTHON%\\python.exe -c \"import struct; print(struct.calcsize('P') * 8)\""
-
-
-before_build:
-  - curl -fsS -o waf https://waf.io/waf-1.8.22
-  - curl -fsS -o waf.bat https://raw.githubusercontent.com/waf-project/waf/master/utils/waf.bat
-
-build_script:
-  - ps: "ls \"C:/Program Files (x86)/Microsoft Visual Studio 15.0/VC/bin"
-  
+- Any CPU
+- x86
+build:
+  project: Builds/VisualStudio2015/
+  verbosity: minimal
