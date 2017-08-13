@@ -64,13 +64,14 @@ multiNeedle(512,512)
 ,pendingTimeStretchRatio(1)
 ,isStretchPending(false)
 ,isStretchReady(false)
+,fadePendingStretch(256,256)
 #endif
 #endif
 
 ,bufferBlockList(numChannels,numSamples)
 ,blockSize(_blockSize)
 ,sampleRate(_sampleRate)
-,fadePendingStretch(256,256)
+
 {
 
   jassert(numSamples < std::numeric_limits<int>::max());

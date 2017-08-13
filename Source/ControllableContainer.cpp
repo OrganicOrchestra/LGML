@@ -725,7 +725,7 @@ void ControllableContainer::loadJSONData(const var & data)
             else {
               // we don't use custom types for now
               jassertfalse;
-              loadCustomJSONElement(p.name,p.value);
+              loadCustomJSONElement(p.name.toString(),p.value);
             }
           }
         }

@@ -84,8 +84,9 @@ linkLatency(00)
   linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
 
   linkSession.setTempoCallback(&TimeManager::linkTempoCallBack);
-  linkLatencyParam = addNewParameter<FloatParameter>("linkLatency", "link latency to add for lgml", 10, -30, 80);
 #endif
+  linkLatencyParam = addNewParameter<FloatParameter>("linkLatency", "link latency to add for lgml", 10, -30, 80);
+
 
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);
 
@@ -334,9 +335,9 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
   }
 
 
-
-  else if (p==linkEnabled){
 #if LINK_SUPPORT
+  else if (p==linkEnabled){
+
 
     linkSession.enable(linkEnabled->boolValue());
     if(linkEnabled->boolValue()){
@@ -347,12 +348,12 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
                             beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
       linkSession.commitAppTimeline(lTl);
     }
-#endif
+
   }
   else if (p==linkLatencyParam){
     linkLatency = std::chrono::microseconds((long long)(linkLatencyParam->doubleValue()*1000));
   }
-
+#endif
 };
 
 void TimeManager::shouldStop(bool now){

@@ -102,9 +102,11 @@ public TimeMasterCandidate
   static void linkTempoCallBack(const double tempo);
   bool getLinkTimeLine();
   #endif
+  FloatParameter * linkLatencyParam;
+
   BoolParameter * linkEnabled;
   IntParameter * linkNumPeers;
-  FloatParameter * linkLatencyParam;
+
 
 
 

@@ -150,11 +150,11 @@ private:
   float pendingTimeStretchRatio;
   int processedStretch;
   int stretchNeedle;
-  bool isStretchPending;
+
   FadeInOut fadePendingStretch;
 
 #endif
-
+  bool isStretchPending;
 #if BUFFER_CAN_STRETCH
   friend class StretcherJob;
   StretcherJob *stretchJob;
