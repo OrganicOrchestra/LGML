@@ -160,7 +160,7 @@ public:
   virtual Parameter * addParameterFromVar(const String & name,const var & data) ;
 
   // get non user-created custom parameter from JSON
-  virtual void loadCustomJSONElement(const String & name,const var v){jassertfalse;};
+  virtual void loadCustomJSONElement(const String & ,const var v){jassertfalse;};
 
 
 
@@ -204,7 +204,7 @@ public:
   protected :
 
   //  container with custom controllable can override this 
-  virtual void addControllableInternal(Controllable *c){};
+  virtual void addControllableInternal(Controllable *){};
 
   /// identifiers
 

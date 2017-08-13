@@ -98,8 +98,8 @@ void NodeContainer::clear(bool recreateContainerNodes)
     containerInNode = (ContainerInNode *)addNode(new ContainerInNode());
     containerOutNode = (ContainerOutNode *)addNode(new ContainerOutNode());
 
-    containerInNode->position->setPoint(150,100);
-    containerOutNode->position->setPoint(450,100);
+    containerInNode->nodePosition->setPoint(150,100);
+    containerOutNode->nodePosition->setPoint(450,100);
 
     //maybe keep it ?
     addConnection(containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);

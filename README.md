@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/OrganicOrchestra/LGML.svg?token=QbwmpjM4Gs9goraZhdFP&branch=develop)](https://travis-ci.com/OrganicOrchestra/LGML)
+
 LGML
 (c) 2017 , LGML is a software to help live music performance
 

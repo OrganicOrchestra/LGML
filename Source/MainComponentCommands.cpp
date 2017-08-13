@@ -367,7 +367,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
                 ConnectableNode * n = container->addNodeFromJSONData(d->getProperty("data"));
                 // ensure to have different uuid than the one from JSON
                 if(n){n->uid = Uuid();
-                n->position->setPoint(n->position->getPoint() + Point<int>(100, 50));
+                n->nodePosition->setPoint(n->nodePosition->getPoint() + Point<int>(100, 50));
                 }
               }
             }

@@ -33,10 +33,10 @@ Spat2DNode::Spat2DNode() :
 	shapeMode->setValue("Free");
 
 	//circle
-	circleRadius = addNewParameter<FloatParameter>("Circle Radius", "Radius of the circle to place the targets, if shape is set to circle", .8f, 0, 1);
-	circleRotation = addNewParameter<FloatParameter>("Circle Rotation", "Rotation of the circle to place the targets, if shape is set to circle", 0, 0, 360);
+	circleRadius = addNewParameter<FloatParameter>("Circle Radius", "Radius of the circle to place the targets, if shape is set to circle", .8f, 0.f, 1.f);
+	circleRotation = addNewParameter<FloatParameter>("Circle Rotation", "Rotation of the circle to place the targets, if shape is set to circle", 0.f, 0.f, 360.f);
 
-	targetRadius = addNewParameter<FloatParameter>("Target Radius", "Radius for all targets", .5f, 0, 1);
+	targetRadius = addNewParameter<FloatParameter>("Target Radius", "Radius for all targets", .5f, 0.f, 1.f);
 
 	numSpatInputs = addNewParameter<IntParameter>("Num Inputs", "Number of inputs to spacialize", 1, 0, 16);
 	numSpatOutputs = addNewParameter<IntParameter>("Num Outputs", "Number of spatialized outputs", 3, 0, 16);

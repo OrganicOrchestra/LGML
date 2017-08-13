@@ -103,7 +103,7 @@ void NodeContainerViewer::addNodeUI(ConnectableNode * node)
   if (getUIForNode(node) == nullptr)
   {
     ConnectableNodeUI * nui = node->createUI();
-    nui->setTopLeftPosition(node->position->getPoint());
+    nui->setTopLeftPosition(node->nodePosition->getPoint());
     nodesUI.add(nui);
     addAndMakeVisible(nui);
   }
@@ -368,7 +368,7 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
         ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(NodeFactory::getTypeForIndex(result - menuOffset,true));
         jassert(n != nullptr);
 
-        n->position->setPoint(mousePos);
+        n->nodePosition->setPoint(mousePos);
       }
     }
   }
@@ -425,7 +425,7 @@ bool NodeContainerViewer::keyPressed(const KeyPress & key){
       jassert(n != nullptr);
 
 
-      n->position->setPoint(mousePos);
+      n->nodePosition->setPoint(mousePos);
     }
 
     return true;

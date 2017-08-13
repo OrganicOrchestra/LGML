@@ -143,9 +143,9 @@ int StretcherJob::studyStretch(double ratio,int start,int block){
     block -= jmax(0,(start+block)-originNumSamples);
 
   }
-  const float* tmp[owner->originAudioBuffer.getNumChannels()];
+  float* tmp[owner->originAudioBuffer.getNumChannels()];
   for(int i = 0 ; i  < owner->originAudioBuffer.getNumChannels() ; i++){
-    tmp[i] = owner->originAudioBuffer.getReadPointer(i) + start;
+    tmp[i] = owner->originAudioBuffer.getWritePointer(i) + start;
   }
   stretcher->study(tmp, block, isFinal);
 
@@ -167,9 +167,9 @@ void StretcherJob::processStretch(int start,int block,int * read, int * produced
 
   }
 
-  const float * tmpIn[owner->originAudioBuffer.getNumChannels()];
+  float * tmpIn[owner->originAudioBuffer.getNumChannels()];
   for(int i = 0 ; i  < owner->originAudioBuffer.getNumChannels() ; i++){
-    tmpIn[i] = owner->originAudioBuffer.getReadPointer(i) + start;
+    tmpIn[i] = owner->originAudioBuffer.getWritePointer(i) + start;
   }
 
 

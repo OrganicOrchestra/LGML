@@ -87,7 +87,7 @@ ConnectableNodeUI::~ConnectableNodeUI()
 void ConnectableNodeUI::moved()
 {
   isDraggingFromUI = true;
-  connectableNode->position->setPoint(getPosition());
+  connectableNode->nodePosition->setPoint(getPosition());
   isDraggingFromUI = false;
 }
 
@@ -147,7 +147,7 @@ void ConnectableNodeUI::resized()
 
 void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
-  if (p == connectableNode->position )
+  if (p == connectableNode->nodePosition )
   {
     if(!isDraggingFromUI)postCommandMessage(posChangedId);
   }
@@ -173,7 +173,7 @@ void ConnectableNodeUI::handleCommandMessage(int commandId){
       setMiniMode(connectableNode->miniMode->boolValue());
       break;
     case posChangedId:
-      setTopLeftPosition(connectableNode->position->getPoint());
+      setTopLeftPosition(connectableNode->nodePosition->getPoint());
       break;
     case sizeChangedId:
       getContentContainer()->setSize(connectableNode->nodeSize->getX(), connectableNode->nodeSize->getY());
@@ -224,8 +224,8 @@ void ConnectableNodeUI::mouseDrag(const MouseEvent & e)
   Point<int> diff = Point<int>(e.getPosition() - e.getMouseDownPosition());
   Point <int> newPos = nodeInitPos + diff;
 
-  connectableNode->position->setPoint(newPos);
-  setTopLeftPosition(connectableNode->position->getPoint());
+  connectableNode->nodePosition->setPoint(newPos);
+  setTopLeftPosition(connectableNode->nodePosition->getPoint());
 
 }
 
