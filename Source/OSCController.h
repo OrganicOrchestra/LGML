@@ -44,12 +44,9 @@ public:
   float lastOSCMessageSentTime;
   int numSentInARow;
 
-  void setupReceiver();
-  void setupSender();
 
   void processMessage(const OSCMessage & msg);
   virtual Result processMessageInternal(const OSCMessage &msg);
-
 
 
   virtual void onContainerParameterChanged(Parameter * p) override;
@@ -104,6 +101,8 @@ public:
   void logMessage(const OSCMessage & m,const String & prefix = "");
 
 private:
+  void setupReceiver();
+  void setupSender();
   bool sendOSCInternal(OSCMessage & m);
   friend class OSCMessageQueue;
   // should use sendOSC for centralizing every call

@@ -77,12 +77,12 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">LGML_x64_Debug</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);third_party\rubberband\Debug</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);third_party\rubberband\Debug_x64</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LGML_x64</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);third_party\rubberband\Release</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);third_party\rubberband\Release_x64</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug 32bit|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug 32bit|Win32'">$(Platform)\$(Configuration)\App\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug 32bit|Win32'">LGML_86_Debug</TargetName>
@@ -130,7 +130,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(IntDir)\LGML_x64_Debug.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>third_party\rubberband\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>third_party\rubberband\Debug_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -174,7 +174,7 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalLibraryDirectories>third_party\rubberband\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>third_party\rubberband\Release_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -194,7 +194,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;..\..\third_party\serial\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;..\..\third_party\serial\include;..\..\third_party\rubberband;..\..\third_party\link\include;..\..\third_party\link\modules\asio-standalone\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.0beta;JUCE_APP_VERSION_HEX=0x10200;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -238,7 +238,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;..\..\third_party\serial\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;..\..\third_party\serial\include;..\..\third_party\rubberband;..\..\third_party\link\include;..\..\third_party\link\modules\asio-standalone\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.0beta;JUCE_APP_VERSION_HEX=0x10200;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>

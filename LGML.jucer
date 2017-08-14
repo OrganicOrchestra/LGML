@@ -856,16 +856,16 @@
             vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
-                       isDebug="1" libraryPath="third_party\rubberband\Debug" name="Debug"
+                       isDebug="1" libraryPath="third_party\rubberband\Debug_x64" name="Debug"
                        optimisation="1" targetName="LGML_x64_Debug" winArchitecture="x64"
                        winWarningLevel="4"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;"
                        isDebug="0" name="Release" optimisation="3" targetName="LGML_x64"
-                       winArchitecture="x64" winWarningLevel="4" libraryPath="third_party\rubberband\Release"/>
-        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;"
+                       winArchitecture="x64" winWarningLevel="4" libraryPath="third_party\rubberband\Release_x64"/>
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="1" name="Debug 32bit" optimisation="1" targetName="LGML_86_Debug"
                        winArchitecture="Win32" winWarningLevel="4" libraryPath="third_party\rubberband\Debug"/>
-        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;"
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="0" libraryPath="third_party\rubberband\Release" name="Release 32bit"
                        optimisation="3" targetName="LGML_x86" winArchitecture="Win32"
                        winWarningLevel="4"/>
