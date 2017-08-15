@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/OrganicOrchestra/LGML.svg?token=QbwmpjM4Gs9goraZhdFP&branch=develop)](https://travis-ci.com/OrganicOrchestra/LGML)
+[![Build Status](https://travis-ci.org/OrganicOrchestra/LGML.svg?branch=develop)](https://travis-ci.org/OrganicOrchestra/LGML)
 [![CircleCI](https://circleci.com/gh/OrganicOrchestra/LGML.svg?style=svg)](https://circleci.com/gh/OrganicOrchestra/LGML)
 [![Build status](https://ci.appveyor.com/api/projects/status/l1rd556j6ogglg6p?svg=true)](https://ci.appveyor.com/project/MartinHN/lgml)
 
