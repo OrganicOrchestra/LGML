@@ -104,7 +104,7 @@ public:
   std::unordered_map<DNSServiceRef,int> m_ServerToFdMap;
   String name;
   NetworkUtils * nu;
-  static constexpr int defaultOSCPort = 8000;
+  static constexpr int defaultOSCPort = 11000;
   
 
   String getName(){

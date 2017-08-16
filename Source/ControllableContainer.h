@@ -95,7 +95,7 @@ public:
   void removeControllable(Controllable * c);
   Controllable * getControllableByName(const String &name, bool searchNiceNameToo = false);
 
-  ControllableContainer* addChildControllableContainer(ControllableContainer * container);
+  ControllableContainer* addChildControllableContainer(ControllableContainer * container,bool notify=true);
   void removeChildControllableContainer(ControllableContainer *container);
   // add indexed container (ensure localIndex and position in the child container array are the same)
   // idx of -1 add after the ast indexed (may be not the last, array can contain other non indexed elements)

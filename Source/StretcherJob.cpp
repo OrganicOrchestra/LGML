@@ -99,7 +99,7 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
       owner->onsetSamples.clear() ;
       int inc = stretcher->getInputIncrement();
 
-      for(int i = 0 ; i < tp.size();i++){
+      for(size_t i = 0 ; i < tp.size();i++){
         owner->onsetSamples.add(tp[i]*inc);
       }
 

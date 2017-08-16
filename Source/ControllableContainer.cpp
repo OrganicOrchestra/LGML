@@ -125,6 +125,9 @@ void ControllableContainer::removeControllable(Controllable * c)
 void ControllableContainer::notifyStructureChanged(ControllableContainer * origin){
 
   controllableContainerListeners.call(&ControllableContainerListener::childStructureChanged, this,origin);
+  if(parentContainer){
+    parentContainer->notifyStructureChanged(origin);
+  }
 }
 
 void ControllableContainer::newMessage(const Parameter::ParamWithValue& pv){
@@ -174,7 +177,7 @@ Controllable * ControllableContainer::getControllableByName(const String & name,
   return nullptr;
 }
 
-ControllableContainer* ControllableContainer::addChildControllableContainer(ControllableContainer * container)
+ControllableContainer* ControllableContainer::addChildControllableContainer(ControllableContainer * container,bool notify)
 {
   String oriName = container->getNiceName();
   String targetName = getUniqueNameInContainer(oriName);
@@ -184,8 +187,10 @@ ControllableContainer* ControllableContainer::addChildControllableContainer(Cont
   controllableContainers.add(container);
   container->addControllableContainerListener(this);
   container->setParentContainer(this);
+  if(notify){
   controllableContainerListeners.call(&ControllableContainerListener::controllableContainerAdded,this, container);
   notifyStructureChanged(this);
+  }
   return container;
 }
 
@@ -313,7 +318,7 @@ String ControllableContainer::getControlAddress(ControllableContainer * relative
     if(!pc->skipControllableNameInAddress) addressArray.insert(0, pc->shortName);
     pc = pc->parentContainer;
   }
-  if(addressArray.size()==0)return "/";
+  if(addressArray.size()==0)return "";
   else return "/" + addressArray.joinIntoString("/");
 }
 
@@ -769,9 +774,8 @@ void ControllableContainer::loadJSONData(const var & data)
 
 }
 
-void ControllableContainer::childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer *origin)
+void ControllableContainer::childStructureChanged(ControllableContainer * notifier,ControllableContainer *origin)
 {
-  notifyStructureChanged(origin);
 }
 
 String ControllableContainer::getUniqueNameInContainer(const String & sourceName, int suffix,void * me)

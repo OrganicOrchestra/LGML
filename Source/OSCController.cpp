@@ -22,6 +22,8 @@
 #include "NetworkUtils.h"
 
 
+
+
 class OSCClientModel:public EnumParameterModel,NetworkUtils::Listener{
 
 public:
@@ -155,6 +157,81 @@ void OSCController::processMessage(const OSCMessage & msg)
 }
 
 
+bool OSCController::setParameterFromMessage(Parameter *c,const OSCMessage & msg,bool force){
+  Controllable::Type targetType = c->type;
+  if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
+  
+  switch (targetType)
+  {
+    case Controllable::Type::TRIGGER:
+      if (msg.size() == 0) ((Trigger *)c)->trigger();
+      else if (msg[0].isInt32() || msg[0].isFloat32())
+      {
+        float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+        if (val > 0) ((Trigger *)c)->trigger();
+      }
+      break;
+
+    case Controllable::Type::BOOL:
+      if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+      {
+        float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+        ((Parameter *)c)->setValue(val > 0,false,force);
+      }
+      break;
+
+    case Controllable::Type::FLOAT:
+      if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+      {
+        float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+        ((Parameter *)c)->setValue((float)value,false,force); //normalized or not ? can user decide ?
+      }
+      break;
+
+    case Controllable::Type::INT:
+      if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+      {
+        int value = msg[0].isInt32() ? msg[0].getInt32() : (int)msg[0].getFloat32();
+        ((Parameter *)c)->setValue(value,false,force);
+      }
+      break;
+
+    case Controllable::Type::STRING:
+      if (msg.size() > 0){
+        // cast number to strings
+        if  (msg[0].isInt32() || msg[0].isFloat32()){
+          float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+          ((Parameter *)c)->setValue(String(value));
+        }
+        else if (msg[0].isString()){
+          ((Parameter *)c)->setValue(msg[0].getString(),false,force);
+        }
+      }
+      break;
+
+    case Controllable::Type::ENUM:
+      if (msg.size() > 0){
+        // cast float to int
+        if  (msg[0].isInt32() || msg[0].isFloat32()){
+          int value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
+          ((Parameter *)c)->setValue(value,false,force);
+        }
+        // select by name
+        else if (msg[0].isString()){
+          ((Parameter *)c)->setValue(msg[0].getString(),false,force);
+        }
+      }
+      break;
+
+
+
+    default:
+      return false;
+      
+      
+  }
+  return true;
+}
 
 
 void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
@@ -170,7 +247,7 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
     auto *c = tC->getControllableContainerByName(sa[i],true);
     if(!c){
       c = new ControllableContainer(sa[i],true);
-      tC->addChildControllableContainer(c );
+      tC->addChildControllableContainer(c ,false);
     }
       tC = c;
     }
@@ -192,6 +269,9 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
       }
     }
 
+      if(auto *p = linked->getParameter()){
+        setParameterFromMessage(p, msg,true);
+      }
     }
     else{
       jassertfalse;
