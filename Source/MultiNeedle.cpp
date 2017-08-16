@@ -58,7 +58,7 @@ void FadeNeedle::reset(){
 
 }
 
-int FadeNeedle::fadeOutValue(){return  (consumedSamples>getStartFadeOut())?currentFade:1;}
+float FadeNeedle::fadeOutValue(){return  (consumedSamples>getStartFadeOut())?currentFade:1;}
 int FadeNeedle::getCurrentPosition(){jassert(consumedSamples>=0);return startNeedle+(reverse?-1:1)*consumedSamples;}
 
 bool FadeNeedle::isFree(bool allowNotStarted ){return !hasBeenSet || (allowNotStarted&&consumedSamples==0) ||consumedSamples>getEndFadeOut() || (isFadingOut && currentFade<=0);}
@@ -408,11 +408,11 @@ void MultiNeedle::addToBuffer( BufferBlockList & originBufferList,AudioBuffer<fl
   if(isLooping){
     DBGNEEDLE(numActiveNeedle << " // " << accumNeedle << " // " <<accumNeedleSq );
   }
-  if(numActiveNeedle>1){
-    int dbg;dbg++;
+//  if(numActiveNeedle>1){
+//    int dbg;dbg++;
 
     //      jassertfalse.
-  }
+//  }
 
 
   if(nextPos>=loopSize){

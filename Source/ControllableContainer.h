@@ -95,7 +95,7 @@ public:
   void removeControllable(Controllable * c);
   Controllable * getControllableByName(const String &name, bool searchNiceNameToo = false);
 
-  ControllableContainer* addChildControllableContainer(ControllableContainer * container);
+  ControllableContainer* addChildControllableContainer(ControllableContainer * container,bool notify=true);
   void removeChildControllableContainer(ControllableContainer *container);
   // add indexed container (ensure localIndex and position in the child container array are the same)
   // idx of -1 add after the ast indexed (may be not the last, array can contain other non indexed elements)
@@ -160,7 +160,7 @@ public:
   virtual Parameter * addParameterFromVar(const String & name,const var & data) ;
 
   // get non user-created custom parameter from JSON
-  virtual void loadCustomJSONElement(const Identifier & name,const var v){jassertfalse;};
+  virtual void loadCustomJSONElement(const String & ,const var v){jassertfalse;};
 
 
 
@@ -204,7 +204,7 @@ public:
   protected :
 
   //  container with custom controllable can override this 
-  virtual void addControllableInternal(Controllable *c){};
+  virtual void addControllableInternal(Controllable *){};
 
   /// identifiers
 

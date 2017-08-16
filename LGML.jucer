@@ -851,38 +851,40 @@
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib" smallIcon="SL4b92"
-            targetFolder="Builds/VisualStudio2015" vst3Folder="$(VST3SDK)"
+    <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib"
+            smallIcon="SL4b92" targetFolder="Builds/VisualStudio2015" vst3Folder="third_party/VST3_SDK"
             vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK">
       <CONFIGURATIONS>
-        <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;"
-                       isDebug="1" libraryPath="" name="Debug" optimisation="1" targetName="LGML_x64_Debug"
-                       winArchitecture="x64" winWarningLevel="4"/>
+        <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
+                       isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64"
+                       name="Debug" optimisation="1" targetName="LGML_x64_Debug" winArchitecture="x64"
+                       winWarningLevel="4"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;"
                        isDebug="0" name="Release" optimisation="3" targetName="LGML_x64"
-                       winArchitecture="x64" winWarningLevel="4"/>
-        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;"
-                       isDebug="1" name="Debug 32bit" optimisation="1" targetName="LGML_86_Debug"
-                       winArchitecture="32-bit" winWarningLevel="4"/>
-        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;"
-                       isDebug="0" libraryPath="" name="Release 32bit" optimisation="3"
-                       targetName="LGML_x86" winArchitecture="32-bit" winWarningLevel="4"/>
+                       winArchitecture="x64" winWarningLevel="4" libraryPath="..\..\third_party\rubberband\Release_x64"/>
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
+                       isDebug="1" name="Debug_32bit" optimisation="1" targetName="LGML_32_Debug"
+                       winArchitecture="Win32" winWarningLevel="4" libraryPath="..\..\third_party\rubberband\Debug"/>
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
+                       isDebug="0" libraryPath="..\..\third_party\rubberband\Release"
+                       name="Release_32bit" optimisation="3" targetName="LGML_32" winArchitecture="Win32"
+                       winWarningLevel="4"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="D:/Softwares/JUCE/modules"/>
-        <MODULEPATH id="juce_osc" path="D:/Softwares/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="rubberband"

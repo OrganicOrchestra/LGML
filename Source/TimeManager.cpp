@@ -53,7 +53,7 @@ linkLatency(00)
 
 {
 
-  BPM = addNewParameter<FloatParameter>("bpm","current BPM",120,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
+  BPM = addNewParameter<FloatParameter>("bpm","current BPM",120.f,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
   BPM->isCommitableParameter = true;
   playState = addNewParameter<BoolParameter>("PlayStop", "play or stop global transport", false);
   BPMLocked = addNewParameter<BoolParameter>("bpmLocked", "bpm is locked by somebody", false);
@@ -68,7 +68,7 @@ linkLatency(00)
   quantizedBarFraction = addNewParameter<IntParameter>("globalQuantization", "Global quantization in fraction of a bar", 1, 0, 16);
   tapTempo =  addNewParameter<Trigger>("tapTempo", "tap at least 2 times to set the tempo");
   click = addNewParameter<BoolParameter>("Metronome", "Play the metronome click", false);
-  clickVolume = addNewParameter<FloatParameter>("Metronome Volume", "Click's volume if metronome is active", .5f, 0, 1);
+  clickVolume = addNewParameter<FloatParameter>("Metronome Volume", "Click's volume if metronome is active", .5f, 0.f, 1.f);
   setBPMInternal(BPM->doubleValue(),false);
 
   linkEnabled = addNewParameter<BoolParameter>("enable link","activate link",false);
@@ -84,8 +84,9 @@ linkLatency(00)
   linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
 
   linkSession.setTempoCallback(&TimeManager::linkTempoCallBack);
-  linkLatencyParam = addNewParameter<FloatParameter>("linkLatency", "link latency to add for lgml", 10, -30, 80);
 #endif
+  linkLatencyParam = addNewParameter<FloatParameter>("linkLatency", "link latency to add for lgml", 10.f, -30.f, 80.f);
+
 
   clickFader = new FadeInOut(10000,10000,true,1.0/3.0);
 
@@ -334,9 +335,9 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
   }
 
 
-
-  else if (p==linkEnabled){
 #if LINK_SUPPORT
+  else if (p==linkEnabled){
+
 
     linkSession.enable(linkEnabled->boolValue());
     if(linkEnabled->boolValue()){
@@ -347,12 +348,12 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
                             beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
       linkSession.commitAppTimeline(lTl);
     }
-#endif
+
   }
   else if (p==linkLatencyParam){
     linkLatency = std::chrono::microseconds((long long)(linkLatencyParam->doubleValue()*1000));
   }
-
+#endif
 };
 
 void TimeManager::shouldStop(bool now){

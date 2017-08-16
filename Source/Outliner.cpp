@@ -172,8 +172,9 @@ Component * OutlinerItem::createItemComponent()
 }
 
 String OutlinerItem::getUniqueName() const{
-  if(isContainer) {return container->getControlAddress();}
-  else            {return controllable->getControlAddress();}
+  // avoid empty names
+  if(isContainer) {return "/it/"+container->getControlAddress();}
+  else            {return "/it/"+controllable->getControlAddress();}
 
 };
 

@@ -107,7 +107,7 @@ void FastMapUI::buttonClicked(Button * b)
   if(b == &removeBT) FastMapper::getInstance()->removeFastmap(fastMap);
 }
 
-void FastMapUI::mouseDown(const MouseEvent &e) {
+void FastMapUI::mouseDown(const MouseEvent &) {
   selectThis();
 };
 

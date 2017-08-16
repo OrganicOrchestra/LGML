@@ -104,7 +104,7 @@ public:
   std::unordered_map<DNSServiceRef,int> m_ServerToFdMap;
   String name;
   NetworkUtils * nu;
-  static constexpr int defaultOSCPort = 8000;
+  static constexpr int defaultOSCPort = 11000;
   
 
   String getName(){
@@ -315,7 +315,7 @@ public:
   Pimpl(NetworkUtils*){}
   
 };
-OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & hn)
+OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & )
 //int hostname_to_ip(char * hostname , char* ip)
 {
   LOG("ip hostname discovery not supported on windows/Unix");

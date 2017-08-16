@@ -64,13 +64,14 @@ multiNeedle(512,512)
 ,pendingTimeStretchRatio(1)
 ,isStretchPending(false)
 ,isStretchReady(false)
+,fadePendingStretch(256,256)
 #endif
 #endif
 
 ,bufferBlockList(numChannels,numSamples)
 ,blockSize(_blockSize)
 ,sampleRate(_sampleRate)
-,fadePendingStretch(256,256)
+
 {
 
   jassert(numSamples < std::numeric_limits<int>::max());
@@ -575,11 +576,11 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
 
 
 
-    int numChannels=getNumChannels();
+    const int numChannels(getNumChannels());
 
 
     int available =RTStretcher->available();
-
+    const float ** inBuf = new const float*[numChannels];
     //    if(stretchNeedle!=originNumSamples)   {
     while(available<outNumSample  ){
 
@@ -595,9 +596,9 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
         RTStretcher->setTimeRatio(pendingTimeStretchRatio*adaptStretch);
       }
 
-      int toProcess =  RTStretcher->getSamplesRequired();
+      int toProcess =  (int)RTStretcher->getSamplesRequired();
       //      jassert(toProcess>0);
-      const float*  inBuf[numChannels];
+
       AudioBuffer<float> tmpCache(numChannels,toProcess);
 
       if(stretchNeedle+toProcess>=originNumSamples){
@@ -605,9 +606,9 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
       }
       if(toProcess>0){
         for(int i = 0 ; i  < numChannels ; i++){
-          inBuf[i] = originAudioBuffer.getReadPointer(i)+stretchNeedle;
+          inBuf [i] = originAudioBuffer.getReadPointer(i)+stretchNeedle;
         }
-        RTStretcher->process(inBuf, toProcess, false);
+        RTStretcher->process(const_cast<const float*const *>(inBuf), toProcess, false);
         stretchNeedle+=toProcess;
         if(stretchNeedle>=originNumSamples){
           stretchNeedle-=originNumSamples;
@@ -624,14 +625,11 @@ bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t
 
 
     }
-
+    delete [] inBuf;
 
 
     //    jassert(available>=outNumSample);
-    float*  outBuf[numChannels];
-    for(int i = 0 ; i  < numChannels; i++){
-      outBuf[i] = b.getWritePointer(i);
-    }
+    float *const *  outBuf = b.getArrayOfWritePointers();
     RTStretcher->retrieve(outBuf, jmin(outNumSample,available));
     double ratio = jmin(stretchNeedle *1.0/originNumSamples,1.0);
 

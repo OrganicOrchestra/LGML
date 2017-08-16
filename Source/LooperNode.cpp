@@ -38,7 +38,7 @@ streamAudioBuffer(2, 16384)// 16000 ~ 300ms and 256*64
   playSelectedTrig =  addNewParameter<Trigger>("Play", "Tells the selected track to wait for the next bar and then stop recording and start playing");
   stopSelectedTrig =  addNewParameter<Trigger>("Stop", "Tells the selected track to stop ");
   clearSelectedTrig =  addNewParameter<Trigger>("Clear", "Tells the selected track to clear it's content if got any");
-  volumeSelected = addNewParameter<FloatParameter>("Volume", "Set the volume of the selected track", 1, 0, 1);
+  volumeSelected = addNewParameter<FloatParameter>("Volume", "Set the volume of the selected track", 1.f, 0.f, 1.f);
   clearAllTrig =  addNewParameter<Trigger>("ClearAll", "Tells all tracks to clear it's content if got any");
   stopAllTrig =  addNewParameter<Trigger>("StopAll", "Tells all tracks to stop it's content if got any");
   playAllTrig =  addNewParameter<Trigger>("PlayAll", "Tells all tracks to play it's content if got any");

@@ -61,7 +61,7 @@ void ControllerManager::clear()
 
 
 
-ControllableContainer *  ControllerManager::addContainerFromVar(const String & name,const var & cData)
+ControllableContainer *  ControllerManager::addContainerFromVar(const String & /*name*/,const var & cData)
 {
 
 

@@ -184,7 +184,7 @@ void SerialController::processMessage(const String & message)
                                                split[3].getFloatValue());
       }
       else{
-        v= userContainer.addNewParameter<FloatParameter>(split[1],split[1],0);
+        v= userContainer.addNewParameter<FloatParameter>(split[1],split[1],0.f);
       }
       serialVariables.add(v);
     }

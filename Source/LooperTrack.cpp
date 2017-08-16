@@ -55,13 +55,13 @@ logVolume(float01ToGain(DB0_FOR_01), 0.5)
   playTrig =  addNewParameter<Trigger>("Play", "Tells the track to wait for the next bar and then stop recording and start playing");
   stopTrig =  addNewParameter<Trigger>("Stop", "Tells the track to stop ");
   clearTrig =  addNewParameter<Trigger>("Clear", "Tells the track to clear it's content if got any");
-  volume = addNewParameter<FloatParameter>("Volume", "Set the volume of the track", DB0_FOR_01, 0, 1);
+  volume = addNewParameter<FloatParameter>("Volume", "Set the volume of the track", DB0_FOR_01, 0.f, 1.f);
   mute = addNewParameter<BoolParameter>("Mute", "Sets the track muted (or not.)", false);
   solo = addNewParameter<BoolParameter>("Solo", "Sets the track solo (or not.)", false);
-  beatLength = addNewParameter<FloatParameter>("Length", "length in bar", 0, 0, 200);
+  beatLength = addNewParameter<FloatParameter>("Length", "length in bar", 0.f, 0.f, 200.f);
   beatLength->isEditable = false;
   togglePlayStopTrig =  addNewParameter<Trigger>("Toggle Play Stop", "Toggle Play / Stop");
-  originBPM = addNewParameter<FloatParameter>("originBPM", "bpm of origin audio loop", 0, 0, 999);
+  originBPM = addNewParameter<FloatParameter>("originBPM", "bpm of origin audio loop", 0.f, 0.f, 999.f);
   originBPM->isEditable = false;
 
   sampleChoice = addNewParameter<EnumParameter>("sample", "loaded sample");
