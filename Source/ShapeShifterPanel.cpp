@@ -40,6 +40,7 @@ ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifter
 			attachTab(sourceTab);
 		}
 	}
+  setOpaque(true);
 
 }
 

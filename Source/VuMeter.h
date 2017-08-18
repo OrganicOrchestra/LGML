@@ -47,6 +47,7 @@ public:
     colorHigh = Colours::red;
     colorLow = Colours::lightgreen;
     isActive = true;
+    setOpaque(true);
   }
 
   ~VuMeter(){
@@ -66,11 +67,13 @@ public:
      */
 
     g.setColour(NORMAL_COLOR);
-    g.fillRoundedRectangle(r.toFloat(), 2);
+//    g.fillRoundedRectangle(r.toFloat(), 2);
+    g.fillRect(r.toFloat());
     if (voldB > 0)
     {
       g.setGradientFill(ColourGradient(colorLow, 0.f, r.getHeight()*.5f, colorHigh, 0.f, r.getHeight()*0.1f, false));
-      g.fillRoundedRectangle(r.removeFromBottom((int)(r.getHeight()*(voldB))).toFloat(), 2.f);
+//      g.fillRoundedRectangle(r.removeFromBottom((int)(r.getHeight()*(voldB))).toFloat(), 2.f);
+      g.fillRect(r.removeFromBottom((int)(r.getHeight()*(voldB))).toFloat());
     }
   }
 

@@ -41,6 +41,8 @@ ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent * _content) : con
 
 
 	setSize(getLabelWidth(), 20);
+  setOpaque(true);
+
 }
 
 ShapeShifterPanelTab::~ShapeShifterPanelTab()
@@ -58,7 +60,7 @@ void ShapeShifterPanelTab::paint(Graphics & g)
 {
 	g.setColour(selected?BG_COLOR:BG_COLOR.brighter(.15f));
 	Rectangle<int> r = getLocalBounds();
-	if (!selected) r.reduce(1,1);
+//	if (!selected) r.reduce(1,1);
 	g.fillRect(r);
 }
 

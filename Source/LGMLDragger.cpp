@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "LGMLDragger.h"
@@ -161,7 +161,7 @@ void LGMLDragger::mouseEnter(const MouseEvent &e){
 }
 
 void LGMLDragger::mouseUp(const MouseEvent &e){
-//  unselect only if in the same parent component
+  //  unselect only if in the same parent component
   auto * i = e.originalComponent;
   while (i) {
     if(i==selectedSSContent){
@@ -184,23 +184,28 @@ void LGMLDragger::mouseExit(const MouseEvent &e){
   }
 };
 
+
+
+
+
 void setAllComponentMappingState(Component * c,bool b){
   for(int i = 0 ; i < c->getNumChildComponents() ; i++){
     Component *  ch = c->getChildComponent(i);
     if(ch->isVisible()){
       if(auto lch = dynamic_cast<ControllableUI*>(ch)){
-
-          lch->setMappingState(b);
-        
-
-
+        if(lch->controllable->isMappable()){
+          if(!dynamic_cast<NamedControllableUI*>(ch)){
+            lch->setMappingState(b);
+          }
+        }
       }
-
       setAllComponentMappingState(ch, b);
-
     }
   }
 }
+
+
+
 void LGMLDragger::setMappingActive(bool b){
   isMappingActive = b;
   setAllComponentMappingState(mainComp, b);
@@ -313,10 +318,10 @@ void LGMLDragger::setSelected(ControllableUI * c){
       auto *cUI = ((ControllableUI*)selected.get());
       cUI->isSelected = true;
       selected->repaint();
-     
+      
     }
     listeners.call(&Listener::selectionChanged,c? c->controllable:nullptr);
-
+    
   }
 }
 

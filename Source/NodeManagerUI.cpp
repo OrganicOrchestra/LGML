@@ -23,7 +23,7 @@ currentViewer(nullptr)
 {
 	nodeManager->addNodeManagerListener(this);
 	setCurrentViewedContainer(nodeManager->mainContainer);
-
+  
 }
 
 NodeManagerUI::~NodeManagerUI()

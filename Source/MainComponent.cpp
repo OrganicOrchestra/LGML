@@ -52,6 +52,8 @@ engine(e)
 
   setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.6f));
   setWantsKeyboardFocus(true);
+  setOpaque(true);
+  tooltipWindow.setOpaque(false);
 
 
 }

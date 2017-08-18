@@ -168,8 +168,6 @@ public:
 
 	  
 
-      setVisible (true);
-
 #if ! JUCE_MAC
       setMenuBar(mainComponent);
 #endif
@@ -178,6 +176,8 @@ public:
       openGLContext.setContinuousRepainting(false);
       openGLContext.attachTo(*getTopLevelComponent());
 #endif
+
+      setVisible (true);
 
 
 

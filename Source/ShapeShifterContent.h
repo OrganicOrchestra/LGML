@@ -41,11 +41,7 @@ class ShapeShifterContentComponent :
 	public ShapeShifterContent
 {
 public:
-	ShapeShifterContentComponent(const String &contentName) :
-		ShapeShifterContent(this, contentName)
-	{
-
-	}
+  ShapeShifterContentComponent(const String &contentName);
 };
 
 #endif  // SHAPESHIFTERCONTENT_H_INCLUDED

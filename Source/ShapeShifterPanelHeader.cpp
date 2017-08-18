@@ -26,6 +26,7 @@ ShapeShifterPanelHeader::ShapeShifterPanelHeader()
   addPannelMenu.setConnectedEdges(0);
   addPannelMenu.setTooltip("add tab to this panel");
   addPannelMenu.addListener(this);
+  setOpaque(true);
 }
 
 ShapeShifterPanelHeader::~ShapeShifterPanelHeader()

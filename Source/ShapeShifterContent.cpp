@@ -26,3 +26,10 @@ ShapeShifterContent::ShapeShifterContent(Component * _contentComponent, const St
 ShapeShifterContent::~ShapeShifterContent()
 {
 }
+
+
+ShapeShifterContentComponent::ShapeShifterContentComponent(const String &contentName) :
+ShapeShifterContent(this, contentName)
+{
+
+}

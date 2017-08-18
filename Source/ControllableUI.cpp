@@ -24,21 +24,13 @@ isMappingDest(false),
 isDraggable(true),
 isSelected(false)
 {
-  if(LGMLDragger::getInstance()->isMappingActive &&
-     controllable->isMappable()){
-    mappingState = isMappingDest?MAPDEST:MAPSOURCE;
-
-  }
-  else{
-    mappingState=NOMAP;
-  }
-
-
   hasValidControllable = (controllable!=nullptr);
   jassert(hasValidControllable);
   setName(controllable->niceName);
   controllable->addControllableListener(this);
+  setMappingState(LGMLDragger::getInstance()->isMappingActive);
   updateTooltip();
+  
 
 }
 
@@ -89,45 +81,116 @@ void ControllableUI::updateTooltip()
 }
 
 
+class MapEffect : public ImageEffectFilter{
+public:
+  MapEffect(const Colour & colour,uint32 _amount,String _text):
+  amount(_amount),
+  pRef(colour.getAlpha(),colour.getRed(),colour.getGreen(),colour.getBlue()),
+  text(_text)
+  {
+  }
+  PixelARGB pRef;
+  uint32 amount;
+  String text;
+  uint32 trueAmount;
+
+  template<typename T>
+void  applyFunction(Image::BitmapData & data){
+  for (int y = 0; y < data.height; ++y)
+  {
+    uint8* p = data.getLinePointer (y);
+
+    for (int x = 0; x < data.width; ++x)
+    {
+      T* pp = ((T*) p);
+
+      pp->desaturate();
+      pp->tween(pRef, trueAmount);
+
+      p += data.pixelStride;
+    }
+  }
+  }
+  void applyEffect (Image& image, Graphics& g, float scaleFactor, float alpha)
+  {
+    //  Image temp (image.getFormat(), image.getWidth(), image.getHeight(), true);
+    trueAmount = alpha*alpha*amount;
+
+    Image::BitmapData data (image, 0, 0, image.getWidth(), image.getHeight(), Image::BitmapData::readWrite);
+    if(image.getFormat()==Image::PixelFormat::ARGB){
+      applyFunction<PixelARGB>(data);
+    }
+    else if(image.getFormat()==Image::PixelFormat::RGB){
+      applyFunction<PixelRGB>(data);
+    }
+    else{
+      jassertfalse;
+    }
+
+
+    g.drawImage(image,image.getBounds().toFloat());
+    g.setColour(Colours::white);
+    g.drawFittedText(text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
+
+  }
+};
+
+
+
 void  ControllableUI::setMappingState(const bool  b){
-  if(!controllable->isMappable())return;
+  if( controllable && !controllable->isMappable())return;
+
+
+
   MappingState s = b?(isMappingDest?MAPDEST:MAPSOURCE):NOMAP;
   if(s!=mappingState){
     if(s==NOMAP){
       setInterceptsMouseClicks(true, true);
+
     }
     else{
       setInterceptsMouseClicks(true, false);
     }
   }
+  if (b){
+    mapEffect  = new MapEffect(isMappingDest?Colours::red:Colours::blue,120,getName());
+  }
+  else{
+    mapEffect= nullptr;
+  }
+
+  setComponentEffect(mapEffect);
   mappingState = s;
   repaint();
 }
-void ControllableUI::paintOverChildren(Graphics &g) {
-  if(hasValidControllable && controllable==nullptr){
-    //    jassertfalse;
-    int dbg;dbg++;
-  }
-  hasValidControllable = (controllable!=nullptr );
-  if(hasValidControllable){
-    Component::paintOverChildren(g);
-    if(mappingState!=NOMAP ){
-      if(mappingState==MAPSOURCE){
-        jassert(!isMappingDest);
-        g.setColour(Colours::red.withAlpha(0.2f));
-      }
-      else{
-        jassert(isMappingDest);
-        g.setColour(Colours::blue.withAlpha(0.2f));
-      }
 
-      g.fillAll();
-      if(isSelected){
-        g.setColour(Colours::red);
-        g.drawRect(getLocalBounds(),2);
-      }
-    }
-  }
+
+
+void ControllableUI::paintOverChildren(Graphics &g) {
+//  if(hasValidControllable && controllable==nullptr){
+//    //    jassertfalse;
+//    int dbg;dbg++;
+//  }
+//  hasValidControllable = (controllable!=nullptr );
+//  if(hasValidControllable){
+//    Component::paintOverChildren(g);
+//    if(mappingState!=NOMAP ){
+//      if(mappingState==MAPSOURCE){
+//        jassert(!isMappingDest);
+//        g.setColour(Colours::red.withAlpha(0.2f));
+//      }
+//      else{
+//        jassert(isMappingDest);
+//        g.setColour(Colours::blue.withAlpha(0.2f));
+//      }
+//
+//      g.fillAll();
+//      if(isSelected){
+//        g.setColour(Colours::red);
+//        g.drawRect(getLocalBounds(),2);
+//      }
+//    }
+//  }
 
 }
 

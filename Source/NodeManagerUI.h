@@ -88,6 +88,7 @@ public ButtonListener
     reconstructViewerPath();
     setWantsKeyboardFocus(true);
     nmui->setWantsKeyboardFocus(true);
+//    setOpaque(true);
 
   }
 

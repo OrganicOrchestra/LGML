@@ -51,6 +51,7 @@ ControllerUI::ControllerUI(Controller * controller) :
   activityBlink = new TriggerBlinkUI(controller->activityTrigger);
 	activityBlink->showLabel = false;
 	addAndMakeVisible(activityBlink);
+  
 }
 
 ControllerUI::~ControllerUI()

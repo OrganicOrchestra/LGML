@@ -57,6 +57,7 @@ private:
   friend class LGMLDragger;
   MappingState mappingState;
   bool hasValidControllable;
+  ScopedPointer<ImageEffectFilter> mapEffect;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableUI)
 

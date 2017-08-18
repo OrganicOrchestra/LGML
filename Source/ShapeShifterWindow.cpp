@@ -16,6 +16,7 @@
 #include "ShapeShifterWindow.h"
 #include "ShapeShifterManager.h"
 #include "Style.h"
+#include "LookandFeelOO.h"
 
 ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds) :
 	ResizableWindow(_panel->currentContent->contentName, true),
@@ -41,7 +42,12 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 
 	setVisible(true);
 	toFront(true);
-
+  static LookAndFeelOO lfOO;
+  setLookAndFeel(&lfOO);
+#if JUCE_OPENGL
+  openGLContext.setContinuousRepainting(false);
+  openGLContext.attachTo(*getTopLevelComponent());
+#endif
 
 	addMouseListener(this, true);
 
@@ -49,6 +55,9 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 
 ShapeShifterWindow::~ShapeShifterWindow()
 {
+#if JUCE_OPENGL
+  openGLContext.detach();
+#endif
 	removeMouseListener(this);
 	clear();
 
@@ -56,8 +65,8 @@ ShapeShifterWindow::~ShapeShifterWindow()
 
 void ShapeShifterWindow::paintOverChildren(Graphics & g)
 {
-	g.setColour(BG_COLOR.brighter());
-	g.drawRect(getLocalBounds());
+//	g.setColour(BG_COLOR.brighter());
+//	g.drawRect(getLocalBounds());
 }
 
 void ShapeShifterWindow::resized()

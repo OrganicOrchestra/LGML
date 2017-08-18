@@ -63,7 +63,7 @@ timeBar(_timeManager) {
   //	linkNumPeers = ParameterUIFactory::createDefaultUI(timeManager->linkNumPeers);
   //	addAndMakeVisible(linkNumPeers);
 
-
+  setOpaque(true);
 }
 
 
@@ -140,6 +140,7 @@ void TimeManagerUI::resized() {
 
 TimeManagerUI::TimeBar::TimeBar(TimeManager * t) :timeManager(t) {
   initComponentsForNumBeats(timeManager->beatPerBar->intValue());
+  setOpaque(true);
 }
 
 
@@ -192,6 +193,7 @@ void TimeManagerUI::TimeBar::zeroOutBeatComponents() {
     bc->repaint();
 
   }
+
 
 }
 
@@ -246,16 +248,15 @@ void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g) {
   int beatBarWidth = 1;
 
   Rectangle<int> r = getLocalBounds();
+  g.setColour(PANEL_COLOR);
+  g.fillRect(r);
   Rectangle<int> lineR = r.removeFromTop(1);
   lineR.removeFromLeft(beatBarWidth);
   lineR.removeFromRight(beatBarWidth);
 
   r.removeFromTop(1);
-
-  g.setColour(PANEL_COLOR);
-  g.fillRect(r.removeFromLeft(beatBarWidth));
-  g.setColour(PANEL_COLOR);
-  g.fillRect(r.removeFromRight(beatBarWidth));
+  r.removeFromLeft(beatBarWidth);
+  r.removeFromRight(beatBarWidth);
   //    g.fillRect(area.removeFromRight(beatBarWidth));
   
   
@@ -266,4 +267,5 @@ void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g) {
   
   g.setColour(HIGHLIGHT_COLOR);
   g.fillRect(lineR.removeFromLeft((int)(percentDone*lineR.getWidth())));
+
 }

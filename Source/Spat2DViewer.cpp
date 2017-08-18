@@ -31,6 +31,7 @@ Spat2DViewer::Spat2DViewer(Spat2DNode * _node) : node(_node)
 		globalTarget->addHandleListener(this);
 		globalTarget->setPosition(node->globalTargetPosition->getPoint());
 	}
+  setOpaque(true);
 }
 
 Spat2DViewer::~Spat2DViewer()
@@ -153,7 +154,6 @@ void Spat2DViewer::resized()
 
 void Spat2DViewer::paint(Graphics & g)
 {
-	Component::paint(g);
 	g.setColour(BG_COLOR.darker());
 	g.fillRect(getLocalBounds());
 }
