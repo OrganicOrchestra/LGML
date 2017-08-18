@@ -16,7 +16,7 @@
 #include "ShapeShifterWindow.h"
 #include "ShapeShifterManager.h"
 #include "Style.h"
-#include "LookandFeelOO.h"
+#include "LookAndFeelOO.h"
 
 ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds) :
 	ResizableWindow(_panel->currentContent->contentName, true),
