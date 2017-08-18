@@ -58,10 +58,7 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
 
 #include <dns_sd.h>
 #include <net/if.h>     // For if_nametoindex()
-#if JUCE_LINUX
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
+
 #include <netdb.h> //hostent
 
 #include <arpa/inet.h>
@@ -245,7 +242,9 @@ public:
         hostIP = arr.joinIntoString(".");
       }
       else{
-        auto * he = gethostbyname(hosttarget);
+#if 0
+        // deprecated gethostbyname
+        struct hostent * he = gethostbyname(hosttarget);
         if( he->h_length){
           struct in_addr **addr_list = (struct in_addr **)he->h_addr_list;
           hostIP = inet_ntoa(*addr_list[0]);
@@ -256,6 +255,29 @@ public:
           jassertfalse;
         }
         freehostent(he);
+#else
+        struct addrinfo hints,*res=NULL;
+        memset(&hints,0,sizeof(hints));
+        hints.ai_family = AF_INET;
+
+        if(getaddrinfo(hosttarget,NULL,&hints,&res)==0){
+
+          struct sockaddr_in *addr;
+          struct addrinfo * it = res;
+          while(it){
+            if(it->ai_family==AF_INET){
+              addr = (struct sockaddr_in *)it->ai_addr;
+              hostIP = inet_ntoa((struct in_addr)addr->sin_addr);
+              break;
+            }
+            it = it->ai_next;
+          }
+
+        }
+        if(res)
+        freeaddrinfo(res);
+
+#endif
       }
     }
     if(isValidIP(hostIP)){
@@ -271,7 +293,7 @@ public:
     }
     else{
       jassertfalse;
-      DBG("DNS : can't resolve ip :"<< hostIP);
+      LOG("DNS : can't resolve ip :"<< hostIP << " (" <<String(hosttarget)<<")" );
     }
 
   }

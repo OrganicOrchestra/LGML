@@ -457,7 +457,6 @@
 		AD76C65EE67386A7AE95568E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FastMapperUI.h; path = ../../Source/FastMapperUI.h; sourceTree = "SOURCE_ROOT"; };
 		AE2D74A46E528A277C089F5F = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DataInNode.cpp; path = ../../Source/DataInNode.cpp; sourceTree = "SOURCE_ROOT"; };
 		AF70276AEE13BA9C272DBC69 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = "include_juce_audio_formats.mm"; path = "../../JuceLibraryCode/include_juce_audio_formats.mm"; sourceTree = "SOURCE_ROOT"; };
-		AFD227E26536B8AB0C0BE224 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LGMLComponentHelpers.h; path = ../../Source/LGMLComponentHelpers.h; sourceTree = "SOURCE_ROOT"; };
 		AFD4516208BF2EA5D7E4D974 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TriggerBlinkUI.cpp; path = ../../Source/TriggerBlinkUI.cpp; sourceTree = "SOURCE_ROOT"; };
 		B05F91927695612080B91370 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ControllableContainer.cpp; path = ../../Source/ControllableContainer.cpp; sourceTree = "SOURCE_ROOT"; };
 		B132B6ADE320CD5A8818AD30 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MIDIManager.cpp; path = ../../Source/MIDIManager.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -989,7 +988,6 @@
 					20F2A63AB3446C57EAC817CA,
 					34760FA80938F368B5B7D441,
 					BC0DE4C48E09F98B873ACB94,
-					AFD227E26536B8AB0C0BE224,
 					61D24E6369A627B897828E91,
 					6B8F9FA07B77327E632B26A1,
 					CF7F9F5767B62B6E960CEBD5,

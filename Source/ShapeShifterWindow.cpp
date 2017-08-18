@@ -18,6 +18,9 @@
 #include "Style.h"
 #include "LookAndFeelOO.h"
 
+
+extern ApplicationCommandManager& getCommandManager();
+
 ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds) :
 	ResizableWindow(_panel->currentContent->contentName, true),
 	dragMode(PANEL),
@@ -45,11 +48,20 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
   static LookAndFeelOO lfOO;
   setLookAndFeel(&lfOO);
 #if JUCE_OPENGL
+  OpenGLContext * context = OpenGLContext::getContextAttachedTo(*ShapeShifterManager::getInstance()->mainContainer.getTopLevelComponent());
+  if(context){
+    openGLContext.setNativeSharedContext(context->getRawContext());
+  }
+  else{
+    jassertfalse;
+  }
   openGLContext.setContinuousRepainting(false);
   openGLContext.attachTo(*getTopLevelComponent());
 #endif
 
 	addMouseListener(this, true);
+
+  addKeyListener ((&getCommandManager())->getKeyMappings());
 
 }
 
@@ -145,3 +157,5 @@ void ShapeShifterWindow::panelEmptied(ShapeShifterPanel *)
 {
 	if (!checking) ShapeShifterManager::getInstance()->closePanelWindow(this, true);
 }
+
+

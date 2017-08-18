@@ -3288,9 +3288,6 @@
     <ClInclude Include="..\..\Source\BetterStepper.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\LGMLComponentHelpers.h">
-      <Filter>LGML\Source\UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\LGMLDragger.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>

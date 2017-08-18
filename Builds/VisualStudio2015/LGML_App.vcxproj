@@ -2212,7 +2212,6 @@
     <ClInclude Include="..\..\Source\ShapeShifterContainer.h"/>
     <ClInclude Include="..\..\Source\ShapeShifterManager.h"/>
     <ClInclude Include="..\..\Source\BetterStepper.h"/>
-    <ClInclude Include="..\..\Source\LGMLComponentHelpers.h"/>
     <ClInclude Include="..\..\Source\LGMLDragger.h"/>
     <ClInclude Include="..\..\Source\LookAndFeelOO.h"/>
     <ClInclude Include="..\..\Source\ProgressWindow.h"/>

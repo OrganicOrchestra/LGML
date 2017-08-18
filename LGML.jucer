@@ -727,8 +727,6 @@
               resource="0"/>
         <FILE compile="0" file="Source/BetterStepper.h" id="LIiKTa" name="BetterStepper.h"
               resource="0"/>
-        <FILE compile="0" file="Source/LGMLComponentHelpers.h" id="ddljoZ"
-              name="LGMLComponentHelpers.h" resource="0"/>
         <FILE compile="1" file="Source/LGMLDragger.cpp" id="Y93xNO" name="LGMLDragger.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/LGMLDragger.h" id="dSMfwg" name="LGMLDragger.h"

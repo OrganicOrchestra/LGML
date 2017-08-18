@@ -100,7 +100,7 @@ public:
 ////////////////////
 // LGMLDragger
 ///////////////
-LGMLDragger::LGMLDragger(){
+LGMLDragger::LGMLDragger():isMappingActive(false){
 
 }
 LGMLDragger::~LGMLDragger(){

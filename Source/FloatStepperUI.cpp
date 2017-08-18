@@ -14,8 +14,6 @@
 
 
 #include "FloatStepperUI.h"
-#include "LGMLComponentHelpers.h"
-
 
 FloatStepperUI::FloatStepperUI(Parameter * _parameter) :ParameterUI(_parameter){
 
@@ -66,7 +64,7 @@ void FloatStepperUI::rangeChanged(Parameter * p){
 void FloatStepperUI::componentParentHierarchyChanged (Component& c){
   if(&c==this){
 
-    bool isInViewport = getParentOfType<Viewport>(this)!=nullptr;
+    bool isInViewport = findParentComponentOfClass<Viewport>()!=nullptr;
     setScrollAllowed(!isInViewport);
   }
 }
