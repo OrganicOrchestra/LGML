@@ -57,8 +57,6 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
 #include <ifaddrs.h>
 
 
-#include <pwd.h> /// gethostname
-
 #include <unordered_map>
 #include <unordered_set>
 
@@ -108,9 +106,8 @@ public:
   
 
   String getName(){
-    uid_t uid = geteuid ();
-    if (struct passwd *pw = getpwuid (uid)){return pw->pw_name;}
-    return "";
+    return SystemStats::getComputerName();
+
   }
   void register_OSC(){
     for(auto i : if_idxs){
