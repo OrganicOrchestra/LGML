@@ -885,7 +885,7 @@
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="rubberband&#10;dnssd"
+    <LINUX_MAKE bigIcon="SL4b92" cppLanguageStandard="-std=c++11" externalLibraries="rubberband&#10;dns_sd"
                 extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
                 extraDefs="LINK_PLATFORM_LINUX=1" extraLinkerFlags="" smallIcon="SL4b92"
                 targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
