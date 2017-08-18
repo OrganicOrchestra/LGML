@@ -16,8 +16,14 @@
 #include "NetworkUtils.h"
 #include "DebugHelpers.h"
 
-// TODO implement dns support on linux / windows
-#define SUPPORT_DNS (JUCE_MAC || JUCE_LINUX)
+// TODO implement dns support on  windows
+#ifndef SUPPORT_DNS
+  #if (JUCE_MAC || JUCE_LINUX)
+    #define SUPPORT_DNS 1
+  #else
+    #define SUPPORT_DNS 0
+  #endif
+#endif // SUPPORT_DNS
 
 juce_ImplementSingleton(NetworkUtils);
 
@@ -52,7 +58,12 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
 
 #include <dns_sd.h>
 #include <net/if.h>     // For if_nametoindex()
+#if JUCE_LINUX
+#include <sys/types.h>
+#include <sys/socket.h>
+#endif
 #include <netdb.h> //hostent
+
 #include <arpa/inet.h>
 #include <ifaddrs.h>
 
