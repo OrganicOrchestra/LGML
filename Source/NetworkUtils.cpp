@@ -17,7 +17,7 @@
 #include "DebugHelpers.h"
 
 // TODO implement dns support on linux / windows
-#define SUPPORT_DNS JUCE_MAC
+#define SUPPORT_DNS (JUCE_MAC || JUCE_LINUX)
 
 juce_ImplementSingleton(NetworkUtils);
 
