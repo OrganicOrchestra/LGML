@@ -1,5 +1,5 @@
 # Ignore everything
-*
+doc/latex/
 
 # But not these files...
 !.gitignore
