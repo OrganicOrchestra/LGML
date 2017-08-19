@@ -29,10 +29,10 @@ def buildApp(configuration):
   return localAppFile
 
 
-def exportApp(baseName,configuration,exportPath = None):
+def exportApp(baseName,configuration,exportpath = None):
   if configuration not in execName:
     raise NameError('unknown configuration : '+ configuration)
-  localExportFile = exportPath or localAppFile
+  localExportFile = exportpath or localAppFile
   localExportFile+='.tar.gz'
   sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName[configuration])
   return localExportFile
