@@ -26,7 +26,8 @@ jobs:
           name: build LGML32
           command: |
             apt-get install -y g++-multilib
-            export LGML_TARGET_ARCH=i386
+            dpkg --add-architecture i386
+            apt-get update
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             python Scripts/buildScript.py --build --beta --os=linux --configuration=Ubuntu32;
       - run:
