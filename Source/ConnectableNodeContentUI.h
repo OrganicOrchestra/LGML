@@ -22,7 +22,7 @@
 class ConnectableNodeUI;
 class ConnectableNode;
 
-class ConnectableNodeContentUI : public Component
+class ConnectableNodeContentUI : public juce::Component
 {
 public:
     ConnectableNodeContentUI();

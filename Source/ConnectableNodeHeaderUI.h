@@ -26,14 +26,14 @@
 class VuMeter;
 class ConnectableNodeUI;
 
-class ConnectableNodeHeaderUI : public Component,
+class ConnectableNodeHeaderUI : public juce::Component,
 public Button::Listener,
 private ControllableContainerListener,
 public ConnectableNode::ConnectableNodeListener
 {
 public:
 
-  class Grabber : public Component
+  class Grabber : public juce::Component
   {
     void paint(Graphics &g) override;
   };

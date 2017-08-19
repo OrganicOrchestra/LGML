@@ -20,7 +20,7 @@
 #include "FloatParameter.h"
 #include "FloatSliderUI.h"
 #include "Engine.h"
-class ProgressWindow : public Component,public ProgressNotifier::ProgressListener
+class ProgressWindow : public juce::Component,public ProgressNotifier::ProgressListener
 {
 public:
 

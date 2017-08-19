@@ -20,7 +20,7 @@
 #include "InspectableComponent.h"
 #include "InspectorEditor.h"
 
-class Inspector : public Component, public InspectableComponent::InspectableListener, public InspectorEditor::InspectorEditorListener
+class Inspector : public juce::Component, public InspectableComponent::InspectableListener, public InspectorEditor::InspectorEditorListener
 {
 public:
 	juce_DeclareSingleton(Inspector, false);

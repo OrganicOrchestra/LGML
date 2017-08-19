@@ -22,7 +22,7 @@
 #include "AudioHelpers.h"
 
 //TODO, move to more common place for use in other components
-class VuMeter : public Component, public NodeBase::RMSListener ,public NodeBase::RMSChannelListener,Timer{
+class VuMeter : public juce::Component, public NodeBase::RMSListener ,public NodeBase::RMSChannelListener,Timer{
 public:
 
   enum Type { IN,OUT};

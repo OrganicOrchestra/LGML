@@ -37,7 +37,7 @@ public:
 
 //Helper class if child class doesn't need to inherit a subclass of Component
 class ShapeShifterContentComponent :
-	public Component,
+	public juce::Component,
 	public ShapeShifterContent
 {
 public:

@@ -54,7 +54,7 @@ ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
-class MainContentComponent   : public Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,private Timer
+class MainContentComponent   : public juce::Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,private Timer
 
 {
 public:

@@ -38,7 +38,7 @@ class TimeManagerUI : public ShapeShifterContentComponent,public Parameter::Asyn
   void newMessage(const Parameter::ParamWithValue & pv) override;
 
 
-  class TimeBar : public Component,private Timer{
+  class TimeBar : public juce::Component,private Timer{
     public :
     TimeBar(TimeManager *);
 
@@ -52,7 +52,7 @@ class TimeManagerUI : public ShapeShifterContentComponent,public Parameter::Asyn
     // handle only one beat area
     // allowing to redraw only concerned zone
     // should optimize things out but not explicitly validated
-    class BeatComponent : public Component{
+    class BeatComponent : public juce::Component{
     public:
       float percentDone=0;
       void paint(Graphics & g)override;

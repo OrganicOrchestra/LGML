@@ -21,7 +21,7 @@
 #include "Style.h"//keep
 
 
-class ControllableUI : public Component,public SettableTooltipClient , public Controllable::Listener
+class ControllableUI : public juce::Component,public SettableTooltipClient , public Controllable::Listener
 {
 public:
   ControllableUI(Controllable * controllable);

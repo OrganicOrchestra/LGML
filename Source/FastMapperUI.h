@@ -31,7 +31,7 @@ public:
 };
 
 class FastMapperUI :
-	public Component,
+	public juce::Component,
 	private ControllableContainerListener,
 private ButtonListener,
 private Inspector::InspectorListener

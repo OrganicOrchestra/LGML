@@ -43,7 +43,7 @@ public:
   void init() override;
 
   class TrackUI :
-  public Component ,
+  public juce::Component ,
   public LooperTrack::Listener
   {
   public:
@@ -72,7 +72,7 @@ public:
     ScopedPointer<EnumParameterUI> sampleChoiceDDL;
     
 
-    class TimeStateUI : public Component,public LooperTrack::Listener{
+    class TimeStateUI : public juce::Component,public LooperTrack::Listener{
     public:
       TimeStateUI(LooperTrack * _track);
       ~TimeStateUI();

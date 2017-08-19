@@ -25,7 +25,7 @@ class Data;
 //==============================================================================
 /*
 */
-class NodeConnectionEditorDataSlot    : public Component
+class NodeConnectionEditorDataSlot    : public juce::Component
 {
 public:
 

@@ -21,7 +21,7 @@
 //==============================================================================
 /*
 */
-class NodeConnectionEditorLink    : public Component, 
+class NodeConnectionEditorLink    : public juce::Component, 
 	public SettableTooltipClient
 {
 public:

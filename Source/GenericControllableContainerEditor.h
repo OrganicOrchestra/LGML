@@ -23,8 +23,8 @@
 
 class GenericControllableContainerEditor;
 
-class CCInnerContainer :
-	public Component,
+class CCInnerContainerUI :
+	public juce::Component,
 	private ControllableContainerListener,
 	public ButtonListener
 {
@@ -37,8 +37,8 @@ public:
 	};
 
 
-	CCInnerContainer(GenericControllableContainerEditor * editor,ControllableContainer * container, int level, int maxLevel, bool canAccessLowerContainers);
-	virtual ~CCInnerContainer();
+	CCInnerContainerUI(GenericControllableContainerEditor * editor,ControllableContainer * container, int level, int maxLevel, bool canAccessLowerContainers);
+	virtual ~CCInnerContainerUI();
 
 	Label containerLabel;
 
@@ -46,7 +46,7 @@ public:
 	ScopedPointer<PresetChooser> presetChooser;
   
 	OwnedArray<NamedControllableUI> controllablesUI;
-	OwnedArray<CCInnerContainer> innerContainers;
+	OwnedArray<CCInnerContainerUI> innerContainers;
   ScopedPointer<Component> customEditor;
 	OwnedArray<Component> lowerContainerLinks;
 
@@ -73,7 +73,7 @@ public:
 	int getContentHeight();
 
 	NamedControllableUI * getUIForControllable(Controllable * c);
-	CCInnerContainer * getInnerContainerForCC(ControllableContainer * cc);
+	CCInnerContainerUI * getInnerContainerForCC(ControllableContainer * cc);
 	CCLinkBT * getCCLinkForCC(ControllableContainer * cc);
 
 	void controllableAdded(ControllableContainer *,Controllable *)override;
@@ -95,7 +95,7 @@ public :
 	TextButton parentBT;
 
 	WeakReference<ControllableContainer> sourceContainer;
-	ScopedPointer<CCInnerContainer> innerContainer;
+	ScopedPointer<CCInnerContainerUI> innerContainer;
 
 	void setCurrentInspectedContainer(ControllableContainer *,bool forceUpdate = false,int recursiveInspectionLevel=0,bool canInspectChildContainersBeyondRecursion=true);
 

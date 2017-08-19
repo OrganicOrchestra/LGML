@@ -28,7 +28,7 @@
  Draw all connected Nodes and Connections
  */
 class NodeManagerUI :
-public Component,
+public juce::Component,
 public NodeManager::NodeManagerListener
 {
 public:

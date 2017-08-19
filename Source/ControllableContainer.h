@@ -48,7 +48,7 @@ public:
   virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
 };
 
-class CCInnerContainer;
+class CCInnerContainerUI;
 class ControllableContainer : public Parameter::Listener,public Parameter::AsyncListener, public ControllableContainerListener
 
 {

@@ -21,7 +21,7 @@
 #include "ParameterUI.h"
 class StringParameterUI;
 
-class JsEnvironmentUI : public Component,public JsEnvironment::Listener{
+class JsEnvironmentUI : public juce::Component,public JsEnvironment::Listener{
 public:
 	JsEnvironmentUI(JSEnvContainer * _env);
   ~JsEnvironmentUI();

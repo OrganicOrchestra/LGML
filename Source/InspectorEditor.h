@@ -20,7 +20,7 @@
 
 class InspectableComponent;
 
-class InspectorEditor : public Component, public ComponentListener
+class InspectorEditor : public juce::Component, public juce::ComponentListener
 {
 public:
 	InspectorEditor();

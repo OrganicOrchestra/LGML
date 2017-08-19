@@ -57,7 +57,7 @@ public:
 
 
   virtual void clear() override;
-  // can be oerriden to react to clear
+  /** can be oerriden to react to clear */
   virtual void clearInternal() {};
 
   var getJSONData() override;
@@ -117,24 +117,9 @@ public:
 
 
   int maxCommonIOChannels = 0;
-  //RMS
-  const float alphaRMS = 0.05f;
-  const int samplesBeforeRMSUpdate = 512;
-  int curSamplesForRMSInUpdate = 0;
-  int curSamplesForRMSOutUpdate = 0;
+
   float globalRMSValueIn ;
   float globalRMSValueOut ;
-
-  Array<float> rmsValuesIn;
-  Array<float> rmsValuesOut;
-
-
-
-  bool wasSuspended;
-  SmoothedValue<double> logVolume;
-
-  float lastVolume;
-
   //DATA
   virtual Data* getInputData(int dataIndex) override;
   virtual Data* getOutputData(int dataIndex) override;
@@ -176,6 +161,8 @@ public:
 
   virtual void processInputDataChanged(Data *) {} // to be overriden by child classes
   virtual void processOutputDataUpdated(Data *) {} // to be overriden by child classes
+
+
 private:
   WeakReference<NodeBase>::Master masterReference;
   friend class WeakReference<NodeBase>;
@@ -185,6 +172,20 @@ private:
   double lastDryVolume;
   bool wasEnabled;
   AudioBuffer<float> crossFadeBuffer;
+
+  //RMS
+  const float alphaRMS = 0.05f;
+  const int samplesBeforeRMSUpdate = 512;
+  int curSamplesForRMSInUpdate = 0;
+  int curSamplesForRMSOutUpdate = 0;
+
+
+  Array<float> rmsValuesIn;
+  Array<float> rmsValuesOut;
+
+  SmoothedValue<double> logVolume;
+  float lastVolume;
+  friend class RMSTimer;
 
   class RMSTimer : public Timer{
   public:
@@ -206,6 +207,7 @@ private:
     }
     NodeBase* owner;
   };
+
   RMSTimer rmsTimer;
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)

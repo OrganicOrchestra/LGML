@@ -27,7 +27,7 @@
 
 class NodeConnectionUI :
 public InspectableComponent,
-public ComponentListener,
+public juce::ComponentListener,
 public NodeConnection::Listener
 {
 public:

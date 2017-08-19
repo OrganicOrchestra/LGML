@@ -23,7 +23,7 @@ class ConnectableNode;
 class ConnectableNodeUI;
 #include "JuceHeader.h"//keep
 
-class ConnectableNodeAudioCtlUI:public Component{
+class ConnectableNodeAudioCtlUI:public juce::Component{
 
 public:
     ConnectableNodeAudioCtlUI();

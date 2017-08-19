@@ -20,7 +20,7 @@
 
 class ShapeShifterContainer;
 
-class ShapeShifter : public Component
+class ShapeShifter : public juce::Component
 {
 public :
 	enum Type {PANEL, CONTAINER};

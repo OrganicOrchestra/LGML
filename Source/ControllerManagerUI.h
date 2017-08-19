@@ -25,7 +25,7 @@
 /*
 */
 
-class ControllerManagerUI : public Component,ControllerManager::Listener
+class ControllerManagerUI : public juce::Component,ControllerManager::Listener
 {
 public:
     ControllerManagerUI(ControllerManager * manager);

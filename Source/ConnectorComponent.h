@@ -26,7 +26,7 @@ class NodeContainerViewer;
 /*
 */
 class ConnectorComponent :
-	public Component,
+	public juce::Component,
 	public SettableTooltipClient,
 	public ConnectableNode::ConnectableNodeListener
 {

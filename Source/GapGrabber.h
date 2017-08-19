@@ -18,7 +18,7 @@
 
 #include "JuceHeader.h"//keep
 
-class GapGrabber : public Component
+class GapGrabber : public juce::Component
 {
 public:
 	enum Direction { HORIZONTAL, VERTICAL };

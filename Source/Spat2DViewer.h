@@ -19,7 +19,7 @@
 #include "JuceHeader.h"
 #include "Spat2DNode.h"
 
-class Spat2DHandle : public Component
+class Spat2DHandle : public juce::Component
 {
 public:
 	enum HandleType { SOURCE, TARGET};
@@ -79,7 +79,7 @@ public:
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spat2DTarget)
 };
 
-class Spat2DViewer : public Component, public Spat2DHandle::Listener, 
+class Spat2DViewer : public juce::Component, public Spat2DHandle::Listener, 
 	public ConnectableNode::ConnectableNodeListener,
 	public ControllableContainer::ControllableContainerListener
 {

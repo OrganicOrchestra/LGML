@@ -26,7 +26,7 @@ juce_ImplementSingleton(LGMLDragger);
 // DraggedComponent
 ///////////////////
 
-class DraggedComponent : public Component{
+class DraggedComponent : public juce::Component{
 public:
   DraggedComponent(ControllableUI * c):originComp(c){
     Rectangle<int > bounds = c->getScreenBounds();

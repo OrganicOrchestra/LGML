@@ -43,7 +43,7 @@ public:
 	
 	
   
-	class OutputBusUI : public Component {
+	class OutputBusUI : public juce::Component {
 	public:
 		
 		OwnedArray<FloatSliderUI> inputVolumes;

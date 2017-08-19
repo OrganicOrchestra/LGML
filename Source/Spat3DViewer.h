@@ -19,7 +19,7 @@
 
 #include "JuceHeader.h"
 
-class Spat3DViewer : public Component
+class Spat3DViewer : public juce::Component
 {
 public :
 	Spat3DViewer();

@@ -23,7 +23,7 @@ class Inspector;
 class InspectorEditor;
 
 
-class InspectableComponent : public Component
+class InspectableComponent : public juce::Component
 {
 public:
 	InspectableComponent(ControllableContainer * relatedContainer = nullptr, const String &inspectableType = "none");

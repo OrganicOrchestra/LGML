@@ -18,7 +18,7 @@
 
 #include "ShapeShifterContent.h"//keep
 class ShapeShifterPanelTab :
-	public Component,
+	public juce::Component,
 	public ButtonListener
 {
 public:

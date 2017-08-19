@@ -41,7 +41,7 @@ public:
   ComponentBoundsConstrainer constrainer;
 
 	class ConnectorContainer :
-		public Component,
+		public juce::Component,
 		public ConnectorComponent::ConnectorListener
 	{
 	public:
@@ -67,7 +67,7 @@ public:
 	};
 
 	//ui
-	class MainComponentContainer : public Component
+	class MainComponentContainer : public juce::Component
 	{
 	public:
 

@@ -125,6 +125,7 @@ public:
 
     /** Destructor. */
     virtual ~LooperListener() {}
+    /** track has been changed */
     virtual void trackNumChanged(int num) = 0;
   };
 
