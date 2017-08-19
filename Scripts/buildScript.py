@@ -83,7 +83,7 @@ if __name__ == "__main__":
 	                    help='switch to beta version (only name affected for now)',default=True)
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
 
-	parser.add_argument('--exportPath',help='path where to put binary', default=None)
+	parser.add_argument('--exportpath',help='path where to put binary', default=None)
 
 	parser.add_argument('--configuration',help='configuration to use ', default=None)
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
 	if args.build:
 		buildAll(args.os,args.configuration);
 	if args.package:
-		packageAll(args.os,args.configuration,args.exportPath)
+		packageAll(args.os,args.configuration,args.exportpath)
 	if args.export:
 		exportAll(args.os,args.configuration,sendToOwncloud=True);
 
