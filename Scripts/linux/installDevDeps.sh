@@ -1,6 +1,6 @@
 # this script install JUCE in sibling directory of LGML
 
-if [ -z ${LGML_TARGET_ARCH+x} ]; then LGML_TARGET_ARCH=`uname -m`; else echo "arch is set to '$LGML_TARGET_ARCH'"; fi
+if [ -z ${LGML_TARGET_ARCH+x} ]; then LGML_TARGET_ARCH=`arch`; else echo "arch is set to '$LGML_TARGET_ARCH'"; fi
 # for dns utility
 apt-get -y --force-yes install libavahi-compat-libdnssd-dev:$LGML_TARGET_ARCH
 
