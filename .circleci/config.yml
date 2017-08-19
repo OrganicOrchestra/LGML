@@ -11,7 +11,7 @@ jobs:
           command: |
             apt-get -qq update
             apt-get install -y git
-            apt-get install gcc-multilib
+            apt-get install -y gcc-multilib
             git submodule update --init --recursive --remote
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
       - run:
