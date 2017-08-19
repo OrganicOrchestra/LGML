@@ -34,7 +34,7 @@ def exportApp(baseName,configuration,exportpath = None):
     raise NameError('unknown configuration : '+ configuration)
   exportFile = exportpath or localExportPath
   exportFile= os.path.join(exportFile,execName[configuration]+'.tar.gz')
-  sh('tar -zcvf '+exportFile+' --directory="'+localExportPath+'" '+execName[configuration])
+  sh('tar -zcvf "'+exportFile+'" --directory="'+localExportPath+'" '+execName[configuration])
   return exportFile
 
 

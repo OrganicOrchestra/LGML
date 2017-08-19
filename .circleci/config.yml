@@ -28,6 +28,7 @@ jobs:
             apt-get install -y g++-multilib
             dpkg --add-architecture i386
             apt-get update
+            export LGML_TARGET_ARCH=i386
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             python Scripts/buildScript.py --build --beta --os=linux --configuration=Ubuntu32;
       - run:
