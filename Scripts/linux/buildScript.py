@@ -32,10 +32,10 @@ def buildApp(configuration):
 def exportApp(baseName,configuration,exportpath = None):
   if configuration not in execName:
     raise NameError('unknown configuration : '+ configuration)
-  localExportFile = exportpath or localAppFile
-  localExportFile+='.tar.gz'
-  sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName[configuration])
-  return localExportFile
+  exportFile = exportpath or localExportPath
+  exportFile= os.path.join(exportFile,execName[configuration]+'.tar.gz')
+  sh('tar -zcvf '+exportFile+' --directory="'+localExportPath+'" '+execName[configuration])
+  return exportFile
 
 
 
