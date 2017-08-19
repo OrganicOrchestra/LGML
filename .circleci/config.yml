@@ -11,7 +11,6 @@ jobs:
           command: |
             apt-get -qq update
             apt-get install -y git
-            apt-get install -y g++-multilib
             git submodule update --init --recursive --remote
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
       - run:
@@ -19,13 +18,16 @@ jobs:
           command: |
             python Scripts/buildScript.py --build --beta --os=linux;
       - run:
-          name: build LGML32
-          command: |
-            python Scripts/buildScript.py --build --beta --os=linux --configuration=Ubuntu32;
-      - run:
           name: package LGML
           command: |
             python Scripts/buildScript.py --package --beta --exportpath=$CIRCLE_ARTIFACTS --os=linux --configuration=Ubuntu;
+
+      - run:
+          name: build LGML32
+          command: |
+            apt-get install -y g++-multilib
+            apt-get install libfreetype6:i386
+            python Scripts/buildScript.py --build --beta --os=linux --configuration=Ubuntu32;
       - run:
           name: package LGML32
           command: |
