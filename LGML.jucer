@@ -896,7 +896,9 @@
         <CONFIGURATION isDebug="0" libraryPath="/usr/X11R6/lib/" linuxArchitecture="-march=armv6"
                        name="Release" optimisation="3" targetName="LGML"/>
         <CONFIGURATION headerPath="../../Source" isDebug="1" libraryPath="/usr/X11R6/lib/"
-                       name="Ubuntu" optimisation="5" targetName="LGML"/>
+                       name="Ubuntu32" optimisation="5" targetName="LGML32" linuxArchitecture="-m32"/>
+        <CONFIGURATION headerPath="../../Source" isDebug="1" libraryPath="/usr/X11R6/lib/"
+                       name="Ubuntu" optimisation="5" targetName="LGML" linuxArchitecture="-m64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>

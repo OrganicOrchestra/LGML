@@ -11,10 +11,7 @@ bumpVersion = False
 sendToOwncloud = False
 specificVersion = ""
 cleanFirst = False;
-localExportPath2 = [
-"~/owncloud/Tools/LGML/App-Dev/OSX/"
-# ,"/Volumes/Pguillerme/Documents/LGML/"
-];
+
 
 executable_name = "LGML"
 
@@ -41,20 +38,17 @@ def buildAll(osType,configuration):
 		import linux
 		linux.buildApp(configuration = configuration)
 
-def packageAll(osType,configuration):
+def packageAll(osType,configuration,exportpath):
 	baseName = generateProductBaseName()
 	if osType=='osx':
 		import osx
-		exportedPath = osx.exportApp(baseName);
+		exportedPath = osx.exportApp(baseName,configuration=configuration,exportpath=exportpath);
 	elif osType=='linux':
 		import linux
-		exportedPath = linux.exportApp(baseName);
+		exportedPath = linux.exportApp(baseName,configuration=configuration,exportpath=exportpath);
 	else:
 		raise NameError("os type not supported")
 
-	for p in localExportPath2:
-		if os.path.exists(p) :
-			sh("cp "+exportedPath+" "+p+generateProductBaseName()+".dmg")
 
 
 	return exportedPath
@@ -88,6 +82,8 @@ if __name__ == "__main__":
 	parser.add_argument('--beta', action='store_true',
 	                    help='switch to beta version (only name affected for now)',default=True)
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
+
+	parser.add_argument('--exportPath',help='path where to put binary', default=None)
 
 	parser.add_argument('--configuration',help='configuration to use ', default=None)
 
@@ -128,7 +124,7 @@ if __name__ == "__main__":
 	if args.build:
 		buildAll(args.os,args.configuration);
 	if args.package:
-		packageAll(args.os,args.configuration)
+		packageAll(args.os,args.configuration,args.exportPath)
 	if args.export:
 		exportAll(args.os,args.configuration,sendToOwncloud=True);
 

@@ -9,25 +9,33 @@ from PyUtils import *
 import multiprocessing
 njobs = min(4,multiprocessing.cpu_count())
 
-execName = "LGML"
+execName = {"Ubuntu32":"LGML32","Ubuntu":"LGML"}
 localMakePath = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir,"Builds/LinuxMakefile/"))+'/'
 localExportPath = localMakePath+'build/'
-localAppFile = localExportPath+execName
-localExportFile = localAppFile+".tar.gz"
+
+
 verbose = False
 print(localMakePath)
 
 
 def buildApp(configuration):
+  if configuration not in execName:
+    raise NameError('unknown configuration : '+ configuration)
   makeCmd = 'make CONFIG='+configuration+' -j'+str(njobs)
   if (verbose):
     makeCmd+=" SHELL='sh +x' "
   sh('cd '+localMakePath+' && '+makeCmd)
+  localAppFile = localExportPath+execName[configuration]
+  return localAppFile
 
 
-def exportApp(baseName):
-	sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName)
-	return localExportFile
+def exportApp(baseName,configuration,exportPath = None):
+  if configuration not in execName:
+    raise NameError('unknown configuration : '+ configuration)
+  localExportFile = exportPath or localAppFile
+  localExportFile+='.tar.gz'
+  sh('tar -zcvf '+localExportFile+' --directory="'+localExportPath+'" '+execName[configuration])
+  return localExportFile
 
 
 

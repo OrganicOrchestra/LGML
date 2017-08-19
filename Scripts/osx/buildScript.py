@@ -69,9 +69,9 @@ def createDmg(exportFileBaseName,appPath):
 
 
 
-def exportApp(baseName):
+def exportApp(baseName,configuration,exportpath=None):
 	global appPath
-	localPath = localExportPath+baseName;
+	localPath = (exportpath or localExportPath)+baseName;
 	dmgPath = createDmg(localPath,appPath);
 	return dmgPath
 	# gitCommit()
