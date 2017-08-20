@@ -20,7 +20,10 @@ jobs:
       - run:
           name: package LGML
           command: |
-            python Scripts/buildScript.py --package --beta --exportpath=$CIRCLE_ARTIFACTS --os=linux --configuration=Ubuntu;
+            python Scripts/buildScript.py --package --beta --exportpath=/tmp/build/ --os=linux --configuration=Ubuntu;
+            ldd /tmp/build/LGML
+      - store_artifacts:
+          path: /tmp/build/
 
       - run:
           name: build LGML32
@@ -34,7 +37,9 @@ jobs:
       - run:
           name: package LGML32
           command: |
-            python Scripts/buildScript.py --package --beta --exportpath=$CIRCLE_ARTIFACTS --os=linux --configuration=Ubuntu32;
+            python Scripts/buildScript.py --package --beta --exportpath=/tmp/build32/ --os=linux --configuration=Ubuntu32;
+      - store_artifacts:
+          path: /tmp/build32/
 
 general:
   branches:
