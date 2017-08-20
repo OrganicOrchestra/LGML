@@ -6,8 +6,8 @@ jobs:
       - image: ubuntu
         environment:
           # PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
-          TARGET_CPU: i386
-          TARGET_ARCH: -m32 # arch for linux makefile
+          # TARGET_CPU: i386
+          TARGET_ARCH: -m64 # arch for linux makefile
           DST_LGML_PATH: /tmp/build
     steps:
       - checkout
@@ -61,7 +61,7 @@ jobs:
             mkdir -p $DST_LGML_PATH
             python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu32;
       - store_artifacts:
-          path: "$DST_LGML_PATH"
+          path: /tmp/build32 #$DST_LGML_PATH
 
 
 workflows:
