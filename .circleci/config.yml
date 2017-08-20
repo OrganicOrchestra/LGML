@@ -37,9 +37,10 @@ jobs:
           name: install LGML32 dependencies
           command: |
             apt-get -qq update
+            apt-get -qq -y upgrade
             apt-get install -y git
             git submodule update --init --recursive --remote
-            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
+            sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
       - run:
           name: build LGML32
           command: |
