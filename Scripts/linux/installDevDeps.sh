@@ -6,21 +6,21 @@ if [ "$TARGET_CPU" != "$NATIVE_CPU" ]; then echo "adding foreing arch $TARGET_CP
 echo "arch is set to '$TARGET_CPU'"
 
 # for dns utility
-apt-get -y --force-yes install libavahi-compat-libdnssd-dev:$TARGET_CPU
+apt-get -y --assume-yes install libavahi-compat-libdnssd-dev:$TARGET_CPU
 
 ## these are devloper libs needed for JUCE,   not sure wich are needed in released version...
 # from Makefile alsa freetype2 libcurl x11 xext xinerama
-apt-get -y --force-yes install libfreetype6-dev:$TARGET_CPU 
-apt-get -y --force-yes install libx11-dev:$TARGET_CPU
-apt-get -y --force-yes install libxinerama-dev:$TARGET_CPU
-apt-get -y --force-yes install libxrandr-dev:$TARGET_CPU
-apt-get -y --force-yes install libxcursor-dev:$TARGET_CPU
-apt-get -y --force-yes install mesa-common-dev:$TARGET_CPU
-apt-get -y --force-yes install libasound2-dev:$TARGET_CPU
-apt-get -y --force-yes install freeglut3-dev:$TARGET_CPU
-apt-get -y --force-yes install libxcomposite-dev:$TARGET_CPU
-apt-get -y --force-yes install libjack-dev:$TARGET_CPU
-apt-get -y -q --force-yes install libcurl4-openssl-dev:$TARGET_CPU
+apt-get -y --assume-yes install libfreetype6-dev:$TARGET_CPU 
+apt-get -y --assume-yes install libx11-dev:$TARGET_CPU
+apt-get -y --assume-yes install libxinerama-dev:$TARGET_CPU
+apt-get -y --assume-yes install libxrandr-dev:$TARGET_CPU
+apt-get -y --assume-yes install libxcursor-dev:$TARGET_CPU
+apt-get -y --assume-yes install mesa-common-dev:$TARGET_CPU
+apt-get -y --assume-yes install libasound2-dev:$TARGET_CPU
+apt-get -y --assume-yes install freeglut3-dev:$TARGET_CPU
+apt-get -y --assume-yes install libxcomposite-dev:$TARGET_CPU
+apt-get -y --assume-yes install libjack-dev:$TARGET_CPU
+apt-get -y -q --assume-yes install libcurl4-openssl-dev:$TARGET_CPU
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 
 cd $SCRIPTPATH
@@ -30,8 +30,8 @@ pwd
 ls
 
 
-apt-get -y -q --force-yes install unzip
-apt-get -y -q --force-yes install curl
+apt-get -y -q --assume-yes install unzip
+apt-get -y -q --assume-yes install curl
 
 if [ ! -d "JUCE" ]; then
   curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip
@@ -40,7 +40,7 @@ if [ ! -d "JUCE" ]; then
 fi
 
 
-apt-get -y -q --force-yes install python
+apt-get -y -q --assume-yes install python
 
 
 # cd ;
