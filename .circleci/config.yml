@@ -20,6 +20,7 @@ jobs:
       - run:
           name: package LGML
           command: |
+            mkdir -p /tmp/build
             python Scripts/buildScript.py --package --beta --exportpath=/tmp/build/ --os=linux --configuration=Ubuntu;
             ldd /tmp/build/LGML
       - store_artifacts:
@@ -37,6 +38,7 @@ jobs:
       - run:
           name: package LGML32
           command: |
+            mkdir -p /tmp/build32
             python Scripts/buildScript.py --package --beta --exportpath=/tmp/build32/ --os=linux --configuration=Ubuntu32;
       - store_artifacts:
           path: /tmp/build32/
