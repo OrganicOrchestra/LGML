@@ -44,6 +44,7 @@ jobs:
       - run:
           name: build LGML32
           command: |
+            export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig/
             python Scripts/buildScript.py --build --beta --os=linux --configuration=Ubuntu32;
       - run:
           name: package LGML32
