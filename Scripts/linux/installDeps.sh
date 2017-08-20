@@ -6,7 +6,7 @@
 
 NATIVE_CPU=`dpkg --print-architecture`
 if [ -z ${TARGET_CPU+x} ]; then TARGET_CPU="$NATIVE_CPU"; fi
-if [ "$TARGET_CPU" != "$TARGET_CPU" ]; then echo "adding foreing arch $TARGET_CPU"; dpkg --add-architecture $TARGET_CPU;apt-get -qq update; fi
+if [ "$TARGET_CPU" != "$NATIVE_CPU" ]; then echo "adding foreing arch $TARGET_CPU"; dpkg --add-architecture $TARGET_CPU;apt-get -qq update; fi
 echo "arch is set to '$TARGET_CPU'"
 # rubberband
 apt-get -y --force-yes install librubberband-dev:$TARGET_CPU
