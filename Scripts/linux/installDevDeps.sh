@@ -17,7 +17,7 @@ apt-get -y --force-yes install libasound2-dev:$LGML_TARGET_ARCH
 # apt-get -y --force-yes install freeglut3-dev:$LGML_TARGET_ARCH
 apt-get -y --force-yes install libxcomposite-dev:$LGML_TARGET_ARCH
 apt-get -y --force-yes install libjack-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install libcurl-dev:$LGML_TARGET_ARCH
+apt-get -y --force-yes install libcurl4-gnutls-dev:$LGML_TARGET_ARCH
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 
 cd $SCRIPTPATH
@@ -28,6 +28,7 @@ ls
 
 
 apt-get -y --force-yes install unzip
+apt-get -y --force-yes install curl
 
 if [ ! -d "JUCE" ]; then
   curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip
