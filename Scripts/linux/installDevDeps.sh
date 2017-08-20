@@ -10,11 +10,11 @@ apt-get -y --force-yes install libavahi-compat-libdnssd-dev
 apt-get -y --force-yes install libfreetype6-dev:$LGML_TARGET_ARCH
 apt-get -y --force-yes install libx11-dev:$LGML_TARGET_ARCH
 apt-get -y --force-yes install libxinerama-dev:$LGML_TARGET_ARCH
-# apt-get -y --force-yes install libxrandr-dev:$LGML_TARGET_ARCH
-# apt-get -y --force-yes install libxcursor-dev:$LGML_TARGET_ARCH
-# apt-get -y --force-yes install mesa-common-dev:$LGML_TARGET_ARCH
+apt-get -y --force-yes install libxrandr-dev:$LGML_TARGET_ARCH
+apt-get -y --force-yes install libxcursor-dev:$LGML_TARGET_ARCH
+apt-get -y --force-yes install mesa-common-dev:$LGML_TARGET_ARCH
 apt-get -y --force-yes install libasound2-dev:$LGML_TARGET_ARCH
-# apt-get -y --force-yes install freeglut3-dev:$LGML_TARGET_ARCH
+apt-get -y --force-yes install freeglut3-dev:$LGML_TARGET_ARCH
 apt-get -y --force-yes install libxcomposite-dev:$LGML_TARGET_ARCH
 apt-get -y --force-yes install libjack-dev:$LGML_TARGET_ARCH
 apt-get -y --force-yes install libcurl4-gnutls-dev:$LGML_TARGET_ARCH
