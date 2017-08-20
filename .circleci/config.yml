@@ -8,7 +8,7 @@ jobs:
           # PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
           # TARGET_CPU: i386
           TARGET_ARCH: -m64 # arch for linux makefile
-          DST_LGML_PATH: /tmp/build
+          DST_LGML_PATH: /tmp/build/
     steps:
       - checkout
       - run:
@@ -25,9 +25,8 @@ jobs:
       - run:
           name: package LGML
           command: |
-            mkdir -p "$DST_LGML_PATH"
             python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu;
-            ldd /root/LGML/Builds/LinuxMakefile/build/LGML
+            ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build/
 
@@ -40,7 +39,7 @@ jobs:
           PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
           TARGET_CPU: i386
           TARGET_ARCH: -m32 # arch for JUCEs linux makefile
-          DST_LGML_PATH: /tmp/build32
+          DST_LGML_PATH: /tmp/build32/
 
     steps:
       - checkout
@@ -58,8 +57,8 @@ jobs:
       - run:
           name: package LGML32
           command: |
-            mkdir -p $DST_LGML_PATH
-            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu32;
+            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux;
+            ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build32 #$DST_LGML_PATH
 
