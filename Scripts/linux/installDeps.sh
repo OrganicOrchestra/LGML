@@ -4,11 +4,11 @@
 #https
 #sudo apt-get -y install libcurl4-gnutls-dev
 
-NATIVE_ARCH=`dpkg --print-architecture`
-if [ -z ${LGML_TARGET_ARCH+x} ]; then LGML_TARGET_ARCH="$NATIVE_ARCH"; fi
-if [ "$LGML_TARGET_ARCH" != "$NATIVE_ARCH" ]; then echo "adding foreing arch $LGML_TARGET_ARCH"; dpkg --add-architecture $LGML_TARGET_ARCH;apt-get -qq update; fi
-echo "arch is set to '$LGML_TARGET_ARCH'"
+NATIVE_CPU=`dpkg --print-architecture`
+if [ -z ${TARGET_CPU+x} ]; then TARGET_CPU="$NATIVE_CPU"; fi
+if [ "$TARGET_CPU" != "$TARGET_CPU" ]; then echo "adding foreing arch $TARGET_CPU"; dpkg --add-architecture $TARGET_CPU;apt-get -qq update; fi
+echo "arch is set to '$TARGET_CPU'"
 # rubberband
-apt-get -y --force-yes install librubberband-dev:$LGML_TARGET_ARCH
+apt-get -y --force-yes install librubberband-dev:$TARGET_CPU
 
 

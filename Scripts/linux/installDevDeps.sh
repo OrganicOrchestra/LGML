@@ -1,26 +1,26 @@
 # this script install JUCE in sibling directory of LGML
 
-NATIVE_ARCH=`dpkg --print-architecture`
-if [ -z ${LGML_TARGET_ARCH+x} ]; then LGML_TARGET_ARCH="$NATIVE_ARCH"; fi
-if [ "$LGML_TARGET_ARCH" != "$NATIVE_ARCH" ]; then echo "adding foreing arch $LGML_TARGET_ARCH"; dpkg --add-architecture $LGML_TARGET_ARCH;apt-get -qq update; fi
-echo "arch is set to '$LGML_TARGET_ARCH'"
+NATIVE_CPU=`dpkg --print-architecture`
+if [ -z ${TARGET_CPU+x} ]; then TARGET_CPU="$NATIVE_CPU"; fi
+if [ "$TARGET_CPU" != "$NATIVE_ARCH" ]; then echo "adding foreing arch $TARGET_CPU"; dpkg --add-architecture $TARGET_CPU;apt-get -qq update; fi
+echo "arch is set to '$TARGET_CPU'"
 
 # for dns utility
-apt-get -y --force-yes install libavahi-compat-libdnssd-dev:$LGML_TARGET_ARCH
+apt-get -y --force-yes install libavahi-compat-libdnssd-dev:$TARGET_CPU
 
 ## these are devloper libs needed for JUCE,   not sure wich are needed in released version...
 # from Makefile alsa freetype2 libcurl x11 xext xinerama
-apt-get -y --force-yes install libfreetype6-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install libx11-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install libxinerama-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install libxrandr-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install libxcursor-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install mesa-common-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install libasound2-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install freeglut3-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install libxcomposite-dev:$LGML_TARGET_ARCH
-apt-get -y --force-yes install libjack-dev:$LGML_TARGET_ARCH
-apt-get -y -q --force-yes install libcurl4-openssl-dev:$LGML_TARGET_ARCH
+apt-get -y --force-yes install libfreetype6-dev:$TARGET_CPU 
+apt-get -y --force-yes install libx11-dev:$TARGET_CPU
+apt-get -y --force-yes install libxinerama-dev:$TARGET_CPU
+apt-get -y --force-yes install libxrandr-dev:$TARGET_CPU
+apt-get -y --force-yes install libxcursor-dev:$TARGET_CPU
+apt-get -y --force-yes install mesa-common-dev:$TARGET_CPU
+apt-get -y --force-yes install libasound2-dev:$TARGET_CPU
+apt-get -y --force-yes install freeglut3-dev:$TARGET_CPU
+apt-get -y --force-yes install libxcomposite-dev:$TARGET_CPU
+apt-get -y --force-yes install libjack-dev:$TARGET_CPU
+apt-get -y -q --force-yes install libcurl4-openssl-dev:$TARGET_CPU
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 
 cd $SCRIPTPATH

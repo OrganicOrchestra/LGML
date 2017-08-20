@@ -4,6 +4,11 @@ jobs:
     working_directory: ~/LGML
     docker:
       - image: ubuntu
+        environment:
+          # PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
+          TARGET_CPU: i386
+          TARGET_ARCH: -m32 # arch for linux makefile
+          DST_LGML_PATH: /tmp/build
     steps:
       - checkout
       - run:
@@ -20,8 +25,8 @@ jobs:
       - run:
           name: package LGML
           command: |
-            mkdir -p /tmp/build
-            python Scripts/buildScript.py --package --beta --exportpath=/tmp/build/ --os=linux --configuration=Ubuntu;
+            mkdir -p "$DST_LGML_PATH"
+            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu;
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML
       - store_artifacts:
           path: /tmp/build/
@@ -31,6 +36,12 @@ jobs:
     working_directory: ~/LGML
     docker:
       - image: dockcross/linux-x86
+        environment:
+          PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
+          TARGET_CPU: i386
+          TARGET_ARCH: -m32 # arch for JUCEs linux makefile
+          DST_LGML_PATH: /tmp/build32
+
     steps:
       - checkout
       - run:
@@ -39,20 +50,18 @@ jobs:
             apt-get -qq update
             apt-get install -y git
             git submodule update --init --recursive --remote
-            export LGML_TARGET_ARCH=i386
             sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
       - run:
           name: build LGML32
           command: |
-            export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig/
-            python Scripts/buildScript.py --build --beta --os=linux --configuration=Ubuntu32;
+            python Scripts/buildScript.py --build --beta --os=linux;
       - run:
           name: package LGML32
           command: |
-            mkdir -p /tmp/build32
-            python Scripts/buildScript.py --package --beta --exportpath=/tmp/build32/ --os=linux --configuration=Ubuntu32;
+            mkdir -p $DST_LGML_PATH
+            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu32;
       - store_artifacts:
-          path: /tmp/build32/
+          path: "$DST_LGML_PATH"
 
 
 workflows:
