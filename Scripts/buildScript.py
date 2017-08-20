@@ -40,6 +40,9 @@ def buildAll(osType,configuration):
 
 def packageAll(osType,configuration,exportpath):
 	baseName = generateProductBaseName()
+	if exportpath is not None:
+		if not os.path.exists(exportpath):
+			os.makedirs(exportpath)
 	if osType=='osx':
 		import osx
 		exportedPath = osx.exportApp(baseName,configuration=configuration,exportpath=exportpath);

@@ -22,7 +22,7 @@ jobs:
           command: |
             mkdir -p /tmp/build
             python Scripts/buildScript.py --package --beta --exportpath=/tmp/build/ --os=linux --configuration=Ubuntu;
-            ldd /tmp/build/LGML
+            ldd /root/LGML/Builds/LinuxMakefile/build/LGML
       - store_artifacts:
           path: /tmp/build/
 
