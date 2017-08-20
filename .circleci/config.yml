@@ -26,13 +26,21 @@ jobs:
       - store_artifacts:
           path: /tmp/build/
 
+
+  build32:
+    working_directory: ~/LGML
+    docker:
+      - image: i686/ubuntu
+      - run:
+          name: install LGML dependencies
+          command: |
+            apt-get -qq update
+            apt-get install -y git
+            git submodule update --init --recursive --remote
+            sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
       - run:
           name: build LGML32
           command: |
-            apt-get install -y g++-multilib
-            dpkg --add-architecture i386
-            apt-get update
-            export LGML_TARGET_ARCH=i386
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
             python Scripts/buildScript.py --build --beta --os=linux --configuration=Ubuntu32;
       - run:
@@ -42,6 +50,15 @@ jobs:
             python Scripts/buildScript.py --package --beta --exportpath=/tmp/build32/ --os=linux --configuration=Ubuntu32;
       - store_artifacts:
           path: /tmp/build32/
+
+
+workflows:
+  version: 2
+  build_all_platforms:
+    jobs:
+      - build
+      - build32
+
 
 general:
   branches:
