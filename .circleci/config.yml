@@ -18,14 +18,11 @@ jobs:
             apt-get install -y git
             git submodule update --init --recursive --remote
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
+
       - run:
-          name: build LGML
+          name: build and package LGML
           command: |
-            python Scripts/buildScript.py --build --beta --os=linux;
-      - run:
-          name: package LGML
-          command: |
-            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu;
+            python Scripts/buildScript.py --build --package --beta --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu;
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build/
@@ -51,16 +48,39 @@ jobs:
             git submodule update --init --recursive --remote
             sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
       - run:
-          name: build LGML32
-          command: |
-            python Scripts/buildScript.py --build --beta --os=linux;
-      - run:
-          name: package LGML32
+          name: build and package LGML32
           command: |
             python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux;
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build32 #$DST_LGML_PATH
+
+  build_rasp:
+    working_directory: ~/LGML
+    docker:
+      - image: dockcross/linux-armv6
+        environment:
+          PKG_CONFIG_PATH: /usr/lib/armhf-linux-gnu/pkgconfig/
+          TARGET_CPU: armhf
+          TARGET_ARCH: -march=armv6 # arch for JUCEs linux makefile
+          DST_LGML_PATH: /tmp/buildRasp/
+
+    steps:
+      - checkout
+      - run:
+          name: install LGMLRasp dependencies
+          command: |
+            apt-get -qq update
+            apt-get install -y git
+            git submodule update --init --recursive --remote
+            sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
+      - run:
+          name: build and package LGMLRasp
+          command: |
+            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux;
+            ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
+      - store_artifacts:
+          path: /tmp/buildRasp/ #$DST_LGML_PATH
 
 
 workflows:
@@ -69,6 +89,7 @@ workflows:
     jobs:
       - build
       - build32
+      - build_rasp
 
 
 general:
