@@ -31,8 +31,10 @@ jobs:
     working_directory: ~/LGML
     docker:
       - image: i686/ubuntu
+    steps:
+      - checkout
       - run:
-          name: install LGML dependencies
+          name: install LGML32 dependencies
           command: |
             apt-get -qq update
             apt-get install -y git
