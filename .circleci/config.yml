@@ -39,6 +39,7 @@ jobs:
             apt-get -qq update
             apt-get install -y git
             git submodule update --init --recursive --remote
+            export LGML_TARGET_ARCH=i386
             sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
       - run:
           name: build LGML32
