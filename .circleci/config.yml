@@ -30,14 +30,13 @@ jobs:
   build32:
     working_directory: ~/LGML
     docker:
-      - image: i686/ubuntu
+      - image: dockcross/linux-x86
     steps:
       - checkout
       - run:
           name: install LGML32 dependencies
           command: |
             apt-get -qq update
-            apt-get -qq -y upgrade
             apt-get install -y git
             git submodule update --init --recursive --remote
             sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
