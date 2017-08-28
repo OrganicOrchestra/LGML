@@ -84,7 +84,7 @@ jobs:
           name: install LGMLRasp dependencies
           command: |
             apt-get -qq update
-            apt-get -qq install -y git
+            apt-get -qq install -y git unzip
             git submodule update --init --recursive --remote
             rm -rf /tmp/images
             mkdir -p /tmp/images
@@ -97,9 +97,10 @@ jobs:
             sh ~/run.sh /tmp/images/raspbian_latest 'python Scripts/buildScript.py --package --beta --exportpath="/tmp/buildRasp" --os=linux;'
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "/tmp/buildRasp/dependencies.txt"
       - store_artifacts:
-          path: 
-            - /media/rpi/tmp/buildRasp/ # rpi chroot + $DST_LGML_PATH  
-            - /tmp/images/ # store image as we have it
+          path: /media/rpi/tmp/buildRasp/
+
+      - store_artifacts:
+          path: /tmp/images/
 
 workflows:
   version: 2
