@@ -23,23 +23,18 @@ apt-get -y -q --assume-yes install libcurl4-openssl-dev:$TARGET_CPU
 
 # libavahi-compat-libdnssd libfreetype6 libx11 libxinerama libxrandr libxcursor mesa-common libasound2 freeglut3 libxcomposite libjack libcurl4-openssl
 
+apt-get -y -q --assume-yes install unzip
+apt-get -y -q --assume-yes install curl
+
 SCRIPTPATH=`pwd`/$(dirname "$0") 
 cd $SCRIPTPATH
 cd ../../..
-
-pwd
-ls
-
-
-apt-get -y -q --assume-yes install unzip
-apt-get -y -q --assume-yes install curl
 
 if [ ! -d "JUCE" ]; then
   curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip
   unzip -q JUCE.zip
   mv JUCE-master/ JUCE
 fi
-
 
 apt-get -y -q --assume-yes install python
 

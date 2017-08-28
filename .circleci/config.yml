@@ -56,32 +56,50 @@ jobs:
           path: /tmp/build32 #$DST_LGML_PATH
 
   build_rasp:
-    working_directory: ~/LGML
+    working_directory: /media/rpi/LGML
     docker:
-      - image: dockcross/linux-armv6
+      - image: ryankurte/docker-rpi-emu 
         environment:
-          PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig/
+          # PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig/
           TARGET_CPU: armhf
           TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
           DST_LGML_PATH: /tmp/buildRasp/
+          # CPPFLAGS : -I/usr/include -I/usr/include/arm-linux-gnueabihf/
 
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - rpi-image
+      - run:
+          name: download raspi image
+          command: |
+            mkdir -p /tmp/downloads
+            wget -nc -P /tmp/downloads https://downloads.raspberrypi.org/raspbian_latest && ls /tmp/downloads
+      - save_cache:
+          key: rpi-image
+          paths:
+            - /tmp/downloads
       - run:
           name: install LGMLRasp dependencies
           command: |
             apt-get -qq update
-            apt-get install -y git
+            apt-get -qq install -y git
             git submodule update --init --recursive --remote
-            sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
+            rm -rf /tmp/images
+            mkdir -p /tmp/images
+            unzip /tmp/downloads/raspbian_latest -d /tmp/images/ && ls /tmp/images
+            sh ~/run.sh /tmp/images/raspbian_latest 'pwd ; ls; ls / ;' 
+            sh ~/run.sh /tmp/images/raspbian_latest 'apt-get -qq update && sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh'
       - run:
           name: build and package LGMLRasp
           command: |
-            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux;
-            ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
+            sh ~/run.sh /tmp/images/raspbian_latest 'python Scripts/buildScript.py --package --beta --exportpath="/tmp/buildRasp" --os=linux;'
+            ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "/tmp/buildRasp/dependencies.txt"
       - store_artifacts:
-          path: /tmp/buildRasp/ #$DST_LGML_PATH
-
+          path: 
+            - /media/rpi/tmp/buildRasp/ # rpi chroot + $DST_LGML_PATH  
+            - /tmp/images/ # store image as we have it
 
 workflows:
   version: 2
