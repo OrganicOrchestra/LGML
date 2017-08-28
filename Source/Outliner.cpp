@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "Outliner.h"
@@ -82,7 +82,7 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
       buildTree(ccItem, cc,!cc->getNiceName().toLowerCase().contains(nameFilter));
       if(shouldFilterByName && ccItem->getNumSubItems()==0 &&
          !cc->getNiceName().toLowerCase().contains(nameFilter)){
-            parentItem->removeSubItem(ccItem->getIndexInParent());
+        parentItem->removeSubItem(ccItem->getIndexInParent());
       }
 
 
@@ -110,9 +110,11 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 
 void Outliner::childStructureChanged(ControllableContainer * ,ControllableContainer*)
 {
-  saveCurrentOpenChilds();
-  rootItem->clearSubItems();
-  triggerAsyncUpdate();
+  if(!AsyncUpdater::isUpdatePending()){
+    saveCurrentOpenChilds();
+    rootItem->clearSubItems();
+    triggerAsyncUpdate();
+  }
 
 }
 
@@ -120,11 +122,11 @@ void Outliner::childStructureChanged(ControllableContainer * ,ControllableContai
 void Outliner::handleAsyncUpdate(){
   if(getEngine()){
     if(getEngine()->isLoadingFile ){
-        triggerAsyncUpdate();
+      triggerAsyncUpdate();
     }
     else
       rebuildTree();
-      restoreCurrentOpenChilds();
+    restoreCurrentOpenChilds();
 
   }
 }
