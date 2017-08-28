@@ -23,7 +23,7 @@ def buildApp(configuration):
     raise NameError('unknown configuration : '+ configuration)
   makeCmd = 'make CONFIG='+configuration+' -j'+str(njobs)
   if (verbose):
-    makeCmd+=" SHELL='sh +x' "
+    makeCmd+=" SHELL='sh +x' V=1"
   sh('cd '+localMakePath+' && '+makeCmd)
   localAppFile = localExportPath+execName[configuration]
   return localAppFile

@@ -891,13 +891,14 @@
                 targetFolder="Builds/LinuxMakefile" vst3Folder="third_party/VST3_SDK"
                 vstFolder="/home/tinmar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
-        <CONFIGURATION headerPath="" isDebug="1" libraryPath="/usr/X11R6/lib/" linuxArchitecture="-march=armv6"
-                       name="Debug" optimisation="5" targetName="LGML"/>
+        <CONFIGURATION headerPath="../../Source&#10;/usr/include" isDebug="1" libraryPath="/usr/X11R6/lib/"
+                       linuxArchitecture="-march=armv6" name="Debug" optimisation="5"
+                       targetName="LGML"/>
         <CONFIGURATION isDebug="0" libraryPath="/usr/X11R6/lib/" linuxArchitecture="-march=armv6"
-                       name="Release" optimisation="3" targetName="LGML"/>
-        <CONFIGURATION headerPath="../../Source" isDebug="1" libraryPath="/usr/X11R6/lib/"
+                       name="Release" optimisation="3" targetName="LGML" headerPath="../../Source&#10;/usr/include"/>
+        <CONFIGURATION headerPath="../../Source&#10;/usr/include" isDebug="1" libraryPath="/usr/X11R6/lib/"
                        name="Ubuntu32" optimisation="5" targetName="LGML32" linuxArchitecture="-m32"/>
-        <CONFIGURATION headerPath="../../Source" isDebug="1" libraryPath="/usr/X11R6/lib/"
+        <CONFIGURATION headerPath="../../Source&#10;/usr/include" isDebug="1" libraryPath="/usr/X11R6/lib/"
                        name="Ubuntu" optimisation="5" targetName="LGML" linuxArchitecture="-m64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

@@ -10,5 +10,6 @@ if [ "$TARGET_CPU" != "$NATIVE_CPU" ]; then echo "adding foreing arch $TARGET_CP
 echo "arch is set to '$TARGET_CPU'"
 # rubberband
 apt-get -y --assume-yes install librubberband-dev:$TARGET_CPU
-
+# for dns utility
+apt-get -y --assume-yes install libavahi-compat-libdnssd-dev:$TARGET_CPU
 

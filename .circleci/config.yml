@@ -62,7 +62,7 @@ jobs:
         environment:
           PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig/
           TARGET_CPU: armhf
-          TARGET_ARCH: -march=armv6 # arch for JUCEs linux makefile
+          TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
           DST_LGML_PATH: /tmp/buildRasp/
 
     steps:

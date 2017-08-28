@@ -5,8 +5,7 @@ if [ -z ${TARGET_CPU+x} ]; then TARGET_CPU="$NATIVE_CPU"; fi
 if [ "$TARGET_CPU" != "$NATIVE_CPU" ]; then echo "adding foreing arch $TARGET_CPU"; dpkg --add-architecture $TARGET_CPU;apt-get -qq update; fi
 echo "arch is set to '$TARGET_CPU'"
 
-# for dns utility
-apt-get -y --assume-yes install libavahi-compat-libdnssd-dev:$TARGET_CPU
+
 
 ## these are devloper libs needed for JUCE,   not sure wich are needed in released version...
 # from Makefile alsa freetype2 libcurl x11 xext xinerama
@@ -21,6 +20,8 @@ apt-get -y --assume-yes install freeglut3-dev:$TARGET_CPU
 apt-get -y --assume-yes install libxcomposite-dev:$TARGET_CPU
 apt-get -y --assume-yes install libjack-dev:$TARGET_CPU
 apt-get -y -q --assume-yes install libcurl4-openssl-dev:$TARGET_CPU
+
+# libavahi-compat-libdnssd libfreetype6 libx11 libxinerama libxrandr libxcursor mesa-common libasound2 freeglut3 libxcomposite libjack libcurl4-openssl
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 
 cd $SCRIPTPATH
