@@ -61,7 +61,6 @@ jobs:
     working_directory: ~/LGML
     docker:
       - image: resin/rpi-raspbian
-      
         environment:
           TARGET_CPU: armhf
           TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
