@@ -5,8 +5,6 @@ jobs:
     docker:
       - image: ubuntu
         environment:
-          # PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
-          # TARGET_CPU: i386
           TARGET_ARCH: -m64 # arch for linux makefile
           DST_LGML_PATH: /tmp/build/
     steps:
@@ -61,14 +59,21 @@ jobs:
       - image: buildpack-deps:trusty
       - image: ryankurte/docker-rpi-emu 
         environment:
-          # PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig/
           TARGET_CPU: armhf
           TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
           DST_LGML_PATH: /tmp/buildRasp/
-          # CPPFLAGS : -I/usr/include -I/usr/include/arm-linux-gnueabihf/
 
     steps:
       - checkout
+      - type: setup-docker-engine
+      - run:
+          name: Install Docker client
+          command: |
+            set -x
+            VER="17.03.0-ce"
+            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+            mv /tmp/docker/* /usr/bin
       - restore_cache:
           keys:
             - rpi-image
@@ -78,7 +83,7 @@ jobs:
             apt-get -qq update
             apt-get -qq install wget
             mkdir -p /tmp/downloads
-            wget -nc -P /tmp/downloads https://downloads.raspberrypi.org/raspbian_latest && ls /tmp/downloads
+            wget -nc -q -P /tmp/downloads https://downloads.raspberrypi.org/raspbian_latest && ls /tmp/downloads
       - save_cache:
           key: rpi-image
           paths:
