@@ -60,7 +60,7 @@ jobs:
   build_rasp:
     working_directory: ~/LGML
     docker:
-      - image: resin/rpi-raspbian
+      - image: jsurf/rpi-raspbian
         environment:
           TARGET_CPU: armhf
           TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
