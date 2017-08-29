@@ -78,7 +78,7 @@ jobs:
             apt-get -qq update
             apt-get -qq install wget
             mkdir -p /tmp/downloads
-            wget -nc -P -q /tmp/downloads https://downloads.raspberrypi.org/raspbian_latest && ls /tmp/downloads
+            wget -nc -P /tmp/downloads https://downloads.raspberrypi.org/raspbian_latest && ls /tmp/downloads
       - save_cache:
           key: rpi-image
           paths:
