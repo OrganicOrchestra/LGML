@@ -53,11 +53,15 @@ jobs:
       - store_artifacts:
           path: /tmp/build32 #$DST_LGML_PATH
 
+###############
+# build Rasp
+##############
+
   build_rasp:
-    working_directory: /Sources/LGML
+    working_directory: ~/LGML
     docker:
-      - image: buildpack-deps:trusty
-      - image: ryankurte/docker-rpi-emu 
+      - image: resin/rpi-raspbian
+      
         environment:
           TARGET_CPU: armhf
           TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
@@ -65,58 +69,23 @@ jobs:
 
     steps:
       - checkout
-      - type: setup-docker-engine
-      - run:
-          name: Install Docker client
-          command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
-      - restore_cache:
-          keys:
-            - rpi-image
-      - run:
-          name: download raspi image
-          command: |
-            apt-get -qq update
-            apt-get -qq install wget
-            mkdir -p /tmp/downloads
-            wget -nc -q -P /tmp/downloads https://downloads.raspberrypi.org/raspbian_latest && ls /tmp/downloads
-      - save_cache:
-          key: rpi-image
-          paths:
-            - /tmp/downloads
       - run:
           name: install LGMLRasp dependencies
           command: |
-            apt-get -qq install -y git unzip
+            apt-get -qq update
+            apt-get install -y git
             git submodule update --init --recursive --remote
-            rm -rf /tmp/images
-            mkdir -p /tmp/images
-            unzip /tmp/downloads/raspbian_latest -d /tmp/images/ && export RPI_IMG_PATH=$(find /tmp/images | grep -m 1 ".*\.img") && export RPI_IMG_NAME=$(basename $RPI_IMG_PATH)
-            echo $RPI_IMG_PATH
-            echo $RPI_IMG_NAME
-            docker run --name rpi -it --privileged=true -v $RPI_IMG_PATH:/usr/rpi/images -v /Sources:/usr/rpi/Sources -w /usr/rpi ryankurte/docker-rpi-emu
-            docker exec -ti rpi sh -c "sed 's/# Launch QEMU/\.\/usr/rpi/Sources/copy_files.sh \$MOUNT_DIR\n/' -i run.sh"
-            "cp -r /usr/rpi/Sources /media/rpi/Sources" >> /Sources/copy_files.sh
-            uname -a
-            docker exec -ti rpi sh -c "uname -a"
-            docker cp /Sources/LGML rpi:/LGML
-            docker exec -ti rpi sh -c "./run.sh images/$RPI_IMG_NAME"
-            docker exec -ti rpi 'apt-get -qq update && sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh'
+            sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
       - run:
           name: build and package LGMLRasp
           command: |
-            docker exec -ti rpi sh -c "python Scripts/buildScript.py --package --beta --exportpath=/tmp/buildRasp --os=linux;"
-            docker cp rpi:/tmp/buildRasp /tmp/buildRasp
-            ldd /tmp/buildRasp/LGML > "/tmp/buildRasp/dependencies.txt"
+            cross-build-start
+            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux;
+            ldd ~/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
+            cross-build-end
       - store_artifacts:
           path: /tmp/buildRasp/
 
-      - store_artifacts:
-          path: /tmp/images/
 
 workflows:
   version: 2
