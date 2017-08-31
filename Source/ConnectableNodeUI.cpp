@@ -149,21 +149,27 @@ void ConnectableNodeUI::nodeParameterChanged(ConnectableNode *, Parameter * p)
 {
   if (p == connectableNode->nodePosition )
   {
-    if(!isDraggingFromUI)postCommandMessage(posChangedId);
+    if(!isDraggingFromUI)
+      postOrHandleCommandMessage(posChangedId);
   }
   else if( p == connectableNode->nodeSize){
-    if(!isDraggingFromUI)postCommandMessage(sizeChangedId);
+    if(!isDraggingFromUI)postOrHandleCommandMessage(sizeChangedId);
   }
 
   else if (p == connectableNode->enabledParam)
   {
-    postCommandMessage(repaintId);
+    postOrHandleCommandMessage(repaintId);
   } else if (p == connectableNode->miniMode)
   {
-    postCommandMessage(setMiniModeId);
+    postOrHandleCommandMessage(setMiniModeId);
   }
 }
-
+void ConnectableNodeUI::postOrHandleCommandMessage(int id){
+  if(MessageManager::getInstance()->isThisTheMessageThread())
+    handleCommandMessage(id);
+  else
+    postCommandMessage(id);
+}
 void ConnectableNodeUI::handleCommandMessage(int commandId){
   switch(commandId){
     case repaintId:

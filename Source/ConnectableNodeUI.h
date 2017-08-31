@@ -147,6 +147,7 @@ private:
 	bool keyPressed(const KeyPress &key) override;
 	void moved()override;
 
+  void postOrHandleCommandMessage(int id);
 
 void handleCommandMessage(int id) override;
 enum{
