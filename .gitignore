@@ -46,6 +46,8 @@ Builds/VisualStudio2015/*
 doxygen/doc
 
 *.password
+*.key
+*.asc
 *.stackdump
 
 *.pyc
