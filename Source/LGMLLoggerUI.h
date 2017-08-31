@@ -72,6 +72,7 @@ private:
   void updateTotalLogRow();
   const String & getSourceForRow(int r);
   const String & getContentForRow(int r);
+  const Colour & getSeverityColourForRow(int r);
   String getTimeStringForRow(int r);
   friend class LogList;
 

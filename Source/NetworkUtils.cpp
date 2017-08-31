@@ -78,7 +78,7 @@ public:
     name = getName();
     // scan all interfaces starting with en
     struct ifaddrs *ifap = NULL;
-    if(getifaddrs(&ifap) < 0) {LOG("Cannot not get a list of interfaces\n");return;}
+    if(getifaddrs(&ifap) < 0) {LOG("!!! Cannot not get a list of interfaces\n");return;}
     for(struct ifaddrs *p = ifap; p!=NULL; p=p->ifa_next) {
       if( String(p->ifa_name).startsWith("en")){
         if_idxs.insert( if_nametoindex(p->ifa_name));
@@ -293,7 +293,7 @@ public:
     }
     else{
       jassertfalse;
-      LOG("DNS : can't resolve ip :"<< hostIP << " (" <<String(hosttarget)<<")" );
+      LOG("!!! DNS : can't resolve ip :"<< hostIP << " (" <<String(hosttarget)<<")" );
     }
 
   }
@@ -348,7 +348,7 @@ public:
 OSCClientRecord NetworkUtils::hostnameToOSCRecord(const String & )
 //int hostname_to_ip(char * hostname , char* ip)
 {
-  LOG("ip hostname discovery not supported on windows/Unix");
+  LOG("!!! ip hostname discovery not supported on windows/Unix");
   return OSCClientRecord();
 }
 

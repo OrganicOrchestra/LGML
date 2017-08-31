@@ -164,7 +164,7 @@ void TimeManager::incrementClock(int block){
        //       && !isFirstPlayingFrame()
        && fabs(driftMs)>1
        ){
-      SLOG("link drift : " + String(driftMs)+"ms");
+      SLOG("! link drift : " + String(driftMs)+"ms");
       goToTime(linkBeat  * beatTimeInSample,true);
     }
   }

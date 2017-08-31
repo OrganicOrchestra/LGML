@@ -121,13 +121,13 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
 	if(a.numArguments<2 )return var::undefined();
 
 	if( !a.arguments[0].isString() ){
-        LOG("jsOSC send first argument must be an address string");
+        LOG("!!jsOSC send first argument must be an address string");
         return var::undefined();
     }
 
     String address = a.arguments[0];
     if(!address.startsWithChar('/') ){
-        LOG("address should start with / ");
+        LOG("!!!address should start with / ");
         return var::undefined();
     }
 

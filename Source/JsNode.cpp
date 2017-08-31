@@ -76,7 +76,7 @@ var JsNode::addIntParameter(const var::NativeFunctionArgs & a) {
 
 	JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
 	if (a.numArguments<5) {
-		LOG("wrong number of arg for addIntParameter");
+		LOG("!!! wrong number of arg for addIntParameter");
 		return var::undefined();
 	};
 	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<IntParameter>(a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
@@ -88,7 +88,7 @@ var JsNode::addFloatParameter(const var::NativeFunctionArgs & a) {
 
 	JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
 	if (a.numArguments<5) {
-		LOG("wrong number of arg for addFloatParameter");
+		LOG("!!! wrong number of arg for addFloatParameter");
 		return var::undefined();
 	};
 
@@ -101,7 +101,7 @@ var JsNode::addStringParameter(const var::NativeFunctionArgs & a) {
 
 	JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
 	if (a.numArguments<3) {
-		LOG("wrong number of arg for addStringParameter");
+		LOG("!!! wrong number of arg for addStringParameter");
 		return var::undefined();
 	};
 	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<StringParameter>(a.arguments[0], a.arguments[1], a.arguments[2]));
@@ -113,7 +113,7 @@ var JsNode::addBoolParameter(const var::NativeFunctionArgs & a) {
 
 	JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
 	if (a.numArguments<3) {
-		LOG("wrong number of arg for addStringParameter");
+		LOG("!!! wrong number of arg for addStringParameter");
 		return var::undefined();
 	};
 	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<BoolParameter>(a.arguments[0], a.arguments[1], a.arguments[2]));
@@ -125,7 +125,7 @@ var JsNode::addTriggerParameter(const var::NativeFunctionArgs & a) {
 
 	JsNode * jsNode = getObjectPtrFromJS<JsNode>(a);
 	if (a.numArguments<2) {
-		LOG("wrong number of arg for addTrigger");
+		LOG("!!! wrong number of arg for addTrigger");
 		return var::undefined();
 	};
 	jsNode->jsParameters.add(jsNode->ControllableContainer::addNewParameter<Trigger>(a.arguments[0], a.arguments[1]));

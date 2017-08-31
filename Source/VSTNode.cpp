@@ -229,7 +229,7 @@ void VSTNode::generatePluginFromDescription(PluginDescription * desc)
     innerPluginTotalNumInputChannels = 0;
     innerPluginTotalNumOutputChannels = 0;
     innerPlugin = nullptr;
-    LOG(errorMessage);
+    LOG("!!!"<<errorMessage);
     jassertfalse;
   }
 }
@@ -238,7 +238,7 @@ void VSTNode::audioProcessorChanged(juce::AudioProcessor * p ){
   if (!innerPlugin || p!=innerPlugin) return;
 
   if(innerPlugin->getNumParameters() != VSTParameters.size()){
-    NLOG("VSTNode : "+innerPlugin->getName(),"rebuildingParameters");
+    NLOG("! VSTNode : "+innerPlugin->getName(),"rebuildingParameters");
     initParametersFromProcessor(innerPlugin);
   }
   else{
@@ -274,11 +274,11 @@ void VSTNode::audioProcessorParameterChanged (AudioProcessor* p ,
       blockFeedback = false;
     }
     else{
-      NLOG("VSTNode","oldParam update");
+      NLOG("VSTNode","!! oldParam update");
     }
   }
   else{
-    NLOG("VSTNode","oldplugin update");
+    NLOG("VSTNode","!! oldplugin update");
   }
 }
 

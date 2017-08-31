@@ -90,8 +90,7 @@ void MainContentComponent::resized()
   //DBG("Resized in main component :" << getLocalBounds().toString());
 
   ShapeShifterManager::getInstance()->mainShifterContainer.setBounds(r);
-  // 
-  ShapeShifterManager::getInstance()->mainShifterContainer.resized();
+
 }
 
 void MainContentComponent::showAudioSettings()

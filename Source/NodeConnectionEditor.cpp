@@ -239,11 +239,11 @@ void NodeConnectionEditor::generateContentForData()
 void NodeConnectionEditor::addAudioLink(int sourceChannel, int destChannel)
 {
     if(sourceChannel>outputSlots.size()){
-        LOG("Channel not found in output Slots");
+        LOG("!! Channel not found in output Slots");
         return;
     }
     if(destChannel>inputSlots.size()){
-        LOG("Channel not found  in input Slots");
+        LOG("!! Channel not found  in input Slots");
         return;
     }
 

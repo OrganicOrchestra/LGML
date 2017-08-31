@@ -89,7 +89,7 @@ void OSCController::setupReceiver()
   receiver.disconnect();
 
   if(!receiver.connect(localPortParam->stringValue().getIntValue())){
-    LOG("can't connect to local port : " +localPortParam->stringValue());
+    LOG("!!! can't connect to local port : " +localPortParam->stringValue());
   };
   //DBG("Receiver connected" + String(result));
 }
@@ -101,7 +101,7 @@ void OSCController::setupSender()
   resolveHostnameIfNeeded();
 
   if(!hostNameResolved){
-    LOG("no valid ip found for " << remoteHostParam->stringValue());
+    LOG("!!! no valid ip found for " << remoteHostParam->stringValue());
   }
 
 }
@@ -123,7 +123,7 @@ void OSCController::resolveHostnameIfNeeded(){
       sender.connect(remoteIP, remotePortParam->stringValue().getIntValue());
     }
     else{
-      LOG("can't resolve IP : "<<hostName);
+      LOG("!! can't resolve IP : "<<hostName);
     }
   }
   else{
@@ -441,7 +441,7 @@ void OSCController::OSCMessageQueue::add(OSCMessage * m){
     aFifo.finishedWrite(numWritten);
     numWritten=0;
     timerCallback();
-    NLOG(owner->getNiceName(),"still flooding OSC");
+    NLOG(owner->getNiceName(),"!!! still flooding OSC");
     delete m;
   }
   aFifo.finishedWrite(numWritten);

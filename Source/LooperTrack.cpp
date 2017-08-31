@@ -119,7 +119,7 @@ void LooperTrack::processBlock(AudioBuffer<float>& buffer, MidiBuffer &) {
     jassert(curTime==0 || ((sample_clk_t)curTime - (sample_clk_t)offset >= 0));
     sample_clk_t localTime = jmin(curTime,curTime - offset);
     if (!playableBuffer.processNextBlock(buffer, localTime) && trackState != STOPPED) {
-      SLOG("Stopping, too many audio ");
+      SLOG("!!! Stopping, too many audio ");
       setTrackState(STOPPED);
     }
   }
@@ -625,7 +625,7 @@ void LooperTrack::setTrackState(TrackState newState) {
       if (quantizedRecordEnd == 0 && playableBuffer.getRecordedLength() <= minRecordTime) {
         //          jassertfalse;
         newState = RECORDING;
-        SLOG("Looper: can't record that little of audio keep recording a bit");
+        SLOG("!! Looper: can't record that little of audio keep recording a bit");
         quantizedRecordEnd = timeManager->getTimeInSample() + minRecordTime-playableBuffer.getRecordedLength() + 2048;
         if (isMasterTempoTrack()) {quantizedPlayStart = quantizedRecordEnd;}
 
@@ -786,7 +786,7 @@ void LooperTrack::loadAudioSample(const String & path) {
       sample_clk_t importSize = audioReader->lengthInSamples * sampleRateRatio;
       
       if(importSize>= MAX_NUMSAMPLES){
-        LOG("trying to import too much audio : " << importSize/parentLooper->getSampleRate() << "s ,max :" << (MAX_NUMSAMPLES)/ parentLooper->getSampleRate()<<"s");
+        LOG("!!! trying to import too much audio : " << importSize/parentLooper->getSampleRate() << "s ,max :" << (MAX_NUMSAMPLES)/ parentLooper->getSampleRate()<<"s");
       }
       else{
         sample_clk_t inSampleLength = (sample_clk_t)audioReader->lengthInSamples;
@@ -796,7 +796,7 @@ void LooperTrack::loadAudioSample(const String & path) {
         audioReader->read(&tempBuf, 0, inSampleLength, 0, true, playableBuffer.getNumChannels() > 1 ? true : false);
         sample_clk_t destSize = importSize;
         if (sampleRateRatio != 1) {
-          LOG("sample loading : resampling should work but still experimental : " \
+          LOG("!! sample loading : resampling should work but still experimental : " \
               << audioFile.getFileName() << " : " << audioReader->sampleRate);
           
           CatmullRomInterpolator interpolator;
@@ -831,9 +831,9 @@ void LooperTrack::loadAudioSample(const String & path) {
         
       }
     } else {
-      LOG("sample loading : format not supported : " << audioFile.getFileExtension());
+      LOG("!!! sample loading : format not supported : " << audioFile.getFileExtension());
     }
   } else {
-    LOG("sample loading : file not found : " << audioFile.getFullPathName());
+    LOG("!!! sample loading : file not found : " << audioFile.getFullPathName());
   }
 }

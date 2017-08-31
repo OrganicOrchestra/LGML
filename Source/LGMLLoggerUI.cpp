@@ -181,6 +181,35 @@ String  LGMLLoggerUI::getTimeStringForRow(int r) {
   return String::empty;
 };
 
+const Colour & LGMLLoggerUI::getSeverityColourForRow(int r) {
+  int count = 0;
+  int idx = 0;
+  while (idx < logElements.size()) {
+    int nl = logElements[idx]->getNumLines();
+    if(count+nl>r){
+      LogElement::Severity s = logElements[idx]->severity;
+      switch(s){
+        case LogElement::LOG_NONE:
+          return Colours::darkgrey;
+        case LogElement::LOG_DBG:
+          return Colours::black;
+        case LogElement::LOG_WARN:
+          return Colours::orange;
+        case LogElement::LOG_ERR:
+          return Colours::red;
+        default:
+          return Colours::pink;
+
+      }
+
+    }
+    count += nl;
+    idx++;
+  }
+
+  return Colours::pink;
+};
+
 
 
 //////////////
@@ -200,7 +229,8 @@ void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
                                                 int width, int height,
                                                 bool)
 {
-  g.setColour(Colours::transparentBlack.withAlpha((rowNumber%2==0?0.1f:0.f)));
+  
+  g.setColour(owner->getSeverityColourForRow(rowNumber).withAlpha((rowNumber%2==0?0.7f:0.6f)));
   g.fillRect(0, 0, width, height);
 };
 

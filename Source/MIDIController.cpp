@@ -205,7 +205,7 @@ var MIDIController::sendNoteOnFromJS(const var::NativeFunctionArgs & a ) {
 
   if (a.numArguments < 3)
   {
-    NLOG("MidiController", "Incorrect number of arguments for sendNoteOn");
+    NLOG("MidiController", "!!! Incorrect number of arguments for sendNoteOn");
     return var(false);
   }
 
@@ -220,7 +220,7 @@ var MIDIController::sendNoteOffFromJS(const var::NativeFunctionArgs & a) {
 
   if (a.numArguments < 3)
   {
-    NLOG("MidiController", "Incorrect number of arguments for sendNoteOff");
+    NLOG("MidiController", "!!! Incorrect number of arguments for sendNoteOff");
     return var(false);
   }
 
@@ -233,7 +233,7 @@ var MIDIController::sendCCFromJS(const var::NativeFunctionArgs & a){
 
   if (a.numArguments < 3)
   {
-    NLOG("MidiController", "Incorrect number of arguments for sendCC");
+    NLOG("MidiController", "!!! Incorrect number of arguments for sendCC");
     return var(false);
   }
 
@@ -247,7 +247,7 @@ var MIDIController::sendSysExFromJS(const var::NativeFunctionArgs & a)
 
   if (a.numArguments > 8)
   {
-    NLOG("MidiController", "Incorrect number of arguments for sendSysEx");
+    NLOG("MidiController", "!!! Incorrect number of arguments for sendSysEx");
     return var(false);
   }
   uint8 bytes[8];

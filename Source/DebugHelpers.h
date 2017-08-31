@@ -63,10 +63,31 @@ public:
         _arr = new StringArray();
 		time = Time::getCurrentTime();
         _arr->addTokens(content,StringRef("\n"),StringRef());
+    if(_arr->size()){
+      String * s =&_arr->getReference(0);
+      auto cp = s->getCharPointer();
+      severity=LOG_NONE;
+      while(cp.getAndAdvance()=='!' && severity<LOG_ERR){
+        severity=(Severity)(severity+1);
+      }
+      
+      if(severity==LOG_NONE && s->startsWith("JUCE Assertion")){
+        severity=LOG_ERR;
+      }
+      else{
+        _arr->set(0, _arr->getReference(0).substring((int)severity+1));
+      }
+
+    }
+    else{
+      severity=LOG_NONE;
+    }
     }
 	Time time;
     String content;
     String source;
+  enum Severity{LOG_NONE=-1,LOG_DBG=0,LOG_WARN=1,LOG_ERR=2};
+  Severity severity;
     int getNumLines(){return  _arr->size();}
     void trimToFit(int num){if(_arr->size()>num)_arr->removeRange(0,_arr->size()-num);}
     const String & getLine(int i){return _arr->getReference(i); }

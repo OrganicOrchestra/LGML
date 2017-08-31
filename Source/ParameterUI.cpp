@@ -51,7 +51,7 @@ bool ParameterUI::shouldBailOut(){
   // we want a clean deletion no?
   if(bailOut){
     // TODO : changing vst preset sometimes hit that
-    NLOG("ParameterUI", "old component still displayed");
+    NLOG("ParameterUI", "!!! old component still displayed");
     //jassertfalse;
   }
   return bailOut;

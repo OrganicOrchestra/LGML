@@ -294,7 +294,8 @@ String Engine::getMinimumRequiredFileVersion()
 File Engine::getCurrentProjectFolder(){
   if(!getFile().exists()){
 #if !LGML_UNIT_TESTS
-    jassertfalse;
+    LOG("!! current session not saved, script will have an absolute path");
+//    jassertfalse;
 #endif
     return File();
   }

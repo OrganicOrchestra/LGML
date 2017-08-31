@@ -308,17 +308,18 @@ void NodeContainer::loadJSONData(const var & data)
         // TODO nicely handle file format errors?
 
         if(srcNode==nullptr){
-          NLOG("loadJSON","no srcnode for shortName : "+cData.getDynamicObject()->getProperty("srcNode").toString());
+          NLOG("loadJSON","!!! no srcnode for shortName : "+cData.getDynamicObject()->getProperty("srcNode").toString());
         }
         if(dstNode==nullptr){
-          NLOG("loadJSON","no dstnode for shortName : "+cData.getDynamicObject()->getProperty("dstNode").toString());
+          NLOG("loadJSON","!!! no dstnode for shortName : "+cData.getDynamicObject()->getProperty("dstNode").toString());
         }
-        LOG("Available Nodes in "+ shortName+" : ");
+
 
 #if defined DEBUG
+        LOG("!!! Available Nodes in "+ shortName+" : ");
         for (auto &node : nodes)
         {
-          DBG(" > " + node->getNiceName()+"//"+ node->shortName);
+          LOG("!!! > " + node->getNiceName()+"//"+ node->shortName);
         }
 #endif
 

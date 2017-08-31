@@ -206,7 +206,7 @@ Result JsEnvironment::loadScriptContent(const String & content)
     _hasValidJsFile = false;
     //        jsEngine = nullptr;
 				// NLOG(localNamespace,printAllNamespace());
-    NLOG(localNamespace, r.getErrorMessage());
+    NLOG(localNamespace, "!!!"+r.getErrorMessage());
   } else {
     _hasValidJsFile = true;
     lastFileModTime = currentFile.getLastModificationTime();
@@ -218,7 +218,7 @@ Result JsEnvironment::loadScriptContent(const String & content)
       NLOG(localNamespace, "Content loaded sucessfully");
     }
     else{
-      NLOG(localNamespace, r.getErrorMessage());
+      NLOG(localNamespace, "!!!"<<r.getErrorMessage());
     }
   }
 
@@ -267,7 +267,7 @@ var JsEnvironment::callFunction(const String& function, const Array<var>& args, 
   if (!functionIsDefined(function)) {
 
     if (result != nullptr)result->fail(noFunctionLogIdentifier.toString());
-    if (logResult)NLOG(localNamespace, noFunctionLogIdentifier.toString());
+    if (logResult)NLOG(localNamespace, "!!!" << noFunctionLogIdentifier.toString());
     return var::undefined();
   }
   return callFunctionFromIdentifier(function, args, logResult, result);
@@ -277,7 +277,7 @@ var JsEnvironment::callFunction(const String& function, const var& args, bool lo
 
   if (!functionIsDefined(function)) {
     if (result != nullptr)result->fail(noFunctionLogIdentifier.toString());
-    if (logResult)NLOG(localNamespace, noFunctionLogIdentifier.toString());
+    if (logResult)NLOG(localNamespace, "!!!" <<noFunctionLogIdentifier.toString());
     return var::undefined();
   }
   return callFunctionFromIdentifier(function, args, logResult, result);
@@ -324,11 +324,11 @@ var JsEnvironment::callFunctionFromIdentifier(const Identifier& function, const 
     }
     else{
       //      jassertfalse;
-      NLOG(localNamespace,"jsEngine is Locked");
+      NLOG(localNamespace,"!!! jsEngine is Locked");
     }
   }
   if (logResult && result->failed()) {
-    NLOG(localNamespace, result->getErrorMessage());
+    NLOG(localNamespace, "!!!" << result->getErrorMessage());
   }
   if (resOwned) {
     delete result;
