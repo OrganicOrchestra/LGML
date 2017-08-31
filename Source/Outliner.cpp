@@ -111,8 +111,6 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 void Outliner::childStructureChanged(ControllableContainer * ,ControllableContainer*)
 {
   if(!AsyncUpdater::isUpdatePending()){
-    saveCurrentOpenChilds();
-    rootItem->clearSubItems();
     triggerAsyncUpdate();
   }
 
@@ -124,10 +122,12 @@ void Outliner::handleAsyncUpdate(){
     if(getEngine()->isLoadingFile ){
       triggerAsyncUpdate();
     }
-    else
+    else{
+      saveCurrentOpenChilds();
+      rootItem->clearSubItems();
       rebuildTree();
-    restoreCurrentOpenChilds();
-
+      restoreCurrentOpenChilds();
+    }
   }
 }
 
