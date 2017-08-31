@@ -20,7 +20,7 @@
 juce_ImplementSingleton(ShapeShifterManager);
 
 ShapeShifterManager::ShapeShifterManager() :
-	mainContainer(ShapeShifterContainer::Direction::VERTICAL),
+	mainShifterContainer(ShapeShifterContainer::Direction::VERTICAL),
 	currentCandidatePanel(nullptr)
 {
 	lastFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder + "/_lastSession." + appLayoutExtension);
@@ -130,9 +130,9 @@ void ShapeShifterManager::showContent(String contentName)
 
 		ShapeShifterPanel * newP = createPanel(c);
 
-		if (mainContainer.shifters.size() == 0)
+		if (mainShifterContainer.shifters.size() == 0)
 		{
-			mainContainer.insertPanelAt(newP, 0);
+			mainShifterContainer.insertPanelAt(newP, 0);
 		} else
 		{
 			Rectangle<int> r(100, 100, 300, 500);
@@ -211,7 +211,20 @@ void ShapeShifterManager::loadLayout(var layout)
 {
 	clearAllPanelsAndWindows();
 	if (layout.getDynamicObject() == nullptr) return;
-	mainContainer.loadLayout(layout.getDynamicObject()->getProperty("mainLayout"));
+  var lData = layout.getDynamicObject()->getProperty("mainLayout");
+	mainShifterContainer.loadLayout(lData);
+  mainShifterContainer.resized();
+//  if(auto * p = mainShifterContainer.getParentComponent()){
+//    p->resized();
+//  }
+//  int targetB = (int)lData.getProperty("width", -2);
+//  if( targetB<0 ){
+//    mainShifterContainer.setPreferredWidth(mainShifterContainer.getParentWidth());
+//  }
+//  targetB = (int)lData.getProperty("height", -2);
+//  if( targetB<0 ){
+//    mainShifterContainer.setPreferredHeight(mainShifterContainer.getParentHeight());
+//  }
 
 	Array<var>* wData = layout.getDynamicObject()->getProperty("windows").getArray();
 
@@ -231,7 +244,7 @@ void ShapeShifterManager::loadLayout(var layout)
 var ShapeShifterManager::getCurrentLayout()
 {
 	var layout(new DynamicObject());
-	layout.getDynamicObject()->setProperty("mainLayout", mainContainer.getCurrentLayout());
+	layout.getDynamicObject()->setProperty("mainLayout", mainShifterContainer.getCurrentLayout());
 
 	var wData;
 	for (auto &w : openedWindows)
@@ -351,7 +364,7 @@ void ShapeShifterManager::clearAllPanelsAndWindows()
 	{
 		removePanel(openedPanels[0]);
 	}
-	mainContainer.clear();
+	mainShifterContainer.clear();
 }
 
 PopupMenu ShapeShifterManager::getPanelsMenu()

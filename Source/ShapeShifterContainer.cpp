@@ -167,9 +167,9 @@ bool ShapeShifterContainer::isFlexible()
 {
 	for (auto &p : shifters)
 	{
-		if (!p->isFlexible()) return false;
+		if (p->isFlexible()) return true;
 	}
-	return true;
+	return false;
 }
 
 
@@ -210,12 +210,12 @@ void ShapeShifterContainer::resized()
 		}
 	} else
 	{
-		int spaceDiffPerShifter = spaceDiff / numShifters;
-		for (auto &p : shifters)
-		{
-			if (direction == HORIZONTAL) p->setPreferredWidth(p->getPreferredWidth() + spaceDiffPerShifter);
-			else p->setPreferredHeight(p->getPreferredHeight() + spaceDiffPerShifter);
-		}
+//		int spaceDiffPerShifter = spaceDiff / numShifters;
+//		for (auto &p : shifters)
+//		{
+//			if (direction == HORIZONTAL) p->setPreferredWidth(p->getPreferredWidth() + spaceDiffPerShifter);
+//			else p->setPreferredHeight(p->getPreferredHeight() + spaceDiffPerShifter);
+//		}
 	}
 
 	Rectangle<int> r = getLocalBounds();
@@ -235,6 +235,7 @@ void ShapeShifterContainer::resized()
 
 		index++;
 	}
+  
 }
 
 void ShapeShifterContainer::clear()
@@ -284,7 +285,7 @@ void ShapeShifterContainer::loadLayoutInternal(var layout)
 		}
 	}
 
-	resized();
+//	resized();
 }
 
 void ShapeShifterContainer::grabberGrabUpdate(GapGrabber * gg, int dist)

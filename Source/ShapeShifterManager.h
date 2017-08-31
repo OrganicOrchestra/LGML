@@ -30,7 +30,7 @@ public:
 	ShapeShifterManager();
 	virtual ~ShapeShifterManager();
 
-	ShapeShifterContainer mainContainer;
+	ShapeShifterContainer mainShifterContainer;
 
 	File lastFile;
 	const String appLayoutExtension = "lgmllayout";

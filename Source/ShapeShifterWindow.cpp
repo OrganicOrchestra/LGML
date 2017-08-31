@@ -48,7 +48,7 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
   static LookAndFeelOO lfOO;
   setLookAndFeel(&lfOO);
 #if JUCE_OPENGL
-  OpenGLContext * context = OpenGLContext::getContextAttachedTo(*ShapeShifterManager::getInstance()->mainContainer.getTopLevelComponent());
+  OpenGLContext * context = OpenGLContext::getContextAttachedTo(*ShapeShifterManager::getInstance()->mainShifterContainer.getTopLevelComponent());
   if(context){
     openGLContext.setNativeSharedContext(context->getRawContext());
   }

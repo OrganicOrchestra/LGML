@@ -34,7 +34,7 @@ engine(e)
 
   setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
 
-  addAndMakeVisible(&ShapeShifterManager::getInstance()->mainContainer);
+  addAndMakeVisible(&ShapeShifterManager::getInstance()->mainShifterContainer);
 
 
   (&getCommandManager())->registerAllCommandsForTarget (this);
@@ -89,7 +89,9 @@ void MainContentComponent::resized()
   //timeManagerUI->setBounds(r.removeFromTop(25));
   //DBG("Resized in main component :" << getLocalBounds().toString());
 
-  ShapeShifterManager::getInstance()->mainContainer.setBounds(r);
+  ShapeShifterManager::getInstance()->mainShifterContainer.setBounds(r);
+  // 
+  ShapeShifterManager::getInstance()->mainShifterContainer.resized();
 }
 
 void MainContentComponent::showAudioSettings()
