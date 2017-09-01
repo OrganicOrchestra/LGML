@@ -1,6 +1,6 @@
 # THIS FILE IS BINDED TO RELATIVE LOCATIONS CHANGE THEM IF DISPLACING FILE
 
-from .writeSha import *
+# from .writeSha import *
 import os
 import collections
 
@@ -87,7 +87,15 @@ def updatePathsIfNeeded(osType):
 			
 	
 
-
+def getModules():
+	import xml.etree.ElementTree as ET
+	tree = ET.parse(JuceProjectPath)
+	
+	modules = tree.findall('MODULES')[0]
+	res = []
+	for m in modules.iter('MODULE'):
+		res+=[m.attrib['id']]
+	return res
 
 def getVersion():
 	return getXmlVersion();
@@ -135,6 +143,7 @@ def tagVersion():
 
 def updateVersion(bumpVersion,specificVersion):
 	global proJucerCommand,JuceProjectPath
+
 	if(bumpVersion):
 		sh(proJucerCommand+ " --bump-version '" + JuceProjectPath+"'")
 	elif specificVersion and (specificVersion!=getXmlVersion()):
@@ -163,5 +172,5 @@ def updateProjucer(osType,bumpVersion,specificVersion):
 
 
 if __name__=="__main__":
-	print(getXmlVersion());
+	print(getModules());
 

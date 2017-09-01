@@ -1,0 +1,5 @@
+*
+!.gitignore
+!lgml
+!lgml/debian
+!lgml/debian/**

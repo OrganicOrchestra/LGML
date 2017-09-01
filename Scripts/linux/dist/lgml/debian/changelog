@@ -1,0 +1,35 @@
+lgml (1.2.0-beta.5) unstable; urgency=medium
+
+  * try avoid dh --sourcedirectory argument not working as expected on launchpad
+
+ -- martin Hermant <martin.hermant@gmail.com>  Tue, 29 Mar 2016 17:25:42 -0300
+
+lgml (1.2.0-beta.4) unstable; urgency=medium
+
+  * having fun with PKGBUILDDIR from launchpad
+
+ -- martin Hermant <martin.hermant@gmail.com>  Tue, 29 Mar 2016 17:25:42 -0300
+
+lgml (1.2.0-beta.3) unstable; urgency=medium
+
+  * remove auto_configure
+
+ -- martin Hermant <martin.hermant@gmail.com>  Tue, 28 Mar 2016 17:25:42 -0300
+
+lgml (1.2.0-beta.2) unstable; urgency=medium
+
+  * add curl to dependencies
+
+ -- martin Hermant <martin.hermant@gmail.com>  Tue, 27 Mar 2016 17:25:42 -0300
+
+lgml (1.2.0-beta.1) unstable; urgency=medium
+
+  * curl sources from ppa for binary install
+
+ -- martin Hermant <martin.hermant@gmail.com>  Tue, 26 Mar 2016 17:25:42 -0300
+
+lgml (1.2.0-beta) unstable; urgency=medium
+
+  * Fake entry
+
+ -- martin Hermant <martin.hermant@gmail.com>  Tue, 25 Mar 2016 17:25:42 -0300

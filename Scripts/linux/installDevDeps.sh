@@ -20,10 +20,10 @@ apt-get -y --assume-yes install freeglut3-dev:$TARGET_CPU
 apt-get -y --assume-yes install libxcomposite-dev:$TARGET_CPU
 apt-get -y --assume-yes install libjack-dev:$TARGET_CPU
 apt-get -y -q --assume-yes install libcurl4-openssl-dev:$TARGET_CPU
+apt-get -y -q --assume-yes install ladspa-sdk:$TARGET_CPU
 
 # libavahi-compat-libdnssd libfreetype6 libx11 libxinerama libxrandr libxcursor mesa-common libasound2 freeglut3 libxcomposite libjack libcurl4-openssl
 
-apt-get -y -q --assume-yes install unzip
 apt-get -y -q --assume-yes install curl
 
 SCRIPTPATH=`pwd`/$(dirname "$0") 
@@ -31,8 +31,8 @@ cd $SCRIPTPATH
 cd ../../..
 
 if [ ! -d "JUCE" ]; then
-  curl -L https://github.com/julianstorer/JUCE/archive/master.zip > JUCE.zip
-  unzip -q JUCE.zip
+  curl -L https://github.com/julianstorer/JUCE/archive/master.tar.gz > JUCE.tar.gz
+  tar -xf JUCE.tar.gz
   mv JUCE-master/ JUCE
 fi
 
