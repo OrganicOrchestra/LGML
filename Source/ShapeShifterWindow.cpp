@@ -47,7 +47,7 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 	toFront(true);
   static LookAndFeelOO lfOO;
   setLookAndFeel(&lfOO);
-#if JUCE_OPENGL
+#if JUCE_OPENGL 
   OpenGLContext * context = OpenGLContext::getContextAttachedTo(*ShapeShifterManager::getInstance()->mainShifterContainer.getTopLevelComponent());
   if(context){
     openGLContext.setNativeSharedContext(context->getRawContext());
@@ -67,7 +67,7 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 
 ShapeShifterWindow::~ShapeShifterWindow()
 {
-#if JUCE_OPENGL
+#if JUCE_OPENGL 
   openGLContext.detach();
 #endif
 	removeMouseListener(this);

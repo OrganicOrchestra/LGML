@@ -52,7 +52,7 @@ public:
 
 
 
-#if JUCE_OPENGL
+#if JUCE_OPENGL 
   OpenGLContext openGLContext
   ;
 #endif

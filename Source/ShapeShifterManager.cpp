@@ -19,11 +19,21 @@
 
 juce_ImplementSingleton(ShapeShifterManager);
 
+
+const String appLayoutExtension = "lgmllayout";
+const String appSubFolder = "LGML/layouts";
+
+
 ShapeShifterManager::ShapeShifterManager() :
 	mainShifterContainer(ShapeShifterContainer::Direction::VERTICAL),
 	currentCandidatePanel(nullptr)
 {
-	lastFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder + "/_lastSession." + appLayoutExtension);
+  defaultFolder = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
+  if(!defaultFolder.exists() && !defaultFolder.createDirectory()){
+    LOG("!!! can't create default layout directory at : "+defaultFolder.getFullPathName());
+  }
+
+	lastFile = defaultFolder.getChildFile("_lastSession." + appLayoutExtension);
 }
 
 ShapeShifterManager::~ShapeShifterManager()
@@ -259,16 +269,16 @@ var ShapeShifterManager::getCurrentLayout()
 void ShapeShifterManager::loadLayoutFromFile(int fileIndexInLayoutFolder)
 {
 
-	File destDir = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
-	if (!destDir.exists())
+
+	if (!defaultFolder.exists())
 	{
-		destDir.createDirectory();
+		defaultFolder.createDirectory();
 	}
 
 	File layoutFile;
 	if (fileIndexInLayoutFolder == -1)
 	{
-		FileChooser fc("Load layout", destDir, "*." + appLayoutExtension);
+		FileChooser fc("Load layout", defaultFolder, "*." + appLayoutExtension);
 		if (!fc.browseForFileToOpen()) return;
 		layoutFile = fc.getResult();
 	} else
@@ -301,7 +311,7 @@ void ShapeShifterManager::loadLastSessionLayoutFile()
 
 void ShapeShifterManager::loadDefaultLayoutFile()
 {
-	File defaultFile = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder + "/default." + appLayoutExtension);
+	File defaultFile = defaultFolder.getChildFile("default." + appLayoutExtension);
 	if (defaultFile.exists())
 	{
 		loadLayoutFromFile(defaultFile);
@@ -316,10 +326,10 @@ void ShapeShifterManager::loadDefaultLayoutFile()
 
 void ShapeShifterManager::saveCurrentLayout()
 {
-	File destDir = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
-	if (!destDir.exists()) destDir.createDirectory();
 
-	FileChooser fc("Save layout", destDir, "*." + appLayoutExtension);
+  
+
+	FileChooser fc("Save layout", defaultFolder, "*." + appLayoutExtension);
 	if (fc.browseForFileToSave(true))
 	{
 		saveCurrentLayoutToFile(fc.getResult());
@@ -332,26 +342,32 @@ void ShapeShifterManager::saveCurrentLayoutToFile(const File &toFile)
 	if (toFile.exists())
 	{
 		toFile.deleteFile();
-		toFile.create();
-	}
 
-	ScopedPointer<OutputStream> os(toFile.createOutputStream());
+	}
+  jassert(toFile.create());
+
+  if(auto os = ScopedPointer<OutputStream>(toFile.createOutputStream())){
 	JSON::writeToStream(*os, getCurrentLayout());
 	os->flush();
+  }
+  else{
+    LOG("!!!can't write to "+toFile.getFullPathName());
+    jassertfalse;
+
+  }
 }
 
 Array<File> ShapeShifterManager::getLayoutFiles()
 {
-	File layoutFolder = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
-	if (!layoutFolder.exists())
-	{
-		layoutFolder.createDirectory();
-	}
 
+	if (defaultFolder.exists())
+	{
 	Array<File> layoutFiles;
-	layoutFolder.findChildFiles(layoutFiles, File::findFiles, false, "*." + appLayoutExtension);
+	defaultFolder.findChildFiles(layoutFiles, File::findFiles, false, "*." + appLayoutExtension);
 
 	return layoutFiles;
+  }
+  return Array<File>();
 }
 
 void ShapeShifterManager::clearAllPanelsAndWindows()

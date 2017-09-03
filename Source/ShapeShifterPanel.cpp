@@ -16,7 +16,6 @@
 #include "ShapeShifterPanel.h"
 #include "Style.h"
 #include "ShapeShifterManager.h"
-#include "ShapeShifterWindow.h"
 #include "ShapeShifterFactory.h"
 
 ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifterPanelTab * sourceTab) :
@@ -40,7 +39,7 @@ ShapeShifterPanel::ShapeShifterPanel(ShapeShifterContent *_content, ShapeShifter
 			attachTab(sourceTab);
 		}
 	}
-  setOpaque(true);
+//  setOpaque(true);
 
 }
 
@@ -186,9 +185,14 @@ void ShapeShifterPanel::detachTab(ShapeShifterPanelTab * tab, bool createNewPane
 
 void ShapeShifterPanel::addContent(ShapeShifterContent * content, bool setCurrent)
 {
-	header.addTab(content);
-	contents.add(content);
-	if (setCurrent) setCurrentContent(content);
+  if(content){
+    header.addTab(content);
+    contents.add(content);
+    if (setCurrent) setCurrentContent(content);
+  }
+  else{
+    jassertfalse;
+  }
 }
 
 bool ShapeShifterPanel::hasContent(ShapeShifterContent * content)

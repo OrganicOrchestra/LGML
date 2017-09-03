@@ -33,8 +33,7 @@ public:
 	ShapeShifterContainer mainShifterContainer;
 
 	File lastFile;
-	const String appLayoutExtension = "lgmllayout";
-	const String appSubFolder = "LGML/layouts";
+  File defaultFolder;
 
 	OwnedArray<ShapeShifterPanel> openedPanels;
 	OwnedArray<ShapeShifterWindow> openedWindows;
