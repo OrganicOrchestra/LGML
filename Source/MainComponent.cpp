@@ -138,6 +138,11 @@ void MainContentComponent::paintOverChildren(Graphics & g) {
    }
    */
 };
+
+void MainContentComponent::paint (Graphics& g) {
+		g.fillAll (BG_COLOR.darker());
+}
+
 void MainContentComponent::startLoadFile(){
 
   // clear graphics to gain time when deleting objects (and to ease thread safety))

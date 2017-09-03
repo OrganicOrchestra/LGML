@@ -83,9 +83,7 @@ public:
     // see MainComponent.cpp
 
     //==============================================================================
-    void paint (Graphics& g) override{
-		g.fillAll (BG_COLOR.darker());
-	}
+  void paint (Graphics& g) override;
 
 	void paintOverChildren(Graphics & g) override;
     void resized() override;

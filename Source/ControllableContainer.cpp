@@ -48,13 +48,15 @@ isUserDefined(false)
   nameParam = addNewParameter<StringParameter>("Name", "Set the visible name of the node.", "");
   nameParam->isPresettable = false;
   nameParam->isEditable = _isUserDefined;
-  nameParam->setValue(niceName);
+
   currentPresetName = addNewParameter<StringParameter>("Preset", "Current Preset", "");
   currentPresetName->hideInEditor = true;
   savePresetTrigger = addNewParameter<Trigger>("Save Preset", "Save current preset");
   savePresetTrigger->hideInEditor = true;
   isUserDefined = _isUserDefined;
 
+  // init once all are created to avoid uninitialized values
+  nameParam->setValue(niceName);
 }
 
 ControllableContainer::~ControllableContainer()

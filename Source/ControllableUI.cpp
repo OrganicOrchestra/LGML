@@ -28,6 +28,7 @@ isSelected(false)
   jassert(hasValidControllable);
   setName(controllable->niceName);
   controllable->addControllableListener(this);
+  mappingState = NOMAP;
   setMappingState(LGMLDragger::getInstance()->isMappingActive);
   updateTooltip();
   
