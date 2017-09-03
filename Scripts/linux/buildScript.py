@@ -36,7 +36,7 @@ def package_sources():
   'LGML':{
   'Tests':'**/*',
   'JuceLibraryCode':'**/*',
-  'Builds/LinuxMakeFile':'Makefile',
+  'Builds/LinuxMakefile':'Makefile',
   'Source':'**/*',
   'third_party':{
     'link':{
