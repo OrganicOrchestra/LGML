@@ -150,45 +150,53 @@ public:
       startTimer(1000);
 
       
-	  setUsingNativeTitleBar(true);
+
 	  mainComponent = createMainContentComponent(e);
-	  setContentOwned(mainComponent, true);
+	  setContentOwned(mainComponent, false);
 	  setResizable(true, true);
 
 
-	  int tx = getAppProperties().getCommonSettings(true)->getIntValue("windowX");
-	  int ty = getAppProperties().getCommonSettings(true)->getIntValue("windowY");
-	  int tw = getAppProperties().getCommonSettings(true)->getIntValue("windowWidth");
-	  int th = getAppProperties().getCommonSettings(true)->getIntValue("windowHeight");
-	  bool fs = getAppProperties().getCommonSettings(true)->getBoolValue("fullscreen",true);
+      setUsingNativeTitleBar(true);
 
-	 
-      setBounds (jmax<int>(tx,20), jmax<int>(ty,20), jmax<int>(tw,100), jmax<int>(th,100));
-	  setFullScreen(fs);
-
-	  
-
+      
 #if ! JUCE_MAC
       setMenuBar(mainComponent);
 #endif
 
-#if JUCE_OPENGL
+#if JUCE_OPENGL 
       openGLContext.setContinuousRepainting(false);
       openGLContext.attachTo(*getTopLevelComponent());
 #endif
 
+
+      // need to stay after ll init function for linux
+#ifndef JUCE_LINUX
+      String winSetting ( "fs 0 0 800 600");
+#else
+      // weird behaviour of fullscreen in linux (can't get out of fs mode)
+      String winSetting ( "0 0 800 600");
+#endif
+
+
+      if(auto prop = getAppProperties().getCommonSettings(true)){
+        winSetting = prop->getValue("winSettings",winSetting);
+      }
+      ResizableWindow::restoreWindowStateFromString(winSetting);
+
+
+      
       setVisible (true);
 
 
 
 	  ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
       LGMLDragger::getInstance()->setMainComponent(mainComponent,&mainComponent->tooltipWindow);
+      
 
     }
     void focusGained(FocusChangeType cause)override{
 		//mainComponent->grabKeyboardFocus();
     }
-
 
     void closeButtonPressed() override
     {
@@ -219,15 +227,11 @@ public:
 	   var boundsVar = var(new DynamicObject());
 	   Rectangle<int> r = getScreenBounds();
 
-	   getAppProperties().getCommonSettings(true)->setValue("windowX",r.getPosition().x);
-	   getAppProperties().getCommonSettings(true)->setValue("windowY", r.getPosition().y); 
-	   getAppProperties().getCommonSettings(true)->setValue("windowWidth", r.getWidth()); 
-	   getAppProperties().getCommonSettings(true)->setValue("windowHeight", r.getHeight());
-	   getAppProperties().getCommonSettings(true)->setValue("fullscreen", isFullScreen());
+      getAppProperties().getCommonSettings(true)->setValue("winSettings",getWindowStateAsString());
 	   getAppProperties().getCommonSettings(true)->saveIfNeeded();
 
 
-#if JUCE_OPENGL
+#if JUCE_OPENGL 
 	   openGLContext.detach();
 #endif
        JUCEApplication::getInstance()->systemRequestedQuit();
@@ -244,7 +248,7 @@ public:
      */
     MainContentComponent * mainComponent;
 
-#if JUCE_OPENGL
+#if JUCE_OPENGL 
 	OpenGLContext openGLContext;
 #endif
 
@@ -273,7 +277,6 @@ START_JUCE_APPLICATION (LGMLApplication)
 
 void LGMLApplication::MainWindow::timerCallback()
 {
-
   setName(getApp()->engine->getDocumentTitle() +" : LGML "
           + String(ProjectInfo::versionString)+String(" (CPU : ")+
           String((int)(getAudioDeviceManager().getCpuUsage() * 100))+String("%)"));
