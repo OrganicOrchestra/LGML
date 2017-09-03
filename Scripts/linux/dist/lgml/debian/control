@@ -18,7 +18,7 @@ Build-Depends: debhelper (>= 9.0.0),
                ladspa-sdk,
                pkg-config,
                curl
-Standards-Version: 1.2.0-beta
+Standards-Version: 1.2.2
 Section: sound
 
 Package: lgml

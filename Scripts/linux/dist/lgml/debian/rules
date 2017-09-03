@@ -7,6 +7,7 @@ DEB_UPSTREAM_VERSION ?= $(shell dpkg-parsechangelog \
 VERSION = $(DEB_UPSTREAM_VERSION)
 PACKAGEVERSION = $(VERSION)-0~$(DISTRIBUTION)0
 
+PKG_NAME = lgml-$(VERSION)
 TARBALL = lgml_$(VERSION).orig.tar.gz
 URL = https://launchpad.net/~tintamarunix/+archive/ubuntu/lgml/+files/$(TARBALL)
 LOCAL_URL = ../$(TARBALL)
@@ -15,56 +16,35 @@ LOCAL_URL = ../$(TARBALL)
 export TARGET_ARCH=-march=native
 
 # Uncomment this to turn on verbose mode.
-export DH_VERBOSE=1
+# export DH_VERBOSE=1
 # juce make verbose
-export V=1
-
+# export V=1
 
 export CFLAGS=$(shell dpkg-buildflags --get CFLAGS)
 export CPPFLAGS=$(shell dpkg-buildflags --get CPPFLAGS)
 export CXXFLAGS=$(shell dpkg-buildflags --get CFXXLAGS)
 export LDFLAGS=$(shell dpkg-buildflags --get LDFLAGS)
 
-export DEB_BUILD_HARDENING=1
 
 export MAKE_DIR=LGML/Builds/LinuxMakefile
 
 %:
-	dh $@ --parallel #--sourcedirectory=$(MAKE_DIR)
+	dh $@ --sourcedirectory=$(MAKE_DIR) --parallel
 
 override_dh_auto_clean:
-	echo $(VERSION)
 	# osx + docker get messy ...
 	if [ `find . -name .DS_Store` ]; then rm -f `find . -name .DS_Store` ; fi
+	dh_auto_clean 
 
-	# # TODO should be a better way of doing this right?
-	if [ ! -d "LGML" ]; \
-	then 				\
-		rm -rf LGML && 									\
-		rm -rf JUCE && 									\
-		curl -L  $(URL) > lgml.tar.gz &&\
-		tar -xf lgml.tar.gz &&					\
-		rm -f lgml.tar.gz 							; \
-	else \
-		make -f $(MAKE_DIR)/Makefile clean ;\
-	fi
-
-override_dh_auto_configure:
-	# ls
+# override_dh_auto_configure:
 	# if [ ! -d "JUCE" ]; then curl -L https://github.com/julianstorer/JUCE/archive/master.tar.gz > JUCE.tar.gz && tar -xf JUCE.tar.gz && mv JUCE-master/ JUCE ;fi
 
 override_dh_auto_test:
 
+# override_dh_auto_build:
+	# cd $(MAKE_DIR) && make all strip
 
-override_dh_auto_build:
-	pwd
-	ls
-	cd $(MAKE_DIR) && make all strip
-
-
-override_dh_auto_install:
-	mkdir -p debian/lgml/usr/bin
-	cp $(MAKE_DIR)/build/LGML debian/lgml/usr/bin
+# override_dh_auto_install:
 
 # override_dh_gencontrol:
 # 	dh_gencontrol -- -v$(PACKAGEVERSION)

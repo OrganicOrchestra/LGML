@@ -5,6 +5,9 @@ Files: LGML/*
 Copyright: 20017-2027 Organic Orchestra <lab@organic-orchestra.com>
 License: GPL-3+
 
+Files: debian/*
+Copyright: 20017-2027 Organic Orchestra <lab@organic-orchestra.com>
+License: GPL-3+
 
 Files: JUCE/*
 Copyright: 2017 - ROLI Ltd

@@ -3,3 +3,6 @@
 !lgml
 !lgml/debian
 !lgml/debian/**
+
+# remove pkg build destination
+lgml/debian/lgml
