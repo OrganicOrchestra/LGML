@@ -258,7 +258,7 @@ String Engine::MultipleAudioSettingsHandler::getConfigName(){
   AudioDeviceManager::AudioDeviceSetup setup ;
   getAudioDeviceManager().getAudioDeviceSetup(setup);
   String idealName = setup.inputDeviceName+"_"+setup.outputDeviceName;
-  String escaped = StringUtil::toShortName(idealName);
+  String escaped = StringUtil::toFullyEscaped(idealName);
   return escaped;
 
 
