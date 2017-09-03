@@ -115,7 +115,7 @@ void  applyFunction(Image::BitmapData & data){
   void applyEffect (Image& image, Graphics& g, float scaleFactor, float alpha)
   {
     //  Image temp (image.getFormat(), image.getWidth(), image.getHeight(), true);
-    trueAmount = alpha*alpha*amount;
+    trueAmount = (uint32)(alpha*alpha*amount);
 
     Image::BitmapData data (image, 0, 0, image.getWidth(), image.getHeight(), Image::BitmapData::readWrite);
     if(image.getFormat()==Image::PixelFormat::ARGB){

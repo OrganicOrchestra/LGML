@@ -557,7 +557,7 @@ void PlayableBuffer::initRTStretch(){
   stretchNeedle = 0;
 }
 
-bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t time){
+bool PlayableBuffer::processPendingRTStretch(AudioBuffer<float> & b,sample_clk_t /*time*/){
 
   if(isStretchPending ){
     int outNumSample = b.getNumSamples();

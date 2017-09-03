@@ -851,7 +851,7 @@
     </XCODE_MAC>
     <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib"
             smallIcon="SL4b92" targetFolder="Builds/VisualStudio2015" vst3Folder="third_party/VST3_SDK"
-            vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK">
+            vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK" extraDefs="LINK_PLATFORM_WINDOWS=1">
       <CONFIGURATIONS>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64"
