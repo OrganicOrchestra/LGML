@@ -22,12 +22,13 @@ print(localMakePath)
 def buildApp(configuration):
   if configuration not in execName:
     raise NameError('unknown configuration : '+ configuration)
-    makeCmd = 'make CONFIG='+configuration+' -j'+str(njobs)
-    if (verbose):
-      makeCmd+=" SHELL='sh +x' V=1"
-      sh('cd '+localMakePath+' && '+makeCmd)
-      localAppFile = localExportPath+execName[configuration]
-      return localAppFile
+
+  makeCmd = 'make CONFIG='+configuration+' -j'+str(njobs)
+  if (verbose):
+    makeCmd+=" SHELL='sh +x' V=1"
+  sh('cd '+localMakePath+' && '+makeCmd)
+  localAppFile = localExportPath+execName[configuration]
+  return localAppFile
 
 def package_sources():
   import glob
@@ -90,10 +91,11 @@ def package_sources():
 def exportApp(baseName,configuration,exportpath = None):
   if configuration not in execName:
     raise NameError('unknown configuration : '+ configuration)
-    exportFile = exportpath or localExportPath
-    exportFile= os.path.join(exportFile,execName[configuration]+'.tar.gz')
-    sh('tar -zcvf "'+exportFile+'" --directory="'+localExportPath+'" '+execName[configuration])
-    return exportFile
+    
+  exportFile = exportpath or localExportPath
+  exportFile= os.path.join(exportFile,execName[configuration]+'.tar.gz')
+  sh('tar -zcvf "'+exportFile+'" --directory="'+localExportPath+'" '+execName[configuration])
+  return exportFile
 
 
 if __name__ == '__main__':
