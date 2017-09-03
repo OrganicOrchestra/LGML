@@ -22,12 +22,121 @@
 
 
 
+// TODO change when window support
+// @ ben header only so should be easy
+#if (defined JUCE_MAC || defined JUCE_LINUX || defined JUCE_WINDOWS)
+#define LINK_SUPPORT 1
+#else
+#define LINK_SUPPORT 0
+#endif
+
+
 juce_ImplementSingleton(TimeManager);
 
 #include "NodeBase.h"
 #include "DebugHelpers.h"
 #include "AudioHelpers.h"
 
+
+
+#if LINK_SUPPORT
+#include "ableton/Link.hpp"
+#include "ableton/link/HostTimeFilter.hpp"
+
+class LinkPimpl{
+public:
+  LinkPimpl(TimeManager *o):owner(o),linkSession(120.0),
+  linkTimeLine(ableton::link::Timeline(),true),
+  linkLatency(00){
+    linkSession.setNumPeersCallback(&LinkPimpl::linkNumPeersCallBack);
+    linkSession.setTempoCallback(&LinkPimpl::linkTempoCallBack);
+  };
+  ableton::Link linkSession;
+
+  ableton::Link::Timeline  linkTimeLine;
+  std::chrono::microseconds  linkTime;
+  ableton::link::HostTimeFilter<ableton::link::platform::Clock> linkFilter;
+  std::chrono::microseconds linkLatency;
+
+  void checkDrift(){
+  linkTime =linkFilter.sampleTimeToHostTime(owner->audioClock) + linkLatency;
+  linkTimeLine = linkSession.captureAudioTimeline();
+  const int quantum = owner->beatPerBar->intValue()/owner->quantizedBarFraction->doubleValue();
+  jassert(quantum>0);
+  const double linkBeat = linkTimeLine.beatAtTime(linkTime, quantum);
+  //    auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
+  //    auto localPhase = fmod(localBeat,tstQ);
+  const double localBeat = owner->getBeat();
+  const float driftMs =(linkBeat -localBeat)*owner->beatTimeInSample*1000.0f/owner->sampleRate;
+
+  if((owner->isPlaying() )
+     //       && !isFirstPlayingFrame()
+     && fabs(driftMs)>1
+     ){
+    SLOG("! link drift : " + String(driftMs)+"ms");
+    owner->goToTime(linkBeat  * owner->beatTimeInSample,true);
+  }
+}
+
+  void notifyJump(){
+    linkTimeLine.requestBeatAtTime(owner->getBeat(),
+                                              //                      std::chrono::system_clock::now().time_since_epoch(),
+                                              linkTime,
+                                              owner->beatPerBar->intValue()*1.0/owner->quantizedBarFraction->intValue());
+    linkSession.commitAudioTimeline(linkTimeLine);
+
+  }
+  void captureTimeLine(){
+    linkTimeLine = linkSession.captureAudioTimeline();
+  }
+
+  void commitBPM(double BPM){
+    linkTimeLine = linkSession.captureAudioTimeline();
+    linkTimeLine.setTempo(BPM,linkTime);
+    linkSession.commitAudioTimeline(linkTimeLine);
+
+  }
+
+
+  void setBPM(double bpm,std::chrono::microseconds delta){
+    linkTimeLine =ableton::Link::Timeline(ableton::link::Timeline(),true);
+
+    linkTimeLine.setTempo(bpm, linkTime);
+    linkTimeLine.forceBeatAtTime(0,linkTime+delta,0);
+
+    linkSession.commitAudioTimeline(linkTimeLine);
+  }
+  void enable(bool b){
+    linkSession.enable(b);
+    if(b){
+      auto lTl = linkSession.captureAppTimeline();
+      lTl.requestBeatAtTime(owner->getBeat(),
+                            //                      std::chrono::system_clock::now().time_since_epoch(),
+                            linkTime,
+                            owner->beatPerBar->intValue()*1.0/owner->quantizedBarFraction->intValue());
+      linkSession.commitAppTimeline(lTl);
+    }
+  }
+
+  static void linkTempoCallBack(const double tempo){
+    if(TimeManager * tm = TimeManager::getInstanceWithoutCreating()){
+      tm->BPM->setValue(tempo);
+    }
+
+  }
+  static void linkNumPeersCallBack(const size_t numPeers){
+    if(TimeManager * tm = TimeManager::getInstanceWithoutCreating()){
+      tm->linkNumPeers->setValue((int)numPeers);
+    }
+    
+  }
+
+  TimeManager * owner;
+};
+#else
+class LinkPimpl{
+};
+#endif
 
 TimeManager::TimeManager():
 beatTimeInSample(1000),
@@ -45,12 +154,6 @@ hadMasterCandidate(false),
 timeMasterCandidate(nullptr),
 samplePerBeatGranularity(8),
 audioClock(0)
-#if LINK_SUPPORT
-,linkSession(120.0),
-linkTimeLine(ableton::link::Timeline(),true),
-linkLatency(00)
-#endif
-
 {
 
   BPM = addNewParameter<FloatParameter>("bpm","current BPM",120.f,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
@@ -81,9 +184,8 @@ linkLatency(00)
 
 #if LINK_SUPPORT
   linkEnabled->setValue(false);
-  linkSession.setNumPeersCallback(&TimeManager::linkNumPeersCallBack);
+  linkPimpl = new LinkPimpl(this);
 
-  linkSession.setTempoCallback(&TimeManager::linkTempoCallBack);
 #endif
   linkLatencyParam = addNewParameter<FloatParameter>("linkLatency", "link latency to add for lgml", 10.f, -30.f, 80.f);
 
@@ -109,7 +211,7 @@ void TimeManager::incrementClock(int block){
 
   }
 #if LINK_SUPPORT
-  linkTimeLine = linkSession.captureAudioTimeline();
+  linkPimpl->captureTimeLine();
 #endif
 
   updateState();
@@ -140,33 +242,14 @@ void TimeManager::incrementClock(int block){
 
   // notify link if jump
   if(hasJumped && isPlaying() ){
-    linkTimeLine.requestBeatAtTime(getBeat(),
-                                   //                      std::chrono::system_clock::now().time_since_epoch(),
-                                   linkTime,
-                                   beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
-    linkSession.commitAudioTimeline(linkTimeLine);
+    linkPimpl->notifyJump();
 
   }
 
   // adapt to link clock if drift > 1ms
   if(linkEnabled->boolValue() && !timeMasterCandidate){
-    linkTime =linkFilter.sampleTimeToHostTime(audioClock) + linkLatency;
-    linkTimeLine = linkSession.captureAudioTimeline();
-    const int quantum = beatPerBar->intValue()/quantizedBarFraction->doubleValue();
-    jassert(quantum>0);
-    const double linkBeat = linkTimeLine.beatAtTime(linkTime, quantum);
-    //    auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
-    //    auto localPhase = fmod(localBeat,tstQ);
-    const double localBeat = getBeat();
-    const float driftMs =(linkBeat -localBeat)*beatTimeInSample*1000.0f/sampleRate;
+    linkPimpl->checkDrift();
 
-    if((isPlaying() )
-       //       && !isFirstPlayingFrame()
-       && fabs(driftMs)>1
-       ){
-      SLOG("! link drift : " + String(driftMs)+"ms");
-      goToTime(linkBeat  * beatTimeInSample,true);
-    }
   }
   
 #endif
@@ -188,9 +271,7 @@ void TimeManager::checkCommitableParams(){
     setBPMInternal(BPM->doubleValue(),true);
     clickFader->startFadeOut();
 #if LINK_SUPPORT
-    linkTimeLine = linkSession.captureAudioTimeline();
-    linkTimeLine.setTempo(BPM->doubleValue(),linkTime);
-    linkSession.commitAudioTimeline(linkTimeLine);
+    linkPimpl->commitBPM(BPM->doubleValue());
 
 #endif
   }
@@ -339,19 +420,13 @@ void TimeManager::onContainerParameterChanged(Parameter * p){
   else if (p==linkEnabled){
 
 
-    linkSession.enable(linkEnabled->boolValue());
-    if(linkEnabled->boolValue()){
-      auto lTl = linkSession.captureAppTimeline();
-      lTl.requestBeatAtTime(getBeat(),
-                            //                      std::chrono::system_clock::now().time_since_epoch(),
-                            linkTime,
-                            beatPerBar->intValue()*1.0/quantizedBarFraction->intValue());
-      linkSession.commitAppTimeline(lTl);
-    }
+    linkPimpl->enable(linkEnabled->boolValue());
 
   }
   else if (p==linkLatencyParam){
-    linkLatency = std::chrono::microseconds((long long)(linkLatencyParam->doubleValue()*1000));
+
+
+    linkPimpl->linkLatency = std::chrono::microseconds((long long)(linkLatencyParam->doubleValue()*1000));
   }
 #endif
 };
@@ -582,12 +657,8 @@ void TimeManager::setBPMFromTransportTimeInfo(const TransportTimeInfo & info,boo
 
 #if LINK_SUPPORT
 
-  linkTimeLine =ableton::Link::Timeline(ableton::link::Timeline(),true);
+  linkPimpl->setBPM(info.bpm,std::chrono::microseconds((long long)(atSample*1000000.0/sampleRate)));
 
-  linkTimeLine.setTempo(info.bpm, linkTime);
-  linkTimeLine.forceBeatAtTime(0,linkTime+std::chrono::microseconds((long long)(atSample*1000000.0/sampleRate)),0);
-
-  linkSession.commitAudioTimeline(linkTimeLine);
 #endif
   //jassert((int)(barLength*beatPerBar->intValue())>0);
 
@@ -669,19 +740,3 @@ void TimeManager::notifyListenerCleared(){
 }
 
 
-#if LINK_SUPPORT
-void TimeManager::linkTempoCallBack(const double tempo){
-  if(TimeManager * tm = getInstanceWithoutCreating()){
-    tm->BPM->setValue(tempo);
-  }
-  
-}
-void TimeManager::linkNumPeersCallBack(const size_t numPeers){
-  if(TimeManager * tm = getInstanceWithoutCreating()){
-    tm->linkNumPeers->setValue((int)numPeers);
-  }
-
-}
-
-
-#endif

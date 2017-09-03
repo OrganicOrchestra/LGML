@@ -454,12 +454,6 @@ FadeNeedle * MultiNeedle::getMostConsumedNeedle(const int time){
     }
   }
 
-#ifndef LINK_SUPPORT
-#error should be defined here
-#endif
-#if !LINK_SUPPORT
-  jassertfalse;
-#endif
   return res;
 
 

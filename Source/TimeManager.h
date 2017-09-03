@@ -29,12 +29,9 @@
 #include "AudioHelpers.h"
 #include "AudioConfig.h"
 
-#if LINK_SUPPORT
-#include "ableton/Link.hpp"
-#include "ableton/link/HostTimeFilter.hpp"
-#else
 
-#endif
+
+class LinkPimpl;
 
 class FadeInOut;
 
@@ -95,13 +92,8 @@ public TimeMasterCandidate
 
   IntParameter * quantizedBarFraction;
 
-  #if LINK_SUPPORT
-  ableton::Link linkSession;
-  
-  static void linkNumPeersCallBack(const std::size_t numPeers);
-  static void linkTempoCallBack(const double tempo);
-  bool getLinkTimeLine();
-  #endif
+  ScopedPointer<LinkPimpl> linkPimpl;
+  friend class LinkPimpl;
   FloatParameter * linkLatencyParam;
 
   BoolParameter * linkEnabled;
@@ -267,12 +259,7 @@ private:
   bool isAnyoneBoundToTime();
 
   void checkCommitableParams();
-  #if LINK_SUPPORT
-  ableton::Link::Timeline  linkTimeLine;
-  std::chrono::microseconds  linkTime;
-  ableton::link::HostTimeFilter<ableton::link::platform::Clock> linkFilter;
-  std::chrono::microseconds linkLatency;
-  #endif
+
 
 
   void pushCommitableParams();

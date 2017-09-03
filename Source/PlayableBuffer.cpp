@@ -264,12 +264,9 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,sample_clk
 
 
   // assert false for now to check alignement
-  if(isFirstPlayingFrame()){
-
-#if !LINK_SUPPORT
-    jassert(playNeedle==0);
-#endif
-  }
+//  if(isFirstPlayingFrame()){
+//
+//  }
 
 
   //  buffer.clear();
