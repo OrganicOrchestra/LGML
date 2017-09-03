@@ -50,7 +50,7 @@ engine(e)
 #endif
 
 
-  setSize((int)(getParentMonitorArea().getWidth()*.9f), (int)(getParentMonitorArea().getHeight()*.6f));
+
   setWantsKeyboardFocus(true);
   setOpaque(true);
   tooltipWindow.setOpaque(false);
@@ -108,7 +108,7 @@ void MainContentComponent::showAudioSettings()
   //  o.dialogBackgroundColour        = Colours::azure;
   o.escapeKeyTriggersCloseButton  = true;
   o.useNativeTitleBar             = false;
-  o.resizable                     = false;
+  o.resizable                     = true;
 
 
   o.runModal();
@@ -164,7 +164,7 @@ void MainContentComponent::startLoadFile(){
   fileProgressWindow = new ProgressWindow("Loading File...",engine);
   addAndMakeVisible(fileProgressWindow);
   fileProgressWindow->setSize(getWidth(), getHeight());
-  //startTimerHz(30);
+//  startTimerHz(10);
   //repaint();
 }
 

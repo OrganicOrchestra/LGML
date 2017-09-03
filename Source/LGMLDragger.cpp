@@ -100,7 +100,7 @@ public:
 ////////////////////
 // LGMLDragger
 ///////////////
-LGMLDragger::LGMLDragger():isMappingActive(false){
+LGMLDragger::LGMLDragger():isMappingActive(false),selectedSSContent(nullptr){
 
 }
 LGMLDragger::~LGMLDragger(){
