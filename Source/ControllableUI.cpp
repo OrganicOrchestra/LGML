@@ -112,7 +112,7 @@ void  applyFunction(Image::BitmapData & data){
     }
   }
   }
-  void applyEffect (Image& image, Graphics& g, float scaleFactor, float alpha)
+  void applyEffect (Image& image, Graphics& g, float /*scaleFactor*/, float alpha)
   {
     //  Image temp (image.getFormat(), image.getWidth(), image.getHeight(), true);
     trueAmount = (uint32)(alpha*alpha*amount);
@@ -167,7 +167,7 @@ void  ControllableUI::setMappingState(const bool  b){
 
 
 
-void ControllableUI::paintOverChildren(Graphics &g) {
+void ControllableUI::paintOverChildren(Graphics & /*g*/) {
 //  if(hasValidControllable && controllable==nullptr){
 //    //    jassertfalse;
 //    int dbg;dbg++;

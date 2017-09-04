@@ -774,7 +774,7 @@ void ControllableContainer::loadJSONData(const var & data)
 
 }
 
-void ControllableContainer::childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer */*origin*/)
+void ControllableContainer::childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer * /*origin*/)
 {
 }
 
