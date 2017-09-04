@@ -147,18 +147,26 @@ public:
                                                            Colours::lightgrey,
                                                            DocumentWindow::allButtons)
     {
-      startTimer(1000);
+
 
       
 
 	  mainComponent = createMainContentComponent(e);
 	  setContentOwned(mainComponent, false);
-	  setResizable(true, true);
 
+#ifdef JUCE_LINUX
+      // loads of bug on ubuntu \
+        - no display            \
+        -wrong rebuilding of windows position/size \
+       - double clicks sent to titlebar
 
+      setUsingNativeTitleBar(false);
+
+#else
       setUsingNativeTitleBar(true);
+#endif
+      setResizable(true, false);
 
-      
 #if ! JUCE_MAC
       setMenuBar(mainComponent);
 #endif
@@ -173,7 +181,7 @@ public:
 #ifndef JUCE_LINUX
       String winSetting ( "fs 0 0 800 600");
 #else
-      // weird behaviour of fullscreen in linux (can't get out of fs mode)
+      // weird behaviour of fullscreen in ubuntu (can't get out of fs mode and wrong windows coords)
       String winSetting ( "0 0 800 600");
 #endif
 
@@ -191,13 +199,16 @@ public:
 
 	  ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
       LGMLDragger::getInstance()->setMainComponent(mainComponent,&mainComponent->tooltipWindow);
-      
+
+
+      startTimer(1000);
 
     }
     void focusGained(FocusChangeType cause)override{
 		//mainComponent->grabKeyboardFocus();
     }
 
+    
     void closeButtonPressed() override
     {
       // This is called when the user tries to close this window. Here, we'll just
