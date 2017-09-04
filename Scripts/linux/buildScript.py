@@ -1,5 +1,6 @@
 import os,sys
 import json
+import fnmatch
 
 scriptDir = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir))
 sys.path.insert(1,scriptDir)
@@ -64,13 +65,22 @@ def generate_filelist():
     depFolders['JUCE/modules'][t]='**/*'
 
   def walk(path,d,res):
+
     if type(d)==dict:
       for k,v in d.items():
         walk(os.path.join(path,k),v,res);
     else:
-      for l in glob.glob(os.path.join(path,d),recursive=True):
-        if os.path.isfile(l) :
-          res+=[l]
+      if len(d)>2 and d[0:3]=='**/':
+        for root, dirnames, filenames in os.walk(path):
+          for filename in fnmatch.filter(filenames, d[3:]):
+            fp = os.path.join(root,filename)
+            if os.path.isfile(fp) and not os.path.basename(fp).startswith('.'):
+              res+=[fp]
+      else:
+        for filename in fnmatch.filter(os.listdir(path),d):
+          fp = os.path.join(path,filename)
+          if os.path.isfile(fp)  and not os.path.basename(fp).startswith('.'):
+            res+=[fp]
 
   res = []
   
@@ -93,7 +103,7 @@ def package_source(fileListPath = None):
 
 def copy_source(fileListPath=None):
   fileListPath = fileListPath or generate_filelist()
-  
+
   # Clean first
   import shutil
   destCopyDir = os.path.join(distDir,'lgml')
@@ -113,6 +123,7 @@ def copy_source(fileListPath=None):
       sourceF = os.path.join(rootDir,f)
       destF =  os.path.join(destCopyDir,f)
       destD =os.path.abspath(os.path.join(destF, os.pardir))
+      
       if not os.path.exists(destD):
         os.makedirs(destD)
       shutil.copy(sourceF,destF)
