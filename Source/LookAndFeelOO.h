@@ -178,7 +178,7 @@ namespace LookAndFeelHelpers {
 
 
 
-    static Colour createBaseColour(Colour buttonColour,
+    forcedinline static Colour createBaseColour(Colour buttonColour,
         bool hasKeyboardFocus,
         bool isMouseOverButton,
         bool isButtonDown) noexcept

@@ -20,14 +20,14 @@
 namespace StringUtil
 {
 
-  static String toShortName(const String &s) {
+  forcedinline static String toShortName(const String &s) {
     if (s.isEmpty()) return "";
     //  based on OSC escaping
     // http://opensoundcontrol.org/spec-1_0
     return s.removeCharacters(" #*,?[]{}");
   }
 
-  static String toFullyEscaped(const String & s){
+  forcedinline static String toFullyEscaped(const String & s){
     if (s.isEmpty()) return "";
     return s.removeCharacters("#*,?[]{} :;%$/<>");
   }
