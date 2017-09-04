@@ -6,14 +6,18 @@ sys.path.insert(1,scriptDir)
 
 from PyUtils import *
 
+
 import multiprocessing
 njobs = min(4,multiprocessing.cpu_count())
 
 execName = {"Ubuntu32":"LGML32","Ubuntu":"LGML"}
-lgmlBasePath=os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir,os.path.pardir));
+lgmlBasePath=os.path.abspath(os.path.join(scriptDir,os.path.pardir));
 localMakePath = os.path.join(lgmlBasePath,"Builds/LinuxMakefile/")
 localExportPath = localMakePath+'build/'
-
+rootDir = os.path.abspath(os.path.join(lgmlBasePath,os.pardir))
+version = ProJucerUtils.getVersionAsList()
+lgmlname = "lgml_"+'.'.join(map(str,version[:3])) # semver (ignore beta)
+distDir = scriptDir+'/linux/dist/'
 
 verbose = False
 print(localMakePath)
@@ -30,7 +34,7 @@ def buildApp(configuration):
   localAppFile = localExportPath+execName[configuration]
   return localAppFile
 
-def package_sources():
+def generate_filelist():
   import glob
   matches = []
   depFolders ={
@@ -54,7 +58,7 @@ def package_sources():
   },
 
   }
-  from PyUtils import ProJucerUtils
+  
   depFolders['JUCE/modules'] = {}
   for t in ProJucerUtils.getModules():
     depFolders['JUCE/modules'][t]='**/*'
@@ -69,29 +73,55 @@ def package_sources():
           res+=[l]
 
   res = []
-  rootDir = os.path.abspath(os.path.join(lgmlBasePath,os.pardir))
+  
   walk(rootDir,depFolders,res);
   # res = [x for x in res if x.split('.')[-1]in['cpp','h','c']]
   
-  version = ProJucerUtils.getVersionAsList()
-  
-  lgmlname = "lgml_"+'.'.join(map(str,version[:3])) # semver (ignore beta)
-  
+
   preSize = len(rootDir)+1
   filesL = '\n'.join([x[preSize:] for x in res])
-  distDir = scriptDir+'/linux/dist/'
+
   fileListPath = distDir+'filelist.txt'
 
   with open(fileListPath,'w') as fp:
     fp.writelines(filesL)
+  return fileListPath
 
+def package_source(fileListPath = None):
+  fileListPath = fileListPath or generate_filelist()
   sh('tar -zcvf "'+distDir+lgmlname+'.orig.tar.gz" --directory="'+rootDir+'" -T '+fileListPath)
+
+def copy_source(fileListPath=None):
+  fileListPath = fileListPath or generate_filelist()
+  
+  # Clean first
+  import shutil
+  destCopyDir = os.path.join(distDir,'lgml')
+  for dirs in os.listdir(destCopyDir):
+    
+    if(dirs != 'debian'):
+      cF = os.path.join(destCopyDir,dirs)
+      if os.path.isdir(cF):
+        shutil.rmtree(os.path.join(destCopyDir,dirs))
+      elif os.path.isfile(cF):
+        os.remove(cF)
+
+
+  with open(fileListPath,'r') as fp:
+    for f in fp.readlines():
+      f = f.strip()
+      sourceF = os.path.join(rootDir,f)
+      destF =  os.path.join(destCopyDir,f)
+      destD =os.path.abspath(os.path.join(destF, os.pardir))
+      if not os.path.exists(destD):
+        os.makedirs(destD)
+      shutil.copy(sourceF,destF)
 
 
 def exportApp(baseName,configuration,exportpath = None):
   if configuration not in execName:
     raise NameError('unknown configuration : '+ configuration)
-    
+
   exportFile = exportpath or localExportPath
   exportFile= os.path.join(exportFile,execName[configuration]+'.tar.gz')
   sh('tar -zcvf "'+exportFile+'" --directory="'+localExportPath+'" '+execName[configuration])
@@ -99,6 +129,6 @@ def exportApp(baseName,configuration,exportpath = None):
 
 
 if __name__ == '__main__':
-  package_sources()
+  copy_source()
 
 
