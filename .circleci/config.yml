@@ -20,7 +20,7 @@ jobs:
       - run:
           name: build and package LGML
           command: |
-            python Scripts/buildScript.py --build --package --beta --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu;
+            python Scripts/buildScript.py --build --package --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu;
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build/
@@ -48,7 +48,7 @@ jobs:
       - run:
           name: build and package LGML32
           command: |
-            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux;
+            python Scripts/buildScript.py --package --exportpath="$DST_LGML_PATH" --os=linux;
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build32 #$DST_LGML_PATH
@@ -79,7 +79,7 @@ jobs:
           name: build and package LGMLRasp
           command: |
             cross-build-start
-            python Scripts/buildScript.py --package --beta --exportpath="$DST_LGML_PATH" --os=linux;
+            python Scripts/buildScript.py --package --exportpath="$DST_LGML_PATH" --os=linux;
             ldd ~/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
             cross-build-end
       - store_artifacts:

@@ -4,7 +4,7 @@
               companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="11"
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
               jucerVersion="5.1.1" name="LGML" projectType="guiapp" reportAppUsage="1"
-              splashScreenColour="Dark" version="1.2.2-beta">
+              splashScreenColour="Dark" version="1.2.3">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{ADAE887E-6BE2-4D24-F2BC-31CB642E62E2}" name="Tests">
       <FILE compile="1" file="Tests/BufferListTest.cpp" id="NidgME" name="BufferListTest.cpp"
