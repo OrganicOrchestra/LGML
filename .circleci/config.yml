@@ -92,7 +92,6 @@ workflows:
     jobs:
       - build
       - build32
-      - build_rasp
 
 
 general:
