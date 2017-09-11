@@ -20,21 +20,21 @@
 
 #pragma warning (disable : 4100)
 
-#include "MIDIManager.h"//keep
-#include "ControlManager.h"//keep
-#include "NodeManager.h"//keep
-#include "PresetManager.h"//keep
-#include "AudioFucker.h"//keep
-#include "TimeManager.h"//keep
-#include "FastMapper.h"//keep
-#include "VSTManager.h"//keep
-#include "ProgressNotifier.h"
-#include "CommandLineElements.hpp"
+#include "MIDI/MIDIManager.h"
+#include "Controller/ControllerManager.h"
+#include "Node/Manager/NodeManager.h"
+#include "Preset/PresetManager.h"
+#include "Utils/AudioFucker.h"
+#include "Time/TimeManager.h"
+#include "FastMapper/FastMapper.h"
+#include "Audio/VSTManager.h"
+#include "UI/ProgressNotifier.h"
+#include "Utils/CommandLineElements.hpp"
 class AudioFucker;
 
 
 class Engine:public FileBasedDocument,NodeManager::NodeManagerListener,AsyncUpdater,public ProgressNotifier,
-public ControllableContainer
+public ParameterContainer
 {
 public:
   Engine();

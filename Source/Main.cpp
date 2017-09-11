@@ -18,8 +18,8 @@
 
 #include "MainComponent.h"
 #include "Engine.h"
-#include "LGMLDragger.h"
-#include "CommandLineElements.hpp"
+#include "UI/LGMLDragger.h"
+#include "Utils/CommandLineElements.hpp"
 
 MainContentComponent* createMainContentComponent(Engine* e);
 

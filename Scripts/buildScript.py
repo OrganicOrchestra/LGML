@@ -16,7 +16,7 @@ cleanFirst = False;
 executable_name = "LGML"
 
 rootPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir))
-isBeta = False
+
 
 def generateProductBaseName():
 	name =  executable_name+ "_v"+str(ProJucerUtils.getVersion())
@@ -28,8 +28,8 @@ def generateProductBaseName():
 def buildAll(osType,configuration):
 	global specificVersion
 
-	if not ProJucerUtils.updateProjucer(osType,bumpVersion,specificVersion):
-		print ('not updating projucer')
+	# if not ProJucerUtils.updateProjucer(osType,bumpVersion,specificVersion):
+	# 	print ('not updating projucer')
 	
 	if osType=='osx':
 		import osx
@@ -115,10 +115,6 @@ if __name__ == "__main__":
 
 	if args.export:
 		args.package = True
-
-	if args.beta:
-		currentV  = ProJucerUtils.getVersionAsList()
-		specificVersion = '.'.join(map(str,currentV[:-1]))+"beta"
 
 
 		

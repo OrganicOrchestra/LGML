@@ -2,179 +2,92 @@
 
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="LGML\Tests">
-      <UniqueIdentifier>{00FE3AD6-E606-054B-EA61-EAC605C59CBA}</UniqueIdentifier>
+    <Filter Include="LGML\Assets">
+      <UniqueIdentifier>{8DBE9E2A-6B57-4B3A-B588-8A7A5DED0C3D}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Outliner">
-      <UniqueIdentifier>{780D62ED-7738-2C57-3A43-E8317A7BDC96}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Audio">
+      <UniqueIdentifier>{87D6A3A7-D224-D9BC-12BB-441132D04BFD}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Controllable\presets\ui">
-      <UniqueIdentifier>{6D6C096C-BD25-5645-7980-4E60D19EF5B1}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Controllable\UI">
+      <UniqueIdentifier>{8804AFB5-6C15-8895-EA5C-7D2527FB6536}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Controllable\presets">
-      <UniqueIdentifier>{6C5A9C7E-8291-A1AE-4EDF-B98713B74701}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Controllable\Parameter\UI">
+      <UniqueIdentifier>{4BC146BF-7BA5-B225-7AEB-CD7D0AD70E9E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Controllable\ui">
-      <UniqueIdentifier>{E4C547E9-EC0B-8CCE-C669-108686524262}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Controllable\parameters\ui">
-      <UniqueIdentifier>{8CAA4112-21F4-B522-612F-62BF7CE9A103}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Controllable\parameters">
-      <UniqueIdentifier>{F6FB39B7-B8E8-9C42-310C-8D4FCB0600A4}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Controllable\Parameter">
+      <UniqueIdentifier>{A089A936-7600-568D-91B5-95EBBEF53349}</UniqueIdentifier>
     </Filter>
     <Filter Include="LGML\Source\Controllable">
       <UniqueIdentifier>{8C6E1813-D58C-9B02-ED36-1375B4A7075A}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Common\Network">
-      <UniqueIdentifier>{283E5E9D-AEED-8DDD-55BE-14521673A971}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Controller\Impl\UI">
+      <UniqueIdentifier>{2AD512F4-21EF-0DE4-4EE5-5AAA1AC14E06}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Common\Audio">
-      <UniqueIdentifier>{824295F8-FD12-AA1F-8A7B-853254068FCE}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Controller\Impl">
+      <UniqueIdentifier>{49B04A9D-92BB-C31E-6C69-A05D24774DD3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Common\Serial">
-      <UniqueIdentifier>{58464B0E-43B8-7741-6617-D577A3C567C0}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Controller\UI">
+      <UniqueIdentifier>{25A4F9B6-FBA6-00E0-3EFB-8839F0683498}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Common\Thread">
-      <UniqueIdentifier>{0CA44506-9E9C-9E9F-3C15-49753989F2C1}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Controller">
+      <UniqueIdentifier>{E4EDAB3C-F62F-A40D-518B-850EE621CE8F}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Common\MIDI">
-      <UniqueIdentifier>{C8433C7E-5A55-3695-276F-A402F86E8E8B}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Data">
+      <UniqueIdentifier>{A98DA5F9-57F3-2EDD-3543-1DCA156EE7B2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Common\ScriptEnvironments\Javascript\ui">
-      <UniqueIdentifier>{B088A6DF-9B78-D5EC-82CF-152389DC8870}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Common\ScriptEnvironments\Javascript">
-      <UniqueIdentifier>{8FB42117-FED2-BC8A-761A-5DFD27F15064}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Common\ScriptEnvironments">
-      <UniqueIdentifier>{475C0CE5-C993-0ACD-3F2B-74FAF853E61E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Common\viz">
-      <UniqueIdentifier>{7DBA2C2E-B8E8-6734-0B88-CE5EB552B4B1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Common">
-      <UniqueIdentifier>{BC3A8BBD-7A12-F94C-7CEF-4813DF3F986A}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers\serial">
-      <UniqueIdentifier>{1326AF4A-A3B0-79EA-AC76-0CAF09E3390E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers\ui">
-      <UniqueIdentifier>{BE6D439D-815D-6822-27FE-310278529180}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers\base">
-      <UniqueIdentifier>{6373AFF3-00A2-C0F0-BEF0-06B7074F66DA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers\dmx">
-      <UniqueIdentifier>{8747D9B5-5BE4-4B67-7454-C1318D3BD9DA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers\midi">
-      <UniqueIdentifier>{BBDDBA36-3136-966B-D279-C8548A678009}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers\osc\scripted">
-      <UniqueIdentifier>{3CCC30E2-173B-B5FC-8055-54FE6C6CC3D0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers\osc\direct">
-      <UniqueIdentifier>{DD1616CE-B897-12E2-4847-E28BD82DF0A5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers\osc">
-      <UniqueIdentifier>{7437ADFF-3E68-2085-4BE1-F9359E4F9297}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\controllers">
-      <UniqueIdentifier>{2131061B-F351-2E2C-7979-F3C84E79D1D6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\fastmapper\ui">
-      <UniqueIdentifier>{D914CF47-AEEB-C7BE-DC6F-A1457CDA2637}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control\fastmapper">
-      <UniqueIdentifier>{64E42799-4225-301E-E1A5-4EDA62C53D79}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Control">
-      <UniqueIdentifier>{76B7A68F-28BD-37AA-5010-C8D13CFF438C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\Base\UI\NodeContainer">
-      <UniqueIdentifier>{22D98ABC-65B3-0084-68DA-A04D47745DB8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\Base\UI\NodeBase">
-      <UniqueIdentifier>{F63DBB08-0D5F-88C5-AFD8-27D82AF08F3D}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\Base\UI\ConnectableNode">
-      <UniqueIdentifier>{B1EB4731-F80D-0EA3-CEC7-12225478ABCC}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\Base\UI">
-      <UniqueIdentifier>{62557B83-DD0A-BBD7-02A6-678202E248EB}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\Base\data">
-      <UniqueIdentifier>{0D8D0007-8117-C667-FFA5-4A6B5854949F}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\Base">
-      <UniqueIdentifier>{84808C3E-E3C3-BFE6-D04E-5107E0C81914}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\connection\connectionEditor">
-      <UniqueIdentifier>{F8EF5961-F775-5445-B73B-9574B493FD6A}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\connection">
-      <UniqueIdentifier>{6CC82C9C-D6FC-91AC-F463-41A6EF4FD2B8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\JsNode">
-      <UniqueIdentifier>{BAD4701D-8E05-5903-1814-8BED3300FF09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\ContainerOut">
-      <UniqueIdentifier>{C0155BAE-CD3D-52DE-46EC-842D1E473669}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\ContainerIn">
-      <UniqueIdentifier>{D6391F85-49EE-C093-A1C0-813E80AA4B66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\AudioDeviceIn">
-      <UniqueIdentifier>{C77E125F-9AFC-75DB-29B3-670908EACAF7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\AudioDeviceOut">
-      <UniqueIdentifier>{D91B2B5B-8A84-80DA-A201-D2A4DC6C1C8C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\DataIn">
-      <UniqueIdentifier>{CF985157-26FA-3D29-2950-C9C35CECE349}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\Dummy">
-      <UniqueIdentifier>{8D71EC0F-F8C3-1727-FC6F-A70E31A471B0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\AudioMixer">
-      <UniqueIdentifier>{80D0CD1A-E034-6A6F-A6ED-AC89B035FAEA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\Looper">
-      <UniqueIdentifier>{A81E90FA-F58C-BB4A-C760-60E977A700A6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\Spat\3D">
-      <UniqueIdentifier>{BBBF5883-57AD-DEB8-5E44-4B4CC96139EA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\Spat\2D">
-      <UniqueIdentifier>{85C30280-8B8A-18B2-00CF-52E4527E3792}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\Spat">
-      <UniqueIdentifier>{32E65D31-A2FA-9ECF-0443-A2EFBF374F12}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes\VST">
-      <UniqueIdentifier>{F72C91B6-38DA-C25A-3FFF-D8E360F10473}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node\nodes">
-      <UniqueIdentifier>{367EBE2E-4EA4-A64D-5431-149B7411BB03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Node">
-      <UniqueIdentifier>{158DB1D6-694E-C7E3-7A04-6F3E5FC2AE58}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Logger">
-      <UniqueIdentifier>{715AE501-5008-5533-C4E3-FD9D80BC96F3}</UniqueIdentifier>
+    <Filter Include="LGML\Source\FastMapper">
+      <UniqueIdentifier>{6D7EDC97-E502-AB45-CB1E-68713BDD12AD}</UniqueIdentifier>
     </Filter>
     <Filter Include="LGML\Source\Inspector">
       <UniqueIdentifier>{35DC88E4-B162-4FEB-CA07-6A2DE749A1E2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LGML\Source\Logger">
+      <UniqueIdentifier>{715AE501-5008-5533-C4E3-FD9D80BC96F3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\MIDI">
+      <UniqueIdentifier>{8AB3AD2B-6138-C1F4-2C05-2A14DF80E6D0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node\Connection\UI">
+      <UniqueIdentifier>{998FA314-056F-C431-C349-EE7C145C0330}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node\Connection">
+      <UniqueIdentifier>{BA8F360E-02AF-56E1-844E-5EB31FE159C9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node\Impl">
+      <UniqueIdentifier>{12A5DDA9-4057-C980-0F8B-6A98CF6FC295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node\Manager\UI">
+      <UniqueIdentifier>{7D93EB1C-53AE-916B-F5BF-B27EEA334AA8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node\Manager">
+      <UniqueIdentifier>{F793F031-E0F3-E513-F2FE-847BB6D01E74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node\NodeContainer\UI">
+      <UniqueIdentifier>{68C9334C-2CCC-6DC3-EC19-353EAF1C1D62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node\NodeContainer">
+      <UniqueIdentifier>{2C3BE6DD-C37C-8CD0-7FAD-95BCDECA1ACF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node\UI">
+      <UniqueIdentifier>{EB325402-284C-8E6F-F387-49FD6DD0CBE8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Node">
+      <UniqueIdentifier>{158DB1D6-694E-C7E3-7A04-6F3E5FC2AE58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Preset">
+      <UniqueIdentifier>{037A818D-A888-D37D-4D13-B8EBDAB749FA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Scripting\Js">
+      <UniqueIdentifier>{3F628763-5BAC-BF37-AC5F-60B21E8460DE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Scripting">
+      <UniqueIdentifier>{D4182521-3B9A-229A-3744-9FA50CB0131A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\Tests">
+      <UniqueIdentifier>{0A0EFF94-2CA8-2822-0D3F-9009311F0121}</UniqueIdentifier>
+    </Filter>
     <Filter Include="LGML\Source\Time">
       <UniqueIdentifier>{8BB71962-CF7B-0DEB-CF0C-3DAC61932DF2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Project">
-      <UniqueIdentifier>{5AE27BB4-A05A-6A68-23D7-D71420EC096E}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LGML\Source\Settings">
-      <UniqueIdentifier>{85ED2170-61E1-3B7C-8771-8CED444D3245}</UniqueIdentifier>
     </Filter>
     <Filter Include="LGML\Source\UI\ShapeShifter">
       <UniqueIdentifier>{87EB8377-185F-11C5-8A03-A4CAB8EAF9D3}</UniqueIdentifier>
@@ -182,8 +95,8 @@
     <Filter Include="LGML\Source\UI">
       <UniqueIdentifier>{253AFE87-1120-E6FF-094B-7B041E188380}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Assets">
-      <UniqueIdentifier>{63211076-716C-A853-B03A-62E01F186853}</UniqueIdentifier>
+    <Filter Include="LGML\Source\Utils">
+      <UniqueIdentifier>{5A54A2F1-FAFE-5753-9E62-911DA435417E}</UniqueIdentifier>
     </Filter>
     <Filter Include="LGML\Source">
       <UniqueIdentifier>{5E91C6EC-143C-1BDF-7BA2-077175FDD55F}</UniqueIdentifier>
@@ -574,452 +487,446 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Tests\BufferListTest.cpp">
-      <Filter>LGML\Tests</Filter>
+    <ClCompile Include="..\..\Source\Audio\BufferBlockList.cpp">
+      <Filter>LGML\Source\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Tests\LooperTest.cpp">
-      <Filter>LGML\Tests</Filter>
+    <ClCompile Include="..\..\Source\Audio\MultiNeedle.cpp">
+      <Filter>LGML\Source\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Tests\NodeChildProofer.cpp">
-      <Filter>LGML\Tests</Filter>
+    <ClCompile Include="..\..\Source\Audio\PlayableBuffer.cpp">
+      <Filter>LGML\Source\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Outliner.cpp">
-      <Filter>LGML\Source\Outliner</Filter>
+    <ClCompile Include="..\..\Source\Audio\StretcherJob.cpp">
+      <Filter>LGML\Source\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\PresetManager.cpp">
-      <Filter>LGML\Source\Controllable\presets</Filter>
+    <ClCompile Include="..\..\Source\Audio\VSTManager.cpp">
+      <Filter>LGML\Source\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\PresetChooser.cpp">
-      <Filter>LGML\Source\Controllable\presets\ui</Filter>
+    <ClCompile Include="..\..\Source\Controllable\UI\ControllableEditor.cpp">
+      <Filter>LGML\Source\Controllable\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControllableUI.cpp">
-      <Filter>LGML\Source\Controllable\ui</Filter>
+    <ClCompile Include="..\..\Source\Controllable\UI\ControllableUI.cpp">
+      <Filter>LGML\Source\Controllable\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControllableHelpers.cpp">
-      <Filter>LGML\Source\Controllable\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\RangeParameterUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ParameterUIFactory.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\TriggerBlinkUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\EnumParameterUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FloatStepperUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\BoolToggleUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FloatSliderUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\IntSliderUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\IntStepperUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ParameterProxyUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ParameterUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\StringParameterUI.cpp">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\RangeParameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Trigger.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\BoolParameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ParameterProxy.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\EnumParameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\FloatParameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\IntParameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Parameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Point2DParameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Point3DParameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\StringParameter.cpp">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ParameterFactory.cpp">
+    <ClCompile Include="..\..\Source\Controllable\Controllable.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable.cpp">
+    <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControllableContainer.cpp">
+    <ClCompile Include="..\..\Source\Controllable\ControllableHelpers.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControllableIndexedContainer.cpp">
+    <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NetworkUtils.cpp">
-      <Filter>LGML\Source\Common\Network</Filter>
+    <ClCompile Include="..\..\Source\Controllable\GenericControllableContainerEditor.cpp">
+      <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\BufferBlockList.cpp">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\StretcherJob.cpp">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MultiNeedle.cpp">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\EnumParameterUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\AudioDebugPipe.cpp">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\FloatSliderUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\AudioDebugCrack.cpp">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\FloatStepperUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\PlayableBuffer.cpp">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\IntSliderUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\SerialManager.cpp">
-      <Filter>LGML\Source\Common\Serial</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\IntStepperUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\SerialPort.cpp">
-      <Filter>LGML\Source\Common\Serial</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterProxyUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\SerialUIHelper.cpp">
-      <Filter>LGML\Source\Common\Serial</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ProgressNotifier.cpp">
-      <Filter>LGML\Source\Common\Thread</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterUIFactory.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MIDIListener.cpp">
-      <Filter>LGML\Source\Common\MIDI</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\RangeParameterUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MIDIManager.cpp">
-      <Filter>LGML\Source\Common\MIDI</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\StringParameterUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MIDIUIHelper.cpp">
-      <Filter>LGML\Source\Common\MIDI</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\TriggerBlinkUI.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\JsEnvironmentUI.cpp">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript\ui</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainer.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\JsLiveEditor.cpp">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript\ui</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\BoolParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\JsContainerSync.cpp">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\EnumParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\JsEnvironment.cpp">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\Parameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\JsGlobalEnvironment.cpp">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterFactory.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\SerialController.cpp">
-      <Filter>LGML\Source\Control\controllers\serial</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterProxy.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\SerialControllerEditor.cpp">
-      <Filter>LGML\Source\Control\controllers\serial</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\NumericParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\SerialControllerUI.cpp">
-      <Filter>LGML\Source\Control\controllers\serial</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\Point2DParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControllerManagerUI.cpp">
-      <Filter>LGML\Source\Control\controllers\ui</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\Point3DParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controller.cpp">
-      <Filter>LGML\Source\Control\controllers\base</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\RangeParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControllerEditor.cpp">
-      <Filter>LGML\Source\Control\controllers\base</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\StringParameter.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControllerUI.cpp">
-      <Filter>LGML\Source\Control\controllers\base</Filter>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\Trigger.cpp">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\DMXController.cpp">
-      <Filter>LGML\Source\Control\controllers\dmx</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\UI\MIDIControllerEditor.cpp">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MIDIController.cpp">
-      <Filter>LGML\Source\Control\controllers\midi</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\UI\OSCControllerEditor.cpp">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\MIDIControllerEditor.cpp">
-      <Filter>LGML\Source\Control\controllers\midi</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialControllerEditor.cpp">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\JavascriptController.cpp">
-      <Filter>LGML\Source\Control\controllers\osc\scripted</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialControllerUI.cpp">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\OSCDirectController.cpp">
-      <Filter>LGML\Source\Control\controllers\osc\direct</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialUIHelper.cpp">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\OSCControllerEditor.cpp">
-      <Filter>LGML\Source\Control\controllers\osc</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\DMXController.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\OSCController.cpp">
-      <Filter>LGML\Source\Control\controllers\osc</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\MIDIController.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControlManager.cpp">
-      <Filter>LGML\Source\Control\controllers</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\OSCController.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FastMapperUI.cpp">
-      <Filter>LGML\Source\Control\fastmapper\ui</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\OSCDirectController.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FastMapUI.cpp">
-      <Filter>LGML\Source\Control\fastmapper\ui</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\SerialController.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FastMap.cpp">
-      <Filter>LGML\Source\Control\fastmapper</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\SerialManager.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\FastMapper.cpp">
-      <Filter>LGML\Source\Control\fastmapper</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\SerialPort.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeBase.cpp">
-      <Filter>LGML\Source\Node\Base</Filter>
+    <ClCompile Include="..\..\Source\Controller\Impl\JavascriptController.cpp">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ConnectableNode.cpp">
-      <Filter>LGML\Source\Node\Base</Filter>
+    <ClCompile Include="..\..\Source\Controller\UI\ControllerEditor.cpp">
+      <Filter>LGML\Source\Controller\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeContainer.cpp">
-      <Filter>LGML\Source\Node\Base</Filter>
+    <ClCompile Include="..\..\Source\Controller\UI\ControllerManagerUI.cpp">
+      <Filter>LGML\Source\Controller\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeContainerContentUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\NodeContainer</Filter>
+    <ClCompile Include="..\..\Source\Controller\UI\ControllerUI.cpp">
+      <Filter>LGML\Source\Controller\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeContainerViewer.cpp">
-      <Filter>LGML\Source\Node\Base\UI\NodeContainer</Filter>
+    <ClCompile Include="..\..\Source\Controller\Controller.cpp">
+      <Filter>LGML\Source\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeContainerUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\NodeContainer</Filter>
+    <ClCompile Include="..\..\Source\Controller\ControllerManager.cpp">
+      <Filter>LGML\Source\Controller</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeBaseAudioCtlUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\NodeBase</Filter>
+    <ClCompile Include="..\..\Source\Data\Data.cpp">
+      <Filter>LGML\Source\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeBaseContentUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\NodeBase</Filter>
+    <ClCompile Include="..\..\Source\Data\DataInNode.cpp">
+      <Filter>LGML\Source\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeBaseHeaderUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\NodeBase</Filter>
+    <ClCompile Include="..\..\Source\Data\DataInNodeUI.cpp">
+      <Filter>LGML\Source\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeBaseUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\NodeBase</Filter>
+    <ClCompile Include="..\..\Source\Data\DataProcessorGraph.cpp">
+      <Filter>LGML\Source\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ConnectableNodeContentUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\ConnectableNode</Filter>
+    <ClCompile Include="..\..\Source\FastMapper\FastMap.cpp">
+      <Filter>LGML\Source\FastMapper</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ConnectableNodeAudioCtlUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\ConnectableNode</Filter>
+    <ClCompile Include="..\..\Source\FastMapper\FastMapper.cpp">
+      <Filter>LGML\Source\FastMapper</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ConnectableNodeHeaderUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\ConnectableNode</Filter>
+    <ClCompile Include="..\..\Source\FastMapper\FastMapperUI.cpp">
+      <Filter>LGML\Source\FastMapper</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ConnectableNodeUI.cpp">
-      <Filter>LGML\Source\Node\Base\UI\ConnectableNode</Filter>
+    <ClCompile Include="..\..\Source\FastMapper\FastMapUI.cpp">
+      <Filter>LGML\Source\FastMapper</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Data.cpp">
-      <Filter>LGML\Source\Node\Base\data</Filter>
+    <ClCompile Include="..\..\Source\Inspector\InspectableComponent.cpp">
+      <Filter>LGML\Source\Inspector</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\DataProcessorGraph.cpp">
-      <Filter>LGML\Source\Node\Base\data</Filter>
+    <ClCompile Include="..\..\Source\Inspector\Inspector.cpp">
+      <Filter>LGML\Source\Inspector</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeConnectionEditor.cpp">
-      <Filter>LGML\Source\Node\connection\connectionEditor</Filter>
+    <ClCompile Include="..\..\Source\Inspector\InspectorEditor.cpp">
+      <Filter>LGML\Source\Inspector</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\NodeConnectionEditorDataSlot.cpp">
-      <Filter>LGML\Source\Node\connection\connectionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\NodeConnectionEditorLink.cpp">
-      <Filter>LGML\Source\Node\connection\connectionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ConnectorComponent.cpp">
-      <Filter>LGML\Source\Node\connection</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\NodeConnection.cpp">
-      <Filter>LGML\Source\Node\connection</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\NodeConnectionUI.cpp">
-      <Filter>LGML\Source\Node\connection</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\JsNode.cpp">
-      <Filter>LGML\Source\Node\nodes\JsNode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\JsNodeUI.cpp">
-      <Filter>LGML\Source\Node\nodes\JsNode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ContainerOutNode.cpp">
-      <Filter>LGML\Source\Node\nodes\ContainerOut</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ContainerInNode.cpp">
-      <Filter>LGML\Source\Node\nodes\ContainerIn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioDeviceInNode.cpp">
-      <Filter>LGML\Source\Node\nodes\AudioDeviceIn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioDeviceInNodeUI.cpp">
-      <Filter>LGML\Source\Node\nodes\AudioDeviceIn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioDeviceOutNode.cpp">
-      <Filter>LGML\Source\Node\nodes\AudioDeviceOut</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioDeviceOutNodeUI.cpp">
-      <Filter>LGML\Source\Node\nodes\AudioDeviceOut</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\DataInNode.cpp">
-      <Filter>LGML\Source\Node\nodes\DataIn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\DataInNodeUI.cpp">
-      <Filter>LGML\Source\Node\nodes\DataIn</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\DummyNode.cpp">
-      <Filter>LGML\Source\Node\nodes\Dummy</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\DummyNodeContentUI.cpp">
-      <Filter>LGML\Source\Node\nodes\Dummy</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioMixerNode.cpp">
-      <Filter>LGML\Source\Node\nodes\AudioMixer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\AudioMixerNodeUI.cpp">
-      <Filter>LGML\Source\Node\nodes\AudioMixer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\LooperNode.cpp">
-      <Filter>LGML\Source\Node\nodes\Looper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\LooperNodeUI.cpp">
-      <Filter>LGML\Source\Node\nodes\Looper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\LooperTrack.cpp">
-      <Filter>LGML\Source\Node\nodes\Looper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Spat3DViewer.cpp">
-      <Filter>LGML\Source\Node\nodes\Spat\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Spat2DViewer.cpp">
-      <Filter>LGML\Source\Node\nodes\Spat\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Spat2DNode.cpp">
-      <Filter>LGML\Source\Node\nodes\Spat\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Spat2DNodeUI.cpp">
-      <Filter>LGML\Source\Node\nodes\Spat\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\PluginWindow.cpp">
-      <Filter>LGML\Source\Node\nodes\VST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\VSTManager.cpp">
-      <Filter>LGML\Source\Node\nodes\VST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\VSTNode.cpp">
-      <Filter>LGML\Source\Node\nodes\VST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\VSTNodeUI.cpp">
-      <Filter>LGML\Source\Node\nodes\VST</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\NodeFactory.cpp">
-      <Filter>LGML\Source\Node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\NodeManagerUI.cpp">
-      <Filter>LGML\Source\Node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\NodeManager.cpp">
-      <Filter>LGML\Source\Node</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\LGMLLogger.cpp">
+    <ClCompile Include="..\..\Source\Logger\LGMLLogger.cpp">
       <Filter>LGML\Source\Logger</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\LGMLLoggerUI.cpp">
+    <ClCompile Include="..\..\Source\Logger\LGMLLoggerUI.cpp">
       <Filter>LGML\Source\Logger</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ControllableEditor.cpp">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClCompile Include="..\..\Source\MIDI\MIDIHelpers.cpp">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\GenericControllableContainerEditor.cpp">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClCompile Include="..\..\Source\MIDI\MIDIListener.cpp">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\InspectableComponent.cpp">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClCompile Include="..\..\Source\MIDI\MIDIManager.cpp">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Inspector.cpp">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClCompile Include="..\..\Source\MIDI\MIDIUIHelper.cpp">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\InspectorEditor.cpp">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.cpp">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TimeManager.cpp">
+    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.cpp">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.cpp">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.cpp">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Connection\NodeConnection.cpp">
+      <Filter>LGML\Source\Node\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioDeviceInNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioDeviceInNodeUI.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioDeviceOutNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioDeviceOutNodeUI.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioMixerNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioMixerNodeUI.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\ContainerInNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\ContainerOutNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\DummyNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\DummyNodeContentUI.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\LooperNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\LooperNodeUI.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\LooperTrack.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\Spat2DNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\Spat2DNodeUI.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\Spat2DViewer.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\Spat3DViewer.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\VSTNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\VSTNodeUI.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\JsNode.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Impl\JsNodeUI.cpp">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Manager\UI\NodeManagerUI.cpp">
+      <Filter>LGML\Source\Node\Manager\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Manager\NodeFactory.cpp">
+      <Filter>LGML\Source\Node\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\Manager\NodeManager.cpp">
+      <Filter>LGML\Source\Node\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerContentUI.cpp">
+      <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerUI.cpp">
+      <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerViewer.cpp">
+      <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeContainer\NodeContainer.cpp">
+      <Filter>LGML\Source\Node\NodeContainer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\NodeBaseAudioCtlUI.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\NodeBaseContentUI.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\NodeBaseHeaderUI.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\NodeBaseUI.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeContentUI.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeUI.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectorComponent.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\ConnectableNode.cpp">
+      <Filter>LGML\Source\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Node\NodeBase.cpp">
+      <Filter>LGML\Source\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Preset\PresetChooserUI.cpp">
+      <Filter>LGML\Source\Preset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Preset\PresetManager.cpp">
+      <Filter>LGML\Source\Preset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Scripting\Js\JsContainerSync.cpp">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Scripting\Js\JsEnvironment.cpp">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Scripting\Js\JsEnvironmentUI.cpp">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Scripting\Js\JsGlobalEnvironment.cpp">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Tests\BufferListTest.cpp">
+      <Filter>LGML\Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Tests\LooperTest.cpp">
+      <Filter>LGML\Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Tests\NodeChildProofer.cpp">
+      <Filter>LGML\Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Time\TimeManager.cpp">
       <Filter>LGML\Source\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TimeManagerUI.cpp">
+    <ClCompile Include="..\..\Source\Time\TimeManagerUI.cpp">
       <Filter>LGML\Source\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\TimeMasterCandidate.cpp">
+    <ClCompile Include="..\..\Source\Time\TimeMasterCandidate.cpp">
       <Filter>LGML\Source\Time</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ProjectManager.cpp">
-      <Filter>LGML\Source\Project</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\SettingsManager.cpp">
-      <Filter>LGML\Source\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifterFactory.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifterPanelHeader.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifterPanelTab.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifterContent.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifter.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\GapGrabber.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifterWindow.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifterPanel.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifterContainer.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\ShapeShifterManager.cpp">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\BetterStepper.cpp">
+    <ClCompile Include="..\..\Source\UI\LGMLDragger.cpp">
       <Filter>LGML\Source\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\LGMLDragger.cpp">
+    <ClCompile Include="..\..\Source\UI\LookAndFeelOO.cpp">
       <Filter>LGML\Source\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\LookAndFeelOO.cpp">
+    <ClCompile Include="..\..\Source\UI\Outliner.cpp">
       <Filter>LGML\Source\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\ProgressWindow.cpp">
+    <ClCompile Include="..\..\Source\UI\PluginWindow.cpp">
       <Filter>LGML\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ProgressNotifier.cpp">
+      <Filter>LGML\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ProgressWindow.cpp">
+      <Filter>LGML\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\GapGrabber.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifter.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterContainer.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterContent.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterFactory.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterManager.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanel.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelHeader.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelTab.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.cpp">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\AudioDebugCrack.cpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\AudioDebugPipe.cpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\NetworkUtils.cpp">
+      <Filter>LGML\Source\Utils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Engine.cpp">
       <Filter>LGML\Source</Filter>
@@ -1027,16 +934,13 @@
     <ClCompile Include="..\..\Source\EngineFileDocument.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\LGMLConfig.cpp">
+    <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MainComponentCommands.cpp">
-      <Filter>LGML\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_linux.cc">
@@ -2823,487 +2727,481 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Outliner.h">
-      <Filter>LGML\Source\Outliner</Filter>
+    <ClInclude Include="..\..\Source\Audio\AudioConfig.h">
+      <Filter>LGML\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\GitSha.h">
-      <Filter>LGML\Source</Filter>
+    <ClInclude Include="..\..\Source\Audio\AudioHelpers.h">
+      <Filter>LGML\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\PresetManager.h">
-      <Filter>LGML\Source\Controllable\presets</Filter>
+    <ClInclude Include="..\..\Source\Audio\BufferBlockList.h">
+      <Filter>LGML\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\PresetChooser.h">
-      <Filter>LGML\Source\Controllable\presets\ui</Filter>
+    <ClInclude Include="..\..\Source\Audio\MultiNeedle.h">
+      <Filter>LGML\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllableUI.h">
-      <Filter>LGML\Source\Controllable\ui</Filter>
+    <ClInclude Include="..\..\Source\Audio\PlayableBuffer.h">
+      <Filter>LGML\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllableHelpers.h">
-      <Filter>LGML\Source\Controllable\ui</Filter>
+    <ClInclude Include="..\..\Source\Audio\RingBuffer.h">
+      <Filter>LGML\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\RangeParameterUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
+    <ClInclude Include="..\..\Source\Audio\StretcherJob.h">
+      <Filter>LGML\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ParameterUIFactory.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
+    <ClInclude Include="..\..\Source\Audio\VSTManager.h">
+      <Filter>LGML\Source\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TriggerBlinkUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
+    <ClInclude Include="..\..\Source\Controllable\UI\ControllableEditor.h">
+      <Filter>LGML\Source\Controllable\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\EnumParameterUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
+    <ClInclude Include="..\..\Source\Controllable\UI\ControllableUI.h">
+      <Filter>LGML\Source\Controllable\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FloatStepperUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\BoolToggleUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FloatSliderUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\IntSliderUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ParameterProxyUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\IntStepperUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ParameterUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\StringParameterUI.h">
-      <Filter>LGML\Source\Controllable\parameters\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\RangeParameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Trigger.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\BoolParameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ParameterProxy.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\EnumParameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\FloatParameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\IntParameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Parameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Point2DParameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Point3DParameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\StringParameter.h">
-      <Filter>LGML\Source\Controllable\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ParameterFactory.h">
+    <ClInclude Include="..\..\Source\Controllable\Controllable.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable.h">
+    <ClInclude Include="..\..\Source\Controllable\ControllableContainer.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllableContainer.h">
+    <ClInclude Include="..\..\Source\Controllable\ControllableHelpers.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllableIndexedContainer.h">
+    <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NetworkUtils.h">
-      <Filter>LGML\Source\Common\Network</Filter>
+    <ClInclude Include="..\..\Source\Controllable\GenericControllableContainerEditor.h">
+      <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\BufferBlockList.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\AudioConfig.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\StretcherJob.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\EnumParameterUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MultiNeedle.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\FloatSliderUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\AudioDebugPipe.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\FloatStepperUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\AudioFucker.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\IntSliderUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\AudioHelpers.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\IntStepperUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\AudioDebugCrack.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterProxyUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\PlayableBuffer.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\RingBuffer.h">
-      <Filter>LGML\Source\Common\Audio</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterUIFactory.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\SerialManager.h">
-      <Filter>LGML\Source\Common\Serial</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\RangeParameterUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\SerialPort.h">
-      <Filter>LGML\Source\Common\Serial</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\StringParameterUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\SerialUIHelper.h">
-      <Filter>LGML\Source\Common\Serial</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\TriggerBlinkUI.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ProgressNotifier.h">
-      <Filter>LGML\Source\Common\Thread</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainer.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\QueuedNotifier.h">
-      <Filter>LGML\Source\Common\Thread</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\BoolParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\CommandLineElements.hpp">
-      <Filter>LGML\Source\Common</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\EnumParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\StringUtil.hpp">
-      <Filter>LGML\Source\Common</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\Parameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MIDIListener.h">
-      <Filter>LGML\Source\Common\MIDI</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterFactory.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MIDIManager.h">
-      <Filter>LGML\Source\Common\MIDI</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterProxy.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MIDIUIHelper.h">
-      <Filter>LGML\Source\Common\MIDI</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\MinMaxParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\JsEnvironmentUI.h">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript\ui</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\NumericParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\JsLiveEditor.h">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript\ui</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\Point2DParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\JsContainerSync.h">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\Point3DParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\JsEnvironment.h">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\RangeParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\JsGlobalEnvironment.h">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\StringParameter.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\JsHelpers.h">
-      <Filter>LGML\Source\Common\ScriptEnvironments\Javascript</Filter>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\Trigger.h">
+      <Filter>LGML\Source\Controllable\Parameter</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\VuMeter.h">
-      <Filter>LGML\Source\Common\viz</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\UI\MIDIControllerEditor.h">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\SerialController.h">
-      <Filter>LGML\Source\Control\controllers\serial</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\UI\OSCControllerEditor.h">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\SerialControllerEditor.h">
-      <Filter>LGML\Source\Control\controllers\serial</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialControllerEditor.h">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\SerialControllerUI.h">
-      <Filter>LGML\Source\Control\controllers\serial</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialControllerUI.h">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllerManagerUI.h">
-      <Filter>LGML\Source\Control\controllers\ui</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialUIHelper.h">
+      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controller.h">
-      <Filter>LGML\Source\Control\controllers\base</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\DMXController.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllerEditor.h">
-      <Filter>LGML\Source\Control\controllers\base</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\MIDIController.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllerUI.h">
-      <Filter>LGML\Source\Control\controllers\base</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\OSCController.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\DMXController.h">
-      <Filter>LGML\Source\Control\controllers\dmx</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\OSCDirectController.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MIDIController.h">
-      <Filter>LGML\Source\Control\controllers\midi</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\SerialController.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MIDIControllerEditor.h">
-      <Filter>LGML\Source\Control\controllers\midi</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\SerialManager.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\JavascriptController.h">
-      <Filter>LGML\Source\Control\controllers\osc\scripted</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\SerialPort.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\OSCDirectController.h">
-      <Filter>LGML\Source\Control\controllers\osc\direct</Filter>
+    <ClInclude Include="..\..\Source\Controller\Impl\JavascriptController.h">
+      <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\OSCControllerEditor.h">
-      <Filter>LGML\Source\Control\controllers\osc</Filter>
+    <ClInclude Include="..\..\Source\Controller\UI\ControllerEditor.h">
+      <Filter>LGML\Source\Controller\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\OSCController.h">
-      <Filter>LGML\Source\Control\controllers\osc</Filter>
+    <ClInclude Include="..\..\Source\Controller\UI\ControllerManagerUI.h">
+      <Filter>LGML\Source\Controller\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllerFactory.h">
-      <Filter>LGML\Source\Control\controllers</Filter>
+    <ClInclude Include="..\..\Source\Controller\UI\ControllerUI.h">
+      <Filter>LGML\Source\Controller\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControlManager.h">
-      <Filter>LGML\Source\Control\controllers</Filter>
+    <ClInclude Include="..\..\Source\Controller\Controller.h">
+      <Filter>LGML\Source\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FastMapperUI.h">
-      <Filter>LGML\Source\Control\fastmapper\ui</Filter>
+    <ClInclude Include="..\..\Source\Controller\ControllerFactory.h">
+      <Filter>LGML\Source\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FastMapUI.h">
-      <Filter>LGML\Source\Control\fastmapper\ui</Filter>
+    <ClInclude Include="..\..\Source\Controller\ControllerManager.h">
+      <Filter>LGML\Source\Controller</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FastMap.h">
-      <Filter>LGML\Source\Control\fastmapper</Filter>
+    <ClInclude Include="..\..\Source\Data\Data.h">
+      <Filter>LGML\Source\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\FastMapper.h">
-      <Filter>LGML\Source\Control\fastmapper</Filter>
+    <ClInclude Include="..\..\Source\Data\DataInNode.h">
+      <Filter>LGML\Source\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeBase.h">
-      <Filter>LGML\Source\Node\Base</Filter>
+    <ClInclude Include="..\..\Source\Data\DataInNodeUI.h">
+      <Filter>LGML\Source\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ConnectableNode.h">
-      <Filter>LGML\Source\Node\Base</Filter>
+    <ClInclude Include="..\..\Source\Data\DataProcessorGraph.h">
+      <Filter>LGML\Source\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeContainer.h">
-      <Filter>LGML\Source\Node\Base</Filter>
+    <ClInclude Include="..\..\Source\FastMapper\FastMap.h">
+      <Filter>LGML\Source\FastMapper</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeContainerContentUI.h">
-      <Filter>LGML\Source\Node\Base\UI\NodeContainer</Filter>
+    <ClInclude Include="..\..\Source\FastMapper\FastMapper.h">
+      <Filter>LGML\Source\FastMapper</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeContainerViewer.h">
-      <Filter>LGML\Source\Node\Base\UI\NodeContainer</Filter>
+    <ClInclude Include="..\..\Source\FastMapper\FastMapperUI.h">
+      <Filter>LGML\Source\FastMapper</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeContainerUI.h">
-      <Filter>LGML\Source\Node\Base\UI\NodeContainer</Filter>
+    <ClInclude Include="..\..\Source\FastMapper\FastMapUI.h">
+      <Filter>LGML\Source\FastMapper</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeBaseAudioCtlUI.h">
-      <Filter>LGML\Source\Node\Base\UI\NodeBase</Filter>
+    <ClInclude Include="..\..\Source\Inspector\InspectableComponent.h">
+      <Filter>LGML\Source\Inspector</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeBaseContentUI.h">
-      <Filter>LGML\Source\Node\Base\UI\NodeBase</Filter>
+    <ClInclude Include="..\..\Source\Inspector\Inspector.h">
+      <Filter>LGML\Source\Inspector</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeBaseHeaderUI.h">
-      <Filter>LGML\Source\Node\Base\UI\NodeBase</Filter>
+    <ClInclude Include="..\..\Source\Inspector\InspectorEditor.h">
+      <Filter>LGML\Source\Inspector</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\NodeBaseUI.h">
-      <Filter>LGML\Source\Node\Base\UI\NodeBase</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ConnectableNodeContentUI.h">
-      <Filter>LGML\Source\Node\Base\UI\ConnectableNode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ConnectableNodeAudioCtlUI.h">
-      <Filter>LGML\Source\Node\Base\UI\ConnectableNode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ConnectableNodeHeaderUI.h">
-      <Filter>LGML\Source\Node\Base\UI\ConnectableNode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ConnectableNodeUI.h">
-      <Filter>LGML\Source\Node\Base\UI\ConnectableNode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Data.h">
-      <Filter>LGML\Source\Node\Base\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\DataProcessorGraph.h">
-      <Filter>LGML\Source\Node\Base\data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeConnectionEditor.h">
-      <Filter>LGML\Source\Node\connection\connectionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeConnectionEditorDataSlot.h">
-      <Filter>LGML\Source\Node\connection\connectionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeConnectionEditorLink.h">
-      <Filter>LGML\Source\Node\connection\connectionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ConnectorComponent.h">
-      <Filter>LGML\Source\Node\connection</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeConnection.h">
-      <Filter>LGML\Source\Node\connection</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeConnectionUI.h">
-      <Filter>LGML\Source\Node\connection</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\JsNode.h">
-      <Filter>LGML\Source\Node\nodes\JsNode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\JsNodeUI.h">
-      <Filter>LGML\Source\Node\nodes\JsNode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ContainerOutNode.h">
-      <Filter>LGML\Source\Node\nodes\ContainerOut</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ContainerInNode.h">
-      <Filter>LGML\Source\Node\nodes\ContainerIn</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioDeviceInNode.h">
-      <Filter>LGML\Source\Node\nodes\AudioDeviceIn</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioDeviceInNodeUI.h">
-      <Filter>LGML\Source\Node\nodes\AudioDeviceIn</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioDeviceOutNode.h">
-      <Filter>LGML\Source\Node\nodes\AudioDeviceOut</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioDeviceOutNodeUI.h">
-      <Filter>LGML\Source\Node\nodes\AudioDeviceOut</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\DataInNode.h">
-      <Filter>LGML\Source\Node\nodes\DataIn</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\DataInNodeUI.h">
-      <Filter>LGML\Source\Node\nodes\DataIn</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\DummyNode.h">
-      <Filter>LGML\Source\Node\nodes\Dummy</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\DummyNodeContentUI.h">
-      <Filter>LGML\Source\Node\nodes\Dummy</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioMixerNode.h">
-      <Filter>LGML\Source\Node\nodes\AudioMixer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\AudioMixerNodeUI.h">
-      <Filter>LGML\Source\Node\nodes\AudioMixer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\LooperNode.h">
-      <Filter>LGML\Source\Node\nodes\Looper</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\LooperNodeUI.h">
-      <Filter>LGML\Source\Node\nodes\Looper</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\LooperTrack.h">
-      <Filter>LGML\Source\Node\nodes\Looper</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Spat3DViewer.h">
-      <Filter>LGML\Source\Node\nodes\Spat\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Spat2DViewer.h">
-      <Filter>LGML\Source\Node\nodes\Spat\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Spat2DNode.h">
-      <Filter>LGML\Source\Node\nodes\Spat\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Spat2DNodeUI.h">
-      <Filter>LGML\Source\Node\nodes\Spat\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\PluginWindow.h">
-      <Filter>LGML\Source\Node\nodes\VST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\VSTManager.h">
-      <Filter>LGML\Source\Node\nodes\VST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\VSTNode.h">
-      <Filter>LGML\Source\Node\nodes\VST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\VSTNodeUI.h">
-      <Filter>LGML\Source\Node\nodes\VST</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeFactory.h">
-      <Filter>LGML\Source\Node</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeManagerUI.h">
-      <Filter>LGML\Source\Node</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\NodeManager.h">
-      <Filter>LGML\Source\Node</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\DebugHelpers.h">
+    <ClInclude Include="..\..\Source\Logger\LGMLLogger.h">
       <Filter>LGML\Source\Logger</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\LGMLLogger.h">
+    <ClInclude Include="..\..\Source\Logger\LGMLLoggerUI.h">
       <Filter>LGML\Source\Logger</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\LGMLLoggerUI.h">
-      <Filter>LGML\Source\Logger</Filter>
+    <ClInclude Include="..\..\Source\MIDI\MIDIHelpers.h">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ControllableEditor.h">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClInclude Include="..\..\Source\MIDI\MIDIListener.h">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\GenericControllableContainerEditor.h">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClInclude Include="..\..\Source\MIDI\MIDIManager.h">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\InspectableComponent.h">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClInclude Include="..\..\Source\MIDI\MIDIUIHelper.h">
+      <Filter>LGML\Source\MIDI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Inspector.h">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.h">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\InspectorEditor.h">
-      <Filter>LGML\Source\Inspector</Filter>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.h">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TimeManager.h">
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.h">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.h">
+      <Filter>LGML\Source\Node\Connection\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Connection\NodeConnection.h">
+      <Filter>LGML\Source\Node\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioDeviceInNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioDeviceInNodeUI.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioDeviceOutNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioDeviceOutNodeUI.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioMixerNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioMixerNodeUI.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\ContainerInNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\ContainerOutNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\DummyNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\DummyNodeContentUI.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\LooperNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\LooperNodeUI.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\LooperTrack.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DNodeUI.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DViewer.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\Spat3DViewer.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\VSTNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\VSTNodeUI.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\JsNode.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Impl\JsNodeUI.h">
+      <Filter>LGML\Source\Node\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Manager\UI\NodeManagerUI.h">
+      <Filter>LGML\Source\Node\Manager\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Manager\NodeFactory.h">
+      <Filter>LGML\Source\Node\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\Manager\NodeManager.h">
+      <Filter>LGML\Source\Node\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerContentUI.h">
+      <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerUI.h">
+      <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerViewer.h">
+      <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\NodeContainer\NodeContainer.h">
+      <Filter>LGML\Source\Node\NodeContainer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\NodeBaseAudioCtlUI.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\NodeBaseContentUI.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\NodeBaseHeaderUI.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\NodeBaseUI.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeContentUI.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeUI.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectorComponent.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\ConnectableNode.h">
+      <Filter>LGML\Source\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Node\NodeBase.h">
+      <Filter>LGML\Source\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Preset\PresetChooserUI.h">
+      <Filter>LGML\Source\Preset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Preset\PresetManager.h">
+      <Filter>LGML\Source\Preset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsContainerSync.h">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsEnvironment.h">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsEnvironmentUI.h">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsGlobalEnvironment.h">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsHelpers.h">
+      <Filter>LGML\Source\Scripting\Js</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Time\TimeManager.h">
       <Filter>LGML\Source\Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TimeManagerUI.h">
+    <ClInclude Include="..\..\Source\Time\TimeManagerUI.h">
       <Filter>LGML\Source\Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\TimeMasterCandidate.h">
+    <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h">
       <Filter>LGML\Source\Time</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ProjectManager.h">
-      <Filter>LGML\Source\Project</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\SettingsManager.h">
-      <Filter>LGML\Source\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifterFactory.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifterPanelHeader.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifterPanelTab.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifterContent.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifter.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\GapGrabber.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifterWindow.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifterPanel.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifterContainer.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\ShapeShifterManager.h">
-      <Filter>LGML\Source\UI\ShapeShifter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\BetterStepper.h">
+    <ClInclude Include="..\..\Source\UI\LGMLDragger.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\LGMLDragger.h">
+    <ClInclude Include="..\..\Source\UI\LookAndFeelOO.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\LookAndFeelOO.h">
+    <ClInclude Include="..\..\Source\UI\Outliner.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\ProgressWindow.h">
+    <ClInclude Include="..\..\Source\UI\PluginWindow.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Style.h">
+    <ClInclude Include="..\..\Source\UI\ProgressNotifier.h">
       <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ProgressWindow.h">
+      <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Style.h">
+      <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\VuMeter.h">
+      <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\GapGrabber.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifter.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterContainer.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterContent.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterFactory.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterManager.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanel.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelHeader.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelTab.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\AudioDebugCrack.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\AudioDebugPipe.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\AudioFucker.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\CommandLineElements.hpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\DebugHelpers.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\NetworkUtils.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\QueuedNotifier.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\StringUtil.hpp">
+      <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Engine.h">
       <Filter>LGML\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\LGMLConfig.h">
+    <ClInclude Include="..\..\Source\GitSha.h">
       <Filter>LGML\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">
@@ -5157,22 +5055,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Resources\little-red-riding-hood-md.png">
-      <Filter>LGML\Source\Assets</Filter>
+      <Filter>LGML\Assets</Filter>
     </None>
     <None Include="..\..\Resources\default.lgmllayout">
-      <Filter>LGML\Source\Assets</Filter>
+      <Filter>LGML\Assets</Filter>
     </None>
     <None Include="..\..\Resources\removeBT.png">
-      <Filter>LGML\Source\Assets</Filter>
+      <Filter>LGML\Assets</Filter>
     </None>
     <None Include="..\..\Resources\grandlouloup.png">
-      <Filter>LGML\Source\Assets</Filter>
+      <Filter>LGML\Assets</Filter>
     </None>
     <None Include="..\..\Resources\wolf_footprint.png">
-      <Filter>LGML\Source\Assets</Filter>
+      <Filter>LGML\Assets</Filter>
     </None>
     <None Include="..\..\Resources\wolf_footprint_debug.png">
-      <Filter>LGML\Source\Assets</Filter>
+      <Filter>LGML\Assets</Filter>
     </None>
     <None Include="..\..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">
       <Filter>Juce Modules\juce_audio_formats\codecs\flac</Filter>

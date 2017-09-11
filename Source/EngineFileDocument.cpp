@@ -15,7 +15,7 @@
 
 #include "Engine.h"
 
-#include "Inspector.h"
+#include "Inspector/Inspector.h"
 
 
 

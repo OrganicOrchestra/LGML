@@ -15,11 +15,11 @@
 
 
 #include "MainComponent.h"
-#include "FastMap.h"
+#include "FastMapper/FastMap.h"
 #include "Engine.h"
-#include "Inspector.h"
-#include "NodeContainer.h"
-#include "LGMLDragger.h"
+#include "Inspector/Inspector.h"
+#include "Node/NodeContainer/NodeContainer.h"
+#include "UI/LGMLDragger.h"
 
 namespace CommandIDs
 {

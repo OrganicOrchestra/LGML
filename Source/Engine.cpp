@@ -14,18 +14,18 @@
 
 
 #include "Engine.h"
-#include "SerialManager.h"
-#include "LGMLLogger.h"
+#include "Controller/Impl/SerialManager.h"
+#include "Logger/LGMLLogger.h"
 #include "MainComponent.h"
-#include "DebugHelpers.h"
+#include "Utils/DebugHelpers.h"
 
-#include "NodeContainer.h"
-#include "AudioDebugPipe.h"
-#include "AudioDebugCrack.h"
-#include "ParameterFactory.h"
-#include "NetworkUtils.h"
+#include "Node/NodeContainer/NodeContainer.h"
+#include "Utils/AudioDebugPipe.h"
+#include "Utils/AudioDebugCrack.h"
+#include "Controllable/Parameter/ParameterFactory.h"
+#include "Utils/NetworkUtils.h"
 
-#include "StringUtil.hpp"
+#include "Utils/StringUtil.hpp"
 
 
 const char* const filenameSuffix = ".lgml";
@@ -35,10 +35,10 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
                                     filenameWildcard,
                                     "Load a filter graph",
                                     "Save a filter graph"),
-	ControllableContainer("root"),
+	ParameterContainer("root"),
 threadPool(4)
 {
-  ParameterFactory::registerAllTypes();
+  ParameterFactory::logAllTypes();
 	skipControllableNameInAddress = true;
   loadingStartTime = 0;
   initAudio();
@@ -283,5 +283,3 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent(){
   getAppProperties().getUserSettings()->saveIfNeeded();
 
 }
-
-

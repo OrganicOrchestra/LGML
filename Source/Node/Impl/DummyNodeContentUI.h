@@ -1,0 +1,49 @@
+/* Copyright © Organic Orchestra, 2017
+*
+* This file is part of LGML.  LGML is a software to manipulate sound in realtime
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation (version 3 of the License).
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*
+*/
+
+
+#ifndef DUMMYNODECONTENTUI_H_INCLUDED
+#define DUMMYNODECONTENTUI_H_INCLUDED
+
+
+#include "DummyNode.h"//keep
+#include "../UI/NodeBaseContentUI.h"
+#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+
+#include "../../Controllable/Parameter/UI/EnumParameterUI.h"
+
+class DummyNodeContentUI : public NodeBaseContentUI
+{
+public:
+    DummyNodeContentUI();
+    virtual ~DummyNodeContentUI();
+
+    DummyNode * dummyNode;
+
+    ScopedPointer<FloatSliderUI> freq1Slider;
+    ScopedPointer<FloatSliderUI> freq2Slider;
+	ScopedPointer<FloatSliderUI> pxSlider;
+	ScopedPointer<FloatSliderUI> pySlider;
+	ScopedPointer<ParameterUI> modeUI;
+    ScopedPointer<ControllableUI> testTriggerButton;
+
+    void resized() override;
+
+    void init() override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNodeContentUI)
+};
+
+
+#endif  // DUMMYNODECONTENTUI_H_INCLUDED

@@ -20,20 +20,20 @@
 
 
 /*
-#include "NodeManager.h"
-#include "NodeManagerUI.h"
+#include "Node/Manager/NodeManager.h"
+#include "Node/Manager/UI/NodeManagerUI.h"
 
-#include "ControlManager.h"
-#include "ControllerManagerUI.h"
-#include "TimeManagerUI.h"
+#include "Controller/ControllerManager.h"
+#include "Controller/UI/ControllerManagerUI.h"
+#include "Time/TimeManagerUI.h"
 
 #include "RuleManager.h"
 #include "RuleManagerUI.h"
 
-#include "FastMapper.h"
-#include "FastMapperUI.h"
+#include "FastMapper/FastMapper.h"
+#include "FastMapper/FastMapperUI.h"
 
-#include "LGMLLoggerUI.h"
+#include "Logger/LGMLLoggerUI.h"
 */
 
 
@@ -46,9 +46,9 @@
 
 
 #include "Engine.h"
-#include "ShapeShifterManager.h"//keep
-#include "DebugHelpers.h"//keep
-#include "ProgressWindow.h"
+#include "UI/ShapeShifter/ShapeShifterManager.h"
+#include "Utils/DebugHelpers.h"
+#include "UI/ProgressWindow.h"
 
 ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();

@@ -1,0 +1,388 @@
+/*
+  ==============================================================================
+
+    ParameterContainer.cpp
+    Created: 5 Sep 2017 3:59:43pm
+    Author:  Martin Hermant
+
+  ==============================================================================
+*/
+
+#include "ParameterContainer.h"
+#include "../Parameter/ParameterFactory.h"
+
+const Identifier ParameterContainer::presetIdentifier("preset");
+
+
+ParameterContainer::ParameterContainer(const String & niceName,bool _isUserDefined):
+ControllableContainer(niceName,_isUserDefined),
+currentPreset(nullptr)
+{
+
+
+
+  nameParam = addNewParameter<StringParameter>("Name", "Set the visible name of the node.", "");
+  nameParam->isPresettable = false;
+  nameParam->isEditable = _isUserDefined;
+
+  currentPresetName = addNewParameter<StringParameter>("Preset", "Current Preset", "");
+  currentPresetName->hideInEditor = true;
+  savePresetTrigger = addNewParameter<Trigger>("Save Preset", "Save current preset");
+  savePresetTrigger->hideInEditor = true;
+
+
+  // init once all are created to avoid uninitialized values
+  nameParam->setValue(niceName);
+
+}
+
+ParameterContainer::~ParameterContainer(){
+
+}
+const String  ParameterContainer::getNiceName(){
+  return nameParam->stringValue();
+}
+
+String ParameterContainer::setNiceName(const String & n){
+  auto targetName = ControllableContainer::setNiceName(n);
+  nameParam->setValue(targetName,targetName==getNiceName(),true);
+  return targetName;
+}
+
+
+Array<WeakReference<Parameter>> ParameterContainer::getAllParameters(bool recursive, bool getNotExposed)
+{
+  Array<WeakReference<Parameter>> result;
+  for (auto &c : controllables)
+  {
+    if (getNotExposed || c->isControllableExposed){
+      if(Parameter * cc = c->getParameter()){
+        result.add(cc);
+      }
+    }
+  }
+
+  if (recursive)
+  {
+    ScopedLock lk(controllableContainers.getLock());
+    for (auto &cc : controllableContainers) if(cc.get())result.addArray(((ParameterContainer*)cc.get())->getAllParameters(true, getNotExposed));
+  }
+
+  return result;
+}
+
+
+var ParameterContainer::getJSONData()
+{
+  DynamicObject * data = new DynamicObject();
+  data->setProperty(containerNameIdentifier, getNiceName());
+  data->setProperty("uid",uid.toString());
+  {
+    var paramsData(new DynamicObject);
+
+    for(auto & c :controllables){
+      if(c->isUserDefined || c->shouldSaveObject  ){
+        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::getVarObjectFromControllable(c));
+      }
+      else if (c->isSavable){
+        paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
+      }
+    }
+
+
+    data->setProperty(controllablesId, paramsData);
+
+  }
+
+
+  if(controllableContainers.size()){
+    DynamicObject *  childData = new DynamicObject();
+
+    for(auto controllableCont: controllableContainers){
+      childData->setProperty(controllableCont->shortName,controllableCont.get()->getJSONData());
+    }
+    data->setProperty(childContainerId, childData);
+  }
+
+
+
+  return data;
+}
+
+void ParameterContainer::containerCleared(ControllableContainer * c){
+  if (c==this)cleanUpPresets();
+}
+
+void ParameterContainer::controllableRemoved(ControllableContainer *,Controllable *c) {
+
+if(auto p = c->getParameter()){
+  p->removeParameterListener(this);
+  p->removeAsyncParameterListener(this);
+}
+}
+Parameter *  ParameterContainer::addParameter(Parameter * p)
+{
+
+  p->setParentContainer(this);
+  controllables.add(p);
+  controllableContainerListeners.call(&ControllableContainerListener::controllableAdded,this, p);
+  notifyStructureChanged(this);
+  addControllableInternal(p);
+  p->addParameterListener(this);
+  p->addAsyncParameterListener(this);
+  p->isUserDefined = isUserDefined;
+  return p;
+
+
+}
+
+
+
+void ParameterContainer::newMessage(const Parameter::ParamWithValue& pv){
+  if(pv.parameter == currentPresetName){
+    loadPresetWithName(pv.parameter->stringValue());
+  }
+  if(!pv.isRange()){
+    onContainerParameterChangedAsync(pv.parameter, pv.value);
+  }
+}
+
+void ParameterContainer::parameterValueChanged(Parameter * p)
+{
+  if (p == nameParam)
+  {
+    if(parentContainer){
+      String oN = nameParam->stringValue();
+      String tN = parentContainer->getUniqueNameInContainer(oN,0,this);
+      if(tN!=oN){
+        nameParam->setValue(tN,false,true);
+      }
+    }
+    if (!hasCustomShortName) setAutoShortName();
+  }
+  else   if (p == savePresetTrigger)
+  {
+    saveCurrentPreset();
+
+  }
+
+  if(p && p->type==Controllable::TRIGGER){
+    onContainerTriggerTriggered((Trigger*)p);
+  }
+  else{
+    onContainerParameterChanged(p);
+  }
+
+  if ( (p!=nullptr && p->parentContainer==this && p->isControllableExposed ) ) dispatchFeedback(p);
+}
+
+void ParameterContainer::loadJSONData(const var & data)
+{
+  auto dyn =data.getDynamicObject();
+  if (dyn->hasProperty("uid")) uid = dyn->getProperty("uid");
+  if (dyn->hasProperty(containerNameIdentifier))
+  {
+    String  name =dyn->getProperty(containerNameIdentifier);
+    setNiceName(name);
+  }
+  {
+    DynamicObject * paramsData = dyn->getProperty(controllablesId).getDynamicObject();
+    jassert(paramsData);
+    if (paramsData != nullptr)
+    {
+      auto props = paramsData->getProperties();
+      for (auto & p:props)
+      {
+        if(Controllable * c = getControllableByName(p.name.toString(),true)){
+          if(c->isSavable){
+            if (Parameter * par = dynamic_cast<Parameter*>(c)) {
+              // we don't load preset when already loading a state
+              if (par->shortName != presetIdentifier.toString() ){
+                par->setValue(p.value);
+              }
+            }
+            else {
+              // we don't use custom types for now
+              jassertfalse;
+              loadCustomJSONElement(p.name.toString(),p.value);
+            }
+          }
+        }
+        else {
+          addParameterFromVar(p.name.toString(),p.value);
+        }
+
+      }
+    }
+  }
+
+  {
+
+
+    auto cD = dyn->getProperty(childContainerId).getDynamicObject();
+    if(cD){
+      auto ob = cD->getProperties();
+
+      for(auto & o: ob){
+        auto cont = getControllableContainerByName(o.name.toString());
+        if(cont){
+          cont->loadJSONData(o.value);
+        }
+        else{
+          auto c = addContainerFromVar(o.name.toString(),o.value);
+          if(c){
+            c->loadJSONData(o.value);
+          }
+          else{
+            jassertfalse;
+          }
+        }
+      }
+
+    }
+  }
+
+
+
+
+
+}
+
+
+ParameterContainer *  ParameterContainer::addContainerFromVar(const String & name,const var & /*data*/) {
+  auto res = new ParameterContainer(name,true);
+  addChildControllableContainer(res);
+  return res;;
+};
+Parameter* ParameterContainer::addParameterFromVar(const String & name,const var & data) {
+  // handle automagically for userdefined
+  jassert(isUserDefined);
+
+  return addParameter(ParameterFactory::createFromVarObject(data, name));
+};
+
+////////////
+// Preset
+
+
+
+bool ParameterContainer::loadPresetWithName(const String & name)
+{
+  // TODO weird feedback when loading preset on parameter presetName
+  if(isLoadingPreset){return false;}
+  if(name=="") return false;
+  isLoadingPreset = true;
+
+  PresetManager::Preset * preset = PresetManager::getInstance()->getPreset(getPresetFilter(), name);
+  if (preset == nullptr){isLoadingPreset = false;currentPresetName->setValue("", true,true); return false;}
+  bool hasLoaded = loadPreset(preset);
+  isLoadingPreset = false;
+  return hasLoaded;
+
+}
+
+bool ParameterContainer::loadPreset(PresetManager::Preset * preset)
+{
+  if (preset == nullptr){
+    currentPresetName->setValue("", true);
+    return false;
+  }
+
+  loadPresetInternal(preset);
+
+  for (auto &pv : preset->presetValues)
+  {
+
+    Parameter * p = dynamic_cast<Parameter *>(getControllableForAddress(pv->paramControlAddress));
+    //DBG("Load preset, param set container : " << niceName << ", niceName : " << p->niceName << ",pv controlAddress : " << p->controlAddress << "" << pv->presetValue.toString());
+    if (p != nullptr && p != currentPresetName) p->setValue(pv->presetValue);
+  }
+
+  currentPreset = preset;
+  currentPresetName->setValue(currentPreset->name, false);
+
+  controllableContainerListeners.call(&ControllableContainerListener::controllableContainerPresetLoaded, this);
+  return true;
+}
+
+PresetManager::Preset* ParameterContainer::saveNewPreset(const String & _name)
+{
+  PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(_name, getPresetFilter(), this, presetSavingIsRecursive);
+  savePresetInternal(pre);
+  NLOG(getNiceName(), "New preset saved : " + pre->name);
+  loadPreset(pre);
+  return pre;
+}
+
+
+bool ParameterContainer::saveCurrentPreset()
+{
+  //Same as saveNewPreset because PresetManager now replaces if name is the same
+  if (currentPreset == nullptr) {
+    jassertfalse;
+    return false;
+  }
+
+  PresetManager::Preset * pre = PresetManager::getInstance()->addPresetFromControllableContainer(currentPreset->name, getPresetFilter(), this, presetSavingIsRecursive);
+  savePresetInternal(pre);
+  NLOG(getNiceName(), "Current preset saved : " + pre->name);
+  return loadPreset(pre);
+
+  /*
+   for (auto &pv : currentPreset->presetValues)
+   {
+   Parameter * p = dynamic_cast<Parameter*> (getControllableForAddress(pv->paramControlAddress));
+   if (p != nullptr && p!=currentPresetName)
+   {
+   pv->presetValue = var(p->value);
+   }
+   }
+   savePresetInternal(currentPreset);
+   NLOG(niceName, "Current preset saved : " + currentPreset->name);
+
+   return true;
+   */
+}
+
+int ParameterContainer::getNumPresets()
+{
+  return PresetManager::getInstance()->getNumPresetForFilter(getPresetFilter());
+}
+
+bool ParameterContainer::resetFromPreset()
+{
+  if (currentPreset == nullptr) return false;
+
+
+  for (auto &pv : currentPreset->presetValues)
+  {
+    Parameter * p = (Parameter *)getControllableForAddress(pv->paramControlAddress);
+    if (p != nullptr && p !=currentPresetName) p->resetValue();
+  }
+
+
+  currentPreset = nullptr;
+  currentPresetName->setValue("", true);
+
+  return true;
+}
+
+var ParameterContainer::getPresetValueFor(Parameter * p)
+{
+  if (currentPreset == nullptr) return var();
+  return currentPreset->getPresetValue(p->getControlAddress(this));
+}
+
+
+void ParameterContainer::cleanUpPresets()
+{
+  PresetManager * pm = PresetManager::getInstanceWithoutCreating();
+  if (pm != nullptr) pm->deletePresetsForContainer(this, true);
+
+}
+
+String ParameterContainer::getPresetFilter()
+{
+  return shortName;
+}
+
