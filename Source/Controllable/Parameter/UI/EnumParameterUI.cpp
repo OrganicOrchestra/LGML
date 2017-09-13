@@ -22,7 +22,7 @@ ParameterUI(parameter),
 ep((EnumParameter *)parameter)
 {
   cb.addListener(this);
-  cb.setTextWhenNoChoicesAvailable(ep->niceName);
+  cb.setTextWhenNoChoicesAvailable("No choices for" + ep->niceName);
   cb.setTextWhenNothingSelected(ep->niceName);
   cb.setTooltip(ParameterUI::getTooltip());
   cb.setEditableText(ep->userCanEnterText);
@@ -70,10 +70,10 @@ void EnumParameterUI::updateComboBox()
 
 
   idKeyMap.clear();
-  if(DynamicObject * dob = ep->getModel()){
+  if(EnumParameterModel * mod = ep->getModel()){
     int id = 1;
     cb.addItem("None", NoneId);
-    NamedValueSet map = dob->getProperties();
+    NamedValueSet map = mod->getProperties();
     for(auto & kv:map)
     {
       String key =kv.name.toString();
@@ -117,6 +117,7 @@ void EnumParameterUI::enumOptionRemoved(EnumParameter *, const Identifier &)
   updateComboBox();
 }
 void EnumParameterUI::enumOptionSelectionChanged(EnumParameter *,bool _isSelected,bool isValid, const Identifier &name){
+  DBG("enum change : " <<name.toString() << (!_isSelected?" not":"") << " selected " << (!isValid?"in-":"") <<"valid");
   if(isValid){
     jassert(keyIdMap.contains(name.toString()));
     cb.setSelectedId(_isSelected?keyIdMap[name.toString()]:0,dontSendNotification);
@@ -141,8 +142,11 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
       String v = cb.getText();
       if(v.isNotEmpty()&& (v != cb.ComboBox::getTextWhenNothingSelected())){
         jassert(ep->userCanEnterText);
-        ep->addOption(v,v);
+        ep->addOption(v,v,true);
         ep->setValue(v);
+      }
+      else{
+        ep->unselectAll();
       }
     }
     else if(id==addElementId ){

@@ -18,7 +18,7 @@
 
 #include "JuceHeader.h"
 #include "../Controllable/Parameter/NumericParameter.h"
-#include "../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../Controllable/Parameter/UI/SliderUI.h"
 #include "../Engine.h"
 class ProgressWindow : public juce::Component,public ProgressNotifier::ProgressListener
 {

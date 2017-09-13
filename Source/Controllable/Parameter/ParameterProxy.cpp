@@ -22,7 +22,6 @@ StringParameter(niceName,desc),
 linkedParam(ref),
 rootOfProxy(nullptr)
 {
-  type = Controllable::PROXY;
   setRoot(root);
 
 

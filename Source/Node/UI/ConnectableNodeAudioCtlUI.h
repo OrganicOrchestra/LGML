@@ -18,11 +18,13 @@
 #pragma once
 
 
-class FloatSliderUI;
+
 class ConnectableNode;
 class ConnectableNodeUI;
+
 #include "JuceHeader.h"//keep
 
+template<typename T> class SliderUI;
 class ConnectableNodeAudioCtlUI:public juce::Component{
 
 public:
@@ -33,7 +35,7 @@ public:
 
     void resized() override;
 
-    ScopedPointer<FloatSliderUI>  outputVolume;
+    ScopedPointer<SliderUI<double> >  outputVolume;
     //ScopedPointer<BoolToggleUI>  bypassUI;
 
 

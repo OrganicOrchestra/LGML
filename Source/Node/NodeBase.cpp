@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "NodeBase.h"
@@ -19,8 +19,8 @@
 
 #include "../Audio/AudioHelpers.h"
 
-NodeBase::NodeBase(const String &name,NodeType _type, bool _hasMainAudioControl) :
-ConnectableNode(name,_type,_hasMainAudioControl),
+NodeBase::NodeBase(const String &name, bool _hasMainAudioControl) :
+ConnectableNode(name,_hasMainAudioControl),
 dryWetFader(5000,5000,false,1),
 muteFader(1000,1000,false,1),
 lastDryVolume(0),
@@ -41,7 +41,7 @@ rmsTimer(this)
 
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
-  
+
 
 }
 
@@ -115,9 +115,14 @@ void NodeBase::clear()
 
 //Save / Load
 
-var NodeBase::getJSONData()
+String NodeBase::getPresetFilter()
 {
-  var data = ConnectableNode::getJSONData();
+  return getTypeName() + String("_") + uid.toString();
+}
+
+DynamicObject * NodeBase::getObject()
+{
+  auto data = ConnectableNode::getObject();
 
   MemoryBlock m;
 
@@ -127,17 +132,17 @@ var NodeBase::getJSONData()
   if (m.getSize()) {
     var audioProcessorData(new DynamicObject());
     audioProcessorData.getDynamicObject()->setProperty("state", m.toBase64Encoding());
-    data.getDynamicObject()->setProperty("audioProcessor", audioProcessorData);
+    data->setProperty("audioProcessor", audioProcessorData);
   }
 
   return data;
 }
 
-void NodeBase::loadJSONData(const var & data)
+void NodeBase::configureFromObject(DynamicObject* data)
 {
-  ConnectableNode::loadJSONData(data);
+  ConnectableNode::configureFromObject(data);
 
-  var audioProcessorData = data.getProperty("audioProcessor", var());
+  var audioProcessorData = data->getProperty("audioProcessor");
   String audioProcessorStateData = audioProcessorData.getProperty("state",var());
 
   MemoryBlock m;
@@ -169,7 +174,7 @@ void NodeBase::processBlock(AudioBuffer<float>& buffer,
   // juceAudioGraph seems to use the fact that we shouldn't process audio to pass others
   int numSample = buffer.getNumSamples();
 
-  
+
   int totalNumInputChannels = getTotalNumInputChannels();
   int totalNumOutputChannels =getTotalNumOutputChannels();
 
@@ -341,42 +346,27 @@ bool NodeBase::setPreferedNumAudioOutput(int num) {
   int oldNumChannels = getTotalNumOutputChannels();
   {
 
-    if (parentNodeContainer != nullptr){
-      //      parentNodeContainer->getAudioGraph()->suspendProcessing(true);
-      {
-        const ScopedLock lk( parentNodeContainer->getAudioGraph()->getCallbackLock());
-        setPlayConfigDetails(getTotalNumInputChannels(), num,
-                             getSampleRate(),
-                             getBlockSize());
-
-
-        parentNodeContainer->updateAudioGraph(false);
-        if(oldNumChannels!=getTotalNumOutputChannels()){
-          numChannelsChanged(false);
-        }
-      }
-      //      if(ContainerOutNode* n = dynamic_cast<ContainerOutNode*>(this)){
-      //        n->parentNodeContainer->setPreferedNumAudioOutput(totalNumOutputChannels);
-      //      }
-
-
-      //      parentNodeContainer->getAudioGraph()->suspendProcessing(false);
+    ScopedPointer<ScopedLock> lkp;
+    if(parentNodeContainer!=nullptr){
+      lkp = new ScopedLock(parentNodeContainer->getAudioGraph()->getCallbackLock());
     }
-    else{
-      setPlayConfigDetails(getTotalNumInputChannels(), num,
-                           getSampleRate(),
-                           getBlockSize());
 
-      if(oldNumChannels!=getTotalNumOutputChannels()){
-        numChannelsChanged(false);
-      }
+    setPlayConfigDetails(getTotalNumInputChannels(), num,
+                         getSampleRate(),
+                         getBlockSize());
 
+    if(parentNodeContainer!=nullptr){
+      parentNodeContainer->updateAudioGraph(false);
     }
+    if(oldNumChannels!=getTotalNumOutputChannels()){
+      numChannelsChanged(false);
+    }
+
   }
 
   rmsValuesOut.clear();
 
-    int totalNumOutputChannels =getTotalNumOutputChannels();
+  int totalNumOutputChannels =getTotalNumOutputChannels();
 
   for (int i = 0; i < totalNumOutputChannels; i++) rmsValuesOut.add(0);
 

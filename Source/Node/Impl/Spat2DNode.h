@@ -24,7 +24,7 @@
 class Spat2DNode : public NodeBase
 {
 public:
-	Spat2DNode();
+  DECLARE_OBJ_TYPE(Spat2DNode)
 	enum SpatMode {BEAM, PROXY};
 	enum ShapeMode {FREE, CIRCLE};
 

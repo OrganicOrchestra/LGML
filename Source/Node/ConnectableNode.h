@@ -29,12 +29,14 @@ class ConnectableNode :
 	public ParameterContainer
 {
 public:
-	ConnectableNode(const String &name, NodeType type, bool _hasMainAudioControl = true);
+	ConnectableNode(const String &name, bool _hasMainAudioControl = true);
 	virtual ~ConnectableNode();
 
-	NodeType type;
+
 
 	NodeContainer * parentNodeContainer;
+
+  
   
 	virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer);
   AudioProcessorGraph::Node * audioNode;
@@ -65,7 +67,6 @@ public:
 	void remove();
 	virtual void clear();
 
-	var getJSONData() override;
 	
 
 
@@ -155,7 +156,7 @@ public:
     void addRMSChannelListener(RMSChannelListener* newListener) { rmsChannelListeners.add(newListener); }
     void removeRMSChannelListener(RMSChannelListener* listener) { rmsChannelListeners.remove(listener); }
 
-    String getPresetFilter() override;
+    
 
 
 	//DATA

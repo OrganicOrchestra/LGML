@@ -20,10 +20,12 @@
 #include "../../Audio/AudioHelpers.h"
 #include "../Manager/NodeManager.h"
 
+REGISTER_NODE_TYPE(AudioDeviceInNode)
+
 AudioDeviceManager& getAudioDeviceManager();
 
-AudioDeviceInNode::AudioDeviceInNode() :
-NodeBase("AudioDeviceIn",NodeType::AudioDeviceInType),
+AudioDeviceInNode::AudioDeviceInNode(StringRef name) :
+NodeBase(name),
 AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
 {
 

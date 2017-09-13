@@ -54,7 +54,7 @@ public:
   void remove();
 
 
-  var getJSONData() override;
+  DynamicObject * getObject() override;
 
   // identifiers
   static const Identifier controllerTypeIdentifier;

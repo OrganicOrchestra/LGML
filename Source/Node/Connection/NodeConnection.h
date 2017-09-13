@@ -19,19 +19,20 @@
 
 #include "../../Data/DataProcessorGraph.h"
 #include "../NodeBase.h"
-
+#include "../../Utils/FactoryObject.h"
 
 
 class NodeConnection :
 	public ReferenceCountedObject,
-	public ConnectableNode::ConnectableNodeListener
+	public ConnectableNode::ConnectableNodeListener,
+  public FactoryObject
 {
 public:
     enum ConnectionType
     {
         AUDIO, DATA, UNDEFINED
     };
-
+  DECLARE_OBJ_TYPE(NodeConnection)
     ConnectionType connectionType;
 
     bool isAudio() { return connectionType == ConnectionType::AUDIO; }
@@ -83,8 +84,8 @@ public:
 
 	// save / load
 
-    var getJSONData();
-    void loadJSONData(const var & data);
+  DynamicObject * getObject()override;
+    void configureFromObject(DynamicObject * data) override;
 
     //Listener
     class  Listener

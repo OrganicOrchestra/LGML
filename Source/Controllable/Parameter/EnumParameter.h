@@ -23,43 +23,26 @@
 // base class for model behind an enum parameter
 // a model is a dictionary of var notifying its structural changes
 // it can be used to share it's content to different instances of enum parameter
-class EnumParameterModel : public DynamicObject{
+class EnumParameterModel : private DynamicObject{
 public:
 
-  EnumParameterModel(){
-  }
-  virtual ~EnumParameterModel(){
-    masterReference.clear();
-  }
+  EnumParameterModel(bool shouldSave);
+  bool shouldSaveModel;
+
+  virtual ~EnumParameterModel();
 
 
-  void addOption(Identifier key, var data){
-    // we don't want to override existing
-    jassert(!hasProperty(key));
-    addOrSetOption(key, data);
+  void addOption(Identifier key, var data,bool userDefined=false);
 
-  }
+  void addOrSetOption(Identifier key, var data,bool userDefined=false);
 
-  void addOrSetOption(Identifier key, var data){
-    setProperty(key, data);
-    listeners.call(&Listener::modelOptionAdded,this,key);
-  }
+  void removeOption(Identifier key);
+  var getValueForId(const Identifier &key);
+  bool isValidId(Identifier key);
+  DynamicObject * getObject();
+  const NamedValueSet getProperties()noexcept;
 
-  void removeOption(Identifier key)
-  {
-    removeProperty(key);
-    listeners.call(&Listener::modelOptionRemoved,this,key);
-
-
-  }
-  var getValueForId(const Identifier &i){
-    return getProperty(i);
-  }
-
-  bool isValidId(Identifier key){
-    return hasProperty(key);
-  }
-
+  
 
 
   class Listener{
@@ -71,7 +54,7 @@ public:
   ListenerList<Listener> listeners;
 
 private:
-
+  DynamicObject::Ptr userOptions;
   WeakReference<EnumParameterModel>::Master masterReference;
   friend class WeakReference<EnumParameterModel>;
 
@@ -112,17 +95,17 @@ class EnumChangeMessage{
 class EnumParameter : public Parameter,public EnumParameterModel::Listener,public QueuedNotifier<EnumChangeMessage>::Listener
 {
 public:
-  DECLARE_PARAM_TYPE(EnumParameter)
-  EnumParameter(const String &niceName, const String &description, EnumParameterModel * modelInstance=nullptr, bool userCanEnterText=false,bool enabled = true);
+  DECLARE_OBJ_TYPE(EnumParameter)
+  EnumParameter(const String &niceName, const String &description=String::empty, EnumParameterModel * modelInstance=nullptr, bool userCanEnterText=false,bool enabled = true);
   ~EnumParameter() ;
   
   static Identifier selectedSetIdentifier;
   static Identifier modelIdentifier;
-  void addOption(Identifier key, var data=var::null);
-  void addOrSetOption(Identifier key, var data=var::null);
+  void addOption(Identifier key, var data=var::null,bool user=false);
+  void addOrSetOption(Identifier key, var data=var::null,bool user=false);
   void removeOption(Identifier key);
-  void selectId(Identifier key,bool shouldSelect,bool appendSelection = true);
-  bool selectFromVar(var & _value,bool shouldSelect,bool appendSelection=true);
+  void selectId(Identifier key,bool shouldSelect,bool appendSelection = false);
+  bool selectFromVar(var & _value,bool shouldSelect,bool appendSelection=false);
   void unselectAll();
   String stringValue() const override;
 

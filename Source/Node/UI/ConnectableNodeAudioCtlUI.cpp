@@ -17,7 +17,7 @@
 
 
 #include "../../Controllable/Parameter/UI/BoolToggleUI.h"
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../ConnectableNode.h"
 #include "ConnectableNodeUI.h"
 

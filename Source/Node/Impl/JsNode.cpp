@@ -19,6 +19,7 @@
 #include "../../Engine.h"
 
 
+REGISTER_NODE_TYPE(JsNode)
 ConnectableNodeUI * JsNode::createUI()
 {
 
@@ -29,7 +30,7 @@ ConnectableNodeUI * JsNode::createUI()
 
 
 
-JsNode::JsNode() :NodeBase("JsNode", NodeType::JsNodeType, false), JsEnvironment("node.jsNode", this) {
+JsNode::JsNode(StringRef name) :NodeBase(name, false), JsEnvironment("node.jsNode", this) {
 	canHavePresets = false;
 	
 	setPreferedNumAudioInput(0);

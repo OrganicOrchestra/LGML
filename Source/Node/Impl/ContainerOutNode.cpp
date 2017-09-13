@@ -18,8 +18,9 @@
 #include "../NodeContainer/NodeContainer.h"
 
 
-ContainerOutNode::ContainerOutNode() :
-	NodeBase("Container Out", NodeType::ContainerOutType, false),
+REGISTER_NODE_TYPE(ContainerOutNode)
+ContainerOutNode::ContainerOutNode(StringRef name) :
+	NodeBase(name, false),
 AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
 	canBeRemovedByUser = false;

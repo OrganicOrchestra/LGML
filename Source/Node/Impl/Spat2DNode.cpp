@@ -17,8 +17,9 @@
 #include "../UI/NodeBaseUI.h"
 #include "Spat2DNodeUI.h"
 
-Spat2DNode::Spat2DNode() :
-	NodeBase("Spat2D", NodeType::Spat2DType),
+REGISTER_NODE_TYPE(Spat2DNode)
+Spat2DNode::Spat2DNode(StringRef name) :
+	NodeBase(name),
 	numSpatInputs(nullptr), numSpatOutputs(nullptr), spatMode(nullptr), shapeMode(nullptr)
 {
 	spatMode = addNewParameter<EnumParameter>("Mode", "Spatialization Mode (2D/3D, Beam/Proxy)");

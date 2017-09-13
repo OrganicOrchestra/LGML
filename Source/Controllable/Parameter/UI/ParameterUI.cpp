@@ -17,15 +17,20 @@
 #include "../../../Utils/DebugHelpers.h"
 
 //==============================================================================
-ParameterUI::ParameterUI(Parameter * parameter) :
-parameter(parameter),
-ControllableUI(parameter),
+ParameterUI::ParameterUI(Parameter * _parameter) :
+parameter(_parameter),
+ControllableUI(_parameter),
 showLabel(true),
 showValue(true),
 customTextDisplayed(String::empty)
 {
+  if(parameter.get()){
   parameter->addAsyncCoalescedListener(this);
   parameter->addParameterListener(this);
+  }
+  else{
+    jassertfalse;
+  }
   
 
 }

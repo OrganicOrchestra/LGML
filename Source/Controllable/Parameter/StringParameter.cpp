@@ -20,7 +20,7 @@ REGISTER_PARAM_TYPE(StringParameter)
 
 
 StringParameter::StringParameter(const String & niceName, const String &description, const String & initialValue, bool enabled) :
-Parameter(Type::STRING, niceName, description, initialValue, enabled)
+Parameter(niceName, description, initialValue, enabled)
 {
 
 }
@@ -43,3 +43,7 @@ void  StringParameter::setValueInternal(var & newVal){
   value = newVal.toString();
 };
 
+
+bool StringParameter::isMappable() {
+  return false;
+}

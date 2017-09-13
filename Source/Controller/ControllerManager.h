@@ -36,7 +36,7 @@ public:
   void clear();
 
 
-  ParameterContainer *  addContainerFromVar(const String & name,const var & cData)override;
+  ParameterContainer *  addContainerFromObject(const String & name,DynamicObject *  )override;
 
   class  Listener
   {

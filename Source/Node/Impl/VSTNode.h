@@ -30,7 +30,7 @@ public AsyncUpdater // end of vst loading
 {
 
 public:
-  VSTNode();
+  DECLARE_OBJ_TYPE(VSTNode)
   ~VSTNode();
 
   StringParameter *  identifierString;

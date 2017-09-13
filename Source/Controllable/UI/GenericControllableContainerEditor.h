@@ -16,10 +16,10 @@
 #ifndef GENERICCONTROLLABLECONTAINEREDITOR_H_INCLUDED
 #define GENERICCONTROLLABLECONTAINEREDITOR_H_INCLUDED
 
-#include "../Inspector/InspectorEditor.h"
-#include "ControllableContainer.h"
-#include "UI/ControllableUI.h"
-#include "../Preset/PresetChooserUI.h"
+#include "../../Inspector/InspectorEditor.h"
+#include "../ControllableContainer.h"
+#include "ControllableUI.h"
+#include "../../Preset/PresetChooserUI.h"
 
 class GenericControllableContainerEditor;
 

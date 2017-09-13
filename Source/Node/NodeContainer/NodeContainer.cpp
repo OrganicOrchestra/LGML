@@ -21,15 +21,15 @@
 
 #include "../../Utils/DebugHelpers.h"
 
-
+REGISTER_NODE_TYPE(NodeContainer)
 
 extern AudioDeviceManager& getAudioDeviceManager();
-bool isEngineLoadingFile();
+extern bool isEngineLoadingFile();
 
-NodeContainer::NodeContainer(const String &name) :
+NodeContainer::NodeContainer(StringRef name) :
 containerInNode(nullptr),
 containerOutNode(nullptr),
-NodeBase(name, NodeType::ContainerType,false),
+NodeBase(name,false),
 nodeChangeNotifier(10000),
 rebuildTimer(this)
 {
@@ -116,20 +116,15 @@ void NodeContainer::clear(bool recreateContainerNodes)
 }
 
 
-ConnectableNode * NodeContainer::addNode(NodeType nodeType, const String &nodeName)
-{
-  ConnectableNode * n = NodeFactory::createNode(nodeType);
-  return addNode(n,nodeName);
-}
 
-ConnectableNode * NodeContainer::addNodeFromJSONData(var data)
+
+ConnectableNode * NodeContainer::addNodeFromJSONData(DynamicObject * data)
 {
-  NodeType nodeType = NodeFactory::getTypeFromString(data.getProperty("nodeType", var()));
-  ConnectableNode * n = NodeFactory::createNode(nodeType);
+  ConnectableNode * n = NodeFactory::createFromObject(String::empty,data);
   return addNode(n,n->getNiceName(),data);
 }
 
-ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName, var nodeData)
+ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName, DynamicObject * nodeData)
 {
   nodes.add(n);
 
@@ -149,7 +144,7 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
 
   addChildControllableContainer(n); //ControllableContainer
 
-  if (!nodeData.isVoid()) n->loadJSONData(nodeData);
+  if (nodeData) n->configureFromObject(nodeData);
 
   nodeChangeNotifier.addMessage(new NodeChangeMessage(n,true));
   //  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
@@ -248,42 +243,42 @@ int NodeContainer::getNumConnections() {
 
 
 
-var NodeContainer::getJSONData()
+DynamicObject* NodeContainer::getObject()
 {
-  var data = ConnectableNode::getJSONData();
+  auto data = ConnectableNode::getObject();
 
   var connectionsData;
 
   for (auto &c : connections)
   {
-    connectionsData.append(c->getJSONData());
+    connectionsData.append(c->getObject());
   }
 
 //  data.getDynamicObject()->setProperty("nodes", nodesData);
-  data.getDynamicObject()->setProperty("connections", connectionsData);
+  data->setProperty("connections", connectionsData);
 
   return data;
 }
 
 
-ParameterContainer *  NodeContainer::addContainerFromVar(const String & /*name*/,const var & data){
+ParameterContainer *  NodeContainer::addContainerFromObject(const String & /*name*/,DynamicObject *  data){
 //  ConnectableNode * node = addNodeFromJSONData(data);
-  NodeType nodeType = NodeFactory::getTypeFromString(data.getProperty("nodeType", var()));
-  ConnectableNode * node = NodeFactory::createNode(nodeType);
-  if (node->type == NodeType::ContainerInType) containerInNode = (ContainerInNode *)node;
-  else if (node->type == NodeType::ContainerOutType) containerOutNode = (ContainerOutNode *)node;
+  
+  ConnectableNode * node = NodeFactory::createFromObject( String::empty,data);
+  if (auto n = dynamic_cast<ContainerInNode*>(node)) containerInNode = n;
+  else if (auto n = dynamic_cast<ContainerOutNode*>(node)) containerOutNode = n;
   addNode(node);
   return node;
 }
 
-void NodeContainer::loadJSONData(const var & data)
+void NodeContainer::configureFromObject(DynamicObject * data)
 {
   // do we really need that ???
   clear(false);
-  NodeBase::loadJSONData(data);
+  NodeBase::configureFromObject(data);
 
 
-  Array<var> * connectionsData = data.getProperty("connections", var()).getArray();
+  Array<var> * connectionsData = data->getProperty("connections").getArray();
 
   if (connectionsData)
   {
@@ -299,7 +294,7 @@ void NodeContainer::loadJSONData(const var & data)
         NodeConnection * c = addConnection(srcNode, dstNode, NodeConnection::ConnectionType(cType));
         // if c == null connection already exist, should never happen loading JSON but safer to check
         if(c){
-          c->loadJSONData(cData);
+          c->configureFromObject(cData.getDynamicObject());
         }
 
 

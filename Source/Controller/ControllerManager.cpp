@@ -61,11 +61,10 @@ void ControllerManager::clear()
 
 
 
-ParameterContainer *  ControllerManager::addContainerFromVar(const String & /*name*/,const var & cData)
+ParameterContainer *  ControllerManager::addContainerFromObject(const String & /*name*/,DynamicObject *  ob)
 {
-
-
-  ControllerFactory::ControllerType controllerType = ControllerFactory::getTypeFromString(cData.getProperty(Controller::controllerTypeIdentifier, var()));
+  jassert(ob && ob->getProperties().contains(Controller::controllerTypeIdentifier));
+  ControllerFactory::ControllerType controllerType = ControllerFactory::getTypeFromString(ob->getProperty(Controller::controllerTypeIdentifier));
   //int controllerId = cData.getProperty("controllerId", var());
   return addController(controllerType);
 

@@ -14,7 +14,7 @@
 
 
 #include "SerialControllerEditor.h"
-#include "../../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 //#include "SerialControllerUI.h"//keep
 

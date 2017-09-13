@@ -17,7 +17,8 @@
 
 #include "Inspector/Inspector.h"
 
-
+#include "Node/Impl/AudioDeviceInNode.h"
+#include "Node/Impl/AudioDeviceOutNode.h"
 
 /*================================
  this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
@@ -42,9 +43,9 @@ void Engine::createNewGraph(){
   clear();
   isLoadingFile = true;
 
-  ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceInType);
+  ConnectableNode * node = NodeManager::getInstance()->mainContainer->addNode(NodeFactory::createFromTypeID(AudioDeviceInNode::getClassId()));
   node->nodePosition->setPoint(150,100);
-  node = NodeManager::getInstance()->mainContainer->addNode(NodeType::AudioDeviceOutType);
+  node = NodeManager::getInstance()->mainContainer->addNode(NodeFactory::createFromTypeID( AudioDeviceOutNode::getClassId()));
   node->nodePosition->setPoint(450,100);
   setFile(File());
   isLoadingFile = false;
@@ -156,7 +157,7 @@ void Engine::handleAsyncUpdate(){
 
 Result Engine::saveDocument (const File& file){
 
-  var data = getJSONData();
+  var data = getObject();
 
   if (file.exists()) file.deleteFile();
   ScopedPointer<OutputStream> os( file.createOutputStream());
@@ -193,22 +194,22 @@ void Engine::setLastDocumentOpened (const File& file) {
 
 }
 
-var Engine::getJSONData()
+DynamicObject* Engine::getObject()
 {
 
-  var data(new DynamicObject());
+  auto data = new DynamicObject();
   var metaData(new DynamicObject());
 
   metaData.getDynamicObject()->setProperty("version",ProjectInfo::versionString);
   metaData.getDynamicObject()->setProperty("versionNumber", ProjectInfo::versionNumber);
 
-  data.getDynamicObject()->setProperty("metaData", metaData);
+  data->setProperty("metaData", metaData);
 
-  data.getDynamicObject()->setProperty("presetManager", PresetManager::getInstance()->getJSONData());
-  data.getDynamicObject()->setProperty("nodeManager", NodeManager::getInstance()->getJSONData());
-  data.getDynamicObject()->setProperty("controllerManager",ControllerManager::getInstance()->getJSONData());
+  data->setProperty("presetManager", PresetManager::getInstance()->getObject());
+  data->setProperty("nodeManager", NodeManager::getInstance()->getObject());
+  data->setProperty("controllerManager",ControllerManager::getInstance()->getObject());
 
-  data.getDynamicObject()->setProperty("fastMapper", FastMapper::getInstance()->getJSONData());
+  data->setProperty("fastMapper", FastMapper::getInstance()->getObject());
 
   return data;
 }
@@ -241,16 +242,16 @@ void Engine::loadJSONData (const var & data,ProgressTask * loadingTask)
   ProgressTask * fastMapperTask = loadingTask->addTask("fastMapper");
 
   presetTask->start();
-  if (d->hasProperty("presetManager")) PresetManager::getInstance()->loadJSONData(d->getProperty("presetManager"));
+  if (d->hasProperty("presetManager")) PresetManager::getInstance()->configureFromObject(d->getProperty("presetManager").getDynamicObject());
   presetTask->end();
   nodeManagerTask->start();
-  if (d->hasProperty("nodeManager")) NodeManager::getInstance()->loadJSONData(d->getProperty("nodeManager"));
+  if (d->hasProperty("nodeManager")) NodeManager::getInstance()->configureFromObject(d->getProperty("nodeManager").getDynamicObject());
   nodeManagerTask->end();
   controllerManagerTask->start();
-  if (d->hasProperty("controllerManager")) ControllerManager::getInstance()->loadJSONData(d->getProperty("controllerManager"));
+  if (d->hasProperty("controllerManager")) ControllerManager::getInstance()->configureFromObject(d->getProperty("controllerManager").getDynamicObject());
   controllerManagerTask->end();
   fastMapperTask->start();
-  if(d->hasProperty("fastMapper")) FastMapper::getInstance()->loadJSONData(d->getProperty("fastMapper"));
+  if(d->hasProperty("fastMapper")) FastMapper::getInstance()->configureFromObject(d->getProperty("fastMapper").getDynamicObject());
   fastMapperTask->end();
 
   //Clean unused presets

@@ -18,10 +18,10 @@ namespace{
 }
 class MinMaxParameter : public Parameter{
 public:
-  MinMaxParameter(Controllable::Type type, const String &niceName, const String &description,
+  MinMaxParameter( const String &niceName, const String &description,
                   const var &initialValue=0,const var min=var::undefined(),const var max=var::undefined(),
                   bool enabled=true):
-  Parameter(type,niceName,description,initialValue,enabled),
+  Parameter(niceName,description,initialValue,enabled),
   minimumValue(min),
   maximumValue(max){
 
@@ -32,17 +32,22 @@ public:
   var maximumValue;
 
 
-  var getVarObject() override {
-    auto res = Parameter::getVarObject();
-    res.getDynamicObject()->setProperty(minValueIdentifier, minimumValue);
-    res.getDynamicObject()->setProperty(maxValueIdentifier, maximumValue);
+  DynamicObject * getObject() override {
+    auto res = Parameter::getObject();
+    res->setProperty(minValueIdentifier, minimumValue);
+    res->setProperty(maxValueIdentifier, maximumValue);
     return res;
   }
 
-  void setFromVarObject(DynamicObject & ob) override{
-    Parameter::setFromVarObject(ob);
-    if(ob.hasProperty(minValueIdentifier)){minimumValue = ob.getProperty(minValueIdentifier);}
-    if(ob.hasProperty(maxValueIdentifier)){maximumValue = ob.getProperty(maxValueIdentifier);}
+  void configureFromObject(DynamicObject * ob) override{
+    Parameter::configureFromObject(ob);
+    if(ob){
+      if(ob->hasProperty(minValueIdentifier)){minimumValue = ob->getProperty(minValueIdentifier);}
+      if(ob->hasProperty(maxValueIdentifier)){maximumValue = ob->getProperty(maxValueIdentifier);}
+    }
+    else{
+      jassertfalse;
+    }
   }
 
   void setMinMax(var min, var max){

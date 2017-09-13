@@ -14,10 +14,10 @@
 
 
 #include "GenericControllableContainerEditor.h"
-#include "../Inspector/InspectableComponent.h"
-#include "UI/ControllableUI.h"
-#include "Parameter/UI/ParameterUIFactory.h"
-#include "Parameter/ParameterContainer.h"
+#include "../../Inspector/InspectableComponent.h"
+#include "ControllableUI.h"
+#include "../Parameter/UI/ParameterUIFactory.h"
+#include "../Parameter/ParameterContainer.h"
 
 GenericControllableContainerEditor::GenericControllableContainerEditor(ControllableContainer * _sourceContainer) :
 	InspectorEditor(),

@@ -19,7 +19,7 @@
 #include "../NodeBase.h"
 #include "../Manager/UI/NodeManagerUI.h"
 #include "ConnectorComponent.h"
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 
 
 

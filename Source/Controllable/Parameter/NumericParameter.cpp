@@ -27,14 +27,12 @@ template<class T>
 NumericParameter<T>::NumericParameter(const String & niceName, const String &description,
                                       const T  initialValue, const T  minValue, const T  maxValue,
                                       bool enabled) :
-MinMaxParameter(std::is_same<T,int>::value?Type::INT:Type::FLOAT, niceName, description, var(initialValue), var(minValue), var(maxValue), enabled)
+MinMaxParameter( niceName, description, var(initialValue), var(minValue), var(maxValue), enabled)
 {
   if(std::is_same<T,int>::value){
-    type = Type::INT;
     jassert(value.isInt());
   }
   else if(std::is_same<T,double>::value){
-    type = Type::FLOAT;
     jassert(value.isDouble());
   }
   else{

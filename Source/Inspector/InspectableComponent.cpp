@@ -16,7 +16,7 @@
 #include "InspectableComponent.h"
 #include "Inspector.h"
 
-#include "../Controllable/GenericControllableContainerEditor.h"
+#include "../Controllable/UI/GenericControllableContainerEditor.h"
 //#include "MainComponent.h"
 #include "../UI/ShapeShifter/ShapeShifterFactory.h"
 #include "../UI/ShapeShifter/ShapeShifterManager.h"

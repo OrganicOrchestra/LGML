@@ -20,9 +20,10 @@
 #include "../../Utils/AudioDebugPipe.h"
 #include "../../Engine.h"
 
+REGISTER_NODE_TYPE(LooperNode)
 
-LooperNode::LooperNode() :
-NodeBase("Looper", NodeType::LooperType),
+LooperNode::LooperNode(StringRef name) :
+NodeBase(name),
 //selectedTrack(nullptr),
 wasMonitoring(false),
 trackGroup(this),
@@ -437,7 +438,10 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
   NodeBase::onContainerParameterChanged(p);
   if (p == numberOfTracks) {
     int oldIdx = trackGroup.selectedTrack?trackGroup.selectedTrack->trackIdx:0;
-    const ScopedLock lk(parentNodeContainer->getAudioGraph()->getCallbackLock());
+    ScopedPointer<ScopedLock> lkp;
+    if(parentNodeContainer){
+      lkp = new ScopedLock(parentNodeContainer->getAudioGraph()->getCallbackLock());
+    }
     trackGroup.setNumTracks(numberOfTracks->intValue());
     if (outputAllTracksSeparately->boolValue()) {
       setPreferedNumAudioOutput(getTotalNumInputChannels()*numberOfTracks->intValue());
@@ -464,7 +468,10 @@ void LooperNode::onContainerParameterChanged(Parameter * p) {
       setPreferedNumAudioOutput(getTotalNumInputChannels());
     }
   } else if (p == numberOfAudioChannelsIn) {
-    const ScopedLock lk(parentNodeContainer->getAudioGraph()->getCallbackLock());
+    ScopedPointer<ScopedLock> lkp;
+    if(parentNodeContainer){
+      lkp = new ScopedLock(parentNodeContainer->getAudioGraph()->getCallbackLock());
+    }
     setPreferedNumAudioInput(numberOfAudioChannelsIn->intValue());
     setPreferedNumAudioOutput(numberOfAudioChannelsIn->intValue()*(outputAllTracksSeparately->boolValue() ? trackGroup.tracks.size() : 1));
   }

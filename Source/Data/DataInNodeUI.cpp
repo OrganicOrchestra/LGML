@@ -15,7 +15,7 @@
 
 
 #include "DataInNodeUI.h"
-#include "../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../Controllable/Parameter/UI/SliderUI.h"
 
 //==============================================================================
 DataInNodeContentUI::DataInNodeContentUI()
@@ -59,16 +59,16 @@ void DataInNodeContentUI::init()
 
 void DataInNodeContentUI::addUIForParameter(Parameter * p)
 {
-    switch (p->type)
-    {
-        case Parameter::Type::FLOAT:
-            addParameterUI(new FloatSliderUI((FloatParameter *)p));
-            break;
-        default:
-            DBG("no UI for type : " << p->type);
-            break;
-
-    }
+//    if
+//    {
+//        case Parameter::Type::FLOAT:
+//            addParameterUI(new FloatSliderUI((FloatParameter *)p));
+//            break;
+//        default:
+//            DBG("no UI for type : " << p->type);
+//            break;
+//
+//    }
 
 }
 

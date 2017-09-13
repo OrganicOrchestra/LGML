@@ -19,7 +19,7 @@
 
 #include "DummyNode.h"//keep
 #include "../UI/NodeBaseContentUI.h"
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 
 #include "../../Controllable/Parameter/UI/EnumParameterUI.h"
 

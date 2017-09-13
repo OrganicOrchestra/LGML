@@ -15,11 +15,11 @@
 
 
 #include "MainComponent.h"
-#include "FastMapper/FastMap.h"
-#include "Engine.h"
-#include "Inspector/Inspector.h"
-#include "Node/NodeContainer/NodeContainer.h"
-#include "UI/LGMLDragger.h"
+#include "../FastMapper/FastMap.h"
+#include "../Engine.h"
+#include "../Inspector/Inspector.h"
+#include "../Node/NodeContainer/NodeContainer.h"
+#include "LGMLDragger.h"
 
 namespace CommandIDs
 {
@@ -328,7 +328,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
 
           var data(new DynamicObject());
           data.getDynamicObject()->setProperty("type", ic->inspectableType);
-          data.getDynamicObject()->setProperty("data", cc->getJSONData());
+          data.getDynamicObject()->setProperty("data", cc->getParameterContainer()->getObject());
 
 
           if (info.commandID == CommandIDs::cutSelection)
@@ -361,10 +361,10 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
             if (type == "node" && Inspector::getInstance()->currentComponent->inspectableType == "node")
             {
               ConnectableNode * cn = dynamic_cast<ConnectableNode *>(Inspector::getInstance()->currentComponent->relatedControllableContainer);
-              NodeContainer * container = (cn->type == ContainerType) ? dynamic_cast<NodeContainer *>(cn) : cn->parentNodeContainer;
+              NodeContainer * container = (dynamic_cast<NodeContainer *>(cn)) ? dynamic_cast<NodeContainer *>(cn) : cn->parentNodeContainer;
               if (cn != nullptr)
               {
-                ConnectableNode * n = container->addNodeFromJSONData(d->getProperty("data"));
+                ConnectableNode * n = container->addNodeFromJSONData(d->getProperty("data").getDynamicObject());
                 // ensure to have different uuid than the one from JSON
                 if(n){n->uid = Uuid();
                 n->nodePosition->setPoint(n->nodePosition->getPoint() + Point<int>(100, 50));

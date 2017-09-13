@@ -17,6 +17,7 @@
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
 #include "../../Audio/VSTManager.h"
 #include "../UI/NodeBaseUI.h"
+#include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 ConnectableNodeUI * VSTNode::createUI() {
   return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);

@@ -153,8 +153,8 @@ void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
 
   ConnectableNode * sourceNode = (ConnectableNode*)connection->sourceNode;
   ConnectableNode * destNode = (ConnectableNode*)connection->destNode;
-  if (sourceNode->type == NodeType::ContainerOutType) sourceNode = ((ContainerOutNode *)sourceNode)->parentNodeContainer;
-  if (destNode->type == NodeType::ContainerInType) destNode = ((ContainerInNode *)destNode)->parentNodeContainer;
+  if (auto s = dynamic_cast<ContainerOutNode*>(sourceNode)) sourceNode = s->parentNodeContainer;
+  if (auto s = dynamic_cast<ContainerInNode*>(destNode)) destNode = s->parentNodeContainer;
 
   ConnectableNodeUI * n1 = getUIForNode(sourceNode);
   ConnectableNodeUI * n2 = getUIForNode(destNode);
@@ -343,7 +343,34 @@ void NodeContainerViewer::finishEditingConnection()
 
 }
 
+PopupMenu * getNodeTypesMenu(int menuIdOffset)
+{
+  PopupMenu * p = new PopupMenu();
+  int i= 0;
+  auto a = NodeFactory::getRegisteredTypes();
+  for(auto & k:a){
+    if( ! (k=="t_ContainerInNode" || k== "t_ContainerOutNode") ){
+      p->addItem(i+menuIdOffset,NodeFactory::typeToNiceName(k));
 
+    }
+    i++;
+  }
+
+  return p;
+}
+const String  getTypeNameFromMenuIdx(int idx){
+  int count = 0;
+  auto a = NodeFactory::getRegisteredTypes();
+  for(auto & k:a){
+    if (idx==count){
+      return k;
+    }
+    count++;
+  }
+  jassertfalse;
+  return String::empty;
+
+}
 //Interaction Events
 void NodeContainerViewer::mouseDown(const MouseEvent & event)
 {
@@ -355,7 +382,7 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
       int menuOffset = 1;
       Point<int> mousePos = getMouseXYRelative();
       PopupMenu   menu;//(new PopupMenu());
-      ScopedPointer<PopupMenu> addNodeMenu(NodeFactory::getNodeTypesMenu(menuOffset));
+      ScopedPointer<PopupMenu> addNodeMenu(getNodeTypesMenu(menuOffset));
       menu.addSubMenu("Add Node", *addNodeMenu);
 
       int result = menu.show();
@@ -364,7 +391,8 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
       if (result > 0 && result < addNodeMenu->getNumItems() + menuOffset)
       {
 
-        ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(NodeFactory::getTypeForIndex(result - menuOffset,true));
+        const String type = getTypeNameFromMenuIdx(result-menuOffset);
+        ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(NodeFactory::createFromTypeID(type));
         jassert(n != nullptr);
 
         n->nodePosition->setPoint(mousePos);
@@ -411,7 +439,7 @@ bool NodeContainerViewer::keyPressed(const KeyPress & key){
   if(key.getTextCharacter()=='a'){
     int menuOffset = 1;
     Point<int> mousePos = getMouseXYRelative();
-    ScopedPointer<PopupMenu > menu= NodeFactory::getNodeTypesMenu(menuOffset);
+    ScopedPointer<PopupMenu > menu= getNodeTypesMenu(menuOffset);
 
 
     int result = menu->show();
@@ -420,7 +448,8 @@ bool NodeContainerViewer::keyPressed(const KeyPress & key){
     if (result > 0 && result < menu->getNumItems() )
     {
 
-      ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(NodeFactory::getTypeForIndex(result - menuOffset,true));
+      const String typeName = getTypeNameFromMenuIdx(result-menuOffset);
+      ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(NodeFactory::createFromTypeID(typeName));
       jassert(n != nullptr);
 
 

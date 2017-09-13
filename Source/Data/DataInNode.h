@@ -22,7 +22,7 @@ class DataInNode :
 	public NodeBase
 {
 public:
-    DataInNode();
+    DECLARE_OBJ_TYPE(DataInNode)
     ~DataInNode();
 
     Array<Parameter *> dynamicParameters;

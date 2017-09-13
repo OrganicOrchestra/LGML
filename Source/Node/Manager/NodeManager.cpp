@@ -17,11 +17,12 @@
 #include "../Impl/DummyNode.h"
 #include "../NodeContainer/NodeContainer.h"
 
+IMPL_OBJ_TYPE(NodeManager);
 extern AudioDeviceManager& getAudioDeviceManager();
 bool isEngineLoadingFile();
 juce_ImplementSingleton(NodeManager);
 
-NodeManager::NodeManager() :
+NodeManager::NodeManager(StringRef name) :
   ThreadPool(4),
     ParameterContainer("Nodes")
 {
@@ -54,20 +55,15 @@ void NodeManager::clear()
 	nodeManagerListeners.call(&NodeManagerListener::managerCleared);
 }
 
-var NodeManager::getJSONData()
-{
-	var data = ParameterContainer::getJSONData();
-//	data.getDynamicObject()->setProperty("mainContainer", mainContainer->getJSONData());
-	return data;
-}
 
-void NodeManager::loadJSONData(const var & data)
+
+void NodeManager::configureFromObject(DynamicObject * data)
 {
   jassert(isLoading ==false);
   jobsWatcher = new JobsWatcher(this);
   isLoading = true;
 	clear();
-  ParameterContainer::loadJSONData(data);
+  ParameterContainer::configureFromObject(data);
 
 //	mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
 

@@ -23,24 +23,25 @@
 
 
 
-const Identifier ControllableContainer::containerNameIdentifier("containerName");
+
 
 const Identifier ControllableContainer::controlAddressIdentifier("controlAddress");
 const Identifier ControllableContainer::childContainerId("/");
 const Identifier ControllableContainer::controllablesId("parameters");
 
 
-ControllableContainer::ControllableContainer(const String & niceName,bool _isUserDefined) :
+ControllableContainer::ControllableContainer(StringRef niceName) :
 parentContainer(nullptr),
 hasCustomShortName(false),
 skipControllableNameInAddress(false),
 numContainerIndexed(0),
 localIndexedPosition(-1),
-isUserDefined(_isUserDefined)
+isUserDefined(false)
 {
 
 
 }
+
 
 ControllableContainer::~ControllableContainer()
 {
@@ -73,7 +74,6 @@ void ControllableContainer::removeFromParent(){
     parentContainer->removeChildControllableContainer(this);
   }
 }
-
 
 
 void ControllableContainer::removeControllable(Controllable * c)
@@ -510,4 +510,10 @@ bool ControllableContainer::containsContainer(ControllableContainer * c){
     if(cc->containsContainer(c))return true;
   }
   return false;
+}
+
+
+void ControllableContainer::setUserDefined(bool v){
+  isUserDefined = v;
+
 }

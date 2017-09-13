@@ -115,18 +115,16 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/VSTManager_e3595958.o \
   $(JUCE_OBJDIR)/ControllableEditor_f166b1d4.o \
   $(JUCE_OBJDIR)/ControllableUI_294cac5b.o \
+  $(JUCE_OBJDIR)/GenericControllableContainerEditor_ee8451ac.o \
   $(JUCE_OBJDIR)/Controllable_a0f8da50.o \
   $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o \
   $(JUCE_OBJDIR)/ControllableHelpers_6d200a9f.o \
   $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
-  $(JUCE_OBJDIR)/GenericControllableContainerEditor_2294e6f5.o \
   $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o \
   $(JUCE_OBJDIR)/BoolToggleUI_b0447c2a.o \
   $(JUCE_OBJDIR)/EnumParameterUI_461058e.o \
-  $(JUCE_OBJDIR)/FloatSliderUI_7d81efc3.o \
-  $(JUCE_OBJDIR)/FloatStepperUI_bc9c4421.o \
-  $(JUCE_OBJDIR)/IntSliderUI_93a3f416.o \
-  $(JUCE_OBJDIR)/IntStepperUI_6abaca2e.o \
+  $(JUCE_OBJDIR)/SliderUI_d4e1556d.o \
+  $(JUCE_OBJDIR)/StepperUI_512993b7.o \
   $(JUCE_OBJDIR)/ParameterProxyUI_2e7116d1.o \
   $(JUCE_OBJDIR)/ParameterUI_27177b4f.o \
   $(JUCE_OBJDIR)/ParameterUIFactory_1e199cc5.o \
@@ -213,6 +211,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/NodeContainerUI_709298b6.o \
   $(JUCE_OBJDIR)/NodeContainerViewer_1d2d2ed4.o \
   $(JUCE_OBJDIR)/NodeContainer_3fa0a9eb.o \
+  $(JUCE_OBJDIR)/NodeUIFactory_e1b69887.o \
   $(JUCE_OBJDIR)/NodeBaseAudioCtlUI_f3b533c3.o \
   $(JUCE_OBJDIR)/NodeBaseContentUI_b22c08d.o \
   $(JUCE_OBJDIR)/NodeBaseHeaderUI_712bf32b.o \
@@ -236,11 +235,11 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/TimeManager_2ea8a747.o \
   $(JUCE_OBJDIR)/TimeManagerUI_681c6b5b.o \
   $(JUCE_OBJDIR)/TimeMasterCandidate_ed6091db.o \
+  $(JUCE_OBJDIR)/MainWindow_5f9c9b05.o \
   $(JUCE_OBJDIR)/LGMLDragger_a52aaed4.o \
   $(JUCE_OBJDIR)/LookAndFeelOO_b515076c.o \
   $(JUCE_OBJDIR)/Outliner_147676ac.o \
   $(JUCE_OBJDIR)/PluginWindow_fd769e3f.o \
-  $(JUCE_OBJDIR)/ProgressNotifier_73168af.o \
   $(JUCE_OBJDIR)/ProgressWindow_59121af9.o \
   $(JUCE_OBJDIR)/GapGrabber_4206bb5c.o \
   $(JUCE_OBJDIR)/ShapeShifter_4966cb1d.o \
@@ -252,14 +251,16 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ShapeShifterPanelHeader_6ef6f65e.o \
   $(JUCE_OBJDIR)/ShapeShifterPanelTab_10325ae.o \
   $(JUCE_OBJDIR)/ShapeShifterWindow_c6d51d2d.o \
+  $(JUCE_OBJDIR)/MainComponent_a54318d2.o \
+  $(JUCE_OBJDIR)/MainComponentCommands_87be867a.o \
+  $(JUCE_OBJDIR)/FactoryBase_1c8d4d5e.o \
   $(JUCE_OBJDIR)/AudioDebugCrack_99daca00.o \
   $(JUCE_OBJDIR)/AudioDebugPipe_25cee4b2.o \
   $(JUCE_OBJDIR)/NetworkUtils_dca78ea.o \
+  $(JUCE_OBJDIR)/ProgressNotifier_4baee7ba.o \
   $(JUCE_OBJDIR)/Engine_7f3228cb.o \
   $(JUCE_OBJDIR)/EngineFileDocument_abfb722.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
-  $(JUCE_OBJDIR)/MainComponent_a6ffb4a5.o \
-  $(JUCE_OBJDIR)/MainComponentCommands_b1179f4d.o \
   $(JUCE_OBJDIR)/list_ports_linux_5c85ed4.o \
   $(JUCE_OBJDIR)/list_ports_osx_ba915334.o \
   $(JUCE_OBJDIR)/list_ports_win_c7a6a16c.o \
@@ -328,6 +329,11 @@ $(JUCE_OBJDIR)/ControllableUI_294cac5b.o: ../../Source/Controllable/UI/Controlla
 	@echo "Compiling ControllableUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/GenericControllableContainerEditor_ee8451ac.o: ../../Source/Controllable/UI/GenericControllableContainerEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling GenericControllableContainerEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/Controllable_a0f8da50.o: ../../Source/Controllable/Controllable.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Controllable.cpp"
@@ -348,11 +354,6 @@ $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o: ../../Source/Controllabl
 	@echo "Compiling ControllableIndexedContainer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/GenericControllableContainerEditor_2294e6f5.o: ../../Source/Controllable/GenericControllableContainerEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling GenericControllableContainerEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o: ../../Source/Controllable/Parameter/UI/BetterStepper.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling BetterStepper.cpp"
@@ -368,24 +369,14 @@ $(JUCE_OBJDIR)/EnumParameterUI_461058e.o: ../../Source/Controllable/Parameter/UI
 	@echo "Compiling EnumParameterUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/FloatSliderUI_7d81efc3.o: ../../Source/Controllable/Parameter/UI/FloatSliderUI.cpp
+$(JUCE_OBJDIR)/SliderUI_d4e1556d.o: ../../Source/Controllable/Parameter/UI/SliderUI.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling FloatSliderUI.cpp"
+	@echo "Compiling SliderUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/FloatStepperUI_bc9c4421.o: ../../Source/Controllable/Parameter/UI/FloatStepperUI.cpp
+$(JUCE_OBJDIR)/StepperUI_512993b7.o: ../../Source/Controllable/Parameter/UI/StepperUI.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling FloatStepperUI.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/IntSliderUI_93a3f416.o: ../../Source/Controllable/Parameter/UI/IntSliderUI.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling IntSliderUI.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/IntStepperUI_6abaca2e.o: ../../Source/Controllable/Parameter/UI/IntStepperUI.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling IntStepperUI.cpp"
+	@echo "Compiling StepperUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ParameterProxyUI_2e7116d1.o: ../../Source/Controllable/Parameter/UI/ParameterProxyUI.cpp
@@ -818,6 +809,11 @@ $(JUCE_OBJDIR)/NodeContainer_3fa0a9eb.o: ../../Source/Node/NodeContainer/NodeCon
 	@echo "Compiling NodeContainer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/NodeUIFactory_e1b69887.o: ../../Source/Node/UI/NodeUIFactory.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling NodeUIFactory.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/NodeBaseAudioCtlUI_f3b533c3.o: ../../Source/Node/UI/NodeBaseAudioCtlUI.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling NodeBaseAudioCtlUI.cpp"
@@ -933,6 +929,11 @@ $(JUCE_OBJDIR)/TimeMasterCandidate_ed6091db.o: ../../Source/Time/TimeMasterCandi
 	@echo "Compiling TimeMasterCandidate.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/MainWindow_5f9c9b05.o: ../../Source/UI/MainWindow.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MainWindow.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/LGMLDragger_a52aaed4.o: ../../Source/UI/LGMLDragger.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling LGMLDragger.cpp"
@@ -951,11 +952,6 @@ $(JUCE_OBJDIR)/Outliner_147676ac.o: ../../Source/UI/Outliner.cpp
 $(JUCE_OBJDIR)/PluginWindow_fd769e3f.o: ../../Source/UI/PluginWindow.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PluginWindow.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ProgressNotifier_73168af.o: ../../Source/UI/ProgressNotifier.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ProgressNotifier.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ProgressWindow_59121af9.o: ../../Source/UI/ProgressWindow.cpp
@@ -1013,6 +1009,21 @@ $(JUCE_OBJDIR)/ShapeShifterWindow_c6d51d2d.o: ../../Source/UI/ShapeShifter/Shape
 	@echo "Compiling ShapeShifterWindow.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/MainComponent_a54318d2.o: ../../Source/UI/MainComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MainComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MainComponentCommands_87be867a.o: ../../Source/UI/MainComponentCommands.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MainComponentCommands.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FactoryBase_1c8d4d5e.o: ../../Source/Utils/FactoryBase.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FactoryBase.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/AudioDebugCrack_99daca00.o: ../../Source/Utils/AudioDebugCrack.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AudioDebugCrack.cpp"
@@ -1028,6 +1039,11 @@ $(JUCE_OBJDIR)/NetworkUtils_dca78ea.o: ../../Source/Utils/NetworkUtils.cpp
 	@echo "Compiling NetworkUtils.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/ProgressNotifier_4baee7ba.o: ../../Source/Utils/ProgressNotifier.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ProgressNotifier.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/Engine_7f3228cb.o: ../../Source/Engine.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Engine.cpp"
@@ -1041,16 +1057,6 @@ $(JUCE_OBJDIR)/EngineFileDocument_abfb722.o: ../../Source/EngineFileDocument.cpp
 $(JUCE_OBJDIR)/Main_90ebc5c2.o: ../../Source/Main.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Main.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/MainComponent_a6ffb4a5.o: ../../Source/MainComponent.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MainComponent.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/MainComponentCommands_b1179f4d.o: ../../Source/MainComponentCommands.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MainComponentCommands.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/list_ports_linux_5c85ed4.o: ../../third_party/serial/src/impl/list_ports/list_ports_linux.cc

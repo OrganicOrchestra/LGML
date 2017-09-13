@@ -16,7 +16,7 @@
 #include "Point3DParameter.h"
 
 Point3DParameter::Point3DParameter(const String & niceName, const String & description, bool enabled) :
-	MinMaxParameter(POINT3D, niceName, description, 0, 0, 1, enabled)
+	MinMaxParameter( niceName, description, 0, 0, 1, enabled)
 {
 }
 

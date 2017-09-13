@@ -19,10 +19,10 @@
 
 
 #include "TimeManager.h"//keep
-#include "../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../Controllable/Parameter/UI/SliderUI.h"
 #include "../Controllable/Parameter/UI/TriggerBlinkUI.h"
 #include "../Controllable/Parameter/UI/BoolToggleUI.h"
-#include "../Controllable/Parameter/UI/IntStepperUI.h"
+#include "../Controllable/Parameter/UI/StepperUI.h"
 #include "../UI/ShapeShifter/ShapeShifterContent.h"
 
 

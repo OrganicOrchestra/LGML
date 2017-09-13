@@ -22,7 +22,7 @@
 class DummyNode : public NodeBase
 {
 public:
-    DummyNode();
+    DECLARE_OBJ_TYPE(DummyNode)
     ~DummyNode();
 
     //parameters

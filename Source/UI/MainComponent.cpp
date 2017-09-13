@@ -16,9 +16,9 @@
 #include "MainComponent.h"
 
 
-#include "Node/Manager/UI/NodeManagerUI.h"
-#include "Controller/UI/ControllerManagerUI.h"
-#include "UI/LookAndFeelOO.h"
+#include "../Node/Manager/UI/NodeManagerUI.h"
+#include "../Controller/UI/ControllerManagerUI.h"
+#include "LookAndFeelOO.h"
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)

@@ -25,17 +25,16 @@ Identifier EnumParameter::selectedSetIdentifier("selected");
 // EnumParameter
 
 EnumParameter::EnumParameter(const String & niceName, const String &description, EnumParameterModel * modelInstance,bool _userCanEnterText, bool enabled) :
-Parameter(Type::ENUM, niceName, description,var::undefined(), enabled),
+Parameter( niceName, description,var::undefined(), enabled),
 asyncNotifier(1000),
 userCanEnterText(_userCanEnterText)
 {
   enumData = new DynamicObject();
   enumData->setProperty(selectedSetIdentifier, Array<var>());
   ownModel = modelInstance==nullptr;
-  model = ownModel?new EnumParameterModel():modelInstance;
-  if(ownModel) {
-    enumData->setProperty(modelIdentifier, model.get() );
-  }
+  model = ownModel?new EnumParameterModel(true):modelInstance;
+  enumData->setProperty(modelIdentifier, model.get()->getObject() );
+
 
   model->listeners.add(this);
 
@@ -46,6 +45,7 @@ userCanEnterText(_userCanEnterText)
 }
 EnumParameter::~EnumParameter(){
   //  value = var::null;
+  model->listeners.remove(this);
   asyncNotifier.removeListener(this);
   enumData=nullptr;
 }
@@ -56,14 +56,14 @@ EnumParameterModel * EnumParameter::getModel() const{
 
 }
 
-void EnumParameter::addOption(Identifier key, var data)
+void EnumParameter::addOption(Identifier key, var data,bool user)
 {
   //  adding option thru parameter is not supported when using a shared model
-  jassert(ownModel || userCanEnterText);
-  getModel()->addOption(key,data);
+  jassert(user || ownModel || userCanEnterText);
+  getModel()->addOption(key,data,user);
 }
 
-void EnumParameter::addOrSetOption(Identifier key, var data)
+void EnumParameter::addOrSetOption(Identifier key, var data,bool user)
 {
   //  adding option thru parameter is not supported when using a shared model
   jassert(ownModel|| userCanEnterText);
@@ -72,7 +72,7 @@ void EnumParameter::addOrSetOption(Identifier key, var data)
 void EnumParameter::removeOption(Identifier key)
 {
   //  removing option thru parameter is not supported when using a shared model
-  jassert(ownModel);
+  jassert(ownModel || userCanEnterText);
   selectId(key, false,true);
   getModel()->removeOption(key);
 
@@ -115,13 +115,14 @@ void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelecti
   }
   Array<var> * selection = getSelectedSet(value);
   jassert(selection);
+  jassert(appendSelection || (selection && (selection->size()==0 || selection->getReference(0).toString()==key.toString())));
   //  if(!appendSelection)selection->clear();
   int numSelectionChange = 0;
   if(shouldSelect  && !selection->contains(key.toString())){
     selection->add(key.toString());
     numSelectionChange = 1;
   }
-  else{
+  else if(!shouldSelect){
     numSelectionChange = selection->removeAllInstancesOf(key.toString());
 
   }
@@ -129,6 +130,7 @@ void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelecti
     auto msg = EnumChangeMessage::newSelectionMessage(key, shouldSelect, getModel()->isValidId(key));
     processForMessage(*msg, enumListeners);
     asyncNotifier.addMessage(msg);
+    DBG("enum : " << key.toString() << (!shouldSelect?" not":"")<<" selected"<<(!msg->isValid?" not":"")<<" valid ");
 
 
   }
@@ -182,9 +184,11 @@ void EnumParameter::unselectAll(){
 
 Array<var> EnumParameter::getSelectedValues() const {
   Array<var> res;
-  DynamicObject * vm = getModel();
+  auto vm = getModel()->getProperties();
   for(auto & i: getSelectedSetIds(value)){
-    res.add( vm->getProperty(i));
+    var * s =  vm.getVarPointer(i);
+    if(s) {res.add(*s );}
+    else  {jassertfalse;}
   }
   return res;
 };
@@ -197,6 +201,7 @@ var EnumParameter::getValueForId(const Identifier &i){
 
 void EnumParameter::setValueInternal(var & _value){
   // try to select
+  DBG("enum value : " <<_value.toString());
   if(selectFromVar(_value,true,false)){}
   else if(_value.isUndefined()){
     unselectAll();
@@ -213,11 +218,8 @@ void EnumParameter::setValueInternal(var & _value){
 
     // if model is stored, this param should own it
 
-    jassert(ownModel);
-    if (ownModel){
-
-      if(DynamicObject * oldValues = getModel()){
-        auto oldP = oldValues->getProperties();
+    if(auto model = getModel()){
+        auto oldP = model->getProperties();
         for(auto v:oldP){
           removeOption(v.name);
         }
@@ -227,7 +229,7 @@ void EnumParameter::setValueInternal(var & _value){
         addOption(v.name.toString(), v.value);
       }
 
-    }
+
 
     for(auto sel:getSelectedSetIds(value)){
       selectId(sel.toString(),false,true);
@@ -239,6 +241,7 @@ void EnumParameter::setValueInternal(var & _value){
   }
   else if(Array<var>* vl = getSelectedSet(_value)){
     for (auto s:*vl){selectId(s.toString(),true,true);}
+    if(vl->size()==0){unselectAll();}
   }
   else{
     // var not suported
@@ -308,7 +311,7 @@ void EnumParameter::processForMessage(const EnumChangeMessage &msg,ListenerList<
   if (msg.isSelectionChange){
     // check validity state has not changed
     jassert(msg.isValid==getModel()->isValidId(msg.key));
-    _listeners.call(&EnumListener::enumOptionSelectionChanged, this,msg.isSelected,msg.isValid, msg.key);
+    _listeners.call(&EnumListener::enumOptionSelectionChanged, this,msg.isSelected,getModel()->isValidId(msg.key), msg.key);
 
   }
 }
@@ -332,6 +335,90 @@ String EnumParameter::stringValue() const{
       res+=","+selected[i].toString();
     }
     return res;
+  }
+}
+
+
+///////////////
+// EnumParameterModel
+
+
+
+EnumParameterModel::EnumParameterModel(bool shouldSave):shouldSaveModel(shouldSave){
+  userOptions = new DynamicObject();
+}
+
+EnumParameterModel::~EnumParameterModel(){
+  masterReference.clear();
+}
+
+
+void EnumParameterModel::addOption(Identifier key, var data,bool userDefined){
+  // we don't want to override existing
+  jassert(!hasProperty(key));
+  addOrSetOption(key, data,userDefined);
+
+}
+
+void EnumParameterModel::addOrSetOption(Identifier key, var data,bool userDefined){
+  jassert(!(userDefined && shouldSaveModel));
+  bool isNew = false;
+  if(userDefined){
+    isNew = !userOptions->hasProperty(key);
+    userOptions->setProperty(key, data);
+  }
+  else{
+    isNew = !hasProperty(key);
+    setProperty(key, data);
+  }
+  if(isNew){
+  listeners.call(&Listener::modelOptionAdded,this,key);
+  }
+}
+
+void EnumParameterModel::removeOption(Identifier key)
+{
+  bool hadOption = false;
+  if(hasProperty(key)){
+    hadOption = hasProperty(key);
+    removeProperty(key);
+  }
+  else{
+    hadOption = userOptions->hasProperty(key);
+    userOptions->removeProperty(key);
+  }
+  if(hadOption){
+  listeners.call(&Listener::modelOptionRemoved,this,key);
+  }
+
+}
+
+var EnumParameterModel::getValueForId(const Identifier &key){
+  if(hasProperty(key)){
+    return getProperty(key);
+  }
+  else{
+    return userOptions->getProperty(key);
+  }
+}
+
+bool EnumParameterModel::isValidId(Identifier key){
+  return hasProperty(key) || userOptions->hasProperty(key);
+}
+const NamedValueSet EnumParameterModel::getProperties()noexcept {
+  NamedValueSet res(DynamicObject::getProperties());
+  for(auto k : userOptions->getProperties()){
+    res.set(k.name, k.value);
+  }
+  return res;
+}
+DynamicObject * EnumParameterModel::getObject(){
+  jassert(!(shouldSaveModel &&userOptions->getProperties().size()>0));
+  if(shouldSaveModel){
+    return this;
+  }
+  else{
+    return userOptions;
   }
 }
 

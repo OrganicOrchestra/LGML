@@ -1,3 +1,4 @@
+
 /* Copyright © Organic Orchestra, 2017
  *
  * This file is part of LGML.  LGML is a software to manipulate sound in realtime
@@ -13,30 +14,5 @@
  */
 
 
-#pragma once
-
-#include "../../Utils/FactoryBase.h"
-
-class Parameter;
-
-class ParameterFactory : public FactoryBase<Parameter>{
-public:
-
-
-
-
-
-
-};
-
-
-
-
-
-#define REGISTER_PARAM_TYPE(T) REGISTER_OBJ_TYPE(Parameter,T)
-
-
-#define REGISTER_PARAM_TYPE_TEMPLATED(T,TT) REGISTER_OBJ_TYPE_TEMPLATED(Parameter,T,TT)
-
-
+#include "NodeUIFactory.h"
 

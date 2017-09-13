@@ -21,7 +21,7 @@
 class RangeParameter : public MinMaxParameter
 {
 public:
-  RangeParameter(const String &niceName, const String &description,float min=0.0f,float max=1.0f,float init_min=0.0f,float init_max=1.0f, bool enabled = true);
+  RangeParameter(const String &niceName, const String &description=String::empty,float min=0.0f,float max=1.0f,float init_min=0.0f,float init_max=1.0f, bool enabled = true);
   ~RangeParameter() {}
 
 
@@ -37,6 +37,6 @@ public:
 
   bool checkValueIsTheSame(var newValue, var oldValue) override;
 
-  DECLARE_PARAM_TYPE(RangeParameter);
+  DECLARE_OBJ_TYPE(RangeParameter);
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RangeParameter)
 };

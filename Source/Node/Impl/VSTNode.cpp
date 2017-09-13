@@ -24,7 +24,7 @@
 
 extern AudioDeviceManager& getAudioDeviceManager();
 
-
+REGISTER_NODE_TYPE(VSTNode)
 class VSTLoaderJob : public ThreadPoolJob{
 
   public :
@@ -41,8 +41,8 @@ class VSTLoaderJob : public ThreadPoolJob{
 };
 
 
-VSTNode::VSTNode() :
-NodeBase("VST",NodeType::VSTType),
+VSTNode::VSTNode(StringRef name) :
+NodeBase(name),
 blockFeedback(false)
 {
   identifierString = addNewParameter<StringParameter>("VST Identifier","string that identify a VST","");

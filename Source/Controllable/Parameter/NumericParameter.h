@@ -24,7 +24,7 @@ template<typename T>
 class NumericParameter : public MinMaxParameter
 {
 public:
-    NumericParameter(const String &niceName, const String &description, const T initialValue=0, const T minimumValue = 0, const T maximumValue = 1, bool enabled = true);
+  NumericParameter(const String &niceName, const String &description=String::empty, const T initialValue=0, const T minimumValue = 0, const T maximumValue = 1, bool enabled = true);
   ~NumericParameter() {};
 
     void setValueInternal(var & _value) override;
@@ -33,7 +33,7 @@ public:
 
   float getNormalizedValue() ;
   
-  DECLARE_PARAM_TYPE(NumericParameter)
+  DECLARE_OBJ_TYPE(NumericParameter)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NumericParameter)
 };
 

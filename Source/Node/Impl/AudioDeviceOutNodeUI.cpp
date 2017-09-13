@@ -18,7 +18,7 @@
 #include "AudioDeviceOutNode.h"
 #include "../../UI/VuMeter.h"
 #include "../../Controllable/Parameter/UI/BoolToggleUI.h"
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 AudioDeviceManager& getAudioDeviceManager();

@@ -17,7 +17,7 @@
 #include "../Manager/NodeManager.h"
 #include "../NodeContainer/NodeContainer.h"
 #include "../ConnectableNode.h"
-
+IMPL_OBJ_TYPE(NodeConnection)
 NodeConnection::NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType,NodeConnection::Model * root) :
 sourceNode(sourceNode),
 destNode(destNode),
@@ -260,9 +260,9 @@ void NodeConnection::dataOutputRemoved(ConnectableNode * n , Data * d)
 }
 
 
-var NodeConnection::getJSONData()
+DynamicObject* NodeConnection::getObject()
 {
-  var data(new DynamicObject());
+  auto data = new DynamicObject();
 
   if(sourceNode.get()==nullptr || destNode.get() ==nullptr){
     DBG("try to save outdated connection"); // TODO clean ghostConnection Nodes
@@ -270,14 +270,14 @@ var NodeConnection::getJSONData()
     return data;
   }
   ConnectableNode * tSource = sourceNode;
-  if (sourceNode->type == ContainerOutType) tSource = ((ContainerOutNode *)sourceNode.get())->parentNodeContainer;
+  if (auto s = dynamic_cast<ContainerOutNode*>(sourceNode.get())) tSource = (s)->parentNodeContainer;
 
   ConnectableNode * tDest = destNode;
-  if(destNode->type == ContainerInType) tDest = ((ContainerInNode *)destNode.get())->parentNodeContainer;
+  if(auto s = dynamic_cast<ContainerInNode*>(destNode.get())) tDest = (s)->parentNodeContainer;
 
-  data.getDynamicObject()->setProperty("srcNode", tSource->shortName);
-  data.getDynamicObject()->setProperty("dstNode", tDest->shortName);
-  data.getDynamicObject()->setProperty("connectionType", (int)connectionType);
+  data->setProperty("srcNode", tSource->shortName);
+  data->setProperty("dstNode", tDest->shortName);
+  data->setProperty("connectionType", (int)connectionType);
 
   var links;
   if (isAudio())
@@ -301,18 +301,18 @@ var NodeConnection::getJSONData()
     }
   }
 
-  data.getDynamicObject()->setProperty("links", links);
+  data->setProperty("links", links);
 
   return data;
 }
 
-void NodeConnection::loadJSONData(const var & data)
+void NodeConnection::configureFromObject(DynamicObject * data)
 {
   //srcNodeId, destNodeId & connectionType set at creation, not in this load
 
   //DBG("Load JSON Data Node COnnection !");
 
-  const Array<var> * links = data.getProperty("links",var()).getArray();
+  const Array<var> * links = data->getProperties().getWithDefault("links",var()).getArray();
 
   if (links != nullptr)
   {

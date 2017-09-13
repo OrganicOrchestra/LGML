@@ -20,8 +20,10 @@
 #include "../../Audio/AudioHelpers.h"
 #include "../NodeContainer/NodeContainer.h"
 
-AudioMixerNode::AudioMixerNode() :
-NodeBase("AudioMixerNode",NodeType::AudioMixerType)
+
+REGISTER_NODE_TYPE(AudioMixerNode)
+AudioMixerNode::AudioMixerNode(StringRef name) :
+NodeBase(name)
 {
     numberOfInput = addNewParameter<IntParameter>("numInput", "number of input", 2, 1, 32);
     numberOfOutput = addNewParameter<IntParameter>("numOutput", "number of output", 2, 1, 16);

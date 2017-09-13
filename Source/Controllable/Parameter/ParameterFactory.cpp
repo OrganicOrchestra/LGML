@@ -13,46 +13,36 @@
 */
 
 
-#include "ParameterFactory.h"
+//#include "ParameterFactory.h"
+//
+//#include "Parameter.h"
+//
+//
+//static Identifier descIdentifier("_description");
+//
+//
+//
+//void ParameterFactory::logAllTypes (){
+//  DBG("Parameter types : ");
+//  for(auto it = getFactory().begin();it != getFactory().end() ; ++it){
+//      DBG("\t" + it.getKey());
+//  }
+//}
+//
+//
+//Parameter* ParameterFactory::createFromVarObject(var v ,const String & name){
+//  DynamicObject * ob = v.getDynamicObject();
+//  String ID =ob->getProperty(typeIdentifier);
+//  String desc =ob->getProperty(descIdentifier);
+//  if (getFactory().contains(ID)){
+//  return getFactory()[ID](name,desc,v.getDynamicObject());
+//  }
+//  else{
+//    jassertfalse;
+//    return nullptr;
+//  }
+//}
 
-#include "Parameter.h"
-
-
-static Identifier descIdentifier("_description");
-
-
-
-void ParameterFactory::logAllTypes (){
-  DBG("Parameter types : ");
-  for(auto it = getFactory().begin();it != getFactory().end() ; ++it){
-      DBG("\t" + it.getKey());
-  }
-}
-
-const String & ParameterFactory::getIdentifierForInstance(Controllable * c){
-  if(auto cp = c->getParameter()){return cp->getTypeId();}
-  jassertfalse;
-  return String::empty;
-};
-
-Parameter* ParameterFactory::createFromVarObject(var v ,const String & name){
-  DynamicObject * ob = v.getDynamicObject();
-  String ID =ob->getProperty(Parameter::varTypeIdentifier);
-  String desc =ob->getProperty(descIdentifier);
-  if (getFactory().contains(ID)){
-  return getFactory()[ID](name,desc,v.getDynamicObject());
-  }
-  else{
-    jassertfalse;
-    return nullptr;
-  }
-}
-
-var ParameterFactory::getVarObjectFromControllable(Controllable *c){
-  var  res = c->getVarObject();
-  res.getDynamicObject()->setProperty(Parameter::varTypeIdentifier, getIdentifierForInstance(c));
-  return res;
-}
 
 
 

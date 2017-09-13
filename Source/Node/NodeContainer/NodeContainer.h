@@ -87,7 +87,7 @@ public AsyncUpdater
 
 {
 public:
-  NodeContainer(const String &name = "Container");
+  DECLARE_OBJ_TYPE(NodeContainer);
   virtual ~NodeContainer();
 
   //Keep value of containerIn RMS and containerOutRMS to dispatch in one time
@@ -109,10 +109,10 @@ public:
   Array<NodeContainer*> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
 
 
-  ConnectableNode* addNode(NodeType nodeType, const String &nodeName = String::empty);
-  //ConnectableNode * addNodeFromJSON(var nodeData);
-  ConnectableNode* addNodeFromJSONData(var data);
-  ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty, var data = var());
+
+  
+  ConnectableNode* addNodeFromJSONData(DynamicObject * data);
+  ConnectableNode* addNode(ConnectableNode * node,const String &nodeName = String::empty, DynamicObject * data = nullptr);
   
   bool removeNode(ConnectableNode * n);
 
@@ -136,9 +136,9 @@ public:
   void removeParamProxy(ParameterProxy * pp);
 
   //save / load
-  var getJSONData() override;
-  void loadJSONData(const var & data) override;
-  ParameterContainer *  addContainerFromVar(const String & name,const var & v)override;
+  DynamicObject* getObject() override;
+  void configureFromObject(DynamicObject * data) override;
+  ParameterContainer *  addContainerFromObject(const String & name,DynamicObject *  v)override;
   
   void clear()override;
   void clear(bool keepContainerNodes);

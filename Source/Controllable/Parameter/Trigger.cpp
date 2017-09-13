@@ -25,8 +25,8 @@ const var Trigger::triggerVar = var::undefined();
 
 REGISTER_PARAM_TYPE(Trigger);
 
-Trigger::Trigger(const String & niceName, const String &description, bool enabled) :
-Parameter(TRIGGER, niceName, description,triggerVar, enabled)
+Trigger::Trigger(const String & niceName, const String &description=String::empty, bool enabled) :
+Parameter( niceName, description,triggerVar, enabled)
 {
   Controllable::isSavable = false;
 }
@@ -44,13 +44,9 @@ DynamicObject * Trigger::createDynamicObject()
 
 	return dObject;
 }
-void Trigger::setFromVarObject(DynamicObject & ){
-  jassertfalse;
-}
 
-var Trigger::getVarObject(){
-  var res = new DynamicObject();
-  return res;
+DynamicObject* Trigger::getObject(){
+  return new DynamicObject();
 }
 var Trigger::getVarState(){
   // isSavable should be false

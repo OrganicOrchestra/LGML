@@ -75,14 +75,15 @@ void FastMap::process(bool toReferenceOut)
   }
   if(!outRef) return;
   fastMapIsProcessing = true;
-  if (outRef->type == Controllable::TRIGGER)
+  auto type = outRef->getTypeId();
+  if (type == Trigger::_objType)
   {
-    if ((newIsInRange != isInRange && newIsInRange) || inRef->type==Controllable::TRIGGER) ((Trigger*)outRef)->trigger();
+    if ((newIsInRange != isInRange && newIsInRange) || inRef->getTypeId()== Trigger::_objType) ((Trigger*)outRef)->trigger();
   }
   else
   {
-    if (outRef->type == Controllable::BOOL){
-      if(inRef->type== Controllable::TRIGGER){
+    if (type == BoolParameter::_objType){
+      if(inRef->getTypeId()== Trigger::_objType){
         ((BoolParameter *)outRef)->setValue(!outRef->boolValue());
       }
       else{

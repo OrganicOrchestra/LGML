@@ -28,8 +28,7 @@ class AudioDeviceInNode :
 {
 
 public:
-
-	AudioDeviceInNode();
+  DECLARE_OBJ_TYPE(AudioDeviceInNode)
 	~AudioDeviceInNode();
 
 	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;

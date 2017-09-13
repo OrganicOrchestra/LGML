@@ -32,7 +32,7 @@ public ThreadPool
 {
 
 public:
-    NodeManager();
+    DECLARE_OBJ_TYPE(NodeManager)
     ~NodeManager();
 
     juce_DeclareSingleton(NodeManager, true);
@@ -46,8 +46,8 @@ public:
 
     void clear();
 
-	var getJSONData() override;
-	void loadJSONData(const var & data) override;
+	
+	void configureFromObject(DynamicObject * data) override;
   bool isLoading;
 
 

@@ -17,9 +17,10 @@
 #include "DataInNodeUI.h"
 #include "../Node/UI/NodeBaseUI.h"
 
+REGISTER_NODE_TYPE(DataInNode)
 
-DataInNode::DataInNode() :
-    NodeBase("DataIn",NodeType::DataInType)
+DataInNode::DataInNode(StringRef name) :
+    NodeBase(name)
 {
     addFloatParamAndData("Test Param", 0, 0, 1);
 	

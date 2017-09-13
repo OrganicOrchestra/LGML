@@ -20,7 +20,7 @@
 
 #include "NodeBaseContentUI.h"//keep
 #include "NodeBaseHeaderUI.h"//keep
-#include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
+
 class NodeBase;
 
 //==============================================================================

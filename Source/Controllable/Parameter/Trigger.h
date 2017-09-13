@@ -32,9 +32,10 @@ public:
 
 
   DynamicObject * createDynamicObject() override;
-  var getVarObject() override;
+  DynamicObject * getObject() override;
   var getVarState() override;
-  void setFromVarObject(DynamicObject & ob) override;
+
+  
 
   static const var triggerVar;
   void trigger()
@@ -56,7 +57,7 @@ public:
 
   }
 
-  DECLARE_PARAM_TYPE(Trigger)
+  DECLARE_OBJ_TYPE(Trigger)
 
 
 

@@ -170,7 +170,11 @@ int PresetManager::deletePresetsForContainer(ParameterContainer * container, boo
 	
 	if (recursive)
 	{
-		for (auto &cc : container->controllableContainers) numPresetsDeleted += deletePresetsForContainer(cc->getParameterContainer(), true);
+    for (auto &cc : container->controllableContainers){
+      if(cc){
+      numPresetsDeleted += deletePresetsForContainer(cc->getParameterContainer(), true);
+      }
+    }
 	}
 
 	return numPresetsDeleted;
@@ -181,26 +185,26 @@ void PresetManager::clear()
     presets.clear();
 }
 
-var PresetManager::getJSONData()
+DynamicObject* PresetManager::getObject()
 {
-	var data(new DynamicObject());
+	auto data = new DynamicObject();
 	var presetDatas;
 
 	for (auto &p : presets)
 	{
-		presetDatas.append(p->getJSONData());
+		presetDatas.append(p->getObject());
 	}
 
-	data.getDynamicObject()->setProperty("presets", presetDatas);
+	data->setProperty("presets", presetDatas);
 
 	return data;
 }
 
-void PresetManager::loadJSONData(const var & data)
+void PresetManager::configureFromObject(DynamicObject * data)
 {
 	clear();
 
-	Array<var> * presetDatas = data.getDynamicObject()->getProperty("presets").getArray();
+	Array<var> * presetDatas = data->getProperty("presets").getArray();
     if(presetDatas==nullptr){
         //DBG("no preset Loaded");
         return;
@@ -208,7 +212,7 @@ void PresetManager::loadJSONData(const var & data)
 	for (auto &presetData : *presetDatas)
 	{
 		Preset * pre = new Preset(presetData.getDynamicObject()->getProperty("name"), presetData.getDynamicObject()->getProperty("filter"));
-		pre->loadJSONData(presetData);
+		pre->configureFromObject(presetData.getDynamicObject());
 
 		presets.add(pre);
 	}
@@ -248,11 +252,11 @@ void PresetManager::Preset::clear()
 }
 
 
-var PresetManager::Preset::getJSONData()
+DynamicObject* PresetManager::Preset::getObject()
 {
-  var data(new DynamicObject());
-  data.getDynamicObject()->setProperty("name", name);
-  data.getDynamicObject()->setProperty("filter", filter);
+  auto data = new DynamicObject();
+  data->setProperty("name", name);
+  data->setProperty("filter", filter);
   var presetValuesData;
 
   for (auto &pv : presetValues)
@@ -263,14 +267,14 @@ var PresetManager::Preset::getJSONData()
 				presetValuesData.append(pvData);
   }
 
-  data.getDynamicObject()->setProperty("values", presetValuesData);
+  data->setProperty("values", presetValuesData);
   return data;
 }
 
-void PresetManager::Preset::loadJSONData(const var & data)
+void PresetManager::Preset::configureFromObject(DynamicObject * data)
 {
 
-  Array<var> * pvDatas = data.getDynamicObject()->getProperty("values").getArray();
+  Array<var> * pvDatas = data->getProperty("values").getArray();
   if(pvDatas!=nullptr){
     for (auto &pvData : *pvDatas)
     {

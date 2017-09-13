@@ -164,7 +164,7 @@ void Spat2DViewer::nodeParameterChanged(ConnectableNode *, Parameter * p)
 	if (p == node->numSpatInputs) updateNumSources();
 	else if (p == node->numSpatOutputs) updateNumTargets();
 	else if (p == node->targetRadius) updateTargetRadius();
-	else if (p->type == Parameter::POINT2D)
+  else if (p->isType<Point2DParameter<float>>())
 	{
 		if(p == node->globalTargetPosition)
 		{
@@ -238,12 +238,12 @@ void Spat2DViewer::dataInputRemoved(ConnectableNode *, Data *)
 
 void Spat2DViewer::controllableAdded(ControllableContainer *,Controllable * c)
 {
-	if (c->type == Controllable::POINT2D) updateNumTargets();
+	if (c->isType<Point2DParameter<float>>()) updateNumTargets();
 }
 
 void Spat2DViewer::controllableRemoved(ControllableContainer *,Controllable * c)
 {
-	if (c->type == Controllable::POINT2D) updateNumTargets();
+	if (c->isType<Point2DParameter<float>>()) updateNumTargets();
 }
 
 void Spat2DViewer::handleUserMoved(Spat2DHandle * handle, const Point<float> &newPos)

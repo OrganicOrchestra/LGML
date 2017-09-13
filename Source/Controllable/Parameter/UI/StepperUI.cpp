@@ -13,10 +13,13 @@
 */
 
 
-#include "FloatStepperUI.h"
+#include "StepperUI.h"
 #include "../NumericParameter.h"
 
-FloatStepperUI::FloatStepperUI(Parameter * _parameter) :ParameterUI(_parameter){
+
+
+template<class T>
+StepperUI<T>::StepperUI(Parameter * _parameter) :ParameterUI(_parameter){
 
   slider = new BetterStepper(ParameterUI::getTooltip());
   MinMaxParameter * fp = parameter->getAs<MinMaxParameter>();
@@ -31,44 +34,52 @@ FloatStepperUI::FloatStepperUI(Parameter * _parameter) :ParameterUI(_parameter){
 
 }
 
-FloatStepperUI::~FloatStepperUI()
+
+
+template<class T>
+StepperUI<T>::~StepperUI()
 {
 
 }
-
-void FloatStepperUI::setScrollAllowed(bool b){
+template<class T>
+void StepperUI<T>::setScrollAllowed(bool b){
   slider->setScrollWheelEnabled(b);
 }
-void FloatStepperUI::resized()
+template<class T>
+void StepperUI<T>::resized()
 {
   slider->setBounds(getLocalBounds());
 }
-
-void FloatStepperUI::valueChanged(const var & value)
+template<class T>
+void StepperUI<T>::valueChanged(const var & value)
 {
   if ((float)value == slider->getValue()) return;
 
   slider->setValue(value,NotificationType::dontSendNotification);
 }
-
-void FloatStepperUI::sliderValueChanged(Slider * _slider)
+template<class T>
+void StepperUI<T>::sliderValueChanged(Slider * _slider)
 {
 
   parameter->setValue(_slider->getValue());
 
 }
-void FloatStepperUI::rangeChanged(Parameter * p){
-  FloatParameter * fp = parameter->getAs<FloatParameter>();
+template <class T>
+void StepperUI<T>::rangeChanged(Parameter * p){
+  auto * fp = parameter->getAs<NumericParameter<T>>();
   jassert(fp);
-  slider->setRange((float)fp->minimumValue, (float)fp->maximumValue,1);
+  slider->setRange((T)fp->minimumValue, (T)fp->maximumValue,1);
 
 }
 
-
-void FloatStepperUI::componentParentHierarchyChanged (Component& c){
+template<class T>
+void StepperUI<T>::componentParentHierarchyChanged (Component& c){
   if(&c==this){
 
     bool isInViewport = findParentComponentOfClass<Viewport>()!=nullptr;
     setScrollAllowed(!isInViewport);
   }
 }
+
+template class StepperUI<double>;
+template class StepperUI<int>;

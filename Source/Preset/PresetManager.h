@@ -58,9 +58,9 @@ public:
 
 		void clear();
 
-		var getJSONData();
+		DynamicObject *  getObject();
 
-		void loadJSONData(const var & data);
+		void configureFromObject(DynamicObject * data);
 
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Preset)
 	};
@@ -84,8 +84,8 @@ public:
 	void clear();
 
 
-	var getJSONData();
-	void loadJSONData(const var & data);
+	DynamicObject * getObject();
+	void configureFromObject(DynamicObject * data);
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PresetManager)
 };

@@ -28,12 +28,16 @@
 #include "Time/TimeManager.h"
 #include "FastMapper/FastMapper.h"
 #include "Audio/VSTManager.h"
-#include "UI/ProgressNotifier.h"
+#include "Utils/ProgressNotifier.h"
 #include "Utils/CommandLineElements.hpp"
 class AudioFucker;
 
 
-class Engine:public FileBasedDocument,NodeManager::NodeManagerListener,AsyncUpdater,public ProgressNotifier,
+class Engine:
+public FileBasedDocument,
+NodeManager::NodeManagerListener,
+AsyncUpdater,
+public ProgressNotifier,
 public ParameterContainer
 {
 public:
@@ -73,7 +77,7 @@ public:
   //    #endif
 
   // our Saving methods
-  var getJSONData() override;
+  DynamicObject* getObject() override;
   void loadJSONData(const var & data,ProgressTask * loadingTask);
 
   bool checkFileVersion(DynamicObject * metaData);
@@ -145,7 +149,8 @@ public:
   class EngineListener{
   public:
     virtual ~EngineListener(){};
-
+    virtual void startEngine(){};
+    virtual void stopEngine(){};
     virtual void startLoadFile(){};
     // TODO implement progression
     virtual void fileProgress(float percent,int state){};

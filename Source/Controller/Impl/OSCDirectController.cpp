@@ -129,38 +129,19 @@ void OSCDirectController::onContainerParameterChanged(Parameter * p) {
 
 void OSCDirectController::sendOSCForAddress(Controllable* c,const String & cAddress){
 #if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES
-
-  Controllable::Type targetType = c->type;
-  if (targetType == Controllable::Type::PROXY) targetType = ((ParameterProxy *)c)->linkedParam->type;
-
-  switch (targetType)
-  {
-    case Controllable::Type::TRIGGER:
-      sendOSC(cAddress);
-      break;
-
-    case Controllable::Type::BOOL:
-      sendOSC(cAddress,((Parameter *)c)->intValue());
-      break;
-
-    case Controllable::Type::FLOAT:
-      sendOSC(cAddress, ((Parameter *)c)->floatValue());
-      break;
-
-    case Controllable::Type::INT:
-      sendOSC(cAddress, ((Parameter *)c)->intValue());
-      break;
-
-    case Controllable::Type::STRING:
-    case Controllable::Type::ENUM:
-      sendOSC(cAddress, ((Parameter *)c)->stringValue());
-      break;
+  auto  targetType = c->getParameter()->getTypeId();
+  if (targetType == ParameterProxy::_objType) targetType = ((ParameterProxy *)c)->linkedParam->getTypeId();
 
 
-    default:
-      DBG("Type not supported " << targetType);
+  if(targetType ==Trigger::_objType){sendOSC(cAddress);}
+  else if(targetType ==BoolParameter::_objType){sendOSC(cAddress,((Parameter *)c)->intValue());}
+  else if(targetType ==FloatParameter::_objType){sendOSC(cAddress, ((Parameter *)c)->floatValue());}
+  else if(targetType ==IntParameter::_objType){sendOSC(cAddress, ((Parameter *)c)->intValue());}
+  else if(targetType ==StringParameter::_objType){sendOSC(cAddress, ((Parameter *)c)->stringValue());}
+  else if(targetType ==EnumParameter::_objType){sendOSC(cAddress, ((Parameter *)c)->stringValue());}
+  else{
+      DBG("Type not supported " << targetType.toString());
       jassertfalse;
-      break;
   }
 
 

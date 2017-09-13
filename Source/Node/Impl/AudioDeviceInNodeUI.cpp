@@ -17,7 +17,6 @@
 #include "AudioDeviceInNode.h"
 #include "../../UI/VuMeter.h"
 #include "../../Controllable/Parameter/UI/BoolToggleUI.h"
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
 #include "../../UI/Style.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 

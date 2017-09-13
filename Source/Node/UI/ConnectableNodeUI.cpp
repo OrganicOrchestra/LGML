@@ -21,7 +21,7 @@
 
 
 // needed because main component need to know it for its scopedPointer
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 
 
 #include "../Manager/UI/NodeManagerUI.h"

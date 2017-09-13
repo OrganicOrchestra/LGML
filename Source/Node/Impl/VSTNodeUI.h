@@ -18,7 +18,7 @@
 
 
 
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../MIDI/MIDIUIHelper.h"
 #include "VSTNode.h"
 #include "../UI/NodeBaseHeaderUI.h"

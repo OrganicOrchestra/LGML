@@ -18,10 +18,10 @@
 
 
 const Identifier Parameter::valueIdentifier("value");
-const Identifier Parameter::varTypeIdentifier("_tName");
 
-Parameter::Parameter(const Type &type, const String &niceName, const String &description, var initialValue, bool enabled) :
-Controllable(type, niceName, description, enabled),
+
+Parameter::Parameter( const String &niceName, const String &description, var initialValue, bool enabled) :
+Controllable( niceName, description, enabled),
 isEditable(true),
 isPresettable(true),
 isOverriden(false),
@@ -37,10 +37,14 @@ value(initialValue)
 
 
 }
-void Parameter::setFromVarObject(DynamicObject & ob){
-  
-  if(ob.hasProperty("initialValue")){defaultValue = ob.getProperty("initialValue");}
-  if(ob.hasProperty("value")){setValue(ob.getProperty("value"));}
+void Parameter::configureFromObject(DynamicObject * ob){
+  if(ob){
+  if(ob->hasProperty("initialValue")){defaultValue = ob->getProperty("initialValue");}
+  if(ob->hasProperty("value")){setValue(ob->getProperty("value"));}
+  }
+  else{
+    jassertfalse;
+  }
 }
 void Parameter::resetValue(bool silentSet)
 {
@@ -130,12 +134,12 @@ bool Parameter::checkValueIsTheSame(var newValue, var oldValue)
 }
 
 void Parameter::checkVarIsConsistentWithType(){
-  if      (type == Type::STRING && !value.isString()) { value = value.toString();}
-  else if (type == Type::INT && !value.isInt())       { value = int(value);}
-  else if (type == Type::BOOL && !value.isBool())     { value = bool(value);}
-  else if (type == Type::FLOAT && !value.isDouble())  { value = double(value);}
-  else if (type == Type::POINT2D && !value.isArray()) { value = Array<var>{0,0};}
-  else if (type == Type::POINT3D && !value.isArray()) { value = Array<var>{0,0,0};}
+//  if      (type ==  && !value.isString()) { value = value.toString();}
+//  else if (type == Type::INT && !value.isInt())       { value = int(value);}
+//  else if (type == Type::BOOL && !value.isBool())     { value = bool(value);}
+//  else if (type == Type::FLOAT && !value.isDouble())  { value = double(value);}
+//  else if (type == Type::POINT2D && !value.isArray()) { value = Array<var>{0,0};}
+//  else if (type == Type::POINT3D && !value.isArray()) { value = Array<var>{0,0,0};}
 }
 
 
@@ -161,10 +165,9 @@ DynamicObject * Parameter::createDynamicObject()
   return dObject;
 }
 
-var Parameter::getVarObject(){
-  var res = new DynamicObject();
-  res.getDynamicObject()->setProperty(varTypeIdentifier, getTypeId());
-  res.getDynamicObject()->setProperty(valueIdentifier, value);
+DynamicObject * Parameter::getObject(){
+  DynamicObject* res = new DynamicObject();
+  res->setProperty(valueIdentifier, value);
   return res;
 }
 var Parameter::getVarState(){
@@ -178,10 +181,9 @@ void Parameter::handleAsyncUpdate(){
 };
 
 bool Parameter::isMappable(){
-  return isEditable && type!=Controllable::Type::STRING;
+  return isEditable ;
 }
 
-var Parameter::setVarState(const var & v){
+void Parameter::setStateFromVar(const var & v){
   setValue(v);
-  return value;
 }

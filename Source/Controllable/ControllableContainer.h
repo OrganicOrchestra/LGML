@@ -44,11 +44,11 @@ class ControllableContainer
 
 {
 public:
-  ControllableContainer(const String &niceName,bool isUserDefined=false);
+  ControllableContainer(StringRef niceName);
   virtual ~ControllableContainer();
   void removeFromParent();
   void clearContainer();
-
+  void setUserDefined(bool);
 
   void setCustomShortName(const String &_shortName);
   void setAutoShortName();
@@ -116,8 +116,8 @@ public:
   void dispatchFeedback(Controllable * c);
 
   
-  virtual var getJSONData() = 0;
-  virtual void loadJSONData(const var & data) = 0;
+  
+  
 
 
   // get non user-created custom parameter from JSON
@@ -159,7 +159,6 @@ public:
 
   /// identifiers
   static const Identifier controlAddressIdentifier;
-  static const Identifier containerNameIdentifier;
   static const Identifier childContainerId;
   static const Identifier controllablesId;
   friend class PresetManager;

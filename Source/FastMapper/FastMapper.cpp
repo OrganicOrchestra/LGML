@@ -16,9 +16,10 @@
 #include "FastMapper.h"
 
 juce_ImplementSingleton(FastMapper)
+IMPL_OBJ_TYPE(FastMapper);
 
-FastMapper::FastMapper() :
-ParameterContainer("Fast Maps"),
+FastMapper::FastMapper(StringRef name) :
+ParameterContainer(name),
 selectedContainerToListenTo(nullptr)
 {
 
@@ -116,21 +117,8 @@ void FastMapper::removeFastmap(FastMap * f)
   maps.removeObject(f);
 }
 
-var FastMapper::getJSONData()
-{
-  var data = ParameterContainer::getJSONData();
 
-  //	var mData;
-  //	for (auto &f : maps)
-  //	{
-  //		mData.append(f->getJSONData());
-  //	}
-  //	data.getDynamicObject()->setProperty("fastMaps",mData);
-  //
-  return data;
-}
-
-ParameterContainer *  FastMapper::addContainerFromVar(const String & /*name*/,const var & /*fData*/)
+ParameterContainer *  FastMapper::addContainerFromObject(const String & /*name*/,DynamicObject *  /*fData*/)
 {
   FastMap * f = addFastMap();
 

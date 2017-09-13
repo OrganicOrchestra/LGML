@@ -13,12 +13,13 @@
 */
 
 
-#include "FloatSliderUI.h"
+#include "SliderUI.h"
 #include "../../../UI/Style.h"
 #include "../NumericParameter.h"
 
 //==============================================================================
-FloatSliderUI::FloatSliderUI(Parameter * parameter) :
+template<class T>
+SliderUI<T>::SliderUI(Parameter * parameter) :
 ParameterUI(parameter), fixedDecimals(2),
 defaultColor(PARAMETER_FRONT_COLOR)
 {
@@ -31,12 +32,14 @@ defaultColor(PARAMETER_FRONT_COLOR)
 
 }
 
-FloatSliderUI::~FloatSliderUI()
+template<class T>
+SliderUI<T>::~SliderUI()
 {
 }
 
 
-void FloatSliderUI::paint(Graphics & g)
+template<class T>
+void SliderUI<T>::paint(Graphics & g)
 {
 
   if(shouldBailOut())return;
@@ -94,7 +97,8 @@ void FloatSliderUI::paint(Graphics & g)
   }
 }
 
-void FloatSliderUI::mouseDown(const MouseEvent & e)
+template<class T>
+void SliderUI<T>::mouseDown(const MouseEvent & e)
 {
   ParameterUI::mouseDown(e);
 
@@ -122,7 +126,8 @@ void FloatSliderUI::mouseDown(const MouseEvent & e)
 
 
 
-void FloatSliderUI::mouseDrag(const MouseEvent & e)
+template<class T>
+void SliderUI<T>::mouseDrag(const MouseEvent & e)
 {
   if (!parameter->isEditable) return;
 
@@ -147,7 +152,8 @@ void FloatSliderUI::mouseDrag(const MouseEvent & e)
   }
 }
 
-void FloatSliderUI::mouseUp(const MouseEvent &me)
+template<class T>
+void SliderUI<T>::mouseUp(const MouseEvent &me)
 {
   if (!parameter->isEditable) return;
 
@@ -194,27 +200,35 @@ void FloatSliderUI::mouseUp(const MouseEvent &me)
   }
 }
 
-float FloatSliderUI::getValueFromMouse()
+template<class T>
+T SliderUI<T>::getValueFromMouse()
 {
   return getValueFromPosition(getMouseXYRelative());
 }
 
-float FloatSliderUI::getValueFromPosition(const Point<int> &pos)
+template<class T>
+T SliderUI<T>::getValueFromPosition(const Point<int> &pos)
 {
   if (orientation == HORIZONTAL) return (pos.x*1.0f / getWidth());
   else return 1-(pos.y*1.0f/ getHeight());
 }
 
-void FloatSliderUI::setParamNormalizedValue(float value)
+template<class T>
+void SliderUI<T>::setParamNormalizedValue(float value)
 {
-  parameter->getAs<FloatParameter>()->setNormalizedValue(jmin(jmax(value,0.0f),1.0f));
+  parameter->getAs<NumericParameter<T> >()->setNormalizedValue(jmin(jmax(value,0.0f),1.0f));
 }
 
-float FloatSliderUI::getParamNormalizedValue()
+template<class T>
+float SliderUI<T>::getParamNormalizedValue()
 {
-  return parameter->getAs<FloatParameter>()->getNormalizedValue();
+  return parameter->getAs<NumericParameter<T> >()->getNormalizedValue();
 }
 
-void FloatSliderUI::valueChanged(const var &) {
+template<class T>
+void SliderUI<T>::valueChanged(const var &) {
   repaint();
 };
+
+template class SliderUI<int>;
+template class SliderUI<double>;

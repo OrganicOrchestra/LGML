@@ -23,10 +23,9 @@
 bool isEngineLoadingFile();
 
 
-ConnectableNode::ConnectableNode(const String & name, NodeType _type, bool _hasMainAudioControl):
+ConnectableNode::ConnectableNode(const String & name, bool _hasMainAudioControl):
 parentNodeContainer(nullptr),
 hasMainAudioControl(_hasMainAudioControl),
-type(_type),
 canBeRemovedByUser(true),
 ParameterContainer(name),
 userCanAccessInputs(true),
@@ -129,10 +128,7 @@ bool ConnectableNode::hasDataOutputs()
   return false;
 }
 
-String ConnectableNode::getPresetFilter()
-{
-  return NodeFactory::nodeToString(this) + String("_") + uid.toString();
-}
+
 
 
 void ConnectableNode::onContainerParameterChanged(Parameter * p)
@@ -159,12 +155,7 @@ void ConnectableNode::clear()
   //to override
 }
 
-var ConnectableNode::getJSONData()
-{
-  var data = ParameterContainer::getJSONData();
-  data.getDynamicObject()->setProperty("nodeType", NodeFactory::nodeToString(this));
-  return data;
-}
+
 
 
 

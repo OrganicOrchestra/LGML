@@ -17,8 +17,12 @@
 #include "../UI/NodeBaseUI.h"
 #include "../NodeContainer/NodeContainer.h"
 
-ContainerInNode::ContainerInNode() :
-	NodeBase("Container IN", NodeType::ContainerInType, false),
+
+REGISTER_NODE_TYPE(ContainerInNode)
+
+
+ContainerInNode::ContainerInNode(StringRef name) :
+	NodeBase(name, false),
 AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioInputNode)
 {
 	canBeRemovedByUser = false;

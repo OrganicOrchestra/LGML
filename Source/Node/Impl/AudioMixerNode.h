@@ -24,6 +24,7 @@ class AudioMixerNode : public NodeBase
 {
 
 public:
+  DECLARE_OBJ_TYPE(AudioMixerNode);
 	class OutputBus : public ParameterContainer {
 	public:
 		OutputBus(int _outputIndex, int numInput);
@@ -37,7 +38,7 @@ public:
 	};
 
 
-    AudioMixerNode() ;
+    
   void setParentNodeContainer(NodeContainer * c)override;
 
 	OwnedArray<OutputBus> outBuses;

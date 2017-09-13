@@ -28,8 +28,9 @@ const Identifier Controller::controllerTypeIdentifier("controllerType");
 
 Controller::Controller(const String &_name) :
 ParameterContainer(_name),
-userContainer("messages",true)
+userContainer("messages")
 {
+  userContainer.setUserDefined(true);
   addChildControllableContainer(&userContainer);
   userContainer.nameParam->isEditable = false;
 
@@ -52,10 +53,10 @@ Controller::~Controller()
 }
 
 
-var Controller::getJSONData(){
+DynamicObject *  Controller::getObject(){
 
-  var res = ParameterContainer::getJSONData();
-  res.getDynamicObject()->setProperty(controllerTypeIdentifier,
+  auto res = ParameterContainer::getObject();
+  res->setProperty(controllerTypeIdentifier,
                                       ControllerFactory::controllerTypeToString((ControllerFactory::ControllerType)controllerTypeEnum));
   return res;
 

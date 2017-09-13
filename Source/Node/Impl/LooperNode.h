@@ -33,7 +33,7 @@ public TimeMasterCandidate,TimeManager::TimeManagerListener
 {
 
 public:
-  LooperNode();
+  DECLARE_OBJ_TYPE(LooperNode)
   virtual ~LooperNode();
 
   ConnectableNodeUI * createUI() override;

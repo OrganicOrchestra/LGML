@@ -21,7 +21,7 @@
 #include "../UI/NodeBaseContentUI.h"
 
 
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 
 class AudioMixerNodeUI : public NodeBaseContentUI,
 public ConnectableNode::ConnectableNodeListener,

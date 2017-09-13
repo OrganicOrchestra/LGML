@@ -16,7 +16,7 @@
 #include "ConnectableNodeUI.h"
 
 #include "../../Preset/PresetManager.h"
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 
 #include "../../UI/VuMeter.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"

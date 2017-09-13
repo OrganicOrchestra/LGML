@@ -19,12 +19,14 @@
 #include "ParameterUI.h"
 #include "BetterStepper.h"
 
-class FloatStepperUI : public ParameterUI, private Slider::Listener,private ComponentListener
+
+template <typename T>
+class StepperUI : public ParameterUI, private Slider::Listener,private ComponentListener
 {
 
 public:
-    FloatStepperUI(Parameter * _parameter);
-    virtual ~FloatStepperUI();
+    StepperUI(Parameter * _parameter);
+    virtual ~StepperUI();
 
   
 
@@ -35,7 +37,7 @@ public:
     void resized() override;
 protected:
     void valueChanged(const var &) override;
-    void rangeChanged(Parameter * p) override;
+    virtual void rangeChanged(Parameter * p) override;
 
     // Inherited via Listener
     virtual void sliderValueChanged(Slider * slider) override;
@@ -44,5 +46,8 @@ protected:
 
 };
 
+
+typedef StepperUI<int> IntStepperUI;
+typedef StepperUI<double> FloatStepperUI;
 
 #endif  // FLOATSTEPPERUI_H_INCLUDED

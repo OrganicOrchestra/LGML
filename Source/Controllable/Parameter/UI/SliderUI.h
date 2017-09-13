@@ -13,17 +13,18 @@
 */
 
 
-#ifndef FLOATSLIDERUI_H_INCLUDED
-#define FLOATSLIDERUI_H_INCLUDED
+#ifndef SliderUI_H_INCLUDED
+#define SliderUI_H_INCLUDED
 
 #include "ParameterUI.h"
 
-class FloatSliderUI    : public ParameterUI
+template<class T>
+class SliderUI    : public ParameterUI
 {
 
 public:
-    FloatSliderUI(Parameter * parameter = nullptr);
-    virtual ~FloatSliderUI();
+    SliderUI(Parameter * parameter = nullptr);
+    virtual ~SliderUI();
 
     enum Direction { HORIZONTAL, VERTICAL };
 
@@ -45,8 +46,8 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
 
-    float getValueFromMouse();
-    float getValueFromPosition(const Point<int> &pos);
+    T getValueFromMouse();
+    T getValueFromPosition(const Point<int> &pos);
 
     virtual void setParamNormalizedValue(float value);
     virtual float getParamNormalizedValue();
@@ -57,8 +58,9 @@ public:
 
 protected:
     void valueChanged(const var &) override ;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FloatSliderUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SliderUI)
 };
 
-
-#endif  // FLOATSLIDERUI_H_INCLUDED
+typedef SliderUI<double> FloatSliderUI;
+typedef SliderUI<int> IntSliderUI;
+#endif  // SliderUI_H_INCLUDED

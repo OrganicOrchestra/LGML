@@ -17,7 +17,7 @@
 #define CONTROLLEREDITOR_H_INCLUDED
 
 #include "ControllerUI.h" //keep
-#include "../../Controllable/GenericControllableContainerEditor.h"
+#include "../../Controllable/UI/GenericControllableContainerEditor.h"
 
 class ControllerEditor : public InspectorEditor,
 						 public ButtonListener

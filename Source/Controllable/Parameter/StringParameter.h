@@ -23,15 +23,15 @@
 class StringParameter : public Parameter
 {
 public:
-  StringParameter(const String &niceName, const String &description, const String &initialValue=String::empty, bool enabled=true);
+  StringParameter(const String &niceName, const String &description=String::empty, const String &initialValue=String::empty, bool enabled=true);
 
 
     
     // need to override this function because var Strings comparison  is based on pointer (we need full string comp)
     void tryToSetValue(var v,bool silentSet=false,bool force=false)override;
     void setValueInternal(var&)override;
-
-    DECLARE_PARAM_TYPE(StringParameter)
+  bool isMappable() override;
+    DECLARE_OBJ_TYPE(StringParameter)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameter)
 };
 

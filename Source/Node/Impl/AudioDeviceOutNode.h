@@ -27,7 +27,7 @@ class AudioDeviceOutNode :
 
 {
 public:
-	AudioDeviceOutNode();
+  DECLARE_OBJ_TYPE(AudioDeviceOutNode);
 	~AudioDeviceOutNode();
 
 

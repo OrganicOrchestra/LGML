@@ -21,7 +21,8 @@
 #include "../UI/NodeBaseContentUI.h"
 #include "../NodeBase.h"
 #include "../../Controllable/Parameter/UI/ParameterUI.h"
-class FloatSliderUI;
+
+template<typename T> class SliderUI;
 class VuMeter;
 class AudioDeviceOutNode;
 
@@ -35,7 +36,7 @@ public:
   virtual ~AudioDeviceOutNodeContentUI();
 
   OwnedArray<ParameterUI> muteToggles;
-  OwnedArray<FloatSliderUI> volumes;
+  OwnedArray<SliderUI<double> >  volumes;
   OwnedArray<VuMeter> vuMeters;
 
   AudioDeviceOutNode * audioOutNode;

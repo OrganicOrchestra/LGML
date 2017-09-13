@@ -508,6 +508,9 @@
     <ClCompile Include="..\..\Source\Controllable\UI\ControllableUI.cpp">
       <Filter>LGML\Source\Controllable\UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Controllable\UI\GenericControllableContainerEditor.cpp">
+      <Filter>LGML\Source\Controllable\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Controllable.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
@@ -520,9 +523,6 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\GenericControllableContainerEditor.cpp">
-      <Filter>LGML\Source\Controllable</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
@@ -532,16 +532,10 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\EnumParameterUI.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\FloatSliderUI.cpp">
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\SliderUI.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\FloatStepperUI.cpp">
-      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\IntSliderUI.cpp">
-      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\IntStepperUI.cpp">
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\StepperUI.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterProxyUI.cpp">
@@ -802,6 +796,9 @@
     <ClCompile Include="..\..\Source\Node\NodeContainer\NodeContainer.cpp">
       <Filter>LGML\Source\Node\NodeContainer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Node\UI\NodeUIFactory.cpp">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Node\UI\NodeBaseAudioCtlUI.cpp">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClCompile>
@@ -871,6 +868,9 @@
     <ClCompile Include="..\..\Source\Time\TimeMasterCandidate.cpp">
       <Filter>LGML\Source\Time</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\MainWindow.cpp">
+      <Filter>LGML\Source\UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\LGMLDragger.cpp">
       <Filter>LGML\Source\UI</Filter>
     </ClCompile>
@@ -881,9 +881,6 @@
       <Filter>LGML\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\PluginWindow.cpp">
-      <Filter>LGML\Source\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\ProgressNotifier.cpp">
       <Filter>LGML\Source\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\ProgressWindow.cpp">
@@ -919,6 +916,15 @@
     <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.cpp">
       <Filter>LGML\Source\UI\ShapeShifter</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\MainComponent.cpp">
+      <Filter>LGML\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\MainComponentCommands.cpp">
+      <Filter>LGML\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\FactoryBase.cpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Utils\AudioDebugCrack.cpp">
       <Filter>LGML\Source\Utils</Filter>
     </ClCompile>
@@ -928,6 +934,9 @@
     <ClCompile Include="..\..\Source\Utils\NetworkUtils.cpp">
       <Filter>LGML\Source\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\ProgressNotifier.cpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Engine.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
@@ -935,12 +944,6 @@
       <Filter>LGML\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
-      <Filter>LGML\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\MainComponent.cpp">
-      <Filter>LGML\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\MainComponentCommands.cpp">
       <Filter>LGML\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_linux.cc">
@@ -2757,6 +2760,9 @@
     <ClInclude Include="..\..\Source\Controllable\UI\ControllableUI.h">
       <Filter>LGML\Source\Controllable\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Controllable\UI\GenericControllableContainerEditor.h">
+      <Filter>LGML\Source\Controllable\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Controllable.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
@@ -2769,9 +2775,6 @@
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\GenericControllableContainerEditor.h">
-      <Filter>LGML\Source\Controllable</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.h">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
@@ -2781,16 +2784,10 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\EnumParameterUI.h">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\FloatSliderUI.h">
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\SliderUI.h">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\FloatStepperUI.h">
-      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\IntSliderUI.h">
-      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\IntStepperUI.h">
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\StepperUI.h">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterProxyUI.h">
@@ -3057,6 +3054,9 @@
     <ClInclude Include="..\..\Source\Node\NodeContainer\NodeContainer.h">
       <Filter>LGML\Source\Node\NodeContainer</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Node\UI\NodeUIFactory.h">
+      <Filter>LGML\Source\Node\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Node\UI\NodeBaseAudioCtlUI.h">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClInclude>
@@ -3120,6 +3120,9 @@
     <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h">
       <Filter>LGML\Source\Time</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\MainWindow.h">
+      <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\LGMLDragger.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>
@@ -3130,9 +3133,6 @@
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\PluginWindow.h">
-      <Filter>LGML\Source\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\ProgressNotifier.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\ProgressWindow.h">
@@ -3174,6 +3174,15 @@
     <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.h">
       <Filter>LGML\Source\UI\ShapeShifter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\MainComponent.h">
+      <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\FactoryObject.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\FactoryBase.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Utils\AudioDebugCrack.h">
       <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
@@ -3198,13 +3207,13 @@
     <ClInclude Include="..\..\Source\Utils\StringUtil.hpp">
       <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\ProgressNotifier.h">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Engine.h">
       <Filter>LGML\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\GitSha.h">
-      <Filter>LGML\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\MainComponent.h">
       <Filter>LGML\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\third_party\serial\include\serial\impl\unix.h">

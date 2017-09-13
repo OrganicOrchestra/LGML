@@ -18,9 +18,9 @@
 #include "BoolToggleUI.h"
 
 #include "../NumericParameter.h"
-#include "FloatSliderUI.h"
+#include "SliderUI.h"
 //#include "IntSliderUI.h"
-#include "IntStepperUI.h"
+#include "StepperUI.h"
 
 #include "../Trigger.h"
 #include "TriggerBlinkUI.h"
@@ -40,31 +40,22 @@
 
 
 
-
+#define CHKNRETURN(p,classN,UIN)  if(p->getTypeId()==classN::_objType) {return new UIN((classN*)t);}
 
 //#define REG(cls,meth)
-ParameterUI * ParameterUIFactory::createDefaultUI(Parameter * targetControllable) {
-   auto classId = targetControllable->type;
-   switch(classId){
-     case Controllable::BOOL:
-       return new BoolToggleUI(dynamic_cast<BoolParameter *>(targetControllable));
-     case Controllable::STRING:
-       return  new StringParameterUI(dynamic_cast<StringParameter *>(targetControllable));
-     case Controllable::FLOAT:
-       return new FloatSliderUI(dynamic_cast<FloatParameter *>(targetControllable));
-     case Controllable::TRIGGER:
-       return new TriggerBlinkUI(dynamic_cast<Trigger *>(targetControllable));
-     case Controllable::INT:
-       return new IntStepperUI(dynamic_cast<IntParameter *>(targetControllable));
-     case Controllable::ENUM:
-       return new EnumParameterUI(dynamic_cast<EnumParameter *>(targetControllable));
-     case Controllable::PROXY:
-       return new ParameterProxyUI(dynamic_cast<ParameterProxy *>(targetControllable));
-     case Controllable::RANGE:
-       return new RangeParameterUI(dynamic_cast<RangeParameter *>(targetControllable));
-     default:
-       jassertfalse;
-       return nullptr;
-   }
+ParameterUI * ParameterUIFactory::createDefaultUI(Parameter * t) {
+
+  CHKNRETURN(t,BoolParameter,BoolToggleUI)
+  CHKNRETURN(t,StringParameter,StringParameterUI)
+  CHKNRETURN(t,FloatParameter,FloatSliderUI)
+  CHKNRETURN(t,Trigger,TriggerBlinkUI)
+  CHKNRETURN(t,IntParameter,IntStepperUI)
+  CHKNRETURN(t,EnumParameter,EnumParameterUI)
+  CHKNRETURN(t,ParameterProxy,ParameterProxyUI)
+  CHKNRETURN(t,RangeParameter,RangeParameterUI)
+
+  jassertfalse;
+  return nullptr;
+
 
 }

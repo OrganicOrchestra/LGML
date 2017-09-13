@@ -17,7 +17,7 @@
 #include "../MIDIController.h"
 
 #include "../../../MIDI/MIDIListener.h"
-#include "../../../Controllable/Parameter/UI/IntStepperUI.h"
+#include "../../../Controllable/Parameter/UI/StepperUI.h"
 #include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 MIDIControllerEditor::MIDIControllerEditor(Controller * _controller) :

@@ -20,10 +20,11 @@
 #include "../../Audio/AudioHelpers.h"
 #include "../Manager/NodeManager.h"
 
+REGISTER_NODE_TYPE(AudioDeviceOutNode)
 AudioDeviceManager& getAudioDeviceManager();
 
-AudioDeviceOutNode::AudioDeviceOutNode() :
-NodeBase("AudioDeviceOut",NodeType::AudioDeviceOutType, false),
+AudioDeviceOutNode::AudioDeviceOutNode(StringRef name) :
+NodeBase(name, false),
 AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::audioOutputNode)
 {
   //CanHavePresets = false;

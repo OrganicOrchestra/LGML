@@ -25,8 +25,7 @@
 
 
 
-Controllable::Controllable(const Type &type, const String & niceName, const String &description, bool enabled) :
-type(type),
+Controllable::Controllable( const String & niceName, const String &description, bool enabled) :
 description(description),
 parentContainer(nullptr),
 hasCustomShortName(false),
@@ -134,7 +133,8 @@ var Controllable::setControllableValueFromJS(const juce::var::NativeFunctionArgs
   {
     //		success = true;
     var value = a.numArguments == 0?var::undefined():a.arguments[0];
-    return c->setVarState(value);
+    c->setStateFromVar(value);
+    return c->getVarState();
   }
   else{
     LOG("!!!unknown controllable set from js");

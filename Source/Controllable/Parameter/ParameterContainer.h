@@ -24,13 +24,15 @@
 
 #include "../Parameter/Trigger.h"
 #include "../../Preset/PresetManager.h"
+#include "../../Utils/FactoryObject.h"
 
 class ParameterContainer:public ControllableContainer,
 public Parameter::Listener,
 public Parameter::AsyncListener,
-public ControllableContainer::Listener{
+public ControllableContainer::Listener,
+FactoryObject{
 public:
-  ParameterContainer(const String &niceName,bool isUserDefined=false);
+  DECLARE_OBJ_TYPE(ParameterContainer)
   virtual ~ParameterContainer();
 
   template<class T,class... Args>
@@ -41,11 +43,11 @@ public:
 
   ParameterContainer * getParameterContainer() override{return this;}
 
-  virtual ParameterContainer * addContainerFromVar(const String & name,const var & data) ;
+  virtual ParameterContainer * addContainerFromObject(const String & name,DynamicObject *  data) ;
   virtual Parameter * addParameterFromVar(const String & name,const var & data) ;
 
-  virtual void loadJSONData(const var & data) override;
-  virtual var getJSONData() override;
+  virtual void configureFromObject(DynamicObject * data) override;
+  virtual DynamicObject * getObject() override;
   virtual Component * getCustomEditor() {return nullptr;}
 
   //  controllableContainer::Listener
@@ -74,7 +76,7 @@ public:
   virtual var getPresetValueFor(Parameter * p);//Any parameter that is part of a this preset can use this function
 
 
-
+  void setUserDefined(bool v);
 
   Parameter* addParameter(Parameter * );
   Array<WeakReference<Parameter>> getAllParameters(bool recursive = false, bool getNotExposed = false);

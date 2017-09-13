@@ -24,9 +24,9 @@ Identifier mixedId("Mixed");
 Identifier clickId("Click");
 Identifier sineId("Sine");
 
-
-DummyNode::DummyNode() :
-NodeBase("DummyNode",NodeType::DummyType),
+REGISTER_NODE_TYPE(DummyNode)
+DummyNode::DummyNode(StringRef name) :
+NodeBase(name),
 clickFade(300,300)
 {
 

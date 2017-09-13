@@ -39,7 +39,7 @@ public juce::AudioProcessor
 {
 
 public:
-  NodeBase(const String &name = "[NodeBase]", NodeType type = UNKNOWN_TYPE, bool _hasMainAudioControl = true);
+  NodeBase(const String &name = "[NodeBase]", bool _hasMainAudioControl = true);
   virtual ~NodeBase();
 
 
@@ -62,8 +62,9 @@ public:
   /** can be oerriden to react to clear */
   virtual void clearInternal() {};
 
-  var getJSONData() override;
-  void loadJSONData(const var & data) override;
+  String getPresetFilter() override;
+  DynamicObject * getObject() override;
+  void configureFromObject(DynamicObject * data) override;
 
 
   //ui
@@ -216,5 +217,8 @@ private:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
   
 };
+
+
+
 
 #endif  // NODEBASE_H_INCLUDED

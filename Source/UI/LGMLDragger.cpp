@@ -14,7 +14,7 @@
 
 
 #include "LGMLDragger.h"
-#include "../MainComponent.h"
+#include "MainComponent.h"
 
 juce_ImplementSingleton(LGMLDragger);
 

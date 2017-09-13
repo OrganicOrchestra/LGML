@@ -15,8 +15,8 @@
 
 #include "Spat2DNodeUI.h"
 #include "../UI/NodeBaseUI.h"
-#include "../../Controllable/Parameter/UI/IntStepperUI.h"
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/StepperUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 Spat2DNodeContentUI::Spat2DNodeContentUI() : NodeBaseContentUI()

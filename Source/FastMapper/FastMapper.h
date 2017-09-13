@@ -34,8 +34,9 @@ private Inspector::InspectorListener
 {
 public:
 	juce_DeclareSingleton(FastMapper,true)
+  DECLARE_OBJ_TYPE(FastMapper)
 
-	FastMapper();
+	
 	virtual ~FastMapper();
 
 	OwnedArray<FastMap> maps;
@@ -51,8 +52,8 @@ public:
 	FastMap * addFastMap();
 	void removeFastmap(FastMap * f);
 
-	virtual var getJSONData() override;
-  ParameterContainer *  addContainerFromVar(const String & name,const var & fData) override;
+	
+  ParameterContainer *  addContainerFromObject(const String & name,DynamicObject *  fData) override;
 
 private:
 

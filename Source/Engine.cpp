@@ -16,7 +16,6 @@
 #include "Engine.h"
 #include "Controller/Impl/SerialManager.h"
 #include "Logger/LGMLLogger.h"
-#include "MainComponent.h"
 #include "Utils/DebugHelpers.h"
 
 #include "Node/NodeContainer/NodeContainer.h"
@@ -62,7 +61,7 @@ threadPool(4)
 
 
 Engine::~Engine(){
-
+  engineListeners.call(&EngineListener::stopEngine);
   engineListeners.clear();
   controllableContainerListeners.clear();
 

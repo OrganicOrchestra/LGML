@@ -23,19 +23,19 @@
 class Parameter : public Controllable,public AsyncUpdater
 {
 public:
-  Parameter(const Type &type, const String & niceName, const String &description, var initialValue, bool enabled = true);
+  Parameter( const String & niceName, const String &description, var initialValue, bool enabled = true);
 
   virtual ~Parameter() {Parameter::masterReference.clear();cancelPendingUpdate();}
 
-  void setFromVarObject(DynamicObject & ob) override;
+  
 
   var defaultValue;
   var value;
   var lastValue;
 
   
-  bool isMappable() override;
-  var setVarState(const var & v) override;
+  virtual bool isMappable() override;
+  
   bool isEditable;
   
   bool isPresettable;
@@ -50,6 +50,8 @@ public:
 
   void resetValue(bool silentSet = false);
   void setValue(var _value, bool silentSet = false, bool force = false);
+  void configureFromObject(DynamicObject *) override;
+  void setStateFromVar(const var &) override;
 
   // helpers to coalesce value until a reader pushes it
   // useful for threadSyncronization
@@ -116,7 +118,7 @@ public:
 
 
   //JS Helper
-  virtual var getVarObject() override;
+  virtual DynamicObject * getObject() override;
   virtual var getVarState() override;
 
 
@@ -124,11 +126,6 @@ public:
 
   static const Identifier valueIdentifier;
   
-
-  // Parameter implementationshould declare a unique name
-  // see helper macros : DECLARE_PARAM_TYPE and REGISTER_PARAMETER_TYPE
-  virtual  const String & getTypeId() const = 0;
-  static const Identifier varTypeIdentifier;
 
   Parameter* getParameter() override{return this;}
 
@@ -156,7 +153,6 @@ private:
 
 
 
-#define DECLARE_PARAM_TYPE(T) static const String _paramType; \
-const String & getTypeId() const override {return _paramType;} \
+
 
 #endif  // PARAMETER_H_INCLUDED

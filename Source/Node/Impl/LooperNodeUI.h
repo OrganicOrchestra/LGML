@@ -17,7 +17,7 @@
 #define LOOPERNODEUI_H_INCLUDED
 
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
-#include "../../Controllable/Parameter/UI/FloatSliderUI.h"
+#include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../Controllable/Parameter/UI/EnumParameterUI.h"
 #include "LooperNode.h"
 #include "../UI/NodeBaseContentUI.h"

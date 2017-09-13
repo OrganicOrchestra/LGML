@@ -13,9 +13,9 @@
 
 const Identifier ParameterContainer::presetIdentifier("preset");
 
-
-ParameterContainer::ParameterContainer(const String & niceName,bool _isUserDefined):
-ControllableContainer(niceName,_isUserDefined),
+IMPL_OBJ_TYPE(ParameterContainer)
+ParameterContainer::ParameterContainer(StringRef niceName):
+ControllableContainer(niceName),
 currentPreset(nullptr)
 {
 
@@ -23,7 +23,7 @@ currentPreset(nullptr)
 
   nameParam = addNewParameter<StringParameter>("Name", "Set the visible name of the node.", "");
   nameParam->isPresettable = false;
-  nameParam->isEditable = _isUserDefined;
+
 
   currentPresetName = addNewParameter<StringParameter>("Preset", "Current Preset", "");
   currentPresetName->hideInEditor = true;
@@ -32,7 +32,7 @@ currentPreset(nullptr)
 
 
   // init once all are created to avoid uninitialized values
-  nameParam->setValue(niceName);
+  nameParam->setValue(String(niceName));
 
 }
 
@@ -72,17 +72,17 @@ Array<WeakReference<Parameter>> ParameterContainer::getAllParameters(bool recurs
 }
 
 
-var ParameterContainer::getJSONData()
+DynamicObject* ParameterContainer::getObject()
 {
   DynamicObject * data = new DynamicObject();
-  data->setProperty(containerNameIdentifier, getNiceName());
+  data->setProperty(factoryTypeIdentifier,getTypeName());
   data->setProperty("uid",uid.toString());
   {
     var paramsData(new DynamicObject);
 
     for(auto & c :controllables){
       if(c->isUserDefined || c->shouldSaveObject  ){
-        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::getVarObjectFromControllable(c));
+        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::getTypedObjectFromInstance(c->getParameter()));
       }
       else if (c->isSavable){
         paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
@@ -99,7 +99,7 @@ var ParameterContainer::getJSONData()
     DynamicObject *  childData = new DynamicObject();
 
     for(auto controllableCont: controllableContainers){
-      childData->setProperty(controllableCont->shortName,controllableCont.get()->getJSONData());
+      childData->setProperty(controllableCont->shortName,controllableCont.get()->getParameterContainer()->getObject());
     }
     data->setProperty(childContainerId, childData);
   }
@@ -166,7 +166,7 @@ void ParameterContainer::parameterValueChanged(Parameter * p)
 
   }
 
-  if(p && p->type==Controllable::TRIGGER){
+  if(p && p->getTypeId()==Trigger::_objType){
     onContainerTriggerTriggered((Trigger*)p);
   }
   else{
@@ -176,15 +176,11 @@ void ParameterContainer::parameterValueChanged(Parameter * p)
   if ( (p!=nullptr && p->parentContainer==this && p->isControllableExposed ) ) dispatchFeedback(p);
 }
 
-void ParameterContainer::loadJSONData(const var & data)
+void ParameterContainer::configureFromObject(DynamicObject * dyn)
 {
-  auto dyn =data.getDynamicObject();
+  if(dyn){
   if (dyn->hasProperty("uid")) uid = dyn->getProperty("uid");
-  if (dyn->hasProperty(containerNameIdentifier))
-  {
-    String  name =dyn->getProperty(containerNameIdentifier);
-    setNiceName(name);
-  }
+
   {
     DynamicObject * paramsData = dyn->getProperty(controllablesId).getDynamicObject();
     jassert(paramsData);
@@ -226,12 +222,12 @@ void ParameterContainer::loadJSONData(const var & data)
       for(auto & o: ob){
         auto cont = getControllableContainerByName(o.name.toString());
         if(cont){
-          cont->loadJSONData(o.value);
+          cont->getParameterContainer()->configureFromObject(o.value.getDynamicObject());
         }
         else{
-          auto c = addContainerFromVar(o.name.toString(),o.value);
+          auto c = addContainerFromObject(o.name.toString(),o.value.getDynamicObject());
           if(c){
-            c->loadJSONData(o.value);
+            c->configureFromObject(o.value.getDynamicObject());
           }
           else{
             jassertfalse;
@@ -242,6 +238,10 @@ void ParameterContainer::loadJSONData(const var & data)
     }
   }
 
+  }
+  else{
+    jassertfalse;
+  }
 
 
 
@@ -249,8 +249,9 @@ void ParameterContainer::loadJSONData(const var & data)
 }
 
 
-ParameterContainer *  ParameterContainer::addContainerFromVar(const String & name,const var & /*data*/) {
-  auto res = new ParameterContainer(name,true);
+ParameterContainer *  ParameterContainer::addContainerFromObject(const String & name,DynamicObject *  /*data*/) {
+  auto res = new ParameterContainer(name);
+  res->setUserDefined(true);
   addChildControllableContainer(res);
   return res;;
 };
@@ -258,7 +259,7 @@ Parameter* ParameterContainer::addParameterFromVar(const String & name,const var
   // handle automagically for userdefined
   jassert(isUserDefined);
 
-  return addParameter(ParameterFactory::createFromVarObject(data, name));
+  return addParameter(ParameterFactory::createFromObject( name,data.getDynamicObject()));
 };
 
 ////////////
@@ -384,5 +385,12 @@ void ParameterContainer::cleanUpPresets()
 String ParameterContainer::getPresetFilter()
 {
   return shortName;
+}
+
+
+void ParameterContainer::setUserDefined(bool v){
+  ControllableContainer::setUserDefined(v);
+  nameParam->isEditable = v;
+
 }
 
