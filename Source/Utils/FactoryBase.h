@@ -60,7 +60,7 @@ public:
 
   }
 
-  static DynamicObject *  getTypedObjectFromInstance(CLASSNAME *c){
+  static DynamicObject *  createTypedObjectFromInstance(CLASSNAME *c){
     auto  res = c->getObject();
     res->setProperty(factoryTypeIdentifier, getTypeNameForInstance(c));
     return res;

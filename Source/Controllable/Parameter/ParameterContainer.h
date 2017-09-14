@@ -26,6 +26,9 @@
 #include "../../Preset/PresetManager.h"
 #include "../../Utils/FactoryObject.h"
 
+
+
+
 class ParameterContainer:public ControllableContainer,
 public Parameter::Listener,
 public Parameter::AsyncListener,
@@ -37,11 +40,11 @@ public:
 
   template<class T,class... Args>
   T* addNewParameter(const String & _niceName,const String & desc,Args...args);
-
+  StringParameter *nameParam;
   String const getNiceName() override;
   String setNiceName(const String &_niceName) override;
 
-  ParameterContainer * getParameterContainer() override{return this;}
+  
 
   virtual ParameterContainer * addContainerFromObject(const String & name,DynamicObject *  data) ;
   virtual Parameter * addParameterFromVar(const String & name,const var & data) ;
@@ -53,6 +56,10 @@ public:
   //  controllableContainer::Listener
   virtual void controllableRemoved(ControllableContainer *,Controllable *) override;
   virtual void containerCleared(ControllableContainer * ) override;
+
+
+
+  //////////////////
   //// preset
 
   virtual bool loadPresetWithName(const String &name);
@@ -87,7 +94,7 @@ public:
 
   bool canHavePresets;
   bool presetSavingIsRecursive;
-  StringParameter * currentPresetName,*nameParam;
+  StringParameter * currentPresetName;
   Trigger * savePresetTrigger;
   PresetManager::Preset * currentPreset;
 
@@ -97,7 +104,8 @@ public:
   bool isLoadingPreset = false;
   friend class PresetManager;
 
-
+  WeakReference< ParameterContainer >::Master masterReference;
+  friend class WeakReference<ParameterContainer>;
 
 
 private:

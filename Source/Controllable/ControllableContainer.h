@@ -1,80 +1,63 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
-#ifndef CONTROLLABLECONTAINER_H_INCLUDED
-#define CONTROLLABLECONTAINER_H_INCLUDED
+#ifndef ControllableCONTAINER_H_INCLUDED
+#define ControllableCONTAINER_H_INCLUDED
 
 #include "Controllable.h"
 
 
 #include "../Utils/DebugHelpers.h"
 
-class ControllableContainer;
-class ParameterContainer;
-//Listener
-class  ControllableContainerListener
-{
-public:
-  /** Destructor. */
-  virtual ~ControllableContainerListener() {}
-  virtual void controllableAdded(ControllableContainer *,Controllable *) {}
-  virtual void controllableRemoved(ControllableContainer *,Controllable *) {}
-  virtual void controllableContainerAdded(ControllableContainer *,ControllableContainer *) {}
-  virtual void controllableContainerRemoved(ControllableContainer *,ControllableContainer *) {}
-  virtual void controllableFeedbackUpdate(ControllableContainer *,Controllable *) {}
-  virtual void childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer* /*origin*/) {}
-  virtual void childAddressChanged(ControllableContainer * ){};
-  virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
-  virtual void containerCleared(ControllableContainer * /*origin*/){}
-};
 
 class ControllableContainer
 
 {
 public:
+
   ControllableContainer(StringRef niceName);
   virtual ~ControllableContainer();
-  void removeFromParent();
-  void clearContainer();
-  void setUserDefined(bool);
 
+  void setUserDefined(bool);
   void setCustomShortName(const String &_shortName);
   void setAutoShortName();
   bool hasCustomShortName;
 
-  // to override
-  virtual String const getNiceName() =0;
-  virtual String setNiceName(const String &_niceName);
 
-
+  // variables
   String shortName;
-
   bool isUserDefined;
   bool skipControllableNameInAddress;
-
-
   Uuid uid;
-
   OwnedArray<Controllable,CriticalSection> controllables;
-  
-  Array<WeakReference<ControllableContainer>,CriticalSection  > controllableContainers;
+  Array<WeakReference<ControllableContainer >,CriticalSection  > controllableContainers;
   ControllableContainer * parentContainer;
 
 
-  
+
+
+  // name functions to override
+  virtual String const getNiceName() =0;
+  virtual String setNiceName(const String &_niceName);
+
+  void removeFromParent();
+
+  void clearContainer();
+
   void removeControllable(Controllable * c);
+
   Controllable * getControllableByName(const String &name, bool searchNiceNameToo = false);
 
   ControllableContainer* addChildControllableContainer(ControllableContainer * container,bool notify=true);
@@ -90,8 +73,41 @@ public:
   // can be overriden if indexed container are removed from the middle of the list,
   // allowing Indexed containers to react to index change
   virtual void localIndexChanged();
+
+  //
+  //template
+
+
   template<class T>
-  Array<T*> getObjectsOfType(bool recursive = false);
+  Array<WeakReference<T> > getControllablesOfType(bool recursive){
+    Array<WeakReference<T> > res;
+    for(auto & c:controllables){
+      if(T* o = dynamic_cast<T*>(c)){res.add(o);}
+    }
+    if(recursive){
+      ScopedLock lk(controllableContainers.getLock());
+      for(auto & c:controllableContainers){res.addArray(c->getControllablesOfType<T>(true));}
+    }
+    return res;
+  }
+
+  template<class T>
+  Array<WeakReference<T> > getContainersOfType(bool recursive){
+    Array<WeakReference<T> > res;
+    ScopedLock lk(controllableContainers.getLock());
+    for(auto & c:controllableContainers){
+      if(WeakReference<T> o = dynamic_cast<T*>(c.get())){ res.add(o);}
+    }
+      if(recursive){
+        for(auto & c:controllableContainers){
+          res.addArray(c->getContainersOfType<T>(true));
+        }
+      }
+
+
+    return res;
+  }
+  
 
   bool containsContainer(ControllableContainer * );
 
@@ -104,57 +120,51 @@ public:
 
   virtual Array<WeakReference<Controllable>> getAllControllables(bool recursive = false, bool getNotExposed = false);
   virtual Array<WeakReference<ControllableContainer>> getAllControllableContainers(bool recursive = false);
-  
+
   virtual Controllable * getControllableForAddress(String addressSplit, bool recursive = true, bool getNotExposed = false);
   virtual Controllable * getControllableForAddress(StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
   bool containsControllable(Controllable * c, int maxSearchLevels = -1);
   String getControlAddress(ControllableContainer * relativeTo=nullptr);
 
 
-
-
-  void dispatchFeedback(Controllable * c);
-
-  
-  
-  
-
-
-  // get non user-created custom parameter from JSON
-  virtual void loadCustomJSONElement(const String & ,const var v){jassertfalse;};
-
-
-
-//  virtual void childStructureChanged(ControllableContainer *notifier,ControllableContainer * origin)override;
-
   String getUniqueNameInContainer(const String &sourceName, int suffix = 0,void * me=nullptr);
-
-  virtual ParameterContainer * getParameterContainer() = 0;
-
-  
 
   int numContainerIndexed;
   int localIndexedPosition;
 
-
-
-public:
-
-  typedef ControllableContainerListener Listener ;
+  //Listener
+  class  Listener
+  {
+  public:
+    /** Destructor. */
+    virtual ~Listener() {}
+    virtual void controllableAdded(ControllableContainer *,Controllable *) {}
+    virtual void controllableRemoved(ControllableContainer *,Controllable *) {}
+    virtual void controllableContainerAdded(ControllableContainer *,ControllableContainer *) {}
+    virtual void controllableContainerRemoved(ControllableContainer *,ControllableContainer *) {}
+    virtual void controllableFeedbackUpdate(ControllableContainer *,Controllable *) {}
+    virtual void childStructureChanged(ControllableContainer * /*notifier*/,ControllableContainer* /*origin*/) {}
+    virtual void childAddressChanged(ControllableContainer * ){};
+    virtual void controllableContainerPresetLoaded(ControllableContainer *) {}
+    virtual void containerCleared(ControllableContainer * /*origin*/){}
+  };
   
-  
-  ListenerList<ControllableContainerListener> controllableContainerListeners;
-  void addControllableContainerListener(ControllableContainerListener* newListener) { controllableContainerListeners.add(newListener);}
-  void removeControllableContainerListener(ControllableContainerListener* listener) { controllableContainerListeners.remove(listener);}
+//  typedef ControllableContainerListener Listener ;
+  ListenerList<Listener> controllableContainerListeners;
+  void addControllableContainerListener(Listener* newListener) { controllableContainerListeners.add(newListener);}
+  void removeControllableContainerListener(Listener* listener) { controllableContainerListeners.remove(listener);}
+
+
+  virtual DynamicObject * getObject()=0;
 
 
 
 
+protected :
 
+  void dispatchFeedback(Controllable * c);
 
-  protected :
-
-  //  container with custom controllable can override this 
+  //  container with custom controllable can override this
   virtual void addControllableInternal(Controllable *){};
 
   /// identifiers
@@ -164,24 +174,18 @@ public:
   friend class PresetManager;
 
   void notifyStructureChanged(ControllableContainer * origin);
-protected:
 
-  WeakReference< ControllableContainer >::Master masterReference;
+  typename  WeakReference< ControllableContainer >::Master masterReference;
   friend class WeakReference<ControllableContainer>;
-  
-
-
-
 
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllableContainer)
 
-
+  
 };
 
+typedef ControllableContainer::Listener ControllableContainerListener;
 
 
-
-
-#endif  // CONTROLLABLECONTAINER_H_INCLUDED
+#endif  // ControllableCONTAINER_H_INCLUDED

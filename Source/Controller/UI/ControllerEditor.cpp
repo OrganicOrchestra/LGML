@@ -23,7 +23,7 @@ ControllerEditor::ControllerEditor(Controller * _controller,bool generateAuto) :
 {
 	addParameterBT.addListener(this);
   if(generateAuto){
-  editor = new GenericControllableContainerEditor(controller);
+  editor = new GenericParameterContainerEditor(controller);
   addAndMakeVisible(editor);
   }
   addAndMakeVisible(addParameterBT);

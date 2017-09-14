@@ -508,9 +508,6 @@
     <ClCompile Include="..\..\Source\Controllable\UI\ControllableUI.cpp">
       <Filter>LGML\Source\Controllable\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\UI\GenericControllableContainerEditor.cpp">
-      <Filter>LGML\Source\Controllable\UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Controllable.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
@@ -524,6 +521,9 @@
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.cpp">
@@ -2760,9 +2760,6 @@
     <ClInclude Include="..\..\Source\Controllable\UI\ControllableUI.h">
       <Filter>LGML\Source\Controllable\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\UI\GenericControllableContainerEditor.h">
-      <Filter>LGML\Source\Controllable\UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Controllable.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
@@ -2774,6 +2771,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h">
       <Filter>LGML\Source\Controllable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h">
+      <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.h">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
@@ -3176,6 +3176,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainComponent.h">
       <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\FactoryUIHelpers.h">
+      <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\FactoryObject.h">
       <Filter>LGML\Source\Utils</Filter>

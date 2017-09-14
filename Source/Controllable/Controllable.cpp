@@ -20,11 +20,6 @@
 
 
 
-
-
-
-
-
 Controllable::Controllable( const String & niceName, const String &description, bool enabled) :
 description(description),
 parentContainer(nullptr),
@@ -40,11 +35,13 @@ isUserDefined(false)
   setNiceName(niceName);
 }
 
+
 Controllable::~Controllable() {
   Controllable::masterReference.clear();
   listeners.call(&Controllable::Listener::controllableRemoved, this);
 
 }
+
 
 void Controllable::setNiceName(const String & _niceName) {
   if (niceName == _niceName) return;
@@ -54,6 +51,7 @@ void Controllable::setNiceName(const String & _niceName) {
   else listeners.call(&Listener::controllableNameChanged, this);
 }
 
+
 void Controllable::setCustomShortName(const String & _shortName)
 {
   this->shortName = _shortName;
@@ -62,12 +60,14 @@ void Controllable::setCustomShortName(const String & _shortName)
   listeners.call(&Listener::controllableNameChanged, this);
 }
 
+
 void Controllable::setAutoShortName() {
   hasCustomShortName = false;
   shortName = StringUtil::toShortName(niceName);
   updateControlAddress();
   listeners.call(&Listener::controllableNameChanged, this);
 }
+
 
 void Controllable::setEnabled(bool value, bool silentSet, bool force)
 {
@@ -77,17 +77,20 @@ void Controllable::setEnabled(bool value, bool silentSet, bool force)
   if (!silentSet) listeners.call(&Listener::controllableStateChanged, this);
 }
 
+
 void Controllable::setParentContainer(ControllableContainer * container)
 {
   this->parentContainer = container;
   updateControlAddress();
 }
 
+
 void Controllable::updateControlAddress()
 {
   this->controlAddress = getControlAddress();
   listeners.call(&Listener::controllableControlAddressChanged, this);
 }
+
 
 String Controllable::getControlAddress(ControllableContainer * relativeTo)
 {
@@ -109,6 +112,7 @@ DynamicObject * Controllable::createDynamicObject()
   dObject->setMethod(jsGetIdentifier, Controllable::getVarStateFromScript);
   return dObject;
 }
+
 
 
 var Controllable::getVarStateFromScript(const juce::var::NativeFunctionArgs & a)
@@ -152,6 +156,7 @@ var Controllable::setControllableValueFromJS(const juce::var::NativeFunctionArgs
 bool Controllable::isMappable(){
   return false;
 }
+
 
 bool Controllable::isChildOf(ControllableContainer * p){
   auto i = parentContainer;

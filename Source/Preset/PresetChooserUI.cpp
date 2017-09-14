@@ -18,7 +18,6 @@
 #include "../Controllable/Parameter/ParameterContainer.h"
 
 PresetChooserUI::PresetChooserUI(ParameterContainer * _container) :
-	wr((ControllableContainer*)_container),
   container(_container),
 	ComboBox("Preset")
 {
@@ -32,7 +31,7 @@ PresetChooserUI::PresetChooserUI(ParameterContainer * _container) :
 PresetChooserUI::~PresetChooserUI()
 {
     ComboBox::removeListener(this);
-	if(auto c = wr.get())c->removeControllableContainerListener(this);
+	if(auto c = container.get())c->removeControllableContainerListener(this);
 }
 
 

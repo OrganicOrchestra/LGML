@@ -19,7 +19,6 @@
 
 #include "../NumericParameter.h"
 #include "SliderUI.h"
-//#include "IntSliderUI.h"
 #include "StepperUI.h"
 
 #include "../Trigger.h"
@@ -51,8 +50,8 @@ ParameterUI * ParameterUIFactory::createDefaultUI(Parameter * t) {
   CHKNRETURN(t,Trigger,TriggerBlinkUI)
   CHKNRETURN(t,IntParameter,IntStepperUI)
   CHKNRETURN(t,EnumParameter,EnumParameterUI)
-  CHKNRETURN(t,ParameterProxy,ParameterProxyUI)
   CHKNRETURN(t,RangeParameter,RangeParameterUI)
+  CHKNRETURN(t,ParameterProxy,ParameterProxyUI)
 
   jassertfalse;
   return nullptr;

@@ -28,8 +28,7 @@ ep((EnumParameter *)parameter)
   cb.setEditableText(ep->userCanEnterText);
   addAndMakeVisible(cb);
   ep->addAsyncEnumParameterListener(this);
-  setIsFileBased( false);
-  addFunction = nullptr;
+  
 
   updateComboBox();
 }
@@ -41,28 +40,6 @@ EnumParameterUI::~EnumParameterUI()
 }
 
 
-void EnumParameterUI::setIsFileBased(bool _isFileBased){
-  if(_isFileBased){
-    addFunction = [](EnumParameter * ep){
-      FileChooser fc("choose file : "+ep->niceName);
-      bool res = false;
-      Identifier key;
-      String value;
-      if(fc.browseForFileToOpen()){
-        File f( fc.getResult());
-        if(f.exists()){
-          res = true;
-          key = f.getFileNameWithoutExtension();
-          value =f.getFullPathName();
-        }
-      }
-      return std::tuple<bool,Identifier,var>(res,key,value);
-    };
-  }
-  else{
-    addFunction = nullptr;
-  }
-}
 
 void EnumParameterUI::updateComboBox()
 {
@@ -150,7 +127,7 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
       }
     }
     else if(id==addElementId ){
-      if(addFunction!=nullptr){
+      if(auto addFunction = ep->getModel()->addFunction){
         auto res = addFunction(ep);
         if(std::get<0>(res)){
           ep->addOption(std::get<1>(res),std::get<2>(res));

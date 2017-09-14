@@ -19,6 +19,7 @@
 #include "../ControllerFactory.h"
 #include "../../Inspector/Inspector.h"
 #include "../../UI/ShapeShifter/ShapeShifterManager.h"
+#include "../../Utils/FactoryUIHelpers.h"
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(ControllerManager * manager):
@@ -144,13 +145,13 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
         {
 
             ScopedPointer<PopupMenu> menu( new PopupMenu());
-            ScopedPointer<PopupMenu> addNodeMenu( ControllerFactory::getControllerTypesMenu(0));
+          ScopedPointer<PopupMenu> addNodeMenu( FactoryUIHelpers::getFactoryTypesMenu<ControllerFactory>(0));
             menu->addSubMenu("Add Controller", *addNodeMenu);
 
             int result = menu->show();
             if (result >= 1 && result <= addNodeMenu->getNumItems())
             {
-                manager->addController((ControllerFactory::ControllerType)(result - 1));
+                manager->addController(FactoryUIHelpers::createFromMenuIdx<Controller>(result));
             }
 		}
 		else

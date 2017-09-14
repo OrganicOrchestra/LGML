@@ -115,12 +115,12 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/VSTManager_e3595958.o \
   $(JUCE_OBJDIR)/ControllableEditor_f166b1d4.o \
   $(JUCE_OBJDIR)/ControllableUI_294cac5b.o \
-  $(JUCE_OBJDIR)/GenericControllableContainerEditor_ee8451ac.o \
   $(JUCE_OBJDIR)/Controllable_a0f8da50.o \
   $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o \
   $(JUCE_OBJDIR)/ControllableHelpers_6d200a9f.o \
   $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
   $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o \
+  $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o \
   $(JUCE_OBJDIR)/BoolToggleUI_b0447c2a.o \
   $(JUCE_OBJDIR)/EnumParameterUI_461058e.o \
   $(JUCE_OBJDIR)/SliderUI_d4e1556d.o \
@@ -329,11 +329,6 @@ $(JUCE_OBJDIR)/ControllableUI_294cac5b.o: ../../Source/Controllable/UI/Controlla
 	@echo "Compiling ControllableUI.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/GenericControllableContainerEditor_ee8451ac.o: ../../Source/Controllable/UI/GenericControllableContainerEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling GenericControllableContainerEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/Controllable_a0f8da50.o: ../../Source/Controllable/Controllable.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Controllable.cpp"
@@ -357,6 +352,11 @@ $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o: ../../Source/Controllabl
 $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o: ../../Source/Controllable/Parameter/UI/BetterStepper.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling BetterStepper.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o: ../../Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling GenericParameterContainerEditor.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/BoolToggleUI_b0447c2a.o: ../../Source/Controllable/Parameter/UI/BoolToggleUI.cpp

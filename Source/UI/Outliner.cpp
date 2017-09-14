@@ -64,10 +64,10 @@ void Outliner::rebuildTree()
 
 }
 
-void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer,bool shouldFilter)
+void Outliner::buildTree(OutlinerItem * parentItem, ParameterContainer * parentContainer,bool shouldFilter)
 {
   bool shouldFilterByName = nameFilter.isNotEmpty() && shouldFilter;
-  Array<WeakReference<ControllableContainer>> childContainers = parentContainer->getAllControllableContainers(false);
+  auto childContainers = parentContainer->getContainersOfType<ParameterContainer>(false);
   for (auto &cc : childContainers)
   {
 
@@ -90,11 +90,11 @@ void Outliner::buildTree(OutlinerItem * parentItem, ControllableContainer * pare
 
   }
 
-  Array<WeakReference<Controllable>> childControllables = parentContainer->getAllControllables(false);
+  auto childControllables = parentContainer->getControllablesOfType<Parameter>(false);
 
   for (auto &c : childControllables)
   {
-    if(c==parentContainer->getParameterContainer()->nameParam || c->hideInEditor) continue;
+    if(c==parentContainer->nameParam || c->hideInEditor) continue;
     if(!shouldFilterByName || c->niceName.toLowerCase().contains(nameFilter)){
       OutlinerItem * cItem = new OutlinerItem(c);
       parentItem->addSubItem(cItem);
@@ -151,14 +151,14 @@ void Outliner::restoreCurrentOpenChilds(){
 // OUTLINER ITEM
 ///////////////////////////
 
-OutlinerItem::OutlinerItem(ControllableContainer * _container) :
-container(_container), controllable(nullptr), isContainer(true)
+OutlinerItem::OutlinerItem(ParameterContainer * _container) :
+container(_container), parameter(nullptr), isContainer(true)
 {
 
 }
 
-OutlinerItem::OutlinerItem(Controllable * _controllable) :
-container(nullptr), controllable(_controllable), isContainer(false)
+OutlinerItem::OutlinerItem(Parameter * _parameter) :
+container(nullptr), parameter(_parameter), isContainer(false)
 {
 }
 
@@ -176,27 +176,27 @@ Component * OutlinerItem::createItemComponent()
 String OutlinerItem::getUniqueName() const{
   // avoid empty names
   if(isContainer) {return "/it/"+container->getControlAddress();}
-  else            {return "/it/"+controllable->getControlAddress();}
+  else            {return "/it/"+parameter->getControlAddress();}
 
 };
 
 OutlinerItemComponent::OutlinerItemComponent(OutlinerItem * _item) :
 InspectableComponent(_item->container),
 item(_item),
-label("label",_item->isContainer? item->container->getNiceName() : item->controllable->niceName),
+label("label",_item->isContainer? item->container->getNiceName() : item->parameter->niceName),
 paramUI(nullptr)
 
 {
 
-  setTooltip(item->isContainer ? item->container->getControlAddress() : item->controllable->description + "\nControl Address : " + item->controllable->controlAddress);
+  setTooltip(item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
   addAndMakeVisible(&label);
   label.setInterceptsMouseClicks(false, false);
   if(!_item->isContainer ){
-    paramUI = ParameterUIFactory::createDefaultUI(item->controllable->getParameter());
+    paramUI = ParameterUIFactory::createDefaultUI(item->parameter->getParameter());
 
   }
   else{
-    paramUI = ParameterUIFactory::createDefaultUI(item->container->getParameterContainer()->nameParam->getParameter());
+    paramUI = ParameterUIFactory::createDefaultUI(item->container->nameParam->getParameter());
   }
   addAndMakeVisible(paramUI);
 }
@@ -241,5 +241,5 @@ void OutlinerItemComponent::mouseDown(const MouseEvent & e)
 InspectorEditor * OutlinerItemComponent::createEditor()
 {
   if (item->isContainer) return InspectableComponent::createEditor();
-  return new ControllableEditor(this,item->controllable);
+  return new ControllableEditor(this,item->parameter);
 }

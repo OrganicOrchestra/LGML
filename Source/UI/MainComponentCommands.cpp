@@ -322,13 +322,13 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
       InspectableComponent * ic = Inspector::getInstance()->currentComponent;
       if (ic != nullptr)
       {
-        ControllableContainer * cc = Inspector::getInstance()->currentComponent->relatedControllableContainer;
+        ParameterContainer * cc = Inspector::getInstance()->currentComponent->relatedParameterContainer;
         if (cc != nullptr)
         {
 
           var data(new DynamicObject());
           data.getDynamicObject()->setProperty("type", ic->inspectableType);
-          data.getDynamicObject()->setProperty("data", cc->getParameterContainer()->getObject());
+          data.getDynamicObject()->setProperty("data", cc->getObject());
 
 
           if (info.commandID == CommandIDs::cutSelection)
@@ -360,7 +360,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
           {
             if (type == "node" && Inspector::getInstance()->currentComponent->inspectableType == "node")
             {
-              ConnectableNode * cn = dynamic_cast<ConnectableNode *>(Inspector::getInstance()->currentComponent->relatedControllableContainer);
+              ConnectableNode * cn = dynamic_cast<ConnectableNode *>(Inspector::getInstance()->currentComponent->relatedParameterContainer);
               NodeContainer * container = (dynamic_cast<NodeContainer *>(cn)) ? dynamic_cast<NodeContainer *>(cn) : cn->parentNodeContainer;
               if (cn != nullptr)
               {

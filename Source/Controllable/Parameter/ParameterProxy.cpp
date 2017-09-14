@@ -17,6 +17,9 @@
 #include "../ControllableContainer.h"
 #include "../../Engine.h"
 
+#include "ParameterFactory.h"
+REGISTER_PARAM_TYPE(ParameterProxy)
+
 ParameterProxy::ParameterProxy(const String & niceName,const String & desc,Parameter * ref,ControllableContainer * root) :
 StringParameter(niceName,desc),
 linkedParam(ref),
@@ -40,6 +43,7 @@ ParameterProxy::~ParameterProxy()
 void ParameterProxy::setRoot(ControllableContainer * r){
   if(rootOfProxy!=nullptr)rootOfProxy->removeControllableContainerListener(this);
   rootOfProxy = r;
+
   resolveAddress();
 
 }

@@ -26,7 +26,9 @@
 
 
 const Identifier ControllableContainer::controlAddressIdentifier("controlAddress");
+
 const Identifier ControllableContainer::childContainerId("/");
+
 const Identifier ControllableContainer::controllablesId("parameters");
 
 
@@ -58,6 +60,8 @@ ControllableContainer::~ControllableContainer()
   clearContainer();
   masterReference.clear();
 }
+
+
 void ControllableContainer::clearContainer()
 {
 
@@ -68,12 +72,14 @@ void ControllableContainer::clearContainer()
   controllableContainerListeners.call(&Listener::containerCleared,this);
 }
 
+
 void ControllableContainer::removeFromParent(){
   jassert(parentContainer);
   if(parentContainer){
     parentContainer->removeChildControllableContainer(this);
   }
 }
+
 
 
 void ControllableContainer::removeControllable(Controllable * c)
@@ -106,12 +112,14 @@ String ControllableContainer::setNiceName(const String &_niceName) {
 
 }
 
+
 void ControllableContainer::setCustomShortName(const String &_shortName){
   shortName = _shortName;
   hasCustomShortName = true;
   updateChildrenControlAddress();
   controllableContainerListeners.call(&Listener::childAddressChanged,this);
 }
+
 
 void ControllableContainer::setAutoShortName() {
   hasCustomShortName = false;
@@ -132,7 +140,8 @@ Controllable * ControllableContainer::getControllableByName(const String & name,
   return nullptr;
 }
 
-ControllableContainer* ControllableContainer::addChildControllableContainer(ControllableContainer * container,bool notify)
+
+ControllableContainer * ControllableContainer::addChildControllableContainer(ControllableContainer * container,bool notify)
 {
   String oriName = container->getNiceName();
   String targetName = getUniqueNameInContainer(oriName);
@@ -149,6 +158,7 @@ ControllableContainer* ControllableContainer::addChildControllableContainer(Cont
   return container;
 }
 
+
 void ControllableContainer::removeChildControllableContainer(ControllableContainer * container)
 {
   if(numContainerIndexed>0 &&
@@ -164,6 +174,7 @@ void ControllableContainer::removeChildControllableContainer(ControllableContain
   container->setParentContainer(nullptr);
 }
 
+
 void ControllableContainer::addChildIndexedControllableContainer(ControllableContainer * container,int idx){
   if(idx == -1 )idx = numContainerIndexed;
   jassert(idx<=numContainerIndexed);
@@ -177,6 +188,7 @@ void ControllableContainer::addChildIndexedControllableContainer(ControllableCon
   controllableContainerListeners.call(&Listener::controllableContainerAdded,this, container);
   notifyStructureChanged(this);
 }
+
 
 void ControllableContainer::removeChildIndexedControllableContainer(int idx){
   if(idx == -1 )idx = numContainerIndexed-1;
@@ -193,10 +205,15 @@ void ControllableContainer::removeChildIndexedControllableContainer(int idx){
 
 }
 
+
 int ControllableContainer::getNumberOfIndexedContainer(){return numContainerIndexed;}
+
 int ControllableContainer::getIndexedPosition(){return localIndexedPosition;}
+
 bool ControllableContainer::hasIndexedContainers(){return numContainerIndexed>0;}
+
 bool ControllableContainer::isIndexedContainer(){return localIndexedPosition>=0;}
+
 void ControllableContainer::localIndexChanged(){};
 
 ControllableContainer * ControllableContainer::getControllableContainerByName(const String & name, bool searchNiceNameToo)
@@ -210,6 +227,7 @@ ControllableContainer * ControllableContainer::getControllableContainerByName(co
   return nullptr;
 
 }
+
 
 ControllableContainer * ControllableContainer::getControllableContainerForAddress( StringArray  addressSplit)
 {
@@ -265,6 +283,7 @@ ControllableContainer * ControllableContainer::getControllableContainerForAddres
 
 }
 
+
 String ControllableContainer::getControlAddress(ControllableContainer * relativeTo){
   StringArray addressArray;
   ControllableContainer * pc = this;
@@ -277,12 +296,14 @@ String ControllableContainer::getControlAddress(ControllableContainer * relative
   else return "/" + addressArray.joinIntoString("/");
 }
 
+
 void ControllableContainer::setParentContainer(ControllableContainer * container)
 {
   this->parentContainer = container;
   updateChildrenControlAddress();
 
 }
+
 
 void ControllableContainer::updateChildrenControlAddress()
 {
@@ -298,7 +319,8 @@ void ControllableContainer::updateChildrenControlAddress()
 
 }
 
-Array<WeakReference<Controllable>> ControllableContainer::getAllControllables(bool recursive,bool getNotExposed)
+
+Array<WeakReference<Controllable> > ControllableContainer::getAllControllables(bool recursive,bool getNotExposed)
 {
 
   Array<WeakReference<Controllable>> result;
@@ -319,7 +341,8 @@ Array<WeakReference<Controllable>> ControllableContainer::getAllControllables(bo
   return result;
 }
 
-Array<WeakReference<ControllableContainer>> ControllableContainer::getAllControllableContainers(bool recursive)
+
+Array<WeakReference<ControllableContainer > > ControllableContainer::getAllControllableContainers(bool recursive)
 {
   Array<WeakReference<ControllableContainer>> containers;
   containers.addArray(controllableContainers);
@@ -346,6 +369,7 @@ Controllable * ControllableContainer::getControllableForAddress(String address, 
 
   return getControllableForAddress(addrArray, recursive, getNotExposed);
 }
+
 
 Controllable * ControllableContainer::getControllableForAddress(StringArray addressSplit, bool recursive, bool getNotExposed)
 {
@@ -414,6 +438,7 @@ Controllable * ControllableContainer::getControllableForAddress(StringArray addr
   return nullptr;
 }
 
+
 bool ControllableContainer::containsControllable(Controllable * c, int maxSearchLevels)
 {
   if (c == nullptr) return false;
@@ -433,6 +458,7 @@ bool ControllableContainer::containsControllable(Controllable * c, int maxSearch
 }
 
 
+
 void ControllableContainer::dispatchFeedback(Controllable * c)
 {
   
@@ -440,13 +466,6 @@ void ControllableContainer::dispatchFeedback(Controllable * c)
   controllableContainerListeners.call(&Listener::controllableFeedbackUpdate,this, c);
 
 }
-
-
-
-
-
-
-
 
 
 
@@ -483,24 +502,7 @@ String ControllableContainer::getUniqueNameInContainer(const String & sourceName
   return resultName;
 }
 
-template<class T>
-Array<T*> ControllableContainer::getObjectsOfType(bool recursive){
-  Array<T*> res;
 
-  for(auto & c:controllables){
-    if(T* o = dynamic_cast<T*>(c)){
-      res.add(o);
-    }
-  }
-  for(auto & c:controllableContainers){
-    if(T* o = dynamic_cast<T*>(c)){
-      res.add(o);
-    }
-    if(recursive){res.addArray(c->getObjectsOfType<T>(recursive));}
-  }
-
-  return res;
-}
 
 bool ControllableContainer::containsContainer(ControllableContainer * c){
   if(c==this)return true;

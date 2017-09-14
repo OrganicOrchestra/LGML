@@ -16,18 +16,18 @@
 #ifndef PRESETCHOOSER_H_INCLUDED
 #define PRESETCHOOSER_H_INCLUDED
 
-#include "../Controllable/ControllableContainer.h"
+#include "../Controllable/Parameter/ParameterContainer.h"
 
 class PresetChooserUI : public ComboBox,
-					  public ComboBox::Listener,
-				      private ControllableContainerListener
+public ComboBox::Listener,
+private ControllableContainer::Listener
 {
 public:
 	PresetChooserUI(ParameterContainer * _container);
 	~PresetChooserUI();
 
-  WeakReference<ControllableContainer> wr;
-  ParameterContainer * container;
+  WeakReference<ParameterContainer> container;
+  
 
 	virtual void updatePresetComboBox(bool forceUpdate = false);
 	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;

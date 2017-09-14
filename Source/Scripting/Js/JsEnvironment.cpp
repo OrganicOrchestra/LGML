@@ -21,7 +21,7 @@
 #include "JsHelpers.h"
 
 #include "../../Engine.h"
-
+#include "JsGlobalEnvironment.h"
 
 
 
@@ -32,7 +32,10 @@ const JsEnvironment::JsTimerType JsEnvironment::autoWatchTimer(0,500);
 const JsEnvironment::JsTimerType JsEnvironment::onUpdateTimer(1,20);
 
 
-JsEnvironment::JsEnvironment(const String & ns, ControllableContainer * _linkedContainer) :
+
+DynamicObject::Ptr JsEnvironment::getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
+
+JsEnvironment::JsEnvironment(const String & ns, ParameterContainer * _linkedContainer) :
 linkedContainer(_linkedContainer),
 localNamespace(ns),
 _hasValidJsFile(false),
@@ -510,10 +513,10 @@ void JsEnvironment::updateUserDefinedFunctions() {
 }
 
 void JsEnvironment::parameterValueChanged(Parameter * p) {
-  if (p == linkedContainer->getParameterContainer()->nameParam) {
+  if (p == linkedContainer->nameParam) {
     // ensure short name is updated...
     // not sure it's needed though
-    linkedContainer->setNiceName(linkedContainer->getParameterContainer()->nameParam->stringValue());
+    linkedContainer->setNiceName(linkedContainer->nameParam->stringValue());
 
     setNamespaceName("node." + linkedContainer->shortName);
   }

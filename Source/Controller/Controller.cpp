@@ -19,6 +19,7 @@
 #include "UI/ControllerEditor.h"
 #include "ControllerManager.h"
 #include "../Utils/DebugHelpers.h"
+#include "../Scripting/Js/JsEnvironment.h"
 
 
 const Identifier Controller::controllerTypeIdentifier("controllerType");
@@ -56,8 +57,7 @@ Controller::~Controller()
 DynamicObject *  Controller::getObject(){
 
   auto res = ParameterContainer::getObject();
-  res->setProperty(controllerTypeIdentifier,
-                                      ControllerFactory::controllerTypeToString((ControllerFactory::ControllerType)controllerTypeEnum));
+  res->setProperty(controllerTypeIdentifier,getTypeName());
   return res;
 
 

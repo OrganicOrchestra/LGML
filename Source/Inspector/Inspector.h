@@ -19,6 +19,7 @@
 #include "../UI/ShapeShifter/ShapeShifterContent.h"
 #include "InspectableComponent.h"
 #include "InspectorEditor.h"
+class ParameterContainer;
 
 class Inspector : public juce::Component, public InspectableComponent::InspectableListener, public InspectorEditor::InspectorEditorListener
 {
@@ -34,7 +35,7 @@ public:
 	bool isEnabled;
 	void setEnabled(bool value);
 
-  ControllableContainer * getCurrentSelected();
+  ParameterContainer * getCurrentSelected();
 	void clear();
 
 	void setCurrentComponent(InspectableComponent * component);

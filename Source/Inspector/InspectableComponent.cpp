@@ -16,14 +16,14 @@
 #include "InspectableComponent.h"
 #include "Inspector.h"
 
-#include "../Controllable/UI/GenericControllableContainerEditor.h"
+#include "../Controllable/Parameter/UI/GenericParameterContainerEditor.h"
 //#include "MainComponent.h"
 #include "../UI/ShapeShifter/ShapeShifterFactory.h"
 #include "../UI/ShapeShifter/ShapeShifterManager.h"
 
-InspectableComponent::InspectableComponent(ControllableContainer * relatedContainer, const String &_inspectableType) :
+InspectableComponent::InspectableComponent(ParameterContainer * relatedContainer, const String &_inspectableType) :
 	inspectableType(_inspectableType),
-	relatedControllableContainer(relatedContainer),
+	relatedParameterContainer(relatedContainer),
 	recursiveInspectionLevel(0),
 	canInspectChildContainersBeyondRecursion(true),
 	isSelected(false),
@@ -39,7 +39,7 @@ InspectableComponent::~InspectableComponent()
 
 InspectorEditor * InspectableComponent::createEditor()
 {
-	return new GenericControllableContainerEditor(relatedControllableContainer);
+	return new GenericParameterContainerEditor(relatedParameterContainer);
 }
 
 void InspectableComponent::selectThis()

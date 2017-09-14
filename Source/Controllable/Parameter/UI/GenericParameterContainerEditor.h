@@ -13,44 +13,44 @@
 */
 
 
-#ifndef GENERICCONTROLLABLECONTAINEREDITOR_H_INCLUDED
-#define GENERICCONTROLLABLECONTAINEREDITOR_H_INCLUDED
+#ifndef GENERICParameterCONTAINEREDITOR_H_INCLUDED
+#define GENERICParameterCONTAINEREDITOR_H_INCLUDED
 
-#include "../../Inspector/InspectorEditor.h"
-#include "../ControllableContainer.h"
-#include "ControllableUI.h"
-#include "../../Preset/PresetChooserUI.h"
+#include "../../../Inspector/InspectorEditor.h"
+#include "../ParameterContainer.h"
+#include "ParameterUI.h"
 
-class GenericControllableContainerEditor;
+class PresetChooserUI;
+class GenericParameterContainerEditor;
 
 class CCInnerContainerUI :
 	public juce::Component,
-	private ControllableContainerListener,
+private ControllableContainer::Listener,
 	public ButtonListener
 {
 public:
 	class CCLinkBT : public TextButton
 	{
 	public:
-		CCLinkBT(ControllableContainer * targetContainer);
-		ControllableContainer * targetContainer;
+		CCLinkBT(ParameterContainer * targetContainer);
+		ParameterContainer * targetContainer;
 	};
 
 
-	CCInnerContainerUI(GenericControllableContainerEditor * editor,ControllableContainer * container, int level, int maxLevel, bool canAccessLowerContainers);
+	CCInnerContainerUI(GenericParameterContainerEditor * editor,ParameterContainer * container, int level, int maxLevel, bool canAccessLowerContainers);
 	virtual ~CCInnerContainerUI();
 
 	Label containerLabel;
 
-	ControllableContainer * container;
+	ParameterContainer * container;
 	ScopedPointer<PresetChooserUI> presetChooser;
   
-	OwnedArray<NamedControllableUI> controllablesUI;
+	OwnedArray<NamedControllableUI > parametersUI;
 	OwnedArray<CCInnerContainerUI> innerContainers;
   ScopedPointer<Component> customEditor;
 	OwnedArray<Component> lowerContainerLinks;
 
-	GenericControllableContainerEditor * editor;
+	GenericParameterContainerEditor * editor;
 
 	int level;
 	int maxLevel;
@@ -61,43 +61,43 @@ public:
 	void clear();
   void rebuild();
 
-	void addControllableUI(Controllable * c);
-	void removeControllableUI(Controllable *c);
+	void addParameterUI(Parameter * c);
+	void removeParameterUI(Parameter *c);
 
-	void addCCInnerUI(ControllableContainer * cc);
-	void removeCCInnerUI(ControllableContainer * cc);
+	void addCCInnerUI(ParameterContainer * cc);
+	void removeCCInnerUI(ParameterContainer * cc);
 
-	void addCCLink(ControllableContainer * cc);
-	void removeCCLink(ControllableContainer * cc);
+	void addCCLink(ParameterContainer * cc);
+	void removeCCLink(ParameterContainer * cc);
 
 	int getContentHeight();
 
-	NamedControllableUI * getUIForControllable(Controllable * c);
-	CCInnerContainerUI * getInnerContainerForCC(ControllableContainer * cc);
-	CCLinkBT * getCCLinkForCC(ControllableContainer * cc);
+	NamedControllableUI * getUIForParameter(Parameter * c);
+	CCInnerContainerUI * getInnerContainerForCC(ParameterContainer * cc);
+	CCLinkBT * getCCLinkForCC(ParameterContainer * cc);
 
 	void controllableAdded(ControllableContainer *,Controllable *)override;
 	void controllableRemoved(ControllableContainer *,Controllable *)override;
 	void controllableContainerAdded(ControllableContainer *,ControllableContainer *)override;
 	void controllableContainerRemoved(ControllableContainer *,ControllableContainer *)override;
-	void childStructureChanged(ControllableContainer *,ControllableContainer *)override;
+	void childStructureChanged(ControllableContainer  *,ControllableContainer  *)override;
 
 	void buttonClicked(Button * b)override;
 };
 
 
-class GenericControllableContainerEditor : public InspectorEditor, public ButtonListener, private ControllableContainerListener,Timer
+class GenericParameterContainerEditor : public InspectorEditor, public ButtonListener, private ControllableContainer::Listener,Timer
 {
 public :
-	GenericControllableContainerEditor(ControllableContainer * sourceComponent);
-	virtual ~GenericControllableContainerEditor();
+	GenericParameterContainerEditor(ParameterContainer * sourceComponent);
+	virtual ~GenericParameterContainerEditor();
 
 	TextButton parentBT;
 
-	WeakReference<ControllableContainer> sourceContainer;
+	WeakReference<ParameterContainer> sourceContainer;
 	ScopedPointer<CCInnerContainerUI> innerContainer;
 
-	void setCurrentInspectedContainer(ControllableContainer *,bool forceUpdate = false,int recursiveInspectionLevel=0,bool canInspectChildContainersBeyondRecursion=true);
+	void setCurrentInspectedContainer(ParameterContainer *,bool forceUpdate = false,int recursiveInspectionLevel=0,bool canInspectChildContainersBeyondRecursion=true);
 
 	virtual int getContentHeight() override;
 
@@ -116,8 +116,8 @@ public :
     CHILD_STRUCTURE_CHANGED = 0
   }commandMessageIDs;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericControllableContainerEditor)
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericParameterContainerEditor)
 };
 
 
-#endif  // GENERICCONTROLLABLECONTAINEREDITOR_H_INCLUDED
+#endif  // GENERICParameterCONTAINEREDITOR_H_INCLUDED

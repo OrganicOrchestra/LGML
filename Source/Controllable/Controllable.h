@@ -19,16 +19,15 @@
 
 #include "JuceHeader.h"//keep
 #include "../Utils/FactoryObject.h"
-class ControllableContainer;
+
 class ControllableUI;
 class ControllableContainer;
 class Parameter;
 
+
 class Controllable : public FactoryObject
 {
 public:
-
-
 
   Controllable( const String &niceName, const String &description, bool enabled = true);
   virtual ~Controllable();
@@ -110,8 +109,8 @@ public:
   
 private:
 
-  WeakReference<Controllable>::Master masterReference;
-  friend class WeakReference<Controllable>;
+  typename WeakReference<Controllable >::Master masterReference;
+  friend class WeakReference<Controllable >;
 
 
 

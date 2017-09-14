@@ -32,7 +32,7 @@ def hasValidProjucerPath(osType):
 
 	return os.path.exists(proJucerPath)
 
-def getProjucerCommand(tmpFolder,osType):
+def getProjucerCommand(osType):
 	global proJucerPath,proJucerCommand
 	# update command
 	if hasValidProjucerPath(osType):
@@ -127,7 +127,14 @@ def syncFileHierarchy():
 					setFromFilePath(ad,mainGroup)
 				g.remove(f)
 	scanGroup(mainGroup)
-	tree.write(os.path.join(projDir,'export.jucer'))
+	tree.write(os.path.join(projDir,'LGML.jucer'))
+	global proJucerCommand
+	if os.path.exists(proJucerCommand):
+		
+		srcDir = os.path.abspath(os.path.join(JuceProjectPath,os.pardir,'Source'))
+		# sh(proJucerCommand+" -h")
+		sh(proJucerCommand+ " --fix-broken-include-paths '"+srcDir+"'")
+
 
 def getModules():
 	import xml.etree.ElementTree as ET
@@ -214,6 +221,7 @@ def updateProjucer(osType,bumpVersion,specificVersion):
 
 
 if __name__=="__main__":
+	from shUtils import *
 	syncFileHierarchy()
 	# print(getModules());
 

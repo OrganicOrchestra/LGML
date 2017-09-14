@@ -82,7 +82,7 @@ DynamicObject* ParameterContainer::getObject()
 
     for(auto & c :controllables){
       if(c->isUserDefined || c->shouldSaveObject  ){
-        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::getTypedObjectFromInstance(c->getParameter()));
+        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::createTypedObjectFromInstance(c->getParameter()));
       }
       else if (c->isSavable){
         paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
@@ -99,7 +99,7 @@ DynamicObject* ParameterContainer::getObject()
     DynamicObject *  childData = new DynamicObject();
 
     for(auto controllableCont: controllableContainers){
-      childData->setProperty(controllableCont->shortName,controllableCont.get()->getParameterContainer()->getObject());
+      childData->setProperty(controllableCont->shortName,controllableCont.get()->getObject());
     }
     data->setProperty(childContainerId, childData);
   }
@@ -191,7 +191,7 @@ void ParameterContainer::configureFromObject(DynamicObject * dyn)
       {
         if(Controllable * c = getControllableByName(p.name.toString(),true)){
           if(c->isSavable){
-            if (Parameter * par = dynamic_cast<Parameter*>(c)) {
+            if (Parameter * par = c->getParameter()) {
               // we don't load preset when already loading a state
               if (par->shortName != presetIdentifier.toString() ){
                 par->setValue(p.value);
@@ -200,7 +200,6 @@ void ParameterContainer::configureFromObject(DynamicObject * dyn)
             else {
               // we don't use custom types for now
               jassertfalse;
-              loadCustomJSONElement(p.name.toString(),p.value);
             }
           }
         }
@@ -220,9 +219,9 @@ void ParameterContainer::configureFromObject(DynamicObject * dyn)
       auto ob = cD->getProperties();
 
       for(auto & o: ob){
-        auto cont = getControllableContainerByName(o.name.toString());
+        auto cont = dynamic_cast<ParameterContainer*>(getControllableContainerByName(o.name.toString()));
         if(cont){
-          cont->getParameterContainer()->configureFromObject(o.value.getDynamicObject());
+          cont->configureFromObject(o.value.getDynamicObject());
         }
         else{
           auto c = addContainerFromObject(o.name.toString(),o.value.getDynamicObject());

@@ -242,14 +242,14 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
     ParameterContainer * tC = &userContainer;
 
     for( int i = 0 ; i < sa.size()-1 ; i++){
-      auto * c = tC->getControllableContainerByName(sa[i],true);
+      auto * c = dynamic_cast<ParameterContainer*>(tC->getControllableContainerByName(sa[i],true));
 
       if(!c){
         c = new ParameterContainer(sa[i]);
         c->setUserDefined(true);
         tC->addChildControllableContainer(c ,false);
       }
-      tC = c?c->getParameterContainer():nullptr;
+      tC = c?c:nullptr;
     }
 
     String pName = sa[sa.size()-1];

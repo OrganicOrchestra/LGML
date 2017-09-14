@@ -23,6 +23,7 @@
 // base class for model behind an enum parameter
 // a model is a dictionary of var notifying its structural changes
 // it can be used to share it's content to different instances of enum parameter
+class EnumParameter;
 class EnumParameterModel : private DynamicObject{
 public:
 
@@ -32,6 +33,7 @@ public:
   virtual ~EnumParameterModel();
 
 
+  void setIsFileBased(bool _isFileBased);
   void addOption(Identifier key, var data,bool userDefined=false);
 
   void addOrSetOption(Identifier key, var data,bool userDefined=false);
@@ -53,7 +55,12 @@ public:
   };
   ListenerList<Listener> listeners;
 
+  typedef std::function<std::tuple<bool,Identifier,var>(EnumParameter*)> AddFunctionType;
+  AddFunctionType addFunction;
+
 private:
+
+
   DynamicObject::Ptr userOptions;
   WeakReference<EnumParameterModel>::Master masterReference;
   friend class WeakReference<EnumParameterModel>;
@@ -110,6 +117,7 @@ public:
   String stringValue() const override;
 
   bool userCanEnterText;
+  bool isFileBased;
 
 
   void setValueInternal(var & _value) override;
@@ -150,6 +158,8 @@ public:
   void addAsyncEnumParameterListener(EnumListener* newListener) { asyncEnumListeners.add(newListener); }
   void removeAsyncEnumParameterListener(EnumListener* listener) { asyncEnumListeners.remove(listener); }
   EnumParameterModel * getModel() const;
+
+
 
 private:
   DynamicObject * getValuesMap(const var & v) ;

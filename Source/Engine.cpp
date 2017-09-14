@@ -25,6 +25,7 @@
 #include "Utils/NetworkUtils.h"
 
 #include "Utils/StringUtil.hpp"
+#include "Scripting/Js/JsGlobalEnvironment.h"
 
 
 const char* const filenameSuffix = ".lgml";

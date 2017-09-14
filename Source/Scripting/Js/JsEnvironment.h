@@ -17,7 +17,7 @@
 #define JAVASCRIPTENVIRONNEMENT_H_INCLUDED
 #include "../../Controllable/Parameter/ParameterContainer.h"
 
-#include "JsGlobalEnvironment.h"
+
 
 
 
@@ -31,7 +31,7 @@ private ControllableContainerListener
 
 {
 public:
-  JsEnvironment(const String & ns,ControllableContainer * linkedContainer);
+  JsEnvironment(const String & ns,ParameterContainer * linkedContainer);
   virtual ~JsEnvironment();
 
 
@@ -97,7 +97,7 @@ public:
 
   static Identifier noFunctionLogIdentifier;
 
-  static DynamicObject::Ptr getGlobalEnv(){return JsGlobalEnvironment::getInstance()->getEnv();}
+  static DynamicObject::Ptr getGlobalEnv();
   //  DynamicObject * getLocalEnv(){return localEnv;}
   DynamicObject::Ptr localEnv;
 
@@ -229,7 +229,7 @@ private:
   void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *)     override;
   void childStructureChanged(ControllableContainer *,ControllableContainer *) override;
 
-  WeakReference<ControllableContainer> linkedContainer;
+  WeakReference<ParameterContainer> linkedContainer;
   bool isLoadingFile;
   int triesToLoad;
   bool _isInSyncWithLGML;

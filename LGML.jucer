@@ -59,10 +59,6 @@
                 id="ggDOnj" name="ControllableUI.cpp" resource="0"/>
           <FILE compile="0" file="Source/Controllable/UI/ControllableUI.h" id="CR9B9U"
                 name="ControllableUI.h" resource="0"/>
-          <FILE compile="1" file="Source/Controllable/UI/GenericControllableContainerEditor.cpp"
-                name="GenericControllableContainerEditor.cpp" ressource="0" id="wxnA6y"/>
-          <FILE compile="0" file="Source/Controllable/UI/GenericControllableContainerEditor.h"
-                name="GenericControllableContainerEditor.h" ressource="0" id="Egz2Gg"/>
         </GROUP>
         <FILE compile="1" file="Source/Controllable/Controllable.cpp" id="BOYgER"
               name="Controllable.cpp" resource="0"/>
@@ -84,6 +80,10 @@
           <GROUP id="y1gtRH" name="UI">
             <FILE compile="1" file="Source/Controllable/Parameter/UI/BetterStepper.cpp"
                   id="rOIzyW" name="BetterStepper.cpp" ressource="0"/>
+            <FILE id="YhmjKH" name="GenericParameterContainerEditor.cpp" compile="1"
+                  resource="0" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp"/>
+            <FILE id="RztLTO" name="GenericParameterContainerEditor.h" compile="0"
+                  resource="0" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.h"/>
             <FILE compile="0" file="Source/Controllable/Parameter/UI/BetterStepper.h"
                   id="Meul0J" name="BetterStepper.h" ressource="0"/>
             <FILE compile="1" file="Source/Controllable/Parameter/UI/BoolToggleUI.cpp"
@@ -488,9 +488,10 @@
                 id="DXAXWw" name="NodeContainer.h" resource="0"/>
         </GROUP>
         <GROUP id="{C35F704D-DA15-9824-09B6-524C116EE3FA}" name="UI">
-          <FILE id="xDCSRQ" name="NodeUIFactory.cpp" compile="1" resource="0"
-                file="Source/Node/UI/NodeUIFactory.cpp"/>
-          <FILE id="bljAKy" name="NodeUIFactory.h" compile="0" resource="0" file="Source/Node/UI/NodeUIFactory.h"/>
+          <FILE compile="1" file="Source/Node/UI/NodeUIFactory.cpp" id="xDCSRQ"
+                name="NodeUIFactory.cpp" resource="0"/>
+          <FILE compile="0" file="Source/Node/UI/NodeUIFactory.h" id="bljAKy"
+                name="NodeUIFactory.h" resource="0"/>
           <FILE compile="1" file="Source/Node/UI/NodeBaseAudioCtlUI.cpp" id="Fg3Dem"
                 name="NodeBaseAudioCtlUI.cpp" resource="0"/>
           <FILE compile="0" file="Source/Node/UI/NodeBaseAudioCtlUI.h" id="MDC7KC"
@@ -670,9 +671,14 @@
               name="MainComponentCommands.cpp" ressource="0"/>
       </GROUP>
       <GROUP id="{8DA61DCB-02FE-2339-7E79-2A3547284A18}" name="Utils">
-        <FILE id="O7Z0PD" name="FactoryBase.cpp" compile="1" resource="0" file="Source/Utils/FactoryBase.cpp"/>
-        <FILE id="xZTkd5" name="FactoryObject.h" compile="0" resource="0" file="Source/Utils/FactoryObject.h"/>
-        <FILE id="cu3IXi" name="FactoryBase.h" compile="0" resource="0" file="Source/Utils/FactoryBase.h"/>
+        <FILE compile="0" file="Source/Utils/FactoryUIHelpers.h" id="qi3kyB"
+              name="FactoryUIHelpers.h" resource="0"/>
+        <FILE compile="1" file="Source/Utils/FactoryBase.cpp" id="O7Z0PD" name="FactoryBase.cpp"
+              resource="0"/>
+        <FILE compile="0" file="Source/Utils/FactoryObject.h" id="xZTkd5" name="FactoryObject.h"
+              resource="0"/>
+        <FILE compile="0" file="Source/Utils/FactoryBase.h" id="cu3IXi" name="FactoryBase.h"
+              resource="0"/>
         <FILE compile="1" file="Source/Utils/AudioDebugCrack.cpp" id="VkbcZl"
               name="AudioDebugCrack.cpp" resource="0"/>
         <FILE compile="0" file="Source/Utils/AudioDebugCrack.h" id="heehPr"

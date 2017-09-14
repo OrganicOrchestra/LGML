@@ -13,13 +13,14 @@
 */
 
 
-#include "GenericControllableContainerEditor.h"
-#include "../../Inspector/InspectableComponent.h"
-#include "ControllableUI.h"
-#include "../Parameter/UI/ParameterUIFactory.h"
-#include "../Parameter/ParameterContainer.h"
+#include "GenericParameterContainerEditor.h"
+#include "../../../Inspector/InspectableComponent.h"
+#include "ParameterUI.h"
+#include "ParameterUIFactory.h"
+#include "../ParameterContainer.h"
+#include "../../../Preset/PresetChooserUI.h"
 
-GenericControllableContainerEditor::GenericControllableContainerEditor(ControllableContainer * _sourceContainer) :
+GenericParameterContainerEditor::GenericParameterContainerEditor(ParameterContainer * _sourceContainer) :
 	InspectorEditor(),
 	parentBT("Up","Go back to parent container")
 {
@@ -37,14 +38,14 @@ GenericControllableContainerEditor::GenericControllableContainerEditor(Controlla
 	resized();
 }
 
-GenericControllableContainerEditor::~GenericControllableContainerEditor()
+GenericParameterContainerEditor::~GenericParameterContainerEditor()
 {
 	if(sourceContainer.get())sourceContainer->removeControllableContainerListener(this);
 	parentBT.removeListener(this);
 	innerContainer->clear();
 }
 
-void GenericControllableContainerEditor::setCurrentInspectedContainer(ControllableContainer * cc,bool forceUpdate,	int recursiveInspectionLevel,bool canInspectChildContainersBeyondRecursion)
+void GenericParameterContainerEditor::setCurrentInspectedContainer(ParameterContainer * cc,bool forceUpdate,	int recursiveInspectionLevel,bool canInspectChildContainersBeyondRecursion)
 {
 	if (cc == nullptr) return;
 	if (innerContainer != nullptr)
@@ -62,7 +63,6 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 	{
 		ccLevel++;
 		tc = tc->parentContainer;
-
 		jassert(tc != nullptr); //If here, trying to inspect a container that is not a child of the source inspectable container
 	}
 
@@ -77,13 +77,13 @@ void GenericControllableContainerEditor::setCurrentInspectedContainer(Controllab
 
 }
 
-int GenericControllableContainerEditor::getContentHeight()
+int GenericParameterContainerEditor::getContentHeight()
 {
 	if (innerContainer == nullptr) return InspectorEditor::getContentHeight();
 	else return InspectorEditor::getContentHeight()+innerContainer->getContentHeight() + parentBT.getHeight() + 5;
 }
 
-void GenericControllableContainerEditor::resized()
+void GenericParameterContainerEditor::resized()
 {
 	InspectorEditor::resized();
 
@@ -99,22 +99,22 @@ void GenericControllableContainerEditor::resized()
 	innerContainer->setBounds(r);
 }
 
-void GenericControllableContainerEditor::clear()
+void GenericParameterContainerEditor::clear()
 {
 	if (innerContainer == nullptr) return;
 
 	innerContainer->clear();
 }
 
-void GenericControllableContainerEditor::buttonClicked(Button * b)
+void GenericParameterContainerEditor::buttonClicked(Button * b)
 {
 	if (b == &parentBT)
 	{
-		setCurrentInspectedContainer(innerContainer->container->parentContainer);
+		setCurrentInspectedContainer(dynamic_cast<ParameterContainer*>(innerContainer->container->parentContainer));
 	}
 }
 
-void GenericControllableContainerEditor::childStructureChanged(ControllableContainer *,ControllableContainer *)
+void GenericParameterContainerEditor::childStructureChanged(ControllableContainer *,ControllableContainer *)
 {
   if(!MessageManager::getInstance()->isThisTheMessageThread()){
 //    removeChildComponent(innerContainer);
@@ -125,7 +125,7 @@ void GenericControllableContainerEditor::childStructureChanged(ControllableConta
   }
 	
 }
-void GenericControllableContainerEditor::handleCommandMessage(int cID){
+void GenericParameterContainerEditor::handleCommandMessage(int cID){
   switch(cID){
     case CHILD_STRUCTURE_CHANGED:
       // force clear for now
@@ -140,7 +140,7 @@ void GenericControllableContainerEditor::handleCommandMessage(int cID){
       break;
   }
 }
-void GenericControllableContainerEditor::timerCallback(){
+void GenericParameterContainerEditor::timerCallback(){
   if(sourceContainer.get())setCurrentInspectedContainer(sourceContainer,true);
   inspectorEditorListeners.call(&InspectorEditorListener::contentSizeChanged, this);
   stopTimer();
@@ -151,7 +151,7 @@ void GenericControllableContainerEditor::timerCallback(){
 //Inner Container
 //////////////////////////////
 
-CCInnerContainerUI::CCInnerContainerUI(GenericControllableContainerEditor * _editor, ControllableContainer * _container, int _level, int _maxLevel, bool _canAccessLowerContainers) :
+CCInnerContainerUI::CCInnerContainerUI(GenericParameterContainerEditor * _editor, ParameterContainer * _container, int _level, int _maxLevel, bool _canAccessLowerContainers) :
 	editor(_editor),
 	container(_container),
 	level(_level),
@@ -183,26 +183,26 @@ CCInnerContainerUI::~CCInnerContainerUI()
 
 void CCInnerContainerUI::rebuild(){
   clear();
-  if (container->getParameterContainer()->canHavePresets)
+  if (container->canHavePresets)
   {
-    presetChooser = new PresetChooserUI(container->getParameterContainer());
+    presetChooser = new PresetChooserUI(container);
     addAndMakeVisible(presetChooser);
   }
 
-  for (auto &c : container->controllables)
+  for (auto &c : container->getControllablesOfType<Parameter>(false))
   {
-    if(!c->hideInEditor) addControllableUI(c);
+    if(!c->hideInEditor) addParameterUI(c);
   }
 
   if (level < maxLevel)
   {
-    for (auto &cc : container->controllableContainers)
+    for (auto &cc : container->getContainersOfType<ParameterContainer>(false))
     {
       addCCInnerUI(cc);
     }
   }else if (level == maxLevel && canAccessLowerContainers)
   {
-    for (auto &cc : container->controllableContainers)
+    for (auto &cc : container->getContainersOfType<ParameterContainer>(false))
     {
      addCCLink(cc);
 
@@ -215,7 +215,7 @@ void CCInnerContainerUI::rebuild(){
 
 
 }
-void CCInnerContainerUI::addCCInnerUI(ControllableContainer * cc)
+void CCInnerContainerUI::addCCInnerUI(ParameterContainer * cc)
 {
 
 	CCInnerContainerUI * ccui = new CCInnerContainerUI(editor, cc, level + 1, maxLevel, canAccessLowerContainers);
@@ -224,7 +224,7 @@ void CCInnerContainerUI::addCCInnerUI(ControllableContainer * cc)
   
 }
 
-void CCInnerContainerUI::removeCCInnerUI(ControllableContainer * cc)
+void CCInnerContainerUI::removeCCInnerUI(ParameterContainer * cc)
 {
 	CCInnerContainerUI * ccui = getInnerContainerForCC(cc);
 	if (ccui == nullptr) return;
@@ -233,9 +233,9 @@ void CCInnerContainerUI::removeCCInnerUI(ControllableContainer * cc)
 	innerContainers.removeObject(ccui);
 }
 
-void CCInnerContainerUI::addCCLink(ControllableContainer * cc)
+void CCInnerContainerUI::addCCLink(ParameterContainer * cc)
 {
-  if( auto subEditor = cc->getParameterContainer()->getCustomEditor()){
+  if( auto subEditor = cc->getCustomEditor()){
     addAndMakeVisible(subEditor);
     lowerContainerLinks.add(subEditor);
   }
@@ -247,7 +247,7 @@ void CCInnerContainerUI::addCCLink(ControllableContainer * cc)
   }
 }
 
-void CCInnerContainerUI::removeCCLink(ControllableContainer * cc)
+void CCInnerContainerUI::removeCCLink(ParameterContainer * cc)
 {
 
 	CCLinkBT * bt = getCCLinkForCC(cc);
@@ -258,29 +258,29 @@ void CCInnerContainerUI::removeCCLink(ControllableContainer * cc)
 	lowerContainerLinks.removeObject(bt);
 }
 
-void CCInnerContainerUI::addControllableUI(Controllable * c)
+void CCInnerContainerUI::addParameterUI(Parameter * c)
 {
 	if ( !c->isControllableExposed) return;
 
 
-  NamedControllableUI * cui = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c->getParameter()), 100);
-	controllablesUI.add(cui);
+  NamedControllableUI * cui = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c), 100);
+	parametersUI.add(cui);
 	addAndMakeVisible(cui);
 }
 
-void CCInnerContainerUI::removeControllableUI(Controllable * c)
+void CCInnerContainerUI::removeParameterUI(Parameter * c)
 {
-	NamedControllableUI * cui = getUIForControllable(c);
+	NamedControllableUI  * cui = getUIForParameter(c);
 	if (cui == nullptr) return;
 
 	removeChildComponent(cui);
-	controllablesUI.removeObject(cui);
+	parametersUI.removeObject(cui);
 
 }
 
-NamedControllableUI * CCInnerContainerUI::getUIForControllable(Controllable * c)
+NamedControllableUI  * CCInnerContainerUI::getUIForParameter(Parameter * c)
 {
-	for (auto &cui : controllablesUI)
+	for (auto &cui : parametersUI)
 	{
 
       if(cui->controllable == c) return cui;
@@ -290,7 +290,7 @@ NamedControllableUI * CCInnerContainerUI::getUIForControllable(Controllable * c)
 	return nullptr;
 }
 
-CCInnerContainerUI * CCInnerContainerUI::getInnerContainerForCC(ControllableContainer * cc)
+CCInnerContainerUI * CCInnerContainerUI::getInnerContainerForCC(ParameterContainer * cc)
 {
 	for (auto &ccui : innerContainers)
 	{if (auto ncui = dynamic_cast<CCInnerContainerUI*>(ccui)){
@@ -301,7 +301,7 @@ CCInnerContainerUI * CCInnerContainerUI::getInnerContainerForCC(ControllableCont
 	return nullptr;
 }
 
-CCInnerContainerUI::CCLinkBT * CCInnerContainerUI::getCCLinkForCC(ControllableContainer * cc)
+CCInnerContainerUI::CCLinkBT * CCInnerContainerUI::getCCLinkForCC(ParameterContainer * cc)
 {
 	for (auto &_cclink : lowerContainerLinks)
 	{
@@ -323,7 +323,7 @@ int CCInnerContainerUI::getContentHeight()
 	int presetChooserHeight = 15;
 
 	int h = ccGap;
-	h += controllablesUI.size()* (controllableHeight + gap) + ccGap;
+	h += parametersUI.size()* (controllableHeight + gap) + ccGap;
   for(auto & c:lowerContainerLinks){
     bool isCustom = dynamic_cast<CCInnerContainerUI::CCLinkBT*>(c)==nullptr;
     h +=  (ccLinkHeight*(isCustom?3:1) + gap) + ccGap;
@@ -336,7 +336,7 @@ int CCInnerContainerUI::getContentHeight()
     h+=ccGap;
   }
 
-	if(container->getParameterContainer()->canHavePresets) h += presetChooserHeight + gap;
+	if(container->canHavePresets) h += presetChooserHeight + gap;
   
 	h += containerLabel.getHeight();
 	h += margin * 2;
@@ -368,7 +368,7 @@ void CCInnerContainerUI::resized()
     customEditor->setBounds(r);
   }
   else{
-	if (container->getParameterContainer()->canHavePresets  )
+	if (container->canHavePresets  )
 	{
 		presetChooser->setBounds(r.removeFromTop(presetChooserHeight));
 		r.removeFromTop(gap);
@@ -391,7 +391,7 @@ void CCInnerContainerUI::resized()
     }
     
     
-    for (auto &cui : controllablesUI)
+    for (auto &cui : parametersUI)
 	{
     cui->setBounds(r.removeFromTop(controllableHeight));
 		r.removeFromTop(gap);
@@ -426,7 +426,7 @@ void CCInnerContainerUI::resized()
 
 void CCInnerContainerUI::clear()
 {
-	controllablesUI.clear();
+	parametersUI.clear();
 	innerContainers.clear();
 	lowerContainerLinks.clear();
 }
@@ -435,26 +435,30 @@ void CCInnerContainerUI::controllableAdded(ControllableContainer *,Controllable 
 {
 	if (c->parentContainer != container) return;
 	if (c->hideInEditor) return;
-	addControllableUI(c);
+  auto pc = dynamic_cast<Parameter*>(c);
+	addParameterUI(pc);
 }
 
 void CCInnerContainerUI::controllableRemoved(ControllableContainer *,Controllable * c)
 {
-	removeControllableUI(c);
+  auto pc = dynamic_cast<Parameter*>(c);
+	removeParameterUI(pc);
 }
 
 void CCInnerContainerUI::controllableContainerAdded(ControllableContainer*,ControllableContainer * cc)
 {
 	if (cc->parentContainer != container) return;
-
-	if (level < maxLevel) addCCInnerUI(cc);
-	else if (canAccessLowerContainers) addCCLink(cc);
+  auto pc = dynamic_cast<ParameterContainer*>(cc);
+  jassert(pc);
+	if (level < maxLevel) addCCInnerUI(pc);
+	else if (canAccessLowerContainers) addCCLink(pc);
 }
 
 void CCInnerContainerUI::controllableContainerRemoved(ControllableContainer *,ControllableContainer * cc)
 {
-	removeCCInnerUI(cc);
-	removeCCLink(cc);
+  auto pc = dynamic_cast<ParameterContainer*>(cc);
+	removeCCInnerUI(pc);
+	removeCCLink(pc);
 }
 
 
@@ -474,7 +478,7 @@ void CCInnerContainerUI::buttonClicked(Button * b)
   
 }
 
-CCInnerContainerUI::CCLinkBT::CCLinkBT(ControllableContainer * _targetContainer) :
+CCInnerContainerUI::CCLinkBT::CCLinkBT(ParameterContainer * _targetContainer) :
 	targetContainer(_targetContainer),
 	TextButton("[ Inspect "+_targetContainer->getNiceName()+" >> ]")
 {

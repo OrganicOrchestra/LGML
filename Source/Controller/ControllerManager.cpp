@@ -30,9 +30,9 @@ ControllerManager::~ControllerManager()
 }
 
 
-Controller * ControllerManager::addController(ControllerFactory::ControllerType controllerType)
+Controller * ControllerManager::addController(Controller* c)
 {
-  Controller * c = factory.createController(controllerType);
+
   c->nameParam->setValue(getUniqueNameInContainer(c->nameParam->stringValue()));
 
   controllers.add(c);
@@ -63,10 +63,7 @@ void ControllerManager::clear()
 
 ParameterContainer *  ControllerManager::addContainerFromObject(const String & /*name*/,DynamicObject *  ob)
 {
-  jassert(ob && ob->getProperties().contains(Controller::controllerTypeIdentifier));
-  ControllerFactory::ControllerType controllerType = ControllerFactory::getTypeFromString(ob->getProperty(Controller::controllerTypeIdentifier));
-  //int controllerId = cData.getProperty("controllerId", var());
-  return addController(controllerType);
+  return addController(ControllerFactory::createFromObject(String::empty, ob));
 
 }
 

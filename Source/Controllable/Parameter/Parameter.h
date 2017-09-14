@@ -20,7 +20,7 @@
 #include "../../Utils/QueuedNotifier.h"
 
 
-class Parameter : public Controllable,public AsyncUpdater
+class Parameter : public Controllable,private AsyncUpdater
 {
 public:
   Parameter( const String & niceName, const String &description, var initialValue, bool enabled = true);

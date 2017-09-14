@@ -17,7 +17,7 @@
 #define CONTROLLEREDITOR_H_INCLUDED
 
 #include "ControllerUI.h" //keep
-#include "../../Controllable/UI/GenericControllableContainerEditor.h"
+#include "../../Controllable/Parameter/UI/GenericParameterContainerEditor.h"
 
 class ControllerEditor : public InspectorEditor,
 						 public ButtonListener
@@ -33,7 +33,7 @@ public:
 
 	//VARIABLES
 	TextButton addParameterBT;
-  ScopedPointer<GenericControllableContainerEditor> editor;
+  ScopedPointer<GenericParameterContainerEditor> editor;
 	void buttonClicked(Button * b) override;
   
 };

@@ -18,6 +18,8 @@
 
 
 #include "ControllerFactory.h"
+#include "../Controllable/Parameter/ParameterContainer.h"
+#include "Controller.h"
 
 class ControllerManager :  public ParameterContainer
 {
@@ -31,7 +33,7 @@ public:
   ControllerFactory factory;
   OwnedArray<Controller> controllers;
 
-  Controller * addController(ControllerFactory::ControllerType controllerType);
+  Controller * addController(Controller* controller);
   void removeController(Controller * c);
   void clear();
 

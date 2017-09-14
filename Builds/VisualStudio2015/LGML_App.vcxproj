@@ -281,12 +281,12 @@
     <ClCompile Include="..\..\Source\Audio\VSTManager.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\UI\ControllableEditor.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\UI\ControllableUI.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable\UI\GenericControllableContainerEditor.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Controllable.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\EnumParameterUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\SliderUI.cpp"/>
@@ -2065,11 +2065,11 @@
     <ClInclude Include="..\..\Source\Audio\VSTManager.h"/>
     <ClInclude Include="..\..\Source\Controllable\UI\ControllableEditor.h"/>
     <ClInclude Include="..\..\Source\Controllable\UI\ControllableUI.h"/>
-    <ClInclude Include="..\..\Source\Controllable\UI\GenericControllableContainerEditor.h"/>
     <ClInclude Include="..\..\Source\Controllable\Controllable.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableContainer.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableHelpers.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\EnumParameterUI.h"/>
@@ -2204,6 +2204,7 @@
     <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelTab.h"/>
     <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.h"/>
     <ClInclude Include="..\..\Source\UI\MainComponent.h"/>
+    <ClInclude Include="..\..\Source\Utils\FactoryUIHelpers.h"/>
     <ClInclude Include="..\..\Source\Utils\FactoryObject.h"/>
     <ClInclude Include="..\..\Source\Utils\FactoryBase.h"/>
     <ClInclude Include="..\..\Source\Utils\AudioDebugCrack.h"/>

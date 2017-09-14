@@ -18,7 +18,7 @@
 
 #include "JuceHeader.h"//keep
 
-class ControllableContainer;
+class ParameterContainer;
 class Inspector;
 class InspectorEditor;
 
@@ -26,7 +26,7 @@ class InspectorEditor;
 class InspectableComponent : public juce::Component
 {
 public:
-	InspectableComponent(ControllableContainer * relatedContainer = nullptr, const String &inspectableType = "none");
+	InspectableComponent(ParameterContainer * relatedContainer = nullptr, const String &inspectableType = "none");
 
 	virtual ~InspectableComponent();
 
@@ -35,7 +35,7 @@ public:
 
 	virtual InspectorEditor * createEditor();
 
-	ControllableContainer * relatedControllableContainer;
+	ParameterContainer * relatedParameterContainer;
 	int recursiveInspectionLevel;
 	bool canInspectChildContainersBeyondRecursion;
 

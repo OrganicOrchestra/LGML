@@ -208,8 +208,10 @@ void ControllableUI::setMappingDest(bool _isMappingDest){
 
 
 
+
 //////////////////
 // NamedControllableUI
+
 
 NamedControllableUI::NamedControllableUI(ControllableUI * ui,int _labelWidth,bool labelA):
 ControllableUI(ui->controllable),
@@ -230,6 +232,7 @@ labelAbove(labelA){
   controllableLabel.setTooltip(ControllableUI::getTooltip());
 
   addAndMakeVisible(ui);
+  ui->toFront(false);
   setBounds(ownedControllableUI->getBounds()
             .withTrimmedRight(-labelWidth)
             .withHeight(jmax((int)controllableLabel.getFont().getHeight() + 4,ownedControllableUI->getHeight())));

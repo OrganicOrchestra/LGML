@@ -53,11 +53,11 @@ PresetManager::Preset * PresetManager::addPresetFromControllableContainer(const 
 
 	if (!recursive)
 	{
-		for (auto &cc : container->controllableContainers)
+		for (auto &cc : container->getControllablesOfType<ParameterContainer>(false))
 		{
-			if (cc->getParameterContainer()->currentPresetName->stringValue().isNotEmpty())
+			if (cc->currentPresetName->stringValue().isNotEmpty())
 			{
-				pre->addPresetValue(cc->getParameterContainer()->currentPresetName->getControlAddress(container), cc->getParameterContainer()->currentPresetName->value);
+				pre->addPresetValue(cc->currentPresetName->getControlAddress(container), cc->currentPresetName->value);
 			}
 		}
 	}
@@ -132,14 +132,14 @@ int PresetManager::getNumPresetForFilter (const String & filter) const{
 void PresetManager::deleteAllUnusedPresets(ParameterContainer * rootContainer)
 {
 	Array<Preset *> presetsToRemove; 
-	Array<WeakReference<ControllableContainer>> allContainers = rootContainer->getAllControllableContainers(true);
+	Array<WeakReference<ParameterContainer>> allContainers = rootContainer->getContainersOfType<ParameterContainer>(true);
 
 	for (auto &p : presets)
 	{
 		bool isUsed = false;
 		for (auto &cc : allContainers)
 		{
-			if (cc->getParameterContainer()->getPresetFilter() == p->filter)
+			if (cc->getPresetFilter() == p->filter)
 			{
 				isUsed = true;
 				break;
@@ -170,9 +170,9 @@ int PresetManager::deletePresetsForContainer(ParameterContainer * container, boo
 	
 	if (recursive)
 	{
-    for (auto &cc : container->controllableContainers){
+    for (auto &cc : container->getContainersOfType<ParameterContainer>(false)){
       if(cc){
-      numPresetsDeleted += deletePresetsForContainer(cc->getParameterContainer(), true);
+      numPresetsDeleted += deletePresetsForContainer(cc, true);
       }
     }
 	}

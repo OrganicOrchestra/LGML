@@ -14,6 +14,7 @@
 
 
 #include "Inspector.h"
+#include "../Controllable/Parameter/ParameterContainer.h"
 juce_ImplementSingleton(Inspector)
 
 Inspector::Inspector() :
@@ -65,9 +66,9 @@ void Inspector::setCurrentComponent(InspectableComponent * c)
 	listeners.call(&InspectorListener::currentComponentChanged, this);
 }
 
-ControllableContainer * Inspector::getCurrentSelected(){
+ParameterContainer * Inspector::getCurrentSelected(){
   if(currentComponent){
-    return currentComponent->relatedControllableContainer;
+    return currentComponent->relatedParameterContainer;
   }
   else return nullptr;
 }

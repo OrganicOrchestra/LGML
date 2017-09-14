@@ -18,7 +18,7 @@
 
 
 #include "ShapeShifter/ShapeShifterContent.h"
-#include "../Controllable/ControllableContainer.h"
+#include "../Controllable/Parameter/ParameterContainer.h"
 #include "../Inspector/InspectableComponent.h"
 #include "../Controllable/UI/ControllableEditor.h"
 
@@ -42,13 +42,13 @@ public:
 class OutlinerItem : public TreeViewItem
 {
 public:
-	OutlinerItem(ControllableContainer * container);
-	OutlinerItem(Controllable * controllable);
+	OutlinerItem(ParameterContainer * container);
+	OutlinerItem(Parameter * controllable);
 
 	bool isContainer;
 
-	ControllableContainer * container;
-	Controllable * controllable;
+	ParameterContainer * container;
+	Parameter * parameter;
 
 
   String getUniqueName() const override;
@@ -79,7 +79,7 @@ public:
   void textEditorTextChanged (TextEditor&)override;
 
 	void rebuildTree();
-	void buildTree(OutlinerItem * parentItem, ControllableContainer * parentContainer,bool shouldFilter=true);
+	void buildTree(OutlinerItem * parentItem, ParameterContainer * parentContainer,bool shouldFilter=true);
 
 	void childStructureChanged(ControllableContainer *,ControllableContainer*) override;
   void handleAsyncUpdate()override;

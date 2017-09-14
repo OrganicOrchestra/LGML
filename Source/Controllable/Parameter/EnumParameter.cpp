@@ -139,13 +139,14 @@ void EnumParameter::selectId(Identifier key,bool shouldSelect,bool appendSelecti
 }
 
 bool EnumParameter::selectFromVar(var & _value,bool shouldSelect,bool appendSelection){
-  // select based on integer
-  if (_value.isInt()){
-    const int idx = (int)_value;
+  // select based on integer (<=0 unselect all)
+  if (_value.isInt() || _value.isDouble()){
+
+    const int idx = (int)_value+1;
     auto props = getModel()->getProperties();
 
-     if(idx>=0 && idx<props.size()){
-      Identifier key = props.getName(idx);
+     if(idx>0 && idx<props.size()){
+      Identifier key = props.getName(idx-1);
       selectId(key,shouldSelect,appendSelection);
     }
     else{
@@ -344,7 +345,7 @@ String EnumParameter::stringValue() const{
 
 
 
-EnumParameterModel::EnumParameterModel(bool shouldSave):shouldSaveModel(shouldSave){
+EnumParameterModel::EnumParameterModel(bool shouldSave):shouldSaveModel(shouldSave),addFunction(nullptr){
   userOptions = new DynamicObject();
 }
 
@@ -352,6 +353,28 @@ EnumParameterModel::~EnumParameterModel(){
   masterReference.clear();
 }
 
+void EnumParameterModel::setIsFileBased(bool _isFileBased){
+  if(_isFileBased){
+    addFunction = [](EnumParameter * ep){
+      FileChooser fc("choose file : "+ep->niceName);
+      bool res = false;
+      Identifier key;
+      String value;
+      if(fc.browseForFileToOpen()){
+        File f( fc.getResult());
+        if(f.exists()){
+          res = true;
+          key = f.getFileNameWithoutExtension();
+          value =f.getFullPathName();
+        }
+      }
+      return std::tuple<bool,Identifier,var>(res,key,value);
+    };
+  }
+  else{
+    addFunction = nullptr;
+  }
+}
 
 void EnumParameterModel::addOption(Identifier key, var data,bool userDefined){
   // we don't want to override existing

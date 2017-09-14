@@ -81,7 +81,7 @@ public:
 
 class Spat2DViewer : public juce::Component, public Spat2DHandle::Listener, 
 	public ConnectableNode::ConnectableNodeListener,
-	public ParameterContainer::ControllableContainerListener
+	public ControllableContainer::Listener
 {
 public:
 	Spat2DViewer(Spat2DNode * node);
