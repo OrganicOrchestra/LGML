@@ -95,7 +95,7 @@ public:
 		vp.setScrollOnDragEnabled(false);
 		addAndMakeVisible(vp);
 		vp.setScrollBarThickness(10);
-
+    contentIsFlexible = true;
 		fastMapperUI->addFastMapperUIListener(this);
 	}
 
@@ -103,6 +103,7 @@ public:
 	{
 		fastMapperUI->removeFastMapperUIListener(this);
 	}
+
 
 	void resized() override {
 		vp.setBounds(getLocalBounds());
