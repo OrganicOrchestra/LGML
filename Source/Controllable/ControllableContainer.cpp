@@ -132,6 +132,7 @@ void ControllableContainer::setAutoShortName() {
 
 Controllable * ControllableContainer::getControllableByName(const String & name, bool searchNiceNameToo)
 {
+  ScopedLock lk(controllables.getLock());
   for (auto &c : controllables)
   {
     if (c->shortName == name || (searchNiceNameToo && c->niceName == name)) return c;

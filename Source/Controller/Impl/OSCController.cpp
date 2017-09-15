@@ -63,6 +63,9 @@ hostNameResolved(false)
   static OSCClientModel model;
   remoteHostParam = addNewParameter<EnumParameter>("Remote Host", "The host's IP of the remote controller",&model,true);
   remoteHostParam->selectId("localhost", true);
+  isConnectedToRemote =addNewParameter<BoolParameter>("Connected To Remote", "status of remote connection", false);
+  isConnectedToRemote->isEditable = false;
+  isConnectedToRemote->isSavable = false;
   logIncomingOSC = addNewParameter<BoolParameter>("logIncomingOSC", "log the incoming OSC Messages", false);
   logOutGoingOSC = addNewParameter<BoolParameter>("logOutGoingOSC", "log the outGoing OSC Messages", false);
   speedLimit = addNewParameter<FloatParameter>("speedLimit", "min interval (ms) between 2 series of "+String(NUM_OSC_MSG_IN_A_ROW)+" OSCMessages", 0.f,0.f,100.f);
@@ -99,7 +102,7 @@ void OSCController::setupReceiver()
 }
 void OSCController::setupSender()
 {
-
+  isConnectedToRemote->setValue(false);
   sender.disconnect();
   hostNameResolved = false;
   resolveHostnameIfNeeded();
@@ -120,15 +123,16 @@ void OSCController::resolveHostnameIfNeeded(){
     if(!NetworkUtils::isValidIP(hostName)){
       OSCClientRecord resolved = NetworkUtils::hostnameToOSCRecord(hostName);
       if(resolved.isValid()){
-        hostNameResolved = true;
         remoteIP = resolved.ipAddress.toString();
-        if(!remotePortParam->isSettingValue){
-//          call again with resolved port
-          remotePortParam->setValue(String((int)resolved.port),false,true);
+        String resolvedPortString = String((int)resolved.port);
+        if(!remotePortParam->isSettingValue && remotePortParam->stringValue()!=resolvedPortString){
+//          call again with resolved port if not manually set
+          remotePortParam->setValue(resolvedPortString,false,true);
           return;
         }
+        hostNameResolved = true;
         LOG("resolved IP : "<<hostName << " > "<<remoteIP <<":" << remotePortParam->stringValue());
-        sender.connect(remoteIP, remotePortParam->stringValue().getIntValue());
+        isConnectedToRemote->setValue(sender.connect(remoteIP, remotePortParam->stringValue().getIntValue()));
       }
       else{
         LOG("!! can't resolve IP : "<<hostName);
@@ -136,7 +140,7 @@ void OSCController::resolveHostnameIfNeeded(){
     }
     else{
       remoteIP = hostName;
-      sender.connect(remoteIP, remotePortParam->stringValue().getIntValue());
+      isConnectedToRemote->setValue(sender.connect(remoteIP, remotePortParam->stringValue().getIntValue()));
       hostNameResolved = true;
     }
   }

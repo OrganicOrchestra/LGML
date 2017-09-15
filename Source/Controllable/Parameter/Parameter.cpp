@@ -88,7 +88,12 @@ void Parameter::tryToSetValue(var _value, bool silentSet , bool force ){
 
   if(!waitOrDeffer(_value, silentSet, force)){
     isSettingValue = true;
-    lastValue = var(value);
+    if(value.getDynamicObject()){
+      lastValue = value.clone();
+    }
+    else{
+      lastValue = var(value);
+    }
     setValueInternal(_value);
     if(_value != defaultValue) isOverriden = true;
     if (!silentSet && !checkValueIsTheSame(lastValue, value)) notifyValueChanged(false);

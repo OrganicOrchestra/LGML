@@ -61,6 +61,7 @@ blockFeedback(false)
 
 
 VSTNode::~VSTNode(){
+  cancelPendingUpdate();
   
 }
 
@@ -83,7 +84,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
   NodeBase::onContainerParameterChanged(p);
   if(p==identifierString){
     if(identifierString->value!=""){
-      if( identifierString->value!=identifierString->lastValue){
+      jassert(!identifierString->checkValueIsTheSame(identifierString->value,identifierString->lastValue));
         PluginDescription * pd = VSTManager::getInstance()->knownPluginList.getTypeForIdentifierString (identifierString->value);
         if(pd){
 #ifdef VSTLOADING_THREADED
@@ -100,8 +101,7 @@ void VSTNode::onContainerParameterChanged(Parameter * p) {
         else{
           DBG("VST : cant find plugin for identifier : "+identifierString->value.toString());
         }
-      }
-      else{DBG("avoid reloading VST : " << identifierString->stringValue());}
+
     }
     else{DBG("VST : no identifierString provided");}
   }
@@ -150,7 +150,8 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
 
   // will check if not already here
   p->addListener(this);
-
+  {
+  ScopedLock lk(controllables.getLock());
   for(auto &c:VSTParameters){
     removeControllable(c);
   }
@@ -159,6 +160,7 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
   VSTParameters.ensureStorageAllocated(p->getNumParameters());
   for(int i = 0 ; i < p->getNumParameters() ; i++){
     VSTParameters.add(addNewParameter<FloatParameter>(p->getParameterName(i), p->getParameterLabel(i), p->getParameter(i)));
+  }
   }
 
 
@@ -327,7 +329,7 @@ void VSTNode::savePresetInternal(PresetManager::Preset * preset){
 
 void VSTNode::handleAsyncUpdate(){
 
-  parentNodeContainer->updateAudioGraph();
+if(parentNodeContainer)  parentNodeContainer->updateAudioGraph();
 
   if(innerPlugin)	initParametersFromProcessor(innerPlugin);
   suspendProcessing(false);

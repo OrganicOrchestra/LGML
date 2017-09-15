@@ -18,7 +18,12 @@
 #include "../../Utils/FactoryBase.h"
 
 class Parameter;
-typedef FactoryBase<Parameter> ParameterFactory;
+class  ParameterFactory:public FactoryBase<Parameter>{
+public:
+//  default creation for simple types
+  static Parameter * createBaseFromVar(StringRef name,const var &);
+};
+
 
 #define REGISTER_PARAM_TYPE(T) REGISTER_OBJ_TYPE(Parameter,T)
 

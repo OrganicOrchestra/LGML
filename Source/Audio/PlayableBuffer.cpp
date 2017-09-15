@@ -239,7 +239,7 @@ inline void PlayableBuffer::readNextBlock(AudioBuffer<float> & buffer,sample_clk
 
   if(fromSample>0){
     jassert(isFirstPlayingFrame() ||
-            (playNeedle-fromSample+getRecordedLength()) % getRecordedLength()==0);
+            (playNeedle+fromSample+getRecordedLength()) % getRecordedLength()==0);
     int dbg;
     dbg++;
   }

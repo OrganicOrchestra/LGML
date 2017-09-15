@@ -71,6 +71,7 @@ public:
 
   virtual bool resetFromPreset();
   static const Identifier presetIdentifier;
+  static const Identifier uidIdentifier;
 
 
   //    to be overriden

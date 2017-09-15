@@ -38,6 +38,7 @@ public:
   BoolParameter * blockFeedback;// if a parameter is updated from processOSC , stops any osc out with same address
   Trigger * sendAllParameters;
   BoolParameter * autoAddParameter;
+  BoolParameter * isConnectedToRemote;
   
   
 
@@ -101,6 +102,7 @@ public:
   void logMessage(const OSCMessage & m,const String & prefix = "");
 
   bool setParameterFromMessage(Parameter *c,const OSCMessage & msg,bool force=false);
+
 private:
   void setupReceiver();
   void setupSender();
