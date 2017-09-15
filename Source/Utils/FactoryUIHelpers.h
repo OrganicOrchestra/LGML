@@ -15,8 +15,9 @@ namespace FactoryUIHelpers{
 
 
   template<class Factory>
-  PopupMenu * getFactoryTypesMenuFilter(int menuIdOffset,Array<String> arr)
+  PopupMenu * getFactoryTypesMenuFilter(Array<String> arr,int menuIdOffset=1)
   {
+    jassert(menuIdOffset>0);
     PopupMenu * p = new PopupMenu();
     int i= 0;
     auto a = Factory::getRegisteredTypes();
@@ -32,8 +33,9 @@ namespace FactoryUIHelpers{
   }
 
   template<class Factory>
-  PopupMenu * getFactoryTypesMenu(int menuIdOffset)
+  PopupMenu * getFactoryTypesMenu(int menuIdOffset=1)
   {
+    jassert(menuIdOffset>0);
     PopupMenu * p = new PopupMenu();
     int i= 0;
     auto a = Factory::getRegisteredTypes();
@@ -49,8 +51,8 @@ namespace FactoryUIHelpers{
 
 
   template<class Factory>
-  const String  getTypeNameFromMenuIdx(int idx){
-    int count = 0;
+  const String  getTypeNameFromMenuIdx(int idx,int menuIdOffset=1){
+    int count = menuIdOffset;
     auto a = Factory::getRegisteredTypes();
     for(auto & k:a){
       if (idx==count){return k;}

@@ -17,7 +17,7 @@
 #define SHAPESHIFTERCONTENT_H_INCLUDED
 
 #include "JuceHeader.h"//keep
-#include "../../Inspector/InspectableComponent.h"
+#include "../Inspector/InspectableComponent.h"
 
 class ShapeShifterContent
 {

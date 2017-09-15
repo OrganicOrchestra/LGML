@@ -17,7 +17,7 @@
 
 #include "../../Node/Manager/UI/NodeManagerUI.h"
 #include "../../Time/TimeManagerUI.h"
-#include "../../Inspector/Inspector.h"
+#include "../Inspector/Inspector.h"
 #include "../../Logger/LGMLLoggerUI.h"
 #include "../../Controller/UI/ControllerManagerUI.h"
 #include "../../FastMapper/FastMapperUI.h"

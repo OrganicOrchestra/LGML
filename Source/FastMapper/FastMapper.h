@@ -20,7 +20,7 @@
 #include "FastMap.h"
 
 #include "../UI/LGMLDragger.h"
-#include "../Inspector/Inspector.h"
+#include "../UI/Inspector/Inspector.h"
 
 
 class FastMapper;

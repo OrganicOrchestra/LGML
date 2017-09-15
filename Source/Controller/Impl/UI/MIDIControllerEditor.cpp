@@ -20,13 +20,12 @@
 #include "../../../Controllable/Parameter/UI/StepperUI.h"
 #include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
-MIDIControllerEditor::MIDIControllerEditor(Controller * _controller) :
+MIDIControllerEditor::MIDIControllerEditor(MIDIController * _controller) :
 	ControllerEditor(_controller,false),
-	deviceChooser(true)
+	deviceChooser(true),
+  midiController(_controller)
 {
 
-  midiController = dynamic_cast<MIDIController*>( controller);
-  jassert(midiController);
   jsUI = new JsEnvironmentUI(midiController->jsParameters);
 	addAndMakeVisible(deviceChooser);
 	deviceChooser.addListener(this);

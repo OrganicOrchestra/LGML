@@ -19,11 +19,13 @@
 #include "../UI/ControllerUI.h"
 #include "UI/SerialControllerEditor.h"
 
+#include "../ControllerFactory.h"
+REGISTER_OBJ_TYPE_NAMED(Controller,SerialController,"t_Serial");
 
 
-SerialController::SerialController() :
+SerialController::SerialController(StringRef name) :
 JsEnvironment("controller.serial",this),
-Controller("Serial"),
+Controller(name),
 port(nullptr)
 {
 

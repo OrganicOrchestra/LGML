@@ -16,10 +16,10 @@
 #include "InspectableComponent.h"
 #include "Inspector.h"
 
-#include "../Controllable/Parameter/UI/GenericParameterContainerEditor.h"
+#include "../../Controllable/Parameter/UI/GenericParameterContainerEditor.h"
 //#include "MainComponent.h"
-#include "../UI/ShapeShifter/ShapeShifterFactory.h"
-#include "../UI/ShapeShifter/ShapeShifterManager.h"
+#include "../ShapeShifter/ShapeShifterFactory.h"
+#include "../ShapeShifter/ShapeShifterManager.h"
 
 InspectableComponent::InspectableComponent(ParameterContainer * relatedContainer, const String &_inspectableType) :
 	inspectableType(_inspectableType),

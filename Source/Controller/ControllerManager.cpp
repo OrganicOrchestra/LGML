@@ -63,7 +63,7 @@ void ControllerManager::clear()
 
 ParameterContainer *  ControllerManager::addContainerFromObject(const String & /*name*/,DynamicObject *  ob)
 {
-  return addController(ControllerFactory::createFromObject(String::empty, ob));
+  return addController(ControllerFactory::createBaseFromObject(String::empty, ob));
 
 }
 

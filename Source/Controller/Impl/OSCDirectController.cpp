@@ -19,14 +19,9 @@
 #include "../../Time/TimeManager.h"
 #include "../../Controllable/Parameter/ParameterProxy.h"
 #include "../ControllerManager.h"
+REGISTER_OBJ_TYPE_NAMED(Controller, OSCDirectController, "t_OSC");
 
-OSCDirectController::OSCDirectController() :
-OSCDirectController("OSC Direct Controller")
-{
-
-}
-
-OSCDirectController::OSCDirectController(const String & name) :
+OSCDirectController::OSCDirectController(StringRef name):
 OSCController(name)
 {
   NodeManager::getInstance()->addControllableContainerListener(this);

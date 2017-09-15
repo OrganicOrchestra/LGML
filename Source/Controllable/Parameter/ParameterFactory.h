@@ -18,20 +18,7 @@
 #include "../../Utils/FactoryBase.h"
 
 class Parameter;
-
-class ParameterFactory : public FactoryBase<Parameter>{
-public:
-
-
-
-
-
-
-};
-
-
-
-
+typedef FactoryBase<Parameter> ParameterFactory;
 
 #define REGISTER_PARAM_TYPE(T) REGISTER_OBJ_TYPE(Parameter,T)
 

@@ -13,36 +13,5 @@
 */
 
 
-//#include "ParameterFactory.h"
-//
-//#include "Parameter.h"
-//
-//
-//static Identifier descIdentifier("_description");
-//
-//
-//
-//void ParameterFactory::logAllTypes (){
-//  DBG("Parameter types : ");
-//  for(auto it = getFactory().begin();it != getFactory().end() ; ++it){
-//      DBG("\t" + it.getKey());
-//  }
-//}
-//
-//
-//Parameter* ParameterFactory::createFromVarObject(var v ,const String & name){
-//  DynamicObject * ob = v.getDynamicObject();
-//  String ID =ob->getProperty(typeIdentifier);
-//  String desc =ob->getProperty(descIdentifier);
-//  if (getFactory().contains(ID)){
-//  return getFactory()[ID](name,desc,v.getDynamicObject());
-//  }
-//  else{
-//    jassertfalse;
-//    return nullptr;
-//  }
-//}
-
-
 
 

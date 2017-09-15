@@ -28,7 +28,7 @@ class MIDIController;
 class MIDIControllerEditor : public ControllerEditor, ComboBoxListener, MIDIListener::Listener
 {
 public:
-	MIDIControllerEditor(Controller * controllerUI);
+	MIDIControllerEditor(MIDIController * controllerUI);
 	virtual ~MIDIControllerEditor();
 
 	MIDIController * midiController;

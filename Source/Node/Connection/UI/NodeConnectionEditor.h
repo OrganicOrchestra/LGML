@@ -20,7 +20,7 @@
 
 #include "NodeConnectionEditorDataSlot.h"
 #include "NodeConnectionEditorLink.h"
-#include "../../../Inspector/InspectorEditor.h"
+#include "../../../UI/Inspector/InspectorEditor.h"
 class NodeConnectionUI;
 //==============================================================================
 /*

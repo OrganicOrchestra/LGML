@@ -20,9 +20,9 @@
 #include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../Controllable/Parameter/UI/EnumParameterUI.h"
 #include "LooperNode.h"
-#include "../UI/NodeBaseContentUI.h"
+#include "../UI/ConnectableNodeContentUI.h"
 
-class LooperNodeContentUI: public NodeBaseContentUI , public LooperNode::LooperListener
+class LooperNodeContentUI: public ConnectableNodeContentUI , public LooperNode::LooperListener
 {
 public:
 

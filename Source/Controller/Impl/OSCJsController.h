@@ -24,10 +24,11 @@
 class JsOSCListener;
 
 
-class JavascriptController : public OSCDirectController ,public JsEnvironment{
+class OSCJsController : public OSCDirectController ,public JsEnvironment{
 public:
-    JavascriptController();
-    ~JavascriptController();
+  DECLARE_OBJ_TYPE_DEFAULTNAME(OSCJsController,"OSCJS");
+  
+    ~OSCJsController();
     Result processMessageInternal(const OSCMessage &m) override;
     Result callForMessage(const OSCMessage & msg);
     void callonAnyMsg(const OSCMessage & msg);

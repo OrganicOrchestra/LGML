@@ -17,9 +17,9 @@
 #define JSNODEEDITOR_H_INCLUDED
 
 #include "../../Scripting/Js/JsEnvironmentUI.h"
-#include "../UI/NodeBaseUI.h"
+#include "../UI/ConnectableNodeContentUI.h"
 
-class JsNodeUI : public NodeBaseContentUI,private ControllableContainerListener,JsEnvironment::Listener{
+class JsNodeUI : public ConnectableNodeContentUI,private ControllableContainerListener,JsEnvironment::Listener{
 
 
 public:

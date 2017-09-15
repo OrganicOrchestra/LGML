@@ -37,7 +37,7 @@ currentPreset(nullptr)
 }
 
 ParameterContainer::~ParameterContainer(){
-
+  ParameterContainer::masterReference.clear();
 }
 const String  ParameterContainer::getNiceName(){
   return nameParam->stringValue();
@@ -72,8 +72,9 @@ Array<WeakReference<Parameter>> ParameterContainer::getAllParameters(bool recurs
 }
 
 
-DynamicObject* ParameterContainer::getObject()
+DynamicObject * ParameterContainer::getObject()
 {
+  
   DynamicObject * data = new DynamicObject();
   data->setProperty(factoryTypeIdentifier,getTypeName());
   data->setProperty("uid",uid.toString());
@@ -258,7 +259,7 @@ Parameter* ParameterContainer::addParameterFromVar(const String & name,const var
   // handle automagically for userdefined
   jassert(isUserDefined);
 
-  return addParameter(ParameterFactory::createFromObject( name,data.getDynamicObject()));
+  return addParameter(ParameterFactory::createBaseFromObject( name,data.getDynamicObject()));
 };
 
 ////////////

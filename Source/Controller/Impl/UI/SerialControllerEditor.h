@@ -27,7 +27,7 @@ class SerialControllerEditor :
 	public SerialController::SerialControllerListener
 {
 public:
-	SerialControllerEditor(Controller * controllerUI);
+	SerialControllerEditor(SerialController * controllerUI);
 	virtual ~SerialControllerEditor();
 
 	SerialDeviceChooser deviceChooser;

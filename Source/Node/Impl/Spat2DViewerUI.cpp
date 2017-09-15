@@ -13,7 +13,7 @@
 */
 
 
-#include "Spat2DViewer.h"
+#include "Spat2DViewerUI.h"
 #include "../../UI/Style.h"
 
 Spat2DViewer::Spat2DViewer(Spat2DNode * _node) : node(_node)

@@ -34,7 +34,7 @@ void JsContainerSync::removeAllListeners(ControllableContainer * c){
 
 void JsContainerSync::linkToControllableContainer(const String & controllableNamespace,ControllableContainer * c){
     c->addControllableContainerListener(this);
-    DynamicObject * obj = createDynamicObjectFromContainer(c,nullptr);
+    auto obj = createDynamicObjectFromContainer(c,nullptr);
     if(!existInContainerNamespace(controllableNamespace)){
         linkedContainerNamespaces.add(new JsContainerNamespace(controllableNamespace,c,obj)) ;
     }
@@ -131,7 +131,7 @@ JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * contai
 
             if(!myParent->hasProperty(jsArrayIdentifier)){
                 var aVar;
-                DynamicObject * childObject = createDynamicObjectFromContainer(c,myParent);
+                auto childObject = createDynamicObjectFromContainer(c,myParent);
                 //check names are aligned with order (first one)
                 jassert(c->getIndexedPosition() == 0);
                 aVar.append(childObject);
@@ -143,12 +143,12 @@ JsContainerSync::createDynamicObjectFromContainer(ControllableContainer * contai
                 arrVar = myParent->getProperty(jsArrayIdentifier).getArray();
                 //check names are aligned with order (others)
                 jassert(c->getIndexedPosition() == arrVar->size());
-                DynamicObject * childObject =createDynamicObjectFromContainer(c,myParent);
+                auto childObject =createDynamicObjectFromContainer(c,myParent);
                 arrVar->add(childObject);
             }
         }
         else{
-            DynamicObject * childObject = createDynamicObjectFromContainer(c,myParent);
+            auto childObject = createDynamicObjectFromContainer(c,myParent);
             if(!c->skipControllableNameInAddress && childObject!=nullptr)
                 myParent->setProperty(c->shortName, childObject);
         }

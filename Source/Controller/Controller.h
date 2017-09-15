@@ -28,9 +28,10 @@ class Controller :
 public ParameterContainer
 {
 public:
-  Controller(const String &name = "[Controller]");
-  virtual ~Controller();
+  
 
+  Controller(StringRef );
+  virtual ~Controller();
   int controllerTypeEnum;
 
   BoolParameter * enabledParam;
@@ -54,7 +55,7 @@ public:
   void remove();
 
 
-  DynamicObject * getObject() override;
+  
 
   // identifiers
   static const Identifier controllerTypeIdentifier;

@@ -43,7 +43,7 @@ public:
 	IntParameter * numInputData;
 	void processInputDataChanged(Data * d) override;
 
-	virtual ConnectableNodeUI * createUI() override;
+	
 
 	void onContainerParameterChanged(Parameter *) override;
 

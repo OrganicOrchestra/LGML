@@ -13,14 +13,17 @@
 */
 
 
-#include "JavascriptController.h"
+#include "OSCJsController.h"
 #include "../../Node/Manager/NodeManager.h"
 #include "../../Utils/DebugHelpers.h"
 #include "../../Scripting/Js/JsEnvironment.h"
 #include "../../Scripting/Js/JsHelpers.h"
 
-JavascriptController::JavascriptController() :
-	OSCDirectController("OSC"),
+#include "../ControllerFactory.h"
+REGISTER_CONTROLLER_TYPE(OSCJsController);
+
+OSCJsController::OSCJsController(StringRef name) :
+	OSCDirectController(name),
 	JsEnvironment("controller.OSCController",this)
 {
     setNamespaceName("controller."+shortName);
@@ -32,13 +35,13 @@ JavascriptController::JavascriptController() :
 
 
 }
-JavascriptController::~JavascriptController(){
+OSCJsController::~OSCJsController(){
 
 
 }
 
 
-void JavascriptController::buildLocalEnv(){
+void OSCJsController::buildLocalEnv(){
     ScopedPointer<DynamicObject>  oscObj = createOSCJsObject();
 
     setLocalNamespace(*oscObj);
@@ -46,7 +49,7 @@ void JavascriptController::buildLocalEnv(){
 
 }
 
-Result JavascriptController::callForMessage(const OSCMessage & msg){
+Result OSCJsController::callForMessage(const OSCMessage & msg){
 
     String functionName = "onCtl_"+getJsFunctionNameFromAddress(msg.getAddressPattern().toString());
     // here we choose to pass each argument as an element of a var Array value in function call i.e onCtl_XXX(ArrayList)
@@ -63,14 +66,14 @@ Result JavascriptController::callForMessage(const OSCMessage & msg){
 }
 
 
-var JavascriptController::OSCArgumentToVar(OSCArgument & a){
+var OSCJsController::OSCArgumentToVar(OSCArgument & a){
   if(a.isFloat32()){ return(a.getFloat32());}
   if(a.isInt32()){ return  (a.getInt32());}
   if(a.isString()){ return (a.getString());}
   return var::undefined();
 }
 
-void JavascriptController::callonAnyMsg(const OSCMessage & msg){
+void OSCJsController::callonAnyMsg(const OSCMessage & msg){
     var address = msg.getAddressPattern().toString();
 
     var args;
@@ -84,7 +87,7 @@ void JavascriptController::callonAnyMsg(const OSCMessage & msg){
 
 }
 
-Result JavascriptController::processMessageInternal(const OSCMessage &m){
+Result OSCJsController::processMessageInternal(const OSCMessage &m){
 
 	Result r1  = OSCDirectController::processMessageInternal(m);
   for(auto & l:jsOSCListeners){l->processMessage(m);}
@@ -116,7 +119,7 @@ inline bool appendVarToMsg(OSCMessage & msg,var & v){
 }
 
 
-var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
+var OSCJsController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
 
 	if(a.numArguments<2 )return var::undefined();
 
@@ -131,7 +134,7 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
         return var::undefined();
     }
 
-    JavascriptController * c = getObjectPtrFromJS<JavascriptController>(a);
+    OSCJsController * c = getObjectPtrFromJS<OSCJsController>(a);
     OSCMessage msg(address);
     for(int i = 1 ; i < a.numArguments ; i++){
 		var v = a.arguments[i];
@@ -151,7 +154,7 @@ var JavascriptController::sendOSCFromJS(const juce::var::NativeFunctionArgs& a){
 
 }
 
-DynamicObject *  JavascriptController::createOSCJsObject(){
+DynamicObject *  OSCJsController::createOSCJsObject(){
     DynamicObject * d = new DynamicObject();
     d->setProperty(jsPtrIdentifier, (int64)this);
     static const Identifier jsSendIdentifier("send");
@@ -162,7 +165,7 @@ DynamicObject *  JavascriptController::createOSCJsObject(){
 
 };
 
-void JavascriptController::onContainerParameterChanged(Parameter * p) {
+void OSCJsController::onContainerParameterChanged(Parameter * p) {
     OSCDirectController::onContainerParameterChanged(p);
     if(p==nameParam){
         setNamespaceName("controller."+shortName);
@@ -175,7 +178,7 @@ void JavascriptController::onContainerParameterChanged(Parameter * p) {
     }
 };
 
-void JavascriptController::onContainerTriggerTriggered(Trigger * t) {
+void OSCJsController::onContainerTriggerTriggered(Trigger * t) {
 
   if(t==sendAllParameters){
     sendAllParametersToJS();
@@ -186,13 +189,13 @@ void JavascriptController::onContainerTriggerTriggered(Trigger * t) {
 };
 
 
-void JavascriptController::newJsFileLoaded(){
+void OSCJsController::newJsFileLoaded(){
 
     jsPath->setValue(getCurrentFilePath(),true);
 }
 
 
-void JavascriptController::clearNamespace(){
+void OSCJsController::clearNamespace(){
   JsEnvironment::clearNamespace();
   {
     const ScopedLock lk(jsOSCListeners.getLock());
@@ -212,13 +215,13 @@ Identifier JsOSCListener::oscReceivedCallbackId("onOSC");
 
 
 
-var JavascriptController::createJsOSCListener(const var::NativeFunctionArgs & a){
+var OSCJsController::createJsOSCListener(const var::NativeFunctionArgs & a){
 
   if(a.numArguments<1){ return var::undefined();}
 
   OSCAddressPattern oscPattern( a.arguments[0].toString());
 
-  JavascriptController * originEnv = getObjectPtrFromJS<JavascriptController>(a);
+  OSCJsController * originEnv = getObjectPtrFromJS<OSCJsController>(a);
   if(originEnv){
     JsOSCListener * ob = new JsOSCListener(originEnv,oscPattern);
     originEnv->jsOSCListeners.add(ob);
@@ -238,8 +241,8 @@ inline void JsOSCListener::processMessage(const OSCMessage & msg) {
 		var * addressList = &jsArgs[0];
 		for (auto &a : adList) { addressList->append(a); };
 		var * argsList = &jsArgs[1];
-		if (msg.size() == 1) { *argsList = JavascriptController::OSCArgumentToVar(msg[0]); } else if (msg.size()>1) {
-			for (auto & m : msg) { argsList->append(JavascriptController::OSCArgumentToVar(m)); }
+		if (msg.size() == 1) { *argsList = OSCJsController::OSCArgumentToVar(msg[0]); } else if (msg.size()>1) {
+			for (auto & m : msg) { argsList->append(OSCJsController::OSCArgumentToVar(m)); }
 		}
 
 		jsEnv->callFunctionFromIdentifier(oscReceivedCallbackId, var::NativeFunctionArgs(object, jsArgs, 2), true);

@@ -16,7 +16,7 @@
 #ifndef AUDIODEVICEINNODEUI_H_INCLUDED
 #define AUDIODEVICEINNODEUI_H_INCLUDED
 
-#include "../UI/NodeBaseContentUI.h"
+#include "../UI/ConnectableNodeContentUI.h"
 #include "../NodeBase.h"
 #include "../../Controllable/Parameter/UI/ParameterUI.h"
 #include "../../Controllable/Parameter/UI/SliderUI.h"
@@ -25,7 +25,7 @@ class VuMeter;
 class AudioDeviceInNode;
 
 class AudioDeviceInNodeContentUI :
-public NodeBaseContentUI,
+public ConnectableNodeContentUI,
 public ConnectableNode::ConnectableNodeListener,
 public ChangeListener
 {

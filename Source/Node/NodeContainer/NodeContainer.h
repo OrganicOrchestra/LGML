@@ -136,7 +136,7 @@ public:
   void removeParamProxy(ParameterProxy * pp);
 
   //save / load
-  DynamicObject* getObject() override;
+  DynamicObject * getObject() override;
   void configureFromObject(DynamicObject * data) override;
   ParameterContainer *  addContainerFromObject(const String & name,DynamicObject *  v)override;
   
@@ -157,7 +157,7 @@ public:
   virtual void onContainerParameterChanged(Parameter * p) override;
   virtual void onContainerParameterChangedAsync(Parameter * p ,const var & value)override;
 
-  virtual ConnectableNodeUI * createUI() override;
+  
 
   //AUDIO
 

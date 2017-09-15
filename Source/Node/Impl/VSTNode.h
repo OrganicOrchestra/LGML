@@ -55,8 +55,6 @@ public:
   };
 
   PluginWindowParameters pluginWindowParameter;
-  void createPluginWindow();
-  void closePluginWindow();
 
 
 
@@ -94,8 +92,6 @@ public:
   void addVSTNodeListener(VSTNodeListener* newListener) { vstNodeListeners.add(newListener); }
   void removeVSTNodeListener(VSTNodeListener* listener) { vstNodeListeners.remove(listener); }
 
-
-  ConnectableNodeUI * createUI()override;
 
 
   // AUDIO

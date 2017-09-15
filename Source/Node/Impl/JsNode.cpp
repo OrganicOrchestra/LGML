@@ -14,19 +14,10 @@
 
 
 #include "JsNode.h"
-
-#include "JsNodeUI.h"
 #include "../../Engine.h"
 
 
 REGISTER_NODE_TYPE(JsNode)
-ConnectableNodeUI * JsNode::createUI()
-{
-
-    NodeBaseUI * ui = new NodeBaseUI(this,new JsNodeUI());
-    return ui;
-
-}
 
 
 

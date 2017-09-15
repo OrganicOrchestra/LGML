@@ -38,9 +38,6 @@
     <Filter Include="LGML\Source\FastMapper">
       <UniqueIdentifier>{6D7EDC97-E502-AB45-CB1E-68713BDD12AD}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Inspector">
-      <UniqueIdentifier>{35DC88E4-B162-4FEB-CA07-6A2DE749A1E2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LGML\Source\Logger">
       <UniqueIdentifier>{715AE501-5008-5533-C4E3-FD9D80BC96F3}</UniqueIdentifier>
     </Filter>
@@ -91,6 +88,9 @@
     </Filter>
     <Filter Include="LGML\Source\UI\ShapeShifter">
       <UniqueIdentifier>{87EB8377-185F-11C5-8A03-A4CAB8EAF9D3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LGML\Source\UI\Inspector">
+      <UniqueIdentifier>{21B48B29-4C18-7B36-3BE9-A0BD1ACB8A6F}</UniqueIdentifier>
     </Filter>
     <Filter Include="LGML\Source\UI">
       <UniqueIdentifier>{253AFE87-1120-E6FF-094B-7B041E188380}</UniqueIdentifier>
@@ -520,10 +520,10 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp">
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp">
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp">
       <Filter>LGML\Source\Controllable\Parameter\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.cpp">
@@ -607,9 +607,6 @@
     <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialUIHelper.cpp">
       <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controller\Impl\DMXController.cpp">
-      <Filter>LGML\Source\Controller\Impl</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Controller\Impl\MIDIController.cpp">
       <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
@@ -628,7 +625,7 @@
     <ClCompile Include="..\..\Source\Controller\Impl\SerialPort.cpp">
       <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controller\Impl\JavascriptController.cpp">
+    <ClCompile Include="..\..\Source\Controller\Impl\OSCJsController.cpp">
       <Filter>LGML\Source\Controller\Impl</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controller\UI\ControllerEditor.cpp">
@@ -669,15 +666,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\FastMapper\FastMapUI.cpp">
       <Filter>LGML\Source\FastMapper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Inspector\InspectableComponent.cpp">
-      <Filter>LGML\Source\Inspector</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Inspector\Inspector.cpp">
-      <Filter>LGML\Source\Inspector</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Inspector\InspectorEditor.cpp">
-      <Filter>LGML\Source\Inspector</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Logger\LGMLLogger.cpp">
       <Filter>LGML\Source\Logger</Filter>
@@ -757,10 +745,7 @@
     <ClCompile Include="..\..\Source\Node\Impl\Spat2DNodeUI.cpp">
       <Filter>LGML\Source\Node\Impl</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Node\Impl\Spat2DViewer.cpp">
-      <Filter>LGML\Source\Node\Impl</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Node\Impl\Spat3DViewer.cpp">
+    <ClCompile Include="..\..\Source\Node\Impl\Spat2DViewerUI.cpp">
       <Filter>LGML\Source\Node\Impl</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Node\Impl\VSTNode.cpp">
@@ -787,9 +772,6 @@
     <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerContentUI.cpp">
       <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerUI.cpp">
-      <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerViewer.cpp">
       <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
     </ClCompile>
@@ -797,18 +779,6 @@
       <Filter>LGML\Source\Node\NodeContainer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Node\UI\NodeUIFactory.cpp">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Node\UI\NodeBaseAudioCtlUI.cpp">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Node\UI\NodeBaseContentUI.cpp">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Node\UI\NodeBaseHeaderUI.cpp">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Node\UI\NodeBaseUI.cpp">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.cpp">
@@ -921,6 +891,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainComponentCommands.cpp">
       <Filter>LGML\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Inspector\InspectableComponent.cpp">
+      <Filter>LGML\Source\UI\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Inspector\Inspector.cpp">
+      <Filter>LGML\Source\UI\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp">
+      <Filter>LGML\Source\UI\Inspector</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Utils\FactoryBase.cpp">
       <Filter>LGML\Source\Utils</Filter>
@@ -2862,9 +2841,6 @@
     <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialUIHelper.h">
       <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controller\Impl\DMXController.h">
-      <Filter>LGML\Source\Controller\Impl</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Controller\Impl\MIDIController.h">
       <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
@@ -2883,7 +2859,7 @@
     <ClInclude Include="..\..\Source\Controller\Impl\SerialPort.h">
       <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controller\Impl\JavascriptController.h">
+    <ClInclude Include="..\..\Source\Controller\Impl\OSCJsController.h">
       <Filter>LGML\Source\Controller\Impl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controller\UI\ControllerEditor.h">
@@ -2927,15 +2903,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\FastMapper\FastMapUI.h">
       <Filter>LGML\Source\FastMapper</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Inspector\InspectableComponent.h">
-      <Filter>LGML\Source\Inspector</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Inspector\Inspector.h">
-      <Filter>LGML\Source\Inspector</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Inspector\InspectorEditor.h">
-      <Filter>LGML\Source\Inspector</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Logger\LGMLLogger.h">
       <Filter>LGML\Source\Logger</Filter>
@@ -3015,10 +2982,7 @@
     <ClInclude Include="..\..\Source\Node\Impl\Spat2DNodeUI.h">
       <Filter>LGML\Source\Node\Impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Node\Impl\Spat2DViewer.h">
-      <Filter>LGML\Source\Node\Impl</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Node\Impl\Spat3DViewer.h">
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DViewerUI.h">
       <Filter>LGML\Source\Node\Impl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\Impl\VSTNode.h">
@@ -3045,9 +3009,6 @@
     <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerContentUI.h">
       <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerUI.h">
-      <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerViewer.h">
       <Filter>LGML\Source\Node\NodeContainer\UI</Filter>
     </ClInclude>
@@ -3055,18 +3016,6 @@
       <Filter>LGML\Source\Node\NodeContainer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\UI\NodeUIFactory.h">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Node\UI\NodeBaseAudioCtlUI.h">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Node\UI\NodeBaseContentUI.h">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Node\UI\NodeBaseHeaderUI.h">
-      <Filter>LGML\Source\Node\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Node\UI\NodeBaseUI.h">
       <Filter>LGML\Source\Node\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.h">
@@ -3176,6 +3125,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainComponent.h">
       <Filter>LGML\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Inspector\InspectableComponent.h">
+      <Filter>LGML\Source\UI\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Inspector\Inspector.h">
+      <Filter>LGML\Source\UI\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h">
+      <Filter>LGML\Source\UI\Inspector</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\FactoryUIHelpers.h">
       <Filter>LGML\Source\Utils</Filter>

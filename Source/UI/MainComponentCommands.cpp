@@ -17,7 +17,7 @@
 #include "MainComponent.h"
 #include "../FastMapper/FastMap.h"
 #include "../Engine.h"
-#include "../Inspector/Inspector.h"
+#include "Inspector/Inspector.h"
 #include "../Node/NodeContainer/NodeContainer.h"
 #include "LGMLDragger.h"
 

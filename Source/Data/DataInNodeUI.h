@@ -16,14 +16,15 @@
 #ifndef DATAINNODEUI_H_INCLUDED
 #define DATAINNODEUI_H_INCLUDED
 
+#include "../Node/UI/ConnectableNodeContentUI.h"
 #include "../Controllable/Parameter/UI/ParameterUI.h"
 #include "DataInNode.h"
-#include "../Node/UI/NodeBaseContentUI.h"
+
 
 //==============================================================================
 /*
 */
-class DataInNodeContentUI    : public NodeBaseContentUI, DataInNode::DataInListener
+class DataInNodeContentUI    : public ConnectableNodeContentUI, DataInNode::DataInListener
 {
 public:
     DataInNodeContentUI();

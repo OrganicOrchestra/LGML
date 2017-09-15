@@ -33,8 +33,6 @@ public:
 
     void onContainerParameterChanged(Parameter * p) override;
 
-    virtual ConnectableNodeUI * createUI() override;
-
     //Listener
     class DataInListener
     {

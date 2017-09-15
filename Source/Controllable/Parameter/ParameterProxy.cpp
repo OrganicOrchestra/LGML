@@ -39,6 +39,9 @@ ParameterProxy::~ParameterProxy()
   }
 }
 
+bool ParameterProxy::isMappable(){
+  return true;
+}
 
 void ParameterProxy::setRoot(ControllableContainer * r){
   if(rootOfProxy!=nullptr)rootOfProxy->removeControllableContainerListener(this);

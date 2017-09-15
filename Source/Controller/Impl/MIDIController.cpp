@@ -22,10 +22,12 @@
 
 extern AudioDeviceManager &  getAudioDeviceManager();
 
+#include "../ControllerFactory.h"
+REGISTER_CONTROLLER_TYPE(MIDIController);
 
-const static Identifier usrMIDICCId("usrMIDICC");
-MIDIController::MIDIController() :
-Controller("MIDI"),JsEnvironment("controller.mIDI",this)
+
+MIDIController::MIDIController(StringRef name) :
+Controller(name),JsEnvironment("controller.MIDI",this)
 {
 	setNamespaceName("controller."+shortName);
 	deviceInName = addNewParameter<StringParameter>("midiPortName", "name of Midi device input", "");

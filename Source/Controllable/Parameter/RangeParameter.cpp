@@ -66,9 +66,9 @@ float RangeParameter::getRangeMin(){
 float RangeParameter::getRangeMax(){
   return value[1];
 }
-bool RangeParameter::checkValueIsTheSame(var newValue, var oldValue)
+bool RangeParameter::checkValueIsTheSame(const var & v1, const var& v2)
 {
-  if (!(newValue.isArray() && oldValue.isArray())) return false;
+  if (!(v1.isArray() && v2.isArray())) return false;
 
-  return newValue[0] == oldValue[0] && newValue[1] == oldValue[1];
+  return v1[0] == v2[0] && v1[1] == v2[1];
 }

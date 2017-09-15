@@ -14,18 +14,8 @@
 
 
 #include "LooperNodeUI.h"
-
-#include "../UI/NodeBaseUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
-
-
-ConnectableNodeUI * LooperNode::createUI(){
-  NodeBaseUI * ui = new NodeBaseUI(this, new LooperNodeContentUI);
-  ui->recursiveInspectionLevel = 2;
-  ui->canInspectChildContainersBeyondRecursion = false;
-  return ui;
-}
 
 
 

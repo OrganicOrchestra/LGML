@@ -16,7 +16,7 @@
 #ifndef GENERICParameterCONTAINEREDITOR_H_INCLUDED
 #define GENERICParameterCONTAINEREDITOR_H_INCLUDED
 
-#include "../../../Inspector/InspectorEditor.h"
+#include "../../../UI/Inspector/InspectorEditor.h"
 #include "../ParameterContainer.h"
 #include "ParameterUI.h"
 

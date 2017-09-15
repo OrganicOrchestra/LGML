@@ -18,7 +18,7 @@
 
 #include "../UI/ShapeShifter/ShapeShifterContent.h"
 #include "FastMapUI.h"
-#include "../Inspector/Inspector.h"
+#include "../UI/Inspector/Inspector.h"
 
 
 class FastMapper;

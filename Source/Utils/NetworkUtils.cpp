@@ -53,6 +53,14 @@ void NetworkUtils::removeOSCRecord(OSCClientRecord & oscRec){
   MessageManager::getInstance()->callAsync([this,oscRec](){listeners.call(&Listener::oscClientRemoved,oscRec);});
 }
 
+Array<OSCClientRecord> NetworkUtils::getOSCRecords(){
+  Array<OSCClientRecord> res;
+  HashMap<String, OSCClientRecord>::Iterator  it ( dnsMap);
+  while(it.next()){
+    res.add(it.getValue());
+  }
+  return res;
+}
 
 #if SUPPORT_DNS
 

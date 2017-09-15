@@ -23,8 +23,7 @@
 
 AudioDeviceManager& getAudioDeviceManager();
 
-AudioDeviceOutNodeContentUI::AudioDeviceOutNodeContentUI() :
-NodeBaseContentUI()
+AudioDeviceOutNodeContentUI::AudioDeviceOutNodeContentUI() 
 {
 
 }

@@ -16,8 +16,6 @@
 #include "NodeContainer.h"
 #include "../Manager/NodeManager.h"
 #include "../Connection/NodeConnection.h"
-#include "UI/NodeContainerUI.h"
-
 
 #include "../../Utils/DebugHelpers.h"
 
@@ -120,7 +118,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 
 ConnectableNode * NodeContainer::addNodeFromJSONData(DynamicObject * data)
 {
-  ConnectableNode * n = NodeFactory::createFromObject(String::empty,data);
+  ConnectableNode * n = NodeFactory::createBaseFromObject(String::empty,data);
   return addNode(n,n->getNiceName(),data);
 }
 
@@ -243,7 +241,7 @@ int NodeContainer::getNumConnections() {
 
 
 
-DynamicObject* NodeContainer::getObject()
+DynamicObject * NodeContainer::getObject()
 {
   auto data = ConnectableNode::getObject();
 
@@ -264,7 +262,7 @@ DynamicObject* NodeContainer::getObject()
 ParameterContainer *  NodeContainer::addContainerFromObject(const String & /*name*/,DynamicObject *  data){
 //  ConnectableNode * node = addNodeFromJSONData(data);
   
-  ConnectableNode * node = NodeFactory::createFromObject( String::empty,data);
+  ConnectableNode * node = NodeFactory::createBaseFromObject( String::empty,data);
   if (auto n = dynamic_cast<ContainerInNode*>(node)) containerInNode = n;
   else if (auto n = dynamic_cast<ContainerOutNode*>(node)) containerOutNode = n;
   addNode(node);
@@ -449,10 +447,6 @@ void NodeContainer::onContainerParameterChangedAsync(Parameter * p  ,const var &
 
 void NodeContainer::bypassNode(bool /*bypass*/){}
 
-ConnectableNodeUI * NodeContainer::createUI()
-{
-  return new NodeContainerUI(this);
-}
 
 
 bool NodeContainer::hasDataInputs()

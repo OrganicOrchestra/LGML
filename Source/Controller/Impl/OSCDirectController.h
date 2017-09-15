@@ -21,8 +21,7 @@
 class OSCDirectController : public OSCController
 {
 public:
-    OSCDirectController();
-	OSCDirectController(const String &name);
+  DECLARE_OBJ_TYPE_DEFAULTNAME(OSCDirectController,"OSC")
 	virtual ~OSCDirectController();
 
   BoolParameter * sendTimeInfo;

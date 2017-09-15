@@ -19,12 +19,14 @@
 
 #include "../../Utils/FactoryBase.h"
 
-class NodeUI;
-class NodeUIFactory:public FactoryBase<NodeUI>{
-
+class ConnectableNodeUI;
+class ConnectableNode;
+class NodeUIFactory:public FactoryBase<ConnectableNodeUI>{
+public:
+  static ConnectableNodeUI * createDefaultUI(ConnectableNode * t);
 };
 
-#define REGISTER_NODEUI_TYPE(T) REGISTER_OBJ_TYPE(NodeUI,T)
+#define REGISTER_NODEUI_TYPE(T) REGISTER_OBJ_TYPE(ConnectableNodeUI,T)
 
 
 #define REGISTER_PARAM_TYPE_TEMPLATED(T,TT) REGISTER_PARAM_TYPE_TEMPLATED(NodeUI,T,TT)

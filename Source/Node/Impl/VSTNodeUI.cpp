@@ -16,13 +16,9 @@
 #include "VSTNodeUI.h"
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
 #include "../../Audio/VSTManager.h"
-#include "../UI/NodeBaseUI.h"
+#include "../UI/ConnectableNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
-
-ConnectableNodeUI * VSTNode::createUI() {
-  return new NodeBaseUI(this, new VSTNodeContentUI, new VSTNodeHeaderUI);
-}
-
+#include "../../UI/PluginWindow.h"
 
 
 VSTNodeContentUI::VSTNodeContentUI():
@@ -35,9 +31,20 @@ isDirty(false)
 
 }
 VSTNodeContentUI::~VSTNodeContentUI(){
-    vstNode->closePluginWindow();
+    closePluginWindow();
     vstNode->removeVSTNodeListener(this);
     vstNode->removeControllableContainerListener(this);
+
+}
+
+
+void  VSTNodeContentUI::createPluginWindow(){
+  if (PluginWindow* const w = PluginWindow::getWindowFor (vstNode))
+    w->toFront (true);
+}
+
+void VSTNodeContentUI::closePluginWindow(){
+  PluginWindow::closeCurrentlyOpenWindowsFor (vstNode);
 }
 
 void VSTNodeContentUI::init() {
@@ -191,38 +198,14 @@ void VSTNodeContentUI::buttonClicked (Button* button)
     if (button == &VSTListShowButton){
         PopupMenu  VSTList;
         VSTManager::getInstance()->knownPluginList.addToMenu(VSTList, KnownPluginList::SortMethod::sortByCategory);
-        vstNode->closePluginWindow();
+        closePluginWindow();
         VSTList.showAt (&VSTListShowButton,0,0,0,0, ModalCallbackFunction::forComponent(&VSTNodeContentUI::vstSelected, (Component*)this));
 
     }
     if(button == &showPluginWindowButton){
-        vstNode->createPluginWindow();
+        createPluginWindow();
     }
 }
 
 
-////
-// HEADER UI
-//
 
-VSTNodeHeaderUI::VSTNodeHeaderUI()
-{
-    //setSize(getWidth(), 80);
-}
-
-VSTNodeHeaderUI::~VSTNodeHeaderUI()
-{
-    vstNode->removeVSTNodeListener(this);
-}
-
-void VSTNodeHeaderUI::init()
-{
-    vstNode = (VSTNode *)node;
-    vstNode->addVSTNodeListener(this);
-}
-
-
-void VSTNodeHeaderUI::newVSTSelected()
-{
-//    updatePresetComboBox();
-}

@@ -14,12 +14,12 @@
 
 
 #include "VSTNode.h"
-#include "VSTNodeUI.h"
+
 #include "../Manager/NodeManager.h"
 #include "../../Utils/DebugHelpers.h"
 #include "../../Audio/VSTManager.h"
 #include "../../Time/TimeManager.h"
-#include "../../UI/PluginWindow.h"
+
 
 
 extern AudioDeviceManager& getAudioDeviceManager();
@@ -61,18 +61,10 @@ blockFeedback(false)
 
 
 VSTNode::~VSTNode(){
-  PluginWindow::closeCurrentlyOpenWindowsFor (this);
+  
 }
 
 
-void  VSTNode::createPluginWindow(){
-  if (PluginWindow* const w = PluginWindow::getWindowFor (this))
-    w->toFront (true);
-}
-
-void VSTNode::closePluginWindow(){
-  PluginWindow::closeCurrentlyOpenWindowsFor (this);
-}
 
 void VSTNode::processBlockBypassed(AudioBuffer<float>& buffer, MidiBuffer&){
 
@@ -184,7 +176,7 @@ void VSTNode::initParametersFromProcessor(AudioProcessor * p){
 void VSTNode::generatePluginFromDescription(PluginDescription * desc)
 {
 
-  closePluginWindow();
+//  closePluginWindow();
   innerPlugin = nullptr;
   String errorMessage;
   AudioDeviceManager::AudioDeviceSetup result;

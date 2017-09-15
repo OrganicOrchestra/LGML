@@ -18,12 +18,12 @@
 
 
 #include "AudioMixerNode.h"
-#include "../UI/NodeBaseContentUI.h"
+#include "../UI/ConnectableNodeContentUI.h"
 
 
 #include "../../Controllable/Parameter/UI/SliderUI.h"
 
-class AudioMixerNodeUI : public NodeBaseContentUI,
+class AudioMixerNodeUI : public ConnectableNodeContentUI,
 public ConnectableNode::ConnectableNodeListener,
 private Parameter::Listener
 {

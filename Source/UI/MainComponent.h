@@ -19,24 +19,6 @@
 #pragma warning( disable : 4244 4100)
 
 
-/*
-#include "../Node/Manager/NodeManager.h"
-#include "../Node/Manager/UI/NodeManagerUI.h"
-
-#include "../Controller/ControllerManager.h"
-#include "../Controller/UI/ControllerManagerUI.h"
-#include "../Time/TimeManagerUI.h"
-
-#include "RuleManager.h"
-#include "RuleManagerUI.h"
-
-#include "../FastMapper/FastMapper.h"
-#include "../FastMapper/FastMapperUI.h"
-
-#include "../Logger/LGMLLoggerUI.h"
-*/
-
-
 //==============================================================================
 /*
  This component lives inside our window, and this is where you should put all

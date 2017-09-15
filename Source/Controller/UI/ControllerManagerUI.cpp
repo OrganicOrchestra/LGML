@@ -1,52 +1,52 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "ControllerManagerUI.h"
 
 #include "../../UI/Style.h"
 #include "../ControllerFactory.h"
-#include "../../Inspector/Inspector.h"
+#include "../../UI/Inspector/Inspector.h"
 #include "../../UI/ShapeShifter/ShapeShifterManager.h"
 #include "../../Utils/FactoryUIHelpers.h"
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(ControllerManager * manager):
-    manager(manager)
+manager(manager)
 {
 
-    manager->addControllerListener(this);
+  manager->addControllerListener(this);
 
-	for (auto &c : manager->controllers)
-	{
-		addControllerUI(c);
-	}
+  for (auto &c : manager->controllers)
+  {
+    addControllerUI(c);
+  }
 
 }
 
 ControllerManagerUI::~ControllerManagerUI()
 {
-    manager->removeControllerListener(this);
-	clear();
+  manager->removeControllerListener(this);
+  clear();
 }
 
 void ControllerManagerUI::clear()
 {
-	while(controllersUI.size() > 0)
-	{
-		removeControllerUI(controllersUI[0]->controller);
-	}
+  while(controllersUI.size() > 0)
+  {
+    removeControllerUI(controllersUI[0]->controller);
+  }
 }
 
 
@@ -64,14 +64,14 @@ void ControllerManagerUI::controllerRemoved(Controller * c)
 
 ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
 {
-    if (getUIForController(controller) != nullptr)
-    {
-        DBG("Controller already exists");
-        return nullptr;
-    }
+  if (getUIForController(controller) != nullptr)
+  {
+    DBG("Controller already exists");
+    return nullptr;
+  }
 
-	ControllerUI * cui = controller->createUI();
-    controllersUI.add(cui);
+  ControllerUI * cui = controller->createUI();
+  controllersUI.add(cui);
 
   {
     MessageManagerLock ml;
@@ -79,20 +79,20 @@ ControllerUI * ControllerManagerUI::addControllerUI(Controller * controller)
     resized();
 
   }
-	cui->selectThis();
+  cui->selectThis();
 
   notifyParentViewPort();
-    return cui;
+  return cui;
 }
 
 void ControllerManagerUI::removeControllerUI(Controller * controller)
 {
-    ControllerUI * cui = getUIForController(controller);
-    if (cui == nullptr)
-    {
-        DBG("Controller dont exist");
-        return;
-    }
+  ControllerUI * cui = getUIForController(controller);
+  if (cui == nullptr)
+  {
+    DBG("Controller dont exist");
+    return;
+  }
 
   {
     MessageManagerLock ml;
@@ -107,29 +107,29 @@ void ControllerManagerUI::removeControllerUI(Controller * controller)
 
 ControllerUI * ControllerManagerUI::getUIForController(Controller * controller)
 {
-    for (auto &cui : controllersUI)
-    {
-        if (cui->controller == controller) return cui;
-    }
+  for (auto &cui : controllersUI)
+  {
+    if (cui->controller == controller) return cui;
+  }
 
-    return nullptr;
+  return nullptr;
 }
 
 const int elemGap = 5;
 const int elemHeight = 20;
 void ControllerManagerUI::resized()
 {
-	Rectangle<int> r = getLocalBounds().reduced(1);
-    for (auto &cui : controllersUI)
-    {
-		cui->setBounds(r.removeFromTop(elemHeight));
-		r.removeFromTop(elemGap);
-    }
+  Rectangle<int> r = getLocalBounds().reduced(1);
+  for (auto &cui : controllersUI)
+  {
+    cui->setBounds(r.removeFromTop(elemHeight));
+    r.removeFromTop(elemGap);
+  }
 }
 
 void ControllerManagerUI::paint (Graphics&)
 {
-    //ContourComponent::paint(g);
+  //ContourComponent::paint(g);
 }
 
 int ControllerManagerUI::getContentHeight(){
@@ -139,24 +139,28 @@ int ControllerManagerUI::getContentHeight(){
 
 void ControllerManagerUI::mouseDown(const MouseEvent & event)
 {
-    if (event.eventComponent == this)
+  if (event.eventComponent == this)
+  {
+    if (event.mods.isRightButtonDown())
     {
-        if (event.mods.isRightButtonDown())
-        {
 
-            ScopedPointer<PopupMenu> menu( new PopupMenu());
-          ScopedPointer<PopupMenu> addNodeMenu( FactoryUIHelpers::getFactoryTypesMenu<ControllerFactory>(0));
-            menu->addSubMenu("Add Controller", *addNodeMenu);
+      ScopedPointer<PopupMenu> menu( new PopupMenu());
+      ScopedPointer<PopupMenu> addNodeMenu( FactoryUIHelpers::getFactoryTypesMenu<ControllerFactory>());
+      menu->addSubMenu("Add Controller", *addNodeMenu);
 
-            int result = menu->show();
-            if (result >= 1 && result <= addNodeMenu->getNumItems())
-            {
-                manager->addController(FactoryUIHelpers::createFromMenuIdx<Controller>(result));
-            }
-		}
-		else
-		{
-			if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setCurrentComponent(nullptr);
-		}
+      int result = menu->show();
+      if (result >0 )
+      {
+        if(auto c = FactoryUIHelpers::createFromMenuIdx<Controller>(result)){
+          manager->addController(c);
+        }
+        else
+          jassertfalse;
+      }
     }
+    else
+    {
+      if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setCurrentComponent(nullptr);
+    }
+  }
 }

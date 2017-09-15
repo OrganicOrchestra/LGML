@@ -14,8 +14,8 @@
 
 
 #include "DummyNode.h"
-#include "../UI/NodeBaseUI.h"
-#include "DummyNodeContentUI.h"
+
+
 #include "../../Time/TimeManager.h"
 
 Identifier lrId("Left / Right");
@@ -188,10 +188,4 @@ inline void DummyNode::processInputDataChanged(Data * d)
    }
 }
 
-ConnectableNodeUI * DummyNode::createUI()
-{
 
-  NodeBaseUI * ui = new NodeBaseUI(this,new DummyNodeContentUI());
-  return ui;
-  
-}

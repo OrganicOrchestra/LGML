@@ -41,7 +41,7 @@ class JsNode : public NodeBase,public JsEnvironment{
   static var addBoolParameter(const var::NativeFunctionArgs & a);
   static var addTriggerParameter(const var::NativeFunctionArgs & a);
 
-  virtual ConnectableNodeUI * createUI() override;
+  
 
   Array<Controllable * > jsParameters;
 

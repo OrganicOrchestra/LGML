@@ -16,7 +16,7 @@
 #ifndef INSPECTOR_H_INCLUDED
 #define INSPECTOR_H_INCLUDED
 
-#include "../UI/ShapeShifter/ShapeShifterContent.h"
+#include "../ShapeShifter/ShapeShifterContent.h"
 #include "InspectableComponent.h"
 #include "InspectorEditor.h"
 class ParameterContainer;

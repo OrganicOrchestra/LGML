@@ -14,8 +14,6 @@
 
 
 #include "Spat2DNode.h"
-#include "../UI/NodeBaseUI.h"
-#include "Spat2DNodeUI.h"
 
 REGISTER_NODE_TYPE(Spat2DNode)
 Spat2DNode::Spat2DNode(StringRef name) :
@@ -282,6 +280,3 @@ void Spat2DNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer &)
 	
 }
 
-ConnectableNodeUI * Spat2DNode::createUI() {
-	return new NodeBaseUI(this,new Spat2DNodeContentUI());
-}

@@ -14,10 +14,10 @@
 
 
 #include "DummyNodeContentUI.h"
-#include "../UI/NodeBaseUI.h"
+#include "../UI/ConnectableNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
-DummyNodeContentUI::DummyNodeContentUI() : NodeBaseContentUI()
+DummyNodeContentUI::DummyNodeContentUI()
 {
 }
 

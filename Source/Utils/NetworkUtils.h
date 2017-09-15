@@ -61,7 +61,7 @@ public:
   ListenerList<Listener> listeners;
   void addListener(Listener* l){listeners.add(l);}
   void removeListener(Listener* l){listeners.remove(l);}
-  
+  Array<OSCClientRecord> getOSCRecords();
 
 private:
    class Pimpl;

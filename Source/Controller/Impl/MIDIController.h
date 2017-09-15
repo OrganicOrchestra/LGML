@@ -25,7 +25,7 @@ class JsMIDIMessageListener;
 class MIDIController : public Controller,public MIDIListener, public MIDIListener::Listener,public JsEnvironment
 {
   public :
-  MIDIController();
+  DECLARE_OBJ_TYPE_DEFAULTNAME(MIDIController,"MIDI");
   virtual ~MIDIController();
 
   ControllerEditor *  createEditor()override;

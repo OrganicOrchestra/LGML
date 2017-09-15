@@ -18,7 +18,7 @@
 
 #include "FastMap.h"
 
-#include "../Inspector/InspectableComponent.h"
+#include "../UI/Inspector/InspectableComponent.h"
 #include "../Controllable/Parameter/UI/ParameterProxyUI.h"
 #include "../Controllable/Parameter/UI/RangeParameterUI.h"
 

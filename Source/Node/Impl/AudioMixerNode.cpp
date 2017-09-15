@@ -14,9 +14,6 @@
 
 
 #include "AudioMixerNode.h"
-#include "../UI/NodeBaseUI.h"
-
-#include "AudioMixerNodeUI.h"
 #include "../../Audio/AudioHelpers.h"
 #include "../NodeContainer/NodeContainer.h"
 
@@ -227,14 +224,3 @@ void AudioMixerNode::OutputBus::onContainerParameterChanged(Parameter *p){
     }
 }
 
-
-
-ConnectableNodeUI * AudioMixerNode::createUI()
-{
-
-    NodeBaseUI * ui = new NodeBaseUI(this, new AudioMixerNodeUI);
-    ui->recursiveInspectionLevel = 2;
-    return ui;
-
-
-}

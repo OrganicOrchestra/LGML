@@ -27,7 +27,7 @@
 #include "ConnectableNode.h"
 #include "../Audio/AudioHelpers.h"
 
-class ConnectableNodeUI;
+
 
 
 class NodeBase :
@@ -67,8 +67,7 @@ public:
   void configureFromObject(DynamicObject * data) override;
 
 
-  //ui
-  virtual ConnectableNodeUI *  createUI() override;
+  
 
   virtual const String getName() const override
   {

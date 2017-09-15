@@ -18,7 +18,7 @@
 
 
 
-#include "../UI/NodeBaseContentUI.h"
+#include "../UI/ConnectableNodeContentUI.h"
 #include "../NodeBase.h"
 #include "../../Controllable/Parameter/UI/ParameterUI.h"
 
@@ -27,7 +27,7 @@ class VuMeter;
 class AudioDeviceOutNode;
 
 class AudioDeviceOutNodeContentUI :
-public NodeBaseContentUI,
+public ConnectableNodeContentUI,
 public ConnectableNode::ConnectableNodeListener,
 public ChangeListener
 {

@@ -28,18 +28,21 @@ class OSCClientModel:public EnumParameterModel,NetworkUtils::Listener{
 
 public:
 
-  OSCClientModel():EnumParameterModel(false){
-    NetworkUtils::getInstance()->addListener(this);
-    addOrSetOption("localhost","127.0.0.1");
+  OSCClientModel():EnumParameterModel(){
+    auto nu = NetworkUtils::getInstance();
+    nu->addListener(this);
+    for(auto r:nu->getOSCRecords()){
+      oscClientAdded(r);
+    }
   };
   ~OSCClientModel(){
   }
 
   void oscClientAdded(OSCClientRecord o) {
-    addOrSetOption(o.getShortName(), o.ipAddress.toString());
+    addOrSetOption(o.getShortName(), o.ipAddress.toString(),true);
   };
   void oscClientRemoved(OSCClientRecord o) {
-    removeOption(o.getShortName());
+    removeOption(o.getShortName(),true);
   };
 
 };

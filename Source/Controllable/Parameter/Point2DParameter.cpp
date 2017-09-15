@@ -82,10 +82,10 @@ Point<T> Point2DParameter<T>::getPoint() {
 }
 
 template<typename T>
-bool Point2DParameter<T>::checkValueIsTheSame(var newValue, var oldValue)
+bool Point2DParameter<T>::checkValueIsTheSame(const var & v1, const var& v2)
 {
-  if (!(newValue.isArray() && oldValue.isArray())) return false;
-  return newValue[0] == oldValue[0] && newValue[1] == oldValue[1];
+  if (!(v1.isArray() && v2.isArray())) return false;
+  return v1[0] == v2[0] && v1[1] == v2[1];
 }
 
 template class Point2DParameter<int>;

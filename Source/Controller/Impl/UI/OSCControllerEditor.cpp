@@ -17,12 +17,13 @@
 #include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../../../Controllable/Parameter/UI/StringParameterUI.h"
 
-OSCControllerEditor::OSCControllerEditor(Controller * _controller) :
-ControllerEditor(_controller)
+OSCControllerEditor::OSCControllerEditor(OSCController * _controller) :
+ControllerEditor(_controller),
+oscController(_controller)
+
 
 {
-  oscController = dynamic_cast<OSCController*> (_controller);
-  jassert(oscController);
+  
   localPortUI = ParameterUIFactory::createDefaultUI(oscController->localPortParam);
   ((StringParameterUI*)localPortUI.get())->setNameLabelVisible(true);
   remoteHostUI = ParameterUIFactory::createDefaultUI(oscController->remoteHostParam);

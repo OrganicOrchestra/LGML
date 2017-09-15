@@ -16,7 +16,7 @@
 #ifndef CONTROLLABLEEDITOR_H_INCLUDED
 #define CONTROLLABLEEDITOR_H_INCLUDED
 
-#include "../../Inspector/InspectorEditor.h"
+#include "../../UI/Inspector/InspectorEditor.h"
 class Controllable;
 class ControllableUI;
 

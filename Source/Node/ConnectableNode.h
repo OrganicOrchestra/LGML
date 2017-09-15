@@ -72,8 +72,7 @@ public:
 
 	void onContainerParameterChanged(Parameter * p) override;
 
-	//ui
-	virtual ConnectableNodeUI *  createUI();
+	
 
 	//Listener
 	class ConnectableNodeListener

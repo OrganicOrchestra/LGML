@@ -14,7 +14,7 @@
 
 
 #include "GenericParameterContainerEditor.h"
-#include "../../../Inspector/InspectableComponent.h"
+#include "../../../UI/Inspector/InspectableComponent.h"
 #include "ParameterUI.h"
 #include "ParameterUIFactory.h"
 #include "../ParameterContainer.h"

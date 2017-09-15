@@ -21,25 +21,11 @@
 #include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../MIDI/MIDIUIHelper.h"
 #include "VSTNode.h"
-#include "../UI/NodeBaseHeaderUI.h"
-#include "../UI/NodeBaseContentUI.h"
+#include "../UI/ConnectableNodeContentUI.h"
 
-class VSTNodeHeaderUI : public NodeBaseHeaderUI, public VSTNode::VSTNodeListener
-{
-public:
-    VSTNodeHeaderUI();
-    ~VSTNodeHeaderUI();
-    VSTNode * vstNode;
-
-    void init() override;
-
-    // Inherited via ChangeListener
-    void newVSTSelected() override;
-	void midiDeviceChanged() override {}
-};
 
 class VSTNodeContentUI:
-	public NodeBaseContentUI,
+	public ConnectableNodeContentUI,
 	public Button::Listener,
 	public VSTNode::VSTNodeListener,
 	private ControllableContainerListener,
@@ -70,6 +56,9 @@ public:
     void comboBoxChanged(ComboBox *cb) override;
     void buttonClicked(Button* button) override;
 
+private:
+  void createPluginWindow();
+  void closePluginWindow();
 
 	void controllableAdded(ControllableContainer *,Controllable * c)override;
 	void controllableRemoved(ControllableContainer *,Controllable * c)override;

@@ -15,7 +15,7 @@
 
 #include "Engine.h"
 
-#include "Inspector/Inspector.h"
+#include "UI/Inspector/Inspector.h"
 
 #include "Node/Impl/AudioDeviceInNode.h"
 #include "Node/Impl/AudioDeviceOutNode.h"

@@ -185,7 +185,7 @@ void PresetManager::clear()
     presets.clear();
 }
 
-DynamicObject* PresetManager::getObject()
+DynamicObject * PresetManager::getObject()
 {
 	auto data = new DynamicObject();
 	var presetDatas;
@@ -252,7 +252,7 @@ void PresetManager::Preset::clear()
 }
 
 
-DynamicObject* PresetManager::Preset::getObject()
+DynamicObject * PresetManager::Preset::getObject()
 {
   auto data = new DynamicObject();
   data->setProperty("name", name);

@@ -16,14 +16,14 @@
 #ifndef SPATNODEUI_H_INCLUDED
 #define SPATNODEUI_H_INCLUDED
 
-#include "../UI/NodeBaseContentUI.h"
+#include "../UI/ConnectableNodeContentUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUI.h"
 #include "Spat2DNode.h"
-#include "Spat2DViewer.h"
-#include "Spat3DViewer.h"
+#include "Spat2DViewerUI.h"
+
 
 class Spat2DNodeContentUI : 
-	public NodeBaseContentUI, 
+	public ConnectableNodeContentUI, 
 	public Spat2DNode::ConnectableNodeListener
 {
 public:

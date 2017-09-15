@@ -38,14 +38,14 @@ Parameter( niceName, description,triggerVar, enabled)
 
 DynamicObject * Trigger::createDynamicObject()
 {
-	DynamicObject* dObject = Controllable::createDynamicObject();
+	auto dObject = Controllable::createDynamicObject();
 	dObject->setMethod(jsTriggerIdentifier, setControllableValueFromJS);
 	dObject->setProperty(jsPtrIdentifier, (int64)this);
 
 	return dObject;
 }
 
-DynamicObject* Trigger::getObject(){
+DynamicObject * Trigger::getObject(){
   return new DynamicObject();
 }
 var Trigger::getVarState(){

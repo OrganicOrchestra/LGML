@@ -18,12 +18,10 @@
 #include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 //#include "SerialControllerUI.h"//keep
 
-SerialControllerEditor::SerialControllerEditor(Controller * cont) :
-ControllerEditor(cont,false)
+SerialControllerEditor::SerialControllerEditor(SerialController * cont) :
+ControllerEditor(cont,false),
+serialController(cont)
 {
-
-  serialController = dynamic_cast<SerialController*>(cont);
-  jassert(serialController);
   jsUI = new JsEnvironmentUI(serialController->jsParameters);
 
 

@@ -20,11 +20,13 @@
 #include "../../UI/Style.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
+#include "../UI/NodeUIFactory.h"
+
+
 AudioDeviceManager& getAudioDeviceManager();
 
 
-AudioDeviceInNodeContentUI::AudioDeviceInNodeContentUI() :
-NodeBaseContentUI()
+AudioDeviceInNodeContentUI::AudioDeviceInNodeContentUI() 
 {
   getAudioDeviceManager().addChangeListener(this);
 }

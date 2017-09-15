@@ -40,8 +40,8 @@ Vector3D<float> * Point3DParameter::getPoint() {
 	return new Vector3D<float>(x, y,z);
 }
 
-bool Point3DParameter::checkValueIsTheSame(var newValue, var oldValue)
+bool Point3DParameter::checkValueIsTheSame(const var & v1, const var& v2)
 {
-	if (!(newValue.isArray() && oldValue.isArray())) return false;
-	return newValue[0] == oldValue[0] && newValue[1] == oldValue[1] && newValue[2] == oldValue[2];
+	if (!(v1.isArray() && v2.isArray())) return false;
+	return v1[0] == v2[0] && v1[1] == v2[1] && v1[2] == v2[2];
 }

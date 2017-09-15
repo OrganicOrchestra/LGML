@@ -36,7 +36,7 @@ public:
   DECLARE_OBJ_TYPE(LooperNode)
   virtual ~LooperNode();
 
-  ConnectableNodeUI * createUI() override;
+  
 
   class TrackGroup : public ParameterContainer{
   public:

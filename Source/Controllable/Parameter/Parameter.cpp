@@ -37,15 +37,7 @@ value(initialValue)
 
 
 }
-void Parameter::configureFromObject(DynamicObject * ob){
-  if(ob){
-  if(ob->hasProperty("initialValue")){defaultValue = ob->getProperty("initialValue");}
-  if(ob->hasProperty("value")){setValue(ob->getProperty("value"));}
-  }
-  else{
-    jassertfalse;
-  }
-}
+
 void Parameter::resetValue(bool silentSet)
 {
   isOverriden = false;
@@ -99,7 +91,7 @@ void Parameter::tryToSetValue(var _value, bool silentSet , bool force ){
     lastValue = var(value);
     setValueInternal(_value);
     if(_value != defaultValue) isOverriden = true;
-    if (!silentSet && lastValue!=value) notifyValueChanged(false);
+    if (!silentSet && !checkValueIsTheSame(lastValue, value)) notifyValueChanged(false);
     isSettingValue = false;
   }
 
@@ -128,9 +120,9 @@ void Parameter::setValueInternal(var & _value) //to override by child classes
 #endif
 }
 
-bool Parameter::checkValueIsTheSame(var newValue, var oldValue)
+bool Parameter::checkValueIsTheSame(const var & v1, const var& v2)
 {
-  return newValue.hasSameTypeAs(oldValue) && (newValue == oldValue);
+  return v1.hasSameTypeAs(v2) && (v1 == v2);
 }
 
 void Parameter::checkVarIsConsistentWithType(){
@@ -159,10 +151,20 @@ void Parameter::notifyValueChanged(bool defferIt) {
 
 DynamicObject * Parameter::createDynamicObject()
 {
-  DynamicObject * dObject = Controllable::createDynamicObject();
+  auto dObject = Controllable::createDynamicObject();
   static const Identifier _jsSetIdentifier("set");
   dObject->setMethod(_jsSetIdentifier, setControllableValueFromJS);
   return dObject;
+}
+
+void Parameter::configureFromObject(DynamicObject * ob){
+  if(ob){
+    if(ob->hasProperty("initialValue")){defaultValue = ob->getProperty("initialValue");}
+    if(ob->hasProperty("value")){setValue(ob->getProperty("value"));}
+  }
+  else{
+    jassertfalse;
+  }
 }
 
 DynamicObject * Parameter::getObject(){
@@ -170,6 +172,7 @@ DynamicObject * Parameter::getObject(){
   res->setProperty(valueIdentifier, value);
   return res;
 }
+
 var Parameter::getVarState(){
   return value;
 }

@@ -14,8 +14,7 @@
 
 
 #include "AudioDeviceOutNode.h"
-#include "../UI/NodeBaseUI.h"
-#include "AudioDeviceOutNodeUI.h"
+
 
 #include "../../Audio/AudioHelpers.h"
 #include "../Manager/NodeManager.h"
@@ -159,8 +158,4 @@ void AudioDeviceOutNode::removeVolMute()
   lastNumberOfOutputs--;
 }
 
-ConnectableNodeUI * AudioDeviceOutNode::createUI() {
-  NodeBaseUI * ui = new NodeBaseUI(this, new AudioDeviceOutNodeContentUI());
-  return ui;
 
-}

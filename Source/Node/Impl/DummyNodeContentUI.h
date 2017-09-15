@@ -18,12 +18,12 @@
 
 
 #include "DummyNode.h"//keep
-#include "../UI/NodeBaseContentUI.h"
+#include "../UI/ConnectableNodeContentUI.h"
 #include "../../Controllable/Parameter/UI/SliderUI.h"
 
 #include "../../Controllable/Parameter/UI/EnumParameterUI.h"
 
-class DummyNodeContentUI : public NodeBaseContentUI
+class DummyNodeContentUI : public ConnectableNodeContentUI
 {
 public:
     DummyNodeContentUI();

@@ -14,8 +14,8 @@
 
 
 #include "DataInNode.h"
-#include "DataInNodeUI.h"
-#include "../Node/UI/NodeBaseUI.h"
+
+
 
 REGISTER_NODE_TYPE(DataInNode)
 
@@ -55,7 +55,4 @@ void DataInNode::onContainerParameterChanged(Parameter * p)
     updateOutputData(p->niceName, fp->getNormalizedValue());}
 }
 
-ConnectableNodeUI * DataInNode::createUI()
-{
-    return new NodeBaseUI(this,new DataInNodeContentUI);
-}
+

@@ -260,7 +260,7 @@ void NodeConnection::dataOutputRemoved(ConnectableNode * n , Data * d)
 }
 
 
-DynamicObject* NodeConnection::getObject()
+DynamicObject * NodeConnection::getObject()
 {
   auto data = new DynamicObject();
 

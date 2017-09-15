@@ -119,7 +119,7 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
       String v = cb.getText();
       if(v.isNotEmpty()&& (v != cb.ComboBox::getTextWhenNothingSelected())){
         jassert(ep->userCanEnterText);
-        ep->addOption(v,v,true);
+        ep->addOrSetOption(v,v,true);
         ep->setValue(v);
       }
       else{
@@ -147,7 +147,7 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
           String res = nameWindow.getTextEditorContents("paramToAdd");
           if(res.isNotEmpty()){
             Identifier elemToAdd = res;
-            ep->getModel()->addOption(elemToAdd, elemToAdd.toString());
+            ep->getModel()->addOption(elemToAdd, elemToAdd.toString(),true);
             ep->selectId(elemToAdd, true,false);
           }
         }
@@ -168,7 +168,7 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
       {
         String elemToRemove = nameWindow.getTextEditorContents("paramToRemove");
         if(elemToRemove.isNotEmpty()){
-          ep->getModel()->removeOption(elemToRemove);
+          ep->getModel()->removeOption(elemToRemove,true);
         }
       }
     }

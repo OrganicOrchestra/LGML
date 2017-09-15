@@ -14,7 +14,7 @@
 
 
 #include "ContainerOutNode.h"
-#include "../UI/NodeBaseUI.h"
+
 #include "../NodeContainer/NodeContainer.h"
 
 
@@ -61,10 +61,6 @@ void ContainerOutNode::processInputDataChanged(Data * d)
 	od->updateFromSourceData(d);
 }
 
-ConnectableNodeUI * ContainerOutNode::createUI()
-{
-	return new NodeBaseUI(this);
-}
 
 void ContainerOutNode::setNumChannels(int num){
   setPreferedNumAudioInput(num);

@@ -138,7 +138,7 @@ DynamicObject * NodeBase::getObject()
   return data;
 }
 
-void NodeBase::configureFromObject(DynamicObject* data)
+void NodeBase::configureFromObject(DynamicObject * data)
 {
   ConnectableNode::configureFromObject(data);
 
@@ -150,13 +150,6 @@ void NodeBase::configureFromObject(DynamicObject* data)
   setStateInformation(m.getData(), (int)m.getSize());
 }
 
-//ui
-
-ConnectableNodeUI * NodeBase::createUI() {
-  DBG("No implementation in child node class !");
-  jassert(false);
-  return nullptr;
-}
 
 
 

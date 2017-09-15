@@ -63,7 +63,7 @@ public:
 
   virtual void setValueInternal(var & _value);
 
-  virtual bool checkValueIsTheSame(var newValue, var oldValue); //can be overriden to modify check behavior
+  virtual bool checkValueIsTheSame(const var & v1, const var& v2); //can be overriden to modify check behavior
 
 
   //helpers for fast typing

@@ -78,12 +78,12 @@
               id="W7C4WZ" name="ControllableIndexedContainer.h" resource="0"/>
         <GROUP id="lRGBzB" name="Parameter">
           <GROUP id="y1gtRH" name="UI">
+            <FILE compile="1" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp"
+                  id="YhmjKH" name="GenericParameterContainerEditor.cpp" resource="0"/>
+            <FILE compile="0" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.h"
+                  id="RztLTO" name="GenericParameterContainerEditor.h" resource="0"/>
             <FILE compile="1" file="Source/Controllable/Parameter/UI/BetterStepper.cpp"
                   id="rOIzyW" name="BetterStepper.cpp" ressource="0"/>
-            <FILE id="YhmjKH" name="GenericParameterContainerEditor.cpp" compile="1"
-                  resource="0" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp"/>
-            <FILE id="RztLTO" name="GenericParameterContainerEditor.h" compile="0"
-                  resource="0" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.h"/>
             <FILE compile="0" file="Source/Controllable/Parameter/UI/BetterStepper.h"
                   id="Meul0J" name="BetterStepper.h" ressource="0"/>
             <FILE compile="1" file="Source/Controllable/Parameter/UI/BoolToggleUI.cpp"
@@ -203,10 +203,6 @@
             <FILE compile="0" file="Source/Controller/Impl/UI/SerialUIHelper.h"
                   id="pd72aP" name="SerialUIHelper.h" ressource="0"/>
           </GROUP>
-          <FILE compile="1" file="Source/Controller/Impl/DMXController.cpp" id="xjer4Y"
-                name="DMXController.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Controller/Impl/DMXController.h" id="oX1M9p"
-                name="DMXController.h" resource="0"/>
           <FILE compile="1" file="Source/Controller/Impl/MIDIController.cpp"
                 id="tr7GNk" name="MIDIController.cpp" resource="0"/>
           <FILE compile="0" file="Source/Controller/Impl/MIDIController.h" id="xcmTdk"
@@ -231,10 +227,10 @@
                 name="SerialPort.cpp" resource="0"/>
           <FILE compile="0" file="Source/Controller/Impl/SerialPort.h" id="pzz2A9"
                 name="SerialPort.h" resource="0"/>
-          <FILE compile="1" file="Source/Controller/Impl/JavascriptController.cpp"
-                id="Iqmcmw" name="JavascriptController.cpp" ressource="0"/>
-          <FILE compile="0" file="Source/Controller/Impl/JavascriptController.h"
-                id="UUkfDJ" name="JavascriptController.h" ressource="0"/>
+          <FILE compile="1" file="Source/Controller/Impl/OSCJsController.cpp"
+                id="Iqmcmw" name="OSCJsController.cpp" ressource="0"/>
+          <FILE compile="0" file="Source/Controller/Impl/OSCJsController.h" id="UUkfDJ"
+                name="OSCJsController.h" ressource="0"/>
         </GROUP>
         <GROUP id="{DE04DF25-AF73-3CC1-41FD-CC6EE013D375}" name="UI">
           <FILE compile="1" file="Source/Controller/UI/ControllerEditor.cpp"
@@ -297,20 +293,7 @@
         <FILE compile="0" file="Source/FastMapper/FastMapUI.h" id="RNfucg"
               name="FastMapUI.h" resource="0"/>
       </GROUP>
-      <GROUP id="{5FDB91E0-726A-EA4C-CBB9-82AA65259548}" name="Inspector">
-        <FILE compile="1" file="Source/Inspector/InspectableComponent.cpp"
-              id="KPVDeO" name="InspectableComponent.cpp" resource="0"/>
-        <FILE compile="0" file="Source/Inspector/InspectableComponent.h" id="S852TC"
-              name="InspectableComponent.h" resource="0"/>
-        <FILE compile="1" file="Source/Inspector/Inspector.cpp" id="Hc6yXF"
-              name="Inspector.cpp" resource="0"/>
-        <FILE compile="0" file="Source/Inspector/Inspector.h" id="M7mRVF" name="Inspector.h"
-              resource="0"/>
-        <FILE compile="1" file="Source/Inspector/InspectorEditor.cpp" id="tSIJFc"
-              name="InspectorEditor.cpp" resource="0"/>
-        <FILE compile="0" file="Source/Inspector/InspectorEditor.h" id="nsxDkm"
-              name="InspectorEditor.h" resource="0"/>
-      </GROUP>
+      <GROUP id="{5FDB91E0-726A-EA4C-CBB9-82AA65259548}" name="Inspector"/>
       <GROUP id="{8FC7D25F-F4F2-D3C9-446C-C62E5997FA4E}" name="Legacy"/>
       <GROUP id="{5A715816-73F1-88F7-8CE2-E1EF06356B13}" name="Logger">
         <FILE compile="1" file="Source/Logger/LGMLLogger.cpp" id="qAOezd" name="LGMLLogger.cpp"
@@ -426,14 +409,10 @@
                 name="Spat2DNodeUI.cpp" resource="0"/>
           <FILE compile="0" file="Source/Node/Impl/Spat2DNodeUI.h" id="LJ5Dgk"
                 name="Spat2DNodeUI.h" resource="0"/>
-          <FILE compile="1" file="Source/Node/Impl/Spat2DViewer.cpp" id="xf2Z06"
-                name="Spat2DViewer.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Node/Impl/Spat2DViewer.h" id="zBHMQ3"
-                name="Spat2DViewer.h" resource="0"/>
-          <FILE compile="1" file="Source/Node/Impl/Spat3DViewer.cpp" id="vsyPxO"
-                name="Spat3DViewer.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Node/Impl/Spat3DViewer.h" id="B4rZSM"
-                name="Spat3DViewer.h" resource="0"/>
+          <FILE compile="1" file="Source/Node/Impl/Spat2DViewerUI.cpp" id="xf2Z06"
+                name="Spat2DViewerUI.cpp" resource="0"/>
+          <FILE compile="0" file="Source/Node/Impl/Spat2DViewerUI.h" id="zBHMQ3"
+                name="Spat2DViewerUI.h" resource="0"/>
           <FILE compile="1" file="Source/Node/Impl/VSTNode.cpp" id="Wmu1dx" name="VSTNode.cpp"
                 resource="0"/>
           <FILE compile="0" file="Source/Node/Impl/VSTNode.h" id="n6WVTf" name="VSTNode.h"
@@ -473,10 +452,6 @@
                   id="AAA85X" name="NodeContainerContentUI.cpp" resource="0"/>
             <FILE compile="0" file="Source/Node/NodeContainer/UI/NodeContainerContentUI.h"
                   id="E9BRr9" name="NodeContainerContentUI.h" resource="0"/>
-            <FILE compile="1" file="Source/Node/NodeContainer/UI/NodeContainerUI.cpp"
-                  id="WX29Ug" name="NodeContainerUI.cpp" resource="0"/>
-            <FILE compile="0" file="Source/Node/NodeContainer/UI/NodeContainerUI.h"
-                  id="WlL7wh" name="NodeContainerUI.h" resource="0"/>
             <FILE compile="1" file="Source/Node/NodeContainer/UI/NodeContainerViewer.cpp"
                   id="bNEMZT" name="NodeContainerViewer.cpp" resource="0"/>
             <FILE compile="0" file="Source/Node/NodeContainer/UI/NodeContainerViewer.h"
@@ -492,22 +467,6 @@
                 name="NodeUIFactory.cpp" resource="0"/>
           <FILE compile="0" file="Source/Node/UI/NodeUIFactory.h" id="bljAKy"
                 name="NodeUIFactory.h" resource="0"/>
-          <FILE compile="1" file="Source/Node/UI/NodeBaseAudioCtlUI.cpp" id="Fg3Dem"
-                name="NodeBaseAudioCtlUI.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Node/UI/NodeBaseAudioCtlUI.h" id="MDC7KC"
-                name="NodeBaseAudioCtlUI.h" resource="0"/>
-          <FILE compile="1" file="Source/Node/UI/NodeBaseContentUI.cpp" id="PjfBtI"
-                name="NodeBaseContentUI.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Node/UI/NodeBaseContentUI.h" id="mdFEN3"
-                name="NodeBaseContentUI.h" resource="0"/>
-          <FILE compile="1" file="Source/Node/UI/NodeBaseHeaderUI.cpp" id="nhUNlR"
-                name="NodeBaseHeaderUI.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Node/UI/NodeBaseHeaderUI.h" id="GnXnnB"
-                name="NodeBaseHeaderUI.h" resource="0"/>
-          <FILE compile="1" file="Source/Node/UI/NodeBaseUI.cpp" id="zUBUmw"
-                name="NodeBaseUI.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Node/UI/NodeBaseUI.h" id="dchm8U" name="NodeBaseUI.h"
-                resource="0"/>
           <FILE compile="1" file="Source/Node/UI/ConnectableNodeAudioCtlUI.cpp"
                 id="q5sFVf" name="ConnectableNodeAudioCtlUI.cpp" ressource="0"/>
           <FILE compile="0" file="Source/Node/UI/ConnectableNodeAudioCtlUI.h"
@@ -669,6 +628,20 @@
               ressource="0"/>
         <FILE compile="1" file="Source/UI/MainComponentCommands.cpp" id="HIroxT"
               name="MainComponentCommands.cpp" ressource="0"/>
+        <GROUP name="Inspector" id="mL7O6E">
+          <FILE compile="1" file="Source/UI/Inspector/InspectableComponent.cpp"
+                name="InspectableComponent.cpp" ressource="0" id="xs9wHI"/>
+          <FILE compile="0" file="Source/UI/Inspector/InspectableComponent.h"
+                name="InspectableComponent.h" ressource="0" id="X2sc05"/>
+          <FILE compile="1" file="Source/UI/Inspector/Inspector.cpp" name="Inspector.cpp"
+                ressource="0" id="BwchYJ"/>
+          <FILE compile="0" file="Source/UI/Inspector/Inspector.h" name="Inspector.h"
+                ressource="0" id="RRIeTV"/>
+          <FILE compile="1" file="Source/UI/Inspector/InspectorEditor.cpp" name="InspectorEditor.cpp"
+                ressource="0" id="OENydu"/>
+          <FILE compile="0" file="Source/UI/Inspector/InspectorEditor.h" name="InspectorEditor.h"
+                ressource="0" id="nQkW6Q"/>
+        </GROUP>
       </GROUP>
       <GROUP id="{8DA61DCB-02FE-2339-7E79-2A3547284A18}" name="Utils">
         <FILE compile="0" file="Source/Utils/FactoryUIHelpers.h" id="qi3kyB"

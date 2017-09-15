@@ -17,7 +17,7 @@
 #define CONNECTABLENODEUI_H_INCLUDED
 #pragma once
 
-#include "../../Inspector/InspectableComponent.h"
+#include "../../UI/Inspector/InspectableComponent.h"
 #include "../ConnectableNode.h"
 #include "ConnectorComponent.h"
 

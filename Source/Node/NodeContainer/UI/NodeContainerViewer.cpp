@@ -1,23 +1,24 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "NodeContainerViewer.h"
 #include "../../Connection/UI/NodeConnectionUI.h"
 #include "../../Connection/UI/NodeConnectionEditor.h"
-#include "../../../Inspector/Inspector.h"
+#include "../../../UI/Inspector/Inspector.h"
 #include "../../../Utils/FactoryUIHelpers.h"
+#include "../../UI/NodeUIFactory.h"
 
 NodeContainerViewer::NodeContainerViewer(NodeContainer * container) :
 InspectableComponent(container,"node"),
@@ -102,7 +103,7 @@ void NodeContainerViewer::addNodeUI(ConnectableNode * node)
 {
   if (getUIForNode(node) == nullptr)
   {
-    ConnectableNodeUI * nui = node->createUI();
+    ConnectableNodeUI * nui = NodeUIFactory::createDefaultUI(node);
     nui->setTopLeftPosition(node->nodePosition->getPoint());
     nodesUI.add(nui);
     addAndMakeVisible(nui);
@@ -353,23 +354,22 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
     if (event.mods.isRightButtonDown())
     {
 
-      int menuOffset = 1;
       Point<int> mousePos = getMouseXYRelative();
       PopupMenu   menu;//(new PopupMenu());
       static Array<String> filt  {"t_ContainerInNode" , "t_ContainerOutNode"};
-      ScopedPointer<PopupMenu> addNodeMenu(FactoryUIHelpers::getFactoryTypesMenuFilter<NodeFactory>(menuOffset,filt));
+      ScopedPointer<PopupMenu> addNodeMenu(FactoryUIHelpers::getFactoryTypesMenuFilter<NodeFactory>(filt));
       menu.addSubMenu("Add Node", *addNodeMenu);
-
       int result = menu.show();
-
-
-      if (result > 0 && result < addNodeMenu->getNumItems() + menuOffset)
-      {
-
-        ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(FactoryUIHelpers::createFromMenuIdx<NodeBase>(result-menuOffset));
-        jassert(n != nullptr);
-
-        n->nodePosition->setPoint(mousePos);
+      if(result>0){
+        if (auto c =  FactoryUIHelpers::createFromMenuIdx<NodeBase>(result))
+        {
+          ConnectableNode * n = (ConnectableNode*)nodeContainer->addNode(c);
+          jassert(n != nullptr);
+          n->nodePosition->setPoint(mousePos);
+        }
+        else{
+          jassertfalse;
+        }
       }
     }
   }
@@ -411,22 +411,24 @@ void NodeContainerViewer::mouseUp(const MouseEvent &)
 
 bool NodeContainerViewer::keyPressed(const KeyPress & key){
   if(key.getTextCharacter()=='a'){
-    int menuOffset = 1;
     Point<int> mousePos = getMouseXYRelative();
-    ScopedPointer<PopupMenu > menu= FactoryUIHelpers::getFactoryTypesMenu<NodeFactory>(menuOffset);
+    ScopedPointer<PopupMenu > menu= FactoryUIHelpers::getFactoryTypesMenu<NodeFactory>();
 
 
     int result = menu->show();
 
 
-    if (result > 0 && result < menu->getNumItems() )
+    if (result > 0 )
     {
+      if(auto c = FactoryUIHelpers::createFromMenuIdx<ConnectableNode>(result)){
 
-      auto* n = nodeContainer->addNode(FactoryUIHelpers::createFromMenuIdx<ConnectableNode>(result-menuOffset));
-      jassert(n != nullptr);
-
-
-      n->nodePosition->setPoint(mousePos);
+        auto* n = nodeContainer->addNode(c);
+        jassert(n != nullptr);
+        n->nodePosition->setPoint(mousePos);
+      }
+      else{
+        return false;
+      }
     }
 
     return true;
@@ -451,9 +453,9 @@ void NodeContainerViewer::resizeToFitNodes() {
   }
   for (auto &n : nodesUI) {
     _bounds = _bounds.getUnion(n->getBoundsInParent().withLeft(0).withTop(0));
-
+    
   }
   
   setSize(_bounds.getWidth(), _bounds.getHeight());
-
+  
 }

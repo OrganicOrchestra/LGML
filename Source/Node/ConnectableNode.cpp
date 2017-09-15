@@ -15,7 +15,6 @@
 
 #include "ConnectableNode.h"
 
-#include "UI/ConnectableNodeUI.h"
 #include "../Audio/AudioHelpers.h"
 #include "NodeContainer/NodeContainer.h"
 
@@ -134,13 +133,6 @@ bool ConnectableNode::hasDataOutputs()
 void ConnectableNode::onContainerParameterChanged(Parameter * p)
 {
   nodeListeners.call(&ConnectableNodeListener::nodeParameterChanged, this, p);
-}
-
-ConnectableNodeUI * ConnectableNode::createUI()
-{
-  DBG("No implementation in child node class !");
-  jassert(false);
-  return nullptr;
 }
 
 

@@ -35,7 +35,7 @@ public:
   float getRangeMin();
   float getRangeMax();
 
-  bool checkValueIsTheSame(var newValue, var oldValue) override;
+  bool checkValueIsTheSame(const var & v1, const var& v2) override;
 
   DECLARE_OBJ_TYPE(RangeParameter);
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RangeParameter)

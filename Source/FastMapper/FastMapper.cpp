@@ -91,6 +91,9 @@ FastMap * FastMapper::addFastMap()
 
 bool FastMapper::checkDuplicates(FastMap *f){
   bool dup = false;
+  if(f->referenceIn->get()==nullptr && f->referenceOut->get()==nullptr)
+    return false;
+  
   for(auto & ff:maps){
     if(ff==f)continue;
     if(ff->referenceIn->get() == f->referenceIn->get() &&
@@ -102,6 +105,7 @@ bool FastMapper::checkDuplicates(FastMap *f){
       dup = true;
     }
     if(dup){
+      LOG("!!! can't duplicate fastMap");
       removeFastmap(f);
       return true;
 
@@ -131,8 +135,7 @@ ParameterContainer *  FastMapper::addContainerFromObject(const String & /*name*/
 
 
 void FastMapper::selectionChanged(Controllable *c ) {
-  // getParameter is safe to call on null pointer as it's only a cast
-  setPotentialInput(c->getParameter());
+  setPotentialInput(c?c->getParameter():nullptr);
 
 };
 

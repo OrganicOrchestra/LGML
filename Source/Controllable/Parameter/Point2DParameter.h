@@ -34,7 +34,7 @@ public:
 	
 	Point<T> getPoint();
 	
-	bool checkValueIsTheSame(var newValue, var oldValue) override;
+	bool checkValueIsTheSame(const var & v1, const var& v2) override;
   T getX(){return (T)value[0];}
   T getY(){return (T)value[1];}
   DECLARE_OBJ_TYPE(Point2DParameter<T>);

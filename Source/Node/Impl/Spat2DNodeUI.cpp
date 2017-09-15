@@ -14,12 +14,12 @@
 
 
 #include "Spat2DNodeUI.h"
-#include "../UI/NodeBaseUI.h"
+#include "../UI/ConnectableNodeUI.h"
 #include "../../Controllable/Parameter/UI/StepperUI.h"
 #include "../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
-Spat2DNodeContentUI::Spat2DNodeContentUI() : NodeBaseContentUI()
+Spat2DNodeContentUI::Spat2DNodeContentUI()
 {
 }
 

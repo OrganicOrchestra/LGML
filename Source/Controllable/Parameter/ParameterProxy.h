@@ -40,6 +40,7 @@ public:
   Parameter * get();
   void tryToSetValue(var _value,bool silentSet,bool force )override;
   void setValueInternal(var & _value) override;
+  bool isMappable() override;
 
 	// Inherited via Listener
   void parameterValueChanged(Parameter * p) override;
