@@ -23,9 +23,11 @@ ParameterContainer(name),
 selectedContainerToListenTo(nullptr)
 {
 
+  nameParam->isEditable = false;
   potentialIn = addNewParameter<ParameterProxy>("potential Input","potential input for new fastMap");
   potentialOut = addNewParameter<ParameterProxy>("potential Output","potential output for new fastMap");
   autoAdd = addNewParameter<BoolParameter>("auto_add", "auto add param when In/Out potentials are set",true);
+  autoAdd->mappingDisabled = true;
   LGMLDragger::getInstance()->addSelectionListener(this);
   Inspector::getInstance()->addInspectorListener(this);
   potentialIn->isSavable = false;

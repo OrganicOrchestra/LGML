@@ -21,6 +21,7 @@ juce_ImplementSingleton(ControllerManager);
 ControllerManager::ControllerManager() :
 ParameterContainer("Controllers")
 {
+  nameParam->isEditable = false;
   setCustomShortName("control");
 }
 

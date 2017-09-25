@@ -95,7 +95,7 @@ void Outliner::buildTree(OutlinerItem * parentItem, ParameterContainer * parentC
 
   for (auto &c : childControllables)
   {
-    if(c==parentContainer->nameParam || c->hideInEditor) continue;
+    if(c==parentContainer->nameParam || c->isHidenInEditor) continue;
     if(!shouldFilterByName || c->niceName.toLowerCase().contains(nameFilter)){
       OutlinerItem * cItem = new OutlinerItem(c);
       parentItem->addSubItem(cItem);

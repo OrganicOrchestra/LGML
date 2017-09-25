@@ -22,7 +22,7 @@ REGISTER_PARAM_TYPE(RangeParameter);
 RangeParameter::RangeParameter(const String & niceName, const String & description,float _min,float _max,float init_min,float init_max, bool enabled) :
 MinMaxParameter( niceName, description,0,0,1,enabled)
 {
-//  hideInEditor = true;
+//  isHidenInEditor = true;
   value .append(0);
   value .append(1);
   defaultValue=var();

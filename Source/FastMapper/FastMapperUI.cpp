@@ -23,6 +23,7 @@ fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
   fastMapper->addControllableContainerListener(this);
 
   linkToSelection.setButtonText("Show from selected");
+  linkToSelection.setTooltip("filter viewed fastmap to currently selected element (Node / Controller ...)");
   linkToSelection.setClickingTogglesState(true);
   linkToSelection.addListener(this);
   addAndMakeVisible(linkToSelection);

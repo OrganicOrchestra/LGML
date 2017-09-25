@@ -155,6 +155,7 @@ timeMasterCandidate(nullptr),
 samplePerBeatGranularity(8),
 audioClock(0)
 {
+  nameParam->isEditable = false;
 
   BPM = addNewParameter<FloatParameter>("bpm","current BPM",120.f,(float)BPMRange.getStart(), (float)BPMRange.getEnd());
   BPM->isCommitableParameter = true;

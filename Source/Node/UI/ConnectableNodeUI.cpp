@@ -68,7 +68,7 @@ isDraggingFromUI(false)
 
 	 addAndMakeVisible(&resizer);
 
-	 //connectableNode->miniMode->hideInEditor = true;
+	 //connectableNode->miniMode->isHidenInEditor = true;
 
 	 setMiniMode(connectableNode->miniMode->boolValue());
 

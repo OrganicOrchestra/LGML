@@ -40,7 +40,7 @@ public juce::AudioProcessor
 
 public:
   NodeBase(const String &name = "[NodeBase]", bool _hasMainAudioControl = true);
-  virtual ~NodeBase();
+  void remove();
 
 
   virtual bool hasAudioInputs() override;
@@ -166,7 +166,8 @@ public:
   virtual void processOutputDataUpdated(Data *) {} // to be overriden by child classes
 
 protected:
-
+  // A node need to be removed with it's remove function
+  virtual ~NodeBase();
   void setParentNodeContainer(NodeContainer * _parentNodeContainer)override;
   
 private:
@@ -229,23 +230,20 @@ private:
 };
 
 
-template<> struct ContainerDeletePolicy<NodeBase>{
-  static void destroy (NodeBase* object)
-  {
-    ignoreUnused (sizeof (NodeBase));
 
-    if(object->audioNode.get()){
-      object->removeFromAudioGraph();
-      jassert(object->audioNode.get()->getReferenceCount()==1);
-      // audioNode is owning the pointer so triggers it's deletion instead
-      object->audioNode = nullptr;
-    }
-    else{
-      delete object;
-    }
-  }
+namespace juce{
+  template<>
+  struct ContainerDeletePolicy<NodeBase>{
+    static void destroy (NodeBase* object)
+    {
+      ignoreUnused (sizeof (NodeBase));
 
-};
+      object->remove();
+    }
+
+  };
+}
+
 
 
 #endif  // NODEBASE_H_INCLUDED

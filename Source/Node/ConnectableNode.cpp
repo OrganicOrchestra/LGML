@@ -48,8 +48,8 @@ outputVolume(nullptr)
   nodePosition->isPresettable = false;
   nodeSize->isPresettable = false;
 
-  nodePosition->hideInEditor = true;
-	 nodeSize->hideInEditor = true;
+  nodePosition->isHidenInEditor = true;
+	 nodeSize->isHidenInEditor = true;
 
   descriptionParam->isPresettable = false;
   enabledParam->isPresettable = false;

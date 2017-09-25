@@ -42,6 +42,7 @@ Engine::Engine():FileBasedDocument (filenameSuffix,
 	ParameterContainer("root"),
 threadPool(4)
 {
+  nameParam->isEditable = false;
   ParameterFactory::logAllTypes();
 	skipControllableNameInAddress = true;
   loadingStartTime = 0;

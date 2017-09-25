@@ -35,9 +35,9 @@ currentPreset(nullptr)
 
 
   currentPresetName = addNewParameter<StringParameter>(presetIdentifier.toString(), "Current Preset", "");
-  currentPresetName->hideInEditor = true;
+  currentPresetName->isHidenInEditor = true;
   savePresetTrigger = addNewParameter<Trigger>("Save Preset", "Save current preset");
-  savePresetTrigger->hideInEditor = true;
+  savePresetTrigger->isHidenInEditor = true;
 
 
   // init once all are created to avoid uninitialized values

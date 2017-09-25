@@ -26,6 +26,7 @@ NodeManager::NodeManager(StringRef name) :
   ThreadPool(4),
     ParameterContainer("Nodes")
 {
+  nameParam->isEditable = false;
   isLoading = false;
     setCustomShortName("node");
 
@@ -35,6 +36,7 @@ NodeManager::NodeManager(StringRef name) :
 	mainContainer->enabledParam->isControllableExposed = false;
 	mainContainer->miniMode->isControllableExposed = false;
 	mainContainer->nameParam->isControllableExposed = false;
+  mainContainer->nameParam->isEditable = false;
 }
 
 NodeManager::~NodeManager()

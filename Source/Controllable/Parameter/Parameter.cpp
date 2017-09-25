@@ -31,7 +31,8 @@ isCommitableParameter(false),
 isSettingValue(false),
 isLocking(true),
 defaultValue(initialValue),
-value(initialValue)
+value(initialValue),
+mappingDisabled(false)
 {
 
 
@@ -189,7 +190,7 @@ void Parameter::handleAsyncUpdate(){
 };
 
 bool Parameter::isMappable(){
-  return isEditable ;
+  return isEditable && !mappingDisabled ;
 }
 
 void Parameter::setStateFromVar(const var & v){

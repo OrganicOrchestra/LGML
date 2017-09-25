@@ -37,7 +37,7 @@ MinMaxParameter( niceName, description,Array<var>{x,y},minPoint,maxPoint,enabled
     maximumValue = var::undefined();
     jassertfalse;
   }
-  hideInEditor = true;
+  isHidenInEditor = true;
   setPoint(x, y);
 }
 

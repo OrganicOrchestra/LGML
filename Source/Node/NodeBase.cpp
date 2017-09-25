@@ -648,3 +648,19 @@ void NodeBase::dataChanged(Data * d)
   }
 }
 
+void NodeBase::remove(){
+  if(audioNode.get()){
+    removeFromAudioGraph();
+    jassert(audioNode.get()->getReferenceCount()==1);
+    // audioNode is owning the pointer so triggers it's deletion instead
+    audioNode = nullptr;
+  }
+  else{
+    jassertfalse;
+    delete this;
+  }
+}
+
+
+
+

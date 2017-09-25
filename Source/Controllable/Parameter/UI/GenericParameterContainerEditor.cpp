@@ -192,7 +192,7 @@ void CCInnerContainerUI::rebuild(){
 
   for (auto &c : container->getControllablesOfType<Parameter>(false))
   {
-    if(!c->hideInEditor) addParameterUI(c);
+    if(!c->isHidenInEditor) addParameterUI(c);
   }
 
   if (level < maxLevel)
@@ -435,7 +435,7 @@ void CCInnerContainerUI::clear()
 void CCInnerContainerUI::controllableAdded(ControllableContainer *,Controllable * c)
 {
 	if (c->parentContainer != container) return;
-	if (c->hideInEditor) return;
+	if (c->isHidenInEditor) return;
   auto pc = dynamic_cast<Parameter*>(c);
 	addParameterUI(pc);
 }

@@ -42,7 +42,7 @@ public:
   bool enabled;
   bool hasCustomShortName;
   bool isControllableExposed;
-  bool hideInEditor;
+  bool isHidenInEditor;
   bool shouldSaveObject;
   bool isUserDefined;
   bool isSavable;

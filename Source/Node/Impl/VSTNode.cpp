@@ -46,12 +46,14 @@ NodeBase(name),
 blockFeedback(false)
 {
   identifierString = addNewParameter<StringParameter>("VST Identifier","string that identify a VST","");
+  identifierString->isEditable = false;
+  identifierString->isHidenInEditor = true;
   addChildControllableContainer(&pluginWindowParameter);
 
   midiActivityTrigger =  addNewParameter<Trigger>("Midi Activity", "Midi Activity indicator");
   midiActivityTrigger->isControllableExposed = false;
   midiPortNameParam = addNewParameter<StringParameter>("midiPortName", "MIDI Port Name", "");
-  midiPortNameParam->hideInEditor = true;
+  midiPortNameParam->isHidenInEditor = true;
 
   processWhenBypassed = addNewParameter<BoolParameter>("processWhenBypassed", "some effects (Reverbs ...) need to process constantly even when bypassed", false);
   bProcessWhenBypassed = processWhenBypassed->boolValue();
