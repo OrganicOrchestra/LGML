@@ -120,7 +120,7 @@ void GenericParameterContainerEditor::childStructureChanged(ControllableContaine
   if(!MessageManager::getInstance()->isThisTheMessageThread()){
 //    removeChildComponent(innerContainer);
 //    if(innerContainer){innerContainer->clear();removeChildComponent(innerContainer);innerContainer = nullptr;}
-  postCommandMessage(CHILD_STRUCTURE_CHANGED);}
+    postCommandMessage(CHILD_STRUCTURE_CHANGED);}
   else{
     handleCommandMessage(CHILD_STRUCTURE_CHANGED);
   }

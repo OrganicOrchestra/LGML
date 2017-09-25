@@ -15,6 +15,7 @@
 
 #include "LooperNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
+#include "../../Controllable/ControllableHelpers.h"
 
 
 
@@ -125,7 +126,7 @@ void LooperNodeContentUI::reLayoutTracks(){
 
 void LooperNodeContentUI::trackNumChanged(int num) {
 
-  std::function<void()> func = [this,num](){
+ execOrDefer([=](){
   if(num < tracksUI.size()){
     tracksUI.removeRange(num, tracksUI.size() - num);
   }
@@ -139,10 +140,9 @@ void LooperNodeContentUI::trackNumChanged(int num) {
       }
     }
     resized();
-  };
-  auto * mm =MessageManager::getInstance();
-  if(mm->isThisTheMessageThread()){func();}
-  else{ mm->callAsync(func);}
+  }
+             );
+
 };
 
 

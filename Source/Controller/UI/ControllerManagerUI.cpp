@@ -20,6 +20,7 @@
 #include "../../UI/Inspector/Inspector.h"
 #include "../../UI/ShapeShifter/ShapeShifterManager.h"
 #include "../../Utils/FactoryUIHelpers.h"
+#include "../../Controllable/ControllableHelpers.h"
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI(ControllerManager * manager):
@@ -52,22 +53,13 @@ void ControllerManagerUI::clear()
 
 void ControllerManagerUI::controllerAdded(Controller * c)
 {
-  if(MessageManager::getInstance()->isThisTheMessageThread()){
-    addControllerUI(c);
-  }
-  else{
-    MessageManager::getInstance()->callAsync([this,c](){ addControllerUI(c);});
-  }
+  execOrDefer([=](){ addControllerUI(c);});
+
 }
 
 void ControllerManagerUI::controllerRemoved(Controller * c)
 {
-  if(MessageManager::getInstance()->isThisTheMessageThread()){
-    removeControllerUI(c);
-  }
-  else{
-    MessageManager::getInstance()->callAsync([this,c](){ removeControllerUI(c);});
-  }
+  execOrDefer([=](){ removeControllerUI(c);});
 
 }
 

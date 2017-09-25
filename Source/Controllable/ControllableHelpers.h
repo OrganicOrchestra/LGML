@@ -67,4 +67,18 @@ public :
 	virtual void buttonClicked(Button * b) override;
 };
 
+
+template<class FunctionType>
+bool execOrDefer(FunctionType func){
+  if(MessageManager::getInstance()->isThisTheMessageThread())
+  {
+    func();
+    return true;
+  }
+  else{
+    MessageManager::callAsync(func);
+    return false;
+  }
+}
+
 #endif  // CONTROLLABLEHELPERS_H_INCLUDED
