@@ -52,6 +52,7 @@ public:
 	virtual void comboBoxChanged(ComboBox *) override;
 	
 private:
+  int lastId ;
 	HashMap<int, String> idKeyMap;
 	HashMap<String,int> keyIdMap;
 

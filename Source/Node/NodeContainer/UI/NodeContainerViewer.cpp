@@ -420,7 +420,7 @@ bool NodeContainerViewer::keyPressed(const KeyPress & key){
 
     if (result > 0 )
     {
-      if(auto c = FactoryUIHelpers::createFromMenuIdx<ConnectableNode>(result)){
+      if(auto c = FactoryUIHelpers::createFromMenuIdx<NodeBase>(result)){
 
         auto* n = nodeContainer->addNode(c);
         jassert(n != nullptr);

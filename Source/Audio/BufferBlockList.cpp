@@ -26,16 +26,16 @@ BufferBlockList::BufferBlockList(int _numChannels,int  _minNumSample ,int _block
 void BufferBlockList::allocateSamples(int numChannels,int numSamples){
   jassert(numChannels>0);
 //  jassert(numSamples>0);
-  if(size()>0 && getReference(0).getNumChannels()!=numChannels){
+  if(getAllocatedNumChannels()!=numChannels){
     for(int i = 0 ; i < size() ; i++){
-      getReference(i).setSize(numChannels, bufferBlockSize);
+      OwnedArray::getUnchecked(i)->setSize(numChannels, bufferBlockSize);
     }
   }
   int i = size() * bufferBlockSize;
 
   numSamples = jmax(numSamples,minNumSample);
   while (i <= numSamples){
-    add(AudioSampleBuffer(numChannels,bufferBlockSize));
+    add(new AudioSampleBuffer(numChannels,bufferBlockSize));
     i+=bufferBlockSize;
   }
 
@@ -45,13 +45,11 @@ void BufferBlockList::allocateSamples(int numChannels,int numSamples){
 
   }
 
-
-
 }
 
 void BufferBlockList::setNumChannels(int numChannels){
-  for(int i = 0 ; i < size() ; i++){
-    getReference(i).setSize(numChannels, bufferBlockSize);
+  for(auto c : *this){
+    c->setSize(numChannels, bufferBlockSize);
   }
 }
 void BufferBlockList::setNumSample(int numSamples){
@@ -65,7 +63,7 @@ int BufferBlockList::getAllocatedNumSample()const {
   return size()*bufferBlockSize;
 }
 int BufferBlockList::getAllocatedNumChannels()const{
-  return size()>0?getReference(0).getNumChannels():0;
+  return size()>0?OwnedArray::getFirst()->getNumChannels():0;
 }
 void BufferBlockList::copyTo(AudioSampleBuffer & outBuf,int listStartSample,int bufStartSample,int numSampleToCopy){
   if(numSampleToCopy==-1) numSampleToCopy = outBuf.getNumSamples();
@@ -88,7 +86,8 @@ void BufferBlockList::copyTo(AudioSampleBuffer & outBuf,int listStartSample,int 
     jassert(readPosInBlock + blockSize<=bufferBlockSize);
     jassert(readBlockIdx < size());
     for (int i = 0 ; i < numChannels ; i++){
-      outBuf.copyFrom( i, writePos, getReference(readBlockIdx),i, readPosInBlock, blockSize);
+      const auto ref = OwnedArray::getUnchecked(readBlockIdx);
+      outBuf.copyFrom( i, writePos, *ref,i, readPosInBlock, blockSize);
     }
     readPosInList+=blockSize;
     writePos+=blockSize;
@@ -126,7 +125,8 @@ void BufferBlockList::copyFrom(const AudioSampleBuffer & inBuf,int listStartSamp
     jassert(startWrite + blockSize<=bufferBlockSize);
     jassert(writeBlockIdx < size());
     for (int i = 0 ; i < numChannels ; i++){
-      getReference(writeBlockIdx).copyFrom(i, startWrite, inBuf, i, readPos, blockSize);
+      auto * ref =  OwnedArray::getUnchecked(writeBlockIdx);
+      ref->copyFrom(i, startWrite, inBuf, i, readPos, blockSize);
 
     }
     readPos+=blockSize;
@@ -142,7 +142,7 @@ float BufferBlockList::getSample(int c, int n){
   int readI = n%bufferBlockSize ;
   int readBI=(int)floor(n*1.0/bufferBlockSize);
   jassert(readBI<size());
-  return getReference(readBI).getSample(c,readI);
+  return  OwnedArray::getUnchecked(readBI)->getSample(c,readI);
 }
 
 

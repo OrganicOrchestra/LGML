@@ -19,7 +19,8 @@
 
 EnumParameterUI::EnumParameterUI(Parameter * parameter) :
 ParameterUI(parameter),
-ep((EnumParameter *)parameter)
+ep((EnumParameter *)parameter),
+lastId(NoneId)
 {
   cb.addListener(this);
   cb.setTextWhenNoChoicesAvailable("No choices for" + ep->niceName);
@@ -111,8 +112,9 @@ void EnumParameterUI::valueChanged(const var & value)
   }
 }
 
-void EnumParameterUI::comboBoxChanged(ComboBox *)
+void EnumParameterUI::comboBoxChanged(ComboBox * c)
 {
+  jassert(c==&cb);
   int id = cb.getSelectedId();
   if (id <=0){
     if(id==0 ){
@@ -128,10 +130,14 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
     }
     else if(id==addElementId ){
       if(auto addFunction = ep->getModel()->addFunction){
+
         auto res = addFunction(ep);
         if(std::get<0>(res)){
           ep->addOption(std::get<1>(res),std::get<2>(res));
           ep->selectId(std::get<1>(res), true,false);
+        }
+        else{
+          cb.setSelectedId(lastId,dontSendNotification);
         }
       }
       else{
@@ -141,7 +147,7 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
         nameWindow.addButton("Cancel", 0, KeyPress(KeyPress::escapeKey));
 
         int result = nameWindow.runModalLoop();
-
+        bool changedFromUI = false;
         if (result)
         {
           String res = nameWindow.getTextEditorContents("paramToAdd");
@@ -149,7 +155,12 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
             Identifier elemToAdd = res;
             ep->getModel()->addOption(elemToAdd, elemToAdd.toString(),true);
             ep->selectId(elemToAdd, true,false);
+            changedFromUI = true;
           }
+        }
+
+        if(!changedFromUI){
+          cb.setSelectedId(lastId,dontSendNotification);
         }
 
 
@@ -163,13 +174,17 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
       nameWindow.addButton("Cancel", 0, KeyPress(KeyPress::escapeKey));
 
       int result = nameWindow.runModalLoop();
-
+      bool changedFromUI = false;
       if (result)
       {
         String elemToRemove = nameWindow.getTextEditorContents("paramToRemove");
         if(elemToRemove.isNotEmpty()){
           ep->getModel()->removeOption(elemToRemove,true);
+          changedFromUI = true;
         }
+      }
+      if(!changedFromUI){
+        cb.setSelectedId(lastId,dontSendNotification);
       }
     }
     else if( id==NoneId){
@@ -185,11 +200,16 @@ void EnumParameterUI::comboBoxChanged(ComboBox *)
 
 void EnumParameterUI::selectString(const juce::String & s){
   if(keyIdMap.contains(s)){
-    cb.setSelectedId(keyIdMap[s], dontSendNotification);
+    lastId = keyIdMap[s];
+    cb.setSelectedId(lastId, dontSendNotification);
     cb.setTextWhenNothingSelected(ep->niceName);
   }
   else if(s!=""){
+    // not valid
     cb.setTextWhenNothingSelected("["+s+"]");
+  }
+  else{
+    lastId = NoneId;
   }
 }
 

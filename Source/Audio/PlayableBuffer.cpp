@@ -445,11 +445,11 @@ void PlayableBuffer::setSampleRate(float sR){sampleRate = sR;};
 void PlayableBuffer::fadeInOut(){
   int fadeIn =multiNeedle.fadeInNumSamples;
   int fadeOut = multiNeedle.fadeOutNumSamples;
-  auto startBlock = &bufferBlockList.getReference(0);
+  auto startBlock = bufferBlockList.getUnchecked(0);
   startBlock->applyGainRamp( 0, fadeIn, 0.0f, 1.f);
 
   int lIdx =floor(bufferBlockList.getNumSamples()/bufferBlockList.bufferBlockSize);
-  auto endBlock =&bufferBlockList.getReference(lIdx);
+  auto endBlock =bufferBlockList.getUnchecked(lIdx);
   int endPoint = bufferBlockList.getNumSamples() - (lIdx*bufferBlockList.bufferBlockSize);
   jassert(endPoint>0);
   if(endPoint<fadeOut){
@@ -457,7 +457,7 @@ void PlayableBuffer::fadeInOut(){
     int firstPart =(fadeOut-endPoint);
 
     if(lIdx>0){
-      auto eendBlock = &bufferBlockList.getReference(lIdx-1);
+      auto eendBlock = bufferBlockList.getUnchecked(lIdx-1);
       eendBlock->applyGainRamp(bufferBlockList.bufferBlockSize-firstPart, firstPart, 1.0f, ratio);
       endBlock->applyGainRamp(0 , endPoint, ratio, 0.0f);
     }
