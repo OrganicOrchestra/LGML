@@ -35,10 +35,7 @@ AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProcessor::IODeviceType::
 
 ContainerInNode::~ContainerInNode()
 {
-	if (parentNodeContainer != nullptr)
-	{
-		removeRMSListener(parentNodeContainer);
-	}
+	
 }
 
 void ContainerInNode::processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages) {

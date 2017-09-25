@@ -127,7 +127,7 @@ public:
   static const Identifier valueIdentifier;
   
 
-  Parameter* getParameter() override{return this;}
+  static Parameter* fromControllable(Controllable *c) {return static_cast<Parameter*>(c);}
 
   template<typename T> T* getAs(){return dynamic_cast<T*>(this);}
 

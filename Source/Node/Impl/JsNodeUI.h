@@ -34,7 +34,7 @@ public:
     void newJsFileLoaded(bool )override;
     ScopedPointer<JsEnvironmentUI> jsUI;
 
-    OwnedArray<ControllableUI> varUI;
+    OwnedArray<ParameterUI> varUI;
     void layoutUI();
 
     void controllableAdded(ControllableContainer *,Controllable *) override;

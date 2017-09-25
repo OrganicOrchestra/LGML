@@ -16,6 +16,8 @@
 #include "SerialControllerEditor.h"
 #include "../../../Controllable/Parameter/UI/SliderUI.h"
 #include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
+#include "../../../UI/Style.h"
+
 //#include "SerialControllerUI.h"//keep
 
 SerialControllerEditor::SerialControllerEditor(SerialController * cont) :

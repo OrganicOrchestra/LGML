@@ -17,7 +17,7 @@
 #define MULTINEEDLE_H_INCLUDED
 
 #include "AudioConfig.h"
-#include "JuceHeader.h"
+#include "../JuceHeaderAudio.h"
 #include "BufferBlockList.h"
 
 

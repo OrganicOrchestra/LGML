@@ -96,11 +96,21 @@ public:
     Array<WeakReference<T> > res;
     ScopedLock lk(controllableContainers.getLock());
     for(auto & c:controllableContainers){
-      if(WeakReference<T> o = dynamic_cast<T*>(c.get())){ res.add(o);}
+      if(c.get()){
+        if(WeakReference<T> o = dynamic_cast<T*>(c.get())){ res.add(o);}
+      }
+      else{
+        jassertfalse;
+      }
     }
       if(recursive){
         for(auto & c:controllableContainers){
-          res.addArray(c->getContainersOfType<T>(true));
+          if(c.get()){
+            res.addArray(c->getContainersOfType<T>(true));
+          }
+          else{
+            jassertfalse;
+          }
         }
       }
 

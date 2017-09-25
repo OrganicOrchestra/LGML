@@ -59,16 +59,16 @@ Result OSCDirectController::processMessageInternal(const OSCMessage & msg)
   if (controller == "node" || controller=="time" || controller=="control")
   {
     addrArray.remove(0);
-    Controllable * c = nullptr;
-    if(controller=="node")c=NodeManager::getInstance()->getControllableForAddress(addrArray);
-    else if (controller=="time")c=TimeManager::getInstance()->getControllableForAddress(addrArray);
-    else if (controller=="control")c=ControllerManager::getInstance()->getControllableForAddress(addrArray);
+    Controllable * cont = nullptr;
+    if(controller=="node")cont=NodeManager::getInstance()->getControllableForAddress(addrArray);
+    else if (controller=="time")cont=TimeManager::getInstance()->getControllableForAddress(addrArray);
+    else if (controller=="control")cont=ControllerManager::getInstance()->getControllableForAddress(addrArray);
 
-    if (c != nullptr)
+    if (auto c = Parameter::fromControllable(cont))
     {
-      if (c->isControllableExposed && c->getParameter()->isEditable)
+      if (c->isControllableExposed && c->isEditable)
       {
-        if(!setParameterFromMessage(c->getParameter(),msg)){
+        if(!setParameterFromMessage(c,msg)){
           result = Result::fail("Controllable type not handled");
         }
       }
@@ -123,57 +123,26 @@ void OSCDirectController::onContainerParameterChanged(Parameter * p) {
 };
 
 void OSCDirectController::sendOSCForAddress(Controllable* c,const String & cAddress){
-#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES
-  auto  targetType = c->getParameter()->getTypeId();
-  if (targetType == ParameterProxy::_objType) targetType = ((ParameterProxy *)c)->linkedParam->getTypeId();
 
 
-  if(targetType ==Trigger::_objType){sendOSC(cAddress);}
-  else if(targetType ==BoolParameter::_objType){sendOSC(cAddress,((Parameter *)c)->intValue());}
-  else if(targetType ==FloatParameter::_objType){sendOSC(cAddress, ((Parameter *)c)->floatValue());}
-  else if(targetType ==IntParameter::_objType){sendOSC(cAddress, ((Parameter *)c)->intValue());}
-  else if(targetType ==StringParameter::_objType){sendOSC(cAddress, ((Parameter *)c)->stringValue());}
-  else if(targetType ==EnumParameter::_objType){sendOSC(cAddress, ((Parameter *)c)->stringValue());}
-  else{
+  if(Parameter * p = Parameter::fromControllable(c)){
+    auto  targetType = p->getTypeId();
+    if (targetType == ParameterProxy::_objType) targetType = ((ParameterProxy *)c)->linkedParam->getTypeId();
+    if(targetType ==Trigger::_objType){sendOSC(cAddress);}
+    else if(targetType ==BoolParameter::_objType){sendOSC(cAddress,p->intValue());}
+    else if(targetType ==FloatParameter::_objType){sendOSC(cAddress, p->floatValue());}
+    else if(targetType ==IntParameter::_objType){sendOSC(cAddress, p->intValue());}
+    else if(targetType ==StringParameter::_objType){sendOSC(cAddress, p->stringValue());}
+    else if(targetType ==EnumParameter::_objType){sendOSC(cAddress, p->stringValue());}
+    else{
       DBG("Type not supported " << targetType.toString());
       jassertfalse;
+    }
+
   }
-
-
-#else
-
-  OSCMessage msg(cAddress);
-  switch (c->type)
-  {
-    case Controllable::Type::TRIGGER:
-      msg.addInt32(1);
-      break;
-
-    case Controllable::Type::BOOL:
-      msg.addInt32(((Parameter *)c)->intValue());
-      break;
-
-    case Controllable::Type::FLOAT:
-      msg.addFloat32(((Parameter *)c)->floatValue());
-      break;
-
-    case Controllable::Type::INT:
-      msg.addInt32(((Parameter *)c)->intValue());
-      break;
-
-    case Controllable::Type::STRING:
-      msg.addString(((Parameter *)c)->stringValue());
-      break;
-
-    default:
-      DBG("OSC : unknown Controllable");
-      jassertfalse;
-      break;
+  else{
+    jassertfalse;
   }
-
-  sendOSC(msg);
-
-#endif
 }
 void OSCDirectController::controllableFeedbackUpdate(ControllableContainer * /*originContainer*/,Controllable * c)
 {

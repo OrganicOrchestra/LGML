@@ -17,7 +17,7 @@
 #define ConnectableNodeCONTENTUI_H_INCLUDED
 #pragma once
 
-#include "JuceHeader.h"//keep
+#include "../../JuceHeaderUI.h"//keep
 #include "../../UI/Style.h"
 class ConnectableNodeUI;
 class ConnectableNode;

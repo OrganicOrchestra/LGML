@@ -17,6 +17,7 @@
 #include "ShapeShifterFactory.h"
 #include "../../Utils/DebugHelpers.h"
 
+
 juce_ImplementSingleton(ShapeShifterManager);
 
 

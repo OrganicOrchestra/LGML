@@ -17,6 +17,7 @@
 #define PRESETCHOOSER_H_INCLUDED
 
 #include "../Controllable/Parameter/ParameterContainer.h"
+#include "../JuceHeaderUI.h"
 
 class PresetChooserUI : public ComboBox,
 public ComboBox::Listener,
@@ -33,6 +34,9 @@ public:
 	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
 
 	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
+
+
+  static void fillWithPresets(ComboBox * cb, const String & filter, bool showSaveCurrent = true) ;
 
 };
 

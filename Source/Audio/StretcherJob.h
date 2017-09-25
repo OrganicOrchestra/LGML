@@ -20,7 +20,7 @@
 #pragma error shouldnt be included if buffer can not stretch
 #endif
 
-#include "JuceHeader.h"
+#include "../JuceHeaderAudio.h"
 
 ////////////////
 // stretcher

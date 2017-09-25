@@ -22,7 +22,7 @@
 class ConnectableNode;
 class ConnectableNodeUI;
 
-#include "JuceHeader.h"//keep
+#include "../../JuceHeaderUI.h"//keep
 
 template<typename T> class SliderUI;
 class ConnectableNodeAudioCtlUI:public juce::Component{

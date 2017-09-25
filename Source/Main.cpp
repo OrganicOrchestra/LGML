@@ -18,6 +18,7 @@
 
 
 #include "Engine.h"
+#include "JuceHeader.h" // for project info
 
 #include "Utils/CommandLineElements.hpp"
 //#define ENGINE_SERVER_ONLY

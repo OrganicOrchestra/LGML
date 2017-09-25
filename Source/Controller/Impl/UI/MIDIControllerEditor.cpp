@@ -36,7 +36,7 @@ MIDIControllerEditor::MIDIControllerEditor(MIDIController * _controller) :
   incomingToogle = ParameterUIFactory::createDefaultUI(midiController->logIncoming);
     addAndMakeVisible(incomingToogle);
 
-	channelStepper = new NamedControllableUI(new IntStepperUI(midiController->channelFilter),50);
+	channelStepper = new NamedParameterUI(new IntStepperUI(midiController->channelFilter),50);
 	addAndMakeVisible(channelStepper);
 
 	midiController->addMIDIListenerListener(this);

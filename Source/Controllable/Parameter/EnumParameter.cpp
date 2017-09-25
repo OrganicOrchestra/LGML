@@ -16,6 +16,8 @@
 #include "EnumParameter.h"
 
 #include "ParameterFactory.h"
+#include <juce_gui_basics/juce_gui_basics.h>
+
 REGISTER_PARAM_TYPE(EnumParameter)
 
 Identifier EnumParameter::modelIdentifier("model");
@@ -24,8 +26,8 @@ Identifier EnumParameter::selectedSetIdentifier("selected");
 ///////////////////
 // EnumParameter
 
-EnumParameter::EnumParameter(const String & niceName, const String &description, EnumParameterModel * modelInstance,bool _userCanEnterText, bool enabled) :
-Parameter( niceName, description,var::undefined(), enabled),
+EnumParameter::EnumParameter(const String & niceName, const String &description,EnumParameterModel * modelInstance,const var & defaultValue,bool _userCanEnterText, bool enabled) :
+Parameter( niceName, description,defaultValue, enabled),
 asyncNotifier(1000),
 userCanEnterText(_userCanEnterText)
 {
@@ -231,7 +233,7 @@ bool EnumParameter::checkValueIsTheSame(const var & v1,const var & v2){
 //    }
 
 
-  return hasChanged;
+  return !hasChanged;
 
 }
 

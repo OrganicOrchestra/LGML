@@ -49,6 +49,7 @@ public:
     isActive = true;
     setOpaque(true);
   }
+  
 
   ~VuMeter(){
 
@@ -90,22 +91,19 @@ public:
     }
   }
 
-  void RMSChanged(ConnectableNode *, float rmsIn,float rmsOut) override {
-
+  void RMSChanged( float rmsIn,float rmsOut) override {
     if (targetChannel > -1) return;
-
     float rms = (type == Type::IN) ? rmsIn : rmsOut;
-
     updateValue(rms);
   };
 
-  void channelRMSInChanged(ConnectableNode *, float rmsIn, int channel) override
+  void channelRMSInChanged(ConnectableNode *, float rms, int channel) override
   {
-    if (targetChannel == channel && type == Type::IN) updateValue(rmsIn);
+    if (targetChannel == channel && type == Type::IN) updateValue(rms);
   }
-  void channelRMSOutChanged(ConnectableNode *, float rmsOut, int channel) override
+  void channelRMSOutChanged(ConnectableNode *, float rms, int channel) override
   {
-    if (targetChannel == channel && type == Type::OUT) updateValue(rmsOut);
+    if (targetChannel == channel && type == Type::OUT) updateValue(rms);
   }
 
   void setVoldB(float value)

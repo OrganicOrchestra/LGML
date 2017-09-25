@@ -155,8 +155,8 @@ void NodeContainerViewer::addConnectionUI(NodeConnection * connection)
 
   ConnectableNode * sourceNode = (ConnectableNode*)connection->sourceNode;
   ConnectableNode * destNode = (ConnectableNode*)connection->destNode;
-  if (auto s = dynamic_cast<ContainerOutNode*>(sourceNode)) sourceNode = s->parentNodeContainer;
-  if (auto s = dynamic_cast<ContainerInNode*>(destNode)) destNode = s->parentNodeContainer;
+  if (auto s = dynamic_cast<ContainerOutNode*>(sourceNode)) sourceNode = s->getParentNodeContainer();
+  if (auto s = dynamic_cast<ContainerInNode*>(destNode)) destNode = s->getParentNodeContainer();
 
   ConnectableNodeUI * n1 = getUIForNode(sourceNode);
   ConnectableNodeUI * n2 = getUIForNode(destNode);

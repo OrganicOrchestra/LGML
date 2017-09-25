@@ -16,10 +16,10 @@
 #ifndef PROGRESSWINDOW_H_INCLUDED
 #define PROGRESSWINDOW_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "../JuceHeaderUI.h"
 #include "../Controllable/Parameter/NumericParameter.h"
 #include "../Controllable/Parameter/UI/SliderUI.h"
-#include "../Engine.h"
+#include "../Utils/ProgressNotifier.h"
 class ProgressWindow : public juce::Component,public ProgressNotifier::ProgressListener
 {
 public:

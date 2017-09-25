@@ -16,18 +16,9 @@
 #ifndef PRESETMANAGER_H_INCLUDED
 #define PRESETMANAGER_H_INCLUDED
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderCore.h"//keep
 class ParameterContainer;
 
-
-// if adding option take care to change static function get num options
-enum PresetChoice
-{
-	SaveCurrent = -3,
-	SaveToNew = -2,
-	ResetToDefault = -1,
-	deleteStartId = 1000
-};
 
 
 class PresetManager
@@ -74,7 +65,7 @@ public:
 
 	Preset * addPresetFromControllableContainer(const String &name, const String & filter, ParameterContainer * container, bool recursive = false, bool includeNotExposed = false);
 	Preset * getPreset(String filter, const String &name) const;
-	void fillWithPresets(ComboBox * cb, const String & filter, bool showSaveCurrent = true) const;
+	
 	void removePresetForIdx(int idx);
 	int getNumPresetForFilter(const String &) const;
 

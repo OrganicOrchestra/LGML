@@ -11,6 +11,14 @@
 #include "ParameterContainer.h"
 #include "../Parameter/ParameterFactory.h"
 
+//#include "../Parameter/NumericParameter.h"
+//#include "../Parameter/BoolParameter.h"
+//#include "../Parameter/StringParameter.h"
+//#include "../Parameter/EnumParameter.h"
+//#include "../Parameter/RangeParameter.h"
+//#include "../Parameter/Point2DParameter.h"
+//#include "../Parameter/Point3DParameter.h"
+//#include "../Parameter/Trigger.h"
 const Identifier ParameterContainer::presetIdentifier("preset");
 const Identifier ParameterContainer::uidIdentifier("uid");
 
@@ -57,7 +65,7 @@ Array<WeakReference<Parameter>> ParameterContainer::getAllParameters(bool recurs
   for (auto &c : controllables)
   {
     if (getNotExposed || c->isControllableExposed){
-      if(Parameter * cc = c->getParameter()){
+      if(Parameter * cc = Parameter::fromControllable(c)){
         result.add(cc);
       }
     }
@@ -66,7 +74,10 @@ Array<WeakReference<Parameter>> ParameterContainer::getAllParameters(bool recurs
   if (recursive)
   {
     ScopedLock lk(controllableContainers.getLock());
-    for (auto &cc : controllableContainers) if(cc.get())result.addArray(((ParameterContainer*)cc.get())->getAllParameters(true, getNotExposed));
+    for (auto &cc : controllableContainers) {
+    if(cc.get())
+      result.addArray(((ParameterContainer*)cc.get())->getAllParameters(true, getNotExposed));
+    }
   }
 
   return result;
@@ -84,7 +95,8 @@ DynamicObject * ParameterContainer::getObject()
 
     for(auto & c :controllables){
       if(c->isUserDefined || c->shouldSaveObject  ){
-        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::createTypedObjectFromInstance(c->getParameter()));
+
+        paramsData.getDynamicObject()->setProperty(c->shortName,ParameterFactory::createTypedObjectFromInstance(Parameter::fromControllable(c)));
       }
       else if (c->isSavable){
         paramsData.getDynamicObject()->setProperty(c->shortName,c->getVarState());
@@ -117,7 +129,7 @@ void ParameterContainer::containerCleared(ControllableContainer * c){
 
 void ParameterContainer::controllableRemoved(ControllableContainer *,Controllable *c) {
 
-  if(auto p = c->getParameter()){
+  if(auto p = Parameter::fromControllable(c)){
     p->removeParameterListener(this);
     p->removeAsyncParameterListener(this);
   }
@@ -194,10 +206,10 @@ void ParameterContainer::configureFromObject(DynamicObject * dyn)
         {
           if(Controllable * c = getControllableByName(p.name.toString(),true)){
             if(c->isSavable){
-              if (Parameter * par = c->getParameter()) {
+              if (Parameter * par = Parameter::fromControllable(c)) {
                 // we don't load preset when already loading a state
                 if (par->shortName != presetIdentifier.toString() ){
-                  par->setValue(p.value,false,true);
+                  par->setValue(p.value);
                 }
               }
               else {

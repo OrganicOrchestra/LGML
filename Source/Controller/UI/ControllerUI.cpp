@@ -21,6 +21,7 @@
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 
+
 ControllerUI::ControllerUI(Controller * controller) :
 	InspectableComponent(controller, "controller"),
     controller(controller)

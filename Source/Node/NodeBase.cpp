@@ -21,6 +21,7 @@
 
 NodeBase::NodeBase(const String &name, bool _hasMainAudioControl) :
 ConnectableNode(name,_hasMainAudioControl),
+audioNode(nullptr),
 dryWetFader(5000,5000,false,1),
 muteFader(1000,1000,false,1),
 lastDryVolume(0),
@@ -42,17 +43,35 @@ rmsTimer(this)
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
   for (int i = 0; i < 2; i++) rmsValuesIn.add(0);
 
+  // when audioNode gets deleted, it will try to remove this instance already deleting by itself
+//  incReferenceCount();
 
 }
 
 
 NodeBase::~NodeBase()
 {
-  rmsTimer.stopTimer();
-  NodeBase::masterReference.clear();
-  clear();
+
+
+  if(audioNode.get()){
+    jassertfalse;
+
+  }
+
+    rmsTimer.stopTimer();
+    NodeBase::masterReference.clear();
+    clear();
+
+    
+
+
+
 }
 
+const String NodeBase::getName() const
+{
+  return nameParam->stringValue();
+}
 
 bool NodeBase::hasAudioInputs()
 {
@@ -155,6 +174,45 @@ void NodeBase::configureFromObject(DynamicObject * data)
 
 
 /////////////////////////////////////// AUDIO
+
+
+void NodeBase::setParentNodeContainer(NodeContainer * _parentNodeContainer){
+  ConnectableNode::setParentNodeContainer(_parentNodeContainer);
+  addToAudioGraph(_parentNodeContainer->getAudioGraph());
+}
+
+AudioProcessorGraph::Node * NodeBase::getAudioNode()
+{
+  jassert(audioNode->getProcessor() == getAudioProcessor());
+  return audioNode.get();
+}
+
+
+void NodeBase::addToAudioGraph(AudioProcessorGraph* g)
+{
+  audioNode = g->addNode(getAudioProcessor());
+  getAudioProcessor()->setRateAndBufferSizeDetails (g->getSampleRate(), g->getBlockSize());
+
+}
+
+void NodeBase::removeFromAudioGraph()
+{
+  if(parentNodeContainer){
+    if(auto pG = parentNodeContainer->getAudioGraph()){
+      const ScopedLock lk(pG->getCallbackLock());
+      pG->removeNode(audioNode);
+    }
+    parentNodeContainer->updateAudioGraph(false);
+  }
+}
+
+AudioProcessor * NodeBase::getAudioProcessor() {
+  if(audioNode){
+    jassert(audioNode->getProcessor() == this);
+    return audioNode->getProcessor();
+  }
+  return this;
+};
 
 void NodeBase::processBlockBypassed(AudioBuffer<float>& /*buffer*/, juce::MidiBuffer& /*midiMessages*/){
   // no op

@@ -361,7 +361,7 @@ bool MainContentComponent::perform(const InvocationInfo& info) {
             if (type == "node" && Inspector::getInstance()->currentComponent->inspectableType == "node")
             {
               ConnectableNode * cn = dynamic_cast<ConnectableNode *>(Inspector::getInstance()->currentComponent->relatedParameterContainer);
-              NodeContainer * container = (dynamic_cast<NodeContainer *>(cn)) ? dynamic_cast<NodeContainer *>(cn) : cn->parentNodeContainer;
+              NodeContainer * container = (dynamic_cast<NodeContainer *>(cn)) ? dynamic_cast<NodeContainer *>(cn) : cn->getParentNodeContainer();
               if (cn != nullptr)
               {
                 ConnectableNode * n = container->addNodeFromJSONData(d->getProperty("data").getDynamicObject());

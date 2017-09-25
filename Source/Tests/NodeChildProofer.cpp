@@ -7,10 +7,10 @@
 
  ==============================================================================
  */
-#include  "JuceHeader.h"
+
 
 #if LGML_UNIT_TESTS
-
+#include  "JuceHeader.h"
 #include "../Node/NodeBase.h"
 #include "../Node/Manager/NodeManager.h"
 #include "../Engine.h"

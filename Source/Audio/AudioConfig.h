@@ -16,8 +16,8 @@
 #ifndef AUDIOCONFIG_H_INCLUDED
 #define AUDIOCONFIG_H_INCLUDED
 
-#include "JuceHeader.h"
 
+#include "../JuceHeaderCore.h"
 
 // TODO change when windows / linux support
 #if (defined JUCE_MAC || defined JUCE_LINUX || defined JUCE_WINDOWS)

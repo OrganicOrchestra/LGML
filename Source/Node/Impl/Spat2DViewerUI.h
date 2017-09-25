@@ -16,7 +16,7 @@
 #ifndef SPAT2DVIEWER_H_INCLUDED
 #define SPAT2DVIEWER_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "../../JuceHeaderUI.h"//keep
 #include "Spat2DNode.h"
 
 class Spat2DHandle : public juce::Component

@@ -53,10 +53,10 @@ void ConnectorComponent::generateToolTip(){
   if (dataType == NodeConnection::ConnectionType::AUDIO)
   {
     bool isInput = ioType == ConnectorIOType::INPUT;
-    AudioProcessorGraph::Node * tAudioNode = node->getAudioNode(isInput);
+    NodeBase * tAudioNode = ((NodeBase*)node.get());
     if (tAudioNode != nullptr)
     {
-      tooltip += isInput? tAudioNode->getProcessor()->getTotalNumInputChannels() : tAudioNode->getProcessor()->getTotalNumOutputChannels();
+      tooltip += isInput? tAudioNode->getTotalNumInputChannels() : tAudioNode->getTotalNumOutputChannels();
       tooltip += " channels";
     }
     else

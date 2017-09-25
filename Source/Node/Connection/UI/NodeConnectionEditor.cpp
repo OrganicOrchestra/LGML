@@ -160,10 +160,10 @@ void NodeConnectionEditor::generateContentForAudio()
     clearContent();
 	if (currentConnection == nullptr) return;
 	if (currentConnection->sourceNode == nullptr || currentConnection->destNode == nullptr) return;
-	//if (currentConnection->sourceNode->getAudioNode(true) == nullptr || currentConnection->destNode->getAudioNode(false)) return;
+	//if (currentConnection->sourceNode->getAudioNode() == nullptr || currentConnection->destNode->getAudioNode()) return;
 
-    int numOutputChannels = currentConnection->sourceNode->getAudioNode(true)->getProcessor()->getTotalNumOutputChannels();
-    int numInputChannels = currentConnection->destNode->getAudioNode(false)->getProcessor()->getTotalNumInputChannels();
+    int numOutputChannels = ((NodeBase*)currentConnection->sourceNode.get())->getTotalNumOutputChannels();
+    int numInputChannels = ((NodeBase*)currentConnection->destNode.get())->getTotalNumInputChannels();
 
     for (int i = 0; i < numOutputChannels; i++)
     {

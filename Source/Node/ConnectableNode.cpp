@@ -29,7 +29,6 @@ canBeRemovedByUser(true),
 ParameterContainer(name),
 userCanAccessInputs(true),
 userCanAccessOutputs(true),
-audioNode(nullptr),
 outputVolume(nullptr)
 {
   //set Params
@@ -75,27 +74,29 @@ outputVolume(nullptr)
 
 ConnectableNode::~ConnectableNode()
 {
-  //@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
-	cleanUpPresets();
+  if(parentNodeContainer)
+    remove();
+
+
+#warning removed explicit behaviour from ben
+//  //@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
+//
+//	cleanUpPresets();
 
   masterReference.clear();
   parentNodeContainer = nullptr;
 }
 
 
-void ConnectableNode::setParentNodeContainer(NodeContainer * _parentNodeContainer)
+void ConnectableNode::setParentNodeContainer(NodeContainer * _parentNodeContainer) 
 {
-
-  addToAudioGraph(_parentNodeContainer->getAudioGraph());
   parentNodeContainer = _parentNodeContainer;
 
 
 }
 
-AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool)
-{
-  jassert(audioNode->getProcessor() == getAudioProcessor());
-  return audioNode;
+NodeContainer  * const ConnectableNode::getParentNodeContainer() const{
+  return parentNodeContainer;
 }
 
 
@@ -104,15 +105,15 @@ AudioProcessorGraph::Node * ConnectableNode::getAudioNode(bool)
 bool ConnectableNode::hasAudioInputs()
 {
   //to override
-  if (getAudioNode(true) == nullptr) return false;
-  return getAudioNode(true)->getProcessor()->getTotalNumInputChannels() > 0;
+  return false;
+
 }
 
 bool ConnectableNode::hasAudioOutputs()
 {
-  //to override
-  if (getAudioNode(false) == nullptr) return false;
-  return getAudioNode(false)->getProcessor()->getTotalNumOutputChannels() > 0;
+//to override
+  return false;
+
 }
 
 bool ConnectableNode::hasDataInputs()
@@ -138,7 +139,13 @@ void ConnectableNode::onContainerParameterChanged(Parameter * p)
 
 void ConnectableNode::remove()
 {
-  nodeListeners.call(&ConnectableNode::ConnectableNodeListener::askForRemoveNode, this);
+  if(parentNodeContainer){
+    parentNodeContainer->removeNode(this);
+  }
+  else{
+    jassertfalse;
+  }
+  
 }
 
 void ConnectableNode::clear()
@@ -155,21 +162,6 @@ void ConnectableNode::clear()
 
 /////////////////////////////  AUDIO
 
-
-void ConnectableNode::addToAudioGraph(AudioProcessorGraph* g)
-{
-  audioNode = g->addNode(getAudioProcessor());
-  getAudioProcessor()->setRateAndBufferSizeDetails (g->getSampleRate(), g->getBlockSize());
-
-}
-
-void ConnectableNode::removeFromAudioGraph()
-{
-  const ScopedLock lk(parentNodeContainer->getAudioGraph()->getCallbackLock());
-  parentNodeContainer->getAudioGraph()->removeNode(getAudioNode());
-  parentNodeContainer->updateAudioGraph(false);
-
-}
 
 
 
@@ -229,13 +221,7 @@ String ConnectableNode::getOutputChannelName(int channelIndex)
   return defaultName;
 }
 
-AudioProcessor * ConnectableNode::getAudioProcessor() {
-  if(audioNode){
-    jassert(audioNode->getProcessor() == dynamic_cast<NodeBase * >(this));
-    return audioNode->getProcessor();
-  }
-  return dynamic_cast<NodeBase * >(this);
-};
+
 
 /////////////////////////////  DATA
 

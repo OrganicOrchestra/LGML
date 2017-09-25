@@ -18,7 +18,7 @@
 
 
 #include "../SerialManager.h"
-
+#include "../../../JuceHeaderUI.h"
 class SerialDeviceChooser : public ComboBox, public SerialManager::SerialManagerListener
 {
 public:

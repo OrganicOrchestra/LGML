@@ -20,6 +20,7 @@
 MIDIListener::MIDIListener()
 {
   midiPortName = String::empty;
+  outPortName = String::empty;
   MIDIManager::getInstance()->addMIDIListener(this);
 }
 
@@ -27,7 +28,6 @@ MIDIListener::~MIDIListener()
 {
   getAudioDeviceManager().removeMidiInputCallback(midiPortName, this);
   MIDIManager::getInstance()->removeMIDIListener(this);
-  midiPortName = String::empty;
 }
 
 void MIDIListener::setCurrentDevice(const String & deviceName)

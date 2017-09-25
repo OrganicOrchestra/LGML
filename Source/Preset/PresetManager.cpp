@@ -78,36 +78,7 @@ PresetManager::Preset * PresetManager::getPreset(String filter, const String & n
     return nullptr;
 }
 
-void PresetManager::fillWithPresets(ComboBox * cb,const  String & filter, bool _showSaveCurrent) const
-{
-    cb->clear();
-    if(_showSaveCurrent) cb->addItem("Save current preset", SaveCurrent);
 
-    cb->addItem("Save to new preset", SaveToNew);
-    cb->addItem("Reset to default", ResetToDefault);
-
-	int pIndex = 1;
-
-    for (auto &pre : presets)
-    {
-
-        if (pre->filter == filter)
-        {
-            pre->presetId = pIndex;
-            cb->addItem(pre->name, pre->presetId);
-            pIndex++;
-        }
-    }
-    for (auto &pre : presets)
-    {
-
-        if (pre->filter == filter)
-        {
-            cb->addItem("delete "+pre->name, PresetChoice::deleteStartId + pre->presetId);
-        }
-    }
-
-}
 
 void PresetManager::removePresetForIdx(int idx){
   if(idx >0 && idx < presets.size()){

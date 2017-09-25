@@ -72,18 +72,7 @@ void NodeContainer::clear(bool recreateContainerNodes)
 
 
 
-  while (nodes.size() > 0)
-  {
-    if(nodes[0].get()){
-      nodes[0]->remove();
-    }
-    else{
-      jassertfalse;
-      nodes.remove(0);
-    }
-
-
-  }
+  nodes.clear();
 
 
   containerInNode = nullptr;
@@ -124,7 +113,7 @@ ConnectableNode * NodeContainer::addNodeFromJSONData(DynamicObject * data)
 
 ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &nodeName, DynamicObject * nodeData)
 {
-  nodes.add(n);
+  nodes.add((NodeBase*)n);
 
   n->setParentNodeContainer(this);
 
@@ -135,8 +124,6 @@ ConnectableNode * NodeContainer::addNode(ConnectableNode * n, const String &node
     //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
   }
 
-
-  n->addConnectableNodeListener(this);
   String targetName = (nodeName.isNotEmpty())?nodeName:n->nameParam->stringValue();
   n->nameParam->setValue(getUniqueNameInContainer(targetName));
 
@@ -160,19 +147,19 @@ bool NodeContainer::removeNode(ConnectableNode * n)
   for (auto &connection : relatedConnections) removeConnection(connection);
 
   if (n == nullptr){jassertfalse; return false;}
-  n->removeConnectableNodeListener(this);
+
   removeChildControllableContainer(n);
 
   nodeChangeNotifier.addMessage(new NodeChangeMessage(n,false));
   //  nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
-  nodes.removeAllInstancesOf(n);
+
 
   n->clear();
 
 
   if (NodeContainer * nc = dynamic_cast<NodeContainer*>(n)) nodeContainers.removeFirstMatchingValue(nc);
 
-  n->removeFromAudioGraph();
+  nodes.removeObject((NodeBase*)n);
   //if(NodeManager::getInstanceWithoutCreating() != nullptr)
   //  getAudioGraph()->removeNode(n->audioNode);
 
@@ -404,26 +391,8 @@ bool NodeContainer::removeConnection(NodeConnection * c)
 
 
 //From NodeBase Listener
-void NodeContainer::askForRemoveNode(ConnectableNode * node)
-{
-  removeNode(node);
-
-}
 
 
-
-void NodeContainer::askForRemoveConnection(NodeConnection *connection)
-{
-  removeConnection(connection);
-}
-
-void NodeContainer::RMSChanged(ConnectableNode * node, float _rmsInValue, float _rmsOutValue)
-{
-  if (node == containerInNode) rmsInValue = _rmsOutValue;
-  else if (node == containerOutNode) rmsOutValue = _rmsInValue;
-
-  rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, this, rmsInValue, rmsOutValue);
-}
 
 void NodeContainer::onContainerParameterChanged(Parameter * p)
 {

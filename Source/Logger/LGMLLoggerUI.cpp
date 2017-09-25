@@ -17,6 +17,7 @@
 #include "../UI/Style.h"
 
 #include "../GitSha.h"
+#include "JuceHeader.h" // for version
 
 
 void LGMLLoggerUI::newMessage(const String & s)

@@ -16,7 +16,7 @@
 #ifndef CONTROLLABLEHELPERS_H_INCLUDED
 #define CONTROLLABLEHELPERS_H_INCLUDED
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderUI.h"//keep
 class ControllableContainer;
 class Controllable;
 

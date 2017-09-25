@@ -16,8 +16,8 @@
 #include "MainComponent.h"
 
 
-#include "../Node/Manager/UI/NodeManagerUI.h"
-#include "../Controller/UI/ControllerManagerUI.h"
+//#include "../Node/Manager/UI/NodeManagerUI.h"
+//#include "../Controller/UI/ControllerManagerUI.h"
 #include "LookAndFeelOO.h"
 
 // (This function is called by the app startup code to create our main component)
@@ -146,14 +146,14 @@ void MainContentComponent::paint (Graphics& g) {
 void MainContentComponent::startLoadFile(){
 
   // clear graphics to gain time when deleting objects (and to ease thread safety))
-  if(NodeManagerUIViewport * vp = (NodeManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel)){
-    if(NodeContainerViewer *v = vp->nmui->currentViewer){
-      v->clear();
-    }
-  }
-  if(ControllerManagerUIViewport * cui = (ControllerManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
-    cui->controllerManagerUI->clear();
-  }
+//  if(NodeManagerUIViewport * vp = (NodeManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(NodeManagerPanel)){
+//    if(NodeContainerViewer *v = vp->nmui->currentViewer){
+//      v->clear();
+//    }
+//  }
+//  if(ControllerManagerUIViewport * cui = (ControllerManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName(ControllerPanel)){
+//    cui->controllerManagerUI->clear();
+//  }
 
   if (fileProgressWindow != nullptr)
   {

@@ -35,8 +35,8 @@ public:
 	ScopedPointer<Spat2DViewer> viewer2D;
 
 	ScopedPointer<ParameterUI> spatModeUI;
-	ScopedPointer<NamedControllableUI> inputStepper;
-	ScopedPointer<NamedControllableUI> outputStepper;
+	ScopedPointer<NamedParameterUI> inputStepper;
+	ScopedPointer<NamedParameterUI> outputStepper;
 	ScopedPointer<ParameterUI> radiusUI;
 	ScopedPointer<ParameterUI> useGlobalUI;
 	ScopedPointer<ParameterUI> globalRadiusUI;

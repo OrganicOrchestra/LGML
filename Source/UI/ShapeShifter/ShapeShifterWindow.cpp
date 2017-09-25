@@ -19,6 +19,7 @@
 #include "../LookAndFeelOO.h"
 
 
+
 extern ApplicationCommandManager& getCommandManager();
 
 ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds) :

@@ -17,9 +17,14 @@
 #define PARAMETERUI_H_INCLUDED
 
 #include "../Parameter.h"
-#include "../../UI/ControllableUI.h"
+#include "../../../JuceHeaderUI.h"
 
-class ParameterUI : protected Parameter::AsyncListener, private Parameter::Listener,public ControllableUI
+
+class ParameterUI : public juce::Component,
+protected Parameter::AsyncListener,
+private Parameter::Listener,
+public SettableTooltipClient ,
+public Controllable::Listener
 {
 public:
   ParameterUI(Parameter * parameter);
@@ -31,6 +36,21 @@ public:
   bool showValue;
 
   void setCustomText(const String text);
+
+  enum MappingState{
+    NOMAP,
+    MAPSOURCE,
+    MAPDEST
+  };
+
+  void setMappingState(const bool  s);
+  void setMappingDest(bool _isMappingDest);
+
+  bool isDraggable;
+  bool isSelected;
+
+
+
 protected:
 
   String customTextDisplayed;
@@ -41,6 +61,11 @@ protected:
   // for general behaviour see AsyncListener
   virtual void valueChanged(const var & ){};
   virtual void rangeChanged(Parameter * ){};
+
+  void updateTooltip();
+  void mouseDown(const MouseEvent &e) override;
+
+
 private:
   // see Parameter::AsyncListener
   virtual void newMessage(const Parameter::ParamWithValue & p) override{
@@ -57,7 +82,45 @@ private:
   void parameterRangeChanged(Parameter * )override{};
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
+  friend class LGMLDragger;
+  MappingState mappingState;
+  bool hasValidControllable;
+  ScopedPointer<ImageEffectFilter> mapEffect;
+
+
+
+  // Inherited via Listener
+  virtual void controllableStateChanged(Controllable * c) override;
+  virtual void controllableControlAddressChanged(Controllable * c) override;
+
+
+  bool isMappingDest;
+
+  WeakReference<ParameterUI>::Master masterReference;
+  friend class WeakReference<ParameterUI>;
+
+
+
+
 };
+
+
+//    this class allow to automaticly generate label / ui element for parameter listing in editor
+//    it owns the created component
+class NamedParameterUI : public ParameterUI,public Label::Listener
+{
+public:
+  NamedParameterUI(ParameterUI * ui,int _labelWidth,bool labelAbove=false);
+  void resized()override;
+  bool labelAbove;
+  void labelTextChanged (Label* labelThatHasChanged) override;
+  Label controllableLabel;
+  int labelWidth;
+  ScopedPointer <ParameterUI > ownedParameterUI;
+};
+
+
+
 
 
 #endif  // PARAMETERUI_H_INCLUDED

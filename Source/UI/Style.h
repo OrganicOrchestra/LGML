@@ -18,7 +18,7 @@
 #pragma once
 // TODO : implement nicer colour handling (maybe skinnable)
 // Warning don't use JUCE's internal color definitions as it will be empty at this stage of compilation
-#include <JuceHeader.h>
+#include "../JuceHeaderUI.h"
 const Colour NORMAL_COLOR    (0xff666666);
 const Colour BG_COLOR        (0xff222222);
 const Colour PANEL_COLOR     (0xff444444);

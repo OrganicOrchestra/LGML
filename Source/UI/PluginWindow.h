@@ -17,7 +17,7 @@
 #define PluginWindow_H_INCLUDED
 
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderUI.h"//keep
 
 class VSTNode;
 

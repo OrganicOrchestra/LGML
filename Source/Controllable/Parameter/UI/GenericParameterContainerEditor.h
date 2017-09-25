@@ -45,7 +45,7 @@ public:
 	ParameterContainer * container;
 	ScopedPointer<PresetChooserUI> presetChooser;
   
-	OwnedArray<NamedControllableUI > parametersUI;
+	OwnedArray<NamedParameterUI > parametersUI;
 	OwnedArray<CCInnerContainerUI> innerContainers;
   ScopedPointer<Component> customEditor;
 	OwnedArray<Component> lowerContainerLinks;
@@ -72,7 +72,7 @@ public:
 
 	int getContentHeight();
 
-	NamedControllableUI * getUIForParameter(Parameter * c);
+	NamedParameterUI * getUIForParameter(Parameter * c);
 	CCInnerContainerUI * getInnerContainerForCC(ParameterContainer * cc);
 	CCLinkBT * getCCLinkForCC(ParameterContainer * cc);
 

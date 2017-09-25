@@ -35,7 +35,7 @@ public:
 	ScopedPointer<JsEnvironmentUI> jsUI;
 
 	MIDIDeviceChooser deviceChooser;
-	ScopedPointer<NamedControllableUI> channelStepper;
+	ScopedPointer<NamedParameterUI> channelStepper;
 	ScopedPointer<ParameterUI> incomingToogle;
 
 	 

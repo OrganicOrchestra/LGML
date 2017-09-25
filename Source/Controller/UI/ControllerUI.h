@@ -19,8 +19,8 @@
 
 #include "../Controller.h"
 #include "../../UI/Inspector/InspectableComponent.h"
-
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
+
 class StringParameterUI;
 
 

@@ -7,9 +7,10 @@
 
  ==============================================================================
  */
-#include  "JuceHeader.h"
+
 
 #if LGML_UNIT_TESTS
+#include  "JuceHeader.h"
 #include "../Node/Impl/LooperNode.h"
 #include "../Time/TimeManager.h"
 

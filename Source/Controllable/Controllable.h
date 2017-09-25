@@ -17,10 +17,10 @@
 #define CONTROLLABLE_H_INCLUDED
 
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderCore.h"//keep
 #include "../Utils/FactoryObject.h"
 
-class ControllableUI;
+
 class ControllableContainer;
 class Parameter;
 
@@ -76,10 +76,6 @@ public:
   virtual void setStateFromVar(const var & v) =0;
 
 
-
-  // using this as a compile time check that no controllable is parameter
-  // will remove this soon when inheritance parameter / controllable is sorted out
-  virtual Parameter* getParameter() = 0;
 
 
 

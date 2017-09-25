@@ -104,7 +104,7 @@ private:
 	virtual void selectLink(NodeConnectionEditorLink * target) override;
 
     // Inherited via Listener
-  virtual void askForRemoveConnection(NodeConnection *) override {setCurrentConnection( nullptr);};
+    virtual void connectionRemoved(NodeConnection *) override {setCurrentConnection( nullptr);};
     virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * dataConnection) override;
     virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * dataConnection) override;
     virtual void connectionAudioLinkAdded(const NodeConnection::AudioConnection & audioConnection) override;

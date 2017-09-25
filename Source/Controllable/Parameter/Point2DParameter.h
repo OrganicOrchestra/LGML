@@ -17,6 +17,7 @@
 #define POINT2DPARAMETER_H_INCLUDED
 
 #include "MinMaxParameter.h"
+#include <juce_graphics/juce_graphics.h>
 
 template<typename T>
 class Point2DParameter : public MinMaxParameter

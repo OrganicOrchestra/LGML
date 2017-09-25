@@ -19,6 +19,7 @@
 
 
 #include "MinMaxParameter.h"
+//#include <juce_opengl/juce_opengl.h>
 
 class Point3DParameter : public MinMaxParameter
 {
@@ -27,10 +28,10 @@ public:
 	~Point3DParameter() {}
   
 	float x, y, z;
-	void setPoint(Vector3D<float> value);
+//	void setPoint(Vector3D<float> value);
 	void setValueInternal(var & _value) override;
 
-	Vector3D<float> * getPoint();
+//	Vector3D<float> * getPoint();
 
 	bool checkValueIsTheSame(const var & v1, const var& v2) override;
 

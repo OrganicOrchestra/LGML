@@ -9,7 +9,7 @@
 */
 
 #pragma once
-#include "JuceHeader.h"
+#include "../JuceHeaderCore.h"
 
 static const Identifier factoryTypeIdentifier ("_tName");
 

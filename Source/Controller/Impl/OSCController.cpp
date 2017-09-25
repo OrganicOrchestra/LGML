@@ -61,8 +61,8 @@ hostNameResolved(false)
 
   remotePortParam = addNewParameter<StringParameter>("Remote Port", "The port bound by the controller to send OSC to it","8000");
   static OSCClientModel model;
-  remoteHostParam = addNewParameter<EnumParameter>("Remote Host", "The host's IP of the remote controller",&model,true);
-  remoteHostParam->selectId("localhost", true);
+  remoteHostParam = addNewParameter<EnumParameter>("Remote Host", "The host's IP of the remote controller",&model,var("localhost"),true);
+  
   isConnectedToRemote =addNewParameter<BoolParameter>("Connected To Remote", "status of remote connection", false);
   isConnectedToRemote->isEditable = false;
   isConnectedToRemote->isSavable = false;
@@ -242,7 +242,7 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
 
   // TODO handle wildcards
   String addr = msg.getAddressPattern().toString();
-  auto * linked = userContainer.getControllableForAddress(addr);
+  auto * linked = Parameter::fromControllable(userContainer.getControllableForAddress(addr));
   if(!linked){
 
     StringArray sa =OSCAddressToArray(addr);
@@ -276,8 +276,8 @@ void OSCController::checkAndAddParameterIfNeeded(const OSCMessage & msg){
         }
       }
 
-      if(auto *p = linked->getParameter()){
-        setParameterFromMessage(p, msg,true);
+      if(linked){
+        setParameterFromMessage(linked, msg,true);
       }
     }
     else{

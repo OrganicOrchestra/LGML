@@ -18,6 +18,7 @@
 #include "FastMapper.h"
 #include "../Controllable/Parameter/UI/RangeParameterUI.h"
 #include "../Controllable/Parameter/NumericParameter.h"
+#include "../UI/Style.h"
 
 FastMapUI::
 FastMapUI(FastMap * f) :
@@ -118,10 +119,10 @@ void FastMapUI::linkedParamChanged(ParameterProxy * p ) {
     MessageManager::getInstance()->callAsync([this,p](){linkedParamChanged(p);});
   }
   else{
-  if(p==refUI.controllable){
+  if(p==refUI.parameter){
     inRangeUI.setVisible(p->linkedParam && p->linkedParam->getAs<MinMaxParameter>());
   }
-  else if(p==targetUI.controllable){
+  else if(p==targetUI.parameter){
     outRangeUI.setVisible(p->linkedParam && p->linkedParam->getAs<MinMaxParameter>());
   }
   resized();

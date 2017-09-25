@@ -17,7 +17,7 @@
 #define QUEUEDNOTIFIER_H_INCLUDED
 #pragma once
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderCore.h"//keep
 
 
 template<typename MessageClass,class CriticalSectionToUse = CriticalSection>

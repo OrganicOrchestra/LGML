@@ -16,7 +16,7 @@
 #ifndef GAPGRABBER_H_INCLUDED
 #define GAPGRABBER_H_INCLUDED
 
-#include "JuceHeader.h"//keep
+#include "../../JuceHeaderUI.h"//keep
 
 class GapGrabber : public juce::Component
 {

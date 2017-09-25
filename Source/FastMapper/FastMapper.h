@@ -58,7 +58,7 @@ public:
 private:
 
   // LGMLDragger Listener
-  void selectionChanged(Controllable *) override;
+  void selectionChanged(Parameter *) override;
 
   // Inspector Component
   void currentComponentChanged(Inspector * ) override;

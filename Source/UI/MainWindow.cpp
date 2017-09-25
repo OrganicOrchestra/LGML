@@ -12,6 +12,7 @@
 #include "MainComponent.h"
 #include "../Engine.h"
 
+#include "JuceHeader.h" // for ProjectInfo
 
 MainContentComponent* createMainContentComponent(Engine* e);
 
@@ -21,9 +22,6 @@ MainWindow::MainWindow (String name,Engine * e)  : DocumentWindow (name,
                                                                    Colours::lightgrey,
                                                                    DocumentWindow::allButtons)
 {
-
-
-
 
   mainComponent = createMainContentComponent(e);
   setContentOwned(mainComponent, false);

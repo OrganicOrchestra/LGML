@@ -15,7 +15,7 @@
 
 #ifndef PROGRESSNOTIFIER_H_INCLUDED
 #define PROGRESSNOTIFIER_H_INCLUDED
-#include "JuceHeader.h"
+#include "../JuceHeaderCore.h"
 
 
 class FakeProgress;

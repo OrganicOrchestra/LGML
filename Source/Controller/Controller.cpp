@@ -22,11 +22,6 @@
 #include "../Scripting/Js/JsEnvironment.h"
 
 
-const Identifier Controller::controllerTypeIdentifier("controllerType");
-
-
-
-
 Controller::Controller(StringRef _name) :
 ParameterContainer(_name),
 userContainer("messages")
@@ -54,14 +49,6 @@ Controller::~Controller()
 }
 
 
-//DynamicObject *  Controller::getObject(){
-//
-//  auto res = ParameterContainer::getObject();
-//  res->setProperty(controllerTypeIdentifier,getTypeName());
-//  return res;
-//
-//
-//}
 ControllerUI * Controller::createUI(){return new ControllerUI(this);}
 
 ControllerEditor * Controller::createEditor(){return new ControllerEditor(this);}

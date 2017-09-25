@@ -18,7 +18,7 @@
 
 #pragma warning( disable : 4505 )
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderUI.h"//keep
 #include "Style.h"//keep
 
 

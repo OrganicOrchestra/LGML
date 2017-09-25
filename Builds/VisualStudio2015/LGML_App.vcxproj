@@ -279,8 +279,6 @@
     <ClCompile Include="..\..\Source\Audio\PlayableBuffer.cpp"/>
     <ClCompile Include="..\..\Source\Audio\StretcherJob.cpp"/>
     <ClCompile Include="..\..\Source\Audio\VSTManager.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable\UI\ControllableEditor.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable\UI\ControllableUI.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Controllable.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableHelpers.cpp"/>
@@ -397,6 +395,7 @@
     <ClCompile Include="..\..\Source\UI\Outliner.cpp"/>
     <ClCompile Include="..\..\Source\UI\PluginWindow.cpp"/>
     <ClCompile Include="..\..\Source\UI\ProgressWindow.cpp"/>
+    <ClCompile Include="..\..\Source\UI\VuMeter.cpp"/>
     <ClCompile Include="..\..\Source\UI\ShapeShifter\GapGrabber.cpp"/>
     <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifter.cpp"/>
     <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterContainer.cpp"/>
@@ -2056,8 +2055,6 @@
     <ClInclude Include="..\..\Source\Audio\RingBuffer.h"/>
     <ClInclude Include="..\..\Source\Audio\StretcherJob.h"/>
     <ClInclude Include="..\..\Source\Audio\VSTManager.h"/>
-    <ClInclude Include="..\..\Source\Controllable\UI\ControllableEditor.h"/>
-    <ClInclude Include="..\..\Source\Controllable\UI\ControllableUI.h"/>
     <ClInclude Include="..\..\Source\Controllable\Controllable.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableContainer.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableHelpers.h"/>
@@ -2204,6 +2201,9 @@
     <ClInclude Include="..\..\Source\Utils\ProgressNotifier.h"/>
     <ClInclude Include="..\..\Source\Engine.h"/>
     <ClInclude Include="..\..\Source\GitSha.h"/>
+    <ClInclude Include="..\..\Source\JuceHeaderAudio.h"/>
+    <ClInclude Include="..\..\Source\JuceHeaderCore.h"/>
+    <ClInclude Include="..\..\Source\JuceHeaderUI.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\impl\unix.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\impl\win.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\serial.h"/>

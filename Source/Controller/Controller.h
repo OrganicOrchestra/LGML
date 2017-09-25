@@ -55,10 +55,6 @@ public:
   void remove();
 
 
-  
-
-  // identifiers
-  static const Identifier controllerTypeIdentifier;
 
   
 

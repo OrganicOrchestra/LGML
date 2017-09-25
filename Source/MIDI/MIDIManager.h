@@ -17,7 +17,7 @@
 #define MIDIMANAGER_H_INCLUDED
 #pragma once
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderAudio.h"//keep
 
 
 extern AudioDeviceManager & getAudioDeviceManager();

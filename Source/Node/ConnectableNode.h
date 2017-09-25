@@ -16,6 +16,7 @@
 #ifndef CONNECTABLENODE_H_INCLUDED
 #define CONNECTABLENODE_H_INCLUDED
 #pragma once
+#include "../JuceHeaderAudio.h"
 
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "Manager/NodeFactory.h"
@@ -34,13 +35,8 @@ public:
 
 
 
-	NodeContainer * parentNodeContainer;
+  NodeContainer * const getParentNodeContainer() const;
 
-  
-  
-	virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer);
-  AudioProcessorGraph::Node * audioNode;
-  AudioProcessor * getAudioProcessor();
 
 	//Interaction
 	bool canBeRemovedByUser;
@@ -55,19 +51,15 @@ public:
 
 	//Controllables (from ControllableContainer)
 	
-    StringParameter * descriptionParam;
+  StringParameter * descriptionParam;
 	BoolParameter * enabledParam;
 
 	//ui params
 	Point2DParameter<int> * nodePosition,*nodeSize;
-
-	
 	BoolParameter * miniMode;
 
 	void remove();
 	virtual void clear();
-
-	
 
 
 	void onContainerParameterChanged(Parameter * p) override;
@@ -79,7 +71,6 @@ public:
 	{
 	public:
 		virtual ~ConnectableNodeListener() {}
-		virtual void askForRemoveNode(ConnectableNode *) {}
 		virtual void nodeParameterChanged(ConnectableNode *,Parameter *) {}
 
     virtual void numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {};
@@ -119,9 +110,7 @@ public:
 	StringArray inputChannelNames;
 	StringArray outputChannelNames;
 
-	virtual AudioProcessorGraph::Node * getAudioNode(bool forInput = true);
-	virtual void addToAudioGraph(AudioProcessorGraph*);
-	virtual void removeFromAudioGraph();
+  
 
 	void setInputChannelNames(int startChannel, StringArray names);
 	void setOutputChannelNames(int startChannel, StringArray names);
@@ -135,7 +124,7 @@ public:
 	public:
 		/** Destructor. */
 		virtual ~RMSListener() {}
-		virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) = 0;
+		virtual void RMSChanged( float rmsInValue, float rmsOutValue) = 0;
 	};
 
 
@@ -173,6 +162,15 @@ public:
 
 	virtual Data * getOutputDataByName(const String &dataName);
 	virtual Data * getInputDataByName(const String &dataName);
+
+
+protected:
+  NodeContainer * parentNodeContainer;
+
+  virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer);
+  friend class NodeContainer;
+
+  
 
 private:
     WeakReference<ConnectableNode>::Master masterReference;

@@ -21,14 +21,16 @@
 #include "../Parameter/RangeParameter.h"
 #include "../Parameter/Point2DParameter.h"
 #include "../Parameter/Point3DParameter.h"
-
 #include "../Parameter/Trigger.h"
+
 #include "../../Preset/PresetManager.h"
 #include "../../Utils/FactoryObject.h"
 
 
 
-
+namespace juce{class Component;};
+class StringParameter;
+class Trigger;
 class ParameterContainer:public ControllableContainer,
 public Parameter::Listener,
 public Parameter::AsyncListener,
@@ -51,7 +53,7 @@ public:
 
   virtual void configureFromObject(DynamicObject * data) override;
   virtual DynamicObject * getObject() override;
-  virtual Component * getCustomEditor() {return nullptr;}
+  virtual juce::Component * getCustomEditor() {return nullptr;}
 
   //  controllableContainer::Listener
   virtual void controllableRemoved(ControllableContainer *,Controllable *) override;

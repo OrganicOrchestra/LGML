@@ -79,9 +79,7 @@ public:
 
 class NodeContainer :
 public NodeBase,
-public ConnectableNode::ConnectableNodeListener,
 public NodeConnection::Listener,
-public ConnectableNode::RMSListener,
 public ParameterProxy::ParameterProxyListener,
 public AsyncUpdater
 
@@ -104,7 +102,7 @@ public:
 
   //NODE AND CONNECTION MANAGEMENT
 
-  Array<WeakReference<ConnectableNode> > nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
+  ReferenceCountedArray<NodeBase> nodes; //Not OwnedArray anymore because NodeBase is AudioProcessor, therefore owned by AudioProcessorGraph
   OwnedArray<NodeConnection> connections;
   Array<NodeContainer*> nodeContainers; //so they are delete on "RemoveNode" (because they don't have an audio processor)
 
@@ -143,15 +141,6 @@ public:
   void clear()override;
   void clear(bool keepContainerNodes);
 
-  // Inherited via NodeBase::Listener
-  virtual void askForRemoveNode(ConnectableNode *) override;
-
-
-  // Inherited via NodeConnection::Listener
-  virtual void askForRemoveConnection(NodeConnection *) override;
-
-  // Inherited via RMSListener
-  virtual void RMSChanged(ConnectableNode * node, float rmsInValue, float rmsOutValue) override;
 
 
   virtual void onContainerParameterChanged(Parameter * p) override;
@@ -174,7 +163,8 @@ public:
   virtual void prepareToPlay(double d, int i) override ;
   virtual void releaseResources() override {
     NodeBase::releaseResources();
-    getAudioGraph()->releaseResources();};
+    getAudioGraph()->releaseResources();
+  };
 
 
 

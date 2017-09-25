@@ -27,11 +27,11 @@ public:
 
 
   
-  void setValue(Point<double> value);
+//  void setValue( Point < double > value );
   void setValue(double x, double y);
   void setValueInternal(var & _value) override;
 
-  Point<double> getRangeMinMax();
+//  Point<double> getRangeMinMax();
   float getRangeMin();
   float getRangeMax();
 

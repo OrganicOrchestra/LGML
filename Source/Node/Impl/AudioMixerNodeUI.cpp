@@ -76,8 +76,9 @@ void AudioMixerNodeUI::numAudioOutputChanged(ConnectableNode * c , int /*numInpu
 }
 
 void AudioMixerNodeUI::numAudioInputChangedUI(ConnectableNode * c , int numInput){
-  if(c->getAudioProcessor()->getTotalNumOutputChannels()!=outputBusUIs.size()){
-    numAudioOutputChanged(c, c->getAudioProcessor()->getTotalNumOutputChannels());
+  mixerNode = (AudioMixerNode*)c;
+  if(mixerNode->getTotalNumOutputChannels()!=outputBusUIs.size()){
+    numAudioOutputChanged(c, mixerNode->getTotalNumOutputChannels());
   }
 	int i =0;
 	for(auto & b:outputBusUIs){

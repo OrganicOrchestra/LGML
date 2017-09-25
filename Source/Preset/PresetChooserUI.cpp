@@ -17,6 +17,16 @@
 #include "../Utils/DebugHelpers.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
 
+
+enum PresetChoice
+{
+  SaveCurrent = -3,
+  SaveToNew = -2,
+  ResetToDefault = -1,
+  deleteStartId = 1000
+};
+
+
 PresetChooserUI::PresetChooserUI(ParameterContainer * _container) :
   container(_container),
 	ComboBox("Preset")
@@ -34,6 +44,36 @@ PresetChooserUI::~PresetChooserUI()
 	if(auto c = container.get())c->removeControllableContainerListener(this);
 }
 
+void PresetChooserUI::fillWithPresets(ComboBox * cb,const  String & filter, bool _showSaveCurrent) 
+{
+  cb->clear();
+  if(_showSaveCurrent) cb->addItem("Save current preset", SaveCurrent);
+
+  cb->addItem("Save to new preset", SaveToNew);
+  cb->addItem("Reset to default", ResetToDefault);
+
+  int pIndex = 1;
+  PresetManager * pm = PresetManager::getInstance();
+  for (auto &pre : pm->presets)
+  {
+
+    if (pre->filter == filter)
+    {
+      pre->presetId = pIndex;
+      cb->addItem(pre->name, pre->presetId);
+      pIndex++;
+    }
+  }
+  for (auto &pre : pm->presets)
+  {
+
+    if (pre->filter == filter)
+    {
+      cb->addItem("delete "+pre->name, PresetChoice::deleteStartId + pre->presetId);
+    }
+  }
+
+}
 
 void PresetChooserUI::updatePresetComboBox(bool forceUpdate)
 {
@@ -43,7 +83,7 @@ void PresetChooserUI::updatePresetComboBox(bool forceUpdate)
 
 	if (!emptyFilter)
 	{
-		PresetManager::getInstance()->fillWithPresets(this, container->getPresetFilter(), container->currentPreset != nullptr);
+		fillWithPresets(this, container->getPresetFilter(), container->currentPreset != nullptr);
 		if (container->currentPreset != nullptr) this->setSelectedId(container->currentPreset->presetId, forceUpdate ? sendNotification : dontSendNotification);
 	}
 }

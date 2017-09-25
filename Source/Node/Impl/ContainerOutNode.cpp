@@ -33,10 +33,6 @@ AudioProcessorGraph::AudioGraphIOProcessor(AudioProcessorGraph::AudioGraphIOProc
 
 ContainerOutNode::~ContainerOutNode()
 {
-	if (parentNodeContainer != nullptr)
-	{
-		removeRMSListener(parentNodeContainer);
-	}
 }
 
 

@@ -102,15 +102,18 @@ public:
 
   }
   ~Pimpl(){
-    stopThread(-1);
+
     for ( auto ii = m_ClientToFdMap.cbegin() ; ii != m_ClientToFdMap.cend() ; ) {
       auto jj = ii++;
       DNSServiceRefDeallocate(jj->first);
     }
+    m_ClientToFdMap.clear();
     for ( auto ii = m_ServerToFdMap.cbegin() ; ii != m_ServerToFdMap.cend() ; ) {
       auto jj = ii++;
       DNSServiceRefDeallocate(jj->first);
     }
+    m_ServerToFdMap.clear();
+    stopThread(-1);
   }
 
   std::unordered_set<uint32_t> if_idxs;
@@ -194,7 +197,12 @@ public:
           for ( auto ii = m_ClientToFdMap.cbegin() ; ii != m_ClientToFdMap.cend() ; ) {
             auto jj = ii++;
             if (FD_ISSET(jj->second, &readfds) ) {
-              if((DNSServiceProcessResult(jj->first)!=0)) jassertfalse;
+
+              if((DNSServiceProcessResult(jj->first)!=0)){
+                // should happen only at the deletion of Pimpl
+                if(threadShouldExit())return;
+                jassertfalse;
+              }
               if ( ++count > 10 )
                 break;
             }

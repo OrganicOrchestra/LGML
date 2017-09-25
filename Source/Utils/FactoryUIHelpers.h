@@ -9,7 +9,7 @@
  */
 
 #pragma once
-#include "JuceHeader.h"
+#include "../JuceHeaderUI.h"
 
 namespace FactoryUIHelpers{
 

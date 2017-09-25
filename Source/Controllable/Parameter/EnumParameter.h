@@ -102,7 +102,7 @@ class EnumParameter : public Parameter,public EnumParameterModel::Listener,publi
 {
 public:
   DECLARE_OBJ_TYPE(EnumParameter)
-  EnumParameter(const String &niceName, const String &description=String::empty, EnumParameterModel * modelInstance=nullptr, bool userCanEnterText=false,bool enabled = true);
+  EnumParameter(const String &niceName, const String &description=String::empty, EnumParameterModel * modelInstance=nullptr,const var & defaultValue=var::undefined(), bool userCanEnterText=false,bool enabled = true);
   ~EnumParameter() ;
   
   static Identifier selectedSetIdentifier;

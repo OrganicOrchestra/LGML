@@ -19,6 +19,7 @@
 #include "ParameterUIFactory.h"
 #include "../ParameterContainer.h"
 #include "../../../Preset/PresetChooserUI.h"
+#include "../../../UI/Style.h"
 
 GenericParameterContainerEditor::GenericParameterContainerEditor(ParameterContainer * _sourceContainer) :
 	InspectorEditor(),
@@ -263,14 +264,14 @@ void CCInnerContainerUI::addParameterUI(Parameter * c)
 	if ( !c->isControllableExposed) return;
 
 
-  NamedControllableUI * cui = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c), 100);
+  NamedParameterUI * cui = new NamedParameterUI(ParameterUIFactory::createDefaultUI(c), 100);
 	parametersUI.add(cui);
 	addAndMakeVisible(cui);
 }
 
 void CCInnerContainerUI::removeParameterUI(Parameter * c)
 {
-	NamedControllableUI  * cui = getUIForParameter(c);
+	NamedParameterUI  * cui = getUIForParameter(c);
 	if (cui == nullptr) return;
 
 	removeChildComponent(cui);
@@ -278,12 +279,12 @@ void CCInnerContainerUI::removeParameterUI(Parameter * c)
 
 }
 
-NamedControllableUI  * CCInnerContainerUI::getUIForParameter(Parameter * c)
+NamedParameterUI  * CCInnerContainerUI::getUIForParameter(Parameter * c)
 {
 	for (auto &cui : parametersUI)
 	{
 
-      if(cui->controllable == c) return cui;
+      if(cui->parameter == c) return cui;
 
 	}
 

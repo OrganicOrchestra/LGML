@@ -19,7 +19,7 @@
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "../Controllable/Parameter/ParameterProxy.h"
 
-class FastMap;
+
 
 
 class FastMap :

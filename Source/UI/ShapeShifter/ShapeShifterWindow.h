@@ -17,7 +17,7 @@
 #define SHAPESHIFTERWINDOW_H_INCLUDED
 
 #include "ShapeShifterPanel.h"
-
+#include <juce_opengl/juce_opengl.h>
 class ShapeShifterWindow :
 	public ResizableWindow,
 	public ShapeShifterPanel::Listener

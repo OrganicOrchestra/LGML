@@ -16,7 +16,7 @@
 #ifndef DATA_H_INCLUDED
 #define DATA_H_INCLUDED
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderCore.h"//keep
 class NodeBase;
 
 class Data

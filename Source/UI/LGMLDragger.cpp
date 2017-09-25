@@ -28,7 +28,7 @@ juce_ImplementSingleton(LGMLDragger);
 
 class DraggedComponent : public juce::Component{
 public:
-  DraggedComponent(ControllableUI * c):originComp(c){
+  DraggedComponent(ParameterUI * c):originComp(c){
     Rectangle<int > bounds = c->getScreenBounds();
     bounds-=LGMLDragger::getInstance()->mainComp->getScreenBounds().getTopLeft();
     draggedImage = c->createComponentSnapshot(c->getLocalBounds());
@@ -44,7 +44,7 @@ public:
   }
 
 
-  ControllableUI * originComp;
+  ParameterUI * originComp;
   Image draggedImage;
   bool isDragging;
   void mouseDrag(const MouseEvent & e)override{
@@ -118,7 +118,7 @@ void LGMLDragger::setMainComponent(Component * c,TooltipWindow * _tip){
 
 
 
-void LGMLDragger::registerDragCandidate(ControllableUI * c){
+void LGMLDragger::registerDragCandidate(ParameterUI * c){
   //    unRegisterForDrag(nullptr);
 
   dragCandidate = new DraggedComponent(c);
@@ -128,7 +128,7 @@ void LGMLDragger::registerDragCandidate(ControllableUI * c){
 
 }
 
-void LGMLDragger::unRegisterDragCandidate(ControllableUI * c){
+void LGMLDragger::unRegisterDragCandidate(ParameterUI * c){
   dragCandidate = nullptr;
   if(dropCandidate){
     dropCandidate->setAlpha(1);
@@ -138,10 +138,10 @@ void LGMLDragger::unRegisterDragCandidate(ControllableUI * c){
 
 
 }
-ControllableUI * getUIForComp(Component *c){
+ParameterUI * getUIForComp(Component *c){
   Component * insp = c;
   while (insp!=nullptr){
-    if(auto vc = dynamic_cast<ControllableUI*>(insp)){
+    if(auto vc = dynamic_cast<ParameterUI*>(insp)){
       return vc;
     }
     insp = insp->getParentComponent();
@@ -153,7 +153,7 @@ void LGMLDragger::mouseEnter(const MouseEvent &e){
 
   if(auto c = getUIForComp(e.originalComponent)){
     if(!c->isMappingDest &&
-       c->mappingState==ControllableUI::MAPSOURCE &&
+       c->mappingState==ParameterUI::MAPSOURCE &&
        c->isDraggable){
       registerDragCandidate(c);
     }
@@ -175,7 +175,7 @@ void LGMLDragger::mouseUp(const MouseEvent &e){
 void LGMLDragger::mouseExit(const MouseEvent &e){
   if(auto c = getUIForComp(e.originalComponent)){
     if(!c->isMappingDest &&
-       c->mappingState==ControllableUI::MAPSOURCE &&
+       c->mappingState==ParameterUI::MAPSOURCE &&
        c->isDraggable &&
        !c->contains(e.getEventRelativeTo(c).getPosition())){
       unRegisterDragCandidate(c);
@@ -192,9 +192,9 @@ void setAllComponentMappingState(Component * c,bool b){
   for(int i = 0 ; i < c->getNumChildComponents() ; i++){
     Component *  ch = c->getChildComponent(i);
     if(ch->isVisible()){
-      if(auto lch = dynamic_cast<ControllableUI*>(ch)){
-        if(lch->controllable->isMappable()){
-          if(!dynamic_cast<NamedControllableUI*>(ch)){
+      if(auto lch = dynamic_cast<ParameterUI*>(ch)){
+        if(lch->parameter->isMappable()){
+          if(!dynamic_cast<NamedParameterUI*>(ch)){
             lch->setMappingState(b);
           }
         }
@@ -214,7 +214,7 @@ void LGMLDragger::setMappingActive(bool b){
   }
   else{
     MouseInputSource mainMouse = Desktop::getInstance().getMainMouseSource();
-    if(auto c = dynamic_cast<ControllableUI*>(mainMouse.getComponentUnderMouse())){
+    if(auto c = dynamic_cast<ParameterUI*>(mainMouse.getComponentUnderMouse())){
       registerDragCandidate(c);
     }
   }
@@ -266,7 +266,7 @@ void LGMLDragger::dragComponent (Component* const componentToDrag, const MouseEv
     auto curComp = mainComp->getComponentAt(e.getEventRelativeTo(mainComp).getPosition());
     // juce still return child of component that doesn't allow click on child
     if(curComp)curComp=curComp->getParentComponent();
-    auto curTarget = dynamic_cast<ControllableUI*> (curComp);
+    auto curTarget = dynamic_cast<ParameterUI*> (curComp);
     if(curTarget!=dropCandidate && (!curTarget ||curTarget->isMappingDest)){
       if(dropCandidate){dropCandidate->setAlpha(1);}
       dropCandidate = curTarget;
@@ -282,7 +282,7 @@ void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseE
   auto target_C = dynamic_cast<ParameterProxyUI*>(dropCandidate);
   jassert(!dropCandidate || target_C);
   if(dropCandidate){
-    target_C->paramProxy->setParamToReferTo(dragCandidate->originComp->controllable->getParameter());
+    target_C->paramProxy->setParamToReferTo(dragCandidate->originComp->parameter);
   }
   else{
 
@@ -292,7 +292,7 @@ void LGMLDragger::endDraggingComponent(Component *  componentToDrag,const MouseE
   unRegisterDragCandidate(nullptr);
 }
 
-void LGMLDragger::setSelected(ControllableUI * c){
+void LGMLDragger::setSelected(ParameterUI * c){
 
   if(c){
     Component *i  = c;
@@ -309,18 +309,17 @@ void LGMLDragger::setSelected(ControllableUI * c){
 
   if(c!=selected.get()){
     if(selected.get()){
-      ((ControllableUI*)selected.get())->isSelected = false;
+      selected->isSelected = false;
       selected->repaint();
     }
 
     selected = c;
     if(selected.get()){
-      auto *cUI = ((ControllableUI*)selected.get());
-      cUI->isSelected = true;
+      selected->isSelected = true;
       selected->repaint();
       
     }
-    listeners.call(&Listener::selectionChanged,c? c->controllable:nullptr);
+    listeners.call(&Listener::selectionChanged,c? c->parameter:nullptr);
     
   }
 }

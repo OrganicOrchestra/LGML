@@ -16,6 +16,7 @@
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../../Controllable/Parameter/UI/StringParameterUI.h"
 
+
 JsEnvironmentUI::JsEnvironmentUI(JSEnvContainer * _cont) :cont(_cont) {
   env = cont->jsEnv;
   jassert(env);

@@ -60,12 +60,14 @@ void MIDIManager::updateDeviceList(bool updateInput)
 
 	for (auto &d : devicesToAdd)
 	{
+//    jassert(!d.contains("error"));
 		listeners.call(updateInput ? &MIDIManagerListener::midiInputAdded : &MIDIManagerListener::midiOutputAdded, d);
 		NLOG("MIDIManager", "MIDI " + String(updateInput?"Input":"Output") + " Added : " + d);
 	}
 
 	for (auto &d : devicesToRemove)
 	{
+//    jassert(!d.contains("error"));
 		listeners.call(updateInput ? &MIDIManagerListener::midiInputRemoved : &MIDIManagerListener::midiOutputRemoved, d);
 		NLOG("MIDIManager", "MIDI " + String(updateInput ? "Input" : "Output") + " Removed : " + d);
 	}
@@ -81,7 +83,7 @@ void MIDIManager::updateDeviceList(bool updateInput)
 void MIDIManager::enableInputDevice(const String & deviceName)
 {
 	DeviceUsageCount * duc = getDUCForInputDeviceName(deviceName);
-	DBG("MIDIManager  Enable Input device : " << deviceName << ", duc != null ?" << String(duc != nullptr));
+	DBG("MIDIManager  Enable Input device : " << deviceName << ", duc != null ?" << (duc != nullptr?"true":"false"));
 
 	if (duc == nullptr)
 	{

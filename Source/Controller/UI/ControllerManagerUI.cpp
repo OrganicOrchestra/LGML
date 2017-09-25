@@ -52,13 +52,22 @@ void ControllerManagerUI::clear()
 
 void ControllerManagerUI::controllerAdded(Controller * c)
 {
-  MessageManager::getInstance()->callAsync([this,c](){addControllerUI(c);});
+  if(MessageManager::getInstance()->isThisTheMessageThread()){
+    addControllerUI(c);
+  }
+  else{
+    MessageManager::getInstance()->callAsync([this,c](){ addControllerUI(c);});
+  }
 }
 
 void ControllerManagerUI::controllerRemoved(Controller * c)
 {
-
-  MessageManager::getInstance()->callAsync([this,c](){ removeControllerUI(c);});
+  if(MessageManager::getInstance()->isThisTheMessageThread()){
+    removeControllerUI(c);
+  }
+  else{
+    MessageManager::getInstance()->callAsync([this,c](){ removeControllerUI(c);});
+  }
 
 }
 

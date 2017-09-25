@@ -60,9 +60,9 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 
 	if (linkedParamUI != nullptr)
 	{
-//    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI->ownedControllableUI.get());
-    auto * cUI = dynamic_cast<ControllableUI*>(linkedParamUI.get());
-		if (cUI && p && cUI->controllable == (Controllable*)p) return;
+//    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI->ownedParameterUI.get());
+    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get());
+		if (cUI && p && cUI->parameter == p) return;
 
 		removeChildComponent(linkedParamUI);
 		linkedParamUI = nullptr;
@@ -70,10 +70,10 @@ void ParameterProxyUI::setLinkedParamUI(Parameter * p)
 
 
 
-//  linkedParamUI = p?new NamedControllableUI(ParameterUIFactory::createDefaultUI(p),100,true):nullptr;
+//  linkedParamUI = p?new NamedParameterUI(ParameterUIFactory::createDefaultUI(p),100,true):nullptr;
   if(dynamic_cast<ParameterProxy*>(p)){
     //encapsulate ui if proxy of proxy to show it explicitly
-    auto * eUI =  new NamedControllableUI(ParameterUIFactory::createDefaultUI(p),20);
+    auto * eUI =  new NamedParameterUI(ParameterUIFactory::createDefaultUI(p),20);
     eUI->controllableLabel.setText("proxy : " + p->niceName, dontSendNotification);
     linkedParamUI = eUI;
   }
@@ -110,7 +110,7 @@ void ParameterProxyUI::linkedParamChanged(ParameterProxy * p)
 
 void ParameterProxyUI::choosedControllableChanged(ControllableReferenceUI*,Controllable * c)
 {
-  auto t = c->getParameter();
+  auto t = Parameter::fromControllable(c);
   paramProxy->setParamToReferTo(t);
 
 

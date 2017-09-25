@@ -16,7 +16,7 @@
 #include "NodeContainerContentUI.h"
 #include "../../Manager/UI/NodeManagerUI.h"
 #include "../../../UI/ShapeShifter/ShapeShifterManager.h"
-#include "../../../Controllable/UI/ControllableUI.h"
+#include "../../../Controllable/Parameter/UI/ParameterUI.h"
 
 
 NodeContainerContentUI::NodeContainerContentUI() :

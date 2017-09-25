@@ -165,6 +165,7 @@ const File & JsEnvironment::getCurrentFile() { return currentFile;}
 String JsEnvironment::getCurrentFilePath() { return getEngine()->getNormalizedFilePath(currentFile);}
 
 void JsEnvironment::internalLoadFile(const File &f ){
+
   if(triesToLoad<=0){stopTimer(autoWatchTimer.id);return;}
   StringArray destLines;
   f.readLines(destLines);
@@ -578,7 +579,7 @@ var JsEnvironment::createParameterListenerObject(const var::NativeFunctionArgs &
   if (auto  p = getObjectPtrFromObject<Parameter>(a.arguments[0].getDynamicObject())) {
     JsEnvironment * originEnv = dynamic_cast<JsEnvironment*>(a.thisObject.getDynamicObject());
     if (originEnv) {
-      JsControllableListenerObject * ob = new JsControllableListenerObject(originEnv, p);
+      JsParameterListenerObject * ob = new JsParameterListenerObject(originEnv, p);
       originEnv->parameterListenerObjects.add(ob);
       return ob->object;
     }
@@ -593,9 +594,13 @@ JSEnvContainer::JSEnvContainer(JsEnvironment * pEnv):
 ParameterContainer("jsParams"),jsEnv(pEnv){
 
   scriptPath = addNewParameter<StringParameter>("ScriptPath", "path for js script", "");
+  scriptPath->isControllableExposed = false;
   loadT =  addNewParameter<Trigger>("loadFile","open dialog to choose file to load");
+  loadT->isControllableExposed = false;
   reloadT=  addNewParameter<Trigger>("reloadFile","reload current file");
+  reloadT->isControllableExposed = false;
   showT=  addNewParameter<Trigger>("showFile","open file in text editor");
+  showT->isControllableExposed = false;
   autoWatch = addNewParameter<BoolParameter>("autoWatch","auto reload if file has been changed",false);
   autoWatch->isSavable = false;
   logT =  addNewParameter<Trigger>("LogEnvironment","print hierarchy of JS objects");
@@ -607,6 +612,7 @@ Component * JSEnvContainer::getCustomEditor(){
 
 void JSEnvContainer::onContainerParameterChanged(Parameter *p) {
   if(p==scriptPath){
+    
     if(!jsEnv->loadFile(scriptPath->stringValue()) ){
 
     }
@@ -644,8 +650,8 @@ void JSEnvContainer::onContainerTriggerTriggered(Trigger *p){
 
 
 //////////////////////
-// JsControllableListenerObject
+// JsParameterListenerObject
 
 
-Identifier JsControllableListenerObject::parameterChangedFId("parameterChanged");
-Identifier JsControllableListenerObject::parameterObjectId("parameter");
+Identifier JsParameterListenerObject::parameterChangedFId("parameterChanged");
+Identifier JsParameterListenerObject::parameterObjectId("parameter");

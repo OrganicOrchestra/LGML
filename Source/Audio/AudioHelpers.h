@@ -17,7 +17,7 @@
 #define AUDIOHELPERS_H_INCLUDED
 
 #pragma once
-#include "JuceHeader.h"
+#include "../JuceHeaderAudio.h"
 #pragma warning( disable : 4244 )
 
 // type to use for clock

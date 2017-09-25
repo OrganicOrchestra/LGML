@@ -134,8 +134,8 @@ ParameterContainer *  FastMapper::addContainerFromObject(const String & /*name*/
 
 
 
-void FastMapper::selectionChanged(Controllable *c ) {
-  setPotentialInput(c?c->getParameter():nullptr);
+void FastMapper::selectionChanged(Parameter *c ) {
+  setPotentialInput(Parameter::fromControllable(c));
 
 };
 
@@ -157,7 +157,9 @@ void FastMapper::setContainerToListen(ControllableContainer *newC){
 }
 void FastMapper::controllableFeedbackUpdate(ControllableContainer *notif,Controllable *ori) {
   ParameterContainer::controllableFeedbackUpdate(notif,ori);
-  if(notif==selectedContainerToListenTo && ori->getParameter()->isEditable && LGMLDragger::getInstance()->isMappingActive){
-    setPotentialOutput(ori->getParameter());
+  if(auto p= Parameter::fromControllable(ori)){
+  if(notif==selectedContainerToListenTo && p->isEditable && LGMLDragger::getInstance()->isMappingActive){
+    setPotentialOutput(p);
+  }
   }
 };

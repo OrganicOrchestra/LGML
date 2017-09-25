@@ -14,7 +14,7 @@
 
 
 #include "ControllerEditor.h"
-#include "../../UI/Style.h"
+
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 ControllerEditor::ControllerEditor(Controller * _controller,bool generateAuto) :
 	InspectorEditor(),

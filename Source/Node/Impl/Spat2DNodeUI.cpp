@@ -85,9 +85,9 @@ void Spat2DNodeContentUI::init()
   spatModeUI = ParameterUIFactory::createDefaultUI(spatNode->spatMode);
 	addAndMakeVisible(spatModeUI);
 
-  inputStepper = new NamedControllableUI(ParameterUIFactory::createDefaultUI(spatNode->numSpatInputs), 80);
+  inputStepper = new NamedParameterUI(ParameterUIFactory::createDefaultUI(spatNode->numSpatInputs), 80);
 	addAndMakeVisible(inputStepper);
-	outputStepper = new NamedControllableUI(ParameterUIFactory::createDefaultUI(spatNode->numSpatOutputs), 80);
+	outputStepper = new NamedParameterUI(ParameterUIFactory::createDefaultUI(spatNode->numSpatOutputs), 80);
 	addAndMakeVisible(outputStepper);
 
 	radiusUI = new FloatSliderUI(spatNode->targetRadius);

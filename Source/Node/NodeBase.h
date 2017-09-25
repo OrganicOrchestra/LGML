@@ -69,15 +69,12 @@ public:
 
   
 
-  virtual const String getName() const override
-  {
-    return nameParam->stringValue();
-  }
+  virtual const String getName() const override;
 
 
-
+  ///////////
   //AUDIO PROCESSOR
-
+  ///////////
 
 
   virtual bool setPreferedNumAudioInput(int num);
@@ -123,7 +120,10 @@ public:
   float globalRMSValueIn ;
   float globalRMSValueOut ;
 
+  //////////////
   //DATA
+  //////////////
+  
   virtual Data* getInputData(int dataIndex) override;
   virtual Data* getOutputData(int dataIndex) override;
 
@@ -165,8 +165,19 @@ public:
   virtual void processInputDataChanged(Data *) {} // to be overriden by child classes
   virtual void processOutputDataUpdated(Data *) {} // to be overriden by child classes
 
+protected:
 
+  void setParentNodeContainer(NodeContainer * _parentNodeContainer)override;
+  
 private:
+
+  AudioProcessorGraph::Node *  getAudioNode();
+  friend class NodeConnection;
+  virtual void addToAudioGraph(AudioProcessorGraph*);
+  virtual void removeFromAudioGraph();
+  AudioProcessorGraph::Node::Ptr audioNode;
+  AudioProcessor * getAudioProcessor();
+
   WeakReference<NodeBase>::Master masterReference;
   friend class WeakReference<NodeBase>;
 
@@ -196,7 +207,7 @@ private:
       startTimerHz(30);
     }
     void timerCallback()override{
-      owner->ConnectableNode::rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, owner, owner->globalRMSValueIn, owner->globalRMSValueOut);
+      owner->ConnectableNode::rmsListeners.call(&ConnectableNode::RMSListener::RMSChanged, owner->globalRMSValueIn, owner->globalRMSValueOut);
       for (int i = 0; i < owner->getTotalNumInputChannels(); i++)
       {
         owner->ConnectableNode::rmsChannelListeners.call(&ConnectableNode::RMSChannelListener::channelRMSInChanged, owner, owner->rmsValuesIn[i], i);
@@ -214,10 +225,27 @@ private:
   RMSTimer rmsTimer;
   
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeBase)
-  
+  friend struct ContainerDeletePolicy<NodeBase>;
 };
 
 
+template<> struct ContainerDeletePolicy<NodeBase>{
+  static void destroy (NodeBase* object)
+  {
+    ignoreUnused (sizeof (NodeBase));
+
+    if(object->audioNode.get()){
+      object->removeFromAudioGraph();
+      jassert(object->audioNode.get()->getReferenceCount()==1);
+      // audioNode is owning the pointer so triggers it's deletion instead
+      object->audioNode = nullptr;
+    }
+    else{
+      delete object;
+    }
+  }
+
+};
 
 
 #endif  // NODEBASE_H_INCLUDED

@@ -15,7 +15,7 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include "../JuceHeaderCore.h"
 
 class OSCClientRecord{
 public:

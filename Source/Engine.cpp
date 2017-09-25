@@ -11,9 +11,13 @@
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
 */
+#define DO_PRAGMA(x) _Pragma (#x)
+#define TODO(x) DO_PRAGMA(message ("TODO - " #x))
+
 
 
 #include "Engine.h"
+
 #include "Controller/Impl/SerialManager.h"
 #include "Logger/LGMLLogger.h"
 #include "Utils/DebugHelpers.h"
@@ -190,12 +194,14 @@ void Engine::clear(){
   ControllerManager::getInstance()->clear();
 //  JsGlobalEnvironment::getInstance()->getEnv()->clear();
 //  graphPlayer.setProcessor(nullptr);
+
+  PresetManager::getInstance()->clear();
   
   NodeManager::getInstance()->clear();
 //graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
 
 
-  PresetManager::getInstance()->clear();
+
 
 //  suspendAudio(false);
 

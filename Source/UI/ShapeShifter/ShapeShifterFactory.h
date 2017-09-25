@@ -16,7 +16,7 @@
 #ifndef SHAPESHIFTERFACTORY_H_INCLUDED
 #define SHAPESHIFTERFACTORY_H_INCLUDED
 
-#include "JuceHeader.h"//keep
+#include "../../JuceHeaderUI.h"//keep
 
 class ShapeShifterContent;
 

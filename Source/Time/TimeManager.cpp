@@ -483,7 +483,7 @@ void TimeManager::shouldPlay(bool now){
 void TimeManager::updateState(){
   String dbg;
   if(timeState.isPlaying != desiredTimeState.isPlaying){
-    dbg+="play:"+String(timeState.isPlaying)+"/"+String(desiredTimeState.isPlaying);
+    dbg+="play:" + String(timeState.isPlaying?"1":"0") + "/" + (desiredTimeState.isPlaying?"1":"0");
     timeManagerListeners.call(&TimeManagerListener::playStop,desiredTimeState.isPlaying);
   }
   if(timeState.time != desiredTimeState.time){

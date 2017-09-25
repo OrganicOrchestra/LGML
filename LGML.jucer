@@ -50,16 +50,6 @@
               resource="0"/>
       </GROUP>
       <GROUP id="{08B6BAA2-9B40-68D1-5C62-106F34637F77}" name="Controllable">
-        <GROUP id="{CAF7AF70-F8ED-A635-94AD-991E645C4C87}" name="UI">
-          <FILE compile="1" file="Source/Controllable/UI/ControllableEditor.cpp"
-                id="oZ8hSq" name="ControllableEditor.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Controllable/UI/ControllableEditor.h"
-                id="ihhEmz" name="ControllableEditor.h" resource="0"/>
-          <FILE compile="1" file="Source/Controllable/UI/ControllableUI.cpp"
-                id="ggDOnj" name="ControllableUI.cpp" resource="0"/>
-          <FILE compile="0" file="Source/Controllable/UI/ControllableUI.h" id="CR9B9U"
-                name="ControllableUI.h" resource="0"/>
-        </GROUP>
         <FILE compile="1" file="Source/Controllable/Controllable.cpp" id="BOYgER"
               name="Controllable.cpp" resource="0"/>
         <FILE compile="0" file="Source/Controllable/Controllable.h" id="WQ5ADm"
@@ -578,6 +568,7 @@
               resource="0"/>
         <FILE compile="0" file="Source/UI/Style.h" id="tK9vBl" name="Style.h"
               resource="0"/>
+        <FILE id="NGaIAG" name="VuMeter.cpp" compile="1" resource="0" file="Source/UI/VuMeter.cpp"/>
         <FILE compile="0" file="Source/UI/VuMeter.h" id="G2KEpA" name="VuMeter.h"
               resource="0"/>
         <GROUP id="mZBbm1" name="ShapeShifter">
@@ -687,6 +678,11 @@
             name="EngineFileDocument.cpp" resource="0"/>
       <FILE compile="0" file="Source/GitSha.h" id="k8EiOY" name="GitSha.h"
             resource="0"/>
+      <FILE id="VRl38p" name="JuceHeaderAudio.h" compile="0" resource="0"
+            file="Source/JuceHeaderAudio.h"/>
+      <FILE id="GgXgTu" name="JuceHeaderCore.h" compile="0" resource="0"
+            file="Source/JuceHeaderCore.h"/>
+      <FILE id="RhPCNk" name="JuceHeaderUI.h" compile="0" resource="0" file="Source/JuceHeaderUI.h"/>
       <FILE compile="1" file="Source/Main.cpp" id="zO82Cw" name="Main.cpp"
             resource="0"/>
     </GROUP>

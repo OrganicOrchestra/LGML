@@ -98,7 +98,7 @@ void NodeManagerUI::childBoundsChanged(Component * )
 
 bool NodeManagerUI::keyPressed(const KeyPress & key){
   if(key.getModifiers().isCommandDown() && key.getKeyCode()==KeyPress::upKey){
-    if(NodeContainer * c = (currentViewer->nodeContainer->parentNodeContainer)){
+    if(NodeContainer * c = (currentViewer->nodeContainer->getParentNodeContainer())){
         setCurrentViewedContainer(c);
         return true;
 

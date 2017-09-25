@@ -14,7 +14,7 @@
 
 
 #pragma once
-#include "JuceHeader.h"
+#include "../JuceHeaderAudio.h"
 
 #define DEFAULT_BUFFER_BLOCK_SIZE 10000 //1000000 // ~ 20s@44.1kHz should be bigger than the highest block size
 

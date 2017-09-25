@@ -69,7 +69,7 @@ void JsNodeUI::layoutUI(){
 void JsNodeUI::controllableAdded(ControllableContainer *,Controllable * c) {
     JsNode * jsNode = (JsNode*) node.get();
     if(!jsNode->jsParameters.contains((Controllable*)c))return;
-  ControllableUI * comp = new NamedControllableUI(ParameterUIFactory::createDefaultUI(c->getParameter()), 100);
+  ParameterUI * comp = new NamedParameterUI(ParameterUIFactory::createDefaultUI(Parameter::fromControllable(c)), 100);
     varUI.add(comp);
     addAndMakeVisible(comp);
     if(varUI.size() * 20>getHeight()-jsUI->getHeight()){
@@ -81,9 +81,9 @@ void JsNodeUI::controllableAdded(ControllableContainer *,Controllable * c) {
 
 }
 void JsNodeUI::controllableRemoved(ControllableContainer *,Controllable * c) {
-
+  Parameter* pToComp = Parameter::fromControllable(c);
     for(auto & comp:varUI){
-        if(comp->controllable == c){
+        if(comp->parameter == pToComp){
             removeChildComponent(comp);
             varUI.removeObject(comp);
             break;

@@ -129,7 +129,7 @@ ControllableContainer * ParameterProxy::getRoot(){
 
 bool ParameterProxy::resolveAddress(){
   if(stringValue().isNotEmpty()){
-    auto p = getRoot()->getControllableForAddress(stringValue())->getParameter();
+    auto p = Parameter::fromControllable(getRoot()->getControllableForAddress(stringValue()));
 
     setParamToReferTo(p);
   }
@@ -142,7 +142,7 @@ bool ParameterProxy::resolveAddress(){
 void ParameterProxy::controllableAdded(ControllableContainer *,Controllable * c) {
   jassert(linkedParam==nullptr);
   if(c->getControlAddress()==stringValue()){
-    setParamToReferTo(c->getParameter());
+    setParamToReferTo(Parameter::fromControllable(c));
   }
   
 }

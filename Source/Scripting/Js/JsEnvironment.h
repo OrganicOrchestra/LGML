@@ -21,7 +21,7 @@
 
 
 
-class JsControllableListenerObject;
+class JsParameterListenerObject;
 
 class JSEnvContainer;
 
@@ -237,21 +237,21 @@ private:
 
   static Identifier onUpdateIdentifier;
 
-  OwnedArray<JsControllableListenerObject> parameterListenerObjects;
-  friend class JsControllableListenerObject;
+  OwnedArray<JsParameterListenerObject> parameterListenerObjects;
+  friend class JsParameterListenerObject;
 
 };
 
 
-//
-class JsControllableListenerObject:public Parameter::AsyncListener
+
+class JsParameterListenerObject:public Parameter::AsyncListener
 {
   public :
-  JsControllableListenerObject(JsEnvironment * js,Parameter * p):jsEnv(js),parameter(p){
+  JsParameterListenerObject(JsEnvironment * js,Parameter * p):jsEnv(js),parameter(p){
     buildVarObject();
 
-    if(Parameter * pp = getParameter()){
-      pp->addAsyncParameterListener(this);
+    if(parameter){
+      parameter->addAsyncParameterListener(this);
     }
 
     else{
@@ -261,18 +261,18 @@ class JsControllableListenerObject:public Parameter::AsyncListener
   static Identifier parameterChangedFId;
   static Identifier parameterObjectId;
 
-  virtual ~JsControllableListenerObject(){
-    if(Parameter * pp = getParameter()) pp->removeAsyncParameterListener(this);
+  virtual ~JsParameterListenerObject(){
+    if(parameter.get()) parameter->removeAsyncParameterListener(this);
   };
 
-  Parameter * getParameter(){ return dynamic_cast<Parameter*>(parameter.get());}
-  Trigger * getTrigger(){ return dynamic_cast<Trigger*>(parameter.get());}
+
+
   void buildVarObject(){
     object= new DynamicObject();
     if(parameter.get()){
       DynamicObject * dob = object.getDynamicObject();
       dob->setProperty(parameterObjectId, parameter->createDynamicObject());
-      dob->setMethod(parameterChangedFId,&JsControllableListenerObject::dummyCallback);
+      dob->setMethod(parameterChangedFId,&JsParameterListenerObject::dummyCallback);
 
     }
   }
@@ -290,7 +290,6 @@ class JsControllableListenerObject:public Parameter::AsyncListener
 
   JsEnvironment* jsEnv;
   WeakReference<Parameter> parameter;
-  bool isTrigger;
   var object;
 };
 

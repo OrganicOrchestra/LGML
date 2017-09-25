@@ -9,6 +9,8 @@
 */
 
 #pragma once
+#include "../JuceHeaderUI.h"
+#include <juce_opengl/juce_opengl.h>
 #include "LGMLDragger.h"
 
 class MainContentComponent;

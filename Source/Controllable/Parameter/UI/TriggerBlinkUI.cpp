@@ -91,7 +91,7 @@ Trigger* TriggerBlinkUI::getTrigger(){
 }
 
 void TriggerBlinkUI::mouseDown(const MouseEvent &e) {
-	ControllableUI::mouseDown(e);
+	ParameterUI::mouseDown(e);
 	if (e.mods.isLeftButtonDown())
 	{
 		getTrigger()->trigger();

@@ -16,7 +16,7 @@
 #ifndef BETTERINTSTEPPER_H_INCLUDED
 #define BETTERINTSTEPPER_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "../../../JuceHeaderUI.h"
 
 class BetterStepper : public Slider
 {

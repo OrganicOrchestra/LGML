@@ -16,7 +16,7 @@
 #ifndef VSTMANAGER_H_INCLUDED
 #define VSTMANAGER_H_INCLUDED
 
-#include "JuceHeader.h"//keep
+#include "../JuceHeaderAudio.h"//keep
 
 
 ApplicationCommandManager& getCommandManager();

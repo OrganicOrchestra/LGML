@@ -16,7 +16,7 @@
 #ifndef NODEFACTORY_H_INCLUDED
 #define NODEFACTORY_H_INCLUDED
 #pragma once
-#include "JuceHeader.h"//keep
+#include "../../JuceHeaderCore.h"//keep
 #include "../../Utils/FactoryBase.h"
 
 class NodeBase;

@@ -17,6 +17,7 @@
 #include "../Engine.h"
 #include "Style.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
+//#include "../Controllable/UI/ParameterEditor.h"
 
 
 
@@ -192,11 +193,11 @@ paramUI(nullptr)
   addAndMakeVisible(&label);
   label.setInterceptsMouseClicks(false, false);
   if(!_item->isContainer ){
-    paramUI = ParameterUIFactory::createDefaultUI(item->parameter->getParameter());
+    paramUI = ParameterUIFactory::createDefaultUI(item->parameter);
 
   }
   else{
-    paramUI = ParameterUIFactory::createDefaultUI(item->container->nameParam->getParameter());
+    paramUI = ParameterUIFactory::createDefaultUI(item->container->nameParam);
   }
   addAndMakeVisible(paramUI);
 }
@@ -241,5 +242,5 @@ void OutlinerItemComponent::mouseDown(const MouseEvent & e)
 InspectorEditor * OutlinerItemComponent::createEditor()
 {
   if (item->isContainer) return InspectableComponent::createEditor();
-  return new ControllableEditor(this,item->parameter);
+  return nullptr;//new ParameterEditor(this,item->parameter);
 }

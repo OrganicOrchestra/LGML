@@ -20,7 +20,6 @@
 #include "ShapeShifter/ShapeShifterContent.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
 #include "Inspector/InspectableComponent.h"
-#include "../Controllable/UI/ControllableEditor.h"
 
 
 class OutlinerItem;

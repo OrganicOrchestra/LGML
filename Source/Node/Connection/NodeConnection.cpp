@@ -18,9 +18,13 @@
 #include "../NodeContainer/NodeContainer.h"
 #include "../ConnectableNode.h"
 IMPL_OBJ_TYPE(NodeConnection)
-NodeConnection::NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, NodeConnection::ConnectionType connectionType,NodeConnection::Model * root) :
-sourceNode(sourceNode),
-destNode(destNode),
+
+NodeBase * getAsNodeBase(WeakReference<ConnectableNode> & n){
+  return (NodeBase*) n.get();
+}
+NodeConnection::NodeConnection(ConnectableNode * _sourceNode, ConnectableNode * _destNode, NodeConnection::ConnectionType connectionType,NodeConnection::Model * root) :
+sourceNode(_sourceNode),
+destNode(_destNode),
 connectionType(connectionType)
 {
 
@@ -28,7 +32,8 @@ connectionType(connectionType)
   if(connectionType == AUDIO){
     // init with all possible Audio connections
     if(!root){
-      int maxCommonAudioConnections = jmin(sourceNode->getAudioNode(true)->getProcessor()->getTotalNumOutputChannels(), destNode->getAudioNode(false)->getProcessor()->getTotalNumInputChannels());
+      int maxCommonAudioConnections = jmin(getAsNodeBase(sourceNode)->getTotalNumOutputChannels(),
+      getAsNodeBase(destNode)->getTotalNumInputChannels());
       for (int i = 0; i < maxCommonAudioConnections; i++) {
         addAudioGraphConnection(i, i);
       }
@@ -73,8 +78,8 @@ NodeConnection::~NodeConnection()
   masterReference.clear();
 }
 AudioProcessorGraph * NodeConnection::getParentGraph(){
-  jassert(sourceNode->parentNodeContainer == destNode->parentNodeContainer );
-  return sourceNode->parentNodeContainer->getAudioGraph();
+  jassert(sourceNode->getParentNodeContainer() == destNode->getParentNodeContainer() );
+  return sourceNode->getParentNodeContainer()->getAudioGraph();
 
 }
 
@@ -84,7 +89,7 @@ bool NodeConnection::addAudioGraphConnection(uint32 sourceChannel, uint32 destCh
   bool result = true;
 
   if(AudioProcessorGraph * g = getParentGraph()){
-    result = g->addConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
+    result = g->addConnection(getAsNodeBase(sourceNode)->getAudioNode()->nodeId, sourceChannel, getAsNodeBase(destNode)->getAudioNode()->nodeId, destChannel);
 		} else
     {
       result = false;
@@ -105,7 +110,8 @@ void NodeConnection::removeAudioGraphConnection(uint32 sourceChannel, uint32 des
   AudioConnection ac = AudioConnection(sourceChannel, destChannel);
 
   if(AudioProcessorGraph * g = getParentGraph())
-    g->removeConnection(sourceNode->getAudioNode(false)->nodeId, sourceChannel, destNode->getAudioNode(true)->nodeId, destChannel);
+    g->removeConnection(getAsNodeBase(sourceNode)->getAudioNode()->nodeId, sourceChannel,
+                        getAsNodeBase(destNode)->getAudioNode()->nodeId, destChannel);
 
 
   model.audioConnections.removeAllInstancesOf(ac);
@@ -117,8 +123,8 @@ void NodeConnection::removeAllAudioGraphConnections()
 {
 
   if(sourceNode.get() && destNode.get()){
-    for(int i = 0 ; i < sourceNode->getAudioNode()->getProcessor()->getTotalNumOutputChannels() ; i++){
-      for(int j = 0 ; j < destNode->getAudioNode()->getProcessor()->getTotalNumInputChannels() ; j++){
+    for(int i = 0 ; i < getAsNodeBase(sourceNode)->getTotalNumOutputChannels() ; i++){
+      for(int j = 0 ; j < getAsNodeBase(destNode)->getTotalNumInputChannels() ; j++){
         removeAudioGraphConnection(i,j);
       }
     }
@@ -194,7 +200,10 @@ void NodeConnection::removeAllDataGraphConnectionsForData(Data * data, bool isSo
 
 void NodeConnection::remove()
 {
-  listeners.call(&NodeConnection::Listener::askForRemoveConnection,this);
+  listeners.call(&Listener::connectionRemoved,this);
+  if(auto parent = sourceNode->getParentNodeContainer()){
+    parent->removeConnection(this);
+  }
 }
 
 void NodeConnection::audioInputAdded(ConnectableNode * , int )
@@ -270,10 +279,10 @@ DynamicObject * NodeConnection::getObject()
     return data;
   }
   ConnectableNode * tSource = sourceNode;
-  if (auto s = dynamic_cast<ContainerOutNode*>(sourceNode.get())) tSource = (s)->parentNodeContainer;
+  if (auto s = dynamic_cast<ContainerOutNode*>(sourceNode.get())) tSource = (s)->getParentNodeContainer();
 
   ConnectableNode * tDest = destNode;
-  if(auto s = dynamic_cast<ContainerInNode*>(destNode.get())) tDest = (s)->parentNodeContainer;
+  if(auto s = dynamic_cast<ContainerInNode*>(destNode.get())) tDest = (s)->getParentNodeContainer();
 
   data->setProperty("srcNode", tSource->shortName);
   data->setProperty("dstNode", tDest->shortName);

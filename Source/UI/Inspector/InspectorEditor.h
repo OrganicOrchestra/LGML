@@ -16,7 +16,7 @@
 #ifndef INSPECTOREDITOR_H_INCLUDED
 #define INSPECTOREDITOR_H_INCLUDED
 
-#include "JuceHeader.h"//keep
+#include "../../JuceHeaderUI.h"//keep
 
 class InspectableComponent;
 

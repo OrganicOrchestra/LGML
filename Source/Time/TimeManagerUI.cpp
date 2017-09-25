@@ -15,6 +15,7 @@
 
 #include "TimeManagerUI.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
+#include "../UI/Style.h"
 
 
 TimeManagerUI::TimeManagerUI(const String &contentName, TimeManager * _timeManager) :

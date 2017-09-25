@@ -15,13 +15,14 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include "../JuceHeaderUI.h"
 
 //DBGinclude
 #include "../Controllable/Controllable.h"
 
-
+class ParameterUI;
 class DraggedComponent;
+
 class LGMLDragger : MouseListener{
 public:
 
@@ -34,8 +35,8 @@ public:
   Component * mainComp;
   TooltipWindow * tip;
 
-  void registerDragCandidate(ControllableUI * c);
-  void unRegisterDragCandidate(ControllableUI * c);
+  void registerDragCandidate(ParameterUI * c);
+  void unRegisterDragCandidate(ParameterUI * c);
 
 
   void mouseEnter(const MouseEvent &e)override;
@@ -54,17 +55,17 @@ public:
   void toggleMappingMode();
   bool isMappingActive;
 
-  void setSelected(ControllableUI *);
+  void setSelected(ParameterUI *);
 
   Component*  dropCandidate;
 
-  WeakReference<Component> selected;
+  WeakReference<ParameterUI> selected;
 
 
   class Listener{
   public:
     virtual ~Listener(){};
-    virtual void selectionChanged(Controllable *) = 0;
+    virtual void selectionChanged(Parameter *) = 0;
   };
   void addSelectionListener(Listener* l ){listeners.add(l);}
   void removeSelectionListener(Listener* l ){listeners.remove(l);}

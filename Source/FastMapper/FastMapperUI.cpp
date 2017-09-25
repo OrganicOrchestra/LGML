@@ -37,8 +37,8 @@ fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
   addAndMakeVisible(addFastMapBt);
 
 
-  potentialIn = new NamedControllableUI(ParameterUIFactory::createDefaultUI(fastMapper->potentialIn),150);
-  potentialOut= new NamedControllableUI(ParameterUIFactory::createDefaultUI(fastMapper->potentialOut),150);
+  potentialIn = new NamedParameterUI(ParameterUIFactory::createDefaultUI(fastMapper->potentialIn),150);
+  potentialOut= new NamedParameterUI(ParameterUIFactory::createDefaultUI(fastMapper->potentialOut),150);
   addAndMakeVisible(potentialIn);
   addAndMakeVisible(potentialOut);
   resetAndUpdateView();

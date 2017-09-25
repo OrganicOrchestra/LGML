@@ -125,7 +125,7 @@ public ButtonListener
       addAndMakeVisible(b);
       b->addListener(this);
 
-      c = c->parentNodeContainer;
+      c = c->getParentNodeContainer();
 
     }
 
@@ -191,7 +191,7 @@ public ButtonListener
     NodeContainer * c = nmui->currentViewer->nodeContainer;
     for (int i = pathButtons.size() - 1; i > bIndex; i--)
     {
-      c = c->parentNodeContainer;
+      c = c->getParentNodeContainer();
     }
     
     nmui->setCurrentViewedContainer(c);

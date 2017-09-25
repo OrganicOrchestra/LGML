@@ -20,6 +20,8 @@
 #include "Node/Impl/AudioDeviceInNode.h"
 #include "Node/Impl/AudioDeviceOutNode.h"
 
+#include "JuceHeader.h" // for project info
+
 /*================================
  this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
  */

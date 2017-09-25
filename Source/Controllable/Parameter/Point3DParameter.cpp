@@ -20,14 +20,14 @@ Point3DParameter::Point3DParameter(const String & niceName, const String & descr
 {
 }
 
-void Point3DParameter::setPoint(Vector3D<float> _value)
-{
-	var d;
-	d.append(_value.x);
-	d.append(_value.y);
-	d.append(_value.z);
-	setValue(d);
-}
+//void Point3DParameter::setPoint(Vector3D<float> _value)
+//{
+//	var d;
+//	d.append(_value.x);
+//	d.append(_value.y);
+//	d.append(_value.z);
+//	setValue(d);
+//}
 
 void Point3DParameter::setValueInternal(var & _value)
 {
@@ -36,9 +36,9 @@ void Point3DParameter::setValueInternal(var & _value)
 	y = _value[1];
 }
 
-Vector3D<float> * Point3DParameter::getPoint() {
-	return new Vector3D<float>(x, y,z);
-}
+//Vector3D<float> * Point3DParameter::getPoint() {
+//	return new Vector3D<float>(x, y,z);
+//}
 
 bool Point3DParameter::checkValueIsTheSame(const var & v1, const var& v2)
 {

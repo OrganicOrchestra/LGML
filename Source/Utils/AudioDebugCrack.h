@@ -16,7 +16,7 @@
 #ifndef AudioDebugCrack_H_INCLUDED
 #define AudioDebugCrack_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "../JuceHeaderAudio.h"
 #define FORCE_DISABLE_CRACK 1
 
 

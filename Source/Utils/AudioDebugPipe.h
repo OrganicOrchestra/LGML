@@ -16,7 +16,7 @@
 #ifndef AUDIODEBUGPIPE_H_INCLUDED
 #define AUDIODEBUGPIPE_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "../JuceHeaderAudio.h"
 
 
 #define FORCE_DISABLE_DEBUGPIPE 1
