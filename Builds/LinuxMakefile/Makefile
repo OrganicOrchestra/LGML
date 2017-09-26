@@ -229,6 +229,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/Outliner_147676ac.o \
   $(JUCE_OBJDIR)/PluginWindow_fd769e3f.o \
   $(JUCE_OBJDIR)/ProgressWindow_59121af9.o \
+  $(JUCE_OBJDIR)/Style_3e7389bf.o \
   $(JUCE_OBJDIR)/VuMeter_47d19158.o \
   $(JUCE_OBJDIR)/GapGrabber_4206bb5c.o \
   $(JUCE_OBJDIR)/ShapeShifter_4966cb1d.o \
@@ -889,6 +890,11 @@ $(JUCE_OBJDIR)/PluginWindow_fd769e3f.o: ../../Source/UI/PluginWindow.cpp
 $(JUCE_OBJDIR)/ProgressWindow_59121af9.o: ../../Source/UI/ProgressWindow.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ProgressWindow.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/Style_3e7389bf.o: ../../Source/UI/Style.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling Style.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/VuMeter_47d19158.o: ../../Source/UI/VuMeter.cpp

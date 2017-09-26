@@ -297,10 +297,10 @@ void ConnectableNodeUI::MainComponentContainer::setNodeAndNodeUI(ConnectableNode
 void ConnectableNodeUI::MainComponentContainer::paint(Graphics & g)
 {
   if(!connectableNodeUI->connectableNode.get())return;
-  g.setColour(connectableNodeUI->connectableNode->enabledParam->boolValue() ? PANEL_COLOR : PANEL_COLOR.darker(.7f));
+  g.setColour(connectableNodeUI->connectableNode->enabledParam->boolValue() ? findColour(LGMLColors::elementBackground) : findColour(LGMLColors::elementBackground).darker(.7f));
   g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
 
-  g.setColour(connectableNodeUI->isSelected ? HIGHLIGHT_COLOR : LIGHTCONTOUR_COLOR);
+  g.setColour(connectableNodeUI->isSelected ? findColour(TextButton::buttonOnColourId) : findColour(TextButton::textColourOffId));
   g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(1), 4.f, connectableNodeUI->isSelected ? 2.f : .5f);
 }
 

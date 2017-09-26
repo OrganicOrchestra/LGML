@@ -94,7 +94,7 @@ void AudioDeviceInNodeContentUI::updateVuMeters()
   for (int i = 0; i < desiredNumInputs; i++)
   {
     bool isActive = i < actualNumberOfMutes;
-    volumes[i]->defaultColor = isActive ? PARAMETER_FRONT_COLOR : Colours::lightgrey;
+    volumes[i]->defaultColor = isActive ? findColour(Slider::backgroundColourId) : Colours::lightgrey;
     vuMeters[i]->isActive = isActive;
     volumes[i]->repaint();
   }

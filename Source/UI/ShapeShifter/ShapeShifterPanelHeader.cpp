@@ -21,9 +21,9 @@
 ShapeShifterPanelHeader::ShapeShifterPanelHeader()
 {
 	addMouseListener(this, true);
-  addPannelMenu.setButtonText("+");
+//  addPannelMenu.setButtonText("+");
   addAndMakeVisible(addPannelMenu);
-  addPannelMenu.setConnectedEdges(0);
+//  addPannelMenu.setConnectedEdges(0);
   addPannelMenu.setTooltip("add tab to this panel");
   addPannelMenu.addListener(this);
   setOpaque(true);
@@ -92,7 +92,7 @@ void ShapeShifterPanelHeader::mouseDrag(const MouseEvent & e)
 
 void ShapeShifterPanelHeader::paint(Graphics & g)
 {
-	g.fillAll(BG_COLOR.brighter(.1f));
+	g.fillAll(findColour(ResizableWindow::backgroundColourId).brighter(.1f));
 }
 
 void ShapeShifterPanelHeader::resized()

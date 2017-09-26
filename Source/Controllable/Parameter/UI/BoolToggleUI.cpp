@@ -35,10 +35,10 @@ void BoolToggleUI::paint(Graphics & g)
     // we are on component deletion
     if(shouldBailOut())return;
 
-	Colour onColour = parameter->isEditable?HIGHLIGHT_COLOR:FEEDBACK_COLOR;
+  Colour onColour = parameter->isEditable?findColour(TextButton::buttonOnColourId):findColour(TextButton::buttonColourId).withAlpha(0.f);
 
     bool valCheck = ((BoolParameter *)parameter.get())->invertVisuals ? !parameter->boolValue():parameter->boolValue();
-    Colour c =  valCheck? onColour  : NORMAL_COLOR;
+    Colour c =  valCheck? onColour  : findColour(TextButton::buttonColourId);
 
     g.setGradientFill(ColourGradient(c.brighter(),(float)getLocalBounds().getCentreX(),(float)getLocalBounds().getCentreY(), c.darker(), 2.f,2.f,true));
     g.fillRoundedRectangle(getLocalBounds().toFloat(),2);

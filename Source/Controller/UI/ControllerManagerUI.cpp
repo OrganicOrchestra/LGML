@@ -165,3 +165,21 @@ void ControllerManagerUI::mouseDown(const MouseEvent & event)
     }
   }
 }
+
+
+void ControllerManagerUIViewport::buttonClicked (Button* b ){
+  if(b==&addControllerBt){
+    ScopedPointer<PopupMenu> addNodeMenu( FactoryUIHelpers::getFactoryTypesMenu<ControllerFactory>());
+
+    int result = addNodeMenu->show();
+    if (result >0 )
+    {
+      if(auto c = FactoryUIHelpers::createFromMenuIdx<Controller>(result)){
+        controllerManagerUI->manager->addController(c);
+      }
+      else
+        jassertfalse;
+    }
+  }
+
+}

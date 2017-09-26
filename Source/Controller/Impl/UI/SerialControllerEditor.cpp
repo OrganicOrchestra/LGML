@@ -52,7 +52,7 @@ SerialControllerEditor::~SerialControllerEditor()
 
 void SerialControllerEditor::paint(Graphics & g)
 {
-  Colour c = NORMAL_COLOR;
+  Colour c = findColour(TextButton::buttonColourId);
   if (serialController->port != nullptr && serialController->port->isOpen())
   {
     c = Colours::lightgreen;

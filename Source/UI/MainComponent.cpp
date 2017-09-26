@@ -18,7 +18,7 @@
 
 //#include "../Node/Manager/UI/NodeManagerUI.h"
 //#include "../Controller/UI/ControllerManagerUI.h"
-#include "LookAndFeelOO.h"
+
 
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent(Engine * e)
@@ -32,7 +32,7 @@ engine(e)
 {
   engine->addEngineListener(this);
 
-  setLookAndFeel(lookAndFeelOO = new LookAndFeelOO);
+  
 
   addAndMakeVisible(&ShapeShifterManager::getInstance()->mainShifterContainer);
 
@@ -140,7 +140,7 @@ void MainContentComponent::paintOverChildren(Graphics & g) {
 };
 
 void MainContentComponent::paint (Graphics& g) {
-		g.fillAll (BG_COLOR.darker());
+		g.fillAll (findColour(ResizableWindow::backgroundColourId).darker());
 }
 
 void MainContentComponent::startLoadFile(){

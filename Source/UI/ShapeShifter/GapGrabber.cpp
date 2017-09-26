@@ -31,9 +31,9 @@ void GapGrabber::paint(Graphics & g)
 	Rectangle<int> r = getLocalBounds().reduced(2);
 	Rectangle<int> tr = (direction == Direction::HORIZONTAL) ? r.withHeight(grabberSize) : r.withWidth(grabberSize);
 	tr.setCentre(r.getCentre());
-	Colour c = BG_COLOR.brighter(.1f);
-	if (isMouseOver()) c = HIGHLIGHT_COLOR;
-	if (isMouseButtonDown()) c = Colours::yellow;
+	Colour c = findColour(ResizableWindow::backgroundColourId).brighter(.1f);
+	if (isMouseOver()) c = findColour(TextButton::buttonOnColourId);
+	if (isMouseButtonDown()) c = c.brighter();
 
 	g.setColour(c);
 	g.fillRoundedRectangle(tr.toFloat(), 2);

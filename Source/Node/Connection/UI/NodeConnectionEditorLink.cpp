@@ -115,8 +115,8 @@ void NodeConnectionEditorLink::paint (Graphics& g)
     p.startNewSubPath(sourcePos.x, sourcePos.y);
     p.cubicTo(midPoint.x, sourcePos.y, midPoint.x, endPos.y,endPos.x,endPos.y);
 
-    Colour baseColor = getBaseSlot()->isAudio() ? AUDIO_COLOR : DATA_COLOR;
-    g.setColour((candidateDropSlot != nullptr) ? Colours::yellow : isSelected? HIGHLIGHT_COLOR: (isEditing || isMouseOver()) ? Colours::red : baseColor);
+    Colour baseColor =findColour((getBaseSlot()->isAudio())?LGMLColors::audioColor:LGMLColors::dataColor);
+    g.setColour((candidateDropSlot != nullptr) ? Colours::yellow : isSelected? findColour(TextButton::buttonOnColourId): (isEditing || isMouseOver()) ? Colours::red : baseColor);
 
     g.strokePath(p, PathStrokeType(2.0f));
 }

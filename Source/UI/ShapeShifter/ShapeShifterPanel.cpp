@@ -96,7 +96,7 @@ void ShapeShifterPanel::setTargetMode(bool value)
 
 void ShapeShifterPanel::paint(Graphics & g)
 {
-	g.setColour(BG_COLOR.withAlpha(transparentBackground ? .3f : 1));
+	g.setColour(findColour(ResizableWindow::backgroundColourId).withAlpha(transparentBackground ? .3f : 1));
 	g.fillRect(getLocalBounds().withTrimmedTop(headerHeight));
 }
 
@@ -105,8 +105,8 @@ void ShapeShifterPanel::paintOverChildren(Graphics & g)
 	if (!targetMode) return;
 	Rectangle<int> r = getLocalBounds();
 
-	Colour hc = HIGHLIGHT_COLOR.withAlpha(.5f);
-	Colour nc = NORMAL_COLOR.withAlpha(.3f);
+	Colour hc = findColour(TextButton::buttonOnColourId).withAlpha(.5f);
+	Colour nc = findColour(TextButton::buttonColourId).withAlpha(.3f);
 
 	if (!isDetached())
 	{

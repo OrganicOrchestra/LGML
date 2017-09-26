@@ -15,7 +15,7 @@ namespace FactoryUIHelpers{
 
 
   template<class Factory>
-  PopupMenu * getFactoryTypesMenuFilter(Array<String> arr,int menuIdOffset=1)
+  PopupMenu * createFactoryTypesMenuFilter(Array<String> arr,int menuIdOffset=1)
   {
     jassert(menuIdOffset>0);
     PopupMenu * p = new PopupMenu();
@@ -68,5 +68,8 @@ namespace FactoryUIHelpers{
     const String type = getTypeNameFromMenuIdx<FactoryBase<obj> >(idx);
     return (obj*)FactoryBase<obj>::createFromTypeID(type);
   }
+
+
+
   
 };

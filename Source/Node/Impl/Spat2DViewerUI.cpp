@@ -154,7 +154,7 @@ void Spat2DViewer::resized()
 
 void Spat2DViewer::paint(Graphics & g)
 {
-	g.setColour(BG_COLOR.darker());
+	g.setColour(findColour(ResizableWindow::backgroundColourId).darker());
 	g.fillRect(getLocalBounds());
 }
 

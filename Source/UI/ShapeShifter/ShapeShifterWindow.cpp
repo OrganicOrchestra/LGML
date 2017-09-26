@@ -16,7 +16,7 @@
 #include "ShapeShifterWindow.h"
 #include "ShapeShifterManager.h"
 #include "../Style.h"
-#include "../LookAndFeelOO.h"
+
 
 
 
@@ -39,15 +39,14 @@ ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int
 
 	setContentNonOwned(_panel, true);
 
-	setBackgroundColour(BG_COLOR.darker(.1f).withAlpha(.3f));
+	setBackgroundColour(findColour(ResizableWindow::backgroundColourId).darker(.1f).withAlpha(.3f));
 
 	setResizable(true, true);
 	setDraggable(true);
 
 	setVisible(true);
 	toFront(true);
-  static LookAndFeelOO lfOO;
-  setLookAndFeel(&lfOO);
+
 #if JUCE_OPENGL 
   OpenGLContext * context = OpenGLContext::getContextAttachedTo(*ShapeShifterManager::getInstance()->mainShifterContainer.getTopLevelComponent());
   if(context){
@@ -78,8 +77,7 @@ ShapeShifterWindow::~ShapeShifterWindow()
 
 void ShapeShifterWindow::paintOverChildren(Graphics & g)
 {
-//	g.setColour(BG_COLOR.brighter());
-//	g.drawRect(getLocalBounds());
+
 }
 
 void ShapeShifterWindow::resized()

@@ -62,7 +62,8 @@ NodeBase::~NodeBase()
     NodeBase::masterReference.clear();
     clear();
 
-    
+  // avoid removing from ConnectableNodeDestructor
+  parentNodeContainer = nullptr;
 
 
 

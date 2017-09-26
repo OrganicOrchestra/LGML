@@ -568,6 +568,7 @@
               resource="0"/>
         <FILE compile="0" file="Source/UI/Style.h" id="tK9vBl" name="Style.h"
               resource="0"/>
+        <FILE id="a0KHRI" name="Style.cpp" compile="1" resource="0" file="Source/UI/Style.cpp"/>
         <FILE id="NGaIAG" name="VuMeter.cpp" compile="1" resource="0" file="Source/UI/VuMeter.cpp"/>
         <FILE compile="0" file="Source/UI/VuMeter.h" id="G2KEpA" name="VuMeter.h"
               resource="0"/>

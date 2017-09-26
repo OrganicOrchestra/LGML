@@ -185,13 +185,13 @@ LooperNodeContentUI::TrackUI::~TrackUI() {
 }
 
 void LooperNodeContentUI::TrackUI::paint(Graphics & g){
-  g.setColour(PANEL_COLOR.brighter());
+  g.setColour(findColour(ResizableWindow::backgroundColourId).brighter().withAlpha(0.5f));
   g.fillRoundedRectangle(getLocalBounds().toFloat(),2.f);
 }
 
 void LooperNodeContentUI::TrackUI::paintOverChildren(Graphics & g) {
 
-  g.setColour((track->isEmpty() || track->trackState==LooperTrack::TrackState::STOPPED)?TEXT_COLOR:Colours::black);
+  g.setColour((track->isEmpty() || track->trackState==LooperTrack::TrackState::STOPPED)?findColour(Label::textColourId):Colours::black);
   g.setFont(12);
   g.drawText( String(track->trackIdx), timeStateUI.getBounds(), Justification::centred);
 

@@ -22,7 +22,6 @@ ShapeShifterPanelTab::ShapeShifterPanelTab(ShapeShifterContent * _content) : con
 	panelLabel.setInterceptsMouseClicks(false, false);
 
 	panelLabel.setFont(12);
-	panelLabel.setColour(panelLabel.textColourId, TEXT_COLOR);
 	panelLabel.setJustificationType(Justification::centred);
 	panelLabel.setText(content == nullptr?"[No content]":content->contentName, NotificationType::dontSendNotification);
 
@@ -58,7 +57,7 @@ void ShapeShifterPanelTab::setSelected(bool value)
 
 void ShapeShifterPanelTab::paint(Graphics & g)
 {
-	g.setColour(selected?BG_COLOR:BG_COLOR.brighter(.15f));
+	g.setColour(selected?findColour(ResizableWindow::backgroundColourId):findColour(ResizableWindow::backgroundColourId).brighter(.15f));
 	Rectangle<int> r = getLocalBounds();
 //	if (!selected) r.reduce(1,1);
 	g.fillRect(r);

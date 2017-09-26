@@ -42,7 +42,7 @@ bMiniMode(false)
   miniModeBT.addListener(this);
 
 
-  setSize(20, 40);
+  setSize(20, 30);
 }
 
 ConnectableNodeHeaderUI::~ConnectableNodeHeaderUI()
@@ -77,12 +77,11 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI(ConnectableNode * _node, Connecta
   descriptionUI = new StringParameterUI(node->descriptionParam);
   descriptionUI->setBackGroundIsTransparent(true);
   addAndMakeVisible(descriptionUI);
-  descriptionUI->valueLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR.darker(.3f));
+  descriptionUI->valueLabel.setColour(Label::ColourIds::textColourId, findColour(Label::textColourId).darker(.3f));
 
   enabledUI = ParameterUIFactory::createDefaultUI(node->enabledParam);
   addAndMakeVisible(enabledUI);
 
-  addAndMakeVisible(grabber);
 
   if(node->canBeRemovedByUser) addAndMakeVisible(removeBT);
 
@@ -139,15 +138,15 @@ void ConnectableNodeHeaderUI::resized()
   int vuMeterWidth = 8;
   int miniModeBTWidth = 15;
   int removeBTWidth = 15;
-  int grabberHeight = 12;
+
 
 
 
   Rectangle<int> r = getLocalBounds();
 
-  grabber.setBounds(r.removeFromTop(grabberHeight));
+
   r.reduce(4, 0);
-  r.removeFromTop(2);
+  r.removeFromTop(4);
 
   if (node->hasAudioOutputs())
   {
@@ -292,17 +291,7 @@ void ConnectableNodeHeaderUI::handleCommandMessage(int id){
   }
 }
 
-void ConnectableNodeHeaderUI::Grabber::paint(Graphics & g)
-{
-  g.setColour(PANEL_COLOR.brighter(.2f));
 
-  Rectangle<int> r = getLocalBounds().reduced(4);
-  float left = (float)r.getTopLeft().x;
-  float right = (float)r.getRight();
-  g.drawHorizontalLine(r.getTopLeft().y, left, right);
-  g.drawHorizontalLine(r.getCentreY(), left, right);
-  g.drawHorizontalLine(r.getBottom(), left, right);
-}
 
 void ConnectableNodeHeaderUI::numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {
   postCommandMessage(audioInputChangedId);

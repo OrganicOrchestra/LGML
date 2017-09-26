@@ -17,7 +17,7 @@
 #define SHAPESHIFTERPANELHEADER_H_INCLUDED
 
 #include "ShapeShifterPanelTab.h"
-
+#include "../../UI/Style.h"
 
 class ShapeShifterPanelHeader :
 	public juce::Component,
@@ -29,7 +29,7 @@ public:
 	virtual ~ShapeShifterPanelHeader();
 
 	OwnedArray<ShapeShifterPanelTab> tabs;
-  TextButton addPannelMenu;
+  AddElementButton addPannelMenu;
   void buttonClicked (Button*)override;
 
 	void addTab(ShapeShifterContent * content);

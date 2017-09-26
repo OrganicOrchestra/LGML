@@ -28,7 +28,7 @@ isHovered(false)
 
     node->addConnectableNodeListener(this);
 
-  boxColor = (dataType == NodeConnection::ConnectionType::AUDIO)? AUDIO_COLOR : DATA_COLOR;
+  boxColor =  findColour((dataType == NodeConnection::ConnectionType::AUDIO)?LGMLColors::audioColor:LGMLColors::dataColor);
   setSize(10,10);
 
 

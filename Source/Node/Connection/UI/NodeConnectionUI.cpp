@@ -79,22 +79,16 @@ void NodeConnectionUI::paint (Graphics& g)
 {
 
 
+  Colour baseColor = getBaseConnector()->boxColor;
 
-  bool isAudio = getBaseConnector()->dataType == NodeConnection::ConnectionType::AUDIO;
-  Colour baseColor = isAudio ? AUDIO_COLOR : DATA_COLOR;
 
-  if (connection != nullptr)
-  {
-    if (isAudio && connection->model.audioConnections.size() == 0) baseColor = NORMAL_COLOR;
-    if (!isAudio && connection->model.dataConnections.size() == 0) baseColor = NORMAL_COLOR;
-  }
 
   //g.setColour(Colours::yellow.withAlpha(.8f));
   //g.strokePath(hitPath, PathStrokeType(2.f));
 
   if (isMouseOver()) baseColor = Colours::red;
   if (candidateDropConnector != nullptr) baseColor = Colours::yellow;
-  if (isSelected) baseColor = HIGHLIGHT_COLOR;
+  if (isSelected) baseColor = findColour(TextButton::buttonOnColourId);
   g.setColour(baseColor);
   g.strokePath(path, PathStrokeType(1.5f));
 }

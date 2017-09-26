@@ -33,10 +33,6 @@ public ConnectableNode::ConnectableNodeListener
 {
 public:
 
-  class Grabber : public juce::Component
-  {
-    void paint(Graphics &g) override;
-  };
 
   ConnectableNodeHeaderUI();
   virtual ~ConnectableNodeHeaderUI();
@@ -50,7 +46,7 @@ public:
   ScopedPointer<VuMeter> vuMeterIn;
   ScopedPointer<VuMeter> vuMeterOut;
 
-  Grabber grabber;
+
   ImageButton removeBT;
   TextButton miniModeBT;
   ScopedPointer<PresetChooserUI> presetChooser;

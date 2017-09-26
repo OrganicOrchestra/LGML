@@ -72,7 +72,7 @@ FastMapUI::~FastMapUI()
 
 void FastMapUI::paint(Graphics & g)
 {
-  g.setColour(PANEL_COLOR);
+  g.setColour(findColour(LGMLColors::elementBackground));
   g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
 }
 

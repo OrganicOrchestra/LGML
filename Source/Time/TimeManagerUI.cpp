@@ -106,7 +106,7 @@ void TimeManagerUI::newMessage(const Parameter::ParamWithValue & pv) {
 
 void TimeManagerUI::paint(Graphics & g)
 {
-  g.fillAll(BG_COLOR);
+  g.fillAll(findColour(ResizableWindow::backgroundColourId));
 }
 
 #pragma warning(push)
@@ -230,8 +230,6 @@ void TimeManagerUI::TimeBar::paint(Graphics & g) {
     // called only if setting tempo
     Rectangle<int> r = getLocalBounds();
 
-    //g.setColour(PANEL_COLOR.darker());
-    //g.fillRect(r);
 
     blinkCount += blinkHz*1.0 / refreshHz;
 
@@ -249,7 +247,7 @@ void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g) {
   int beatBarWidth = 1;
 
   Rectangle<int> r = getLocalBounds();
-  g.setColour(PANEL_COLOR);
+  g.setColour(findColour(ResizableWindow::backgroundColourId));
   g.fillRect(r);
   Rectangle<int> lineR = r.removeFromTop(1);
   lineR.removeFromLeft(beatBarWidth);
@@ -261,12 +259,12 @@ void TimeManagerUI::TimeBar::BeatComponent::paint(Graphics & g) {
   //    g.fillRect(area.removeFromRight(beatBarWidth));
   
   
-  if (percentDone == 0) g.setColour(PANEL_COLOR.brighter());
+  if (percentDone == 0) g.setColour(findColour(ResizableWindow::backgroundColourId).brighter());
   else g.setColour(Colours::orange);
   
   g.fillRect(r);
   
-  g.setColour(HIGHLIGHT_COLOR);
+  g.setColour(findColour(TextButton::buttonOnColourId));
   g.fillRect(lineR.removeFromLeft((int)(percentDone*lineR.getWidth())));
 
 }

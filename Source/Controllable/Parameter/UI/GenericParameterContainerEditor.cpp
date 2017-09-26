@@ -164,9 +164,9 @@ CCInnerContainerUI::CCInnerContainerUI(GenericParameterContainerEditor * _editor
 
 	addAndMakeVisible(containerLabel);
 	containerLabel.setFont(containerLabel.getFont().withHeight(10));
-	containerLabel.setColour(containerLabel.backgroundColourId,BG_COLOR.brighter(.2f));
+	containerLabel.setColour(containerLabel.backgroundColourId,findColour(ResizableWindow::backgroundColourId).brighter(.2f));
 	containerLabel.setSize(containerLabel.getFont().getStringWidth(containerLabel.getText()) + 10,14);
-	containerLabel.setColour(containerLabel.textColourId, TEXTNAME_COLOR);
+
 
   
   rebuild();
@@ -348,7 +348,7 @@ int CCInnerContainerUI::getContentHeight()
 void CCInnerContainerUI::paint(Graphics & g)
 {
 	//if (level == 0) return;
-	g.setColour(BG_COLOR.brighter(.3f));
+	g.setColour(findColour(ResizableWindow::backgroundColourId).brighter(.3f));
 	g.drawRoundedRectangle(getLocalBounds().toFloat(),4,2);
 }
 

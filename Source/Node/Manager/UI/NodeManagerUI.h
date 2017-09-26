@@ -21,6 +21,8 @@
 #include "../../../UI/ShapeShifter/ShapeShifterContent.h"
 #include "../../NodeContainer/UI/NodeContainerViewer.h"
 #include "../../../UI/Style.h"
+#include "../NodeFactory.h"
+#include "../../../Utils/FactoryUIHelpers.h"
 
 
 //==============================================================================
@@ -88,6 +90,9 @@ public ButtonListener
     reconstructViewerPath();
     setWantsKeyboardFocus(true);
     nmui->setWantsKeyboardFocus(true);
+    addAndMakeVisible(addNodeBt);
+    addNodeBt.addListener(this);
+    addNodeBt.setTooltip("Add Node");
 //    setOpaque(true);
 
   }
@@ -135,7 +140,7 @@ public ButtonListener
 
   void paint(Graphics &g) override
   {
-    g.setColour(BG_COLOR.darker(.2f));
+    g.setColour(findColour(ResizableWindow::backgroundColourId).darker(.2f));
     g.fillRect(getLocalBounds().removeFromTop(30));
     const int grid = 100;
     auto area = vp.getViewArea();
@@ -169,6 +174,7 @@ public ButtonListener
 
     nmui->setTopLeftPosition(r.getTopLeft());
     nmui->setSize(jmax<int>(r.getWidth(), nmui->getContentWidth()), jmax<int>(r.getHeight(), nmui->getContentHeight()));
+    addNodeBt.setFromParentBounds(getLocalBounds());
 
   }
 
@@ -183,7 +189,27 @@ public ButtonListener
 
   void buttonClicked(Button * b)override
   {
-    int bIndex = pathButtons.indexOf((TextButton *)b);
+    if(b== &addNodeBt){
+        static Array<String> filt  {"t_ContainerInNode" , "t_ContainerOutNode"};
+        ScopedPointer<PopupMenu> menu(FactoryUIHelpers::createFactoryTypesMenuFilter<NodeFactory>(filt));
+
+        int result = menu->show();
+        Point<int> mousePos = vp.getViewArea().getCentre();
+        if(result>0){
+          if (auto c =  FactoryUIHelpers::createFromMenuIdx<NodeBase>(result))
+          {
+            ConnectableNode * n = nmui->currentViewer->nodeContainer->addNode(c);
+            jassert(n != nullptr);
+            n->nodePosition->setPoint(mousePos);
+          }
+          else{
+            jassertfalse;
+          }
+        }
+
+    }
+    else{
+      int bIndex = pathButtons.indexOf((TextButton *)b);
     if (bIndex == -1)
     {
       DBG("WTF ?");
@@ -195,10 +221,12 @@ public ButtonListener
     }
     
     nmui->setCurrentViewedContainer(c);
+    }
     
   }
   
   Viewport vp;
+  AddElementButton addNodeBt;
   NodeManagerUI * nmui;
 };
 

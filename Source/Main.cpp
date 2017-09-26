@@ -23,6 +23,7 @@
 #include "Utils/CommandLineElements.hpp"
 //#define ENGINE_SERVER_ONLY
 #ifndef ENGINE_SERVER_ONLY
+#include "UI/LookAndFeelOO.h"
 #include "UI/MainWindow.h"
 #endif
 
@@ -99,6 +100,7 @@ public:
 #else
 
 #ifndef ENGINE_SERVER_ONLY
+      LookAndFeel::setDefaultLookAndFeel(lookAndFeelOO= new LookAndFeelOO);
       mainWindow = new MainWindow (getApplicationName(),engine);
 #endif
       engine->parseCommandline(commandLinesElements);
@@ -142,6 +144,7 @@ public:
 
 #ifndef ENGINE_SERVER_ONLY
       ScopedPointer<MainWindow> mainWindow;
+      ScopedPointer<LookAndFeel> lookAndFeelOO;
 #endif
 
       };

@@ -14,6 +14,7 @@
 
 #include "JuceHeader.h" // for ProjectInfo
 
+
 MainContentComponent* createMainContentComponent(Engine* e);
 
 
@@ -23,6 +24,7 @@ MainWindow::MainWindow (String name,Engine * e)  : DocumentWindow (name,
                                                                    DocumentWindow::allButtons)
 {
 
+  
   mainComponent = createMainContentComponent(e);
   setContentOwned(mainComponent, false);
 

@@ -777,7 +777,7 @@ void LooperTrack::loadAudioSample(const String & path) {
 
 
 
-      int padSize = 0;//playableBuffer.getNumSampleFadeOut() ;
+
 
 
 
@@ -814,16 +814,19 @@ void LooperTrack::loadAudioSample(const String & path) {
         playableBuffer.setState(PlayableBuffer::BUFFER_STOPPED);
         setTrackState(STOPPED);
 
-        playableBuffer.originAudioBuffer.makeCopyOf(tempBuf);
-        
-        // clear fadeout zone
-        playableBuffer.originAudioBuffer.setSize(playableBuffer.originAudioBuffer.getNumChannels(), destSize + padSize, true, true, true);
+
         
         ti = tm->findTransportTimeInfoForLength(destSize);
         double timeRatio = ti.bpm / tm->BPM->doubleValue();
-        playableBuffer.setRecordedLength(destSize);
-        originBPM->setValue(ti.bpm);
-        beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / ti.beatInSample, false, false);
+        {
+          // lock audio thread on loading sample
+          const ScopedLock lk(parentLooper->getCallbackLock());
+          playableBuffer.originAudioBuffer.makeCopyOf(tempBuf);
+          playableBuffer.setRecordedLength(destSize);
+          originBPM->setValue(ti.bpm);
+          beatLength->setValue(playableBuffer.getRecordedLength()*1.0 / ti.beatInSample, false, false);
+        }
+
         
         
 #if BUFFER_CAN_STRETCH

@@ -84,6 +84,7 @@ ThreadPoolJob::JobStatus StretcherJob::runJob(){
     if(lk.isLocked()){
 
       int targetNumSamples = originNumSamples*ratio;
+      jassert(targetNumSamples!=0);
 
       int diffSample =abs(produced-targetNumSamples);
       if(diffSample>128){

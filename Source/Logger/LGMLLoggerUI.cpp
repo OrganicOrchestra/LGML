@@ -84,7 +84,7 @@ totalLogRow(0)
   logListComponent->setHeaderHeight(20);
   logListComponent->getViewport()->setScrollBarThickness(10);
 
-  logListComponent->setColour(TableListBox::backgroundColourId, BG_COLOR);
+  logListComponent->setColour(TableListBox::backgroundColourId, findColour(ResizableWindow::backgroundColourId));
   logListComponent->setHeader(thc);
   addAndMakeVisible(logListComponent);
 
@@ -241,7 +241,7 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
                                        int width, int height,
                                        bool) {
   g.setFont(12);
-  g.setColour(TEXT_COLOR);
+  g.setColour(owner->findColour(Label::textColourId));
   String text;
 
   switch (columnId)

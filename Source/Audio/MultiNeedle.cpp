@@ -315,9 +315,11 @@ void MultiNeedle::addToBuffer( BufferBlockList & originBufferList,AudioBuffer<fl
   // ensure buffer is larger than last possible read sample
 //  jassert(originBufferList.getAllocatedNumSample()>loopSize+fadeOutNumSamples);
   jassert(loopSize>0);
+  //
   jassert(loopSize==originBufferList.getNumSamples());
 
   const int nextPos = currentPos+numSamples;
+
 #if NEEDLE_STITCHING
   const bool isAfterStitchingPoint = nextPos>loopSize - fadeOutNumSamples  ;
   if(isLooping ){

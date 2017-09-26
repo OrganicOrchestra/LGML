@@ -214,7 +214,7 @@ void OutlinerItemComponent::paint(Graphics & g)
 {
   Rectangle<int> r = getLocalBounds();
 
-  Colour c = item->isContainer ? HIGHLIGHT_COLOR : TEXT_COLOR;
+  Colour c = item->isContainer ? findColour(TextButton::buttonOnColourId) : findColour(Label::textColourId);
 
 
   int labelWidth = label.getFont().getStringWidthFloat(label.getText());

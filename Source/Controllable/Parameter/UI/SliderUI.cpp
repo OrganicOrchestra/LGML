@@ -21,7 +21,7 @@
 template<class T>
 SliderUI<T>::SliderUI(Parameter * parameter) :
 ParameterUI(parameter), fixedDecimals(2),
-defaultColor(PARAMETER_FRONT_COLOR)
+defaultColor(0xff99ff66)
 {
   assignOnMousePosDirect = false;
   changeParamOnMouseUpOnly = false;
@@ -44,26 +44,31 @@ void SliderUI<T>::paint(Graphics & g)
 
   if(shouldBailOut())return;
 
-  Colour baseColour = parameter->isEditable? defaultColor :FEEDBACK_COLOR;
-  Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? HIGHLIGHT_COLOR : baseColour;
-
   Rectangle<int> sliderBounds = getLocalBounds();
+  const int corner = 2;
+  g.setColour(findColour(Slider::backgroundColourId));
+  g.fillRoundedRectangle(sliderBounds.toFloat(), corner);
 
+  g.setColour(findColour(Slider::backgroundColourId).withAlpha(1.f).brighter());
+  g.drawRoundedRectangle(sliderBounds.toFloat(),corner,1);
+  Colour baseColour = parameter->isEditable? findColour(Slider::trackColourId) :findColour(Slider::trackColourId).withAlpha(0.3f);
+  Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? findColour(TextButton::buttonOnColourId) : baseColour;
 
   float normalizedValue = getParamNormalizedValue();
-  g.setColour(BG_COLOR.brighter(.1f));
-  g.fillRoundedRectangle(sliderBounds.toFloat(), 2);
+
 
   g.setColour(c);
+
+  sliderBounds.reduce(1,1);
   float drawPos = 0;
   if (orientation == HORIZONTAL)
   {
     drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().x : normalizedValue*getWidth();
-    g.fillRoundedRectangle(sliderBounds.removeFromLeft((int)drawPos).toFloat(), 2.f);
+    g.fillRoundedRectangle(sliderBounds.removeFromLeft((int)drawPos).toFloat(), corner);
   }
   else {
     drawPos = changeParamOnMouseUpOnly ? getMouseXYRelative().y : normalizedValue*getHeight();
-    g.fillRoundedRectangle(sliderBounds.removeFromBottom((int)drawPos).toFloat(), 2.f);
+    g.fillRoundedRectangle(sliderBounds.removeFromBottom((int)drawPos).toFloat(), corner);
   }
 
 

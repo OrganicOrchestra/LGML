@@ -39,18 +39,18 @@ NodeConnectionEditorDataSlot::~NodeConnectionEditorDataSlot()
 void NodeConnectionEditorDataSlot::paint (Graphics& g)
 {
 
-    g.setColour (isMouseOver() ? HIGHLIGHT_COLOR:TEXTNAME_COLOR);
+  g.setColour (findColour(isMouseOver() ?Label::textColourId:Label::textColourId));
     g.setFont(12);
 
     g.drawText (label, getLocalBounds(),Justification::centred, true);   // draw some placeholder text
 
-    Colour c = isMouseOver() ? HIGHLIGHT_COLOR : (isConnected() ? Colours::lightblue : NORMAL_COLOR);
+    Colour c = isMouseOver() ? findColour(TextButton::buttonOnColourId) : (isConnected() ? Colours::lightblue : findColour(TextButton::buttonColourId));
 
     if (currentEditingData != nullptr)
     {
         if (currentEditingData->type == data->type) c = Colours::lightgreen;
         else if (currentEditingData->isTypeCompatible(data->type)) c = Colours::yellow;
-        else c = NORMAL_COLOR;
+        else c = findColour(TextButton::buttonColourId);
     }
     g.setColour(c);
 

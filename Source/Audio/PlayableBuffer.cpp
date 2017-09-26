@@ -497,8 +497,9 @@ void PlayableBuffer::setTimeRatio(const double ratio){
   }
 #endif
 
-  if(ratio!=1.0){
 
+  if(ratio!=1.0){
+#if PROCESS_FINAL_STRETCH
     ThreadPool * tp = getEngineThreadPool();
     if(tp->contains(stretchJob)){
       ScopedLock lk(stretchJob->jobLock);
@@ -510,7 +511,10 @@ void PlayableBuffer::setTimeRatio(const double ratio){
     else stretchJob = nullptr;
     stretchJob =new StretcherJob(this,ratio);
     tp->addJob(stretchJob, true);
-
+#else
+    bufferBlockList.copyFrom(originAudioBuffer, 0);
+    setRecordedLength(originAudioBuffer.getNumSamples());
+#endif
   }
   else{
 

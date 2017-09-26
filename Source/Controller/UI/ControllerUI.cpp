@@ -62,7 +62,7 @@ ControllerUI::~ControllerUI()
 
 void ControllerUI::paint(Graphics & g)
 {
-    g.setColour(PANEL_COLOR);
+  g.setColour(findColour(LGMLColors::elementBackground));
     g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
 
 }

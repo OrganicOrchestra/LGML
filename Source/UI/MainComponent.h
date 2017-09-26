@@ -55,7 +55,7 @@ public:
 
 
 	void timerCallback() override;
-    ScopedPointer<LookAndFeel> lookAndFeelOO;
+    
 
     //==============================================================================
     MainContentComponent(Engine * e);

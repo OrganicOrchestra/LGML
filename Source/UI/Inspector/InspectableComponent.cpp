@@ -72,7 +72,7 @@ void InspectableComponent::setSelectedInternal(bool)
 
 void InspectableComponent::paintOverChildren(juce::Graphics &g){
   if(isSelected && paintBordersWhenSelected){
-    g.setColour( HIGHLIGHT_COLOR);
+    g.setColour( findColour(TextButton::buttonOnColourId));
     g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
   }
 

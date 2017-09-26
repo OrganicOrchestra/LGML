@@ -233,7 +233,6 @@ labelAbove(labelA){
   addAndMakeVisible(controllableLabel);
 
   controllableLabel.setJustificationType(Justification::centredLeft);
-  controllableLabel.setColour(Label::ColourIds::textColourId, TEXT_COLOR);
   controllableLabel.setText(ui->parameter->niceName, dontSendNotification);
   if(ui->parameter->isUserDefined){
     controllableLabel.setEditable(true);

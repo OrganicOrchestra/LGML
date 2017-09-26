@@ -24,8 +24,8 @@ TriggerBlinkUI::TriggerBlinkUI(Trigger *t) :
 	refreshPeriod(40),
 	intensity(0),
 	animateIntensity(true),
-	offColor(NORMAL_COLOR),
-	onColor(HIGHLIGHT_COLOR)
+offColor(findColour(TextButton::buttonColourId)),
+	onColor(findColour(TextButton::buttonOnColourId))
 {
     setSize(30, 20);
 

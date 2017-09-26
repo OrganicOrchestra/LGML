@@ -19,7 +19,7 @@
 #include "../UI/ShapeShifter/ShapeShifterContent.h"
 #include "FastMapUI.h"
 #include "../UI/Inspector/Inspector.h"
-
+#include "../UI/Style.h"
 
 class FastMapper;
 class FastMapperUI;
@@ -41,7 +41,8 @@ public:
 	virtual ~FastMapperUI();
 
 	FastMapper * fastMapper;
-  TextButton linkToSelection,addFastMapBt;
+  TextButton linkToSelection;
+
   ScopedPointer<ParameterUI> autoAddBt;
   ScopedPointer<Component> potentialIn,potentialOut;
 	OwnedArray<FastMapUI> mapsUI;
@@ -83,7 +84,8 @@ private:
 
 class FastMapperViewport :
 	public ShapeShifterContentComponent,
-	public FastMapperUIListener
+	public FastMapperUIListener,
+  private ButtonListener
 {
 public:
 	FastMapperViewport(const String &contentName, FastMapperUI * _fastMapperUI) :
@@ -94,6 +96,9 @@ public:
 		vp.setScrollBarsShown(true, false);
 		vp.setScrollOnDragEnabled(false);
 		addAndMakeVisible(vp);
+    addAndMakeVisible(addFastMapButton);
+    addFastMapButton.addListener(this);
+    addFastMapButton.setTooltip("Add FastMap");
 		vp.setScrollBarThickness(10);
     contentIsFlexible = true;
 		fastMapperUI->addFastMapperUIListener(this);
@@ -111,6 +116,7 @@ public:
 		Rectangle<int> targetBounds = getLocalBounds().withPosition(fastMapperUI->getPosition()).withHeight(th);
 		targetBounds.removeFromRight(vp.getScrollBarThickness());
 		fastMapperUI->setBounds(targetBounds);
+    addFastMapButton.setFromParentBounds(getLocalBounds());
 	}
 
 	void fastMapperContentChanged(FastMapperUI *)override
@@ -118,8 +124,12 @@ public:
 		resized();
 	}
 
-	Viewport vp;
+  void buttonClicked (Button* b)override;
+
+  
+  Viewport vp;
 	FastMapperUI * fastMapperUI;
+  AddElementButton addFastMapButton;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapperViewport)
 };

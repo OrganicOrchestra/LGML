@@ -357,7 +357,7 @@ void NodeContainerViewer::mouseDown(const MouseEvent & event)
       Point<int> mousePos = getMouseXYRelative();
       PopupMenu   menu;//(new PopupMenu());
       static Array<String> filt  {"t_ContainerInNode" , "t_ContainerOutNode"};
-      ScopedPointer<PopupMenu> addNodeMenu(FactoryUIHelpers::getFactoryTypesMenuFilter<NodeFactory>(filt));
+      ScopedPointer<PopupMenu> addNodeMenu(FactoryUIHelpers::createFactoryTypesMenuFilter<NodeFactory>(filt));
       menu.addSubMenu("Add Node", *addNodeMenu);
       int result = menu.show();
       if(result>0){

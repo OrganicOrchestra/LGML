@@ -143,6 +143,7 @@
 		5466CAEDEADE3BE09B06379E = {isa = PBXBuildFile; fileRef = 212C00F686ACFCFDC4B39CA3; };
 		784EBAF38BACC36BB3EF371D = {isa = PBXBuildFile; fileRef = 2C9203EBE5100623D2E515B0; };
 		802ED690CA94335E611C572F = {isa = PBXBuildFile; fileRef = 1098024BC23D3327B1C71F9E; };
+		1D81C32C94FF79F064AA4847 = {isa = PBXBuildFile; fileRef = 0EA7CACBBCFDA05119AE6FD2; };
 		AA6A77F3A41683B542CEC4BC = {isa = PBXBuildFile; fileRef = E3F706A0108FEF3F8B405C3D; };
 		430435657F57DEF8DD1AB6BE = {isa = PBXBuildFile; fileRef = 43CEE4378BBF71F74393C86B; };
 		955F19BE41CAB1EAFBFC5596 = {isa = PBXBuildFile; fileRef = 1A0E3102B6F97EB2141EB37D; };
@@ -210,6 +211,7 @@
 		0C5D3305B1817F87183B7EED = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EnumParameter.h; path = ../../Source/Controllable/Parameter/EnumParameter.h; sourceTree = "SOURCE_ROOT"; };
 		0D4A416975710FE3441AB6C7 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_formats"; path = "../../../JUCE/modules/juce_audio_formats"; sourceTree = "SOURCE_ROOT"; };
 		0D61332931881D896B24E8B4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StringParameterUI.h; path = ../../Source/Controllable/Parameter/UI/StringParameterUI.h; sourceTree = "SOURCE_ROOT"; };
+		0EA7CACBBCFDA05119AE6FD2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Style.cpp; path = ../../Source/UI/Style.cpp; sourceTree = "SOURCE_ROOT"; };
 		0F82AD264951B32A80E72326 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeContainerViewer.h; path = ../../Source/Node/NodeContainer/UI/NodeContainerViewer.h; sourceTree = "SOURCE_ROOT"; };
 		105385B77524C8FF41CA42F0 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConnectableNodeUI.h; path = ../../Source/Node/UI/ConnectableNodeUI.h; sourceTree = "SOURCE_ROOT"; };
 		1098024BC23D3327B1C71F9E = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProgressWindow.cpp; path = ../../Source/UI/ProgressWindow.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -879,6 +881,7 @@
 					1098024BC23D3327B1C71F9E,
 					FE0D153B7AD40B52CDCB1E29,
 					079D7B332440897F49A2AABB,
+					0EA7CACBBCFDA05119AE6FD2,
 					E3F706A0108FEF3F8B405C3D,
 					B6951AC9F72EE136C435F744,
 					83FD1F620BD395233DD3EAC2,
@@ -1378,6 +1381,7 @@
 					5466CAEDEADE3BE09B06379E,
 					784EBAF38BACC36BB3EF371D,
 					802ED690CA94335E611C572F,
+					1D81C32C94FF79F064AA4847,
 					AA6A77F3A41683B542CEC4BC,
 					430435657F57DEF8DD1AB6BE,
 					955F19BE41CAB1EAFBFC5596,

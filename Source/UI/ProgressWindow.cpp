@@ -26,7 +26,6 @@ ProgressListener(notifier)
 	progressUI = new FloatSliderUI(&progressParam);
 	addAndMakeVisible(progressUI);
 	addAndMakeVisible(titleLabel);
-	titleLabel.setColour(Label::ColourIds::textColourId, TEXTNAME_COLOR);
 	titleLabel.setText(_title, dontSendNotification);
 }
 
@@ -39,9 +38,9 @@ void ProgressWindow::paint(Graphics & g)
 	g.fillAll(Colours::black.withAlpha(.5f));
 	
 	Rectangle<int> r = getLocalBounds().withSizeKeepingCentre(windowWidth, windowHeight);
-	g.setColour(PANEL_COLOR);
+	g.setColour(findColour(ResizableWindow::backgroundColourId));
 	g.fillRoundedRectangle(r.toFloat(), 2);
-	g.setColour(PANEL_COLOR.brighter(.2f));
+	g.setColour(findColour(ResizableWindow::backgroundColourId).brighter(.2f));
 	g.drawRoundedRectangle(r.toFloat(), 2, 1);
 }
 

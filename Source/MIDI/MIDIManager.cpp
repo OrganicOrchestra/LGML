@@ -32,7 +32,7 @@ MIDIManager::~MIDIManager()
 
 void MIDIManager::init()
 {
-	startTimer(500);
+	startTimer(1000);
 }
 
 void MIDIManager::updateDeviceList(bool updateInput)

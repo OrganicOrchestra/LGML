@@ -30,12 +30,7 @@ fastMapper(_fastMapper), viewFilterContainer(_viewFilterContainer)
 
   autoAddBt = ParameterUIFactory::createDefaultUI(fastMapper->autoAdd);
   addAndMakeVisible(autoAddBt);
-  
-  addAndMakeVisible(autoAddBt);
 
-  addFastMapBt.setButtonText("Add FastMap");
-  addFastMapBt.addListener(this);
-  addAndMakeVisible(addFastMapBt);
 
 
   potentialIn = new NamedParameterUI(ParameterUIFactory::createDefaultUI(fastMapper->potentialIn),150);
@@ -119,7 +114,7 @@ constexpr int buttonHeight = 21;
 int FastMapperUI::getContentHeight()
 {
 
-  return mapsUI.size() * (mapHeight + gap) + 5*buttonHeight+10;
+  return mapsUI.size() * (mapHeight + gap) + 4*buttonHeight+10;
 }
 
 void FastMapperUI::resized()
@@ -129,7 +124,7 @@ void FastMapperUI::resized()
   potentialOut->setBounds(r.removeFromTop(buttonHeight).reduced(2));
   autoAddBt->setBounds(r.removeFromTop(buttonHeight).reduced(2));
   linkToSelection.setBounds(r.removeFromTop(buttonHeight).reduced(2));
-  addFastMapBt.setBounds(r.removeFromTop(buttonHeight).reduced(2));
+  
 
   r.removeFromTop(10);
   r.reduce(2, 0);
@@ -208,10 +203,6 @@ void FastMapperUI::buttonClicked (Button* b){
     }
   }
 
-  else if(b==&addFastMapBt ){
-    fastMapper->addFastMap();
-  }
-
 
 }
 
@@ -222,3 +213,10 @@ void FastMapperUI::currentComponentChanged(Inspector * i) {
 
   
 };
+
+void FastMapperViewport::buttonClicked (Button* b){
+  if(b==&addFastMapButton ){
+    fastMapperUI->fastMapper->addFastMap();
+  }
+
+}

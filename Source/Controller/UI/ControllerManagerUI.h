@@ -21,6 +21,7 @@
 #include "ControllerUI.h"
 
 #include "../../UI/ShapeShifter/ShapeShifterContent.h"
+#include "../../UI/Style.h"
 //==============================================================================
 /*
 */
@@ -59,7 +60,8 @@ private:
 
 
 class ControllerManagerUIViewport :
-public ShapeShifterContentComponent
+public ShapeShifterContentComponent,
+private ButtonListener
 {
 public:
   ControllerManagerUIViewport(const String &contentName, ControllerManagerUI * _UI) :
@@ -71,6 +73,9 @@ public:
     vp.setScrollOnDragEnabled(false);
     addAndMakeVisible(vp);
     vp.setScrollBarThickness(10);
+    addAndMakeVisible(addControllerBt);
+    addControllerBt.setTooltip("Add controller");
+    addControllerBt.addListener(this);
 
 
   }
@@ -86,12 +91,14 @@ public:
     Rectangle<int> targetBounds = getLocalBounds().withPosition(controllerManagerUI->getPosition()).withHeight(th);
     targetBounds.removeFromRight(vp.getScrollBarThickness());
     controllerManagerUI->setBounds(targetBounds);
+    addControllerBt.setFromParentBounds(getLocalBounds());
   }
 
+  void buttonClicked (Button*) override;
 
   Viewport vp;
   ControllerManagerUI * controllerManagerUI;
-
+  AddElementButton addControllerBt;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerUIViewport)
 };
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED
