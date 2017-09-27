@@ -67,7 +67,7 @@ def addEntete(f,entete):
       print("empty space")
     lines = lines[codestart:]
 
-  lines=entete+['']+lines
+  lines=entete+['\n']+lines
   with open(f,'w',encoding=encoding) as fi:
     fi.writelines(lines)
   # print (lines)

@@ -1,16 +1,20 @@
-/* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+/*
+ ==============================================================================
+
+ Copyright © Organic Orchestra, 2017
+
+ This file is part of LGML. LGML is a software to manipulate sound in realtime
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation (version 3 of the License).
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+ ==============================================================================
+ */
 
 #include "AudioConfig.h"
 #if BUFFER_CAN_STRETCH
@@ -19,7 +23,6 @@
 using namespace RubberBand;
 
 #include "PlayableBuffer.h"
-
 #include "StretcherJob.h"
 
 
@@ -46,7 +49,7 @@ void StretcherJob::initStretcher (int sampleRate, int numChannels)
                                             //Options options = DefaultOptions,
                                             //double initialTimeRatio = 1.0,
                                             //double initialPitchScale = 1.0
-                                           );
+                                            );
 
     stretcher->setDebugLevel (0);
     stretcher->setPitchScale (1.0);
@@ -219,16 +222,16 @@ void StretcherJob::processStretch (int start, int block, int* read, int* produce
     tmpStretchBuf.setNumSample (*produced + retrievedSamples);
     tmpStretchBuf.copyFrom (tmpOutBuf, *produced, 0, retrievedSamples);
     jassert (retrievedSamples == available);
-
+    
     *read = block;
     *produced += retrievedSamples;
-
+    
     if (isFinal)
     {
         int dbg = stretcher->available();
         jassert (dbg <= 0);
     }
-
+    
 }
 
 
