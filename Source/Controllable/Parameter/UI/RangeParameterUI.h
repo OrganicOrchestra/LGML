@@ -24,7 +24,7 @@
 class RangeParameterUI : public ParameterUI, private Slider::Listener
 {
 public:
-    RangeParameterUI (RangeParameter* p): ParameterUI (p), rangeP (p), slider (Slider::SliderStyle::TwoValueHorizontal, Slider::NoTextBox)
+    RangeParameterUI (RangeParameter* p): ParameterUI (p), slider (Slider::SliderStyle::TwoValueHorizontal, Slider::NoTextBox)
     {
         slider.addListener (this);
         addAndMakeVisible (slider);
@@ -43,7 +43,7 @@ public:
 
     void rangeChanged (Parameter* p)override
     {
-        jassert (p == rangeP);
+        auto rangeP = (RangeParameter*)p;
         slider.setRange (rangeP->minimumValue, rangeP->maximumValue);
     }
     void resized()override
@@ -53,9 +53,12 @@ public:
 
     void sliderValueChanged (Slider* ) override
     {
-        rangeP->setValue (slider.getMinValue(), slider.getMaxValue());
+        if(auto rangeP = ((RangeParameter*)parameter.get()) )
+            rangeP->setValue (slider.getMinValue(), slider.getMaxValue());
+        else
+            jassertfalse;
     }
 
-    RangeParameter* rangeP;
+
 
 };

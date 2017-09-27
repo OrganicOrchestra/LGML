@@ -88,7 +88,7 @@ void FastMapperUI::resetAndUpdateView()
 void FastMapperUI::setViewFilter (ControllableContainer* filterContainer)
 {
     viewFilterContainer = filterContainer;
-    resetAndUpdateView();
+    MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
 }
 
 bool FastMapperUI::mapPassViewFilter (FastMap* f)
