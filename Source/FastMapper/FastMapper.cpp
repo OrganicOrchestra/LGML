@@ -23,14 +23,15 @@ IMPL_OBJ_TYPE (FastMapper);
 
 FastMapper::FastMapper (StringRef name) :
     ParameterContainer (name),
-    selectedContainerToListenTo (nullptr)
+    selectedContainerToListenTo (nullptr),
+    autoAdd(false)
 {
 
     nameParam->isEditable = false;
     potentialIn = addNewParameter<ParameterProxy> ("potential Input", "potential input for new fastMap");
     potentialOut = addNewParameter<ParameterProxy> ("potential Output", "potential output for new fastMap");
-    autoAdd = addNewParameter<BoolParameter> ("auto_add", "auto add param when In/Out potentials are set", true);
-    autoAdd->mappingDisabled = true;
+    
+
     LGMLDragger::getInstance()->addSelectionListener (this);
     Inspector::getInstance()->addInspectorListener (this);
     potentialIn->isSavable = false;
@@ -59,17 +60,21 @@ FastMapper::~FastMapper()
 
 void FastMapper::setPotentialInput (Parameter* p)
 {
+    if(p!=potentialIn->get()){
     potentialIn->setParamToReferTo (p);
     createNewFromPotentials();
+    }
 }
 void FastMapper::setPotentialOutput (Parameter* p )
 {
+    if(p!=potentialOut->get()){
     potentialOut->setParamToReferTo (p);
     createNewFromPotentials();
+    }
 }
 void FastMapper::createNewFromPotentials()
 {
-    if (potentialIn->get() && potentialOut->get() && autoAdd->boolValue())
+    if (potentialIn->get() && potentialOut->get() && autoAdd)
     {
         addFastMap();
 
@@ -94,7 +99,7 @@ FastMap* FastMapper::addFastMap()
     addChildControllableContainer (f);
     f->nameParam->isEditable = true;
     maps.add (f);
-    setContainerToListen (nullptr);
+//    setContainerToListen (nullptr);
     f->referenceIn->setParamToReferTo (potentialIn->get());
     f->referenceOut->setParamToReferTo (potentialOut->get());
 
@@ -162,6 +167,11 @@ void FastMapper::selectionChanged (Parameter* c )
 {
     setPotentialInput (Parameter::fromControllable (c));
 
+};
+
+
+void FastMapper::mappingModeChanged(bool state){
+    autoAdd = state;
 };
 
 void FastMapper::currentComponentChanged (Inspector* i)

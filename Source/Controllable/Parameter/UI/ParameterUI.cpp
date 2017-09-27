@@ -108,7 +108,7 @@ bool ParameterUI::shouldBailOut()
     if (bailOut)
     {
         // TODO : changing vst preset sometimes hit that
-        NLOG ("ParameterUI", "!!! old component still displayed");
+        NLOG ("ParameterUI", "!!! old component still displayed : " << getName());
         //jassertfalse;
     }
 
@@ -191,8 +191,8 @@ public:
 
 
         g.drawImage (image, image.getBounds().toFloat());
-        g.setColour (Colours::white);
-        g.drawFittedText (text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
+//        g.setColour (Colours::white);
+//        g.drawFittedText (text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
 
     }
 };
@@ -220,7 +220,7 @@ void  ParameterUI::setMappingState (const bool  b)
 
     if (b)
     {
-        mapEffect  = new MapEffect (isMappingDest ? Colours::red : Colours::blue, 120, getName());
+        mapEffect  = new MapEffect (isMappingDest ? Colours::red : Colours::blue, 50, getName());
     }
     else
     {

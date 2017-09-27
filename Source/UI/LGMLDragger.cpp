@@ -127,13 +127,13 @@ LGMLDragger::~LGMLDragger()
 {
 
 }
-void LGMLDragger::setMainComponent (Component* c, TooltipWindow* _tip)
+void LGMLDragger::setMainComponent (Component* c)
 {
     dragCandidate = nullptr;
     dropCandidate = nullptr;
     selected = nullptr;
     mainComp = c;
-    tip = _tip;
+
     mainComp->addMouseListener (this, true);
     setMappingActive (false);
 }
@@ -145,7 +145,7 @@ void LGMLDragger::registerDragCandidate (ParameterUI* c)
     //    unRegisterForDrag(nullptr);
 
     dragCandidate = new DraggedComponent (c);
-    //    tip->setMillisecondsBeforeTipAppears(99999999);
+
     mainComp->addAndMakeVisible (dragCandidate);
     dragCandidate->toFront (false);
 
@@ -161,7 +161,7 @@ void LGMLDragger::unRegisterDragCandidate (ParameterUI* c)
     }
 
     dropCandidate = nullptr;
-    //  tip->setMillisecondsBeforeTipAppears();
+
 
 
 }
@@ -276,6 +276,7 @@ void LGMLDragger::setMappingActive (bool b)
             registerDragCandidate (c);
         }
     }
+    listeners.call (&Listener::mappingModeChanged, b);
 
 
 }

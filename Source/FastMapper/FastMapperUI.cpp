@@ -31,8 +31,7 @@ FastMapperUI::FastMapperUI (FastMapper* _fastMapper, ControllableContainer* _vie
     linkToSelection.addListener (this);
     addAndMakeVisible (linkToSelection);
 
-    autoAddBt = ParameterUIFactory::createDefaultUI (fastMapper->autoAdd);
-    addAndMakeVisible (autoAddBt);
+    
 
 
 
@@ -120,7 +119,7 @@ constexpr int buttonHeight = 21;
 int FastMapperUI::getContentHeight()
 {
 
-    return mapsUI.size() * (mapHeight + gap) + 4 * buttonHeight + 10;
+    return mapsUI.size() * (mapHeight + gap) + 3 * buttonHeight + 10;
 }
 
 void FastMapperUI::resized()
@@ -128,7 +127,6 @@ void FastMapperUI::resized()
     Rectangle<int> r = getLocalBounds().reduced (2);
     potentialIn->setBounds (r.removeFromTop (buttonHeight).reduced (2));
     potentialOut->setBounds (r.removeFromTop (buttonHeight).reduced (2));
-    autoAddBt->setBounds (r.removeFromTop (buttonHeight).reduced (2));
     linkToSelection.setBounds (r.removeFromTop (buttonHeight).reduced (2));
 
 

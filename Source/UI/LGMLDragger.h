@@ -34,10 +34,10 @@ public:
     ~LGMLDragger();
     juce_DeclareSingleton (LGMLDragger, true);
 
-    void setMainComponent (Component* c, TooltipWindow* tip);
+    void setMainComponent (Component* c);
 
     Component* mainComp;
-    TooltipWindow* tip;
+    
 
     void registerDragCandidate (ParameterUI* c);
     void unRegisterDragCandidate (ParameterUI* c);
@@ -70,6 +70,7 @@ public:
     {
     public:
         virtual ~Listener() {};
+        virtual void mappingModeChanged(bool) = 0;
         virtual void selectionChanged (Parameter*) = 0;
     };
     void addSelectionListener (Listener* l ) {listeners.add (l);}

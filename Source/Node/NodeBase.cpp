@@ -728,6 +728,9 @@ void NodeBase::dataChanged (Data* d)
 
 void NodeBase::remove()
 {
+    if(parentNodeContainer)
+        parentNodeContainer->removeNode(this,false);
+    
     if (audioNode.get())
     {
         removeFromAudioGraph();

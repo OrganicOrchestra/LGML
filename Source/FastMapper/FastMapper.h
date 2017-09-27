@@ -45,7 +45,7 @@ public:
     OwnedArray<FastMap> maps;
     ParameterProxy* potentialIn;
     ParameterProxy* potentialOut;
-    BoolParameter* autoAdd;
+    bool autoAdd;
 
     void clear();
 
@@ -58,10 +58,14 @@ public:
 
     ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*   fData) override;
 
+
+
+
 private:
 
     // LGMLDragger Listener
     void selectionChanged (Parameter*) override;
+    void mappingModeChanged(bool) override;
 
     // Inspector Component
     void currentComponentChanged (Inspector* ) override;

@@ -46,7 +46,7 @@ public:
     FastMapper* fastMapper;
     TextButton linkToSelection;
 
-    ScopedPointer<ParameterUI> autoAddBt;
+    
     ScopedPointer<Component> potentialIn, potentialOut;
     OwnedArray<FastMapUI> mapsUI;
 

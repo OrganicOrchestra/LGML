@@ -82,7 +82,7 @@ MainWindow::MainWindow (String name, Engine* e)  : DocumentWindow (name,
 
 
     ShapeShifterManager::getInstance()->loadLastSessionLayoutFile();
-    LGMLDragger::getInstance()->setMainComponent (mainComponent, &mainComponent->tooltipWindow);
+    LGMLDragger::getInstance()->setMainComponent (mainComponent);
 
 
     startTimer (1000);

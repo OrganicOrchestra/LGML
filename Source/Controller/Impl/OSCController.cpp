@@ -62,10 +62,10 @@ OSCController::OSCController (const String& _name) :
     hostNameResolved (false)
 
 {
+    // force init of Network Utils if not created
     NetworkUtils::getInstance();
+
     localPortParam = addNewParameter<StringParameter> ("Local Port", "The port to bind for the controller to receive OSC from it", "11000");
-
-
     remotePortParam = addNewParameter<StringParameter> ("Remote Port", "The port bound by the controller to send OSC to it", "8000");
     static OSCClientModel model;
     remoteHostParam = addNewParameter<EnumParameter> ("Remote Host", "The host's IP of the remote controller", &model, var ("localhost"), true);
@@ -80,7 +80,7 @@ OSCController::OSCController (const String& _name) :
     blockFeedback = addNewParameter<BoolParameter> ("blockFeedback", "block osc feedback (resending updated message to controller)", true);
     sendAllParameters =  addNewParameter<Trigger> ("sendAll", "send all parameter states to initialize ", true);
 
-    autoAddParameter = addNewParameter<BoolParameter> ("autoAddParam", "add new parameter for each recieved OSC message", false);
+    
     setupReceiver();
     setupSender();
 
@@ -88,13 +88,14 @@ OSCController::OSCController (const String& _name) :
     lastOSCMessageSentTime = 0;
     numSentInARow = NUM_OSC_MSG_IN_A_ROW;
 
+    LGMLDragger::getInstance()->addSelectionListener(this);
 
 
 }
 
 OSCController::~OSCController()
 {
-
+    LGMLDragger::getInstanceWithoutCreating()->removeSelectionListener(this);
 }
 
 void OSCController::setupReceiver()
@@ -144,6 +145,13 @@ void OSCController::resolveHostnameIfNeeded()
 
                 if (!remotePortParam->isSettingValue && remotePortParam->stringValue() != resolvedPortString)
                 {
+                    //    enssure to not create feedback on ports
+                    if(remoteIP == "127.0.0.1" &&
+                       resolved.port == localPortParam->stringValue().getIntValue()){
+                        resolvedPortString = String((int)resolved.port+1);
+
+                    }
+
                     //          call again with resolved port if not manually set
                     remotePortParam->setValue (resolvedPortString, false, true);
                     return;
@@ -184,7 +192,7 @@ void OSCController::processMessage (const OSCMessage& msg)
 
     isProcessingOSC = true;
 
-    if (autoAddParameter->boolValue())
+    if (autoAdd)
     {
         MessageManager::getInstance()->callAsync ([this, msg]() {checkAndAddParameterIfNeeded (msg);});
     }
@@ -522,6 +530,9 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 
 }
 
+void OSCController::mappingModeChanged(bool state) {
+    autoAdd = state;
+};
 
 ////////////////////////
 // OSCMessageQueue

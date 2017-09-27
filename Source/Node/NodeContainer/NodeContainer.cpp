@@ -143,7 +143,7 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
 
 
 
-bool NodeContainer::removeNode (ConnectableNode* n)
+bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
 {
     Array<NodeConnection*> relatedConnections = getAllConnectionsForNode (n);
 
@@ -154,7 +154,7 @@ bool NodeContainer::removeNode (ConnectableNode* n)
     removeChildControllableContainer (n);
 
     nodeChangeNotifier.addMessage (new NodeChangeMessage (n, false));
-    //  nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
+    nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
 
 
     n->clear();
@@ -162,7 +162,8 @@ bool NodeContainer::removeNode (ConnectableNode* n)
 
     if (NodeContainer* nc = dynamic_cast<NodeContainer*> (n)) nodeContainers.removeFirstMatchingValue (nc);
 
-    nodes.removeObject ((NodeBase*)n);
+    if(doDelete)
+        nodes.removeObject ((NodeBase*)n);
     //if(NodeManager::getInstanceWithoutCreating() != nullptr)
     //  getAudioGraph()->removeNode(n->audioNode);
 

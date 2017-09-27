@@ -37,6 +37,7 @@ Controller::Controller (StringRef _name) :
 
     activityTrigger =  addNewParameter<Trigger> ("activity", "Activity indicator");
     activityTrigger->isEditable = false;
+    activityTrigger->isControllableExposed =false;
     controllerTypeEnum = 0; //init
 }
 
