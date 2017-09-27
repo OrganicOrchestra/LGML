@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "DataProcessorGraph.h"
 
 DataProcessorGraph::DataProcessorGraph()

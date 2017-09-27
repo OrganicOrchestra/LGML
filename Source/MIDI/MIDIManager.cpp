@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "MIDIManager.h"
 #include "../Logger/LGMLLogger.h"
 

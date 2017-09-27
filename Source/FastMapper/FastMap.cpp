@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "FastMap.h"
 #include "../Node/Manager/NodeManager.h"
 

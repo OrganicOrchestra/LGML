@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "PresetChooserUI.h"
 #include "../Utils/DebugHelpers.h"
 #include "../Controllable/Parameter/ParameterContainer.h"

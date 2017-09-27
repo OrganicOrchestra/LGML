@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef DATAINNODEUI_H_INCLUDED
 #define DATAINNODEUI_H_INCLUDED
 

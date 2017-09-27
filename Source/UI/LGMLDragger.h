@@ -12,7 +12,6 @@
 *
 */
 
-
 #pragma once
 
 #include "../JuceHeaderUI.h"

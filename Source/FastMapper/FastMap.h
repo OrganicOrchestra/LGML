@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef FASTMAP_H_INCLUDED
 #define FASTMAP_H_INCLUDED
 

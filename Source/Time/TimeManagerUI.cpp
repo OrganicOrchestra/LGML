@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "TimeManagerUI.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../UI/Style.h"

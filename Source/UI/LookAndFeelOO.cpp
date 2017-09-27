@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "LookAndFeelOO.h"
 #include "Style.h"
 

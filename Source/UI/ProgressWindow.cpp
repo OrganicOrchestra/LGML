@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "ProgressWindow.h"
 #include "Style.h"
 

@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "FastMapUI.h"
 #include "../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "FastMapper.h"

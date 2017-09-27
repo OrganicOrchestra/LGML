@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef DATAINNODE_H_INCLUDED
 #define DATAINNODE_H_INCLUDED
 

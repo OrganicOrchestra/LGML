@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "VSTManager.h"
 
 

@@ -12,7 +12,6 @@
 *
 */
 
-
 /*
  NodeBase is the base class for all Nodes
  it contains NodeAudioProcessor and/or NodeBase::NodeDataProcessor

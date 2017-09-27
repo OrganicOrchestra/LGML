@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef MIDIMANAGER_H_INCLUDED
 #define MIDIMANAGER_H_INCLUDED
 #pragma once

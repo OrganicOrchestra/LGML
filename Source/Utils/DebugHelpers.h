@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef DEBUGHELPERS_H_INCLUDED
 #define DEBUGHELPERS_H_INCLUDED
 //  header (build and link-time cheap) to include everywhere we need LGML specific debug macros

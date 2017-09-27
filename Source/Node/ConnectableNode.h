@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef CONNECTABLENODE_H_INCLUDED
 #define CONNECTABLENODE_H_INCLUDED
 #pragma once

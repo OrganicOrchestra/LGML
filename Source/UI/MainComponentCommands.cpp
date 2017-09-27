@@ -12,8 +12,6 @@
 *
 */
 
-
-
 #include "MainComponent.h"
 #include "../FastMapper/FastMap.h"
 #include "../Engine.h"

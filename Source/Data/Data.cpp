@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "Data.h"
 
 Data::Data (NodeBase* _node, String _name, DataType _type, IOType _ioType) :

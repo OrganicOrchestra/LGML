@@ -2,7 +2,7 @@ import glob
 import os
 
 types = ('*.cpp','*.h','*.hpp')
-sourcePath = "../../Source/"
+sourcePath = "../../Source/**/"
 
 encoding = 'utf8'
 
@@ -12,6 +12,7 @@ for t in types:
 
 
 def getEntete(f):
+
   enteteLines = (0,0)
   # print("parsing "+f)
   with open(f,'r',encoding=encoding) as fi:
@@ -52,16 +53,21 @@ def addEntete(f,entete):
     print( lines[0:e[0]])
     exit(1)
     return
-  if(e[0] == e[1] )and (e[0]!=0):
+  if(e[0] == e[1] ) and (e[0]!=0):
     print("weird entete content : "+f)
     print( lines[0:e[0]])
     exit(1)
   if e!=(0,0):
     # print(lines)
-    # print(e)
-    lines = lines[e[1]+1:]
+    
+    codestart = e[1]+1
 
-  lines=entete+lines
+    while not lines[codestart].strip() and codestart < len(lines):
+      codestart+=1
+      print("empty space")
+    lines = lines[codestart:]
+
+  lines=entete+['']+lines
   with open(f,'w',encoding=encoding) as fi:
     fi.writelines(lines)
   # print (lines)
@@ -76,6 +82,7 @@ if(not desiredEntete):
   raise NameError('no entete found')
 
 for f in fl:
+  print ("adding entete on ", f)
   entete = addEntete(f,desiredEntete);
   if entete == (0,0):
     print("no entete in" + f)

@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef PluginWindow_H_INCLUDED
 #define PluginWindow_H_INCLUDED
 

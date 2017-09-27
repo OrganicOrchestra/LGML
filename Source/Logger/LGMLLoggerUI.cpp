@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "LGMLLoggerUI.h"
 #include "../UI/Style.h"
 

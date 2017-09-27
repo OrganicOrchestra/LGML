@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef TIMEMANAGER_H_INCLUDED
 #define TIMEMANAGER_H_INCLUDED
 #pragma once

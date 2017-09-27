@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef FASTMAPUI_H_INCLUDED
 #define FASTMAPUI_H_INCLUDED
 

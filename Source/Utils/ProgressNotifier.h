@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef PROGRESSNOTIFIER_H_INCLUDED
 #define PROGRESSNOTIFIER_H_INCLUDED
 #include "../JuceHeaderCore.h"

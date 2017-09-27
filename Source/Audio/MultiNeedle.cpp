@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "MultiNeedle.h"
 
 #define DEBUG_NEEDLE 0

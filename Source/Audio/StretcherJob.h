@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef STRETCHERJOB_H_INCLUDED
 #define STRETCHERJOB_H_INCLUDED
 

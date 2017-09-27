@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "FastMapper.h"
 
 juce_ImplementSingleton (FastMapper)

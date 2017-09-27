@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef VSTMANAGER_H_INCLUDED
 #define VSTMANAGER_H_INCLUDED
 

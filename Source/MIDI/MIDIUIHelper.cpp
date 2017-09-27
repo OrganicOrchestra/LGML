@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "MIDIUIHelper.h"
 
 MIDIDeviceChooser::MIDIDeviceChooser (bool _isInputChooser) :

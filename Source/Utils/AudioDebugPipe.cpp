@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "AudioDebugPipe.h"
 Array<AudioDebugPipe*> AudioDebugPipe::openedPipes;
 

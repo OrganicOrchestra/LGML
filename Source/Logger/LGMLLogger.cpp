@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "LGMLLogger.h"
 
 juce_ImplementSingleton (LGMLLogger);

@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef MIDILISTENER_H_INCLUDED
 #define MIDILISTENER_H_INCLUDED
 #pragma once

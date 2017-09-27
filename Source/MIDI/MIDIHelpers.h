@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef MIDIHELPERS_H_INCLUDED
 #define MIDIHELPERS_H_INCLUDED
 

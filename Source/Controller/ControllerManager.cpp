@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "ControllerManager.h"
 
 juce_ImplementSingleton (ControllerManager);

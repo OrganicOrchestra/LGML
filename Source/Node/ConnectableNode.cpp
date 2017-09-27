@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "ConnectableNode.h"
 
 #include "../Audio/AudioHelpers.h"

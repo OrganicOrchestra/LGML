@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef MIDIUIHELPER_H_INCLUDED
 #define MIDIUIHELPER_H_INCLUDED
 #pragma once

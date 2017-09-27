@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "Controllable.h"
 #include "ControllableContainer.h"
 #include "../Scripting/Js/JsHelpers.h"

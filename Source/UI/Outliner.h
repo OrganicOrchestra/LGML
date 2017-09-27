@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef OUTLINER_H_INCLUDED
 #define OUTLINER_H_INCLUDED
 

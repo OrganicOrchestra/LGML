@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef RINGBUFFER_H_INCLUDED
 #define RINGBUFFER_H_INCLUDED
 

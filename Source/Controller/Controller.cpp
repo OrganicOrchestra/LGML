@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "Controller.h"
 #include "ControllerFactory.h"
 #include "UI/ControllerUI.h"

@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef LGMLLOGGERUI_H_INCLUDED
 #define LGMLLOGGERUI_H_INCLUDED
 

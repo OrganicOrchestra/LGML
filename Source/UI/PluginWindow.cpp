@@ -12,8 +12,6 @@
 *
 */
 
-
-
 #include "PluginWindow.h"
 
 

@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "PresetManager.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
 

@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "TimeMasterCandidate.h"
 
 #include "TimeManager.h"

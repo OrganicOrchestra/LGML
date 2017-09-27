@@ -12,7 +12,6 @@
 *
 */
 
-
 #ifndef AUDIOCONFIG_H_INCLUDED
 #define AUDIOCONFIG_H_INCLUDED
 

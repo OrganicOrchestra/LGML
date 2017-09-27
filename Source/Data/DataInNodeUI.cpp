@@ -12,8 +12,6 @@
 *
 */
 
-
-
 #include "DataInNodeUI.h"
 #include "../Controllable/Parameter/UI/SliderUI.h"
 

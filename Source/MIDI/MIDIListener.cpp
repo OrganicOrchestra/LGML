@@ -12,7 +12,6 @@
 *
 */
 
-
 #include "MIDIListener.h"
 #include "../Utils/DebugHelpers.h"
 
