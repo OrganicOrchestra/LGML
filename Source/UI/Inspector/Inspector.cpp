@@ -54,6 +54,7 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
         clearEditor();
         currentComponent->setSelected (false);
         currentComponent->removeInspectableListener (this);
+        getCurrentSelected()->parentContainer->removeControllableContainerListener(this);
     }
 
     currentComponent = c;
@@ -62,6 +63,7 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
     {
         currentComponent->setSelected (true);
         currentComponent->addInspectableListener (this);
+        getCurrentSelected()->parentContainer->addControllableContainerListener(this);
         inspectCurrentComponent();
     }
 
@@ -72,7 +74,7 @@ ParameterContainer* Inspector::getCurrentSelected()
 {
     if (currentComponent)
     {
-        return currentComponent->relatedParameterContainer;
+        return currentComponent->getRelatedParameterContainer();
     }
     else return nullptr;
 }
@@ -117,4 +119,12 @@ void Inspector::inspectableRemoved (InspectableComponent* component)
 void Inspector::contentSizeChanged (InspectorEditor*)
 {
     listeners.call (&InspectorListener::contentSizeChanged, this);
+}
+
+void Inspector::controllableContainerRemoved(ControllableContainer * , ControllableContainer * ori ) {
+    if(ori== getCurrentSelected()){
+        setCurrentComponent(nullptr);
+    }
+
+
 }

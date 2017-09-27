@@ -33,9 +33,10 @@ public:
     Inspector* inspector;
     const String inspectableType;
 
+    ParameterContainer* getRelatedParameterContainer();
     virtual InspectorEditor* createEditor();
 
-    ParameterContainer* relatedParameterContainer;
+
     int recursiveInspectionLevel;
     bool canInspectChildContainersBeyondRecursion;
 
@@ -64,7 +65,11 @@ public:
     ListenerList<InspectableListener> listeners;
     void addInspectableListener (InspectableListener* newListener) { listeners.add (newListener); }
     void removeInspectableListener (InspectableListener* listener) { listeners.remove (listener); }
-
+private:
+    ParameterContainer* relatedParameterContainer;
+    WeakReference<InspectableComponent>::Master masterReference;
+    friend class WeakReference<InspectableComponent>;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InspectableComponent)
 };
 

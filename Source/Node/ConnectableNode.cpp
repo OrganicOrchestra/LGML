@@ -82,7 +82,7 @@ ConnectableNode::~ConnectableNode()
         remove();
 
 
-#warning removed explicit behaviour from ben
+#warning removed explicit behaviour from ben, not sure but prevent some bugs
     //  //@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
     //
     //  cleanUpPresets();

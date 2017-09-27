@@ -30,11 +30,13 @@ InspectableComponent::InspectableComponent (ParameterContainer* relatedContainer
     paintBordersWhenSelected (true),
     bringToFrontOnSelect (true)
 {
+    
 }
 
 InspectableComponent::~InspectableComponent()
 {
-    listeners.call (&InspectableListener::inspectableRemoved, this);
+    masterReference.clear();
+
 }
 
 InspectorEditor* InspectableComponent::createEditor()
@@ -80,5 +82,11 @@ void InspectableComponent::paintOverChildren (juce::Graphics& g)
         g.setColour ( findColour (TextButton::buttonOnColourId));
         g.drawRoundedRectangle (getLocalBounds().toFloat(), 4, 2);
     }
+
+}
+
+
+ParameterContainer* InspectableComponent::getRelatedParameterContainer(){
+    return relatedParameterContainer;
 
 }

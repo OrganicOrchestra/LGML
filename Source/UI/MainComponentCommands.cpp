@@ -347,7 +347,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
             if (ic != nullptr)
             {
-                ParameterContainer* cc = Inspector::getInstance()->currentComponent->relatedParameterContainer;
+                ParameterContainer* cc = Inspector::getInstance()->currentComponent->getRelatedParameterContainer();
 
                 if (cc != nullptr)
                 {
@@ -390,7 +390,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                     {
                         if (type == "node" && Inspector::getInstance()->currentComponent->inspectableType == "node")
                         {
-                            ConnectableNode* cn = dynamic_cast<ConnectableNode*> (Inspector::getInstance()->currentComponent->relatedParameterContainer);
+                            ConnectableNode* cn = dynamic_cast<ConnectableNode*> (Inspector::getInstance()->currentComponent->getRelatedParameterContainer());
                             NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
 
                             if (cn != nullptr)

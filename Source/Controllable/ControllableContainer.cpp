@@ -194,6 +194,8 @@ void ControllableContainer::removeChildControllableContainer (ControllableContai
         numContainerIndexed--;
     }
 
+
+    
     controllableContainerListeners.call (&Listener::controllableContainerRemoved, this, container);
     controllableContainers.removeAllInstancesOf (container);
 

@@ -19,16 +19,20 @@
 #include "../ShapeShifter/ShapeShifterContent.h"
 #include "InspectableComponent.h"
 #include "InspectorEditor.h"
-class ParameterContainer;
+#include "../../Controllable/Parameter/ParameterContainer.h"
 
-class Inspector : public juce::Component, public InspectableComponent::InspectableListener, public InspectorEditor::InspectorEditorListener
+class Inspector : public juce::Component,
+    public InspectableComponent::InspectableListener,
+    public InspectorEditor::InspectorEditorListener,
+    private ControllableContainer::Listener
+
 {
 public:
     juce_DeclareSingleton (Inspector, false);
     Inspector();
     virtual ~Inspector();
 
-    InspectableComponent* currentComponent;
+    WeakReference<InspectableComponent> currentComponent;
 
     ScopedPointer<InspectorEditor> currentEditor;
 
@@ -62,7 +66,8 @@ public:
     void addInspectorListener (InspectorListener* newListener) { listeners.add (newListener); }
     void removeInspectorListener (InspectorListener* listener) { listeners.remove (listener); }
 
-
+private:
+    void controllableContainerRemoved(ControllableContainer * , ControllableContainer * ) override;
 };
 
 class InspectorViewport : public ShapeShifterContentComponent, public Inspector::InspectorListener
