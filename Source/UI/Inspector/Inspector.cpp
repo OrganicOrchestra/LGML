@@ -15,98 +15,106 @@
 
 #include "Inspector.h"
 #include "../../Controllable/Parameter/ParameterContainer.h"
-juce_ImplementSingleton(Inspector)
+juce_ImplementSingleton (Inspector)
 
 Inspector::Inspector() :
-	currentEditor(nullptr),
-	currentComponent(nullptr),
-	isEnabled(true)
+    currentEditor (nullptr),
+    currentComponent (nullptr),
+    isEnabled (true)
 {
 }
 
 Inspector::~Inspector()
 {
-	clear();
+    clear();
 }
 
-void Inspector::setEnabled(bool value)
+void Inspector::setEnabled (bool value)
 {
-	if (isEnabled == value) return;
+    if (isEnabled == value) return;
 
-	if (!value) setCurrentComponent(nullptr);
-	isEnabled = value;
+    if (!value) setCurrentComponent (nullptr);
+
+    isEnabled = value;
 }
 
 void Inspector::clear()
 {
-	setCurrentComponent(nullptr);
+    setCurrentComponent (nullptr);
 }
 
-void Inspector::setCurrentComponent(InspectableComponent * c)
+void Inspector::setCurrentComponent (InspectableComponent* c)
 {
-	if (c == currentComponent) return;
-	if (!isEnabled) return;
+    if (c == currentComponent) return;
 
-	if (currentComponent != nullptr)
-	{
-		clearEditor();
-		currentComponent->setSelected(false);
-		currentComponent->removeInspectableListener(this);
-	}
+    if (!isEnabled) return;
 
-	currentComponent = c;
+    if (currentComponent != nullptr)
+    {
+        clearEditor();
+        currentComponent->setSelected (false);
+        currentComponent->removeInspectableListener (this);
+    }
 
-	if (currentComponent != nullptr)
-	{
-		currentComponent->setSelected(true);
-		currentComponent->addInspectableListener(this);
-		inspectCurrentComponent();
-	}
+    currentComponent = c;
 
-	listeners.call(&InspectorListener::currentComponentChanged, this);
+    if (currentComponent != nullptr)
+    {
+        currentComponent->setSelected (true);
+        currentComponent->addInspectableListener (this);
+        inspectCurrentComponent();
+    }
+
+    listeners.call (&InspectorListener::currentComponentChanged, this);
 }
 
-ParameterContainer * Inspector::getCurrentSelected(){
-  if(currentComponent){
-    return currentComponent->relatedParameterContainer;
-  }
-  else return nullptr;
+ParameterContainer* Inspector::getCurrentSelected()
+{
+    if (currentComponent)
+    {
+        return currentComponent->relatedParameterContainer;
+    }
+    else return nullptr;
 }
 
 void Inspector::resized()
 {
-	if (currentEditor != nullptr) currentEditor->setBounds(getLocalBounds().reduced(5));
+    if (currentEditor != nullptr) currentEditor->setBounds (getLocalBounds().reduced (5));
 }
 
 void Inspector::clearEditor()
 {
-	if (currentEditor != nullptr)
-	{
-		removeChildComponent(currentEditor);
-		currentEditor->clear();
-		currentEditor = nullptr;
-	}
+    if (currentEditor != nullptr)
+    {
+        removeChildComponent (currentEditor);
+        currentEditor->clear();
+        currentEditor = nullptr;
+    }
 }
 
 void Inspector::inspectCurrentComponent()
 {
-	if (currentComponent == nullptr) return;
-	if (currentEditor != nullptr) currentEditor->removeInspectorEditorListener(this);
-	currentEditor = currentComponent->createEditor();
-	if (currentEditor != nullptr) currentEditor->addInspectorEditorListener(this);
-	addAndMakeVisible(currentEditor);
+    if (currentComponent == nullptr) return;
 
-	getTopLevelComponent()->toFront(true);
+    if (currentEditor != nullptr) currentEditor->removeInspectorEditorListener (this);
 
-	resized();
+    currentEditor = currentComponent->createEditor();
+
+    if (currentEditor != nullptr) currentEditor->addInspectorEditorListener (this);
+
+    addAndMakeVisible (currentEditor);
+
+    getTopLevelComponent()->toFront (true);
+
+    resized();
 }
 
-void Inspector::inspectableRemoved(InspectableComponent * component)
+void Inspector::inspectableRemoved (InspectableComponent* component)
 {
-	if (component == currentComponent) setCurrentComponent(nullptr);
+    if (component == currentComponent) setCurrentComponent (nullptr);
 }
 
-void Inspector::contentSizeChanged(InspectorEditor *)
+void Inspector::contentSizeChanged (InspectorEditor*)
 {
-	listeners.call(&InspectorListener::contentSizeChanged, this);
+    listeners.call (&InspectorListener::contentSizeChanged, this);
 }

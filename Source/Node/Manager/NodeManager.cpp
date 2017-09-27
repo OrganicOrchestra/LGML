@@ -17,76 +17,79 @@
 #include "../Impl/DummyNode.h"
 #include "../NodeContainer/NodeContainer.h"
 
-IMPL_OBJ_TYPE(NodeManager);
+IMPL_OBJ_TYPE (NodeManager);
 extern AudioDeviceManager& getAudioDeviceManager();
 bool isEngineLoadingFile();
-juce_ImplementSingleton(NodeManager);
+juce_ImplementSingleton (NodeManager);
 
-NodeManager::NodeManager(StringRef name) :
-  ThreadPool(4),
-    ParameterContainer("Nodes")
+NodeManager::NodeManager (StringRef name) :
+    ThreadPool (4),
+    ParameterContainer ("Nodes")
 {
-  nameParam->isEditable = false;
-  isLoading = false;
-    setCustomShortName("node");
+    nameParam->isEditable = false;
+    isLoading = false;
+    setCustomShortName ("node");
 
-	mainContainer = new NodeContainer("mainContainer");
-	addChildControllableContainer(mainContainer);
-	mainContainer->skipControllableNameInAddress = true;
-	mainContainer->enabledParam->isControllableExposed = false;
-	mainContainer->miniMode->isControllableExposed = false;
-	mainContainer->nameParam->isControllableExposed = false;
-  mainContainer->nameParam->isEditable = false;
+    mainContainer = new NodeContainer ("mainContainer");
+    addChildControllableContainer (mainContainer);
+    mainContainer->skipControllableNameInAddress = true;
+    mainContainer->enabledParam->isControllableExposed = false;
+    mainContainer->miniMode->isControllableExposed = false;
+    mainContainer->nameParam->isControllableExposed = false;
+    mainContainer->nameParam->isEditable = false;
 }
 
 NodeManager::~NodeManager()
 {
-	clear();
+    clear();
 }
 
 void NodeManager::clear()
 {
-  // maincontainer will automaticly delete all nodes with him
-//  removeChildControllableContainer(mainContainer);
-//mainContainer = new NodeContainer("mainContainer");
-//  addChildControllableContainer(mainContainer);
-  mainContainer->clear();
+    // maincontainer will automaticly delete all nodes with him
+    //  removeChildControllableContainer(mainContainer);
+    //mainContainer = new NodeContainer("mainContainer");
+    //  addChildControllableContainer(mainContainer);
+    mainContainer->clear();
 
-	dataGraph.clear();
+    dataGraph.clear();
 
-	nodeManagerListeners.call(&NodeManagerListener::managerCleared);
+    nodeManagerListeners.call (&NodeManagerListener::managerCleared);
 }
 
 
 
-void NodeManager::configureFromObject(DynamicObject * data)
+void NodeManager::configureFromObject (DynamicObject* data)
 {
-  jassert(isLoading ==false);
-  jobsWatcher = new JobsWatcher(this);
-  isLoading = true;
-	clear();
-  ParameterContainer::configureFromObject(data);
+    jassert (isLoading == false);
+    jobsWatcher = new JobsWatcher (this);
+    isLoading = true;
+    clear();
+    ParameterContainer::configureFromObject (data);
 
-//	mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
-
-}
-
-void NodeManager::rebuildAudioGraph() {
-  if(!isLoading && !isEngineLoadingFile()){
-  mainContainer->updateAudioGraph();
-  }
-	
-}
-
-
-void NodeManager::notifiedJobsEnded(){
-  isLoading = false;
-  rebuildAudioGraph();
-  nodeManagerListeners.call(&NodeManagerListener::managerEndedLoading);
+    //  mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
 
 }
 
-void NodeManager::notifiedJobsProgressed(float progress)
+void NodeManager::rebuildAudioGraph()
 {
-	nodeManagerListeners.call(&NodeManagerListener::managerProgressedLoading, progress);
+    if (!isLoading && !isEngineLoadingFile())
+    {
+        mainContainer->updateAudioGraph();
+    }
+
+}
+
+
+void NodeManager::notifiedJobsEnded()
+{
+    isLoading = false;
+    rebuildAudioGraph();
+    nodeManagerListeners.call (&NodeManagerListener::managerEndedLoading);
+
+}
+
+void NodeManager::notifiedJobsProgressed (float progress)
+{
+    nodeManagerListeners.call (&NodeManagerListener::managerProgressedLoading, progress);
 }

@@ -21,83 +21,87 @@
 
 
 class ParameterUI : public juce::Component,
-protected Parameter::AsyncListener,
-private Parameter::Listener,
-public SettableTooltipClient ,
-public Controllable::Listener
+    protected Parameter::AsyncListener,
+    private Parameter::Listener,
+    public SettableTooltipClient,
+    public Controllable::Listener
 {
 public:
-  ParameterUI(Parameter * parameter);
-  virtual ~ParameterUI();
+    ParameterUI (Parameter* parameter);
+    virtual ~ParameterUI();
 
-  WeakReference<Parameter> parameter;
+    WeakReference<Parameter> parameter;
 
-  bool showLabel;
-  bool showValue;
+    bool showLabel;
+    bool showValue;
 
-  void setCustomText(const String text);
+    void setCustomText (const String text);
 
-  enum MappingState{
-    NOMAP,
-    MAPSOURCE,
-    MAPDEST
-  };
+    enum MappingState
+    {
+        NOMAP,
+        MAPSOURCE,
+        MAPDEST
+    };
 
-  void setMappingState(const bool  s);
-  void setMappingDest(bool _isMappingDest);
+    void setMappingState (const bool  s);
+    void setMappingDest (bool _isMappingDest);
 
-  bool isDraggable;
-  bool isSelected;
+    bool isDraggable;
+    bool isSelected;
 
 
 
 protected:
 
-  String customTextDisplayed;
-  // helper to spot wrong deletion order
-  bool shouldBailOut();
+    String customTextDisplayed;
+    // helper to spot wrong deletion order
+    bool shouldBailOut();
 
-  // here we are bound to only one parameter so no need to pass parameter*
-  // for general behaviour see AsyncListener
-  virtual void valueChanged(const var & ){};
-  virtual void rangeChanged(Parameter * ){};
+    // here we are bound to only one parameter so no need to pass parameter*
+    // for general behaviour see AsyncListener
+    virtual void valueChanged (const var& ) {};
+    virtual void rangeChanged (Parameter* ) {};
 
-  void updateTooltip();
-  void mouseDown(const MouseEvent &e) override;
+    void updateTooltip();
+    void mouseDown (const MouseEvent& e) override;
 
 
 private:
-  // see Parameter::AsyncListener
-  virtual void newMessage(const Parameter::ParamWithValue & p) override{
-    if(p.isRange()){
-      rangeChanged(p.parameter);
-    }
-    else{
-      valueChanged(p.value);
-    }
-  };
+    // see Parameter::AsyncListener
+    virtual void newMessage (const Parameter::ParamWithValue& p) override
+    {
+        if (p.isRange())
+        {
+            rangeChanged (p.parameter);
+        }
+        else
+        {
+            valueChanged (p.value);
+        }
+    };
 
-  // never change this as value can be changed from other threads
-  void parameterValueChanged(Parameter * ) override{};
-  void parameterRangeChanged(Parameter * )override{};
+    // never change this as value can be changed from other threads
+    void parameterValueChanged (Parameter* ) override {};
+    void parameterRangeChanged (Parameter* )override {};
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterUI)
-  friend class LGMLDragger;
-  MappingState mappingState;
-  bool hasValidControllable;
-  ScopedPointer<ImageEffectFilter> mapEffect;
-
-
-
-  // Inherited via Listener
-  virtual void controllableStateChanged(Controllable * c) override;
-  virtual void controllableControlAddressChanged(Controllable * c) override;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterUI)
+    friend class LGMLDragger;
+    MappingState mappingState;
+    bool hasValidControllable;
+    ScopedPointer<ImageEffectFilter> mapEffect;
 
 
-  bool isMappingDest;
 
-  WeakReference<ParameterUI>::Master masterReference;
-  friend class WeakReference<ParameterUI>;
+    // Inherited via Listener
+    virtual void controllableStateChanged (Controllable* c) override;
+    virtual void controllableControlAddressChanged (Controllable* c) override;
+
+
+    bool isMappingDest;
+
+    WeakReference<ParameterUI>::Master masterReference;
+    friend class WeakReference<ParameterUI>;
 
 
 
@@ -107,16 +111,16 @@ private:
 
 //    this class allow to automaticly generate label / ui element for parameter listing in editor
 //    it owns the created component
-class NamedParameterUI : public ParameterUI,public Label::Listener
+class NamedParameterUI : public ParameterUI, public Label::Listener
 {
 public:
-  NamedParameterUI(ParameterUI * ui,int _labelWidth,bool labelAbove=false);
-  void resized()override;
-  bool labelAbove;
-  void labelTextChanged (Label* labelThatHasChanged) override;
-  Label controllableLabel;
-  int labelWidth;
-  ScopedPointer <ParameterUI > ownedParameterUI;
+    NamedParameterUI (ParameterUI* ui, int _labelWidth, bool labelAbove = false);
+    void resized()override;
+    bool labelAbove;
+    void labelTextChanged (Label* labelThatHasChanged) override;
+    Label controllableLabel;
+    int labelWidth;
+    ScopedPointer <ParameterUI > ownedParameterUI;
 };
 
 

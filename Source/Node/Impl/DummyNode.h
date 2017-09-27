@@ -22,45 +22,45 @@
 class DummyNode : public NodeBase
 {
 public:
-    DECLARE_OBJ_TYPE(DummyNode)
+    DECLARE_OBJ_TYPE (DummyNode)
     ~DummyNode();
 
     //parameters
-    FloatParameter * freq1Param;
-    FloatParameter * freq2Param;
-	EnumParameter * enumParam;
+    FloatParameter* freq1Param;
+    FloatParameter* freq2Param;
+    EnumParameter* enumParam;
 
-	FloatParameter * pxParam;
-	FloatParameter * pyParam;
-
-
-    Trigger * testTrigger;
+    FloatParameter* pxParam;
+    FloatParameter* pyParam;
 
 
-    void onContainerParameterChanged(Parameter * p) override;
-
-	//AUDIO
-
-	int step1 = 0;
-	int step2 = 0;
-	int period1 = (int)(44100 * 1.0f / 300);
-	int period2 = (int)(44100 * 1.0f / 300);
-	float amp = 1.f;
-
-	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override;
-
-	//DATA
-
-  Data * outPosData;
-	void processInputDataChanged(Data *d) override;
+    Trigger* testTrigger;
 
 
+    void onContainerParameterChanged (Parameter* p) override;
+
+    //AUDIO
+
+    int step1 = 0;
+    int step2 = 0;
+    int period1 = (int) (44100 * 1.0f / 300);
+    int period2 = (int) (44100 * 1.0f / 300);
+    float amp = 1.f;
+
+    void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)override;
+
+    //DATA
+
+    Data* outPosData;
+    void processInputDataChanged (Data* d) override;
 
 
-    
-  FadeInOut clickFade;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNode)
+
+
+    FadeInOut clickFade;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DummyNode)
 };
 
 

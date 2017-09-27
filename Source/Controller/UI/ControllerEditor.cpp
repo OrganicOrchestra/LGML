@@ -16,17 +16,20 @@
 #include "ControllerEditor.h"
 
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
-ControllerEditor::ControllerEditor(Controller * _controller,bool generateAuto) :
-	InspectorEditor(),
-	controller(_controller),
-	addParameterBT("Add Variable")
+ControllerEditor::ControllerEditor (Controller* _controller, bool generateAuto) :
+    InspectorEditor(),
+    controller (_controller),
+    addParameterBT ("Add Variable")
 {
-	addParameterBT.addListener(this);
-  if(generateAuto){
-  editor = new GenericParameterContainerEditor(controller);
-  addAndMakeVisible(editor);
-  }
-  addAndMakeVisible(addParameterBT);
+    addParameterBT.addListener (this);
+
+    if (generateAuto)
+    {
+        editor = new GenericParameterContainerEditor (controller);
+        addAndMakeVisible (editor);
+    }
+
+    addAndMakeVisible (addParameterBT);
 }
 
 ControllerEditor::~ControllerEditor()
@@ -37,26 +40,28 @@ ControllerEditor::~ControllerEditor()
 
 void ControllerEditor::resized()
 {
-	InspectorEditor::resized();
-  auto r =getLocalBounds();
-	addParameterBT.setBounds(r.removeFromTop(20));
-  if(editor){
-    editor->setBounds(r);
-  }
+    InspectorEditor::resized();
+    auto r = getLocalBounds();
+    addParameterBT.setBounds (r.removeFromTop (20));
+
+    if (editor)
+    {
+        editor->setBounds (r);
+    }
 }
 
 int ControllerEditor::getContentHeight()
 {
-  return InspectorEditor::getContentHeight() + 20  + (editor?editor->getContentHeight():0);
+    return InspectorEditor::getContentHeight() + 20  + (editor ? editor->getContentHeight() : 0);
 }
 
 
-void ControllerEditor::buttonClicked(Button * b)
+void ControllerEditor::buttonClicked (Button* b)
 {
-	if (b == &addParameterBT)
-	{
-    
-    controller->userContainer.addNewParameter<FloatParameter>("var","Custom Variable");
+    if (b == &addParameterBT)
+    {
 
-	}
+        controller->userContainer.addNewParameter<FloatParameter> ("var", "Custom Variable");
+
+    }
 }

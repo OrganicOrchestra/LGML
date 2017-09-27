@@ -17,37 +17,37 @@
 #include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 #include "../../../Controllable/Parameter/UI/StringParameterUI.h"
 
-OSCControllerEditor::OSCControllerEditor(OSCController * _controller) :
-ControllerEditor(_controller),
-oscController(_controller)
+OSCControllerEditor::OSCControllerEditor (OSCController* _controller) :
+    ControllerEditor (_controller),
+    oscController (_controller)
 
 
 {
-  
-  localPortUI = ParameterUIFactory::createDefaultUI(oscController->localPortParam);
-  ((StringParameterUI*)localPortUI.get())->setNameLabelVisible(true);
-  remoteHostUI = ParameterUIFactory::createDefaultUI(oscController->remoteHostParam);
-  ((StringParameterUI*)remoteHostUI.get())->setNameLabelVisible(true);
-  remotePortUI = ParameterUIFactory::createDefaultUI(oscController->remotePortParam);
-  ((StringParameterUI*)remotePortUI.get())->setNameLabelVisible(true);
 
-  logIncomingOSC = ParameterUIFactory::createDefaultUI(oscController->logIncomingOSC);
-  speedLimit = ParameterUIFactory::createDefaultUI(oscController->speedLimit);
-  logOutOSC = ParameterUIFactory::createDefaultUI(oscController->logOutGoingOSC);
-  blockFeedback = ParameterUIFactory::createDefaultUI(oscController->blockFeedback);
+    localPortUI = ParameterUIFactory::createDefaultUI (oscController->localPortParam);
+    ((StringParameterUI*)localPortUI.get())->setNameLabelVisible (true);
+    remoteHostUI = ParameterUIFactory::createDefaultUI (oscController->remoteHostParam);
+    ((StringParameterUI*)remoteHostUI.get())->setNameLabelVisible (true);
+    remotePortUI = ParameterUIFactory::createDefaultUI (oscController->remotePortParam);
+    ((StringParameterUI*)remotePortUI.get())->setNameLabelVisible (true);
 
-  sendAllTrigger = ParameterUIFactory::createDefaultUI(oscController->sendAllParameters);
+    logIncomingOSC = ParameterUIFactory::createDefaultUI (oscController->logIncomingOSC);
+    speedLimit = ParameterUIFactory::createDefaultUI (oscController->speedLimit);
+    logOutOSC = ParameterUIFactory::createDefaultUI (oscController->logOutGoingOSC);
+    blockFeedback = ParameterUIFactory::createDefaultUI (oscController->blockFeedback);
 
-  addAndMakeVisible(localPortUI);
-  addAndMakeVisible(remoteHostUI);
-  addAndMakeVisible(remotePortUI);
-  addAndMakeVisible(logIncomingOSC);
-  addAndMakeVisible(logOutOSC);
-  addAndMakeVisible(sendAllTrigger);
-  addAndMakeVisible(blockFeedback);
-  addAndMakeVisible(speedLimit);
+    sendAllTrigger = ParameterUIFactory::createDefaultUI (oscController->sendAllParameters);
 
-  addAndMakeVisible(innerContainer);
+    addAndMakeVisible (localPortUI);
+    addAndMakeVisible (remoteHostUI);
+    addAndMakeVisible (remotePortUI);
+    addAndMakeVisible (logIncomingOSC);
+    addAndMakeVisible (logOutOSC);
+    addAndMakeVisible (sendAllTrigger);
+    addAndMakeVisible (blockFeedback);
+    addAndMakeVisible (speedLimit);
+
+    addAndMakeVisible (innerContainer);
 }
 
 OSCControllerEditor::~OSCControllerEditor()
@@ -56,38 +56,38 @@ OSCControllerEditor::~OSCControllerEditor()
 
 void OSCControllerEditor::resized()
 {
-  ControllerEditor::resized();
+    ControllerEditor::resized();
 
-  Rectangle<int> r = getLocalBounds();
+    Rectangle<int> r = getLocalBounds();
 
-  r.removeFromTop( 30);
+    r.removeFromTop ( 30);
 
-  localPortUI->setBounds(r.removeFromTop(localPortUI->getHeight()));
-  r.removeFromTop(2);
-  remoteHostUI->setBounds(r.removeFromTop(remoteHostUI->getHeight()));
-  remotePortUI->setBounds(r.removeFromTop(remotePortUI->getHeight()));
-  r.removeFromTop(2);
-  logIncomingOSC->setBounds(r.removeFromTop(15));
-  r.removeFromTop(2);
-  logOutOSC->setBounds(r.removeFromTop(15));
-  r.removeFromTop(2);
-  sendAllTrigger->setBounds(r.removeFromTop(15));
-  r.removeFromTop(2);
-  blockFeedback->setBounds(r.removeFromTop(15));
-  r.removeFromTop(2);
-  speedLimit->setBounds(r.removeFromTop(15));
+    localPortUI->setBounds (r.removeFromTop (localPortUI->getHeight()));
+    r.removeFromTop (2);
+    remoteHostUI->setBounds (r.removeFromTop (remoteHostUI->getHeight()));
+    remotePortUI->setBounds (r.removeFromTop (remotePortUI->getHeight()));
+    r.removeFromTop (2);
+    logIncomingOSC->setBounds (r.removeFromTop (15));
+    r.removeFromTop (2);
+    logOutOSC->setBounds (r.removeFromTop (15));
+    r.removeFromTop (2);
+    sendAllTrigger->setBounds (r.removeFromTop (15));
+    r.removeFromTop (2);
+    blockFeedback->setBounds (r.removeFromTop (15));
+    r.removeFromTop (2);
+    speedLimit->setBounds (r.removeFromTop (15));
 
-  innerContainer.setBounds(r);
+    innerContainer.setBounds (r);
 
 }
 
 int OSCControllerEditor::getContentHeight()
 {
-//	const int lineHeight = 20;
-	return ControllerEditor::getContentHeight() + 200;
+    //  const int lineHeight = 20;
+    return ControllerEditor::getContentHeight() + 200;
 }
 
-void OSCControllerEditor::messageProcessed(const OSCMessage & , bool)
+void OSCControllerEditor::messageProcessed (const OSCMessage&, bool)
 {
-  
+
 }

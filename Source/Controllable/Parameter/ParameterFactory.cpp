@@ -14,24 +14,30 @@
 
 #include "ParameterFactory.h"
 
-Parameter * ParameterFactory::createBaseFromVar(StringRef n,const var &v){
-  if(v.isDouble()){
-    return createFromTypeID(Identifier("t_NumericParameter_double"),n);
-  }
-  else if (v.isInt()){
-      return createFromTypeID(Identifier("t_NumericParameter_int"),n);
-  }
-  else if (v.isBool()){
-      return createFromTypeID(Identifier("t_BoolParameter"),n);
-  }
-  else if (v.isString()){
-    return createFromTypeID(Identifier("t_StringParameter"),n);
-  }
-  else{
+Parameter* ParameterFactory::createBaseFromVar (StringRef n, const var& v)
+{
+    if (v.isDouble())
+    {
+        return createFromTypeID (Identifier ("t_NumericParameter_double"), n);
+    }
+    else if (v.isInt())
+    {
+        return createFromTypeID (Identifier ("t_NumericParameter_int"), n);
+    }
+    else if (v.isBool())
+    {
+        return createFromTypeID (Identifier ("t_BoolParameter"), n);
+    }
+    else if (v.isString())
+    {
+        return createFromTypeID (Identifier ("t_StringParameter"), n);
+    }
+    else
+    {
 
-    jassertfalse;
-    return nullptr;
-  }
+        jassertfalse;
+        return nullptr;
+    }
 }
 
 

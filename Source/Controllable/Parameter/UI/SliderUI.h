@@ -23,16 +23,16 @@ class SliderUI    : public ParameterUI
 {
 
 public:
-    SliderUI(Parameter * parameter = nullptr);
+    SliderUI (Parameter* parameter = nullptr);
     virtual ~SliderUI();
 
     enum Direction { HORIZONTAL, VERTICAL };
 
     //settings
     Direction orientation;
-	Colour defaultColor;
+    Colour defaultColor;
 
-	bool changeParamOnMouseUpOnly;
+    bool changeParamOnMouseUpOnly;
     bool assignOnMousePosDirect;
     float scaleFactor;
 
@@ -41,23 +41,24 @@ public:
     //interaction
     float initValue;
 
-    void paint(Graphics &g) override;
-    void mouseDown(const MouseEvent &e) override;
-    void mouseDrag(const MouseEvent &e) override;
-    void mouseUp(const MouseEvent &e) override;
+    void paint (Graphics& g) override;
+    void mouseDown (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) override;
 
     T getValueFromMouse();
-    T getValueFromPosition(const Point<int> &pos);
+    T getValueFromPosition (const Point<int>& pos);
 
-    virtual void setParamNormalizedValue(float value);
+    virtual void setParamNormalizedValue (float value);
     virtual float getParamNormalizedValue();
-    void rangeChanged(Parameter * )override{
-      repaint();
+    void rangeChanged (Parameter* )override
+    {
+        repaint();
     };
 
 
 protected:
-    void valueChanged(const var &) override ;
+    void valueChanged (const var&) override ;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SliderUI)
 };
 

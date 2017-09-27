@@ -20,36 +20,41 @@
 #include "../../Controller/ControllerManager.h"
 
 #include "JsHelpers.h"
-juce_ImplementSingleton(JsGlobalEnvironment);
+juce_ImplementSingleton (JsGlobalEnvironment);
 
 
-JsGlobalEnvironment::JsGlobalEnvironment(){
+JsGlobalEnvironment::JsGlobalEnvironment()
+{
     env = new DynamicObject();
-    static const Identifier jsPostIdentifier("post");
-	static const Identifier jsGetMillisIdentifier("getMillis");
-    getEnv()->setMethod(jsPostIdentifier, JsGlobalEnvironment::post);
-    getEnv()->setMethod(jsGetMillisIdentifier, JsGlobalEnvironment::getMillis);
+    static const Identifier jsPostIdentifier ("post");
+    static const Identifier jsGetMillisIdentifier ("getMillis");
+    getEnv()->setMethod (jsPostIdentifier, JsGlobalEnvironment::post);
+    getEnv()->setMethod (jsGetMillisIdentifier, JsGlobalEnvironment::getMillis);
     // default in global namespace
-    linkToControllableContainer("time",TimeManager::getInstance());
-    linkToControllableContainer("node",NodeManager::getInstance());
-    linkToControllableContainer("controller",ControllerManager::getInstance());
+    linkToControllableContainer ("time", TimeManager::getInstance());
+    linkToControllableContainer ("node", NodeManager::getInstance());
+    linkToControllableContainer ("controller", ControllerManager::getInstance());
 
 
 }
 
-void JsGlobalEnvironment::removeNamespace(const String & ns){removeNamespaceFromObject(ns,getEnv());}
+void JsGlobalEnvironment::removeNamespace (const String& ns) {removeNamespaceFromObject (ns, getEnv());}
 
-DynamicObject::Ptr JsGlobalEnvironment::getNamespaceObject(const String & ns){return getNamespaceFromObject(ns,getEnv());}
+DynamicObject::Ptr JsGlobalEnvironment::getNamespaceObject (const String& ns) {return getNamespaceFromObject (ns, getEnv());}
 
-DynamicObject::Ptr JsGlobalEnvironment::getEnv(){return env.getDynamicObject();}
+DynamicObject::Ptr JsGlobalEnvironment::getEnv() {return env.getDynamicObject();}
 
-var JsGlobalEnvironment::post(const juce::var::NativeFunctionArgs& a){
-    for(int i = 0 ; i < a.numArguments ;i++){
-        LOG(a.arguments[i].toString());
+var JsGlobalEnvironment::post (const juce::var::NativeFunctionArgs& a)
+{
+    for (int i = 0 ; i < a.numArguments ; i++)
+    {
+        LOG (a.arguments[i].toString());
     }
+
     return var();
 }
 
-var JsGlobalEnvironment::getMillis(const juce::var::NativeFunctionArgs& /*a*/) {
-	return var((int)Time::getMillisecondCounter());
+var JsGlobalEnvironment::getMillis (const juce::var::NativeFunctionArgs& /*a*/)
+{
+    return var ((int)Time::getMillisecondCounter());
 }

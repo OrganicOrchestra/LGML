@@ -17,19 +17,19 @@
 
 
 #include "ParameterFactory.h"
-REGISTER_PARAM_TYPE(RangeParameter);
+REGISTER_PARAM_TYPE (RangeParameter);
 
-RangeParameter::RangeParameter(const String & niceName, const String & description,float _min,float _max,float init_min,float init_max, bool enabled) :
-MinMaxParameter( niceName, description,0,0,1,enabled)
+RangeParameter::RangeParameter (const String& niceName, const String& description, float _min, float _max, float init_min, float init_max, bool enabled) :
+    MinMaxParameter ( niceName, description, 0, 0, 1, enabled)
 {
-//  isHidenInEditor = true;
-  value .append(0);
-  value .append(1);
-  defaultValue=var();
-  defaultValue.append(init_min);
-  defaultValue.append(init_max);
-  setMinMax(_min, _max);
-  setValue(init_min, init_max);
+    //  isHidenInEditor = true;
+    value .append (0);
+    value .append (1);
+    defaultValue = var();
+    defaultValue.append (init_min);
+    defaultValue.append (init_max);
+    setMinMax (_min, _max);
+    setValue (init_min, init_max);
 
 }
 
@@ -38,37 +38,42 @@ MinMaxParameter( niceName, description,0,0,1,enabled)
 //  setValue(_value.x, _value.y);
 //}
 
-void RangeParameter::setValue(double _x, double _y)
+void RangeParameter::setValue (double _x, double _y)
 {
-  var d;
-  d.append(_x);
-  d.append(_y);
-  Parameter::setValue(d);
+    var d;
+    d.append (_x);
+    d.append (_y);
+    Parameter::setValue (d);
 }
 
-void RangeParameter::setValueInternal(var & _value)
+void RangeParameter::setValueInternal (var& _value)
 {
 
-  if (!_value.isArray()){
-    jassertfalse; return;
-  }
-  value[0] = jlimit<float>(minimumValue, maximumValue, _value[0]);
-  value[1] = jlimit<float>(minimumValue, maximumValue,_value[1]);
+    if (!_value.isArray())
+    {
+        jassertfalse;
+        return;
+    }
+
+    value[0] = jlimit<float> (minimumValue, maximumValue, _value[0]);
+    value[1] = jlimit<float> (minimumValue, maximumValue, _value[1]);
 
 }
 
 //Point<double> RangeParameter::getRangeMinMax() {
 //  return Point<double>(getRangeMin(), getRangeMax());
 //}
-float RangeParameter::getRangeMin(){
-  return value[0];
-}
-float RangeParameter::getRangeMax(){
-  return value[1];
-}
-bool RangeParameter::checkValueIsTheSame(const var & v1, const var& v2)
+float RangeParameter::getRangeMin()
 {
-  if (!(v1.isArray() && v2.isArray())) return false;
+    return value[0];
+}
+float RangeParameter::getRangeMax()
+{
+    return value[1];
+}
+bool RangeParameter::checkValueIsTheSame (const var& v1, const var& v2)
+{
+    if (! (v1.isArray() && v2.isArray())) return false;
 
-  return v1[0] == v2[0] && v1[1] == v2[1];
+    return v1[0] == v2[0] && v1[1] == v2[1];
 }

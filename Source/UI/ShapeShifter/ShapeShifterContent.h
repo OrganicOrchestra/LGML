@@ -22,26 +22,26 @@
 class ShapeShifterContent
 {
 public:
-	ShapeShifterContent(Component * contentComponent, const String &_contentName);
-	virtual ~ShapeShifterContent();
+    ShapeShifterContent (Component* contentComponent, const String& _contentName);
+    virtual ~ShapeShifterContent();
 
-	Component * contentComponent;
-	String contentName;
+    Component* contentComponent;
+    String contentName;
 
-	bool contentIsFlexible;
+    bool contentIsFlexible;
 
-	bool contentIsShown;
+    bool contentIsShown;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterContent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterContent)
 };
 
 //Helper class if child class doesn't need to inherit a subclass of Component
 class ShapeShifterContentComponent :
-	public juce::Component,
-	public ShapeShifterContent
+    public juce::Component,
+    public ShapeShifterContent
 {
 public:
-  ShapeShifterContentComponent(const String &contentName);
+    ShapeShifterContentComponent (const String& contentName);
 };
 
 #endif  // SHAPESHIFTERCONTENT_H_INCLUDED

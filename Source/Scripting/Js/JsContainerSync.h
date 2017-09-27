@@ -23,78 +23,90 @@ class JsContainerSync: private ControllableContainerListener
 
 public:
 
-  JsContainerSync():aggregChanges(this){};
-  virtual ~JsContainerSync();
+    JsContainerSync(): aggregChanges (this) {};
+    virtual ~JsContainerSync();
 
 
-  // should return current env
-  virtual DynamicObject::Ptr getEnv() = 0;
+    // should return current env
+    virtual DynamicObject::Ptr getEnv() = 0;
 
-  void    linkToControllableContainer(const String & jsNamespace,ControllableContainer * c);
-  bool existInContainerNamespace(const String &);
+    void    linkToControllableContainer (const String& jsNamespace, ControllableContainer* c);
+    bool existInContainerNamespace (const String&);
 
 
-  bool isDirty();
+    bool isDirty();
 
 
 protected :
 
-  void childStructureChanged(ControllableContainer *,ControllableContainer * )override;
-  void childAddressChanged(ControllableContainer * c) override;
+    void childStructureChanged (ControllableContainer*, ControllableContainer* )override;
+    void childAddressChanged (ControllableContainer* c) override;
 
-  void updateControllableNamespace(ControllableContainer * c);
+    void updateControllableNamespace (ControllableContainer* c);
 
 
 private:
 
-  void removeAllListeners(ControllableContainer * c);
+    void removeAllListeners (ControllableContainer* c);
 
-  class JsContainerNamespace{
-  public:
-    JsContainerNamespace(const String & n,ControllableContainer * c,DynamicObject * o):nsName (n),container(c),jsObject(o){}
-    WeakReference<ControllableContainer> container;
-    DynamicObject::Ptr jsObject;
-    String nsName;
+    class JsContainerNamespace
+    {
+    public:
+        JsContainerNamespace (const String& n, ControllableContainer* c, DynamicObject* o): nsName (n), container (c), jsObject (o) {}
+        WeakReference<ControllableContainer> container;
+        DynamicObject::Ptr jsObject;
+        String nsName;
 
-  };
-  JsContainerNamespace* getContainerNamespace(ControllableContainer *);
-  JsContainerNamespace* getContainerNamespace(const String & );
+    };
+    JsContainerNamespace* getContainerNamespace (ControllableContainer*);
+    JsContainerNamespace* getContainerNamespace (const String& );
 
 
-  DynamicObject *  createDynamicObjectFromContainer(ControllableContainer * c,DynamicObject * parent);
+    DynamicObject*   createDynamicObjectFromContainer (ControllableContainer* c, DynamicObject* parent);
 
-  class AggregChanges : private Timer{
-  public:
-    AggregChanges(JsContainerSync * _owner):owner(_owner){
-      startTimer(1000);
-    }
-
-    void timerCallback() override{
-      if(nsToUpdate.size()){
-        Array<JsContainerNamespace * > processed;
-        for(auto & ns:nsToUpdate){
-          if(!processed.contains(ns)){
-            owner->getEnv()->setProperty(ns->nsName, owner->createDynamicObjectFromContainer(ns->container, nullptr));
-            processed.add(ns);
-          }
+    class AggregChanges : private Timer
+    {
+    public:
+        AggregChanges (JsContainerSync* _owner): owner (_owner)
+        {
+            startTimer (1000);
         }
-        nsToUpdate.clear();
-      }
-    }
-    void addNs(JsContainerNamespace * ns){
-      if(ns==nullptr){
-        return;
-      }
-      nsToUpdate.addIfNotAlreadyThere(ns);
-    }
-    Array<JsContainerNamespace * > nsToUpdate;
-    JsContainerSync * owner;
-  };
 
-  AggregChanges aggregChanges;
+        void timerCallback() override
+        {
+            if (nsToUpdate.size())
+            {
+                Array<JsContainerNamespace* > processed;
 
-  OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
-  
+                for (auto& ns : nsToUpdate)
+                {
+                    if (!processed.contains (ns))
+                    {
+                        owner->getEnv()->setProperty (ns->nsName, owner->createDynamicObjectFromContainer (ns->container, nullptr));
+                        processed.add (ns);
+                    }
+                }
+
+                nsToUpdate.clear();
+            }
+        }
+        void addNs (JsContainerNamespace* ns)
+        {
+            if (ns == nullptr)
+            {
+                return;
+            }
+
+            nsToUpdate.addIfNotAlreadyThere (ns);
+        }
+        Array<JsContainerNamespace* > nsToUpdate;
+        JsContainerSync* owner;
+    };
+
+    AggregChanges aggregChanges;
+
+    OwnedArray<JsContainerNamespace>  linkedContainerNamespaces;
+
 };
 
 

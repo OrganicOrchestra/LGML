@@ -26,26 +26,26 @@
 class JsGlobalEnvironment: public JsContainerSync
 {
 public:
-  juce_DeclareSingleton(JsGlobalEnvironment, true);
+    juce_DeclareSingleton (JsGlobalEnvironment, true);
 
-  JsGlobalEnvironment();
+    JsGlobalEnvironment();
 
-  void removeNamespace(const String & ns);
-  DynamicObject::Ptr getNamespaceObject(const String & ns);
-  DynamicObject::Ptr getEnv() override;
+    void removeNamespace (const String& ns);
+    DynamicObject::Ptr getNamespaceObject (const String& ns);
+    DynamicObject::Ptr getEnv() override;
 
 
 private:
 
 
 
-  static var post(const juce::var::NativeFunctionArgs& a);
-  static var getMillis(const juce::var::NativeFunctionArgs& a);
+    static var post (const juce::var::NativeFunctionArgs& a);
+    static var getMillis (const juce::var::NativeFunctionArgs& a);
 
 
-  friend class JsEnvironment;
+    friend class JsEnvironment;
 
-  var env;
+    var env;
 
 
 };

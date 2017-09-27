@@ -25,40 +25,40 @@ class ControllerManager :  public ParameterContainer
 {
 public:
 
-  ControllerManager();
-  ~ControllerManager();
+    ControllerManager();
+    ~ControllerManager();
 
-  juce_DeclareSingleton(ControllerManager, true);
+    juce_DeclareSingleton (ControllerManager, true);
 
-  ControllerFactory factory;
-  OwnedArray<Controller> controllers;
+    ControllerFactory factory;
+    OwnedArray<Controller> controllers;
 
-  Controller * addController(Controller* controller);
-  void removeController(Controller * c);
-  void clear();
-
-
-  ParameterContainer *  addContainerFromObject(const String & name,DynamicObject *  )override;
-
-  class  Listener
-  {
-  public:
-    /** Destructor. */
-    virtual ~Listener() {}
-
-    virtual void controllerAdded(Controller *) = 0;
-    virtual void controllerRemoved(Controller *) = 0;
-  };
-
-  ListenerList<Listener> listeners;
-  void addControllerListener(Listener* newListener) { listeners.add(newListener); }
-  void removeControllerListener(Listener* listener) { listeners.remove(listener); }
+    Controller* addController (Controller* controller);
+    void removeController (Controller* c);
+    void clear();
 
 
+    ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*  )override;
+
+    class  Listener
+    {
+    public:
+        /** Destructor. */
+        virtual ~Listener() {}
+
+        virtual void controllerAdded (Controller*) = 0;
+        virtual void controllerRemoved (Controller*) = 0;
+    };
+
+    ListenerList<Listener> listeners;
+    void addControllerListener (Listener* newListener) { listeners.add (newListener); }
+    void removeControllerListener (Listener* listener) { listeners.remove (listener); }
 
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManager)
+
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManager)
 };
 
 

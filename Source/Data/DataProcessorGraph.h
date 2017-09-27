@@ -34,7 +34,7 @@ public:
     {
     public:
 
-        DataThread() : Thread("dataThread") {}
+        DataThread() : Thread ("dataThread") {}
         virtual ~DataThread();
         virtual void run() override;
     };
@@ -45,22 +45,23 @@ public:
     {
     public:
         //==============================================================================
-        Connection(Data * sourceData, Data * destData) noexcept;
+        Connection (Data* sourceData, Data* destData) noexcept;
         virtual ~Connection()
         {
-            if (sourceData != nullptr) sourceData->removeDataListener(this);
-			if (destData != nullptr) destData->removeDataListener(this);
+            if (sourceData != nullptr) sourceData->removeDataListener (this);
+
+            if (destData != nullptr) destData->removeDataListener (this);
         }
 
-        Data * sourceData;
-        Data * destData;
+        Data* sourceData;
+        Data* destData;
 
     private:
-			//==============================================================================
-			JUCE_LEAK_DETECTOR(Connection)
+        //==============================================================================
+        JUCE_LEAK_DETECTOR (Connection)
 
-            // Inherited via DataListener
-            virtual void dataChanged(Data *) override;
+        // Inherited via DataListener
+        virtual void dataChanged (Data*) override;
     };
 
 
@@ -68,22 +69,22 @@ public:
 
     void clear();
     int getNumConnections() const { return connections.size(); }
-    const Connection* getConnection(int index) const { return connections[index]; }
-    Connection* getConnectionBetween(Data * sourceData, Data * destData) const;
+    const Connection* getConnection (int index) const { return connections[index]; }
+    Connection* getConnectionBetween (Data* sourceData, Data* destData) const;
 
-    bool canConnect(Data * sourceData, Data * destData) const;
+    bool canConnect (Data* sourceData, Data* destData) const;
 
-    Connection * addConnection(Data * sourceData, Data * destData);
+    Connection* addConnection (Data* sourceData, Data* destData);
 
-    void removeConnection(int index);
-    void removeConnection(Connection * connection);
+    void removeConnection (int index);
+    void removeConnection (Connection* connection);
 
-    private:
-        Array<NodeBase *> processors;
-        OwnedArray<Connection> connections;
-        uint32 lastNodeId;
+private:
+    Array<NodeBase*> processors;
+    OwnedArray<Connection> connections;
+    uint32 lastNodeId;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataProcessorGraph)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DataProcessorGraph)
 };
 
 

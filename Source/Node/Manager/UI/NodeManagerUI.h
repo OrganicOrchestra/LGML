@@ -30,204 +30,219 @@
  Draw all connected Nodes and Connections
  */
 class NodeManagerUI :
-public juce::Component,
-public NodeManager::NodeManagerListener
+    public juce::Component,
+    public NodeManager::NodeManagerListener
 {
 public:
 
-  NodeManagerUI(NodeManager * nodeManager);
-  ~NodeManagerUI();
+    NodeManagerUI (NodeManager* nodeManager);
+    ~NodeManagerUI();
 
-  NodeManager * nodeManager;
-  ScopedPointer<NodeContainerViewer> currentViewer;
+    NodeManager* nodeManager;
+    ScopedPointer<NodeContainerViewer> currentViewer;
 
-  void clear();
+    void clear();
 
-  void resized() override;
+    void resized() override;
 
-  int getContentWidth();
-  int getContentHeight();
+    int getContentWidth();
+    int getContentHeight();
 
-  void managerCleared() override;
+    void managerCleared() override;
 
-  void setCurrentViewedContainer(NodeContainer * c);
+    void setCurrentViewedContainer (NodeContainer* c);
 
-  void childBoundsChanged(Component * c)override;
+    void childBoundsChanged (Component* c)override;
 
-  class  NodeManagerUIListener
-  {
-  public:
-    /** Destructor. */
-    virtual ~NodeManagerUIListener() {}
-    virtual void currentViewedContainerChanged() {};
-  };
+    class  NodeManagerUIListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~NodeManagerUIListener() {}
+        virtual void currentViewedContainerChanged() {};
+    };
 
-  ListenerList<NodeManagerUIListener> nodeManagerUIListeners;
-  void addNodeManagerUIListener(NodeManagerUIListener* newListener) { nodeManagerUIListeners.add(newListener); }
-  void removeNodeManagerUIListener(NodeManagerUIListener* listener) { nodeManagerUIListeners.remove(listener); }
-  bool keyPressed(const KeyPress & key)override;
+    ListenerList<NodeManagerUIListener> nodeManagerUIListeners;
+    void addNodeManagerUIListener (NodeManagerUIListener* newListener) { nodeManagerUIListeners.add (newListener); }
+    void removeNodeManagerUIListener (NodeManagerUIListener* listener) { nodeManagerUIListeners.remove (listener); }
+    bool keyPressed (const KeyPress& key)override;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 
 };
 
 class NodeManagerUIViewport :
-public ShapeShifterContentComponent,
-public NodeManagerUI::NodeManagerUIListener,
-public ButtonListener
+    public ShapeShifterContentComponent,
+    public NodeManagerUI::NodeManagerUIListener,
+    public ButtonListener
 {
-  public :
-  NodeManagerUIViewport(const String &contentName, NodeManagerUI * _nmui):nmui(_nmui),ShapeShifterContentComponent(contentName)
-  {
-    vp.setViewedComponent(nmui,true);
-    vp.setScrollBarsShown(true, true);
-    vp.setScrollOnDragEnabled(false);
-    vp.addMouseListener(this, true);
-    contentIsFlexible = true;
-    addAndMakeVisible(vp);
-    vp.setScrollBarThickness(10);
-    nmui->addNodeManagerUIListener(this);
-    reconstructViewerPath();
-    setWantsKeyboardFocus(true);
-    nmui->setWantsKeyboardFocus(true);
-    addAndMakeVisible(addNodeBt);
-    addNodeBt.addListener(this);
-    addNodeBt.setTooltip("Add Node");
-//    setOpaque(true);
-
-  }
-
-  virtual ~NodeManagerUIViewport()
-  {
-    nmui->removeNodeManagerUIListener(this);
-
-  }
-  void mouseMove(const MouseEvent & me) override{
-    vp.setScrollOnDragEnabled(me.originalComponent==nmui->currentViewer);
-  }
-
-
-  OwnedArray<TextButton> pathButtons;
-
-  void reconstructViewerPath()
-  {
-    for (auto &b : pathButtons)
+public :
+    NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName)
     {
-      removeChildComponent(b);
-      b->removeListener(this);
+        vp.setViewedComponent (nmui, true);
+        vp.setScrollBarsShown (true, true);
+        vp.setScrollOnDragEnabled (false);
+        vp.addMouseListener (this, true);
+        contentIsFlexible = true;
+        addAndMakeVisible (vp);
+        vp.setScrollBarThickness (10);
+        nmui->addNodeManagerUIListener (this);
+        reconstructViewerPath();
+        setWantsKeyboardFocus (true);
+        nmui->setWantsKeyboardFocus (true);
+        addAndMakeVisible (addNodeBt);
+        addNodeBt.addListener (this);
+        addNodeBt.setTooltip ("Add Node");
+        //    setOpaque(true);
+
     }
 
-    pathButtons.clear();
-
-    NodeContainer * c = nmui->currentViewer->nodeContainer;
-
-    while (c != nullptr)
+    virtual ~NodeManagerUIViewport()
     {
-      TextButton * b = new TextButton(c->getNiceName());
-      if (c == nmui->currentViewer->nodeContainer) b->setEnabled(false);
-
-      pathButtons.insert(0, b);
-      addAndMakeVisible(b);
-      b->addListener(this);
-
-      c = c->getParentNodeContainer();
+        nmui->removeNodeManagerUIListener (this);
 
     }
-
-
-    resized();
-  }
-
-  void paint(Graphics &g) override
-  {
-    g.setColour(findColour(ResizableWindow::backgroundColourId).darker(.2f));
-    g.fillRect(getLocalBounds().removeFromTop(30));
-    const int grid = 100;
-    auto area = vp.getViewArea();
-    g.setColour(Colours::white.withAlpha(0.03f));
-    auto dest = vp.getBoundsInParent();
-    for(int x = -area.getX()%grid ; x < area.getWidth(); x+=grid){
-
-      g.drawVerticalLine(x+dest.getX(), dest.getY(), dest.getBottom());
-    }
-    for(int y = -area.getY()%grid ; y < area.getHeight(); y+=grid){
-      g.drawHorizontalLine( y+dest.getY(), dest.getX()  , dest.getRight());
-    }
-
-  }
-
-  void resized() override{
-
-    Rectangle<int> r = getLocalBounds();
-
-    Rectangle<int> buttonR = r.removeFromTop(30).reduced(5);
-
-    for (auto & b : pathButtons)
+    void mouseMove (const MouseEvent& me) override
     {
-      b->setBounds(buttonR.removeFromLeft(100));
-      buttonR.removeFromLeft(5);
+        vp.setScrollOnDragEnabled (me.originalComponent == nmui->currentViewer);
     }
 
-    r.removeFromTop(2);
 
-    vp.setBounds(r);
+    OwnedArray<TextButton> pathButtons;
 
-    nmui->setTopLeftPosition(r.getTopLeft());
-    nmui->setSize(jmax<int>(r.getWidth(), nmui->getContentWidth()), jmax<int>(r.getHeight(), nmui->getContentHeight()));
-    addNodeBt.setFromParentBounds(getLocalBounds());
+    void reconstructViewerPath()
+    {
+        for (auto& b : pathButtons)
+        {
+            removeChildComponent (b);
+            b->removeListener (this);
+        }
 
-  }
+        pathButtons.clear();
 
-  void currentViewedContainerChanged()override
-  {
-    reconstructViewerPath();
-    //nmui->setBounds(getLocalBounds().withTop(30));
-    resized();
+        NodeContainer* c = nmui->currentViewer->nodeContainer;
+
+        while (c != nullptr)
+        {
+            TextButton* b = new TextButton (c->getNiceName());
+
+            if (c == nmui->currentViewer->nodeContainer) b->setEnabled (false);
+
+            pathButtons.insert (0, b);
+            addAndMakeVisible (b);
+            b->addListener (this);
+
+            c = c->getParentNodeContainer();
+
+        }
 
 
-  }
+        resized();
+    }
 
-  void buttonClicked(Button * b)override
-  {
-    if(b== &addNodeBt){
-        static Array<String> filt  {"t_ContainerInNode" , "t_ContainerOutNode"};
-        ScopedPointer<PopupMenu> menu(FactoryUIHelpers::createFactoryTypesMenuFilter<NodeFactory>(filt));
+    void paint (Graphics& g) override
+    {
+        g.setColour (findColour (ResizableWindow::backgroundColourId).darker (.2f));
+        g.fillRect (getLocalBounds().removeFromTop (30));
+        const int grid = 100;
+        auto area = vp.getViewArea();
+        g.setColour (Colours::white.withAlpha (0.03f));
+        auto dest = vp.getBoundsInParent();
 
-        int result = menu->show();
-        Point<int> mousePos = vp.getViewArea().getCentre();
-        if(result>0){
-          if (auto c =  FactoryUIHelpers::createFromMenuIdx<NodeBase>(result))
-          {
-            ConnectableNode * n = nmui->currentViewer->nodeContainer->addNode(c);
-            jassert(n != nullptr);
-            n->nodePosition->setPoint(mousePos);
-          }
-          else{
-            jassertfalse;
-          }
+        for (int x = -area.getX() % grid ; x < area.getWidth(); x += grid)
+        {
+
+            g.drawVerticalLine (x + dest.getX(), dest.getY(), dest.getBottom());
+        }
+
+        for (int y = -area.getY() % grid ; y < area.getHeight(); y += grid)
+        {
+            g.drawHorizontalLine ( y + dest.getY(), dest.getX(), dest.getRight());
         }
 
     }
-    else{
-      int bIndex = pathButtons.indexOf((TextButton *)b);
-    if (bIndex == -1)
+
+    void resized() override
     {
-      DBG("WTF ?");
+
+        Rectangle<int> r = getLocalBounds();
+
+        Rectangle<int> buttonR = r.removeFromTop (30).reduced (5);
+
+        for (auto& b : pathButtons)
+        {
+            b->setBounds (buttonR.removeFromLeft (100));
+            buttonR.removeFromLeft (5);
+        }
+
+        r.removeFromTop (2);
+
+        vp.setBounds (r);
+
+        nmui->setTopLeftPosition (r.getTopLeft());
+        nmui->setSize (jmax<int> (r.getWidth(), nmui->getContentWidth()), jmax<int> (r.getHeight(), nmui->getContentHeight()));
+        addNodeBt.setFromParentBounds (getLocalBounds());
+
     }
-    NodeContainer * c = nmui->currentViewer->nodeContainer;
-    for (int i = pathButtons.size() - 1; i > bIndex; i--)
+
+    void currentViewedContainerChanged()override
     {
-      c = c->getParentNodeContainer();
+        reconstructViewerPath();
+        //nmui->setBounds(getLocalBounds().withTop(30));
+        resized();
+
+
     }
-    
-    nmui->setCurrentViewedContainer(c);
+
+    void buttonClicked (Button* b)override
+    {
+        if (b == &addNodeBt)
+        {
+            static Array<String> filt  {"t_ContainerInNode", "t_ContainerOutNode"};
+            ScopedPointer<PopupMenu> menu (FactoryUIHelpers::createFactoryTypesMenuFilter<NodeFactory> (filt));
+
+            int result = menu->show();
+            Point<int> mousePos = vp.getViewArea().getCentre();
+
+            if (result > 0)
+            {
+                if (auto c =  FactoryUIHelpers::createFromMenuIdx<NodeBase> (result))
+                {
+                    ConnectableNode* n = nmui->currentViewer->nodeContainer->addNode (c);
+                    jassert (n != nullptr);
+                    n->nodePosition->setPoint (mousePos);
+                }
+                else
+                {
+                    jassertfalse;
+                }
+            }
+
+        }
+        else
+        {
+            int bIndex = pathButtons.indexOf ((TextButton*)b);
+
+            if (bIndex == -1)
+            {
+                DBG ("WTF ?");
+            }
+
+            NodeContainer* c = nmui->currentViewer->nodeContainer;
+
+            for (int i = pathButtons.size() - 1; i > bIndex; i--)
+            {
+                c = c->getParentNodeContainer();
+            }
+
+            nmui->setCurrentViewedContainer (c);
+        }
+
     }
-    
-  }
-  
-  Viewport vp;
-  AddElementButton addNodeBt;
-  NodeManagerUI * nmui;
+
+    Viewport vp;
+    AddElementButton addNodeBt;
+    NodeManagerUI* nmui;
 };
 
 #endif  // NODEMANAGERUI_H_INCLUDED

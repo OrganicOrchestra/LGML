@@ -24,14 +24,14 @@ class BoolParameter : public Parameter
 {
 public:
 
-  BoolParameter(const String &niceName, const String &description=String::empty, bool initialValue=false, bool enabled = true);
+    BoolParameter (const String& niceName, const String& description = String::empty, bool initialValue = false, bool enabled = true);
     ~BoolParameter() {}
 
-    
 
-	bool invertVisuals; //moved here for coherence when ui is generated automatically
-  DECLARE_OBJ_TYPE(BoolParameter);
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BoolParameter)
+
+    bool invertVisuals; //moved here for coherence when ui is generated automatically
+    DECLARE_OBJ_TYPE (BoolParameter);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BoolParameter)
 };
 
 

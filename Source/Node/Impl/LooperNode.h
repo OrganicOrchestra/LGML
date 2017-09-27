@@ -27,131 +27,132 @@
 #include "../../Time/TimeManager.h"
 
 class LooperNode :
-public NodeBase,
-public TimeMasterCandidate,TimeManager::TimeManagerListener
+    public NodeBase,
+    public TimeMasterCandidate, TimeManager::TimeManagerListener
 
 {
 
 public:
-  DECLARE_OBJ_TYPE(LooperNode)
-  virtual ~LooperNode();
-
-  
-
-  class TrackGroup : public ParameterContainer{
-  public:
-    TrackGroup(LooperNode* l):ParameterContainer("tracks"),
-    owner(l),
-    selectedTrack(nullptr),
-    lastMasterTempoTrack(nullptr){};
-
-    void setNumTracks(int numTracks);
-    void addTrack();
-    void removeTrack(int i);
-
-    OwnedArray<LooperTrack> tracks;
-    LooperNode * owner;
-    LooperTrack *  selectedTrack;
-
-    LooperTrack * lastMasterTempoTrack;
-
-  };
-
-  TrackGroup trackGroup;
-  
+    DECLARE_OBJ_TYPE (LooperNode)
+    virtual ~LooperNode();
 
 
-  //Parameters
-  Trigger * recPlaySelectedTrig;
-  Trigger * playSelectedTrig;
-  Trigger * clearSelectedTrig;
-  Trigger * stopSelectedTrig;
 
-  Trigger * selectAllTrig;
-  Trigger * clearAllTrig;
-  Trigger * stopAllTrig;
-  Trigger * playAllTrig;
-  Trigger * togglePlayStopAllTrig;
+    class TrackGroup : public ParameterContainer
+    {
+    public:
+        TrackGroup (LooperNode* l): ParameterContainer ("tracks"),
+            owner (l),
+            selectedTrack (nullptr),
+            lastMasterTempoTrack (nullptr) {};
 
-  Trigger * selectNextTrig;
-  Trigger * selectPrevTrig;
+        void setNumTracks (int numTracks);
+        void addTrack();
+        void removeTrack (int i);
 
-  FloatParameter * volumeSelected;
-  BoolParameter * isMonitoring;
-  IntParameter * numberOfTracks;
-  IntParameter * numberOfAudioChannelsIn;
-  IntParameter * selectTrack;
-  IntParameter * quantization;
-  IntParameter * preDelayMs;
-  BoolParameter * isOneShot;
-  BoolParameter*  firstTrackSetTempo;
-  BoolParameter * waitForOnset;
-  FloatParameter * onsetThreshold;
-  BoolParameter * outputAllTracksSeparately;
-  BoolParameter * autoNextTrackAfterRecord;
-  BoolParameter * autoClearPreviousIfEmpty;
+        OwnedArray<LooperTrack> tracks;
+        LooperNode* owner;
+        LooperTrack*   selectedTrack;
 
-  Trigger * exportAudio;
+        LooperTrack* lastMasterTempoTrack;
 
-  AudioBuffer<float> bufferIn;
-  AudioBuffer<float>bufferOut;
+    };
 
-  int getQuantization();
+    TrackGroup trackGroup;
 
 
-  void selectMe(LooperTrack * t);
+
+    //Parameters
+    Trigger* recPlaySelectedTrig;
+    Trigger* playSelectedTrig;
+    Trigger* clearSelectedTrig;
+    Trigger* stopSelectedTrig;
+
+    Trigger* selectAllTrig;
+    Trigger* clearAllTrig;
+    Trigger* stopAllTrig;
+    Trigger* playAllTrig;
+    Trigger* togglePlayStopAllTrig;
+
+    Trigger* selectNextTrig;
+    Trigger* selectPrevTrig;
+
+    FloatParameter* volumeSelected;
+    BoolParameter* isMonitoring;
+    IntParameter* numberOfTracks;
+    IntParameter* numberOfAudioChannelsIn;
+    IntParameter* selectTrack;
+    IntParameter* quantization;
+    IntParameter* preDelayMs;
+    BoolParameter* isOneShot;
+    BoolParameter*  firstTrackSetTempo;
+    BoolParameter* waitForOnset;
+    FloatParameter* onsetThreshold;
+    BoolParameter* outputAllTracksSeparately;
+    BoolParameter* autoNextTrackAfterRecord;
+    BoolParameter* autoClearPreviousIfEmpty;
+
+    Trigger* exportAudio;
+
+    AudioBuffer<float> bufferIn;
+    AudioBuffer<float>bufferOut;
+
+    int getQuantization();
 
 
-  bool askForBeingMasterTrack(LooperTrack * t);
-  bool askForBeingAbleToPlayNow(LooperTrack *_t);
-  bool askForBeingAbleToRecNow(LooperTrack * _t);
-  bool areAllTrackClearedButThis(LooperTrack * _t);
-  bool hasAtLeastOneTrackPlaying();
+    void selectMe (LooperTrack* t);
 
 
-  void onContainerTriggerTriggered(Trigger * t) override;
-  void onContainerParameterChanged(Parameter * p) override;
-//  void parameterValueChanged(Parameter *p)override;
-  // internal
-  void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
-  
-
-  bool wasMonitoring;
-
-  //Listener
-  class  LooperListener
-  {
-  public:
-
-    /** Destructor. */
-    virtual ~LooperListener() {}
-    /** track has been changed */
-    virtual void trackNumChanged(int num) = 0;
-  };
-
-  ListenerList<LooperListener> looperListeners;
-  void addLooperListener(LooperListener* newListener) { looperListeners.add(newListener); }
-  void removeLooperListener(LooperListener* listener) { looperListeners.remove(listener); }
+    bool askForBeingMasterTrack (LooperTrack* t);
+    bool askForBeingAbleToPlayNow (LooperTrack* _t);
+    bool askForBeingAbleToRecNow (LooperTrack* _t);
+    bool areAllTrackClearedButThis (LooperTrack* _t);
+    bool hasAtLeastOneTrackPlaying();
 
 
-  void clearInternal()override;
-  bool hasOnset();
+    void onContainerTriggerTriggered (Trigger* t) override;
+    void onContainerParameterChanged (Parameter* p) override;
+    //  void parameterValueChanged(Parameter *p)override;
+    // internal
+    void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
 
-  // TimeListener functions
-  void playStop(bool isPlaying) override;
-  void timeJumped(sample_clk_t time)override;
-  void BPMChanged(double BPM) override;
-  bool isBoundToTime()override;
+    bool wasMonitoring;
+
+    //Listener
+    class  LooperListener
+    {
+    public:
+
+        /** Destructor. */
+        virtual ~LooperListener() {}
+        /** track has been changed */
+        virtual void trackNumChanged (int num) = 0;
+    };
+
+    ListenerList<LooperListener> looperListeners;
+    void addLooperListener (LooperListener* newListener) { looperListeners.add (newListener); }
+    void removeLooperListener (LooperListener* listener) { looperListeners.remove (listener); }
+
+
+    void clearInternal()override;
+    bool hasOnset();
+
+
+    // TimeListener functions
+    void playStop (bool isPlaying) override;
+    void timeJumped (sample_clk_t time)override;
+    void BPMChanged (double BPM) override;
+    bool isBoundToTime()override;
 
 private:
-  // keeps track of few bits of audio
-  // to readjust the loop when controllers are delayed
-  void numChannelsChanged(bool isInput)override;
-  PhantomBuffer streamAudioBuffer;
-  friend class LooperTrack;
+    // keeps track of few bits of audio
+    // to readjust the loop when controllers are delayed
+    void numChannelsChanged (bool isInput)override;
+    PhantomBuffer streamAudioBuffer;
+    friend class LooperTrack;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LooperNode)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LooperNode)
 };
 
 #endif  // LOOPERNODE_H_INCLUDED

@@ -21,226 +21,251 @@
 
 
 
-Outliner::Outliner(const String &contentName) : ShapeShifterContentComponent(contentName)
+Outliner::Outliner (const String& contentName) : ShapeShifterContentComponent (contentName)
 {
-  getEngine()->addControllableContainerListener(this);
+    getEngine()->addControllableContainerListener (this);
 
-  showHiddenContainers = false;
+    showHiddenContainers = false;
 
-  rootItem = new OutlinerItem(getEngine());
-  treeView.setRootItem(rootItem);
-  addAndMakeVisible(treeView);
-  treeView.getViewport()->setScrollBarThickness(10);
-  filterTextEditor.setTextToShowWhenEmpty("search", Colours::grey);
-  addAndMakeVisible(filterTextEditor);
-  filterTextEditor.addListener(this);
-  rebuildTree();
+    rootItem = new OutlinerItem (getEngine());
+    treeView.setRootItem (rootItem);
+    addAndMakeVisible (treeView);
+    treeView.getViewport()->setScrollBarThickness (10);
+    filterTextEditor.setTextToShowWhenEmpty ("search", Colours::grey);
+    addAndMakeVisible (filterTextEditor);
+    filterTextEditor.addListener (this);
+    rebuildTree();
 }
 
 Outliner::~Outliner()
 {
-  if(getEngine()) getEngine()->removeControllableContainerListener(this);
+    if (getEngine()) getEngine()->removeControllableContainerListener (this);
 
 }
 
 void Outliner::resized()
 {
-  Rectangle<int> r = getLocalBounds();
-  r.removeFromTop(20);
-  filterTextEditor.setBounds(r.removeFromTop(30));
-  treeView.setBounds(r);
+    Rectangle<int> r = getLocalBounds();
+    r.removeFromTop (20);
+    filterTextEditor.setBounds (r.removeFromTop (30));
+    treeView.setBounds (r);
 }
 
-void Outliner::paint(Graphics & g)
+void Outliner::paint (Graphics& g)
 {
-  //g.fillAll(Colours::green.withAlpha(.2f));
+    //g.fillAll(Colours::green.withAlpha(.2f));
 }
 
 
 void Outliner::rebuildTree()
 {
-  rootItem->clearSubItems();
-  buildTree(rootItem, getEngine());
-  rootItem->setOpen(true);
+    rootItem->clearSubItems();
+    buildTree (rootItem, getEngine());
+    rootItem->setOpen (true);
 
 }
 
-void Outliner::buildTree(OutlinerItem * parentItem, ParameterContainer * parentContainer,bool shouldFilter)
+void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentContainer, bool shouldFilter)
 {
-  bool shouldFilterByName = nameFilter.isNotEmpty() && shouldFilter;
-  auto childContainers = parentContainer->getContainersOfType<ParameterContainer>(false);
-  for (auto &cc : childContainers)
-  {
+    bool shouldFilterByName = nameFilter.isNotEmpty() && shouldFilter;
+    auto childContainers = parentContainer->getContainersOfType<ParameterContainer> (false);
 
-    if (cc->skipControllableNameInAddress && !showHiddenContainers)
+    for (auto& cc : childContainers)
     {
-      buildTree(parentItem, cc,shouldFilter);
-    } else
-    {
-      OutlinerItem * ccItem = new OutlinerItem(cc);
-      parentItem->addSubItem(ccItem);
 
-      buildTree(ccItem, cc,!cc->getNiceName().toLowerCase().contains(nameFilter));
-      if(shouldFilterByName && ccItem->getNumSubItems()==0 &&
-         !cc->getNiceName().toLowerCase().contains(nameFilter)){
-        parentItem->removeSubItem(ccItem->getIndexInParent());
-      }
+        if (cc->skipControllableNameInAddress && !showHiddenContainers)
+        {
+            buildTree (parentItem, cc, shouldFilter);
+        }
+        else
+        {
+            OutlinerItem* ccItem = new OutlinerItem (cc);
+            parentItem->addSubItem (ccItem);
 
+            buildTree (ccItem, cc, !cc->getNiceName().toLowerCase().contains (nameFilter));
+
+            if (shouldFilterByName && ccItem->getNumSubItems() == 0 &&
+                !cc->getNiceName().toLowerCase().contains (nameFilter))
+            {
+                parentItem->removeSubItem (ccItem->getIndexInParent());
+            }
+
+
+        }
 
     }
 
-  }
+    auto childControllables = parentContainer->getControllablesOfType<Parameter> (false);
 
-  auto childControllables = parentContainer->getControllablesOfType<Parameter>(false);
+    for (auto& c : childControllables)
+    {
+        if (c == parentContainer->nameParam || c->isHidenInEditor) continue;
 
-  for (auto &c : childControllables)
-  {
-    if(c==parentContainer->nameParam || c->isHidenInEditor) continue;
-    if(!shouldFilterByName || c->niceName.toLowerCase().contains(nameFilter)){
-      OutlinerItem * cItem = new OutlinerItem(c);
-      parentItem->addSubItem(cItem);
+        if (!shouldFilterByName || c->niceName.toLowerCase().contains (nameFilter))
+        {
+            OutlinerItem* cItem = new OutlinerItem (c);
+            parentItem->addSubItem (cItem);
+
+        }
+    }
+
+    // show every thing on text search
+    if (nameFilter.isNotEmpty())
+    {
+        parentItem->setOpen (true);
 
     }
-  }
-  // show every thing on text search
-  if(nameFilter.isNotEmpty()){
-    parentItem->setOpen(true);
-
-  }
 }
 
-void Outliner::childStructureChanged(ControllableContainer * ,ControllableContainer*)
+void Outliner::childStructureChanged (ControllableContainer*, ControllableContainer*)
 {
-  if(!AsyncUpdater::isUpdatePending()){
-    triggerAsyncUpdate();
-  }
-
-}
-
-
-void Outliner::handleAsyncUpdate(){
-  if(getEngine()){
-    if(getEngine()->isLoadingFile ){
-      triggerAsyncUpdate();
+    if (!AsyncUpdater::isUpdatePending())
+    {
+        triggerAsyncUpdate();
     }
-    else{
-      saveCurrentOpenChilds();
-      rootItem->clearSubItems();
-      rebuildTree();
-      restoreCurrentOpenChilds();
+
+}
+
+
+void Outliner::handleAsyncUpdate()
+{
+    if (getEngine())
+    {
+        if (getEngine()->isLoadingFile )
+        {
+            triggerAsyncUpdate();
+        }
+        else
+        {
+            saveCurrentOpenChilds();
+            rootItem->clearSubItems();
+            rebuildTree();
+            restoreCurrentOpenChilds();
+        }
     }
-  }
 }
 
-void Outliner::textEditorTextChanged (TextEditor& t){
-  nameFilter = t.getText().toLowerCase();
-  rebuildTree();
+void Outliner::textEditorTextChanged (TextEditor& t)
+{
+    nameFilter = t.getText().toLowerCase();
+    rebuildTree();
 
-}
-
-
-void Outliner::saveCurrentOpenChilds(){
-  xmlState = treeView.getOpennessState(true);
 }
 
 
-void Outliner::restoreCurrentOpenChilds(){
-  if(xmlState.get()){treeView.restoreOpennessState(*xmlState.get(),true);}
+void Outliner::saveCurrentOpenChilds()
+{
+    xmlState = treeView.getOpennessState (true);
+}
+
+
+void Outliner::restoreCurrentOpenChilds()
+{
+    if (xmlState.get()) {treeView.restoreOpennessState (*xmlState.get(), true);}
 }
 
 //////////////////////////
 // OUTLINER ITEM
 ///////////////////////////
 
-OutlinerItem::OutlinerItem(ParameterContainer * _container) :
-container(_container), parameter(nullptr), isContainer(true)
+OutlinerItem::OutlinerItem (ParameterContainer* _container) :
+    container (_container), parameter (nullptr), isContainer (true)
 {
 
 }
 
-OutlinerItem::OutlinerItem(Parameter * _parameter) :
-container(nullptr), parameter(_parameter), isContainer(false)
+OutlinerItem::OutlinerItem (Parameter* _parameter) :
+    container (nullptr), parameter (_parameter), isContainer (false)
 {
 }
 
 
 bool OutlinerItem::mightContainSubItems()
 {
-  return isContainer;
+    return isContainer;
 }
 
-Component * OutlinerItem::createItemComponent()
+Component* OutlinerItem::createItemComponent()
 {
-  return new OutlinerItemComponent(this);
+    return new OutlinerItemComponent (this);
 }
 
-String OutlinerItem::getUniqueName() const{
-  // avoid empty names
-  if(isContainer) {return "/it/"+container->getControlAddress();}
-  else            {return "/it/"+parameter->getControlAddress();}
+String OutlinerItem::getUniqueName() const
+{
+    // avoid empty names
+    if (isContainer) {return "/it/" + container->getControlAddress();}
+    else            {return "/it/" + parameter->getControlAddress();}
 
 };
 
-OutlinerItemComponent::OutlinerItemComponent(OutlinerItem * _item) :
-InspectableComponent(_item->container),
-item(_item),
-label("label",_item->isContainer? item->container->getNiceName() : item->parameter->niceName),
-paramUI(nullptr)
+OutlinerItemComponent::OutlinerItemComponent (OutlinerItem* _item) :
+    InspectableComponent (_item->container),
+    item (_item),
+    label ("label", _item->isContainer ? item->container->getNiceName() : item->parameter->niceName),
+    paramUI (nullptr)
 
 {
 
-  setTooltip(item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
-  addAndMakeVisible(&label);
-  label.setInterceptsMouseClicks(false, false);
-  if(!_item->isContainer ){
-    paramUI = ParameterUIFactory::createDefaultUI(item->parameter);
+    setTooltip (item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
+    addAndMakeVisible (&label);
+    label.setInterceptsMouseClicks (false, false);
 
-  }
-  else{
-    paramUI = ParameterUIFactory::createDefaultUI(item->container->nameParam);
-  }
-  addAndMakeVisible(paramUI);
+    if (!_item->isContainer )
+    {
+        paramUI = ParameterUIFactory::createDefaultUI (item->parameter);
+
+    }
+    else
+    {
+        paramUI = ParameterUIFactory::createDefaultUI (item->container->nameParam);
+    }
+
+    addAndMakeVisible (paramUI);
 }
 void OutlinerItemComponent::resized()
 {
-  auto r = getLocalBounds();
-  if(paramUI){
-    paramUI->setBounds(r.removeFromRight(r.getWidth()/2).reduced(2));
-  }
-  label.setBounds(r);
+    auto r = getLocalBounds();
+
+    if (paramUI)
+    {
+        paramUI->setBounds (r.removeFromRight (r.getWidth() / 2).reduced (2));
+    }
+
+    label.setBounds (r);
 
 }
-void OutlinerItemComponent::paint(Graphics & g)
+void OutlinerItemComponent::paint (Graphics& g)
 {
-  Rectangle<int> r = getLocalBounds();
+    Rectangle<int> r = getLocalBounds();
 
-  Colour c = item->isContainer ? findColour(TextButton::buttonOnColourId) : findColour(Label::textColourId);
+    Colour c = item->isContainer ? findColour (TextButton::buttonOnColourId) : findColour (Label::textColourId);
 
 
-  int labelWidth = label.getFont().getStringWidthFloat(label.getText());
+    int labelWidth = label.getFont().getStringWidthFloat (label.getText());
 
-  if (item->isSelected())
-  {
-    g.setColour(c);
-    g.fillRoundedRectangle(r.withSize(labelWidth + 20, r.getHeight()).toFloat(), 2);
-  }
+    if (item->isSelected())
+    {
+        g.setColour (c);
+        g.fillRoundedRectangle (r.withSize (labelWidth + 20, r.getHeight()).toFloat(), 2);
+    }
 
-  r.removeFromLeft(3);
-  label.setBounds(r);
-  label.setColour(Label::textColourId, item->isSelected() ? Colours::grey.darker() : c);
+    r.removeFromLeft (3);
+    label.setBounds (r);
+    label.setColour (Label::textColourId, item->isSelected() ? Colours::grey.darker() : c);
 
 
 
 }
 
-void OutlinerItemComponent::mouseDown(const MouseEvent & e)
+void OutlinerItemComponent::mouseDown (const MouseEvent& e)
 {
-  item->setSelected(true, true);
-  selectThis();
+    item->setSelected (true, true);
+    selectThis();
 }
 
-InspectorEditor * OutlinerItemComponent::createEditor()
+InspectorEditor* OutlinerItemComponent::createEditor()
 {
-  if (item->isContainer) return InspectableComponent::createEditor();
-  return nullptr;//new ParameterEditor(this,item->parameter);
+    if (item->isContainer) return InspectableComponent::createEditor();
+
+    return nullptr;//new ParameterEditor(this,item->parameter);
 }

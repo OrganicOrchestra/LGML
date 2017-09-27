@@ -23,19 +23,19 @@
 class MIDIDeviceChooser : public ComboBox, public MIDIManager::MIDIManagerListener
 {
 public:
-	MIDIDeviceChooser(bool isInputChooser);
-	virtual ~MIDIDeviceChooser();
+    MIDIDeviceChooser (bool isInputChooser);
+    virtual ~MIDIDeviceChooser();
 
-	bool isInputChooser;
-	
-	String currentDeviceName;
+    bool isInputChooser;
 
-	void fillDeviceList();
-	void setSelectedDevice(const String &deviceName, bool silent = true);
+    String currentDeviceName;
+
+    void fillDeviceList();
+    void setSelectedDevice (const String& deviceName, bool silent = true);
 
 
-	virtual void midiInputsChanged() override;
-	virtual void midiOutputsChanged() override;
+    virtual void midiInputsChanged() override;
+    virtual void midiOutputsChanged() override;
 };
 
 #endif  // MIDIUIHELPER_H_INCLUDED

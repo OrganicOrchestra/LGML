@@ -25,28 +25,28 @@ class OSCControllerUI;
 class OSCControllerEditor : public ControllerEditor, public OSCController::OSCControllerListener
 {
 public:
-	OSCControllerEditor(OSCController * controller);
-	virtual ~OSCControllerEditor();
+    OSCControllerEditor (OSCController* controller);
+    virtual ~OSCControllerEditor();
 
-	OSCController * oscController;
+    OSCController* oscController;
 
-	ScopedPointer<ParameterUI> localPortUI;
-	ScopedPointer<ParameterUI> remoteHostUI;
-	ScopedPointer<ParameterUI> remotePortUI;
-  ScopedPointer<ParameterUI> logIncomingOSC,logOutOSC;
-  ScopedPointer<ParameterUI> speedLimit;
-  ScopedPointer<ParameterUI> blockFeedback;
-  ScopedPointer<ParameterUI> sendAllTrigger;
+    ScopedPointer<ParameterUI> localPortUI;
+    ScopedPointer<ParameterUI> remoteHostUI;
+    ScopedPointer<ParameterUI> remotePortUI;
+    ScopedPointer<ParameterUI> logIncomingOSC, logOutOSC;
+    ScopedPointer<ParameterUI> speedLimit;
+    ScopedPointer<ParameterUI> blockFeedback;
+    ScopedPointer<ParameterUI> sendAllTrigger;
 
 
-	Component innerContainer;
-  
-	virtual void resized() override;
+    Component innerContainer;
 
-	virtual int getContentHeight() override;
+    virtual void resized() override;
 
-	// Inherited via OSCControllerListener
-	virtual void messageProcessed(const OSCMessage & msg, bool success) override;
+    virtual int getContentHeight() override;
+
+    // Inherited via OSCControllerListener
+    virtual void messageProcessed (const OSCMessage& msg, bool success) override;
 };
 
 

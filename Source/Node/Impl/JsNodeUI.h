@@ -19,7 +19,8 @@
 #include "../../Scripting/Js/JsEnvironmentUI.h"
 #include "../UI/ConnectableNodeContentUI.h"
 
-class JsNodeUI : public ConnectableNodeContentUI,private ControllableContainerListener,JsEnvironment::Listener{
+class JsNodeUI : public ConnectableNodeContentUI, private ControllableContainerListener, JsEnvironment::Listener
+{
 
 
 public:
@@ -31,14 +32,14 @@ public:
 
     void resized() override;
 
-    void newJsFileLoaded(bool )override;
+    void newJsFileLoaded (bool )override;
     ScopedPointer<JsEnvironmentUI> jsUI;
 
     OwnedArray<ParameterUI> varUI;
     void layoutUI();
 
-    void controllableAdded(ControllableContainer *,Controllable *) override;
-    void controllableRemoved(ControllableContainer*,Controllable *) override;
+    void controllableAdded (ControllableContainer*, Controllable*) override;
+    void controllableRemoved (ControllableContainer*, Controllable*) override;
 
 
 };

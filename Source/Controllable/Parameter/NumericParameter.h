@@ -24,17 +24,17 @@ template<typename T>
 class NumericParameter : public MinMaxParameter
 {
 public:
-  NumericParameter(const String &niceName, const String &description=String::empty, const T initialValue=0, const T minimumValue = 0, const T maximumValue = 1, bool enabled = true);
-  ~NumericParameter() {};
+    NumericParameter (const String& niceName, const String& description = String::empty, const T initialValue = 0, const T minimumValue = 0, const T maximumValue = 1, bool enabled = true);
+    ~NumericParameter() {};
 
-    void setValueInternal(var & _value) override;
-  
-  void setNormalizedValue(const T  normalizedValue, bool silentSet=false, bool force=false);
+    void setValueInternal (var& _value) override;
 
-  float getNormalizedValue() ;
-  
-  DECLARE_OBJ_TYPE(NumericParameter)
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NumericParameter)
+    void setNormalizedValue (const T  normalizedValue, bool silentSet = false, bool force = false);
+
+    float getNormalizedValue() ;
+
+    DECLARE_OBJ_TYPE (NumericParameter)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NumericParameter)
 };
 
 typedef NumericParameter<int> IntParameter;
@@ -43,18 +43,20 @@ typedef NumericParameter<double> FloatParameter;
 // template implementation
 
 template<class T>
-float NumericParameter<T>::getNormalizedValue() {
-  if((T)minimumValue==(T)maximumValue){
-    return 0.0;
-  }
-  else
-    return jmap<T>((T)value, (T)minimumValue, (T)maximumValue, (T)0, (T)1);
+float NumericParameter<T>::getNormalizedValue()
+{
+    if ((T)minimumValue == (T)maximumValue)
+    {
+        return 0.0;
+    }
+    else
+        return jmap<T> ((T)value, (T)minimumValue, (T)maximumValue, (T)0, (T)1);
 }
 
 template<class T>
-void NumericParameter<T>::setNormalizedValue(const T  normalizedValue, bool silentSet, bool force)
+void NumericParameter<T>::setNormalizedValue (const T  normalizedValue, bool silentSet, bool force)
 {
-  setValue(jmap<T>(normalizedValue, (T)minimumValue, (T)maximumValue), silentSet, force);
+    setValue (jmap<T> (normalizedValue, (T)minimumValue, (T)maximumValue), silentSet, force);
 }
 
 #endif  // INTPARAMETER_H_INCLUDED

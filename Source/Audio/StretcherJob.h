@@ -17,45 +17,46 @@
 #define STRETCHERJOB_H_INCLUDED
 
 #if !BUFFER_CAN_STRETCH
-#pragma error shouldnt be included if buffer can not stretch
+    #pragma error shouldnt be included if buffer can not stretch
 #endif
 
 #include "../JuceHeaderAudio.h"
 
 ////////////////
 // stretcher
-namespace RubberBand{class RubberBandStretcher;};
+namespace RubberBand {class RubberBandStretcher;};
 class PlayableBuffer;
 
-class StretcherJob : public ThreadPoolJob{
+class StretcherJob : public ThreadPoolJob
+{
 public:
 
-  StretcherJob(PlayableBuffer * pb,double _ratio):
-  ThreadPoolJob("stretch"),
-  owner(pb),
-  ratio(_ratio),
-  tmpStretchBuf(1,44100,4096)
+    StretcherJob (PlayableBuffer* pb, double _ratio):
+        ThreadPoolJob ("stretch"),
+        owner (pb),
+        ratio (_ratio),
+        tmpStretchBuf (1, 44100, 4096)
 
-  {
-  };
+    {
+    };
 
 
-  JobStatus runJob()override;
+    JobStatus runJob()override;
 
-  int studyStretch(double ratio,int start,int blockSize);
-  void processStretch(int start,int block,int *read,int * produced);
-  // stretching function
-  void initStretcher(int sR,int c);
-  PlayableBuffer * owner;
-  int originNumSamples;
-  double ratio;
+    int studyStretch (double ratio, int start, int blockSize);
+    void processStretch (int start, int block, int* read, int* produced);
+    // stretching function
+    void initStretcher (int sR, int c);
+    PlayableBuffer* owner;
+    int originNumSamples;
+    double ratio;
 
-  BufferBlockList tmpStretchBuf;
-   
+    BufferBlockList tmpStretchBuf;
 
-  ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
 
-  CriticalSection jobLock;
+    ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
+
+    CriticalSection jobLock;
 
 };
 

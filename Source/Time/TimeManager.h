@@ -36,236 +36,246 @@ class LinkPimpl;
 class FadeInOut;
 
 
-struct TransportTimeInfo{
-  double barLength;
-  double beatTime;
-  int beatInSample;
-  double sampleRate;
-  double bpm;
+struct TransportTimeInfo
+{
+    double barLength;
+    double beatTime;
+    int beatInSample;
+    double sampleRate;
+    double bpm;
 
 
 
-  void makeValidForGranularity(int samplePerBeatGranularity){
-    if(samplePerBeatGranularity>0){
-      int offset =((int)beatInSample)%samplePerBeatGranularity;
-      if(offset>samplePerBeatGranularity/2){offset = -(samplePerBeatGranularity-offset);}
-      beatInSample = beatInSample - offset;
-      beatTime = beatInSample*1.0/sampleRate;
+    void makeValidForGranularity (int samplePerBeatGranularity)
+    {
+        if (samplePerBeatGranularity > 0)
+        {
+            int offset = ((int)beatInSample) % samplePerBeatGranularity;
 
-    };
-  }
-  
-  
+            if (offset > samplePerBeatGranularity / 2) {offset = - (samplePerBeatGranularity - offset);}
+
+            beatInSample = beatInSample - offset;
+            beatTime = beatInSample * 1.0 / sampleRate;
+
+        };
+    }
+
+
 
 };
 
 
-class TimeManager : public AudioIODeviceCallback ,public ParameterContainer,public AudioPlayHead,
-public TimeMasterCandidate
+class TimeManager : public AudioIODeviceCallback, public ParameterContainer, public AudioPlayHead,
+    public TimeMasterCandidate
 {
 
 
-  public :
+public :
 
-  // TODO check if we can use SingleThread Singleton for fast access in processAdio
-  juce_DeclareSingleton(TimeManager, true);
+    // TODO check if we can use SingleThread Singleton for fast access in processAdio
+    juce_DeclareSingleton (TimeManager, true);
 
-  TimeManager();
-  ~TimeManager();
+    TimeManager();
+    ~TimeManager();
 
 
-  BoolParameter * playState;
-  Trigger * playTrigger;
-  Trigger * stopTrigger;
-  Trigger * tapTempo;
-  BoolParameter * isSettingTempo;
-  FloatParameter *  BPM;
-  IntParameter * currentBeat;
-  IntParameter * currentBar;
-  IntParameter * beatPerBar;
-  BoolParameter * BPMLocked;
-  BoolParameter * click;
-  FloatParameter * clickVolume;
-  
-
-  
-
-  IntParameter * quantizedBarFraction;
-
-  ScopedPointer<LinkPimpl> linkPimpl;
-  friend class LinkPimpl;
-  FloatParameter * linkLatencyParam;
-
-  BoolParameter * linkEnabled;
-  IntParameter * linkNumPeers;
+    BoolParameter* playState;
+    Trigger* playTrigger;
+    Trigger* stopTrigger;
+    Trigger* tapTempo;
+    BoolParameter* isSettingTempo;
+    FloatParameter*   BPM;
+    IntParameter* currentBeat;
+    IntParameter* currentBar;
+    IntParameter* beatPerBar;
+    BoolParameter* BPMLocked;
+    BoolParameter* click;
+    FloatParameter* clickVolume;
 
 
 
 
-  void setSampleRate(int sr);
-  void setBlockSize(int bS);
+    IntParameter* quantizedBarFraction;
+
+    ScopedPointer<LinkPimpl> linkPimpl;
+    friend class LinkPimpl;
+    FloatParameter* linkLatencyParam;
+
+    BoolParameter* linkEnabled;
+    IntParameter* linkNumPeers;
 
 
 
 
-  TransportTimeInfo findTransportTimeInfoForLength(sample_clk_t time,double sampleRate = -1);
-  void setBPMFromTransportTimeInfo(const TransportTimeInfo & info,bool adaptTime,sample_clk_t atSample);
-
-
-  void jump(int amount);
-  void goToTime(sample_clk_t time,bool now = false);
-  void advanceTime(sample_clk_t ,bool now = false);
-
-  // used when triggering multiple change
-  void lockTime(bool );
-  bool isLocked();
-
-  void play(bool shouldPlay);
-  void togglePlay();
-
-  int getBeatInt();
-  double getBeat();
-  sample_clk_t getNextGlobalQuantifiedTime();
-  sample_clk_t getNextQuantifiedTime(int barFraction);
-  sample_clk_t getTimeForNextBeats(int beats);
-  sample_clk_t getTimeInSample();
-  sample_clk_t getNextTimeInSample();
-  bool willRestart();
-  int getClosestBeat();
-  double getBeatInNextSamples(int numSampleToAdd);
-  double getBeatForQuantum(const double q);
-
-
-  bool isPlaying();
-  bool isFirstPlayingFrame();
-  bool isJumping();
-
-  //return percent in beat
-  double getBeatPercent();
-  int getBar();
+    void setSampleRate (int sr);
+    void setBlockSize (int bS);
 
 
 
-  sample_clk_t beatTimeInSample;
-  int sampleRate;
-  int blockSize;
 
-  // instance currently handling tempo (loop track while recording)
-  TimeMasterCandidate *  timeMasterCandidate;
-  bool isMasterCandidate(TimeMasterCandidate * n);
-  bool hasMasterCandidate();
-  void releaseMasterCandidate(TimeMasterCandidate * n);
-  void releaseIfMasterCandidate(TimeMasterCandidate * n);
-  bool askForBeingMasterCandidate(TimeMasterCandidate * n);
-  void audioDeviceIOCallback (const float** inputChannelData,int numInputChannels,float** outputChannelData,int numOutputChannels,int numSamples) override;
-
-  bool hadMasterCandidate;
+    TransportTimeInfo findTransportTimeInfoForLength (sample_clk_t time, double sampleRate = -1);
+    void setBPMFromTransportTimeInfo (const TransportTimeInfo& info, bool adaptTime, sample_clk_t atSample);
 
 
-  bool getCurrentPosition (CurrentPositionInfo& result)override;
+    void jump (int amount);
+    void goToTime (sample_clk_t time, bool now = false);
+    void advanceTime (sample_clk_t, bool now = false);
 
-  void notifyListenerCleared();
+    // used when triggering multiple change
+    void lockTime (bool );
+    bool isLocked();
 
-  class TimeManagerListener{
-  public:
-    virtual ~TimeManagerListener(){};
-    virtual void BPMChanged(double /*BPM*/){};
-    virtual void timeJumped(sample_clk_t /*time*/) {};
-    virtual void playStop(bool /*playStop*/){};
+    void play (bool shouldPlay);
+    void togglePlay();
+
+    int getBeatInt();
+    double getBeat();
+    sample_clk_t getNextGlobalQuantifiedTime();
+    sample_clk_t getNextQuantifiedTime (int barFraction);
+    sample_clk_t getTimeForNextBeats (int beats);
+    sample_clk_t getTimeInSample();
+    sample_clk_t getNextTimeInSample();
+    bool willRestart();
+    int getClosestBeat();
+    double getBeatInNextSamples (int numSampleToAdd);
+    double getBeatForQuantum (const double q);
 
 
-    // prevent link and other timejumps (while recording track for example)
-//    virtual bool lockTimeJump()=0;
-    // info for stopping manager if needed;
-    virtual bool isBoundToTime()=0;
+    bool isPlaying();
+    bool isFirstPlayingFrame();
+    bool isJumping();
+
+    //return percent in beat
+    double getBeatPercent();
+    int getBar();
 
 
 
-  };
+    sample_clk_t beatTimeInSample;
+    int sampleRate;
+    int blockSize;
 
-  ListenerList<TimeManagerListener> timeManagerListeners;
+    // instance currently handling tempo (loop track while recording)
+    TimeMasterCandidate*   timeMasterCandidate;
+    bool isMasterCandidate (TimeMasterCandidate* n);
+    bool hasMasterCandidate();
+    void releaseMasterCandidate (TimeMasterCandidate* n);
+    void releaseIfMasterCandidate (TimeMasterCandidate* n);
+    bool askForBeingMasterCandidate (TimeMasterCandidate* n);
+    void audioDeviceIOCallback (const float** inputChannelData, int numInputChannels, float** outputChannelData, int numOutputChannels, int numSamples) override;
 
-   void addTimeManagerListener(TimeManagerListener* newListener) { timeManagerListeners.add(newListener); }
-   void removeTimeManagerListener(TimeManagerListener* listener) { timeManagerListeners.remove(listener); }
+    bool hadMasterCandidate;
+
+
+    bool getCurrentPosition (CurrentPositionInfo& result)override;
+
+    void notifyListenerCleared();
+
+    class TimeManagerListener
+    {
+    public:
+        virtual ~TimeManagerListener() {};
+        virtual void BPMChanged (double /*BPM*/) {};
+        virtual void timeJumped (sample_clk_t /*time*/) {};
+        virtual void playStop (bool /*playStop*/) {};
+
+
+        // prevent link and other timejumps (while recording track for example)
+        //    virtual bool lockTimeJump()=0;
+        // info for stopping manager if needed;
+        virtual bool isBoundToTime() = 0;
+
+
+
+    };
+
+    ListenerList<TimeManagerListener> timeManagerListeners;
+
+    void addTimeManagerListener (TimeManagerListener* newListener) { timeManagerListeners.add (newListener); }
+    void removeTimeManagerListener (TimeManagerListener* listener) { timeManagerListeners.remove (listener); }
 
 
 #if !LGML_UNIT_TESTS
 private:
 #endif
 
-  struct TimeState{
-    TimeState():isJumping(false),nextTime(0),isPlaying(false),time(0){}
-    bool isPlaying;
-    void jumpTo(sample_clk_t t){
-      isJumping = true;
-      nextTime = t;
-    }
-    bool isJumping;
-    sample_clk_t nextTime;
-    sample_clk_t time;
-  };
+    struct TimeState
+    {
+        TimeState(): isJumping (false), nextTime (0), isPlaying (false), time (0) {}
+        bool isPlaying;
+        void jumpTo (sample_clk_t t)
+        {
+            isJumping = true;
+            nextTime = t;
+        }
+        bool isJumping;
+        sample_clk_t nextTime;
+        sample_clk_t time;
+    };
 
-  TimeState timeState,desiredTimeState;
-  sample_clk_t audioClock;
+    TimeState timeState, desiredTimeState;
+    sample_clk_t audioClock;
 
-  void shouldStop(bool now=false);
-  void shouldPlay(bool now = false);
-  void shouldRestart(bool );
-  void shouldGoToZero();
+    void shouldStop (bool now = false);
+    void shouldPlay (bool now = false);
+    void shouldRestart (bool );
+    void shouldGoToZero();
 
-  void updateState();
-  void incrementClock(int block);
+    void updateState();
+    void incrementClock (int block);
 
-  void onContainerParameterChanged(Parameter * )override;
-  void onContainerTriggerTriggered(Trigger * ) override;
-
-
-  void setBPMInternal(double BPM,bool adaptTime);
-
-  virtual void audioDeviceAboutToStart (AudioIODevice* device)override {
-    setSampleRate((int)device->getCurrentSampleRate());
-    setBlockSize((int)device->getCurrentBufferSizeSamples());
-    // should we notify blockSize?
-  };
-
-  /** Called to indicate that the device has stopped. */
-  virtual void audioDeviceStopped() override{
-
-  };
-  bool _isLocked;
-  void updateCurrentPositionInfo();
-
-  CurrentPositionInfo currentPositionInfo;
-
-  // used for guessing tempo
-  Range<double> beatTimeGuessRange;
-  // used for manual setting of tempo
-  Range<double> BPMRange;
+    void onContainerParameterChanged (Parameter* )override;
+    void onContainerTriggerTriggered (Trigger* ) override;
 
 
-  // granularity ensure that beat sample is divisible by 8 (8,4,2 ... 1) for further sub quantifs
-  const int samplePerBeatGranularity;
-  
+    void setBPMInternal (double BPM, bool adaptTime);
 
-  sample_clk_t lastTaped;
-  sample_clk_t currentBeatPeriod;
-  int tapInRow;
+    virtual void audioDeviceAboutToStart (AudioIODevice* device)override
+    {
+        setSampleRate ((int)device->getCurrentSampleRate());
+        setBlockSize ((int)device->getCurrentBufferSizeSamples());
+        // should we notify blockSize?
+    };
 
-  bool hasJumped;
+    /** Called to indicate that the device has stopped. */
+    virtual void audioDeviceStopped() override
+    {
 
-  ScopedPointer<FadeInOut> clickFader;
-  bool updateAndNotifyTimeJumpedIfNeeded();
+    };
+    bool _isLocked;
+    void updateCurrentPositionInfo();
 
-  bool isAnyoneBoundToTime();
+    CurrentPositionInfo currentPositionInfo;
 
-  void checkCommitableParams();
+    // used for guessing tempo
+    Range<double> beatTimeGuessRange;
+    // used for manual setting of tempo
+    Range<double> BPMRange;
+
+
+    // granularity ensure that beat sample is divisible by 8 (8,4,2 ... 1) for further sub quantifs
+    const int samplePerBeatGranularity;
+
+
+    sample_clk_t lastTaped;
+    sample_clk_t currentBeatPeriod;
+    int tapInRow;
+
+    bool hasJumped;
+
+    ScopedPointer<FadeInOut> clickFader;
+    bool updateAndNotifyTimeJumpedIfNeeded();
+
+    bool isAnyoneBoundToTime();
+
+    void checkCommitableParams();
 
 
 
-  void pushCommitableParams();
-//  double lastEnv;
-//  int clickFadeOut,clickFadeIn,clickFadeTime;
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeManager)
+    void pushCommitableParams();
+    //  double lastEnv;
+    //  int clickFadeOut,clickFadeIn,clickFadeTime;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeManager)
 
 };
 

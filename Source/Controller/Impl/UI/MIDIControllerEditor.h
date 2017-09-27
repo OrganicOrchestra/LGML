@@ -28,24 +28,24 @@ class MIDIController;
 class MIDIControllerEditor : public ControllerEditor, ComboBoxListener, MIDIListener::Listener
 {
 public:
-	MIDIControllerEditor(MIDIController * controllerUI);
-	virtual ~MIDIControllerEditor();
+    MIDIControllerEditor (MIDIController* controllerUI);
+    virtual ~MIDIControllerEditor();
 
-	MIDIController * midiController;
-	ScopedPointer<JsEnvironmentUI> jsUI;
+    MIDIController* midiController;
+    ScopedPointer<JsEnvironmentUI> jsUI;
 
-	MIDIDeviceChooser deviceChooser;
-	ScopedPointer<NamedParameterUI> channelStepper;
-	ScopedPointer<ParameterUI> incomingToogle;
+    MIDIDeviceChooser deviceChooser;
+    ScopedPointer<NamedParameterUI> channelStepper;
+    ScopedPointer<ParameterUI> incomingToogle;
 
-	 
 
-	void resized() override;
-	void comboBoxChanged(ComboBox *) override;
 
-	int getContentHeight() override;
+    void resized() override;
+    void comboBoxChanged (ComboBox*) override;
 
-	void currentDeviceChanged(MIDIListener *) override;
+    int getContentHeight() override;
+
+    void currentDeviceChanged (MIDIListener*) override;
 };
 
 

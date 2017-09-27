@@ -20,53 +20,53 @@
 
 // abstract base class that provide midi callback handle and keeps MIDIManager in sync
 
-class MIDIListener :public MidiInputCallback,MIDIManager::MIDIManagerListener
+class MIDIListener : public MidiInputCallback, MIDIManager::MIDIManagerListener
 {
-    public :
+public :
     MIDIListener();
     virtual ~MIDIListener();
 
 
     String midiPortName;
-	String ghostPortName;
-  String outPortName;
+    String ghostPortName;
+    String outPortName;
 
-    virtual void setCurrentDevice(const String &deviceName);
-	
-	//Output
-	ScopedPointer<MidiOutput> midiOutDevice;
-	void sendNoteOn(int channel, int pitch, int velocity);
-	void sendNoteOff(int channel, int pitch, int velocity);
-	void sendCC(int channel, int number, int value);
-	void sendSysEx(uint8 * data, int dataCount);
+    virtual void setCurrentDevice (const String& deviceName);
 
-	virtual void midiInputAdded(String & s) override;
-	virtual void midiInputRemoved(String & s) override;
-//    virtual void midiInputsChanged() {}
-    
-	virtual void midiOutputAdded(String & s) override;
-	virtual void midiOutputRemoved(String & s) override;
-//    virtual void midiOutputsChanged() {}
-    
+    //Output
+    ScopedPointer<MidiOutput> midiOutDevice;
+    void sendNoteOn (int channel, int pitch, int velocity);
+    void sendNoteOff (int channel, int pitch, int velocity);
+    void sendCC (int channel, int number, int value);
+    void sendSysEx (uint8* data, int dataCount);
+
+    virtual void midiInputAdded (String& s) override;
+    virtual void midiInputRemoved (String& s) override;
+    //    virtual void midiInputsChanged() {}
+
+    virtual void midiOutputAdded (String& s) override;
+    virtual void midiOutputRemoved (String& s) override;
+    //    virtual void midiOutputsChanged() {}
+
     class  Listener
     {
     public:
         /** Destructor. */
         virtual ~Listener() {}
-        virtual void currentDeviceChanged(MIDIListener *) {}
+        virtual void currentDeviceChanged (MIDIListener*) {}
 
 
     };
 
     ListenerList<Listener> MIDIListenerListeners;
-    void addMIDIListenerListener(Listener* newListener) { MIDIListenerListeners.add(newListener); }
-    void removeMIDIListenerListener(Listener* listener) { MIDIListenerListeners.remove(listener); }
+    void addMIDIListenerListener (Listener* newListener) { MIDIListenerListeners.add (newListener); }
+    void removeMIDIListenerListener (Listener* listener) { MIDIListenerListeners.remove (listener); }
 
 
 
-  int commonNamePartWithInName(String & s);
-  String getClosestOutName();
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MIDIListener)
+    int commonNamePartWithInName (String& s);
+    String getClosestOutName();
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIListener)
 };
 
 

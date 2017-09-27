@@ -20,200 +20,229 @@
 #include "../../../FastMapper/FastMapper.h"
 
 //==============================================================================
-ParameterUI::ParameterUI(Parameter * _parameter) :
-parameter(_parameter),
-showLabel(true),
-showValue(true),
-customTextDisplayed(String::empty),
-isMappingDest(false),
-isDraggable(true),
-isSelected(false)
+ParameterUI::ParameterUI (Parameter* _parameter) :
+    parameter (_parameter),
+    showLabel (true),
+    showValue (true),
+    customTextDisplayed (String::empty),
+    isMappingDest (false),
+    isDraggable (true),
+    isSelected (false)
 {
-  if(parameter.get()){
-  parameter->addAsyncCoalescedListener(this);
-  parameter->addParameterListener(this);
-  }
-  else{
-    jassertfalse;
-  }
+    if (parameter.get())
+    {
+        parameter->addAsyncCoalescedListener (this);
+        parameter->addParameterListener (this);
+    }
+    else
+    {
+        jassertfalse;
+    }
 
-  hasValidControllable = (parameter.get()!=nullptr);
-  jassert(hasValidControllable);
-  setName(parameter->niceName);
-  parameter->addControllableListener(this);
-  mappingState = NOMAP;
-  setMappingState(LGMLDragger::getInstance()->isMappingActive);
-  updateTooltip();
-  
+    hasValidControllable = (parameter.get() != nullptr);
+    jassert (hasValidControllable);
+    setName (parameter->niceName);
+    parameter->addControllableListener (this);
+    mappingState = NOMAP;
+    setMappingState (LGMLDragger::getInstance()->isMappingActive);
+    updateTooltip();
+
 
 }
 
 ParameterUI::~ParameterUI()
 {
-  LGMLDragger::getInstance()->unRegisterDragCandidate(this);
-  if(parameter.get()){
-    parameter->removeControllableListener(this);
-    parameter->removeParameterListener(this);
-    parameter->removeAsyncParameterListener(this);
-  }
+    LGMLDragger::getInstance()->unRegisterDragCandidate (this);
 
-  masterReference.clear();
-}
-
-
-void ParameterUI::setCustomText(const String text){
-  customTextDisplayed = text;
-  repaint();
-}
-
-
-void ParameterUI::mouseDown(const MouseEvent & e)
-{
-  if (e.mods.isRightButtonDown())
-  {
-    PopupMenu p;
-    p.addItem(1, "Copy control address");
-    p.addItem(2, "Add FastMap To");
-    p.addItem(3, "Add FastMap From");
-    int result = p.show();
-    switch (result)
+    if (parameter.get())
     {
-      case 1:
-        SystemClipboard::copyTextToClipboard(parameter->controlAddress);
-        break;
-      case 2:
-        FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo(Parameter::fromControllable(parameter));
-        break;
-      case 3:
-        FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo(Parameter::fromControllable(parameter));
-        break;
+        parameter->removeControllableListener (this);
+        parameter->removeParameterListener (this);
+        parameter->removeAsyncParameterListener (this);
     }
-  }
+
+    masterReference.clear();
 }
 
 
-bool ParameterUI::shouldBailOut(){
-  bool bailOut= parameter.get()==nullptr;
-  // we want a clean deletion no?
-  if(bailOut){
-    // TODO : changing vst preset sometimes hit that
-    NLOG("ParameterUI", "!!! old component still displayed");
-    //jassertfalse;
-  }
-  return bailOut;
-
-}
-
-
-
-void ParameterUI::controllableStateChanged(Controllable * c)
+void ParameterUI::setCustomText (const String text)
 {
-  setAlpha(c->enabled ? 1 : .5f);
+    customTextDisplayed = text;
+    repaint();
 }
 
-void ParameterUI::controllableControlAddressChanged(Controllable *)
+
+void ParameterUI::mouseDown (const MouseEvent& e)
 {
-  updateTooltip();
-  repaint();
+    if (e.mods.isRightButtonDown())
+    {
+        PopupMenu p;
+        p.addItem (1, "Copy control address");
+        p.addItem (2, "Add FastMap To");
+        p.addItem (3, "Add FastMap From");
+        int result = p.show();
+
+        switch (result)
+        {
+            case 1:
+                SystemClipboard::copyTextToClipboard (parameter->controlAddress);
+                break;
+
+            case 2:
+                FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo (Parameter::fromControllable (parameter));
+                break;
+
+            case 3:
+                FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo (Parameter::fromControllable (parameter));
+                break;
+        }
+    }
+}
+
+
+bool ParameterUI::shouldBailOut()
+{
+    bool bailOut = parameter.get() == nullptr;
+
+    // we want a clean deletion no?
+    if (bailOut)
+    {
+        // TODO : changing vst preset sometimes hit that
+        NLOG ("ParameterUI", "!!! old component still displayed");
+        //jassertfalse;
+    }
+
+    return bailOut;
+
+}
+
+
+
+void ParameterUI::controllableStateChanged (Controllable* c)
+{
+    setAlpha (c->enabled ? 1 : .5f);
+}
+
+void ParameterUI::controllableControlAddressChanged (Controllable*)
+{
+    updateTooltip();
+    repaint();
 }
 
 
 
 void ParameterUI::updateTooltip()
 {
-  setTooltip(parameter->description + "\nControl Address : " + parameter->controlAddress);
+    setTooltip (parameter->description + "\nControl Address : " + parameter->controlAddress);
 }
 
 
-class MapEffect : public ImageEffectFilter{
+class MapEffect : public ImageEffectFilter
+{
 public:
-  MapEffect(const Colour & colour,uint32 _amount,String _text):
-  amount(_amount),
-  pRef(colour.getAlpha(),colour.getRed(),colour.getGreen(),colour.getBlue()),
-  text(_text)
-  {
-  }
-  PixelARGB pRef;
-  uint32 amount;
-  String text;
-  uint32 trueAmount;
-
-  template<typename T>
-  void  applyFunction(Image::BitmapData & data){
-    for (int y = 0; y < data.height; ++y)
+    MapEffect (const Colour& colour, uint32 _amount, String _text):
+        amount (_amount),
+        pRef (colour.getAlpha(), colour.getRed(), colour.getGreen(), colour.getBlue()),
+        text (_text)
     {
-      uint8* p = data.getLinePointer (y);
-
-      for (int x = 0; x < data.width; ++x)
-      {
-        T* pp = ((T*) p);
-
-        pp->desaturate();
-        pp->tween(pRef, trueAmount);
-
-        p += data.pixelStride;
-      }
     }
-  }
-  void applyEffect (Image& image, Graphics& g, float /*scaleFactor*/, float alpha)
-  {
-    //  Image temp (image.getFormat(), image.getWidth(), image.getHeight(), true);
-    trueAmount = (uint32)(alpha*alpha*amount);
+    PixelARGB pRef;
+    uint32 amount;
+    String text;
+    uint32 trueAmount;
 
-    Image::BitmapData data (image, 0, 0, image.getWidth(), image.getHeight(), Image::BitmapData::readWrite);
-    if(image.getFormat()==Image::PixelFormat::ARGB){
-      applyFunction<PixelARGB>(data);
+    template<typename T>
+    void  applyFunction (Image::BitmapData& data)
+    {
+        for (int y = 0; y < data.height; ++y)
+        {
+            uint8* p = data.getLinePointer (y);
+
+            for (int x = 0; x < data.width; ++x)
+            {
+                T* pp = ((T*) p);
+
+                pp->desaturate();
+                pp->tween (pRef, trueAmount);
+
+                p += data.pixelStride;
+            }
+        }
     }
-    else if(image.getFormat()==Image::PixelFormat::RGB){
-      applyFunction<PixelRGB>(data);
+    void applyEffect (Image& image, Graphics& g, float /*scaleFactor*/, float alpha)
+    {
+        //  Image temp (image.getFormat(), image.getWidth(), image.getHeight(), true);
+        trueAmount = (uint32) (alpha * alpha * amount);
+
+        Image::BitmapData data (image, 0, 0, image.getWidth(), image.getHeight(), Image::BitmapData::readWrite);
+
+        if (image.getFormat() == Image::PixelFormat::ARGB)
+        {
+            applyFunction<PixelARGB> (data);
+        }
+        else if (image.getFormat() == Image::PixelFormat::RGB)
+        {
+            applyFunction<PixelRGB> (data);
+        }
+        else
+        {
+            jassertfalse;
+        }
+
+
+        g.drawImage (image, image.getBounds().toFloat());
+        g.setColour (Colours::white);
+        g.drawFittedText (text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
+
     }
-    else{
-      jassertfalse;
-    }
-
-
-    g.drawImage(image,image.getBounds().toFloat());
-    g.setColour(Colours::white);
-    g.drawFittedText(text, 0, 0, image.getWidth(), image.getHeight(), Justification::centred, 2);
-
-  }
 };
 
 
 
-void  ParameterUI::setMappingState(const bool  b){
-  if( parameter && !parameter->isMappable())return;
+void  ParameterUI::setMappingState (const bool  b)
+{
+    if ( parameter && !parameter->isMappable())return;
 
-  MappingState s = b?(isMappingDest?MAPDEST:MAPSOURCE):NOMAP;
-  if(s!=mappingState){
-    if(s==NOMAP){
-      setInterceptsMouseClicks(true, true);
+    MappingState s = b ? (isMappingDest ? MAPDEST : MAPSOURCE) : NOMAP;
 
+    if (s != mappingState)
+    {
+        if (s == NOMAP)
+        {
+            setInterceptsMouseClicks (true, true);
+
+        }
+        else
+        {
+            setInterceptsMouseClicks (true, false);
+        }
     }
-    else{
-      setInterceptsMouseClicks(true, false);
-    }
-  }
-  if (b){
-    mapEffect  = new MapEffect(isMappingDest?Colours::red:Colours::blue,120,getName());
-  }
-  else{
-    mapEffect= nullptr;
-  }
 
-  setComponentEffect(mapEffect);
-  mappingState = s;
-  repaint();
+    if (b)
+    {
+        mapEffect  = new MapEffect (isMappingDest ? Colours::red : Colours::blue, 120, getName());
+    }
+    else
+    {
+        mapEffect = nullptr;
+    }
+
+    setComponentEffect (mapEffect);
+    mappingState = s;
+    repaint();
 }
 
 
 
 
-void ParameterUI::setMappingDest(bool _isMappingDest){
-  isMappingDest = _isMappingDest;
-  if(mappingState!=NOMAP){
-    mappingState = isMappingDest?MAPDEST:MAPSOURCE;
-  }
+void ParameterUI::setMappingDest (bool _isMappingDest)
+{
+    isMappingDest = _isMappingDest;
+
+    if (mappingState != NOMAP)
+    {
+        mappingState = isMappingDest ? MAPDEST : MAPSOURCE;
+    }
 
 }
 
@@ -224,47 +253,58 @@ void ParameterUI::setMappingDest(bool _isMappingDest){
 // NamedParameterUI
 
 
-NamedParameterUI::NamedParameterUI(ParameterUI * ui,int _labelWidth,bool labelA):
-ParameterUI(ui->parameter),
-ownedParameterUI(ui),
-labelWidth(_labelWidth),
-labelAbove(labelA){
+NamedParameterUI::NamedParameterUI (ParameterUI* ui, int _labelWidth, bool labelA):
+    ParameterUI (ui->parameter),
+    ownedParameterUI (ui),
+    labelWidth (_labelWidth),
+    labelAbove (labelA)
+{
 
-  addAndMakeVisible(controllableLabel);
+    addAndMakeVisible (controllableLabel);
 
-  controllableLabel.setJustificationType(Justification::centredLeft);
-  controllableLabel.setText(ui->parameter->niceName, dontSendNotification);
-  if(ui->parameter->isUserDefined){
-    controllableLabel.setEditable(true);
-    controllableLabel.addListener(this);
-  }
+    controllableLabel.setJustificationType (Justification::centredLeft);
+    controllableLabel.setText (ui->parameter->niceName, dontSendNotification);
 
-  controllableLabel.setTooltip(ParameterUI::getTooltip());
+    if (ui->parameter->isUserDefined)
+    {
+        controllableLabel.setEditable (true);
+        controllableLabel.addListener (this);
+    }
 
-  addAndMakeVisible(ui);
-  ui->toFront(false);
-  setBounds(ownedParameterUI->getBounds()
-            .withTrimmedRight(-labelWidth)
-            .withHeight(jmax((int)controllableLabel.getFont().getHeight() + 4,ownedParameterUI->getHeight())));
+    controllableLabel.setTooltip (ParameterUI::getTooltip());
+
+    addAndMakeVisible (ui);
+    ui->toFront (false);
+    setBounds (ownedParameterUI->getBounds()
+               .withTrimmedRight (-labelWidth)
+               .withHeight (jmax ((int)controllableLabel.getFont().getHeight() + 4, ownedParameterUI->getHeight())));
 }
 
-void NamedParameterUI::resized(){
-  Rectangle<int> area  = getLocalBounds();
-  if(controllableLabel.getText().isNotEmpty()){
-    if(labelAbove){
-      controllableLabel.setBounds(area.removeFromTop(jmin(18,area.getHeight()/2)));
+void NamedParameterUI::resized()
+{
+    Rectangle<int> area  = getLocalBounds();
+
+    if (controllableLabel.getText().isNotEmpty())
+    {
+        if (labelAbove)
+        {
+            controllableLabel.setBounds (area.removeFromTop (jmin (18, area.getHeight() / 2)));
+        }
+        else
+        {
+            controllableLabel.setBounds (area.removeFromLeft (labelWidth));
+            area.removeFromLeft (10);
+        }
     }
-    else{
-      controllableLabel.setBounds(area.removeFromLeft(labelWidth));
-      area.removeFromLeft(10);
-    }
-  }
-  ownedParameterUI->setBounds(area);
+
+    ownedParameterUI->setBounds (area);
 }
 
-void NamedParameterUI::labelTextChanged (Label* labelThatHasChanged) {
-  if(ownedParameterUI.get()){
-    ownedParameterUI->parameter->setNiceName(labelThatHasChanged->getText());
-  }
+void NamedParameterUI::labelTextChanged (Label* labelThatHasChanged)
+{
+    if (ownedParameterUI.get())
+    {
+        ownedParameterUI->parameter->setNiceName (labelThatHasChanged->getText());
+    }
 };
 

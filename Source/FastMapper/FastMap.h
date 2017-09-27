@@ -23,37 +23,37 @@
 
 
 class FastMap :
-public ParameterContainer,
-public ParameterProxy::ParameterProxyListener
+    public ParameterContainer,
+    public ParameterProxy::ParameterProxyListener
 {
 public:
-  FastMap();
-  virtual ~FastMap();
+    FastMap();
+    virtual ~FastMap();
 
-  BoolParameter * enabledParam;
-  BoolParameter * fullSync;
+    BoolParameter* enabledParam;
+    BoolParameter* fullSync;
 
-  RangeParameter * inputRange;
-  RangeParameter * outputRange;
+    RangeParameter* inputRange;
+    RangeParameter* outputRange;
 
-  BoolParameter * invertParam;
+    BoolParameter* invertParam;
 
-  ParameterProxy * referenceIn;
-  ParameterProxy *  referenceOut;
+    ParameterProxy* referenceIn;
+    ParameterProxy*   referenceOut;
 
 
 private:
-  void onContainerParameterChanged(Parameter *)override;
+    void onContainerParameterChanged (Parameter*)override;
 
-  bool isInRange; //memory for triggering
-  bool fastMapIsProcessing;
+    bool isInRange; //memory for triggering
+    bool fastMapIsProcessing;
 
-  void process(bool toReferenceOut=true);
-  // inherited from proxy listener
-  void linkedParamValueChanged(ParameterProxy *) override;
-  void linkedParamChanged(ParameterProxy *) override;
+    void process (bool toReferenceOut = true);
+    // inherited from proxy listener
+    void linkedParamValueChanged (ParameterProxy*) override;
+    void linkedParamChanged (ParameterProxy*) override;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMap);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMap);
 };
 
 

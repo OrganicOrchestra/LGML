@@ -22,81 +22,83 @@
 bool isEngineLoadingFile();
 
 
-ConnectableNode::ConnectableNode(const String & name, bool _hasMainAudioControl):
-parentNodeContainer(nullptr),
-hasMainAudioControl(_hasMainAudioControl),
-canBeRemovedByUser(true),
-ParameterContainer(name),
-userCanAccessInputs(true),
-userCanAccessOutputs(true),
-outputVolume(nullptr)
+ConnectableNode::ConnectableNode (const String& name, bool _hasMainAudioControl):
+    parentNodeContainer (nullptr),
+    hasMainAudioControl (_hasMainAudioControl),
+    canBeRemovedByUser (true),
+    ParameterContainer (name),
+    userCanAccessInputs (true),
+    userCanAccessOutputs (true),
+    outputVolume (nullptr)
 {
-  //set Params
-  ParameterContainer::nameParam->isEditable=true;
-  descriptionParam = addNewParameter<StringParameter>("Description", "Set a custom description for this node.", "Description");
-  enabledParam = addNewParameter<BoolParameter>("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
-  
-  nodePosition = addNewParameter<Point2DParameter<int>>("nodePosition", "position on canvas",0,0,Array<var>{0,0});
+    //set Params
+    ParameterContainer::nameParam->isEditable = true;
+    descriptionParam = addNewParameter<StringParameter> ("Description", "Set a custom description for this node.", "Description");
+    enabledParam = addNewParameter<BoolParameter> ("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
 
-  nodeSize = addNewParameter<Point2DParameter<int>>("nodeSize", "Node Size", 180,100,Array<var>{0,0});
+    nodePosition = addNewParameter<Point2DParameter<int>> ("nodePosition", "position on canvas", 0, 0, Array<var> {0, 0});
 
-  miniMode = addNewParameter<BoolParameter>("miniMode", "Mini Mode", false);
-  
-  nodePosition->isControllableExposed = false;
-  nodeSize->isControllableExposed = false;
+    nodeSize = addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {0, 0});
 
-  nodePosition->isPresettable = false;
-  nodeSize->isPresettable = false;
+    miniMode = addNewParameter<BoolParameter> ("miniMode", "Mini Mode", false);
 
-  nodePosition->isHidenInEditor = true;
-	 nodeSize->isHidenInEditor = true;
+    nodePosition->isControllableExposed = false;
+    nodeSize->isControllableExposed = false;
 
-  descriptionParam->isPresettable = false;
-  enabledParam->isPresettable = false;
+    nodePosition->isPresettable = false;
+    nodeSize->isPresettable = false;
+
+    nodePosition->isHidenInEditor = true;
+    nodeSize->isHidenInEditor = true;
+
+    descriptionParam->isPresettable = false;
+    enabledParam->isPresettable = false;
 
 
-  //Audio
-  if(hasMainAudioControl){
-		  outputVolume = addNewParameter<FloatParameter>("masterVolume", "master volume for this node", DB0_FOR_01);
-    //  bypass = addNewParameter<BoolParameter>("Bypass", "by-pass current node, letting audio pass thru", false);
-  }
+    //Audio
+    if (hasMainAudioControl)
+    {
+        outputVolume = addNewParameter<FloatParameter> ("masterVolume", "master volume for this node", DB0_FOR_01);
+        //  bypass = addNewParameter<BoolParameter>("Bypass", "by-pass current node, letting audio pass thru", false);
+    }
 
-  /*
-	  setInputChannelName(0, "Main Left");
-	  setInputChannelName(1, "Main Right");
-	  setOutputChannelName(0, "Main Left");
-	  setOutputChannelName(1, "Main Right");
-	  */
+    /*
+      setInputChannelName(0, "Main Left");
+      setInputChannelName(1, "Main Right");
+      setOutputChannelName(0, "Main Left");
+      setOutputChannelName(1, "Main Right");
+      */
 
-  //allow for all nested container to have all parameters save in node's preset (except node container, see nodecontainer's constructor)
-  presetSavingIsRecursive = true;
+    //allow for all nested container to have all parameters save in node's preset (except node container, see nodecontainer's constructor)
+    presetSavingIsRecursive = true;
 }
 
 ConnectableNode::~ConnectableNode()
 {
-  if(parentNodeContainer)
-    remove();
+    if (parentNodeContainer)
+        remove();
 
 
 #warning removed explicit behaviour from ben
-//  //@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
-//
-//	cleanUpPresets();
+    //  //@Martin :: must do this here (doubling with the one ControllableContainer::clear) to get right preset filter, because getPresetFilter is overriden and when calling getPresetFilter() from ControllableContainer::clear, it doesn't return the overriden method..)
+    //
+    //  cleanUpPresets();
 
-  masterReference.clear();
-  parentNodeContainer = nullptr;
+    masterReference.clear();
+    parentNodeContainer = nullptr;
 }
 
 
-void ConnectableNode::setParentNodeContainer(NodeContainer * _parentNodeContainer) 
+void ConnectableNode::setParentNodeContainer (NodeContainer* _parentNodeContainer)
 {
-  parentNodeContainer = _parentNodeContainer;
+    parentNodeContainer = _parentNodeContainer;
 
 
 }
 
-NodeContainer  * const ConnectableNode::getParentNodeContainer() const{
-  return parentNodeContainer;
+NodeContainer*   const ConnectableNode::getParentNodeContainer() const
+{
+    return parentNodeContainer;
 }
 
 
@@ -104,54 +106,56 @@ NodeContainer  * const ConnectableNode::getParentNodeContainer() const{
 
 bool ConnectableNode::hasAudioInputs()
 {
-  //to override
-  return false;
+    //to override
+    return false;
 
 }
 
 bool ConnectableNode::hasAudioOutputs()
 {
-//to override
-  return false;
+    //to override
+    return false;
 
 }
 
 bool ConnectableNode::hasDataInputs()
 {
-  //to override
-  return false;
+    //to override
+    return false;
 }
 
 bool ConnectableNode::hasDataOutputs()
 {
-  //to override
-  return false;
+    //to override
+    return false;
 }
 
 
 
 
-void ConnectableNode::onContainerParameterChanged(Parameter * p)
+void ConnectableNode::onContainerParameterChanged (Parameter* p)
 {
-  nodeListeners.call(&ConnectableNodeListener::nodeParameterChanged, this, p);
+    nodeListeners.call (&ConnectableNodeListener::nodeParameterChanged, this, p);
 }
 
 
 void ConnectableNode::remove()
 {
-  if(parentNodeContainer){
-    parentNodeContainer->removeNode(this);
-  }
-  else{
-    jassertfalse;
-  }
-  
+    if (parentNodeContainer)
+    {
+        parentNodeContainer->removeNode (this);
+    }
+    else
+    {
+        jassertfalse;
+    }
+
 }
 
 void ConnectableNode::clear()
 {
-  //  ControllableContainer::clear();
-  //to override
+    //  ControllableContainer::clear();
+    //to override
 }
 
 
@@ -165,120 +169,126 @@ void ConnectableNode::clear()
 
 
 
-void ConnectableNode::setInputChannelNames(int startChannel, StringArray names)
+void ConnectableNode::setInputChannelNames (int startChannel, StringArray names)
 {
-  for (int i = startChannel; i < startChannel + names.size(); i++)
-  {
-    setInputChannelName(i, names[i]);
-  }
+    for (int i = startChannel; i < startChannel + names.size(); i++)
+    {
+        setInputChannelName (i, names[i]);
+    }
 }
 
-void ConnectableNode::setOutputChannelNames(int startChannel, StringArray names)
+void ConnectableNode::setOutputChannelNames (int startChannel, StringArray names)
 {
-  for (int i = startChannel; i < startChannel + names.size(); i++)
-  {
-    setOutputChannelName(i, names[i]);
-  }
+    for (int i = startChannel; i < startChannel + names.size(); i++)
+    {
+        setOutputChannelName (i, names[i]);
+    }
 }
 
-void ConnectableNode::setInputChannelName(int channelIndex, const String & name)
+void ConnectableNode::setInputChannelName (int channelIndex, const String& name)
 {
-  while (inputChannelNames.size() < (channelIndex + 1))
-  {
-    inputChannelNames.add(String::empty);
-  }
+    while (inputChannelNames.size() < (channelIndex + 1))
+    {
+        inputChannelNames.add (String::empty);
+    }
 
-  inputChannelNames.set(channelIndex, name);
+    inputChannelNames.set (channelIndex, name);
 }
 
-void ConnectableNode::setOutputChannelName(int channelIndex, const String & name)
+void ConnectableNode::setOutputChannelName (int channelIndex, const String& name)
 {
-  while (outputChannelNames.size() < (channelIndex + 1))
-  {
-    outputChannelNames.add(String::empty);
-  }
+    while (outputChannelNames.size() < (channelIndex + 1))
+    {
+        outputChannelNames.add (String::empty);
+    }
 
-  outputChannelNames.set(channelIndex, name);
+    outputChannelNames.set (channelIndex, name);
 }
 
-String ConnectableNode::getInputChannelName(int channelIndex)
+String ConnectableNode::getInputChannelName (int channelIndex)
 {
-  String defaultName = "Input " + String(channelIndex+1);
-  if (channelIndex < 0 || channelIndex >= inputChannelNames.size()) return defaultName;
+    String defaultName = "Input " + String (channelIndex + 1);
 
-  String s = inputChannelNames[channelIndex];
-  if (s.isNotEmpty()) return s;
-  return defaultName;
+    if (channelIndex < 0 || channelIndex >= inputChannelNames.size()) return defaultName;
+
+    String s = inputChannelNames[channelIndex];
+
+    if (s.isNotEmpty()) return s;
+
+    return defaultName;
 }
 
-String ConnectableNode::getOutputChannelName(int channelIndex)
+String ConnectableNode::getOutputChannelName (int channelIndex)
 {
-  String defaultName = "Output " + String(channelIndex+1);
-  if (channelIndex < 0 || channelIndex >= outputChannelNames.size()) return defaultName;
+    String defaultName = "Output " + String (channelIndex + 1);
 
-  String s = outputChannelNames[channelIndex];
-  if (s.isNotEmpty()) return s;
-  return defaultName;
+    if (channelIndex < 0 || channelIndex >= outputChannelNames.size()) return defaultName;
+
+    String s = outputChannelNames[channelIndex];
+
+    if (s.isNotEmpty()) return s;
+
+    return defaultName;
 }
 
 
 
 /////////////////////////////  DATA
 
-Data * ConnectableNode::getInputData(int)
+Data* ConnectableNode::getInputData (int)
 {
-  //to override
-  return nullptr;
+    //to override
+    return nullptr;
 }
 
-Data * ConnectableNode::getOutputData(int)
+Data* ConnectableNode::getOutputData (int)
 {
-  //to override
-  return nullptr;
+    //to override
+    return nullptr;
 }
 
 int ConnectableNode::getTotalNumInputData()
 {
-  //to override
-  return 0;
+    //to override
+    return 0;
 }
 
 int ConnectableNode::getTotalNumOutputData()
 {
-  //to override
-  return 0;
+    //to override
+    return 0;
 }
 
 StringArray ConnectableNode::getInputDataInfos()
 {
-  return StringArray();
+    return StringArray();
 }
 
 StringArray ConnectableNode::getOutputDataInfos()
 {
-  return StringArray();
+    return StringArray();
 }
 
-Data::DataType ConnectableNode::getInputDataType(const String & , const String & )
+Data::DataType ConnectableNode::getInputDataType (const String&, const String& )
 {
-  //to override
-  return Data::DataType::Unknown;
+    //to override
+    return Data::DataType::Unknown;
 }
 
-Data::DataType ConnectableNode::getOutputDataType(const String & , const String & )
+Data::DataType ConnectableNode::getOutputDataType (const String&, const String& )
 {
-  //to override
-  return Data::DataType::Unknown;
+    //to override
+    return Data::DataType::Unknown;
 }
 
-Data * ConnectableNode::getOutputDataByName(const String & )
+Data* ConnectableNode::getOutputDataByName (const String& )
 {
-  //to override
-  return nullptr;
+    //to override
+    return nullptr;
 }
 
-Data * ConnectableNode::getInputDataByName(const String & )
+Data* ConnectableNode::getInputDataByName (const String& )
 {
-  //to override
-  return nullptr;
+    //to override
+    return nullptr;
 }

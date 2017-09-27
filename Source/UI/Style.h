@@ -20,27 +20,30 @@
 // Warning don't use JUCE's internal color definitions as it will be empty at this stage of compilation
 #include "../JuceHeaderUI.h"
 
-namespace LGMLColors{
-  enum ColorsIds{
-    audioColor =0x200001,
+namespace LGMLColors
+{
+enum ColorsIds
+{
+    audioColor = 0x200001,
     dataColor,
     elementBackground
-  };
+};
 
 }
 
 
-class AddElementButton : public Button{
+class AddElementButton : public Button
+{
 public:
-  AddElementButton();
+    AddElementButton();
 
-  void paintButton (Graphics& g,
-                    bool isMouseOverButton,
-                    bool isButtonDown)override;
-  // utility function to share common positioning
-  void setFromParentBounds(const Rectangle<int> & area);
-  
-  
+    void paintButton (Graphics& g,
+                      bool isMouseOverButton,
+                      bool isButtonDown)override;
+    // utility function to share common positioning
+    void setFromParentBounds (const Rectangle<int>& area);
+
+
 };
 
 

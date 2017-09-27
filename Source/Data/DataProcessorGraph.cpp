@@ -17,8 +17,8 @@
 
 DataProcessorGraph::DataProcessorGraph()
 {
-//    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
-//  thread.startThread();
+    //    @ben not starting if not used, furthermore a while(true){} eats all the CPU for nothing
+    //  thread.startThread();
 }
 
 DataProcessorGraph::~DataProcessorGraph()
@@ -28,15 +28,15 @@ DataProcessorGraph::~DataProcessorGraph()
 }
 
 
-DataProcessorGraph::Connection::Connection(Data * sourceData, Data * destData) noexcept
-    : sourceData(sourceData), destData(destData)
+DataProcessorGraph::Connection::Connection (Data* sourceData, Data* destData) noexcept
+    : sourceData (sourceData), destData (destData)
 {
-    if(sourceData != nullptr) sourceData->addDataListener(this);
+    if (sourceData != nullptr) sourceData->addDataListener (this);
 }
 
-void DataProcessorGraph::Connection::dataChanged(Data * d)
+void DataProcessorGraph::Connection::dataChanged (Data* d)
 {
-	if (destData != nullptr) destData->updateFromSourceData(d);
+    if (destData != nullptr) destData->updateFromSourceData (d);
 }
 
 
@@ -48,11 +48,12 @@ void DataProcessorGraph::clear()
 
 }
 
-DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(Data * sourceData, Data * destData) const
+DataProcessorGraph::Connection* DataProcessorGraph::getConnectionBetween (Data* sourceData, Data* destData) const
 {
     for (int i = connections.size(); --i >= 0;)
     {
-        Connection * c = connections.getUnchecked(i);
+        Connection* c = connections.getUnchecked (i);
+
         if (c->sourceData == sourceData && c->destData == destData)
         {
             return c;
@@ -63,7 +64,7 @@ DataProcessorGraph::Connection * DataProcessorGraph::getConnectionBetween(Data *
 }
 
 
-bool DataProcessorGraph::canConnect(Data * sourceData, Data * destData) const
+bool DataProcessorGraph::canConnect (Data* sourceData, Data* destData) const
 {
     if (sourceData == nullptr || destData == nullptr)
         return false;
@@ -78,9 +79,9 @@ bool DataProcessorGraph::canConnect(Data * sourceData, Data * destData) const
 }
 
 
-DataProcessorGraph::Connection * DataProcessorGraph::addConnection(Data * sourceData, Data * destData)
+DataProcessorGraph::Connection* DataProcessorGraph::addConnection (Data* sourceData, Data* destData)
 {
-    if (!canConnect(sourceData,destData))
+    if (!canConnect (sourceData, destData))
         return nullptr;
 
     /*
@@ -89,35 +90,36 @@ DataProcessorGraph::Connection * DataProcessorGraph::addConnection(Data * source
         destNodeId, destChannelIndex));
         */
 
-    Connection * c = new Connection(sourceData, destData);
-    connections.add(c);
+    Connection* c = new Connection (sourceData, destData);
+    connections.add (c);
 
     //triggerAsyncUpdate();
     return c;
 }
 
-void DataProcessorGraph::removeConnection(int index)
+void DataProcessorGraph::removeConnection (int index)
 {
-    connections.remove(index);
+    connections.remove (index);
     //triggerAsyncUpdate();
 }
 
-void DataProcessorGraph::removeConnection(Connection * c)
+void DataProcessorGraph::removeConnection (Connection* c)
 {
-    connections.removeObject(c, true);
+    connections.removeObject (c, true);
 }
 
 
 
 DataProcessorGraph::DataThread::~DataThread()
 {
-    stopThread(100);
+    stopThread (100);
 }
 
-void DataProcessorGraph::DataThread::run() {
+void DataProcessorGraph::DataThread::run()
+{
 
-//  while (!threadShouldExit()) {
-//
-//  }
-    DBG("finish data thread");
+    //  while (!threadShouldExit()) {
+    //
+    //  }
+    DBG ("finish data thread");
 }

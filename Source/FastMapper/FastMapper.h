@@ -27,51 +27,51 @@ class FastMapper;
 
 
 class FastMapper :
-public ParameterContainer,
-private LGMLDragger::Listener,
-private Inspector::InspectorListener
+    public ParameterContainer,
+    private LGMLDragger::Listener,
+    private Inspector::InspectorListener
 
 {
 public:
-	juce_DeclareSingleton(FastMapper,true)
-  DECLARE_OBJ_TYPE(FastMapper)
+    juce_DeclareSingleton (FastMapper, true)
+    DECLARE_OBJ_TYPE (FastMapper)
 
-	
-	virtual ~FastMapper();
 
-	OwnedArray<FastMap> maps;
-  ParameterProxy * potentialIn;
-  ParameterProxy * potentialOut;
-  BoolParameter * autoAdd;
+    virtual ~FastMapper();
 
-	void clear();
+    OwnedArray<FastMap> maps;
+    ParameterProxy* potentialIn;
+    ParameterProxy* potentialOut;
+    BoolParameter* autoAdd;
 
-  void setPotentialInput(Parameter*);
-  void setPotentialOutput(Parameter*);
+    void clear();
 
-	FastMap * addFastMap();
-	void removeFastmap(FastMap * f);
+    void setPotentialInput (Parameter*);
+    void setPotentialOutput (Parameter*);
 
-	
-  ParameterContainer *  addContainerFromObject(const String & name,DynamicObject *  fData) override;
+    FastMap* addFastMap();
+    void removeFastmap (FastMap* f);
+
+
+    ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*   fData) override;
 
 private:
 
-  // LGMLDragger Listener
-  void selectionChanged(Parameter *) override;
+    // LGMLDragger Listener
+    void selectionChanged (Parameter*) override;
 
-  // Inspector Component
-  void currentComponentChanged(Inspector * ) override;
-  ControllableContainer * selectedContainerToListenTo;
+    // Inspector Component
+    void currentComponentChanged (Inspector* ) override;
+    ControllableContainer* selectedContainerToListenTo;
 
-  void setContainerToListen(ControllableContainer *);
+    void setContainerToListen (ControllableContainer*);
 
 
-  // ControllableContainer::Listener
-  void controllableFeedbackUpdate(ControllableContainer *,Controllable *) override;
-  void createNewFromPotentials();
-  bool checkDuplicates(FastMap *f);
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapper)
+    // ControllableContainer::Listener
+    void controllableFeedbackUpdate (ControllableContainer*, Controllable*) override;
+    void createNewFromPotentials();
+    bool checkDuplicates (FastMap* f);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapper)
 
 };
 

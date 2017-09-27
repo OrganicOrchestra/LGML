@@ -21,33 +21,33 @@
 
 class NodeContainer;
 
-class ContainerOutNode : public NodeBase,public AudioProcessorGraph::AudioGraphIOProcessor
+class ContainerOutNode : public NodeBase, public AudioProcessorGraph::AudioGraphIOProcessor
 {
 public:
-  DECLARE_OBJ_TYPE(ContainerOutNode)
-	~ContainerOutNode();
+    DECLARE_OBJ_TYPE (ContainerOutNode)
+    ~ContainerOutNode();
 
 
-  void setParentNodeContainer(NodeContainer *) override;
-  
-
-	//AUDIO
-	IntParameter * numChannels;
-  void setNumChannels(int num);
-  void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer & midiMessages)override;
-  
-
-	//DATA
-	IntParameter * numInputData;
-
-  void processInputDataChanged(Data * d) override;
+    void setParentNodeContainer (NodeContainer*) override;
 
 
-	void onContainerParameterChanged(Parameter *) override;
+    //AUDIO
+    IntParameter* numChannels;
+    void setNumChannels (int num);
+    void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
+
+
+    //DATA
+    IntParameter* numInputData;
+
+    void processInputDataChanged (Data* d) override;
+
+
+    void onContainerParameterChanged (Parameter*) override;
 
 
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContainerOutNode)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ContainerOutNode)
 };
 
 

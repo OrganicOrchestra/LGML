@@ -21,22 +21,22 @@
 class RangeParameter : public MinMaxParameter
 {
 public:
-  RangeParameter(const String &niceName, const String &description=String::empty,float min=0.0f,float max=1.0f,float init_min=0.0f,float init_max=1.0f, bool enabled = true);
-  ~RangeParameter() {}
+    RangeParameter (const String& niceName, const String& description = String::empty, float min = 0.0f, float max = 1.0f, float init_min = 0.0f, float init_max = 1.0f, bool enabled = true);
+    ~RangeParameter() {}
 
 
 
-  
-//  void setValue( Point < double > value );
-  void setValue(double x, double y);
-  void setValueInternal(var & _value) override;
 
-//  Point<double> getRangeMinMax();
-  float getRangeMin();
-  float getRangeMax();
+    //  void setValue( Point < double > value );
+    void setValue (double x, double y);
+    void setValueInternal (var& _value) override;
 
-  bool checkValueIsTheSame(const var & v1, const var& v2) override;
+    //  Point<double> getRangeMinMax();
+    float getRangeMin();
+    float getRangeMax();
 
-  DECLARE_OBJ_TYPE(RangeParameter);
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RangeParameter)
+    bool checkValueIsTheSame (const var& v1, const var& v2) override;
+
+    DECLARE_OBJ_TYPE (RangeParameter);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RangeParameter)
 };

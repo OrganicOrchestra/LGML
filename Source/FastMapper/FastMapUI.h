@@ -23,48 +23,48 @@
 #include "../Controllable/Parameter/UI/RangeParameterUI.h"
 
 class FastMapUI :
-	public InspectableComponent,
-	private  ControllableReferenceUI::Listener,
-	private ButtonListener,
-private ParameterProxy::ParameterProxyListener
+    public InspectableComponent,
+    private  ControllableReferenceUI::Listener,
+    private ButtonListener,
+    private ParameterProxy::ParameterProxyListener
 
 {
 public:
-	FastMapUI(FastMap * f);
-	virtual ~FastMapUI();
+    FastMapUI (FastMap* f);
+    virtual ~FastMapUI();
 
 
 
 
-	ScopedPointer<ParameterUI> enabledUI;
+    ScopedPointer<ParameterUI> enabledUI;
 
-  ParameterProxyUI refUI;
-	RangeParameterUI inRangeUI;
-
-
-  ParameterProxyUI targetUI;
-	RangeParameterUI outRangeUI;
-	ScopedPointer<ParameterUI> invertUI;
+    ParameterProxyUI refUI;
+    RangeParameterUI inRangeUI;
 
 
-
-	FastMap * fastMap;
-	ImageButton removeBT;
-
-
-	void paint(Graphics &g) override;
-	void resized() override;
-
-//	virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) override;
-//	virtual void fastMapTargetChanged(FastMap *) override;
+    ParameterProxyUI targetUI;
+    RangeParameterUI outRangeUI;
+    ScopedPointer<ParameterUI> invertUI;
 
 
-  void mouseDown(const MouseEvent &e) override;
-	void buttonClicked(Button * b) override;
 
-  void linkedParamChanged(ParameterProxy *) override;
+    FastMap* fastMap;
+    ImageButton removeBT;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapUI)
+
+    void paint (Graphics& g) override;
+    void resized() override;
+
+    //  virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) override;
+    //  virtual void fastMapTargetChanged(FastMap *) override;
+
+
+    void mouseDown (const MouseEvent& e) override;
+    void buttonClicked (Button* b) override;
+
+    void linkedParamChanged (ParameterProxy*) override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapUI)
 
 };
 

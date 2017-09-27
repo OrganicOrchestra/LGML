@@ -24,25 +24,26 @@
 #if !FORCE_DISABLE_CRACK
 #include "../Audio/AudioHelpers.h"
 
-class AudioDebugCrack {
+class AudioDebugCrack
+{
 public:
-  AudioDebugCrack(const String & name);
+    AudioDebugCrack (const String& name);
 
-  static void deleteInstanciated();
-  static Array<AudioDebugCrack*> allAudioDebugCracks;
-  static AudioDebugCrack * getOrCreateDetector(const String & name);
+    static void deleteInstanciated();
+    static Array<AudioDebugCrack*> allAudioDebugCracks;
+    static AudioDebugCrack* getOrCreateDetector (const String& name);
 
-  void processBuffer(const AudioBuffer<float> & b);
-  void notifyCrack(const AudioBuffer<float> & b, int i);
-  String name;
-  float lastValue = 0;
-  static constexpr float threshold = 0.15f;
+    void processBuffer (const AudioBuffer<float>& b);
+    void notifyCrack (const AudioBuffer<float>& b, int i);
+    String name;
+    float lastValue = 0;
+    static constexpr float threshold = 0.15f;
 
-  float lastDerivative = 0;
-  static constexpr float derivativeThreshold = 0.01f;
-  bool hasCrack;
-  sample_clk_t lastCrack, sampleCount;
-  int debounceSample = 20;
+    float lastDerivative = 0;
+    static constexpr float derivativeThreshold = 0.01f;
+    bool hasCrack;
+    sample_clk_t lastCrack, sampleCount;
+    int debounceSample = 20;
 };
 #define DBGAUDIOCRACK(name,b) if(juce_isRunningUnderDebugger()){AudioDebugCrack::getOrCreateDetector(name)->processBuffer(b);}
 #else

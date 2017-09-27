@@ -15,13 +15,13 @@
 
 #include "LGMLLogger.h"
 
-juce_ImplementSingleton(LGMLLogger);
+juce_ImplementSingleton (LGMLLogger);
 
 
 
-void LGMLLogger::logMessage(const String & message)
+void LGMLLogger::logMessage (const String& message)
 {
-	notifier.addMessage(new String(message));
-  DBG(message);
+    notifier.addMessage (new String (message));
+    DBG (message);
 
 }

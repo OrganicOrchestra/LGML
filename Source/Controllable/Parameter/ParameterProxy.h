@@ -23,50 +23,50 @@
 
 
 class ParameterProxy :
-  public StringParameter,
-	private Parameter::Listener,
-  public Controllable::Listener,
-private ControllableContainer::Listener
+    public StringParameter,
+    private Parameter::Listener,
+    public Controllable::Listener,
+    private ControllableContainer::Listener
 {
 public:
-  ParameterProxy(const String & niceName,const String & desc=String::empty,Parameter * ref=nullptr,ControllableContainer * root=nullptr);
-	virtual ~ParameterProxy();
+    ParameterProxy (const String& niceName, const String& desc = String::empty, Parameter* ref = nullptr, ControllableContainer* root = nullptr);
+    virtual ~ParameterProxy();
 
 
-	WeakReference<Parameter> linkedParam;
-  ControllableContainer * rootOfProxy;
+    WeakReference<Parameter> linkedParam;
+    ControllableContainer* rootOfProxy;
 
-  void setRoot(ControllableContainer * );
-  Parameter * get();
-  void tryToSetValue(var _value,bool silentSet,bool force )override;
-  void setValueInternal(var & _value) override;
-  bool isMappable() override;
+    void setRoot (ControllableContainer* );
+    Parameter* get();
+    void tryToSetValue (var _value, bool silentSet, bool force )override;
+    void setValueInternal (var& _value) override;
+    bool isMappable() override;
 
-	// Inherited via Listener
-  void parameterValueChanged(Parameter * p) override;
-   
-	 void setParamToReferTo(Parameter * p);
+    // Inherited via Listener
+    void parameterValueChanged (Parameter* p) override;
+
+    void setParamToReferTo (Parameter* p);
 
 
-	class ParameterProxyListener
-	{
-	public:
-		virtual ~ParameterProxyListener() {}
-    virtual void linkedParamValueChanged(ParameterProxy *) {};
-		virtual void linkedParamChanged(ParameterProxy *) {};
-	};
+    class ParameterProxyListener
+    {
+    public:
+        virtual ~ParameterProxyListener() {}
+        virtual void linkedParamValueChanged (ParameterProxy*) {};
+        virtual void linkedParamChanged (ParameterProxy*) {};
+    };
 
-	ListenerList<ParameterProxyListener> proxyListeners;
-	void addParameterProxyListener(ParameterProxyListener* newListener) { proxyListeners.add(newListener); }
-	void removeParameterProxyListener(ParameterProxyListener* listener) { proxyListeners.remove(listener); }
+    ListenerList<ParameterProxyListener> proxyListeners;
+    void addParameterProxyListener (ParameterProxyListener* newListener) { proxyListeners.add (newListener); }
+    void removeParameterProxyListener (ParameterProxyListener* listener) { proxyListeners.remove (listener); }
 
-  ControllableContainer * getRoot();
+    ControllableContainer* getRoot();
 
-  DECLARE_OBJ_TYPE(ParameterProxy)
+    DECLARE_OBJ_TYPE (ParameterProxy)
 private:
-  void controllableAdded(ControllableContainer *,Controllable * /*notifier*/) override;
-  void controllableRemoved(Controllable * ) override;
-  bool resolveAddress();
+    void controllableAdded (ControllableContainer*, Controllable* /*notifier*/) override;
+    void controllableRemoved (Controllable* ) override;
+    bool resolveAddress();
 
 };
 

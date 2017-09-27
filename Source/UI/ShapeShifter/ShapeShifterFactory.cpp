@@ -26,47 +26,48 @@
 #include "../MainComponent.h"
 
 
-ShapeShifterContent * ShapeShifterFactory::createContentForIndex(PanelName pn)
+ShapeShifterContent* ShapeShifterFactory::createContentForIndex (PanelName pn)
 {
-	String contentName = globalPanelNames[(int)pn];
+    String contentName = globalPanelNames[ (int)pn];
 
-	switch (pn)
-	{
-	case NodeManagerPanel:
-		return new NodeManagerUIViewport(contentName, new NodeManagerUI(NodeManager::getInstance()));
-		
-
-	case TimeManagerPanel:
-		return new TimeManagerUI(contentName, TimeManager::getInstance());
+    switch (pn)
+    {
+        case NodeManagerPanel:
+            return new NodeManagerUIViewport (contentName, new NodeManagerUI (NodeManager::getInstance()));
 
 
-	case InspectorPanel:
-		return new InspectorViewport(contentName, Inspector::getInstance());
+        case TimeManagerPanel:
+            return new TimeManagerUI (contentName, TimeManager::getInstance());
 
 
-	case LoggerPanel:
-		return new LGMLLoggerUI(contentName, LGMLLogger::getInstance());
+        case InspectorPanel:
+            return new InspectorViewport (contentName, Inspector::getInstance());
 
 
-	case ControllerPanel:
-		return new ControllerManagerUIViewport(contentName,new ControllerManagerUI( ControllerManager::getInstance()));
+        case LoggerPanel:
+            return new LGMLLoggerUI (contentName, LGMLLogger::getInstance());
+
+
+        case ControllerPanel:
+            return new ControllerManagerUIViewport (contentName, new ControllerManagerUI ( ControllerManager::getInstance()));
 
 
 
-	case FastMapperPanel:
-		return new FastMapperViewport(contentName, new FastMapperUI(FastMapper::getInstance()));
+        case FastMapperPanel:
+            return new FastMapperViewport (contentName, new FastMapperUI (FastMapper::getInstance()));
 
-	case OutlinerPanel:
-		return new Outliner(contentName);
+        case OutlinerPanel:
+            return new Outliner (contentName);
 
 
-	default:
-		DBG("Panel not handled : " << contentName << ", index in names = " << globalPanelNames.strings.indexOf(contentName));
-	}
-	return nullptr;
+        default:
+            DBG ("Panel not handled : " << contentName << ", index in names = " << globalPanelNames.strings.indexOf (contentName));
+    }
+
+    return nullptr;
 }
 
-ShapeShifterContent * ShapeShifterFactory::createContentForName(String name)
+ShapeShifterContent* ShapeShifterFactory::createContentForName (String name)
 {
-	return createContentForIndex((PanelName)globalPanelNames.strings.indexOf(name));
+    return createContentForIndex ((PanelName)globalPanelNames.strings.indexOf (name));
 }

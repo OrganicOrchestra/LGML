@@ -23,26 +23,26 @@ template<typename T>
 class Point2DParameter : public MinMaxParameter
 {
 public:
-  Point2DParameter(const String &niceName, const String &description=String::empty, T x= T(0), T y = T(0),var minPoint=var::undefined(),var maxPoint=var::undefined(), bool enabled = true);
-	~Point2DParameter() {}
-
-  
+    Point2DParameter (const String& niceName, const String& description = String::empty, T x = T (0), T y = T (0), var minPoint = var::undefined(), var maxPoint = var::undefined(), bool enabled = true);
+    ~Point2DParameter() {}
 
 
-	void setPoint(const Point<T> & value);
-	void setPoint(const T x, const T y);
-	void setValueInternal(var & _value) override;
-	
-	Point<T> getPoint();
-	
-	bool checkValueIsTheSame(const var & v1, const var& v2) override;
-  T getX(){return (T)value[0];}
-  T getY(){return (T)value[1];}
-  DECLARE_OBJ_TYPE(Point2DParameter<T>);
+
+
+    void setPoint (const Point<T>& value);
+    void setPoint (const T x, const T y);
+    void setValueInternal (var& _value) override;
+
+    Point<T> getPoint();
+
+    bool checkValueIsTheSame (const var& v1, const var& v2) override;
+    T getX() {return (T)value[0];}
+    T getY() {return (T)value[1];}
+    DECLARE_OBJ_TYPE (Point2DParameter<T>);
 private:
 
-	
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Point2DParameter)
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Point2DParameter)
 };
 
 

@@ -18,138 +18,172 @@
 #include "../../Engine.h"
 
 #include "ParameterFactory.h"
-REGISTER_PARAM_TYPE(ParameterProxy)
+REGISTER_PARAM_TYPE (ParameterProxy)
 
-ParameterProxy::ParameterProxy(const String & niceName,const String & desc,Parameter * ref,ControllableContainer * root) :
-StringParameter(niceName,desc),
-linkedParam(ref),
-rootOfProxy(nullptr)
+ParameterProxy::ParameterProxy (const String& niceName, const String& desc, Parameter* ref, ControllableContainer* root) :
+    StringParameter (niceName, desc),
+    linkedParam (ref),
+    rootOfProxy (nullptr)
 {
-  setRoot(root);
+    setRoot (root);
 
 
 }
 
 ParameterProxy::~ParameterProxy()
 {
-  if(auto r =getRoot())r->removeControllableContainerListener(this);
-  if (linkedParam != nullptr){
-    linkedParam->removeControllableListener(this);
-    linkedParam->removeParameterListener(this);
-  }
+    if (auto r = getRoot())r->removeControllableContainerListener (this);
+
+    if (linkedParam != nullptr)
+    {
+        linkedParam->removeControllableListener (this);
+        linkedParam->removeParameterListener (this);
+    }
 }
 
-bool ParameterProxy::isMappable(){
-  return true;
+bool ParameterProxy::isMappable()
+{
+    return true;
 }
 
-void ParameterProxy::setRoot(ControllableContainer * r){
-  if(rootOfProxy!=nullptr)rootOfProxy->removeControllableContainerListener(this);
-  rootOfProxy = r;
+void ParameterProxy::setRoot (ControllableContainer* r)
+{
+    if (rootOfProxy != nullptr)rootOfProxy->removeControllableContainerListener (this);
 
-  resolveAddress();
+    rootOfProxy = r;
+
+    resolveAddress();
 
 }
-void ParameterProxy::tryToSetValue(var _value,bool silentSet,bool force ){
+void ParameterProxy::tryToSetValue (var _value, bool silentSet, bool force )
+{
 
-  if(_value.isString()){
-    StringParameter::tryToSetValue(_value, silentSet, force);
-  }
-  else if (linkedParam){
-    //WIP : polymorphic set value not supported
-    jassertfalse;
-    linkedParam->tryToSetValue(_value, silentSet, force);
-  }
+    if (_value.isString())
+    {
+        StringParameter::tryToSetValue (_value, silentSet, force);
+    }
+    else if (linkedParam)
+    {
+        //WIP : polymorphic set value not supported
+        jassertfalse;
+        linkedParam->tryToSetValue (_value, silentSet, force);
+    }
 };
-void ParameterProxy::setValueInternal(var & _value)
+void ParameterProxy::setValueInternal (var& _value)
 {
-  if(_value.isString()){
-  StringParameter::setValueInternal(_value);
-  if(auto * root = getRoot()){
-    if(!resolveAddress() && stringValue().isNotEmpty()){
-      root->addControllableContainerListener(this);
+    if (_value.isString())
+    {
+        StringParameter::setValueInternal (_value);
+
+        if (auto* root = getRoot())
+        {
+            if (!resolveAddress() && stringValue().isNotEmpty())
+            {
+                root->addControllableContainerListener (this);
+            }
+            else
+            {
+                root->removeControllableContainerListener (this);
+            }
+        }
     }
-    else{
-      root->removeControllableContainerListener(this);
+    else if (linkedParam)
+    {
+        //WIP : polymorphic set value not supported
+        jassertfalse;
+        linkedParam->setValueInternal (_value);
     }
-  }
-  }
-  else if(linkedParam){
-    //WIP : polymorphic set value not supported
-    jassertfalse;
-    linkedParam->setValueInternal(_value);
-  }
 }
 
 
-void ParameterProxy::parameterValueChanged(Parameter * p)
+void ParameterProxy::parameterValueChanged (Parameter* p)
 {
-  jassert(p==linkedParam);
-  proxyListeners.call(&ParameterProxyListener::linkedParamValueChanged, this);
+    jassert (p == linkedParam);
+    proxyListeners.call (&ParameterProxyListener::linkedParamValueChanged, this);
 }
 
-Parameter* ParameterProxy::get(){
-  return linkedParam.get();
+Parameter* ParameterProxy::get()
+{
+    return linkedParam.get();
 }
-void ParameterProxy::setParamToReferTo(Parameter * p)
+void ParameterProxy::setParamToReferTo (Parameter* p)
 {
 
-  String targetAddress = p?p->getControlAddress(getRoot()):String::empty;
-  if( targetAddress!=stringValue()){
-    setValue(targetAddress);
-  }
-  else{
-    if (linkedParam != nullptr){
-      linkedParam->removeParameterListener(this);
-      linkedParam->removeControllableListener(this);
-    }
-    if(p==this){
-      jassertfalse;
-      DBG("try to auto reference proxy");
-      linkedParam = nullptr;
-    }
-    else{
-      linkedParam = p;
-    }
-    if (linkedParam != nullptr){
-      linkedParam->addParameterListener(this);
-      linkedParam->addControllableListener(this);
-    }
+    String targetAddress = p ? p->getControlAddress (getRoot()) : String::empty;
 
-    proxyListeners.call(&ParameterProxyListener::linkedParamChanged,this);
-  }
+    if ( targetAddress != stringValue())
+    {
+        setValue (targetAddress);
+    }
+    else
+    {
+        if (linkedParam != nullptr)
+        {
+            linkedParam->removeParameterListener (this);
+            linkedParam->removeControllableListener (this);
+        }
+
+        if (p == this)
+        {
+            jassertfalse;
+            DBG ("try to auto reference proxy");
+            linkedParam = nullptr;
+        }
+        else
+        {
+            linkedParam = p;
+        }
+
+        if (linkedParam != nullptr)
+        {
+            linkedParam->addParameterListener (this);
+            linkedParam->addControllableListener (this);
+        }
+
+        proxyListeners.call (&ParameterProxyListener::linkedParamChanged, this);
+    }
 }
 
 
 
-ControllableContainer * ParameterProxy::getRoot(){
-  return (rootOfProxy?rootOfProxy:getEngine());
+ControllableContainer* ParameterProxy::getRoot()
+{
+    return (rootOfProxy ? rootOfProxy : getEngine());
 }
 
 
-bool ParameterProxy::resolveAddress(){
-  if(stringValue().isNotEmpty()){
-    auto p = Parameter::fromControllable(getRoot()->getControllableForAddress(stringValue()));
+bool ParameterProxy::resolveAddress()
+{
+    if (stringValue().isNotEmpty())
+    {
+        auto p = Parameter::fromControllable (getRoot()->getControllableForAddress (stringValue()));
 
-    setParamToReferTo(p);
-  }
-  else{
-    setParamToReferTo(nullptr);
-  }
-  return linkedParam!=nullptr;
+        setParamToReferTo (p);
+    }
+    else
+    {
+        setParamToReferTo (nullptr);
+    }
+
+    return linkedParam != nullptr;
 }
 
-void ParameterProxy::controllableAdded(ControllableContainer *,Controllable * c) {
-  jassert(linkedParam==nullptr);
-  if(c->getControlAddress()==stringValue()){
-    setParamToReferTo(Parameter::fromControllable(c));
-  }
-  
+void ParameterProxy::controllableAdded (ControllableContainer*, Controllable* c)
+{
+    jassert (linkedParam == nullptr);
+
+    if (c->getControlAddress() == stringValue())
+    {
+        setParamToReferTo (Parameter::fromControllable (c));
+    }
+
 }
 
-void ParameterProxy::controllableRemoved(Controllable * c) {
-  if(c==(Controllable*)linkedParam || !linkedParam.get()){
-    setParamToReferTo(nullptr);
-  }
+void ParameterProxy::controllableRemoved (Controllable* c)
+{
+    if (c == (Controllable*)linkedParam || !linkedParam.get())
+    {
+        setParamToReferTo (nullptr);
+    }
 
 };

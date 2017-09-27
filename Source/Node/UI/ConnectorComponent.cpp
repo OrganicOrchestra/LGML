@@ -18,139 +18,153 @@
 #include "../../UI/Style.h"
 #include "../NodeBase.h"
 
-ConnectorComponent::ConnectorComponent(ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, ConnectableNode * _cnode) :
-ioType(_ioType),
-dataType(_dataType),
-node((ConnectableNode *)_cnode),
-isHovered(false)
+ConnectorComponent::ConnectorComponent (ConnectorIOType _ioType, NodeConnection::ConnectionType _dataType, ConnectableNode* _cnode) :
+    ioType (_ioType),
+    dataType (_dataType),
+    node ((ConnectableNode*)_cnode),
+    isHovered (false)
 {
 
 
-    node->addConnectableNodeListener(this);
+    node->addConnectableNodeListener (this);
 
-  boxColor =  findColour((dataType == NodeConnection::ConnectionType::AUDIO)?LGMLColors::audioColor:LGMLColors::dataColor);
-  setSize(10,10);
+    boxColor =  findColour ((dataType == NodeConnection::ConnectionType::AUDIO) ? LGMLColors::audioColor : LGMLColors::dataColor);
+    setSize (10, 10);
 
 
-  postCommandMessage(0);
+    postCommandMessage (0);
 }
 
-ConnectorComponent::~ConnectorComponent(){
-     if(node.get())
-       node->removeConnectableNodeListener(this);
-     else{
-       jassertfalse;
-     }
-}
-
-NodeBase * ConnectorComponent::getNodeBase(){
-  return dynamic_cast<NodeBase *>(node.get());
-}
-
-void ConnectorComponent::generateToolTip(){
-  String tooltip;
-  tooltip += dataType == NodeConnection::ConnectionType::AUDIO?"Audio\n":"Data\n";
-  if (dataType == NodeConnection::ConnectionType::AUDIO)
-  {
-    bool isInput = ioType == ConnectorIOType::INPUT;
-    NodeBase * tAudioNode = ((NodeBase*)node.get());
-    if (tAudioNode != nullptr)
+ConnectorComponent::~ConnectorComponent()
+{
+    if (node.get())
+        node->removeConnectableNodeListener (this);
+    else
     {
-      tooltip += isInput? tAudioNode->getTotalNumInputChannels() : tAudioNode->getTotalNumOutputChannels();
-      tooltip += " channels";
+        jassertfalse;
+    }
+}
+
+NodeBase* ConnectorComponent::getNodeBase()
+{
+    return dynamic_cast<NodeBase*> (node.get());
+}
+
+void ConnectorComponent::generateToolTip()
+{
+    String tooltip;
+    tooltip += dataType == NodeConnection::ConnectionType::AUDIO ? "Audio\n" : "Data\n";
+
+    if (dataType == NodeConnection::ConnectionType::AUDIO)
+    {
+        bool isInput = ioType == ConnectorIOType::INPUT;
+        NodeBase* tAudioNode = ((NodeBase*)node.get());
+
+        if (tAudioNode != nullptr)
+        {
+            tooltip += isInput ? tAudioNode->getTotalNumInputChannels() : tAudioNode->getTotalNumOutputChannels();
+            tooltip += " channels";
+        }
+        else
+        {
+            tooltip = "[Error accessing audio processor]";
+        }
     }
     else
     {
-      tooltip = "[Error accessing audio processor]";
+
+        StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->getInputDataInfos() : node->getOutputDataInfos();
+        tooltip += dataInfos.joinIntoString ("\n");
+
     }
-  }
-  else
-  {
 
-    StringArray dataInfos = ioType == ConnectorIOType::INPUT ? node->getInputDataInfos() : node->getOutputDataInfos();
-    tooltip += dataInfos.joinIntoString("\n");
-  
-  }
-  setTooltip(tooltip);
+    setTooltip (tooltip);
 }
-void ConnectorComponent::paint(Graphics & g)
+void ConnectorComponent::paint (Graphics& g)
 {
-  g.setGradientFill(ColourGradient(isHovered?boxColor.brighter(5.f):boxColor, (float)(getLocalBounds().getCentreY()),(float)(getLocalBounds().getCentreY()), boxColor.darker(), 0.f,0.f, true));
-  g.fillRoundedRectangle(getLocalBounds().toFloat(), 2);
+    g.setGradientFill (ColourGradient (isHovered ? boxColor.brighter (5.f) : boxColor, (float) (getLocalBounds().getCentreY()), (float) (getLocalBounds().getCentreY()), boxColor.darker(), 0.f, 0.f, true));
+    g.fillRoundedRectangle (getLocalBounds().toFloat(), 2);
 }
 
-void ConnectorComponent::mouseDown(const MouseEvent &)
+void ConnectorComponent::mouseDown (const MouseEvent&)
 {
-  NodeContainerViewer * containerViewer = getNodeContainerViewer();
+    NodeContainerViewer* containerViewer = getNodeContainerViewer();
 
-  if (dataType == NodeConnection::ConnectionType::DATA)
-  {
+    if (dataType == NodeConnection::ConnectionType::DATA)
+    {
 
-    containerViewer->createDataConnectionFromConnector(this);
-  }
-  else
-  {
-    containerViewer->createAudioConnectionFromConnector(this);
-  }
+        containerViewer->createDataConnectionFromConnector (this);
+    }
+    else
+    {
+        containerViewer->createAudioConnectionFromConnector (this);
+    }
 }
 
-void ConnectorComponent::mouseEnter (const MouseEvent&){
-  isHovered = true;
-  repaint();
+void ConnectorComponent::mouseEnter (const MouseEvent&)
+{
+    isHovered = true;
+    repaint();
 }
-void ConnectorComponent::mouseExit  (const MouseEvent&){
-  isHovered = false;
-  repaint();
+void ConnectorComponent::mouseExit  (const MouseEvent&)
+{
+    isHovered = false;
+    repaint();
 }
 
 void ConnectorComponent::updateVisibility()
 {
 
-  bool isAudio = dataType == NodeConnection::ConnectionType::AUDIO;
-  bool isInput = ioType == ConnectorIOType::INPUT;
+    bool isAudio = dataType == NodeConnection::ConnectionType::AUDIO;
+    bool isInput = ioType == ConnectorIOType::INPUT;
 
-  if (isAudio) setVisible(isInput ? node->hasAudioInputs() : node->hasAudioOutputs());
-  else setVisible(isInput ? node->hasDataInputs() : node->hasDataOutputs());
+    if (isAudio) setVisible (isInput ? node->hasAudioInputs() : node->hasAudioOutputs());
+    else setVisible (isInput ? node->hasDataInputs() : node->hasDataOutputs());
 
-  connectorListeners.call(&ConnectorListener::connectorVisibilityChanged, this);
+    connectorListeners.call (&ConnectorListener::connectorVisibilityChanged, this);
 }
 
-void ConnectorComponent::numAudioInputChanged(ConnectableNode *, int)
+void ConnectorComponent::numAudioInputChanged (ConnectableNode*, int)
 {
-  if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::INPUT) return;
-  postCommandMessage(0);
+    if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::INPUT) return;
+
+    postCommandMessage (0);
 }
 
-void ConnectorComponent::numAudioOutputChanged(ConnectableNode *, int)
+void ConnectorComponent::numAudioOutputChanged (ConnectableNode*, int)
 {
-  if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
-  postCommandMessage(0);
+    if (dataType != NodeConnection::ConnectionType::AUDIO || ioType != ConnectorIOType::OUTPUT) return;
+
+    postCommandMessage (0);
 }
-void ConnectorComponent::handleCommandMessage(int /*id*/){
-  updateVisibility();
-  
+void ConnectorComponent::handleCommandMessage (int /*id*/)
+{
+    updateVisibility();
+
 }
 
 //DATA
-void ConnectorComponent::numDataInputChanged(ConnectableNode *, int)
+void ConnectorComponent::numDataInputChanged (ConnectableNode*, int)
 {
-  if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::INPUT) return;
-postCommandMessage(0);
+    if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::INPUT) return;
+
+    postCommandMessage (0);
 }
 
-void ConnectorComponent::numDataOutputChanged(ConnectableNode *, int)
+void ConnectorComponent::numDataOutputChanged (ConnectableNode*, int)
 {
-  if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::OUTPUT) return;
-postCommandMessage(0);
+    if (dataType != NodeConnection::ConnectionType::DATA || ioType != ConnectorIOType::OUTPUT) return;
+
+    postCommandMessage (0);
 }
 
 
-NodeContainerViewer * ConnectorComponent::getNodeContainerViewer() const noexcept
+NodeContainerViewer* ConnectorComponent::getNodeContainerViewer() const noexcept
 {
-  return findParentComponentOfClass<NodeContainerViewer>();
+    return findParentComponentOfClass<NodeContainerViewer>();
 }
 
-ConnectableNodeUI * ConnectorComponent::getNodeUI() const noexcept
+ConnectableNodeUI* ConnectorComponent::getNodeUI() const noexcept
 {
-  return findParentComponentOfClass<ConnectableNodeUI>();
+    return findParentComponentOfClass<ConnectableNodeUI>();
 }

@@ -17,13 +17,13 @@
 
 
 
-REGISTER_NODE_TYPE(DataInNode)
+REGISTER_NODE_TYPE (DataInNode)
 
-DataInNode::DataInNode(StringRef name) :
-    NodeBase(name)
+DataInNode::DataInNode (StringRef name) :
+    NodeBase (name)
 {
-    addFloatParamAndData("Test Param", 0, 0, 1);
-	
+    addFloatParamAndData ("Test Param", 0, 0, 1);
+
 }
 
 DataInNode::~DataInNode()
@@ -31,28 +31,31 @@ DataInNode::~DataInNode()
 
 }
 
-inline FloatParameter * DataInNode::addFloatParamAndData(const String & name, float initialValue, float minVal, float maxVal)
+inline FloatParameter* DataInNode::addFloatParamAndData (const String& name, float initialValue, float minVal, float maxVal)
 {
-	FloatParameter * p = addNewParameter<FloatParameter>(name, "OSC Control for " + name, initialValue, minVal, maxVal);
-	addOutputData(name, Data::DataType::Number);
-	dynamicParameters.add(p);
-	dataInListeners.call(&DataInListener::parameterAdded, p);
-	return p;
+    FloatParameter* p = addNewParameter<FloatParameter> (name, "OSC Control for " + name, initialValue, minVal, maxVal);
+    addOutputData (name, Data::DataType::Number);
+    dynamicParameters.add (p);
+    dataInListeners.call (&DataInListener::parameterAdded, p);
+    return p;
 }
 
-inline void DataInNode::removeFloatParamAndData(FloatParameter * p)
+inline void DataInNode::removeFloatParamAndData (FloatParameter* p)
 {
-	removeControllable(p);
-	removeOutputData(p->niceName);
-	dataInListeners.call(&DataInListener::parameterRemoved, p);
+    removeControllable (p);
+    removeOutputData (p->niceName);
+    dataInListeners.call (&DataInListener::parameterRemoved, p);
 }
 
-void DataInNode::onContainerParameterChanged(Parameter * p)
+void DataInNode::onContainerParameterChanged (Parameter* p)
 {
-        NodeBase::onContainerParameterChanged(p);
-  // @ben we pass only float here?!
-    if(auto fp = dynamic_cast<FloatParameter*>(p)){
-    updateOutputData(p->niceName, fp->getNormalizedValue());}
+    NodeBase::onContainerParameterChanged (p);
+
+    // @ben we pass only float here?!
+    if (auto fp = dynamic_cast<FloatParameter*> (p))
+    {
+        updateOutputData (p->niceName, fp->getNormalizedValue());
+    }
 }
 
 

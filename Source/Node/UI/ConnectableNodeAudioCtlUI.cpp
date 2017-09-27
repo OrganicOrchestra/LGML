@@ -22,32 +22,35 @@
 #include "ConnectableNodeUI.h"
 
 ConnectableNodeAudioCtlUI::ConnectableNodeAudioCtlUI():
-	outputVolume(nullptr)
-	//,bypassUI(nullptr)
+    outputVolume (nullptr)
+    //,bypassUI(nullptr)
 {
 
 
 }
-void ConnectableNodeAudioCtlUI::resized() {
+void ConnectableNodeAudioCtlUI::resized()
+{
     Rectangle<int > outCtl = getLocalBounds();
+
     //if(bypassUI)bypassUI->setBounds(outCtl.removeFromTop(outCtl.getWidth()));
-    if(outputVolume)outputVolume->setBounds(outCtl);
+    if (outputVolume)outputVolume->setBounds (outCtl);
 }
 
 
 
-void ConnectableNodeAudioCtlUI::setNodeAndNodeUI(ConnectableNode * node, ConnectableNodeUI *){
-    jassert(node->hasAudioOutputs());
-    outputVolume = new FloatSliderUI(node->outputVolume);
+void ConnectableNodeAudioCtlUI::setNodeAndNodeUI (ConnectableNode* node, ConnectableNodeUI*)
+{
+    jassert (node->hasAudioOutputs());
+    outputVolume = new FloatSliderUI (node->outputVolume);
     outputVolume->orientation = FloatSliderUI::Direction::VERTICAL;
-    addAndMakeVisible(outputVolume);
+    addAndMakeVisible (outputVolume);
     //bypassUI = node->bypass->createToggle();
     //addAndMakeVisible(bypassUI);
 
-	init(); //for child override
+    init(); //for child override
 }
 
 void ConnectableNodeAudioCtlUI::init()
 {
-	//to be override by child classes
+    //to be override by child classes
 }

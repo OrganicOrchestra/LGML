@@ -21,31 +21,31 @@
 #include "../../../Controllable/Parameter/UI/ParameterUI.h"
 
 class NodeContainerContentUI :
-	public ConnectableNodeContentUI,
-	public ButtonListener,
-	public NodeContainerListener
+    public ConnectableNodeContentUI,
+    public ButtonListener,
+    public NodeContainerListener
 {
 public :
-	NodeContainerContentUI();
-	virtual ~NodeContainerContentUI();
+    NodeContainerContentUI();
+    virtual ~NodeContainerContentUI();
 
-	NodeContainer * nodeContainer;
-	TextButton editContainerBT;
-	TextButton addUserParamBT;
+    NodeContainer* nodeContainer;
+    TextButton editContainerBT;
+    TextButton addUserParamBT;
 
-	OwnedArray<ParameterUI> userParamUI;
+    OwnedArray<ParameterUI> userParamUI;
 
 
 
-	void updateSize();
+    void updateSize();
 
-	void init()override;
-	void resized() override;
+    void init()override;
+    void resized() override;
 
-	void buttonClicked(Button * b) override;
+    void buttonClicked (Button* b) override;
 
-  
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeContainerContentUI)
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeContainerContentUI)
 };
 
 

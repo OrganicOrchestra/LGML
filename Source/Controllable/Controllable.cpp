@@ -20,152 +20,168 @@
 
 
 
-Controllable::Controllable( const String & niceName, const String &description, bool enabled) :
-description(description),
-parentContainer(nullptr),
-hasCustomShortName(false),
-isControllableExposed(true),
-isHidenInEditor(false),
-shouldSaveObject(false),
-isSavable(true),
-enabled(enabled),
-isUserDefined(false)
+Controllable::Controllable ( const String& niceName, const String& description, bool enabled) :
+    description (description),
+    parentContainer (nullptr),
+    hasCustomShortName (false),
+    isControllableExposed (true),
+    isHidenInEditor (false),
+    shouldSaveObject (false),
+    isSavable (true),
+    enabled (enabled),
+    isUserDefined (false)
 {
-  setEnabled(enabled);
-  setNiceName(niceName);
+    setEnabled (enabled);
+    setNiceName (niceName);
 }
 
 
-Controllable::~Controllable() {
-  Controllable::masterReference.clear();
-  listeners.call(&Controllable::Listener::controllableRemoved, this);
-
-}
-
-
-void Controllable::setNiceName(const String & _niceName) {
-  if (niceName == _niceName) return;
-
-  this->niceName = _niceName;
-  if (!hasCustomShortName) setAutoShortName();
-  else listeners.call(&Listener::controllableNameChanged, this);
-}
-
-
-void Controllable::setCustomShortName(const String & _shortName)
+Controllable::~Controllable()
 {
-  this->shortName = _shortName;
-  hasCustomShortName = true;
-  updateControlAddress();
-  listeners.call(&Listener::controllableNameChanged, this);
+    Controllable::masterReference.clear();
+    listeners.call (&Controllable::Listener::controllableRemoved, this);
+
 }
 
 
-void Controllable::setAutoShortName() {
-  hasCustomShortName = false;
-  shortName = StringUtil::toShortName(niceName);
-  updateControlAddress();
-  listeners.call(&Listener::controllableNameChanged, this);
-}
-
-
-void Controllable::setEnabled(bool value, bool silentSet, bool force)
+void Controllable::setNiceName (const String& _niceName)
 {
-  if (!force && value == enabled) return;
+    if (niceName == _niceName) return;
 
-  enabled = value;
-  if (!silentSet) listeners.call(&Listener::controllableStateChanged, this);
+    this->niceName = _niceName;
+
+    if (!hasCustomShortName) setAutoShortName();
+    else listeners.call (&Listener::controllableNameChanged, this);
 }
 
 
-void Controllable::setParentContainer(ControllableContainer * container)
+void Controllable::setCustomShortName (const String& _shortName)
 {
-  this->parentContainer = container;
-  updateControlAddress();
+    this->shortName = _shortName;
+    hasCustomShortName = true;
+    updateControlAddress();
+    listeners.call (&Listener::controllableNameChanged, this);
+}
+
+
+void Controllable::setAutoShortName()
+{
+    hasCustomShortName = false;
+    shortName = StringUtil::toShortName (niceName);
+    updateControlAddress();
+    listeners.call (&Listener::controllableNameChanged, this);
+}
+
+
+void Controllable::setEnabled (bool value, bool silentSet, bool force)
+{
+    if (!force && value == enabled) return;
+
+    enabled = value;
+
+    if (!silentSet) listeners.call (&Listener::controllableStateChanged, this);
+}
+
+
+void Controllable::setParentContainer (ControllableContainer* container)
+{
+    this->parentContainer = container;
+    updateControlAddress();
 }
 
 
 void Controllable::updateControlAddress()
 {
-  this->controlAddress = getControlAddress();
-  listeners.call(&Listener::controllableControlAddressChanged, this);
+    this->controlAddress = getControlAddress();
+    listeners.call (&Listener::controllableControlAddressChanged, this);
 }
 
 
-String Controllable::getControlAddress(ControllableContainer * relativeTo)
+String Controllable::getControlAddress (ControllableContainer* relativeTo)
 {
-  // we may need empty parentContainer in unit tests
+    // we may need empty parentContainer in unit tests
 #if LGML_UNIT_TESTS
-  return (parentContainer?parentContainer->getControlAddress(relativeTo):"") + "/"+shortName;
+    return (parentContainer ? parentContainer->getControlAddress (relativeTo) : "") + "/" + shortName;
 #else
-  return parentContainer->getControlAddress(relativeTo) + "/"+shortName;
+    return parentContainer->getControlAddress (relativeTo) + "/" + shortName;
 #endif
 }
 
 
 
-DynamicObject * Controllable::createDynamicObject()
+DynamicObject* Controllable::createDynamicObject()
 {
-  DynamicObject* dObject = new DynamicObject();
-  dObject->setProperty(jsPtrIdentifier, (int64)this);
-//  dObject->setProperty(jsVarObjectIdentifier, getVarObject());
-  dObject->setMethod(jsGetIdentifier, Controllable::getVarStateFromScript);
-  return dObject;
+    DynamicObject* dObject = new DynamicObject();
+    dObject->setProperty (jsPtrIdentifier, (int64)this);
+    //  dObject->setProperty(jsVarObjectIdentifier, getVarObject());
+    dObject->setMethod (jsGetIdentifier, Controllable::getVarStateFromScript);
+    return dObject;
 }
 
 
 
-var Controllable::getVarStateFromScript(const juce::var::NativeFunctionArgs & a)
+var Controllable::getVarStateFromScript (const juce::var::NativeFunctionArgs& a)
 {
-  // TODO handle with weak references
-  Controllable * c = getObjectPtrFromJS<Controllable>(a);
-  if(c == nullptr  ) return var();
-  //  WeakReference<Parameter> wc = c;
-  //  if(!wc.get()) return var();
-  return c->getVarState();
+    // TODO handle with weak references
+    Controllable* c = getObjectPtrFromJS<Controllable> (a);
+
+    if (c == nullptr  ) return var();
+
+    //  WeakReference<Parameter> wc = c;
+    //  if(!wc.get()) return var();
+    return c->getVarState();
 
 }
 //STATIC
 
 
-var Controllable::setControllableValueFromJS(const juce::var::NativeFunctionArgs& a) {
+var Controllable::setControllableValueFromJS (const juce::var::NativeFunctionArgs& a)
+{
 
-  Controllable * c = getObjectPtrFromJS<Controllable>(a);
-  //	bool success = false;
+    Controllable* c = getObjectPtrFromJS<Controllable> (a);
+    //    bool success = false;
 
-  if (c != nullptr)
-  {
-    //		success = true;
-    var value = a.numArguments == 0?var::undefined():a.arguments[0];
-    c->setStateFromVar(value);
-    return c->getVarState();
-  }
-  else{
-    LOG("!!!unknown controllable set from js");
-    jassertfalse;
-  }
-  
-  return var();
-}
-
-
-
-
-
-
-bool Controllable::isMappable(){
-  return false;
-}
-
-
-bool Controllable::isChildOf(ControllableContainer * p){
-  auto i = parentContainer;
-  while(i){
-    if(i==p){
-      return true;
+    if (c != nullptr)
+    {
+        //      success = true;
+        var value = a.numArguments == 0 ? var::undefined() : a.arguments[0];
+        c->setStateFromVar (value);
+        return c->getVarState();
     }
-    i = i->parentContainer;
-  }
-  return false;
+    else
+    {
+        LOG ("!!!unknown controllable set from js");
+        jassertfalse;
+    }
+
+    return var();
+}
+
+
+
+
+
+
+bool Controllable::isMappable()
+{
+    return false;
+}
+
+
+bool Controllable::isChildOf (ControllableContainer* p)
+{
+    auto i = parentContainer;
+
+    while (i)
+    {
+        if (i == p)
+        {
+            return true;
+        }
+
+        i = i->parentContainer;
+    }
+
+    return false;
 
 }

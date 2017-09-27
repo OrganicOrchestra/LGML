@@ -22,62 +22,62 @@
 class NodeConnectionUI;
 
 class NodeContainerViewer :
-	public InspectableComponent,
-	public NodeContainerListener
+    public InspectableComponent,
+    public NodeContainerListener
 {
 public :
-	NodeContainerViewer(NodeContainer * container);
-	virtual ~NodeContainerViewer();
+    NodeContainerViewer (NodeContainer* container);
+    virtual ~NodeContainerViewer();
 
-	NodeContainer * nodeContainer;
+    NodeContainer* nodeContainer;
 
-	OwnedArray<ConnectableNodeUI> nodesUI;
-	OwnedArray<NodeConnectionUI>  connectionsUI;
-	NodeConnectionUI * editingConnection;
-  ScopedPointer<NodeConnection::Model> editingModel;
-	void clear();
+    OwnedArray<ConnectableNodeUI> nodesUI;
+    OwnedArray<NodeConnectionUI>  connectionsUI;
+    NodeConnectionUI* editingConnection;
+    ScopedPointer<NodeConnection::Model> editingModel;
+    void clear();
 
-	void resized() override;
+    void resized() override;
 
-	// Inherited via NodeContainerListener
-	virtual void nodeAdded(ConnectableNode *) override;
-	virtual void nodeRemoved(ConnectableNode *) override;
-	virtual void connectionAdded(NodeConnection *) override;
-	virtual void connectionRemoved(NodeConnection *) override;
+    // Inherited via NodeContainerListener
+    virtual void nodeAdded (ConnectableNode*) override;
+    virtual void nodeRemoved (ConnectableNode*) override;
+    virtual void connectionAdded (NodeConnection*) override;
+    virtual void connectionRemoved (NodeConnection*) override;
 
-	void addNodeUI(ConnectableNode * node);
-	void removeNodeUI(ConnectableNode * node);
-	ConnectableNodeUI * getUIForNode(ConnectableNode * node);
+    void addNodeUI (ConnectableNode* node);
+    void removeNodeUI (ConnectableNode* node);
+    ConnectableNodeUI* getUIForNode (ConnectableNode* node);
 
-	void addConnectionUI(NodeConnection * connection);
-	void removeConnectionUI(NodeConnection * connection);
-	NodeConnectionUI * getUIForConnection(NodeConnection * connection);
+    void addConnectionUI (NodeConnection* connection);
+    void removeConnectionUI (NodeConnection* connection);
+    NodeConnectionUI* getUIForConnection (NodeConnection* connection);
 
-	//connection creation / editing
-	typedef ConnectorComponent Connector;
-	void createDataConnectionFromConnector(Connector * baseConnector);
-	void createAudioConnectionFromConnector(Connector * baseConnector,NodeConnection * root=nullptr);
+    //connection creation / editing
+    typedef ConnectorComponent Connector;
+    void createDataConnectionFromConnector (Connector* baseConnector);
+    void createAudioConnectionFromConnector (Connector* baseConnector, NodeConnection* root = nullptr);
 
-	void updateEditingConnection();
-	bool isEditingConnection() { return editingConnection != nullptr; }
-	bool checkDropCandidates();
-	bool setCandidateDropConnector(Connector * c);
-	void cancelCandidateDropConnector();
-	void finishEditingConnection();
-
-
-	//Mouse event
-	void mouseDown(const MouseEvent& event) override;
-	void mouseMove(const MouseEvent& event) override;
-	void mouseDrag(const MouseEvent& event) override;
-	void mouseUp(const MouseEvent& event) override;
-	void childBoundsChanged(Component *)override;
+    void updateEditingConnection();
+    bool isEditingConnection() { return editingConnection != nullptr; }
+    bool checkDropCandidates();
+    bool setCandidateDropConnector (Connector* c);
+    void cancelCandidateDropConnector();
+    void finishEditingConnection();
 
 
-  // key events
-  bool keyPressed(const KeyPress & key)override;
+    //Mouse event
+    void mouseDown (const MouseEvent& event) override;
+    void mouseMove (const MouseEvent& event) override;
+    void mouseDrag (const MouseEvent& event) override;
+    void mouseUp (const MouseEvent& event) override;
+    void childBoundsChanged (Component*)override;
 
-	void resizeToFitNodes();
+
+    // key events
+    bool keyPressed (const KeyPress& key)override;
+
+    void resizeToFitNodes();
 };
 
 

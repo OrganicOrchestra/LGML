@@ -20,64 +20,65 @@
 #include "UI/SerialControllerEditor.h"
 
 #include "../ControllerFactory.h"
-REGISTER_OBJ_TYPE_NAMED(Controller,SerialController,"t_Serial");
+REGISTER_OBJ_TYPE_NAMED (Controller, SerialController, "t_Serial");
 
 
-SerialController::SerialController(StringRef name) :
-JsEnvironment("controller.serial",this),
-Controller(name),
-port(nullptr)
+SerialController::SerialController (StringRef name) :
+    JsEnvironment ("controller.serial", this),
+    Controller (name),
+    port (nullptr)
 {
 
-  setNamespaceName("controller." + shortName);
-  logIncoming = addNewParameter<BoolParameter>("logIncoming", "log Incoming midi message", false);
+    setNamespaceName ("controller." + shortName);
+    logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
 
-  selectedHardwareID = addNewParameter<StringParameter>("selectedHardwareID","Id of the selected hardware", "");
-  selectedPort = addNewParameter<StringParameter>("selectedPort","Name of the selected hardware", "");
+    selectedHardwareID = addNewParameter<StringParameter> ("selectedHardwareID", "Id of the selected hardware", "");
+    selectedPort = addNewParameter<StringParameter> ("selectedPort", "Name of the selected hardware", "");
 
-  SerialManager::getInstance()->addSerialManagerListener(this);
+    SerialManager::getInstance()->addSerialManagerListener (this);
 }
 
 SerialController::~SerialController()
 {
-  if (SerialManager::getInstanceWithoutCreating() != nullptr)
-  {
-    SerialManager::getInstance()->removeSerialManagerListener(this);
-  }
+    if (SerialManager::getInstanceWithoutCreating() != nullptr)
+    {
+        SerialManager::getInstance()->removeSerialManagerListener (this);
+    }
 
-  setCurrentPort(nullptr);
+    setCurrentPort (nullptr);
 }
 
-void SerialController::setCurrentPort(SerialPort * _port)
+void SerialController::setCurrentPort (SerialPort* _port)
 {
 
-  if (port == _port) return;
+    if (port == _port) return;
 
 
-  if (port != nullptr)
-  {
+    if (port != nullptr)
+    {
 
-    port->removeSerialPortListener(this);
-  }
+        port->removeSerialPortListener (this);
+    }
 
-  port = _port;
+    port = _port;
 
-  if (port != nullptr)
-  {
-    port->addSerialPortListener(this);
-    lastOpenedPortID = port->info->port;
+    if (port != nullptr)
+    {
+        port->addSerialPortListener (this);
+        lastOpenedPortID = port->info->port;
 
-    selectedPort->setValue(port->info->port);
-    selectedHardwareID->setValue(port->info->hardwareID);
+        selectedPort->setValue (port->info->port);
+        selectedHardwareID->setValue (port->info->hardwareID);
 
-    sendIdentificationQuery();
-  } else
-  {
-    DBG("set port null");
-  }
+        sendIdentificationQuery();
+    }
+    else
+    {
+        DBG ("set port null");
+    }
 
-  DBG("current port changed");
-  serialControllerListeners.call(&SerialControllerListener::currentPortChanged);
+    DBG ("current port changed");
+    serialControllerListeners.call (&SerialControllerListener::currentPortChanged);
 }
 
 void SerialController::newJsFileLoaded()
@@ -85,148 +86,170 @@ void SerialController::newJsFileLoaded()
 
 }
 
-void SerialController::onContainerParameterChanged(Parameter * p) {
-  Controller::onContainerParameterChanged(p);
-  if(p==nameParam){
-    setNamespaceName("controller."+shortName);
-  }
-  else if(p == selectedHardwareID || p == selectedPort)
-  {
-    SerialPort * _port  = SerialManager::getInstance()->getPort(selectedHardwareID->stringValue(), selectedPort->stringValue(),true);
-    if(_port != nullptr)
+void SerialController::onContainerParameterChanged (Parameter* p)
+{
+    Controller::onContainerParameterChanged (p);
+
+    if (p == nameParam)
     {
-      setCurrentPort(_port);
+        setNamespaceName ("controller." + shortName);
     }
-  }
+    else if (p == selectedHardwareID || p == selectedPort)
+    {
+        SerialPort* _port  = SerialManager::getInstance()->getPort (selectedHardwareID->stringValue(), selectedPort->stringValue(), true);
+
+        if (_port != nullptr)
+        {
+            setCurrentPort (_port);
+        }
+    }
 
 
 };
 
-void SerialController::buildLocalEnv() {
-
-  DynamicObject obj;
-  static const Identifier jsSendMessageIdentifier("sendMessage");
-  obj.setMethod(jsSendMessageIdentifier, sendMessageFromScript);
-  obj.setProperty(jsPtrIdentifier, (int64)this);
-
-
-
-  setLocalNamespace(obj);
-}
-
-void SerialController::portOpened(SerialPort * )
+void SerialController::buildLocalEnv()
 {
-  serialControllerListeners.call(&SerialControllerListener::portOpened);
 
-  sendIdentificationQuery();
+    DynamicObject obj;
+    static const Identifier jsSendMessageIdentifier ("sendMessage");
+    obj.setMethod (jsSendMessageIdentifier, sendMessageFromScript);
+    obj.setProperty (jsPtrIdentifier, (int64)this);
+
+
+
+    setLocalNamespace (obj);
 }
 
-void SerialController::portClosed(SerialPort *)
+void SerialController::portOpened (SerialPort* )
 {
-  serialControllerListeners.call(&SerialControllerListener::portClosed);
+    serialControllerListeners.call (&SerialControllerListener::portOpened);
+
+    sendIdentificationQuery();
 }
 
-void SerialController::portRemoved(SerialPort *)
+void SerialController::portClosed (SerialPort*)
 {
-  setCurrentPort(nullptr);
+    serialControllerListeners.call (&SerialControllerListener::portClosed);
 }
 
-void SerialController::serialDataReceived(const var & data)
+void SerialController::portRemoved (SerialPort*)
 {
-  activityTrigger->trigger();
-  processMessage(data.toString());
+    setCurrentPort (nullptr);
 }
 
-void SerialController::controllableAdded(ControllableContainer *,Controllable * c){
-  if(c->isUserDefined){
-  reloadFile();
-  }
+void SerialController::serialDataReceived (const var& data)
+{
+    activityTrigger->trigger();
+    processMessage (data.toString());
 }
-void SerialController::controllableRemoved(ControllableContainer *,Controllable *c){
-  if(c->isUserDefined){
-  reloadFile();
-  }
+
+void SerialController::controllableAdded (ControllableContainer*, Controllable* c)
+{
+    if (c->isUserDefined)
+    {
+        reloadFile();
+    }
+}
+void SerialController::controllableRemoved (ControllableContainer*, Controllable* c)
+{
+    if (c->isUserDefined)
+    {
+        reloadFile();
+    }
 
 }
-var SerialController::sendMessageFromScript(const var::NativeFunctionArgs &) {
-  //    SerialController * c = getObjectPtrFromJS<SerialController>(a);
-  return var::undefined();
+var SerialController::sendMessageFromScript (const var::NativeFunctionArgs&)
+{
+    //    SerialController * c = getObjectPtrFromJS<SerialController>(a);
+    return var::undefined();
 }
 
 void SerialController::sendIdentificationQuery()
 {
-  port->writeString("i");
+    port->writeString ("i");
 }
 
-void SerialController::processMessage(const String & message)
+void SerialController::processMessage (const String& message)
 {
-  StringArray split;
-  split.addTokens(message.removeCharacters("\n"),true);
-  String command = split[0];
-  if (command == "i")
-  {
-    //identification
-    deviceID = split[1];
-    while (serialVariables.size() > 0)
-    {
-      serialVariables.removeAllInstancesOf(serialVariables[0]);
-    }
+    StringArray split;
+    split.addTokens (message.removeCharacters ("\n"), true);
+    String command = split[0];
 
-  } else if (command == "a")
-  {
-    auto found = userContainer.getControllableForAddress(split[1]);
-    if (!found )
+    if (command == "i")
     {
-      FloatParameter * v ;
+        //identification
+        deviceID = split[1];
 
-      if(split.size()>=4){
-        v= userContainer.addNewParameter<FloatParameter>(split[1],split[1],
-                                               split[2].getFloatValue(),
-                                               split[2].getFloatValue(),
-                                               split[3].getFloatValue());
-      }
-      else{
-        v= userContainer.addNewParameter<FloatParameter>(split[1],split[1],0.f);
-      }
-      serialVariables.add(v);
+        while (serialVariables.size() > 0)
+        {
+            serialVariables.removeAllInstancesOf (serialVariables[0]);
+        }
+
     }
-  } else if (command == "d")
-  {
-     auto found = userContainer.getControllableForAddress(split[1]);
-    if (!found )
+    else if (command == "a")
     {
-      BoolParameter * v = userContainer.addNewParameter<BoolParameter>(split[1], split[1], false);
-      serialVariables.add(v);
+        auto found = userContainer.getControllableForAddress (split[1]);
+
+        if (!found )
+        {
+            FloatParameter* v ;
+
+            if (split.size() >= 4)
+            {
+                v = userContainer.addNewParameter<FloatParameter> (split[1], split[1],
+                                                                   split[2].getFloatValue(),
+                                                                   split[2].getFloatValue(),
+                                                                   split[3].getFloatValue());
+            }
+            else
+            {
+                v = userContainer.addNewParameter<FloatParameter> (split[1], split[1], 0.f);
+            }
+
+            serialVariables.add (v);
+        }
     }
-  } else if (command == "u")
-  {
-     auto v = userContainer.getControllableForAddress(split[1]);
-    if (v != nullptr)
+    else if (command == "d")
     {
-      ((Parameter*)v)->setValue(split[2].getFloatValue());
+        auto found = userContainer.getControllableForAddress (split[1]);
+
+        if (!found )
+        {
+            BoolParameter* v = userContainer.addNewParameter<BoolParameter> (split[1], split[1], false);
+            serialVariables.add (v);
+        }
     }
-  }
+    else if (command == "u")
+    {
+        auto v = userContainer.getControllableForAddress (split[1]);
+
+        if (v != nullptr)
+        {
+            ((Parameter*)v)->setValue (split[2].getFloatValue());
+        }
+    }
 }
 
-ControllerUI * SerialController::createUI()
+ControllerUI* SerialController::createUI()
 {
-  auto c = new ControllerUI(this);
-  c->activityBlink->animateIntensity = false;
-  return c;
+    auto c = new ControllerUI (this);
+    c->activityBlink->animateIntensity = false;
+    return c;
 }
-ControllerEditor * SerialController::createEditor() {
-  return new SerialControllerEditor(this);
+ControllerEditor* SerialController::createEditor()
+{
+    return new SerialControllerEditor (this);
 };
 
-void SerialController::portAdded(SerialPortInfo * info)
+void SerialController::portAdded (SerialPortInfo* info)
 {
-  //DBG("SerialController, portAdded >" << info->hardwareID << "< > " << lastOpenedPortID);
-  if (port == nullptr && lastOpenedPortID == info->port)
-  {
-    setCurrentPort(SerialManager::getInstance()->getPort(info));
-  }
+    //DBG("SerialController, portAdded >" << info->hardwareID << "< > " << lastOpenedPortID);
+    if (port == nullptr && lastOpenedPortID == info->port)
+    {
+        setCurrentPort (SerialManager::getInstance()->getPort (info));
+    }
 }
 
-void SerialController::portRemoved(SerialPortInfo *)
+void SerialController::portRemoved (SerialPortInfo*)
 {
 }

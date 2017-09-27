@@ -25,40 +25,40 @@ class ControllerEditor;
 
 
 class Controller :
-public ParameterContainer
+    public ParameterContainer
 {
 public:
-  
-
-  Controller(StringRef );
-  virtual ~Controller();
-  int controllerTypeEnum;
-
-  BoolParameter * enabledParam;
-
-  Trigger * activityTrigger;
-
-  ParameterContainer  userContainer;
 
 
+    Controller (StringRef );
+    virtual ~Controller();
+    int controllerTypeEnum;
 
-  virtual void internalVariableAdded(Parameter * ){};
-  virtual void internalVariableRemoved(Parameter * ){};
-  virtual void onContainerParameterChanged(Parameter * p) override;
-  virtual void onContainerTriggerTriggered(Trigger * ) override;
+    BoolParameter* enabledParam;
+
+    Trigger* activityTrigger;
+
+    ParameterContainer  userContainer;
 
 
 
-  virtual ControllerUI * createUI();
-  virtual ControllerEditor *  createEditor() ;
+    virtual void internalVariableAdded (Parameter* ) {};
+    virtual void internalVariableRemoved (Parameter* ) {};
+    virtual void onContainerParameterChanged (Parameter* p) override;
+    virtual void onContainerTriggerTriggered (Trigger* ) override;
 
-  void remove();
+
+
+    virtual ControllerUI* createUI();
+    virtual ControllerEditor*   createEditor() ;
+
+    void remove();
 
 
 
-  
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Controller)
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Controller)
 };
 
 

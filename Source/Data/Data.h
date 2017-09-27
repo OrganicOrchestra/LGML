@@ -22,10 +22,10 @@ class NodeBase;
 class Data
 {
 public:
-	enum IOType
-	{
-		Input, Output
-	};
+    enum IOType
+    {
+        Input, Output
+    };
 
     enum DataType
     {
@@ -35,46 +35,46 @@ public:
     class DataElement
     {
     public:
-        DataElement(String _name);
+        DataElement (String _name);
 
         String name;
         DataType type;
-		
+
         float value;
 
-        bool isTypeCompatible(const DataType &targetType);
+        bool isTypeCompatible (const DataType& targetType);
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataElement)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DataElement)
     };
 
 
 
     String name;
     DataType type;
-	IOType ioType;
+    IOType ioType;
 
-    NodeBase * node;
+    NodeBase* node;
 
     int numConnections;
 
     OwnedArray<DataElement> elements;
 
-    Data(NodeBase * node, String _name, DataType _type, IOType _ioType);
+    Data (NodeBase* node, String _name, DataType _type, IOType _ioType);
     ~Data();
 
-    void addElement(const String &_name);
+    void addElement (const String& _name);
 
-    DataElement * getElement(const String &elementName);
+    DataElement* getElement (const String& elementName);
 
-    void updateFromSourceData(Data * sourceData);
+    void updateFromSourceData (Data* sourceData);
 
-    void update(const float &value1, const float &value2 = 0, const float &value3 = 0);
+    void update (const float& value1, const float& value2 = 0, const float& value3 = 0);
 
     bool isComplex() { return elements.size() > 1; }
 
-    bool isTypeCompatible(const DataType &targetType);
+    bool isTypeCompatible (const DataType& targetType);
 
-    int getNumElementsForType(const DataType &_type);
+    int getNumElementsForType (const DataType& _type);
 
     String getTypeString();
 
@@ -84,14 +84,14 @@ public:
         /** Destructor. */
         virtual ~DataListener() {}
 
-        virtual void dataChanged(Data *) = 0;
+        virtual void dataChanged (Data*) = 0;
     };
 
     ListenerList<DataListener> listeners;
-    void addDataListener(DataListener* newListener) { listeners.add(newListener); }
-    void removeDataListener(DataListener* listener) { listeners.remove(listener); }
+    void addDataListener (DataListener* newListener) { listeners.add (newListener); }
+    void removeDataListener (DataListener* listener) { listeners.remove (listener); }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Data)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Data)
 };
 
 

@@ -30,29 +30,29 @@ class Trigger;
 class TriggerBlinkUI : public ParameterUI, private Timer
 {
 public:
-    TriggerBlinkUI(Trigger * t);
+    TriggerBlinkUI (Trigger* t);
     virtual ~TriggerBlinkUI();
 
-  
-    void paint(Graphics&)override;
-    void mouseDown(const MouseEvent& event)override;
+
+    void paint (Graphics&)override;
+    void mouseDown (const MouseEvent& event)override;
     void startBlink();
     void timerCallback()override;
-    Trigger * getTrigger();
+    Trigger* getTrigger();
 
-    void valueChanged(const var & )override;
+    void valueChanged (const var& )override;
 
     float intensity;
 
-	bool animateIntensity;
-	int blinkTime;
-	Colour offColor;
-	Colour onColor;
+    bool animateIntensity;
+    int blinkTime;
+    Colour offColor;
+    Colour onColor;
 private:
 
 
     int refreshPeriod;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TriggerBlinkUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TriggerBlinkUI)
 };
 
 

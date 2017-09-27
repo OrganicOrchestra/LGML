@@ -14,114 +14,141 @@
 static const Identifier factoryTypeIdentifier ("_tName");
 
 template <typename CLASSNAME>
-class FactoryBase{
+class FactoryBase
+{
 public:
 
-  static CLASSNAME* createBaseFromObject(const String & name,DynamicObject * ob ) {
-    if (ob){
-    Identifier ID (ob->getProperty(factoryTypeIdentifier));
-    return createFromTypeID(ID,name,ob);
+    static CLASSNAME* createBaseFromObject (const String& name, DynamicObject* ob )
+    {
+        if (ob)
+        {
+            Identifier ID (ob->getProperty (factoryTypeIdentifier));
+            return createFromTypeID (ID, name, ob);
+        }
+
+        jassertfalse;
+        return nullptr;
+
+
     }
 
-      jassertfalse;
-    return nullptr;
+    static CLASSNAME* createFromTypeID (const Identifier& ID, const String& name = String::empty, DynamicObject* ob = nullptr)
+    {
+        String className = ID.toString();
+        String targetName = name.isEmpty() ? typeToNiceName (className) : name;
 
+        if (getFactory().contains (className))
+        {
+            return getFactory()[className] (targetName, ob);
+        }
+        else
+        {
+            jassertfalse;
+            return nullptr;
+        }
 
-  }
-
-  static CLASSNAME* createFromTypeID(const Identifier & ID,const String & name=String::empty,DynamicObject * ob=nullptr){
-    String className = ID.toString();
-    String targetName = name.isEmpty()?typeToNiceName(className):name;
-    if (getFactory().contains(className)){
-      return getFactory()[className](targetName,ob);
     }
-    else{
-      jassertfalse;
-      return nullptr;
+    static String typeToNiceName (const String& t)
+    {
+        if (t.length() > 2 && t[0] == 't' && t[1] == '_')
+        {
+            return t.substring (2);
+        }
+
+        jassertfalse;
+        return t;
+
+    }
+    static String niceToTypeName (const  String& t)
+    {
+        if (t.length() < 2 || (t[0] != 't' && t[1] != '_'))
+        {
+            return "t_" + t;
+        }
+
+        jassertfalse;
+        return t;
+
     }
 
-  }
-  static String typeToNiceName(const String & t){
-    if (t.length()>2 && t[0]=='t' && t[1]=='_'){
-    return t.substring(2);
+    static DynamicObject*   createTypedObjectFromInstance (CLASSNAME* c)
+    {
+        auto  res = c->getObject();
+        res->setProperty (factoryTypeIdentifier, getTypeNameForInstance (c));
+        return res;
     }
-    jassertfalse;
-    return t;
 
-  }
-  static String niceToTypeName(const  String & t){
-    if (t.length()<2 || (t[0]!='t' && t[1]!='_')){
-      return "t_" + t;
+    static const Identifier& getTypeForInstance (CLASSNAME* i )
+    {
+        return i->getTypeId();
+    };
+    static const String& getTypeNameForInstance (CLASSNAME* i )
+    {
+        return i->getTypeId().toString();
+    };
+
+
+    template<typename T>
+    static String registerType (const String& ID)
+    {
+        jassert (!getFactory().contains (ID));
+        jassert (ID[0] == 't' && ID[1] == '_');
+        getFactory().set (ID, Entry (createFromObject<T>));
+        return ID;
     }
-    jassertfalse;
-    return t;
 
-  }
+    /////////
+    //intern
+    static void  logAllTypes()
+    {
+        DBG ("Factory types (" << typeid (CLASSNAME).name() << ") :");
+        auto a = getRegisteredTypes();
 
-  static DynamicObject *  createTypedObjectFromInstance(CLASSNAME *c){
-    auto  res = c->getObject();
-    res->setProperty(factoryTypeIdentifier, getTypeNameForInstance(c));
-    return res;
-  }
-  
-  static const Identifier & getTypeForInstance(CLASSNAME * i ){
-    return i->getTypeId();
-  };
-  static const String & getTypeNameForInstance(CLASSNAME * i ){
-    return i->getTypeId().toString();
-  };
-
-
-  template<typename T>
-  static String registerType (const String & ID){
-    jassert(!getFactory().contains(ID));
-    jassert(ID[0]=='t' && ID[1]=='_');
-    getFactory().set(ID, Entry(createFromObject<T>));
-    return ID;
-  }
-
-  /////////
-  //intern
-  static void  logAllTypes(){
-    DBG("Factory types (" << typeid(CLASSNAME).name() << ") :");
-    auto a = getRegisteredTypes();
-    for(auto e:a){
-      DBG("\t" + e);
+        for (auto e : a)
+        {
+            DBG ("\t" + e);
+        }
     }
-  }
 
- static Array<String> getRegisteredTypes() {
-    Array<String> res;
+    static Array<String> getRegisteredTypes()
+    {
+        Array<String> res;
 
-    for(auto it = getFactory().begin();it != getFactory().end() ; ++it){
-      res.add(it.getKey());
+        for (auto it = getFactory().begin(); it != getFactory().end() ; ++it)
+        {
+            res.add (it.getKey());
+        }
+
+        return res;
     }
-    return res;
-  }
 
 private:
 
 
-  typedef CLASSNAME* (*CreatorFunc)(const String &niceName , DynamicObject * d);
+    typedef CLASSNAME* (*CreatorFunc) (const String& niceName, DynamicObject* d);
 
-  template <typename T>
-  static CLASSNAME* createFromObject( const String &niceName , DynamicObject * d) {
-    T * res =  new T(niceName);
-    if(d){
-    res->configureFromObject(d);
+    template <typename T>
+    static CLASSNAME* createFromObject ( const String& niceName, DynamicObject* d)
+    {
+        T* res =  new T (niceName);
+
+        if (d)
+        {
+            res->configureFromObject (d);
+        }
+
+        return res;
     }
 
-    return res;
-  }
 
 
+    typedef CreatorFunc Entry;
 
-  typedef CreatorFunc Entry;
-
-  static  HashMap< String, Entry > & getFactory(){
-    static HashMap< String, Entry > factory;
-    return factory;
-  }
+    static  HashMap< String, Entry >& getFactory()
+    {
+        static HashMap< String, Entry > factory;
+        return factory;
+    }
 
 };
 
@@ -129,7 +156,7 @@ private:
 #define REGISTER_OBJ_TYPE_NAMED(FACTORY,T,NAME)  const Identifier T::_objType = Identifier( NAME);\
 static const Identifier _type_##T = FactoryBase<FACTORY>::registerType<T>(T::_objType.toString());
 
-#define REGISTER_OBJ_TYPE(FACTORY,T) REGISTER_OBJ_TYPE_NAMED(FACTORY,T,"t_" #T) 
+#define REGISTER_OBJ_TYPE(FACTORY,T) REGISTER_OBJ_TYPE_NAMED(FACTORY,T,"t_" #T)
 
 
 #define REGISTER_OBJ_TYPE_TEMPLATED(FACTORY,T,TT) template<> const Identifier T<TT>::_objType = Identifier("t_" #T "_" #TT); \

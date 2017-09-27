@@ -24,19 +24,19 @@
 class Point3DParameter : public MinMaxParameter
 {
 public:
-	Point3DParameter(const String &niceName, const String &description, bool enabled = true);
-	~Point3DParameter() {}
-  
-	float x, y, z;
-//	void setPoint(Vector3D<float> value);
-	void setValueInternal(var & _value) override;
+    Point3DParameter (const String& niceName, const String& description, bool enabled = true);
+    ~Point3DParameter() {}
 
-//	Vector3D<float> * getPoint();
+    float x, y, z;
+    //  void setPoint(Vector3D<float> value);
+    void setValueInternal (var& _value) override;
 
-	bool checkValueIsTheSame(const var & v1, const var& v2) override;
+    //  Vector3D<float> * getPoint();
 
-	
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Point3DParameter)
+    bool checkValueIsTheSame (const var& v1, const var& v2) override;
+
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Point3DParameter)
 };
 
 

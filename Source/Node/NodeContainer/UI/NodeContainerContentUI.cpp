@@ -20,35 +20,35 @@
 
 
 NodeContainerContentUI::NodeContainerContentUI() :
-	ConnectableNodeContentUI(),
-	editContainerBT("Edit Container"),
-	addUserParamBT("Add Param Proxy")
+    ConnectableNodeContentUI(),
+    editContainerBT ("Edit Container"),
+    addUserParamBT ("Add Param Proxy")
 {
-	addAndMakeVisible(&editContainerBT);
-	editContainerBT.addListener(this);
+    addAndMakeVisible (&editContainerBT);
+    editContainerBT.addListener (this);
 
-	addAndMakeVisible(&addUserParamBT);
-	addUserParamBT.addListener(this);
+    addAndMakeVisible (&addUserParamBT);
+    addUserParamBT.addListener (this);
 
-	setSize(250, 100);
+    setSize (250, 100);
 
 }
 
 NodeContainerContentUI::~NodeContainerContentUI()
 {
-	nodeContainer->removeNodeContainerListener(this);
+    nodeContainer->removeNodeContainerListener (this);
 }
 
 void NodeContainerContentUI::resized()
 {
 
-	Rectangle<int> r = getLocalBounds().reduced(5);
+    Rectangle<int> r = getLocalBounds().reduced (5);
 
-	editContainerBT.setBounds(r.removeFromTop(20));
-	r.removeFromTop(5);
+    editContainerBT.setBounds (r.removeFromTop (20));
+    r.removeFromTop (5);
 
-	addUserParamBT.setBounds(r.removeFromTop(20));
-	r.removeFromTop(10);
+    addUserParamBT.setBounds (r.removeFromTop (20));
+    r.removeFromTop (10);
 
 
 
@@ -57,24 +57,27 @@ void NodeContainerContentUI::resized()
 
 void NodeContainerContentUI::init()
 {
-  NodeContainer * nc = dynamic_cast<NodeContainer*>(node.get());
-  if(!nc){jassertfalse;return;}
-  nodeContainer = nc;
-	nodeContainer->addNodeContainerListener(this);
+    NodeContainer* nc = dynamic_cast<NodeContainer*> (node.get());
+
+    if (!nc) {jassertfalse; return;}
+
+    nodeContainer = nc;
+    nodeContainer->addNodeContainerListener (this);
 
 
 }
 
 
 
-void NodeContainerContentUI::buttonClicked(Button * b)
+void NodeContainerContentUI::buttonClicked (Button* b)
 {
-	if (b == &editContainerBT)
-	{
-		NodeManagerUI * nmui = ((NodeManagerUIViewport *)ShapeShifterManager::getInstance()->getContentForName(PanelName::NodeManagerPanel))->nmui;
-		if (nmui != nullptr)
-		{
-			nmui->setCurrentViewedContainer(nodeContainer);
-		}
-	}
+    if (b == &editContainerBT)
+    {
+        NodeManagerUI* nmui = ((NodeManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName (PanelName::NodeManagerPanel))->nmui;
+
+        if (nmui != nullptr)
+        {
+            nmui->setCurrentViewedContainer (nodeContainer);
+        }
+    }
 }

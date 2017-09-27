@@ -21,9 +21,10 @@
 
 class ConnectableNodeUI;
 class ConnectableNode;
-class NodeUIFactory:public FactoryBase<ConnectableNodeUI>{
+class NodeUIFactory: public FactoryBase<ConnectableNodeUI>
+{
 public:
-  static ConnectableNodeUI * createDefaultUI(ConnectableNode * t);
+    static ConnectableNodeUI* createDefaultUI (ConnectableNode* t);
 };
 
 #define REGISTER_NODEUI_TYPE(T) REGISTER_OBJ_TYPE(ConnectableNodeUI,T)

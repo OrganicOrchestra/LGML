@@ -26,79 +26,80 @@
 /*
 */
 
-class ControllerManagerUI : public juce::Component,ControllerManager::Listener
+class ControllerManagerUI : public juce::Component, ControllerManager::Listener
 {
 public:
-    ControllerManagerUI(ControllerManager * manager);
+    ControllerManagerUI (ControllerManager* manager);
     ~ControllerManagerUI();
 
-    ControllerManager * manager;
+    ControllerManager* manager;
 
     OwnedArray<ControllerUI> controllersUI;
 
-    ControllerUI * addControllerUI(Controller * controller);
-    void removeControllerUI(Controller * controller);
+    ControllerUI* addControllerUI (Controller* controller);
+    void removeControllerUI (Controller* controller);
 
-    ControllerUI * getUIForController(Controller * controller);
+    ControllerUI* getUIForController (Controller* controller);
 
     void paint (Graphics&)override;
     void resized()override;
 
-    void mouseDown(const MouseEvent &e) override;
+    void mouseDown (const MouseEvent& e) override;
 
-  int getContentHeight();
+    int getContentHeight();
 
-	void clear();
+    void clear();
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUI)
 
     // Inherited via Listener
-    void controllerAdded(Controller *) override;
-    void controllerRemoved(Controller *) override;
-    void notifyParentViewPort(){if(auto * p = getParentComponent()) p->resized();}
+    void controllerAdded (Controller*) override;
+    void controllerRemoved (Controller*) override;
+    void notifyParentViewPort() {if (auto* p = getParentComponent()) p->resized();}
 };
 
 
 class ControllerManagerUIViewport :
-public ShapeShifterContentComponent,
-private ButtonListener
+    public ShapeShifterContentComponent,
+    private ButtonListener
 {
 public:
-  ControllerManagerUIViewport(const String &contentName, ControllerManagerUI * _UI) :
-		controllerManagerUI(_UI),
-		ShapeShifterContentComponent(contentName)
-  {
-    vp.setViewedComponent(controllerManagerUI, true);
-    vp.setScrollBarsShown(true, false);
-    vp.setScrollOnDragEnabled(false);
-    addAndMakeVisible(vp);
-    vp.setScrollBarThickness(10);
-    addAndMakeVisible(addControllerBt);
-    addControllerBt.setTooltip("Add controller");
-    addControllerBt.addListener(this);
+    ControllerManagerUIViewport (const String& contentName, ControllerManagerUI* _UI) :
+        controllerManagerUI (_UI),
+        ShapeShifterContentComponent (contentName)
+    {
+        vp.setViewedComponent (controllerManagerUI, true);
+        vp.setScrollBarsShown (true, false);
+        vp.setScrollOnDragEnabled (false);
+        addAndMakeVisible (vp);
+        vp.setScrollBarThickness (10);
+        addAndMakeVisible (addControllerBt);
+        addControllerBt.setTooltip ("Add controller");
+        addControllerBt.addListener (this);
 
 
-  }
+    }
 
-  virtual ~ControllerManagerUIViewport()
-  {
+    virtual ~ControllerManagerUIViewport()
+    {
 
-  }
+    }
 
-  void resized() override {
-    vp.setBounds(getLocalBounds());
-    int th = jmax<int>(controllerManagerUI->getContentHeight(), getHeight());
-    Rectangle<int> targetBounds = getLocalBounds().withPosition(controllerManagerUI->getPosition()).withHeight(th);
-    targetBounds.removeFromRight(vp.getScrollBarThickness());
-    controllerManagerUI->setBounds(targetBounds);
-    addControllerBt.setFromParentBounds(getLocalBounds());
-  }
+    void resized() override
+    {
+        vp.setBounds (getLocalBounds());
+        int th = jmax<int> (controllerManagerUI->getContentHeight(), getHeight());
+        Rectangle<int> targetBounds = getLocalBounds().withPosition (controllerManagerUI->getPosition()).withHeight (th);
+        targetBounds.removeFromRight (vp.getScrollBarThickness());
+        controllerManagerUI->setBounds (targetBounds);
+        addControllerBt.setFromParentBounds (getLocalBounds());
+    }
 
-  void buttonClicked (Button*) override;
+    void buttonClicked (Button*) override;
 
-  Viewport vp;
-  ControllerManagerUI * controllerManagerUI;
-  AddElementButton addControllerBt;
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerManagerUIViewport)
+    Viewport vp;
+    ControllerManagerUI* controllerManagerUI;
+    AddElementButton addControllerBt;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUIViewport)
 };
 #endif  // CONTROLLERMANAGERUI_H_INCLUDED

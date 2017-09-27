@@ -23,12 +23,12 @@
 const var Trigger::triggerVar = var::undefined();
 
 
-REGISTER_PARAM_TYPE(Trigger);
+REGISTER_PARAM_TYPE (Trigger);
 
-Trigger::Trigger(const String & niceName, const String &description=String::empty, bool enabled) :
-Parameter( niceName, description,triggerVar, enabled)
+Trigger::Trigger (const String& niceName, const String& description = String::empty, bool enabled) :
+    Parameter ( niceName, description, triggerVar, enabled)
 {
-  Controllable::isSavable = false;
+    Controllable::isSavable = false;
 }
 
 
@@ -36,20 +36,22 @@ Parameter( niceName, description,triggerVar, enabled)
 
 
 
-DynamicObject * Trigger::createDynamicObject()
+DynamicObject* Trigger::createDynamicObject()
 {
-	auto dObject = Controllable::createDynamicObject();
-	dObject->setMethod(jsTriggerIdentifier, setControllableValueFromJS);
-	dObject->setProperty(jsPtrIdentifier, (int64)this);
+    auto dObject = Controllable::createDynamicObject();
+    dObject->setMethod (jsTriggerIdentifier, setControllableValueFromJS);
+    dObject->setProperty (jsPtrIdentifier, (int64)this);
 
-	return dObject;
+    return dObject;
 }
 
-DynamicObject * Trigger::getObject(){
-  return new DynamicObject();
+DynamicObject* Trigger::getObject()
+{
+    return new DynamicObject();
 }
-var Trigger::getVarState(){
-  // isSavable should be false
-  jassertfalse;
-  return var::undefined();
+var Trigger::getVarState()
+{
+    // isSavable should be false
+    jassertfalse;
+    return var::undefined();
 }

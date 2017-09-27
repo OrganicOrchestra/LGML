@@ -23,9 +23,10 @@ ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 
 
-class VSTManager : public ChangeListener{
+class VSTManager : public ChangeListener
+{
 public:
-    juce_DeclareSingleton(VSTManager,false);
+    juce_DeclareSingleton (VSTManager, false);
     VSTManager();
     ~VSTManager();
 
@@ -40,9 +41,9 @@ public:
     public:
         PluginListWindow (VSTManager& owner_,
                           AudioPluginFormatManager& pluginFormatManager)
-        : DocumentWindow ("Available Plugins", Colours::white,
-                          DocumentWindow::minimiseButton | DocumentWindow::closeButton)
-        ,owner (owner_)
+            : DocumentWindow ("Available Plugins", Colours::white,
+                              DocumentWindow::minimiseButton | DocumentWindow::closeButton)
+            , owner (owner_)
         {
             const File deadMansPedalFile (getAppProperties().getUserSettings()
                                           ->getFile().getSiblingFile ("RecentlyCrashedPluginsList"));
@@ -66,7 +67,7 @@ public:
             clearContentComponent();
         }
 
-        void closeButtonPressed(){owner.pluginListWindow = nullptr;}
+        void closeButtonPressed() {owner.pluginListWindow = nullptr;}
 
     private:
         VSTManager& owner;

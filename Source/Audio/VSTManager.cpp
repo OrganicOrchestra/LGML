@@ -16,10 +16,11 @@
 #include "VSTManager.h"
 
 
-juce_ImplementSingleton(VSTManager);
+juce_ImplementSingleton (VSTManager);
 
 
-VSTManager::VSTManager(){
+VSTManager::VSTManager()
+{
     formatManager.addDefaultFormats();
 
 
@@ -29,20 +30,21 @@ VSTManager::VSTManager(){
         knownPluginList.recreateFromXml (*savedPluginList);
 
     pluginSortMethod = (KnownPluginList::SortMethod) getAppProperties().getUserSettings()
-    ->getIntValue ("pluginSortMethod", KnownPluginList::sortByManufacturer);
+                       ->getIntValue ("pluginSortMethod", KnownPluginList::sortByManufacturer);
 
 
     knownPluginList.addChangeListener (this);
 }
-VSTManager::~VSTManager(){
-        knownPluginList.removeChangeListener (this);
+VSTManager::~VSTManager()
+{
+    knownPluginList.removeChangeListener (this);
 }
 
 void VSTManager::changeListenerCallback (ChangeBroadcaster* changed)
 {
     if (changed == &knownPluginList)
     {
-//        menuItemsChanged();
+        //        menuItemsChanged();
 
         // save the plugin list every time it gets chnaged, so that if we're scanning
         // and it crashes, we've still saved the previous ones
@@ -55,8 +57,10 @@ void VSTManager::changeListenerCallback (ChangeBroadcaster* changed)
         }
     }
 }
-void VSTManager::createPluginListWindowIfNeeded(){
+void VSTManager::createPluginListWindowIfNeeded()
+{
     if (pluginListWindow == nullptr)
         pluginListWindow = new PluginListWindow (*this, formatManager);
+
     pluginListWindow->toFront (true);
 }

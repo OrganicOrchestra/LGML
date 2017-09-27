@@ -21,42 +21,42 @@
 
 
 class SerialManager :
-	private Timer
+    private Timer
 {
 public:
-	juce_DeclareSingleton(SerialManager, true);
+    juce_DeclareSingleton (SerialManager, true);
 
-	SerialManager();
-	virtual ~SerialManager();
+    SerialManager();
+    virtual ~SerialManager();
 
-	OwnedArray<SerialPortInfo> portInfos;
-	OwnedArray<SerialPort> openedPorts;
+    OwnedArray<SerialPortInfo> portInfos;
+    OwnedArray<SerialPort> openedPorts;
 
-	void init();
-	void updateDeviceList();
+    void init();
+    void updateDeviceList();
 
-	SerialPort * getPort(SerialPortInfo *  portInfo, bool createIfNotThere = true, int openBaudRate = 9600);
-  SerialPort * getPort(String hardwareID, String portName, bool createIfNotThere);
-  
-	void removePort(SerialPort * p);
+    SerialPort* getPort (SerialPortInfo*   portInfo, bool createIfNotThere = true, int openBaudRate = 9600);
+    SerialPort* getPort (String hardwareID, String portName, bool createIfNotThere);
 
-	class SerialManagerListener
-	{
-	public:
-		virtual ~SerialManagerListener() {}
-		virtual void portAdded(SerialPortInfo  *info) = 0;
-		virtual void portRemoved(SerialPortInfo  *info) = 0;
-	};
+    void removePort (SerialPort* p);
 
-	ListenerList<SerialManagerListener> listeners;
-	void addSerialManagerListener(SerialManagerListener* newListener) { listeners.add(newListener); }
-	void removeSerialManagerListener(SerialManagerListener* listener) { listeners.remove(listener); }
+    class SerialManagerListener
+    {
+    public:
+        virtual ~SerialManagerListener() {}
+        virtual void portAdded (SerialPortInfo*  info) = 0;
+        virtual void portRemoved (SerialPortInfo*  info) = 0;
+    };
+
+    ListenerList<SerialManagerListener> listeners;
+    void addSerialManagerListener (SerialManagerListener* newListener) { listeners.add (newListener); }
+    void removeSerialManagerListener (SerialManagerListener* listener) { listeners.remove (listener); }
 
 
-	// Inherited via Timer
-	virtual void timerCallback() override;
+    // Inherited via Timer
+    virtual void timerCallback() override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SerialManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SerialManager)
 };
 
 

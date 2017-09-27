@@ -25,10 +25,10 @@ static Array <PluginWindow*> activePluginWindows;
 PluginWindow::PluginWindow (Component* const pluginEditor,
                             VSTNode* const o,
                             WindowFormatType t)
-: DocumentWindow (pluginEditor->getName(), Colours::grey,
-                  DocumentWindow::minimiseButton | DocumentWindow::closeButton),
-owner (o),
-type (t)
+    : DocumentWindow (pluginEditor->getName(), Colours::grey,
+                      DocumentWindow::minimiseButton | DocumentWindow::closeButton),
+      owner (o),
+      type (t)
 {
     setSize (400, 300);
 
@@ -38,7 +38,7 @@ type (t)
     setTopLeftPosition ((int)owner->pluginWindowParameter.x->value,
                         (int)owner->pluginWindowParameter.y->value);
 
-     owner->pluginWindowParameter.isDisplayed->setValue(true);
+    owner->pluginWindowParameter.isDisplayed->setValue (true);
 
     setVisible (true);
 
@@ -55,7 +55,7 @@ PluginWindow::~PluginWindow()
 void PluginWindow::closeCurrentlyOpenWindowsFor (VSTNode* p)
 {
     for (int i = activePluginWindows.size(); --i >= 0;)
-        if (activePluginWindows.getUnchecked(i)->owner == p)
+        if (activePluginWindows.getUnchecked (i)->owner == p)
             delete activePluginWindows.getUnchecked (i);
 }
 
@@ -78,12 +78,13 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
     jassert (node != nullptr);
 
     for (int i = activePluginWindows.size(); --i >= 0;)
-        if (activePluginWindows.getUnchecked(i)->owner == node
-            && activePluginWindows.getUnchecked(i)->type == type)
-            return activePluginWindows.getUnchecked(i);
+        if (activePluginWindows.getUnchecked (i)->owner == node
+            && activePluginWindows.getUnchecked (i)->type == type)
+            return activePluginWindows.getUnchecked (i);
 
-    AudioProcessor* processor = dynamic_cast<VSTNode*>(node)->innerPlugin;
-    if(!processor)return nullptr;
+    AudioProcessor* processor = dynamic_cast<VSTNode*> (node)->innerPlugin;
+
+    if (!processor)return nullptr;
 
 
     AudioProcessorEditor* ui = nullptr;
@@ -100,8 +101,9 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
     {
         if (type == Generic || type == Parameters)
             ui = new GenericAudioProcessorEditor (processor);
-//        else if (type == Programs)
-//            ui = new ProgramAudioProcessorEditor (processor);
+
+        //        else if (type == Programs)
+        //            ui = new ProgramAudioProcessorEditor (processor);
     }
 
     if (ui != nullptr)
@@ -119,12 +121,12 @@ PluginWindow* PluginWindow::getWindowFor (VSTNode* const node,
 
 void PluginWindow::moved()
 {
-    owner->pluginWindowParameter.x->setValue((float)getX());
-    owner->pluginWindowParameter.y->setValue((float)getY());
+    owner->pluginWindowParameter.x->setValue ((float)getX());
+    owner->pluginWindowParameter.y->setValue ((float)getY());
 }
 
 void PluginWindow::closeButtonPressed()
 {
-    owner->pluginWindowParameter.isDisplayed->setValue(false);
+    owner->pluginWindowParameter.isDisplayed->setValue (false);
     delete this;
 }

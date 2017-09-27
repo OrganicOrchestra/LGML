@@ -37,7 +37,7 @@ public:
     PluginWindow (Component* pluginEditor, VSTNode*, WindowFormatType);
     ~PluginWindow();
 
-    static PluginWindow* getWindowFor (VSTNode*, WindowFormatType w=WindowFormatType::Normal );
+    static PluginWindow* getWindowFor (VSTNode*, WindowFormatType w = WindowFormatType::Normal );
 
     static void closeCurrentlyOpenWindowsFor (VSTNode*);
     static void closeAllCurrentlyOpenWindows();
@@ -58,11 +58,20 @@ inline String toString (PluginWindow::WindowFormatType type)
 {
     switch (type)
     {
-        case PluginWindow::Normal:     return "Normal";
-        case PluginWindow::Generic:    return "Generic";
-        case PluginWindow::Programs:   return "Programs";
-        case PluginWindow::Parameters: return "Parameters";
-        default:                       return String();
+        case PluginWindow::Normal:
+            return "Normal";
+
+        case PluginWindow::Generic:
+            return "Generic";
+
+        case PluginWindow::Programs:
+            return "Programs";
+
+        case PluginWindow::Parameters:
+            return "Parameters";
+
+        default:
+            return String();
     }
 }
 

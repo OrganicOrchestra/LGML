@@ -20,23 +20,23 @@
 #include "../JuceHeaderUI.h"
 
 class PresetChooserUI : public ComboBox,
-public ComboBox::Listener,
-private ControllableContainer::Listener
+    public ComboBox::Listener,
+    private ControllableContainer::Listener
 {
 public:
-	PresetChooserUI(ParameterContainer * _container);
-	~PresetChooserUI();
+    PresetChooserUI (ParameterContainer* _container);
+    ~PresetChooserUI();
 
-  WeakReference<ParameterContainer> container;
-  
-
-	virtual void updatePresetComboBox(bool forceUpdate = false);
-	virtual void comboBoxChanged(ComboBox * comboBoxThatHasChanged) override;
-
-	virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
+    WeakReference<ParameterContainer> container;
 
 
-  static void fillWithPresets(ComboBox * cb, const String & filter, bool showSaveCurrent = true) ;
+    virtual void updatePresetComboBox (bool forceUpdate = false);
+    virtual void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+
+    virtual void controllableContainerPresetLoaded (ControllableContainer*) override;
+
+
+    static void fillWithPresets (ComboBox* cb, const String& filter, bool showSaveCurrent = true) ;
 
 };
 

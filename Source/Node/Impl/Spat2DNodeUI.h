@@ -22,36 +22,36 @@
 #include "Spat2DViewerUI.h"
 
 
-class Spat2DNodeContentUI : 
-	public ConnectableNodeContentUI, 
-	public Spat2DNode::ConnectableNodeListener
+class Spat2DNodeContentUI :
+    public ConnectableNodeContentUI,
+    public Spat2DNode::ConnectableNodeListener
 {
 public:
-	Spat2DNodeContentUI();
-	virtual ~Spat2DNodeContentUI();
+    Spat2DNodeContentUI();
+    virtual ~Spat2DNodeContentUI();
 
-	Spat2DNode * spatNode;
+    Spat2DNode* spatNode;
 
-	ScopedPointer<Spat2DViewer> viewer2D;
+    ScopedPointer<Spat2DViewer> viewer2D;
 
-	ScopedPointer<ParameterUI> spatModeUI;
-	ScopedPointer<NamedParameterUI> inputStepper;
-	ScopedPointer<NamedParameterUI> outputStepper;
-	ScopedPointer<ParameterUI> radiusUI;
-	ScopedPointer<ParameterUI> useGlobalUI;
-	ScopedPointer<ParameterUI> globalRadiusUI;
+    ScopedPointer<ParameterUI> spatModeUI;
+    ScopedPointer<NamedParameterUI> inputStepper;
+    ScopedPointer<NamedParameterUI> outputStepper;
+    ScopedPointer<ParameterUI> radiusUI;
+    ScopedPointer<ParameterUI> useGlobalUI;
+    ScopedPointer<ParameterUI> globalRadiusUI;
 
-	ScopedPointer<ParameterUI> shapeModeUI;
-	ScopedPointer<ParameterUI> circleRadiusUI;
-	ScopedPointer<ParameterUI> circleRotationUI;
+    ScopedPointer<ParameterUI> shapeModeUI;
+    ScopedPointer<ParameterUI> circleRadiusUI;
+    ScopedPointer<ParameterUI> circleRotationUI;
 
-	void resized() override;
-	void init() override;
+    void resized() override;
+    void init() override;
 
-	void updateShapeModeView();
-	
-	void nodeParameterChanged(ConnectableNode *, Parameter * p) override;
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spat2DNodeContentUI)
+    void updateShapeModeView();
+
+    void nodeParameterChanged (ConnectableNode*, Parameter* p) override;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DNodeContentUI)
 };
 
 

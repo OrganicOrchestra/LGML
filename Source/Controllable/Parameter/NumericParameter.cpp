@@ -16,36 +16,39 @@
 #include "NumericParameter.h"
 
 #include "ParameterFactory.h"
-REGISTER_PARAM_TYPE_TEMPLATED(NumericParameter,int)
-REGISTER_PARAM_TYPE_TEMPLATED(NumericParameter,double)
+REGISTER_PARAM_TYPE_TEMPLATED (NumericParameter, int)
+REGISTER_PARAM_TYPE_TEMPLATED (NumericParameter, double)
 
 
 
 
 
 template<class T>
-NumericParameter<T>::NumericParameter(const String & niceName, const String &description,
-                                      const T  initialValue, const T  minValue, const T  maxValue,
-                                      bool enabled) :
-MinMaxParameter( niceName, description, var(initialValue), var(minValue), var(maxValue), enabled)
+NumericParameter<T>::NumericParameter (const String& niceName, const String& description,
+                                       const T  initialValue, const T  minValue, const T  maxValue,
+                                       bool enabled) :
+    MinMaxParameter ( niceName, description, var (initialValue), var (minValue), var (maxValue), enabled)
 {
-  if(std::is_same<T,int>::value){
-    jassert(value.isInt());
-  }
-  else if(std::is_same<T,double>::value){
-    jassert(value.isDouble());
-  }
-  else{
-    // another Numeric parameter type?
-    jassertfalse;
-  }
+    if (std::is_same<T, int>::value)
+    {
+        jassert (value.isInt());
+    }
+    else if (std::is_same<T, double>::value)
+    {
+        jassert (value.isDouble());
+    }
+    else
+    {
+        // another Numeric parameter type?
+        jassertfalse;
+    }
 
 }
 
 template<class T>
-void  NumericParameter<T>::setValueInternal(var & _value)
+void  NumericParameter<T>::setValueInternal (var& _value)
 {
-    value = jlimit<T>((T)minimumValue,(T) maximumValue, (T)_value);
+    value = jlimit<T> ((T)minimumValue, (T) maximumValue, (T)_value);
 }
 
 

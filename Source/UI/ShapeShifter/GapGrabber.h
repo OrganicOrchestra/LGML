@@ -21,31 +21,31 @@
 class GapGrabber : public juce::Component
 {
 public:
-	enum Direction { HORIZONTAL, VERTICAL };
+    enum Direction { HORIZONTAL, VERTICAL };
 
-	GapGrabber(Direction _direction);
-	virtual ~GapGrabber();
+    GapGrabber (Direction _direction);
+    virtual ~GapGrabber();
 
-	void paint(Graphics & g) override;
-	void mouseEnter(const MouseEvent &e) override;
-	void mouseExit(const MouseEvent &e) override;
-	void mouseDrag(const MouseEvent &e) override;
+    void paint (Graphics& g) override;
+    void mouseEnter (const MouseEvent& e) override;
+    void mouseExit (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
 
-	Direction direction;
+    Direction direction;
 
-	//Listener
-	class Listener
-	{
-	public:
-		virtual ~Listener() {}
-		virtual void grabberGrabUpdate(GapGrabber *, int relativeDist) = 0;
-	};
+    //Listener
+    class Listener
+    {
+    public:
+        virtual ~Listener() {}
+        virtual void grabberGrabUpdate (GapGrabber*, int relativeDist) = 0;
+    };
 
-	ListenerList<Listener> listeners;
-	void addGrabberListener(Listener* newListener) { listeners.add(newListener); }
-	void removeGrabberListener(Listener* listener) { listeners.remove(listener); }
+    ListenerList<Listener> listeners;
+    void addGrabberListener (Listener* newListener) { listeners.add (newListener); }
+    void removeGrabberListener (Listener* listener) { listeners.remove (listener); }
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GapGrabber)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GapGrabber)
 };
 
 #endif  // GAPGRABBER_H_INCLUDED

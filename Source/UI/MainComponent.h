@@ -36,7 +36,7 @@ ApplicationCommandManager& getCommandManager();
 ApplicationProperties& getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
-class MainContentComponent   : public juce::Component,public ApplicationCommandTarget,public MenuBarModel,public Engine::EngineListener,private Timer
+class MainContentComponent   : public juce::Component, public ApplicationCommandTarget, public MenuBarModel, public Engine::EngineListener, private Timer
 
 {
 public:
@@ -44,30 +44,30 @@ public:
     TooltipWindow tooltipWindow; // to add tooltips to an application, you
     // just need to create one of these and leave it
     // there to do its work..
-    Engine * engine;
+    Engine* engine;
 
-	ScopedPointer<ProgressWindow> fileProgressWindow;
+    ScopedPointer<ProgressWindow> fileProgressWindow;
 
-	// from engineListener
-	void startLoadFile() override;
-	void fileProgress(float percent, int state)override;
-	void endLoadFile() override;
+    // from engineListener
+    void startLoadFile() override;
+    void fileProgress (float percent, int state)override;
+    void endLoadFile() override;
 
 
-	void timerCallback() override;
-    
+    void timerCallback() override;
+
 
     //==============================================================================
-    MainContentComponent(Engine * e);
+    MainContentComponent (Engine* e);
     ~MainContentComponent();
 
     //==============================================================================
     // see MainComponent.cpp
 
     //==============================================================================
-  void paint (Graphics& g) override;
+    void paint (Graphics& g) override;
 
-	void paintOverChildren(Graphics & g) override;
+    void paintOverChildren (Graphics& g) override;
     void resized() override;
 
 
@@ -83,19 +83,19 @@ public:
     virtual void getCommandInfo (CommandID commandID, ApplicationCommandInfo& result) override ;
     virtual bool perform (const InvocationInfo& info) override ;
     StringArray getMenuBarNames() override ;
-    virtual PopupMenu getMenuForIndex (int topLevelMenuIndex,const String& menuName) override;
-	void menuItemSelected(int /*menuItemID*/, int /*topLevelMenuIndex*/) override;
+    virtual PopupMenu getMenuForIndex (int topLevelMenuIndex, const String& menuName) override;
+    void menuItemSelected (int /*menuItemID*/, int /*topLevelMenuIndex*/) override;
 
 
     void updateStimulateAudioItem (ApplicationCommandInfo& info);
-	void focusGained(FocusChangeType cause)override;
+    void focusGained (FocusChangeType cause)override;
 
 private:
     //==============================================================================
 
     // Your private member variables go here...
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };
 
 

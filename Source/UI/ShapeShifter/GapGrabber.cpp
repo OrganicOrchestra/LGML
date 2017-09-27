@@ -16,40 +16,42 @@
 #include "GapGrabber.h"
 #include "../Style.h"
 
-GapGrabber::GapGrabber(Direction _direction) : direction(_direction)
+GapGrabber::GapGrabber (Direction _direction) : direction (_direction)
 {
-	setRepaintsOnMouseActivity(true);
+    setRepaintsOnMouseActivity (true);
 }
 
 GapGrabber::~GapGrabber()
 {
 }
 
-void GapGrabber::paint(Graphics & g)
+void GapGrabber::paint (Graphics& g)
 {
-	int grabberSize = 100;
-	Rectangle<int> r = getLocalBounds().reduced(2);
-	Rectangle<int> tr = (direction == Direction::HORIZONTAL) ? r.withHeight(grabberSize) : r.withWidth(grabberSize);
-	tr.setCentre(r.getCentre());
-	Colour c = findColour(ResizableWindow::backgroundColourId).brighter(.1f);
-	if (isMouseOver()) c = findColour(TextButton::buttonOnColourId);
-	if (isMouseButtonDown()) c = c.brighter();
+    int grabberSize = 100;
+    Rectangle<int> r = getLocalBounds().reduced (2);
+    Rectangle<int> tr = (direction == Direction::HORIZONTAL) ? r.withHeight (grabberSize) : r.withWidth (grabberSize);
+    tr.setCentre (r.getCentre());
+    Colour c = findColour (ResizableWindow::backgroundColourId).brighter (.1f);
 
-	g.setColour(c);
-	g.fillRoundedRectangle(tr.toFloat(), 2);
+    if (isMouseOver()) c = findColour (TextButton::buttonOnColourId);
+
+    if (isMouseButtonDown()) c = c.brighter();
+
+    g.setColour (c);
+    g.fillRoundedRectangle (tr.toFloat(), 2);
 }
 
-void GapGrabber::mouseEnter(const MouseEvent &)
+void GapGrabber::mouseEnter (const MouseEvent&)
 {
-	setMouseCursor(direction == HORIZONTAL?MouseCursor::LeftRightResizeCursor:MouseCursor::UpDownResizeCursor);
+    setMouseCursor (direction == HORIZONTAL ? MouseCursor::LeftRightResizeCursor : MouseCursor::UpDownResizeCursor);
 }
 
-void GapGrabber::mouseExit(const MouseEvent &)
+void GapGrabber::mouseExit (const MouseEvent&)
 {
-	setMouseCursor(MouseCursor::NormalCursor);
+    setMouseCursor (MouseCursor::NormalCursor);
 }
 
-void GapGrabber::mouseDrag(const MouseEvent &e)
+void GapGrabber::mouseDrag (const MouseEvent& e)
 {
-	listeners.call(&Listener::grabberGrabUpdate, this, direction == HORIZONTAL?e.getPosition().x:e.getPosition().y);
+    listeners.call (&Listener::grabberGrabUpdate, this, direction == HORIZONTAL ? e.getPosition().x : e.getPosition().y);
 }

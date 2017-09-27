@@ -29,31 +29,32 @@
 //const Colour TEXTNAME_COLOR  (0xff999999);
 //const Colour AUDIO_COLOR     (0xff5f9ea0);//(Colours::cadetblue);//
 //const Colour DATA_COLOR      (0xffffc0cb);//(Colours::pink);//
-//const Colour FEEDBACK_COLOR		(0xff18b5ef);
+//const Colour FEEDBACK_COLOR       (0xff18b5ef);
 
 //SLIDER 0xff99ff66
 
 
-LookAndFeelOO::LookAndFeelOO(){
-  juce::LookAndFeel_V4::ColourScheme scheme (
-                                             0xff222222,      //    windowBackground,
-                                             0xff666666,      //    widgetBackground,
-                                             0xff444444,      //    menuBackground,
-                                             0xcc303030,      //    outline,
-                                             0xffCCCCCC,      //    defaultText,
-                                             Colour(0xff232323).brighter(0.5f),//    defaultFill,
-                                             0xff999999,      //    highlightedText,
-                                             0xff111111,      //    highlightedFill,
-                                             0xffCCCCCC       //    menuText,
-                                            );
-  LookAndFeel_V4::setColourScheme(scheme);
-  setColour(Slider::trackColourId,Colour(0xff99ff66));
-  setColour(Slider::backgroundColourId,Colours::black.withAlpha(0.1f));
-  setColour(TextButton::buttonOnColourId,Colour(0xffFF922F));
-  setColour(LGMLColors::audioColor, Colours::cadetblue);
-  setColour(LGMLColors::dataColor, Colours::pink);
-  setColour(LGMLColors::elementBackground,findColour(ResizableWindow::backgroundColourId).brighter(0.1f));
-  setColour(TooltipWindow::backgroundColourId,Colours::black);
+LookAndFeelOO::LookAndFeelOO()
+{
+    juce::LookAndFeel_V4::ColourScheme scheme (
+        0xff222222,      //    windowBackground,
+        0xff666666,      //    widgetBackground,
+        0xff444444,      //    menuBackground,
+        0xcc303030,      //    outline,
+        0xffCCCCCC,      //    defaultText,
+        Colour (0xff232323).brighter (0.5f), //    defaultFill,
+        0xff999999,      //    highlightedText,
+        0xff111111,      //    highlightedFill,
+        0xffCCCCCC       //    menuText,
+    );
+    LookAndFeel_V4::setColourScheme (scheme);
+    setColour (Slider::trackColourId, Colour (0xff99ff66));
+    setColour (Slider::backgroundColourId, Colours::black.withAlpha (0.1f));
+    setColour (TextButton::buttonOnColourId, Colour (0xffFF922F));
+    setColour (LGMLColors::audioColor, Colours::cadetblue);
+    setColour (LGMLColors::dataColor, Colours::pink);
+    setColour (LGMLColors::elementBackground, findColour (ResizableWindow::backgroundColourId).brighter (0.1f));
+    setColour (TooltipWindow::backgroundColourId, Colours::black);
 
 }
 
@@ -61,30 +62,33 @@ LookAndFeelOO::~LookAndFeelOO()  {}
 
 //==============================================================================
 
-static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour, float height,bool isToggle)
+static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour, float height, bool isToggle)
 {
-  const float mainBrightness = baseColour.getBrightness();
-  const float mainAlpha = baseColour.getFloatAlpha();
+    const float mainBrightness = baseColour.getBrightness();
+    const float mainAlpha = baseColour.getFloatAlpha();
 
-  auto bounds = outline.getBounds();
+    auto bounds = outline.getBounds();
 
-  if(isToggle){
-    g.setGradientFill(ColourGradient(baseColour.brighter(),(float)bounds.getCentreX(),(float)bounds.getCentreY(), baseColour.darker(), 2.f,2.f,true));
-  }
-  else{
-    g.setGradientFill (ColourGradient (baseColour.brighter (0.2f), 0.0f, 0.0f,
-                                       baseColour.darker (0.25f), 0.0f, height, false));
-  }
-//  g.setGradientFill(ColourGradient(baseColour.brighter(),(float)bounds.getCentreX(),(float)bounds.getCentreY(), baseColour.darker(), 2.f,2.f,true));
-  //    g.setColour(baseColour);
-  g.fillPath (outline);
+    if (isToggle)
+    {
+        g.setGradientFill (ColourGradient (baseColour.brighter(), (float)bounds.getCentreX(), (float)bounds.getCentreY(), baseColour.darker(), 2.f, 2.f, true));
+    }
+    else
+    {
+        g.setGradientFill (ColourGradient (baseColour.brighter (0.2f), 0.0f, 0.0f,
+                                           baseColour.darker (0.25f), 0.0f, height, false));
+    }
 
-  g.setColour (Colours::white.withAlpha (0.4f * mainAlpha * mainBrightness * mainBrightness));
-  g.strokePath (outline, PathStrokeType (1.0f), AffineTransform::translation (0.0f, 1.0f)
-                .scaled (1.0f, (height - 1.6f) / height));
+    //  g.setGradientFill(ColourGradient(baseColour.brighter(),(float)bounds.getCentreX(),(float)bounds.getCentreY(), baseColour.darker(), 2.f,2.f,true));
+    //    g.setColour(baseColour);
+    g.fillPath (outline);
 
-  g.setColour (Colours::black.withAlpha (0.4f * mainAlpha));
-  g.strokePath (outline, PathStrokeType (1.0f));
+    g.setColour (Colours::white.withAlpha (0.4f * mainAlpha * mainBrightness * mainBrightness));
+    g.strokePath (outline, PathStrokeType (1.0f), AffineTransform::translation (0.0f, 1.0f)
+                  .scaled (1.0f, (height - 1.6f) / height));
+
+    g.setColour (Colours::black.withAlpha (0.4f * mainAlpha));
+    g.strokePath (outline, PathStrokeType (1.0f));
 }
 
 
@@ -94,56 +98,56 @@ void LookAndFeelOO::drawButtonBackground (Graphics& g,
                                           bool isMouseOverButton,
                                           bool isButtonDown)
 {
-  Colour baseColour (backgroundColour.withMultipliedSaturation (button.hasKeyboardFocus (true) ? 1.3f : 0.9f)
-                     .withMultipliedAlpha (button.isEnabled() ? 0.9f : 0.5f));
+    Colour baseColour (backgroundColour.withMultipliedSaturation (button.hasKeyboardFocus (true) ? 1.3f : 0.9f)
+                       .withMultipliedAlpha (button.isEnabled() ? 0.9f : 0.5f));
 
-  if (isButtonDown || isMouseOverButton)
-    baseColour = baseColour.contrasting (isButtonDown ? 0.2f : 0.1f);
+    if (isButtonDown || isMouseOverButton)
+        baseColour = baseColour.contrasting (isButtonDown ? 0.2f : 0.1f);
 
-  const bool flatOnLeft   = button.isConnectedOnLeft();
-  const bool flatOnRight  = button.isConnectedOnRight();
-  const bool flatOnTop    = button.isConnectedOnTop();
-  const bool flatOnBottom = button.isConnectedOnBottom();
+    const bool flatOnLeft   = button.isConnectedOnLeft();
+    const bool flatOnRight  = button.isConnectedOnRight();
+    const bool flatOnTop    = button.isConnectedOnTop();
+    const bool flatOnBottom = button.isConnectedOnBottom();
 
-  const float width  = button.getWidth() - 1.0f;
-  const float height = button.getHeight() - 1.0f;
+    const float width  = button.getWidth() - 1.0f;
+    const float height = button.getHeight() - 1.0f;
 
-  if (width > 0 && height > 0)
-  {
-    const float cornerSize = 3.0f;
+    if (width > 0 && height > 0)
+    {
+        const float cornerSize = 3.0f;
 
-    Path outline;
-    outline.addRoundedRectangle (0.5f, 0.5f, width, height, cornerSize, cornerSize,
-                                 ! (flatOnLeft  || flatOnTop),
-                                 ! (flatOnRight || flatOnTop),
-                                 ! (flatOnLeft  || flatOnBottom),
-                                 ! (flatOnRight || flatOnBottom));
+        Path outline;
+        outline.addRoundedRectangle (0.5f, 0.5f, width, height, cornerSize, cornerSize,
+                                     ! (flatOnLeft  || flatOnTop),
+                                     ! (flatOnRight || flatOnTop),
+                                     ! (flatOnLeft  || flatOnBottom),
+                                     ! (flatOnRight || flatOnBottom));
 
-    drawButtonShape (g, outline, baseColour, height,button.getClickingTogglesState());
+        drawButtonShape (g, outline, baseColour, height, button.getClickingTogglesState());
 
-  }
+    }
 }
 
 constexpr int comboButtonW = 10;
 void LookAndFeelOO::drawComboBox (Graphics& g, int width, int height, const bool isButtonDown,
-                                   int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& box)
+                                  int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& box)
 {
-  buttonX = 2;
-  buttonW = comboButtonW;
+    buttonX = 2;
+    buttonW = comboButtonW;
     g.fillAll (box.findColour (ComboBox::backgroundColourId));
 
     if (box.isEnabled() && box.hasKeyboardFocus (false))
     {
         g.setColour (box.findColour (ComboBox::buttonColourId));
-        g.drawRoundedRectangle(0, 0, (float)width, (float)height, 2,2);
+        g.drawRoundedRectangle (0, 0, (float)width, (float)height, 2, 2);
     }
     else
     {
         g.setColour (box.findColour (ComboBox::outlineColourId));
-        g.drawRoundedRectangle(0, 0, (float)width, (float)height,2,2);
+        g.drawRoundedRectangle (0, 0, (float)width, (float)height, 2, 2);
     }
 
-//    const float outlineThickness = box.isEnabled() ? (isButtonDown ? 1.2f : 0.5f) : 0.3f;
+    //    const float outlineThickness = box.isEnabled() ? (isButtonDown ? 1.2f : 0.5f) : 0.3f;
 
     const Colour baseColour (LookAndFeelHelpers::createBaseColour (box.findColour (ComboBox::buttonColourId),
                                                                    box.hasKeyboardFocus (true),
@@ -181,9 +185,9 @@ Font LookAndFeelOO::getComboBoxFont (ComboBox& box)
 
 void LookAndFeelOO::positionComboBoxText (ComboBox& box, Label& label)
 {
-  int buttonW = comboButtonW;
-    label.setBounds (1+buttonW, 1,
-                     box.getWidth() -buttonW,
+    int buttonW = comboButtonW;
+    label.setBounds (1 + buttonW, 1,
+                     box.getWidth() - buttonW,
                      box.getHeight() - 2);
 
     label.setFont (getComboBoxFont (box));
@@ -194,8 +198,9 @@ class LookAndFeelOO::SliderLabelComp  : public Label
 public:
     SliderLabelComp() : Label (String::empty, String::empty) {}
 
-    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& d) {
-      Component::mouseWheelMove(e, d);
+    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& d)
+    {
+        Component::mouseWheelMove (e, d);
     }
 };
 

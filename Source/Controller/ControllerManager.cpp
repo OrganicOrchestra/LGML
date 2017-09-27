@@ -15,56 +15,56 @@
 
 #include "ControllerManager.h"
 
-juce_ImplementSingleton(ControllerManager);
+juce_ImplementSingleton (ControllerManager);
 
 
 ControllerManager::ControllerManager() :
-ParameterContainer("Controllers")
+    ParameterContainer ("Controllers")
 {
-  nameParam->isEditable = false;
-  setCustomShortName("control");
+    nameParam->isEditable = false;
+    setCustomShortName ("control");
 }
 
 ControllerManager::~ControllerManager()
 {
-  clear();
+    clear();
 }
 
 
-Controller * ControllerManager::addController(Controller* c)
+Controller* ControllerManager::addController (Controller* c)
 {
 
-  c->nameParam->setValue(getUniqueNameInContainer(c->nameParam->stringValue()));
+    c->nameParam->setValue (getUniqueNameInContainer (c->nameParam->stringValue()));
 
-  controllers.add(c);
+    controllers.add (c);
 
-  addChildControllableContainer(c);
-  listeners.call(&ControllerManager::Listener::controllerAdded, c);
-  return c;
+    addChildControllableContainer (c);
+    listeners.call (&ControllerManager::Listener::controllerAdded, c);
+    return c;
 }
 
-void ControllerManager::removeController(Controller * c)
+void ControllerManager::removeController (Controller* c)
 {
 
-  removeChildControllableContainer(c);
-  listeners.call(&ControllerManager::Listener::controllerRemoved, c);
-  controllers.removeObject(c);
+    removeChildControllableContainer (c);
+    listeners.call (&ControllerManager::Listener::controllerRemoved, c);
+    controllers.removeObject (c);
 }
 
 void ControllerManager::clear()
 {
 
-  while (controllers.size())
-  {
-    controllers[0]->remove();
-  }
+    while (controllers.size())
+    {
+        controllers[0]->remove();
+    }
 }
 
 
 
-ParameterContainer *  ControllerManager::addContainerFromObject(const String & /*name*/,DynamicObject *  ob)
+ParameterContainer*   ControllerManager::addContainerFromObject (const String& /*name*/, DynamicObject*   ob)
 {
-  return addController(ControllerFactory::createBaseFromObject(String::empty, ob));
+    return addController (ControllerFactory::createBaseFromObject (String::empty, ob));
 
 }
 

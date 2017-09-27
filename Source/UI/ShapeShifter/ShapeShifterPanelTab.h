@@ -18,41 +18,41 @@
 
 #include "ShapeShifterContent.h"//keep
 class ShapeShifterPanelTab :
-	public juce::Component,
-	public ButtonListener
+    public juce::Component,
+    public ButtonListener
 {
 public:
-	ShapeShifterPanelTab(ShapeShifterContent * _content);
-	~ShapeShifterPanelTab();
+    ShapeShifterPanelTab (ShapeShifterContent* _content);
+    ~ShapeShifterPanelTab();
 
-	ShapeShifterContent * content;
-	Label panelLabel;
-	ImageButton closePanelBT;
+    ShapeShifterContent* content;
+    Label panelLabel;
+    ImageButton closePanelBT;
 
-	bool selected;
-	void setSelected(bool value);
+    bool selected;
+    void setSelected (bool value);
 
-	void paint(Graphics &g) override;
-	void resized()override;
+    void paint (Graphics& g) override;
+    void resized()override;
 
-	int getLabelWidth();
+    int getLabelWidth();
 
-	void buttonClicked(Button * b) override;
+    void buttonClicked (Button* b) override;
 
-	//Listener
-	class TabListener
-	{
-	public:
-		virtual ~TabListener() {};
-		virtual void askForRemoveTab(ShapeShifterPanelTab *) {};
-	};
+    //Listener
+    class TabListener
+    {
+    public:
+        virtual ~TabListener() {};
+        virtual void askForRemoveTab (ShapeShifterPanelTab*) {};
+    };
 
-	ListenerList<TabListener> tabListeners;
-	void addShapeShifterTabListener(TabListener* newListener) { tabListeners.add(newListener); }
-	void removeShapeShifterTabListener(TabListener* listener) { tabListeners.remove(listener); }
+    ListenerList<TabListener> tabListeners;
+    void addShapeShifterTabListener (TabListener* newListener) { tabListeners.add (newListener); }
+    void removeShapeShifterTabListener (TabListener* listener) { tabListeners.remove (listener); }
 
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterPanelTab)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterPanelTab)
 };
 
 

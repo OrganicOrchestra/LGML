@@ -21,31 +21,31 @@
 #include "../../ControllableHelpers.h"
 
 class ParameterProxyUI :
-	public ParameterUI,
-	public ParameterProxy::ParameterProxyListener,
-	public ControllableReferenceUI::Listener
+    public ParameterUI,
+    public ParameterProxy::ParameterProxyListener,
+    public ControllableReferenceUI::Listener
 {
 public:
-	ParameterProxyUI(ParameterProxy * proxy=nullptr);
-	virtual ~ParameterProxyUI();
+    ParameterProxyUI (ParameterProxy* proxy = nullptr);
+    virtual ~ParameterProxyUI();
 
-	ControllableReferenceUI chooser;
+    ControllableReferenceUI chooser;
 
-	ParameterProxy * paramProxy;
+    ParameterProxy* paramProxy;
 
-	ScopedPointer<Component> linkedParamUI;
-  
-
-	void resized()override ;
-
-	void setLinkedParamUI(Parameter *);
+    ScopedPointer<Component> linkedParamUI;
 
 
+    void resized()override ;
 
-	virtual void linkedParamChanged(ParameterProxy * c) override;
-	virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable * c) override;
+    void setLinkedParamUI (Parameter*);
 
-	virtual void controllableNameChanged(Controllable * c) override;
+
+
+    virtual void linkedParamChanged (ParameterProxy* c) override;
+    virtual void choosedControllableChanged (ControllableReferenceUI*, Controllable* c) override;
+
+    virtual void controllableNameChanged (Controllable* c) override;
 
 };
 

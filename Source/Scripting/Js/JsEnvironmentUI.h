@@ -21,26 +21,27 @@
 #include "../../Controllable/Parameter/UI/ParameterUI.h"
 class StringParameterUI;
 
-class JsEnvironmentUI : public juce::Component,public JsEnvironment::Listener{
+class JsEnvironmentUI : public juce::Component, public JsEnvironment::Listener
+{
 public:
-	JsEnvironmentUI(JSEnvContainer * _env);
-  ~JsEnvironmentUI();
+    JsEnvironmentUI (JSEnvContainer* _env);
+    ~JsEnvironmentUI();
 
     ScopedPointer<ParameterUI> loadFileB;
     ScopedPointer<ParameterUI>  reloadB;
     ScopedPointer<ParameterUI> openB;
     ScopedPointer<ParameterUI> logEnvB;
     ScopedPointer<ParameterUI> watchT;
-  ScopedPointer<StringParameterUI> path;
+    ScopedPointer<StringParameterUI> path;
     DrawablePath validJsLed;
-	void resized()override;
+    void resized()override;
 
-	void buildLed(int size);
+    void buildLed (int size);
 
-	void newJsFileLoaded(bool s) override;
+    void newJsFileLoaded (bool s) override;
 
-  JSEnvContainer * cont;
-    JsEnvironment * env;
+    JSEnvContainer* cont;
+    JsEnvironment* env;
 };
 
 

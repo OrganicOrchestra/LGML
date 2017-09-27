@@ -22,38 +22,38 @@
 class StringParameterUI : public ParameterUI, public Label::Listener
 {
 public:
-    StringParameterUI(Parameter * p);
-    virtual ~StringParameterUI(){};
+    StringParameterUI (Parameter* p);
+    virtual ~StringParameterUI() {};
 
     Label nameLabel;
     Label valueLabel;
 
-	String prefix;
-	String suffix;
+    String prefix;
+    String suffix;
 
-	float maxFontHeight;
+    float maxFontHeight;
 
-	bool autoSize;
-	void setAutoSize(bool value);
+    bool autoSize;
+    void setAutoSize (bool value);
 
-	void setPrefix(const String &_prefix);
-	void setSuffix(const String &_suffix);
+    void setPrefix (const String& _prefix);
+    void setSuffix (const String& _suffix);
 
     bool nameLabelIsVisible;
-    void setNameLabelVisible(bool visible);
-  void setBackGroundIsTransparent(bool t);
+    void setNameLabelVisible (bool visible);
+    void setBackGroundIsTransparent (bool t);
 
-  
+
     void resized() override;
 
 
 protected:
-    void valueChanged(const var & v) override;
+    void valueChanged (const var& v) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StringParameterUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StringParameterUI)
 
-        // Inherited via Listener
-    virtual void labelTextChanged(Label * labelThatHasChanged) override;
+    // Inherited via Listener
+    virtual void labelTextChanged (Label* labelThatHasChanged) override;
 };
 
 

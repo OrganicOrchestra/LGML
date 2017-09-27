@@ -24,30 +24,33 @@
 
 
 
-namespace LookAndFeelHelpers {
+namespace LookAndFeelHelpers
+{
 
 
 
-    forcedinline static Colour createBaseColour(Colour buttonColour,
-        bool hasKeyboardFocus,
-        bool isMouseOverButton,
-        bool isButtonDown) noexcept
-    {
-        const float sat = hasKeyboardFocus ? 1.3f : 0.9f;
-        const Colour baseColour(buttonColour.withMultipliedSaturation(sat));
+forcedinline static Colour createBaseColour (Colour buttonColour,
+                                             bool hasKeyboardFocus,
+                                             bool isMouseOverButton,
+                                             bool isButtonDown) noexcept
+{
+    const float sat = hasKeyboardFocus ? 1.3f : 0.9f;
+    const Colour baseColour (buttonColour.withMultipliedSaturation (sat));
 
-        if (isButtonDown)      return baseColour.contrasting(0.2f);
-        if (isMouseOverButton) return baseColour.contrasting(0.1f);
+    if (isButtonDown)      return baseColour.contrasting (0.2f);
 
-        return baseColour;
-    }
+    if (isMouseOverButton) return baseColour.contrasting (0.1f);
+
+    return baseColour;
+}
 
 
 
 };
 
 
-class LookAndFeelOO:public LookAndFeel_V4{
+class LookAndFeelOO: public LookAndFeel_V4
+{
 public:
 
     LookAndFeelOO();

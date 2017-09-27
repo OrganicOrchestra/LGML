@@ -17,93 +17,98 @@
 #include "../NodeManager.h"
 
 //==============================================================================
-NodeManagerUI::NodeManagerUI(NodeManager * nodeManager) :
-nodeManager(nodeManager),
-currentViewer(nullptr)
+NodeManagerUI::NodeManagerUI (NodeManager* nodeManager) :
+    nodeManager (nodeManager),
+    currentViewer (nullptr)
 {
-	nodeManager->addNodeManagerListener(this);
-	setCurrentViewedContainer(nodeManager->mainContainer);
-  
+    nodeManager->addNodeManagerListener (this);
+    setCurrentViewedContainer (nodeManager->mainContainer);
+
 }
 
 NodeManagerUI::~NodeManagerUI()
 {
-	nodeManager->removeNodeManagerListener(this);
-	clear();
-	setCurrentViewedContainer(nullptr);
+    nodeManager->removeNodeManagerListener (this);
+    clear();
+    setCurrentViewedContainer (nullptr);
 
 }
 
 void NodeManagerUI::clear()
 {
-	setCurrentViewedContainer(nodeManager->mainContainer);
+    setCurrentViewedContainer (nodeManager->mainContainer);
 }
 
 void NodeManagerUI::resized()
 {
 
-	Rectangle<int> r = getLocalBounds();
-	if (currentViewer != nullptr)
-	{
-		currentViewer->setTopLeftPosition(0, 0);
-		currentViewer->setSize(jmax<int>(getWidth(), currentViewer->getWidth()), jmax<int>(getHeight(), currentViewer->getHeight()));
-	}
+    Rectangle<int> r = getLocalBounds();
+
+    if (currentViewer != nullptr)
+    {
+        currentViewer->setTopLeftPosition (0, 0);
+        currentViewer->setSize (jmax<int> (getWidth(), currentViewer->getWidth()), jmax<int> (getHeight(), currentViewer->getHeight()));
+    }
 }
 
 int NodeManagerUI::getContentWidth()
 {
-	return (currentViewer == nullptr) ? 0 : currentViewer->getWidth();
+    return (currentViewer == nullptr) ? 0 : currentViewer->getWidth();
 }
 
 int NodeManagerUI::getContentHeight()
 {
-	return (currentViewer == nullptr) ? 0 : currentViewer->getHeight();
+    return (currentViewer == nullptr) ? 0 : currentViewer->getHeight();
 }
 
 void NodeManagerUI::managerCleared()
 {
-	clear();
+    clear();
 }
 
-void NodeManagerUI::setCurrentViewedContainer(NodeContainer * c)
+void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
 {
-	if (currentViewer != nullptr)
-	{
-		if (currentViewer->nodeContainer == c) return;
+    if (currentViewer != nullptr)
+    {
+        if (currentViewer->nodeContainer == c) return;
 
-		removeChildComponent(currentViewer);
-		currentViewer = nullptr;
-	}
+        removeChildComponent (currentViewer);
+        currentViewer = nullptr;
+    }
 
-	if (c != nullptr)
-	{
-		currentViewer = new NodeContainerViewer(c);
-		addAndMakeVisible(currentViewer);
-		currentViewer->setTopLeftPosition(0, 0);
-    currentViewer->setSelected(true);
-
-	}
-	setSize(0, 0);
-	resized();
-	nodeManagerUIListeners.call(&NodeManagerUIListener::currentViewedContainerChanged);
-
-}
-void NodeManagerUI::childBoundsChanged(Component * )
-{
-	if (currentViewer != nullptr)
-	{
-		setSize(currentViewer->getWidth(), currentViewer->getHeight());
-	}
-}
-
-bool NodeManagerUI::keyPressed(const KeyPress & key){
-  if(key.getModifiers().isCommandDown() && key.getKeyCode()==KeyPress::upKey){
-    if(NodeContainer * c = (currentViewer->nodeContainer->getParentNodeContainer())){
-        setCurrentViewedContainer(c);
-        return true;
+    if (c != nullptr)
+    {
+        currentViewer = new NodeContainerViewer (c);
+        addAndMakeVisible (currentViewer);
+        currentViewer->setTopLeftPosition (0, 0);
+        currentViewer->setSelected (true);
 
     }
-  }
+
+    setSize (0, 0);
+    resized();
+    nodeManagerUIListeners.call (&NodeManagerUIListener::currentViewedContainerChanged);
+
+}
+void NodeManagerUI::childBoundsChanged (Component* )
+{
+    if (currentViewer != nullptr)
+    {
+        setSize (currentViewer->getWidth(), currentViewer->getHeight());
+    }
+}
+
+bool NodeManagerUI::keyPressed (const KeyPress& key)
+{
+    if (key.getModifiers().isCommandDown() && key.getKeyCode() == KeyPress::upKey)
+    {
+        if (NodeContainer* c = (currentViewer->nodeContainer->getParentNodeContainer()))
+        {
+            setCurrentViewedContainer (c);
+            return true;
+
+        }
+    }
 
     return false;
 }

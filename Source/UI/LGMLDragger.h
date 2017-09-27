@@ -23,57 +23,59 @@
 class ParameterUI;
 class DraggedComponent;
 
-class LGMLDragger : MouseListener{
+class LGMLDragger : MouseListener
+{
 public:
 
-  LGMLDragger();
-  ~LGMLDragger();
-  juce_DeclareSingleton(LGMLDragger, true);
+    LGMLDragger();
+    ~LGMLDragger();
+    juce_DeclareSingleton (LGMLDragger, true);
 
-  void setMainComponent(Component * c,TooltipWindow * tip);
+    void setMainComponent (Component* c, TooltipWindow* tip);
 
-  Component * mainComp;
-  TooltipWindow * tip;
+    Component* mainComp;
+    TooltipWindow* tip;
 
-  void registerDragCandidate(ParameterUI * c);
-  void unRegisterDragCandidate(ParameterUI * c);
-
-
-  void mouseEnter(const MouseEvent &e)override;
-  void mouseUp(const MouseEvent &e)override;
-  void mouseExit(const MouseEvent &e) override;
-  
-  
-  void startDraggingComponent (Component* const componentToDrag, const MouseEvent& e);
-  void dragComponent (Component* const componentToDrag, const MouseEvent& e,ComponentBoundsConstrainer* const constrainer);
-  void endDraggingComponent(Component *  componentToDrag,const MouseEvent & e);
+    void registerDragCandidate (ParameterUI* c);
+    void unRegisterDragCandidate (ParameterUI* c);
 
 
-
-  ScopedPointer<DraggedComponent> dragCandidate;
-  void setMappingActive(bool isActive);
-  void toggleMappingMode();
-  bool isMappingActive;
-
-  void setSelected(ParameterUI *);
-
-  Component*  dropCandidate;
-
-  WeakReference<ParameterUI> selected;
+    void mouseEnter (const MouseEvent& e)override;
+    void mouseUp (const MouseEvent& e)override;
+    void mouseExit (const MouseEvent& e) override;
 
 
-  class Listener{
-  public:
-    virtual ~Listener(){};
-    virtual void selectionChanged(Parameter *) = 0;
-  };
-  void addSelectionListener(Listener* l ){listeners.add(l);}
-  void removeSelectionListener(Listener* l ){listeners.remove(l);}
+    void startDraggingComponent (Component* const componentToDrag, const MouseEvent& e);
+    void dragComponent (Component* const componentToDrag, const MouseEvent& e, ComponentBoundsConstrainer* const constrainer);
+    void endDraggingComponent (Component*   componentToDrag, const MouseEvent& e);
+
+
+
+    ScopedPointer<DraggedComponent> dragCandidate;
+    void setMappingActive (bool isActive);
+    void toggleMappingMode();
+    bool isMappingActive;
+
+    void setSelected (ParameterUI*);
+
+    Component*  dropCandidate;
+
+    WeakReference<ParameterUI> selected;
+
+
+    class Listener
+    {
+    public:
+        virtual ~Listener() {};
+        virtual void selectionChanged (Parameter*) = 0;
+    };
+    void addSelectionListener (Listener* l ) {listeners.add (l);}
+    void removeSelectionListener (Listener* l ) {listeners.remove (l);}
 private:
 
-  Component * selectedSSContent;
-  ListenerList<Listener> listeners;
-  Point<int> mouseDownWithinTarget;
+    Component* selectedSSContent;
+    ListenerList<Listener> listeners;
+    Point<int> mouseDownWithinTarget;
 
 
 };

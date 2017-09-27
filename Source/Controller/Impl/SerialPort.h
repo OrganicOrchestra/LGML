@@ -22,117 +22,118 @@
 #include "../../Utils/QueuedNotifier.h"
 
 #if !defined __arm__
-	#define SERIALSUPPORT 1
+    #define SERIALSUPPORT 1
 #else
-	#define SERIALSUPPORT 0
+    #define SERIALSUPPORT 0
 #endif
 
 #if SERIALSUPPORT
-#include "serial/serial.h"
-using namespace serial;
+    #include "serial/serial.h"
+    using namespace serial;
 #endif
 
 
 class SerialPort;
 
 class SerialReadThread :
-	public Thread
+    public Thread
 {
 public:
 
-	SerialReadThread(String name, SerialPort * _port);
-	virtual ~SerialReadThread();
+    SerialReadThread (String name, SerialPort* _port);
+    virtual ~SerialReadThread();
 
-	SerialPort * port;
+    SerialPort* port;
 
-	virtual void run() override;
+    virtual void run() override;
 
-	// ASYNC
-	QueuedNotifier<var> queuedNotifier;
-	typedef QueuedNotifier<var>::Listener AsyncListener;
+    // ASYNC
+    QueuedNotifier<var> queuedNotifier;
+    typedef QueuedNotifier<var>::Listener AsyncListener;
 
-  class SerialThreadListener{
-  public:
-    virtual ~SerialThreadListener(){};
-    virtual void newMessage(const var &){};
-  };
+    class SerialThreadListener
+    {
+    public:
+        virtual ~SerialThreadListener() {};
+        virtual void newMessage (const var&) {};
+    };
 
-  ListenerList<SerialThreadListener> serialThreadListeners;
+    ListenerList<SerialThreadListener> serialThreadListeners;
 
-  void addSerialListener(SerialThreadListener* newListener) { serialThreadListeners.add(newListener); }
-  void removeSerialListener(SerialThreadListener* listener) { serialThreadListeners.remove(listener); }
-	void addAsyncSerialListener(AsyncListener* newListener) { queuedNotifier.addListener(newListener); }
-	void removeAsyncSerialListener(AsyncListener* listener) { queuedNotifier.removeListener(listener); }
+    void addSerialListener (SerialThreadListener* newListener) { serialThreadListeners.add (newListener); }
+    void removeSerialListener (SerialThreadListener* listener) { serialThreadListeners.remove (listener); }
+    void addAsyncSerialListener (AsyncListener* newListener) { queuedNotifier.addListener (newListener); }
+    void removeAsyncSerialListener (AsyncListener* listener) { queuedNotifier.removeListener (listener); }
 
 };
 
 class SerialPortInfo
 {
 public:
-	SerialPortInfo(String _port, String _description, String _hardwareID) :
-		port(_port), description(_description), hardwareID(_hardwareID)
-	{}
+    SerialPortInfo (String _port, String _description, String _hardwareID) :
+        port (_port), description (_description), hardwareID (_hardwareID)
+    {}
 
-	virtual ~SerialPortInfo() {}
+    virtual ~SerialPortInfo() {}
 
-	String port;
-	String description;
-	String hardwareID;
+    String port;
+    String description;
+    String hardwareID;
 
 
 };
 
 class SerialPort :
 #ifdef SYNCHRONOUS_SERIAL_LISTENERS
-public SerialReadThread::SerialThreadListener
+    public SerialReadThread::SerialThreadListener
 #else
-public SerialReadThread::AsyncListener
+    public SerialReadThread::AsyncListener
 #endif
 {
 public:
-	SerialReadThread thread;
+    SerialReadThread thread;
 
-	enum PortMode { LINES, DATA255, RAW, COBS };
+    enum PortMode { LINES, DATA255, RAW, COBS };
 
-	#if SERIALSUPPORT
-		SerialPort(Serial *port, SerialPortInfo * info, PortMode mode = LINES);
-		ScopedPointer<Serial> port;
-	#else
-		SerialPort(SerialPortInfo * info, PortMode mode = LINES);
-	#endif
+#if SERIALSUPPORT
+    SerialPort (Serial* port, SerialPortInfo* info, PortMode mode = LINES);
+    ScopedPointer<Serial> port;
+#else
+    SerialPort (SerialPortInfo* info, PortMode mode = LINES);
+#endif
 
-	virtual ~SerialPort();
+    virtual ~SerialPort();
 
-	SerialPortInfo * info;
+    SerialPortInfo* info;
 
-	PortMode mode;
+    PortMode mode;
 
-	void open();
-	void close();
+    void open();
+    void close();
 
-	bool isOpen();
+    bool isOpen();
 
-	//write functions
-	int writeString(String message, bool endLine = true);
-	int writeBytes(Array<uint8_t> data);
+    //write functions
+    int writeString (String message, bool endLine = true);
+    int writeBytes (Array<uint8_t> data);
 
-	virtual void newMessage(const var &data) override;
+    virtual void newMessage (const var& data) override;
 
-	class SerialPortListener
-	{
-	public:
-		virtual ~SerialPortListener() {}
+    class SerialPortListener
+    {
+    public:
+        virtual ~SerialPortListener() {}
 
-		//serial data here
-		virtual void portOpened(SerialPort  *) {};
-		virtual void portClosed(SerialPort  *) {};
-		virtual void portRemoved(SerialPort *) {};
-		virtual void serialDataReceived(const var &) {};
-	};
+        //serial data here
+        virtual void portOpened (SerialPort*) {};
+        virtual void portClosed (SerialPort*) {};
+        virtual void portRemoved (SerialPort*) {};
+        virtual void serialDataReceived (const var&) {};
+    };
 
-	ListenerList<SerialPortListener> listeners;
-	void addSerialPortListener(SerialPortListener* newListener);
-	void removeSerialPortListener(SerialPortListener* listener);
+    ListenerList<SerialPortListener> listeners;
+    void addSerialPortListener (SerialPortListener* newListener);
+    void removeSerialPortListener (SerialPortListener* listener);
 };
 
 

@@ -20,22 +20,22 @@
 #include "../../Controllable/Parameter/UI/GenericParameterContainerEditor.h"
 
 class ControllerEditor : public InspectorEditor,
-						 public ButtonListener
+    public ButtonListener
 {
 public:
-  ControllerEditor(Controller * controller,bool generateEditorFromParameters = true);
-	virtual ~ControllerEditor();
+    ControllerEditor (Controller* controller, bool generateEditorFromParameters = true);
+    virtual ~ControllerEditor();
 
-	Controller * controller;
+    Controller* controller;
 
-	virtual void resized() override;
-	virtual int getContentHeight() override;
+    virtual void resized() override;
+    virtual int getContentHeight() override;
 
-	//VARIABLES
-	TextButton addParameterBT;
-  ScopedPointer<GenericParameterContainerEditor> editor;
-	void buttonClicked(Button * b) override;
-  
+    //VARIABLES
+    TextButton addParameterBT;
+    ScopedPointer<GenericParameterContainerEditor> editor;
+    void buttonClicked (Button* b) override;
+
 };
 
 

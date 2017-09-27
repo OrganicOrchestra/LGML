@@ -32,8 +32,8 @@ void InspectorEditor::resized()
 
 int InspectorEditor::getContentHeight()
 {
-	return 0;//will default to parent's bounds
-	 
+    return 0;//will default to parent's bounds
+
 }
 
 void InspectorEditor::clear()

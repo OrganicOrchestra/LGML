@@ -26,46 +26,46 @@ class InspectorEditor;
 class InspectableComponent : public juce::Component
 {
 public:
-	InspectableComponent(ParameterContainer * relatedContainer = nullptr, const String &inspectableType = "none");
+    InspectableComponent (ParameterContainer* relatedContainer = nullptr, const String& inspectableType = "none");
 
-	virtual ~InspectableComponent();
+    virtual ~InspectableComponent();
 
-	Inspector * inspector;
-	const String inspectableType;
+    Inspector* inspector;
+    const String inspectableType;
 
-	virtual InspectorEditor * createEditor();
+    virtual InspectorEditor* createEditor();
 
-	ParameterContainer * relatedParameterContainer;
-	int recursiveInspectionLevel;
-	bool canInspectChildContainersBeyondRecursion;
+    ParameterContainer* relatedParameterContainer;
+    int recursiveInspectionLevel;
+    bool canInspectChildContainersBeyondRecursion;
 
-	bool paintBordersWhenSelected;
-	bool bringToFrontOnSelect;
+    bool paintBordersWhenSelected;
+    bool bringToFrontOnSelect;
 
-	bool isSelected;
-	virtual void selectThis();
-	virtual void setSelected(bool value);
+    bool isSelected;
+    virtual void selectThis();
+    virtual void setSelected (bool value);
 
-	virtual void setSelectedInternal(bool value); //to be overriden
+    virtual void setSelectedInternal (bool value); //to be overriden
 
 
-  //
-   void paintOverChildren(juce::Graphics &g) override;
-	//Listener
-	class  InspectableListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~InspectableListener() {}
-		virtual void inspectableSelectionChanged(InspectableComponent *) {};
-		virtual void inspectableRemoved(InspectableComponent *) {};
-	};
+    //
+    void paintOverChildren (juce::Graphics& g) override;
+    //Listener
+    class  InspectableListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~InspectableListener() {}
+        virtual void inspectableSelectionChanged (InspectableComponent*) {};
+        virtual void inspectableRemoved (InspectableComponent*) {};
+    };
 
-	ListenerList<InspectableListener> listeners;
-	void addInspectableListener(InspectableListener* newListener) { listeners.add(newListener); }
-	void removeInspectableListener(InspectableListener* listener) { listeners.remove(listener); }
+    ListenerList<InspectableListener> listeners;
+    void addInspectableListener (InspectableListener* newListener) { listeners.add (newListener); }
+    void removeInspectableListener (InspectableListener* listener) { listeners.remove (listener); }
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InspectableComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InspectableComponent)
 };
 
 

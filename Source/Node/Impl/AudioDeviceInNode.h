@@ -22,38 +22,38 @@
 
 
 class AudioDeviceInNode :
-	public NodeBase,
-	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
-	public ChangeListener
+    public NodeBase,
+    public juce::AudioProcessorGraph::AudioGraphIOProcessor,
+    public ChangeListener
 {
 
 public:
-  DECLARE_OBJ_TYPE(AudioDeviceInNode)
-	~AudioDeviceInNode();
+    DECLARE_OBJ_TYPE (AudioDeviceInNode)
+    ~AudioDeviceInNode();
 
-	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
+    void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
 
-	void changeListenerCallback(ChangeBroadcaster* source)override;
-    void onContainerParameterChanged(Parameter *)override;
-  void setParentNodeContainer(NodeContainer*)override;
-	Array<BoolParameter *> inMutes;
-    Array<FloatParameter * > volumes;
-    Array<float > logVolumes,lastVolumes;
-    IntParameter * desiredNumAudioInput;
+    void changeListenerCallback (ChangeBroadcaster* source)override;
+    void onContainerParameterChanged (Parameter*)override;
+    void setParentNodeContainer (NodeContainer*)override;
+    Array<BoolParameter*> inMutes;
+    Array<FloatParameter* > volumes;
+    Array<float > logVolumes, lastVolumes;
+    IntParameter* desiredNumAudioInput;
 
 
 
-	void addVolMute();
-	void removeVolMute();
-  void numChannelsChanged(bool isInput)override;
-	
+    void addVolMute();
+    void removeVolMute();
+    void numChannelsChanged (bool isInput)override;
+
 
 
 
 private:
     int lastNumberOfInputs;
     void    updateVolMutes();
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioDeviceInNode)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioDeviceInNode)
 };
 
 

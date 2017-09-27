@@ -19,45 +19,45 @@
 #include "ShapeShifterPanel.h"
 #include <juce_opengl/juce_opengl.h>
 class ShapeShifterWindow :
-	public ResizableWindow,
-	public ShapeShifterPanel::Listener
+    public ResizableWindow,
+    public ShapeShifterPanel::Listener
 {
 public:
-	ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds);
-	~ShapeShifterWindow();
+    ShapeShifterWindow (ShapeShifterPanel* _panel, Rectangle<int> bounds);
+    ~ShapeShifterWindow();
 
-	enum DragMode { NONE, TAB, PANEL };
+    enum DragMode { NONE, TAB, PANEL };
 
-	ShapeShifterPanel * panel;
+    ShapeShifterPanel* panel;
 
-	bool checking;
+    bool checking;
 
-	void paintOverChildren(Graphics &g)override;
-	void resized() override;
+    void paintOverChildren (Graphics& g)override;
+    void resized() override;
 
-	ComponentDragger dragger;
-	void mouseDown(const MouseEvent& e) override;
-	void mouseDrag(const MouseEvent& e) override;
-	void mouseUp(const MouseEvent &e) override;
+    ComponentDragger dragger;
+    void mouseDown (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) override;
 
-	DragMode dragMode;
+    DragMode dragMode;
 
-	void clear();
+    void clear();
 
-	void userTriedToCloseWindow() override;
+    void userTriedToCloseWindow() override;
 
-	virtual var getCurrentLayout();
+    virtual var getCurrentLayout();
 
-	void panelEmptied(ShapeShifterPanel *) override;
+    void panelEmptied (ShapeShifterPanel*) override;
 
 
 
-#if JUCE_OPENGL 
-  OpenGLContext openGLContext
-  ;
+#if JUCE_OPENGL
+    OpenGLContext openGLContext
+    ;
 #endif
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterWindow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterWindow)
 };
 
 

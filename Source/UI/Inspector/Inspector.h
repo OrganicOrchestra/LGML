@@ -24,89 +24,93 @@ class ParameterContainer;
 class Inspector : public juce::Component, public InspectableComponent::InspectableListener, public InspectorEditor::InspectorEditorListener
 {
 public:
-	juce_DeclareSingleton(Inspector, false);
-	Inspector();
-	virtual ~Inspector();
+    juce_DeclareSingleton (Inspector, false);
+    Inspector();
+    virtual ~Inspector();
 
-	InspectableComponent * currentComponent;
+    InspectableComponent* currentComponent;
 
-	ScopedPointer<InspectorEditor> currentEditor;
+    ScopedPointer<InspectorEditor> currentEditor;
 
-	bool isEnabled;
-	void setEnabled(bool value);
+    bool isEnabled;
+    void setEnabled (bool value);
 
-  ParameterContainer * getCurrentSelected();
-	void clear();
+    ParameterContainer* getCurrentSelected();
+    void clear();
 
-	void setCurrentComponent(InspectableComponent * component);
+    void setCurrentComponent (InspectableComponent* component);
 
-	void resized() override;
+    void resized() override;
 
-	void clearEditor();
-	void inspectCurrentComponent();
+    void clearEditor();
+    void inspectCurrentComponent();
 
-	void inspectableRemoved(InspectableComponent * component) override;
+    void inspectableRemoved (InspectableComponent* component) override;
 
-	void contentSizeChanged(InspectorEditor *) override;
-	//Listener
-	class  InspectorListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~InspectorListener() {}
-		virtual void currentComponentChanged(Inspector * ) {};
-		virtual void contentSizeChanged(Inspector *) {};
-	};
+    void contentSizeChanged (InspectorEditor*) override;
+    //Listener
+    class  InspectorListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~InspectorListener() {}
+        virtual void currentComponentChanged (Inspector* ) {};
+        virtual void contentSizeChanged (Inspector*) {};
+    };
 
-	ListenerList<InspectorListener> listeners;
-	void addInspectorListener(InspectorListener* newListener) { listeners.add(newListener); }
-	void removeInspectorListener(InspectorListener* listener) { listeners.remove(listener); }
+    ListenerList<InspectorListener> listeners;
+    void addInspectorListener (InspectorListener* newListener) { listeners.add (newListener); }
+    void removeInspectorListener (InspectorListener* listener) { listeners.remove (listener); }
 
 
 };
 
-class InspectorViewport : public ShapeShifterContentComponent, public Inspector::InspectorListener {
+class InspectorViewport : public ShapeShifterContentComponent, public Inspector::InspectorListener
+{
 public:
-	InspectorViewport(const String &contentName, Inspector * _inspector) :inspector(_inspector), ShapeShifterContentComponent(contentName)
-	{
-		vp.setViewedComponent(inspector, false);
-		vp.setScrollBarsShown(true, false);
-		vp.setScrollOnDragEnabled(false);
-		contentIsFlexible = false;
-		addAndMakeVisible(vp);
-		vp.setScrollBarThickness(10);
+    InspectorViewport (const String& contentName, Inspector* _inspector) : inspector (_inspector), ShapeShifterContentComponent (contentName)
+    {
+        vp.setViewedComponent (inspector, false);
+        vp.setScrollBarsShown (true, false);
+        vp.setScrollOnDragEnabled (false);
+        contentIsFlexible = false;
+        addAndMakeVisible (vp);
+        vp.setScrollBarThickness (10);
 
-		inspector->addInspectorListener(this);
+        inspector->addInspectorListener (this);
 
-	}
+    }
 
-	virtual ~InspectorViewport()
-	{
-		Inspector::deleteInstance();
-	}
+    virtual ~InspectorViewport()
+    {
+        Inspector::deleteInstance();
+    }
 
-	void resized() override {
-		Rectangle<int> r = getLocalBounds();
+    void resized() override
+    {
+        Rectangle<int> r = getLocalBounds();
 
-		vp.setBounds(r);
+        vp.setBounds (r);
 
-		r.removeFromRight(vp.getScrollBarThickness());
+        r.removeFromRight (vp.getScrollBarThickness());
 
-		if(inspector->currentEditor == nullptr) inspector->setBounds(r);
-		else
-		{
-			int cH = inspector->currentEditor->getContentHeight();
-			if(cH == 0) cH = r.getHeight();
-			inspector->setBounds(r.withPosition(inspector->getPosition()).withHeight(cH));
-		}
-	}
-	Viewport vp;
-	Inspector * inspector;
+        if (inspector->currentEditor == nullptr) inspector->setBounds (r);
+        else
+        {
+            int cH = inspector->currentEditor->getContentHeight();
 
-	void currentComponentChanged(Inspector *) override { resized(); }
-	void contentSizeChanged(Inspector *) override { resized(); }
+            if (cH == 0) cH = r.getHeight();
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InspectorViewport)
+            inspector->setBounds (r.withPosition (inspector->getPosition()).withHeight (cH));
+        }
+    }
+    Viewport vp;
+    Inspector* inspector;
+
+    void currentComponentChanged (Inspector*) override { resized(); }
+    void contentSizeChanged (Inspector*) override { resized(); }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InspectorViewport)
 };
 
 #endif  // INSPECTOR_H_INCLUDED

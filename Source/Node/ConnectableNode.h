@@ -27,156 +27,157 @@ class NodeContainer;
 class ConnectableNodeUI;
 
 class ConnectableNode :
-	public ParameterContainer
+    public ParameterContainer
 {
 public:
-	ConnectableNode(const String &name, bool _hasMainAudioControl = true);
-	virtual ~ConnectableNode();
+    ConnectableNode (const String& name, bool _hasMainAudioControl = true);
+    virtual ~ConnectableNode();
 
 
 
-  NodeContainer * const getParentNodeContainer() const;
+    NodeContainer* const getParentNodeContainer() const;
 
 
-	//Interaction
-	bool canBeRemovedByUser;
-	bool userCanAccessInputs;
-	bool userCanAccessOutputs;
+    //Interaction
+    bool canBeRemovedByUser;
+    bool userCanAccessInputs;
+    bool userCanAccessOutputs;
 
-	virtual bool hasAudioInputs();
-	virtual bool hasAudioOutputs();
+    virtual bool hasAudioInputs();
+    virtual bool hasAudioOutputs();
 
-	virtual bool hasDataInputs();
-	virtual bool hasDataOutputs();
+    virtual bool hasDataInputs();
+    virtual bool hasDataOutputs();
 
-	//Controllables (from ControllableContainer)
-	
-  StringParameter * descriptionParam;
-	BoolParameter * enabledParam;
+    //Controllables (from ControllableContainer)
 
-	//ui params
-	Point2DParameter<int> * nodePosition,*nodeSize;
-	BoolParameter * miniMode;
+    StringParameter* descriptionParam;
+    BoolParameter* enabledParam;
 
-	void remove();
-	virtual void clear();
+    //ui params
+    Point2DParameter<int>* nodePosition, *nodeSize;
+    BoolParameter* miniMode;
 
-
-	void onContainerParameterChanged(Parameter * p) override;
-
-	
-
-	//Listener
-	class ConnectableNodeListener
-	{
-	public:
-		virtual ~ConnectableNodeListener() {}
-		virtual void nodeParameterChanged(ConnectableNode *,Parameter *) {}
-
-    virtual void numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) {};
-    virtual void numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) {};
-
-    virtual void audioInputAdded(ConnectableNode *, int /*channel*/) {}
-    virtual void audioInputRemoved(ConnectableNode *, int /*channel*/) {}
-    virtual void audioOutputAdded(ConnectableNode *, int /*channel*/) {}
-    virtual void audioOutputRemoved(ConnectableNode *, int /*channel*/) {}
-
-    // DATA
-    virtual void numDataInputChanged(ConnectableNode *, int /*newNumInput*/) {};
-    virtual void numDataOutputChanged(ConnectableNode *, int /*newNumOutput*/) {};
-
-    virtual void dataInputAdded(ConnectableNode *, Data *) {}
-    virtual void dataInputRemoved(ConnectableNode *, Data *) {}
-    virtual void dataOutputAdded(ConnectableNode *, Data *) {}
-    virtual void dataOutputRemoved(ConnectableNode *, Data *) {}
-    virtual void nodeInputDataChanged(ConnectableNode *, Data *) {}
-    virtual void nodeOutputDataUpdated(ConnectableNode *, Data *) {}
+    void remove();
+    virtual void clear();
 
 
-  };
-  
-  ListenerList<ConnectableNodeListener> nodeListeners;
-	void addConnectableNodeListener(ConnectableNodeListener* newListener) { nodeListeners.add(newListener); }
-	void removeConnectableNodeListener(ConnectableNodeListener* listener) { nodeListeners.remove(listener); }
+    void onContainerParameterChanged (Parameter* p) override;
 
 
 
+    //Listener
+    class ConnectableNodeListener
+    {
+    public:
+        virtual ~ConnectableNodeListener() {}
+        virtual void nodeParameterChanged (ConnectableNode*, Parameter*) {}
 
-	//AUDIO
-	bool hasMainAudioControl;
+        virtual void numAudioInputChanged (ConnectableNode*, int /*newNumInput*/) {};
+        virtual void numAudioOutputChanged (ConnectableNode*, int /*newNumOutput*/) {};
 
-	FloatParameter * outputVolume;
-	//BoolParameter * bypass;
-	StringArray inputChannelNames;
-	StringArray outputChannelNames;
+        virtual void audioInputAdded (ConnectableNode*, int /*channel*/) {}
+        virtual void audioInputRemoved (ConnectableNode*, int /*channel*/) {}
+        virtual void audioOutputAdded (ConnectableNode*, int /*channel*/) {}
+        virtual void audioOutputRemoved (ConnectableNode*, int /*channel*/) {}
 
-  
+        // DATA
+        virtual void numDataInputChanged (ConnectableNode*, int /*newNumInput*/) {};
+        virtual void numDataOutputChanged (ConnectableNode*, int /*newNumOutput*/) {};
 
-	void setInputChannelNames(int startChannel, StringArray names);
-	void setOutputChannelNames(int startChannel, StringArray names);
-	void setInputChannelName(int channelIndex, const String &name);
-	void setOutputChannelName(int channelIndex, const String &name);
-	String getInputChannelName(int channelIndex);
-	String getOutputChannelName(int channelIndex);
+        virtual void dataInputAdded (ConnectableNode*, Data*) {}
+        virtual void dataInputRemoved (ConnectableNode*, Data*) {}
+        virtual void dataOutputAdded (ConnectableNode*, Data*) {}
+        virtual void dataOutputRemoved (ConnectableNode*, Data*) {}
+        virtual void nodeInputDataChanged (ConnectableNode*, Data*) {}
+        virtual void nodeOutputDataUpdated (ConnectableNode*, Data*) {}
 
-	class  RMSListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~RMSListener() {}
-		virtual void RMSChanged( float rmsInValue, float rmsOutValue) = 0;
-	};
+
+    };
+
+    ListenerList<ConnectableNodeListener> nodeListeners;
+    void addConnectableNodeListener (ConnectableNodeListener* newListener) { nodeListeners.add (newListener); }
+    void removeConnectableNodeListener (ConnectableNodeListener* listener) { nodeListeners.remove (listener); }
+
+
+
+
+    //AUDIO
+    bool hasMainAudioControl;
+
+    FloatParameter* outputVolume;
+    //BoolParameter * bypass;
+    StringArray inputChannelNames;
+    StringArray outputChannelNames;
+
+
+
+    void setInputChannelNames (int startChannel, StringArray names);
+    void setOutputChannelNames (int startChannel, StringArray names);
+    void setInputChannelName (int channelIndex, const String& name);
+    void setOutputChannelName (int channelIndex, const String& name);
+    String getInputChannelName (int channelIndex);
+    String getOutputChannelName (int channelIndex);
+
+    class  RMSListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~RMSListener() {}
+        virtual void RMSChanged ( float rmsInValue, float rmsOutValue) = 0;
+    };
 
 
     ListenerList<RMSListener> rmsListeners;
-    void addRMSListener(RMSListener* newListener) { rmsListeners.add(newListener); }
-    void removeRMSListener(RMSListener* listener) { rmsListeners.remove(listener); }
+    void addRMSListener (RMSListener* newListener) { rmsListeners.add (newListener); }
+    void removeRMSListener (RMSListener* listener) { rmsListeners.remove (listener); }
 
-    class RMSChannelListener{
+    class RMSChannelListener
+    {
     public:
-        virtual ~RMSChannelListener(){}
-        virtual void channelRMSInChanged(ConnectableNode * node, float rmsInValue, int channel) = 0;
-        virtual void channelRMSOutChanged(ConnectableNode * node, float rmsOutValue, int channel) = 0;
+        virtual ~RMSChannelListener() {}
+        virtual void channelRMSInChanged (ConnectableNode* node, float rmsInValue, int channel) = 0;
+        virtual void channelRMSOutChanged (ConnectableNode* node, float rmsOutValue, int channel) = 0;
     };
 
 
     ListenerList<RMSChannelListener> rmsChannelListeners;
-    void addRMSChannelListener(RMSChannelListener* newListener) { rmsChannelListeners.add(newListener); }
-    void removeRMSChannelListener(RMSChannelListener* listener) { rmsChannelListeners.remove(listener); }
-
-    
+    void addRMSChannelListener (RMSChannelListener* newListener) { rmsChannelListeners.add (newListener); }
+    void removeRMSChannelListener (RMSChannelListener* listener) { rmsChannelListeners.remove (listener); }
 
 
-	//DATA
-	virtual Data* getInputData(int dataIndex);
-	virtual Data* getOutputData(int dataIndex);
 
-	virtual int getTotalNumInputData();
-	virtual int getTotalNumOutputData();
 
-	virtual StringArray getInputDataInfos();
-	virtual StringArray getOutputDataInfos();
+    //DATA
+    virtual Data* getInputData (int dataIndex);
+    virtual Data* getOutputData (int dataIndex);
 
-	virtual Data::DataType getInputDataType(const String &dataName, const String &elementName);
-	virtual Data::DataType getOutputDataType(const String &dataName, const String &elementName);
+    virtual int getTotalNumInputData();
+    virtual int getTotalNumOutputData();
 
-	virtual Data * getOutputDataByName(const String &dataName);
-	virtual Data * getInputDataByName(const String &dataName);
+    virtual StringArray getInputDataInfos();
+    virtual StringArray getOutputDataInfos();
+
+    virtual Data::DataType getInputDataType (const String& dataName, const String& elementName);
+    virtual Data::DataType getOutputDataType (const String& dataName, const String& elementName);
+
+    virtual Data* getOutputDataByName (const String& dataName);
+    virtual Data* getInputDataByName (const String& dataName);
 
 
 protected:
-  NodeContainer * parentNodeContainer;
+    NodeContainer* parentNodeContainer;
 
-  virtual void setParentNodeContainer(NodeContainer * _parentNodeContainer);
-  friend class NodeContainer;
+    virtual void setParentNodeContainer (NodeContainer* _parentNodeContainer);
+    friend class NodeContainer;
 
-  
+
 
 private:
     WeakReference<ConnectableNode>::Master masterReference;
     friend class WeakReference<ConnectableNode>;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectableNode)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectableNode)
 };
 
 

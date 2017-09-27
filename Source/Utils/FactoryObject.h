@@ -15,16 +15,17 @@
 #define CHK_OBJECT_BASE(T)  int dummy_check_##T = dummy_##T();ignoreUnused(dummy_check_##T);
 #define IMPL_OBJECT_BASE(T)    virtual int dummy_##T() {return 0;};
 
-class FactoryObject {
+class FactoryObject
+{
 public:
 
-  virtual ~FactoryObject(){};
-  virtual const Identifier & getTypeId() const = 0;
-  virtual const String & getTypeName() const = 0;
-  virtual void configureFromObject(DynamicObject *) = 0;
-  virtual DynamicObject * getObject()=0;
-  template<typename T>
-  bool isType(){return getTypeId() == T::_objType;}
+    virtual ~FactoryObject() {};
+    virtual const Identifier& getTypeId() const = 0;
+    virtual const String& getTypeName() const = 0;
+    virtual void configureFromObject (DynamicObject*) = 0;
+    virtual DynamicObject* getObject() = 0;
+    template<typename T>
+    bool isType() {return getTypeId() == T::_objType;}
 
 
 };

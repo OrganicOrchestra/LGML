@@ -22,14 +22,14 @@
 class SerialDeviceChooser : public ComboBox, public SerialManager::SerialManagerListener
 {
 public:
-	SerialDeviceChooser();
-	virtual ~SerialDeviceChooser();
+    SerialDeviceChooser();
+    virtual ~SerialDeviceChooser();
 
-	void fillDeviceList();
+    void fillDeviceList();
 
-	// Inherited via SerialManagerListener
-	virtual void portAdded(SerialPortInfo * info) override;
-	virtual void portRemoved(SerialPortInfo * info) override;
+    // Inherited via SerialManagerListener
+    virtual void portAdded (SerialPortInfo* info) override;
+    virtual void portRemoved (SerialPortInfo* info) override;
 };
 
 

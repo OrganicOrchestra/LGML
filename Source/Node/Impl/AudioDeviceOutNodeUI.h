@@ -27,36 +27,36 @@ class VuMeter;
 class AudioDeviceOutNode;
 
 class AudioDeviceOutNodeContentUI :
-public ConnectableNodeContentUI,
-public ConnectableNode::ConnectableNodeListener,
-public ChangeListener
+    public ConnectableNodeContentUI,
+    public ConnectableNode::ConnectableNodeListener,
+    public ChangeListener
 {
 public:
-  AudioDeviceOutNodeContentUI();
-  virtual ~AudioDeviceOutNodeContentUI();
+    AudioDeviceOutNodeContentUI();
+    virtual ~AudioDeviceOutNodeContentUI();
 
-  OwnedArray<ParameterUI> muteToggles;
-  OwnedArray<SliderUI<double> >  volumes;
-  OwnedArray<VuMeter> vuMeters;
+    OwnedArray<ParameterUI> muteToggles;
+    OwnedArray<SliderUI<double> >  volumes;
+    OwnedArray<VuMeter> vuMeters;
 
-  AudioDeviceOutNode * audioOutNode;
+    AudioDeviceOutNode* audioOutNode;
 
-  void init() override;
+    void init() override;
 
-  void resized() override;
+    void resized() override;
 
-  void updateVuMeters();
+    void updateVuMeters();
 
-  void addVuMeter();
-  void removeLastVuMeter();
+    void addVuMeter();
+    void removeLastVuMeter();
 
-  virtual void nodeParameterChanged(ConnectableNode*, Parameter *) override;
+    virtual void nodeParameterChanged (ConnectableNode*, Parameter*) override;
 
-  virtual void numAudioOutputChanged(ConnectableNode *, int newNum) override;
-  virtual void numAudioInputChanged(ConnectableNode *, int newNum) override;
+    virtual void numAudioOutputChanged (ConnectableNode*, int newNum) override;
+    virtual void numAudioInputChanged (ConnectableNode*, int newNum) override;
 
-  void changeListenerCallback (ChangeBroadcaster* source)override;
-  //virtual void numAudioOutputChanged() { DBG("Output changed !"); }
+    void changeListenerCallback (ChangeBroadcaster* source)override;
+    //virtual void numAudioOutputChanged() { DBG("Output changed !"); }
 
 };
 

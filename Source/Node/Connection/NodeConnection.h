@@ -23,100 +23,101 @@
 
 
 class NodeConnection :
-public ReferenceCountedObject,
-public ConnectableNode::ConnectableNodeListener,
-public FactoryObject
+    public ReferenceCountedObject,
+    public ConnectableNode::ConnectableNodeListener,
+    public FactoryObject
 {
 public:
-  enum ConnectionType
-  {
-    AUDIO, DATA, UNDEFINED
-  };
+    enum ConnectionType
+    {
+        AUDIO, DATA, UNDEFINED
+    };
 
-  typedef std::pair<int,int> AudioConnection;
-  class Model{
-    // keeps all connection info (used to keep info after deletion)
-  public:
-    Array<AudioConnection> audioConnections;
-    Array<DataProcessorGraph::Connection *> dataConnections;
-  };
-  Model model;
+    typedef std::pair<int, int> AudioConnection;
+    class Model
+    {
+        // keeps all connection info (used to keep info after deletion)
+    public:
+        Array<AudioConnection> audioConnections;
+        Array<DataProcessorGraph::Connection*> dataConnections;
+    };
+    Model model;
 
-  NodeConnection(ConnectableNode * sourceNode, ConnectableNode * destNode, ConnectionType connectionType,Model * root = nullptr);
-  NodeConnection getCopy();
-  virtual ~NodeConnection();
+    NodeConnection (ConnectableNode* sourceNode, ConnectableNode* destNode, ConnectionType connectionType, Model* root = nullptr);
+    NodeConnection getCopy();
+    virtual ~NodeConnection();
 
-  DECLARE_OBJ_TYPE(NodeConnection)
-  ConnectionType connectionType;
+    DECLARE_OBJ_TYPE (NodeConnection)
+    ConnectionType connectionType;
 
-  bool isAudio() { return connectionType == ConnectionType::AUDIO; }
-  bool isData() { return connectionType == ConnectionType::DATA; }
+    bool isAudio() { return connectionType == ConnectionType::AUDIO; }
+    bool isData() { return connectionType == ConnectionType::DATA; }
 
-  WeakReference<ConnectableNode> sourceNode;
-  WeakReference<ConnectableNode> destNode;
-
-  
-  //Audio
-  bool addAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
-  void removeAudioGraphConnection(uint32 sourceChannel, uint32 destChannel);
-  void removeAllAudioGraphConnections();
-
-  void removeAllAudioGraphConnectionsForChannel(int channel, bool isSourceChannel);
-
-  //Data
-  void addDataGraphConnection(Data * sourceData, Data * destData);
-  void removeDataGraphConnection(Data * sourceData, Data * destData);
-  void removeAllDataGraphConnections();
-
-  void removeAllDataGraphConnectionsForData(Data *, bool isSourceData);
-
-  void remove();
-
-  virtual void audioInputAdded(ConnectableNode *, int /*channel*/) override;
-  virtual void audioOutputAdded(ConnectableNode *, int /*channel*/) override;
-
-  virtual void audioInputRemoved(ConnectableNode *, int /* channel */) override;
-  virtual void audioOutputRemoved(ConnectableNode *, int /* channel */) override;
+    WeakReference<ConnectableNode> sourceNode;
+    WeakReference<ConnectableNode> destNode;
 
 
-  virtual void dataInputRemoved(ConnectableNode *, Data *) override;
-  virtual void dataOutputRemoved(ConnectableNode *, Data *) override;
+    //Audio
+    bool addAudioGraphConnection (uint32 sourceChannel, uint32 destChannel);
+    void removeAudioGraphConnection (uint32 sourceChannel, uint32 destChannel);
+    void removeAllAudioGraphConnections();
+
+    void removeAllAudioGraphConnectionsForChannel (int channel, bool isSourceChannel);
+
+    //Data
+    void addDataGraphConnection (Data* sourceData, Data* destData);
+    void removeDataGraphConnection (Data* sourceData, Data* destData);
+    void removeAllDataGraphConnections();
+
+    void removeAllDataGraphConnectionsForData (Data*, bool isSourceData);
+
+    void remove();
+
+    virtual void audioInputAdded (ConnectableNode*, int /*channel*/) override;
+    virtual void audioOutputAdded (ConnectableNode*, int /*channel*/) override;
+
+    virtual void audioInputRemoved (ConnectableNode*, int /* channel */) override;
+    virtual void audioOutputRemoved (ConnectableNode*, int /* channel */) override;
 
 
-  // save / load
+    virtual void dataInputRemoved (ConnectableNode*, Data*) override;
+    virtual void dataOutputRemoved (ConnectableNode*, Data*) override;
 
-  DynamicObject * getObject()override;
-  void configureFromObject(DynamicObject * data) override;
 
-  //Listener
-  class  Listener
-  {
-  public:
-    /** Destructor. */
-    virtual ~Listener() {}
+    // save / load
 
-    virtual void connectionRemoved(NodeConnection *) {}
+    DynamicObject* getObject()override;
+    void configureFromObject (DynamicObject* data) override;
 
-    virtual void connectionDataLinkAdded(DataProcessorGraph::Connection * ) {}
-    virtual void connectionDataLinkRemoved(DataProcessorGraph::Connection * ) {}
+    //Listener
+    class  Listener
+    {
+    public:
+        /** Destructor. */
+        virtual ~Listener() {}
 
-    virtual void connectionAudioLinkAdded(const AudioConnection &) {}
-    virtual void connectionAudioLinkRemoved(const AudioConnection &) {}
-  };
+        virtual void connectionRemoved (NodeConnection*) {}
 
-  ListenerList<Listener> listeners;
-  void addConnectionListener(Listener* newListener) { jassert(newListener);listeners.add(newListener); }
-  void removeConnectionListener(Listener* listener) { listeners.remove(listener); }
+        virtual void connectionDataLinkAdded (DataProcessorGraph::Connection* ) {}
+        virtual void connectionDataLinkRemoved (DataProcessorGraph::Connection* ) {}
 
-  AudioProcessorGraph * getParentGraph();
+        virtual void connectionAudioLinkAdded (const AudioConnection&) {}
+        virtual void connectionAudioLinkRemoved (const AudioConnection&) {}
+    };
+
+    ListenerList<Listener> listeners;
+    void addConnectionListener (Listener* newListener) { jassert (newListener); listeners.add (newListener); }
+    void removeConnectionListener (Listener* listener) { listeners.remove (listener); }
+
+    AudioProcessorGraph* getParentGraph();
 
 protected:
-  WeakReference<NodeConnection >::Master masterReference;
-  friend class WeakReference<NodeConnection>;
+    WeakReference<NodeConnection >::Master masterReference;
+    friend class WeakReference<NodeConnection>;
 
 
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NodeConnection)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeConnection)
 
 };
 

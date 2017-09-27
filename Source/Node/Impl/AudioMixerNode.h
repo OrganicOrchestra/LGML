@@ -24,48 +24,49 @@ class AudioMixerNode : public NodeBase
 {
 
 public:
-  DECLARE_OBJ_TYPE(AudioMixerNode);
-	class OutputBus : public ParameterContainer {
-	public:
-		OutputBus(int _outputIndex, int numInput);
-		void setNumInput(int numInput);
+    DECLARE_OBJ_TYPE (AudioMixerNode);
+    class OutputBus : public ParameterContainer
+    {
+    public:
+        OutputBus (int _outputIndex, int numInput);
+        void setNumInput (int numInput);
 
-        void onContainerParameterChanged(Parameter *p)override;
-		Array<FloatParameter*,CriticalSection> volumes;
+        void onContainerParameterChanged (Parameter* p)override;
+        Array<FloatParameter*, CriticalSection> volumes;
         Array<float> logVolumes;
-		Array<float> lastVolumes;
-		int outputIndex;
-	};
+        Array<float> lastVolumes;
+        int outputIndex;
+    };
 
 
-    
-  void setParentNodeContainer(NodeContainer * c)override;
 
-	OwnedArray<OutputBus> outBuses;
-//  OwnedArray<Vumeter>
-	AudioBuffer<float> cachedBuffer;
+    void setParentNodeContainer (NodeContainer* c)override;
 
-
-	IntParameter * numberOfInput;
-	IntParameter * numberOfOutput;
-    BoolParameter * oneToOne;
-
-	void updateInput();
-	void updateOutput();
-  void numChannelsChanged(bool isInput) override;
+    OwnedArray<OutputBus> outBuses;
+    //  OwnedArray<Vumeter>
+    AudioBuffer<float> cachedBuffer;
 
 
-	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer&)override;
-	void onContainerParameterChanged(Parameter * p) override;
+    IntParameter* numberOfInput;
+    IntParameter* numberOfOutput;
+    BoolParameter* oneToOne;
 
-	
+    void updateInput();
+    void updateOutput();
+    void numChannelsChanged (bool isInput) override;
+
+
+    void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer&)override;
+    void onContainerParameterChanged (Parameter* p) override;
+
+
 
 
 
 private:
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMixerNode)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioMixerNode)
 };
 
 #endif  // AUDIOMIXERNODE_H_INCLUDED

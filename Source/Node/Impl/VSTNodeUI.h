@@ -25,52 +25,52 @@
 
 
 class VSTNodeContentUI:
-	public ConnectableNodeContentUI,
-	public Button::Listener,
-	public VSTNode::VSTNodeListener,
-	private ControllableContainerListener,
-	public ComboBoxListener
+    public ConnectableNodeContentUI,
+    public Button::Listener,
+    public VSTNode::VSTNodeListener,
+    private ControllableContainerListener,
+    public ComboBoxListener
 {
 public:
     VSTNodeContentUI();
     ~VSTNodeContentUI();
     OwnedArray<FloatSliderUI> paramSliders;
 
-	VSTNode * vstNode;
+    VSTNode* vstNode;
 
-	TextButton VSTListShowButton;
-	TextButton showPluginWindowButton;
+    TextButton VSTListShowButton;
+    TextButton showPluginWindowButton;
 
-	MIDIDeviceChooser midiDeviceChooser;
+    MIDIDeviceChooser midiDeviceChooser;
 
-	ScopedPointer<ParameterUI> activityBlink;
+    ScopedPointer<ParameterUI> activityBlink;
 
     void init() override;
-	void resized()override;
+    void resized()override;
 
     void updateVSTParameters();
     void newVSTSelected() override;
-	void midiDeviceChanged() override;
+    void midiDeviceChanged() override;
 
-    void layoutSliderParameters(Rectangle<int> pArea);
-    void comboBoxChanged(ComboBox *cb) override;
-    void buttonClicked(Button* button) override;
+    void layoutSliderParameters (Rectangle<int> pArea);
+    void comboBoxChanged (ComboBox* cb) override;
+    void buttonClicked (Button* button) override;
 
 private:
-  void createPluginWindow();
-  void closePluginWindow();
+    void createPluginWindow();
+    void closePluginWindow();
 
-	void controllableAdded(ControllableContainer *,Controllable * c)override;
-	void controllableRemoved(ControllableContainer *,Controllable * c)override;
-	void controllableContainerAdded(ControllableContainer *,ControllableContainer * cc)override;
-	void controllableContainerRemoved(ControllableContainer *,ControllableContainer * cc) override;
-	void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable *c) override;
+    void controllableAdded (ControllableContainer*, Controllable* c)override;
+    void controllableRemoved (ControllableContainer*, Controllable* c)override;
+    void controllableContainerAdded (ControllableContainer*, ControllableContainer* cc)override;
+    void controllableContainerRemoved (ControllableContainer*, ControllableContainer* cc) override;
+    void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c) override;
 
 
-	static void vstSelected(int modalResult, Component *  originComp);
-	void handleCommandMessage(int )override;
+    static void vstSelected (int modalResult, Component*   originComp);
+    void handleCommandMessage (int )override;
 
-  bool isDirty;
+    bool isDirty;
 
 };
 

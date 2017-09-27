@@ -22,137 +22,143 @@
 
 extern ApplicationCommandManager& getCommandManager();
 
-ShapeShifterWindow::ShapeShifterWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds) :
-	ResizableWindow(_panel->currentContent->contentName, true),
-	dragMode(PANEL),
-	panel(_panel),
-	checking(false)
+ShapeShifterWindow::ShapeShifterWindow (ShapeShifterPanel* _panel, Rectangle<int> bounds) :
+    ResizableWindow (_panel->currentContent->contentName, true),
+    dragMode (PANEL),
+    panel (_panel),
+    checking (false)
 {
-	setTopLeftPosition(bounds.getTopLeft());
-	_panel->setBounds(bounds);
+    setTopLeftPosition (bounds.getTopLeft());
+    _panel->setBounds (bounds);
 
-	panel->setPreferredWidth(getWidth());
-	panel->setPreferredHeight(getHeight());
+    panel->setPreferredWidth (getWidth());
+    panel->setPreferredHeight (getHeight());
 
-	//DBG("window -> addShapeShifterListener " << panel->header.tabs[0]->content->contentName);
-	panel->addShapeShifterPanelListener(this); //is it necessary ?
+    //DBG("window -> addShapeShifterListener " << panel->header.tabs[0]->content->contentName);
+    panel->addShapeShifterPanelListener (this); //is it necessary ?
 
-	setContentNonOwned(_panel, true);
+    setContentNonOwned (_panel, true);
 
-	setBackgroundColour(findColour(ResizableWindow::backgroundColourId).darker(.1f).withAlpha(.3f));
+    setBackgroundColour (findColour (ResizableWindow::backgroundColourId).darker (.1f).withAlpha (.3f));
 
-	setResizable(true, true);
-	setDraggable(true);
+    setResizable (true, true);
+    setDraggable (true);
 
-	setVisible(true);
-	toFront(true);
+    setVisible (true);
+    toFront (true);
 
-#if JUCE_OPENGL 
-  OpenGLContext * context = OpenGLContext::getContextAttachedTo(*ShapeShifterManager::getInstance()->mainShifterContainer.getTopLevelComponent());
-  if(context){
-    openGLContext.setNativeSharedContext(context->getRawContext());
-  }
-  else{
-    jassertfalse;
-  }
-  openGLContext.setContinuousRepainting(false);
-  openGLContext.attachTo(*getTopLevelComponent());
+#if JUCE_OPENGL
+    OpenGLContext* context = OpenGLContext::getContextAttachedTo (*ShapeShifterManager::getInstance()->mainShifterContainer.getTopLevelComponent());
+
+    if (context)
+    {
+        openGLContext.setNativeSharedContext (context->getRawContext());
+    }
+    else
+    {
+        jassertfalse;
+    }
+
+    openGLContext.setContinuousRepainting (false);
+    openGLContext.attachTo (*getTopLevelComponent());
 #endif
 
-	addMouseListener(this, true);
+    addMouseListener (this, true);
 
-  addKeyListener ((&getCommandManager())->getKeyMappings());
+    addKeyListener ((&getCommandManager())->getKeyMappings());
 
 }
 
 ShapeShifterWindow::~ShapeShifterWindow()
 {
-#if JUCE_OPENGL 
-  openGLContext.detach();
+#if JUCE_OPENGL
+    openGLContext.detach();
 #endif
-	removeMouseListener(this);
-	clear();
+    removeMouseListener (this);
+    clear();
 
 }
 
-void ShapeShifterWindow::paintOverChildren(Graphics & g)
+void ShapeShifterWindow::paintOverChildren (Graphics& g)
 {
 
 }
 
 void ShapeShifterWindow::resized()
 {
-	ResizableWindow::resized();
+    ResizableWindow::resized();
 
-	if (panel == nullptr) return;
+    if (panel == nullptr) return;
 
-	panel->setPreferredWidth(getWidth());
-	panel->setPreferredHeight(getHeight());
+    panel->setPreferredWidth (getWidth());
+    panel->setPreferredHeight (getHeight());
 }
 
-void ShapeShifterWindow::mouseDown(const MouseEvent & e)
+void ShapeShifterWindow::mouseDown (const MouseEvent& e)
 {
-	if (e.eventComponent == &panel->header || dynamic_cast<ShapeShifterPanelTab *>(e.eventComponent) != nullptr)
-	{
-		dragMode = e.eventComponent == &panel->header ? PANEL : TAB;
-		dragger.startDraggingComponent(this, e);
-	} else
-	{
-		dragMode = NONE;
-	}
+    if (e.eventComponent == &panel->header || dynamic_cast<ShapeShifterPanelTab*> (e.eventComponent) != nullptr)
+    {
+        dragMode = e.eventComponent == &panel->header ? PANEL : TAB;
+        dragger.startDraggingComponent (this, e);
+    }
+    else
+    {
+        dragMode = NONE;
+    }
 
 }
 
-void ShapeShifterWindow::mouseDrag(const MouseEvent & e)
+void ShapeShifterWindow::mouseDrag (const MouseEvent& e)
 {
-	if (dragMode == NONE) return;
-	panel->setTransparentBackground(true);
-	ShapeShifterManager::getInstance()->checkCandidateTargetForPanel(panel);
-	dragger.dragComponent(this, e, 0);
+    if (dragMode == NONE) return;
+
+    panel->setTransparentBackground (true);
+    ShapeShifterManager::getInstance()->checkCandidateTargetForPanel (panel);
+    dragger.dragComponent (this, e, 0);
 }
 
-void ShapeShifterWindow::mouseUp(const MouseEvent &)
+void ShapeShifterWindow::mouseUp (const MouseEvent&)
 {
-	panel->setTransparentBackground(false);
+    panel->setTransparentBackground (false);
 
-	checking = true;
-	bool found = ShapeShifterManager::getInstance()->checkDropOnCandidateTarget(panel);
-	checking = false;
+    checking = true;
+    bool found = ShapeShifterManager::getInstance()->checkDropOnCandidateTarget (panel);
+    checking = false;
 
-	if (found)
-	{
-		clear();
-		ShapeShifterManager::getInstance()->closePanelWindow(this, false);
-	}
+    if (found)
+    {
+        clear();
+        ShapeShifterManager::getInstance()->closePanelWindow (this, false);
+    }
 }
 
 
 void ShapeShifterWindow::clear()
 {
-	if (panel != nullptr)
-	{
-		panel->removeShapeShifterPanelListener(this);
-		panel = nullptr;
-	}
+    if (panel != nullptr)
+    {
+        panel->removeShapeShifterPanelListener (this);
+        panel = nullptr;
+    }
 }
 
 void ShapeShifterWindow::userTriedToCloseWindow()
 {
-	ShapeShifterManager::getInstance()->closePanelWindow(this, true);
+    ShapeShifterManager::getInstance()->closePanelWindow (this, true);
 }
 
 var ShapeShifterWindow::getCurrentLayout()
 {
-	var data(new DynamicObject());
-	data.getDynamicObject()->setProperty("panel", panel->getCurrentLayout());
-	data.getDynamicObject()->setProperty("x", getBounds().getPosition().x);
-	data.getDynamicObject()->setProperty("y", getBounds().getPosition().y);
-	data.getDynamicObject()->setProperty("width", getWidth());
-	data.getDynamicObject()->setProperty("height", getHeight());
-	return data;
+    var data (new DynamicObject());
+    data.getDynamicObject()->setProperty ("panel", panel->getCurrentLayout());
+    data.getDynamicObject()->setProperty ("x", getBounds().getPosition().x);
+    data.getDynamicObject()->setProperty ("y", getBounds().getPosition().y);
+    data.getDynamicObject()->setProperty ("width", getWidth());
+    data.getDynamicObject()->setProperty ("height", getHeight());
+    return data;
 }
 
-void ShapeShifterWindow::panelEmptied(ShapeShifterPanel *)
+void ShapeShifterWindow::panelEmptied (ShapeShifterPanel*)
 {
-	if (!checking) ShapeShifterManager::getInstance()->closePanelWindow(this, true);
+    if (!checking) ShapeShifterManager::getInstance()->closePanelWindow (this, true);
 }

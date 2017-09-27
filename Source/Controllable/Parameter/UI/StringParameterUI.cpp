@@ -17,100 +17,106 @@
 #include "StringParameterUI.h"
 #include "../../../UI/Style.h"
 
-StringParameterUI::StringParameterUI(Parameter * p) :
-ParameterUI(p), autoSize(false), maxFontHeight(12)
+StringParameterUI::StringParameterUI (Parameter* p) :
+    ParameterUI (p), autoSize (false), maxFontHeight (12)
 {
 
-  addChildComponent(nameLabel);
-  setNameLabelVisible(false);
-  addAndMakeVisible(valueLabel);
+    addChildComponent (nameLabel);
+    setNameLabelVisible (false);
+    addAndMakeVisible (valueLabel);
 
-  nameLabel.setJustificationType(Justification::topLeft);
-  nameLabel.setText(prefix+parameter->niceName+suffix, NotificationType::dontSendNotification);
+    nameLabel.setJustificationType (Justification::topLeft);
+    nameLabel.setText (prefix + parameter->niceName + suffix, NotificationType::dontSendNotification);
 
-  valueLabel.setJustificationType(Justification::topLeft);
-  valueLabel.setText(parameter->value,NotificationType::dontSendNotification);
-  
-  bool stringEditable = parameter->isEditable ;
-  valueLabel.setEditable(false,stringEditable);
+    valueLabel.setJustificationType (Justification::topLeft);
+    valueLabel.setText (parameter->value, NotificationType::dontSendNotification);
 
-  valueLabel.addListener(this);
+    bool stringEditable = parameter->isEditable ;
+    valueLabel.setEditable (false, stringEditable);
 
-  valueLabel.setColour(valueLabel.backgroundWhenEditingColourId, Colours::white);
-  setBackGroundIsTransparent(!stringEditable);
-  nameLabel.setTooltip(p->description);
+    valueLabel.addListener (this);
+
+    valueLabel.setColour (valueLabel.backgroundWhenEditingColourId, Colours::white);
+    setBackGroundIsTransparent (!stringEditable);
+    nameLabel.setTooltip (p->description);
 
 
 
-  setSize(200, 20);//default size
+    setSize (200, 20); //default size
 }
 
-void StringParameterUI::setAutoSize(bool value)
+void StringParameterUI::setAutoSize (bool value)
 {
-  autoSize = value;
-  valueChanged(parameter->value);
+    autoSize = value;
+    valueChanged (parameter->value);
 }
 
-void StringParameterUI::setPrefix(const String & _prefix)
+void StringParameterUI::setPrefix (const String& _prefix)
 {
-  if (prefix == _prefix) return;
-  prefix = _prefix;
-  valueChanged(parameter->stringValue());
+    if (prefix == _prefix) return;
+
+    prefix = _prefix;
+    valueChanged (parameter->stringValue());
 }
 
-void StringParameterUI::setSuffix(const String & _suffix)
+void StringParameterUI::setSuffix (const String& _suffix)
 {
-  if (suffix == _suffix) return;
-  suffix = _suffix;
-  valueChanged(parameter->stringValue());
+    if (suffix == _suffix) return;
+
+    suffix = _suffix;
+    valueChanged (parameter->stringValue());
 }
 
-void StringParameterUI::setNameLabelVisible(bool visible)
+void StringParameterUI::setNameLabelVisible (bool visible)
 {
-  //    if (nameLabelIsVisible == visible) return;
-  nameLabelIsVisible = visible;
-  nameLabel.setVisible(visible);
+    //    if (nameLabelIsVisible == visible) return;
+    nameLabelIsVisible = visible;
+    nameLabel.setVisible (visible);
 }
-void StringParameterUI::setBackGroundIsTransparent(bool t){
-  valueLabel.setColour(valueLabel.backgroundColourId, Colours::transparentWhite.withAlpha(t?0:0.1f));
+void StringParameterUI::setBackGroundIsTransparent (bool t)
+{
+    valueLabel.setColour (valueLabel.backgroundColourId, Colours::transparentWhite.withAlpha (t ? 0 : 0.1f));
 }
 
 
 
 void StringParameterUI::resized()
 {
-  Rectangle<int> r = getLocalBounds();
-  int nameLabelWidth = 100;// nameLabel.getFont().getStringWidth(nameLabel.getText());
-  if (nameLabelIsVisible)
-  {
-    nameLabel.setBounds(r.removeFromLeft(nameLabelWidth));
-    nameLabel.setFont(nameLabel.getFont().withHeight(jmin<float>((float)r.getHeight(), maxFontHeight)));
+    Rectangle<int> r = getLocalBounds();
+    int nameLabelWidth = 100;// nameLabel.getFont().getStringWidth(nameLabel.getText());
 
-  }
+    if (nameLabelIsVisible)
+    {
+        nameLabel.setBounds (r.removeFromLeft (nameLabelWidth));
+        nameLabel.setFont (nameLabel.getFont().withHeight (jmin<float> ((float)r.getHeight(), maxFontHeight)));
 
-  valueLabel.setBounds(r);
-  valueLabel.setFont(valueLabel.getFont().withHeight(jmin<float>((float)r.getHeight(), maxFontHeight)));
+    }
 
-}
-
-
-void StringParameterUI::valueChanged(const var & v)
-{
-  valueLabel.setText(prefix+v.toString()+suffix,NotificationType::dontSendNotification);
-
-  if (autoSize)
-  {
-    int nameLabelWidth = nameLabel.getFont().getStringWidth(nameLabel.getText());
-    int valueLabelWidth = valueLabel.getFont().getStringWidth(valueLabel.getText());
-    int tw = valueLabelWidth;
-    if (nameLabelIsVisible) tw += 5 + nameLabelWidth;
-    setSize(tw + 10,(int)valueLabel.getFont().getHeight());
-  }
+    valueLabel.setBounds (r);
+    valueLabel.setFont (valueLabel.getFont().withHeight (jmin<float> ((float)r.getHeight(), maxFontHeight)));
 
 }
 
-void StringParameterUI::labelTextChanged(Label *)
+
+void StringParameterUI::valueChanged (const var& v)
 {
-  //String  originalString = valueLabel.getText().substring(prefix.length(), valueLabel.getText().length() - suffix.length());
-  parameter->setValue(valueLabel.getText());
+    valueLabel.setText (prefix + v.toString() + suffix, NotificationType::dontSendNotification);
+
+    if (autoSize)
+    {
+        int nameLabelWidth = nameLabel.getFont().getStringWidth (nameLabel.getText());
+        int valueLabelWidth = valueLabel.getFont().getStringWidth (valueLabel.getText());
+        int tw = valueLabelWidth;
+
+        if (nameLabelIsVisible) tw += 5 + nameLabelWidth;
+
+        setSize (tw + 10, (int)valueLabel.getFont().getHeight());
+    }
+
+}
+
+void StringParameterUI::labelTextChanged (Label*)
+{
+    //String  originalString = valueLabel.getText().substring(prefix.length(), valueLabel.getText().length() - suffix.length());
+    parameter->setValue (valueLabel.getText());
 }

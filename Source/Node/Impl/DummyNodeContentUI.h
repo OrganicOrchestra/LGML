@@ -29,20 +29,20 @@ public:
     DummyNodeContentUI();
     virtual ~DummyNodeContentUI();
 
-    DummyNode * dummyNode;
+    DummyNode* dummyNode;
 
     ScopedPointer<FloatSliderUI> freq1Slider;
     ScopedPointer<FloatSliderUI> freq2Slider;
-	ScopedPointer<FloatSliderUI> pxSlider;
-	ScopedPointer<FloatSliderUI> pySlider;
-	ScopedPointer<ParameterUI> modeUI;
+    ScopedPointer<FloatSliderUI> pxSlider;
+    ScopedPointer<FloatSliderUI> pySlider;
+    ScopedPointer<ParameterUI> modeUI;
     ScopedPointer<ParameterUI> testTriggerButton;
 
     void resized() override;
 
     void init() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyNodeContentUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DummyNodeContentUI)
 };
 
 

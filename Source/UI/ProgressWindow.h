@@ -20,29 +20,29 @@
 #include "../Controllable/Parameter/NumericParameter.h"
 #include "../Controllable/Parameter/UI/SliderUI.h"
 #include "../Utils/ProgressNotifier.h"
-class ProgressWindow : public juce::Component,public ProgressNotifier::ProgressListener
+class ProgressWindow : public juce::Component, public ProgressNotifier::ProgressListener
 {
 public:
 
-	ProgressWindow(const String &title,ProgressNotifier * notifier=nullptr);
-	~ProgressWindow();
-	
+    ProgressWindow (const String& title, ProgressNotifier* notifier = nullptr);
+    ~ProgressWindow();
 
-	const int windowWidth = 300;
-	const int windowHeight = 100;
 
-	Label titleLabel;
-	FloatParameter progressParam;
-	ScopedPointer<FloatSliderUI> progressUI;
-	
-	void paint(Graphics & g) override;
-	void resized() override;
+    const int windowWidth = 300;
+    const int windowHeight = 100;
 
-  void startedProgress(ProgressTask *  task)override;
-  void endedProgress(ProgressTask * task) override;
-  void newProgress(ProgressTask *  task ,float advance)override;
+    Label titleLabel;
+    FloatParameter progressParam;
+    ScopedPointer<FloatSliderUI> progressUI;
 
-	void setProgress(float progress);
+    void paint (Graphics& g) override;
+    void resized() override;
+
+    void startedProgress (ProgressTask*   task)override;
+    void endedProgress (ProgressTask* task) override;
+    void newProgress (ProgressTask*   task, float advance)override;
+
+    void setProgress (float progress);
 };
 
 

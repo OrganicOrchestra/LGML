@@ -42,19 +42,20 @@
 #define CHKNRETURN(p,classN,UIN)  if(p->getTypeId()==classN::_objType) {return new UIN((classN*)p);}
 
 //#define REG(cls,meth)
-ParameterUI * ParameterUIFactory::createDefaultUI(Parameter * t) {
+ParameterUI* ParameterUIFactory::createDefaultUI (Parameter* t)
+{
 
-  CHKNRETURN(t,BoolParameter,BoolToggleUI)
-  CHKNRETURN(t,StringParameter,StringParameterUI)
-  CHKNRETURN(t,FloatParameter,FloatSliderUI)
-  CHKNRETURN(t,Trigger,TriggerBlinkUI)
-  CHKNRETURN(t,IntParameter,IntStepperUI)
-  CHKNRETURN(t,EnumParameter,EnumParameterUI)
-  CHKNRETURN(t,RangeParameter,RangeParameterUI)
-  CHKNRETURN(t,ParameterProxy,ParameterProxyUI)
+    CHKNRETURN (t, BoolParameter, BoolToggleUI)
+    CHKNRETURN (t, StringParameter, StringParameterUI)
+    CHKNRETURN (t, FloatParameter, FloatSliderUI)
+    CHKNRETURN (t, Trigger, TriggerBlinkUI)
+    CHKNRETURN (t, IntParameter, IntStepperUI)
+    CHKNRETURN (t, EnumParameter, EnumParameterUI)
+    CHKNRETURN (t, RangeParameter, RangeParameterUI)
+    CHKNRETURN (t, ParameterProxy, ParameterProxyUI)
 
-  jassertfalse;
-  return nullptr;
+    jassertfalse;
+    return nullptr;
 
 
 }

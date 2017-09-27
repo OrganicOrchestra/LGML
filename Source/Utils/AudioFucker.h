@@ -18,20 +18,23 @@
 #pragma once
 #include "../JuceHeaderAudio.h"//keep
 
-class AudioFucker : public AudioIODeviceCallback{
+class AudioFucker : public AudioIODeviceCallback
+{
 
 public:
-    AudioFucker(AudioDeviceManager *_manager,double _targetCPU = 100):manager(_manager),targetCPU(_targetCPU){
+    AudioFucker (AudioDeviceManager* _manager, double _targetCPU = 100): manager (_manager), targetCPU (_targetCPU)
+    {
         iterationCount = 100;
         adaptationSpeed = .7;
     }
-    ~AudioFucker(){
-        manager->removeAudioCallback(this);
+    ~AudioFucker()
+    {
+        manager->removeAudioCallback (this);
         int a = 0;
         a++;
     }
 
-    AudioDeviceManager * manager;
+    AudioDeviceManager* manager;
     double targetCPU;
     double adaptationSpeed;
     int iterationCount;
@@ -39,24 +42,30 @@ public:
                                         int /*numInputChannels*/,
                                         float** /*outputChannelData*/,
                                         int /*numOutputChannels*/,
-                                        int /*numSamples*/) {
+                                        int /*numSamples*/)
+    {
 
-        double currentCPU = manager->getCpuUsage()*100.0;
-        iterationCount += (int)(adaptationSpeed* (targetCPU -currentCPU));
-        iterationCount = jmax(0,iterationCount);
+        double currentCPU = manager->getCpuUsage() * 100.0;
+        iterationCount += (int) (adaptationSpeed * (targetCPU - currentCPU));
+        iterationCount = jmax (0, iterationCount);
         //        DBG(iterationCount);
         sample_clk_t  i = 0 ;
-        while(i < iterationCount){
+
+        while (i < iterationCount)
+        {
             doStupidThings();
             i++;
         }
     }
 
-    void doStupidThings(){
+    void doStupidThings()
+    {
         float j = 1;
-        for(int i = 0 ; i < 100 ; i++){
-            j*=2;
-            j/=3;
+
+        for (int i = 0 ; i < 100 ; i++)
+        {
+            j *= 2;
+            j /= 3;
         }
     }
     virtual void audioDeviceAboutToStart (AudioIODevice* /*device*/) {}

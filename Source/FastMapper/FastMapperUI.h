@@ -27,111 +27,112 @@ class FastMapperUIListener
 {
 public:
     virtual ~FastMapperUIListener() {}
-	virtual void fastMapperContentChanged(FastMapperUI *) {}
+    virtual void fastMapperContentChanged (FastMapperUI*) {}
 };
 
 class FastMapperUI :
-	public juce::Component,
-	private ControllableContainerListener,
-private ButtonListener,
-private Inspector::InspectorListener
+    public juce::Component,
+    private ControllableContainerListener,
+    private ButtonListener,
+    private Inspector::InspectorListener
 {
 public:
-	FastMapperUI(FastMapper * fastMapper, ControllableContainer * viewFilterContainer = nullptr);
-	virtual ~FastMapperUI();
+    FastMapperUI (FastMapper* fastMapper, ControllableContainer* viewFilterContainer = nullptr);
+    virtual ~FastMapperUI();
 
-	FastMapper * fastMapper;
-  TextButton linkToSelection;
+    FastMapper* fastMapper;
+    TextButton linkToSelection;
 
-  ScopedPointer<ParameterUI> autoAddBt;
-  ScopedPointer<Component> potentialIn,potentialOut;
-	OwnedArray<FastMapUI> mapsUI;
+    ScopedPointer<ParameterUI> autoAddBt;
+    ScopedPointer<Component> potentialIn, potentialOut;
+    OwnedArray<FastMapUI> mapsUI;
 
-	ControllableContainer * viewFilterContainer;
+    ControllableContainer* viewFilterContainer;
 
-	void clear();
+    void clear();
 
-	void addFastMapUI(FastMap *);
-	void removeFastMapUI(FastMapUI *);
+    void addFastMapUI (FastMap*);
+    void removeFastMapUI (FastMapUI*);
 
-	void resetAndUpdateView();
-	void setViewFilter(ControllableContainer * filterContainer);
-	bool mapPassViewFilter(FastMap *);
+    void resetAndUpdateView();
+    void setViewFilter (ControllableContainer* filterContainer);
+    bool mapPassViewFilter (FastMap*);
 
-	FastMapUI * getUIForFastMap(FastMap *);
+    FastMapUI* getUIForFastMap (FastMap*);
 
-	const int mapHeight = 35;
-	const int gap = 5;
-	int getContentHeight();
+    const int mapHeight = 35;
+    const int gap = 5;
+    int getContentHeight();
 
-	void resized() override;
-	void mouseDown(const MouseEvent &e) override;
+    void resized() override;
+    void mouseDown (const MouseEvent& e) override;
 
-	virtual void controllableContainerAdded(ControllableContainer*,ControllableContainer *) override;
-	virtual void controllableContainerRemoved(ControllableContainer*,ControllableContainer *) override;
+    virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) override;
+    virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) override;
 
-	ListenerList<FastMapperUIListener> fastMapperUIListeners;
-	void addFastMapperUIListener(FastMapperUIListener* newListener) { fastMapperUIListeners.add(newListener); }
-	void removeFastMapperUIListener(FastMapperUIListener* listener) { fastMapperUIListeners.remove(listener); }
+    ListenerList<FastMapperUIListener> fastMapperUIListeners;
+    void addFastMapperUIListener (FastMapperUIListener* newListener) { fastMapperUIListeners.add (newListener); }
+    void removeFastMapperUIListener (FastMapperUIListener* listener) { fastMapperUIListeners.remove (listener); }
 private:
 
-  void buttonClicked (Button*) override;
-  void currentComponentChanged(Inspector * ) override;
+    void buttonClicked (Button*) override;
+    void currentComponentChanged (Inspector* ) override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapperUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperUI)
 
 };
 
 class FastMapperViewport :
-	public ShapeShifterContentComponent,
-	public FastMapperUIListener,
-  private ButtonListener
+    public ShapeShifterContentComponent,
+    public FastMapperUIListener,
+    private ButtonListener
 {
 public:
-	FastMapperViewport(const String &contentName, FastMapperUI * _fastMapperUI) :
-		fastMapperUI(_fastMapperUI),
-		ShapeShifterContentComponent(contentName)
-	{
-		vp.setViewedComponent(fastMapperUI, true);
-		vp.setScrollBarsShown(true, false);
-		vp.setScrollOnDragEnabled(false);
-		addAndMakeVisible(vp);
-    addAndMakeVisible(addFastMapButton);
-    addFastMapButton.addListener(this);
-    addFastMapButton.setTooltip("Add FastMap");
-		vp.setScrollBarThickness(10);
-    contentIsFlexible = true;
-		fastMapperUI->addFastMapperUIListener(this);
-	}
+    FastMapperViewport (const String& contentName, FastMapperUI* _fastMapperUI) :
+        fastMapperUI (_fastMapperUI),
+        ShapeShifterContentComponent (contentName)
+    {
+        vp.setViewedComponent (fastMapperUI, true);
+        vp.setScrollBarsShown (true, false);
+        vp.setScrollOnDragEnabled (false);
+        addAndMakeVisible (vp);
+        addAndMakeVisible (addFastMapButton);
+        addFastMapButton.addListener (this);
+        addFastMapButton.setTooltip ("Add FastMap");
+        vp.setScrollBarThickness (10);
+        contentIsFlexible = true;
+        fastMapperUI->addFastMapperUIListener (this);
+    }
 
-	virtual ~FastMapperViewport()
-	{
-		fastMapperUI->removeFastMapperUIListener(this);
-	}
+    virtual ~FastMapperViewport()
+    {
+        fastMapperUI->removeFastMapperUIListener (this);
+    }
 
 
-	void resized() override {
-		vp.setBounds(getLocalBounds());
-		int th = jmax<int>(fastMapperUI->getContentHeight(), getHeight());
-		Rectangle<int> targetBounds = getLocalBounds().withPosition(fastMapperUI->getPosition()).withHeight(th);
-		targetBounds.removeFromRight(vp.getScrollBarThickness());
-		fastMapperUI->setBounds(targetBounds);
-    addFastMapButton.setFromParentBounds(getLocalBounds());
-	}
+    void resized() override
+    {
+        vp.setBounds (getLocalBounds());
+        int th = jmax<int> (fastMapperUI->getContentHeight(), getHeight());
+        Rectangle<int> targetBounds = getLocalBounds().withPosition (fastMapperUI->getPosition()).withHeight (th);
+        targetBounds.removeFromRight (vp.getScrollBarThickness());
+        fastMapperUI->setBounds (targetBounds);
+        addFastMapButton.setFromParentBounds (getLocalBounds());
+    }
 
-	void fastMapperContentChanged(FastMapperUI *)override
-	{
-		resized();
-	}
+    void fastMapperContentChanged (FastMapperUI*)override
+    {
+        resized();
+    }
 
-  void buttonClicked (Button* b)override;
+    void buttonClicked (Button* b)override;
 
-  
-  Viewport vp;
-	FastMapperUI * fastMapperUI;
-  AddElementButton addFastMapButton;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FastMapperViewport)
+    Viewport vp;
+    FastMapperUI* fastMapperUI;
+    AddElementButton addFastMapButton;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperViewport)
 };
 
 

@@ -19,10 +19,11 @@
 class Parameter;
 
 
-class ParameterUIFactory{
+class ParameterUIFactory
+{
 public:
-  // used for generating editor
-  static ParameterUI * createDefaultUI(Parameter * targetControllable = nullptr);
+    // used for generating editor
+    static ParameterUI* createDefaultUI (Parameter* targetControllable = nullptr);
 
 
 

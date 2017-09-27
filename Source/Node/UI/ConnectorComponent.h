@@ -26,9 +26,9 @@ class NodeContainerViewer;
 /*
 */
 class ConnectorComponent :
-	public juce::Component,
-	public SettableTooltipClient,
-	public ConnectableNode::ConnectableNodeListener
+    public juce::Component,
+    public SettableTooltipClient,
+    public ConnectableNode::ConnectableNodeListener
 {
 public:
 
@@ -47,7 +47,7 @@ public:
     NodeConnection::ConnectionType dataType;
     ConnectorIOType ioType;
     WeakReference<ConnectableNode> node;
-  NodeBase * getNodeBase();
+    NodeBase* getNodeBase();
 
     //layout
 
@@ -55,48 +55,48 @@ public:
     Colour boxColor;
     bool isHovered;
 
-    ConnectorComponent(ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode * cnode);
+    ConnectorComponent (ConnectorIOType ioType, NodeConnection::ConnectionType dataType, ConnectableNode* cnode);
     ~ConnectorComponent();
 
-    void paint(Graphics &g)override;
+    void paint (Graphics& g)override;
 
-    void mouseDown(const MouseEvent &e) override;
+    void mouseDown (const MouseEvent& e) override;
     void mouseEnter (const MouseEvent&)override;
     void mouseExit  (const MouseEvent&)override;
 
-	void updateVisibility();
+    void updateVisibility();
 
     //void selectDataAndElementPopup(String &selectedDataName, String &selectedElementName, DataType &selectedDataType, const DataType &filterType = DataType::Unknown);
 
-    NodeContainerViewer * getNodeContainerViewer() const noexcept;
-    ConnectableNodeUI * getNodeUI() const noexcept;
+    NodeContainerViewer* getNodeContainerViewer() const noexcept;
+    ConnectableNodeUI* getNodeUI() const noexcept;
 
-    void numAudioInputChanged(ConnectableNode *, int newNum) override;
-	void numAudioOutputChanged(ConnectableNode *, int newNum) override;
-  //DATA
-	void numDataInputChanged(ConnectableNode *, int newNum) override;
-	void numDataOutputChanged(ConnectableNode *, int newNum) override;
+    void numAudioInputChanged (ConnectableNode*, int newNum) override;
+    void numAudioOutputChanged (ConnectableNode*, int newNum) override;
+    //DATA
+    void numDataInputChanged (ConnectableNode*, int newNum) override;
+    void numDataOutputChanged (ConnectableNode*, int newNum) override;
 
-  void handleCommandMessage(int id)override;
+    void handleCommandMessage (int id)override;
 
 
-	//Listener
-	class  ConnectorListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~ConnectorListener() {}
+    //Listener
+    class  ConnectorListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~ConnectorListener() {}
 
-		virtual void connectorVisibilityChanged(ConnectorComponent *) {};
-	};
+        virtual void connectorVisibilityChanged (ConnectorComponent*) {};
+    };
 
-	ListenerList<ConnectorListener> connectorListeners;
-	void addConnectorListener(ConnectorListener* newListener) { connectorListeners.add(newListener); }
-	void removeConnectorListener(ConnectorListener* listener) { connectorListeners.remove(listener); }
+    ListenerList<ConnectorListener> connectorListeners;
+    void addConnectorListener (ConnectorListener* newListener) { connectorListeners.add (newListener); }
+    void removeConnectorListener (ConnectorListener* listener) { connectorListeners.remove (listener); }
 private:
     void generateToolTip();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectorComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectorComponent)
 };
 
 

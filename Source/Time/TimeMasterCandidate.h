@@ -16,7 +16,8 @@
 #ifndef TIMEMASTERCANDIDATE_H_INCLUDED
 #define TIMEMASTERCANDIDATE_H_INCLUDED
 
-class TimeMasterCandidate{
+class TimeMasterCandidate
+{
 
 
 

@@ -25,13 +25,14 @@ class ConnectableNodeUI;
 #include "../../JuceHeaderUI.h"//keep
 
 template<typename T> class SliderUI;
-class ConnectableNodeAudioCtlUI:public juce::Component{
+class ConnectableNodeAudioCtlUI: public juce::Component
+{
 
 public:
     ConnectableNodeAudioCtlUI();
 
-    void setNodeAndNodeUI(ConnectableNode * _node, ConnectableNodeUI * _nodeUI);
-	virtual void init();
+    void setNodeAndNodeUI (ConnectableNode* _node, ConnectableNodeUI* _nodeUI);
+    virtual void init();
 
     void resized() override;
 

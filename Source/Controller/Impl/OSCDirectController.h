@@ -21,52 +21,52 @@
 class OSCDirectController : public OSCController
 {
 public:
-  DECLARE_OBJ_TYPE_DEFAULTNAME(OSCDirectController,"OSC")
-	virtual ~OSCDirectController();
+    DECLARE_OBJ_TYPE_DEFAULTNAME (OSCDirectController, "OSC")
+    virtual ~OSCDirectController();
 
-  BoolParameter * sendTimeInfo;
+    BoolParameter* sendTimeInfo;
 
 
-    virtual Result processMessageInternal(const OSCMessage &msg) override;
+    virtual Result processMessageInternal (const OSCMessage& msg) override;
 
-  
+
 
 
     // Inherited via Listener
-    virtual void controllableAdded(ControllableContainer *,Controllable * c) override;
-    virtual void controllableRemoved(ControllableContainer *,Controllable * c) override;
-    virtual void controllableContainerAdded(ControllableContainer *,ControllableContainer * cc) override;
-    virtual void controllableContainerRemoved(ControllableContainer *,ControllableContainer * cc) override;
+    virtual void controllableAdded (ControllableContainer*, Controllable* c) override;
+    virtual void controllableRemoved (ControllableContainer*, Controllable* c) override;
+    virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer* cc) override;
+    virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer* cc) override;
 
-    virtual void controllableFeedbackUpdate(ControllableContainer *originContainer,Controllable * c) override;
+    virtual void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c) override;
 
-    virtual void onContainerParameterChanged(Parameter * p) override;
-
-
+    virtual void onContainerParameterChanged (Parameter* p) override;
 
 
-        //Listener
-        class  OSCDirectListener
-        {
-        public:
-            /** Destructor. */
-            virtual ~OSCDirectListener() {}
-            virtual void messageProcessed(const OSCMessage & msg, Result success) = 0;
-        };
 
-        ListenerList<OSCDirectListener> oscDirectlisteners;
-        void addOSCDirectParameterListener(OSCDirectListener* newListener) { oscDirectlisteners.add(newListener); }
-        void removeOSCDirectParameterListener(OSCDirectListener* listener) { oscDirectlisteners.remove(listener); }
+
+    //Listener
+    class  OSCDirectListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~OSCDirectListener() {}
+        virtual void messageProcessed (const OSCMessage& msg, Result success) = 0;
+    };
+
+    ListenerList<OSCDirectListener> oscDirectlisteners;
+    void addOSCDirectParameterListener (OSCDirectListener* newListener) { oscDirectlisteners.add (newListener); }
+    void removeOSCDirectParameterListener (OSCDirectListener* listener) { oscDirectlisteners.remove (listener); }
 
 
 
 private:
-    void sendOSCForAddress(Controllable*,const String & address);
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OSCDirectController)
+    void sendOSCForAddress (Controllable*, const String& address);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSCDirectController)
 
 
-        // Inherited via Listener
+    // Inherited via Listener
 
 
 };

@@ -24,55 +24,55 @@
 class Spat2DNode : public NodeBase
 {
 public:
-  DECLARE_OBJ_TYPE(Spat2DNode)
-	enum SpatMode {BEAM, PROXY};
-	enum ShapeMode {FREE, CIRCLE};
+    DECLARE_OBJ_TYPE (Spat2DNode)
+    enum SpatMode {BEAM, PROXY};
+    enum ShapeMode {FREE, CIRCLE};
 
-	EnumParameter * spatMode; //Beam / Proxy
-	EnumParameter * shapeMode; //Free, Circle
+    EnumParameter* spatMode;  //Beam / Proxy
+    EnumParameter* shapeMode;  //Free, Circle
 
-	IntParameter * numSpatInputs;
-	IntParameter * numSpatOutputs;
-	
-	FloatParameter * targetRadius;
+    IntParameter* numSpatInputs;
+    IntParameter* numSpatOutputs;
 
-	//Circle shape
-	FloatParameter * circleRadius;
-	FloatParameter * circleRotation;
+    FloatParameter* targetRadius;
 
-	Array<Point2DParameter<float> *> targetPositions;
-	
-	BoolParameter * useGlobalTarget;
-	Point2DParameter<float> * globalTargetPosition;
-	FloatParameter * globalTargetRadius;
+    //Circle shape
+    FloatParameter* circleRadius;
+    FloatParameter* circleRotation;
 
-	void setSourcePosition(int index, const Point<float> &position);
-	void setTargetPosition(int index, const Point<float> &position);
-	void updateInputOutputDataSlots();
+    Array<Point2DParameter<float> *> targetPositions;
 
-	void updateTargetsFromShape();
-	void computeAllInfluences();
-	void computeInfluencesForTarget(int targetIndex);
-	void computeInfluence(int sourceIndex, int targetIndex);
-	float getValueForSourceAndTargetPos(const Point<float> &sourcePosition, const Point<float> &targetPosition,float radius);
+    BoolParameter* useGlobalTarget;
+    Point2DParameter<float>* globalTargetPosition;
+    FloatParameter* globalTargetRadius;
 
-	bool modeIsBeam();
+    void setSourcePosition (int index, const Point<float>& position);
+    void setTargetPosition (int index, const Point<float>& position);
+    void updateInputOutputDataSlots();
 
-	void onContainerParameterChanged(Parameter *) override;
+    void updateTargetsFromShape();
+    void computeAllInfluences();
+    void computeInfluencesForTarget (int targetIndex);
+    void computeInfluence (int sourceIndex, int targetIndex);
+    float getValueForSourceAndTargetPos (const Point<float>& sourcePosition, const Point<float>& targetPosition, float radius);
 
-	void processInputDataChanged(Data *) override;
+    bool modeIsBeam();
 
+    void onContainerParameterChanged (Parameter*) override;
 
-
-	//AUDIO
-	void updateChannelNames();
-    void numChannelsChanged(bool isInput)override;
-	virtual void processBlockInternal(AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/) override;
-	
+    void processInputDataChanged (Data*) override;
 
 
-	
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Spat2DNode)
+
+    //AUDIO
+    void updateChannelNames();
+    void numChannelsChanged (bool isInput)override;
+    virtual void processBlockInternal (AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessage*/) override;
+
+
+
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Spat2DNode)
 };
 
 

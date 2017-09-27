@@ -20,51 +20,51 @@
 #include "../../UI/Style.h"
 
 class ShapeShifterPanelHeader :
-	public juce::Component,
-	public ShapeShifterPanelTab::TabListener,
-  public ButtonListener
+    public juce::Component,
+    public ShapeShifterPanelTab::TabListener,
+    public ButtonListener
 {
 public:
-	ShapeShifterPanelHeader();
-	virtual ~ShapeShifterPanelHeader();
+    ShapeShifterPanelHeader();
+    virtual ~ShapeShifterPanelHeader();
 
-	OwnedArray<ShapeShifterPanelTab> tabs;
-  AddElementButton addPannelMenu;
-  void buttonClicked (Button*)override;
+    OwnedArray<ShapeShifterPanelTab> tabs;
+    AddElementButton addPannelMenu;
+    void buttonClicked (Button*)override;
 
-	void addTab(ShapeShifterContent * content);
-	void removeTab(ShapeShifterPanelTab * tab, bool doRemove = true);
-	void attachTab(ShapeShifterPanelTab * tab);
+    void addTab (ShapeShifterContent* content);
+    void removeTab (ShapeShifterPanelTab* tab, bool doRemove = true);
+    void attachTab (ShapeShifterPanelTab* tab);
 
-	ShapeShifterPanelTab * getTabForContent(ShapeShifterContent * content);
-
-
-	void mouseDown(const MouseEvent &e) override;
-	void mouseDrag(const MouseEvent &e) override;
-
-	void paint(Graphics &g) override;
-	void resized()override;
-
-	void askForRemoveTab(ShapeShifterPanelTab *) override;
-
-	class Listener
-	{
-	public:
-        virtual ~Listener(){}
-		virtual void tabDrag(ShapeShifterPanelTab *) = 0;
-		virtual void tabSelect(ShapeShifterPanelTab *) = 0;
-
-		virtual void askForRemoveTab(ShapeShifterPanelTab *) = 0;
-		virtual void headerDrag() = 0;
+    ShapeShifterPanelTab* getTabForContent (ShapeShifterContent* content);
 
 
-	};
+    void mouseDown (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
 
-	ListenerList<Listener> listeners;
-	void addHeaderListener(Listener* newListener) { listeners.add(newListener); }
-	void removeHeaderListener(Listener* listener) { listeners.remove(listener); }
+    void paint (Graphics& g) override;
+    void resized()override;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterPanelHeader)
+    void askForRemoveTab (ShapeShifterPanelTab*) override;
+
+    class Listener
+    {
+    public:
+        virtual ~Listener() {}
+        virtual void tabDrag (ShapeShifterPanelTab*) = 0;
+        virtual void tabSelect (ShapeShifterPanelTab*) = 0;
+
+        virtual void askForRemoveTab (ShapeShifterPanelTab*) = 0;
+        virtual void headerDrag() = 0;
+
+
+    };
+
+    ListenerList<Listener> listeners;
+    void addHeaderListener (Listener* newListener) { listeners.add (newListener); }
+    void removeHeaderListener (Listener* listener) { listeners.remove (listener); }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterPanelHeader)
 };
 
 

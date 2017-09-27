@@ -17,44 +17,46 @@
 
 SerialDeviceChooser::SerialDeviceChooser()
 {
-	SerialManager::getInstance()->addSerialManagerListener(this);
-	fillDeviceList();
+    SerialManager::getInstance()->addSerialManagerListener (this);
+    fillDeviceList();
 }
 
 SerialDeviceChooser::~SerialDeviceChooser()
 {
-	SerialManager::getInstance()->removeSerialManagerListener(this);
+    SerialManager::getInstance()->removeSerialManagerListener (this);
 }
 
 void SerialDeviceChooser::fillDeviceList()
 {
-	String currentSelected = getItemText(getSelectedItemIndex());
+    String currentSelected = getItemText (getSelectedItemIndex());
 
-	clear();
-	addItem("Choose a Serial Device", 1);
-	int menuIndex = 2;
+    clear();
+    addItem ("Choose a Serial Device", 1);
+    int menuIndex = 2;
 
-	int newSelectedId = 1;
+    int newSelectedId = 1;
 
-	for (auto &pi : SerialManager::getInstance()->portInfos)
-	{
-		String mName = pi->description + String("(") + pi->port + String(")");
-		if (mName == currentSelected) newSelectedId = menuIndex;
-		addItem(mName,menuIndex);
-		menuIndex++;
-	}
+    for (auto& pi : SerialManager::getInstance()->portInfos)
+    {
+        String mName = pi->description + String ("(") + pi->port + String (")");
 
-	setSelectedId(newSelectedId, NotificationType::dontSendNotification);
+        if (mName == currentSelected) newSelectedId = menuIndex;
 
-}
+        addItem (mName, menuIndex);
+        menuIndex++;
+    }
 
-void SerialDeviceChooser::portAdded(SerialPortInfo *)
-{
-	fillDeviceList();
+    setSelectedId (newSelectedId, NotificationType::dontSendNotification);
 
 }
 
-void SerialDeviceChooser::portRemoved(SerialPortInfo *)
+void SerialDeviceChooser::portAdded (SerialPortInfo*)
 {
-	fillDeviceList();
+    fillDeviceList();
+
+}
+
+void SerialDeviceChooser::portRemoved (SerialPortInfo*)
+{
+    fillDeviceList();
 }

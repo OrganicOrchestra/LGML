@@ -21,38 +21,38 @@
 #include "../NodeBase.h"
 
 class AudioDeviceOutNode :
-	public NodeBase,
-	public juce::AudioProcessorGraph::AudioGraphIOProcessor,
-	public ChangeListener
+    public NodeBase,
+    public juce::AudioProcessorGraph::AudioGraphIOProcessor,
+    public ChangeListener
 
 {
 public:
-  DECLARE_OBJ_TYPE(AudioDeviceOutNode);
-	~AudioDeviceOutNode();
+    DECLARE_OBJ_TYPE (AudioDeviceOutNode);
+    ~AudioDeviceOutNode();
 
 
-	void changeListenerCallback(ChangeBroadcaster* source)override;
-	void processBlockInternal(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
+    void changeListenerCallback (ChangeBroadcaster* source)override;
+    void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override;
 
-	Array<BoolParameter *> outMutes;
-    Array<FloatParameter * > volumes;
-    Array<float > logVolumes,lastVolumes;
-    IntParameter * desiredNumAudioOutput;
+    Array<BoolParameter*> outMutes;
+    Array<FloatParameter* > volumes;
+    Array<float > logVolumes, lastVolumes;
+    IntParameter* desiredNumAudioOutput;
 
-	void addVolMute();
-	void removeVolMute();
+    void addVolMute();
+    void removeVolMute();
 
-  void numChannelsChanged(bool isInput)override;
+    void numChannelsChanged (bool isInput)override;
 
-    void onContainerParameterChanged(Parameter * p) override;
-    private :
+    void onContainerParameterChanged (Parameter* p) override;
+private :
     void updateVolMutes();
     int lastNumberOfOutputs;
 
-  void  setParentNodeContainer(NodeContainer * parent)override;
+    void  setParentNodeContainer (NodeContainer* parent)override;
 
-  Array<Array<float>> audioInCache;
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioDeviceOutNode)
+    Array<Array<float>> audioInCache;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioDeviceOutNode)
 };
 
 

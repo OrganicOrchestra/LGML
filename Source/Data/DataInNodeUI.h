@@ -30,7 +30,7 @@ public:
     DataInNodeContentUI();
     ~DataInNodeContentUI();
 
-    DataInNode * dataInNode;
+    DataInNode* dataInNode;
 
     OwnedArray<ParameterUI> parameterUIs;
 
@@ -40,25 +40,25 @@ public:
     void init() override;
 
     //helpers
-    void addUIForParameter(Parameter * p);
-    void addParameterUI(ParameterUI *pui);
+    void addUIForParameter (Parameter* p);
+    void addParameterUI (ParameterUI* pui);
 
 private:
 
     // Inherited via Listener
-    virtual void parameterAdded(Parameter *) override;
-    virtual void parameterRemoved(Parameter *) override;
+    virtual void parameterAdded (Parameter*) override;
+    virtual void parameterRemoved (Parameter*) override;
 
-    ParameterUI * getUIForParameter(Parameter * p)
+    ParameterUI* getUIForParameter (Parameter* p)
     {
-        for (auto &pui : parameterUIs)
+        for (auto& pui : parameterUIs)
         {
             if (pui->parameter == p) return pui;
         }
 
         return nullptr;
     }
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DataInNodeContentUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DataInNodeContentUI)
 };
 
 

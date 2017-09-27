@@ -18,10 +18,11 @@
 #include "../../Utils/FactoryBase.h"
 
 class Parameter;
-class  ParameterFactory:public FactoryBase<Parameter>{
+class  ParameterFactory: public FactoryBase<Parameter>
+{
 public:
-//  default creation for simple types
-  static Parameter * createBaseFromVar(StringRef name,const var &);
+    //  default creation for simple types
+    static Parameter* createBaseFromVar (StringRef name, const var&);
 };
 
 

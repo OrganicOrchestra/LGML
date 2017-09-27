@@ -22,8 +22,8 @@
 class Trigger : public Parameter
 {
 public:
-  Trigger(const String &niceName, const String &description, bool enabled = true);
-  ~Trigger() {masterReference.clear();}
+    Trigger (const String& niceName, const String& description, bool enabled = true);
+    ~Trigger() {masterReference.clear();}
 
 
 
@@ -31,41 +31,46 @@ public:
 
 
 
-  DynamicObject * createDynamicObject() override;
-  DynamicObject * getObject() override;
-  var getVarState() override;
+    DynamicObject* createDynamicObject() override;
+    DynamicObject* getObject() override;
+    var getVarState() override;
 
-  
 
-  static const var triggerVar;
-  void trigger()
-  {
-    setValue(triggerVar);
-  }
-  void tryToSetValue(var _value, bool silentSet , bool force) override{
 
-    if(!waitOrDeffer(_value, silentSet, force)){
-      if( !((_value.isInt() && (int) _value==0)
-            || (_value.isDouble() && (double) _value==0)
-            )){
+    static const var triggerVar;
+    void trigger()
+    {
+        setValue (triggerVar);
+    }
+    void tryToSetValue (var _value, bool silentSet, bool force) override
+    {
 
-        isSettingValue = true;
-        if (!silentSet) notifyValueChanged();
-          isSettingValue = false;
-      }
+        if (!waitOrDeffer (_value, silentSet, force))
+        {
+            if ( ! ((_value.isInt() && (int) _value == 0)
+                    || (_value.isDouble() && (double) _value == 0)
+                   ))
+            {
+
+                isSettingValue = true;
+
+                if (!silentSet) notifyValueChanged();
+
+                isSettingValue = false;
+            }
+        }
+
     }
 
-  }
-
-  DECLARE_OBJ_TYPE(Trigger)
+    DECLARE_OBJ_TYPE (Trigger)
 
 
 
 private:
-  WeakReference<Trigger>::Master masterReference;
-  friend class WeakReference<Trigger>;
+    WeakReference<Trigger>::Master masterReference;
+    friend class WeakReference<Trigger>;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Trigger)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Trigger)
 };
 
 

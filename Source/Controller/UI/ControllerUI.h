@@ -27,27 +27,27 @@ class StringParameterUI;
 class ControllerUI : public InspectableComponent, public ButtonListener
 {
 public:
-    ControllerUI(Controller * controller);
+    ControllerUI (Controller* controller);
     virtual ~ControllerUI();
 
-	ScopedPointer<StringParameterUI> nameTF;
-	ScopedPointer<ParameterUI> enabledBT;
-	ImageButton removeBT;
+    ScopedPointer<StringParameterUI> nameTF;
+    ScopedPointer<ParameterUI> enabledBT;
+    ImageButton removeBT;
 
-	ScopedPointer<TriggerBlinkUI> activityBlink;
+    ScopedPointer<TriggerBlinkUI> activityBlink;
 
-    Controller * controller;
+    Controller* controller;
 
-    virtual void paint(Graphics &g) override;
+    virtual void paint (Graphics& g) override;
     virtual void resized() override;
 
-	virtual void mouseDown(const MouseEvent &e) override;
-	virtual void buttonClicked(Button *) override;
-	bool keyPressed(const KeyPress &e) override;
+    virtual void mouseDown (const MouseEvent& e) override;
+    virtual void buttonClicked (Button*) override;
+    bool keyPressed (const KeyPress& e) override;
 
-	virtual InspectorEditor * createEditor() override;
+    virtual InspectorEditor* createEditor() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ControllerUI)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerUI)
 };
 
 

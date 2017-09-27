@@ -23,46 +23,47 @@
 class EnumParameterUI : public ParameterUI, public EnumParameter::EnumListener, public ComboBox::Listener
 {
 public:
-    EnumParameterUI(Parameter * parameter = nullptr);
+    EnumParameterUI (Parameter* parameter = nullptr);
     virtual ~EnumParameterUI();
 
-	EnumParameter * ep;
-  
+    EnumParameter* ep;
 
-	ComboBox cb;
 
-	void updateComboBox();
-	String getCBSelectedKey();
+    ComboBox cb;
 
-	void resized() override;
+    void updateComboBox();
+    String getCBSelectedKey();
 
-  
-  
-  enum Actions{
-    addElementId = -1,
-    removeElementId = -2,
-    NoneId = -3
-  };
+    void resized() override;
 
-	
-	void enumOptionAdded(EnumParameter *, const Identifier &key) override;
-	void enumOptionRemoved(EnumParameter *, const Identifier &key) override;
-  void enumOptionSelectionChanged(EnumParameter *,bool isSelected,bool isValid, const Identifier &name) override;
-	// Inherited via Listener
-	virtual void comboBoxChanged(ComboBox *) override;
-	
+
+
+    enum Actions
+    {
+        addElementId = -1,
+        removeElementId = -2,
+        NoneId = -3
+    };
+
+
+    void enumOptionAdded (EnumParameter*, const Identifier& key) override;
+    void enumOptionRemoved (EnumParameter*, const Identifier& key) override;
+    void enumOptionSelectionChanged (EnumParameter*, bool isSelected, bool isValid, const Identifier& name) override;
+    // Inherited via Listener
+    virtual void comboBoxChanged (ComboBox*) override;
+
 private:
-  int lastId ;
-	HashMap<int, String> idKeyMap;
-	HashMap<String,int> keyIdMap;
+    int lastId ;
+    HashMap<int, String> idKeyMap;
+    HashMap<String, int> keyIdMap;
 
-  void selectString(const String & );
+    void selectString (const String& );
 
 protected:
-    void valueChanged(const var &) override ;
+    void valueChanged (const var&) override ;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EnumParameterUI)
 
-		
+
 };
 
 #endif  // ENUMPARAMETERUI_H_INCLUDED

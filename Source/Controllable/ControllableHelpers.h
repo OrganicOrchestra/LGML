@@ -24,15 +24,15 @@ class Controllable;
 class ControllableContainerPopupMenu : public PopupMenu
 {
 public:
-  ControllableContainerPopupMenu(ControllableContainer * rootContainer,Array<Controllable*> * filterOut =nullptr);
-	virtual ~ControllableContainerPopupMenu();
+    ControllableContainerPopupMenu (ControllableContainer* rootContainer, Array<Controllable*>* filterOut = nullptr);
+    virtual ~ControllableContainerPopupMenu();
 
-	Array<Controllable *> controllableList;
-  Array<Controllable*> * filterOutControllable;
-	void populateMenu(PopupMenu *subMenu, ControllableContainer * container, int &currentId);
+    Array<Controllable*> controllableList;
+    Array<Controllable*>* filterOutControllable;
+    void populateMenu (PopupMenu* subMenu, ControllableContainer* container, int& currentId);
 
 
-	Controllable * showAndGetControllable();
+    Controllable* showAndGetControllable();
 
 };
 
@@ -40,45 +40,47 @@ public:
 class ControllableReferenceUI : public TextButton, public ButtonListener
 {
 public :
-	ControllableReferenceUI(ControllableContainer * rootContainer = nullptr,Array<Controllable*> filterOut ={});
-	virtual ~ControllableReferenceUI();
+    ControllableReferenceUI (ControllableContainer* rootContainer = nullptr, Array<Controllable*> filterOut = {});
+    virtual ~ControllableReferenceUI();
 
-	WeakReference<ControllableContainer> rootContainer;
+    WeakReference<ControllableContainer> rootContainer;
 
-	WeakReference<Controllable> currentControllable;
-	void setCurrentControllale(Controllable * c);
+    WeakReference<Controllable> currentControllable;
+    void setCurrentControllale (Controllable* c);
 
-  Array<Controllable*> filterOutControllable;
+    Array<Controllable*> filterOutControllable;
 
 
 
-	class  Listener
-	{
-	public:
-		/** Destructor. */
-		virtual ~Listener() {}
-		virtual void choosedControllableChanged(ControllableReferenceUI*,Controllable *) {};
-	};
+    class  Listener
+    {
+    public:
+        /** Destructor. */
+        virtual ~Listener() {}
+        virtual void choosedControllableChanged (ControllableReferenceUI*, Controllable*) {};
+    };
 
-	ListenerList<Listener> listeners;
-	void addControllableReferenceUIListener(Listener* newListener) { listeners.add(newListener); }
-	void removeControllableReferenceUIListener(Listener* listener) { listeners.remove(listener); }
+    ListenerList<Listener> listeners;
+    void addControllableReferenceUIListener (Listener* newListener) { listeners.add (newListener); }
+    void removeControllableReferenceUIListener (Listener* listener) { listeners.remove (listener); }
 
-	virtual void buttonClicked(Button * b) override;
+    virtual void buttonClicked (Button* b) override;
 };
 
 
 template<class FunctionType>
-bool execOrDefer(FunctionType func){
-  if(MessageManager::getInstance()->isThisTheMessageThread())
-  {
-    func();
-    return true;
-  }
-  else{
-    MessageManager::callAsync(func);
-    return false;
-  }
+bool execOrDefer (FunctionType func)
+{
+    if (MessageManager::getInstance()->isThisTheMessageThread())
+    {
+        func();
+        return true;
+    }
+    else
+    {
+        MessageManager::callAsync (func);
+        return false;
+    }
 }
 
 #endif  // CONTROLLABLEHELPERS_H_INCLUDED

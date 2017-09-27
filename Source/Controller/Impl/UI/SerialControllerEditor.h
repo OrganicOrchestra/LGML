@@ -23,37 +23,37 @@
 #include "../SerialController.h"
 
 class SerialControllerEditor :
-	public ControllerEditor, ComboBoxListener,
-	public SerialController::SerialControllerListener
+    public ControllerEditor, ComboBoxListener,
+    public SerialController::SerialControllerListener
 {
 public:
-	SerialControllerEditor(SerialController * controllerUI);
-	virtual ~SerialControllerEditor();
+    SerialControllerEditor (SerialController* controllerUI);
+    virtual ~SerialControllerEditor();
 
-	SerialDeviceChooser deviceChooser;
+    SerialDeviceChooser deviceChooser;
 
-	SerialController * serialController;
-	TextButton connectPortBT;
+    SerialController* serialController;
+    TextButton connectPortBT;
 
-	ScopedPointer<JsEnvironmentUI> jsUI;
-	ScopedPointer<ParameterUI> incomingToogle;
+    ScopedPointer<JsEnvironmentUI> jsUI;
+    ScopedPointer<ParameterUI> incomingToogle;
 
-	OwnedArray<ParameterUI> variablesUI;
+    OwnedArray<ParameterUI> variablesUI;
 
-	int getContentHeight() override;
+    int getContentHeight() override;
 
 
-	void paint(Graphics &g) override;
-	void resized() override;
+    void paint (Graphics& g) override;
+    void resized() override;
 
-	void updateConnectBTAndIndic();
+    void updateConnectBTAndIndic();
 
-	void comboBoxChanged(ComboBox *) override;
-	void buttonClicked(Button *) override;
+    void comboBoxChanged (ComboBox*) override;
+    void buttonClicked (Button*) override;
 
-	void portOpened() override;
-	void portClosed() override;
-	void currentPortChanged() override;
+    void portOpened() override;
+    void portClosed() override;
+    void currentPortChanged() override;
 
 };
 

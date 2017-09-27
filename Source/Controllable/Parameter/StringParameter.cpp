@@ -16,25 +16,28 @@
 #include "StringParameter.h"
 
 #include "ParameterFactory.h"
-REGISTER_PARAM_TYPE(StringParameter)
+REGISTER_PARAM_TYPE (StringParameter)
 
 
-StringParameter::StringParameter(const String & niceName, const String &description, const String & initialValue, bool enabled) :
-Parameter(niceName, description, initialValue, enabled)
+StringParameter::StringParameter (const String& niceName, const String& description, const String& initialValue, bool enabled) :
+    Parameter (niceName, description, initialValue, enabled)
 {
 
 }
 
 
-bool StringParameter::checkValueIsTheSame(const juce::var & v1,const juce::var & v2){
-  return v1.toString() == v2.toString();
+bool StringParameter::checkValueIsTheSame (const juce::var& v1, const juce::var& v2)
+{
+    return v1.toString() == v2.toString();
 }
 
-void  StringParameter::setValueInternal(var & newVal){
-  value = newVal.toString();
+void  StringParameter::setValueInternal (var& newVal)
+{
+    value = newVal.toString();
 };
 
 
-bool StringParameter::isMappable() {
-  return false;
+bool StringParameter::isMappable()
+{
+    return false;
 }

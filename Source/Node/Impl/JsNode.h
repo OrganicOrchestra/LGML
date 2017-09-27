@@ -21,29 +21,30 @@
 
 
 
-class JsNode : public NodeBase,public JsEnvironment{
-  public :
-  DECLARE_OBJ_TYPE(JsNode);
-  JsNode();
-  StringParameter* scriptPath;
+class JsNode : public NodeBase, public JsEnvironment
+{
+public :
+    DECLARE_OBJ_TYPE (JsNode);
+    JsNode();
+    StringParameter* scriptPath;
 
-  void clearNamespace() override;
+    void clearNamespace() override;
 
-  void buildLocalEnv() override;
-
-
-  void onContainerParameterChanged(Parameter * p) override;
+    void buildLocalEnv() override;
 
 
-  static var addIntParameter(const var::NativeFunctionArgs & a);
-  static var addFloatParameter(const var::NativeFunctionArgs & a);
-  static var addStringParameter(const var::NativeFunctionArgs & a);
-  static var addBoolParameter(const var::NativeFunctionArgs & a);
-  static var addTriggerParameter(const var::NativeFunctionArgs & a);
+    void onContainerParameterChanged (Parameter* p) override;
 
-  
 
-  Array<Controllable * > jsParameters;
+    static var addIntParameter (const var::NativeFunctionArgs& a);
+    static var addFloatParameter (const var::NativeFunctionArgs& a);
+    static var addStringParameter (const var::NativeFunctionArgs& a);
+    static var addBoolParameter (const var::NativeFunctionArgs& a);
+    static var addTriggerParameter (const var::NativeFunctionArgs& a);
+
+
+
+    Array<Controllable* > jsParameters;
 
 
 };

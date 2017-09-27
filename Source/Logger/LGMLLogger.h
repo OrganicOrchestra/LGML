@@ -25,18 +25,20 @@
 
 
 
-class LGMLLogger : public Logger {
-    public :
+class LGMLLogger : public Logger
+{
+public :
 
-    juce_DeclareSingleton(LGMLLogger, true);
+    juce_DeclareSingleton (LGMLLogger, true);
 
-    LGMLLogger():notifier(100){
+    LGMLLogger(): notifier (100)
+    {
 #if USE_FILE_LOGGER
-        addLogListener(&fileWriter);
+        addLogListener (&fileWriter);
 #endif
     }
 
-	void logMessage(const String & message) override;
+    void logMessage (const String& message) override;
 
 
     QueuedNotifier<String> notifier;
@@ -44,16 +46,17 @@ class LGMLLogger : public Logger {
 
 
 
-    void addLogListener(Listener * l){notifier.addListener(l);}
-    void removeLogListener(Listener * l){notifier.removeListener(l);}
+    void addLogListener (Listener* l) {notifier.addListener (l);}
+    void removeLogListener (Listener* l) {notifier.removeListener (l);}
 
 #if USE_FILE_LOGGER
-    class FileWriter : public Listener{
+    class FileWriter : public Listener
+    {
     public:
-        FileWriter(){fileLog = FileLogger::createDefaultAppLogger("LGML", "log", "");}
+        FileWriter() {fileLog = FileLogger::createDefaultAppLogger ("LGML", "log", "");}
 
-        void newMessage(const String& s) override{if (fileLog && !s.isEmpty()) {fileLog->logMessage(s);}}
-        String getFilePath(){return fileLog->getLogFile().getFullPathName();}
+        void newMessage (const String& s) override {if (fileLog && !s.isEmpty()) {fileLog->logMessage (s);}}
+        String getFilePath() {return fileLog->getLogFile().getFullPathName();}
         ScopedPointer<FileLogger> fileLog;
     };
 

@@ -23,40 +23,41 @@
 
 
 
-class AudioDebugPipe : public Thread{
+class AudioDebugPipe : public Thread
+{
 public:
 
-  AudioDebugPipe(const String & name);
-  ~AudioDebugPipe();
-  static void deleteInstanciated();
+    AudioDebugPipe (const String& name);
+    ~AudioDebugPipe();
+    static void deleteInstanciated();
 
-  void push(const AudioBuffer<float> & b);
-  void push(const float f);
-  void sendMessage(const String & c);
+    void push (const AudioBuffer<float>& b);
+    void push (const float f);
+    void sendMessage (const String& c);
 
-  static int idxOfPipe(const String & n);
-  static AudioDebugPipe * getOrCreatePipe(const String & name);
+    static int idxOfPipe (const String& n);
+    static AudioDebugPipe* getOrCreatePipe (const String& name);
 
-  void run() override;
+    void run() override;
 
-  NamedPipe audioPipe;
-  NamedPipe msgPipe;
+    NamedPipe audioPipe;
+    NamedPipe msgPipe;
 
-  static Array<AudioDebugPipe*> openedPipes;
+    static Array<AudioDebugPipe*> openedPipes;
 
-  Array<float,CriticalSection> buffer;
-  
+    Array<float, CriticalSection> buffer;
+
 };
 
 
 #if !FORCE_DISABLE_DEBUGPIPE
-  #define DBGAUDIO(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->push(b);}
-  #define DBGAUDIOSETBPM(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->sendMessage("BPM "+String(b));}
-  #define DEBUGPIPE_ENABLED juce_isRunningUnderDebugger()
+    #define DBGAUDIO(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->push(b);}
+    #define DBGAUDIOSETBPM(name,b) if(juce_isRunningUnderDebugger()){AudioDebugPipe::getOrCreatePipe(name)->sendMessage("BPM "+String(b));}
+    #define DEBUGPIPE_ENABLED juce_isRunningUnderDebugger()
 #else
-  #define DBGAUDIO(name,b)
-  #define DBGAUDIOSETBPM(name,b)
-  #define DEBUGPIPE_ENABLED 0
+    #define DBGAUDIO(name,b)
+    #define DBGAUDIOSETBPM(name,b)
+    #define DEBUGPIPE_ENABLED 0
 #endif
 
 

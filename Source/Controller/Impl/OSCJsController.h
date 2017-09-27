@@ -24,39 +24,40 @@
 class JsOSCListener;
 
 
-class OSCJsController : public OSCDirectController ,public JsEnvironment{
+class OSCJsController : public OSCDirectController, public JsEnvironment
+{
 public:
-  DECLARE_OBJ_TYPE_DEFAULTNAME(OSCJsController,"OSCJS");
-  
-    ~OSCJsController();
-    Result processMessageInternal(const OSCMessage &m) override;
-    Result callForMessage(const OSCMessage & msg);
-    void callonAnyMsg(const OSCMessage & msg);
+    DECLARE_OBJ_TYPE_DEFAULTNAME (OSCJsController, "OSCJS");
 
-    static var sendOSCFromJS(const juce::var::NativeFunctionArgs& a);
-    void onContainerParameterChanged(Parameter * p) override;
-    void onContainerTriggerTriggered(Trigger * t ) override;
+    ~OSCJsController();
+    Result processMessageInternal (const OSCMessage& m) override;
+    Result callForMessage (const OSCMessage& msg);
+    void callonAnyMsg (const OSCMessage& msg);
+
+    static var sendOSCFromJS (const juce::var::NativeFunctionArgs& a);
+    void onContainerParameterChanged (Parameter* p) override;
+    void onContainerTriggerTriggered (Trigger* t ) override;
 
 
 
     void newJsFileLoaded()override;
-    
 
 
-  static var createJsOSCListener(const var::NativeFunctionArgs & a);
-  OwnedArray<JsOSCListener,CriticalSection> jsOSCListeners;
 
-  static var OSCArgumentToVar(OSCArgument & a);
-  
+    static var createJsOSCListener (const var::NativeFunctionArgs& a);
+    OwnedArray<JsOSCListener, CriticalSection> jsOSCListeners;
+
+    static var OSCArgumentToVar (OSCArgument& a);
+
 
 private:
     void buildLocalEnv() override;
-  void clearNamespace()override;
+    void clearNamespace()override;
 
-  DynamicObject *  createOSCJsObject();
+    DynamicObject*   createOSCJsObject();
 
 
-    StringParameter * jsPath;
+    StringParameter* jsPath;
 };
 
 
@@ -70,40 +71,44 @@ private:
 // gets activated when /osc/pattern/to/watch has been recieved
 // do stuff with value...
 // }
-class JsOSCListener{
-  public :
-  JsOSCListener(JsEnvironment * js, OSCAddressPattern & pattern):jsEnv(js),
-  addressPattern(pattern){
-    buildVarObject();
+class JsOSCListener
+{
+public :
+    JsOSCListener (JsEnvironment* js, OSCAddressPattern& pattern): jsEnv (js),
+        addressPattern (pattern)
+    {
+        buildVarObject();
 
-  }
-  static Identifier oscReceivedCallbackId;
+    }
+    static Identifier oscReceivedCallbackId;
 
 
-  virtual ~JsOSCListener(){};
-  void buildVarObject(){
-    object= new DynamicObject();
-    DynamicObject * dob = object.getDynamicObject();
-    dob->setMethod(oscReceivedCallbackId,&JsOSCListener::dummyCallback);
+    virtual ~JsOSCListener() {};
+    void buildVarObject()
+    {
+        object = new DynamicObject();
+        DynamicObject* dob = object.getDynamicObject();
+        dob->setMethod (oscReceivedCallbackId, &JsOSCListener::dummyCallback);
 
-  }
+    }
 
-  // overriden in Js
+    // overriden in Js
 #pragma warning(push)
 #pragma warning(disable:4305 4800)
-  static var dummyCallback(const var::NativeFunctionArgs &){
-	  return var::undefined();
-  };
+    static var dummyCallback (const var::NativeFunctionArgs&)
+    {
+        return var::undefined();
+    };
 
 #pragma warning(pop)
 
 
-  void processMessage(const OSCMessage & msg);
+    void processMessage (const OSCMessage& msg);
 
 
-  JsEnvironment* jsEnv;
-  OSCAddressPattern  addressPattern;
-  var object;
+    JsEnvironment* jsEnv;
+    OSCAddressPattern  addressPattern;
+    var object;
 };
 
 

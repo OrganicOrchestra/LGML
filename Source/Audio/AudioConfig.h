@@ -21,9 +21,9 @@
 
 // TODO change when windows / linux support
 #if (defined JUCE_MAC || defined JUCE_LINUX || defined JUCE_WINDOWS)
-#define BUFFER_CAN_STRETCH 1
+    #define BUFFER_CAN_STRETCH 1
 #else
-#define BUFFER_CAN_STRETCH 0
+    #define BUFFER_CAN_STRETCH 0
 #endif
 
 

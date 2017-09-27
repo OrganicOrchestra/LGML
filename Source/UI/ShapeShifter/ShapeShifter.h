@@ -23,33 +23,33 @@ class ShapeShifterContainer;
 class ShapeShifter : public juce::Component
 {
 public :
-	enum Type {PANEL, CONTAINER};
+    enum Type {PANEL, CONTAINER};
 
-	ShapeShifter(Type _type);
-	virtual ~ShapeShifter();
+    ShapeShifter (Type _type);
+    virtual ~ShapeShifter();
 
-	ShapeShifterContainer * parentContainer;
+    ShapeShifterContainer* parentContainer;
 
-	Type shifterType;
+    Type shifterType;
 
-	int preferredWidth;
-	int preferredHeight;
-	void setPreferredWidth(int newWidth);
-	void setPreferredHeight(int newHeight);
+    int preferredWidth;
+    int preferredHeight;
+    void setPreferredWidth (int newWidth);
+    void setPreferredHeight (int newHeight);
 
-	virtual int getPreferredWidth();
-	virtual int getPreferredHeight();
+    virtual int getPreferredWidth();
+    virtual int getPreferredHeight();
 
-	bool isDetached();
-	void setParentContainer(ShapeShifterContainer * _parent);
+    bool isDetached();
+    void setParentContainer (ShapeShifterContainer* _parent);
 
-	virtual bool isFlexible();
+    virtual bool isFlexible();
 
-	virtual var getCurrentLayout();
-	virtual void loadLayout(var layout);
-  virtual void loadLayoutInternal(var /*layout*/) =0;
+    virtual var getCurrentLayout();
+    virtual void loadLayout (var layout);
+    virtual void loadLayoutInternal (var /*layout*/) = 0;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifter)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifter)
 };
 
 

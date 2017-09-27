@@ -25,74 +25,74 @@ class ControllerUI;
 
 
 class SerialController : public Controller, public JsEnvironment,
-	public SerialPort::SerialPortListener,
-	public SerialManager::SerialManagerListener
+    public SerialPort::SerialPortListener,
+    public SerialManager::SerialManagerListener
 {
 public:
-  DECLARE_OBJ_TYPE_DEFAULTNAME(SerialController, "Serial");
-	virtual ~SerialController();
+    DECLARE_OBJ_TYPE_DEFAULTNAME (SerialController, "Serial");
+    virtual ~SerialController();
 
-	String lastOpenedPortID; //for ghosting
-
-
-	StringParameter * selectedPort;
-	StringParameter * selectedHardwareID;
-	SerialPort * port;
-	void setCurrentPort(SerialPort *port);
-
-	Array<Parameter *> serialVariables;
-    void controllableAdded(ControllableContainer * ,Controllable*) override;
-    void controllableRemoved(ControllableContainer *,Controllable*) override;
-	//Script
-	
-	BoolParameter * logIncoming;
-
-	void onContainerParameterChanged(Parameter * p) override;
-	void newJsFileLoaded() override;
-	
+    String lastOpenedPortID; //for ghosting
 
 
-	void buildLocalEnv() override;
-	static var sendMessageFromScript(const var::NativeFunctionArgs & v);
+    StringParameter* selectedPort;
+    StringParameter* selectedHardwareID;
+    SerialPort* port;
+    void setCurrentPort (SerialPort* port);
 
-	//Device info
-	String deviceID;
+    Array<Parameter*> serialVariables;
+    void controllableAdded (ControllableContainer*, Controllable*) override;
+    void controllableRemoved (ControllableContainer*, Controllable*) override;
+    //Script
 
+    BoolParameter* logIncoming;
 
-	//LGML Serial functions
-
-	void sendIdentificationQuery();
-	virtual void processMessage(const String &message);
-
-	// Inherited via SerialPortListener
-
-	virtual void portOpened(SerialPort *) override;
-	virtual void portClosed(SerialPort *) override;
-	virtual void portRemoved(SerialPort *) override;
-	virtual void serialDataReceived(const var &data) override;
+    void onContainerParameterChanged (Parameter* p) override;
+    void newJsFileLoaded() override;
 
 
-	ControllerUI * createUI() override;
-  ControllerEditor * createEditor() override;
+
+    void buildLocalEnv() override;
+    static var sendMessageFromScript (const var::NativeFunctionArgs& v);
+
+    //Device info
+    String deviceID;
 
 
-	class SerialControllerListener
-	{
-	public:
-		virtual ~SerialControllerListener() {}
-		virtual void portOpened() {}
-		virtual void portClosed() {}
-		virtual void currentPortChanged() {}
-	};
+    //LGML Serial functions
 
-	ListenerList<SerialControllerListener> serialControllerListeners;
-	void addSerialControllerListener(SerialControllerListener* newListener) { serialControllerListeners.add(newListener); }
-	void removeSerialControllerListener(SerialControllerListener* listener) { serialControllerListeners.remove(listener); }
+    void sendIdentificationQuery();
+    virtual void processMessage (const String& message);
+
+    // Inherited via SerialPortListener
+
+    virtual void portOpened (SerialPort*) override;
+    virtual void portClosed (SerialPort*) override;
+    virtual void portRemoved (SerialPort*) override;
+    virtual void serialDataReceived (const var& data) override;
 
 
-	// Inherited via SerialManagerListener
-	virtual void portAdded(SerialPortInfo * info) override;
-	virtual void portRemoved(SerialPortInfo * info) override;
+    ControllerUI* createUI() override;
+    ControllerEditor* createEditor() override;
+
+
+    class SerialControllerListener
+    {
+    public:
+        virtual ~SerialControllerListener() {}
+        virtual void portOpened() {}
+        virtual void portClosed() {}
+        virtual void currentPortChanged() {}
+    };
+
+    ListenerList<SerialControllerListener> serialControllerListeners;
+    void addSerialControllerListener (SerialControllerListener* newListener) { serialControllerListeners.add (newListener); }
+    void removeSerialControllerListener (SerialControllerListener* listener) { serialControllerListeners.remove (listener); }
+
+
+    // Inherited via SerialManagerListener
+    virtual void portAdded (SerialPortInfo* info) override;
+    virtual void portRemoved (SerialPortInfo* info) override;
 
 };
 

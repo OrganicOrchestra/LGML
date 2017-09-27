@@ -27,62 +27,63 @@ class VuMeter;
 class ConnectableNodeUI;
 
 class ConnectableNodeHeaderUI : public juce::Component,
-public Button::Listener,
-private ControllableContainerListener,
-public ConnectableNode::ConnectableNodeListener
+    public Button::Listener,
+    private ControllableContainerListener,
+    public ConnectableNode::ConnectableNodeListener
 {
 public:
 
 
-  ConnectableNodeHeaderUI();
-  virtual ~ConnectableNodeHeaderUI();
+    ConnectableNodeHeaderUI();
+    virtual ~ConnectableNodeHeaderUI();
 
-  ConnectableNode * node;
-  ConnectableNodeUI * nodeUI;
+    ConnectableNode* node;
+    ConnectableNodeUI* nodeUI;
 
-  ScopedPointer<StringParameterUI> titleUI;
-  ScopedPointer<StringParameterUI> descriptionUI;
-  ScopedPointer<ParameterUI> enabledUI;
-  ScopedPointer<VuMeter> vuMeterIn;
-  ScopedPointer<VuMeter> vuMeterOut;
-
-
-  ImageButton removeBT;
-  TextButton miniModeBT;
-  ScopedPointer<PresetChooserUI> presetChooser;
+    ScopedPointer<StringParameterUI> titleUI;
+    ScopedPointer<StringParameterUI> descriptionUI;
+    ScopedPointer<ParameterUI> enabledUI;
+    ScopedPointer<VuMeter> vuMeterIn;
+    ScopedPointer<VuMeter> vuMeterOut;
 
 
-  virtual void setNodeAndNodeUI(ConnectableNode * node, ConnectableNodeUI * nodeUI);
-  virtual void init();
+    ImageButton removeBT;
+    TextButton miniModeBT;
+    ScopedPointer<PresetChooserUI> presetChooser;
 
 
-  virtual void resized() override;
-
-  void updateVuMeters();
-
-  bool bMiniMode;
-  virtual void setMiniMode(bool value);
-
-  // Inherited via Listeners
-  virtual void nodeParameterChanged(ConnectableNode *,Parameter *) override;
-
-  virtual void buttonClicked(Button *) override;
-  virtual void controllableContainerPresetLoaded(ControllableContainer *) override;
+    virtual void setNodeAndNodeUI (ConnectableNode* node, ConnectableNodeUI* nodeUI);
+    virtual void init();
 
 
-  void numAudioInputChanged(ConnectableNode *, int /*newNumInput*/) override;
-  void numAudioOutputChanged(ConnectableNode *, int /*newNumOutput*/) override;
+    virtual void resized() override;
+
+    void updateVuMeters();
+
+    bool bMiniMode;
+    virtual void setMiniMode (bool value);
+
+    // Inherited via Listeners
+    virtual void nodeParameterChanged (ConnectableNode*, Parameter*) override;
+
+    virtual void buttonClicked (Button*) override;
+    virtual void controllableContainerPresetLoaded (ControllableContainer*) override;
 
 
-  void handleCommandMessage(int id) override;
-  enum {
-    updatePresetCBID,
-    repaintId,
-    audioInputChangedId,
-    audioOutputChangedId
-  }DrawingCommand;
+    void numAudioInputChanged (ConnectableNode*, int /*newNumInput*/) override;
+    void numAudioOutputChanged (ConnectableNode*, int /*newNumOutput*/) override;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectableNodeHeaderUI)
+
+    void handleCommandMessage (int id) override;
+    enum
+    {
+        updatePresetCBID,
+        repaintId,
+        audioInputChangedId,
+        audioOutputChangedId
+    } DrawingCommand;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectableNodeHeaderUI)
 
 
 

@@ -22,79 +22,81 @@
 
 
 
-class FadeNeedle{
+class FadeNeedle
+{
 public:
-  FadeNeedle();
-  void set(const int & c,const int fIn,const int fOut,const int sus,bool _reverse = false);
+    FadeNeedle();
+    void set (const int& c, const int fIn, const int fOut, const int sus, bool _reverse = false);
 
 
-  void reset();
-  int startNeedle;
-  int startFadeOutCount;
-  bool isFadingOut;
-  float lastFade,currentFade;
-  int consumedSamples;
-  int fadeInNumSamples ,sustainNumSamples;
-  int fadeOutNumSamples;
-  bool hasBeenSet;
-  int num;
-  bool reverse;
+    void reset();
+    int startNeedle;
+    int startFadeOutCount;
+    bool isFadingOut;
+    float lastFade, currentFade;
+    int consumedSamples;
+    int fadeInNumSamples, sustainNumSamples;
+    int fadeOutNumSamples;
+    bool hasBeenSet;
+    int num;
+    bool reverse;
 
-  float fadeOutValue();
-  int getCurrentPosition();
+    float fadeOutValue();
+    int getCurrentPosition();
 
-  bool isFree(bool allowNotStarted =false);
+    bool isFree (bool allowNotStarted = false);
 
-  void consume(const int block);
+    void consume (const int block);
 
-  void setMaxLength(int max);
-  void startFadeOut(bool force = true);
+    void setMaxLength (int max);
+    void startFadeOut (bool force = true);
 
-  float getFadeValueStart();
-  float getFadeValueEnd();
-  float maxFadeOutValue;
+    float getFadeValueStart();
+    float getFadeValueEnd();
+    float maxFadeOutValue;
 private:
-  inline float computeCurrentFade();
-  int getStartFadeOut() const;
-  int getEndFadeOut()const;
+    inline float computeCurrentFade();
+    int getStartFadeOut() const;
+    int getEndFadeOut()const;
 
 
 };
 
 
 
-class MultiNeedle{
+class MultiNeedle
+{
 public:
-  int currentPos;
-  Array<FadeNeedle> needles;
-  int maxNeedles;
-  bool isJumping;
-  int fadeInNumSamples ;
-  int fadeOutNumSamples;
-  int needleIdx = 0;
-  int loopSize;
-  int numActiveNeedle;
-  bool isStitching;
-  CriticalSection readMutex;
+    int currentPos;
+    Array<FadeNeedle> needles;
+    int maxNeedles;
+    bool isJumping;
+    int fadeInNumSamples ;
+    int fadeOutNumSamples;
+    int needleIdx = 0;
+    int loopSize;
+    int numActiveNeedle;
+    bool isStitching;
+    CriticalSection readMutex;
 
-  MultiNeedle(int fIn=512,int fOut=512,int max = 10);
+    MultiNeedle (int fIn = 512, int fOut = 512, int max = 10);
 
-  void setLoopSize(int _loopSize);
-  void jumpTo(const int to);
-  FadeNeedle *  consumeNextNeedle(int numSamples);
-  void fadeAllOut();
-  void resetAll();
-  void addToBuffer( BufferBlockList & originBuffer,AudioBuffer<float> & destBuffer,int numSamples,bool isLooping);
+    void setLoopSize (int _loopSize);
+    void jumpTo (const int to);
+    FadeNeedle*   consumeNextNeedle (int numSamples);
+    void fadeAllOut();
+    void resetAll();
+    void addToBuffer ( BufferBlockList& originBuffer, AudioBuffer<float>& destBuffer, int numSamples, bool isLooping);
 
 
 
 private:
 
-  FadeNeedle * getMostConsumedNeedle(const int time);
-  FadeNeedle * getLessConsumedNeedle(const int time);
-  
-  
-  
+    FadeNeedle* getMostConsumedNeedle (const int time);
+    FadeNeedle* getLessConsumedNeedle (const int time);
+
+
+
 };
 
 #endif  // MULTINEEDLE_H_INCLUDED

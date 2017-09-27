@@ -18,109 +18,121 @@
 #include "../../ControllableContainer.h"
 #include "ParameterUIFactory.h"
 
-ParameterProxyUI::ParameterProxyUI(ParameterProxy * proxy) :
-  linkedParamUI(nullptr),
-	ParameterUI(proxy),
-	paramProxy(proxy),
-chooser(proxy->getRoot())
+ParameterProxyUI::ParameterProxyUI (ParameterProxy* proxy) :
+    linkedParamUI (nullptr),
+    ParameterUI (proxy),
+    paramProxy (proxy),
+    chooser (proxy->getRoot())
 
 {
-  setMappingDest(true);
-	chooser.addControllableReferenceUIListener(this);
-	addAndMakeVisible(&chooser);
-	paramProxy->addParameterProxyListener(this);
+    setMappingDest (true);
+    chooser.addControllableReferenceUIListener (this);
+    addAndMakeVisible (&chooser);
+    paramProxy->addParameterProxyListener (this);
 
-	setLinkedParamUI(paramProxy->linkedParam);
+    setLinkedParamUI (paramProxy->linkedParam);
 }
 
 ParameterProxyUI::~ParameterProxyUI()
 {
-	paramProxy->removeParameterProxyListener(this);
-	setLinkedParamUI(nullptr);
+    paramProxy->removeParameterProxyListener (this);
+    setLinkedParamUI (nullptr);
 }
 
 void ParameterProxyUI::resized()
 {
-	Rectangle<int> r = getLocalBounds();
-	if (r.getWidth() == 0 || r.getHeight() == 0) return;
+    Rectangle<int> r = getLocalBounds();
+
+    if (r.getWidth() == 0 || r.getHeight() == 0) return;
 
 
-	Rectangle<int> paramR = r;
-  if (linkedParamUI != nullptr){
-    linkedParamUI->setBounds(paramR);
+    Rectangle<int> paramR = r;
 
-  }
-  else{chooser.setBounds(paramR);}
+    if (linkedParamUI != nullptr)
+    {
+        linkedParamUI->setBounds (paramR);
 
-}
-
-void ParameterProxyUI::setLinkedParamUI(Parameter * p)
-{
-
-
-	if (linkedParamUI != nullptr)
-	{
-//    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI->ownedParameterUI.get());
-    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get());
-		if (cUI && p && cUI->parameter == p) return;
-
-		removeChildComponent(linkedParamUI);
-		linkedParamUI = nullptr;
-	}
-
-
-
-//  linkedParamUI = p?new NamedParameterUI(ParameterUIFactory::createDefaultUI(p),100,true):nullptr;
-  if(dynamic_cast<ParameterProxy*>(p)){
-    //encapsulate ui if proxy of proxy to show it explicitly
-    auto * eUI =  new NamedParameterUI(ParameterUIFactory::createDefaultUI(p),20);
-    eUI->controllableLabel.setText("proxy : " + p->niceName, dontSendNotification);
-    linkedParamUI = eUI;
-  }
-  else{
-    linkedParamUI = p?ParameterUIFactory::createDefaultUI(p):nullptr;
-  }
-
-
-	if (linkedParamUI != nullptr)
-	{
-		addAndMakeVisible(linkedParamUI);
-		updateTooltip();
-    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get());
-    if(cUI)
-		cUI->setTooltip(getTooltip());
-	}
-  chooser.setVisible(linkedParamUI==nullptr);
-  chooser.filterOutControllable = {paramProxy};
-	resized();
-}
-
-
-
-void ParameterProxyUI::linkedParamChanged(ParameterProxy * p)
-{
-  jassert(p==paramProxy);
-  if(!MessageManager::getInstance()->isThisTheMessageThread()){
-    MessageManager::getInstance()->callAsync([this,p](){linkedParamChanged(p);});
-  }
-  else{
-	setLinkedParamUI(p->linkedParam);
-  }
-}
-
-void ParameterProxyUI::choosedControllableChanged(ControllableReferenceUI*,Controllable * c)
-{
-  auto t = Parameter::fromControllable(c);
-  paramProxy->setParamToReferTo(t);
-
+    }
+    else {chooser.setBounds (paramR);}
 
 }
 
-void ParameterProxyUI::controllableNameChanged(Controllable * c)
+void ParameterProxyUI::setLinkedParamUI (Parameter* p)
 {
-	ParameterUI::controllableNameChanged(c);
-	updateTooltip();
-  if(auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI.get()))
-		cUI->setTooltip(getTooltip());
-	
+
+
+    if (linkedParamUI != nullptr)
+    {
+        //    auto * cUI = dynamic_cast<ParameterUI*>(linkedParamUI->ownedParameterUI.get());
+        auto* cUI = dynamic_cast<ParameterUI*> (linkedParamUI.get());
+
+        if (cUI && p && cUI->parameter == p) return;
+
+        removeChildComponent (linkedParamUI);
+        linkedParamUI = nullptr;
+    }
+
+
+
+    //  linkedParamUI = p?new NamedParameterUI(ParameterUIFactory::createDefaultUI(p),100,true):nullptr;
+    if (dynamic_cast<ParameterProxy*> (p))
+    {
+        //encapsulate ui if proxy of proxy to show it explicitly
+        auto* eUI =  new NamedParameterUI (ParameterUIFactory::createDefaultUI (p), 20);
+        eUI->controllableLabel.setText ("proxy : " + p->niceName, dontSendNotification);
+        linkedParamUI = eUI;
+    }
+    else
+    {
+        linkedParamUI = p ? ParameterUIFactory::createDefaultUI (p) : nullptr;
+    }
+
+
+    if (linkedParamUI != nullptr)
+    {
+        addAndMakeVisible (linkedParamUI);
+        updateTooltip();
+        auto* cUI = dynamic_cast<ParameterUI*> (linkedParamUI.get());
+
+        if (cUI)
+            cUI->setTooltip (getTooltip());
+    }
+
+    chooser.setVisible (linkedParamUI == nullptr);
+    chooser.filterOutControllable = {paramProxy};
+    resized();
+}
+
+
+
+void ParameterProxyUI::linkedParamChanged (ParameterProxy* p)
+{
+    jassert (p == paramProxy);
+
+    if (!MessageManager::getInstance()->isThisTheMessageThread())
+    {
+        MessageManager::getInstance()->callAsync ([this, p]() {linkedParamChanged (p);});
+    }
+    else
+    {
+        setLinkedParamUI (p->linkedParam);
+    }
+}
+
+void ParameterProxyUI::choosedControllableChanged (ControllableReferenceUI*, Controllable* c)
+{
+    auto t = Parameter::fromControllable (c);
+    paramProxy->setParamToReferTo (t);
+
+
+}
+
+void ParameterProxyUI::controllableNameChanged (Controllable* c)
+{
+    ParameterUI::controllableNameChanged (c);
+    updateTooltip();
+
+    if (auto* cUI = dynamic_cast<ParameterUI*> (linkedParamUI.get()))
+        cUI->setTooltip (getTooltip());
+
 }

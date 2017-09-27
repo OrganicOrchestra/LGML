@@ -21,12 +21,12 @@
 class BetterStepper : public Slider
 {
 public:
-	BetterStepper(const String &tooltip);
-	virtual ~BetterStepper();
-  void resized()override;
-  bool isMini;
-	
-//  void paint(Graphics &g) ;
+    BetterStepper (const String& tooltip);
+    virtual ~BetterStepper();
+    void resized()override;
+    bool isMini;
+
+    //  void paint(Graphics &g) ;
 };
 
 

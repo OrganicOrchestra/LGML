@@ -21,59 +21,64 @@
 #include "../ShapeShifter/ShapeShifterManager.h"
 #include "../Style.h"
 
-InspectableComponent::InspectableComponent(ParameterContainer * relatedContainer, const String &_inspectableType) :
-	inspectableType(_inspectableType),
-	relatedParameterContainer(relatedContainer),
-	recursiveInspectionLevel(0),
-	canInspectChildContainersBeyondRecursion(true),
-	isSelected(false),
-	paintBordersWhenSelected(true),
-	bringToFrontOnSelect(true)
+InspectableComponent::InspectableComponent (ParameterContainer* relatedContainer, const String& _inspectableType) :
+    inspectableType (_inspectableType),
+    relatedParameterContainer (relatedContainer),
+    recursiveInspectionLevel (0),
+    canInspectChildContainersBeyondRecursion (true),
+    isSelected (false),
+    paintBordersWhenSelected (true),
+    bringToFrontOnSelect (true)
 {
 }
 
 InspectableComponent::~InspectableComponent()
 {
-	listeners.call(&InspectableListener::inspectableRemoved,this);
+    listeners.call (&InspectableListener::inspectableRemoved, this);
 }
 
-InspectorEditor * InspectableComponent::createEditor()
+InspectorEditor* InspectableComponent::createEditor()
 {
-	return new GenericParameterContainerEditor(relatedParameterContainer);
+    return new GenericParameterContainerEditor (relatedParameterContainer);
 }
 
 void InspectableComponent::selectThis()
 {
-	if (Inspector::getInstanceWithoutCreating() == nullptr)
-	{
-		ShapeShifterManager::getInstance()->showPanelWindowForContent(PanelName::InspectorPanel);
-	}
-	Inspector::getInstance()->setCurrentComponent(this);
+    if (Inspector::getInstanceWithoutCreating() == nullptr)
+    {
+        ShapeShifterManager::getInstance()->showPanelWindowForContent (PanelName::InspectorPanel);
+    }
+
+    Inspector::getInstance()->setCurrentComponent (this);
 }
 
-void InspectableComponent::setSelected(bool value)
+void InspectableComponent::setSelected (bool value)
 {
-	if (value == isSelected) return;
-	isSelected = value;
+    if (value == isSelected) return;
 
-	if (bringToFrontOnSelect) toFront(true);
-	 repaint();
+    isSelected = value;
+
+    if (bringToFrontOnSelect) toFront (true);
+
+    repaint();
 
 
-	setSelectedInternal(value);
+    setSelectedInternal (value);
 
-	listeners.call(&InspectableListener::inspectableSelectionChanged, this);
+    listeners.call (&InspectableListener::inspectableSelectionChanged, this);
 }
 
-void InspectableComponent::setSelectedInternal(bool)
+void InspectableComponent::setSelectedInternal (bool)
 {
-	//to be overriden
+    //to be overriden
 }
 
-void InspectableComponent::paintOverChildren(juce::Graphics &g){
-  if(isSelected && paintBordersWhenSelected){
-    g.setColour( findColour(TextButton::buttonOnColourId));
-    g.drawRoundedRectangle(getLocalBounds().toFloat(), 4, 2);
-  }
+void InspectableComponent::paintOverChildren (juce::Graphics& g)
+{
+    if (isSelected && paintBordersWhenSelected)
+    {
+        g.setColour ( findColour (TextButton::buttonOnColourId));
+        g.drawRoundedRectangle (getLocalBounds().toFloat(), 4, 2);
+    }
 
 }

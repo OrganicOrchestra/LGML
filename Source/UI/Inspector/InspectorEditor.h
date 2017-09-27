@@ -23,30 +23,30 @@ class InspectableComponent;
 class InspectorEditor : public juce::Component, public juce::ComponentListener
 {
 public:
-	InspectorEditor();
-	virtual ~InspectorEditor();
+    InspectorEditor();
+    virtual ~InspectorEditor();
 
-	
-	
-	void resized() override;
 
-	virtual int getContentHeight();
 
-	virtual void clear();
+    void resized() override;
 
-	class  InspectorEditorListener
-	{
-	public:
-		/** Destructor. */
-		virtual ~InspectorEditorListener() {}
-		virtual void contentSizeChanged(InspectorEditor *) {};
-	};
+    virtual int getContentHeight();
 
-	ListenerList<InspectorEditorListener> inspectorEditorListeners;
-	void addInspectorEditorListener(InspectorEditorListener* newListener) { inspectorEditorListeners.add(newListener); }
-	void removeInspectorEditorListener(InspectorEditorListener* listener) { inspectorEditorListeners.remove(listener); }
+    virtual void clear();
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InspectorEditor)
+    class  InspectorEditorListener
+    {
+    public:
+        /** Destructor. */
+        virtual ~InspectorEditorListener() {}
+        virtual void contentSizeChanged (InspectorEditor*) {};
+    };
+
+    ListenerList<InspectorEditorListener> inspectorEditorListeners;
+    void addInspectorEditorListener (InspectorEditorListener* newListener) { inspectorEditorListeners.add (newListener); }
+    void removeInspectorEditorListener (InspectorEditorListener* listener) { inspectorEditorListeners.remove (listener); }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InspectorEditor)
 };
 
 #endif  // INSPECTOREDITOR_H_INCLUDED

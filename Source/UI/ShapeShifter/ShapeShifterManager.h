@@ -23,66 +23,66 @@
 
 
 class ShapeShifterManager :
-	public ShapeShifterPanel::Listener
+    public ShapeShifterPanel::Listener
 {
 public:
-	juce_DeclareSingleton(ShapeShifterManager, true);
-	ShapeShifterManager();
-	virtual ~ShapeShifterManager();
+    juce_DeclareSingleton (ShapeShifterManager, true);
+    ShapeShifterManager();
+    virtual ~ShapeShifterManager();
 
-	ShapeShifterContainer mainShifterContainer;
+    ShapeShifterContainer mainShifterContainer;
 
-	File lastFile;
-  File defaultFolder;
+    File lastFile;
+    File defaultFolder;
 
-	OwnedArray<ShapeShifterPanel> openedPanels;
-	OwnedArray<ShapeShifterWindow> openedWindows;
+    OwnedArray<ShapeShifterPanel> openedPanels;
+    OwnedArray<ShapeShifterWindow> openedWindows;
 
-	ShapeShifterPanel * currentCandidatePanel;
-	void setCurrentCandidatePanel(ShapeShifterPanel *);
+    ShapeShifterPanel* currentCandidatePanel;
+    void setCurrentCandidatePanel (ShapeShifterPanel*);
 
-	PanelName getPanelNameForContentName(const String &name);
-	String getContentNameForPanelName(PanelName panelName);
+    PanelName getPanelNameForContentName (const String& name);
+    String getContentNameForPanelName (PanelName panelName);
 
-	ShapeShifterPanel * getPanelForContent(ShapeShifterContent * content);
-	ShapeShifterPanel * getPanelForContentName(const String & name);
+    ShapeShifterPanel* getPanelForContent (ShapeShifterContent* content);
+    ShapeShifterPanel* getPanelForContentName (const String& name);
 
-	ShapeShifterPanel * createPanel(ShapeShifterContent * content, ShapeShifterPanelTab * sourceTab = nullptr);
-	void removePanel(ShapeShifterPanel * panel);
+    ShapeShifterPanel* createPanel (ShapeShifterContent* content, ShapeShifterPanelTab* sourceTab = nullptr);
+    void removePanel (ShapeShifterPanel* panel);
 
-	ShapeShifterWindow * showPanelWindow(ShapeShifterPanel * _panel, Rectangle<int> bounds);
-	ShapeShifterWindow * showPanelWindowForContent(PanelName panelName);
-	void showContent(String contentName);
+    ShapeShifterWindow* showPanelWindow (ShapeShifterPanel* _panel, Rectangle<int> bounds);
+    ShapeShifterWindow* showPanelWindowForContent (PanelName panelName);
+    void showContent (String contentName);
 
 
-	void closePanelWindow(ShapeShifterWindow * window, bool doRemovePanel);
+    void closePanelWindow (ShapeShifterWindow* window, bool doRemovePanel);
 
-	ShapeShifterContent * getContentForName(PanelName contentName);
+    ShapeShifterContent* getContentForName (PanelName contentName);
 
-	ShapeShifterPanel * checkCandidateTargetForPanel(ShapeShifterPanel * panel);
-	bool checkDropOnCandidateTarget(WeakReference<ShapeShifterPanel> panel);
+    ShapeShifterPanel* checkCandidateTargetForPanel (ShapeShifterPanel* panel);
+    bool checkDropOnCandidateTarget (WeakReference<ShapeShifterPanel> panel);
 
-	ShapeShifterWindow * getWindowForPanel(ShapeShifterPanel * panel);
+    ShapeShifterWindow* getWindowForPanel (ShapeShifterPanel* panel);
 
-	void loadLayout(var layoutObject);
-	var getCurrentLayout();
-	void loadLayoutFromFile(int fileIndexInLayoutFolder = -1);
-	void loadLayoutFromFile(const File &fromFile);
-	void loadLastSessionLayoutFile();
-	void loadDefaultLayoutFile();
-	void saveCurrentLayout();
-	void saveCurrentLayoutToFile(const File &toFile);
-	Array<File> getLayoutFiles();
+    void loadLayout (var layoutObject);
+    var getCurrentLayout();
+    void loadLayoutFromFile (int fileIndexInLayoutFolder = -1);
+    void loadLayoutFromFile (const File& fromFile);
+    void loadLastSessionLayoutFile();
+    void loadDefaultLayoutFile();
+    void saveCurrentLayout();
+    void saveCurrentLayoutToFile (const File& toFile);
+    Array<File> getLayoutFiles();
 
-	void clearAllPanelsAndWindows();
+    void clearAllPanelsAndWindows();
 
-	const int baseMenuCommandID = 0x31000;
-	const int baseSpecialMenuCommandID = 0x32000;
-	PopupMenu getPanelsMenu();
+    const int baseMenuCommandID = 0x31000;
+    const int baseSpecialMenuCommandID = 0x32000;
+    PopupMenu getPanelsMenu();
 
-	void handleMenuPanelCommand(int commandID);
+    void handleMenuPanelCommand (int commandID);
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ShapeShifterManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterManager)
 };
 
 #endif  // SHAPESHIFTERMANAGER_H_INCLUDED

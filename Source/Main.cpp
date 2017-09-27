@@ -23,8 +23,8 @@
 #include "Utils/CommandLineElements.hpp"
 //#define ENGINE_SERVER_ONLY
 #ifndef ENGINE_SERVER_ONLY
-#include "UI/LookAndFeelOO.h"
-#include "UI/MainWindow.h"
+    #include "UI/LookAndFeelOO.h"
+    #include "UI/MainWindow.h"
 #endif
 
 
@@ -32,133 +32,151 @@
 class LGMLApplication : public JUCEApplication
 {
 public:
-  //==============================================================================
-  LGMLApplication() {}
+    //==============================================================================
+    LGMLApplication() {}
 
-  ApplicationCommandManager commandManager;
-  ScopedPointer<ApplicationProperties> appProperties;
-  AudioDeviceManager deviceManager;
-  UndoManager undoManager;
+    ApplicationCommandManager commandManager;
+    ScopedPointer<ApplicationProperties> appProperties;
+    AudioDeviceManager deviceManager;
+    UndoManager undoManager;
 
-  ScopedPointer<Engine> engine;
-
-
-  const String getApplicationName() override       { return ProjectInfo::projectName; }
-  const String getApplicationVersion() override    { return ProjectInfo::versionString; }
-  bool moreThanOneInstanceAllowed() override       { return false; }
-
-  //==============================================================================
-  void initialise (const String& commandLine) override
-  {
-    // This method is where you should put your application's initialisation code..
-    auto commandLinesElements = CommandLineElements::parseCommandLine(commandLine);
-    if(commandLinesElements.containsCommand("v")){
-      std::cout << ProjectInfo::versionString << std::endl;
-      quit();
-      return;
-      }
-      PropertiesFile::Options options;
-      options.applicationName     = "LGML";
-      options.filenameSuffix      = "settings";
-      options.osxLibrarySubFolder = "Preferences";
-
-      appProperties = new ApplicationProperties();
-      appProperties->setStorageParameters (options);
+    ScopedPointer<Engine> engine;
 
 
+    const String getApplicationName() override       { return ProjectInfo::projectName; }
+    const String getApplicationVersion() override    { return ProjectInfo::versionString; }
+    bool moreThanOneInstanceAllowed() override       { return false; }
+
+    //==============================================================================
+    void initialise (const String& commandLine) override
+    {
+        // This method is where you should put your application's initialisation code..
+        auto commandLinesElements = CommandLineElements::parseCommandLine (commandLine);
+
+        if (commandLinesElements.containsCommand ("v"))
+        {
+            std::cout << ProjectInfo::versionString << std::endl;
+            quit();
+            return;
+        }
+
+        PropertiesFile::Options options;
+        options.applicationName     = "LGML";
+        options.filenameSuffix      = "settings";
+        options.osxLibrarySubFolder = "Preferences";
+
+        appProperties = new ApplicationProperties();
+        appProperties->setStorageParameters (options);
 
 
-      Process::setPriority (Process::HighPriority);
 
-      engine = new Engine();
+
+        Process::setPriority (Process::HighPriority);
+
+        engine = new Engine();
 #if LGML_UNIT_TESTS
 
-      UnitTestRunner tstRunner;
-      CommandLineElements commandLineElements = CommandLineElements::parseCommandLine(commandLine);
-      if(CommandLineElement elem = commandLineElements.getCommandLineElement("t","")){
-        Array<UnitTest*> allTests = UnitTest::getAllTests();
-        Array<UnitTest*> testsToRun ;
-        for(auto &tName:elem.args){
-          bool found = false;
-          for(auto & t:allTests){
-            if(tName==t->getName()){
-              testsToRun.add(t);
-              found = true;
-              break;
+        UnitTestRunner tstRunner;
+        CommandLineElements commandLineElements = CommandLineElements::parseCommandLine (commandLine);
+
+        if (CommandLineElement elem = commandLineElements.getCommandLineElement ("t", ""))
+        {
+            Array<UnitTest*> allTests = UnitTest::getAllTests();
+            Array<UnitTest*> testsToRun ;
+
+            for (auto& tName : elem.args)
+            {
+                bool found = false;
+
+                for (auto& t : allTests)
+                {
+                    if (tName == t->getName())
+                    {
+                        testsToRun.add (t);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    DBG ("no tests found for : " + tName);
+                }
             }
-          }
-          if(!found){
-            DBG("no tests found for : "+tName);
-          }
+
+            tstRunner.runTests (testsToRun);
         }
-        tstRunner.runTests(testsToRun);
-      }
-      else{
-        tstRunner.runAllTests();
-      }
-      quit();
+        else
+        {
+            tstRunner.runAllTests();
+        }
+
+        quit();
 #else
 
 #ifndef ENGINE_SERVER_ONLY
-      LookAndFeel::setDefaultLookAndFeel(lookAndFeelOO= new LookAndFeelOO);
-      mainWindow = new MainWindow (getApplicationName(),engine);
+        LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
+        mainWindow = new MainWindow (getApplicationName(), engine);
 #endif
-      engine->parseCommandline(commandLinesElements);
-      if(!engine->getFile().existsAsFile()){
-        engine->createNewGraph();
-        engine->setChangedFlag(false);
-      }
+        engine->parseCommandline (commandLinesElements);
+
+        if (!engine->getFile().existsAsFile())
+        {
+            engine->createNewGraph();
+            engine->setChangedFlag (false);
+        }
+
 #endif
 
-      }
+    }
 
-      void shutdown() override
-      {
+    void shutdown() override
+    {
         // Add your application's shutdown code here..
 
 #ifndef ENGINE_SERVER_ONLY
         mainWindow = nullptr; // (deletes our window)
 #endif
         engine = nullptr;
-      }
+    }
 
-      //==============================================================================
-      void systemRequestedQuit() override
-      {
+    //==============================================================================
+    void systemRequestedQuit() override
+    {
         // This is called when the app is being asked to quit: you can ignore this
         // request and let the app carry on running, or call quit() to allow the app to close.
         quit();
-      }
+    }
 
-      void anotherInstanceStarted (const String& commandLine) override
-      {
+    void anotherInstanceStarted (const String& commandLine) override
+    {
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
 
-        DBG("Another instance started !");
-        engine->parseCommandline(CommandLineElements::parseCommandLine(commandLine));
+        DBG ("Another instance started !");
+        engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
 
 
-      }
+    }
 
 #ifndef ENGINE_SERVER_ONLY
-      ScopedPointer<MainWindow> mainWindow;
-      ScopedPointer<LookAndFeel> lookAndFeelOO;
+    ScopedPointer<MainWindow> mainWindow;
+    ScopedPointer<LookAndFeel> lookAndFeelOO;
 #endif
 
-      };
+};
 
 
-      static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*>(JUCEApplication::getInstance()); }
-      ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
-      ApplicationProperties& getAppProperties()           { return *getApp()->appProperties; }
-      AudioDeviceManager & getAudioDeviceManager()        { return getApp()->deviceManager;}
-      UndoManager & getAppUndoManager()                      { return getApp()->undoManager;}
-      Engine * getEngine()                              { return getApp()->engine;}
-      ThreadPool * getEngineThreadPool()                              { return &getApp()->engine->threadPool;}
-      bool  isEngineLoadingFile()                            {if(getEngine()) {return getEngine()->isLoadingFile;}else{return false;}}
-      //==============================================================================
-      // This macro generates the main() routine that launches the app.
-      START_JUCE_APPLICATION (LGMLApplication)
-      
+static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*> (JUCEApplication::getInstance()); }
+ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
+ApplicationProperties& getAppProperties()           { return *getApp()->appProperties; }
+AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
+UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
+Engine* getEngine()                              { return getApp()->engine;}
+ThreadPool* getEngineThreadPool()                              { return &getApp()->engine->threadPool;}
+bool  isEngineLoadingFile()                            {if (getEngine()) {return getEngine()->isLoadingFile;} else {return false;}}
+//==============================================================================
+// This macro generates the main() routine that launches the app.
+START_JUCE_APPLICATION (LGMLApplication)
+

@@ -22,37 +22,37 @@
 
 
 
-ControllerUI::ControllerUI(Controller * controller) :
-	InspectableComponent(controller, "controller"),
-    controller(controller)
+ControllerUI::ControllerUI (Controller* controller) :
+    InspectableComponent (controller, "controller"),
+    controller (controller)
 {
-  canInspectChildContainersBeyondRecursion = true;
-  {
-    MessageManagerLock ml;
-	addMouseListener(this, true);
-  }
-	nameTF = new StringParameterUI(controller->nameParam);
-  nameTF->setBackGroundIsTransparent(true);
-	addAndMakeVisible(nameTF);
+    canInspectChildContainersBeyondRecursion = true;
+    {
+        MessageManagerLock ml;
+        addMouseListener (this, true);
+    }
+    nameTF = new StringParameterUI (controller->nameParam);
+    nameTF->setBackGroundIsTransparent (true);
+    addAndMakeVisible (nameTF);
 
-  enabledBT = ParameterUIFactory::createDefaultUI(controller->enabledParam);
-	addAndMakeVisible(enabledBT);
+    enabledBT = ParameterUIFactory::createDefaultUI (controller->enabledParam);
+    addAndMakeVisible (enabledBT);
 
-	Image removeImage = ImageCache::getFromMemory(BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
+    Image removeImage = ImageCache::getFromMemory (BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
-	removeBT.setImages(false, true, true, removeImage,
-		0.7f, Colours::transparentBlack,
-		removeImage, 1.0f, Colours::transparentBlack,
-		removeImage, 1.0f, Colours::white.withAlpha(.7f),
-		0.5f);
-	removeBT.addListener(this);
-	addAndMakeVisible(removeBT);
+    removeBT.setImages (false, true, true, removeImage,
+                        0.7f, Colours::transparentBlack,
+                        removeImage, 1.0f, Colours::transparentBlack,
+                        removeImage, 1.0f, Colours::white.withAlpha (.7f),
+                        0.5f);
+    removeBT.addListener (this);
+    addAndMakeVisible (removeBT);
 
 
-  activityBlink = new TriggerBlinkUI(controller->activityTrigger);
-	activityBlink->showLabel = false;
-	addAndMakeVisible(activityBlink);
-  
+    activityBlink = new TriggerBlinkUI (controller->activityTrigger);
+    activityBlink->showLabel = false;
+    addAndMakeVisible (activityBlink);
+
 }
 
 ControllerUI::~ControllerUI()
@@ -60,52 +60,52 @@ ControllerUI::~ControllerUI()
 
 }
 
-void ControllerUI::paint(Graphics & g)
+void ControllerUI::paint (Graphics& g)
 {
-  g.setColour(findColour(LGMLColors::elementBackground));
-    g.fillRoundedRectangle(getLocalBounds().toFloat(), 4);
+    g.setColour (findColour (LGMLColors::elementBackground));
+    g.fillRoundedRectangle (getLocalBounds().toFloat(), 4);
 
 }
 
 void ControllerUI::resized()
 {
-	Rectangle<int> r = getLocalBounds().reduced(2);
-	r.removeFromRight(15);
-	removeBT.setBounds(r.removeFromRight(20));
-	r.removeFromRight(2);
-	activityBlink->setBounds(r.removeFromRight(r.getHeight()).reduced(2));
-	enabledBT->setBounds(r.removeFromLeft(r.getHeight()));
-	r.removeFromLeft(5);
-	nameTF->setBounds(r);
+    Rectangle<int> r = getLocalBounds().reduced (2);
+    r.removeFromRight (15);
+    removeBT.setBounds (r.removeFromRight (20));
+    r.removeFromRight (2);
+    activityBlink->setBounds (r.removeFromRight (r.getHeight()).reduced (2));
+    enabledBT->setBounds (r.removeFromLeft (r.getHeight()));
+    r.removeFromLeft (5);
+    nameTF->setBounds (r);
 }
 
-void ControllerUI::mouseDown(const MouseEvent &)
+void ControllerUI::mouseDown (const MouseEvent&)
 {
-	selectThis();
+    selectThis();
 }
 
-void ControllerUI::buttonClicked(Button * b)
+void ControllerUI::buttonClicked (Button* b)
 {
-	if (b == &removeBT)
-	{
-    controller->remove();
-	}
+    if (b == &removeBT)
+    {
+        controller->remove();
+    }
 }
 
-bool ControllerUI::keyPressed(const KeyPress & key)
+bool ControllerUI::keyPressed (const KeyPress& key)
 {
-	if (!isSelected) return false;
+    if (!isSelected) return false;
 
-	if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
-	{
-		controller->parentContainer->removeChildControllableContainer(controller);
-		return true;
-	}
+    if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
+    {
+        controller->parentContainer->removeChildControllableContainer (controller);
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
-InspectorEditor * ControllerUI::createEditor()
+InspectorEditor* ControllerUI::createEditor()
 {
-  return controller->createEditor();
+    return controller->createEditor();
 }

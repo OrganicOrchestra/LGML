@@ -22,56 +22,59 @@
 #include "../Scripting/Js/JsEnvironment.h"
 
 
-Controller::Controller(StringRef _name) :
-ParameterContainer(_name),
-userContainer("messages")
+Controller::Controller (StringRef _name) :
+    ParameterContainer (_name),
+    userContainer ("messages")
 {
-  userContainer.setUserDefined(true);
-  addChildControllableContainer(&userContainer);
-  userContainer.nameParam->isEditable = false;
+    userContainer.setUserDefined (true);
+    addChildControllableContainer (&userContainer);
+    userContainer.nameParam->isEditable = false;
 
-  enabledParam = addNewParameter<BoolParameter>("Enabled","Set whether the controller is enabled or disabled", true);
+    enabledParam = addNewParameter<BoolParameter> ("Enabled", "Set whether the controller is enabled or disabled", true);
 
-  activityTrigger =  addNewParameter<Trigger>("activity", "Activity indicator");
-  activityTrigger->isEditable = false;
-  controllerTypeEnum = 0; //init
+    activityTrigger =  addNewParameter<Trigger> ("activity", "Activity indicator");
+    activityTrigger->isEditable = false;
+    controllerTypeEnum = 0; //init
 }
 
 
 Controller::~Controller()
 {
-  if(parentContainer){
-    parentContainer->removeChildControllableContainer(this);
-  }
-
-
-  //DBG("Remove Controller");
-}
-
-
-ControllerUI * Controller::createUI(){return new ControllerUI(this);}
-
-ControllerEditor * Controller::createEditor(){return new ControllerEditor(this);}
-
-void Controller::remove(){
-  ((ControllerManager*)parentContainer)->removeController(this);
-}
-
-void Controller::onContainerParameterChanged(Parameter * p)
-{
-  if (p == nameParam)
-  {
-    setNiceName(nameParam->stringValue());
-  }
-  else if (p == enabledParam)
-  {
-    if(JsEnvironment * jsEnv = dynamic_cast<JsEnvironment*>(this)){
-
-      jsEnv->setEnabled(enabledParam->boolValue());
+    if (parentContainer)
+    {
+        parentContainer->removeChildControllableContainer (this);
     }
 
-    // DBG("set Controller Enabled " + String(enabledParam->boolValue()));
-  }
+
+    //DBG("Remove Controller");
 }
 
-void Controller::onContainerTriggerTriggered(Trigger *){}
+
+ControllerUI* Controller::createUI() {return new ControllerUI (this);}
+
+ControllerEditor* Controller::createEditor() {return new ControllerEditor (this);}
+
+void Controller::remove()
+{
+    ((ControllerManager*)parentContainer)->removeController (this);
+}
+
+void Controller::onContainerParameterChanged (Parameter* p)
+{
+    if (p == nameParam)
+    {
+        setNiceName (nameParam->stringValue());
+    }
+    else if (p == enabledParam)
+    {
+        if (JsEnvironment* jsEnv = dynamic_cast<JsEnvironment*> (this))
+        {
+
+            jsEnv->setEnabled (enabledParam->boolValue());
+        }
+
+        // DBG("set Controller Enabled " + String(enabledParam->boolValue()));
+    }
+}
+
+void Controller::onContainerTriggerTriggered (Trigger*) {}
