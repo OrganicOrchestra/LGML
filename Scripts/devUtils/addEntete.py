@@ -2,14 +2,18 @@ import glob
 import os
 
 types = ('*.cpp','*.h','*.hpp')
-sourcePath = "../../Source/**/"
+sourcePath = "../../Source/"
 
 encoding = 'utf8'
 
 lgmlFiles = []
 for t in types:
   lgmlFiles+= glob.glob(sourcePath+t);
+  lgmlFiles+= glob.glob(sourcePath+"**/"+t);
 
+ignoredFiles = ["GitSha.h"]
+
+lgmlFiles = [x for i in ignoredFiles for x in lgmlFiles if i not in x]
 
 def getEntete(f):
 
@@ -58,13 +62,9 @@ def addEntete(f,entete):
     print( lines[0:e[0]])
     exit(1)
   if e!=(0,0):
-    # print(lines)
-    
     codestart = e[1]+1
-
     while not lines[codestart].strip() and codestart < len(lines):
       codestart+=1
-      print("empty space")
     lines = lines[codestart:]
 
   lines=entete+['\n']+lines
