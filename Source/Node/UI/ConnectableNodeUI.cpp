@@ -223,7 +223,7 @@ void ConnectableNodeUI::mouseDown (const juce::MouseEvent& /*e*/)
     //    if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
     //  if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
     isDraggingFromUI = true;
-    nodeInitPos = getLocalBounds().getPosition();
+    nodeInitPos = getBoundsInParent().getPosition();
 }
 
 

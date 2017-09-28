@@ -19,7 +19,7 @@
 #pragma once
 #include "../JuceHeaderAudio.h"
 
-#define DEFAULT_BUFFER_BLOCK_SIZE 10000 //1000000 // ~ 20s@44.1kHz should be bigger than the highest block size
+#define DEFAULT_BUFFER_BLOCK_SIZE 1000000 // ~ 20s@44.1kHz should be bigger than the highest block size
 
 class BufferBlockList : public OwnedArray<AudioSampleBuffer>
 {
@@ -37,7 +37,7 @@ public:
     AudioSampleBuffer& getContiguousBuffer (int sampleStart = 0, int numSamples = -1);
     AudioSampleBuffer contiguous_Cache;
     int targetNumSamples;
-    int minNumSample;
-    int bufferBlockSize;
+    const int minNumSample;
+    const int bufferBlockSize;
 
 };

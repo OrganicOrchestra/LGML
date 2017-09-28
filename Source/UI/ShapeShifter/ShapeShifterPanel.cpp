@@ -42,7 +42,7 @@ ShapeShifterPanel::ShapeShifterPanel (ShapeShifterContent* _content, ShapeShifte
         }
     }
 
-    //  setOpaque(true);
+      setOpaque(true);
 
 }
 
