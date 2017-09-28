@@ -41,6 +41,7 @@ FastMapUI (FastMap* f) :
 
 
     invertUI = ParameterUIFactory::createDefaultUI (fastMap->invertParam);
+    fullSyncUI = ParameterUIFactory::createDefaultUI (fastMap->fullSync);
 
     addAndMakeVisible (refUI);
     f->referenceIn->addParameterProxyListener (this);
@@ -50,7 +51,7 @@ FastMapUI (FastMap* f) :
 
     addChildComponent (outRangeUI);
     addAndMakeVisible (invertUI);
-
+    addAndMakeVisible(fullSyncUI);
     Image removeImage = ImageCache::getFromMemory (BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
     removeBT.setImages (false, true, true, removeImage,
@@ -106,7 +107,8 @@ void FastMapUI::resized()
     targetUI.setBounds (targetRect.reduced (6, 0));
 
 
-    invertUI->setBounds (r.reduced (1));
+    invertUI->setBounds (r.removeFromTop(r.getHeight()/2).reduced (1));
+    fullSyncUI->setBounds(r.reduced(1));
 
 
 

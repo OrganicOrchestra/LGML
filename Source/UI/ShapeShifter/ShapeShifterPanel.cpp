@@ -26,6 +26,7 @@ ShapeShifterPanel::ShapeShifterPanel (ShapeShifterContent* _content, ShapeShifte
     candidateZone (NONE),
     candidateTargetPoint (Point<float>())
 {
+    Component::setName("Panel");
     addAndMakeVisible (header);
     header.addHeaderListener (this);
 
@@ -58,7 +59,9 @@ ShapeShifterPanel::~ShapeShifterPanel()
 
 void ShapeShifterPanel::setCurrentContent (ShapeShifterContent* _content)
 {
-    if (_content == currentContent) return;
+    if (_content == currentContent){
+        return;
+    }
 
     if (currentContent != nullptr)
     {
@@ -67,7 +70,6 @@ void ShapeShifterPanel::setCurrentContent (ShapeShifterContent* _content)
         if (tab != nullptr) tab->setSelected (false);
 
         removeChildComponent (currentContent->contentComponent);
-        currentContent->contentComponent->setVisible (false);
         currentContent->contentIsShown = false;
     }
 
@@ -160,6 +162,9 @@ void ShapeShifterPanel::setTransparentBackground (bool value)
 void ShapeShifterPanel::attachTab (ShapeShifterPanelTab* tab)
 {
 
+    if(tab && tab->content){
+    Component::setName(Component::getName()+":"+tab->content->contentName);
+    }
     header.attachTab (tab);
 
     contents.add (tab->content);
@@ -169,6 +174,9 @@ void ShapeShifterPanel::attachTab (ShapeShifterPanelTab* tab)
 
 void ShapeShifterPanel::detachTab (ShapeShifterPanelTab* tab, bool createNewPanel)
 {
+    if(tab && tab->content){
+        Component::setName(Component::getName().replaceFirstOccurrenceOf(":"+tab->content->contentName, ""));
+    }
     ShapeShifterContent* content = tab->content;
 
     header.removeTab (tab, false);
@@ -277,7 +285,7 @@ bool ShapeShifterPanel::attachPanel (ShapeShifterPanel* panel)
         case RIGHT:
         case TOP:
         case BOTTOM:
-            if (parentContainer != nullptr) parentContainer->insertPanelRelative (panel, this, candidateZone);
+            if (parentShifterContainer != nullptr) parentShifterContainer->insertPanelRelative (panel, this, candidateZone);
             else return false;
 
             break;
@@ -389,7 +397,7 @@ void ShapeShifterPanel::loadLayoutInternal (var layout)
 
 void ShapeShifterPanel::tabDrag (ShapeShifterPanelTab* tab)
 {
-    if (!isDetached() || contents.size() > 1) detachTab (tab, true);
+    if (!isDetached() ) detachTab (tab, true);
     else listeners.call (&Listener::tabDrag, this);
 }
 

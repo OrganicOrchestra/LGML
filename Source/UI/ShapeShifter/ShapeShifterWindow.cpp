@@ -1,33 +1,35 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "ShapeShifterWindow.h"
 #include "ShapeShifterManager.h"
-#include "../Style.h"
+
 
 
 
 
 extern ApplicationCommandManager& getCommandManager();
 
+
 ShapeShifterWindow::ShapeShifterWindow (ShapeShifterPanel* _panel, Rectangle<int> bounds) :
-    ResizableWindow (_panel->currentContent->contentName, true),
-    dragMode (PANEL),
-    panel (_panel),
-    checking (false)
+ResizableWindow (_panel->currentContent->contentName, true),
+dragMode (PANEL),
+panel (_panel),
+checking (false)
 {
+
     setTopLeftPosition (bounds.getTopLeft());
     _panel->setBounds (bounds);
 
@@ -47,7 +49,7 @@ ShapeShifterWindow::ShapeShifterWindow (ShapeShifterPanel* _panel, Rectangle<int
     setVisible (true);
     toFront (true);
 
-#if JUCE_OPENGL
+#if JUCE_OPENGL && USE_GL
     OpenGLContext* context = OpenGLContext::getContextAttachedTo (*ShapeShifterManager::getInstance()->mainShifterContainer.getTopLevelComponent());
 
     if (context)
@@ -67,11 +69,13 @@ ShapeShifterWindow::ShapeShifterWindow (ShapeShifterPanel* _panel, Rectangle<int
 
     addKeyListener ((&getCommandManager())->getKeyMappings());
 
+
+
 }
 
 ShapeShifterWindow::~ShapeShifterWindow()
 {
-#if JUCE_OPENGL
+#if JUCE_OPENGL && USE_GL
     openGLContext.detach();
 #endif
     removeMouseListener (this);
@@ -86,16 +90,20 @@ void ShapeShifterWindow::paintOverChildren (Graphics& g)
 
 void ShapeShifterWindow::resized()
 {
+
     ResizableWindow::resized();
 
     if (panel == nullptr) return;
 
     panel->setPreferredWidth (getWidth());
     panel->setPreferredHeight (getHeight());
+
 }
 
 void ShapeShifterWindow::mouseDown (const MouseEvent& e)
 {
+
+
     if (e.eventComponent == &panel->header || dynamic_cast<ShapeShifterPanelTab*> (e.eventComponent) != nullptr)
     {
         dragMode = e.eventComponent == &panel->header ? PANEL : TAB;

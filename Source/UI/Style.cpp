@@ -18,8 +18,96 @@
 
 #include "Style.h"
 
-AddElementButton::AddElementButton(): Button ("Add") {};
 
+/////////////////////
+/// LGMLUIUtils
+/////////////////////
+
+template<class F,class... Args>
+struct itercomp{
+    static void doit(const F & func,Component *c , int idx,Args... args){
+        if(!c ) return;
+        func(c,idx,args... );
+        for (auto & ch:c->getChildren()){
+            doit(func,ch,idx+1,args...);
+            jassert(ch->getParentComponent()==c);
+        }
+    }
+};
+
+static void _printComp(Component * c,int idx){
+    if(!c->getName().isEmpty()){
+        String msg;
+        for(int i = 0; i  < idx ; i++){
+            msg+="-";
+        }
+
+        msg+=c->getName();
+        if(c->isVisible()){
+            msg+="::";
+            msg+=c->getScreenBounds().toString();
+        }
+        else{
+            msg+="////////invisible";
+        }
+        if(c->getParentComponent() && !c->getScreenBounds().contains(c->getParentComponent()->getScreenBounds())){
+
+            msg+= "/// excluded";
+        }
+        DBG(msg);
+    }
+}
+static void _drawBounds(Component* c ,int idx,Graphics & g,Component * relativeTo){
+
+    if(c->isVisible()){
+        Rectangle<int >r = c->getLocalBounds();
+        Component* p = c;
+        while(p && p!=relativeTo){
+            r+= p->getPosition();
+            p = p->getParentComponent();
+        }
+        static float strk = 0.5f;
+        g.drawRect(r.toFloat().reduced(idx*strk),strk*0.5);
+    }
+    
+}
+
+static void _repaint(Component* c ,int idx){
+    c->repaint();
+    
+    
+}
+
+
+
+
+
+void LGMLUIUtils::printComp(Component * c) {
+    itercomp<decltype(_printComp)>::doit(_printComp,c,0);
+}
+
+void LGMLUIUtils::drawBounds(Component * c,Graphics & g) {
+    g.setColour(juce::Colours::red);
+    itercomp<decltype(_drawBounds),Graphics &,Component*>::doit(_drawBounds,c,0,g,c);
+}
+void LGMLUIUtils::forceRepaint(Component * c) {
+    itercomp<decltype(_repaint)>::doit(_repaint,c,0);
+}
+
+
+
+
+////////////////////////
+// AddElementButton
+///////////////////////
+
+
+AddElementButton::AddElementButton(): Button ("Add") {
+    
+};
+AddElementButton::~AddElementButton(){
+
+};
 void AddElementButton::paintButton (Graphics& g,
                                     bool isMouseOverButton,
                                     bool isButtonDown)
@@ -27,7 +115,11 @@ void AddElementButton::paintButton (Graphics& g,
 
     auto area = getLocalBounds();
     auto bgColor = findColour (TextButton::buttonColourId);
-    g.setColour ((isButtonDown || isMouseOverButton) ? bgColor.brighter() : bgColor);
+
+    if((isButtonDown || isMouseOverButton) ){
+        bgColor = bgColor.brighter();
+    }
+    g.setColour (  bgColor);
     const float stroke = 1;
     g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
     g.setColour (findColour (TextButton::textColourOffId));

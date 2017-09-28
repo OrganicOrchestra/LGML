@@ -137,7 +137,7 @@ void Spat2DViewer::updateTargetInfluence (int targetIndex)
 
 void Spat2DViewer::resized()
 {
-    Rectangle<int> r = getBounds();
+    Rectangle<int> r = getLocalBounds();
 
     for (auto& s : sources)
     {

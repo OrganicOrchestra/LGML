@@ -39,7 +39,7 @@ public:
 
 
 
-    ScopedPointer<ParameterUI> enabledUI;
+    ScopedPointer<ParameterUI> enabledUI,fullSyncUI;
 
     ParameterProxyUI refUI;
     RangeParameterUI inRangeUI;

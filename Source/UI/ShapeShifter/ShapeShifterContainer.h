@@ -91,6 +91,7 @@ public:
     void removeShapeShifterContainerListener (ShapeShifterContainerListener* listener) { containerListeners.remove (listener); }
 
 
+    void paintOverChildren(Graphics & g) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterContainer)
 };
 

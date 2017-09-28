@@ -19,9 +19,22 @@
 #ifndef STYLE_H_INCLUDED
 #define STYLE_H_INCLUDED
 #pragma once
-// TODO : implement nicer colour handling (maybe skinnable)
-// Warning don't use JUCE's internal color definitions as it will be empty at this stage of compilation
+
 #include "../JuceHeaderUI.h"
+
+
+#define USE_GL 1
+
+
+// debug util
+struct LGMLUIUtils{
+
+
+    static void printComp(Component * c);
+    static void drawBounds(Component * c,Graphics & g);
+    static void forceRepaint(Component * c) ;
+
+};
 
 namespace LGMLColors
 {
@@ -39,6 +52,7 @@ class AddElementButton : public Button
 {
 public:
     AddElementButton();
+    ~AddElementButton();
 
     void paintButton (Graphics& g,
                       bool isMouseOverButton,

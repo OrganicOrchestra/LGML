@@ -20,6 +20,8 @@
 #define CONTROLLABLEHELPERS_H_INCLUDED
 
 #include "../JuceHeaderUI.h"//keep
+
+#warning fix name to UI
 class ControllableContainer;
 class Controllable;
 

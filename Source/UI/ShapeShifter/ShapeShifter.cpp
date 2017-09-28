@@ -19,7 +19,7 @@
 ShapeShifter::ShapeShifter (Type _type) :
     shifterType (_type),
     preferredWidth (300), preferredHeight (300),
-    parentContainer (nullptr)
+    parentShifterContainer (nullptr)
 {
 
 }
@@ -36,6 +36,7 @@ void ShapeShifter::setPreferredWidth (int newWidth)
 void ShapeShifter::setPreferredHeight (int newHeight)
 {
     preferredHeight = jmax<int> (50, newHeight);
+
 }
 
 int ShapeShifter::getPreferredWidth()
@@ -50,20 +51,16 @@ int ShapeShifter::getPreferredHeight()
 
 bool ShapeShifter::isDetached()
 {
-    return parentContainer == nullptr;
+    return parentShifterContainer == nullptr;
 }
 
 void ShapeShifter::setParentContainer (ShapeShifterContainer* _parent)
 {
-    if (_parent == parentContainer) return;
+    if (_parent == parentShifterContainer) return;
 
-    parentContainer = _parent;
+    parentShifterContainer = _parent;
 }
 
-bool ShapeShifter::isFlexible()
-{
-    return false;
-}
 
 var ShapeShifter::getCurrentLayout()
 {
@@ -78,6 +75,6 @@ void ShapeShifter::loadLayout (var layout)
 {
     setPreferredWidth (layout.getDynamicObject()->getProperty ("width"));
     setPreferredHeight (layout.getDynamicObject()->getProperty ("height"));
-
+    
     loadLayoutInternal (layout);
 }

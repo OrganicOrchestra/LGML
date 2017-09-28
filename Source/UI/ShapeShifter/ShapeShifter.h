@@ -28,7 +28,7 @@ public :
     ShapeShifter (Type _type);
     virtual ~ShapeShifter();
 
-    ShapeShifterContainer* parentContainer;
+    ShapeShifterContainer* parentShifterContainer;
 
     Type shifterType;
 
@@ -43,7 +43,7 @@ public :
     bool isDetached();
     void setParentContainer (ShapeShifterContainer* _parent);
 
-    virtual bool isFlexible();
+    virtual bool isFlexible() = 0;
 
     virtual var getCurrentLayout();
     virtual void loadLayout (var layout);

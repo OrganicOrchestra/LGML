@@ -53,7 +53,7 @@ MainWindow::MainWindow (String name, Engine* e)  : DocumentWindow (name,
     setMenuBar (mainComponent);
 #endif
 
-#if JUCE_OPENGL
+#if JUCE_OPENGL && USE_GL
     openGLContext.setContinuousRepainting (false);
     openGLContext.attachTo (*getTopLevelComponent());
 #endif
@@ -128,7 +128,7 @@ void MainWindow::closeButtonPressed()
     getAppProperties().getCommonSettings (true)->saveIfNeeded();
 
 
-#if JUCE_OPENGL
+#if JUCE_OPENGL && USE_GL
     openGLContext.detach();
 #endif
     JUCEApplication::getInstance()->systemRequestedQuit();

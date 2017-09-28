@@ -18,6 +18,7 @@
 
 #pragma once
 #include "../JuceHeaderUI.h"
+#include "Style.h" // for USE_GL
 #include <juce_opengl/juce_opengl.h>
 #include "LGMLDragger.h"
 
@@ -44,7 +45,7 @@ public:
      */
     MainContentComponent* mainComponent;
 
-#if JUCE_OPENGL
+#if JUCE_OPENGL && USE_GL
     OpenGLContext openGLContext;
 #endif
 

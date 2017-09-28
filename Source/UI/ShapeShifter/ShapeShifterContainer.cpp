@@ -49,6 +49,7 @@ void ShapeShifterContainer::insertShifterAt (ShapeShifter* shifter, int index, b
     DBG ("Insert shifter at : " << shifter->getPreferredWidth());
 
     if (resizeAfter) resized();
+    shifter->repaint();
 }
 
 void ShapeShifterContainer::removeShifter (ShapeShifter* shifter, bool deleteShifter, bool silent, bool resizeAfter)
@@ -84,7 +85,7 @@ void ShapeShifterContainer::removeShifter (ShapeShifter* shifter, bool deleteShi
     }
     else
     {
-        if (shifters.size() == 1 && !silent && parentContainer != nullptr)
+        if (shifters.size() == 1 && !silent && parentShifterContainer != nullptr)
         {
             containerListeners.call (&ShapeShifterContainerListener::oneShifterRemaining, this, shifters[0]);
         }
@@ -163,15 +164,19 @@ void ShapeShifterContainer::movePanelsInContainer (ShapeShifterPanel* newPanel, 
     removeShifter (containedPanel, false, true, false);
 
     ShapeShifterContainer* newContainer = new ShapeShifterContainer (_newDir);
-    newContainer->insertPanelAt (containedPanel, 0, false);
-    newContainer->insertPanelAt (newPanel, secondBeforeFirst ? 1 : 0, false);
+    newContainer->insertPanelAt (containedPanel, 0, true);
+    newContainer->insertPanelAt (newPanel, secondBeforeFirst ? -1 : 0, false);
 
     newContainer->setPreferredWidth (containedPanel->getPreferredWidth());
     newContainer->setPreferredHeight (containedPanel->getPreferredHeight());
+//    newPanel->repaint();
+//    newContainer->setBounds(getLocalBounds());
+
+
     DBG ("MovePanels " << containedPanel->contents[0]->contentName << "/" << containedPanel->getPreferredWidth() << " / " << newContainer->getPreferredWidth());
 
     insertContainerAt (newContainer, targetIndex);
-    DBG ("After insertContainerAt" << containedPanel->contents[0]->contentName << "/" << containedPanel->getPreferredWidth() << " / " << newContainer->getPreferredWidth());
+    DBG ("After insertContainerAt : " << containedPanel->contents[0]->contentName << "/" << containedPanel->getPreferredWidth() << " / " << newContainer->getPreferredWidth());
 
 }
 
@@ -190,7 +195,7 @@ void ShapeShifterContainer::resized()
 {
     if (shifters.size() == 0) return;
 
-    if (parentContainer == nullptr && shifters.size() == 1) //Main container, only one item
+    if (parentShifterContainer == nullptr && shifters.size() == 1) //Main container, only one item
     {
         shifters[0]->setBounds (getLocalBounds());
         return;
@@ -243,13 +248,19 @@ void ShapeShifterContainer::resized()
     {
         bool isLastShifter = index == numShifters - 1;
 
-        if (direction == HORIZONTAL) p->setBounds (r.removeFromLeft (p->getPreferredWidth()));
-        else p->setBounds (r.removeFromTop (p->getPreferredHeight()));
+
+//        if (direction == HORIZONTAL) p->setBounds (r.removeFromLeft (p->getPreferredWidth()));
+//        else p->setBounds (r.removeFromTop (p->getPreferredHeight()));
 
         if (!isLastShifter)
         {
+            if (direction == HORIZONTAL) p->setBounds (r.removeFromLeft (p->getPreferredWidth()));
+            else p->setBounds (r.removeFromTop (p->getPreferredHeight()));
             Rectangle<int> gr = (direction == HORIZONTAL) ? r.removeFromLeft (gap) : r.removeFromTop (gap);
             grabbers[index]->setBounds (gr);
+        }
+        else{
+            p->setBounds(r);
         }
 
         index++;
@@ -308,7 +319,7 @@ void ShapeShifterContainer::loadLayoutInternal (var layout)
         }
     }
 
-    //  resized();
+//      resized();
 }
 
 void ShapeShifterContainer::grabberGrabUpdate (GapGrabber* gg, int dist)
@@ -329,8 +340,6 @@ void ShapeShifterContainer::grabberGrabUpdate (GapGrabber* gg, int dist)
             break;
 
         case NONE:
-            //@ben what to we do for that?
-            //@martin never gonna happen :)
             jassertfalse;
             break;
     }
@@ -344,7 +353,7 @@ void ShapeShifterContainer::grabberGrabUpdate (GapGrabber* gg, int dist)
 void ShapeShifterContainer::panelDetach (ShapeShifterPanel* panel)
 {
     Rectangle<int> panelBounds = panel->getScreenBounds();
-    removeShifter (panel, false);
+    removeShifter (panel, false,false,false);
     ShapeShifterManager::getInstance()->showPanelWindow (panel, panelBounds);
 }
 
@@ -381,5 +390,10 @@ void ShapeShifterContainer::oneShifterRemaining (ShapeShifterContainer* containe
 
     //DBG("Remove useless container");
     removeShifter (container, true, true);
+
+}
+
+void ShapeShifterContainer::paintOverChildren(Graphics & g) {
+//    LGMLUIUtils::drawBounds(this,g);
 
 }

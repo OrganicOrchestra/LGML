@@ -18,6 +18,11 @@
 
 // (You can add your own code in this section, and the Projucer will not overwrite it)
 
+// LGML is GPL v3
+#define JUCE_DISPLAY_SPLASH_SCREEN 0
+#define JUCE_REPORT_APP_USAGE 0
+
+
 // [END_USER_CODE_SECTION]
 
 /*
