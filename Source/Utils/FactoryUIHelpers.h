@@ -52,7 +52,7 @@ PopupMenu* getFactoryTypesMenu (int menuIdOffset = 1)
     PopupMenu* p = new PopupMenu();
     int i = 0;
     auto a = Factory::getRegisteredTypes();
-
+    
     for (auto& k : a)
     {
         p->addItem (i + menuIdOffset, Factory::typeToNiceName (k));

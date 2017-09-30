@@ -37,7 +37,7 @@ AudioDeviceOutNode::AudioDeviceOutNode (StringRef name) :
     AudioIODevice* ad = getAudioDeviceManager().getCurrentAudioDevice();
 
     desiredNumAudioOutput = addNewParameter<IntParameter> ("numAudioOutput", "desired numAudioOutputs (independent of audio settings)",
-                                                           ad ? ad->getActiveInputChannels().countNumberOfSetBits() : 2, 0, 32);
+                                                           ad ? jmax(2,ad->getActiveInputChannels().countNumberOfSetBits()) : 2, 2, 32);
     lastNumberOfOutputs = 0;
 
     setPreferedNumAudioInput (desiredNumAudioOutput->intValue());
@@ -47,7 +47,11 @@ AudioDeviceOutNode::AudioDeviceOutNode (StringRef name) :
 void AudioDeviceOutNode::setParentNodeContainer (NodeContainer* parent)
 {
     NodeBase::setParentNodeContainer (parent);
-    jassert (parent == NodeManager::getInstance()->mainContainer);
+    if(parent != NodeManager::getInstance()->mainContainer){
+        LOG("!!! avoid creating AudioDeviceIn/Out in container, unstable behaviour");
+        jassertfalse;
+    }
+
     AudioGraphIOProcessor::setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
     updateVolMutes();
 }

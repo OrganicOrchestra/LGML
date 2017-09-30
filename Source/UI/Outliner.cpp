@@ -263,7 +263,8 @@ void OutlinerItemComponent::paint (Graphics& g)
 void OutlinerItemComponent::mouseDown (const MouseEvent& e)
 {
     item->setSelected (true, true);
-    selectThis();
+    if(item->isContainer)
+        selectThis();
 }
 
 InspectorEditor* OutlinerItemComponent::createEditor()

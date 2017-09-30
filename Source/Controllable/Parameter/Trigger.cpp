@@ -28,6 +28,7 @@ REGISTER_PARAM_TYPE (Trigger);
 Trigger::Trigger (const String& niceName, const String& description = String::empty, bool enabled) :
     Parameter ( niceName, description, triggerVar, enabled)
 {
+    isPresettable = false;
     Controllable::isSavable = false;
 }
 

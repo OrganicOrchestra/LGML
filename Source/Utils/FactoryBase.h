@@ -126,6 +126,7 @@ public:
         {
             res.add (it.getKey());
         }
+        res.sort();
 
         return res;
     }

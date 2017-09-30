@@ -114,7 +114,7 @@ int PresetManager::getNumPresetForFilter (const String& filter) const
 void PresetManager::deleteAllUnusedPresets (ParameterContainer* rootContainer)
 {
     Array<Preset*> presetsToRemove;
-    Array<WeakReference<ParameterContainer>> allContainers = rootContainer->getContainersOfType<ParameterContainer> (true);
+    auto allContainers = rootContainer->getContainersOfType<ParameterContainer> (true);
 
     for (auto& p : presets)
     {

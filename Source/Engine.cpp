@@ -170,8 +170,9 @@ void Engine::suspendAudio (bool shouldBeSuspended)
 
     if (AudioProcessor* ap = graphPlayer.getCurrentProcessor())
     {
-        const ScopedLock lk (ap->getCallbackLock());
         ap->suspendProcessing (shouldBeSuspended);
+        const ScopedLock lk (ap->getCallbackLock());
+
 
         if (shouldBeSuspended)ap->releaseResources();
         else

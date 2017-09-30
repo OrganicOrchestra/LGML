@@ -30,7 +30,7 @@ NodeManager::NodeManager (StringRef name) :
     isLoading = false;
     setCustomShortName ("node");
 
-    mainContainer = new NodeContainer ("mainContainer");
+    mainContainer = new NodeContainer ("mainContainer",true);
     addChildControllableContainer (mainContainer);
     mainContainer->skipControllableNameInAddress = true;
     mainContainer->enabledParam->isControllableExposed = false;

@@ -133,6 +133,7 @@ void TimeManagerUI::resized()
     int gap = 2;
 
     Rectangle<int> r = getLocalBounds().withWidth (width).withCentre (getLocalBounds().getCentre()).reduced (4);
+    r = r.withSizeKeepingCentre(r.getWidth(), jmin(100,r.getHeight()));
     timeBar.setBounds (r.removeFromRight (width * 0.3).reduced (0, 2));
     r.removeFromRight (5);
     playTrig->setBounds (r.removeFromRight (width * 0.05).reduced (gap, 0));

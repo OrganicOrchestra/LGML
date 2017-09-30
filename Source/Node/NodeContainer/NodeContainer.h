@@ -90,6 +90,7 @@ class NodeContainer :
 
 {
 public:
+    NodeContainer(StringRef name,bool isRoot);
     DECLARE_OBJ_TYPE (NodeContainer);
     virtual ~NodeContainer();
 
@@ -154,7 +155,8 @@ public:
 
 
     //AUDIO
-
+    bool isRoot;
+    
     void updateAudioGraph (bool lock = true) ;
     void numChannelsChanged (bool isInput) override;
 

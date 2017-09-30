@@ -35,7 +35,7 @@ NodeBase::NodeBase (const String& name, bool _hasMainAudioControl) :
     rmsTimer (this)
 
 {
-
+    canHavePresets = true;
 
 
     lastVolume = hasMainAudioControl ? outputVolume->floatValue() : 0;
@@ -201,7 +201,8 @@ AudioProcessorGraph::Node* NodeBase::getAudioNode()
 void NodeBase::addToAudioGraph (AudioProcessorGraph* g)
 {
     audioNode = g->addNode (getAudioProcessor());
-    getAudioProcessor()->setRateAndBufferSizeDetails (g->getSampleRate(), g->getBlockSize());
+//    jassert(g->getSampleRate()!=0 && g->getBlockSize()!=0);
+//    getAudioProcessor()->setRateAndBufferSizeDetails (g->getSampleRate(), g->getBlockSize());
 
 }
 
@@ -382,8 +383,8 @@ bool NodeBase::setPreferedNumAudioInput (int num)
             {
                 const ScopedLock lk ( parentNodeContainer->innerGraph->getCallbackLock());
                 setPlayConfigDetails (num, getTotalNumOutputChannels(),
-                                      getSampleRate(),
-                                      getBlockSize());
+                                      parentNodeContainer->innerGraph->getSampleRate(),
+                                      parentNodeContainer->innerGraph->getBlockSize());
 
 
                 parentNodeContainer->updateAudioGraph (false);

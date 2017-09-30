@@ -102,16 +102,16 @@ public:
     }
 
     template<class T>
-    Array<WeakReference<T> > getContainersOfType (bool recursive)
+    Array<T* > getContainersOfType (bool recursive)
     {
-        Array<WeakReference<T> > res;
+        Array<T* > res;
         ScopedLock lk (controllableContainers.getLock());
 
         for (auto& c : controllableContainers)
         {
             if (c.get())
             {
-                if (WeakReference<T> o = dynamic_cast<T*> (c.get())) { res.add (o);}
+                if (T* o = dynamic_cast<T*> (c.get())) { res.add (o);}
             }
             else
             {

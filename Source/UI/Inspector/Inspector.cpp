@@ -54,7 +54,8 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
         clearEditor();
         currentComponent->setSelected (false);
         currentComponent->removeInspectableListener (this);
-        getCurrentSelected()->parentContainer->removeControllableContainerListener(this);
+        if(auto cont = getCurrentSelected())
+            cont->parentContainer->removeControllableContainerListener(this);
     }
 
     currentComponent = c;
@@ -63,7 +64,8 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
     {
         currentComponent->setSelected (true);
         currentComponent->addInspectableListener (this);
-        getCurrentSelected()->parentContainer->addControllableContainerListener(this);
+        if(auto cont = getCurrentSelected())
+            cont->parentContainer->addControllableContainerListener(this);
         inspectCurrentComponent();
     }
 

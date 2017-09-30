@@ -24,12 +24,17 @@ REGISTER_NODE_TYPE (NodeContainer)
 extern AudioDeviceManager& getAudioDeviceManager();
 extern bool isEngineLoadingFile();
 
-NodeContainer::NodeContainer (StringRef name) :
+
+NodeContainer::NodeContainer (StringRef name):NodeContainer(name,false){
+
+}
+NodeContainer::NodeContainer (StringRef name,bool _isRoot) :
     containerInNode (nullptr),
     containerOutNode (nullptr),
     NodeBase (name, false),
     nodeChangeNotifier (10000),
-    rebuildTimer (this)
+    rebuildTimer (this),
+    isRoot(_isRoot)
 {
 
     innerGraph = new AudioProcessorGraph();
@@ -43,6 +48,10 @@ NodeContainer::NodeContainer (StringRef name) :
 
     //Force non recursive saving of preset as container has only is level to take care, nested containers are other nodes
     presetSavingIsRecursive = false;
+
+
+    //maybe keep it ?
+//    addConnection (containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
 }
 
 
@@ -63,6 +72,8 @@ void NodeContainer::clear()
     innerGraph->releaseResources();
 
 }
+
+
 void NodeContainer::clear (bool recreateContainerNodes)
 {
 
@@ -76,21 +87,15 @@ void NodeContainer::clear (bool recreateContainerNodes)
     nodes.clear();
 
 
-    containerInNode = nullptr;
-    containerOutNode = nullptr;
+
     setPreferedNumAudioOutput (2);
     setPreferedNumAudioInput (2);
 
     if (recreateContainerNodes && parentNodeContainer != nullptr)
     {
-        containerInNode = (ContainerInNode*)addNode (new ContainerInNode());
-        containerOutNode = (ContainerOutNode*)addNode (new ContainerOutNode());
 
-        containerInNode->nodePosition->setPoint (150, 100);
-        containerOutNode->nodePosition->setPoint (450, 100);
 
-        //maybe keep it ?
-        addConnection (containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
+
     }
 
     if (!recreateContainerNodes)ConnectableNode::clear();
@@ -118,12 +123,12 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
 {
     nodes.add ((NodeBase*)n);
 
-    n->setParentNodeContainer (this);
+
 
     if (NodeContainer* nc = dynamic_cast<NodeContainer*> (n))
     {
         nodeContainers.add (nc);
-        nc->NodeContainer::clear (!isEngineLoadingFile());
+//        nc->NodeContainer::clear (!isEngineLoadingFile());
         //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
     }
 
@@ -132,7 +137,11 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
 
     addChildControllableContainer (n); //ControllableContainer
 
+
+    n->setParentNodeContainer (this);
+    
     if (nodeData) n->configureFromObject (nodeData);
+
 
     nodeChangeNotifier.addMessage (new NodeChangeMessage (n, true));
     //  nodeContainerListeners.call(&NodeContainerListener::nodeAdded, n);
@@ -186,36 +195,36 @@ void NodeContainer::updateAudioGraph (bool lock)
 
     if (!MessageManager::getInstance()->isThisTheMessageThread())
     {
-        if (lock)
+
         {
-            const ScopedLock lk (getAudioGraph()->getCallbackLock());
+            ScopedPointer<ScopedLock> lk;
+            if(lock){lk = new ScopedLock(getAudioGraph()->getCallbackLock());}
+
             getAudioGraph()->suspendProcessing (true);
         }
-        else
-        {
-            getAudioGraph()->suspendProcessing (true);
-        }
+
 
         triggerAsyncUpdate();
 
         return;
     }
 
-    if (lock)
     {
-        const ScopedLock lk (getAudioGraph()->getCallbackLock());
-        getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
-        getAudioGraph()->prepareToPlay (NodeBase::getSampleRate(), NodeBase::getBlockSize());
-        getAudioGraph()->suspendProcessing (false);
-    }
-    else
-    {
-        getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
-        getAudioGraph()->prepareToPlay (NodeBase::getSampleRate(), NodeBase::getBlockSize());
-        getAudioGraph()->suspendProcessing (false);
+    ScopedPointer<ScopedLock> lk;
+    if(lock){lk = new ScopedLock(getAudioGraph()->getCallbackLock());}
+
+
+        if(NodeBase::getBlockSize()==0 || NodeBase::getSampleRate()==0){
+            jassertfalse;
+        }
+        else{
+            getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
+            getAudioGraph()->prepareToPlay (NodeBase::getSampleRate(), NodeBase::getBlockSize());
+            getAudioGraph()->suspendProcessing (false);
+        }
     }
 
-    //  }
+
 
 
 }
@@ -278,7 +287,7 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*nam
 void NodeContainer::configureFromObject (DynamicObject* data)
 {
     // do we really need that ???
-    clear (false);
+//    clear (false);
     NodeBase::configureFromObject (data);
 
 
@@ -475,15 +484,24 @@ void NodeContainer::numChannelsChanged (bool isInput)
 void NodeContainer::prepareToPlay (double d, int i)
 {
     NodeBase::prepareToPlay (d, i);
+    updateAudioGraph(true);
+    if(!isRoot ){
 
+        if(!getContainersOfType<ContainerInNode>(false).size()){
 
-    jassert (getSampleRate());
-    jassert (getBlockSize());
-    //    numChannelsChanged();
-    {
-        const ScopedLock lk (innerGraph->getCallbackLock());
-        getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
-        getAudioGraph()->prepareToPlay (d, i);
+            containerInNode = (ContainerInNode*)addNode (new ContainerInNode());
+#warning should be on ui side
+            containerInNode->nodePosition->setPoint (150, 100);
+        }
+
+        if( !getContainersOfType<ContainerOutNode>(false).size()){
+            containerOutNode = (ContainerOutNode*)addNode (new ContainerOutNode());
+#warning should be on ui side
+            containerOutNode->nodePosition->setPoint (450, 100);
+        }
+
+        
+        
     }
 
 
