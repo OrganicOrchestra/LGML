@@ -21,6 +21,7 @@
 #include "Style.h" // for USE_GL
 #include <juce_opengl/juce_opengl.h>
 #include "LGMLDragger.h"
+class LatestVersionChecker;
 
 class MainContentComponent;
 class Engine;
@@ -29,6 +30,7 @@ class MainWindow    : public DocumentWindow, private Timer
 {
 public:
     MainWindow (String name, Engine* e) ;
+    ~MainWindow () ;
     void focusGained (FocusChangeType cause)override;
 
 
@@ -49,7 +51,10 @@ public:
     OpenGLContext openGLContext;
 #endif
 
+
 private:
+    ScopedPointer<LatestVersionChecker>  latestVChecker ;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
 
 };

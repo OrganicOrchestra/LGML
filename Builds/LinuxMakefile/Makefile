@@ -246,6 +246,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/InspectableComponent_1f8fbae3.o \
   $(JUCE_OBJDIR)/Inspector_8b9570d.o \
   $(JUCE_OBJDIR)/InspectorEditor_ee2341a.o \
+  $(JUCE_OBJDIR)/AutoUpdater_e99736fd.o \
   $(JUCE_OBJDIR)/FactoryBase_1c8d4d5e.o \
   $(JUCE_OBJDIR)/AudioDebugCrack_99daca00.o \
   $(JUCE_OBJDIR)/AudioDebugPipe_25cee4b2.o \
@@ -975,6 +976,11 @@ $(JUCE_OBJDIR)/Inspector_8b9570d.o: ../../Source/UI/Inspector/Inspector.cpp
 $(JUCE_OBJDIR)/InspectorEditor_ee2341a.o: ../../Source/UI/Inspector/InspectorEditor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InspectorEditor.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/AutoUpdater_e99736fd.o: ../../Source/Utils/AutoUpdater.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling AutoUpdater.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/FactoryBase_1c8d4d5e.o: ../../Source/Utils/FactoryBase.cpp

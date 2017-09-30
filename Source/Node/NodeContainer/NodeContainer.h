@@ -217,13 +217,34 @@ public:
     class RebuildTimer : public Timer
     {
     public:
-        RebuildTimer (NodeContainer* o): owner (o) {};
+        RebuildTimer (NodeContainer* o): owner (o) ,maxRebuildTime(10000),lastTime(0){
+        curRebuildTime = maxRebuildTime;
+        };
         void timerCallback()override
         {
+
             owner->triggerAsyncUpdate();
+            auto cT =Time::currentTimeMillis();
+            auto interval = cT-lastTime;
+            if(interval < 2000){
+                curRebuildTime-=interval;
+                if(curRebuildTime<=0){
+                    LOG("!!! internal node loading error");
+                    jassertfalse;
+                    stopTimer();
+                }
+            }
+            else{
+                curRebuildTime = maxRebuildTime;
+
+            }
+            lastTime =cT;
         };
         NodeContainer* owner;
-
+        const int maxRebuildTime;
+        int64 curRebuildTime;
+        int64 lastTime;
+        
     };
     RebuildTimer rebuildTimer;
     NodeChangeQueue nodeChangeNotifier;

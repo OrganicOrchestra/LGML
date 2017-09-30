@@ -114,10 +114,16 @@ void MainContentComponent::showAudioSettings()
     o.content.setNonOwned (&audioSettingsComp);
     o.dialogTitle                   = "Audio Settings";
     o.componentToCentreAround       = this;
-    //  o.dialogBackgroundColour        = Colours::azure;
+    o.dialogBackgroundColour        = findColour(ResizableWindow::ColourIds::backgroundColourId);
     o.escapeKeyTriggersCloseButton  = true;
+#warning need to check compat on other platforms
+#ifdef JUCE_MAC
+    o.useNativeTitleBar             = true;
+#else
     o.useNativeTitleBar             = false;
+#endif
     o.resizable                     = true;
+    
 
 
     o.runModal();

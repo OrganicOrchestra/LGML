@@ -276,7 +276,7 @@ bool LooperNode::askForBeingMasterTrack (LooperTrack* t)
 bool LooperNode::askForBeingAbleToPlayNow (LooperTrack* _t)
 {
 
-    if (isOneShot->boolValue() || _t->getQuantization() == 0)return true;
+    if ( _t->getQuantization() == 0)return true;
 
     if (TimeManager::getInstance()->playTrigger->isSettingValue) return true;
 

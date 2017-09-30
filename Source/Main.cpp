@@ -157,6 +157,7 @@ public:
         // the other instance's command-line arguments were.
 
         DBG ("Another instance started !");
+        AlertWindow("other instance started", "other instance started", juce::AlertWindow::AlertIconType::WarningIcon);
         engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
 
 

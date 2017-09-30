@@ -68,6 +68,7 @@ public:
     Font getComboBoxFont (ComboBox&) override;
     void positionComboBoxText (ComboBox&, Label&) override;
     Label* createSliderTextBox (Slider&) override;
+    void drawTextEditorOutline (Graphics& g, int width, int height, TextEditor& textEditor)override;
 
 private:
     class SliderLabelComp;

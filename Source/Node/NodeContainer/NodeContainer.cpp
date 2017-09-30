@@ -88,25 +88,13 @@ void NodeContainer::clear (bool recreateContainerNodes)
 
 
 
-    setPreferedNumAudioOutput (2);
-    setPreferedNumAudioInput (2);
-
-    if (recreateContainerNodes && parentNodeContainer != nullptr)
-    {
+//    setPreferedNumAudioOutput (2);
+//    setPreferedNumAudioInput (2);
 
 
+    ConnectableNode::clear();
 
-    }
 
-    if (!recreateContainerNodes)ConnectableNode::clear();
-
-    // init with global sample rate and blockSize
-    AudioIODevice* ad = getAudioDeviceManager().getCurrentAudioDevice();
-
-    if (ad)
-    {
-        setRateAndBufferSizeDetails (ad->getCurrentSampleRate(), ad->getCurrentBufferSizeSamples());
-    }
 
 }
 
@@ -215,7 +203,15 @@ void NodeContainer::updateAudioGraph (bool lock)
 
 
         if(NodeBase::getBlockSize()==0 || NodeBase::getSampleRate()==0){
-            jassertfalse;
+            //            jassertfalse;
+        // node is not ready , postponing setup
+            if( !isEngineLoadingFile()) {
+                jassertfalse;
+            }
+            else{
+                rebuildTimer.startTimer (10);
+            }
+
         }
         else{
             getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
@@ -503,6 +499,7 @@ void NodeContainer::prepareToPlay (double d, int i)
         
         
     }
+
 
 
 

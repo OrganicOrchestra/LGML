@@ -21,15 +21,19 @@
 #include "../Engine.h"
 
 #include "JuceHeader.h" // for ProjectInfo
+#include "../Utils/AutoUpdater.h"
 
 
 MainContentComponent* createMainContentComponent (Engine* e);
+MainWindow::~MainWindow(){
+    stopTimer();
+    latestVChecker = nullptr;
+}
 
 
-
-MainWindow::MainWindow (String name, Engine* e)  : DocumentWindow (name,
-                                                                       Colours::lightgrey,
-                                                                       DocumentWindow::allButtons)
+MainWindow::MainWindow (String name, Engine* e)  :
+    DocumentWindow (name,Colours::lightgrey,DocumentWindow::allButtons),
+    latestVChecker(nullptr)
 {
 
 
@@ -37,9 +41,9 @@ MainWindow::MainWindow (String name, Engine* e)  : DocumentWindow (name,
     setContentOwned (mainComponent, false);
 
 #ifdef JUCE_LINUX
-    // loads of bug on ubuntu \
+    // lots of bug with nativetitlebar on ubuntu  \
     - no display            \
-    -wrong rebuilding of windows position / size \
+    - wrong rebuilding of windows position / size \
     - double clicks sent to titlebar
 
     setUsingNativeTitleBar (false);
@@ -86,6 +90,7 @@ MainWindow::MainWindow (String name, Engine* e)  : DocumentWindow (name,
 
 
     startTimer (1000);
+
 
 }
 void MainWindow::focusGained (FocusChangeType cause)
@@ -137,6 +142,14 @@ void MainWindow::closeButtonPressed()
 
 void MainWindow::timerCallback()
 {
+    const int timeToUpdate = 60000;
+    const auto curT = getEngine()->getElapsedMillis();
+    if(latestVChecker==nullptr && curT < timeToUpdate){
+        latestVChecker = new LatestVersionChecker();
+    }
+    if(latestVChecker && curT>timeToUpdate){
+        latestVChecker = nullptr;
+    }
     setName (getEngine()->getDocumentTitle() + " : LGML "
              + String (ProjectInfo::versionString) + String (" (CPU : ") +
              String ((int) (getAudioDeviceManager().getCpuUsage() * 100)) + String ("%)"));

@@ -342,6 +342,8 @@ bool LooperTrack::updatePendingLooperTrackState (int blockSize)
                 // stop oneShot if needed
                 if (parentLooper->isOneShot->boolValue())
                 {
+                    if (getQuantization() == 0)
+                        quantizedPlayStart=0;
                     quantizedPlayEnd = quantizedPlayStart + playableBuffer.getRecordedLength() - playableBuffer.getNumSampleFadeOut();
                 }
 

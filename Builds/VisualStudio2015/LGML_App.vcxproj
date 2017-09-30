@@ -412,6 +412,7 @@
     <ClCompile Include="..\..\Source\UI\Inspector\InspectableComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Inspector\Inspector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\AutoUpdater.cpp"/>
     <ClCompile Include="..\..\Source\Utils\FactoryBase.cpp"/>
     <ClCompile Include="..\..\Source\Utils\AudioDebugCrack.cpp"/>
     <ClCompile Include="..\..\Source\Utils\AudioDebugPipe.cpp"/>
@@ -2197,6 +2198,7 @@
     <ClInclude Include="..\..\Source\UI\Inspector\InspectableComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\Inspector.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h"/>
+    <ClInclude Include="..\..\Source\Utils\AutoUpdater.h"/>
     <ClInclude Include="..\..\Source\Utils\FactoryUIHelpers.h"/>
     <ClInclude Include="..\..\Source\Utils\FactoryObject.h"/>
     <ClInclude Include="..\..\Source\Utils\FactoryBase.h"/>

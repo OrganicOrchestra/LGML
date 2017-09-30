@@ -45,7 +45,9 @@ Engine::Engine(): FileBasedDocument (filenameSuffix,
                                          "Load a filter graph",
                                          "Save a filter graph"),
     ParameterContainer ("root"),
-    threadPool (4)
+    threadPool (4),
+    isLoadingFile(false),
+    engineStartTime(Time::getCurrentTime().getMilliseconds())
 {
     nameParam->isEditable = false;
     ParameterFactory::logAllTypes();
@@ -179,6 +181,7 @@ void Engine::suspendAudio (bool shouldBeSuspended)
         {
             if (AudioIODevice* dev = getAudioDeviceManager().getCurrentAudioDevice())
             {
+                NodeManager::getInstance()->mainContainer->setRateAndBufferSizeDetails(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
                 ap->prepareToPlay (dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
             }
             else
@@ -257,7 +260,7 @@ void Engine::stimulateAudio ( bool s)
 void Engine::MultipleAudioSettingsHandler::changeListenerCallback (ChangeBroadcaster*)
 {
     //    Trick allowing to defer all changes have the last word
-    startTimer (100);
+    startTimer (300);
 }
 void Engine::MultipleAudioSettingsHandler::timerCallback()
 {
@@ -330,4 +333,8 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent()
     getAppProperties().getUserSettings()->setValue (oldSettingsId.toString(), oldXml);
     getAppProperties().getUserSettings()->saveIfNeeded();
 
+}
+
+const int64 Engine::getElapsedMillis()const {
+    return Time::getCurrentTime().getMilliseconds() - engineStartTime;
 }

@@ -160,6 +160,7 @@
 		20DC1F03DC4C1F4881C5F757 = {isa = PBXBuildFile; fileRef = C40FEF2E907592DECE8B1947; };
 		F72124BA0EDF8D9BE8BF375B = {isa = PBXBuildFile; fileRef = 6100A5CB627EF9C28977A09D; };
 		FB14FE2D8522142D1D907FA6 = {isa = PBXBuildFile; fileRef = DEFCE8C923EC489CB8ED7DE7; };
+		B72E5A92824EC549D8842E96 = {isa = PBXBuildFile; fileRef = 7D7A028D24A89E5E9B76503C; };
 		85B05C36D51A85D39F12E006 = {isa = PBXBuildFile; fileRef = 2107735F710165A1C1DD3293; };
 		254C91EFD34645E7B3EA8371 = {isa = PBXBuildFile; fileRef = 4D5AACA8CEB22306569DAE48; };
 		9F83C5755FC5E19663C5054A = {isa = PBXBuildFile; fileRef = FB69C272F09120F9ED8867BB; };
@@ -373,6 +374,7 @@
 		7CB28437717C4D7C854C6ED8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SerialController.h; path = ../../Source/Controller/Impl/SerialController.h; sourceTree = "SOURCE_ROOT"; };
 		7CBE7DAAF1857A677C37BEAC = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JsEnvironment.h; path = ../../Source/Scripting/Js/JsEnvironment.h; sourceTree = "SOURCE_ROOT"; };
 		7D6D9859215171A00D6FFE12 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Controller.h; path = ../../Source/Controller/Controller.h; sourceTree = "SOURCE_ROOT"; };
+		7D7A028D24A89E5E9B76503C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AutoUpdater.cpp; path = ../../Source/Utils/AutoUpdater.cpp; sourceTree = "SOURCE_ROOT"; };
 		80433D373E57EF352FDFF974 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SliderUI.h; path = ../../Source/Controllable/Parameter/UI/SliderUI.h; sourceTree = "SOURCE_ROOT"; };
 		80570A95E026C525D1356A24 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ControllerEditor.h; path = ../../Source/Controller/UI/ControllerEditor.h; sourceTree = "SOURCE_ROOT"; };
 		810DC1CB2E3CF968869E2298 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MultiNeedle.h; path = ../../Source/Audio/MultiNeedle.h; sourceTree = "SOURCE_ROOT"; };
@@ -473,6 +475,7 @@
 		C59BF9B44B22349FE56E88C7 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = EngineFileDocument.cpp; path = ../../Source/EngineFileDocument.cpp; sourceTree = "SOURCE_ROOT"; };
 		C64641A3FB1F3F963E28F503 = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		C6D6C62D0163B282028885CF = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FactoryUIHelpers.h; path = ../../Source/Utils/FactoryUIHelpers.h; sourceTree = "SOURCE_ROOT"; };
+		C7576346F33A03790C28DC66 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutoUpdater.h; path = ../../Source/Utils/AutoUpdater.h; sourceTree = "SOURCE_ROOT"; };
 		C7BD9A2A005BB6350E841B98 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BinaryData.h; path = ../../JuceLibraryCode/BinaryData.h; sourceTree = "SOURCE_ROOT"; };
 		C821373088BC715DC040DD97 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShapeShifterPanelTab.cpp; path = ../../Source/UI/ShapeShifter/ShapeShifterPanelTab.cpp; sourceTree = "SOURCE_ROOT"; };
 		C843CB56566E29128EE6E968 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PresetManager.cpp; path = ../../Source/Preset/PresetManager.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -890,6 +893,8 @@
 					1A0740D11C53D3D8710A13C2,
 					06F3F391126CAAEDDD87A951, ); name = UI; sourceTree = "<group>"; };
 		7467E54AD807664B6E3C7879 = {isa = PBXGroup; children = (
+					7D7A028D24A89E5E9B76503C,
+					C7576346F33A03790C28DC66,
 					C6D6C62D0163B282028885CF,
 					2107735F710165A1C1DD3293,
 					0A3006838E3A400CB05E2E6E,
@@ -1398,6 +1403,7 @@
 					20DC1F03DC4C1F4881C5F757,
 					F72124BA0EDF8D9BE8BF375B,
 					FB14FE2D8522142D1D907FA6,
+					B72E5A92824EC549D8842E96,
 					85B05C36D51A85D39F12E006,
 					254C91EFD34645E7B3EA8371,
 					9F83C5755FC5E19663C5054A,

@@ -185,7 +185,7 @@ void ConnectableNodeHeaderUI::resized()
 
     }
 
-    if (r.getWidth() < 100)
+    if (r.getWidth() < 100 && !bMiniMode)
     {
         miniModeBT.setVisible (false);
     }

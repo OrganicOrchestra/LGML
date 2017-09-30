@@ -54,6 +54,9 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (Slider::trackColourId, Colour (0xff99ff66));
     setColour (Slider::backgroundColourId, Colours::black.withAlpha (0.1f));
     setColour (TextButton::buttonOnColourId, Colour (0xffFF922F));
+    setColour (Label::textWhenEditingColourId, Colours::white);
+    setColour (TextEditor::ColourIds::highlightedTextColourId, Colours::white);
+
     setColour (LGMLColors::audioColor, Colours::cadetblue);
     setColour (LGMLColors::dataColor, Colours::pink);
     setColour (LGMLColors::elementBackground, findColour (ResizableWindow::backgroundColourId).brighter (0.1f));
@@ -230,5 +233,24 @@ Label* LookAndFeelOO::createSliderTextBox (Slider& slider)
     l->setColour (TextEditor::highlightColourId, slider.findColour (Slider::textBoxHighlightColourId));
 
     return l;
+}
+
+
+void LookAndFeelOO::drawTextEditorOutline (Graphics& g, int width, int height, TextEditor& textEditor){
+//    if (dynamic_cast<AlertWindow*> (textEditor.getParentComponent()) == nullptr)
+//    {
+//        if (textEditor.isEnabled())
+//        {
+//            if (textEditor.hasKeyboardFocus (true) && ! textEditor.isReadOnly())
+//            {
+//                g.setColour (textEditor.findColour (TextEditor::focusedOutlineColourId));
+//            }
+//            else
+//            {
+//                g.setColour (textEditor.findColour (TextEditor::outlineColourId));
+//            }
+//            g.drawRect (0, 0, width, height);
+//        }
+//    }
 }
 

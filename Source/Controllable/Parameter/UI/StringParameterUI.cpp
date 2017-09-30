@@ -36,7 +36,7 @@ StringParameterUI::StringParameterUI (Parameter* p) :
 
     valueLabel.addListener (this);
 
-    valueLabel.setColour (valueLabel.backgroundWhenEditingColourId, Colours::white);
+    valueLabel.setBorderSize(BorderSize<int>(0));
     setBackGroundIsTransparent (!stringEditable);
     nameLabel.setTooltip (p->description);
 

@@ -898,6 +898,9 @@
     <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp">
       <Filter>LGML\Source\UI\Inspector</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Utils\AutoUpdater.cpp">
+      <Filter>LGML\Source\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Utils\FactoryBase.cpp">
       <Filter>LGML\Source\Utils</Filter>
     </ClCompile>
@@ -3134,6 +3137,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h">
       <Filter>LGML\Source\UI\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Utils\AutoUpdater.h">
+      <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\FactoryUIHelpers.h">
       <Filter>LGML\Source\Utils</Filter>
