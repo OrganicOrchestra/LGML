@@ -29,9 +29,10 @@
  this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
  */
 
-ApplicationProperties& getAppProperties();
+ApplicationProperties* getAppProperties();
 
 AudioDeviceManager& getAudioDeviceManager();
+static String lastFileListKey ("lastFileList");
 
 String Engine::getDocumentTitle()
 {
@@ -75,13 +76,17 @@ Result Engine::loadDocument (const File& file)
 
 #ifdef MULTITHREADED_LOADING
     // force clear on main thread, safer for ui related stuffs
-    clear();
-    fileLoader = new FileLoader (this, file);
-    fileLoader->startThread (10);
-#else
-    loadDocumentAsync (file);
-    triggerAsyncUpdate();
+    if(getAppProperties()->getUserSettings()->getBoolValue("multiThreadedLoading",true)){
+        clear();
+        fileLoader = new FileLoader (this, file);
+        fileLoader->startThread (10);
+    }
+    else
 #endif
+    {
+        loadDocumentAsync (file);
+        triggerAsyncUpdate();
+    }
 
 
     return Result::ok();
@@ -194,7 +199,7 @@ Result Engine::saveDocument (const File& file)
 File Engine::getLastDocumentOpened()
 {
     RecentlyOpenedFilesList recentFiles;
-    recentFiles.restoreFromString (getAppProperties().getUserSettings()
+    recentFiles.restoreFromString (getAppProperties()->getUserSettings()
                                    ->getValue (lastFileListKey));
 
     return recentFiles.getFile (0);
@@ -207,12 +212,12 @@ void Engine::setLastDocumentOpened (const File& file)
 {
 
     RecentlyOpenedFilesList recentFiles;
-    recentFiles.restoreFromString (getAppProperties().getUserSettings()
+    recentFiles.restoreFromString (getAppProperties()->getUserSettings()
                                    ->getValue (lastFileListKey));
 
     recentFiles.addFile (file);
 
-    getAppProperties().getUserSettings()->setValue (lastFileListKey, recentFiles.toString());
+    getAppProperties()->getUserSettings()->setValue (lastFileListKey, recentFiles.toString());
     RecentlyOpenedFilesList::registerRecentFileNatively (file);
 
 }

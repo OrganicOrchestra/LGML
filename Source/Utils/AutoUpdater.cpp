@@ -18,18 +18,6 @@
 
 
 
-
-/*
-  ==============================================================================
-
-    AutoUpdater.cpp
-    Created: 29 Sep 2017 3:07:42pm
-    Author:  Martin Hermant
-
-  ==============================================================================
-*/
-
-
 //// code adapted from projucer
 
 #include "AutoUpdater.h"
@@ -529,7 +517,6 @@ bool LatestVersionChecker::allowCustomLocation() const      { return true; }
 Result LatestVersionChecker::performUpdate (const MemoryBlock& data, File& targetFolder)
 {
     File unzipTarget;
-//    bool isUsingTempFolder = false;
 
     {
         MemoryInputStream input (data, false);
@@ -541,45 +528,18 @@ Result LatestVersionChecker::performUpdate (const MemoryBlock& data, File& targe
 
         unzipTarget = targetFolder;
 
-//        if (unzipTarget.exists())
-//        {
-//            isUsingTempFolder = true;
-//            unzipTarget = File::getSpecialLocation(File::SpecialLocationType::tempDirectory).getChildFile("LGML_download");
-//
-////            unzipTarget = targetFolder.getNonexistentSibling();
-//
-//            if (! unzipTarget.createDirectory())
-//                return Result::fail ("Couldn't create a folder to unzip the new version!");
-//        }
+
 
         Result r (zip.uncompressTo (unzipTarget));
 
         if (r.failed())
         {
-//            if (isUsingTempFolder)
-//                unzipTarget.deleteRecursively();
 
             return r;
         }
     }
 
-//    if (isUsingTempFolder)
-//    {
-//        File oldFolder (targetFolder.getSiblingFile (targetFolder.getFileNameWithoutExtension() + "_old")
-//                        .getNonexistentSibling());
-//
-//        if (! targetFolder.moveFileTo (oldFolder))
-//        {
-//            unzipTarget.deleteRecursively();
-//            return Result::fail ("Could not remove the existing folder!");
-//        }
-//
-//        if (! unzipTarget.moveFileTo (targetFolder))
-//        {
-//            unzipTarget.deleteRecursively();
-//            return Result::fail ("Could not overwrite the existing folder!");
-//        }
-//    }
+
 
     return Result::ok();
 }
@@ -601,11 +561,7 @@ URL LatestVersionChecker::getLatestVersionURL (String& headers, const String& pa
         updateURL << urlsAndKeys.updateSeverHostname
         << (isRedirect ? path : String (urlsAndKeys.updatePath));
 
-//        if (! isRedirect)
-//        {
-//            updateURL << LGMLVersionTriple (getProductVersionNumber()).toString() << '/'
-//            << getOSString() ;//<< "?language=" << SystemStats::getUserLanguage();
-//        }
+
     }
 
     headers.clear();

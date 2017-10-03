@@ -23,7 +23,7 @@
 
 
 ApplicationCommandManager& getCommandManager();
-ApplicationProperties& getAppProperties();
+ApplicationProperties * getAppProperties();
 
 
 class VSTManager : public ChangeListener
@@ -48,25 +48,26 @@ public:
                               DocumentWindow::minimiseButton | DocumentWindow::closeButton)
             , owner (owner_)
         {
-            const File deadMansPedalFile (getAppProperties().getUserSettings()
-                                          ->getFile().getSiblingFile ("RecentlyCrashedPluginsList"));
+            auto appProps = getAppProperties()?getAppProperties()->getUserSettings():nullptr;
+            const File deadMansPedalFile = appProps?File(appProps->getFile().getSiblingFile ("RecentlyCrashedPluginsList")):File();
 
             setContentOwned (new PluginListComponent (pluginFormatManager,
                                                       owner.knownPluginList,
                                                       deadMansPedalFile,
-                                                      getAppProperties().getUserSettings()), true);
+                                                      appProps), true);
 
             setResizable (true, false);
             setResizeLimits (300, 400, 800, 1500);
             setTopLeftPosition (60, 60);
 
-            restoreWindowStateFromString (getAppProperties().getUserSettings()->getValue ("listWindowPos"));
+            restoreWindowStateFromString (appProps->getValue ("listWindowPos"));
             setVisible (true);
         }
 
         ~PluginListWindow()
         {
-            getAppProperties().getUserSettings()->setValue ("listWindowPos", getWindowStateAsString());
+            if(getAppProperties())
+                getAppProperties()->getUserSettings()->setValue ("listWindowPos", getWindowStateAsString());
             clearContentComponent();
         }
 

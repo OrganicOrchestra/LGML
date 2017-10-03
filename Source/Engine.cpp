@@ -40,6 +40,20 @@
 const char* const filenameSuffix = ".lgml";
 const char* const filenameWildcard = "*.lgml";
 
+void setDefault(PropertiesFile *f, const String & n, const var & d)
+{
+    if(!f->containsKey(n))
+        f->setValue(n, d);
+}
+
+void initDefaultUserSettings(){
+    auto settings = getAppProperties()->getUserSettings();
+    setDefault(settings,"multiThreadedLoading",true);
+
+
+    settings->saveIfNeeded();
+}
+
 Engine::Engine(): FileBasedDocument (filenameSuffix,
                                          filenameWildcard,
                                          "Load a filter graph",
@@ -68,8 +82,8 @@ Engine::Engine(): FileBasedDocument (filenameSuffix,
     addChildControllableContainer (FastMapper::getInstance());
 
     DBG ("max recording time : " << std::numeric_limits<sample_clk_t>().max() / (44100.0 * 60.0 * 60.0) << "hours @ 44.1kHz");
-
-
+    initDefaultUserSettings();
+    
 }
 
 
@@ -143,6 +157,29 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
                 NLOG ("Engine", "File : " << fileArg << " not found.");
             }
         }
+        else if(c.command=="p"){
+            if (c.args.size() == 0)
+            {
+                LOG ("no preferences provided for command : " + c.command);
+                jassertfalse;
+                continue;
+            }
+
+
+            if(c.args.size()==0 || c.args.size()%2!=0){
+                LOG("unable to parse parameter : " << c.args.joinIntoString(":"));
+                jassertfalse;
+                continue;
+            }
+            for( int i = 0 ; i < c.args.size()-1 ; i+=2){
+                if (!getAppProperties()->getUserSettings()->containsKey(c.args[i])){
+                    LOG("unknown parameter : " << c.args[i]);
+                    jassertfalse;
+                    continue;
+                }
+                getAppProperties()->getUserSettings()->setValue(c.args[i], c.args[i+1]);
+            }
+        }
 
     }
 
@@ -154,7 +191,7 @@ void Engine::initAudio()
 {
 
     graphPlayer.setProcessor (NodeManager::getInstance()->mainContainer->getAudioGraph());
-    ScopedPointer<XmlElement> savedAudioState (getAppProperties().getUserSettings()->getXmlValue ("audioDeviceState"));
+    ScopedPointer<XmlElement> savedAudioState (getAppProperties()->getUserSettings()->getXmlValue ("audioDeviceState"));
     getAudioDeviceManager().initialise (64, 64, savedAudioState, true);
     getAudioDeviceManager().addChangeListener (&audioSettingsHandler);
     // timeManager should be the first audio Callback added to ensure that time is updated each new block
@@ -269,7 +306,7 @@ void Engine::MultipleAudioSettingsHandler::timerCallback()
 
     if (lastConfigName == configName) {return;}
 
-    ScopedPointer<XmlElement> oldSetupXml = getAppProperties().getUserSettings()->getXmlValue (oldSettingsId);
+    ScopedPointer<XmlElement> oldSetupXml = getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId);
 
     if (!oldSetupXml)return;
 
@@ -316,8 +353,8 @@ String Engine::MultipleAudioSettingsHandler::getConfigName()
 void Engine::MultipleAudioSettingsHandler::saveCurrent()
 {
     ScopedPointer<XmlElement> audioState (getAudioDeviceManager().createStateXml());
-    getAppProperties().getUserSettings()->setValue ("audioDeviceState", audioState);
-    ScopedPointer<XmlElement> oldXml = getAppProperties().getUserSettings()->getXmlValue (oldSettingsId);
+    getAppProperties()->getUserSettings()->setValue ("audioDeviceState", audioState);
+    ScopedPointer<XmlElement> oldXml = getAppProperties()->getUserSettings()->getXmlValue (oldSettingsId);
 
     if (!oldXml) {oldXml = new XmlElement (oldSettingsId);}
 
@@ -330,11 +367,13 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent()
     oldConfig->addChildElement (getAudioDeviceManager().createStateXml());
 
 
-    getAppProperties().getUserSettings()->setValue (oldSettingsId.toString(), oldXml);
-    getAppProperties().getUserSettings()->saveIfNeeded();
+    getAppProperties()->getUserSettings()->setValue (oldSettingsId.toString(), oldXml);
+    getAppProperties()->getUserSettings()->saveIfNeeded();
 
 }
 
 const int64 Engine::getElapsedMillis()const {
     return Time::getCurrentTime().getMilliseconds() - engineStartTime;
 }
+
+

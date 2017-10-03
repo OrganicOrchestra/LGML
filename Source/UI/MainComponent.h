@@ -36,7 +36,7 @@
 #include "ProgressWindow.h"
 
 ApplicationCommandManager& getCommandManager();
-ApplicationProperties& getAppProperties();
+ApplicationProperties * getAppProperties();
 AudioDeviceManager& getAudioDeviceManager();
 
 class MainContentComponent   : public juce::Component, public ApplicationCommandTarget, public MenuBarModel, public Engine::EngineListener, private Timer
@@ -73,8 +73,6 @@ public:
     void paintOverChildren (Graphics& g) override;
     void resized() override;
 
-
-    void showAudioSettings();
 
 
     //==============================================================================

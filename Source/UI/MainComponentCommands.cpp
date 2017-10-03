@@ -22,6 +22,7 @@
 #include "Inspector/Inspector.h"
 #include "../Node/NodeContainer/NodeContainer.h"
 #include "LGMLDragger.h"
+#include "AppPropertiesUI.h"
 
 namespace CommandIDs
 {
@@ -31,11 +32,12 @@ static const int saveAs                 = 0x30002;
 static const int newFile                = 0x30003;
 static const int openLastDocument       = 0x30004;
 static const int playPause              = 0x30010;
-static const int copySelection            = 0x30020;
-static const int cutSelection         = 0x30021;
-static const int pasteSelection           = 0x30022;
+static const int copySelection          = 0x30020;
+static const int cutSelection           = 0x30021;
+static const int pasteSelection         = 0x30022;
 static const int showPluginListEditor   = 0x30100;
-static const int showAudioSettings      = 0x30200;
+static const int showAppSettings        = 0x30200;
+static const int showAudioSettings      = 0x30201;
 static const int aboutBox               = 0x30300;
 static const int allWindowsForward      = 0x30400;
 static const int toggleDoublePrecision  = 0x30500;
@@ -47,7 +49,7 @@ static const int lastFileStartID        = 100; // 100 to 200 max
 
 }
 
-
+static String lastOpenedFileListKey("lastOpenedFileList");
 
 
 void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationCommandInfo& result)
@@ -91,6 +93,10 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
         case CommandIDs::showAudioSettings:
             result.setInfo ("Change the audio device settings", String::empty, category, 0);
             result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
+            break;
+        case CommandIDs::showAppSettings:
+            result.setInfo ("show app settings", String::empty, category, 0);
+            result.addDefaultKeypress (',', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::toggleDoublePrecision:
@@ -154,6 +160,7 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands)
         CommandIDs::save,
         CommandIDs::saveAs,
         CommandIDs::showPluginListEditor,
+        CommandIDs::showAppSettings,
         CommandIDs::showAudioSettings,
         CommandIDs::toggleDoublePrecision,
         CommandIDs::aboutBox,
@@ -182,8 +189,8 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
         menu.addCommandItem (&getCommandManager(), CommandIDs::openLastDocument);
 
         RecentlyOpenedFilesList recentFiles;
-        recentFiles.restoreFromString (getAppProperties().getUserSettings()
-                                       ->getValue (lastFileListKey));
+        recentFiles.restoreFromString (getAppProperties()->getUserSettings()
+                                       ->getValue (lastOpenedFileListKey));
 
         PopupMenu recentFilesMenu;
         recentFiles.createPopupMenuItems (recentFilesMenu, CommandIDs::lastFileStartID, true, true);
@@ -218,6 +225,7 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
         // "Options" menu
 
         menu.addCommandItem (&getCommandManager(), CommandIDs::showPluginListEditor);
+        menu.addCommandItem (&getCommandManager(), CommandIDs::showAppSettings);
         menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
         menu.addCommandItem (&getCommandManager(), CommandIDs::stimulateCPU);
         menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
@@ -313,7 +321,11 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             break;
 
         case CommandIDs::showAudioSettings:
-            showAudioSettings();
+            AppPropertiesUI::showAppSettings(AppPropertiesUI::AudioPageName);
+            break;
+
+        case CommandIDs::showAppSettings:
+            AppPropertiesUI::showAppSettings();
             break;
 
 
@@ -434,8 +446,7 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
     else if (isPositiveAndBelow (menuItemID - CommandIDs::lastFileStartID, 100))
     {
         RecentlyOpenedFilesList recentFiles;
-        recentFiles.restoreFromString (getAppProperties().getUserSettings()
-                                       ->getValue (lastFileListKey));
+        recentFiles.restoreFromString (getAppProperties()->getUserSettings()->getValue (lastOpenedFileListKey));
         engine->loadFrom (recentFiles.getFile (menuItemID - CommandIDs::lastFileStartID), true);
     }
 }

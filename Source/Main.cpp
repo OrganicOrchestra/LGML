@@ -173,7 +173,7 @@ public:
 
 static LGMLApplication* getApp()                 { return dynamic_cast<LGMLApplication*> (JUCEApplication::getInstance()); }
 ApplicationCommandManager& getCommandManager()      { return getApp()->commandManager; }
-ApplicationProperties& getAppProperties()           { return *getApp()->appProperties; }
+ApplicationProperties * getAppProperties()           { return getApp()->appProperties; }
 AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
 UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
 Engine* getEngine()                              { return getApp()->engine;}

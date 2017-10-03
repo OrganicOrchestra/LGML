@@ -72,7 +72,7 @@ MainWindow::MainWindow (String name, Engine* e)  :
 #endif
 
 
-    if (auto prop = getAppProperties().getCommonSettings (true))
+    if (auto prop = getAppProperties()->getCommonSettings (true))
     {
         winSetting = prop->getValue ("winSettings", winSetting);
     }
@@ -129,8 +129,8 @@ void MainWindow::closeButtonPressed()
     var boundsVar = var (new DynamicObject());
     Rectangle<int> r = getScreenBounds();
 
-    getAppProperties().getCommonSettings (true)->setValue ("winSettings", getWindowStateAsString());
-    getAppProperties().getCommonSettings (true)->saveIfNeeded();
+    getAppProperties()->getCommonSettings (true)->setValue ("winSettings", getWindowStateAsString());
+    getAppProperties()->getCommonSettings (true)->saveIfNeeded();
 
 
 #if JUCE_OPENGL && USE_GL

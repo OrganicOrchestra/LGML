@@ -17,22 +17,22 @@
  */
 
 #include "VSTManager.h"
-
+//#include "../Engine.h"
 
 juce_ImplementSingleton (VSTManager);
 
-
+static String pluginListKey("pluginList");
 VSTManager::VSTManager()
 {
     formatManager.addDefaultFormats();
+    auto appProps = getAppProperties();
 
-
-    ScopedPointer<XmlElement> savedPluginList (getAppProperties().getUserSettings()->getXmlValue ("pluginList"));
+    ScopedPointer<XmlElement> savedPluginList (appProps->getUserSettings()->getXmlValue (pluginListKey));
 
     if (savedPluginList != nullptr)
         knownPluginList.recreateFromXml (*savedPluginList);
 
-    pluginSortMethod = (KnownPluginList::SortMethod) getAppProperties().getUserSettings()
+    pluginSortMethod = (KnownPluginList::SortMethod) appProps->getUserSettings()
                        ->getIntValue ("pluginSortMethod", KnownPluginList::sortByManufacturer);
 
 
@@ -55,8 +55,10 @@ void VSTManager::changeListenerCallback (ChangeBroadcaster* changed)
 
         if (savedPluginList != nullptr)
         {
-            getAppProperties().getUserSettings()->setValue ("pluginList", savedPluginList);
-            getAppProperties().saveIfNeeded();
+            getAppProperties()->getUserSettings()->setValue (pluginListKey, savedPluginList);
+            getAppProperties()->getUserSettings()->saveIfNeeded();
+
+
         }
     }
 }

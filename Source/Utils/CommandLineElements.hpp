@@ -88,7 +88,7 @@ public:
     {
         CommandLineElements res;
         StringArray args;
-        args.addTokens (commandLine, true);
+        args.addTokens (commandLine," =\n\t","\"");
         args.trim();
 
         int parsingIdx = 0;

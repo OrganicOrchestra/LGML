@@ -17,7 +17,7 @@
  */
 
 #include "MainComponent.h"
-
+#include "AppPropertiesUI.h"
 
 //#include "../Node/Manager/UI/NodeManagerUI.h"
 //#include "../Controller/UI/ControllerManagerUI.h"
@@ -66,6 +66,7 @@ MainContentComponent::MainContentComponent (Engine* e):
 MainContentComponent::~MainContentComponent()
 {
 
+    AppPropertiesUI::closeAppSettings();
 #if JUCE_MAC
     setMacMainMenu (nullptr);
 
@@ -73,6 +74,7 @@ MainContentComponent::~MainContentComponent()
 
     engine->removeEngineListener (this);
     ShapeShifterManager::deleteInstance();
+
 }
 
 void MainContentComponent::focusGained (FocusChangeType cause)
@@ -102,36 +104,6 @@ void MainContentComponent::resized()
 
 }
 
-void MainContentComponent::showAudioSettings()
-{
-    AudioDeviceSelectorComponent audioSettingsComp (getAudioDeviceManager(),
-                                                    0, 256,
-                                                    0, 256,
-                                                    false, false, false, false);
-    audioSettingsComp.setSize (500, 450);
-
-    DialogWindow::LaunchOptions o;
-    o.content.setNonOwned (&audioSettingsComp);
-    o.dialogTitle                   = "Audio Settings";
-    o.componentToCentreAround       = this;
-    o.dialogBackgroundColour        = findColour(ResizableWindow::ColourIds::backgroundColourId);
-    o.escapeKeyTriggersCloseButton  = true;
-#warning need to check compat on other platforms
-#ifdef JUCE_MAC
-    o.useNativeTitleBar             = true;
-#else
-    o.useNativeTitleBar             = false;
-#endif
-    o.resizable                     = true;
-    
-
-
-    o.runModal();
-
-    engine->audioSettingsHandler.saveCurrent();
-
-
-}
 
 void MainContentComponent::paintOverChildren (Graphics& g)
 {

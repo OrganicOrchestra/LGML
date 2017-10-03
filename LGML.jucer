@@ -542,6 +542,10 @@
               name="TimeMasterCandidate.h" resource="0"/>
       </GROUP>
       <GROUP id="{02F30C9F-B8EE-F4A9-F9F8-5309911C4D05}" name="UI">
+        <FILE id="VZcR0o" name="AppPropertiesUI.cpp" compile="1" resource="0"
+              file="Source/UI/AppPropertiesUI.cpp"/>
+        <FILE id="uXtuKD" name="AppPropertiesUI.h" compile="0" resource="0"
+              file="Source/UI/AppPropertiesUI.h"/>
         <FILE compile="1" file="Source/UI/MainWindow.cpp" id="ko5B6E" name="MainWindow.cpp"
               resource="0"/>
         <FILE compile="0" file="Source/UI/MainWindow.h" id="pFsnp5" name="MainWindow.h"

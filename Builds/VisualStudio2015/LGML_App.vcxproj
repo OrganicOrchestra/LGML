@@ -389,6 +389,7 @@
     <ClCompile Include="..\..\Source\Time\TimeManager.cpp"/>
     <ClCompile Include="..\..\Source\Time\TimeManagerUI.cpp"/>
     <ClCompile Include="..\..\Source\Time\TimeMasterCandidate.cpp"/>
+    <ClCompile Include="..\..\Source\UI\AppPropertiesUI.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
     <ClCompile Include="..\..\Source\UI\LGMLDragger.cpp"/>
     <ClCompile Include="..\..\Source\UI\LookAndFeelOO.cpp"/>
@@ -2176,6 +2177,7 @@
     <ClInclude Include="..\..\Source\Time\TimeManager.h"/>
     <ClInclude Include="..\..\Source\Time\TimeManagerUI.h"/>
     <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h"/>
+    <ClInclude Include="..\..\Source\UI\AppPropertiesUI.h"/>
     <ClInclude Include="..\..\Source\UI\MainWindow.h"/>
     <ClInclude Include="..\..\Source\UI\LGMLDragger.h"/>
     <ClInclude Include="..\..\Source\UI\LookAndFeelOO.h"/>

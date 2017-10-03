@@ -184,8 +184,6 @@ public:
 };
 
 
-static String lastFileListKey = "recentNodeGraphFiles";
-
 
 
 extern Engine* getEngine();
