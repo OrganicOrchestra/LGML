@@ -49,8 +49,8 @@ void SliderUI<T>::paint (Graphics& g)
     g.setColour (findColour (Slider::backgroundColourId));
     g.fillRoundedRectangle (sliderBounds.toFloat(), corner);
 
-    g.setColour (findColour (Slider::backgroundColourId).withAlpha (1.f).brighter());
-    g.drawRoundedRectangle (sliderBounds.toFloat(), corner, 1);
+//    g.setColour (findColour (Slider::backgroundColourId).withAlpha (1.f).brighter());
+//    g.drawRoundedRectangle (sliderBounds.toFloat(), corner, 1);
     Colour baseColour = parameter->isEditable ? findColour (Slider::trackColourId) : findColour (Slider::trackColourId).withAlpha (0.3f);
     Colour c = (isMouseButtonDown() && changeParamOnMouseUpOnly) ? findColour (TextButton::buttonOnColourId) : baseColour;
 
@@ -130,6 +130,11 @@ void SliderUI<T>::mouseDown (const MouseEvent& e)
         parameter->resetValue();
     }
 
+    if (e.mods.isCtrlDown())
+    {
+        parameter->setValue(parameter->floatValue()>0?0:(T)parameter->lastValue);
+    }
+
     if (assignOnMousePosDirect)
     {
         setParamNormalizedValue (getValueFromMouse());
@@ -149,6 +154,7 @@ void SliderUI<T>::mouseDrag (const MouseEvent& e)
     if (!parameter->isEditable) return;
 
     if (!e.mods.isLeftButtonDown()) return;
+    if(e.mods.isCtrlDown()) return;
 
     if (changeParamOnMouseUpOnly) repaint();
     else
@@ -180,7 +186,7 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
 
     BailOutChecker checker (this);
 
-    if (me.getNumberOfClicks() >= 2)
+    if (me.getNumberOfClicks() >= 2 && !me.mods.isCtrlDown())
     {
         AlertWindow nameWindow ("Set a value", "Set a new value for this parameter", AlertWindow::AlertIconType::NoIcon, this);
         nameWindow.addTextEditor ("newValue", parameter->stringValue());
