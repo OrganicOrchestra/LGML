@@ -26,7 +26,7 @@ void AudioMixerNodeUI::resized()
     {
         int diagoNum = jmin (mixerNode->numberOfInput->intValue(), mixerNode->numberOfOutput->intValue());
         float step = (float) (area.getWidth() / diagoNum);
-        const int pad = 3;
+        const int pad = 1;
 
         for (int i = 0 ; i < outputBusUIs.size() ; i ++)
         {
@@ -48,12 +48,11 @@ void AudioMixerNodeUI::resized()
     {
 
         float step = area.getHeight() / (float)outputBusUIs.size();
-        const int pad = 3;
-
+        const int pad = 1;
         for (auto& o : outputBusUIs)
         {
             o->setVisible (true);
-            o->setBounds (area.removeFromTop ((int)step).reduced (pad));
+            o->setBounds (area.removeFromTop ((int)step).reduced(0, pad));
             o->setAllVisible();
         }
     }
@@ -220,14 +219,14 @@ void AudioMixerNodeUI::OutputBusUI::resized()
     Rectangle<int> area = getLocalBounds();
     int numToBeDisplayed = getNumOfVisibleChannels();
     float step = area.getWidth() * 1.0f / numToBeDisplayed;
-    const int pad = 2;
+    const int pad = 1;
     int idx = 0;
 
     for (auto& o : inputVolumes)
     {
         if (visibleChanels[idx])
         {
-            o->setBounds (area.removeFromLeft ((int)step).reduced (pad));
+            o->setBounds (area.removeFromLeft ((int)step).reduced (pad,0));
         }
 
         idx++;
