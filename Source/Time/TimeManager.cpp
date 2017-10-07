@@ -64,9 +64,12 @@ public:
     ableton::link::HostTimeFilter<ableton::link::platform::Clock> linkFilter;
     std::chrono::microseconds linkLatency;
 
+    void updateTime(){
+        linkTime = linkFilter.sampleTimeToHostTime (owner->audioClock) + linkLatency;
+    }
     void checkDrift()
     {
-        linkTime = linkFilter.sampleTimeToHostTime (owner->audioClock) + linkLatency;
+
         linkTimeLine = linkSession.captureAudioTimeline();
         const int quantum = owner->beatPerBar->intValue() / owner->quantizedBarFraction->doubleValue();
         jassert (quantum > 0);
@@ -124,6 +127,7 @@ public:
 
         if (b)
         {
+
             auto lTl = linkSession.captureAppTimeline();
             lTl.requestBeatAtTime (owner->getBeat(),
                                    //                      std::chrono::system_clock::now().time_since_epoch(),
@@ -236,6 +240,7 @@ void TimeManager::incrementClock (int block)
     }
 
 #if LINK_SUPPORT
+    linkPimpl->updateTime();
     linkPimpl->captureTimeLine();
 #endif
 
