@@ -758,7 +758,8 @@ void LatestVersionChecker::timerCallback()
         hasAttemptedToReadWebsite = false;
         
         if (restartTimer)
-            startTimer (7200000);
+            DBG("can't check for new version");
+//            startTimer (7200000);
     }
     else
     {
