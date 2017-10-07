@@ -43,7 +43,10 @@ class PrefPanel : public PreferencesPanel{
     Component* createComponentForPage (const String& pageName)override{
         if(pageName==AppPropertiesUI::GeneralPageName){
             auto res =  new PropertyPanel();
-            res->addProperties( {new BoolPropUI("multiThreadedLoading") } );
+            res->addProperties(
+            {new BoolPropUI("multiThreadedLoading"),
+             new BoolPropUI("check for updates"),
+            } );
             return res;
         }
         else if (pageName==AppPropertiesUI::AudioPageName){
