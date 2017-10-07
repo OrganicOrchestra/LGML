@@ -260,11 +260,36 @@ void OutlinerItemComponent::paint (Graphics& g)
 
 }
 
+
+void expandItems(TreeViewItem * c,const bool s){
+    c->setOpen(s);
+    for (int i = 0 ; i <c->getNumSubItems() ; i++ ){
+        expandItems(c->getSubItem(i), s);
+    }
+
+
+}
+
 void OutlinerItemComponent::mouseDown (const MouseEvent& e)
 {
+    if(e.mods.isRightButtonDown() && item->isContainer){
+        PopupMenu m;
+        m.addItem(1, "expand all childs");
+        m.addItem(2, "close all childs");
+
+        auto res = m.showAt(this);
+        if(res==1 || res==2){
+            expandItems(item,res==1);
+        }
+    }
+    else if(e.getNumberOfClicks()>=2){
+        expandItems(item,!item->isOpen());
+    }
+    else{
     item->setSelected (true, true);
     if(item->isContainer)
         selectThis();
+    }
 }
 
 InspectorEditor* OutlinerItemComponent::createEditor()

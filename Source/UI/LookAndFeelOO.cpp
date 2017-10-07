@@ -56,6 +56,7 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (TextButton::buttonOnColourId, Colour (0xffFF922F));
     setColour (Label::textWhenEditingColourId, Colours::white);
     setColour (TextEditor::ColourIds::highlightedTextColourId, Colours::white);
+    setColour (TreeView::backgroundColourId,scheme.getUIColour (ColourScheme::UIColour::windowBackground));
 
     setColour (LGMLColors::audioColor, Colours::cadetblue);
     setColour (LGMLColors::dataColor, Colours::pink);
