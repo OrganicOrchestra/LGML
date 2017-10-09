@@ -19,6 +19,7 @@
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
 #include "../../Controllable/Parameter/UI/StringParameterUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
+#include "../../UI/Outliner.h"
 
 
 
@@ -52,6 +53,15 @@ ControllerUI::ControllerUI (Controller* controller) :
     activityBlink = new TriggerBlinkUI (controller->activityTrigger);
     activityBlink->showLabel = false;
     addAndMakeVisible (activityBlink);
+    userParamsUI = new Outliner("usr_"+controller->shortName,&controller->userContainer,false);
+    addAndMakeVisible(userParamsUI);
+
+    showUserParams = new TextButton("showParams");
+    addAndMakeVisible(showUserParams);
+    showUserParams->setTooltip("show this controller registered parameters");
+    showUserParams->setToggleState(false, dontSendNotification);
+    showUserParams->addListener(this);
+    showUserParams->setClickingTogglesState(true);
 
 }
 
@@ -67,16 +77,29 @@ void ControllerUI::paint (Graphics& g)
 
 }
 
+const int headerHeight = 20;
+const int usrParamHeight = 200;
 void ControllerUI::resized()
 {
-    Rectangle<int> r = getLocalBounds().reduced (2);
+    Rectangle<int> area = getLocalBounds().reduced (2);
+    Rectangle<int> r = area.removeFromTop(headerHeight);
     r.removeFromRight (15);
     removeBT.setBounds (r.removeFromRight (20));
     r.removeFromRight (2);
     activityBlink->setBounds (r.removeFromRight (r.getHeight()).reduced (2));
+    showUserParams->setBounds(r.removeFromRight (r.getHeight()).reduced (2));
     enabledBT->setBounds (r.removeFromLeft (r.getHeight()));
     r.removeFromLeft (5);
     nameTF->setBounds (r);
+
+    if(area.getHeight()){
+        userParamsUI->setBounds(area);
+    }
+
+}
+
+int ControllerUI::getHeight(){
+    return headerHeight + (showUserParams->getToggleState()?jmax(usrParamHeight,userParamsUI->treeView.getViewport()->getViewArea().getHeight()):0);
 }
 
 void ControllerUI::mouseDown (const MouseEvent&)
@@ -89,6 +112,10 @@ void ControllerUI::buttonClicked (Button* b)
     if (b == &removeBT)
     {
         controller->remove();
+    }
+    else if(b==showUserParams){
+        if(auto p = getParentComponent())
+            p->resized();
     }
 }
 
@@ -107,5 +134,6 @@ bool ControllerUI::keyPressed (const KeyPress& key)
 
 InspectorEditor* ControllerUI::createEditor()
 {
-    return controller->createEditor();
+#warning add factory to handle custom Editor
+    return new GenericParameterContainerEditor(controller);
 }

@@ -746,10 +746,6 @@ JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
     logT =  addNewParameter<Trigger> ("LogEnvironment", "print hierarchy of JS objects");
 
 }
-Component* JSEnvContainer::getCustomEditor()
-{
-    return new JsEnvironmentUI (jsEnv->jsParameters);
-}
 
 void JSEnvContainer::onContainerParameterChanged (Parameter* p)
 {

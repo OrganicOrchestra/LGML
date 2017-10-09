@@ -141,11 +141,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/RangeParameter_69c98879.o \
   $(JUCE_OBJDIR)/StringParameter_567a2b75.o \
   $(JUCE_OBJDIR)/Trigger_3deda295.o \
-  $(JUCE_OBJDIR)/MIDIControllerEditor_3fd4e0aa.o \
-  $(JUCE_OBJDIR)/OSCControllerEditor_9dcecf2.o \
-  $(JUCE_OBJDIR)/SerialControllerEditor_b29f815d.o \
-  $(JUCE_OBJDIR)/SerialControllerUI_6e64a864.o \
-  $(JUCE_OBJDIR)/SerialUIHelper_ee40d2f6.o \
   $(JUCE_OBJDIR)/MIDIController_748f162.o \
   $(JUCE_OBJDIR)/OSCController_58078380.o \
   $(JUCE_OBJDIR)/OSCDirectController_56470089.o \
@@ -452,31 +447,6 @@ $(JUCE_OBJDIR)/StringParameter_567a2b75.o: ../../Source/Controllable/Parameter/S
 $(JUCE_OBJDIR)/Trigger_3deda295.o: ../../Source/Controllable/Parameter/Trigger.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Trigger.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/MIDIControllerEditor_3fd4e0aa.o: ../../Source/Controller/Impl/UI/MIDIControllerEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MIDIControllerEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/OSCControllerEditor_9dcecf2.o: ../../Source/Controller/Impl/UI/OSCControllerEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling OSCControllerEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SerialControllerEditor_b29f815d.o: ../../Source/Controller/Impl/UI/SerialControllerEditor.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SerialControllerEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SerialControllerUI_6e64a864.o: ../../Source/Controller/Impl/UI/SerialControllerUI.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SerialControllerUI.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SerialUIHelper_ee40d2f6.o: ../../Source/Controller/Impl/UI/SerialUIHelper.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SerialUIHelper.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/MIDIController_748f162.o: ../../Source/Controller/Impl/MIDIController.cpp

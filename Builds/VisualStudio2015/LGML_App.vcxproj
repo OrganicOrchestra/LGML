@@ -307,11 +307,6 @@
     <ClCompile Include="..\..\Source\Controllable\Parameter\RangeParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\StringParameter.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\Trigger.cpp"/>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\MIDIControllerEditor.cpp"/>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\OSCControllerEditor.cpp"/>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialControllerEditor.cpp"/>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialControllerUI.cpp"/>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialUIHelper.cpp"/>
     <ClCompile Include="..\..\Source\Controller\Impl\MIDIController.cpp"/>
     <ClCompile Include="..\..\Source\Controller\Impl\OSCController.cpp"/>
     <ClCompile Include="..\..\Source\Controller\Impl\OSCDirectController.cpp"/>
@@ -2096,11 +2091,6 @@
     <ClInclude Include="..\..\Source\Controllable\Parameter\RangeParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\StringParameter.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\Trigger.h"/>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\MIDIControllerEditor.h"/>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\OSCControllerEditor.h"/>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialControllerEditor.h"/>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialControllerUI.h"/>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialUIHelper.h"/>
     <ClInclude Include="..\..\Source\Controller\Impl\MIDIController.h"/>
     <ClInclude Include="..\..\Source\Controller\Impl\OSCController.h"/>
     <ClInclude Include="..\..\Source\Controller\Impl\OSCDirectController.h"/>

@@ -25,7 +25,10 @@ public:
     virtual ~BetterStepper();
     void resized()override;
     bool isMini;
+    void setEditable(bool s);
 
+private:
+    bool isEditable;
     //  void paint(Graphics &g) ;
 };
 

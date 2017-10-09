@@ -21,6 +21,9 @@
 #include "../../../Preset/PresetChooserUI.h"
 #include "../../../UI/Style.h"
 
+
+#include "../../../Scripting/Js/JsEnvironmentUI.h"
+
 GenericParameterContainerEditor::GenericParameterContainerEditor (ParameterContainer* _sourceContainer) :
     InspectorEditor(),
     parentBT ("Up", "Go back to parent container")
@@ -254,8 +257,10 @@ void CCInnerContainerUI::removeCCInnerUI (ParameterContainer* cc)
 
 void CCInnerContainerUI::addCCLink (ParameterContainer* cc)
 {
-    if ( auto subEditor = cc->getCustomEditor())
-    {
+#warning TODO implement more generic parameterContainer UI factory
+    if(auto jsCont = dynamic_cast<JSEnvContainer*> (cc)){
+
+        auto subEditor = new JsEnvironmentUI (jsCont->jsEnv->jsParameters);
         addAndMakeVisible (subEditor);
         lowerContainerLinks.add (subEditor);
     }

@@ -22,7 +22,7 @@
 
 #include "ShapeShifter/ShapeShifterContent.h"
 #include "../Controllable/Parameter/ParameterContainer.h"
-#include "Inspector/InspectableComponent.h"
+#include "Inspector/Inspector.h"
 
 
 class OutlinerItem;
@@ -61,16 +61,20 @@ public:
 };
 
 class Outliner : public ShapeShifterContentComponent,
-    private ControllableContainerListener, AsyncUpdater, TextEditorListener
+private ControllableContainerListener, AsyncUpdater, TextEditorListener,Button::Listener,Inspector::InspectorListener
 {
 public:
 
-    Outliner (const String& contentName);
+    Outliner (const String& contentName,ParameterContainer* root=nullptr,bool showFilterText = true);
     ~Outliner();
+    void clear();
 
     TreeView treeView;
     ScopedPointer<OutlinerItem> rootItem;
+    WeakReference<ParameterContainer> root,baseRoot;
+
     TextEditor filterTextEditor;
+    TextButton linkToSelected;
     String nameFilter;
 
     bool showHiddenContainers; //include or exclude in treeview the "skipInAddress" containers (may be later exposed to user as an option)
@@ -87,11 +91,16 @@ public:
     void handleAsyncUpdate()override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Outliner)
 
+    void setRoot(ParameterContainer * );
+
 private:
+    void currentComponentChanged (Inspector *)override;
+    void buttonClicked(Button *b) override;
     void saveCurrentOpenChilds();
     void restoreCurrentOpenChilds();
-    //  Array<String> uniqueOpenNames;
-    ScopedPointer<XmlElement> xmlState;
+    // we should be using RAII like scoped pointer, but hashmap accessors, cant contains Scoped
+    HashMap<WeakReference<ParameterContainer>,XmlElement*> opennessStates;
+
 
 };
 

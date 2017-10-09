@@ -19,7 +19,7 @@
 #include "../../Time/TimeManager.h"
 #include "../../Controllable/Parameter/ParameterProxy.h"
 #include "../ControllerManager.h"
-REGISTER_OBJ_TYPE_NAMED (Controller, OSCDirectController, "t_OSC");
+//REGISTER_OBJ_TYPE_NAMED (Controller, OSCDirectController, "t_OSC");
 
 OSCDirectController::OSCDirectController (StringRef name):
     OSCController (name)

@@ -29,8 +29,9 @@ StepperUI<T>::StepperUI (Parameter* _parameter) : ParameterUI (_parameter)
     slider->setRange (fp->minimumValue, fp->maximumValue, 1);
     slider->setValue (parameter->floatValue(), dontSendNotification);
     slider->addListener (this);
-    slider->setTextBoxIsEditable (_parameter->isEditable);
-    slider->setEnabled ( parameter->isEditable);
+    
+    slider->setEditable(_parameter->isEditable);
+
     addComponentListener (this);
 
 }

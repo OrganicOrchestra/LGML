@@ -28,7 +28,7 @@ public :
     DECLARE_OBJ_TYPE_DEFAULTNAME (MIDIController, "MIDI");
     virtual ~MIDIController();
 
-    ControllerEditor*   createEditor()override;
+    
 
     // should be implemented to build localenv
     void buildLocalEnv() override;

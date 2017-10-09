@@ -16,11 +16,12 @@
 #include "SerialController.h"
 
 #include "../../Scripting/Js/JsHelpers.h"
-#include "../UI/ControllerUI.h"
-#include "UI/SerialControllerEditor.h"
+
 
 #include "../ControllerFactory.h"
 REGISTER_OBJ_TYPE_NAMED (Controller, SerialController, "t_Serial");
+
+
 
 
 SerialController::SerialController (StringRef name) :
@@ -32,8 +33,8 @@ SerialController::SerialController (StringRef name) :
     setNamespaceName ("controller." + shortName);
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
 
-    selectedHardwareID = addNewParameter<StringParameter> ("selectedHardwareID", "Id of the selected hardware", "");
-    selectedPort = addNewParameter<StringParameter> ("selectedPort", "Name of the selected hardware", "");
+//    selectedHardwareID = addNewParameter<StringParameter> ("selectedHardwareID", "Id of the selected hardware", "");
+    selectedPort = addNewParameter<EnumParameter> ("selectedPort", "Name of the selected hardware",SerialManager::getInstance(), "");
 
     SerialManager::getInstance()->addSerialManagerListener (this);
 }
@@ -67,8 +68,8 @@ void SerialController::setCurrentPort (SerialPort* _port)
         port->addSerialPortListener (this);
         lastOpenedPortID = port->info->port;
 
-        selectedPort->setValue (port->info->port);
-        selectedHardwareID->setValue (port->info->hardwareID);
+//        selectedPort->setValue (port->info->port);
+//        selectedHardwareID->setValue (port->info->hardwareID);
 
         sendIdentificationQuery();
     }
@@ -94,9 +95,11 @@ void SerialController::onContainerParameterChanged (Parameter* p)
     {
         setNamespaceName ("controller." + shortName);
     }
-    else if (p == selectedHardwareID || p == selectedPort)
+    else if ( p == selectedPort)
     {
-        SerialPort* _port  = SerialManager::getInstance()->getPort (selectedHardwareID->stringValue(), selectedPort->stringValue(), true);
+        String portName = selectedPort->getFirstSelectedId().toString();
+        String portHID = selectedPort->getFirstSelectedValue().toString();
+        SerialPort* _port  = SerialManager::getInstance()->getPort (portHID, portName, true);
 
         if (_port != nullptr)
         {
@@ -230,16 +233,7 @@ void SerialController::processMessage (const String& message)
     }
 }
 
-ControllerUI* SerialController::createUI()
-{
-    auto c = new ControllerUI (this);
-    c->activityBlink->animateIntensity = false;
-    return c;
-}
-ControllerEditor* SerialController::createEditor()
-{
-    return new SerialControllerEditor (this);
-};
+
 
 void SerialController::portAdded (SerialPortInfo* info)
 {

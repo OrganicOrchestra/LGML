@@ -54,7 +54,7 @@ public:
 
     virtual void configureFromObject (DynamicObject* data) override;
     virtual DynamicObject* getObject() override;
-    virtual juce::Component* getCustomEditor() {return nullptr;}
+    
 
     //  controllableContainer::Listener
     virtual void controllableRemoved (ControllableContainer*, Controllable*) override;

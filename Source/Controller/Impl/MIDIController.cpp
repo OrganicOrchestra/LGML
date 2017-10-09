@@ -14,8 +14,6 @@
 
 
 #include "MIDIController.h"
-#include "UI/MIDIControllerEditor.h"
-
 #include "../../MIDI/MIDIManager.h"
 #include "../../Utils/DebugHelpers.h"
 #include "../../Scripting/Js/JsHelpers.h"
@@ -60,10 +58,6 @@ void MIDIController::currentDeviceChanged (MIDIListener*)
     }
 }
 
-ControllerEditor*   MIDIController::createEditor()
-{
-    return new MIDIControllerEditor (this );
-}
 
 void MIDIController::handleIncomingMidiMessage (MidiInput*,
                                                 const MidiMessage& message)

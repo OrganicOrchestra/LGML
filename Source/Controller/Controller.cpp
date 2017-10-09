@@ -18,8 +18,6 @@
 
 #include "Controller.h"
 #include "ControllerFactory.h"
-#include "UI/ControllerUI.h"
-#include "UI/ControllerEditor.h"
 #include "ControllerManager.h"
 #include "../Utils/DebugHelpers.h"
 #include "../Scripting/Js/JsEnvironment.h"
@@ -54,9 +52,6 @@ Controller::~Controller()
 }
 
 
-ControllerUI* Controller::createUI() {return new ControllerUI (this);}
-
-ControllerEditor* Controller::createEditor() {return new ControllerEditor (this);}
 
 void Controller::remove()
 {

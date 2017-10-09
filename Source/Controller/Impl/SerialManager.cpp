@@ -96,7 +96,7 @@ void SerialManager::updateDeviceList()
     for (auto& p : portsToNotifyRemoved)
     {
         DBG ("Port Removed " << p->description);
-
+        removeOption ( p->port ,true);
 
         portInfos.removeObject (p, false);
         listeners.call (&SerialManagerListener::portRemoved, p);
@@ -110,7 +110,7 @@ void SerialManager::updateDeviceList()
 
     for (auto& p : portsToNotifyAdded)
     {
-
+        addOption( p->port , p->hardwareID,true);
         newInfos.removeObject (p, false);
         portInfos.add (p);
         listeners.call (&SerialManagerListener::portAdded, p);

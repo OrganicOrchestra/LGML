@@ -17,9 +17,6 @@
     <Filter Include="LGML\Source\Controllable">
       <UniqueIdentifier>{8C6E1813-D58C-9B02-ED36-1375B4A7075A}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LGML\Source\Controller\Impl\UI">
-      <UniqueIdentifier>{2AD512F4-21EF-0DE4-4EE5-5AAA1AC14E06}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LGML\Source\Controller\Impl">
       <UniqueIdentifier>{49B04A9D-92BB-C31E-6C69-A05D24774DD3}</UniqueIdentifier>
     </Filter>
@@ -582,21 +579,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\Parameter\Trigger.cpp">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\MIDIControllerEditor.cpp">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\OSCControllerEditor.cpp">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialControllerEditor.cpp">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialControllerUI.cpp">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Controller\Impl\UI\SerialUIHelper.cpp">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controller\Impl\MIDIController.cpp">
       <Filter>LGML\Source\Controller\Impl</Filter>
@@ -2831,21 +2813,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\Parameter\Trigger.h">
       <Filter>LGML\Source\Controllable\Parameter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\MIDIControllerEditor.h">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\OSCControllerEditor.h">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialControllerEditor.h">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialControllerUI.h">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Controller\Impl\UI\SerialUIHelper.h">
-      <Filter>LGML\Source\Controller\Impl\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controller\Impl\MIDIController.h">
       <Filter>LGML\Source\Controller\Impl</Filter>

@@ -225,14 +225,7 @@ Label* LookAndFeelOO::createSliderTextBox (Slider& slider)
                   ? Colours::transparentBlack
                   : slider.findColour (Slider::textBoxBackgroundColourId));
     l->setColour (Label::outlineColourId, slider.findColour (Slider::textBoxOutlineColourId));
-    l->setColour (TextEditor::textColourId, slider.findColour (Slider::textBoxTextColourId));
-    l->setColour (TextEditor::backgroundColourId,
-                  slider.findColour (Slider::textBoxBackgroundColourId)
-                  .withAlpha ((slider.getSliderStyle() == Slider::LinearBar || slider.getSliderStyle() == Slider::LinearBarVertical)
-                              ? 0.7f : 1.0f));
-    l->setColour (TextEditor::outlineColourId, slider.findColour (Slider::textBoxOutlineColourId));
-    l->setColour (TextEditor::highlightColourId, slider.findColour (Slider::textBoxHighlightColourId));
-
+    
     return l;
 }
 

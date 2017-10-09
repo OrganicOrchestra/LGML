@@ -71,7 +71,7 @@ ControllerUI* ControllerManagerUI::addControllerUI (Controller* controller)
         return nullptr;
     }
 
-    ControllerUI* cui = controller->createUI();
+    ControllerUI* cui = new ControllerUI(controller);
     controllersUI.add (cui);
 
     {
@@ -119,14 +119,14 @@ ControllerUI* ControllerManagerUI::getUIForController (Controller* controller)
 }
 
 const int elemGap = 5;
-const int elemHeight = 20;
+
 void ControllerManagerUI::resized()
 {
     Rectangle<int> r = getLocalBounds().reduced (1);
 
     for (auto& cui : controllersUI)
     {
-        cui->setBounds (r.removeFromTop (elemHeight));
+        cui->setBounds (r.removeFromTop (cui->getHeight()));
         r.removeFromTop (elemGap);
     }
 }
@@ -138,7 +138,11 @@ void ControllerManagerUI::paint (Graphics&)
 
 int ControllerManagerUI::getContentHeight()
 {
-    return controllersUI.size() * (elemHeight + elemGap) + 2;
+    int totalHeight = 0;
+    for(auto & c : controllersUI){
+        totalHeight+= c->getHeight() +  elemGap;
+    }
+    return totalHeight;
 
 }
 

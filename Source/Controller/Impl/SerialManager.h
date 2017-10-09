@@ -17,11 +17,13 @@
 #define SERIALMANAGER_H_INCLUDED
 
 #include "SerialPort.h"
+#include "../../Controllable/Parameter/EnumParameter.h"
 
 
 
 class SerialManager :
-    private Timer
+    private Timer,
+    public EnumParameterModel
 {
 public:
     juce_DeclareSingleton (SerialManager, true);

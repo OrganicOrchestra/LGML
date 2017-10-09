@@ -34,20 +34,31 @@ void BetterStepper::resized()
 {
     Slider::resized();
     isMini = getWidth() < 30;
+    bool isWider = getWidth()>getHeight();
+    auto linearStyle = isWider?SliderStyle::LinearBar:SliderStyle::LinearBarVertical;
 
     if (isMini)
     {
-        setSliderStyle (juce::Slider::SliderStyle::LinearBarVertical);
+        setSliderStyle (linearStyle);
         setColour (juce::Slider::textBoxTextColourId, juce::Colours::white);
     }
     else
     {
-        setSliderStyle (SliderStyle::IncDecButtons);
-        setColour (juce::Slider::textBoxBackgroundColourId, juce::Colours::white.withAlpha (0.1f));
+        setSliderStyle (isEditable ? SliderStyle::IncDecButtons:linearStyle);
+        setColour (juce::Slider::textBoxBackgroundColourId, !isEditable?Colours::black:juce::Colours::white.withAlpha (0.1f));
         setColour (juce::Slider::textBoxTextColourId, juce::Colours::white.withAlpha (0.7f));
         //    setColour(juce::Slider::textBoxTextColourId, juce::Colours::black);
     }
 
+}
+
+
+void BetterStepper::setEditable(bool s){
+    setTextBoxIsEditable (s);
+    setEnabled ( s);
+
+    isEditable = s;
+    resized();
 }
 
 //void BetterStepper::paint(juce::Graphics & g){

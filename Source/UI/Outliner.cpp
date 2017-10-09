@@ -24,34 +24,58 @@
 
 
 
-Outliner::Outliner (const String& contentName) : ShapeShifterContentComponent (contentName)
+Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName),
+baseRoot(_root),
+root(nullptr)
 {
-    getEngine()->addControllableContainerListener (this);
+    if(!baseRoot.get()){
+        baseRoot = getEngine();
+    }
+
 
     showHiddenContainers = false;
 
-    rootItem = new OutlinerItem (getEngine());
-    treeView.setRootItem (rootItem);
-    treeView.setRootItemVisible(false);
+    setRoot(baseRoot);
     addAndMakeVisible (treeView);
     treeView.getViewport()->setScrollBarThickness (10);
-    filterTextEditor.setTextToShowWhenEmpty ("search", Colours::grey);
-    addAndMakeVisible (filterTextEditor);
-    filterTextEditor.addListener (this);
-    rebuildTree();
+    if(showFilterText){
+        filterTextEditor.setTextToShowWhenEmpty ("search", Colours::grey);
+        addAndMakeVisible (filterTextEditor);
+        filterTextEditor.addListener (this);
+        addAndMakeVisible(linkToSelected);
+        linkToSelected.addListener(this);
+        linkToSelected.setClickingTogglesState(true);
+    }
+
 }
 
 Outliner::~Outliner()
 {
-    if (getEngine()) getEngine()->removeControllableContainerListener (this);
+
+    clear();
+    if(auto i = Inspector::getInstanceWithoutCreating())
+        i->removeInspectorListener(this);
 
 }
 
+void Outliner::clear(){
+    setRoot(nullptr);
+    for(auto  k : opennessStates){
+        delete k;
+    }
+    opennessStates.clear();
+
+}
 void Outliner::resized()
 {
     Rectangle<int> r = getLocalBounds();
     r.removeFromTop (20);
-    filterTextEditor.setBounds (r.removeFromTop (30));
+    if(filterTextEditor.isVisible()){
+        auto headerArea = r.removeFromTop(30);
+        linkToSelected.setBounds(headerArea.removeFromLeft(headerArea.getHeight()));
+        filterTextEditor.setBounds (headerArea);
+
+    }
     treeView.setBounds (r);
 }
 
@@ -61,10 +85,30 @@ void Outliner::paint (Graphics& g)
 }
 
 
+void Outliner::setRoot(ParameterContainer * p){
+    if (root.get()){
+        root->removeControllableContainerListener (this);
+        saveCurrentOpenChilds();
+    }
+    root = p;
+    if (root.get()){
+
+        root->addControllableContainerListener(this);
+        rootItem = new OutlinerItem (root);
+        treeView.setRootItem (rootItem);
+
+        treeView.setRootItemVisible(false);
+        rebuildTree();
+        restoreCurrentOpenChilds();
+        //        resized();
+    }
+
+}
+
 void Outliner::rebuildTree()
 {
     rootItem->clearSubItems();
-    buildTree (rootItem, getEngine());
+    buildTree (rootItem, root.get());
     rootItem->setOpen (true);
 
 }
@@ -133,6 +177,7 @@ void Outliner::childStructureChanged (ControllableContainer*, ControllableContai
 
 void Outliner::handleAsyncUpdate()
 {
+    // generic behaviour waiting angine being ready
     if (getEngine())
     {
         if (getEngine()->isLoadingFile )
@@ -159,27 +204,65 @@ void Outliner::textEditorTextChanged (TextEditor& t)
 
 void Outliner::saveCurrentOpenChilds()
 {
-    xmlState = treeView.getOpennessState (true);
+    if(opennessStates.contains(root)){
+        delete opennessStates[root];
+    }
+    opennessStates.set(root, treeView.getOpennessState (true));
+
 }
 
 
 void Outliner::restoreCurrentOpenChilds()
 {
+    ScopedPointer <XmlElement> xmlState (nullptr);
+    if(root && opennessStates.contains(root)){
+        xmlState = opennessStates[root];
+        opennessStates.remove(root);
+    }
+
     if (xmlState.get()) {treeView.restoreOpennessState (*xmlState.get(), true);}
+    
 }
+void Outliner::buttonClicked(Button *b){
+    if(b==&linkToSelected){
+        if(linkToSelected.getToggleState()){
+            Inspector::getInstance()->addInspectorListener(this);
+            if(auto sel = Inspector::getInstance()->getCurrentSelected())
+                setRoot(sel);
+        }
+        else{
+            Inspector::getInstance()->removeInspectorListener(this);
+            setRoot(baseRoot);
+        }
+    }
+}
+void Outliner::currentComponentChanged (Inspector * i ){
+    if(linkToSelected.getToggleState()){
+        // ignore child components
+            Component *  ic = i->currentComponent;
+            while(ic)
+            {
+                if(ic==this){return;}
+                ic= ic->getParentComponent();
+            }
+
+        if(auto sel = i->getCurrentSelected())
+            setRoot(sel);
+    }
+};
 
 //////////////////////////
 // OUTLINER ITEM
 ///////////////////////////
 
 OutlinerItem::OutlinerItem (ParameterContainer* _container) :
-    container (_container), parameter (nullptr), isContainer (true)
+container (_container), parameter (nullptr), isContainer (true)
 {
 
 }
 
 OutlinerItem::OutlinerItem (Parameter* _parameter) :
-    container (nullptr), parameter (_parameter), isContainer (false)
+container (nullptr), parameter (_parameter), isContainer (false)
 {
 }
 
@@ -203,10 +286,10 @@ String OutlinerItem::getUniqueName() const
 };
 
 OutlinerItemComponent::OutlinerItemComponent (OutlinerItem* _item) :
-    InspectableComponent (_item->container),
-    item (_item),
-    label ("label", _item->isContainer ? item->container->getNiceName() : item->parameter->niceName),
-    paramUI (nullptr)
+InspectableComponent (_item->container),
+item (_item),
+label ("label", _item->isContainer ? item->container->getNiceName() : item->parameter->niceName),
+paramUI (nullptr)
 
 {
 
@@ -273,6 +356,7 @@ void expandItems(TreeViewItem * c,const bool s){
 
 void OutlinerItemComponent::mouseDown (const MouseEvent& e)
 {
+
     if(e.mods.isRightButtonDown() && item->isContainer){
         PopupMenu m;
         m.addItem(1, "expand all childs");
@@ -287,15 +371,15 @@ void OutlinerItemComponent::mouseDown (const MouseEvent& e)
         expandItems(item,!item->isOpen());
     }
     else{
-    item->setSelected (true, true);
-    if(item->isContainer)
-        selectThis();
+        item->setSelected (true, true);
+        if(item->isContainer)
+            selectThis();
     }
 }
 
 InspectorEditor* OutlinerItemComponent::createEditor()
 {
     if (item->isContainer) return InspectableComponent::createEditor();
-
+    
     return nullptr;//new ParameterEditor(this,item->parameter);
 }

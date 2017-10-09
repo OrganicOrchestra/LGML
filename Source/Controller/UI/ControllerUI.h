@@ -22,7 +22,7 @@
 #include "../../Controllable/Parameter/UI/TriggerBlinkUI.h"
 
 class StringParameterUI;
-
+class Outliner;
 
 class ControllerUI : public InspectableComponent, public ButtonListener
 {
@@ -37,6 +37,9 @@ public:
     ScopedPointer<TriggerBlinkUI> activityBlink;
 
     Controller* controller;
+    ScopedPointer<Outliner> userParamsUI;
+    int getHeight();
+    ScopedPointer<TextButton> showUserParams;
 
     virtual void paint (Graphics& g) override;
     virtual void resized() override;

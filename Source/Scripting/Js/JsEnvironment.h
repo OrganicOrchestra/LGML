@@ -319,7 +319,7 @@ class JSEnvContainer : public ParameterContainer
 {
 public:
     JSEnvContainer (JsEnvironment* pEnv);
-    Component* getCustomEditor() override;
+    
 
     void onContainerParameterChanged (Parameter* p) override;
     void onContainerTriggerTriggered (Trigger* p)override;

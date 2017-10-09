@@ -52,8 +52,7 @@ public:
 
 
 
-    virtual ControllerUI* createUI();
-    virtual ControllerEditor*   createEditor() ;
+    
 
     void remove();
 

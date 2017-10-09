@@ -21,7 +21,8 @@
 class OSCDirectController : public OSCController
 {
 public:
-    DECLARE_OBJ_TYPE_DEFAULTNAME (OSCDirectController, "OSC")
+//    DECLARE_OBJ_TYPE_DEFAULTNAME (OSCDirectController, "OSC")
+    OSCDirectController (StringRef name);
     virtual ~OSCDirectController();
 
     BoolParameter* sendTimeInfo;

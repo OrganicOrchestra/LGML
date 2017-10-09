@@ -35,10 +35,11 @@ public:
     String lastOpenedPortID; //for ghosting
 
 
-    StringParameter* selectedPort;
-    StringParameter* selectedHardwareID;
+    EnumParameter* selectedPort;
+    BoolParameter * isConnected;
+//    StringParameter* selectedHardwareID;
     SerialPort* port;
-    void setCurrentPort (SerialPort* port);
+
 
     Array<Parameter*> serialVariables;
     void controllableAdded (ControllableContainer*, Controllable*) override;
@@ -72,8 +73,7 @@ public:
     virtual void serialDataReceived (const var& data) override;
 
 
-    ControllerUI* createUI() override;
-    ControllerEditor* createEditor() override;
+    
 
 
     class SerialControllerListener
@@ -93,6 +93,9 @@ public:
     // Inherited via SerialManagerListener
     virtual void portAdded (SerialPortInfo* info) override;
     virtual void portRemoved (SerialPortInfo* info) override;
+
+private:
+    void setCurrentPort (SerialPort* port);
 
 };
 

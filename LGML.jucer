@@ -171,28 +171,6 @@
       </GROUP>
       <GROUP id="{425F36E7-B164-8711-1CD8-33AD246A21F4}" name="Controller">
         <GROUP id="{865F397A-4E13-425D-CB67-29BA8CAAEB5C}" name="Impl">
-          <GROUP id="{EF167C62-F8E3-35E5-0FA1-BE6C44E905EA}" name="UI">
-            <FILE compile="1" file="Source/Controller/Impl/UI/MIDIControllerEditor.cpp"
-                  id="fjdzQ9" name="MIDIControllerEditor.cpp" resource="0"/>
-            <FILE compile="0" file="Source/Controller/Impl/UI/MIDIControllerEditor.h"
-                  id="tNTn0k" name="MIDIControllerEditor.h" resource="0"/>
-            <FILE compile="1" file="Source/Controller/Impl/UI/OSCControllerEditor.cpp"
-                  id="hCKoGY" name="OSCControllerEditor.cpp" resource="0"/>
-            <FILE compile="0" file="Source/Controller/Impl/UI/OSCControllerEditor.h"
-                  id="RoEYRG" name="OSCControllerEditor.h" resource="0"/>
-            <FILE compile="1" file="Source/Controller/Impl/UI/SerialControllerEditor.cpp"
-                  id="mSelff" name="SerialControllerEditor.cpp" ressource="0"/>
-            <FILE compile="0" file="Source/Controller/Impl/UI/SerialControllerEditor.h"
-                  id="PSeFYU" name="SerialControllerEditor.h" ressource="0"/>
-            <FILE compile="1" file="Source/Controller/Impl/UI/SerialControllerUI.cpp"
-                  id="kL8XgM" name="SerialControllerUI.cpp" ressource="0"/>
-            <FILE compile="0" file="Source/Controller/Impl/UI/SerialControllerUI.h"
-                  id="m46XrZ" name="SerialControllerUI.h" ressource="0"/>
-            <FILE compile="1" file="Source/Controller/Impl/UI/SerialUIHelper.cpp"
-                  id="UV37TA" name="SerialUIHelper.cpp" ressource="0"/>
-            <FILE compile="0" file="Source/Controller/Impl/UI/SerialUIHelper.h"
-                  id="pd72aP" name="SerialUIHelper.h" ressource="0"/>
-          </GROUP>
           <FILE compile="1" file="Source/Controller/Impl/MIDIController.cpp"
                 id="tr7GNk" name="MIDIController.cpp" resource="0"/>
           <FILE compile="0" file="Source/Controller/Impl/MIDIController.h" id="xcmTdk"
