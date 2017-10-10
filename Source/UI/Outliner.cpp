@@ -239,12 +239,9 @@ void Outliner::buttonClicked(Button *b){
 void Outliner::currentComponentChanged (Inspector * i ){
     if(linkToSelected.getToggleState()){
         // ignore child components
-            Component *  ic = i->currentComponent;
-            while(ic)
-            {
-                if(ic==this){return;}
-                ic= ic->getParentComponent();
-            }
+        if(isParentOf(i->currentComponent))
+            return;
+
 
         if(auto sel = i->getCurrentSelected())
             setRoot(sel);

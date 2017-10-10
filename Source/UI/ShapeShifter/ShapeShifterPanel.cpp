@@ -18,6 +18,9 @@
 #include "ShapeShifterManager.h"
 #include "ShapeShifterFactory.h"
 
+constexpr float panelRelativeAttachSize = 0.2f;
+
+
 ShapeShifterPanel::ShapeShifterPanel (ShapeShifterContent* _content, ShapeShifterPanelTab* sourceTab) :
     ShapeShifter (ShapeShifter::PANEL),
     currentContent (nullptr),
@@ -120,23 +123,47 @@ void ShapeShifterPanel::paintOverChildren (Graphics& g)
     Colour hc = findColour (TextButton::buttonOnColourId).withAlpha (.5f);
     Colour nc = findColour (TextButton::buttonColourId).withAlpha (.3f);
 
+    static int sideMinSize(10);
+    int zoneHeight =jmax<int> (sideMinSize, r.getHeight() * panelRelativeAttachSize);
+    int zoneWidth = jmax<int> (sideMinSize, r.getWidth() * panelRelativeAttachSize);
+    static constexpr float pixGap = 10.0f;
+    float scaleX = 1.0f - jmax<float>(0.f,pixGap/r.getWidth());
+    float scaleY =  1.0f - jmax<float>(0.f,pixGap/r.getHeight());
     if (!isDetached())
     {
+        auto symetryTransform = AffineTransform::rotation(juce::float_Pi, r.getCentreX(),r.getCentreY());
         g.setColour (candidateZone == AttachZone::TOP ? hc : nc);
-        g.fillRect (r.withHeight (jmin<int> (10, getHeight() / 3)).reduced (jmin<int> (30, getWidth() / 5), 0));
+        Path pt ;
+        pt.addQuadrilateral(0,0,
+                            zoneWidth, zoneHeight,
+                            r.getWidth()-zoneWidth, zoneHeight,
+                            r.getWidth(),0);
+        pt.applyTransform(AffineTransform::scale(scaleX ,scaleY, r.getCentreX(), 0));
+        g.fillPath(pt);
 
         g.setColour (candidateZone == AttachZone::BOTTOM ? hc : nc);
-        g.fillRect (getLocalBounds().removeFromBottom (jmin<int> (10, getHeight() / 3)).reduced (jmin<int> (30, getWidth() / 5), 0));
+        pt.applyTransform(symetryTransform);
+        g.fillPath(pt);
+
 
         g.setColour (candidateZone == AttachZone::LEFT ? hc : nc);
-        g.fillRect (r.withWidth (jmin<int> (10, getWidth() / 3)).reduced (0, jmin<int> (30, getHeight() / 5)));
+        Path pl ;
+        pl.addQuadrilateral(0, 0,
+                            zoneWidth, zoneHeight,
+                            zoneWidth, r.getHeight()-zoneHeight,
+                            0, r.getHeight());
+        pl.applyTransform(AffineTransform::scale(scaleX ,scaleY, 0,r.getCentreY()));
+        g.fillPath(pl);
 
         g.setColour (candidateZone == AttachZone::RIGHT ? hc : nc);
-        g.fillRect (getLocalBounds().removeFromRight (jmin<int> (10, getWidth() / 3)).withRight (getWidth()).reduced (0, jmin<int> (30, getHeight() / 5)));
+        pl.applyTransform(symetryTransform);
+        g.fillPath(pl);
+
     }
 
     g.setColour (candidateZone == AttachZone::CENTER ? hc : nc);
-    g.fillRect (r.reduced (jmin<int> (50, getWidth() / 3), jmin<int> (50, getHeight() / 3)));
+    g.fillRect(r.reduced(zoneWidth, zoneHeight).reduced((1.0f-scaleX)*0.5*r.getWidth(), (1.0f-scaleY)*0.5*r.getHeight()));
+
 
 }
 
@@ -323,20 +350,32 @@ ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone (ShapeShifterPa
 
     candidateTargetPoint = getLocalPoint (source, Point<float>());
 
-    float rx = candidateTargetPoint.x / getWidth();
-    float ry = candidateTargetPoint.y / getHeight();
-
-    if (rx < 0 || rx > 1 || ry < 0 || ry > 1)
+    float rx = candidateTargetPoint.x / getWidth() - 0.5;
+    float ry = candidateTargetPoint.y / getHeight() - 0.5;
+    
+    if (fabs(rx) > 0.5 || fabs(ry) > 0.5 )
     {
-        //keep none
+        jassertfalse;
     }
     else
     {
-        if (rx < .2f) z = AttachZone::LEFT;
-        else if (rx > .8f) z = AttachZone::RIGHT;
-        else if (ry < .2f) z = AttachZone::TOP;
-        else if (ry > .8f) z = AttachZone::BOTTOM;
-        else z = AttachZone::CENTER;
+        if( (fabs(rx) < 0.5f -panelRelativeAttachSize) && (fabs(ry) < 0.5f - panelRelativeAttachSize)){
+            z = AttachZone::CENTER;
+        }
+        else{
+            float dx =rx - ry;
+            float dy = rx + ry;
+            if (dx>0){
+                if( dy>0) z = AttachZone::RIGHT;
+                else z= AttachZone::TOP;
+
+            }
+            else{
+                if (dy >0) z = AttachZone::BOTTOM;
+                else z = AttachZone::LEFT;
+                
+            }
+        }
     }
 
     if (isDetached() && z != AttachZone::CENTER) z = AttachZone::NONE;
