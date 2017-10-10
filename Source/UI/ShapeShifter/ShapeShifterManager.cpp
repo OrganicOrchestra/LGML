@@ -213,6 +213,7 @@ bool ShapeShifterManager::checkDropOnCandidateTarget (WeakReference<ShapeShifter
 
     if (currentCandidatePanel == nullptr) return false;
 
+    
     bool result = currentCandidatePanel->attachPanel (panel);
     //if (result) closePanelWindow(getWindowForPanel(panel),false);
     setCurrentCandidatePanel (nullptr);

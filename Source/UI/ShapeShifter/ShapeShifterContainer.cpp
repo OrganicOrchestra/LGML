@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "ShapeShifterContainer.h"
@@ -19,8 +19,8 @@
 
 
 ShapeShifterContainer::ShapeShifterContainer (Direction _direction) :
-    ShapeShifter (ShapeShifter::CONTAINER),
-    direction (_direction)
+ShapeShifter (ShapeShifter::CONTAINER),
+direction (_direction)
 {
 
 }
@@ -48,7 +48,14 @@ void ShapeShifterContainer::insertShifterAt (ShapeShifter* shifter, int index, b
 
     DBG ("Insert shifter at : " << shifter->getPreferredWidth());
 
-    if (resizeAfter) resized();
+    if (resizeAfter) {
+        if(getMinWidth()> getWidth() || getMinHeight()>getHeight()){
+            setSize(jmax<int> (getWidth(),getMinWidth()), jmax<int> (getHeight(),getMinHeight()));
+        }
+        else{
+            resized();
+        }
+    }
     shifter->repaint();
 }
 
@@ -167,10 +174,10 @@ void ShapeShifterContainer::movePanelsInContainer (ShapeShifterPanel* newPanel, 
     newContainer->insertPanelAt (containedPanel, 0, true);
     newContainer->insertPanelAt (newPanel, secondBeforeFirst ? -1 : 0, false);
 
-    newContainer->setPreferredWidth (containedPanel->getPreferredWidth());
-    newContainer->setPreferredHeight (containedPanel->getPreferredHeight());
-//    newPanel->repaint();
-//    newContainer->setBounds(getLocalBounds());
+//    newContainer->setPreferredWidth (containedPanel->getPreferredWidth());
+//    newContainer->setPreferredHeight (containedPanel->getPreferredHeight());
+    //    newPanel->repaint();
+    //    newContainer->setBounds(getLocalBounds());
 
 
     DBG ("MovePanels " << containedPanel->contents[0]->contentName << "/" << containedPanel->getPreferredWidth() << " / " << newContainer->getPreferredWidth());
@@ -190,6 +197,186 @@ bool ShapeShifterContainer::isFlexible()
     return false;
 }
 
+class ShapeShifterResolver{
+public:
+    typedef ShapeShifterContainer::Direction Direction ;
+    ShapeShifterResolver(Array<ShapeShifter*> _s,int _totalSpace,Direction _direction):
+    shifters(_s),
+    direction(_direction),
+    totalSpace(_totalSpace){
+    }
+
+    bool resolveAll(){
+        if(totalSpace < (shifters.size())*minElemSize)
+            jassertfalse;
+
+        if(shifters.size()==0){
+            jassertfalse;
+            return true;
+        }
+        if(!resolveFlexible())
+            if(!resolveOverflows())
+                if(!resolveForced())
+                    jassertfalse;
+
+        return getOverflow()==0;
+    }
+
+    bool resolveFlexible(){
+
+
+        auto spaceDiff = getOverflow();
+        if(spaceDiff!=0){
+            int numFlexibleShifters = 0;
+            for (auto p : shifters){if (p->isFlexible() ) numFlexibleShifters++;}
+            bool cannotResolve = false;
+            if(numFlexibleShifters>0){
+                int spaceDiffPerShifter = spaceDiff / numFlexibleShifters;
+                bool padRemain = (spaceDiff % numFlexibleShifters )!= 0;
+                ShapeShifter * lastFlexible(nullptr);
+                for (auto& p : shifters)
+                {
+                    if (p->isFlexible() )
+                    {
+                        auto nL = getLength(p)-spaceDiffPerShifter;
+                        if(minElemSize>nL){
+                            cannotResolve= true;
+                            nL =jmax<int>(minElemSize,nL);
+                        }
+                        setLength(p,nL);
+                        lastFlexible = p;
+                    }
+                }
+                if(padRemain){
+                    jassert(lastFlexible);
+                    setLength(lastFlexible, getLength(lastFlexible)+1);
+                }
+
+                if(!cannotResolve)jassert(getOverflow()>=0);
+                spaceDiff = getOverflow();
+                return spaceDiff==0;
+            }
+
+        }
+        return false;
+    }
+
+    bool resolveOverflows(){
+        auto spaceDiff = getOverflow();
+        if(spaceDiff>0){
+            int idx = 0;
+            int curEdge = 0;
+            float averageSize = totalSpace*1.0f/shifters.size();
+            for (auto p : shifters)
+            {
+                auto cL = getLength(p);
+                bool isLast = idx == shifters.size()-1;
+                const auto maxEdge = totalSpace - (shifters.size()-idx-1)*minElemSize;
+                jassert(maxEdge>0);
+                if ( (curEdge+cL >= maxEdge ) || isLast)
+                {
+                    int bestEdge = averageSize*(idx+1);
+                    if(isLast){
+                        cL = totalSpace - curEdge;
+                    }
+                    else if( bestEdge-curEdge >= minElemSize){
+                        cL = bestEdge-curEdge;
+                    }
+                    else{
+                        cL = maxEdge-curEdge;
+                    }
+                    jassert(cL>=minElemSize);
+                    setLength(p, cL);
+                }
+                curEdge+=cL;
+                idx++;
+            }
+            jassert(curEdge==totalSpace);
+            spaceDiff = getOverflow();
+        }
+
+        return spaceDiff == 0;
+
+
+    }
+
+    bool resolveForced(){
+        auto spaceDiff = getOverflow();
+        jassert(spaceDiff!=0);
+        ShapeShifter * p(nullptr);
+        if(spaceDiff>0){
+             p = getBigger();
+        }
+        else{
+            p = getSmaller();
+        }
+        if(p){
+            setLength(p,getLength(p) - spaceDiff);
+            jassert(getLength(p)>=minElemSize);
+            spaceDiff = getOverflow();
+        }
+        else{
+            jassertfalse;
+
+        }
+        return spaceDiff == 0;
+
+    }
+
+private:
+    bool isHorizontal(){
+        return direction==ShapeShifterContainer::HORIZONTAL;
+    }
+    ShapeShifter * getBigger(){
+        ShapeShifter * res = nullptr;
+        int maxCl = 0;
+        for (auto p : shifters)
+        { auto cL = getLength(p);
+            if(cL>maxCl){
+                res = p;
+                maxCl = cL;
+            }
+        }
+        return res;
+    }
+
+    ShapeShifter * getSmaller(){
+        ShapeShifter * res = nullptr;
+        int minCl = 0;
+        for (auto p : shifters)
+        { auto cL = getLength(p);
+            if(cL<minCl || minCl==0){
+                res = p;
+                minCl = cL;
+            }
+        }
+        return res;
+    }
+    int getLength(ShapeShifter *p){
+        return isHorizontal() ? p->getPreferredWidth() : p->getPreferredHeight();
+    }
+    int getOverflow(){
+
+        return getUsedSpace() - totalSpace;
+    }
+    void setLength(ShapeShifter *p,int l){
+        jassert(l>=minElemSize);
+        if (isHorizontal()) p->setPreferredWidth (l);
+        else p->setPreferredHeight (l);
+    }
+
+    int getUsedSpace(){
+        int res = 0;
+        for(auto l:shifters){
+            res+=getLength(l);
+        }
+        return  res;
+    }
+    int totalSpace;
+    Array<ShapeShifter*>  shifters;
+    Direction direction;
+    const int minElemSize = ShapeShifter::minSize;
+};
 
 void ShapeShifterContainer::resized()
 {
@@ -206,40 +393,8 @@ void ShapeShifterContainer::resized()
     int numShifters = shifters.size();
     int totalSpaceWithoutGap = totalSpace - gap * (numShifters - 1);
 
-    int numFlexibleShifters = 0;
-    int totalSpacePreferred = 0;
-
-    for (auto& p : shifters)
-    {
-        if (p->isFlexible()) numFlexibleShifters++;
-
-        totalSpacePreferred += (direction == HORIZONTAL) ? p->getPreferredWidth() : p->getPreferredHeight();
-    }
-
-    int spaceDiff = totalSpaceWithoutGap - totalSpacePreferred;
-
-    if (numFlexibleShifters > 0)
-    {
-        int spaceDiffPerShifter = spaceDiff / numFlexibleShifters;
-
-        for (auto& p : shifters)
-        {
-            if (p->isFlexible())
-            {
-                if (direction == HORIZONTAL) p->setPreferredWidth (p->getPreferredWidth() + spaceDiffPerShifter);
-                else p->setPreferredHeight (p->getPreferredHeight() + spaceDiffPerShifter);
-            }
-        }
-    }
-    else
-    {
-        //      int spaceDiffPerShifter = spaceDiff / numShifters;
-        //      for (auto &p : shifters)
-        //      {
-        //          if (direction == HORIZONTAL) p->setPreferredWidth(p->getPreferredWidth() + spaceDiffPerShifter);
-        //          else p->setPreferredHeight(p->getPreferredHeight() + spaceDiffPerShifter);
-        //      }
-    }
+    ShapeShifterResolver sr(shifters,totalSpaceWithoutGap,direction);
+    jassert(sr.resolveAll());
 
     Rectangle<int> r = getLocalBounds();
     int index = 0;
@@ -249,8 +404,8 @@ void ShapeShifterContainer::resized()
         bool isLastShifter = index == numShifters - 1;
 
 
-//        if (direction == HORIZONTAL) p->setBounds (r.removeFromLeft (p->getPreferredWidth()));
-//        else p->setBounds (r.removeFromTop (p->getPreferredHeight()));
+        //        if (direction == HORIZONTAL) p->setBounds (r.removeFromLeft (p->getPreferredWidth()));
+        //        else p->setBounds (r.removeFromTop (p->getPreferredHeight()));
 
         if (!isLastShifter)
         {
@@ -260,6 +415,7 @@ void ShapeShifterContainer::resized()
             grabbers[index]->setBounds (gr);
         }
         else{
+            jassert(r.getWidth()>=p->getMinWidth() && r.getHeight()>=p->getMinHeight());
             p->setBounds(r);
         }
 
@@ -319,7 +475,7 @@ void ShapeShifterContainer::loadLayoutInternal (var layout)
         }
     }
 
-//      resized();
+    //      resized();
 }
 
 void ShapeShifterContainer::grabberGrabUpdate (GapGrabber* gg, int dist)
@@ -384,16 +540,44 @@ void ShapeShifterContainer::oneShifterRemaining (ShapeShifterContainer* containe
     //DBG("Insert last shifter in parent container");
     if (lastShifter->shifterType == PANEL)  ss = insertPanelAt ((ShapeShifterPanel*)lastShifter, containerIndex, false);
     else ss = insertContainerAt ((ShapeShifterContainer*)lastShifter, containerIndex, false);
-
+    
     ss->setPreferredWidth (container->getPreferredWidth());
     ss->setPreferredHeight (container->getPreferredHeight());
-
+    
     //DBG("Remove useless container");
     removeShifter (container, true, true);
-
+    
 }
 
 void ShapeShifterContainer::paintOverChildren(Graphics & g) {
-//    LGMLUIUtils::drawBounds(this,g);
+    //    LGMLUIUtils::drawBounds(this,g);
+    
+}
+
+int ShapeShifterContainer::getPreferredWidth() {
+    if(direction==HORIZONTAL)
+        return jmax<int> (ShapeShifter::getPreferredWidth(),getMinWidth());
+
+    return ShapeShifter::getPreferredWidth();
+}
+int ShapeShifterContainer::getPreferredHeight(){
+    if(direction==VERTICAL)
+        return jmax<int> (ShapeShifter::getPreferredHeight(),getMinHeight());
+
+    return ShapeShifter::getPreferredHeight();
+}
+
+int ShapeShifterContainer::getMinWidth(){
+    if(direction==HORIZONTAL)
+        return shifters.size()*minSize + (shifters.size() - 1)*gap;
+
+    return minSize;
+
+}
+int ShapeShifterContainer::getMinHeight(){
+    if(direction==VERTICAL)
+        return shifters.size()*minSize+ (shifters.size() - 1)*gap;
+
+    return minSize;
 
 }

@@ -39,6 +39,9 @@ MainWindow::MainWindow (String name, Engine* e)  :
 
     mainComponent = createMainContentComponent (e);
     setContentOwned (mainComponent, false);
+    // shapeshifter does'nt handle well if size are really small (under its min Size)
+    setResizeLimits(200, 200, 4096, 4096);
+    getConstrainer()->setMinimumOnscreenAmounts(100, 100, 100, 100);
 
 #ifdef JUCE_LINUX
     // lots of bug with nativetitlebar on ubuntu  \
@@ -96,6 +99,7 @@ MainWindow::MainWindow (String name, Engine* e)  :
 void MainWindow::focusGained (FocusChangeType cause)
 {
     //mainComponent->grabKeyboardFocus();
+
 }
 
 

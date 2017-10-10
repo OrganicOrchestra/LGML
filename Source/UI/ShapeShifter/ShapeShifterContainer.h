@@ -90,6 +90,10 @@ public:
     void addShapeShifterContainerListener (ShapeShifterContainerListener* newListener) { containerListeners.add (newListener); }
     void removeShapeShifterContainerListener (ShapeShifterContainerListener* listener) { containerListeners.remove (listener); }
 
+    int getPreferredWidth() override;
+    int getPreferredHeight() override;
+    int getMinWidth() override;
+    int getMinHeight() override;
 
     void paintOverChildren(Graphics & g) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterContainer)

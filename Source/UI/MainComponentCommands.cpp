@@ -433,11 +433,8 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
 void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuIndex)
 {
-#ifndef JUCE_WINDOWS
-    String menuName = getMenuBarNames()[topLevelMenuIndex - 1];
-#else // TODO : check if also broken on windows
-    String menuName = getMenuBarNames()[topLevelMenuIndex];
-#endif
+
+    String menuName = getMenuBarNames()[topLevelMenuIndex ];
 
     if (menuName == "Panels")
     {

@@ -44,6 +44,8 @@ checking (false)
     setBackgroundColour (findColour (ResizableWindow::backgroundColourId).darker (.1f).withAlpha (.3f));
 
     setResizable (true, true);
+    setResizeLimits(ShapeShifter::minSize,ShapeShifter::minSize, 4096, 4096);
+    getConstrainer()->setMinimumOnscreenAmounts(100, 100, 100, 100);
     setDraggable (true);
 
     setVisible (true);

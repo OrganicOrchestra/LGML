@@ -16,6 +16,9 @@
 #include "ShapeShifter.h"
 #include "ShapeShifterContainer.h"
 
+
+const int ShapeShifter::minSize(50);
+
 ShapeShifter::ShapeShifter (Type _type) :
     shifterType (_type),
     preferredWidth (300), preferredHeight (300),
@@ -30,25 +33,34 @@ ShapeShifter::~ShapeShifter()
 
 void ShapeShifter::setPreferredWidth (int newWidth)
 {
-    preferredWidth = jmax<int> (150, newWidth);
+    preferredWidth = jmax<int> (minSize, newWidth);
 }
 
 void ShapeShifter::setPreferredHeight (int newHeight)
 {
-    preferredHeight = jmax<int> (50, newHeight);
+    preferredHeight = jmax<int> (minSize, newHeight);
 
 }
 
 int ShapeShifter::getPreferredWidth()
 {
+    jassert(preferredWidth>0);
     return preferredWidth;
 }
 
 int ShapeShifter::getPreferredHeight()
 {
+    jassert(preferredHeight>0);
     return preferredHeight;
 }
 
+int ShapeShifter::getMinWidth(){
+    return minSize;
+}
+
+int ShapeShifter::getMinHeight(){
+    return minSize;
+}
 bool ShapeShifter::isDetached()
 {
     return parentShifterContainer == nullptr;

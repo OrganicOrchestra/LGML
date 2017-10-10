@@ -39,6 +39,8 @@ public :
 
     virtual int getPreferredWidth();
     virtual int getPreferredHeight();
+    virtual int getMinWidth();
+    virtual int getMinHeight();
 
     bool isDetached();
     void setParentContainer (ShapeShifterContainer* _parent);
@@ -48,6 +50,8 @@ public :
     virtual var getCurrentLayout();
     virtual void loadLayout (var layout);
     virtual void loadLayoutInternal (var /*layout*/) = 0;
+
+    static const int minSize;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifter)
 };

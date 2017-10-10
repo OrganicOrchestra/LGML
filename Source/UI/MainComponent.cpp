@@ -23,6 +23,7 @@
 //#include "../Controller/UI/ControllerManagerUI.h"
 
 
+
 // (This function is called by the app startup code to create our main component)
 MainContentComponent* createMainContentComponent (Engine* e)
 {
@@ -57,6 +58,7 @@ MainContentComponent::MainContentComponent (Engine* e):
     setWantsKeyboardFocus (true);
     setOpaque (true);
     tooltipWindow.setOpaque (false);
+
 
 
 }
