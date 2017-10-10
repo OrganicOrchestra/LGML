@@ -44,7 +44,7 @@ String Engine::getDocumentTitle()
 
 void Engine::createNewGraph()
 {
-    loadingStartTime =  Time::currentTimeMillis();
+    loadingStartTime =  getElapsedMillis();
     engineListeners.call (&EngineListener::startLoadFile);
 
     suspendAudio (true);
@@ -113,7 +113,7 @@ void Engine::loadDocumentAsync (const File& file)
 
 
 
-    loadingStartTime =  Time::currentTimeMillis();
+    loadingStartTime =  getElapsedMillis();
     setFile (file);
 
     // relative path can be resolved this way
@@ -173,7 +173,7 @@ void Engine::handleAsyncUpdate()
 
     //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
     //  suspendAudio(false);
-    int64 timeForLoading  =  Time::currentTimeMillis() - loadingStartTime;
+    auto timeForLoading  =  getElapsedMillis() - loadingStartTime;
     suspendAudio (false);
     engineListeners.call (&EngineListener::endLoadFile);
     NLOG ("Engine", "Session loaded in " << timeForLoading / 1000.0 << "s");

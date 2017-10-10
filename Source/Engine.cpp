@@ -61,7 +61,8 @@ Engine::Engine(): FileBasedDocument (filenameSuffix,
     ParameterContainer ("root"),
     threadPool (4),
     isLoadingFile(false),
-    engineStartTime(Time::getCurrentTime().getMilliseconds())
+    engineStartTime(Time::currentTimeMillis())
+
 {
     nameParam->isEditable = false;
     ParameterFactory::logAllTypes();
@@ -372,8 +373,10 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent()
 
 }
 
-const int64 Engine::getElapsedMillis()const {
-    return Time::getCurrentTime().getMilliseconds() - engineStartTime;
+const uint32 Engine::getElapsedMillis()const {
+    int64 res =Time::currentTimeMillis() -engineStartTime;
+    jassert(res>=0);
+    return (uint32)res;
 }
 
 

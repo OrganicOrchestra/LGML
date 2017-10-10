@@ -481,10 +481,10 @@ private:
  {
  startTimer (2000);
  }
- 
+constexpr int maxTimeOut = 20000;
  LatestVersionChecker::~LatestVersionChecker()
  {
- stopThread (20000);
+ stopThread (maxTimeOut);
  }
  
  String LatestVersionChecker::getOSString()
@@ -599,7 +599,7 @@ void LatestVersionChecker::checkForNewVersion()
         const int numRedirects = 0;
 
         const ScopedPointer<InputStream> in (updateURL.createInputStream (false, nullptr, nullptr,
-                                                                          extraHeaders, 0, &responseHeaders,
+                                                                          extraHeaders, maxTimeOut*3/4, &responseHeaders,
                                                                           &statusCode, numRedirects));
 
         if (threadShouldExit())
@@ -616,7 +616,7 @@ void LatestVersionChecker::checkForNewVersion()
 
             jsonReply = JSON::parse (in->readEntireStreamAsString());
 
-
+            
         }
     }
 
@@ -703,12 +703,13 @@ bool LatestVersionChecker::askUserAboutNewVersion (const LatestVersionChecker::L
             // attachCallback will delete callback
             if (ModalComponentManager* mm = ModalComponentManager::getInstance())
                 mm->attachCallback (modalDialog, callback);
+
         }
 
-        return false;
+//        return false;
     }
 
-    return true;
+    return false;
 }
 
 void LatestVersionChecker::modalStateFinished (int result,
@@ -747,22 +748,30 @@ void LatestVersionChecker::askUserForLocationToDownload (URL& newVersionToDownlo
 
 void LatestVersionChecker::timerCallback()
 {
-    stopTimer();
+
 
     if (hasAttemptedToReadWebsite)
     {
         bool restartTimer = true;
-        if (jsonReply.isObject())
+        if (jsonReply.isObject()){
             restartTimer = processResult (jsonReply, newRelativeDownloadPath);
+            jassert(!restartTimer);
+            DBG("has checked for new version");
+        }
         
         hasAttemptedToReadWebsite = false;
         
-        if (restartTimer)
+        if (restartTimer){
             DBG("can't check for new version");
-//            startTimer (7200000);
+            startTimer(500);
+        }
+        else{
+            stopTimer();
+        }
     }
     else
     {
+        stopTimer();
         startThread (3);
     }
 }

@@ -105,9 +105,9 @@ public:
     };
     MultipleAudioSettingsHandler audioSettingsHandler;
 
-    int64 loadingStartTime;
-    const int64 engineStartTime;
-    const int64 getElapsedMillis()const ;
+    int64 engineStartTime;
+    uint32 loadingStartTime;
+    const uint32 getElapsedMillis()const ;
 
     void managerEndedLoading() override;
     void managerProgressedLoading (float progress) override;

@@ -352,7 +352,7 @@ ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone (ShapeShifterPa
 
     float rx = candidateTargetPoint.x / getWidth() - 0.5;
     float ry = candidateTargetPoint.y / getHeight() - 0.5;
-    
+
     if (fabs(rx) > 0.5 || fabs(ry) > 0.5 )
     {
         jassertfalse;
@@ -363,6 +363,7 @@ ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone (ShapeShifterPa
             z = AttachZone::CENTER;
         }
         else{
+            // project on diagonals
             float dx =rx - ry;
             float dy = rx + ry;
             if (dx>0){
