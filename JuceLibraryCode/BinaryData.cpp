@@ -727,7 +727,7 @@ static const unsigned char temp_binary_data_1[] =
 "      {\n"
 "        \"type\": 0,\n"
 "        \"width\": 300,\n"
-"        \"height\": 47,\n"
+"        \"height\": 50,\n"
 "        \"currentContent\": \"Time Manager\",\n"
 "        \"tabs\": [\n"
 "          {\n"
@@ -738,12 +738,12 @@ static const unsigned char temp_binary_data_1[] =
 "      {\n"
 "        \"type\": 1,\n"
 "        \"width\": 300,\n"
-"        \"height\": 300,\n"
+"        \"height\": 695,\n"
 "        \"direction\": 1,\n"
 "        \"shifters\": [\n"
 "          {\n"
 "            \"type\": 1,\n"
-"            \"width\": 269,\n"
+"            \"width\": 432,\n"
 "            \"height\": 300,\n"
 "            \"direction\": 2,\n"
 "            \"shifters\": [\n"
@@ -761,7 +761,7 @@ static const unsigned char temp_binary_data_1[] =
 "              {\n"
 "                \"type\": 0,\n"
 "                \"width\": 300,\n"
-"                \"height\": 300,\n"
+"                \"height\": 389,\n"
 "                \"currentContent\": \"Fast Mapper\",\n"
 "                \"tabs\": [\n"
 "                  {\n"
@@ -773,7 +773,7 @@ static const unsigned char temp_binary_data_1[] =
 "          },\n"
 "          {\n"
 "            \"type\": 0,\n"
-"            \"width\": 300,\n"
+"            \"width\": 463,\n"
 "            \"height\": 300,\n"
 "            \"currentContent\": \"Node Manager\",\n"
 "            \"tabs\": [\n"
@@ -792,17 +792,20 @@ static const unsigned char temp_binary_data_1[] =
 "                \"type\": 0,\n"
 "                \"width\": 389,\n"
 "                \"height\": 524,\n"
-"                \"currentContent\": \"Inpector\",\n"
+"                \"currentContent\": \"Outliner\",\n"
 "                \"tabs\": [\n"
 "                  {\n"
-"                    \"name\": \"Inpector\"\n"
+"                    \"name\": \"Outliner\"\n"
+"                  },\n"
+"                  {\n"
+"                    \"name\": \"Inspector\"\n"
 "                  }\n"
 "                ]\n"
 "              },\n"
 "              {\n"
 "                \"type\": 0,\n"
 "                \"width\": 576,\n"
-"                \"height\": 637,\n"
+"                \"height\": 165,\n"
 "                \"currentContent\": \"Logger\",\n"
 "                \"tabs\": [\n"
 "                  {\n"
@@ -817,7 +820,7 @@ static const unsigned char temp_binary_data_1[] =
 "    ]\n"
 "  },\n"
 "  \"windows\": null\n"
-"}\n";
+"}";
 
 const char* default_lgmllayout = (const char*) temp_binary_data_1;
 
@@ -3903,7 +3906,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
     switch (hash)
     {
         case 0x9bae78ed:  numBytes = 51582; return littleredridinghoodmd_png;
-        case 0x1fa434c2:  numBytes = 2243; return default_lgmllayout;
+        case 0x1fa434c2:  numBytes = 2323; return default_lgmllayout;
         case 0xae53f640:  numBytes = 58335; return removeBT_png;
         case 0xe88b5a8e:  numBytes = 71763; return grandlouloup_png;
         case 0x5550a5bc:  numBytes = 45430; return wolf_footprint_png;

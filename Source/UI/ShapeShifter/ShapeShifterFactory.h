@@ -20,7 +20,7 @@
 
 class ShapeShifterContent;
 
-const static StringArray globalPanelNames = { "Node Manager", "Time Manager", "Inpector", "Logger", "Controllers", "Fast Mapper", "Outliner" };
+const static StringArray globalPanelNames = { "Node Manager", "Time Manager", "Inspector", "Logger", "Controllers", "Fast Mapper", "Outliner" };
 enum PanelName {NodeManagerPanel, TimeManagerPanel, InspectorPanel, LoggerPanel, ControllerPanel, FastMapperPanel, OutlinerPanel};
 
 class ShapeShifterFactory
