@@ -192,12 +192,13 @@ void OSCController::processMessage (const OSCMessage& msg)
 
     isProcessingOSC = true;
 
-    if (autoAdd)
+
+
+    bool result = processMessageInternal (msg);
+    if (autoAdd && !result && !msg.getAddressPattern().containsWildcards())
     {
         MessageManager::getInstance()->callAsync ([this, msg]() {checkAndAddParameterIfNeeded (msg);});
     }
-
-    bool result = processMessageInternal (msg);
     isProcessingOSC = false;
     oscListeners.call (&OSCControllerListener::messageProcessed, msg, result);
 
@@ -205,7 +206,7 @@ void OSCController::processMessage (const OSCMessage& msg)
 }
 
 
-bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force)
+bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force,bool allowConversions)
 {
     auto  targetType = c->getTypeId();
 
@@ -215,7 +216,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
     if (targetType == Trigger::_objType)
     {
         if (msg.size() == 0) ((Trigger*)c)->trigger();
-        else if (msg[0].isInt32() || msg[0].isFloat32())
+        else if (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
         {
             float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
 
@@ -224,7 +225,9 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
     }
     else if (targetType == BoolParameter::_objType)
     {
-        if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+        if (msg.size() > 0 && (
+            (allowConversions || (msg[0].isInt32() && (msg[0].getInt32()==0 || msg[0].getInt32()==1))) &&
+            (msg[0].isInt32() || msg[0].isFloat32())))
         {
             float val = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
             ((Parameter*)c)->setValue (val > 0, false, force);
@@ -232,7 +235,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
     }
     else if (targetType == FloatParameter::_objType)
     {
-        if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+        if (msg.size() > 0 && ((allowConversions && msg[0].isInt32()) || msg[0].isFloat32()))
         {
             float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
             ((Parameter*)c)->setValue ((float)value, false, force); //normalized or not ? can user decide ?
@@ -240,7 +243,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
     }
     else if (targetType == IntParameter::_objType)
     {
-        if (msg.size() > 0 && (msg[0].isInt32() || msg[0].isFloat32()))
+        if (msg.size() > 0 && (msg[0].isInt32() || (allowConversions && msg[0].isFloat32())))
         {
             int value = msg[0].isInt32() ? msg[0].getInt32() : (int)msg[0].getFloat32();
             ((Parameter*)c)->setValue (value, false, force);
@@ -251,7 +254,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
         if (msg.size() > 0)
         {
             // cast number to strings
-            if  (msg[0].isInt32() || msg[0].isFloat32())
+            if  (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
             {
                 float value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
                 ((Parameter*)c)->setValue (String (value));
@@ -267,7 +270,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
         if (msg.size() > 0)
         {
             // cast float to int
-            if  (msg[0].isInt32() || msg[0].isFloat32())
+            if  (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
             {
                 int value = msg[0].isInt32() ? msg[0].getInt32() : msg[0].getFloat32();
                 ((Parameter*)c)->setValue (value, false, force);
@@ -293,6 +296,9 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
 void OSCController::checkAndAddParameterIfNeeded (const OSCMessage& msg)
 {
 
+    // cannot create a param from a wildcard address
+    if(msg.getAddressPattern().containsWildcards())
+        return;
     // TODO handle wildcards
     String addr = msg.getAddressPattern().toString();
     auto* linked = Parameter::fromControllable (userContainer.getControllableForAddress (addr));

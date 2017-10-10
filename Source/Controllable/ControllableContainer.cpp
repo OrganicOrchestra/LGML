@@ -24,10 +24,10 @@
 #include "../Scripting/Js/JsHelpers.h"
 #include "Parameter/ParameterFactory.h"
 
+#include <juce_osc/juce_osc.h>
 
 
-
-
+                
 const Identifier ControllableContainer::controlAddressIdentifier ("controlAddress");
 
 const Identifier ControllableContainer::childContainerId ("/");
@@ -494,6 +494,93 @@ Controllable* ControllableContainer::getControllableForAddress (StringArray addr
     }
 
     return nullptr;
+}
+
+Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (StringArray addressSplit, bool recursive, bool getNotExposed)
+{
+    if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
+    Array<Controllable *> res;
+    bool isTargetAControllable = addressSplit.size() == 1;
+
+    if (isTargetAControllable)
+    {
+        {
+            //DBG("Check controllable Address : " + shortName);
+            const ScopedLock lk (controllables.getLock());
+
+            for (auto& c : controllables)
+            {
+                if (c->isControllableExposed || getNotExposed){
+                OSCAddress ad("/"+c->shortName);
+                OSCAddressPattern pat ("/"+addressSplit[0]);
+                if ( pat.matches(ad))
+                {
+                    //DBG(c->shortName);
+                     res.add(c);
+
+                }
+                }
+            }
+        }
+        {
+            //no found in direct children controllables, maybe in a skip container ?
+            ScopedLock lk (controllableContainers.getLock());
+
+            for (auto& cc : controllableContainers)
+            {
+                if (cc.get())
+                {
+                    if (cc->skipControllableNameInAddress)
+                    {
+                        res.addArray(cc->getControllablesForExtendedAddress(StringArray({addressSplit[0]}),
+                                                                       recursive,
+                                                                       getNotExposed));
+                    }
+                }
+            }
+        }
+    }
+
+    else
+    {
+        ScopedLock lk (controllableContainers.getLock());
+        auto deeperAddr = addressSplit;
+        deeperAddr.remove(0);
+
+        for (auto& cc : controllableContainers)
+        {
+
+            if (cc.get())
+            {
+                if (!cc->skipControllableNameInAddress)
+                {   OSCAddress ad("/"+cc->shortName);
+                    OSCAddressPattern pat ("/"+addressSplit[0]);
+                    if (pat.matches(ad))
+                    {
+
+                        res.addArray(cc->getControllablesForExtendedAddress (deeperAddr, recursive, getNotExposed));
+                    }
+                }
+                else
+                {
+
+                    for(auto ccc:cc->controllableContainers){
+                        OSCAddress ad("/"+ccc->shortName);
+                        OSCAddressPattern pat ("/"+addressSplit[0]);
+                        if (pat.matches(ad))
+                        {
+                            res.addArray( ccc->getControllablesForExtendedAddress (deeperAddr, recursive, getNotExposed));
+                        }
+                    }
+
+
+                    
+                }
+            }
+        }
+    }
+    
+    return res;
 }
 
 

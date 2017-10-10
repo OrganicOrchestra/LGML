@@ -151,8 +151,9 @@ public:
     virtual Array<WeakReference<Controllable>> getAllControllables (bool recursive = false, bool getNotExposed = false);
     virtual Array<WeakReference<ControllableContainer>> getAllControllableContainers (bool recursive = false);
 
-    virtual Controllable* getControllableForAddress (String addressSplit, bool recursive = true, bool getNotExposed = false);
-    virtual Controllable* getControllableForAddress (StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
+     Controllable* getControllableForAddress (String addressSplit, bool recursive = true, bool getNotExposed = false);
+     Controllable* getControllableForAddress (StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
+    Array<Controllable*> getControllablesForExtendedAddress (StringArray addressSplit, bool recursive=true, bool getNotExposed=false);
     bool containsControllable (Controllable* c, int maxSearchLevels = -1);
     String getControlAddress (ControllableContainer* relativeTo = nullptr);
 

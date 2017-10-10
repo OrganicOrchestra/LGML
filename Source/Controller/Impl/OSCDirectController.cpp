@@ -19,6 +19,9 @@
 #include "../../Time/TimeManager.h"
 #include "../../Controllable/Parameter/ParameterProxy.h"
 #include "../ControllerManager.h"
+
+
+
 //REGISTER_OBJ_TYPE_NAMED (Controller, OSCDirectController, "t_OSC");
 
 OSCDirectController::OSCDirectController (StringRef name):
@@ -50,6 +53,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
     auto addrArray = OSCAddressToArray (addr);
 
 
+
     if (auto* up = (Parameter*)userContainer.getControllableForAddress (addrArray))
     {
         if (!setParameterFromMessage (up, msg))
@@ -57,18 +61,40 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
             result =  Result::fail ("Controllable type not handled in user Parameter");
         }
     }
+    auto root = NodeManager::getInstance()->parentContainer;
+
+    if(msg.getAddressPattern().containsWildcards()){
+
+
+
+        auto params = root->getControllablesForExtendedAddress(addrArray);
+        for(auto cont:params){
+            if (auto c = Parameter::fromControllable (cont))
+            {
+                if (c->isControllableExposed && c->isEditable)
+                {
+                    if (!setParameterFromMessage (c, msg,false,false))
+                    {
+                        result = Result::fail ("Controllable type not handled");
+                    }
+                }
+            }
+        }
+    }
+    else{
 
     String controller = addrArray[0];
 
 
-    if (controller == "node" || controller == "time" || controller == "control")
-    {
-        addrArray.remove (0);
-        Controllable* cont = nullptr;
+//    if (controller == "node" || controller == "time" || controller == "control")
+//    {
+//        addrArray.remove (0);
+        Controllable* cont = root->getControllableForAddress(addrArray);
 
-        if (controller == "node")cont = NodeManager::getInstance()->getControllableForAddress (addrArray);
-        else if (controller == "time")cont = TimeManager::getInstance()->getControllableForAddress (addrArray);
-        else if (controller == "control")cont = ControllerManager::getInstance()->getControllableForAddress (addrArray);
+
+//        if (controller == "node")cont = NodeManager::getInstance()->getControllableForAddress (addrArray);
+//        else if (controller == "time")cont = TimeManager::getInstance()->getControllableForAddress (addrArray);
+//        else if (controller == "control")cont = ControllerManager::getInstance()->getControllableForAddress (addrArray);
 
         if (auto c = Parameter::fromControllable (cont))
         {
@@ -86,10 +112,11 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
 
             DBG ("No Controllable for address : " + addr);
         }
-    }
-    else
-    {
-        result = Result::fail ("address other than /node, not handler for now");
+//    }
+//    else
+//    {
+//        result = Result::fail ("address other than /node, not handler for now");
+//    }
     }
 
     return result;

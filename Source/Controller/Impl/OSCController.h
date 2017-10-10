@@ -107,7 +107,7 @@ public:
 
     void logMessage (const OSCMessage& m, const String& prefix = "");
 
-    bool setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force = false);
+    bool setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force = false,bool allowConversions = true);
 
 private:
     void mappingModeChanged(bool) override;
