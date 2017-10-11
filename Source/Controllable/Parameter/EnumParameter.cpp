@@ -166,7 +166,7 @@ void EnumParameter::selectId (Identifier key, bool shouldSelect, bool appendSele
 
 }
 
-bool EnumParameter::selectFromVar (var& _value, bool shouldSelect, bool appendSelection)
+bool EnumParameter::selectFromVar (const var& _value, bool shouldSelect, bool appendSelection)
 {
     // select based on integer (<=0 unselect all)
     if (_value.isInt() || _value.isDouble())
@@ -286,7 +286,7 @@ bool EnumParameter::checkValueIsTheSame (const var& v1, const var& v2)
 }
 
 
-void EnumParameter::setValueInternal (var& _value)
+void EnumParameter::setValueInternal (const var& _value)
 {
     // try to select
     DBG ("enum value : " << _value.toString());

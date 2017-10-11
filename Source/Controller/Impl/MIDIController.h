@@ -35,7 +35,8 @@ public :
     void handleIncomingMidiMessage (MidiInput* source,
                                     const MidiMessage& message) override;
 
-    StringParameter* deviceInName;
+    EnumParameter* deviceInName;
+
 
 
     BoolParameter* logIncoming;

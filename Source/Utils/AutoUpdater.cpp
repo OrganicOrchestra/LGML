@@ -624,7 +624,7 @@ void LatestVersionChecker::checkForNewVersion()
         startTimer (100);
 }
 
-bool LatestVersionChecker::processResult (var reply, const String& downloadPath)
+bool LatestVersionChecker::processResult (const var& reply, const String& downloadPath)
 {
     if (statusCode == 303 || statusCode ==200)
     {
@@ -763,7 +763,8 @@ void LatestVersionChecker::timerCallback()
         
         if (restartTimer){
             DBG("can't check for new version");
-            startTimer(500);
+            if(statusCode!=0)startTimer(500);
+            else stopTimer();
         }
         else{
             stopTimer();

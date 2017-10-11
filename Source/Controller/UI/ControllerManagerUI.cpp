@@ -122,12 +122,13 @@ const int elemGap = 5;
 
 void ControllerManagerUI::resized()
 {
-    Rectangle<int> r = getLocalBounds().reduced (1);
+    Rectangle<int> r = getLocalBounds().reduced (4,0);
 
     for (auto& cui : controllersUI)
     {
-        cui->setBounds (r.removeFromTop (cui->getHeight()));
         r.removeFromTop (elemGap);
+        cui->setBounds (r.removeFromTop (cui->getHeight()));
+
     }
 }
 

@@ -177,7 +177,8 @@ void OSCController::resolveHostnameIfNeeded()
 }
 void OSCController::processMessage (const OSCMessage& msg)
 {
-    if (logIncomingOSC->boolValue())
+    bool logIncoming = logIncomingOSC->boolValue();
+    if (logIncoming)
     {
         logMessage (msg, "In:");
 
@@ -194,10 +195,14 @@ void OSCController::processMessage (const OSCMessage& msg)
 
 
 
-    bool result = processMessageInternal (msg);
+    Result result = processMessageInternal (msg);
+
     if (autoAdd && !result && !msg.getAddressPattern().containsWildcards())
     {
         MessageManager::getInstance()->callAsync ([this, msg]() {checkAndAddParameterIfNeeded (msg);});
+    }
+    if(logIncoming && !result){
+        LOG("!! "+result.getErrorMessage());
     }
     isProcessingOSC = false;
     oscListeners.call (&OSCControllerListener::messageProcessed, msg, result);

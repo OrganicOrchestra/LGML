@@ -46,7 +46,7 @@ NumericParameter<T>::NumericParameter (const String& niceName, const String& des
 }
 
 template<class T>
-void  NumericParameter<T>::setValueInternal (var& _value)
+void  NumericParameter<T>::setValueInternal (const var& _value)
 {
     value = jlimit<T> ((T)minimumValue, (T) maximumValue, (T)_value);
 }

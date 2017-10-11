@@ -101,7 +101,6 @@ void LGMLUIUtils::forceRepaint(Component * c) {
 // AddElementButton
 ///////////////////////
 
-
 AddElementButton::AddElementButton(): Button ("Add") {
     
 };
@@ -140,3 +139,42 @@ void AddElementButton::setFromParentBounds (const Rectangle<int>& area)
     const int fms = jmin (jmin (36, area.getWidth()), area.getHeight());
     setBounds (fmb.removeFromBottom (fms).removeFromRight (fms));
 }
+
+
+////////////////////////
+// RemoveElementButton
+///////////////////////
+
+
+RemoveElementButton::RemoveElementButton(): Button ("Remove") {
+
+};
+RemoveElementButton::~RemoveElementButton(){
+
+};
+void RemoveElementButton::paintButton (Graphics& g,
+                                    bool isMouseOverButton,
+                                    bool isButtonDown)
+{
+    g.addTransform(AffineTransform::rotation(float_Pi/4,getWidth()/2,getHeight()/2));
+
+    auto area = getLocalBounds();
+    auto bgColor = findColour (TextButton::buttonColourId);
+
+    if((isButtonDown || isMouseOverButton) ){
+        bgColor = bgColor.brighter();
+    }
+    g.setColour (  bgColor);
+    const float stroke = 1;
+    g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
+    g.setColour (Colours::red);
+    const float hw = stroke;//area.getHeight()/18.0;
+    const float offset = area.getWidth() / 4 ;
+
+    const float corner = hw;
+
+    g.fillRoundedRectangle (area.getX() + offset, area.getCentre().getY() - hw, area.getWidth() - 2 * offset, 2 * hw, corner);
+    g.fillRoundedRectangle ( area.getCentre().getX() - hw, area.getY() + offset, 2 * hw, area.getHeight() - 2 * offset,  corner);
+
+}
+

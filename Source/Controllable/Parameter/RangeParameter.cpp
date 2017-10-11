@@ -46,7 +46,7 @@ void RangeParameter::setValue (double _x, double _y)
     Parameter::setValue (d);
 }
 
-void RangeParameter::setValueInternal (var& _value)
+void RangeParameter::setValueInternal (const var& _value)
 {
 
     if (!_value.isArray())

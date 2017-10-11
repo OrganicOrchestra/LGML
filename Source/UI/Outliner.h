@@ -27,7 +27,12 @@
 
 class OutlinerItem;
 class ParameterUI;
-class OutlinerItemComponent : public  InspectableComponent, public SettableTooltipClient
+class OutlinerItemComponent :
+public  InspectableComponent,
+public SettableTooltipClient,
+private Button::Listener
+
+
 {
 public:
     OutlinerItemComponent (OutlinerItem* item);
@@ -35,10 +40,13 @@ public:
 
     Label label;
     ScopedPointer<ParameterUI> paramUI;
+    ScopedPointer<Button> addUserParamBt;
+    ScopedPointer<Button> removeMeBt;
     void paint (Graphics& g) override;
     void mouseDown (const MouseEvent& e) override;
     void resized()override;
     InspectorEditor* createEditor() override;
+    void buttonClicked (Button*) override;
 };
 
 class OutlinerItem : public TreeViewItem
@@ -92,7 +100,7 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Outliner)
 
     void setRoot(ParameterContainer * );
-
+    bool showUserContainer;
 private:
     void currentComponentChanged (Inspector *)override;
     void buttonClicked(Button *b) override;

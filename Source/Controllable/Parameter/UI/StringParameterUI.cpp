@@ -24,7 +24,7 @@ StringParameterUI::StringParameterUI (Parameter* p) :
     addChildComponent (nameLabel);
     setNameLabelVisible (false);
     addAndMakeVisible (valueLabel);
-
+    addMouseListener(this, true);
     nameLabel.setJustificationType (Justification::topLeft);
     nameLabel.setText (prefix + parameter->niceName + suffix, NotificationType::dontSendNotification);
 

@@ -45,7 +45,7 @@ void Parameter::resetValue (bool silentSet)
     setValue (defaultValue, silentSet, true);
 }
 
-void Parameter::setValue (var _value, bool silentSet, bool force)
+void Parameter::setValue (const var & _value, bool silentSet, bool force)
 {
     if (isCommitableParameter && !force)
     {
@@ -95,7 +95,7 @@ bool Parameter::waitOrDeffer (const var& _value, bool silentSet, bool force )
 
     return false;
 }
-void Parameter::tryToSetValue (var _value, bool silentSet, bool force )
+void Parameter::tryToSetValue (const var & _value, bool silentSet, bool force )
 {
 
     if (!force && checkValueIsTheSame (_value, value)) return;
@@ -141,7 +141,7 @@ void Parameter::pushValue (bool force)
 }
 
 
-void Parameter::setValueInternal (var& _value) //to override by child classes
+void Parameter::setValueInternal (const var& _value) //to override by child classes
 {
 
     value = _value;

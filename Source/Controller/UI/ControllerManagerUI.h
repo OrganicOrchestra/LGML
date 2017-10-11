@@ -90,8 +90,14 @@ public:
         vp.setBounds (getLocalBounds());
         int th = jmax<int> (controllerManagerUI->getContentHeight(), getHeight());
         Rectangle<int> targetBounds = getLocalBounds().withPosition (controllerManagerUI->getPosition()).withHeight (th);
+
         targetBounds.removeFromRight (vp.getScrollBarThickness());
+        bool needResize = controllerManagerUI->getHeight()==th;
+
         controllerManagerUI->setBounds (targetBounds);
+        if(needResize){
+            controllerManagerUI->resized();
+        }
         addControllerBt.setFromParentBounds (getLocalBounds());
     }
 

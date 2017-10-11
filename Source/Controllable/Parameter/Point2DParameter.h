@@ -31,7 +31,7 @@ public:
 
     void setPoint (const Point<T>& value);
     void setPoint (const T x, const T y);
-    void setValueInternal (var& _value) override;
+    void setValueInternal (const var& _value) override;
 
     Point<T> getPoint();
 

@@ -42,7 +42,7 @@ public:
     {
         setValue (triggerVar);
     }
-    void tryToSetValue (var _value, bool silentSet, bool force) override
+    void tryToSetValue (const var & _value, bool silentSet, bool force) override
     {
 
         if (!waitOrDeffer (_value, silentSet, force))

@@ -26,7 +26,8 @@
 
 Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName),
 baseRoot(_root),
-root(nullptr)
+root(nullptr),
+showUserContainer(false)
 {
     if(!baseRoot.get()){
         baseRoot = getEngine();
@@ -47,6 +48,7 @@ root(nullptr)
         linkToSelected.setClickingTogglesState(true);
     }
 
+
 }
 
 Outliner::~Outliner()
@@ -57,6 +59,7 @@ Outliner::~Outliner()
         i->removeInspectorListener(this);
 
 }
+
 
 void Outliner::clear(){
     setRoot(nullptr);
@@ -97,9 +100,10 @@ void Outliner::setRoot(ParameterContainer * p){
         rootItem = new OutlinerItem (root);
         treeView.setRootItem (rootItem);
 
-        treeView.setRootItemVisible(false);
+
         rebuildTree();
         restoreCurrentOpenChilds();
+        treeView.setRootItemVisible(root->isUserDefined);
         //        resized();
     }
 
@@ -120,7 +124,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
 
     for (auto& cc : childContainers)
     {
-
+        if(showUserContainer || !cc->isUserDefined){
         if (cc->skipControllableNameInAddress && !showHiddenContainers)
         {
             buildTree (parentItem, cc, shouldFilter);
@@ -138,7 +142,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
                 parentItem->removeSubItem (ccItem->getIndexInParent());
             }
 
-
+        }
         }
 
     }
@@ -293,7 +297,23 @@ paramUI (nullptr)
     setTooltip (item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
     addAndMakeVisible (&label);
     label.setInterceptsMouseClicks (false, false);
-
+    if(_item->isContainer && _item->container->isUserDefined){
+        addUserParamBt = new AddElementButton();
+        addAndMakeVisible(addUserParamBt);
+        addUserParamBt->addListener(this);
+        if(auto p = _item->container->parentContainer){
+            if(p->isUserDefined){
+                removeMeBt = new RemoveElementButton();
+                addAndMakeVisible(removeMeBt);
+                removeMeBt->addListener(this);
+            }
+        }
+    }
+    if(!_item->isContainer && _item->parameter->isUserDefined){
+        removeMeBt = new RemoveElementButton();
+        addAndMakeVisible(removeMeBt);
+        removeMeBt->addListener(this);
+    }
     if (!_item->isContainer )
     {
         paramUI = ParameterUIFactory::createDefaultUI (item->parameter);
@@ -314,7 +334,12 @@ void OutlinerItemComponent::resized()
     {
         paramUI->setBounds (r.removeFromRight (r.getWidth() / 2).reduced (2));
     }
-
+    if(addUserParamBt){
+        addUserParamBt->setBounds(r.removeFromRight(r.getHeight()).reduced(2));
+    }
+    if(removeMeBt){
+        removeMeBt->setBounds(r.removeFromRight(r.getHeight()).reduced(2));
+    }
     label.setBounds (r);
 
 }
@@ -379,4 +404,27 @@ InspectorEditor* OutlinerItemComponent::createEditor()
     if (item->isContainer) return InspectableComponent::createEditor();
     
     return nullptr;//new ParameterEditor(this,item->parameter);
+}
+
+void OutlinerItemComponent::buttonClicked (Button* b){
+    if(b==addUserParamBt){
+        if(item->isContainer){
+            item->container->addNewParameter<FloatParameter> ("var", "Custom Variable");
+        }
+        else{
+            jassertfalse;
+        }
+    }
+    else if( b==removeMeBt){
+        if(item->isContainer){
+            item->container->removeFromParent();
+        }
+        else{
+            if(auto p = item->parameter->parentContainer)
+                p->removeControllable(item->parameter);
+            else jassertfalse;
+        }
+
+    }
+
 }

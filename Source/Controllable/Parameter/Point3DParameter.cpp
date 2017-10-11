@@ -29,7 +29,7 @@ Point3DParameter::Point3DParameter (const String& niceName, const String& descri
 //  setValue(d);
 //}
 
-void Point3DParameter::setValueInternal (var& _value)
+void Point3DParameter::setValueInternal (const var& _value)
 {
     if (!_value.isArray()) return;
 

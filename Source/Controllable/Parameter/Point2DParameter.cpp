@@ -61,7 +61,7 @@ void Point2DParameter<T>::setPoint (const T _x, const T _y)
 }
 
 template<typename T>
-void Point2DParameter<T>::setValueInternal (var& _value)
+void Point2DParameter<T>::setValueInternal (const var& _value)
 {
 
     if (!_value.isArray() || _value.size() != 2)

@@ -39,7 +39,7 @@ public:
     Controller* controller;
     ScopedPointer<Outliner> userParamsUI;
     int getHeight();
-    ScopedPointer<TextButton> showUserParams;
+    ScopedPointer<DrawableButton> showUserParams;
 
     virtual void paint (Graphics& g) override;
     virtual void resized() override;

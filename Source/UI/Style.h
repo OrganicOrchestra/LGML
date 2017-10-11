@@ -64,4 +64,17 @@ public:
 };
 
 
+class RemoveElementButton : public Button
+{
+public:
+    RemoveElementButton();
+    ~RemoveElementButton();
+
+    void paintButton (Graphics& g,
+                      bool isMouseOverButton,
+                      bool isButtonDown)override;
+
+    
+    
+};
 #endif  // STYLE_H_INCLUDED

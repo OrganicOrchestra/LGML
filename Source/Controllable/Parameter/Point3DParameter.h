@@ -29,7 +29,7 @@ public:
 
     float x, y, z;
     //  void setPoint(Vector3D<float> value);
-    void setValueInternal (var& _value) override;
+    void setValueInternal (const var& _value) override;
 
     //  Vector3D<float> * getPoint();
 

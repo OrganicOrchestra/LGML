@@ -50,7 +50,7 @@ public:
     volatile bool isSettingValue;
 
     void resetValue (bool silentSet = false);
-    void setValue (var _value, bool silentSet = false, bool force = false);
+    void setValue (const var & _value, bool silentSet = false, bool force = false);
     void configureFromObject (DynamicObject*) override;
     void setStateFromVar (const var&) override;
 
@@ -62,7 +62,7 @@ public:
     var commitedValue;
     volatile bool hasCommitedValue;
 
-    virtual void setValueInternal (var& _value);
+    virtual void setValueInternal (const var& _value);
 
     virtual bool checkValueIsTheSame (const var& v1, const var& v2); //can be overriden to modify check behavior
 
@@ -101,7 +101,7 @@ public:
     class  ParamWithValue
     {
     public:
-        ParamWithValue (Parameter* p, var v, bool _isRange): parameter (p), value (v), m_isRange (_isRange) {}
+        ParamWithValue (Parameter* p, const var & v, bool _isRange): parameter (p), value (v), m_isRange (_isRange) {}
         Parameter* parameter;
         var value;
         bool m_isRange;
@@ -124,7 +124,7 @@ public:
     virtual var getVarState() override;
 
 
-    virtual void tryToSetValue (var _value, bool silentSet, bool force );
+    virtual void tryToSetValue (const var & _value, bool silentSet, bool force );
 
     static const Identifier valueIdentifier;
 

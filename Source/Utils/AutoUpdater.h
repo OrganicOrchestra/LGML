@@ -60,7 +60,7 @@ public:
     URL getLatestVersionURL (String& headers) const;
 
     void checkForNewVersion();
-    bool processResult (var reply, const String& downloadPath);
+    bool processResult (const var & reply, const String& downloadPath);
 
     bool askUserAboutNewVersion (const LGMLVersionTriple& version,
                                  const String& releaseNotes,

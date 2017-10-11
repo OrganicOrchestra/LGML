@@ -57,7 +57,8 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (Label::textWhenEditingColourId, Colours::white);
     setColour (TextEditor::ColourIds::highlightedTextColourId, Colours::white);
     setColour (TreeView::backgroundColourId,scheme.getUIColour (ColourScheme::UIColour::windowBackground));
-
+    setColour(DrawableButton::backgroundOnColourId, Colours::transparentWhite);
+    setColour(DrawableButton::backgroundColourId, Colours::transparentWhite);
     setColour (LGMLColors::audioColor, Colours::cadetblue);
     setColour (LGMLColors::dataColor, Colours::pink);
     setColour (LGMLColors::elementBackground, findColour (ResizableWindow::backgroundColourId).brighter (0.1f));

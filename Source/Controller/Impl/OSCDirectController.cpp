@@ -86,15 +86,9 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
     String controller = addrArray[0];
 
 
-//    if (controller == "node" || controller == "time" || controller == "control")
-//    {
-//        addrArray.remove (0);
-        Controllable* cont = root->getControllableForAddress(addrArray);
+    Controllable* cont = root->getControllableForAddress(addrArray);
 
 
-//        if (controller == "node")cont = NodeManager::getInstance()->getControllableForAddress (addrArray);
-//        else if (controller == "time")cont = TimeManager::getInstance()->getControllableForAddress (addrArray);
-//        else if (controller == "control")cont = ControllerManager::getInstance()->getControllableForAddress (addrArray);
 
         if (auto c = Parameter::fromControllable (cont))
         {
@@ -112,11 +106,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
 
             DBG ("No Controllable for address : " + addr);
         }
-//    }
-//    else
-//    {
-//        result = Result::fail ("address other than /node, not handler for now");
-//    }
+
     }
 
     return result;

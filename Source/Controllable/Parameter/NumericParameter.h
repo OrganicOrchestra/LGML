@@ -27,7 +27,7 @@ public:
     NumericParameter (const String& niceName, const String& description = String::empty, const T initialValue = 0, const T minimumValue = 0, const T maximumValue = 1, bool enabled = true);
     ~NumericParameter() {};
 
-    void setValueInternal (var& _value) override;
+    void setValueInternal (const var& _value) override;
 
     void setNormalizedValue (const T  normalizedValue, bool silentSet = false, bool force = false);
 

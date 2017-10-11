@@ -26,12 +26,12 @@ StringParameter::StringParameter (const String& niceName, const String& descript
 }
 
 
-bool StringParameter::checkValueIsTheSame (const juce::var& v1, const juce::var& v2)
+bool StringParameter::checkValueIsTheSame (const var& v1, const var& v2)
 {
     return v1.toString() == v2.toString();
 }
 
-void  StringParameter::setValueInternal (var& newVal)
+void  StringParameter::setValueInternal (const var& newVal)
 {
     value = newVal.toString();
 };

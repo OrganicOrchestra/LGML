@@ -29,7 +29,7 @@ public:
 
     // need to override this function because var Strings comparison  is based on pointer (we need full string comp)
     bool checkValueIsTheSame (const var& v1, const var& v2)override;
-    void setValueInternal (var&)override;
+    void setValueInternal (const var&)override;
 
     bool isMappable() override;
     DECLARE_OBJ_TYPE (StringParameter)

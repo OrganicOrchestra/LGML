@@ -22,7 +22,41 @@
 #include "../../UI/Outliner.h"
 
 
+static DrawableButton* getArrowButton(const String& name){
+    static bool inited(false);
+    static DrawablePath arrow;
+    static DrawablePath  downArrow;
+    static DrawablePath hoverArrow;
+    static DrawablePath hoverDownArrow;
+    if(!inited){
+        Path p;
+        p.addTriangle(0, 0, 1, 0.5, 0, 1);
+        Path dp;
+        dp.addTriangle(0, 0, 1, 0, 0.5, 1);
+        arrow.setPath(p);
+        downArrow.setPath(dp);
+        hoverArrow.setPath(p);
+        hoverDownArrow .setPath(dp);
+        Colour hoverColour = arrow.getFill().fill.colour.contrasting(.8f);
+        hoverArrow.setFill(hoverColour);
+        hoverDownArrow.setFill(hoverColour);
+        inited = true;
+    }
 
+    DrawableButton* res = new DrawableButton (name,DrawableButton::ButtonStyle::ImageStretched);
+
+    res->setImages(&arrow,
+                   &hoverArrow,// over,
+                   &downArrow,// down,
+                   nullptr,// disabled,
+                   &downArrow,// normalOn,
+                   &hoverDownArrow,// overOn,
+                   &downArrow,// downOn,
+                   nullptr// disabledOn
+                   );
+    return res;
+
+}
 ControllerUI::ControllerUI (Controller* controller) :
     InspectableComponent (controller, "controller"),
     controller (controller)
@@ -54,9 +88,10 @@ ControllerUI::ControllerUI (Controller* controller) :
     activityBlink->showLabel = false;
     addAndMakeVisible (activityBlink);
     userParamsUI = new Outliner("usr_"+controller->shortName,&controller->userContainer,false);
+    userParamsUI->showUserContainer = true;
     addAndMakeVisible(userParamsUI);
 
-    showUserParams = new TextButton("showParams");
+    showUserParams = getArrowButton("showParams");
     addAndMakeVisible(showUserParams);
     showUserParams->setTooltip("show this controller registered parameters");
     showUserParams->setToggleState(false, dontSendNotification);
@@ -79,16 +114,18 @@ void ControllerUI::paint (Graphics& g)
 
 const int headerHeight = 20;
 const int usrParamHeight = 200;
+
 void ControllerUI::resized()
 {
-    Rectangle<int> area = getLocalBounds().reduced (2);
+    Rectangle<int> area = getLocalBounds();
     Rectangle<int> r = area.removeFromTop(headerHeight);
     r.removeFromRight (15);
     removeBT.setBounds (r.removeFromRight (20));
     r.removeFromRight (2);
     activityBlink->setBounds (r.removeFromRight (r.getHeight()).reduced (2));
-    showUserParams->setBounds(r.removeFromRight (r.getHeight()).reduced (2));
+
     enabledBT->setBounds (r.removeFromLeft (r.getHeight()));
+    showUserParams->setBounds(r.removeFromLeft (r.getHeight()).reduced (4));
     r.removeFromLeft (5);
     nameTF->setBounds (r);
 
@@ -99,12 +136,24 @@ void ControllerUI::resized()
 }
 
 int ControllerUI::getHeight(){
-    return headerHeight + (showUserParams->getToggleState()?jmax(usrParamHeight,userParamsUI->treeView.getViewport()->getViewArea().getHeight()):0);
+    return   headerHeight + (showUserParams->getToggleState()?jmax(usrParamHeight,userParamsUI->treeView.getViewport()->getViewArea().getHeight()):0);
 }
 
 void ControllerUI::mouseDown (const MouseEvent&)
 {
     selectThis();
+}
+
+Component * getViewportOrParent( Component * c){
+    Component * ic = c;
+    while(ic){
+        if(auto v = dynamic_cast<Viewport*>(ic)){
+            return v->getParentComponent();
+        }
+        ic = ic->getParentComponent();
+    }
+    return c->getParentComponent();
+
 }
 
 void ControllerUI::buttonClicked (Button* b)
@@ -114,8 +163,9 @@ void ControllerUI::buttonClicked (Button* b)
         controller->remove();
     }
     else if(b==showUserParams){
-        if(auto p = getParentComponent())
+        if(auto p = getViewportOrParent(this))
             p->resized();
+        
     }
 }
 

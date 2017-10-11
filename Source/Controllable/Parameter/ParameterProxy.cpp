@@ -55,7 +55,7 @@ void ParameterProxy::setRoot (ControllableContainer* r)
     resolveAddress();
 
 }
-void ParameterProxy::tryToSetValue (var _value, bool silentSet, bool force )
+void ParameterProxy::tryToSetValue (const var & _value, bool silentSet, bool force )
 {
 
     if (_value.isString())
@@ -69,7 +69,7 @@ void ParameterProxy::tryToSetValue (var _value, bool silentSet, bool force )
         linkedParam->tryToSetValue (_value, silentSet, force);
     }
 };
-void ParameterProxy::setValueInternal (var& _value)
+void ParameterProxy::setValueInternal (const var& _value)
 {
     if (_value.isString())
     {

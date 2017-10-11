@@ -22,13 +22,30 @@ extern AudioDeviceManager&   getAudioDeviceManager();
 
 #include "../ControllerFactory.h"
 REGISTER_CONTROLLER_TYPE (MIDIController);
+class MIDIDeviceEnumModel : public EnumParameterModel,MIDIManager::MIDIManagerListener{
+    public :
+
+    void midiInputAdded (String& k) override{
+        addOption(k, k, true);
+    };
+    virtual void midiInputRemoved (String& k)override {
+        removeOption(k, true);
+    };
+//    virtual void midiInputsChanged()override {};
+
+    virtual void midiOutputAdded (String&) override{};
+    virtual void midiOutputRemoved (String&) override{};
+    virtual void midiOutputsChanged() override{};
 
 
+};
+
+MIDIDeviceEnumModel globalMidiModel;
 MIDIController::MIDIController (StringRef name) :
     Controller (name), JsEnvironment ("controller.MIDI", this)
 {
     setNamespaceName ("controller." + shortName);
-    deviceInName = addNewParameter<StringParameter> ("midiPortName", "name of Midi device input", "");
+    deviceInName = addNewParameter<EnumParameter> ("midiPortName", "name of Midi device input",&globalMidiModel, "");
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
 
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
