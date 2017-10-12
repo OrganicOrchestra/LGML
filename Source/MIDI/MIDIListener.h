@@ -23,7 +23,9 @@
 
 // abstract base class that provide midi callback handle and keeps MIDIManager in sync
 
-class MIDIListener : public MidiInputCallback, MIDIManager::MIDIManagerListener
+class MIDIListener :
+public MidiInputCallback,
+public MIDIManager::MIDIManagerListener
 {
 public :
     MIDIListener();
@@ -33,6 +35,7 @@ public :
     String midiPortName;
     String ghostPortName;
     String outPortName;
+    bool hasValidPort;
 
     virtual void setCurrentDevice (const String& deviceName);
 
@@ -43,6 +46,7 @@ public :
     void sendCC (int channel, int number, int value);
     void sendSysEx (uint8* data, int dataCount);
 
+    virtual void midiMessageSent(){};
     virtual void midiInputAdded (String& s) override;
     virtual void midiInputRemoved (String& s) override;
     //    virtual void midiInputsChanged() {}
@@ -51,24 +55,8 @@ public :
     virtual void midiOutputRemoved (String& s) override;
     //    virtual void midiOutputsChanged() {}
 
-    class  Listener
-    {
-    public:
-        /** Destructor. */
-        virtual ~Listener() {}
-        virtual void currentDeviceChanged (MIDIListener*) {}
 
-
-    };
-
-    ListenerList<Listener> MIDIListenerListeners;
-    void addMIDIListenerListener (Listener* newListener) { MIDIListenerListeners.add (newListener); }
-    void removeMIDIListenerListener (Listener* listener) { MIDIListenerListeners.remove (listener); }
-
-
-
-    int commonNamePartWithInName (String& s);
-    String getClosestOutName();
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIListener)
 };
 

@@ -42,6 +42,7 @@ public:
     // variables
     String shortName;
     bool isUserDefined;
+    
     bool skipControllableNameInAddress;
     Uuid uid;
     OwnedArray<Controllable, CriticalSection> controllables;

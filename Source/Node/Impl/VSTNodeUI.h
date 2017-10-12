@@ -28,8 +28,7 @@ class VSTNodeContentUI:
     public ConnectableNodeContentUI,
     public Button::Listener,
     public VSTNode::VSTNodeListener,
-    private ControllableContainerListener,
-    public ComboBoxListener
+    private ControllableContainerListener
 {
 public:
     VSTNodeContentUI();
@@ -41,7 +40,7 @@ public:
     TextButton VSTListShowButton;
     TextButton showPluginWindowButton;
 
-    MIDIDeviceChooser midiDeviceChooser;
+    ScopedPointer<ParameterUI> midiDeviceChooser;
 
     ScopedPointer<ParameterUI> activityBlink;
 
@@ -50,10 +49,10 @@ public:
 
     void updateVSTParameters();
     void newVSTSelected() override;
-    void midiDeviceChanged() override;
+    
 
     void layoutSliderParameters (Rectangle<int> pArea);
-    void comboBoxChanged (ComboBox* cb) override;
+    
     void buttonClicked (Button* button) override;
 
 private:

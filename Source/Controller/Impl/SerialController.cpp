@@ -142,8 +142,9 @@ void SerialController::portRemoved (SerialPort*)
 
 void SerialController::serialDataReceived (const var& data)
 {
-    activityTrigger->trigger();
+
     processMessage (data.toString());
+    inActivityTrigger->trigger();
 }
 
 void SerialController::controllableAdded (ControllableContainer*, Controllable* c)
@@ -169,6 +170,7 @@ var SerialController::sendMessageFromScript (const var::NativeFunctionArgs&)
 
 void SerialController::sendIdentificationQuery()
 {
+    outActivityTrigger->trigger();
     port->writeString ("i");
 }
 

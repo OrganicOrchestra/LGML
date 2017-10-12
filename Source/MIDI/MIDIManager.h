@@ -22,7 +22,7 @@
 
 #include "../JuceHeaderAudio.h"//keep
 
-
+class MIDIListener;
 extern AudioDeviceManager& getAudioDeviceManager();
 class MIDIManager : private Timer
 {
@@ -41,32 +41,23 @@ public:
     ~MIDIManager();
 
     void init();
-
+    void updateLists();
+    
     StringArray inputDevices;
     StringArray outputDevices;
-
-
-    OwnedArray<DeviceUsageCount> inputCounts;
-    OwnedArray<DeviceUsageCount> outputCounts;
-
-    void updateDeviceList (bool updateInput);
 
     void enableInputDevice (const String& deviceName);
     MidiOutput* enableOutputDevice (const String& deviceName);
     void disableInputDevice (const String& deviceName);
     void disableOutputDevice (const String& deviceName);
 
-    DeviceUsageCount* getDUCForInputDeviceName (const String& deviceName);
-    DeviceUsageCount* getDUCForOutputDeviceName (const String& deviceName);
-
-    void timerCallback() override;
 
 
-public:
+
     class  MIDIManagerListener
     {
     public:
-        /** Destructor. */
+
         virtual ~MIDIManagerListener() {}
         virtual void midiInputAdded (String&) {}
         virtual void midiInputRemoved (String&) {}
@@ -76,13 +67,31 @@ public:
         virtual void midiOutputRemoved (String&) {}
         virtual void midiOutputsChanged() {}
 
-
     };
 
     ListenerList<MIDIManagerListener> listeners;
-    void addMIDIListener (MIDIManagerListener* newListener) { listeners.add (newListener); }
-    void removeMIDIListener (MIDIManagerListener* listener) { listeners.remove (listener); }
+    void addMIDIManagerListener (MIDIManagerListener* newListener) { listeners.add (newListener); }
+    void removeMIDIManagerListener (MIDIManagerListener* listener) { listeners.remove (listener); }
 
+
+    void addMIDIListener(MIDIListener * l);
+    void removeMIDIListener(MIDIListener * l);
+    Array<MIDIListener* > MIDIListeners;
+    void checkMIDIListenerStates();
+private:
+    OwnedArray<DeviceUsageCount> inputCounts;
+    OwnedArray<DeviceUsageCount> outputCounts;
+
+    void updateDeviceList (bool updateInput);
+
+
+
+
+    DeviceUsageCount* getDUCForInputDeviceName (const String& deviceName);
+    DeviceUsageCount* getDUCForOutputDeviceName (const String& deviceName);
+
+    void timerCallback() override;
+    
 
 
 };

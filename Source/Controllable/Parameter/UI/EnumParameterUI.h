@@ -30,6 +30,7 @@ public:
 
 
     ComboBox cb;
+    bool isSorted;
 
     void updateComboBox();
     String getCBSelectedKey();
@@ -49,6 +50,7 @@ public:
     void enumOptionAdded (EnumParameter*, const Identifier& key) override;
     void enumOptionRemoved (EnumParameter*, const Identifier& key) override;
     void enumOptionSelectionChanged (EnumParameter*, bool isSelected, bool isValid, const Identifier& name) override;
+    void mouseDown(const MouseEvent & e)override;
     // Inherited via Listener
     virtual void comboBoxChanged (ComboBox*) override;
 

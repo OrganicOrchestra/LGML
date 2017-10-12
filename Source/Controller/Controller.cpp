@@ -33,9 +33,12 @@ Controller::Controller (StringRef _name) :
 
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Set whether the controller is enabled or disabled", true);
 
-    activityTrigger =  addNewParameter<Trigger> ("activity", "Activity indicator");
-    activityTrigger->isEditable = false;
-    activityTrigger->isControllableExposed =false;
+    inActivityTrigger =  addNewParameter<Trigger> ("in activity", "In Activity indicator");
+    outActivityTrigger =  addNewParameter<Trigger> ("out activity", "Out Activity indicator");
+    inActivityTrigger->isEditable = false;
+    inActivityTrigger->isControllableExposed =false;
+    outActivityTrigger->isEditable = false;
+    outActivityTrigger->isControllableExposed =false;
     controllerTypeEnum = 0; //init
 }
 

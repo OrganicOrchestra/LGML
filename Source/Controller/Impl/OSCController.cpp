@@ -207,7 +207,7 @@ void OSCController::processMessage (const OSCMessage& msg)
     isProcessingOSC = false;
     oscListeners.call (&OSCControllerListener::messageProcessed, msg, result);
 
-    activityTrigger->trigger();
+    inActivityTrigger->trigger();
 }
 
 
@@ -512,7 +512,7 @@ bool OSCController::sendOSC (OSCMessage& m)
 bool OSCController::sendOSCInternal (OSCMessage& m)
 {
     if (logOutGoingOSC->boolValue()) { logMessage (m, "Out:");}
-
+    outActivityTrigger->trigger();
     return sender.send (m);
 }
 

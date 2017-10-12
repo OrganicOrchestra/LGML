@@ -238,11 +238,7 @@ private:
     void releaseMasterTrack();
     void cleanAllQuantizeNeedles();
 
-
-
-
-    void enumOptionAdded (EnumParameter*, const Identifier&) override;
-    void enumOptionRemoved (EnumParameter*, const Identifier&) override;
+    
     void enumOptionSelectionChanged (EnumParameter*, bool isSelected, bool isValid, const Identifier&)override;
 
 

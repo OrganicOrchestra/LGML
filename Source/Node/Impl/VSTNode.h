@@ -20,6 +20,7 @@
 #include "../NodeBase.h"
 
 #include "../../MIDI/MIDIListener.h"
+#include "../../MIDI/MIDIHelpers.h"
 //#define VSTLOADING_THREADED
 class VSTNode :
     public NodeBase,
@@ -48,6 +49,8 @@ public:
             y = addNewParameter<FloatParameter> ("y", "y position of plugin window", (float)Random::getSystemRandom().nextInt (500), 0.f, 1000.f);
             isDisplayed = addNewParameter<BoolParameter> ("isDisplayed", "is the plugin window displayed", false);
             currentPresetName->isPresettable = false;
+            isHidenInEditor = true;
+            
         }
 
         FloatParameter* x;
@@ -86,7 +89,7 @@ public:
     public:
         virtual ~VSTNodeListener() {}
         virtual void newVSTSelected() = 0;
-        virtual void midiDeviceChanged() = 0;
+        
     };
 
     ListenerList<VSTNodeListener> vstNodeListeners;
@@ -124,12 +127,13 @@ public:
 
 
     ///// MIDI
-    StringParameter* midiPortNameParam;
+//    StringParameter* midiPortNameParam;
+    MIDIHelpers::MIDIIOChooser midiChooser;
     BoolParameter* processWhenBypassed;
     bool bProcessWhenBypassed;
     Trigger* midiActivityTrigger;
 
-    void setCurrentDevice (const String& deviceName) override;
+    
     void handleIncomingMidiMessage (MidiInput* source,
                                     const MidiMessage& message) override;
 

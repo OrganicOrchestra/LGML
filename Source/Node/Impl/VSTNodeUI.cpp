@@ -24,10 +24,9 @@
 VSTNodeContentUI::VSTNodeContentUI():
     VSTListShowButton ("VSTs"),
     showPluginWindowButton ("showWindow"),
-    midiDeviceChooser (true),
     isDirty (false)
 {
-    midiDeviceChooser.addListener (this);
+
 
 }
 VSTNodeContentUI::~VSTNodeContentUI()
@@ -66,7 +65,9 @@ void VSTNodeContentUI::init()
     activityBlink->showLabel = false;
     addAndMakeVisible (activityBlink);
 
-
+    midiDeviceChooser = ParameterUIFactory::createDefaultUI(vstNode->midiChooser.getDeviceInEnumParameter());
+    addAndMakeVisible(midiDeviceChooser);
+    jassert(midiDeviceChooser);
     updateVSTParameters();
     setDefaultSize (250, 100);
 
@@ -75,7 +76,6 @@ void VSTNodeContentUI::init()
     vstNode->addControllableContainerListener (this);
 
     //DBG("Set Node and ui -> " << vstNode->midiPortNameParam->stringValue());
-    midiDeviceChooser.setSelectedDevice (vstNode->midiPortNameParam->stringValue());
 
 }
 
@@ -141,17 +141,13 @@ void VSTNodeContentUI::handleCommandMessage (int /*cId*/)
     isDirty = false;
 }
 
-void VSTNodeContentUI::midiDeviceChanged()
-{
-    midiDeviceChooser.setSelectedDevice (vstNode->midiPortNameParam->stringValue());
-}
 
 void VSTNodeContentUI::resized()
 {
     Rectangle<int> area = getLocalBounds().reduced (2);
     Rectangle<int> midiR = area.removeFromTop (25);
     activityBlink->setBounds (midiR.removeFromRight (midiR.getHeight()).reduced (2));
-    midiDeviceChooser.setBounds (midiR);
+    midiDeviceChooser->setBounds (midiR);
 
     area.removeFromTop (2);
     Rectangle<int> headerArea = area.removeFromTop (25);
@@ -213,16 +209,7 @@ void VSTNodeContentUI::vstSelected (int modalResult, Component*   originComp)
     }
 }
 
-void VSTNodeContentUI::comboBoxChanged (ComboBox* cb)
-{
-    if (cb == &midiDeviceChooser)
-    {
-        if (midiDeviceChooser.getSelectedItemIndex() > 0)
-        {
-            vstNode->midiPortNameParam->setValue (midiDeviceChooser.getItemText (midiDeviceChooser.getSelectedItemIndex()));
-        }
-    }
-}
+
 
 void VSTNodeContentUI::buttonClicked (Button* button)
 {

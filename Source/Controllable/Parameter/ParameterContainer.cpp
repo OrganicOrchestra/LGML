@@ -25,7 +25,8 @@ const Identifier ParameterContainer::uidIdentifier ("uid");
 IMPL_OBJ_TYPE (ParameterContainer)
 ParameterContainer::ParameterContainer (StringRef niceName):
     ControllableContainer (niceName),
-    currentPreset (nullptr)
+    currentPreset (nullptr),
+    isHidenInEditor(false)
 {
 
 

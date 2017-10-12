@@ -15,6 +15,7 @@
 
 #include "MIDIController.h"
 #include "../../MIDI/MIDIManager.h"
+#include "../../MIDI/MIDIHelpers.h"
 #include "../../Utils/DebugHelpers.h"
 #include "../../Scripting/Js/JsHelpers.h"
 
@@ -22,31 +23,16 @@ extern AudioDeviceManager&   getAudioDeviceManager();
 
 #include "../ControllerFactory.h"
 REGISTER_CONTROLLER_TYPE (MIDIController);
-class MIDIDeviceEnumModel : public EnumParameterModel,MIDIManager::MIDIManagerListener{
-    public :
 
-    void midiInputAdded (String& k) override{
-        addOption(k, k, true);
-    };
-    virtual void midiInputRemoved (String& k)override {
-        removeOption(k, true);
-    };
-//    virtual void midiInputsChanged()override {};
-
-    virtual void midiOutputAdded (String&) override{};
-    virtual void midiOutputRemoved (String&) override{};
-    virtual void midiOutputsChanged() override{};
-
-
-};
-
-MIDIDeviceEnumModel globalMidiModel;
 MIDIController::MIDIController (StringRef name) :
-    Controller (name), JsEnvironment ("controller.MIDI", this)
+    Controller (name), JsEnvironment ("controller.MIDI", this),
+midiChooser(this,true,false)
 {
     setNamespaceName ("controller." + shortName);
-    deviceInName = addNewParameter<EnumParameter> ("midiPortName", "name of Midi device input",&globalMidiModel, "");
+//    deviceInName = addNewParameter<EnumParameter> ("midiPortName", "name of Midi device input",MIDIHelpers::getGlobalMidiModel(), "");
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
+    logIncoming->isSavable = false;
+    logIncoming->isPresettable =false;
 
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
 
@@ -56,24 +42,30 @@ MIDIController::MIDIController (StringRef name) :
     getAudioDeviceManager().getAudioDeviceSetup (setup);
     midiCollector.reset (setup.sampleRate);
 
-    addMIDIListenerListener (this);
-
+//    deviceInName->addEnumParameterListener(this);
 }
 
 MIDIController::~MIDIController()
 {
-    removeMIDIListenerListener (this);
+//    deviceInName->removeEnumParameterListener(this);
     setCurrentDevice (String::empty);
 
 }
 
-void MIDIController::currentDeviceChanged (MIDIListener*)
-{
-    if (midiPortName != deviceInName->stringValue())
-    {
-        deviceInName->setValue (midiPortName, true);
-    }
-}
+//void MIDIController::enumOptionSelectionChanged(EnumParameter * ep, bool isSelected, bool isValid, const juce::Identifier & key)
+//{
+//    if (ep == deviceInName)
+//    {
+//
+////        if(isValid && isSelected){
+////            setCurrentDevice(ep->getFirstSelectedValue().toString());
+////        }
+////        else if (!isSelected){
+////            setCurrentDevice(String::empty);
+////        }
+//
+//    }
+//}
 
 
 void MIDIController::handleIncomingMidiMessage (MidiInput*,
@@ -143,7 +135,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
         callJs (message);
     }
 
-    activityTrigger->trigger();
+    if(!message.isNoteOff())inActivityTrigger->trigger();
 }
 
 
@@ -194,11 +186,16 @@ void MIDIController::onContainerParameterChanged (Parameter* p)
     {
         setNamespaceName ("controller." + shortName);
     }
-    else if (p == deviceInName)
-    {
-        setCurrentDevice (deviceInName->stringValue());
-    }
+//    else if (p == deviceInName)
+//    {
+//        setCurrentDevice (deviceInName->getFirstSelectedValue(String::empty).toString());
+//    }
 }
+
+void MIDIController::midiMessageSent(){
+    outActivityTrigger->trigger();
+
+};
 
 void MIDIController::buildLocalEnv()
 {
@@ -278,8 +275,12 @@ var MIDIController::sendCCFromJS (const var::NativeFunctionArgs& a)
         NLOG ("MidiController", "!!! Incorrect number of arguments for sendCC");
         return var (false);
     }
-
-    c->sendCC ((int) (a.arguments[0]), a.arguments[1], a.arguments[2]);
+    int targetChannel = (int) (a.arguments[0]);
+    if(targetChannel==0)
+        targetChannel = c->channelFilter->intValue();
+    if(targetChannel==0)
+        targetChannel = 1;
+    c->sendCC (targetChannel, a.arguments[1], a.arguments[2]);
     return var (true);
 }
 

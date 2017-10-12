@@ -21,13 +21,13 @@
 MIDIDeviceChooser::MIDIDeviceChooser (bool _isInputChooser) :
     isInputChooser (_isInputChooser)
 {
-    MIDIManager::getInstance()->addMIDIListener (this);
+    MIDIManager::getInstance()->addMIDIManagerListener (this);
     fillDeviceList();
 }
 
 MIDIDeviceChooser::~MIDIDeviceChooser()
 {
-    MIDIManager::getInstance()->removeMIDIListener (this);
+    MIDIManager::getInstance()->removeMIDIManagerListener (this);
 }
 
 void MIDIDeviceChooser::fillDeviceList()

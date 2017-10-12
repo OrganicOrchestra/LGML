@@ -39,7 +39,7 @@ public:
 
     BoolParameter* enabledParam;
 
-    Trigger* activityTrigger;
+    Trigger* inActivityTrigger,*outActivityTrigger;
 
     ParameterContainer  userContainer;
 

@@ -64,7 +64,7 @@ protected:
     virtual void rangeChanged (Parameter* ) {};
 
     void updateTooltip();
-    void mouseDown (const MouseEvent& e) override;
+    virtual void mouseDown (const MouseEvent& e) override;
 
 
 private:

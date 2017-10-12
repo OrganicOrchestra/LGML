@@ -142,10 +142,7 @@ void GenericParameterContainerEditor::handleCommandMessage (int cID)
     switch (cID)
     {
         case CHILD_STRUCTURE_CHANGED:
-            // force clear for now
             // TODO: check differences
-
-
             startTimer (100);
 
             break;
@@ -217,14 +214,18 @@ void CCInnerContainerUI::rebuild()
     {
         for (auto& cc : container->getContainersOfType<ParameterContainer> (false))
         {
+            if(!cc->isHidenInEditor){
             addCCInnerUI (cc);
+            }
         }
     }
     else if (level == maxLevel && canAccessLowerContainers)
     {
         for (auto& cc : container->getContainersOfType<ParameterContainer> (false))
         {
+            if(!cc->isHidenInEditor){
             addCCLink (cc);
+            }
 
         }
 
@@ -496,7 +497,7 @@ void CCInnerContainerUI::controllableContainerAdded (ControllableContainer*, Con
 
     auto pc = dynamic_cast<ParameterContainer*> (cc);
     jassert (pc);
-
+    if (pc->isHidenInEditor) return;
     if (level < maxLevel) addCCInnerUI (pc);
     else if (canAccessLowerContainers) addCCLink (pc);
 }

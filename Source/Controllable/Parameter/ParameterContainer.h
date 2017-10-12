@@ -47,7 +47,7 @@ public:
     String const getNiceName() override;
     String setNiceName (const String& _niceName) override;
 
-
+    bool isHidenInEditor;
 
     virtual ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) ;
     virtual Parameter* addParameterFromVar (const String& name, const var& data) ;

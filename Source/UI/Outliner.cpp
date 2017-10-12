@@ -92,6 +92,7 @@ void Outliner::setRoot(ParameterContainer * p){
     if (root.get()){
         root->removeControllableContainerListener (this);
         saveCurrentOpenChilds();
+        rootItem->clearSubItems();
     }
     root = p;
     if (root.get()){
@@ -112,8 +113,10 @@ void Outliner::setRoot(ParameterContainer * p){
 void Outliner::rebuildTree()
 {
     rootItem->clearSubItems();
-    buildTree (rootItem, root.get());
-    rootItem->setOpen (true);
+    if(root.get()){
+        buildTree (rootItem, root.get());
+        rootItem->setOpen (true);
+    }
 
 }
 
@@ -125,7 +128,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
     for (auto& cc : childContainers)
     {
         if(showUserContainer || !cc->isUserDefined){
-        if (cc->skipControllableNameInAddress && !showHiddenContainers)
+        if (cc->skipControllableNameInAddress && !showHiddenContainers &&!cc->isHidenInEditor)
         {
             buildTree (parentItem, cc, shouldFilter);
         }
@@ -190,10 +193,19 @@ void Outliner::handleAsyncUpdate()
         }
         else
         {
-            saveCurrentOpenChilds();
-            rootItem->clearSubItems();
-            rebuildTree();
-            restoreCurrentOpenChilds();
+            // our main root has been deleted, try to come back
+            if(!root.get()){
+                setRoot(baseRoot.get());
+            }
+            if(root.get()){
+                saveCurrentOpenChilds();
+                rootItem->clearSubItems();
+                rebuildTree();
+                restoreCurrentOpenChilds();
+            }
+            else{
+                rootItem->clearSubItems();
+            }
         }
     }
 }

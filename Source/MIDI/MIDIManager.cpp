@@ -17,12 +17,14 @@
  */
 
 #include "MIDIManager.h"
+#include "MIDIListener.h"
 #include "../Logger/LGMLLogger.h"
 
 #include "../Utils/DebugHelpers.h"
 
 juce_ImplementSingleton (MIDIManager)
 
+constexpr int MIDICheckInterval(1000);
 MIDIManager::MIDIManager()
 {
 
@@ -35,7 +37,7 @@ MIDIManager::~MIDIManager()
 
 void MIDIManager::init()
 {
-    startTimer (1000);
+    startTimer (MIDICheckInterval);
 }
 
 void MIDIManager::updateDeviceList (bool updateInput)
@@ -133,7 +135,10 @@ MidiOutput* MIDIManager::enableOutputDevice (const String& deviceName)
     }
     else
     {
-        LOG ("can't open MIDI device : " << deviceName);
+        const String available ( inD.joinIntoString(", "));
+
+        LOG ("can't open MIDI out device : " << deviceName << "\navailable :" << available);
+
     }
 
     return out;
@@ -187,6 +192,40 @@ MIDIManager::DeviceUsageCount* MIDIManager::getDUCForOutputDeviceName (const Str
 
 void MIDIManager::timerCallback()
 {
+    updateLists();
+    checkMIDIListenerStates();
+}
+
+void MIDIManager::updateLists(){
     updateDeviceList (true); //update inputs
     updateDeviceList (false); //update outputs
+}
+
+
+void MIDIManager::addMIDIListener(MIDIListener * l){
+    MIDIListeners.add(l);
+    listeners.add(l);
+    checkMIDIListenerStates();
+}
+void MIDIManager::removeMIDIListener(MIDIListener * l){
+    MIDIListeners.removeAllInstancesOf(l);
+    listeners.remove(l);
+    checkMIDIListenerStates();
+}
+
+void MIDIManager::checkMIDIListenerStates(){
+    // it seems 
+//    bool allValid = true;
+//    for(auto l: MIDIListeners){
+//        if(!l->hasValidPort){
+//            allValid = false;
+//        }
+//    }
+//    if(allValid){
+//        stopTimer();
+//    }
+//    else{
+//        startTimer(MIDICheckInterval);
+//    }
+
 }

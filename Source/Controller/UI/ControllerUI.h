@@ -34,7 +34,7 @@ public:
     ScopedPointer<ParameterUI> enabledBT;
     ImageButton removeBT;
 
-    ScopedPointer<TriggerBlinkUI> activityBlink;
+    ScopedPointer<TriggerBlinkUI> inActivityBlink,outActivityBlink;
 
     Controller* controller;
     ScopedPointer<Outliner> userParamsUI;

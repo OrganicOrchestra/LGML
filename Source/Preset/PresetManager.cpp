@@ -48,7 +48,7 @@ PresetManager::Preset* PresetManager::addPresetFromControllableContainer (const 
 
     for (auto& p : container->getAllParameters (recursive, includeNotExposed))
     {
-        if (!p->isPresettable) continue;
+        if (!p->isPresettable || !p->isEditable) continue;
 
         if (p == (Parameter*)container->currentPresetName) { continue; }
 

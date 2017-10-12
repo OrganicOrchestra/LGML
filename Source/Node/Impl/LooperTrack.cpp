@@ -918,8 +918,6 @@ void LooperTrack::releaseMasterTrack()
 }
 
 
-void LooperTrack::enumOptionAdded (EnumParameter*, const Identifier&) {};
-void LooperTrack::enumOptionRemoved (EnumParameter*, const Identifier&) {};
 void LooperTrack::enumOptionSelectionChanged (EnumParameter* ep, bool _isSelected, bool isValid, const Identifier& k)
 {
     if (ep == sampleChoice && _isSelected)

@@ -84,9 +84,12 @@ ControllerUI::ControllerUI (Controller* controller) :
     addAndMakeVisible (removeBT);
 
 
-    activityBlink = new TriggerBlinkUI (controller->activityTrigger);
-    activityBlink->showLabel = false;
-    addAndMakeVisible (activityBlink);
+    inActivityBlink = new TriggerBlinkUI (controller->inActivityTrigger);
+    outActivityBlink = new TriggerBlinkUI (controller->outActivityTrigger);
+    inActivityBlink->showLabel = false;
+    addAndMakeVisible (inActivityBlink);
+    outActivityBlink->showLabel = false;
+    addAndMakeVisible (outActivityBlink);
     userParamsUI = new Outliner("usr_"+controller->shortName,&controller->userContainer,false);
     userParamsUI->showUserContainer = true;
     addAndMakeVisible(userParamsUI);
@@ -122,7 +125,8 @@ void ControllerUI::resized()
     r.removeFromRight (15);
     removeBT.setBounds (r.removeFromRight (20));
     r.removeFromRight (2);
-    activityBlink->setBounds (r.removeFromRight (r.getHeight()).reduced (2));
+    outActivityBlink->setBounds (r.removeFromRight (r.getHeight()/2).reduced (2));
+    inActivityBlink->setBounds (r.removeFromRight (r.getHeight()/2).reduced (2));
 
     enabledBT->setBounds (r.removeFromLeft (r.getHeight()));
     showUserParams->setBounds(r.removeFromLeft (r.getHeight()).reduced (4));

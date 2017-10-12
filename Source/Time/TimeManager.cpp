@@ -61,11 +61,12 @@ public:
 
     ableton::Link::Timeline  linkTimeLine;
     std::chrono::microseconds  linkTime;
-    ableton::link::HostTimeFilter<ableton::link::platform::Clock> linkFilter;
+//    ableton::link::HostTimeFilter<ableton::link::platform::Clock> linkFilter;
     std::chrono::microseconds linkLatency;
 
     void updateTime(){
-        linkTime = linkFilter.sampleTimeToHostTime (owner->audioClock) + linkLatency;
+        linkTime = std::chrono::microseconds((long long)Time::getMillisecondCounterHiRes()*1000)+linkLatency;
+//        linkTime = linkFilter.sampleTimeToHostTime (owner->audioClock) + linkLatency;
     }
     void checkDrift()
     {
@@ -79,9 +80,8 @@ public:
         const double localBeat = owner->getBeat();
         const float driftMs = (linkBeat - localBeat) * owner->beatTimeInSample * 1000.0f / owner->sampleRate;
 
-        if ((owner->isPlaying() )
-            //       && !isFirstPlayingFrame()
-            && fabs (driftMs) > 1
+        if (//(owner->isPlaying() )&&
+             fabs (driftMs) > 5
            )
         {
             SLOG ("! link drift : " + String (driftMs) + "ms");
@@ -264,12 +264,14 @@ void TimeManager::incrementClock (int block)
     timeState.nextTime = timeState.time + blockSize;
     int lastBeat =  int (currentBeat->doubleValue());
     int newBeat = getBeatInt();
-
-    if (lastBeat != newBeat)
+    bool isNewBeat =lastBeat != newBeat;
+    bool isNewBar = false;
+    if (isNewBeat)
     {
         currentBeat->setValue (newBeat);
 
-        if (newBeat % ((int)beatPerBar->value) == 0)
+        isNewBar = newBeat % ((int)beatPerBar->value) == 0;
+        if(isNewBar)
         {
             currentBar->setValue (getBar());
 
@@ -285,9 +287,10 @@ void TimeManager::incrementClock (int block)
 
     }
 
-    // adapt to link clock if drift > 1ms
-    if (linkEnabled->boolValue() && !timeMasterCandidate)
+
+    if (linkEnabled->boolValue() && !timeMasterCandidate && ((isPlaying() &&isNewBar) || hasJumped))
     {
+        
         linkPimpl->checkDrift();
 
     }
@@ -500,7 +503,7 @@ void TimeManager::onContainerParameterChanged (Parameter* p)
     {
 
 
-        linkPimpl->linkLatency = std::chrono::microseconds ((long long) (linkLatencyParam->doubleValue() * 1000));
+        linkPimpl->linkLatency = std::chrono::microseconds ((long long) (linkLatencyParam->doubleValue() * 1000.0));
     }
 
 #endif
@@ -695,6 +698,13 @@ void TimeManager::setBlockSize (int bS)
 {
     jassert (bS != 0);
     blockSize = bS;
+    if(bS!=0&& sampleRate!=0){
+        // heuristical default value for link Latency
+        linkLatencyParam->defaultValue = (float)(10 + 1000.0*2 *blockSize/sampleRate );
+        if(!linkLatencyParam->isOverriden ){
+            linkLatencyParam->resetValue();
+        }
+    }
 
 
 

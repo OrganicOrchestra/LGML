@@ -20,8 +20,10 @@
 EnumParameterUI::EnumParameterUI (Parameter* parameter) :
     ParameterUI (parameter),
     ep ((EnumParameter*)parameter),
-    lastId (NoneId)
+    lastId (NoneId),
+    isSorted(true)
 {
+    addMouseListener(this, true);
     cb.addListener (this);
     cb.setTextWhenNoChoicesAvailable ("No choices for" + ep->niceName);
     cb.setTextWhenNothingSelected (ep->niceName);
@@ -36,17 +38,23 @@ EnumParameterUI::EnumParameterUI (Parameter* parameter) :
 
 EnumParameterUI::~EnumParameterUI()
 {
-    ep->removeAsyncEnumParameterListener (this);
+    if(parameter.get()){
+        ep->removeAsyncEnumParameterListener (this);
+    }
     cb.removeListener (this);
 }
 
-
+void EnumParameterUI::mouseDown(const MouseEvent & e){
+    if(e.mods.isLeftButtonDown())
+        ep->getModel()->refresh();
+}
 
 void EnumParameterUI::updateComboBox()
 {
     cb.clear (dontSendNotification);
 
 
+    keyIdMap.clear();
     idKeyMap.clear();
 
     if (EnumParameterModel* mod = ep->getModel())
@@ -54,19 +62,29 @@ void EnumParameterUI::updateComboBox()
         int id = 1;
         cb.addItem ("None", NoneId);
         NamedValueSet map = mod->getProperties();
+        StringArray keys ;
+        for(auto & k:map){
+            keys.add(k.name.toString());
+        }
+        if(isSorted){keys.sort(true);}
 
-        for (auto& kv : map)
+
+        for (auto& key : keys)
         {
-            String key = kv.name.toString();
+            
+//            String key = kv.name.toString();
             String displayed = key;//+" ["+kv.value.toString()+"]";
             cb.addItem (displayed, id);
             idKeyMap.set (id, key);
             keyIdMap.set (key, id);
             id++;
         }
+        
     }
 
+    
     String sel = ep->getFirstSelectedId().toString();
+    DBG("enum CB Select " << sel << " ; " << ep->shortName);
     selectString (sel);
 
     if (ep->isEditable)

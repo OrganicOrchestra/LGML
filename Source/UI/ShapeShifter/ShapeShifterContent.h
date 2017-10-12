@@ -42,6 +42,7 @@ class ShapeShifterContentComponent :
 {
 public:
     ShapeShifterContentComponent (const String& contentName);
+    virtual ~ShapeShifterContentComponent(){};
 };
 
 #endif  // SHAPESHIFTERCONTENT_H_INCLUDED

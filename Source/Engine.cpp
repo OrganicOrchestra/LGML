@@ -373,10 +373,10 @@ void Engine::MultipleAudioSettingsHandler::saveCurrent()
 
 }
 
-const uint32 Engine::getElapsedMillis()const {
+const int Engine::getElapsedMillis()const {
     int64 res =Time::currentTimeMillis() -engineStartTime;
     jassert(res>=0);
-    return (uint32)res;
+    return (int)res;
 }
 
 

@@ -19,10 +19,15 @@
 #include "../Controller.h"
 #include "../../MIDI/MIDIListener.h"
 #include "../../Scripting/Js/JsEnvironment.h"
+#include "../../MIDI/MIDIHelpers.h"
 class JsMIDIMessageListener;
 
 
-class MIDIController : public Controller, public MIDIListener, public MIDIListener::Listener, public JsEnvironment
+class MIDIController :
+public Controller,
+public MIDIListener,
+public EnumParameter::EnumListener,
+public JsEnvironment
 {
 public :
     DECLARE_OBJ_TYPE_DEFAULTNAME (MIDIController, "MIDI");
@@ -45,8 +50,8 @@ public :
 
     MidiMessageCollector midiCollector;
 
-    void currentDeviceChanged (MIDIListener* m) override;
-
+//    void enumOptionSelectionChanged(EnumParameter * ep, bool isSelected, bool isValid, const juce::Identifier & key)override;
+    void midiMessageSent()override;
 
     void    onContainerParameterChanged (Parameter* )override;
 
@@ -80,7 +85,9 @@ public :
     // from jsenvironment
     void clearNamespace()override;
 
+    MIDIHelpers::MIDIIOChooser midiChooser;
 private:
+
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIController)
