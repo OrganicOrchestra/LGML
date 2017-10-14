@@ -93,7 +93,7 @@ void AudioDeviceInNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBu
 void AudioDeviceInNode::setParentNodeContainer (NodeContainer* parent)
 {
     NodeBase::setParentNodeContainer (parent);
-    if(parent != NodeManager::getInstance()->mainContainer){
+    if(parent != NodeManager::getInstance()){
         LOG("!!! avoid creating AudioDeviceIn/Out in container, unstable behaviour");
         jassertfalse;
     }

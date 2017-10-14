@@ -275,7 +275,7 @@ void ConnectableNodeHeaderUI::buttonClicked (Button* b)
     }
     else if (b == &miniModeBT)
     {
-        node->miniMode->setValue (!node->miniMode->boolValue());
+        nodeUI->miniMode->setValue (!nodeUI->miniMode->boolValue());
     }
 }
 

@@ -45,6 +45,14 @@ void Parameter::resetValue (bool silentSet)
     setValue (defaultValue, silentSet, true);
 }
 
+void Parameter::setNewDefault(const var & v,bool notify){
+    defaultValue=v;
+    if(!isOverriden){
+        resetValue(!notify);
+    }
+
+}
+
 void Parameter::setValue (const var & _value, bool silentSet, bool force)
 {
     if (isCommitableParameter && !force)

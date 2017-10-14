@@ -145,7 +145,7 @@ public:
     ParameterContainer*   addContainerFromObject (const String& name, DynamicObject*   v)override;
 
     void clear()override;
-    void clear (bool keepContainerNodes);
+    
 
 
 

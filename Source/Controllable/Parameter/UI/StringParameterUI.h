@@ -30,7 +30,7 @@ public:
 
     String prefix;
     String suffix;
-
+    int arraySize;
     float maxFontHeight;
 
     bool autoSize;

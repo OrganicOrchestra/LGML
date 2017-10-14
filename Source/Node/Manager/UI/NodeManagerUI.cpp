@@ -15,28 +15,83 @@
 
 #include "NodeManagerUI.h"
 #include "../NodeManager.h"
+#include "../../../Controllable/Parameter/ParameterContainerSync.h"
+#include "../../../Controllable/ControllableHelpers.h"
+
+class UISync:public ParameterContainerSync{
+public:
+    UISync(const String &n,ParameterContainer * c,ParameterContainer *p) : ParameterContainerSync(n,c,p){
+        setRoot(c);
+    }
+
+    ParameterContainer* createContainerFromContainer(ParameterContainer * o) override{
+        ParameterContainer* res (nullptr);
+        if(dynamic_cast<ConnectableNode*>(o)){
+            auto pc = new ConnectableNodeUIParams(o->shortName);
+            all.add(pc);
+            res = pc;
+        }
+        return res;
+    }
+    OwnedArray<ConnectableNodeUIParams> all;
+
+
+};
+
+
+class NodeManagerUIFactory : public ParameterContainer{
+public:
+    NodeManagerUIFactory():ParameterContainer("NodesUI"){}
+
+    ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
+        if(auto c = getControllableContainerByName(name)){
+            return dynamic_cast<NodeManagerUI*>(c);
+        }
+        return new NodeManagerUI(NodeManager::getInstance());
+    };
+};
 
 //==============================================================================
-NodeManagerUI::NodeManagerUI (NodeManager* nodeManager) :
-    nodeManager (nodeManager),
-    currentViewer (nullptr)
+NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
+    nodeManager (_nodeManager),
+    currentViewer (nullptr),
+ParameterContainer("NodeManagerUI")
 {
+
+    uiSync = new UISync("UI",nodeManager,this);
+    auto p =getRoot(true)->getControllableContainerByName("NodesUI");
+    if(!p){
+        NodeManagerUIFactory * np = new NodeManagerUIFactory();
+        np->nameParam->isEditable = false;
+        p = getRoot(true)->addChildControllableContainer(np);
+
+    }
+    p->addChildControllableContainer(this);
     nodeManager->addNodeManagerListener (this);
-    setCurrentViewedContainer (nodeManager->mainContainer);
+    execOrDefer([this](){setCurrentViewedContainer (nodeManager);});
+    
+//    nodeManager->parentContainer->addChildControllableContainer(uiSync->getSlaveContainer());
 
 }
 
 NodeManagerUI::~NodeManagerUI()
 {
+
+    
     nodeManager->removeNodeManagerListener (this);
     clear();
     setCurrentViewedContainer (nullptr);
 
+    auto p =getRoot(true)->getControllableContainerByName("NodesUI");
+    if(p){
+        p->removeChildControllableContainer(this);
+    }
+    else jassertfalse;
 }
 
 void NodeManagerUI::clear()
 {
-    setCurrentViewedContainer (nodeManager->mainContainer);
+    setCurrentViewedContainer (nullptr);
 }
 
 void NodeManagerUI::resized()
@@ -63,8 +118,23 @@ int NodeManagerUI::getContentHeight()
 
 void NodeManagerUI::managerCleared()
 {
-    clear();
+//    execOrDefer([this](){clear();});
+    execOrDefer([this](){setCurrentViewedContainer(nodeManager);});
 }
+
+void NodeManagerUI::managerEndedLoading()
+{
+
+}
+ParameterContainer * NodeManagerUI::addContainerFromObject(const String &s ,DynamicObject * d) {
+    ParameterContainer* existing = dynamic_cast<ParameterContainer*>(getControllableContainerByName(s));
+    if(existing){
+        return existing;
+    }
+    
+    ParameterContainer * newP =  new ConnectableNodeUIParams(s);
+    return newP;
+};
 
 void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
 {
@@ -78,15 +148,22 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
 
     if (c != nullptr)
     {
-        currentViewer = new NodeContainerViewer (c);
+        auto p =dynamic_cast<ParameterContainer*>(getMirroredContainer(c,nodeManager));
+        if(!p){
+            p = new ParameterContainer();
+            addChildControllableContainer(p);
+        }
+        currentViewer = new NodeContainerViewer (c,p);
+
         addAndMakeVisible (currentViewer);
         currentViewer->setTopLeftPosition (0, 0);
         currentViewer->setSelected (true);
+        setSize (0, 0);
+        resized();
 
     }
 
-    setSize (0, 0);
-    resized();
+
     nodeManagerUIListeners.call (&NodeManagerUIListener::currentViewedContainerChanged);
 
 }
@@ -112,3 +189,5 @@ bool NodeManagerUI::keyPressed (const KeyPress& key)
 
     return false;
 }
+
+

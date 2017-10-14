@@ -24,19 +24,18 @@ juce_ImplementSingleton (NodeManager);
 
 NodeManager::NodeManager (StringRef name) :
     ThreadPool (4),
-    ParameterContainer ("Nodes")
+    NodeContainer ("node",true)
 {
     nameParam->isEditable = false;
     isLoading = false;
-    setCustomShortName ("node");
 
-    mainContainer = new NodeContainer ("mainContainer",true);
-    addChildControllableContainer (mainContainer);
-    mainContainer->skipControllableNameInAddress = true;
-    mainContainer->enabledParam->isControllableExposed = false;
-    mainContainer->miniMode->isControllableExposed = false;
-    mainContainer->nameParam->isControllableExposed = false;
-    mainContainer->nameParam->isEditable = false;
+
+    
+
+    enabledParam->isControllableExposed = false;
+    enabledParam->isHidenInEditor = true;
+    nameParam->isControllableExposed = false;
+    nameParam->isEditable = false;
 }
 
 NodeManager::~NodeManager()
@@ -46,11 +45,8 @@ NodeManager::~NodeManager()
 
 void NodeManager::clear()
 {
-    // maincontainer will automaticly delete all nodes with him
-    //  removeChildControllableContainer(mainContainer);
-    //mainContainer = new NodeContainer("mainContainer");
-    //  addChildControllableContainer(mainContainer);
-    mainContainer->clear();
+
+    NodeContainer::clear();
 
     dataGraph.clear();
 
@@ -75,7 +71,7 @@ void NodeManager::rebuildAudioGraph()
 {
     if (!isLoading && !isEngineLoadingFile())
     {
-        mainContainer->updateAudioGraph();
+        updateAudioGraph();
     }
 
 }

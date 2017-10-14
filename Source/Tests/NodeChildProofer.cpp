@@ -195,7 +195,7 @@ public:
 
         getEngine()->createNewGraph();
 
-        ConnectableNode* testingNode = NodeManager::getInstance()->mainContainer->addNode (NodeFactory::getTypeFromString (testingNodeName));
+        ConnectableNode* testingNode = NodeManager::getInstance()->addNode (NodeFactory::getTypeFromString (testingNodeName));
 
         expect (testingNode != nullptr, "node not found for name : " + testingNodeName);
         {

@@ -22,6 +22,7 @@
 #include "../JuceHeaderUI.h"//keep
 
 #warning fix name to UI
+
 class ControllableContainer;
 class Controllable;
 
@@ -87,5 +88,6 @@ bool execOrDefer (FunctionType func)
         return false;
     }
 }
+
 
 #endif  // CONTROLLABLEHELPERS_H_INCLUDED

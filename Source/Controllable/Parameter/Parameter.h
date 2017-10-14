@@ -49,6 +49,7 @@ public:
     bool isLocking;
     volatile bool isSettingValue;
 
+    void setNewDefault(const var & value,bool notify);
     void resetValue (bool silentSet = false);
     void setValue (const var & _value, bool silentSet = false, bool force = false);
     void configureFromObject (DynamicObject*) override;
@@ -84,16 +85,27 @@ public:
     {
     public:
         /** Destructor. */
-        virtual ~Listener() {}
+        virtual ~Listener() {
+            for(auto p:linkedP){
+                if(p.get())p->removeParameterListener(this);
+            }
+        }
         virtual void parameterValueChanged (Parameter* p) = 0;
         virtual void parameterRangeChanged (Parameter* ) {};
+        Array<WeakReference<Parameter> > linkedP;
     };
 
 
 
     ListenerList<Listener> listeners;
-    void addParameterListener (Listener* newListener) { listeners.add (newListener); }
-    void removeParameterListener (Listener* listener) { listeners.remove (listener); }
+    void addParameterListener (Listener* newListener) {
+        listeners.add (newListener);
+        newListener->linkedP.add(this);
+    }
+    void removeParameterListener (Listener* listener) {
+        listeners.remove (listener);
+        listener->linkedP.removeAllInstancesOf(this);
+    }
 
 
 

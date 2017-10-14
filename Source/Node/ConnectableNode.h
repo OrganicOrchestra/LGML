@@ -57,9 +57,7 @@ public:
     StringParameter* descriptionParam;
     BoolParameter* enabledParam;
 
-    //ui params
-    Point2DParameter<int>* nodePosition, *nodeSize;
-    BoolParameter* miniMode;
+
 
     void remove();
     virtual void clear();

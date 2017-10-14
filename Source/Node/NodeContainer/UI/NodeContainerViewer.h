@@ -23,14 +23,17 @@ class NodeConnectionUI;
 
 class NodeContainerViewer :
     public InspectableComponent,
-    public NodeContainerListener
+    public NodeContainerListener,
+    public ParameterContainer
 {
 public :
-    NodeContainerViewer (NodeContainer* container);
+    NodeContainerViewer (NodeContainer* container,ParameterContainer * uiP);
     virtual ~NodeContainerViewer();
 
     NodeContainer* nodeContainer;
+    
 
+    
     OwnedArray<ConnectableNodeUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI* editingConnection;
@@ -78,6 +81,9 @@ public :
     bool keyPressed (const KeyPress& key)override;
 
     void resizeToFitNodes();
+
+    ParameterContainer * uiParams;
+    
 };
 
 

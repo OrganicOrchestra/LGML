@@ -59,22 +59,13 @@ NodeContainer::~NodeContainer()
 {
     //connections.clear();
     rebuildTimer.stopTimer();
-    clear (false);
+    clear ();
     innerGraph->releaseResources();
 }
-void NodeContainer::clear()
-{
-
-    //    innerGraph->clear();
-    clear (false);
 
 
-    innerGraph->releaseResources();
 
-}
-
-
-void NodeContainer::clear (bool recreateContainerNodes)
+void NodeContainer::clear ()
 {
 
     while (connections.size() > 0)
@@ -486,14 +477,10 @@ void NodeContainer::prepareToPlay (double d, int i)
         if(!getContainersOfType<ContainerInNode>(false).size()){
 
             containerInNode = (ContainerInNode*)addNode (new ContainerInNode());
-#warning should be on ui side
-            containerInNode->nodePosition->setPoint (150, 100);
         }
 
         if( !getContainersOfType<ContainerOutNode>(false).size()){
             containerOutNode = (ContainerOutNode*)addNode (new ContainerOutNode());
-#warning should be on ui side
-            containerOutNode->nodePosition->setPoint (450, 100);
         }
 
         

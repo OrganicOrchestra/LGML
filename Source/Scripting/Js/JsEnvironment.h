@@ -239,7 +239,7 @@ private:
 
 
     void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable*)     override;
-    void childStructureChanged (ControllableContainer*, ControllableContainer*) override;
+    void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded) override;
 
     WeakReference<ParameterContainer> linkedContainer;
     bool isLoadingFile;

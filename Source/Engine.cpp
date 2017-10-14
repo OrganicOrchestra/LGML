@@ -65,8 +65,9 @@ Engine::Engine(): FileBasedDocument (filenameSuffix,
 
 {
     nameParam->isEditable = false;
+    ControllableContainer::globalRoot = this;
     ParameterFactory::logAllTypes();
-    skipControllableNameInAddress = true;
+    
     loadingStartTime = 0;
     initAudio();
     Logger::setCurrentLogger (LGMLLogger::getInstance());
@@ -191,7 +192,7 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
 void Engine::initAudio()
 {
 
-    graphPlayer.setProcessor (NodeManager::getInstance()->mainContainer->getAudioGraph());
+    graphPlayer.setProcessor (NodeManager::getInstance()->getAudioGraph());
     ScopedPointer<XmlElement> savedAudioState (getAppProperties()->getUserSettings()->getXmlValue ("audioDeviceState"));
     getAudioDeviceManager().initialise (64, 64, savedAudioState, true);
     getAudioDeviceManager().addChangeListener (&audioSettingsHandler);
@@ -219,7 +220,7 @@ void Engine::suspendAudio (bool shouldBeSuspended)
         {
             if (AudioIODevice* dev = getAudioDeviceManager().getCurrentAudioDevice())
             {
-                NodeManager::getInstance()->mainContainer->setRateAndBufferSizeDetails(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
+                NodeManager::getInstance()->setRateAndBufferSizeDetails(dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
                 ap->prepareToPlay (dev->getCurrentSampleRate(), dev->getCurrentBufferSizeSamples());
             }
             else
@@ -266,7 +267,9 @@ void Engine::clear()
     PresetManager::getInstance()->clear();
 
     NodeManager::getInstance()->clear();
-    //graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+
+    
+    //graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
 
 
 

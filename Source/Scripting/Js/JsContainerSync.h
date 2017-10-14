@@ -39,15 +39,15 @@ public:
 
 protected :
 
-    void childStructureChanged (ControllableContainer*, ControllableContainer* )override;
-    void childAddressChanged (ControllableContainer* c) override;
+    void childStructureChanged (ControllableContainer*, ControllableContainer* ,bool isAdded)override;
+    void childAddressChanged (ControllableContainer*,ControllableContainer* c) override;
 
     void updateControllableNamespace (ControllableContainer* c);
 
 
 private:
 
-    void removeAllListeners (ControllableContainer* c);
+    
 
     class JsContainerNamespace
     {

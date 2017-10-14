@@ -43,7 +43,7 @@ public:
     String shortName;
     bool isUserDefined;
     
-    bool skipControllableNameInAddress;
+    
     Uuid uid;
     OwnedArray<Controllable, CriticalSection> controllables;
     Array<WeakReference<ControllableContainer >, CriticalSection  > controllableContainers;
@@ -65,6 +65,7 @@ public:
     Controllable* getControllableByName (const String& name, bool searchNiceNameToo = false);
 
     ControllableContainer* addChildControllableContainer (ControllableContainer* container, bool notify = true);
+    ControllableContainer* getRoot(bool getGlobal);
     void removeChildControllableContainer (ControllableContainer* container);
     // add indexed container (ensure localIndex and position in the child container array are the same)
     // idx of -1 add after the ast indexed (may be not the last, array can contain other non indexed elements)
@@ -155,8 +156,10 @@ public:
      Controllable* getControllableForAddress (String addressSplit, bool recursive = true, bool getNotExposed = false);
      Controllable* getControllableForAddress (StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
     Array<Controllable*> getControllablesForExtendedAddress (StringArray addressSplit, bool recursive=true, bool getNotExposed=false);
+    ControllableContainer * getMirroredContainer(ControllableContainer * other,ControllableContainer * root = nullptr);
     bool containsControllable (Controllable* c, int maxSearchLevels = -1);
     String getControlAddress (ControllableContainer* relativeTo = nullptr);
+    StringArray getControlAddressArray (ControllableContainer* relativeTo = nullptr);
 
 
     String getUniqueNameInContainer (const String& sourceName, int suffix = 0, void* me = nullptr);
@@ -175,8 +178,8 @@ public:
         virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) {}
         virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) {}
         virtual void controllableFeedbackUpdate (ControllableContainer*, Controllable*) {}
-        virtual void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/) {}
-        virtual void childAddressChanged (ControllableContainer* ) {};
+        virtual void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool isAdded) {}
+        virtual void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* ) {};
         virtual void controllableContainerPresetLoaded (ControllableContainer*) {}
         virtual void containerCleared (ControllableContainer* /*origin*/) {}
     };
@@ -189,7 +192,7 @@ public:
 
     virtual DynamicObject* getObject() = 0;
 
-
+    static ControllableContainer * globalRoot;
 
 
 protected :
@@ -205,7 +208,8 @@ protected :
     static const Identifier controllablesId;
     friend class PresetManager;
 
-    void notifyStructureChanged (ControllableContainer* origin);
+    void notifyStructureChanged (ControllableContainer* origin,bool isAdded);
+    void notifyChildAddressChanged (ControllableContainer* origin);
 
     typename  WeakReference< ControllableContainer >::Master masterReference;
     friend class WeakReference<ControllableContainer>;

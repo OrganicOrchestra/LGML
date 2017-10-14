@@ -24,6 +24,7 @@
 #include "../NodeFactory.h"
 #include "../../../Utils/FactoryUIHelpers.h"
 
+class UISync;
 
 //==============================================================================
 /*
@@ -31,10 +32,11 @@
  */
 class NodeManagerUI :
     public juce::Component,
-    public NodeManager::NodeManagerListener
+    public NodeManager::NodeManagerListener,
+    public ParameterContainer
 {
 public:
-
+    
     NodeManagerUI (NodeManager* nodeManager);
     ~NodeManagerUI();
 
@@ -49,6 +51,7 @@ public:
     int getContentHeight();
 
     void managerCleared() override;
+    void managerEndedLoading() override;
 
     void setCurrentViewedContainer (NodeContainer* c);
 
@@ -67,6 +70,13 @@ public:
     void removeNodeManagerUIListener (NodeManagerUIListener* listener) { nodeManagerUIListeners.remove (listener); }
     bool keyPressed (const KeyPress& key)override;
 
+//    DynamicObject* getObject();
+//    void setFromObject(const DynamicObject * obj);
+
+
+
+    ScopedPointer<UISync> uiSync;
+    ParameterContainer * addContainerFromObject(const String &,DynamicObject * d) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 
 };
@@ -112,6 +122,7 @@ public :
 
     void reconstructViewerPath()
     {
+
         for (auto& b : pathButtons)
         {
             removeChildComponent (b);
@@ -119,7 +130,7 @@ public :
         }
 
         pathButtons.clear();
-
+        if( nmui->currentViewer){
         NodeContainer* c = nmui->currentViewer->nodeContainer;
 
         while (c != nullptr)
@@ -135,7 +146,7 @@ public :
             c = c->getParentNodeContainer();
 
         }
-
+        }
 
         resized();
     }
@@ -210,7 +221,11 @@ public :
                 {
                     ConnectableNode* n = nmui->currentViewer->nodeContainer->addNode (c);
                     jassert (n != nullptr);
-                    n->nodePosition->setPoint (mousePos);
+                    if(auto ui= nmui->getControllableForAddress(c->getControlAddressArray())){
+                        if(auto d = dynamic_cast<ConnectableNodeUIParams*>(ui)){
+                            d->nodePosition->setPoint (mousePos);
+                        }
+                    }
                 }
                 else
                 {

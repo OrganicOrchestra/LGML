@@ -25,6 +25,10 @@
 
 #include "JuceHeader.h" // for project info
 
+#ifndef ENGINE_SERVER_ONLY
+#include "Node/Manager/UI/NodeManagerUI.h"
+#endif
+
 /*================================
  this file implements all methods that are related to saving/loading : basicly iherited from FileBasedDocument
  */
@@ -51,12 +55,13 @@ void Engine::createNewGraph()
     clear();
     isLoadingFile = true;
 
-    ConnectableNode* node = NodeManager::getInstance()->mainContainer->addNode (NodeFactory::createFromTypeID (AudioDeviceInNode::getClassId()));
-    node->nodePosition->setPoint (150, 100);
-    node = NodeManager::getInstance()->mainContainer->addNode (NodeFactory::createFromTypeID ( AudioDeviceOutNode::getClassId()));
-    node->nodePosition->setPoint (450, 100);
+    ConnectableNode* node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID (AudioDeviceInNode::getClassId()));
+
+
+    node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID ( AudioDeviceOutNode::getClassId()));
     setFile (File());
     isLoadingFile = false;
+    
     handleAsyncUpdate();
 
 }
@@ -171,10 +176,11 @@ void Engine::handleAsyncUpdate()
         setLastDocumentOpened (getFile());
     }
 
-    //  graphPlayer.setProcessor(NodeManager::getInstance()->mainContainer->getAudioGraph());
+    //  graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
     //  suspendAudio(false);
     auto timeForLoading  =  getElapsedMillis() - loadingStartTime;
     suspendAudio (false);
+    
     engineListeners.call (&EngineListener::endLoadFile);
     NLOG ("Engine", "Session loaded in " << timeForLoading / 1000.0 << "s");
 }
@@ -234,6 +240,12 @@ DynamicObject* Engine::getObject()
     data->setProperty ("metaData", metaData);
 
     data->setProperty ("presetManager", PresetManager::getInstance()->getObject());
+
+
+    if( auto p = getControllableContainerByName("NodesUI")){
+        data->setProperty("NodesUI",p->getObject());
+    }
+
     data->setProperty ("nodeManager", NodeManager::getInstance()->getObject());
     data->setProperty ("controllerManager", ControllerManager::getInstance()->getObject());
 
@@ -275,8 +287,24 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     presetTask->end();
     nodeManagerTask->start();
-
+    
     if (d->hasProperty ("nodeManager")) NodeManager::getInstance()->configureFromObject (d->getProperty ("nodeManager").getDynamicObject());
+
+    #ifndef ENGINE_SERVER_ONLY
+    if(d->hasProperty("NodesUI")) {
+        auto p = dynamic_cast<ParameterContainer*>(getControllableContainerByName("NodesUI"));
+
+        if(!p){
+            jassertfalse;
+            p = new ParameterContainer("NodesUI");
+            addChildControllableContainer(p);
+        }
+            p->configureFromObject(d->getProperty("NodesUI").getDynamicObject());
+    
+    }
+#endif
+
+
 
     nodeManagerTask->end();
     controllerManagerTask->start();

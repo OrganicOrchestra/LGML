@@ -24,6 +24,8 @@
 #include "LGMLDragger.h"
 #include "AppPropertiesUI.h"
 
+#include "../Node/NodeContainer/UI/NodeContainerViewer.h"// for copy paste
+
 namespace CommandIDs
 {
 static const int open                   = 0x30000;
@@ -404,7 +406,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                         {
                             ConnectableNode* cn = dynamic_cast<ConnectableNode*> (Inspector::getInstance()->currentComponent->getRelatedParameterContainer());
                             NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
-
+                            NodeContainerViewer *  ncv = Inspector::getInstance()->currentComponent->findParentComponentOfClass<NodeContainerViewer>();
                             if (cn != nullptr)
                             {
                                 ConnectableNode* n = container->addNodeFromJSONData (d->getProperty ("data").getDynamicObject());
@@ -413,7 +415,15 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                 if (n)
                                 {
                                     n->uid = Uuid();
-                                    n->nodePosition->setPoint (n->nodePosition->getPoint() + Point<int> (100, 50));
+
+                                    auto nodeUI = ncv->getUIForNode(n);
+                                    if(nodeUI){
+                                        nodeUI->nodePosition->setPoint (ncv->getMouseXYRelative());
+                                    }
+                                    else{
+                                        jassertfalse;
+                                    }
+//                                    nodePosition->);
                                 }
                             }
                         }

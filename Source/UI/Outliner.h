@@ -49,11 +49,12 @@ public:
     void buttonClicked (Button*) override;
 };
 
-class OutlinerItem : public TreeViewItem
+class OutlinerItem : public TreeViewItem,ControllableContainer::Listener
 {
 public:
-    OutlinerItem (ParameterContainer* container);
-    OutlinerItem (Parameter* controllable);
+    OutlinerItem (ParameterContainer* container,bool generateSubTree);
+    OutlinerItem (Parameter* controllable,bool generateSubTree);
+    ~OutlinerItem();
 
     bool isContainer;
 
@@ -62,10 +63,13 @@ public:
 
 
     String getUniqueName() const override;
+    void controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori)override;
+    void controllableContainerRemoved(ControllableContainer * notif,ControllableContainer * ori)override;
 
     bool mightContainSubItems() override;
 
     Component* createItemComponent() override;
+    JUCE_LEAK_DETECTOR(OutlinerItem);
 };
 
 class Outliner : public ShapeShifterContentComponent,
@@ -95,7 +99,7 @@ public:
     void rebuildTree();
     void buildTree (OutlinerItem* parentItem, ParameterContainer* parentContainer, bool shouldFilter = true);
 
-    void childStructureChanged (ControllableContainer*, ControllableContainer*) override;
+    void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded) override;
     void handleAsyncUpdate()override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Outliner)
 

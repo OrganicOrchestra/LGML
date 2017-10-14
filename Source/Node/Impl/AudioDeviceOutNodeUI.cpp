@@ -55,7 +55,8 @@ void AudioDeviceOutNodeContentUI::init()
     getAudioDeviceManager().addChangeListener (this);
 
     updateVuMeters();
-    setDefaultSize (240, 80);
+    setDefaultSize (100, 80);
+    setDefaultPosition(250,100);
 
 
 

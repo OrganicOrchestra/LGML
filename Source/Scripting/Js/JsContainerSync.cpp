@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "JsContainerSync.h"
@@ -23,18 +23,11 @@ JsContainerSync::~JsContainerSync()
     for (auto& n : linkedContainerNamespaces)
     {
 
-        if (n->container.get()) removeAllListeners (n->container);
+        if (auto c = n->container.get()) c->removeControllableContainerListener (this);
     }
 }
 
-void JsContainerSync::removeAllListeners (ControllableContainer* c)
-{
-    for (auto& cc : c->controllableContainers)
-    {
-        cc->removeControllableContainerListener (this);
-        removeAllListeners (cc);
-    }
-}
+
 
 void JsContainerSync::linkToControllableContainer (const String& controllableNamespace, ControllableContainer* c)
 {
@@ -136,20 +129,18 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
 {
     DynamicObject*  myParent = parent;
 
-    // create or get object only if not skipping , if not add to parent
-    if (!container->skipControllableNameInAddress)
-    {
-        if (auto js = dynamic_cast<JsEnvironment*> (container))
-        {
-            myParent = js->localEnv;
-        }
-        else
-        {
-            myParent = new DynamicObject();
-        }
 
+    if (auto js = dynamic_cast<JsEnvironment*> (container))
+    {
+        myParent = js->localEnv;
     }
-    else {jassert (parent != nullptr);}
+    else
+    {
+        myParent = new DynamicObject();
+    }
+
+
+
 
     static Identifier getControllableForAddressId ("getControllableForAddress");
     myParent->setMethod (getControllableForAddressId, getControllableForAddress);
@@ -166,7 +157,7 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
     {
         if (c.get())
         {
-            c->addControllableContainerListener (this);
+
 
             if (c->isIndexedContainer())
             {
@@ -195,7 +186,7 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
             {
                 auto childObject = createDynamicObjectFromContainer (c, myParent);
 
-                if (!c->skipControllableNameInAddress && childObject != nullptr)
+                if (childObject != nullptr)
                     myParent->setProperty (c->shortName, childObject);
             }
         }
@@ -215,12 +206,11 @@ void JsContainerSync::updateControllableNamespace (ControllableContainer* c)
 
     while (inspected && !originNs)
     {
-        DBG ("look" << inspected->shortName << (inspected->skipControllableNameInAddress ? "skip" : ""));
+        DBG ("look" << inspected->shortName );
 
-        if (!inspected->skipControllableNameInAddress)
-        {
-            jsNamespace.add (inspected->shortName);
-        }
+
+        jsNamespace.add (inspected->shortName);
+
 
         for (auto& n : linkedContainerNamespaces)
         {
@@ -274,16 +264,16 @@ bool JsContainerSync::isDirty()
 {
     return aggregChanges.nsToUpdate.size() > 0;
 }
-void JsContainerSync::childStructureChanged (ControllableContainer* notifier, ControllableContainer* )
+void JsContainerSync::childStructureChanged (ControllableContainer* notifier, ControllableContainer* ,bool isAdded)
 {
-
+    
     aggregChanges.addNs (getContainerNamespace (notifier));
     //    updateControllableNamespace(c);
-
+    
 }
-void JsContainerSync::childAddressChanged (ControllableContainer* c)
+void JsContainerSync::childAddressChanged (ControllableContainer* notifier,ControllableContainer* c)
 {
     aggregChanges.addNs (getContainerNamespace (c));
     //    updateControllableNamespace(c->parentContainer);
-
+    
 }

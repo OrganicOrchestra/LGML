@@ -158,7 +158,7 @@ Parameter*   ParameterContainer::addParameter (Parameter* p)
     p->setParentContainer (this);
     controllables.add (p);
     controllableContainerListeners.call (&ControllableContainerListener::controllableAdded, this, p);
-    notifyStructureChanged (this);
+    notifyStructureChanged (this,true);
     addControllableInternal (p);
     p->addParameterListener (this);
     p->addAsyncParameterListener (this);

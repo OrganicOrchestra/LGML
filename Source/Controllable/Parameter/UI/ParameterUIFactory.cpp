@@ -37,6 +37,8 @@
 #include "../RangeParameter.h"
 #include "RangeParameterUI.h"
 
+#include "../Point2DParameter.h"
+
 
 
 #define CHKNRETURN(p,classN,UIN)  if(p->getTypeId()==classN::_objType) {return new UIN((classN*)p);}
@@ -53,7 +55,8 @@ ParameterUI* ParameterUIFactory::createDefaultUI (Parameter* t)
     CHKNRETURN (t, EnumParameter, EnumParameterUI)
     CHKNRETURN (t, RangeParameter, RangeParameterUI)
     CHKNRETURN (t, ParameterProxy, ParameterProxyUI)
-
+    CHKNRETURN(t,Point2DParameter<int>, StringParameterUI);
+    CHKNRETURN(t,Point2DParameter<float>, StringParameterUI);
     jassertfalse;
     return nullptr;
 

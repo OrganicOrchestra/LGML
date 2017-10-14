@@ -671,7 +671,7 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
 }
 
 
-void JsEnvironment::childStructureChanged (ControllableContainer* notifierC, ControllableContainer* changed)
+void JsEnvironment::childStructureChanged (ControllableContainer* notifierC, ControllableContainer* changed,bool isAdded)
 {
     // rebuild files that are not loaded properly if LGML JsEnvironment is not fully built at the time of their firstExecution
     if ((!_hasValidJsFile || !_isInSyncWithLGML) && !isLoadingFile && notifierC == getEngine() && (linkedContainer.get() && !linkedContainer->containsContainer (changed)))

@@ -39,20 +39,7 @@ ConnectableNode::ConnectableNode (const String& name, bool _hasMainAudioControl)
     descriptionParam = addNewParameter<StringParameter> ("Description", "Set a custom description for this node.", "Description");
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Enable processing of the node.\nDisable will bypass the node and pass the audio flux to the output", true);
 
-    nodePosition = addNewParameter<Point2DParameter<int>> ("nodePosition", "position on canvas", 0, 0, Array<var> {0, 0});
 
-    nodeSize = addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {0, 0});
-
-    miniMode = addNewParameter<BoolParameter> ("miniMode", "Mini Mode", false);
-
-    nodePosition->isControllableExposed = false;
-    nodeSize->isControllableExposed = false;
-
-    nodePosition->isPresettable = false;
-    nodeSize->isPresettable = false;
-
-    nodePosition->isHidenInEditor = true;
-    nodeSize->isHidenInEditor = true;
 
     descriptionParam->isPresettable = false;
     enabledParam->isPresettable = false;

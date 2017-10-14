@@ -26,13 +26,32 @@ class ConnectableNodeHeaderUI;
 #include "ConnectableNodeAudioCtlUI.h"
 
 
+class ConnectableNodeUIParams: public ParameterContainer{
+public:
+    ConnectableNodeUIParams(ConnectableNodeUIParams * _origin);
+    ConnectableNodeUIParams(StringRef n);
+    void initFromParams();
+    void notifyFromParams();
+    virtual ~ConnectableNodeUIParams();
+
+    
+
+    Point2DParameter<int>* nodePosition;
+    Point2DParameter<int>* nodeSize;
+    BoolParameter* miniMode;
+    WeakReference<ParameterContainer>  origin;
+
+};
+
 class ConnectableNodeUI :
     public InspectableComponent,
-    public ConnectableNode::ConnectableNodeListener
+    public ConnectableNode::ConnectableNodeListener,
+    public ConnectableNodeUIParams
 {
 public:
-    ConnectableNodeUI (ConnectableNode* cn, ConnectableNodeContentUI* contentUI = nullptr, ConnectableNodeHeaderUI* headerUI = nullptr);
+    ConnectableNodeUI (ConnectableNode* cn, ConnectableNodeUIParams* params ,ConnectableNodeContentUI* contentUI = nullptr, ConnectableNodeHeaderUI* headerUI = nullptr);
     virtual ~ConnectableNodeUI();
+
 
     WeakReference<ConnectableNode> connectableNode;
 
@@ -99,15 +118,14 @@ public:
 
 
 
-    //layout
-    int connectorWidth;
+
 
     // @ben conflit avec le parametre ;)
     bool bMiniMode;
 
-    //interaction
-    Point<int> nodeInitPos;
-    bool dragIsLocked;
+
+//    DynamicObject* getObject();
+//    void setFromObject(const DynamicObject * obj);
 
 
 
@@ -137,9 +155,13 @@ public:
     ConnectorComponent* getFirstConnector (NodeConnection::ConnectionType connectionType, ConnectorComponent::ConnectorIOType ioType);
 
 private:
+
+    //interaction
+    Point<int> nodeInitPos;
+
     void childBoundsChanged (Component*)override;
     void nodeParameterChanged (ConnectableNode*, Parameter* p) override;
-
+    void onContainerParameterChanged(Parameter *p) override;
 
     void mouseDown (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;

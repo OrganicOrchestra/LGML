@@ -67,6 +67,10 @@
         <FILE compile="0" file="Source/Controllable/ControllableIndexedContainer.h"
               id="W7C4WZ" name="ControllableIndexedContainer.h" resource="0"/>
         <GROUP id="lRGBzB" name="Parameter">
+          <FILE id="RCFnwU" name="ParameterContainerSync.cpp" compile="1" resource="0"
+                file="Source/Controllable/Parameter/ParameterContainerSync.cpp"/>
+          <FILE id="zSQQ5G" name="ParameterContainerSync.h" compile="0" resource="0"
+                file="Source/Controllable/Parameter/ParameterContainerSync.h"/>
           <GROUP id="y1gtRH" name="UI">
             <FILE compile="1" file="Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp"
                   id="YhmjKH" name="GenericParameterContainerEditor.cpp" resource="0"/>

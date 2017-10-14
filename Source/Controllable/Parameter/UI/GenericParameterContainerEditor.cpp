@@ -123,7 +123,7 @@ void GenericParameterContainerEditor::buttonClicked (Button* b)
     }
 }
 
-void GenericParameterContainerEditor::childStructureChanged (ControllableContainer*, ControllableContainer*)
+void GenericParameterContainerEditor::childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded)
 {
     if (!MessageManager::getInstance()->isThisTheMessageThread())
     {
@@ -510,7 +510,7 @@ void CCInnerContainerUI::controllableContainerRemoved (ControllableContainer*, C
 }
 
 
-void CCInnerContainerUI::childStructureChanged (ControllableContainer*, ControllableContainer*)
+void CCInnerContainerUI::childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded)
 {
     //resized();
 

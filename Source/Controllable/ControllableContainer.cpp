@@ -27,7 +27,7 @@
 #include <juce_osc/juce_osc.h>
 
 
-                
+ControllableContainer * ControllableContainer::globalRoot(nullptr);
 const Identifier ControllableContainer::controlAddressIdentifier ("controlAddress");
 
 const Identifier ControllableContainer::childContainerId ("/");
@@ -36,12 +36,11 @@ const Identifier ControllableContainer::controllablesId ("parameters");
 
 
 ControllableContainer::ControllableContainer (StringRef niceName) :
-    parentContainer (nullptr),
-    hasCustomShortName (false),
-    skipControllableNameInAddress (false),
-    numContainerIndexed (0),
-    localIndexedPosition (-1),
-    isUserDefined (false)
+parentContainer (nullptr),
+hasCustomShortName (false),
+numContainerIndexed (0),
+localIndexedPosition (-1),
+isUserDefined (false)
 {
 
 
@@ -65,7 +64,19 @@ ControllableContainer::~ControllableContainer()
     clearContainer();
     masterReference.clear();
 }
-
+ControllableContainer * ControllableContainer::getRoot(bool global){
+    if(global){
+        jassert(globalRoot);
+        return globalRoot;
+    }
+    else{
+        ControllableContainer * pc = this;
+        while(pc->parentContainer){
+            pc = pc->parentContainer;
+        }
+        return pc;
+    }
+}
 
 void ControllableContainer::clearContainer()
 {
@@ -98,21 +109,31 @@ void ControllableContainer::removeControllable (Controllable* c)
 
 
     controllables.removeObject (c);
-    notifyStructureChanged (this);
+    notifyStructureChanged (this,false);
 }
 
 
-void ControllableContainer::notifyStructureChanged (ControllableContainer* origin)
+void ControllableContainer::notifyStructureChanged (ControllableContainer* origin,bool isAdded)
 {
 
-    controllableContainerListeners.call (&Listener::childStructureChanged, this, origin);
+    controllableContainerListeners.call (&Listener::childStructureChanged, this, origin,isAdded);
 
     if (parentContainer)
     {
-        parentContainer->notifyStructureChanged (origin);
+        parentContainer->notifyStructureChanged (origin,isAdded);
     }
 }
 
+void ControllableContainer::notifyChildAddressChanged (ControllableContainer* origin)
+{
+
+    controllableContainerListeners.call (&Listener::childAddressChanged, this, origin);
+
+    if (parentContainer)
+    {
+        parentContainer->notifyChildAddressChanged (origin);
+    }
+}
 
 
 String ControllableContainer::setNiceName (const String& _niceName)
@@ -134,7 +155,8 @@ void ControllableContainer::setCustomShortName (const String& _shortName)
     shortName = _shortName;
     hasCustomShortName = true;
     updateChildrenControlAddress();
-    controllableContainerListeners.call (&Listener::childAddressChanged, this);
+    notifyChildAddressChanged(this);
+
 }
 
 
@@ -143,7 +165,7 @@ void ControllableContainer::setAutoShortName()
     hasCustomShortName = false;
     shortName = StringUtil::toShortName (getNiceName());
     updateChildrenControlAddress();
-    controllableContainerListeners.call (&Listener::childAddressChanged, this);
+    notifyChildAddressChanged(this);
 }
 
 
@@ -178,7 +200,7 @@ ControllableContainer* ControllableContainer::addChildControllableContainer (Con
     if (notify)
     {
         controllableContainerListeners.call (&Listener::controllableContainerAdded, this, container);
-        notifyStructureChanged (this);
+        notifyStructureChanged (this,true);
     }
 
     return container;
@@ -195,12 +217,12 @@ void ControllableContainer::removeChildControllableContainer (ControllableContai
     }
 
 
-    
+
     controllableContainerListeners.call (&Listener::controllableContainerRemoved, this, container);
     controllableContainers.removeAllInstancesOf (container);
 
     //  container->removeControllableContainerListener(this);
-    notifyStructureChanged (this);
+    notifyStructureChanged (this,false);
     container->setParentContainer (nullptr);
 }
 
@@ -218,7 +240,7 @@ void ControllableContainer::addChildIndexedControllableContainer (ControllableCo
     //  container->addControllableContainerListener(this);
     container->setParentContainer (this);
     controllableContainerListeners.call (&Listener::controllableContainerAdded, this, container);
-    notifyStructureChanged (this);
+    notifyStructureChanged (this,true);
 }
 
 
@@ -263,31 +285,29 @@ ControllableContainer* ControllableContainer::getControllableContainerByName (co
     return nullptr;
 
 }
+ControllableContainer * ControllableContainer::getMirroredContainer(ControllableContainer * other,ControllableContainer * root ){
 
+    StringArray arr = other->getControlAddressArray(root);
+    if(arr.size()==0){
+        return this;
+    }
+    return getControllableContainerForAddress(arr);
 
-ControllableContainer* ControllableContainer::getControllableContainerForAddress ( StringArray  addressSplit)
+}
+
+ControllableContainer* ControllableContainer::getControllableContainerForAddress (StringArray   addressSplit)
 {
 
     if (addressSplit.size() == 0) jassertfalse; // SHOULD NEVER BE THERE !
 
-    bool isTargetAControllable = addressSplit.size() == 1;
+    bool isTarget = addressSplit.size() == 1;
 
-    if (isTargetAControllable)
+    if (isTarget)
     {
 
         if (ControllableContainer* res = getControllableContainerByName (addressSplit[0]))
             return res;
 
-        //no found in direct children Container, maybe in a skip container ?
-        ScopedLock lk (controllableContainers.getLock());
-
-        for (auto& cc : controllableContainers)
-        {
-            if (cc->skipControllableNameInAddress)
-            {
-                if (ControllableContainer* res = cc->getControllableContainerForAddress (addressSplit)) return res;
-            }
-        }
     }
     else
     {
@@ -295,14 +315,12 @@ ControllableContainer* ControllableContainer::getControllableContainerForAddress
 
         for (auto& cc : controllableContainers)
         {
+            bool validName = cc->shortName == addressSplit[0];
 
-            if (!cc->skipControllableNameInAddress)
-            {
-                if (cc->shortName == addressSplit[0])
-                {
-                    addressSplit.remove (0);
-                    return cc->getControllableContainerForAddress (addressSplit);
-                }
+
+            if( validName){
+                addressSplit.remove (0);
+                return cc->getControllableContainerForAddress (addressSplit);
             }
             else
             {
@@ -325,20 +343,26 @@ ControllableContainer* ControllableContainer::getControllableContainerForAddress
 
 String ControllableContainer::getControlAddress (ControllableContainer* relativeTo)
 {
-    StringArray addressArray;
-    ControllableContainer* pc = this;
-
-    while (pc != relativeTo && pc != nullptr)
-    {
-        if (!pc->skipControllableNameInAddress) addressArray.insert (0, pc->shortName);
-
-        pc = pc->parentContainer;
-    }
-
+    StringArray addressArray(getControlAddressArray(relativeTo));
     if (addressArray.size() == 0)return "";
     else return "/" + addressArray.joinIntoString ("/");
 }
 
+StringArray ControllableContainer::getControlAddressArray (ControllableContainer* relativeTo){
+    StringArray addressArray;
+    ControllableContainer* pc = this;
+
+    while (pc != relativeTo && pc->parentContainer != nullptr)
+    {
+        addressArray.insert (0, pc->shortName);
+
+        pc = pc->parentContainer;
+    }
+    if(relativeTo){
+        jassert(pc == relativeTo);
+    }
+    return addressArray;
+}
 
 void ControllableContainer::setParentContainer (ControllableContainer* container)
 {
@@ -430,38 +454,21 @@ Controllable* ControllableContainer::getControllableForAddress (StringArray addr
 
     if (isTargetAControllable)
     {
+
+        //DBG("Check controllable Address : " + shortName);
+        const ScopedLock lk (controllables.getLock());
+
+        for (auto& c : controllables)
         {
-            //DBG("Check controllable Address : " + shortName);
-            const ScopedLock lk (controllables.getLock());
-
-            for (auto& c : controllables)
+            if (c->shortName == addressSplit[0])
             {
-                if (c->shortName == addressSplit[0])
-                {
-                    //DBG(c->shortName);
-                    if (c->isControllableExposed || getNotExposed) return c;
-                    else return nullptr;
-                }
-            }
-        }
-        {
-            //no found in direct children controllables, maybe in a skip container ?
-            ScopedLock lk (controllableContainers.getLock());
-
-            for (auto& cc : controllableContainers)
-            {
-                if (cc.get())
-                {
-                    if (cc->skipControllableNameInAddress)
-                    {
-                        Controllable* tc = cc->getControllableByName (addressSplit[0]);
-
-                        if (tc != nullptr) return tc;
-                    }
-                }
+                //DBG(c->shortName);
+                if (c->isControllableExposed || getNotExposed) return c;
+                else return nullptr;
             }
         }
     }
+
     else
     {
         ScopedLock lk (controllableContainers.getLock());
@@ -470,25 +477,14 @@ Controllable* ControllableContainer::getControllableForAddress (StringArray addr
         {
             if (cc.get())
             {
-                if (!cc->skipControllableNameInAddress)
-                {
-                    if (cc->shortName == addressSplit[0])
-                    {
-                        addressSplit.remove (0);
-                        return cc->getControllableForAddress (addressSplit, recursive, getNotExposed);
-                    }
-                }
-                else
-                {
-                    ControllableContainer* tc = cc->getControllableContainerByName (addressSplit[0]);
 
-                    if (tc != nullptr)
-                    {
-                        addressSplit.remove (0);
-                        return tc->getControllableForAddress (addressSplit, recursive, getNotExposed);
-                    }
-
+                if (cc->shortName == addressSplit[0])
+                {
+                    addressSplit.remove (0);
+                    return cc->getControllableForAddress (addressSplit, recursive, getNotExposed);
                 }
+
+
             }
         }
     }
@@ -511,34 +507,18 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
             for (auto& c : controllables)
             {
                 if (c->isControllableExposed || getNotExposed){
-                OSCAddress ad("/"+c->shortName);
-                OSCAddressPattern pat ("/"+addressSplit[0]);
-                if ( pat.matches(ad))
-                {
-                    //DBG(c->shortName);
-                     res.add(c);
-
-                }
-                }
-            }
-        }
-        {
-            //no found in direct children controllables, maybe in a skip container ?
-            ScopedLock lk (controllableContainers.getLock());
-
-            for (auto& cc : controllableContainers)
-            {
-                if (cc.get())
-                {
-                    if (cc->skipControllableNameInAddress)
+                    OSCAddress ad("/"+c->shortName);
+                    OSCAddressPattern pat ("/"+addressSplit[0]);
+                    if ( pat.matches(ad))
                     {
-                        res.addArray(cc->getControllablesForExtendedAddress(StringArray({addressSplit[0]}),
-                                                                       recursive,
-                                                                       getNotExposed));
+                        //DBG(c->shortName);
+                        res.add(c);
+
                     }
                 }
             }
         }
+
     }
 
     else
@@ -552,34 +532,20 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
 
             if (cc.get())
             {
-                if (!cc->skipControllableNameInAddress)
-                {   OSCAddress ad("/"+cc->shortName);
-                    OSCAddressPattern pat ("/"+addressSplit[0]);
-                    if (pat.matches(ad))
-                    {
 
-                        res.addArray(cc->getControllablesForExtendedAddress (deeperAddr, recursive, getNotExposed));
-                    }
-                }
-                else
+                OSCAddress ad("/"+cc->shortName);
+                OSCAddressPattern pat ("/"+addressSplit[0]);
+                if (pat.matches(ad))
                 {
 
-                    for(auto ccc:cc->controllableContainers){
-                        OSCAddress ad("/"+ccc->shortName);
-                        OSCAddressPattern pat ("/"+addressSplit[0]);
-                        if (pat.matches(ad))
-                        {
-                            res.addArray( ccc->getControllablesForExtendedAddress (deeperAddr, recursive, getNotExposed));
-                        }
-                    }
-
-
-                    
+                    res.addArray(cc->getControllablesForExtendedAddress (deeperAddr, recursive, getNotExposed));
                 }
+
+
             }
         }
     }
-    
+
     return res;
 }
 
@@ -652,12 +618,12 @@ String ControllableContainer::getUniqueNameInContainer (const String& sourceName
     }
 
     elem = getControllableContainerByName (resultName, true) ;
-
+    
     if (elem != nullptr && elem != me)
     {
         return getUniqueNameInContainer (sourceName, suffix + 1, me);
     }
-
+    
     return resultName;
 }
 
@@ -666,16 +632,16 @@ String ControllableContainer::getUniqueNameInContainer (const String& sourceName
 bool ControllableContainer::containsContainer (ControllableContainer* c)
 {
     if (c == this)return true;
-
+    
     ScopedLock lk (controllableContainers.getLock());
-
+    
     for (auto& cc : controllableContainers)
     {
         if (c == cc) {return true;}
-
+        
         if (cc->containsContainer (c))return true;
     }
-
+    
     return false;
 }
 
@@ -683,5 +649,5 @@ bool ControllableContainer::containsContainer (ControllableContainer* c)
 void ControllableContainer::setUserDefined (bool v)
 {
     isUserDefined = v;
-
+    
 }
