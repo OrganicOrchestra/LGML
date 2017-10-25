@@ -8,6 +8,7 @@ stages:
   - "build"
   - "test"
   - "package"
+  - "pages"
 
 build_job:
   stage: build
