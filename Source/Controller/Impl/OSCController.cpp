@@ -322,7 +322,7 @@ void OSCController::checkAndAddParameterIfNeeded (const OSCMessage& msg)
             {
                 c = new ParameterContainer (sa[i]);
                 c->setUserDefined (true);
-                tC->addChildControllableContainer (c, false);
+                tC->addChildControllableContainer (c, true);
             }
 
             tC = c ? c : nullptr;

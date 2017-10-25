@@ -43,6 +43,8 @@ showUserContainer(false)
         filterTextEditor.setTextToShowWhenEmpty ("search", Colours::grey);
         addAndMakeVisible (filterTextEditor);
         filterTextEditor.addListener (this);
+        linkToSelected.setTooltip("link viewed to selected node/controller");
+        linkToSelected.setButtonText("L");
         addAndMakeVisible(linkToSelected);
         linkToSelected.addListener(this);
         linkToSelected.setClickingTogglesState(true);
@@ -325,10 +327,16 @@ Component* OutlinerItem::createItemComponent()
     return new OutlinerItemComponent (this);
 }
 void OutlinerItem::controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori){
-#warning TODO better outliner handle filtering
+#warning TODO better outliner name filtering
+    if(notif && notif==container){
     addSubItem(new OutlinerItem (dynamic_cast<ParameterContainer*>(ori),true));
+    }
+    else if(container){
+        jassertfalse;
+    }
 }
 void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,ControllableContainer * ori){
+    if(notif && notif==container){
     int i = 0;
     while( i < getNumSubItems()){
         auto item = dynamic_cast<OutlinerItem*>(getSubItem(i));
@@ -339,8 +347,40 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
             i++;
         }
     }
+    }
+    else if (container){
+        jassertfalse;
+    }
 
 }
+
+void OutlinerItem::controllableAdded (ControllableContainer* notif, Controllable* ori) {
+    if(notif && notif==container){
+    addSubItem(new OutlinerItem (dynamic_cast<Parameter*>(ori),true));
+    }
+    else if (container){
+        jassertfalse;
+    }
+}
+void OutlinerItem::controllableRemoved (ControllableContainer* notif, Controllable* ori) {
+    if(notif && notif==container){
+    int i = 0;
+    while( i < getNumSubItems()){
+        auto item = dynamic_cast<OutlinerItem*>(getSubItem(i));
+        if(item->parameter==ori){
+            removeSubItem(i);
+        }
+        else{
+            i++;
+        }
+    }
+    }
+    else if (container){
+        jassertfalse;
+    }
+
+}
+
 String OutlinerItem::getUniqueName() const
 {
     // avoid empty names
@@ -348,6 +388,11 @@ String OutlinerItem::getUniqueName() const
     else            {return "/it/" + parameter->getControlAddress();}
 
 };
+
+////////////////////////////
+// OutlinerItemComponent
+////////////////////////
+
 
 OutlinerItemComponent::OutlinerItemComponent (OutlinerItem* _item) :
 InspectableComponent (_item->container),
@@ -358,8 +403,12 @@ paramUI (nullptr)
 {
 
     setTooltip (item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
+    if(item->isContainer?item->container->isUserDefined : item->parameter->isUserDefined){
+        label.setEditable(false,true,false);
+        label.addListener(this);
+    }
     addAndMakeVisible (&label);
-    label.setInterceptsMouseClicks (false, false);
+    label.setInterceptsMouseClicks (true, true);
     if(_item->isContainer && _item->container->isUserDefined){
         addUserParamBt = new AddElementButton();
         addAndMakeVisible(addUserParamBt);
@@ -491,3 +540,12 @@ void OutlinerItemComponent::buttonClicked (Button* b){
     }
     
 }
+
+void OutlinerItemComponent::labelTextChanged (Label* labelThatHasChanged) {
+    if(item->isContainer){
+        item->container->nameParam->setValue(label.getTextValue().toString());
+    }
+    else{
+        item->parameter->setNiceName(label.getTextValue().toString());
+    }
+};

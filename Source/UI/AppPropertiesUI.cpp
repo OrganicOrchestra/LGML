@@ -73,7 +73,7 @@ class PrefPanel : public PreferencesPanel{
 // AppPropertiesUI
 //////////////
 
-static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * parent){
+static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * parent,const int color = 0){
     DrawableComposite * res = new DrawableComposite();
 
 //    DrawablePath * border = new DrawablePath();
@@ -89,11 +89,11 @@ static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * 
 
     DrawableText * text = new DrawableText();
     text->setText(n.substring(0,1));
-    text->setColour(parent->findColour(TextButton::ColourIds::textColourOnId));
+    text->setColour(parent->findColour(color>0? color:TextButton::ColourIds::textColourOffId));
     text->setJustification(juce::Justification::centred);
     text->setFontHeight(parent->getButtonSize());
     res->addAndMakeVisible(text);
-//
+
 
 
     return res;
@@ -103,9 +103,21 @@ AppPropertiesUI::AppPropertiesUI():ResizableWindow("Settings",true){
 
 
     prefPanel = new PrefPanel();
+    const int normalColorId = TextButton::ColourIds::textColourOffId;
+    const int hoverColorId = TextButton::ColourIds::buttonOnColourId;
+//    const int downColorId = TextButton::ColourIds::textColourOnId;
 
-    prefPanel->addSettingsPage(GeneralPageName,createIcon(GeneralPageName,prefPanel) ,nullptr, nullptr);
-    prefPanel->addSettingsPage(AudioPageName,createIcon(AudioPageName,prefPanel) ,nullptr, nullptr);
+    prefPanel->addSettingsPage(GeneralPageName,
+                               createIcon(GeneralPageName,prefPanel,normalColorId) ,
+                               createIcon(GeneralPageName,prefPanel,hoverColorId) ,
+                               nullptr//createIcon(GeneralPageName,prefPanel,downColorId)
+                               );
+
+    prefPanel->addSettingsPage(AudioPageName,
+                               createIcon(AudioPageName,prefPanel,normalColorId) ,
+                               createIcon(AudioPageName,prefPanel,hoverColorId) ,
+                               nullptr//createIcon(AudioPageName,prefPanel,downColorId)
+                               );
 
 
 #ifdef JUCE_MAC

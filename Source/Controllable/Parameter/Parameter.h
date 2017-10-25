@@ -86,8 +86,10 @@ public:
     public:
         /** Destructor. */
         virtual ~Listener() {
-            for(auto p:linkedP){
-                if(p.get())p->removeParameterListener(this);
+            while(linkedP.size()){
+                if(auto p = linkedP.getLast().get())
+                    p->removeParameterListener(this);
+                linkedP.removeLast();
             }
         }
         virtual void parameterValueChanged (Parameter* p) = 0;

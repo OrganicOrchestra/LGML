@@ -34,7 +34,7 @@ ConnectableNodeUIParams::ConnectableNodeUIParams(ConnectableNodeUIParams * _orig
     }
 }
 void ConnectableNodeUIParams::initFromParams(){
-    auto nui = dynamic_cast<ConnectableNodeUIParams*> (origin.get());
+    auto nui = static_cast<ConnectableNodeUIParams*> (origin.get());
     nodePosition = nui->nodePosition;
     nodeSize = nui->nodeSize;
     miniMode = nui->miniMode;
@@ -202,7 +202,7 @@ void ConnectableNodeUI::resized()
 }
 
 void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
-    if(dynamic_cast<ConnectableNodeUI*>(this)){
+
         if (p == nodePosition )
         {
             if (!isDraggingFromUI)
@@ -216,7 +216,7 @@ void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
         {
             postOrHandleCommandMessage (setMiniModeId);
         }
-    }
+
 }
 
 void ConnectableNodeUI::nodeParameterChanged (ConnectableNode*, Parameter* p)
@@ -328,7 +328,7 @@ bool ConnectableNodeUI::keyPressed (const KeyPress& key)
     }
     else if (key.getModifiers().isCommandDown() && key.getKeyCode() == KeyPress::downKey)
     {
-        if (NodeContainer* c = dynamic_cast<NodeContainer* > (connectableNode.get()))
+        if (NodeContainer* c = static_cast<NodeContainer* > (connectableNode.get()))
         {
             if (NodeManagerUI* manager = findParentComponentOfClass<NodeManagerUI>())
             {

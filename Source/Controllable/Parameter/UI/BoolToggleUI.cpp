@@ -44,7 +44,7 @@ void BoolToggleUI::paint (Graphics& g)
     g.fillRoundedRectangle (getLocalBounds().toFloat(), 2);
 
     g.setFont (10);
-    g.setColour (Colours::white.darker (.1f));
+    g.setColour (findColour(valCheck?TextButton::textColourOnId : TextButton::textColourOffId));
 
     if (customTextDisplayed.isNotEmpty())
     {

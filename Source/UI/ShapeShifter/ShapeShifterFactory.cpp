@@ -33,7 +33,7 @@ ShapeShifterContent* ShapeShifterFactory::createContentForIndex (PanelName pn)
     switch (pn)
     {
         case NodeManagerPanel:
-            return new NodeManagerUIViewport (contentName, new NodeManagerUI (NodeManager::getInstance()));
+            return new NodeManagerUIViewport (contentName, NodeManagerUI::getInstance ());
 
 
         case TimeManagerPanel:

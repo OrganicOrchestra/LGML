@@ -395,6 +395,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
                     jassert (n != nullptr);
                     if(auto m = getUIForNode(n)){
                         m->nodePosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
+                        
                     }
 
                 }

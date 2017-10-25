@@ -27,12 +27,12 @@
 
 class OutlinerItem;
 class ParameterUI;
+
 class OutlinerItemComponent :
 public  InspectableComponent,
 public SettableTooltipClient,
-private Button::Listener
-
-
+private Button::Listener,
+private Label::Listener
 {
 public:
     OutlinerItemComponent (OutlinerItem* item);
@@ -47,6 +47,7 @@ public:
     void resized()override;
     InspectorEditor* createEditor() override;
     void buttonClicked (Button*) override;
+    void labelTextChanged (Label* labelThatHasChanged) override;
 };
 
 class OutlinerItem : public TreeViewItem,ControllableContainer::Listener
@@ -65,7 +66,8 @@ public:
     String getUniqueName() const override;
     void controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori)override;
     void controllableContainerRemoved(ControllableContainer * notif,ControllableContainer * ori)override;
-
+    void controllableAdded (ControllableContainer*, Controllable*) override;
+    void controllableRemoved (ControllableContainer*, Controllable*)override;
     bool mightContainSubItems() override;
 
     Component* createItemComponent() override;
@@ -73,7 +75,10 @@ public:
 };
 
 class Outliner : public ShapeShifterContentComponent,
-private ControllableContainerListener, AsyncUpdater, TextEditorListener,Button::Listener,Inspector::InspectorListener
+private ControllableContainerListener, AsyncUpdater,
+TextEditorListener,
+Button::Listener,
+Inspector::InspectorListener
 {
 public:
 

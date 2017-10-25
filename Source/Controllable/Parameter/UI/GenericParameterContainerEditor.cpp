@@ -119,7 +119,7 @@ void GenericParameterContainerEditor::buttonClicked (Button* b)
 {
     if (b == &parentBT)
     {
-        setCurrentInspectedContainer (dynamic_cast<ParameterContainer*> (innerContainer->container->parentContainer));
+        setCurrentInspectedContainer (static_cast<ParameterContainer*> (innerContainer->container->parentContainer));
     }
 }
 
@@ -481,13 +481,13 @@ void CCInnerContainerUI::controllableAdded (ControllableContainer*, Controllable
 
     if (c->isHidenInEditor) return;
 
-    auto pc = dynamic_cast<Parameter*> (c);
+    auto pc = static_cast<Parameter*> (c);
     addParameterUI (pc);
 }
 
 void CCInnerContainerUI::controllableRemoved (ControllableContainer*, Controllable* c)
 {
-    auto pc = dynamic_cast<Parameter*> (c);
+    auto pc = static_cast<Parameter*> (c);
     removeParameterUI (pc);
 }
 
@@ -495,7 +495,7 @@ void CCInnerContainerUI::controllableContainerAdded (ControllableContainer*, Con
 {
     if (cc->parentContainer != container) return;
 
-    auto pc = dynamic_cast<ParameterContainer*> (cc);
+    auto pc = static_cast<ParameterContainer*> (cc);
     jassert (pc);
     if (pc->isHidenInEditor) return;
     if (level < maxLevel) addCCInnerUI (pc);
@@ -504,7 +504,7 @@ void CCInnerContainerUI::controllableContainerAdded (ControllableContainer*, Con
 
 void CCInnerContainerUI::controllableContainerRemoved (ControllableContainer*, ControllableContainer* cc)
 {
-    auto pc = dynamic_cast<ParameterContainer*> (cc);
+    auto pc = static_cast<ParameterContainer*> (cc);
     removeCCInnerUI (pc);
     removeCCLink (pc);
 }

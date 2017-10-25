@@ -44,7 +44,7 @@ public:
     NodeManagerUIFactory():ParameterContainer("NodesUI"){}
 
     ParameterContainer* addContainerFromObject (const String& name, DynamicObject*   data) override{
-        if(auto c = getControllableContainerByName(name)){
+        if(auto c = getControllableContainerByName("NodeManagerUI")){
             return dynamic_cast<NodeManagerUI*>(c);
         }
         return new NodeManagerUI(NodeManager::getInstance());
@@ -52,6 +52,7 @@ public:
 };
 
 //==============================================================================
+juce_ImplementSingleton(NodeManagerUI);
 NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
     nodeManager (_nodeManager),
     currentViewer (nullptr),
@@ -64,7 +65,6 @@ ParameterContainer("NodeManagerUI")
         NodeManagerUIFactory * np = new NodeManagerUIFactory();
         np->nameParam->isEditable = false;
         p = getRoot(true)->addChildControllableContainer(np);
-
     }
     p->addChildControllableContainer(this);
     nodeManager->addNodeManagerListener (this);

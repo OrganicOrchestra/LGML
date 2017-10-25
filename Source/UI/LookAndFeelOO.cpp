@@ -44,9 +44,9 @@ LookAndFeelOO::LookAndFeelOO()
         0xff666666,      //    widgetBackground,
         0xff444444,      //    menuBackground,
         0xcc303030,      //    outline,
-        0xffCCCCCC,      //    defaultText,
+        Colours::white.darker(.1f),//0xffCCCCCC,      //    defaultText,
         Colour (0xff232323).brighter (0.5f), //    defaultFill,
-        0xff999999,      //    highlightedText,
+        Colours::white.darker(.0f),      //    highlightedText,
         0xff111111,      //    highlightedFill,
         0xffCCCCCC       //    menuText,
     );
@@ -54,7 +54,9 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (Slider::trackColourId, Colour (0xff99ff66));
     setColour (Slider::backgroundColourId, Colours::black.withAlpha (0.1f));
     setColour (TextButton::buttonOnColourId, Colour (0xffFF922F));
+//    setColour (TextButton::textColourOnId, Colours::black.brighter(.1f));
     setColour (Label::textWhenEditingColourId, Colours::white);
+
     setColour (TextEditor::ColourIds::highlightedTextColourId, Colours::white);
     setColour (TreeView::backgroundColourId,scheme.getUIColour (ColourScheme::UIColour::windowBackground));
     setColour(DrawableButton::backgroundOnColourId, Colours::transparentWhite);
@@ -62,7 +64,7 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (LGMLColors::audioColor, Colours::cadetblue);
     setColour (LGMLColors::dataColor, Colours::pink);
     setColour (LGMLColors::elementBackground, findColour (ResizableWindow::backgroundColourId).brighter (0.1f));
-    setColour (TooltipWindow::backgroundColourId, Colours::black);
+    setColour (TooltipWindow::ColourIds::textColourId, scheme.getUIColour (ColourScheme::UIColour::defaultText));
 
 }
 

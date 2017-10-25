@@ -36,8 +36,8 @@ class NodeManagerUI :
     public ParameterContainer
 {
 public:
-    
-    NodeManagerUI (NodeManager* nodeManager);
+    juce_DeclareSingleton(NodeManagerUI, false);
+    NodeManagerUI (NodeManager* nodeManager=NodeManager::getInstance());
     ~NodeManagerUI();
 
     NodeManager* nodeManager;

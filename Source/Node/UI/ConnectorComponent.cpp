@@ -47,7 +47,7 @@ ConnectorComponent::~ConnectorComponent()
 
 NodeBase* ConnectorComponent::getNodeBase()
 {
-    return dynamic_cast<NodeBase*> (node.get());
+    return static_cast<NodeBase*> (node.get());
 }
 
 void ConnectorComponent::generateToolTip()
