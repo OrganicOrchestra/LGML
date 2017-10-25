@@ -19,12 +19,14 @@
 
 #include "../../Utils/FactoryBase.h"
 
+
 class ConnectableNodeUI;
+class ConnectableNodeUIParams;
 class ConnectableNode;
 class NodeUIFactory: public FactoryBase<ConnectableNodeUI>
 {
 public:
-    static ConnectableNodeUI* createDefaultUI (ConnectableNode* t);
+    static ConnectableNodeUI* createDefaultUI (ConnectableNode* t,ConnectableNodeUIParams *uip);
 };
 
 #define REGISTER_NODEUI_TYPE(T) REGISTER_OBJ_TYPE(ConnectableNodeUI,T)

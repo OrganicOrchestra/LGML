@@ -33,7 +33,7 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := -march=armv6
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.3 -DJUCE_APP_VERSION_HEX=0x10203 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.4 -DJUCE_APP_VERSION_HEX=0x10204 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0
   JUCE_TARGET_APP := LGML
 
@@ -54,7 +54,7 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := -march=armv6
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.3 -DJUCE_APP_VERSION_HEX=0x10203 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.4 -DJUCE_APP_VERSION_HEX=0x10204 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0
   JUCE_TARGET_APP := LGML
 
@@ -75,7 +75,7 @@ ifeq ($(CONFIG),Ubuntu32)
     TARGET_ARCH := -m32
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.3 -DJUCE_APP_VERSION_HEX=0x10203 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.4 -DJUCE_APP_VERSION_HEX=0x10204 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0
   JUCE_TARGET_APP := LGML32
 
@@ -96,7 +96,7 @@ ifeq ($(CONFIG),Ubuntu)
     TARGET_ARCH := -m64
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.3 -DJUCE_APP_VERSION_HEX=0x10203 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.4 -DJUCE_APP_VERSION_HEX=0x10204 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0
   JUCE_TARGET_APP := LGML
 
@@ -117,6 +117,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o \
   $(JUCE_OBJDIR)/ControllableHelpers_6d200a9f.o \
   $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
+  $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o \
   $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o \
   $(JUCE_OBJDIR)/BetterStepper_3cf8b0d3.o \
   $(JUCE_OBJDIR)/BoolToggleUI_b0447c2a.o \
@@ -327,6 +328,11 @@ $(JUCE_OBJDIR)/ControllableHelpers_6d200a9f.o: ../../Source/Controllable/Control
 $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o: ../../Source/Controllable/ControllableIndexedContainer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ControllableIndexedContainer.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o: ../../Source/Controllable/Parameter/ParameterContainerSync.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ParameterContainerSync.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o: ../../Source/Controllable/Parameter/UI/GenericParameterContainerEditor.cpp

@@ -15,7 +15,7 @@
 
 #include "NodeContainerContentUI.h"
 #include "../../Manager/UI/NodeManagerUI.h"
-#include "../../../UI/ShapeShifter/ShapeShifterManager.h"
+
 #include "../../../Controllable/Parameter/UI/ParameterUI.h"
 
 
@@ -73,7 +73,7 @@ void NodeContainerContentUI::buttonClicked (Button* b)
 {
     if (b == &editContainerBT)
     {
-        NodeManagerUI* nmui = ((NodeManagerUIViewport*)ShapeShifterManager::getInstance()->getContentForName (PanelName::NodeManagerPanel))->nmui;
+        NodeManagerUI* nmui  = findParentComponentOfClass<NodeManagerUI>();
 
         if (nmui != nullptr)
         {

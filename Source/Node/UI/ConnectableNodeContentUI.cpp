@@ -35,13 +35,7 @@ void ConnectableNodeContentUI::setNodeAndNodeUI (ConnectableNode* _node, Connect
 
     init();
 
-    if (!node->nodeSize->isOverriden)
-    {
-        node->nodeSize->setValue (node->nodeSize->defaultValue, false);
-    }
 
-
-    setSize (node->nodeSize->getX(), node->nodeSize->getY());
 
 
 }
@@ -53,8 +47,16 @@ void ConnectableNodeContentUI::init()
 
 void ConnectableNodeContentUI::setDefaultSize (int w, int h)
 {
-    jassert (node.get());
-    node.get()->nodeSize->defaultValue = Array<var> {w, h};
+
+    nodeUI->nodeSize->setNewDefault( Array<var> {w, h},false);
 
 
 }
+void ConnectableNodeContentUI::setDefaultPosition (int x, int y)
+{
+
+    nodeUI->nodePosition->setNewDefault( Array<var> {x, y},false);
+    
+    
+}
+

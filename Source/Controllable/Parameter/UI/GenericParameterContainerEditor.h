@@ -80,7 +80,7 @@ public:
     void controllableRemoved (ControllableContainer*, Controllable*)override;
     void controllableContainerAdded (ControllableContainer*, ControllableContainer*)override;
     void controllableContainerRemoved (ControllableContainer*, ControllableContainer*)override;
-    void childStructureChanged (ControllableContainer*, ControllableContainer*)override;
+    void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded)override;
 
     void buttonClicked (Button* b)override;
 };
@@ -106,7 +106,7 @@ public :
 
     void buttonClicked (Button*  b)override;
 
-    void childStructureChanged (ControllableContainer*, ControllableContainer*) override;
+    void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded) override;
 
     void handleCommandMessage (int cID)override;
 

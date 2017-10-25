@@ -43,6 +43,8 @@ showUserContainer(false)
         filterTextEditor.setTextToShowWhenEmpty ("search", Colours::grey);
         addAndMakeVisible (filterTextEditor);
         filterTextEditor.addListener (this);
+        linkToSelected.setTooltip("link viewed to selected node/controller");
+        linkToSelected.setButtonText("L");
         addAndMakeVisible(linkToSelected);
         linkToSelected.addListener(this);
         linkToSelected.setClickingTogglesState(true);
@@ -98,7 +100,7 @@ void Outliner::setRoot(ParameterContainer * p){
     if (root.get()){
 
         root->addControllableContainerListener(this);
-        rootItem = new OutlinerItem (root);
+        rootItem = new OutlinerItem (root,true);
         treeView.setRootItem (rootItem);
 
 
@@ -128,15 +130,10 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
     for (auto& cc : childContainers)
     {
         if(showUserContainer || !cc->isUserDefined){
-        if (cc->skipControllableNameInAddress && !showHiddenContainers &&!cc->isHidenInEditor)
-        {
-            buildTree (parentItem, cc, shouldFilter);
-        }
-        else
-        {
-            OutlinerItem* ccItem = new OutlinerItem (cc);
-            parentItem->addSubItem (ccItem);
 
+            OutlinerItem* ccItem = new OutlinerItem (cc,false);
+            parentItem->addSubItem (ccItem);
+            
             buildTree (ccItem, cc, !cc->getNiceName().toLowerCase().contains (nameFilter));
 
             if (shouldFilterByName && ccItem->getNumSubItems() == 0 &&
@@ -145,7 +142,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
                 parentItem->removeSubItem (ccItem->getIndexInParent());
             }
 
-        }
+
         }
 
     }
@@ -158,7 +155,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
 
         if (!shouldFilterByName || c->niceName.toLowerCase().contains (nameFilter))
         {
-            OutlinerItem* cItem = new OutlinerItem (c);
+            OutlinerItem* cItem = new OutlinerItem (c,false);
             parentItem->addSubItem (cItem);
 
         }
@@ -172,19 +169,24 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
     }
 }
 
-void Outliner::childStructureChanged (ControllableContainer*, ControllableContainer*)
+void Outliner::childStructureChanged (ControllableContainer* notif, ControllableContainer* changed,bool isAdded)
 {
+    jassert(notif == root);
+
     if (!AsyncUpdater::isUpdatePending())
     {
+        if(nameFilter.isNotEmpty()){
         triggerAsyncUpdate();
+        }
     }
+    
 
 }
 
 
 void Outliner::handleAsyncUpdate()
 {
-    // generic behaviour waiting angine being ready
+    // generic behaviour waiting engine being ready
     if (getEngine())
     {
         if (getEngine()->isLoadingFile )
@@ -199,7 +201,7 @@ void Outliner::handleAsyncUpdate()
             }
             if(root.get()){
                 saveCurrentOpenChilds();
-                rootItem->clearSubItems();
+
                 rebuildTree();
                 restoreCurrentOpenChilds();
             }
@@ -223,6 +225,7 @@ void Outliner::saveCurrentOpenChilds()
     if(opennessStates.contains(root)){
         delete opennessStates[root];
     }
+
     opennessStates.set(root, treeView.getOpennessState (true));
 
 }
@@ -237,7 +240,7 @@ void Outliner::restoreCurrentOpenChilds()
     }
 
     if (xmlState.get()) {treeView.restoreOpennessState (*xmlState.get(), true);}
-    
+
 }
 void Outliner::buttonClicked(Button *b){
     if(b==&linkToSelected){
@@ -268,17 +271,51 @@ void Outliner::currentComponentChanged (Inspector * i ){
 // OUTLINER ITEM
 ///////////////////////////
 
-OutlinerItem::OutlinerItem (ParameterContainer* _container) :
+OutlinerItem::OutlinerItem (ParameterContainer* _container,bool generateSubTree) :
 container (_container), parameter (nullptr), isContainer (true)
 {
+    container->addControllableContainerListener(this);
+    if(generateSubTree){
+    for(auto c:container->getContainersOfType<ParameterContainer>(false)){
+       if(!c->isHidenInEditor) addSubItem(new OutlinerItem(c,generateSubTree));
+    }
 
+    for(auto c:container->getAllParameters(false,true)){
+       if(!c->isHidenInEditor && c!=container->nameParam) addSubItem(new OutlinerItem(c,generateSubTree));
+    }
+    }
 }
 
-OutlinerItem::OutlinerItem (Parameter* _parameter) :
+OutlinerItem::OutlinerItem (Parameter* _parameter,bool generateSubTree) :
 container (nullptr), parameter (_parameter), isContainer (false)
 {
+    if(auto p = parameter->parentContainer){
+        p->addControllableContainerListener(this);
+    }
+    else{
+        jassertfalse;
+    }
 }
 
+OutlinerItem::~OutlinerItem(){
+    if(isContainer){
+        if(container){
+            container->removeControllableContainerListener(this);
+        }
+        else{
+            jassertfalse;
+        }
+    }
+    else{
+        if(auto p = parameter->parentContainer){
+            p->removeControllableContainerListener(this);
+        }
+        else{
+            jassertfalse;
+        }
+    }
+
+}
 
 bool OutlinerItem::mightContainSubItems()
 {
@@ -289,6 +326,60 @@ Component* OutlinerItem::createItemComponent()
 {
     return new OutlinerItemComponent (this);
 }
+void OutlinerItem::controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori){
+#warning TODO better outliner name filtering
+    if(notif && notif==container){
+    addSubItem(new OutlinerItem (dynamic_cast<ParameterContainer*>(ori),true));
+    }
+    else if(container){
+        jassertfalse;
+    }
+}
+void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,ControllableContainer * ori){
+    if(notif && notif==container){
+    int i = 0;
+    while( i < getNumSubItems()){
+        auto item = dynamic_cast<OutlinerItem*>(getSubItem(i));
+        if(item->container==ori){
+            removeSubItem(i);
+        }
+        else{
+            i++;
+        }
+    }
+    }
+    else if (container){
+        jassertfalse;
+    }
+
+}
+
+void OutlinerItem::controllableAdded (ControllableContainer* notif, Controllable* ori) {
+    if(notif && notif==container){
+    addSubItem(new OutlinerItem (dynamic_cast<Parameter*>(ori),true));
+    }
+    else if (container){
+        jassertfalse;
+    }
+}
+void OutlinerItem::controllableRemoved (ControllableContainer* notif, Controllable* ori) {
+    if(notif && notif==container){
+    int i = 0;
+    while( i < getNumSubItems()){
+        auto item = dynamic_cast<OutlinerItem*>(getSubItem(i));
+        if(item->parameter==ori){
+            removeSubItem(i);
+        }
+        else{
+            i++;
+        }
+    }
+    }
+    else if (container){
+        jassertfalse;
+    }
+
+}
 
 String OutlinerItem::getUniqueName() const
 {
@@ -297,6 +388,11 @@ String OutlinerItem::getUniqueName() const
     else            {return "/it/" + parameter->getControlAddress();}
 
 };
+
+////////////////////////////
+// OutlinerItemComponent
+////////////////////////
+
 
 OutlinerItemComponent::OutlinerItemComponent (OutlinerItem* _item) :
 InspectableComponent (_item->container),
@@ -307,8 +403,12 @@ paramUI (nullptr)
 {
 
     setTooltip (item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
+    if(item->isContainer?item->container->isUserDefined : item->parameter->isUserDefined){
+        label.setEditable(false,true,false);
+        label.addListener(this);
+    }
     addAndMakeVisible (&label);
-    label.setInterceptsMouseClicks (false, false);
+    label.setInterceptsMouseClicks (true, true);
     if(_item->isContainer && _item->container->isUserDefined){
         addUserParamBt = new AddElementButton();
         addAndMakeVisible(addUserParamBt);
@@ -414,7 +514,7 @@ void OutlinerItemComponent::mouseDown (const MouseEvent& e)
 InspectorEditor* OutlinerItemComponent::createEditor()
 {
     if (item->isContainer) return InspectableComponent::createEditor();
-    
+
     return nullptr;//new ParameterEditor(this,item->parameter);
 }
 
@@ -436,7 +536,16 @@ void OutlinerItemComponent::buttonClicked (Button* b){
                 p->removeControllable(item->parameter);
             else jassertfalse;
         }
-
+        
     }
-
+    
 }
+
+void OutlinerItemComponent::labelTextChanged (Label* labelThatHasChanged) {
+    if(item->isContainer){
+        item->container->nameParam->setValue(label.getTextValue().toString());
+    }
+    else{
+        item->parameter->setNiceName(label.getTextValue().toString());
+    }
+};

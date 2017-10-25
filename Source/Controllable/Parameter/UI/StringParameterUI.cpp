@@ -17,6 +17,22 @@
 #include "StringParameterUI.h"
 #include "../../../UI/Style.h"
 
+String varToString(const var &v){
+    String stringValue;
+    if(v.isArray()){
+        StringArray arr;
+        for(auto vl:*v.getArray()){
+            arr.add(vl.toString());
+        }
+        stringValue = "[" + arr.joinIntoString(",") + " ]";
+    }
+    else{
+        stringValue = v.toString();
+    }
+    return stringValue;
+
+}
+
 StringParameterUI::StringParameterUI (Parameter* p) :
     ParameterUI (p), autoSize (false), maxFontHeight (12)
 {
@@ -29,7 +45,7 @@ StringParameterUI::StringParameterUI (Parameter* p) :
     nameLabel.setText (prefix + parameter->niceName + suffix, NotificationType::dontSendNotification);
 
     valueLabel.setJustificationType (Justification::topLeft);
-    valueLabel.setText (parameter->value, NotificationType::dontSendNotification);
+    valueLabel.setText (varToString(parameter->value), NotificationType::dontSendNotification);
 
     bool stringEditable = parameter->isEditable ;
     valueLabel.setEditable (false, stringEditable);
@@ -40,7 +56,7 @@ StringParameterUI::StringParameterUI (Parameter* p) :
     setBackGroundIsTransparent (!stringEditable);
     nameLabel.setTooltip (p->description);
 
-
+    arraySize = p->value.isArray()?p->value.getArray()->size():-1;
 
     setSize (200, 20); //default size
 }
@@ -100,8 +116,9 @@ void StringParameterUI::resized()
 
 void StringParameterUI::valueChanged (const var& v)
 {
-    valueLabel.setText (prefix + v.toString() + suffix, NotificationType::dontSendNotification);
+    String stringValue = varToString(v);
 
+valueLabel.setText (prefix + stringValue+ suffix, NotificationType::dontSendNotification);
     if (autoSize)
     {
         int nameLabelWidth = nameLabel.getFont().getStringWidth (nameLabel.getText());
@@ -117,6 +134,24 @@ void StringParameterUI::valueChanged (const var& v)
 
 void StringParameterUI::labelTextChanged (Label*)
 {
+    if(arraySize!=-1){
+        StringArray arr;
+        String sv = valueLabel.getText();
+        sv = sv.removeCharacters("[]");
+        arr.addTokens(sv,",","");
+        Array<var> varList;
+        for(int i = 0 ; i < arraySize;i++){
+            if(i<arr.size()){
+                varList.add(arr[i].getFloatValue());
+            }
+            else{
+                varList.add(0);
+            }
+        }
+        parameter->setValue(varList);
+    }
+    else{
     //String  originalString = valueLabel.getText().substring(prefix.length(), valueLabel.getText().length() - suffix.length());
     parameter->setValue (valueLabel.getText());
+    }
 }

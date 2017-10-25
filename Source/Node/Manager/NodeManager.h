@@ -27,7 +27,7 @@ Node Manager Contain all Node and synchronize building of audioGraph (AudioProce
 
 
 class NodeManager:
-    public ParameterContainer,
+    public NodeContainer,
     public ThreadPool
 {
 
@@ -40,11 +40,10 @@ public:
 
     DataProcessorGraph dataGraph;
 
-    ScopedPointer<NodeContainer> mainContainer;
 
     void rebuildAudioGraph();
 
-    void clear();
+    void clear()override;
 
 
     void configureFromObject (DynamicObject* data) override;
@@ -70,6 +69,7 @@ public:
 
 private:
     // @ben no listener here for now, only because it's overkilling (and Im lazy..)
+    friend class Engine;
     void notifiedJobsEnded();
     void notifiedJobsProgressed (float progress);
 

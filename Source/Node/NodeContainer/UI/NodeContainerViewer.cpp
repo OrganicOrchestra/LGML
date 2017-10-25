@@ -20,11 +20,14 @@
 #include "../../../Utils/FactoryUIHelpers.h"
 #include "../../UI/NodeUIFactory.h"
 
-NodeContainerViewer::NodeContainerViewer (NodeContainer* container) :
+NodeContainerViewer::NodeContainerViewer (NodeContainer* container,ParameterContainer * uiP) :
     InspectableComponent (container, "node"),
     nodeContainer (container),
-    editingConnection (nullptr)
+    editingConnection (nullptr),
+uiParams(uiP),
+ParameterContainer("ui_"+container->getNiceName())
 {
+
     setInterceptsMouseClicks (true, true);
     nodeContainer->addNodeContainerListener (this);
 
@@ -104,13 +107,20 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
 {
     if (getUIForNode (node) == nullptr)
     {
-        ConnectableNodeUI* nui = NodeUIFactory::createDefaultUI (node);
-        nui->setTopLeftPosition (node->nodePosition->getPoint());
+        
+        ConnectableNodeUI* nui =
+        NodeUIFactory::createDefaultUI (node,
+                                        dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(node->shortName)));
+
+        
+        
         nodesUI.add (nui);
+        addChildControllableContainer(nui);
         addAndMakeVisible (nui);
     }
     else
     {
+        jassertfalse;
         //ui for this node already in list
     }
 }
@@ -125,7 +135,10 @@ void NodeContainerViewer::removeNodeUI (ConnectableNode* node)
     if (nui != nullptr)
     {
         removeChildComponent (nui);
+        removeChildControllableContainer(nui);
         nodesUI.removeObject (nui);
+
+
 
     }
     else
@@ -380,7 +393,11 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
                 {
                     ConnectableNode* n = (ConnectableNode*)nodeContainer->addNode (c);
                     jassert (n != nullptr);
-                    n->nodePosition->setPoint (mousePos);
+                    if(auto m = getUIForNode(n)){
+                        m->nodePosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
+                        
+                    }
+
                 }
                 else
                 {
@@ -443,7 +460,10 @@ bool NodeContainerViewer::keyPressed (const KeyPress& key)
 
                 auto* n = nodeContainer->addNode (c);
                 jassert (n != nullptr);
-                n->nodePosition->setPoint (mousePos);
+                if(auto m = getUIForNode(n)){
+                    m->nodePosition->setPoint (mousePos);
+                }
+
             }
             else
             {

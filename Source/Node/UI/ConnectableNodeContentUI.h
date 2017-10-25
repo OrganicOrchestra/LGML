@@ -31,6 +31,7 @@ public:
     ConnectableNodeUI* nodeUI;
     WeakReference<ConnectableNode> node;
     void setDefaultSize (int w, int h);
+    void setDefaultPosition (int x, int y);
 
     virtual void setNodeAndNodeUI (ConnectableNode* node, ConnectableNodeUI* nodeUI);
     virtual void init();

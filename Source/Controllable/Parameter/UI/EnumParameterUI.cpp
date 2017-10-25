@@ -84,7 +84,7 @@ void EnumParameterUI::updateComboBox()
 
     
     String sel = ep->getFirstSelectedId().toString();
-    DBG("enum CB Select " << sel << " ; " << ep->shortName);
+//    DBG("enum CB Select " << sel << " ; " << ep->shortName);
     selectString (sel);
 
     if (ep->isEditable)
