@@ -27,7 +27,7 @@ static bool runningUnderDebugger = juce_isRunningUnderDebugger();\
 uint32 now = Time::getMillisecondCounter();\
 if( (now - lastTime>300 )|| runningUnderDebugger){ \
 String fullPath = String(__FILE__);\
-tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::separator) + 1 ,fullPath.lastIndexOfChar('.') ) << "::" <<  textToWrite;\
+tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::getSeparatorChar()) + 1 ,fullPath.lastIndexOfChar('.') ) << "::" <<  textToWrite;\
 juce::Logger::writeToLog(tempDbgBuf);\
 lastTime = now;})
 
@@ -35,7 +35,7 @@ lastTime = now;})
 // log informing file from where it was outputed
 #define LOG(textToWrite) JUCE_BLOCK_WITH_FORCED_SEMICOLON (juce::String tempDbgBuf;\
 String fullPath = String(__FILE__);\
-tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::separator) + 1 ,fullPath.lastIndexOfChar('.') ) << "::" <<  textToWrite;\
+tempDbgBuf << fullPath.substring (fullPath.lastIndexOfChar (File::getSeparatorChar()) + 1 ,fullPath.lastIndexOfChar('.') ) << "::" <<  textToWrite;\
 juce::Logger::writeToLog(tempDbgBuf);)
 
 
