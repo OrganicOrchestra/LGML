@@ -59,8 +59,8 @@ public:
 
     bool isContainer;
 
-    ParameterContainer* container;
-    Parameter* parameter;
+    WeakReference<ParameterContainer> container;
+    WeakReference<Parameter> parameter;
 
 
     String getUniqueName() const override;

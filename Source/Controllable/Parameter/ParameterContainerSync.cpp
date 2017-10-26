@@ -113,7 +113,8 @@ void ParameterContainerSync::checkContExists(ParameterContainer * fromRoot){
     }
 }
 void ParameterContainerSync::checkContInSync(ParameterContainer * fromRoot){
-    if(!slave){jassertfalse;return;}
+    if(!slave ){jassertfalse;return;}
+    if(!fromRoot){jassertfalse;return;} // happens on deletions
 
 
     for(auto c:fromRoot->getContainersOfType<ParameterContainer>(false)){

@@ -385,8 +385,8 @@ void OutlinerItem::controllableRemoved (ControllableContainer* notif, Controllab
 String OutlinerItem::getUniqueName() const
 {
     // avoid empty names
-    if (isContainer) {return "/it/" + container->getControlAddress();}
-    else            {return "/it/" + parameter->getControlAddress();}
+    if (isContainer) {return "/it/" + container.get()->getControlAddress();}
+    else            {return "/it/" + parameter.get()->getControlAddress();}
 
 };
 

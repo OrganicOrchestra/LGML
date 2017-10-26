@@ -322,7 +322,7 @@ var JsEnvironment::callFunction (const String& function, const Array<var>& args,
 
         if (result != nullptr)result->fail (noFunctionLogIdentifier.toString());
 
-        if (logResult)NLOG (localNamespace, "!!!" << noFunctionLogIdentifier.toString());
+        if(logResult) NLOG (localNamespace, "!!!" << noFunctionLogIdentifier.toString());
 
         return var::undefined();
     }

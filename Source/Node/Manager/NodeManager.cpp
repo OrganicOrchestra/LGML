@@ -40,7 +40,7 @@ NodeManager::NodeManager (StringRef name) :
 
 NodeManager::~NodeManager()
 {
-    clear();
+    NodeManager::clear();
 }
 
 void NodeManager::clear()
