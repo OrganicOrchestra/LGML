@@ -41,7 +41,10 @@ void ContainerOutNode::setParentNodeContainer (NodeContainer* nc)
 
     NodeBase::setParentNodeContainer (nc);
     setPreferedNumAudioOutput (0);
-    setPreferedNumAudioInput (nc->getTotalNumOutputChannels());
+//    setPreferedNumAudioInput (nc->getTotalNumOutputChannels());
+    if (parentNodeContainer) {
+        parentNodeContainer->setPreferedNumAudioOutput (AudioGraphIOProcessor::getTotalNumInputChannels());
+    }
 
 }
 

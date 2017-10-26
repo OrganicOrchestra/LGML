@@ -57,7 +57,11 @@ void ContainerInNode::setParentNodeContainer (NodeContainer* nc)
 {
     NodeBase::setParentNodeContainer (nc);
     setPreferedNumAudioInput (0);
-    setPreferedNumAudioOutput (nc->getTotalNumInputChannels());
+//    setPreferedNumAudioOutput (nc->getTotalNumInputChannels());
+    if (parentNodeContainer) {
+        parentNodeContainer->setPreferedNumAudioInput (NodeBase::getTotalNumOutputChannels());
+    }
+
 }
 
 //DATA
@@ -74,7 +78,6 @@ void ContainerInNode::setNumChannels (int num)
     setPreferedNumAudioOutput (num);
     AudioGraphIOProcessor::setPlayConfigDetails (0, num, NodeBase::getSampleRate(), NodeBase::getBlockSize());
     jassert (NodeBase::getTotalNumOutputChannels() == AudioGraphIOProcessor::getTotalNumOutputChannels());
-
     if (parentNodeContainer) {
         parentNodeContainer->setPreferedNumAudioInput (NodeBase::getTotalNumOutputChannels());
     }
