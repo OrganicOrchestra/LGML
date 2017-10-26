@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "NodeContainer.h"
@@ -29,12 +29,12 @@ NodeContainer::NodeContainer (StringRef name):NodeContainer(name,false){
 
 }
 NodeContainer::NodeContainer (StringRef name,bool _isRoot) :
-    containerInNode (nullptr),
-    containerOutNode (nullptr),
-    NodeBase (name, false),
-    nodeChangeNotifier (10000),
-    rebuildTimer (this),
-    isRoot(_isRoot)
+containerInNode (nullptr),
+containerOutNode (nullptr),
+NodeBase (name, false),
+nodeChangeNotifier (10000),
+rebuildTimer (this),
+isRoot(_isRoot)
 {
 
     innerGraph = new AudioProcessorGraph();
@@ -51,7 +51,7 @@ NodeContainer::NodeContainer (StringRef name,bool _isRoot) :
 
 
     //maybe keep it ?
-//    addConnection (containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
+    //    addConnection (containerInNode, containerOutNode, NodeConnection::ConnectionType::AUDIO);
 }
 
 
@@ -79,8 +79,8 @@ void NodeContainer::clear ()
 
 
 
-//    setPreferedNumAudioOutput (2);
-//    setPreferedNumAudioInput (2);
+    //    setPreferedNumAudioOutput (2);
+    //    setPreferedNumAudioInput (2);
 
 
     ConnectableNode::clear();
@@ -107,7 +107,7 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
     if (NodeContainer* nc = dynamic_cast<NodeContainer*> (n))
     {
         nodeContainers.add (nc);
-//        nc->NodeContainer::clear (!isEngineLoadingFile());
+        //        nc->NodeContainer::clear (!isEngineLoadingFile());
         //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
     }
 
@@ -118,7 +118,7 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
 
 
     n->setParentNodeContainer (this);
-    
+
     if (nodeData) n->configureFromObject (nodeData);
 
 
@@ -139,10 +139,12 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
 
     if (n == nullptr) {jassertfalse; return false;}
 
-    removeChildControllableContainer (n);
-
     nodeChangeNotifier.addMessage (new NodeChangeMessage (n, false));
     nodeContainerListeners.call(&NodeContainerListener::nodeRemoved, n);
+    
+    if(!doDelete)removeChildControllableContainer (n);
+
+
 
 
     n->clear();
@@ -158,8 +160,9 @@ bool NodeContainer::removeNode (ConnectableNode* n,bool doDelete)
     return true;
 }
 
-ConnectableNode* NodeContainer::getNodeForName (const String& name)
+ConnectableNode* NodeContainer::getNodeForName (const String& _name)
 {
+    const String name = _name.toLowerCase();
     for (auto& n : nodes)
     {
         if (n->shortName == name) return n;
@@ -189,13 +192,13 @@ void NodeContainer::updateAudioGraph (bool lock)
     }
 
     {
-    ScopedPointer<ScopedLock> lk;
-    if(lock){lk = new ScopedLock(getAudioGraph()->getCallbackLock());}
+        ScopedPointer<ScopedLock> lk;
+        if(lock){lk = new ScopedLock(getAudioGraph()->getCallbackLock());}
 
 
         if(NodeBase::getBlockSize()==0 || NodeBase::getSampleRate()==0){
             //            jassertfalse;
-        // node is not ready , postponing setup
+            // node is not ready , postponing setup
             if( !isEngineLoadingFile()) {
                 jassertfalse;
             }
@@ -274,63 +277,74 @@ ParameterContainer*   NodeContainer::addContainerFromObject (const String& /*nam
 void NodeContainer::configureFromObject (DynamicObject* data)
 {
     // do we really need that ???
-//    clear (false);
+    //    clear (false);
+
+
+
+
+
     NodeBase::configureFromObject (data);
 
 
-    Array<var>* connectionsData = data->getProperty ("connections").getArray();
 
-    if (connectionsData)
+    // save connection and remove them from object to pass valid object to NodeBaseParsing
+    Array<var>* _connectionsData = data->getProperty ("connections").getArray();
+    Array<var> connectionsData;
+    if(_connectionsData){
+        for (auto &v:*_connectionsData){
+            connectionsData.add(v);
+        }
+    }
+
+    for (var& cData : connectionsData)
     {
-        for (var& cData : *connectionsData)
+
+        ConnectableNode* srcNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("srcNode").toString())) ;
+        ConnectableNode* dstNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("dstNode").toString()));
+
+        int cType = cData.getProperty ("connectionType", var());
+
+        if (srcNode && dstNode && isPositiveAndBelow (cType, (int)NodeConnection::ConnectionType::UNDEFINED))
         {
+            NodeConnection* c = addConnection (srcNode, dstNode, NodeConnection::ConnectionType (cType));
 
-            ConnectableNode* srcNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("srcNode").toString())) ;
-            ConnectableNode* dstNode = (ConnectableNode*) (getNodeForName (cData.getDynamicObject()->getProperty ("dstNode").toString()));
-
-            int cType = cData.getProperty ("connectionType", var());
-
-            if (srcNode && dstNode && isPositiveAndBelow (cType, (int)NodeConnection::ConnectionType::UNDEFINED))
+            // if c == null connection already exist, should never happen loading JSON but safer to check
+            if (c)
             {
-                NodeConnection* c = addConnection (srcNode, dstNode, NodeConnection::ConnectionType (cType));
-
-                // if c == null connection already exist, should never happen loading JSON but safer to check
-                if (c)
-                {
-                    c->configureFromObject (cData.getDynamicObject());
-                }
-
-
+                c->configureFromObject (cData.getDynamicObject());
             }
-            else
+
+
+        }
+        else
+        {
+            // TODO nicely handle file format errors?
+
+            if (srcNode == nullptr)
             {
-                // TODO nicely handle file format errors?
+                NLOG ("loadJSON", "!!! no srcnode for shortName : " + cData.getDynamicObject()->getProperty ("srcNode").toString());
+            }
 
-                if (srcNode == nullptr)
-                {
-                    NLOG ("loadJSON", "!!! no srcnode for shortName : " + cData.getDynamicObject()->getProperty ("srcNode").toString());
-                }
-
-                if (dstNode == nullptr)
-                {
-                    NLOG ("loadJSON", "!!! no dstnode for shortName : " + cData.getDynamicObject()->getProperty ("dstNode").toString());
-                }
+            if (dstNode == nullptr)
+            {
+                NLOG ("loadJSON", "!!! no dstnode for shortName : " + cData.getDynamicObject()->getProperty ("dstNode").toString());
+            }
 
 
 #if defined DEBUG
-                LOG ("!!! Available Nodes in " + shortName + " : ");
+            LOG ("!!! Available Nodes in " + shortName + " : ");
 
-                for (auto& node : nodes)
-                {
-                    LOG ("!!! > " + node->getNiceName() + "//" + node->shortName);
-                }
+            for (auto& node : nodes)
+            {
+                LOG ("!!! > " + node->getNiceName() + "//" + node->shortName);
+            }
 
 #endif
 
-                jassertfalse;
-            }
+            jassertfalse;
         }
     }
+
 
 
 
@@ -483,8 +497,8 @@ void NodeContainer::prepareToPlay (double d, int i)
             containerOutNode = (ContainerOutNode*)addNode (new ContainerOutNode());
         }
 
-        
-        
+
+
     }
 
 
@@ -518,7 +532,7 @@ void NodeContainer::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer
         const ScopedLock lk (innerGraph->getCallbackLock());
         getAudioGraph()->processBlock (buffer, midiMessage);
     }
-
+    
 #else
     const ScopedLock lk (innerGraph->getCallbackLock());
     getAudioGraph()->processBlock (buffer, midiMessage);
@@ -527,7 +541,7 @@ void NodeContainer::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer
 void NodeContainer::processBlockBypassed (AudioBuffer<float>& /*buffer*/, MidiBuffer& /*midiMessages*/)
 {
     //    getAudioGraph()->processBlockBypassed(buffer,midiMessages);
-
+    
 }
 
 
@@ -535,10 +549,10 @@ void NodeContainer::processBlockBypassed (AudioBuffer<float>& /*buffer*/, MidiBu
 void NodeContainer::removeIllegalConnections()
 {
     getAudioGraph()->removeIllegalConnections();
-
+    
     for (auto& c : nodeContainers)
     {
         c->removeIllegalConnections();
     }
-
+    
 }

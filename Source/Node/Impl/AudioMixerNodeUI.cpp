@@ -185,6 +185,7 @@ void AudioMixerNodeUI::OutputBusUI::setNumInput (int numInput)
         for (int  i = lastSize ; i < numInput; i++ )
         {
             FloatSliderUI* v = new FloatSliderUI (owner->volumes[i]);
+            v->setCustomText(  String(i+1)+ ">" +String(owner->outputIndex+1));
             v->orientation = FloatSliderUI::Direction::VERTICAL;
             inputVolumes.add (v);
             addAndMakeVisible (v);
@@ -217,6 +218,7 @@ void AudioMixerNodeUI::OutputBusUI::resized()
     if (inputVolumes.size() == 0)return;
 
     Rectangle<int> area = getLocalBounds();
+
     int numToBeDisplayed = getNumOfVisibleChannels();
     float step = area.getWidth() * 1.0f / numToBeDisplayed;
     const int pad = 1;

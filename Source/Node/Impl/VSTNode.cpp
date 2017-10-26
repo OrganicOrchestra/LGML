@@ -348,8 +348,13 @@ void VSTNode::setStateInformation (const void* data, int sizeInBytes)
 {
     if (innerPlugin)
     {
+        MemoryBlock m (data,sizeInBytes);
+
+        MessageManager::callAsync([this,m](){
         DBG ("loading state for vst " + getNiceName() + (parentContainer ? "in : " + parentContainer->getNiceName() : ""));
-        innerPlugin->setStateInformation (data, sizeInBytes);
+        innerPlugin->setStateInformation (m.getData() , m.getSize());
+        }
+                                  );
     };
 };
 

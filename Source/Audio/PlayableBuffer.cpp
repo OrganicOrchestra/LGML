@@ -191,15 +191,29 @@ bool PlayableBuffer::processNextBlock (AudioBuffer<float>& buffer, sample_clk_t 
         {
             if (onsetSamples.size() > 0)
             {
+                int nextOnset = -1;
                 for (auto o : onsetSamples)
                 {
                     int delta = (int) ((sample_clk_t)o - (sample_clk_t) (stretchNeedle % originAudioBuffer.getNumSamples()) );
-
-                    if (abs (delta) <= fadePendingStretch.fadeOutNumSamples )
+                    int absDelta = abs(delta);
+                    if (absDelta <= fadePendingStretch.fadeOutNumSamples )
                     {
                         fadePendingStretch.startFadeOut();
                         break;
                     }
+                    if(delta>0){
+                    if(nextOnset==-1){
+                        nextOnset = delta;
+                    }
+                    else{
+                        // assure ordered
+                        jassert(delta>nextOnset);
+                    }
+                    }
+                }
+                // if we need to wait to long, prefere
+                if(nextOnset>44100*0.5){
+                    fadePendingStretch.startFadeOut();
                 }
             }
             else
@@ -495,6 +509,7 @@ PlayableBuffer::BufferState PlayableBuffer::getLastState() const {return lastSta
 
 
 sample_clk_t PlayableBuffer::getRecordedLength() const {return recordNeedle;}
+//sample_clk_t PlayableBuffer::getStretchedLength() const{return recordNeedle*pendingTimeStretchRatio;}
 int PlayableBuffer::getMinRecordSampleLength() const
 {
     return multiNeedle.fadeInNumSamples + multiNeedle.fadeOutNumSamples + 1024;

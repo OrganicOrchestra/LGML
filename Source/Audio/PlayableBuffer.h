@@ -108,7 +108,7 @@ public :
 
     sample_clk_t getRecordedLength() const;
     int getMinRecordSampleLength() const;
-    sample_clk_t getStretchedLength() const;
+//    sample_clk_t getStretchedLength() const;
 
     sample_clk_t getPlayPos() const;
     sample_clk_t getGlobalPlayPos() const;
@@ -142,7 +142,7 @@ public :
     //  uint64 fadeLoopOutPoint;
     //  bool reverseFadeOut;
     Array<int> onsetSamples;
-
+    bool getIsStretchPending(){return isStretchPending;};
 #if !LGML_UNIT_TESTS
 private:
 #endif

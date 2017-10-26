@@ -25,7 +25,7 @@ ControllerManager::ControllerManager() :
     ParameterContainer ("Controllers")
 {
     nameParam->isEditable = false;
-    setCustomShortName ("control");
+    
 }
 
 ControllerManager::~ControllerManager()

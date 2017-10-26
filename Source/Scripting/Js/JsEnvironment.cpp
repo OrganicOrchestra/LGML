@@ -72,6 +72,8 @@ JsEnvironment::~JsEnvironment()
     if (localEnv)
     {localEnv->clear();}
 
+    
+
 }
 
 void JsEnvironment::setEnabled (bool t)
@@ -745,6 +747,10 @@ JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
     autoWatch->isSavable = false;
     logT =  addNewParameter<Trigger> ("LogEnvironment", "print hierarchy of JS objects");
 
+}
+
+JSEnvContainer::~JSEnvContainer(){
+    masterReference.clear();
 }
 
 void JSEnvContainer::onContainerParameterChanged (Parameter* p)

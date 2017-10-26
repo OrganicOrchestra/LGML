@@ -26,7 +26,6 @@
 Controllable::Controllable ( const String& niceName, const String& description, bool enabled) :
     description (description),
     parentContainer (nullptr),
-    hasCustomShortName (false),
     isControllableExposed (true),
     isHidenInEditor (false),
     shouldSaveObject (false),
@@ -51,25 +50,17 @@ void Controllable::setNiceName (const String& _niceName)
 {
     if (niceName == _niceName) return;
 
-    this->niceName = _niceName;
+    niceName = _niceName;
 
-    if (!hasCustomShortName) setAutoShortName();
-    else listeners.call (&Listener::controllableNameChanged, this);
+    setAutoShortName();
+
 }
 
 
-void Controllable::setCustomShortName (const String& _shortName)
-{
-    this->shortName = _shortName;
-    hasCustomShortName = true;
-    updateControlAddress();
-    listeners.call (&Listener::controllableNameChanged, this);
-}
 
 
 void Controllable::setAutoShortName()
 {
-    hasCustomShortName = false;
     shortName = StringUtil::toShortName (niceName);
     updateControlAddress();
     listeners.call (&Listener::controllableNameChanged, this);

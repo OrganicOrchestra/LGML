@@ -319,6 +319,7 @@ class JSEnvContainer : public ParameterContainer
 {
 public:
     JSEnvContainer (JsEnvironment* pEnv);
+    ~JSEnvContainer();
     
 
     void onContainerParameterChanged (Parameter* p) override;
@@ -330,6 +331,10 @@ public:
     Trigger* logT;
     BoolParameter* autoWatch;
     JsEnvironment* jsEnv;
+
+private:
+    WeakReference<JSEnvContainer>::Master masterReference;
+    friend class WeakReference<JSEnvContainer>;
 };
 
 

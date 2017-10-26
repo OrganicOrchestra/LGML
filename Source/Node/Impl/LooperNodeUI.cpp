@@ -279,7 +279,7 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::paint (Graphics& g)
 
     float angle = 2.0f * float_Pi * trackPosition;
 
-    g.setColour (mainColour);
+    g.setColour (track->isBusy()?mainColour.darker():mainColour);
     g.fillEllipse (r.toFloat());
 
     if (track->trackState != LooperTrack::TrackState::PLAYING) return;
@@ -296,6 +296,12 @@ void LooperNodeContentUI::TrackUI::TimeStateUI::paint (Graphics& g)
     angle -= float_Pi / 2;
     g.setColour (Colours::orange.withAlpha (.8f));
     g.drawLine (r.getCentreX(), r.getCentreY(), r.getCentreX() + cosf (angle)*r.getWidth() / 2, r.getCentreX() + sinf (angle)*r.getHeight() / 2, 2);
+
+    g.setColour(Colours::white.withAlpha(0.5f));
+    for(auto  o:track->getNormalizedOnsets()){
+        float oAngle = o*2*float_Pi - float_Pi/2;
+        g.drawLine (r.getCentreX(), r.getCentreY(), r.getCentreX() + cosf (oAngle)*r.getWidth() / 2, r.getCentreX() + sinf (oAngle)*r.getHeight() / 2, 2);
+    }
 
 
 }

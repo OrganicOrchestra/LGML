@@ -54,13 +54,13 @@ void JsNodeUI::newJsFileLoaded (bool v)
     JsNode* jsNode = (JsNode*) node.get();
     varUI.clear();
 
-    if (v)
-    {
+//    if (v)
+//    {
         for (auto& c : jsNode->jsParameters)
         {
             controllableAdded (jsNode, c);
         }
-    }
+//    }
 };
 
 void JsNodeUI::resized()

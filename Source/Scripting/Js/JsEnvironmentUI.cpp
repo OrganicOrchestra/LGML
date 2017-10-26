@@ -49,8 +49,9 @@ JsEnvironmentUI::JsEnvironmentUI (JSEnvContainer* _cont) : cont (_cont)
 
 }
 JsEnvironmentUI::~JsEnvironmentUI()
-{
+{if(cont.get()){
     env->removeListener (this);
+}
 }
 
 void JsEnvironmentUI::resized()

@@ -39,7 +39,12 @@ namespace MIDIHelpers{
                 mm->removeMIDIManagerListener(this);
         }
         void midiInputAdded (String& k) override{
+            if(k!="<error>"){
             addOption(k, k, true);
+            }
+            else{
+                LOG("error while checking MIDI Input");
+            }
         };
         void midiInputRemoved (String& k)override {
             removeOption(k, true);

@@ -61,7 +61,7 @@ void NodeManager::configureFromObject (DynamicObject* data)
     jobsWatcher = new JobsWatcher (this);
     isLoading = true;
     clear();
-    ParameterContainer::configureFromObject (data);
+    NodeContainer::configureFromObject (data);
 
     //  mainContainer->loadJSONData(data.getDynamicObject()->getProperty("mainContainer"));
 

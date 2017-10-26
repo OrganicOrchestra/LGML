@@ -198,7 +198,7 @@ void ParameterContainer::parameterValueChanged (Parameter* p)
             }
         }
 
-        if (!hasCustomShortName) setAutoShortName();
+         setAutoShortName();
     }
     else   if (p == savePresetTrigger)
     {
@@ -280,7 +280,7 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                     {
                         cont->configureFromObject (o.value.getDynamicObject());
                     }
-                    else
+                    else if(o.value.getDynamicObject())
                     {
                         auto c = addContainerFromObject (o.name.toString(), o.value.getDynamicObject());
 
@@ -292,6 +292,9 @@ void ParameterContainer::configureFromObject (DynamicObject* dyn)
                         {
                             jassertfalse;
                         }
+                    }
+                    else{
+                        DBG("ignoring container : "+o.name.toString());
                     }
                 }
 

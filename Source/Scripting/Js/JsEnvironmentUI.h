@@ -40,7 +40,7 @@ public:
 
     void newJsFileLoaded (bool s) override;
 
-    JSEnvContainer* cont;
+    WeakReference<JSEnvContainer> cont;
     JsEnvironment* env;
 };
 

@@ -208,10 +208,10 @@ void AudioMixerNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuffe
 
 AudioMixerNode::OutputBus::OutputBus (int _outputIndex, int numInput):
     outputIndex (_outputIndex),
-    ParameterContainer ("outputBus : " + String (_outputIndex))
+    ParameterContainer ("out " + String (_outputIndex+1))
 {
     setNumInput (numInput);
-    setCustomShortName ("Out_" + String (_outputIndex + 1));
+
 
 }
 
@@ -224,8 +224,10 @@ void AudioMixerNode::OutputBus::setNumInput (int numInput)
     {
         for (int i = volumes.size(); i < numInput ; i++)
         {
-            FloatParameter* p = addNewParameter<FloatParameter> ("In " + String (i + 1) + " > Out " + String (outputIndex + 1), "mixer volume from input" + String (i + 1), i == outputIndex ? DB0_FOR_01 : 0);
-            p->setCustomShortName ("In_" + String (i + 1));
+            FloatParameter* p = addNewParameter<FloatParameter> (
+                                                                "in "+String (i + 1),
+                                                                 "mixer volume from input" + String (i + 1) + " to output" + String (outputIndex + 1), i == outputIndex ? DB0_FOR_01 : 0);
+            
             p->defaultValue = DB0_FOR_01;
             volumes.add (p);
             logVolumes.add (float01ToGain (p->floatValue()));

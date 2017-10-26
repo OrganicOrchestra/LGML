@@ -171,6 +171,7 @@ void Outliner::buildTree (OutlinerItem* parentItem, ParameterContainer* parentCo
 
 void Outliner::childStructureChanged (ControllableContainer* notif, ControllableContainer* changed,bool isAdded)
 {
+    if(root.get()){
     jassert(notif == root);
 
     if (!AsyncUpdater::isUpdatePending())
@@ -179,7 +180,7 @@ void Outliner::childStructureChanged (ControllableContainer* notif, Controllable
         triggerAsyncUpdate();
         }
     }
-    
+    }
 
 }
 
@@ -408,7 +409,7 @@ paramUI (nullptr)
         label.addListener(this);
     }
     addAndMakeVisible (&label);
-    label.setInterceptsMouseClicks (true, true);
+    label.setInterceptsMouseClicks (false, false);
     if(_item->isContainer && _item->container->isUserDefined){
         addUserParamBt = new AddElementButton();
         addAndMakeVisible(addUserParamBt);

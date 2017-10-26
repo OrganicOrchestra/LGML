@@ -123,6 +123,7 @@ ThreadPoolJob::JobStatus StretcherJob::runJob()
             {
                 owner->onsetSamples.add (tp[i]*inc);
             }
+            owner->onsetSamples.sort();
 
             //      std::swap(owner->tmpBufferBlockList, tmpStretchBuf);
             owner->tmpBufferStretch.setSize (tmpStretchBuf.getAllocatedNumChannels(), tmpStretchBuf.getNumSamples());

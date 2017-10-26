@@ -189,6 +189,7 @@ public:
         for (auto i : if_idxs)
         {
             browse ("_osc._udp", "local", i);
+            browse ("_smb._tcp", "local", i);
             //      browse("_afptovertcp._udp","",i);
             //      browse("_aftovertcp._tcp","",i);
         }
@@ -380,6 +381,9 @@ public:
             DBG (ip.toString());
             String description = String::fromUTF8 ((char*)txtRecord);
             uint16 host_port = ntohs (port);
+            if(host_port==445){ // smb hack 
+                host_port=11000;
+            }
             OSCClientRecord oscRec{name, ip, description, host_port};
 
             nu->addOSCRecord (oscRec);

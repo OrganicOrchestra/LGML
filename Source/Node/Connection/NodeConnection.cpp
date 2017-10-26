@@ -106,6 +106,7 @@ bool NodeConnection::addAudioGraphConnection (uint32 sourceChannel, uint32 destC
     }
     else
     {
+        jassertfalse;
         result = false;
     }
 

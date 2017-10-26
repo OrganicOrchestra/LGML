@@ -154,6 +154,7 @@ void OSCController::resolveHostnameIfNeeded()
 
                     //          call again with resolved port if not manually set
                     remotePortParam->setValue (resolvedPortString, false, true);
+                    hostNameResolved = true;
                     return;
                 }
 
@@ -513,7 +514,14 @@ bool OSCController::sendOSCInternal (OSCMessage& m)
 {
     if (logOutGoingOSC->boolValue()) { logMessage (m, "Out:");}
     outActivityTrigger->trigger();
+    if(isConnectedToRemote->boolValue()){
     return sender.send (m);
+    }
+    else{
+        LOG("OSC : "+nameParam->stringValue()+" not connected");
+
+    }
+    return false;
 }
 
 

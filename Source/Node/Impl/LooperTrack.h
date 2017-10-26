@@ -69,6 +69,8 @@ public:
     void stop();
     void play();
     void recPlay();
+    bool isBusy();
+    Array<float> getNormalizedOnsets();
 
 
 
@@ -243,6 +245,7 @@ private:
 
 
     void loadAudioSample (const String& file);
+    bool isLoadingAudioFile;
     //friend class Looper;
 };
 

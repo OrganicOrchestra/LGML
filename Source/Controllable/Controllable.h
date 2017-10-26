@@ -43,7 +43,6 @@ public:
 
 
     bool enabled;
-    bool hasCustomShortName;
     bool isControllableExposed;
     bool isHidenInEditor;
     bool shouldSaveObject;
@@ -55,7 +54,7 @@ public:
     ControllableContainer* parentContainer;
 
     void setNiceName (const String& _niceName);
-    void setCustomShortName (const String& _shortName);
+    
     void setAutoShortName();
 
     void setEnabled (bool value, bool silentSet = false, bool force = false);

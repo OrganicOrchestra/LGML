@@ -42,7 +42,7 @@ LooperTrack::LooperTrack (LooperNode* looperNode, int _trackIdx) :
     trackIdx (_trackIdx),
     someOneIsSolo (false),
     isSelected (false),
-
+    isLoadingAudioFile(false),
     lastVolume (0),
     startPlayBeat (0),
     startRecBeat (0),
@@ -93,6 +93,19 @@ LooperTrack::~LooperTrack()
     removeTrackListener (stateParameterStringSynchronizer);
 }
 
+bool LooperTrack::isBusy(){
+    return playableBuffer.getIsStretchPending() ||isLoadingAudioFile ;
+}
+
+Array<float> LooperTrack::getNormalizedOnsets(){
+    Array<float> onsets;
+    onsets.ensureStorageAllocated(playableBuffer.onsetSamples.size());
+    for(auto o:playableBuffer.onsetSamples ){
+        onsets.add(o*1.0f/playableBuffer.originAudioBuffer.getNumSamples());
+    }
+    return onsets;
+
+}
 void LooperTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
 {
 
@@ -943,6 +956,7 @@ void LooperTrack::loadAudioSample (const String& path)
 
     if (audioFile.exists())
     {
+        isLoadingAudioFile = true;
 
         AudioFormatManager formatManager;
         formatManager.registerBasicFormats();
@@ -1026,4 +1040,5 @@ void LooperTrack::loadAudioSample (const String& path)
     {
         LOG ("!!! sample loading : file not found : " << audioFile.getFullPathName());
     }
+    isLoadingAudioFile = false;
 }

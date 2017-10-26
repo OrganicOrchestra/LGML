@@ -37,7 +37,6 @@ const Identifier ControllableContainer::controllablesId ("parameters");
 
 ControllableContainer::ControllableContainer (StringRef niceName) :
 parentContainer (nullptr),
-hasCustomShortName (false),
 numContainerIndexed (0),
 localIndexedPosition (-1),
 isUserDefined (false)
@@ -150,19 +149,10 @@ String ControllableContainer::setNiceName (const String& _niceName)
 }
 
 
-void ControllableContainer::setCustomShortName (const String& _shortName)
-{
-    shortName = _shortName;
-    hasCustomShortName = true;
-    updateChildrenControlAddress();
-    notifyChildAddressChanged(this);
-
-}
 
 
 void ControllableContainer::setAutoShortName()
 {
-    hasCustomShortName = false;
     shortName = StringUtil::toShortName (getNiceName());
     updateChildrenControlAddress();
     notifyChildAddressChanged(this);
@@ -273,8 +263,9 @@ bool ControllableContainer::isIndexedContainer() {return localIndexedPosition >=
 
 void ControllableContainer::localIndexChanged() {};
 
-ControllableContainer* ControllableContainer::getControllableContainerByName (const String& name, bool searchNiceNameToo)
+ControllableContainer* ControllableContainer::getControllableContainerByName (const String& _name, bool searchNiceNameToo)
 {
+    const String name = _name.toLowerCase();
     ScopedLock lk (controllableContainers.getLock());
 
     for (auto& cc : controllableContainers)

@@ -34,9 +34,8 @@ public:
     virtual ~ControllableContainer();
 
     void setUserDefined (bool);
-    void setCustomShortName (const String& _shortName);
+    
     void setAutoShortName();
-    bool hasCustomShortName;
 
 
     // variables

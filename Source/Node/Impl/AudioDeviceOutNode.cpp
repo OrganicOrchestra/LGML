@@ -155,12 +155,11 @@ void AudioDeviceOutNode::processBlockInternal (AudioBuffer<float>& buffer, MidiB
 void AudioDeviceOutNode::addVolMute()
 {
 
-    BoolParameter* p = addNewParameter<BoolParameter> (String (outMutes.size() + 1), "Mute if disabled", false);
-    p->setCustomShortName (String ("mute") + String (outMutes.size() + 1));
+    BoolParameter* p = addNewParameter<BoolParameter> (String ("mute") + String (outMutes.size() + 1), "Mute if disabled", false);
     p->invertVisuals = true;
     outMutes.add (p);
 
-    FloatParameter* v = addNewParameter<FloatParameter> ("volume" + String (volumes.size()), "volume", DB0_FOR_01);
+    FloatParameter* v = addNewParameter<FloatParameter> ("volume" + String (volumes.size()+1), "volume", DB0_FOR_01);
     volumes.add (v);
     lastVolumes.add (0);
     logVolumes.add (float01ToGain (DB0_FOR_01));

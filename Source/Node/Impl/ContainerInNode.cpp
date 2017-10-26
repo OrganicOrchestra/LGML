@@ -75,7 +75,9 @@ void ContainerInNode::setNumChannels (int num)
     AudioGraphIOProcessor::setPlayConfigDetails (0, num, NodeBase::getSampleRate(), NodeBase::getBlockSize());
     jassert (NodeBase::getTotalNumOutputChannels() == AudioGraphIOProcessor::getTotalNumOutputChannels());
 
-    if (parentNodeContainer) {parentNodeContainer->setPreferedNumAudioInput (NodeBase::getTotalNumOutputChannels());}
+    if (parentNodeContainer) {
+        parentNodeContainer->setPreferedNumAudioInput (NodeBase::getTotalNumOutputChannels());
+    }
 }
 
 void ContainerInNode::onContainerParameterChanged (Parameter* p)

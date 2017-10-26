@@ -59,7 +59,7 @@ ConnectableNodeUIParams::~ConnectableNodeUIParams(){
 }
 ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContainer(n){
     nodePosition=addNewParameter<Point2DParameter<int>> ("nodePosition", "position on canvas", 0, 0, Array<var> {0, 0});
-    nodeSize=addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {0, 0});
+    nodeSize=addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {30, 30});
     miniMode=addNewParameter<BoolParameter> ("miniMode", "Mini Mode", false);
     nodePosition->isControllableExposed = false;
     nodeSize->isControllableExposed = false;
@@ -156,7 +156,7 @@ void ConnectableNodeUI::setMiniMode (bool value)
 
 int ConnectableNodeUI::getMiniModeWidth (bool forMiniMode)
 {
-    return forMiniMode ? 180 : (getContentContainer()->getWidth() + inputContainer.getWidth() + outputContainer.getWidth() + (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() + mainComponentContainer.audioCtlContainerPadRight : 0));
+    return forMiniMode ? 130 : (getContentContainer()->getWidth() + inputContainer.getWidth() + outputContainer.getWidth() + (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() + mainComponentContainer.audioCtlContainerPadRight : 0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight (bool forMiniMode)
