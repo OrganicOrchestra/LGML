@@ -330,7 +330,7 @@ Component* OutlinerItem::createItemComponent()
 void OutlinerItem::controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori){
 #warning TODO better outliner name filtering
     if(notif && notif==container){
-    addSubItem(new OutlinerItem (dynamic_cast<ParameterContainer*>(ori),true));
+        MessageManager::callAsync([this,ori](){addSubItem(new OutlinerItem (dynamic_cast<ParameterContainer*>(ori),true));});
     }
     else if(container){
         jassertfalse;

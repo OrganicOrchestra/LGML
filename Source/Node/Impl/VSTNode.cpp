@@ -346,8 +346,9 @@ void VSTNode::getStateInformation (MemoryBlock& destData)
 
 void VSTNode::setStateInformation (const void* data, int sizeInBytes)
 {
-    if (innerPlugin)
+    if (innerPlugin && (data!=stateInfo.getData() || sizeInBytes!=stateInfo.getSize()))
     {
+        
         stateInfo.replaceWith (data,sizeInBytes);
 
         triggerAsyncUpdate();
