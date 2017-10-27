@@ -191,7 +191,8 @@ CCInnerContainerUI::CCInnerContainerUI (GenericParameterContainerEditor* _editor
 
 CCInnerContainerUI::~CCInnerContainerUI()
 {
-    container->removeControllableContainerListener (this);
+    if(container.get())
+        container->removeControllableContainerListener (this);
     clear();
 }
 
@@ -347,6 +348,10 @@ CCInnerContainerUI::CCLinkBT* CCInnerContainerUI::getCCLinkForCC (ParameterConta
 
 int CCInnerContainerUI::getContentHeight()
 {
+    if(!container.get()){
+        jassertfalse;
+        return 1;
+    }
     int gap = 2;
     int ccGap = 5;
     int controllableHeight = 15;

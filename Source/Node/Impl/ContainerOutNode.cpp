@@ -29,6 +29,7 @@ ContainerOutNode::ContainerOutNode (StringRef name) :
 
     numChannels = addNewParameter<IntParameter> ("Num Audio Outputs", "Number of output channels for this container", 2, 0, 100);
     numInputData = addNewParameter<IntParameter> ("Num Data Outputs", "Number of data outputs for this container", 0, 0, 100);
+    setNumChannels(numChannels->intValue());
 }
 
 ContainerOutNode::~ContainerOutNode()
@@ -40,8 +41,11 @@ void ContainerOutNode::setParentNodeContainer (NodeContainer* nc)
 {
 
     NodeBase::setParentNodeContainer (nc);
+    if(numChannels->intValue()!=AudioGraphIOProcessor::getTotalNumInputChannels()){
+        setNumChannels(numChannels->intValue());
+    }
     setPreferedNumAudioOutput (0);
-//    setPreferedNumAudioInput (nc->getTotalNumOutputChannels());
+    setPreferedNumAudioInput (AudioGraphIOProcessor::getTotalNumInputChannels());
     if (parentNodeContainer) {
         parentNodeContainer->setPreferedNumAudioOutput (AudioGraphIOProcessor::getTotalNumInputChannels());
     }
@@ -66,6 +70,7 @@ void ContainerOutNode::setNumChannels (int num)
 {
     setPreferedNumAudioInput (num);
     AudioGraphIOProcessor::setPlayConfigDetails (num, 0, NodeBase::getSampleRate(), NodeBase::getBlockSize());
+    jassert(NodeBase::getTotalNumInputChannels()==num);
     jassert (NodeBase::getTotalNumInputChannels() == AudioGraphIOProcessor::getTotalNumInputChannels());
 
     if (parentNodeContainer) {parentNodeContainer->setPreferedNumAudioOutput (AudioGraphIOProcessor::getTotalNumInputChannels());}

@@ -42,7 +42,7 @@ public:
 
     Label containerLabel;
 
-    ParameterContainer* container;
+    WeakReference<ParameterContainer> container;
     ScopedPointer<PresetChooserUI> presetChooser;
 
     OwnedArray<NamedParameterUI > parametersUI;

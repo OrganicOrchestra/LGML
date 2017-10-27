@@ -30,7 +30,7 @@ ContainerInNode::ContainerInNode (StringRef name) :
 
     numChannels = addNewParameter<IntParameter> ("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);
     numInputData = addNewParameter<IntParameter> ("Num Data Inputs", "Number of data inputs for this container", 0, 0, 100);
-
+    setNumChannels(numChannels->intValue());
 }
 
 ContainerInNode::~ContainerInNode()
@@ -55,6 +55,9 @@ void ContainerInNode::processBlockInternal (AudioBuffer<float>& buffer, MidiBuff
 
 void ContainerInNode::setParentNodeContainer (NodeContainer* nc)
 {
+    if(numChannels->intValue()!=AudioGraphIOProcessor::getTotalNumOutputChannels()){
+        setNumChannels(numChannels->intValue());
+    }
     NodeBase::setParentNodeContainer (nc);
     setPreferedNumAudioInput (0);
 //    setPreferedNumAudioOutput (nc->getTotalNumInputChannels());
