@@ -53,6 +53,6 @@ DynamicObject* Trigger::getObject()
 var Trigger::getVarState()
 {
     // isSavable should be false
-    jassertfalse;
+//    jassertfalse;
     return var::undefined();
 }

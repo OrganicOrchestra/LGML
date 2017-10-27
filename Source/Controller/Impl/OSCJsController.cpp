@@ -117,8 +117,11 @@ Result OSCJsController::processMessageInternal (const OSCMessage& m)
 
     if (!r1 && !r2)
     {
-        //        NLOG("OSCController",r1.getErrorMessage());
-        //        NLOG("Javascript",r2.getErrorMessage());
+
+        if(r1)
+                NLOG("OSCController",r1.getErrorMessage());
+        if(r2)
+                NLOG("Javascript",r2.getErrorMessage());
         return Result::fail ("failed");
     }
 
