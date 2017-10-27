@@ -23,7 +23,7 @@
 class StringParameter : public Parameter
 {
 public:
-    StringParameter (const String& niceName, const String& description = String::empty, const String& initialValue = String::empty, bool enabled = true);
+    StringParameter (const String& niceName, const String& description = "", const String& initialValue = "", bool enabled = true);
 
 
 

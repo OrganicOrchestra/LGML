@@ -1073,14 +1073,14 @@
 					"JucePlugin_Build_AAX=0",
 					"JucePlugin_Build_Standalone=0", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNINITIALIZED_AUTOS = "YES_AGGRESSIVE";
 				HEADER_SEARCH_PATHS = ("../../third_party/VST3_SDK", "../../JuceLibraryCode", "../../../JUCE/modules", "$(inherited)");
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				ONLY_ACTIVE_ARCH=1;
+				ONLY_ACTIVE_ARCH = "1";
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include";
 				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anic.orchestra.LGML;
@@ -1118,7 +1118,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				ONLY_ACTIVE_ARCH=1;
+				ONLY_ACTIVE_ARCH = "1";
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -I../../third_party/serial/include -I../../third_party/rubberband/ -I../../third_party/link/include/ -I../../third_party/link/modules/asio-standalone/asio/include";
 				OTHER_LDFLAGS = "../../third_party/rubberband/lib/librubberband.a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.anic.orchestra.LGML;

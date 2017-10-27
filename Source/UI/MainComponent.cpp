@@ -49,6 +49,7 @@ MainContentComponent::MainContentComponent (Engine* e):
     addKeyListener ((&getCommandManager())->getKeyMappings());
 #if JUCE_MAC
     setMacMainMenu (this, nullptr, "Open recent file");
+//    setMenu (this);
 #else
     //setMenu (this); //done in Main.cpp as it's a method of DocumentWindow
 #endif

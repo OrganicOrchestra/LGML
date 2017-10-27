@@ -40,7 +40,7 @@ public:
 
     }
 
-    static CLASSNAME* createFromTypeID (const Identifier& ID, const String& name = String::empty, DynamicObject* ob = nullptr)
+    static CLASSNAME* createFromTypeID (const Identifier& ID, const String& name = "", DynamicObject* ob = nullptr)
     {
         String className = ID.toString();
         String targetName = name.isEmpty() ? typeToNiceName (className) : name;

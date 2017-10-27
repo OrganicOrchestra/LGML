@@ -116,7 +116,7 @@ public:
 
 
     ConnectableNode* addNodeFromJSONData (DynamicObject* data);
-    ConnectableNode* addNode (ConnectableNode* node, const String& nodeName = String::empty, DynamicObject* data = nullptr);
+    ConnectableNode* addNode (ConnectableNode* node, const String& nodeName = "", DynamicObject* data = nullptr);
 
     bool removeNode (ConnectableNode* n,bool doDelete=true);
 

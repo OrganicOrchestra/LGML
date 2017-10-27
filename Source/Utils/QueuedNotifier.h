@@ -76,9 +76,12 @@ public:
             // fifo is full : we can drop message
             while (size1 == 0)
             {
+                // still lock if full
+                const MessageManagerLock mmLock;
                 //        jassert(isUpdatePending());
                 if (canDropMessage)
                 {
+
                     fifo.finishedRead (1);
                     fifo.prepareToWrite (1, start1, size1, start2, size2);
 

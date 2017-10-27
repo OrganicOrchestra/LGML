@@ -46,7 +46,8 @@ public:
     int sampleRate = 44100;
     int originTargetBeatSize = 0.6 * sampleRate;
     const int numBeats = 4;
-    const int recordSizeInBlock = floor (numBeats* originTargetBeatSize * 1.0 / blockSize);
+    const float fRecordSizeInBlock = numBeats* originTargetBeatSize * 1.0 / blockSize;
+    const int recordSizeInBlock = floor (fRecordSizeInBlock);
     int fadeSample = 80;
 
     void processBlock()
@@ -180,7 +181,7 @@ public:
                 offset = (recordSizeInBlock * blockSize) - tm->getTimeInSample();
                 startWallTime = (startWallTime + offset) % (recordSizeInBlock * blockSize);
                 int recLen = track1->playableBuffer.getRecordedLength() ;
-                int offset = recLen % (tm->beatTimeInSample);
+                 offset = recLen % (tm->beatTimeInSample);
                 expect (recLen == getRecordedLength(), "wrong recorded Length found : " + String (recLen) + " for " + String ( getRecordedLength()));
                 expect (offset == 0, "wrong quantization");
             }

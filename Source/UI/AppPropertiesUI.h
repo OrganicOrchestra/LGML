@@ -24,7 +24,7 @@ public:
     static String GeneralPageName;
     static String AudioPageName;
 
-    static void showAppSettings(const String & name=String::empty);
+    static void showAppSettings(const String & name="");
     static void closeAppSettings();
 
 

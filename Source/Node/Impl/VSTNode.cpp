@@ -348,13 +348,9 @@ void VSTNode::setStateInformation (const void* data, int sizeInBytes)
 {
     if (innerPlugin)
     {
-        MemoryBlock m (data,sizeInBytes);
+        stateInfo.replaceWith (data,sizeInBytes);
 
-        MessageManager::callAsync([this,m](){
-        DBG ("loading state for vst " + getNiceName() + (parentContainer ? "in : " + parentContainer->getNiceName() : ""));
-        innerPlugin->setStateInformation (m.getData() , m.getSize());
-        }
-                                  );
+        triggerAsyncUpdate();
     };
 };
 
@@ -383,6 +379,14 @@ void VSTNode::savePresetInternal (PresetManager::Preset* preset)
 
 void VSTNode::handleAsyncUpdate()
 {
+
+    if(stateInfo.getSize() && innerPlugin){
+
+            DBG ("loading state for vst " + getNiceName() + (parentContainer ? "in : " + parentContainer->getNiceName() : ""));
+        innerPlugin->setStateInformation (stateInfo.getData() , stateInfo.getSize());
+        stateInfo.reset();
+
+    }
 
     if (parentNodeContainer)  parentNodeContainer->updateAudioGraph();
 

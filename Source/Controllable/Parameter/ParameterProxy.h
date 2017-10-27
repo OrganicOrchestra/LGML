@@ -29,7 +29,7 @@ class ParameterProxy :
     private ControllableContainer::Listener
 {
 public:
-    ParameterProxy (const String& niceName, const String& desc = String::empty, Parameter* ref = nullptr, ControllableContainer* root = nullptr);
+    ParameterProxy (const String& niceName, const String& desc = "", Parameter* ref = nullptr, ControllableContainer* root = nullptr);
     virtual ~ParameterProxy();
 
 

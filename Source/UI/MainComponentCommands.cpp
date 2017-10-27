@@ -462,7 +462,8 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
 StringArray MainContentComponent::getMenuBarNames()
 {
     const char* const names[] = { "File", "Edit", "Plugins", "Options", "Windows", "Panels", nullptr };
-    return StringArray (names);
+    static  StringArray namesArray (names);
+    return namesArray;
 }
 
 void MainContentComponent::updateStimulateAudioItem (ApplicationCommandInfo& info)

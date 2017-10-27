@@ -22,7 +22,7 @@
 class CommandLineElement
 {
 public:
-    CommandLineElement (const String& name = String::empty): command (name) {}
+    CommandLineElement (const String& name = ""): command (name) {}
     String command;
     StringArray args;
 

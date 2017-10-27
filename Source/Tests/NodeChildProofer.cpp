@@ -35,9 +35,9 @@ class NodeChildProofer  : public UnitTest
 {
 public:
     NodeChildProofer (String NodeName, int _numActionsPerControllables = 10)  :
-        UnitTest ("NodeChildProofer : " + NodeName),
-        testingNodeName (NodeName),
-        numActionsPerControllables (_numActionsPerControllables) {}
+    UnitTest ("NodeChildProofer : " + NodeName),
+    testingNodeName (NodeName),
+    numActionsPerControllables (_numActionsPerControllables) {}
 
 
     int numActionsPerControllables;
@@ -65,9 +65,9 @@ public:
 
                 if (tested.get())
                 {
-                    if (((NodeBase*)tested->parentContainer)->type != NodeType::ContainerInType &&
-                        ((NodeBase*)tested->parentContainer)->type != NodeType::ContainerOutType &&
-                        tested != tested->parentContainer->nameParam
+                    if (!dynamic_cast<ContainerInNode*>(tested->parentContainer) &&
+                        dynamic_cast<ContainerOutNode*>(tested->parentContainer) &&
+                        tested != static_cast<ParameterContainer*>(tested->parentContainer)->nameParam
                         && tested->shortName != "savePreset" &&
                         tested->shortName != "loadFile" &&
                         tested->shortName != "scriptPath" &&
@@ -121,47 +121,18 @@ public:
         {
             double startTime = juce::Time::getMillisecondCounterHiRes();
 
-            switch (c->type )
-            {
-                case Controllable::TRIGGER:
-                    if (Trigger* t = dynamic_cast<Trigger*> (c)) {t->trigger();}
-
-                    break;
-
-                case Controllable::FLOAT:
-                    if (FloatParameter* t = dynamic_cast<FloatParameter*> (c)) {t->setValue (Random().nextFloat());}
-
-                    break;
-
-                case Controllable::INT:
-                    if (IntParameter* t = dynamic_cast<IntParameter*> (c)) {t->setValue (Random().nextInt());}
-
-                    break;
-
-                case  Controllable::BOOL:
-                    if (BoolParameter* t = dynamic_cast<BoolParameter*> (c)) {t->setValue (Random().nextBool());}
-
-                    break;
-
-                case Controllable::STRING:
-                    if (StringParameter* t = dynamic_cast<StringParameter*> (c)) {t->setValue (String (Random().nextInt()));}
-
-                    break;
-
-                case Controllable::RANGE:
-                    return false;
-                    break;
-
-                case Controllable::ENUM:
-                case Controllable::PROXY:
-                case Controllable::POINT2D:
-                case Controllable::POINT3D:
-                    break;
-
-
-                default:
-                    return false;
-
+            if (Trigger* t = dynamic_cast<Trigger*> (c))
+            {t->trigger();}
+            else  if (FloatParameter* t = dynamic_cast<FloatParameter*> (c))
+            {t->setValue (Random().nextFloat());}
+            else if (IntParameter* t = dynamic_cast<IntParameter*> (c))
+            {t->setValue (Random().nextInt());}
+            else    if (BoolParameter* t = dynamic_cast<BoolParameter*> (c))
+            {t->setValue (Random().nextBool());}
+            else if (StringParameter* t = dynamic_cast<StringParameter*> (c))
+            {t->setValue (String (Random().nextInt()));}
+            else{
+                return false;
             }
 
             double now =  juce::Time::getMillisecondCounterHiRes();
@@ -195,7 +166,7 @@ public:
 
         getEngine()->createNewGraph();
 
-        ConnectableNode* testingNode = NodeManager::getInstance()->addNode (NodeFactory::getTypeFromString (testingNodeName));
+        ConnectableNode* testingNode = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID (testingNodeName));
 
         expect (testingNode != nullptr, "node not found for name : " + testingNodeName);
         {
@@ -235,33 +206,23 @@ public:
             // just to be sure that async message are handled too
             Thread::sleep (500);
 
-
         }
-
-
-
-
-
-
-
     }
-
 };
-
-
-static bool hasBeenBuilt = false;
 
 bool buildTests()
 {
+    static bool hasBeenBuilt = false;
+
     if (!hasBeenBuilt)
     {
-
-        for (auto nName : nodeTypeNames)
+        
+        for (auto nName : NodeFactory::getRegisteredTypes())
         {
-            if (nName != "ContainerIn" && nName != "ContainerOut" && !nName.contains ("AudioDevice"))
+            if (nName != "t_ContainerIn" && nName != "t_ContainerOut" && !nName.contains ("AudioDevice"))
                 new NodeChildProofer (nName, 10);
         }
-
+        
         hasBeenBuilt = true;
     }
     else
@@ -269,7 +230,7 @@ bool buildTests()
         DBG ("trying to instanciate 2 tests");
         jassertfalse;
     }
-
+    
     return true;
 }
 

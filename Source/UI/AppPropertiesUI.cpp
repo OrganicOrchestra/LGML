@@ -38,6 +38,33 @@ public:
 
 };
 
+template<class FunctionType>
+class ActionPropUI : public ButtonPropertyComponent{
+public:
+    ActionPropUI(const String & name,FunctionType f):ButtonPropertyComponent(name,true),func(f){};
+    void buttonClicked() override{
+        func();
+    }
+    String getButtonText() const override{
+        return getName();
+    };
+
+    FunctionType func;
+
+
+};
+
+namespace{
+
+template<class FunctionType>
+ButtonPropertyComponent* createProp(const String & n,FunctionType f){
+     return new ActionPropUI<FunctionType>(n,f);
+}
+
+void lala(){
+    
+}
+}
 
 class PrefPanel : public PreferencesPanel{
     Component* createComponentForPage (const String& pageName)override{
@@ -46,6 +73,7 @@ class PrefPanel : public PreferencesPanel{
             res->addProperties(
             {new BoolPropUI("multiThreadedLoading"),
              new BoolPropUI("check for updates"),
+//                createProp("reset preferences",lala)
             } );
             return res;
         }

@@ -24,7 +24,7 @@ class BoolParameter : public Parameter
 {
 public:
 
-    BoolParameter (const String& niceName, const String& description = String::empty, bool initialValue = false, bool enabled = true);
+    BoolParameter (const String& niceName, const String& description = "", bool initialValue = false, bool enabled = true);
     ~BoolParameter() {}
 
 

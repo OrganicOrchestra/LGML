@@ -121,6 +121,7 @@ public:
     bool hasEditor() const override { if (innerPlugin) { return innerPlugin->hasEditor(); } return false; };
     void getStateInformation (MemoryBlock& destData)override ;
     void setStateInformation (const void* data, int sizeInBytes)override ;
+    MemoryBlock stateInfo;
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
     void processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
     ScopedPointer<AudioPluginInstance> innerPlugin;

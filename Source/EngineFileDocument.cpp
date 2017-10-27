@@ -390,7 +390,7 @@ String Engine::getNormalizedFilePath (const File& f)
 
 File Engine::getFileAtNormalizedPath (const String& path)
 {
-    bool isRelative = path.length() > 0 && (path[0] != (File::getSeparatorChar()) || path[0] == '.');
+    bool isRelative = path.length() > 0 && (path[0] != File::getSeparatorChar() || path[0] == '.');
 
     if (isRelative)
     {
