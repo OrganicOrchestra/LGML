@@ -26,7 +26,7 @@ public:
 
     virtual ParameterContainer * createContainerFromContainer(ParameterContainer *p) = 0;
     ParameterContainer * getSlaveContainer();
-    ParameterContainer * getSlaveRelatedContainer(ParameterContainer *c);
+    ParameterContainer * getSlaveRelatedContainer(ParameterContainer *c,bool useLastName=false);
     ParameterContainer * getRootRelatedContainer(ParameterContainer *c);
     void checkContInSync(ParameterContainer * fromRoot);
     void checkContExists(ParameterContainer * fromRoot);

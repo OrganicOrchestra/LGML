@@ -153,7 +153,7 @@ String ControllableContainer::setNiceName (const String& _niceName)
 
 void ControllableContainer::setAutoShortName()
 {
-    shortName = StringUtil::toShortName (getNiceName());
+    shortName = Controllable::toShortName (getNiceName());
     updateChildrenControlAddress();
     notifyChildAddressChanged(this);
 }

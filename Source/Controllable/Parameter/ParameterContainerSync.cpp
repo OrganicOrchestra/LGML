@@ -34,11 +34,14 @@ void ParameterContainerSync::setRoot(ParameterContainer * _root){
     }
 
 }
-ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterContainer *c){
+ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterContainer *c,bool useLastName){
     if(c==root){
         return slave;
     }
-    const StringArray arr (c->getControlAddressArray(root));
+ StringArray arr (c->getControlAddressArray(root));
+    if(useLastName && arr.size()){
+        arr.getReference(arr.size()-1) = Controllable::toShortName(c->nameParam->lastValue.toString());
+    }
     auto inner = dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(arr));
 
     return inner;
@@ -160,12 +163,12 @@ void ParameterContainerSync::childStructureChanged (ControllableContainer* notif
 
 };
 void ParameterContainerSync::childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* c) {
-    if(auto inner = getSlaveRelatedContainer(dynamic_cast<ParameterContainer*>(c))){
+    if(auto inner = getSlaveRelatedContainer(dynamic_cast<ParameterContainer*>(c),true)){
         inner->setNiceName(c->getNiceName());
     }
     else{
-#warning this line is triggered on ezra session migration tests
-//        jassertfalse;
+#warning should find controller
+        jassertfalse;
     }
 
 

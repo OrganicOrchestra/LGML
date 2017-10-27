@@ -61,7 +61,7 @@ void Controllable::setNiceName (const String& _niceName)
 
 void Controllable::setAutoShortName()
 {
-    shortName = StringUtil::toShortName (niceName);
+    shortName = toShortName (niceName);
     updateControlAddress();
     listeners.call (&Listener::controllableNameChanged, this);
 }

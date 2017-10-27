@@ -42,6 +42,16 @@ public:
     String description;
 
 
+    forcedinline static String toShortName (const String& s)
+    {
+        if (s.isEmpty()) return "";
+        
+        //   #*,?[]{}/ based on OSC escaping
+        // http://opensoundcontrol.org/spec-1_0
+        // other for xml or generic escaping
+        return s.removeCharacters (" #*,?[]{}/:;%$<>()").toLowerCase();
+    }
+    
     bool enabled;
     bool isControllableExposed;
     bool isHidenInEditor;
