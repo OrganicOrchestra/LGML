@@ -49,13 +49,14 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
 
     if (!isEnabled) return;
 
-    if (currentComponent != nullptr)
+    if (currentComponent != nullptr || c==nullptr)
     {
         clearEditor();
-        currentComponent->setSelected (false);
-        currentComponent->removeInspectableListener (this);
         if(auto cont = getCurrentSelected())
-            cont->parentContainer->removeControllableContainerListener(this);
+            cont->removeControllableContainerListener(this);
+        currentComponent->setSelected (false);
+        
+
     }
 
     currentComponent = c;
@@ -63,9 +64,8 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
     if (currentComponent != nullptr)
     {
         currentComponent->setSelected (true);
-        currentComponent->addInspectableListener (this);
         if(auto cont = getCurrentSelected())
-            cont->parentContainer->addControllableContainerListener(this);
+            cont->addControllableContainerListener(this);
         inspectCurrentComponent();
     }
 
@@ -113,10 +113,7 @@ void Inspector::inspectCurrentComponent()
     resized();
 }
 
-void Inspector::inspectableRemoved (InspectableComponent* component)
-{
-    if (component == currentComponent) setCurrentComponent (nullptr);
-}
+
 
 void Inspector::contentSizeChanged (InspectorEditor*)
 {
@@ -129,4 +126,8 @@ void Inspector::controllableContainerRemoved(ControllableContainer * , Controlla
     }
 
 
+}
+void Inspector::containerWillClear(ControllableContainer * ){
+    setCurrentComponent(nullptr);
+    
 }

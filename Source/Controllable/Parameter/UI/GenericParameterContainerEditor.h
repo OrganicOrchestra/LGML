@@ -107,7 +107,7 @@ public :
     void buttonClicked (Button*  b)override;
 
     void childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded) override;
-
+    void containerWillClear(ControllableContainer *c)override;
     void handleCommandMessage (int cID)override;
 
     void timerCallback()override;

@@ -22,7 +22,6 @@
 #include "../../Controllable/Parameter/ParameterContainer.h"
 
 class Inspector : public juce::Component,
-    public InspectableComponent::InspectableListener,
     public InspectorEditor::InspectorEditorListener,
     private ControllableContainer::Listener
 
@@ -49,7 +48,7 @@ public:
     void clearEditor();
     void inspectCurrentComponent();
 
-    void inspectableRemoved (InspectableComponent* component) override;
+    
 
     void contentSizeChanged (InspectorEditor*) override;
     //Listener
@@ -68,6 +67,7 @@ public:
 
 private:
     void controllableContainerRemoved(ControllableContainer * , ControllableContainer * ) override;
+    void containerWillClear(ControllableContainer * )override;
 };
 
 class InspectorViewport : public ShapeShifterContentComponent, public Inspector::InspectorListener

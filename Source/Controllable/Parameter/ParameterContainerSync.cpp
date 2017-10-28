@@ -176,8 +176,7 @@ void ParameterContainerSync::childAddressChanged (ControllableContainer* /*notif
         inner->setNiceName(c->getNiceName());
     }
     else{
-#warning should find controller
-        jassertfalse;
+        jassertfalse;// should find controller
     }
 
 
@@ -187,11 +186,17 @@ void ParameterContainerSync::controllableContainerPresetLoaded (ControllableCont
 };
 void ParameterContainerSync::containerWillClear (ControllableContainer* c) {
     auto pc=dynamic_cast<ParameterContainer*>(c);
-    if(!pc){
-        jassertfalse;
+    if(c==root){
+        setRoot(nullptr);
         return;
     }
-    if(auto inner = getSlaveRelatedContainer(pc)){
-        inner->clearContainer();
+    if(!pc){
+        jassertfalse; // hapen on closing file (destructor methods)
+        return;
     }
+    
+        
+    
+    
+    
 };

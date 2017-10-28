@@ -170,10 +170,10 @@ void ControllerManagerUI::mouseDown (const MouseEvent& event)
                     jassertfalse;
             }
         }
-        else
-        {
-            if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setCurrentComponent (nullptr);
-        }
+//        else
+//        {
+//            if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setCurrentComponent (nullptr);
+//        }
     }
 }
 

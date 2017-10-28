@@ -98,7 +98,7 @@ Engine::~Engine()
 
     closeAudio();
     
-    NodeManager::getInstance()->clear();
+    
     NodeManager::deleteInstance();
     PresetManager::deleteInstance();
     FastMapper::deleteInstance();

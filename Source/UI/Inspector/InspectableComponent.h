@@ -52,19 +52,8 @@ public:
 
     //
     void paintOverChildren (juce::Graphics& g) override;
-    //Listener
-    class  InspectableListener
-    {
-    public:
-        /** Destructor. */
-        virtual ~InspectableListener() {}
-        virtual void inspectableSelectionChanged (InspectableComponent*) {};
-        virtual void inspectableRemoved (InspectableComponent*) {};
-    };
 
-    ListenerList<InspectableListener> listeners;
-    void addInspectableListener (InspectableListener* newListener) { listeners.add (newListener); }
-    void removeInspectableListener (InspectableListener* listener) { listeners.remove (listener); }
+
 private:
     ParameterContainer* relatedParameterContainer;
     WeakReference<InspectableComponent>::Master masterReference;

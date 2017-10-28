@@ -47,12 +47,12 @@ GenericParameterContainerEditor::~GenericParameterContainerEditor()
     if (sourceContainer.get())sourceContainer->removeControllableContainerListener (this);
 
     parentBT.removeListener (this);
-    innerContainer->clear();
+    if(innerContainer.get())innerContainer->clear();
 }
 
 void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterContainer* cc, bool forceUpdate,    int recursiveInspectionLevel, bool canInspectChildContainersBeyondRecursion)
 {
-    if (cc == nullptr) return;
+//    if (cc == nullptr) return;
 
     if (innerContainer != nullptr)
     {
@@ -66,6 +66,7 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
     int ccLevel = 0;
     ControllableContainer* tc = cc;
 
+    if(cc){
     while (tc != sourceContainer)
     {
         ccLevel++;
@@ -73,6 +74,7 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
         jassert (tc != nullptr); //If here, trying to inspect a container that is not a child of the source inspectable container
     }
 
+    
     innerContainer = new CCInnerContainerUI (this, cc, 0, ccLevel == 0 ? recursiveInspectionLevel : 0, canInspectChildContainersBeyondRecursion);
 
     addAndMakeVisible (innerContainer);
@@ -80,9 +82,9 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
     parentBT.setVisible (ccLevel > 0);
 
     if (parentBT.isVisible() && cc->parentContainer != nullptr) parentBT.setButtonText ("Up : " + cc->parentContainer->getNiceName());
-
+    }
     resized();
-
+    
 }
 
 int GenericParameterContainerEditor::getContentHeight()
@@ -137,6 +139,10 @@ void GenericParameterContainerEditor::childStructureChanged (ControllableContain
     }
 
 }
+void GenericParameterContainerEditor::containerWillClear(ControllableContainer *c){
+//    handleCommandMessage(<#int cID#>)
+}
+
 void GenericParameterContainerEditor::handleCommandMessage (int cID)
 {
     switch (cID)
@@ -154,7 +160,7 @@ void GenericParameterContainerEditor::handleCommandMessage (int cID)
 }
 void GenericParameterContainerEditor::timerCallback()
 {
-    if (sourceContainer.get())setCurrentInspectedContainer (sourceContainer, true);
+    setCurrentInspectedContainer (sourceContainer, true);
 
     inspectorEditorListeners.call (&InspectorEditorListener::contentSizeChanged, this);
     stopTimer();

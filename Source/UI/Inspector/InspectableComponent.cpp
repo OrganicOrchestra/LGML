@@ -67,7 +67,6 @@ void InspectableComponent::setSelected (bool value)
 
     setSelectedInternal (value);
 
-    listeners.call (&InspectableListener::inspectableSelectionChanged, this);
 }
 
 void InspectableComponent::setSelectedInternal (bool)
