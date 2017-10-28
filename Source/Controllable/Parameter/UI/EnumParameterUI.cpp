@@ -229,7 +229,7 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
 
                 if (elemToRemove.isNotEmpty())
                 {
-                    ep->getModel()->removeOption (elemToRemove, true);
+                    ep->getModel()->removeOption (elemToRemove, false);
                     changedFromUI = true;
                 }
             }
@@ -237,6 +237,12 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
             if (!changedFromUI)
             {
                 cb.setSelectedId (lastId, dontSendNotification);
+            }
+            else{
+                
+                cb.setTextWhenNothingSelected (ep->niceName);
+                cb.setSelectedId(NoneId);
+                
             }
         }
         else if ( id == NoneId)
