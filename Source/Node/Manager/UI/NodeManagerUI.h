@@ -23,6 +23,7 @@
 #include "../../../UI/Style.h"
 #include "../NodeFactory.h"
 #include "../../../Utils/FactoryUIHelpers.h"
+#include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 class UISync;
 
@@ -89,7 +90,7 @@ class NodeManagerUIViewport :
 public :
     NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName)
     {
-        vp.setViewedComponent (nmui, true);
+        vp.setViewedComponent (nmui, false);
         vp.setScrollBarsShown (true, true);
         vp.setScrollOnDragEnabled (false);
         vp.addMouseListener (this, true);
@@ -117,7 +118,7 @@ public :
         vp.setScrollOnDragEnabled (me.originalComponent == nmui->currentViewer);
     }
 
-
+    ScopedPointer<ParameterUI> minimizeAllUI;
     OwnedArray<TextButton> pathButtons;
 
     void reconstructViewerPath()
@@ -132,7 +133,10 @@ public :
         pathButtons.clear();
         if( nmui->currentViewer){
         NodeContainer* c = nmui->currentViewer->nodeContainer;
+        minimizeAllUI = ParameterUIFactory::createDefaultUI(nmui->currentViewer->minimizeAll);
+        addAndMakeVisible(minimizeAllUI);
 
+            
         while (c != nullptr)
         {
             TextButton* b = new TextButton (c->getNiceName());
@@ -179,7 +183,8 @@ public :
         Rectangle<int> r = getLocalBounds();
 
         Rectangle<int> buttonR = r.removeFromTop (30).reduced (5);
-
+        
+        minimizeAllUI->setBounds(buttonR.removeFromRight(100));
         for (auto& b : pathButtons)
         {
             b->setBounds (buttonR.removeFromLeft (100));
@@ -199,6 +204,9 @@ public :
     void currentViewedContainerChanged()override
     {
         reconstructViewerPath();
+        
+        
+
         //nmui->setBounds(getLocalBounds().withTop(30));
         resized();
 

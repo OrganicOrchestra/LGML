@@ -33,6 +33,7 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
     {
         parameter->addAsyncCoalescedListener (this);
         parameter->addParameterListener (this);
+        
     }
     else
     {
@@ -46,6 +47,7 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
     mappingState = NOMAP;
     setMappingState (LGMLDragger::getInstance()->isMappingActive);
     updateTooltip();
+    
 
 
 }

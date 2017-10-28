@@ -287,11 +287,11 @@ void MultiNeedle::jumpTo (const int to)
     jassert (loopSize > 0);
     jassert (to >= 0);
 
-    if (to > 256)
-    {
-        int dbg;
-        dbg++;
-    }
+//    if (to > 256)
+//    {
+//        int dbg;
+//        dbg++;
+//    }
 
     fadeAllOut();
 

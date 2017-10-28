@@ -217,7 +217,7 @@ public:
     class RebuildTimer : public Timer
     {
     public:
-        RebuildTimer (NodeContainer* o): owner (o) ,maxRebuildTime(10000),lastTime(0){
+        RebuildTimer (NodeContainer* o): owner (o) ,maxRebuildTime(40000),lastTime(0){
         curRebuildTime = maxRebuildTime;
         };
         void timerCallback()override

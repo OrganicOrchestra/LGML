@@ -125,7 +125,8 @@ void Parameter::tryToSetValue (const var & _value, bool silentSet, bool force )
 
         if (!isOverriden && !checkValueIsTheSame (defaultValue, value)) isOverriden = true;
 
-        if (!silentSet && !checkValueIsTheSame (lastValue, value)) notifyValueChanged (false);
+        if (!silentSet && (force || !checkValueIsTheSame (lastValue, value)))
+            notifyValueChanged (false);
 
         isSettingValue = false;
     }

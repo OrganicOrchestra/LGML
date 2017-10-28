@@ -43,12 +43,11 @@ void ConnectableNodeUIParams::initFromParams(){
 
 
 }
-Point2DParameter<int>* ConnectableNodeUIParams::getCurrentPositionParam(){
-    return miniMode->boolValue()?nodeMinimizedPosition:nodePosition;
-}
+
 void ConnectableNodeUIParams::notifyFromParams(){
 
-    getCurrentPositionParam()->notifyValueChanged();
+    nodeMinimizedPosition->notifyValueChanged();
+    nodePosition->notifyValueChanged();
     nodeSize->notifyValueChanged();
     miniMode->notifyValueChanged();
 }
@@ -93,7 +92,6 @@ connectableNode (cn),
 inputContainer (ConnectorComponent::ConnectorIOType::INPUT),
 outputContainer (ConnectorComponent::ConnectorIOType::OUTPUT),
 mainComponentContainer (this, contentUI, headerUI),
-bMiniMode (false),
 resizer (this, &constrainer),
 isDraggingFromUI (false)
 {
@@ -143,7 +141,10 @@ ConnectableNodeUI::~ConnectableNodeUI()
     connectableNode->removeConnectableNodeListener (this);
 }
 
-
+Point2DParameter<int>* ConnectableNodeUI::getCurrentPositionParam(){
+    auto ncv = findParentComponentOfClass<NodeContainerViewer>();
+    return ncv && ncv->minimizeAll->boolValue()?nodeMinimizedPosition:nodePosition;
+}
 
 void ConnectableNodeUI::moved()
 {
@@ -156,9 +157,9 @@ void ConnectableNodeUI::moved()
 
 void ConnectableNodeUI::setMiniMode (bool value)
 {
-    if (bMiniMode == value) return;
+    bool bMiniMode = miniMode->boolValue();
 
-    bMiniMode = value;
+
 
     mainComponentContainer.setMiniMode (bMiniMode);
     auto nodeP = getCurrentPositionParam();
@@ -217,11 +218,11 @@ void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
 
         if (p == nodePosition )
         {
-            if (!isDraggingFromUI && !miniMode->boolValue())
+            if (!isDraggingFromUI )
                 postOrHandleCommandMessage (posChangedId);
         }
         else if(p== nodeMinimizedPosition){
-            if (!isDraggingFromUI && miniMode->boolValue())
+            if (!isDraggingFromUI )
                 postOrHandleCommandMessage (posChangedId);
         }
         else if ( p == nodeSize)

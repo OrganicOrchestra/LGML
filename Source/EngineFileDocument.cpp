@@ -328,7 +328,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
     //Clean unused presets
     PresetManager::getInstance()->deleteAllUnusedPresets (this);
 
-    if (Inspector::getInstanceWithoutCreating() != nullptr) Inspector::getInstance()->setEnabled (true); //Re enable editor
+    if (auto inspector = Inspector::getInstanceWithoutCreating() ) inspector->setEnabled (true); //Re enable editor
 
 }
 

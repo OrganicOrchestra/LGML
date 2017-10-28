@@ -59,7 +59,7 @@ public:
 
     //  controllableContainer::Listener
     virtual void controllableRemoved (ControllableContainer*, Controllable*) override;
-    virtual void containerCleared (ControllableContainer* ) override;
+    virtual void containerWillClear (ControllableContainer* ) override;
 
 
 

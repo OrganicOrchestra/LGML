@@ -19,14 +19,14 @@
 #include "../../../UI/Inspector/Inspector.h"
 #include "../../../Utils/FactoryUIHelpers.h"
 #include "../../UI/NodeUIFactory.h"
-#include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
+
 
 NodeContainerViewer::NodeContainerViewer (NodeContainer* container,ParameterContainer * uiP) :
     InspectableComponent (container, "node"),
     nodeContainer (container),
     editingConnection (nullptr),
     uiParams(uiP),
-    ParameterContainer("ui_"+container->getNiceName())
+    ParameterContainer(container->getNiceName())
 {
 
     setInterceptsMouseClicks (true, true);
@@ -35,8 +35,6 @@ NodeContainerViewer::NodeContainerViewer (NodeContainer* container,ParameterCont
     canInspectChildContainersBeyondRecursion = false;
 
     minimizeAll = addNewParameter<BoolParameter>("minimizeAll", "minimize all visible nodes", false);
-    minimizeAllUI = ParameterUIFactory::createDefaultUI(minimizeAll);
-    addAndMakeVisible(minimizeAllUI);
 
 
     for (auto& n : nodeContainer->nodes)
@@ -54,6 +52,7 @@ NodeContainerViewer::NodeContainerViewer (NodeContainer* container,ParameterCont
 
 
     resizeToFitNodes();
+    
 
 }
 
@@ -61,6 +60,7 @@ NodeContainerViewer::~NodeContainerViewer()
 {
     nodeContainer->removeNodeContainerListener (this);
     clear();
+
 }
 
 void NodeContainerViewer::clear()
@@ -87,9 +87,9 @@ void NodeContainerViewer::clear()
 
 void NodeContainerViewer::resized()
 {
-    auto area = getLocalBounds();
-    auto header  =area.removeFromTop(20);
-    minimizeAllUI->setBounds(header.removeFromLeft(100));
+//    auto area = getLocalBounds();
+//    auto header  =area.removeFromTop(20);
+//    
 
 }
 
@@ -128,7 +128,7 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
         nodesUI.add (nui);
         addChildControllableContainer(nui);
         addAndMakeVisible (nui);
-        minimizeAllUI->toFront(false);
+        
     }
     else
     {
@@ -500,7 +500,7 @@ void NodeContainerViewer::childBoundsChanged (Component*)
 void NodeContainerViewer::onContainerParameterChanged(Parameter * p) {
     if(p==minimizeAll){
         for(auto n:nodesUI){
-            n->miniMode->setValue(minimizeAll->boolValue());
+            n->miniMode->setValue(minimizeAll->boolValue(),false,true);
         }
     }
 

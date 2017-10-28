@@ -359,7 +359,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
 
             if (ic != nullptr)
             {
-                ParameterContainer* cc = Inspector::getInstance()->currentComponent->getRelatedParameterContainer();
+                ParameterContainer* cc = ic->getRelatedParameterContainer();
 
                 if (cc != nullptr)
                 {
@@ -367,7 +367,14 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                     var data (new DynamicObject());
                     data.getDynamicObject()->setProperty ("type", ic->inspectableType);
                     data.getDynamicObject()->setProperty ("data", cc->getObject());
-
+                    auto relatedComponent =Inspector::getInstance()->currentComponent;
+                    
+                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent.get());
+                    if(!ncv)ncv=Inspector::getInstance()->currentComponent->findParentComponentOfClass<NodeContainerViewer>();
+                    if(ncv && ncv->uiParams){
+                        auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
+                        data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
+                    }
 
                     if (info.commandID == CommandIDs::cutSelection)
                     {
@@ -397,14 +404,15 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                 {
 
                     String type = d->getProperty ("type");
+                    auto relatedComponent =Inspector::getInstance()->currentComponent;
 
-                    if (Inspector::getInstance()->currentComponent != nullptr)
+                    if (relatedComponent != nullptr)
                     {
-                        if (type == "node" && Inspector::getInstance()->currentComponent->inspectableType == "node")
+                        if (type == "node" && relatedComponent->inspectableType == "node")
                         {
-                            ConnectableNode* cn = dynamic_cast<ConnectableNode*> (Inspector::getInstance()->currentComponent->getRelatedParameterContainer());
+                            ConnectableNode* cn = dynamic_cast<ConnectableNode*> (relatedComponent->getRelatedParameterContainer());
                             NodeContainer* container = (dynamic_cast<NodeContainer*> (cn)) ? dynamic_cast<NodeContainer*> (cn) : cn->getParentNodeContainer();
-                            NodeContainerViewer *  ncv = Inspector::getInstance()->currentComponent->findParentComponentOfClass<NodeContainerViewer>();
+                            
                             if (cn != nullptr)
                             {
                                 ConnectableNode* n = container->addNodeFromJSONData (d->getProperty ("data").getDynamicObject());
@@ -413,11 +421,22 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                 if (n)
                                 {
                                     n->uid = Uuid();
-
+                                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent.get());
+                                    if(!ncv)ncv=Inspector::getInstance()->currentComponent->findParentComponentOfClass<NodeContainerViewer>();
+                                    if(ncv){
                                     auto nodeUI = ncv->getUIForNode(n);
                                     if(nodeUI){
+                                        if(auto o = d->getProperty ("uiData").getDynamicObject()){
+                                            auto nodeUIParams = dynamic_cast<ParameterContainer*>(ncv->uiParams->getControllableContainerByName(n->shortName));
+                                            nodeUIParams->configureFromObject(o);
+                                        }
+                                        nodeUI->uid=Uuid();
                                         nodeUI->nodePosition->setPoint (ncv->getMouseXYRelative());
                                         nodeUI->nodeMinimizedPosition->setPoint (ncv->getMouseXYRelative());
+                                    }
+                                    else{
+                                        jassertfalse;
+                                    }
                                     }
                                     else{
                                         jassertfalse;

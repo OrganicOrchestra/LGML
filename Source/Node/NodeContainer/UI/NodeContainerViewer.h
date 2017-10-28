@@ -34,7 +34,7 @@ public :
     
 
     BoolParameter * minimizeAll;
-    ScopedPointer<ParameterUI> minimizeAllUI;
+    
     OwnedArray<ConnectableNodeUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI* editingConnection;

@@ -34,15 +34,20 @@ void ParameterContainerSync::setRoot(ParameterContainer * _root){
     }
 
 }
-ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterContainer *c,bool useLastName){
+ParameterContainer * ParameterContainerSync::getSlaveRelatedContainer(ParameterContainer *c,bool tryLastName){
     if(c==root){
         return slave;
     }
  StringArray arr (c->getControlAddressArray(root));
-    if(useLastName && arr.size()){
-        arr.getReference(arr.size()-1) = Controllable::toShortName(c->nameParam->lastValue.toString());
+    ParameterContainer * inner = dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(arr));;
+    if( tryLastName && !inner &&  arr.size()){
+        StringArray lastArr (arr);
+        lastArr.getReference(arr.size()-1) = Controllable::toShortName(c->nameParam->lastValue.toString());
+        if(auto lastIn =  dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(lastArr))){
+            inner = lastIn;
+        }
     }
-    auto inner = dynamic_cast<ParameterContainer*>(slave->getControllableContainerForAddress(arr));
+    
 
     return inner;
 }
@@ -137,8 +142,10 @@ void ParameterContainerSync::checkContInSync(ParameterContainer * fromRoot){
 };
 
 
-void ParameterContainerSync::controllableContainerRemoved (ControllableContainer*, ControllableContainer* cont) {
-    if(auto inner = getSlaveRelatedContainer(dynamic_cast<ParameterContainer*>(cont))){
+void ParameterContainerSync::controllableContainerRemoved (ControllableContainer*, ControllableContainer* origin) {
+    auto pc=dynamic_cast<ParameterContainer*>(origin);
+    if(!pc){jassertfalse;return;}
+    if(auto inner = getSlaveRelatedContainer(pc)){
         if(inner!=slave){
         inner->parentContainer->removeChildControllableContainer(inner);
         }
@@ -155,7 +162,9 @@ void ParameterContainerSync::controllableFeedbackUpdate (ControllableContainer*,
 
 void ParameterContainerSync::childStructureChanged (ControllableContainer* notifier, ControllableContainer* origin,bool isAdded) {
     if(notifier==root){
-        checkContInSync(dynamic_cast<ParameterContainer*>(origin));
+        auto pc=dynamic_cast<ParameterContainer*>(origin);
+        if(!pc){jassertfalse;return;}
+        checkContInSync(pc);
     }
 
 
@@ -176,8 +185,13 @@ void ParameterContainerSync::childAddressChanged (ControllableContainer* /*notif
 void ParameterContainerSync::controllableContainerPresetLoaded (ControllableContainer*) {
 
 };
-void ParameterContainerSync::containerCleared (ControllableContainer* c) {
-    if(auto inner = getSlaveRelatedContainer(dynamic_cast<ParameterContainer*>(c))){
+void ParameterContainerSync::containerWillClear (ControllableContainer* c) {
+    auto pc=dynamic_cast<ParameterContainer*>(c);
+    if(!pc){
+        jassertfalse;
+        return;
+    }
+    if(auto inner = getSlaveRelatedContainer(pc)){
         inner->clearContainer();
     }
 };

@@ -138,7 +138,7 @@ DynamicObject* ParameterContainer::getObject()
     return data;
 }
 
-void ParameterContainer::containerCleared (ControllableContainer* c)
+void ParameterContainer::containerWillClear (ControllableContainer* c)
 {
     if (c == this)cleanUpPresets();
 }

@@ -180,7 +180,7 @@ public:
         virtual void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool isAdded) {}
         virtual void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* ) {};
         virtual void controllableContainerPresetLoaded (ControllableContainer*) {}
-        virtual void containerCleared (ControllableContainer* /*origin*/) {}
+        virtual void containerWillClear (ControllableContainer* /*origin*/) {}
     };
 
     //  typedef ControllableContainerListener Listener ;

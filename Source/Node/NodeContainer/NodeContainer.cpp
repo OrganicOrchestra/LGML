@@ -60,7 +60,9 @@ NodeContainer::~NodeContainer()
     //connections.clear();
     rebuildTimer.stopTimer();
     clear ();
+    
     innerGraph->releaseResources();
+    
 }
 
 
@@ -111,8 +113,8 @@ ConnectableNode* NodeContainer::addNode (ConnectableNode* n, const String& nodeN
         //DBG("Check containerIn Node : " << String(((NodeContainer *)n)->containerInNode != nullptr));
     }
 
-    String targetName = (nodeName.isNotEmpty()) ? nodeName : n->nameParam->stringValue();
-    n->nameParam->setValue (getUniqueNameInContainer (targetName));
+    String targetName = getUniqueNameInContainer (nodeName.isNotEmpty() ? nodeName : n->nameParam->stringValue());
+    n->nameParam->setValue (targetName);
 
     addChildControllableContainer (n); //ControllableContainer
 
@@ -200,14 +202,17 @@ void NodeContainer::updateAudioGraph (bool lock)
             //            jassertfalse;
             // node is not ready , postponing setup
             if( !isEngineLoadingFile()) {
-                jassertfalse;
+                LOG("!! node "+getNiceName()+" is not ready , postponing setup");
+//                jassertfalse;
             }
             else{
-                rebuildTimer.startTimer (10);
+                rebuildTimer.startTimer (100);
             }
+            
 
         }
         else{
+            LOG("! node "+getNiceName()+" is ready");
             getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
             getAudioGraph()->prepareToPlay (NodeBase::getSampleRate(), NodeBase::getBlockSize());
             getAudioGraph()->suspendProcessing (false);
@@ -230,7 +235,7 @@ void NodeContainer::handleAsyncUpdate()
     }
     else
     {
-        rebuildTimer.startTimer (10);
+        rebuildTimer.startTimer (100);
 
 
     }

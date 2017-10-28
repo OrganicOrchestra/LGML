@@ -22,6 +22,7 @@ BoolToggleUI::BoolToggleUI (Parameter* parameter) :
     ParameterUI (parameter)
 {
     setSize (10, 10);
+
 }
 
 BoolToggleUI::~BoolToggleUI()

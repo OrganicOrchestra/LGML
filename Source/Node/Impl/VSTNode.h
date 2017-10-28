@@ -122,6 +122,7 @@ public:
     void getStateInformation (MemoryBlock& destData)override ;
     void setStateInformation (const void* data, int sizeInBytes)override ;
     MemoryBlock stateInfo;
+    CriticalSection pluginStateMutex;
     void processBlockInternal (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
     void processBlockBypassed (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)override;
     ScopedPointer<AudioPluginInstance> innerPlugin;

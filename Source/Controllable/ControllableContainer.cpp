@@ -79,6 +79,7 @@ ControllableContainer * ControllableContainer::getRoot(bool global){
 
 void ControllableContainer::clearContainer()
 {
+    controllableContainerListeners.call (&Listener::containerWillClear, this);
 
     while (controllables.size())
     {
@@ -86,7 +87,7 @@ void ControllableContainer::clearContainer()
     }
 
     controllableContainers.clear();
-    controllableContainerListeners.call (&Listener::containerCleared, this);
+    
 }
 
 
@@ -160,13 +161,14 @@ void ControllableContainer::setAutoShortName()
 
 
 
-Controllable* ControllableContainer::getControllableByName (const String& name, bool searchNiceNameToo)
+Controllable* ControllableContainer::getControllableByName (const String& _name, bool searchNiceNameToo)
 {
+    
+    const String name = Controllable::toShortName(_name);
     ScopedLock lk (controllables.getLock());
-
     for (auto& c : controllables)
     {
-        if (c->shortName == name || (searchNiceNameToo && c->niceName == name)) return c;
+        if (c->shortName == name || (searchNiceNameToo && c->niceName == _name)) return c;
     }
 
     return nullptr;
@@ -185,6 +187,7 @@ ControllableContainer* ControllableContainer::addChildControllableContainer (Con
 
     controllableContainers.add (container);
     //  container->addControllableContainerListener(this);
+    jassert(container->parentContainer==nullptr);
     container->setParentContainer (this);
 
     if (notify)
@@ -265,17 +268,32 @@ void ControllableContainer::localIndexChanged() {};
 
 ControllableContainer* ControllableContainer::getControllableContainerByName (const String& _name, bool searchNiceNameToo)
 {
-    const String name = _name.toLowerCase();
+    const String name = Controllable::toShortName(_name);
     ScopedLock lk (controllableContainers.getLock());
 
     for (auto& cc : controllableContainers)
     {
-        if (cc.get() && (cc->shortName == name || (searchNiceNameToo && cc->getNiceName() == name))) return cc;
+        if (cc.get() && (cc->shortName == name || (searchNiceNameToo && cc->getNiceName() == _name))) return cc;
     }
 
     return nullptr;
 
 }
+
+
+//ControllableContainer* ControllableContainer::getControllableContainerByName (const String& name, bool searchNiceNameToo)
+//{
+//    
+//    ScopedLock lk (controllableContainers.getLock());
+//    
+//    for (auto& cc : controllableContainers)
+//    {
+//        if (cc.get() && (cc->shortName.compareIgnoreCase(name)==0 || (searchNiceNameToo && cc->getNiceName().compareIgnoreCase(name)==0))) return cc;
+//    }
+//    
+//    return nullptr;
+//    
+//}
 ControllableContainer * ControllableContainer::getMirroredContainer(ControllableContainer * other,ControllableContainer * root ){
 
     StringArray arr = other->getControlAddressArray(root);

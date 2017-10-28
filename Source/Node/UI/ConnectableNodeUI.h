@@ -33,7 +33,7 @@ public:
     void initFromParams();
     void notifyFromParams();
     virtual ~ConnectableNodeUIParams();
-    Point2DParameter<int>* getCurrentPositionParam();
+    
 
     
 
@@ -54,7 +54,7 @@ public:
     ConnectableNodeUI (ConnectableNode* cn, ConnectableNodeUIParams* params ,ConnectableNodeContentUI* contentUI = nullptr, ConnectableNodeHeaderUI* headerUI = nullptr);
     virtual ~ConnectableNodeUI();
 
-
+    
     WeakReference<ConnectableNode> connectableNode;
 
 
@@ -122,8 +122,7 @@ public:
 
 
 
-    // @ben conflit avec le parametre ;)
-    bool bMiniMode;
+    
 
 
 //    DynamicObject* getObject();
@@ -158,6 +157,7 @@ public:
 
 private:
 
+    Point2DParameter<int>* getCurrentPositionParam();
     //interaction
     Point<int> nodeInitPos;
 

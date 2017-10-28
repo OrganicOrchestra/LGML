@@ -359,11 +359,6 @@ inline void PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_cl
             jassertfalse;
         }
     }
-    else
-    {
-        int dbg;
-        dbg++;
-    }
 
 
 }
