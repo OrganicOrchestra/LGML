@@ -33,10 +33,12 @@ public:
     void initFromParams();
     void notifyFromParams();
     virtual ~ConnectableNodeUIParams();
+    Point2DParameter<int>* getCurrentPositionParam();
 
     
 
     Point2DParameter<int>* nodePosition;
+    Point2DParameter<int>* nodeMinimizedPosition;
     Point2DParameter<int>* nodeSize;
     BoolParameter* miniMode;
     WeakReference<ParameterContainer>  origin;

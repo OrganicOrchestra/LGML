@@ -419,11 +419,11 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                     auto nodeUI = ncv->getUIForNode(n);
                                     if(nodeUI){
                                         nodeUI->nodePosition->setPoint (ncv->getMouseXYRelative());
+                                        nodeUI->nodeMinimizedPosition->setPoint (ncv->getMouseXYRelative());
                                     }
                                     else{
                                         jassertfalse;
                                     }
-//                                    nodePosition->);
                                 }
                             }
                         }

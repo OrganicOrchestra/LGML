@@ -57,12 +57,22 @@ public:
 namespace{
 
 template<class FunctionType>
-ButtonPropertyComponent* createProp(const String & n,FunctionType f){
+ButtonPropertyComponent* createActionProp(const String & n,FunctionType f){
      return new ActionPropUI<FunctionType>(n,f);
 }
 
-void lala(){
-    
+void resetPreferences(){
+    auto fl = {getAppProperties()->getUserSettings()->getFile()};
+    for(auto f:fl){
+        if(f.exists()){
+#if JUCE_MAC
+    f.moveToTrash();
+#else
+    f.deleteFile();
+#endif
+        }
+    }
+
 }
 }
 
@@ -73,7 +83,7 @@ class PrefPanel : public PreferencesPanel{
             res->addProperties(
             {new BoolPropUI("multiThreadedLoading"),
              new BoolPropUI("check for updates"),
-//                createProp("reset preferences",lala)
+            createActionProp("reset preferences",resetPreferences)
             } );
             return res;
         }

@@ -20,7 +20,7 @@
 #include "../../UI/ConnectableNodeUI.h"
 
 class NodeConnectionUI;
-
+class ParameterUI;
 class NodeContainerViewer :
     public InspectableComponent,
     public NodeContainerListener,
@@ -33,7 +33,8 @@ public :
     NodeContainer* nodeContainer;
     
 
-    
+    BoolParameter * minimizeAll;
+    ScopedPointer<ParameterUI> minimizeAllUI;
     OwnedArray<ConnectableNodeUI> nodesUI;
     OwnedArray<NodeConnectionUI>  connectionsUI;
     NodeConnectionUI* editingConnection;
@@ -41,6 +42,8 @@ public :
     void clear();
 
     void resized() override;
+    void onContainerParameterChanged(Parameter * p) override;
+
 
     // Inherited via NodeContainerListener
     virtual void nodeAdded (ConnectableNode*) override;
@@ -83,6 +86,8 @@ public :
     void resizeToFitNodes();
 
     ParameterContainer * uiParams;
+
+
     
 };
 

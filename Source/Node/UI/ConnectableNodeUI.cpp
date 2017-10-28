@@ -36,14 +36,19 @@ ConnectableNodeUIParams::ConnectableNodeUIParams(ConnectableNodeUIParams * _orig
 void ConnectableNodeUIParams::initFromParams(){
     auto nui = static_cast<ConnectableNodeUIParams*> (origin.get());
     nodePosition = nui->nodePosition;
+    nodeMinimizedPosition = nui->nodeMinimizedPosition;
     nodeSize = nui->nodeSize;
     miniMode = nui->miniMode;
 
 
 
 }
+Point2DParameter<int>* ConnectableNodeUIParams::getCurrentPositionParam(){
+    return miniMode->boolValue()?nodeMinimizedPosition:nodePosition;
+}
 void ConnectableNodeUIParams::notifyFromParams(){
-    nodePosition->notifyValueChanged();
+
+    getCurrentPositionParam()->notifyValueChanged();
     nodeSize->notifyValueChanged();
     miniMode->notifyValueChanged();
 }
@@ -59,15 +64,19 @@ ConnectableNodeUIParams::~ConnectableNodeUIParams(){
 }
 ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContainer(n){
     nodePosition=addNewParameter<Point2DParameter<int>> ("nodePosition", "position on canvas", 0, 0, Array<var> {0, 0});
+    nodeMinimizedPosition= addNewParameter<Point2DParameter<int>> ("nodeMinimizedPosition", "position in minimode on canvas", 0, 0, Array<var> {0, 0});
     nodeSize=addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {30, 30});
     miniMode=addNewParameter<BoolParameter> ("miniMode", "Mini Mode", false);
     nodePosition->isControllableExposed = false;
     nodeSize->isControllableExposed = false;
 
+#warning use preset instead nodeMinimazed param
     nodePosition->isPresettable = false;
+    nodeMinimizedPosition->isPresettable = false;
     nodeSize->isPresettable = false;
 
     nodePosition->isHidenInEditor = false;
+    nodeMinimizedPosition->isHidenInEditor = false;
     nodeSize->isHidenInEditor = false;
 
 }
@@ -139,7 +148,8 @@ ConnectableNodeUI::~ConnectableNodeUI()
 void ConnectableNodeUI::moved()
 {
     isDraggingFromUI = true;
-    nodePosition->setPoint (getPosition());
+    getCurrentPositionParam()->setPoint (getPosition());
+
     isDraggingFromUI = false;
 }
 
@@ -151,7 +161,9 @@ void ConnectableNodeUI::setMiniMode (bool value)
     bMiniMode = value;
 
     mainComponentContainer.setMiniMode (bMiniMode);
-    setSize (getMiniModeWidth (bMiniMode), getMiniModeHeight (bMiniMode));
+    auto nodeP = getCurrentPositionParam();
+    setBounds(nodeP->getX(), nodeP->getY() ,
+              getMiniModeWidth (bMiniMode), getMiniModeHeight (bMiniMode));
 }
 
 int ConnectableNodeUI::getMiniModeWidth (bool forMiniMode)
@@ -205,7 +217,11 @@ void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
 
         if (p == nodePosition )
         {
-            if (!isDraggingFromUI)
+            if (!isDraggingFromUI && !miniMode->boolValue())
+                postOrHandleCommandMessage (posChangedId);
+        }
+        else if(p== nodeMinimizedPosition){
+            if (!isDraggingFromUI && miniMode->boolValue())
                 postOrHandleCommandMessage (posChangedId);
         }
         else if ( p == nodeSize)
@@ -248,7 +264,10 @@ void ConnectableNodeUI::handleCommandMessage (int commandId)
             break;
 
         case posChangedId:
-            setTopLeftPosition (nodePosition->getPoint());
+            setTopLeftPosition(getCurrentPositionParam()->getPoint());
+            if(!nodeMinimizedPosition->isOverriden){
+                nodeMinimizedPosition->setPoint(nodePosition->getPoint());
+            }
             break;
 
         case sizeChangedId:
@@ -308,8 +327,9 @@ void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
     Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
     Point <int> newPos = nodeInitPos + diff;
 
-    nodePosition->setPoint (newPos);
-    setTopLeftPosition (nodePosition->getPoint());
+    auto nodeP = getCurrentPositionParam();
+    nodeP->setPoint (newPos);
+    setTopLeftPosition (nodeP->getPoint());
 
 }
 
@@ -328,7 +348,7 @@ bool ConnectableNodeUI::keyPressed (const KeyPress& key)
     }
     else if (key.getModifiers().isCommandDown() && key.getKeyCode() == KeyPress::downKey)
     {
-        if (NodeContainer* c = static_cast<NodeContainer* > (connectableNode.get()))
+        if (NodeContainer* c = dynamic_cast<NodeContainer* > (connectableNode.get()))
         {
             if (NodeManagerUI* manager = findParentComponentOfClass<NodeManagerUI>())
             {

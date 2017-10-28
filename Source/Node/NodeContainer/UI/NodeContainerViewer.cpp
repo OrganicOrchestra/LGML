@@ -19,19 +19,25 @@
 #include "../../../UI/Inspector/Inspector.h"
 #include "../../../Utils/FactoryUIHelpers.h"
 #include "../../UI/NodeUIFactory.h"
+#include "../../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 NodeContainerViewer::NodeContainerViewer (NodeContainer* container,ParameterContainer * uiP) :
     InspectableComponent (container, "node"),
     nodeContainer (container),
     editingConnection (nullptr),
-uiParams(uiP),
-ParameterContainer("ui_"+container->getNiceName())
+    uiParams(uiP),
+    ParameterContainer("ui_"+container->getNiceName())
 {
 
     setInterceptsMouseClicks (true, true);
     nodeContainer->addNodeContainerListener (this);
 
     canInspectChildContainersBeyondRecursion = false;
+
+    minimizeAll = addNewParameter<BoolParameter>("minimizeAll", "minimize all visible nodes", false);
+    minimizeAllUI = ParameterUIFactory::createDefaultUI(minimizeAll);
+    addAndMakeVisible(minimizeAllUI);
+
 
     for (auto& n : nodeContainer->nodes)
     {
@@ -43,9 +49,11 @@ ParameterContainer("ui_"+container->getNiceName())
         addConnectionUI (c);
     }
 
+
+
+
+
     resizeToFitNodes();
-
-
 
 }
 
@@ -79,6 +87,9 @@ void NodeContainerViewer::clear()
 
 void NodeContainerViewer::resized()
 {
+    auto area = getLocalBounds();
+    auto header  =area.removeFromTop(20);
+    minimizeAllUI->setBounds(header.removeFromLeft(100));
 
 }
 
@@ -117,6 +128,7 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
         nodesUI.add (nui);
         addChildControllableContainer(nui);
         addAndMakeVisible (nui);
+        minimizeAllUI->toFront(false);
     }
     else
     {
@@ -395,7 +407,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
                     jassert (n != nullptr);
                     if(auto m = getUIForNode(n)){
                         m->nodePosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
-                        
+                        m->nodeMinimizedPosition->setPoint (mousePos - m->nodeSize->getPoint() / 2);
                     }
 
                 }
@@ -462,6 +474,7 @@ bool NodeContainerViewer::keyPressed (const KeyPress& key)
                 jassert (n != nullptr);
                 if(auto m = getUIForNode(n)){
                     m->nodePosition->setPoint (mousePos);
+                    m->nodeMinimizedPosition->setPoint (mousePos);
                 }
 
             }
@@ -484,6 +497,14 @@ void NodeContainerViewer::childBoundsChanged (Component*)
     resizeToFitNodes();
 }
 
+void NodeContainerViewer::onContainerParameterChanged(Parameter * p) {
+    if(p==minimizeAll){
+        for(auto n:nodesUI){
+            n->miniMode->setValue(minimizeAll->boolValue());
+        }
+    }
+
+};
 
 void NodeContainerViewer::resizeToFitNodes()
 {

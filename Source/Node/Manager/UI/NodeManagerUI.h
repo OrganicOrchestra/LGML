@@ -224,6 +224,7 @@ public :
                     if(auto ui= nmui->getControllableForAddress(c->getControlAddressArray())){
                         if(auto d = dynamic_cast<ConnectableNodeUIParams*>(ui)){
                             d->nodePosition->setPoint (mousePos);
+                            d->nodeMinimizedPosition->setPoint (mousePos);
                         }
                     }
                 }

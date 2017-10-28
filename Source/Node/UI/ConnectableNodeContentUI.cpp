@@ -56,6 +56,7 @@ void ConnectableNodeContentUI::setDefaultPosition (int x, int y)
 {
 
     nodeUI->nodePosition->setNewDefault( Array<var> {x, y},false);
+    nodeUI->nodeMinimizedPosition->setNewDefault( Array<var> {x, y},false);
     
     
 }

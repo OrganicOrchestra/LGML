@@ -77,11 +77,13 @@ ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,Connectabl
     // set default for ContainerIn/Out
     if(t->getTypeId()==ContainerInNode::_objType){
         uip->nodePosition->setNewDefault(Array<var>({10,10}), false);
+        uip->nodeMinimizedPosition->setNewDefault(Array<var>({10,10}), false);
         return new ConnectableNodeUI(t, uip,nullptr);
 
     }
     if(t->getTypeId()==ContainerOutNode::_objType){
         uip->nodePosition->setNewDefault(Array<var>({200,10}), false);
+        uip->nodeMinimizedPosition->setNewDefault(Array<var>({200,10}), false);
         return new ConnectableNodeUI(t, uip,nullptr);
 
     }
