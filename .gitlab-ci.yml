@@ -8,6 +8,7 @@ stages:
   - "build"
   - "test"
   - "package"
+  - "deploy"
 
 build_job:
   stage: build
@@ -36,6 +37,17 @@ package:
   script:
     - "python Scripts/buildScript.py --package --export "
 
+pages:
+  stage: deploy
+  script:
+  - mkdir .public
+  - cp -r * .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - gh-pages
 
   # artifacts:
   #   paths:
