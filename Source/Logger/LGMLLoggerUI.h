@@ -73,10 +73,12 @@ public:
 private:
     int totalLogRow;
     void updateTotalLogRow();
-    const String& getSourceForRow (int r);
-    const String& getContentForRow (int r);
-    const Colour& getSeverityColourForRow (int r);
-    String getTimeStringForRow (int r);
+    const LogElement * getElementForRow(const int r) const;
+    const String& getSourceForRow  (const int r) const;
+    const bool isPrimaryRow  (const int r) const;
+    const String& getContentForRow (const int r) const;
+    const Colour& getSeverityColourForRow (const int r)const;
+    const String getTimeStringForRow (const int r) const;
     friend class LogList;
 
     void handleAsyncUpdate()override;

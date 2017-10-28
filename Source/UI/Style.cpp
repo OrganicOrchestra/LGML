@@ -69,13 +69,13 @@ static void _drawBounds(Component* c ,int idx,Graphics & g,Component * relativeT
         static float strk = 0.5f;
         g.drawRect(r.toFloat().reduced(idx*strk),strk*0.5);
     }
-    
+
 }
 
 static void _repaint(Component* c ,int idx){
     c->repaint();
-    
-    
+
+
 }
 
 
@@ -102,7 +102,7 @@ void LGMLUIUtils::forceRepaint(Component * c) {
 ///////////////////////
 
 AddElementButton::AddElementButton(): Button ("Add") {
-    
+
 };
 AddElementButton::~AddElementButton(){
 
@@ -153,8 +153,8 @@ RemoveElementButton::~RemoveElementButton(){
 
 };
 void RemoveElementButton::paintButton (Graphics& g,
-                                    bool isMouseOverButton,
-                                    bool isButtonDown)
+                                       bool isMouseOverButton,
+                                       bool isButtonDown)
 {
     g.addTransform(AffineTransform::rotation(float_Pi/4,getWidth()/2,getHeight()/2));
 
@@ -178,3 +178,67 @@ void RemoveElementButton::paintButton (Graphics& g,
 
 }
 
+
+/////////////////////
+// CachedGlyph
+///////////////
+#if USE_CACHED_GLYPH
+NamedValueSet CachedGlyph::usedFonts;
+Identifier noFont("noFont");
+
+CachedGlyph::CachedGlyph(const String &t):
+Component(t),
+useEllipsesIfTooBig(false),
+justificationType(Justification::centred),
+curFontName(noFont)
+{
+
+}
+
+void CachedGlyph::setGlyphBounds(const Rectangle<int>& b){
+    updateGlyph();
+}
+
+void CachedGlyph::setText(const String & t){
+    setName(t);
+
+}
+
+void CachedGlyph::updateGlyph(){
+    if(isReady()){
+        auto area = getLocalBounds();
+        auto text = getName();
+        glyphArr.clear();
+        glyphArr.addCurtailedLineOfText (*getCurFont(), text, 0.0f, 0.0f,
+                                         area.getWidth(), useEllipsesIfTooBig);
+
+        glyphArr.justifyGlyphs (0, glyphArr.getNumGlyphs(),
+                                area.getX(), area.getY(), area.getWidth(), area.getHeight(),
+                                justificationType);
+    }
+}
+bool CachedGlyph::isReady(){
+    return curFontName!=noFont && getCurFont() && curFontName == getCurFont()->toString();
+}
+
+Font * CachedGlyph::getCurFont(){
+    var *v=usedFonts.getVarPointer(curFontName);
+    if(v){
+        v->getObject();
+    }
+}
+void CachedGlyph::paint(Graphics & g){
+    if(!isReady()){
+        curFont = g.getCurrentFont();
+        curFontName = curFont.toString();
+        updateGlyph();
+
+    }
+    auto area = getLocalBounds();
+    auto text = getName();
+    if (text.isNotEmpty())// && g.context.clipRegionIntersects (area.getSmallestIntegerContainer()))
+    {
+        glyphArr.draw (g);
+    }
+}
+#endif

@@ -393,6 +393,10 @@ void CCInnerContainerUI::paint (Graphics& g)
 
 void CCInnerContainerUI::resized()
 {
+    if(!container.get()){
+        jassertfalse;
+        return;
+    }
     int gap = 2;
     int ccGap = 5;
     int controllableHeight = 15;

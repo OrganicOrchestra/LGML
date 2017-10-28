@@ -77,4 +77,29 @@ public:
     
     
 };
+
+#define USE_CACHED_GLYPH 0
+#if USE_CACHED_GLYPH
+class CachedGlyph : public Component {
+public:
+
+    CachedGlyph(const String &t);
+    void setGlyphBounds(const Rectangle<int>& b);
+    void setText(const String & t);
+    void paint( Graphics & g) override;
+
+class ReferenceCountedObject
+private:
+    bool isReady();
+    void updateGlyph();
+    Identifier curFontName;
+    Font * getCurFont();
+    
+    bool useEllipsesIfTooBig;
+    Justification justificationType;
+    GlyphArrangement glyphArr;
+
+    static NamedValueSet usedFonts;
+};
+#endif
 #endif  // STYLE_H_INCLUDED

@@ -48,8 +48,10 @@ MainContentComponent::MainContentComponent (Engine* e):
     //    (&getCommandManager())->getKeyMappings()->restoreFromXml (lastSavedKeyMappingsXML);
     addKeyListener ((&getCommandManager())->getKeyMappings());
 #if JUCE_MAC
-    setMacMainMenu (this, nullptr, "Open recent file");
-//    setMenu (this);
+    PopupMenu extraAppleMenuItems;
+//    createExtraAppleMenuItems (extraAppleMenuItems);
+    setMacMainMenu (this, &extraAppleMenuItems);//, "Open Recent");
+
 #else
     //setMenu (this); //done in Main.cpp as it's a method of DocumentWindow
 #endif

@@ -51,7 +51,7 @@ static const int lastFileStartID        = 100; // 100 to 200 max
 
 }
 
-static String lastOpenedFileListKey("lastOpenedFileList");
+
 
 
 void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationCommandInfo& result)
@@ -190,13 +190,11 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
         menu.addCommandItem (&getCommandManager(), CommandIDs::open);
         menu.addCommandItem (&getCommandManager(), CommandIDs::openLastDocument);
 
-        RecentlyOpenedFilesList recentFiles;
-        recentFiles.restoreFromString (getAppProperties()->getUserSettings()
-                                       ->getValue (lastOpenedFileListKey));
+        RecentlyOpenedFilesList recentFiles (getEngine()->getLastOpenedFileList());
 
         PopupMenu recentFilesMenu;
         recentFiles.createPopupMenuItems (recentFilesMenu, CommandIDs::lastFileStartID, true, true);
-        menu.addSubMenu ("Open recent file", recentFilesMenu);
+        menu.addSubMenu ("Open Recent", recentFilesMenu);
 
         menu.addCommandItem (&getCommandManager(), CommandIDs::save);
         menu.addCommandItem (&getCommandManager(), CommandIDs::saveAs);
@@ -452,8 +450,7 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
     }
     else if (isPositiveAndBelow (menuItemID - CommandIDs::lastFileStartID, 100))
     {
-        RecentlyOpenedFilesList recentFiles;
-        recentFiles.restoreFromString (getAppProperties()->getUserSettings()->getValue (lastOpenedFileListKey));
+        RecentlyOpenedFilesList recentFiles (getEngine()->getLastOpenedFileList());
         engine->loadFrom (recentFiles.getFile (menuItemID - CommandIDs::lastFileStartID), true);
     }
 }

@@ -77,11 +77,11 @@ void LGMLLoggerUI::handleAsyncUpdate()
 }
 
 LGMLLoggerUI::LGMLLoggerUI (const String& contentName, LGMLLogger* l) :
-    logger (l),
-    ShapeShifterContentComponent (contentName),
-    logList (this),
-    maxNumElement (1000),
-    totalLogRow (0)
+logger (l),
+ShapeShifterContentComponent (contentName),
+logList (this),
+maxNumElement (1000),
+totalLogRow (0)
 {
     logger->addLogListener (this);
     TableHeaderComponent* thc = new TableHeaderComponent();
@@ -124,7 +124,7 @@ void LGMLLoggerUI::resized()
     logListComponent->setBounds (area);
     bool firstVisible  = area.getWidth() > 400;
     logListComponent->getHeader().setColumnVisible (1, firstVisible);
-    bool secondVisible = area.getWidth() > 400;
+    bool secondVisible = area.getWidth() > 300;
     logListComponent->getHeader().setColumnVisible (2, secondVisible);
 
     int tw = getWidth();
@@ -150,29 +150,33 @@ void LGMLLoggerUI::updateTotalLogRow()
     }
 
 }
-const String& LGMLLoggerUI::getSourceForRow (int r)
+const String& LGMLLoggerUI::getSourceForRow (const int r) const
 {
-    int count = 0;
-    int idx = 0;
-
-    while (count <= r )
-    {
-        if (count == r)
-        {
-            return logElements[idx]->source;
-        }
-
-        count += logElements[idx]->getNumLines();
-        idx++;
-
-        if (idx >= logElements.size())return String::empty;
-
+    if(auto el = getElementForRow(r)){
+        return el->source;
     }
-
     return String::empty;
 }
+const bool LGMLLoggerUI::isPrimaryRow (const int r) const
+{
+    int count = 0;
+    int idx = 0;
 
-const String&   LGMLLoggerUI::getContentForRow (int r)
+    while (count <= r && idx < logElements.size())
+    {
+        if (count== r)
+        {
+            return true;
+        }
+        count += logElements.getUnchecked(idx)->getNumLines();
+        idx++;
+
+    }
+
+    return false;
+}
+
+const String&   LGMLLoggerUI::getContentForRow (const int r) const
 {
     int count = 0;
     int idx = 0;
@@ -180,11 +184,11 @@ const String&   LGMLLoggerUI::getContentForRow (int r)
     while (idx < logElements.size())
     {
 
-        int nl = logElements[idx]->getNumLines();
+        int nl = logElements.getUnchecked(idx)->getNumLines();
 
         if (count + nl > r)
         {
-            return logElements[idx]->getLine (r - count);
+            return logElements.getUnchecked(idx)->getLine (r - count);
         }
 
         count += nl;
@@ -194,64 +198,65 @@ const String&   LGMLLoggerUI::getContentForRow (int r)
     return String::empty;
 };
 
-String  LGMLLoggerUI::getTimeStringForRow (int r)
-{
-    int count = 0;
-    int idx = 0;
-
-    while (count <= r)
-    {
-        if (count == r)
-        {
-            return String (logElements[idx]->time.toString (false, true, true, true));
-        }
-
-        count += logElements[idx]->getNumLines();
-        idx++;
-
-        if (idx >= logElements.size()) return String::empty;
-
-    }
-
-    return String::empty;
-};
-
-const Colour& LGMLLoggerUI::getSeverityColourForRow (int r)
-{
+const LogElement* LGMLLoggerUI::getElementForRow(const int r) const{
     int count = 0;
     int idx = 0;
 
     while (idx < logElements.size())
     {
-        int nl = logElements[idx]->getNumLines();
+        auto el = logElements.getUnchecked(idx);
+
+        int nl = el->getNumLines();
 
         if (count + nl > r)
         {
-            LogElement::Severity s = logElements[idx]->severity;
-
-            switch (s)
-            {
-                case LogElement::LOG_NONE:
-                    return Colours::darkgrey;
-
-                case LogElement::LOG_DBG:
-                    return Colours::black;
-
-                case LogElement::LOG_WARN:
-                    return Colours::orange;
-
-                case LogElement::LOG_ERR:
-                    return Colours::red;
-
-                default:
-                    return Colours::pink;
-
-            }
-
+            return el;
         }
 
         count += nl;
         idx++;
+    }
+    jassertfalse;
+
+    return nullptr;
+
+}
+
+const String  LGMLLoggerUI::getTimeStringForRow (const int r) const
+{
+    if(auto el = getElementForRow(r)){
+        return String (el->time.toString (false, true, true, true));
+    }
+
+    return String::empty;
+};
+
+const Colour& LGMLLoggerUI::getSeverityColourForRow (const int r) const
+{
+
+    if(auto el = getElementForRow(r))
+    {
+        LogElement::Severity s = el->severity;
+
+        switch (s)
+        {
+            case LogElement::LOG_NONE:
+                return Colours::darkgrey;
+
+            case LogElement::LOG_DBG:
+                return Colours::black;
+
+            case LogElement::LOG_WARN:
+                return Colours::orange;
+
+            case LogElement::LOG_ERR:
+                return Colours::red;
+
+            default:
+                return Colours::pink;
+
+        }
+
     }
 
     return Colours::pink;
@@ -295,11 +300,11 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
     switch (columnId)
     {
         case 1:
-            text = owner->getTimeStringForRow (rowNumber);
+            text = owner->isPrimaryRow(rowNumber)?owner->getTimeStringForRow (rowNumber):String::empty;
             break;
 
         case 2:
-            text = owner->getSourceForRow (rowNumber);
+            text = owner->isPrimaryRow(rowNumber)?owner->getSourceForRow (rowNumber):String::empty;
             break;
 
         case 3:
@@ -313,12 +318,18 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
 
 String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int /*columnId*/)
 {
-    return owner->getContentForRow (rowNumber);
+    auto el = owner->getElementForRow(rowNumber);
+    String sR = el->source;
+    return
+    (sR.isNotEmpty()?
+     sR +" ("+el->time.toString(false, true, true, true)+")"+ "\n":String::empty)
+    
+    +el->content;
 };
 
 void LGMLLoggerUI::buttonClicked (Button* b)
 {
-
+    
     if (b == &clearB)
     {
         logElements.clear();

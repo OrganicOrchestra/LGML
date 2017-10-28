@@ -36,7 +36,7 @@
 ApplicationProperties* getAppProperties();
 
 AudioDeviceManager& getAudioDeviceManager();
-static String lastFileListKey ("lastFileList");
+ String lastFileListKey ("lastFileList");
 
 String Engine::getDocumentTitle()
 {
@@ -44,6 +44,13 @@ String Engine::getDocumentTitle()
         return "Unnamed";
 
     return getFile().getFileNameWithoutExtension();
+}
+
+RecentlyOpenedFilesList Engine::getLastOpenedFileList(){
+    RecentlyOpenedFilesList recentFiles;
+    recentFiles.restoreFromString (getAppProperties()->getUserSettings()
+                                   ->getValue (lastFileListKey));
+    return recentFiles;
 }
 
 void Engine::createNewGraph()

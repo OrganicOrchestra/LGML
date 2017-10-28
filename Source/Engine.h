@@ -179,7 +179,7 @@ public:
     void handleAsyncUpdate()override;
 
     ThreadPool threadPool;
-
+    RecentlyOpenedFilesList getLastOpenedFileList();
 
 };
 
