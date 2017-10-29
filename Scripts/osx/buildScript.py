@@ -32,7 +32,8 @@ localExportPath = os.path.abspath(localExportPath)+"/"
 
 xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
 executable_name = "LGML"
-appPath = os.path.join(xcodeProjPath,"build",configuration,executable_name+".app")
+def getAppPath(configuration = configuration) :
+	return os.path.join(xcodeProjPath,"build",configuration,executable_name+".app")
 
 isBeta = False
 
@@ -40,9 +41,10 @@ njobs = min(8,multiprocessing.cpu_count())
 
 
 
-def buildApp(xcodeProjPath=xcodeProjPath,configuration=configuration,appPath=appPath,njobs=njobs,clean = cleanFirst):
+def buildApp(xcodeProjPath=xcodeProjPath,configuration=configuration,appPath=getAppPath(configuration),njobs=njobs,clean = cleanFirst):
 	if len(appPath)>10:
 		sh("rm -rf "+appPath)
+
 	configuration="Debug" if not configuration else configuration
 	if clean:
 		sh("cd "+xcodeProjPath+ " && "\
@@ -70,9 +72,8 @@ def createDmg(exportFileBaseName,appPath):
 
 
 def exportApp(baseName,configuration,exportpath=None):
-	global appPath
 	localPath = (exportpath or localExportPath)+baseName;
-	dmgPath = createDmg(localPath,appPath);
+	dmgPath = createDmg(localPath,getAppPath(configuration));
 	return dmgPath
 	# gitCommit()
 
