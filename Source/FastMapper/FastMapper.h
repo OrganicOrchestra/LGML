@@ -69,7 +69,7 @@ private:
 
     // Inspector Component
     void currentComponentChanged (Inspector* ) override;
-    ControllableContainer* selectedContainerToListenTo;
+    WeakReference<ControllableContainer> selectedContainerToListenTo;
 
     void setContainerToListen (ControllableContainer*);
 

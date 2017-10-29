@@ -442,7 +442,20 @@ void LooperNode::onContainerTriggerTriggered (Trigger* t)
     if (t == exportAudio)
     {
         ScopedLock lk(getCallbackLock());
-        File folder = getEngine()->getCurrentProjectFolder().getChildFile ("LGML_audio").getChildFile (shortName);
+        File exportFolder = getEngine()->getCurrentProjectFolder();
+        if(!getEngine()->getCurrentProjectFolder().exists()){
+            exportFolder = File::getSpecialLocation(File::SpecialLocationType::tempDirectory);
+            
+            if(exportFolder.exists()){
+                LOG("!! session not loaded, exporting to temp folder : "+ exportFolder.getFullPathName());
+            }
+            else{
+                LOG("!!! can't create temporary folder for export path");
+                return;
+            }
+            
+        }
+        File folder = exportFolder.getChildFile ("LGML_audio").getChildFile (shortName);
         folder.createDirectory();
         jassert (folder.exists());
 

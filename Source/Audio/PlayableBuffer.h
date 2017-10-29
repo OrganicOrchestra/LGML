@@ -166,7 +166,7 @@ private:
     bool isStretchPending;
 #if BUFFER_CAN_STRETCH
     friend class StretcherJob;
-    StretcherJob* stretchJob;
+    WeakReference<StretcherJob> stretchJob;
     AudioSampleBuffer tmpBufferStretch;
     bool isStretchReady;
 

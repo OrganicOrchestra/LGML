@@ -42,6 +42,10 @@ public:
 
     {
     };
+    ~StretcherJob ()
+    
+    {masterReference.clear();
+    };
 
 
     JobStatus runJob()override;
@@ -60,6 +64,10 @@ public:
     ScopedPointer<RubberBand::RubberBandStretcher> stretcher;
 
     CriticalSection jobLock;
+    
+private:
+    WeakReference<StretcherJob>::Master masterReference;
+    friend class WeakReference<StretcherJob>;
 
 };
 

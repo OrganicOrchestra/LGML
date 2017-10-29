@@ -58,7 +58,12 @@ Controller::~Controller()
 
 void Controller::remove()
 {
-    ((ControllerManager*)parentContainer)->removeController (this);
+    if(parentContainer){
+        ((ControllerManager*)parentContainer)->removeController (this);
+    }
+    else{
+        jassertfalse;
+    }
 }
 
 void Controller::onContainerParameterChanged (Parameter* p)
