@@ -66,7 +66,7 @@ logVolume (float01ToGain (DB0_FOR_01), 0.5)
     
     sampleChoice = addNewParameter<EnumParameter> ("sample", "loaded sample");
     sampleChoice->getModel()->setIsFileBased (true);
-    sampleChoice->addAsyncEnumParameterListener (this);
+    sampleChoice->addEnumParameterListener (this);
     
     mute->invertVisuals = true;
     
@@ -934,14 +934,19 @@ void LooperTrack::enumOptionSelectionChanged (EnumParameter* ep, bool _isSelecte
         
         if (!path.isEmpty())
         {
-            loadAudioSample (path);
+            MessageManager::callAsync([this,path](){loadAudioSample (path);});
             return;
         }
         
     }
     
     // should clear if no audio sample
+    if(ep->getSelectedIds().size()==0){
     clear();
+    }
+    else{
+//        jassertfalse;
+    }
 };
 void LooperTrack::loadAudioSample (const String& path)
 {

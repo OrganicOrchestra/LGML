@@ -180,6 +180,7 @@ void EnumParameter::selectId (Identifier key, bool shouldSelect, bool appendSele
     else if (!shouldSelect)
     {
         numSelectionChange = selection->removeAllInstancesOf (key.toString());
+        jassert( getSelectedSet (value)->size() == selection->size());
 
     }
 
@@ -202,12 +203,12 @@ bool EnumParameter::selectFromVar (const var& _value, bool shouldSelect, bool ap
     if (_value.isInt() || _value.isDouble())
     {
 
-        const int idx = (int)_value + 1;
+        const int idx = (int)_value ;
         auto props = getModel()->getProperties();
 
-        if (idx > 0 && idx < props.size())
+        if (idx >= 0 && idx < props.size())
         {
-            Identifier key = props.getName (idx - 1);
+            Identifier key = props.getName (idx);
             selectId (key, shouldSelect, appendSelection);
         }
         else
@@ -483,6 +484,7 @@ void EnumParameter::processForMessage (const EnumChangeMessage& msg, ListenerLis
 
 void EnumParameter::newMessage (const EnumChangeMessage& msg)
 {
+    
     processForMessage (msg, asyncEnumListeners);
 
 };
