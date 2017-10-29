@@ -87,6 +87,21 @@ PlayableBuffer::PlayableBuffer (int numChannels, int numSamples, float _sampleRa
 
 PlayableBuffer::~PlayableBuffer()
 {
+    
+#if PROCESS_FINAL_STRETCH
+
+    if (stretchJob)
+    {
+        ScopedLock lk (stretchJob->jobLock);
+        stretchJob->signalJobShouldExit();
+        //      int64 mil = Time::currentTimeMillis();
+//        if(auto tp = getEngineThreadPool()){
+//        tp->waitForJobToFinish (stretchJob, -1);
+//        }
+
+        //      DBG("Waited : " <<(Time::currentTimeMillis() - mil));
+    }
+#endif
 
 }
 
@@ -291,8 +306,7 @@ inline void PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_cl
     {
         jassert (isFirstPlayingFrame() ||
                  (playNeedle + fromSample + getRecordedLength()) % getRecordedLength() == 0);
-        int dbg;
-        dbg++;
+
     }
 
     int numSamples = buffer.getNumSamples() - fromSample;
@@ -626,6 +640,7 @@ void PlayableBuffer::setTimeRatio (const double ratio)
 #endif
 
 #if RT_STRETCH
+int forcedBlockSize = 0;
 void PlayableBuffer::initRTStretch()
 {
     pendingTimeStretchRatio = 1.0;
@@ -653,7 +668,8 @@ void PlayableBuffer::initRTStretch()
                                             //double initialPitchScale = 1.0
                                            );
 
-    //  RTStretcher->setMaxProcessSize(blockSize);
+    if(forcedBlockSize>0)
+        RTStretcher->setMaxProcessSize(forcedBlockSize);
     RTStretcher->setPitchScale (1.0);
     stretchNeedle = 0;
 }
@@ -699,7 +715,7 @@ bool PlayableBuffer::processPendingRTStretch (AudioBuffer<float>& b, sample_clk_
                 RTStretcher->setTimeRatio (pendingTimeStretchRatio * adaptStretch);
             }
 
-            int toProcess =  (int)RTStretcher->getSamplesRequired();
+            int toProcess =  forcedBlockSize!=0? forcedBlockSize:(int)RTStretcher->getSamplesRequired();
             //      jassert(toProcess>0);
 
             AudioBuffer<float> tmpCache (numChannels, toProcess);

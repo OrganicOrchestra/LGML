@@ -25,9 +25,6 @@
 #include "TimeManager.h"
 
 
-
-// TODO change when window support
-// @ ben header only so should be easy
 #if (defined JUCE_MAC || defined JUCE_LINUX || defined JUCE_WINDOWS)
     #define LINK_SUPPORT 1
 #else

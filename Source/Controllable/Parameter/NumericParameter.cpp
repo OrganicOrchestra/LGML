@@ -52,5 +52,5 @@ void  NumericParameter<T>::setValueInternal (const var& _value)
 }
 
 
-
-
+template class NumericParameter<int>;
+template class NumericParameter<double>;

@@ -19,12 +19,13 @@
 #pragma warning( disable : 4244 )
 
 
+
 #include "Engine.h"
 #include "JuceHeader.h" // for project info
 
 #include "Utils/CommandLineElements.hpp"
-//#define ENGINE_SERVER_ONLY
-#ifndef ENGINE_SERVER_ONLY
+
+#if ENGINE_WITH_UI
     #include "UI/LookAndFeelOO.h"
     #include "UI/MainWindow.h"
 #endif
@@ -116,7 +117,7 @@ public:
         quit();
 #else
 
-#ifndef ENGINE_SERVER_ONLY
+#if ENGINE_WITH_UI
         LookAndFeel::setDefaultLookAndFeel (lookAndFeelOO = new LookAndFeelOO);
         mainWindow = new MainWindow (getApplicationName(), engine);
 #endif
@@ -135,8 +136,8 @@ public:
     void shutdown() override
     {
         // Add your application's shutdown code here..
-
-#ifndef ENGINE_SERVER_ONLY
+        
+#if ENGINE_WITH_UI
         mainWindow = nullptr; // (deletes our window)
 #endif
         engine = nullptr;
@@ -163,7 +164,7 @@ public:
 
     }
 
-#ifndef ENGINE_SERVER_ONLY
+#if ENGINE_WITH_UI
     ScopedPointer<MainWindow> mainWindow;
     ScopedPointer<LookAndFeel> lookAndFeelOO;
 #endif
@@ -177,7 +178,7 @@ ApplicationProperties * getAppProperties()           { return getApp()->appPrope
 AudioDeviceManager& getAudioDeviceManager()        { return getApp()->deviceManager;}
 UndoManager& getAppUndoManager()                      { return getApp()->undoManager;}
 Engine* getEngine()                              { return getApp()->engine;}
-ThreadPool* getEngineThreadPool()                              { return &getApp()->engine->threadPool;}
+ThreadPool* getEngineThreadPool()                              { return &getEngine()->threadPool;}
 bool  isEngineLoadingFile()                            {if (getEngine()) {return getEngine()->isLoadingFile;} else {return false;}}
 //==============================================================================
 // This macro generates the main() routine that launches the app.

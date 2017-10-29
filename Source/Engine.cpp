@@ -16,8 +16,7 @@
  ==============================================================================
  */
 
-#define DO_PRAGMA(x) _Pragma (#x)
-#define TODO(x) DO_PRAGMA(message ("TODO - " #x))
+
 
 
 
@@ -98,6 +97,7 @@ Engine::~Engine()
 
     closeAudio();
     
+    threadPool.removeAllJobs(true, -1);
     
     NodeManager::deleteInstance();
     PresetManager::deleteInstance();

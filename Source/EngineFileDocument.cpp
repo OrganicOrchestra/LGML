@@ -25,7 +25,11 @@
 
 #include "JuceHeader.h" // for project info
 
-#ifndef ENGINE_SERVER_ONLY
+#ifndef ENGINE_WITH_UI
+#error should be defined here
+#endif
+
+#if ENGINE_WITH_UI
 #include "Node/Manager/UI/NodeManagerUI.h"
 #endif
 
@@ -77,7 +81,7 @@ Result Engine::loadDocument (const File& file)
 {
     if (isLoadingFile)
     {
-        // TODO handle quick reloading of file
+        TODO( handle quick reloading of file)
         return Result::fail ("engine already loading");
     }
 
@@ -297,7 +301,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
     
     if (d->hasProperty ("nodeManager")) NodeManager::getInstance()->configureFromObject (d->getProperty ("nodeManager").getDynamicObject());
 
-    #ifndef ENGINE_SERVER_ONLY
+#if ENGINE_WITH_UI
     if(d->hasProperty("NodesUI")) {
         auto p = dynamic_cast<ParameterContainer*>(getControllableContainerByName("NodesUI"));
 
