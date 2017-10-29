@@ -448,8 +448,11 @@ Array<WeakReference<ControllableContainer > > ControllableContainer::getAllContr
 Controllable* ControllableContainer::getControllableForAddress (String address, bool recursive, bool getNotExposed)
 {
     StringArray addrArray;
-    addrArray.addTokens (address, juce::StringRef ("/"), juce::StringRef ("\""));
-    addrArray.remove (0);
+    addrArray.addTokens (address.toLowerCase(), juce::StringRef ("/"), juce::StringRef ("\""));
+    
+    // remove first when address starts with " / "
+    if(addrArray.size() && addrArray.getReference(0).isEmpty())
+        addrArray.remove (0);
 
     return getControllableForAddress (addrArray, recursive, getNotExposed);
 }
