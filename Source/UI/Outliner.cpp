@@ -357,7 +357,7 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
 
 void OutlinerItem::controllableAdded (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
-    addSubItem(new OutlinerItem (dynamic_cast<Parameter*>(ori),true));
+        MessageManager::callAsync([this , ori](){addSubItem(new OutlinerItem (dynamic_cast<Parameter*>(ori),true));});
     }
     else if (container){
         jassertfalse;
