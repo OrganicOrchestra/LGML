@@ -18,6 +18,7 @@ extern AudioDeviceManager& getAudioDeviceManager();
 
 String AppPropertiesUI::GeneralPageName("General");
 String AppPropertiesUI::AudioPageName("Audio");
+String AppPropertiesUI::AdvancedPageName("Advanced");
 
 
 class BoolPropUI : public BooleanPropertyComponent{
@@ -27,7 +28,7 @@ public:
 
     }
     bool getState() const override{
-       return  getAppProperties()->getUserSettings()->getBoolValue(getName());
+        return  getAppProperties()->getUserSettings()->getBoolValue(getName());
 
     }
     void setState(bool b)  override{
@@ -56,24 +57,24 @@ public:
 
 namespace{
 
-template<class FunctionType>
-ButtonPropertyComponent* createActionProp(const String & n,FunctionType f){
-     return new ActionPropUI<FunctionType>(n,f);
-}
-
-void resetPreferences(){
-    auto fl = {getAppProperties()->getUserSettings()->getFile()};
-    for(auto f:fl){
-        if(f.exists()){
-#if JUCE_MAC
-    f.moveToTrash();
-#else
-    f.deleteFile();
-#endif
-        }
+    template<class FunctionType>
+    ButtonPropertyComponent* createActionProp(const String & n,FunctionType f){
+        return new ActionPropUI<FunctionType>(n,f);
     }
 
-}
+    void resetPreferences(){
+        auto fl = {getAppProperties()->getUserSettings()->getFile()};
+        for(auto f:fl){
+            if(f.exists()){
+#if JUCE_MAC
+                f.moveToTrash();
+#else
+                f.deleteFile();
+#endif
+            }
+        }
+
+    }
 }
 
 class PrefPanel : public PreferencesPanel{
@@ -81,10 +82,10 @@ class PrefPanel : public PreferencesPanel{
         if(pageName==AppPropertiesUI::GeneralPageName){
             auto res =  new PropertyPanel();
             res->addProperties(
-            {new BoolPropUI("multiThreadedLoading"),
-             new BoolPropUI("check for updates"),
-            createActionProp("reset preferences",resetPreferences)
-            } );
+                               {
+                                   new BoolPropUI("check for updates"),
+
+                               } );
             return res;
         }
         else if (pageName==AppPropertiesUI::AudioPageName){
@@ -97,6 +98,15 @@ class PrefPanel : public PreferencesPanel{
 
         }
 
+        else if(pageName==AppPropertiesUI::AdvancedPageName){
+            auto res =  new PropertyPanel();
+            res->addProperties(
+                               {new BoolPropUI("multiThreadedLoading"),
+                                createActionProp("reset preferences",resetPreferences)
+
+                               } );
+            return res;
+        }
         return nullptr;
 
     }
@@ -114,15 +124,15 @@ class PrefPanel : public PreferencesPanel{
 static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * parent,const int color = 0){
     DrawableComposite * res = new DrawableComposite();
 
-//    DrawablePath * border = new DrawablePath();
-//    Path circle;
-//    circle.addEllipse(0, 0, parent->getButtonSize(), parent->getButtonSize());
+    //    DrawablePath * border = new DrawablePath();
+    //    Path circle;
+    //    circle.addEllipse(0, 0, parent->getButtonSize(), parent->getButtonSize());
 
-//    border->setPath(circle);
-//    border->setFill(Colours::transparentWhite);
-//    border->setFill(parent->findColour(TextButton::ColourIds::textColourOnId).brighter());
+    //    border->setPath(circle);
+    //    border->setFill(Colours::transparentWhite);
+    //    border->setFill(parent->findColour(TextButton::ColourIds::textColourOnId).brighter());
 
-//    res->addAndMakeVisible(border);
+    //    res->addAndMakeVisible(border);
 
 
     DrawableText * text = new DrawableText();
@@ -143,7 +153,7 @@ AppPropertiesUI::AppPropertiesUI():ResizableWindow("Settings",true){
     prefPanel = new PrefPanel();
     const int normalColorId = TextButton::ColourIds::textColourOffId;
     const int hoverColorId = TextButton::ColourIds::buttonOnColourId;
-//    const int downColorId = TextButton::ColourIds::textColourOnId;
+    //    const int downColorId = TextButton::ColourIds::textColourOnId;
 
     prefPanel->addSettingsPage(GeneralPageName,
                                createIcon(GeneralPageName,prefPanel,normalColorId) ,
@@ -154,6 +164,11 @@ AppPropertiesUI::AppPropertiesUI():ResizableWindow("Settings",true){
     prefPanel->addSettingsPage(AudioPageName,
                                createIcon(AudioPageName,prefPanel,normalColorId) ,
                                createIcon(AudioPageName,prefPanel,hoverColorId) ,
+                               nullptr//createIcon(AudioPageName,prefPanel,downColorId)
+                               );
+    prefPanel->addSettingsPage(AdvancedPageName,
+                               createIcon(AdvancedPageName,prefPanel,normalColorId) ,
+                               createIcon(AdvancedPageName,prefPanel,hoverColorId) ,
                                nullptr//createIcon(AudioPageName,prefPanel,downColorId)
                                );
 
@@ -178,7 +193,7 @@ AppPropertiesUI::~AppPropertiesUI(){
         getEngine()->audioSettingsHandler.saveCurrent();
     }
     // TODO we may implement a mechanism to close appProps files every time we access it?
-//    getAppProperties().closeFiles();
+    //    getAppProperties().closeFiles();
 }
 
 void AppPropertiesUI::userTriedToCloseWindow() {
@@ -187,11 +202,11 @@ void AppPropertiesUI::userTriedToCloseWindow() {
 
 bool AppPropertiesUI::keyPressed (const KeyPress& key){
 
-if (key.isKeyCode (KeyPress::escapeKey) )
-{
-    deleteInstance();
-    return true;
-}
+    if (key.isKeyCode (KeyPress::escapeKey) )
+    {
+        deleteInstance();
+        return true;
+    }
     return false;
 }
 
@@ -203,7 +218,7 @@ void AppPropertiesUI::showAppSettings(const String & name){
     }
     i->setVisible (true);
     i->toFront (true);
-
+    
     
     
     
@@ -213,7 +228,7 @@ int AppPropertiesUI::getDesktopWindowStyleFlags() const {
     return
     (ResizableWindow::getDesktopWindowStyleFlags() | ComponentPeer::windowHasCloseButton )
     & ~ComponentPeer::windowHasMaximiseButton & ~ComponentPeer::windowHasMinimiseButton;
-
+    
 }
 void AppPropertiesUI::closeAppSettings(){
     deleteInstance();
