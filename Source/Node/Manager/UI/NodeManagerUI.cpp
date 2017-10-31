@@ -56,9 +56,10 @@ juce_ImplementSingleton(NodeManagerUI);
 NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
     nodeManager (_nodeManager),
     currentViewer (nullptr),
-ParameterContainer("NodeManagerUI")
+ParameterContainer("NodeManagerUI"),isMiniMode(false)
 {
 
+    
     uiSync = new UISync("UI",nodeManager,this);
     auto p =getRoot(true)->getControllableContainerByName("NodesUI");
     if(!p){
@@ -140,6 +141,7 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
 {
     if (currentViewer != nullptr)
     {
+        isMiniMode = currentViewer->minimizeAll->boolValue();
         if (currentViewer->nodeContainer == c) return;
 
         removeChildComponent (currentViewer);
@@ -152,9 +154,10 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
         if(!p){
             p = new ParameterContainer();
             addChildControllableContainer(p);
+            jassertfalse;
         }
         currentViewer = new NodeContainerViewer (c,p);
-
+        currentViewer->minimizeAll->setValue(isMiniMode);
         addAndMakeVisible (currentViewer);
         currentViewer->setTopLeftPosition (0, 0);
         currentViewer->setSelected (true);

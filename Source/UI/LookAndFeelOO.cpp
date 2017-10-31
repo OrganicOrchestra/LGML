@@ -67,6 +67,14 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (LGMLColors::elementBackground, findColour (ResizableWindow::backgroundColourId).brighter (0.1f));
     setColour (TooltipWindow::ColourIds::textColourId, scheme.getUIColour (ColourScheme::UIColour::defaultText));
 
+
+
+    setColour (0x1000440, /*LassoComponent::lassoFillColourId*/
+               scheme.getUIColour (ColourScheme::UIColour::defaultFill).withAlpha(0.2f));
+    setColour(0x1000441, /*LassoComponent::lassoOutlineColourId*/
+              findColour(TextButton::buttonOnColourId));
+
+
 }
 
 LookAndFeelOO::~LookAndFeelOO()  {}

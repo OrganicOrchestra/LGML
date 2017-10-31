@@ -44,9 +44,9 @@ public:
     bool bringToFrontOnSelect;
 
     bool isSelected;
-    virtual void selectThis();
-    virtual void setSelected (bool value);
 
+    void selectThis();
+    void setSelected (bool value);
     virtual void setSelectedInternal (bool value); //to be overriden
 
 

@@ -31,17 +31,21 @@ public:
     Inspector();
     virtual ~Inspector();
 
-    WeakReference<InspectableComponent> currentComponent;
 
-    ScopedPointer<InspectorEditor> currentEditor;
 
     bool isEnabled;
     void setEnabled (bool value);
 
-    ParameterContainer* getCurrentSelected();
+
     void clear();
 
     void setCurrentComponent (InspectableComponent* component);
+
+    InspectableComponent * getCurrentComponent();
+    ParameterContainer* getCurrentContainerSelected();
+
+    InspectorEditor * getCurrentEditor();
+
 
     void resized() override;
 
@@ -66,6 +70,12 @@ public:
     void removeInspectorListener (InspectorListener* listener) { listeners.remove (listener); }
 
 private:
+    WeakReference<InspectableComponent> currentComponent;
+
+    ScopedPointer<InspectorEditor> currentEditor;
+
+    SelectedItemSet<WeakReference<InspectableComponent>> selectedComps;
+    
     void controllableContainerRemoved(ControllableContainer * , ControllableContainer * ) override;
     void containerWillClear(ControllableContainer * )override;
 };
@@ -100,10 +110,10 @@ public:
 
         r.removeFromRight (vp.getScrollBarThickness());
 
-        if (inspector->currentEditor == nullptr) inspector->setBounds (r);
+        if (inspector->getCurrentEditor() == nullptr) inspector->setBounds (r);
         else
         {
-            int cH = inspector->currentEditor->getContentHeight();
+            int cH = inspector->getCurrentEditor()->getContentHeight();
 
             if (cH == 0) cH = r.getHeight();
 

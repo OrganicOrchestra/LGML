@@ -19,12 +19,15 @@
 #include "../NodeContainer.h"
 #include "../../UI/ConnectableNodeUI.h"
 
+
 class NodeConnectionUI;
 class ParameterUI;
 class NodeContainerViewer :
     public InspectableComponent,
     public NodeContainerListener,
-    public ParameterContainer
+    public ParameterContainer,
+public ChangeListener, // multiselection
+private LassoSource<ConnectableNodeUI*>
 {
 public :
     NodeContainerViewer (NodeContainer* container,ParameterContainer * uiP);
@@ -86,6 +89,23 @@ public :
     void resizeToFitNodes();
 
     ParameterContainer * uiParams;
+
+
+    SelectedItemSet<ConnectableNodeUI*> selectedItems;
+
+private:
+    
+    void changeListenerCallback (ChangeBroadcaster* source) override;
+    LassoComponent<ConnectableNodeUI*> lassoSelectionComponent;
+    Component nodesLayer;
+
+    void findLassoItemsInArea (Array<ConnectableNodeUI*>& itemsFound,
+                               const Rectangle<int>& area) override;
+
+    SelectedItemSet<ConnectableNodeUI*>& getLassoSelection() override;
+    HashMap<ConnectableNodeUI*, Rectangle<int>> selectedInitBounds;
+    
+    
 
 
     

@@ -77,6 +77,7 @@ public:
 
 
     ScopedPointer<UISync> uiSync;
+    bool isMiniMode;
     ParameterContainer * addContainerFromObject(const String &,DynamicObject * d) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeManagerUI)
 

@@ -355,7 +355,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
         case CommandIDs::copySelection:
         case CommandIDs::cutSelection:
         {
-            InspectableComponent* ic = Inspector::getInstance()->currentComponent;
+            InspectableComponent* ic = Inspector::getInstance()->getCurrentComponent();
 
             if (ic != nullptr)
             {
@@ -367,10 +367,10 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                     var data (new DynamicObject());
                     data.getDynamicObject()->setProperty ("type", ic->inspectableType);
                     data.getDynamicObject()->setProperty ("data", cc->getObject());
-                    auto relatedComponent =Inspector::getInstance()->currentComponent;
+                    if(auto relatedComponent =Inspector::getInstance()->getCurrentComponent()){
                     
-                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent.get());
-                    if(!ncv)ncv=Inspector::getInstance()->currentComponent->findParentComponentOfClass<NodeContainerViewer>();
+                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                    if(!ncv)ncv=relatedComponent->findParentComponentOfClass<NodeContainerViewer>();
                     if(ncv && ncv->uiParams){
                         auto nodeUIParams = ncv->uiParams->getControllableContainerByName(cc->shortName);
                         data.getDynamicObject()->setProperty ("uiData",nodeUIParams->getObject());
@@ -385,6 +385,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                     }
 
                     SystemClipboard::copyTextToClipboard (JSON::toString (data));
+                    }
                 }
             }
         }
@@ -404,7 +405,7 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                 {
 
                     String type = d->getProperty ("type");
-                    auto relatedComponent =Inspector::getInstance()->currentComponent;
+                    auto relatedComponent =Inspector::getInstance()->getCurrentComponent();
 
                     if (relatedComponent != nullptr)
                     {
@@ -421,8 +422,8 @@ bool MainContentComponent::perform (const InvocationInfo& info)
                                 if (n)
                                 {
                                     n->uid = Uuid();
-                                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent.get());
-                                    if(!ncv)ncv=Inspector::getInstance()->currentComponent->findParentComponentOfClass<NodeContainerViewer>();
+                                    NodeContainerViewer *  ncv = dynamic_cast<NodeContainerViewer*>(relatedComponent);
+                                    if(!ncv)ncv=Inspector::getInstance()->getCurrentComponent()->findParentComponentOfClass<NodeContainerViewer>();
                                     if(ncv){
                                     auto nodeUI = ncv->getUIForNode(n);
                                     if(nodeUI){

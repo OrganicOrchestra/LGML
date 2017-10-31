@@ -159,7 +159,9 @@ private:
 
     Point2DParameter<int>* getCurrentPositionParam();
     //interaction
-    Point<int> nodeInitPos;
+    Rectangle<int> nodeInitBounds;
+
+    friend class NodeContainerViewer;
 
     void childBoundsChanged (Component*)override;
     void nodeParameterChanged (ConnectableNode*, Parameter* p) override;

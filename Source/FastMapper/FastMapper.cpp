@@ -176,7 +176,7 @@ void FastMapper::mappingModeChanged(bool state){
 
 void FastMapper::currentComponentChanged (Inspector* i)
 {
-    auto* newC = i->getCurrentSelected();
+    auto* newC = i->getCurrentContainerSelected();
 
     if (newC == selectedContainerToListenTo)return;
 

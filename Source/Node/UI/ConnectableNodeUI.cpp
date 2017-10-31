@@ -184,12 +184,6 @@ void ConnectableNodeUI::paint (Graphics&)
 
 void ConnectableNodeUI::resized()
 {
-    //    if (!connectableNode->miniMode->boolValue())
-    //    {
-
-
-
-
 
     Rectangle<int> r = getLocalBounds();
     Rectangle<int> inputBounds = r.removeFromLeft (connectorWidth);
@@ -227,7 +221,10 @@ void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
         }
         else if ( p == nodeSize)
         {
-            if (!isDraggingFromUI)postOrHandleCommandMessage (sizeChangedId);
+            if (!isDraggingFromUI){
+                postOrHandleCommandMessage (sizeChangedId);
+
+            }
         }
         else if (p == miniMode)
         {
@@ -304,19 +301,32 @@ void ConnectableNodeUI::childBoundsChanged (Component* c)
 
 void ConnectableNodeUI::mouseDown (const juce::MouseEvent& /*e*/)
 {
-    selectThis();
+
+
     //    if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
     //  if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
-    isDraggingFromUI = true;
-    nodeInitPos = getBoundsInParent().getPosition();
+
+    auto ncv = findParentComponentOfClass<NodeContainerViewer>();
+    if(ncv){
+//        mouseDownSelectMethod =  addToSelectionOnMouseDown (ParameterType item,
+//                                        ModifierKeys modifiers)
+
+
+
+    }
 }
-
-
 
 void ConnectableNodeUI::mouseUp (const juce::MouseEvent&)
 {
+    auto ncv = findParentComponentOfClass<NodeContainerViewer>();
+    if(ncv){
+        for(auto s: ncv->selectedItems){
+            s-> isDraggingFromUI = false;
+        }
 
-    isDraggingFromUI = false;
+//        ncv->selectedItems.addToSelectionOnMouseUp(this, e.modifiers, wasDragged, mouseDownSelectMethod);
+    }
+
 }
 
 void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
@@ -329,12 +339,8 @@ void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
         return;
     }
     isDraggingFromUI = true;
-    Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
-    Point <int> newPos = nodeInitPos + diff;
 
-    auto nodeP = getCurrentPositionParam();
-    nodeP->setPoint (newPos);
-    setTopLeftPosition (nodeP->getPoint());
+
 
 }
 

@@ -247,7 +247,7 @@ void Outliner::buttonClicked(Button *b){
     if(b==&linkToSelected){
         if(linkToSelected.getToggleState()){
             Inspector::getInstance()->addInspectorListener(this);
-            if(auto sel = Inspector::getInstance()->getCurrentSelected())
+            if(auto sel = Inspector::getInstance()->getCurrentContainerSelected())
                 setRoot(sel);
         }
         else{
@@ -259,11 +259,11 @@ void Outliner::buttonClicked(Button *b){
 void Outliner::currentComponentChanged (Inspector * i ){
     if(linkToSelected.getToggleState()){
         // ignore child components
-        if(isParentOf(i->currentComponent))
+        if(isParentOf(i->getCurrentComponent()))
             return;
 
 
-        if(auto sel = i->getCurrentSelected())
+        if(auto sel = i->getCurrentContainerSelected())
             setRoot(sel);
     }
 };

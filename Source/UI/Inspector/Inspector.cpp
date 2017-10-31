@@ -52,7 +52,7 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
     if (currentComponent != nullptr || c==nullptr)
     {
         clearEditor();
-        if(auto cont = getCurrentSelected())
+        if(auto cont = getCurrentContainerSelected())
             cont->removeControllableContainerListener(this);
         currentComponent->setSelected (false);
         
@@ -64,7 +64,7 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
     if (currentComponent != nullptr)
     {
         currentComponent->setSelected (true);
-        if(auto cont = getCurrentSelected())
+        if(auto cont = getCurrentContainerSelected())
             cont->addControllableContainerListener(this);
         inspectCurrentComponent();
     }
@@ -72,7 +72,7 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
     listeners.call (&InspectorListener::currentComponentChanged, this);
 }
 
-ParameterContainer* Inspector::getCurrentSelected()
+ParameterContainer* Inspector::getCurrentContainerSelected()
 {
     if (currentComponent)
     {
@@ -81,6 +81,21 @@ ParameterContainer* Inspector::getCurrentSelected()
     else return nullptr;
 }
 
+
+InspectableComponent * Inspector::getCurrentComponent(){
+    if(currentComponent){
+        return currentComponent;
+    }
+    return nullptr;
+
+}
+InspectorEditor * Inspector::getCurrentEditor(){
+    if(currentEditor){
+        return currentEditor;
+    }
+    return nullptr;
+
+}
 void Inspector::resized()
 {
     if (currentEditor != nullptr) currentEditor->setBounds (getLocalBounds().reduced (5));
@@ -121,7 +136,7 @@ void Inspector::contentSizeChanged (InspectorEditor*)
 }
 
 void Inspector::controllableContainerRemoved(ControllableContainer * , ControllableContainer * ori ) {
-    if(ori== getCurrentSelected()){
+    if(ori== getCurrentContainerSelected()){
         setCurrentComponent(nullptr);
     }
 

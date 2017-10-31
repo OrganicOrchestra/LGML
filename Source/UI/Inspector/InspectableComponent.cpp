@@ -60,10 +60,18 @@ void InspectableComponent::setSelected (bool value)
 
     isSelected = value;
 
-    if (bringToFrontOnSelect) toFront (true);
 
+    if (value){
+        if(bringToFrontOnSelect)
+            toFront (true);
+        if(!Inspector::getInstance()->getCurrentComponent()){
+            selectThis();
+        }
+    }
+    else{
+        
+    }
     repaint();
-
 
     setSelectedInternal (value);
 
