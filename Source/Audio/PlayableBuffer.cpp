@@ -267,21 +267,15 @@ bool PlayableBuffer::writeAudioBlock (const AudioBuffer<float>& buffer, int from
 
     if (samplesToWrite == 0) {return true;}
 
+    // allocate more if needed
     if (recordNeedle + buffer.getNumSamples() >= getAllocatedNumSample())
     {
         bufferBlockList.allocateSamples (bufferBlockList.getAllocatedNumChannels(), recordNeedle + 10 * buffer.getNumSamples());
-        //    return true;
     }
 
-    //  else{
-    //    const int maxChannel = jmin(getNumChannels(),buffer.getNumChannels());
     bufferBlockList.copyFrom (buffer, recordNeedle);
-    //    for (int i =  maxChannel- 1; i >= 0; --i) {
-    //      audioBuffer.copyFrom(i, (int)recordNeedle, buffer, i, fromSample, samplesToWrite );
-    //    }
-
     recordNeedle += samplesToWrite;
-    //  }
+
 
     return true;
 }
