@@ -267,14 +267,7 @@ bool PlayableBuffer::writeAudioBlock (const AudioBuffer<float>& buffer, int from
 
     if (samplesToWrite == 0) {return true;}
 
-    //  float rms = buffer.getRMSLevel(0, fromSample,samplesToWrite);
-    //  if(rms==0){
-    //    int dbg;
-    //    dbg++;
-    //  }
-
-
-    if (recordNeedle + buffer.getNumSamples() > getAllocatedNumSample())
+    if (recordNeedle + buffer.getNumSamples() >= getAllocatedNumSample())
     {
         bufferBlockList.allocateSamples (bufferBlockList.getAllocatedNumChannels(), recordNeedle + 10 * buffer.getNumSamples());
         //    return true;
