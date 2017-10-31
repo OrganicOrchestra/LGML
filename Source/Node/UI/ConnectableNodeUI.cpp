@@ -323,7 +323,11 @@ void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
 {
     //    if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
 
-
+    // a child TextEditor is focused, don't drag
+    auto fComp = getCurrentlyFocusedComponent ();
+    if(isParentOf(fComp) && dynamic_cast<TextEditor*>(fComp)){
+        return;
+    }
     isDraggingFromUI = true;
     Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
     Point <int> newPos = nodeInitPos + diff;
