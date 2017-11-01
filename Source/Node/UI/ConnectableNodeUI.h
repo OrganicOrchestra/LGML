@@ -78,7 +78,7 @@ public:
         void resized() override;
 
         void connectorVisibilityChanged (ConnectorComponent*) override;
-
+        bool hitTest(int x, int y) override;
 
         ConnectorComponent* getFirstConnector (NodeConnection::ConnectionType dataType);
 
@@ -176,6 +176,7 @@ private:
     void postOrHandleCommandMessage (int id);
 
     void handleCommandMessage (int id) override;
+    bool hitTest(int x, int y)override;
     enum
     {
         repaintId,

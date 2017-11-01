@@ -529,6 +529,14 @@ ConnectorComponent* ConnectableNodeUI::ConnectorContainer::getFirstConnector (No
     return nullptr;
 }
 
+bool ConnectableNodeUI::ConnectorContainer::hitTest(int x, int y) {
+    for(auto c:connectors){
+        if(c->getBoundsInParent().contains(x,y))
+            return true;
+    }
+    return false;
+}
+
 
 
 Array<ConnectorComponent*> ConnectableNodeUI::getComplementaryConnectors (ConnectorComponent* baseConnector)
@@ -569,3 +577,18 @@ ConnectorComponent* ConnectableNodeUI::getFirstConnector (NodeConnection::Connec
     }
 }
 
+
+bool ConnectableNodeUI::hitTest(int x, int y){
+    if (mainComponentContainer.getBoundsInParent().contains(x,y))
+        return true;
+
+    if(outputContainer.getBoundsInParent().contains(x, y)){
+        auto lp =outputContainer.getLocalPoint(this, Point<int> (x, y));
+        return outputContainer.hitTest(lp.x,lp.y) ;
+    }
+    if(inputContainer.getBoundsInParent().contains(x, y)){
+        auto lp =inputContainer.getLocalPoint(this, Point<int> (x, y));
+        return inputContainer.hitTest(lp.x,lp.y) ;
+    }
+    return false;
+}
