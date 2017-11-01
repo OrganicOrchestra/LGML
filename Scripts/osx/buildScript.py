@@ -72,7 +72,7 @@ def createDmg(exportFileBaseName,appPath):
 
 
 def exportApp(baseName,configuration,exportpath=None):
-	localPath = (exportpath or localExportPath)+baseName;
+	localPath = os.path.join((exportpath or localExportPath),baseName);
 	dmgPath = createDmg(localPath,getAppPath(configuration));
 	return dmgPath
 	# gitCommit()
