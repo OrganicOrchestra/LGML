@@ -26,7 +26,7 @@
 #define ENGINE_WITH_UI 1
 
 #define DO_PRAGMA(x) _Pragma (#x)
-#define TODO(x) DO_PRAGMA(message ("TODO - " #x))
+#define TODO(x) DO_PRAGMA(message ("TODO - " #x));
 
 // [END_USER_CODE_SECTION]
 

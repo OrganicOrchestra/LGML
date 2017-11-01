@@ -328,7 +328,7 @@ Component* OutlinerItem::createItemComponent()
     return new OutlinerItemComponent (this);
 }
 
-TODO( better outliner name filtering)
+//TODO better outliner name filtering
 void OutlinerItem::controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori){
 
     if(notif && notif==container){

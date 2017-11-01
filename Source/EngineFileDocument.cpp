@@ -81,7 +81,7 @@ Result Engine::loadDocument (const File& file)
 {
     if (isLoadingFile)
     {
-        TODO( handle quick reloading of file)
+//        TODO handle quick reloading of file
         return Result::fail ("engine already loading");
     }
 
