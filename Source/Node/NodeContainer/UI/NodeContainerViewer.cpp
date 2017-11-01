@@ -19,6 +19,7 @@
 #include "../../../UI/Inspector/Inspector.h"
 #include "../../../Utils/FactoryUIHelpers.h"
 #include "../../UI/NodeUIFactory.h"
+#include "../../UI/ConnectableNodeHeaderUI.h"
 
 
 
@@ -388,7 +389,30 @@ void NodeContainerViewer::finishEditingConnection()
 
 }
 
+ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c){
 
+    // dont drag if comming from param or text editor
+
+    if( auto nui = dynamic_cast<ConnectableNodeUI*>(c)){
+        return nui;
+    }
+
+    if(auto cont = dynamic_cast<ConnectableNodeContentUI*>(c)){
+        return cont->nodeUI;
+    }
+
+    if(auto header = dynamic_cast<ConnectableNodeHeaderUI*>(c)){
+        return header->nodeUI;
+    }
+    if(auto label = dynamic_cast<Label*>(c)){
+        return label->findParentComponentOfClass<ConnectableNodeUI>();
+    }
+//    if(auto vumeter = dynamic_cast<VuMeter*>(c)){
+//        return vumeter->findParentComponentOfClass<ConnectableNodeUI>();
+//    }
+    return nullptr;
+    
+}
 //Interaction Events
 void NodeContainerViewer::mouseDown (const MouseEvent& event)
 {
@@ -431,10 +455,8 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
     else
     {
         hasDraggedDuringClick = false;
-        SelectedUIType nui = dynamic_cast<ConnectableNodeUI*>(event.eventComponent);
-        if(!nui)
-            nui = event.eventComponent->findParentComponentOfClass<ConnectableNodeUI>();
-        if(nui){
+
+        if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent)){
 
             resultOfMouseDownSelectMethod = selectedItems.addToSelectionOnMouseDown(nui, event.mods);
             if(selectedItems.getItemArray().size()==0){
@@ -461,20 +483,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
 }
 
-ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c){
 
-    // dont drag if comming from param or text editor
-    if(!dynamic_cast<ParameterUI*>(c) && !dynamic_cast<TextEditor*>(c)){
-    auto nui = dynamic_cast<ConnectableNodeUI*>(c);
-    if(!nui)
-        nui = c->findParentComponentOfClass<ConnectableNodeUI>();
-
-    return nui;
-    }
-    else{
-        return nullptr;
-    }
-}
 
 void NodeContainerViewer::mouseMove (const MouseEvent& e)
 {
@@ -559,12 +568,14 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
             if(getLassoSelection().getItemArray().size()==0)
                 selectThis();
 
-            lassoSelectionComponent.endLasso();
+
         }
     }
     else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent)){
         selectedItems.addToSelectionOnMouseUp(nui, e.mods, hasDraggedDuringClick , resultOfMouseDownSelectMethod);
     }
+
+    lassoSelectionComponent.endLasso();
 
 
 }
