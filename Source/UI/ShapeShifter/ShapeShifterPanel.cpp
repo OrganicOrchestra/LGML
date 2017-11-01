@@ -118,27 +118,27 @@ void ShapeShifterPanel::paintOverChildren (Graphics& g)
 {
     if (!targetMode) return;
 
-    Rectangle<int> r = getLocalBounds();
+    Rectangle<float> r = getLocalBounds().toFloat();
 
     Colour hc = findColour (TextButton::buttonOnColourId).withAlpha (.5f);
     Colour nc = findColour (TextButton::buttonColourId).withAlpha (.3f);
 
-    static int sideMinSize(10);
-    int zoneHeight =jmax<int> (sideMinSize, r.getHeight() * panelRelativeAttachSize);
-    int zoneWidth = jmax<int> (sideMinSize, r.getWidth() * panelRelativeAttachSize);
+    static float sideMinSize(10);
+    float zoneHeight =jmax<float> (sideMinSize, r.getHeight() * panelRelativeAttachSize);
+    float zoneWidth = jmax<float> (sideMinSize, r.getWidth() * panelRelativeAttachSize);
     static constexpr float pixGap = 10.0f;
     float scaleX = 1.0f - jmax<float>(0.f,pixGap/r.getWidth());
     float scaleY =  1.0f - jmax<float>(0.f,pixGap/r.getHeight());
     if (!isDetached())
     {
-        auto symetryTransform = AffineTransform::rotation(juce::float_Pi, r.getCentreX(),r.getCentreY());
+        auto symetryTransform = AffineTransform::rotation(juce::float_Pi, (float)r.getCentreX(),(float)r.getCentreY());
         g.setColour (candidateZone == AttachZone::TOP ? hc : nc);
         Path pt ;
-        pt.addQuadrilateral(0,0,
+        pt.addQuadrilateral(0.0f,0.0f,
                             zoneWidth, zoneHeight,
                             r.getWidth()-zoneWidth, zoneHeight,
-                            r.getWidth(),0);
-        pt.applyTransform(AffineTransform::scale(scaleX ,scaleY, r.getCentreX(), 0));
+                            r.getWidth(),0.0f);
+        pt.applyTransform(AffineTransform::scale(scaleX ,scaleY, (float)r.getCentreX(), 0.0f));
         g.fillPath(pt);
 
         g.setColour (candidateZone == AttachZone::BOTTOM ? hc : nc);
@@ -148,10 +148,10 @@ void ShapeShifterPanel::paintOverChildren (Graphics& g)
 
         g.setColour (candidateZone == AttachZone::LEFT ? hc : nc);
         Path pl ;
-        pl.addQuadrilateral(0, 0,
+        pl.addQuadrilateral(0.0f, 0.0f,
                             zoneWidth, zoneHeight,
                             zoneWidth, r.getHeight()-zoneHeight,
-                            0, r.getHeight());
+                            0.0f, r.getHeight());
         pl.applyTransform(AffineTransform::scale(scaleX ,scaleY, 0,r.getCentreY()));
         g.fillPath(pl);
 
