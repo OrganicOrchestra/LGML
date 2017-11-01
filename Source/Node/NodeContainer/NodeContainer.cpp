@@ -212,7 +212,7 @@ void NodeContainer::updateAudioGraph (bool lock)
 
         }
         else{
-            LOG("! node "+getNiceName()+" is ready");
+//            LOG("! node "+getNiceName()+" is ready");
             getAudioGraph()->setRateAndBufferSizeDetails (NodeBase::getSampleRate(), NodeBase::getBlockSize());
             getAudioGraph()->prepareToPlay (NodeBase::getSampleRate(), NodeBase::getBlockSize());
             getAudioGraph()->suspendProcessing (false);
