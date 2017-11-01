@@ -47,6 +47,7 @@ JsEnvironment::JsEnvironment (const String& ns, ParameterContainer* _linkedConta
 {
     jsParameters = new JSEnvContainer (this);
     linkedContainer->addChildControllableContainer (jsParameters);
+    linkedContainer->nameParam->addParameterListener(this);
     localEnv = new DynamicObject();
     clearNamespace();
     getEngine()->addControllableContainerListener (this);
@@ -64,6 +65,9 @@ JsEnvironment::~JsEnvironment()
         getEngine()->removeControllableContainerListener (this);
     }
 
+    if(linkedContainer.get()){
+        linkedContainer->nameParam->removeParameterListener(this);
+    }
     stopTimer (autoWatchTimer.id);
     stopTimer (onUpdateTimer.id);
     clearListeners();

@@ -130,7 +130,7 @@ void SliderUI<T>::mouseDown (const MouseEvent& e)
         parameter->resetValue();
     }
 
-    if (e.mods.isCtrlDown())
+    if (e.mods.isCommandDown())
     {
         parameter->setValue(parameter->floatValue()>0?0:(T)parameter->lastValue);
     }
@@ -154,7 +154,7 @@ void SliderUI<T>::mouseDrag (const MouseEvent& e)
     if (!parameter->isEditable) return;
 
     if (!e.mods.isLeftButtonDown()) return;
-    if(e.mods.isCtrlDown()) return;
+    if(e.mods.isCommandDown() ||  e.mods.isShiftDown()) return;
 
     if (changeParamOnMouseUpOnly) repaint();
     else
@@ -183,10 +183,11 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
     if (!parameter->isEditable) return;
 
     if (!me.mods.isLeftButtonDown()) return;
+    if(me.mods.isCommandDown() ||  me.mods.isShiftDown()) return;
 
     BailOutChecker checker (this);
 
-    if (me.getNumberOfClicks() >= 2 && !me.mods.isCtrlDown())
+    if (me.getNumberOfClicks() >= 2 )
     {
         AlertWindow nameWindow ("Set a value", "Set a new value for this parameter", AlertWindow::AlertIconType::NoIcon, this);
         nameWindow.addTextEditor ("newValue", parameter->stringValue());
@@ -218,7 +219,7 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
         }
     }
 
-    if (changeParamOnMouseUpOnly)
+    if (changeParamOnMouseUpOnly )
     {
         setParamNormalizedValue ((float)getValueFromMouse());
     }
