@@ -94,7 +94,7 @@ public :
         vp.setViewedComponent (nmui, false);
         vp.setScrollBarsShown (true, true);
         vp.setScrollOnDragEnabled (false);
-        vp.addMouseListener (this, true);
+//        vp.addMouseListener (this, true);
         contentIsFlexible = true;
         addAndMakeVisible (vp);
         vp.setScrollBarThickness (10);
@@ -106,6 +106,7 @@ public :
         addNodeBt.addListener (this);
         addNodeBt.setTooltip ("Add Node");
         //    setOpaque(true);
+        vp.setScrollOnDragEnabled (false);
 
     }
 
@@ -114,10 +115,10 @@ public :
         nmui->removeNodeManagerUIListener (this);
 
     }
-    void mouseMove (const MouseEvent& me) override
-    {
-        vp.setScrollOnDragEnabled (me.originalComponent == nmui->currentViewer);
-    }
+//    void mouseMove (const MouseEvent& me) override
+//    {
+//
+//    }
 
     ScopedPointer<ParameterUI> minimizeAllUI;
     OwnedArray<TextButton> pathButtons;
