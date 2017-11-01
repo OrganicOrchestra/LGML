@@ -23,7 +23,7 @@
 class OSCClientRecord
 {
 public:
-    OSCClientRecord(): port (0)
+    OSCClientRecord(): port (noPort)
     {
 
     }
@@ -40,7 +40,8 @@ public:
     IPAddress ipAddress;
     String description;
     uint16 port;
-
+    static uint16 noPort;
+    bool hasValidPort();
     String getShortName()
     {
         StringArray arr;

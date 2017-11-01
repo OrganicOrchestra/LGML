@@ -97,14 +97,14 @@ public:
     Pimpl (NetworkUtils* _nu): Thread ("bonjourOSC"), nu (_nu)
     {
         name = getName();
-        // scan all interfaces starting with en
+        // scan all interfaces not starting with lo
         struct ifaddrs* ifap = NULL;
 
         if (getifaddrs (&ifap) < 0) {LOG ("!!! Cannot not get a list of interfaces\n"); return;}
 
         for (struct ifaddrs* p = ifap; p != NULL; p = p->ifa_next)
         {
-            if ( String (p->ifa_name).startsWith ("en"))
+            if ( !String (p->ifa_name).startsWith ("lo"))
             {
                 if_idxs.insert ( if_nametoindex (p->ifa_name));
             }
@@ -325,52 +325,9 @@ public:
             }
             else
             {
-#if 0
-                // deprecated gethostbyname
-                struct hostent* he = gethostbyname (hosttarget);
+                hostIP = resolveIPFromHostName(hosttarget);
 
-                if ( he->h_length)
-                {
-                    struct in_addr** addr_list = (struct in_addr**)he->h_addr_list;
-                    hostIP = inet_ntoa (*addr_list[0]);
-                }
 
-                else
-                {
-                    DBG ("DNS : can't resolve non ip name");
-                    jassertfalse;
-                }
-
-                freehostent (he);
-#else
-                struct addrinfo hints, *res = NULL;
-                memset (&hints, 0, sizeof (hints));
-                hints.ai_family = AF_INET;
-
-                if (getaddrinfo (hosttarget, NULL, &hints, &res) == 0)
-                {
-
-                    struct sockaddr_in* addr;
-                    struct addrinfo* it = res;
-
-                    while (it)
-                    {
-                        if (it->ai_family == AF_INET)
-                        {
-                            addr = (struct sockaddr_in*)it->ai_addr;
-                            hostIP = inet_ntoa ((struct in_addr)addr->sin_addr);
-                            break;
-                        }
-
-                        it = it->ai_next;
-                    }
-
-                }
-
-                if (res)
-                    freeaddrinfo (res);
-
-#endif
             }
         }
 
@@ -381,8 +338,8 @@ public:
             DBG (ip.toString());
             String description = String::fromUTF8 ((char*)txtRecord);
             uint16 host_port = ntohs (port);
-            if(host_port==445){ // smb hack 
-                host_port=11000;
+            if(host_port<=1000 || host_port==8080){ //  remove non valid port from "fake listeners" (smb,...)
+                host_port=OSCClientRecord::noPort;
             }
             OSCClientRecord oscRec{name, ip, description, host_port};
 
@@ -396,6 +353,40 @@ public:
         }
 
     }
+
+    static String resolveIPFromHostName(const char * hosttarget){
+
+        String hostIP = "";
+    struct addrinfo hints, *res = NULL;
+    memset (&hints, 0, sizeof (hints));
+    hints.ai_family = AF_INET;
+
+    if (getaddrinfo (hosttarget, NULL, &hints, &res) == 0)
+    {
+
+        struct sockaddr_in* addr;
+        struct addrinfo* it = res;
+
+        while (it)
+        {
+            if (it->ai_family == AF_INET)
+            {
+                addr = (struct sockaddr_in*)it->ai_addr;
+                hostIP = inet_ntoa ((struct in_addr)addr->sin_addr);
+                break;
+            }
+
+            it = it->ai_next;
+        }
+
+    }
+
+    if (res)
+        freeaddrinfo (res);
+
+        return hostIP;
+    };
+
     static void cb_dns (
         DNSServiceRef sdRef,
         DNSServiceFlags flags,
@@ -435,10 +426,17 @@ OSCClientRecord  NetworkUtils::hostnameToOSCRecord (const String& hn)
 
     if (nu)
     {
-        // will return emty if not in there
+
+        if(nu->dnsMap.contains(hn)){
         return nu->dnsMap[hn];
+        }
+        String resolvedIP = Pimpl::resolveIPFromHostName(hn.toRawUTF8());
+        if(isValidIP(resolvedIP)){
+            return OSCClientRecord(resolvedIP,IPAddress(resolvedIP),resolvedIP,OSCClientRecord::noPort);
+        }
 
     }
+
 
     return OSCClientRecord();
 }
@@ -463,6 +461,9 @@ OSCClientRecord NetworkUtils::hostnameToOSCRecord (const String& )
 #endif
 
 
+
+uint16 OSCClientRecord::noPort = 1;
+bool OSCClientRecord::hasValidPort(){return port!=noPort;};
 
 NetworkUtils::NetworkUtils()
 {

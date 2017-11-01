@@ -151,7 +151,6 @@ void ConnectableNodeUI::moved()
 {
     isDraggingFromUI = true;
     getCurrentPositionParam()->setPoint (getPosition());
-
     isDraggingFromUI = false;
 }
 
@@ -159,8 +158,6 @@ void ConnectableNodeUI::moved()
 void ConnectableNodeUI::setMiniMode (bool value)
 {
     bool bMiniMode = miniMode->boolValue();
-
-
 
     mainComponentContainer.setMiniMode (bMiniMode);
     auto nodeP = getCurrentPositionParam();
@@ -303,45 +300,17 @@ void ConnectableNodeUI::childBoundsChanged (Component* c)
 void ConnectableNodeUI::mouseDown (const juce::MouseEvent& /*e*/)
 {
 
-
-    //    if (e.eventComponent != &mainComponentContainer.headerContainer->grabber) return;
-    //  if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
-
-    auto ncv = findParentComponentOfClass<NodeContainerViewer>();
-    if(ncv){
-//        mouseDownSelectMethod =  addToSelectionOnMouseDown (ParameterType item,
-//                                        ModifierKeys modifiers)
-
-
-
-    }
 }
 
 void ConnectableNodeUI::mouseUp (const juce::MouseEvent&)
 {
-    auto ncv = findParentComponentOfClass<NodeContainerViewer>();
-    if(ncv){
-        for(auto s: ncv->selectedItems){
-            s-> isDraggingFromUI = false;
-        }
-
-
-    }
-
+    isDraggingFromUI = false;
 }
 
 void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
 {
-    //    if (e.eventComponent->getParentComponent() != mainComponentContainer.headerContainer) return;
 
-    // a child TextEditor is focused, don't drag
-    auto fComp = getCurrentlyFocusedComponent ();
-    if(isParentOf(fComp) && dynamic_cast<TextEditor*>(fComp)){
-        return;
-    }
     isDraggingFromUI = true;
-
-
 
 }
 

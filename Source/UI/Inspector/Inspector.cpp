@@ -66,9 +66,8 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
         currentComponent->setSelected (true);
         if(auto cont = getCurrentContainerSelected())
             cont->addControllableContainerListener(this);
-        inspectCurrentComponent();
     }
-
+    inspectCurrentComponent();
     listeners.call (&InspectorListener::currentComponentChanged, this);
 }
 
@@ -115,9 +114,11 @@ void Inspector::clearEditor()
 
 void Inspector::inspectCurrentComponent()
 {
-    if (currentComponent == nullptr) return;
+
 
     if (currentEditor != nullptr) currentEditor->removeInspectorEditorListener (this);
+
+    if (currentComponent == nullptr) return;
 
     currentEditor = currentComponent->createEditor();
 

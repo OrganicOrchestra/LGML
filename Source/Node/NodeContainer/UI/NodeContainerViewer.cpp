@@ -458,14 +458,8 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
         if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent)){
 
+            nui->selectThis();
             resultOfMouseDownSelectMethod = selectedItems.addToSelectionOnMouseDown(nui, event.mods);
-            if(selectedItems.getItemArray().size()==0){
-                nui->selectThis();
-            }
-            if(!selectedItems.getItemArray().contains(nui)){
-                selectedItems.deselectAll();
-                selectedItems.addToSelection(nui);
-            }
             selectedInitBounds.clear();
             for(auto s: selectedItems){
                 if(s.get()){

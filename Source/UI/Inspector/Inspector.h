@@ -27,7 +27,7 @@ class Inspector : public juce::Component,
 
 {
 public:
-    juce_DeclareSingleton (Inspector, false);
+    juce_DeclareSingleton (Inspector, true);
     Inspector();
     virtual ~Inspector();
 

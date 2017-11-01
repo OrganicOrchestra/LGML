@@ -141,6 +141,7 @@ void OSCController::resolveHostnameIfNeeded()
             if (resolved.isValid())
             {
                 remoteIP = resolved.ipAddress.toString();
+                if(resolved.hasValidPort()){
                 String resolvedPortString = String ((int)resolved.port);
 
                 if (!remotePortParam->isSettingValue && remotePortParam->stringValue() != resolvedPortString)
@@ -157,7 +158,7 @@ void OSCController::resolveHostnameIfNeeded()
                     hostNameResolved = true;
                     return;
                 }
-
+                }
                 hostNameResolved = true;
                 LOG ("resolved IP : " << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
                 isConnectedToRemote->setValue (sender.connect (remoteIP, remotePortParam->stringValue().getIntValue()));
