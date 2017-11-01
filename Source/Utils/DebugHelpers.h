@@ -103,9 +103,9 @@ public:
     String source;
     enum Severity {LOG_NONE = -1, LOG_DBG = 0, LOG_WARN = 1, LOG_ERR = 2};
     Severity severity;
-    int getNumLines() {return  _arr->size();}
+    int getNumLines() const {return  _arr->size();}
     void trimToFit (int num) {if (_arr->size() > num)_arr->removeRange (0, _arr->size() - num);}
-    const String& getLine (int i) {return _arr->getReference (i); }
+    const String& getLine (int i) const {return _arr->getReference (i); }
 
 
 private:

@@ -104,6 +104,29 @@ void JsEnvironment::setEnabled (bool t)
     isEnabled = t;
 }
 
+DynamicObject* JsEnvironment::getGlobalObject(){
+    String ns = localNamespace;
+    if(ns.length())
+        return JsGlobalEnvironment::getInstance()->getNamespaceObject(ns).getObject();
+    else
+        return nullptr;
+}
+var getLocal(const juce::var::NativeFunctionArgs &a){
+    auto c = getObjectPtrFromJS<JsEnvironment> (a);
+    if (c != nullptr)
+    {
+        return c->getGlobalObject();
+    }
+    else
+    {
+        LOG ("!!!unknown controllable set from js");
+        jassertfalse;
+    }
+
+    return var();
+}
+
+
 void JsEnvironment::clearNamespace()
 {
     const  ScopedLock lk (engineLock);
@@ -116,13 +139,18 @@ void JsEnvironment::clearNamespace()
     static Identifier createParamListenerId ("createParameterListener");
     localEnv->setMethod (createParamListenerId, &JsEnvironment::createParameterListenerObject);
     localEnv->setProperty (jsPtrIdentifier, (int64)this);
+    if(linkedContainer.get()){
+        localEnv->setMethod("getLocal",&getLocal );
+    }
     jsEngine->registerNativeObject (jsLocalIdentifier, localEnv);
     jsEngine->registerNativeObject (jsGlobalIdentifier, getGlobalEnv());
 
 
 
 
+
 }
+
 
 void    JsEnvironment::removeNamespace (const String& jsNamespace)
 {
@@ -154,6 +182,7 @@ bool JsEnvironment::loadFile (const File& f)
         _isInSyncWithLGML = false;
         buildLocalEnv();
         clearListeners();
+
         jsListeners.call (&JsEnvironment::Listener::newJsFileLoaded, false);
         return false;
     }
@@ -222,7 +251,7 @@ void JsEnvironment::internalLoadFile (const File& f )
     {
         isEnabled = cc->enabledParam->boolValue();
     }
-
+    JsGlobalEnvironment::getInstance()->setControllableContainerDirty(linkedContainer);
     setTimerState (onUpdateTimer, isEnabled && userDefinedFunctions.contains (onUpdateFId) );
 }
 
@@ -291,6 +320,7 @@ void JsEnvironment::clearListeners()
         const ScopedLock lk (engineLock);
         parameterListenerObjects.clear();
     }
+
 }
 
 bool JsEnvironment::functionIsDefined (const juce::String& s)
@@ -643,8 +673,16 @@ void JsEnvironment::parameterValueChanged (Parameter* p)
         // ensure short name is updated...
         // not sure it's needed though
         linkedContainer->setNiceName (linkedContainer->nameParam->stringValue());
+        auto ns = linkedContainer->getControlAddressArray();
+        if(ns.size()>=2){
 
-        setNamespaceName ("node." + linkedContainer->shortName);
+            String namespaceName = ns.joinIntoString(".");
+            setNamespaceName (namespaceName);
+        }
+        else{
+//            jassertfalse;
+        }
+
     }
 
     else if (p)callFunction ("on_" + getJsFunctionNameFromAddress (p->getControlAddress()), p->value, false);

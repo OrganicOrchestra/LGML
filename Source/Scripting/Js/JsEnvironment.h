@@ -52,6 +52,8 @@ public:
     // dynamically update namespace name
     void    setNamespaceName (const String&);
 
+    // returns object in global scope (includes params)
+    DynamicObject * getGlobalObject();
     // helpers
 
     void    setLocalNamespace (DynamicObject& target);

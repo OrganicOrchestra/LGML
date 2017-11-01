@@ -25,12 +25,12 @@ REGISTER_OBJ_TYPE_NAMED (Controller, SerialController, "t_Serial");
 
 
 SerialController::SerialController (StringRef name) :
-    JsEnvironment ("controller.serial", this),
+    JsEnvironment ("controllers.serial", this),
     Controller (name),
     port (nullptr)
 {
 
-    setNamespaceName ("controller." + shortName);
+    setNamespaceName ("controllers." + shortName);
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
 
 //    selectedHardwareID = addNewParameter<StringParameter> ("selectedHardwareID", "Id of the selected hardware", "");
@@ -93,7 +93,7 @@ void SerialController::onContainerParameterChanged (Parameter* p)
 
     if (p == nameParam)
     {
-        setNamespaceName ("controller." + shortName);
+        setNamespaceName ("controllers." + shortName);
     }
     else if ( p == selectedPort)
     {
@@ -116,7 +116,7 @@ void SerialController::buildLocalEnv()
     DynamicObject obj;
     static const Identifier jsSendMessageIdentifier ("sendMessage");
     obj.setMethod (jsSendMessageIdentifier, sendMessageFromScript);
-    obj.setProperty (jsPtrIdentifier, (int64)this);
+//    obj.setProperty (jsPtrIdentifier, (int64)this);
 
 
 

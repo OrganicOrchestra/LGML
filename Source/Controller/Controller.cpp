@@ -28,6 +28,7 @@ Controller::Controller (StringRef _name) :
     userContainer ("messages")
 {
     userContainer.setUserDefined (true);
+    userContainer.addControllableContainerListener (this);
     addChildControllableContainer (&userContainer);
     userContainer.nameParam->isEditable = false;
 

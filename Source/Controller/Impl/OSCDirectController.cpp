@@ -28,7 +28,7 @@ OSCDirectController::OSCDirectController (StringRef name):
     OSCController (name)
 {
     NodeManager::getInstance()->addControllableContainerListener (this);
-    userContainer.addControllableContainerListener (this);
+    
     sendTimeInfo = addNewParameter<BoolParameter> ("sendTimeInfo", "send time information", false);
 
     if (sendTimeInfo->boolValue())

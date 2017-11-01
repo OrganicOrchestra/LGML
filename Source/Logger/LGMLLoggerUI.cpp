@@ -319,12 +319,14 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
 String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int /*columnId*/)
 {
     auto el = owner->getElementForRow(rowNumber);
+
     String sR = el->source;
     return
     (sR.isNotEmpty()?
      sR +" ("+el->time.toString(false, true, true, true)+")"+ "\n":String::empty)
-    
-    +el->content;
+    +(el->getNumLines()< 10?el->content:owner->getSourceForRow(rowNumber));
+
+
 };
 
 void LGMLLoggerUI::buttonClicked (Button* b)

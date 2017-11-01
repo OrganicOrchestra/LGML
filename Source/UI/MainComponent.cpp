@@ -79,6 +79,7 @@ MainContentComponent::~MainContentComponent()
 
     engine->removeEngineListener (this);
     ShapeShifterManager::deleteInstance();
+    Inspector::deleteInstance();
 
 }
 

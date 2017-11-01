@@ -89,6 +89,7 @@ InspectableComponent * Inspector::getCurrentComponent(){
     return nullptr;
 
 }
+
 InspectorEditor * Inspector::getCurrentEditor(){
     if(currentEditor){
         return currentEditor;
@@ -96,6 +97,7 @@ InspectorEditor * Inspector::getCurrentEditor(){
     return nullptr;
 
 }
+
 void Inspector::resized()
 {
     if (currentEditor != nullptr) currentEditor->setBounds (getLocalBounds().reduced (5));

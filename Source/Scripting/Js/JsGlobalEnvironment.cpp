@@ -33,7 +33,7 @@ JsGlobalEnvironment::JsGlobalEnvironment()
     // default in global namespace
     linkToControllableContainer ("time", TimeManager::getInstance());
     linkToControllableContainer ("node", NodeManager::getInstance());
-    linkToControllableContainer ("controller", ControllerManager::getInstance());
+    linkToControllableContainer ("controllers", ControllerManager::getInstance());
 
 
 }

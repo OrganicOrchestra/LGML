@@ -25,10 +25,10 @@ extern AudioDeviceManager&   getAudioDeviceManager();
 REGISTER_CONTROLLER_TYPE (MIDIController);
 
 MIDIController::MIDIController (StringRef name) :
-    Controller (name), JsEnvironment ("controller.MIDI", this),
+    Controller (name), JsEnvironment ("controllers.MIDI", this),
 midiChooser(this,true,false)
 {
-    setNamespaceName ("controller." + shortName);
+    setNamespaceName ("controllers." + shortName);
 //    deviceInName = addNewParameter<EnumParameter> ("midiPortName", "name of Midi device input",MIDIHelpers::getGlobalMidiModel(), "");
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
     logIncoming->isSavable = false;
@@ -184,7 +184,7 @@ void MIDIController::onContainerParameterChanged (Parameter* p)
 
     if (p == nameParam)
     {
-        setNamespaceName ("controller." + shortName);
+        setNamespaceName ("controllers." + shortName);
     }
 //    else if (p == deviceInName)
 //    {

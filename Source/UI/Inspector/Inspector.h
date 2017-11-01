@@ -98,7 +98,8 @@ public:
 
     virtual ~InspectorViewport()
     {
-        Inspector::deleteInstance();
+        
+        inspector->removeInspectorListener(this);
     }
 
     void resized() override
@@ -113,9 +114,11 @@ public:
         if (inspector->getCurrentEditor() == nullptr) inspector->setBounds (r);
         else
         {
-            int cH = inspector->getCurrentEditor()->getContentHeight();
+            int cH = r.getHeight();
+            if(auto ed = inspector->getCurrentEditor())
+                cH = ed->getContentHeight();
 
-            if (cH == 0) cH = r.getHeight();
+
 
             inspector->setBounds (r.withPosition (inspector->getPosition()).withHeight (cH));
         }

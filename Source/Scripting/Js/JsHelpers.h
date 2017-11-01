@@ -42,21 +42,19 @@ static const Array<Identifier> jsCoreClasses =
 
 // TODO use weakReferences
 template<class T>
-inline T* getObjectPtrFromJS (const var::NativeFunctionArgs& a)
-{
-    DynamicObject* d = a.thisObject.getDynamicObject();
-
-    if (d == nullptr)return nullptr;
-
-    return dynamic_cast<T*> ((T*) (int64)d->getProperty (jsPtrIdentifier));
-}
-template<class T>
 inline T* getObjectPtrFromObject ( DynamicObject* d)
 {
     if (!d)return nullptr;
 
     return dynamic_cast<T*> ((T*) (int64)d->getProperty (jsPtrIdentifier));
 }
+
+template<class T>
+inline T* getObjectPtrFromJS (const var::NativeFunctionArgs& a)
+{
+    return getObjectPtrFromObject<T>(a.thisObject.getDynamicObject());
+}
+
 
 inline String getJsFunctionNameFromAddress (const String& n)
 {
@@ -157,7 +155,7 @@ inline DynamicObject*   getNamespaceFromObject (const String& ns, DynamicObject*
 
 
 
-inline String namespaceToString (const NamedValueSet& v, int indentlevel = 0, bool showValue = false, bool showptr = false)
+inline String namespaceToString (const NamedValueSet & v, int indentlevel = 0, bool showValue = false, bool showptr = false)
 {
     String res;
     res += " (";
@@ -185,8 +183,8 @@ inline String namespaceToString (const NamedValueSet& v, int indentlevel = 0, bo
     for (int i = 0 ; i < v.size() ; i++)
     {
         var* vv = v.getVarPointerAt (i);
-        String name = v.getName (i).toString();
-        jassert (name != "");
+        Identifier name = v.getName (i);
+
 
 
         if (vv->isObject() || vv->isArray())
@@ -196,7 +194,7 @@ inline String namespaceToString (const NamedValueSet& v, int indentlevel = 0, bo
                 res += "*.";
             }
 
-            DynamicObject* d;
+            DynamicObject* d = nullptr;
 
             if (vv->isArray() && vv->getArray()->size() > 0)
             {
@@ -213,10 +211,12 @@ inline String namespaceToString (const NamedValueSet& v, int indentlevel = 0, bo
                 res += "(" + String::toHexString ((int64)d) + ")";
             }
 
-            if (d != nullptr)
+            if (d != nullptr )
             {
+
                 res += name + ":";
                 res += namespaceToString (d->getProperties(), indentlevel + 1, showValue, showptr);
+                
 
             }
             // potential empty array

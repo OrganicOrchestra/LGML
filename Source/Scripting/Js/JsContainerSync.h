@@ -35,14 +35,14 @@ public:
 
 
     bool isDirty();
-
+    void setControllableContainerDirty(ControllableContainer* c);
 
 protected :
 
     void childStructureChanged (ControllableContainer*, ControllableContainer* ,bool isAdded)override;
     void childAddressChanged (ControllableContainer*,ControllableContainer* c) override;
-
     void updateControllableNamespace (ControllableContainer* c);
+
 
 
 private:
@@ -62,7 +62,7 @@ private:
     JsContainerNamespace* getContainerNamespace (const String& );
 
 
-    DynamicObject*   createDynamicObjectFromContainer (ControllableContainer* c, DynamicObject* parent);
+    static DynamicObject*   createDynamicObjectFromContainer (ControllableContainer* c);
 
     class AggregChanges : private Timer
     {
@@ -82,8 +82,8 @@ private:
                 {
                     if (!processed.contains (ns))
                     {
-                        owner->getEnv()->setProperty (ns->nsName, owner->createDynamicObjectFromContainer (ns->container, nullptr));
-                        processed.add (ns);
+                        owner->getEnv()->setProperty (ns->nsName, owner->createDynamicObjectFromContainer (ns->container));
+                        processed.add(ns);
                     }
                 }
 

@@ -24,9 +24,9 @@ REGISTER_CONTROLLER_TYPE (OSCJsController);
 
 OSCJsController::OSCJsController (StringRef name) :
     OSCDirectController (name),
-    JsEnvironment ("controller.OSCController", this)
+    JsEnvironment ("controllers.OSCController", this)
 {
-    setNamespaceName ("controller." + shortName);
+    setNamespaceName ("controllers." + shortName);
 
     buildLocalEnv();
 
@@ -206,7 +206,7 @@ void OSCJsController::onContainerParameterChanged (Parameter* p)
 
     if (p == nameParam)
     {
-        setNamespaceName ("controller." + shortName);
+        setNamespaceName ("controllers." + shortName);
     }
     else if (p == jsPath)
     {

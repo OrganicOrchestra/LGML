@@ -32,7 +32,7 @@ JsContainerSync::~JsContainerSync()
 void JsContainerSync::linkToControllableContainer (const String& controllableNamespace, ControllableContainer* c)
 {
     c->addControllableContainerListener (this);
-    auto obj = createDynamicObjectFromContainer (c, nullptr);
+    auto obj = createDynamicObjectFromContainer (c);
 
     if (!existInContainerNamespace (controllableNamespace))
     {
@@ -125,30 +125,28 @@ var getControllableForAddress (const var::NativeFunctionArgs& a)
 };
 
 DynamicObject*
-JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* container, DynamicObject* parent)
+JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* container)
 {
-    DynamicObject*  myParent = parent;
+    DynamicObject*  myObj = nullptr;
 
 
     if (auto js = dynamic_cast<JsEnvironment*> (container))
     {
-        myParent = js->localEnv;
+        myObj = js->localEnv;
     }
     else
     {
-        myParent = new DynamicObject();
+        myObj = container->getObject();
     }
 
 
-
-
     static Identifier getControllableForAddressId ("getControllableForAddress");
-    myParent->setMethod (getControllableForAddressId, getControllableForAddress);
-    myParent->setProperty (jsPtrIdentifier, (int64)container);
+    myObj->setMethod (getControllableForAddressId, getControllableForAddress);
+    myObj->setProperty (jsPtrIdentifier, (int64)container);
 
     for (auto& c : container->controllables)
     {
-        myParent->setProperty (c->shortName, c->createDynamicObject());
+        myObj->setProperty (c->shortName, c->createDynamicObject());
 
 
     }
@@ -162,37 +160,40 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
             if (c->isIndexedContainer())
             {
 
-                if (!myParent->hasProperty (jsArrayIdentifier))
+                if (!myObj->hasProperty (jsArrayIdentifier))
                 {
                     var aVar;
-                    auto childObject = createDynamicObjectFromContainer (c, myParent);
+                    auto childObject = createDynamicObjectFromContainer (c);
                     //check names are aligned with order (first one)
                     jassert (c->getIndexedPosition() == 0);
                     aVar.append (childObject);
-                    myParent->setProperty (jsArrayIdentifier, aVar);
+                    myObj->setProperty (jsArrayIdentifier, aVar);
 
                 }
                 else
                 {
                     Array<var>* arrVar;
-                    arrVar = myParent->getProperty (jsArrayIdentifier).getArray();
+                    arrVar = myObj->getProperty (jsArrayIdentifier).getArray();
                     //check names are aligned with order (others)
                     jassert (c->getIndexedPosition() == arrVar->size());
-                    auto childObject = createDynamicObjectFromContainer (c, myParent);
+                    auto childObject = createDynamicObjectFromContainer (c);
                     arrVar->add (childObject);
                 }
             }
             else
             {
-                auto childObject = createDynamicObjectFromContainer (c, myParent);
+                auto childObject = createDynamicObjectFromContainer (c);
 
-                if (childObject != nullptr)
-                    myParent->setProperty (c->shortName, childObject);
+                if (childObject != nullptr){
+
+                    DBG("jsContainerSync : " + c->shortName);
+                    myObj->setProperty (c->shortName, childObject);
+                }
             }
         }
     }
 
-    return myParent;
+    return myObj;
 }
 
 void JsContainerSync::updateControllableNamespace (ControllableContainer* c)
@@ -231,7 +232,7 @@ void JsContainerSync::updateControllableNamespace (ControllableContainer* c)
 
     if (jsNamespace.size() == 0)
     {
-        getEnv()->setProperty (originNs->nsName, createDynamicObjectFromContainer (originNs->container, nullptr));
+        getEnv()->setProperty (originNs->nsName, createDynamicObjectFromContainer (originNs->container));
     }
     else
     {
@@ -255,9 +256,14 @@ void JsContainerSync::updateControllableNamespace (ControllableContainer* c)
         }
 
 
-        if (found) dyn->setProperty (jsNamespace[0], createDynamicObjectFromContainer (c, dyn));
+        if (found) dyn->setProperty (jsNamespace[0], createDynamicObjectFromContainer (c));
         else DBG ("proprety not found for Controllable " + c->shortName);
     }
+
+}
+
+void JsContainerSync::setControllableContainerDirty(ControllableContainer* c){
+    aggregChanges.addNs (getContainerNamespace (c));
 
 }
 bool JsContainerSync::isDirty()

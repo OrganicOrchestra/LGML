@@ -304,7 +304,7 @@ OutlinerItem::~OutlinerItem(){
             container->removeControllableContainerListener(this);
         }
         else{
-            jassertfalse;
+//            jassertfalse;
         }
     }
     else{
@@ -312,7 +312,7 @@ OutlinerItem::~OutlinerItem(){
             p->removeControllableContainerListener(this);
         }
         else{
-            jassertfalse;
+//            jassertfalse;
         }
     }
 
@@ -524,7 +524,7 @@ InspectorEditor* OutlinerItemComponent::createEditor()
 void OutlinerItemComponent::buttonClicked (Button* b){
     if(b==addUserParamBt){
         if(item->isContainer){
-            item->container->addNewParameter<FloatParameter> ("var", "Custom Variable");
+            item->container->addNewParameter<FloatParameter> ("variable", "Custom Variable");
         }
         else{
             jassertfalse;
