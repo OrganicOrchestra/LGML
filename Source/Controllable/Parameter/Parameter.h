@@ -50,7 +50,7 @@ public:
     volatile bool isSettingValue;
 
     void setNewDefault(const var & value,bool notify);
-    void resetValue (bool silentSet = false);
+    void resetValue (bool silentSet = false,bool force = false);
     void setValue (const var & _value, bool silentSet = false, bool force = false);
     void configureFromObject (DynamicObject*) override;
     void setStateFromVar (const var&) override;

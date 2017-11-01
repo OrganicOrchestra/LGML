@@ -39,16 +39,16 @@ Parameter::Parameter ( const String& niceName, const String& description, var in
 
 }
 
-void Parameter::resetValue (bool silentSet)
+void Parameter::resetValue (bool silentSet,bool force)
 {
     isOverriden = false;
-    setValue (defaultValue, silentSet, true);
+    setValue (defaultValue, silentSet, force);
 }
 
 void Parameter::setNewDefault(const var & v,bool notify){
     defaultValue=v;
     if(!isOverriden){
-        resetValue(!notify);
+        resetValue(!notify,false);
     }
 
 }

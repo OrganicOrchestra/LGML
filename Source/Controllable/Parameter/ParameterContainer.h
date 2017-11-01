@@ -136,7 +136,7 @@ T* ParameterContainer::addNewParameter (const String& _niceName, const String& d
 
     String targetName = getUniqueNameInContainer (_niceName);
     T* p = new T (targetName, desc, args...);
-    p->resetValue (true);
+    p->resetValue (true,true);
     return static_cast<T*> (addParameter (p));
 
 
