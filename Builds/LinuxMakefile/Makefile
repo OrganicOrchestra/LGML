@@ -115,7 +115,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/VSTManager_e3595958.o \
   $(JUCE_OBJDIR)/Controllable_a0f8da50.o \
   $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o \
-  $(JUCE_OBJDIR)/ControllableHelpers_6d200a9f.o \
+  $(JUCE_OBJDIR)/ControllableUIHelpers_49826e4b.o \
   $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o \
   $(JUCE_OBJDIR)/ParameterContainerSync_5c3cffa0.o \
   $(JUCE_OBJDIR)/GenericParameterContainerEditor_282bb6ae.o \
@@ -320,9 +320,9 @@ $(JUCE_OBJDIR)/ControllableContainer_a2acad5b.o: ../../Source/Controllable/Contr
 	@echo "Compiling ControllableContainer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ControllableHelpers_6d200a9f.o: ../../Source/Controllable/ControllableHelpers.cpp
+$(JUCE_OBJDIR)/ControllableUIHelpers_49826e4b.o: ../../Source/Controllable/ControllableUIHelpers.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ControllableHelpers.cpp"
+	@echo "Compiling ControllableUIHelpers.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ControllableIndexedContainer_32b95300.o: ../../Source/Controllable/ControllableIndexedContainer.cpp

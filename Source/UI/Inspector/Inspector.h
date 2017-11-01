@@ -74,7 +74,7 @@ private:
 
     ScopedPointer<InspectorEditor> currentEditor;
 
-    SelectedItemSet<WeakReference<InspectableComponent>> selectedComps;
+    
     
     void controllableContainerRemoved(ControllableContainer * , ControllableContainer * ) override;
     void containerWillClear(ControllableContainer * )override;

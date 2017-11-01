@@ -58,10 +58,10 @@
               id="OlFVfM" name="ControllableContainer.cpp" resource="0"/>
         <FILE compile="0" file="Source/Controllable/ControllableContainer.h"
               id="UuEbkq" name="ControllableContainer.h" resource="0"/>
-        <FILE compile="1" file="Source/Controllable/ControllableHelpers.cpp"
-              id="oB1amn" name="ControllableHelpers.cpp" resource="0"/>
-        <FILE compile="0" file="Source/Controllable/ControllableHelpers.h"
-              id="XmPrwT" name="ControllableHelpers.h" resource="0"/>
+        <FILE compile="1" file="Source/Controllable/ControllableUIHelpers.cpp"
+              id="oB1amn" name="ControllableUIHelpers.cpp" resource="0"/>
+        <FILE compile="0" file="Source/Controllable/ControllableUIHelpers.h"
+              id="XmPrwT" name="ControllableUIHelpers.h" resource="0"/>
         <FILE compile="1" file="Source/Controllable/ControllableIndexedContainer.cpp"
               id="j9XQci" name="ControllableIndexedContainer.cpp" resource="0"/>
         <FILE compile="0" file="Source/Controllable/ControllableIndexedContainer.h"
@@ -652,8 +652,6 @@
               resource="0"/>
         <FILE compile="0" file="Source/Utils/QueuedNotifier.h" id="SYieL0"
               name="QueuedNotifier.h" resource="0"/>
-        <FILE compile="0" file="Source/Utils/StringUtil.hpp" id="yT6yS9" name="StringUtil.hpp"
-              resource="0"/>
         <FILE compile="1" file="Source/Utils/ProgressNotifier.cpp" id="iosow9"
               name="ProgressNotifier.cpp" ressource="0"/>
         <FILE compile="0" file="Source/Utils/ProgressNotifier.h" id="syT0hu"

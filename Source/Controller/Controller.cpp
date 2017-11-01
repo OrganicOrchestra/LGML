@@ -74,7 +74,7 @@ void Controller::onContainerParameterChanged (Parameter* p)
     }
     else if (p == enabledParam)
     {
-#warning move this behaviour to jsEnv
+TODO(move this behaviour to jsEnv)
         if (JsEnvironment* jsEnv = dynamic_cast<JsEnvironment*> (this))
         {
 

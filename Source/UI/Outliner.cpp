@@ -327,8 +327,10 @@ Component* OutlinerItem::createItemComponent()
 {
     return new OutlinerItemComponent (this);
 }
+
+TODO( better outliner name filtering)
 void OutlinerItem::controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori){
-#warning TODO better outliner name filtering
+
     if(notif && notif==container){
         MessageManager::callAsync([this,ori](){addSubItem(new OutlinerItem (dynamic_cast<ParameterContainer*>(ori),true));});
     }

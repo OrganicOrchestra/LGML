@@ -16,7 +16,7 @@
 #include "NodeManagerUI.h"
 #include "../NodeManager.h"
 #include "../../../Controllable/Parameter/ParameterContainerSync.h"
-#include "../../../Controllable/ControllableHelpers.h"
+#include "../../../Controllable/ControllableUIHelpers.h"
 
 class UISync:public ParameterContainerSync{
 public:

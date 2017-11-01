@@ -15,7 +15,7 @@
 
 #include "LooperNodeUI.h"
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
-#include "../../Controllable/ControllableHelpers.h"
+#include "../../Controllable/ControllableUIHelpers.h"
 
 
 

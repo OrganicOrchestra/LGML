@@ -186,6 +186,9 @@ private:
 
     // avoid laggy self param updates
     bool isDraggingFromUI;
+
+    WeakReference<ConnectableNodeUI>::Master masterReference;
+    friend class WeakReference<ConnectableNodeUI>;
 };
 
 

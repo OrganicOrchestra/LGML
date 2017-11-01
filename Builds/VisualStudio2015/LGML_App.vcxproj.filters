@@ -502,7 +502,7 @@
     <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Controllable\ControllableHelpers.cpp">
+    <ClCompile Include="..\..\Source\Controllable\ControllableUIHelpers.cpp">
       <Filter>LGML\Source\Controllable</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp">
@@ -2745,7 +2745,7 @@
     <ClInclude Include="..\..\Source\Controllable\ControllableContainer.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Controllable\ControllableHelpers.h">
+    <ClInclude Include="..\..\Source\Controllable\ControllableUIHelpers.h">
       <Filter>LGML\Source\Controllable</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h">
@@ -3157,9 +3157,6 @@
       <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\QueuedNotifier.h">
-      <Filter>LGML\Source\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Utils\StringUtil.hpp">
       <Filter>LGML\Source\Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utils\ProgressNotifier.h">

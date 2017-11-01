@@ -20,7 +20,7 @@
 #include "../../UI/Inspector/Inspector.h"
 #include "../../UI/ShapeShifter/ShapeShifterManager.h"
 #include "../../Utils/FactoryUIHelpers.h"
-#include "../../Controllable/ControllableHelpers.h"
+#include "../../Controllable/ControllableUIHelpers.h"
 
 //==============================================================================
 ControllerManagerUI::ControllerManagerUI (ControllerManager* manager):

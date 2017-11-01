@@ -186,8 +186,9 @@ bool ControllerUI::keyPressed (const KeyPress& key)
     return false;
 }
 
+
+TODO(add factory to handle custom Editor)
 InspectorEditor* ControllerUI::createEditor()
 {
-#warning add factory to handle custom Editor
     return new GenericParameterContainerEditor(controller);
 }

@@ -69,7 +69,7 @@ ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContaine
     nodePosition->isControllableExposed = false;
     nodeSize->isControllableExposed = false;
 
-#warning use preset instead nodeMinimazed param
+
     nodePosition->isPresettable = false;
     nodeMinimizedPosition->isPresettable = false;
     nodeSize->isPresettable = false;
@@ -139,6 +139,7 @@ ConnectableNodeUI::~ConnectableNodeUI()
 {
 
     connectableNode->removeConnectableNodeListener (this);
+    masterReference.clear();
 }
 
 Point2DParameter<int>* ConnectableNodeUI::getCurrentPositionParam(){
@@ -324,7 +325,7 @@ void ConnectableNodeUI::mouseUp (const juce::MouseEvent&)
             s-> isDraggingFromUI = false;
         }
 
-//        ncv->selectedItems.addToSelectionOnMouseUp(this, e.modifiers, wasDragged, mouseDownSelectMethod);
+
     }
 
 }

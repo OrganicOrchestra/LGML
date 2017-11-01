@@ -32,7 +32,7 @@
 #include "Controllable/Parameter/ParameterFactory.h"
 #include "Utils/NetworkUtils.h"
 
-#include "Utils/StringUtil.hpp"
+
 #include "Scripting/Js/JsGlobalEnvironment.h"
 
 

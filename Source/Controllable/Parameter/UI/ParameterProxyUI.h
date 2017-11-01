@@ -18,7 +18,7 @@
 
 #include "../ParameterProxy.h"
 #include "ParameterUI.h"
-#include "../../ControllableHelpers.h"
+#include "../../ControllableUIHelpers.h"
 
 class ParameterProxyUI :
     public ParameterUI,

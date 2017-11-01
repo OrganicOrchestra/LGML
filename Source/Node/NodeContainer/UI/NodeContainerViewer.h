@@ -19,6 +19,7 @@
 #include "../NodeContainer.h"
 #include "../../UI/ConnectableNodeUI.h"
 
+typedef WeakReference<ConnectableNodeUI> SelectedUIType;
 
 class NodeConnectionUI;
 class ParameterUI;
@@ -27,7 +28,7 @@ class NodeContainerViewer :
     public NodeContainerListener,
     public ParameterContainer,
 public ChangeListener, // multiselection
-private LassoSource<ConnectableNodeUI*>
+private LassoSource<SelectedUIType>
 {
 public :
     NodeContainerViewer (NodeContainer* container,ParameterContainer * uiP);
@@ -91,19 +92,19 @@ public :
     ParameterContainer * uiParams;
 
 
-    SelectedItemSet<ConnectableNodeUI*> selectedItems;
+    SelectedItemSet<SelectedUIType> selectedItems;
 
 private:
-    
-    void changeListenerCallback (ChangeBroadcaster* source) override;
-    LassoComponent<ConnectableNodeUI*> lassoSelectionComponent;
-    Component nodesLayer;
 
-    void findLassoItemsInArea (Array<ConnectableNodeUI*>& itemsFound,
+    void changeListenerCallback (ChangeBroadcaster* source) override;
+    LassoComponent<SelectedUIType> lassoSelectionComponent;
+    Component nodesLayer;
+    bool resultOfMouseDownSelectMethod,hasDraggedDuringClick;
+    void findLassoItemsInArea (Array<SelectedUIType>& itemsFound,
                                const Rectangle<int>& area) override;
 
-    SelectedItemSet<ConnectableNodeUI*>& getLassoSelection() override;
-    HashMap<ConnectableNodeUI*, Rectangle<int>> selectedInitBounds;
+    SelectedItemSet<SelectedUIType>& getLassoSelection() override;
+    HashMap<SelectedUIType, Rectangle<int>> selectedInitBounds;
     
     
 

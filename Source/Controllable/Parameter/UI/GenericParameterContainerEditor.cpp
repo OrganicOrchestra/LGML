@@ -265,7 +265,7 @@ void CCInnerContainerUI::removeCCInnerUI (ParameterContainer* cc)
 
 void CCInnerContainerUI::addCCLink (ParameterContainer* cc)
 {
-#warning TODO implement more generic parameterContainer UI factory
+TODO(implement more generic parameterContainer UI factory)
     if(auto jsCont = dynamic_cast<JSEnvContainer*> (cc)){
 
         auto subEditor = new JsEnvironmentUI (jsCont->jsEnv->jsParameters);

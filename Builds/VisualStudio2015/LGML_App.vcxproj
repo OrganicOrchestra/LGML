@@ -296,7 +296,7 @@
     <ClCompile Include="..\..\Source\Audio\VSTManager.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Controllable.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable\ControllableHelpers.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\ControllableUIHelpers.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp"/>
     <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp"/>
@@ -2089,7 +2089,7 @@
     <ClInclude Include="..\..\Source\Audio\VSTManager.h"/>
     <ClInclude Include="..\..\Source\Controllable\Controllable.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableContainer.h"/>
-    <ClInclude Include="..\..\Source\Controllable\ControllableHelpers.h"/>
+    <ClInclude Include="..\..\Source\Controllable\ControllableUIHelpers.h"/>
     <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h"/>
     <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h"/>
@@ -2227,7 +2227,6 @@
     <ClInclude Include="..\..\Source\Utils\DebugHelpers.h"/>
     <ClInclude Include="..\..\Source\Utils\NetworkUtils.h"/>
     <ClInclude Include="..\..\Source\Utils\QueuedNotifier.h"/>
-    <ClInclude Include="..\..\Source\Utils\StringUtil.hpp"/>
     <ClInclude Include="..\..\Source\Utils\ProgressNotifier.h"/>
     <ClInclude Include="..\..\Source\Engine.h"/>
     <ClInclude Include="..\..\Source\GitSha.h"/>

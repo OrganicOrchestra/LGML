@@ -21,7 +21,7 @@
 
 #include "../JuceHeaderUI.h"//keep
 
-#warning fix name to UI
+
 
 class ControllableContainer;
 class Controllable;
