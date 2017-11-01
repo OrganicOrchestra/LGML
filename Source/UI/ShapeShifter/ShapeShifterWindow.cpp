@@ -45,7 +45,8 @@ checking (false)
 
     setResizable (true, true);
     setResizeLimits(ShapeShifter::minSize,ShapeShifter::minSize, 4096, 4096);
-    getConstrainer()->setMinimumOnscreenAmounts(100, 100, 100, 100);
+    getConstrainer()->setMinimumOnscreenAmounts(0xffffff , 0xffffff, 100, 100);
+    
     setDraggable (true);
 
     setVisible (true);
@@ -124,7 +125,7 @@ void ShapeShifterWindow::mouseDrag (const MouseEvent& e)
 
     panel->setTransparentBackground (true);
     ShapeShifterManager::getInstance()->checkCandidateTargetForPanel (panel);
-    dragger.dragComponent (this, e, 0);
+    dragger.dragComponent (this, e, getConstrainer());
 }
 
 void ShapeShifterWindow::mouseUp (const MouseEvent&)
@@ -140,6 +141,7 @@ void ShapeShifterWindow::mouseUp (const MouseEvent&)
         clear();
         ShapeShifterManager::getInstance()->closePanelWindow (this, false);
     }
+
 }
 
 
