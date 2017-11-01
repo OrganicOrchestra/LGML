@@ -33,12 +33,12 @@ void JsNode::clearNamespace()
 {
     JsEnvironment::clearNamespace();
 
-    for (auto& p : jsParameters)
+    for (auto& p : jsDynamicParameters)
     {
         removeControllable (p);
     }
 
-    jsParameters.clear();
+    jsDynamicParameters.clear();
 
 
 }
@@ -67,7 +67,9 @@ void JsNode::buildLocalEnv()
 
 void JsNode::onContainerParameterChanged (Parameter* p)
 {
+    
     NodeBase::onContainerParameterChanged (p);
+
 
 }
 
@@ -82,7 +84,7 @@ var JsNode::addIntParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsParameters.add (jsNode->ParameterContainer::addNewParameter<IntParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
+    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<IntParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
 
     return var::undefined();
 }
@@ -98,7 +100,7 @@ var JsNode::addFloatParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsParameters.add (jsNode->ParameterContainer::addNewParameter<FloatParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
+    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<FloatParameter> (a.arguments[0], a.arguments[1], a.arguments[2], a.arguments[3], a.arguments[4]));
 
     return var::undefined();
 }
@@ -114,7 +116,7 @@ var JsNode::addStringParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsParameters.add (jsNode->ParameterContainer::addNewParameter<StringParameter> (a.arguments[0], a.arguments[1], a.arguments[2]));
+    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<StringParameter> (a.arguments[0], a.arguments[1], a.arguments[2]));
 
     return var::undefined();
 }
@@ -130,7 +132,7 @@ var JsNode::addBoolParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsParameters.add (jsNode->ParameterContainer::addNewParameter<BoolParameter> (a.arguments[0], a.arguments[1], a.arguments[2]));
+    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<BoolParameter> (a.arguments[0], a.arguments[1], a.arguments[2]));
 
     return var::undefined();
 }
@@ -146,7 +148,7 @@ var JsNode::addTriggerParameter (const var::NativeFunctionArgs& a)
         return var::undefined();
     };
 
-    jsNode->jsParameters.add (jsNode->ParameterContainer::addNewParameter<Trigger> (a.arguments[0], a.arguments[1]));
+    jsNode->jsDynamicParameters.add (jsNode->ParameterContainer::addNewParameter<Trigger> (a.arguments[0], a.arguments[1]));
 
     return var::undefined();
 }

@@ -461,12 +461,19 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
 }
 
-ConnectableNodeUI * getRelatedConnectableNodeUI(Component * c){
+ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c){
+
+    // dont drag if comming from param or text editor
+    if(!dynamic_cast<ParameterUI*>(c) && !dynamic_cast<TextEditor*>(c)){
     auto nui = dynamic_cast<ConnectableNodeUI*>(c);
     if(!nui)
         nui = c->findParentComponentOfClass<ConnectableNodeUI>();
 
     return nui;
+    }
+    else{
+        return nullptr;
+    }
 }
 
 void NodeContainerViewer::mouseMove (const MouseEvent& e)
@@ -499,7 +506,7 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
     else     {
 
-        auto nui = getRelatedConnectableNodeUI(e.eventComponent);
+        auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent);
         if(nui){
             bool isResizing = dynamic_cast<ResizableCornerComponent*>(e.eventComponent)!=nullptr;
             Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
@@ -555,7 +562,7 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
             lassoSelectionComponent.endLasso();
         }
     }
-    else if(auto nui = getRelatedConnectableNodeUI(e.eventComponent)){
+    else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent)){
         selectedItems.addToSelectionOnMouseUp(nui, e.mods, hasDraggedDuringClick , resultOfMouseDownSelectMethod);
     }
 

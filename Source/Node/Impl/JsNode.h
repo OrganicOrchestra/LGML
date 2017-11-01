@@ -26,7 +26,7 @@ class JsNode : public NodeBase, public JsEnvironment
 public :
     DECLARE_OBJ_TYPE (JsNode);
     JsNode();
-    StringParameter* scriptPath;
+    
 
     void clearNamespace() override;
 
@@ -44,7 +44,7 @@ public :
 
 
 
-    Array<Controllable* > jsParameters;
+    Array<Controllable* > jsDynamicParameters;
 
 
 };

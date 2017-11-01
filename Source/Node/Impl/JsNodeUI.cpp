@@ -56,7 +56,7 @@ void JsNodeUI::newJsFileLoaded (bool v)
 
 //    if (v)
 //    {
-        for (auto& c : jsNode->jsParameters)
+        for (auto& c : jsNode->jsDynamicParameters)
         {
             controllableAdded (jsNode, c);
         }
@@ -84,7 +84,7 @@ void JsNodeUI::controllableAdded (ControllableContainer*, Controllable* c)
 {
     JsNode* jsNode = (JsNode*) node.get();
 
-    if (!jsNode->jsParameters.contains ((Controllable*)c))return;
+    if (!jsNode->jsDynamicParameters.contains ((Controllable*)c))return;
 
     ParameterUI* comp = new NamedParameterUI (ParameterUIFactory::createDefaultUI (Parameter::fromControllable (c)), 100);
     varUI.add (comp);
