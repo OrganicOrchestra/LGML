@@ -12,10 +12,9 @@
 
 
 
-ParameterContainerSync::ParameterContainerSync(const String& name,ParameterContainer * _root,ParameterContainer *_slave=nullptr):root(nullptr),slave(_slave){
+ParameterContainerSync::ParameterContainerSync(const String& name,ParameterContainer *_slave=nullptr):root(nullptr),slave(_slave){
     if(!slave)slave = new ParameterContainer(name);
     slave->nameParam->isEditable = false;
-
 
 }
 ParameterContainerSync::~ParameterContainerSync(){
@@ -72,7 +71,7 @@ ParameterContainer * ParameterContainerSync::getSlaveContainer(){
 
 
 
-void ParameterContainerSync::controllableContainerAdded (ControllableContainer* notifier, ControllableContainer* cont) {
+void ParameterContainerSync::controllableContainerAdded (ControllableContainer* /*notifier*/, ControllableContainer* cont) {
     checkContExists(dynamic_cast<ParameterContainer*>(cont));
     checkContInSync(dynamic_cast<ParameterContainer*>(cont));
 }
@@ -160,7 +159,8 @@ void ParameterContainerSync::controllableFeedbackUpdate (ControllableContainer*,
 
 };
 
-void ParameterContainerSync::childStructureChanged (ControllableContainer* notifier, ControllableContainer* origin,bool isAdded) {
+void ParameterContainerSync::childStructureChanged (ControllableContainer* notifier, ControllableContainer* origin,bool /*isAdded*/) {
+
     if(notifier==root){
         auto pc=dynamic_cast<ParameterContainer*>(origin);
         if(!pc){jassertfalse;return;}

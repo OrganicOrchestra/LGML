@@ -45,7 +45,7 @@ void SliderUI<T>::paint (Graphics& g)
     if (shouldBailOut())return;
 
     Rectangle<int> sliderBounds = getLocalBounds();
-    const int corner = 2;
+    const float corner = 2;
     g.setColour (findColour (Slider::backgroundColourId));
     g.fillRoundedRectangle (sliderBounds.toFloat(), corner);
 
@@ -137,7 +137,7 @@ void SliderUI<T>::mouseDown (const MouseEvent& e)
 
     if (assignOnMousePosDirect)
     {
-        setParamNormalizedValue (getValueFromMouse());
+        setParamNormalizedValue ((float)getValueFromMouse());
     }
     else
     {
@@ -163,15 +163,15 @@ void SliderUI<T>::mouseDrag (const MouseEvent& e)
         {
             if (assignOnMousePosDirect)
             {
-                setParamNormalizedValue (getValueFromMouse());
+                setParamNormalizedValue ((float)getValueFromMouse());
             }
             else
             {
-                float diffValue = getValueFromPosition ((e.getPosition() - e.getMouseDownPosition()));
+                float diffValue = (float)getValueFromPosition ((e.getPosition() - e.getMouseDownPosition()));
 
                 if (orientation == VERTICAL) diffValue -= 1;
 
-                setParamNormalizedValue (initValue + diffValue * scaleFactor);
+                setParamNormalizedValue ((float)(initValue + diffValue * scaleFactor));
             }
         }
     }
@@ -220,7 +220,7 @@ void SliderUI<T>::mouseUp (const MouseEvent& me)
 
     if (changeParamOnMouseUpOnly)
     {
-        setParamNormalizedValue (getValueFromMouse());
+        setParamNormalizedValue ((float)getValueFromMouse());
     }
     else
     {

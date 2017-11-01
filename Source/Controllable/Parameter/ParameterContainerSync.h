@@ -18,7 +18,7 @@ public ControllableContainerListener
 
 {
 public:
-    ParameterContainerSync(const String & name,ParameterContainer * root,ParameterContainer * slave);
+    ParameterContainerSync(const String & name,ParameterContainer * slave);
     virtual ~ParameterContainerSync();
     void setRoot(ParameterContainer * root);
     

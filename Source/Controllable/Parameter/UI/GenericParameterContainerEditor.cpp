@@ -125,7 +125,7 @@ void GenericParameterContainerEditor::buttonClicked (Button* b)
     }
 }
 
-void GenericParameterContainerEditor::childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded)
+void GenericParameterContainerEditor::childStructureChanged (ControllableContainer*, ControllableContainer*,bool /*isAdded*/)
 {
     if (!MessageManager::getInstance()->isThisTheMessageThread())
     {
@@ -139,7 +139,7 @@ void GenericParameterContainerEditor::childStructureChanged (ControllableContain
     }
 
 }
-void GenericParameterContainerEditor::containerWillClear(ControllableContainer *c){
+void GenericParameterContainerEditor::containerWillClear(ControllableContainer * ){
 //    handleCommandMessage(<#int cID#>)
 }
 
@@ -525,7 +525,7 @@ void CCInnerContainerUI::controllableContainerRemoved (ControllableContainer*, C
 }
 
 
-void CCInnerContainerUI::childStructureChanged (ControllableContainer*, ControllableContainer*,bool isAdded)
+void CCInnerContainerUI::childStructureChanged (ControllableContainer*, ControllableContainer*,bool /*isAdded*/)
 {
     //resized();
 

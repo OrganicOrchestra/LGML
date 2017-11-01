@@ -20,7 +20,7 @@
 
 class UISync:public ParameterContainerSync{
 public:
-    UISync(const String &n,ParameterContainer * c,ParameterContainer *p) : ParameterContainerSync(n,c,p){
+    UISync(const String &n,ParameterContainer * c,ParameterContainer *p) : ParameterContainerSync(n,p){
         setRoot(c);
     }
 
