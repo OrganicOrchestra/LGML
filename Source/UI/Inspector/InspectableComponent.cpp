@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "InspectableComponent.h"
@@ -22,15 +22,15 @@
 #include "../Style.h"
 
 InspectableComponent::InspectableComponent (ParameterContainer* relatedContainer, const String& _inspectableType) :
-    inspectableType (_inspectableType),
-    relatedParameterContainer (relatedContainer),
-    recursiveInspectionLevel (0),
-    canInspectChildContainersBeyondRecursion (true),
-    isSelected (false),
-    paintBordersWhenSelected (true),
-    bringToFrontOnSelect (true)
+inspectableType (_inspectableType),
+relatedParameterContainer (relatedContainer),
+recursiveInspectionLevel (0),
+canInspectChildContainersBeyondRecursion (true),
+isSelected (false),
+paintBordersWhenSelected (true),
+bringToFrontOnSelect (true)
 {
-    
+
 }
 
 InspectableComponent::~InspectableComponent()
@@ -64,12 +64,14 @@ void InspectableComponent::setSelected (bool value)
     if (value){
         if(bringToFrontOnSelect)
             toFront (true);
-        if(!Inspector::getInstance()->getCurrentComponent()){
-            selectThis();
+        if(auto i = Inspector::getInstanceWithoutCreating()){
+            if(!i->getCurrentComponent()){
+                selectThis();
+            }
         }
     }
     else{
-        
+
     }
     repaint();
 
@@ -95,5 +97,5 @@ void InspectableComponent::paintOverChildren (juce::Graphics& g)
 
 ParameterContainer* InspectableComponent::getRelatedParameterContainer(){
     return relatedParameterContainer;
-
+    
 }

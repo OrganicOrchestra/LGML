@@ -59,7 +59,7 @@ PresetManager::Preset* PresetManager::addPresetFromControllableContainer (const 
 
     if (!recursive)
     {
-        for (auto& cc : container->getControllablesOfType<ParameterContainer> (false))
+        for (auto& cc : container->getContainersOfType<ParameterContainer> (false))
         {
             if (cc->currentPresetName->stringValue().isNotEmpty())
             {
