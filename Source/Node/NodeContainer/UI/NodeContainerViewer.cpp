@@ -552,19 +552,16 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
 void NodeContainerViewer::mouseUp (const MouseEvent& e)
 {
-    if (e.eventComponent == this){
+    
         if (isEditingConnection())
         {
             finishEditingConnection();
+            return;
         }
-        else
-        {
 
+    if (e.eventComponent == this){
             if(getLassoSelection().getItemArray().size()==0)
                 selectThis();
-
-
-        }
     }
     else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent)){
         selectedItems.addToSelectionOnMouseUp(nui, e.mods, hasDraggedDuringClick , resultOfMouseDownSelectMethod);
