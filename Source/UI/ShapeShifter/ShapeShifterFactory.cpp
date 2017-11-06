@@ -24,6 +24,7 @@
 #include "../Outliner.h"
 
 #include "../MainComponent.h"
+#include "TooltipPanel.h"
 
 
 ShapeShifterContent* ShapeShifterFactory::createContentForIndex (PanelName pn)
@@ -58,6 +59,9 @@ ShapeShifterContent* ShapeShifterFactory::createContentForIndex (PanelName pn)
 
         case OutlinerPanel:
             return new Outliner (contentName);
+
+        case ToolTipPanel:
+            return new TooltipPanel(contentName);
 
 
         default:

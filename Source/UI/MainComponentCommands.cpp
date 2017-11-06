@@ -42,8 +42,8 @@ static const int showAppSettings        = 0x30200;
 static const int showAudioSettings      = 0x30201;
 static const int aboutBox               = 0x30300;
 static const int allWindowsForward      = 0x30400;
-static const int toggleDoublePrecision  = 0x30500;
-static const int stimulateCPU           = 0x30600;
+//static const int unused               = 0x30500;
+//static const int stimulateCPU           = 0x30600;
 static const int toggleMappingMode      = 0x30700;
 
 // range ids
@@ -88,23 +88,19 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             break;
 
         case CommandIDs::showPluginListEditor:
-            result.setInfo ("Edit the list of available plug-Ins...", String::empty, category, 0);
+            result.setInfo ("Plug-Ins Settings...", String::empty, category, 0);
             result.addDefaultKeypress ('p', ModifierKeys::commandModifier);
             break;
 
         case CommandIDs::showAudioSettings:
-            result.setInfo ("Change the audio device settings", String::empty, category, 0);
+            result.setInfo ("Audio settings...", String::empty, category, 0);
             result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
             break;
         case CommandIDs::showAppSettings:
-            result.setInfo ("show app settings", String::empty, category, 0);
+            result.setInfo ("Settings...", String::empty, category, 0);
             result.addDefaultKeypress (',', ModifierKeys::commandModifier);
             break;
 
-        case CommandIDs::toggleDoublePrecision:
-            result.setInfo ("toggles doublePrecision", String::empty, category, 0);
-            //updatePrecisionMenuItem (result);
-            break;
 
         case CommandIDs::aboutBox:
             result.setInfo ("About...", String::empty, category, 0);
@@ -140,9 +136,6 @@ void MainContentComponent::getCommandInfo (CommandID commandID, ApplicationComma
             result.addDefaultKeypress ('v', ModifierKeys::commandModifier);
             break;
 
-        case CommandIDs::stimulateCPU:
-            updateStimulateAudioItem (result);
-            break;
 
 
         default:
@@ -164,14 +157,12 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands)
         CommandIDs::showPluginListEditor,
         CommandIDs::showAppSettings,
         CommandIDs::showAudioSettings,
-        CommandIDs::toggleDoublePrecision,
         CommandIDs::aboutBox,
         CommandIDs::allWindowsForward,
         CommandIDs::playPause,
         CommandIDs::copySelection,
         CommandIDs::cutSelection,
         CommandIDs::pasteSelection,
-        CommandIDs::stimulateCPU,
         CommandIDs::toggleMappingMode
     };
 
@@ -182,13 +173,14 @@ void MainContentComponent::getAllCommands (Array<CommandID>& commands)
 PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, const String& menuName)
 {
     PopupMenu menu;
+    auto commandManager = &getCommandManager();
 
     if (menuName == "File")
     {
         // "File" menu
-        menu.addCommandItem (&getCommandManager(), CommandIDs::newFile);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::open);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::openLastDocument);
+        menu.addCommandItem (commandManager, CommandIDs::newFile);
+        menu.addCommandItem (commandManager, CommandIDs::open);
+        menu.addCommandItem (commandManager, CommandIDs::openLastDocument);
 
         RecentlyOpenedFilesList recentFiles (getEngine()->getLastOpenedFileList());
 
@@ -196,51 +188,42 @@ PopupMenu MainContentComponent::getMenuForIndex (int /*topLevelMenuIndex*/, cons
         recentFiles.createPopupMenuItems (recentFilesMenu, CommandIDs::lastFileStartID, true, true);
         menu.addSubMenu ("Open Recent", recentFilesMenu);
 
-        menu.addCommandItem (&getCommandManager(), CommandIDs::save);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::saveAs);
+        menu.addCommandItem (commandManager, CommandIDs::save);
+        menu.addCommandItem (commandManager, CommandIDs::saveAs);
         menu.addSeparator();
-        menu.addCommandItem (&getCommandManager(), StandardApplicationCommandIDs::quit);
+        menu.addCommandItem (commandManager, CommandIDs::showAppSettings);
+        menu.addCommandItem (commandManager, CommandIDs::showAudioSettings);
+        menu.addCommandItem (commandManager, CommandIDs::showPluginListEditor);
+        menu.addCommandItem (commandManager, CommandIDs::aboutBox);
+        menu.addSeparator();
+        menu.addCommandItem (commandManager, StandardApplicationCommandIDs::quit);
 
     }
     else if (menuName == "Edit")
     {
-        menu.addCommandItem (&getCommandManager(), CommandIDs::playPause);
+        menu.addCommandItem (commandManager, CommandIDs::playPause);
         menu.addSeparator();
-        menu.addCommandItem (&getCommandManager(), CommandIDs::copySelection);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::cutSelection);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::pasteSelection);
+        menu.addCommandItem (commandManager, CommandIDs::copySelection);
+        menu.addCommandItem (commandManager, CommandIDs::cutSelection);
+        menu.addCommandItem (commandManager, CommandIDs::pasteSelection);
 
     }
-    else if (menuName == "Plugins")
-    {
-        // "Plugins" menu
-        PopupMenu pluginsMenu;
-        //            addPluginsToMenu (pluginsMenu);
-        menu.addSubMenu ("Create plugin", pluginsMenu);
-        menu.addSeparator();
-        menu.addItem (250, "Delete all plugins");
-    }
+
     else if (menuName == "Options")
     {
         // "Options" menu
-
-        menu.addCommandItem (&getCommandManager(), CommandIDs::showPluginListEditor);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::showAppSettings);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::showAudioSettings);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::stimulateCPU);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::toggleDoublePrecision);
-        menu.addCommandItem (&getCommandManager(), CommandIDs::toggleMappingMode);
+        menu.addCommandItem (commandManager, CommandIDs::toggleMappingMode);
         menu.addSeparator();
-        menu.addCommandItem (&getCommandManager(), CommandIDs::aboutBox);
+
     }
     else if (menuName == "Windows")
     {
-        menu.addCommandItem (&getCommandManager(), CommandIDs::allWindowsForward);
+        menu = ShapeShifterManager::getInstance()->getPanelsMenu();
+        menu.addSeparator();
+        menu.addCommandItem (commandManager, CommandIDs::allWindowsForward);
+
     }
-    else if (menuName == "Panels")
-    {
-        return ShapeShifterManager::getInstance()->getPanelsMenu();
-    }
+
 
     return menu;
 }
@@ -302,22 +285,12 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             engine->saveAs (File::nonexistent, true, true, true);
             break;
 
-        case CommandIDs::stimulateCPU:
-            engine->stimulateAudio (engine->stimulator == nullptr);
-            {
-                ApplicationCommandInfo cmdInfo (info.commandID);
-                updateStimulateAudioItem (cmdInfo);
-                menuItemsChanged();
-            }
-            break;
 
-        case CommandIDs::toggleDoublePrecision:
-            DBG ("double precision not supported yet...");
-            break;
+
 
 
         case CommandIDs::showPluginListEditor:
-            VSTManager::getInstance()->createPluginListWindowIfNeeded();
+            AppPropertiesUI::showAppSettings(AppPropertiesUI::PluginsPageName);
             break;
 
         case CommandIDs::showAudioSettings:
@@ -328,6 +301,10 @@ bool MainContentComponent::perform (const InvocationInfo& info)
             AppPropertiesUI::showAppSettings();
             break;
 
+        case CommandIDs::aboutBox:
+            //TODO about box
+            LOG("about LGML");
+            break;
 
         case CommandIDs::allWindowsForward:
         {
@@ -464,7 +441,7 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
 
     String menuName = getMenuBarNames()[topLevelMenuIndex ];
 
-    if (menuName == "Panels")
+    if (menuName == "Windows")
     {
         ShapeShifterManager::getInstance()->handleMenuPanelCommand (menuItemID);
     }
@@ -478,13 +455,9 @@ void MainContentComponent::menuItemSelected (int menuItemID, int topLevelMenuInd
 
 StringArray MainContentComponent::getMenuBarNames()
 {
-    const char* const names[] = { "File", "Edit", "Plugins", "Options", "Windows", "Panels", nullptr };
+    const char* const names[] = { "File", "Edit", "Options", "Windows", nullptr };
     static  StringArray namesArray (names);
     return namesArray;
 }
 
-void MainContentComponent::updateStimulateAudioItem (ApplicationCommandInfo& info)
-{
-    info.setInfo ("stimulate CPU", "Simulate heavy CPU Usage", "General", 0);
-    info.setTicked (engine->stimulator != nullptr);
-}
+

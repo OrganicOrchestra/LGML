@@ -3114,6 +3114,9 @@
     <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.h">
       <Filter>LGML\Source\UI\ShapeShifter</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\TooltipPanel.h">
+      <Filter>LGML\Source\UI\ShapeShifter</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainComponent.h">
       <Filter>LGML\Source\UI</Filter>
     </ClInclude>

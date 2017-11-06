@@ -22,7 +22,6 @@
 #include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
 
 ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
-    removeBT ("X"),
     miniModeBT ("-"),
     bMiniMode (false)
 {
@@ -30,14 +29,8 @@ ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
     nodeUI = nullptr;
     vuMeterIn = new VuMeter (VuMeter::Type::IN);
     vuMeterOut = new VuMeter (VuMeter::Type::OUT);
-    Image removeImage = ImageCache::getFromMemory (BinaryData::removeBT_png, BinaryData::removeBT_pngSize);
 
-    removeBT.setImages (false, true, true, removeImage,
-                        0.7f, Colours::transparentBlack,
-                        removeImage, 1.0f, Colours::transparentBlack,
-                        removeImage, 1.0f, Colours::white.withAlpha (.7f),
-                        0.5f);
-    removeBT.addListener (this);
+
 
     miniModeBT.addListener (this);
 
@@ -83,8 +76,6 @@ void ConnectableNodeHeaderUI::setNodeAndNodeUI (ConnectableNode* _node, Connecta
     enabledUI = ParameterUIFactory::createDefaultUI (node->enabledParam);
     addAndMakeVisible (enabledUI);
 
-
-    if (node->canBeRemovedByUser) addAndMakeVisible (removeBT);
 
     addAndMakeVisible (miniModeBT);
 
@@ -142,7 +133,6 @@ void ConnectableNodeHeaderUI::resized()
 
     int vuMeterWidth = 8;
     int miniModeBTWidth = 15;
-    int removeBTWidth = 15;
 
 
 
@@ -170,20 +160,6 @@ void ConnectableNodeHeaderUI::resized()
 
     r.removeFromLeft (3);
 
-    if (node->canBeRemovedByUser)
-    {
-        if (r.getWidth() < 80)
-        {
-            removeBT.setVisible (false);
-        }
-        else
-        {
-            removeBT.setVisible (true);
-            removeBT.setBounds (r.removeFromRight (removeBTWidth));
-            r.removeFromRight (2);
-        }
-
-    }
 
     if (r.getWidth() < 100 && !bMiniMode)
     {
@@ -265,15 +241,8 @@ void ConnectableNodeHeaderUI::nodeParameterChanged (ConnectableNode*, Parameter*
 
 void ConnectableNodeHeaderUI::buttonClicked (Button* b)
 {
-    if (b == &removeBT)
-    {
-        int result = AlertWindow::showOkCancelBox (AlertWindow::AlertIconType::QuestionIcon, "Remove node", "Do you want to remove the node ?");
 
-        if (result == 0) return;
-
-        node->remove();
-    }
-    else if (b == &miniModeBT)
+    if (b == &miniModeBT)
     {
         nodeUI->miniMode->setValue (!nodeUI->miniMode->boolValue());
     }

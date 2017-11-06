@@ -19,6 +19,7 @@ extern AudioDeviceManager& getAudioDeviceManager();
 String AppPropertiesUI::GeneralPageName("General");
 String AppPropertiesUI::AudioPageName("Audio");
 String AppPropertiesUI::AdvancedPageName("Advanced");
+String AppPropertiesUI::PluginsPageName("Plugins");
 
 
 class BoolPropUI : public BooleanPropertyComponent{
@@ -40,6 +41,28 @@ public:
 };
 
 template<class FunctionType>
+class BoolUnsavedPropUI : public BooleanPropertyComponent{
+public:
+    BoolUnsavedPropUI(const String & _name,FunctionType f,bool defaultV = false):BooleanPropertyComponent(_name,"1","0"),internalState(defaultV),func(f){
+
+
+    }
+    bool getState() const override{
+        return  internalState;
+
+    }
+    void setState(bool b)  override{
+        BooleanPropertyComponent::setState(b);
+        internalState = b;
+        func(b);
+        refresh();
+    }
+    bool internalState;
+    FunctionType func;
+
+};
+
+template<class FunctionType>
 class ActionPropUI : public ButtonPropertyComponent{
 public:
     ActionPropUI(const String & name,FunctionType f):ButtonPropertyComponent(name,true),func(f){};
@@ -55,11 +78,17 @@ public:
 
 };
 
+
 namespace{
 
     template<class FunctionType>
     ButtonPropertyComponent* createActionProp(const String & n,FunctionType f){
         return new ActionPropUI<FunctionType>(n,f);
+    }
+
+    template<class FunctionType>
+    BooleanPropertyComponent* createUnsavedPropUI(const String & n, FunctionType f,bool defaultV = false){
+        return new BoolUnsavedPropUI<FunctionType>(n,f,defaultV);
     }
 
     void resetPreferences(){
@@ -74,6 +103,10 @@ namespace{
             }
         }
 
+    }
+    void stimulateAudio(bool b){
+        auto engine = getEngine();
+        engine->stimulateAudio (b);
     }
 }
 
@@ -102,10 +135,24 @@ class PrefPanel : public PreferencesPanel{
             auto res =  new PropertyPanel();
             res->addProperties(
                                {new BoolPropUI("multiThreadedLoading"),
-                                createActionProp("reset preferences",resetPreferences)
+                                createActionProp("reset preferences",resetPreferences),
+                                createUnsavedPropUI("stimulate Audio",stimulateAudio),
 
                                } );
             return res;
+        }
+
+        else if(pageName==AppPropertiesUI::PluginsPageName){
+            auto vm = VSTManager::getInstance();
+            if(vm){
+            auto appProps = getAppProperties()?getAppProperties()->getUserSettings():nullptr;
+            const File deadMansPedalFile = appProps?File(appProps->getFile().getSiblingFile ("RecentlyCrashedPluginsList")):File();
+
+            auto res = new PluginListComponent (vm->formatManager,vm->knownPluginList,deadMansPedalFile,appProps, true);
+
+                return res;
+            }
+
         }
         return nullptr;
 
@@ -147,30 +194,29 @@ static ScopedPointer<DrawableComposite>  createIcon(const String &n,PrefPanel * 
     return res;
 }
 
+void createForPageName(const String & pageName,PrefPanel * prefPanel){
+    const int normalColorId = TextButton::ColourIds::textColourOffId;
+    const int hoverColorId = TextButton::ColourIds::buttonOnColourId;
+    prefPanel->addSettingsPage(pageName,
+                               createIcon(pageName,prefPanel,normalColorId) ,
+                               createIcon(pageName,prefPanel,hoverColorId) ,
+                               nullptr//createIcon(GeneralPageName,prefPanel,downColorId)
+                               );
+}
+
 AppPropertiesUI::AppPropertiesUI():ResizableWindow("Settings",true){
 
 
     prefPanel = new PrefPanel();
-    const int normalColorId = TextButton::ColourIds::textColourOffId;
-    const int hoverColorId = TextButton::ColourIds::buttonOnColourId;
+
     //    const int downColorId = TextButton::ColourIds::textColourOnId;
+    createForPageName(GeneralPageName,prefPanel);
+    createForPageName(AudioPageName,prefPanel);
 
-    prefPanel->addSettingsPage(GeneralPageName,
-                               createIcon(GeneralPageName,prefPanel,normalColorId) ,
-                               createIcon(GeneralPageName,prefPanel,hoverColorId) ,
-                               nullptr//createIcon(GeneralPageName,prefPanel,downColorId)
-                               );
+    createForPageName(PluginsPageName,prefPanel);
 
-    prefPanel->addSettingsPage(AudioPageName,
-                               createIcon(AudioPageName,prefPanel,normalColorId) ,
-                               createIcon(AudioPageName,prefPanel,hoverColorId) ,
-                               nullptr//createIcon(AudioPageName,prefPanel,downColorId)
-                               );
-    prefPanel->addSettingsPage(AdvancedPageName,
-                               createIcon(AdvancedPageName,prefPanel,normalColorId) ,
-                               createIcon(AdvancedPageName,prefPanel,hoverColorId) ,
-                               nullptr//createIcon(AudioPageName,prefPanel,downColorId)
-                               );
+
+    createForPageName(AdvancedPageName,prefPanel);
 
 
 #ifdef JUCE_MAC

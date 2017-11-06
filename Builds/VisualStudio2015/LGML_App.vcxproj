@@ -2212,6 +2212,7 @@
     <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelHeader.h"/>
     <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelTab.h"/>
     <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\TooltipPanel.h"/>
     <ClInclude Include="..\..\Source\UI\MainComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\InspectableComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Inspector\Inspector.h"/>

@@ -70,7 +70,7 @@ public:
     {
         _arr = new StringArray();
         time = Time::getCurrentTime();
-        _arr->addTokens (content, StringRef ("\n"), StringRef());
+        _arr->addTokens (content, StringRef ("\r\n"), StringRef("\""));
 
         if (_arr->size())
         {

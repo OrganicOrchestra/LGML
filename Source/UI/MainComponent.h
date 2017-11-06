@@ -44,9 +44,7 @@ class MainContentComponent   : public juce::Component, public ApplicationCommand
 {
 public:
 
-    TooltipWindow tooltipWindow; // to add tooltips to an application, you
-    // just need to create one of these and leave it
-    // there to do its work..
+
     Engine* engine;
 
     ScopedPointer<ProgressWindow> fileProgressWindow;
@@ -88,15 +86,15 @@ public:
     void menuItemSelected (int /*menuItemID*/, int /*topLevelMenuIndex*/) override;
 
 
-    void updateStimulateAudioItem (ApplicationCommandInfo& info);
+    
     void focusGained (FocusChangeType cause)override;
-
+    
 private:
     //==============================================================================
 
     // Your private member variables go here...
     
-
+    TooltipWindow tooltipWindow;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };
 

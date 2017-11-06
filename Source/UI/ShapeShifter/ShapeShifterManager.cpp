@@ -434,16 +434,15 @@ PopupMenu ShapeShifterManager::getPanelsMenu()
 
     p.addSubMenu ("Layout", layoutP);
 
-    p.addSeparator();
-
+    PopupMenu showP;
     int currentID = 1;
 
     for (auto& n : globalPanelNames)
     {
-        p.addItem (baseMenuCommandID + currentID, n, true);
+        showP.addItem (baseMenuCommandID + currentID, n, true);
         currentID++;
     }
-
+    p.addSubMenu("Show Panel", showP);
     return p;
 }
 

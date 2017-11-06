@@ -599,6 +599,7 @@
                 id="pmIuzX" name="ShapeShifterWindow.cpp" ressource="0"/>
           <FILE compile="0" file="Source/UI/ShapeShifter/ShapeShifterWindow.h"
                 id="kf5Y78" name="ShapeShifterWindow.h" ressource="0"/>
+          <FILE id="hutxbi" name="TooltipPanel.h" compile="0" resource="0" file="Source/UI/ShapeShifter/TooltipPanel.h"/>
         </GROUP>
         <FILE compile="1" file="Source/UI/MainComponent.cpp" id="ajsIsJ" name="MainComponent.cpp"
               ressource="0"/>

@@ -389,6 +389,7 @@
 		8CDF813500AF5053B24996A8 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = JsEnvironmentUI.cpp; path = ../../Source/Scripting/Js/JsEnvironmentUI.cpp; sourceTree = "SOURCE_ROOT"; };
 		8DEACDE3D820E2417F1B4C6C = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RangeParameter.h; path = ../../Source/Controllable/Parameter/RangeParameter.h; sourceTree = "SOURCE_ROOT"; };
 		90AA386C1322C0DF61CE5805 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LooperNodeUI.h; path = ../../Source/Node/Impl/LooperNodeUI.h; sourceTree = "SOURCE_ROOT"; };
+		90B93818E2D54C827C974EDA = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TooltipPanel.h; path = ../../Source/UI/ShapeShifter/TooltipPanel.h; sourceTree = "SOURCE_ROOT"; };
 		92483466FF49E5C1ED88B633 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShapeShifterWindow.h; path = ../../Source/UI/ShapeShifter/ShapeShifterWindow.h; sourceTree = "SOURCE_ROOT"; };
 		926945DC4327623558F75DAC = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MIDIController.h; path = ../../Source/Controller/Impl/MIDIController.h; sourceTree = "SOURCE_ROOT"; };
 		92B6C96E48370F8406AC2802 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OSCDirectController.cpp; path = ../../Source/Controller/Impl/OSCDirectController.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -842,7 +843,8 @@
 					C821373088BC715DC040DD97,
 					D57E6545A660EDCA1328ECEA,
 					36947B434EB53DFA2B7D5DD3,
-					92483466FF49E5C1ED88B633, ); name = ShapeShifter; sourceTree = "<group>"; };
+					92483466FF49E5C1ED88B633,
+					90B93818E2D54C827C974EDA, ); name = ShapeShifter; sourceTree = "<group>"; };
 		06F3F391126CAAEDDD87A951 = {isa = PBXGroup; children = (
 					C40FEF2E907592DECE8B1947,
 					426205B73CE1DA5EF1656050,

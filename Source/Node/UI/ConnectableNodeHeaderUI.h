@@ -47,7 +47,7 @@ public:
     ScopedPointer<VuMeter> vuMeterOut;
 
 
-    ImageButton removeBT;
+    
     TextButton miniModeBT;
     ScopedPointer<PresetChooserUI> presetChooser;
 

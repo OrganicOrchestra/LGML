@@ -22,7 +22,7 @@ public:
 
 
     static String GeneralPageName;
-    static String AudioPageName,AdvancedPageName;
+    static String AudioPageName,AdvancedPageName,PluginsPageName;
 
     static void showAppSettings(const String & name="");
     static void closeAppSettings();

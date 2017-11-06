@@ -425,6 +425,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
             PopupMenu   menu;//(new PopupMenu());
             static Array<String> filt  {"t_ContainerInNode", "t_ContainerOutNode"};
             ScopedPointer<PopupMenu> addNodeMenu (FactoryUIHelpers::createFactoryTypesMenuFilter<NodeFactory> (filt));
+
             menu.addSubMenu ("Add Node", *addNodeMenu);
             int result = menu.show();
 
