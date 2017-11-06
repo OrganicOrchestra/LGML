@@ -31,6 +31,7 @@ ContainerInNode::ContainerInNode (StringRef name) :
     numChannels = addNewParameter<IntParameter> ("Num Audio Inputs", "Number of input channels for this container", 2, 0, 100);
     numInputData = addNewParameter<IntParameter> ("Num Data Inputs", "Number of data inputs for this container", 0, 0, 100);
     setNumChannels(numChannels->intValue());
+    
 }
 
 ContainerInNode::~ContainerInNode()

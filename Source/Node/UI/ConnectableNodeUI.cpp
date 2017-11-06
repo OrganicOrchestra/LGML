@@ -184,16 +184,20 @@ void ConnectableNodeUI::resized()
 {
 
     Rectangle<int> r = getLocalBounds();
-    Rectangle<int> inputBounds = r.removeFromLeft (connectorWidth);
-    Rectangle<int> outputBounds = r.removeFromRight (connectorWidth);
+
+
 
     if (connectableNode->userCanAccessInputs)
     {
+        jassert(inputContainer.isVisible());
+        Rectangle<int> inputBounds = r.removeFromLeft (connectorWidth);
         inputContainer.setBounds (inputBounds);
     }
 
     if (connectableNode->userCanAccessOutputs)
     {
+        jassert(outputContainer.isVisible());
+        Rectangle<int> outputBounds = r.removeFromRight (connectorWidth);
         outputContainer.setBounds (outputBounds);
     }
 
@@ -268,7 +272,7 @@ void ConnectableNodeUI::handleCommandMessage (int commandId)
 
         case sizeChangedId:
             mainComponentContainer.contentContainer->setSize (nodeSize->getX(), nodeSize->getY());
-            //            childBoundsChanged(&mainComponentContainer);
+//                        childBoundsChanged(&mainComponentContainer);
             //            resized();
             break;
 
@@ -283,7 +287,8 @@ void ConnectableNodeUI::childBoundsChanged (Component* c)
     // if changes in this layout take care to update  childBounds changed to update when child resize itself (ConnectableNodeContentUI::init()
     //    if (c == &mainComponentContainer)
     //    {
-    int destWidth = mainComponentContainer.getWidth() + 2 * connectorWidth;
+    int destWidth = mainComponentContainer.getWidth() + ((inputContainer.isVisible()?1:0) +
+                                                         (outputContainer.isVisible()?1:0))* connectorWidth;
     int destHeight = mainComponentContainer.getHeight();
 
     if (getWidth() != destWidth ||
