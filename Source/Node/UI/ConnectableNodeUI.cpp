@@ -167,7 +167,10 @@ void ConnectableNodeUI::setMiniMode (bool value)
 
 int ConnectableNodeUI::getMiniModeWidth (bool forMiniMode)
 {
-    return forMiniMode ? 130 : (getContentContainer()->getWidth() + inputContainer.getWidth() + outputContainer.getWidth() + (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() + mainComponentContainer.audioCtlContainerPadRight : 0));
+    return forMiniMode ? 130 : (getContentContainer()->getWidth() +
+                                inputContainer.isVisible()*inputContainer.getWidth() +
+                                outputContainer.isVisible()*outputContainer.getWidth() +
+                                (mainComponentContainer.audioCtlUIContainer ? mainComponentContainer.audioCtlUIContainer->getWidth() + mainComponentContainer.audioCtlContainerPadRight : 0));
 }
 
 int ConnectableNodeUI::getMiniModeHeight (bool forMiniMode)
@@ -587,11 +590,11 @@ bool ConnectableNodeUI::hitTest(int x, int y){
     if (mainComponentContainer.getBoundsInParent().contains(x,y))
         return true;
 
-    if(outputContainer.getBoundsInParent().contains(x, y)){
+    if(outputContainer.isVisible() && outputContainer.getBoundsInParent().contains(x, y)){
         auto lp =outputContainer.getLocalPoint(this, Point<int> (x, y));
         return outputContainer.hitTest(lp.x,lp.y) ;
     }
-    if(inputContainer.getBoundsInParent().contains(x, y)){
+    if(inputContainer.isVisible() &&inputContainer.getBoundsInParent().contains(x, y)){
         auto lp =inputContainer.getLocalPoint(this, Point<int> (x, y));
         return inputContainer.hitTest(lp.x,lp.y) ;
     }

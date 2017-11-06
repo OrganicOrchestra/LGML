@@ -407,11 +407,11 @@ ConnectableNodeUI * getRelatedConnectableNodeUIForDrag(Component * c){
     if(auto label = dynamic_cast<Label*>(c)){
         return label->findParentComponentOfClass<ConnectableNodeUI>();
     }
-//    if(auto vumeter = dynamic_cast<VuMeter*>(c)){
-//        return vumeter->findParentComponentOfClass<ConnectableNodeUI>();
-//    }
+    //    if(auto vumeter = dynamic_cast<VuMeter*>(c)){
+    //        return vumeter->findParentComponentOfClass<ConnectableNodeUI>();
+    //    }
     return nullptr;
-    
+
 }
 //Interaction Events
 void NodeContainerViewer::mouseDown (const MouseEvent& event)
@@ -464,8 +464,8 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
             selectedInitBounds.clear();
             for(auto s: selectedItems){
                 if(s.get()){
-                Component * tSize = s->mainComponentContainer.contentContainer;
-                selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
+                    Component * tSize = s->mainComponentContainer.contentContainer;
+                    selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
                 }
 
             }
@@ -492,20 +492,20 @@ void NodeContainerViewer::mouseMove (const MouseEvent& e)
 
 void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 {
+
+    if (editingConnection != nullptr)
+    {
+        //    if (event.eventComponent == editingConnection->getBaseConnector())
+
+        updateEditingConnection();
+        return;
+
+    }
+
     if (e.eventComponent == this){
-        if (editingConnection != nullptr)
-        {
-            //    if (event.eventComponent == editingConnection->getBaseConnector())
-            {
-                updateEditingConnection();
-            }
-        }
-        else{
+        lassoSelectionComponent.dragLasso(e);
+        lassoSelectionComponent.toFront(false);
 
-            lassoSelectionComponent.dragLasso(e);
-            lassoSelectionComponent.toFront(false);
-
-        }
     }
 
     else     {
@@ -518,29 +518,29 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
                 hasDraggedDuringClick = diff.getDistanceSquaredFromOrigin()>0;
                 for(auto s: selectedItems){
                     if(s.get()){
-                    if(selectedInitBounds.contains(s)){
-                        Point <int> newPos = selectedInitBounds.getReference(s).getPosition() + diff;
-                        auto nodeP = s->getCurrentPositionParam();
-                        nodeP->setPoint (newPos);
-                        s->setTopLeftPosition (nodeP->getPoint());
-                    }
-                    else{
-                        jassertfalse;
-                    }
+                        if(selectedInitBounds.contains(s)){
+                            Point <int> newPos = selectedInitBounds.getReference(s).getPosition() + diff;
+                            auto nodeP = s->getCurrentPositionParam();
+                            nodeP->setPoint (newPos);
+                            s->setTopLeftPosition (nodeP->getPoint());
+                        }
+                        else{
+                            jassertfalse;
+                        }
                     }
                 }
             }
             else if( !minimizeAll->boolValue()){
                 for(auto s: selectedItems){
                     if(s.get()){
-                    if(selectedInitBounds.contains(s)){
-                        Point <int> newSize = selectedInitBounds.getReference(s).withPosition(Point<int>(0,0)).getBottomRight() + diff;
-                        auto nodeS = s->nodeSize;
-                        nodeS->setPoint(newSize);
-                    }
-                    else{
-                        jassertfalse;
-                    }
+                        if(selectedInitBounds.contains(s)){
+                            Point <int> newSize = selectedInitBounds.getReference(s).withPosition(Point<int>(0,0)).getBottomRight() + diff;
+                            auto nodeS = s->nodeSize;
+                            nodeS->setPoint(newSize);
+                        }
+                        else{
+                            jassertfalse;
+                        }
                     }
                 }
             }
