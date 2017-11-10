@@ -127,7 +127,7 @@ void ControllableReferenceUI::buttonClicked (Button*)
         PopupMenu mainMenu;
         mainMenu.addSubMenu("Change Target", p);
         int removeId = p.endId+1;
-        mainMenu.addItem(removeId, "Remove Target");
+        mainMenu.addItem(removeId, "Clear Target");
 
         int result = mainMenu.show();
 

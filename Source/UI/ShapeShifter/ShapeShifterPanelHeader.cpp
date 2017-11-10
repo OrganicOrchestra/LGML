@@ -106,13 +106,21 @@ void ShapeShifterPanelHeader::resized()
 
     if (r.getWidth() == 0 || r.getHeight() == 0) return;
 
-    const int buttonSize = r.getHeight() - 2;
-    addPannelMenu.setBounds (r.removeFromRight (buttonSize).withSizeKeepingCentre (buttonSize, buttonSize));
 
     for (auto& t : tabs)
     {
         t->setBounds (r.removeFromLeft (jmin<int> (getWidth(), t->getLabelWidth())));
     }
+    r.removeFromLeft(2);
+    const int buttonSize = r.getHeight() - 2;
+    // stick to right if to much pannels
+    if(r.getWidth()<buttonSize){
+        addPannelMenu.setBounds (r.removeFromRight (buttonSize).withSizeKeepingCentre (buttonSize, buttonSize));
+    }
+    else{
+        addPannelMenu.setBounds(r.removeFromLeft(buttonSize).withSizeKeepingCentre(buttonSize, buttonSize));
+    }
+
 }
 
 void ShapeShifterPanelHeader::askForRemoveTab (ShapeShifterPanelTab* tab)
