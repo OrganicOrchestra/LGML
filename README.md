@@ -30,7 +30,7 @@ LGML is a software to help live music performance , it's main features are :
 
 ```
 git clone https://github.com/OrganicOrchestra/LGML.git
-git submodule update --init --recursive --remote
+git submodule update --init --recursive
 git clone https://github.com/WeAreROLI/JUCE.git
 ```
 JUCE has to be in a sibling folder from LGML:

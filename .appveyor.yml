@@ -15,7 +15,7 @@ environment:
 before_build:
   ps: |
     echo "submodule"
-    git submodule -q update --init --recursive --remote
+    git submodule -q update --init --recursive
     cd C:\projects\lgml\third_party\rubberband
     echo 'build rubberband'
     ls C:\projects\lgml\third_party\rubberband

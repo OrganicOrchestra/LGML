@@ -14,7 +14,7 @@ jobs:
           command: |
             apt-get -qq update
             apt-get install -y git
-            git submodule update --init --recursive --remote
+            git submodule update --init --recursive
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
 
       - run:
@@ -43,7 +43,7 @@ jobs:
           command: |
             apt-get -qq update
             apt-get install -y git
-            git submodule update --init --recursive --remote
+            git submodule update --init --recursive
             sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
       - run:
           name: build and package LGML32
@@ -73,7 +73,7 @@ jobs:
           command: |
             apt-get -qq update
             apt-get install -y git
-            git submodule update --init --recursive --remote
+            git submodule update --init --recursive
             sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
       - run:
           name: build and package LGMLRasp
