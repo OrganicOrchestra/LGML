@@ -216,7 +216,6 @@ const LogElement* LGMLLoggerUI::getElementForRow(const int r) const{
         count += nl;
         idx++;
     }
-    jassertfalse;
 
     return nullptr;
 
