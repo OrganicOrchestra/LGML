@@ -60,7 +60,7 @@ jobs:
   build_rasp:
     working_directory: ~/LGML
     docker:
-      - image: codingwell/rpi-raspbian-qemu
+      - image: mazzolino/armhf-ubuntu:14.04
         environment:
           TARGET_CPU: armhf
           TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
@@ -71,6 +71,7 @@ jobs:
       - run:
           name: install LGMLRasp dependencies
           command: |
+            sudo sh -c 'echo ":arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:" >/proc/sys/fs/binfmt_misc/register'
             apt-get -qq update
             apt-get install -y git
             git submodule update --init --recursive
@@ -78,10 +79,8 @@ jobs:
       - run:
           name: build and package LGMLRasp
           command: |
-            cross-build-start
             python Scripts/buildScript.py --package --exportpath="$DST_LGML_PATH" --os=linux;
             ldd ~/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
-            cross-build-end
       - store_artifacts:
           path: /tmp/buildRasp/
 
@@ -92,6 +91,7 @@ workflows:
     jobs:
       - build
       - build32
+      - build_rasp
 
 
 general:
