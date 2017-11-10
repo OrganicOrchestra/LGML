@@ -215,12 +215,12 @@ void OSCController::processMessage (const OSCMessage& msg)
 
 bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force,bool allowConversions)
 {
-    auto  targetType = c->getTypeId();
+    auto  targetType = c->getFactoryTypeId();
 
-    if (targetType == ParameterProxy::_objType) targetType = ((ParameterProxy*)c)->linkedParam->getTypeId();
+    if (targetType == ParameterProxy::_factoryType) targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
 
 
-    if (targetType == Trigger::_objType)
+    if (targetType == Trigger::_factoryType)
     {
         if (msg.size() == 0) ((Trigger*)c)->trigger();
         else if (allowConversions && (msg[0].isInt32() || msg[0].isFloat32()))
@@ -230,7 +230,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
             if (val > 0) ((Trigger*)c)->trigger();
         }
     }
-    else if (targetType == BoolParameter::_objType)
+    else if (targetType == BoolParameter::_factoryType)
     {
         if (msg.size() > 0 && (
             (allowConversions || (msg[0].isInt32() && (msg[0].getInt32()==0 || msg[0].getInt32()==1))) &&
@@ -240,7 +240,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
             ((Parameter*)c)->setValue (val > 0, false, force);
         }
     }
-    else if (targetType == FloatParameter::_objType)
+    else if (targetType == FloatParameter::_factoryType)
     {
         if (msg.size() > 0 && ((allowConversions && msg[0].isInt32()) || msg[0].isFloat32()))
         {
@@ -248,7 +248,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
             ((Parameter*)c)->setValue ((float)value, false, force); //normalized or not ? can user decide ?
         }
     }
-    else if (targetType == IntParameter::_objType)
+    else if (targetType == IntParameter::_factoryType)
     {
         if (msg.size() > 0 && (msg[0].isInt32() || (allowConversions && msg[0].isFloat32())))
         {
@@ -256,7 +256,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
             ((Parameter*)c)->setValue (value, false, force);
         }
     }
-    else if (targetType == StringParameter::_objType)
+    else if (targetType == StringParameter::_factoryType)
     {
         if (msg.size() > 0)
         {
@@ -272,7 +272,7 @@ bool OSCController::setParameterFromMessage (Parameter* c, const OSCMessage& msg
             }
         }
     }
-    else if (targetType == EnumParameter::_objType)
+    else if (targetType == EnumParameter::_factoryType)
     {
         if (msg.size() > 0)
         {

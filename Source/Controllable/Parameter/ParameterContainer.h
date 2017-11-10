@@ -35,7 +35,7 @@ class ParameterContainer: public ControllableContainer,
     public Parameter::Listener,
     public Parameter::AsyncListener,
     public ControllableContainer::Listener,
-    FactoryObject
+    protected FactoryObject
 {
 public:
     DECLARE_OBJ_TYPE (ParameterContainer)

@@ -97,7 +97,7 @@ DynamicObject* ParameterContainer::getObject()
 {
 
     DynamicObject* data = new DynamicObject();
-    data->setProperty (factoryTypeIdentifier, getTypeName());
+    data->setProperty (factoryTypeIdentifier, getFactoryTypeName());
     data->setProperty (uidIdentifier, uid.toString());
     {
         var paramsData (new DynamicObject);
@@ -206,7 +206,7 @@ void ParameterContainer::parameterValueChanged (Parameter* p)
 
     }
 
-    if (p && p->getTypeId() == Trigger::_objType)
+    if (p && p->getFactoryTypeId() == Trigger::_factoryType)
     {
         onContainerTriggerTriggered ((Trigger*)p);
     }

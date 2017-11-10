@@ -23,19 +23,24 @@
 #define CHK_OBJECT_BASE(T)  int dummy_check_##T = dummy_##T();ignoreUnused(dummy_check_##T);
 #define IMPL_OBJECT_BASE(T)    virtual int dummy_##T() {return 0;};
 
+class FactoryClass{
+    
+};
+
 class FactoryObject
 {
 public:
 
     virtual ~FactoryObject() {};
-    virtual const Identifier& getTypeId() const = 0;
-    virtual const String& getTypeName() const = 0;
+    virtual const Identifier & getFactoryTypeId() const =0;
+    virtual const String& getFactoryTypeName() const = 0;
     virtual void configureFromObject (DynamicObject*) = 0;
     virtual DynamicObject* getObject() = 0;
-    template<typename T>
-    bool isType() {return getTypeId() == T::_objType;}
 
 
+    template<class OtherType>
+    bool isType() const {return getFactoryTypeId() == OtherType::typeId(); };
+    
 };
 
 
@@ -43,14 +48,14 @@ public:
 
 
 
-#define DECLARE_OBJ_TYPE_DEFAULTNAME(T,DEFAULTNAME) static const Identifier _objType; \
-const Identifier & getTypeId() const override {return _objType;}\
-static const Identifier & getClassId() {return _objType;}\
-const String & getTypeName() const override {return _objType.toString();}\
-T(StringRef name=DEFAULTNAME);
+#define DECLARE_OBJ_TYPE_DEFAULTNAME(T,DEFAULTNAME) static const Identifier _factoryType; \
+static const Identifier & typeId() {return _factoryType;}\
+const Identifier & getFactoryTypeId() const override{return typeId();}\
+const String & getFactoryTypeName() const override {return _factoryType.toString();}\
+T(StringRef name=DEFAULTNAME); \
 
 
 #define DECLARE_OBJ_TYPE(T) DECLARE_OBJ_TYPE_DEFAULTNAME(T,#T)
 // use that for static objects that dont need factories
-#define IMPL_OBJ_TYPE(T)  const Identifier T::_objType = Identifier( "t_" #T);
+#define IMPL_OBJ_TYPE(T)  const Identifier T::_factoryType = Identifier( "t_" #T);
 

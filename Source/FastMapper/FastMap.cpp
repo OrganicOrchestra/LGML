@@ -87,17 +87,17 @@ void FastMap::process (bool toReferenceOut)
     if (!outRef) return;
 
     fastMapIsProcessing = true;
-    auto type = outRef->getTypeId();
+    auto type = outRef->getFactoryTypeId();
 
-    if (type == Trigger::_objType)
+    if (type == Trigger::_factoryType)
     {
-        if ((newIsInRange != isInRange && newIsInRange) || inRef->getTypeId() == Trigger::_objType) ((Trigger*)outRef)->trigger();
+        if ((newIsInRange != isInRange && newIsInRange) || inRef->getFactoryTypeId() == Trigger::_factoryType) ((Trigger*)outRef)->trigger();
     }
     else
     {
-        if (type == BoolParameter::_objType)
+        if (type == BoolParameter::_factoryType)
         {
-            if (inRef->getTypeId() == Trigger::_objType)
+            if (inRef->getFactoryTypeId() == Trigger::_factoryType)
             {
                 ((BoolParameter*)outRef)->setValue (!outRef->boolValue());
             }

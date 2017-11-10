@@ -33,8 +33,10 @@ MIDIListener::MIDIListener():hasValidPort(true)
 
 MIDIListener::~MIDIListener()
 {
-    getAudioDeviceManager().removeMidiInputCallback (midiPortName, this);
-    MIDIManager::getInstance()->removeMIDIListener (this);
+    if(auto mm  = MIDIManager::getInstanceWithoutCreating()){
+    mm->removeMidiInputCallback (midiPortName, this);
+    mm->removeMIDIListener (this);
+    }
 }
 
 void MIDIListener::setCurrentDevice (const String& deviceName)
@@ -61,7 +63,7 @@ void MIDIListener::setCurrentDevice (const String& deviceName)
     {
         mm->disableInputDevice (midiPortName);
         mm->disableOutputDevice (outPortName);
-        getAudioDeviceManager().removeMidiInputCallback (midiPortName, this);
+        mm->removeMidiInputCallback (midiPortName, this);
         hasValidPort = false;
     }
 
@@ -75,7 +77,7 @@ void MIDIListener::setCurrentDevice (const String& deviceName)
         mm->enableInputDevice (midiPortName);
         outPortName = getClosestOutName(midiPortName);
         midiOutDevice = mm->enableOutputDevice (outPortName);
-        getAudioDeviceManager().addMidiInputCallback (midiPortName, this);
+        mm->addMidiInputCallback (midiPortName, this);
         hasValidPort = true;
     }
 

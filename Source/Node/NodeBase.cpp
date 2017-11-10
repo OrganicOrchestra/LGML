@@ -144,7 +144,7 @@ void NodeBase::clear()
 
 String NodeBase::getPresetFilter()
 {
-    return getTypeName() + String ("_") + uid.toString();
+    return getFactoryTypeName() + String ("_") + uid.toString();
 }
 
 DynamicObject* NodeBase::getObject()

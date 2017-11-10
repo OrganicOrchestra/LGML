@@ -66,7 +66,7 @@ PopupMenu* getFactoryTypesMenu (int menuIdOffset = 1)
 
 
 template<class Factory>
-const String  getTypeNameFromMenuIdx (int idx, int menuIdOffset = 1)
+const String  getFactoryTypeNameFromMenuIdx (int idx, int menuIdOffset = 1)
 {
     int count = menuIdOffset;
     auto a = Factory::getRegisteredTypes();
@@ -86,7 +86,7 @@ const String  getTypeNameFromMenuIdx (int idx, int menuIdOffset = 1)
 template<class obj>
 obj* createFromMenuIdx (int idx)
 {
-    const String type = getTypeNameFromMenuIdx<FactoryBase<obj> > (idx);
+    const String type = getFactoryTypeNameFromMenuIdx<FactoryBase<obj> > (idx);
     return (obj*)FactoryBase<obj>::createFromTypeID (type);
 }
 

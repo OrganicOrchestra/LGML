@@ -161,16 +161,16 @@ void OSCDirectController::sendOSCForAddress (Controllable* c, const String& cAdd
 
     if (Parameter* p = Parameter::fromControllable (c))
     {
-        auto  targetType = p->getTypeId();
+        auto  targetType = p->getFactoryTypeId();
 
-        if (targetType == ParameterProxy::_objType) targetType = ((ParameterProxy*)c)->linkedParam->getTypeId();
+        if (targetType == ParameterProxy::_factoryType) targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
 
-        if (targetType == Trigger::_objType) {sendOSC (cAddress);}
-        else if (targetType == BoolParameter::_objType) {sendOSC (cAddress, p->intValue());}
-        else if (targetType == FloatParameter::_objType) {sendOSC (cAddress, p->floatValue());}
-        else if (targetType == IntParameter::_objType) {sendOSC (cAddress, p->intValue());}
-        else if (targetType == StringParameter::_objType) {sendOSC (cAddress, p->stringValue());}
-        else if (targetType == EnumParameter::_objType) {sendOSC (cAddress, p->stringValue());}
+        if (targetType == Trigger::_factoryType) {sendOSC (cAddress);}
+        else if (targetType == BoolParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
+        else if (targetType == FloatParameter::_factoryType) {sendOSC (cAddress, p->floatValue());}
+        else if (targetType == IntParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
+        else if (targetType == StringParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
+        else if (targetType == EnumParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
         else
         {
             DBG ("Type not supported " << targetType.toString());

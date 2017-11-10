@@ -29,43 +29,20 @@ MIDIController::MIDIController (StringRef name) :
 midiChooser(this,true,false)
 {
     setNamespaceName ("controllers." + shortName);
-//    deviceInName = addNewParameter<EnumParameter> ("midiPortName", "name of Midi device input",MIDIHelpers::getGlobalMidiModel(), "");
+
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
     logIncoming->isSavable = false;
     logIncoming->isPresettable =false;
 
     channelFilter = addNewParameter<IntParameter> ("Channel", "Channel to filter message (0 = accept all channels)", 0, 0, 16);
 
-
-    // TODO : we may need to listen to sR changes
-    juce::AudioDeviceManager::AudioDeviceSetup setup;
-    getAudioDeviceManager().getAudioDeviceSetup (setup);
-    midiCollector.reset (setup.sampleRate);
-
-//    deviceInName->addEnumParameterListener(this);
 }
 
 MIDIController::~MIDIController()
 {
-//    deviceInName->removeEnumParameterListener(this);
     setCurrentDevice (String::empty);
 
 }
-
-//void MIDIController::enumOptionSelectionChanged(EnumParameter * ep, bool isSelected, bool isValid, const juce::Identifier & key)
-//{
-//    if (ep == deviceInName)
-//    {
-//
-////        if(isValid && isSelected){
-////            setCurrentDevice(ep->getFirstSelectedValue().toString());
-////        }
-////        else if (!isSelected){
-////            setCurrentDevice(String::empty);
-////        }
-//
-//    }
-//}
 
 
 void MIDIController::handleIncomingMidiMessage (MidiInput*,
@@ -93,10 +70,6 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
 
             }
 
-            //        message.
-            //      int variableIndex = 128 + message.getControllerNumber() -1;
-            //DBG("Variable name " << variables[variableIndex]->parameter->niceName);
-            //      variables[variableIndex]->setValue(message.getControllerValue()*1.f / 127.f);
         }
 
     }
@@ -107,8 +80,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
             NLOG ("MIDI", "Note " + String (message.isNoteOn() ? "on" : "off") + " : " + MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0) + " > " + String (message.getVelocity()) + " (Channel " + String (message.getChannel()) + ")");
         }
 
-        //      int variableIndex = message.getNoteNumber();
-        //      variables[variableIndex]->setValue(message.isNoteOn()?(message.getVelocity()*1.f / 127.f):0);
+        
     }
 
     else if (message.isPitchWheel())
@@ -186,10 +158,7 @@ void MIDIController::onContainerParameterChanged (Parameter* p)
     {
         setNamespaceName ("controllers." + shortName);
     }
-//    else if (p == deviceInName)
-//    {
-//        setCurrentDevice (deviceInName->getFirstSelectedValue(String::empty).toString());
-//    }
+    
 }
 
 void MIDIController::midiMessageSent(){
@@ -355,6 +324,8 @@ void MIDIController::clearNamespace()
         jsCCListeners.clear();
     }
 }
+
+
 ////////
 // MidiListener
 

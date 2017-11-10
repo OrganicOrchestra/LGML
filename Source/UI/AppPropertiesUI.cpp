@@ -219,7 +219,7 @@ AppPropertiesUI::AppPropertiesUI():ResizableWindow("Settings",true){
     createForPageName(AdvancedPageName,prefPanel);
 
 
-#ifdef JUCE_MAC
+#ifdef JUCE_MAC 
     setUsingNativeTitleBar(true);
 #else
     setUsingNativeTitleBar(false);

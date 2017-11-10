@@ -232,6 +232,7 @@ private:
 
     RMSTimer rmsTimer;
 
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NodeBase)
     friend struct ContainerDeletePolicy<NodeBase>;
 };

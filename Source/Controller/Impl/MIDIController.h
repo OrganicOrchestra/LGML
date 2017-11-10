@@ -20,6 +20,8 @@
 #include "../../MIDI/MIDIListener.h"
 #include "../../Scripting/Js/JsEnvironment.h"
 #include "../../MIDI/MIDIHelpers.h"
+
+
 class JsMIDIMessageListener;
 
 
@@ -48,7 +50,6 @@ public :
     IntParameter* channelFilter;
 
 
-    MidiMessageCollector midiCollector;
 
 //    void enumOptionSelectionChanged(EnumParameter * ep, bool isSelected, bool isValid, const juce::Identifier & key)override;
     void midiMessageSent()override;
@@ -87,6 +88,8 @@ public :
 
     MIDIHelpers::MIDIIOChooser midiChooser;
 private:
+
+
 
 
 

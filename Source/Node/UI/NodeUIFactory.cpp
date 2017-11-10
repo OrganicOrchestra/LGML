@@ -53,8 +53,8 @@
 #include "../Impl/VSTNode.h"
 #include "../Impl/VSTNodeUI.h"
 
-//#define CHKNRETURN_HEADER(p,A,B,C) if(p->getTypeId()==A::_objType){return new ConnectableNodeUI(p, B,C);}
-#define CHKNRETURN(p,A,B) if(p->getTypeId()==A::_objType){return new ConnectableNodeUI(p, uip,B);}
+//#define CHKNRETURN_HEADER(p,A,B,C) if(p->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, B,C);}
+#define CHKNRETURN(p,A,B) if(p->getFactoryTypeId()==A::_factoryType){return new ConnectableNodeUI(p, uip,B);}
 
 ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,ConnectableNodeUIParams *uip)
 {
@@ -75,13 +75,13 @@ ConnectableNodeUI* NodeUIFactory::createDefaultUI (ConnectableNode* t,Connectabl
 
 
     // set default for ContainerIn/Out
-    if(t->getTypeId()==ContainerInNode::_objType){
+    if(t->getFactoryTypeId()==ContainerInNode::_factoryType){
         uip->nodePosition->setNewDefault(Array<var>({10,10}), false);
         uip->nodeMinimizedPosition->setNewDefault(Array<var>({10,10}), false);
         return new ConnectableNodeUI(t, uip,nullptr);
 
     }
-    if(t->getTypeId()==ContainerOutNode::_objType){
+    if(t->getFactoryTypeId()==ContainerOutNode::_factoryType){
         uip->nodePosition->setNewDefault(Array<var>({200,10}), false);
         uip->nodeMinimizedPosition->setNewDefault(Array<var>({200,10}), false);
         return new ConnectableNodeUI(t, uip,nullptr);

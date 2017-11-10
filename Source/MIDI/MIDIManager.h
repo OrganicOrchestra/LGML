@@ -23,7 +23,10 @@
 #include "../JuceHeaderAudio.h"//keep
 
 class MIDIListener;
+class ComputerKeyboardMIDIDevice;
 extern AudioDeviceManager& getAudioDeviceManager();
+
+
 class MIDIManager : private Timer
 {
 public:
@@ -51,8 +54,8 @@ public:
     void disableInputDevice (const String& deviceName);
     void disableOutputDevice (const String& deviceName);
 
-
-
+    void addMidiInputCallback(const String & deviceName,MidiInputCallback * cb);
+    void removeMidiInputCallback(const String & deviceName,MidiInputCallback * cb);
 
     class  MIDIManagerListener
     {
@@ -91,6 +94,9 @@ private:
     DeviceUsageCount* getDUCForOutputDeviceName (const String& deviceName);
 
     void timerCallback() override;
+
+
+    ComputerKeyboardMIDIDevice * computerKeyboardDevice;
     
 
 

@@ -24,14 +24,135 @@
 
 juce_ImplementSingleton (MIDIManager)
 
+class ComputerKeyboardMIDIDevice:public ReferenceCountedObject,private KeyListener {
+public:
+    ComputerKeyboardMIDIDevice():octave(4){
+        if(ComponentPeer::getNumPeers()>0){
+            Component * mainComp =&ComponentPeer::getPeer(0)->getComponent();
+            mainComp->addKeyListener(this);
+        }
+        else{
+            LOG("!!! can't find component for computer keyboard ");
+        }
+    };
+    ~ComputerKeyboardMIDIDevice(){
+        if(ComponentPeer::getNumPeers()>0){
+            Component * mainComp =&ComponentPeer::getPeer(0)->getComponent();
+
+            mainComp->removeKeyListener(this);
+        };
+    }
+    static String deviceName;
+    void addMidiInputCallback(MidiInputCallback * cb){ midiCallbacks.add(cb);}
+    void removeMidiInputCallback(MidiInputCallback * cb){midiCallbacks.removeAllInstancesOf(cb);}
+    void handleIncomingMidiMessage(const MidiMessage & message){
+
+        for (auto callback:midiCallbacks){callback->handleIncomingMidiMessage (nullptr, message);}
+    }
+
+    int keyToPitch(int kc,int octave){
+
+        constexpr int numpitches = 12;
+        static int pitches[numpitches] = {'q','z','s','e','d','f','t','g','y','h','u','j'};
+        for(int i = 0 ; i < numpitches ; i++){
+            if(kc==pitches[i]){
+                return i + 12*octave;
+            }
+        }
+        return -1;
+    }
+    //==============================================================================
+    bool keyPressed (const KeyPress& key, Component* const /*originatingComponent*/)
+    {
+        const uint32 time = Time::getMillisecondCounter();
+        const char c = key.getTextCharacter();
+        if(c=='w'){
+            octave--;
+            octave = jmax(octave,0);
+            LOG("computer keyboard octave = " << String(octave));
+        }
+        else if (c=='x'){
+            octave++;
+            octave = jmin(octave,8);
+            LOG("computer keyboard octave = " << String(octave));
+        }
+        else{
+            int note =keyToPitch(key.getTextCharacter(),octave);
+            int channel  = 1;
+            static const uint8 vel = 127;
+
+            if(note>=0){
+                // avoid repetition on holded keys
+                for ( auto k:keysDown){if(k->key == key){ return false;}}
+
+                handleIncomingMidiMessage (MidiMessage::noteOn(channel,note,vel)
+                                           .withTimeStamp(time / 1000.));
+
+                keysDown.add(new KeyPressTime{key,note,time});
+            }
+        }
+        return false;
+    }
+
+    bool keyStateChanged (const bool /*isKeyDown*/, Component* /*originatingComponent*/)
+    {
+
+        const uint32 now = Time::getMillisecondCounter();
+        int channel = 1;
+        int i = 0;
+        while(i < keysDown.size())
+        {
+            auto keyd = keysDown.getUnchecked(i);
+
+            const bool isDown = keyd->key.isCurrentlyDown();
+
+            if (!isDown)
+            {
+//                int millisecs = 0;
+//                const uint32 pressTime = keyd->timeWhenPressed;
+//                if (now > pressTime)
+//                    millisecs = (int) (now - pressTime);
+                handleIncomingMidiMessage (MidiMessage::noteOff(channel,keyd->note,(uint8)0)
+                                           .withTimeStamp(now / 1000.));
+                keysDown.remove(i);
+            }
+            i++;
+        }
+
+
+        return false;
+    }
+
+
+
+    struct KeyPressTime
+    {
+        KeyPress key;
+        int note;
+        uint32 timeWhenPressed;
+    };
+
+    OwnedArray<KeyPressTime> keysDown;
+    int octave;
+    Array<MidiInputCallback*> midiCallbacks;
+};
+
+
+String ComputerKeyboardMIDIDevice::deviceName("ComputerKeyboard");
+
 constexpr int MIDICheckInterval(1000);
-MIDIManager::MIDIManager()
+MIDIManager::MIDIManager():computerKeyboardDevice(nullptr)
 {
+
 
 }
 
 MIDIManager::~MIDIManager()
 {
+    if(computerKeyboardDevice){
+        while(!computerKeyboardDevice->decReferenceCountWithoutDeleting()){}
+        delete computerKeyboardDevice;
+    }
 
 }
 
@@ -46,6 +167,9 @@ void MIDIManager::updateDeviceList (bool updateInput)
 
     StringArray sourceArray = updateInput ? inputDevices : outputDevices;
 
+    if(updateInput){
+        deviceNames.add(ComputerKeyboardMIDIDevice::deviceName);
+    }
     StringArray devicesToAdd;
     StringArray devicesToRemove;
 
@@ -88,6 +212,7 @@ void MIDIManager::updateDeviceList (bool updateInput)
 
 void MIDIManager::enableInputDevice (const String& deviceName)
 {
+
     DeviceUsageCount* duc = getDUCForInputDeviceName (deviceName);
     DBG ("MIDIManager  Enable Input device : " << deviceName << ", duc != null ?" << (duc != nullptr ? "true" : "false"));
 
@@ -105,7 +230,14 @@ void MIDIManager::enableInputDevice (const String& deviceName)
     if (duc->usageCount >= 1)
     {
         DBG ("AudioDeviceManager:Enable Input device : " << duc->deviceName);
-        getAudioDeviceManager().setMidiInputEnabled (duc->deviceName, true);
+        if(deviceName==ComputerKeyboardMIDIDevice::deviceName){
+            if(!computerKeyboardDevice) {computerKeyboardDevice = new ComputerKeyboardMIDIDevice();}
+            computerKeyboardDevice->incReferenceCount();
+        }
+        else{
+            getAudioDeviceManager().setMidiInputEnabled (duc->deviceName, true);
+        }
+
     }
 
 
@@ -113,6 +245,9 @@ void MIDIManager::enableInputDevice (const String& deviceName)
 
 MidiOutput* MIDIManager::enableOutputDevice (const String& deviceName)
 {
+    if(deviceName==ComputerKeyboardMIDIDevice::deviceName){
+        return nullptr;
+    }
     DeviceUsageCount* duc = getDUCForOutputDeviceName (deviceName);
 
     if (duc == nullptr)
@@ -155,7 +290,20 @@ void MIDIManager::disableInputDevice (const String& deviceName)
     if (duc->usageCount == 0)
     {
         DBG ("Disable Input device : " << duc->deviceName);
-        getAudioDeviceManager().setMidiInputEnabled (duc->deviceName, false);
+        if(deviceName==ComputerKeyboardMIDIDevice::deviceName){
+            if(computerKeyboardDevice){
+                if(computerKeyboardDevice->decReferenceCountWithoutDeleting()){
+                    delete computerKeyboardDevice;
+                    computerKeyboardDevice = nullptr;
+                }
+            }
+            else{
+                jassertfalse;
+            }
+        }
+        else{
+            getAudioDeviceManager().setMidiInputEnabled (duc->deviceName, false);
+        }
     }
 }
 
@@ -190,6 +338,7 @@ MIDIManager::DeviceUsageCount* MIDIManager::getDUCForOutputDeviceName (const Str
     return nullptr;
 }
 
+
 void MIDIManager::timerCallback()
 {
     updateLists();
@@ -213,19 +362,50 @@ void MIDIManager::removeMIDIListener(MIDIListener * l){
     checkMIDIListenerStates();
 }
 
-void MIDIManager::checkMIDIListenerStates(){
-    // it seems 
-//    bool allValid = true;
-//    for(auto l: MIDIListeners){
-//        if(!l->hasValidPort){
-//            allValid = false;
-//        }
-//    }
-//    if(allValid){
-//        stopTimer();
-//    }
-//    else{
-//        startTimer(MIDICheckInterval);
-//    }
 
+void MIDIManager::addMidiInputCallback(const String & deviceName,MidiInputCallback * cb){
+    if(deviceName==ComputerKeyboardMIDIDevice::deviceName){
+        if(computerKeyboardDevice){
+            computerKeyboardDevice->addMidiInputCallback(cb);
+        }
+        else{
+            jassertfalse;
+        }
+    }
+    else{
+        getAudioDeviceManager().addMidiInputCallback(deviceName,cb);
+    }
+}
+void MIDIManager::removeMidiInputCallback(const String & deviceName,MidiInputCallback * cb){
+    if(deviceName==ComputerKeyboardMIDIDevice::deviceName){
+        if(computerKeyboardDevice){
+            computerKeyboardDevice->removeMidiInputCallback(cb);
+        }
+        else{
+            jassertfalse;
+        }
+    }
+    else{
+        getAudioDeviceManager().removeMidiInputCallback(deviceName,cb);
+    }
+}
+
+
+void MIDIManager::checkMIDIListenerStates(){
+    // attempt to disable useless timer calls,
+    // useless for now as we don't have proper callbacks on systems midi port add or deletion
+#if 0
+    bool allValid = true;
+    for(auto l: MIDIListeners){
+        if(!l->hasValidPort){
+            allValid = false;
+        }
+    }
+    if(allValid){
+        stopTimer();
+    }
+    else{
+        startTimer(MIDICheckInterval);
+    }
+#endif
 }

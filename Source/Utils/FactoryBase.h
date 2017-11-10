@@ -82,27 +82,27 @@ public:
     static DynamicObject*   createTypedObjectFromInstance (CLASSNAME* c)
     {
         auto  res = c->getObject();
-        res->setProperty (factoryTypeIdentifier, getTypeNameForInstance (c));
+        res->setProperty (factoryTypeIdentifier, getFactoryTypeNameForInstance (c));
         return res;
     }
 
-    static const Identifier& getTypeForInstance (CLASSNAME* i )
+    static const Identifier& getFactoryTypeIdForInstance (CLASSNAME* i )
     {
-        return i->getTypeId();
+        return i->getFactoryTypeId();
     };
-    static const String& getTypeNameForInstance (CLASSNAME* i )
+    static const String& getFactoryTypeNameForInstance (CLASSNAME* i )
     {
-        return i->getTypeId().toString();
+        return i->getFactoryTypeId().toString();
     };
 
 
     template<typename T>
-    static String registerType (const String& ID)
+    static Identifier registerType (const String& ID)
     {
         jassert (!getFactory().contains (ID));
         jassert (ID[0] == 't' && ID[1] == '_');
         getFactory().set (ID, Entry (createFromObject<T>));
-        return ID;
+        return Identifier(ID);
     }
 
     /////////
@@ -162,14 +162,12 @@ private:
 };
 
 
-#define REGISTER_OBJ_TYPE_NAMED(FACTORY,T,NAME)  const Identifier T::_objType = Identifier( NAME);\
-static const Identifier _type_##T = FactoryBase<FACTORY>::registerType<T>(T::_objType.toString());
+#define REGISTER_OBJ_TYPE_NAMED(FACTORY,T,NAME) const Identifier T::_factoryType = FactoryBase<FACTORY>::registerType<T>(NAME);
 
 #define REGISTER_OBJ_TYPE(FACTORY,T) REGISTER_OBJ_TYPE_NAMED(FACTORY,T,"t_" #T)
 
 
-#define REGISTER_OBJ_TYPE_TEMPLATED(FACTORY,T,TT) template<> const Identifier T<TT>::_objType = Identifier("t_" #T "_" #TT); \
-static const String type_##T_##TT = FactoryBase<FACTORY>::registerType< T<TT> >(T<TT>::_objType.toString());
+#define REGISTER_OBJ_TYPE_TEMPLATED(FACTORY,T,TT) template<> const Identifier T<TT>::_factoryType  = FactoryBase<FACTORY>::registerType< T<TT> >("t_" #T "_" #TT);
 
 
 

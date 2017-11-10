@@ -66,10 +66,10 @@ void Engine::createNewGraph()
     clear();
     isLoadingFile = true;
 
-    ConnectableNode* node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID (AudioDeviceInNode::getClassId()));
+    ConnectableNode* node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID (AudioDeviceInNode::typeId()));
 
 
-    node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID ( AudioDeviceOutNode::getClassId()));
+    node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID ( AudioDeviceOutNode::typeId()));
     setFile (File());
     isLoadingFile = false;
     

@@ -41,7 +41,7 @@
 
 
 
-#define CHKNRETURN(p,classN,UIN)  if(p->getTypeId()==classN::_objType) {return new UIN((classN*)p);}
+#define CHKNRETURN(p,classN,UIN)  if(p->isType< classN >()) {return new UIN((classN*)p);}
 
 //#define REG(cls,meth)
 ParameterUI* ParameterUIFactory::createDefaultUI (Parameter* t)
