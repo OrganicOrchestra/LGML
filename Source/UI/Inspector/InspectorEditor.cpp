@@ -30,7 +30,7 @@ void InspectorEditor::resized()
 
 }
 
-int InspectorEditor::getContentHeight()
+int InspectorEditor::getContentHeight() const
 {
     return 0;//will default to parent's bounds
 

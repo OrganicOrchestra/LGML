@@ -381,9 +381,7 @@ void MIDIManager::removeMidiInputCallback(const String & deviceName,MidiInputCal
         if(computerKeyboardDevice){
             computerKeyboardDevice->removeMidiInputCallback(cb);
         }
-        else{
-            jassertfalse;
-        }
+        
     }
     else{
         getAudioDeviceManager().removeMidiInputCallback(deviceName,cb);

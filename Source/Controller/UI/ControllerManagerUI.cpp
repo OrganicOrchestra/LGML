@@ -137,7 +137,7 @@ void ControllerManagerUI::paint (Graphics&)
     //ContourComponent::paint(g);
 }
 
-int ControllerManagerUI::getContentHeight()
+int ControllerManagerUI::getContentHeight() const
 {
     int totalHeight = 0;
     for(auto & c : controllersUI){

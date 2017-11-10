@@ -45,6 +45,7 @@ public:
 
     FastMapper* fastMapper;
     TextButton linkToSelection;
+    Label candidateLabel;
 
     
     ScopedPointer<Component> potentialIn, potentialOut;
@@ -65,7 +66,7 @@ public:
 
     const int mapHeight = 35;
     const int gap = 5;
-    int getContentHeight();
+    int getContentHeight() const;
 
     void resized() override;
     void mouseDown (const MouseEvent& e) override;
@@ -134,6 +135,7 @@ public:
     Viewport vp;
     FastMapperUI* fastMapperUI;
     AddElementButton addFastMapButton;
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperViewport)
 };

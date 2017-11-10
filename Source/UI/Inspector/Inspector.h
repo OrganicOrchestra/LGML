@@ -44,7 +44,7 @@ public:
     InspectableComponent * getCurrentComponent();
     ParameterContainer* getCurrentContainerSelected();
 
-    InspectorEditor * getCurrentEditor();
+   const  InspectorEditor * const getCurrentEditor();
 
 
     void resized() override;
@@ -74,7 +74,6 @@ private:
 
     ScopedPointer<InspectorEditor> currentEditor;
 
-    
     
     void controllableContainerRemoved(ControllableContainer * , ControllableContainer * ) override;
     void containerWillClear(ControllableContainer * )override;

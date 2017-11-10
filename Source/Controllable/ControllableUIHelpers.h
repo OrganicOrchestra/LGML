@@ -30,15 +30,17 @@ class Controllable;
 class ControllableContainerPopupMenu : public PopupMenu
 {
 public:
-    ControllableContainerPopupMenu (ControllableContainer* rootContainer, Array<Controllable*>* filterOut = nullptr);
+    ControllableContainerPopupMenu (ControllableContainer* rootContainer, Array<Controllable*>* filterOut = nullptr,int startId=1);
     virtual ~ControllableContainerPopupMenu();
 
     Array<Controllable*> controllableList;
     Array<Controllable*>* filterOutControllable;
+    int startId,endId;
     void populateMenu (PopupMenu* subMenu, ControllableContainer* container, int& currentId);
 
 
     Controllable* showAndGetControllable();
+    Controllable* getControllableForResult(int result);
 
 };
 

@@ -87,7 +87,7 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
     
 }
 
-int GenericParameterContainerEditor::getContentHeight()
+int GenericParameterContainerEditor::getContentHeight() const
 {
     if (innerContainer == nullptr) return InspectorEditor::getContentHeight();
     else return InspectorEditor::getContentHeight() + innerContainer->getContentHeight() + parentBT.getHeight() + 5;
@@ -352,7 +352,7 @@ CCInnerContainerUI::CCLinkBT* CCInnerContainerUI::getCCLinkForCC (ParameterConta
     return nullptr;
 }
 
-int CCInnerContainerUI::getContentHeight()
+int CCInnerContainerUI::getContentHeight() const
 {
     if(!container.get()){
         jassertfalse;

@@ -277,7 +277,9 @@ void LGMLDragger::setMappingActive (bool b)
         }
     }
     listeners.call (&Listener::mappingModeChanged, b);
-
+    for(auto c: getEngine()->getContainersOfType<Controller>(true)){
+        c->setMappingMode(b);
+    }
 
 }
 void LGMLDragger::toggleMappingMode()

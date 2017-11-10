@@ -46,7 +46,7 @@ public:
 
     void mouseDown (const MouseEvent& e) override;
 
-    int getContentHeight();
+    int getContentHeight() const;
 
     void clear();
 private:

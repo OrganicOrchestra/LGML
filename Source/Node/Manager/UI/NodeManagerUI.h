@@ -48,8 +48,8 @@ public:
 
     void resized() override;
 
-    int getContentWidth();
-    int getContentHeight();
+    int getContentWidth() const;
+    int getContentHeight() const;
 
     void managerCleared() override;
     void managerEndedLoading() override;

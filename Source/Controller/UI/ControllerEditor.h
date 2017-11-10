@@ -29,7 +29,7 @@ public:
     Controller* controller;
 
     virtual void resized() override;
-    virtual int getContentHeight() override;
+    virtual int getContentHeight() const override;
 
     //VARIABLES
     TextButton addParameterBT;

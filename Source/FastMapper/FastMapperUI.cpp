@@ -35,8 +35,10 @@ FastMapperUI::FastMapperUI (FastMapper* _fastMapper, ControllableContainer* _vie
 
 
 
-    potentialIn = new NamedParameterUI (ParameterUIFactory::createDefaultUI (fastMapper->potentialIn), 150);
-    potentialOut = new NamedParameterUI (ParameterUIFactory::createDefaultUI (fastMapper->potentialOut), 150);
+    potentialIn =  ParameterUIFactory::createDefaultUI (fastMapper->potentialIn);
+    potentialOut = ParameterUIFactory::createDefaultUI (fastMapper->potentialOut);
+    candidateLabel.setText("candidate", dontSendNotification);
+    addAndMakeVisible(candidateLabel);
     addAndMakeVisible (potentialIn);
     addAndMakeVisible (potentialOut);
     resetAndUpdateView();
@@ -116,17 +118,19 @@ FastMapUI* FastMapperUI::getUIForFastMap (FastMap* f)
 }
 
 constexpr int buttonHeight = 21;
-int FastMapperUI::getContentHeight()
+int FastMapperUI::getContentHeight() const
 {
 
-    return mapsUI.size() * (mapHeight + gap) + 3 * buttonHeight + 10;
+    return mapsUI.size() * (mapHeight + gap) + 2 * buttonHeight + 10;
 }
 
 void FastMapperUI::resized()
 {
     Rectangle<int> r = getLocalBounds().reduced (2);
-    potentialIn->setBounds (r.removeFromTop (buttonHeight).reduced (2));
-    potentialOut->setBounds (r.removeFromTop (buttonHeight).reduced (2));
+    auto inputHeader  = r.removeFromTop (buttonHeight);
+    candidateLabel.setBounds(inputHeader.removeFromLeft(100));
+    potentialIn->setBounds (inputHeader.removeFromLeft(inputHeader.getWidth()/2).reduced (2));
+    potentialOut->setBounds (inputHeader.reduced (2));
     linkToSelection.setBounds (r.removeFromTop (buttonHeight).reduced (2));
 
 

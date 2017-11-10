@@ -31,8 +31,7 @@ class FastMapper;
 
 class FastMapper :
     public ParameterContainer,
-    private LGMLDragger::Listener,
-    private Inspector::InspectorListener
+    private LGMLDragger::Listener
 
 {
 public:
@@ -45,7 +44,7 @@ public:
     OwnedArray<FastMap> maps;
     ParameterProxy* potentialIn;
     ParameterProxy* potentialOut;
-    bool autoAdd;
+    bool autoAddFastMaps;
 
     void clear();
 
@@ -67,11 +66,7 @@ private:
     void selectionChanged (Parameter*) override;
     void mappingModeChanged(bool) override;
 
-    // Inspector Component
-    void currentComponentChanged (Inspector* ) override;
-    WeakReference<ControllableContainer> selectedContainerToListenTo;
-
-    void setContainerToListen (ControllableContainer*);
+    uint32 lastFMAddedTime;
 
 
     // ControllableContainer::Listener

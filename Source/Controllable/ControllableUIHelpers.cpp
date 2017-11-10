@@ -21,14 +21,22 @@
 
 #include "../Node/Manager/NodeManager.h"
 
-ControllableContainerPopupMenu::ControllableContainerPopupMenu (ControllableContainer* rootContainer, Array<Controllable*>* _filterOut ):
-    filterOutControllable (_filterOut)
+ControllableContainerPopupMenu::ControllableContainerPopupMenu (ControllableContainer* rootContainer, Array<Controllable*>* _filterOut,int _startId ):
+filterOutControllable (_filterOut),
+startId(_startId)
 {
-    int id = 1;
+
+    jassert(startId>0);
+
+    // copy id to avoid modif by populateMenu
+    int id = startId;
 
     if (rootContainer == nullptr) rootContainer = NodeManager::getInstance(); //to replace with global app container containing nodes, controllers, rules, etc...
 
     populateMenu (this, rootContainer, id);
+
+    endId = id+1;
+    jassert(endId>=startId);
 }
 
 ControllableContainerPopupMenu::~ControllableContainerPopupMenu()
@@ -62,17 +70,22 @@ Controllable* ControllableContainerPopupMenu::showAndGetControllable()
 {
     int result = show();
 
+    return getControllableForResult(result);
+}
+Controllable * ControllableContainerPopupMenu::getControllableForResult(int result){
     if (result == 0) return nullptr;
+    int idx = result - startId;
+    if(idx>=0 && idx< controllableList.size()){return controllableList[idx];}
 
-    return controllableList[result - 1];
+    return nullptr;
+    
 }
 
 
-
 ControllableReferenceUI::ControllableReferenceUI (ControllableContainer* container, Array<Controllable*> filterOut) :
-    rootContainer (container),
-    TextButton ("Target"),
-    filterOutControllable (filterOut)
+rootContainer (container),
+TextButton ("Target"),
+filterOutControllable (filterOut)
 {
     addListener (this);
     setTooltip ("Choose a target");
@@ -108,10 +121,33 @@ void ControllableReferenceUI::setCurrentControllale (Controllable* c)
 
 void ControllableReferenceUI::buttonClicked (Button*)
 {
-    ControllableContainerPopupMenu p (rootContainer, &filterOutControllable);
-    Controllable* c = p.showAndGetControllable();
+    if(currentControllable){
 
-    if (c != nullptr) setCurrentControllale (c);
+        ControllableContainerPopupMenu p (rootContainer, &filterOutControllable);
+        PopupMenu mainMenu;
+        mainMenu.addSubMenu("Change Target", p);
+        int removeId = p.endId+1;
+        mainMenu.addItem(removeId, "Remove Target");
+
+        int result = mainMenu.show();
+
+        if (result != 0) {
+
+            if(result==removeId){
+                setCurrentControllale(nullptr);
+            }
+            else{
+                Controllable* c = p.getControllableForResult(result);
+                if (c != nullptr) setCurrentControllale (c);
+                else{jassertfalse;}
+            }
+        }
+    }
+    else{
+        ControllableContainerPopupMenu p (rootContainer, &filterOutControllable);
+        Controllable* c = p.showAndGetControllable();
+        if (c != nullptr) setCurrentControllale (c);
+    }
 }
 
 

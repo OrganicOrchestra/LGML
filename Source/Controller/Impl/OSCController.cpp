@@ -88,14 +88,14 @@ OSCController::OSCController (const String& _name) :
     lastOSCMessageSentTime = 0;
     numSentInARow = NUM_OSC_MSG_IN_A_ROW;
 
-    LGMLDragger::getInstance()->addSelectionListener(this);
+
 
 
 }
 
 OSCController::~OSCController()
 {
-    LGMLDragger::getInstanceWithoutCreating()->removeSelectionListener(this);
+    
 }
 
 void OSCController::setupReceiver()
@@ -199,7 +199,7 @@ void OSCController::processMessage (const OSCMessage& msg)
 
     Result result = processMessageInternal (msg);
 
-    if (autoAdd && !result && !msg.getAddressPattern().containsWildcards())
+    if (autoAddParams && !result && !msg.getAddressPattern().containsWildcards())
     {
         MessageManager::getInstance()->callAsync ([this, msg]() {checkAndAddParameterIfNeeded (msg);});
     }
@@ -550,9 +550,7 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 
 }
 
-void OSCController::mappingModeChanged(bool state) {
-    autoAdd = state;
-};
+
 
 ////////////////////////
 // OSCMessageQueue

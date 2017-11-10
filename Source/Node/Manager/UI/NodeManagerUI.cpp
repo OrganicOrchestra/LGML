@@ -107,12 +107,12 @@ void NodeManagerUI::resized()
     }
 }
 
-int NodeManagerUI::getContentWidth()
+int NodeManagerUI::getContentWidth() const
 {
     return (currentViewer == nullptr) ? 0 : currentViewer->getWidth();
 }
 
-int NodeManagerUI::getContentHeight()
+int NodeManagerUI::getContentHeight() const
 {
     return (currentViewer == nullptr) ? 0 : currentViewer->getHeight();
 }

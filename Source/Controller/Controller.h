@@ -56,6 +56,8 @@ public:
 
     void remove();
 
+    void setMappingMode(bool state) ;
+    bool autoAddParams;
 
 
 

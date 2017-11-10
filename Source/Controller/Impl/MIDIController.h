@@ -42,7 +42,7 @@ public :
     void handleIncomingMidiMessage (MidiInput* source,
                                     const MidiMessage& message) override;
 
-    EnumParameter* deviceInName;
+    
 
 
 

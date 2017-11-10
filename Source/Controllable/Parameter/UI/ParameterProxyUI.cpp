@@ -46,14 +46,18 @@ void ParameterProxyUI::resized()
     if (r.getWidth() == 0 || r.getHeight() == 0) return;
 
 
-    Rectangle<int> paramR = r;
+
 
     if (linkedParamUI != nullptr)
     {
-        linkedParamUI->setBounds (paramR);
+        chooser.setBounds (r.removeFromLeft(10));
+        linkedParamUI->setBounds (r);
 
     }
-    else {chooser.setBounds (paramR);}
+    else {
+        chooser.setBounds(r);
+
+    }
 
 }
 
@@ -84,7 +88,7 @@ void ParameterProxyUI::setLinkedParamUI (Parameter* p)
     }
     else
     {
-        linkedParamUI = p ? ParameterUIFactory::createDefaultUI (p) : nullptr;
+        linkedParamUI = p ? ParameterUIFactory::createDefaultUI (p): nullptr;
     }
 
 
@@ -98,7 +102,8 @@ void ParameterProxyUI::setLinkedParamUI (Parameter* p)
             cUI->setTooltip (getTooltip());
     }
 
-    chooser.setVisible (linkedParamUI == nullptr);
+//    chooser.setVisible (linkedParamUI == nullptr);
+    chooser.setCurrentControllale(p);
     chooser.filterOutControllable = {paramProxy};
     resized();
 }

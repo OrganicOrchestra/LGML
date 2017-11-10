@@ -70,7 +70,7 @@ public:
     void addCCLink (ParameterContainer* cc);
     void removeCCLink (ParameterContainer* cc);
 
-    int getContentHeight();
+    int getContentHeight() const;
 
     NamedParameterUI* getUIForParameter (Parameter* c);
     CCInnerContainerUI* getInnerContainerForCC (ParameterContainer* cc);
@@ -99,7 +99,7 @@ public :
 
     void setCurrentInspectedContainer (ParameterContainer*, bool forceUpdate = false, int recursiveInspectionLevel = 0, bool canInspectChildContainersBeyondRecursion = true);
 
-    virtual int getContentHeight() override;
+    virtual int getContentHeight() const override;
 
     void resized() override;
     void clear() override;

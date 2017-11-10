@@ -63,24 +63,50 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
             NLOG ("MIDI", "CC " + String (message.getControllerNumber()) + " > " + String (message.getControllerValue()) + " (Channel " + String (message.getChannel()) + ")");
         }
 
-        for (Controllable* c : userContainer.getAllControllables())
+
+        const String paramName( "CC "+String(message.getControllerNumber()));
+        if (Controllable* c = userContainer.getControllableByName(paramName))
         {
-            if (((Parameter*)c)->intValue() == 1)
-            {
-
+                ((Parameter*)c)->setValue(message.getControllerValue()*1.0/127);
+        }
+        else if(autoAddParams){
+            MessageManager::callAsync([this,message,paramName](){
+                userContainer.
+                addNewParameter<FloatParameter>(
+                                                paramName,
+                                                "MIDI CC Parameter",
+                                                message.getControllerValue()/127.0,
+                                                0,1);
             }
-
+                                      );
         }
 
     }
     else if (message.isNoteOnOrOff())
     {
+        bool isNoteOn = message.isNoteOn();
         if (logIncoming->boolValue())
         {
-            NLOG ("MIDI", "Note " + String (message.isNoteOn() ? "on" : "off") + " : " + MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0) + " > " + String (message.getVelocity()) + " (Channel " + String (message.getChannel()) + ")");
+            NLOG ("MIDI", "Note " + String (isNoteOn ? "on" : "off") + " : " + MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0) + " > " + String (message.getVelocity()) + " (Channel " + String (message.getChannel()) + ")");
         }
 
-        
+        const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0));//+"_"+String(message.getChannel()));
+        if (Controllable* c = userContainer.getControllableByName(paramName))
+        {
+            ((Parameter*)c)->setValue(isNoteOn?message.getFloatVelocity():0);
+        }
+        else if(autoAddParams && isNoteOn ){
+            MessageManager::callAsync([this,message,paramName](){
+                userContainer.
+                addNewParameter<FloatParameter>(paramName,
+                                                "MIDI Note Parameter",
+                                                message.getFloatVelocity(),
+                                                0,1);
+            }
+                                      );
+        }
+
+
     }
 
     else if (message.isPitchWheel())

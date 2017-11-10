@@ -25,7 +25,8 @@
 
 Controller::Controller (StringRef _name) :
     ParameterContainer (_name),
-    userContainer ("messages")
+    userContainer ("messages"),
+    autoAddParams(false)
 {
     userContainer.setUserDefined (true);
     userContainer.addControllableContainerListener (this);
@@ -85,5 +86,9 @@ void Controller::onContainerParameterChanged (Parameter* p)
         // DBG("set Controller Enabled " + String(enabledParam->boolValue()));
     }
 }
+
+void Controller::setMappingMode(bool state) {
+    autoAddParams = state;
+};
 
 void Controller::onContainerTriggerTriggered (Trigger*) {}

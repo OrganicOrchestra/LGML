@@ -17,7 +17,7 @@
 #define OSCCONTROLLER_H_INCLUDED
 
 #include "../Controller.h"
-#include "../../UI/LGMLDragger.h"
+
 #include <juce_osc/juce_osc.h>
 
 
@@ -27,8 +27,7 @@
 
 class OSCController :
     public Controller,
-    public OSCReceiver::Listener<OSCReceiver::RealtimeCallback>,
-    private LGMLDragger::Listener
+    public OSCReceiver::Listener<OSCReceiver::RealtimeCallback>
 {
 public:
     OSCController (const String& name);
@@ -42,7 +41,7 @@ public:
     BoolParameter* logOutGoingOSC;
     BoolParameter* blockFeedback; // if a parameter is updated from processOSC , stops any osc out with same address
     Trigger* sendAllParameters;
-    bool autoAdd;
+    
     BoolParameter* isConnectedToRemote;
 
 
@@ -110,9 +109,8 @@ public:
     bool setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force = false,bool allowConversions = true);
 
 private:
-    void mappingModeChanged(bool) override;
-    // TODO auto add only on selection?
-    void selectionChanged(Parameter *) override{};
+
+    
     void setupReceiver();
     void setupSender();
     bool sendOSCInternal (OSCMessage& m);

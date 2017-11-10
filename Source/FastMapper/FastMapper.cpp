@@ -18,22 +18,26 @@
 
 #include "FastMapper.h"
 
+#include "../Controller/ControllerManager.h"
 juce_ImplementSingleton (FastMapper)
 IMPL_OBJ_TYPE (FastMapper);
 
+
 FastMapper::FastMapper (StringRef name) :
-    ParameterContainer (name),
-    selectedContainerToListenTo (nullptr),
-    autoAdd(false)
+ParameterContainer (name),
+autoAddFastMaps(false),
+lastFMAddedTime(0)
 {
 
     nameParam->isEditable = false;
-    potentialIn = addNewParameter<ParameterProxy> ("potential Input", "potential input for new fastMap");
-    potentialOut = addNewParameter<ParameterProxy> ("potential Output", "potential output for new fastMap");
-    
+    potentialIn = addNewParameter<ParameterProxy> ("Input", "potential input for new fastMap");
+    potentialOut = addNewParameter<ParameterProxy> ("Output", "potential output for new fastMap");
+
 
     LGMLDragger::getInstance()->addSelectionListener (this);
-    Inspector::getInstance()->addInspectorListener (this);
+    auto cm = ControllerManager::getInstance();
+    cm->addControllableContainerListener(this);
+
     potentialIn->isSavable = false;
     potentialOut->isSavable = false;
     potentialIn->isPresettable = false;
@@ -47,10 +51,8 @@ FastMapper::~FastMapper()
     {
         dr->removeSelectionListener (this);
     }
-
-    if (auto* i = Inspector::getInstanceWithoutCreating())
-    {
-        i->removeInspectorListener (this);
+    if(auto cm = ControllerManager::getInstanceWithoutCreating()){
+        cm->removeControllableContainerListener(this);
     }
 
     clear();
@@ -61,20 +63,20 @@ FastMapper::~FastMapper()
 void FastMapper::setPotentialInput (Parameter* p)
 {
     if(p!=potentialIn->get()){
-    potentialIn->setParamToReferTo (p);
-    createNewFromPotentials();
+        potentialIn->setParamToReferTo (p);
+        createNewFromPotentials();
     }
 }
 void FastMapper::setPotentialOutput (Parameter* p )
 {
     if(p!=potentialOut->get()){
-    potentialOut->setParamToReferTo (p);
-    createNewFromPotentials();
+        potentialOut->setParamToReferTo (p);
+        createNewFromPotentials();
     }
 }
 void FastMapper::createNewFromPotentials()
 {
-    if (potentialIn->get() && potentialOut->get() && autoAdd)
+    if (potentialIn->get() && potentialOut->get() && autoAddFastMaps)
     {
         addFastMap();
 
@@ -99,13 +101,15 @@ FastMap* FastMapper::addFastMap()
     addChildControllableContainer (f);
     f->nameParam->isEditable = true;
     maps.add (f);
-//    setContainerToListen (nullptr);
+    //    setContainerToListen (nullptr);
     f->referenceIn->setParamToReferTo (potentialIn->get());
     f->referenceOut->setParamToReferTo (potentialOut->get());
 
     potentialIn->setParamToReferTo (nullptr);
     potentialOut->setParamToReferTo (nullptr);
-    checkDuplicates (f);
+    if(!checkDuplicates (f)){
+        lastFMAddedTime = Time::getMillisecondCounter();
+    }
     return f;
 }
 
@@ -165,48 +169,32 @@ ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/
 
 void FastMapper::selectionChanged (Parameter* c )
 {
-    setPotentialInput (Parameter::fromControllable (c));
+    setPotentialOutput (Parameter::fromControllable (c));
 
 };
 
 
 void FastMapper::mappingModeChanged(bool state){
-    autoAdd = state;
+    autoAddFastMaps = state;
 };
 
-void FastMapper::currentComponentChanged (Inspector* i)
-{
-    auto* newC = i->getCurrentContainerSelected();
 
-    if (newC == selectedContainerToListenTo)return;
 
-    setContainerToListen (newC);
-
-};
-
-void FastMapper::setContainerToListen (ControllableContainer* newC)
-{
-    if (selectedContainerToListenTo)
-    {
-        selectedContainerToListenTo->removeControllableContainerListener (this);
-    }
-
-    selectedContainerToListenTo = newC;
-
-    if (selectedContainerToListenTo)
-    {
-        selectedContainerToListenTo->addControllableContainerListener (this);
-    }
-}
 void FastMapper::controllableFeedbackUpdate (ControllableContainer* notif, Controllable* ori)
 {
     ParameterContainer::controllableFeedbackUpdate (notif, ori);
 
     if (auto p = Parameter::fromControllable (ori))
     {
-        if (notif == selectedContainerToListenTo && p->isEditable && LGMLDragger::getInstance()->isMappingActive)
-        {
-            setPotentialOutput (p);
+        if(notif== ControllerManager::getInstance()){
+            auto now=Time::getMillisecondCounter();
+            jassert(now>=lastFMAddedTime);
+            // debounce control changes, to avoid setting potentialOutput back
+            if (ori->isUserDefined && now-lastFMAddedTime>500){
+                setPotentialInput (p);
+            }
         }
+        
+        
     }
 };

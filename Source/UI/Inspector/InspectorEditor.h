@@ -30,7 +30,7 @@ public:
 
     void resized() override;
 
-    virtual int getContentHeight();
+    virtual int getContentHeight() const;
 
     virtual void clear();
 

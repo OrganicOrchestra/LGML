@@ -121,7 +121,7 @@ void NodeConnectionEditor::resized()
     }
 }
 
-int NodeConnectionEditor::getContentHeight()
+int NodeConnectionEditor::getContentHeight() const
 {
     return InspectorEditor::getContentHeight() + 20 + jmax (outputSlots.size() * 35, inputSlots.size() * 35);
 }

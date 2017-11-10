@@ -45,6 +45,7 @@ void Inspector::clear()
 
 void Inspector::setCurrentComponent (InspectableComponent* c)
 {
+    jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     if (c == currentComponent) return;
 
     if (!isEnabled) return;
@@ -89,7 +90,7 @@ InspectableComponent * Inspector::getCurrentComponent(){
 
 }
 
-InspectorEditor * Inspector::getCurrentEditor(){
+const  InspectorEditor * const Inspector::getCurrentEditor(){
     if(currentEditor){
         return currentEditor;
     }
