@@ -185,8 +185,6 @@ JsContainerSync::createDynamicObjectFromContainer (ControllableContainer* contai
                 auto childObject = createDynamicObjectFromContainer (c);
 
                 if (childObject != nullptr){
-
-                    DBG("jsContainerSync : " + c->shortName);
                     myObj->setProperty (c->shortName, childObject);
                 }
             }
