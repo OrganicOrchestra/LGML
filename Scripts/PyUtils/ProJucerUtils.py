@@ -1,6 +1,6 @@
 # THIS FILE IS BINDED TO RELATIVE LOCATIONS CHANGE THEM IF DISPLACING FILE
 
-from .writeSha import *
+# from .writeSha import *
 import os
 import collections
 
@@ -32,7 +32,7 @@ def hasValidProjucerPath(osType):
 
 	return os.path.exists(proJucerPath)
 
-def getProjucerCommand(tmpFolder,osType):
+def getProjucerCommand(osType):
 	global proJucerPath,proJucerCommand
 	# update command
 	if hasValidProjucerPath(osType):
@@ -85,9 +85,66 @@ def updatePathsIfNeeded(osType):
 
 			
 			
+def syncFileHierarchy():
+	import xml.etree.ElementTree as ET
+	tree = ET.parse(JuceProjectPath)
+	mainGroup = tree.findall('MAINGROUP')[0]
+	projDir = os.path.abspath(os.path.join(JuceProjectPath,os.pardir))
+	def findFile(fname):
+		root = projDir+'/Source'
+		for dp, dn, filenames in os.walk(root):
+			for f in filenames :
+				if os.path.basename(f) == os.path.basename(fname):
+					return os.path.join(dp, f)[len(projDir)+1:] 
+		print (fname+'not found')
+		return ''
+		
+	def setFromFilePath(ad,n,idx=0):
+		
+		if(idx<len(ad)-1):
+			for l in n.findall('GROUP'):
+				if l.attrib['name']==ad[idx]:
+					setFromFilePath(ad,l,idx+1)
+					return
+			# not found
+			nc = ET.Element('GROUP',{'name':ad[idx]})
+			n.append(nc)
+			setFromFilePath(ad,nc,idx+1)
+		if(len(ad)-1==idx):
+			print ('adding'+ str(ad))
+			n.append(ET.Element('FILE',{'name':ad[idx],'file':'/'.join(ad),'compile':"1" if ad[idx][-4:]=='.cpp' else "0",'ressource':"0"}))
+	def scanGroup(g):
+		for ig in g.findall('GROUP'):
+			scanGroup(ig)
+		for f in g.findall('FILE'):
+			fname = f.attrib['file']
+			fpath = os.path.join(projDir,fname)
+			if not os.path.exists(fpath):
+				trup=findFile(fname)
+				if trup!='':
+					ad = trup.split('/')
+					print(trup)
+					setFromFilePath(ad,mainGroup)
+				g.remove(f)
+	scanGroup(mainGroup)
+	tree.write(os.path.join(projDir,'LGML.jucer'))
+	global proJucerCommand
+	if os.path.exists(proJucerCommand):
+		
+		srcDir = os.path.abspath(os.path.join(JuceProjectPath,os.pardir,'Source'))
+		# sh(proJucerCommand+" -h")
+		sh(proJucerCommand+ " --fix-broken-include-paths '"+srcDir+"'")
+
+
+def getModules():
+	import xml.etree.ElementTree as ET
+	tree = ET.parse(JuceProjectPath)
 	
-
-
+	modules = tree.findall('MODULES')[0]
+	res = []
+	for m in modules.iter('MODULE'):
+		res+=[m.attrib['id']]
+	return res
 
 def getVersion():
 	return getXmlVersion();
@@ -135,6 +192,7 @@ def tagVersion():
 
 def updateVersion(bumpVersion,specificVersion):
 	global proJucerCommand,JuceProjectPath
+
 	if(bumpVersion):
 		sh(proJucerCommand+ " --bump-version '" + JuceProjectPath+"'")
 	elif specificVersion and (specificVersion!=getXmlVersion()):
@@ -163,5 +221,7 @@ def updateProjucer(osType,bumpVersion,specificVersion):
 
 
 if __name__=="__main__":
-	print(getXmlVersion());
+	from shUtils import *
+	syncFileHierarchy()
+	# print(getModules());
 

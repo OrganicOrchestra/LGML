@@ -8,7 +8,7 @@
     <key>CFBundleIconFile</key>
     <string>Icon.icns</string>
     <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <string>org.anic.orchestra.LGML</string>
     <key>CFBundleName</key>
     <string>LGML</string>
     <key>CFBundleDisplayName</key>
@@ -18,9 +18,9 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.2.0beta</string>
+    <string>1.2.4</string>
     <key>CFBundleVersion</key>
-    <string>1.2.0beta</string>
+    <string>1.2.4</string>
     <key>NSHumanReadableCopyright</key>
     <string>Organic Orchestra</string>
     <key>NSHighResolutionCapable</key>

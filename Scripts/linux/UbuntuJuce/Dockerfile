@@ -6,4 +6,4 @@ RUN apt-get -y --force-yes install libfreetype6-dev libx11-dev libxinerama-dev l
 
 RUN git clone --depth 1  https://github.com/julianstorer/JUCE.git
 RUN apt-get -y --force-yes install make pkg-config g++ libcurl3-dev
-RUN cd JUCE/extras/Projucer/Builds/LinuxMakefile && make -j2
+# RUN cd JUCE/extras/Projucer/Builds/LinuxMakefile && make -j2

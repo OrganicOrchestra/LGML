@@ -13,4 +13,3 @@
 [submodule "third_party/VST3_SDK"]
 	path = third_party/VST3_SDK
 	url = https://github.com/steinbergmedia/vst3sdk.git
-	shallow = true

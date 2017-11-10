@@ -8,6 +8,7 @@ stages:
   - "build"
   - "test"
   - "package"
+  - "deploy"
 
 build_job:
   stage: build
@@ -17,7 +18,7 @@ build_job:
     - "echo installDeps"
     - "source Scripts/export_platform_vars.sh"
     - "sh Scripts/$LGML_PLATFORM_TYPE/installDeps.sh;"
-    - "python Scripts/buildScript.py --build --beta"
+    - "python Scripts/buildScript.py --build "
 
 
 test_job:
@@ -34,8 +35,19 @@ package:
     - master@lgml/lgml
   stage: package
   script:
-    - "python Scripts/buildScript.py --package --export --beta"
+    - "python Scripts/buildScript.py --package --export "
 
+pages:
+  stage: deploy
+  script:
+  - mkdir .public
+  - cp -r * .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - gh-pages
 
   # artifacts:
   #   paths:

@@ -108,7 +108,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;..\..\third_party\serial\include;..\..\third_party\rubberband;..\..\third_party\link\include;..\..\third_party\link\modules\asio-standalone\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.0beta;JUCE_APP_VERSION_HEX=0x10200;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;LINK_PLATFORM_WINDOWS=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.4;JUCE_APP_VERSION_HEX=0x10204;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -138,6 +138,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\LGML_x64_Debug.bsc</OutputFile>
     </Bscmake>
+    <Lib>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -150,7 +154,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;..\..\third_party\serial\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.0beta;JUCE_APP_VERSION_HEX=0x10200;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;LINK_PLATFORM_WINDOWS=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.4;JUCE_APP_VERSION_HEX=0x10204;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -182,6 +186,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\LGML_x64.bsc</OutputFile>
     </Bscmake>
+    <Lib>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_32bit|Win32'">
     <Midl>
@@ -193,9 +201,9 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;..\..\third_party\serial\include;..\..\third_party\rubberband;..\..\third_party\link\include;..\..\third_party\link\modules\asio-standalone\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.0beta;JUCE_APP_VERSION_HEX=0x10200;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;LINK_PLATFORM_WINDOWS=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.4;JUCE_APP_VERSION_HEX=0x10204;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -218,7 +226,6 @@
       <ProgramDatabaseFile>$(IntDir)\LGML_32_Debug.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
       <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -227,6 +234,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\LGML_32_Debug.bsc</OutputFile>
     </Bscmake>
+    <Lib>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_32bit|Win32'">
     <Midl>
@@ -239,7 +250,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\third_party\VST3_SDK;..\..\JuceLibraryCode;..\..\..\JUCE\modules;$(ASIOSDK)\common;..\..\third_party\serial\include;..\..\third_party\rubberband;..\..\third_party\link\include;..\..\third_party\link\modules\asio-standalone\asio\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.0beta;JUCE_APP_VERSION_HEX=0x10200;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;LINK_PLATFORM_WINDOWS=1;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=1.2.4;JUCE_APP_VERSION_HEX=0x10204;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -272,162 +283,155 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(IntDir)\LGML_32.bsc</OutputFile>
     </Bscmake>
+    <Lib>
+      <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\third_party\rubberband\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Tests\BufferListTest.cpp"/>
-    <ClCompile Include="..\..\Tests\LooperTest.cpp"/>
-    <ClCompile Include="..\..\Tests\NodeChildProofer.cpp"/>
-    <ClCompile Include="..\..\Source\Outliner.cpp"/>
-    <ClCompile Include="..\..\Source\PresetManager.cpp"/>
-    <ClCompile Include="..\..\Source\PresetChooser.cpp"/>
-    <ClCompile Include="..\..\Source\ControllableUI.cpp"/>
-    <ClCompile Include="..\..\Source\ControllableHelpers.cpp"/>
-    <ClCompile Include="..\..\Source\RangeParameterUI.cpp"/>
-    <ClCompile Include="..\..\Source\ParameterUIFactory.cpp"/>
-    <ClCompile Include="..\..\Source\TriggerBlinkUI.cpp"/>
-    <ClCompile Include="..\..\Source\EnumParameterUI.cpp"/>
-    <ClCompile Include="..\..\Source\FloatStepperUI.cpp"/>
-    <ClCompile Include="..\..\Source\BoolToggleUI.cpp"/>
-    <ClCompile Include="..\..\Source\FloatSliderUI.cpp"/>
-    <ClCompile Include="..\..\Source\IntSliderUI.cpp"/>
-    <ClCompile Include="..\..\Source\IntStepperUI.cpp"/>
-    <ClCompile Include="..\..\Source\ParameterProxyUI.cpp"/>
-    <ClCompile Include="..\..\Source\ParameterUI.cpp"/>
-    <ClCompile Include="..\..\Source\StringParameterUI.cpp"/>
-    <ClCompile Include="..\..\Source\RangeParameter.cpp"/>
-    <ClCompile Include="..\..\Source\Trigger.cpp"/>
-    <ClCompile Include="..\..\Source\BoolParameter.cpp"/>
-    <ClCompile Include="..\..\Source\ParameterProxy.cpp"/>
-    <ClCompile Include="..\..\Source\EnumParameter.cpp"/>
-    <ClCompile Include="..\..\Source\FloatParameter.cpp"/>
-    <ClCompile Include="..\..\Source\IntParameter.cpp"/>
-    <ClCompile Include="..\..\Source\Parameter.cpp"/>
-    <ClCompile Include="..\..\Source\Point2DParameter.cpp"/>
-    <ClCompile Include="..\..\Source\Point3DParameter.cpp"/>
-    <ClCompile Include="..\..\Source\StringParameter.cpp"/>
-    <ClCompile Include="..\..\Source\ParameterFactory.cpp"/>
-    <ClCompile Include="..\..\Source\Controllable.cpp"/>
-    <ClCompile Include="..\..\Source\ControllableContainer.cpp"/>
-    <ClCompile Include="..\..\Source\ControllableIndexedContainer.cpp"/>
-    <ClCompile Include="..\..\Source\NetworkUtils.cpp"/>
-    <ClCompile Include="..\..\Source\BufferBlockList.cpp"/>
-    <ClCompile Include="..\..\Source\StretcherJob.cpp"/>
-    <ClCompile Include="..\..\Source\MultiNeedle.cpp"/>
-    <ClCompile Include="..\..\Source\AudioDebugPipe.cpp"/>
-    <ClCompile Include="..\..\Source\AudioDebugCrack.cpp"/>
-    <ClCompile Include="..\..\Source\PlayableBuffer.cpp"/>
-    <ClCompile Include="..\..\Source\SerialManager.cpp"/>
-    <ClCompile Include="..\..\Source\SerialPort.cpp"/>
-    <ClCompile Include="..\..\Source\SerialUIHelper.cpp"/>
-    <ClCompile Include="..\..\Source\ProgressNotifier.cpp"/>
-    <ClCompile Include="..\..\Source\MIDIListener.cpp"/>
-    <ClCompile Include="..\..\Source\MIDIManager.cpp"/>
-    <ClCompile Include="..\..\Source\MIDIUIHelper.cpp"/>
-    <ClCompile Include="..\..\Source\JsEnvironmentUI.cpp"/>
-    <ClCompile Include="..\..\Source\JsLiveEditor.cpp"/>
-    <ClCompile Include="..\..\Source\JsContainerSync.cpp"/>
-    <ClCompile Include="..\..\Source\JsEnvironment.cpp"/>
-    <ClCompile Include="..\..\Source\JsGlobalEnvironment.cpp"/>
-    <ClCompile Include="..\..\Source\SerialController.cpp"/>
-    <ClCompile Include="..\..\Source\SerialControllerEditor.cpp"/>
-    <ClCompile Include="..\..\Source\SerialControllerUI.cpp"/>
-    <ClCompile Include="..\..\Source\ControllerManagerUI.cpp"/>
-    <ClCompile Include="..\..\Source\Controller.cpp"/>
-    <ClCompile Include="..\..\Source\ControllerEditor.cpp"/>
-    <ClCompile Include="..\..\Source\ControllerUI.cpp"/>
-    <ClCompile Include="..\..\Source\DMXController.cpp"/>
-    <ClCompile Include="..\..\Source\MIDIController.cpp"/>
-    <ClCompile Include="..\..\Source\MIDIControllerEditor.cpp"/>
-    <ClCompile Include="..\..\Source\JavascriptController.cpp"/>
-    <ClCompile Include="..\..\Source\OSCDirectController.cpp"/>
-    <ClCompile Include="..\..\Source\OSCControllerEditor.cpp"/>
-    <ClCompile Include="..\..\Source\OSCController.cpp"/>
-    <ClCompile Include="..\..\Source\ControlManager.cpp"/>
-    <ClCompile Include="..\..\Source\FastMapperUI.cpp"/>
-    <ClCompile Include="..\..\Source\FastMapUI.cpp"/>
-    <ClCompile Include="..\..\Source\FastMap.cpp"/>
-    <ClCompile Include="..\..\Source\FastMapper.cpp"/>
-    <ClCompile Include="..\..\Source\NodeBase.cpp"/>
-    <ClCompile Include="..\..\Source\ConnectableNode.cpp"/>
-    <ClCompile Include="..\..\Source\NodeContainer.cpp"/>
-    <ClCompile Include="..\..\Source\NodeContainerContentUI.cpp"/>
-    <ClCompile Include="..\..\Source\NodeContainerViewer.cpp"/>
-    <ClCompile Include="..\..\Source\NodeContainerUI.cpp"/>
-    <ClCompile Include="..\..\Source\NodeBaseAudioCtlUI.cpp"/>
-    <ClCompile Include="..\..\Source\NodeBaseContentUI.cpp"/>
-    <ClCompile Include="..\..\Source\NodeBaseHeaderUI.cpp"/>
-    <ClCompile Include="..\..\Source\NodeBaseUI.cpp"/>
-    <ClCompile Include="..\..\Source\ConnectableNodeContentUI.cpp"/>
-    <ClCompile Include="..\..\Source\ConnectableNodeAudioCtlUI.cpp"/>
-    <ClCompile Include="..\..\Source\ConnectableNodeHeaderUI.cpp"/>
-    <ClCompile Include="..\..\Source\ConnectableNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\Data.cpp"/>
-    <ClCompile Include="..\..\Source\DataProcessorGraph.cpp"/>
-    <ClCompile Include="..\..\Source\NodeConnectionEditor.cpp"/>
-    <ClCompile Include="..\..\Source\NodeConnectionEditorDataSlot.cpp"/>
-    <ClCompile Include="..\..\Source\NodeConnectionEditorLink.cpp"/>
-    <ClCompile Include="..\..\Source\ConnectorComponent.cpp"/>
-    <ClCompile Include="..\..\Source\NodeConnection.cpp"/>
-    <ClCompile Include="..\..\Source\NodeConnectionUI.cpp"/>
-    <ClCompile Include="..\..\Source\JsNode.cpp"/>
-    <ClCompile Include="..\..\Source\JsNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\ContainerOutNode.cpp"/>
-    <ClCompile Include="..\..\Source\ContainerInNode.cpp"/>
-    <ClCompile Include="..\..\Source\AudioDeviceInNode.cpp"/>
-    <ClCompile Include="..\..\Source\AudioDeviceInNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\AudioDeviceOutNode.cpp"/>
-    <ClCompile Include="..\..\Source\AudioDeviceOutNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\DataInNode.cpp"/>
-    <ClCompile Include="..\..\Source\DataInNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\DummyNode.cpp"/>
-    <ClCompile Include="..\..\Source\DummyNodeContentUI.cpp"/>
-    <ClCompile Include="..\..\Source\AudioMixerNode.cpp"/>
-    <ClCompile Include="..\..\Source\AudioMixerNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\LooperNode.cpp"/>
-    <ClCompile Include="..\..\Source\LooperNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\LooperTrack.cpp"/>
-    <ClCompile Include="..\..\Source\Spat3DViewer.cpp"/>
-    <ClCompile Include="..\..\Source\Spat2DViewer.cpp"/>
-    <ClCompile Include="..\..\Source\Spat2DNode.cpp"/>
-    <ClCompile Include="..\..\Source\Spat2DNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\PluginWindow.cpp"/>
-    <ClCompile Include="..\..\Source\VSTManager.cpp"/>
-    <ClCompile Include="..\..\Source\VSTNode.cpp"/>
-    <ClCompile Include="..\..\Source\VSTNodeUI.cpp"/>
-    <ClCompile Include="..\..\Source\NodeFactory.cpp"/>
-    <ClCompile Include="..\..\Source\NodeManagerUI.cpp"/>
-    <ClCompile Include="..\..\Source\NodeManager.cpp"/>
-    <ClCompile Include="..\..\Source\LGMLLogger.cpp"/>
-    <ClCompile Include="..\..\Source\LGMLLoggerUI.cpp"/>
-    <ClCompile Include="..\..\Source\ControllableEditor.cpp"/>
-    <ClCompile Include="..\..\Source\GenericControllableContainerEditor.cpp"/>
-    <ClCompile Include="..\..\Source\InspectableComponent.cpp"/>
-    <ClCompile Include="..\..\Source\Inspector.cpp"/>
-    <ClCompile Include="..\..\Source\InspectorEditor.cpp"/>
-    <ClCompile Include="..\..\Source\TimeManager.cpp"/>
-    <ClCompile Include="..\..\Source\TimeManagerUI.cpp"/>
-    <ClCompile Include="..\..\Source\TimeMasterCandidate.cpp"/>
-    <ClCompile Include="..\..\Source\ProjectManager.cpp"/>
-    <ClCompile Include="..\..\Source\SettingsManager.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifterFactory.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifterPanelHeader.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifterPanelTab.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifterContent.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifter.cpp"/>
-    <ClCompile Include="..\..\Source\GapGrabber.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifterWindow.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifterPanel.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifterContainer.cpp"/>
-    <ClCompile Include="..\..\Source\ShapeShifterManager.cpp"/>
-    <ClCompile Include="..\..\Source\BetterStepper.cpp"/>
-    <ClCompile Include="..\..\Source\LGMLDragger.cpp"/>
-    <ClCompile Include="..\..\Source\LookAndFeelOO.cpp"/>
-    <ClCompile Include="..\..\Source\ProgressWindow.cpp"/>
+    <ClCompile Include="..\..\Source\Audio\BufferBlockList.cpp"/>
+    <ClCompile Include="..\..\Source\Audio\MultiNeedle.cpp"/>
+    <ClCompile Include="..\..\Source\Audio\PlayableBuffer.cpp"/>
+    <ClCompile Include="..\..\Source\Audio\StretcherJob.cpp"/>
+    <ClCompile Include="..\..\Source\Audio\VSTManager.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Controllable.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\ControllableContainer.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\ControllableUIHelpers.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\ControllableIndexedContainer.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\EnumParameterUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\SliderUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\StepperUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterProxyUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\ParameterUIFactory.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\RangeParameterUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\StringParameterUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\UI\TriggerBlinkUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterContainer.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\BoolParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\EnumParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\Parameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterFactory.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\ParameterProxy.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\NumericParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\Point2DParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\Point3DParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\RangeParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\StringParameter.cpp"/>
+    <ClCompile Include="..\..\Source\Controllable\Parameter\Trigger.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Impl\MIDIController.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Impl\OSCController.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Impl\OSCDirectController.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Impl\SerialController.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Impl\SerialManager.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Impl\SerialPort.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Impl\OSCJsController.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\UI\ControllerEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\UI\ControllerManagerUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\UI\ControllerUI.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\Controller.cpp"/>
+    <ClCompile Include="..\..\Source\Controller\ControllerManager.cpp"/>
+    <ClCompile Include="..\..\Source\Data\Data.cpp"/>
+    <ClCompile Include="..\..\Source\Data\DataInNode.cpp"/>
+    <ClCompile Include="..\..\Source\Data\DataInNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Data\DataProcessorGraph.cpp"/>
+    <ClCompile Include="..\..\Source\FastMapper\FastMap.cpp"/>
+    <ClCompile Include="..\..\Source\FastMapper\FastMapper.cpp"/>
+    <ClCompile Include="..\..\Source\FastMapper\FastMapperUI.cpp"/>
+    <ClCompile Include="..\..\Source\FastMapper\FastMapUI.cpp"/>
+    <ClCompile Include="..\..\Source\Logger\LGMLLogger.cpp"/>
+    <ClCompile Include="..\..\Source\Logger\LGMLLoggerUI.cpp"/>
+    <ClCompile Include="..\..\Source\MIDI\MIDIHelpers.cpp"/>
+    <ClCompile Include="..\..\Source\MIDI\MIDIListener.cpp"/>
+    <ClCompile Include="..\..\Source\MIDI\MIDIManager.cpp"/>
+    <ClCompile Include="..\..\Source\MIDI\MIDIUIHelper.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Connection\NodeConnection.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioDeviceInNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioDeviceInNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioDeviceOutNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioDeviceOutNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioMixerNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\AudioMixerNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\ContainerInNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\ContainerOutNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\DummyNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\DummyNodeContentUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\LooperNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\LooperNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\LooperTrack.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\Spat2DNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\Spat2DNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\Spat2DViewerUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\VSTNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\VSTNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\JsNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Impl\JsNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Manager\UI\NodeManagerUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Manager\NodeFactory.cpp"/>
+    <ClCompile Include="..\..\Source\Node\Manager\NodeManager.cpp"/>
+    <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerContentUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\NodeContainer\UI\NodeContainerViewer.cpp"/>
+    <ClCompile Include="..\..\Source\Node\NodeContainer\NodeContainer.cpp"/>
+    <ClCompile Include="..\..\Source\Node\UI\NodeUIFactory.cpp"/>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeContentUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectableNodeUI.cpp"/>
+    <ClCompile Include="..\..\Source\Node\UI\ConnectorComponent.cpp"/>
+    <ClCompile Include="..\..\Source\Node\ConnectableNode.cpp"/>
+    <ClCompile Include="..\..\Source\Node\NodeBase.cpp"/>
+    <ClCompile Include="..\..\Source\Preset\PresetChooserUI.cpp"/>
+    <ClCompile Include="..\..\Source\Preset\PresetManager.cpp"/>
+    <ClCompile Include="..\..\Source\Scripting\Js\JsContainerSync.cpp"/>
+    <ClCompile Include="..\..\Source\Scripting\Js\JsEnvironment.cpp"/>
+    <ClCompile Include="..\..\Source\Scripting\Js\JsEnvironmentUI.cpp"/>
+    <ClCompile Include="..\..\Source\Scripting\Js\JsGlobalEnvironment.cpp"/>
+    <ClCompile Include="..\..\Source\Tests\BufferListTest.cpp"/>
+    <ClCompile Include="..\..\Source\Tests\LooperTest.cpp"/>
+    <ClCompile Include="..\..\Source\Tests\NodeChildProofer.cpp"/>
+    <ClCompile Include="..\..\Source\Time\TimeManager.cpp"/>
+    <ClCompile Include="..\..\Source\Time\TimeManagerUI.cpp"/>
+    <ClCompile Include="..\..\Source\Time\TimeMasterCandidate.cpp"/>
+    <ClCompile Include="..\..\Source\UI\AppPropertiesUI.cpp"/>
+    <ClCompile Include="..\..\Source\UI\MainWindow.cpp"/>
+    <ClCompile Include="..\..\Source\UI\LGMLDragger.cpp"/>
+    <ClCompile Include="..\..\Source\UI\LookAndFeelOO.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Outliner.cpp"/>
+    <ClCompile Include="..\..\Source\UI\PluginWindow.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ProgressWindow.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Style.cpp"/>
+    <ClCompile Include="..\..\Source\UI\VuMeter.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\GapGrabber.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifter.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterContainer.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterContent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterFactory.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterManager.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanel.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelHeader.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelTab.cpp"/>
+    <ClCompile Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.cpp"/>
+    <ClCompile Include="..\..\Source\UI\MainComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\MainComponentCommands.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Inspector\InspectableComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Inspector\Inspector.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Inspector\InspectorEditor.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\AutoUpdater.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\FactoryBase.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\AudioDebugCrack.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\AudioDebugPipe.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\NetworkUtils.cpp"/>
+    <ClCompile Include="..\..\Source\Utils\ProgressNotifier.cpp"/>
     <ClCompile Include="..\..\Source\Engine.cpp"/>
     <ClCompile Include="..\..\Source\EngineFileDocument.cpp"/>
-    <ClCompile Include="..\..\Source\LGMLConfig.cpp"/>
-    <ClCompile Include="..\..\Source\MainComponent.cpp"/>
-    <ClCompile Include="..\..\Source\MainComponentCommands.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_linux.cc"/>
     <ClCompile Include="..\..\third_party\serial\src\impl\list_ports\list_ports_osx.cc"/>
@@ -1683,6 +1687,15 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_FlexBox.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_Grid.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_GridItem.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_GridUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_GroupComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1947,6 +1960,9 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_PreferencesPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_PushNotifications.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_RecentlyOpenedFilesList.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1956,7 +1972,13 @@
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_SystemTrayIconComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\native\juce_android_PushNotifications.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\native\juce_android_WebBrowserComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\native\juce_ios_PushNotifications.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\JUCE\modules\juce_gui_extra\native\juce_linux_X11_SystemTrayIcon.cpp">
@@ -2057,169 +2079,161 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Outliner.h"/>
-    <ClInclude Include="..\..\Source\GitSha.h"/>
-    <ClInclude Include="..\..\Source\PresetManager.h"/>
-    <ClInclude Include="..\..\Source\PresetChooser.h"/>
-    <ClInclude Include="..\..\Source\ControllableUI.h"/>
-    <ClInclude Include="..\..\Source\ControllableHelpers.h"/>
-    <ClInclude Include="..\..\Source\RangeParameterUI.h"/>
-    <ClInclude Include="..\..\Source\ParameterUIFactory.h"/>
-    <ClInclude Include="..\..\Source\TriggerBlinkUI.h"/>
-    <ClInclude Include="..\..\Source\EnumParameterUI.h"/>
-    <ClInclude Include="..\..\Source\FloatStepperUI.h"/>
-    <ClInclude Include="..\..\Source\BoolToggleUI.h"/>
-    <ClInclude Include="..\..\Source\FloatSliderUI.h"/>
-    <ClInclude Include="..\..\Source\IntSliderUI.h"/>
-    <ClInclude Include="..\..\Source\ParameterProxyUI.h"/>
-    <ClInclude Include="..\..\Source\IntStepperUI.h"/>
-    <ClInclude Include="..\..\Source\ParameterUI.h"/>
-    <ClInclude Include="..\..\Source\StringParameterUI.h"/>
-    <ClInclude Include="..\..\Source\RangeParameter.h"/>
-    <ClInclude Include="..\..\Source\Trigger.h"/>
-    <ClInclude Include="..\..\Source\BoolParameter.h"/>
-    <ClInclude Include="..\..\Source\ParameterProxy.h"/>
-    <ClInclude Include="..\..\Source\EnumParameter.h"/>
-    <ClInclude Include="..\..\Source\FloatParameter.h"/>
-    <ClInclude Include="..\..\Source\IntParameter.h"/>
-    <ClInclude Include="..\..\Source\Parameter.h"/>
-    <ClInclude Include="..\..\Source\Point2DParameter.h"/>
-    <ClInclude Include="..\..\Source\Point3DParameter.h"/>
-    <ClInclude Include="..\..\Source\StringParameter.h"/>
-    <ClInclude Include="..\..\Source\ParameterFactory.h"/>
-    <ClInclude Include="..\..\Source\Controllable.h"/>
-    <ClInclude Include="..\..\Source\ControllableContainer.h"/>
-    <ClInclude Include="..\..\Source\ControllableIndexedContainer.h"/>
-    <ClInclude Include="..\..\Source\NetworkUtils.h"/>
-    <ClInclude Include="..\..\Source\BufferBlockList.h"/>
-    <ClInclude Include="..\..\Source\AudioConfig.h"/>
-    <ClInclude Include="..\..\Source\StretcherJob.h"/>
-    <ClInclude Include="..\..\Source\MultiNeedle.h"/>
-    <ClInclude Include="..\..\Source\AudioDebugPipe.h"/>
-    <ClInclude Include="..\..\Source\AudioFucker.h"/>
-    <ClInclude Include="..\..\Source\AudioHelpers.h"/>
-    <ClInclude Include="..\..\Source\AudioDebugCrack.h"/>
-    <ClInclude Include="..\..\Source\PlayableBuffer.h"/>
-    <ClInclude Include="..\..\Source\RingBuffer.h"/>
-    <ClInclude Include="..\..\Source\SerialManager.h"/>
-    <ClInclude Include="..\..\Source\SerialPort.h"/>
-    <ClInclude Include="..\..\Source\SerialUIHelper.h"/>
-    <ClInclude Include="..\..\Source\ProgressNotifier.h"/>
-    <ClInclude Include="..\..\Source\QueuedNotifier.h"/>
-    <ClInclude Include="..\..\Source\CommandLineElements.hpp"/>
-    <ClInclude Include="..\..\Source\StringUtil.hpp"/>
-    <ClInclude Include="..\..\Source\MIDIListener.h"/>
-    <ClInclude Include="..\..\Source\MIDIManager.h"/>
-    <ClInclude Include="..\..\Source\MIDIUIHelper.h"/>
-    <ClInclude Include="..\..\Source\JsEnvironmentUI.h"/>
-    <ClInclude Include="..\..\Source\JsLiveEditor.h"/>
-    <ClInclude Include="..\..\Source\JsContainerSync.h"/>
-    <ClInclude Include="..\..\Source\JsEnvironment.h"/>
-    <ClInclude Include="..\..\Source\JsGlobalEnvironment.h"/>
-    <ClInclude Include="..\..\Source\JsHelpers.h"/>
-    <ClInclude Include="..\..\Source\VuMeter.h"/>
-    <ClInclude Include="..\..\Source\SerialController.h"/>
-    <ClInclude Include="..\..\Source\SerialControllerEditor.h"/>
-    <ClInclude Include="..\..\Source\SerialControllerUI.h"/>
-    <ClInclude Include="..\..\Source\ControllerManagerUI.h"/>
-    <ClInclude Include="..\..\Source\Controller.h"/>
-    <ClInclude Include="..\..\Source\ControllerEditor.h"/>
-    <ClInclude Include="..\..\Source\ControllerUI.h"/>
-    <ClInclude Include="..\..\Source\DMXController.h"/>
-    <ClInclude Include="..\..\Source\MIDIController.h"/>
-    <ClInclude Include="..\..\Source\MIDIControllerEditor.h"/>
-    <ClInclude Include="..\..\Source\JavascriptController.h"/>
-    <ClInclude Include="..\..\Source\OSCDirectController.h"/>
-    <ClInclude Include="..\..\Source\OSCControllerEditor.h"/>
-    <ClInclude Include="..\..\Source\OSCController.h"/>
-    <ClInclude Include="..\..\Source\ControllerFactory.h"/>
-    <ClInclude Include="..\..\Source\ControlManager.h"/>
-    <ClInclude Include="..\..\Source\FastMapperUI.h"/>
-    <ClInclude Include="..\..\Source\FastMapUI.h"/>
-    <ClInclude Include="..\..\Source\FastMap.h"/>
-    <ClInclude Include="..\..\Source\FastMapper.h"/>
-    <ClInclude Include="..\..\Source\NodeBase.h"/>
-    <ClInclude Include="..\..\Source\ConnectableNode.h"/>
-    <ClInclude Include="..\..\Source\NodeContainer.h"/>
-    <ClInclude Include="..\..\Source\NodeContainerContentUI.h"/>
-    <ClInclude Include="..\..\Source\NodeContainerViewer.h"/>
-    <ClInclude Include="..\..\Source\NodeContainerUI.h"/>
-    <ClInclude Include="..\..\Source\NodeBaseAudioCtlUI.h"/>
-    <ClInclude Include="..\..\Source\NodeBaseContentUI.h"/>
-    <ClInclude Include="..\..\Source\NodeBaseHeaderUI.h"/>
-    <ClInclude Include="..\..\Source\NodeBaseUI.h"/>
-    <ClInclude Include="..\..\Source\ConnectableNodeContentUI.h"/>
-    <ClInclude Include="..\..\Source\ConnectableNodeAudioCtlUI.h"/>
-    <ClInclude Include="..\..\Source\ConnectableNodeHeaderUI.h"/>
-    <ClInclude Include="..\..\Source\ConnectableNodeUI.h"/>
-    <ClInclude Include="..\..\Source\Data.h"/>
-    <ClInclude Include="..\..\Source\DataProcessorGraph.h"/>
-    <ClInclude Include="..\..\Source\NodeConnectionEditor.h"/>
-    <ClInclude Include="..\..\Source\NodeConnectionEditorDataSlot.h"/>
-    <ClInclude Include="..\..\Source\NodeConnectionEditorLink.h"/>
-    <ClInclude Include="..\..\Source\ConnectorComponent.h"/>
-    <ClInclude Include="..\..\Source\NodeConnection.h"/>
-    <ClInclude Include="..\..\Source\NodeConnectionUI.h"/>
-    <ClInclude Include="..\..\Source\JsNode.h"/>
-    <ClInclude Include="..\..\Source\JsNodeUI.h"/>
-    <ClInclude Include="..\..\Source\ContainerOutNode.h"/>
-    <ClInclude Include="..\..\Source\ContainerInNode.h"/>
-    <ClInclude Include="..\..\Source\AudioDeviceInNode.h"/>
-    <ClInclude Include="..\..\Source\AudioDeviceInNodeUI.h"/>
-    <ClInclude Include="..\..\Source\AudioDeviceOutNode.h"/>
-    <ClInclude Include="..\..\Source\AudioDeviceOutNodeUI.h"/>
-    <ClInclude Include="..\..\Source\DataInNode.h"/>
-    <ClInclude Include="..\..\Source\DataInNodeUI.h"/>
-    <ClInclude Include="..\..\Source\DummyNode.h"/>
-    <ClInclude Include="..\..\Source\DummyNodeContentUI.h"/>
-    <ClInclude Include="..\..\Source\AudioMixerNode.h"/>
-    <ClInclude Include="..\..\Source\AudioMixerNodeUI.h"/>
-    <ClInclude Include="..\..\Source\LooperNode.h"/>
-    <ClInclude Include="..\..\Source\LooperNodeUI.h"/>
-    <ClInclude Include="..\..\Source\LooperTrack.h"/>
-    <ClInclude Include="..\..\Source\Spat3DViewer.h"/>
-    <ClInclude Include="..\..\Source\Spat2DViewer.h"/>
-    <ClInclude Include="..\..\Source\Spat2DNode.h"/>
-    <ClInclude Include="..\..\Source\Spat2DNodeUI.h"/>
-    <ClInclude Include="..\..\Source\PluginWindow.h"/>
-    <ClInclude Include="..\..\Source\VSTManager.h"/>
-    <ClInclude Include="..\..\Source\VSTNode.h"/>
-    <ClInclude Include="..\..\Source\VSTNodeUI.h"/>
-    <ClInclude Include="..\..\Source\NodeFactory.h"/>
-    <ClInclude Include="..\..\Source\NodeManagerUI.h"/>
-    <ClInclude Include="..\..\Source\NodeManager.h"/>
-    <ClInclude Include="..\..\Source\DebugHelpers.h"/>
-    <ClInclude Include="..\..\Source\LGMLLogger.h"/>
-    <ClInclude Include="..\..\Source\LGMLLoggerUI.h"/>
-    <ClInclude Include="..\..\Source\ControllableEditor.h"/>
-    <ClInclude Include="..\..\Source\GenericControllableContainerEditor.h"/>
-    <ClInclude Include="..\..\Source\InspectableComponent.h"/>
-    <ClInclude Include="..\..\Source\Inspector.h"/>
-    <ClInclude Include="..\..\Source\InspectorEditor.h"/>
-    <ClInclude Include="..\..\Source\TimeManager.h"/>
-    <ClInclude Include="..\..\Source\TimeManagerUI.h"/>
-    <ClInclude Include="..\..\Source\TimeMasterCandidate.h"/>
-    <ClInclude Include="..\..\Source\ProjectManager.h"/>
-    <ClInclude Include="..\..\Source\SettingsManager.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifterFactory.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifterPanelHeader.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifterPanelTab.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifterContent.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifter.h"/>
-    <ClInclude Include="..\..\Source\GapGrabber.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifterWindow.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifterPanel.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifterContainer.h"/>
-    <ClInclude Include="..\..\Source\ShapeShifterManager.h"/>
-    <ClInclude Include="..\..\Source\BetterStepper.h"/>
-    <ClInclude Include="..\..\Source\LGMLComponentHelpers.h"/>
-    <ClInclude Include="..\..\Source\LGMLDragger.h"/>
-    <ClInclude Include="..\..\Source\LookAndFeelOO.h"/>
-    <ClInclude Include="..\..\Source\ProgressWindow.h"/>
-    <ClInclude Include="..\..\Source\Style.h"/>
+    <ClInclude Include="..\..\Source\Audio\AudioConfig.h"/>
+    <ClInclude Include="..\..\Source\Audio\AudioHelpers.h"/>
+    <ClInclude Include="..\..\Source\Audio\BufferBlockList.h"/>
+    <ClInclude Include="..\..\Source\Audio\MultiNeedle.h"/>
+    <ClInclude Include="..\..\Source\Audio\PlayableBuffer.h"/>
+    <ClInclude Include="..\..\Source\Audio\RingBuffer.h"/>
+    <ClInclude Include="..\..\Source\Audio\StretcherJob.h"/>
+    <ClInclude Include="..\..\Source\Audio\VSTManager.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Controllable.h"/>
+    <ClInclude Include="..\..\Source\Controllable\ControllableContainer.h"/>
+    <ClInclude Include="..\..\Source\Controllable\ControllableUIHelpers.h"/>
+    <ClInclude Include="..\..\Source\Controllable\ControllableIndexedContainer.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainerSync.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\GenericParameterContainerEditor.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BetterStepper.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\BoolToggleUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\EnumParameterUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\SliderUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\StepperUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterProxyUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\ParameterUIFactory.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\RangeParameterUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\StringParameterUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\UI\TriggerBlinkUI.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterContainer.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\BoolParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\EnumParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\Parameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterFactory.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\ParameterProxy.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\MinMaxParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\NumericParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\Point2DParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\Point3DParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\RangeParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\StringParameter.h"/>
+    <ClInclude Include="..\..\Source\Controllable\Parameter\Trigger.h"/>
+    <ClInclude Include="..\..\Source\Controller\Impl\MIDIController.h"/>
+    <ClInclude Include="..\..\Source\Controller\Impl\OSCController.h"/>
+    <ClInclude Include="..\..\Source\Controller\Impl\OSCDirectController.h"/>
+    <ClInclude Include="..\..\Source\Controller\Impl\SerialController.h"/>
+    <ClInclude Include="..\..\Source\Controller\Impl\SerialManager.h"/>
+    <ClInclude Include="..\..\Source\Controller\Impl\SerialPort.h"/>
+    <ClInclude Include="..\..\Source\Controller\Impl\OSCJsController.h"/>
+    <ClInclude Include="..\..\Source\Controller\UI\ControllerEditor.h"/>
+    <ClInclude Include="..\..\Source\Controller\UI\ControllerManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Controller\UI\ControllerUI.h"/>
+    <ClInclude Include="..\..\Source\Controller\Controller.h"/>
+    <ClInclude Include="..\..\Source\Controller\ControllerFactory.h"/>
+    <ClInclude Include="..\..\Source\Controller\ControllerManager.h"/>
+    <ClInclude Include="..\..\Source\Data\Data.h"/>
+    <ClInclude Include="..\..\Source\Data\DataInNode.h"/>
+    <ClInclude Include="..\..\Source\Data\DataInNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Data\DataProcessorGraph.h"/>
+    <ClInclude Include="..\..\Source\FastMapper\FastMap.h"/>
+    <ClInclude Include="..\..\Source\FastMapper\FastMapper.h"/>
+    <ClInclude Include="..\..\Source\FastMapper\FastMapperUI.h"/>
+    <ClInclude Include="..\..\Source\FastMapper\FastMapUI.h"/>
+    <ClInclude Include="..\..\Source\Logger\LGMLLogger.h"/>
+    <ClInclude Include="..\..\Source\Logger\LGMLLoggerUI.h"/>
+    <ClInclude Include="..\..\Source\MIDI\MIDIHelpers.h"/>
+    <ClInclude Include="..\..\Source\MIDI\MIDIListener.h"/>
+    <ClInclude Include="..\..\Source\MIDI\MIDIManager.h"/>
+    <ClInclude Include="..\..\Source\MIDI\MIDIUIHelper.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditor.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorDataSlot.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionEditorLink.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\UI\NodeConnectionUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Connection\NodeConnection.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioDeviceInNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioDeviceInNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioDeviceOutNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioDeviceOutNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioMixerNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\AudioMixerNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\ContainerInNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\ContainerOutNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\DummyNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\DummyNodeContentUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\LooperNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\LooperNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\LooperTrack.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\Spat2DViewerUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\VSTNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\VSTNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\JsNode.h"/>
+    <ClInclude Include="..\..\Source\Node\Impl\JsNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Manager\UI\NodeManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Node\Manager\NodeFactory.h"/>
+    <ClInclude Include="..\..\Source\Node\Manager\NodeManager.h"/>
+    <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerContentUI.h"/>
+    <ClInclude Include="..\..\Source\Node\NodeContainer\UI\NodeContainerViewer.h"/>
+    <ClInclude Include="..\..\Source\Node\NodeContainer\NodeContainer.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\NodeUIFactory.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeAudioCtlUI.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeContentUI.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeHeaderUI.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectableNodeUI.h"/>
+    <ClInclude Include="..\..\Source\Node\UI\ConnectorComponent.h"/>
+    <ClInclude Include="..\..\Source\Node\ConnectableNode.h"/>
+    <ClInclude Include="..\..\Source\Node\NodeBase.h"/>
+    <ClInclude Include="..\..\Source\Preset\PresetChooserUI.h"/>
+    <ClInclude Include="..\..\Source\Preset\PresetManager.h"/>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsContainerSync.h"/>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsEnvironment.h"/>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsEnvironmentUI.h"/>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsGlobalEnvironment.h"/>
+    <ClInclude Include="..\..\Source\Scripting\Js\JsHelpers.h"/>
+    <ClInclude Include="..\..\Source\Time\TimeManager.h"/>
+    <ClInclude Include="..\..\Source\Time\TimeManagerUI.h"/>
+    <ClInclude Include="..\..\Source\Time\TimeMasterCandidate.h"/>
+    <ClInclude Include="..\..\Source\UI\AppPropertiesUI.h"/>
+    <ClInclude Include="..\..\Source\UI\MainWindow.h"/>
+    <ClInclude Include="..\..\Source\UI\LGMLDragger.h"/>
+    <ClInclude Include="..\..\Source\UI\LookAndFeelOO.h"/>
+    <ClInclude Include="..\..\Source\UI\Outliner.h"/>
+    <ClInclude Include="..\..\Source\UI\PluginWindow.h"/>
+    <ClInclude Include="..\..\Source\UI\ProgressWindow.h"/>
+    <ClInclude Include="..\..\Source\UI\Style.h"/>
+    <ClInclude Include="..\..\Source\UI\VuMeter.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\GapGrabber.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifter.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterContainer.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterContent.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterFactory.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterManager.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanel.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelHeader.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterPanelTab.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\ShapeShifterWindow.h"/>
+    <ClInclude Include="..\..\Source\UI\ShapeShifter\TooltipPanel.h"/>
+    <ClInclude Include="..\..\Source\UI\MainComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Inspector\InspectableComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Inspector\Inspector.h"/>
+    <ClInclude Include="..\..\Source\UI\Inspector\InspectorEditor.h"/>
+    <ClInclude Include="..\..\Source\Utils\AutoUpdater.h"/>
+    <ClInclude Include="..\..\Source\Utils\FactoryUIHelpers.h"/>
+    <ClInclude Include="..\..\Source\Utils\FactoryObject.h"/>
+    <ClInclude Include="..\..\Source\Utils\FactoryBase.h"/>
+    <ClInclude Include="..\..\Source\Utils\AudioDebugCrack.h"/>
+    <ClInclude Include="..\..\Source\Utils\AudioDebugPipe.h"/>
+    <ClInclude Include="..\..\Source\Utils\AudioFucker.h"/>
+    <ClInclude Include="..\..\Source\Utils\CommandLineElements.hpp"/>
+    <ClInclude Include="..\..\Source\Utils\DebugHelpers.h"/>
+    <ClInclude Include="..\..\Source\Utils\NetworkUtils.h"/>
+    <ClInclude Include="..\..\Source\Utils\QueuedNotifier.h"/>
+    <ClInclude Include="..\..\Source\Utils\ProgressNotifier.h"/>
     <ClInclude Include="..\..\Source\Engine.h"/>
-    <ClInclude Include="..\..\Source\LGMLConfig.h"/>
-    <ClInclude Include="..\..\Source\MainComponent.h"/>
+    <ClInclude Include="..\..\Source\GitSha.h"/>
+    <ClInclude Include="..\..\Source\JuceHeaderAudio.h"/>
+    <ClInclude Include="..\..\Source\JuceHeaderCore.h"/>
+    <ClInclude Include="..\..\Source\JuceHeaderUI.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\impl\unix.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\impl\win.h"/>
     <ClInclude Include="..\..\third_party\serial\include\serial\serial.h"/>
@@ -2699,6 +2713,8 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ConcertinaPanel.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_FlexBox.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_FlexItem.h"/>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_Grid.h"/>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_GridItem.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_GroupComponent.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_MultiDocumentPanel.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_basics\layout\juce_ResizableBorderComponent.h"/>
@@ -2795,6 +2811,7 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_KeyMappingEditorComponent.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_LiveConstantEditor.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_PreferencesPanel.h"/>
+    <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_PushNotifications.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_RecentlyOpenedFilesList.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_SplashScreen.h"/>
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\misc\juce_SystemTrayIconComponent.h"/>

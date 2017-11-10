@@ -64,7 +64,7 @@ install:
 
 
 script:
-    - python Scripts/buildScript.py --build --beta --os=$TARGET;
+    - python Scripts/buildScript.py --build --os=$TARGET;
 
 after_success:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then

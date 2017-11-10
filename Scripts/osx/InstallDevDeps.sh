@@ -17,7 +17,7 @@ if [ ! -d "JUCE" ]; then
 fi
 
 
-
+# build rubberband
 cd $SCRIPTPATH
 cd ../../third_party/rubberband
 # ./configure

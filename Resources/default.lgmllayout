@@ -8,7 +8,7 @@
       {
         "type": 0,
         "width": 300,
-        "height": 47,
+        "height": 50,
         "currentContent": "Time Manager",
         "tabs": [
           {
@@ -19,12 +19,12 @@
       {
         "type": 1,
         "width": 300,
-        "height": 300,
+        "height": 695,
         "direction": 1,
         "shifters": [
           {
             "type": 1,
-            "width": 269,
+            "width": 432,
             "height": 300,
             "direction": 2,
             "shifters": [
@@ -42,7 +42,7 @@
               {
                 "type": 0,
                 "width": 300,
-                "height": 300,
+                "height": 389,
                 "currentContent": "Fast Mapper",
                 "tabs": [
                   {
@@ -54,7 +54,7 @@
           },
           {
             "type": 0,
-            "width": 300,
+            "width": 463,
             "height": 300,
             "currentContent": "Node Manager",
             "tabs": [
@@ -73,17 +73,20 @@
                 "type": 0,
                 "width": 389,
                 "height": 524,
-                "currentContent": "Inpector",
+                "currentContent": "Outliner",
                 "tabs": [
                   {
-                    "name": "Inpector"
+                    "name": "Outliner"
+                  },
+                  {
+                    "name": "Inspector"
                   }
                 ]
               },
               {
                 "type": 0,
                 "width": 576,
-                "height": 637,
+                "height": 165,
                 "currentContent": "Logger",
                 "tabs": [
                   {

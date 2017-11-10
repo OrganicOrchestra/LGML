@@ -9,9 +9,14 @@ encoding = 'utf8'
 lgmlFiles = []
 for t in types:
   lgmlFiles+= glob.glob(sourcePath+t);
+  lgmlFiles+= glob.glob(sourcePath+"**/"+t);
 
+ignoredFiles = ["GitSha.h"]
+
+lgmlFiles = [x for i in ignoredFiles for x in lgmlFiles if i not in x]
 
 def getEntete(f):
+
   enteteLines = (0,0)
   # print("parsing "+f)
   with open(f,'r',encoding=encoding) as fi:
@@ -52,16 +57,17 @@ def addEntete(f,entete):
     print( lines[0:e[0]])
     exit(1)
     return
-  if(e[0] == e[1] )and (e[0]!=0):
+  if(e[0] == e[1] ) and (e[0]!=0):
     print("weird entete content : "+f)
     print( lines[0:e[0]])
     exit(1)
   if e!=(0,0):
-    # print(lines)
-    # print(e)
-    lines = lines[e[1]+1:]
+    codestart = e[1]+1
+    while not lines[codestart].strip() and codestart < len(lines):
+      codestart+=1
+    lines = lines[codestart:]
 
-  lines=entete+lines
+  lines=entete+['\n']+lines
   with open(f,'w',encoding=encoding) as fi:
     fi.writelines(lines)
   # print (lines)
@@ -76,6 +82,7 @@ if(not desiredEntete):
   raise NameError('no entete found')
 
 for f in fl:
+  print ("adding entete on ", f)
   entete = addEntete(f,desiredEntete);
   if entete == (0,0):
     print("no entete in" + f)

@@ -4,6 +4,9 @@ jobs:
     working_directory: ~/LGML
     docker:
       - image: ubuntu
+        environment:
+          TARGET_ARCH: -m64 # arch for linux makefile
+          DST_LGML_PATH: /tmp/build/
     steps:
       - checkout
       - run:
@@ -11,13 +14,84 @@ jobs:
           command: |
             apt-get -qq update
             apt-get install -y git
-            git submodule update --init --recursive --remote
+            git submodule update --init --recursive
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
-      - run:
-          name: build LGML
-          command: |
-            python Scripts/buildScript.py --build --beta --os=linux;
 
+      - run:
+          name: build and package LGML
+          command: |
+            python Scripts/buildScript.py --build --package --exportpath="$DST_LGML_PATH" --os=linux --configuration=Ubuntu;
+            ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
+      - store_artifacts:
+          path: /tmp/build/
+
+
+  build32:
+    working_directory: ~/LGML
+    docker:
+      - image: dockcross/linux-x86
+        environment:
+          PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
+          TARGET_CPU: i386
+          TARGET_ARCH: -m32 # arch for JUCEs linux makefile
+          DST_LGML_PATH: /tmp/build32/
+
+    steps:
+      - checkout
+      - run:
+          name: install LGML32 dependencies
+          command: |
+            apt-get -qq update
+            apt-get install -y git
+            git submodule update --init --recursive
+            sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
+      - run:
+          name: build and package LGML32
+          command: |
+            python Scripts/buildScript.py --package --exportpath="$DST_LGML_PATH" --os=linux;
+            ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
+      - store_artifacts:
+          path: /tmp/build32 #$DST_LGML_PATH
+
+###############
+# build Rasp
+##############
+
+  build_rasp:
+    working_directory: ~/LGML
+    docker:
+      - image: codingwell/rpi-raspbian-qemu
+        environment:
+          TARGET_CPU: armhf
+          TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
+          DST_LGML_PATH: /tmp/buildRasp/
+
+    steps:
+      - checkout
+      - run:
+          name: install LGMLRasp dependencies
+          command: |
+            apt-get -qq update
+            apt-get install -y git
+            git submodule update --init --recursive
+            sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
+      - run:
+          name: build and package LGMLRasp
+          command: |
+            cross-build-start
+            python Scripts/buildScript.py --package --exportpath="$DST_LGML_PATH" --os=linux;
+            ldd ~/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
+            cross-build-end
+      - store_artifacts:
+          path: /tmp/buildRasp/
+
+
+workflows:
+  version: 2
+  build_all_platforms:
+    jobs:
+      - build
+      - build32
 
 
 general:
