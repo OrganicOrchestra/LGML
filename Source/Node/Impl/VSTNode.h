@@ -50,6 +50,9 @@ public:
             isDisplayed = addNewParameter<BoolParameter> ("isDisplayed", "is the plugin window displayed", false);
             currentPresetName->isPresettable = false;
             isHidenInEditor = true;
+            x->isControllableExposed = false;
+            y->isControllableExposed = false;
+            isDisplayed->isControllableExposed = false;
             
         }
 

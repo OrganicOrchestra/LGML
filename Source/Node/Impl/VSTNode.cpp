@@ -51,6 +51,7 @@ midiChooser(this,false,true)
     identifierString = addNewParameter<StringParameter> ("VST Identifier", "string that identify a VST", "");
     identifierString->isEditable = false;
     identifierString->isHidenInEditor = true;
+    
     addChildControllableContainer (&pluginWindowParameter);
     
     midiActivityTrigger =  addNewParameter<Trigger> ("Midi Activity", "Midi Activity indicator");
