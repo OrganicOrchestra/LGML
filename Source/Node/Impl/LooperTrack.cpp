@@ -483,7 +483,7 @@ void LooperTrack::handleEndOfRecording()
         
         playableBuffer.setRecordedLength (desiredSize);
         beatLength->setValue (playableBuffer.getRecordedLength() * 1.0 / info.beatInSample, false, false);
-        //      tm->goToTime(offsetForPlay, false);//desiredSize+offsetForPlay,true);
+        tm->goToTime(sampleToRemove, true);
         startPlayBeat = 0;
         jassert (tm->playState->boolValue());
         releaseMasterTrack();
