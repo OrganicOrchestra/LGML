@@ -107,6 +107,10 @@ totalLogRow (0)
     clearB.addListener (this);
     addAndMakeVisible (clearB);
 
+    copyB.setButtonText("Copy");
+    copyB.addListener(this);
+    addAndMakeVisible(copyB);
+
 }
 
 LGMLLoggerUI::~LGMLLoggerUI()
@@ -120,7 +124,9 @@ void LGMLLoggerUI::resized()
 {
 
     Rectangle<int> area = getLocalBounds();
-    clearB.setBounds (area.removeFromBottom (30).reduced (5));
+    auto footer =area.removeFromBottom (30).reduced (5);
+    clearB.setBounds (footer.removeFromLeft(footer.getWidth()/2).reduced(2));
+    copyB.setBounds(footer.reduced(2));
     logListComponent->setBounds (area);
     bool firstVisible  = area.getWidth() > 400;
     logListComponent->getHeader().setColumnVisible (1, firstVisible);
@@ -337,5 +343,18 @@ void LGMLLoggerUI::buttonClicked (Button* b)
         totalLogRow = 0;
         logListComponent->updateContent();
         LOG ("Cleared.");
+    }
+
+    else if (b == &copyB){
+        String s;
+        for(auto & el: logElements){
+            int leftS = el->source.length() + 3;
+            s+=el->source+" : ";
+            for(int i = 0 ; i < el->getNumLines() ; i++){
+                if (i!=0)for ( int j = 0; j < leftS ; j++) s+=" ";
+                s+=el->getLine(i)+"\n";
+            }
+        }
+        SystemClipboard::copyTextToClipboard (s);
     }
 }

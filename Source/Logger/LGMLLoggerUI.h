@@ -61,7 +61,7 @@ public:
 
     void resized()override;
     LogList logList;
-    TextButton clearB;
+    TextButton clearB,copyB;
     ScopedPointer<TableListBox> logListComponent;
     int maxNumElement;
 
