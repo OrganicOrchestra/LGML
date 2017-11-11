@@ -99,7 +99,7 @@ def generate_filelist():
 
 def package_source(fileListPath = None):
   fileListPath = fileListPath or generate_filelist()
-  sh('tar -zcvf "'+distDir+lgmlname+'.orig.tar.gz" --directory="'+rootDir+'" -T '+fileListPath)
+  sh('COPYFILE_DISABLE=1 tar -zcvf "'+distDir+lgmlname+'.orig.tar.gz" --directory="'+rootDir+'" -T '+fileListPath)
 
 def copy_source(fileListPath=None):
   fileListPath = fileListPath or generate_filelist()
@@ -140,6 +140,6 @@ def exportApp(baseName,configuration,exportpath = None):
 
 
 if __name__ == '__main__':
-  copy_source()
+  package_source()
 
 
