@@ -36,17 +36,43 @@ void BoolToggleUI::paint (Graphics& g)
     // we are on component deletion
     if (shouldBailOut())return;
 
-    Colour onColour = parameter->isEditable ? findColour (TextButton::buttonOnColourId) : findColour (TextButton::buttonColourId).withAlpha (0.f);
+    Colour onColour =
+//    parameter->isEditable ?
+        findColour (TextButton::buttonOnColourId)
+//        :Colours::green
+    ;
 
     bool valCheck = ((BoolParameter*)parameter.get())->invertVisuals ? !parameter->boolValue() : parameter->boolValue();
     Colour c =  valCheck ? onColour  : findColour (TextButton::buttonColourId);
 
-    g.setGradientFill (ColourGradient (c.brighter(), (float)getLocalBounds().getCentreX(), (float)getLocalBounds().getCentreY(), c.darker(), 2.f, 2.f, true));
-    g.fillRoundedRectangle (getLocalBounds().toFloat(), 2);
+    const int fontHeight=10;
 
-    g.setFont (10);
+    if(!parameter->isEditable){
+        g.setColour(c);
+        auto tbound = getLocalBounds()
+                                    .removeFromLeft(fontHeight)
+                                    .withSizeKeepingCentre(fontHeight, fontHeight)
+                                    .reduced(1).toFloat() ;
+
+//        if(valCheck){
+            g.setColour(c);
+            g.fillEllipse(tbound);
+//        }
+//        else{
+//            g.setColour(Colours::black);
+//            g.drawEllipse(tbound,1);
+//        }
+
+    }
+    else{
+        g.setGradientFill (ColourGradient (c.brighter(), (float)getLocalBounds().getCentreX(), (float)getLocalBounds().getCentreY(), c.darker(), 2.f, 2.f, true));
+        g.fillRoundedRectangle (getLocalBounds().toFloat(), 2);
+    }
+
+    g.setFont (fontHeight);
     g.setColour (findColour(valCheck?TextButton::textColourOnId : TextButton::textColourOffId));
 
+    if(showLabel){
     if (customTextDisplayed.isNotEmpty())
     {
         g.drawText (customTextDisplayed, getLocalBounds().reduced (2).toFloat(), Justification::centred);
@@ -54,6 +80,7 @@ void BoolToggleUI::paint (Graphics& g)
     else
     {
         g.drawText (parameter->niceName, getLocalBounds().reduced (2).toFloat(), Justification::centred);
+    }
     }
 }
 
