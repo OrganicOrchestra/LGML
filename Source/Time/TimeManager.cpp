@@ -368,7 +368,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
             clickFader->startFadeOut();
         }
 
-        double cVol = clickVolume->floatValue();
+        double cVol = float01ToGain (clickVolume->floatValue());
 
         for (int i = 0 ; i < numSamples; i++)
         {
@@ -389,7 +389,7 @@ void TimeManager::audioDeviceIOCallback (const float** /*inputChannelData*/,
             double cFade = clickFader->getCurrentFade();
 
             double env = cVol * cFade * jmax (0.0, h); //*exp(1.0-h));
-
+            jassert(env < 1.0);
             float res = ( env * (sin (2.0 * M_PI * carg ) + 0.1 * sin (2.0 * M_PI * 4.0 * carg )));
 
             for (int c = 0 ; c < numOutputChannels ; c++ ) {outputChannelData[c][i] = res;}
