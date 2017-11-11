@@ -101,7 +101,7 @@ public:
         }
 
         if(controllerManagerUI->controllersUI.size()==0){
-            int side = (int)( jmin(getWidth(),getHeight()) * .75);
+            int side = (int)( jmin(getWidth(),getHeight()) * .5);
             addControllerBt.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
         }
         else{

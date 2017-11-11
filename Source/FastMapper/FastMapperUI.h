@@ -121,7 +121,13 @@ public:
         Rectangle<int> targetBounds = getLocalBounds().withPosition (fastMapperUI->getPosition()).withHeight (th);
         targetBounds.removeFromRight (vp.getScrollBarThickness());
         fastMapperUI->setBounds (targetBounds);
-        addFastMapButton.setFromParentBounds (getLocalBounds());
+        if(fastMapperUI->mapsUI.size()==0){
+            int side = (int)( jmin(getWidth(),getHeight()) * .5);
+            addFastMapButton.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
+        }
+        else{
+            addFastMapButton.setFromParentBounds (getLocalBounds());
+        }
     }
 
     void fastMapperContentChanged (FastMapperUI*)override
