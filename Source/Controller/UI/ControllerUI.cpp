@@ -83,9 +83,15 @@ ControllerUI::ControllerUI (Controller* controller) :
     removeBT.addListener (this);
     addAndMakeVisible (removeBT);
 
+    if(auto *c = controller->getControllableByName("connectedtoremote")){
+        isConnectedUI = ParameterUIFactory::createDefaultUI((Parameter*)c);
+        isConnectedUI->showLabel = false;
+        addAndMakeVisible(isConnectedUI);
+    }
 
     inActivityBlink = new TriggerBlinkUI (controller->inActivityTrigger);
     outActivityBlink = new TriggerBlinkUI (controller->outActivityTrigger);
+
     inActivityBlink->showLabel = false;
     addAndMakeVisible (inActivityBlink);
     outActivityBlink->showLabel = false;
@@ -127,7 +133,9 @@ void ControllerUI::resized()
     r.removeFromRight (2);
     outActivityBlink->setBounds (r.removeFromRight (r.getHeight()/2).reduced (2));
     inActivityBlink->setBounds (r.removeFromRight (r.getHeight()/2).reduced (2));
-
+    if(isConnectedUI){
+        isConnectedUI->setBounds(r.removeFromRight(r.getHeight()).reduced(2));
+    }
     enabledBT->setBounds (r.removeFromLeft (r.getHeight()));
     showUserParams->setBounds(r.removeFromLeft (r.getHeight()).reduced (4));
     r.removeFromLeft (5);

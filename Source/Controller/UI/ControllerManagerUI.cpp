@@ -107,6 +107,10 @@ void ControllerManagerUI::removeControllerUI (Controller* controller)
     notifyParentViewPort();
 
 }
+void ControllerManagerUI::notifyParentViewPort() {
+    if (auto* p = findParentComponentOfClass<ControllerManagerUIViewport>())
+        p->resized();
+}
 
 ControllerUI* ControllerManagerUI::getUIForController (Controller* controller)
 {

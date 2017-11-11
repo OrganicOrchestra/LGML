@@ -55,7 +55,7 @@ private:
     // Inherited via Listener
     void controllerAdded (Controller*) override;
     void controllerRemoved (Controller*) override;
-    void notifyParentViewPort() {if (auto* p = getParentComponent()) p->resized();}
+    void notifyParentViewPort() ;
 };
 
 
@@ -95,10 +95,18 @@ public:
         bool needResize = controllerManagerUI->getHeight()==th;
 
         controllerManagerUI->setBounds (targetBounds);
+        // resize not called if no change in heights, but internal state yes
         if(needResize){
             controllerManagerUI->resized();
         }
+
+        if(controllerManagerUI->controllersUI.size()==0){
+            int side = (int)( jmin(getWidth(),getHeight()) * .75);
+            addControllerBt.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
+        }
+        else{
         addControllerBt.setFromParentBounds (getLocalBounds());
+        }
     }
 
     void buttonClicked (Button*) override;

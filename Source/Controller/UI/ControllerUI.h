@@ -32,6 +32,7 @@ public:
 
     ScopedPointer<StringParameterUI> nameTF;
     ScopedPointer<ParameterUI> enabledBT;
+    ScopedPointer<ParameterUI> isConnectedUI;
     ImageButton removeBT;
 
     ScopedPointer<TriggerBlinkUI> inActivityBlink,outActivityBlink;
