@@ -239,17 +239,7 @@ void ShapeShifterManager::loadLayout (var layout)
     var lData = layout.getDynamicObject()->getProperty ("mainLayout");
     mainShifterContainer.loadLayout (lData);
     mainShifterContainer.resized();
-    //  if(auto * p = mainShifterContainer.getParentComponent()){
-    //    p->resized();
-    //  }
-    //  int targetB = (int)lData.getProperty("width", -2);
-    //  if( targetB<0 ){
-    //    mainShifterContainer.setPreferredWidth(mainShifterContainer.getParentWidth());
-    //  }
-    //  targetB = (int)lData.getProperty("height", -2);
-    //  if( targetB<0 ){
-    //    mainShifterContainer.setPreferredHeight(mainShifterContainer.getParentHeight());
-    //  }
+
 
     Array<var>* wData = layout.getDynamicObject()->getProperty ("windows").getArray();
 
@@ -319,13 +309,24 @@ void ShapeShifterManager::loadLayoutFromFile (const File& fromFile)
 
 void ShapeShifterManager::loadLastSessionLayoutFile()
 {
-    if (lastFile.exists())
+    bool hasFile =lastFile.exists();
+    if (hasFile)
     {
         loadLayoutFromFile (lastFile);
-    }
-    else
-    {
 
+    }
+    bool hasLoadedSuccessfully = mainShifterContainer.shifters.size()!=0;
+
+    if(!hasFile || !hasLoadedSuccessfully)
+    {
+        if(!hasLoadedSuccessfully && hasFile){
+            String bkName = lastFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
+            File bkFile = lastFile.getParentDirectory().getChildFile(bkName);
+            LOG("!!! last layout file not valid moving to :" << bkFile.getFullPathName());
+            if(!lastFile.moveFileTo(bkFile)){
+                LOG("!!! can't move last layout file");
+            }
+        }
         loadDefaultLayoutFile();
     }
 }
@@ -333,17 +334,27 @@ void ShapeShifterManager::loadLastSessionLayoutFile()
 void ShapeShifterManager::loadDefaultLayoutFile()
 {
     File defaultFile = defaultFolder.getChildFile ("default." + appLayoutExtension);
-
-    if (defaultFile.exists())
+    bool hasDefaultFile = defaultFile.exists();
+    if (hasDefaultFile)
     {
         loadLayoutFromFile (defaultFile);
     }
-    else
+    bool hasLoadedSuccessfully = mainShifterContainer.shifters.size()!=0;
+
+    // move corrupted file to .bak sibling
+    if(!hasLoadedSuccessfully && hasDefaultFile){
+        String bkName = defaultFile.getFileNameWithoutExtension()+".bak."+appLayoutExtension;
+        File bkFile = defaultFile.getParentDirectory().getChildFile(bkName);
+        LOG("!!! default layout file not valid moving to :" << bkFile.getFullPathName());
+        if(!defaultFile.moveFileTo(bkFile)){
+            LOG("!!! can't move default layout file");
+        }
+    }
+    //load from app
+    if(!hasDefaultFile || !hasLoadedSuccessfully)
     {
         String defaultLayoutFileData = String::fromUTF8 (BinaryData::default_lgmllayout);
         loadLayout (JSON::parse (defaultLayoutFileData));
-        //File layoutFolder = File::getSpecialLocation(File::SpecialLocationType::userDocumentsDirectory).getChildFile(appSubFolder);
-        //saveCurrentLayoutToFile(layoutFolder.getChildFile("default.lgmllayout"));
     }
 }
 

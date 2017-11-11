@@ -107,7 +107,7 @@ totalLogRow (0)
     clearB.addListener (this);
     addAndMakeVisible (clearB);
 
-    copyB.setButtonText("Copy");
+    copyB.setButtonText("Copy to Clipboard");
     copyB.addListener(this);
     addAndMakeVisible(copyB);
 
