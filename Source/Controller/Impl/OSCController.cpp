@@ -105,6 +105,7 @@ void OSCController::setupReceiver()
 
     if (!receiver.connect (localPortParam->stringValue().getIntValue()))
     {
+
         LOG ("!!! can't connect to local port : " + localPortParam->stringValue());
     };
 
@@ -123,7 +124,6 @@ void OSCController::setupSender()
     }
 
 }
-
 
 
 void OSCController::resolveHostnameIfNeeded()
@@ -146,6 +146,7 @@ void OSCController::resolveHostnameIfNeeded()
 
                 if (!remotePortParam->isSettingValue && remotePortParam->stringValue() != resolvedPortString)
                 {
+
                     //    enssure to not create feedback on ports
                     if(remoteIP == "127.0.0.1" &&
                        resolved.port == localPortParam->stringValue().getIntValue()){
@@ -160,8 +161,12 @@ void OSCController::resolveHostnameIfNeeded()
                 }
                 }
                 hostNameResolved = true;
-                LOG ("resolved IP : " << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
-                isConnectedToRemote->setValue (sender.connect (remoteIP, remotePortParam->stringValue().getIntValue()));
+                int portNum = remotePortParam->stringValue().getTrailingIntValue();
+                bool connected = portNum>=100 && portNum <= 20000;
+                if(connected)connected = sender.connect (remoteIP,portNum );
+                isConnectedToRemote->setValue (connected);
+
+                LOG ((connected?"":"!! un-") <<"resolved IP : " << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
             }
             else
             {
@@ -171,7 +176,10 @@ void OSCController::resolveHostnameIfNeeded()
         else
         {
             remoteIP = hostName;
-            isConnectedToRemote->setValue (sender.connect (remoteIP, remotePortParam->stringValue().getIntValue()));
+            int portNum  = remotePortParam->stringValue().getTrailingIntValue();
+            isConnectedToRemote->setValue ((portNum >= 100 && portNum <= 20000)?
+                                           sender.connect (remoteIP, portNum):
+                                           false);
             hostNameResolved = true;
         }
     }
