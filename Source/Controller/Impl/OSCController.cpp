@@ -70,9 +70,7 @@ OSCController::OSCController (const String& _name) :
     static OSCClientModel model;
     remoteHostParam = addNewParameter<EnumParameter> ("Remote Host", "The host's IP of the remote controller", &model, var ("localhost"), true);
 
-    isConnectedToRemote = addNewParameter<BoolParameter> ("Connected To Remote", "status of remote connection", false);
-    isConnectedToRemote->isEditable = false;
-    isConnectedToRemote->isSavable = false;
+    
     logIncomingOSC = addNewParameter<BoolParameter> ("logIncomingOSC", "log the incoming OSC Messages", false);
     logOutGoingOSC = addNewParameter<BoolParameter> ("logOutGoingOSC", "log the outGoing OSC Messages", false);
     speedLimit = addNewParameter<FloatParameter> ("speedLimit", "min interval (ms) between 2 series of " + String (NUM_OSC_MSG_IN_A_ROW) + " OSCMessages", 0.f, 0.f, 100.f);
@@ -113,7 +111,7 @@ void OSCController::setupReceiver()
 }
 void OSCController::setupSender()
 {
-    isConnectedToRemote->setValue (false);
+    isConnected->setValue (false);
     sender.disconnect();
     hostNameResolved = false;
     resolveHostnameIfNeeded();
@@ -164,7 +162,7 @@ void OSCController::resolveHostnameIfNeeded()
                 int portNum = remotePortParam->stringValue().getTrailingIntValue();
                 bool connected = portNum>=100 && portNum <= 20000;
                 if(connected)connected = sender.connect (remoteIP,portNum );
-                isConnectedToRemote->setValue (connected);
+                isConnected->setValue (connected);
 
                 LOG ((connected?"":"!! un-") <<"resolved IP : " << hostName << " > " << remoteIP << ":" << remotePortParam->stringValue());
             }
@@ -177,7 +175,7 @@ void OSCController::resolveHostnameIfNeeded()
         {
             remoteIP = hostName;
             int portNum  = remotePortParam->stringValue().getTrailingIntValue();
-            isConnectedToRemote->setValue ((portNum >= 100 && portNum <= 20000)?
+            isConnected->setValue ((portNum >= 100 && portNum <= 20000)?
                                            sender.connect (remoteIP, portNum):
                                            false);
             hostNameResolved = true;
@@ -523,7 +521,7 @@ bool OSCController::sendOSCInternal (OSCMessage& m)
 {
     if (logOutGoingOSC->boolValue()) { logMessage (m, "Out:");}
     outActivityTrigger->trigger();
-    if(isConnectedToRemote->boolValue()){
+    if(isConnected->boolValue()){
     return sender.send (m);
     }
     else{

@@ -38,6 +38,7 @@ public:
     int controllerTypeEnum;
 
     BoolParameter* enabledParam;
+    BoolParameter *isConnected;
 
     Trigger* inActivityTrigger,*outActivityTrigger;
 

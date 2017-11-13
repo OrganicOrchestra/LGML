@@ -245,6 +245,7 @@ void SerialReadThread::run()
 
 
     }
+    port->close();
 
 #endif
 

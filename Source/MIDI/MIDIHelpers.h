@@ -24,7 +24,8 @@
 namespace MIDIHelpers{
 
 EnumParameterModel * getGlobalMidiModel();
-    struct MIDIIOChooser : EnumParameter::EnumListener{
+
+struct MIDIIOChooser : EnumParameter::EnumListener{
         MIDIIOChooser(MIDIListener *l,bool autoOut,bool showControllers);
         EnumParameter * getDeviceInEnumParameter();
     private:

@@ -35,6 +35,10 @@ Controller::Controller (StringRef _name) :
 
     enabledParam = addNewParameter<BoolParameter> ("Enabled", "Set whether the controller is enabled or disabled", true);
 
+    isConnected = addNewParameter<BoolParameter> ("Connected", "status of Controller connection", false);
+    isConnected->isEditable = false;
+    isConnected->isSavable = false;
+
     inActivityTrigger =  addNewParameter<Trigger> ("in activity", "In Activity indicator");
     outActivityTrigger =  addNewParameter<Trigger> ("out activity", "Out Activity indicator");
     inActivityTrigger->isEditable = false;

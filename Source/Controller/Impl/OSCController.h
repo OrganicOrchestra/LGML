@@ -42,8 +42,6 @@ public:
     BoolParameter* blockFeedback; // if a parameter is updated from processOSC , stops any osc out with same address
     Trigger* sendAllParameters;
     
-    BoolParameter* isConnectedToRemote;
-
 
 
     float lastOSCMessageSentTime;

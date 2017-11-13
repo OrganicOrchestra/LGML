@@ -291,8 +291,9 @@ bool EnumParameter::checkValueIsTheSame (const var& v1, const var& v2)
 
 
     if ( !v1.getDynamicObject() || !v2.getDynamicObject()) return false;
-
-    bool selectionChanged = getSelectedSetIds (v1) !=  getSelectedSetIds (v2);
+    auto sId1 =getSelectedSetIds (v1);
+    auto sId2 = getSelectedSetIds (v2);
+    bool selectionChanged = sId1 !=sId2;
     bool modelChanged = getModelPropsFromVar (v1) != getModelPropsFromVar (v2);
     bool hasChanged = (selectionChanged || modelChanged);
 

@@ -41,7 +41,7 @@ public:
     SerialPort* port;
 
 
-    Array<Parameter*> serialVariables;
+    
     void controllableAdded (ControllableContainer*, Controllable*) override;
     void controllableRemoved (ControllableContainer*, Controllable*) override;
     //Script
@@ -72,22 +72,6 @@ public:
     virtual void portRemoved (SerialPort*) override;
     virtual void serialDataReceived (const var& data) override;
 
-
-    
-
-
-    class SerialControllerListener
-    {
-    public:
-        virtual ~SerialControllerListener() {}
-        virtual void portOpened() {}
-        virtual void portClosed() {}
-        virtual void currentPortChanged() {}
-    };
-
-    ListenerList<SerialControllerListener> serialControllerListeners;
-    void addSerialControllerListener (SerialControllerListener* newListener) { serialControllerListeners.add (newListener); }
-    void removeSerialControllerListener (SerialControllerListener* listener) { serialControllerListeners.remove (listener); }
 
 
     // Inherited via SerialManagerListener

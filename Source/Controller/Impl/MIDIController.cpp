@@ -184,7 +184,12 @@ void MIDIController::onContainerParameterChanged (Parameter* p)
     {
         setNamespaceName ("controllers." + shortName);
     }
-    
+    if(p==midiChooser.getDeviceInEnumParameter()){
+        auto ep = midiChooser.getDeviceInEnumParameter();
+        auto selId = ep->getFirstSelectedId();
+        bool connected = ep->getModel()->isValidId(selId);
+        isConnected->setValue(connected);
+    }
 }
 
 void MIDIController::midiMessageSent(){

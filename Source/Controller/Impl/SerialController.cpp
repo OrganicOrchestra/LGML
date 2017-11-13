@@ -77,9 +77,9 @@ void SerialController::setCurrentPort (SerialPort* _port)
     {
         DBG ("set port null");
     }
-
+    isConnected->setValue(port!=nullptr);
     DBG ("current port changed");
-    serialControllerListeners.call (&SerialControllerListener::currentPortChanged);
+
 }
 
 void SerialController::newJsFileLoaded()
@@ -125,14 +125,13 @@ void SerialController::buildLocalEnv()
 
 void SerialController::portOpened (SerialPort* )
 {
-    serialControllerListeners.call (&SerialControllerListener::portOpened);
-
     sendIdentificationQuery();
+    isConnected->setValue(true);
 }
 
 void SerialController::portClosed (SerialPort*)
 {
-    serialControllerListeners.call (&SerialControllerListener::portClosed);
+    isConnected->setValue(false);
 }
 
 void SerialController::portRemoved (SerialPort*)
@@ -185,11 +184,6 @@ void SerialController::processMessage (const String& message)
         //identification
         deviceID = split[1];
 
-        while (serialVariables.size() > 0)
-        {
-            serialVariables.removeAllInstancesOf (serialVariables[0]);
-        }
-
     }
     else if (command == "a")
     {
@@ -211,7 +205,7 @@ void SerialController::processMessage (const String& message)
                 v = userContainer.addNewParameter<FloatParameter> (split[1], split[1], 0.f);
             }
 
-            serialVariables.add (v);
+
         }
     }
     else if (command == "d")
@@ -221,7 +215,7 @@ void SerialController::processMessage (const String& message)
         if (!found )
         {
             BoolParameter* v = userContainer.addNewParameter<BoolParameter> (split[1], split[1], false);
-            serialVariables.add (v);
+
         }
     }
     else if (command == "u")

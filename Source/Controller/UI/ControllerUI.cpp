@@ -83,7 +83,7 @@ ControllerUI::ControllerUI (Controller* controller) :
     removeBT.addListener (this);
     addAndMakeVisible (removeBT);
 
-    if(auto *c = controller->getControllableByName("connectedtoremote")){
+    if(auto *c = controller->isConnected){
         isConnectedUI = ParameterUIFactory::createDefaultUI((Parameter*)c);
         isConnectedUI->showLabel = false;
         addAndMakeVisible(isConnectedUI);

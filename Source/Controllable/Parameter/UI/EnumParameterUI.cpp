@@ -161,7 +161,7 @@ void EnumParameterUI::comboBoxChanged (ComboBox* c)
             }
             else
             {
-                ep->unselectAll();
+                ep->setValue(var::undefined());
             }
         }
         else if (id == addElementId )
