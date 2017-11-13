@@ -119,8 +119,11 @@ public:
         else
         {
             int cH = r.getHeight();
-            if(auto ed = inspector->getCurrentEditor())
-                cH = ed->getContentHeight();
+            if(auto ed = inspector->getCurrentEditor()){
+                if(int tH = ed->getContentHeight())
+                    cH = tH;
+            }
+
 
 
 
