@@ -18,9 +18,10 @@
 
 #include "../Parameter.h"
 #include "../../../JuceHeaderUI.h"
+#include "../../../UI/Inspector/InspectableComponent.h"
 
 
-class ParameterUI : public juce::Component,
+class ParameterUI : public InspectableComponent,
     protected Parameter::AsyncListener,
     private Parameter::Listener,
     public SettableTooltipClient,
@@ -69,17 +70,7 @@ protected:
 
 private:
     // see Parameter::AsyncListener
-    virtual void newMessage (const Parameter::ParamWithValue& p) override
-    {
-        if (p.isRange())
-        {
-            rangeChanged (p.parameter);
-        }
-        else
-        {
-            valueChanged (p.value);
-        }
-    };
+    virtual void newMessage (const Parameter::ParamWithValue& p) override;
 
     // never change this as value can be changed from other threads
     void parameterValueChanged (Parameter* ) override {};

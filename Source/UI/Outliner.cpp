@@ -35,7 +35,7 @@ showUserContainer(false)
 
 
     showHiddenContainers = false;
-
+    treeView.setIndentSize(10);
     setRoot(baseRoot);
     addAndMakeVisible (treeView);
     treeView.getViewport()->setScrollBarThickness (10);
@@ -325,7 +325,8 @@ bool OutlinerItem::mightContainSubItems()
 
 Component* OutlinerItem::createItemComponent()
 {
-    return new OutlinerItemComponent (this);
+    currentDisplayedComponent = new OutlinerItemComponent (this);
+    return currentDisplayedComponent;
 }
 
 //TODO better outliner name filtering
@@ -392,6 +393,21 @@ String OutlinerItem::getUniqueName() const
 
 };
 
+
+void OutlinerItem::itemSelectionChanged (bool isNowSelected){
+    if(auto c= static_cast<OutlinerItemComponent*>(currentDisplayedComponent.get())){
+        auto* insp = Inspector::getInstance();
+        if(insp->getCurrentComponent()!=c){
+            if(isNowSelected ){
+            insp->setCurrentComponent(c);
+            }
+            else{
+                insp->setCurrentComponent(nullptr);
+            }
+
+        }
+    }
+}
 ////////////////////////////
 // OutlinerItemComponent
 ////////////////////////
@@ -404,7 +420,10 @@ label ("label", _item->isContainer ? item->container->getNiceName() : item->para
 paramUI (nullptr)
 
 {
-
+    if(!_item->isContainer){
+        InspectableComponent::relatedParameter = _item->parameter;
+        InspectableComponent::relatedParameterContainer = nullptr;
+    }
     setTooltip (item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
     if(item->isContainer?item->container->isUserDefined : item->parameter->isUserDefined){
         label.setEditable(false,true,false);
@@ -447,7 +466,12 @@ void OutlinerItemComponent::resized()
 
     if (paramUI)
     {
+        const int minParamDisplayWidth = 200;
+
+        paramUI->setVisible(r.getWidth()>minParamDisplayWidth);
+        if(paramUI->isVisible()){
         paramUI->setBounds (r.removeFromRight (r.getWidth() / 2).reduced (2));
+        }
     }
     if(addUserParamBt){
         addUserParamBt->setBounds(r.removeFromRight(r.getHeight()).reduced(2));
@@ -473,8 +497,8 @@ void OutlinerItemComponent::paint (Graphics& g)
         g.fillRoundedRectangle (r.withSize (labelWidth + 20, r.getHeight()).toFloat(), 2);
     }
 
-    r.removeFromLeft (3);
-    label.setBounds (r);
+    
+
     label.setColour (Label::textColourId, item->isSelected() ? Colours::grey.darker() : c);
 
 
@@ -509,17 +533,12 @@ void OutlinerItemComponent::mouseDown (const MouseEvent& e)
     }
     else{
         item->setSelected (true, true);
-        if(item->isContainer)
-            selectThis();
+//        if(item->isContainer)
+
     }
 }
 
-InspectorEditor* OutlinerItemComponent::createEditor()
-{
-    if (item->isContainer) return InspectableComponent::createEditor();
 
-    return nullptr;//new ParameterEditor(this,item->parameter);
-}
 
 void OutlinerItemComponent::buttonClicked (Button* b){
     if(b==addUserParamBt){

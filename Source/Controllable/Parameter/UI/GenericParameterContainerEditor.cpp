@@ -89,8 +89,8 @@ void GenericParameterContainerEditor::setCurrentInspectedContainer (ParameterCon
 
 int GenericParameterContainerEditor::getContentHeight() const
 {
-    if (innerContainer == nullptr) return InspectorEditor::getContentHeight();
-    else return InspectorEditor::getContentHeight() + innerContainer->getContentHeight() + parentBT.getHeight() + 5;
+    if (innerContainer == nullptr) return 0;
+    else return  innerContainer->getContentHeight() + parentBT.getHeight() + 5;
 }
 
 void GenericParameterContainerEditor::resized()

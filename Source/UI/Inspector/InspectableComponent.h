@@ -19,6 +19,7 @@
 #include "../../JuceHeaderUI.h"//keep
 
 class ParameterContainer;
+class Parameter;
 class Inspector;
 class InspectorEditor;
 
@@ -27,6 +28,7 @@ class InspectableComponent : public juce::Component
 {
 public:
     InspectableComponent (ParameterContainer* relatedContainer = nullptr, const String& inspectableType = "none");
+    InspectableComponent (Parameter* relatedParameter , const String& inspectableType = "none");
 
     virtual ~InspectableComponent();
 
@@ -34,6 +36,7 @@ public:
     const String inspectableType;
 
     ParameterContainer* getRelatedParameterContainer();
+    Parameter * getRelatedParameter();
     virtual InspectorEditor* createEditor();
 
 
@@ -54,8 +57,10 @@ public:
     void paintOverChildren (juce::Graphics& g) override;
 
 
-private:
+protected:
     ParameterContainer* relatedParameterContainer;
+    Parameter* relatedParameter;
+private:
     WeakReference<InspectableComponent>::Master masterReference;
     friend class WeakReference<InspectableComponent>;
     

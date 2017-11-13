@@ -52,7 +52,7 @@ void ControllerEditor::resized()
 
 int ControllerEditor::getContentHeight() const
 {
-    return InspectorEditor::getContentHeight() + 20  + (editor ? editor->getContentHeight() : 0);
+    return  20  + (editor ? editor->getContentHeight() : 0);
 }
 
 

@@ -99,6 +99,9 @@ void ParameterUI::mouseDown (const MouseEvent& e)
                 break;
         }
     }
+    if(e.mods.isAltDown()){
+        Inspector::getInstance()->setCurrentComponent(this);
+    }
 }
 
 
@@ -248,6 +251,18 @@ void ParameterUI::setMappingDest (bool _isMappingDest)
 
 }
 
+void ParameterUI::newMessage (const Parameter::ParamWithValue& p)
+{
+    if (p.isRange())
+    {
+        rangeChanged (p.parameter);
+    }
+    else
+    {
+        valueChanged (p.value);
+    }
+};
+
 
 
 
@@ -261,7 +276,8 @@ NamedParameterUI::NamedParameterUI (ParameterUI* ui, int _labelWidth, bool label
     labelWidth (_labelWidth),
     labelAbove (labelA)
 {
-
+    // prevent mapping state for named parameterUI -> inner will handle it
+    setMappingState(false);
     addAndMakeVisible (controllableLabel);
 
     controllableLabel.setJustificationType (Justification::centredLeft);

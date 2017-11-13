@@ -90,18 +90,40 @@ void FastMapperUI::resetAndUpdateView()
 void FastMapperUI::setViewFilter (ControllableContainer* filterContainer)
 {
     viewFilterContainer = filterContainer;
+    viewFilterControllable = nullptr;
+    MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
+}
+
+void FastMapperUI::setViewFilter (Controllable* filterControllable)
+{
+    viewFilterContainer = nullptr;
+    viewFilterControllable = filterControllable;
+    MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
+}
+
+void FastMapperUI::resetViewFilter(){
+    viewFilterContainer = nullptr;
+    viewFilterControllable = nullptr;
     MessageManager::getInstance()->callAsync([this](){resetAndUpdateView();});
 }
 
 bool FastMapperUI::mapPassViewFilter (FastMap* f)
 {
 
-    if (viewFilterContainer == nullptr ) return true;
+    if (viewFilterContainer == nullptr && viewFilterControllable==nullptr) return true;
 
+    if( viewFilterContainer){
     if (f->referenceIn->linkedParam != nullptr && (ControllableContainer*)f->referenceIn->linkedParam->isChildOf (viewFilterContainer)) return true;
 
     if (f->referenceOut->linkedParam != nullptr && (ControllableContainer*)f->referenceOut->linkedParam->isChildOf (viewFilterContainer)) return true;
+    }
+    else if(viewFilterControllable){
+        if (f->referenceIn->linkedParam == viewFilterControllable ||
+            f->referenceOut->linkedParam == viewFilterControllable)
+            return true;
+    }
 
+    // pass through emptys
     return (!f->referenceOut->linkedParam && !f->referenceIn->linkedParam);
 }
 
@@ -221,20 +243,34 @@ void FastMapperUI::buttonClicked (Button* b)
         else
         {
             Inspector::getInstance()->removeInspectorListener (this);
-            setViewFilter (nullptr);
+            resetViewFilter ();
         }
     }
 
 
 }
 
+ParameterUI * getParamFromComponent(Component * comp){
+    if(!comp) return nullptr;
+    if(auto pui = dynamic_cast<ParameterUI*>(comp))return pui;
+    for(auto c:comp->getChildren()){
+        if(auto pui = dynamic_cast<ParameterUI*>(c))return pui;
+    }
+    return nullptr;
+}
 void FastMapperUI::currentComponentChanged (Inspector* i)
 {
     jassert (linkToSelection.getToggleState());
+    auto * curCont = i->getCurrentContainerSelected();
+    // prevent self selection
+    if (dynamic_cast<FastMap*> (curCont) || dynamic_cast<FastMapper*>(curCont)) {return;}
 
-    if (dynamic_cast<FastMap*> (i->getCurrentContainerSelected())) {return;}
+    if(auto container = curCont)
+        setViewFilter (container);
+    else if(auto pui = getParamFromComponent(i->getCurrentComponent())){
+        setViewFilter(pui->parameter);
 
-    setViewFilter (i->getCurrentContainerSelected());
+    }
 
 
 };

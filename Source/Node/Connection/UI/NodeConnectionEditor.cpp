@@ -123,7 +123,7 @@ void NodeConnectionEditor::resized()
 
 int NodeConnectionEditor::getContentHeight() const
 {
-    return InspectorEditor::getContentHeight() + 20 + jmax (outputSlots.size() * 35, inputSlots.size() * 35);
+    return  20 + jmax (outputSlots.size() * 35, inputSlots.size() * 35);
 }
 
 void NodeConnectionEditor::mouseEnter (const MouseEvent&)

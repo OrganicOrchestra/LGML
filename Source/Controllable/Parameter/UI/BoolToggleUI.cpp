@@ -90,7 +90,7 @@ void BoolToggleUI::mouseDown (const MouseEvent& e)
 
     if (!parameter->isEditable) return;
 
-    if (e.mods.isLeftButtonDown())
+    if (e.mods.isLeftButtonDown() && !e.mods.isAnyModifierKeyDown())
     {
         parameter->setValue (!parameter->boolValue());
     }

@@ -36,7 +36,7 @@ ParameterProxyUI::ParameterProxyUI (ParameterProxy* proxy) :
 ParameterProxyUI::~ParameterProxyUI()
 {
     paramProxy->removeParameterProxyListener (this);
-    setLinkedParamUI (nullptr);
+//    setLinkedParamUI (nullptr);
 }
 
 void ParameterProxyUI::resized()

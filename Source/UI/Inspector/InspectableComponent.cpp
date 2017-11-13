@@ -21,9 +21,12 @@
 #include "../ShapeShifter/ShapeShifterManager.h"
 #include "../Style.h"
 
-InspectableComponent::InspectableComponent (ParameterContainer* relatedContainer, const String& _inspectableType) :
+#include "../../Controllable/Parameter/UI/ParameterUIFactory.h"
+
+InspectableComponent::InspectableComponent (ParameterContainer* _relatedContainer, const String& _inspectableType) :
 inspectableType (_inspectableType),
-relatedParameterContainer (relatedContainer),
+relatedParameterContainer (_relatedContainer),
+relatedParameter(nullptr),
 recursiveInspectionLevel (0),
 canInspectChildContainersBeyondRecursion (true),
 isSelected (false),
@@ -33,6 +36,18 @@ bringToFrontOnSelect (true)
 
 }
 
+InspectableComponent::InspectableComponent (Parameter* _relatedParameter, const String& _inspectableType) :
+inspectableType (_inspectableType),
+relatedParameterContainer (nullptr),
+relatedParameter(_relatedParameter),
+recursiveInspectionLevel (0),
+canInspectChildContainersBeyondRecursion (true),
+isSelected (false),
+paintBordersWhenSelected (true),
+bringToFrontOnSelect (true)
+{
+
+}
 InspectableComponent::~InspectableComponent()
 {
     masterReference.clear();
@@ -41,7 +56,12 @@ InspectableComponent::~InspectableComponent()
 
 InspectorEditor* InspectableComponent::createEditor()
 {
-    return new GenericParameterContainerEditor (relatedParameterContainer);
+    if(relatedParameterContainer)
+        return new GenericParameterContainerEditor (relatedParameterContainer);
+    else if (relatedParameter)
+        return new ComponentInspectorEditor(new NamedParameterUI(ParameterUIFactory::createDefaultUI(relatedParameter),100),25);
+
+    return nullptr;
 }
 
 void InspectableComponent::selectThis()
@@ -97,5 +117,7 @@ void InspectableComponent::paintOverChildren (juce::Graphics& g)
 
 ParameterContainer* InspectableComponent::getRelatedParameterContainer(){
     return relatedParameterContainer;
-    
+}
+Parameter* InspectableComponent::getRelatedParameter(){
+    return relatedParameter;
 }

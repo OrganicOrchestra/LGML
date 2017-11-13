@@ -74,13 +74,12 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
 
 ParameterContainer* Inspector::getCurrentContainerSelected()
 {
-    if (currentComponent)
-    {
-        return currentComponent->getRelatedParameterContainer();
-    }
-    else return nullptr;
+    return currentComponent?currentComponent->getRelatedParameterContainer():nullptr;
 }
-
+Parameter* Inspector::getCurrentParameterSelected()
+{
+    return currentComponent?currentComponent->getRelatedParameter():nullptr;
+}
 
 InspectableComponent * Inspector::getCurrentComponent(){
     if(currentComponent){
@@ -149,4 +148,9 @@ void Inspector::controllableContainerRemoved(ControllableContainer * , Controlla
 void Inspector::containerWillClear(ControllableContainer * ){
     setCurrentComponent(nullptr);
     
+}
+void Inspector::controllableRemoved (Controllable* c) {
+    if(c==getCurrentParameterSelected()){
+        setCurrentComponent(nullptr);
+    }
 }

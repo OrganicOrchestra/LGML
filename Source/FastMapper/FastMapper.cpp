@@ -169,7 +169,14 @@ ParameterContainer*   FastMapper::addContainerFromObject (const String& /*name*/
 
 void FastMapper::selectionChanged (Parameter* c )
 {
-    setPotentialOutput (Parameter::fromControllable (c));
+
+    auto ms = Desktop::getInstance().getMouseSource(0);
+    if (ms&& ms->getCurrentModifiers().isAltDown()){
+        setPotentialInput (Parameter::fromControllable (c));
+    }
+    else{
+        setPotentialOutput (Parameter::fromControllable (c));
+    }
 
 };
 

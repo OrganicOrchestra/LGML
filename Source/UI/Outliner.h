@@ -45,7 +45,6 @@ public:
     void paint (Graphics& g) override;
     void mouseDown (const MouseEvent& e) override;
     void resized()override;
-    InspectorEditor* createEditor() override;
     void buttonClicked (Button*) override;
     void labelTextChanged (Label* labelThatHasChanged) override;
 };
@@ -61,7 +60,7 @@ public:
 
     WeakReference<ParameterContainer> container;
     WeakReference<Parameter> parameter;
-
+    WeakReference<Component> currentDisplayedComponent;
 
     String getUniqueName() const override;
     void controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori)override;
@@ -69,7 +68,7 @@ public:
     void controllableAdded (ControllableContainer*, Controllable*) override;
     void controllableRemoved (ControllableContainer*, Controllable*)override;
     bool mightContainSubItems() override;
-
+    void itemSelectionChanged (bool isNowSelected) override;
     Component* createItemComponent() override;
     JUCE_LEAK_DETECTOR(OutlinerItem);
 };

@@ -23,7 +23,8 @@
 
 class Inspector : public juce::Component,
     public InspectorEditor::InspectorEditorListener,
-    private ControllableContainer::Listener
+    private ControllableContainer::Listener,
+    private Controllable::Listener
 
 {
 public:
@@ -43,6 +44,7 @@ public:
 
     InspectableComponent * getCurrentComponent();
     ParameterContainer* getCurrentContainerSelected();
+    Parameter* getCurrentParameterSelected();
 
    const  InspectorEditor * const getCurrentEditor();
 
@@ -74,9 +76,12 @@ private:
 
     ScopedPointer<InspectorEditor> currentEditor;
 
-    
+    // controllableContainer listener
     void controllableContainerRemoved(ControllableContainer * , ControllableContainer * ) override;
     void containerWillClear(ControllableContainer * )override;
+
+    // controllableListner
+    void controllableRemoved (Controllable* ) override;
 };
 
 class InspectorViewport : public ShapeShifterContentComponent, public Inspector::InspectorListener

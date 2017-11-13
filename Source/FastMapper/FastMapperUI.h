@@ -52,6 +52,7 @@ public:
     OwnedArray<FastMapUI> mapsUI;
 
     ControllableContainer* viewFilterContainer;
+    Controllable* viewFilterControllable;
 
     void clear();
 
@@ -60,6 +61,8 @@ public:
 
     void resetAndUpdateView();
     void setViewFilter (ControllableContainer* filterContainer);
+    void setViewFilter (Controllable* filterControllable);
+    void resetViewFilter();
     bool mapPassViewFilter (FastMap*);
 
     FastMapUI* getUIForFastMap (FastMap*);

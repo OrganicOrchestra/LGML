@@ -23,16 +23,13 @@ class InspectableComponent;
 class InspectorEditor : public juce::Component, public juce::ComponentListener
 {
 public:
-    InspectorEditor();
-    virtual ~InspectorEditor();
+    InspectorEditor(){};
+    virtual ~InspectorEditor(){};
 
 
+    virtual int getContentHeight() const = 0;
 
-    void resized() override;
-
-    virtual int getContentHeight() const;
-
-    virtual void clear();
+    virtual void clear(){};
 
     class  InspectorEditorListener
     {
@@ -47,6 +44,19 @@ public:
     void removeInspectorEditorListener (InspectorEditorListener* listener) { inspectorEditorListeners.remove (listener); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InspectorEditor)
+};
+
+class ComponentInspectorEditor : public InspectorEditor{
+public:
+    ComponentInspectorEditor(Component * c,int _height):component(c),height(_height){
+        addAndMakeVisible(c);
+    }
+private:
+    void resized() override{component->setBounds(getLocalBounds());}
+    int getContentHeight() const override{return height;}
+
+    int height;
+    ScopedPointer<Component> component;
 };
 
 #endif  // INSPECTOREDITOR_H_INCLUDED

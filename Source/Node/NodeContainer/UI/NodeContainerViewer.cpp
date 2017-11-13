@@ -654,6 +654,7 @@ void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFoun
     
     auto insp = Inspector::getInstance();
     if(itemsFound.size()){
+        // unselect this if needed
         if(insp->getCurrentComponent()==this){
             insp->setCurrentComponent(nullptr);
         }

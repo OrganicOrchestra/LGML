@@ -15,27 +15,3 @@
 
 #include "InspectorEditor.h"
 
-InspectorEditor::InspectorEditor()
-{
-
-}
-
-InspectorEditor::~InspectorEditor()
-{
-}
-
-
-void InspectorEditor::resized()
-{
-
-}
-
-int InspectorEditor::getContentHeight() const
-{
-    return 0;//will default to parent's bounds
-
-}
-
-void InspectorEditor::clear()
-{
-}
