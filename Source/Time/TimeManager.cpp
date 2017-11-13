@@ -755,7 +755,10 @@ TransportTimeInfo TimeManager::findTransportTimeInfoForLength (sample_clk_t time
     res.barLength = 1;
     double time_seconds = time * 1.0 / res.sampleRate;
     res.beatTime = time_seconds * 1.0 / beatPerBar->intValue();
-
+    if(res.beatTime == 0){
+        jassertfalse;
+        res.beatTime = 1;
+    }
     // over 150 bpm (0.4s)
     while (res.beatTime < beatTimeGuessRange.getStart()) {res.beatTime *= 2.0; res.barLength /= 2.0;}
 

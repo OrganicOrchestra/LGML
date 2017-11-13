@@ -150,7 +150,8 @@ void LooperTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
             setTrackState (STOPPED);
         }
     }
-    
+
+    // empty internal only when ended fade out
     if (trackState == CLEARED && playableBuffer.multiNeedle.numActiveNeedle == 0 && playableBuffer.getRecordedLength() > 0)
     {
         playableBuffer.setRecordedLength (0);
@@ -244,13 +245,13 @@ bool LooperTrack::updatePendingLooperTrackState (int blockSize)
             
             if (isMasterTempoTrack())releaseMasterTrack();
         }
-        
+
+        // do not set playableBuffer.recordedlength to 0 for now, we wait end of needles
         else if (desiredState == CLEARED)
         {
             playableBuffer.setState (PlayableBuffer::BUFFER_STOPPED);
             cleanAllQuantizeNeedles();
             stateChanged = playableBuffer.stateChanged;
-            
             if (isMasterTempoTrack())releaseMasterTrack();
         }
     }
@@ -499,7 +500,8 @@ void LooperTrack::handleEndOfRecording()
         {
             // non quantified
             // we assign one but obviously not related to master (avoid null bpms)
-            originBPM->setValue (tm->findTransportTimeInfoForLength (playableBuffer.getRecordedLength()).bpm);
+            if(auto length = playableBuffer.getRecordedLength())
+                originBPM->setValue (tm->findTransportTimeInfoForLength (length).bpm);
         }
     }
     
@@ -1022,11 +1024,8 @@ void LooperTrack::loadAudioSample (const String& path)
                 
                 
 #if BUFFER_CAN_STRETCH
-                playableBuffer.setTimeRatio (timeRatio);
-                if(wasPlaying){
-                    setTrackState(WILL_PLAY);
-                }
-                   
+                    playableBuffer.setTimeRatio (parentLooper->getQuantization()>0?timeRatio:1);
+                    if(wasPlaying){setTrackState(WILL_PLAY);}
 #endif
                 
             }

@@ -156,8 +156,11 @@ bool PlayableBuffer::processNextBlock (AudioBuffer<float>& buffer, sample_clk_t 
     }
     else if ( wasLastRecordingFrame())
     {
-        jassert (getRecordedLength() >= getMinRecordSampleLength());
-        succeeded &= writeAudioBlock (buffer, 0, sampleOffsetBeforeNewState);
+        // check if was not cleared before
+        if(getRecordedLength()>0){
+            jassert ( getRecordedLength() >= getMinRecordSampleLength());
+            succeeded &= writeAudioBlock (buffer, 0, sampleOffsetBeforeNewState);
+        }
         //    findFadeLoopPoints();
 
 
@@ -395,9 +398,13 @@ void PlayableBuffer::cropEndOfRecording (int* sampletoRemove)
 void PlayableBuffer::setRecordedLength (sample_clk_t targetSamples)
 {
     //  jassert(targetSamples<=getAllocatedNumSample());
+    if(targetSamples==0){
+        onsetSamples.clearQuick();
+    }
     recordNeedle = targetSamples;
     multiNeedle.setLoopSize (targetSamples);
     bufferBlockList.setNumSample (targetSamples);
+
     //  findFadeLoopPoints();
 
 }
@@ -605,6 +612,7 @@ void PlayableBuffer::setTimeRatio (const double ratio)
         stretchJob = new StretcherJob (this, ratio);
         tp->addJob (stretchJob, true);
 #else
+        bufferBlockList.setNumSample(originAudioBuffer.getNumSamples());
         bufferBlockList.copyFrom (originAudioBuffer, 0);
         setRecordedLength (originAudioBuffer.getNumSamples());
 #endif
@@ -612,11 +620,11 @@ void PlayableBuffer::setTimeRatio (const double ratio)
     else
     {
 
-        //    for(int i = 0 ; i < originAudioBuffer.getNumChannels() ; i++){
-        //      audioBuffer.copyFrom(i, 0, originAudioBuffer, i, 0, originAudioBuffer.getNumSamples());
-        //    }
-        bufferBlockList.copyFrom (originAudioBuffer, 0);
-        setRecordedLength (originAudioBuffer.getNumSamples());
+        tmpBufferStretch.makeCopyOf(originAudioBuffer);
+        isStretchReady = true;
+
+//        bufferBlockList.copyFrom (originAudioBuffer, 0);
+//        setRecordedLength (originAudioBuffer.getNumSamples());
 
 
     }

@@ -673,6 +673,14 @@ void LooperNode::onContainerParameterChanged (Parameter* p)
             }
         }
     }
+    else if(p == quantization){
+        // TODO should react 
+        bool wasQuantized = (int)quantization->lastValue !=0;
+        bool isQuantized = getQuantization()>0;
+        if(wasQuantized!=isQuantized)
+            setAllTimeRatios();
+
+    }
 
     // TimeManager
     else if (p == TimeManager::getInstance()->playState)
@@ -726,23 +734,26 @@ bool LooperNode::hasOnset()
     return hasOnset;
 }
 
-void LooperNode::BPMChanged (double /*BPM*/)
-{
+void LooperNode::BPMChanged (double /*BPM*/) { setAllTimeRatios();}
+void LooperNode::setAllTimeRatios(){
 #if BUFFER_CAN_STRETCH
 
-    if (!TimeManager::getInstance()->isMasterCandidate (this) && getQuantization() > 0)
+    if (!TimeManager::getInstance()->isMasterCandidate (this) )
     {
+        bool needStretch =getQuantization() > 0;
+        double currentBPM = TimeManager::getInstance()->BPM->doubleValue();
         for (auto& t : trackGroup.tracks)
         {
             if (!t->isEmpty())
             {
-
-                double ratio = t->originBPM->doubleValue();
-                ratio /= TimeManager::getInstance()->BPM->doubleValue();
-
+                double ratio =needStretch? t->originBPM->doubleValue()/currentBPM:1;
                 if (std::isnormal (ratio))
                 {
+//                    bool wasPlaying = t->trackState==LooperTrack::PLAYING;
                     t->playableBuffer.setTimeRatio (ratio);
+//                    if(wasPlaying)
+//                        t->play();
+
                     //          if( DEBUGPIPE_ENABLED){
                     //            if(ratio!=1){
                     //

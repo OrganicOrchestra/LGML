@@ -149,6 +149,9 @@ private:
     // keeps track of few bits of audio
     // to readjust the loop when controllers are delayed
     void numChannelsChanged (bool isInput)override;
+
+    // compute all track stretched versions
+    void setAllTimeRatios();
     PhantomBuffer streamAudioBuffer;
     friend class LooperTrack;
 
