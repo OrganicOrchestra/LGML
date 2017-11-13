@@ -23,6 +23,7 @@
 #include "FastMapUI.h"
 #include "../UI/Inspector/Inspector.h"
 #include "../UI/Style.h"
+#include "../UI/LGMLDragger.h"
 
 class FastMapper;
 class FastMapperUI;
@@ -37,7 +38,8 @@ class FastMapperUI :
     public juce::Component,
     private ControllableContainerListener,
     private ButtonListener,
-    private Inspector::InspectorListener
+    private Inspector::InspectorListener,
+    private LGMLDragger::Listener
 {
 public:
     FastMapperUI (FastMapper* fastMapper, ControllableContainer* viewFilterContainer = nullptr);
@@ -83,7 +85,12 @@ public:
 private:
 
     void buttonClicked (Button*) override;
+    // Inspector Listener
     void currentComponentChanged (Inspector* ) override;
+
+    // LGMLDrager
+    void mappingModeChanged(bool) override;
+    void selectionChanged (Parameter*) override{};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapperUI)
 

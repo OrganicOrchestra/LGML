@@ -97,10 +97,10 @@ void FastMapper::clear()
 FastMap* FastMapper::addFastMap()
 {
 
-    FastMap* f = new FastMap();
-    addChildControllableContainer (f);
+    ScopedPointer<FastMap> f ( new FastMap());
+
     f->nameParam->isEditable = true;
-    maps.add (f);
+
     //    setContainerToListen (nullptr);
     f->referenceIn->setParamToReferTo (potentialIn->get());
     f->referenceOut->setParamToReferTo (potentialOut->get());
@@ -108,9 +108,14 @@ FastMap* FastMapper::addFastMap()
     potentialIn->setParamToReferTo (nullptr);
     potentialOut->setParamToReferTo (nullptr);
     if(!checkDuplicates (f)){
+        addChildControllableContainer (f);
+        maps.add (f);
         lastFMAddedTime = Time::getMillisecondCounter();
+        return f.release();
     }
-    return f;
+    else{
+        return nullptr;
+    }
 }
 
 bool FastMapper::checkDuplicates (FastMap* f)

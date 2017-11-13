@@ -44,11 +44,18 @@ FastMapperUI::FastMapperUI (FastMapper* _fastMapper, ControllableContainer* _vie
     resetAndUpdateView();
 
 
+    LGMLDragger::getInstance()->addSelectionListener(this);
+
+
 }
 
 FastMapperUI::~FastMapperUI()
 {
     fastMapper->removeControllableContainerListener (this);
+    if(auto* i = LGMLDragger::getInstanceWithoutCreating()){
+        i->removeSelectionListener(this);
+    }
+    
     clear();
 
 
@@ -139,21 +146,25 @@ FastMapUI* FastMapperUI::getUIForFastMap (FastMap* f)
     return nullptr;
 }
 
-constexpr int buttonHeight = 21;
+ int getTargetHeight(){
+    return LGMLDragger::getInstance()->isMappingActive? 80: 21;
+}
+constexpr int linkBtHeight = 21;
 int FastMapperUI::getContentHeight() const
 {
 
-    return mapsUI.size() * (mapHeight + gap) + 2 * buttonHeight + 10;
+    return mapsUI.size() * (mapHeight + gap) +  getTargetHeight() + linkBtHeight + 10;
 }
 
 void FastMapperUI::resized()
 {
     Rectangle<int> r = getLocalBounds().reduced (2);
-    auto inputHeader  = r.removeFromTop (buttonHeight);
+    auto inputHeader  = r.removeFromTop (getTargetHeight());
     candidateLabel.setBounds(inputHeader.removeFromLeft(100));
+
     potentialIn->setBounds (inputHeader.removeFromLeft(inputHeader.getWidth()/2).reduced (2));
     potentialOut->setBounds (inputHeader.reduced (2));
-    linkToSelection.setBounds (r.removeFromTop (buttonHeight).reduced (2));
+    linkToSelection.setBounds (r.removeFromTop (linkBtHeight).reduced (2));
 
 
     r.removeFromTop (10);
@@ -275,6 +286,16 @@ void FastMapperUI::currentComponentChanged (Inspector* i)
 
 };
 
+
+void FastMapperUI::mappingModeChanged(bool){
+    resized();
+}
+
+
+/////////////////
+// FastMapperViewport
+//////////
+
 void FastMapperViewport::buttonClicked (Button* b)
 {
     if (b == &addFastMapButton )
@@ -283,3 +304,4 @@ void FastMapperViewport::buttonClicked (Button* b)
     }
 
 }
+

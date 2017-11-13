@@ -315,7 +315,7 @@ OutlinerItem::~OutlinerItem(){
 //            jassertfalse;
         }
     }
-
+    masterReference.clear();
 }
 
 bool OutlinerItem::mightContainSubItems()
@@ -332,11 +332,19 @@ Component* OutlinerItem::createItemComponent()
 //TODO better outliner name filtering
 void OutlinerItem::controllableContainerAdded(ControllableContainer * notif,ControllableContainer * ori){
 
+
     if(notif && notif==container){
-        MessageManager::callAsync([this,ori](){addSubItem(new OutlinerItem (dynamic_cast<ParameterContainer*>(ori),true));});
+        WeakReference<OutlinerItem> item (this);
+        WeakReference<ControllableContainer> orir (ori);
+        MessageManager::callAsync([item,orir](){
+            if(item.get() && orir.get())
+                item.get()->addSubItem(new OutlinerItem (dynamic_cast<ParameterContainer*>(orir.get()),true));
+        });
     }
-    else if(container){
-        jassertfalse;
+
+    else {
+        // if we are notified from other than our container
+        jassert(!container);
     }
 }
 void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,ControllableContainer * ori){

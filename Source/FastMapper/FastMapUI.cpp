@@ -106,7 +106,6 @@ void FastMapUI::resized()
 
     targetUI.setBounds (targetRect.reduced (6, 0));
 
-
     invertUI->setBounds (r.removeFromTop(r.getHeight()/2).reduced (1));
     fullSyncUI->setBounds(r.reduced(1));
 

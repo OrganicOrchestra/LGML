@@ -59,6 +59,7 @@ LookAndFeelOO::LookAndFeelOO()
 
     setColour (TextEditor::ColourIds::highlightedTextColourId, Colours::white);
     setColour (TextEditor::ColourIds::highlightColourId, Colours::black);
+    setColour(CaretComponent::caretColourId, Colours::white);
     setColour (TreeView::backgroundColourId,scheme.getUIColour (ColourScheme::UIColour::windowBackground));
     setColour(DrawableButton::backgroundOnColourId, Colours::transparentWhite);
     setColour(DrawableButton::backgroundColourId, Colours::transparentWhite);

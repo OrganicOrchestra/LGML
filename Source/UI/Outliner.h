@@ -70,6 +70,11 @@ public:
     bool mightContainSubItems() override;
     void itemSelectionChanged (bool isNowSelected) override;
     Component* createItemComponent() override;
+
+private:
+    friend class WeakReference<OutlinerItem>;
+    WeakReference<OutlinerItem>::Master masterReference;
+
     JUCE_LEAK_DETECTOR(OutlinerItem);
 };
 
