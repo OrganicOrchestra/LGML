@@ -618,7 +618,12 @@ void NodeContainerViewer::childBoundsChanged (Component*)
 void NodeContainerViewer::onContainerParameterChanged(Parameter * p) {
     if(p==minimizeAll){
         for(auto n:nodesUI){
-            n->miniMode->setValue(minimizeAll->boolValue(),false,true);
+            if(minimizeAll->boolValue()){
+                n->setMiniMode(true);
+            }
+            else{
+                n->setMiniMode(n->miniModeParam->boolValue());
+            }
         }
     }
 

@@ -40,7 +40,7 @@ public:
     Point2DParameter<int>* nodePosition;
     Point2DParameter<int>* nodeMinimizedPosition;
     Point2DParameter<int>* nodeSize;
-    BoolParameter* miniMode;
+    BoolParameter* miniModeParam;
     WeakReference<ParameterContainer>  origin;
 
 };
@@ -190,6 +190,9 @@ private:
 
     WeakReference<ConnectableNodeUI>::Master masterReference;
     friend class WeakReference<ConnectableNodeUI>;
+
+    friend class ConnectableNodeHeaderUI;
+    bool isMiniMode;
 };
 
 

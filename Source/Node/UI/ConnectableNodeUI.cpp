@@ -38,7 +38,7 @@ void ConnectableNodeUIParams::initFromParams(){
     nodePosition = nui->nodePosition;
     nodeMinimizedPosition = nui->nodeMinimizedPosition;
     nodeSize = nui->nodeSize;
-    miniMode = nui->miniMode;
+    miniModeParam = nui->miniModeParam;
 
 
 
@@ -49,7 +49,7 @@ void ConnectableNodeUIParams::notifyFromParams(){
     nodeMinimizedPosition->notifyValueChanged();
     nodePosition->notifyValueChanged();
     nodeSize->notifyValueChanged();
-    miniMode->notifyValueChanged();
+    miniModeParam->notifyValueChanged();
 }
 ConnectableNodeUIParams::~ConnectableNodeUIParams(){
 
@@ -65,7 +65,7 @@ ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContaine
     nodePosition=addNewParameter<Point2DParameter<int>> ("nodePosition", "position on canvas", 0, 0, Array<var> {0, 0});
     nodeMinimizedPosition= addNewParameter<Point2DParameter<int>> ("nodeMinimizedPosition", "position in minimode on canvas", 0, 0, Array<var> {0, 0});
     nodeSize=addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {30, 30});
-    miniMode=addNewParameter<BoolParameter> ("miniMode", "Mini Mode", false);
+    miniModeParam=addNewParameter<BoolParameter> ("miniMode", "Mini Mode", false);
     nodePosition->isControllableExposed = false;
     nodeSize->isControllableExposed = false;
 
@@ -128,6 +128,7 @@ isDraggingFromUI (false)
 
     addAndMakeVisible (&resizer);
 
+    isMiniMode = miniModeParam->boolValue();
     //connectableNode->miniMode->isHidenInEditor = true;
 
 
@@ -157,12 +158,18 @@ void ConnectableNodeUI::moved()
 
 void ConnectableNodeUI::setMiniMode (bool value)
 {
-    bool bMiniMode = miniMode->boolValue();
-
-    mainComponentContainer.setMiniMode (bMiniMode);
+    // update parameter only if in non minimized mode
+    if(auto ncv = findParentComponentOfClass<NodeContainerViewer>())
+        if(!ncv->minimizeAll->boolValue())
+            if( value!=miniModeParam->boolValue()){
+                miniModeParam->setValue(value);
+                return;
+            }
+    mainComponentContainer.setMiniMode (value);
+    isMiniMode = value;
     auto nodeP = getCurrentPositionParam();
     setBounds(nodeP->getX(), nodeP->getY() ,
-              getMiniModeWidth (bMiniMode), getMiniModeHeight (bMiniMode));
+              getMiniModeWidth (value), getMiniModeHeight (value));
 }
 
 int ConnectableNodeUI::getMiniModeWidth (bool forMiniMode)
@@ -231,7 +238,7 @@ void ConnectableNodeUI::onContainerParameterChanged(Parameter *p){
 
             }
         }
-        else if (p == miniMode)
+        else if (p == miniModeParam)
         {
             postOrHandleCommandMessage (setMiniModeId);
         }
@@ -263,7 +270,7 @@ void ConnectableNodeUI::handleCommandMessage (int commandId)
             break;
 
         case setMiniModeId:
-            setMiniMode (miniMode->boolValue());
+            setMiniMode (miniModeParam->boolValue());
             break;
 
         case posChangedId:
