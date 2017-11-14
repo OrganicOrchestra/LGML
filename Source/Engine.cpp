@@ -48,7 +48,7 @@ void setDefault(PropertiesFile *f, const String & n, const var & d)
 void initDefaultUserSettings(){
     auto settings = getAppProperties()->getUserSettings();
     setDefault(settings,"multiThreadedLoading",false);
-    setDefault(settings,"check for updates",false);
+    setDefault(settings,"check for updates",true);
 
     settings->saveIfNeeded();
 }

@@ -146,7 +146,7 @@ void MainWindow::closeButtonPressed()
 
 void MainWindow::timerCallback()
 {
-    const int timeToUpdate = getAppProperties()->getUserSettings()->getBoolValue("check for updates",false)?60000:-1;
+    const int timeToUpdate = getAppProperties()->getUserSettings()->getBoolValue("check for updates",true)?60000:-1;
     const int curT = getEngine()->getElapsedMillis();
     if(latestVChecker==nullptr && curT < timeToUpdate){
         latestVChecker = new LatestVersionChecker();

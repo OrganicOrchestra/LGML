@@ -19,6 +19,7 @@
 #pragma once
 
 #include "../JuceHeaderCore.h"
+#define DOWNLOAD_INPLACE 0 // fancy auto downloading, not activated for now
 
 class UpdaterDialogModalCallback;
 
@@ -66,13 +67,10 @@ public:
                                  const String& releaseNotes,
                                  URL& newVersionToDownload,
                                  const String& extraHeaders);
-
+#if DOWNLOAD_INPLACE
     void askUserForLocationToDownload (URL& newVersionToDownload, const String& extraHeaders);
-
-    
-
     virtual Result performUpdate (const MemoryBlock& data, File& targetFolder);
-
+#endif
 protected:
     const LGMLServerLocationsAndKeys& getLGMLServerURLsAndKeys() const;
     int getProductVersionNumber() const;
