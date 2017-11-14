@@ -76,7 +76,6 @@ jobs:
             apt-get -qq update
             apt-get install -y git
             git submodule update --init --recursive
-            . /etc/lsb-release && echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME main universe restricted multiverse" >> /etc/apt/sources.list
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
       - run:
           name: build and package LGMLRasp
