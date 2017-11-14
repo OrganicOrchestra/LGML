@@ -797,15 +797,10 @@
                 vst3Folder="third_party/VST3_SDK" vstFolder="/home/tinmar/SDKs/VST3 SDK">
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="../../Source&#10;" isDebug="1" libraryPath="/usr/X11R6/lib/"
-                       linuxArchitecture="-march=armv6" name="Debug" optimisation="5"
-                       targetName="LGML"/>
+                       linuxArchitecture="" name="Debug" optimisation="5" targetName="LGML"/>
         <CONFIGURATION headerPath="../../Source&#10;" isDebug="0" libraryPath="/usr/X11R6/lib/"
-                       linuxArchitecture="-march=armv6" name="Release" optimisation="3"
-                       targetName="LGML"/>
-        <CONFIGURATION headerPath="../../Source" isDebug="1" libraryPath="/usr/X11R6/lib/"
-                       linuxArchitecture="-m32" name="Ubuntu32" optimisation="5" targetName="LGML32"/>
-        <CONFIGURATION headerPath="../../Source" isDebug="1" libraryPath="/usr/X11R6/lib/"
-                       linuxArchitecture="-m64" name="Ubuntu" optimisation="5" targetName="LGML"/>
+                       linuxArchitecture="" name="Release" optimisation="3" targetName="LGML"
+                       linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_osc" path="../JUCE/modules"/>

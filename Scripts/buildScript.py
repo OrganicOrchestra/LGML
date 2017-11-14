@@ -108,10 +108,8 @@ if __name__ == "__main__":
 			exit(1)
 
 # default configurations for oses
-	if args.os=='osx' and not args.configuration:
+	if not args.configuration:
 		args.configuration = 'Debug'
-	elif args.os=='linux' and not args.configuration:
-		args.configuration = 'Ubuntu'
 
 	if args.export:
 		args.package = True
