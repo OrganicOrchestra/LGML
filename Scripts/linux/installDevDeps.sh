@@ -1,11 +1,11 @@
 # this script install JUCE in sibling directory of LGML
-
+set +e # ignore apt update error
 NATIVE_CPU=`dpkg --print-architecture`
 if [ -z ${TARGET_CPU+x} ]; then TARGET_CPU="$NATIVE_CPU"; fi
 if [ "$TARGET_CPU" != "$NATIVE_CPU" ]; then echo "adding foreing arch $TARGET_CPU"; dpkg --add-architecture $TARGET_CPU;apt-get -qq update; fi
 echo "arch is set to '$TARGET_CPU'"
 
-
+set -e # un-ignore apt update error
 
 ## these are devloper libs needed for JUCE,   not sure wich are needed in released version...
 # from Makefile alsa freetype2 libcurl x11 xext xinerama
