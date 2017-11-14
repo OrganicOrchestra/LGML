@@ -60,7 +60,7 @@ jobs:
   build_rasp:
     working_directory: ~/LGML
     docker:
-      - image: gregorymaertens/docker-arm-linux-gnueabihf
+      - image: ubuntu
         environment:
           TARGET_CPU: armhf
           TARGET_ARCH: -march=armv7 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile -> armv7 or 6?
@@ -72,7 +72,8 @@ jobs:
           name: install LGMLRasp dependencies
           command: |
             set -x
-            cat /etc/apt/sources.list
+            apt-get install gcc-arm-linux-gnueabihf
+            apt-get install g++-arm-linux-gnueabihf
             apt-get -qq update
             apt-get install -y git
             git submodule update --init --recursive
@@ -81,10 +82,12 @@ jobs:
             echo "deb-src [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME main universe restricted multiverse" >> /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME-updates main universe restricted multiverse" >> /etc/apt/sources.list
             echo "deb-src [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME-updates main universe restricted multiverse" >> /etc/apt/sources.list
+            cat /etc/apt/sources.list
             sh Scripts/linux/installDeps.sh && sh Scripts/linux/installDevDeps.sh
       - run:
           name: build and package LGMLRasp
           command: |
+            export CXX=arm-linux-gnueabihf-g++
             python Scripts/buildScript.py --package --exportpath="$DST_LGML_PATH" --os=linux;
             ldd ~/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
@@ -95,9 +98,10 @@ workflows:
   version: 2
   build_all_platforms:
     jobs:
-      - build
-      - build32
       - build_rasp
+# - build
+# - build32
+
 
 
 general:
