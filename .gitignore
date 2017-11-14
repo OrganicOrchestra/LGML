@@ -43,6 +43,20 @@ Builds/VisualStudio2015/*
 !Builds/VisualStudio2015/icon.ico
 !Builds/VisualStudio2015/resources.rc
 
+
+
+
+!Builds/VisualStudio2017/
+Builds/VisualStudio2017/*
+!Builds/VisualStudio2017/LGML.sln
+!Builds/VisualStudio2017/LGML.vcxproj
+!Builds/VisualStudio2017/LGML.vcxproj.filters
+!Builds/VisualStudio2017/LGML_App.vcxproj
+!Builds/VisualStudio2017/LGML_App.vcxproj.filters
+!Builds/VisualStudio2017/icon.ico
+!Builds/VisualStudio2017/resources.rc
+
+
 doxygen/doc
 
 *.password
