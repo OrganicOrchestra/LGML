@@ -24,6 +24,9 @@ before_build:
     wget https://codeload.github.com/WeAreROLI/JUCE/zip/master -OutFile JUCE.zip
     7z x JUCE.zip -o"C:\projects" -y
     Rename-Item -path ‘C:\projects\JUCE-master’ -newName ‘JUCE’
+    echo 'downloading ASIOSDK'
+    wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -OutFile ASIO_SDK.zip
+    7z x ASIO_SDK.zip -o"C:\projects" -y
 
 
 after_build:
