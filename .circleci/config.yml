@@ -73,7 +73,7 @@ jobs:
           command: |
             set -x
             dpkg --add-architecture armhf
-            . /etc/lsb-release && echo "deb [arch=armhf] ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME main universe restricted multiverse" >> /etc/apt/sources.list
+            . /etc/lsb-release && echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports $DISTRIB_CODENAME main universe restricted multiverse" >> /etc/apt/sources.list
             cat /etc/apt/sources.list
             apt-get -qq update
             apt-get install -y git
