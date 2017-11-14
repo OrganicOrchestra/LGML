@@ -72,9 +72,10 @@ jobs:
           name: install LGMLRasp dependencies
           command: |
             set -x
-            apt-get install gcc-arm-linux-gnueabihf
-            apt-get install g++-arm-linux-gnueabihf
+            
             apt-get -qq update
+            apt-get install -y gcc-arm-linux-gnueabihf
+            apt-get install -y g++-arm-linux-gnueabihf
             apt-get install -y git
             git submodule update --init --recursive
             . /etc/lsb-release
@@ -87,6 +88,8 @@ jobs:
       - run:
           name: build and package LGMLRasp
           command: |
+            set -x
+            echo $PKG_CONFIG_PATH
             export CXX=arm-linux-gnueabihf-g++
             python Scripts/buildScript.py --package --exportpath="$DST_LGML_PATH" --os=linux;
             ldd ~/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
