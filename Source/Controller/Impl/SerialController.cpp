@@ -214,7 +214,7 @@ void SerialController::processMessage (const String& message)
 
         if (!found )
         {
-            BoolParameter* v = userContainer.addNewParameter<BoolParameter> (split[1], split[1], false);
+            userContainer.addNewParameter<BoolParameter> (split[1], split[1], false);
 
         }
     }

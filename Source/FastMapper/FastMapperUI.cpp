@@ -26,7 +26,7 @@ FastMapperUI::FastMapperUI (FastMapper* _fastMapper, ControllableContainer* _vie
     fastMapper->addControllableContainerListener (this);
 
     linkToSelection.setButtonText ("Show from selected");
-    linkToSelection.setTooltip ("filter viewed fastmap to currently selected element (Node / Controller ...)");
+    linkToSelection.setTooltip ("Filter viewed fastmap to currently selected element :\n- Node\n- Controller\n- Parameter\n- ...");
     linkToSelection.setClickingTogglesState (true);
     linkToSelection.addListener (this);
     addAndMakeVisible (linkToSelection);

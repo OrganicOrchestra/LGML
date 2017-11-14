@@ -6,35 +6,33 @@ branches:
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
+  image: Visual Studio 2017
   matrix:
     - platform: Win32
-      configuration: Debug_32bit
+      configuration: Release_32bit
     - platform: x64
-      configuration: Debug
+      configuration: Release
 
 before_build:
   ps: |
     echo "submodule"
     git submodule -q update --init --recursive
     cd C:\projects\lgml\third_party\rubberband
-    echo 'build rubberband'
-    ls C:\projects\lgml\third_party\rubberband
-    git remote -v
-    msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Debug /m:4
+    echo 'building rubberband'
+    msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
+    echo 'dowloading JUCE'
     wget https://codeload.github.com/WeAreROLI/JUCE/zip/master -OutFile JUCE.zip
     7z x JUCE.zip -o"C:\projects" -y
     Rename-Item -path ‘C:\projects\JUCE-master’ -newName ‘JUCE’
-    wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -OutFile ASIO_SDK.zip
-    7z x ASIO_SDK.zip -o"C:\projects" -y
 
 
 after_build:
-  cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
+  cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2017\%PLATFORM%\%CONFIGURATION%\App\*.exe
   
 artifacts:
   - path: LGML_$(platform).zip
 
 build:
-  project: Builds/VisualStudio2015/LGML.sln
+  project: Builds/VisualStudio2017/LGML.sln
   verbosity: minimal
   parallel: true

@@ -29,7 +29,7 @@ ParameterProxyUI::ParameterProxyUI (ParameterProxy* proxy) :
     chooser.addControllableReferenceUIListener (this);
     addAndMakeVisible (&chooser);
     paramProxy->addParameterProxyListener (this);
-
+    if(paramProxy)chooser.setTooltip(paramProxy->description);
     setLinkedParamUI (paramProxy->linkedParam);
 }
 

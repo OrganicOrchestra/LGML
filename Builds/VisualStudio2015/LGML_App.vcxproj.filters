@@ -3168,9 +3168,6 @@
     <ClInclude Include="..\..\Source\Engine.h">
       <Filter>LGML\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\GitSha.h">
-      <Filter>LGML\Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\JuceHeaderAudio.h">
       <Filter>LGML\Source</Filter>
     </ClInclude>

@@ -79,24 +79,31 @@ void ParameterUI::mouseDown (const MouseEvent& e)
     if (e.mods.isRightButtonDown())
     {
         PopupMenu p;
-        p.addItem (1, "Copy control address");
-        p.addItem (2, "Add FastMap To");
-        p.addItem (3, "Add FastMap From");
+        p.addItem (1, "Select Parameter (Alt+click)");
+        p.addItem (2, "Copy control address");
+        p.addItem (3, "Add FastMap To");
+        p.addItem (4, "Add FastMap From");
+
         int result = p.show();
 
         switch (result)
         {
             case 1:
+                Inspector::getInstance()->setCurrentComponent(this);
+                break;
+                
+            case 2:
                 SystemClipboard::copyTextToClipboard (parameter->controlAddress);
                 break;
 
-            case 2:
+            case 3:
                 FastMapper::getInstance()->addFastMap()->referenceOut->setParamToReferTo (Parameter::fromControllable (parameter));
                 break;
 
-            case 3:
+            case 4:
                 FastMapper::getInstance()->addFastMap()->referenceIn->setParamToReferTo (Parameter::fromControllable (parameter));
                 break;
+
         }
     }
     if(e.mods.isAltDown()){

@@ -4,7 +4,7 @@
               companyWebsite="http://www.organic-orchestra.com" cppLanguageStandard="11"
               displaySplashScreen="1" id="a1hJPO" includeBinaryInAppConfig="1"
               jucerVersion="5.2.0" name="LGML" projectType="guiapp" reportAppUsage="1"
-              splashScreenColour="Dark" version="1.2.4" companyCopyright="Organic Orchestra">
+              splashScreenColour="Dark" version="1.2.5" companyCopyright="Organic Orchestra">
   <MAINGROUP id="RYpQgZ" name="LGML">
     <GROUP id="{C4A5CA13-B090-453E-F1E3-DE9F74C715E2}" name="Assets">
       <FILE compile="0" file="Resources/little-red-riding-hood-md.png" id="SL4b92"
@@ -664,8 +664,6 @@
             resource="0"/>
       <FILE compile="1" file="Source/EngineFileDocument.cpp" id="fqvNis"
             name="EngineFileDocument.cpp" resource="0"/>
-      <FILE compile="0" file="Source/GitSha.h" id="k8EiOY" name="GitSha.h"
-            resource="0"/>
       <FILE id="VRl38p" name="JuceHeaderAudio.h" compile="0" resource="0"
             file="Source/JuceHeaderAudio.h"/>
       <FILE id="GgXgTu" name="JuceHeaderCore.h" compile="0" resource="0"
@@ -715,7 +713,7 @@
     <XCODE_MAC bigIcon="jsU7Hw" documentExtensions="lgml" externalLibraries=""
                extraCompilerFlags="-Wno-reorder&#10;-I../../third_party/serial/include&#10;-I../../third_party/rubberband/&#10;-I../../third_party/link/include/&#10;-I../../third_party/link/modules/asio-standalone/asio/include"
                extraDefs="LINK_PLATFORM_MACOSX=1&#10;" extraLinkerFlags="../../third_party/rubberband/lib/librubberband.a"
-               keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand="python ../../Scripts/PyUtils/writeSha.py"
+               keepCustomXcodeSchemes="1" postbuildCommand="" prebuildCommand=""
                smallIcon="jsU7Hw" targetFolder="Builds/MacOSX" vst3Folder="third_party/VST3_SDK"
                vstFolder="">
       <CONFIGURATIONS>
@@ -751,18 +749,19 @@
     </XCODE_MAC>
     <VS2015 bigIcon="SL4b92" externalLibraries="setupapi.lib&#10;rubberband-library.lib"
             extraDefs="LINK_PLATFORM_WINDOWS=1" smallIcon="SL4b92" targetFolder="Builds/VisualStudio2015"
-            vst3Folder="third_party/VST3_SDK" vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK">
+            vst3Folder="third_party/VST3_SDK" vstFolder="D:\Documents\Ressources\SDKs\VST3 SDK"
+            windowsTargetPlatformVersion="8.1">
       <CONFIGURATIONS>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64"
                        name="Debug" optimisation="1" targetName="LGML_x64_Debug" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0"/>
-        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;"
+        <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="0" libraryPath="..\..\third_party\rubberband\Release_x64"
                        name="Release" optimisation="3" targetName="LGML_x64" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
-                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
+                       enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" alwaysGenerateDebugSymbols="0"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="1" libraryPath="..\..\third_party\rubberband\Debug"
                        name="Debug_32bit" optimisation="1" targetName="LGML_32_Debug"
@@ -843,6 +842,38 @@
         <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
       </MODULEPATHS>
     </CLION>
+    <VS2017 targetFolder="Builds/VisualStudio2017" vst3Folder="third_party/VST3_SDK"
+            windowsTargetPlatformVersion="10.0.16299.0" extraDefs="LINK_PLATFORM_WINDOWS=1"
+            externalLibraries="setupapi.lib&#10;rubberband-library.lib" smallIcon="SL4b92"
+            bigIcon="SL4b92">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="LGML_x64_Debug"
+                       headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
+                       libraryPath="..\..\third_party\rubberband\Debug_x64"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
+                       linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="LGML"
+                       libraryPath="..\..\third_party\rubberband\Release_x64" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2017>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useGlobalPath="0" useLocalCopy="0"/>

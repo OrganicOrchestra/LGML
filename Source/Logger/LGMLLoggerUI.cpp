@@ -99,7 +99,7 @@ totalLogRow (0)
     logListComponent->setHeader (thc);
     addAndMakeVisible (logListComponent);
 
-    LOG ("LGML v" + String (ProjectInfo::versionString) + " : " + String (GIT_SHA_SHORT) + " (" + String (COMMIT_DATE) + ")" + "\nby OrganicOrchestra");
+    LOG ("LGML v" + String (ProjectInfo::versionString) + " : (" + String (Time::getCompilationDate().formatted("%d/%m/%y (%R)")) + ")" + "\nby OrganicOrchestra");
 #if USE_FILE_LOGGER
     LOG ("please provide logFile for any bug report :\nlogFile in " + l->fileWriter.getFilePath());
 #endif

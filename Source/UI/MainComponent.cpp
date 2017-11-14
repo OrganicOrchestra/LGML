@@ -32,7 +32,8 @@ MainContentComponent* createMainContentComponent (Engine* e)
 
 
 MainContentComponent::MainContentComponent (Engine* e):
-    engine (e)
+    engine (e),
+    tooltipWindow(nullptr,1200)
 {
     engine->addEngineListener (this);
 

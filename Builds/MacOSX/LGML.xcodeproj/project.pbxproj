@@ -428,7 +428,6 @@
 		AAF2CC88AB4EC5DDDC890C0B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProgressNotifier.cpp; path = ../../Source/Utils/ProgressNotifier.cpp; sourceTree = "SOURCE_ROOT"; };
 		AB17C1F329FD98B6436DDCBD = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConnectorComponent.h; path = ../../Source/Node/UI/ConnectorComponent.h; sourceTree = "SOURCE_ROOT"; };
 		AB1F0857F886CEFD8586C59C = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = JsContainerSync.cpp; path = ../../Source/Scripting/Js/JsContainerSync.cpp; sourceTree = "SOURCE_ROOT"; };
-		ACA1251A1BCA43CCD4EFCA02 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GitSha.h; path = ../../Source/GitSha.h; sourceTree = "SOURCE_ROOT"; };
 		ACF4D4B8CBD44964447E0504 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AudioDeviceOutNode.h; path = ../../Source/Node/Impl/AudioDeviceOutNode.h; sourceTree = "SOURCE_ROOT"; };
 		ADADCDA5347FC8725D61B49F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ControllerFactory.h; path = ../../Source/Controller/ControllerFactory.h; sourceTree = "SOURCE_ROOT"; };
 		AF5816302E5FAB5DA8696557 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ShapeShifterFactory.cpp; path = ../../Source/UI/ShapeShifter/ShapeShifterFactory.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -915,7 +914,6 @@
 					96808889246435657FB32873,
 					E7356E32A20CAF3F4CBA6ECB,
 					C59BF9B44B22349FE56E88C7,
-					ACA1251A1BCA43CCD4EFCA02,
 					4B18E0AD503F51590F1441DE,
 					DEE1093ABCE13FBD9176210A,
 					565F13E36871AC907D101C92,
@@ -1025,8 +1023,8 @@
 					"NDEBUG=1",
 					"LINK_PLATFORM_MACOSX=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=1.2.4",
-					"JUCE_APP_VERSION_HEX=0x10204",
+					"JUCE_APP_VERSION=1.2.5",
+					"JUCE_APP_VERSION_HEX=0x10205",
 					"JucePlugin_Build_VST=0",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1063,8 +1061,8 @@
 					"DEBUG=1",
 					"LINK_PLATFORM_MACOSX=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=1.2.4",
-					"JUCE_APP_VERSION_HEX=0x10204",
+					"JUCE_APP_VERSION=1.2.5",
+					"JUCE_APP_VERSION_HEX=0x10205",
 					"JucePlugin_Build_VST=0",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1102,8 +1100,8 @@
 					"LGML_UNIT_TESTS=1",
 					"LINK_PLATFORM_MACOSX=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=1.2.4",
-					"JUCE_APP_VERSION_HEX=0x10204",
+					"JUCE_APP_VERSION=1.2.5",
+					"JUCE_APP_VERSION_HEX=0x10205",
 					"JucePlugin_Build_VST=0",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -1243,7 +1241,6 @@
 					A413A5C5D8FD14C2C6740BF3,
 					46490BCE9877DD7FFC34BAE6,
 					A915B38F377BAA20491A7C50, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
-		D3A00F77E81CF610BB6B8D9A = {isa = PBXShellScriptBuildPhase; buildActionMask = 2147483647; files = (  ); runOnlyForDeploymentPostprocessing = 0; name = "Pre-build script"; shellPath = /bin/sh; shellScript = "python ../../Scripts/PyUtils/writeSha.py"; };
 		88AC4B1C8528597C91CB2E22 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (
 					F5B381C1189C5C4192305786,
 					986C7017C0358D8E12DA39FC, ); runOnlyForDeploymentPostprocessing = 0; };
@@ -1428,7 +1425,6 @@
 					18D44744A97223383781C2EE,
 					2097ADB792132E645FAD7A02, ); runOnlyForDeploymentPostprocessing = 0; };
 		BB9BD10F0DF4AA8CF089378C = {isa = PBXNativeTarget; buildConfigurationList = 33DDE3C209D83A9F7309C3B6; buildPhases = (
-					D3A00F77E81CF610BB6B8D9A,
 					88AC4B1C8528597C91CB2E22,
 					851DF79495B4AF729D4A3FB1,
 					F883C92B3CBC8B46C370D7BE, ); buildRules = ( ); dependencies = (  ); name = "LGML - App"; productName = LGML; productReference = BF39687C537D2DF8D9008C4A; productType = "com.apple.product-type.application"; };

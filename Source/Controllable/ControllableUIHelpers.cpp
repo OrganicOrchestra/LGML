@@ -88,7 +88,7 @@ TextButton ("Target"),
 filterOutControllable (filterOut)
 {
     addListener (this);
-    setTooltip ("Choose a target");
+
 }
 
 ControllableReferenceUI::~ControllableReferenceUI()
