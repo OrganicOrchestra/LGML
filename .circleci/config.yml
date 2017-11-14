@@ -60,10 +60,10 @@ jobs:
   build_rasp:
     working_directory: ~/LGML
     docker:
-      - image: armv7/armhf-ubuntu
+      - image: gregorymaertens/docker-arm-linux-gnueabihf
         environment:
           TARGET_CPU: armhf
-          TARGET_ARCH: -march=armv6 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile
+          TARGET_ARCH: -march=armv7 -mfpu=vfp -mfloat-abi=hard # arch for JUCEs linux makefile -> armv7 or 6?
           DST_LGML_PATH: /tmp/buildRasp/
 
     steps:
