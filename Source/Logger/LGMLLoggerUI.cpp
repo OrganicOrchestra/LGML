@@ -19,7 +19,6 @@
 #include "LGMLLoggerUI.h"
 #include "../UI/Style.h"
 
-#include "../GitSha.h"
 #include "JuceHeader.h" // for version
 
 
