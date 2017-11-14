@@ -11,7 +11,7 @@ from PyUtils import *
 import multiprocessing
 njobs = min(4,multiprocessing.cpu_count())
 
-execName = {"Ubuntu32":"LGML32","Ubuntu":"LGML"}
+execName = {"Debug":"LGML_Debug","Release":"LGML"}
 lgmlBasePath=os.path.abspath(os.path.join(scriptDir,os.path.pardir));
 localMakePath = os.path.join(lgmlBasePath,"Builds/LinuxMakefile/")
 localExportPath = localMakePath+'build/'
