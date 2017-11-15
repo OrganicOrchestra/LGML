@@ -18,12 +18,12 @@ class OSXBuilder (BuilderBase):
 	localExportPath = os.path.abspath(os.path.join(rootPath,'Builds/MacOSX/build/'))+'/'
 	# default configuration
 	default_cfg  = {
-	"architecture" : "i386",
+	"arch" : "i386",
 	}
 
-	def __init__(self):
-		BuilderBase.__init__(self)
-		self.applyDefaultCfg(self.default_cfg)
+	def __init__(self,cfg):
+		BuilderBase.__init__(self,cfg)
+		self.applyCfg(self.default_cfg)
 		if not "appPath" in self.cfg:
 			self.cfg["appPath"] = self.getBinaryPath()
 

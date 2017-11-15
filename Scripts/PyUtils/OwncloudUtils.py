@@ -1,20 +1,13 @@
 import os
 import json
 from .shUtils import *
-from  urllib import *
+import urllib.request
 def getCredential():
 	if ('OWNCLOUDPASS' in os.environ) and ('OWNCLOUDUSER' in os.environ):
 		credentials = os.environ['OWNCLOUDUSER']+':'+os.environ['OWNCLOUDPASS']
-	
-	else:
-		credPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir));
-		credPath = os.path.join(credPath,"owncloud.password")
 
-		with open(credPath) as json_data:
-			credentials = json.loads(json_data.read())["pass"]
-		
 	if not credentials:
-		print('no credentials found')
+		raise NameError(" no credential for uploading to owncloud")
 	return credentials
 
 def makeDirIfNotExistent(destPath,forceCreation=False):

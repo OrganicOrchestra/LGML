@@ -13,12 +13,12 @@ class BuilderBase:
     self.cfg = cfg or {};
     self.action = actions or ['build']
     self.verbose = "normal" # or quiet or verbose
-    self.applyDefaultCfg(self.default_cfg_all)
+    self.applyCfg(self.default_cfg_all)
 
 
-  def applyDefaultCfg(self, default):
+  def applyCfg(self, default,overwrite = False):
     for k in default:
-      if not k in self.cfg:
+      if overwrite or not k in self.cfg:
         self.cfg[k] = default[k]
 
   def getNameWithVersion(self):

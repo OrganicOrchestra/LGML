@@ -63,6 +63,11 @@ doxygen/doc
 *.key
 *.asc
 *.stackdump
+*.tar.gz
+*.zip
+*.dmg
+
+lgml_build_cfg.json
 
 *.pyc
 

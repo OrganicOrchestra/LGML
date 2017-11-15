@@ -1,6 +1,6 @@
 # THIS FILE IS BINDED TO RELATIVE LOCATIONS CHANGE THEM IF DISPLACING FILE
 
-# from .writeSha import *
+
 import os
 import collections
 
@@ -199,7 +199,6 @@ def updateVersion(bumpVersion,specificVersion):
 		sh(proJucerCommand+ " --set-version " +specificVersion+" '"+ JuceProjectPath+"'")
 
 	tagVersion()
-	writeSha();
 
 
 def buildJUCE():
