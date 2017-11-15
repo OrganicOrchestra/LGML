@@ -36,7 +36,7 @@ if [ ! -d "JUCE" ]; then
   mv JUCE-master/ JUCE
 fi
 
-apt-get -y -q --assume-yes install python
+apt-get -y -q --assume-yes install python3
 
 
 # cd ;
