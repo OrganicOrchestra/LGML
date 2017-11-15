@@ -1,0 +1,1 @@
+apt-get -y -q --assume-yes install devscripts debhelper pkg-config

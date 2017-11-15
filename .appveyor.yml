@@ -1,0 +1,38 @@
+version: 1.0.{build}
+branches:
+  only:
+  - feature/ci
+  - develop
+
+environment:
+  ASIOSDK: C:\projects\ASIOSDK2.3
+  image: Visual Studio 2017
+  matrix:
+    - platform: Win32
+      configuration: Release_32bit
+    - platform: x64
+      configuration: Release
+
+before_build:
+  ps: |
+    echo "submodule"
+    git submodule -q update --init --recursive
+    cd C:\projects\lgml\third_party\rubberband
+    echo 'building rubberband'
+    msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
+    echo 'dowloading JUCE'
+    wget https://codeload.github.com/WeAreROLI/JUCE/zip/master -OutFile JUCE.zip
+    7z x JUCE.zip -o"C:\projects" -y
+    Rename-Item -path ‘C:\projects\JUCE-master’ -newName ‘JUCE’
+
+
+after_build:
+  cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2017\%PLATFORM%\%CONFIGURATION%\App\*.exe
+  
+artifacts:
+  - path: LGML_$(platform).zip
+
+build:
+  project: Builds/VisualStudio2017/LGML.sln
+  verbosity: minimal
+  parallel: true

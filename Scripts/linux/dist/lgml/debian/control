@@ -1,0 +1,29 @@
+Source: lgml
+Priority: optional
+Maintainer: Martin Hermant <lab@organic-orchestra.com>
+Build-Depends: debhelper (>= 9.0.0),
+               librubberband-dev,
+               libavahi-compat-libdnssd-dev,
+               libfreetype6-dev,
+               libx11-dev,
+               libxinerama-dev,
+               libxrandr-dev,
+               libxcursor-dev,
+               mesa-common-dev,
+               libasound2-dev,
+               freeglut3-dev,
+               libxcomposite-dev,
+               libjack-dev,
+               libcurl4-openssl-dev,
+               ladspa-sdk,
+               pkg-config,
+               curl
+Standards-Version: 1.2.2
+Section: sound
+
+Package: lgml
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Section: sound
+Description: a nodal DAW with easy control interface
+

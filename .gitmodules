@@ -1,0 +1,15 @@
+[submodule "third_party/serial"]
+	path = third_party/serial
+	url = https://github.com/wjwwood/serial.git
+	shallow = true
+[submodule "third_party/link"]
+	path = third_party/link
+	url = https://github.com/Ableton/link.git
+	shallow = true
+[submodule "third_party/rubberband"]
+	path = third_party/rubberband
+	url = https://github.com/MartinHN/rubberband.git
+	shallow = true
+[submodule "third_party/VST3_SDK"]
+	path = third_party/VST3_SDK
+	url = https://github.com/steinbergmedia/vst3sdk.git
