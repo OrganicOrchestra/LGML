@@ -170,6 +170,8 @@ private:
     void mouseDown (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e)  override;
+    void mouseEnter (const MouseEvent& e)  override;
+    void mouseExit (const MouseEvent& e)  override;
     bool keyPressed (const KeyPress& key) override;
     void moved()override;
 

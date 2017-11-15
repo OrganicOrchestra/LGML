@@ -18,7 +18,7 @@
 
 #include "ShapeShifterPanel.h"
 #include "../Style.h" // for USE_GL
-#if JUCE_OPENGL  && USE_GL
+#if USE_GL
     #include <juce_opengl/juce_opengl.h>
 #endif
 
@@ -56,9 +56,8 @@ public:
 
 
 
-#if JUCE_OPENGL  && USE_GL
-    OpenGLContext openGLContext
-    ;
+#if USE_GL
+    OpenGLContext openGLContext;
 #endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShapeShifterWindow)

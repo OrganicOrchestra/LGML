@@ -44,11 +44,11 @@ MainWindow::MainWindow (String name, Engine* e)  :
     getConstrainer()->setMinimumOnscreenAmounts(100, 100, 100, 100);
 
 #ifdef JUCE_LINUX
-    // lots of bug with nativetitlebar on ubuntu  \
-    - no display            \
-    - wrong rebuilding of windows position / size \
+/* lots of bug with nativetitlebar on ubuntu
+    - no display
+    - wrong rebuilding of windows position / size
     - double clicks sent to titlebar
-
+*/
     setUsingNativeTitleBar (false);
 
 #else
@@ -60,7 +60,7 @@ MainWindow::MainWindow (String name, Engine* e)  :
     setMenuBar (mainComponent);
 #endif
 
-#if JUCE_OPENGL && USE_GL
+#if USE_GL
     openGLContext.setContinuousRepainting (false);
     openGLContext.attachTo (*getTopLevelComponent());
 #endif
@@ -137,7 +137,7 @@ void MainWindow::closeButtonPressed()
     getAppProperties()->getCommonSettings (true)->saveIfNeeded();
 
 
-#if JUCE_OPENGL && USE_GL
+#if USE_GL
     openGLContext.detach();
 #endif
     JUCEApplication::getInstance()->systemRequestedQuit();

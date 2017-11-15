@@ -22,17 +22,18 @@ template<class T>
 StepperUI<T>::StepperUI (Parameter* _parameter) : ParameterUI (_parameter)
 {
 
-    slider = new BetterStepper (ParameterUI::getTooltip());
+    slider = new BetterStepper (this);
     MinMaxParameter* fp = parameter->getAs<MinMaxParameter>();
     jassert (fp);
     addAndMakeVisible (slider);
-    slider->setRange (fp->minimumValue, fp->maximumValue, 1);
+    stepInterval =(T)(.1)==0?1:0.01;
+    slider->setRange (fp->minimumValue, fp->maximumValue,(double) stepInterval);
     slider->setValue (parameter->floatValue(), dontSendNotification);
     slider->addListener (this);
     
     slider->setEditable(_parameter->isEditable);
 
-    addComponentListener (this);
+    
 
 }
 
@@ -43,16 +44,19 @@ StepperUI<T>::~StepperUI()
 {
 
 }
-template<class T>
-void StepperUI<T>::setScrollAllowed (bool b)
-{
-    slider->setScrollWheelEnabled (b);
-}
+
 template<class T>
 void StepperUI<T>::resized()
 {
     slider->setBounds (getLocalBounds());
 }
+
+template<class T>
+void StepperUI<T>::setStepInterval(T i){
+    stepInterval = i;
+    rangeChanged(parameter);
+}
+
 template<class T>
 void StepperUI<T>::valueChanged (const var& value)
 {
@@ -72,20 +76,10 @@ void StepperUI<T>::rangeChanged (Parameter* p)
 {
     auto* fp = parameter->getAs<NumericParameter<T>>();
     jassert (fp);
-    slider->setRange ((T)fp->minimumValue, (T)fp->maximumValue, 1);
+    slider->setRange ((T)fp->minimumValue, (T)fp->maximumValue, stepInterval);
 
 }
 
-template<class T>
-void StepperUI<T>::componentParentHierarchyChanged (Component& c)
-{
-    if (&c == this)
-    {
-
-        bool isInViewport = findParentComponentOfClass<Viewport>() != nullptr;
-        setScrollAllowed (!isInViewport);
-    }
-}
 
 template class StepperUI<double>;
 template class StepperUI<int>;

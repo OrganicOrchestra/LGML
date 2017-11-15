@@ -19,7 +19,7 @@
 
 
 #include "MinMaxParameter.h"
-//#include <juce_opengl/juce_opengl.h>
+
 
 class Point3DParameter : public MinMaxParameter
 {

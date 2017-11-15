@@ -39,7 +39,7 @@ TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManag
     timeManager->linkEnabled->addAsyncParameterListener (this);
 
     addAndMakeVisible (timeBar);
-    bpmStepper = new IntStepperUI (timeManager->BPM);
+    bpmStepper = new FloatSliderUI (timeManager->BPM);
     //  bpmStepper->assignOnMousePosDirect = true;
     //  bpmStepper->changeParamOnMouseUpOnly = true;
 

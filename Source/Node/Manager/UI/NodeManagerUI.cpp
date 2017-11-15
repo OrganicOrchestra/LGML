@@ -159,6 +159,7 @@ void NodeManagerUI::setCurrentViewedContainer (NodeContainer* c)
         currentViewer = new NodeContainerViewer (c,p);
         currentViewer->minimizeAll->setValue(isMiniMode);
         addAndMakeVisible (currentViewer);
+        currentViewer->setMouseCursor(MouseCursor::CrosshairCursor);
         currentViewer->setTopLeftPosition (0, 0);
         currentViewer->setSelected (true);
         setSize (0, 0);

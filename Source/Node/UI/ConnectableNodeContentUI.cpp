@@ -20,7 +20,7 @@ ConnectableNodeContentUI::ConnectableNodeContentUI()
 {
     node = nullptr;
     nodeUI = nullptr;
-
+    setMouseCursor(MouseCursor::ParentCursor);
 }
 
 ConnectableNodeContentUI::~ConnectableNodeContentUI()

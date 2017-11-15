@@ -95,11 +95,6 @@ void ParameterProxyUI::setLinkedParamUI (Parameter* p)
     if (linkedParamUI != nullptr)
     {
         addAndMakeVisible (linkedParamUI);
-        updateTooltip();
-        auto* cUI = dynamic_cast<ParameterUI*> (linkedParamUI.get());
-
-        if (cUI)
-            cUI->setTooltip (getTooltip());
     }
 
 //    chooser.setVisible (linkedParamUI == nullptr);
@@ -135,9 +130,6 @@ void ParameterProxyUI::choosedControllableChanged (ControllableReferenceUI*, Con
 void ParameterProxyUI::controllableNameChanged (Controllable* c)
 {
     ParameterUI::controllableNameChanged (c);
-    updateTooltip();
 
-    if (auto* cUI = dynamic_cast<ParameterUI*> (linkedParamUI.get()))
-        cUI->setTooltip (getTooltip());
 
 }

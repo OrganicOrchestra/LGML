@@ -39,14 +39,14 @@ ControllerManagerUI::ControllerManagerUI (ControllerManager* manager):
 ControllerManagerUI::~ControllerManagerUI()
 {
     manager->removeControllerListener (this);
-    clear();
+    clear(false);
 }
 
-void ControllerManagerUI::clear()
+void ControllerManagerUI::clear(bool notify)
 {
     while (controllersUI.size() > 0)
     {
-        removeControllerUI (controllersUI[0]->controller);
+        removeControllerUI (controllersUI[0]->controller,notify);
     }
 }
 
@@ -86,7 +86,7 @@ ControllerUI* ControllerManagerUI::addControllerUI (Controller* controller)
     return cui;
 }
 
-void ControllerManagerUI::removeControllerUI (Controller* controller)
+void ControllerManagerUI::removeControllerUI (Controller* controller,bool notify)
 {
     ControllerUI* cui = getUIForController (controller);
 
@@ -104,7 +104,7 @@ void ControllerManagerUI::removeControllerUI (Controller* controller)
         resized();
     }
 
-    notifyParentViewPort();
+    if(notify)notifyParentViewPort();
 
 }
 void ControllerManagerUI::notifyParentViewPort() {

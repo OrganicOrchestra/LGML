@@ -64,7 +64,7 @@ install:
 
 
 script:
-    - python Scripts/buildScript.py --build --os=$TARGET;
+    - python Scripts/buildScript.py --build --configuration=Release --os=$TARGET;
 
 after_success:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
@@ -72,7 +72,7 @@ after_success:
     elif [ "$TARGET" == "osx" ] ; then
         sudo sh Scripts/osx/installExportDeps.sh;
     fi
-  - python Scripts/buildScript.py --package --export --os=$TARGET;
+  - python Scripts/buildScript.py --package --configuration=Release --export --os=$TARGET;
 
 git:
   depth: 1

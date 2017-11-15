@@ -21,7 +21,7 @@
 
 
 template <typename T>
-class StepperUI : public ParameterUI, private Slider::Listener, private ComponentListener
+class StepperUI : public ParameterUI, private Slider::Listener
 {
 
 public:
@@ -35,6 +35,8 @@ public:
     void setScrollAllowed (bool );
 
     void resized() override;
+
+    void setStepInterval(T i);
 protected:
     void valueChanged (const var&) override;
     virtual void rangeChanged (Parameter* p) override;
@@ -42,7 +44,10 @@ protected:
     // Inherited via Listener
     virtual void sliderValueChanged (Slider* slider) override;
 
-    void componentParentHierarchyChanged (Component&)override;
+    
+
+
+    T stepInterval;
 
 };
 

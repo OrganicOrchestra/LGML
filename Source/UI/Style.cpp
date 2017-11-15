@@ -67,15 +67,13 @@ static void _drawBounds(Component* c ,int idx,Graphics & g,Component * relativeT
             p = p->getParentComponent();
         }
         static float strk = 0.5f;
-        g.drawRect(r.toFloat().reduced(idx*strk),strk*0.5);
+        g.drawRect(r.toFloat().reduced(idx*strk),strk*0.5f);
     }
 
 }
 
-static void _repaint(Component* c ,int idx){
+static void _repaint(Component* c ,int /*idx*/){
     c->repaint();
-
-
 }
 
 
@@ -123,7 +121,7 @@ void AddElementButton::paintButton (Graphics& g,
     g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
     g.setColour (findColour (TextButton::textColourOffId));
     const float hw = stroke;//area.getHeight()/18.0;
-    const float offset = area.getWidth() / 4 ;
+    const float offset = area.getWidth() / 4.0 ;
 
     const float corner = hw;
 
@@ -156,7 +154,7 @@ void RemoveElementButton::paintButton (Graphics& g,
                                        bool isMouseOverButton,
                                        bool isButtonDown)
 {
-    g.addTransform(AffineTransform::rotation(float_Pi/4,getWidth()/2,getHeight()/2));
+    g.addTransform(AffineTransform::rotation(float_Pi/4.0,getWidth()/2.0,getHeight()/2.0));
 
     auto area = getLocalBounds();
     auto bgColor = findColour (TextButton::buttonColourId);
@@ -169,7 +167,7 @@ void RemoveElementButton::paintButton (Graphics& g,
     g.drawEllipse (area.toFloat().reduced (stroke / 2), stroke);
     g.setColour (Colours::red);
     const float hw = stroke;//area.getHeight()/18.0;
-    const float offset = area.getWidth() / 4 ;
+    const float offset = area.getWidth() / 4.0 ;
 
     const float corner = hw;
 

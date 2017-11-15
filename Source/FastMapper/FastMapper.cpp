@@ -198,12 +198,14 @@ void FastMapper::controllableFeedbackUpdate (ControllableContainer* notif, Contr
 
     if (auto p = Parameter::fromControllable (ori))
     {
-        if(notif== ControllerManager::getInstance()){
-            auto now=Time::getMillisecondCounter();
-            jassert(now>=lastFMAddedTime);
-            // debounce control changes, to avoid setting potentialOutput back
-            if (ori->isUserDefined && now-lastFMAddedTime>500){
-                setPotentialInput (p);
+        if(autoAddFastMaps){
+            if(notif== ControllerManager::getInstance()){
+                auto now=Time::getMillisecondCounter();
+                jassert(now>=lastFMAddedTime);
+                // debounce control changes, to avoid setting potentialOutput back
+                if (ori->isUserDefined && now-lastFMAddedTime>500){
+                    setPotentialInput (p);
+                }
             }
         }
         

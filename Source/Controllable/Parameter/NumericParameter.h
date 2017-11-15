@@ -29,7 +29,7 @@ public:
 
     void setValueInternal (const var& _value) override;
 
-    void setNormalizedValue (const T  normalizedValue, bool silentSet = false, bool force = false);
+    void setNormalizedValue (const float  normalizedValue, bool silentSet = false, bool force = false);
 
     float getNormalizedValue() ;
 
@@ -47,16 +47,16 @@ float NumericParameter<T>::getNormalizedValue()
 {
     if ((T)minimumValue == (T)maximumValue)
     {
-        return 0.0;
+        return 0.0f;
     }
     else
-        return jmap<T> ((T)value, (T)minimumValue, (T)maximumValue, (T)0, (T)1);
+        return (float)(jmap<float> ((float)value, (float)minimumValue, (float)maximumValue, 0.f, 1.f));
 }
 
 template<class T>
-void NumericParameter<T>::setNormalizedValue (const T  normalizedValue, bool silentSet, bool force)
+void NumericParameter<T>::setNormalizedValue (const float  normalizedValue, bool silentSet, bool force)
 {
-    setValue (jmap<T> (normalizedValue, (T)minimumValue, (T)maximumValue), silentSet, force);
+    setValue ((T)(jmap<float> (normalizedValue, (float)minimumValue, (float)maximumValue)), silentSet, force);
 }
 
 #endif  // INTPARAMETER_H_INCLUDED

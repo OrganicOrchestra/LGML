@@ -350,8 +350,8 @@ ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone (ShapeShifterPa
 
     candidateTargetPoint = getLocalPoint (source, Point<float>());
 
-    float rx = candidateTargetPoint.x / getWidth() - 0.5;
-    float ry = candidateTargetPoint.y / getHeight() - 0.5;
+    double rx = candidateTargetPoint.x / getWidth() - 0.5;
+    double ry = candidateTargetPoint.y / getHeight() - 0.5;
 
     if (fabs(rx) > 0.5 || fabs(ry) > 0.5 )
     {

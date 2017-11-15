@@ -21,14 +21,18 @@
 class BetterStepper : public Slider
 {
 public:
-    BetterStepper (const String& tooltip);
+    BetterStepper (TooltipClient* tooltip=nullptr);
     virtual ~BetterStepper();
     void resized()override;
     bool isMini;
     void setEditable(bool s);
-
+    String getTooltip() override;
 private:
     bool isEditable;
+    TooltipClient * tooltipClient;
+    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
+    void mouseEnter(const MouseEvent& e)override;
+    
     //  void paint(Graphics &g) ;
 };
 

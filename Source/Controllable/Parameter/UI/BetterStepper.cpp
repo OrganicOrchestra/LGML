@@ -15,12 +15,13 @@
 
 #include "BetterStepper.h"
 
-BetterStepper::BetterStepper (const String& tooltip) : Slider (SliderStyle::IncDecButtons, TextEntryBoxPosition::TextBoxLeft)
+BetterStepper::BetterStepper (TooltipClient* tooltip) : Slider (SliderStyle::IncDecButtons, TextEntryBoxPosition::TextBoxLeft)
+,tooltipClient(tooltip)
 {
-    setTooltip (tooltip);
-    setIncDecButtonsMode (IncDecButtonMode::incDecButtonsDraggable_AutoDirection);
 
-    setScrollWheelEnabled (false);
+    setIncDecButtonsMode (IncDecButtonMode::incDecButtonsDraggable_AutoDirection);
+    
+    setScrollWheelEnabled (true);
 
 
 }
@@ -29,6 +30,12 @@ BetterStepper::~BetterStepper()
 {
 }
 
+String BetterStepper::getTooltip() {
+    if (tooltipClient)
+        return tooltipClient->getTooltip();
+    return "";
+
+}
 
 void BetterStepper::resized()
 {
@@ -61,11 +68,19 @@ void BetterStepper::setEditable(bool s){
     resized();
 }
 
-//void BetterStepper::paint(juce::Graphics & g){
-////  if(isMini){
-////  g.drawText(String((int)Slider::getValue()), getLocalBounds(), juce::Justification::centred);
-////  }
-////  else{
-//    Slider::paint(g);
-////  }
-//}
+void BetterStepper::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) {
+    Viewport *vp =findParentComponentOfClass<Viewport>();
+    bool _scrollWheelAllowed = !vp  || !(vp->canScrollVertically() || vp->canScrollHorizontally());
+    if(_scrollWheelAllowed){
+        Slider::mouseWheelMove(e, wheel);
+    }
+    else{
+        Component::mouseWheelMove(e, wheel);
+    }
+
+}
+
+void BetterStepper::mouseEnter(const MouseEvent& e){
+    //update  tooltip of inner Slider component
+    lookAndFeelChanged();
+};

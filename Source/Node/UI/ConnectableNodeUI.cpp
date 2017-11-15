@@ -101,6 +101,7 @@ isDraggingFromUI (false)
     constrainer.setMinimumHeight (50);
 
     addAndMakeVisible (mainComponentContainer);
+    mainComponentContainer.setMouseCursor(MouseCursor::UpDownLeftRightResizeCursor);
 
     if (connectableNode->userCanAccessInputs)
     {
@@ -328,6 +329,12 @@ void ConnectableNodeUI::mouseDrag (const MouseEvent& e)
     isDraggingFromUI = true;
 
 }
+void ConnectableNodeUI::mouseEnter (const MouseEvent& e)  {
+
+};
+void ConnectableNodeUI::mouseExit (const MouseEvent& e)  {
+    
+};
 
 bool ConnectableNodeUI::keyPressed (const KeyPress& key)
 {

@@ -33,7 +33,7 @@ ConnectableNodeHeaderUI::ConnectableNodeHeaderUI() :
 
 
     miniModeBT.addListener (this);
-
+    setMouseCursor(MouseCursor::ParentCursor);
 
     setSize (20, 30);
 }

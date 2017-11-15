@@ -19,7 +19,7 @@
 #include "ParameterUI.h"
 
 template<class T>
-class SliderUI    : public ParameterUI
+class SliderUI    : public ParameterUI ,private Label::Listener
 {
 
 public:
@@ -42,9 +42,11 @@ public:
     float initValue;
 
     void paint (Graphics& g) override;
+    void resized() override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
+    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
 
     T getValueFromMouse();
     T getValueFromPosition (const Point<int>& pos);
@@ -58,7 +60,14 @@ public:
 
 
 protected:
+    
     void valueChanged (const var&) override ;
+    bool scrollWheelAllowed;
+    Time lastMouseWheelTime;
+    ScopedPointer<Label> valueBox;
+    void labelTextChanged (Label* labelThatHasChanged) override;
+    void editorHidden (Label*, TextEditor&) override;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SliderUI)
 };
 

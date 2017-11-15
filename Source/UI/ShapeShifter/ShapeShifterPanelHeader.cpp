@@ -52,6 +52,7 @@ void ShapeShifterPanelHeader::attachTab (ShapeShifterPanelTab* tab)
 {
     tab->addShapeShifterTabListener (this);
     addAndMakeVisible (tab);
+    tab->setMouseCursor(MouseCursor::UpDownLeftRightResizeCursor);
     tabs.add (tab);
     resized();
 }

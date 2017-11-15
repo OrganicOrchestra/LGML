@@ -37,7 +37,7 @@ public:
     OwnedArray<ControllerUI> controllersUI;
 
     ControllerUI* addControllerUI (Controller* controller);
-    void removeControllerUI (Controller* controller);
+    void removeControllerUI (Controller* controller,bool notify=true);
 
     ControllerUI* getUIForController (Controller* controller);
 
@@ -48,7 +48,7 @@ public:
 
     int getContentHeight() const;
 
-    void clear();
+    void clear(bool notify=true);
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ControllerManagerUI)
 

@@ -24,7 +24,7 @@
 class ParameterUI : public InspectableComponent,
     protected Parameter::AsyncListener,
     private Parameter::Listener,
-    public SettableTooltipClient,
+    public TooltipClient,
     public Controllable::Listener
 {
 public:
@@ -64,7 +64,8 @@ protected:
     virtual void valueChanged (const var& ) {};
     virtual void rangeChanged (Parameter* ) {};
 
-    void updateTooltip();
+    
+    String getTooltip() override;
     virtual void mouseDown (const MouseEvent& e) override;
 
 

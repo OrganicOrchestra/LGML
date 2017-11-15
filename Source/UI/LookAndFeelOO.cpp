@@ -243,7 +243,7 @@ Label* LookAndFeelOO::createSliderTextBox (Slider& slider)
 }
 
 
-void LookAndFeelOO::drawTextEditorOutline (Graphics& g, int width, int height, TextEditor& textEditor){
+void LookAndFeelOO::drawTextEditorOutline (Graphics& /*g*/, int /*width*/, int /*height*/, TextEditor& /*textEditor*/){
 //    if (dynamic_cast<AlertWindow*> (textEditor.getParentComponent()) == nullptr)
 //    {
 //        if (textEditor.isEnabled())

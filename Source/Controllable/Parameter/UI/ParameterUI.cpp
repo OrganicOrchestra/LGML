@@ -46,7 +46,7 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
     parameter->addControllableListener (this);
     mappingState = NOMAP;
     setMappingState (LGMLDragger::getInstance()->isMappingActive);
-    updateTooltip();
+    
     
 
 
@@ -137,15 +137,12 @@ void ParameterUI::controllableStateChanged (Controllable* c)
 
 void ParameterUI::controllableControlAddressChanged (Controllable*)
 {
-    updateTooltip();
     repaint();
 }
 
 
-
-void ParameterUI::updateTooltip()
-{
-    setTooltip (parameter->description + "\nControl Address : " + parameter->controlAddress);
+String ParameterUI::getTooltip(){
+    return parameter->description + "\nControl Address : " + parameter->controlAddress;//"\nValue : "+parameter->value.toString();
 }
 
 

@@ -47,7 +47,7 @@ public:
      */
     MainContentComponent* mainComponent;
 
-#if JUCE_OPENGL && USE_GL
+#if USE_GL
     OpenGLContext openGLContext;
 #endif
 
