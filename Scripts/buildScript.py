@@ -116,9 +116,10 @@ if __name__ == "__main__":
 	if args.build:
 		builder.buildApp();
 	if args.package:
-		if ( args.exportpath is not None ) and ( not os.path.exists(args.exportpath)):
-				os.makedirs(args.exportpath)
-		builder.cfg["packaged_path"] = builder.packageApp(args.exportpath)
+		ep = builder.cfg["export_path"]
+		if ( ep is not None ) and ( not os.path.exists(ep)):
+				os.makedirs(ep)
+		builder.cfg["packaged_path"] = builder.packageApp(ep)
 		saveConfig(builder.cfg)
 	if args.export:
 		exportToOwncloud(builder,builder.cfg["packaged_path"]);

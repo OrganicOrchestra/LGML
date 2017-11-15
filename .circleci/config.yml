@@ -6,7 +6,7 @@ jobs:
       - image: ubuntu
         environment:
           TARGET_ARCH: -m64 # arch for linux makefile
-          DST_LGML_PATH: /tmp/build/
+          DST_LGML_PATH: /tmp/build
     steps:
       - checkout
       - run:
@@ -35,7 +35,7 @@ jobs:
           PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
           TARGET_CPU: i386
           TARGET_ARCH: -m32 # arch for JUCEs linux makefile
-          DST_LGML_PATH: /tmp/build32/
+          DST_LGML_PATH: /tmp/build32
 
     steps:
       - checkout
@@ -66,7 +66,7 @@ jobs:
         environment:
           TARGET_CPU: armhf
           TARGET_ARCH: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard # arch for JUCEs linux makefile -> RPI3
-          DST_LGML_PATH: /tmp/buildRasp/
+          DST_LGML_PATH: /tmp/buildRasp
 
     steps:
       - checkout

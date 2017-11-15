@@ -18,10 +18,14 @@ class LinuxBuilder (BuilderBase):
   localMakePath = os.path.join(lgmlBasePath,"Builds/LinuxMakefile/")
   localExportPath = localMakePath+'build/'
   distDir = scriptDir+'/linux/dist/'
+
   target_cpu = platform.machine()
   if("TARGET_CPU" in os.environ) : 
     target_cpu = os.environ["TARGET_CPU"]
-  default_cfg = {"arch":target_cpu}
+  default_cfg = {
+  "arch":target_cpu,
+  }
+
   def __init__(self,cfg):
     BuilderBase.__init__(self,cfg)
     self.applyCfg(self.default_cfg)
