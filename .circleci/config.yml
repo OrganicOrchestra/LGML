@@ -20,7 +20,8 @@ jobs:
       - run:
           name: build and package LGML
           command: |
-            python Scripts/buildScript.py --build --package --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release;
+            python Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
+            python Scripts/buildScript.py --build --package --export;
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build/
@@ -48,7 +49,8 @@ jobs:
       - run:
           name: build and package LGML32
           command: |
-            python Scripts/buildScript.py --package --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release;
+            python Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
+            python Scripts/buildScript.py --build --package --export;
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build32 #$DST_LGML_PATH
@@ -89,7 +91,8 @@ jobs:
             set -x
             export PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig
             export CXX=arm-linux-gnueabihf-g++
-            python Scripts/buildScript.py --package --configuration=Release --exportpath="$DST_LGML_PATH" --os=linux;
+            python Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
+            python Scripts/buildScript.py --build --package --export;
             arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH/dependencies.txt"
 
       - store_artifacts:

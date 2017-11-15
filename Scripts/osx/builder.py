@@ -10,9 +10,9 @@ sys.path.insert(1,pathToAdd)
 
 
 from PyUtils import *
-from PyUtils.builder import Builder
+from PyUtils.builderBase import BuilderBase
 
-class OSXBuilder (Builder):
+class OSXBuilder (BuilderBase):
 	rootPath=os.path.abspath(os.path.join(__file__,os.pardir,os.pardir,os.pardir))
 	xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
 	localExportPath = os.path.abspath(os.path.join(rootPath,'Builds/MacOSX/build/'))+'/'
@@ -22,7 +22,7 @@ class OSXBuilder (Builder):
 	}
 
 	def __init__(self):
-		Builder.__init__(self)
+		BuilderBase.__init__(self)
 		self.applyDefaultCfg(self.default_cfg)
 		if not "appPath" in self.cfg:
 			self.cfg["appPath"] = self.getBinaryPath()

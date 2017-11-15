@@ -1,15 +1,15 @@
 import os,sys
 import json
 import fnmatch
-
+import platform
 scriptDir = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir))
 sys.path.insert(1,scriptDir)
 
 from PyUtils import *
 
-from PyUtils.builder import Builder
+from PyUtils.builderBase import BuilderBase
 
-class LinuxBuilder (Builder):
+class LinuxBuilder (BuilderBase):
   lgmlBasePath=os.path.abspath(os.path.join(scriptDir,os.path.pardir));
   rootDir = os.path.abspath(os.path.join(lgmlBasePath,os.pardir))
   version = ProJucerUtils.getVersionAsList()
@@ -18,9 +18,13 @@ class LinuxBuilder (Builder):
   localMakePath = os.path.join(lgmlBasePath,"Builds/LinuxMakefile/")
   localExportPath = localMakePath+'build/'
   distDir = scriptDir+'/linux/dist/'
-  
-  def __init__(self):
-    Builder.__init__(self)
+  target_cpu = platform.machine()
+  if("TARGET_CPU" in os.environ) : 
+    target_cpu = os.environ["TARGET_CPU"]
+  default_cfg = {"arch":target_cpu}
+  def __init__(self,cfg):
+    BuilderBase.__init__(self,cfg)
+    self.applyCfg(self.default_cfg)
 
   def buildApp(self):
     makeCmd = self.makeCmd()
@@ -35,7 +39,7 @@ class LinuxBuilder (Builder):
 
   def packageApp(self,exportpath = None):
     exportFile = exportpath or self.localExportPath
-    exportFile= os.path.join(exportFile,self.lgml_dist_name+'.tar.gz')
+    exportFile= os.path.join(exportFile,self.getNameWithVersion()+"_"+self.cfg["arch"]+'.tar.gz')
     sh('tar -zcvf "'+exportFile+'" --directory="'+self.localExportPath+'" '+self.cfg["appName"])
     return exportFile
 
@@ -132,6 +136,41 @@ def package_source_dist(fileListPath = None):
   sh('COPYFILE_DISABLE=1 tar -zcvf "'+destFile+'" --directory="'+LinuxBuilder.rootDir+'" -T '+fileListPath)
   return destFile
 
+def get_upstream_source_package():
+  targetFile =  LinuxBuilder.distDir+LinuxBuilder.lgml_dist_name+".orig.tar.gz"
+  if(os.path.exists(targetFile)):
+    print("using cached sourcePackage : "+ targetFile)
+    return
+  import urllib.request 
+  print('downloading upstream package for '+LinuxBuilder.lgml_dist_name)
+  url = "https://launchpad.net/~tintamarunix/+archive/ubuntu/lgml/+files/"+LinuxBuilder.lgml_dist_name+".orig.tar.gz"
+  
+  displayed = 0
+  downloaded=0
+  def show_progress(count, block_size, total_size):
+    global displayed
+    global downloaded
+    if(count == 0): displayed= 0; downloaded=0;
+    downloaded += block_size
+    step = 50000.0
+    isLast = downloaded>=total_size
+    shouldDisplay = int(downloaded/step)!=int(displayed/step)
+    shouldDisplay |= isLast
+    if(shouldDisplay):
+      displayed = downloaded
+      info = "-> %.1f kB / %.1f kB"%(displayed/1000.0 ,total_size/1000.0)
+      if(total_size>0):
+        info += " %.2f"%(displayed*100.0/total_size) + "%"
+      endChar = '\r'
+      if(isLast) :endChar = '\n'
+      print(info, sep=' ', end=endChar, flush=True)
+    if isLast:
+        print("ended")
+        downloaded = 0
+
+
+  urllib.request.urlretrieve(url,targetFile,show_progress)
+
 def copy_source_dist(fileListPath=None):
   fileListPath = fileListPath or generate_filelist()
 
@@ -163,6 +202,9 @@ def copy_source_dist(fileListPath=None):
 
 
 if __name__ == '__main__':
+  get_upstream_source_package();
+  copy_source_dist()
+  exit()
   builder = LinuxBuilder();
   builder.buildApp()
 

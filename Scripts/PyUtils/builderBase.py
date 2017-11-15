@@ -1,5 +1,5 @@
 import os
-class Builder:
+class BuilderBase:
   rootPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir))
   default_cfg_all = {
   "appName": "LGML",
