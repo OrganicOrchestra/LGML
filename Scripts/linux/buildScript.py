@@ -23,19 +23,31 @@ class LinuxBuilder (Builder):
     Builder.__init__(self)
 
   def buildApp(self):
-    makeCmd = 'make CONFIG='+self.cfg["build_cfg_name"]+' -j'+str(self.cfg["njobs"])
-    if (self.verbose=="verbose"):
-      makeCmd+=" SHELL='sh +x' V=1"
+    makeCmd = self.makeCmd()
     sh('cd '+self.localMakePath+' && '+makeCmd)
-    localAppFile = self.localExportPath+self.cfg["appName"]
+    localAppFile = self.getBinaryPath()
     return localAppFile
 
+  def cleanApp(self):
+    makeCmd = self.makeCmd()
+    makeCmd += " clean"
+    sh('cd '+self.localMakePath+' && '+makeCmd)
 
   def packageApp(self,exportpath = None):
     exportFile = exportpath or self.localExportPath
     exportFile= os.path.join(exportFile,self.lgml_dist_name+'.tar.gz')
     sh('tar -zcvf "'+exportFile+'" --directory="'+self.localExportPath+'" '+self.cfg["appName"])
     return exportFile
+
+  def getBinaryPath(self):
+    return self.localExportPath+self.cfg["appName"]
+
+  def makeCmd(self):
+    makeCmd = 'make CONFIG='+self.cfg["build_cfg_name"]+' -j'+str(self.cfg["njobs"])
+    if (self.verbose=="verbose"):
+      makeCmd+=" SHELL='sh +x' V=1"
+    return makeCmd
+
 
 
 

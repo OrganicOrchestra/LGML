@@ -15,23 +15,18 @@ from PyUtils.builder import Builder
 class OSXBuilder (Builder):
 	rootPath=os.path.abspath(os.path.join(__file__,os.pardir,os.pardir,os.pardir))
 	xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
+	localExportPath = os.path.abspath(os.path.join(rootPath,'Builds/MacOSX/build/'))+'/'
 	# default configuration
 	default_cfg  = {
-	"build_cfg_name" : "Debug",
 	"architecture" : "i386",
-	"rootPath" : rootPath,
-	"localExportPath": os.path.abspath(os.path.join(rootPath,'Builds/MacOSX/build/'))+'/',
-
 	}
 
 	def __init__(self):
 		Builder.__init__(self)
 		self.applyDefaultCfg(self.default_cfg)
 		if not "appPath" in self.cfg:
-			self.cfg["appPath"] = self.getAppPath()
+			self.cfg["appPath"] = self.getBinaryPath()
 
-	def getAppPath(self) :
-		return os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"],self.cfg["appName"]+".app")
 
 	def cleanApp(self):
 		self.removeOldApp()
@@ -48,16 +43,19 @@ class OSXBuilder (Builder):
 			+" -arch "+self.cfg["architecture"]
 			+" -jobs "+str(self.cfg["njobs"]))
 
+	def packageApp(self,exportpath=None):
+		localPath = os.path.join((exportpath or self.localExportPath),self.getNameWithVersion());
+		dmgPath = self.createDmg(localPath,self.getBinaryPath());
+		return dmgPath
+
+	def getBinaryPath(self) :
+		return os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"],self.cfg["appName"]+".app")
 
 	def removeOldApp(self):
 		appPath = self.cfg["appPath"]
 		if len(appPath)>10:
 			sh("rm -rf "+appPath)
 
-	def packageApp(self,baseName,exportpath=None):
-		localPath = os.path.join((exportpath or localExportPath),baseName);
-		dmgPath = createDmg(localPath,self.getAppPath());
-		return dmgPath
 
 
 	def createDmg(self,exportFileBaseName,appPath):

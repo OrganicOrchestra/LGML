@@ -8,24 +8,21 @@ from PyUtils import *
 
 
 bumpVersion = False
-sendToOwncloud = False
+# sendToOwncloud = False
 cleanFirst = False;
 
 
 
 
-def exportToOwncloud(exportedPath,sendToOwncloud):
-	if sendToOwncloud:
-		if osType=='osx':
-			ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
-		elif osType=='linux':
-			import platform
-			distName = ''.join(platform.linux_distribution()[:-1])
-			ownCloudPath = "Tools/LGML/App-Dev/Linux/"+distName+"/"+generateProductBaseName()+".tar.gz"
-			
-		OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
+# def exportToOwncloud(builder,exportedPath):
+# 	if builder.cfg['build_os']=='osx':
+# 		ownCloudPath = "Tools/LGML/App-Dev/dist/"+generateProductBaseName()+".dmg"
+# 	elif builder.cfg['build_os']=='linux':
+# 		import platform
+# 		distName = ''.join(platform.linux_distribution()[:-1])
+# 		ownCloudPath = "Tools/LGML/App-Dev/Linux/"+distName+"/"+generateProductBaseName()+".tar.gz"
+# 	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
 
-	# gitCommit()
 
 if __name__ == "__main__":
 	
@@ -35,7 +32,7 @@ if __name__ == "__main__":
 	parser.add_argument('--build', action='store_true',
 	                    help='build it',default = True)
 	parser.add_argument('--package', action='store_true',
-	                    help='package it',default = False)
+	                    help='package it',default = True)
 	parser.add_argument('--export', action='store_true',
 	                    help='export it',default = False)
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
@@ -100,8 +97,9 @@ if __name__ == "__main__":
 	if args.package:
 		if ( args.exportpath is not None ) and ( not os.path.exists(args.exportpath)):
 				os.makedirs(args.exportpath)
-		packagePath = builder.packageApp()
+		packagePath = builder.packageApp(args.exportpath)
 	if args.export:
-		exportAll(packagePath,sendToOwncloud=True);
+		raise NameError("sending to owncloud not supported anymore")
+		# exportAll(packagePath,sendToOwncloud=True);
 
 

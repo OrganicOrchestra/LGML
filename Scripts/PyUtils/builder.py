@@ -14,15 +14,15 @@ class Builder:
     self.action = actions or ['build']
     self.verbose = "normal" # or quiet or verbose
     self.applyDefaultCfg(self.default_cfg_all)
-    
+
 
   def applyDefaultCfg(self, default):
     for k in default:
       if not k in self.cfg:
         self.cfg[k] = default[k]
 
-  def generateProductBaseName(self):
-    import ProjucerUtils
+  def getNameWithVersion(self):
+    from PyUtils import ProJucerUtils
     name =  self.cfg["appName"]+ "_v"+str(ProJucerUtils.getVersion())
     return name
   
