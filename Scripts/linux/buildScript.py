@@ -7,33 +7,48 @@ sys.path.insert(1,scriptDir)
 
 from PyUtils import *
 
+from PyUtils.builder import Builder
 
-import multiprocessing
-njobs = min(4,multiprocessing.cpu_count())
+class LinuxBuilder (Builder):
+  lgmlBasePath=os.path.abspath(os.path.join(scriptDir,os.path.pardir));
+  rootDir = os.path.abspath(os.path.join(lgmlBasePath,os.pardir))
+  version = ProJucerUtils.getVersionAsList()
+  lgml_dist_name = "lgml_"+'.'.join(map(str,version[:3])) # semver (ignore beta)
+  
+  localMakePath = os.path.join(lgmlBasePath,"Builds/LinuxMakefile/")
+  localExportPath = localMakePath+'build/'
+  distDir = scriptDir+'/linux/dist/'
+  
+  def __init__(self):
+    Builder.__init__(self)
 
-execName = {"Debug":"LGML","Release":"LGML"}
-lgmlBasePath=os.path.abspath(os.path.join(scriptDir,os.path.pardir));
-localMakePath = os.path.join(lgmlBasePath,"Builds/LinuxMakefile/")
-localExportPath = localMakePath+'build/'
-rootDir = os.path.abspath(os.path.join(lgmlBasePath,os.pardir))
-version = ProJucerUtils.getVersionAsList()
-lgmlname = "lgml_"+'.'.join(map(str,version[:3])) # semver (ignore beta)
-distDir = scriptDir+'/linux/dist/'
-
-verbose = False
-print(localMakePath)
+  def buildApp(self):
+    makeCmd = 'make CONFIG='+self.cfg["build_cfg_name"]+' -j'+str(self.cfg["njobs"])
+    if (self.verbose=="verbose"):
+      makeCmd+=" SHELL='sh +x' V=1"
+    sh('cd '+self.localMakePath+' && '+makeCmd)
+    localAppFile = self.localExportPath+self.cfg["appName"]
+    return localAppFile
 
 
-def buildApp(configuration):
-  if configuration not in execName:
-    raise NameError('unknown configuration : '+ configuration)
+  def packageApp(self,exportpath = None):
+    exportFile = exportpath or self.localExportPath
+    exportFile= os.path.join(exportFile,self.lgml_dist_name+'.tar.gz')
+    sh('tar -zcvf "'+exportFile+'" --directory="'+self.localExportPath+'" '+self.cfg["appName"])
+    return exportFile
 
-  makeCmd = 'make CONFIG='+configuration+' -j'+str(njobs)
-  if (verbose):
-    makeCmd+=" SHELL='sh +x' V=1"
-  sh('cd '+localMakePath+' && '+makeCmd)
-  localAppFile = localExportPath+execName[configuration]
-  return localAppFile
+
+
+
+
+
+################
+# source deb package helpers
+##################
+
+
+
+
 
 def generate_filelist():
   import glob
@@ -84,29 +99,33 @@ def generate_filelist():
 
   res = []
   
-  walk(rootDir,depFolders,res);
+  walk(LinuxBuilder.rootDir,depFolders,res);
   # res = [x for x in res if x.split('.')[-1]in['cpp','h','c']]
   
 
-  preSize = len(rootDir)+1
+  preSize = len(LinuxBuilder.rootDir)+1
   filesL = '\n'.join([x[preSize:] for x in res])
 
-  fileListPath = distDir+'filelist.txt'
+  fileListPath = os.path.join(LinuxBuilder.distDir,'filelist.txt')
 
   with open(fileListPath,'w') as fp:
     fp.writelines(filesL)
   return fileListPath
 
-def package_source(fileListPath = None):
-  fileListPath = fileListPath or generate_filelist()
-  sh('COPYFILE_DISABLE=1 tar -zcvf "'+distDir+lgmlname+'.orig.tar.gz" --directory="'+rootDir+'" -T '+fileListPath)
 
-def copy_source(fileListPath=None):
+
+def package_source_dist(fileListPath = None):
+  fileListPath = fileListPath or generate_filelist()
+  destFile= LinuxBuilder.distDir+LinuxBuilder.lgml_dist_name+'.orig.tar.gz'
+  sh('COPYFILE_DISABLE=1 tar -zcvf "'+destFile+'" --directory="'+LinuxBuilder.rootDir+'" -T '+fileListPath)
+  return destFile
+
+def copy_source_dist(fileListPath=None):
   fileListPath = fileListPath or generate_filelist()
 
   # Clean first
   import shutil
-  destCopyDir = os.path.join(distDir,'lgml')
+  destCopyDir = os.path.join(LinuxBuilder.distDir,'lgml')
   for dirs in os.listdir(destCopyDir):
     
     if(dirs != 'debian'):
@@ -120,7 +139,7 @@ def copy_source(fileListPath=None):
   with open(fileListPath,'r') as fp:
     for f in fp.readlines():
       f = f.strip()
-      sourceF = os.path.join(rootDir,f)
+      sourceF = os.path.join(LinuxBuilder.rootDir,f)
       destF =  os.path.join(destCopyDir,f)
       destD =os.path.abspath(os.path.join(destF, os.pardir))
       
@@ -129,17 +148,13 @@ def copy_source(fileListPath=None):
       shutil.copy(sourceF,destF)
 
 
-def exportApp(baseName,configuration,exportpath = None):
-  if configuration not in execName:
-    raise NameError('unknown configuration : '+ configuration)
-
-  exportFile = exportpath or localExportPath
-  exportFile= os.path.join(exportFile,execName[configuration]+'.tar.gz')
-  sh('tar -zcvf "'+exportFile+'" --directory="'+localExportPath+'" '+execName[configuration])
-  return exportFile
 
 
 if __name__ == '__main__':
-  package_source()
+  builder = LinuxBuilder();
+  builder.buildApp()
+
+  print( builder.cfg)
+  # package_source_dist()
 
 

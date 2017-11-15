@@ -4,80 +4,78 @@ import json;
 
 import multiprocessing
 
-
-
 import sys
 pathToAdd = os.path.abspath(os.path.join(__file__,os.path.pardir,os.path.pardir))
 sys.path.insert(1,pathToAdd)
 
+
 from PyUtils import *
+from PyUtils.builder import Builder
+
+class OSXBuilder (Builder):
+	rootPath=os.path.abspath(os.path.join(__file__,os.pardir,os.pardir,os.pardir))
+	xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
+	# default configuration
+	default_cfg  = {
+	"build_cfg_name" : "Debug",
+	"architecture" : "i386",
+	"rootPath" : rootPath,
+	"localExportPath": os.path.abspath(os.path.join(rootPath,'Builds/MacOSX/build/'))+'/',
+
+	}
+
+	def __init__(self):
+		Builder.__init__(self)
+		self.applyDefaultCfg(self.default_cfg)
+		if not "appPath" in self.cfg:
+			self.cfg["appPath"] = self.getAppPath()
+
+	def getAppPath(self) :
+		return os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"],self.cfg["appName"]+".app")
+
+	def cleanApp(self):
+		self.removeOldApp()
+		sh("cd "+self.xcodeProjPath+ " && "\
+			+" xcodebuild -project LGML.xcodeproj" \
+			+" -configuration "+ self.cfg["build_cfg_name"]
+			+" clean")
+
+	def buildApp(self):
+		self.removeOldApp()
+		sh("cd "+self.xcodeProjPath+ " && " \
+			+" xcodebuild -project LGML.xcodeproj" \
+			+" -configuration "+ self.cfg["build_cfg_name"]
+			+" -arch "+self.cfg["architecture"]
+			+" -jobs "+str(self.cfg["njobs"]))
 
 
-# default configuration
+	def removeOldApp(self):
+		appPath = self.cfg["appPath"]
+		if len(appPath)>10:
+			sh("rm -rf "+appPath)
 
-# configuration  = "Release"
-configuration  = "Debug"
-cleanFirst = False;
-
-architecture = "i386"
-
+	def packageApp(self,baseName,exportpath=None):
+		localPath = os.path.join((exportpath or localExportPath),baseName);
+		dmgPath = createDmg(localPath,self.getAppPath());
+		return dmgPath
 
 
-
-# paths relative to this file
-rootPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir,os.pardir))
-
-localExportPath = os.path.join(rootPath,'Builds/MacOSX/build/')
-localExportPath = os.path.abspath(localExportPath)+"/"
-
-xcodeProjPath = os.path.join(rootPath,"Builds/MacOSX/")
-executable_name = "LGML"
-def getAppPath(configuration = configuration) :
-	return os.path.join(xcodeProjPath,"build",configuration,executable_name+".app")
-
-isBeta = False
-
-njobs = min(8,multiprocessing.cpu_count())
+	def createDmg(self,exportFileBaseName,appPath):
+		import dmgbuild
+		print('creating dmg')
+		os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
+		dmgbuild.build_dmg(exportFileBaseName,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':appPath})
+		print('dmg done at :'+exportFileBaseName+'.dmg')
+		return exportFileBaseName+'.dmg'
 
 
 
-def buildApp(xcodeProjPath=xcodeProjPath,configuration=configuration,appPath=getAppPath(configuration),njobs=njobs,clean = cleanFirst):
-	if len(appPath)>10:
-		sh("rm -rf "+appPath)
+		# gitCommit()
 
-	configuration="Debug" if not configuration else configuration
-	if clean:
-		sh("cd "+xcodeProjPath+ " && "\
-		+" xcodebuild -project LGML.xcodeproj" \
-		+" -configuration "+configuration
-		+" clean")
-
-	sh("cd "+xcodeProjPath+ " && "\
-		+" xcodebuild -project LGML.xcodeproj" \
-		+" -configuration "+configuration
-		+" -arch "+architecture
-		+" -jobs "+str(njobs))
-
-
-
-def createDmg(exportFileBaseName,appPath):
-	import dmgbuild
-	print('creating dmg')
-	os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
-	dmgbuild.build_dmg(exportFileBaseName,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':appPath})
-	print('dmg done at :'+exportFileBaseName+'.dmg')
-	return exportFileBaseName+'.dmg'
-
-
-
-
-def exportApp(baseName,configuration,exportpath=None):
-	localPath = os.path.join((exportpath or localExportPath),baseName);
-	dmgPath = createDmg(localPath,getAppPath(configuration));
-	return dmgPath
-	# gitCommit()
-
-# if __name__ == "__main__":
+if __name__ == "__main__":
+	builder = OSXBuilder()
+	print (builder.cfg)
+	builder.buildApp()
 # 	global specificVersion
 # 	print sys.argv
 	

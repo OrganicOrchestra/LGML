@@ -9,56 +9,12 @@ from PyUtils import *
 
 bumpVersion = False
 sendToOwncloud = False
-specificVersion = ""
 cleanFirst = False;
 
 
-executable_name = "LGML"
-
-rootPath = os.path.abspath(os.path.join(__file__,os.pardir,os.pardir))
 
 
-def generateProductBaseName():
-	name =  executable_name+ "_v"+str(ProJucerUtils.getVersion())
-	return name
-
-
-
-
-def buildAll(osType,configuration):
-	global specificVersion
-
-	# if not ProJucerUtils.updateProjucer(osType,bumpVersion,specificVersion):
-	# 	print ('not updating projucer')
-	
-	if osType=='osx':
-		import osx
-		osx.buildApp(configuration = configuration);#xcodeProjPath,configuration,appPath,njobs,cleanFirst);
-	elif osType=='linux':
-		import linux
-		linux.buildApp(configuration = configuration)
-
-def packageAll(osType,configuration,exportpath):
-	baseName = generateProductBaseName()
-	if exportpath is not None:
-		if not os.path.exists(exportpath):
-			os.makedirs(exportpath)
-	if osType=='osx':
-		import osx
-		exportedPath = osx.exportApp(baseName,configuration=configuration,exportpath=exportpath);
-	elif osType=='linux':
-		import linux
-		exportedPath = linux.exportApp(baseName,configuration=configuration,exportpath=exportpath);
-	else:
-		raise NameError("os type not supported")
-
-
-
-	return exportedPath
-
-def exportAll(exportedPath,sendToOwncloud):
-
-
+def exportToOwncloud(exportedPath,sendToOwncloud):
 	if sendToOwncloud:
 		if osType=='osx':
 			ownCloudPath = "Tools/LGML/App-Dev/OSX/"+generateProductBaseName()+".dmg"
@@ -72,9 +28,9 @@ def exportAll(exportedPath,sendToOwncloud):
 	# gitCommit()
 
 if __name__ == "__main__":
-	print(sys.argv)
 	
 	import argparse
+	import multiprocessing
 	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
 	parser.add_argument('--build', action='store_true',
 	                    help='build it',default = True)
@@ -88,9 +44,14 @@ if __name__ == "__main__":
 
 	parser.add_argument('--configuration',help='configuration to use ', default=None)
 
+	parser.add_argument('--version','-v',help='return current version ', action='store_true',default=False)
+	parser.add_argument('--clean',help='clean', action='store_true',default=False)
+
 	args = parser.parse_args()
 
-
+	if args.version==True:
+		print(ProJucerUtils.getXmlVersion());
+		exit()
 
 # try to find os
 	if not args.os:
@@ -114,13 +75,33 @@ if __name__ == "__main__":
 	if args.export:
 		args.package = True
 
+	builder = None
+	if(args.os=='osx'):
+		import osx;
+		builder = osx.OSXBuilder()
+	elif args.os == 'linux':
+		import linux;
+		builder=  linux.LinuxBuilder()
+	else:
+		raise NameError('no builder found for os :'+ args.os)
 
-		
+	builder.configuration = {
+	"build_os" : args.os,
+	"build_cfg_name":args.configuration,
+	"njobs": min(8,multiprocessing.cpu_count()),
+	"lgml_root_path" : os.path.abspath(os.path.join(__file__,os.pardir,os.pardir)),
+	"export_path" : args.exportpath
+
+	}
+	if args.clean:
+		builder.clean();
 	if args.build:
-		buildAll(args.os,args.configuration);
+		builder.buildApp();
 	if args.package:
-		packageAll(args.os,args.configuration,args.exportpath)
+		if ( args.exportpath is not None ) and ( not os.path.exists(args.exportpath)):
+				os.makedirs(args.exportpath)
+		packagePath = builder.packageApp()
 	if args.export:
-		exportAll(args.os,args.configuration,sendToOwncloud=True);
+		exportAll(packagePath,sendToOwncloud=True);
 
 
