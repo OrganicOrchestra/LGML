@@ -1,8 +1,8 @@
 version: 1.0.{build}
 branches:
   only:
-  - feature/ci
-  - develop
+  - ci/all
+  - ci/appveyor
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
@@ -17,9 +17,10 @@ environment:
       configuration: Release
 
 before_build:
-  ps: |
+  cmd: |
     python --version
     python -c \"import struct; print(struct.calcsize('P') * 8)\"
+  ps: |
     echo "submodule"
     git submodule -q update --init --recursive
     cd C:\projects\lgml\third_party\rubberband
