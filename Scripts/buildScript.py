@@ -89,11 +89,12 @@ if __name__ == "__main__":
 	if not args.configure:
 		savedCfg = getSavedConfig();
 		#if 
-		if savedCfg and not args.build and (args.package or args.export):
-			for k in defaultCfg :
-				if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
-					raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
-		defaultCfg = savedCfg
+		if savedCfg:
+			if not args.build and (args.package or args.export):
+				for k in defaultCfg :
+					if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
+						raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
+			defaultCfg = savedCfg
 
 	# default Release
 	if defaultCfg["build_cfg_name"] is None:
