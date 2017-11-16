@@ -1,4 +1,4 @@
 #!/usr/bin/bash
 
-pip install -U pip; 
-pip install future requests;
+pip3 install -U pip3; 
+pip3 install requests;

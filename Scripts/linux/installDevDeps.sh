@@ -37,6 +37,7 @@ if [ ! -d "JUCE" ]; then
 fi
 
 apt-get -y -q --assume-yes install python3
+apt-get -y -q --assume-yes install python3-pip
 
 
 # cd ;
