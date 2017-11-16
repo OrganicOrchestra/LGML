@@ -7,6 +7,7 @@ branches:
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
   image: Visual Studio 2015
+  PYTHON: "C:\\Python27"
   matrix:
     - platform: Win32
       configuration: Release_32bit
@@ -15,8 +16,8 @@ environment:
 
 before_build:
   - cmd: |
-    python --version
-    pip install future
+    "python --version"
+    "pip install future"
   - ps: |
     echo "submodule"
     git submodule -q update --init --recursive
