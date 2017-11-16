@@ -15,8 +15,7 @@ environment:
 
 before_build:
   cmd: |
-    "python --version"
-    "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+    python --version
     pip install future
   ps: |
     echo "submodule"
