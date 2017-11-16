@@ -10,7 +10,7 @@ environment:
   image: Visual Studio 2015
   matrix:
     - platform: Win32
-      configuration: Release_32bit
+      configuration: Release
     - platform: x64
       configuration: Release
 
