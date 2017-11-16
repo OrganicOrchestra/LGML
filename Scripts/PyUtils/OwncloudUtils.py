@@ -33,6 +33,21 @@ def getSession():
 	session.auth = getCredential()
 	return session;
 
+
+def decomposePath(path):
+	folders = []
+	path.rem
+	while 1:
+		path, folder = os.path.split(path)
+		if folder != "":
+			folders.append(folder)
+		else:
+			if path != "":
+				folders.append(path)
+			break
+	folders.reverse()
+	return folders
+
 def makeDirIfNotExistent(destPath,forceCreation=False,session=None):
 	if not '%' in destPath:
 		destPath = urllib.request.quote(destPath.strip())
@@ -44,7 +59,7 @@ def makeDirIfNotExistent(destPath,forceCreation=False,session=None):
 		# do partially if not found
 		if r.status_code not in (201, 301,405):
 			if forceCreation:
-				splittedPath = destPath.split('/')
+				splittedPath = decomposePath(destPath)
 				for i in range(1,len(splittedPath)):
 					tryPath = '/'.join(splittedPath[:i])
 					print("mkdir :::: " +tryPath)
@@ -66,7 +81,7 @@ def sendToOwnCloud(originPath,destPath,session=None):
 	makeDirIfNotExistent(os.path.dirname(destPath),True,session=session)
 	print('sending to owncloud:')
 	print(originPath,' >> ', destPath)
-	with open(originPath,'r') as fp:
+	with open(originPath,'rb') as fp:
 		r = session.request("PUT",baseURL+destPath,data=fp,allow_redirects=True)
 		if r.status_code not in (200, 201, 204):
 			raise NameError("can't upload file, error : "+str(r.status_code) + '\n'+r.text)
