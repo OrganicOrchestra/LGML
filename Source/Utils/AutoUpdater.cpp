@@ -28,19 +28,7 @@
 extern ApplicationProperties * getAppProperties();
 
 
-static const String getAppFileName(){
-    return
-#if JUCE_MAC
-    "LGML.app";
-#elif JUCE_WINDOWS
-    "LGML.exe";
-#elif JUCE_LINUX
-    "LGML";
-#else
-#error not supported platform
-#endif
 
-}
 
 LatestVersionChecker::LGMLVersionTriple::LGMLVersionTriple()
 :  major ((ProjectInfo::versionNumber & 0xff0000) >> 16),
@@ -96,7 +84,19 @@ bool LatestVersionChecker::LGMLVersionTriple::operator> (const LatestVersionChec
 }
 
 #if DOWNLOAD_INPLACE
+static const String getAppFileName(){
+    return
+#if JUCE_MAC
+    "LGML.app";
+#elif JUCE_WINDOWS
+    "LGML.exe";
+#elif JUCE_LINUX
+    "LGML";
+#else
+#error not supported platform
+#endif
 
+}
 //==============================================================================
 struct RelaunchTimer  : private Timer
 {

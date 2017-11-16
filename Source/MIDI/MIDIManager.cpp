@@ -50,7 +50,7 @@ public:
         for (auto callback:midiCallbacks){callback->handleIncomingMidiMessage (nullptr, message);}
     }
 
-    int keyToPitch(int kc,int octave){
+    int keyToPitch(int kc){
 
         constexpr int numpitches = 12;
         static int pitches[numpitches] = {'q','z','s','e','d','f','t','g','y','h','u','j'};
@@ -62,7 +62,7 @@ public:
         return -1;
     }
     //==============================================================================
-    bool keyPressed (const KeyPress& key, Component* const /*originatingComponent*/)
+    bool keyPressed (const KeyPress& key, Component* const /*originatingComponent*/) override
     {
         const uint32 time = Time::getMillisecondCounter();
         const char c = key.getTextCharacter();
@@ -77,7 +77,7 @@ public:
             LOG("computer keyboard octave = " << String(octave));
         }
         else{
-            int note =keyToPitch(key.getTextCharacter(),octave);
+            int note =keyToPitch(key.getTextCharacter());
             int channel  = 1;
             static const uint8 vel = 127;
 
@@ -94,7 +94,7 @@ public:
         return false;
     }
 
-    bool keyStateChanged (const bool /*isKeyDown*/, Component* /*originatingComponent*/)
+    bool keyStateChanged (const bool /*isKeyDown*/, Component* /*originatingComponent*/) override
     {
 
         const uint32 now = Time::getMillisecondCounter();

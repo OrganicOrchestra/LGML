@@ -42,7 +42,7 @@ public:
     String description;
 
 
-    forcedinline static String toShortName (const String& s)
+    static String toShortName (const String& s)
     {
         if (s.isEmpty()) return "";
         

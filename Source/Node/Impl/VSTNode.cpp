@@ -391,7 +391,7 @@ void VSTNode::handleAsyncUpdate()
             const ScopedLock lk(pluginStateMutex);
             
             DBG ("loading state for vst " + getNiceName() + (parentContainer ? "in : " + parentContainer->getNiceName() : ""));
-            innerPlugin->setStateInformation (stateInfo.getData() , stateInfo.getSize());
+            innerPlugin->setStateInformation (stateInfo.getData() ,(int) stateInfo.getSize());
             stateInfo.reset();
         
         

@@ -18,7 +18,7 @@
 
 #include "../../JuceHeaderUI.h"//keep
 
-class InspectableComponent;
+
 
 class InspectorEditor : public juce::Component, public juce::ComponentListener
 {

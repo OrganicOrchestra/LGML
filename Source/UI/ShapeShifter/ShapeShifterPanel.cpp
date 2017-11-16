@@ -162,7 +162,7 @@ void ShapeShifterPanel::paintOverChildren (Graphics& g)
     }
 
     g.setColour (candidateZone == AttachZone::CENTER ? hc : nc);
-    g.fillRect(r.reduced(zoneWidth, zoneHeight).reduced((1.0f-scaleX)*0.5*r.getWidth(), (1.0f-scaleY)*0.5*r.getHeight()));
+    g.fillRect(r.reduced(zoneWidth, zoneHeight).reduced((1.0f-scaleX)*0.5f*r.getWidth(), (1.0f-scaleY)*0.5f*r.getHeight()));
 
 
 }
@@ -350,21 +350,21 @@ ShapeShifterPanel::AttachZone ShapeShifterPanel::checkAttachZone (ShapeShifterPa
 
     candidateTargetPoint = getLocalPoint (source, Point<float>());
 
-    double rx = candidateTargetPoint.x / getWidth() - 0.5;
-    double ry = candidateTargetPoint.y / getHeight() - 0.5;
+    float rx = candidateTargetPoint.x / getWidth() - 0.5f;
+    float ry = candidateTargetPoint.y / getHeight() - 0.5f;
 
-    if (fabs(rx) > 0.5 || fabs(ry) > 0.5 )
+    if (fabsf(rx) > 0.5 || fabsf(ry) > 0.5 )
     {
         jassertfalse;
     }
     else
     {
-        if( (fabs(rx) < 0.5f -panelRelativeAttachSize) && (fabs(ry) < 0.5f - panelRelativeAttachSize)){
+        if( (fabsf(rx) < 0.5f -panelRelativeAttachSize) && (fabsf(ry) < 0.5f - panelRelativeAttachSize)){
             z = AttachZone::CENTER;
         }
         else{
             // project on diagonals
-            float dx =rx - ry;
+            float dx = rx - ry;
             float dy = rx + ry;
             if (dx>0){
                 if( dy>0) z = AttachZone::RIGHT;
