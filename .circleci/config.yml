@@ -21,7 +21,9 @@ jobs:
           name: build and package LGML
           command: |
             python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
-            python3 Scripts/buildScript.py --build --package --export;
+            python3 Scripts/buildScript.py --build --package
+            sudo  sh Scripts/linux/installExportDeps.sh
+            python3 Scripts/buildScript.py --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build/
@@ -45,10 +47,11 @@ jobs:
             apt-get -qq update
             apt-get install -y git
             git submodule update --init --recursive
-            sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh
+            sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh 
       - run:
           name: build and package LGML32
           command: |
+            sudo  sh Scripts/linux/installExportDeps.sh
             python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
             python3 Scripts/buildScript.py --build --package --export;
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
@@ -113,5 +116,5 @@ general:
   branches:
     only:
       - master
-      - develop
-      - feature/ci
+      - ci/all
+      - ci/circleci
