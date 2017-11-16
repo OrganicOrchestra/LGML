@@ -54,7 +54,7 @@ if __name__ == "__main__":
 											action='store_true', default=False)
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
 	parser.add_argument('--exportpath',help='path where to put binary', default=None)
-	parser.add_argument('--configuration',help='build configuration name ', default='Release')
+	parser.add_argument('--configuration',help='build configuration name ', default=None)
 	parser.add_argument('--version','-v',help='return current version ', action='store_true',default=False)
 	parser.add_argument('--arch', help='target architecture',default=None)
 	
@@ -91,6 +91,9 @@ if __name__ == "__main__":
 					raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
 			defaultCfg = savedCfg
 
+	# default Release
+	if defaultCfg["build_cfg_name"] is None:
+		defaultCfg["build_cfg_name"] = "Release"
 	# auto detect os if not provided
 	if not defaultCfg["build_os"] :
 		# curOs = os.name
