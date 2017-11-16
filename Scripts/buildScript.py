@@ -54,7 +54,7 @@ if __name__ == "__main__":
 											action='store_true', default=False)
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
 	parser.add_argument('--exportpath',help='path where to put binary', default=None)
-	parser.add_argument('--configuration',help='build configuration name ', default='Debug')
+	parser.add_argument('--configuration',help='build configuration name ', default='Release')
 	parser.add_argument('--version','-v',help='return current version ', action='store_true',default=False)
 	parser.add_argument('--arch', help='target architecture',default=None)
 	
@@ -65,18 +65,7 @@ if __name__ == "__main__":
 		print(ProJucerUtils.getXmlVersion());
 		exit()
 
-# try to find os
-	if not args.os:
-		curOs = os.name
-		curPlatform = platform.system()
 
-		if curPlatform=='Linux':
-			args.os = 'linux'
-		elif curPlatform=='Darwin':
-			args.os = 'osx'
-
-		else:
-			raise NameError('platform not supported : ',curOs,curPlatform)
 
 
 
@@ -93,32 +82,46 @@ if __name__ == "__main__":
 	"binary_path" : None
 	}
 
-	if args.configure==False:
+	if args.configure==False :
 		savedCfg = getSavedConfig();
-		if savedCfg:
+		#if 
+		if savedCfg and not args.build and (args.package or args.export):
 			for k in defaultCfg :
 				if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
 					raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
 			defaultCfg = savedCfg
 
+	# auto detect os if not provided
+	if not defaultCfg["build_os"] :
+		# curOs = os.name
+		curPlatform = platform.system()
+		if curPlatform=='Linux':
+			defaultCfg["build_os"] = 'linux'
+		elif curPlatform=='Darwin':
+			defaultCfg["build_os"] = 'osx'
 
-	if(args.os=='osx'):
+
+	#osx
+	if(defaultCfg["build_os"]=='osx'):
 		import osx;
 		builder = osx.OSXBuilder(cfg=defaultCfg)
-	elif args.os == 'linux':
+
+	#linux
+	elif defaultCfg["build_os"] == 'linux':
 		import linux;
 		builder=  linux.LinuxBuilder(cfg = defaultCfg)
 
-		## hack for windows
-	elif args.os == 'windows':
+	# hack for windows
+	elif defaultCfg["build_os"] == 'windows':
 		from PyUtils.builderBase import BuilderBase;
 		builder=  BuilderBase(cfg = defaultCfg)
 		if( args.build):
 			raise NameError("does'nt support windows building")
 		cfg= builder.cfg
 		builder.cfg["binary_path"] = os.path.join(cfg["lgml_root_path"],"Builds","VisualStudio2015",cfg["arch"],cfg["build_cfg_name"],"App","LGML.exe");
+	
 	else:
-		raise NameError('no builder found for os :'+ args.os)
+		raise NameError('no builder found for os :'+defaultCfg["build_os"])
 
 
 	if args.configure ==True:
@@ -133,7 +136,7 @@ if __name__ == "__main__":
 
 	#build
 	if args.build:
-		builder.cfg["appPath"] = builder.buildApp();
+		builder.cfg["binary_path"] = builder.buildApp();
 
 	# package
 	if args.package:

@@ -32,15 +32,18 @@ class BuilderBase:
     else :
       raise NameError("no binary_path provided")
 
+  # default package method zips application file
   def packageApp(self,export_path):
     from zipfile import ZipFile
-    print ("default package method")
     source =self.getBinaryPath();
     if not os.path.exists(export_path):
       raise NameError("can't package to "+export_path)
     zipname = self.getNameWithVersion()+"_"+self.cfg["build_os"]+"_"+self.cfg["arch"]+".zip"
-    with ZipFile(os.path.join(export_path,zipname),'w') as z:
+    zipPath = os.path.join(export_path,zipname)
+    with ZipFile(zipPath,'w') as z:
       z.write(source,arcname=os.path.basename(source))
+      return zipPath
+
 
 
 

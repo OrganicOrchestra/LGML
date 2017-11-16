@@ -24,8 +24,7 @@ class OSXBuilder (BuilderBase):
 	def __init__(self,cfg):
 		BuilderBase.__init__(self,cfg)
 		self.applyCfg(self.default_cfg)
-		if not "appPath" in self.cfg:
-			self.cfg["appPath"] = self.getBinaryPath()
+
 
 
 	def cleanApp(self):
@@ -46,24 +45,24 @@ class OSXBuilder (BuilderBase):
 
 	def packageApp(self,exportpath=None):
 		localPath = os.path.join((exportpath or self.localExportPath),self.getNameWithVersion());
-		dmgPath = self.createDmg(localPath,self.getBinaryPath());
+		dmgPath = self.createDmg(localPath);
 		return dmgPath
 
 	def getBinaryPath(self) :
 		return os.path.join(self.xcodeProjPath,"build",self.cfg["build_cfg_name"],self.cfg["appName"]+".app")
 
 	def removeOldApp(self):
-		appPath = self.cfg["appPath"]
+		appPath = self.getBinaryPath()
 		if len(appPath)>10:
 			sh("rm -rf "+appPath)
 
 
 
-	def createDmg(self,exportFileBaseName,appPath):
+	def createDmg(self,exportFileBaseName):
 		import dmgbuild
 		print('creating dmg')
 		os.chdir(os.path.abspath(os.path.join(__file__,os.path.pardir)))
-		dmgbuild.build_dmg(exportFileBaseName,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':appPath})
+		dmgbuild.build_dmg(exportFileBaseName,"Le Grand Mechant Loop",settings_file = 'dmgbuild_conf.py',defines={'app':self.getBinaryPath()})
 		print('dmg done at :'+exportFileBaseName+'.dmg')
 		return exportFileBaseName+'.dmg'
 
