@@ -1,46 +1,45 @@
 version: 1.0.{build}
 branches:
   only:
-  - feature/ci
-  - develop
+  - master
+  - ci/all
+  - ci/appveyor
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
-  PYTHON: "C:\\Python34-x64"
-  PYTHON_VERSION: "3.4.x" # currently 3.4.3
-  PYTHON_ARCH: "64"
   image: Visual Studio 2015
   matrix:
     - platform: Win32
-      configuration: Release_32bit
+      configuration: Release_32
     - platform: x64
       configuration: Release
 
 before_build:
-  ps: |
-    python --version
-    python -c \"import struct; print(struct.calcsize('P') * 8)\"
-    echo "submodule"
-    git submodule -q update --init --recursive
-    cd C:\projects\lgml\third_party\rubberband
-    echo 'building rubberband'
-    msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
-    echo 'dowloading JUCE'
-    wget https://codeload.github.com/WeAreROLI/JUCE/zip/master -OutFile JUCE.zip
-    7z x JUCE.zip -o"C:\projects" -y
-    Rename-Item -path ‘C:\projects\JUCE-master’ -newName ‘JUCE’
-    echo 'downloading ASIOSDK'
-    wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -OutFile ASIO_SDK.zip
-    7z x ASIO_SDK.zip -o"C:\projects" -y
+  - ps: |
+      echo "submodule"
+      git submodule -q update --init --recursive
+      cd C:\projects\lgml\third_party\rubberband
+      echo 'building rubberband'
+      msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
+      echo 'dowloading JUCE'
+      wget https://codeload.github.com/WeAreROLI/JUCE/zip/master -OutFile JUCE.zip
+      7z x JUCE.zip -o"C:\projects" -y
+      Rename-Item -path ‘C:\projects\JUCE-master’ -newName ‘JUCE’
+      echo 'downloading ASIOSDK'
+      wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -OutFile ASIO_SDK.zip
+      7z x ASIO_SDK.zip -o"C:\projects" -y
 
 
-after_build:
-  cmd: |
-    7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
-    python %APPVEYOR_BUILD_FOLDER%\Scripts\PyUtils\OwncloudUtils.py %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/LGML_%PLATFORM%.zip
-  
+# after_build:
+#   cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
+
+deploy_script:
+  - pip install future requests
+  - cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --configure --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%APPVEYOR_BUILD_FOLDER%
+  - cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --package --export
+
 artifacts:
-  - path: LGML_$(platform).zip
+  - path: '*.zip'
 
 build:
   project: Builds/VisualStudio2015/LGML.sln
