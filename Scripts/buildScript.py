@@ -10,6 +10,7 @@ configPath = os.path.abspath(os.path.join(__file__,os.pardir,'lgml_build_cfg.jso
 
 
 def saveConfig(cfg):
+	print("saving config")
 	with open(configPath,'w') as f:
 		cfg = json.dump(cfg,f,indent=4)
 		return cfg
@@ -72,7 +73,7 @@ if __name__ == "__main__":
 		print(ProJucerUtils.getXmlVersion());
 		exit()
 
-	builder = None
+
 	defaultCfg = {
 	"build_os" : args.os,
 	"build_cfg_name":args.configuration,
@@ -85,7 +86,7 @@ if __name__ == "__main__":
 	"binary_path" : None
 	}
 
-	if args.configure==False :
+	if not args.configure:
 		savedCfg = getSavedConfig();
 		#if 
 		if savedCfg and not args.build and (args.package or args.export):
@@ -106,7 +107,7 @@ if __name__ == "__main__":
 		elif curPlatform=='Darwin':
 			defaultCfg["build_os"] = 'osx'
 
-
+	builder = None
 	#osx
 	if(defaultCfg["build_os"]=='osx'):
 		import osx;
@@ -133,12 +134,13 @@ if __name__ == "__main__":
 	if args.configure :
 		saveConfig(builder.cfg)
 
-	print(json.dumps(builder.cfg,sort_keys=True,indent=4));
+	print("config")
+	print (json.dumps(builder.cfg,sort_keys=True,indent=4)) 
 
 	# clean
 	if args.clean:
 		saveConfig({})
-		builder.cleanApp();
+		builder.cleanApp()
 
 	#build
 	if args.build:
