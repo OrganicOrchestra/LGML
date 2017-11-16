@@ -145,6 +145,9 @@ def get_upstream_source_package():
   if(os.path.exists(targetFile)):
     print("using cached sourcePackage : "+ targetFile)
     return
+  #py 2-3 compat urllib
+  from future.standard_library import install_aliases
+  install_aliases()
   import urllib.request 
   print('downloading upstream package for '+LinuxBuilder.lgml_dist_name)
   url = "https://launchpad.net/~tintamarunix/+archive/ubuntu/lgml/+files/"+LinuxBuilder.lgml_dist_name+".orig.tar.gz"

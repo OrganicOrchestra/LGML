@@ -40,7 +40,7 @@ class OSXBuilder (BuilderBase):
 		sh("cd "+self.xcodeProjPath+ " && " \
 			+" xcodebuild -project LGML.xcodeproj" \
 			+" -configuration "+ self.cfg["build_cfg_name"]
-			+" -arch "+self.cfg["architecture"]
+			+" -arch "+self.cfg["arch"]
 			+" -jobs "+str(self.cfg["njobs"]))
 
 	def packageApp(self,exportpath=None):

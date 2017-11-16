@@ -27,7 +27,6 @@ def getSavedConfig():
 def exportToOwncloud(builder,exportedPath):
 	from PyUtils import OwncloudUtils
 	basePath = "DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/"#+ProJucerUtils.getXmlVersion()
-	OwncloudUtils.makeDirIfNotExistent(basePath)
 	exportedFile = os.path.basename(exportedPath)
 	ownCloudPath = os.path.join(basePath,exportedFile)
 	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)

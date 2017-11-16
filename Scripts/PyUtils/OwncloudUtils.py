@@ -1,8 +1,20 @@
 import os
 import json
-from .shUtils import *
+
+try:
+	from .shUtils import *
+except (ImportError,ValueError) as e:
+	from shUtils import *
+
+
+#py 2-3 compat urllib
+from future.standard_library import install_aliases
+install_aliases()
 import urllib.request
+
+
 def getCredential():
+	credentials=None
 	if ('OWNCLOUDPASS' in os.environ) and ('OWNCLOUDUSER' in os.environ):
 		credentials = os.environ['OWNCLOUDUSER']+':'+os.environ['OWNCLOUDPASS']
 
@@ -36,8 +48,11 @@ def sendToOwnCloud(originPath,destPath):
 
 
 if __name__=='__main__':
-	lastLGMLPath = urllib.request.pathname2url("/Tools/LGML/App-Dev/OSX/lastLGML.dmg")
-	currentLGML = urllib.request.pathname2url("/Tools/LGML/App-Dev/OSX/LGML_v1.1.6beta.dmg")
+	import sys
+	if len(sys.argv)>=2:
+		sendToOwnCloud(sys.argv[0],sys.argv[1])
+	# lastLGMLPath = urllib.request.pathname2url("/Tools/LGML/App-Dev/OSX/lastLGML.dmg")
+	# currentLGML = urllib.request.pathname2url("/Tools/LGML/App-Dev/OSX/LGML_v1.1.6beta.dmg")
 
-	sh("curl -X COPY \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/"+currentLGML+"\" \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/"+lastLGMLPath+"\" -u "+getCredential()+" -k",printIt=False)
+	# sh("curl -X COPY \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/"+currentLGML+"\" \"https://storage.organic-orchestra.com/owncloud/remote.php/webdav/"+lastLGMLPath+"\" -u "+getCredential()+" -k",printIt=False)
 

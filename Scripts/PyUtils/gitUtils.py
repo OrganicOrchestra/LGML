@@ -4,7 +4,7 @@ import time
 
 try:
 	from .shUtils import *
-except ModuleNotFoundError:
+except (ImportError,ValueError) as e:
 	from shUtils import *
 
 

@@ -64,12 +64,10 @@ install:
 
 
 script:
-    - python Scripts/buildScript.py --build --configuration=Release --os=$TARGET;
+    - python Scripts/buildScript.py --configure --build --configuration=Release --os=$TARGET;
 
 after_success:
-  - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
-        sudo sh Scripts/linux/installExportDeps.sh;
-    elif [ "$TARGET" == "osx" ] ; then
+  - if [ "$TARGET" == "osx" ] ; then
         sudo sh Scripts/osx/installExportDeps.sh;
     fi
   - python Scripts/buildScript.py --package --configuration=Release --export --os=$TARGET;
