@@ -1,4 +1,4 @@
-import os
+import os,sys
 import json
 
 try:
@@ -8,8 +8,9 @@ except (ImportError,ValueError) as e:
 
 
 #py 2-3 compat urllib
-from future.standard_library import install_aliases
-install_aliases()
+if sys.version_info < (3, 0):
+	from future.standard_library import install_aliases
+	install_aliases()
 import urllib.request
 
 
