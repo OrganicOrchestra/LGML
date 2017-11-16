@@ -15,10 +15,9 @@ environment:
       configuration: Release
 
 before_build:
-  - cmd: |
-    python --version
-    pip install future
-  - ps: |
+  ps: |
+    "python --version"
+    "pip install future"
     echo "submodule"
     git submodule -q update --init --recursive
     cd C:\projects\lgml\third_party\rubberband
