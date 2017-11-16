@@ -16,8 +16,8 @@ environment:
 
 before_build:
   - cmd: |
-    "python --version"
-    "pip install future"
+    python --version
+    pip install future
   - ps: |
     echo "submodule"
     git submodule -q update --init --recursive
