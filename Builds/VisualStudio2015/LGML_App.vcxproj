@@ -75,22 +75,22 @@
     <TargetExt>.exe</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\App\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">LGML_x64_Debug</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">LGML</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);..\..\third_party\rubberband\Debug_x64</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\App\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LGML_x64</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LGML</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);..\..\third_party\rubberband\Release_x64</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_32bit|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_32bit|Win32'">$(Platform)\$(Configuration)\App\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug_32bit|Win32'">LGML_32_Debug</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug_32bit|Win32'">LGML</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug_32bit|Win32'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug_32bit|Win32'">$(LibraryPath);..\..\third_party\rubberband\Debug</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_32bit|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\App\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_32bit|Win32'">$(Platform)\$(Configuration)\App\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release_32bit|Win32'">LGML_32</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release_32bit|Win32'">LGML</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release_32bit|Win32'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release_32bit|Win32'">$(LibraryPath);..\..\third_party\rubberband\Release</LibraryPath>
     <PlatformToolset>v140</PlatformToolset>
@@ -124,11 +124,11 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\LGML_x64_Debug.exe</OutputFile>
+      <OutputFile>$(OutDir)\LGML.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\LGML_x64_Debug.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\LGML.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <LargeAddressAware>true</LargeAddressAware>
@@ -136,7 +136,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(IntDir)\LGML_x64_Debug.bsc</OutputFile>
+      <OutputFile>$(IntDir)\LGML.bsc</OutputFile>
     </Bscmake>
     <Lib>
       <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -170,11 +170,11 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\LGML_x64.exe</OutputFile>
+      <OutputFile>$(OutDir)\LGML.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\LGML_x64.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\LGML.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -184,7 +184,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(IntDir)\LGML_x64.bsc</OutputFile>
+      <OutputFile>$(IntDir)\LGML.bsc</OutputFile>
     </Bscmake>
     <Lib>
       <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -219,11 +219,11 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\LGML_32_Debug.exe</OutputFile>
+      <OutputFile>$(OutDir)\LGML.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\LGML_32_Debug.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\LGML.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>..\..\third_party\rubberband\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -232,7 +232,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(IntDir)\LGML_32_Debug.bsc</OutputFile>
+      <OutputFile>$(IntDir)\LGML.bsc</OutputFile>
     </Bscmake>
     <Lib>
       <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -266,11 +266,11 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\LGML_32.exe</OutputFile>
+      <OutputFile>$(OutDir)\LGML.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(IntDir)\LGML_32.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(IntDir)\LGML.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <OptimizeReferences>true</OptimizeReferences>
@@ -281,7 +281,7 @@
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(IntDir)\LGML_32.bsc</OutputFile>
+      <OutputFile>$(IntDir)\LGML.bsc</OutputFile>
     </Bscmake>
     <Lib>
       <AdditionalDependencies>setupapi.lib;rubberband-library.lib;%(AdditionalDependencies)</AdditionalDependencies>
