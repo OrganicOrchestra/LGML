@@ -30,7 +30,7 @@ ifeq ($(CONFIG),Debug)
   JUCE_OUTDIR := build
 
   ifeq ($(TARGET_ARCH),)
-    TARGET_ARCH := -march=native
+    TARGET_ARCH := 
   endif
 
   JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.5 -DJUCE_APP_VERSION_HEX=0x10205 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)
@@ -51,7 +51,7 @@ ifeq ($(CONFIG),Release)
   JUCE_OUTDIR := build
 
   ifeq ($(TARGET_ARCH),)
-    TARGET_ARCH := -march=native
+    TARGET_ARCH := 
   endif
 
   JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DLINK_PLATFORM_LINUX=1 -DJUCE_PLUGINHOST_LADSPA=1 -DJUCER_LINUX_MAKE_6D53C8B4=1 -DJUCE_APP_VERSION=1.2.5 -DJUCE_APP_VERSION_HEX=0x10205 $(shell pkg-config --cflags alsa freetype2 libcurl x11 xext xinerama) -pthread -I../../third_party/VST3_SDK -I../../JuceLibraryCode -I../../../JUCE/modules -I../../Source $(CPPFLAGS)

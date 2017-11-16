@@ -754,22 +754,22 @@
       <CONFIGURATIONS>
         <CONFIGURATION defines="" generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="1" libraryPath="..\..\third_party\rubberband\Debug_x64"
-                       name="Debug" optimisation="1" targetName="LGML_x64_Debug" winArchitecture="x64"
+                       name="Debug" optimisation="1" targetName="LGML" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="0" libraryPath="..\..\third_party\rubberband\Release_x64"
-                       name="Release" optimisation="3" targetName="LGML_x64" winArchitecture="x64"
+                       name="Release" optimisation="3" targetName="LGML" winArchitecture="x64"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1" alwaysGenerateDebugSymbols="0"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="1" libraryPath="..\..\third_party\rubberband\Debug"
-                       name="Debug_32bit" optimisation="1" targetName="LGML_32_Debug"
-                       winArchitecture="Win32" winWarningLevel="4" debugInformationFormat="ProgramDatabase"
+                       name="Debug_32bit" optimisation="1" targetName="LGML" winArchitecture="Win32"
+                       winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0"/>
         <CONFIGURATION generateManifest="1" headerPath="$(ASIOSDK)\common&#10;..\..\third_party\serial\include&#10;..\..\third_party\rubberband&#10;..\..\third_party\link\include&#10;..\..\third_party\link\modules\asio-standalone\asio\include"
                        isDebug="0" libraryPath="..\..\third_party\rubberband\Release"
-                       name="Release_32bit" optimisation="3" targetName="LGML_32" winArchitecture="Win32"
+                       name="Release_32bit" optimisation="3" targetName="LGML" winArchitecture="Win32"
                        winWarningLevel="4" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>

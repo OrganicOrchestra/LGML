@@ -24,13 +24,16 @@ def getSavedConfig():
 		print ('no config found')
 		return None
 
-def exportToOwncloud(builder,exportedPath):
+def exportToOwncloud(exportedPath):
 	from PyUtils import OwncloudUtils
 	basePath = "DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/"#+ProJucerUtils.getXmlVersion()
 	exportedFile = os.path.basename(exportedPath)
 	ownCloudPath = os.path.join(basePath,exportedFile)
 	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
 	OwncloudUtils.sendToOwnCloud(configPath,ownCloudPath+".cfg")
+
+
+
 
 
 if __name__ == "__main__":
@@ -53,6 +56,7 @@ if __name__ == "__main__":
 	parser.add_argument('--exportpath',help='path where to put binary', default=None)
 	parser.add_argument('--configuration',help='build configuration name ', default='Debug')
 	parser.add_argument('--version','-v',help='return current version ', action='store_true',default=False)
+	parser.add_argument('--arch', help='target architecture',default=None)
 	
 
 	args = parser.parse_args()
@@ -84,14 +88,17 @@ if __name__ == "__main__":
 	"lgml_root_path" : os.path.abspath(os.path.join(__file__,os.pardir,os.pardir)),
 	"export_path" : args.exportpath,
 	"version" : ProJucerUtils.getXmlVersion(),
-	"git_sha" : gitUtils.getGitSha()
+	"git_sha" : gitUtils.getGitSha(),
+	"arch" : args.arch,
+	"binary_path" : None
 	}
 
 	if args.configure==False:
 		savedCfg = getSavedConfig();
 		if savedCfg:
-			if (savedCfg["build_os"]!=args.os):
-				raise NameError("config made for another builder os (%s vs %s)"%(savedCfg["build_os"],args.os))
+			for k in defaultCfg :
+				if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
+					raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
 			defaultCfg = savedCfg
 
 
@@ -101,6 +108,15 @@ if __name__ == "__main__":
 	elif args.os == 'linux':
 		import linux;
 		builder=  linux.LinuxBuilder(cfg = defaultCfg)
+
+		## hack for windows
+	elif args.os == 'windows':
+		from PyUtils.builderBase import BuilderBase;
+		builder=  BuilderBase(cfg = defaultCfg)
+		if( args.build):
+			raise NameError("does'nt support windows building")
+		cfg= builder.cfg
+		builder.cfg["binary_path"] = os.path.join(cfg["lgml_root_path"],"Builds","VisualStudio2015",cfg["arch"],cfg["build_cfg_name"],"App","LGML.exe");
 	else:
 		raise NameError('no builder found for os :'+ args.os)
 
@@ -109,18 +125,26 @@ if __name__ == "__main__":
 		saveConfig(builder.cfg)
 
 	print(json.dumps(builder.cfg,sort_keys=True,indent=4));
+
+	# clean
 	if args.clean:
 		saveConfig({})
 		builder.cleanApp();
+
+	#build
 	if args.build:
-		builder.buildApp();
+		builder.cfg["appPath"] = builder.buildApp();
+
+	# package
 	if args.package:
 		ep = builder.cfg["export_path"]
 		if ( ep is not None ) and ( not os.path.exists(ep)):
 				os.makedirs(ep)
 		builder.cfg["packaged_path"] = builder.packageApp(ep)
 		saveConfig(builder.cfg)
+
+	#export
 	if args.export:
-		exportToOwncloud(builder,builder.cfg["packaged_path"]);
+		exportToOwncloud(builder.cfg["packaged_path"]);
 
 

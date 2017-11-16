@@ -42,6 +42,7 @@ class OSXBuilder (BuilderBase):
 			+" -configuration "+ self.cfg["build_cfg_name"]
 			+" -arch "+self.cfg["arch"]
 			+" -jobs "+str(self.cfg["njobs"]))
+		return getBinaryPath();
 
 	def packageApp(self,exportpath=None):
 		localPath = os.path.join((exportpath or self.localExportPath),self.getNameWithVersion());

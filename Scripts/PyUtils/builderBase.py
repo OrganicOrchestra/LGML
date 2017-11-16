@@ -11,21 +11,37 @@ class BuilderBase:
 
   def __init__(self,cfg=None,actions = None):
     self.cfg = cfg or {};
-    self.action = actions or ['build']
     self.verbose = "normal" # or quiet or verbose
     self.applyCfg(self.default_cfg_all)
 
 
-  def applyCfg(self, default,overwrite = False):
-    for k in default:
-      if overwrite or not k in self.cfg:
-        self.cfg[k] = default[k]
+  def applyCfg(self, newCfg,overwrite = False):
+    for k in newCfg:
+      if overwrite or not k in self.cfg or self.cfg[k] is None:
+        self.cfg[k] = newCfg[k]
 
   def getNameWithVersion(self):
     from PyUtils import ProJucerUtils
     name =  self.cfg["appName"]+ "_v"+str(ProJucerUtils.getVersion())
     return name
   
+
+  def getBinaryPath(self):
+    if "binary_path" in self.cfg:
+      return self.cfg["binary_path"]
+    else :
+      raise NameError("no binary_path provided")
+
+  def packageApp(self,export_path):
+    from zipfile import ZipFile
+    print ("default package method")
+    source =self.getBinaryPath();
+    if not os.path.exists(export_path):
+      raise NameError("can't package to "+export_path)
+    zipname = self.getNameWithVersion()+"_"+self.cfg["build_os"]+"_"+self.cfg["arch"]+".zip"
+    with ZipFile(os.path.join(export_path,zipname),'w') as z:
+      z.write(source,arcname=os.path.basename(source))
+
 
 
 

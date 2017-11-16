@@ -32,14 +32,15 @@ before_build:
       7z x ASIO_SDK.zip -o"C:\projects" -y
 
 
-after_build:
-  cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
+# after_build:
+#   cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
 
-on_success:
-  - "python %APPVEYOR_BUILD_FOLDER%\Scripts\PyUtils\OwncloudUtils.py \"%APPVEYOR_BUILD_FOLDER%/LGML_%PLATFORM%.zip\" \"DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/LGML_%PLATFORM%.zip\""
+after_build:
+  cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%APPVEYOR_BUILD_FOLDER%
+  cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --package --export
 
 artifacts:
-  - path: LGML_$(platform).zip
+  - path: '*.zip'
 
 build:
   project: Builds/VisualStudio2015/LGML.sln
