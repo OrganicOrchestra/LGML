@@ -17,19 +17,19 @@ environment:
 before_build:
   - "python --version"
   - "pip install future"
-  - ps: >-
-    echo "submodule"
-    git submodule -q update --init --recursive
-    cd C:\projects\lgml\third_party\rubberband
-    echo 'building rubberband'
-    msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
-    echo 'dowloading JUCE'
-    wget https://codeload.github.com/WeAreROLI/JUCE/zip/master -OutFile JUCE.zip
-    7z x JUCE.zip -o"C:\projects" -y
-    Rename-Item -path ‘C:\projects\JUCE-master’ -newName ‘JUCE’
-    echo 'downloading ASIOSDK'
-    wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -OutFile ASIO_SDK.zip
-    7z x ASIO_SDK.zip -o"C:\projects" -y
+  - ps: |
+      echo "submodule"
+      git submodule -q update --init --recursive
+      cd C:\projects\lgml\third_party\rubberband
+      echo 'building rubberband'
+      msbuild C:\projects\lgml\third_party\rubberband\rubberband-library.sln /p:Configuration=Release /m:4
+      echo 'dowloading JUCE'
+      wget https://codeload.github.com/WeAreROLI/JUCE/zip/master -OutFile JUCE.zip
+      7z x JUCE.zip -o"C:\projects" -y
+      Rename-Item -path ‘C:\projects\JUCE-master’ -newName ‘JUCE’
+      echo 'downloading ASIOSDK'
+      wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip -OutFile ASIO_SDK.zip
+      7z x ASIO_SDK.zip -o"C:\projects" -y
 
 
 after_build:
