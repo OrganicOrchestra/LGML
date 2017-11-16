@@ -1,13 +1,13 @@
 version: 1.0.{build}
 branches:
   only:
+  - master
   - ci/all
   - ci/appveyor
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
   image: Visual Studio 2015
-  PYTHON: "C:\\Python27"
   matrix:
     - platform: Win32
       configuration: Release_32bit
@@ -36,7 +36,7 @@ after_build:
   cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
 
 on_success:
-  cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\PyUtils\OwncloudUtils.py %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/LGML_%PLATFORM%.zip
+  - "python %APPVEYOR_BUILD_FOLDER%\Scripts\PyUtils\OwncloudUtils.py \"%APPVEYOR_BUILD_FOLDER%/LGML_%PLATFORM%.zip\" \"DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/LGML_%PLATFORM%.zip\""
 
 artifacts:
   - path: LGML_$(platform).zip
