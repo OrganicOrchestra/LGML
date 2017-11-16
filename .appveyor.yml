@@ -7,9 +7,6 @@ branches:
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
   image: Visual Studio 2015
-  PYTHON: "C:\\Python34-x64"
-  PYTHON_VERSION: "3.4.x" # currently 3.4.3
-  PYTHON_ARCH: "64"
   matrix:
     - platform: Win32
       configuration: Release_32bit
@@ -18,9 +15,9 @@ environment:
 
 before_build:
   cmd: |
-    "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
     "python --version"
     "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+    pip install future
   ps: |
     echo "submodule"
     git submodule -q update --init --recursive
