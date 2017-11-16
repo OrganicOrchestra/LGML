@@ -6,15 +6,18 @@ branches:
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
-  PYTHON: "C:\\Python34-x64"
-  PYTHON_VERSION: "3.4.x" # currently 3.4.3
-  PYTHON_ARCH: "64"
   image: Visual Studio 2015
   matrix:
     - platform: Win32
       configuration: Release_32bit
+      PYTHON: "C:\\Python34-x64"
+      PYTHON_VERSION: "3.4.x" # currently 3.4.3
+      PYTHON_ARCH: "64"
     - platform: x64
       configuration: Release
+      PYTHON: "C:\\Python34-x64"
+      PYTHON_VERSION: "3.4.x" # currently 3.4.3
+      PYTHON_ARCH: "64"
 
 before_build:
   cmd: |
