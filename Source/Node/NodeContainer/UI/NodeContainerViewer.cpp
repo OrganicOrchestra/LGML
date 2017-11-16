@@ -132,7 +132,6 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
 
         nodesUI.add (nui);
         addChildControllableContainer(nui);
-        nui->setMiniMode(minimizeAll->boolValue());
         nodesLayer.addAndMakeVisible (nui);
 
     }

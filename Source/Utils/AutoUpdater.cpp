@@ -707,7 +707,7 @@ bool LatestVersionChecker::askUserAboutNewVersion (const LatestVersionChecker::L
 {
     LGMLVersionTriple currentVersion (getProductVersionNumber());
 
-    if (1)//version > currentVersion)
+    if (version > currentVersion)
     {
         File appParentFolder (File::getSpecialLocation (File::currentApplicationFile).getParentDirectory());
         DialogWindow* modalDialog = nullptr;
