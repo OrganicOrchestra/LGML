@@ -93,7 +93,7 @@ if __name__ == "__main__":
 			for k in defaultCfg :
 				if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
 					raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
-			defaultCfg = savedCfg
+		defaultCfg = savedCfg
 
 	# default Release
 	if defaultCfg["build_cfg_name"] is None:
