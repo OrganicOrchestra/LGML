@@ -9,7 +9,7 @@ class BuilderBase:
 
   }
 
-  def __init__(self,cfg=None,actions = None):
+  def __init__(self,cfg=None):
     self.cfg = cfg or {};
     self.verbose = "normal" # or quiet or verbose
     self.applyCfg(self.default_cfg_all)

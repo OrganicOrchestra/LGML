@@ -16,13 +16,14 @@ def saveConfig(cfg):
 
 
 def getSavedConfig():
+	print('loading savedCfg')
 	if(os.path.exists(configPath)):
 		with open(configPath,'r') as f:
 			cfg = json.load(f)
 			return cfg
-	else:
-		print ('no config found')
-		return None
+
+	print ('no config found')
+	return None
 
 def exportToOwncloud(exportedPath):
 	from PyUtils import OwncloudUtils
@@ -41,17 +42,23 @@ if __name__ == "__main__":
 	import argparse
 	import multiprocessing
 	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
+	
 	parser.add_argument('--configure', action='store_true',
-	                    help='build it',default = False)
+	                    help='configure it (and save config locally)',default = False)
 
 	parser.add_argument('--build', help='build it',
 											action='store_true',default = False)
+
 	parser.add_argument('--package', action='store_true',
 											help='package it',default = False)
+
 	parser.add_argument('--export', help='export it',
 											action='store_true',default = False)
+
 	parser.add_argument('--clean',help='clean',
 											action='store_true', default=False)
+
+
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
 	parser.add_argument('--exportpath',help='path where to put binary', default=None)
 	parser.add_argument('--configuration',help='build configuration name ', default=None)
@@ -64,10 +71,6 @@ if __name__ == "__main__":
 	if args.version==True:
 		print(ProJucerUtils.getXmlVersion());
 		exit()
-
-
-
-
 
 	builder = None
 	defaultCfg = {
@@ -127,7 +130,7 @@ if __name__ == "__main__":
 		raise NameError('no builder found for os :'+defaultCfg["build_os"])
 
 
-	if args.configure ==True:
+	if args.configure :
 		saveConfig(builder.cfg)
 
 	print(json.dumps(builder.cfg,sort_keys=True,indent=4));
