@@ -10,7 +10,7 @@ environment:
   image: Visual Studio 2015
   matrix:
     - platform: Win32
-      configuration: Release
+      configuration: Release_32
     - platform: x64
       configuration: Release
 
@@ -36,7 +36,7 @@ before_build:
 after_build:
   - "python --version"
   - "pip install future requests"
-  - cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%APPVEYOR_BUILD_FOLDER%
+  - cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --configure --os=windows --configuration=%CONFIGURATION% --arch=%PLATFORM%  --exportpath=%APPVEYOR_BUILD_FOLDER%
   - cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\buildScript.py --package --export
 
 artifacts:
