@@ -15,9 +15,9 @@ environment:
       configuration: Release
 
 before_build:
-  ps: |
-    python --version
-    pip install future
+  - cmd: python --version
+  - cmd: pip install future
+  - ps: |
     echo "submodule"
     git submodule -q update --init --recursive
     cd C:\projects\lgml\third_party\rubberband
@@ -33,10 +33,11 @@ before_build:
 
 
 after_build:
-  cmd: |
-    7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
-    python %APPVEYOR_BUILD_FOLDER%\Scripts\PyUtils\OwncloudUtils.py %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/LGML_%PLATFORM%.zip
-  
+  cmd: 7z a %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Builds\VisualStudio2015\%PLATFORM%\%CONFIGURATION%\App\*.exe
+
+on_success:
+  cmd: python %APPVEYOR_BUILD_FOLDER%\Scripts\PyUtils\OwncloudUtils.py %APPVEYOR_BUILD_FOLDER%\LGML_%PLATFORM%.zip DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/LGML_%PLATFORM%.zip
+
 artifacts:
   - path: LGML_$(platform).zip
 
