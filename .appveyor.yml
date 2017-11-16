@@ -6,6 +6,9 @@ branches:
 
 environment:
   ASIOSDK: C:\projects\ASIOSDK2.3
+  PYTHON: "C:\\Python34-x64"
+  PYTHON_VERSION: "3.4.x" # currently 3.4.3
+  PYTHON_ARCH: "64"
   image: Visual Studio 2015
   matrix:
     - platform: Win32
@@ -15,6 +18,8 @@ environment:
 
 before_build:
   ps: |
+    python --version
+    python -c \"import struct; print(struct.calcsize('P') * 8)\"
     echo "submodule"
     git submodule -q update --init --recursive
     cd C:\projects\lgml\third_party\rubberband
