@@ -31,6 +31,8 @@ class BuilderBase:
       return self.cfg["binary_path"]
     else :
       raise NameError("no binary_path provided")
+  def getPreprocessor(self):
+    return ""
 
   # default package method zips application file
   def packageApp(self,export_path):

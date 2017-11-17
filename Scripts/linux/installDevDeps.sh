@@ -39,6 +39,11 @@ fi
 apt-get -y -q --assume-yes install python3
 apt-get -y -q --assume-yes install python3-pip
 
+# rubberband
+apt-get -y -q --assume-yes install librubberband-dev:$TARGET_CPU
+# for dns utility
+apt-get -y -q --assume-yes install libavahi-compat-libdnssd-dev:$TARGET_CPU
+
 
 # cd ;
 # if [ ! -d "Dev/Projucer/linux" ]; then

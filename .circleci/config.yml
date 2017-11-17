@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: ubuntu
         environment:
-          TARGET_ARCH: -m64 # arch for linux makefile
+          ARCH_FLAGS: -m64 # arch for linux makefile
           DST_LGML_PATH: /tmp/build
     steps:
       - checkout
@@ -34,8 +34,8 @@ jobs:
       - image: dockcross/linux-x86
         environment:
           PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
-          TARGET_CPU: i386
-          TARGET_ARCH: -m32 # arch for JUCEs linux makefile
+          TARGET_ARCH: i386
+          ARCH_FLAGS: -m32 # arch for JUCEs linux makefile
           DST_LGML_PATH: /tmp/build32
 
     steps:
@@ -51,7 +51,7 @@ jobs:
           name: build and package LGML32
           command: |
             sh Scripts/linux/installExportDeps.sh
-            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --arch=$TARGET_CPU
+            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --arch=$TARGET_ARCH
             python3 Scripts/buildScript.py --build --package --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
@@ -66,9 +66,10 @@ jobs:
     docker:
       - image: ubuntu
         environment:
-          TARGET_CPU: armhf
-          TARGET_ARCH: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard # arch flags for JUCEMakefile -> RPI3
+          TARGET_ARCH: armhf
+          ARCH_FLAGS: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -ffast-math # arch flags for JUCEMakefile -> RPI3
           DST_LGML_PATH: /tmp/buildRasp
+          PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
 
     steps:
       - checkout
@@ -91,10 +92,9 @@ jobs:
           name: build and package LGMLRasp
           command: |
             set -x
-            export PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig
             export CXX=arm-linux-gnueabihf-g++
             sh Scripts/linux/installExportDeps.sh
-            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --arch=$TARGET_CPU
+            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --arch=$TARGET_ARCH
             python3 Scripts/buildScript.py --build --package --export
             arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH/dependencies.txt"
 

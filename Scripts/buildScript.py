@@ -26,13 +26,25 @@ def getSavedConfig():
 	print ('no config found')
 	return None
 
-def exportToOwncloud(exportedPath):
+def exportToOwncloud(builder):
 	from PyUtils import OwncloudUtils
+
+	# send binaryies
+	exportedPath = builder.cfg["packaged_path"]
 	basePath = "DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/"#+ProJucerUtils.getXmlVersion()
 	exportedFile = os.path.basename(exportedPath)
 	ownCloudPath = os.path.join(basePath,exportedFile)
+
+	#send opt
 	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
+	
 	OwncloudUtils.sendToOwnCloud(configPath,ownCloudPath+".cfg")
+	
+	preprocessor = builder.getPreprocessor()
+	if preprocessor:
+		with open(configPath+".preprocessor",'w') as preFp:
+			preFp.write(preprocessor);
+		OwncloudUtils.sendToOwnCloud(configPath+".preprocessor",ownCloudPath+".preprocessor")
 
 
 
@@ -157,6 +169,6 @@ if __name__ == "__main__":
 
 	#export
 	if args.export:
-		exportToOwncloud(builder.cfg["packaged_path"]);
+		exportToOwncloud(builder);
 
 
