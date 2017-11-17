@@ -34,7 +34,7 @@ jobs:
       - image: dockcross/linux-x86
         environment:
           PKG_CONFIG_PATH: /usr/lib/i386-linux-gnu/pkgconfig/
-          TARGET_ARCH: i386
+          CROSS_ARCH: i386
           ARCH_FLAGS: -m32 # arch for JUCEs linux makefile
           DST_LGML_PATH: /tmp/build32
 
@@ -51,7 +51,7 @@ jobs:
           name: build and package LGML32
           command: |
             sh Scripts/linux/installExportDeps.sh
-            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --arch=$TARGET_ARCH
+            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release 
             python3 Scripts/buildScript.py --build --package --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
@@ -66,7 +66,7 @@ jobs:
     docker:
       - image: ubuntu
         environment:
-          TARGET_ARCH: armhf
+          CROSS_ARCH: armhf
           ARCH_FLAGS: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -ffast-math # arch flags for JUCEMakefile -> RPI3
           DST_LGML_PATH: /tmp/buildRasp
           PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
@@ -94,7 +94,7 @@ jobs:
             set -x
             export CXX=arm-linux-gnueabihf-g++
             sh Scripts/linux/installExportDeps.sh
-            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --arch=$TARGET_ARCH
+            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
             python3 Scripts/buildScript.py --build --package --export
             arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH/dependencies.txt"
 

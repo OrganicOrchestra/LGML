@@ -1,26 +1,26 @@
 # this script install JUCE in sibling directory of LGML
 set +e # ignore apt update error
-NATIVE_CPU=`dpkg --print-architecture`
-if [ -z ${TARGET_CPU+x} ]; then TARGET_CPU="$NATIVE_CPU"; fi
-if [ "$TARGET_CPU" != "$NATIVE_CPU" ]; then echo "adding foreing arch $TARGET_CPU"; dpkg --add-architecture $TARGET_CPU;apt-get -qq update; fi
-echo "arch is set to '$TARGET_CPU'"
+NATIVE_ARCH=`dpkg --print-architecture`
+if [ -z ${CROSS_ARCH+x} ]; then CROSS_ARCH="$NATIVE_CPU"; fi
+if [ "$CROSS_ARCH" != "$NATIVE_ARCH" ]; then echo "adding foreing arch $CROSS_ARCH"; dpkg --add-architecture $CROSS_ARCH;apt-get -qq update; fi
+echo "arch is set to '$CROSS_ARCH'"
 
 set -e # un-ignore apt update error
 
 ## these are devloper libs needed for JUCE,   not sure wich are needed in released version...
 # from Makefile alsa freetype2 libcurl x11 xext xinerama
-apt-get -y --assume-yes install libfreetype6-dev:$TARGET_CPU 
-apt-get -y --assume-yes install libx11-dev:$TARGET_CPU
-apt-get -y --assume-yes install libxinerama-dev:$TARGET_CPU
-apt-get -y --assume-yes install libxrandr-dev:$TARGET_CPU
-apt-get -y --assume-yes install libxcursor-dev:$TARGET_CPU
-apt-get -y --assume-yes install mesa-common-dev:$TARGET_CPU
-apt-get -y --assume-yes install libasound2-dev:$TARGET_CPU
-apt-get -y --assume-yes install freeglut3-dev:$TARGET_CPU
-apt-get -y --assume-yes install libxcomposite-dev:$TARGET_CPU
-apt-get -y --assume-yes install libjack-dev:$TARGET_CPU
-apt-get -y -q --assume-yes install libcurl4-openssl-dev:$TARGET_CPU
-apt-get -y -q --assume-yes install ladspa-sdk:$TARGET_CPU
+apt-get -y --assume-yes install libfreetype6-dev:$CROSS_ARCH 
+apt-get -y --assume-yes install libx11-dev:$CROSS_ARCH
+apt-get -y --assume-yes install libxinerama-dev:$CROSS_ARCH
+apt-get -y --assume-yes install libxrandr-dev:$CROSS_ARCH
+apt-get -y --assume-yes install libxcursor-dev:$CROSS_ARCH
+apt-get -y --assume-yes install mesa-common-dev:$CROSS_ARCH
+apt-get -y --assume-yes install libasound2-dev:$CROSS_ARCH
+apt-get -y --assume-yes install freeglut3-dev:$CROSS_ARCH
+apt-get -y --assume-yes install libxcomposite-dev:$CROSS_ARCH
+apt-get -y --assume-yes install libjack-dev:$CROSS_ARCH
+apt-get -y -q --assume-yes install libcurl4-openssl-dev:$CROSS_ARCH
+apt-get -y -q --assume-yes install ladspa-sdk:$CROSS_ARCH
 
 # libavahi-compat-libdnssd libfreetype6 libx11 libxinerama libxrandr libxcursor mesa-common libasound2 freeglut3 libxcomposite libjack libcurl4-openssl
 
@@ -40,9 +40,9 @@ apt-get -y -q --assume-yes install python3
 apt-get -y -q --assume-yes install python3-pip
 
 # rubberband
-apt-get -y -q --assume-yes install librubberband-dev:$TARGET_CPU
+apt-get -y -q --assume-yes install librubberband-dev:$CROSS_ARCH
 # for dns utility
-apt-get -y -q --assume-yes install libavahi-compat-libdnssd-dev:$TARGET_CPU
+apt-get -y -q --assume-yes install libavahi-compat-libdnssd-dev:$CROSS_ARCH
 
 
 # cd ;

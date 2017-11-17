@@ -33,7 +33,7 @@ class LinuxBuilder (BuilderBase):
   def __init__(self,cfg):
     BuilderBase.__init__(self,cfg)
     self.apply_if_defined("ARCH_FLAGS")
-    self.apply_if_defined("TARGET_ARCH","arch")
+    self.apply_if_defined("CROSS_ARCH","arch")
     self.applyCfg(self.default_cfg)
     os.environ["CPPFLAGS"] = self.getFullArchFlags()
 
@@ -45,7 +45,7 @@ class LinuxBuilder (BuilderBase):
 
 
   def getFullArchFlags(self):
-    return '-march='+self.cfg["arch"]+" "+self.cfg["ARCH_FLAGS"]
+    return self.cfg["ARCH_FLAGS"]
 
   def buildApp(self):
     makeCmd = self.makeCmd()
