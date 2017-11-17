@@ -1,18 +1,19 @@
 #!/usr/bin/bash
 
 
-
-if command -v python3 &>/dev/null; then
-    echo Python 3 is installed
-else
+set -x
+if ! (command -v python3 &>/dev/null); then
     #install brew if needed
-    if command -v brew &/dev/null; then
+    if !(command -v brew &>/dev/null); then
       ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
-    brew install python3
+brew update
+brew install python3
+else
+echo Python 3 is installed
 fi
 
 
-pip3 install -U pip3; 
-pip3 install dmgbuild;
-pip3 install requests;
+pip3 install -U pip; 
+pip3 install -U dmgbuild;
+pip3 install -U requests;

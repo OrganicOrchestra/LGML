@@ -1,6 +1,6 @@
 
 import os,platform;
-from PyUtils import *
+from PyUtils import gitUtils,ProJucerUtils
 import json
 
 
@@ -25,6 +25,7 @@ def getSavedConfig():
 
 	print ('no config found')
 	return None
+
 
 def exportToOwncloud(builder):
 	from PyUtils import OwncloudUtils
