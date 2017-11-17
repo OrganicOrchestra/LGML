@@ -35,7 +35,8 @@ class LinuxBuilder (BuilderBase):
     self.apply_if_defined("ARCH_FLAGS")
     self.apply_if_defined("CROSS_ARCH","arch")
     self.applyCfg(self.default_cfg)
-    os.environ["CPPFLAGS"] = self.getFullArchFlags()
+    # hack to pass param to builder and linker
+    os.environ["TARGET_ARCH"] = self.getFullArchFlags()
 
   def getPreprocessor(self):
     gcc = "g++"

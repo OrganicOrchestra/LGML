@@ -22,8 +22,11 @@
 
 #include "../JuceHeaderUI.h"
 
-
+#if JUCE_ARM // remove GL for arm, just to try if it changes ui perfs
+#define USE_GL 0
+#else
 #define USE_GL 1
+#endif
 
 
 // debug util
