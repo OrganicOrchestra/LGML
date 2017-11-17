@@ -32,8 +32,6 @@ SerialController::SerialController (StringRef name) :
 
     setNamespaceName ("controllers." + shortName);
     logIncoming = addNewParameter<BoolParameter> ("logIncoming", "log Incoming midi message", false);
-
-//    selectedHardwareID = addNewParameter<StringParameter> ("selectedHardwareID", "Id of the selected hardware", "");
     selectedPort = addNewParameter<EnumParameter> ("selectedPort", "Name of the selected hardware",SerialManager::getInstance(), "");
 
     SerialManager::getInstance()->addSerialManagerListener (this);
@@ -52,12 +50,8 @@ SerialController::~SerialController()
 void SerialController::setCurrentPort (SerialPort* _port)
 {
 
-    if (port == _port) return;
-
-
     if (port != nullptr)
     {
-
         port->removeSerialPortListener (this);
     }
 
@@ -67,14 +61,11 @@ void SerialController::setCurrentPort (SerialPort* _port)
     {
         port->addSerialPortListener (this);
         lastOpenedPortID = port->info->port;
-
-//        selectedPort->setValue (port->info->port);
-//        selectedHardwareID->setValue (port->info->hardwareID);
-
         sendIdentificationQuery();
     }
     else
     {
+        selectedPort->unselectAll();
         DBG ("set port null");
     }
     isConnected->setValue(port!=nullptr);
@@ -101,10 +92,9 @@ void SerialController::onContainerParameterChanged (Parameter* p)
         String portHID = selectedPort->getFirstSelectedValue().toString();
         SerialPort* _port  = SerialManager::getInstance()->getPort (portHID, portName, true);
 
-        if (_port != nullptr)
-        {
+
             setCurrentPort (_port);
-        }
+        
     }
 
 

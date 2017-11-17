@@ -23,6 +23,7 @@ SerialPort::SerialPort (Serial* _port, SerialPortInfo*   _info, PortMode _mode) 
     mode (_mode),
     thread (_info->port, this)
 {
+    
     open();
 }
 #else
@@ -50,7 +51,7 @@ void SerialPort::open()
     {
         port->open();
     }
-
+    
     port->setDTR();
     port->setRTS();
 
@@ -68,7 +69,7 @@ void SerialPort::open()
 #endif
 }
 
-void SerialPort::close()
+void SerialPort::close(bool stopThread)
 {
 #if SERIALSUPPORT
 
@@ -80,7 +81,9 @@ void SerialPort::close()
         thread.removeAsyncSerialListener (this);
 #endif
 
-        thread.stopThread (10000);
+        if(stopThread)
+            thread.stopThread (10000);
+
         port->close();
         listeners.call (&SerialPortListener::portClosed, this);
     }
@@ -245,7 +248,7 @@ void SerialReadThread::run()
 
 
     }
-    port->close();
+    port->close(false);
 
 #endif
 
