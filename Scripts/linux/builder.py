@@ -42,7 +42,7 @@ class LinuxBuilder (BuilderBase):
     gcc = "g++"
     if "CXX" in os.environ:
       gcc = os.environ["CXX"]
-    return sh(gcc+' -E -v '+self.getFullArchFlags()+" - </dev/null 2>&1",printIt=True)
+    return sh(gcc+' -E -v -dM '+self.getFullArchFlags()+" - </dev/null 2>&1",printIt=True)
 
 
   def getFullArchFlags(self):

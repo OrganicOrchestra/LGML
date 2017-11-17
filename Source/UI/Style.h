@@ -28,6 +28,10 @@
 #define USE_GL 1
 #endif
 
+#if USE_GL
+#include <juce_opengl/juce_opengl.h>
+#endif
+
 
 // debug util
 struct LGMLUIUtils{
