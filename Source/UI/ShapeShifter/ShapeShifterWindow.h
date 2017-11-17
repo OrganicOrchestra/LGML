@@ -17,10 +17,8 @@
 #define SHAPESHIFTERWINDOW_H_INCLUDED
 
 #include "ShapeShifterPanel.h"
-#include "../Style.h" // for USE_GL
-#if USE_GL
-    #include <juce_opengl/juce_opengl.h>
-#endif
+#include "../Style.h" // for JUCE_OPENGL
+
 
 class ShapeShifterWindow :
     public ResizableWindow,
@@ -56,7 +54,7 @@ public:
 
 
 
-#if USE_GL
+#if JUCE_OPENGL
     OpenGLContext openGLContext;
 #endif
 

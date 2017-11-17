@@ -36,7 +36,7 @@ public:
 
 
     EnumParameter* selectedPort;
-    BoolParameter * isConnected;
+
 //    StringParameter* selectedHardwareID;
     SerialPort* port;
 

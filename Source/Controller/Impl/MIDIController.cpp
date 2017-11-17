@@ -90,7 +90,7 @@ void MIDIController::handleIncomingMidiMessage (MidiInput*,
             NLOG ("MIDI", "Note " + String (isNoteOn ? "on" : "off") + " : " + MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0) + " > " + String (message.getVelocity()) + " (Channel " + String (message.getChannel()) + ")");
         }
 
-        const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), true, true, 0));//+"_"+String(message.getChannel()));
+        const String paramName (MidiMessage::getMidiNoteName (message.getNoteNumber(), false, true, 0));//+"_"+String(message.getChannel()));
         if (Controllable* c = userContainer.getControllableByName(paramName))
         {
             ((Parameter*)c)->setValue(isNoteOn?message.getFloatVelocity():0);

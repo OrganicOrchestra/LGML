@@ -99,7 +99,6 @@ totalLogRow (0)
     addAndMakeVisible (logListComponent);
 
     LOG ("LGML v" + String (ProjectInfo::versionString) + " : (" + String (Time::getCompilationDate().formatted("%d/%m/%y (%R)")) + ")" + "\nby OrganicOrchestra");
-    jassertfalse;
 #if USE_FILE_LOGGER
     LOG ("please provide logFile for any bug report :\nlogFile in " + l->fileWriter.getFilePath());
 #endif

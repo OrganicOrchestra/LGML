@@ -129,11 +129,17 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
                                         dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(node->shortName)));
 
 
-
-        nodesUI.add (nui);
-        addChildControllableContainer(nui);
-        nui->setMiniMode(minimizeAll->boolValue());
-        nodesLayer.addAndMakeVisible (nui);
+        if(nui){
+            nodesUI.add (nui);
+            addChildControllableContainer(nui);
+            if(minimizeAll->boolValue()){
+                nui->setMiniMode(true);
+            }
+            else{
+                nui->setMiniMode(nui->miniModeParam->boolValue());
+            }
+            nodesLayer.addAndMakeVisible (nui);
+        }
 
     }
     else

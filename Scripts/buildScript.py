@@ -10,27 +10,41 @@ configPath = os.path.abspath(os.path.join(__file__,os.pardir,'lgml_build_cfg.jso
 
 
 def saveConfig(cfg):
+	print("saving config")
 	with open(configPath,'w') as f:
 		cfg = json.dump(cfg,f,indent=4)
 		return cfg
 
 
 def getSavedConfig():
+	print('loading savedCfg')
 	if(os.path.exists(configPath)):
 		with open(configPath,'r') as f:
 			cfg = json.load(f)
 			return cfg
-	else:
-		print ('no config found')
-		return None
 
-def exportToOwncloud(exportedPath):
+	print ('no config found')
+	return None
+
+def exportToOwncloud(builder):
 	from PyUtils import OwncloudUtils
+
+	# send binaryies
+	exportedPath = builder.cfg["packaged_path"]
 	basePath = "DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/"#+ProJucerUtils.getXmlVersion()
 	exportedFile = os.path.basename(exportedPath)
 	ownCloudPath = os.path.join(basePath,exportedFile)
+
+	#send opt
 	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
+	
 	OwncloudUtils.sendToOwnCloud(configPath,ownCloudPath+".cfg")
+	
+	preprocessor = builder.getPreprocessor()
+	if preprocessor:
+		with open(configPath+".preprocessor",'w') as preFp:
+			preFp.write(preprocessor);
+		OwncloudUtils.sendToOwnCloud(configPath+".preprocessor",ownCloudPath+".preprocessor")
 
 
 
@@ -41,17 +55,23 @@ if __name__ == "__main__":
 	import argparse
 	import multiprocessing
 	parser = argparse.ArgumentParser(description='python util for building and exporting LGML')
+	
 	parser.add_argument('--configure', action='store_true',
-	                    help='build it',default = False)
+	                    help='configure it (and save config locally)',default = False)
 
 	parser.add_argument('--build', help='build it',
 											action='store_true',default = False)
+
 	parser.add_argument('--package', action='store_true',
 											help='package it',default = False)
+
 	parser.add_argument('--export', help='export it',
 											action='store_true',default = False)
+
 	parser.add_argument('--clean',help='clean',
 											action='store_true', default=False)
+
+
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
 	parser.add_argument('--exportpath',help='path where to put binary', default=None)
 	parser.add_argument('--configuration',help='build configuration name ', default=None)
@@ -66,10 +86,6 @@ if __name__ == "__main__":
 		exit()
 
 
-
-
-
-	builder = None
 	defaultCfg = {
 	"build_os" : args.os,
 	"build_cfg_name":args.configuration,
@@ -82,13 +98,14 @@ if __name__ == "__main__":
 	"binary_path" : None
 	}
 
-	if args.configure==False :
+	if not args.configure:
 		savedCfg = getSavedConfig();
 		#if 
-		if savedCfg and not args.build and (args.package or args.export):
-			for k in defaultCfg :
-				if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
-					raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
+		if savedCfg:
+			if not args.build and (args.package or args.export):
+				for k in defaultCfg :
+					if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
+						raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
 			defaultCfg = savedCfg
 
 	# default Release
@@ -103,7 +120,7 @@ if __name__ == "__main__":
 		elif curPlatform=='Darwin':
 			defaultCfg["build_os"] = 'osx'
 
-
+	builder = None
 	#osx
 	if(defaultCfg["build_os"]=='osx'):
 		import osx;
@@ -127,15 +144,16 @@ if __name__ == "__main__":
 		raise NameError('no builder found for os :'+defaultCfg["build_os"])
 
 
-	if args.configure ==True:
+	if args.configure :
 		saveConfig(builder.cfg)
 
-	print(json.dumps(builder.cfg,sort_keys=True,indent=4));
+	print("config")
+	print (json.dumps(builder.cfg,sort_keys=True,indent=4)) 
 
 	# clean
 	if args.clean:
 		saveConfig({})
-		builder.cleanApp();
+		builder.cleanApp()
 
 	#build
 	if args.build:
@@ -151,6 +169,6 @@ if __name__ == "__main__":
 
 	#export
 	if args.export:
-		exportToOwncloud(builder.cfg["packaged_path"]);
+		exportToOwncloud(builder);
 
 

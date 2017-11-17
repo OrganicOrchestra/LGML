@@ -40,9 +40,9 @@ JUCE has to be in a sibling folder from LGML:
   JUCE/
 ```
 
-see Scripts/yourplatform/ for platform specific setup :
-* compiling rubberband
-
+see Scripts/yourplatform/ for platform specific setup
+* installDevDeps : install dependency for compiling the project
+* installDeps : install dependency in production
 
 
 ## License

@@ -9,7 +9,7 @@ class BuilderBase:
 
   }
 
-  def __init__(self,cfg=None,actions = None):
+  def __init__(self,cfg=None):
     self.cfg = cfg or {};
     self.verbose = "normal" # or quiet or verbose
     self.applyCfg(self.default_cfg_all)
@@ -31,6 +31,8 @@ class BuilderBase:
       return self.cfg["binary_path"]
     else :
       raise NameError("no binary_path provided")
+  def getPreprocessor(self):
+    return ""
 
   # default package method zips application file
   def packageApp(self,export_path):

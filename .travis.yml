@@ -1,6 +1,13 @@
 language: c++
 compiler: gcc
 sudo: true
+
+branches:
+  only:
+  - master
+  - ci/all
+  - ci/travis
+
 matrix:
   include:
   # fully specify builds, include can't dynamically expand matrix entries
@@ -42,7 +49,9 @@ matrix:
   - os: osx
     osx_image: xcode8
     compiler: clang
-    env: TARGET="osx"
+    env: 
+      - TARGET="osx"
+      - CONFIGURATION="Release"
     cache:
       directories:
         - ~/Dev
@@ -59,18 +68,15 @@ install:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
         sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
-        sudo sh Scripts/osx/installDevDeps.sh;
+        sudo sh Scripts/osx/installDevDeps.sh && sudo sh Scripts/osx/installExportDeps.sh;
     fi
 
 
 script:
-    - python Scripts/buildScript.py --configure --build --configuration=Release --os=$TARGET;
+    - python3 Scripts/buildScript.py --configure --build --configuration=$CONFIGURATION --os=$TARGET;
 
 after_success:
-  - if [ "$TARGET" == "osx" ] ; then
-        sudo sh Scripts/osx/installExportDeps.sh;
-    fi
-  - python Scripts/buildScript.py --package --configuration=Release --export --os=$TARGET;
+  - python3 Scripts/buildScript.py --package --export;
 
 git:
-  depth: 1
+  depth: 100

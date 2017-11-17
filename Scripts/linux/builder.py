@@ -19,16 +19,34 @@ class LinuxBuilder (BuilderBase):
   localExportPath = localMakePath+'build/'
   distDir = scriptDir+'/linux/dist/'
 
-  target_cpu = platform.machine()
-  if("TARGET_CPU" in os.environ) : 
-    target_cpu = os.environ["TARGET_CPU"]
   default_cfg = {
-  "arch":target_cpu,
+  "arch":platform.machine(),
+  "ARCH_FLAGS":""
   }
+  def apply_if_defined(self,n,localName=None):
+    localName = localName or n
+    if n in os.environ:
+      self.default_cfg[localName]=os.environ[n]
+
+  
 
   def __init__(self,cfg):
     BuilderBase.__init__(self,cfg)
+    self.apply_if_defined("ARCH_FLAGS")
+    self.apply_if_defined("CROSS_ARCH","arch")
     self.applyCfg(self.default_cfg)
+    # hack to pass param to builder and linker
+    os.environ["TARGET_ARCH"] = self.getFullArchFlags()
+
+  def getPreprocessor(self):
+    gcc = "g++"
+    if "CXX" in os.environ:
+      gcc = os.environ["CXX"]
+    return sh(gcc+' -E -v -dM '+self.getFullArchFlags()+" - </dev/null 2>&1",printIt=True)
+
+
+  def getFullArchFlags(self):
+    return self.cfg["ARCH_FLAGS"]
 
   def buildApp(self):
     makeCmd = self.makeCmd()
@@ -55,7 +73,6 @@ class LinuxBuilder (BuilderBase):
     if (self.verbose=="verbose"):
       makeCmd+=" SHELL='sh +x' V=1"
     return makeCmd
-
 
 
 
@@ -210,13 +227,13 @@ def copy_source_dist(fileListPath=None):
 
 
 if __name__ == '__main__':
-  get_upstream_source_package();
-  copy_source_dist()
-  exit()
-  builder = LinuxBuilder();
-  builder.buildApp()
+  # get_upstream_source_package();
+  # copy_source_dist()
+  
+  builder = LinuxBuilder({"arch":"native","ARCH_FLAGS":"-ffast-math"});
+  # builder.buildApp()
 
-  print( builder.cfg)
+  print( builder.getPreprocessor())
   # package_source_dist()
 
 

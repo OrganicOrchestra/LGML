@@ -18,8 +18,9 @@
 
 #pragma once
 #include "../JuceHeaderUI.h"
-#include "Style.h" // for USE_GL
-#include <juce_opengl/juce_opengl.h>
+#include "Style.h" // for JUCE_OPENGL
+
+
 #include "LGMLDragger.h"
 class LatestVersionChecker;
 
@@ -47,7 +48,7 @@ public:
      */
     MainContentComponent* mainComponent;
 
-#if USE_GL
+#if JUCE_OPENGL
     OpenGLContext openGLContext;
 #endif
 

@@ -91,7 +91,6 @@ void ParameterUI::mouseDown (const MouseEvent& e)
             case 1:
                 Inspector::getInstance()->setCurrentComponent(this);
                 break;
-                
             case 2:
                 SystemClipboard::copyTextToClipboard (parameter->controlAddress);
                 break;
