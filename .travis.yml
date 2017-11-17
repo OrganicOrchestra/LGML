@@ -69,7 +69,7 @@ install:
   - if [ "$TARGET" == "linux" ]|| [ "$TARGET" == "linuxarmv6" ] || [ "$TARGET" == "linuxarmv7" ]; then
         sudo sh Scripts/linux/installDeps.sh && sudo  sh Scripts/linux/installDevDeps.sh;
     elif [ "$TARGET" == "osx" ] ; then
-        sudo sh Scripts/osx/installDevDeps.sh && sudo sh Scripts/osx/installExportDeps.sh;
+        sh Scripts/osx/installDevDeps.sh && sh Scripts/osx/installExportDeps.sh;
     fi
 
 
