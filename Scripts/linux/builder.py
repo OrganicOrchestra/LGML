@@ -45,7 +45,7 @@ class LinuxBuilder (BuilderBase):
 
 
   def getFullArchFlags(self):
-    return '-march='+self.cfg["TARGET_ARCH"]+" "+self.cfg["ARCH_FLAGS"]
+    return '-march='+self.cfg["arch"]+" "+self.cfg["ARCH_FLAGS"]
 
   def buildApp(self):
     makeCmd = self.makeCmd()
@@ -229,7 +229,7 @@ if __name__ == '__main__':
   # get_upstream_source_package();
   # copy_source_dist()
   
-  builder = LinuxBuilder({"TARGET_ARCH":"native","ARCH_FLAGS":"-ffast-math"});
+  builder = LinuxBuilder({"arch":"native","ARCH_FLAGS":"-ffast-math"});
   # builder.buildApp()
 
   print( builder.getPreprocessor())
