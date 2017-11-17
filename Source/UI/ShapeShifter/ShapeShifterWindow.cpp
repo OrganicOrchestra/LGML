@@ -52,7 +52,7 @@ checking (false)
     setVisible (true);
     toFront (true);
 
-#if JUCE_OPENGL
+#if USE_GL
     OpenGLContext* context = OpenGLContext::getContextAttachedTo (*ShapeShifterManager::getInstance()->mainShifterContainer.getTopLevelComponent());
 
     if (context)
@@ -78,7 +78,7 @@ checking (false)
 
 ShapeShifterWindow::~ShapeShifterWindow()
 {
-#if JUCE_OPENGL
+#if USE_GL
     openGLContext.detach();
 #endif
     removeMouseListener (this);
