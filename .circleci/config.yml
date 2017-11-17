@@ -22,8 +22,7 @@ jobs:
           command: |
             sh Scripts/linux/installExportDeps.sh
             python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
-            python3 Scripts/buildScript.py --build --package
-            python3 Scripts/buildScript.py --export
+            python3 Scripts/buildScript.py --build --package --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build/
@@ -53,7 +52,7 @@ jobs:
           command: |
             sh Scripts/linux/installExportDeps.sh
             python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --arch=$TARGET_CPU
-            python3 Scripts/buildScript.py --build --package --export;
+            python3 Scripts/buildScript.py --build --package --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build32 #$DST_LGML_PATH
@@ -96,7 +95,7 @@ jobs:
             export CXX=arm-linux-gnueabihf-g++
             sh Scripts/linux/installExportDeps.sh
             python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --arch=$TARGET_CPU
-            python3 Scripts/buildScript.py --build --package --export;
+            python3 Scripts/buildScript.py --build --package --export
             arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH/dependencies.txt"
 
       - store_artifacts:
