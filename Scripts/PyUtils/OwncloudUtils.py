@@ -36,7 +36,6 @@ def getSession():
 
 def decomposePath(path):
 	folders = []
-	path.rem
 	while 1:
 		path, folder = os.path.split(path)
 		if folder != "":
