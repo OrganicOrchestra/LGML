@@ -4,10 +4,15 @@ pwd;
 #       JUCE in sibling directory of LGML
 #       compile rubberband locally (third_party/rubberband)
 
+
 SCRIPTPATH=`pwd`/$(dirname "$0") 
 echo $SCRIPTPATH
 cd $SCRIPTPATH
 cd ../../..
+
+
+# install command line tools if needed
+xcode-select --install
 
 # install JUCE if needed
 if [ ! -d "JUCE" ]; then
@@ -19,7 +24,8 @@ fi
 
 # build rubberband
 cd $SCRIPTPATH
+xcodebuild -find clang++
 cd ../../third_party/rubberband
 # ./configure
 mkdir -p lib
-make -f Makefile.osx CPPFLAGS=-DNO_THREADING static
+CXX=gcc -stdlib=libc++ make -f Makefile.osx CPPFLAGS=-DNO_THREADING static
