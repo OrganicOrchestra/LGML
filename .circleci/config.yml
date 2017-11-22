@@ -116,7 +116,7 @@ jobs:
           name: install LGML32 dependencies
           command: |
             git submodule update --init --recursive
-            sh Scripts/osx/installDeps.sh && sh Scripts/osx/installDevDeps.sh 
+            sh Scripts/osx/installDevDeps.sh 
       - run:
           name: build and package LGML32
           command: |
