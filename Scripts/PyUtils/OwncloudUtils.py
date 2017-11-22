@@ -76,10 +76,11 @@ def makeDirIfNotExistent(destPath,forceCreation=False,session=None):
 def sendToOwnCloud(originPath,destPath,session=None):
 	if not '%' in destPath:
 		destPath = urllib.request.quote(destPath.strip())
-	session = getSession()
-	makeDirIfNotExistent(os.path.dirname(destPath),True,session=session)
+	
 	print('sending to owncloud:')
 	print(originPath,' >> ', destPath)
+	session = getSession()
+	makeDirIfNotExistent(os.path.dirname(destPath),True,session=session)
 	with open(originPath,'rb') as fp:
 		r = session.request("PUT",baseURL+destPath,data=fp,allow_redirects=True)
 		if r.status_code not in (200, 201, 204):

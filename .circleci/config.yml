@@ -100,10 +100,38 @@ jobs:
           path: /tmp/buildRasp/
 
 
+
+
+  buildOSX:
+    working_directory: ~/LGML
+    machine:
+      xcode:
+        version: 8.2
+      environment:
+        DST_LGML_PATH: /tmp/build32
+
+    steps:
+      - checkout
+      - run:
+          name: install LGML32 dependencies
+          command: |
+            git submodule update --init --recursive
+            sh Scripts/osx/installDeps.sh && sh Scripts/osx/installDevDeps.sh 
+      - run:
+          name: build and package LGML32
+          command: |
+            sh Scripts/osx/installExportDeps.sh
+            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=osx --configuration=Release 
+            python3 Scripts/buildScript.py --build --package --export
+      - store_artifacts:
+          path: /tmp/build32 #$DST_LGML_PATH
+
+
 workflows:
   version: 2
   build_all_platforms:
     jobs:
+      - buildOSX
       - build_rasp
       - build
       - build32

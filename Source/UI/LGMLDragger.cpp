@@ -50,7 +50,7 @@ public:
     }
 
 
-    ParameterUI* originComp;
+    WeakReference<ParameterUI> originComp;
     Image draggedImage;
     bool isDragging;
     void mouseDrag (const MouseEvent& e)override
@@ -72,7 +72,8 @@ public:
 
             if (!contains (e.getEventRelativeTo (this).getPosition()))
             {
-                originComp->repaint();
+                if(originComp.get())
+                    originComp->repaint();
                 LGMLDragger::getInstance()->endDraggingComponent (this, e);
             }
         }
@@ -89,7 +90,9 @@ public:
         }
 
         isDragging = false;
-        originComp->repaint();
+        if(originComp.get())
+            originComp->repaint();
+
         LGMLDragger::getInstance()->unRegisterDragCandidate (originComp);
 
     }
@@ -97,7 +100,8 @@ public:
     {
         g.drawImage ( draggedImage, getLocalBounds().toFloat());
         g.setColour (Colours::white);
-        g.drawFittedText (originComp->getName(), getLocalBounds(), Justification::centred, 2);
+        if(originComp.get())
+            g.drawFittedText (originComp->getName(), getLocalBounds(), Justification::centred, 2);
     }
     void paintOverChildren (Graphics& g) override
     {
@@ -151,7 +155,7 @@ void LGMLDragger::registerDragCandidate (ParameterUI* c)
 
 }
 
-void LGMLDragger::unRegisterDragCandidate (ParameterUI* c)
+void LGMLDragger::unRegisterDragCandidate (ParameterUI* /*c*/)
 {
     dragCandidate = nullptr;
 
