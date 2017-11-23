@@ -182,6 +182,9 @@ LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) : track (track),
     muteButton = ParameterUIFactory::createDefaultUI (track->mute);
     soloButton = ParameterUIFactory::createDefaultUI (track->solo);
     sampleChoiceDDL = (EnumParameterUI*)ParameterUIFactory::createDefaultUI (track->sampleChoice);
+    selectMeButton = ParameterUIFactory::createDefaultUI(track->selectTrig);
+    selectMeButton->setCustomText("_");
+    selectMeButton->setColour(TextButton::buttonColourId, Colours::white.withAlpha (0.f));
 
 
     track->addTrackListener (this);
@@ -196,6 +199,8 @@ LooperNodeContentUI::TrackUI::TrackUI (LooperTrack* track) : track (track),
     addAndMakeVisible (soloButton);
     addAndMakeVisible (timeStateUI);
     addAndMakeVisible (sampleChoiceDDL);
+    addAndMakeVisible(selectMeButton);
+    selectMeButton->toBack();
 }
 
 LooperNodeContentUI::TrackUI::~TrackUI()
@@ -227,10 +232,11 @@ void LooperNodeContentUI::TrackUI::resized()
 {
     Rectangle<int> r = getLocalBounds().reduced (2);
 
+
     const int timeUISize = 16;
     //  Rectangle<int>  hr = r.removeFromTop(timeUISize+gap);
 
-
+    selectMeButton->setBounds(r.withBottom(timeUISize));
     timeStateUI.setBounds (r.removeFromTop (timeUISize).withSize (timeUISize, timeUISize).reduced (2)); //header
     sampleChoiceDDL->setBounds (r.removeFromTop (15).reduced (1));
 
