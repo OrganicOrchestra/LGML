@@ -37,6 +37,7 @@ public:
     virtual bool isMappable() override;
 
     bool isEditable;
+    bool alwaysNotify; // force notifying even if not changed
 
     bool isPresettable;
     bool isOverriden;
@@ -89,7 +90,8 @@ public:
             while(linkedP.size()){
                 if(auto p = linkedP.getLast().get())
                     p->removeParameterListener(this);
-                linkedP.removeLast();
+                else
+                    linkedP.removeLast();
             }
         }
         virtual void parameterValueChanged (Parameter* p) = 0;

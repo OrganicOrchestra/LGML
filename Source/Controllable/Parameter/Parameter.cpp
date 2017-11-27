@@ -32,7 +32,8 @@ Parameter::Parameter ( const String& niceName, const String& description, var in
     isLocking (true),
     defaultValue (initialValue),
     value (initialValue),
-    mappingDisabled (false)
+    mappingDisabled (false),
+    alwaysNotify(false)
 {
 
 
@@ -61,7 +62,7 @@ void Parameter::setValue (const var & _value, bool silentSet, bool force)
     }
     else
     {
-        tryToSetValue (_value, silentSet, force);
+        tryToSetValue (_value, silentSet, alwaysNotify || force);
     }
 
 }
