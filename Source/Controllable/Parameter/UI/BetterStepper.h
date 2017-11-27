@@ -32,8 +32,9 @@ private:
     TooltipClient * tooltipClient;
     void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& wheel) override;
     void mouseEnter(const MouseEvent& e)override;
-    
-    //  void paint(Graphics &g) ;
+
+    uint64 timeEntered ;
+
 };
 
 
