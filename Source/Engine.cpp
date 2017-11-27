@@ -60,12 +60,18 @@ Engine::Engine(): FileBasedDocument (filenameSuffix,
     ParameterContainer ("root"),
     threadPool (4),
     isLoadingFile(false),
-    engineStartTime(Time::currentTimeMillis())
+    engineStartTime(Time::currentTimeMillis()),
+    hasDefaultOSCControl(false)
 
 {
     nameParam->isEditable = false;
     ControllableContainer::globalRoot = this;
     ParameterFactory::logAllTypes();
+    saveSession = addNewParameter<StringParameter>("save", "save current session");
+    saveSession->alwaysNotify = true;
+    loadSession = addNewParameter<StringParameter>("load", "load a given session");
+    loadSession->alwaysNotify = true;
+    closeEngine = addNewParameter<Trigger>("close","close engine");
     
     loadingStartTime = 0;
     initAudio();
@@ -133,31 +139,44 @@ Engine::~Engine()
 
 }
 
+ void Engine::onContainerParameterChanged (Parameter* p) {
+     if(p==saveSession){
+         File fileToLoad (loadSession->stringValue());
+         MessageManager::callAsync([this,fileToLoad](){saveAs(File(saveSession->stringValue()),false, false,true);});
+     }
+     else if( p==loadSession){
+         File fileToLoad (loadSession->stringValue());
+         MessageManager::callAsync([this,fileToLoad](){loadDocument(fileToLoad);});
+     }
+
+};
+void Engine::onContainerTriggerTriggered(Trigger *t){
+    if(t==closeEngine){
+        JUCEApplication::getInstance()->systemRequestedQuit();
+    }
+}
+
 void Engine::parseCommandline (const CommandLineElements& commandLine)
 {
 
+    File fileToLoad = File();
     for (auto& c : commandLine)
     {
         if (c.command == "f" || c.command == "")
         {
             if (c.args.size() == 0)
             {
-                LOG ("no file provided for command : " + c.command);
+                LOG ("!!! no file provided for command : " + c.command);
                 jassertfalse;
                 continue;
             }
 
             String fileArg = c.args[0];
+            fileToLoad = File (fileArg);
 
-            if (File::isAbsolutePath (fileArg))
-            {
-                File f (fileArg);
+            if( !(File::isAbsolutePath (fileArg) && fileToLoad.existsAsFile())){
 
-                if (f.existsAsFile()) loadDocument (f);
-            }
-            else
-            {
-                NLOG ("Engine", "File : " << fileArg << " not found.");
+                NLOG ("!!! Engine", "File : " << fileArg << " not found.");
             }
         }
         else if(c.command=="p"){
@@ -170,22 +189,26 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
 
 
             if(c.args.size()==0 || c.args.size()%2!=0){
-                LOG("unable to parse parameter : " << c.args.joinIntoString(":"));
+                LOG("!!! unable to parse parameter : " << c.args.joinIntoString(":"));
                 jassertfalse;
                 continue;
             }
             for( int i = 0 ; i < c.args.size()-1 ; i+=2){
                 if (!getAppProperties()->getUserSettings()->containsKey(c.args[i])){
-                    LOG("unknown parameter : " << c.args[i]);
+                    LOG("!!! unknown parameter : " << c.args[i]);
                     jassertfalse;
                     continue;
                 }
                 getAppProperties()->getUserSettings()->setValue(c.args[i], c.args[i+1]);
             }
         }
+        else if (c.command=="remote"){
+            getEngine()->hasDefaultOSCControl = true;
+        }
 
     }
 
+    if (fileToLoad.existsAsFile()) loadDocument (fileToLoad);
 
 }
 

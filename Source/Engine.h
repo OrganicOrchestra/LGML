@@ -54,8 +54,10 @@ public:
     void clear();
     void initAudio();
     void closeAudio();
-
-
+    Parameter * saveSession,*loadSession,*closeEngine;
+    bool hasDefaultOSCControl;
+    void onContainerParameterChanged(Parameter *)override;
+    void onContainerTriggerTriggered(Trigger *t)override;
     void suspendAudio (bool shouldSuspend);
 
     void parseCommandline (const CommandLineElements& );

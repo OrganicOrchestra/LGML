@@ -22,6 +22,7 @@
 
 #include "Node/Impl/AudioDeviceInNode.h"
 #include "Node/Impl/AudioDeviceOutNode.h"
+#include "Controller/Impl/OSCJsController.h"
 
 #include "JuceHeader.h" // for project info
 
@@ -70,6 +71,7 @@ void Engine::createNewGraph()
 
 
     node = NodeManager::getInstance()->addNode (NodeFactory::createFromTypeID ( AudioDeviceOutNode::typeId()));
+
     setFile (File());
     isLoadingFile = false;
     
@@ -191,7 +193,21 @@ void Engine::handleAsyncUpdate()
     //  suspendAudio(false);
     auto timeForLoading  =  getElapsedMillis() - loadingStartTime;
     suspendAudio (false);
-    
+    if(hasDefaultOSCControl){
+        auto controllers = ControllerManager::getInstance()->getContainersOfType<OSCJsController>(false);
+        bool found = false;
+        for(auto & c:controllers){
+            if(c->fullSync->boolValue()){
+                found = true;
+                break;
+            }
+        }
+        if(!found){
+            OSCJsController * c = (OSCJsController*)ControllerFactory::createFromTypeID(OSCJsController::typeId());
+            c->fullSync->setValue(true);
+            ControllerManager::getInstance()->addController(c);
+        }
+    }
     engineListeners.call (&EngineListener::endLoadFile);
     NLOG ("Engine", "Session loaded in " << timeForLoading / 1000.0 << "s");
 }
