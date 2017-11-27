@@ -218,8 +218,8 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
             float newMin = mmp ? (float)mmp->minimumValue : 0;
             float newMax = mmp ? (float)mmp->maximumValue : 1;
             outputRange->setMinMax (newMin, newMax);
-            outputRange->setValue (newMin, newMax);
-
+            outputRange->setValue (jmax<float> (outputRange->getRangeMin(),newMin),
+                                  jmin<float> (outputRange->getRangeMax(),newMax));
 
         }
 
