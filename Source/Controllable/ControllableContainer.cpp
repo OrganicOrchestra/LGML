@@ -167,7 +167,7 @@ Controllable* ControllableContainer::getControllableByName (const String& _name,
     ScopedLock lk (controllables.getLock());
     for (auto& c : controllables)
     {
-        if (c->shortName == name || (searchNiceNameToo && c->niceName == _name)) return c;
+        if ((c->shortName.compareIgnoreCase(name)==0) || (searchNiceNameToo && c->niceName == _name)) return c;
     }
 
     return nullptr;
@@ -272,7 +272,7 @@ ControllableContainer* ControllableContainer::getControllableContainerByName (co
 
     for (auto& cc : controllableContainers)
     {
-        if (cc.get() && (cc->shortName == name || (searchNiceNameToo && cc->getNiceName() == _name))) return cc;
+        if (cc.get() && ((cc->shortName.compareIgnoreCase(name)==0) || (searchNiceNameToo && cc->getNiceName() == _name))) return cc;
     }
 
     return nullptr;
@@ -323,7 +323,7 @@ ControllableContainer* ControllableContainer::getControllableContainerForAddress
 
         for (auto& cc : controllableContainers)
         {
-            bool validName = cc->shortName == addressSplit[0];
+            bool validName = cc->shortName.compareIgnoreCase(addressSplit[0])==0;
 
 
             if( validName){
@@ -471,7 +471,7 @@ Controllable* ControllableContainer::getControllableForAddress (StringArray addr
 
         for (auto& c : controllables)
         {
-            if (c->shortName == addressSplit[0])
+            if (c->shortName.compareIgnoreCase( addressSplit[0])==0)
             {
                 //DBG(c->shortName);
                 if (c->isControllableExposed || getNotExposed) return c;
@@ -489,7 +489,7 @@ Controllable* ControllableContainer::getControllableForAddress (StringArray addr
             if (cc.get())
             {
 
-                if (cc->shortName == addressSplit[0])
+                if (cc->shortName.compareIgnoreCase(addressSplit[0])==0)
                 {
                     addressSplit.remove (0);
                     return cc->getControllableForAddress (addressSplit, recursive, getNotExposed);
