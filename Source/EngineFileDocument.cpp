@@ -184,10 +184,6 @@ void Engine::handleAsyncUpdate()
 
     isLoadingFile = false;
 
-    if (getFile().exists())
-    {
-        setLastDocumentOpened (getFile());
-    }
 
     //  graphPlayer.setProcessor(NodeManager::getInstance()->getAudioGraph());
     //  suspendAudio(false);
