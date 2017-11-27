@@ -171,7 +171,15 @@ public:
     {
     public:
         /** Destructor. */
-        virtual ~Listener() {}
+        virtual ~Listener() {
+
+            while(listenedContainers.size()>0){
+                if(auto cc = listenedContainers.getLast().get())
+                    cc->removeControllableContainerListener(this);
+                else
+                    listenedContainers.removeLast();
+            }
+        }
         virtual void controllableAdded (ControllableContainer*, Controllable*) {}
         virtual void controllableRemoved (ControllableContainer*, Controllable*) {}
         virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) {}
@@ -181,12 +189,22 @@ public:
         virtual void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* ) {};
         virtual void controllableContainerPresetLoaded (ControllableContainer*) {}
         virtual void containerWillClear (ControllableContainer* /*origin*/) {}
+    private:
+        friend class ControllableContainer;
+        Array<WeakReference<ControllableContainer>> listenedContainers;
     };
 
     //  typedef ControllableContainerListener Listener ;
     ListenerList<Listener> controllableContainerListeners;
-    void addControllableContainerListener (Listener* newListener) { controllableContainerListeners.add (newListener);}
-    void removeControllableContainerListener (Listener* listener) { controllableContainerListeners.remove (listener);}
+    void addControllableContainerListener (Listener* newListener) {
+        controllableContainerListeners.add (newListener);
+        newListener->listenedContainers.addIfNotAlreadyThere(this);
+    }
+    void removeControllableContainerListener (Listener* listener) {
+        controllableContainerListeners.remove (listener);
+        listener->listenedContainers.removeAllInstancesOf(this);
+        
+    }
 
 
     virtual DynamicObject* getObject() = 0;
