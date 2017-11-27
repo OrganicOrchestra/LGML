@@ -187,7 +187,7 @@ bool ControllerUI::keyPressed (const KeyPress& key)
 
     if (key.getKeyCode() == KeyPress::deleteKey || key.getKeyCode() == KeyPress::backspaceKey)
     {
-        controller->parentContainer->removeChildControllableContainer (controller);
+        controller->remove();
         return true;
     }
 

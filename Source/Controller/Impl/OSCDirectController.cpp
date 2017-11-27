@@ -192,6 +192,14 @@ void OSCDirectController::sendOSCForAddress (Controllable* c, const String& cAdd
         else if (targetType == IntParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
         else if (targetType == StringParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
         else if (targetType == EnumParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
+        else if (targetType == Point2DParameter<int>::_factoryType) {
+            auto point = static_cast<Point2DParameter<int> *>(p);
+            sendOSC (cAddress, point->getX(),point->getY());
+        }
+        else if (targetType == Point2DParameter<float>::_factoryType) {
+            auto point = static_cast<Point2DParameter<float> *>(p);
+            sendOSC (cAddress, point->getX(),point->getY());
+        }
         else
         {
             DBG ("Type not supported " << targetType.toString());
