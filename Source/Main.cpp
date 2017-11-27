@@ -157,9 +157,16 @@ public:
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
 
+        bool isWeirdMacCallback = File(commandLine).existsAsFile();
+        if(isWeirdMacCallback){
+            engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
+        }
+        else{
         DBG ("Another instance started !");
-        AlertWindow("other instance started", "other instance started", juce::AlertWindow::AlertIconType::WarningIcon);
-        engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
+#if ENGINE_WITH_UI
+        AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon,"other instance started", commandLine);
+#endif
+        }
 
 
     }
