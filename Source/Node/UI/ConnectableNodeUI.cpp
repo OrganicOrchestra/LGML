@@ -67,6 +67,7 @@ ConnectableNodeUIParams::ConnectableNodeUIParams(StringRef n): ParameterContaine
     nodeSize=addNewParameter<Point2DParameter<int>> ("nodeSize", "Node Size", 180, 100, Array<var> {30, 30});
     miniModeParam=addNewParameter<BoolParameter> ("miniMode", "Mini Mode", false);
     nodePosition->isControllableExposed = false;
+    nodeMinimizedPosition->isControllableExposed = false;
     nodeSize->isControllableExposed = false;
 
 
