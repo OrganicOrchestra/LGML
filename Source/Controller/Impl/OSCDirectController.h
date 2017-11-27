@@ -25,7 +25,7 @@ public:
     OSCDirectController (StringRef name);
     virtual ~OSCDirectController();
 
-    BoolParameter* sendTimeInfo;
+    BoolParameter* sendTimeInfo,*fullSync;
 
 
     virtual Result processMessageInternal (const OSCMessage& msg) override;

@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "OSCDirectController.h"
@@ -25,15 +25,22 @@
 //REGISTER_OBJ_TYPE_NAMED (Controller, OSCDirectController, "t_OSC");
 
 OSCDirectController::OSCDirectController (StringRef name):
-    OSCController (name)
+OSCController (name)
 {
-    NodeManager::getInstance()->addControllableContainerListener (this);
-    
-    sendTimeInfo = addNewParameter<BoolParameter> ("sendTimeInfo", "send time information", false);
 
-    if (sendTimeInfo->boolValue())
-    {
+
+    sendTimeInfo = addNewParameter<BoolParameter> ("sendTimeInfo", "send time information", false);
+    fullSync = addNewParameter<BoolParameter> ("syncAllParameters", "sync every parameter", false);
+
+    if(fullSync->boolValue()){
+        ParameterContainer::getRoot(true)->addControllableContainerListener(this);
+    }
+    else{
+        NodeManager::getInstance()->addControllableContainerListener (this);
+        if (sendTimeInfo->boolValue())
+        {
         TimeManager::getInstance()->addControllableContainerListener (this);
+        }
     }
 
 }
@@ -61,7 +68,7 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
             result =  Result::fail ("Controllable type not handled in user Parameter");
         }
     }
-    auto root = NodeManager::getInstance()->parentContainer;
+    auto root = ParameterContainer::getRoot(true);
 
     if(msg.getAddressPattern().containsWildcards()){
 
@@ -83,10 +90,10 @@ Result OSCDirectController::processMessageInternal (const OSCMessage& msg)
     }
     else{
 
-    String controller = addrArray[0];
+        
 
 
-    Controllable* cont = root->getControllableForAddress(addrArray);
+        Controllable* cont = root->getControllableForAddress(addrArray);
 
 
 
@@ -129,11 +136,9 @@ String getValidOSCAddress (const String& s)
     return targetName;
 }
 
-void OSCDirectController::controllableAdded (ControllableContainer*, Controllable* ) {}
-void OSCDirectController::controllableRemoved (ControllableContainer*, Controllable*)
-{
+void OSCDirectController::controllableAdded (ControllableContainer*, Controllable* )  {}
+void OSCDirectController::controllableRemoved (ControllableContainer*, Controllable*) {}
 
-}
 void OSCDirectController::onContainerParameterChanged (Parameter* p)
 {
     OSCController::onContainerParameterChanged (p);
@@ -149,6 +154,22 @@ void OSCDirectController::onContainerParameterChanged (Parameter* p)
             TimeManager::getInstance()->removeControllableContainerListener (this);
         }
 
+    }
+    if(p==fullSync){
+        if(fullSync->boolValue()){
+            if(sendTimeInfo->boolValue())
+                TimeManager::getInstance()->removeControllableContainerListener(this);
+            NodeManager::getInstance()->removeControllableContainerListener(this);
+            ParameterContainer::getRoot(true)->addControllableContainerListener(this);
+        }
+        else{
+            ParameterContainer::getRoot(true)->removeControllableContainerListener(this);
+            if(sendTimeInfo->boolValue())
+                TimeManager::getInstance()->addControllableContainerListener(this);
+            NodeManager::getInstance()->addControllableContainerListener(this);
+
+
+        }
     }
 
 

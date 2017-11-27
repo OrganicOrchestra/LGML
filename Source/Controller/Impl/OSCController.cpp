@@ -201,9 +201,13 @@ void OSCController::processMessage (const OSCMessage& msg)
 
     isProcessingOSC = true;
 
+    bool isPing =msg.getAddressPattern()=="/ping";
+    if(isPing){
+        sendOSC("/pong",getControlAddress());
+    }
 
-
-    Result result = processMessageInternal (msg);
+    Result result = isPing?Result::ok():processMessageInternal (msg);
+    
 
     if (autoAddParams && !result && !msg.getAddressPattern().containsWildcards())
     {
@@ -565,7 +569,9 @@ OSCController::OSCMessageQueue::OSCMessageQueue (OSCController* o):
     owner (o),
     aFifo (OSC_QUEUE_LENGTH),
     interval (1)
-{messages.resize (OSC_QUEUE_LENGTH);}
+{
+    messages.resize (OSC_QUEUE_LENGTH);
+}
 
 void OSCController::OSCMessageQueue::add (OSCMessage* m)
 {
