@@ -146,7 +146,7 @@ Engine::~Engine()
      }
      else if( p==loadSession){
          File fileToLoad (loadSession->stringValue());
-         MessageManager::callAsync([this,fileToLoad](){loadDocument(fileToLoad);});
+         MessageManager::callAsync([this,fileToLoad](){loadFrom(fileToLoad,true);});
      }
 
 };
@@ -208,7 +208,7 @@ void Engine::parseCommandline (const CommandLineElements& commandLine)
 
     }
 
-    if (fileToLoad.existsAsFile()) loadDocument (fileToLoad);
+    if (fileToLoad.existsAsFile()) loadFrom (fileToLoad,true);
 
 }
 

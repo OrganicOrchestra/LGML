@@ -67,6 +67,7 @@ public:
 
     //  inherited from FileBasedDocument
     String getDocumentTitle()override ;
+    // do not call this, call loadFrom instead (empowers FileBasedDocument behaviour)
     Result loadDocument (const File& file)override;
     Result saveDocument (const File& file)override;
     File getLastDocumentOpened() override;
