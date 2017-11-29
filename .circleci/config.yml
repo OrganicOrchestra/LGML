@@ -131,7 +131,6 @@ workflows:
   version: 2
   build_all_platforms:
     jobs:
-      - buildOSX
       - build_rasp
       - build
       - build32
