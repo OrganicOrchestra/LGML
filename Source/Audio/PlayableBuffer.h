@@ -38,7 +38,7 @@ namespace RubberBand {class RubberBandStretcher;};
 #endif
 
 // this flags start background job to compute samples when time ratio is changed
-// we may need to want to always stratch as it's avoid CPU spikes on bpm changes if a lot of samples are loaded
+// we may need to want to always stretch as it's avoid CPU spikes on bpm changes if a lot of samples are loaded
 #define PROCESS_FINAL_STRETCH 1
 
 

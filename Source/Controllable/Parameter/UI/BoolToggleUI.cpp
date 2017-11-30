@@ -45,7 +45,7 @@ void BoolToggleUI::paint (Graphics& g)
     bool valCheck = ((BoolParameter*)parameter.get())->invertVisuals ? !parameter->boolValue() : parameter->boolValue();
     Colour c =  valCheck ? onColour  : findColour (TextButton::buttonColourId);
 
-    const int fontHeight=10;
+    const float fontHeight=10.0f;
 
     if(!parameter->isEditable){
         g.setColour(c);

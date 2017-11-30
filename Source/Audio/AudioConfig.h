@@ -22,8 +22,8 @@
 
 #include "../JuceHeaderCore.h"
 
-// TODO change when windows / linux support
-#if (defined JUCE_MAC || defined JUCE_LINUX || defined JUCE_WINDOWS)
+
+#if (defined JUCE_MAC || defined JUCE_LINUX || defined JUCE_WINDOWS || defined JUCE_IOS)
     #define BUFFER_CAN_STRETCH 1
 #else
     #define BUFFER_CAN_STRETCH 0
