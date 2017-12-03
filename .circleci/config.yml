@@ -67,8 +67,8 @@ jobs:
       - image: ubuntu
         environment:
           CROSS_ARCH: armhf
-          ARCH_FLAGS_PI3: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -ffast-math # arch flags for JUCEMakefile -> RPI3
-          ARCH_FLAGS_PI2: -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -ffast-math # arch flags for JUCEMakefile -> RPI3
+          ARCH_FLAGS_PI3: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard # -ffast-math # arch flags for JUCEMakefile -> RPI3
+          ARCH_FLAGS_PI2: -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard  # -ffast-math # arch flags for JUCEMakefile -> RPI2
           DST_LGML_PATH: /tmp/buildRasp
           PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
 
@@ -94,14 +94,15 @@ jobs:
             export CXX=arm-linux-gnueabihf-g++
             sh Scripts/linux/installExportDeps.sh
             export ARCH_FLAGS=$ARCH_FLAGS_PI3
-            python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/3" --os=linux --configuration=Release
-            python3 Scripts/buildScript.py --build --package --export
-            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "/tmp/buildRasp/3/dependencies.txt"
+            python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/" --os=linux --configuration=Debug --packagesuffix=Rpi3 --build --package --export
+            python3 Scripts/buildScript.py --clean
+            python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/" --os=linux --configuration=Release --packagesuffix=Rpi3 --build --package --export
+            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "/tmp/buildRasp/dependenciesRasp3.txt"
             python3 Scripts/buildScript.py --clean
             export ARCH_FLAGS=$ARCH_FLAGS_PI2
-            python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/2" --os=linux --configuration=Release
-            python3 Scripts/buildScript.py --build --package --export
-            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "/tmp/buildRasp/2/dependencies.txt"
+            python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/" --os=linux --configuration=Debug --packagesuffix=Rpi2 --build --package --export
+            python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/" --os=linux --configuration=Release --packagesuffix=Rpi2 --build --package --export
+            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "/tmp/buildRasp/dependenciesRasp2.txt"
 
       - store_artifacts:
           path: /tmp/buildRasp/
