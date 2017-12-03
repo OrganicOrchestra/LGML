@@ -31,7 +31,7 @@ ParameterContainer::ParameterContainer (StringRef niceName):
 
 
 
-    nameParam = addNewParameter<StringParameter> ("Name", "Set the visible name of the node.", "");
+    nameParam = addNewParameter<StringParameter> ("Name", "Set the visible name", "");
     nameParam->isPresettable = false;
 
 

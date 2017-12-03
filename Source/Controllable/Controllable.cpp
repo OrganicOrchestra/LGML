@@ -85,19 +85,14 @@ void Controllable::setParentContainer (ControllableContainer* container)
 
 void Controllable::updateControlAddress()
 {
-    this->controlAddress = getControlAddress();
+    controlAddress = getControlAddress();
     listeners.call (&Listener::controllableControlAddressChanged, this);
 }
 
 
 String Controllable::getControlAddress (ControllableContainer* relativeTo)
 {
-    // we may need empty parentContainer in unit tests
-#if LGML_UNIT_TESTS
-    return (parentContainer ? parentContainer->getControlAddress (relativeTo) : "") + "/" + shortName;
-#else
-    return parentContainer->getControlAddress (relativeTo) + "/" + shortName;
-#endif
+    return (parentContainer.get()?parentContainer->getControlAddress (relativeTo):"/noParent") + "/" + shortName;
 }
 
 

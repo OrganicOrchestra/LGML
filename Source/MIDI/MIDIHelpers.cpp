@@ -109,7 +109,7 @@ namespace MIDIHelpers{
             }
         };
         void parameterValueChanged (Parameter* p) override{
-            auto c = p->parentContainer;
+            auto c = p->parentContainer.get();
             if(auto cont = dynamic_cast<MIDIController*>(c)){
                 jassert(p==cont->nameParam);
                 const var v = MCToValue(cont);

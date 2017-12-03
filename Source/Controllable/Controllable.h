@@ -61,7 +61,7 @@ public:
     String controlAddress;
 
 
-    ControllableContainer* parentContainer;
+    WeakReference<ControllableContainer> parentContainer;
 
     void setNiceName (const String& _niceName);
     
