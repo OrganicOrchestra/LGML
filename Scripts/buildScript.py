@@ -74,6 +74,7 @@ if __name__ == "__main__":
 
 
 	parser.add_argument('--os',help='os to use : osx, linux', default=None)
+	parser.add_argument('--packagesuffix',help='suffix to add', default=None)
 	parser.add_argument('--exportpath',help='path where to put binary', default=None)
 	parser.add_argument('--configuration',help='build configuration name ', default=None)
 	parser.add_argument('--version','-v',help='return current version ', action='store_true',default=False)
@@ -96,7 +97,8 @@ if __name__ == "__main__":
 	"version" : ProJucerUtils.getXmlVersion(),
 	"git_sha" : gitUtils.getGitSha(),
 	"arch" : args.arch,
-	"binary_path" : None
+	"binary_path" : None,
+	"packagesuffix" : args.packagesuffix
 	}
 
 	if not args.configure:
@@ -165,7 +167,20 @@ if __name__ == "__main__":
 		ep = builder.cfg["export_path"]
 		if ( ep is not None ) and ( not os.path.exists(ep)):
 				os.makedirs(ep)
-		builder.cfg["packaged_path"] = builder.packageApp(ep)
+		pkgPath = builder.packageApp(ep)
+		if args.packagesuffix:
+			if pkgPath.endswith(".tar.gz"):
+				bName = pkgPath[:-7]
+				ext = ".tar.gz"
+			else:
+				bName = '.'.join(pkgPath.split('.')[:-1])
+				ext = pkgPath.split('.')[-1]
+
+			newP = bName+args.packagesuffix+ext
+			print("applying suffix : "+newP)
+			os.rename(pkgPath,newP)
+			pkgPath = newP;
+		builder.cfg["packaged_path"]=pkgPath
 		saveConfig(builder.cfg)
 
 	#export
