@@ -58,7 +58,7 @@ jobs:
           path: /tmp/build32 #$DST_LGML_PATH
 
 ###############
-# build Rasp
+# build Rasp 2/3
 ##############
 
   build_rasp:
@@ -67,7 +67,8 @@ jobs:
       - image: ubuntu
         environment:
           CROSS_ARCH: armhf
-          ARCH_FLAGS: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -ffast-math # arch flags for JUCEMakefile -> RPI3
+          ARCH_FLAGS_PI3: -mcpu=cortex-a53 -mfpu=neon-fp-armv8 -mfloat-abi=hard -ffast-math # arch flags for JUCEMakefile -> RPI3
+          ARCH_FLAGS_PI2: -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -ffast-math # arch flags for JUCEMakefile -> RPI3
           DST_LGML_PATH: /tmp/buildRasp
           PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
 
@@ -92,9 +93,15 @@ jobs:
             set -x
             export CXX=arm-linux-gnueabihf-g++
             sh Scripts/linux/installExportDeps.sh
-            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
+            export ARCH_FLAGS=$ARCH_FLAGS_PI3
+            python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/3" --os=linux --configuration=Release
             python3 Scripts/buildScript.py --build --package --export
-            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH/dependencies.txt"
+            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "/tmp/buildRasp/3/dependencies.txt"
+            python3 Scripts/buildScript.py --clean
+            export ARCH_FLAGS=$ARCH_FLAGS_PI2
+            python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/2" --os=linux --configuration=Release
+            python3 Scripts/buildScript.py --build --package --export
+            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "/tmp/buildRasp/2/dependencies.txt"
 
       - store_artifacts:
           path: /tmp/buildRasp/
@@ -131,6 +138,7 @@ workflows:
   version: 2
   build_all_platforms:
     jobs:
+      - buildOSX
       - build_rasp
       - build
       - build32
