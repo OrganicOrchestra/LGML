@@ -1,5 +1,8 @@
 version: 2
 jobs:
+  #######
+# ubuntu14
+#########
   buildu14:
     working_directory: ~/LGML
     docker:
@@ -26,6 +29,9 @@ jobs:
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build/
+#######
+# ubuntu16
+#########
   buildu16:
     working_directory: ~/LGML
     docker:
@@ -97,7 +103,7 @@ jobs:
           ARCH_FLAGS_PI2: -mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard  # -ffast-math # arch flags for JUCEMakefile -> RPI2
           DST_LGML_PATH: /tmp/buildRasp
           PKG_CONFIG_PATH: /usr/lib/arm-linux-gnueabihf/pkgconfig
-          BUILDLGML_CMD_BASE: python3 Scripts/buildScript.py --configure --exportpath="/tmp/buildRasp/" --os=linux --build --package --export
+          BUILDLGML_CMD_BASE: python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildRasp/ --os=linux --build --package --export
 
     steps:
       - checkout

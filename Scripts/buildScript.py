@@ -165,10 +165,14 @@ if __name__ == "__main__":
 	# package
 	if args.package:
 		ep = builder.cfg["export_path"]
-		if ( ep is not None ) and ( not os.path.exists(ep)):
+		if  ep is not None :
+			ep = ep.strip('\'" ')
+			if  not os.path.exists(ep):
 				os.makedirs(ep)
+
 		pkgPath = builder.packageApp(ep)
-		if args.packagesuffix:
+		suffix = builder.cfg["packagesuffix"]
+		if suffix:
 			if pkgPath.endswith(".tar.gz"):
 				bName = pkgPath[:-7]
 				ext = ".tar.gz"
@@ -176,7 +180,7 @@ if __name__ == "__main__":
 				bName = '.'.join(pkgPath.split('.')[:-1])
 				ext = pkgPath.split('.')[-1]
 
-			newP = bName+args.packagesuffix+ext
+			newP = bName+suffix+ext
 			print("applying suffix : "+newP)
 			os.rename(pkgPath,newP)
 			pkgPath = newP;
