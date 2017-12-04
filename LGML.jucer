@@ -798,7 +798,7 @@
       <CONFIGURATIONS>
         <CONFIGURATION headerPath="../../Source&#10;" isDebug="1" libraryPath="/usr/X11R6/lib/"
                        linuxArchitecture="" name="Debug" optimisation="5" targetName="LGML"/>
-        <CONFIGURATION headerPath="../../Source&#10;" isDebug="1" libraryPath="/usr/X11R6/lib/"
+        <CONFIGURATION headerPath="../../Source&#10;" isDebug="0" libraryPath="/usr/X11R6/lib/"
                        linuxArchitecture="" name="Release" optimisation="3" targetName="LGML"
                        linkTimeOptimisation="1"/>
       </CONFIGURATIONS>

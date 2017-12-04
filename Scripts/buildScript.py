@@ -35,10 +35,9 @@ def exportToOwncloud(builder):
 	basePath = "DEVSPECTACLES/Tools/LGML/App-Dev/dist/bleedingEdge/"+ProJucerUtils.getXmlVersion()
 	exportedFile = os.path.basename(exportedPath)
 	ownCloudPath = basePath + "/" + exportedFile
-
-	#send opt
-	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
 	
+	OwncloudUtils.sendToOwnCloud(exportedPath,ownCloudPath)
+	#send opt
 	OwncloudUtils.sendToOwnCloud(configPath,ownCloudPath+".cfg")
 	
 	preprocessor = builder.getPreprocessor()
@@ -111,7 +110,7 @@ if __name__ == "__main__":
 						raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
 			defaultCfg = savedCfg
 
-	# default Release
+	# default to Release config
 	if defaultCfg["build_cfg_name"] is None:
 		defaultCfg["build_cfg_name"] = "Release"
 	# auto detect os if not provided
@@ -134,7 +133,7 @@ if __name__ == "__main__":
 		import linux;
 		builder=  linux.LinuxBuilder(cfg = defaultCfg)
 
-	# hack for windows
+	# hack for exporting windows builds
 	elif defaultCfg["build_os"] == 'windows':
 		from PyUtils.builderBase import BuilderBase;
 		builder=  BuilderBase(cfg = defaultCfg)
@@ -173,14 +172,14 @@ if __name__ == "__main__":
 		pkgPath = builder.packageApp(ep)
 		suffix = builder.cfg["packagesuffix"]
 		if suffix:
+			suffix = suffix.strip('\'" ')
 			if pkgPath.endswith(".tar.gz"):
-				bName = pkgPath[:-7]
-				ext = ".tar.gz"
+				splitExt = [pkgPath[:-7], ".tar.gz"]
 			else:
-				bName = '.'.join(pkgPath.split('.')[:-1])
-				ext = pkgPath.split('.')[-1]
+				psplit = pkgPath.split('.')
+				splitExt = ['.'.join(psplit[:-1]),psplit[-1]]
 
-			newP = bName+suffix+ext
+			newP = splitExt[0]+"_"+suffix+splitExt[1]
 			print("applying suffix : "+newP)
 			os.rename(pkgPath,newP)
 			pkgPath = newP;
