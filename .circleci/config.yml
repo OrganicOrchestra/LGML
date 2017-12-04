@@ -53,8 +53,8 @@ jobs:
           name: build and package LGML
           command: |
             sh Scripts/linux/installExportDeps.sh
-            python3 Scripts/buildScript.py --packagesuffix=ubuntu16 --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release
-            python3 Scripts/buildScript.py --build --package --export
+            python3 Scripts/buildScript.py --packagesuffix=ubuntu16 --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Debug --build --package --export
+            python3 Scripts/buildScript.py --packagesuffix=ubuntu16 --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --build --package --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build/
@@ -83,8 +83,7 @@ jobs:
           name: build and package LGML32
           command: |
             sh Scripts/linux/installExportDeps.sh
-            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release 
-            python3 Scripts/buildScript.py --build --package --export
+            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=linux --configuration=Release --build --package --export
             ldd /root/LGML/Builds/LinuxMakefile/build/LGML > "$DST_LGML_PATH/dependencies.txt"
       - store_artifacts:
           path: /tmp/build32 #$DST_LGML_PATH
@@ -127,13 +126,14 @@ jobs:
             export CXX=arm-linux-gnueabihf-g++
             sh Scripts/linux/installExportDeps.sh
             export ARCH_FLAGS=$ARCH_FLAGS_PI3
-            python3 Scripts/buildScript.py --clean
+            $BUILDLGML_CMD_BASE --configuration=Debug --packagesuffix=Rpi3
             $BUILDLGML_CMD_BASE --configuration=Release --packagesuffix=Rpi3
-            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "/tmp/buildRasp/dependenciesRpi3.txt"
+            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH/dependenciesRpi3.txt"
             python3 Scripts/buildScript.py --clean
             export ARCH_FLAGS=$ARCH_FLAGS_PI2
+            $BUILDLGML_CMD_BASE --configuration=Debug --packagesuffix=Rpi2
             $BUILDLGML_CMD_BASE --configuration=Release --packagesuffix=Rpi2
-            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "/tmp/buildRasp/dependenciesRpi2.txt"
+            arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH//dependenciesRpi2.txt"
 
       - store_artifacts:
           path: /tmp/buildRasp/
