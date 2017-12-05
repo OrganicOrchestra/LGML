@@ -423,8 +423,8 @@ void ShapeShifterPanel::loadLayoutInternal (var layout)
     {
         for (auto& tData : *tabData)
         {
-            String t = tData.getDynamicObject()->getProperty ("name").toString();
-            ShapeShifterContent* c = ShapeShifterFactory::createContentForName (tData.getDynamicObject()->getProperty ("name"));
+            const String t ( tData.getDynamicObject()->getProperty ("name").toString());
+            ShapeShifterContent* c = ShapeShifterFactory::createContentForName (t);
             addContent (c);
         }
     }
