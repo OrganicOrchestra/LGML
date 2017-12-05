@@ -350,16 +350,16 @@ ControllableContainer* ControllableContainer::getControllableContainerForAddress
 }
 
 
-String ControllableContainer::getControlAddress (ControllableContainer* relativeTo)
+String ControllableContainer::getControlAddress (const ControllableContainer* relativeTo) const
 {
     StringArray addressArray(getControlAddressArray(relativeTo));
     if (addressArray.size() == 0)return "";
     else return "/" + addressArray.joinIntoString ("/");
 }
 
-StringArray ControllableContainer::getControlAddressArray (ControllableContainer* relativeTo){
+StringArray ControllableContainer::getControlAddressArray (const ControllableContainer* relativeTo) const{
     StringArray addressArray;
-    ControllableContainer* pc = this;
+   const ControllableContainer* pc = this;
 
     while (pc != relativeTo && pc->parentContainer != nullptr)
     {
@@ -562,11 +562,11 @@ Array<Controllable*> ControllableContainer::getControllablesForExtendedAddress (
 }
 
 
-bool ControllableContainer::containsControllable (Controllable* c, int maxSearchLevels)
+bool ControllableContainer::containsControllable (const Controllable* c, int maxSearchLevels)
 {
     if (c == nullptr) return false;
 
-    ControllableContainer* pc = c->parentContainer;
+    const ControllableContainer* pc = c->parentContainer;
 
     if (pc == nullptr) return false;
 

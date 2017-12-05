@@ -117,6 +117,7 @@ void ParameterProxy::setParamToReferTo (Parameter* p)
     }
     else
     {
+        if(linkedParam == p) return;
         if (linkedParam != nullptr)
         {
             linkedParam->removeParameterListener (this);

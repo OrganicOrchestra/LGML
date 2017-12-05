@@ -73,13 +73,13 @@
                 "type": 0,
                 "width": 389,
                 "height": 524,
-                "currentContent": "Outliner",
+                "currentContent": "Inspector",
                 "tabs": [
                   {
-                    "name": "Outliner"
+                    "name": "Inspector"
                   },
                   {
-                    "name": "Inspector"
+                    "name": "Outliner"
                   }
                 ]
               },

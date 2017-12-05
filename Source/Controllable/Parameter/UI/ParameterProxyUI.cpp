@@ -98,7 +98,7 @@ void ParameterProxyUI::setLinkedParamUI (Parameter* p)
     }
 
 //    chooser.setVisible (linkedParamUI == nullptr);
-    chooser.setCurrentControllale(p);
+    chooser.setCurrentControllable(p);
     chooser.filterOutControllable = {paramProxy};
     resized();
 }

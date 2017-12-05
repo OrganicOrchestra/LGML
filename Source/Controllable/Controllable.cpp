@@ -90,7 +90,7 @@ void Controllable::updateControlAddress()
 }
 
 
-String Controllable::getControlAddress (ControllableContainer* relativeTo)
+String Controllable::getControlAddress (const ControllableContainer* relativeTo) const
 {
     return (parentContainer.get()?parentContainer->getControlAddress (relativeTo):"/noParent") + "/" + shortName;
 }
@@ -156,7 +156,7 @@ bool Controllable::isMappable()
 }
 
 
-bool Controllable::isChildOf (ControllableContainer* p)
+bool Controllable::isChildOf (const ControllableContainer* p) const
 {
     auto i = parentContainer;
 

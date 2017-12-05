@@ -87,7 +87,7 @@ void Point2DParameter<T>::setValueInternal (const var& _value)
 
 }
 template<typename T>
-Point<T> Point2DParameter<T>::getPoint()
+Point<T> Point2DParameter<T>::getPoint() const
 {
     return Point<T> (getX(), getY());
 }

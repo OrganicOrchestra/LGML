@@ -156,9 +156,9 @@ public:
      Controllable* getControllableForAddress (StringArray addressSplit, bool recursive = true, bool getNotExposed = false);
     Array<Controllable*> getControllablesForExtendedAddress (StringArray addressSplit, bool recursive=true, bool getNotExposed=false);
     ControllableContainer * getMirroredContainer(ControllableContainer * other,ControllableContainer * root = nullptr);
-    bool containsControllable (Controllable* c, int maxSearchLevels = -1);
-    String getControlAddress (ControllableContainer* relativeTo = nullptr);
-    StringArray getControlAddressArray (ControllableContainer* relativeTo = nullptr);
+    bool containsControllable (const Controllable* c, int maxSearchLevels = -1);
+    String getControlAddress (const ControllableContainer* relativeTo = nullptr) const;
+    StringArray getControlAddressArray (const ControllableContainer* relativeTo = nullptr) const;
 
 
     String getUniqueNameInContainer (const String& sourceName, int suffix = 0, void* me = nullptr);

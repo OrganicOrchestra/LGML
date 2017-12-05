@@ -176,11 +176,11 @@ void OSCDirectController::onContainerParameterChanged (Parameter* p)
 
 };
 
-void OSCDirectController::sendOSCForAddress (Controllable* c, const String& cAddress)
+void OSCDirectController::sendOSCForAddress (const Controllable* c, const String& cAddress)
 {
 
 
-    if (Parameter* p = Parameter::fromControllable (c))
+    if (const Parameter* p = Parameter::fromControllable (c))
     {
         auto  targetType = p->getFactoryTypeId();
 
@@ -193,11 +193,11 @@ void OSCDirectController::sendOSCForAddress (Controllable* c, const String& cAdd
         else if (targetType == StringParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
         else if (targetType == EnumParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
         else if (targetType == Point2DParameter<int>::_factoryType) {
-            auto point = static_cast<Point2DParameter<int> *>(p);
+            auto point = static_cast<const Point2DParameter<int> *>(p);
             sendOSC (cAddress, point->getX(),point->getY());
         }
         else if (targetType == Point2DParameter<float>::_factoryType) {
-            auto point = static_cast<Point2DParameter<float> *>(p);
+            auto point = static_cast<const Point2DParameter<float> *>(p);
             sendOSC (cAddress, point->getX(),point->getY());
         }
         else

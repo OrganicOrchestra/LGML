@@ -54,7 +54,7 @@ public :
     WeakReference<ControllableContainer> rootContainer;
 
     WeakReference<Controllable> currentControllable;
-    void setCurrentControllale (Controllable* c);
+    void setCurrentControllable (Controllable* c);
 
     Array<Controllable*> filterOutControllable;
 

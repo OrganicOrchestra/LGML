@@ -62,7 +62,7 @@ public:
 
 
 private:
-    void sendOSCForAddress (Controllable*, const String& address);
+    void sendOSCForAddress (const Controllable*, const String& address);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSCDirectController)
 

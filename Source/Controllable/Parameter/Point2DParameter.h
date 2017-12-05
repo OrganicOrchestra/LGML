@@ -33,11 +33,11 @@ public:
     void setPoint (const T x, const T y);
     void setValueInternal (const var& _value) override;
 
-    Point<T> getPoint();
+    Point<T> getPoint() const;
 
     bool checkValueIsTheSame (const var& v1, const var& v2) override;
-    T getX() {return (T)value[0];}
-    T getY() {return (T)value[1];}
+    T getX() const {return (T)value[0];}
+    T getY() const {return (T)value[1];}
     DECLARE_OBJ_TYPE (Point2DParameter<T>);
 private:
 

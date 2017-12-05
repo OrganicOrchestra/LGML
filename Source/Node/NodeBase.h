@@ -147,7 +147,7 @@ public:
     void removeAllInputDatas();
     void removeAllOutputDatas();
 
-    virtual void updateOutputData (String& dataName, const float& value1, const float& value2 = 0, const float& value3 = 0);
+    virtual void updateOutputData (const String& dataName, const float& value1, const float& value2 = 0, const float& value3 = 0);
 
 
     int getTotalNumInputData() override;

@@ -596,7 +596,7 @@ void NodeBase::removeAllOutputDatas()
     }
 }
 
-void NodeBase::updateOutputData (String& dataName, const float& value1, const float& value2, const float& value3)
+void NodeBase::updateOutputData (const String& dataName, const float& value1, const float& value2, const float& value3)
 {
     Data* d = getOutputDataByName (dataName);
 

@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #ifndef PARAMETER_H_INCLUDED
@@ -46,7 +46,7 @@ public:
     // useful for thread syncronization
     bool isCommitableParameter;
 
-    // when race condition are met, do we lock?
+    // when race conditions are met, do we lock?
     bool isLocking;
     volatile bool isSettingValue;
 
@@ -145,8 +145,9 @@ public:
     static const Identifier valueIdentifier;
 
 
-    static Parameter* fromControllable (Controllable* c) {return static_cast<Parameter*> (c);}
+    static const Parameter* fromControllable (const Controllable* c) {return static_cast<const Parameter*> (c);}
 
+    static Parameter* fromControllable (Controllable* c) {return static_cast<Parameter*> (c);}
     template<typename T> T* getAs() {return dynamic_cast<T*> (this);}
 
 
@@ -162,10 +163,10 @@ private:
 
     WeakReference<Parameter>::Master masterReference;
     friend class WeakReference<Parameter>;
-
-
+    
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Parameter)
-
+    
 };
 
 

@@ -97,7 +97,7 @@ ControllableReferenceUI::~ControllableReferenceUI()
 }
 
 
-void ControllableReferenceUI::setCurrentControllale (Controllable* c)
+void ControllableReferenceUI::setCurrentControllable (Controllable* c)
 {
 
     if (currentControllable.get() == c) return;
@@ -134,11 +134,11 @@ void ControllableReferenceUI::buttonClicked (Button*)
         if (result != 0) {
 
             if(result==removeId){
-                setCurrentControllale(nullptr);
+                setCurrentControllable(nullptr);
             }
             else{
                 Controllable* c = p.getControllableForResult(result);
-                if (c != nullptr) setCurrentControllale (c);
+                if (c != nullptr) setCurrentControllable (c);
                 else{jassertfalse;}
             }
         }
@@ -146,7 +146,7 @@ void ControllableReferenceUI::buttonClicked (Button*)
     else{
         ControllableContainerPopupMenu p (rootContainer, &filterOutControllable);
         Controllable* c = p.showAndGetControllable();
-        if (c != nullptr) setCurrentControllale (c);
+        if (c != nullptr) setCurrentControllable (c);
     }
 }
 
