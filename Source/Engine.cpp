@@ -69,9 +69,12 @@ Engine::Engine(): FileBasedDocument (filenameSuffix,
     ParameterFactory::logAllTypes();
     saveSession = addNewParameter<StringParameter>("save", "save current session");
     saveSession->alwaysNotify = true;
+    saveSession->isHidenInEditor = true;
     loadSession = addNewParameter<StringParameter>("load", "load a given session");
     loadSession->alwaysNotify = true;
+    loadSession->isHidenInEditor = true;
     closeEngine = addNewParameter<Trigger>("close","close engine");
+    closeEngine->isHidenInEditor = true;
     
     loadingStartTime = 0;
     initAudio();
