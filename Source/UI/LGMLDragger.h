@@ -26,7 +26,7 @@
 class ParameterUI;
 class DraggedComponent;
 
-class LGMLDragger : MouseListener
+class LGMLDragger : MouseListener,KeyListener
 {
 public:
 
@@ -59,7 +59,7 @@ public:
     void toggleMappingMode();
     bool isMappingActive;
 
-    void setSelected (ParameterUI*);
+
 
     Component*  dropCandidate;
 
@@ -75,11 +75,14 @@ public:
     };
     void addSelectionListener (Listener* l ) {listeners.add (l);}
     void removeSelectionListener (Listener* l ) {listeners.remove (l);}
+
+    void setSelected (ParameterUI*,LGMLDragger::Listener * from = nullptr);
 private:
 
     Component* selectedSSContent;
     ListenerList<Listener> listeners;
     Point<int> mouseDownWithinTarget;
-
+    bool keyPressed (const KeyPress& key,
+                Component* originatingComponent)override;
 
 };

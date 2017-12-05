@@ -15,6 +15,7 @@
 
 #include "Parameter.h"
 #include "../../Scripting/Js/JsHelpers.h"
+#include "../../Utils/DebugHelpers.h"
 
 
 const Identifier Parameter::valueIdentifier ("value");
@@ -85,7 +86,7 @@ bool Parameter::waitOrDeffer (const var& _value, bool silentSet, bool force )
 
             if (isSettingValue && overflow <= 0)
             {
-                DBG ("locked for : " << Time::currentTimeMillis() - startWait);
+                LOG ("!!! param " << controlAddress << " locked for : " << Time::currentTimeMillis() - startWait);
             }
         }
 

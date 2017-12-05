@@ -50,6 +50,7 @@ public:
 
     bool isDraggable;
     bool isSelected;
+    void updateOverlayEffect();
 
 
 

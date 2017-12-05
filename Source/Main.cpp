@@ -205,7 +205,10 @@ public:
                 // this method is invoked, and the commandLine parameter tells you what
                 // the other instance's command-line arguments were.
 
-                bool isWeirdMacCallback = File(commandLine).existsAsFile();
+                bool isWeirdMacCallback =
+                        commandLine.startsWithChar (File::getSeparatorChar())
+                        && File(commandLine).existsAsFile();
+                
                 if(isWeirdMacCallback){
                     engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
                 }

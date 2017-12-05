@@ -33,10 +33,10 @@ lastFMAddedTime(0)
     potentialIn = addNewParameter<ParameterProxy> ("Input", "potential input for new fastMap,\nto assing :\n- move a controller in mapping mode\n- alt click on other LGML parameter\n- use this popup");
     potentialOut = addNewParameter<ParameterProxy> ("Output", "potential output for new fastMap\nto assign :\n- click on parameter in mapping mode\n- navigate through this popup");
 
-
+    potentialIn->addParameterProxyListener(this);
+    potentialOut->addParameterProxyListener(this);
     LGMLDragger::getInstance()->addSelectionListener (this);
-    auto cm = ControllerManager::getInstance();
-    cm->addControllableContainerListener(this);
+
 
     potentialIn->isSavable = false;
     potentialOut->isSavable = false;
@@ -64,19 +64,18 @@ void FastMapper::setPotentialInput (Parameter* p)
 {
     if(p!=potentialIn->get()){
         potentialIn->setParamToReferTo (p);
-        createNewFromPotentials();
+
     }
 }
 void FastMapper::setPotentialOutput (Parameter* p )
 {
     if(p!=potentialOut->get()){
         potentialOut->setParamToReferTo (p);
-        createNewFromPotentials();
     }
 }
 void FastMapper::createNewFromPotentials()
 {
-    if (potentialIn->get() && potentialOut->get() && autoAddFastMaps)
+    if (potentialIn->get() && potentialOut->get() )
     {
         addFastMap();
 
@@ -101,16 +100,24 @@ FastMap* FastMapper::addFastMap()
 
     f->nameParam->isEditable = true;
 
-    //    setContainerToListen (nullptr);
+    
     f->referenceIn->setParamToReferTo (potentialIn->get());
     f->referenceOut->setParamToReferTo (potentialOut->get());
 
-    potentialIn->setParamToReferTo (nullptr);
-    potentialOut->setParamToReferTo (nullptr);
+
     if(!checkDuplicates (f)){
         addChildControllableContainer (f);
         maps.add (f);
         lastFMAddedTime = Time::getMillisecondCounter();
+
+        // avoid listener feedback
+        MessageManager::callAsync([this](){
+            if(auto dr = LGMLDragger::getInstance()){
+                dr->setSelected(nullptr,this);
+            }
+            potentialIn->setParamToReferTo (nullptr);
+            potentialOut->setParamToReferTo (nullptr);
+        });
         return f.release();
     }
     else{
@@ -187,8 +194,22 @@ void FastMapper::selectionChanged (Parameter* c )
 
 void FastMapper::mappingModeChanged(bool state){
     autoAddFastMaps = state;
+    if(auto cm = ControllerManager::getInstance()){
+    if(state)
+        cm->addControllableContainerListener(this);
+    else
+        cm->removeControllableContainerListener(this);
+    }
+
+
 };
 
+void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
+    if(p== potentialIn || p== potentialOut){
+            createNewFromPotentials();
+    }
+
+}
 
 
 void FastMapper::controllableFeedbackUpdate (ControllableContainer* notif, Controllable* ori)

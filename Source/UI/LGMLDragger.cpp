@@ -139,6 +139,7 @@ void LGMLDragger::setMainComponent (Component* c)
     mainComp = c;
 
     mainComp->addMouseListener (this, true);
+
     setMappingActive (false);
 }
 
@@ -210,6 +211,7 @@ void LGMLDragger::mouseUp (const MouseEvent& e)
         if (i == selectedSSContent)
         {
             setSelected (nullptr);
+            break;
         }
 
         i = i->getParentComponent();
@@ -270,9 +272,11 @@ void LGMLDragger::setMappingActive (bool b)
     if (!b)
     {
         unRegisterDragCandidate (nullptr);
+        mainComp->removeKeyListener(this);
     }
     else
     {
+        mainComp->addKeyListener(this);
         MouseInputSource mainMouse = Desktop::getInstance().getMainMouseSource();
 
         if (auto c = dynamic_cast<ParameterUI*> (mainMouse.getComponentUnderMouse()))
@@ -292,7 +296,14 @@ void LGMLDragger::toggleMappingMode()
 }
 
 
-
+bool LGMLDragger::keyPressed (const KeyPress& key,
+                              Component* originatingComponent){
+    if(key==KeyPress::escapeKey && isMappingActive){
+        setMappingActive(false);
+        return true;
+    }
+    return false;
+}
 
 void LGMLDragger::startDraggingComponent (Component* const componentToDrag, const MouseEvent& e)
 {
@@ -364,14 +375,14 @@ void LGMLDragger::endDraggingComponent (Component*   componentToDrag, const Mous
     else
     {
 
-        auto* c = dragCandidate ? dragCandidate->originComp.get() : nullptr;
+        auto* c = (dragCandidate && e.getDistanceFromDragStart()==0)? dragCandidate->originComp.get() : nullptr;
         setSelected (c);
     }
 
     unRegisterDragCandidate (nullptr);
 }
 
-void LGMLDragger::setSelected (ParameterUI* c)
+void LGMLDragger::setSelected (ParameterUI* c,LGMLDragger::Listener * from)
 {
 
     if (c)
@@ -398,7 +409,7 @@ void LGMLDragger::setSelected (ParameterUI* c)
         if (selected.get())
         {
             selected->isSelected = false;
-            selected->repaint();
+            selected->updateOverlayEffect();
         }
 
         selected = c;
@@ -406,11 +417,11 @@ void LGMLDragger::setSelected (ParameterUI* c)
         if (selected.get())
         {
             selected->isSelected = true;
-            selected->repaint();
+            selected->updateOverlayEffect();
 
         }
 
-        listeners.call (&Listener::selectionChanged, c ? c->parameter : nullptr);
+        listeners.callExcluding(from, &Listener::selectionChanged, c ? c->parameter : nullptr);
 
     }
 }

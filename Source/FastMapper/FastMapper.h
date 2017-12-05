@@ -31,7 +31,8 @@ class FastMapper;
 
 class FastMapper :
     public ParameterContainer,
-    private LGMLDragger::Listener
+    private LGMLDragger::Listener,
+    private ParameterProxy::ParameterProxyListener
 
 {
 public:
@@ -68,6 +69,8 @@ private:
 
     uint32 lastFMAddedTime;
 
+    // proxy listener
+    void linkedParamChanged (ParameterProxy*) override;
 
     // ControllableContainer::Listener
     void controllableFeedbackUpdate (ControllableContainer*, Controllable*) override;

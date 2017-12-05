@@ -226,9 +226,18 @@ void  ParameterUI::setMappingState (const bool  b)
         }
     }
 
-    if (b)
+
+    mappingState = s;
+    updateOverlayEffect();
+
+}
+
+void ParameterUI::updateOverlayEffect(){
+    if (mappingState!=NOMAP)
     {
-        mapEffect  = new MapEffect (isMappingDest ? Colours::red : Colours::blue, 50, getName());
+        Colour c =isMappingDest ? Colours::red : Colours::blue;
+        if (isSelected) c = Colours::green;
+        mapEffect  = new MapEffect (c, isSelected? 100:50, getName());
     }
     else
     {
@@ -236,12 +245,9 @@ void  ParameterUI::setMappingState (const bool  b)
     }
 
     setComponentEffect (mapEffect);
-    mappingState = s;
     repaint();
+
 }
-
-
-
 
 void ParameterUI::setMappingDest (bool _isMappingDest)
 {
