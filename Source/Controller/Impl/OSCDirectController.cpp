@@ -217,6 +217,7 @@ void OSCDirectController::controllableFeedbackUpdate (ControllableContainer* /*o
 
     if (enabledParam->boolValue())
     {
+        auto f = [this,c](){
         if (c->isChildOf (&userContainer))
         {
             sendOSCForAddress (c, c->getControlAddress (&userContainer));
@@ -225,6 +226,15 @@ void OSCDirectController::controllableFeedbackUpdate (ControllableContainer* /*o
         {
             sendOSCForAddress (c, c->controlAddress);
         }
+        };
+        // avoid locking other threads
+        if(MessageManager::getInstance()->isThisTheMessageThread()){
+            f();
+        }
+        else{
+            MessageManager::callAsync(f);
+        }
+
     }
 
 

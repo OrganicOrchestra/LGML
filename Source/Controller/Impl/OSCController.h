@@ -77,14 +77,15 @@ public:
     void addOSCControllerListener (OSCControllerListener* newListener) { oscListeners.add (newListener); }
     void removeOSCControllerListener (OSCControllerListener* listener) { oscListeners.remove (listener); }
 
-#if JUCE_COMPILER_SUPPORTS_VARIADIC_TEMPLATES
+
     template <typename... Args>
     bool sendOSC (const OSCAddressPattern& address, Args&& ... args)
     {
         OSCMessage m = OSCMessage (address, std::forward<Args> (args)...);
         return sendOSC (m);
     }
-#endif
+    bool sendOSC (OSCMessage& m);
+
 
     class OSCMessageQueue: private Timer
     {
@@ -100,7 +101,7 @@ public:
     };
 
     OSCMessageQueue oscMessageQueue;
-    bool sendOSC (OSCMessage& m);
+
 
     void logMessage (const OSCMessage& m, const String& prefix = "");
 
