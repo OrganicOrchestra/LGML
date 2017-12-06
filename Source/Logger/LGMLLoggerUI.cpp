@@ -34,7 +34,16 @@ void LGMLLoggerUI::newMessage (const String& s)
 
     //bool overFlow = false;
 
-    if (totalLogRow > maxNumElement)
+    //coalesce messages
+    if(!Timer::isTimerRunning()){
+        startTimer(200);
+    }
+
+};
+void LGMLLoggerUI::timerCallback()
+{
+    stopTimer();
+    if (totalLogRow.get() > maxNumElement)
     {
         int curCount = 0;
         int idxToRemove = -1;
@@ -57,31 +66,39 @@ void LGMLLoggerUI::newMessage (const String& s)
         }
 
         if (idxToRemove >= 0)logElements.removeRange (0, idxToRemove + 1);
-
+        
         totalLogRow = maxNumElement;
-
-
+        
+        
     }
-
-    //coalesce messages
-    triggerAsyncUpdate();
-
-};
-void LGMLLoggerUI::handleAsyncUpdate()
-{
     //DBG("Handle Async Update");
-    logListComponent->updateContent();
-    logListComponent->scrollToEnsureRowIsOnscreen (totalLogRow - 1);
-    repaint();
+//    auto cTime = Time::getMillisecondCounter();
+//    if(cTime - lastUpdateTime < 500 ){
+//        triggerAsyncUpdate();
+//    }
+//    else{
+//        lastUpdateTime = cTime;
+
+        logListComponent->updateContent();
+        logListComponent->scrollToEnsureRowIsOnscreen (totalLogRow.get() - 1);
+#if USE_CACHED_GLYPH
+        logList.cleanUnusedGlyphs();
+#endif
+        repaint();
+
+
+//    }
 }
 
 LGMLLoggerUI::LGMLLoggerUI (const String& contentName, LGMLLogger* l) :
 logger (l),
 ShapeShifterContentComponent (contentName),
 logList (this),
-maxNumElement (1000),
-totalLogRow (0)
+maxNumElement (100),
+totalLogRow (0),
+lastUpdateTime(0)
 {
+    
     logger->addLogListener (this);
     TableHeaderComponent* thc = new TableHeaderComponent();
     thc->addColumn ("Time", 1, 60);
@@ -90,6 +107,7 @@ totalLogRow (0)
 
 
     logListComponent = new TableListBox ("LGMLLogger", &logList);
+    logListComponent->setOpaque(true);
     logListComponent->setRowHeight (13);
     logListComponent->setHeaderHeight (20);
     logListComponent->getViewport()->setScrollBarThickness (10);
@@ -114,7 +132,7 @@ totalLogRow (0)
 
 LGMLLoggerUI::~LGMLLoggerUI()
 {
-    handleAsyncUpdate();
+    stopTimer();
     //        logListComponent.setModel(nullptr);
     logger->removeLogListener (this);
 }
@@ -271,14 +289,14 @@ const Colour& LGMLLoggerUI::getSeverityColourForRow (const int r) const
 //////////////
 // logList
 
-LGMLLoggerUI::LogList::LogList (LGMLLoggerUI* o) : owner (o)
+LGMLLoggerUI::LogList::LogList (LGMLLoggerUI* o) : owner (o),minRow(0),maxRow(0)
 {
 }
 
 int LGMLLoggerUI::LogList::getNumRows()
 {
 
-    return owner->totalLogRow;
+    return owner->totalLogRow.get();
 };
 
 void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
@@ -291,15 +309,22 @@ void LGMLLoggerUI::LogList::paintRowBackground (Graphics& g,
     g.fillRect (0, 0, width, height);
 };
 
+
+// use as function to prevent juce leak detection
+const Font  getLogFont(){
+    static Font  f(12);
+    return f;
+}
 void LGMLLoggerUI::LogList::paintCell (Graphics& g,
                                        int rowNumber,
                                        int columnId,
                                        int width, int height,
                                        bool)
 {
-    g.setFont (12);
+
     g.setColour (owner->findColour (Label::textColourId));
     String text;
+
 
     switch (columnId)
     {
@@ -316,7 +341,25 @@ void LGMLLoggerUI::LogList::paintCell (Graphics& g,
             break;
     }
 
-    g.drawFittedText (text, 0, 0, width, height, Justification::left, 1);
+#if USE_CACHED_GLYPH
+    if(cachedG.contains(text)){
+        auto & cg  = cachedG.getReference(text);
+        cg.paint(g);
+        return;
+    }
+
+
+    auto & cg  = cachedG.getReference(text);
+    cg.setFont(getLogFont());
+    cg.setText(text);
+    cg.setSize(width, height);
+    cg.paint(g);
+#else
+    g.setFont (getLogFont());
+
+    g.drawText(text, 0, 0, width,height, Justification::left,true);
+#endif
+//    g.drawFittedText (text, 0, 0, width, height, Justification::left, 1);
 
 };
 
@@ -333,9 +376,39 @@ String LGMLLoggerUI::LogList::getCellTooltip (int rowNumber, int /*columnId*/)
 
 };
 
+#if USE_CACHED_GLYPH
+void LGMLLoggerUI::LogList::cleanUnusedGlyphs(){
+    int nminRow = owner->logListComponent->getRowContainingPosition (1,1);
+    int nmaxRow = owner->logListComponent->getRowContainingPosition (1, owner->logListComponent->getHeight());
+    if(nminRow==-1)return;
+    if(nmaxRow==-1)nmaxRow = owner->totalLogRow.get();
+
+    int min=0,max=0;
+    if(nminRow>minRow){
+        min = minRow;max=nminRow;
+    }
+    if(nmaxRow<maxRow){
+        min = nmaxRow;max = maxRow;
+    }
+
+    for(int i = min; i < max ; i++){
+        cachedG.remove(owner->getContentForRow (i));
+        if(owner->isPrimaryRow(i)){
+            cachedG.remove(owner->getSourceForRow (i));
+            cachedG.remove(owner->getTimeStringForRow(i));
+        }
+    }
+
+    minRow = nminRow;
+    maxRow = nmaxRow;
+
+
+}
+#endif
+
 void LGMLLoggerUI::buttonClicked (Button* b)
 {
-    
+
     if (b == &clearB)
     {
         logElements.clear();
@@ -343,7 +416,7 @@ void LGMLLoggerUI::buttonClicked (Button* b)
         logListComponent->updateContent();
         LOG ("Cleared.");
     }
-
+    
     else if (b == &copyB){
         String s;
         for(auto & el: logElements){

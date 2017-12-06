@@ -184,7 +184,6 @@ public:
         virtual void controllableRemoved (ControllableContainer*, Controllable*) {}
         virtual void controllableContainerAdded (ControllableContainer*, ControllableContainer*) {}
         virtual void controllableContainerRemoved (ControllableContainer*, ControllableContainer*) {}
-        virtual void controllableFeedbackUpdate (ControllableContainer*, Controllable*) {}
         virtual void childStructureChanged (ControllableContainer* /*notifier*/, ControllableContainer* /*origin*/,bool /*isAdded*/) {}
         virtual void childAddressChanged (ControllableContainer* /*notifier*/,ControllableContainer* ) {};
         virtual void controllableContainerPresetLoaded (ControllableContainer*) {}
@@ -194,8 +193,26 @@ public:
         Array<WeakReference<ControllableContainer>> listenedContainers;
     };
 
+
+    class FeedbackListener : public Listener{
+    public:
+        virtual ~FeedbackListener(){}
+        virtual void controllableFeedbackUpdate (ControllableContainer*, Controllable*) =0;
+    };
+
+    // helper class to inject members
+    template<class OwnerClass>
+    class OwnedFeedbackListener : public FeedbackListener{
+        public:
+        OwnedFeedbackListener(OwnerClass * o):owner(o){};
+        virtual ~OwnedFeedbackListener(){}
+        void controllableFeedbackUpdate (ControllableContainer*, Controllable*) ;
+        OwnerClass * owner;
+
+    };
     //  typedef ControllableContainerListener Listener ;
     ListenerList<Listener> controllableContainerListeners;
+    ListenerList<FeedbackListener> controllableContainerFBListeners;
     void addControllableContainerListener (Listener* newListener) {
         controllableContainerListeners.add (newListener);
         newListener->listenedContainers.addIfNotAlreadyThere(this);
@@ -203,7 +220,16 @@ public:
     void removeControllableContainerListener (Listener* listener) {
         controllableContainerListeners.remove (listener);
         listener->listenedContainers.removeAllInstancesOf(this);
-        
+    }
+    void addControllableContainerListener (FeedbackListener* newListener) {
+        controllableContainerListeners.add (newListener);
+        controllableContainerFBListeners.add (newListener);
+        newListener->listenedContainers.addIfNotAlreadyThere(this);
+    }
+    void removeControllableContainerListener (FeedbackListener* listener) {
+        controllableContainerListeners.remove (listener);
+        controllableContainerFBListeners.remove (listener);
+        listener->listenedContainers.removeAllInstancesOf(this);
     }
 
 

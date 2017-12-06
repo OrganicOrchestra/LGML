@@ -21,7 +21,7 @@
 #include <juce_osc/juce_osc.h>
 
 
-#define NUM_OSC_MSG_IN_A_ROW 10
+#define NUM_OSC_MSG_IN_A_ROW 100
 #define OSC_QUEUE_LENGTH 5000
 
 
@@ -45,7 +45,6 @@ public:
 
 
     float lastOSCMessageSentTime;
-    int numSentInARow;
 
 
     void processMessage (const OSCMessage& msg);
@@ -55,27 +54,13 @@ public:
     virtual void onContainerParameterChanged (Parameter* p) override;
     virtual void onContainerTriggerTriggered (Trigger* t) override;
 
-    virtual void oscMessageReceived (const OSCMessage& message) override;
-    virtual void oscBundleReceived (const OSCBundle& bundle) override;
+
     void sendAllControllableStates (ControllableContainer* c, int& sentControllable );
 
     static StringArray OSCAddressToArray (const String&);
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OSCController)
-
-    //Listener
-    class  OSCControllerListener
-    {
-    public:
-        /** Destructor. */
-        virtual ~OSCControllerListener() {}
-        virtual void messageProcessed (const OSCMessage& msg, bool success) = 0;
-    };
-
-    ListenerList<OSCControllerListener> oscListeners;
-    void addOSCControllerListener (OSCControllerListener* newListener) { oscListeners.add (newListener); }
-    void removeOSCControllerListener (OSCControllerListener* listener) { oscListeners.remove (listener); }
 
 
     template <typename... Args>
@@ -93,7 +78,7 @@ public:
         OSCMessageQueue (OSCController* o);
         void add (OSCMessage* m);
         void timerCallback() override;
-        Array<OSCMessage*> messages;
+        OwnedArray<OSCMessage > messages;
         AbstractFifo aFifo;
         OSCController* owner;
         int interval;
@@ -107,8 +92,13 @@ public:
 
     bool setParameterFromMessage (Parameter* c, const OSCMessage& msg, bool force = false,bool allowConversions = true);
 
+    void sendOSCForAddress (const Controllable* c, const String& cAddress);
+    void sendOSCFromParam(const Controllable* c);
+
 private:
 
+    void oscMessageReceived (const OSCMessage& message) override;
+    void oscBundleReceived (const OSCBundle& bundle) override;
     
     void setupReceiver();
     void setupSender();

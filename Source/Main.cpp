@@ -30,9 +30,11 @@
 #include "UI/MainWindow.h"
 #endif
 
+
+
 class CrashHandler{
 public:
-
+    static bool saveToFile;
     static void init(){
         if(getCrashFile().existsAsFile()){
             ScopedPointer<InputStream> in = getCrashFile().createInputStream();
@@ -63,17 +65,21 @@ public:
     static void triggerCrash(){abort();}
 
     static void report(void *p){
+
         auto bt = SystemStats::getStackBacktrace();
+        if(saveToFile){
         ScopedPointer<OutputStream> out ( getCrashFile().createOutputStream());
         if(out){
             if(!out->writeString(bt))
                 LOG("!!! Crash Reporter can't write to file");
+        }
         }
         LOG(bt);
 
 
     }
 };
+bool CrashHandler::saveToFile = true;
 
 
 //==============================================================================
@@ -184,7 +190,7 @@ public:
             void shutdown() override
             {
                 // Add your application's shutdown code here..
-
+                CrashHandler::saveToFile = false;
 #if ENGINE_WITH_UI
                 mainWindow = nullptr; // (deletes our window)
 #endif
@@ -196,6 +202,7 @@ public:
             {
                 // This is called when the app is being asked to quit: you can ignore this
                 // request and let the app carry on running, or call quit() to allow the app to close.
+                CrashHandler::saveToFile = false;
                 quit();
             }
 
@@ -205,19 +212,22 @@ public:
                 // this method is invoked, and the commandLine parameter tells you what
                 // the other instance's command-line arguments were.
 
-                bool isWeirdMacCallback =
+                bool isMacFileCallback =
                         commandLine.startsWithChar (File::getSeparatorChar())
                         && File(commandLine).existsAsFile();
                 
-                if(isWeirdMacCallback){
+                
+                if(!isMacFileCallback){
+                    DBG ("Log recieved command args : "<<commandLine);
+                }
                     engine->parseCommandline (CommandLineElements::parseCommandLine (commandLine));
-                }
-                else{
-                    DBG ("Another instance started !");
+//                }
+//                else{
+
 #if ENGINE_WITH_UI
-                    AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon,"other instance started", commandLine);
+//                    AlertWindow::showMessageBox(AlertWindow::AlertIconType::WarningIcon,"other instance started", commandLine);
 #endif
-                }
+//                }
 
 
             }

@@ -158,8 +158,10 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
 
                 LOG ("!!Can't map a parameter to itself");
                 // ignore assert for loopBacks
-                referenceIn->isSettingValue = false;
-                referenceIn->setParamToReferTo (nullptr);
+//                referenceIn->isSettingValue = false;
+                MessageManager::callAsync([this](){
+                    referenceIn->setParamToReferTo (nullptr);
+                });
             }
         }
         else
@@ -193,16 +195,20 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
             {
                 LOG ("!!Can't map a parameter to itself");
                 // ignore assert for loopBacks
-                referenceOut->isSettingValue = false;
+//                referenceOut->isSettingValue = false;
+                MessageManager::callAsync([this](){
                 referenceOut->setParamToReferTo (nullptr);
+                });
             }
         }
         else if (p->linkedParam && !p->linkedParam->isEditable)
         {
             LOG ("!!Parameter non editable");
             // ignore assert for loopBacks
-            referenceOut->isSettingValue = false;
+//            referenceOut->isSettingValue = false;
+            MessageManager::callAsync([this](){
             referenceOut->setParamToReferTo (nullptr);
+            });
         }
         else
         {

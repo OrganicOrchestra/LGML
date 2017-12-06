@@ -67,6 +67,11 @@ void Parameter::setValue (const var & _value, bool silentSet, bool force)
     }
 
 }
+void Parameter::setValueFrom(Listener * notifier,const var & _value, bool silentSet , bool force ){
+    jassert(!isCommitableParameter);
+     tryToSetValue (_value, silentSet, alwaysNotify || force,notifier);
+
+}
 
 bool Parameter::waitOrDeffer (const var& _value, bool silentSet, bool force )
 {
@@ -105,7 +110,7 @@ bool Parameter::waitOrDeffer (const var& _value, bool silentSet, bool force )
 
     return false;
 }
-void Parameter::tryToSetValue (const var & _value, bool silentSet, bool force )
+void Parameter::tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier )
 {
 
     if (!force && checkValueIsTheSame (_value, value)) return;
@@ -128,7 +133,7 @@ void Parameter::tryToSetValue (const var & _value, bool silentSet, bool force )
         if (!isOverriden && !checkValueIsTheSame (defaultValue, value)) isOverriden = true;
 
         if (!silentSet && (force || !checkValueIsTheSame (lastValue, value)))
-            notifyValueChanged (false);
+            notifyValueChanged (false,notifier);
 
         _isSettingValue = false;
     }
@@ -178,14 +183,16 @@ void Parameter::checkVarIsConsistentWithType()
 
 
 
-void Parameter::notifyValueChanged (bool defferIt)
+void Parameter::notifyValueChanged (bool defferIt,Listener * notifier)
 {
     if (defferIt)
         triggerAsyncUpdate();
-    else
-        listeners.call (&Listener::parameterValueChanged, this);
+    else{
+        // call all listeners as they still need to dispatch feedback
+        listeners.call (&Listener::parameterValueChanged, this,notifier);
+    }
 
-    queuedNotifier.addMessage (new ParamWithValue (this, value, false));
+    queuedNotifier.addMessage (new ParamWithValue (this, value, false,notifier));
 }
 
 
@@ -230,7 +237,7 @@ var Parameter::getVarState()
 
 void Parameter::handleAsyncUpdate()
 {
-    listeners.call (&Listener::parameterValueChanged, this);
+    listeners.call (&Listener::parameterValueChanged, this,nullptr);
 };
 
 bool Parameter::isMappable()

@@ -191,17 +191,17 @@ void Engine::handleAsyncUpdate()
     suspendAudio (false);
     if(hasDefaultOSCControl){
         auto controllers = ControllerManager::getInstance()->getContainersOfType<OSCJsController>(false);
-        bool found = false;
+        OSCJsController *mainC(nullptr);
         for(auto & c:controllers){
             if(c->fullSync->boolValue()){
-                found = true;
+                mainC = c;
                 break;
             }
         }
-        if(!found){
-            OSCJsController * c = (OSCJsController*)ControllerFactory::createFromTypeID(OSCJsController::typeId());
-            c->fullSync->setValue(true);
-            ControllerManager::getInstance()->addController(c);
+        if(!mainC){
+            mainC = (OSCJsController*)ControllerFactory::createFromTypeID(OSCJsController::typeId());
+            mainC->fullSync->setValue(true);
+            ControllerManager::getInstance()->addController(mainC);
         }
     }
     engineListeners.call (&EngineListener::endLoadFile);
@@ -220,6 +220,7 @@ Result Engine::saveDocument (const File& file)
     os->flush();
 
     setLastDocumentOpened (file);
+    saveSession->setValueFrom(this, getFile().getFullPathName());
     return Result::ok();
 }
 

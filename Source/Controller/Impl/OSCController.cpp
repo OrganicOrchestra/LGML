@@ -84,7 +84,6 @@ OSCController::OSCController (const String& _name) :
 
     receiver.addListener (this);
     lastOSCMessageSentTime = 0;
-    numSentInARow = NUM_OSC_MSG_IN_A_ROW;
 
 
 
@@ -217,7 +216,7 @@ void OSCController::processMessage (const OSCMessage& msg)
         LOG("!! "+result.getErrorMessage());
     }
     isProcessingOSC = false;
-    oscListeners.call (&OSCControllerListener::messageProcessed, msg, result);
+    
 
     inActivityTrigger->trigger();
 }
@@ -542,9 +541,9 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 {
     if (c)
     {
-        for (auto& controllable : c->getAllControllables())
+        for (auto& controllable : c->getAllControllables(false))
         {
-            controllableFeedbackUpdate (c, controllable);
+            sendOSCFromParam(controllable);
             sentControllable++;
 
             if ((sentControllable % 10) == 0)
@@ -561,6 +560,53 @@ void OSCController::sendAllControllableStates (ControllableContainer* c, int& se
 
 }
 
+void OSCController::sendOSCFromParam(const Controllable *c){
+    if (c->isChildOf (&userContainer))
+    {
+        sendOSCForAddress (c, c->getControlAddress (&userContainer));
+    }
+    else
+    {
+        sendOSCForAddress (c, c->controlAddress);
+    }
+}
+
+void OSCController::sendOSCForAddress (const Controllable* c, const String& cAddress)
+{
+
+
+    if (const Parameter* p = Parameter::fromControllable (c))
+    {
+        auto  targetType = p->getFactoryTypeId();
+
+        if (targetType == ParameterProxy::_factoryType) targetType = ((ParameterProxy*)c)->linkedParam->getFactoryTypeId();
+
+        if (targetType == Trigger::_factoryType) {sendOSC (cAddress);}
+        else if (targetType == BoolParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
+        else if (targetType == FloatParameter::_factoryType) {sendOSC (cAddress, p->floatValue());}
+        else if (targetType == IntParameter::_factoryType) {sendOSC (cAddress, p->intValue());}
+        else if (targetType == StringParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
+        else if (targetType == EnumParameter::_factoryType) {sendOSC (cAddress, p->stringValue());}
+        else if (targetType == Point2DParameter<int>::_factoryType) {
+            auto point = static_cast<const Point2DParameter<int> *>(p);
+            sendOSC (cAddress, point->getX(),point->getY());
+        }
+        else if (targetType == Point2DParameter<float>::_factoryType) {
+            auto point = static_cast<const Point2DParameter<float> *>(p);
+            sendOSC (cAddress, point->getX(),point->getY());
+        }
+        else
+        {
+            DBG ("Type not supported " << targetType.toString());
+            jassertfalse;
+        }
+
+    }
+    else
+    {
+        jassertfalse;
+    }
+}
 
 
 ////////////////////////
@@ -571,7 +617,7 @@ OSCController::OSCMessageQueue::OSCMessageQueue (OSCController* o):
     aFifo (OSC_QUEUE_LENGTH),
     interval (1)
 {
-    messages.resize (OSC_QUEUE_LENGTH);
+//    messages.resize (OSC_QUEUE_LENGTH);
 }
 
 void OSCController::OSCMessageQueue::add (OSCMessage* m)
@@ -580,23 +626,33 @@ void OSCController::OSCMessageQueue::add (OSCMessage* m)
     aFifo.prepareToWrite (1, startIndex1, blockSize1, startIndex2, blockSize2);
     int numWritten = 0;
 
+    // fifo is full : we can drop message
+    while (blockSize1 == 0)
+    {
+        aFifo.finishedRead (1);
+        aFifo.prepareToWrite (1, startIndex1, blockSize1, startIndex2, blockSize2);
+        NLOG (owner->getNiceName(), "!!! still flooding OSC");
+    }
     if (blockSize1 > 0)
     {
-        messages.set (startIndex1, m);
+        if(messages.size()<OSC_QUEUE_LENGTH){
+            jassert(startIndex1 == messages.size());
+            messages.add(m);
+        }
+        else
+            messages.set (startIndex1, m);
         numWritten ++;
     }
     else if (blockSize2 > 0)
     {
+        jassertfalse;
         messages.set (startIndex2, m);
         numWritten ++;
     }
     else
     {
-        aFifo.finishedWrite (numWritten);
-        numWritten = 0;
-        timerCallback();
-        NLOG (owner->getNiceName(), "!!! still flooding OSC");
-        delete m;
+        jassertfalse;
+
     }
 
     aFifo.finishedWrite (numWritten);
@@ -617,7 +673,6 @@ void OSCController::OSCMessageQueue::timerCallback()
             for ( ; numRead < blockSize1 ; numRead++ )
             {
                 owner->sendOSCInternal (*messages[startIndex1 + numRead]);
-                delete messages[startIndex1 + numRead];
             }
         }
 
@@ -626,7 +681,6 @@ void OSCController::OSCMessageQueue::timerCallback()
             for (int i = 0 ; i < blockSize2 ; i++ )
             {
                 owner->sendOSCInternal (*messages[startIndex2 + i]);
-                delete messages[startIndex2 + i];
                 numRead++;
             }
         }

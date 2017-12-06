@@ -666,7 +666,7 @@ void JsEnvironment::updateUserDefinedFunctions()
 
 }
 
-void JsEnvironment::parameterValueChanged (Parameter* p)
+void JsEnvironment::parameterValueChanged (Parameter* p,Parameter::Listener * notifier)
 {
     if (p == linkedContainer->nameParam)
     {
@@ -690,7 +690,7 @@ void JsEnvironment::parameterValueChanged (Parameter* p)
 
 };
 
-
+#define NON_BLOCKING 0
 void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c)
 {
     // avoid root callback (only used to reload if
@@ -711,7 +711,17 @@ void JsEnvironment::controllableFeedbackUpdate (ControllableContainer* originCon
     for (auto& s : sArr) { add.add (s); }
 
     Array<var> argList = { var (add), v };
-    callFunction ("on_" + getJsFunctionNameFromAddress (originContainer->getControlAddress()), argList, false);
+
+#if NON_BLOCKING
+    auto f=[this,originContainer,argList](){
+#endif
+        callFunction ("on_" + getJsFunctionNameFromAddress (originContainer->getControlAddress()), argList, false);
+#if NON_BLOCKING
+    };
+
+    if(MessageManager::getInstance()->isThisTheMessageThread()){f();}
+    else{MessageManager::callAsync(f);}
+#endif
 }
 
 

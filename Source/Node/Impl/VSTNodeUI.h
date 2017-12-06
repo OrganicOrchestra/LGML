@@ -63,7 +63,7 @@ private:
     void controllableRemoved (ControllableContainer*, Controllable* c)override;
     void controllableContainerAdded (ControllableContainer*, ControllableContainer* cc)override;
     void controllableContainerRemoved (ControllableContainer*, ControllableContainer* cc) override;
-    void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c) override;
+    
 
 
     static void vstSelected (int modalResult, Component*   originComp);

@@ -42,7 +42,7 @@ public:
     {
         setValue (triggerVar);
     }
-    void tryToSetValue (const var & _value, bool silentSet, bool force) override
+    void tryToSetValue (const var & _value, bool silentSet, bool force,Listener * notifier=nullptr) override
     {
 
         if (!waitOrDeffer (_value, silentSet, force))
@@ -54,7 +54,7 @@ public:
 
                 _isSettingValue = true;
 
-                if (!silentSet) notifyValueChanged();
+                if (!silentSet) notifyValueChanged(false,notifier);
 
                 _isSettingValue = false;
             }

@@ -108,7 +108,7 @@ namespace MIDIHelpers{
                 removeOption(mc->getNiceName(), true);
             }
         };
-        void parameterValueChanged (Parameter* p) override{
+        void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) override{
             auto c = p->parentContainer.get();
             if(auto cont = dynamic_cast<MIDIController*>(c)){
                 jassert(p==cont->nameParam);

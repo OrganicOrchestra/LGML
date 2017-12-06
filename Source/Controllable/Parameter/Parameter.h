@@ -23,6 +23,7 @@
 class Parameter : public Controllable, private AsyncUpdater
 {
 public:
+    class Listener;
     Parameter ( const String& niceName, const String& description, var initialValue, bool enabled = true);
 
     virtual ~Parameter() {Parameter::masterReference.clear(); cancelPendingUpdate();}
@@ -54,6 +55,7 @@ public:
     void setNewDefault(const var & value,bool notify);
     void resetValue (bool silentSet = false,bool force = false);
     void setValue (const var & _value, bool silentSet = false, bool force = false);
+    void setValueFrom(Listener * notifier,const var & _value, bool silentSet = false, bool force = false);
     void configureFromObject (DynamicObject*) override;
     void setStateFromVar (const var&) override;
 
@@ -77,7 +79,7 @@ public:
     bool boolValue() const { return (bool)value; }
     virtual String stringValue() const { return value.toString(); }
 
-    void notifyValueChanged (bool defferIt = false);
+    void notifyValueChanged (bool defferIt = false,Listener * notifier=nullptr);
 
     virtual DynamicObject* createDynamicObject() override;
 
@@ -95,7 +97,7 @@ public:
                     linkedP.removeLast();
             }
         }
-        virtual void parameterValueChanged (Parameter* p) = 0;
+        virtual void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) = 0;
         virtual void parameterRangeChanged (Parameter* ) {};
         Array<WeakReference<Parameter> > linkedP;
     };
@@ -118,10 +120,11 @@ public:
     class  ParamWithValue
     {
     public:
-        ParamWithValue (Parameter* p, const var & v, bool _isRange): parameter (p), value (v), m_isRange (_isRange) {}
+        ParamWithValue (Parameter* p, const var & v, bool _isRange,Listener* _notifier=nullptr): parameter (p), value (v), m_isRange (_isRange),notifier(_notifier) {}
         Parameter* parameter;
         var value;
         bool m_isRange;
+        Listener* notifier;
         bool isRange() const {return m_isRange;}
 
     };
@@ -141,7 +144,7 @@ public:
     virtual var getVarState() override;
 
 
-    virtual void tryToSetValue (const var & _value, bool silentSet, bool force );
+    virtual void tryToSetValue (const var & _value, bool silentSet, bool force, Listener * notifier=nullptr);
 
     static const Identifier valueIdentifier;
 

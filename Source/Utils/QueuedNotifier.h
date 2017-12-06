@@ -28,10 +28,12 @@ class QueuedNotifier: public  AsyncUpdater
 {
 public:
 
+
     QueuedNotifier (int _maxSize, bool _canDropMessage = true): fifo (_maxSize), canDropMessage (_canDropMessage)
     {
         maxSize = _maxSize;
         messageQueue.ensureStorageAllocated (maxSize);
+        notifierQueue.ensureStorageAllocated(maxSize);
 
     }
 
@@ -48,7 +50,7 @@ public:
 
 
 
-    void addMessage (MessageClass* msg, bool forceSendNow = false)
+    void addMessage (MessageClass* msg, bool forceSendNow = false,Listener * notifier=nullptr)
     {
         if (listeners.size() == 0 && lastListeners.size() == 0)
         {
@@ -60,25 +62,21 @@ public:
 
         if (forceSendNow)
         {
-            listeners.call (&Listener::newMessage, *msg);
-            lastListeners.call (&Listener::newMessage, *msg);
+            listeners.callExcluding(notifier,&Listener::newMessage, *msg);
+            lastListeners.callExcluding (notifier,&Listener::newMessage, *msg);
             delete msg;
             return;
         }
         else
         {
 
-            // add if we are in a decent array size
 
             int start1, size1, start2, size2;
             fifo.prepareToWrite (1, start1, size1, start2, size2);
 
-            // fifo is full : we can drop message
+            // fifo is full : we can drop message or wait
             while (size1 == 0)
             {
-                // still lock if full
-                const MessageManagerLock mmLock;
-                //        jassert(isUpdatePending());
                 if (canDropMessage)
                 {
 
@@ -98,8 +96,14 @@ public:
 
             jassert (size1 == 1 && size2 == 0);
 
-            if (messageQueue.size() < maxSize) {messageQueue.add (msg);}
-            else {messageQueue.set (start1, msg);}
+            if (messageQueue.size() < maxSize) {
+                messageQueue.add (msg);
+                notifierQueue.add(notifier);
+            }
+            else {
+                messageQueue.set (start1, msg);
+                notifierQueue.set(start1,notifier);
+            }
 
             fifo.finishedWrite (size1 );
             triggerAsyncUpdate();
@@ -127,23 +131,25 @@ private:
 
         for (int i = start1 ; i < start1 + size1 ; i++)
         {
-            listeners.call (&Listener::newMessage, *messageQueue.getUnchecked (i));
+            listeners.callExcluding (notifierQueue.getUnchecked(i),&Listener::newMessage, *messageQueue.getUnchecked (i));
 
         }
 
         for (int i = start2 ; i < start2 + size2 ; i++)
         {
-            listeners.call (&Listener::newMessage, *messageQueue.getUnchecked (i));
+            listeners.callExcluding (notifierQueue.getUnchecked(i),&Listener::newMessage, *messageQueue.getUnchecked (i));
         }
 
 
         if (size2 > 0)
         {
-            lastListeners.call (&Listener::newMessage, *messageQueue.getUnchecked (start2 + size2 - 1));
+            int i =start2 + size2 - 1;
+            lastListeners.callExcluding (notifierQueue.getUnchecked(i),&Listener::newMessage, *messageQueue.getUnchecked (i));
         }
         else if (size1 > 0)
         {
-            lastListeners.call (&Listener::newMessage, *messageQueue.getUnchecked (start1 + size1 - 1));
+            int i = start1 + size1 - 1;
+            lastListeners.callExcluding (notifierQueue.getUnchecked(i),&Listener::newMessage, *messageQueue.getUnchecked (i));
         }
 
         fifo.finishedRead (size1 + size2);
@@ -158,6 +164,7 @@ private:
     AbstractFifo fifo;
     int maxSize;
     OwnedArray<MessageClass, CriticalSectionToUse> messageQueue;
+    Array<Listener*,CriticalSectionToUse> notifierQueue;
     bool canDropMessage;
     ListenerList<Listener > listeners;
     ListenerList<Listener > lastListeners;

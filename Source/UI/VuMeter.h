@@ -21,7 +21,6 @@
 #pragma once
 
 #include "../Node/NodeBase.h"
-#include "Style.h"//keep
 #include "../Audio/AudioHelpers.h"
 
 //TODO, move to more common place for use in other components

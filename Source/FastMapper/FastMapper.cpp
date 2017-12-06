@@ -22,11 +22,33 @@
 juce_ImplementSingleton (FastMapper)
 IMPL_OBJ_TYPE (FastMapper);
 
+template<>
+void ControllableContainer::OwnedFeedbackListener<FastMapper>::controllableFeedbackUpdate (ControllableContainer* notif, Controllable*ori) {
+
+    if (auto p = Parameter::fromControllable (ori))
+    {
+        if(owner->autoAddFastMaps){
+            if(notif== ControllerManager::getInstance()){
+                auto now=Time::getMillisecondCounter();
+                jassert(now>=owner->lastFMAddedTime);
+                // debounce control changes, to avoid setting potentialOutput back
+                if (ori->isUserDefined && now-owner->lastFMAddedTime>500){
+                    owner->setPotentialInput (p);
+                }
+            }
+        }
+
+
+    }
+}
+
+
 
 FastMapper::FastMapper (StringRef name) :
 ParameterContainer (name),
 autoAddFastMaps(false),
-lastFMAddedTime(0)
+lastFMAddedTime(0),
+pSync(this)
 {
 
     nameParam->isEditable = false;
@@ -43,6 +65,7 @@ lastFMAddedTime(0)
     potentialIn->isPresettable = false;
     potentialOut->isPresettable = false;
 
+
 }
 
 FastMapper::~FastMapper()
@@ -52,7 +75,7 @@ FastMapper::~FastMapper()
         dr->removeSelectionListener (this);
     }
     if(auto cm = ControllerManager::getInstanceWithoutCreating()){
-        cm->removeControllableContainerListener(this);
+        cm->removeControllableContainerListener(&pSync);
     }
 
     clear();
@@ -196,9 +219,9 @@ void FastMapper::mappingModeChanged(bool state){
     autoAddFastMaps = state;
     if(auto cm = ControllerManager::getInstance()){
     if(state)
-        cm->addControllableContainerListener(this);
+        cm->addControllableContainerListener(&pSync);
     else
-        cm->removeControllableContainerListener(this);
+        cm->removeControllableContainerListener(&pSync);
     }
 
 
@@ -210,25 +233,3 @@ void  FastMapper::linkedParamChanged (ParameterProxy* p ) {
     }
 
 }
-
-
-void FastMapper::controllableFeedbackUpdate (ControllableContainer* notif, Controllable* ori)
-{
-    ParameterContainer::controllableFeedbackUpdate (notif, ori);
-
-    if (auto p = Parameter::fromControllable (ori))
-    {
-        if(autoAddFastMaps){
-            if(notif== ControllerManager::getInstance()){
-                auto now=Time::getMillisecondCounter();
-                jassert(now>=lastFMAddedTime);
-                // debounce control changes, to avoid setting potentialOutput back
-                if (ori->isUserDefined && now-lastFMAddedTime>500){
-                    setPotentialInput (p);
-                }
-            }
-        }
-        
-        
-    }
-};

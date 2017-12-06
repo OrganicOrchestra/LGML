@@ -75,7 +75,7 @@ public:
     };
 
     void handleCommandMessage (int id)override;
-    void parameterValueChanged (Parameter* p) override;
+    void parameterValueChanged (Parameter* p,Parameter::Listener * notifier=nullptr) override;
     void resized() override;
     OwnedArray<OutputBusUI> outputBusUIs;
     AudioMixerNode* mixerNode;

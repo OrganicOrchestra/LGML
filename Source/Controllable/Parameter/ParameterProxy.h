@@ -38,12 +38,12 @@ public:
 
     void setRoot (ControllableContainer* );
     Parameter* get();
-    void tryToSetValue (const var & _value, bool silentSet, bool force )override;
+    void tryToSetValue (const var & _value, bool silentSet, bool force,Parameter::Listener * notifier=nullptr )override;
     void setValueInternal (const var& _value) override;
     bool isMappable() override;
 
     // Inherited via Listener
-    void parameterValueChanged (Parameter* p) override;
+    void parameterValueChanged (Parameter* p,Parameter::Listener * notifier) override;
 
     void setParamToReferTo (Parameter* p);
 

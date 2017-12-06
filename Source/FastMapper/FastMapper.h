@@ -73,7 +73,10 @@ private:
     void linkedParamChanged (ParameterProxy*) override;
 
     // ControllableContainer::Listener
-    void controllableFeedbackUpdate (ControllableContainer*, Controllable*) override;
+    typedef  ControllableContainer::OwnedFeedbackListener<FastMapper> PSync;
+    PSync pSync;
+    friend class ControllableContainer::OwnedFeedbackListener<FastMapper>;
+
     void createNewFromPotentials();
     bool checkDuplicates (FastMap* f);
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FastMapper)

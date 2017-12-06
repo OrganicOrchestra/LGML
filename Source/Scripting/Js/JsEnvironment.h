@@ -27,7 +27,7 @@ class JSEnvContainer;
 
 class JsEnvironment : public MultiTimer, //timer for autoWatch & timer for calling update() in scripts
     private Parameter::Listener,
-    private ControllableContainerListener
+private ControllableContainer::FeedbackListener
 
 {
 public:
@@ -237,7 +237,7 @@ private:
 
     void clearListeners();
     Result checkUserControllableEventFunction();
-    void parameterValueChanged (Parameter* c) override;
+    void parameterValueChanged (Parameter* c,Parameter::Listener * notifier=nullptr) override;
 
 
     void controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable*)     override;

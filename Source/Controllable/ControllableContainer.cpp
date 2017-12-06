@@ -593,7 +593,7 @@ void ControllableContainer::dispatchFeedback (Controllable* c)
 
     if (parentContainer != nullptr) { parentContainer->dispatchFeedback (c); }
 
-    controllableContainerListeners.call (&Listener::controllableFeedbackUpdate, this, c);
+    controllableContainerFBListeners.call (&FeedbackListener::controllableFeedbackUpdate, this, c);
 
 }
 
