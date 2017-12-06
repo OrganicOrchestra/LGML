@@ -196,8 +196,16 @@ public:
 
     class FeedbackListener : public Listener{
     public:
-        virtual ~FeedbackListener(){}
+        virtual ~FeedbackListener(){
+            while(listenedFBContainers.size()>0){
+                if(auto cc = listenedFBContainers.getLast().get())
+                    cc->removeControllableContainerListener(this);
+                else
+                    listenedFBContainers.removeLast();
+            }
+        }
         virtual void controllableFeedbackUpdate (ControllableContainer*, Controllable*) =0;
+        Array<WeakReference<ControllableContainer>> listenedFBContainers;
     };
 
     // helper class to inject members
@@ -222,14 +230,14 @@ public:
         listener->listenedContainers.removeAllInstancesOf(this);
     }
     void addControllableContainerListener (FeedbackListener* newListener) {
-        controllableContainerListeners.add (newListener);
+        addControllableContainerListener ((Listener*)newListener);
         controllableContainerFBListeners.add (newListener);
-        newListener->listenedContainers.addIfNotAlreadyThere(this);
+        newListener->listenedFBContainers.addIfNotAlreadyThere(this);
     }
     void removeControllableContainerListener (FeedbackListener* listener) {
-        controllableContainerListeners.remove (listener);
+        removeControllableContainerListener((Listener*)listener);
         controllableContainerFBListeners.remove (listener);
-        listener->listenedContainers.removeAllInstancesOf(this);
+        listener->listenedFBContainers.removeAllInstancesOf(this);
     }
 
 

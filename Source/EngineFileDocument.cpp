@@ -41,7 +41,7 @@
 ApplicationProperties* getAppProperties();
 
 AudioDeviceManager& getAudioDeviceManager();
- String lastFileListKey ("lastFileList");
+String lastFileListKey ("lastFileList");
 
 String Engine::getDocumentTitle()
 {
@@ -74,7 +74,7 @@ void Engine::createNewGraph()
 
     setFile (File());
     isLoadingFile = false;
-    
+
     handleAsyncUpdate();
 
 }
@@ -83,7 +83,7 @@ Result Engine::loadDocument (const File& file)
 {
     if (isLoadingFile)
     {
-//        TODO handle quick reloading of file
+        //        TODO handle quick reloading of file
         return Result::fail ("engine already loading");
     }
 
@@ -214,10 +214,11 @@ Result Engine::saveDocument (const File& file)
     var data = getObject();
 
     if (file.exists()) file.deleteFile();
-
-    ScopedPointer<OutputStream> os ( file.createOutputStream());
-    JSON::writeToStream (*os, data);
-    os->flush();
+    {
+        ScopedPointer<OutputStream> os ( file.createOutputStream());
+        JSON::writeToStream (*os, data);
+        os->flush();
+    }
 
     setLastDocumentOpened (file);
     saveSession->setValueFrom(this, getFile().getFullPathName());
@@ -311,7 +312,7 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
 
     presetTask->end();
     nodeManagerTask->start();
-    
+
     if (d->hasProperty ("nodeManager")) NodeManager::getInstance()->configureFromObject (d->getProperty ("nodeManager").getDynamicObject());
 
 #if ENGINE_WITH_UI
@@ -323,8 +324,8 @@ void Engine::loadJSONData (const var& data, ProgressTask* loadingTask)
             p = new ParameterContainer("NodesUI");
             addChildControllableContainer(p);
         }
-            p->configureFromObject(d->getProperty("NodesUI").getDynamicObject());
-    
+        p->configureFromObject(d->getProperty("NodesUI").getDynamicObject());
+
     }
 #endif
 
@@ -415,7 +416,7 @@ String Engine::getNormalizedFilePath (const File& f)
 File Engine::getFileAtNormalizedPath (const String& path)
 {
     bool isRelative = path.length() > 0 && (path[0] != File::getSeparatorChar() || path[0] == '.');
-
+    
     if (isRelative)
     {
         return getCurrentProjectFolder().getChildFile (path);

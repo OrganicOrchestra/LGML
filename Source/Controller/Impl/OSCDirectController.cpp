@@ -20,17 +20,18 @@
 #include "../../Controllable/Parameter/ParameterProxy.h"
 #include "../ControllerManager.h"
 
+#define NON_BLOCKING 0
 template<>
 void ControllableContainer::OwnedFeedbackListener<OSCDirectController>::controllableFeedbackUpdate (ControllableContainer* originContainer, Controllable* c){
 
-#define NON_LOCKING 0
+
     if (owner->enabledParam->boolValue())
     {
-#if NON_LOCKING
+#if NON_BLOCKING
         auto f = [this,c](){
 #endif
             owner->sendOSCFromParam(c);
-#if NON_LOCKING
+#if NON_BLOCKING
         };
         // avoid locking other threads
         if(MessageManager::getInstance()->isThisTheMessageThread()){
