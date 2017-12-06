@@ -34,7 +34,7 @@ const Identifier ControllableContainer::childContainerId ("/");
 const Identifier ControllableContainer::controllablesId ("parameters");
 
 
-#warning correct use of niceName
+// TODO fix use of niceName
 ControllableContainer::ControllableContainer (StringRef /*niceName*/) :
 parentContainer (nullptr),
 numContainerIndexed (0),
