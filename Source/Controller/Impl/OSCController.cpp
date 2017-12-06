@@ -142,7 +142,7 @@ void OSCController::resolveHostnameIfNeeded()
                 if(resolved.hasValidPort()){
                 String resolvedPortString = String ((int)resolved.port);
 
-                if (!remotePortParam->isSettingValue && remotePortParam->stringValue() != resolvedPortString)
+                if (!remotePortParam->isSettingValue() && remotePortParam->stringValue() != resolvedPortString)
                 {
 
                     //    enssure to not create feedback on ports
@@ -409,7 +409,7 @@ void OSCController::onContainerParameterChanged (Parameter* p)
     Controller::onContainerParameterChanged (p);
 
     if (p == localPortParam) setupReceiver();
-    else if ((p == remotePortParam && !remoteHostParam->isSettingValue) || p == remoteHostParam ) setupSender();
+    else if ((p == remotePortParam && !remoteHostParam->isSettingValue()) || p == remoteHostParam ) setupSender();
     else if (p == speedLimit) {oscMessageQueue.interval = speedLimit->floatValue();}
 
 
@@ -431,6 +431,7 @@ void OSCController::oscMessageReceived (const OSCMessage& message)
 {
     //DBG("Message received !");
     processMessage (message);
+
 }
 
 void OSCController::oscBundleReceived (const OSCBundle& bundle)

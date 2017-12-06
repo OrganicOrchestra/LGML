@@ -48,7 +48,8 @@ public:
 
     // when race conditions are met, do we lock?
     bool isLocking;
-    volatile bool isSettingValue;
+    bool isSettingValue();
+
 
     void setNewDefault(const var & value,bool notify);
     void resetValue (bool silentSet = false,bool force = false);
@@ -153,7 +154,7 @@ public:
 
 protected:
     bool waitOrDeffer (const var& _value, bool silentSet, bool force);
-
+    Atomic<bool> _isSettingValue;
 private:
 
 

@@ -52,11 +52,11 @@ public:
                    ))
             {
 
-                isSettingValue = true;
+                _isSettingValue = true;
 
                 if (!silentSet) notifyValueChanged();
 
-                isSettingValue = false;
+                _isSettingValue = false;
             }
         }
 
