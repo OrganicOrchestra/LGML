@@ -147,23 +147,23 @@ jobs:
       xcode:
         version: 8.2
       environment:
-        DST_LGML_PATH: /tmp/build32
+        DST_LGML_PATH: /tmp/buildOSX
 
     steps:
       - checkout
       - run:
-          name: install LGML32 dependencies
+          name: install LGML OSX dependencies
           command: |
             git submodule update --init --recursive
             sh Scripts/osx/installDevDeps.sh 
       - run:
-          name: build and package LGML32
+          name: build and package LGML OSX
           command: |
             sh Scripts/osx/installExportDeps.sh
             python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=osx --configuration=Release 
             python3 Scripts/buildScript.py --build --package --export
       - store_artifacts:
-          path: /tmp/build32 #$DST_LGML_PATH
+          path: /tmp/buildOSX #$DST_LGML_PATH
 
 
 workflows:
