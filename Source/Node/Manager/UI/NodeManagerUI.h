@@ -89,7 +89,7 @@ class NodeManagerUIViewport :
     public ButtonListener
 {
 public :
-    NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName)
+    NodeManagerUIViewport (const String& contentName, NodeManagerUI* _nmui): nmui (_nmui), ShapeShifterContentComponent (contentName,"Patch your Audio here")
     {
         vp.setViewedComponent (nmui, false);
         vp.setScrollBarsShown (true, true);
@@ -181,7 +181,7 @@ public :
 
     void resized() override
     {
-
+        ShapeShifterContentComponent::resized();
         Rectangle<int> r = getLocalBounds();
 
         Rectangle<int> buttonR = r.removeFromTop (30).reduced (5);
@@ -207,12 +207,19 @@ public :
     {
         reconstructViewerPath();
         
-        
+        hideInfoLabelIfNeeded();
 
         //nmui->setBounds(getLocalBounds().withTop(30));
         resized();
 
 
+    }
+    void hideInfoLabelIfNeeded(){
+        if( nmui->currentViewer){
+            NodeContainer* c = nmui->currentViewer->nodeContainer;
+            if(c){infoLabel.setVisible( c->getNumNodes()<=2);}
+            else{jassertfalse;}
+        }
     }
 
     void buttonClicked (Button* b)override

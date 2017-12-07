@@ -154,3 +154,57 @@ void Inspector::controllableRemoved (Controllable* c) {
         setCurrentComponent(nullptr);
     }
 }
+
+////////////
+// InspectorViewport
+///////////
+
+InspectorViewport::InspectorViewport (const String& contentName, Inspector* _inspector) :
+inspector (_inspector),
+ShapeShifterContentComponent (contentName, "See inside :\nDisplays info on selected Object")
+{
+    vp.setViewedComponent (inspector, false);
+    vp.setScrollBarsShown (true, false);
+    vp.setScrollOnDragEnabled (false);
+    contentIsFlexible = false;
+    addAndMakeVisible (vp);
+    vp.setScrollBarThickness (10);
+
+    inspector->addInspectorListener (this);
+
+}
+
+InspectorViewport::~InspectorViewport()
+{
+
+    inspector->removeInspectorListener(this);
+}
+
+void InspectorViewport::resized() 
+{
+    ShapeShifterContentComponent::resized();
+    Rectangle<int> r = getLocalBounds();
+
+    vp.setBounds (r);
+
+    r.removeFromRight (vp.getScrollBarThickness());
+
+    if (inspector->getCurrentEditor() == nullptr){
+
+        auto labelR=r.withSizeKeepingCentre(jmax(300,getWidth()),r.getHeight());
+        infoLabel.setBounds(labelR);
+        infoLabel.setVisible(true);
+        inspector->setBounds (r);
+    }
+    else
+    {
+        infoLabel.setVisible(false);
+        int cH = r.getHeight();
+        if(auto ed = inspector->getCurrentEditor()){
+            if(int tH = ed->getContentHeight())
+                cH = tH;
+        }
+
+        inspector->setBounds (r.withPosition (inspector->getPosition()).withHeight (cH));
+    }
+}

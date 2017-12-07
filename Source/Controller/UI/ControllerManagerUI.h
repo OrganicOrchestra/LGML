@@ -64,50 +64,10 @@ class ControllerManagerUIViewport :
     private ButtonListener
 {
 public:
-    ControllerManagerUIViewport (const String& contentName, ControllerManagerUI* _UI) :
-        controllerManagerUI (_UI),
-        ShapeShifterContentComponent (contentName)
-    {
-        vp.setViewedComponent (controllerManagerUI, true);
-        vp.setScrollBarsShown (true, false);
-        vp.setScrollOnDragEnabled (false);
-        addAndMakeVisible (vp);
-        vp.setScrollBarThickness (10);
-        addAndMakeVisible (addControllerBt);
-        addControllerBt.setTooltip ("Add controller");
-        addControllerBt.addListener (this);
+    ControllerManagerUIViewport (const String& contentName, ControllerManagerUI* _UI) ;
+    virtual ~ControllerManagerUIViewport();
 
-
-    }
-
-    virtual ~ControllerManagerUIViewport()
-    {
-
-    }
-
-    void resized() override
-    {
-        vp.setBounds (getLocalBounds());
-        int th = jmax<int> (controllerManagerUI->getContentHeight(), getHeight());
-        Rectangle<int> targetBounds = getLocalBounds().withPosition (controllerManagerUI->getPosition()).withHeight (th);
-
-        targetBounds.removeFromRight (vp.getScrollBarThickness());
-        bool needResize = controllerManagerUI->getHeight()==th;
-
-        controllerManagerUI->setBounds (targetBounds);
-        // resize not called if no change in heights, but internal state yes
-        if(needResize){
-            controllerManagerUI->resized();
-        }
-
-        if(controllerManagerUI->controllersUI.size()==0){
-            int side = (int)( jmin(getWidth(),getHeight()) * .5);
-            addControllerBt.setBounds(getLocalBounds().withSizeKeepingCentre(side,side));
-        }
-        else{
-        addControllerBt.setFromParentBounds (getLocalBounds());
-        }
-    }
+    void resized() override;
 
     void buttonClicked (Button*) override;
 

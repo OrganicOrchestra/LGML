@@ -24,7 +24,7 @@
 
 
 
-Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName),
+Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName,"Search Parameters in here"),
 baseRoot(_root),
 root(nullptr),
 showUserContainer(false)
@@ -73,6 +73,7 @@ void Outliner::clear(){
 }
 void Outliner::resized()
 {
+    ShapeShifterContentComponent::resized();
     Rectangle<int> r = getLocalBounds();
     r.removeFromTop (20);
     if(filterTextEditor.isVisible()){

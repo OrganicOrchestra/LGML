@@ -15,12 +15,14 @@
 
 #include "ShapeShifterContent.h"
 
-ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const String& _contentName) :
+ShapeShifterContent::ShapeShifterContent (Component* _contentComponent, const String& _contentName,const String& _info) :
     contentIsFlexible (false),
     contentName (_contentName),
     contentIsShown (false),
-    contentComponent (_contentComponent)
+    contentComponent (_contentComponent),
+    info(_info)
 {
+
 }
 
 ShapeShifterContent::~ShapeShifterContent()
@@ -28,8 +30,16 @@ ShapeShifterContent::~ShapeShifterContent()
 }
 
 
-ShapeShifterContentComponent::ShapeShifterContentComponent (const String& contentName) :
-    ShapeShifterContent (this, contentName)
+ShapeShifterContentComponent::ShapeShifterContentComponent (const String& contentName,const String & _info) :
+    ShapeShifterContent (this, contentName,_info),
+    infoLabel("info",_info)
 {
-
+    addAndMakeVisible(infoLabel);
+    infoLabel.setAlpha(0.5);
+    infoLabel.toBack();
+    infoLabel.setJustificationType(Justification::centred);
 }
+void ShapeShifterContentComponent::resized(){
+    infoLabel.setBounds(getLocalBounds());
+}
+

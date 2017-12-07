@@ -128,7 +128,6 @@ void NodeContainerViewer::addNodeUI (ConnectableNode* node)
         NodeUIFactory::createDefaultUI (node,
                                         dynamic_cast<ConnectableNodeUIParams*>(uiParams->getControllableContainerByName(node->shortName)));
 
-
         if(nui){
             nodesUI.add (nui);
             addChildControllableContainer(nui);
@@ -465,7 +464,6 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
 
         if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent)){
 
-            nui->selectThis();
             resultOfMouseDownSelectMethod = selectedItems.addToSelectionOnMouseDown(nui, event.mods);
             selectedInitBounds.clear();
             for(auto s: selectedItems){
@@ -516,40 +514,41 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
     else     {
 
+
+
+        bool isResizing = dynamic_cast<ResizableCornerComponent*>(e.eventComponent)!=nullptr;
         auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent);
-        if(nui){
-            bool isResizing = dynamic_cast<ResizableCornerComponent*>(e.eventComponent)!=nullptr;
-            Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
-            if(!isResizing){
-                hasDraggedDuringClick = diff.getDistanceSquaredFromOrigin()>0;
-                for(auto s: selectedItems){
-                    if(s.get()){
-                        if(selectedInitBounds.contains(s)){
-                            Point <int> newPos = selectedInitBounds.getReference(s).getPosition() + diff;
-                            auto nodeP = s->getCurrentPositionParam();
-                            nodeP->setPoint (newPos);
-                            s->setTopLeftPosition (nodeP->getPoint());
-                        }
-                        else{
-                            jassertfalse;
-                        }
+        Point<int> diff = Point<int> (e.getPosition() - e.getMouseDownPosition());
+        if(!isResizing && nui){
+            hasDraggedDuringClick = diff.getDistanceSquaredFromOrigin()>0;
+            for(auto s: selectedItems){
+                if(s.get()){
+                    if(selectedInitBounds.contains(s)){
+                        Point <int> newPos = selectedInitBounds.getReference(s).getPosition() + diff;
+                        auto nodeP = s->getCurrentPositionParam();
+                        nodeP->setPoint (newPos);
+                        s->setTopLeftPosition (nodeP->getPoint());
+                    }
+                    else{
+                        jassertfalse;
                     }
                 }
             }
-            else if( !minimizeAll->boolValue()){
-                for(auto s: selectedItems){
-                    if(s.get()){
-                        if(selectedInitBounds.contains(s)){
-                            Point <int> newSize = selectedInitBounds.getReference(s).withPosition(Point<int>(0,0)).getBottomRight() + diff;
-                            auto nodeS = s->nodeSize;
-                            nodeS->setPoint(newSize);
-                        }
-                        else{
-                            jassertfalse;
-                        }
+        }
+        else if( !minimizeAll->boolValue()){
+            for(auto s: selectedItems){
+                if(s.get()){
+                    if(selectedInitBounds.contains(s)){
+                        Point <int> newSize = selectedInitBounds.getReference(s).withPosition(Point<int>(0,0)).getBottomRight() + diff;
+                        auto nodeS = s->nodeSize;
+                        nodeS->setPoint(newSize);
+                    }
+                    else{
+                        jassertfalse;
                     }
                 }
             }
+
         }
     }
 
@@ -558,20 +557,33 @@ void NodeContainerViewer::mouseDrag (const MouseEvent&  e)
 
 void NodeContainerViewer::mouseUp (const MouseEvent& e)
 {
-    
-        if (isEditingConnection())
-        {
-            finishEditingConnection();
-            return;
-        }
+
+    if (isEditingConnection())
+    {
+        finishEditingConnection();
+        return;
+    }
 
     if (e.eventComponent == this){
-            if(getLassoSelection().getItemArray().size()==0)
-                selectThis();
+        if(getLassoSelection().getItemArray().size()==0)
+            selectThis();
     }
     else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent)){
-        selectedItems.addToSelectionOnMouseUp(nui, e.mods, hasDraggedDuringClick , resultOfMouseDownSelectMethod);
+        selectedItems.addToSelectionOnMouseUp(nui,e.mods,
+                                              hasDraggedDuringClick ,
+                                              resultOfMouseDownSelectMethod);
+
     }
+
+    selectedInitBounds.clear();
+    for(auto s: selectedItems){
+        if(s.get()){
+            Component * tSize = s->mainComponentContainer.contentContainer;
+            selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
+        }
+
+    }
+
 
     lassoSelectionComponent.endLasso();
 
@@ -662,7 +674,7 @@ void NodeContainerViewer::findLassoItemsInArea (Array<SelectedUIType>& itemsFoun
             itemsFound.add(n);
         }
     }
-    
+
     auto insp = Inspector::getInstance();
     if(itemsFound.size()){
         // unselect this if needed

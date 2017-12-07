@@ -92,7 +92,8 @@ void LGMLLoggerUI::timerCallback()
 
 LGMLLoggerUI::LGMLLoggerUI (const String& contentName, LGMLLogger* l) :
 logger (l),
-ShapeShifterContentComponent (contentName),
+ShapeShifterContentComponent (contentName,
+                              "See events occuring in LGML"),
 logList (this),
 maxNumElement (100),
 totalLogRow (0),
@@ -139,7 +140,7 @@ LGMLLoggerUI::~LGMLLoggerUI()
 
 void LGMLLoggerUI::resized()
 {
-
+    ShapeShifterContentComponent::resized();
     Rectangle<int> area = getLocalBounds();
     auto footer =area.removeFromBottom (30).reduced (5);
     clearB.setBounds (footer.removeFromLeft(footer.getWidth()/2).reduced(2));
