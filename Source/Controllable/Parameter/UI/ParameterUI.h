@@ -75,7 +75,7 @@ private:
     virtual void newMessage (const Parameter::ParamWithValue& p) override;
 
     // never change this as value can be changed from other threads
-    void parameterValueChanged (Parameter* ,Parameter::Listener * notifier=nullptr) override {};
+    void parameterValueChanged (Parameter* ,Parameter::Listener * /*notifier=nullptr*/) override {};
     void parameterRangeChanged (Parameter* )override {};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ParameterUI)

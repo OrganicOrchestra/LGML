@@ -62,7 +62,7 @@ public:
         return -1;
     }
     //==============================================================================
-    bool keyPressed (const KeyPress& key, Component* const /*originatingComponent*/) override
+    bool keyPressed (const KeyPress& key, Component* /*originatingComponent*/) override
     {
         const uint32 time = Time::getMillisecondCounter();
         const char c = key.getTextCharacter();

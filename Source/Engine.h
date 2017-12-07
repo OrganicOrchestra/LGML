@@ -21,7 +21,7 @@
 
 #define MULTITHREADED_LOADING
 
-#pragma warning (disable : 4100)
+
 
 #include "MIDI/MIDIManager.h"
 #include "Controller/ControllerManager.h"

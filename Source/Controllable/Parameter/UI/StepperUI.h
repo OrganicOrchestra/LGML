@@ -32,8 +32,6 @@ public:
 
     ScopedPointer<BetterStepper> slider;
 
-    void setScrollAllowed (bool );
-
     void resized() override;
 
     void setStepInterval(T i);
