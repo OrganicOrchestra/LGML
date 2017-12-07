@@ -22,6 +22,8 @@
 #define JUCE_DISPLAY_SPLASH_SCREEN 0
 #define JUCE_REPORT_APP_USAGE 0
 
+// we really don't care of unreferenced parameter warnings do we?
+#pragma warning (disable : 4100)
 
 #define ENGINE_WITH_UI 1
 
