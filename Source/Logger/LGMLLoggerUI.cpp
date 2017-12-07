@@ -141,7 +141,7 @@ LGMLLoggerUI::~LGMLLoggerUI()
 void LGMLLoggerUI::resized()
 {
     ShapeShifterContentComponent::resized();
-    Rectangle<int> area = getLocalBounds();
+    Rectangle<int> area = getLocalBounds().withTop(5);
     auto footer =area.removeFromBottom (30).reduced (5);
     clearB.setBounds (footer.removeFromLeft(footer.getWidth()/2).reduced(2));
     copyB.setBounds(footer.reduced(2));
