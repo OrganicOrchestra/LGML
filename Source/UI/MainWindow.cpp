@@ -92,7 +92,7 @@ MainWindow::MainWindow (String name, Engine* e)  :
     LGMLDragger::getInstance()->setMainComponent (mainComponent);
 
 
-    startTimer (10000);
+    startTimer (4000);
 
 
 }
