@@ -68,6 +68,7 @@ doxygen/doc
 *.dmg
 
 lgml_build_cfg.json
+*.log
 
 *.pyc
 
