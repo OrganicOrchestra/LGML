@@ -357,7 +357,7 @@ public:
 
         if (juceIcon != nullptr)
             juceIcon->drawWithin (g, Rectangle<float> (20, 17, 64, 64),
-                                  RectanglePlacement::stretchToFit, 1.000f);
+                                  RectanglePlacement::centred, 1.000f);
     }
 
     void resized() override
