@@ -132,7 +132,7 @@ namespace{
         void timerCallback() override{
             if(isChecking()){
                 if(bt.get()){
-                    float alpha = jmap((1+cos(count*float_Pi/5.0f))/2,0.3,1.) ;
+                    float alpha = jmap<float>((1.0+cos(count*float_Pi/5.0f))/2,0.3,1.) ;
                     bt->setAlpha(alpha);
                     count++;
                 }

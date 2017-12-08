@@ -126,12 +126,10 @@ jobs:
             export CXX=arm-linux-gnueabihf-g++
             sh Scripts/linux/installExportDeps.sh
             export ARCH_FLAGS=$ARCH_FLAGS_PI3
-            $BUILDLGML_CMD_BASE --configuration=Debug --packagesuffix=Rpi3
             $BUILDLGML_CMD_BASE --configuration=Release --packagesuffix=Rpi3
             arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH/dependenciesRpi3.txt"
             python3 Scripts/buildScript.py --clean
             export ARCH_FLAGS=$ARCH_FLAGS_PI2
-            $BUILDLGML_CMD_BASE --configuration=Debug --packagesuffix=Rpi2
             $BUILDLGML_CMD_BASE --configuration=Release --packagesuffix=Rpi2
             arm-linux-gnueabihf-objdump -x ~/LGML/Builds/LinuxMakefile/build/LGML | grep NEEDED > "$DST_LGML_PATH//dependenciesRpi2.txt"
 

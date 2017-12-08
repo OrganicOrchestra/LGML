@@ -109,6 +109,7 @@ if __name__ == "__main__":
 					if defaultCfg[k] is not None and k in savedCfg and defaultCfg[k]!=savedCfg[k]:
 						raise NameError("config changed %s : was %s, is now %s)"%(k,savedCfg[k],defaultCfg[k]))
 			defaultCfg = savedCfg
+			defaultCfg["git_sha"] = gitUtils.getGitSha()
 
 	# default to Release config
 	if defaultCfg["build_cfg_name"] is None:
