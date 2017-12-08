@@ -291,7 +291,7 @@ public:
 
 
         if(!(version>currentVersion)){
-            titleLabel->setText(String("you have the latest version : 123").replace("123", version.toString()), dontSendNotification);
+            titleLabel->setText(String("you have the latest version : 123 re-download it?").replace("123", version.toString()), dontSendNotification);
             contentLabel->setText("", dontSendNotification);
         }
         addAndMakeVisible (changeLogLabel = new Label ("Change Log Label",

@@ -572,7 +572,11 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
         selectedItems.addToSelectionOnMouseUp(nui,e.mods,
                                               hasDraggedDuringClick ,
                                               resultOfMouseDownSelectMethod);
+        // trigger selection when first and alone
+        if(Inspector::getInstance()->getCurrentComponent()!=nui &&
+           getLassoSelection().getItemArray().size()==1){
         nui->selectThis();
+        }
 
     }
     else {
