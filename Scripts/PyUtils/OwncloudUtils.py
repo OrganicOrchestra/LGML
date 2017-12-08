@@ -74,8 +74,21 @@ def makeDirIfNotExistent(destPath,forceCreation=False,session=None):
 
 
 def sendToOwnCloud(originPath,destPath,session=None):
-	if not '%' in destPath:
-		destPath = urllib.request.quote(destPath.strip())
+	localPath = os.path.expanduser("~/owncloud")
+	hasLocal  = os.path.exists(localPath)
+	if hasLocal:
+		print ("copying localy")
+		print(originPath,' >> ', destPath)
+		from shutil import copy2
+		destPath = urllib.request.unquote(destPath)
+		destPath = os.path.join(localPath,destPath)
+		if( destPath != originPath):
+			os.makedirs(os.path.dirname(destPath), exist_ok=True)
+			copy2(originPath,destPath)
+		return
+	else:
+		if not '%' in destPath:
+			destPath = urllib.request.quote(destPath.strip())
 	
 	print('sending to owncloud:')
 	print(originPath,' >> ', destPath)
