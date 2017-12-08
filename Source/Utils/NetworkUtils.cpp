@@ -253,7 +253,8 @@ public:
                                 if (threadShouldExit())return;
                                 
                                 LOG("!!! DNS service failed with error : "<<res);
-                                jassertfalse;
+                                if(res!=kDNSServiceErr_NATPortMappingDisabled)
+                                    jassertfalse;
                             }
 
                             if ( ++count > 10 )
