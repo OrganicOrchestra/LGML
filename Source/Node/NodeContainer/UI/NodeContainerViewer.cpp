@@ -572,7 +572,13 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
         selectedItems.addToSelectionOnMouseUp(nui,e.mods,
                                               hasDraggedDuringClick ,
                                               resultOfMouseDownSelectMethod);
+        nui->selectThis();
 
+    }
+    else {
+        for( auto i:selectedItems){
+            i->setSelected(false);
+        }
     }
 
     selectedInitBounds.clear();
