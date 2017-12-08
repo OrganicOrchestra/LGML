@@ -671,12 +671,19 @@ bool LatestVersionChecker::processResult (const var& reply, const String& downlo
             if (LGMLVersionTriple::fromString (versionString, version))
             {
                 String extraHeaders;
+#if DOWNLOAD_INPLACE
+
                 String _path = downloadPath;
                 if (statusCode==200){
                     _path = versionString <<'/'<< getOSString()<< '/'<<"LGML.zip";
                 }
 
                 URL newVersionToDownload = getLatestVersionURL (extraHeaders, _path);
+#else
+                String urlPage = reply.getProperty("download_page",
+                                                    "http://organic-orchestra.com/forum/d/6-lgml-telechargements").toString();
+                URL newVersionToDownload (urlPage);
+#endif
                 return askUserAboutNewVersion (version, releaseNotes, newVersionToDownload, extraHeaders);
 
             }
@@ -760,7 +767,7 @@ void LatestVersionChecker::modalStateFinished (int result,
         else
             askUserForLocationToDownload (newVersionToDownload, extraHeaders);
 #else
-        const String link("http://organic-orchestra.com/forum/d/6-lgml-telechargements");
+        const String link(newVersionToDownload.toString(false));
         Process::openDocument(link, "");
 #endif
     }
