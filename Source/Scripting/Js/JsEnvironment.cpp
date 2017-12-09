@@ -855,48 +855,66 @@ void JSEnvContainer::onContainerTriggerTriggered (Trigger* p)
         }
     }
     else if (p==createT){
-        AlertWindow nameWindow ("Create script", "name your script", AlertWindow::AlertIconType::NoIcon);
-        nameWindow.addTextEditor ("Name", "MyScript");
 
-        nameWindow.addButton ("OK", 1, KeyPress (KeyPress::returnKey));
-        nameWindow.addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
-
-        int result = nameWindow.runModalLoop();
-
-        if (result)
-        {
-            String sN = nameWindow.getTextEditor("Name")->getText();
-            if(sN.isNotEmpty()){
-                if( sN.endsWith(".js")){
-                    sN= sN.substring(0, -2);
-                }
-                File scriptFile ( getEngine()->getCurrentProjectFolder().getChildFile("Scripts/"));
-                if(! scriptFile.exists()){
-                    scriptFile.createDirectory();
-                }
-                scriptFile = scriptFile.getNonexistentChildFile(sN,".js",true);
-                if(! scriptFile.exists()){
-                        auto r = scriptFile.create();
-                    if(!r){
-                        LOG("!!! Can't create script : " <<scriptFile.getFullPathName() << "("<< r.getErrorMessage()<<")");
-                    }
-                }
-                else{
-                    jassertfalse;
-                }
+        if(!getEngine()->getCurrentProjectFolder().exists()){
+            FileChooser fc("where to save the script?");
+            if(fc.browseForFileToSave(true)){
+                File scriptFile = fc.getResult();
                 if(scriptFile.exists()){
                     scriptPath->setValue( scriptFile.getFullPathName());
                     showT->trigger();
                 }
             }
-            
+            else{
+                return;
+            }
+        }
+        else{
+            AlertWindow nameWindow ("Create script", "name your script", AlertWindow::AlertIconType::NoIcon);
+            nameWindow.addTextEditor ("Name", "MyScript");
+
+            nameWindow.addButton ("OK", 1, KeyPress (KeyPress::returnKey));
+            nameWindow.addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
+
+            int result = nameWindow.runModalLoop();
+
+            if (result)
+            {
+                String sN = nameWindow.getTextEditor("Name")->getText();
+                if(sN.isNotEmpty()){
+                    if( sN.endsWith(".js")){
+                        sN= sN.substring(0, -2);
+                    }
+                    File scriptFile = getEngine()->getCurrentProjectFolder().getChildFile("Scripts/");
+
+                    if(! scriptFile.exists()){
+                        scriptFile.createDirectory();
+                    }
+                    scriptFile = scriptFile.getNonexistentChildFile(sN,".js",true);
+                    if(! scriptFile.exists()){
+                        auto r = scriptFile.create();
+                        if(!r){
+                            LOG("!!! Can't create script : " <<scriptFile.getFullPathName() << "("<< r.getErrorMessage()<<")");
+                        }
+                    }
+                    else{
+                        jassertfalse;
+                    }
+                    
+                    if(scriptFile.exists()){
+                        scriptPath->setValue( scriptFile.getFullPathName());
+                        showT->trigger();
+                    }
+                }
+                
+            }
         }
     }
 }
-
-//////////////////////
-// JsParameterListenerObject
-
-
-Identifier JsParameterListenerObject::parameterChangedFId ("parameterChanged");
-Identifier JsParameterListenerObject::parameterObjectId ("parameter");
+    
+    //////////////////////
+    // JsParameterListenerObject
+    
+    
+    Identifier JsParameterListenerObject::parameterChangedFId ("parameterChanged");
+    Identifier JsParameterListenerObject::parameterObjectId ("parameter");
