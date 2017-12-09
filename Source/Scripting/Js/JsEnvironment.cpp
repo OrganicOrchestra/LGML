@@ -1,16 +1,16 @@
 /* Copyright © Organic Orchestra, 2017
-*
-* This file is part of LGML.  LGML is a software to manipulate sound in realtime
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation (version 3 of the License).
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-*/
+ *
+ * This file is part of LGML.  LGML is a software to manipulate sound in realtime
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation (version 3 of the License).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ */
 
 
 #include "JsEnvironment.h"
@@ -36,13 +36,13 @@ const JsEnvironment::JsTimerType JsEnvironment::onUpdateTimer (1, 20);
 DynamicObject::Ptr JsEnvironment::getGlobalEnv() {return JsGlobalEnvironment::getInstance()->getEnv();}
 
 JsEnvironment::JsEnvironment (const String& ns, ParameterContainer* _linkedContainer) :
-    linkedContainer (_linkedContainer),
-    localNamespace (ns),
-    _hasValidJsFile (false),
-    autoWatch (false),
-    _isInSyncWithLGML (false),
-    isLoadingFile (false),
-    isEnabled (true)
+linkedContainer (_linkedContainer),
+localNamespace (ns),
+_hasValidJsFile (false),
+autoWatch (false),
+_isInSyncWithLGML (false),
+isLoadingFile (false),
+isEnabled (true)
 
 {
     jsParameters = new JSEnvContainer (this);
@@ -76,7 +76,7 @@ JsEnvironment::~JsEnvironment()
     if (localEnv)
     {localEnv->clear();}
 
-    
+
 
 }
 
@@ -242,7 +242,7 @@ void JsEnvironment::internalLoadFile (const File& f )
     else {_isInSyncWithLGML = true;}
 
     String normalizedPath =  getCurrentFilePath();
-    jsParameters->scriptPath->setValue (normalizedPath);
+    jsParameters->scriptPath->setValueFrom (jsParameters,normalizedPath);
     jsListeners.call (&JsEnvironment::Listener::newJsFileLoaded, (bool)r);
 
     // TODO get rid of this once unifying JsEnvironment
@@ -680,7 +680,7 @@ void JsEnvironment::parameterValueChanged (Parameter* p,Parameter::Listener * no
             setNamespaceName (namespaceName);
         }
         else{
-//            jassertfalse;
+            //            jassertfalse;
         }
 
     }
@@ -784,7 +784,7 @@ var JsEnvironment::createParameterListenerObject (const var::NativeFunctionArgs&
 #include "JsEnvironmentUI.h"
 
 JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
-    ParameterContainer ("jsParams"), jsEnv (pEnv)
+ParameterContainer ("jsParams"), jsEnv (pEnv)
 {
 
     scriptPath = addNewParameter<StringParameter> ("ScriptPath", "path for js script", "");
@@ -798,6 +798,7 @@ JSEnvContainer::JSEnvContainer (JsEnvironment* pEnv):
     autoWatch = addNewParameter<BoolParameter> ("autoWatch", "auto reload if file has been changed", false);
     autoWatch->isSavable = false;
     logT =  addNewParameter<Trigger> ("LogEnvironment", "print hierarchy of JS objects");
+    createT = addNewParameter<Trigger> ("create", "create new script");
 
 }
 
@@ -820,6 +821,7 @@ void JSEnvContainer::onContainerParameterChanged (Parameter* p)
     {
         jsEnv->setAutoWatch (autoWatch->boolValue());
     }
+
 }
 void JSEnvContainer::onContainerTriggerTriggered (Trigger* p)
 {
@@ -852,8 +854,45 @@ void JSEnvContainer::onContainerTriggerTriggered (Trigger* p)
             jsEnv->loadFile (script);
         }
     }
-}
+    else if (p==createT){
+        AlertWindow nameWindow ("Create script", "name your script", AlertWindow::AlertIconType::NoIcon);
+        nameWindow.addTextEditor ("Name", "MyScript");
 
+        nameWindow.addButton ("OK", 1, KeyPress (KeyPress::returnKey));
+        nameWindow.addButton ("Cancel", 0, KeyPress (KeyPress::escapeKey));
+
+        int result = nameWindow.runModalLoop();
+
+        if (result)
+        {
+            String sN = nameWindow.getTextEditor("Name")->getText();
+            if(sN.isNotEmpty()){
+                if( sN.endsWith(".js")){
+                    sN= sN.substring(0, -2);
+                }
+                File scriptFile ( getEngine()->getCurrentProjectFolder().getChildFile("Scripts/"));
+                if(! scriptFile.exists()){
+                    scriptFile.createDirectory();
+                }
+                scriptFile = scriptFile.getNonexistentChildFile(sN,".js",true);
+                if(! scriptFile.exists()){
+                        auto r = scriptFile.create();
+                    if(!r){
+                        LOG("!!! Can't create script : " <<scriptFile.getFullPathName() << "("<< r.getErrorMessage()<<")");
+                    }
+                }
+                else{
+                    jassertfalse;
+                }
+                if(scriptFile.exists()){
+                    scriptPath->setValue( scriptFile.getFullPathName());
+                    showT->trigger();
+                }
+            }
+            
+        }
+    }
+}
 
 //////////////////////
 // JsParameterListenerObject

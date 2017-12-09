@@ -331,6 +331,7 @@ public:
     Trigger* reloadT;
     Trigger* showT;
     Trigger* logT;
+    Trigger * createT;
     BoolParameter* autoWatch;
     JsEnvironment* jsEnv;
 

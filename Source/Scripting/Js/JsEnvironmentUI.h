@@ -28,6 +28,7 @@ public:
     ~JsEnvironmentUI();
 
     ScopedPointer<ParameterUI> loadFileB;
+    ScopedPointer<ParameterUI> createB;
     ScopedPointer<ParameterUI>  reloadB;
     ScopedPointer<ParameterUI> openB;
     ScopedPointer<ParameterUI> logEnvB;
