@@ -52,7 +52,8 @@ public:
     bool isSelected;
     void updateOverlayEffect();
 
-
+    void visibilityChanged() override;
+    void parentHierarchyChanged()override;
 
 protected:
 

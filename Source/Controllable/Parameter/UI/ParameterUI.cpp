@@ -144,6 +144,25 @@ String ParameterUI::getTooltip(){
     return parameter->description + "\nControl Address : " + parameter->controlAddress;//"\nValue : "+parameter->value.toString();
 }
 
+void ParameterUI::visibilityChanged(){
+    if (parameter.get()){
+        if(isShowing()){
+            parameter->addAsyncCoalescedListener (this);
+            parameter->addParameterListener (this);
+            parameter->addControllableListener (this);
+            valueChanged(parameter->value);
+        }
+        else{
+            parameter->removeAsyncParameterListener (this);
+            parameter->removeParameterListener (this);
+            parameter->removeControllableListener (this);
+        }
+    }
+
+}
+void ParameterUI::parentHierarchyChanged(){
+    visibilityChanged();
+};
 
 class MapEffect : public ImageEffectFilter
 {

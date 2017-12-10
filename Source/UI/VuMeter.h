@@ -51,6 +51,7 @@ public:
         colorLow = Colours::lightgreen;
         isActive = true;
         setOpaque (true);
+        setInterceptsMouseClicks(false, false);
     }
 
 

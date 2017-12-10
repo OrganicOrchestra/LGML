@@ -43,3 +43,4 @@ void ShapeShifterContentComponent::resized(){
     infoLabel.setBounds(getLocalBounds());
 }
 
+
