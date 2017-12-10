@@ -143,9 +143,6 @@ jobs:
     working_directory: ~/LGML
     macos:
       xcode: "9.0"
-      environment:
-        DST_LGML_PATH: /tmp/buildOSX
-
     steps:
       - checkout
       - run:
@@ -157,7 +154,7 @@ jobs:
           name: build and package LGML OSX
           command: |
             sh Scripts/osx/installExportDeps.sh
-            python3 Scripts/buildScript.py --configure --exportpath="$DST_LGML_PATH" --os=osx --configuration=Release 
+            python3 Scripts/buildScript.py --configure --exportpath=/tmp/buildOSX/ --os=osx --configuration=Release 
             python3 Scripts/buildScript.py --build --package --export
       - store_artifacts:
           path: /tmp/buildOSX #$DST_LGML_PATH

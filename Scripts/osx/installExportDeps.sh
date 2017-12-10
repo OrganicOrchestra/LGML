@@ -7,7 +7,8 @@ if ! (command -v python3 &>/dev/null); then
     if !(command -v brew &>/dev/null); then
       ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
-brew update
+
+brew update >/dev/null
 brew install python3
 else
 echo Python 3 is installed
