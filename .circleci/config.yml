@@ -141,9 +141,8 @@ jobs:
 
   buildOSX:
     working_directory: ~/LGML
-    machine:
-      xcode:
-        version: 8.2
+    macos:
+      xcode: "9.0"
       environment:
         DST_LGML_PATH: /tmp/buildOSX
 
