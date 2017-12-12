@@ -75,6 +75,7 @@ Engine::Engine(): FileBasedDocument (filenameSuffix,
     loadSession->isHidenInEditor = true;
     closeEngine = addNewParameter<Trigger>("close","close engine");
     closeEngine->isHidenInEditor = true;
+    addChildControllableContainer(engineStats=new EngineStats(this));
     
     loadingStartTime = 0;
     initAudio();
@@ -408,5 +409,26 @@ const int Engine::getElapsedMillis()const {
     jassert(res>=0);
     return (int)res;
 }
+
+
+/////////////
+//Engine Stats
+/////////
+
+Engine::EngineStats::EngineStats(Engine * e):engine(e),ParameterContainer("stats"){
+    audioCpu = addNewParameter<Point2DParameter<float>>("audioCpu",
+                                                        "cpu percentage used by Audio",
+                                                        0,0);
+    audioCpu->isEditable = false;
+    audioCpu->isSavable = false;
+    startTimer(300);
+
+}
+void Engine::EngineStats::timerCallback(){
+    auto time = engine->getElapsedMillis();
+    audioCpu->setPoint(getAudioDeviceManager().getCpuUsage() * 100.0f,time);
+}
+
+
 
 

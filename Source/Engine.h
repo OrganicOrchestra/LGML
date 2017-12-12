@@ -55,6 +55,14 @@ public:
     void initAudio();
     void closeAudio();
     Parameter * saveSession,*loadSession,*closeEngine;
+    class EngineStats : public ParameterContainer ,public Timer{
+    public:
+        EngineStats(Engine *);
+        Point2DParameter<float> * audioCpu;
+        void timerCallback()override;
+        Engine * engine;
+    };
+    ScopedPointer< EngineStats> engineStats;
     bool hasDefaultOSCControl;
     void onContainerParameterChanged(Parameter *)override;
     void onContainerTriggerTriggered(Trigger *t)override;
