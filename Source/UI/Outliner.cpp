@@ -49,6 +49,7 @@ showUserContainer(true)
         linkToSelected.addListener(this);
         linkToSelected.setClickingTogglesState(true);
     }
+    infoLabel.setVisible(false);
 
 
 }
