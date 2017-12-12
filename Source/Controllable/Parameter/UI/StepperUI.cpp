@@ -32,7 +32,7 @@ StepperUI<T>::StepperUI (Parameter* _parameter) : ParameterUI (_parameter)
     slider->addListener (this);
     
     slider->setEditable(_parameter->isEditable);
-
+    addMouseListener(this, true);
     
 
 }
@@ -42,7 +42,11 @@ StepperUI<T>::StepperUI (Parameter* _parameter) : ParameterUI (_parameter)
 template<class T>
 StepperUI<T>::~StepperUI()
 {
-
+    removeMouseListener(this);
+}
+template<class T>
+void StepperUI<T>::mouseDown(const MouseEvent & e){
+    ParameterUI::mouseDown(e);
 }
 
 template<class T>

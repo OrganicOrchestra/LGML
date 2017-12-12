@@ -58,7 +58,7 @@ public:
 
     void    setLocalNamespace (DynamicObject& target);
     virtual void    clearNamespace();
-    void setEnabled (bool t);
+    void setScriptEnabled (bool t);
 
 
     bool    loadFile (const String& path);

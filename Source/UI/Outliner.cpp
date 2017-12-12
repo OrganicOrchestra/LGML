@@ -27,7 +27,7 @@
 Outliner::Outliner (const String& contentName,ParameterContainer * _root,bool showFilterText) : ShapeShifterContentComponent (contentName,"Search Parameters in here"),
 baseRoot(_root),
 root(nullptr),
-showUserContainer(false)
+showUserContainer(true)
 {
     if(!baseRoot.get()){
         baseRoot = getEngine();
@@ -277,6 +277,7 @@ OutlinerItem::OutlinerItem (ParameterContainer* _container,bool generateSubTree)
 container (_container), parameter (nullptr), isContainer (true)
 {
     container->addControllableContainerListener(this);
+
     if(generateSubTree){
     for(auto c:container->getContainersOfType<ParameterContainer>(false)){
        if(!c->isHidenInEditor) addSubItem(new OutlinerItem(c,generateSubTree));
@@ -291,8 +292,10 @@ container (_container), parameter (nullptr), isContainer (true)
 OutlinerItem::OutlinerItem (Parameter* _parameter,bool generateSubTree) :
 container (nullptr), parameter (_parameter), isContainer (false)
 {
+
     if(auto p = parameter->parentContainer){
         p->addControllableContainerListener(this);
+
     }
     else{
         jassertfalse;
@@ -326,6 +329,7 @@ bool OutlinerItem::mightContainSubItems()
 
 Component* OutlinerItem::createItemComponent()
 {
+
     currentDisplayedComponent = new OutlinerItemComponent (this);
     return currentDisplayedComponent;
 }
@@ -366,6 +370,8 @@ void OutlinerItem::controllableContainerRemoved(ControllableContainer * notif,Co
     }
 
 }
+
+
 
 void OutlinerItem::controllableAdded (ControllableContainer* notif, Controllable* ori) {
     if(notif && notif==container){
@@ -408,7 +414,7 @@ void OutlinerItem::itemSelectionChanged (bool isNowSelected){
         auto* insp = Inspector::getInstance();
         if(insp->getCurrentComponent()!=c){
             if(isNowSelected ){
-            insp->setCurrentComponent(c);
+                insp->setCurrentComponent(c);
             }
             else{
                 insp->setCurrentComponent(nullptr);
@@ -434,7 +440,10 @@ paramUI (nullptr)
         InspectableComponent::relatedParameterContainer = nullptr;
     }
     setTooltip (item->isContainer ? item->container->getControlAddress() : item->parameter->description + "\nControl Address : " + item->parameter->controlAddress);
-    if(item->isContainer?item->container->isUserDefined : item->parameter->isUserDefined){
+    bool isNameEditable = !item->isContainer && item->parameter->isUserDefined;
+    if(item->isContainer)
+        isNameEditable|=item->container->nameParam->isEditable;
+    if(isNameEditable){
         label.setEditable(false,true,false);
         label.addListener(this);
     }
@@ -460,11 +469,13 @@ paramUI (nullptr)
     if (!_item->isContainer )
     {
         paramUI = ParameterUIFactory::createDefaultUI (item->parameter);
+        item->parameter->addControllableListener(this);
 
     }
     else
     {
         paramUI = ParameterUIFactory::createDefaultUI (item->container->nameParam);
+        item->container->nameParam->addAsyncCoalescedListener(this);
     }
 
     addAndMakeVisible (paramUI);
@@ -490,6 +501,20 @@ void OutlinerItemComponent::resized()
     }
     label.setBounds (r);
 
+}
+
+void OutlinerItemComponent::controllableNameChanged (Controllable* ) {
+    if(!item->isContainer)
+        label.setText(  item->parameter->niceName,dontSendNotification);
+    else
+        jassertfalse;
+}
+
+void OutlinerItemComponent::newMessage(const Parameter::ParamWithValue &pv){
+    if(item->isContainer && pv.parameter==item->container->nameParam)
+        label.setText(  item->container->nameParam->stringValue(),dontSendNotification);
+    else
+        jassertfalse;
 }
 void OutlinerItemComponent::paint (Graphics& g)
 {
@@ -538,10 +563,15 @@ void OutlinerItemComponent::mouseDown (const MouseEvent& e)
         }
     }
     else if(e.getNumberOfClicks()>=2){
+        if(item->isContainer){
         expandItems(item,!item->isOpen());
+        }
+
     }
     else{
         item->setSelected (true, true);
+        if(label.isEditable())
+            label.showEditor();
 //        if(item->isContainer)
 
     }

@@ -214,7 +214,7 @@ void OSCJsController::onContainerParameterChanged (Parameter* p)
     }
     else if (p == enabledParam)
     {
-        setEnabled (enabledParam->boolValue());
+        setScriptEnabled (enabledParam->boolValue());
     }
 };
 

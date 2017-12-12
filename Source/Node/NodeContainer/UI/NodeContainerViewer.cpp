@@ -466,7 +466,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
         hasDraggedDuringClick = false;
 
         if(auto nui=getRelatedConnectableNodeUIForDrag(event.eventComponent,true)){
-
+            if(!event.mods.isAltDown()){
             resultOfMouseDownSelectMethod = selectedItems.addToSelectionOnMouseDown(nui, event.mods);
             selectedInitBounds.clear();
             for(auto s: selectedItems){
@@ -475,6 +475,7 @@ void NodeContainerViewer::mouseDown (const MouseEvent& event)
                     selectedInitBounds.set(s, s->getBoundsInParent().withSize(tSize->getWidth(), tSize->getHeight()));
                 }
 
+            }
             }
         }
 
@@ -572,7 +573,8 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
         if(getLassoSelection().getItemArray().size()==0)
             selectThis();
     }
-    else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent,true)){
+    else if(auto nui = getRelatedConnectableNodeUIForDrag(e.eventComponent,true) ){
+        if(!e.mods.isAltDown()){
         selectedItems.addToSelectionOnMouseUp(nui,e.mods,
                                               hasDraggedDuringClick ,
                                               resultOfMouseDownSelectMethod);
@@ -580,6 +582,7 @@ void NodeContainerViewer::mouseUp (const MouseEvent& e)
         if(Inspector::getInstance()->getCurrentComponent()!=nui &&
            getLassoSelection().getItemArray().size()==1){
         nui->selectThis();
+        }
         }
 
     }

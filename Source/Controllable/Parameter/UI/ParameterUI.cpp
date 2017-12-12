@@ -21,14 +21,17 @@
 
 //==============================================================================
 ParameterUI::ParameterUI (Parameter* _parameter) :
+    InspectableComponent(_parameter,"ParameterUI"),
     parameter (_parameter),
     showLabel (true),
     showValue (true),
     customTextDisplayed (String::empty),
     isMappingDest (false),
     isDraggable (true),
-    isSelected (false)
+    isSelected (false),
+    wasShowing(true)
 {
+    setBufferedToImage(true);
     if (parameter.get())
     {
         parameter->addAsyncCoalescedListener (this);
@@ -48,7 +51,7 @@ ParameterUI::ParameterUI (Parameter* _parameter) :
     setMappingState (LGMLDragger::getInstance()->isMappingActive);
     
     
-
+    
 
 }
 
@@ -145,12 +148,19 @@ String ParameterUI::getTooltip(){
 }
 
 void ParameterUI::visibilityChanged(){
+    bool _isShowing = isShowing();
+    // do nothing if already in appropriate state
+    if(_isShowing==wasShowing) return;
+    // do nothing if detached
+    if(getParentComponent()==nullptr) return;
     if (parameter.get()){
-        if(isShowing()){
+        if(_isShowing){
             parameter->addAsyncCoalescedListener (this);
             parameter->addParameterListener (this);
             parameter->addControllableListener (this);
-            valueChanged(parameter->value);
+            // don't trigger
+            if(!dynamic_cast<Trigger*>(parameter.get()))
+               valueChanged(parameter->value);
         }
         else{
             parameter->removeAsyncParameterListener (this);
@@ -158,6 +168,7 @@ void ParameterUI::visibilityChanged(){
             parameter->removeControllableListener (this);
         }
     }
+    wasShowing =_isShowing;
 
 }
 void ParameterUI::parentHierarchyChanged(){
@@ -353,4 +364,10 @@ void NamedParameterUI::labelTextChanged (Label* labelThatHasChanged)
         ownedParameterUI->parameter->setNiceName (labelThatHasChanged->getText());
     }
 };
+
+void  NamedParameterUI::controllableControlAddressChanged (Controllable* c){
+    if(c && c==parameter){
+    controllableLabel.setText (parameter->niceName, dontSendNotification);
+    }
+}
 

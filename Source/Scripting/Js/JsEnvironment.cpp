@@ -80,7 +80,7 @@ JsEnvironment::~JsEnvironment()
 
 }
 
-void JsEnvironment::setEnabled (bool t)
+void JsEnvironment::setScriptEnabled (bool t)
 {
     if (t == isEnabled) {return;}
 

@@ -97,7 +97,7 @@ private:
     WeakReference<ParameterUI>::Master masterReference;
     friend class WeakReference<ParameterUI>;
 
-
+    bool wasShowing;
 
 
 };
@@ -115,6 +115,9 @@ public:
     Label controllableLabel;
     int labelWidth;
     ScopedPointer <ParameterUI > ownedParameterUI;
+    void controllableControlAddressChanged (Controllable*)override;
+
+    
 };
 
 

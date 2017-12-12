@@ -50,6 +50,9 @@ void Inspector::setCurrentComponent (InspectableComponent* c)
 
     if (!isEnabled) return;
 
+    // avoid selection from inspector that will get self-deleted
+    if(isParentOf(c)){return;}
+
     if (currentComponent != nullptr || c==nullptr)
     {
         clearEditor();

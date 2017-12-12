@@ -27,8 +27,9 @@ class InspectorEditor;
 class InspectableComponent : public juce::Component
 {
 public:
-    InspectableComponent (ParameterContainer* relatedContainer = nullptr, const String& inspectableType = "none");
+    InspectableComponent (ParameterContainer* relatedContainer , const String& inspectableType = "none");
     InspectableComponent (Parameter* relatedParameter , const String& inspectableType = "none");
+    InspectableComponent (const String& inspectableType );
 
     virtual ~InspectableComponent();
 
