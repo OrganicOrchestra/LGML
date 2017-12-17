@@ -96,7 +96,7 @@ mainComponentContainer (this, contentUI, headerUI),
 resizer (this, &constrainer),
 isDraggingFromUI (false)
 {
-
+    
 
     constrainer.setMinimumWidth (50);
     constrainer.setMinimumHeight (50);

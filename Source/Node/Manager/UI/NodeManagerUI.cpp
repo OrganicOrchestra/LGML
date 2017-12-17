@@ -58,7 +58,7 @@ NodeManagerUI::NodeManagerUI (NodeManager* _nodeManager) :
     currentViewer (nullptr),
 ParameterContainer("NodeManagerUI"),isMiniMode(false)
 {
-
+    
     
     uiSync = new UISync("UI",nodeManager,this);
     auto p =getRoot(true)->getControllableContainerByName("NodesUI");

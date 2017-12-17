@@ -68,7 +68,7 @@ TimeManagerUI::TimeManagerUI (const String& contentName, TimeManager* _timeManag
     //    linkNumPeers = ParameterUIFactory::createDefaultUI(timeManager->linkNumPeers);
     //    addAndMakeVisible(linkNumPeers);
     infoLabel.setVisible(false);
-    setOpaque (true);
+    
 }
 
 
@@ -119,10 +119,7 @@ void TimeManagerUI::newMessage (const Parameter::ParamWithValue& pv)
 }
 
 
-void TimeManagerUI::paint (Graphics& g)
-{
-    g.fillAll (findColour (ResizableWindow::backgroundColourId));
-}
+
 
 #pragma warning(push)
 #pragma warning(disable:4244)

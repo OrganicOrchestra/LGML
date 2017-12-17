@@ -156,7 +156,7 @@ void MainWindow::timerCallback()
     }
     setName (getEngine()->getDocumentTitle() + " : LGML "
              + String (ProjectInfo::versionString) + String (" (CPU : ") +
-             String ((int) getEngine()->engineStats->audioCpu->floatValue()) + String ("%)"));
+             String ((int) getEngine()->engineStats->getAudioCPU()) + String ("%)"));
 }
 
 

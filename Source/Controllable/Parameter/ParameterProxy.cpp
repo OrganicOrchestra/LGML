@@ -102,6 +102,13 @@ void ParameterProxy::parameterValueChanged (Parameter* p,Parameter::Listener * n
     proxyListeners.call (&ParameterProxyListener::linkedParamValueChanged, this);
 }
 
+void ParameterProxy::parameterRangeChanged (Parameter* p)
+{
+    jassert (p == linkedParam);
+    proxyListeners.call (&ParameterProxyListener::linkedParamRangeChanged, this);
+}
+
+
 Parameter* ParameterProxy::get()
 {
     return linkedParam.get();

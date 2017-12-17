@@ -58,9 +58,18 @@ public:
     class EngineStats : public ParameterContainer ,public Timer{
     public:
         EngineStats(Engine *);
+        void activateGlobalStats(bool);
+        float getAudioCPU() const;
         Point2DParameter<float> * audioCpu;
+        bool isListeningGlobal;
+        typedef OwnedFeedbackListener<EngineStats> GlobalListener;
+        typedef HashMap<String, Array<int>,DefaultHashFunctions,CriticalSection> CountMapType;
+         CountMapType modCounts;
+    private:
         void timerCallback()override;
         Engine * engine;
+        int timerTicks;
+        ScopedPointer< GlobalListener > globalListener;
     };
     ScopedPointer< EngineStats> engineStats;
     bool hasDefaultOSCControl;

@@ -33,15 +33,26 @@ checking (false)
     setTopLeftPosition (bounds.getTopLeft());
     _panel->setBounds (bounds);
 
-    panel->setPreferredWidth (getWidth());
-    panel->setPreferredHeight (getHeight());
+//    panel->setPreferredWidth (getWidth());
+//    panel->setPreferredHeight (getHeight());
+
+    setVisible (true);
+    _panel->currentContent->contentComponent->setVisible(true);
+    setContentNonOwned (_panel, true);
+    jassert(panel->currentContent->contentComponent->isVisible());
+    jassert(_panel->currentContent->contentComponent->isShowing());
+
 
     //DBG("window -> addShapeShifterListener " << panel->header.tabs[0]->content->contentName);
     panel->addShapeShifterPanelListener (this); //is it necessary ?
 
-    setContentNonOwned (_panel, true);
 
-    setBackgroundColour (findColour (ResizableWindow::backgroundColourId).darker (.1f).withAlpha (.3f));
+    setBackgroundColour (
+                         Colours::transparentWhite
+//                         findColour (ResizableWindow::backgroundColourId).darker (.1f).withAlpha (.3f)
+                         );
+    setColour(ResizableWindow::backgroundColourId, Colours::transparentWhite);
+
 
     setResizable (true, true);
     setResizeLimits(ShapeShifter::minSize,ShapeShifter::minSize, 4096, 4096);
@@ -49,7 +60,7 @@ checking (false)
     
     setDraggable (true);
 
-    setVisible (true);
+
     toFront (true);
 
 #if USE_GL
@@ -71,7 +82,6 @@ checking (false)
     addMouseListener (this, true);
 
     addKeyListener ((&getCommandManager())->getKeyMappings());
-
 
 
 }
@@ -96,8 +106,12 @@ void ShapeShifterWindow::resized()
 
     ResizableWindow::resized();
 
-    if (panel == nullptr) return;
+    if (panel == nullptr){
+        jassertfalse;
+        return;}
 
+//    panel->setSize(getWidth(),getHeight());
+    jassert(panel->currentContent->contentComponent->isShowing());
     panel->setPreferredWidth (getWidth());
     panel->setPreferredHeight (getHeight());
 
@@ -106,7 +120,7 @@ void ShapeShifterWindow::resized()
 void ShapeShifterWindow::mouseDown (const MouseEvent& e)
 {
 
-
+    jassert(panel->currentContent->contentComponent->isVisible());
     if (e.eventComponent == &panel->header || dynamic_cast<ShapeShifterPanelTab*> (e.eventComponent) != nullptr)
     {
         dragMode = e.eventComponent == &panel->header ? PANEL : TAB;
@@ -122,8 +136,10 @@ void ShapeShifterWindow::mouseDown (const MouseEvent& e)
 void ShapeShifterWindow::mouseDrag (const MouseEvent& e)
 {
     if (dragMode == NONE) return;
-
+    jassert(panel->currentContent->contentComponent->isVisible());
+    jassert(panel->currentContent->contentComponent->isShowing());
     panel->setTransparentBackground (true);
+    setOpaque(false);
     ShapeShifterManager::getInstance()->checkCandidateTargetForPanel (panel);
     dragger.dragComponent (this, e, getConstrainer());
 }
@@ -131,7 +147,7 @@ void ShapeShifterWindow::mouseDrag (const MouseEvent& e)
 void ShapeShifterWindow::mouseUp (const MouseEvent&)
 {
     panel->setTransparentBackground (false);
-
+    setOpaque(true);
     checking = true;
     bool found = ShapeShifterManager::getInstance()->checkDropOnCandidateTarget (panel);
     checking = false;

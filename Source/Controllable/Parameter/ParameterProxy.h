@@ -44,7 +44,8 @@ public:
 
     // Inherited via Listener
     void parameterValueChanged (Parameter* p,Parameter::Listener * notifier) override;
-
+    void parameterRangeChanged (Parameter* ) override;
+    
     void setParamToReferTo (Parameter* p);
 
 
@@ -54,6 +55,7 @@ public:
         virtual ~ParameterProxyListener() {}
         virtual void linkedParamValueChanged (ParameterProxy*) {};
         virtual void linkedParamChanged (ParameterProxy*) {};
+        virtual void linkedParamRangeChanged(ParameterProxy*) {};
     };
 
     ListenerList<ParameterProxyListener> proxyListeners;

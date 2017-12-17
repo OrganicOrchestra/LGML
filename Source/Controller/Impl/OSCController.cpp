@@ -54,6 +54,7 @@ public:
 
 };
 
+int defaultLocalOSCPort = 11000;
 OSCController::OSCController (const String& _name) :
     Controller (_name),
     lastMessageReceived (OSCAddressPattern ("/fake")),
@@ -65,7 +66,7 @@ OSCController::OSCController (const String& _name) :
     // force init of Network Utils if not created
     NetworkUtils::getInstance();
 
-    localPortParam = addNewParameter<StringParameter> ("Local Port", "The port to bind for the controller to receive OSC from it", "11000");
+    localPortParam = addNewParameter<StringParameter> ("Local Port", "The port to bind for the controller to receive OSC from it", String(defaultLocalOSCPort++));
     remotePortParam = addNewParameter<StringParameter> ("Remote Port", "The port bound by the controller to send OSC to it", "8000");
     static OSCClientModel model;
     remoteHostParam = addNewParameter<EnumParameter> ("Remote Host", "The host's IP of the remote controller", &model, var ("localhost"), true);
@@ -144,7 +145,7 @@ void OSCController::resolveHostnameIfNeeded()
                 if (!remotePortParam->isSettingValue() && remotePortParam->stringValue() != resolvedPortString)
                 {
 
-                    //    enssure to not create feedback on ports
+                    //    ensure to not create feedback on ports
                     if(remoteIP == "127.0.0.1" &&
                        resolved.port == localPortParam->stringValue().getIntValue()){
                         resolvedPortString = String((int)resolved.port+1);
@@ -382,8 +383,7 @@ void OSCController::checkAndAddParameterIfNeeded (const OSCMessage& msg)
 
 void OSCController::logMessage (const OSCMessage& msg, const String& prefix)
 {
-    String log = prefix;
-    log += msg.getAddressPattern().toString() + ":";
+    String log(prefix + msg.getAddressPattern().toString() + ":");
 
     for (int i = 0 ; i < msg.size() ; i++)
     {

@@ -159,8 +159,8 @@ public :
 
     void paint (Graphics& g) override
     {
-        g.setColour (findColour (ResizableWindow::backgroundColourId).darker (.2f));
-        g.fillRect (getLocalBounds().removeFromTop (30));
+//        g.setColour (findColour (ResizableWindow::backgroundColourId).darker (.2f));
+//        g.fillRect (getLocalBounds().removeFromTop (30));
         const int grid = 100;
         auto area = vp.getViewArea();
         g.setColour (Colours::white.withAlpha (0.03f));

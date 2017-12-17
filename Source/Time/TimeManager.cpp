@@ -435,7 +435,7 @@ bool TimeManager::askForBeingMasterCandidate (TimeMasterCandidate* n)
         return true;
     }
 
-    return false;
+    return timeMasterCandidate == n;
 }
 
 bool TimeManager::isMasterCandidate (TimeMasterCandidate* n)

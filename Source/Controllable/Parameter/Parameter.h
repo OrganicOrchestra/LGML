@@ -158,6 +158,7 @@ public:
 protected:
     bool waitOrDeffer (const var& _value, bool silentSet, bool force);
     Atomic<bool> _isSettingValue;
+    
 private:
 
 

@@ -72,6 +72,7 @@ public:
     void removeInspectorListener (InspectorListener* listener) { listeners.remove (listener); }
 
 private:
+    void parentHierarchyChanged() override;
     WeakReference<InspectableComponent> currentComponent;
 
     ScopedPointer<InspectorEditor> currentEditor;

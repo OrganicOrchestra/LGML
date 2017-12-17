@@ -23,10 +23,10 @@
 
 
 FastMap::FastMap() :
-    referenceIn (nullptr),
-    referenceOut (nullptr),
-    fastMapIsProcessing (false),
-    ParameterContainer ("FastMap")
+referenceIn (nullptr),
+referenceOut (nullptr),
+fastMapIsProcessing (false),
+ParameterContainer ("FastMap")
 {
 
     referenceIn = addNewParameter<ParameterProxy> ("in param", "parameter for input");
@@ -146,6 +146,43 @@ void FastMap::linkedParamValueChanged (ParameterProxy* p)
         return;
     }
 };
+
+void FastMap::linkedParamRangeChanged(ParameterProxy* p ) {
+    float newMin = 0;
+    float newMax = 1;
+    float newVmin =0;
+    float newVmax = 1;
+    RangeParameter * rangeToModify(nullptr);
+    if(p==referenceIn){
+        if(auto mmp = dynamic_cast<MinMaxParameter*> (referenceIn->linkedParam.get())){
+            newMin =  (float)mmp->minimumValue ;
+            newMax =  (float)mmp->maximumValue ;
+        }
+        rangeToModify =  inputRange;
+    }
+    else if (p==referenceOut){
+        if(auto mmp = dynamic_cast<MinMaxParameter*> (referenceOut->linkedParam.get())){
+            newMin =  (float)mmp->minimumValue ;
+            newMax =  (float)mmp->maximumValue ;
+        }
+        rangeToModify =  outputRange;
+    }
+    else{
+        jassertfalse;
+        return;
+    }
+    bool remapRange =rangeToModify->hasFiniteRange();
+    if(remapRange){
+        newVmin = rangeToModify->getNormalizedRangeMin();
+        newVmax = rangeToModify->getNormalizedRangeMax();
+    }
+    rangeToModify->setMinMax (newMin, newMax);
+    if(remapRange){
+        rangeToModify->setNormalizedRangeMinMax(newVmin,newVmax);
+    }
+
+};
+
 void FastMap::linkedParamChanged (ParameterProxy* p)
 {
 
@@ -158,7 +195,7 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
 
                 LOG ("!!Can't map a parameter to itself");
                 // ignore assert for loopBacks
-//                referenceIn->isSettingValue = false;
+                //                referenceIn->isSettingValue = false;
                 MessageManager::callAsync([this](){
                     referenceIn->setParamToReferTo (nullptr);
                 });
@@ -195,9 +232,9 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
             {
                 LOG ("!!Can't map a parameter to itself");
                 // ignore assert for loopBacks
-//                referenceOut->isSettingValue = false;
+                //                referenceOut->isSettingValue = false;
                 MessageManager::callAsync([this](){
-                referenceOut->setParamToReferTo (nullptr);
+                    referenceOut->setParamToReferTo (nullptr);
                 });
             }
         }
@@ -205,9 +242,9 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
         {
             LOG ("!!Parameter non editable");
             // ignore assert for loopBacks
-//            referenceOut->isSettingValue = false;
+            //            referenceOut->isSettingValue = false;
             MessageManager::callAsync([this](){
-            referenceOut->setParamToReferTo (nullptr);
+                referenceOut->setParamToReferTo (nullptr);
             });
         }
         else
@@ -225,11 +262,11 @@ void FastMap::linkedParamChanged (ParameterProxy* p)
             float newMax = mmp ? (float)mmp->maximumValue : 1;
             outputRange->setMinMax (newMin, newMax);
             outputRange->setValue (jmax<float> (outputRange->getRangeMin(),newMin),
-                                  jmin<float> (outputRange->getRangeMax(),newMax));
-
+                                   jmin<float> (outputRange->getRangeMax(),newMax));
+            
         }
-
+        
     }
-
-
+    
+    
 };

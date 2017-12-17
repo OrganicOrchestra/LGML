@@ -105,6 +105,15 @@ void Inspector::resized()
     if (currentEditor != nullptr) currentEditor->setBounds (getLocalBounds().reduced (5));
 }
 
+void Inspector::parentHierarchyChanged(){
+    if(isShowing()){
+        inspectCurrentComponent();
+    }
+    else{
+        currentEditor = nullptr;
+    }
+}
+
 void Inspector::clearEditor()
 {
     if (currentEditor != nullptr)
@@ -123,7 +132,8 @@ void Inspector::inspectCurrentComponent()
 
     if (currentComponent == nullptr) return;
 
-    currentEditor = currentComponent->createEditor();
+    if(isShowing())
+        currentEditor = currentComponent->createEditor();
 
     if (currentEditor != nullptr) currentEditor->addInspectorEditorListener (this);
 

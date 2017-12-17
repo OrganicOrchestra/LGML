@@ -246,6 +246,7 @@ private:
 
     void loadAudioSample (const String& file);
     bool isLoadingAudioFile;
+    bool hadOnset;
     //friend class Looper;
 };
 

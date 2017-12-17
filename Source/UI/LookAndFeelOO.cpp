@@ -60,7 +60,9 @@ LookAndFeelOO::LookAndFeelOO()
     setColour (TextEditor::ColourIds::highlightedTextColourId, Colours::white);
     setColour (TextEditor::ColourIds::highlightColourId, Colours::black);
     setColour(CaretComponent::caretColourId, Colours::white);
-    setColour (TreeView::backgroundColourId,scheme.getUIColour (ColourScheme::UIColour::windowBackground));
+    setColour (TreeView::backgroundColourId,Colours::white.withAlpha(0.f)
+               //scheme.getUIColour (ColourScheme::UIColour::windowBackground)
+               );
     setColour(DrawableButton::backgroundOnColourId, Colours::transparentWhite);
     setColour(DrawableButton::backgroundColourId, Colours::transparentWhite);
     setColour (LGMLColors::audioColor, Colours::cadetblue);

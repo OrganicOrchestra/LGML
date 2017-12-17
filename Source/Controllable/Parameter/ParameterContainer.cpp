@@ -172,6 +172,7 @@ Parameter*   ParameterContainer::addParameter (Parameter* p)
 
 void ParameterContainer::newMessage (const Parameter::ParamWithValue& pv)
 {
+    
     if (pv.parameter == currentPresetName)
     {
         loadPresetWithName (pv.parameter->stringValue());
@@ -360,7 +361,10 @@ bool ParameterContainer::loadPresetWithName (const String& name)
 
     PresetManager::Preset* preset = PresetManager::getInstance()->getPreset (getPresetFilter(), name);
 
-    if (preset == nullptr) {isLoadingPreset = false; currentPresetName->setValue ("", true, true); return false;}
+    if (preset == nullptr) {
+        isLoadingPreset = false;
+        currentPresetName->setValue ("", true, true);
+        return false;}
 
     bool hasLoaded = loadPreset (preset);
     isLoadingPreset = false;
