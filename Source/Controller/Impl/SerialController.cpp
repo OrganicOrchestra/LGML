@@ -181,18 +181,18 @@ void SerialController::processMessage (const String& message)
 
         if (!found )
         {
-            FloatParameter* v ;
+//            FloatParameter* v ;
 
             if (split.size() >= 4)
             {
-                v = userContainer.addNewParameter<FloatParameter> (split[1], split[1],
+                 userContainer.addNewParameter<FloatParameter> (split[1], split[1],
                                                                    split[2].getFloatValue(),
                                                                    split[2].getFloatValue(),
                                                                    split[3].getFloatValue());
             }
             else
             {
-                v = userContainer.addNewParameter<FloatParameter> (split[1], split[1], 0.f);
+                 userContainer.addNewParameter<FloatParameter> (split[1], split[1], 0.f);
             }
 
 

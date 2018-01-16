@@ -69,8 +69,9 @@ public:
     {
 
         linkTimeLine = linkSession.captureAudioTimeline();
-        const int quantum = owner->beatPerBar->intValue() / owner->quantizedBarFraction->doubleValue();
+        const double quantum = owner->beatPerBar->intValue() / owner->quantizedBarFraction->doubleValue();
         jassert (quantum > 0);
+
         const double linkBeat = linkTimeLine.beatAtTime (linkTime, quantum);
         //    auto phaseAtTime = linkTimeLine.phaseAtTime(linkTime, tstQ);
         //    auto localPhase = fmod(localBeat,tstQ);

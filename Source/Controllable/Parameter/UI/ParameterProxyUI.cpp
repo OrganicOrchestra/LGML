@@ -28,9 +28,15 @@ ParameterProxyUI::ParameterProxyUI (ParameterProxy* proxy) :
     setMappingDest (true);
     chooser.addControllableReferenceUIListener (this);
     addAndMakeVisible (&chooser);
-    paramProxy->addParameterProxyListener (this);
-    if(paramProxy)chooser.setTooltip(paramProxy->description);
-    setLinkedParamUI (paramProxy->linkedParam);
+
+    if(paramProxy){
+        paramProxy->addParameterProxyListener (this);
+        chooser.setTooltip(paramProxy->description);
+        setLinkedParamUI (paramProxy->linkedParam);
+    }
+    else{
+        jassertfalse;
+    }
 }
 
 ParameterProxyUI::~ParameterProxyUI()

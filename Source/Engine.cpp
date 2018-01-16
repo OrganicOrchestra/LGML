@@ -426,7 +426,7 @@ timerTicks(0){
     audioCpu->isEditable = false;
     audioCpu->isSavable = false;
     startTimer(300);
-//#warning to be removed
+//TODO implement UI Monitoring tool
 //    activateGlobalStats(true);
 
 }
@@ -458,7 +458,7 @@ void Engine::EngineStats::timerCallback(){
             auto u = paramUsage[i];
             DBG(u.first << ":" << String(u.second));
         }
-        int curtime = engine->getElapsedMillis();
+//        int curtime = engine->getElapsedMillis();
         // clean old
         i.reset();
         Array<String> toRemove;
@@ -469,7 +469,7 @@ void Engine::EngineStats::timerCallback(){
             Array<int> tl =  i.getValue();
             int i = 0;
             while(i < tl.size()){
-                auto t = tl[i];
+//                auto t = tl[i];
                 //                if(t<curtime-3000){
                 tl.remove(i);
                 //                }

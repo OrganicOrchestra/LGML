@@ -114,7 +114,7 @@ void SliderUI<T>::paint (Graphics& g)
 
         if (showLabel)
         {
-            text += customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter->niceName;
+            text += customTextDisplayed.isNotEmpty()?customTextDisplayed:parameter.get()?parameter->niceName:"No Parameter";
 
             if (showValue) text += " : ";
         }
