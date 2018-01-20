@@ -1029,7 +1029,7 @@ void LooperTrack::loadAudioSample (const String& path)
 
 
 #if BUFFER_CAN_STRETCH
-                playableBuffer.setTimeRatio (parentLooper->getQuantization()>0?timeRatio:1);
+                playableBuffer.setTimeRatio( parentLooper->getQuantization()>0?timeRatio:1,false);
                 if(wasPlaying){setTrackState(WILL_PLAY);}
 #endif
 

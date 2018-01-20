@@ -750,7 +750,7 @@ void LooperNode::setAllTimeRatios(){
                 if (std::isnormal (ratio))
                 {
 //                    bool wasPlaying = t->trackState==LooperTrack::PLAYING;
-                    t->playableBuffer.setTimeRatio (ratio);
+                    t->playableBuffer.setTimeRatio (ratio,false);
 //                    if(wasPlaying)
 //                        t->play();
 
