@@ -97,13 +97,14 @@ PlayableBuffer::~PlayableBuffer()
     {
         ScopedLock lk (stretchJob->jobLock);
         stretchJob->signalJobShouldExit();
-        //      int64 mil = Time::currentTimeMillis();
-        //        if(auto tp = getEngineThreadPool()){
-        //        tp->waitForJobToFinish (stretchJob, -1);
-        //        }
+              int64 mil = Time::currentTimeMillis();
+                if(auto tp = getEngineThreadPool()){
+                tp->waitForJobToFinish (stretchJob, 5000);
+                }
 
-        //      DBG("Waited : " <<(Time::currentTimeMillis() - mil));
+              DBG("Waited : " <<(Time::currentTimeMillis() - mil));
     }
+    
 #endif
 
 }
