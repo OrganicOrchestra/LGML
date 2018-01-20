@@ -18,8 +18,10 @@
 
 #include "MultiNeedle.h"
 
+
 #define DEBUG_NEEDLE 0
 #if DEBUG_NEEDLE
+
     #define DBGNEEDLE(txt) DBG(txt)
 #else
     #define DBGNEEDLE(txt)
@@ -377,7 +379,7 @@ void MultiNeedle::resetAll()
     }
 }
 
-void MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<float>& destBuffer, int numSamples, bool isLooping)
+bool MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<float>& destBuffer, int numSamples, bool isLooping)
 {
     //    jassert(destBuffer.getNumChannels()>=originBuffer.getNumChannels());
     const int minComonChannels = jmin (destBuffer.getNumChannels(), originBufferList.getAllocatedNumChannels());
@@ -523,7 +525,7 @@ void MultiNeedle::addToBuffer ( BufferBlockList& originBufferList, AudioBuffer<f
 
     }
 
-
+    return numActiveNeedle>0;
 }
 
 
