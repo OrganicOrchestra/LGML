@@ -39,6 +39,7 @@ namespace RubberBand {class RubberBandStretcher;};
 
 // this flags start background job to compute samples when time ratio is changed
 // we may need to want to always stretch as it's avoid CPU spikes on bpm changes if a lot of samples are loaded
+
 #define PROCESS_FINAL_STRETCH 1
 
 
@@ -57,7 +58,7 @@ public :
 
 
     bool writeAudioBlock (const AudioBuffer<float>& buffer, int fromSample = 0, int samplesToWrite = -1);
-    void readNextBlock (AudioBuffer<float>& buffer, sample_clk_t time, int fromSample = 0  );
+    bool readNextBlock (AudioBuffer<float>& buffer, sample_clk_t time, int fromSample = 0  );
 
 
     void setPlayNeedle (int n);
@@ -131,7 +132,8 @@ public :
 
 
 #if BUFFER_CAN_STRETCH
-    void setTimeRatio (const double ratio);
+    void setTimeRatio (const double ratio,bool now);
+
 #endif
     void setSampleRate (float sR);
     float sampleRate;
@@ -156,6 +158,7 @@ private:
     void applyStretch();
     bool processPendingRTStretch (AudioBuffer<float>& b, sample_clk_t time);
     ScopedPointer<RubberBand::RubberBandStretcher> RTStretcher;
+    int RTStretcherSamplerate;
     float pendingTimeStretchRatio;
     int processedStretch;
     int stretchNeedle;
@@ -164,11 +167,13 @@ private:
 
 #endif
     bool isStretchPending;
+    
 #if BUFFER_CAN_STRETCH
     friend class StretcherJob;
     WeakReference<StretcherJob> stretchJob;
     AudioSampleBuffer tmpBufferStretch;
     bool isStretchReady;
+    double desiredRatio,appliedRatio;
 
 #endif
 

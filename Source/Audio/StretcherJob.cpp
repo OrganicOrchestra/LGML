@@ -26,6 +26,34 @@ using namespace RubberBand;
 #include "StretcherJob.h"
 
 
+extern ThreadPool* getEngineThreadPool();
+constexpr int process_blocksize = 10*44100;//4096;
+int count = 0;
+StretcherJob::StretcherJob (PlayableBuffer* pb, double _ratio):
+ThreadPoolJob (String(count)),
+owner (pb),
+ratio (_ratio),
+tmpStretchBuf (1, 44100, process_blocksize)
+
+{
+
+    ThreadPool* tp = getEngineThreadPool();
+    for(int i = 0 ; i <tp->getNumJobs() ; i++){
+        if( auto j = dynamic_cast<StretcherJob*>(tp->getJob(i))){
+            jassert(j==this || j->owner!=owner);
+        }
+    }
+    count++;
+    
+};
+
+StretcherJob::~StretcherJob (){
+
+    ScopedLock lk (jobLock);
+    masterReference.clear();
+    
+};
+
 
 void StretcherJob::initStretcher (int sampleRate, int numChannels)
 {
@@ -64,6 +92,8 @@ void StretcherJob::initStretcher (int sampleRate, int numChannels)
 
 ThreadPoolJob::JobStatus StretcherJob::runJob()
 {
+    if(shouldExit())
+        return jobHasFinished;
     owner->isStretchReady = false;
     int processed = 0;
     int block = tmpStretchBuf.bufferBlockSize;
@@ -93,12 +123,13 @@ ThreadPoolJob::JobStatus StretcherJob::runJob()
 
     }
 
+    ScopedLock lk (jobLock);
     if (!shouldExit() )
     {
-        ScopedTryLock lk (jobLock);
 
-        if (lk.isLocked())
-        {
+
+//        if (lk.isLocked())
+//        {
 
             int targetNumSamples = originNumSamples * ratio;
             jassert (targetNumSamples != 0);
@@ -129,6 +160,7 @@ ThreadPoolJob::JobStatus StretcherJob::runJob()
             owner->tmpBufferStretch.setSize (tmpStretchBuf.getAllocatedNumChannels(), tmpStretchBuf.getNumSamples());
             tmpStretchBuf.copyTo (owner->tmpBufferStretch, 0);
             owner->isStretchReady = true;
+            owner->appliedRatio = ratio;
 
 
             //    int dbg =stretcher->getSamplesRequired();
@@ -136,9 +168,9 @@ ThreadPoolJob::JobStatus StretcherJob::runJob()
 
             //    owner->fadeInOut(owner->fadeSamples, 0);
 
-            int dbg = stretcher->available();
-            jassert (dbg <= 0);
-        }
+//            int dbg = stretcher->available();
+//            jassert (dbg <= 0);
+//        }
     }
 
     return jobHasFinished;

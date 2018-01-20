@@ -34,18 +34,9 @@ class StretcherJob : public ThreadPoolJob
 {
 public:
 
-    StretcherJob (PlayableBuffer* pb, double _ratio):
-        ThreadPoolJob ("stretch"),
-        owner (pb),
-        ratio (_ratio),
-        tmpStretchBuf (1, 44100, 4096)
-
-    {
-    };
-    ~StretcherJob ()
+    StretcherJob (PlayableBuffer* pb, double _ratio);
+    ~StretcherJob ();
     
-    {masterReference.clear();
-    };
 
 
     JobStatus runJob()override;

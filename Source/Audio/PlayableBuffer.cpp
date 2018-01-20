@@ -37,9 +37,9 @@ extern ThreadPool* getEngineThreadPool();
 
 
 #if BUFFER_CAN_STRETCH
-    #include "StretcherJob.h"
-    #include "rubberband/RubberBandStretcher.h"
-    using namespace RubberBand;
+#include "StretcherJob.h"
+#include "rubberband/RubberBandStretcher.h"
+using namespace RubberBand;
 #endif
 
 
@@ -50,30 +50,33 @@ extern ThreadPool* getEngineThreadPool();
 
 PlayableBuffer::PlayableBuffer (int numChannels, int numSamples, float _sampleRate, int _blockSize):
 
-    recordNeedle (0),
+recordNeedle (0),
 
-    playNeedle (0), globalPlayNeedle (0),
-    state (BUFFER_STOPPED),
-    lastState (BUFFER_STOPPED),
-    stateChanged (false),
-    numTimePlayed (0),
-    sampleOffsetBeforeNewState (0),
-    multiNeedle (512, 512)
-    //tailRecordNeedle(0),
+playNeedle (0), globalPlayNeedle (0),
+state (BUFFER_STOPPED),
+lastState (BUFFER_STOPPED),
+stateChanged (false),
+numTimePlayed (0),
+sampleOffsetBeforeNewState (0),
+multiNeedle (512, 512)
+//tailRecordNeedle(0),
 
 #if BUFFER_CAN_STRETCH
-    , stretchJob (nullptr)
+, stretchJob (nullptr)
 #if RT_STRETCH
-    , pendingTimeStretchRatio (1)
-    , isStretchPending (false)
-    , isStretchReady (false)
-    , fadePendingStretch (256, 256)
+, pendingTimeStretchRatio (1)
+, isStretchPending (false)
+, isStretchReady (false)
+, fadePendingStretch (256, 256)
+, desiredRatio(1)
+, appliedRatio(1)
+, RTStretcherSamplerate(-1)
 #endif
 #endif
 
-    , bufferBlockList (numChannels, numSamples)
-    , blockSize (_blockSize)
-    , sampleRate (_sampleRate)
+, bufferBlockList (numChannels, numSamples)
+, blockSize (_blockSize)
+, sampleRate (_sampleRate)
 
 {
 
@@ -87,7 +90,7 @@ PlayableBuffer::PlayableBuffer (int numChannels, int numSamples, float _sampleRa
 
 PlayableBuffer::~PlayableBuffer()
 {
-    
+
 #if PROCESS_FINAL_STRETCH
 
     if (stretchJob)
@@ -95,9 +98,9 @@ PlayableBuffer::~PlayableBuffer()
         ScopedLock lk (stretchJob->jobLock);
         stretchJob->signalJobShouldExit();
         //      int64 mil = Time::currentTimeMillis();
-//        if(auto tp = getEngineThreadPool()){
-//        tp->waitForJobToFinish (stretchJob, -1);
-//        }
+        //        if(auto tp = getEngineThreadPool()){
+        //        tp->waitForJobToFinish (stretchJob, -1);
+        //        }
 
         //      DBG("Waited : " <<(Time::currentTimeMillis() - mil));
     }
@@ -111,7 +114,15 @@ void PlayableBuffer::setNumChannels (int numChannels)
     bufferBlockList.setNumChannels (numChannels);
 #if RT_STRETCH
     initRTStretch();
+
 #endif
+    if(stretchJob.get()){
+        ScopedLock lk (stretchJob->jobLock);
+        double ratio = desiredRatio;
+        stretchJob->signalJobShouldExit();
+        desiredRatio = ratio;
+
+    }
 
 }
 int PlayableBuffer::getNumChannels() const
@@ -132,6 +143,12 @@ void PlayableBuffer::setBlockSize (int bs)
 
 bool PlayableBuffer::processNextBlock (AudioBuffer<float>& buffer, sample_clk_t time)
 {
+
+#if PROCESS_FINAL_STRETCH
+    if(desiredRatio!=appliedRatio){
+        setTimeRatio(desiredRatio,true);
+    }
+#endif
     bool succeeded = true;
 
     if (buffer.getNumSamples() != blockSize)
@@ -185,9 +202,23 @@ bool PlayableBuffer::processNextBlock (AudioBuffer<float>& buffer, sample_clk_t 
 #if RT_STRETCH
 
 
+    processPendingRTStretch (buffer, time);
+    readNextBlock (buffer, time, sampleOffsetBeforeNewState);
 
-    if (!processPendingRTStretch (buffer, time))
-        readNextBlock (buffer, time, sampleOffsetBeforeNewState);
+    //update play state
+    if(isStretchPending){
+        if(isFirstPlayingFrame() ){
+            stretchNeedle = playNeedle * (originAudioBuffer.getNumSamples() * 1.0 / getRecordedLength());
+            multiNeedle.fadeAllOut();
+            fadePendingStretch.startFadeIn();
+        }
+        if(isStopping() ){
+            fadePendingStretch.startFadeOut();
+        }
+    }
+
+
+
 
     //  int stretchedSample = tmpBufferStretch.getNumSamples();
     if (originAudioBuffer.getNumSamples() == 0)
@@ -220,13 +251,13 @@ bool PlayableBuffer::processNextBlock (AudioBuffer<float>& buffer, sample_clk_t 
                         break;
                     }
                     if(delta>0){
-                    if(nextOnset==-1){
-                        nextOnset = delta;
-                    }
-                    else{
-                        // assure ordered
-                        jassert(delta>nextOnset);
-                    }
+                        if(nextOnset==-1){
+                            nextOnset = delta;
+                        }
+                        else{
+                            // assure ordered
+                            jassert(delta>nextOnset);
+                        }
                     }
                 }
                 // if we need to wait to long, prefere
@@ -284,12 +315,13 @@ bool PlayableBuffer::writeAudioBlock (const AudioBuffer<float>& buffer, int from
 }
 
 
-inline void PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_clk_t time, int fromSample   )
+inline bool PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_clk_t time, int fromSample   )
 {
+    bool hasAdded=  false;
     if (isRecording())
     {
         //    jassertfalse;
-        return;
+        return false;
     }
 
     if (fromSample > 0)
@@ -339,7 +371,7 @@ inline void PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_cl
         }
 
 
-        multiNeedle.addToBuffer (bufferBlockList, buffer, buffer.getNumSamples(), isPlaying());
+        hasAdded = multiNeedle.addToBuffer (bufferBlockList, buffer, buffer.getNumSamples(), isPlaying());
         //    }
 
     }
@@ -363,7 +395,7 @@ inline void PlayableBuffer::readNextBlock (AudioBuffer<float>& buffer, sample_cl
             jassertfalse;
         }
     }
-
+    return hasAdded;
 
 }
 
@@ -525,7 +557,9 @@ sample_clk_t PlayableBuffer::getGlobalPlayPos() const {return globalPlayNeedle;}
 int PlayableBuffer::getSampleOffsetBeforeNewState() {return sampleOffsetBeforeNewState;};
 int PlayableBuffer::getNumSampleFadeOut() const {return multiNeedle.fadeOutNumSamples;};
 
-void PlayableBuffer::setSampleRate (float sR) {sampleRate = sR;};
+void PlayableBuffer::setSampleRate (float sR) {
+    sampleRate = sR;
+};
 
 void PlayableBuffer::fadeInOut()
 {
@@ -568,15 +602,17 @@ void PlayableBuffer::fadeInOut()
 }
 #if BUFFER_CAN_STRETCH
 
-void PlayableBuffer::setTimeRatio (const double ratio)
+void PlayableBuffer::setTimeRatio (const double ratio,bool now)
 {
+    desiredRatio = ratio;
+
     //  jassert(isOrWasPlaying());
     if (originAudioBuffer.getNumSamples() == 0) {return;}
 
 #if RT_STRETCH
 
-    //  initRTStretch();
-    if (isPlaying())
+
+    if (isPlaying() && ratio!=pendingTimeStretchRatio)
     {
         if (!isStretchPending && ratio != 1.0 )
         {
@@ -593,199 +629,242 @@ void PlayableBuffer::setTimeRatio (const double ratio)
 
 #endif
 
+    if(!now){
 
+        return;
+    }
+
+#if PROCESS_FINAL_STRETCH
+    ThreadPool* tp = getEngineThreadPool();
+
+    if (tp->contains (stretchJob) )
+    {
+        ScopedLock lk (stretchJob->jobLock);
+        if( stretchJob && stretchJob->ratio!=ratio && !stretchJob->shouldExit()){
+            stretchJob->signalJobShouldExit();
+            return;
+        }
+
+    }
     if (ratio != 1.0)
     {
-#if PROCESS_FINAL_STRETCH
-        ThreadPool* tp = getEngineThreadPool();
-
-        if (tp->contains (stretchJob))
+        if(!tp->contains (stretchJob)   &&
+           ratio != appliedRatio        &&
+           (!stretchJob || stretchJob->ratio!=ratio))
         {
-            ScopedLock lk (stretchJob->jobLock);
-            stretchJob->signalJobShouldExit();
-            //      int64 mil = Time::currentTimeMillis();
-            tp->waitForJobToFinish (stretchJob, -1);
-            //      DBG("Waited : " <<(Time::currentTimeMillis() - mil));
+
+            jassert(!tp->contains(stretchJob));
+            jassert(!stretchJob || !stretchJob->isRunning());
+            jassert(!stretchJob || stretchJob->shouldExit());
+            auto tmpStretchJob = new StretcherJob (this, ratio);
+            tp->addJob (tmpStretchJob, true);
+            stretchJob = tmpStretchJob;
         }
-        else stretchJob = nullptr;
-
-        stretchJob = new StretcherJob (this, ratio);
-        tp->addJob (stretchJob, true);
 #else
-        bufferBlockList.setNumSample(originAudioBuffer.getNumSamples());
-        bufferBlockList.copyFrom (originAudioBuffer, 0);
-        setRecordedLength (originAudioBuffer.getNumSamples());
+        if (ratio != 1.0)
+        {
+            bufferBlockList.setNumSample(originAudioBuffer.getNumSamples());
+            bufferBlockList.copyFrom (originAudioBuffer, 0);
+            setRecordedLength (originAudioBuffer.getNumSamples());
 #endif
+        }
+        else
+        {
+
+            tmpBufferStretch.makeCopyOf(originAudioBuffer);
+            isStretchReady = true;
+            appliedRatio=1.0;
+
+            //        bufferBlockList.copyFrom (originAudioBuffer, 0);
+            //        setRecordedLength (originAudioBuffer.getNumSamples());
+
+
+        }
+
+
+
     }
-    else
-    {
-
-        tmpBufferStretch.makeCopyOf(originAudioBuffer);
-        isStretchReady = true;
-
-//        bufferBlockList.copyFrom (originAudioBuffer, 0);
-//        setRecordedLength (originAudioBuffer.getNumSamples());
-
-
-    }
-
-
-
-}
 #endif
 
 #if RT_STRETCH
-int forcedBlockSize = 0;
-void PlayableBuffer::initRTStretch()
-{
-    pendingTimeStretchRatio = 1.0;
-
-    if (sampleRate <= 0)
+    constexpr bool use_pb_blocksize = true;
+    constexpr int forcedBlockSize = 0;//1024;
+    void PlayableBuffer::initRTStretch()
     {
-        jassertfalse;
-    }
+        pendingTimeStretchRatio = 1.0;
 
-    jassert (blockSize > 0);
-    RTStretcher = new RubberBandStretcher  (sampleRate,//size_t sampleRate,
-                                            bufferBlockList.getAllocatedNumChannels(),//size_t channels,
-                                            RubberBandStretcher::OptionProcessRealTime
-                                            //                                          | RubberBandStretcher::OptionTransientsMixed
-                                            | RubberBandStretcher::OptionTransientsSmooth
-                                            //| RubberBandStretcher::OptionPhaseAdaptive
-                                            | RubberBandStretcher::OptionThreadingNever
-                                            | RubberBandStretcher::OptionWindowStandard
+        jassert(sampleRate>0);
+        jassert (blockSize > 0);
+        
+        auto targetNumChannel = bufferBlockList.getAllocatedNumChannels();
 
-                                            //| RubberBandStretcher::OptionStretchElastic
-                                            | RubberBandStretcher::OptionStretchPrecise
+        if(!RTStretcher.get() ||
+           RTStretcher->getChannelCount()!=targetNumChannel ||
+           RTStretcherSamplerate!=sampleRate){
+            RTStretcherSamplerate = sampleRate;
+            RTStretcher = new RubberBandStretcher  (sampleRate,//size_t sampleRate,
+                                                    bufferBlockList.getAllocatedNumChannels(),//size_t channels,
+                                                    RubberBandStretcher::OptionProcessRealTime
+                                                    //
+                                                    //                                            | RubberBandStretcher::OptionTransientsSmooth
+                                                    | RubberBandStretcher::OptionTransientsMixed
 
-                                            //Options options = DefaultOptions,
-                                            //double initialTimeRatio = 1.0,
-                                            //double initialPitchScale = 1.0
-                                           );
+                                                    //| RubberBandStretcher::OptionPhaseAdaptive
+                                                    | RubberBandStretcher::OptionThreadingNever
+                                                    | RubberBandStretcher::OptionWindowStandard
 
-    if(forcedBlockSize>0)
-        RTStretcher->setMaxProcessSize(forcedBlockSize);
-    RTStretcher->setPitchScale (1.0);
-    stretchNeedle = 0;
-}
+                                                    | RubberBandStretcher::OptionChannelsTogether
 
-bool PlayableBuffer::processPendingRTStretch (AudioBuffer<float>& b, sample_clk_t /*time*/)
-{
+                                                    | RubberBandStretcher::OptionStretchPrecise // rubberband forced to this mode in real time (StretchElastic is useless)
 
-    if (isStretchPending )
-    {
-        int outNumSample = b.getNumSamples();
-        fadePendingStretch.incrementFade (outNumSample);
-        double lastFade = fadePendingStretch.getLastFade();
-        double curFade = fadePendingStretch.getCurrentFade();
-        //    jassert(curFade>0 || lastFade>0);
-        int originNumSamples = originAudioBuffer.getNumSamples();
-
-
-        jassert (pendingTimeStretchRatio != 0);
-
-
-
-
-        const int numChannels (getNumChannels());
-
-
-        int available = RTStretcher->available();
-        const float** inBuf = new const float*[numChannels];
-
-        //    if(stretchNeedle!=originNumSamples)   {
-        while (available < outNumSample  )
-        {
-
-            //      int targetLen = (originNumSamples*pendingTimeStretchRatio);
-            //      double curBeat = (time%(targetLen))*1.0/targetLen + 0.0000001;
-            //      double localBeat = stretchNeedle*1.0/originNumSamples;
-            if (!fadePendingStretch.isFadingOut())
-            {
-                //        double diff =(localBeat*1.0/curBeat);
-                //        diff=pow(diff,3);
-                //        double adaptStretch=jmin(jmax(0.5,diff),2.0);
-                const double adaptStretch = 1;
-                //                DBG(curBeat << " : " << localBeat << " : " <<diff << " : " << adaptStretch);
-                RTStretcher->setTimeRatio (pendingTimeStretchRatio * adaptStretch);
-            }
-
-            int toProcess =  forcedBlockSize!=0? forcedBlockSize:(int)RTStretcher->getSamplesRequired();
-            //      jassert(toProcess>0);
-
-            AudioBuffer<float> tmpCache (numChannels, toProcess);
-
-            if (stretchNeedle + toProcess >= originNumSamples)
-            {
-                toProcess = originNumSamples - stretchNeedle;
-            }
-
-            if (toProcess > 0)
-            {
-                for (int i = 0 ; i  < numChannels ; i++)
-                {
-                    inBuf [i] = originAudioBuffer.getReadPointer (i) + stretchNeedle;
-                }
-
-                RTStretcher->process (const_cast<const float* const*> (inBuf), toProcess, false);
-                stretchNeedle += toProcess;
-
-                if (stretchNeedle >= originNumSamples)
-                {
-                    stretchNeedle -= originNumSamples;
-                    numTimePlayed++;
-                }
-            }
-            else
-            {
-                available = RTStretcher->available();
-                jassert (available > outNumSample);
-                break;
-            }
-
-            available = RTStretcher->available();
-            jassert (available >= 0);
-
+                                                    //Options options = DefaultOptions,
+                                                    //double initialTimeRatio = 1.0,
+                                                    //double initialPitchScale = 1.0
+                                                    );
 
         }
+        else{
+            RTStretcher->reset();
+        }
 
-        delete [] inBuf;
+        if(forcedBlockSize>0)
+            RTStretcher->setMaxProcessSize(forcedBlockSize);
+        else{
+            if(use_pb_blocksize)
+                RTStretcher->setMaxProcessSize(blockSize);
+        }
+        RTStretcher->setPitchScale (1.0);
+        stretchNeedle = 0;
 
-
-        //    jassert(available>=outNumSample);
-        float* const*   outBuf = b.getArrayOfWritePointers();
-        RTStretcher->retrieve (outBuf, jmin (outNumSample, available));
-        double ratio = jmin (stretchNeedle * 1.0 / originNumSamples, 1.0);
-
-        b.applyGainRamp (0, outNumSample,
-                         lastFade,
-                         curFade);
-
-
-
-        if (!fadePendingStretch.isFadingOut())
-            playNeedle = ratio * multiNeedle.loopSize;
-
-
-        return true;
     }
 
-    return false;
+    bool PlayableBuffer::processPendingRTStretch (AudioBuffer<float>& b, sample_clk_t /*time*/)
+    {
+        //    if(auto f = fadePendingStretch.getCurrentFade())DBGRT(f);
 
-}
-void PlayableBuffer::applyStretch()
-{
-    DBG ("apply stretch");
-    int targetNumSamples = tmpBufferStretch.getNumSamples();
-    //  playNeedle =  0;
-    setRecordedLength (targetNumSamples);
-    bufferBlockList.copyFrom (tmpBufferStretch, 0);
-    isStretchReady = false;
-    isStretchPending = false;
-    pendingTimeStretchRatio = 1.0;
-    initRTStretch();
-    //  RTStretcher->reset();
+        if (isStretchPending )
+        {
+
+            int outNumSample = b.getNumSamples();
+
+            fadePendingStretch.incrementFade (outNumSample);
+
+            double lastFade = fadePendingStretch.getLastFade();
+            double curFade = fadePendingStretch.getCurrentFade();
 
 
-};
+            //    jassert(curFade>0 || lastFade>0);
+            if(curFade!=0 || lastFade!=0){
+
+                int originNumSamples = originAudioBuffer.getNumSamples();
+
+
+                jassert (pendingTimeStretchRatio != 0);
+
+                const int numChannels (getNumChannels());
+
+
+                int available = RTStretcher->available();
+                const float** inBuf = new const float*[numChannels];
+
+                //    if(stretchNeedle!=originNumSamples)   {
+                while (available < outNumSample  )
+                {
+
+                    //      int targetLen = (originNumSamples*pendingTimeStretchRatio);
+                    //      double curBeat = (time%(targetLen))*1.0/targetLen + 0.0000001;
+                    //      double localBeat = stretchNeedle*1.0/originNumSamples;
+                    if (!fadePendingStretch.isFadingOut())
+                    {
+                        //        double diff =(localBeat*1.0/curBeat);
+                        //        diff=pow(diff,3);
+                        //        double adaptStretch=jmin(jmax(0.5,diff),2.0);
+                        const double adaptStretch = 1;
+                        //                DBG(curBeat << " : " << localBeat << " : " <<diff << " : " << adaptStretch);
+                        RTStretcher->setTimeRatio (pendingTimeStretchRatio * adaptStretch);
+                    }
+
+                    int toProcess =  forcedBlockSize!=0? forcedBlockSize:
+                    use_pb_blocksize? blockSize:
+                    (int)RTStretcher->getSamplesRequired();
+                    //      jassert(toProcess>0);
+
+
+
+                    if (stretchNeedle + toProcess >= originNumSamples)
+                    {
+                        toProcess = originNumSamples - stretchNeedle;
+                    }
+
+                    if (toProcess > 0)
+                    {
+                        for (int i = 0 ; i  < numChannels ; i++)
+                        {
+                            inBuf [i] = originAudioBuffer.getReadPointer (i) + stretchNeedle;
+                        }
+                        
+                        RTStretcher->process (const_cast<const float* const*> (inBuf), toProcess, false);
+                        stretchNeedle += toProcess;
+                        
+                        if (stretchNeedle >= originNumSamples)
+                        {
+                            stretchNeedle -= originNumSamples;
+                            numTimePlayed++;
+                        }
+                    }
+                    else
+                    {
+                        available = RTStretcher->available();
+                        jassert (available > outNumSample);
+                        break;
+                    }
+                    
+                    available = RTStretcher->available();
+                    jassert (available >= 0);
+                    
+                    
+                }
+                
+                delete [] inBuf;
+                
+                
+                jassert(available>=outNumSample);
+                float* const*   outBuf = b.getArrayOfWritePointers();
+                RTStretcher->retrieve (outBuf, jmin (outNumSample, available));
+
+                
+                b.applyGainRamp (0, outNumSample,
+                                 lastFade,
+                                 curFade);
+                
+                
+//                double ratio = jmin (stretchNeedle * 1.0 / originNumSamples, 1.0);
+                //        if (!fadePendingStretch.isFadingOut())
+                //            playNeedle = ratio * multiNeedle.loopSize;
+                
+                
+                return true;
+            }
+        }
+        
+        return false;
+        
+    }
+    void PlayableBuffer::applyStretch()
+    {
+        
+        
+        //     DBGRT ("apply stretch");
+        int targetNumSamples = tmpBufferStretch.getNumSamples();
+        //  playNeedle =  0;
+        setRecordedLength (targetNumSamples);
+        bufferBlockList.copyFrom (tmpBufferStretch, 0);
+        isStretchReady = false;
+        isStretchPending = false;
+        pendingTimeStretchRatio = 1.0;
+        initRTStretch();
+        //  RTStretcher->reset();
+        
+        
+    };
 #endif
