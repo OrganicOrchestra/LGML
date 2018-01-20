@@ -29,8 +29,13 @@
     #define BUFFER_CAN_STRETCH 0
 #endif
 
-
-
+#define DODBGAUDIO 0
+#if DODBGAUDIO
+#warning
+#define DBGRT(x)  DBG(x)
+#else
+#define DBGRT(x)
+#endif
 
 
 
